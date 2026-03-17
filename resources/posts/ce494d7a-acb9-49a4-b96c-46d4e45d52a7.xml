@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Cross-Page Postback Paradigması</title>
+  <description>Asp.Net 2.0 ile gelen en önemli yeniliklerden biriside Cross-Page Postback mimarisidir. Cross-Page Postback, bir sayfanın tüm içeriği ile başka bir sayfaya doğru gönderilebilmesini sağlar. Bunu bir asp.net sayfasının kendi üzerine değilde, hedef gösterilen bir sayfaya doğru gönderilmesi olarakta düşünebiliriz.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Asp.Net 2.0 ile gelen en &amp;ouml;nemli yeniliklerden biriside Cross-Page Postback mimarisidir. Cross-Page Postback, bir sayfanın t&amp;uuml;m i&amp;ccedil;eriği ile başka bir sayfaya doğru g&amp;ouml;nderilebilmesini sağlar. Bunu bir asp.net sayfasının kendi &amp;uuml;zerine değilde, hedef g&amp;ouml;sterilen bir sayfaya doğru g&amp;ouml;nderilmesi olarakta d&amp;uuml;ş&amp;uuml;nebiliriz. B&amp;ouml;ylece hedef sayfa i&amp;ccedil;erisinden, kaynak sayfadaki (yada kaynak sayfalardaki) verilere erişebilme imkanı sağlanmış olunur.&lt;/p&gt;
+&lt;p&gt;Bu aynı zamanda sayfalar arasında veri taşımanın etkili yollarından birisi olarak, web uygulamalarındaki yerini almıştır. Cross-Page Postback olduk&amp;ccedil;a g&amp;uuml;&amp;ccedil;l&amp;uuml; bir yenilik olmasına karşın kullanırken dikkat edilmesi gereken bazı hususlar vardır. Bu makelemizde dikkat edilmesi gereken noktaları &amp;ouml;rnekler &amp;uuml;zerinden incelemeye &amp;ccedil;alışacağız. Aşağıdaki tabloda Cross-Page Postback işlemi sırasında dikkat etmemiz gereken noktalar maddeler halinde &amp;ouml;zetlenmeye &amp;ccedil;alışılmıştır.&lt;/p&gt;
+&lt;table id="table92" style="border-collapse: collapse; width: 100%;" border="1" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td colspan="2"&gt;&lt;strong&gt;Cross-Page Post Back Kullanırken&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align="center" width="9"&gt;&lt;strong&gt;1&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="96%"&gt;Cross-Page Postback işlemini yapabilen web tabanlı bileşenler sadece &lt;strong&gt;IButtonControl&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml; (interface) uygulamış web kontrolleridir. Bu nedenle hedef sayfada &lt;strong&gt;Null Reference&lt;/strong&gt; kontrol&amp;uuml; mutlaka yapılmalıdır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align="center" width="9"&gt;&lt;strong&gt;2&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="96%"&gt;Cross-Page Postback işlemi sırasında, kaynak sayfaya(sayfalara) ait referans(referanslar) kullanılmak istendiğinde bu sayfaya(sayfalara) ait nesne &amp;ouml;rneği (&amp;ouml;rnekleri) oluşturulur. Dolayısıyla bu kaynak sayfanın yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml;nde &lt;strong&gt;(Web Page Life Cycle)&lt;/strong&gt; yer alan olay metodlarında &amp;ccedil;alışması ama g&amp;ouml;rmezden gelinmesi anlamına gelir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align="center" width="9"&gt;&lt;strong&gt;3&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="96%"&gt;Kaynak sayfada tanımlı herhangibir &amp;ouml;zelliğe hedef sayfa i&amp;ccedil;erisinden erişebilmek i&amp;ccedil;in, kaynak sınıfa ait bir nesne &amp;ouml;rneğine ihtiya&amp;ccedil; vardır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align="center" width="9"&gt;&lt;strong&gt;4&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="96%"&gt;Birden fazla sayfadan tek bir sayfaya doğru Cross-Page Postback işlemi yapılabilir. Ancak bu durumda hedef sayfaya hangi sayfadan gelindiğinin anlaşılması kaynak sayfa kontrollerinin doğru bir şekilde tespit edilebilmesi i&amp;ccedil;in şarttır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align="center" width="9"&gt;&lt;strong&gt;5&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="96%"&gt;Kaynak sayfa eğer doğrulama kontrolleri (validation controls) i&amp;ccedil;eriyorsa ve istemci taraflı kontrol scriptleri (&amp;ouml;zellikle java script' ler) &amp;ccedil;alışıtırılamıyorsa yada kapalıysa, hedef sayfaya yinede ge&amp;ccedil;iş yapılabilir. Bu kaynak sayfaya ait doğrulama işlemlerinin komple atlanması anlamına gelir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Dilerseniz bu maddeleri teker teker incelemeye &amp;ccedil;alışalım.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;Madde 1:&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Web kontrollerinden olan &lt;strong&gt;Button, LinkButton&lt;/strong&gt; ve &lt;strong&gt;ImageButton&lt;/strong&gt; bileşenleri, IButtonControl' den t&amp;uuml;remişlerdir. Bu sebepten dolayı &lt;strong&gt;PostBackUrl&lt;/strong&gt; isimli &amp;ouml;zellikleri vardır. PostBackUrl bildiğiniz gibi, Cross-Page Postback sırasında hedef olarak gidilecek url bilgisini i&amp;ccedil;ermektedir. Tipik olarak hedef sayfa i&amp;ccedil;erisinden kaynak sayfaya ait herhangibir kontrol&amp;uuml;n i&amp;ccedil;eriğini almak (&amp;ouml;rneğin kaynak sayfadaki bir TextBox i&amp;ccedil;erisine girilen bir değeri) i&amp;ccedil;in &lt;strong&gt;FindControl&lt;/strong&gt; metodu kullanılır. Lakin hedef sayfaya ge&amp;ccedil;mek i&amp;ccedil;in HyperLink yada Response.Redirect metodu gibi tekniklerde kullanılabilir. Bu ise Cross-Page Postback olmaması anlamına gelmektedir.&lt;/p&gt;
+&lt;p&gt;Madde 1' i daha net anlayabilmek i&amp;ccedil;in basit bir &amp;ouml;rnek geliştirelim. Kaynak1.aspx ve Hedef.aspx isimli iki web sayfamız olduğunu d&amp;uuml;ş&amp;uuml;nelim. Kaynak1.aspx sayfasından, Hedef.aspx sayfasına ge&amp;ccedil;iş yapmak i&amp;ccedil;in iki farklı teknik kullanıyoruz. Birincisinde PostBackUrl &amp;ouml;zellikleri set edilmiş olan Button, LinkButton ve ImageButton kontrollerini ele alıyoruz. Bu kontrollerin PostBackUrl &amp;ouml;zelliklerine ilgili değerleri set ederekten Cross-Page Postback işlemini ger&amp;ccedil;ekleştiriyoruz. Diğer se&amp;ccedil;eneğimizde ise Response.Redirect metodu ve HyperLink kontrol&amp;uuml;n&amp;uuml; kullanarak hedef sayfaya bir ge&amp;ccedil;iş yapmaktayız.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Kaynak1.aspx;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk170_1.gif" alt="" width="227" height="386" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;%@ Page Language="C#" AutoEventWireup="true" CodeFile="Kaynak1.aspx.cs" Inherits="Kaynak1" %&amp;gt;
+&amp;lt;html xmlns="http://www.w3.org/1999/xhtml" &amp;gt;
+&amp;lt;head runat="server"&amp;gt;
+&amp;lt;title&amp;gt;Untitled Page&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+&amp;lt;form id="form1" runat="server"&amp;gt;
+&amp;lt;div&amp;gt;
+    &amp;lt;strong&amp;gt;G&amp;ouml;nderilecek Bilgi &amp;lt;br /&amp;gt;&amp;lt;/strong&amp;gt;
+    &amp;lt;asp:TextBox ID="txtInfo" runat="server"&amp;gt;&amp;lt;/asp:TextBox&amp;gt;&amp;lt;br /&amp;gt;&amp;lt;br /&amp;gt;
+    &amp;lt;table border="1"&amp;gt;
+    &amp;lt;tr&amp;gt;
+        &amp;lt;td&amp;gt;&amp;lt;strong&amp;gt;&amp;lt;span style="color: green; font-family: Verdana"&amp;gt;PostBackUrl ile&amp;lt;/span&amp;gt;&amp;lt;/strong&amp;gt;&amp;lt;/td&amp;gt;
+    &amp;lt;/tr&amp;gt;
+    &amp;lt;tr&amp;gt;
+        &amp;lt;td &amp;gt;&amp;lt;asp:Button ID="btnGoTarget" runat="server" PostBackUrl="~/Hedef.aspx" Text="Hedefe Git" /&amp;gt;&amp;lt;br/&amp;gt;&amp;lt;br/&amp;gt;    
+                &amp;lt;asp:LinkButton ID="lnkGoTarget" runat="server" PostBackUrl="~/Hedef.aspx"&amp;gt;Hedefe Git&amp;lt;/asp:LinkButton&amp;gt;&amp;lt;br /&amp;gt;&amp;lt;br /&amp;gt;
+                &amp;lt;asp:ImageButton ID="imbGoTarget" runat="server" Height="64px" ImageAlign="Middle" ImageUrl="~/Beaver.bmp" PostBackUrl="~/Hedef.aspx" Width="64px" /&amp;gt;&amp;lt;/td&amp;gt;
+    &amp;lt;/tr&amp;gt;
+    &amp;lt;tr&amp;gt;
+        &amp;lt;td&amp;gt;&amp;lt;strong&amp;gt;&amp;lt;span style="color: red; font-family: Verdana"&amp;gt;PostBackUrl olmadan&amp;lt;/span&amp;gt;&amp;lt;/strong&amp;gt;&amp;lt;/td&amp;gt;
+    &amp;lt;/tr&amp;gt;
+    &amp;lt;tr&amp;gt;
+        &amp;lt;td&amp;gt;&amp;lt;asp:Button ID="btnGoTarget2" runat="server" OnClick="btnGoTarget2_Click" Text="Hedefe Git"/&amp;gt;&amp;lt;br/&amp;gt;&amp;lt;br /&amp;gt;
+               &amp;lt;asp:HyperLink ID="hlGoTarget" runat="server" NavigateUrl="~/Hedef.aspx"&amp;gt;Hedefe Git&amp;lt;/asp:HyperLink&amp;gt;&amp;lt;/td&amp;gt;
+    &amp;lt;/tr&amp;gt;
+&amp;lt;/table&amp;gt;
+&amp;lt;/div&amp;gt;
+&amp;lt;/form&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Kaynak1.aspx.cs;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;protected void btnGoTarget2_Click(object sender, EventArgs e)
+{
+    Response.Redirect("~/Hedef.aspx");
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Hedef.aspx.cs;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;protected void Page_Load(object sender, EventArgs e)
+{
+    Response.Write(((TextBox)PreviousPage.FindControl("txtInfo")).Text);
+}&lt;/pre&gt;
+&lt;p&gt;Uygulamayı &amp;ccedil;alıştırdıktan sonra, HyperLink veya PostBackUrl &amp;ouml;zelliği set edilmemiş olan kontrollerimizden herhangibiri &amp;uuml;zerinden hedef sayfaya ge&amp;ccedil;iş yaptığımızda aşağıdaki hata mesajı ile karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk170_2.gif" alt="" width="551" height="140" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu hata mesajının sebebi son derece a&amp;ccedil;ıktır. Nitekim HyperLink kontrol&amp;uuml; yada Response.Redirect metodu ile hedef sayfaya ge&amp;ccedil;iş yapıldığından &lt;strong&gt;PreviousPage&lt;/strong&gt; referansı null olarak gelmektedir. Yani ortada bir Cross-Page Postback işlemi s&amp;ouml;z konusu değildir. Bu durum, hedef sayfaya ait Url bilgisinin doğrudan talep edilmesi halinde de ge&amp;ccedil;erlidir. &amp;Ouml;yleyse, ilgili yerlerde PreviousPage tipinin null olup olmadığı kontrol edilmeli ve işlemler buna g&amp;ouml;re yapılmalıdır. &amp;Ccedil;&amp;ouml;z&amp;uuml;m olarak Hedef.aspx sayfasında aşağıdaki kontrol&amp;uuml; yapmak yeterli olacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;if (PreviousPage != null)
+    Response.Write(((TextBox)PreviousPage.FindControl("txtInfo")).Text);&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;Madde 2:&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Bir Cross-Page Postback işlemi meydana geldiğinde, hedef sayfada PreviousPage referansının ilk kullanıldığı yer kaynak sayfaya ait bir nesne &amp;ouml;rneğinin oluşturulmasına yol a&amp;ccedil;acaktır. Dolayısıyla kaynak sayfanın yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml; i&amp;ccedil;erisinde yer alan olaylardan, geliştirici tarafından kodlanmış olanları &amp;ccedil;alışacaktır. Ancak bu kodlar ve sonu&amp;ccedil;ları g&amp;ouml;rmezden gelinecektir. Bunu daha iyi anlayabilmek i&amp;ccedil;in Kaynak1.aspx.cs dosyasına aşağıdaki eklemeleri yapalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void Page_Init(object sender, EventArgs e)
+{
+    Response.Write("Init metodu..."); 
+}
+protected void Page_Load(object sender, EventArgs e)
+{
+    Response.Write("Page Load metodu &amp;ccedil;alışıyor...");
+}
+protected void btnGoTarget_Click(object sender, EventArgs e)
+{
+    Response.Write("Go Target d&amp;uuml;ğmesine basıldı...");
+}
+private void Page_PreRender(object sender, System.EventArgs e)
+{
+    Response.Write("PreRender &amp;ccedil;alışıyor...");
+}
+private void Page_Unload(object sender, System.EventArgs e)
+{
+}&lt;/pre&gt;
+&lt;p&gt;Kodu bu aşamasındayken debug ederek izlersek aşağıdaki şekilde anlatılmaya &amp;ccedil;alışılan yolu izlediğini g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk170_3.gif" alt="" width="552" height="348" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi, kaynak sayfa y&amp;uuml;klendikten sonra PostBackUrl &amp;ouml;zelliği set edilmiş herhangibir kontrole basılması halinde kod ilk olarak Hedef sayfanın yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml;nden işletilmeye başlanacaktır. Bu d&amp;ouml;ng&amp;uuml; Hedef sayfaya aittir. Dolayısıyla bir asp.net web sayfası i&amp;ccedil;in ge&amp;ccedil;erli olan yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml;ndeki işleyiş ge&amp;ccedil;erlidir. Ne varki, hedef sayfada &lt;strong&gt;PreviousPage&lt;/strong&gt; referansı ile kaynak sayfaya yapılacak ilk talepte, sunucu tarafında Kaynak sayfaya ait nesne &amp;ouml;rneğinin oluşturulması işlemleri başlayacaktır. Buda doğal olarak Kaynak sayfanın yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml;n&amp;uuml;n tekrar tetiklenmesi, &lt;strong&gt;Init, Load, Click, PreRender ve Unload&lt;/strong&gt; gibi olayların yeniden &amp;ccedil;alışması anlamına gelmektedir. Bu sadece kaynak sayfaya ait nesne &amp;ouml;rneğinin elde edilmesi sırasında olması beklenen bir prosed&amp;uuml;rd&amp;uuml;r. İşin ilgin&amp;ccedil; yanı, kaynak sayfaya ait nesne &amp;ouml;rneklenirken, buradaki kodların g&amp;ouml;rmezden gelinmesidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk170_4.gif" alt="" width="593" height="65" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu maddeyi daha net anlayabilmek i&amp;ccedil;in klasik bir Asp.Net sayfasının yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml;n&amp;uuml; bilmekte fayda vardır. Yukarıdaki şekil bunu g&amp;ouml;stermektedir. Burada g&amp;ouml;r&amp;uuml;len changed ve click olayları &amp;ccedil;oğunlukla Web kontrollerine ait olaylardır. Bir sayfa ilk y&amp;uuml;klendiğinde Change ve Click olayları devreye girmez. Genellikle bir Asp.Net sayfası &amp;uuml;zerinde herhangibir şekilde PostBack işlemi yapıldığında var olan yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml; i&amp;ccedil;erisinde sırasıyla Changed ve Click olaylarıda eklenir.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;Madde 3: &lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Bazı durumlarda kaynak sayfadaki herhangibir public &amp;uuml;yeye, hedef sayfa &amp;uuml;zerinden erişmek isteyebiliriz. B&amp;ouml;yle bir durumda eğer herhangibir şey belirtmessek PreviousPage tipi ilgili &amp;uuml;yelere doğrudan erişilmesi m&amp;uuml;mk&amp;uuml;n değildir. Bu &amp;ccedil;oğunlukla kaynak sayfaya ait sınıf i&amp;ccedil;erisinde bir &amp;ouml;zellik (property) tanımlandığı zaman rastlanacak bir durumdur. İlgili &amp;ouml;zelliğe erişebilmek i&amp;ccedil;in &amp;ouml;ncelikle kaynak sayfaya ait nesne &amp;ouml;rneğinin hedef sayfada kullanılabilir olması gerekmektedir. Durumu daha iyi anlayabilmek i&amp;ccedil;in ilk olarak kaynak sayfa sınıfımıza bir &amp;ouml;zellik yazacağız. Daha sonra ise PreviousPage yardımıyla bu &amp;ouml;zelliğe hedef sayfa &amp;uuml;zerinden erişmeye &amp;ccedil;alışacağız. &amp;Ouml;rneği geliştirmek i&amp;ccedil;in Kaynak1.aspx.cs kodlarını aşağıdaki gibi değiştirelim.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Kaynak1.aspx.cs i&amp;ccedil;in ek;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private DateTime _istekZamani;
+
+public DateTime IstekZamani
+{
+    get { return _istekZamani; }
+}&lt;/pre&gt;
+&lt;p&gt;Hedef.aspx.cs sayfasına ait Load metodu i&amp;ccedil;erisinde IstekZamani isimli &amp;ouml;zelliğe erişmeye &amp;ccedil;alıştığımızda tasarım zamanında aşağıdaki hata mesajı ile karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk170_5.gif" alt="" width="586" height="146" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Sorun Kaynak1.aspx sayfasına ait arka plan sınıfının nesne &amp;ouml;rneğinin doğru bir şekilde ele alınmayışından kaynaklanmaktadır. &amp;Ccedil;&amp;ouml;z&amp;uuml;m olarak hedef sayfaya, kaynak sayfanın tipini s&amp;ouml;ylememiz yeterli olacaktır. Bunun i&amp;ccedil;in Hedef.aspx sayfasında Page direktifinin hemen altına aşağıdaki gibi &lt;strong&gt;PreviousPageType&lt;/strong&gt; direktifini eklememiz gerekmektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;%@ PreviousPageType VirtualPath="~/Kaynak1.aspx" %&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Bu haliyle uygulamayı derlediğimizde hi&amp;ccedil; bir sorunla karşılaşmadan IstekZamani isimli &amp;ouml;zelliğe erişebildiğimizi g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;Madde 4 : &lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Cross-Page Postback işlemi &amp;ouml;zellikle sayfalar arasında veri taşıma işlemleri arasında &amp;ouml;nemli bir yere sahiptir. Bazı durumlarda hedef sayfaya birden fazla sayfadan Cross-Page Postback işlemi ger&amp;ccedil;ekleştirebiliriz. Ancak b&amp;ouml;yle bir senaryoda, hedef sayfaya hangi tipten gelindiğinin anlaşılması şart olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk170_6.gif" alt="" width="413" height="180" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Senaryoyu daha net anlayabilmek i&amp;ccedil;in &amp;ouml;rnek uygulamamıza Kaynak2.aspx isimli yeni bir web sayfası daha ekliyoruz. Bu sayfa da Hedef.aspx sayfasına doğru post işlemini ger&amp;ccedil;ekleştirebilecek button kontrolleri i&amp;ccedil;ermektedir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Kaynak2.aspx;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk170_7.gif" alt="" width="242" height="168" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;%@ Page Language="C#" AutoEventWireup="true" CodeFile="Kaynak2.aspx.cs" Inherits="Kaynak2" %&amp;gt;
+&amp;lt;html xmlns="http://www.w3.org/1999/xhtml" &amp;gt;
+&amp;lt;head runat="server"&amp;gt;
+&amp;lt;title&amp;gt;Untitled Page&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+&amp;lt;form id="form1" runat="server"&amp;gt;
+&amp;lt;div&amp;gt;    
+    &amp;lt;strong&amp;gt;G&amp;ouml;nderilecek Bilgi&amp;lt;br /&amp;gt;&amp;lt;/strong&amp;gt;
+    &amp;lt;asp:TextBox ID="txtInfo2" runat="server"&amp;gt;&amp;lt;/asp:TextBox&amp;gt;&amp;lt;br /&amp;gt;&amp;lt;br /&amp;gt;
+    &amp;lt;table border="1"&amp;gt;
+    &amp;lt;tr&amp;gt;
+        &amp;lt;td&amp;gt;&amp;lt;strong&amp;gt;&amp;lt;span style="color: green; font-family: Verdana"&amp;gt;PostBackUrl ile&amp;lt;/span&amp;gt;&amp;lt;/strong&amp;gt;&amp;lt;/td&amp;gt;
+    &amp;lt;/tr&amp;gt;
+    &amp;lt;tr&amp;gt;
+        &amp;lt;td&amp;gt;&amp;lt;asp:Button ID="btnGoTarget" runat="server" OnClick="btnGoTarget_Click" PostBackUrl="~/Hedef.aspx"
+Text="Hedefe Git" /&amp;gt;&amp;lt;/td&amp;gt;
+    &amp;lt;/tr&amp;gt;
+    &amp;lt;/table&amp;gt;
+&amp;lt;/div&amp;gt;
+&amp;lt;/form&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Bu sefer Kaynak2.aspx sayfasındaki TextBox kontrol&amp;uuml;n&amp;uuml;n adını Kaynak1.aspx' den farklı olarak txtInfo2 olarak değiştirdik. Şimdi uygulamamızı test ettiğimizde Kontrol1.aspx' den yapılan ge&amp;ccedil;işlerde bir problem olmadığını ancak Kaynak2.aspx' ten yapılan ge&amp;ccedil;işlerde aşağıdaki istisna mesajını aldığımızı g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk170_8.gif" alt="" width="463" height="285" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu son derece doğaldır. Nitekim PreviousPage referansının işaret ettiği sayfada txtInfo isimli bir kontrol bulunmamaktadır. Dahası bizim PreviousPage tipimiz şu anda hangi sayfadan buraya gelindiğini de bilmemektedir. Madde 3 ' te yaptığımız gibi &lt;strong&gt;PreviousPageType&lt;/strong&gt; direktifini kullanmayı tercih edebiliriz. Ancak bu direktif sadece bir kez tanımlanabilmektedir. Dolayısıyla aşağıdaki gibi bir kullanım ge&amp;ccedil;ersizdir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk170_9.gif" alt="" width="415" height="90" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;yleyse &amp;ccedil;&amp;ouml;z&amp;uuml;m ? &amp;Ccedil;&amp;ouml;z&amp;uuml;m olarak, &lt;strong&gt;Reference&lt;/strong&gt; direktifi kullanılabilir.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;%@ Reference Page="~/Kaynak1.aspx" %&amp;gt;
+&amp;lt;%@ Reference Page="~/Kaynak2.aspx" %&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Elbette kod tarafında da yapılması gereken bir takım değişiklikler vardır. Reference direktifleri sayesinde Hedef sayfada kullanılabilecek referans tiplerini bildirmiş oluruz. Bu durumda Hedef sayfada aşağıdaki değişiklikleri yapmamız yeterli olacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;if (PreviousPage != null)
+{
+    if (PreviousPage is Kaynak1)
+    {
+        Kaynak1 kyn1 = PreviousPage as Kaynak1;
+        Response.Write(((TextBox)kyn1.FindControl("txtInfo")).Text);
+    }
+    if (PreviousPage is Kaynak2)
+    {
+        Kaynak2 kyn2 = PreviousPage as Kaynak2;
+        Response.Write(((TextBox)kyn2.FindControl("txtInfo2")).Text);
+    } 
+}
+else
+    Response.Write("Cross-Page Postback işlemi yok...");&lt;/pre&gt;
+&lt;p&gt;Bu durumda uygulama sorunsuz olarak &amp;ccedil;alışacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;Madde 5: &lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Gelelim bir diğer &amp;ouml;nemli konuya. Doğrulama (Validation) işlemleri bildiğiniz gibi istemci tarafından başlar ve sunucu tarafında tekrar edilir. Asp.Net 2.0' ın kullandığı Validation Kontrolleri, hem istemci taraflı script' leri hemde sunucu taraflı kodları otomatik olarak hazırlamaktadır. Istemcilerin script desteğinin olmaması ihtimaline karşılıkta sunucu tarafında mutlaka ve mutlaka doğrulama işlemleri yapılır. Dolayısıla istemci tarafında doğrulama işlemleri başarılı olsa dahi sunucu tarafında bu kontroller tekrar yapılacaktır. Ancak istemci tarafında script desteğinin olmaması halinde Cross-Page postback işleminde yaşanan bir problem vardır. Eğer istemci tarafı script desteği kapalı ise kaynak sayfadaki doğrulama işlemleri Cross-Page işlemi nedeni ile atlanmaktadır. Dilerseniz &amp;ouml;rnek &amp;uuml;zerinden devam ederek konuyu daha net anlamaya &amp;ccedil;alışalım. Bu ama&amp;ccedil;la aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ne sahip Kaynak3.aspx isimli bir web sayfası oluşturuyoruz.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Kaynak3.aspx;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk170_10.gif" alt="" width="182" height="184" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;%@ Page Language="C#" AutoEventWireup="true" CodeFile="Kaynak3.aspx.cs" Inherits="Kaynak3" %&amp;gt;
+&amp;lt;html xmlns="http://www.w3.org/1999/xhtml" &amp;gt;
+&amp;lt;head runat="server"&amp;gt;
+&amp;lt;title&amp;gt;Untitled Page&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+&amp;lt;form id="form1" runat="server"&amp;gt;
+&amp;lt;div&amp;gt;
+&amp;lt;strong&amp;gt;
+Email adresinizi girin : &amp;lt;/strong&amp;gt;
+&amp;lt;br /&amp;gt;
+&amp;lt;asp:TextBox ID="txtEmail" runat="server"&amp;gt;&amp;lt;/asp:TextBox&amp;gt;
+&amp;lt;br /&amp;gt;
+&amp;lt;br /&amp;gt;
+&amp;lt;asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtEmail" ErrorMessage="Email girmelisiniz." EnableClientScript="False"&amp;gt;&amp;lt;/asp:RequiredFieldValidator&amp;gt;&amp;lt;br /&amp;gt;
+&amp;lt;asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" ControlToValidate="txtEmail" ErrorMessage="Ge&amp;ccedil;ersiz mail adresi" ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*" EnableClientScript="False"&amp;gt;&amp;lt;/asp:RegularExpressionValidator&amp;gt;&amp;lt;br /&amp;gt;
+&amp;lt;br /&amp;gt;
+&amp;lt;asp:Button ID="btnSend" runat="server" Text="Hedef" PostBackUrl="~/Hedef2.aspx" /&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;/form&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Dikkat ederseniz doğrulama kontrollerinin script tarafında JavaScript kodu &amp;uuml;retmesini &lt;strong&gt;EnableClientScript&lt;/strong&gt; &amp;ouml;zelliklerine false değerini atayarak &amp;ouml;nledik. Bu elbette teorimizin ispatlanması i&amp;ccedil;in konulmuş k&amp;uuml;&amp;ccedil;&amp;uuml;k bir değişiklik. Senaryomuz gereği Hedef2.aspx isimli bir sayfaya doğru hareket ediyoruz. Eğer textBox kontrol&amp;uuml;n&amp;uuml;n i&amp;ccedil;eriğini boş bırakırsak veya ge&amp;ccedil;ersiz bir mail adresi yazarsak normal şartlarda sayfanın Cross-Page Postback işlemini ger&amp;ccedil;ekleştirmemesini bekleyebiliriz. Ne yazıkki b&amp;ouml;yle olmayacaktır. Sonu&amp;ccedil; aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;object id="obj1" width="369" height="261" classid="clsid:D27CDB6E-AE6D-11CF-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0" border="0"&gt;
+&lt;param name="movie" value="http://www.buraksenyurt.com/makale/images/mk170v_1.swf" /&gt;
+&lt;param name="quality" value="High" /&gt; &lt;embed type="application/x-shockwave-flash" width="369" height="261" src="http://www.buraksenyurt.com/makale/images/mk170v_1.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" name="obj1" /&gt;&lt;/object&gt;&lt;/p&gt;
+&lt;p&gt;Video' dan g&amp;ouml;receğiniz gibi hi&amp;ccedil; bir doğrulama işlemi &amp;ccedil;alışmadan hedef sayfaya ge&amp;ccedil;ilebilmektedir. Bu durumu &amp;ouml;nlemek i&amp;ccedil;in kaynak sayfadan hedef sayfaya hareket etmeden &amp;ouml;nce Page sınıfının IsValid &amp;ouml;zelliği kullanılarak doğrulama işlemlerini yaptırmaya &amp;ccedil;alışabiliriz. Ancak Cross-Page Postback s&amp;uuml;recinde meydana gelen yaşam d&amp;ouml;ng&amp;uuml;leri nedeni ile yine kontroller atlanacak ve hedef sayfaya gidilecektir. &amp;Ccedil;&amp;ouml;z&amp;uuml;m olarak hedef sayfa i&amp;ccedil;erisinde, kaynak sayfanın ge&amp;ccedil;erli olup olmadığı kontrol edilebilir ve gerekirse kullanıcı kaynak sayfaya geri g&amp;ouml;nderilebilir. Bunun i&amp;ccedil;in Hedef2.aspx.cs i&amp;ccedil;erisindeki Load metodunu aşağıdaki gibi kodlamak yeterli olacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;protected void Page_Load(object sender, EventArgs e)
+{
+    if (PreviousPage != null)
+    {
+        if (!PreviousPage.IsValid)
+        {
+            Response.Write("&amp;Ouml;nceki Sayfada doğrulanmamış bilgiler var...");
+        }
+    }
+}
+protected void btnBack_Click(object sender, EventArgs e)
+{
+    Response.Redirect("~/Kaynak3.aspx");
+}&lt;/pre&gt;
+&lt;p&gt;Şimdi tekrardan uygulamamızı &amp;ccedil;alıştıralım.&lt;/p&gt;
+&lt;p&gt;&lt;object id="obj2" width="369" height="265" classid="clsid:D27CDB6E-AE6D-11CF-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0" border="0"&gt;
+&lt;param name="movie" value="http://www.buraksenyurt.com/makale/images/mk170v_2.swf" /&gt;
+&lt;param name="quality" value="High" /&gt; &lt;embed type="application/x-shockwave-flash" width="369" height="265" src="http://www.buraksenyurt.com/makale/images/mk170v_2.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" name="obj2" /&gt;&lt;/object&gt;&lt;/p&gt;
+&lt;p&gt;Eminimki dikkatli g&amp;ouml;zlerden ka&amp;ccedil;mayacaktır. Kaynak sayfaya geri d&amp;ouml;nd&amp;uuml;ğ&amp;uuml;m&amp;uuml;zde TextBox kontrol&amp;uuml;n&amp;uuml;n i&amp;ccedil;eriği boşalmıştır. Dahası &amp;ccedil;alışma esnasında hi&amp;ccedil; g&amp;ouml;remediğimiz doğrulama kontrol&amp;uuml;ne ait hata mesajı hi&amp;ccedil; &amp;ccedil;ıkmamıştır. Oysaki normal bir PostBack işleminde (yani sayfanın kendi &amp;uuml;zerine g&amp;ouml;nderilmesinde) validation kontrolleri &amp;ccedil;alışacak, ilgili hata mesajları g&amp;ouml;r&amp;uuml;necek ve TextBox gibi diğer bazı kontrollerinde i&amp;ccedil;eriği kaybolmayacaktır. Oysaki Cross-Page Postback işlemi sırasında bu avantaj kaybedilmektedir.&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;&amp;ouml;z&amp;uuml;m olarak kaynak sayfadaki verilerin hedef sayfaya bir şekilde taşınması ve d&amp;ouml;n&amp;uuml;ş işlemi sırasında da ilgili kontrollere aktarılması d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Bu ama&amp;ccedil;la &amp;ouml;zelliklerden faydalanabiliriz. Daha etkili bir &amp;ccedil;&amp;ouml;z&amp;uuml;m olarak kaynak sayfa hedef sayfaya gitmeden doğrulama kontrolleri yapılması yoluna gibilebilir. Ancak yukarıdaki madde 2' de g&amp;ouml;rd&amp;uuml;ğ&amp;uuml;m&amp;uuml;z gibi sayfaların yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml;nden dolayı kaynak sayfadaki bu kodlar g&amp;ouml;z ardı edilecektir. Diğer taraftan her web sayfası bu &amp;ouml;rnekte olduğu gibi bir tek TextBox kontrol&amp;uuml;nde ibaret değildir.&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;ok daha fazla kontrol&amp;uuml;n ve doğrulama işleminin olduğu bir sayfada sayfalar arası kontrol i&amp;ccedil;eriklerini taşıyarak elde edilmeye &amp;ccedil;alışılacak bir &amp;ccedil;&amp;ouml;z&amp;uuml;m can sıkıcı olabilir. Yinede, kaynak sayfaya tekrar geri d&amp;ouml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde eğer kontrollerin i&amp;ccedil;eriklerini yeniden doldurabilirsek sayfaya yeniden bir doğrulama işlemi yaptırabilir ve gerekli validator kontrollerinin hata mesajlarının &amp;ccedil;ıkmasını sağlayabiliriz. Bu durumu daha net anlayabilmek i&amp;ccedil;in kaynak3.aspx.cs ve hedef2.aspx.cs kodlarını aşağıdaki gibi değiştirelim.&lt;em&gt; (Hedef2 i&amp;ccedil;erisinde Kaynak3 referansını elde edebilmek i&amp;ccedil;in &lt;strong&gt;PreviousPageType&lt;/strong&gt; direktifi kullanılmıştır.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Hedef2.aspx.cs;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;protected void Page_Load(object sender, EventArgs e)
+{
+    if (PreviousPage != null)
+    {
+        if (!PreviousPage.IsValid)
+        {
+            Kaynak3 kyn3 = PreviousPage as Kaynak3;
+            Response.Redirect("~/Kaynak3.aspx?HatalarVar=1&amp;amp;email="+kyn3.Email);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Kaynak3.aspx.cs;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public string Email
+{
+    get { return txtEmail.Text; }
+}
+
+protected void Page_Load(object sender, EventArgs e)
+{
+    if (Request.QueryString["HatalarVar"] != null)
+    {
+        txtEmail.Text = Request.QueryString["email"].ToString();
+        Page.Validate();
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Kod şu şekilde &amp;ccedil;alışmaktadır. Kullanıcı kaynak sayfada hatalı bir veri girişi yaptığında hedef sayfaya yinede gidilir ve PreviousPage tipi &amp;uuml;zerinden hedef sayfa i&amp;ccedil;erisinde doğrulama işlemi yapılır. Eğer doğrulama (Validation) başarısız ise, Kaynak3 i&amp;ccedil;erisinde tanımlı EMail isimli &amp;ouml;zellik yardımıyla kaynak sayfadakiTextBox i&amp;ccedil;eriği alınır ve QueryString' e eklenerek geri g&amp;ouml;nderilir. Kaynak sayfanın Load metodunda ilgili &lt;strong&gt;QueryString&lt;/strong&gt; parametreleri yakalanır ve i&amp;ccedil;erik alınarak TextBox kontrol&amp;uuml;ne atanır. Son olarak kaynak sayfa i&amp;ccedil;erisinde Validate metodu &amp;ccedil;alıştırılarak doğrulama işlemlerinin yeniden yapılması sağlanır ve bu sayede Validator kontrol&amp;uuml;ne ait uygun hata mesajıda ekranda g&amp;ouml;r&amp;uuml;n&amp;uuml;r. Sonucu g&amp;ouml;rmek i&amp;ccedil;in &amp;ouml;rneğimizi tekrar &amp;ccedil;alıştıralım.&lt;/p&gt;
+&lt;p&gt;&lt;object id="obj3" width="373" height="281" classid="clsid:D27CDB6E-AE6D-11CF-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0" border="0"&gt;
+&lt;param name="movie" value="http://www.buraksenyurt.com/makale/images/mk170v_3.swf" /&gt;
+&lt;param name="quality" value="High" /&gt; &lt;embed type="application/x-shockwave-flash" width="373" height="281" src="http://www.buraksenyurt.com/makale/images/mk170v_3.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" name="obj3" /&gt;&lt;/object&gt;&lt;/p&gt;
+&lt;p&gt;Yukarıdaki videodan g&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi, client side validation script' ler kapalıda olsa, Cross-Page postback olduktan sonra kaynak sayfaya d&amp;ouml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde hem kontrol&amp;uuml;n eski i&amp;ccedil;eriği hemde validator bileşenin hata mesajı g&amp;ouml;sterilebilmektedir. Bu her ne kadar iyi bir &amp;ccedil;&amp;ouml;z&amp;uuml;m gibi g&amp;ouml;r&amp;uuml;nsede, sayfadaki kontrol sayısının ve i&amp;ccedil;erik uzunluklarının &amp;ccedil;ok daha fazla olduğu hallerde bizi QueryString yerine başka nesnelerden yararlanmaya zorlayacaktır. Bu anlamda &amp;ouml;rneğin Session nesnesi ele alınabilir. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bu makalemizde Cross-Page Postback kullanırken dikkat etmemiz gereken noktaları incelemeye &amp;ccedil;alıştık. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/makale/images/CPPB.rar"&gt;&amp;Ouml;rnek Uygulama İ&amp;ccedil;in Tıklayın.&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2006-08-04 12:00:00</pubDate>
+  <slug>Cross-Page-Postback-Paradigmasc4b1-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>aspnet-20</tag>
+    <tag>cross-page-postback</tag>
+  </tags>
+  <categories>
+    <category>Asp.Net 2.0</category>
+  </categories>
+</post>

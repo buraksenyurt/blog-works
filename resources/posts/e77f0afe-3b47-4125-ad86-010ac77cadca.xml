@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Entity Framework Code-First için Calculated Fields Kullanımı</title>
+  <description>Bildiğiniz üzere Entity Framework Code-First yaklaşımında, veritabanı nesnelerinin tasarımları POCO(Plain Old CRL Object) tipleri üzerinden gerçekleştirilmektedir. Dolayısıyla Calculated Field şeklinde düşünülmesi gereken bir özelliğin veritabanı tarafına nasıl yansıtılacağı kafalarda bir soru işareti oluşturmaktadır. Pek tabi bunun için de bir nitelik(attribute) desteği sunulmuş olabilir ki öyledir. DatabaseGenerated niteliğinde DatabaseGeneratedOption.Computed enum sabiti değerini kullanarak, istenilen hesaplanabilir alan bildirimlerini yaptırabiliriz. Acaba durum gerçekten böyle midir?</description>
+  <content>&lt;p&gt;&lt;a href="/pics/hot-water-migration.jpg"&gt;&lt;img style="margin: 4px 0px; display: inline; float: right;" title="hot-water-migration" src="/pics/hot-water-migration_thumb.jpg" alt="hot-water-migration" width="240" height="189" align="right" /&gt;&lt;/a&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Genellikle g&amp;ouml;&amp;ccedil; etmek gibi anlamlarda kullanılan &lt;strong&gt;Migrate &lt;/strong&gt;kelimesinin yazılım d&amp;uuml;nyasındaki karşılığını d&amp;uuml;ş&amp;uuml;nd&amp;uuml;ğ&amp;uuml;m&amp;uuml;zde, elbetteki yandaki fotoğrafta yer alan ve bir birlerinin akvaryumuna atlayan balıklar gelmeyecektir/gelmemelidir.&lt;/p&gt;
+&lt;p&gt;Ancak &lt;strong&gt;Entity Framework Code-First &lt;/strong&gt;yaklaşımı ve &lt;strong&gt;Calculated Fields &lt;/strong&gt;kavramını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne getirdiğimizde, &lt;strong&gt;Migration &lt;/strong&gt;kelimesini ciddi manada d&amp;uuml;ş&amp;uuml;nmemiz gerekebilir. Nasıl mı? Haydi okumaya devam &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_134.png" alt="Winking smile" /&gt;&lt;/p&gt;
+&lt;p&gt;Hesaplanmış alanlar&lt;em&gt;(Calculated Fields/Columns)&lt;/em&gt; veritabanı programcılığında sık kullanılan &amp;ouml;zelliklerden birisidir. Bu alanların i&amp;ccedil;eriği genellikle tablonun diğer alanları kullanılarak bir hesaplama sonucu &amp;uuml;retilir. S&amp;ouml;z gelimi personel verilerinin tutulduğu bir tablodaki FirstName ve LastName alanlarının değerleri birleştirilerek, bir &lt;strong&gt;Calculated Field&lt;/strong&gt; oluşturulması m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Peki bu desteği &lt;strong&gt;Entity Framework Code-First&lt;/strong&gt; yaklaşımında nasıl değerlendirebiliriz?&lt;/p&gt;
+&lt;p&gt;Bildiğiniz &amp;uuml;zere&lt;strong&gt; Entity Framework Code-First&lt;/strong&gt; yaklaşımında, veritabanı nesnelerinin tasarımları &lt;strong&gt;POCO(Plain Old CRL Object)&lt;/strong&gt; tipleri &amp;uuml;zerinden ger&amp;ccedil;ekleştirilmektedir. Dolayısıyla&lt;strong&gt; Calculated Field&lt;/strong&gt; şeklinde d&amp;uuml;ş&amp;uuml;n&amp;uuml;lmesi gereken bir &amp;ouml;zelliğin veritabanı tarafına nasıl yansıtılacağı kafalarda bir soru işareti oluşturmaktadır. Pek tabi bunun i&amp;ccedil;in de bir &lt;strong&gt;nitelik(attribute)&lt;/strong&gt; desteği sunulmuş olabilir ki &amp;ouml;yledir. &lt;strong&gt;DatabaseGenerated &lt;/strong&gt;niteliğinde &lt;strong&gt;DatabaseGeneratedOption.Computed&lt;/strong&gt; &lt;strong&gt;enum&lt;/strong&gt; sabiti değerini kullanarak, istenilen hesaplanabilir alan bildirimlerini yaptırabiliriz. Acaba durum ger&amp;ccedil;ekten b&amp;ouml;yle midir? &lt;img class="wlEmoticon wlEmoticon-whome" style="border-style: none;" src="/pics/wlEmoticon-whome.png" alt="Who me?" /&gt;&lt;/p&gt;
+&lt;p&gt;Dilerseniz basit bir &amp;ouml;rnek &amp;uuml;zerinden hareket ederek konuyu incelemeye &amp;ccedil;alışalım. İlk etapta aşağıdaki sınıf &amp;ccedil;izelgesinde&lt;em&gt;(Class Diagram)&lt;/em&gt; yer alan tipleri geliştirdiğimizi d&amp;uuml;ş&amp;uuml;nelim. Senaryomuzdaki başrol oyuncuları, &lt;strong&gt;Shop&lt;/strong&gt; isimli &lt;strong&gt;Context&lt;/strong&gt; tipi ve &lt;strong&gt;Product &lt;/strong&gt;sınıfının &lt;strong&gt;TotalPrice &lt;/strong&gt;&amp;ouml;zelliğidir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/efcf_3.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="efcf_3" src="/pics/efcf_3_thumb.png" alt="efcf_3" width="284" height="326" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Product&lt;/strong&gt; isimli &amp;ouml;rnek &lt;strong&gt;POCO(Plain Old CLR Object)&lt;/strong&gt; tipi;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.ComponentModel.DataAnnotations.Schema;
+
+namespace HowTo_CalculatedFields 
+{ 
+    public class Product 
+    { 
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] 
+        public int ProductId { get; set; } 
+        public string Name { get; set; } 
+        public int ListPrice { get; set; } 
+        public int Quantity { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)] 
+        public int TotalPrice { 
+            get; 
+            private set; 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;DbContext&lt;/strong&gt; t&amp;uuml;revli Context tipi;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Data.Entity;
+
+namespace HowTo_CalculatedFields 
+{ 
+    public class Shop 
+        :DbContext 
+    { 
+        public DbSet&amp;lt;Product&amp;gt; Products{ get; set; } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Product&lt;/strong&gt; tipi i&amp;ccedil;erisinde yer alan &lt;strong&gt;TotalPrice&lt;/strong&gt; &amp;ouml;zelliğine dikkat edelim. Bu &amp;ouml;zellik i&amp;ccedil;erisinde &amp;uuml;r&amp;uuml;n&amp;uuml;n fiyatı ve miktarından yararlanılarak ger&amp;ccedil;ekleştirilen bir hesaplama işlemi s&amp;ouml;z konusudur. Bunun veritabanı tarafına da yansıtılması i&amp;ccedil;in &lt;strong&gt;DatabaseGenerated&lt;/strong&gt; niteliğinden yararlanılmaktadır. Peki &amp;ccedil;alışma zamanı bu durumu anlayabilecek midir?&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;Ouml;rneğimizde Code-First yaklaşımına istinaden config dosyasında aşağıdaki bağlantı bilgisini kullanmayı tercih ettim. Herhangibir bilgi ifade etmediğimizde SQL Express s&amp;uuml;r&amp;uuml;m&amp;uuml; &amp;uuml;zerinde bir veritabanı oluşturulmaya &amp;ccedil;alışıldığını hatırlatmak isterim. Diğer &amp;ouml;nemli bir nokta da DbContext t&amp;uuml;revli sınıf adı ile ConnectionString elementinin name niteliğinin değerlerinin aynı olmasıdır. Bu sayede &amp;ccedil;alışma zamanı Shop veritabanı i&amp;ccedil;in gerekli bağlantı bilgisini bulabilir.&lt;/p&gt;
+&lt;p&gt;&amp;lt;?xml version="1.0"?&amp;gt; &lt;br /&gt;&amp;lt;configuration&amp;gt; &lt;br /&gt;&amp;nbsp; &amp;lt;configSections&amp;gt; &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;section name="entityFramework" type="System.Data.Entity.Internal.ConfigFile.EntityFrameworkSection, EntityFramework, Version=4.4.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" requirePermission="false"/&amp;gt; &lt;br /&gt;&amp;nbsp; &amp;lt;/configSections&amp;gt; &lt;br /&gt;&amp;nbsp; &amp;lt;entityFramework&amp;gt; &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;defaultConnectionFactory type="System.Data.Entity.Infrastructure.SqlConnectionFactory, EntityFramework"/&amp;gt; &lt;br /&gt;&amp;nbsp; &amp;lt;/entityFramework&amp;gt; &lt;br /&gt;&amp;nbsp; &amp;lt;connectionStrings&amp;gt; &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;add &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; name="Shop" &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; connectionString="data source=localhost;database=Shop;integrated security=true" &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; providerName="System.Data.SqlClient"/&amp;gt; &lt;br /&gt;&amp;nbsp; &amp;lt;/connectionStrings&amp;gt; &lt;br /&gt;&amp;lt;startup&amp;gt;&amp;lt;supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.5"/&amp;gt;&amp;lt;/startup&amp;gt;&amp;lt;/configuration&amp;gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Program.cs&lt;/strong&gt; i&amp;ccedil;eriğini aşağıdaki şekilde kodlayarak senaryomuza devam edelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Linq;
+
+namespace HowTo_CalculatedFields 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            using (Shop context = new Shop()) 
+            { 
+                Product hpKeyboard = new Product 
+                { 
+                     Name="HP 102 Tuş Kablosuz Klavye", 
+                     ListPrice=35, 
+                     Quantity=125 
+                };
+
+                context.Products.Add(hpKeyboard); 
+                context.SaveChanges();
+
+                var finded = (from k in context.Products 
+                     where k.Name == "HP 102 Tuş Kablosuz Klavye" 
+                     select k) 
+                    .FirstOrDefault(); 
+                Console.WriteLine(finded.TotalPrice); 
+            } 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Shop&lt;/strong&gt; &lt;strong&gt;context&lt;/strong&gt; tipinin &amp;ouml;rneklenmesinin ardından bir Product nesnesi &amp;uuml;retilmektedir. Dikkat edileceği &amp;uuml;zere &lt;strong&gt;identity&lt;/strong&gt; alan olarak &lt;strong&gt;set&lt;/strong&gt; edilen &lt;strong&gt;ProductId&lt;/strong&gt; ve &lt;strong&gt;Calculated Field&lt;/strong&gt; olması planlanan &lt;strong&gt;TotalPrice&lt;/strong&gt; i&amp;ccedil;in bir atama işlemi s&amp;ouml;z konusu değildir. Beklentimiz yeni &lt;strong&gt;Product&lt;/strong&gt;, &lt;strong&gt;context&lt;/strong&gt; &amp;uuml;zerine eklendiğinde &lt;strong&gt;TotalPrice&lt;/strong&gt; alanınında otomatik olarak hesaplanmış olmasıdır. Lakin bu aşamaya kadar ilerleyemeyiz bile. &lt;a href="/pics/efcf_1.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="efcf_1" src="/pics/efcf_1_thumb.png" alt="efcf_1" width="620" height="375" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceğiz &amp;uuml;zere &lt;strong&gt;SaveChanges&lt;/strong&gt; metoduna yapılan &amp;ccedil;ağrı sonrasında bir &amp;ccedil;alışma zamanı istisnası&lt;em&gt;(Runtime Exception)&lt;/em&gt; oluşmuştur. S&amp;ouml;ylenene g&amp;ouml;re &lt;strong&gt;TotalPrice&lt;/strong&gt; alanı &lt;strong&gt;null&lt;/strong&gt; değer i&amp;ccedil;eremez. Aslında bu mesajı doğrudan Calculated Field ile ilişkili değildir. Yine de veritabanı tarafına baktığımızda ş&amp;ouml;yle bir durum oluştuğunu g&amp;ouml;zlemleyebiliriz; &lt;strong&gt;Shop&lt;/strong&gt; isimli veritabanı &amp;uuml;retilmiş, &lt;strong&gt;Products&lt;/strong&gt; isimli tablo oluşturulmuş ve hatta i&amp;ccedil;erisine &lt;strong&gt;TotalPrice&lt;/strong&gt; isimli alan da dahil edilmiştir. Hımmm...Ne var ki &lt;strong&gt;TotalPrice&lt;/strong&gt; kolonu &lt;strong&gt;Calculate Field&lt;/strong&gt; haline gelmemiştir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/efcf_4.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="efcf_4" src="/pics/efcf_4_thumb.png" alt="efcf_4" width="357" height="381" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Peki ya &amp;ccedil;&amp;ouml;z&amp;uuml;m? &lt;img class="wlEmoticon wlEmoticon-idontknowsmile" style="border-style: none;" src="/pics/wlEmoticon-idontknowsmile.png" alt="I don't know smile" /&gt;&lt;/p&gt;
+&lt;p&gt;Neyseki elimizin altında &lt;strong&gt;migration&lt;/strong&gt; diye bir kabiliyet bulunmakta. Şu anda var olan veritabanı yapısını biraz değiştirip, &lt;strong&gt;TotalPrice&lt;/strong&gt; alanı i&amp;ccedil;in de bir m&amp;uuml;dahalede bulunmamız gerekecek. &lt;em&gt;(Hatta &lt;strong&gt;Name&lt;/strong&gt; alanının boyutuna bir dokunuş yaparsak hi&amp;ccedil; de fena olmaz &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_134.png" alt="Winking smile" /&gt;)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi &lt;strong&gt;Migration&lt;/strong&gt; &amp;ouml;zelliğini etkinleştirip yeni bir &lt;strong&gt;Migration&lt;/strong&gt; setini projeye dahil ediyor olacağız. Bunun i&amp;ccedil;in &lt;strong&gt;Package&lt;/strong&gt; &lt;strong&gt;Manager&lt;/strong&gt; &lt;strong&gt;Console&lt;/strong&gt; penceresinden sırasıyla &lt;strong&gt;Enable-Migrations&lt;/strong&gt; ve &lt;strong&gt;Add-Migration&lt;/strong&gt; komutlarını &amp;ccedil;ağıralım. Aşağıdaki gibi.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/efcf_2.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="efcf_2" src="/pics/efcf_2_thumb.png" alt="efcf_2" width="428" height="734" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;AddTotalPriceCalculateFields&lt;/strong&gt; olarak adlandırdığımız &lt;strong&gt;Migration&lt;/strong&gt; sınıfının i&amp;ccedil;eriğinde yer alan &lt;strong&gt;Up&lt;/strong&gt; ve &lt;strong&gt;Down&lt;/strong&gt; metodlarını ise şu şekilde d&amp;uuml;zenleyebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace HowTo_CalculatedFields.Migrations 
+{ 
+    using System; 
+    using System.Data.Entity.Migrations; 
+    
+    public partial class AddTotalPriceCalculatedFields 
+        : DbMigration 
+    { 
+        public override void Up() 
+        { 
+            DropTable("dbo.Products");
+
+            CreateTable( 
+                "dbo.Products", 
+                c =&amp;gt; new 
+                { 
+                    ProductId = c.Int(nullable: false, identity: true), 
+                    Name = c.String(maxLength:50), 
+                    ListPrice = c.Int(nullable: false), 
+                    Quantity = c.Int(nullable: false) 
+                }) 
+                .PrimaryKey(t =&amp;gt; t.ProductId);
+
+            Sql("ALTER TABLE dbo.Products ADD [TotalPrice] as ([ListPrice] * [Quantity])"); 
+        }
+
+        public override void Down() 
+        { 
+            DropTable("dbo.Products"); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Aslında iki noktaya dokunduk. İlk olarak &lt;strong&gt;TotalPrice&lt;/strong&gt; alaının eklenmesi i&amp;ccedil;in herhangibir işlem yapmadığımızı g&amp;ouml;r&amp;uuml;yoruz. İkinci olarak da bir &lt;strong&gt;T-SQL&lt;/strong&gt; ifadesinin &amp;ccedil;alıştırılması i&amp;ccedil;in gerekli metod &amp;ccedil;ağrısında bulunduk. &lt;strong&gt;Sql&lt;/strong&gt; Metod &amp;ccedil;ağrısına dikkat edilecek olursa &lt;strong&gt;Calculated&lt;/strong&gt; &lt;strong&gt;Field&lt;/strong&gt; i&amp;ccedil;in gerekli olan T-SQL ifadesini i&amp;ccedil;erdiğini g&amp;ouml;rebiliriz. Kısacası tablo &lt;strong&gt;Create&lt;/strong&gt; edildikten sonra bir &lt;strong&gt;Alter&lt;/strong&gt; işlemini bilin&amp;ccedil;li olarak uygulatıyor ve hesaplanabilir alanın bildirilmesini sağlıyoruz.&lt;/p&gt;
+&lt;p&gt;Artık veritabanını manuel olarak g&amp;uuml;ncelletebiliriz. Bu g&amp;uuml;ncelleme işlemi i&amp;ccedil;in &lt;strong&gt;Package Manager Console&lt;/strong&gt; &amp;uuml;zerinden Update-Database komutunu g&amp;ouml;ndermemiz yeterli olacaktır&lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_134.png" alt="Winking smile" /&gt;&amp;nbsp;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Verbose anahtarını kullanmamızın tek sebebi, veritabanına doğru giden T-SQL ifadelerini g&amp;ouml;rmektir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;a href="/pics/efcf_5.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="efcf_5" src="/pics/efcf_5_thumb.png" alt="efcf_5" width="544" height="460" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Bu adımdan sonra veritabanına gidip &lt;strong&gt;Products&lt;/strong&gt; tablosuna baktığımızda, ger&amp;ccedil;ektende &lt;strong&gt;TotalPrice&lt;/strong&gt; i&amp;ccedil;in bir &lt;strong&gt;Calculated T-SQL&lt;/strong&gt; ifadesinin yazılmış olduğunu g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/efcf_6.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="efcf_6" src="/pics/efcf_6_thumb.png" alt="efcf_6" width="338" height="355" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Uuml;stelik &amp;ccedil;alışma zamanında bir &amp;uuml;r&amp;uuml;n&amp;uuml; &amp;ccedil;ektiğimizde, miktar ve birim fiyata g&amp;ouml;re &lt;strong&gt;TotalPrice&lt;/strong&gt; &amp;ouml;zelliğinin de veritabanından hesaplanarak getirildiğini g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/efcf_7.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="efcf_7" src="/pics/efcf_7_thumb.png" alt="efcf_7" width="334" height="168" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Herşey buraya kadar iyi gitti diyebiliriz. Lakin ufak bir sorunumuz daha var. &lt;img class="wlEmoticon wlEmoticon-laughingoutloud" style="border-style: none;" src="/pics/wlEmoticon-laughingoutloud_1.png" alt="Laughing out loud" /&gt; Eğer &lt;strong&gt;Quantity&lt;/strong&gt; veya &lt;strong&gt;ListPrice&lt;/strong&gt; değerlerinde, nesne &amp;ouml;rneği &amp;uuml;zerinden değişiklik yaparsak, bu durumda &lt;strong&gt;Calculated&lt;/strong&gt; &lt;strong&gt;Field&lt;/strong&gt; beklediğimiz gibi bir davranış g&amp;ouml;stermeyecektir. Aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan kod par&amp;ccedil;asını dikkate alalım.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/efcf_8.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="efcf_8" src="/pics/efcf_8_thumb.png" alt="efcf_8" width="430" height="286" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Senaryoda &amp;uuml;r&amp;uuml;n eklendikten sonraki durumda &lt;strong&gt;Calculated&lt;/strong&gt; &lt;strong&gt;Field&lt;/strong&gt; alanının hesaplanarak geldiği g&amp;ouml;r&amp;uuml;lmektedir. Yani ilk eklemeden sonra ger&amp;ccedil;ekleştirilen &lt;strong&gt;LINQ&lt;/strong&gt; ifadesine g&amp;ouml;re TotalPrice i&amp;ccedil;in SQL tarafındaki hesaplama devreye girmiştir. Ancak bellek &amp;uuml;zerinde kalan &lt;strong&gt;Product&lt;/strong&gt; nesne &amp;ouml;rneğinin &lt;strong&gt;Quantity&lt;/strong&gt; veya &lt;strong&gt;ListPrice&lt;/strong&gt; alanlarında bir değişiklik yapıldığında, bu &amp;ccedil;ok doğal olarak &lt;strong&gt;TotalPrice'&lt;/strong&gt; a yansımayacaktır.&lt;/p&gt;
+&lt;p&gt;Bu durum &amp;ccedil;ok doğal olarak veritabanına gidilmeden yapılan nesne &amp;ouml;rneği bazlı &amp;ouml;zellik g&amp;uuml;ncellemelerinde doğru verinin g&amp;ouml;sterilemeyeceği anlamına gelir ki bu da pek istemediğimiz bir durumdur. Soruna &lt;strong&gt;Product&lt;/strong&gt; tipi i&amp;ccedil;erisindeki &lt;strong&gt;TotalPrice&lt;/strong&gt; &amp;ouml;zelliği &amp;uuml;zerinden m&amp;uuml;dahalede bulunarak &amp;ccedil;&amp;ouml;z&amp;uuml;m getirebiliriz. Aynen aşağıdaki kod par&amp;ccedil;asında g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.ComponentModel.DataAnnotations.Schema;
+
+namespace HowTo_CalculatedFields 
+{ 
+    public class Product 
+    { 
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] 
+        public int ProductId { get; set; } 
+        public string Name { get; set; } 
+        public int ListPrice { get; set; } 
+        public int Quantity { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)] 
+        public int TotalPrice 
+        { 
+            get 
+            { 
+                return ListPrice * Quantity; 
+            } 
+            private set // get bloğunu a&amp;ccedil;tığımız i&amp;ccedil;in aşağıdaki bloğu boş olsa bile a&amp;ccedil;mak mecburiyetindeyiz. 
+            { 
+            } 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;İşte şimdi oldu &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_134.png" alt="Winking smile" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/efcf_9.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="efcf_9" src="/pics/efcf_9_thumb.png" alt="efcf_9" width="288" height="79" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Bu makalemizde&lt;strong&gt; Code-First&lt;/strong&gt; yaklaşımının kullanıldığı senaryolarda, biraz da veritabanı tarafına &amp;ouml;zg&amp;uuml; olan &lt;strong&gt;Calculated&lt;/strong&gt; &lt;strong&gt;Field&amp;rsquo;&lt;/strong&gt; ların nasıl etkin hale getirilebileceğini bir ka&amp;ccedil; k&amp;uuml;&amp;ccedil;&amp;uuml;k hile ile incelemeye &amp;ccedil;alıştık. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2012%2f9%2fHowTo_CalculatedFields.zip"&gt;HowTo_CalculatedFields.zip (2,60 mb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2013-02-08 05:15:00</pubDate>
+  <slug>Entity-Framework-Code-First-icin-Calculated-Fields-Kullanimi</slug>
+  <tags>
+    <tag>entity-framework</tag>
+    <tag>entity-framework-45</tag>
+    <tag>t-sql</tag>
+    <tag>migration</tag>
+    <tag>code-first</tag>
+    <tag>poco</tag>
+    <tag>c#</tag>
+    <tag>adonet</tag>
+    <tag>alter</tag>
+  </tags>
+  <categories>
+    <category>Entity Framework</category>
+  </categories>
+</post>

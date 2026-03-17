@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Web Uygulamalarında Custom Paging</title>
+  <description>Geliştirdiğimiz web uygulamalarında özellikle DataGrid kontrollerini kullandığımızda sayfalama işlemini sıkça kullanırız. Genellikle sayfalama işlemlerini var sayılan hali ile kullanırız. Bu modele göre grid üzerinde sayfalama yapabilmek için PageIndexChanged olayını ele almamız gerekir. Burada grid kontrolüne yeni sayfa numarasını DataGridPageChangedEventArgs parametresinin NewPageIndex değeri ile verir ve bilgilerin tekrardan yüklenmesini sağlayacak uygulama kodlarımızı yürütürüz. Tipik olarak bu tarz bir kullanım aşağıdaki kod parçasında olduğu gibi yapılmaktadır.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Geliştirdiğimiz web uygulamalarında &amp;ouml;zellikle DataGrid kontrollerini kullandığımızda sayfalama işlemini sık&amp;ccedil;a kullanırız. Genellikle sayfalama işlemlerini var sayılan hali ile kullanırız. Bu modele g&amp;ouml;re grid &amp;uuml;zerinde sayfalama yapabilmek i&amp;ccedil;in PageIndexChanged olayını ele almamız gerekir. Burada grid kontrol&amp;uuml;ne yeni sayfa numarasını DataGridPageChangedEventArgs parametresinin NewPageIndex değeri ile verir ve bilgilerin tekrardan y&amp;uuml;klenmesini sağlayacak uygulama kodlarımızı y&amp;uuml;r&amp;uuml;t&amp;uuml;r&amp;uuml;z. Tipik olarak bu tarz bir kullanım aşağıdaki kod par&amp;ccedil;asında olduğu gibi yapılmaktadır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void Doldur()
+{
+    //Bağlantının a&amp;ccedil;ılması, verilerin &amp;ccedil;ekilmesi ve &amp;ccedil;ekilen verilerin DataGrid kontrol&amp;uuml;ne bağlanması
+}
+
+private void DataGrid1_PageIndexChanged(object source, DataGridPageChangedEventArgs e)
+{
+    DataGrid1.CurrentPageIndex=e.NewPageIndex;
+    Doldur();
+}&lt;/pre&gt;
+&lt;p&gt;Buradaki yaklaşım ger&amp;ccedil;ekten işe yaramaktadır. Ancak aslında performans a&amp;ccedil;ısından bazı kayıplar s&amp;ouml;z konusudur. &amp;Ccedil;&amp;uuml;nk&amp;uuml; bu tip sayfalama tekniğini kullanırken, sayfa linklerine her basışımızda ilgili veri kaynağındaki t&amp;uuml;m veriler &amp;ccedil;ekilmekte ve &amp;ccedil;ekilen veri k&amp;uuml;mesi &amp;uuml;zerinde ilgili sayfaya gidilmektedir. Bu elbetteki b&amp;uuml;y&amp;uuml;k boyutlu veri k&amp;uuml;meleri ile &amp;ccedil;alışırken dikkate alınması gereken bir durumdur. Nitekim performansı olumsuz y&amp;ouml;nde etkileyecektir. Her ne kadar caching (tampon belleğe almak) teknikleri ile sorunun biraz olsun &amp;uuml;stesinden gelinebilecek olsa da daha etkili &amp;ccedil;&amp;ouml;z&amp;uuml;mler &amp;uuml;retebiliriz.&lt;/p&gt;
+&lt;table id="table8" style="width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#ffffff"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;B&amp;uuml;y&amp;uuml;k boyutlu veri k&amp;uuml;meleri ile &amp;ccedil;alışırken uygulanan varsayılan sayfalama tekniği hız kaybına neden olarak performansı olumsuz y&amp;ouml;nde etkileyebilir.&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;İşte bu makalemizde &amp;ouml;zel sayfalama tekniklerinden bir tanesini incelemeye &amp;ccedil;alışacağız. Bu teknikte yer alan par&amp;ccedil;alardan en &amp;ouml;nemlisi şablon bir tablonun (temporary) kullanılmasıdır. İlk olarak asıl veri k&amp;uuml;mesini ele alacağımız bir stored procedure (saklı yordam) geliştireceğiz. Bu saklı yordamımız i&amp;ccedil;erisinde asıl veri k&amp;uuml;mesinin satırlarını alıp temprary bir tabloya aktaracağız. Temporary tablomuzun en b&amp;uuml;y&amp;uuml;k &amp;ouml;zelliği identity tipinde 1 den başlayan ve 1' er artan bir alana sahip olmasıdır. Biz bu alanın değerinden faydalanarak temp tablosu &amp;uuml;zerinde sayfalama işlemini uygulayacağız. Buradaki ana fikiri daha iyi anlamak i&amp;ccedil;in aşağıdaki şekile bir g&amp;ouml;z atalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk134_1.gif" alt="" width="594" height="419" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Senaryomuzda AdventureWorks2000 veritabanı i&amp;ccedil;erisinde yer alan Employee isimli tabloyu kullanacağız. Bu tablo &amp;uuml;zerinde aşağıdaki select sorgusu i&amp;ccedil;in sayfalama işlemini ger&amp;ccedil;ekleştireceğiz.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;SELECT EmployeeID,FirstName,LastName,NationalIDNumber,Title,BirthDate,EmailAddress FROM Employee&lt;/pre&gt;
+&lt;p&gt;Teorimizi şekil &amp;uuml;zerinden a&amp;ccedil;ıklamaya &amp;ccedil;alışalım. &amp;Ouml;nce bir temp tablosu oluşturacağız. Temp tablomuzun alanları yukarıdaki select sorgusundaki alanları karşılayacak şekilde olacak. Bir de ekstradan identity alanımız olacak. Sonra select sorgumuzdaki verileri, temp tablomuz i&amp;ccedil;erisine insert edeceğiz. Ardından temp tablomuz &amp;uuml;zerinden yeni bir select sorgusu &amp;ccedil;alıştıracağız. Ancak bu sefer, Where koşulumuz olacak ve burada identity alanımız i&amp;ccedil;in bir aralık belirleyeceğiz. İşte bu aralık sayfanın başlangı&amp;ccedil; ve bitiş satırlarını belirleyerek istediğimiz sayfaya ait verileri elde etmemizi sağlayacak.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğin, verilerimizi 5' er satırlık sayfalara b&amp;ouml;lmek istediğimizi d&amp;uuml;ş&amp;uuml;nelim. Bu durumda 2nci sayfadaki ilk satırın id değerini Baslangic isimli form&amp;uuml;l&amp;uuml;m&amp;uuml;zden 6 olarak bulabiliriz. Yine 2nci sayfanın bitis satırının değerinide Bitis isimli form&amp;uuml;l&amp;uuml; kullanarak 10 olarak bulabiliriz. G&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi teori son derece basit. Sayfalamayı ger&amp;ccedil;ekleştirebilmek i&amp;ccedil;in aslında temp tablodaki identity alanlarını kullanıyoruz. Son olarak bu işlemlerin hepsini bir stored procedure(saklı yordam) i&amp;ccedil;erisinde barındırarak işlemlerin doğrudan sql sunucusu &amp;uuml;zerinde ne hızlı şekilde ger&amp;ccedil;ekleştirilmesini sağlıyoruz. İşte sp kodlarımız.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;CREATE PROCEDURE WorkSp_Paging 
+
+@SayfaNo INT,
+@GosterilecekSatirSayisi INT
+
+AS
+
+DECLARE @BaslangicID AS INT
+DECLARE @BitisID AS INT
+DECLARE @SelectSorgusu AS NVARCHAR(255)
+
+-- &amp;Ouml;nce Temporary tablomuzu oluşturuyoruz. ID alanı &amp;ouml;nemli.
+CREATE TABLE #TempOfEmployee 
+(
+ID INT IDENTITY(1,1),
+EmployeeID INT,
+FirstName NVARCHAR(50),
+LastName NVARCHAR(50),
+NationalIDNumber NVARCHAR(15),
+Title NVARCHAR(50),
+BirthDate DATETIME,
+EmailAddress NVARCHAR(50)
+)
+
+-- Employee tablosundaki verileri temporary tablomuza aktarıyoruz.
+SET @SelectSorgusu='SELECT EmployeeID,FirstName,LastName,NationalIDNumber,Title,BirthDate,EmailAddress FROM Employee'
+INSERT INTO #TempOfEmployee EXEC (@SelectSorgusu)
+
+-- Başlangı&amp;ccedil; ve bitiş satırlarının ID alanlarının değerlerini belirlemek i&amp;ccedil;in form&amp;uuml;lasyonumuzu kullanıyoruz. SayfaNo ve G&amp;ouml;sterilecekSatirSayisi sp mize dışarıdan gelen parametreler.
+SET @BaslangicID=((@SayfaNo-1)*@GosterilecekSatirSayisi)
+SET @BitisID=(@SayfaNo*@GosterilecekSatirSayisi)+1
+
+-- Temporary tablomuz &amp;uuml;zerinden ilgili ID aralığındaki veri setini &amp;ccedil;ekiyoruz.
+SELECT ID,EmployeeID,FirstName,LastName,NationalIDNumber,Title,BirthDate,EmailAddress FROM #TempOfEmployee
+WHERE ID&amp;gt;@BaslangicID AND ID&amp;lt;@BitisID
+
+-- Son olarak sistemde bir karmaşıklığa yer vermemek i&amp;ccedil;in temporary tablomuzu kaldırıyoruz.
+DROP TABLE #TempOfEmployee
+GO&lt;/pre&gt;
+&lt;p&gt;&lt;br /&gt;Şimdi sp' mizi asp.net uygulamamızda kullanalım. &amp;Ouml;zel sayfalama yaptığımız i&amp;ccedil;in artık PageIndexChanged olayını kullanamayacağız. Dolayısıyla sayfa linklerini manuel olarak oluşturmamız gerekiyor. Bu durumda DataGrid kontrol&amp;uuml;m&amp;uuml;ze ait AllowPaging ve AllowCustomPaging &amp;ouml;zelliklerinin değerlerini false olarak bırakabiliriz. Eğer sadece ilk, &amp;ouml;nceki, sonraki, son tarzında linkler oluşturacak isek işimiz kolay. İlgili metodumuza sayfa numarasını ve g&amp;ouml;stereceğimiz satır sayısını parametre olarak g&amp;ouml;ndermemiz yeterli olacaktır. Ancak sayfa numalarını link olarak sunmak istiyorsak biraz daha fazla &amp;ccedil;abalamamız gerekecek. &amp;Ouml;ncelikle asıl işi yapan metodumuzu aşağıdaki gibi oluşturalım. Bu metodumuzda tanımlamış olduğumuz sp' mizi bir SqlCommand nesnesi yardımıyla y&amp;uuml;r&amp;uuml;t&amp;uuml;yor ve elde ettiğimiz sonu&amp;ccedil; k&amp;uuml;mesini DataGrid kontrol&amp;uuml;m&amp;uuml;ze bağlıyoruz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void Doldur(int sayfaNo,int gosterilecekSatirSayisi)
+{
+    string sql=@"WorkSp_Paging";
+    cmd=new SqlCommand(sql,con);
+    cmd.CommandType=CommandType.StoredProcedure;
+    cmd.Parameters.Add("@SayfaNo",sayfaNo);
+    cmd.Parameters.Add("@GosterilecekSatirSayisi",gosterilecekSatirSayisi);
+    da=new SqlDataAdapter(cmd);
+    dt=new DataTable();
+    da.Fill(dt);
+    DataGrid1.DataSource=dt;
+    DataGrid1.DataBind();
+}&lt;/pre&gt;
+&lt;p&gt;Şimdi linklerimizi oluşturalım. Burada kodlama tekniği a&amp;ccedil;ısından tamamen serbestsiniz. Ben aşağıdaki gibi kodlamayı tercih ettim. &amp;Ouml;ncelikle Employee tablosundaki satır sayısını buluyoruz. Sonra sayfalarda g&amp;ouml;sterilecek satır sayısı ile bunu oranlayarak sayfa sayısını buluyoruz. Sayfa sayısını bulurken dikkat etmemiz gereken nokta artık satırlar i&amp;ccedil;in sayfa numarasını bir arttırmamız gerektiğidir. Bunu tespit edebilmek i&amp;ccedil;in toplam satır sayısını sayfada g&amp;ouml;sterilecek satır sayısına b&amp;ouml;lerken mod operat&amp;ouml;r&amp;uuml; (%) yardımıyla kalan değeri hesaplıyoruz. Eğer kalan değer 0 ise problem yok. Sayfa sayısı tamdır. Ancak 0 değil ise bu durumda sayfa sayısını bir arttırmalıyız ki kalan satırlarıda en sondaki sayfada g&amp;ouml;sterebilelim.&lt;/p&gt;
+&lt;p&gt;Bu teknik yardımıyla sayfa sayısını tespit etmemizin ardından her bir sayfa numarası i&amp;ccedil;in birer LinkButton kontrol&amp;uuml; oluşturuyoruz. Bu kontrollerin Text ve ID &amp;ouml;zelliklerine ilgili sayfa numarasını set ettikten sonra sayfadaki placeHolder kontrol&amp;uuml;ne ekliyoruz. Ayrıca LinkButton' lar arasında birer boşluk olmasını sağlamak i&amp;ccedil;in Label kontrollerini kullanabiliriz. Şimdi burada &amp;ouml;nemli olan nokta LinkButton nesnelerinden birisine tıklandığında ilgili sp' mizi &amp;ccedil;alıştıracak olan metodumuzu &amp;ccedil;ağırabilmek. Bunun i&amp;ccedil;in her bir LinkButton nesnesini d&amp;ouml;ng&amp;uuml; i&amp;ccedil;erisinde oluştururken aynı Click olay metoduna y&amp;ouml;nlendiriyoruz. Bu olay metodu i&amp;ccedil;erisinde yaptığımız iş ise ilgili LinkButton kontrol&amp;uuml;n&amp;uuml;n ID değerini almak ve Doldur isimli metoda g&amp;ouml;ndermek. B&amp;ouml;ylece ilgili linke tıklandığında doğruca sp' miz &amp;ccedil;alıştırılacak ve ilgili sayfaya ait veri seti ekrandaki grid kontrol&amp;uuml;m&amp;uuml;ze dolacak.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void SatirSayisiniBul()
+{
+    cmd=new SqlCommand("SELECT COUNT(*) FROM Employee",con);
+    con.Open();
+    int toplamSatirSayisi=Convert.ToInt32(cmd.ExecuteScalar());
+    con.Close();
+    ViewState.Add("TSS",toplamSatirSayisi);
+}
+
+private void LinkleriOlustur(int gosterilecekSatirSayisi)
+{
+    if(ViewState["TSS"]==null)
+    {
+        SatirSayisiniBul();
+    }
+
+    int kalanSatirSayisi=toplamSatirSayisi%gosterilecekSatirSayisi;
+    int sayfaSayisi;
+    if(kalanSatirSayisi==0)
+        sayfaSayisi=(toplamSatirSayisi/gosterilecekSatirSayisi);
+    else
+        sayfaSayisi=(toplamSatirSayisi/gosterilecekSatirSayisi)+1;
+
+    for(int i=1;i&amp;lt;sayfaSayisi;i++)
+    {
+        LinkButton link=new LinkButton();
+        Label lbl=new Label();
+    
+        link.Text=i.ToString();
+        link.ID=i.ToString();
+        link.Click+=new EventHandler(link_Click);
+        lbl.Text=" ";
+        plhLinkler.Controls.Add(link);
+        plhLinkler.Controls.Add(lbl);
+    } 
+}
+
+private void link_Click(object sender, EventArgs e)
+{
+    LinkButton currLink=(LinkButton)sender;
+    int sayfaNo=Convert.ToInt16(currLink.ID);
+    Doldur(sayfaNo,5);
+}&lt;/pre&gt;
+&lt;p&gt;&lt;br /&gt;Son olarak sayfamız y&amp;uuml;klenirken Load olayında olmasını istediğimiz kodlarıda aşağıdaki gibi ekleyelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void Page_Load(object sender, System.EventArgs e)
+{ 
+    con=new SqlConnection("data source=localhost;database=AdventureWorks2000;integrated security=SSPI");
+    LinkleriOlustur(5);
+    if(!Page.IsPostBack)
+    { 
+        Doldur(1,5); 
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Uygulamamızı &amp;ccedil;alıştıracak olursak sayfalar arasında başarılı bir şekilde dolaşabildiğimizi g&amp;ouml;r&amp;uuml;r&amp;uuml;z. G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &amp;ouml;zel sayfalama işlemi biraz meşakkatli bir yol gerektirse de performans a&amp;ccedil;ısından olduk&amp;ccedil;a iyi verim sunacaktır. Buradaki performans farkını iyi anlayabilmek i&amp;ccedil;in normal sayfalama ve &amp;ouml;zel sayfalama tekniklerini iyice kavramak gerekir. Bir kere daha &amp;ouml;zetleyecek olursak, normal sayfalama tekniğinde her bir sayfada t&amp;uuml;m veri seti tekrardan ilgili bağlantsız katman kontrol&amp;uuml;ne doldurulmaktadır.&lt;/p&gt;
+&lt;p&gt;Bizim kullandığımız tekniktede dikkat ederseniz buna benzer bir yaklaşım s&amp;ouml;z konusudur. &amp;Ccedil;&amp;uuml;nk&amp;uuml; bizde sp' miz i&amp;ccedil;erisinde t&amp;uuml;m veri setini &amp;ccedil;ekip bir temp tablo i&amp;ccedil;erisine alıyoruz. Yanlız biz bu işlemi sql sunucusu &amp;uuml;zerinde ger&amp;ccedil;ekleştiriyoruz. Oysaki normal sayfalamada hakikaten t&amp;uuml;m veri k&amp;uuml;mesi bağlantısız katman nesnesine doldurulmaktadır. Bizim tekniğimizde ise sadece ilgili sayfadaki belirtilen satır sayısı kadarlık bir veri seti bağlantısız katman nesnesine doldurulmaktadır. İşte aradaki en b&amp;uuml;y&amp;uuml;k fark budur. Ki bu fark bize performans sağlamaktadır. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/makale/images/UsingCustomPaging.rar"&gt;&amp;Ouml;rnek Kodlar İ&amp;ccedil;in Tıklayınız.&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2005-09-03 12:00:00</pubDate>
+  <slug>Web-Uygulamalarc4b1nda-Custom-Paging-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>aspnet</tag>
+    <tag>paging</tag>
+    <tag>custom-paging</tag>
+  </tags>
+  <categories>
+    <category>Asp.Net</category>
+  </categories>
+</post>

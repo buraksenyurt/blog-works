@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>SQL Persistence Hizmeti</title>
+  <description>Workflow Foundation yardımıyla kod akışlarının modellenebilmesi ve herhangibir .Net uygulaması içerisinden host edilerek çalıştırılabilmesi mümkündür. Bu kavram işin içerisine servisler girdiğinde çok daha genişlemektedir. Nitekim servisler yardımıyla Workflow örneklerinin host edildikleri uygulama dışındaki ortamlar ile haberleşebilmeleri mümkün olmaktadır. Hatta servislerin kendi içlerinde Workflow aktivitilerini kullanabilmeleri ve böylece belirli kod akışlarını yürütebilmeleride mümkündür.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Workflow Foundation&lt;/strong&gt; yardımıyla kod akışlarının modellenebilmesi ve herhangibir .Net uygulaması i&amp;ccedil;erisinden host edilerek &amp;ccedil;alıştırılabilmesi m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Bu kavram işin i&amp;ccedil;erisine servisler girdiğinde &amp;ccedil;ok daha genişlemektedir. Nitekim servisler yardımıyla &lt;strong&gt;Workflow&lt;/strong&gt; &amp;ouml;rneklerinin &lt;strong&gt;host&lt;/strong&gt; edildikleri uygulama dışındaki ortamlar ile haberleşebilmeleri m&amp;uuml;mk&amp;uuml;n olmaktadır. Hatta servislerin kendi i&amp;ccedil;lerinde Workflow aktivitilerini kullanabilmeleri ve b&amp;ouml;ylece belirli kod akışlarını y&amp;uuml;r&amp;uuml;tebilmeleride m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Bu c&amp;uuml;mleden sonra durup d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde &lt;strong&gt;Workflow Foundation&lt;/strong&gt; kavramının akışları, platform bağımsız ortamlara taşıyabileceği sonucuda ortaya &amp;ccedil;ıkmaktadır. Diğer taraftan Workflow uygulamaları sadece dış ortamlar ile haberleşmek i&amp;ccedil;in servislerden yararlanmazlar. İlaveten, &lt;strong&gt;Workflow &amp;ccedil;alışma zamanını(Runtime)&lt;/strong&gt; ilgilendiren ve &amp;ouml;zellikle aktivitilerin dayanıklı olarak saklanmasını&lt;strong&gt;(Durable Persistence)&lt;/strong&gt;, &amp;ccedil;alışma hayatlarının izlenmesini&lt;strong&gt;(Tracking)&lt;/strong&gt;, adımlar arası ge&amp;ccedil;işlerin &amp;ouml;zel olarak planlanmasını&lt;strong&gt;(Scheduling)&lt;/strong&gt; sağlayan ve &lt;strong&gt;.Net Framework &lt;/strong&gt;i&amp;ccedil;erisinde &amp;ouml;nceden tanımlanmış servislerde s&amp;ouml;z konusudur.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Workflow servisleri, &amp;ccedil;alışma zamanına eklenerek workflow &amp;ouml;rneklerine yeni kabiliyetler kazandırılmasını sağlamak amacıyla kullanılırlar. &amp;Ouml;rneğin PersistenceServices ve TrackingServices, SQL veritabanlarını varsayılan olarak kullanan &amp;ccedil;alışma zamanı servisleridir. PersistenceServices ile workflow' ların kalıcı olarak saklanabilmesi sağlanabilir. TrackingServices yardımıylada &amp;ccedil;alışma zamanı workflow &amp;ouml;rneklerinin izlenebilmesi m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Bir başka &amp;ouml;rnek olarak workflow &amp;ccedil;alışma zamanı davranışlarını değiştirmemizi sağlayan Manual Scheduler servisi g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir. Bu servislerin bir kısmının kullanılabilmesi i&amp;ccedil;in, &amp;ccedil;alışma zamanına bilin&amp;ccedil;li olarak eklenmeleri gerekmektedir. Bir başka deyişle etkinleştirilmeleri gerekir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;İşte bu yazımızdaki konumuz, uzun s&amp;uuml;reli &amp;ccedil;alışma ihtimali olan bir Workflow' un belirli koşullarda kalıcı olarak fiziki bir ortamda saklanmasının, &lt;strong&gt;SQL Persistence Service&lt;/strong&gt; yardımıyla nasıl ger&amp;ccedil;ekleştirilebileceğidir. &lt;strong&gt;SQL Persistence Service &lt;/strong&gt;sayesinde, bir Workflow' un faaliyetsiz kalması&lt;strong&gt;(Idle)&lt;/strong&gt; halinde bellek yerine, tablo bazlı bir ortamda saklanabilmesi ve bu durum sona erdiğinde s&amp;ouml;z konusu depolama alanından tekrar ayağa kaldırılarak &amp;ccedil;alışmaya devam etmesi m&amp;uuml;mk&amp;uuml;n olmaktadır. Konuyu daha kolay kavrayabilmek adına ilk &amp;ouml;nce &lt;strong&gt;Workflow&lt;/strong&gt; &lt;strong&gt;&amp;ccedil;alışma&lt;/strong&gt; &lt;strong&gt;zamanının&lt;/strong&gt; kendi ve y&amp;ouml;nettiği &lt;strong&gt;WF&lt;/strong&gt; &amp;ouml;rnekleri ile ilişkili yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml;n&amp;uuml; incelemekte yarar vardır. Bu yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml;n&amp;uuml;n kolayca ele alınabilmesi i&amp;ccedil;in &lt;strong&gt;WorkflowRuntime&lt;/strong&gt; sınıfı i&amp;ccedil;erisine &amp;ccedil;eşitli olaylar eklenmiştir.&lt;/p&gt;
+&lt;p&gt;Bilindiği &amp;uuml;zere &lt;strong&gt;WorkflowRuntime&lt;/strong&gt; sınıfı &amp;ccedil;alışma zamanında WF &amp;ouml;rneklerinin y&amp;ouml;netiminden sorumludur. Bu y&amp;ouml;netim işlemi sırasında &lt;strong&gt;WorkflowRuntime&lt;/strong&gt; sınıfı &amp;uuml;zerinden ele alınabilecek &lt;strong&gt;14&lt;/strong&gt; farklı olay metodu vardır. S&amp;ouml;z konusu olayların bir kısmı sadece &amp;ccedil;alışma zamanını ilgilendirirken, bir kısmıda &lt;strong&gt;WF&lt;/strong&gt; &amp;ouml;rneklerinin yaşam d&amp;ouml;ng&amp;uuml;lerine&lt;strong&gt;(LifeCycle)&lt;/strong&gt; adanmıştır. Buna g&amp;ouml;re &lt;strong&gt;ServicesExceptionNotHandled&lt;/strong&gt;, &lt;strong&gt;Started&lt;/strong&gt; ve &lt;strong&gt;Stopped&lt;/strong&gt; olayları Workflow &amp;ccedil;alışma zamanı olayları olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir.&lt;/p&gt;
+&lt;table style="border-collapse: collapse; width: 100%;" border="1" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="background-color: #ffffff;" colspan="2" bgcolor="#336699"&gt;&lt;strong&gt; Workflow &amp;Ccedil;alışma Zamanı Olayları&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;ServicesExceptionNotHandled &lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Workflow &amp;ccedil;alışma zamanı servislerinden herhangibirinde kontrol altına &lt;strong&gt;alınmamış&lt;/strong&gt; bir &lt;strong&gt;istisna(Exception)&lt;/strong&gt; oluştuğunda devreye giren olaydır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Started &lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;Workflow&lt;/strong&gt; &amp;ccedil;alışma zamanı motoru, &amp;uuml;zerine eklenmiş servisler ile başarılı bir şekilde başlatıldığında devreye girer. Burada &amp;ccedil;alışma zamanına eklenen servislerin başarılı bir şekilde başlatıldıklarına dair bir bilgilendirme yapması s&amp;ouml;z konusudur.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Stopped&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;Started&lt;/strong&gt; olayına benzer olaraktan, WF &amp;ccedil;alışma zamanı motorunun, kendi &amp;uuml;zerinde yer alan ve &amp;ccedil;alışmakta olan t&amp;uuml;m servislerin başarılı bir şekilde durdurulması sonrasında tetiklenir. Servisler başarılı bir şekilde durdurulduklarına dair WF &amp;ccedil;alışma zamanı motoruna bilgilendirmede bulunurlar.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Aşağıdaki tabloda a&amp;ccedil;ıklamaları verilmiş olan olaylar ise, WF &amp;ccedil;alışma zamanının y&amp;ouml;nettiği &lt;strong&gt;Workflow&lt;/strong&gt; &amp;ouml;rneklerinin &lt;strong&gt;durumlarının(State)&lt;/strong&gt; değiştiği hallerde tetiklenmektedir.&lt;/p&gt;
+&lt;table style="border-collapse: collapse; width: 100%;" border="1" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="background-color: #ffffff;" colspan="2" bgcolor="#336699"&gt;&lt;strong&gt; Workflow &amp;Ouml;rneğine Adanmış Olaylar&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;WorkflowAborted &lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Workflow &amp;ouml;rneği devre dışı bırakıldığında tetiklenir. &amp;Ouml;zellikle &lt;strong&gt;Persistence&lt;/strong&gt; servisi kullanıldığında &amp;ouml;nem kazınır. Nitekim devre dışı bırakılan servisin kalıcı olarak saklanması ve tekrar kaldığı yerden &lt;strong&gt;ayağa&lt;/strong&gt; &lt;strong&gt;kaldırılması(Resume)&lt;/strong&gt; m&amp;uuml;mk&amp;uuml;n olabilmektedir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;WorkflowCompleted &lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Bir Workflow &amp;ouml;rneği tamamlanıp bellekten hen&amp;uuml;z kaldırılmadan &amp;ouml;nce devreye giren olaydır. Bu olaya ait metod yardımıyla &lt;strong&gt;host&lt;/strong&gt; uygulamaya, tamamlanan Workflow &amp;ouml;rneğinin &lt;strong&gt;output&lt;/strong&gt; parametrelerini d&amp;ouml;nd&amp;uuml;rmek m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;WorkflowCreated &lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Workflow &amp;ouml;rneği oluşturulduğunda ancak &lt;strong&gt;Start&lt;/strong&gt; metodu ile &amp;ccedil;alıştırılmadan az &amp;ouml;nce tetiklenir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;WorkflowIdled &lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Bir workflow &amp;ouml;rneği dışarıdan beklediği bir etki veya &lt;strong&gt;Delay&lt;/strong&gt; aktivitesi nedeni ile i&amp;ccedil;erisinde yer alan herhangibir aktiviteyi işletmediği durumlarda tetiklenir. &amp;Ouml;zellikle Idle olma durumunda Persistence hizmetlerinin kullanımı &amp;ouml;nem kazanır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;WorkflowLoaded &lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;Persistence&lt;/strong&gt; servisi kullanıldığı durumlarda, Workflow &amp;ouml;rneğinin herhangibir aktivitesi &amp;ccedil;alıştırılmadan &amp;ouml;nce ve belleğe y&amp;uuml;klenmesi sonrasında devreye giren olaydır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;WorkflowPersisted &lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;Persistence&lt;/strong&gt; servisin kullanılması halinde bir workflow &amp;ouml;rneğinin saklanmak &amp;uuml;zere kaydedilmesi sonrasında tetiklenir. Workflow persistence servisi varsayılan olarak &lt;strong&gt;SQL&lt;/strong&gt; veritabanını kullandığından, s&amp;ouml;z konusu kaydetme işlemi tablo &amp;uuml;zerinde ger&amp;ccedil;ekleştirilmektedir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;WorkflowResumed &lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Bir erteleme nedeni ile &lt;strong&gt;Suspended&lt;/strong&gt; moda ge&amp;ccedil;en bir &amp;ouml;rneğin tekrar ayağa kalkması sonrasında ve kaldığı yerden devam ederken herhangibir aktivite &amp;ccedil;alıştırılmadan &amp;ouml;nce devreye giren olaydır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;WorkflowStarted &lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;Workflow&lt;/strong&gt; &amp;ouml;rneği y&amp;uuml;r&amp;uuml;t&amp;uuml;lmeye başlatıldığında tetiklenir. Bu başlangı&amp;ccedil; &lt;strong&gt;k&amp;ouml;k aktivitenin(Root Activity)&lt;/strong&gt; &amp;ccedil;alıştırılması sonrasında meydana gelmektedir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;WorkflowSuspended &lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Workflow &amp;ouml;rneği, &lt;strong&gt;Suspend&lt;/strong&gt; metoduna yapılan &amp;ccedil;ağrı veya &lt;strong&gt;Suspend&lt;/strong&gt; aktivitesine gelinmesi nedeniyle &lt;strong&gt;Suspended&lt;/strong&gt; moduna ge&amp;ccedil;tiğinde tetiklenen olaydır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;WorkflowTerminated &lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Workflow &amp;ouml;rneği yok edildikten ama bellekten atılmadan az &amp;ouml;nce &amp;ccedil;alışan olaydır. Workflow, &lt;strong&gt;Terminate&lt;/strong&gt; metodu yardımıyla, &lt;strong&gt;Terminate&lt;/strong&gt; &lt;strong&gt;aktivitesine&lt;/strong&gt; gelinmesi nedeniyle veya ele &lt;strong&gt;alınmamış&lt;/strong&gt; bir &lt;strong&gt;istisna(Unhandled Exception) &lt;/strong&gt;y&amp;uuml;z&amp;uuml;nden Terminated durumuna ge&amp;ccedil;ebilir. Eğer persistence servis kullanılıyorsa, Terminate edilen workflow &amp;ouml;rneğine ait t&amp;uuml;m kayıtlar ilgili depolama alanından kaldırılır. SQL tabanlı persistence servisi g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında bu, tablolar &amp;uuml;zerinde gerekli silme işlemlerinin yapılması anlamına gelmektedir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;WorkflowUnloaded &lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;Persistence&lt;/strong&gt; servisleri kullanıldığında, Workflow &amp;ouml;rneği depolama alanına kaydedildikten sonra ama bellekten kaldırılmadan az &amp;ouml;nce tetiklenen olaydır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Aslında &lt;strong&gt;WF &amp;Ccedil;alışma Zamanı Motorunun(WF Runtime Engine) &lt;/strong&gt;kendisinin bir &lt;strong&gt;State Machine&lt;/strong&gt; olduğu rahatlıkla d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Nitekim, y&amp;ouml;netmekte olduğu &amp;ouml;rneklerin durumları arasındaki ge&amp;ccedil;işleri kontrol altına almakta ve bununla ilişkili olayları y&amp;ouml;netmektedir. Temel olarak workflow &amp;ouml;rnekleri &lt;strong&gt;Created&lt;/strong&gt;, &lt;strong&gt;Running&lt;/strong&gt;, &lt;strong&gt;Suspended&lt;/strong&gt;, &lt;strong&gt;Completed&lt;/strong&gt; ve &lt;strong&gt;Terminated&lt;/strong&gt; olmak &amp;uuml;zere 5 farklı duruma sahip olabilir. Bu durum aşağıdaki diyagram ile &amp;ouml;zetlenebilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk270_1.gif" alt="" width="391" height="364" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;İlk etapta, &lt;strong&gt;Persistence&lt;/strong&gt; servisinin devrede olmadığı durumlarda standart olarak &amp;ccedil;alışan olay metodlarını ele alacağımız bir &amp;ouml;rnek geliştirerek devam edebiliriz. Bu ama&amp;ccedil;la &amp;ouml;rnek bir &lt;strong&gt;Sequential&lt;/strong&gt; &lt;strong&gt;Workflow&lt;/strong&gt; &lt;strong&gt;Console&lt;/strong&gt; &lt;strong&gt;Application&lt;/strong&gt; oluşturarak başladığımızı d&amp;uuml;ş&amp;uuml;nebiliriz. S&amp;ouml;z konusu &amp;ouml;rnek i&amp;ccedil;erisinde &lt;strong&gt;Costflow&lt;/strong&gt; isimli bir &lt;strong&gt;Sequential&lt;/strong&gt; &lt;strong&gt;Activity&lt;/strong&gt; kullanılmakta olup adımları aşağıdaki şekilde g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk270_2.gif" alt="" width="410" height="225" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;S&amp;ouml;z konusu aktivite aynı zamanda dışarıdan parametre alıp, bir sonu&amp;ccedil; &amp;uuml;retmektedir. Aktivitenin &lt;strong&gt; faaliyetsiz(Idle)&lt;/strong&gt; moda ge&amp;ccedil;tiğini g&amp;ouml;rmek i&amp;ccedil;in sembolik olarak &lt;strong&gt;Delay&lt;/strong&gt; aktivitesinden yararlanılmaktadır. S&amp;ouml;z konusu aktivititede sadece duraksama s&amp;uuml;resi &amp;ouml;zelliği 10 saniye olarak set edilmiştir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk270_3.gif" alt="" width="308" height="165" border="0" /&gt;&lt;br /&gt; &lt;br /&gt; Costflow aktivitesine ait kod i&amp;ccedil;eriği aşağıdaki gibi tasarlanabilir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Workflow.Activities;
+
+namespace WFCostFactory
+{
+    public enum WorkType
+    {
+        Consumer,
+        Corporate
+    }
+    public sealed partial class Costflow 
+            : SequentialWorkflowActivity
+    {
+        #region Workflow &amp;ouml;zellikleri(Properties)
+
+        // Dış ortamdan gelen parametreler
+        public int TotalDays { get; set; }
+        public decimal CostValue { get; set; } 
+        public WorkType WorkT { get; set; } // Dış ortama sonu&amp;ccedil; olarak d&amp;ouml;nd&amp;uuml;r&amp;uuml;len parametre
+
+        #endregion
+
+        public Costflow()
+        {
+            InitializeComponent();
+        }
+
+        // CodeActivity tarafından &amp;ccedil;alıştırılan &amp;ouml;rnek fonksiyonellik
+        private void Calculate(object sender, EventArgs e)
+        {
+            Console.WriteLine("Calculate Metodu. Maliyet hesaplama işlemleri yapılır");
+            switch (WorkT)
+            {
+                case WorkType.Consumer:
+                    CostValue = TotalDays * 1.10M;
+                    break;
+                case WorkType.Corporate:
+                    CostValue = TotalDays * 1.15M;
+                    break;
+                default:
+                    CostValue = 1;
+                    break;
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;S&amp;ouml;z konusu aktiviteyi host eden &lt;strong&gt;Console&lt;/strong&gt; uygulamasına ait kod i&amp;ccedil;eriği ise aşağıdaki gibidir. Burada dikkat edilmesi gereken nokta &lt;strong&gt;WorkflowRuntime&lt;/strong&gt; &amp;ouml;rneğine ait t&amp;uuml;m olayların y&amp;uuml;klenmiş olmasıdır. Bu olayların &amp;ccedil;oğu &amp;ouml;rneğimizde devreye girmeyecektir. Ancak hangi durumlarda devreye gireceği yukarıdaki tablolarda belirtilmiştir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Workflow.Runtime;
+
+namespace WFCostFactory
+{
+    class Program
+    {
+        static WorkflowRuntime wfRuntime = null;
+        static AutoResetEvent wHandle = null;
+
+        static void Main(string[] args)
+        {
+            // Workflow Runtime nesnesi &amp;ouml;rneklenir
+            using(wfRuntime = new WorkflowRuntime())
+            {
+                wHandle = new AutoResetEvent(false);
+
+                #region Event Tanımlamaları
+
+                wfRuntime.Started += new EventHandler&amp;lt;WorkflowRuntimeEventArgs&amp;gt;(wfRuntime_Started);
+                wfRuntime.ServicesExceptionNotHandled += new EventHandler&amp;lt;ServicesExceptionNotHandledEventArgs&amp;gt;(wfRuntime_ServicesExceptionNotHandled);
+                wfRuntime.Stopped += new EventHandler&amp;lt;WorkflowRuntimeEventArgs&amp;gt;(wfRuntime_Stopped);
+                wfRuntime.WorkflowAborted += new EventHandler&amp;lt;WorkflowEventArgs&amp;gt;(wfRuntime_WorkflowAborted);
+                wfRuntime.WorkflowCreated += new EventHandler&amp;lt;WorkflowEventArgs&amp;gt;(wfRuntime_WorkflowCreated);
+                wfRuntime.WorkflowIdled += new EventHandler&amp;lt;WorkflowEventArgs&amp;gt;(wfRuntime_WorkflowIdled);
+                wfRuntime.WorkflowLoaded += new EventHandler&amp;lt;WorkflowEventArgs&amp;gt;(wfRuntime_WorkflowLoaded);
+                wfRuntime.WorkflowPersisted += new EventHandler&amp;lt;WorkflowEventArgs&amp;gt;(wfRuntime_WorkflowPersisted);
+                wfRuntime.WorkflowResumed += new EventHandler&amp;lt;WorkflowEventArgs&amp;gt;(wfRuntime_WorkflowResumed);
+                wfRuntime.WorkflowStarted += new EventHandler&amp;lt;WorkflowEventArgs&amp;gt;(wfRuntime_WorkflowStarted);
+                wfRuntime.WorkflowSuspended += new EventHandler&amp;lt;WorkflowSuspendedEventArgs&amp;gt;(wfRuntime_WorkflowSuspended);
+                wfRuntime.WorkflowTerminated += new EventHandler&amp;lt;WorkflowTerminatedEventArgs&amp;gt;(wfRuntime_WorkflowTerminated);
+                wfRuntime.WorkflowUnloaded += new EventHandler&amp;lt;WorkflowEventArgs&amp;gt;(wfRuntime_WorkflowUnloaded);
+                wfRuntime.WorkflowCompleted+=new EventHandler&amp;lt;WorkflowCompletedEventArgs&amp;gt;(wfRuntime_WorkflowCompleted);
+
+                #endregion
+
+                // Workflow nesne &amp;ouml;rneği oluşturulur
+                // TotalDays ve WorkT &amp;ouml;zellikleri i&amp;ccedil;in ilk değerler set edilir
+                WorkflowInstance instance = wfRuntime.CreateWorkflow(
+                    typeof(WFCostFactory.Costflow)
+                    , new Dictionary&amp;lt;string,object&amp;gt;
+                        { 
+                            {"TotalDays",20}
+                            ,{"WorkT",WorkType.Corporate}
+                        }
+                    );
+                // Workflow &amp;ouml;rneği başlatılır
+                instance.Start();
+                // İşlemler tamamlana kadar bekle
+                wHandle.WaitOne();
+            }
+        }
+
+        static void wfRuntime_WorkflowUnloaded(object sender, WorkflowEventArgs e)
+        {
+            Console.WriteLine("{0} : Event : {1}, InstanceId : {2}", DateTime.Now, "WorkflowUnloaded", e.WorkflowInstance.InstanceId.ToString());
+        }
+    
+        static void wfRuntime_WorkflowTerminated(object sender, WorkflowTerminatedEventArgs e)
+        {
+            Console.WriteLine("{0} : Event : {1}, InstanceId : {2} Exception Message : {3}", DateTime.Now, "WorkflowTerminated",             e.WorkflowInstance.InstanceId.ToString(), e.Exception.Message);
+            wHandle.Set();
+        }
+
+        static void wfRuntime_WorkflowSuspended(object sender, WorkflowSuspendedEventArgs e)
+        { 
+            Console.WriteLine("{0} : Event : {1}, InstanceId : {2}", DateTime.Now, "WorkflowSuspended", e.WorkflowInstance.InstanceId.ToString());
+        }
+
+        static void wfRuntime_WorkflowStarted(object sender, WorkflowEventArgs e)
+        {
+            Console.WriteLine("{0} : Event : {1}, InstanceId : {2}", DateTime.Now, "WorkflowStarted", e.WorkflowInstance.InstanceId.ToString());
+        }
+
+        static void wfRuntime_WorkflowResumed(object sender, WorkflowEventArgs e)
+        {
+            Console.WriteLine("{0} : Event : {1}, InstanceId : {2}", DateTime.Now, "WorkflowResumed", e.WorkflowInstance.InstanceId.ToString());
+        }
+
+        static void wfRuntime_WorkflowPersisted(object sender, WorkflowEventArgs e)
+        {
+            Console.WriteLine("{0} : Event : {1}, InstanceId : {2}", DateTime.Now, "WorkflowPersisted", e.WorkflowInstance.InstanceId.ToString());
+        }
+
+        static void wfRuntime_WorkflowLoaded(object sender, WorkflowEventArgs e)
+        {
+            Console.WriteLine("{0} : Event : {1}, InstanceId : {2}", DateTime.Now, "WorkflowLoaded", e.WorkflowInstance.InstanceId.ToString());
+        }
+
+        static void wfRuntime_WorkflowIdled(object sender, WorkflowEventArgs e)
+        {
+            Console.WriteLine("{0} : Event : {1}, InstanceId : {2}", DateTime.Now, "WorkflowIdled", e.WorkflowInstance.InstanceId.ToString());
+        }
+
+        static void wfRuntime_WorkflowCreated(object sender, WorkflowEventArgs e)
+        {
+            Console.WriteLine("{0} : Event : {1}, InstanceId : {2}", DateTime.Now, "WorkflowCreated", e.WorkflowInstance.InstanceId.ToString());
+        }
+
+        static void wfRuntime_WorkflowCompleted(object sender, WorkflowCompletedEventArgs e)
+        { 
+            Console.WriteLine("{0} : Event : {1}, InstanceId : {2}", DateTime.Now, "WorkflowCompleted", e.WorkflowInstance.InstanceId.ToString());
+            Console.WriteLine("Maliyet : {0}", e.OutputParameters["CostValue"].ToString());
+            wHandle.Set();
+        }
+
+        static void wfRuntime_WorkflowAborted(object sender, WorkflowEventArgs e)
+        {
+            Console.WriteLine("{0} : Event : {1}, InstanceId : {2}", DateTime.Now, "WorkflowAborted", e.WorkflowInstance.InstanceId);
+        }
+
+        static void wfRuntime_Stopped(object sender, WorkflowRuntimeEventArgs e)
+        {
+            Console.WriteLine("{0} : Event : {1}, IsStarted : {2}", DateTime.Now, "WFRuntime_Stopped", e.IsStarted.ToString());
+        }
+    
+        static void wfRuntime_ServicesExceptionNotHandled(object sender, ServicesExceptionNotHandledEventArgs e)
+        {
+            Console.WriteLine("{0} : InstanceId : {1} Event : {2}, Exception Message : {3}", DateTime.Now, e.WorkflowInstanceId.ToString(),"WF        Runtime_ServicesExceptionNotHandled",e.Exception.Message);
+        }
+
+        static void wfRuntime_Started(object sender, WorkflowRuntimeEventArgs e)
+        {
+            Console.WriteLine("{0} : Event : {1}, IsStarted : {2}", DateTime.Now, "WFRuntime_Started", e.IsStarted.ToString());
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rneği ilk etapta bu haliye &amp;ccedil;alıştırdığımızda aşağıdaki ekran &amp;ccedil;ıktısı ile karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk270_4.gif" alt="" width="628" height="133" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;İlk analizimi yapabiliriz artık. Dikkat edileceği &amp;uuml;zere ilk olarak &lt;strong&gt;Workflow&lt;/strong&gt; &amp;ccedil;alışma zamanına ait &lt;strong&gt;Started&lt;/strong&gt; olayı tetiklenmiş ve &lt;strong&gt;IsStarted&lt;/strong&gt; değeri &lt;strong&gt;true&lt;/strong&gt; olarak set edilmiştir. Hatırlanacağı &amp;uuml;zere Workflow motorunun kullandığı veya başlattığı t&amp;uuml;m servislerin &lt;strong&gt;IsStarted&lt;/strong&gt; &amp;ouml;zelliğine etkisi vardır ve bu &amp;ouml;zelliğin değeri &lt;strong&gt;true&lt;/strong&gt; kalmadığı s&amp;uuml;rece &amp;ccedil;alışma zamanı başlatılamayacaktır. Bu işlemin arkasından &lt;strong&gt;Workflow&lt;/strong&gt; nesnesi &amp;ouml;rneklendiği i&amp;ccedil;in &lt;strong&gt;WorkflowCreated&lt;/strong&gt; ve &lt;strong&gt;WorkflowStared&lt;/strong&gt; olayları sırasıyla &amp;ccedil;alışmaktadır. S&amp;uuml;re&amp;ccedil; devam etmekteyken &lt;strong&gt;Delay&lt;/strong&gt; aktivitesi devreye girmiştir. İşte bu noktada Workflow &amp;ouml;rneği faaliyetsiz kalarak, &amp;ccedil;alışma zamanı moturu tarafından bellekte tutulmaya devam edilmektedir.&amp;nbsp;Bu anda &lt;strong&gt;WorkflowIdled&lt;/strong&gt; olayı tetiklenmiştir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;Ouml;zellikle olay metodlarının bazıları i&amp;ccedil;erisindeden GUID tipinden InstanceId değerlerinin elde edilebiliyor olması &amp;ouml;nemlidir ki bu sayede hangi WF &amp;ouml;rneğinin faaliyetsiz kaldığı kolayca anlaşılabilmektedir. Tahmin edeceğiniz &amp;uuml;zere bu Id değeri persistence ortamları i&amp;ccedil;inde benzersiliği sağlamak a&amp;ccedil;ısından &amp;ouml;nemlidir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Faaliyetsiz kalma durumu &lt;strong&gt;Delay&lt;/strong&gt; aktitivitesinde belirtilen s&amp;uuml;re sonlanıncaya kadar devam eder. S&amp;uuml;re sonunda ise &lt;strong&gt;Workflow&lt;/strong&gt; &amp;ouml;rneği &amp;ccedil;alışmasına kaldığı yerden tekrar başlayacaktır. İşte bizim en b&amp;uuml;y&amp;uuml;k amacımız bu faaliyetsiz kalma anında s&amp;ouml;z konusu &lt;strong&gt;WF&lt;/strong&gt; &amp;ouml;rneğini &lt;strong&gt;SQL&lt;/strong&gt; &lt;strong&gt;Persistence&lt;/strong&gt; &lt;strong&gt;Service&lt;/strong&gt; yardımıyla fiziki bir ortama kaydetmektir.&lt;/p&gt;
+&lt;p&gt;Varsayılan olarak &lt;strong&gt;WF&lt;/strong&gt; &amp;ouml;rneklerinin durumu bellekte saklanır. Bir başka deyişle, &lt;strong&gt;workflow&lt;/strong&gt; herhangibir sebeple faaliyetsiz duruma ge&amp;ccedil;tiğinde s&amp;ouml;z konusu &amp;ouml;rnek bellekte asılı olarak kalır ve beklemeye başlar. Ancak ger&amp;ccedil;ek hayat senaryolarında &amp;ccedil;alışmakta olan &lt;strong&gt;Workflow&lt;/strong&gt; &amp;ouml;rneklerinin uzun s&amp;uuml;re asılı kalmasıda s&amp;ouml;z konusu olabilir. Bu, &amp;ouml;zellikle faaliyetine devam etmesi i&amp;ccedil;in onu bekleten operasyona bağlıdır. Dolayısıyla bu tip vakalarda Workflow &amp;ouml;rneklerinin kalıcı olarak saklanmaları tercih edilebilir. Kalıcılıkta esas olan &lt;strong&gt;Workflow&lt;/strong&gt; &amp;ouml;rneğinin o anki durumu ve değerleri ile fiziki bir depolama alanına atılmasıdır. Bu noktada &amp;ccedil;oğunlukla &lt;strong&gt;SQL&lt;/strong&gt; gibi veritabanı kaynaklarının kullanılması tercih edilir. Diğer taraftan elbetteki &lt;strong&gt;Persistence&lt;/strong&gt; servisleri &amp;ouml;zelleştirilebilir ve farklı veri kaynaklarına kaydetme işlemleri ger&amp;ccedil;ekleştirilebilir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Workflow&lt;/strong&gt; &lt;strong&gt;Foundation&lt;/strong&gt;, &amp;ccedil;alışma zamanındaki &lt;strong&gt;WF&lt;/strong&gt; &amp;ouml;rneklerinin bellekten kaldırılıp &amp;ccedil;alışmasının durdurulması sonrasında, kalıcı olarak saklanabilmeleri i&amp;ccedil;in &amp;ouml;nceden geliştirilmiş bir &lt;strong&gt;Persistence&lt;/strong&gt; servisi sunmaktadır. Hangi tip Persistence kullanılırsa kullanılsın, Workflow &amp;ccedil;alışma zamanı, kalıcı olarak saklanan Workflow &amp;ouml;rneğine(&amp;ouml;rneklerine) gelen mesajları takip de eder. Bu sayede gerektiği anda, &amp;uuml;zerinde yer alan &lt;strong&gt;Persistence&lt;/strong&gt; servisi devreye alarak, ilgili WF &amp;ouml;rneğinin tekrardan belleğe y&amp;uuml;klenmesini sağlayabilir. Workflow &amp;ccedil;alışma zamanı, &lt;strong&gt;Persistence&lt;/strong&gt; servisini belirli durumlar ger&amp;ccedil;ekleştirildiğinde &amp;ccedil;ağırmaktadır. Bu durumlar;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;WF &amp;ouml;rneği belirli bir nedenden askıya alındığında yani faaliyetsiz hale ge&amp;ccedil;tiğinde&lt;strong&gt;(Idle)&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;WF &amp;ouml;rneği yok edilmeden&lt;strong&gt;(Terminate) &lt;/strong&gt;&amp;ouml;nce.&lt;/li&gt;
+&lt;li&gt;WF &amp;ouml;rneği tamamlanmadan&lt;strong&gt;(Complete)&lt;/strong&gt; &amp;ouml;nce.&lt;/li&gt;
+&lt;li&gt;Workflow &amp;ouml;rneği &amp;uuml;zerinde &lt;strong&gt;Unload&lt;/strong&gt;, &lt;strong&gt;TryUnload&lt;/strong&gt; metodları &amp;ccedil;ağırıldığında.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;PersistOnCloseAttribute&lt;/strong&gt; niteliği ile imzalanmış olan bir aktivitenin tamamlanması sonrasında. &amp;Ouml;zellikle &lt;strong&gt;transaction&lt;/strong&gt; kullanan aktivitiler bu niteliğe sahiptir. Diğer taraftan i&amp;ccedil;erisinde transaction kullanılacak olan aktivitilerinde bu nitleği uygulaması gerekir.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;WorkflowPersistenceService&lt;/strong&gt; &lt;strong&gt;abstract&lt;/strong&gt; sınıfından t&amp;uuml;retme yapılarak istenirse &amp;ouml;zel persistence sınıflarıda yazılabilmektedir. Biz &amp;ouml;rneğimizde &lt;strong&gt;SqlWorkflowPersistenceService&lt;/strong&gt; tipinden yararlanarak WF &amp;ouml;rneklerini &lt;strong&gt;SQL&lt;/strong&gt; veritabanı &amp;uuml;zerinde saklamaya &amp;ccedil;alışacağız. Şimdi bu durumu incelememiz gerekiyor. Ancak depolama alanı i&amp;ccedil;in &lt;strong&gt;SQL&lt;/strong&gt; tarafında gerekli hazırlıkların yapılması gerekmektedir. Bu noktada&lt;strong&gt; .Net Framework &lt;/strong&gt;ile birlikte hazır olarak gelen &lt;strong&gt;WF SQL betikleri(Scripts) &lt;/strong&gt;kullanılabilir. S&amp;ouml;z konusu SQL betikleri varsayılan olarak &amp;ouml;rneğin &lt;strong&gt;Windows XP &lt;/strong&gt;işletim sisteminin kurulu olduğu bir makinede &lt;strong&gt;C:\WINDOWS\Microsoft.NET\Framework\v3.0\Windows Workflow Foundation\SQL\EN &lt;/strong&gt;klas&amp;ouml;r&amp;uuml;nde yer almaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk270_5.gif" alt="" width="458" height="130" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Burada yer alan &lt;strong&gt;SqlPersistenceService_Logic&lt;/strong&gt; ile &lt;strong&gt;SqlPersistenceService_Schema&lt;/strong&gt; betikleri, &lt;strong&gt;Persistence&lt;/strong&gt; depolama alanı i&amp;ccedil;in gerekli &lt;strong&gt;tablo(Table), saklı yordam(Stored Procedure) &lt;/strong&gt;gibi veritabanı nesnelerini oluşturmakla g&amp;ouml;revlidir. S&amp;ouml;z konusu betikler, bir SQL sunucusu &amp;uuml;zerinde &amp;ccedil;alıştırılıp kullanılabileceği gibi, istenirse ilgili Workflow &amp;ccedil;alışma zamanını &lt;strong&gt;Host&lt;/strong&gt; eden uygulamanın erişebileceği dosya bazlı bir veritabanı &amp;uuml;zerindende &amp;ccedil;alıştırılabilir. Biz &amp;ouml;rneğimizde ikinci se&amp;ccedil;eneği kullanacağız. Yani, s&amp;ouml;z konusu depolama alanı i&amp;ccedil;in &lt;strong&gt;SQL Express Edition&lt;/strong&gt; temelli bir veritabanı dosyasını ele alacağız. Bu ama&amp;ccedil;la ilk olarak &lt;strong&gt;Solution&lt;/strong&gt;' ımıza bir &lt;strong&gt;Database&lt;/strong&gt; &lt;strong&gt;Project&lt;/strong&gt; ekleyerek devam edebiliriz. Proje eklenmesi sırasında bize aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi kullanmak istediğimiz veritabanı sorulacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk270_6.gif" alt="" width="305" height="318" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Elimizde b&amp;ouml;yle bir veritabanı olmadığını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alaraktan &lt;strong&gt;Add New Reference&lt;/strong&gt; se&amp;ccedil;eneğine tıklayalım. S&amp;uuml;rekli kullandığımız standart bağlantı ekleme iletişim kutusu ile karşılacağız. Burada &amp;ouml;nemli olan veri kaynağı olarak &lt;strong&gt;Microsoft&lt;/strong&gt; &lt;strong&gt;SQL Server Database File (SqlClient)&lt;/strong&gt; tipinin se&amp;ccedil;ilmesidir. Sonrasında ise veritabanımıza bir isim vererek devam edebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk270_7.gif" alt="" width="425" height="398" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Ok&lt;/strong&gt; d&amp;uuml;ğmesine bastığımızda s&amp;ouml;z konusu veritabanı yoksa eğer, oluşturmak isteyip istemediğimize dair bir soru sorulacaktır. Bu oluşturma işlemi sırasında unutulmaması gereken noktalardan biriside &lt;strong&gt;SQL Express &lt;/strong&gt;servisinin &amp;ccedil;alışıyor olması zorunluluğudur. Eğer servis &amp;ccedil;alışmıyorsa tahmin edileceği &amp;uuml;zere s&amp;ouml;z konusu veritabanı oluşturulamayacaktır. &lt;strong&gt;Database&lt;/strong&gt; projesi oluşturulduktan sonra yukarıda değindiğimiz &lt;strong&gt;SQL&lt;/strong&gt; &lt;strong&gt;betiklerini&lt;/strong&gt; &lt;strong&gt;Create&lt;/strong&gt; &lt;strong&gt;Scripts&lt;/strong&gt; klas&amp;ouml;r&amp;uuml; altına ekleyerek devam edebiliriz. Bu işlemler sonrasında proje i&amp;ccedil;eriği aşağıdakine benzer olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk270_8.gif" alt="" width="316" height="273" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;(Buradaki gibi bir veritabanı projesinin oluşturulması aslında şart değildir. Bu sadece s&amp;ouml;z konusu veritabanının y&amp;ouml;netimin kolaylaştırılmasını sağlayan ve belirli bir d&amp;uuml;zeni tesis eden bir opsiyon olarak g&amp;ouml;r&amp;uuml;lmelidir. Genel olarak ger&amp;ccedil;ek hayat uygulamalarında depolama alanı olarak sunucu bazlı veritabanları tercih edilir. Sizlere tavsiyem aynı &amp;ouml;rneği SQL sunucusu &amp;uuml;zerinde ger&amp;ccedil;ekleştirmeye &amp;ccedil;alışmanızdır.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Sıradaki işlem, s&amp;ouml;z konusu &lt;strong&gt;SQL&lt;/strong&gt; betiklerinin &amp;ccedil;alıştırılmasıdır. Bu betikler &amp;ccedil;alıştırıldıktan sonra &lt;strong&gt;CostFactoryPersistenceDb&lt;/strong&gt; isimli veritabanının i&amp;ccedil;eriği aşağıdaki şekilde g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi oluşturulacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk270_9.gif" alt="" width="344" height="584" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Burada temel olarak &lt;strong&gt;Workflow&lt;/strong&gt; &amp;ouml;rneklerinin &lt;strong&gt;saklanması(Insert)&lt;/strong&gt;, &lt;strong&gt;kilitlenmesi(lock)&lt;/strong&gt;, &lt;strong&gt;elde&lt;/strong&gt; &lt;strong&gt;edilmesi(retrieve)&lt;/strong&gt; veya &lt;strong&gt;silinmesi(delete)&lt;/strong&gt; ile ilişkili gerekli &lt;strong&gt;Stored Procedure&lt;/strong&gt;' ler ve &lt;strong&gt;tablolar&lt;/strong&gt; yer almaktadır. Artık depolama alanıda tanımlandığına g&amp;ouml;re, &lt;strong&gt;Workflow&lt;/strong&gt; uygulamamız i&amp;ccedil;in gerekli kod değişikliklerini yapabiliriz. Bu ama&amp;ccedil;la host uygulama &amp;uuml;zerinde &lt;strong&gt;SqlWorkflowPersistenceService&lt;/strong&gt;' in oluşturulması ve &amp;ccedil;alışma zamanına eklenmesi gerekmektedir. İşte &amp;ouml;rnek kodlarımız;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Workflow.Runtime;
+using System.Workflow.Runtime.Hosting;
+
+namespace WFCostFactory
+{
+    class Program
+    {
+        static WorkflowRuntime wfRuntime = null;
+        static AutoResetEvent wHandle = null;
+
+        static void Main(string[] args)
+        {
+            // Workflow Runtime nesnesi &amp;ouml;rneklenir
+            using(wfRuntime = new WorkflowRuntime())
+            {
+                // Varsayılan ayarları ile persistence servisi &amp;ouml;rneklenir
+                SqlWorkflowPersistenceService persistenceService = new SqlWorkflowPersistenceService
+                (
+                    @"Data Source=.\SQLEXPRESS;AttachDbFilename=C:\Documents and Settings\Burak Selim Senyurt\My Documents\CostFactoryPersistenceDb.mdf;Integrated Security=True;Connect Timeout=30;User Instance=True"
+                );
+                // Oluşturulan servis &amp;ccedil;alışma zamanına bildirilir.
+                wfRuntime.AddService(persistenceService);
+                //Diğer kod satırları...&lt;/pre&gt;
+&lt;p&gt;İlk olarak &lt;strong&gt;System.Workflow.Runtime.Hosting&lt;/strong&gt; isim alanında(namespace) yer alan &lt;strong&gt;SqlWorkflowPersistence&lt;/strong&gt; hizmetine ait bir nesne &amp;ouml;rneği oluşturulur. Nesne &amp;ouml;rneklenirken &lt;strong&gt;yapıcı&lt;/strong&gt; &lt;strong&gt;metod(Constructor)&lt;/strong&gt; i&amp;ccedil;erisinde &lt;strong&gt;persistence&lt;/strong&gt; i&amp;ccedil;in kullanılacak veri depolama alanın bağlantı bilgisi verilmektedir. Bu en basit yapıcı metodu versiyonudur. Diğer versiyonlarını kullanarak farklı başlangı&amp;ccedil; ayarlamaları yapılabilir. S&amp;ouml;z gelimi Workflow &amp;ouml;rneklerinin &lt;strong&gt;Idle&lt;/strong&gt; moda ge&amp;ccedil;tiklerinde bellekten kaldırılıp kaldırılmayacakları, birden fazla Workflow &amp;ccedil;alışma zamanı moturunun &lt;strong&gt;aynı&lt;/strong&gt; WF &amp;ouml;rneklerini kullanmaları halinde, birbirlerini kesmemeleri i&amp;ccedil;in &lt;strong&gt;kilit s&amp;uuml;relerinin(Lock Time)&lt;/strong&gt; ne olacağı gibi kriterlerde yapıcı metod parametreleri ile belirlenebilir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Servis tanımlaması ile ilgili ayarlar istenirse konfigurasyon dosyasında da yapılabilir. Bunun i&amp;ccedil;in host uygulamaya ait konfigurasyon dosyasında &amp;ouml;rneğin aşağıdaki tanımlamaların yapılması yeterlidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk270_13.gif" alt="" width="478" height="401" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Tabi host uygulama i&amp;ccedil;erisinde WorkflowRuntime nesne &amp;ouml;rneği oluşturulurken wfRuntime=new WorkflowRuntime("WorkflowRuntime"); şeklinde bir kullanım s&amp;ouml;z konusudur. Burada parametre olarak app.config dosyasındaki section adı verilmektedir. Bu ad benzersizdir. Yani farklı bir isim olamaz. Diğer taraftan yapıcı metodun bu versiyonunun &amp;ccedil;alıştırılabilmesi i&amp;ccedil;in(&amp;ouml;rneğin geliştirdiğimiz Console uygulamasında) mutlaka System.Configuration assembly' ının projeye referans edilmesi gerekmektedir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Artık uygulamamızı test etmeye başlayabiliriz. Konuyu kolay takip edebilmek amacıyla geliştirdiğiniz &amp;ouml;rneği &lt;strong&gt;Debug&lt;/strong&gt; ederken adım adım ilerlemenizi &amp;ouml;neririm. &amp;Ouml;ncelikle programın &amp;ccedil;alışması sonrasındaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ne bakalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk270_10.gif" alt="" width="628" height="167" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;Workflow&lt;/strong&gt; &amp;ouml;rneği faaliyetsiz hale ge&amp;ccedil;tikten sonra(WorkflowIdled olayının tetiklenmesi sonrası) sırasıyla &lt;strong&gt;WorkflowPersisted&lt;/strong&gt;, &lt;strong&gt;WorkflowUnloaded&lt;/strong&gt; olayları &amp;ccedil;alışmıştır. Bir başka deyişle faaliyetsiz kalan Workflow &amp;ouml;rneği veritabanındaki ilgili tablolara yazılmıştır. Diğer taraftan faaliyetsiz kalma s&amp;uuml;resi dolduğunda ve Workflow akışı tekrar devam etmek istediğinde sırasıyla &lt;strong&gt;WorkflowLoaded&lt;/strong&gt; ve &lt;strong&gt;WorkflowPersisted&lt;/strong&gt; olayları tetiklenmiştir. Yani WF &amp;ouml;rneği tablodan tekrar y&amp;uuml;klenerek y&amp;uuml;r&amp;uuml;t&amp;uuml;lmeye devam etmiş ve son olarakta tamamlanmıştır. &amp;Ouml;zellikle Workflow faaliyetsiz hale geldiğinde &lt;strong&gt;InstanceState&lt;/strong&gt; isimli tabloda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ne benzer olacak şekilde bir satır a&amp;ccedil;ıldığı ve &lt;strong&gt;Delay&lt;/strong&gt; s&amp;uuml;resi sona erdikten sonra ise WF &amp;ouml;rneğinin tekrar ayağa kaldırılmasıyla birlikte s&amp;ouml;z konusu satırın silindiği g&amp;ouml;r&amp;uuml;l&amp;uuml;r.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk270_11.gif" alt="" width="634" height="73" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Tahmin edileceği &amp;uuml;zere bu satır saklanan WF &amp;ouml;rneğine ait bilgileri &lt;strong&gt;serileştirerek&lt;/strong&gt; tutmaktadır. Bu nedenle &amp;ouml;zellikle WF i&amp;ccedil;erisinde kullanılan tiplerin, eğer &lt;strong&gt;SQL&lt;/strong&gt; &lt;strong&gt;Persistence&lt;/strong&gt; hizmeti kullanılıyorsa serileştirilebilir olmalarına dikkat etmek gerekmektedir. Bu durumu analiz etmek i&amp;ccedil;in &lt;strong&gt;Costflow&lt;/strong&gt; aktivitesine &lt;strong&gt;Customer&lt;/strong&gt; isimli tipten bir &amp;ouml;zellik eklenmiştir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Workflow.Activities;
+
+namespace WFCostFactory
+{
+    public enum WorkType
+    {
+        Consumer,
+        Corporate
+    }
+    public class Customer
+    {
+        public string Name { get; set; }
+        public int Id { get; set; }
+    }
+    public sealed partial class Costflow : SequentialWorkflowActivity
+    {
+        #region Workflow &amp;ouml;zellikleri(Properties)
+
+        // Dış ortamdan gelen parametreler
+        public int TotalDays { get; set; }
+        public decimal CostValue { get; set; } 
+        public WorkType WorkT { get; set; } // Dış ortama sonu&amp;ccedil; olarak d&amp;ouml;nd&amp;uuml;r&amp;uuml;len parametre
+        public Customer Owner { get; set; }
+
+        #endregion
+
+        public Costflow()
+        {
+            InitializeComponent();
+        }
+        // Diğer kod satırları&lt;/pre&gt;
+&lt;p&gt;Burada hemen bir noktayı vurgulamak isterim. S&amp;ouml;z konusu &amp;ouml;rnek bu haliyle &amp;ccedil;alıştırıldığında serileştirme ile ilişkili herhangibir hata mesajının alınmadığı g&amp;ouml;r&amp;uuml;lecektir. Bunun nedeni &lt;strong&gt;Customer&lt;/strong&gt; tipine ait nesne &amp;ouml;rneğinin WF i&amp;ccedil;erisinde kullanılmamış olmasıdır. Bu nedenle Workflow nesnesi host uygulamada &amp;ouml;rneklenirken aşağıdaki kod değişikliğini yapmamız &amp;ccedil;alışma zamanında serileştirme hatasını almamız i&amp;ccedil;in gerekli ve yeterlidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;WorkflowInstance instance = wfRuntime.CreateWorkflow(
+        typeof(WFCostFactory.Costflow)
+        , new Dictionary&amp;lt;string,object&amp;gt;
+        { 
+            {"TotalDays",20}
+            ,{"WorkT",WorkType.Corporate}
+            ,{"Owner",new Customer{ Id=1000, Name="Burak Selim Şenyurt"}}
+        }
+);&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rnek bu haliyle &amp;ccedil;alıştırıldığında aşağıdaki g&amp;ouml;r&amp;uuml;nt&amp;uuml; ile karşılaşılır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk270_12.gif" alt="" width="628" height="158" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere, &lt;strong&gt;WorkflowPersisted&lt;/strong&gt; olay metodunun hemen arkasından &lt;strong&gt;WorkflowTerminated&lt;/strong&gt; olayı tetiklenmiş ve oluşan &lt;strong&gt;istisna(Exception)&lt;/strong&gt; mesajı ekrana yazdırılmıştır. Bir başka deyişle &lt;strong&gt;Workflow&lt;/strong&gt; &amp;ouml;rneği tabloya yazdırılamamış ve istisna fırlatarak sonlanmıştır. İşte bu durumun sebebi &lt;strong&gt;Owner&lt;/strong&gt; isimli &lt;strong&gt;Customer&lt;/strong&gt; tipinin &lt;strong&gt;binary&lt;/strong&gt; formatta serileştirilebilir &lt;strong&gt;tanımlanmamasıdır&lt;/strong&gt;. Bu nedenle Customer tipinin &lt;strong&gt;Serializable&lt;/strong&gt; &lt;strong&gt;niteliği(Attribute)&lt;/strong&gt; ile aşağıdaki kod par&amp;ccedil;asında g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi işaretlenmesi gerekir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[Serializable]
+public class Customer
+{
+    public string Name { get; set; }
+    public int Id { get; set; }
+}&lt;/pre&gt;
+&lt;p&gt;Uygulama tekrar denendiğinde sorunsuz olarak &amp;ccedil;alıştığı hatta &lt;strong&gt;WF&lt;/strong&gt; &amp;ouml;rneği oluşturulurken parametre olarak verilen &lt;strong&gt;Customer&lt;/strong&gt; nesnesinin, &lt;strong&gt;WorkflowCompleted&lt;/strong&gt; olayında (tabloda saklanıp tekrar elde edilmesi ile birlikte) tedarik edilebildiği g&amp;ouml;r&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk270_14.gif" alt="" width="628" height="131" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;Workflow&lt;/strong&gt; &amp;ouml;rneklerinin, &amp;ccedil;alışma zamanında belirli koşulların sağlanması şartıyla bir depolama alanında saklanması ve sonradan tekrardan ayağa kaldırılıp y&amp;uuml;r&amp;uuml;t&amp;uuml;lmesi &lt;strong&gt;SQL Persistence Service &lt;/strong&gt;yardımıyla son derece kolay bir şekilde ger&amp;ccedil;ekleştirilebilmektedir. Elbetteki ger&amp;ccedil;ek hayat koşullarında &lt;strong&gt;SQL&lt;/strong&gt; dışı kaynakların kullanılmasıda istenebilir. Bu gibi vakalarda s&amp;ouml;z konusu hizmet i&amp;ccedil;in &amp;ouml;zel bir geliştirme yapılması gerekmektedir. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/makale/images/PersistenceInceleme.rar"&gt;&amp;Ouml;rneği İndirmek İ&amp;ccedil;in Tıklayın&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2009-03-06 12:00:00</pubDate>
+  <slug>SQL-Persistence-Hizmeti-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>workflow-foundation</tag>
+  </tags>
+  <categories>
+    <category>WF</category>
+  </categories>
+</post>

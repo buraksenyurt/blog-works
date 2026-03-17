@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Entity Framework - Entity Bölünmesi (Splitting)</title>
+  <description>Hız kesmeden Ado.Net Entity Framework ile ilişkili araştırmalarımızı paylaşmaya devam ediyoruz. Bu günkü yazımızda bir Entity tipinin, veritabanı tarafında birden fazla Tablo' yu işaret edebilmesi kabiliyetini incelemeye çalışacağız. Söz konusu duruma çok sık rastlanılmasa dahi, zaman zaman gereksinim duyulmaktadır. Konuyu daha kolay bir şekilde kavrayabilmek adına, yazıyı yazdığım tarih itibariyle sistemimde kurulu olan Adventure Works 2008 veritabanında yer alan ve aşağıdaki diagramda görülen tablolarımızın olduğunu varsayalım(Tabiki kendi sisteminizde yer alan örnek veritabanında benzer ilişikilere sahip başka tabloları da aynı teori içerisinde değerlendirebilirsiniz)</description>
+  <content>&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Hız kesmeden &lt;strong&gt;Ado.Net Entity Framework &lt;/strong&gt;ile ilişkili araştırmalarımızı paylaşmaya devam ediyoruz. Bu g&amp;uuml;nk&amp;uuml; yazımızda bir &lt;strong&gt;Entity&lt;/strong&gt; tipinin, veritabanı tarafında birden fazla &lt;strong&gt;Tablo' &lt;/strong&gt;yu işaret edebilmesi&amp;nbsp;kabiliyetini incelemeye &amp;ccedil;alışacağız. S&amp;ouml;z konusu duruma &amp;ccedil;ok sık rastlanılmasa dahi, zaman zaman gereksinim duyulmaktadır. Konuyu daha kolay bir şekilde kavrayabilmek adına, yazıyı yazdığım tarih itibariyle sistemimde&amp;nbsp;kurulu&amp;nbsp;olan&amp;nbsp;&lt;strong&gt;Adventure Works 2008 &lt;/strong&gt;veritabanında yer alan ve aşağıdaki diagramda g&amp;ouml;r&amp;uuml;len tablolarımızın olduğunu varsayalım&lt;em&gt;(Tabiki kendi sisteminizde yer alan &amp;ouml;rnek veritabanında benzer ilişikilere sahip başka tabloları da aynı teori i&amp;ccedil;erisinde değerlendirebilirsiniz)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f1%2fblg142_SqlDiagram.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Person, Password &lt;/strong&gt;ve &lt;strong&gt;BusinessEntity &lt;/strong&gt;tabloları arasındaki ilişkileri değerlendirdiğimizde, &lt;strong&gt;1 Person' a ait 1 Password&lt;/strong&gt; &lt;strong&gt;satırı&lt;/strong&gt; ve yine &lt;strong&gt;1 Person' a ait 1 BusinessEntity&lt;/strong&gt; satırı olabileceğini g&amp;ouml;rmekteyiz. Aslında bu tabloların tamamı tek bir &lt;strong&gt;Person&lt;/strong&gt; verisini ifade etmekte. Tabi veritabanı tarafında kavramsal olarak bu veri birden fazla tabloya&amp;nbsp;ayrıştırılmış durumda. &amp;Ccedil;ok doğal olarak kod tarafına ge&amp;ccedil;tiğimizde bu tabloların her biri i&amp;ccedil;in ayrı birer &lt;strong&gt;Entity &lt;/strong&gt;tipi &amp;uuml;retileceğine şahit olacağız. Aynen aşağıdaki &lt;strong&gt;Entity Model Diagram' &lt;/strong&gt;da g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f1%2fbkg142_EntityDiagram.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Tabi kod tarafında &lt;strong&gt;Person&lt;/strong&gt; i&amp;ccedil;eriğini değerlendirirken &lt;strong&gt;Password&lt;/strong&gt; veya &lt;strong&gt;BusinessEntity&lt;/strong&gt; i&amp;ccedil;eriklerine de kolay bir şekilde erişebilmek gibi bir amacımız varsa eğer, &lt;strong&gt;3 farklı Entity yerine 1 Entity&lt;/strong&gt; kullanmak daha avantajlı olabilir. &amp;Ouml;zellikle kodlama zamanında yazılan &lt;strong&gt;LINQ &lt;/strong&gt;sorgularında veya &lt;strong&gt;CRUD &lt;/strong&gt;işlemlerinde.&amp;nbsp;Peki bu 3 Entity' nin tek bir Entity olarak ele alınması i&amp;ccedil;in&amp;nbsp;ne yapmak gerekmektedir? Son derece basit.&amp;nbsp;&lt;strong&gt;Cut-Paste&lt;/strong&gt; &amp;ouml;zelliklerinden faydalanılmalıdır&lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;Bu anlamda, &lt;strong&gt;BusinessEntity&lt;/strong&gt; ve &lt;strong&gt;Password Entity&lt;/strong&gt; i&amp;ccedil;eriklerine baktığımızda bizim i&amp;ccedil;in gerekli olan alanları kesip &lt;strong&gt;Person Entity&lt;/strong&gt; tipi i&amp;ccedil;erisine yapıştırmamız yeterlidir. Ne yazık ki bu &amp;ouml;rnekte yer alan&amp;nbsp;&lt;strong&gt;BusinessEntity&lt;/strong&gt; tablosunun i&amp;ccedil;eriğinde &amp;ccedil;ok faydalı bilgiler bulunmamaktadır. Ama yinede konunun kavranabilmesi a&amp;ccedil;ısından&amp;nbsp;değerlendirilmiştir.&amp;nbsp;Bu işlemleri ger&amp;ccedil;ekleştirirken dikkat edilmesi gereken noktalaradan biriside, aynı isimli &lt;strong&gt;Property' &lt;/strong&gt;lerin kopyalanması sonrasında, son ek olarak &lt;strong&gt;_1&lt;/strong&gt; gibi sayısal bir isimlendirmenin s&amp;ouml;z konusu olmasıdır. Tabiki bu tip &amp;ouml;zellikleri tekrardan isimlendirmekte yarar vardır. Gerekli kesme ve yapıştırma işlemleri tamamlandıktan sonra Password ve BusinessEntity tipleri diagramdan silinebilir. Yine bu işlem sırasında dikkat edilmesi gereken bir noktada bize sorulan soruya No cevabını vermektir.&lt;em&gt;(Sorunun ne olduğunu s&amp;ouml;ylemeyeceğim, &amp;ouml;rneği yaparken g&amp;ouml;rmenizi istiyorum. &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;) &lt;/em&gt;Sonu&amp;ccedil; olarak diagramın yeni hali aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f1%2fblg142_NewType.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Yeterli mi? Elbette değil. &lt;strong&gt;Designer'&lt;/strong&gt; da yapmış olduğumuz taşıma işlemlerine rağmen, &lt;strong&gt;Mapping&amp;nbsp;Details&lt;/strong&gt;&amp;nbsp;i&amp;ccedil;eriğinde halen daha eksiklikler bulunmaktadır. Aşağıdaki şekilde bu durum net bir şekilde g&amp;ouml;r&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f1%2fblg142_FirstCase.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Eksik olan kısım şudur; kopyalanan &amp;ouml;zelliklerin hangi tablolardaki hangi alanları işaret ettiği belli değildir. Dolayısıyla &lt;strong&gt;Mapping Details&lt;/strong&gt; kısmında gerekli d&amp;uuml;zenlemeleri yaparak aşağıdaki şekilde g&amp;ouml;r&amp;uuml;len eşleştirmeleri tamamlamamız gerekir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f1%2fblg142_SecondCase.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Buna g&amp;ouml;re&lt;strong&gt; Person Entity&lt;/strong&gt; tipinin &lt;strong&gt;Person&lt;/strong&gt; tablosu dışında &lt;strong&gt;BusinessEntity&lt;/strong&gt; ve &lt;strong&gt;Password&lt;/strong&gt; tablolarını da işaret ettiği belirtilmiş olur. Gerekli &lt;strong&gt;Field-Property&lt;/strong&gt; eşleştirmeleri yapıldıktan sonra&lt;em&gt;(&amp;ouml;rneğin rowguid' in BusinessEntity_RowGuid ile eşleşmesi gibi)&lt;/em&gt; uygulama derlenip &amp;ouml;rnek bir kodun denenmesi i&amp;ccedil;in gerekli işlemlere başlanabilir. Bu ama&amp;ccedil;la &lt;strong&gt;Main&lt;/strong&gt; metodu i&amp;ccedil;erisinde aşağıdaki test kodunu yazdığımızı d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Splitting
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            using (AdventureWorks2008Entities entities = new AdventureWorks2008Entities())
+            {
+                var result = (from p in entities.People
+                             select new
+                             {
+                                 p.PersonType,
+                                 p.FirstName,
+                                 p.MiddleName,
+                                 p.LastName,
+                                 p.PasswordHash,
+                                 p.PasswordSalt,
+                                 p.BusinessEntity_rowguid,
+                                 p.Password_ModifiedDate
+                             }).Take(3);
+
+                foreach (var r in result)
+                {
+                    Console.WriteLine(r.ToString()+"\n");
+                }
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rneğimizde ilk 3 satıra ait alanlardan bazılarının &amp;ccedil;ekildiği &lt;strong&gt;isimsiz tip(Anonymous Type)&lt;/strong&gt; kullanımı s&amp;ouml;z konusudur. Dikkat edilmesi gereken nokta ise tek bir &lt;strong&gt;Entity&lt;/strong&gt; nesnesi &amp;uuml;zerinden, &lt;strong&gt;Person, Password &lt;/strong&gt;ve &lt;strong&gt;BusinessEntity &lt;/strong&gt;tablolarının ilgili alanlarına ulaşılabiliyor olmasıdır ki bu &lt;strong&gt;Splitting&lt;/strong&gt; &amp;ouml;zelliğinin bir sonucudur. Buna g&amp;ouml;re &amp;ouml;rneğimizin &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı aşağıadaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f1%2fblg142_Runtime.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu kabiliyetin uygulanışı sırasında en &amp;ccedil;ok dikkat edilmesi gereken nokta arka planda &amp;ccedil;alıştırılan &lt;strong&gt;SQL&lt;/strong&gt; sorgularıdır. Nitekim birden fazla Tablonun tek bir &lt;strong&gt;Entity&lt;/strong&gt; i&amp;ccedil;erisinde birleştirilmesi arka planda &lt;strong&gt;Inner Join&lt;/strong&gt; sorgularının atılmasına neden olacaktır. Yukarıdaki &amp;ouml;rneğin &amp;ccedil;alışma zamanı sırasında &lt;strong&gt;SQL&lt;/strong&gt; tarafında icra edilen sorgudan bu durum net bir şekilde g&amp;ouml;r&amp;uuml;lebilir.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;SELECT TOP (3) 
+[Extent1].[BusinessEntityID] AS [BusinessEntityID], 
+[Extent3].[PersonType] AS [PersonType], 
+[Extent3].[FirstName] AS [FirstName], 
+[Extent3].[MiddleName] AS [MiddleName], 
+[Extent3].[LastName] AS [LastName], 
+[Extent2].[PasswordHash] AS [PasswordHash], 
+[Extent2].[PasswordSalt] AS [PasswordSalt], 
+[Extent1].[rowguid] AS [rowguid], 
+[Extent2].[ModifiedDate] AS [ModifiedDate]
+FROM   [Person].[BusinessEntity] AS [Extent1]
+INNER JOIN [Person].[Password] AS [Extent2] ON [Extent1].[BusinessEntityID] = [Extent2].[BusinessEntityID]
+INNER JOIN [Person].[Person] AS [Extent3] ON [Extent1].[BusinessEntityID] = [Extent3].[BusinessEntityID]&lt;/pre&gt;
+&lt;p&gt;Dolayısıyla bu &amp;ccedil;alışma şekli dikkate alınarak ger&amp;ccedil;ekten gereksinim var ise &lt;strong&gt;Entity&lt;/strong&gt; birleştirmesi yolu tercih edilmelidir. &amp;Ouml;yleki &lt;strong&gt;Entity &lt;/strong&gt;tiplerinin&amp;nbsp;ayrık olarak kalmaları tercih edilebilir. S&amp;ouml;z gelimi geliştirdiğimiz &amp;ouml;rnekte &lt;strong&gt;BusinessEntity&lt;/strong&gt; tablosundan alınan alanların program kodu i&amp;ccedil;erisinde hi&amp;ccedil; bir yerde kullanılmadığı bir durumda, bu tablo alanlarının &lt;strong&gt;Person Entity&lt;/strong&gt; tipi i&amp;ccedil;erisine alınması anlamsızdır. Nitekim, performans a&amp;ccedil;ısından gereksiz &lt;strong&gt;Inner Join&lt;/strong&gt; sorgusu atılmasına neden olmaktadır.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Sonu&amp;ccedil; olarak &lt;strong&gt;Splitting&lt;/strong&gt;&amp;nbsp;&amp;ouml;zelliği yardımıyla bir &lt;strong&gt;Entity&lt;/strong&gt; i&amp;ccedil;erisinde yer alan &lt;strong&gt;&amp;ouml;zelliklerin(Property),&lt;/strong&gt; veritabanı tarafında birden fazla &lt;strong&gt;Tablo' nun alanlarına(Fields)&lt;/strong&gt; ait olması sağlanabilmektedir. B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2010%2f2%2fSplitting_RC.rar"&gt;Splitting_RC.rar (49,90 kb)&lt;/a&gt;&amp;nbsp;&lt;strong&gt;[&amp;Ouml;rnek Visual Studio 2010 Ultimate RC s&amp;uuml;r&amp;uuml;m&amp;uuml; &amp;uuml;zerinde geliştirilmiş ve test edilmiştir]&lt;/strong&gt;&lt;/p&gt;</content>
+  <pubDate>2010-04-04 20:15:00</pubDate>
+  <slug>Entity-Framework-Entity-Splitting</slug>
+  <tags>
+    <tag>adonet-entity-framework</tag>
+    <tag>entity</tag>
+  </tags>
+  <categories>
+    <category>Entity Framework</category>
+  </categories>
+</post>

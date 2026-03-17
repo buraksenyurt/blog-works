@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Instagram REST Servislerinin .Net Tarafında Basit Kullanımı</title>
+  <description>Neredeyse hepimizin sosyal ağ üzerinde hesapları bulunuyor. Facebook, Twitter, Instagram, Youtube, Flickr ve benzerlerini bunlara örnek olarak verebiliriz. Bu ağlar pek tabii kendi hizmetlerini geliştiricilerin kullanımına da uzun zamandır açmış durumdalar. Geliştirici olarak bizleri bu kısım daha çok ilgilendiriyor. Peki bu tip ağlar geliştiricilere kendi hizmetlerini nasıl sunuyorlar? Bunun en bilinen ve ortak yanı pek tabii ki servisler şeklinde yayınlanmaları. Burada kullanılacak olan servislerin istemci uygulamaların ne tipte olduğuna bakılmaksızın ortak bir standartta çalışması önemli. İşte bu noktada devreye REST(Representational State Transfer) yaklaşımını benimseyen servisler geliyor.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2016/05/UsingInstagram_3.gif" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Neredeyse hepimizin sosyal ağ &amp;uuml;zerinde hesapları bulunuyor. &lt;strong&gt;Facebook, Twitter, Instagram, Youtube, Flickr&lt;/strong&gt; ve benzerlerini bunlara &amp;ouml;rnek olarak verebiliriz. Bu ağlar pek tabii kendi hizmetlerini geliştiricilerin kullanımına da uzun zamandır a&amp;ccedil;mış durumdalar. Geliştirici olarak bizleri bu kısım daha &amp;ccedil;ok ilgilendiriyor.&lt;/p&gt;
+&lt;p&gt;Peki bu tip ağlar geliştiricilere kendi hizmetlerini nasıl sunuyorlar? Bunun en bilinen ve ortak yanı pek tabii ki servisler şeklinde yayınlanmaları. Burada kullanılacak olan servislerin istemci uygulamaların ne tipte olduğuna bakılmaksızın&amp;nbsp;ortak bir standartta &amp;ccedil;alışması &amp;ouml;nemli. İşte bu noktada devreye &lt;strong&gt;REST&lt;em&gt;(Representational State Transfer)&lt;/em&gt;&lt;/strong&gt; yaklaşımını benimseyen servisler geliyor. Neredeyse pek &amp;ccedil;ok sosyal ağın &lt;strong&gt;REST&lt;/strong&gt; tipinden hizmet veren &lt;strong&gt;Endpoint&lt;/strong&gt;' leri&amp;nbsp;mevcut. Bu sayede istemci teknolojilerinden tamamen bağımsız olarak dış d&amp;uuml;nyaya fonksiyonellikler sunulabilmekte. İşte bu yazımızda &lt;strong&gt;Instagram&lt;/strong&gt;' ın dışarıya sunduğu bu &lt;strong&gt;REST&lt;/strong&gt; servisleri nasıl kullanabileceğimizi basit bir Endpoint &amp;uuml;zerinden incelemeye &amp;ccedil;alışacağız. Amacımız Instagram hesabı ile giriş yapan bir kullanıcının eklediği son fotoğrafları web sayfası &amp;uuml;zerinde g&amp;ouml;sterbilmek.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Aslında Instagram API'sinin .Net d&amp;uuml;nyasında&amp;nbsp;daha&amp;nbsp;kolay kullanımını sağlayan NuGet paketleri de mevcut. Kod tarafında nesne odaklı modeli kullanmak &amp;ccedil;ok daha mantıklı. Ancak bizim amacımız REST taleplerini Instagram servislerine yaparken &amp;ccedil;alışma mimarisini de anlamaya &amp;ccedil;alışmak. Yazıyı bu şekilde değerlendirmenizi tavsiye ederim.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Dilerseniz hi&amp;ccedil; vakit kaybetmeden işlemlerimize başlayalım.&lt;/p&gt;
+&lt;h2&gt;Instagram'a Uygulamamızın Kayıt Edilmesi(Registration)&lt;/h2&gt;
+&lt;p&gt;&amp;Ouml;ncelikle Instagram' a gidip uygulamamız i&amp;ccedil;in bir &lt;strong&gt;kayıt işlemi&lt;em&gt;(Register)&lt;/em&gt;&lt;/strong&gt; ger&amp;ccedil;ekleştirmeli ve kullanıcı girişi sonrası y&amp;ouml;nlendirilecek olan sayfa&amp;nbsp;adresini bildirmeliyiz&lt;strong&gt;&lt;em&gt;(Redirect URL)&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/05/UsingInstagram_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu kayıt işleminde &amp;ouml;nemli olan bir ka&amp;ccedil; nokta var. &lt;strong&gt;Client ID&lt;/strong&gt;, &lt;strong&gt;Client Secret&lt;/strong&gt; ve &lt;strong&gt;Redirect URI&lt;/strong&gt; değerleri istemci uygulama tarafından&amp;nbsp;kullanılacak&amp;nbsp;değişkenler olacak. Geliştireceğimiz &amp;ouml;rnekte bu değerleri ele alarak&amp;nbsp;&lt;strong&gt;Instagram&lt;/strong&gt;' a erişim hakkı olan bir &lt;strong&gt;jeton&lt;em&gt;(Access Token)&lt;/em&gt;&lt;/strong&gt; elde edeceğiz. Bir başka deyişle uygulamanın &lt;strong&gt;REST&lt;/strong&gt; &lt;strong&gt;Endoint&lt;/strong&gt;' lerini kullanabilmesi i&amp;ccedil;in gerekli izni alacağız. &amp;Ouml;zellikle &lt;strong&gt;Redirect URI&lt;/strong&gt; değeri &amp;ouml;nemli. Nitekim&amp;nbsp;uygulamamız &amp;uuml;zerinden bir Login işlemi de ger&amp;ccedil;ekleştirilmekte. Bu Login işlemi sonrasında&amp;nbsp;geriye d&amp;ouml;n&amp;uuml;lecek olan &lt;strong&gt;URL&lt;/strong&gt; bilgisi, &lt;strong&gt;Instagram&lt;/strong&gt;' a kayıt edilen adres ile eş olmalı. Aksi durumda bir &lt;strong&gt;Authentication&lt;/strong&gt; hatası alırız.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Instagram API'sinin kullanımı ile ilişkili olduk&amp;ccedil;a detaylı bir dok&amp;uuml;man da mevcut. Plaftorm bağımsız olarak yazılmış dok&amp;uuml;manı inceleyerek kullanılabilecek &lt;a title="REST Endpoint' leri hakkında detaylı bilgiye" href="https://www.instagram.com/developer/endpoints/" target="_blank"&gt;REST Endpoint' leri hakkında detaylı bilgiye&lt;/a&gt; ulaşabilirsiniz.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;Uygulama Kodlarının Geliştirilmesi&lt;/h2&gt;
+&lt;p&gt;Şimdi gelin boş bir web uygulaması a&amp;ccedil;ıp i&amp;ccedil;erisine koyacağımız Default.aspx sayfasının kodlarını geliştirmeye başlayalım ve Instagram' a giriş yapan kişinin&lt;em&gt;(ki bu senaryoda ben oluyorum)&lt;/em&gt; paylaştığı son fotoğrafları ekrana&amp;nbsp;basalım.&lt;/p&gt;
+&lt;p&gt;Default.aspx.cs i&amp;ccedil;eriğimiz şu şekildedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Specialized;
+using System.Configuration;
+using System.Net;
+using System.Web.UI;
+
+namespace InstagramRESTHello
+{
+    public partial class Default : System.Web.UI.Page
+    {
+        static string code = string.Empty;
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!String.IsNullOrEmpty(Request["code"]) &amp;amp;&amp;amp; !Page.IsPostBack)
+            {
+                code = Request["code"].ToString();
+                GetUserIdAndAccessToken();
+            }
+        }
+
+        public void GetUserIdAndAccessToken()
+        {
+            NameValueCollection parameters = new NameValueCollection();
+            parameters.Add("client_id", ConfigurationManager.AppSettings["ClientID"].ToString());
+            parameters.Add("client_secret", ConfigurationManager.AppSettings["ClientSecret"].ToString());
+            parameters.Add("grant_type", "authorization_code");
+            parameters.Add("redirect_uri", ConfigurationManager.AppSettings["RedirectUri"].ToString());
+            parameters.Add("code", code);
+
+            WebClient client = new WebClient();
+            var result = client.UploadValues("https://api.instagram.com/oauth/access_token", "POST", parameters);
+            var response = System.Text.Encoding.Default.GetString(result);
+
+            var returnContent = (JObject)JsonConvert.DeserializeObject(response);
+            string accessToken = (string)returnContent["access_token"];
+            string id = returnContent["user"]["id"].ToString();
+
+            var script = string.Format("&amp;lt;script&amp;gt;var userId = \"{0}\"; var accessToken = \"{1}\";&amp;lt;/script&amp;gt;",
+                id,
+                accessToken
+                );
+            Page.ClientScript.RegisterStartupScript(this.GetType(), "GetToken",script);
+        }
+
+        protected void btnGetLastPhotos_Click(object sender, EventArgs e)
+        {
+            var clientId = ConfigurationManager.AppSettings["ClientID"];
+            var clientSecret = ConfigurationManager.AppSettings["ClientSecret"];
+            var redirectPage = ConfigurationManager.AppSettings["RedirectUri"];
+
+            var loginUrl = string.Format("https://api.instagram.com/oauth/authorize/?client_id={0}&amp;amp;redirect_uri={1}&amp;amp;response_type=code"
+                , clientId, redirectPage);
+
+            Response.Redirect(loginUrl);
+        }
+    }
+}&lt;/pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Instagram REST servisleri varsayılan olarak JSON formatından i&amp;ccedil;erik d&amp;ouml;nd&amp;uuml;rmektedir. Bu nedenle gelen cevapların ayrıştırılmasını kolaylaştırmak amacıyla Newtonsoft.JSON paketinden yararlanılmaktadır. Bu paketi y&amp;uuml;klemeyi unutmayalım. NuGet Console' dan y&amp;uuml;klemek i&amp;ccedil;in install-package Newtonsoft.Json yazmamız yeterlidir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Kodumuzda neler yaptığımızı kısaca anlatalım. &amp;Ouml;ncelikle uygulamamızın &lt;strong&gt;Instagram API&lt;/strong&gt;'sinden yararlanabilmesini sağlamak i&amp;ccedil;in izin almamız&amp;nbsp;gerekir. Bu izin i&amp;ccedil;in&amp;nbsp;&lt;a href="https://api.instagram.com/oauth/access_token"&gt;https://api.instagram.com/oauth/access_token&lt;/a&gt;&amp;nbsp;adresine &lt;strong&gt;HTTP&lt;/strong&gt;&amp;nbsp;&lt;strong&gt;POST&lt;/strong&gt;&amp;nbsp;tipinden bir paket g&amp;ouml;nderilir. &lt;strong&gt;Instagram&lt;/strong&gt;' a kayıt ettiğimiz uygulama ile ilgili bilgiler g&amp;ouml;nderilecek pakete&amp;nbsp;&lt;strong&gt;anahtar-değer&lt;em&gt;(key-value)&lt;/em&gt;&lt;/strong&gt; koleksiyonu şeklinde eklenir. &lt;strong&gt;client_id&lt;/strong&gt;, &lt;strong&gt;client_secret&lt;/strong&gt;, &lt;strong&gt;grant_type&lt;/strong&gt;, &lt;strong&gt;redirect_uri&lt;/strong&gt; ve &lt;strong&gt;code&lt;/strong&gt;. Eğer &lt;strong&gt;POST&lt;/strong&gt; işlemi sonucu başarılı ise gelen cevap &lt;strong&gt;JSON&lt;/strong&gt; formatında ters serileştirilerek &lt;strong&gt;access_token&lt;/strong&gt; ve &lt;strong&gt;id&lt;/strong&gt; bilgileri yakalanır. Bu bilgiler sayfaya &lt;strong&gt;register&lt;/strong&gt; edilecek bir &lt;strong&gt;Javascript&lt;/strong&gt; fonksiyonu i&amp;ccedil;in gereklidir. Nitekim &amp;ccedil;ekilen &lt;strong&gt;id&lt;/strong&gt; ve &lt;strong&gt;access_token&lt;/strong&gt; bilgisini &lt;strong&gt;jQuery&lt;/strong&gt; i&amp;ccedil;erisindeki &lt;strong&gt;REST&lt;/strong&gt; &amp;ccedil;ağrısında kullanacağız.&lt;/p&gt;
+&lt;p&gt;Gelelim Default.aspx i&amp;ccedil;eriğine.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="InstagramRESTHello.Default" %&amp;gt;
+&amp;lt;script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js" type="text/javascript"&amp;gt;&amp;lt;/script&amp;gt;
+
+&amp;lt;body&amp;gt;
+    &amp;lt;form id="form1" runat="server"&amp;gt;
+        &amp;lt;div&amp;gt;
+            &amp;lt;asp:Button ID="btnGetLastPhotos" Text="Son Fotoğrafları Getir" runat="server" OnClick="btnGetLastPhotos_Click" /&amp;gt;
+        &amp;lt;/div&amp;gt;
+        &amp;lt;div&amp;gt;
+            &amp;lt;h2&amp;gt;Son Fotoğraflarım&amp;lt;/h2&amp;gt;
+            &amp;lt;div id="PhotosDiv"&amp;gt;
+                &amp;lt;ul id="PhotosUL"&amp;gt;
+                &amp;lt;/ul&amp;gt;
+            &amp;lt;/div&amp;gt;
+        &amp;lt;/div&amp;gt;
+        &amp;lt;div style="clear: both;"&amp;gt;
+        &amp;lt;/div&amp;gt;
+        &amp;lt;script type="text/javascript"&amp;gt;
+            function GetLastPhotos() {
+                $("#PhotosUL").html("");
+                $.ajax({
+                    type: "GET",
+                    async: true,
+                    contentType: "application/json; charset=utf-8",
+                    url: 'https://api.instagram.com/v1/users/' + userId + '/media/recent?access_token=' + accessToken,                    
+                    dataType: "jsonp",
+                    cache: false,
+                    beforeSend: function () {
+                        $("#loading").show();
+                    },
+                    success: function (data) {
+                        $("#loading").hide();
+                        if (data == "") {
+                            $("#PhotosDiv").hide();
+                        } else {
+
+                            $("#PhotosDiv").show();
+                            for (var i = 0; i &amp;lt; data["data"].length; i++) {
+                                $("#PhotosUL").append("&amp;lt;li style='float:left;list-style:none;'&amp;gt;&amp;lt;a target='_blank' href='" + data.data[i].link + "'&amp;gt;&amp;lt;img src='" + data.data[i].images.thumbnail.url + "'&amp;gt;&amp;lt;/img&amp;gt;&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;");
+                            }
+                        }
+                    }
+                });
+            }
+            $(document).ready(function () {
+                GetLastPhotos();
+            });
+        &amp;lt;/script&amp;gt;
+    &amp;lt;/form&amp;gt;
+&amp;lt;/body&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Sayfada yer alan &lt;strong&gt;Son Fotoğrafları Getir&lt;/strong&gt;&amp;nbsp;başlıklı buton'a basıldığında aslında &amp;ouml;nceden &lt;strong&gt;login&lt;/strong&gt; olunmamışsa &lt;strong&gt;Instagram&lt;/strong&gt; &amp;uuml;zerinden bir giriş işlemi yaptırılır. Giriş işlemini takiben akış&amp;nbsp;tekrardan Default.aspx sayfasına y&amp;ouml;nlenir&lt;em&gt;(Instagram'a d&amp;ouml;n&amp;uuml;l&amp;uuml;rken nereye gidileceği bilgisini uygulamamızı register ederken s&amp;ouml;ylemiştik)&lt;/em&gt;&amp;nbsp;Eğer d&amp;ouml;n&amp;uuml;ş başarılı ise&lt;strong&gt;&amp;nbsp;GetLastPhotos&lt;/strong&gt; isimli javascript i&amp;ccedil;eriği devreye girer.&amp;nbsp;Bu fonksiyon i&amp;ccedil;erisinde&amp;nbsp;&lt;strong&gt;Instagram&lt;/strong&gt; &lt;strong&gt;REST&lt;/strong&gt; &lt;strong&gt;Endpoint&lt;/strong&gt;'lerine &lt;strong&gt;Ajax servis &amp;ccedil;ağrısı&lt;/strong&gt; ger&amp;ccedil;ekleştirilir. &lt;strong&gt;HTTP&amp;nbsp;GET&lt;/strong&gt; tipinden yapılan bu &amp;ccedil;ağrıda i&amp;ccedil;erik tipi&lt;em&gt;&lt;strong&gt;(content-type)&lt;/strong&gt;&lt;/em&gt;&amp;nbsp;&lt;strong&gt;JSON&lt;/strong&gt; olarak&amp;nbsp;bildirilir. Ayrıca asenkron tipte bir &amp;ccedil;ağrı yapılacağı da belirtilmiştir&lt;strong&gt;&lt;em&gt;(async:true)&lt;/em&gt;&lt;/strong&gt;. &lt;strong&gt;url&lt;/strong&gt; niteliğine verilen değerde ise talep edilen fonksiyonelliğe ait adres bilgisi yer alır. Tabii burada kullanılan &lt;strong&gt;userId&lt;/strong&gt; ve &lt;strong&gt;accessToken&lt;/strong&gt; değerlerinin, &lt;strong&gt;GetUserIdAndAccessToken&lt;/strong&gt; metodu i&amp;ccedil;erisinden verildiklerine dikkat edelim&lt;em&gt;(O script'i bu y&amp;uuml;zden sayfaya register ettik)&lt;/em&gt; Eğer işlemler başarılı bir şekilde ger&amp;ccedil;ekleşirse &lt;strong&gt;success&lt;/strong&gt; bloğundaki kod bloğu devreye girecek ve ilgili div s&amp;ouml;z konusu kullanıcının son fotoğrafları ile dolacaktır. &amp;Ouml;rneğin aşağıdaki gibi :)&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/05/UsingInstagram_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi son fotoğraflarımız geldi. Hatta i&amp;ccedil;lerinden istenilen bir tanesine&amp;nbsp;tıklayabilir ve &lt;strong&gt;Instagram&lt;/strong&gt; &amp;uuml;zerindeki ge&amp;ccedil;erli adresine gidebiliriz.&amp;nbsp;&lt;strong&gt;url&lt;/strong&gt; i&amp;ccedil;eriğini değiştirerek farklı talepleri de&amp;nbsp;test edebiliriz. &amp;Ouml;rneğin tag bazlı veya pop&amp;uuml;ler olan fotoğrafları, sizi takip eden kullanıcıları, sizin takip ettiklerinizi, belli bir fotoğrafı ya da video'yu beğenenleri vb...Kısacası &lt;strong&gt;Instagram&lt;/strong&gt; i&amp;ccedil;in yazılmış herhangibir uygulamanın yapabileceği pek &amp;ccedil;ok şeyi &lt;strong&gt;REST&lt;/strong&gt; &lt;strong&gt;Endpoint&lt;/strong&gt;'leri kullanarak&amp;nbsp;ger&amp;ccedil;ekleştirmeniz m&amp;uuml;mk&amp;uuml;n.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Bu &amp;ouml;rnekte bir &lt;strong&gt;Instagram REST Endpoint&lt;/strong&gt;'ini kullanarak&amp;nbsp;son 25 fotoğrafımızı web sayfası &amp;uuml;zerine nasıl basabileceğimizi g&amp;ouml;rd&amp;uuml;k. Dikkat edilmesi gereken nokta &amp;ccedil;alışma prensibi. &amp;Ouml;ncelikle Instagram'dan uygulamamız i&amp;ccedil;in izin aldık. Bu izin karşılığında bize verdiği jetonu ve kendisine uygulamamız &amp;uuml;zerinden giriş yaptığımızı kullanıcı bilgisine ele alarak sorgu işlemi ger&amp;ccedil;ekleştirdik. Elde ettiğimiz JSON i&amp;ccedil;eriklerini sayfa &amp;uuml;zerinde uygun bir şekilde kullandık ve vakamızı tamamladık. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Tekrar g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2016-05-04 06:00:00</pubDate>
+  <slug>instagram-rest-servislerinin-net-tarafinda-kullanimi</slug>
+  <tags>
+    <tag>instagram</tag>
+    <tag>rest-services</tag>
+    <tag>web-client</tag>
+    <tag>json</tag>
+    <tag>c#</tag>
+    <tag>jquery</tag>
+    <tag>javascript</tag>
+    <tag>endpoint-behavior</tag>
+    <tag>api</tag>
+    <tag>nuget</tag>
+  </tags>
+  <categories>
+    <category>REST</category>
+  </categories>
+</post>

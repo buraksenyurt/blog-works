@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Soap Bazlı WCF Servislerini REST Modeline Taşımak</title>
+  <description>.Net Framework 3.5 ile birlikte, WCF(Windows Communication Foundation) tarafına kazandırılan önemli yeteneklerden biriside Web programlama modelidir. Bu modelin getirileri arasında, WCF servislerinin REST(Representational State Transfer) tekniğine göre yazılıp, kullanılabilmesi de vardır. Özellikle SOAP(Simple Object Access Procotol) bazlı WCF Servisleri ile REST modeline göre tasarlanmış servisler arasındaki en büyük fark, HTTP metodunun çeşididir.</description>
+  <content>&lt;p&gt;&lt;strong&gt;.Net Framework 3.5&lt;/strong&gt; ile birlikte, &lt;strong&gt;&lt;a title="WCF" href="http://msdn.microsoft.com/en-us/netframework/aa663324.aspx" target="_blank"&gt;WCF(Windows Communication Foundation)&lt;/a&gt;&lt;/strong&gt;&amp;nbsp;tarafına kazandırılan &amp;ouml;nemli yeteneklerden biriside &lt;strong&gt;Web programlama&lt;/strong&gt; modelidir. Bu modelin getirileri arasında, WCF servislerinin &lt;strong&gt;REST&lt;/strong&gt;(&lt;a title="REST" href="http://en.wikipedia.org/wiki/Representational_State_Transfer" target="_blank"&gt;Representational State Transfer&lt;/a&gt;) tekniğine g&amp;ouml;re yazılıp, kullanılabilmesi de vardır. &amp;Ouml;zellikle &lt;strong&gt;SOAP(Simple Object Access Procotol)&lt;/strong&gt; bazlı WCF Servisleri ile &lt;strong&gt;REST&lt;/strong&gt; modeline g&amp;ouml;re tasarlanmış servisler arasındaki en b&amp;uuml;y&amp;uuml;k fark, &lt;strong&gt;HTTP&lt;/strong&gt; metodunun &amp;ccedil;eşididir.&lt;/p&gt;
+&lt;p&gt;SOAP bazlı modelde istemciler proxy' ler aracılığıyla HTTP protokol&amp;uuml;n&amp;uuml;n &lt;strong&gt;POST&lt;/strong&gt; metoduna g&amp;ouml;re isteklerini g&amp;ouml;nderirler. REST modeline g&amp;ouml;re tasarlanmış bir servise ise HTTP protokol&amp;uuml;n&amp;uuml;n &lt;strong&gt;GET&lt;/strong&gt; metoduna g&amp;ouml;re talepte bulunulmaktadır. URL bazlı &lt;strong&gt;Querystring&lt;/strong&gt; parametreleri ele alınabilir, &lt;strong&gt;URL Rewriting/URL Routing&lt;/strong&gt; tarzında taleplerin istenmesi sağlanabilir(İlerleyen bir yazımda nasıl ele alındığını g&amp;ouml;stereceğim). Bu yazımızda SOAP bazlı olarak tasarlanmış bir WCF servisinin, basit&amp;ccedil;e REST modeline nasıl taşınabileceğini incelemeye &amp;ccedil;alışacağız. &amp;Ouml;ncelikli olarak elimizde aşağıdaki kod par&amp;ccedil;alarında yer alan s&amp;ouml;zleşme&lt;strong&gt;(Service Contract)&lt;/strong&gt;&amp;nbsp;ve tiplere sahip bir &lt;strong&gt;WCF Service Application'&lt;/strong&gt; ımız olduğunu d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;p&gt;&lt;span style="text-decoration: underline;"&gt;&lt;strong&gt;Servis s&amp;ouml;zleşmemiz;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.ServiceModel;
+
+namespace NorthwindServices
+{    
+    [ServiceContract]
+    public interface IProductService
+    {
+        [OperationContract]
+        Product GetProduct(int id);
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Uygulayıcı tip;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace NorthwindServices
+{    
+    public class ProductService 
+        : IProductService
+    {
+        #region IProductService Members
+
+        public Product GetProduct(int id)
+        {
+            return new Product
+            {
+                 Id=id,
+                 Name="Bisiklet(Hemde Kırmızı)",
+                 ListPrice=10.45
+            };
+        }
+
+        #endregion
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Veri s&amp;ouml;zleşmeli tipi;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Runtime.Serialization;
+
+[DataContract]
+public class Product
+{
+    [DataMember]    
+    public int Id { get; set; }
+    [DataMember]
+    public string Name { get; set; }
+    [DataMember]
+    public double ListPrice { get; set; }
+}&lt;/pre&gt;
+&lt;p&gt;S&amp;ouml;z konusu servis SOAP bazlı tasarlandığı i&amp;ccedil;in web.config dosyasındaki system.serviceModel i&amp;ccedil;eriğide aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblog3_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu servis test edilmek istenirse eğer, yine 3.5 s&amp;uuml;r&amp;uuml;m&amp;uuml; ile birlikte gelen &lt;strong&gt;WcfTestClient&lt;/strong&gt; aracı kullanılabilir. Tabi, servisin &lt;strong&gt;IIS&lt;/strong&gt; veya &lt;strong&gt;Asp.Net Development Server&lt;/strong&gt; &amp;uuml;zerinden host ediliyor olması gerekmektedir. Aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde servisin ilgili GetProduct metodunun test edilişi g&amp;ouml;r&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblog3_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere istemci ve servis aralarında, &lt;strong&gt;SOAP zarflarını(SOAP Envelope)&lt;/strong&gt; kullanarak haberleşmektedir. Eğer &lt;strong&gt;Fiddler&lt;/strong&gt; gibi bir aracı kullanırsanız bu durumda &lt;strong&gt;HTTP Post&lt;/strong&gt; metoduna g&amp;ouml;re bir talepte bulunulduğunu g&amp;ouml;rebilirsiniz. Diğer tarafan istemcinin servisi kullanabilmesi i&amp;ccedil;in proxy&amp;nbsp;tipinede ihtiyacı vardır. Ancak REST modeli ele alındığında ve HTTP Get ile talepte bulunulduğunda arada&amp;nbsp;buna gerek&amp;nbsp;yoktur ki buda&amp;nbsp;her iki model arasındaki ikinci &amp;ouml;nemli fark olarak g&amp;ouml;r&amp;uuml;lebilir.&amp;nbsp;Şu anda yapmak istediğimiz s&amp;ouml;z konusu servisi &lt;strong&gt;REST&lt;/strong&gt; modeline taşımaktadır.&lt;/p&gt;
+&lt;p&gt;İlk olarak projeye&amp;nbsp;&lt;strong&gt;System.ServiceMode.Web&lt;/strong&gt; assembly' ının referans edilmesi gerekmektedir. İkinci adımda ise &lt;strong&gt;HTTP Get&lt;/strong&gt; metodu ile erişilmesi istenen operasyonların &lt;strong&gt;WebGet&lt;/strong&gt; &lt;strong&gt;niteliği(attribute)&lt;/strong&gt; ile imzalanması yeterli olacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.ServiceModel;
+using System.ServiceModel.Web;
+
+namespace NorthwindServices
+{    
+    [ServiceContract]
+    public interface IProductService
+    {
+        [OperationContract]        
+        [WebGet]
+        Product GetProduct(int id);
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu işlem ile GetProduct operasyonunun &lt;strong&gt;HTTP Get&lt;/strong&gt; metoduna g&amp;ouml;re &amp;ccedil;ağırlabileceği bildirilmektedir. Peki kime?&lt;/p&gt;
+&lt;p&gt;Bir nitelik s&amp;ouml;z konusu ise eğer, bunu &amp;ccedil;alışma zamanında ele alan bir yapının olması gerekmektedir. Bu senaryoda, WCF &amp;ccedil;alışma zamanı ortamının bu niteliği g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alarak, operasyona gelecek olan &amp;ccedil;ağrılarda HTTP Get metodunu&amp;nbsp;değerlendiriyor olması gerekir. Var olan &lt;strong&gt;ServiceHost&lt;/strong&gt; fabrikası bu işlemi yapmamaktadır. Bu sebepten servise ait Markup kodları i&amp;ccedil;erisinde aşağıdaki değişikliğin yapılması &amp;uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; adımdır.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;%@ ServiceHost Language="C#" Debug="true" Service="NorthwindServices.ProductService" CodeBehind="ProductService.svc.cs" Factory="System.ServiceModel.Activation.WebServiceHostFactory" %&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Buradaki en &amp;ouml;nemli değişiklik &lt;strong&gt;WebServiceHostFactory&lt;/strong&gt; fabrika tipinin kullnılıyor olmasıdır. Dolayısıyla artık ProductService.svc isimli hizmete&amp;nbsp;gelecek olan HTTP Get talepleri karşılanabilecektir. Buna g&amp;ouml;re &amp;Uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; adımdan sonra servis bir tarayıcı uygulama yardımıyla test edilebilir. Ancak bu durumda aşağıdaki g&amp;ouml;r&amp;uuml;nt&amp;uuml; ile karşılaşılması muhtemeldir.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblog3_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu son derece doğaldır. Nitekim halen &lt;strong&gt;web.config&lt;/strong&gt; dosyası i&amp;ccedil;erisinde service ile ilişkili ayarlar SOAP modeline g&amp;ouml;re durmaktadır.(&lt;strong&gt;BasicHttpBinding&lt;/strong&gt; kullandığımız hatırlayalım)&amp;nbsp;İki alternatif vardır. web.config i&amp;ccedil;eriğinde yer alan servis ilişkili bildirimler tamamen kaldırılabilir. Yada &lt;strong&gt;WebHttpBinding&lt;/strong&gt; bağlayıcı tipinin kullanılması tercih edilebilir. Ben web.config i&amp;ccedil;erisindeki &lt;strong&gt;system.ServiceModel&lt;/strong&gt; i&amp;ccedil;eriğini tamamen kaldırmayı tercih ettim. Buda bizim 4nc&amp;uuml; adımımız oldu. Peki bu adımdan sonra servisi tekrar denersek...&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblog3_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Sonu&amp;ccedil; yine h&amp;uuml;sran. &lt;img title="Cry" src="/editors/tiny_mce3/plugins/emotions/img/smiley-cry.gif" alt="Cry" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Aslında problem servisten nasıl istekte bulunacağımızı bilmiyor oluşum. Nitekim &lt;strong&gt;WebGet&lt;/strong&gt; niteliği ile imzalanmış olan&amp;nbsp;GetProduct operasyonuna HTTP Get modeline g&amp;ouml;re parametre ile birlikte talepte bulunmamız gerekiyor. Aynen aşağıdaki şekilde olduğu gibi.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblog3_5.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;/GetProduct?id=1001&lt;/strong&gt; ile g&amp;ouml;nderilen talep, başarılı bir şekilde servis tarafından ele alınmış ve geriye, Product nesne &amp;ouml;rneği i&amp;ccedil;in oluşturulan &lt;strong&gt;XML&lt;/strong&gt; i&amp;ccedil;eriği d&amp;ouml;nd&amp;uuml;r&amp;uuml;lm&amp;uuml;şt&amp;uuml;r.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;REST&lt;/strong&gt; modeli &amp;ouml;ylesine tutuldu ki &lt;strong&gt;WCF 4.0&lt;/strong&gt; i&amp;ccedil;erisinde zaten g&amp;ouml;m&amp;uuml;l&amp;uuml; olarak daha fazla eklenti ile birlikte gelecek. &lt;em&gt;(Ado.Net Data Service' leri bu modelin g&amp;uuml;zel bir a&amp;ccedil;ılımı olarak g&amp;ouml;rebiliriz aslında)&lt;/em&gt;&amp;nbsp;&amp;nbsp;Bu eklentileri bir s&amp;uuml;re &amp;ouml;nce &lt;strong&gt;CodePlex&lt;/strong&gt;' te yayımlanan &lt;a title="WCF Rest Starter Kit" href="http://aspnet.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=24644" target="_blank"&gt;WCF Rest Starter Kit &lt;/a&gt;yardımıyla&lt;strong&gt; Visual Studio 2008&lt;/strong&gt; ortamı &amp;uuml;zerinde test etmemiz ve geliştirmemizde m&amp;uuml;mk&amp;uuml;n. Hatta ge&amp;ccedil;tiğimiz Mart ayında bu geliştirme kitinin 2nci versiyonuda yayınladı. REST modeli ile ilişkili olaraktan yeni yazılar eklemeye devam ediyor olacağım. Hatta Rest modeli ile ilişkili iki g&amp;ouml;rsel dersimede aşağıdaki linklerden ulaşabilirsiniz.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Atom Feed Service&lt;/strong&gt; &amp;nbsp;&lt;a title="Atom Feed Service" href="http://www.nedirtv.com/video/WCF-REST-Bolum-1---Atom-Feed-Service.aspx" target="_blank"&gt;NedirTv?&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Read-Only Collection Service&lt;/strong&gt; &lt;a title="ReadOnly Collection Service" href="http://www.nedirtv.com/video/WCF-REST-Bolum-2---Readonly-Collection-Service.aspx" target="_blank"&gt;NedirTv?&lt;/a&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2009%2f4%2fNorthwindServices.rar"&gt;NorthwindServices.rar (16,34 kb)&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Artık dinlenmeye &amp;ccedil;ekilebilir miyim acaba ? &lt;img title="Cool" src="/editors/tiny_mce3/plugins/emotions/img/smiley-cool.gif" alt="Cool" border="0" /&gt;&lt;/p&gt;</content>
+  <pubDate>2009-04-17 17:19:00</pubDate>
+  <slug>Soap-Bazlı-WCF-Servislerini-REST-Modeline-Taşımak</slug>
+  <tags>
+    <tag>wcf</tag>
+    <tag>rest</tag>
+  </tags>
+  <categories>
+    <category>WCF</category>
+  </categories>
+</post>

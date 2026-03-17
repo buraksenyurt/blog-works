@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Task Süreçlerinde Bilinçli Olarak Duraksatma</title>
+  <description>Bu günkü konumuz Task nesne örneklerinin işlettikleri süreçleri bilinçli olarak nasıl bekletebileceğimiz ile ilgilidir. Pek çok sebepten dolayı Task örneklerinin çalıştırdıkları iş parçalarının belirli süreler boyunca veya süre bağımsız olarak bekletilmeleri istenebilir. Burada zaman bağımlı ya da koşul bağımlı olarak bekletmelerin/duraksatmaların yapılabilmesi söz konusudur. Genel olarak 3 farklı bekletme tekniğinden söz edebiliriz.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/blg206_Giris.jpg"&gt;&lt;img style="display: inline; margin-left: 0px; margin-right: 0px; border-width: 0px;" title="blg206_Giris" src="/pics/blg206_Giris_thumb.jpg" alt="blg206_Giris" width="304" height="228" align="right" border="0" /&gt;&lt;/a&gt; Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Pek &amp;ccedil;oğumuz hayatımızın &amp;ccedil;eşitli d&amp;ouml;nemlerinde ayakta veya oturarak bir şeyler i&amp;ccedil;in beklemek zorunda kalırız. Kimi zaman seyahat edeceğimiz yere gidecek aracı bekleriz. &amp;Ouml;zellikle u&amp;ccedil;ak seyahatleri gibi gecikmelerin sıklıkla yaşanabileceği durumlardan tutunda, İstanbul trafiğinin akşam saatlerindeki yoğunluğu y&amp;uuml;z&amp;uuml;nden yine belirsiz s&amp;uuml;re dolmuş beklenmesi gibi hallerle sıklıkla karşılaşılır.&lt;/p&gt;
+&lt;p&gt;Fakat bazı zamanlarda belirli s&amp;uuml;reli bekleyişler de s&amp;ouml;z konusu olabilir. &amp;Ouml;rneğin bir iş g&amp;ouml;r&amp;uuml;şmesinin saati bellidir ve gecikme durumları pek s&amp;ouml;z konusu olmamaktadır. Ya da bir metronun kalkış saati, hatta gideceği yere varış zamanı dahi sabittir. Dolayısıyla metroaya binmek i&amp;ccedil;in beklenen ve metro i&amp;ccedil;indeyken gidilecek yere kadar ge&amp;ccedil;en s&amp;uuml;reler genellikle standarttır. Ancak hangi durum olursa olsun, hayatımızda her zaman i&amp;ccedil;in beklemeler s&amp;ouml;z konusudur ve bunlar zaman zaman tekrar ederek bir yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml;n&amp;uuml;n oluşmasına neden olmaktadır.&lt;/p&gt;
+&lt;p&gt;Beklemeye neden bu kadar taktığımızı d&amp;uuml;ş&amp;uuml;nebilirsiniz. Aslında beklemeyi seven bir insan değilimdir. Metro&amp;rsquo; ların yaşam stili bana biraz daha uygundur diyebilirim. &amp;Ccedil;&amp;uuml;nk&amp;uuml; bekleme s&amp;uuml;releri sabittir ve buna g&amp;ouml;re planlama yapmak kolaydır. Ancak hayat her zaman bu kadar kolay planlama yapmayı olanaklı kılmayacak s&amp;uuml;rprizlerle doludur.&lt;/p&gt;
+&lt;p&gt;Bu g&amp;uuml;nk&amp;uuml; konumuz &lt;strong&gt;Task&lt;/strong&gt; nesne &amp;ouml;rneklerinin işlettikleri s&amp;uuml;re&amp;ccedil;leri bilin&amp;ccedil;li olarak nasıl bekletebileceğimiz ile ilgilidir. Pek &amp;ccedil;ok sebepten dolayı &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneklerinin &amp;ccedil;alıştırdıkları iş par&amp;ccedil;alarının belirli s&amp;uuml;reler boyunca veya s&amp;uuml;re bağımsız olarak bekletilmeleri istenebilir. Burada &lt;strong&gt;zaman bağımlı&lt;/strong&gt; ya da &lt;strong&gt;koşul bağımlı&lt;/strong&gt; olarak bekletmelerin/duraksatmaların yapılabilmesi s&amp;ouml;z konusudur. Genel olarak&lt;strong&gt; 3&lt;/strong&gt; farklı bekletme tekniğinden s&amp;ouml;z edebiliriz.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;CancellationToken&lt;/strong&gt; nesne &amp;ouml;rneği &amp;uuml;zerinden ulaşılan &lt;strong&gt;WaitOne&lt;/strong&gt; metodu ile&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Thread&lt;/strong&gt; sınıfının static &lt;strong&gt;Sleep&lt;/strong&gt; metodu ile&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Thread&lt;/strong&gt; sınıfının static &lt;strong&gt;SpinWait &lt;/strong&gt;metodu ile&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Şimdi bu farklı teknikleri &amp;ouml;rnekler yardımıyla incelemeye başlayalım.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;CancellationToken.WaitHandle.WaitOne Tekniği&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;WaitOne&lt;/strong&gt; metodu yardımıyla belirsiz s&amp;uuml;reli veya belirli s&amp;uuml;reli duraksatma işlemleri ger&amp;ccedil;ekleştirebiliriz. Konuyu daha net kavramak adına aşağıdaki &amp;ouml;rnek kod par&amp;ccedil;asını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım. Olduk&amp;ccedil;a tanıdık gelecek.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Collections.Generic; 
+using System.Linq; 
+using System.Threading; 
+using System.Threading.Tasks;
+
+namespace WaitingScenarios 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            IEnumerable&amp;lt;int&amp;gt; numbers = Enumerable.Range(0, 100000000);
+
+            CancellationTokenSource tokenSource = new CancellationTokenSource(); 
+            CancellationToken token = tokenSource.Token;
+
+            Task startedTask = Task.Factory.StartNew(() =&amp;gt; 
+            { 
+                for (int i = 0; i &amp;lt; numbers.Count(); i++) 
+                { 
+                    bool waitStatus=token.WaitHandle.WaitOne(); 
+                    if (waitStatus == true) 
+                        throw new OperationCanceledException(token); 
+                    else 
+                        Console.WriteLine("CancellationToken WaitOne Status = {0}",waitStatus); 
+                    i++; 
+                    i--; 
+                    i *= 2; 
+                    Console.Write("."); 
+                } 
+            } 
+            , token);
+
+            token.Register(() =&amp;gt; 
+            { 
+                Console.WriteLine("İşlem iptali"); 
+            } 
+            );
+
+            Console.WriteLine("İşlemler devam ediyor. İptal etmek i&amp;ccedil;in bir tuşa basınız."); 
+            Console.ReadLine();
+
+            tokenSource.Cancel();
+
+            Console.ReadLine(); 
+            Console.WriteLine("Task 1 Status = {0}", startedTask.Status);
+
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rnekte &lt;strong&gt;Task&lt;/strong&gt; bloğu i&amp;ccedil;erisinde yer alan &lt;strong&gt;for&lt;/strong&gt; d&amp;ouml;ng&amp;uuml;s&amp;uuml;n&amp;uuml;n ilk satırında belirsiz s&amp;uuml;reli bir duraksatma yapıldığı g&amp;ouml;r&amp;uuml;lmektedir. Nitekim &lt;strong&gt;WaitOne&lt;/strong&gt; metodu herhangibir s&amp;uuml;re parametresi almamıştır. Dolayısıyla şartlar uygun olduğunda &lt;strong&gt;Task&amp;rsquo;&lt;/strong&gt; in sonsuza kadar beklemesi de olasıdır.&lt;/p&gt;
+&lt;p&gt;Diğer yandan &lt;strong&gt;WaitOne&lt;/strong&gt; metodu &lt;strong&gt;bool&lt;/strong&gt; bir değer d&amp;ouml;nd&amp;uuml;rmektedir. Peki nasıl olucaktırda bu değer d&amp;ouml;necektir? Az &amp;ouml;nce belirsiz s&amp;uuml;reli bir bekletme yaptığımızdan bahsetmiştik. Cevap, iptal talebinin gelmesidir. &lt;strong&gt;CancellationTokenSource&lt;/strong&gt; nesne &amp;ouml;rneği &amp;uuml;zerinden gelen &lt;strong&gt;Cancel&lt;/strong&gt; &amp;ccedil;ağrısı, &lt;strong&gt;WaitOne&lt;/strong&gt; metodunun işleyişini kesmesi, bir başka deyişle geriye anında bool bir değer d&amp;ouml;nd&amp;uuml;rmesi ve kodun y&amp;uuml;r&amp;uuml;meye devam etmesi anlamına gelmektedir. B&amp;ouml;yle bir durumda &lt;strong&gt;WaitOne&lt;/strong&gt; metodu &lt;strong&gt;true&lt;/strong&gt; değer d&amp;ouml;nd&amp;uuml;recektir.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneği &amp;ccedil;alıştırdığımızda ve &amp;ouml;zellikle bir tuşa basarak işlemi iptal &lt;span style="text-decoration: underline;"&gt;etmediğimizde&lt;/span&gt;, &lt;strong&gt;Debug&lt;/strong&gt; modda &lt;strong&gt;Task &lt;/strong&gt;&amp;ouml;rneğinin anlık durumu aşağıdaki gibi g&amp;ouml;r&amp;uuml;lecektir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg206_WaitOneTest1Debug.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg206_WaitOneTest1Debug" src="/pics/blg206_WaitOneTest1Debug_thumb.gif" alt="blg206_WaitOneTest1Debug" width="496" height="99" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;Task&lt;/strong&gt; nesne &amp;ouml;rneğinin &lt;strong&gt;Status&lt;/strong&gt; değeri &lt;strong&gt;Waiting&lt;/strong&gt; olarak set edilmiştir. &amp;Ccedil;alışma zamanında tuşa basılarak işlemin iptal edilmesinin sonucunda ise, aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan durum ile karşılaşılacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg206_WaitOneTest1.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg206_WaitOneTest1" src="/pics/blg206_WaitOneTest1_thumb.gif" alt="blg206_WaitOneTest1" width="415" height="101" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneğinin &lt;strong&gt;Status&lt;/strong&gt; değeri &lt;strong&gt;Canceled&lt;/strong&gt; olarak değişmiştir.&lt;/p&gt;
+&lt;p&gt;Tabiki bu &amp;ouml;rnekte belirsiz s&amp;uuml;reli bir duraksatma işlemi ger&amp;ccedil;ekleştirilmiş ve i&amp;ccedil;inden &amp;ccedil;ıkılması i&amp;ccedil;in &lt;strong&gt;Cancel&lt;/strong&gt; &amp;ccedil;ağrısının yapılması şart olmuştur. Ancak &lt;strong&gt;WaitOne&lt;/strong&gt; metoduna istenildiğinde bekleme s&amp;uuml;resi, &lt;strong&gt;milisaniye&lt;/strong&gt; cinsinden de verilebilir. &amp;Ouml;rnek kodumuzda &lt;strong&gt;3000&lt;/strong&gt; milisaniyelik(yani 3 saniyelik) bir duraksatma yaptırmak istediğimizi d&amp;uuml;ş&amp;uuml;nelim. Bu durumda &lt;strong&gt;WaitOne&lt;/strong&gt; metodunu aşağıdaki gibi kullanmamız yeterlidir.&lt;/p&gt;
+&lt;p&gt;bool waitStatus=token&lt;strong&gt;.WaitHandle.WaitOne(3000);&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Bu durumda &amp;ouml;rneğin &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı aşağıdakine benzer olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg206_WaitOneTest3.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg206_WaitOneTest3" src="/pics/blg206_WaitOneTest3_thumb.gif" alt="blg206_WaitOneTest3" width="425" height="138" border="0" /&gt;&lt;/a&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/Exclamation.gif"&gt;&lt;img style="display: inline; margin-left: 0px; margin-right: 0px; border-width: 0px;" title="Exclamation" src="/pics/Exclamation_thumb.gif" alt="Exclamation" width="48" height="48" align="left" border="0" /&gt;&lt;/a&gt;Farketmişsinizdir&amp;hellip;3 saniyelik bir duraksatma yapmamıza rağmen ekrana yazılan bilgiler +2 saniye daha ge&amp;ccedil; gelmektedir. Burada ş&amp;uuml;pheli şahıs değer aralığıdır. Nitekim &lt;strong&gt;Enumberable&lt;/strong&gt; ile &amp;uuml;retilen aralığın k&amp;uuml;&amp;ccedil;&amp;uuml;lt&amp;uuml;lmesi(&amp;ouml;rneğin 10000&amp;rsquo; e &amp;ccedil;ekilmesi) halinde s&amp;uuml;reler beklendiği gibi &amp;ccedil;ıkmaktadır. Yani +2 lik kayıp olmamaktadır.&lt;/p&gt;
+&lt;p&gt;Sonu&amp;ccedil; itibariyle belirli s&amp;uuml;reliğine &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneğinin işleyişinin duraksatılması ger&amp;ccedil;ekleştirilmiştir. Bu s&amp;uuml;reli &amp;ccedil;alışmalarda &lt;strong&gt;milisaniye&lt;/strong&gt; olarak belirtilen periyodun her tamamlanışında, kod bir sonraki satırdan devam etmekte ve &lt;strong&gt;CancellationTokenSource&lt;/strong&gt; nesne &amp;ouml;rneğinin &lt;strong&gt;WaitOne&lt;/strong&gt; metodu &lt;strong&gt;false&lt;/strong&gt; değeri anında ortama d&amp;ouml;nd&amp;uuml;rmektedir. Tahmin edileceği &amp;uuml;zere bu değerin &lt;strong&gt;true&lt;/strong&gt; olmasının &lt;strong&gt;Task&lt;/strong&gt; işleyişinin iptal edilmesi gerekmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Thread.Sleep Metodunun Kullanılması&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Task Parallel Library&lt;/strong&gt; var olmadan &amp;ouml;nce, &lt;strong&gt;&amp;Ccedil;ok Kanallı(Multi Thread) &lt;/strong&gt;uygulamaların geliştirilmesinde en &amp;ccedil;ok haşır neşir olduğumuz tip sanıyorum ki &lt;strong&gt;Thread&lt;/strong&gt; sınıfıdır. &amp;Ouml;zellikle beliri durumlarda, &amp;ccedil;alışmakta olan bir &lt;strong&gt;Thread &lt;/strong&gt;&amp;ouml;rneğini duraksatmak istediğimizde, &lt;strong&gt;static Sleep &lt;/strong&gt;metodundan yararlanabiliriz. &lt;strong&gt;Sleep&lt;/strong&gt; metodu &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneklerinin duraksatılması i&amp;ccedil;inde kullanılabilir. Bu son derece doğaldır nitekim &lt;strong&gt;TPL&lt;/strong&gt; zaten var olan &lt;strong&gt;Thread&lt;/strong&gt; sistemi &amp;uuml;zerine kurulumuş bir alt yapıdır. İşte &amp;ouml;rnek kod par&amp;ccedil;amız.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Collections.Generic; 
+using System.Linq; 
+using System.Threading; 
+using System.Threading.Tasks;
+
+namespace WaitingScenarios 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            IEnumerable&amp;lt;int&amp;gt; numbers = Enumerable.Range(0, 10000);
+
+            CancellationTokenSource tokenSource = new CancellationTokenSource(); 
+            CancellationToken token = tokenSource.Token;
+
+            Task startedTask = Task.Factory.StartNew(() =&amp;gt; 
+            { 
+                for (int i = 0; i &amp;lt; numbers.Count(); i++) 
+                { 
+                   Thread.Sleep(8000);                    
+                    i++; 
+                    i--; 
+                    i *= 2; 
+                    Console.WriteLine("Time : {0}...",DateTime.Now.ToLongTimeString()); 
+                    token.ThrowIfCancellationRequested(); 
+                } 
+            } 
+            , token);
+
+            token.Register(() =&amp;gt; 
+            { 
+                Console.WriteLine("Time : {0} , İşlem iptali",DateTime.Now.ToLongTimeString()); 
+            } 
+            );
+
+            Console.WriteLine("İşlemler devam ediyor. İptal etmek i&amp;ccedil;in bir tuşa basınız."); 
+            Console.ReadLine();
+
+            tokenSource.Cancel();
+
+            Console.ReadLine(); 
+            Console.WriteLine("Time : {0} , Task 1 Status = {1}", DateTime.Now.ToLongTimeString(),startedTask.Status); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rnekte 8 saniyelik bir duraksatma işlemi s&amp;ouml;z konusudur. Burada anlaşılması g&amp;uuml;&amp;ccedil; bir durum yoktur ancak &amp;ccedil;alışma zamanında dikkat edilmesi gereken bir nokta vardır. İlk testimizin sonu&amp;ccedil;ları aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg206_ThreadSleepTest.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg206_ThreadSleepTest" src="/pics/blg206_ThreadSleepTest_thumb.gif" alt="blg206_ThreadSleepTest" width="415" height="144" border="0" /&gt;&lt;/a&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Şimdi ikinci teste ait ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;n&amp;uuml; de yazımıza ekleyelim ve iki şekil arasındaki 9 farkı bulmaya &amp;ccedil;alışalım.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg206_ThreadSleepTest2.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg206_ThreadSleepTest2" src="/pics/blg206_ThreadSleepTest2_thumb.gif" alt="blg206_ThreadSleepTest2" width="414" height="151" border="0" /&gt;&lt;/a&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;İlk &amp;ccedil;alışma da işleyişi sonlandırmak i&amp;ccedil;in kullanıcı tuşa bastığında bir &lt;strong&gt;Cancel&lt;/strong&gt; talebi &amp;uuml;retilmektedir. &lt;strong&gt;Cancel&lt;/strong&gt; talebi &lt;strong&gt;7nci saniye&lt;/strong&gt; de gelmiş ve kullanıcı tekrardan tuşa &lt;strong&gt;10ncu saniye&lt;/strong&gt; de basarak uygulamayı sonlandırmıştır. Ne varki &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneğinin &lt;strong&gt;Status&lt;/strong&gt; değeri &lt;strong&gt;Running&lt;/strong&gt; olarak set edilmiştir. Yani halen &amp;ccedil;alışıyor olduğu bildirilmektedir. Bunun sebebi, &lt;strong&gt;Task&lt;/strong&gt; i&amp;ccedil;in &lt;strong&gt;Cancel&lt;/strong&gt; &amp;ccedil;ağrısı yapılmış olsa bile, &lt;strong&gt;Thread&lt;/strong&gt; tipinin &lt;strong&gt;static&lt;/strong&gt; &lt;strong&gt;Sleep&lt;/strong&gt; metodunun belirttiği bekleme s&amp;uuml;resinin dolmamış olmasıdır. Ancak bu s&amp;uuml;re dolduktan sonra &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneğinin &lt;strong&gt;Status&lt;/strong&gt; değerinin &lt;strong&gt;Canceled&lt;/strong&gt; olduğu g&amp;ouml;r&amp;uuml;lebilir. Bu da &lt;strong&gt;CancellationToken&lt;/strong&gt; &amp;uuml;zerinden ele alınan &lt;strong&gt;WaitOne&lt;/strong&gt; metodu ile&lt;strong&gt; Thread.Sleep&lt;/strong&gt; arasındaki en &amp;ouml;nemli farktır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Thread.SpinWait Metodunun Kullanımı&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Bu teknikte CPU&amp;rsquo; nun &amp;ccedil;alıştıracağı ve duraksatma işlemi i&amp;ccedil;in gerekli d&amp;ouml;ng&amp;uuml; sayısı belirtilir. İşlemci aslında kendi i&amp;ccedil;erisinde &amp;ccedil;ok hafif bir d&amp;ouml;ng&amp;uuml;y&amp;uuml; kullanarak duraksatma işlemini ger&amp;ccedil;ekleştirmektedir. Bu nedenle işlemcinin durumu, anlık yoğunluğu gibi kriterler bekleme s&amp;uuml;relerinin belirlenmesinde &amp;ouml;nemli rol oynamaktadır. Gelin &amp;ouml;rnek kod par&amp;ccedil;amızı değerlendirerek konuyu anlamaya &amp;ccedil;alışalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Collections.Generic; 
+using System.Linq; 
+using System.Threading; 
+using System.Threading.Tasks;
+
+namespace WaitingScenarios 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            IEnumerable&amp;lt;int&amp;gt; numbers = Enumerable.Range(0, 100000000);
+
+            CancellationTokenSource tokenSource = new CancellationTokenSource(); 
+            CancellationToken token = tokenSource.Token;
+
+            Task startedTask = Task.Factory.StartNew(() =&amp;gt; 
+            { 
+                for (int i = 0; i &amp;lt; numbers.Count(); i++) 
+                { 
+                    Thread.SpinWait(50000000); 
+                    i++; 
+                    i--; 
+                    i *= 2; 
+                    Console.WriteLine("Time : {0}...", DateTime.Now.ToLongTimeString()); 
+                    token.ThrowIfCancellationRequested(); 
+                } 
+            } 
+            , token);
+
+            token.Register(() =&amp;gt; 
+            { 
+                Console.WriteLine("Time : {0} , İşlem iptali", DateTime.Now.ToLongTimeString()); 
+            } 
+            );
+
+            Console.WriteLine("İşlemler devam ediyor. İptal etmek i&amp;ccedil;in bir tuşa basınız."); 
+            Console.ReadLine();
+
+            tokenSource.Cancel();
+
+            Console.ReadLine(); 
+            Console.WriteLine("Time : {0} , Task 1 Status = {1}", DateTime.Now.ToLongTimeString(), startedTask.Status); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;SpinWait&lt;/strong&gt; metoduna verilen &lt;strong&gt;50milyon&lt;/strong&gt; değeri tahmin edeceğiniz &amp;uuml;zere s&amp;uuml;reyi değil iterasyon sayısını belirtmektedir. Buna g&amp;ouml;re işlemcinin 50 milyon kere, hafif bir d&amp;ouml;ng&amp;uuml;y&amp;uuml; &amp;ccedil;alıştırarak o anki &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneğinin işleyişini duraksatacağı belirtilmektedir. Kendi sistemimde s&amp;ouml;z konusu &amp;ouml;rnek kodun &amp;ccedil;alışma zamanı sonu&amp;ccedil;ları aşağıdaki gibi ger&amp;ccedil;ekleşmiştir. Ancak bu durum farklı sistemlerde farklı sonu&amp;ccedil;lar verebilir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg206_SpinWaitTest1.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg206_SpinWaitTest1" src="/pics/blg206_SpinWaitTest1_thumb.gif" alt="blg206_SpinWaitTest1" width="416" height="166" border="0" /&gt;&lt;/a&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi sabit bir bekleme s&amp;uuml;resi s&amp;ouml;z konusu olmamıştır. Bazen 3 saniye bazen 2 saniye ve bazende 4 saniyelik bir duraksama olduğu g&amp;ouml;r&amp;uuml;lmektedir. Yine doğal olarak bu bekleme s&amp;uuml;recinden &amp;ccedil;ıkılması i&amp;ccedil;in iptal talebinin yapılması veya t&amp;uuml;m işleyişin sona ermesinin beklenmesi yeterlidir.&lt;/p&gt;
+&lt;p&gt;Bu yazımızda &lt;strong&gt;Task&lt;/strong&gt; işleyişlerinin duraksatılması i&amp;ccedil;in kullanabileceğimiz teknikleri incelemeye &amp;ccedil;alıştık. Bir sonraki yazımızda duraksatma işlemleri i&amp;ccedil;in kullanılabilecek diğer teknikleri de &amp;ouml;ğrenmeye &amp;ccedil;alışıyor olacağız. B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2010%2f6%2fWaitingScenarios.rar"&gt;WaitingScenarios.rar (23,76 kb)&lt;/a&gt;&lt;strong&gt;&amp;nbsp;[&amp;Ouml;rnek Visual Studio 2010 Ultimate s&amp;uuml;r&amp;uuml;m&amp;uuml; &amp;uuml;zerinde geliştirilmiş ve test edilmiştir]&lt;/strong&gt;&lt;/p&gt;</content>
+  <pubDate>2010-12-31 13:20:00</pubDate>
+  <slug>Task-Sureclerinde-Bilincli-Olarak-Duraksatma</slug>
+  <tags>
+    <tag>task-parallel-library</tag>
+    <tag>c#-40</tag>
+    <tag>net-framework-40</tag>
+    <tag>parallel-programming</tag>
+    <tag>thread</tag>
+    <tag>task-cancellation</tag>
+  </tags>
+  <categories>
+    <category>Parallel Programming</category>
+  </categories>
+</post>

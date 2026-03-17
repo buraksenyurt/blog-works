@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Windows Uygulamalarında Daha Kolay Thread Yönetimi</title>
+  <description>Windows uygulamalarında, arka planda çalışan iş parçalarının (process) çok uzun sürdüğü durumlar ile sıkça karşılaşırız. Bu gibi durumlarda genellikle kullanıcı ekranı (UI - User Interface) kısa süreliğine de olsa arka plan işlemleri tamamlanıncaya kadar donar. Bunun önüne geçmek için Thread sınıflarını kullanabiliriz. Ancak .Net 2.0 ile birlikte windows uygulamalarında arka planda asenkron olarak çalıştırılabilecek tipteki işlemleri kolayca yönetebileceğimiz BackgroundWorker isimli yeni bir görsel bileşen gelmektedir. Bu makalemizde bu bileşen yardımıyla, UI kitlenmelerine neden olacak tarzdaki süreçleri nasıl yönetebileceğimizi görmeye çalışacağız.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Windows uygulamalarında, arka planda &amp;ccedil;alışan iş par&amp;ccedil;alarının (process) &amp;ccedil;ok uzun s&amp;uuml;rd&amp;uuml;ğ&amp;uuml; durumlar ile sık&amp;ccedil;a karşılaşırız. Bu gibi durumlarda genellikle kullanıcı ekranı (UI - User Interface) kısa s&amp;uuml;reliğine de olsa arka plan işlemleri tamamlanıncaya kadar donar. Bunun &amp;ouml;n&amp;uuml;ne ge&amp;ccedil;mek i&amp;ccedil;in Thread sınıflarını kullanabiliriz. Ancak .Net 2.0 ile birlikte windows uygulamalarında arka planda asenkron olarak &amp;ccedil;alıştırılabilecek tipteki işlemleri kolayca y&amp;ouml;netebileceğimiz &lt;strong&gt;BackgroundWorker&lt;/strong&gt; isimli yeni bir g&amp;ouml;rsel bileşen gelmektedir. Bu makalemizde bu bileşen yardımıyla, UI kitlenmelerine neden olacak tarzdaki s&amp;uuml;re&amp;ccedil;leri nasıl y&amp;ouml;netebileceğimizi g&amp;ouml;rmeye &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;BackgroundWorker bileşeni &amp;ccedil;alışma zamanında, asenkron olarak işlem y&amp;uuml;r&amp;uuml;tebilmemizi ve bu sayede kullanıcı ekranının gereksiz şekilde donmasını (freeze) engellemek amacıyla kolay ve g&amp;uuml;&amp;ccedil;l&amp;uuml; bir s&amp;uuml;re&amp;ccedil; y&amp;ouml;netimi sunar.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Herşeyden &amp;ouml;nce, bir windows uygulamasında &amp;ouml;zellikle kullanıcı aray&amp;uuml;z&amp;uuml;n&amp;uuml; (user interface) uzun s&amp;uuml;re duraksatabilecek,&amp;nbsp; bir başka deyişle kullanıcının arabirim &amp;uuml;zerindeki herhangibir kontrol ile etkileşimini ge&amp;ccedil;ici s&amp;uuml;re engelleyebilecek durumların neler olabileceğini d&amp;uuml;ş&amp;uuml;nmekte fayda vardır. Duraksatmaya neden olacak &amp;ouml;rnek durumlar aşağıdaki tabloda verilmiştir.&lt;/p&gt;
+&lt;table id="table8" style="border-collapse: collapse; width: 404px;" border="1" cellspacing="0" cellpadding="5" bgcolor="#ffffff"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="width: 392px;" width="392"&gt;&lt;strong&gt; Ekran Donmalarına Neden Olabilecek Durumlar&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="392"&gt;Yoğun veritabanı işlemleri. &amp;Ouml;rneğin CRUD işlemleri sırasında.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="392"&gt;Dosyalara ilişkin download ve upload işlemlerinde.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="392"&gt;Web servislerine ait metodların y&amp;uuml;r&amp;uuml;t&amp;uuml;lmesinde.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="392"&gt;Resim dosyalarının uygulama ortamına y&amp;uuml;klenmesinde.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;BackgroundWorker bileşeni, ilgili iş par&amp;ccedil;asını asenkron olarak y&amp;uuml;r&amp;uuml;tebilme ve anlık olarak durum bilgisini verebilme (progress status) gibi imkanlar sunmaktadır. Bu nesneye ait 3 &amp;ouml;nemli olay bulunmaktadır. Bunlar &lt;strong&gt;DoWork&lt;/strong&gt;, &lt;strong&gt;ProgressChanged&lt;/strong&gt;, &lt;strong&gt;RunWorkerCompleted&lt;/strong&gt; olaylarıdır. DoWork olayı, asenkron olarak y&amp;uuml;r&amp;uuml;t&amp;uuml;lecek kodların yer aldığı işlemleri ele alır. Asenkron olarak y&amp;uuml;r&amp;uuml;t&amp;uuml;len işlemler &amp;ccedil;alışmaya devam ederken, kullanıcı aray&amp;uuml;z&amp;uuml;(UI) herhangibir şekilde donmaz ve kullanıcı aktivitelerine cevap vermeye devam eder. Y&amp;uuml;r&amp;uuml;t&amp;uuml;len iş par&amp;ccedil;ası sonlandığında ise, RunWorkerCompleted olayı tetiklenir. Bunu, asenkron olarak y&amp;uuml;r&amp;uuml;t&amp;uuml;len s&amp;uuml;re&amp;ccedil; sonlandığında devreye giren callback metodu olarakta d&amp;uuml;ş&amp;uuml;nebilirsiniz. RunWorkerCompleted metodu sadece işlemler tamamlandığında değil, iptal edildiğinde (cancel) veya bir exception sonucu işlemler kesildiğinde de devreye girer. ProgressChanged olayı ise, asenkron olarak y&amp;uuml;r&amp;uuml;t&amp;uuml;len iş par&amp;ccedil;asının anlık durumunu bildirmek amacıyla kullanılabilir.&lt;/p&gt;
+&lt;p&gt;BackgrounWorker bileşeninin en &amp;ouml;nemli metodu &lt;strong&gt;RunWorkerAsync&lt;/strong&gt;' dir. Bu metod, DoWork olayını tetikleyerek, asenkron olarak y&amp;uuml;r&amp;uuml;t&amp;uuml;lmek istenen komutların devreye girmesini sağlamak gibi &amp;ouml;nemli bir rolu &amp;uuml;stlenir. Dilersek RunWorkerAsync metodundan, DoWork olay metoduna ortam parametresi taşıyabiliriz. Bu &amp;ouml;nemlidir &amp;ccedil;&amp;uuml;nk&amp;uuml; &amp;ccedil;oğu zaman, asenkron y&amp;uuml;r&amp;uuml;t&amp;uuml;lecek iş par&amp;ccedil;alarına ait kodlar, dış parametreler bağımlıdır. Benzer şekikde DoWork olayından da işlemler bittiğinde tetiklenen RunWorkerCompleted olayına parametre aktarımını yapabiliriz. (&amp;Ouml;rneğin s&amp;uuml;re&amp;ccedil; sona erdiğinde elde edilen sonu&amp;ccedil;ların aktarılması gibi.)&lt;/p&gt;
+&lt;p&gt;Bileşenin kullanımını daha kolay anlayabilmek i&amp;ccedil;in basit bir &amp;ouml;rnek &amp;uuml;zerinden makalemize devam edeceğiz. Bir windows uygulamamız olduğunu ve arka planda son derece uzun s&amp;uuml;rebilecek bir operasyonu ger&amp;ccedil;ekleştirmeye &amp;ccedil;alıştığımızı d&amp;uuml;ş&amp;uuml;nelim. &amp;Ouml;rneğin matematiksel bir uygulamada 1' den 1000' e kadar olan elemanların karelerinin toplamına ihtiyacımız olduğunu d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;Ouml;zellikle Asenkron olarak y&amp;uuml;r&amp;uuml;t&amp;uuml;lecek bir veya daha fazla sql komutunun s&amp;ouml;z konusu olduğu veritabanı operasyonlarında bir windows uygulaması kullanılıyor ise, BackgroundWorker bileşeni yerine, asenkron komut y&amp;uuml;r&amp;uuml;tme tekniklerinin (polling, callback, wait modelleri) ele alınması tercih edilmelidir. Nitekim BackgroundWorker nesne &amp;ouml;rnekleri ile, sql komutlarının asenkron y&amp;ouml;netimi sanıldığı kadar kolay değildir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Konuyu en basit haliyle anlamak i&amp;ccedil;in aşağıdaki &amp;ouml;rneği geliştirelim. Windows uygulamamız aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ne sahip olan tek bir Form' dan oluşmaktadır. Hesapla başlıklı butona basıldığında, 1' den 1000' e kadar olan sayıların karelerinin toplamının bulunduğu s&amp;uuml;re&amp;ccedil;, arka planda &amp;ccedil;alıştırılmaktadır. İptal başlıklı button kontrol&amp;uuml;m&amp;uuml;z ise, &amp;ccedil;alışmakta olan arka plan işlemini iptal etmek i&amp;ccedil;in kullanılır. Uygulamamızda bir adet TextBox ve ProgressBar kontrol&amp;uuml;m&amp;uuml;z yer alıyor. Bu kontrollerden TextBox kontrol&amp;uuml;m&amp;uuml;z&amp;uuml;, işlemler hesap edilirken kullanıcının ekran ile etkileşebildiğini g&amp;ouml;stermek amacıyla kullanmaktayız. ProgressBar kontrol&amp;uuml;m&amp;uuml;z&amp;uuml; ise, arka planda yapılan hesaplamanın hangi konumda olduğunu y&amp;uuml;zdesel olmamakla birlikte vurgulamaya &amp;ccedil;alışmak i&amp;ccedil;in kullanıyoruz. Elbette, 1' den 1000'e kadar olan sayıların karelerinin toplamını hesap etmek anlık bir işlemdir. Biz s&amp;uuml;reci uzatmak i&amp;ccedil;in k&amp;uuml;&amp;ccedil;&amp;uuml;k bir hile yapacağız. Bu hilede amacımız s&amp;uuml;reci yeterince uzatmak olduğu i&amp;ccedil;in, hesaplamar arasında 10 milisaniyelik gecikme s&amp;uuml;releri koyacağız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk143_1.gif" alt="" width="371" height="271" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Uygulama kodlarımız ve a&amp;ccedil;ıklamaları aşağıda yer almaktadır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Data.SqlClient;
+using System.Drawing;
+using System.Text;
+using System.Windows.Forms;
+
+namespace UsingBackGroundWorkerProcess
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        //Hesaplama işlemini yaptığımız metod. İptal işlemini burada ele alabilmek i&amp;ccedil;in DoWork olayından buraya DoWorkEventArgs parametresinide g&amp;ouml;nderiyoruz.
+        private double Compute(int endValue, DoWorkEventArgs e)
+        {
+            double Total = 0;
+            for (int i = 1; i &amp;lt;= endValue; i++)
+            {
+                // Eğer iptal işlemi i&amp;ccedil;in btnComputeCancel kontrol&amp;uuml;ne basılmışsa, BackgroundWorker sınıfının CancelAsync metodu &amp;ccedil;alıştırılmış demektir. Bu durumda, BackgroundWorker nesnesine bir iptal talebi (Cancel Request) gider. Bu if yapısında bunu kontrol ederek hesaplama işleminin iptalini ger&amp;ccedil;ekleştiriyoruz.
+                if (bgwProcess.CancellationPending == true)
+                {
+                    e.Cancel = true;
+                }
+                else
+                {
+                    // Hesaplama işleminden sonra, s&amp;uuml;reci biraz daha uzatabilmek i&amp;ccedil;in arka planda &amp;ccedil;alışan thread' imizi 10 milisanine kadar duraksatıyoruz. Bu sadece olayları izlemeyi kolaylaştırmak i&amp;ccedil;in yapılmış bir hile. Nitekim bize ger&amp;ccedil;ekten arka planda uzun s&amp;uuml;ren bir işlem gerekiyor.
+                    Total += i * i;
+                    System.Threading.Thread.Sleep(10);
+                    // ReportProgress metodu ile hesaplanan değeri, raporlama amacı ile ProgressChanged olayına g&amp;ouml;nderiyoruz.
+                    bgwProcess.ReportProgress(i);
+                }
+            }
+            return Total;
+        }
+
+        // DoWork olayımız, hesaplamaların arka planda y&amp;uuml;r&amp;uuml;t&amp;uuml;lmesini ve işlem sonucunun DoWorkEventArgs parametresinin Result &amp;ouml;zelliğine atanmasını sağlar. S&amp;uuml;re&amp;ccedil; sona erdiğinde, RunWorkerCompleted metodunda bu result &amp;ouml;zelliğinin değerini alabiliriz.
+        private void bgwProcess_DoWork(object sender, DoWorkEventArgs e)
+        {
+            e.Result=Compute(Convert.ToInt32(e.Argument),e);
+        }
+
+        // RunWorkerCompleted olayı, arka plan s&amp;uuml;reci tamamlandığında devreye girmektedir. Burada basit olarak işleme ait iptal talebi (Cancel Request) olup olmadığı kontrol edilir ve yoksa sonu&amp;ccedil; kullanıcıya bir MessageBox yardımıyla bildirilir. Bu metodu asenkron olarak &amp;ccedil;alışan bir işlemin tamamlanması sonrası devreye giren Callback metodu olarak d&amp;uuml;ş&amp;uuml;nebilirsiniz.
+        private void bgwProcess_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled)
+            {
+                MessageBox.Show("İşleminiz iptal edildi...");
+                pgbStatus.Value = 0;
+                txtFreeZone.Text = "";
+            }
+            else
+            {
+                MessageBox.Show(e.Result.ToString());
+            } 
+            btnComputeCancel.Enabled = false;
+            btnComputeStart.Enabled = true;
+        }
+
+        private void btnCompute_Click(object sender, EventArgs e)
+        {
+            pgbStatus.Maximum = 1000;
+            pgbStatus.Minimum = 0;
+            pgbStatus.Value = 0;
+            // Hesaplama işleminin arka planda asenkron olarak y&amp;uuml;r&amp;uuml;t&amp;uuml;lmesini başlatan metod &amp;ccedil;ağırılır. Dikkat ederseniz metodumuza birde parametrik değer g&amp;ouml;nderiyoruz. 
+            bgwProcess.RunWorkerAsync(1000);
+            btnComputeCancel.Enabled = true;
+            btnComputeStart.Enabled = false;
+        }
+
+        private void btnComputeCancel_Click(object sender, EventArgs e)
+        {
+            // Arka planda y&amp;uuml;r&amp;uuml;t&amp;uuml;len işleme, iptal talebini (cancel request) CancelAsync metodu ile g&amp;ouml;ndermekteyiz.
+            bgwProcess.CancelAsync();
+            btnComputeCancel.Enabled = false;
+            btnComputeStart.Enabled = true;
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            btnComputeCancel.Enabled = false;
+        }
+
+        // Bu olay ile, anlık olarak arka planda devam eden işlemin hangi aşamada olduğunu ele alabiliriz. İlgili değeri ProgressChangedEventArgs parametresinin ProgressPercentage &amp;ouml;zelliği ile alıyoruz. Bu değer aslında Compute fonksiyonu i&amp;ccedil;erisinde, ReportProgress metodu ile g&amp;ouml;nderdiğimiz değerin aynısıdır. İstenirse, burada bu değere g&amp;ouml;re y&amp;uuml;zdesel g&amp;ouml;sterimler de yapılabilir.
+        private void bgwProcess_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            pgbStatus.Value = e.ProgressPercentage;
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Uygulamamızı bu haliyle &amp;ccedil;alıştırdığımızda aşağıdaki Flash videosunda g&amp;ouml;r&amp;uuml;len sonu&amp;ccedil;ları elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;(Not : Aşağıdaki g&amp;ouml;r&amp;uuml;nt&amp;uuml;y&amp;uuml; seyredebilmek i&amp;ccedil;in tarayıcınızda Flash Player' ın son s&amp;uuml;r&amp;uuml;m&amp;uuml;n&amp;uuml;n olması tavsiye edilir. Eğer sisteminizde XP Service Pack 2 y&amp;uuml;kl&amp;uuml;yse ilgili uyarıyı dikkate alıp i&amp;ccedil;eriğe izin vermelisiniz. (Allow Blocked Content). Videoyu y&amp;ouml;netmek i&amp;ccedil;in sağ tıklayıp &amp;ccedil;ıkan men&amp;uuml;y&amp;uuml; kullanabilirsiniz.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;object id="obj1" width="349" height="249" classid="clsid:D27CDB6E-AE6D-11CF-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0" border="0"&gt;
+&lt;param name="movie" value="http://www.buraksenyurt.com/makale/images/BackgroundWorkerDemo.swf" /&gt;
+&lt;param name="quality" value="High" /&gt; &lt;embed type="application/x-shockwave-flash" width="349" height="249" src="http://www.buraksenyurt.com/makale/images/BackgroundWorkerDemo.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" name="obj1" quality="High" /&gt;&lt;/object&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi, Windows uygulamalarında arka planda &amp;ccedil;alışacak işlemleri y&amp;ouml;netmek i&amp;ccedil;in BackgroundWorker bileşeni olduk&amp;ccedil;a b&amp;uuml;y&amp;uuml;k kolaylıklar sağlamaktadır. Aslında şu bir ger&amp;ccedil;ektir ki, aynı işlevselliği Thread nesnelerini kullanaraktanda yapabilmekteyiz.&lt;/p&gt;
+&lt;p&gt;Aslında Windows uygulamalarını hedef alan bu gelişmenin, thread y&amp;ouml;netimini kolaylaştırıcı bir yenilik olduğunu d&amp;uuml;ş&amp;uuml;nebiliriz. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2006-01-05 08:00:00</pubDate>
+  <slug>Windows-Uygulamalarc4b1nda-Daha-Kolay-Thread-Yonetimi-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>windows-forms</tag>
+    <tag>thread</tag>
+    <tag>backgroundworker</tag>
+  </tags>
+  <categories>
+    <category>Windows Forms</category>
+  </categories>
+</post>

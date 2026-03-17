@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Workflow Foundation 4.0 - Paralel Olmak ya da Olmamak</title>
+  <description>Geçtiğimiz günlerde Workflow Foundation 4.0 içerisinde NativeActivity türevli bileşenlerde hata yönetiminin nasıl yapılabileceğini incelerken, ne olduysa kendimi ParallelForEach&lt;T&gt; aktivitesini çalıştırmaya uğraşırken buldum. Bir türlü istediğim gibi ayrı Thread parçaları oluşturulmuyor dolayısıyla aktivite içerisine aldığım işler paralel olarak yürütülmüyordu.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/pics/2010%2f2%2fblg155_Giris.jpg" alt="" width="250" height="174" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Pek &amp;ccedil;oğumuz &amp;uuml;nl&amp;uuml; İngiliz şairi &lt;strong&gt;Shakespeare&lt;/strong&gt;' in adını ve eserlerini bir şekilde duymuş, okumuş veya seyretmişizdir. Yaşadığı&lt;strong&gt; 1564-1616&lt;/strong&gt; yılları arasında yazdığı sayısız &lt;strong&gt;Komedi, Trajedi &lt;/strong&gt;ve &lt;strong&gt;Romanesk &lt;/strong&gt;bulunmaktadır. Bunlar y&amp;uuml;z yıllar boyu Tiyatrolarda sergilenmiş ve edebi değeri y&amp;uuml;ksek eserlerdir. &lt;strong&gt;Shakespeare &lt;/strong&gt;dendiğinde insanın aklına hemen &lt;strong&gt;Romeo ve Juliet, Hamlet, Othello, Machbeth &lt;/strong&gt;gibi eserleri gelmektedir. Aslında &lt;strong&gt;Edebiyat&lt;/strong&gt;' tan &amp;ccedil;ok fazla anlamam. B&amp;uuml;y&amp;uuml;k bir ihtimalle &lt;strong&gt;Matematik&amp;ccedil;i &lt;/strong&gt;olduğum i&amp;ccedil;indir.&lt;/p&gt;
+&lt;p&gt;Dolayısıyla &lt;strong&gt;Shakespeare &lt;/strong&gt;gibi &amp;uuml;nl&amp;uuml; şarilerin eserlerini hayatım boyunca &amp;ccedil;ok fazla dikkate almamışımdır. Tabi son zamanlarda bu tip k&amp;uuml;lt klasiklerin&lt;strong&gt; NTV Yayınlarından&lt;/strong&gt; &amp;ccedil;ıkan &amp;ccedil;izgi serileri yer almakta. En azından &amp;ccedil;ocuklarımızın okuması i&amp;ccedil;in bir hamlede bulunabiliriz. Her ne kadar &lt;strong&gt;Shakespeare&lt;/strong&gt;' i &amp;ccedil;ok fazla okumasam da, &lt;strong&gt;Mel Gibson' &lt;/strong&gt;ın oyunculuğuyla parladığı &lt;strong&gt;Hamlet &lt;/strong&gt;filmini seyretmişimdir. Her ne kadar &lt;strong&gt;Shakespeare&lt;/strong&gt;' in eserlerindeki anlamı, derinliği tam olarak bilemesem de, şiirindeki şu meşhur mısrayı hi&amp;ccedil; unutmam; &lt;strong&gt;"Olmak ya da olmamak; işte b&amp;uuml;t&amp;uuml;n mesele bu" &lt;/strong&gt;. Bu konuya nereden mi geldik? Kısaca hikayeyi anlatayım.&lt;/p&gt;
+&lt;p&gt;Ge&amp;ccedil;tiğimiz g&amp;uuml;nlerde &lt;strong&gt;Workflow Foundation 4.0&lt;/strong&gt; i&amp;ccedil;erisinde &lt;strong&gt;NativeActivity &lt;/strong&gt;t&amp;uuml;revli bileşenlerde hata y&amp;ouml;netiminin nasıl yapılabileceğini incelerken, ne olduysa kendimi &lt;strong&gt;ParallelForEach&amp;lt;T&amp;gt; &lt;/strong&gt;aktivitesini &amp;ccedil;alıştırmaya uğraşırken buldum. Bir t&amp;uuml;rl&amp;uuml; istediğim gibi ayrı &lt;strong&gt;Thread &lt;/strong&gt;par&amp;ccedil;aları oluşturulmuyor dolayısıyla aktivite i&amp;ccedil;erisine aldığım işler paralel olarak y&amp;uuml;r&amp;uuml;t&amp;uuml;lm&amp;uuml;yordu. O sırada ş&amp;ouml;yle mırıldandığımı &amp;ccedil;ok net hatırlıyorum;&lt;strong&gt; "Paralel olmak ya da olmamak. Sanırım t&amp;uuml;m mesele bu..."&lt;/strong&gt; &lt;img title="Sealed" src="/editors/tiny_mce3/plugins/emotions/img/smiley-sealed.gif" alt="Sealed" border="0" /&gt; İşte bu yazımızda&lt;strong&gt; ParallelForEach&amp;lt;T&amp;gt;&lt;/strong&gt; aktivitesinin &amp;ouml;rnek senaryoya g&amp;ouml;re neden &amp;ccedil;alıştırılamadığını ve buna karşın basit olan &amp;ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml;n ne olduğu g&amp;ouml;rmeye &amp;ccedil;alışacağız. &amp;Ouml;ncelikli olarak sorunumuzu &amp;ouml;rnek bir senaryo &amp;uuml;zerinden masaya yatıralım. Bu ama&amp;ccedil;la aşağıdaki sınıf diagramında g&amp;ouml;r&amp;uuml;len &lt;strong&gt;CodeActivity &lt;/strong&gt;t&amp;uuml;revli bir bileşenimiz olduğunu d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f2%2fblg155_ClassDia1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Kod i&amp;ccedil;eriği;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Activities;
+using System.Threading;
+
+namespace ErrorHandlingForNativeActivities
+{
+    public sealed class LetterCalculaterActivity 
+        : CodeActivity
+    {
+        public InArgument&amp;lt;char&amp;gt; Letter { get; set; }
+
+        protected override void Execute(CodeActivityContext context)
+        {
+            Thread.Sleep(1000);
+            Console.WriteLine(
+                "{0} ASCII = {1} | Current Thread Id : {2}"
+                , Letter.Get(context)
+                ,((byte)Letter.Get(context)).ToString()
+                , Thread.CurrentThread.ManagedThreadId.ToString());
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;CodeActivity &lt;/strong&gt;t&amp;uuml;revli olan bu bileşenimiz &lt;strong&gt;InArgument&amp;lt;char&amp;gt;&lt;/strong&gt; tipinden olan &lt;strong&gt;Letter &lt;/strong&gt;isimli &amp;ouml;zelliğin &amp;ccedil;alışma zamanı değerini almakta ve&lt;strong&gt; ASCII &lt;/strong&gt;kodu karşılığı ile o anki &lt;strong&gt;y&amp;ouml;netimli(Managed) Thread Id&lt;/strong&gt; değerlerini ekrana yazdırmaktadır. &lt;strong&gt;Execute &lt;/strong&gt;metodunda dikkat edileceği &amp;uuml;zere şakacıktan ana &lt;strong&gt;Thread&lt;/strong&gt;' in 1 saniye s&amp;uuml;reyle duraksatılması s&amp;ouml;z konusudur. Peki bu &lt;strong&gt;Activite &lt;/strong&gt;bileşeni ne işimize yarayacak? Bu ama&amp;ccedil;la tasarım g&amp;ouml;r&amp;uuml;n&amp;uuml;m&amp;uuml; aşağıdaki gibi olan bir &lt;strong&gt;Workflow &lt;/strong&gt;geliştirdiğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f2%2fblg155_DesignTime.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Xaml i&amp;ccedil;eriği;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;Activity........&amp;gt;
+  &amp;lt;x:Members&amp;gt;
+    &amp;lt;x:Property Name="vSentence" Type="InArgument(x:String)" /&amp;gt;
+  &amp;lt;/x:Members&amp;gt;
+  &amp;lt;sap:VirtualizedContainerService.HintSize&amp;gt;349,370&amp;lt;/sap:VirtualizedContainerService.HintSize&amp;gt;
+  &amp;lt;mva:VisualBasic.Settings&amp;gt;Assembly references and imported namespaces for internal implementation&amp;lt;/mva:VisualBasic.Settings&amp;gt;
+  &amp;lt;Sequence sad:XamlDebuggerXmlReader.FileName="D:\Vs 2010\RC\Workflow Foundation\ErrorHandlingForNativeActivities\ErrorHandlingForNativeActivities\ParallelFlow.xaml" sap:VirtualizedContainerService.HintSize="309,330"&amp;gt;
+    &amp;lt;sap:WorkflowViewStateService.ViewState&amp;gt;
+      &amp;lt;scg:Dictionary x:TypeArguments="x:String, x:Object"&amp;gt;
+        &amp;lt;x:Boolean x:Key="IsExpanded"&amp;gt;True&amp;lt;/x:Boolean&amp;gt;
+      &amp;lt;/scg:Dictionary&amp;gt;
+    &amp;lt;/sap:WorkflowViewStateService.ViewState&amp;gt;
+    &amp;lt;ParallelForEach x:TypeArguments="x:Char" DisplayName="ParallelForEach&amp;lt;Char&amp;gt;" sap:VirtualizedContainerService.HintSize="287,206" Values="[vSentence]"&amp;gt;
+      &amp;lt;ActivityAction x:TypeArguments="x:Char"&amp;gt;
+        &amp;lt;ActivityAction.Argument&amp;gt;
+          &amp;lt;DelegateInArgument x:TypeArguments="x:Char" Name="ltr" /&amp;gt;
+        &amp;lt;/ActivityAction.Argument&amp;gt;
+        &amp;lt;local:LetterCalculaterActivity sap:VirtualizedContainerService.HintSize="257,100" Letter="[ltr]" /&amp;gt;
+      &amp;lt;/ActivityAction&amp;gt;
+    &amp;lt;/ParallelForEach&amp;gt;
+  &amp;lt;/Sequence&amp;gt;
+&amp;lt;/Activity&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Tasarım zamanından da g&amp;ouml;r&amp;uuml;leceği &amp;uuml;zere, &lt;strong&gt;ParallelFlow.xaml&lt;/strong&gt; i&amp;ccedil;erisinde &lt;strong&gt;ParallelForEach&amp;lt;T&amp;gt; &lt;/strong&gt;aktivite bileşeni yer almaktadır. &lt;strong&gt;ParallelForEach&amp;lt;T&amp;gt;&lt;/strong&gt;, &lt;strong&gt;char &lt;/strong&gt;tipi ile &amp;ccedil;alışacak şekilde ayarlanmıştır ve &lt;strong&gt;Workflow &lt;/strong&gt;i&amp;ccedil;in &lt;strong&gt;vSentence &lt;/strong&gt;isimli arg&amp;uuml;manın değerini alıp, s&amp;ouml;z konusu c&amp;uuml;mledeki her bir harfi, i&amp;ccedil;erdiği &lt;strong&gt;LetterCalculaterActivity &lt;/strong&gt;bileşenine g&amp;ouml;ndermektedir. Bu akıştan &amp;ccedil;alışma zamanındaki beklentimiz, s&amp;ouml;z konusu c&amp;uuml;mledeki harflerin paralel thread' lerin ele alacağı şekilde yorumlaması ve kullanılmasıdır. Bu arada unutmadan, &lt;strong&gt;Main &lt;/strong&gt;metodunun i&amp;ccedil;eriğinin aşağıdaki gibi olduğunu d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Activities;
+
+namespace ErrorHandlingForNativeActivities
+{
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            ParallelFlow pFlow = new ParallelFlow();
+            WorkflowInvoker.Invoke(pFlow);
+            Console.WriteLine("İşlemler tamamlandı");
+            Console.ReadLine();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;ve buna g&amp;ouml;re &amp;ccedil;alışma zamanı sonu&amp;ccedil;larına kısaca bir bakalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f2%2fblg155_FirstRuntime.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Uppsss!!! &lt;img title="Sealed" src="/editors/tiny_mce3/plugins/emotions/img/smiley-sealed.gif" alt="Sealed" border="0" /&gt; Enteresan bir durum s&amp;ouml;z konusu.&lt;strong&gt; "Bu g&amp;uuml;n &amp;ccedil;ok g&amp;uuml;zel bir g&amp;uuml;nd&amp;uuml;" &lt;/strong&gt;c&amp;uuml;mlesi ters sırada işlenmiştir. Dahası t&amp;uuml;m işlemler &lt;strong&gt;1&lt;/strong&gt; numaralı &lt;strong&gt;ThreadId&lt;/strong&gt;' ye bağlı olarak ger&amp;ccedil;ekleştirilmektedir. Bir başka deyişle &lt;strong&gt;ParallelForEach&amp;lt;T&amp;gt;&lt;/strong&gt; aktivitesi istediğimiz/beklediğimiz şekilde &lt;span style="text-decoration: underline;"&gt;&amp;ccedil;alışmamıştır&lt;/span&gt;. Sorun ne olabilir acaba?&lt;img title="Undecided" src="/editors/tiny_mce3/plugins/emotions/img/smiley-undecided.gif" alt="Undecided" border="0" /&gt; Aslında sorundan ziyade yanlış bir &amp;ccedil;&amp;ouml;z&amp;uuml;m yolu izlediğimizi ifade edebiliriz. Esasında &lt;strong&gt;ParallelForEach&amp;lt;T&amp;gt; &lt;/strong&gt;bileşeninin bu senaryoda işe yarayabilmesi i&amp;ccedil;in i&amp;ccedil;erisinde yer alan &lt;strong&gt;CodeActivity &lt;/strong&gt;t&amp;uuml;revli bileşenin de paralel &amp;ccedil;alışmaya destek vermesi bir başka deyişle asenkron olarak y&amp;uuml;r&amp;uuml;t&amp;uuml;lebiliyor olması gerekmektedir. Ahaaa!! &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt; İşte şimdi &amp;ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml; bulduk. Buna g&amp;ouml;re &lt;strong&gt;LetterCalculaterActivity &lt;/strong&gt;bileşeninin &lt;strong&gt;CodeActivity &lt;/strong&gt;yerine &lt;strong&gt;AsyncCodeActivity &lt;/strong&gt;tipinden t&amp;uuml;retilmesi ve kodlanması yeterlidir. O halde s&amp;ouml;z konusu bileşenimizi aşağıdaki şekilde değiştirelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f2%2fblg155_ClassDia2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Activities;
+using System.Threading;
+
+namespace ErrorHandlingForNativeActivities
+{
+    public sealed class LetterCalculaterActivity
+            : AsyncCodeActivity
+    {
+        public InArgument&amp;lt;char&amp;gt; Letter { get; set; }
+
+        protected override IAsyncResult BeginExecute(AsyncCodeActivityContext context, AsyncCallback callback, object state)
+        {
+            Func&amp;lt;char, bool&amp;gt; dlg = c =&amp;gt;
+            {
+                Thread.Sleep(1000);
+                Console.WriteLine("{0} i&amp;ccedil;in hesaplamalar| Current Thread Id : {1}", c, Thread.CurrentThread.ManagedThreadId.ToString());
+                return true;
+            };
+
+            context.UserState = dlg;
+            return dlg.BeginInvoke(Letter.Get(context), callback, state);
+        }
+
+        protected override void EndExecute(AsyncCodeActivityContext context, IAsyncResult result)
+        {
+            bool r = ((Func&amp;lt;char, bool&amp;gt;)context.UserState).EndInvoke(result);
+            Console.WriteLine("\t{0}", r);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Kod par&amp;ccedil;asına g&amp;ouml;re, &lt;strong&gt;temsilcilerin(Delegates) BeginInvoke &lt;/strong&gt;ve &lt;strong&gt;EndInvoke &lt;/strong&gt;metodlarından yararlanılarak aktivite i&amp;ccedil;erisinde asenkron bir işin y&amp;uuml;r&amp;uuml;t&amp;uuml;lmesinin sağlandığını &amp;ouml;zetleyebiliriz.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;AsyncCodeActivity t&amp;uuml;revli bileşenlerin nasıl geliştirileceğini daha &amp;ouml;nceden &lt;a class="postheader taggedlink" href="/post/Workflow-Foundation-40-Custom-Async-Activity"&gt;Workflow Foundation 4.0 - Custom Async Activity Geliştirmek [Beta 2] &lt;/a&gt;isimli yazımızda değerlendirmiştik.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Buna g&amp;ouml;re program kodumuzu yeniden test edersek, &amp;ccedil;alışma zamanında aşağıdakine benzer sonu&amp;ccedil;lar ile karşılaştığımızı g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f2%2fblg155_LastRuntime.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;alışma sırası tam olarak ş&amp;ouml;yledir ; &lt;strong&gt;"Bu gn&amp;uuml; &amp;ccedil; kogz e&amp;uuml;lbir g&amp;uuml;n&amp;uuml;d"&lt;/strong&gt; . Sakın bu c&amp;uuml;mleyi okumaya &amp;ccedil;alışmayın.&lt;img title="Laughing" src="/editors/tiny_mce3/plugins/emotions/img/smiley-laughing.gif" alt="Laughing" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;farklı y&amp;ouml;netimli Thread Id &lt;/strong&gt;değerleri &amp;uuml;retilmiş, &amp;uuml;stelik&lt;strong&gt; "Bu g&amp;uuml;n &amp;ccedil;ok g&amp;uuml;zel bir g&amp;uuml;nd&amp;uuml;"&lt;/strong&gt; c&amp;uuml;mlesi aynı harf sırasına g&amp;ouml;re ele alınmamıştır. Bir başka deyişle paralel &amp;ccedil;alışma sağlanmıştır. Tabi &amp;ccedil;alışma zamanı ve &amp;ccedil;evresel donanım şartlarına g&amp;ouml;re bu sıralama her seferinde farklı sonu&amp;ccedil;lanabilir veya aynı sonu&amp;ccedil;lar tekrar tekrar elde edilebilir. Aslında b&amp;uuml;t&amp;uuml;n mesele de budur zaten. &lt;strong&gt;"Paralel olmak ya da olmamak"&lt;/strong&gt;. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2010%2f2%2fToBeOrNotToBe_RC.rar"&gt;ToBeOrNotToBe_RC.rar (48,75 kb)&lt;/a&gt;&lt;strong&gt; [&amp;Ouml;rnek uygulama Visual Studio 2010 Ultimate RC S&amp;uuml;r&amp;uuml;m&amp;uuml; &amp;Uuml;zerinde Geliştirilmiştir ve Test Edilmiştir]&lt;/strong&gt;&lt;/p&gt;</content>
+  <pubDate>2010-03-16 02:15:00</pubDate>
+  <slug>Workflow-Foundation-40-Paralel-Olmak-ya-da-Olmamak</slug>
+  <tags>
+    <tag>wf</tag>
+    <tag>wf-40</tag>
+    <tag>parallel-programming</tag>
+    <tag>net-framework-40</tag>
+  </tags>
+  <categories>
+    <category>WF 4.0 RC</category>
+  </categories>
+</post>

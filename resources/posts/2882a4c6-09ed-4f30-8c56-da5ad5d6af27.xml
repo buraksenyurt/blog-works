@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Native Web Services</title>
+  <description>Sql Server 2005 ile gelen etkili özelliklerden biriside, doğal xml web servisi (native xml web services) desteğinin bulunmasıdır. Sql Server 2000 sürümünde, web servisi desteğini sunabilmek için SqlXml 3.0 ve IIS' in sunucu sistemde mutlaka yüklü olması gerekmektedir. Bununla birlikte istemciler MDAC desteğine sahip olmalıdır...</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Sql Server 2005 ile gelen etkili &amp;ouml;zelliklerden biriside, doğal xml web servisi (native xml web services) desteğinin bulunmasıdır. Sql Server 2000 s&amp;uuml;r&amp;uuml;m&amp;uuml;nde, web servisi desteğini sunabilmek i&amp;ccedil;in SqlXml 3.0 ve IIS' in sunucu sistemde mutlaka y&amp;uuml;kl&amp;uuml; olması gerekmektedir. Bununla birlikte istemciler MDAC desteğine sahip olmalıdır. Oysaki Sql Server 2005 istemcilerden Http protokol&amp;uuml;ne g&amp;ouml;re gelecek SOAP uyumlu talepleri doğrudan işletebilecek şekilde tasarlanmıştır. Sistemde yer alan Http dinleyici (Http Listener), istemcilerden gelecek olan talepleri doğrudan Sql Server 2005 &amp;uuml;zerindeki EndPoint' lere iletmektedir. Dolayısıyla sunucu sistem &amp;uuml;zerine IIS bulunma zorunluluğu ortadan kaldırılmıştır.&lt;/p&gt;
+&lt;p&gt;Sql Server 2005, saklı yordamların (stored procedures) ve kullanıcı tanımlı fonksiyonların (User-defined Functions) http &amp;uuml;zerinden SOAP uyumlu taleplere cevap verebilecek halde sunulmasını sağlar. Bunun i&amp;ccedil;inde Http veya Tcp protokol&amp;uuml;ne g&amp;ouml;re &amp;ccedil;alışan EndPoint nesnelerinden yararlanır. Sql Server 2005, http &amp;uuml;zerinden gelecek olan talepleri yine SOAP mesajları şeklinde cevaplandırdığından, istemci her hangibir platform veya sistem olabilir. &amp;Ouml;rneğin bir Unix sistemi yada Linux sistemi de Sql Server 2005 tarafından sununlan bu servisleri kullanabilir. Biz bu makalemizde adım adım Sql Server 2005 &amp;uuml;zerinden web servisi hizmetini nasıl verebileceğimizi incelemeye &amp;ccedil;alışacağız. Sql Server 2005 &amp;uuml;zerinden herhangibir saklı yordamı yada kullanıcı tanımlı fonksiyonu web servisi kuralları i&amp;ccedil;erisinde sunmanın ve kullanmanın yolu aşağıdaki şekilde kısaca tasvir edilmeye &amp;ccedil;alışılmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk162_4.gif" alt="" width="633" height="44" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Buna g&amp;ouml;re ilk olarak web servisi &amp;uuml;zerinden hizmet verecek saklı yordam yada fonksiyon hazırlanır. Hazırlanan bu fonksiyonun istemcilere cevap verebilmesi ve SOAP taleplerini uygun bir bi&amp;ccedil;imde ele alabilmesi i&amp;ccedil;in bir EndPoint nesnesi hazırlanır. Daha sonra istemci uygulama ilgili EndPoint i&amp;ccedil;in proxy sınıfını oluşturur. Bildiğiniz gibi .Net ile geliştirilen web servislerini, isteci tarafındaki uygulamalarda kullanmanın yollarından birisi proxy nesnelerinden faydalanmaktır. Buna g&amp;ouml;re, t&amp;uuml;ketilmek (Consume) istenen web servisinin wsdl d&amp;ouml;k&amp;uuml;manına g&amp;ouml;re istemci tarafında bir proxy sınıfı oluşturulur. Aynı durum, Sql Server 2005 &amp;uuml;zerinden sunulan EndPoint nesneleri i&amp;ccedil;inde ge&amp;ccedil;erlidir. Tabi istenirse, proxy nesnesi yardımıyla değil SOAP taleplerini doğrudan oluşturacak ve cevapları değerlendirecek şekilde kodlama teknikleride kullanılabilir. Web servisinin kullanılabilmesi i&amp;ccedil;in gerekli adımların tamamlanmasının ardından son olarak Sql Server 2005 tarafındaki EndPoint t&amp;uuml;ketilerek kullanılır.&lt;/p&gt;
+&lt;p&gt;Bu kadar teorik bilgiden sonra dilerseniz &amp;ouml;rnek bir senaryo &amp;uuml;zerinen hareket edelim. İlk olarak işe yarar bir saklı yordam (Stored Procedure) geliştireceğiz. &amp;Ouml;rnek olarak Sql Server 2005 ile standart olarak y&amp;uuml;klenen AdventureWorks veritabanını kullanacağız. Aşağıdaki sql script ile Production isim alanındaki Product tablosundan liste fiyatı belirli bir değerin &amp;uuml;st&amp;uuml;nde olan &amp;uuml;r&amp;uuml;nlerin elde edilebildiği bir saklı yordam (stored procedure) oluşturulmaktadır.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;USE AdventureWorks
+GO
+
+CREATE PROCEDURE ListeFiyatinaGoreUrunler
+    @ListPrice float
+AS
+BEGIN
+    SELECT
+          ProductID
+        , Name
+        , ProductNumber
+        , MakeFlag
+        , StandardCost
+        , ListPrice
+        , SafetyStockLevel
+    FROM Production.Product
+    WHERE (ListPrice &amp;gt; @ListPrice)
+END
+GO&lt;/pre&gt;
+&lt;p&gt;İstemcilerin bu saklı yordama http &amp;uuml;zerinden talepte bulunup sonu&amp;ccedil;larını alabilmelerini sağlamak i&amp;ccedil;in ise Sql Server 2005 &amp;uuml;zerinde bir EndPoint oluşturmamız gerektiğinden daha &amp;ouml;ncesinde bahsetmiştik. Bu EndPoint nesnesini aşağıdaki scriptte g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi oluşturabiliriz. &lt;em&gt;( EndPoint nesneleride diğer &amp;ccedil;oğu veritabanı nesnesi gibi Drop ve Alter gibi komutlar ile birlikte kullanılabilmektedir. )&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;USE AdventureWorks
+GO
+
+CREATE ENDPOINT ListeFiyatinaGoreUrunlerEndPoint
+    STATE = STARTED
+    AS HTTP ( path = '/sql/ListeFiyatinaGoreUrunler', AUTHENTICATION = (INTEGRATED), PORTS = (CLEAR) )
+    FOR SOAP( 
+                        WEBMETHOD 'ListeFiyatinaGoreUrunler' (NAME = 'AdventureWorks.dbo.ListeFiyatinaGoreUrunler',SCHEMA = STANDARD),
+                        BATCHES = ENABLED,
+                        WSDL = DEFAULT,
+                        SCHEMA = STANDARD,
+                        DATABASE = 'AdventureWorks',
+                        NAMESPACE = 'http://tempUri.org/'
+                 )
+GO&lt;/pre&gt;
+&lt;p&gt;B&amp;ouml;ylece sistemde http &amp;uuml;zerinden ListeFiyatinaGoreUrunler saklı yordamına (stored procedure) gelecek talepleri karşılayacak bir EndPoint nesnesi oluşturmuş oluyoruz. Artık istemciler bu EndPoint' i http veya tcp &amp;uuml;zerinden &amp;ccedil;ağırıp sonu&amp;ccedil;larını alabilirler.&lt;/p&gt;
+&lt;table id="table61" style="border-collapse: collapse; width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#ffffff"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;Windows XP Service Pack 2 y&amp;uuml;kl&amp;uuml; bir sistemde &amp;ccedil;alışıyorsanız eğer, EndPoint nesnesini oluşturbilmek i&amp;ccedil;in World Wide Web Publishing servisini bu işlem sırasında &lt;span style="text-decoration: underline;"&gt;durdurmamız gerekebilir. Windows 2003 sistemlerinde ise buna gerek yoktur.&lt;/span&gt;&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Geliştirdiğimiz ListeFiyatinaGoreUrunlerEndPoint adlı nesneyi ve Sql Server 2005 &amp;uuml;zerinde kayıtlı diğer EndPoint' leri g&amp;ouml;rmek i&amp;ccedil;in http_endpoints tablosundan yararlanabiliriz. Bu sistem tablosu EndPoint' lere ait t&amp;uuml;m bilgileri taşımaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk162_2.gif" alt="" width="608" height="111" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;EndPoint nesnesi oluşturulurken pek &amp;ccedil;ok anahtar kelime kullanılmaktadır. Temel ama&amp;ccedil; EndPoint nesnesinin hangi saklı yordamı yada fonksiyonu, hangi iletişim protokol&amp;uuml;ne g&amp;ouml;re sunacağını belirlemek ve diğer konfigurasyon ayarlarını yapmaktır. Bu anahtar kelimeler hakkında birazda olsa bilgi vermekte fayda olacağı kanısındayım.&lt;/p&gt;
+&lt;table id="table62" style="border-collapse: collapse; width: 100%;" border="1" cellpadding="5" bgcolor="#ffffff"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="width: 114px; background-color: #ffffff;" bgcolor="#336699" width="114"&gt;&lt;strong&gt; Anahtar S&amp;ouml;zc&amp;uuml;k&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="width: 114px; background-color: #ffffff;" bgcolor="#336699"&gt;&lt;strong&gt; İşlevi&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="114"&gt;State&lt;/td&gt;
+&lt;td&gt;EndPoint i&amp;ccedil;in başlangı&amp;ccedil; durumunu belirtir. Started, Stoped veya Disabled olabilir. Eğer Stoped olarak ayarlanırsa, EndPoint' e erişmek isteyen istemciler bir &amp;ccedil;alışma zamanı istisnası alırlar. Disabled olması halinde ise EndPoint sistemde kalmaya ancak gelen taleplere cevap vermemeye başalayacaktır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="114"&gt;Http / Tcp&lt;/td&gt;
+&lt;td&gt;Bu kısımda iletişim protokol&amp;uuml; tanımlanır ve bu protokol &amp;uuml;zerinden gerekli konfigurasyon ayarları belirlenir. Http dışında tcp &amp;uuml;zerindende servis verilebilmektedir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="114"&gt;Path&lt;/td&gt;
+&lt;td&gt;EndPoint i&amp;ccedil;in gerekli URL bilgisini tanımlar.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="114"&gt;Authentication&lt;/td&gt;
+&lt;td&gt;İstemciler i&amp;ccedil;in g&amp;uuml;venlik doğrulama modelini belirler. Basic, Digets, Ntlm, Kerberos, Integrated modlarından birisi olabilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="114"&gt;Ports&lt;/td&gt;
+&lt;td&gt;Clear olması halinde http portu &amp;uuml;zerinden hizmet verilmesini sağlar. SSL olması halinde ise https &amp;uuml;zerinden hizmet verilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="114"&gt;Site&lt;/td&gt;
+&lt;td&gt;Servisin host edildiği bilgisayarın adıdır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="114"&gt;Soap&lt;/td&gt;
+&lt;td&gt;Bu kısımda SOAP mesajına y&amp;ouml;nelik tanımlamalar yapılır ve servisin SOAP protokol&amp;uuml;n&amp;uuml; kullanacağı belirtilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="114"&gt;WebMethod&lt;/td&gt;
+&lt;td&gt;Saklı yordamın yada kullanıcı tanımlı fonksiyonumuzun istemciler tarafından kullanılabilmesi i&amp;ccedil;in gerekli metod adı tanımlamasıdır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="114"&gt;Wsdl&lt;/td&gt;
+&lt;td&gt;Wsdl desteğini belirtir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="114"&gt;Database&lt;/td&gt;
+&lt;td&gt;EndPoint' in yer aldığı veritabanı adını belirtir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="114"&gt;Namespace&lt;/td&gt;
+&lt;td&gt;SOAP mesajları i&amp;ccedil;in gerekli xml isim alanını (xml namespace) tanımlar.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Artık EndPoint' imiz hazır olduğuna g&amp;ouml;re bunu herhangibir istemci uygulama &amp;uuml;zerinde test edebiliriz. Ancak teste başlamadan &amp;ouml;nce basit olarak EndPoint' in &amp;ccedil;alışıp &amp;ccedil;alışmadığını kontrol edebiliriz. Yazdığımız EndPoint' in kontrol işlemi i&amp;ccedil;in tarayıcı penceresinde, http://localhost/sql/ListeFiyatinaGoreUrunler?wsdl bilgisini yazmamız yeterlidir. Eğer aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi wsdl d&amp;ouml;k&amp;uuml;manına ulaşabiliyorsak EndPoint' imiz başarılı bir şekilde &amp;ccedil;alışıyor demektir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk162_3.gif" alt="" width="633" height="359" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi bu hizmeti ger&amp;ccedil;ek bir .Net uygulamasında nasıl kullanacağımızı incelemeye &amp;ccedil;alışalım. Web servisi hizmetini hangi tip istemcide sunacağımıza bakmaksızın dikkat etmemiz gereken &amp;ouml;nemli bir nokta vardır. Yukarıdaki saklı yordamda (stored procedure) olduğu gibi geriye bir sonu&amp;ccedil; k&amp;uuml;mesi d&amp;ouml;n&amp;uuml;yorsa, EndPoint bunu bir object dizisi şeklinde d&amp;ouml;nd&amp;uuml;recektir. Bu y&amp;uuml;zden EndPoint &amp;uuml;zerinden gelen veriyi taşıyan DataSet nesnesini bu object dizisi i&amp;ccedil;erisinde yakalayıp almamız gerekmektedir. Biz &amp;ouml;rnek olarak bir Windows Uygulamasını ele alacağız. İlk olarak servisimizi uygulamamıza Add Web Reference tekniğine g&amp;ouml;re tanıtmamız gerekiyor.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk162_5.gif" alt="" width="587" height="322" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu işlemin ardından solution explorer' a bakacak olursak, web servisinin, proxy sınıfının ve wsdl d&amp;ouml;k&amp;uuml;manının da eklenmiş olduğunu g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk162_6.gif" alt="" width="240" height="99" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Uygulama kodumuz ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void button1_Click(object sender, EventArgs e)
+{
+    UrunServis.ListeFiyatinaGoreUrunlerEndPoint srv = new UrunServis.ListeFiyatinaGoreUrunlerEndPoint();
+    srv.Credentials = System.Net.CredentialCache.DefaultCredentials;
+    object[] sonuclar = srv.ListeFiyatinaGoreUrunler(Convert.ToDouble(txtFiyat.Text));
+
+    foreach (object guncelNesne in sonuclar)
+    {
+        if (guncelNesne.GetType().ToString() == "System.Data.DataSet")
+            grdUrunler.DataSource = ((DataSet)guncelNesne).Tables[0]; 
+    }
+}&lt;/pre&gt;
+&lt;p&gt;UrunServis referansı i&amp;ccedil;erisinde yer alan ListeFiyatinaGoreUrunlerEndPoint servisine erişirken istemcinin aynı domain i&amp;ccedil;erisinde olduğunu d&amp;uuml;ş&amp;uuml;nerekten DefaultCredential uygulanmıştır. Nitekim EndPoint tanımlamamızda, authentication modu olaraktanda integrated se&amp;ccedil;eneğini kullanmıştık. Diğer taraftan normal web servislerinin kullanımında web metodlarının d&amp;ouml;n&amp;uuml;ş tipi ne ise, proxy nesneleri &amp;uuml;zerinden de aynı tipi alabilmekteyiz. Oysaki burada geriye object tipinden bir dizi d&amp;ouml;nmektedir. Bu dizinin elemanlarına &amp;ccedil;alışma zamanında Visualizer yardımıyla bakacak olursak aşağıdaki şekildende g&amp;ouml;rebileceğiniz gibi bir DataSet nesnesinin de var olduğunu g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk162_8.gif" alt="" width="600" height="390" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dolayısıyla kodumuz i&amp;ccedil;erisinde object dizisinin elemanları arasında dolaşıp tipinin string karşılığı, DataSet' in Framework i&amp;ccedil;erisindeki tam adına eş d&amp;uuml;şen System.Data.DataSet ile karşılaştırılması gerekmektedir. Bu tespit yapıldıktan sonra, g&amp;uuml;ncel object dizi elemanı DataSet tipine d&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;lerek veri kaynağı olarak kullanılmış ve form &amp;uuml;zerindeki gridView kontrol&amp;uuml;ne bu veri k&amp;uuml;mesi i&amp;ccedil;erisindeki 0 indeksli DataTable bağlanmıştır. Uygulamamızı &amp;ccedil;alıştırdığımızda , Sql Server 2005 &amp;uuml;zerinden EndPoint' imize başarılı bir şekilde erişebildiğimizi g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk162_7.gif" alt="" width="651" height="273" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi artık Sql Server 2005 &amp;uuml;zerinde saklı yordam (stored procedure) yada kullanıcı tanımlı fonksiyonları (user defined functions), http istemcilerine hizmet verecek şekilde web servisi olarak sunmak olduk&amp;ccedil;a kolaydır. Tek yapmamız gereken EndPoint nesnelerini hazırlamak ve istemcilerde t&amp;uuml;ketmek olacaktır. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2006-05-22 12:00:00</pubDate>
+  <slug>Native-Web-Services-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>sql-2005</tag>
+    <tag>native-web-service</tag>
+    <tag>xml-web-service</tag>
+  </tags>
+  <categories>
+    <category>XML Web Services</category>
+  </categories>
+</post>

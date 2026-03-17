@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Rest Tabanlı WCF Servisleri için İstemci Yazmak</title>
+  <description>Bir önceki blog yazımızda, koleksiyon bazlı WCF servislerinin REST modeline göre geliştirilmesini incelemeye çalışmış ve REST Starter Kit' in sağladığı kolaylıklara değinmiştik. Belkide yazının en zor kısımlarından biriside CUD(CreateUpdateDelete) işlemlerinin test edilmesiydi...</description>
+  <content>&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Bir &amp;ouml;nceki blog &lt;a title="Koleksiyon Bazlı WCF Rest Servisleri" href="/post/Koleksiyon-Bazl%C4%B1-WCF-Rest-Servisleri" target="_blank"&gt;yazımızda&lt;/a&gt;, koleksiyon bazlı &lt;strong&gt;WCF&lt;/strong&gt; servislerinin &lt;strong&gt;REST&lt;/strong&gt; modeline g&amp;ouml;re geliştirilmesini incelemeye &amp;ccedil;alışmış ve &lt;strong&gt;REST Starter Kit'&lt;/strong&gt; in sağladığı kolaylıklara değinmiştik. Belkide yazının en zor kısımlarından biriside &lt;strong&gt;CUD(CreateUpdateDelete)&lt;/strong&gt; işlemlerinin test edilmesiydi. Nitekim burada istemciden g&amp;ouml;nderilecek &lt;strong&gt;Request&lt;/strong&gt; paketlerinin &lt;strong&gt;HTTP&lt;/strong&gt; protokol&amp;uuml;n&amp;uuml;n uygun olan&lt;strong&gt; POST, PUT, DELETE&lt;/strong&gt; metodlarından birisine g&amp;ouml;re hazırlanıp iletilmesi gerekmekteydi. Bu nedenle, &lt;strong&gt;Fiddler&lt;/strong&gt; aracını kullanarak talepleri oluşturmuş ve testleri ger&amp;ccedil;ekleştirmiştik. Aslında, sadece veri &amp;ccedil;ekilmesi işleminde&lt;strong&gt;(HTTP GET)&lt;/strong&gt; işimiz nispeten &amp;ccedil;ok daha kolay olmaktadır. Basit bir tarayıcı uygulama bu iş i&amp;ccedil;in yeterlidir. Peki ya istemci,&amp;nbsp;bir geliştirici tarafından yazılacak ve s&amp;ouml;z konusu REST bazlı koleksiyon servisini t&amp;uuml;ketecek bir uygulama olacaksa... &lt;img title="Undecided" src="/editors/tiny_mce3/plugins/emotions/img/smiley-undecided.gif" alt="Undecided" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bir geliştirici olarak olayı son derece basit bir şekilde d&amp;uuml;ş&amp;uuml;nebiliriz. Nitekim &lt;strong&gt;Fiddler&lt;/strong&gt; veya &lt;strong&gt;Internet Explorer&lt;/strong&gt; gibi bir tarayıcının yaptıkları, i&amp;ccedil;eride gereki &lt;strong&gt;HTTP&lt;/strong&gt; paketinin hazırlanması ve karşı tarafa g&amp;ouml;nderilmesidir. &amp;Ccedil;ok &amp;ccedil;ok eskiden galaksinin uzak bir diyarında(a long time ago in a galaxy far far away), Web servislerinin kullanılmasında &lt;strong&gt;SOAP&lt;/strong&gt; paketlerinin manuel olarak nasıl hazırlanıp g&amp;ouml;nderilebileceğini ve servisten d&amp;ouml;nen cevapların nasıl ele alınabileceğini&amp;nbsp;incelemiştim(2006 yılında). O &amp;ouml;rnekte de &lt;strong&gt;SOAP zarflarının(SOAP Envelope)&lt;/strong&gt;&amp;nbsp;&lt;strong&gt;.Net&lt;/strong&gt; tipleri yardımıyla manuel olarak hazırlanıp g&amp;ouml;nderilmesi s&amp;ouml;z konusuydu. E tabi aradan yıllar ge&amp;ccedil;er, WCF gibi &amp;ccedil;ok g&amp;uuml;&amp;ccedil;l&amp;uuml; bir &lt;strong&gt;SOA(Service Oriented Architecture)&lt;/strong&gt;&amp;nbsp;&amp;ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml; ortaya &amp;ccedil;ıkar.&lt;/p&gt;
+&lt;p&gt;Bildiğiniz gibi &lt;strong&gt;.Net Framework 3.5&lt;/strong&gt; ile birlikte WCF' in kazandığı web programlama modeli sayesinde de, REST bazlı geliştirmelerin yapılabilmesi olanaklı hale gelmiştir. Ayrıca, &lt;strong&gt;WCF Rest Starter Kit&lt;/strong&gt; ile işlemlerin biraz daha kolaylaştırılması m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. İstemci tarafını geliştirirkende bu kit ile birlikte gelen yardımcı tipler ve belkide en &amp;ouml;nemlisi &lt;strong&gt;genişletme metodlarından(Extension Methods)&lt;/strong&gt;&amp;nbsp;yararlanılmaktadır. &amp;Ouml;yleyse yeni bir maceraya yelken a&amp;ccedil;alım ve bir &amp;ouml;nceki yazımızda geliştirdiğimiz &lt;strong&gt;WCF Rest Collection Service&lt;/strong&gt; projesi i&amp;ccedil;erisinde yayımlanan hizmeti, basit bir WinForms uygulamasından t&amp;uuml;ketmeye &amp;ccedil;alışalım.&lt;/p&gt;
+&lt;p&gt;Bu ama&amp;ccedil;la ilk olarak bir Windows projesi a&amp;ccedil;arak yola koyuluyoruz. Sonrasında ise projemiz i&amp;ccedil;in gerekli olan bazı referansları eklememiz gerekiyor.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblg6_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Burada g&amp;ouml;r&amp;uuml;len &lt;strong&gt;Microsoft.Http.dll&lt;/strong&gt;, &lt;strong&gt;Microsoft.Http.Extension.dll&lt;/strong&gt; ve &lt;strong&gt;Microsoft.ServiceModel.Web.dll&lt;/strong&gt; &lt;strong&gt;assmebly'&lt;/strong&gt; lar, &lt;strong&gt;WCF Rest Stater Kit&lt;/strong&gt; ile birlikte gelen ve istemci tarafından REST bazlı WCF servislerinin t&amp;uuml;ketilmesinde kullanılan pek &amp;ccedil;ok yardımcı tipi ve &amp;uuml;yeyi&amp;nbsp;i&amp;ccedil;ermektedir. Bu muhakkakki geliştrici olarak bizleri sevindiren bir gelişmedir.&amp;nbsp;&lt;img title="Cool" src="/editors/tiny_mce3/plugins/emotions/img/smiley-cool.gif" alt="Cool" border="0" /&gt; Sonraki adımda ise servis tarafından yayımlanan Product tipi ve buna ait &amp;ouml;rnekleri i&amp;ccedil;eren koleksiyon bazlı listenin istemci tarafında bir şekilde temsil edilmesi gerekmektedir. Nitekim, istemciden gidecek talep sonrası(&amp;ouml;rneğin t&amp;uuml;m &amp;uuml;r&amp;uuml;n listesinin istenmesi) servisten gelecek cevap i&amp;ccedil;eriği XML tabanlı olacaktır ve kod tarafında kolay bir şekilde y&amp;ouml;netilebilmesi arzu edilir. İşte bu noktada da WCF Rest Starter Kit kurulumu sonrası &lt;strong&gt;Visual Studio 2008'&lt;/strong&gt; e eklenen &lt;strong&gt;Paste XML as Types&lt;/strong&gt; men&amp;uuml; se&amp;ccedil;eneği dikkati &amp;ccedil;ekmektedir. Aslında yapacağımız tek şey, istemci tarafında boş bir &lt;strong&gt;namespace&lt;/strong&gt; oluşturmak(adını NorthwindV2 olarak verebiliriz), servisi bir kere kullanıp t&amp;uuml;m &amp;uuml;r&amp;uuml;n listesini istedikten sonra &amp;uuml;retilen &lt;strong&gt;XML&lt;/strong&gt; i&amp;ccedil;eriğini tamamıyla kopyalamak ve &lt;strong&gt;Paste XML as Types&lt;/strong&gt; men&amp;uuml; se&amp;ccedil;eneği ile yapıştırmaktır. &lt;img title="Laughing" src="/editors/tiny_mce3/plugins/emotions/img/smiley-laughing.gif" alt="Laughing" border="0" /&gt;&amp;nbsp;Bunun sonucunda istemci uygulama tarafında aşağıdaki sınıf diagramında g&amp;ouml;r&amp;uuml;len tipler otomatik olarak oluşturulacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblg6_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi istemci tarafında, servisten gelen koleksiyon bazlı i&amp;ccedil;eriği &lt;strong&gt;y&amp;ouml;netimli kod(Managed Code)&lt;/strong&gt;&amp;nbsp;tarafında temsil edebilmemiz i&amp;ccedil;in gerekli t&amp;uuml;m tipler oluşturulmuştur. Ama Oz b&amp;uuml;y&amp;uuml;c&amp;uuml;s&amp;uuml;n&amp;uuml;n yardımları sadece buraya kadardır. Artık developer olarak bizim direksiyonun başına ge&amp;ccedil;memiz gerekiyor. Peki ama neden? &amp;Ouml;ncelikli olarak amacımızı belirtelim. İlk etapta t&amp;uuml;m &amp;uuml;r&amp;uuml;n listesini istemci uygulama tarafına &amp;ccedil;ekebilmek istiyoruz. Bu ama&amp;ccedil;la aşağıdaki ekran g&amp;ouml;r&amp;uuml;t&amp;uuml;s&amp;uuml;ne sahip basit bir &lt;strong&gt;WinForm&lt;/strong&gt; ' umuz olduğunu d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblg6_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Form &amp;uuml;zerindeki &lt;strong&gt;Button&lt;/strong&gt; kullanıldığında, servis tarafından talep edilen &amp;uuml;r&amp;uuml;n listesini &lt;strong&gt;DataGridView&lt;/strong&gt; kontrol&amp;uuml;nde g&amp;ouml;stermeyi ilk hedefimiz olarak se&amp;ccedil;ebiliriz. Burada &amp;ouml;nemli olan noktalardan birisi &lt;strong&gt;talebin(Request)&lt;/strong&gt; oluşturulması, servise &lt;strong&gt;GET&lt;/strong&gt; metoduna g&amp;ouml;re g&amp;ouml;nderilmesi ve gelen &lt;strong&gt;cevap(Response)&lt;/strong&gt; i&amp;ccedil;erisinde yer alan &lt;strong&gt;XML&lt;/strong&gt; i&amp;ccedil;eriğinin y&amp;ouml;netimli kod tarafında &lt;strong&gt;ItemInfoListItemInfoItem&lt;/strong&gt; tipine kadar indirgenebilmesidir. &amp;Ouml;yleyse kod i&amp;ccedil;eriğini aşağıdaki gibi oluşturalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Linq;
+using System.Net;
+using System.Windows.Forms;
+using System.Xml.Serialization;
+using Microsoft.Http;
+using NorthwindV2;
+
+namespace NorthwindClient
+{
+    public partial class Form1 : Form
+    {
+        // İstemci talepleri i&amp;ccedil;in kullanacağımız sınıf HttpClient
+        HttpClient client = null;
+        // Servis adresi (sondaki / işaretini unutmadım bu sefer)
+        string serviceUri="http://localhost:1000/Service.svc/";
+
+        public Form1()
+        {
+            InitializeComponent();
+            // HttpClient nesnemizi &amp;ouml;rnekliyoruz
+            client = new HttpClient();            
+        }
+
+        private void btnGetProducts_Click(object sender, EventArgs e)
+        {
+            // IDisposable interface' ini implemente eden HttpResponseMessage nesne &amp;ouml;rneğinin i&amp;ccedil;eriğinin HttpClient tipinin Get metodu yardımıyla elde ediyoruz. Get metodu parametre olarak servis adresini almakta.
+            using (HttpResponseMessage response = client.Get(serviceUri))
+            {                
+                // Eğer servis tarafından Http 200(yani OK) cevabı gelirse işlemler devam edecektir. Aksi durumda istisna mesajı fırlatılacaktır.
+                response.EnsureStatusIs(HttpStatusCode.OK);
+
+                // cevap olarak gelen paket i&amp;ccedil;eriği XML formatlıdır. Bu i&amp;ccedil;eriğin ItemInfoList tipine cast edilmesi ve y&amp;ouml;netimli kod ile ele alınabilmesi i&amp;ccedil;in ReadAsXmlSerializable&amp;lt;T&amp;gt; generic metodu kullanılır.
+                ItemInfoList products=response.Content.ReadAsXmlSerializable&amp;lt;ItemInfoList&amp;gt;();
+
+                // ilk olarak t&amp;uuml;m &amp;uuml;r&amp;uuml;nleri listeleriz. ToList metoduna generic parametre olarak, servis tarafındaki Product tipinin istemcide otomatik &amp;uuml;retilen karşılığı olan ItemInfoListItemInfoItem sınıfı verilmiştir, buna dikkat edelim.
+                grdProducts.DataSource = (from p in products.ItemInfo
+                                          select p.Item).ToList&amp;lt;ItemInfoListItemInfoItem&amp;gt;();               
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Burada dikkat edilmesi gereken noktalardan biriside &lt;strong&gt;HttpClient&lt;/strong&gt; tipine ait nesne &amp;ouml;rneği yardımıyla &lt;strong&gt;Get&lt;/strong&gt; metodunun kullanılışıdır. Parametrenin servis adresini g&amp;ouml;steriyor olması aslında,&lt;strong&gt; HTTP Get&lt;/strong&gt; metoduna g&amp;ouml;re &lt;strong&gt;http://localhost:1000/Service.svc/&lt;/strong&gt; adresine bir talep g&amp;ouml;nderiliyor olması anlamına gelmektedir. Eğer istemci tarafından &lt;strong&gt;Post, Put&lt;/strong&gt; veya &lt;strong&gt;Delete&lt;/strong&gt; talepleri g&amp;ouml;nderilmek isteniyorsa yine &lt;strong&gt;HttpClient&lt;/strong&gt; nesne &amp;ouml;rneği &amp;uuml;zerinden aynı isimli metodlar kullanılabilir. Bu metodlar aslında aşağıdaki şekildende g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere,&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblg6_8.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;HttpMethodExtension&lt;/strong&gt; sınıfı i&amp;ccedil;erisinde yazılmış genişletme metodlarıdır.&lt;/p&gt;
+&lt;p&gt;Form uygulamamızı ilk haliyle &amp;ccedil;alıştırıp testlerimize başlayabilir. Tabi burada k&amp;uuml;&amp;ccedil;&amp;uuml;k bir ayrıntıyı g&amp;ouml;zden ka&amp;ccedil;ırmamak gerekiyor. Servis &amp;ouml;rneğinin &amp;ccedil;alışıyor olmasına dikkat etmeliyiz. &amp;Ouml;rnekte geliştirdiğim &lt;strong&gt;NorthwindV2&lt;/strong&gt; servis uygulaması,&amp;nbsp;&lt;strong&gt;Asp.Net Development Server&lt;/strong&gt; &amp;uuml;zerinden &lt;strong&gt;Host&lt;/strong&gt; edildiğinden manuel olarak &amp;ccedil;alıştırılıyor olması gerekebilir. İşte ilk sonu&amp;ccedil;lar;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblg6_5.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere t&amp;uuml;m Product bilgileri istemci tarafına gelmiştir. Tabiki koleksiyon i&amp;ccedil;eriğini istemci tarafına indirdikten sonra sorgularıda istediğimiz şekilde değiştirebiliriz. &amp;Ouml;rneğin;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt; grdProducts.DataSource = (from p in products.ItemInfo
+                                          where p.Item.CategoryID == 1
+                                          select p.Item).ToList&amp;lt;ItemInfoListItemInfoItem&amp;gt;();&lt;/pre&gt;
+&lt;p&gt;kodunu denediğimizde kategorisi 1 olan &amp;uuml;r&amp;uuml;nlerin getirilmesi sağlanacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblg6_6.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Hatta istersek &lt;strong&gt;anoymous type(isimsiz tip)&lt;/strong&gt; kullanımıda s&amp;ouml;z konusu olabilir. S&amp;ouml;z gelimi&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;grdProducts.DataSource = (from p in products.ItemInfo
+                                          where p.Item.CategoryID == 1
+                                          select new
+                                          {
+                                              Key = p.Item.ProductID,
+                                              p.Item.ProductName,
+                                              p.Item.CategoryID,
+                                              p.Item.UnitsInStock
+                                          }).ToList();&lt;/pre&gt;
+&lt;p&gt;kodu ile sadece &lt;strong&gt;ProductID&lt;/strong&gt;, &lt;strong&gt;ProductName&lt;/strong&gt;, &lt;strong&gt;CategoryID&lt;/strong&gt; ve &lt;strong&gt;UnitsInStock&lt;/strong&gt; alanlarını i&amp;ccedil;eren bir isimsiz tip topluluğunu &lt;strong&gt;DataGridView&lt;/strong&gt; i&amp;ccedil;erisinde g&amp;ouml;sterilmesi sağlanabilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblg6_7.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Gayet kolay g&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi. Artık hedefimiz &lt;strong&gt;Post, Put&lt;/strong&gt; ve &lt;strong&gt;Delete&lt;/strong&gt; metodlarını istemci tarafından g&amp;ouml;nderip ele alabilmek. Yazıyı sonlandırmadan &amp;ouml;nce aslında bu modelin ne gibi bir farkı olduğuna bakmakta yarar var.&amp;nbsp;Dikkat edileceği &amp;uuml;zere&amp;nbsp;istemci tarafı i&amp;ccedil;in &amp;uuml;rettiğimiz herhangibir &lt;strong&gt;Proxy&lt;/strong&gt; tipi &lt;span style="text-decoration: underline;"&gt;bulunmamaktadır&lt;/span&gt;. (Hi&amp;ccedil; &lt;strong&gt;Add Service Reference&lt;/strong&gt; dediğimi duydunuz mu? &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;)&lt;/p&gt;
+&lt;p&gt;Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2009-04-23 12:12:00</pubDate>
+  <slug>Rest-Tabanlı-WCF-Servisleri-icin-Istemci-Yazmak</slug>
+  <tags>
+    <tag>wcf</tag>
+    <tag>rest</tag>
+  </tags>
+  <categories>
+    <category>WCF</category>
+  </categories>
+</post>

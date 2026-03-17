@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Asp.Net Core - Dependency Injection Türleri</title>
+  <description>Hatırlayacağınız üzere bir önceki yazımızda Asp.Net 5 tarafında nasıl Hello World diyebileceğimizi incelemeye çalışmıştık(Henüz okumadıysanız bir göz atmanızda yarar var) Bu deneyimde ana odak noktamız dahili Dependency Injection mekanizmasının nasıl kullanıldığını görmekti. Kobay senaryomuzdaki en önemli noktalardan birisi de GameController sınıfı içerisinde IGameRepository yardımıyla low-level bir bileşenin kullanılmasıydı. Burada Constructor Injection tekniğinden yararlandığımızı ifade etmiştik. Bu teknik dışında kullanabileceğimiz versiyonlar da var. Metot üzerinden, bir Property yardımıyla ve Asp.Net MVC 6 ile gelen @inject direktifi yoluyla, nesne bağımlılıklarını çözümleyebiliriz. İşte bu yazımızdaki amacımız aynı senaryoyu devam ettirerek söz konusu tekniklerin nasıl uygulanabileceğini öğrenmektir. Hazırsanız başlayalım.</description>
+  <content>&lt;p&gt;&lt;img src="/image.axd?picture=/2021/Nisan/hellomvc_7.png" alt="" align="right" /&gt;Ayakta durmuş odanın camından dışarıyı izlerken yazıya nasıl bir giriş yapsam diye d&amp;uuml;ş&amp;uuml;n&amp;uuml;yordum. Baharın etkisi ile yapraklarını a&amp;ccedil;mış meşenin yavaş yavaş g&amp;ouml;lgelediği caddeden İtalyan bayrağı kasklı bir motosikletli ge&amp;ccedil;ti aniden. Sadece birka&amp;ccedil; metre gerisinden de onu&amp;nbsp;neredeyse aynı s&amp;uuml;ratle takip eden martıya binmiş bir gen&amp;ccedil;. Kaldırımda bir elinde alışveriş poşeti &amp;ouml;tekinde onu yola doğru &amp;ccedil;ekiştiren haylazla birlikte y&amp;uuml;r&amp;uuml;meye &amp;ccedil;alışan orta yaşlarında bir kadın. Hemen binanın &amp;ouml;n&amp;uuml;ndeki basket sahasında da yaşları&amp;nbsp;beş ile on beş arasında değişen on &amp;ccedil;ocuk. Futbol oynuyorlar. Bağrışlar, &amp;ccedil;ağrışlar. &amp;Ccedil;ekişmeli de gidiyor ama herkesin y&amp;uuml;z&amp;uuml;nde bir maske.&amp;nbsp;Eve kapanmak zorunda kalmadan &amp;ouml;nce &amp;ccedil;ocukların son bir bahar ziyafetini izliyorum diye i&amp;ccedil; ge&amp;ccedil;iriyorum.&lt;/p&gt;
+&lt;p&gt;On yedi g&amp;uuml;nl&amp;uuml;k evden &amp;ccedil;ıkma yasaklarının bir g&amp;uuml;n &amp;ouml;ncesi &amp;ccedil;&amp;uuml;nk&amp;uuml; bug&amp;uuml;n, 29 Nisan 2021 Perşembe. Pek tabii hayat evde de olsa devam ediyor. Bende bu&amp;nbsp;d&amp;ouml;nemi iyi değerlendirmek adına yaz aylarında vereceğim şirket eğitimleri i&amp;ccedil;in Amazon'dan getirttiğim kitapları &amp;ccedil;alışmaya ağırlık vereyim diyorum. Malum .Net 5 g&amp;uuml;ld&amp;uuml;r g&amp;uuml;ld&amp;uuml;r geleli &amp;ccedil;ok oldu ve orada&amp;nbsp;&amp;ouml;ğrenmem gereken bir&amp;ccedil;ok konu&amp;nbsp;birikti.&amp;nbsp;En &amp;ouml;nemli şey ise &amp;ouml;ğrendiğim bir konuyu olabildiğince basit şekilde anlatabilmek. Bakalım bu yazıda bunu başarabilecek miyim?&lt;/p&gt;
+&lt;p&gt;Hatırlayacağınız &amp;uuml;zere &lt;a href="/post/asp-net-core-a-nasil-merhaba-deriz" target="_blank"&gt;bir &amp;ouml;nceki yazımızda&lt;/a&gt; Asp.Net 5 tarafında nasıl Hello World diyebileceğimizi incelemeye &amp;ccedil;alışmıştık&lt;em&gt;(Hen&amp;uuml;z okumadıysanız bir g&amp;ouml;z atmanızda yarar var)&lt;/em&gt;&amp;nbsp;O &amp;ccedil;alışmada&amp;nbsp;ana odak noktamız dahili Dependency Injection mekanizmasının nasıl kullanıldığını g&amp;ouml;rmekti. Kobay senaryomuzdaki en &amp;ouml;nemli noktalardan birisi de GameController sınıfı i&amp;ccedil;erisinde IGameRepository yardımıyla low-level bir bileşenin kullanımıydı. Burada Constructor Injection tekniğinden yararlandığımızı ifade etmiştik. Bu teknik dışında kullanabileceğimiz versiyonlar da var. Bağımlı nesne &amp;ccedil;&amp;ouml;z&amp;uuml;mlemesini metot &amp;uuml;zerinden, Property yardımıyla ve Asp.Net MVC 6 ile gelen @inject direktifi yoluyla da ger&amp;ccedil;ekleştirebiliriz. İşte bu yazımızdaki amacımız aynı senaryoyu devam ettirerek s&amp;ouml;z konusu tekniklerin nasıl uygulanabileceğini &amp;ouml;ğrenmek. Yazıdaki kod par&amp;ccedil;aları&amp;nbsp;&lt;a href="https://github.com/buraksenyurt/hands-on-aspnetcore-di" target="_blank"&gt;şuradaki github hesabımda&lt;/a&gt;&amp;nbsp;yer alıyor. Initial, constructor-injection, method-injection, property-injection ve view-injection şeklinde farklı branch'ler i&amp;ccedil;eriyor. Bu branch'lerde ilgili tekniklerin proje &amp;uuml;st&amp;uuml;nden ayrı ayrı uygulanış şekillerini takip edebilirsiniz. Yazı boyunca ise odak noktamızı kaybetmemek adına sadece gerekli kod par&amp;ccedil;alarını kullanacağım. Paralel hareket etmeniz gerekebilir. Hazırsanız başlayalım;&lt;/p&gt;
+&lt;h2&gt;Method Injection&lt;/h2&gt;
+&lt;p&gt;Aslında&amp;nbsp;yapıcı metot(Constructor)&amp;nbsp;bir metottur. Dolayısıyla neden bu şekilde farklı bir uygulama tekniği olduğunu d&amp;uuml;ş&amp;uuml;nebilirsiniz. Ne var ki, Constructor tekniğinde bağımlı nesnenin &amp;ccedil;&amp;ouml;z&amp;uuml;mlenmesi&lt;em&gt;(DI'ın Resolution aşaması) &lt;/em&gt;ona ihtiya&amp;ccedil; duyan nesne &amp;ouml;rneklenirken ger&amp;ccedil;ekleşir. Bazı durumlarda sadece belli bir metot i&amp;ccedil;erisinden kullanılan&amp;nbsp;bağımlı nesneler de olabilir. Sanırım &amp;ouml;rnek bir senaryo &amp;uuml;zerinden gidersek konu daha anlaşılır olacak.&lt;/p&gt;
+&lt;p&gt;Oyun portaline yenilerini eklemek i&amp;ccedil;in bir fonksiyon yazacağımızı d&amp;uuml;ş&amp;uuml;nelim. Ayrıca her oyun eklendiğinde bir dış sisteme mesajla bildirim yapamak istiyoruz. RabbitMQ gibi bir kuyruk sistemi, veritabanı ya da doğrudan e-posta&amp;nbsp;sunucusu bile olabilir. En nihayetinde GameRepository'nin Create metodu i&amp;ccedil;erisinde bu g&amp;ouml;nderim işlemini yapmaya karar veriyoruz. Bununla birlikte mesaj yayınlama işini &amp;uuml;stlenen asıl sınıfı kullanmak yerine, sadece g&amp;ouml;nder demenin daha doğru olacağını da biliyoruz. &amp;Ccedil;&amp;uuml;nk&amp;uuml; bu sıkı bağlı&lt;em&gt;(tightly-coupled)&lt;/em&gt; yapıda s&amp;ouml;z konusu olan xyz sistemi i&amp;ccedil;in gerekli g&amp;ouml;nderim adımlarını, bununla ilgisi olmayan GameRepository sınıfının anlamasına gerek yok. Hatta tightly-coupled durumlarda ısrarla ka&amp;ccedil;ınmaya da &amp;ccedil;alışıyoruz. Haydi gelin kodlamaya başlayalım. İlk olarak IPublisher isimli bir aray&amp;uuml;z geliştirelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public interface IPublisher
+{
+	void Send(string message);
+}&lt;/pre&gt;
+&lt;p&gt;IPublisher aray&amp;uuml;z&amp;uuml; senaryomuz i&amp;ccedil;in olduk&amp;ccedil;a ilkel bir s&amp;ouml;zleşme sunuyor. Geriye değer d&amp;ouml;nd&amp;uuml;rmeyen ve string tipte parametre alan Send isimli bir metot bildirimi taşıyor.&amp;nbsp;Bu aray&amp;uuml;z&amp;uuml; kullanan &amp;ouml;rnek bir sınıfı da aşağıdaki gibi geliştirdiğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public class RabbitPublisher
+	: IPublisher
+{
+	public void Send(string message)
+	{
+	   //todo something
+	}
+}&lt;/pre&gt;
+&lt;p&gt;Biliyorum, fonksiyon i&amp;ccedil;erisinde bir şey yapmıyoruz ama unutmayın; amacımız Method Injection'ı uygulamak. Bu durumda GameRepository sınıfı i&amp;ccedil;in d&amp;uuml;ş&amp;uuml;nd&amp;uuml;ğ&amp;uuml;m&amp;uuml;z Create metodunu nasıl yazarız, bir d&amp;uuml;ş&amp;uuml;n&amp;uuml;n. İdeal olanı aşağıdaki kod par&amp;ccedil;asında olduğu gibidir.&lt;em&gt;(Bu arada IGameRepository aray&amp;uuml;z&amp;uuml;nde de Create bildiriminin yapılması gerektiğini hatırlatayım. Nitekim IGameRepository &amp;uuml;st&amp;uuml;nden kullanacağımız bir fonksiyon olmalı)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public Game Create(Game game, IPublisher publisher)
+{
+	publisher.Send("A new game has been added to inventory");
+	return game;
+}&lt;/pre&gt;
+&lt;p&gt;Metodun belki de en &amp;ouml;nemli kısmı ikinci parametresidir ve IPublisher aray&amp;uuml;z referansı kullanılmaktadır. Dolayısıyla onu uygulayan bir nesneyi metot i&amp;ccedil;erisine alabilir ve Send fonksiyonunu &amp;ccedil;ağırabiliriz. Bir başka deyişle Create metodunun ihtiyacı olan asıl nesne aray&amp;uuml;z &amp;uuml;zerinden kullanılır. Bu, Method Injection tekniği ile bağımlılığın &amp;ccedil;&amp;ouml;z&amp;uuml;mlenmesidir. Ancak ortada halen daha bir soru var. Create metodunun hangi IPublisher t&amp;uuml;revi ile &amp;ccedil;alışacağını nerede s&amp;ouml;yleyeceğiz? Yani bağımlı nesne i&amp;ccedil;in gerekli kayıt işlemini&lt;em&gt;(Dependency Injection Service Registration)&lt;/em&gt; nerede yapacağız? Tahmin edileceği &amp;uuml;zere bu sorunun cevabı Create metodunun &amp;ccedil;ağırıldığı yerdir ve GameController sınıfındaki Create metodu bunun i&amp;ccedil;in uygundur.&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[HttpPost]
+public IActionResult Create(Game game)
+{
+	_gameRepository.Create(game, new RabbitPublisher());
+	return RedirectToAction("Index");
+}&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere ikinci parametrede bir RabbitPublisher nesne &amp;ouml;rneği kullanılıyor. Yani Create metodunun ihtiya&amp;ccedil; duyduğu asıl nesneyi metot &amp;uuml;zerinden g&amp;ouml;ndermiş oluyoruz.&amp;nbsp;&lt;/p&gt;
+&lt;h2&gt;Property Injection&lt;/h2&gt;
+&lt;p&gt;Yukarıdaki senaryoyu d&amp;uuml;ş&amp;uuml;nd&amp;uuml;ğ&amp;uuml;m&amp;uuml;zde aklımıza ş&amp;ouml;yle bir soru da gelebilir; ortada bir IPublisher referansı yoksa Send metodunun &lt;span style="text-decoration: underline;"&gt;&amp;ccedil;alışmamasını&lt;/span&gt; nasıl sağlarız? Yani Create metodunun IPublisher ile &amp;ccedil;alışmasını opsiyonel olarak sunmak istersek nasıl bir yol izleriz? Bu senaryo i&amp;ccedil;in IGameRepository aray&amp;uuml;z&amp;uuml;n&amp;uuml; aşağıdaki gibi değiştirelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public interface IGameRepository
+{
+	IEnumerable&amp;lt;Game&amp;gt; GetAllGames();
+	IPublisher Publisher { get; set; }
+	Game Create(Game game);
+}&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere Create metodunun parametresi olarak kullandığımız IPublisher aray&amp;uuml;z&amp;uuml;n&amp;uuml;, &amp;ouml;zellik olarak tip seviyesine aldık. &amp;Ccedil;ok doğal olarak GameRepository sınıfının i&amp;ccedil;eriği de buna uygun şekilde değiştirilmeli.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;public class GameRepository
+	: IGameRepository
+{
+	public IPublisher Publisher { get; set; }
+	public IEnumerable&amp;lt;Game&amp;gt; GetAllGames()
+	{
+		return new List&amp;lt;Game&amp;gt;
+		{
+			new Game{ Id=1, Title="Commandos II",ListPrice=10.5M },
+			new Game{ Id=2, Title="Prince of Persia",ListPrice=9.45M },
+			new Game{ Id=3, Title="Prince of Persia",ListPrice=9.45M }
+		};
+	}
+
+	public Game Create(Game game)
+	{
+		if (Publisher != default)
+			Publisher.Send("A new game has been added to inventory");
+		return game;
+	}
+}&lt;/pre&gt;
+&lt;p&gt;L&amp;uuml;tfen Create metodunun i&amp;ccedil;erisindeki if kullanımına dikkat edelim. Eğer IPublisher t&amp;uuml;r&amp;uuml;nden olan Publisher isimli &amp;ouml;zellik&lt;em&gt;(property)&lt;/em&gt; ger&amp;ccedil;ekten bir nesne referansı taşıyorsa Send metodu &amp;ccedil;ağırılacaktır. B&amp;ouml;ylece Create metodunun bağımlılığını property seviyesine &amp;ccedil;ekerek tercihe bırakmış olduk. Tabii bağımlı nesnenin kayıt işlemini de yapacağımız bir yer olmalı &amp;ouml;yle değil mi? Yine GameController sınıfındaki Create metodunda bunu yapabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[HttpPost]
+public IActionResult Create(Game game)
+{
+	_gameRepository.Publisher = new RabbitPublisher();
+	_gameRepository.Create(game);
+	return RedirectToAction("Index");
+}&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere _gameRepository nesnesinin&lt;em&gt;(ki o da GameController sınıfına Constructor &amp;uuml;zerinden enjekte edilmektedir)&lt;/em&gt; Publisher &amp;ouml;zelliğine yeni bir RabbitPublisher referansı atadık. Dolayısıyla Create metodu &amp;ccedil;ağrıldığında RabbitMQ'ya mesaj g&amp;ouml;nderen asıl fonksiyon işleyecektir. Lakin Publisher &amp;ouml;zelliğine bir atama yapılmazsa herhangi bir g&amp;ouml;nderim işlemi de olmayacaktır. Se&amp;ccedil;ime bağlı bu nesne &amp;ccedil;&amp;ouml;z&amp;uuml;mlemesi i&amp;ccedil;in Property Injection tekniğini nasıl kullanacağımızı da g&amp;ouml;rm&amp;uuml;ş olduk.&lt;/p&gt;
+&lt;h2&gt;View Injection&lt;/h2&gt;
+&lt;p&gt;Aslında Asp.Net tarafına MVC 6 ile birlikte gelen ve genel Dependency Injection teknikleri i&amp;ccedil;erisinde olmadığını d&amp;uuml;ş&amp;uuml;nd&amp;uuml;ğ&amp;uuml;m bir y&amp;ouml;ntem daha var. @inject direktifinin kullanımı. MVC/MVVM desenlerinde bir View'u, Controller'dan veya View-Model'den ayrıştırmak istediğimiz durumlarda kullanabileceğimiz bir y&amp;ouml;ntem olarak karşımıza &amp;ccedil;ıkıyor.&amp;nbsp;Y&amp;ouml;ntem sayesinde DI Container &amp;uuml;st&amp;uuml;nden kayıt edilen bir nesne veya servis metodunun View &amp;uuml;st&amp;uuml;nden doğrudan &amp;ccedil;ağrılması sağlanabiliyor. Senaryomuzda portaldeki hareketliliklerle ilgili veri toplayan ve &amp;ouml;rneğin aktif kullanıcıların sayısını veren aşağıdaki gibi bir&amp;nbsp;sınıf olduğunu d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public class DataCollectorService
+{
+	public async Task&amp;lt;int&amp;gt; GetActiveUserCount()
+	{
+		return await Task.FromResult(new Random().Next(10,50));
+	}
+}&lt;/pre&gt;
+&lt;p&gt;DataCollectorService i&amp;ccedil;erisindeki GetActiveUserCount metodunun ne iş yaptığının &amp;ccedil;ok &amp;ouml;nemi yok ama bu metodu bir View bileşeninde aşağıdaki gibi doğrudan kullanmamız m&amp;uuml;mk&amp;uuml;n.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;@inject C64Portal.Agent.DataCollectorService dataCollectorService
+
+&amp;lt;div&amp;gt;
+    &amp;lt;h2&amp;gt;Envanterdeki C64 Oyunları&amp;lt;/h2&amp;gt;
+    &amp;lt;hr /&amp;gt;
+    &amp;lt;h3&amp;gt;Current active user count is @await dataCollectorService.GetActiveUserCount() &amp;lt;/h3&amp;gt;
+
+
+&amp;lt;/div&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Tabii &amp;ouml;rneği bu haliyle &amp;ccedil;alıştırıp Inventory sayfasına gitmek istersek ka&amp;ccedil;ınılmaz olarak aşağıdaki hata mesajı ile karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2021/Nisan/hellomvc_5.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;View nesnesi bir nesne &amp;ccedil;&amp;ouml;z&amp;uuml;mlemek istemektedir ancak bu nesne dahili DI Container'ın servis koleksiyonunda yer almamaktadır. Dolayısıyla Startup sınıfındaki ConfigureServices metodunda DataCollectorService isimli servis i&amp;ccedil;in bir kayıt işlemi yapılmalıdır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public void ConfigureServices(IServiceCollection services)
+{
+	services.AddControllersWithViews();
+
+	services.AddTransient&amp;lt;IGameRepository, GameRepository&amp;gt;();
+	services.AddTransient&amp;lt;DataCollectorService&amp;gt;();
+}&lt;/pre&gt;
+&lt;p&gt;Sonrasında uygulamanın sorunsuz &amp;ccedil;alıştığı g&amp;ouml;zlemlenebilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2021/Nisan/hellomvc_6.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu ve &amp;ouml;nceki yazıyla birlikte Asp.Net 5'in temel Dependency Injection uygulama tekniklerini g&amp;ouml;rm&amp;uuml;ş olduk. Tabii Dependency Injection konusu bunlarla bitmiyor. ConfigureServices metodunda servisleri kayıt altına alırken hep AddTransient metodunu kullandığımızı fark etmiş olmalısınız. Oysa ki AddScope ve AddSingleton metotları da var. Yani kayıt altına alınan bir DI servisinin hangi anda &amp;ouml;rnekleneceğini ve yaşam &amp;ouml;mr&amp;uuml;n&amp;uuml;n ne olacağını da belirleyebiliyoruz. Bu konu ile ilgili fırsatım olursa bir şeyler karalamaya &amp;ccedil;alışacağım. B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize sağlıklı g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2021-04-29 11:03:00</pubDate>
+  <slug>asp-net-core-dependency-injection-turleri</slug>
+  <tags>
+    <tag>dependency-injection</tag>
+    <tag>aspnet-core</tag>
+    <tag>aspnet-core-mvc</tag>
+    <tag>net-5</tag>
+    <tag>method-injection</tag>
+    <tag>property-injection</tag>
+    <tag>view-injection</tag>
+    <tag>di-container</tag>
+  </tags>
+  <categories>
+    <category>Asp.Net Core</category>
+  </categories>
+</post>

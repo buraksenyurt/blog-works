@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Go Web Sunucusunu Docker Üzerinden Yayınlamak</title>
+  <description>Uzun zamandır Go ile kod yazmıyordum. Özlediğimi ifade edebilirim. Özellikle de kurallarını ve basitliğini. Ana paketteki programın başlangıç noktası olan main içerisinde HandleFunc isimli fonksiyondan yararlanarak root adrese gelecek olan talepleri indexHandler isimli operasyona yönlendiriyoruz. indexHandler içerisinde ise çok basit bir HTML içeriği bastırmaktayız. Elle tutulur bir şeyler olması açısından güncel zaman bilgisini, işletim sistemini, işlemcinin türevini yazdırdıktan sonra 0 ile 100 arasında üretilecek rastgele bir sayı da basıyoruz.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2017/11/go_docker5.gif" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Gondor'da bir şeyler araştırmak i&amp;ccedil;in harika bir zaman. &amp;Ccedil;&amp;uuml;nk&amp;uuml; elimdeki işler bitti. B&amp;ouml;yle vakitleri kendi araştırmalarıma ayırmak hoşuma gidiyor, kim ne derse desin. Yeni g&amp;ouml;zdem Linux makinem de&lt;em&gt;(Gondor)&lt;/em&gt; &amp;ouml;n&amp;uuml;mde durduğuna g&amp;ouml;re kısa bir s&amp;uuml;re onun &amp;uuml;zerinde &amp;ccedil;alışabileceğimi d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum.&lt;/p&gt;
+&lt;p&gt;Aklıma gelen ilk şey ise, Go diliyle yazılmış ilkel bir web sunucusunu Docker&amp;nbsp;&amp;uuml;zerinden kullanabilmek&lt;em&gt;.&lt;/em&gt;&amp;nbsp;&amp;Ouml;nce web sunucusunu geliştirmek, başarılı bir şekilde &amp;ccedil;alıştığından emin olmak, sonrasında bir Docker imajı hazırlamak lazım. Ardından oluşturulan imajdan yararlanarak bir Container başlatıp web sunucusunun bu taşıyıcı &amp;ouml;rneği &amp;uuml;zerinden &amp;ccedil;alışıp &amp;ccedil;alışmadığını test etmek senaryonun tamamlanması a&amp;ccedil;ısından yeterli. Tahminlerime g&amp;ouml;re 15 dakikayı aşmayacak bir iş gibi duruyor. Haydi başlayalım.&lt;/p&gt;
+&lt;p&gt;Gondor'da a&amp;ccedil;tığım SimpleWebServer klas&amp;ouml;r&amp;uuml;ne aşağıdaki kod par&amp;ccedil;asını i&amp;ccedil;eren main.go isimli bir dosya ekleyerek ilerliyorum. Tabii buradaki ortamda GOPATH tanımlamalarını değiştirmiştim. $home\goprojects altında konuşlandırıyorum&amp;nbsp;&lt;em&gt;(Geliştirici arabirimi olarak Visual Studio Code' tan faydalanıyorum. Her zaman ki gibi &amp;ccedil;ok keyifli bir geliştirici deneyimi sunuyor. Size de tavsiye ederim)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;package main
+
+import(
+    "fmt"
+    "net/http"
+    "runtime"
+    "math/rand"
+    "time"
+)
+
+func indexHandler(w http.ResponseWriter,r *http.Request){
+    t:=time.Now()   
+    w.Header().Set("Content-Type","text/html; charset=utf-8")
+    fmt.Fprintf(w,"Gondor time : &amp;lt;b&amp;gt;(%s)&amp;lt;/b&amp;gt;&amp;lt;br/&amp;gt;We are running on &amp;lt;b&amp;gt;%s&amp;lt;/b&amp;gt; with an &amp;lt;b&amp;gt;%s&amp;lt;/b&amp;gt; CPU&amp;lt;br/&amp;gt;&amp;lt;i&amp;gt;Your lucky number&amp;lt;/i&amp;gt; &amp;lt;b&amp;gt;%d&amp;lt;/b&amp;gt;",t.Format(time.RFC1123),runtime.GOOS,runtime.GOARCH,rand.Intn(100))
+}
+
+func main(){
+    http.HandleFunc("/",indexHandler)
+    fmt.Println("listening...")
+    http.ListenAndServe(":8087",nil)    
+}&lt;/pre&gt;
+&lt;p&gt;Uzun zamandır Go ile kod yazmıyordum. &amp;Ouml;zlediğimi ifade edebilirim. &amp;Ouml;zellikle de kurallarını ve basitliğini. Ana paketteki programın başlangı&amp;ccedil; noktası olan main i&amp;ccedil;erisinde HandleFunc isimli fonksiyondan yararlanarak root adrese gelecek olan talepleri indexHandler isimli operasyona y&amp;ouml;nlendiriyoruz. indexHandler i&amp;ccedil;erisinde ise &amp;ccedil;ok basit bir HTML i&amp;ccedil;eriği bastırmaktayız. Elle tutulur bir şeyler olması a&amp;ccedil;ısından g&amp;uuml;ncel zaman bilgisini, işletim sistemini, işlemcinin t&amp;uuml;revini yazdırdıktan sonra 0 ile 100 arasında &amp;uuml;retilecek rastgele bir sayı da basıyoruz. İ&amp;ccedil;eriğin HTML tipinden olacağını Header'a ait Set fonksiyonu ile belirtmekteyiz. B&amp;ouml;ylece istemciye ulaşacak paketin html olarak yorumlanılması gerektiğini de s&amp;ouml;ylemiş oluyoruz. main i&amp;ccedil;erisinde yer alan ListenAndServe fonksiyonu da 8087&lt;em&gt;(istediğiniz bir portu kullanabilirsiniz tabii)&lt;/em&gt; nolu porttan yayın yapılmasını sağlamakta.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;İlk olarak kodun bu şekilde &amp;ccedil;alışıp &amp;ccedil;alışmadığını test etmek lazım. Terminalden&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;go run main.go&lt;/pre&gt;
+&lt;p&gt;komutunu vererek bu denemeyi yaşayabiliriz. Aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde &amp;ouml;rnek bir &amp;ccedil;alışma zamanına yer veriliyor. Ben bu g&amp;ouml;r&amp;uuml;nt&amp;uuml;y&amp;uuml; aldığımda yine g&amp;uuml;l&amp;uuml;msedim hafif&amp;ccedil;e.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/11/godocker_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Hedefimiz şu. Bu uygulamayı başlatıldığı zaman ayağa kaldıracak bir Docker imajı oluşturmak. Bunun yolu bildiğiniz gibi ilgili komutları i&amp;ccedil;erecek bir Dockerfile oluşturmaktan ge&amp;ccedil;iyor. main.go ile aynı lokasyona aşağıdaki i&amp;ccedil;eriğe sahip docker dosyasını ekleyerek ilerleyebiliriz.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;FROM golang
+
+ADD . /go/src/GoWebServer
+RUN go install GoWebServer
+ENTRYPOINT [ "/go/bin/GoWebServer" ]
+
+EXPOSE 8087&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;ncelikle resmi golang imajından feyz aldığımızı belirtelim. İlk satırda bunu belirtmekteyiz. Sonrasında kaynak kodun tamamını oluşturulan imaj i&amp;ccedil;erisindeki /go/src/GoWebServer adresine taşıyoruz. Tahmin edileceği &amp;uuml;zere golang imajındaki GOROOT ve GOPATH ortam ayarlamalarına uyan taşımalar yapılmakta. Bu path tanımlamaları ata imajda hazırlanmış. GOPATH tanımına g&amp;ouml;re kaynak kodları go/src altına atmamız gerekiyor. Sonrasında GoWebServer i&amp;ccedil;eriğini sisteme y&amp;uuml;kl&amp;uuml;yoruz&lt;em&gt;(Go Deployment)&lt;/em&gt; RUN ifadesinden sonra gelen komut bu işi yapmakta.&amp;nbsp;Container başlatıldığında giriş noktası olarak kurulumun ger&amp;ccedil;ekleştiği go/bin/GoWebServer klas&amp;ouml;r&amp;uuml;n&amp;uuml; işaret ediyoruz. Son olarak Container'ı localhost:8087 portu &amp;uuml;zerinden yayına a&amp;ccedil;ıyoruz.&lt;/p&gt;
+&lt;p&gt;Dosya hazırlandıktan sonra imajın oluşturulmasına başlayabiliriz. Bu tipik olarak Docker'ın Build operasyonu. Terminalden aşağıdaki komutu kullanarak inşayı başlatabiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo docker build -t go_rnd_server .&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/11/godocker_22.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;go_rnd_server isimli bir imaj oluşturduk. Eğer indirilmesi gereken i&amp;ccedil;erikler varsa sisteme y&amp;uuml;klenmesi i&amp;ccedil;in bir s&amp;uuml;re beklemek gerekebilir. Herhangibir hata alınmadıysa oluşturulan imajı kullanarak yeni bir Container&amp;nbsp;başlatabiliriz. Bunun i&amp;ccedil;in docker'ın run komutundan yararlanmak gerekiyor. -p den sonra gelen adres ile yayınlamanın hangi adresten yapılacağını da belirtmiş oluyoruz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo docker run -p 8087:8087 go_rnd_server&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/11/go_docker33.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nden de g&amp;ouml;r&amp;uuml;leceği gibi artık&amp;nbsp;docker &amp;uuml;zerinde konuşlandırdığımız Web sunucusuna gidebiliyoruz&lt;em&gt;(Biraz daha g&amp;uuml;l&amp;uuml;ms&amp;uuml;yorum)&lt;/em&gt; &amp;Ouml;rneği genişletmek tabii ki sizin elinizde. Burada Go ile yazılmış bir REST servis de sunulabilir. Hatta veri i&amp;ccedil;in Redis gibi bir yapı kullanılarak senaryo daha da heyecanlı hale getirilebilir&lt;em&gt;(En sevdiğiniz filmdeki s&amp;ouml;zlerin i&amp;ccedil;eren bir veri k&amp;uuml;mesinden kullanıcıya rastgele s&amp;ouml;zler yolladığınız bir &amp;ouml;rnek &amp;uuml;zerinde &amp;ccedil;alışabilirsiniz)&amp;nbsp;&lt;/em&gt;Bunlara ek olarak s&amp;ouml;z konusu Container'lardan bir ka&amp;ccedil;ının farklı port'lardan başlatılması da denenebilir. Bu m&amp;uuml;mk&amp;uuml;n olabilir mi şimdilik bilmiyorum ama denemek de istiyorum. &amp;Ouml;zellikle ortak veri kullanımları veya verinin t&amp;uuml;m Container'lar i&amp;ccedil;in eşleştirilmesi gibi epik senaryoları kafamda şekillendirmekte hen&amp;uuml;z zorlanıyorum.&lt;/p&gt;
+&lt;p&gt;Makaleme son vermeden &amp;ouml;nce &amp;ccedil;alışmakta olan Container'ı nasıl durduracağımızı da s&amp;ouml;yleyeyim.&amp;nbsp;Eğer bir Deploy işlemi ger&amp;ccedil;ekleştireceksek bunun &amp;ouml;ncesinde ilgili Container &amp;ouml;rneğinin durdurulması &amp;ouml;nerilmiş. İlk olarak var olan Container &amp;ouml;rneklerini g&amp;ouml;relim. Terminalden vereceğimiz aşağıdaki komutu bunu sağlayacaktır.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo docker ps -a&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/11/go_docker4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;alışmakta olan bir Container &amp;ouml;rneğini durdurmak i&amp;ccedil;in de ID değerini kullanabiliriz. Aşağıdaki gibi.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo docker stop fb3936d9f595&lt;/pre&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik kısa s&amp;uuml;reli faydası olan bir &amp;ouml;ğle arasının daha sonuna. Artık işin sırrı &amp;ouml;ğrenildi diyebilirim. Hakim olduğunuz bir dille basit bir Web sunucusu veya REST servisi yazıp Docker ile sunmayı deneyebilirsiniz. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2017-11-15 10:00:00</pubDate>
+  <slug>go-web-sunucusunu-docker-uzerinden-yayinlamak</slug>
+  <tags>
+    <tag>golang</tag>
+    <tag>go-programming-language</tag>
+    <tag>docker</tag>
+    <tag>container</tag>
+    <tag>web-hosting</tag>
+  </tags>
+  <categories>
+    <category>GoLang</category>
+  </categories>
+</post>

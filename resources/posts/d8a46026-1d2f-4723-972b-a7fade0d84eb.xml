@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Mountebank ile Mock Servis Desteği Sunmak</title>
+  <description>Mountebank, ne zamandır merak ettiğim ve denemek istediğim araçlardan birisiydi. Test senaryolarında kullanmak isteyeceğimiz mock servislerini kolayca inşa edebilmemize olanak sağlayan bir araç olarak tanımlayabilirim. Örneğin test kodumuz arka tarafta belki bir veritabanına bağlanan belki başka bir servis zincirini çağıran ya da farklı bağımlıkları olan bir servisi kullanmak zorunda olabilir. Normal şartlarda bu servisin ayakta olması zorunludur ki testimiz yürüsün. Ancak o anki test vakasının ilerleyen adımlarının çalışması için illaki bu servisin vereceği çıktıya ihtiyacımız yoktur. Test vakası adımlarının devamı için o servisin vereceği çıktının sanki verilmiş gibi yapılarak ilerlenilmesi tercih edilen yöntemlerdendir.</description>
+  <content>&lt;p&gt;&lt;img src="/image.axd?picture=/2020/skynet/34/mb.jpg" alt="" align="right" /&gt;Mountebank, ne zamandır merak ettiğim ve denemek istediğim ara&amp;ccedil;lardan birisiydi. Test senaryolarında kullanmak isteyeceğimiz mock servislerini kolayca inşa edebilmemize olanak sağlayan bir ara&amp;ccedil; olarak tanımlayabilirim. &amp;Ouml;rneğin test kodumuz arka tarafta belki bir veritabanına bağlanan belki başka bir servis zincirini &amp;ccedil;ağıran ya da farklı bağımlıkları olan bir servisi kullanmak zorunda olabilir. Normal şartlarda bu servisin ayakta olması zorunludur ki testimiz y&amp;uuml;r&amp;uuml;s&amp;uuml;n. Ancak o anki test vakasının ilerleyen adımlarının &amp;ccedil;alışması i&amp;ccedil;in illaki bu servisin vereceği &amp;ccedil;ıktıya ihtiyacımız yoktur. Test vakası adımlarının devamı i&amp;ccedil;in o servisin vereceği &amp;ccedil;ıktının sanki verilmiş gibi yapılarak ilerlenilmesi tercih edilen y&amp;ouml;ntemlerdendir.&lt;/p&gt;
+&lt;p&gt;&amp;Uuml;stelik kullandığı servisin hep aynı veri setini kullanarak &amp;ccedil;alışan bir testin, veri değişikliklerinden etkilenmemesi de istenebilir. B&amp;ouml;yle durumlarda asıl servismiş gibi hareket eden&lt;em&gt;(Sahtekar/Taklit&amp;ccedil;i gibi isimlendirebiliriz bunları)&lt;/em&gt; ama testin ihtiyacı olup asıl vakayı bozmayacak şekilde kullanılabilen servisleri test senaryosu i&amp;ccedil;erisine monte edebiliriz. Yani bir mock servis ile teste devam edelim diyebiliriz.&lt;/p&gt;
+&lt;p&gt;İşte Mountebank, mock servislerin host edilmesi noktasında olduk&amp;ccedil;a kullanışlı bir ara&amp;ccedil; olarak karşımıza &amp;ccedil;ıkıyor. Mountebank kendisi ile iletişim i&amp;ccedil;in REST API aray&amp;uuml;z&amp;uuml; sunuyor. Bu API'yi kullanarak Mountebank'a mock servisler eklenebiliyor. Yani bir mock servis ihtiyacımız varsa bunu Mountebank'a y&amp;uuml;klemek i&amp;ccedil;in HTTP Post &amp;ccedil;ağrısı ile bir şeyler g&amp;ouml;ndermemiz&lt;em&gt;(Stub'lardan oluşan Imposter akt&amp;ouml;rleri)&lt;/em&gt;&amp;nbsp;yeterli oluyor. Mountebank'ın CI/CD hatlarına da entegre edilebildiği ifade ediliyor&lt;em&gt;(ki hen&amp;uuml;z g&amp;ouml;z&amp;uuml;mle g&amp;ouml;rme şansım olmadı)&lt;/em&gt;&amp;nbsp;Bu &amp;ccedil;alışmamın amacı Heimdall&lt;em&gt;(Ubuntu-20.04)&lt;/em&gt; &amp;uuml;st&amp;uuml;nde onu deneyimlemek ve nasıl &amp;ccedil;alıştığını, ne gibi bir &amp;ccedil;&amp;ouml;z&amp;uuml;m sunduğunu anlayabilmek.&lt;/p&gt;
+&lt;h2&gt;Senaryo&lt;/h2&gt;
+&lt;p&gt;Mountebank sunucu uygulamasını ayağa kaldırırken kendisine otomatik olarak en az iki mock servisi kayıt edeceğiz. Bu servisleri imposter olarak g&amp;ouml;rebilmeli ve curl, postman veya herhangibir tarayıcıdan t&amp;uuml;ketebilmeliyiz. Ayrıca Mountebank sunucusu ayakta iken yine Postman gibi bir aracı kullanıp yeni bir mock servis bildirimini g&amp;ouml;nderebilmemiz gerekiyor. Mountebank uygulaması ve ilgili servisler ayakta iken elbette bir birim test &amp;uuml;zerinden de bu servislerin t&amp;uuml;ketimini ele almalıyız.&lt;/p&gt;
+&lt;h2&gt;&amp;Ouml;n Hazırlıklar&lt;/h2&gt;
+&lt;p&gt;&amp;Ouml;ncelikle Mountebank'ı sistem y&amp;uuml;kleyerek işe başlamamız gerekiyor. Bunu bir NodeJs uygulaması &amp;uuml;zerinden icra edeceğiz. Aşağıdaki adımları izleyerek devam edelim.&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;mkdir asgard
+cd asgard
+npm init --yes
+# Mountebank paketini npm aracı ile y&amp;uuml;kl&amp;uuml;yoruz
+# Birde yazacağımız mock servisleri Mountebank sunucusuna bildirmek i&amp;ccedil;in
+# node-fetch paketinden yararlanacağız. Dolayısıyla onu da ekliyoruz.
+npm i --save mountebank node-fetch
+
+mkdir src
+cd src
+# port bilgilerini tutacağımız bir konfigurasyon dosyası ile 
+# Bir Mountebank sunucusunu ayağa kaldırmaktan sorumlu index dosyasını oluşturuyoruz
+# Bunlar src dizini altında konuşlanabilirler
+touch ports.js index.js
+
+# ve ilk Mock Service'imiz i&amp;ccedil;in aşağıdaki dosyayı kullanabiliriz
+# yine src altında olabilir
+touch ping-service.js
+
+# İkinci servisimizde herhangi bir şehir bilgisini getirmek i&amp;ccedil;in kullanacağımız bir mock servis
+# Şehir bilgileri normalde bir veritabanında tutuluyor ve primary key değerine g&amp;ouml;re &amp;ccedil;ekiliyor.
+# Ancak test senaryomuzda zaten belli şehirleri alıp ilerlememiz m&amp;uuml;mk&amp;uuml;n. Yine de bunu bir servis &amp;uuml;st&amp;uuml;nde
+# yapmamız lazım. İşte mock servis bu noktada devreye giriyor (şehir bilgilerini cities.csv dosyasında tutuyoruz)
+touch city-service.js&lt;/pre&gt;
+&lt;p&gt;Kod i&amp;ccedil;eriklerini sırasıyla yazarak ilerleyelim.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ports.js;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;module.exports = {
+    server: 5500, // Mountebank uygulamasının ana servis adresidir
+    ping_service: 5501, // ping-pong servisinin kullanacağı adrestir
+    city_service: 5502, // bu &amp;ccedil;alışacağımız şehir bilgilerini getiren servise ait bir adres
+};&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;index.js;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;// mountebank ve kendi yazdığımız ports mod&amp;uuml;l&amp;uuml;n&amp;uuml; ekledik
+const mb = require('mountebank');
+const ports = require('./ports');
+
+/* 
+    Mountebank uygulamasını ayağa kaldırdığımızda, yazdığımız mock servislerin de 
+    etkinleştirilmesini sağlayabiliriz.
+    then fonksiyonuna odaklanın.
+*/
+const pingService = require('./ping-service');
+const cityService = require('./city-service');
+
+// Yeni bir mountebank &amp;ouml;rneği oluşturuyoruz
+mb.create({
+    port: ports.server,
+    pidfile: '../mb.pid',
+    logfile: '../mb.log', // Bir &amp;uuml;st klas&amp;ouml;rde tutacağımız log dosyası bildirimi
+    protofile: '../protofile.json',
+    ipWhitelist: ['*']
+}).then(function () {
+    pingService.register(); // pingService'i 
+    cityService.register(); // ve cityService'i register ediyoruz
+});&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;ping-service.js;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;/*
+    Bu bir Hello World mock servisi.
+    Mountebank'a register ediliyor.
+    Mountebank tarafına register edilen bir mock servis imposter olarak tanımlanır.
+    Imposter i&amp;ccedil;erisinde stub tanımlaları yer alır. Birden fazla stub tanımı olabilir.
+    Stub'larda ne t&amp;uuml;r talepler i&amp;ccedil;in ne t&amp;uuml;r cevaplar verileceğinin tanımlandığı yer olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir.
+    
+    &amp;Ouml;rneğin aşağıdaki stub tanımında, JSON formatında bir s&amp;ouml;zleşme(contract) mevcuttur.
+    Predicates ile hangi route ve metod i&amp;ccedil;in talep alınacağı ifade edilir.
+    Response kısmında da bu talep i&amp;ccedil;in nasıl bir cevap d&amp;ouml;n&amp;uuml;leceği. &amp;Ouml;rnekte HTTP 200 OK durum bilgisi ile birlikte basit bir JSON cevap verilmektedir.
+    Yani bu sayede mock servisin talebe karşılık ne d&amp;ouml;nd&amp;uuml;receğini tanımlamış oluruz.
+    imposter kısmında ise mock servis ile nasıl bir protokol &amp;uuml;st&amp;uuml;nden iletişim kurulacağı,
+    hangi porttan yayın yapacağı ve stub s&amp;ouml;zleşmesinde nelerin yer alacağın dair bilgilere toplanır.
+    &amp;Ouml;rnekte HTTP protokol&amp;uuml;n&amp;uuml;n kullanılacağı ifade edilmektedir.
+*/
+const fetch = require('node-fetch'); // Mountebank servisine Post işlemini kolaylaştıracak
+const ports = require('./ports');
+
+function register() {
+
+    const stub = [
+        {
+            predicates: [{
+                equals: {
+                    method: "GET",
+                    "path": "/ping"
+                }
+            }],
+            responses: [
+                {
+                    is: {
+                        statusCode: 200,
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ message: "Pong!" })
+                    }
+                }
+            ]
+        }
+    ];
+
+    const imposter = {
+        port: ports.ping_service,
+        protocol: 'http',
+        stubs: stub
+    };
+
+    /*
+        Aşağıdaki kod par&amp;ccedil;asında Mountebank'ın imposters API'sine HTTP Post ile bir talep g&amp;ouml;nderme işlemi yer alıyor.
+        body parametresine yukarırdaki imposter'ın JSON formatına serileştirilen halini g&amp;ouml;nderdiğimize dikkat edelim.
+        B&amp;ouml;ylece bu mock servisini Mountebank sunucusuna kayıt etmiş ve kullanıma a&amp;ccedil;mıl olacağız.
+    */
+    const url = `http://127.0.0.1:${ports.server}/imposters`;
+
+    //console.log(JSON.stringify(imposter));
+
+    return fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(imposter)
+    });
+
+}
+
+module.exports = { register };&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;city-service.js;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;/*
+    Mountebank ile ilgili yaygın imposter senaryolarından birisi de CSV gibi i&amp;ccedil;eriklerden okunan veriyi d&amp;ouml;nd&amp;uuml;rmek.
+    &amp;Ouml;rneğin bir veritabanından gelen id değerine g&amp;ouml;re şehir bilgisi d&amp;ouml;nd&amp;uuml;ren bir servisimiz olduğunu d&amp;uuml;ş&amp;uuml;nelim.
+    Test senaryomuzda asıl servis yerine onu taklit eden bir servis kullanmak istiyoruz.
+    Aşağıdaki gibi bir stub yapısı kullanılabilir.
+    Cities/1 gibi bir HTTP talebi olursa,
+    fromDataSource kısmında belirtilen CSV dosysını regex ile sorguluyoruz.
+    Desenimiz city_id alanını index kabul ederek i&amp;ccedil;eriden bu alana ait satırı buluyor.
+    Bulunan satır row değişkenine alınıyor ve body kısmındaki map tekniği ile bir JSON sonu&amp;ccedil; &amp;uuml;retiliyor.
+    Test senaryosu b&amp;ouml;ylece ger&amp;ccedil;ekte veritabanına gitmeyen ama ihtiyacımız olan şehir bilgisi d&amp;ouml;nd&amp;uuml;recek taklit&amp;ccedil;i ile akışını devam ettirebilir.
+*/
+const ports = require('./ports');
+const fetch = require('node-fetch');
+
+function register() {
+    const stub = [
+        {
+            predicates: [{
+                and: [
+                    { equals: { method: "GET" } },
+                    { startsWith: { "path": "/cities/" } }
+                ]
+            }],
+            responses: [
+                {
+                    is: {
+                        statusCode: 200,
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: '{ "cityName": "${row}[name]", "cityCode": "${row}[code]" }'
+                    },
+                    _behaviors: {
+                        lookup: [
+                            {
+                                "key": {
+                                    "from": "path",
+                                    "using": { "method": "regex", "selector": "/cities/(.*)$" },
+                                    "index": 1
+                                },
+                                "fromDataSource": {
+                                    "csv": {
+                                        "path": "src/data/cities.csv",
+                                        "keyColumn": "city_id"
+                                    }
+                                },
+                                "into": "${row}"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ];
+
+    const imposter = {
+        port: ports.city_service,
+        protocol: 'http',
+        stubs: stub
+    };
+
+    const url = `http://127.0.0.1:${ports.server}/imposters`;
+
+    //console.log(JSON.stringify(imposter));
+
+    return fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(imposter)
+    });
+}
+
+module.exports = { register };&lt;/pre&gt;
+&lt;h2&gt;&amp;Ccedil;alışma Zamanı&lt;/h2&gt;
+&lt;p&gt;Uygulamanın &amp;ccedil;alışma zamanı i&amp;ccedil;in aşağıdaki adımları takip etmemiz yeterli.&amp;nbsp;Mountebank server'ını ayağa kaldırmak i&amp;ccedil;in asgard klas&amp;ouml;r&amp;uuml; altında aşağıdaki komutu vermek yeterli. Bunun işletilmesi i&amp;ccedil;inse package.json'a start komutunu ekledik. Normal olarak src klas&amp;ouml;r&amp;uuml; altındaki index.js dosyasını &amp;ccedil;alıştırıyor. &amp;Ccedil;alıştırılan&amp;nbsp;komut sonrası sunucunun ayakta olup olmadığını anlamak i&amp;ccedil;in pekala http://localhost:5500 adresine gidebiliriz&lt;em&gt;(Bir JSON i&amp;ccedil;eriği g&amp;ouml;rmemiz lazım)&lt;/em&gt;&amp;nbsp;Hatta gelen json'da belirtilen adreslere giderek y&amp;uuml;klenen imposter'ları, servis hareketlerine ait log i&amp;ccedil;eriklerini ve konfigurasyonu da g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;npm start&lt;/pre&gt;
+&lt;p&gt;Mountebank server'ı npm start ile ayağa kaldırdığımızda 5500 portundan gelecek olan json i&amp;ccedil;eriği aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ndeki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2020/skynet/34/Screenshot_01.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Mock Servis &amp;ouml;rneklerini ekledik&amp;ccedil;e, imposter s&amp;ouml;zleşmelerinde belirtilen route tanımlarına gidilerek kayıt edilen servislerin &amp;ccedil;alışıp &amp;ccedil;alışmadığı kontrol edilmelidir. &amp;Ouml;rneğin ping-service'i Mountebank'a ekledikten sonra http://localhost:5501/ping adresine talete bulunup, stub-&amp;gt;response kısmında belirtiğimiz pong cevabını almamız gerekir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2020/skynet/34/Screenshot_02.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Ayrıca birden fazla servisi Mountebank'a ekledikten sonra&lt;em&gt;(ister kod yoluyla ister Postman gibi ara&amp;ccedil;larla Post ederek olsun)&lt;/em&gt; http://localhost:5500/imposters gibi adresten bunları izleyebilir ve gelen talep sayılarına bakabiliriz. Ben ikinci servisi de ekledikten sonra aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi bu durumu g&amp;ouml;zlemleyebildim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2020/skynet/34/Screenshot_03.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Mountebank uygulaması ayakta iken Postman veya muadili bir ara&amp;ccedil;la aşağıdaki &amp;ccedil;ıktıyı g&amp;ouml;nderdiğimizde de s&amp;ouml;z konusu servisin imposter olarak eklendiğini g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Yani ille de uygulama i&amp;ccedil;erisinde kod yoluyla servis y&amp;uuml;klenmesi mecburi&amp;nbsp;değildir. Mountebank, REST Api şeklinde bir arabirim sunduğundan ekleme, silme vb işlemleri doğru i&amp;ccedil;erikten oluşan talepler ile sağlayabiliriz. Tabii mountebank sunucusu kapandığında bu mock servisler de &amp;ouml;m&amp;uuml;rlerini tamamlayacaktır.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;Kullandığım adres : http://localhost:5500/imposters
+Http metodu : POST
+Body tipi : raw/json
+Body i&amp;ccedil;eriği :
+
+{
+  "port": 5503,
+  "protocol": "http",
+  "stubs": [
+    {
+      "predicates": [
+        {
+          "equals": {
+            "method": "POST",
+            "path": "/creditrisk/check/12345678"
+          }
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "statusCode": 200,
+            "headers": {
+              "Content-Type": "application/json"
+            },
+            "body": {
+              "available": "no"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2020/skynet/34/Screenshot_04.png" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;Testler&lt;/h2&gt;
+&lt;p&gt;Mock servisleri yazdık. İyi g&amp;uuml;zel de bunları Nodejs tarafındaki testlerde nasıl kullanacağız? İşin i&amp;ccedil;erisine Mocha ve Chai paketlerini katsak pek bir g&amp;uuml;zel olur sanki ;)&amp;nbsp;Hatta Mock servis &amp;ccedil;ağrılarını ger&amp;ccedil;ekleştirmek i&amp;ccedil;in axios paketi en ideali. Asgard ile paralel yeni bir proje a&amp;ccedil;ıp devam &amp;ouml;rneğimize edelim.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;# Asgard klas&amp;ouml;r&amp;uuml;nde &amp;ouml;nce gerekli test ve servis haberleşme paketlerimizi y&amp;uuml;kleyelim
+# Mocha : Belki en pop&amp;uuml;ler test framework'lerinden birisi
+# Chai : Behavioral Driven Design'ın TDD &amp;uuml;st&amp;uuml;nde başarılı bir uyarlaması
+# Axios : Mountebank servis &amp;ccedil;ağrıları i&amp;ccedil;in kullanacağımız mod&amp;uuml;l
+npm i --save axios mocha chai
+
+# Sonra yine asgard klas&amp;ouml;r&amp;uuml; i&amp;ccedil;erisindeyken test isimli bir klas&amp;ouml;r a&amp;ccedil;alım.
+# ve i&amp;ccedil;erisine test dosyamızı koyalım
+# Ayrıca asgard'a ait package.json i&amp;ccedil;erisinde de gerekli test komutunu vermemiz gerekiyor
+mkdir test
+touch ./test/index.test.js&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;index.test.js;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;const expect = require('chai').expect;
+const axios = require('axios');
+
+describe('Asgard Mock Servis testleri', () =&amp;gt; {
+
+    it('Herhangi bir şehirden en az bir kullanıcı bilgisi gelmeli', () =&amp;gt; {
+        var city;
+
+        return axios
+            .get(`http://localhost:5502/cities/3`)
+            .then(res =&amp;gt; res.data)
+            .catch(error =&amp;gt; console.log(error))
+            .then(response =&amp;gt; {
+                /*
+                    Beklentilerimizi yazıyoruz.
+                    Mock servisinin d&amp;ouml;n&amp;uuml;ş&amp;uuml; bir object olmalı,
+                    cityName &amp;ouml;zelliği bulunmalı ve değeri Istanbul olmalı
+                    ayrıca cityCode &amp;ouml;zelliğinin değeri de 340 gelmeli
+                */
+                expect(typeof response).to.equal('object');
+                expect(response.cityName).to.equal('Istanbul')
+                expect(response.cityCode).to.equal("340")
+
+                city = response.cityName; // sonraki işlemler i&amp;ccedil;in değişkeni sakladım sadece
+            }).then(() =&amp;gt; {
+                // Burada başka bir test operasyonu icra edilebilir
+                // console.log(city, "ile ilgili başka testler");
+            });
+    });
+
+    it('Ping mesajıma karşılık Pong denmeli ve oyun başlamalı', () =&amp;gt; {
+        return axios
+            .get(`http://localhost:5501/ping`) // servis adresini bozup Fail durumunu da test edebiliriz
+            .then(res =&amp;gt; res.data)
+            .catch(error =&amp;gt; console.log(error))
+            .then(response =&amp;gt; {
+                expect(typeof response).to.equal('object');
+                expect(response.message).to.equal('Pong!')
+            });
+    });
+});&lt;/pre&gt;
+&lt;p&gt;Test kodlarını tamamladıktan sonra yine iki terminal &amp;uuml;zerinden &amp;ouml;rnekleri denemek lazım. İlk terminalde Mountebank sunucusunu ayağa kaldırıp mock servisleri devreye sokmamız gerekiyor. İkinci terminalde ise yine asgard klas&amp;ouml;r&amp;uuml; altında aşağıdaki komutu işletmeliyiz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;npm test&lt;/pre&gt;
+&lt;p&gt;Yazılan iki testin de başarılı olma haline ait bir g&amp;ouml;r&amp;uuml;nt&amp;uuml;y&amp;uuml; aşağıda g&amp;ouml;rebilirsiniz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2020/skynet/34/Screenshot_05.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Mountebank servisleri ayakta değilken ki durum ise aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2020/skynet/34/Screenshot_06.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Temel olarak Mountebank'ın nasıl kullanıldığını az &amp;ccedil;ok anladık diye d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum. Şimdi bunu kendi projelerinizde kullanmayı deneyebilirsiniz. Konu ile ilgili not olarak aldığım birka&amp;ccedil; soruyu buradaya da bırakayım.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Mountebank uygulamasına bir mock servis s&amp;ouml;zleşmesini&lt;em&gt;(imposter)&lt;/em&gt; NodeJs harici bir uygulamadan da&lt;em&gt;(&amp;Ouml;rneğin bir .Net Core uygulaması)&lt;/em&gt; yollayabilir miyiz?&lt;/li&gt;
+&lt;li&gt;Bir imposter dosyasına birden fazla stub y&amp;uuml;klenebilir mi?&lt;/li&gt;
+&lt;li&gt;Peki bir stub i&amp;ccedil;erisinde n sayıda prediction ve response &amp;ccedil;ifti bulunabilir mi?&lt;/li&gt;
+&lt;li&gt;Eklenen bir imposter'ı nasıl silebiliriz?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir skynet derlememizin daha sonuna. &amp;Ouml;rneğin tamamına &lt;a href="https://github.com/buraksenyurt/skynet/tree/master/No%2034%20-%20Mountebank" target="_blank"&gt;github reposu&lt;/a&gt; &amp;uuml;zerinden erişebilirsiniz. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2020-12-07 14:00:00</pubDate>
+  <slug>mountebank-ile-mock-servis-destegi-sunmak</slug>
+  <tags>
+    <tag>test</tag>
+    <tag>nodejs</tag>
+    <tag>mountebank</tag>
+    <tag>ci/cd</tag>
+    <tag>stub</tag>
+    <tag>mocking</tag>
+    <tag>npm</tag>
+    <tag>mocha</tag>
+    <tag>chai</tag>
+    <tag>axios</tag>
+    <tag>rest</tag>
+  </tags>
+  <categories>
+    <category>Node.js</category>
+  </categories>
+</post>

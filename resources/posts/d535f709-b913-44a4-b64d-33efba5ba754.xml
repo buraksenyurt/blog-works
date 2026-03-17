@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Debug Edilebilir Windows Service Geliştirmek</title>
+  <description>Ancak bir developer için, kodun çalışma zamanındaki durumunu incelemenin sayısız yolu olduğu da bir gerçek. Öyleki, Debug etmek bence en güzel yollardan birisi. Lakin bir Windows Service uygulamasının Debug edilmesi de sanıldığı kadar kolay değil Thinking smile  İşte bu yazımızda internet üzerinden yaptığım araştırmalar sonucu öğrendiğim ve bir Windows Service uygulamasının nasıl debug edilebeceğine dair uygulanabilen yöntemlerden birisini ele alıyor olacağız. Olabildiğince basit bir şekilde anlatmaya gayret edeceğim bu vaka çalışmamızda, adım adım ilerliyor olacağızWinking smile Öyleyse gelin şu metal entegre üzerindeki böcekleri ayıklamaya çalışalım.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/blg232_Giris.jpg"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; float: right; padding-top: 0px; border: 0px;" title="blg232_Giris" src="/pics/blg232_Giris_thumb.jpg" alt="blg232_Giris" width="304" height="229" align="right" border="0" /&gt;&lt;/a&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Uzun s&amp;uuml;re &amp;ouml;nce dış kaynak(Outsource) olarak g&amp;ouml;rev aldığım bir bankacılık uygulamasında &lt;strong&gt;Windows Service &lt;/strong&gt;tabanlı entegrasyon işlemleri i&amp;ccedil;in g&amp;ouml;revlendirilmiştim. Herşeyden &amp;ouml;nce bu servislerin bankacılık uygulaması olması nedeniyle, farklı ve yabancı sistemleri de ilgilendiren iş adımları bulunmaktaydı. Bu sebepten s&amp;ouml;z konusu &lt;strong&gt;Windows Service &lt;/strong&gt;uygulamalarının hem kod i&amp;ccedil;erikleri hem de iş kuralları olduk&amp;ccedil;a karışık olabiliyordu. İlgili &lt;strong&gt;Windows Service &lt;/strong&gt;&amp;ouml;rneklerinin geliştirilmesi bir yana, bunların test ortamına atılması ve sonu&amp;ccedil;larının takip edilmesi ise başlı başına bir dertti &lt;img class="wlEmoticon wlEmoticon-confusedsmile" style="border-style: none;" src="/pics/wlEmoticon-confusedsmile_1.png" alt="Confused smile" /&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Genellikle servisin &amp;ccedil;alışma durumunu izlemek adına &amp;ouml;zellikle &lt;strong&gt;Exception &lt;/strong&gt;bloklarında veya metod başlangı&amp;ccedil; ile bitiş noktalarında&lt;em&gt;(&amp;ouml;rneğin OnStart başında ve sonunda) &lt;/em&gt;işletim sisteminin uygulamaya &amp;ouml;zel &lt;strong&gt;Event Log&amp;rsquo;&lt;/strong&gt; larına bilgi atmaktaydım. Bu bilgileri atarken de durumun kritikliğine g&amp;ouml;re &lt;strong&gt;Warning, Exclamation, Error &lt;/strong&gt;gibi hazır sistem ikonlarından yararlanıyor ve &amp;ccedil;alışma zamanındaki durumu analiz etmeye &amp;ccedil;alışıyordum.&lt;/p&gt;
+&lt;p&gt;Ancak bir developer i&amp;ccedil;in, kodun &amp;ccedil;alışma zamanındaki durumunu incelemenin sayısız yolu olduğu da bir ger&amp;ccedil;ek. &amp;Ouml;yleki, &lt;strong&gt;Debug&lt;/strong&gt; etmek bence en g&amp;uuml;zel yollardan birisi. Lakin bir &lt;strong&gt;Windows Service &lt;/strong&gt;uygulamasının &lt;strong&gt;Debug &lt;/strong&gt;edilmesi de sanıldığı kadar kolay değil &lt;img class="wlEmoticon wlEmoticon-thinkingsmile" style="border-style: none;" src="/pics/wlEmoticon-thinkingsmile.png" alt="Thinking smile" /&gt;&amp;nbsp; İşte bu yazımızda internet &amp;uuml;zerinden yaptığım araştırmalar sonucu &amp;ouml;ğrendiğim ve bir &lt;strong&gt;Windows Service&lt;/strong&gt; uygulamasının nasıl &lt;strong&gt;debug&lt;/strong&gt; edilebeceğine dair uygulanabilen y&amp;ouml;ntemlerden birisini ele alıyor olacağız. Olabildiğince basit bir şekilde anlatmaya gayret edeceğim bu vaka &amp;ccedil;alışmamızda, adım adım ilerliyor olacağız&lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_2.png" alt="Winking smile" /&gt; &amp;Ouml;yleyse gelin şu metal entegre &amp;uuml;zerindeki b&amp;ouml;cekleri ayıklamaya &amp;ccedil;alışalım.&lt;/p&gt;
+&lt;p&gt;İlk olarak &lt;strong&gt;Windows Service Application &lt;/strong&gt;tipinden bir uygulama oluşturmamız gerekiyor. Bu uygulama i&amp;ccedil;erisinde yer alan &lt;strong&gt;ControllerService&lt;/strong&gt; isimli &lt;strong&gt;Windows Service &lt;/strong&gt;tipinin i&amp;ccedil;eriği başlangı&amp;ccedil;ta aşağıdaki gibidir. S&amp;ouml;z konusu servis i&amp;ccedil;erisindeki &lt;strong&gt;Timer&lt;/strong&gt; &amp;ouml;rneğinin &lt;strong&gt;10 &lt;/strong&gt;saniyede bir &amp;ccedil;alıştırdığı olay metoduna g&amp;ouml;re, belirli bir klas&amp;ouml;rdeki&lt;em&gt;(ki path bilgisi &lt;strong&gt;App.config &lt;/strong&gt;dosyasından &amp;ccedil;ekilmektedir)&lt;/em&gt; dosyaların şifrelenmesi i&amp;ccedil;in bir akış &amp;ccedil;alıştırmaktadır ki aslında bunun konumuz i&amp;ccedil;in &amp;ccedil;ok da b&amp;uuml;y&amp;uuml;k bir &amp;ouml;nemi yoktur &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_2.png" alt="Winking smile" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Configuration; 
+using System.IO; 
+using System.ServiceProcess; 
+using System.Timers;
+
+namespace FileControllerService 
+{ 
+    public partial class ControllerService 
+        : ServiceBase 
+    { 
+        private string _path = null; 
+        private Timer _timer = null;
+
+        public ControllerService() 
+        { 
+            InitializeComponent(); 
+            _path = ConfigurationManager.AppSettings["Path"]; 
+            _timer = new Timer(10000); 
+            _timer.Elapsed += new ElapsedEventHandler(_timer_Elapsed); 
+        }
+
+        void _timer_Elapsed(object sender, ElapsedEventArgs e) 
+        { 
+            string[] files=Directory.GetFiles(_path); 
+            foreach (string file in files) 
+            { 
+                File.Encrypt(file); 
+            } 
+        } 
+        protected override void OnStart(string[] args) 
+        { 
+            _timer.Start(); 
+        }
+
+        protected override void OnStop() 
+        { 
+            _timer.Stop(); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Bir &lt;strong&gt;Windows Service &lt;/strong&gt;tipi temel olarak &lt;strong&gt;ServiceBase&lt;/strong&gt; tipinden t&amp;uuml;remektedir. &lt;strong&gt;Windows Service Application &lt;/strong&gt;proje şablonunda yer alan bu hazır uyarlamaya g&amp;ouml;re &lt;strong&gt;Program &lt;/strong&gt;sınıfı i&amp;ccedil;erisindeki &lt;strong&gt;Main &lt;/strong&gt;metodunun kod yapısı da aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Configuration; 
+using System.ServiceProcess; 
+using InvestigationLib;
+
+namespace FileControllerService 
+{ 
+    static class Program 
+    { 
+        static void Main() 
+        { 
+            ServiceBase[] ServicesToRun; 
+            ServicesToRun = new ServiceBase[] 
+            { 
+                new ControllerService() 
+            }; 
+            ServiceBase.Run(ServicesToRun); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere Servisin &amp;ccedil;alıştırılması işini &lt;strong&gt;ServiceBase &lt;/strong&gt;tipinin &lt;strong&gt;static Run &lt;/strong&gt;metodu &amp;uuml;stlenmektedir. Ne varki bu tip bir servisin varsayılan olarak &lt;strong&gt;Debug &lt;/strong&gt;edilmesi m&amp;uuml;mk&amp;uuml;n değildir. Bir başka deyişle servise ait &lt;strong&gt;OnStart &lt;/strong&gt;ve &lt;strong&gt;OnStop &lt;/strong&gt;gibi metodların i&amp;ccedil;erisine &lt;span style="text-decoration: underline;"&gt;girilememektedir&lt;/span&gt;. Bu, &amp;ouml;zellikle karmaşık iş kuralları ve modelleri i&amp;ccedil;eren &lt;strong&gt;Windows Service &lt;/strong&gt;&amp;ouml;rnekleri d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde, geliştirme s&amp;uuml;recini zorlaştıran ve uzatan bir durumun oluşması anlamına gelmektedir. Elbette servisin pek &amp;ccedil;ok noktasından &amp;ouml;rneğin işletim sistemi&lt;strong&gt; Event Log&amp;rsquo;&lt;/strong&gt; larına bilgi g&amp;ouml;nderilebilir veya bir &lt;strong&gt;Text &lt;/strong&gt;dosyası i&amp;ccedil;erisine servisin &amp;ccedil;alışması sırasındaki s&amp;uuml;recin &amp;ouml;nemli adımlarına ait bilgiler&lt;em&gt;(mesela Exceptipon mesajları) &lt;/em&gt;yazdırılabilir. Ancak değişken, parametre ve metod sayılarının iyiden iyiye fazlalaştığı, referans edilen k&amp;uuml;t&amp;uuml;phanelerin &amp;ccedil;ok olduğu bir modelde bu i&amp;ccedil;erikleri izlemekte, &amp;uuml;retmekte zor olmaktadır.&lt;/p&gt;
+&lt;p&gt;Aslında bir geliştirici i&amp;ccedil;in kodun yazılması ve test ortamına alınması esnasında &lt;strong&gt;debug&lt;/strong&gt; edilebilyor olması son derece &amp;ouml;nemlidir. Şimdi dilerseniz yazımıza konu olan bu basit &lt;strong&gt;Windows Service &lt;/strong&gt;&amp;ouml;rneğinin &lt;strong&gt;debug &lt;/strong&gt;edilebilir bir versiyonunu nasıl geliştirebileceğimize bir bakalım &lt;img class="wlEmoticon wlEmoticon-openmouthedsmile" style="border-style: none;" src="/pics/wlEmoticon-openmouthedsmile_2.png" alt="Open-mouthed smile" /&gt; Durumu anlamanın en kolay yolu bitmiş olan &amp;ouml;rneğin sınıf diagramına bakmak olacaktır&lt;em&gt;(Yani &amp;ccedil;&amp;ouml;z&amp;uuml;me biraz tersten bakmamız gerekmektedir)&lt;/em&gt; İşte &amp;ccedil;&amp;ouml;z&amp;uuml;msel yaklaşıma ait sınıf diagramı g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg232_ClassDiagram.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="blg232_ClassDiagram" src="/pics/blg232_ClassDiagram_thumb.gif" alt="blg232_ClassDiagram" width="563" height="557" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi bu sınıf diagramını adım adım &amp;uuml;retmeye başlayalım. İlk olarak bir &lt;strong&gt;aray&amp;uuml;z s&amp;ouml;zleşmesi(Interface Contract)&lt;/strong&gt; oluşturarak işe başlayacağız. Buradaki en b&amp;uuml;y&amp;uuml;k amacımız birden fazla &lt;strong&gt;Windows Service &lt;/strong&gt;tipinin &lt;strong&gt;Debug &lt;/strong&gt;edilebilir versiyonları i&amp;ccedil;in ortak bir s&amp;ouml;zleşme sunmaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace InvestigationLib 
+{ 
+    public interface IWindowsServiceContract 
+    { 
+        void OnStart(string[] args); 
+        void OnStop(); 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;IWindowsServiceContract&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml;n i&amp;ccedil;inde iki basit metod bildirimi olduğu g&amp;ouml;r&amp;uuml;lmektedir. &amp;Ouml;rneğimizi &amp;ccedil;ok basit tutmak istediğimizden &lt;strong&gt;OnPause, OnContinue, OnShutdown &lt;/strong&gt;gibi metod bildirimlerini g&amp;ouml;z &amp;ouml;n&amp;uuml;ne almadık. Ancak siz kendi denemelerinizi yaparken veya bir &amp;uuml;r&amp;uuml;n geliştirmesi sırasında bu tekniği uygularken mutlaka s&amp;ouml;z konusu diğer metodları da d&amp;uuml;ş&amp;uuml;nmelisiniz. Aslında yaptığımız bir anlamda &lt;strong&gt;ServiceBase &lt;/strong&gt;ile &lt;strong&gt;override &lt;/strong&gt;edilen metodlara ait bir s&amp;ouml;zleşme bildiriminde bulunmaktan ibarettir.&lt;/p&gt;
+&lt;p&gt;Bu s&amp;ouml;zleşme bildiriminin ardından &lt;strong&gt;ServiceBase&lt;/strong&gt; t&amp;uuml;revli olan ve &lt;strong&gt;IWindowsServiceContract&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml; implemente eden tiplerin fonksiyonelliklerini &amp;ccedil;ağırabilen başka bir sınıf daha &amp;uuml;retilir. &lt;strong&gt;WindowsServiceCaller&lt;/strong&gt;&amp;hellip;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.ServiceProcess;
+
+namespace InvestigationLib 
+{ 
+    public class WindowsServiceCaller 
+        :ServiceBase 
+    { 
+        IWindowsServiceContract _winSrv;
+
+        public WindowsServiceCaller(IWindowsServiceContract winSrv)            
+        { 
+            _winSrv = winSrv;   
+        } 
+        protected override void OnStart(string[] args) 
+        { 
+            _winSrv.OnStart(args); 
+        } 
+        protected override void OnStop() 
+        { 
+            _winSrv.OnStop(); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;WindowsServiceCallar&lt;/strong&gt; tipi i&amp;ccedil;in s&amp;ouml;ylenebilecek iki &amp;ouml;nemli nokta vardır. Bunlardan ilki &lt;strong&gt;ServiceBase&lt;/strong&gt; tipinden t&amp;uuml;remiş olması ve senaryomuza g&amp;ouml;re &lt;strong&gt;OnStart &lt;/strong&gt;ile &lt;strong&gt;OnStop &lt;/strong&gt;metodlarını &lt;strong&gt;override &lt;/strong&gt;etmesidir. Diğer yandan ezilen &lt;strong&gt;OnStart &lt;/strong&gt;ve &lt;strong&gt;OnStop &lt;/strong&gt;metodları i&amp;ccedil;erisinden yapılan &amp;ccedil;ağrılar, tipin &lt;strong&gt;yapıcı metodu(Constructor) &lt;/strong&gt;i&amp;ccedil;erisinden alınan &lt;strong&gt;IWindowsServiceCaller &lt;/strong&gt;aray&amp;uuml;z&amp;uuml;n&amp;uuml; implemente eden herhangibir nesne &amp;ouml;rneğine aittir. Bir başka deyişle bu tip, &lt;strong&gt;OnStart &lt;/strong&gt;ve &lt;strong&gt;OnStop &lt;/strong&gt;metod bildirimlerini s&amp;ouml;zleşme olarak sunan &lt;strong&gt;IWindowsServiceContract &lt;/strong&gt;aray&amp;uuml;z&amp;uuml;n&amp;uuml; implemente eden bir tipin, &amp;ccedil;alışma zamanındaki asıl &lt;strong&gt;OnStart&lt;/strong&gt; ve &lt;strong&gt;OnStop &lt;/strong&gt;fonksiyonelliklerini kullanmaktadır&lt;em&gt;. (Oh oh ohhh!!! &lt;strong&gt;Including &lt;/strong&gt;var, &lt;strong&gt;inheritance &lt;/strong&gt;var, &lt;strong&gt;Polimorphysm &lt;/strong&gt;var, &lt;strong&gt;overriding &lt;/strong&gt;var &lt;img class="wlEmoticon wlEmoticon-openmouthedsmile" style="border-style: none;" src="/pics/wlEmoticon-openmouthedsmile_2.png" alt="Open-mouthed smile" /&gt;&amp;hellip; &lt;strong&gt;Nesne Y&amp;ouml;nelimli Programlama-Object Oriented Programming &lt;/strong&gt;temellerini hatırlamanın zamanı )&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Dolayısıyla bu tanımlamanın ardınan &lt;strong&gt;debug&lt;/strong&gt; edilmesi gereken kod i&amp;ccedil;eriğini taşıyan asıl servis tipi geliştirilir ki tesad&amp;uuml;f bu olsa gerek bu tipte &lt;strong&gt;IWindowsServiceContract&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml; implemente etmektedir &lt;img class="wlEmoticon wlEmoticon-openmouthedsmile" style="border-style: none;" src="/pics/wlEmoticon-openmouthedsmile_2.png" alt="Open-mouthed smile" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.IO; 
+using System.Timers;
+
+namespace InvestigationLib 
+{ 
+    public class DebugableControllerService 
+        :IWindowsServiceContract 
+    { 
+        string path=String.Empty; 
+        Timer timer = null;
+
+        public DebugableControllerService() 
+        { 
+            timer = new Timer(10000); 
+            timer.Elapsed += new ElapsedEventHandler(timer_Elapsed); 
+        }
+
+        void timer_Elapsed(object sender, ElapsedEventArgs e) 
+        { 
+            try 
+            { 
+                string[] files = Directory.GetFiles(path); 
+                foreach (string file in files) 
+                { 
+                    File.Encrypt(file); 
+                } 
+            } 
+            catch (Exception excp) 
+            { 
+                //TODO:Handle Exception 
+                // Eğer Windows Service projesinin &amp;ouml;zelliklerinden Output Type -&amp;gt; Console Application olarak se&amp;ccedil;ilirse buradan Console penceresine de bilgi yazdırılabilir 
+            } 
+        }
+
+        #region IWindowsServiceContract Members
+
+        public void OnStart(string[] args) 
+        { 
+            path = args[0]; 
+            timer.Start(); 
+        }
+
+        public void OnStop() 
+        { 
+            timer.Stop(); 
+        }
+
+        #endregion 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;DebugableControllerService&lt;/strong&gt; sınıfı aslında ilk başta &lt;strong&gt;debug&lt;/strong&gt; &lt;span style="text-decoration: underline;"&gt;edemediğimiz&lt;/span&gt; &lt;strong&gt;ControllerService&lt;/strong&gt; sınıfının asıl fonksiyonelliklerini i&amp;ccedil;ermektedir. Tabi &lt;strong&gt;ControllerService&lt;/strong&gt; tipinin yaptığı gibi &lt;strong&gt;ServiceBase&amp;rsquo;&lt;/strong&gt; den t&amp;uuml;remek yerine &lt;strong&gt;IWindowsServiceContract&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml; uygulamaktadır. B&amp;ouml;ylece &lt;strong&gt;WindowsServiceCaller&lt;/strong&gt; tipinin kullanabileceği bir sınıf oluşturulmuştur. Ancak hazırlıklar bu tipleri yazmakla bitmez. Birde s&amp;ouml;z konusu &lt;strong&gt;debug&lt;/strong&gt; edilecek tip &amp;ouml;rneğini &lt;strong&gt;başlatacak/y&amp;uuml;r&amp;uuml;t&amp;uuml;ecek&lt;/strong&gt; bir başka sınıfın olmasında yarar vardır &lt;img class="wlEmoticon wlEmoticon-cryingface" style="border-style: none;" src="/pics/wlEmoticon-cryingface.png" alt="Crying face" /&gt; İşte başlatıcı tipimiz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Threading;
+
+namespace InvestigationLib 
+{ 
+    public static class ServiceStarter 
+    { 
+        public static void Run(string[] args,IWindowsServiceContract winSrv) 
+        { 
+            winSrv.OnStart(args); 
+            Thread.Sleep(45000); 
+            winSrv.OnStop();            
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Bu &lt;strong&gt;static&lt;/strong&gt; sınıf i&amp;ccedil;erisindeki &lt;strong&gt;Run&lt;/strong&gt; metodu &lt;strong&gt;IWindowsServiceContract&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml; implemente eden her hangibir tip &amp;uuml;zerinden &lt;strong&gt;OnStart&lt;/strong&gt; ve &lt;strong&gt;OnStop&lt;/strong&gt; metodlarını &amp;ccedil;ağırabilir ve b&amp;ouml;ylece sim&amp;uuml;lasyon işlemini başlatabilir. Geriye yapılması gereken tek bir işlem kalmaktadır. &lt;strong&gt;Windows Service &lt;/strong&gt;projesindeki &lt;strong&gt;Main &lt;/strong&gt;metodu i&amp;ccedil;eriğini aşağıdaki kod par&amp;ccedil;asında g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi değiştirmek.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Configuration; 
+using System.ServiceProcess; 
+using InvestigationLib;
+
+namespace FileControllerService 
+{ 
+    static class Program 
+    { 
+        static void Main() 
+        { 
+            #region Debug Edilebilir Versiyon 
+           
+            DebugableControllerService implementation = new DebugableControllerService(); 
+            if (Environment.UserInteractive) 
+                ServiceStarter.Run( 
+                    new string[]{ 
+                        ConfigurationManager.AppSettings["Path"]                        
+                    } 
+                    , implementation); 
+            else 
+                ServiceBase.Run(new WindowsServiceCaller(implementation));
+
+            #endregion 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Debug edilmek istenen kod i&amp;ccedil;eriğini taşıyan &lt;strong&gt;DebugableControllerService&lt;/strong&gt; &amp;ouml;rneğinin oluşturulmasından sonra &lt;strong&gt;ServiceStarter&lt;/strong&gt; tipinin &lt;strong&gt;Run&lt;/strong&gt; metodundan yararlanarak s&amp;uuml;recin başlatılması sağlanır. Şu aşamada kod i&amp;ccedil;erisinde &lt;strong&gt;breakpoint&amp;rsquo;&lt;/strong&gt; ler yardımıyla ilerlenmesi m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r &lt;img class="wlEmoticon wlEmoticon-laughingoutloud" style="border-style: none;" src="/pics/wlEmoticon-laughingoutloud.png" alt="Laughing out loud" /&gt; Hatta &amp;ouml;rneğin olmayan bir klas&amp;ouml;r i&amp;ccedil;eriğinin &lt;strong&gt;Directory&lt;/strong&gt; tipinin &lt;strong&gt;GetFiles&lt;/strong&gt; metodu yardımıyla okunmaya &amp;ccedil;alışılması sırasında oluşan &lt;strong&gt;Exception&lt;/strong&gt; mesajları da, &lt;strong&gt;Visual Studio &lt;/strong&gt;arabiriminin &lt;strong&gt;Output &lt;/strong&gt;ekranına d&amp;uuml;şmektedir. Aynen aşağıdaki ekran &amp;ccedil;ıktısında g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg231_DebugWindow.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="blg231_DebugWindow" src="/pics/blg231_DebugWindow_thumb.gif" alt="blg231_DebugWindow" width="527" height="504" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Ancak istenirse işlemlerin daha kolay takip edilmesi adına &lt;strong&gt;Console&lt;/strong&gt; penceresine bilgi yazdırılması da m&amp;uuml;mk&amp;uuml;n olabilir. Bunun i&amp;ccedil;in&lt;strong&gt; Windows Service&lt;/strong&gt; projesinin &lt;strong&gt;Output&lt;/strong&gt; tipinin &lt;strong&gt;Console Application&lt;/strong&gt; olarak değiştirilmesi yeterlidir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg232_ConsoleOutput.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="blg232_ConsoleOutput" src="/pics/blg232_ConsoleOutput_thumb.gif" alt="blg232_ConsoleOutput" width="331" height="156" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Buna g&amp;ouml;re &lt;strong&gt;Exception&lt;/strong&gt; bloğunu aşağıdaki gibi değişitirsek &lt;strong&gt;debug&lt;/strong&gt; işlemleri sırasında &lt;strong&gt;Console&lt;/strong&gt; ekranına &amp;ccedil;ıktı &amp;uuml;retebilmeyi de sağlayabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;void timer_Elapsed(object sender, ElapsedEventArgs e) 
+{ 
+    try 
+    { 
+        string[] files = Directory.GetFiles(path); 
+        foreach (string file in files) 
+        { 
+            File.Encrypt(file); 
+        } 
+    } 
+    catch (Exception excp) 
+    { 
+        Console.WriteLine(excp.Message); 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;a href="/pics/blg232_WriteToConsole.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="blg232_WriteToConsole" src="/pics/blg232_WriteToConsole_thumb.gif" alt="blg232_WriteToConsole" width="493" height="294" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Elbette &lt;strong&gt;Debug&lt;/strong&gt; işlemleri sonrasında hataları bertaraf edilen servis kodunun son hali asıl &lt;strong&gt;Windows Service &lt;/strong&gt;kodu ile değiştirilmeli ve bu şekilde &lt;strong&gt;install&lt;/strong&gt; edilmelidir. &amp;Ouml;rneğimiz bu haliyle artık &lt;strong&gt;Console&lt;/strong&gt; penceresine bilgilendirme de bulunabilir. Ne &lt;strong&gt;Text&lt;/strong&gt; dosyaya, ne işletim sistemindeki &lt;strong&gt;Event Log&amp;rsquo;&lt;/strong&gt; lara ne veritabanı &amp;uuml;zerindeki ilgili tablolara loglama işlemleri yapmak i&amp;ccedil;in gerekli atraksiyonlar ile uğraşmamıza gerek kalmamaktadır. Uygulamanın dışına &amp;ccedil;ıkmadan, olduğumuz &lt;strong&gt;Visual Studio&lt;/strong&gt; &lt;strong&gt;ortamı(Environment)&lt;/strong&gt; i&amp;ccedil;erisinden gerekli izleme ve &lt;strong&gt;Debug &lt;/strong&gt;işlemleri yapılabilir. Doğrudan &lt;strong&gt;Console &lt;/strong&gt;penceresinden gerekli izlemeler de yapılabilecektir. Bunu da unutmayalım &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_2.png" alt="Winking smile" /&gt; B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2010%2f10%2fFileControllerService.rar"&gt;FileControllerService.rar (51,95 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2011-04-10 10:34:00</pubDate>
+  <slug>Debug-Edilebilir-Windows-Service-Gelistirmek</slug>
+  <tags>
+    <tag>windows-services</tag>
+    <tag>debug</tag>
+  </tags>
+  <categories>
+    <category>Windows Services</category>
+  </categories>
+</post>

@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>.Net Framework 4.5 Asenkron IO İşlemleri</title>
+  <description>Asenkron çalışma çok uzun zamandır hayatımızda. Ancak yazılım geliştiriciler için halen daha tam anlamıyla mükemmel değil. Özellikle .Net Framework açısından olaya baktığımızda. Yine de her .Net Framework sürümünde, User Experience' ın yoğun ve cevap verebilirliği yüksek ekranların tasarlanmaya çalışıldığı senaryolarda, geliştiricilerin ellerinde daha güçlü kozlar oluşmakta. Burada en büyük yardımcı tabiki Framework içerisine dahil edilen Built-In operasyonlar/fonksiyonlar.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/WAR2.jpg"&gt;&lt;img style="margin: 4px 0px; display: inline; float: right;" title="WAR2" src="/pics/WAR2_thumb.jpg" alt="WAR2" width="320" height="240" align="right" /&gt;&lt;/a&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Ge&amp;ccedil;tiğimiz g&amp;uuml;n &amp;ouml;zlem duyduğum bilgisayar oyunlarından birisi olan &lt;strong&gt;Warcraft II&lt;/strong&gt;' nin ses efektlerini arar halde buldum kendimi. Olay tabi ses efektlerinin m&amp;uuml;kemmelliğinden &amp;ccedil;ıktı oyuncu karakterlerine kadar geldi. Gerek Orc' lar da gerek Human' lar da s&amp;uuml;per kahramanlar vardı. B&amp;uuml;y&amp;uuml;c&amp;uuml;ler, ok&amp;ccedil;ular, iş&amp;ccedil;iler ve daha niceleri. Pek &amp;ccedil;oğumuzun bu oyun başında saatler harcadığından ve sabah ezanına kadar kaldığından eminim.&lt;/p&gt;
+&lt;p&gt;Nedense s&amp;ouml;z konusu karakterleri bir araştırma konusunda kullanma ihtiyacı da hissettim. Tesad&amp;uuml;fe bakın ki aynı anda .Net tarafında da bir konuyu araştırmaktaydım. Sonu&amp;ccedil; olarak aşağıdaki konu i&amp;ccedil;in onları kendi bakış a&amp;ccedil;ımdan değerlendirmeye karar verdim. Bakalım bu g&amp;uuml;nk&amp;uuml; yazımızda nasıl bir maceraya dalıyor olacağız &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_117.png" alt="Winking smile" /&gt; Haydi buyrun &amp;ouml;yleyse başlayalım.&lt;/p&gt;
+&lt;p&gt;Asenkron &amp;ccedil;alışma &amp;ccedil;ok uzun zamandır hayatımızda. Ancak yazılım geliştiriciler i&amp;ccedil;in halen daha tam anlamıyla m&amp;uuml;kemmel değil. &amp;Ouml;zellikle &lt;strong&gt;.Net Framework&lt;/strong&gt; a&amp;ccedil;ısından olaya baktığımızda. Yine de her &lt;strong&gt;.Net Framework&lt;/strong&gt; s&amp;uuml;r&amp;uuml;m&amp;uuml;nde, &lt;strong&gt;User&lt;/strong&gt; &lt;strong&gt;Experience'&lt;/strong&gt; ın yoğun ve cevap verebilirliği y&amp;uuml;ksek ekranların tasarlanmaya &amp;ccedil;alışıldığı senaryolarda, geliştiricilerin ellerinde daha g&amp;uuml;&amp;ccedil;l&amp;uuml; kozlar oluşmakta. Burada en b&amp;uuml;y&amp;uuml;k yardımcı tabiki &lt;strong&gt;Framework&lt;/strong&gt; i&amp;ccedil;erisine dahil edilen &lt;strong&gt;Built-In&lt;/strong&gt; operasyonlar/fonksiyonlar.&lt;/p&gt;
+&lt;p&gt;Bu alanlardan birisi de tahmin edileceği &amp;uuml;zere&lt;strong&gt; dosya giriş &amp;ccedil;ıkış işlemleri(IO operasyonları).&lt;/strong&gt; Dosyalama işlemleri &amp;ouml;zellikle &lt;strong&gt;.Net Framework 4.0&lt;/strong&gt; s&amp;uuml;r&amp;uuml;m&amp;uuml;ne kadar &lt;strong&gt;senkron(Synchronous)&lt;/strong&gt; olarak işletilebilen operasyonlardan ibaretti. Diğer yandan &lt;strong&gt;.Net Framework 4.0&lt;/strong&gt; s&amp;uuml;r&amp;uuml;m&amp;uuml; ile birlikte &lt;strong&gt;StreamReader&lt;/strong&gt; ve &lt;strong&gt;StreamWriter&lt;/strong&gt; gibi sınıflara &lt;strong&gt;BeginRead, BeginWrite&lt;/strong&gt; gibi temel asenkron &amp;ccedil;alışabilme metodları ilave edildi.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Bilindiği &amp;uuml;zere en basit mana da bir işlevi başlatıp anında koda d&amp;ouml;nebilmek i&amp;ccedil;in IAsyncResult aray&amp;uuml;z&amp;uuml;n&amp;uuml;n(Interface) kullanıldığın BeginX, EndX gibi dahili metodlardan yararlanılır. Bu, olay tabanlı asenkron programlamaya(Event Based Asynchronous Programming) da olanak tanımaktadır.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Bu yeni metodlar sayesinden dosyalara asenkron olarak yazmak veya kaynakta yine asenkron olarak okuma yapmak m&amp;uuml;mk&amp;uuml;n. Yine de ortada geliştiriciler i&amp;ccedil;in bir sıkıntı var. O da kodun karmaşıklığı ve yazım zorluğu.&lt;/p&gt;
+&lt;h1&gt;&lt;strong&gt;IO&lt;/strong&gt; işlemlerinde neden asenkron &amp;ccedil;alışmaya ihtiya&amp;ccedil; duyarız?&lt;/h1&gt;
+&lt;p&gt;Bu soruyu da cevaplamak &amp;ouml;nemli. İlk etapta kullanıcıların ele aldıkları ekranların cevap verebilirliği(Responsivable) yer almakta. Kullanıcılar sabırsız kişilikte insanlar. O nedenle &amp;ouml;zellikle bir &lt;strong&gt;IO&lt;/strong&gt; işlemi sırasına ekranın kitlenmesini&lt;em&gt;(kitlenmiş gibi g&amp;ouml;z&amp;uuml;kmesini)&lt;/em&gt; istemezler. Diğer yandan ikinci bir sebep te tamamen performans ile alakalıdır. Bazı hallerde &lt;strong&gt;IO&lt;/strong&gt; işlemi ger&amp;ccedil;ekten &amp;ccedil;ok zaman alan ve sistem kaynaklarını &amp;ouml;nemli &amp;ouml;l&amp;ccedil;&amp;uuml;de t&amp;uuml;keten hareketliliklere gebedir. Dolayısıya bu y&amp;uuml;k&amp;uuml; asenkron olarak dağıtabilmek &amp;ouml;nemlidir.&lt;/p&gt;
+&lt;p&gt;Pek tabi&lt;strong&gt; .Net Framework 4.5&lt;/strong&gt; ile birlikte &amp;ouml;zellikle &lt;strong&gt;async&lt;/strong&gt; ve &lt;strong&gt;await&lt;/strong&gt; anahtar kelimelerinin de devreye girmesi ile &lt;strong&gt;IO&lt;/strong&gt; tarafı i&amp;ccedil;in de bazı iyileştirmeler yapıldı. Bu iyileştirmeler sayesinde &lt;strong&gt;IO&lt;/strong&gt; işlemleri sırasında cevap verebilirliği y&amp;uuml;ksek olan ekranların tasarlanması daha kolay hale gelmekte. Buna ek olarak&lt;strong&gt; CLR(Common Language Runtime)&lt;/strong&gt; takımı bu yeni fonksiyonellikler i&amp;ccedil;in eş zamanlı&lt;em&gt;(Concurrent)&lt;/em&gt; &amp;ccedil;alışmanın performansını da arttırıcı iyileştirmeler yapmış. Ancak bana g&amp;ouml;re belki de en &amp;ouml;nemli avatajımız, geliştirici a&amp;ccedil;ısından bakıldığında, ihtiya&amp;ccedil;ların daha kolay yazılabiliyor olması.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Ger&amp;ccedil;ek hayattan;&lt;/p&gt;
+&lt;p&gt;daha &amp;ouml;nceden &amp;ccedil;alıştığım bir banka da, sistemler arasında veri taşınması veya dışarıdan gelen bazı verilerin database ortamlarına alınması, b&amp;uuml;y&amp;uuml;k boyutlu ve genellikle text tabanlı olan dosyalar &amp;uuml;zerinden yapılmaktaydı. &amp;Ccedil;oğunlukla otomatik olarak devreye giren ve bir SQL Job ile ilişkilendirilmiş olan SSIS&lt;em&gt;(Sql Server Integration Services)&lt;/em&gt; paketleri s&amp;ouml;z konusuydu.&lt;/p&gt;
+&lt;p&gt;Ancak SSIS' de ayrı bir uzmanlık alanı gerektirmekte ve bazı durumlarda s&amp;ouml;z konusu dosya aktarım işlemleri, Form tabanlı uygulamalar i&amp;ccedil;erisinden yapılmak zorundaydı.&lt;/p&gt;
+&lt;p&gt;Hal b&amp;ouml;yle olunca bazı vakalarda, boyutu 650 megabyte' ın &amp;uuml;zerinde olan dosyalar i&amp;ccedil;in uygulama ekranının kilitlenmesi de son derece doğaldı. Hele de bu bir banka olunca s&amp;uuml;reci asenkron olarak &amp;ccedil;alıştırmak şarttır. İşte size Asenkron IO işlemleri i&amp;ccedil;in kocaman bir sebep &lt;img class="wlEmoticon wlEmoticon-smile" style="border-style: none;" src="/pics/wlEmoticon-smile_49.png" alt="Smile" /&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1&gt;Yeni Fonksiyonlar&lt;/h1&gt;
+&lt;p&gt;Biz bu makalemizde &amp;ouml;zellikle &lt;strong&gt;StreamReader&lt;/strong&gt; ve &lt;strong&gt;StreamWriter&lt;/strong&gt; sınıflarına gelen ve asenkron &lt;strong&gt;IO&lt;/strong&gt; işlemlerini yapmamızı sağlayan yeni metodları incelemeye &amp;ccedil;alışıyor olacağız. Konsept olarak sadece kullanım şekillerini incelemek niyetindeyiz. Bu sebepten senaryolarımızı bir &lt;strong&gt;Console&lt;/strong&gt; uygulaması &amp;uuml;zerinden ele alacağız. &lt;strong&gt;StreamReader&lt;/strong&gt; ve &lt;strong&gt;StreamWriter&lt;/strong&gt; gibi IO sınfılarına ilave edilen asenkron metodları bulmamız aslında son derece kolay. İsimlendirme standardı olarak sonu &lt;strong&gt;async&lt;/strong&gt; kelimesi ile biten metodlar aradığımız fonksiyonlar olacaktır &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_117.png" alt="Winking smile" /&gt;&lt;/p&gt;
+&lt;p&gt;Dilerseniz işe ilk olarak asenkron yazma işlemleri ile başlayalım ki elimizde b&amp;uuml;y&amp;uuml;k&amp;ccedil;e bir test dosyası da oluşsun &lt;img class="wlEmoticon wlEmoticon-smile" style="border-style: none;" src="/pics/wlEmoticon-smile_49.png" alt="Smile" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu ama&amp;ccedil;la basit ama işi zevkli hale getirecek de bir &amp;ouml;n hazırlık yapacağız. Senaryomuzda en az &lt;strong&gt;10milyon&lt;/strong&gt; elementten oluşan bir oyun sahası bulunacak. Bu saha i&amp;ccedil;erisinde ok&amp;ccedil;u, şovalye, mancınık, kale gibi karekterlere yer vereceğiz. Bu karakterlere ait başka bilgileri de tutuabiliriz. &amp;Ouml;rneğin bulundukları kıta, harita &amp;uuml;zerindeki koordinat bilgisi, g&amp;uuml;&amp;ccedil; seviyleri, hangi taraftan oldukları&lt;em&gt;(insan, bilgisayar, hayalet &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_117.png" alt="Winking smile" /&gt; )&lt;/em&gt; gibi.&lt;/p&gt;
+&lt;p&gt;E tabi bu karakterlerden oluşan k&amp;uuml;meyi &amp;uuml;retecek bir de yardımcı tipimizin s&amp;ouml;z konusu olduğunu d&amp;uuml;ş&amp;uuml;nebiliriz. Lafı fazla uzatmadan &amp;ouml;n hazırlık i&amp;ccedil;in kullanacağımız kod par&amp;ccedil;alarına bir g&amp;ouml;z atalım dilerseniz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/aio_1.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="aio_1" src="/pics/aio_1_thumb.png" alt="aio_1" width="358" height="466" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;GameElement.cs;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace NewIOFunctions 
+{ 
+    public class GameElement 
+    { 
+        public int Id { get; set; } 
+        public string Actor { get; set; } 
+        public int Force { get; set; } 
+        public string Type { get; set; } 
+        public string MainLand { get; set; } 
+        public int X { get; set; } 
+        public int Y { get; set; }
+
+        public override string ToString() 
+        { 
+            return String.Format("{0}|{1}|{2}|{3}|{4}|({5};{6})", Id.ToString(), Actor, Force, Type, MainLand,X.ToString(),Y.ToString()); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;GameCreator.cs;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Collections.Generic;
+
+namespace NewIOFunctions 
+{ 
+    public static class GameCreator 
+    { 
+        // Test verileri i&amp;ccedil;in &amp;ouml;rnek bir k&amp;uuml;me 
+        // Savaş alanına yerleştireceğimiz akt&amp;ouml;rler 
+        static string[] actors = { "Archer", "Footman", "Knight", "Castle", "Rider", "Catapult" }; 
+        // Bu akt&amp;ouml;rlerin g&amp;uuml;&amp;ccedil;lerini temsil eden değerler. 
+        static int[] forceValues = { 100, 200, 300, 400 }; 
+        // Bu yerleştirilen akt&amp;ouml;rlerin hangi tipten olduğunu belirtecek taraf bilgileri(Ghost enteresan bir karakterdir. Yeri gelince Human yeri gelince Computer tarafında oluyor :) 
+        static string[] types = { "Human", "Computer", "Ghost" }; 
+        static string[] mainlands = { "Mordor", "Middle Earth", "Other Side", "Wrong Side", "Red Zone", "Deadly Land", "Kolburg" };
+
+        public static List&amp;lt;GameElement&amp;gt; CreateRandomElements(int size) 
+        { 
+            List&amp;lt;GameElement&amp;gt; elements = new List&amp;lt;GameElement&amp;gt;(size); 
+            Random randomizer = new Random(); 
+            for (int i = 0; i &amp;lt; size-1; i++) 
+            { 
+                GameElement element = new GameElement(); 
+                element.Id = i; 
+                element.Actor = actors[randomizer.Next(0, actors.Length - 1)]; 
+                element.Force=forceValues[randomizer.Next(0, forceValues.Length - 1)]; 
+                element.Type = types[randomizer.Next(0, types.Length - 1)]; 
+                element.MainLand = mainlands[randomizer.Next(0, mainlands.Length - 1)]; 
+                element.X = randomizer.Next(-90, 90); 
+                element.Y = randomizer.Next(-90, 90); 
+                elements.Add(element); 
+            } 
+            return elements; 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;static&lt;/strong&gt; &lt;strong&gt;GameCreator&lt;/strong&gt; sınıfının &lt;strong&gt;CreateRandomElements&lt;/strong&gt; isimli metodu istenen boyuta g&amp;ouml;re rastgele veriler ile &amp;uuml;retilen &lt;strong&gt;GameElement&lt;/strong&gt; tipinden bir koleksiyon d&amp;ouml;nd&amp;uuml;recek şekilde tasarlanmıştır.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Dilerseniz buradaki &amp;uuml;retim işini Task Parallel Library&amp;rsquo; yi ve Concurrent koleksiyonları da işin i&amp;ccedil;erisine katarak asenkron doldurabilirsiniz. Ama dikkatli olun. Her &amp;uuml;retiminizde 10milyonluk bir set elde edemessiniz. Tabi Thread&amp;rsquo; leri en azından gereken yerlerde kilitleyip senkronize etmedik&amp;ccedil;e &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_117.png" alt="Winking smile" /&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Şimdi asıl senaryolarımıza ge&amp;ccedil;ebiliriz. İlk etapta &amp;uuml;retilen bu rastgele veri i&amp;ccedil;eriğini fiziki bir dosyaya asenkron moda da nasıl yazdırabileceğimizi incelemeye &amp;ccedil;alışacağız. Bu nedenle &lt;strong&gt;Program.cs&lt;/strong&gt; i&amp;ccedil;eriğinde aşağıdaki kodlar ile işe başlayabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Collections.Generic; 
+using System.Diagnostics; 
+using System.IO; 
+using System.Threading.Tasks;
+
+namespace NewIOFunctions 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            //10 milyonluk bir test k&amp;uuml;mesi &amp;uuml;retiyoruz. Bunu asenkron geliştirmediğimizden biraz zaman alacaktır. 
+            var gameZone = GameCreator.CreateRandomElements(10000000); 
+            var taskResult=WriteFileAsync(gameZone, Path.Combine(Environment.CurrentDirectory, "GameZone.txt")); 
+            Console.WriteLine("İşlemler devam ediyor..."); 
+            // Dosya yazma ile ilişkili işlemlerin tamamlanması i&amp;ccedil;in uygulamayı bekletiyoruz. 
+            taskResult.Wait(); 
+            Console.WriteLine("{0} adet satır yazıldığı bilgisi geldi.", taskResult.Result.ToString()); 
+        }
+
+        // WriteFileAsync metodundan geriye bilin&amp;ccedil;li olarak bir Task tipi d&amp;ouml;nd&amp;uuml;rd&amp;uuml;k. B&amp;ouml;ylece burayı &amp;ccedil;ağırdığımız Main metodu sonuna gelindiğinde ilgili Task' ın tamamlanıp tamamlanmadığını kontrol edebiliriz. 
+        private static async Task&amp;lt;int&amp;gt; WriteFileAsync(List&amp;lt;GameElement&amp;gt; elements, string filePath) 
+        { 
+            Console.WriteLine("Yazma işlemi başlatıldı.");
+
+            Stopwatch watcher = new Stopwatch(); 
+            watcher.Start();
+
+            // StreamWriter tipini &amp;uuml;retiyoruz ve parametre olarak veriyi yazacağımız dosya adresini belirtiyoruz 
+            using (StreamWriter writer = new StreamWriter(filePath)) 
+            { 
+                foreach (var element in elements) 
+                { 
+                    // Awaitable olan WriteLineAsync metodunu &amp;ccedil;ağırıyor ve i&amp;ccedil;eriği yazdırıyoruz. 
+                    await writer.WriteLineAsync(element.ToString()); 
+                }    
+            } 
+            
+            watcher.Stop(); 
+            Console.WriteLine("Yazma işlemi tamamlandı. Toplam s&amp;uuml;re {0} milisaniye.",watcher.ElapsedMilliseconds.ToString());
+
+            return elements.Count; 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rneğimizi &amp;ccedil;alıştırdığımızda aşağıdakine benzer bir sonu&amp;ccedil; ile karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/aio_2.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="aio_2" src="/pics/aio_2_thumb.png" alt="aio_2" width="502" height="257" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Uuml;retilen dosya i&amp;ccedil;eriğinin bir kısmı da aşağıdaki gibidir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Tabi bu dosyayı Notepad a&amp;ccedil;mayı nasıl başardı anlayabilmiş değilim &lt;img class="wlEmoticon wlEmoticon-smile" style="border-style: none;" src="/pics/wlEmoticon-smile_49.png" alt="Smile" /&gt; Yine de siz kendi sistemlerinizde zorlanmamak adına, Notepad2' yi veya Notepad++' ı kullanmayı d&amp;uuml;ş&amp;uuml;nebilirsiniz.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;a href="/pics/aio_3.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="aio_3" src="/pics/aio_3_thumb.png" alt="aio_3" width="384" height="411" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;WriteFileAsync'&lt;/strong&gt; e yapılan &amp;ccedil;ağrı i&amp;ccedil;erisinde &lt;strong&gt;StreamWriter&lt;/strong&gt; tipinin &lt;strong&gt;await&lt;/strong&gt; edilebilir &lt;strong&gt;WriteLineAsync&lt;/strong&gt; metodu kullanılmaktadır. &lt;strong&gt;WriteFileAsync&lt;/strong&gt; metodu aslında geriye bir &lt;strong&gt;Task&amp;lt;int&amp;gt;&lt;/strong&gt; tipi d&amp;ouml;nd&amp;uuml;rmek zorunda değildir. Bunu daha &amp;ccedil;ok, &lt;strong&gt;Wait&lt;/strong&gt; metodu kullanılarak başlatılan &lt;strong&gt;Task'&lt;/strong&gt; ın işlemlerini bitirene kadar uygulamanın beklemesi ve işlenen satır sayısının bir değerinin ana &lt;strong&gt;Thread &lt;/strong&gt;tarafından elde edilebilmesi i&amp;ccedil;in kullandık. Nitekim uygulamayı akışına bırakıp &lt;strong&gt;Wait&lt;/strong&gt; &amp;ccedil;ağrısını ger&amp;ccedil;ekleştirmessek, t&amp;uuml;m i&amp;ccedil;erik yerine program sonlanana kadar yazılabilen kısım fiziki olarak aktarılacaktır.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;Ouml;rnek senaryonun işletilişi sırasında g&amp;ouml;zden &lt;u&gt;ka&amp;ccedil;ırılmaması&lt;/u&gt; gereken bir nokta da, aslında dosyaya yazma işleminin asenkron olarak &lt;u&gt;ger&amp;ccedil;ekleştirilmemesidir&lt;/u&gt;. Yani, GameElement tipindeki koleksiyon i&amp;ccedil;eriğinin eş zamanlı(Concurrent) olarak yazılması gibi bir durum ortada yoktur. Dosya i&amp;ccedil;eriğine baktığımızda, i&amp;ccedil;eriğin sıralı olarak yazılmış olmasının nedeni de budur. Yanlış bir asenkron algı oluşmaması i&amp;ccedil;in bu hususu belirtmek istedim. Nitekim dosya i&amp;ccedil;eriğini asenkron olarak doldurmak tamemen farklı bir vakadır.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Dilerseniz bir de dosyadan okuma işlemini basit bir senaryo ile ele almaya &amp;ccedil;alışalım. Yine satır satır okuma adımını ger&amp;ccedil;ekleştirebiliriz. İşte kod i&amp;ccedil;eriğimiz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Collections.Generic; 
+using System.Diagnostics; 
+using System.IO; 
+using System.Threading.Tasks;
+
+namespace NewIOFunctions 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            var readTaskResult = ReadFileLineByLineAsync(Path.Combine(Environment.CurrentDirectory, "GameZone.txt")); 
+            Console.WriteLine("İşlemler devam ediyor..."); 
+            readTaskResult.Wait(); 
+            Console.WriteLine("Sonu&amp;ccedil;lar"); 
+            for (int i = 0; i &amp;lt; 10; i++) 
+            { 
+                Console.WriteLine(readTaskResult.Result[i].ToString()); 
+            } 
+        }
+
+        private static async Task&amp;lt;List&amp;lt;GameElement&amp;gt;&amp;gt; ReadFileLineByLineAsync(string file) 
+        { 
+            Console.WriteLine("Okuma işlemi başlatıldı."); 
+            List&amp;lt;GameElement&amp;gt; elements = new List&amp;lt;GameElement&amp;gt;(); 
+            Stopwatch watcher = new Stopwatch(); 
+            watcher.Start();
+
+            using (StreamReader reader = new StreamReader(file)) 
+            { 
+                string line; 
+                while (!String.IsNullOrEmpty(line = await reader.ReadLineAsync())) 
+                { 
+                    string[] columns=line.Split('|'); 
+                    elements.Add(new GameElement 
+                    { 
+                        Id=Convert.ToInt32(columns[0]), 
+                        Actor=columns[1], 
+                        Force=Convert.ToInt32(columns[2]), 
+                        Type=columns[3], 
+                        MainLand=columns[4], 
+                        X=Convert.ToInt32(columns[5].Split(';')[0].TrimStart('(')), 
+                        Y = Convert.ToInt32(columns[5].Split(';')[1].TrimEnd(')')) 
+                    } 
+                    ); 
+                } 
+            }
+
+            watcher.Stop(); 
+            Console.WriteLine("Okuma işlemi tamamlandı. Toplam s&amp;uuml;re {0} milisaniye.", watcher.ElapsedMilliseconds.ToString());
+
+            return elements; 
+        }        
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Okuma işleminin tamamlanmasını takiben ,&amp;uuml;retilen &lt;strong&gt;GameElement&lt;/strong&gt; i&amp;ccedil;erikli &lt;strong&gt;generic&lt;/strong&gt; &lt;strong&gt;List&lt;/strong&gt; koleksiyonunun metoddan neden bu şekilde bir &lt;strong&gt;Task&lt;/strong&gt; tipi ile d&amp;ouml;nd&amp;uuml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; noktasında kafalarda bir soru işaret olabilir. Neden normal bir liste d&amp;ouml;nd&amp;uuml;rmedik? Ya da neden &lt;strong&gt;out&lt;/strong&gt; veya &lt;strong&gt;ref&lt;/strong&gt; işaretli metod parametrelerine başvurmadık? Cevap &lt;strong&gt;async&lt;/strong&gt; kullanmış olmamızdır. Bu şekilde işaretlenmiş metodlar &lt;strong&gt;void&lt;/strong&gt;, &lt;strong&gt;Task&lt;/strong&gt; ya da &lt;strong&gt;Task&amp;lt;T&amp;gt;&lt;/strong&gt; d&amp;ouml;n&amp;uuml;ş&amp;uuml;ne sahip olabilir. Ayrıca &lt;strong&gt;ref&lt;/strong&gt; ve &lt;strong&gt;out&lt;/strong&gt; kullanımına izin verilmez.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğimizin &amp;ccedil;alışması tabiki biraz uzun s&amp;uuml;rebilir. Kolay değil yaklaşık&lt;strong&gt; 450 megabyte'&lt;/strong&gt; lık bir i&amp;ccedil;eriğin okunması s&amp;ouml;z konusu. İşte &amp;ouml;rnek ekran &amp;ccedil;ıktımız.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/aio_6.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="aio_6" src="/pics/aio_6_thumb.png" alt="aio_6" width="588" height="211" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Her iki &amp;ouml;rnekte de &amp;ouml;nemli olan, dosyadan satır bazında okuma ve dosyaya satır bazında yazma işlemlerini i&amp;ccedil;eren fonksiyonelliklerin ana uygulamadan bağımsız olarak asenkron &amp;ccedil;alışabiliyor olmalarıdır. Bir başka deyişle eş zamanlı&lt;em&gt;(Concurrent)&lt;/em&gt; olarak bir dosya i&amp;ccedil;erisine yazma veya okuma işlemi s&amp;ouml;z konusu değildir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Async&lt;/strong&gt; olarak kullanılabilecek başka &lt;strong&gt;IO&lt;/strong&gt; metodları da mevcuttur. Bunları aşağıdaki şekilde sıralayabiliriz.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;ReadAsync&lt;/li&gt;
+&lt;li&gt;ReadToEndAsync&lt;/li&gt;
+&lt;li&gt;ReadBlockAsync&lt;/li&gt;
+&lt;li&gt;WriteAsync&lt;/li&gt;
+&lt;li&gt;WriteLineAsync&lt;/li&gt;
+&lt;li&gt;FlushAsync&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;Par&amp;ccedil;alanmış Asenkronluk&lt;/h1&gt;
+&lt;p&gt;Son bir senaryo ile yazımıza devam edelim dilerseniz &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_117.png" alt="Winking smile" /&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Bu kez &lt;strong&gt;10milyon&lt;/strong&gt; element' ten oluşan sahımızı 10 par&amp;ccedil;aya b&amp;ouml;l&amp;uuml;p her bir par&amp;ccedil;a i&amp;ccedil;erisinde ayrı bir &lt;strong&gt;Text&lt;/strong&gt; dosyaya yazma işlemini, asenkron manada sim&amp;uuml;le etmeye &amp;ccedil;alışıyor olacağız. İşte senaryoya istinaden ele alabileceğimiz kod par&amp;ccedil;aları.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Collections.Generic; 
+using System.Diagnostics; 
+using System.IO; 
+using System.Linq; 
+using System.Threading.Tasks;
+
+namespace NewIOFunctions 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            //10 milyonluk bir test k&amp;uuml;mesi &amp;uuml;retiyoruz. Bunu asenkron geliştirmediğimizden biraz zaman alacaktır. 
+            var gameZone = GameCreator.CreateRandomElements(10000000); 
+            var r=WriteTo10File(gameZone); 
+            Console.WriteLine("İşlemler devam ediyor...L&amp;uuml;tfen bekleyiniz"); 
+            r.Wait(); 
+            Console.WriteLine("Program sonlandırılıyor"); 
+        }
+
+        private static async Task WriteTo10File(List&amp;lt;GameElement&amp;gt; elements) 
+        { 
+            for (int i = 1; i &amp;lt;= 10; i++) 
+            { 
+                string fileName = Path.Combine(Environment.CurrentDirectory, "GameZone_" + i.ToString() + ".txt"); 
+                await WriteFileAsyncV2(elements.Skip((i-1)*1000000).Take(1000000).ToList(), fileName); 
+            } 
+            Console.WriteLine("T&amp;uuml;m dosya yazma işlemleri tamamlandı."); 
+        }
+
+        private static async Task WriteFileAsyncV2(List&amp;lt;GameElement&amp;gt; elements, string filePath) 
+        { 
+            using (StreamWriter writer = new StreamWriter(filePath)) 
+            { 
+                foreach (var element in elements) 
+                { 
+                    // Awaitable olan WriteLineAsync metodunu &amp;ccedil;ağırıyor ve i&amp;ccedil;eriği yazdırıyoruz. 
+                    await writer.WriteLineAsync(element.ToString()); 
+                } 
+                Console.WriteLine("{0} i&amp;ccedil;in işlemler tamamlandı.",filePath); 
+            } 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Hem &lt;strong&gt;WriteTo10File&lt;/strong&gt; hem de &lt;strong&gt;WriteFileAsyncV2&lt;/strong&gt; metodları &lt;strong&gt;async &lt;/strong&gt;olarak işaretlenmiş olup kendi i&amp;ccedil;lerinde &lt;strong&gt;await&lt;/strong&gt; edilebilir operasyon &amp;ccedil;ağrılarına yer vermektedirler. İlk olarak 10milyonluk k&amp;uuml;me 10&amp;nbsp; eşit par&amp;ccedil;a şeklinde ele alınmakta ve her bir alt k&amp;uuml;menin asenkron bir metod ile &amp;ccedil;alışacak şekilde ilgili dosyalara yazdırılması işlemi ger&amp;ccedil;ekleştirilmektedir.&lt;/p&gt;
+&lt;p&gt;Dosyaya satır bazlı yazma işlemi i&amp;ccedil;in yine &lt;strong&gt;WriteLineAsync&lt;/strong&gt; fonksiyonunundan yararlanılmaktadır. &lt;strong&gt;WriteTo10File&lt;/strong&gt; metoduda kendi i&amp;ccedil;erisinde 1milyonluk k&amp;uuml;melere ayırdığı element listelerini ayrı dosyalara yazmak i&amp;ccedil;in &lt;strong&gt;WriteFileAsyncV2&lt;/strong&gt; metodunu &lt;strong&gt;await&lt;/strong&gt; anahtar kelimesi ile &amp;ccedil;ağırmaktadır ki bu da g&amp;ouml;zden ka&amp;ccedil;ırılmaması gereken bir noktadır. Kodun &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı aşağıda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/aio_7.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="aio_7" src="/pics/aio_7_thumb.png" alt="aio_7" width="588" height="343" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Tabi klas&amp;ouml;r yapısına bakıldığında&amp;nbsp; GameZone_1&amp;rsquo; den GameZone_10&amp;rsquo; a kadar 10 farklı dosyanın &amp;uuml;retildiği ve i&amp;ccedil;erisine de 10milyon k&amp;uuml;menin 1milyon par&amp;ccedil;alarının yazıldığı g&amp;ouml;r&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/aio_8.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="aio_8" src="/pics/aio_8_thumb.png" alt="aio_8" width="493" height="358" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Senaryolarımız ile &lt;strong&gt;Console&lt;/strong&gt; &amp;uuml;zerinden basit pratiklerimizi yapmış olduk. Şimdi bu pratikleri ger&amp;ccedil;ek hayat senaryoları ile değerlendirmeye &amp;ccedil;alışmalıyız. Dolayısıyla işlemlerimizi artık g&amp;ouml;rsel arabirimi olan ve ger&amp;ccedil;ekten de cevap verilebilirliğe ihtiya&amp;ccedil; duyan &lt;strong&gt;Windows Forms&lt;/strong&gt;, &lt;strong&gt;WPF(Windows Presentation Foundation)&lt;/strong&gt; ve belki de &lt;strong&gt;Asp.Net &lt;/strong&gt;gibi uygulama &amp;ccedil;eşitlerinde ele almalıyız. Her zaman olduğu gibi bu kutsal g&amp;ouml;revi siz değerli meslektaşlarıma bırakıyorum &lt;img class="wlEmoticon wlEmoticon-smile" style="border-style: none;" src="/pics/wlEmoticon-smile_49.png" alt="Smile" /&gt; B&amp;ouml;ylece geldik bir yazmızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2012%2f9%2fNewIOFunctions.zip"&gt;NewIOFunctions.zip (48,16 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2013-01-25 02:27:00</pubDate>
+  <slug>Net-Framework-45-Asenkron-IO-Islemleri</slug>
+  <tags>
+    <tag>net-framework-45</tag>
+    <tag>async</tag>
+    <tag>asynchronous-programming</tag>
+    <tag>wait</tag>
+    <tag>await</tag>
+    <tag>awaitable-task</tag>
+    <tag>task</tag>
+    <tag>task-parallel-library</tag>
+    <tag>io</tag>
+    <tag>streamreader</tag>
+    <tag>streamwriter</tag>
+  </tags>
+  <categories>
+    <category>.Net Framework 4.5</category>
+  </categories>
+</post>

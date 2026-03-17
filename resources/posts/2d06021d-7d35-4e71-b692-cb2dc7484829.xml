@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>.Net Remoting Dünyasından WCF'e Geçmek</title>
+  <description>Windows tabanlı olan Servis Yönelimli Mimari(Service Oriented Architecture) tekniklerinden biriside .Net Remoting' dir. .Net Remoting mimarisi ağırlıklı olarak TCP bazlı ve Binary tabanlı paket iletiminde kullanılır. En büyük özelliklerinden birisi, sadece Windows işletim sistemlerinden oluşan ağlarda koşabilmesidir. Elbette HTTP üzerinden SOAP-Simple Object Access Protocol formatına uygun alt yapı kurulmasıda mümkündür. Bu sayede internet ağındada ektin şekilde kullanılabilir. Ancak Windows bağımlı olması platform bağımsızlığını ortadan kaldırmaktadır. Günümüzde WCF(Windows Communication Foundation) gibi daha ölçeklenebilir(Scalable), birleştirilmiş(Unified) bir Servis Yönelimli Mimari(SOA) açılımıda mevcuttur. Bu durumda geliştiricilerin karşısına önemli bazı sorular ve sorunlar çıkmaktadır.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Windows tabanlı olan &lt;strong&gt;Servis&lt;/strong&gt; &lt;strong&gt;Y&amp;ouml;nelimli Mimari(Service Oriented Architecture) &lt;/strong&gt;tekniklerinden biriside .Net Remoting' dir. .Net Remoting mimarisi ağırlıklı olarak &lt;strong&gt;TCP&lt;/strong&gt; bazlı ve &lt;strong&gt;Binary&lt;/strong&gt; tabanlı paket iletiminde kullanılır. En b&amp;uuml;y&amp;uuml;k &amp;ouml;zelliklerinden birisi, sadece Windows işletim sistemlerinden oluşan ağlarda koşabilmesidir. Elbette &lt;strong&gt;HTTP&lt;/strong&gt; &amp;uuml;zerinden &lt;strong&gt;SOAP-Simple Object Access Protocol&lt;/strong&gt; formatına uygun alt yapı kurulmasıda m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Bu sayede internet ağındada ektin şekilde kullanılabilir. Ancak Windows bağımlı olması platform bağımsızlığını ortadan kaldırmaktadır. G&amp;uuml;n&amp;uuml;m&amp;uuml;zde &lt;strong&gt;WCF(Windows Communication Foundation)&lt;/strong&gt; gibi daha &amp;ouml;l&amp;ccedil;eklenebilir(Scalable), birleştirilmiş(Unified) bir Servis Y&amp;ouml;nelimli Mimari(SOA) a&amp;ccedil;ılımıda mevcuttur. Bu durumda geliştiricilerin karşısına &amp;ouml;nemli bazı sorular ve sorunlar &amp;ccedil;ıkmaktadır. İşte bunlardan bir ka&amp;ccedil;ı;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Var olan .Net Remoting alt yapısı, WCF tabanlı bir hale d&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;lebilir mi?&lt;/li&gt;
+&lt;li&gt;D&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;l&amp;uuml;rse ne gibi d&amp;uuml;zenlemeler yapmak gerekir?&lt;/li&gt;
+&lt;li&gt;Sıfırdan WCF tabanlı bir model geliştirmek yerine, .Net Remoting WCF'e g&amp;ouml;&amp;ccedil; etmek mantıklı mıdır?&lt;/li&gt;
+&lt;li&gt;.Net Framework 2.0 hatta 1.1 uyumlu sistemler &amp;uuml;zerine kurulmuş senaryolarda, var olan .Net Remoting uygulamalarında yapılacak WCF d&amp;uuml;zenlemeleri ge&amp;ccedil;erli olacak mıdır? Yoksa bu makinelere Framework 3.0 y&amp;uuml;klenmeli midir?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Bu sorular farklı a&amp;ccedil;ılardan bakıldığında artabilir. İlerleyen kısımlarda bu sorulara ve beraberinde gelen sorunlara cevap bulmamızı kolaylaştıracak şekilde ilerlemeye &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Windows Communication Foundation, &lt;strong&gt;.Net Remoting&lt;/strong&gt;, &lt;strong&gt;Web Servisleri&lt;/strong&gt;, &lt;strong&gt;MSMQ&lt;/strong&gt;,&lt;strong&gt; Named Pipes&lt;/strong&gt;, &lt;strong&gt;WSE&lt;/strong&gt; gibi pek &amp;ccedil;ok dağıtık mimari modelini tek bir &amp;ccedil;atı altında birleştirip sunabilmesiyle &amp;ouml;n plana &amp;ccedil;ıkmış bir &lt;strong&gt;Servis Y&amp;ouml;nelimli Mimari(Service Oriented Architecture)&lt;/strong&gt; alt yapısıdır. Bu alt yapı, &amp;ouml;nceki mimarilerde daha fazla kodlama gerektiren yada geliştiricileri zorlayan standartların(&amp;Ouml;rneğin &lt;strong&gt;WS-Specifications&lt;/strong&gt;) kolay ve etkin bir şekilde uygulanabilmesini hatta bir arada tutulabilmesine de izin vermektedir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Bazı durumlarda &amp;ccedil;alışmakta olan sistemi yeni bir mimariye adapte etmenin maliyeti &amp;ccedil;ok y&amp;uuml;ksek olabilir. S&amp;ouml;z gelimi &amp;ouml;l&amp;ccedil;ek olarak &amp;ccedil;ok b&amp;uuml;y&amp;uuml;k &amp;ccedil;aplı projelerde sistemi yeniden tasarlamak son derece sancılı bir s&amp;uuml;re&amp;ccedil; olabilir. Ancak b&amp;ouml;yle bir durum s&amp;ouml;z konusu değilse karşımızda iki alternatif olacaktır. Var olan sistemi modifiye ederek WCF' e taşımak yada sıfırdan tasarlamak. Aslında var olan bir .Net Remoting alt yapısını bir ka&amp;ccedil; k&amp;uuml;&amp;ccedil;&amp;uuml;k değişiklik ile WCF' e taşımak son derece kolaydır. Herşeyden &amp;ouml;nce .Net Remoting i&amp;ccedil;erisinde yer alan temel par&amp;ccedil;aları g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alarak ilerlemekte yarar vardır.&lt;/p&gt;
+&lt;p&gt;.Net Remoting ile hazırlanmış bir sistemde&lt;strong&gt; istemcilerin(Clients)&lt;/strong&gt; kullanacakları fonksiyonellikleri barındıran &lt;strong&gt;uzak nesneler(Remote Objects)&lt;/strong&gt; bir &lt;strong&gt;sunucu(Server) &lt;/strong&gt;uygulama &amp;uuml;zerinden &lt;strong&gt;Client Activated Object &lt;/strong&gt;yada &lt;strong&gt;Server Activated Object&lt;/strong&gt; modeline uygun olacak şekilde yayınlanırlar. Hatta SAO nesneleride &lt;strong&gt;Singleton&lt;/strong&gt; veya &lt;strong&gt;SingleCall&lt;/strong&gt; olarak tasarlanırlar. İstemci uygulamalar aslında uzak nesne referanslarını kullanırken bu referanslar &lt;strong&gt;Marshal By Reference&lt;/strong&gt; modeline g&amp;ouml;re sunucu &amp;uuml;zerinde &amp;ouml;rneklenirler. Bir başka deyişle istemci uzak nesneyi sanki kendi &lt;strong&gt;uygulama alanı(Application Domain) &lt;/strong&gt;i&amp;ccedil;erisindeymiş gibi kullanırlarken, t&amp;uuml;m işlevler sunucu &amp;uuml;zerinde ger&amp;ccedil;ekleşmektedir.&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;ok doğal olarak burada istemci ve sunucu arasındaki mesaj trafiğinin ortak bir zemine oturtulması şarttır. Bu nedenle genellikle istemci ve sunucu uygulamalar hizmete ait nesne tasarımını i&amp;ccedil;eren şartnamelerin yer aldığı bir &lt;strong&gt;aray&amp;uuml;z(Interface)&lt;/strong&gt; tipini ortaklaşa referans ederler. B&amp;ouml;ylece servis tarafındaki fonkisyonelliklerin i&amp;ccedil; yapılarının değiştirilmesi halinde istemciler &amp;uuml;zerinde yeniden g&amp;uuml;ncelleme yapılmasına gerek kalmayacaktır. Ayrıca istemciler sadece aray&amp;uuml;z&amp;uuml; g&amp;ouml;rebildiklerinden, &amp;ccedil;ağırdıkları fonksiyonelliklerin i&amp;ccedil; yapısını bilmeyeceklerdir ki buda servis kodunun tam olarak istemci tarafından g&amp;ouml;r&amp;uuml;lmesini engellemektedir. Zaten WCF' in tamamen aray&amp;uuml;zlere dayalı bir sistemi &amp;ouml;nermesinin ve kullanmasının en &amp;ouml;nemli nedenleride bunlardır.&lt;/p&gt;
+&lt;p&gt;Bu noktada geliştirici tarafından tanımlanan &lt;strong&gt;serileştirilebilir tiplerinde (Serializable Types) &lt;/strong&gt; ortak bir &lt;strong&gt;sınıf k&amp;uuml;t&amp;uuml;phanesi(Class Library)&lt;/strong&gt; &amp;uuml;zerinde olması gerekmektedir. Serileştirilebilir nesneler aslında servis tarafında &amp;ouml;rneklenip sadece &lt;strong&gt; varlıkları(Entities) &lt;/strong&gt;istemci tarafına aktarılan &amp;ouml;rnekler olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. S&amp;ouml;z gelimi istemcinin talep ettiği bir &amp;uuml;r&amp;uuml;n&amp;uuml;n, Product isimli bir sınıfa ait nesne &amp;ouml;rneği olacak şekilde servis tarafında doldurulması ve istemciden elde edilmesi buna &amp;ouml;rnek olarak verilebilir. Burada istemcinin talebi sonrasında servis tarafından d&amp;ouml;nen veriler Product isimli sınıfın &lt;strong&gt;&amp;ouml;zellik(Property) &lt;/strong&gt;veya &lt;strong&gt; alanlarının(Fields) &lt;/strong&gt;değerleridir. Serileştirilebilir nesnelerin WCF mimarisinde ele alınması &amp;ccedil;ok daha kolaydır. &amp;Ouml;zellikle &lt;strong&gt;versiyonlamanın(Versioning)&lt;/strong&gt; WCF &amp;uuml;zerinden ger&amp;ccedil;ekleştirilmesi daha esnektir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Makalenin konusu .Net Remoting' den WCF' e bir iki adımda taşınmanın nasıl sağlanabileceğini g&amp;ouml;stermek olduğundan, .Net Remoting ve WCF mimarilerinin &amp;ccedil;ok geniş detayları g&amp;ouml;z ardı edilmektedir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Artık bir &amp;ouml;rnek &amp;uuml;zerinden hareket ederek devam edebiliriz. &amp;Ouml;ncelikli olarak bir &lt;strong&gt;.Net Remoting&lt;/strong&gt; uygulamasını &lt;strong&gt;Visual Studio 2005&lt;/strong&gt; &amp;uuml;zerinden geliştiriyor olacağız. İlk olarak istemci ve servis uygulamasının ortaklaşa kullanacağı &lt;strong&gt; sınıf k&amp;uuml;t&amp;uuml;phanesini(Class Library)&lt;/strong&gt; tasarlayarak işe başlanabilir. Sınıf k&amp;uuml;t&amp;uuml;phanesi i&amp;ccedil;erisindeki tiplere ait &lt;strong&gt;sınıf diyagramı(Class Diagram) &lt;/strong&gt;ve kod i&amp;ccedil;erikleri aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk233_1.gif" alt="" width="289" height="308" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;IProductManager aray&amp;uuml;z&amp;uuml;(Interface);&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace AdvLibrary
+{
+    public interface IProductManager
+    {
+        Product GetProductInfo(int productId);
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rneğin daha basit olarak ele alınabilmesi i&amp;ccedil;in aray&amp;uuml;z(Interface) tanımlamasında, geriye Product tipinden nesne &amp;ouml;rneği d&amp;ouml;nd&amp;uuml;rebilen ve integer tipinden bir parametre alabilen GetProductInfo isimli bir metod bildirimi yer almaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Product sınıfı(Class);&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace AdvLibrary
+{
+    [Serializable]
+    public class Product
+    {
+        public int Id;
+        public string Name;
+        public double ListPrice;
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Product isimli sınıf i&amp;ccedil;erisinde bir &amp;uuml;r&amp;uuml;ne ait Id, Name ve ListPrice değerleri tutulmaktadır. Bununla birlikte Product sınıfı i&amp;ccedil;in dikkat &amp;ccedil;ekici en &amp;ouml;nemli &amp;ouml;zelliklerden biriside&lt;strong&gt; Serializable niteliği(attribute)&lt;/strong&gt; ile imzalanmış olmasıdır. Burada a&amp;ccedil;ık bir şekilde Product sınıfına ait nesne &amp;ouml;rneklerinin &lt;strong&gt;Marshal By Value&lt;/strong&gt; olarak sunucudan istemciye serileşerek taşınabileceği garanti altına alınmaktadır.&lt;/p&gt;
+&lt;p&gt;Servis tarafında yer alan program, s&amp;ouml;z konusu &amp;ouml;rnekte bir &lt;strong&gt;Console&lt;/strong&gt; uygulaması olarak tasarlanmaktadır. Bu uygulamanın &amp;ccedil;ok doğal olarak yukarıda tasarlanan tipleri i&amp;ccedil;eren AdvLibrary isimli &lt;strong&gt;sınıf k&amp;uuml;t&amp;uuml;phanesini(Class Library)&lt;/strong&gt; referans ediyor olması gerekmektedir. Nitekim sunucu uygulama i&amp;ccedil;erisinde asıl iş yapan sınıfın uyarlayacağı aray&amp;uuml;z ve kullanacağı serileştirilebilir tip bu sınıf k&amp;uuml;t&amp;uuml;phanesi i&amp;ccedil;erisinde bulunmaktadır.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Ger&amp;ccedil;ek hayat senaryolarında en &amp;ccedil;ok tercih edilen .Net Remoting y&amp;ouml;ntemi, sunucu uygulamasını bir &lt;strong&gt;Windows Service&lt;/strong&gt; olarak tasarlamaktadır. Bu y&amp;ouml;netimi daha g&amp;uuml;&amp;ccedil;l&amp;uuml; olan, &amp;ouml;l&amp;ccedil;eklenebilir ve g&amp;uuml;venli bir uygulama se&amp;ccedil;imidir. Bunun dışında &lt;strong&gt;IIS(Internet Information Services)&lt;/strong&gt; &amp;uuml;zerinden &lt;strong&gt;barındırma(Host)&lt;/strong&gt; imkanıda bulunmaktadır. Diğer taraftan sunucu uygulama bir Windows uygulaması hatta bu &amp;ouml;rnekte olduğu gibi bir Console uygulamasıda olabilir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Tekrar sunucu uygulamasına d&amp;ouml;n&amp;uuml;lecek olursa, IProductManager isimli &lt;strong&gt;aray&amp;uuml;z&amp;uuml;(Interface) &lt;/strong&gt;uygulayan uzak nesne sınıfının aşağıdaki gibi tasarlanabileceği d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk233_2.gif" alt="" width="294" height="188" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using AdvLibrary;
+using System.Data.SqlClient;
+
+namespace ServerApp
+{
+    public class ProductManager:MarshalByRefObject,IProductManager
+    {
+        public ProductManager()
+        {
+            Console.WriteLine("ProductManager nesnesi oluşturuldu...");
+        }    
+        #region IProductManager Members
+
+        public Product GetProductInfo(int productId)
+        {
+            Product prd = null;
+            using (SqlConnection conn = new SqlConnection("data source=.;database=AdventureWorks;integrated security=SSPI"))
+            {
+                using (SqlCommand cmd = new SqlCommand("Select ProductId,Name,ListPrice,SellStartDate From Production.Product Where ProductId=@PrdId", conn))
+                {
+                    cmd.Parameters.AddWithValue("@PrdId",productId);
+                    conn.Open();
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        prd = new Product();
+                        prd.Id = productId;
+                        prd.Name = reader["Name"].ToString();
+                        prd.ListPrice = Convert.ToDouble(reader["ListPrice"]);
+                    }
+                    reader.Close();
+                }
+            }
+            return prd;
+        }
+
+        #endregion
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu sınıf i&amp;ccedil;erisinde yer alan metod uyarlamasında AdventureWorks isimli veritabanına gidilmekte ve Production &lt;strong&gt;şemasında(Schema) &lt;/strong&gt;yer alan Product tablosundan parametre olarak gelen ProductID değerine sahip olan &amp;uuml;r&amp;uuml;n bilgisi geriye d&amp;ouml;nd&amp;uuml;r&amp;uuml;lmektedir. Nesne oluşumlarının kolay takip edilebilmesi amacıyla ProductManager sınıfı i&amp;ccedil;erisine birde &lt;strong&gt;varsayılan yapıcı metod(Default Constructor)&lt;/strong&gt; ilave edilmiştir. Burada dikkat edilmesi gereken nokta sınıfın IProductManager isimli aray&amp;uuml;z dışında &lt;strong&gt;MarshalByRefObject&lt;/strong&gt; sınıfından t&amp;uuml;remiş olmasıdır.&lt;/p&gt;
+&lt;p&gt;Sunucu tarafındaki Remoting ayarlarını konfigurasyon bazlı olarak aşağıdaki config dosyasında tanımlayabiliriz.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;system.runtime.remoting&amp;gt;
+        &amp;lt;application&amp;gt;
+            &amp;lt;channels&amp;gt;
+                &amp;lt;channel ref="Tcp Server" port="4500"/&amp;gt;
+            &amp;lt;/channels&amp;gt;
+            &amp;lt;service&amp;gt;
+                &amp;lt;wellknown mode="Singleton" type="ServerApp.ProductManager,ServerApp" objectUri="ProductMng.rem" /&amp;gt;
+            &amp;lt;/service&amp;gt;
+        &amp;lt;/application&amp;gt;
+    &amp;lt;/system.runtime.remoting&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Konfigurasyon dosyası i&amp;ccedil;erisinde tahmin edileceği &amp;uuml;zere &lt;strong&gt;Wellknown&lt;/strong&gt; bir nesne tanımı yapılmıştır. Bu nesne &lt;strong&gt;Singleton&lt;/strong&gt; modeline g&amp;ouml;re &amp;ccedil;alışacaktır. Bir başka deyişle t&amp;uuml;m istemcilerin talepleri aynı uzak nesne referansı &amp;uuml;zerinden karşılanmaktadır. Sunucu uygulama, &lt;strong&gt;uzak nesne(Remote Object) &lt;/strong&gt;i&amp;ccedil;in &lt;strong&gt;TCP&lt;/strong&gt; bazlı 4500 numaralı portu kullanıma sunmaktadır. Buradaki konfigurasyon ayarlarının sunucu uygulama &amp;uuml;zerinde tesis edilmesi i&amp;ccedil;inde aşağıdaki başlangı&amp;ccedil; kodlarının yazılması yeterlidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using AdvLibrary;
+using System.Runtime.Remoting;
+
+namespace ServerApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            RemotingConfiguration.Configure("..\\..\\App.config",false);
+            Console.WriteLine("Sunucu dinlemede. Kapatmak i&amp;ccedil;in bir tuşa basınız...");
+            Console.ReadLine();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu noktada şunu hatırlamakta yarar vardır; sunucu uygulama &amp;ccedil;alıştığı s&amp;uuml;rece istemcilerden gelecek taleplere cevap verilebilir.&lt;/p&gt;
+&lt;p&gt;Gelelim istemci uygulamaya. Herşeyden &amp;ouml;nce istemci uygulamanında aray&amp;uuml;z&amp;uuml; barındıran ortak k&amp;uuml;t&amp;uuml;phaneyi referans etmesi gerekmektedir. Diğer taraftan istemci uygulamanın kod i&amp;ccedil;eriği aşağıdaki gibi olabilir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using AdvLibrary;
+
+namespace ClientApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            IProductManager prdMng = (IProductManager)Activator.GetObject( typeof(IProductManager), "tcp://localhost:4500/ProductMng.rem");
+            Product prd=prdMng.GetProductInfo(1);
+            Console.WriteLine(prd.Name+" "+prd.ListPrice.ToString("C2"));
+            Console.ReadLine();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Burada en kritik nokta, &lt;strong&gt; aray&amp;uuml;z(interface)&lt;/strong&gt; tercihi nedeniyle &lt;strong&gt;Activator&lt;/strong&gt; sınıfının &lt;strong&gt; GetObject&lt;/strong&gt; metodunun kullanılmasıdır. Bu metod ile aslında ikinci parametre ile belirtilen adresten ProductMng.rem isimli tanımlayıcının&lt;strong&gt;(Uniform Resource Identifier)&lt;/strong&gt; işaret ettiği uzak nesne referansı talep edilmektedir. İstemciye d&amp;ouml;nd&amp;uuml;r&amp;uuml;lecek olan referansın taşınabileceği tek yer IProductManager aray&amp;uuml;z&amp;uuml; olduğundan da metodun d&amp;ouml;n&amp;uuml;ş tipi &lt;strong&gt; bilin&amp;ccedil;li(Explicit)&lt;/strong&gt; olarak &amp;ccedil;evrilmektedir. Buraya kadar yapılan hazırlıklar sonucunda test işlemi yapılırsa aşağıdakine benzer &amp;ccedil;ıktılar elde edilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk233_3.gif" alt="" width="363" height="335" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi istemciler başarılı bir şekilde sunucu &amp;uuml;zerinden taleplerini karşılayabilmektedirler. &lt;em&gt;(Burada oluşturulan sistemin d&amp;uuml;zg&amp;uuml;n &amp;ccedil;alıştığının kontrol edilmesi i&amp;ccedil;in sunucu uygulama &amp;ccedil;alıştırılmadan bir istemcinin &amp;ccedil;alıştırılması denenebilir. Eğer ger&amp;ccedil;ekten sunucu &amp;uuml;zerindeki nesne kullanılmaya &amp;ccedil;alışılıyorsa &amp;ccedil;alışma zamanında istemci tarafında &lt;strong&gt;"No Connection Could Be Made, Becouse the Target Machine Actively Refused It..." &lt;/strong&gt;hatası alınır.) &lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Buraya kadar anlatılanlar basit olarak bir &lt;strong&gt;.Net Remoting &lt;/strong&gt;uygulamasının alt yapısını &amp;ouml;zetlemektedir. Aşağıdaki şekil &amp;uuml;zerinden, yapılanlar ve sonu&amp;ccedil;ları tartışılabilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk233_4.gif" alt="" width="546" height="404" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekilde .Net Remoting i&amp;ccedil;erisinde 50000 metre yukarıdan bakıldığında g&amp;ouml;ze &amp;ccedil;arpan etkenler betimlenmeye &amp;ccedil;alışılmıştır. Şimdi bu sistemi &lt;strong&gt;Windows Communication Foundation&lt;/strong&gt; alt yapısına taşımaya &amp;ccedil;alışıyor olacağız.&lt;/p&gt;
+&lt;p&gt;İlk yapılması gereken servis tarafında sunulmak istenen fonksiyonellikleri tanımlayacak bir s&amp;ouml;zleşme(Contract) oluşturmaktır. Burada s&amp;ouml;z konusu olan &lt;strong&gt;servis s&amp;ouml;zleşmesi(Service Contract) &lt;/strong&gt;bir aray&amp;uuml;ze rahatlıkla uygulanabilir. Tek yapılması gereken &lt;strong&gt;System.ServiceModel.dll&lt;/strong&gt; isimli &lt;strong&gt;.Net Framework 3.0 assembly&lt;/strong&gt;' ının referans edilmesi ve &lt;strong&gt;ServiceContract&lt;/strong&gt; ile &lt;strong&gt; OperationContract niteliklerinin(attributes)&lt;/strong&gt; kullanılmasıdır. Aşağıdaki şekilde Visual Studio 2005 &amp;uuml;zerinden s&amp;ouml;z konusu assembly' ın referans edilişi g&amp;ouml;r&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk233_5.gif" alt="" width="268" height="451" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu işlemin ardından IProductManager isimli aray&amp;uuml;z&amp;uuml;n yapısı aşağıdaki gibi değiştirilmelidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+
+namespace AdvLibrary
+{
+    [ServiceContract]
+    public interface IProductManager
+    {
+        [OperationContract]
+        Product GetProductInfo(int productId);
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu değişiklik aray&amp;uuml;z&amp;uuml;n &lt;strong&gt;Windows Communication Foundation&lt;/strong&gt; uyumlu bir &lt;strong&gt;serviş s&amp;ouml;zleşmesi(Service Contract)&lt;/strong&gt; olması i&amp;ccedil;in yeterlidir. &lt;strong&gt;ServiceContract&lt;/strong&gt; niteliği ile tanımlanan servis s&amp;ouml;zleşmesi i&amp;ccedil;erisinden dışarıya sunulabilecek fonksiyonelliklerin tamamı &lt;strong&gt;OperationContract&lt;/strong&gt; niteliği(attribute) ile imzalanmalıdır. Yapılan bu değişiklik her ne kadar ortak k&amp;uuml;t&amp;uuml;phane i&amp;ccedil;erisinde olsada sonu&amp;ccedil; itibariyle t&amp;uuml;m istemcilere gerekli assembly' ın yeniden dağıtılması gerekmektedir. Ama zaten bu g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınması gereken bir aşamadır.&lt;/p&gt;
+&lt;p&gt;Gelelim sunucu tarafına. Sunucu tarafındada &amp;ccedil;ok doğal olarak yapılması gereken bazı işlemler vardır. Herşeyden &amp;ouml;nce konfigurasyon i&amp;ccedil;eriğinin WCF mimarisine uyumlu olacak şekilde değiştirilmesi gerekmektedir. Bu ama&amp;ccedil;la sunucu uygulama tarafındaki &lt;strong&gt; App.config&lt;/strong&gt; dosyasının i&amp;ccedil;eriği aşağıdaki gibi yenilenmelidir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;!--&amp;lt;system.runtime.remoting&amp;gt;
+                &amp;lt;application&amp;gt;
+                    &amp;lt;channels&amp;gt;
+                        &amp;lt;channel ref="Tcp Server" port="4500"/&amp;gt;
+                    &amp;lt;/channels&amp;gt;
+                    &amp;lt;service&amp;gt;
+                        &amp;lt;wellknown mode="Singleton" type="ServerApp.ProductManager,ServerApp" objectUri="ProductMng.rem" /&amp;gt;
+                    &amp;lt;/service&amp;gt;
+                &amp;lt;/application&amp;gt;
+            &amp;lt;/system.runtime.remoting&amp;gt;--&amp;gt;
+    &amp;lt;system.serviceModel&amp;gt;
+        &amp;lt;services&amp;gt;
+            &amp;lt;service name="ServerApp.ProductManager"&amp;gt;
+                &amp;lt;endpoint address="net.tcp://localhost:4500/ProductMng" binding="netTcpBinding" contract="AdvLibrary.IProductManager" /&amp;gt;
+            &amp;lt;/service&amp;gt;
+        &amp;lt;/services&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Windows Communication Foundation(WCF)&lt;/strong&gt; mimarisinde servis i&amp;ccedil;in belkide en &amp;ouml;nemli kavram &lt;strong&gt; EndPoint&lt;/strong&gt;' dir. EndPoint i&amp;ccedil;erisinde &lt;strong&gt;WCF mimarisinin ABC' si &lt;/strong&gt; yer almaktadır. &lt;strong&gt;AddressBindingConfiguration&lt;/strong&gt; yardımıyla servisin hangi lokasyondan, hangi protokol ile, hangi nesneyi nasıl ve ne şekilde sunduğu belirtilmektedir.&lt;strong&gt; .Net Remoting&lt;/strong&gt; bazlı geliştirilen &amp;ouml;rnekte &lt;strong&gt;TCP&lt;/strong&gt; bazlı ve &lt;strong&gt;Binary &lt;/strong&gt;serileştirme yapan bir sistem kullanıldığından bu &amp;ouml;zellikleri b&amp;uuml;nyesinde barındıran bir tipin WCF tarafında ele alınması gerekmektedir. Bu işi &lt;strong&gt;NetTcpBinding&lt;/strong&gt; isimli sınıf &amp;uuml;stlenmektedir. Bu aynı zamanda &lt;strong&gt;bağlayıcı tiptir(Binding Type)&lt;/strong&gt;. &lt;strong&gt;Contract&lt;/strong&gt; bilgisi ile tahmin edileceği &amp;uuml;zere servisin dış ortama sunduğu s&amp;ouml;zleşme ve operasyonları belirtilmektedir. Son olarak &lt;strong&gt; Address&lt;/strong&gt; bilgisi ile servis &amp;uuml;zerinde sunulan nesneye hangi adres &amp;uuml;zerinden erişilebileceği belirtilmektedir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;WCF&lt;/strong&gt; mimarisinde bir servis birden fazla &lt;strong&gt;EndPoint&lt;/strong&gt; sunabilir. Bu geliştiricilere senaryoya g&amp;ouml;re birden fazla bağlayıcı tipin(Binding Type) ve dolayısıyla imkanın sunulabildiği bir ortam hazrılayacaktır. S&amp;ouml;z gelimi bir servis uygulaması WCF' e g&amp;ouml;re yazıldığında, &lt;strong&gt;MSMQ&lt;/strong&gt;, &lt;strong&gt;TCP&lt;/strong&gt;, &lt;strong&gt;HTTPS&lt;/strong&gt; &amp;uuml;zerinden vb... hizmet verebilecek mesaj seviyesinde(Message Level) yada iletişim seviyesinde(Transport Level) korumalı hizmetleri sunabilir. &amp;Uuml;stelik bunlar i&amp;ccedil;in ayrı ayrı uygulama &amp;ccedil;eşitleri tasarlanmasına gerek kalmaz. Bir başka deyişle bu tip bir senaryo i&amp;ccedil;in ayrı bir .&lt;strong&gt;Net Remoting, Xml&lt;/strong&gt; &lt;strong&gt;Web&lt;/strong&gt; &lt;strong&gt;Service&lt;/strong&gt; veya &lt;strong&gt;MSMQ&lt;/strong&gt; uygulaması yazılmasına gerek yoktur. İşte WCF' in birleştirici rol&amp;uuml;n&amp;uuml;n &amp;ouml;nemi burada belirgin bir bi&amp;ccedil;imde ortaya &amp;ccedil;ıkmaktadır.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Elbetteki sunucu uygulamanın kodlarınıda aşağıdaki gibi değiştirmek gerekmektedir. Artık &lt;strong&gt; ServiceHost&lt;/strong&gt; isimli sınıf başlatıcı rol&amp;uuml; &amp;uuml;stlenmektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using AdvLibrary;
+//using System.Runtime.Remoting;
+using System.ServiceModel;
+
+namespace ServerApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            //RemotingConfiguration.Configure("..\\..\\App.config",false);
+            ServiceHost host = new ServiceHost(typeof(ProductManager));
+            host.Open();
+            Console.WriteLine("Sunucu dinlemede. Kapatmak i&amp;ccedil;in bir tuşa basınız...");
+            Console.ReadLine();
+            host.Close();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rnek koda g&amp;ouml;re &lt;strong&gt;ServiceHost&lt;/strong&gt; nesne &amp;ouml;rneği, ProductManager isimli sınıfı uzak nesne olarak hizmete a&amp;ccedil;maktadır. &lt;strong&gt;Open&lt;/strong&gt; metoduna yapılan &amp;ccedil;ağrıdan sonra, sunucu uygulama istemciden gelecek olan talepleri dinleyecek konuma gelmektedir. &lt;strong&gt; Close&lt;/strong&gt; metoduna yapılan &amp;ccedil;ağrı sonrasında ise servis kapatılmaktadır. Elbette &lt;strong&gt;ServiceHost&lt;/strong&gt; sınıfının kullanılabilmesi i&amp;ccedil;in &lt;strong&gt; System.ServiceModel.dll&lt;/strong&gt; &lt;strong&gt;assembly&lt;/strong&gt;' ının sunucu uygulama tarafınada referans edilmesi gerekmektedir.&lt;/p&gt;
+&lt;p&gt;Peki istemci tarafında neler yapılmalıdır? Herşeyden &amp;ouml;nce istemci tarafında gerekli ayarların konfigurasyon bazlı olacak şekilde geliştirilmesi &amp;ouml;nerilmektedir. Bu ama&amp;ccedil;la istemci tarafına eklenecek olan bir konfigurasyon dosyasının i&amp;ccedil;eriği, &amp;ouml;rneğe g&amp;ouml;re aşağıdaki gibi tasarlanabilir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;system.serviceModel&amp;gt;
+        &amp;lt;client&amp;gt;
+            &amp;lt;endpoint name="ProductMng" address="net.tcp://localhost:4500/ProductMng" binding="netTcpBinding" contract="AdvLibrary.IProductManager"/&amp;gt;
+        &amp;lt;/client&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Konfigurasyon i&amp;ccedil;eriğine bakıldığında dikkat edileceği &amp;uuml;zere yine bir &lt;strong&gt;EndPoint&lt;/strong&gt; tanımlaması yapılmaktadır. Bu EndPoint aslında istemcinin bağlantı kuracağı servis tarafındaki noktayı tanımlamaktadır. İstemci tarafındaki kod i&amp;ccedil;eriği ise aşağıdaki gibi geliştirilebilir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using AdvLibrary;
+using System.ServiceModel;
+
+namespace ClientApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            //IProductManager prdMng = (IProductManager)Activator.GetObject(typeof(IProductManager), "tcp://localhost:4500/ProductMng.rem");
+            //Product prd=prdMng.GetProductInfo(1);
+
+            ChannelFactory&amp;lt;IProductManager&amp;gt; chn = new ChannelFactory&amp;lt;IProductManager&amp;gt;("ProductMng");
+            IProductManager prdMng=chn.CreateChannel();
+            Product prd = prdMng.GetProductInfo(1);
+            Console.WriteLine(prd.Name+" "+prd.ListPrice.ToString("C2"));
+            Console.ReadLine();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;ChannelFactory&lt;/strong&gt; nesne &amp;uuml;retimi i&amp;ccedil;in gerekli bilgileri, parametre olarak verilen değere g&amp;ouml;re konfigurasyon dosyasından almaktadır. B&amp;ouml;ylece servis tarafındaki hangi &lt;strong&gt;EndPoint&lt;/strong&gt; ile konuşabileceğini bilmektedir. &lt;strong&gt;CreateChannel&lt;/strong&gt; metodu &amp;ouml;nceden hazırlanan ayarlara g&amp;ouml;re, servis tarafı ile konuşacak olan kanal nesnesini &amp;ouml;rneklemektedir. A&amp;ccedil;ık&amp;ccedil;ası CreateChannel metodunun sonucu &lt;strong&gt; .Net Remoting &lt;/strong&gt;i&amp;ccedil;in kullanılan &lt;strong&gt;Activator.GetObject&lt;/strong&gt; metodunun &amp;uuml;rettiğine benzerdir. Nitekim aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nden de anlaşılacağı &amp;uuml;zere &lt;strong&gt;CreateChannel&lt;/strong&gt; metoduda &lt;strong&gt;Transparent&lt;/strong&gt; bir &lt;strong&gt;Proxy&lt;/strong&gt; &amp;uuml;retmektedir. Bu Proxy, &amp;ccedil;alışma zamanında servis &amp;uuml;zerindeki &lt;strong&gt; EndPoint&lt;/strong&gt; ile haberleşmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk233_7.gif" alt="" width="639" height="166" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;ok doğal olarak &lt;strong&gt;proxy&lt;/strong&gt; nesnesinin &amp;uuml;retilmesinde de kullanılan &lt;strong&gt;ChannelFactory&lt;/strong&gt; sınıfı &lt;strong&gt; System.ServiceModel isim alanı(Namespace) &lt;/strong&gt;altındadır. Bu nedenle s&amp;ouml;z konusu isim alanını i&amp;ccedil;eren &lt;strong&gt;assembly&lt;/strong&gt;' ın istemci uygulamayada referans edilmesi gerekmektedir.&lt;/p&gt;
+&lt;p&gt;Artık var olan .Net Remoting uygulaması bu bir ka&amp;ccedil; adım ile &lt;strong&gt;WCF&lt;/strong&gt; formatına &amp;ccedil;evrilmiştir. Uygulamalar test edildiğinde aşağıdakine benzer sonu&amp;ccedil;lar alınacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk233_6.gif" alt="" width="464" height="308" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Elbetteki servisin ve operasyonların davranışları &lt;strong&gt;WCF&lt;/strong&gt; mimarisi i&amp;ccedil;erisinde &amp;ccedil;ok daha geniş bir şekilde ele alınmaktadır. &amp;Ouml;rnekte bunlara gerek kalmadanda WCF' e ge&amp;ccedil;ilebileceği g&amp;ouml;sterilmektedir. Ancak ele alınması gereken başka noktalarda olabilir.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğin her istemci i&amp;ccedil;in birer uzak nesne referansı sunucu &amp;uuml;zerinde oluşturulmaktadır. Oysaki tasarlanan &lt;strong&gt; .Net Remoting &lt;/strong&gt;alt yapısında &lt;strong&gt;Singleton&lt;/strong&gt; modeli benimsenmiştir. Bir başka deyişle her istemci talebi(Request) aynı uzak nesne &amp;ouml;rneği &amp;uuml;zerinden karşılanmaktadır. &lt;strong&gt;WCF&lt;/strong&gt; tarafında bu, servis tarafında sunulan uzak nesnenin bir &lt;strong&gt;&amp;ccedil;alışma zamanı(run-time)&lt;/strong&gt; davranışıdır(Behavior). Dolayısıyla bu davranışın bir &lt;strong&gt;nitelik(attribute)&lt;/strong&gt; yardımıyla belirlenmesi yada konfigurasyon i&amp;ccedil;eriğinde tanımlanması gerekmektedir. Bu sebepten &amp;ouml;rnekte yer alan ProductManager sınıfı başında &lt;strong&gt;ServiceBehavior&lt;/strong&gt; niteliğinin(attribute) aşağıdaki gibi kullanılması gerekir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[ServiceBehavior(InstanceContextMode=InstanceContextMode.Single)]
+public class ProductManager:MarshalByRefObject,IProductManager&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;InstanceContextMode&lt;/strong&gt; &lt;strong&gt;enum&lt;/strong&gt; sabitinin &lt;strong&gt;Single&lt;/strong&gt; olarak belirlenen değeri &amp;ouml;rnekte ele alınan senrayoya uygun olacak şekilde uzak nesne referanslarının oluşturulmasını sağlamaktadır. Bunun sonucunda &amp;ccedil;alışma zamanındaki durum aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk233_10.gif" alt="" width="453" height="271" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bunun dışında binary olarak serileştirilebilen Product sınıfı i&amp;ccedil;in herhangibir ekstra &amp;ccedil;alışma yapılmadığı ortadadır. Nitekim b&amp;ouml;yle bir &amp;ccedil;alışma yapılmasına gerek kalmamıştır. Fakat &lt;strong&gt;versiyonlama&lt;/strong&gt; yapıldığı durumlarda WCF mimarisi&lt;strong&gt; .Net Remoting&lt;/strong&gt;' e g&amp;ouml;re daha efektif bir &amp;ccedil;&amp;ouml;z&amp;uuml;m sunmaktadır.&lt;/p&gt;
+&lt;p&gt;Burada &lt;strong&gt;versiyonlamanın(Versioning)&lt;/strong&gt; nasıl sorunlar yaşatabileceğini anlamak &amp;ouml;nemlidir. S&amp;ouml;z gelimi Product isimli serileştirilebilir sınıfın sonradan yazılan ikinci bir versiyonu olduğu ve bu versiyonda işin i&amp;ccedil;erisine &lt;strong&gt;SellStartDate&lt;/strong&gt; isimli yeni bir alan(Field) katıldığı g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınsın. Eski Product sınıfını kullanan istemcilerin sorunsuz olarak onunla &amp;ccedil;alışmaya devam etmelerini, yeni versiyonu kullananların ise yeni eklenen alanı ele alabilmelerini sağlamak i&amp;ccedil;in kuvvetle muhtemel tasarımı aşağıdaki gibi değiştirmek gerekecektir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk233_8.gif" alt="" width="451" height="285" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Runtime.Serialization;
+
+namespace AdvLibrary
+{
+    [Serializable]
+    public class Product:ISerializable
+    {
+        public int Id;
+        public string Name;
+        public double ListPrice;
+        public DateTime SellStartDate; // Yeni versiyonlar i&amp;ccedil;in eklenen alan.
+    
+        public Product()
+        {
+    
+        }
+
+        public Product(SerializationInfo info, StreamingContext context)
+        {
+            Id = info.GetInt32("Id");
+            Name = info.GetString("Name");
+            ListPrice = info.GetDouble("ListPrice");
+            // Versiyonlama nedeni ile oluşabilecek hataları g&amp;ouml;rmezden gelmek i&amp;ccedil;in bir try...catch
+            try
+            {
+                SellStartDate = info.GetDateTime("SellStartDate");
+            }
+            catch
+            {
+            }
+        }
+
+        #region ISerializable Members
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("Id", Id);
+            info.AddValue("Name", Name);
+            info.AddValue("ListPrice", ListPrice);
+            info.AddValue("SellStartDate", SellStartDate); // Yeni versiyon i&amp;ccedil;in ekenen kod satırı
+        }
+    
+        #endregion
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Burada dikkat edilecek olursa serileştirme işlemleri &lt;strong&gt;ISerializable&lt;/strong&gt; &lt;strong&gt;aray&amp;uuml;z&amp;uuml;n&amp;uuml;n(Interface)&lt;/strong&gt; kullanılmasıyla &amp;ouml;zelleştirilerek, değerlerin aktarımı kontroll&amp;uuml; bir hale getirilmektedir. &amp;Ouml;zelleştirme i&amp;ccedil;in &lt;strong&gt;ISerializable&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml;n uygulanması haricinde yapıcı metodun(Constructor) aşırı y&amp;uuml;klenmiş(Overload) bir versiyonuda ele alınmaktadır. Sorunun detayları &amp;ccedil;ok &amp;ouml;nemli olmamakla birlikte Windows Communication Foundation i&amp;ccedil;erisinde bu tip versiyonlamalarında kontrol edilebilmesi son derece kolaydır. Tek yapılması gereken aşağıdaki gibi Product sınıfını bir &lt;strong&gt;veri s&amp;ouml;zleşmesi(Data Contract)&lt;/strong&gt; haline getirmektir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Runtime.Serialization;
+
+namespace AdvLibrary
+{ 
+    [DataContract]
+    public class Product
+    {
+        [DataMember(IsRequired=true)] // Mutlaka olmalı
+        public int Id;
+
+        [DataMember(IsRequired = true)] // Mutlaka olmalı
+        public string Name;
+
+        [DataMember(IsRequired = true)] // Mutlaka olmalı
+        public double ListPrice;
+        
+        [DataMember] // Opsiyonel oldu.
+        public DateTime SellStartDate; // Yeni versiyonlar i&amp;ccedil;in eklenen alan.
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;DataMember&lt;/strong&gt; &lt;strong&gt; niteliği(attribute)&lt;/strong&gt; varsayılan olarak uygulandığı &amp;uuml;yeye opsiyonel bir davranış getirmektedir. Bir başka deyişle &amp;ccedil;alışma zamanında karışa tarafın bu alanı i&amp;ccedil;ermeyen bir tipi kullanması halinde hi&amp;ccedil; bir problem oluşmayacak ve bu alan g&amp;ouml;rmezden gelinecektir. Tam tersine bu alanı kullanan bir versiyon varsa SellStartDate alanıda hesaba katılacaktır. Bu sayede versiyonlamada &amp;ccedil;ok kolay bir şekilde ele alınabilmektedir. Product sınıfının tasarlanmasında dikkat edilmesi gereken &amp;ouml;nemli bir nokta vardır. Buna g&amp;ouml;re &lt;strong&gt;DataContract&lt;/strong&gt; ve &lt;strong&gt; DataMember&lt;/strong&gt; &lt;strong&gt;niteliklerinin(attributes)&lt;/strong&gt; tanımlandıkları isim alanı(Namespace), &lt;strong&gt;System.Runtime.Serialization.dll &lt;/strong&gt;assembly' ı i&amp;ccedil;erisindedir. Dolayısıyla sınıf k&amp;uuml;t&amp;uuml;phanesine bu assembly' ın aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi referans edilmesi gerekmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk233_9.gif" alt="" width="487" height="342" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Son olarak ele alınması gereken bir durum daha olabilir. İstemci ve servis tarafının &lt;strong&gt;.Net Framework 2.0&lt;/strong&gt; y&amp;uuml;kl&amp;uuml; sistemler olduğu g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında yapılan son değişikliker sonrasında uygulamalar sorunsuz bir şekilde &amp;ccedil;alışabilecek midir?&lt;em&gt;( Burada iyimser bir yaklaşım g&amp;uuml;d&amp;uuml;lerek .Net Framework 1.1 versiyonu hi&amp;ccedil; hesaba katılmamıştır.)&lt;/em&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Yukarıdaki referans ekleme kısmında dikkat &amp;ccedil;eken noktalardan biriside &lt;strong&gt;Framework 3.0&lt;/strong&gt; i&amp;ccedil;in geliştirilmiş pek &amp;ccedil;ok &lt;strong&gt;assembly&lt;/strong&gt;' ın &lt;strong&gt;&amp;ccedil;alışma zamanında(Run Time) v2.0.50727 &lt;/strong&gt;versiyonuna ihtiya&amp;ccedil; duymasıdır. Bir başka deyişle &lt;strong&gt;System.ServiceModel &lt;/strong&gt;veya &lt;strong&gt; System.Runtime.Serialization&lt;/strong&gt; gibi 3.0 assembly' ları,&lt;strong&gt; .Net Framework 2.0&lt;/strong&gt; y&amp;uuml;kl&amp;uuml; bir makinede belleğe y&amp;uuml;klenip &amp;ccedil;alışabilirler. Nitekim ihtiya&amp;ccedil;ları olan &lt;strong&gt;v2.0.50727 &lt;/strong&gt; versiyonlu &lt;strong&gt;Common Language Runtime(CLR)&lt;/strong&gt;' dır.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Aslında sistemler &amp;uuml;zerinde .Net Framework 3.0' ın y&amp;uuml;kl&amp;uuml; olması sorunun &amp;ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml; i&amp;ccedil;in yeterlidir. Lakin sadece .Net Framework 2.0 y&amp;uuml;kl&amp;uuml; olan bir sistemde değiştirilen uygulamalar &amp;ccedil;alıştırılabilirse, bir .Net Framework 3.0 y&amp;uuml;kleme derdinden kurtulunabilinir. Ancak bunun bir dert olup olmadığıda tartışılması gereken bir vakadır.&lt;/p&gt;
+&lt;p&gt;S&amp;ouml;z konusu durumu &lt;span style="text-decoration: underline;"&gt;test etmek i&amp;ccedil;in servis veya istemci uygulamaları, &amp;uuml;zerinde &lt;strong&gt;.Net Framework 2.0&lt;/strong&gt; y&amp;uuml;kl&amp;uuml; olan bir sistemde, &lt;strong&gt;System.ServiceModel.dll &lt;/strong&gt;ve &lt;strong&gt;System.Runtime.Serialization.dll assembly&lt;/strong&gt;' larınıda kopyalayarak &amp;ccedil;alıştırmak yeterli olacaktır. Başlangı&amp;ccedil;ta servis ve istemci tarafında var olması d&amp;uuml;ş&amp;uuml;n&amp;uuml;len exe, config ve dll dosyaları aşağıdaki gibidir.&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk233_11.gif" alt="" width="479" height="393" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Ne yazıkki buradaki dll' lerin hedef bilgisayara(bilgisayarlara) taşınmaları yeterli olmamaktadır. &lt;strong&gt;.Net Framework 2.0&lt;/strong&gt; y&amp;uuml;kl&amp;uuml; makinede &amp;ouml;rnek olarak ServerApp uygulaması &amp;ccedil;alıştırıldığında aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan hata ile karşılaşılabilir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;span style="font-family: Verdana; color: #ff0000;"&gt; &lt;img src="/makale/images/mk233_12.gif" alt="" width="639" height="301" border="0" /&gt;&lt;/span&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Bunun &amp;uuml;zerine &lt;strong&gt;SMDiagnostics.dll&lt;/strong&gt; isimli assembly' ında hedef bilgisayarda &lt;strong&gt;ServerApp&lt;/strong&gt; ve &lt;strong&gt; ClientApp&lt;/strong&gt; program dosyalarının olduğu yere konması gerekir. S&amp;ouml;z konusu assembly hedef programların bulunduğu lokasyona taşındıktan sonra bir deneme daha yapılırsa aşağıdakine benzer bir hata mesajı ile daha karşılaşılabilinir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;span style="font-family: Verdana; color: #ff0000;"&gt; &lt;img src="/makale/images/mk233_16.gif" alt="" width="641" height="231" border="0" /&gt;&lt;/span&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Bu hatanın oluşmasının en b&amp;uuml;y&amp;uuml;k nedeni, programın &amp;ccedil;alıştığı makine &amp;uuml;zerinde &lt;strong&gt;.Net Framework 3.0&lt;/strong&gt; y&amp;uuml;kl&amp;uuml; olmadığı i&amp;ccedil;in, &lt;strong&gt;machine.config&lt;/strong&gt;' de olması gereken bazı ayarların bulunmayışından kaynaklanmaktadır. Bu nedenle &lt;strong&gt;ServiceModelReg&lt;/strong&gt; aracının kullanılarak gerekli konfigurasyon bilgilerinin hedef makineye y&amp;uuml;klenmesi gerekecektir. Bu sebepten komut satırından aşağıdaki gibi bir &amp;ccedil;alışma yapılmalıdır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;span style="font-family: Verdana; color: #ff0000;"&gt; &lt;img src="/makale/images/mk233_14.gif" alt="" width="596" height="249" border="0" /&gt;&lt;/span&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Bu &amp;ccedil;alışmanın ardından hedef bilgisayarda yer alan konfigurasyon dosyas i&amp;ccedil;in gerekli Handler ve Module y&amp;uuml;klemeleri ger&amp;ccedil;ekleştirilecektir. Artık herşey halloldu diye d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir ama bu seferde ServerApp uygulaması &amp;ccedil;alıştırıldığında aşağıdakine benzer bir hata mesajı daha alınabilir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;span style="font-family: Verdana; color: #ff0000;"&gt; &lt;img src="/makale/images/mk233_15.gif" alt="" width="638" height="231" border="0" /&gt;&lt;/span&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;ok doğal olarak &lt;strong&gt; System.IdentityModel.dll&lt;/strong&gt;' ininde kopyalanmış olması gerekecektir. Bu hata beraberinde &lt;strong&gt;System.IdentityModel.Selectors.dll&lt;/strong&gt; isimli assembly' ında y&amp;uuml;klenmesini gerektirmektedir. Her iki &lt;strong&gt;assembly&lt;/strong&gt; y&amp;uuml;klensede bu kez &lt;strong&gt;doğrulama(Authentication)&lt;/strong&gt; ve &lt;strong&gt; yetkilendirme(Authorization)&lt;/strong&gt; problemleri oluşmaktadır. Bunların &amp;ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml; adına config dosyalarında gerekli d&amp;uuml;zenlemele yapılabilir. Yinede bu sancılı s&amp;uuml;re&amp;ccedil; hemen &amp;ccedil;&amp;ouml;z&amp;uuml;mlenemeyecektir. Yazının ilerleyen kısımlarında konunun daha fazla dağılmaması adına bu y&amp;ouml;ntemler g&amp;ouml;z ardı edilmiştir.&lt;/p&gt;
+&lt;p&gt;Sonu&amp;ccedil; olarak her ne kadar &lt;strong&gt;.Net Remoting&lt;/strong&gt;' den &lt;strong&gt;Windows Communication Foundation &lt;/strong&gt;tarafına ge&amp;ccedil;iş yapmak kolay olsada, ger&amp;ccedil;ek &amp;ccedil;alışma ortamında &amp;ouml;zellikle&lt;strong&gt; .Net Framework 2.0&lt;/strong&gt; y&amp;uuml;kl&amp;uuml; sistemlerde bazı ayarlamaların yapılması gerekmektedir. Bu durum .Net Framework 1.1 y&amp;uuml;kl&amp;uuml; makinelerde tam bir kabus haline gelebilir. Nitekim kopyalanan dll' lerin bazıları &lt;strong&gt;CLR 1.1&lt;/strong&gt; versiyonunda &amp;ccedil;alışmayacaktır. Bu nedenle &lt;strong&gt;.Net Framework 3.0&lt;/strong&gt;' ın &lt;strong&gt;Redistruable&lt;/strong&gt; paketinin hedef sistemlere y&amp;uuml;klenerek &amp;ccedil;alışmalara devam edilmesi doğru bir davranış olacaktır. Hatta istemciler i&amp;ccedil;in bir setup paketinin hazırlanması ve gerekliliklerden birisi olarak .Net Framework 3.0 se&amp;ccedil;iminin eklenmesi &amp;ccedil;ok yerinde bir davranıştır. O halde cevaplanması gereken bir soru daha vardır. Bu kadar zahmete girilecekse, sistemin WCF i&amp;ccedil;in yeninde yazılması yoluna gidilemez midir? Aslında bu sorunun cevabı daha &amp;ouml;nceden tasarlanıp kullanılılmakta olan .Net Remoting sistemine bağlıdır. Eğer yazılan &amp;ccedil;ok fazla kod ve birbirlerine bağlı par&amp;ccedil;a var ise, bir iki d&amp;uuml;zenleme ile WCF' e uyumlu bir sistem oluşturmak son derece kolaydır.&lt;/p&gt;
+&lt;p&gt;Bu noktalarda vakayı doğru değerlendirip karar vermekte ve gerekirse cevap i&amp;ccedil;in profesyonel destek almakta yarar olabilir.B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/makale/images/FromRemotingToWCF.rar"&gt;&amp;Ouml;rnek Uygulama i&amp;ccedil;in Tıklayın&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2007-12-03 12:00:00</pubDate>
+  <slug>-Net-Remoting-Dunyasc4b1ndan-WCFe-Gecmek-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>wcf</tag>
+    <tag>windows-communication-foundation</tag>
+    <tag>net-remoting</tag>
+    <tag>migration</tag>
+  </tags>
+  <categories>
+    <category>.Net Remoting</category>
+    <category>WCF</category>
+  </categories>
+</post>

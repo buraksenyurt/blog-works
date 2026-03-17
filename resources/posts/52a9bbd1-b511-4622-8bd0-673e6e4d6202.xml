@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Task Wait,WaitAll,WaitAny</title>
+  <description>Task Süreçlerinde Bilinçli Olarak Duraksatma başlıklı bir önceki yazımızda CancellationToken.WaitHandle.WaitOne, Thread.Sleep ve Thread.SpinWait metodlarından yararlanarak bir Task çalışmasının bekletme işlemlerinin nasıl yapılabileceğini incelemeye çalışmıştık.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/blg207_Giris.jpg"&gt;&lt;img style="display: inline; margin-left: 0px; margin-right: 0px; border-width: 0px;" title="blg207_Giris" src="/pics/blg207_Giris_thumb.jpg" alt="blg207_Giris" width="302" height="226" align="right" border="0" /&gt;&lt;/a&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;&lt;a href="/post/Task-Sureclerinde-Bilincli-Olarak-Duraksatma"&gt;Task S&amp;uuml;re&amp;ccedil;lerinde Bilin&amp;ccedil;li Olarak Duraksatma&lt;/a&gt; başlıklı bir &amp;ouml;nceki yazımızda &lt;strong&gt;CancellationToken.WaitHandle.WaitOne, Thread.Sleep&lt;/strong&gt; ve &lt;strong&gt;Thread.SpinWait&lt;/strong&gt; metodlarından yararlanarak bir Task &amp;ccedil;alışmasının bekletme işlemlerinin nasıl yapılabileceğini incelemeye &amp;ccedil;alışmıştık. &amp;Ouml;zellikle &lt;strong&gt;WaitOne &lt;/strong&gt;metodunun,&lt;strong&gt; CancellationToken.WaitHandle&lt;/strong&gt; &amp;ouml;zeliği &amp;uuml;zerinden &amp;ccedil;alıştırıldığını unutmayalım. Diğer yandan t&amp;uuml;m bu teknikleri Task g&amp;ouml;vdesi i&amp;ccedil;erisinde ger&amp;ccedil;ekleştirmiştik. Bunun doğal sonucu olarakta y&amp;uuml;r&amp;uuml;t&amp;uuml;lmekte olan Task işlevlerinin duraksatılmasını sağlamıştık.&lt;/p&gt;
+&lt;p&gt;Ancak incelediğimiz bu teknikler dışında, &lt;strong&gt;Task&lt;/strong&gt; nesne &amp;ouml;rnekleri veya &lt;strong&gt;Task&lt;/strong&gt; sınıfı &amp;uuml;zerinden kullanılabilecek farklı bekletme teknikleri de s&amp;ouml;z konusudur.&lt;/p&gt;
+&lt;p&gt;Aslında &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rnekleri &amp;uuml;zerinden &lt;strong&gt;Result&lt;/strong&gt; değerlerinin okunmaya &amp;ccedil;alışılması, s&amp;ouml;z konusu &lt;strong&gt;Task&amp;rsquo;&lt;/strong&gt; in işleyişini tamamlayıncaya kadar, &amp;ccedil;ağıran uygulamanın bekletilmesi anlamına gelmektedir. Fakat bunun dışında kullanılabilecek &lt;strong&gt;Wait, WaitAll&lt;/strong&gt; ve &lt;strong&gt;WaitAny&lt;/strong&gt; gibi metodlar s&amp;ouml;z konusudur. T&amp;uuml;m bu metodların kullanımında ama&amp;ccedil;, &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneğini/&amp;ouml;rneklerini başlatan uygulamanın, belirtilen şartlar doğrultusunda bekletilmesini sağlamaktır. Bir &amp;ouml;nceki yazımızda incelediğimiz konular d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde bu &amp;ouml;nemli bir farktır. Bu seferki hedefimiz &amp;ccedil;ağıran uygulamanın/metodun duraksatılmasıdır. Dilerseniz s&amp;ouml;z konusu modellere ait &amp;ouml;rnek uygulamalarımızı geliştirerek ilerleyelim.&lt;/p&gt;
+&lt;h2&gt;&lt;strong&gt;Wait Tekniği&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;Bu modelde, &lt;strong&gt;Task&lt;/strong&gt; nesne &amp;ouml;rneği &amp;uuml;zerinden &amp;ccedil;ağırılan &lt;strong&gt;Wait&lt;/strong&gt; metodu ile, &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneğini başlatan fonksiyon veya uygulamanın duraksatılması s&amp;ouml;z konusudur. Aslında &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneğini başlatan en azından uygulamanın ana &lt;strong&gt;Thread&amp;rsquo;&lt;/strong&gt; idir. Dolayısıyla &lt;strong&gt;Wait&lt;/strong&gt;, &lt;strong&gt;Main Thread&amp;rsquo;&lt;/strong&gt; in duraksatılmasına neden olmaktadır. Durumu daha a&amp;ccedil;ık bir şekilde kavrayabilmek adına aşağıdaki kod par&amp;ccedil;asını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Collections.Generic; 
+using System.Linq; 
+using System.Threading; 
+using System.Threading.Tasks;
+
+namespace WaitingScenarios2 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            IEnumerable&amp;lt;int&amp;gt; numbers = Enumerable.Range(0, 100000000);
+
+            CancellationTokenSource tokenSource = new CancellationTokenSource(); 
+            CancellationToken token = tokenSource.Token;
+
+            Task startedTask = Task.Factory.StartNew(() =&amp;gt; 
+            { 
+                for (int i = 0; i &amp;lt; numbers.Count(); i++) 
+                { 
+                    token.ThrowIfCancellationRequested(); 
+                    i++; 
+                    i--; 
+                    i *= 2; 
+                    Console.Write("."); 
+                } 
+            } 
+            , token);
+
+            token.Register(() =&amp;gt; 
+            { 
+                Console.WriteLine("İşlem iptali"); 
+            } 
+            ); 
+            Console.WriteLine("İşlemler devam ediyor. İlk duraksatma i&amp;ccedil;in bir tuşa basın."); 
+            Console.ReadLine();
+
+            Console.WriteLine("TimeSpan.FromSeconds(5) duraksatması. Time : {0}",DateTime.Now.ToLongTimeString()); 
+            bool waitStatus=startedTask.Wait(TimeSpan.FromSeconds(5)); 
+            Console.WriteLine("Timespan.FromSeconds(5) duraksatması bitti Time : {0}\nTask tamamlanmış mı ? {1}\nİkinci duraksatma i&amp;ccedil;in bir tuşa basın.",DateTime.Now.ToLongTimeString(),waitStatus); 
+            Console.ReadLine();
+
+            Console.WriteLine("10 saniyelik duraksatma. Time : {0}", DateTime.Now.ToLongTimeString()); 
+            waitStatus=startedTask.Wait(10000); 
+            Console.WriteLine("10 saniyelik duraksatma bitti. Time : {0}\nTask tamamlanmış mı? {1}\nİşlemler devam ediyor. İptal etmek i&amp;ccedil;in bir tuşa basınız.",DateTime.Now.ToLongTimeString(), waitStatus);        
+            Console.ReadLine();
+
+            tokenSource.Cancel();
+
+            Console.ReadLine(); 
+            Console.WriteLine("Task 1 Status = {0}", startedTask.Status);
+
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Tedbiri elden bırakmadık ve yine bir iptal işlemini işin i&amp;ccedil;erisine kattık. Ancak odaklanacağımız nokta tabiki bu değil. Kodun iki farklı satırında &lt;strong&gt;Wait&lt;/strong&gt; metodunun kullanıldığını g&amp;ouml;rmekteyiz. İlk kullanımda&lt;strong&gt; o anki andan itibaren 5 saniyelik&lt;/strong&gt; &lt;strong&gt;bir duraksatma&lt;/strong&gt; ger&amp;ccedil;ekleştiriyoruz. Diğer metod kullanımından ise &lt;strong&gt;10000 mili saniyelik s&amp;uuml;re bildirimi yaparak 10 saniyelik bir duraksatma&lt;/strong&gt; icra ettirmekteyiz. &lt;strong&gt;Wait&lt;/strong&gt; metodu &lt;strong&gt;bool&lt;/strong&gt; tipinden değer d&amp;ouml;nd&amp;uuml;rmektedir. &lt;strong&gt;False&lt;/strong&gt; değer d&amp;ouml;nmesi, ilgili &lt;strong&gt;Task&lt;/strong&gt; bloğunun herhangibir sebepten işyelişini tamamlamamış olması veya iptal edilmesi anlamına gelmektedir. Tahmin edileceği &amp;uuml;zere &lt;strong&gt;Task&amp;rsquo;&lt;/strong&gt; in başarılı bir şekilde tamamlanması sonucu bu değer &lt;strong&gt;True&lt;/strong&gt; olacaktır. &amp;Ouml;rneğimizi &amp;ccedil;alıştırdığımızda, aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ndekine benzer sonu&amp;ccedil;lar ile karşılaşabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg207_WaitOneTest1.gif"&gt;&lt;img style="display: inline; border: 0px;" title="blg207_WaitOneTest1" src="/pics/blg207_WaitOneTest1_thumb.gif" alt="blg207_WaitOneTest1" width="449" height="198" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere duraksatmalar da bekleyen aslında &lt;strong&gt;Console&lt;/strong&gt; uygulamasının kendisidir. Yani &lt;strong&gt;Main Thread&amp;rsquo;&lt;/strong&gt; dir. Ana uygulama, belirtilen s&amp;uuml;reler boyunca duraksamıştır. Lakin, &lt;strong&gt;Task&lt;/strong&gt; g&amp;ouml;vdesi i&amp;ccedil;erisinden başlatılan for d&amp;ouml;ng&amp;uuml;s&amp;uuml;, bu duraksatmalar sırasında işleyişine devam etmiştir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Wait&lt;/strong&gt; metodunun aşırı y&amp;uuml;klenmiş versiyonlarına bakıldığında parametre almayan bir versiyonunun daha olduğu g&amp;ouml;r&amp;uuml;lmektedir. Sıklıkla kullanılan bu versiyona g&amp;ouml;re ana uygulama, s&amp;ouml;z konusu &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneği işleyişini tamamlayıncaya kadar duraksatılacaktır.&lt;strong&gt; Wait()&lt;/strong&gt; kullanımına ilişkin &amp;ouml;rnek kod par&amp;ccedil;ası aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;IEnumerable&amp;lt;int&amp;gt; numbers = Enumerable.Range(0, 10000000);
+
+Task startedTask = Task.Factory.StartNew(() =&amp;gt; 
+{ 
+	for (int i = 0; i &amp;lt; numbers.Count(); i++) 
+	{ 
+		i++; 
+		i--; 
+		i *= 2; 
+		Console.Write("."); 
+	} 
+} 
+);
+
+Console.WriteLine("Wait()"); 
+startedTask.Wait();                  
+Console.WriteLine("\nTask 1 Status = {0}", startedTask.Status);&lt;/pre&gt;
+&lt;p&gt;Değer aralığı bilin&amp;ccedil;li olarak k&amp;uuml;&amp;ccedil;&amp;uuml;lt&amp;uuml;lm&amp;uuml;şt&amp;uuml;r. &amp;Ccedil;ok fazla beklememek i&amp;ccedil;in. Burada dikkat edilmesi gereken noktalardan birisi de, parametre almayan &lt;strong&gt;Wait&lt;/strong&gt; metodunun geriye &lt;strong&gt;bool&lt;/strong&gt; bir değer &lt;span style="text-decoration: underline;"&gt;d&amp;ouml;nd&amp;uuml;rmeyişidir&lt;/span&gt;. &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneğinin işlettiği kod par&amp;ccedil;asında herhangibir istisna oluşmadığı varsayıldığında, ana uygulmanın, işleyiş tamamlanıncaya kadar beklemesi s&amp;ouml;z konusudur.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg207_WaitOneTest2.gif"&gt;&lt;img style="display: inline; border: 0px;" title="blg207_WaitOneTest2" src="/pics/blg207_WaitOneTest2_thumb.gif" alt="blg207_WaitOneTest2" width="274" height="80" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;WaitAll Kullanımı&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;nceki &amp;ouml;rneklerimizde tek bir &lt;strong&gt;Task&lt;/strong&gt; nesne &amp;ouml;rneği &amp;uuml;zerinden, &amp;ccedil;ağıran uygulamanın duraksatılması işlemi ger&amp;ccedil;ekleştirilmiştir. Bir başka deyişle &amp;ccedil;ağıran uygulama, tek bir &lt;strong&gt;Task&lt;/strong&gt; nesne &amp;ouml;rneği i&amp;ccedil;in belirli/belirsiz s&amp;uuml;re bekletilmiştir. Ancak doğal olarak birden fazla &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneğinin yer aldığı bir senaryoda, t&amp;uuml;m &lt;strong&gt;Task&amp;rsquo;&lt;/strong&gt; ler i&amp;ccedil;in ana uygulamanın bekletilmesi de istenebilir. Hatta bu teknikte temel ama&amp;ccedil;, birden fazla &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneğinin işleyişi tamamlanıncaya kodun &lt;span style="text-decoration: underline;"&gt;ilerlememesidir&lt;/span&gt;. Bu durumda &lt;strong&gt;Task &lt;/strong&gt;sınıfının &lt;strong&gt;static WaitAll &lt;/strong&gt;metodundan yararlanılabilir. İşte &amp;ouml;rnek kod par&amp;ccedil;amız.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Collections.Generic; 
+using System.Linq; 
+using System.Threading; 
+using System.Threading.Tasks;
+
+namespace WaitingScenarios2 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            IEnumerable&amp;lt;int&amp;gt; numbers = Enumerable.Range(0, 100000000); 
+            IEnumerable&amp;lt;int&amp;gt; numbers2 = Enumerable.Range(0, 150000000);
+
+            Task startedTask = Task.Factory.StartNew(() =&amp;gt; 
+            { 
+                for (int i = 0; i &amp;lt; numbers.Count(); i++) 
+                { 
+                    i++; 
+                    i--; 
+                    i *= 2; 
+                    Console.Write("."); 
+                } 
+            } 
+            );
+
+            Task startedTask2 = Task.Factory.StartNew(() =&amp;gt; 
+            { 
+                for (int i = 0; i &amp;lt; numbers2.Count(); i++) 
+                { 
+                    i++; 
+                    i--; 
+                    i *= 2; 
+                    Console.Write("+"); 
+                } 
+            } 
+            );
+
+            Console.WriteLine("WaitAll &amp;Ccedil;ağrısı. Time : {0}",DateTime.Now.ToLongTimeString()); 
+            Task.WaitAll(startedTask, startedTask2); 
+            Console.WriteLine("\nWaitAll&amp;Ccedil;ağrısı sonrasındaki satır ge&amp;ccedil;iş zamanı : {0}",DateTime.Now.ToLongTimeString()); 
+            Console.WriteLine("\nTask 1 Status = {0}\nTask 2 Status = {0}", startedTask.Status,startedTask2.Status); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rnekte iki &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneği &amp;uuml;retilmiş ve başlatılmıştır. Sonrasında ise &lt;strong&gt;Task&lt;/strong&gt; sınıfı &amp;uuml;zerinden &lt;strong&gt;static WaitAll&lt;/strong&gt; metoduna parametre olarak aktarılmışlardır. Bunun sonucu olarak &lt;strong&gt;ana uyglamaya ait iş par&amp;ccedil;ası(Main Thread),&lt;/strong&gt; ilgili &lt;strong&gt;Task&lt;/strong&gt; işleyişleri tamamlanıncaya kadar duraksatılmaktadır. &amp;Ouml;rnek kod par&amp;ccedil;asında &lt;strong&gt;Cancel&lt;/strong&gt; işlemi ele alınmamıştır. Ancak g&amp;ouml;rsel bir uygulama s&amp;ouml;z konusu olduğunda, kullanıcının &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneklerinin işleyişleri devam ederken iptal isteğinin g&amp;ouml;nderilebileceği de g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınmalıdır. &amp;Ouml;rnek kod par&amp;ccedil;asının &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg207_WaitAllTest1.gif"&gt;&lt;img style="display: inline; border: 0px;" title="blg207_WaitAllTest1" src="/pics/blg207_WaitAllTest1_thumb.gif" alt="blg207_WaitAllTest1" width="415" height="111" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;WaitAll&lt;/strong&gt; metodunda istenirse s&amp;uuml;rede belirtilebilir. Bir başka deyişle parametre olarak gelen bir &lt;strong&gt;Task&lt;/strong&gt; k&amp;uuml;mesinin &amp;ccedil;alışması sonucu, y&amp;uuml;r&amp;uuml;t&amp;uuml;c&amp;uuml; uygulamanın belirli s&amp;uuml;re duraksatılması sağlanabilir. Bu durumu analiz etmek i&amp;ccedil;in aşağıdaki kod par&amp;ccedil;asını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Collections.Generic; 
+using System.Linq; 
+using System.Threading; 
+using System.Threading.Tasks;
+
+namespace WaitingScenarios2 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            CancellationTokenSource tokenSource = new CancellationTokenSource(); 
+            CancellationToken token = tokenSource.Token;
+
+            IEnumerable&amp;lt;int&amp;gt; numbers = Enumerable.Range(0, 100000000); 
+            IEnumerable&amp;lt;int&amp;gt; numbers2 = Enumerable.Range(0, 150000000);
+
+            Task startedTask = Task.Factory.StartNew(() =&amp;gt; 
+            { 
+                for (int i = 0; i &amp;lt; numbers.Count(); i++) 
+                { 
+                    token.ThrowIfCancellationRequested(); 
+                    i++; 
+                    i--; 
+                    i *= 2; 
+                    Console.Write("."); 
+                } 
+            } 
+            ,token);
+
+            Task startedTask2 = Task.Factory.StartNew(() =&amp;gt; 
+            { 
+                for (int i = 0; i &amp;lt; numbers2.Count(); i++) 
+                { 
+                    token.ThrowIfCancellationRequested(); 
+                    i++; 
+                    i--; 
+                    i *= 2; 
+                    Console.Write("+"); 
+                } 
+            } 
+            ,token 
+            );
+
+            token.Register(() =&amp;gt; 
+                { 
+                    Console.WriteLine("İptal"); 
+                } 
+            );
+
+            Console.WriteLine("WaitAll &amp;Ccedil;ağrısı. Time : {0}", DateTime.Now.ToLongTimeString()); 
+            Task[] tasks = { startedTask, startedTask2 }; 
+            Task.WaitAll(tasks,5000); 
+            Console.WriteLine("\nWaitAll&amp;Ccedil;ağrısı sonrasındaki satır ge&amp;ccedil;iş zamanı : {0}", DateTime.Now.ToLongTimeString()); 
+            Console.WriteLine("\nTask 1 Status = {0}\nTask 2 Status = {0}\nİptal etmek i&amp;ccedil;in bir tuşa basınız.", startedTask.Status, startedTask2.Status); 
+            Console.ReadLine(); 
+            tokenSource.Cancel(); 
+            Console.ReadLine();
+
+            Console.WriteLine("\nTask 1 Status = {0}\nTask 2 Status = {0}", startedTask.Status, startedTask2.Status); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rnekte WaitAll metoduna tasks isimli Task[] dizisi aktarılmış ve 5000 milisaniyelik duraksatma değeri verilmiştir. Ayrıca iptal işlemi de yapılabilmektedir. &amp;Ouml;rnek bir &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg207_WaitAllTest2.gif"&gt;&lt;img style="display: inline; border: 0px;" title="blg207_WaitAllTest2" src="/pics/blg207_WaitAllTest2_thumb.gif" alt="blg207_WaitAllTest2" width="424" height="186" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;WaitAll&lt;/strong&gt; &amp;ccedil;ağrısı sonrasındaki satıra ge&amp;ccedil;iş s&amp;uuml;resi, &lt;strong&gt;5 saniyelik bir duraksamaya&lt;/strong&gt; neden olmuştur. Tabi ki bu aralıkta &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneklerinin g&amp;ouml;vdeleri işleyişlerini s&amp;uuml;rd&amp;uuml;rmektedir. &lt;strong&gt;WaitAll&lt;/strong&gt; &amp;ccedil;ağrısı aşıldıktan sonraysa, &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rnekleri hen&amp;uuml;z &amp;ccedil;alışmalarını tamamlamadıklarından &lt;strong&gt;Running&lt;/strong&gt; durumunda kalmışlardır. Ki işleyişleri de devam etmektedir. Burada kullanıcı isterse iptal işlemini ger&amp;ccedil;ekleştirebilir ki &amp;ouml;rneğimizde bu senaryo icra edilmiştir. Dolayısıyla &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneklerinin her ikisi i&amp;ccedil;inde &lt;strong&gt;Status &lt;/strong&gt;değerleri &lt;strong&gt;Canceled &lt;/strong&gt;olmuştur.&lt;/p&gt;
+&lt;p&gt;Gelelim diğer bir duraksatma tekniğine.&lt;/p&gt;
+&lt;h2&gt;&lt;strong&gt;WaitAny Kullanımı&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;WaitAny&lt;/strong&gt; metodu ile bir &lt;strong&gt;Task&lt;/strong&gt; topluluğundan herhangibiri i&amp;ccedil;in, &amp;ccedil;ağırıcının bekletilmesi sağlanabilir. &lt;strong&gt;Task&lt;/strong&gt; sınıfı &amp;uuml;zerinden &amp;ccedil;ağırılabilen &lt;strong&gt;static WaitAny&lt;/strong&gt; metodu, parametre olarak gelen &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneklerinden hangisi tamamlanmışsa, bu &amp;ouml;rneğin dizi i&amp;ccedil;erisindeki indis değerini d&amp;ouml;nd&amp;uuml;r&amp;uuml;r. &lt;strong&gt;&amp;ndash;1&lt;/strong&gt; değer d&amp;ouml;nd&amp;uuml;rmesi, zaman aşımına uğrandığını veya &lt;strong&gt;CancellationToken&lt;/strong&gt; &amp;uuml;zerinden bir iptal talebi ger&amp;ccedil;ekleştirildiğini ifade etmektedir. Ancak bu değerin alınabilmesi i&amp;ccedil;inde, &lt;strong&gt;WaitAny &lt;/strong&gt;metodunun uygun olan &lt;strong&gt;aşırı y&amp;uuml;klenmiş(Overload)&lt;/strong&gt; versiyonunun kullanılması gerekmektedir. Dilerseniz konuyu daha net kavrayabilmek adına aşağıdaki &amp;ouml;rnek kod par&amp;ccedil;asını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Collections.Generic; 
+using System.Linq; 
+using System.Threading; 
+using System.Threading.Tasks;
+
+namespace WaitingScenarios2 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        {            
+            IEnumerable&amp;lt;int&amp;gt; numbers = Enumerable.Range(0, 60000000); 
+            IEnumerable&amp;lt;int&amp;gt; numbers2 = Enumerable.Range(0, 15000000); 
+            IEnumerable&amp;lt;int&amp;gt; numbers3 = Enumerable.Range(0, 45000000);
+
+            Task startedTask = Task.Factory.StartNew(() =&amp;gt; 
+            { 
+                for (int i = 0; i &amp;lt; numbers.Count(); i++) 
+                { 
+                    i++; 
+                    i--; 
+                    i *= 2; 
+                    Console.Write("."); 
+                } 
+            });
+
+            Task startedTask2 = Task.Factory.StartNew(() =&amp;gt; 
+            { 
+                for (int i = 0; i &amp;lt; numbers2.Count(); i++) 
+                { 
+                    i++; 
+                    i--; 
+                    i *= 2; 
+                    Console.Write("+"); 
+                } 
+            } 
+            );
+
+            Task startedTask3 = Task.Factory.StartNew(() =&amp;gt; 
+            { 
+                for (int i = 0; i &amp;lt; numbers3.Count(); i++) 
+                { 
+                    i++; 
+                    i--; 
+                    i *= 2; 
+                    Console.Write("/"); 
+                } 
+            } 
+            );
+
+            Task[] tasks = { startedTask, startedTask2, startedTask3 }; 
+            Console.WriteLine("WaitAny &amp;Ccedil;ağrısı. Time : {0}", DateTime.Now.ToLongTimeString());          
+            int completedTaskIndex = Task.WaitAny(tasks); 
+            Console.Write("\nİlk tamamlanan Task : {0}. Durumu {1}\n",completedTaskIndex,tasks[completedTaskIndex].Status); 
+            Console.ReadLine(); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Kod i&amp;ccedil;erisinde 3 farklı &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneğinin &amp;ccedil;alıştırıldığı g&amp;ouml;r&amp;uuml;lmektedir. Bu işlemler sonrasında &lt;strong&gt;WaitAny&lt;/strong&gt; metodu &amp;ccedil;ağırılmış ve ana uygulama Thread&amp;rsquo; inin duraksatılması sağlanmıştır. &amp;Ouml;rneği &amp;ccedil;alıştırdığımızda aşağıdaki ekran &amp;ccedil;ıktısındakine benzer bir sonu&amp;ccedil; ile karşılaşmamız olasıdır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg207_WaitAnyTest1.gif"&gt;&lt;img style="display: inline; border: 0px;" title="blg207_WaitAnyTest1" src="/pics/blg207_WaitAnyTest1_thumb.gif" alt="blg207_WaitAnyTest1" width="353" height="99" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Burada dikkat edilmesi gereken nokta, &amp;uuml;&amp;ccedil; &lt;strong&gt;Task&lt;/strong&gt; nesne &amp;ouml;rneğinden ilk olarak hangisi bitmişse, &lt;strong&gt;WaitAny&lt;/strong&gt; metodunun ona ait indis değerini d&amp;ouml;nd&amp;uuml;rmesidir. &amp;Ouml;rneğimizde dizi i&amp;ccedil;erisinde ikinci sırada yer alan, bir başka deyişle &lt;strong&gt;1 numaralı index değerine sahip olan&lt;/strong&gt; &lt;strong&gt;Task&lt;/strong&gt; g&amp;ouml;vdesi ilk tamamlanan i&amp;ccedil;eriktir. Dolayısıyla &lt;strong&gt;WaitAny&lt;/strong&gt; metodu geriye 1 değerini d&amp;ouml;nd&amp;uuml;rmektedir. Geri d&amp;ouml;n&amp;uuml;şten sonra fark edileceği &amp;uuml;zere hen&amp;uuml;z tamamlanmayan Task &amp;ouml;rnekleri &amp;ccedil;alışmalarına devam edecektir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/Exclamation_1.gif"&gt;&lt;img style="display: inline; margin-left: 0px; margin-right: 0px; border: 0px;" title="Exclamation" src="/pics/Exclamation_thumb_1.gif" alt="Exclamation" width="48" height="48" align="left" border="0" /&gt;&lt;/a&gt; &amp;Ouml;rnekleri daha iyi kavrayabilmek adına mutlaka &amp;ccedil;alıştırıp test etmenizi, debug zamanında durarak anlık durumları incelemenizi &amp;ouml;neririm.&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Bu yazımızda &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneklerinin sahibi olan &amp;ccedil;alıştırıcıların&lt;em&gt;(Ana uygulama Thread&amp;rsquo; i gibi)&lt;/em&gt; nasıl bekletilebileceklerini inclemeye &amp;ccedil;alıştık. Tabi bu &amp;ouml;rneklerde istisna fırlatılmasına y&amp;ouml;nelik vakaları değerlendirmedik. Ancak bu tip durumlarında incelenmesi gerekmektedir. İşte size g&amp;uuml;zel bir araştırma konusu. &lt;strong&gt;Task Parallel Library&lt;/strong&gt; ile ilişkili kavramları incelemeye devam ediyor olacağız. Bir sonraki yazımızda g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2010%2f6%2fWaitingScenarios2.rar"&gt;WaitingScenarios2.rar (23,05 kb)&lt;/a&gt;&lt;strong&gt;&amp;nbsp;[&amp;Ouml;rnek Visual Studio 2010 Ultimate s&amp;uuml;r&amp;uuml;m&amp;uuml; &amp;uuml;zerinde geliştirilmiş ve test edilmiştir]&lt;/strong&gt;&lt;/p&gt;</content>
+  <pubDate>2011-01-06 13:25:00</pubDate>
+  <slug>Task-Wait-WaitAll-WaitAny</slug>
+  <tags>
+    <tag>c#-40</tag>
+    <tag>parallel-programming</tag>
+    <tag>net-framework-40</tag>
+    <tag>visual-studio-2010-ultimate</tag>
+    <tag>task-parallel-library</tag>
+    <tag>waiting-tasks</tag>
+  </tags>
+  <categories>
+    <category>Parallel Programming</category>
+  </categories>
+</post>

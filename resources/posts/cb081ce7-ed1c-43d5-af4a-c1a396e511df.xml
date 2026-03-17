@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>İlk Bakışta .Net Process Yönetimi</title>
+  <description>Bir Windows uygulamasını çalıştırdığımızda işletim sistemi bellek üzerinde söz konusu programın çalışabilmesi için bir Process açar. Bu Process içerisinde, uygulamanın çalışması için gerekli bellek ayırma işlemleri, harici olarak kullanılan Module' ler (örneğin başka Com nesneleri veya .net assembly' ları gibi) ve process içi Thread' ler bulunur. Çoğunlukla bir Process açıldığında bu Process içerisinde mutlaka bir main thread bulunur. Hatta basit bir Console uygulamasını çalıştırdığınızda Main Thread dışında başka aynı Proces' e dahil başka Thread' ler ile de karşılaşabiliriz. Dolayısıyla uygulama için açılan Process' in birden fazla Thread içereceği durumlar söz konusu olabilir. Literatürde multi-threading olarak geçen bu olay, bir Process' in içerisinde iş yapan eş zamanlı parçaların olması anlamına gelmektedir.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Bir Windows uygulamasını &amp;ccedil;alıştırdığımızda işletim sistemi bellek &amp;uuml;zerinde s&amp;ouml;z konusu programın &amp;ccedil;alışabilmesi i&amp;ccedil;in bir &lt;strong&gt;Process&lt;/strong&gt; a&amp;ccedil;ar. Bu Process i&amp;ccedil;erisinde, uygulamanın &amp;ccedil;alışması i&amp;ccedil;in gerekli bellek ayırma işlemleri, harici olarak kullanılan Module' ler (&amp;ouml;rneğin başka Com nesneleri veya .net assembly' ları gibi) ve process i&amp;ccedil;i Thread' ler bulunur. &amp;Ccedil;oğunlukla bir Process a&amp;ccedil;ıldığında bu Process i&amp;ccedil;erisinde mutlaka bir main thread bulunur. Hatta basit bir Console uygulamasını &amp;ccedil;alıştırdığınızda Main Thread dışında başka aynı Proces' e dahil başka Thread' ler ile de karşılaşabiliriz. Dolayısıyla uygulama i&amp;ccedil;in a&amp;ccedil;ılan Process' in birden fazla Thread i&amp;ccedil;ereceği durumlar s&amp;ouml;z konusu olabilir. Literat&amp;uuml;rde multi-threading olarak ge&amp;ccedil;en bu olay, bir Process' in i&amp;ccedil;erisinde iş yapan eş zamanlı par&amp;ccedil;aların olması anlamına gelmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk166_1.gif" alt="" width="366" height="264" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Yukarıdaki şekilde bir Process' in &amp;ccedil;alışma zamanında sahip olabileceği i&amp;ccedil;erik ifade edilmeye &amp;ccedil;alışmaktadır. Buradaki bilgilerden yola &amp;ccedil;ıkarak bir Process' in en azından bir Thread i&amp;ccedil;erdiğini, bellek &amp;uuml;zerinde kullandığı ve ihtiya&amp;ccedil; duyduğu bilgileri veri olarak paylaşımlı bir alanda tuttuğunu ve belleğe y&amp;uuml;klenirken beraberinde ihtiya&amp;ccedil; duyabileceği başka modulleride i&amp;ccedil;erebileceğini s&amp;ouml;yleyebiliriz. Burada yer alan &lt;strong&gt;TLS (Thread Local Storage)&lt;/strong&gt; kısmını, bir Thread' in kendisi i&amp;ccedil;in sonradan hatırlaması gereken bilgileri tuttuğu yer olarak d&amp;uuml;ş&amp;uuml;nebiliriz. Bu saklama alanları sayesinde Thread' lerin bir &amp;ouml;nceki konumlarında sahip oldukları i&amp;ccedil;eriğe erişebilmeleri ve kaldıkları yerden devam edebilmeleri m&amp;uuml;mk&amp;uuml;n olabilmektedir. İşte bu nedenle bu bilgiler &amp;ouml;zel olarak TLS (Thread Local Storage) alanında tutulurlar. Tek işlemcili bir sistem g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında TLS alanları son derece &amp;ouml;nemlidir. Ancak &lt;strong&gt;HyperThreading&lt;/strong&gt; teknolojili veya birden fazla işlemciye sahip sistemlerde durum daha farklı olabilir. Konumuz Thread' lerin &amp;ccedil;alışmasını incelemek olmadığı i&amp;ccedil;in bu konuda &amp;ccedil;ok fazla detaya girmeyeceğiz.&lt;/p&gt;
+&lt;p&gt;.Net Framework yukarıdaki şekilde g&amp;ouml;r&amp;uuml;len yapıdaki bilgileri &amp;ccedil;alışma zamanında elde edebilmemizi sağlayan bazı tipler (types) i&amp;ccedil;erir. &lt;strong&gt;System.Diagnostics&lt;/strong&gt; isim alanında bulunan bu tipler yardımıyla &amp;ccedil;alışma zamanda bir Process' e ait &amp;ccedil;eşitli bilgilerini elde edebiliriz. Diğer taraftan dilersek &amp;ccedil;alışma zamanında başka Process' leri &amp;ccedil;alıştırabilir, var olanları yok edebilir, bazı Process' lere parametrik bilgi aktarabilir ve hatta Process' lerden dış ortama sunulan bir takım stream' leri okuyabiliriz. Aşağıdaki tabloda Process API' sini kullanarak yapabileceklerimizin bazıları maddeler halinde belirtilmektedir.&lt;/p&gt;
+&lt;table id="table78" style="border-collapse: collapse;" border="1" width="100%" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;&lt;strong&gt;Process ' ler ile ilgili Managed Code (Y&amp;ouml;netimli Kod) Tarafında Yapabileceklerimizden Bazıları&lt;/strong&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;1&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Sistemde var olan Process' lerin bilgilerini alabiliriz. &amp;Ouml;rneğin Process' lerin adlarını, başladıkları s&amp;uuml;releri, sistem tarafından kendilerine verilen Identity değerlerini vb. gibi.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;2&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Bir Process' i kod i&amp;ccedil;erisinden &amp;ccedil;alıştırabiliriz. Bu işlemi yaparken &amp;ccedil;alıştırılacak Process i&amp;ccedil;in gerekli başlangı&amp;ccedil; bilgilerini s&amp;ouml;yleyebilir. (Start işlemi)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;3&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Bir Process' i &amp;ccedil;alıştırıp kendi i&amp;ccedil;inden dış ortama sunduğu verileri başka Process' ler i&amp;ccedil;erisinde yakalayabiliriz. &amp;Ouml;zellike Main metodu i&amp;ccedil;erisinden dış ortama atılan stream' leri diğer Process' ler i&amp;ccedil;erisinde yakalayabilmemiz m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. (Yada tam dersi durumda s&amp;ouml;z konusudur.)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;4&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Bir Process' i &amp;ccedil;alıştırmadan &amp;ouml;nce s&amp;ouml;z konusu Process i&amp;ccedil;in gerekli parametreleri kod i&amp;ccedil;erisinden g&amp;ouml;nderebiliriz. &amp;Ouml;rneğin internet explorer i&amp;ccedil;in bir Process a&amp;ccedil;arken gezilecek URL bilgisini de parametre olarak verebiliriz.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;5&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Bir Process' in , &amp;ccedil;alışma zamanında i&amp;ccedil;erdiği Thread' leri yakalayabilir ve bir takım bilgilerine ulaşabiliriz.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;6&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Bir Process' in belleğe a&amp;ccedil;ılması ile birlikte, s&amp;ouml;z konusu Process' e ilave olan ve &amp;ccedil;alışması sırasında kullanılan module bilgilerini elde edebiliriz.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;7&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Bir Process' i istersek &amp;ccedil;alışma zamanında sonlandırabiliriz. (Kill işlemi)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Burada bahsedilenleri dahada genişletebiliriz. Bizim i&amp;ccedil;in en &amp;ouml;nemli yardımcı tip &lt;strong&gt;Process&lt;/strong&gt; isimli sınıftır. Process sınıfının &amp;ccedil;eşitli static metodları sayesinde o an &amp;ccedil;alışmakta olan t&amp;uuml;m Process' leri elde edebiliriz ; ayrıca belirli bir Process' i sistem tarafından verilen &lt;strong&gt;Identity&lt;/strong&gt; değeri ile veya &lt;strong&gt;Process&lt;/strong&gt; adı ile başlatabiliriz. Dilerseniz ilk &amp;ouml;rneğimiz ile işe başlayalım ve Process API' sini daha detaylı bir şekilde &amp;ouml;ğrenmeye &amp;ccedil;alışalım. İlk olarak sistem de yer alan Process' leri ve bunlara ait bir takım bilgileri nasıl elde edebileceğimize bakacağız. Bunun i&amp;ccedil;in aşağıdaki kod par&amp;ccedil;asını herhangibir Console uygulamasında denememiz yeterli olacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private static void ProcessInfos()
+{
+    Process[] currentProcesses = Process.GetProcesses("manchester");
+    Console.WriteLine("Process Count {0}", currentProcesses.Length.ToString());
+    foreach (Process pro in currentProcesses)
+    {
+        try
+        {
+            Console.WriteLine("{0,6}, {1,20}, Başlangı&amp;ccedil; : {2,6}, Thread Sayısı {3,5}", pro.Id.ToString(), pro.ProcessName, pro.StartTime.ToShortTimeString(), pro.Threads.Count.ToString());
+        }
+        catch 
+        {
+            continue;
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Herhangibir sistemde o anda &amp;ccedil;alışan Process' leri elde edebilmek i&amp;ccedil;in Process sınıfının static &lt;strong&gt;GetProcesses&lt;/strong&gt; metodunu kullanırız. &amp;Ouml;rneğimizde bu metoda parametre olarak yerel makine adını (local machine name) vermekteyiz. GetProcesses metodu geriye &lt;strong&gt;Process&lt;/strong&gt; tipinden bir dizi d&amp;ouml;nd&amp;uuml;rmektedir. Bu dizinin herbir elemanı Process tipinden olduğu i&amp;ccedil;in g&amp;uuml;ncel Process' lere ait &amp;ccedil;eşitli bilgileri elde edebiliriz. Tabi elde ettiğimiz bu bilgiler ilgili Process' lere ait anlık verilerdir.&lt;/p&gt;
+&lt;p&gt;Dolayısıyla Process' lerin son durumu hakkındaki bilgileri elde edebilmek i&amp;ccedil;in s&amp;uuml;rekli kontrol işlemi gerektirecek kodlar yazılması gerekebilir.&lt;em&gt;(Bu tip bir d&amp;uuml;zenlemede Polling benzeri bir mantık s&amp;ouml;z konusudur.) &lt;/em&gt;Biz &amp;ouml;rneğimizde basit olarak her bir Process' in sistem tarafından verilen Identity değerini, adını, başladığı zamanı ve i&amp;ccedil;erdiği Thread sayısını ekrana yazdırmaktayız. &lt;em&gt;( Process sınıfını ve &amp;uuml;yelerini kullanırken System.Diagnostics isim alanını uygulamamıza eklemeyi unutmamamlıyız. ) &lt;/em&gt;Metodumuzu test ettiğimiz &amp;ouml;rnek bir Console uygulamasının &amp;ccedil;ıktısı aşağıdakine benzer olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk166_2.gif" alt="" width="567" height="271" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Process sınıfının başka static metodlarıda vardır. &amp;Ouml;rneğin &lt;strong&gt;GetCurrentProcess&lt;/strong&gt; metodu o an &amp;ccedil;alışmakta olan uygulamaya ait Process bilgisini elde etmenizi sağlar. &lt;strong&gt;GetProcessById&lt;/strong&gt; static metodu sistemdeki Identity değerine g&amp;ouml;re bir Process nesne &amp;ouml;rneği &amp;uuml;retir. &lt;strong&gt;GetProcessesByName&lt;/strong&gt; static metodu bir Process adını parametre olarak alarak, o anda bu isim ile a&amp;ccedil;ık olan ka&amp;ccedil; tane Process varsa bunların hepsini Process sınıfı tipinden bir dizi olarak geri d&amp;ouml;nd&amp;uuml;r&amp;uuml;r. Son olarak static &lt;strong&gt;Start&lt;/strong&gt; metodu ile, &amp;ccedil;alışma zamanında bir Process i&amp;ccedil;erisinden başka Process' leri &amp;ccedil;alıştırabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;Process current = Process.GetCurrentProcess();
+Console.WriteLine("{0,15} {1,15}","Id : ",current.Id.ToString());
+Console.WriteLine("{0,15} {1,15}", "Start Time : ", current.StartTime.ToShortTimeString());
+Console.WriteLine("{0,15} {1,15}","Process Name : ", current.ProcessName);
+Console.WriteLine("{0,15} {1,15}", "Machine Name : ", current.MachineName);&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk166_3.gif" alt="" width="364" height="131" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Yukarıdaki kod par&amp;ccedil;asında o anda &amp;ccedil;alışmakta olan uygulamaya ait Process bilgilerinden bazıları ekrana yazdırılmaktadır. Burada &amp;ouml;rnek olarak bir ka&amp;ccedil; Process bilgisini okuyoruz. Bazı durumlarda &amp;ccedil;alışma zamanında herhangibir uygulama adını ele alaraktan s&amp;ouml;z konusu program i&amp;ccedil;in a&amp;ccedil;ık olan Process' ler hakkında bilgi almak isteyebiliriz. &lt;em&gt;( &amp;Ouml;rneğin sistemde a&amp;ccedil;ık olan Visual Studio.Net IDE' lerinin tamamı hakkında bilgi almak gibi. ) &lt;/em&gt;Bu durumda Process sınıfının static &lt;strong&gt;GetProcessesByName&lt;/strong&gt; metodunu kullanırız. Bu metod geriye Process sınıfı tipinden bir dizi d&amp;ouml;nd&amp;uuml;r&amp;uuml;r. Metodun geriye dizi d&amp;ouml;nd&amp;uuml;rmesinin sebebi, &amp;ccedil;alışma zamanında bir uygulamaya ait birden fazla Process' in a&amp;ccedil;ılmış olabileceğidir. Aşağıdaki kod par&amp;ccedil;ası basit olarak &amp;ccedil;alışma zamanında Windows işletim sisteminin bilinen programlarından olan Notepad uygulamasına ait Process bilgilerini vermektedir. Kod i&amp;ccedil;erisinde, elde edilen dizinin uzunluğuna bakılarak s&amp;ouml;z konusu uygulamaya ait a&amp;ccedil;ık Process' lerin olup olmadığının tespiti kolayca yapılabilir. Bu kontrol&amp;uuml;n yapılmasının sebebi a&amp;ccedil;ık Process olmaması halinde, null referans olacağından uygulamanın istem dışı bir bi&amp;ccedil;imde sonlanabilecek olmasıdır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;Process[] prcNotePad = Process.GetProcessesByName("Notepad");
+if (prcNotePad.Length &amp;gt; 0)
+{
+    for (int i = 0; i &amp;lt; prcNotePad.Length; i++)
+    {
+        Console.WriteLine("{0,15} {1,15}", "Id : ", prcNotePad[i].Id.ToString());
+        Console.WriteLine("{0,15} {1,15}", "Start Time : ", prcNotePad[i].StartTime.ToShortTimeString());
+        Console.WriteLine("{0,15} {1,15}", "Process Name : ", prcNotePad[i].ProcessName);
+        Console.WriteLine("{0,15} {1,15}", "Machine Name : ", prcNotePad[i].MachineName);
+        Console.WriteLine("----------------");
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk166_4.gif" alt="" width="316" height="191" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Sıradaki &amp;ouml;rneğimizde her hangibir .Net kodu i&amp;ccedil;erisinden başka Process' leri nasıl &amp;ccedil;alıştırabileceğimizi g&amp;ouml;receğimiz aşağıdaki kod par&amp;ccedil;asını ele alacağız. Kod i&amp;ccedil;erisinden başka Process' ler başlatabilmek i&amp;ccedil;in Process sınıfının static &lt;strong&gt;Start&lt;/strong&gt; metodunu kullanırız.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;// Bilinen bir Windows uygulaması i&amp;ccedil;in parametre destekli Process başlatılır. Bir internet explorer uygulamasının alabileceği parametrelerden birisi Url bilgisidir.
+Process.Start("iexplore", "http://www.bsenyurt.com");
+
+// Start metodu parametre olarak ProcessStartInfo tipinden bir nesne &amp;ouml;rneğide alabilir. Aşağıdaki kod satırı Windows ' un Calculator uygulamasını &amp;ccedil;alıştırmakta ve bir Process a&amp;ccedil;maktadır.
+ProcessStartInfo startInfo = new ProcessStartInfo("calc");
+Process.Start(startInfo);
+
+// Herhangibir uygulamanın path bilgisinden yararlanarak, s&amp;ouml;z konusu uygulama i&amp;ccedil;in bir Process başlatılabilir.
+Process.Start(@"D:\HaftaIci\ExceptionHandling\ExceptionHandling\bin\Debug\ExceptionHandling.exe");&lt;/pre&gt;
+&lt;p&gt;Dikkat ederseniz bu kod par&amp;ccedil;asındaki &amp;ouml;rneklerde farklı şekillerde Process başlatma işlemleri ele alınmıştır. &amp;Ccedil;oğunlukla Windows işletim sistemini g&amp;ouml;z &amp;ouml;n&amp;uuml;ne aldığınızda komut satırından veya Start men&amp;uuml;s&amp;uuml;nde yer alan Run se&amp;ccedil;eneği ile doğrudan &amp;ccedil;alıştırabileceğiniz uygulamalar vardır. Bu nedenle aynı uygulama adlarını exe uzantılı veya uzantısız olabilecek şekilde kod i&amp;ccedil;erisinde yazabilir ve ayrı Process' leri başlatabiliriz. Start metodunun yukarıda kullanılan versiyonları dışında ele alabileceğiniz farklı aşırı y&amp;uuml;klenmiş versiyonlarıda vardır. &amp;Ouml;rneğin aşağıdaki versiyonda dikkat ederseniz Process' i a&amp;ccedil;mak i&amp;ccedil;in &lt;strong&gt;UserName&lt;/strong&gt;, &lt;strong&gt;Domain&lt;/strong&gt; ve &lt;strong&gt;Password&lt;/strong&gt; bilgileri gerekmektedir. Buna g&amp;ouml;re bir uygulamayı gerekli yetkileri bildirerektende başlatabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk166_5.gif" alt="" width="630" height="59" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Makalemizin giriş kısmında &amp;ccedil;alışma zamanındaki Process' lerin beraberlerinde y&amp;uuml;kledikleri module' ler olabileceğinden bahsetmiştik. Sonu&amp;ccedil; itibariye bir .Net uygulamasının varsayılan hali belleğe y&amp;uuml;klendiği zaman, işletim sistemi tarafından ilgili Process' e dahil edilen bazı ek module' ler s&amp;ouml;z konusu olabilir. Bu Module' ler &amp;ccedil;oğunlukla &lt;strong&gt;Com&lt;/strong&gt; nesneleri,&lt;strong&gt; C&lt;/strong&gt; tabanlı sistem k&amp;uuml;t&amp;uuml;phaneleri olabileceği gib başka .Net k&amp;uuml;t&amp;uuml;phaneleride (dll' ler) olabilir. Aşağıdaki kod par&amp;ccedil;ası parametre olarak verilen herhangibir uygulamanın, işletim sistemi tarafından a&amp;ccedil;ılan Process' ine dahil olan Module' lerine ilişkin bir takım bilgiler vermektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private static void LookingModules(Process currentProc)
+{
+    ProcessModuleCollection modules = currentProc.Modules;
+    int totalSize = 0;
+    foreach (ProcessModule mdl in modules)
+    {
+        Console.WriteLine("{0,25} : {1,15} bytes", mdl.ModuleName, mdl.ModuleMemorySize.ToString());
+        totalSize += mdl.ModuleMemorySize;
+    }
+    Console.WriteLine(totalSize.ToString() + " bytes");
+    Console.ReadLine();
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk166_6.gif" alt="" width="436" height="311" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Biz &amp;ouml;rneğimizde, var olan uygulamaya ait Process nesne &amp;ouml;rneğini ele aldık. Buna g&amp;ouml;re Process' imize dahil olan diğer Module' lerin isimlerini ve bellekte kapladıkları alanları g&amp;ouml;rebiliriz. Dikkat ederseniz Process sınıfının &lt;strong&gt;Modules&lt;/strong&gt; isimli &amp;ouml;zelliği geriye her bir elemanı &lt;strong&gt;ProcessModule&lt;/strong&gt; sınıfı tipinden olan &lt;strong&gt;ProcessModuleCollection&lt;/strong&gt; t&amp;uuml;r&amp;uuml;nden bir koleksiyon &amp;ouml;rneği d&amp;ouml;nd&amp;uuml;rmektedir. ProcessModule tipini kullanarak bir Process i&amp;ccedil;erisine dahil olan herhangibir Module hakkında &amp;ccedil;alışma zamanı bilgilerine ulaşabiliriz.&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;alışma zamanında Process' leri başlatabileceğimiz gibi onları yok etmek isteyebiliriz de. Bunun i&amp;ccedil;in tek yapmamız gereken Process sınıfına ait &lt;strong&gt;Kill&lt;/strong&gt; metodunu kullanmak olacaktır. Aşağıdaki kod par&amp;ccedil;ası ile &amp;ccedil;alışma zamanında sistemde var olan t&amp;uuml;m Internet Explorer uygulamaları (doğal olarak Process' leri) sonlandırılmaktadır. Bu işlemi ger&amp;ccedil;ekleştirmek i&amp;ccedil;in iexplore adını i&amp;ccedil;eren Process' lerin listesi &lt;strong&gt;GetProcessesByName&lt;/strong&gt; metodu ile &amp;ccedil;ekilmiş ve elde edilen dizideki her bir Process tipi nesne &amp;ouml;rneği i&amp;ccedil;in Kill metodu &amp;ccedil;ağırılmıştır. Her zamanki gibi s&amp;ouml;z konusu uygulama i&amp;ccedil;in sistemde a&amp;ccedil;ık Process' ler olup olmadığını kontrol etmek ve Kill işlemini bir try...catch bloğu altında g&amp;uuml;venli olarak ger&amp;ccedil;ekleştirmek &amp;ccedil;alışma zamanında oluşabilecek istenmeyen hataların &amp;ouml;n&amp;uuml;ne ge&amp;ccedil;ilmesinde &amp;ouml;nemli bir rol oynayacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;Process[] prcs = Process.GetProcessesByName("iexplore");
+if (prcs.Length &amp;gt; 0)
+{
+    for (int i = 0; i &amp;lt; prcs.Length; i++)
+    {
+        try
+        {
+            prcs[i].Kill();
+        }
+        catch{}
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bazen bir Process i&amp;ccedil;erisinden, başka Process' lerce dış ortama aktarılan verileri okumak isteyebiliriz. &amp;Ccedil;oğunlukla string bazlı stream' lerin bu şekilde dış ortama aktarılması halinde, Process API' sini kullanarak her hangibir uygulama i&amp;ccedil;erisinden bu &amp;ccedil;ıktıları yakalayabiliriz. Tabiki b&amp;ouml;yle bir ihtiyacın hangi durumlarda doğabileceğinide d&amp;uuml;ş&amp;uuml;nmek lazım. Aşağıdaki &amp;ouml;rnekte, Support.exe adlı Console uygulaması dış ortama bir string mesaj vermektedir. Bunun i&amp;ccedil;in tipik olarak Console sınıfının WriteLine metodu kullanılmıştır.&lt;em&gt;(Consolo.out' ta kullanılabilinir.)&lt;/em&gt; &amp;Ouml;rnek kod par&amp;ccedil;amız ise, Support.exe adlı Console uygulamasını &amp;ccedil;alıştırıp bir Process i&amp;ccedil;erisine dahil etmekte ve Support.exe uygulamasının dış ortama verdiği sonu&amp;ccedil;ları bir Stream dahilinde kendi Process' i i&amp;ccedil;erisine almaktadır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;ProcessStartInfo strInfo = new ProcessStartInfo(@"D:\Vs2005Projects\C# 2.0\Support\Support\bin\Debug\Support.exe");
+strInfo.UseShellExecute = false;
+strInfo.RedirectStandardOutput = true;
+Process pro=Process.Start(strInfo);
+StreamReader reader = pro.StandardOutput;
+
+//string okunan;
+//while((okunan=reader.ReadLine())!=null)
+//{
+// Console.WriteLine(okunan);
+//}
+
+Console.WriteLine(reader.ReadToEnd());
+
+Console.ReadLine();
+pro.WaitForExit();&lt;/pre&gt;
+&lt;p&gt;Kodumuzda ilk olarak &lt;strong&gt; ProcessStartInfo&lt;/strong&gt; tipinden bir nesne &amp;ouml;rneği oluşturuyor ve ilgili Process i&amp;ccedil;in bir takım &amp;ouml;zellikleri belirliyoruz. &amp;Ouml;zellikle ProcessStartInfo' nun işaret ettiği Support.exe isimli uygulamadan dış ortama aktarılan stream' i okuyabilmek i&amp;ccedil;in &lt;strong&gt;RedirectStandartOutput&lt;/strong&gt; &amp;ouml;zelliğine &lt;strong&gt;true&lt;/strong&gt; değerini atamış olmamız gerekmektedir. Bundan sonrasında ise Process' i başlatıyor ve &lt;strong&gt;StandartOutput&lt;/strong&gt; &amp;ouml;zelliğini kullanarak bir stream yakalıyoruz. Yakaladığımız stream &amp;uuml;zerinden gelen veriyi kod i&amp;ccedil;erisinde değişik şekillerde okuyabiliriz.&lt;/p&gt;
+&lt;p&gt;Kodumuzda bu işin iki farklı yapılış yolunu g&amp;ouml;r&amp;uuml;yorsunuz. Bir tanesi satır satır okuma işlemini diğeri ise t&amp;uuml;m string bilgiyi okuma işlemini ger&amp;ccedil;ekleştiriyor. Kodumuzun sonunda dikkat ederseniz &lt;strong&gt;WaitForExit&lt;/strong&gt; metodunu &amp;ccedil;ağırıyoruz. Process sınıfının WaitForExit isimli metodunu kullanmamızın amacı ise; ilgili harici uygulamanın sonlanmasını beklemek. B&amp;ouml;ylece harici Process' sonlandırılmadan, asıl uygulamamızın sonlandırılmamasını sağlamış oluyoruz. Diğer Process i&amp;ccedil;erisinde &amp;ccedil;alışacak olan Console uygulamasına ait Main metodu kodu ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;static void Main(string[] args)
+{
+    Console.WriteLine("Diğer Process' den Merhabalar."); 
+}&lt;/pre&gt;
+&lt;p&gt;Uygulamanın &amp;ccedil;alıştırılması sonucu;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk166_7.gif" alt="" width="332" height="83" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bir Process' den başka bir Process' e stream bazlı veri &amp;ccedil;ekmek dışından istenirse &amp;ccedil;alıştırılacak Process' e uygulama i&amp;ccedil;erisinde yine stream bazlı veri aktarımıda ger&amp;ccedil;ekleştirilebiliriz. Bu durumda Process' in &lt;strong&gt;StandardInput&lt;/strong&gt; &amp;ouml;zelliğini ele almamız gerekecektir. StandardInput &amp;ouml;zelliği, StandardOutput &amp;ouml;zelliğinin tersine stream i&amp;ccedil;erisine veri yazabilmek i&amp;ccedil;in bir &lt;strong&gt;StreamWriter&lt;/strong&gt; nesne &amp;ouml;rneğini d&amp;ouml;nd&amp;uuml;r&amp;uuml;r.&lt;/p&gt;
+&lt;p&gt;Son olarak bir Process' e dahil olan Thread' lerin nasıl ele alınabileceğini basit bir &amp;ouml;rnek ile incelemeye &amp;ccedil;alışacağız. Aşağıdaki kod par&amp;ccedil;asında Visual Studio.Net 2005 ortamına ait &amp;ccedil;alışma zamanı thread' lerine ilişkin bazı bilgilerin nasıl elde edilebileceğimizi g&amp;ouml;steren &amp;ouml;rnek bir kod par&amp;ccedil;ası bulunmaktadır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;Process[] currProc = Process.GetProcessesByName("devenv");
+if (currProc.Length &amp;gt; 0)
+{
+    ProcessThreadCollection currThreads = currProc[0].Threads;
+    foreach (ProcessThread trd in currThreads)
+    {
+        Console.WriteLine("{0,7} {1,15} {2,10} {3,15} ", trd.Id.ToString(), trd.PriorityLevel.ToString(), trd.StartTime.ToString(),trd.ThreadState.ToString());
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk166_8.gif" alt="" width="460" height="359" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bir Process' in i&amp;ccedil;erisinde &amp;ccedil;alışan Thread' leri elde edebilmek i&amp;ccedil;in Process sınıfına ait nesne &amp;ouml;rneği &amp;uuml;zerinden &lt;strong&gt;Threads&lt;/strong&gt; &amp;ouml;zelliği &amp;ccedil;ağırılır. Threads &amp;ouml;zelliği geriye &lt;strong&gt; ProcessThreadCollection&lt;/strong&gt; tipinden (bu tip g&amp;uuml;venli bir koleksiyondur) bir nesne &amp;ouml;rneği d&amp;ouml;nd&amp;uuml;r&amp;uuml;r. Her bir elemanı &lt;strong&gt;ProcessThread&lt;/strong&gt; sınıfı tipinden olan bu koleksiyon yardımıyla bir Process i&amp;ccedil;erisinde yer alan t&amp;uuml;m Thread' leri elde edebiliriz. &amp;Ouml;rnek kodumuzda, elde edilen her bir Thread' in &lt;strong&gt;Id (Sistem tarafından verilen identity değeri)&lt;/strong&gt;, &lt;strong&gt; PriorityLevel (&amp;ouml;ncelik seviyesi)&lt;/strong&gt;, &lt;strong&gt;StartTime (Başlangı&amp;ccedil; zamanı)&lt;/strong&gt; ve &lt;strong&gt;ThreadState (Thread' in o anki durumu)&lt;/strong&gt; bilgileri &amp;ccedil;ekilmektedir.&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi .Net uygulamaları &amp;ccedil;alıştırıldıklarında işletim sistemi tarafından a&amp;ccedil;ılan Process' ler s&amp;ouml;z konusudur. Biz bu Process' leri managed (y&amp;ouml;netimli) taraftan kontrol edebiliriz. Gerekli Process bilgilerinin &amp;ccedil;alışma zamanında elde edilebilmesi, istendiğinde başka Process' lerin parametrik olarak başlatılabilmesi (ya da sonlandırılabilmesi) gibi imkanlara sahibiz. Hatta &amp;ccedil;ok basit seviyede de olsa Process' ler arası veri transferide yapabilmekteyiz. Bu makalemizde &amp;ccedil;ok kısada olsa Process' lerin ne olduğunu ve managed (y&amp;ouml;netimli) tarafta nasıl ele alınabileceklerini incelemeye &amp;ccedil;alıştık ve b&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/makale/images/ProcessTest.rar"&gt;&amp;Ouml;rnek Uygulama İ&amp;ccedil;in Tıklayın.&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2006-07-07 12:00:00</pubDate>
+  <slug>İlk-Bakışta--Net-Process-Yönetimi-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>framework</tag>
+    <tag>process-management</tag>
+    <tag>clr</tag>
+    <tag>common-language-runtime</tag>
+  </tags>
+  <categories>
+    <category>C#</category>
+  </categories>
+</post>

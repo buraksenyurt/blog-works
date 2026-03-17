@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>C# 2.0 ile Partial Types (Kısmi Tipler)</title>
+  <description>Visual Studio.Net ile windows veya web uygulamaları geliştirirken, kod yazılması sırasında karşılaştığımız güçlüklerden birisi, tasarım kodları ile kendi yazmış olduklarımızın iç içe geçmeleridir. Bu zamanla kodun okunabilirliğini zorlaştıran bir etmendir. Bunun windows uygulamalarını veya asp.net uygulamalarını geliştirirken sıkça yaşamaktayız. Bununla birlikte, özellike soruce safe gibi ortamlarda farklı geliştiricilerin aynı sınıf kodları üzerinde eş zamanlı olarak çalışması pek mümkün değildir.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Visual Studio.Net ile windows veya web uygulamaları geliştirirken, kod yazılması sırasında karşılaştığımız g&amp;uuml;&amp;ccedil;l&amp;uuml;klerden birisi, tasarım kodları ile kendi yazmış olduklarımızın i&amp;ccedil; i&amp;ccedil;e ge&amp;ccedil;meleridir. Bu zamanla kodun okunabilirliğini zorlaştıran bir etmendir. Bunun windows uygulamalarını veya asp.net uygulamalarını geliştirirken sık&amp;ccedil;a yaşamaktayız. Bununla birlikte, &amp;ouml;zellike soruce safe gibi ortamlarda farklı geliştiricilerin aynı sınıf kodları &amp;uuml;zerinde eş zamanlı olarak &amp;ccedil;alışması pek m&amp;uuml;mk&amp;uuml;n değildir.&lt;/p&gt;
+&lt;p&gt;Visual Studio.2005 ile birlikte, sınıf (class), aray&amp;uuml;z(interface) ve yapı(struct) gibi tipleri mantıksal olarak ayrıştırabileceğimiz ve farklı fiziki dosyalarda (veya aynı fiziki dosya &amp;uuml;zerinde) tutabileceğimiz yeni bir yapı getirilmiştir. Bu yapının kilit noktası tiplerin partial anahtar s&amp;ouml;zc&amp;uuml;ğ&amp;uuml; ile imzalanmasıdır. Partial olarak tanımladığımız tipleri farklı fiziki dosyalarda (veya aynı fiziki dosya i&amp;ccedil;erisinde) tutabiliriz. Burada &amp;ouml;nemli olan, &amp;ccedil;alışma zamanında yazmış olduğumuz tipin mutlaka tek bir b&amp;uuml;t&amp;uuml;n olarak ele alınıyor olmasıdır. &lt;/p&gt;
+&lt;table id="table10" border="1" width="100%" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;&lt;em&gt;Partial tipler, bir tipin b&amp;uuml;t&amp;uuml;n&amp;uuml;n&amp;uuml; oluşturan soyutsal par&amp;ccedil;alardır.&lt;/em&gt;&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;İşte bu makalemizde kısaca partial tiplerin nasıl kullanıldığını incelemeye &amp;ccedil;alışacağız. Şimdi Visual Studio.2005 ile geliştirdiğimiz aşağıdaki &amp;ouml;rneği g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım. Yeni a&amp;ccedil;tığımız bir Console uygulamasında projemize şekilden de g&amp;ouml;receğiniz gibi VeriYonetim.Ozellik ve VeriYonetim.Metod adlı iki kaynak kod dosyası ekledik.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk126_1.gif" alt="" width="204" height="206" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;ncelikle buradaki amacımızdan bahsedelim. Veritabanı ile ilgili y&amp;ouml;netim işlerini &amp;uuml;stlenecek bir sınıf geliştirmek istiyoruz. Ancak bu sınıfın &amp;ouml;zelliklerini ve metodlarını ayrı fiziki kaynak kod dosyalarında tutacağız. Bu mantıksal ayrımı yapmamızın &amp;ccedil;eşitli nedenleri olabilir. Geliştiricilerin aynı sınıfın &amp;ccedil;eşitli mantıksal par&amp;ccedil;aları &amp;uuml;zerinde bağımsız ama eş zamanlı olarak &amp;ccedil;alışmalarını isteyebiliriz. &amp;Ccedil;oğunlukla en temel nedemiz sınıf b&amp;uuml;t&amp;uuml;n&amp;uuml;n&amp;uuml; mantıksal olarak ayrıştırarak kodlamayı kolaylaştırmaktır. İşte bu ama&amp;ccedil;la VeriYonetim isimli sınıfımızın bu ayrı par&amp;ccedil;alarını tutacak iki fiziki sınıfı dosyasını projemize ekledik. B&amp;ouml;ylece sınıfımızı aslında iki mantıksal par&amp;ccedil;aya b&amp;ouml;lm&amp;uuml;ş olduk. İlk par&amp;ccedil;ada sadece gerekli &amp;ouml;zellik tanımalamalarını ikinci par&amp;ccedil;ada ise işlevsel metodları barındıracağız. B&amp;ouml;ylece kod geliştirme safhasında bu mantıksal par&amp;ccedil;aların iki farklı dosyada tutulmasını sağlamış oluyoruz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk126_2.gif" alt="" width="372" height="466" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Tasarım zamanında sınıfımızı iki farklı par&amp;ccedil;aya ayırmış olsakta, kod geliştirme sırasında veya &amp;ccedil;alışma zamanında tek bir tip olarak ele alınacaktır. Yani sınıfın b&amp;uuml;t&amp;uuml;nl&amp;uuml;ğ&amp;uuml; aslında hi&amp;ccedil; bir şekilde bozulmamaktadır. Bu &amp;ouml;nemli bir noktadır. Şimdi ilk &amp;ouml;rneğimizin kodlarına kısaca bakalım.&lt;/p&gt;
+&lt;p&gt;VeriYonetim.Ozellikler.cs;&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Data.SqlClient;
+
+namespace PartialClasses
+{
+    partial class VeriYonetim
+    {
+        private SqlConnection m_GuncelBaglanti;
+        private SqlCommand m_SqlKomutu;
+
+        public SqlConnection GuncelBaglanti
+        {
+            get { return m_GuncelBaglanti; }
+            set { m_GuncelBaglanti = value; }
+        }
+        public SqlCommand SqlKomutu
+        {
+            get { return m_SqlKomutu; }
+            set { m_SqlKomutu = value; }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;VeriYonetim.Metodlar.cs; &amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Data.SqlClient;
+
+namespace PartialClasses
+{
+    partial class VeriYonetim
+    {
+        public VeriYonetim(string baglanti)
+        {
+            m_GuncelBaglanti = new SqlConnection(baglanti);
+        }
+        public void KomutHazirla(string sorguCumlesi)
+        {
+            m_SqlKomutu = new SqlCommand(sorguCumlesi, GuncelBaglanti);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Uygulama ;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace PartialClasses
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            VeriYonetim yonetici = new VeriYonetim("data source=localhost;database=AdventureWorks;integrated security=SSPI");
+            yonetici.KomutHazirla("SELECT * FROM Customers");
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;VeriYonetim isimli sınıfımızı her iki kaynak kod dosyası i&amp;ccedil;erisinde partial anahtar kelimesi ile tanımlıyoruz. B&amp;ouml;ylece &amp;ouml;nceden bahsetmiş olduğumuz mantıksal ayrıştırmayı ger&amp;ccedil;ekleştirmiş olduk. Eğer MS ILDasm (Microsoft Intermediate Language DisAssembler) programı yardımıyla derlediğimiz uygulamamıza g&amp;ouml;z atarsak ayrı par&amp;ccedil;alar halinde geliştirdiğimiz VeriYonetim sınıfının tek bir tip olarak yazıldığını g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk126_3.gif" alt="" width="537" height="388" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bizim partial sınıflar i&amp;ccedil;erisine b&amp;ouml;ld&amp;uuml;ğ&amp;uuml;m&amp;uuml;z &amp;ouml;zellik, alan ve metodlar burada tek bir &amp;ccedil;atı altında toplanmıştır. Partial sınıfları kullanırken elbetteki dikkat etmemiz gereken noktalar vardır. &amp;Ouml;rneğin partial sınıflar i&amp;ccedil;erisinde aynı elemanları tanımlayamayız. Yukarıdaki &amp;ouml;rneğimizde &amp;ouml;zellikleri tuttuğumuz sınıf par&amp;ccedil;amıza metodları tuttuğumuz sınıf par&amp;ccedil;asında olan constructor (yapıcı metod) dan bir tane daha ekleyelim. &amp;Ouml;zellikle aynı metod imzalarına sahip olmalarına dikkat edelim. Bu durumda uygulamayı derlemeye &amp;ccedil;alıştığımızda aşağıdaki hata mesajını alırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk126_5.gif" alt="" width="513" height="323" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu hata bize, partial class' ların asında tek bir sınıfı oluşturan par&amp;ccedil;alar olduğunu ispat etmektedir. Bu teoriden yola &amp;ccedil;ıkaraktan metodların aşırı y&amp;uuml;klenmiş (overload) hallerini partial class' lar i&amp;ccedil;erisinde kullanabileceğimizi s&amp;ouml;yleyebiliriz. Bu sefer &amp;ouml;zellikleri tuttuğumuz partial sınıfımız i&amp;ccedil;erisine VeriYonetim tipimiz i&amp;ccedil;in varsayılan yapıcı metodu (default constructor) ekleyelim. &lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;partial class VeriYonetim
+{
+    public VeriYonetim()
+    {
+        m_GuncelBaglanti = new SqlConnection("data source=localhost;database=AdventureWorks;integrated security=SSPI");
+    }
+    // Diğer kodlar
+}&lt;/pre&gt;
+&lt;p&gt;Bu durumda uygulamamız sorunsuz şekilde derlenecek ve &amp;ccedil;alışacaktır. &amp;nbsp;&lt;/p&gt;
+&lt;table id="table11" border="1" width="100%" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;&lt;strong&gt;Partial sınıflar(classes) tanımlayabildiğimiz gibi partial aray&amp;uuml;zler(interfaces) veya yapılarda(structs) tanımlayabiliriz. &lt;/strong&gt;&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;&amp;Ouml;rneğin, par&amp;ccedil;aları aşağıdaki şekilden de g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi iki farklı fiziki kaynak dosyada tutulacak IVeriYonetim isimli bir aray&amp;uuml;z oluşturmak istediğimizi d&amp;uuml;ş&amp;uuml;nelim. IVeriYonetim.Metodlar.cs kaynak kod dosyası i&amp;ccedil;erisinde aray&amp;uuml;z&amp;uuml; uygulayacak olan tiplerin i&amp;ccedil;ermesi gereken metodları bildireceğimizi farzedelim. IVeriYonetim.Ozellikler.cs kaynak kod dosyasında ise, bu aray&amp;uuml;z&amp;uuml; uygulayacak tiplerin i&amp;ccedil;ermesi gereken &amp;ouml;zellik bildirimlerini yapacağımızı varsayalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk126_6.gif" alt="" width="199" height="237" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Tek yapmamız gereken aray&amp;uuml;zlerimizi mantıksal olarak ayrıştırmak ve partial anahtar kelimesini kullanarak kodlamak olacaktır.&lt;/p&gt;
+&lt;p&gt;IVeriYonetim.Ozellikler.cs dosyası;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace PartialClasses
+{
+    partial interface IVeriYonetim
+    {
+        int MaasArtisOrani
+        {
+        get;
+        set;
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;IVeriYonetim.Metodlar.cs dosyası;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace PartialClasses
+{
+    partial interface IVeriYonetim
+    {
+        void Bilgilendir();
+        int PersonelSayisi(string sqlCumlesi);
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Her iki interface tanımlamasıda aslında tek bir interface' in kendi kurduğumuz mantıksal mimari &amp;ccedil;er&amp;ccedil;evesinde ayrılmış soyut par&amp;ccedil;alardır. Keza, IVeriYonetim isimli aray&amp;uuml;z&amp;uuml;m&amp;uuml;z&amp;uuml; her hangi bir sınıfa uyguladığımızda aşağıdaki şekilden de g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi aray&amp;uuml;z&amp;uuml;m&amp;uuml;z&amp;uuml;n par&amp;ccedil;aları değil b&amp;uuml;t&amp;uuml;nl&amp;uuml;ğ&amp;uuml; ele alınacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk126_7.gif" alt="" width="612" height="186" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Sınıflarda olduğu gibi interface' ler i&amp;ccedil;inde IL kodunun verdiği g&amp;ouml;r&amp;uuml;n&amp;uuml;m benzer olacaktır. Aray&amp;uuml;z&amp;uuml; ilgili sınıfımıza uyguladığımızda partial b&amp;ouml;l&amp;uuml;mlerde yer alan t&amp;uuml;m elemanların implementasyona dahil edildiğini g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;class VeriYoneticisi:IVeriYonetim
+{
+
+    #region IVeriYonetim Members
+
+    // IVeriYonetim.Ozellikler.cs kaynak kod dosyası i&amp;ccedil;erisindeki partial kısımdan gelen &amp;uuml;yeler.
+    public void Bilgilendir()
+    {
+        //
+    }
+
+    public int PersonelSayisi(string sqlCumlesi)
+    {
+        //
+    }
+
+    // IVeriYonetim.Metodlar.cs kaynak kod dosyası i&amp;ccedil;indeki partial kısımdan gelen &amp;uuml;yeler.
+    public int MaasArtisOrani 
+    {
+        get
+        {
+            //
+        }
+        set
+        {
+            //
+        }
+    }
+    #endregion
+}&lt;/pre&gt;
+&lt;p&gt;Tek bir &amp;ccedil;atı altında toplanmış kod i&amp;ccedil;erisinde mantıksal olarak ayrı par&amp;ccedil;alara b&amp;ouml;l&amp;uuml;nm&amp;uuml;ş bir tek aray&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk126_8.gif" alt="" width="438" height="388" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Partial kısımların, sturct' larda kullanılış bi&amp;ccedil;imleride sınıflar ve aray&amp;uuml;zlerde olduğu gibidir.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;zellikle partial sınıflar i&amp;ccedil;in bir takım kurallar vardır. Bu kurallara g&amp;ouml;re partial sınıflardan her hangi biri abstract veya sealed olarak belirtilirse, s&amp;ouml;z konusu tipin tamamı bu şekilde değerlendirilir. &amp;Ouml;rneğin aşağıdaki uygulamada partial sınıflarımızdan birisi sealed olarak tanımlanmıştır. Bunun doğal sonucu olarak s&amp;ouml;z konusu olan tip sealed olarak ele alınır. Dolayısıyla bu tipten her hangi bir şekilde t&amp;uuml;retme işlemi ger&amp;ccedil;ekleştirilemez. &amp;Ouml;rneğin aşağıdaki kod derleme zamanında hataya yol a&amp;ccedil;acaktır.&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;sealed partial class Islemler
+{
+}
+partial class Islemler
+{
+}
+class AltIslemler : Islemler
+{
+}&lt;/pre&gt;
+&lt;p&gt;Peki Partial sınıfları birden &amp;ccedil;ok defa sealed tanımlarsak ne olur? &amp;Ouml;rneğin yukarıdaki kodumuzda Islemler sınıfının her iki par&amp;ccedil;asınada sealed anahtar s&amp;ouml;zc&amp;uuml;ğ&amp;uuml;n&amp;uuml; uyguladığımızı d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;sealed partial class Islemler
+{
+}
+sealed partial class Islemler
+{
+}&lt;/pre&gt;
+&lt;p&gt;Burada ki gibi bir kullanım tamamen ge&amp;ccedil;erlidir. Derleme zamanında her hangi bir hata alınmaz. Parital tiplerin kullanımı ile ilgili bir diğer kısıtlamaya g&amp;ouml;re partial olarak imzalanmış bir sınıfı partial olamayan bir sınıf olarak tekrardan yazamayız. Yani aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi Islemler isimli sınıfı hem partial olarak hem de normal bir sınıf olarak tanımlayamayız. B&amp;ouml;yle bir kullanım sonrasında derleme zamanı hatasını alırız.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;&lt;span style="color: #ff0000; font-family: Verdana; font-size: small;"&gt; &lt;img src="/makale/images/mk126_9.gif" alt="" width="421" height="399" border="0" /&gt; &lt;/span&gt;&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi sınıflarımızı, aray&amp;uuml;zlerimizi veya yapılarımızı partial olarak tanımlamak son derece kolaydır. Tek yapmanız gereken partial anahtar s&amp;ouml;zc&amp;uuml;ğ&amp;uuml;n&amp;uuml; kullanmaktır. Asıl zor olan, bu tipleri b&amp;ouml;lme ihtiyacını tespit edebilmek ve ne şekilde par&amp;ccedil;alara ayırabileceğimize karar vermektir. Yani bir sınıfı gelişi g&amp;uuml;zel par&amp;ccedil;alara b&amp;ouml;lmektense bunun i&amp;ccedil;in ge&amp;ccedil;erli bir sebep aramak son derece &amp;ouml;nemlidir. Ayrıca mantıksal b&amp;ouml;l&amp;uuml;mlemeyi &amp;ccedil;ok iyi analiz etmemiz gerekir. Bu analizin en iyi &amp;ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml; sunabilmesi ise sizlerin proje tecr&amp;uuml;benize, planlama ve &amp;ouml;ng&amp;ouml;r&amp;uuml; yeteneklerinize bağlıdır. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2005-06-27 12:00:00</pubDate>
+  <slug>C#-2-0-ile-Partial-Types-(Kısmi-Tipler)-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>c#-2</tag>
+    <tag>class</tag>
+    <tag>partial-class</tag>
+    <tag>partial-type</tag>
+  </tags>
+  <categories>
+    <category>C#</category>
+  </categories>
+</post>

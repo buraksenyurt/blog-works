@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>GoLang - Kalıtımsız Bir Dünya</title>
+  <description>Go hızlı ve performanslı bir programlama dili olarak anılıyor. Diğer yandan nesne yönelimli dil özelliklerini büyük ölçüde içermediği gibi bir gerçek de var ortada.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2017/01/gocomp_2.gif" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Go hızlı ve performanslı bir programlama dili olarak anılıyor. Diğer yandan nesne y&amp;ouml;nelimli dil &amp;ouml;zelliklerini b&amp;uuml;y&amp;uuml;k &amp;ouml;l&amp;ccedil;&amp;uuml;de i&amp;ccedil;ermediği gibi bir ger&amp;ccedil;ek de var ortada. Tasarımı sırasında kalıtım&lt;em&gt;(Inheritance)&lt;/em&gt; gibi y&amp;ouml;netimin sonradan zorlaşabildiği&amp;nbsp;ve bakım gerektiren &amp;ccedil;atıların&amp;nbsp;performansı olumsuz y&amp;ouml;nde etkilediği&amp;nbsp;d&amp;uuml;ş&amp;uuml;ncesi hakim olmuş. Bu nedenle nesne y&amp;ouml;nelimli d&amp;uuml;ş&amp;uuml;nce tarzını az da olsa kenara bırakarak ilerlemek gerekiyor. Kalıtım doğrudan desteklenmese de nesne kompozisyonu&lt;em&gt;(Composition)&lt;/em&gt;&amp;nbsp;mevcut. Hatta belli bir &amp;ouml;l&amp;ccedil;&amp;uuml;de &amp;ccedil;ok bi&amp;ccedil;imliliği&lt;em&gt;(Polymorphism)&lt;/em&gt; de uygulayabiliriz gibi.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Doğruyu s&amp;ouml;ylemek gerekirse yıllarca nesne y&amp;ouml;nelimli dillerle &amp;ccedil;alışmış birisinin tekrardan okula d&amp;ouml;n&amp;uuml;p alışık olduğu alan&amp;nbsp;yapısı ve kurallar dizisinin dışına &amp;ccedil;ıkması pek kolay değil. Bunu sancısını Go dilini &amp;ouml;ğrenmeye &amp;ccedil;alıştığım şu g&amp;uuml;nlerde yoğun olarak yaşamaktayım. Gelin kalıtımı ve &amp;ccedil;ok bi&amp;ccedil;imliliği tam olarak karşılamasa da Go dilinde benzer kurguların nasıl yapılabileceğine bir bakalım. İşe aşağıdaki &amp;ouml;rnek kod par&amp;ccedil;asını geliştirerek başlayabiliriz.&lt;/p&gt;
+&lt;h2&gt;Composition&amp;nbsp;&lt;/h2&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;package main
+
+// Inheritance ve Composition'a baslangic kodu
+import (
+	"fmt"
+	)
+
+func main(){
+	buentap:=new(Gorlog)
+	buentap.nick="buentap"
+	buentap.level=4857
+	buentap.color="red"
+	writeGorlog(buentap)
+
+	zulu:=new(Molag)
+	zulu.nick="zulurak"
+	zulu.level=3450
+	writeMolag(zulu)
+}
+
+type Player struct{
+	nick string
+	level int
+}
+
+// Gorlog'lar insan irkindan gelir. Ten renkleri vardir.
+type Gorlog struct{
+	Player
+	color string
+}
+
+func writeGorlog(g *Gorlog){
+	fmt.Printf("%s - %d('%s')\n",g.nick,g.level,g.color)
+}
+
+// Molag'lar renksiz ruhlardir
+type Molag struct{
+	Player
+}
+
+func writeMolag(m *Molag){
+	fmt.Printf("%s - %d\n",m.nick,m.level)
+}&lt;/pre&gt;
+&lt;p&gt;Kodun &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı aşağıdaki gibi olacaktır.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/01/gocomp_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şuraya da &amp;ccedil;akma bir Object Composition &amp;ccedil;izelgesi&amp;nbsp;koyalım. Player tipi esas itibariyle Gorlog ve Molag'ın birer par&amp;ccedil;asıdır. Nesneleri bu şekilde birleştirdiğimizi d&amp;uuml;ş&amp;uuml;nebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/01/composition.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Kod i&amp;ccedil;erisinde &amp;uuml;&amp;ccedil; structure tanımlandığını g&amp;ouml;rmektesiniz. Player tipinde nick ve level isimli &amp;uuml;yeler mevcut. Diğer yandan Gorlog ve Molag olarak adlandırdığımız orta d&amp;uuml;nya tipleri i&amp;ccedil;erisinde Player isimli bir tanımlama yer alıyor. Bir başka deyişle bu tipler aslında birer Player olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilirler. Nitekim bir Player'ın &amp;uuml;yelerini barındıracak şekilde tasarlandılar. Farklılık olması a&amp;ccedil;ısından insan ırkından gelen Gorlog'ların renkleri de var&lt;em&gt;(color isimli &amp;uuml;ye)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;main fonksiyonunda &amp;uuml;retilen nesne &amp;ouml;rneklerinin &amp;uuml;retim şekilleri haricinde noktadan sonra Player yapısında gelen &amp;uuml;yelerine değerler atadığımıza dikkat edelim. Yani bir Gorlog nesne &amp;ouml;rneği veya Molag nesne &amp;ouml;rneği &amp;uuml;zerinden Player &amp;uuml;yelerine erişebiliyoruz. Alın size kalıtımsal bir yaklaşım. Her t&amp;uuml;r aslında birer Player olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir diyebilir miyiz?&lt;/p&gt;
+&lt;p&gt;Her iki t&amp;uuml;r i&amp;ccedil;in ekrana bilgi yazan birer fonksiyon da mevcut. writeGorlog, Gorlog tipinden, writeMolag ise&amp;nbsp;Molag tipinden bir pointer değişkenini parametre olarak kullanıyor. B&amp;ouml;ylece ilgili fonksiyonlardan Player yapısında o nesne &amp;ouml;rnekleri i&amp;ccedil;in tanımlı nick ve level değerlerine ulaşabiliyoruz.&lt;/p&gt;
+&lt;h2&gt;Interface Kullanımı&lt;/h2&gt;
+&lt;p&gt;Gelelim bir diğer noktaya. Diyelim ki Gorlog ve Molag t&amp;uuml;rleri i&amp;ccedil;in ortak bir takım işlevesellikler s&amp;ouml;z konusu. &amp;Ouml;rneğin hareket ve ateş etme kabiliyetleri olduğunu varsayalım. Normal şartlarda nesne y&amp;ouml;nelimli bir dil ile geliştirme yapıyor olsak kuvvetle muhtemel bir interface tanımlar ve ilgili tipleri bu interface tipinden t&amp;uuml;reterek &amp;uuml;yeleri ezmeye zorlardık. Ancak bu kadar nesne odaklı bir d&amp;uuml;nyada değiliz. Yine de elimizde bir takım &amp;ccedil;&amp;ouml;z&amp;uuml;mler var. İlk olarak Go dilinde de interface tipi olduğunu belirtelim. Bu tip i&amp;ccedil;erisinde tanımlanacak fonksiyonları, uygulamasını istediğimiz yapılar i&amp;ccedil;in yazabilir ve az da olsa &amp;ccedil;ok bi&amp;ccedil;imlilik sunan fonksiyonellikler sağlayabiliriz. Yukarıdaki &amp;ouml;rneğimize aşağıdaki değişikliler ile devam edelim.&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;package main
+// Inheritance ve Composition'a baslangic kodu
+import (
+	"fmt"
+	)
+	
+func main(){
+	buentap:=new(Gorlog)
+	buentap.nick="buentap"
+	buentap.level=4857
+	buentap.color="red"	
+	writeGorlog(buentap)
+	
+	zulu:=new(Molag)
+	zulu.nick="zulurak"
+	zulu.level=3450
+	writeMolag(zulu)
+	
+	moveAndFire(buentap,"korusant","tatuyin")
+	moveAndFire(zulu,"tatuyin","korusant")
+}
+func moveAndFire(p IPlayer,moveL string,fireL string){
+	p.move(moveL)
+	p.fire(fireL)
+}
+type IPlayer interface{
+	move(location string) bool
+	fire(location string) bool
+}
+
+type Player struct{
+	nick string
+	level int
+}
+
+// Gorlog'lar insan irkindan gelir. Ten renkleri vardir.
+type Gorlog struct{
+	Player	
+	color string
+}
+func (g Gorlog) move(location string) bool{
+	fmt.Printf("%s:Move to %s\n",g.nick,location)
+	return true
+}
+func (g Gorlog) fire(location string) bool{
+	fmt.Printf("%s:Fire to the %s\n",g.nick,location)
+	return true
+}
+func writeGorlog(g *Gorlog){
+	fmt.Printf("%s - %d('%s')\n",g.nick,g.level,g.color)
+}
+
+// Molag'lar renksiz ruhlardir
+type Molag struct{
+	Player		
+}
+func (m Molag) move(location string) bool{
+	fmt.Printf("%s:Move to %s\n",m.nick,location)
+	return true
+}
+func (m Molag) fire(location string) bool{
+	fmt.Printf("%s:Fire to the %s\n",m.nick,location)
+	return true
+}
+func writeMolag(m *Molag){
+	fmt.Printf("%s - %d\n",m.nick,m.level)
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/01/gocomp4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Eski alışkanlık olsa gerek IPlayer şeklinde isimlendirdiğimiz bir interface tipi mevcut. Bu tip i&amp;ccedil;erisinde move ve fire isimli iki fonksiyon yer alıyor. Biz bu fonksiyonellikleri hangi yapılara kazandırmak istersek onlara uygulamalıyız. Uygulama şekli aslında aynı isimli fonksiyonları uygulanacak tip i&amp;ccedil;in yazmak. move ve fire fonksiyonlarının tanımlanış şekillerinde ilk parantezler arasında uygulanacağı yapıyı belirtiyoruz. B&amp;ouml;ylece&amp;nbsp;ilgili nesne &amp;ouml;rneklerinin Player i&amp;ccedil;erisinde tanımlı &amp;uuml;ylelerine ve kendi &amp;ouml;zel niteliklerine erişebiliriz. Fonksiyonlar i&amp;ccedil;in &amp;ouml;nemli olan nokta girdi&amp;nbsp;ve &amp;ccedil;ıktı&amp;nbsp;i&amp;ccedil;in kullanılan parametre yapılarının IPlayer aray&amp;uuml;z&amp;uuml;nde belirtildiği şekilde olması.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Peki nerede nesne y&amp;ouml;nelimliye yakınlaşıyoruz? Go'nun kod yazım kuralları haricinde dikkat etmemiz gereken nokta MoveAndFire isimli fonksiyon. İlk parametre IPlayer tipinden&lt;em&gt;(Bir ışık yandı mı sevgili C#&amp;ccedil;ı, Javacı arkadaşım)&lt;/em&gt; Gorlog ve Molag isimli yapılar i&amp;ccedil;in tanımlanan move ve fire fonksiyonları, IPlayer tarafından tanımlanan şablona uygun olacak şekilde yazıldılar. Dolayısıyla IPlayer'a atanan tipin i&amp;ccedil;erisinde bu fonksiyonların aynı desende yazılmış olması&lt;em&gt;(tabii ilk parantez i&amp;ccedil;lerine dikkat)&lt;/em&gt; yeterli. main fonksiyonunda yaptığımız moveAndFire &amp;ccedil;ağırımlarında bu&amp;nbsp;fonksiyona hangi nesne &amp;ouml;rneğini g&amp;ouml;nderdiysek o nesne &amp;ouml;rneğine ait fire ve move fonksiyonlarının &amp;ccedil;alıştırılması s&amp;ouml;z konusu.&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi Composition kuramını ve interface tipini kullanarak belli &amp;ouml;l&amp;ccedil;&amp;uuml;de nesne y&amp;ouml;nelimlilik sağladık. moveAndFire fonksiyonunun bir &amp;ccedil;eşit &amp;ccedil;ok bi&amp;ccedil;imlilik sağladığını da g&amp;ouml;rd&amp;uuml;k. Bakalım Go dili ile ilgili olarak ilerleyen zamanlarda daha neler neler g&amp;ouml;receğiz? Yazıyı hazırlarken&amp;nbsp;&lt;a href="http://www.goder.co/sample-golang-ile-inheritance-ve-interface-kullanimi/" target="_blank"&gt;goder isimli blog'dan&lt;/a&gt; olduk&amp;ccedil;a faydalandığımı da ifade etmek isterim. Ufkumu a&amp;ccedil;an &amp;ccedil;ok değerli bir T&amp;uuml;rk&amp;ccedil;e kaynak. Gopher olmak isteyenlerin takip etmesini şiddetle tavsiye derim. B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2017-02-25 21:38:00</pubDate>
+  <slug>golang-kalitimsiz-bir-dunya</slug>
+  <tags>
+    <tag>golang</tag>
+    <tag>inheritance</tag>
+    <tag>composition</tag>
+    <tag>struct</tag>
+    <tag>structure</tag>
+    <tag>pointer</tag>
+    <tag>interface</tag>
+    <tag>gopher</tag>
+  </tags>
+  <categories>
+    <category>GoLang</category>
+  </categories>
+</post>

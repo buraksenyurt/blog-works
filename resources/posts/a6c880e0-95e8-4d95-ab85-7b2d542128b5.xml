@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>İlk Bakışta WCF</title>
+  <description>Bildiğiniz gibi bir süre önce Microsoft .Net Framework' un 3.0 sürümünün son halini yayınladı. Framework 3.0 beraberinde köklü ve güçlü mimari modeller ile birlikte geldi. Aslında Framework 3.0, Framework 2.0 üzerine gelen yeni eklentiler ile oluşmuştur.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Bildiğiniz gibi bir s&amp;uuml;re &amp;ouml;nce Microsoft .Net Framework' un 3.0 s&amp;uuml;r&amp;uuml;m&amp;uuml;n&amp;uuml;n son halini yayınladı. Framework 3.0 beraberinde k&amp;ouml;kl&amp;uuml; ve g&amp;uuml;&amp;ccedil;l&amp;uuml; mimari modeller ile birlikte geldi. Aslında Framework 3.0, Framework 2.0 &amp;uuml;zerine gelen yeni eklentiler ile oluşmuştur. Bu eklentiler, Windows Presentation Foundation (WPF), Work Flow Foundation (WF), CardSpace ve Windows Communication Foundation (WCF) dır. Biz bu makalemizde WCF' ı &amp;ccedil;ok y&amp;uuml;zeysel olarak anlamaya başlayacak ve konu ile ilişkili basit bir &amp;ouml;rnek geliştirmeye &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;WCF, hızlı bir şekilde servis y&amp;ouml;nelimli mimariyi baz alan uygulamalar yazabilmek i&amp;ccedil;in geliştirilmiş, birleştirilmiş bir Framework API' si olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;WCF aslında dağıtık mimarinin .Net Framework 3.0 ile gelen yeni hali olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Microsoft, bu g&amp;uuml;ne kadar dağıtık mimari uygulamalarının (Distributed Applications) geliştirilebilmesi i&amp;ccedil;in COM+, .Net Remoting, XML Web Servisleri, MSMQ gibi sistemleri geliştirmiştir. WCF, temel olarak bu sistemlerin tamamının yeteneklerini b&amp;uuml;nyesinde barındıran ve tam SOA (Service Oriented Architecture - Servis Y&amp;ouml;nelimli Mimari) desteği sağlayan g&amp;uuml;&amp;ccedil;l&amp;uuml; bir Framework API' si olarak tanımlanabilir. Aslında ilk zamanlarda fonksiyonel programlamadan nesne tabanlı programlamaya (Object Oriented Architecture) ge&amp;ccedil;ilmiştir. Sonrasında bu modeli nesnelerin bileşen haline getirilebilmesi sayesinden, bileşen y&amp;ouml;nelimli mimari (Component Oriented Architecture) izlemiştir. Son olarak da , servis y&amp;ouml;nelimli mimariyi (SOA) kullanılmaya başlanmıştır. İşte WCF, SOA mimarisine tam ve y&amp;uuml;ksek seviyede destek veren bir API olarak karşımıza &amp;ccedil;ıkmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk191_4.gif" alt="" width="354" height="250" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Temel olarak WCF, servis y&amp;ouml;nelimli mimariyi doğrudan desteklemekte ve iki &amp;ouml;nemli &amp;ouml;zellik i&amp;ccedil;ermektedir. Bunlardan birisi, &amp;ouml;zellikle Microsoft kanadındaki servislerin, farklı platformlar tarafından ele alınabilmesidir(Interoperability). B&amp;ouml;ylece, karmaşık .Net tiplerini &amp;ouml;zel olarak Java, Com gibi modelleri destekleyen &amp;ccedil;eşitli tipteki platformlara yayabiliriz. Dolayısıyla Linux, Unix vb sistemler servislerimizin birer potansiyel t&amp;uuml;keticisi olabilirler.&lt;/p&gt;
+&lt;p&gt;İkinci &amp;ouml;nemli &amp;ouml;zellik ise, windows tarafındaki &amp;ccedil;eşitli dağıtık mimari modeller arasındaki entegrasyonun tek bir &amp;ccedil;atı altında toplanabilmesinin sağlanmış olmasıdır(Integration). Bu iki &amp;ouml;zelliğin yanı sıra WCF, CLR (Comman Language Runtime) tiplerini birer servis olarak sunabilmemizi ve hatta servisleride birer CLR tipiymiş gibi ele alabilmemizi sağlayan bir mimari sağlamaktadır. Aşağıdaki şekil, WCF' ının sağladığı mimari yaklaşımı a&amp;ccedil;ıklamaya &amp;ccedil;alışmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk191_2.gif" alt="" width="465" height="500" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat ederseniz servise,&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Aynı makine i&amp;ccedil;erisinde aynı s&amp;uuml;re&amp;ccedil;te (process) yer alan farklı bir uygulama alanı (application domain) &amp;uuml;zerinden,&lt;/li&gt;
+&lt;li&gt;Aynı makinede yer alan farklı bir s&amp;uuml;re&amp;ccedil; (process) i&amp;ccedil;erisindeki farklı bir uygulama alanı (application domain) &amp;uuml;zerinden,&lt;/li&gt;
+&lt;li&gt;Farklı bir makinedeki bir s&amp;uuml;re&amp;ccedil; (process) i&amp;ccedil;erisinde yer alan farklı bir uygulama alanı (application domain) &amp;uuml;zerinden,&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;erişebiliriz. İstemciler hangi uygulama alanı (Application Domain) i&amp;ccedil;erisinde olurlarsa olsunlar, servis ile olan iletişimlerini bir proxy nesnesi &amp;uuml;zerinden sağlamak zorundadır. Bununla birlikte proxy nesneleri &amp;uuml;zerinden giden mesajlar servis tarafında bir endPoint &amp;uuml;zerinden ge&amp;ccedil;erler. Benzer şekilde servis tarafından istemcilere giden mesajlarda bu endPoint &amp;uuml;zerinden &amp;ccedil;ıkarlar. Bu resim aslında bildiğimiz dağıtık mimari modelin WCF tarafından bir g&amp;ouml;r&amp;uuml;n&amp;uuml;ş&amp;uuml;d&amp;uuml;r.&lt;/p&gt;
+&lt;p&gt;İngilizce bazı kaynaklarda, WCF' ının ABC' sinden bahsedilmektedir. Burada ABC aslında Addresses (Adresler), Bindings (Bağlayıcılar) ve Contracts (S&amp;ouml;zleşmeler) kelimelerinin baş harfleridir. Bu &amp;uuml;&amp;ccedil;leme, WCF' ının &amp;ccedil;ekirdeğinde yer alan en &amp;ouml;nemli kavramlardır. &amp;Ouml;yleki, dağıtık modele g&amp;ouml;re servis olarak dış ortama sunulan her bir CLR tipi i&amp;ccedil;in bir endPoint tanımlanır. Tanımlanmak zorundadır. Aslında endPoint bir servisin dış ortama sunulan aray&amp;uuml;z&amp;uuml; (Interface) olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Yani istemcilerin, proxy &amp;uuml;zerinden g&amp;ouml;nderecekleri ve alacakları mesajların servis tarafında karşılandığı nokta olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Bir endPoint i&amp;ccedil;erisinde &amp;uuml;&amp;ccedil; &amp;ouml;nemli par&amp;ccedil;a vardır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk191_1.gif" alt="" width="192" height="192" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dilerseniz bu kavramları kısaca anlamaya &amp;ccedil;alışalım.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Servis Adresleri (Service Addresses)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;WCF' a g&amp;ouml;re, hizmette bulunan her servis benzersiz bir adrese sahip olmalıdır. Genellikle bir servis adresi, servisin yeri (service location) ve taşıma protokol&amp;uuml; (transport protocol) bilgilerinden oluşur. Aslında servis yerinden kasıt,&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Bilgisayarın adı,&lt;/li&gt;
+&lt;li&gt;Site adı,&lt;/li&gt;
+&lt;li&gt;Network adı,&lt;/li&gt;
+&lt;li&gt;İletişim portu adı,&lt;/li&gt;
+&lt;li&gt;Pipe adı,&lt;/li&gt;
+&lt;li&gt;Queue adı,&lt;/li&gt;
+&lt;li&gt;Belirli bir path bilgisi,&lt;/li&gt;
+&lt;li&gt;URI adı&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;olabilir. Taşıma protokollerimiz ise,&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;HTTP,&lt;/li&gt;
+&lt;li&gt;TCP,&lt;/li&gt;
+&lt;li&gt;P2P (Peer To Peer),&lt;/li&gt;
+&lt;li&gt;IPC (Inter-Process Communication),&lt;/li&gt;
+&lt;li&gt;MSMQ (Microsoft Message Queuing),&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;olabilir. Bu bilgiler ışığında &amp;ouml;rnek servis adresi şablonu aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;[taşıma protokol&amp;uuml;(transport protocol)]://[makine adı]:[opsiyonel port numarası]/[opsiyonel URI bilgisi]&lt;/pre&gt;
+&lt;p&gt;Aşağıda bu desene uygun bir ka&amp;ccedil; &amp;ouml;rnek servis adı yer almaktadır. Buradaki desenler &amp;ouml;zellike .Net Remoting ve Xml Web Servisleri &amp;uuml;zerinde geliştirme yapanlarada tanıdık gelecektir.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;net.tcp://localhost:4578/MatSrv
+net.msmq://localhost:6789/MatSrv
+http://localhost:9001/MatSrv&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;S&amp;ouml;zleşmeler (Contracts)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Temel olarak bir servisin ne iş yaptığının bilinmesi &amp;ouml;nemlidir. Bu &amp;ouml;zellikle, istemcilerin ihtiya&amp;ccedil; duyduğu proxy sınıflarının yazılmasında &amp;ouml;nem arz eden bir konudur. Bu nedenle WCF' da t&amp;uuml;m servisler dış ortama bir s&amp;ouml;zleşme (Contract) sunmaktadırlar. Genel olarak d&amp;ouml;rt s&amp;ouml;zleşme tipi vardır.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;em&gt;Servis S&amp;ouml;zleşmesi (Service Contract):&lt;/em&gt;&lt;/strong&gt; Servis &amp;uuml;zerinden hangi operasyonları ger&amp;ccedil;ekleştirebileceğimizi tanımlayan s&amp;ouml;zleşme &amp;ccedil;eşididir.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;em&gt;Veri S&amp;ouml;zleşmesi (Data Contract) :&lt;/em&gt;&lt;/strong&gt; Servislerden istemcilere giden ve istemcilerden servise gelen veri tiplerini tanımlayan s&amp;ouml;zleşme &amp;ccedil;eşididir. Int gibi bilinen tipler i&amp;ccedil;in bu s&amp;ouml;zleşmeler bilin&amp;ccedil;siz(implicit) olarak hazırlanır. Ancak karmaşık tiplerde ve &amp;ouml;zellikle kendi tiplerimizde a&amp;ccedil;ık (explicit) bir şekilde tanımlanmaları gerekir. İşte bu sayede, Java gibi platformlar ile konuşabiliriz. Nitekim onların anlayacağı şekilde bir veri s&amp;ouml;zleşmesini dış ortama sunma şansımız artık vardır.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;&lt;strong&gt;Hata S&amp;ouml;zleşmesi (Fault Contract):&lt;/strong&gt; &lt;/em&gt;Servis tarafından hangi hataların fırlatılabileceğini ve bunların istemciye nasıl aktarılacağını tanımlayan s&amp;ouml;zleşme &amp;ccedil;eşididir.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;&lt;strong&gt;Mesaj S&amp;ouml;zleşmesi (Message Contract):&lt;/strong&gt;&lt;/em&gt; Servislerin mesajlar ile etkileşimde bulunmasını sağlayan s&amp;ouml;zleşme &amp;ccedil;eşidir.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Genellikle servisler bir s&amp;ouml;zleşme tanımlamak i&amp;ccedil;in &lt;strong&gt;ServiceContract&lt;/strong&gt; ve &lt;strong&gt;OperationContract&lt;/strong&gt; niteliklerini kullanırlar. Daha sonra geliştireceğimiz ilk &amp;ouml;rnekte bu niteliklere tekrardan değineceğiz. Temel olarak bir tipin servis olarak sunulabileceğini belirtmek i&amp;ccedil;in ServiceContract niteliği kullanılır. Servis i&amp;ccedil;erisinde sunulabilecek metodlar ise OperationContract adı verilen nitelikler ile işaretlenirler. Bu aslında WCF' ının başka bir &amp;ouml;zelliğidir. Nitelik tabanlı (Attribute Based) programlama.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;WCF uygulamalarını geliştirebilmek i&amp;ccedil;in gereken temel tipler, Framework 3.0 ile gelen &lt;strong&gt;System.ServiceModel.dll, System.IdentityModel.dll, System.Runtime.Serialization.dll &lt;/strong&gt;vb... Assembly' lar i&amp;ccedil;erisinde yer alırlar. Bu nedenle bu Assembly' ları gerektiğinde kullanabilmek i&amp;ccedil;in projelere a&amp;ccedil;ık&amp;ccedil;a referans etmemiz gerekmektedir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Bağlayıcılar (Bindings)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Bağlayıcılar temel olarak servisler ile nasıl iletişim kurulacağını tanımlamak &amp;uuml;zere kullanılırlar. Aslında bir bağlayıcı tip (Binding Type) taşıma tipi (transport type), protokol(protocol) ve veri &amp;ccedil;&amp;ouml;z&amp;uuml;mlemesi(data encoding) bildirir. Bunlar aslında servis y&amp;ouml;nelimli mimari modelde kullanılabilen senaryolar g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınarak oluşurlar. Bu sebepten dolayıda WCF, bu &amp;ouml;nceden bilinen senaryoları kullanabilmek i&amp;ccedil;in gerekli bağlayıcı tipleri &amp;ouml;nceden bildirmiştir. Bu tipler aşağıdaki tabloda yer aldığı gibidir.&lt;/p&gt;
+&lt;table id="table10" style="border-collapse: collapse; width: 630px;" border="1" cellpadding="5" bgcolor="#336699"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="background-color: #ffffff;"&gt;&lt;strong&gt; Binding Tipi&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="background-color: #ffffff;" width="182"&gt;&lt;strong&gt; Konfigurasyon&lt;br /&gt; Elementi&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="background-color: #ffffff;"&gt;&lt;strong&gt; Taşıma &amp;Ccedil;eşidi &lt;br /&gt; (Transport Type)&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="background-color: #ffffff;"&gt;&lt;strong&gt; Veri &amp;Ccedil;&amp;ouml;z&amp;uuml;mlemesi&lt;br /&gt; (Data Encoding)&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="background-color: #ffffff;"&gt;&lt;strong&gt; Platform Desteği&lt;br /&gt; (Inter operatbility)&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff"&gt;&lt;strong&gt; BasicHttpBinding&lt;/strong&gt;&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="182"&gt;&amp;lt;basicHttpBinding&amp;gt;&lt;/td&gt;
+&lt;td bgcolor="#ffffff"&gt;HTTP / HTTPS&lt;/td&gt;
+&lt;td bgcolor="#ffffff"&gt;Text&lt;/td&gt;
+&lt;td bgcolor="#ffffff"&gt;Var&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff"&gt;&lt;strong&gt; NetTcpBinding&lt;/strong&gt;&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="182"&gt;&amp;lt;netTcpBinding&amp;gt;&lt;/td&gt;
+&lt;td bgcolor="#ffffff"&gt;TCP&lt;/td&gt;
+&lt;td bgcolor="#ffffff"&gt;Binary&lt;/td&gt;
+&lt;td bgcolor="#ffffff"&gt;Yok&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff"&gt;&lt;strong&gt; NetPeerTcpBinding&lt;/strong&gt;&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="182"&gt;&amp;lt;netPeerTcpBinding&amp;gt;&lt;/td&gt;
+&lt;td bgcolor="#ffffff"&gt;P2P&lt;/td&gt;
+&lt;td bgcolor="#ffffff"&gt;Binary&lt;/td&gt;
+&lt;td bgcolor="#ffffff"&gt;Yok&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff"&gt;&lt;strong&gt; NetNamedPipeBinding&lt;/strong&gt;&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="182"&gt;&amp;lt;netNamedPipeBinding&amp;gt;&lt;/td&gt;
+&lt;td bgcolor="#ffffff"&gt;IPC&lt;/td&gt;
+&lt;td bgcolor="#ffffff"&gt;Binary&lt;/td&gt;
+&lt;td bgcolor="#ffffff"&gt;Yok&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff"&gt;&lt;strong&gt; WSHttpBinding&lt;/strong&gt;&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="182"&gt;&amp;lt;wsHttpBinding&amp;gt;&lt;/td&gt;
+&lt;td bgcolor="#ffffff"&gt;HTTP/HTTPS&lt;/td&gt;
+&lt;td bgcolor="#ffffff"&gt;Text/MTOM&lt;/td&gt;
+&lt;td bgcolor="#ffffff"&gt;Var&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff"&gt;&lt;strong&gt; WSFederationBinding&lt;/strong&gt;&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="182"&gt;&amp;lt;wsFederationHttpBinding&amp;gt;&lt;/td&gt;
+&lt;td bgcolor="#ffffff"&gt;HTTP/HTTPS&lt;/td&gt;
+&lt;td bgcolor="#ffffff"&gt;Text/MTOM&lt;/td&gt;
+&lt;td bgcolor="#ffffff"&gt;Var&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff"&gt;&lt;strong&gt; NetMsmqBinding&lt;/strong&gt;&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="182"&gt;&amp;lt;netMsmqBinding&amp;gt;&lt;/td&gt;
+&lt;td bgcolor="#ffffff"&gt;MSMQ&lt;/td&gt;
+&lt;td bgcolor="#ffffff"&gt;Binary&lt;/td&gt;
+&lt;td bgcolor="#ffffff"&gt;Yok&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff"&gt;&lt;strong&gt; MsmqIntegrationBinding&lt;/strong&gt;&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="182"&gt;&amp;lt;msmqIntegrationBinding&amp;gt;&lt;/td&gt;
+&lt;td bgcolor="#ffffff"&gt;MSMQ&lt;/td&gt;
+&lt;td bgcolor="#ffffff"&gt;Binary&lt;/td&gt;
+&lt;td bgcolor="#ffffff"&gt;Var&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff"&gt;&lt;strong&gt; WSDualHttpBinding&lt;/strong&gt;&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="182"&gt;&amp;lt;wsDualHttpBinding&amp;gt;&lt;/td&gt;
+&lt;td bgcolor="#ffffff"&gt;HTTP&lt;/td&gt;
+&lt;td bgcolor="#ffffff"&gt;Text/MTOM&lt;/td&gt;
+&lt;td bgcolor="#ffffff"&gt;Var&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Buradaki tiplerden hangisini se&amp;ccedil;eceğimiz, geliştireceğimiz SOA (Service Oriented Architecture) modelindeki ihtiya&amp;ccedil;larımız doğrultusunda belirlenebilirler. Dikkat ederseniz her bağlayıcı tipin interoperability desteği bulunmamaktadır. Bazılar daha y&amp;uuml;ksek performans sağlayacak şekilde Binary veri &amp;ccedil;&amp;ouml;z&amp;uuml;mlemesini ele alır. Ama kimiside IIS gibi ortamlar &amp;uuml;zerinden internete a&amp;ccedil;ılabilecek protokol desteğini sunar. İşte bu tip kriterlere g&amp;ouml;re uygun olan bağlayıcı tipler se&amp;ccedil;ilebilir. Elbette istersek buradaki tipler dışından kendi bağlayıcılarımızı da yazma şansına sahibiz. Ancak bahsi ge&amp;ccedil;en tipler hemen hemen her dağıtık uygulama senaryosu g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınarak tasarlanmıştır.B&amp;ouml;ylece WCF' ın ABC' sine &amp;ccedil;ok kısada olsa değinmiş olduk.&lt;/p&gt;
+&lt;p&gt;Gelelim WCF servislerini nerelerde barındırabileceğimize. Sonu&amp;ccedil; itibariyle yazılan servileslerin mutlaka bir windows s&amp;uuml;reci (Windows Process) &amp;uuml;zerinden sunulması gerekmektedir. Artık temel olarak iki farklı barındırma (Hosting) se&amp;ccedil;eneğimiz vardır.&lt;strong&gt; IIS Hosting&lt;/strong&gt; ve &lt;strong&gt;Self Hosting&lt;/strong&gt;. IIS Hosting sisteminde, geliştirilen servislerin IIS &amp;uuml;zerinde barındırılması ama&amp;ccedil;lanır. Doğal olarak servisler, web &amp;uuml;zerinden hizmet verilebilmektedir. Self Hosting modeli ise kendi i&amp;ccedil;erisinde d&amp;ouml;rde ayrılmaktadır. Windows Aktivasyon Servisi (Windows Activation Service), Windows Servisi, Konsol uygulaması, Windows Uygulaması.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk191_3.gif" alt="" width="462" height="302" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Windows Aktivasyon Servisi (Windows Activation Service), Vista ile birlikte gelen bir uygulama &amp;ccedil;eşididir. &amp;Ouml;zetle Http desteği olmayan host uygulamalar i&amp;ccedil;in IIS benzeri bir işlevselliği sağlamakla y&amp;uuml;k&amp;uuml;ml&amp;uuml;d&amp;uuml;r. Diğerleri ise &amp;ouml;zellike .Net Remoting' den aşina olduğumuz host uygulama tipleridir. Elbette servislerin hizmet verebilmesi i&amp;ccedil;in host edilmeleri şarttır. Bu da servisi sunan uygulamanın s&amp;uuml;rekli &amp;ccedil;alışır olmasını gerektirir. Nitekim uygulama &amp;ccedil;alışmadığı takdirde istemcilere hizmet veremez. Buraya kadar anlatıklarımızdan yola &amp;ccedil;ıkacak olursak, WCF cephesinden bir servis y&amp;ouml;nelimli sistem i&amp;ccedil;in şu adımları takip etmemiz yeterli olacaktır.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Servise ait s&amp;ouml;zleşmeyi barındıran ve asıl fonksiyonelleri i&amp;ccedil;eren bir assembly geliştirilir.&lt;/li&gt;
+&lt;li&gt;Servisi istemcilere sunacak olan bir host uygulama geliştirilir.&lt;/li&gt;
+&lt;li&gt;İstemcilerin s&amp;ouml;z konusu servisi kullanabilmeleri i&amp;ccedil;in gerekli olan proxy sınıfı &amp;uuml;retilir.&lt;/li&gt;
+&lt;li&gt;İstemci uygulama geliştirilir.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Bu adımlar sırasında &amp;ouml;zellikle servis tarafında ve istemci tarafında gereken bir takım ayarlamalar i&amp;ccedil;in konfigurasyon dosyalarından faydalanabilir yada programatik olarak gerekli hazırlıkların yapılmasını sağlayabiliriz.&lt;/p&gt;
+&lt;p&gt;Dilerseniz basit bir &amp;ouml;rnek &amp;uuml;zerinden hareket ederek &amp;ouml;rnek bir WCF sistemi geliştirmeye &amp;ccedil;alışalım. İlk olarak bir Class Library projesi geliştireceğiz. Projemiz i&amp;ccedil;erisinde servis s&amp;ouml;zleşmesi rol&amp;uuml;n&amp;uuml; &amp;uuml;stlenecek bir aray&amp;uuml;z(interface) tipi ve bu aray&amp;uuml;z tipini uygulayan bir sınıfımız olacak. WCF' da, servis s&amp;ouml;zleşmlerinin tanımlanması i&amp;ccedil;in &lt;strong&gt;ServiceContract&lt;/strong&gt; ve &lt;strong&gt; OperationContract&lt;/strong&gt; niteliklerinin kullanılmasını gerekir. Daha &amp;ouml;nceden de belirttiğimiz gibi bu nitelikler(attributes) &lt;strong&gt; System.ServiceModel&lt;/strong&gt; isim alanı (namespace) altında yer almaktadır. Bu nedenle ilk olarak projemize bu referansı aşağıdaki gibi eklememiz gerekir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk191_6.gif" alt="" width="467" height="375" border="0" /&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;WCF uygulamalarını Visual Studio 2005 &amp;uuml;zerinde daha kolay geliştirmek i&amp;ccedil;in gerekli extension' ları y&amp;uuml;klememiz gerekir. Bu extension' lar y&amp;uuml;klendiği takdirde, proje şablonları arasına&lt;strong&gt; WCF Service Library&lt;/strong&gt; se&amp;ccedil;eneğide gelecektir. Bu proje şablonu, servis s&amp;ouml;zleşmesinide uygulayan ve &amp;ouml;n bilgiler veren hazır bir &amp;ouml;rnek k&amp;uuml;t&amp;uuml;phane &amp;uuml;retmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk191_5.gif" alt="" width="404" height="160" border="0" /&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Şimdi sınıf k&amp;uuml;t&amp;uuml;phanemizin i&amp;ccedil;erisine aşağıdaki tipleri ekleyelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk191_7.gif" alt="" width="258" height="305" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+
+namespace MatematikServisLib
+{
+    [ServiceContract]
+    public interface IMatematikServis
+    {
+        [OperationContract]
+        double Toplam(double x, double y);
+
+        void DahiliMetod();
+    }
+
+    public class Matematik : IMatematikServis
+    {
+        #region IMatematikServis Members
+
+        public double Toplam(double x, double y)
+        {
+            return x + y;
+        }
+
+        public void DahiliMetod()
+        {
+        }
+
+        #endregion
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Burada test amacıyla DahiliMetod isimli metod i&amp;ccedil;in OperationContract niteliği kullanılmamıştır. Bu sebepten dolayı bu metodun bilgisi servis s&amp;ouml;zleşmesine dahil edilmeyecektir. Bir başka deyişle istemciler bu metodu hi&amp;ccedil; bir şekilde kullanamayacaktır.&lt;/p&gt;
+&lt;p&gt;Şimdi sırada host uygulamasının geliştirilmesi var. Şu an i&amp;ccedil;in WCF' a merhaba demek istediğimizden, host uygulamasınıda basit bir konsol projesi olarak geliştireceğiz. .Net Remoting mimarisinden de hatırlanacağı gibi, genellikle sunucu ve istemci tarafındaki ayarları konfigurasyon bazlı dosyalarda tutmayı tercih ederiz. Bu bize, uygulamayı yeniden derlemeden kanal(channel), port numarası, uzak nesne bilgisi gibi ayarların değiştirilebilmesi ve kullanılabilmesi imkanını sunmaktadır. Aynı felsefeyi WCF uygulamalarında da benimsemekte fayda vardır. Bu nedenle, host uygulamamız i&amp;ccedil;in gerekli bazı bilgileri (endPoint gibi) &lt;strong&gt;App.config&lt;/strong&gt; dosyasında tutmayı tercih edeceğiz. Tahmin edeceğiniz gibi konfigurasyon dosyası i&amp;ccedil;erisine WCF' nın ABC' sini koymalıyız. Yani adres (address), bağlayıcı (binding) ve s&amp;ouml;zleşme (contract) bilgilerini dahil ederek gerekli endPoint tipini tanımlamalıyız. Bu ama&amp;ccedil;la konsol uygulamamızın konfigurasyon dosyasını aşağıdaki gibi geliştirelim.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;appSettings&amp;gt;
+        &amp;lt;add key="adres" value="http://localhost:4590/MatSrv"/&amp;gt;
+    &amp;lt;/appSettings&amp;gt;
+    &amp;lt;system.serviceModel&amp;gt;
+        &amp;lt;services&amp;gt;
+            &amp;lt;service name="MatematikServisLib.Matematik"&amp;gt;
+                &amp;lt;endpoint address="http://localhost:4590/MatSrv" binding="basicHttpBinding" contract="MatematikServisLib.IMatematikServis"/&amp;gt; 
+            &amp;lt;/service&amp;gt;
+        &amp;lt;/services&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Dilerseniz konfigurasyon dosyasına yazdıklarımızı inceleyelim. Servisimize ait bir endPoint tanımlamamız gerekmektedir. EndPoint servisin sunulduğu adres bilgisini, bağlayıcı tipini ve servis s&amp;ouml;zleşmesini ilgili niteliklerden almaktadır. &lt;strong&gt; endPoint&lt;/strong&gt; elementleri, service elementleri i&amp;ccedil;erisinde tanımlanır. Bir &lt;strong&gt;service&lt;/strong&gt; elementi i&amp;ccedil;erisine birden fazla endPoint bilgiside konulabilir. Diğer tarafan service elementleride &lt;strong&gt;services&lt;/strong&gt; elementi tarafından sarmalanmıştır. Dolayısıyla birden fazla service elementininde tanımlanabileceğini s&amp;ouml;yleyebiliriz.&lt;/p&gt;
+&lt;p&gt;Peki istemcilere sunmak istediğimiz tipi host uygulama i&amp;ccedil;erisinde servise nasıl sunacağız? Bu ama&amp;ccedil;la, &lt;strong&gt; System.ServiceModel&lt;/strong&gt; isim alanı altında yer alan &lt;strong&gt;ServiceHost&lt;/strong&gt; sınıfını kullanmamız gerekmektedir. Bu sınıfın temel g&amp;ouml;revi, parametre olarak aldığı tipi, yine parametre olarak aldığı adres &amp;uuml;zerinden istemcilere sunmaktır. Dolayısıyla konsol uygulamamız i&amp;ccedil;erisindeki Main metodunda aşağıdaki kodları yazmamız servisi sunmak i&amp;ccedil;in yeterli olacaktır. Tekrardan hatırlatalım; Host uygulamanın konfigurasyon dosyasındaki adres değerine erişebilmesi i&amp;ccedil;in &lt;strong&gt; System.Configuration.dll&lt;/strong&gt;, ServiceHost tipini kullanabilmesi i&amp;ccedil;in &lt;strong&gt; System.ServiceModel.dll&lt;/strong&gt;, Matematik tipini kullanabilmesi i&amp;ccedil;inde MatematikServisLib.dll assembly' larına referansta bulunması gerekir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk191_8.gif" alt="" width="213" height="196" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Gelelim host uygulama kodlarımıza;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+using System.Configuration;
+using MatematikServisLib;
+
+namespace HostApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // Servisin sunulacağı base address bilgisi konfigurasyon dosyasından alınır.
+            Uri adres=new Uri(ConfigurationManager.AppSettings["adres"]);
+            // Matematik tipi, Uri &amp;uuml;zerinden host edilmek &amp;uuml;zere ServiceHost nesne &amp;ouml;rneğine bildirilir.
+            ServiceHost srv = new ServiceHost(typeof(Matematik), adres);
+            // Servis a&amp;ccedil;ılırken &amp;ccedil;alışan event metodu
+            srv.Opening += delegate(object sender, EventArgs e)
+            {
+                Console.WriteLine("Servis a&amp;ccedil;ılıyor...");
+            };
+            // Servis a&amp;ccedil;ıldıktan sonraki event metodu
+            srv.Opened += delegate(object sender, EventArgs e)
+            {
+                Console.WriteLine("Servis a&amp;ccedil;ıldı...");
+            };
+            // Servis kapanırkenki event metodu
+            srv.Closing += delegate(object sender, EventArgs e)
+            {
+                Console.WriteLine("Servis kapanıyor...");
+            };
+            // Servis kapandığındaki event metodu
+            srv.Closed += delegate(object sender, EventArgs e)
+            {
+                Console.WriteLine("Servis kapandı...");
+            };
+            // Servis a&amp;ccedil;ılır
+            srv.Open();
+            Console.ReadLine();
+            // Servis kapatılır
+            srv.Close();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Uygulamamızı &amp;ccedil;alıştırdığımızda aşağıdakine benzer bir ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; elde ederiz. Dolayısıyla servisimiz şu an i&amp;ccedil;in başarılı bir şekilde &amp;ccedil;alışmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk191_9.gif" alt="" width="331" height="188" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Gelelim istemci tarafına. Yazımızın başında da belirttiğimiz gibi, istemcilerin WCF Servislerini kullanabilmeleri i&amp;ccedil;in proxy sınıflarına ve gerekli istemci taraflı konfigurasyon ayarlarına ihtiya&amp;ccedil;ları vardır. &amp;Ccedil;ok doğal olarak bu sınıfların &amp;uuml;retilebilmesi i&amp;ccedil;in, servise ait bir metadata bilgisinin olması ve dış ortama sunulması gerekmektedir. Şimdi şunu deneyelim. Servisimizi host eden uygulamayı &amp;ccedil;alıştıralım ve herhangibir tarayıcı penceresinden, http://localhost:4590/MatSrv adresini girelim. &lt;em&gt; (Tarayıcı penceresinden bu adresi girerken host uygulamanın a&amp;ccedil;ık olması şarttır.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk191_10.gif" alt="" width="582" height="493" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat ederseniz, servis i&amp;ccedil;in metadata yayınlama hizmetinin şu an i&amp;ccedil;in ge&amp;ccedil;ersiz olduğu ibaresi vardır. İlgili servisin metadata' sına ulaşamadığımızdan, istemciler i&amp;ccedil;in gerekli proxy sınıfını &amp;uuml;retemeyiz. &amp;Ccedil;&amp;ouml;z&amp;uuml;m, konfigurasyon dosyasına &lt;strong&gt;behavior&lt;/strong&gt; tipi eklemektir. Bu tipi &lt;strong&gt;Metadata Exchange (MEX)&lt;/strong&gt; davranışını uygulayacak şekilde aktif etmemiz gerekir. Bunun i&amp;ccedil;in app.config dosyamızı aşağıdaki hale getirmemiz yeterlidir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;appSettings&amp;gt;
+        &amp;lt;add key="adres" value="http://localhost:4590/MatSrv"/&amp;gt;
+    &amp;lt;/appSettings&amp;gt;
+    &amp;lt;system.serviceModel&amp;gt;
+        &amp;lt;services&amp;gt;
+            &amp;lt;service name="MatematikServisLib.Matematik" 
+                      behaviorConfiguration="MatematikBehavior"&amp;gt;
+                &amp;lt;endpoint address="http://localhost:4590/MatSrv" binding="basicHttpBinding" contract="MatematikServisLib.IMatematikServis"/&amp;gt; 
+            &amp;lt;/service&amp;gt;
+        &amp;lt;/services&amp;gt;
+        &amp;lt;behaviors&amp;gt;
+            &amp;lt;serviceBehaviors&amp;gt;
+                &amp;lt;behavior name="MatematikBehavior"&amp;gt;
+                    &amp;lt;serviceMetadata httpGetEnabled="true"/&amp;gt;
+                &amp;lt;/behavior&amp;gt;
+            &amp;lt;/serviceBehaviors&amp;gt;
+        &amp;lt;/behaviors&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Şimdi host uygulamamızı tekrar &amp;ccedil;alıştırır ve tarayıcı penceresinden servisimizi tekrar talep edersek aşağıdaki &amp;ccedil;ıktıyı elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk191_11.gif" alt="" width="620" height="453" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dolayısıyla artık servisimize ait metadata dış ortama sunulabilir ve http &amp;uuml;zerinden elde edilebilir haldedir. Bir başka deyişle proxy sınıfını oluşturabilir ve istemcilerin hizmetine sunabiliriz. Burada, &lt;strong&gt;?wsdl&lt;/strong&gt; takısının olduğuna da dikkat edelim. Bu bize Xml Web Servislerinden son derece tanıdık gelecektir. Bildiğiniz gibi WSDL (Web Service Description Language) bir servisin ne yaptığını Xml olarak s&amp;ouml;yleyebilen &amp;ccedil;ıktıların &amp;uuml;retilmesinde rol almaktadır. Bu yapı WCF i&amp;ccedil;erisindede aynen kullanılabilmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk191_12.gif" alt="" width="637" height="656" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Artık istemci tarafını kodlayabiliriz. Ama &amp;ouml;ncesinde proxy sınıfımızı nasıl &amp;uuml;retebileceğimize bakalım. Bunun i&amp;ccedil;in iki yolumuz vardır. Birincisi .Net Framework 3.0 SDK ile gelen komut satırı ara&amp;ccedil;larından olan &lt;strong&gt;svcutil.exe&lt;/strong&gt; dir. Diğeri ise, Visual Studio 2005 i&amp;ccedil;erisinde yer alan &lt;strong&gt;Add Service Reference&lt;/strong&gt; se&amp;ccedil;eneğidir. Biz bu makalemizde svcutil aracı ile proxy sınıfımızı nasıl yazacağımızı inceleyeceğiz. Bunun i&amp;ccedil;in Visual Studio 2005 Command Prompt' ta aşağıdaki komut satırı ifadesini &amp;ccedil;alıştıralım. &lt;em&gt;(svcUtil aracının başarılı bir şekilde proxy sınıfını ve config dosyasını &amp;uuml;retmesi i&amp;ccedil;in, host uygulamanın &amp;ccedil;alışır olduğundan emin olun.)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;svcutil http://localhost:4590/MatSrv?wsdl /out:Proxyim.cs /config:app.config&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk191_13.gif" alt="" width="588" height="197" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi Proxyim.cs ve app.config isimli iki dosya &amp;uuml;retildi. Artık tek yapmamız gereken bunları istemci uygulamada kullanmaktır. &amp;Uuml;retilen proxyim.cs dosyası i&amp;ccedil;erisinde aşağıdaki şekilde g&amp;ouml;r&amp;uuml;len tipler yer almaktadır. Dikkat ederseniz servis s&amp;ouml;zleşmesine g&amp;ouml;re uygun bir sınıf &amp;uuml;retimi ger&amp;ccedil;ekleştirilmiştir. Ayrıca istemci i&amp;ccedil;in gereken konfigurasyon ayarlarıda otomatik olarak app.config dosyası i&amp;ccedil;erisine dahil edilmiştir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk191_14.gif" alt="" width="549" height="492" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;İstemci tarafında kullanacağımız tip MatematikServisClient isimli sınıftır. İstemci uygulamamızı aşağıdaki kodları yazarak test edebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Text;
+using System.ServiceModel;
+
+namespace Istemci
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            MatematikServisClient mat = new MatematikServisClient();
+            Console.WriteLine(mat.Toplam(4, 5).ToString());
+            Console.ReadLine();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Elbetteki istemci uygulamanın &amp;ccedil;alışabilmesi i&amp;ccedil;in &amp;ouml;ncesinde host uygulamanın &amp;ccedil;alışıyor olması gerekmektedir. Aksi takdirde &lt;strong&gt;EndPointNotFoundException&lt;/strong&gt; tipinden bir istisna alırız. Bu aynı zamanda ger&amp;ccedil;ketende istemcinin bir sunucuya bağlanmaya &amp;ccedil;alıştığınında bir ispatıdır. Eğer &amp;ouml;nce sunucuyu sonrada istemciyi &amp;ccedil;alıştırırsak uygulamanın başarılı bir şekilde y&amp;uuml;r&amp;uuml;d&amp;uuml;ğ&amp;uuml;n&amp;uuml; ve Toplam metodunun sonucunun elde edildiğini rahatlıkla g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk191_15.gif" alt="" width="268" height="192" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu makalemizde WCF' a kısa bir giriş yapmaya &amp;ccedil;alıştık. Konuyu daha iyi kavrayabilmek i&amp;ccedil;inde basit bir &amp;ouml;rnek geliştirdik. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;şmek dileğiyle hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2007-02-14 06:00:00</pubDate>
+  <slug>Ilk-Bakc4b1sta-WCF-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>wcf</tag>
+    <tag>windows-communication-foundation</tag>
+    <tag>hello-world</tag>
+  </tags>
+  <categories>
+    <category>WCF</category>
+  </categories>
+</post>

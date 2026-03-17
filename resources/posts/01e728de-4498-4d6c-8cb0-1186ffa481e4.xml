@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Peki ya Kong Kim?</title>
+  <description>Hali hazırda çalışmakta olduğum firmada, microservice'lerin orkestrasyonu için KONG isimli bir araç kullanılıyor. Kabaca bir API Gateway rolünü üstlenen KONG microservice'lere gelen request'lerle ilgili olarak Load Balancing, Authentication, Rate Limiting, Caching, Logging gibi cross-cutting olarak tabir edebileceğimiz yapıları hazır olarak sunuyor(muş) Web, Mobil ve IoT gibi uygulamalar geliştirirken backend servisleri çoğunlukla microservis formunda yaşamaktalar. Bunların orkestrasyonunda görev alan KONG, Lua dili ile geliştirilmiş performansı ile ön plana çıkan NGINX üzerinde koşan açık kaynaklı bir proje olmasıyla da dikkat çekiyor.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2019/04/33/kingkong.jpg" alt="" /&gt;Kurumsal mimari ekibinin &amp;ouml;nerdiği &amp;ccedil;atılardan birisi &amp;uuml;zerine kurulmuş yeni &amp;uuml;r&amp;uuml;n&amp;uuml;m&amp;uuml;z&amp;uuml; test ortamına almaya &amp;ccedil;alıştığımız bir g&amp;uuml;nd&amp;uuml;. Local makinelerimizde &amp;ccedil;ok az sorunla ayağa kaldırdığımız proje, test ortamında ne yazık ki daha fazla problem &amp;uuml;retmişti. Ağırlıklı olarak web &amp;ouml;ny&amp;uuml;z&amp;uuml;nden iş kurallarının y&amp;uuml;r&amp;uuml;t&amp;uuml;ld&amp;uuml;ğ&amp;uuml; Web API servislerine gidişlerde sorunlar yaşıyorduk.&lt;/p&gt;
+&lt;p&gt;CI/CD hattındaki parametreleri, veri tabanı nesnelerini, SSO ayarlarını kontrol edip Kibana loglarını incelemeye başladık. T&amp;uuml;m bu işler devam ederken DevOps ekibinden bize destek veren sevigili Yavuz, servisler &amp;uuml;zerindeki trafiği monit&amp;ouml;r etmekteydi. Konuşmalarımız sırasında Docker Container'larının &amp;ouml;n&amp;uuml;nde yer alan KONG isimli bir arabirimden bahsetti. O an i&amp;ccedil;imde bir merak uyanmış olsa da aslında sorunların bir an &amp;ouml;nce &amp;ccedil;&amp;ouml;z&amp;uuml;lmesini istiyordum. Bu y&amp;uuml;zden merakımı birka&amp;ccedil; hafta sonrasına bıraktım.&lt;/p&gt;
+&lt;p&gt;Derken artık cumartesi geceleri dışına da taşan &lt;a href="https://github.com/buraksenyurt/saturday-night-works" target="_blank"&gt;saturday-night-works&lt;/a&gt; &amp;ccedil;alışmalarımda ona yer verme fırsatı yakaladım. &lt;a href="https://konghq.com/kong/" target="_blank"&gt;Kimdi bu Kong?&lt;/a&gt; M&amp;uuml;zik grubu olan Kong'muydu yoksa Skull adasındaki iri olan&amp;nbsp;mıydı? Belki de API Gateway'di. Onu Westworld &amp;uuml;zerinde &amp;ccedil;alıştırabilir miydim? &amp;Ouml;ğrenmin yolu basitti. Sonunda macera başladı. Github &amp;ccedil;alışmaları tamamlandıktan uzun s&amp;uuml;re sonra da bloğuma not olarak d&amp;uuml;şmeye karar verdim.&lt;/p&gt;
+&lt;p&gt;Hali hazırda &amp;ccedil;alışmakta olduğum firmada, microservice'lerin orkestrasyonu i&amp;ccedil;in KONG kullanılıyor. Kabaca bir API Gateway rol&amp;uuml;n&amp;uuml; &amp;uuml;stlenen KONG&amp;nbsp;mikro servislere gelen taleplerle ilgili olarak Load Balancing, Authentication, Rate Limiting, Caching, Logging gibi cross-cutting olarak tabir edebileceğimiz yapıları hazır olarak sunuyor&lt;em&gt;(muş)&lt;/em&gt; Web, Mobil ve IoT gibi uygulamalar geliştirirken back-end servisleri &amp;ccedil;oğunlukla&amp;nbsp;mikro servis&amp;nbsp;formunda yaşamaktalar. Bunların orkestrasyonunda g&amp;ouml;rev alan KONG, Lua dili ile geliştirilmiş, performansı ile &amp;ouml;n plana &amp;ccedil;ıkan NGINX &amp;uuml;zerinde koşan a&amp;ccedil;ık kaynaklı bir proje olmasıyla da dikkat &amp;ccedil;ekiyor.&lt;/p&gt;
+&lt;p&gt;Benim amacım ilk etapta KONG'u WestWorld&lt;em&gt;(Ubuntu 18.04, 64bit)&lt;/em&gt; &amp;uuml;zerine kurmak ve en az bir servis geliştirip ona gelen talepleri KONG &amp;uuml;zerinden ge&amp;ccedil;irmeye &amp;ccedil;alışmak&lt;em&gt;(Kabaca proxy rol&amp;uuml;n&amp;uuml; &amp;uuml;stlenecek diyebiliriz)&lt;/em&gt; Normal şartlarda KONG'u sisteme t&amp;uuml;m gereksinimleri ile kurabiliriz ancak denemeler i&amp;ccedil;in docker imajlarını kullanmak da yeterli olacaktır ki ben bu yolu tercih ediyorum.&lt;/p&gt;
+&lt;h2&gt;Kobay REST servisleri&lt;/h2&gt;
+&lt;p&gt;&amp;Ccedil;alışmada en azından bir Web API servisinin olması lazım. Bir tane .net core bir tane de node.js tabanlı servis geliştirmeye karar verdim. Projeler i&amp;ccedil;in WestWorld'de uyguladığım terminal komutları ş&amp;ouml;yle.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;mkdir services
+cd services
+dotnet new webapi -o FabrikamApi
+touch Dockerfile
+touch .dockerignore
+mkdir GameCenterApi
+cd GameCenterApi
+npm init
+sudo npm i --save express body-parser
+touch index.js
+touch Dockerfile&lt;/pre&gt;
+&lt;p&gt;.Net Core ile geliştirilmiş FabrikamApi servisindeki hazır kod dosyalarında bir ka&amp;ccedil; değişiklik yapıp, Node.js tabanlı GameCenterApi klas&amp;ouml;r&amp;uuml;ndeki index.js'i sıfırdan geliştirmem gerekti &lt;em&gt;(Servislerin normal kullanım &amp;ouml;rneklerine ait &lt;a href="https://github.com/buraksenyurt/saturday-night-works/blob/master/No%2033%20-%20Who%20is%20Kong/assets/postman_samples.json" target="_blank"&gt;Postman dosyasını burada&lt;/a&gt;&amp;nbsp;bulabilirsiniz)&lt;/em&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;PlayerController i&amp;ccedil;eriği;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using FabrikamApi.Models;
+
+namespace FabrikamApi.Controllers
+{
+    /*
+    PlayersController isimli Controller sınıfı Player t&amp;uuml;r&amp;uuml;nden bir listeyle &amp;ccedil;alışıyor.
+    Konumuz KONG'u tanımak olduğu i&amp;ccedil;in &amp;ccedil;ok detalı bir servis değil.
+    Temel Get, Post, Put ve Delete operasyonlarını i&amp;ccedil;ermekte.
+    Listeyi static bir değişkende tutuyoruz. Dolayısıyla servis sonlandırıldığında bilgiler u&amp;ccedil;acaktır.
+    Ancak isterseniz kalıcı bir repository ekleyebilirsiniz.
+     */
+    [Route("api/v1/[controller]")]
+    [ApiController]
+    public class PlayersController : ControllerBase
+    {
+        private static List&amp;lt;Player&amp;gt; playerList = new List&amp;lt;Player&amp;gt;{
+            new Player{Id=1000,Nickname="Hatuta Matata",Level=100}
+        };
+        [HttpGet]
+        public ActionResult&amp;lt;IEnumerable&amp;lt;Player&amp;gt;&amp;gt; Get()
+        {
+            return playerList;
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult&amp;lt;Player&amp;gt; Get(int id)
+        {
+            var p = playerList.Where(item =&amp;gt; item.Id == id).FirstOrDefault();
+            if (p != null)
+            {
+                return p;
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpPost]
+        public void Post([FromBody] Player player)
+        {
+            playerList.Add(player);
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, [FromBody] Player player)
+        {
+            var p = playerList.Where(item =&amp;gt; item.Id == id).FirstOrDefault();
+            if (p != null)
+            {
+                p.Nickname = player.Nickname;
+                p.Level = player.Level;
+                return Ok();
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var p = playerList.Where(item =&amp;gt; item.Id == id).FirstOrDefault();
+            if (p != null)
+            {
+                playerList.Remove(p);
+                return Ok();
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;PlayerController tarafından kullanılan Player sınıfı i&amp;ccedil;eriği;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace FabrikamApi.Models
+{
+    public class Player{
+        public int Id { get; set; } 
+        public string Nickname { get; set; }
+        public int Level { get; set; }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;FabrikamAPI ye ait Docker ve .dockerignore i&amp;ccedil;erikleri;&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;FROM microsoft/dotnet:sdk AS build-env
+WORKDIR /app
+
+# Copy csproj and restore as distinct layers
+COPY *.csproj ./
+RUN dotnet restore
+
+# Copy everything else and build
+COPY . ./
+RUN dotnet publish -c Release -o out
+
+# Build runtime image
+FROM microsoft/dotnet:aspnetcore-runtime
+WORKDIR /app
+COPY --from=build-env /app/out .
+
+ENV ASPNETCORE_URLS=http://+:65001
+
+ENTRYPOINT ["dotnet", "FabrikamApi.dll"]&lt;/pre&gt;
+&lt;p&gt;Başlangı&amp;ccedil;ta dotnet:sdk imajından yararlanılacağı bildiriliyor. &amp;Ccedil;alışma klas&amp;ouml;r&amp;uuml; bildirildikten sonra proje dosyasının kopyalanıp paketlerin y&amp;uuml;klenmesi i&amp;ccedil;in restore işlemi başlatılıyor. Diğer her şeyin kopylanamasını bir build işlemi takip ediyor ki burada release versiyonu da &amp;ccedil;ıkılıyor. &amp;Ccedil;alışma zamanı imajı alındıktan sonra 65001 numaralı port yayın noktası olarak belirtiliyor. Son adımsa dll'i &amp;ccedil;alıştıran dotnet komutunu i&amp;ccedil;ermekte. Birde bin ve obj klas&amp;ouml;rlerinin docker ortamında yer almaması i&amp;ccedil;in&amp;nbsp;.dockerignore isimli dosyamız var. İ&amp;ccedil;eriği olduk&amp;ccedil;a basit.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;bin\
+obj\&lt;/pre&gt;
+&lt;p&gt;games isimli json veri dizisi ile ilgili basit get operasyonları i&amp;ccedil;eren GameCenterApi uygulamasındaki kod i&amp;ccedil;eriklerimiz ise ş&amp;ouml;yle.&lt;/p&gt;
+&lt;p&gt;index.js&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;/*
+GameCenterApi'den yayına alınan bu dummy servis games isimli diziyi d&amp;ouml;nd&amp;uuml;ren iki basit fonksiyonelliğe sahip.
+*/
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
+
+const games = [
+    {
+        id: 1,
+        title: 'Red Dragons',
+        maxPlayerCount: 10
+    },
+    {
+        id: 2,
+        title: 'Green Barrets',
+        maxPlayerCount: 24
+    },
+    {
+        id: 3,
+        title: 'River Raid',
+        maxPlayerCount: 4
+    },
+    {
+        id: 4,
+        title: 'A-Team',
+        maxPlayerCount: 9
+    },
+];
+
+app.use(bodyParser.json());
+
+app.get('/api/v1/games', (req, res) =&amp;gt; {
+    res.json(games);
+});
+
+app.get('/api/v1/games/:id', (req, res) =&amp;gt; {
+    res.json(games[req.params.id]);
+});
+
+app.listen(65002, () =&amp;gt; {
+    console.log(`Oyun servisi aktif! http://localhost:65002/api/v1/games`);
+});&lt;/pre&gt;
+&lt;p&gt;DockerFile dosyası&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;FROM node:carbon
+
+# create work directory
+WORKDIR /usr/src/app
+
+# copy package.json
+COPY package.json ./
+RUN npm install
+
+# copy source code
+COPY . .
+
+EXPOSE 65002
+
+CMD ["npm", "start"]&lt;/pre&gt;
+&lt;p&gt;Dosya node.js ortamlarından birisini ifade eden carbon bildirimi ile başlıyor. İmaj buradan alınacak. &amp;Ccedil;alışma klas&amp;ouml;r&amp;uuml;n&amp;uuml;n oluşturulması, package.json dosyasının burayı alınıp proje bağımlılıklarının install edilmesi, uygulamanın 65002 numaralı porttan ayağa kaldırılması diğer bildirimler olarak karşımıza &amp;ccedil;ıkıyor.&lt;/p&gt;
+&lt;p&gt;Geliştirme noktasında servislerin &amp;ccedil;alıştığını kontrol etmemiz gerekiyor. FabrikamAPI isimli .Net Core tabanlı servisi &amp;ccedil;alıştırmak i&amp;ccedil;in,&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet run&lt;/pre&gt;
+&lt;p&gt;terminal komutunu verip http://localhost:65001/api/v1/players adresine gidebiliriz. GameCenterApi isimli Node.js tabanlı servisi &amp;ccedil;alıştırmak i&amp;ccedil;inse package.json i&amp;ccedil;erisine aldığımız start kod adlı script'i işlettirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;npm run start&lt;/pre&gt;
+&lt;p&gt;Sonrasında http://localhost:65002/api/v1/games adresi &amp;uuml;zerinden bu servisi de test edebiliriz.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;localhost bilgisi ilerleyen kısımlarda g&amp;ouml;r&amp;uuml;leceği gibi Docker'a ge&amp;ccedil;ildikten sonra değişmektedir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;Servislerin Dockerize Edilmesi&lt;/h2&gt;
+&lt;p&gt;Dikkat edilmesi gereken noktalardan birisi de, her iki &amp;ouml;rneğin Dockerize edilebilecek şekilde Dockerfile dosyaları ile donatılmış olmalarıdır. İlaveten .Net Core uygulamasında .dockerignore dosyası vardır. Bunu build context'ini ufalamak i&amp;ccedil;in kullanıyoruz. Docker imajları KONG tarafından kullanılacakları i&amp;ccedil;in &amp;ouml;nemli.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;FabrikamApi uygulaması i&amp;ccedil;in Dockerize işlemleri aşağıdaki terminal komutuyla yapılabilir.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;docker build -t fma_docker .&lt;/pre&gt;
+&lt;p&gt;GameCenterApi isimli Node.js uygulaması i&amp;ccedil;inse aşağıdaki gibi.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;docker build -t gca_docker .&lt;/pre&gt;
+&lt;p&gt;Dockerize işlemleri tamamlandıktan sonra container'ları &amp;ccedil;alıştırıp kontrol etmemizde yarar var. İlk iki komutla ayağa kaldırıp son komutla listede olup olmadıklarına bakıyoruz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;docker run -d --name=game_center_api gca_docker
+docker run -d --name=fabrikam_api fma_docker
+docker ps -a&lt;/pre&gt;
+&lt;p&gt;WestWord'de durum aşağıdaki gibi.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/33/credit_1.png" alt="" /&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Docker imajları &amp;ccedil;alışmaya başladıktan sonra servislere hangi IP adresi &amp;uuml;zerinden gitmemiz gerektiğine bakmak i&amp;ccedil;in 'docker inspect game_center_api' ve 'docker inspect fabrikam_api' komutlarından yararlanabiliriz. Bize uzun bir Json i&amp;ccedil;eriği d&amp;ouml;necektir ancak son kısımda IPAddress bilgisini yakalayabiliriz. WestWorld i&amp;ccedil;in docker tabanlı adresler http://172.17.0.3:65001/api/v1/players ve http://172.17.0.2:65002/api/v1/games şeklinde oluştu. Sizin sisteminizde bu IP adresleri farklı olabilir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/33/credit_2.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/33/credit_3.png" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;Kong Kurulumları ve Docker Servislerinin Dahil Edilmesi&lt;/h2&gt;
+&lt;p&gt;T&amp;uuml;m işlemleri Docker Container'lar &amp;uuml;zerinde yapacağız. Bu nedenle kendimize yeni bir ağ oluşturarak işe başlamakta yarar var. Aşağıdaki terminal komutları ile devam edelim.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;docker network create sphere-net
+
+docker run -d --name kong-db --network=sphere-net -p 5555:5432 -e "POSTGRES_USER=kong" -e "POSTGRES_DB=kong" postgres:9.6
+
+docker run --rm --network=sphere-net -e "KONG_DATABAE=postgres" -e "KONG_PG_HOST=kong-db" kong:latest kong migrations bootstrap
+
+docker run -d --name kong --network=sphere-net -e "KONG_LOG_LEVEL=debug" -e "KONG_DATABASE=postgres" -e "KONG_PG_HOST=kong-db" -e "KONG_PROXY_ACCESS_LOG=/dev/stdout" -e "KONG_ADMIN_ACCESS_LOG=/dev/stdout" -e "KONG_PROXY_ERROR_LOG=/dev/stderr" -e "KONG_ADMIN_ERROR_LOG=/dev/stderr" -e "KONG_ADMIN_LISTEN=0.0.0.0:8001, 0.0.0.0:8444 ssl" -p 9000:8000 -p 9443:8443 -p 9001:8001 -p 9444:8444 kong:latest&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;İlk komutla sphere-net isimli bir docker network'&amp;uuml; oluşturuyoruz.&lt;/li&gt;
+&lt;li&gt;İkinci uzun komutla Postgres veri tabanı i&amp;ccedil;in bir Container başlatıyoruz. sphere-net ağında &amp;ccedil;alışacak olan veri tabanını KONG kullanacak. KONG, veri tabanı olarak Postgres veya Cassandra sistemlerini destekliyor. Eğer yerel makinede Postgres imajı yoksa &lt;em&gt;(ki &amp;ouml;rneği denediğim d&amp;ouml;nemde WestWorld'de yoktu)&lt;/em&gt;&amp;nbsp;pull işlemi biraz zaman alabilir.&lt;/li&gt;
+&lt;li&gt;&amp;Uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; komutla Postgres veri tabanının KONG i&amp;ccedil;in hazırlanması s&amp;ouml;z konusu.&lt;/li&gt;
+&lt;li&gt;D&amp;ouml;rd&amp;uuml;nc&amp;uuml; ve uzuuuuuun bir parametre listesine sahip komutla da KONG Container'ını &amp;ccedil;alıştırıyoruz &lt;em&gt;(&amp;uuml;şenmedim, kopyalamadan yazdım. Siz de &amp;ouml;yle yapın)&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Bu adımlardan sonra kong ve postgres ile ilgili Container'ların &amp;ccedil;alıştığını teyit etmeliyiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/33/credit_4.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Hatta http://localhost:9001 adresine bir HTTP GET talebi attığımızda konfigurasyon ayarlarını da g&amp;ouml;rebiliriz. 9001 portu &lt;em&gt;(Normal kurulumda 8001 de olabilir)&lt;/em&gt;&amp;nbsp;y&amp;ouml;netsel işlemlerin bulunduğu servis katmanıdır. Service ekleme, silme, g&amp;ouml;r&amp;uuml;nt&amp;uuml;leme ve g&amp;uuml;ncelleme gibi işlemler 9001 portundan ulaşılan servis&amp;ccedil;e yapılır&amp;nbsp;&lt;em&gt;(Route y&amp;ouml;netimi i&amp;ccedil;inde aynı şey s&amp;ouml;z konusudur)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/33/credit_5.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Komutlar biter mi? Şimdi servislere ait Container'ları sphere-net &amp;uuml;zerinde &amp;ccedil;alışacak şekilde ayağa kaldırmalıyız.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;docker run -d --name=game_center_api --network=sphere-net gca_docker
+docker run -d --name=fabrikam_api --network=sphere-net fma_docker
+docker ps -a&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/33/credit_6.png" alt="" /&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;KONG i&amp;ccedil;in bir Docker Network oluşturduk. Bu ağa dahil olan ne kadar Container varsa IP adresleri farklılık g&amp;ouml;sterecektir. sphere-net'e dahil olan Container'ların host edildiği IP adreslerini &amp;ouml;ğrenmek i&amp;ccedil;in terminalden 'docker inspect sphere-net' komutunu &amp;ccedil;alıştırabiliriz.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/33/credit_7.png" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;&amp;Ccedil;alışma Zamanı &lt;em&gt;(Bir başka deyişle KONG &amp;uuml;zerinde servislerin ayarlanması)&lt;/em&gt;&lt;/h2&gt;
+&lt;p&gt;KONG, veri tabanı olarak kullanılan Postgres ve geliştirdiğimiz iki REST Servisine ait Docker Container'ları ayakta. WestWorld'deki g&amp;uuml;ncel duruma g&amp;ouml;re&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;http://172.19.0.4:65002/api/v1/games adresinde Node.js tabanlı servisimiz yaşıyor.&lt;/li&gt;
+&lt;li&gt;http://172.19.0.5:65001/api/v1/players adresinde ise .Net Core Web API servisimiz bulunuyor.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Amacımız şu anda localhost:9000 adresli KONG servisine gelecek olan games ve players odaklı talepleri aslı servislere iletmek. Yani KONG ilk etapta bir Proxy servis şeklinde davranış g&amp;ouml;sterecek. Bunun i&amp;ccedil;in &amp;ouml;ncelikle servislerimizi KONG'a eklemeliyiz. KONG'a eklenen servisler http://localhost:9001/services adresinden izlenebilir ve hatta y&amp;ouml;netilebilirler. Şimdi bu adrese aşağıdaki i&amp;ccedil;eriğe sahip POST komutunu g&amp;ouml;nderelim &lt;em&gt;(Postman ile yapabilir veya curl komutu ile terminalden icra edebiliriz)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;URL : http://localhost:9001/services
+Method : HTTP Post
+Content-Type : application/json
+Body :
+{
+"name":"api-v1-games",
+"url":"http://172.19.0.4:65002/api/v1/games"
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/33/credit_8.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu işlemi FabrikamAPI i&amp;ccedil;inde yaptıktan sonra http://localhost:9001/services adresine gidersek servis bilgilerini g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/33/credit_9.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Servisleri eklemek yeterli değil. Route tanımlamalarını da yapmak gerekiyor &lt;em&gt;(KONG tarafındaki entrypoint tanımlamaları i&amp;ccedil;in gerekli bir aksiyon olarak d&amp;uuml;ş&amp;uuml;nebiliriz)&lt;/em&gt;&amp;nbsp;KONG services'e aşağıdaki i&amp;ccedil;eriğe sahip talepleri g&amp;ouml;ndererek gerekli route tanımlamaları yapılabilir.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;URL: http://localhost:9001/services/api-v1-players/routes
+Method : HTTP Post
+Content-Type : application/json
+Body :
+{
+"hosts":["api.ct.id"],
+"paths":["/api/v1/players"]
+}&lt;/pre&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;URL: http://localhost:9001/services/api-v1-games/routes
+Method : HTTP Post
+Content-Type : application/json
+Body :
+{
+"hosts":["api.ct.id"],
+"paths":["/api/v1/games"]
+}&lt;/pre&gt;
+&lt;p&gt;Oluşan route bilgilerini http://localhost:9001/routes adresinden g&amp;ouml;rebiliriz. Her iki servis i&amp;ccedil;in gerekli route tanımlamaları başarılı bir şekilde yapıldıktan sonra KONG &amp;uuml;zerinden GameCenterAPI ve FabrikamAPI servislerine erişebiliyor olmamız gerekir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/33/credit_10.png" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;Yararlandığım Diğer Docker Komutları&lt;/h2&gt;
+&lt;p&gt;&amp;Ouml;rneği geliştirirken yararlandığım bazı Docker komutları da oldu. Mesela &amp;ccedil;alışan Container'ları stop komutu sonrası durduramayınca,&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo killall docker-containerd-shim&lt;/pre&gt;
+&lt;p&gt;Container'larımı g&amp;ouml;rmek i&amp;ccedil;in,&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;docker ps -a&lt;/pre&gt;
+&lt;p&gt;Container'ları sık sık remove etmem gerektiğinden,&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;docker rm {ContainerID}&lt;/pre&gt;
+&lt;p&gt;Container'ın t&amp;uuml;m bilgilerini g&amp;ouml;rmem gerektiğinde de&lt;em&gt;(&amp;ouml;zellikle IP adresini)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;docker inspect {container adı}
+docker inspect {ağ adı}&lt;/pre&gt;
+&lt;h2&gt;Ben Neler &amp;Ouml;ğrendim&lt;/h2&gt;
+&lt;p&gt;Doğruyu s&amp;ouml;ylemek gerekirse &lt;a href="https://github.com/buraksenyurt/saturday-night-works" target="_blank"&gt;Saturday-Night-Works&lt;/a&gt; &amp;ccedil;alışmalarının herbirisi bana tahmin ettiğimden de &amp;ccedil;ok şey &amp;ouml;ğretiyor. 33 numaralı &amp;ouml;rnekten yanıma kar olarak kalanları ş&amp;ouml;yle sıralayabilirim.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;KONG'un temel olarak ne işe yaradığını&lt;/li&gt;
+&lt;li&gt;.Net Core ve Node.js tabanlı servis uygulamaları i&amp;ccedil;in Dockerfile dosyalarının nasıl hazırlanacağını&lt;/li&gt;
+&lt;li&gt;KONG a bir servis ve route bilgisinin nasıl eklenebileceğini&lt;/li&gt;
+&lt;li&gt;Bolca Docker terminal komutunu&lt;/li&gt;
+&lt;li&gt;Docker Container i&amp;ccedil;ine a&amp;ccedil;ılan uygulamaların asıl IP adreslerini nasıl g&amp;ouml;rebileceğimi&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Bu macerada API Gateway olarak kullanılabilen KONG isimli &amp;uuml;r&amp;uuml;n&amp;uuml; bir Linux platformunda docker imajları &amp;uuml;zerinde deneyimlemeye &amp;ccedil;alıştık.&amp;nbsp;B&amp;ouml;ylece geldik bir maceramızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2019-05-06 07:00:00</pubDate>
+  <slug>Peki-ya-Kong-Kim</slug>
+  <tags>
+    <tag>kong</tag>
+    <tag>api-gateway</tag>
+    <tag>microservice</tag>
+    <tag>web-api</tag>
+    <tag>node</tag>
+    <tag>nodejs</tag>
+    <tag>javascript</tag>
+    <tag>c#</tag>
+    <tag>docker</tag>
+    <tag>container</tag>
+    <tag>dockerize</tag>
+    <tag>dockerfile</tag>
+    <tag>postgres</tag>
+    <tag>api</tag>
+  </tags>
+  <categories>
+    <category>DevOps</category>
+  </categories>
+</post>

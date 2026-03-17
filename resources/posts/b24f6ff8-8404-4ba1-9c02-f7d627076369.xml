@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>FORParallelism</title>
+  <description>Günümüz yazılım teknolojilerinin belkide en popüler olan konularından biriside paralel programlamadır(Parallel Programming). Özellikle kullanıcı bilgisayarlarının artık birden fazla çekirdeğe sahip işlemcilerle donatılmış olduğu düşünüldüğünde geliştirme ortamlarının da(.Net Framework 4.0' da olduğu üzere) paralel programlamaya daha fazla destek vermeye başladığını görmekteyiz.</description>
+  <content>&lt;p&gt;&lt;img style="float: left;" src="/pics/2009%2f11%2fblg100_Giris.jpg" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;G&amp;uuml;n&amp;uuml;m&amp;uuml;z yazılım teknolojilerinin belkide en pop&amp;uuml;ler olan konularından biriside &lt;strong&gt;paralel programlamadır(Parallel Programming)&lt;/strong&gt;. &amp;Ouml;zellikle kullanıcı bilgisayarlarının artık birden fazla &amp;ccedil;ekirdeğe sahip işlemcilerle donatılmış olduğu d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde geliştirme ortamlarının da(.Net Framework&amp;nbsp;4.0' da olduğu&amp;nbsp;&amp;uuml;zere &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;)&amp;nbsp;paralel programlamaya daha fazla destek vermeye başladığını g&amp;ouml;rmekteyiz.&lt;/p&gt;
+&lt;p&gt;Aslında zaten var olan ara&amp;ccedil;lar ile paralel programlama tekniklerini uygulayabilmekteyiz. Ne varki kodlanmasının karmaşık olması bir yana, birden fazla tekniğin kullanılabiliyor olması, hangisinin daha performanslı olduğunun anlaşılması i&amp;ccedil;in test aşamalarının da &amp;ouml;nemini ortaya &amp;ccedil;ıkarmakta.&lt;strong&gt; Microsoft &lt;/strong&gt;cephesi bir s&amp;uuml;redir,&amp;nbsp;paralel programlama k&amp;uuml;t&amp;uuml;phanesi ile s&amp;ouml;z konusu tekniklere ait tasarımları aza indirgeyip kolay geliştirilebilir ve performanslı sonu&amp;ccedil;lar &amp;uuml;reten tiplerin tasarlanması ve geliştirilmesini gere&amp;ccedil;ekleştirmekte. &lt;strong&gt;.Net Framework 4.0 &lt;/strong&gt;i&amp;ccedil;erisinde doğrudan gelen &lt;strong&gt;Task Parallel Library &lt;/strong&gt;k&amp;uuml;t&amp;uuml;phanesi bu anlamda &amp;ouml;nemli kabiliyetler i&amp;ccedil;ermekte.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Peki elimizde bu k&amp;uuml;t&amp;uuml;phane olmasaydı? &lt;img title="Sealed" src="/editors/tiny_mce3/plugins/emotions/img/smiley-sealed.gif" alt="Sealed" border="0" /&gt;&amp;nbsp;O zaman n sayıda tekrar edecek olan bir işlemi paralel hale getirmek i&amp;ccedil;in nasıl bir kodlama yapmamız gerekirdi?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;S&amp;ouml;z gelimi başlangı&amp;ccedil; ve bitiş değerleri parametrik olan bir d&amp;ouml;ng&amp;uuml;n&amp;uuml;n i&amp;ccedil;erisinden &amp;ccedil;ağırılan bir fonksiyonun, birden fazla &lt;strong&gt;Thread'&lt;/strong&gt; e b&amp;ouml;l&amp;uuml;nerek &amp;ccedil;alıştırılmasını istediğimizi d&amp;uuml;ş&amp;uuml;nelim. Aslında teorik olarak makinede ka&amp;ccedil; işlemci yada ka&amp;ccedil; &amp;ccedil;ekirdek var ise o sayıda Thread a&amp;ccedil;ılması tercih edilir. Buna g&amp;ouml;re tekrar edecek olan işlemler belirli aralıklara b&amp;ouml;l&amp;uuml;nerek bu aralıkların a&amp;ccedil;ılan Thread' ler tarafından ele alınması sağlanır. Ne demek istediğimi aşağıdaki &amp;ouml;rnek kod par&amp;ccedil;ası ile aktarmaya &amp;ccedil;alışayım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Parallelism
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            ParallelFor(48, 98,
+                (i) =&amp;gt;
+                {
+                    double r = 0;
+                    for (int j = 0; j &amp;lt; i * 99999; j++)
+                        r = Math.Sqrt((i * Math.PI) / Math.E);
+                    Console.Write("{0} ", i.ToString());
+                }
+            );
+
+            Console.ReadLine();
+        }
+
+        static void ParallelFor(int lowerBound, int upperBound, Action&amp;lt;int&amp;gt; body)
+        {
+            int processorCount = Environment.ProcessorCount; // İşlemci/&amp;ccedil;ekirdek sayısı bulundu
+            int range = (upperBound - lowerBound) / processorCount; // Yaklaşık iterasyon sayısı hesaplanır. 
+            Console.WriteLine("İşlemci/&amp;Ccedil;ekirdek Sayısı : {0} , Iterasyon Boyutu {1}\n", processorCount.ToString(), range.ToString());
+
+            #region Birinci Y&amp;ouml;ntem (List&amp;lt;Thread&amp;gt; Kullanımı)
+
+            List&amp;lt;Thread&amp;gt; threads = new List&amp;lt;Thread&amp;gt;(processorCount); // İşlemci/&amp;ccedil;ekirdek sayısı kadar Thread taşıyacak koleksiyon tanımlanır.
+
+            // İşlemci/&amp;ccedil;ekirdek sayısı kadar &amp;ccedil;alışacak bir d&amp;ouml;ng&amp;uuml;
+            for (int processor = 0; processor &amp;lt; processorCount; processor++)
+            {
+                // Thread tarafından ele alınacak değer aralığı hesaplanır
+                int startPoint = (processor * range) + lowerBound;
+                int endPoint = (processor == processor - 1) ? upperBound : startPoint + range;
+                Console.WriteLine("Start : {0} End : {1}", startPoint.ToString(), endPoint.ToString());
+                // Her bir &amp;ccedil;ekirdek i&amp;ccedil;in bir Thread oluşturulur ve i&amp;ccedil;erisinde iterasyon aralığı uzunluğunda bir d&amp;ouml;ng&amp;uuml; oluşturularak parametre olarak gelen fonksiyon &amp;ccedil;alıştırılır
+                threads.Add(new Thread(() =&amp;gt;
+                    {
+                        for (int i = startPoint; i &amp;lt; endPoint; i++)
+                        {
+                            body(i);
+                        }
+                    }
+                )
+                );
+            }
+
+            // Thread' ler &amp;ccedil;alıştırılır
+            foreach (Thread t in threads)
+            {
+                t.Start();
+            }
+            // Thread' lerin tamamlanması beklenir
+            foreach (Thread t in threads)
+            {
+                t.Join();
+            } 
+            #endregion
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rneğimizde tamamen anlamsız olan bir d&amp;ouml;ng&amp;uuml; &amp;ccedil;alıştırıldığını g&amp;ouml;rmektesiniz. İ&amp;ccedil;erdiği bazı hesaplamalar sayesinde zaman alan bir işlemler b&amp;uuml;t&amp;uuml;n&amp;uuml; s&amp;ouml;z konusu. Burada s&amp;ouml;z konusu olan operasyonun birden fazla Thread' e b&amp;ouml;l&amp;uuml;nerek &amp;ccedil;alıştırılması i&amp;ccedil;inde &lt;strong&gt;ParallelFor&lt;/strong&gt; isimli yardımcı metoddan yararlanılmaktadır. Bu modelde &lt;strong&gt;ParallelFor&lt;/strong&gt; isimli metod d&amp;ouml;ng&amp;uuml;n&amp;uuml;n başlangı&amp;ccedil; ve bitiş değerlerini almakta, ayrıca &amp;ccedil;alıştıracağı fonksiyonu işaret eden &lt;strong&gt;Action&amp;lt;T&amp;gt;&lt;/strong&gt; tipinden bir parametre almaktadır.&lt;/p&gt;
+&lt;p&gt;Metoda g&amp;ouml;re &lt;strong&gt;Thread'&lt;/strong&gt; lerin değerlendireceği aralıklar hesaplanır. &lt;strong&gt;Thread'&lt;/strong&gt; ler basit bir &lt;strong&gt;List&amp;lt;T&amp;gt;&lt;/strong&gt; koleksiyonunda tutulmakta olup &amp;ccedil;alıştırılmaları ve tamamlanmalarının beklenmeleri i&amp;ccedil;in iki &lt;strong&gt;foreach &lt;/strong&gt;d&amp;ouml;ng&amp;uuml;s&amp;uuml;nden yararlanılır. İlk d&amp;ouml;ng&amp;uuml; oluşturulan &lt;strong&gt;Thread'&lt;/strong&gt; leri başlatırken diğeride oluşturulan &lt;strong&gt;Thread'&lt;/strong&gt; leri &lt;strong&gt;Main Thread'&lt;/strong&gt; e katıp uygulamanın sonlanması i&amp;ccedil;in s&amp;ouml;z konusu &lt;strong&gt;Thread'&lt;/strong&gt; lerin işlerinin bitirilmesinin beklenmesini garanti etmektedir. Dikkat edilmesi gereken nokta &lt;strong&gt;işlemci/&amp;ccedil;ekirdek sayısı&lt;/strong&gt; kadar &lt;strong&gt;Thread&lt;/strong&gt; oluşturulması ve oluşturulan her bir &lt;strong&gt;Thread'&lt;/strong&gt; in yaklaşık olarak hesap edilen iterasyon alanı kadar değeri hesaba katarak Action&amp;lt;T&amp;gt; ile gelen operasyonu &amp;ccedil;alıştırmasıdır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Peki &amp;ccedil;alışma zamanındaki durum nedir?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Bu konuda &amp;ccedil;ok şanslıyız nitekim Visual Studio 2010 ile birlikte son derece etkili performans analiz ara&amp;ccedil;ları gelmekte. Geliştirmeyi yapmakta olduğumuz&amp;nbsp;&lt;strong&gt;Visual Studio 2010 Ultimate Beta 2 &lt;/strong&gt;s&amp;uuml;r&amp;uuml;m&amp;uuml;nde&amp;nbsp;yer alan&amp;nbsp;&lt;strong&gt;Concurrency Profiler &lt;/strong&gt;raporuna bakıldığında, yukarıdaki &amp;ouml;rnek i&amp;ccedil;in&amp;nbsp;aşağıdaki sonu&amp;ccedil;ların elde edildiği g&amp;ouml;r&amp;uuml;l&amp;uuml;r.&lt;/p&gt;
+&lt;p&gt;İlk &amp;ccedil;alışmanın sonucu oluşan ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg100_FirstRun.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;İlk &amp;ccedil;alışma sonucu elde edilen Concurrency Profiler &amp;ccedil;ıktısı;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg100_FirstReport.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Sarı alanlar bir &lt;strong&gt;Thread'&lt;/strong&gt; in &amp;ccedil;alışmakta olduğunu ama diğer bir Thread tarafından o s&amp;uuml;re boyunca etkisizleştirildiğini g&amp;ouml;stermektedir. Yeşil renkli alanlar &lt;strong&gt;Thread' &lt;/strong&gt;in işini yaptığı zaman aralıklarıdır. Sarı b&amp;ouml;lgelerin fazla olması performansı olumsuz y&amp;ouml;nde etkileyen bir fakt&amp;ouml;rd&amp;uuml;r. Nitekim &lt;strong&gt;aşırı talebin(Oversubscription) &lt;/strong&gt;oluştuğunu g&amp;ouml;stermektedir. Peki iyileştirmenin bir yolu olabilir mi? Aslında &lt;strong&gt;ThreadPool&lt;/strong&gt; tipinden yararlanarak &lt;strong&gt;Therad&lt;/strong&gt; y&amp;ouml;netiminin sisteme bırakılması sağlanabilir. İşte buna g&amp;ouml;re yazılan yeni modelimiz;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Parallelism
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            ParallelFor(48, 98,
+                (i) =&amp;gt;
+                {
+                    double r = 0;
+                    for (int j = 0; j &amp;lt; i * 99999; j++)
+                        r = Math.Sqrt((i * Math.PI) / Math.E);
+                    Console.Write("{0} ", i.ToString());
+                }
+            );
+
+            Console.ReadLine();
+        }
+
+        static void ParallelFor(int lowerBound, int upperBound, Action&amp;lt;int&amp;gt; body)
+        {
+            int processorCount = Environment.ProcessorCount; // İşlemci/&amp;ccedil;ekirdek sayısı bulundu
+            int range = (upperBound - lowerBound) / processorCount; // Yaklaşık iterasyon sayısı hesaplanır. 
+            Console.WriteLine("İşlemci/&amp;Ccedil;ekirdek Sayısı : {0} , Iterasyon Boyutu {1}\n", processorCount.ToString(), range.ToString());
+
+            #region İkinci Y&amp;ouml;ntem (ThreadPool)
+
+            int remainingProcessor = processorCount;
+            // ManualResetEvent bir olay meydana geldiğinde beklemekte olan bir veya daha &amp;ccedil;ok Thread' e bilgilendirmede bulunur.
+            ManualResetEvent manuelResetEvent = new ManualResetEvent(false);
+            for (int processor = 0; processor &amp;lt; processorCount; processor++)
+            {
+                int startPoint = (processor * range) + lowerBound;
+                int endPoint = (processor == processorCount - 1) ? upperBound : startPoint + range;
+
+                // ThreadPool, Thread' ler i&amp;ccedil;in bir havuz sağlar ve asenkron işleyişin y&amp;ouml;netimini sağlar
+                // QueueUserWorkItem y&amp;uuml;r&amp;uuml;t&amp;uuml;lmek &amp;uuml;zere bir metodu kuyruğa atar.ThreadPool i&amp;ccedil;erisindeki ilgili thread kullanılabilir olduğunda da metod icra edilir.
+                ThreadPool.QueueUserWorkItem((o) =&amp;gt;
+                    {
+                        for (int i = startPoint; i &amp;lt; endPoint; i++)
+                        {
+                            body(i);
+                        }
+                        // Birden fazla Thread tarafından kullanılan remainingProcessor değeri azaltılır ve 0 olup olmadığı kontrol edilir. Eğer 0 ise bekleyen t&amp;uuml;m Thread' ler i&amp;ccedil;in sinyal verilir
+                        if (Interlocked.Decrement(ref remainingProcessor) == 0)
+                            manuelResetEvent.Set();
+                    }
+                );
+
+            }
+            // Diğer Thread' ler tamamlanıncaya kadar(ki Set dolayısıyla sinyal geldiğinde anlaşılır) ana thread' i bekletecektir.
+            manuelResetEvent.WaitOne();
+            manuelResetEvent.Close(); // G&amp;uuml;ncel WaitHandle ile alakalı t&amp;uuml;m kaynaklar serbest bırakılır(Release).
+
+            #endregion
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu sefer &lt;strong&gt;ThreadPool&lt;/strong&gt; tipinin &lt;strong&gt;QueueUserWorkItem&lt;/strong&gt; static metodu kullanılmıştır. &lt;strong&gt;ThreadPool&lt;/strong&gt; bir &amp;ouml;nceki modele g&amp;ouml;re &lt;strong&gt;Thread&lt;/strong&gt; y&amp;ouml;netimini daha iyi yapmaktadır. &amp;Ouml;yleyse yeni modele g&amp;ouml;re oluşan &amp;ccedil;alışma zamanı &lt;strong&gt;Thread&lt;/strong&gt; analizine bir bakalım.&lt;/p&gt;
+&lt;p&gt;İkinci modele g&amp;ouml;re &amp;ccedil;alışma sonucu;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg100_SecondRun.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;İkinci modele g&amp;ouml;re Concurrency Profiler &amp;ccedil;ıktısı;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg100_SecondReport.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu rapora g&amp;ouml;re Thread' lerin toplam &amp;ccedil;alışma s&amp;uuml;relerinin bir &amp;ouml;nceki modele g&amp;ouml;re azaldığı g&amp;ouml;r&amp;uuml;lmektedir. Sarı alanların s&amp;uuml;resi daha az g&amp;ouml;r&amp;uuml;nsede sayıları yinede &amp;ccedil;ok azalmış değildir. Dolayısıyla&lt;strong&gt; aşırı talep(Oversubscription) &lt;/strong&gt;durumu devam ediyor g&amp;ouml;r&amp;uuml;nmektedir. Ancak ana Thread' in sadece Thread' lerin &amp;ccedil;alışması tamamlanıncaya kadar bloklandığı g&amp;ouml;zlemlenmektedir. Peki yeni bir y&amp;ouml;ntem tercih edilebilir mi? Evet edilebilir. Aslında &lt;strong&gt;ThreadPool&lt;/strong&gt; kullanımının iyileştirilmesi yoluna gidilebilir ki biz daha fazla ilerlemeyeceğiz...&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z &amp;uuml;zere &amp;ccedil;oğu geliştirici a&amp;ccedil;ısından ileri seviyede kalan bir kodlama gerekmektedir. &amp;Ouml;zellikle geliştiricinin Thread konusuna son derece iyi hakim olması şarttır. Her ne kadar s&amp;ouml;z konusu karmaşık teknikler birer tasarım kalıbı olarak şekillenmiş olsalarda geliştiricinin kafa ayarını da fazla &amp;ccedil;izdirmemek gerekir. Buda yazımızın neden kafayı &amp;ccedil;izmiş bir bilgisayarcı resmi ile başladığının ispatıdır&lt;img title="Laughing" src="/editors/tiny_mce3/plugins/emotions/img/smiley-laughing.gif" alt="Laughing" border="0" /&gt;&amp;nbsp;İşte &lt;strong&gt;Task Parallel Library&lt;/strong&gt; ile birlikte gelen tipler bu anlamda işleri kolaylaştırmaktadır. Ama tabiki &lt;strong&gt;Concurrency Profiler&lt;/strong&gt; ile &amp;uuml;retilen rapor sonu&amp;ccedil;larını değerlendirmek gerekir.&lt;em&gt;(Bu tip karmaşık teknikleri tercih ederken&amp;nbsp;kişisel g&amp;ouml;r&amp;uuml;ş&amp;uuml;me g&amp;ouml;re programcının performans mı? kolay&amp;nbsp;ve hızlı kodlama mı? sorusuna verdiği cevap b&amp;uuml;y&amp;uuml;k &amp;ouml;nem kazanmaktadır)&lt;/em&gt;&amp;nbsp;İşte aynı s&amp;uuml;re&amp;ccedil; i&amp;ccedil;in&lt;strong&gt; Parallel.For&lt;/strong&gt; kullanımı ve rapor sonu&amp;ccedil;ları;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Parallelism
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Parallel.For(48, 98, (i) =&amp;gt;
+                {
+                    double r = 0;
+                    for (int j = 0; j &amp;lt; i * 99999; j++)
+                        r = Math.Sqrt((i * Math.PI) / Math.E);
+                    Console.Write("{0} ", i.ToString());
+                }
+            );
+
+            Console.ReadLine();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Parallel.For kullanımının sonucu;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg100_ThirdRun.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Parallel.For kullanımına g&amp;ouml;re Concurrency Profiler &amp;ccedil;ıktısı;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg100_ThirdReportAgain.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu rapora g&amp;ouml;re Thread işlemlerinin tamamlanma&amp;nbsp;s&amp;uuml;resinin &amp;ccedil;ok daha azaldığı g&amp;ouml;r&amp;uuml;lmektedir. Ayrıca Sarı alanların sayısında belirgin &amp;ouml;l&amp;ccedil;&amp;uuml;de azalma g&amp;ouml;zlemlenmektedir. İlgin&amp;ccedil; olan noktalardan biriside &lt;strong&gt;Main Thread'&lt;/strong&gt; de&amp;nbsp;bloklanmanın(Kırmızı alanlar) diğer modellere g&amp;ouml;re &amp;ccedil;ok daha az sayıda olmasıdır.&amp;nbsp;Bir başka deyişle aşırı talep(Oversubscription) durumu biraz daha azalmıştır.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Raporlar ile ilişkili not:&amp;nbsp;D&amp;ouml;ng&amp;uuml;lerin &amp;ccedil;alışma zamanında a&amp;ccedil;tıkları Thread' lerin &amp;ccedil;alışma şeklini raporlamak amacıyla Visual Studio 2010 ile birlikte gelen Debug men&amp;uuml;s&amp;uuml;ndeki Start Peformance Analysis &amp;ouml;ğesi kullanılmaktadır. Bu &amp;ouml;ğe ile a&amp;ccedil;ılan sihirbazda bizim &amp;ouml;rneğimiz i&amp;ccedil;in Concurrency se&amp;ccedil;eneği işaretlenmelidir. Ayrıca bu se&amp;ccedil;eneğin alt se&amp;ccedil;imi olan&amp;nbsp;Visualize the behavior of multithreaded application kutucuğunun işaretlenmiş olması da gerekmektedir. Ancak bu son se&amp;ccedil;enek Windows 7, Server 2008 işletim sistemleri &amp;uuml;zerinde kullanılabilmektedir.&lt;/p&gt;
+&lt;p&gt;Raporların oluşturulması programın &amp;ccedil;alıştırılması ile birlikte başlamaktadır. Bu nedenle s&amp;ouml;z konusu analiz raporlarının &amp;uuml;retilmesi zaman alabilir. Raporlarda n sayıda Thread' in g&amp;ouml;r&amp;uuml;lmesi m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. &amp;Ouml;rneklerimizdeki analizlerimizi kolayca incelemek i&amp;ccedil;in sadece ilgili Thread' lerin &amp;ccedil;alışma zamanı durumları g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınmıştır. Diğerleri ise gizlenmiştir. &amp;Uuml;retilen analiz raporundaki Threads kısmında yer alan renklerin belirli anlamları vardır. Sarı renkler Preemption olarak adlandırılmakta olup genellikle aşırı talep(Oversubscription) ile ilişkili s&amp;uuml;releri belirtmektedir. Yeşil alanlar&amp;nbsp;Thread' in iş yaptığını g&amp;ouml;steren zaman aralıkları iken&amp;nbsp;kırmızı alanlar bloklama yapılan zaman aralıklarını ifade etmektedir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Tabiki bu test sonu&amp;ccedil;ları, uygulamanın &amp;ccedil;alıştığı sistemin donanımsal &amp;ouml;zelliklerine g&amp;ouml;re değişiklik g&amp;ouml;sterecektir. Ancak sonu&amp;ccedil; olarak &lt;strong&gt;Parallel.For&lt;/strong&gt; d&amp;ouml;ng&amp;uuml;s&amp;uuml;n&amp;uuml;n paralel işlemleri daha efektif olarak y&amp;uuml;r&amp;uuml;tt&amp;uuml;ğ&amp;uuml;n&amp;uuml; d&amp;uuml;ş&amp;uuml;nebiliriz. Bunlara ek olarak aslında &lt;strong&gt;Parallel.For&lt;/strong&gt; d&amp;ouml;ng&amp;uuml;s&amp;uuml;n&amp;uuml;n sağladığı başka avantajlarda vardır. Bunlar aşağıda listelenmiştir.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Etkili&amp;nbsp;Y&amp;uuml;k Dengelemesi (Load Balancing)&amp;nbsp;: &lt;/strong&gt;Parallel.For Thread' ler arasındaki y&amp;uuml;k dağılımını organize eder.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Dinamik Thread Sayısı : &lt;/strong&gt;Parallel.For akılldır ve zaman aşımları durumunda d&amp;ouml;ng&amp;uuml; i&amp;ccedil;erisindeki Thread sayılarını dinamik olarak ayarlayabilir.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Y&amp;uuml;ksek Değer Aralıkları :&lt;/strong&gt; &lt;strong&gt;Parallel.For&lt;/strong&gt; metodu &lt;strong&gt;Int32 &lt;/strong&gt;dışında &lt;strong&gt;Int64 &lt;/strong&gt;tipini de kullanılabilir.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Konfigurasyon Se&amp;ccedil;enekleri : &lt;/strong&gt;&amp;Ouml;rneğin Parallel.For i&amp;ccedil;erisinde a&amp;ccedil;ılacak olan Thread sayısı i&amp;ccedil;in limit belirlenebilir.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;İstisna Y&amp;ouml;netimi (Exception Handling) :&lt;/strong&gt; D&amp;ouml;ng&amp;uuml; i&amp;ccedil;erisinde bir istisna oluştuğunda, dahil olan t&amp;uuml;m Thread' ler m&amp;uuml;mk&amp;uuml;n olduğunca kısa s&amp;uuml;rede işlemlerini durdururlar. Aslında varsayılan olarak yeni iterasyonların başlaması durdurulur. Bu nedenle exception sonrası Thread' lerin y&amp;uuml;r&amp;uuml;tt&amp;uuml;ğ&amp;uuml; bazı iterasyon adımları devam edebilir ancak yenilerinin başlatılması exception nedeniyle engellenir.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;İ&amp;ccedil; i&amp;ccedil;e paralellik (Nested Parallelism) :&lt;/strong&gt;İ&amp;ccedil; i&amp;ccedil;e &amp;ccedil;alıştırılan Parallel.For d&amp;ouml;ng&amp;uuml;leri birbirlerinin Thread kaynaklarını koordineli olarak paylaşarak &amp;ccedil;alışırlar.&lt;/li&gt;
+&lt;li&gt;vb...&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Şimdi bu avantajları kendi yazdığımız &lt;strong&gt;ParallelFor&lt;/strong&gt; metodu i&amp;ccedil;inde ger&amp;ccedil;ellemeye &amp;ccedil;alıştığımızı d&amp;uuml;ş&amp;uuml;nelim. Hatta deneyin &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2009%2f11%2fTaskParallelLibrary.rar"&gt;TaskParallelLibrary.rar (89,38 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2009-12-16 04:55:00</pubDate>
+  <slug>Parallelism</slug>
+  <tags>
+    <tag>task-parallel-library</tag>
+  </tags>
+  <categories>
+    <category>TPL</category>
+  </categories>
+</post>

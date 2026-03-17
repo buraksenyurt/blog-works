@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WCF 4.0 Yenilikleri - Automatic Help Page [Beta 1]</title>
+  <description>WCF 4.0 tarafında beklenen gelmesi yüksek olan yenilikleri sizlere aktarmaya çalıştığım yazılarımızın yavaş yavaş sonlarına gelmekteyiz. Elbette incelemeyemediğimiz bir çok detay var. Bunları ilerleyen dönemlerde ürün son halini alırken tartışma ve araştırma fırsatımız olacak...</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/pics/2009%2f8%2fblg76_Giris.jpg" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;WCF 4.0&lt;/strong&gt; tarafında beklenen gelmesi y&amp;uuml;ksek olan yenilikleri&amp;nbsp;sizlere aktarmaya &amp;ccedil;alıştığım yazılarımızın&amp;nbsp;yavaş yavaş sonlarına gelmekteyiz. Elbette&amp;nbsp;incelemeyemediğimiz bir &amp;ccedil;ok detay var. Bunları ilerleyen d&amp;ouml;nemlerde &amp;uuml;r&amp;uuml;n son halini alırken tartışma ve araştırma fırsatımız olacak. Bu yazımızda &lt;strong&gt;WCF 4.0 &lt;/strong&gt;tarafına entegre olarak gelen &lt;strong&gt;REST&amp;nbsp;&lt;/strong&gt;geliştirme modeline y&amp;ouml;nelik yeteneklerden bahsedeceğiz.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Aslında bu yeniliklerin &amp;ccedil;oğunu &lt;strong&gt;WCF Rest Starter Kit &lt;/strong&gt;ile birlikte, &lt;strong&gt;.Net Framework 3.5 &lt;/strong&gt;platformu &amp;uuml;zerinde kullanabiliyoruz.&amp;nbsp;Ne varki,&amp;nbsp;ek bir pakete ihtiya&amp;ccedil; duyulmadan&amp;nbsp;kullanılabilen iki &amp;ouml;zellik, &lt;strong&gt;WCF 4.0&lt;/strong&gt; i&amp;ccedil;erisine entegre edilmiş durumda. Bunlardan birisi otomatik yardım sayfaları&lt;strong&gt;(Automatic Help Page)&lt;/strong&gt;. &lt;strong&gt;WCF 4.0&lt;/strong&gt;&amp;nbsp;i&amp;ccedil;erisindeki &lt;strong&gt;WebServiceHost &lt;/strong&gt;fabrikasını kullandığımızda otomatik olarak her &lt;strong&gt;RESTful &lt;/strong&gt;servis i&amp;ccedil;in gelen ve varsayılan olarak a&amp;ccedil;ık olan yardım sayfaları, istenirse konfigurasyon dosyasındaki bir nitelik yardımıyla kapatılabilirde.&lt;/p&gt;
+&lt;p&gt;Yardım sayfaları &amp;ouml;zellikle &lt;strong&gt;HTTP&lt;/strong&gt; protokol&amp;uuml;n&amp;uuml;n &lt;strong&gt;GET,POST,PUT &lt;/strong&gt;veya &lt;strong&gt;DELETE &lt;/strong&gt;gibi metodları yardımıyla erişilen &lt;strong&gt;RESTful &lt;/strong&gt;servis operasyonlarının t&amp;uuml;keticiler tarafından kolayca anlaşılmasını hedeflemektedir. Nitekim, t&amp;uuml;ketici tarafını yazan geliştiricilerin bu modelindeki bir servisin operasyonlarını &amp;ccedil;ağırırken, &lt;strong&gt;HTTP&lt;/strong&gt; metoduna g&amp;ouml;re nasıl bir paket i&amp;ccedil;eriği&amp;nbsp;veya &lt;strong&gt;URL&lt;/strong&gt; hazırlayıp g&amp;ouml;ndermeleri gerektiğini bilmeleri gelmektedir. Otomatik olarak &amp;uuml;retilen yardım sayfalarının tek ve yegane amacı bu ihtiyacı karşılamaktır.&lt;/p&gt;
+&lt;p&gt;Şimdi bu konuyu basit bir &amp;ouml;rnek &amp;uuml;zerinden değerlendirmeye &amp;ccedil;alışarak sonu&amp;ccedil;ları g&amp;ouml;rmeyi hedefleyeceğiz. Bu ama&amp;ccedil;la &lt;strong&gt;Visual Studio 2010 Beta 1&lt;/strong&gt; ortamında ve &lt;strong&gt;.Net&lt;/strong&gt; &lt;strong&gt;Framework 4.0 Beta 1&amp;nbsp;&lt;/strong&gt;odaklı olarak&amp;nbsp;hazırlayacağımız bir &lt;strong&gt;WCF Service Application&lt;/strong&gt; &amp;uuml;zerinden ilerliyor olacağız. Bu &amp;ouml;rnekte &lt;strong&gt;System.ServiceModel.Web.Activation &lt;/strong&gt;isim alanında yer alan&amp;nbsp;&lt;strong&gt;WebServiceHostFactory&lt;/strong&gt; fabrikasından yararlanmayacağız&lt;em&gt;(Bir sonraki konumuz olan HTTP Cache desteğine ait &amp;ouml;rnekte ise kullanacağız)&lt;/em&gt;. Servisimize ait s&amp;ouml;zleşmemizi&lt;strong&gt;(Service Contract)&lt;/strong&gt;&amp;nbsp;aşağıda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi geliştirdiğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.ServiceModel;
+using System.ServiceModel.Web;
+
+namespace GeoService
+{
+    [ServiceContract(Namespace="http://GeoServices/LocationService")]
+    public interface ILocationService
+    {
+        [OperationContract]
+        [WebGet]
+        string FindLocation(string gsmNumber);
+
+        [OperationContract]
+        [WebGet(ResponseFormat = WebMessageFormat.Json)]
+        string FindLocationInJson(string gsmNumber);
+
+        [OperationContract]
+        [WebInvoke(Method = "DELETE")]
+        string Delete(string location);
+
+        [OperationContract]
+        [WebInvoke(Method="POST")]
+        bool Insert(Customer customer);
+
+        [OperationContract]
+        [WebInvoke(Method = "PUT")]
+        bool Move(Customer customer);
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Servis s&amp;ouml;zleşmesinde &amp;ouml;rnek olarak &lt;strong&gt;HTTP GET, POST, PUT&lt;/strong&gt; ve &lt;strong&gt;DELETE&lt;/strong&gt; metodlarına g&amp;ouml;re kullanılabilen bazı operasyonlar tanımlanmıştır. &lt;strong&gt;FindLocationInJson&lt;/strong&gt; operasyonu, &lt;strong&gt;JSON&lt;/strong&gt; formatında &lt;strong&gt;cevaplar(Response)&lt;/strong&gt; &amp;uuml;retmektedir. Bilindiği &amp;uuml;zere &lt;strong&gt;WebGet&lt;/strong&gt; metodu i&amp;ccedil;in yapılan &amp;ccedil;ağrılarda &lt;strong&gt;URL&lt;/strong&gt; satırından gelen talepler s&amp;ouml;z konusudur. &lt;strong&gt;WebInvoke&lt;/strong&gt; niteliği ile imzalanmış operasyonlarda ise HTTP i&amp;ccedil;eriğinin paket olarak g&amp;ouml;nderilmesi s&amp;ouml;z konusudur. Bu operasyonlardan &lt;strong&gt;Insert&lt;/strong&gt; ve &lt;strong&gt;Move &lt;/strong&gt;metodları, parametre olarak serileştirilebilir bir tip kullanmaktadır. Dolayısıyla, servisi &lt;strong&gt;REST&lt;/strong&gt; modele g&amp;ouml;re kullanmak isteyen geliştiricilerin bu kritik noktalara g&amp;ouml;re paket i&amp;ccedil;eriği veya URL bilgilerini nasıl hazırlayacaklarını bilmeleri son derece yararlı olacaktır. Gelelim servis s&amp;ouml;zleşmesini uygulayan tipimize;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace GeoService
+{
+    public class LocationService 
+        : ILocationService
+    {
+        public string FindLocation(string gsmNumber)
+        {
+            return String.Format("({0}:{1})-({2}:{3})", 36, 42, 26, 45);
+        }
+
+        public string FindLocationInJson(string gsmNumber)
+        {
+            return String.Format("({0}:{1})-({2}:{3})", 36, 42, 26, 45);
+        }
+
+        public string Delete(string location)
+        {
+            return string.Format("{0} ----&amp;gt; {1}",location);
+        }
+
+        public bool Insert(Customer customer)
+        {
+            return false;
+        }
+
+        public bool Move(Customer customer)
+        {
+            return true;
+        }
+    }
+
+    public class Customer
+    {
+        public string GsmNo { get; set; }
+        public string Name { get; set; }
+        public string Location { get; set; }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Operasyonalrın uygulanışında herhangibir &amp;ouml;zel durum s&amp;ouml;z konusu değildir aslında. Asıl &amp;uuml;zerinde duracağımız nokta &lt;strong&gt;Web.config &lt;/strong&gt;dosyasının i&amp;ccedil;eriğidir. &lt;strong&gt;Web.config &lt;/strong&gt;dosyasında yer alan &lt;strong&gt;system.ServiceModel&lt;/strong&gt; element i&amp;ccedil;eriğini aşağıdaki gibi d&amp;uuml;zenleyebiliriz.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;system.serviceModel&amp;gt;
+    &amp;lt;services&amp;gt;
+      &amp;lt;service name="GeoService.LocationService"&amp;gt;
+        &amp;lt;endpoint address="" binding="webHttpBinding" contract="GeoService.ILocationService"/&amp;gt;
+      &amp;lt;/service&amp;gt;
+    &amp;lt;/services&amp;gt;
+    &amp;lt;behaviors&amp;gt;
+      &amp;lt;endpointBehaviors&amp;gt;
+        &amp;lt;behavior&amp;gt;
+          &amp;lt;webHttp enableHelp="true"/&amp;gt;
+        &amp;lt;/behavior&amp;gt;
+      &amp;lt;/endpointBehaviors&amp;gt;
+    &amp;lt;/behaviors&amp;gt;
+  &amp;lt;/system.serviceModel&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Bağlayıcı tip(Binding Type)&lt;/strong&gt;&amp;nbsp;olarak &lt;strong&gt;webHttpBinding &lt;/strong&gt;kullanmamızın sebebi elbetteki servisimizin &lt;strong&gt;RESTful &lt;/strong&gt;&amp;ouml;zelliklerine g&amp;ouml;re hizmet vermesinin sağlanmasıdır. Diğer yandan &lt;strong&gt;endPoint &lt;/strong&gt;noktasına eklenen&amp;nbsp;&lt;strong&gt;webHttp &lt;/strong&gt;isimli davranışın &lt;strong&gt;enableHelp &lt;/strong&gt;&amp;ouml;zelliğine &lt;strong&gt;true&lt;/strong&gt; değeri atanmıştır. Buna g&amp;ouml;re &amp;ccedil;alışma zamanında &lt;strong&gt;help&lt;/strong&gt; takısı ile servis talep edildiğinde&amp;nbsp;aşağıdaki &amp;ccedil;ıktı ile karşılaşılır.&lt;/p&gt;
+&lt;p&gt;URL&amp;nbsp;: http://localhost:2166/LocationService.svc/&lt;strong&gt;help&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f8%2fblg76_Runtime.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere t&amp;uuml;m operasyonlar i&amp;ccedil;in nasıl &amp;ccedil;ağırılacaklarına, ne t&amp;uuml;r cevaplar d&amp;ouml;nd&amp;uuml;receklerine dair bilgiler ve hatta kullanılan serileştirilebilir tipler varsa bunların şemalarına ait&amp;nbsp;detaylar bu yardım sayfasında yer almaktadır. Tabi şu anda help sayfası i&amp;ccedil;in,&amp;nbsp;&lt;strong&gt;Internet Explorer'&lt;/strong&gt; ın &lt;strong&gt;Feed &lt;/strong&gt;&amp;ouml;zelliğine g&amp;ouml;re bir &amp;ccedil;ıktı elde edilmektedir. Normal şartlarda kaynağa baktığımızda aslında varsayılan olarak &lt;strong&gt;ATOM&lt;/strong&gt; formatında bir &lt;strong&gt;feed&lt;/strong&gt; i&amp;ccedil;eriğinin &amp;uuml;retildiği g&amp;ouml;r&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f8%2fblg76_RuntimeAtom.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Hemen hatırlalatım &amp;ouml;rneğimizde &lt;strong&gt;WebServiceHostFactory&lt;/strong&gt; kullanmadığımızdan, yardım sayfaları &lt;strong&gt;enableHelp&lt;/strong&gt; niteliğine &lt;strong&gt;true&lt;/strong&gt; değerini atamadığımız s&amp;uuml;rece &amp;ccedil;alışmayacaktır. &lt;strong&gt;GET&lt;/strong&gt; metodlarının &amp;ccedil;ağrıları dikkat edileceği &amp;uuml;zere doğal olarak bir &lt;strong&gt;URL&lt;/strong&gt; formatındadır. Diğer taraftan &amp;ouml;rneğin &lt;strong&gt;Insert &lt;/strong&gt;operasyonunu &amp;ccedil;ağırmak istediğimizi g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım. Bu durumda geliştirici olarak tek yapmamız gereken &lt;strong&gt;Request&lt;/strong&gt; ve &amp;ouml;rnek talep formatı i&amp;ccedil;in &lt;strong&gt;Example&lt;/strong&gt; isimli bağlantılardan elde edilen sonu&amp;ccedil;lara bakmak olacaktır. Insert operasyonu i&amp;ccedil;in &amp;uuml;retilen şema aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;URL : http://localhost:2166/LocationService.svc/&lt;strong&gt;help/request/schema&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f8%2fblg76_InsertSchema.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere&amp;nbsp;şema bilgisinden yararlanılarak operasyona parametre olarak nasıl bir tip g&amp;ouml;nderilmesi gerektiği, &amp;uuml;yelerinin ne olacağı a&amp;ccedil;ık bir şekilde g&amp;ouml;r&amp;uuml;lmektedir. &lt;strong&gt;Insert&lt;/strong&gt; operasyonu i&amp;ccedil;in &lt;strong&gt;Example&lt;/strong&gt; linkine tıkladığımızda ise &amp;ouml;rnek bir &lt;strong&gt;POST&lt;/strong&gt; &amp;ccedil;ağrısının i&amp;ccedil;eriğinin nasıl olması gerektiğinin &amp;ouml;rneklendiği g&amp;ouml;r&amp;uuml;lecektir.&lt;/p&gt;
+&lt;p&gt;URL : http://localhost:2166/LocationService.svc/&lt;strong&gt;help/Insert/request/example?format=Xml&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f8%2fblg76_InsertExample.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;İşte bu kadar. Son derece basit bir &amp;ouml;zellik olmakla birlikte otomatik yardım sayfaları aslında t&amp;uuml;keticiyi yazan geliştiriciler i&amp;ccedil;in bulunmaz bir nimettir. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2009%2f8%2fHelpSupport.rar"&gt;HelpSupport.rar (18,55 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2009-09-16 16:02:00</pubDate>
+  <slug>WCF-40-Yenilikleri-Automatic-Help-Page</slug>
+  <tags>
+    <tag>wcf</tag>
+    <tag>wcf-40</tag>
+  </tags>
+  <categories>
+    <category>WCF 4.0 Beta 1</category>
+  </categories>
+</post>

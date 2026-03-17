@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Workflow Foundation 4.0 - Persistence [Beta 2]</title>
+  <description>Workflow Foundation modeli ile geliştirilen uzun süreli işlemlerde(Long Running Process) en önemli konulardan biriside, Workflow örneğinin herhangibir t anında kalıcı olarak saklanabilmesi(Persist) ve istenildiğinde saklandığı yerdeki içeriği ile birlikte tekrardan ayağa kaldırılabilmesidir...</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/pics/2009%2f11%2fblg104_Giris.jpg" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Bundan bir ka&amp;ccedil; yıl &amp;ouml;nce, eşimle birlike İtalya' daki Amca' sını ziyarete gitmiştik. Amcamız, Milano şehrinde uzun yıllar restoran işiyle uğraşmış olduk&amp;ccedil;a yetenekli bir aş&amp;ccedil;ı ve işletmeciydi. Bir g&amp;uuml;n İtalya' da bizi davet ettiği bir restoranda yemek yerken g&amp;uuml;zel bir tavsiyede bulunduğunu hatırlıyorum;&amp;nbsp;&lt;em&gt;"Yemekte bitiremediğiniz salatalar mı var? Yemekten sonra onları tavada ısıtın ve buzdolabına koyun. &lt;/em&gt;&lt;em&gt;Ertesi g&amp;uuml;n yine soslayarak yiyebilirsiniz. Tabiki ağır soslu salatalar değilde hafif olanlardan bahsediyorum"&lt;/em&gt;. Bir anlamda salatayı herhangibir anda o anki haliyle saklayıp&lt;em&gt;(ki ben buna Persist etmek demek istiyorum)&lt;/em&gt; sonra t zamanında yeniden yemek. Her ne kadar bu senaryoda salatayı yıllarca saklamak zor olsada&lt;em&gt;(ki bu durumdada bazı sonu&amp;ccedil;larına katlanmak gerekebilir &lt;img title="Sealed" src="/editors/tiny_mce3/plugins/emotions/img/smiley-sealed.gif" alt="Sealed" border="0" /&gt;&amp;nbsp;)&lt;/em&gt; yazılım d&amp;uuml;nyasında uzun s&amp;uuml;reli bir iş akışının yıllarca saklanabilmesi m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. İşte bu g&amp;uuml;nk&amp;uuml; konumuz; &lt;strong&gt;Workflow Foundation 4.0 ile Persistence&lt;/strong&gt; işlemleri nasıl ger&amp;ccedil;ekleştirilebilir...&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Workflow Foundation&lt;/strong&gt; modeli ile geliştirilen &lt;strong&gt;uzun s&amp;uuml;reli işlemlerde(Long Running Process)&lt;/strong&gt; en &amp;ouml;nemli konulardan biriside, &lt;strong&gt;Workflow&lt;/strong&gt; &amp;ouml;rneğinin herhangibir &lt;strong&gt;t&lt;/strong&gt; anında &lt;strong&gt;kalıcı olarak saklanabilmesi(Persist)&lt;/strong&gt; ve istenildiğinde saklandığı yerdeki i&amp;ccedil;eriği ile birlikte tekrardan ayağa kaldırılabilmesidir. &lt;strong&gt;Persist&lt;/strong&gt; edilecek verilerin nerede saklanacağına ilişkin olarak &amp;ccedil;alışma zamanının varsayılan tutumu belleği kullanmaktır. Ancak &amp;ccedil;ok sayıda &lt;strong&gt;Workflow&lt;/strong&gt; &amp;ouml;rneğinin &lt;strong&gt;Long Running Process&lt;/strong&gt; olarak değerlendirildiği ger&amp;ccedil;ek hayat vakalarında hem y&amp;ouml;netim(Administration) hemde&amp;nbsp;kalıcılığın daha kuvvetli olması&amp;nbsp;adına &lt;strong&gt;SQL&lt;/strong&gt; veritabanı ortamının değerlendirilmesi &amp;ccedil;ok daha doğru bir davranıştır.&lt;/p&gt;
+&lt;p&gt;İlk versiyonlarından bu yana, &lt;strong&gt;Workflow &lt;/strong&gt;tarafında &lt;strong&gt;persistence&lt;/strong&gt; alanı olarak &lt;strong&gt;SQL&lt;/strong&gt; veritabanının kullanılması bazı &lt;strong&gt;SQL Script'&lt;/strong&gt; lerinin &amp;ccedil;alıştırılıp gerekli veritabanının oluşturulması ile başlamaktadır. Bu veritabanının &lt;strong&gt;Workflow&lt;/strong&gt; &amp;ccedil;alışma zamanı tarafından kullanılacağının belirtilmesi sırasında bağlantı bilgisi verilmesi yeterlidir. Buda &amp;ouml;nemli bir noktadır ki veritabanını, &lt;strong&gt;Workflow&lt;/strong&gt; uygulamalarını host edip &amp;ccedil;alıştıran sunucunun dışında bir yerde tutma şansına sahip olabiliriz. Yazımızın bundan sonraki kısımlarında, &lt;strong&gt;Workflow Foundation 4.0 Beta 2&lt;/strong&gt; &amp;uuml;zerinden &lt;strong&gt;Persistence&lt;/strong&gt; sistemini nasıl kullanabileceğimize &amp;ccedil;ok basit bir &amp;ouml;rnek &amp;uuml;zerinden bakmaya &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;p&gt;İşe ilk olarak &lt;strong&gt;WFPersistenceStore&lt;/strong&gt;&lt;em&gt;(ki siz istediğiniz bir veritabanı adını verebilirsiniz)&lt;/em&gt;&lt;strong&gt;&amp;nbsp;&lt;/strong&gt;isimli bir veritabanını oluşturarak başlayabiliriz. Bu işlemin ardından varsayılan olarak&lt;strong&gt; C:\WINDOWS\Microsoft.NET\Framework\v4.0.21006\SQL\en\&lt;/strong&gt; adresinde duran &lt;strong&gt;SqlWorkflowInstanceStoreSchema,&amp;nbsp;SqlWorkflowInstanceStoreLogic sql&lt;/strong&gt; script' lerini sırasıyla oluşturulan veritabanı &amp;uuml;zerinde &amp;ccedil;alıştırmamız gerekmektedir. S&amp;ouml;z konusu işlem sonrasında &lt;strong&gt;Workflow&lt;/strong&gt; &amp;ouml;rneklerinin tutulması ile ilişkili olaraktan gerekli veritabanı nesnelerinin &amp;uuml;retildiği g&amp;ouml;r&amp;uuml;lebilir&lt;em&gt;(Tables, Stored Procedures, Views vb...).&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Workflow&lt;/strong&gt; tarafında &lt;strong&gt;Persistence&lt;/strong&gt; işlemleri i&amp;ccedil;in birden fazla yol kullanılabilir. Bunların i&amp;ccedil;erisinde belkide en basiti &lt;strong&gt;Persist&lt;/strong&gt; isimli aktivite bileşeninin Workflow i&amp;ccedil;erisinde bir noktada değerlendirilmesidir. Bu yol dışında istenirse &lt;strong&gt;WorkflowApplication&lt;/strong&gt; nesne &amp;ouml;rneğinin &lt;strong&gt;PersistableIdle&lt;/strong&gt; &amp;ouml;zelliğide değerlendirilebilir. Ancak unutulmaması gereken noktalardan birisi de &lt;strong&gt;Workflow&lt;/strong&gt; &amp;ouml;rneklerinin saklanma durumlarının aslında uzun s&amp;uuml;reli s&amp;uuml;re&amp;ccedil;ler i&amp;ccedil;in ge&amp;ccedil;erli oluşudur. Bu nedenle ilgili &amp;ouml;zellik ve konfigurasyon işlemleri esas itibariyle &lt;strong&gt;WorkflowApplication&lt;/strong&gt; tipi &amp;uuml;zerinden yapılmaktadır.&lt;/p&gt;
+&lt;p&gt;Dilerseniz daha fazla vakit kaybetmeden &amp;ouml;rneğimizi geliştirmeye başlayalım. İlk olarak basit bir&lt;strong&gt; Workflow Console Application&lt;/strong&gt; projesi oluşturarak yolumuza devam edebiliriz. &lt;strong&gt;Workflow&lt;/strong&gt; uygulamamızda &lt;strong&gt;SQL&lt;/strong&gt; tabanlı bir &lt;strong&gt;Persistence&lt;/strong&gt; sistemi kullanacağımızdan gerekli &lt;strong&gt;assembly'&lt;/strong&gt; larında projeye referans edilmesi gerekmektedir. Bu ama&amp;ccedil;la uygulamamıza&lt;strong&gt; System.Activities.DurableInstancing.dll'&lt;/strong&gt; ini eklememiz gerekmektedir. Ayrıca &lt;strong&gt;System.Runtime.dll&lt;/strong&gt; assembly' ının &lt;strong&gt;4.0 &lt;/strong&gt;versiyonun da eklenmesi gerekmektedir. S&amp;ouml;z konusu referans eklemeleri sonrasında tasarım zamanındaki g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; aşağıdaki gibi olan &amp;ccedil;ok basit&amp;nbsp;bir Workflow geliştirerek devam edebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg104_DesignerLast.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Workflow &amp;ouml;rneğine ait &lt;strong&gt;XAML&lt;/strong&gt; i&amp;ccedil;eriğinin sadece &lt;span style="text-decoration: underline;"&gt;Sequence &lt;/span&gt;b&amp;ouml;l&amp;uuml;m&amp;uuml;nden oluşan par&amp;ccedil;ası aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;Sequence sad:XamlDebuggerXmlReader.FileName="c:\documents and settings\bsenyurt\my documents\visual studio 10\Projects\WFPersistence\WFPersistence\Workflow1.xaml" sap:VirtualizedContainerService.HintSize="486,614"&amp;gt;
+    &amp;lt;Sequence.Variables&amp;gt;
+      &amp;lt;Variable x:TypeArguments="x:Int32" Name="CurrentNumber" /&amp;gt;
+    &amp;lt;/Sequence.Variables&amp;gt;
+    &amp;lt;sap:WorkflowViewStateService.ViewState&amp;gt;
+      &amp;lt;scg3:Dictionary x:TypeArguments="x:String, x:Object"&amp;gt;
+        &amp;lt;x:Boolean x:Key="IsExpanded"&amp;gt;True&amp;lt;/x:Boolean&amp;gt;
+      &amp;lt;/scg3:Dictionary&amp;gt;
+    &amp;lt;/sap:WorkflowViewStateService.ViewState&amp;gt;
+    &amp;lt;WriteLine sap:VirtualizedContainerService.HintSize="464,59" Text="[String.Format("Workflow başlangıcı {0}", DateTime.Now.ToLongTimeString())]" /&amp;gt;
+    &amp;lt;While sap:VirtualizedContainerService.HintSize="464,391" Condition="True"&amp;gt;
+      &amp;lt;Sequence sap:VirtualizedContainerService.HintSize="438,280"&amp;gt;
+        &amp;lt;sap:WorkflowViewStateService.ViewState&amp;gt;
+          &amp;lt;scg3:Dictionary x:TypeArguments="x:String, x:Object"&amp;gt;
+            &amp;lt;x:Boolean x:Key="IsExpanded"&amp;gt;True&amp;lt;/x:Boolean&amp;gt;
+          &amp;lt;/scg3:Dictionary&amp;gt;
+        &amp;lt;/sap:WorkflowViewStateService.ViewState&amp;gt;
+        &amp;lt;Assign sap:VirtualizedContainerService.HintSize="242,57"&amp;gt;
+          &amp;lt;Assign.To&amp;gt;
+            &amp;lt;OutArgument x:TypeArguments="x:Int32"&amp;gt;[CurrentNumber]&amp;lt;/OutArgument&amp;gt;
+          &amp;lt;/Assign.To&amp;gt;
+          &amp;lt;Assign.Value&amp;gt;
+            &amp;lt;InArgument x:TypeArguments="x:Int32"&amp;gt;[CurrentNumber + 1]&amp;lt;/InArgument&amp;gt;
+          &amp;lt;/Assign.Value&amp;gt;
+        &amp;lt;/Assign&amp;gt;
+        &amp;lt;WriteLine sap:VirtualizedContainerService.HintSize="242,59" Text="[String.Format("CurrentNumber : {0} ", CurrentNumber.ToString())]" /&amp;gt;
+      &amp;lt;/Sequence&amp;gt;
+    &amp;lt;/While&amp;gt;
+  &amp;lt;/Sequence&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Tasarım ekranından g&amp;ouml;rebileceğiniz &amp;uuml;zere &lt;strong&gt;Workflow&lt;/strong&gt; &amp;ouml;rneğimiz bir &lt;strong&gt;WriteLine&lt;/strong&gt; ile başlamakta ve sonrasında sonsuz bir d&amp;ouml;ng&amp;uuml;ye girmektedir. Bu sonsuz d&amp;ouml;ng&amp;uuml; i&amp;ccedil;in &lt;strong&gt;While&lt;/strong&gt; bileşeninden yararlanılmaktadır. Sonsuz d&amp;ouml;ng&amp;uuml; i&amp;ccedil;erisinde yer alan &lt;strong&gt;Assign&lt;/strong&gt; bileşeni sayesinde, &lt;strong&gt;CurrentNumber&lt;/strong&gt; isimli &lt;strong&gt;Sequence&lt;/strong&gt; seviyesindeki &lt;strong&gt;Variable'&lt;/strong&gt; ın değeri s&amp;uuml;rekli olarak arttırılmaktadır. Buna g&amp;ouml;re yazacağımız program kodunun &amp;ouml;nemi vardır.&amp;nbsp;&lt;strong&gt;Workflow&lt;/strong&gt; &amp;ouml;rneğini Host eden &lt;strong&gt;Console&lt;/strong&gt; uygulamasını &amp;ouml;yle yazmalıyızki, uygulama kapandığında &lt;strong&gt;Workflow&lt;/strong&gt; &amp;ouml;rneğinin o anki hali &lt;strong&gt;Persistence&lt;/strong&gt; tablolarına yazılabilsin. Bu nedenle&lt;strong&gt; Program.cs&lt;/strong&gt; i&amp;ccedil;eriğini aşağıdaki gibi geliştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Activities;
+using System.Activities.DurableInstancing;
+
+namespace WFPersistence
+{
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string conStr = "data source=.;database=WFPersistenceStore;integrated security=SSPI";
+
+            // Persistence işleminin yapılacağı veritabanını işaret edecek ve y&amp;ouml;netecek nesne &amp;ouml;rneklenir
+            SqlWorkflowInstanceStore instanceStore = new SqlWorkflowInstanceStore(conStr);
+
+            // Workflow nesnesi &amp;ouml;rneklenir
+            Workflow1 wf1 = new Workflow1();
+
+            // WorkflowApplication nesnesi &amp;ouml;rnekleni ve wf1' i &amp;ccedil;alıştıracağı belirtilir
+            WorkflowApplication wfApp = new WorkflowApplication(wf1);
+            // WorkflowApplication nesne &amp;ouml;rneğinin persistence store olarak instanceStore isimli SqlWorkflowInstanceStore nesne &amp;ouml;rneğini kullanacağı ve dolayısıyla saklama işlemlerinin WFPersistenceStore veritabanında ger&amp;ccedil;ekleştirileceği belirtilir
+            wfApp.InstanceStore = instanceStore;
+
+            // WorkflowApplication başlatılır
+            wfApp.Run();
+
+            Console.WriteLine("Uygulamadan &amp;ccedil;ıkmak i&amp;ccedil;in bir tuşa basın");
+            Console.ReadLine();
+
+            // Unload metodunun &amp;ccedil;alıştırılması nedeniyle Workflow &amp;ouml;rneğinin o anda bulunduğu i&amp;ccedil;erik itibariyle Persist edilmeside sağlanmaktadır.
+            wfApp.Unload();
+
+            Console.WriteLine("Uygulamadan &amp;ccedil;ıkış zamanı {0}",DateTime.Now.ToLongTimeString());
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rneğimizi &amp;ccedil;alıştırmadan &amp;ouml;nce &lt;strong&gt;SQL Server Profiler&lt;/strong&gt; aracınında a&amp;ccedil;ık olduğundan emin olalım. B&amp;ouml;ylece arka planda ger&amp;ccedil;ekleşen insert işlemlerini g&amp;ouml;rme şansımız olacaktır. Ben &amp;ouml;rneğimizi bu haliyle test ederken aşağıdaki sonu&amp;ccedil;lar ile karşılaştım. &lt;em&gt;(Bilin&amp;ccedil;li olarak belirli s&amp;uuml;re ge&amp;ccedil;tikten sonra uygulamayı kapattım)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg104_RuntimeLast2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zer &lt;strong&gt;While&lt;/strong&gt; d&amp;ouml;ng&amp;uuml;s&amp;uuml;nde &lt;strong&gt;CurrentNumber &lt;/strong&gt;değeri &lt;strong&gt;4158&lt;/strong&gt; iken &amp;ccedil;ıkılmıştır.&amp;nbsp;Tabiki sizin testlerinizde bu değer &amp;ccedil;ok daha farklı olabilir.&amp;nbsp;Uygulama&amp;nbsp;&lt;strong&gt;Unload&lt;/strong&gt; metodu &amp;ccedil;ağrısını ger&amp;ccedil;ekleştirdikten sonra&lt;strong&gt;&amp;nbsp;SQL Server Profiler &lt;/strong&gt;aracından&amp;nbsp;yakalan sorgu aşağıdaki gibidir&lt;em&gt;(SQL İ&amp;ccedil;eriği &amp;ccedil;ok uzun&amp;nbsp;olduğundan son kısmı kırpılmıştır)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;exec sp_executesql N'begin transaction
+declare @result int
+exec @result = [System.Activities.DurableInstancing].[SaveInstance] @instanceId, @surrogateLockOwnerId, @handleInstanceVersion, @handleIsBoundToLock,
+@primitiveDataProperties, @complexDataProperties, @writeOnlyPrimitiveDataProperties, @writeOnlyComplexDataProperties, @metadataProperties,
+@metadataIsConsistent, @encodingOption, @pendingTimer, @suspensionStateChange, @suspensionReason, @keysToAssociate, @keysToComplete,
+@keysToFree, @concatenatedKeyProperties, @unlockInstance, @isReadyToRun, @isCompleted,
+@lastMachineRunOn, @executionStatus, @blockingBookmarks, @operationTimeout ;
+if (@result = 0)
+begin
+commit transaction
+end
+else
+rollback transaction
+',N'@instanceId uniqueidentifier,@surrogateLockOwnerId bigint,@handleInstanceVersion bigint, @handleIsBoundToLock bit, @pendingTimer datetime,@unlockInstance bit,@suspensionStateChange tinyint,@suspensionReason nvarchar(450),@isCompleted bit,@isReadyToRun bit, @operationTimeout int,@keysToAssociate xml,@keysToComplete xml, @keysToFree xml,@concatenatedKeyProperties varbinary(8000),@primitiveDataProperties varbinary(8000), @complexDataProperties varbinary(1664), @writeOnlyPrimitiveDataProperties varbinary(470) ,@writeOnlyComplexDataProperties varbinary(860),@metadataProperties varbinary(8000), @metadataIsConsistent bit,@encodingOption tinyint, @lastMachineRunOn varchar(900),@executionStatus varchar(900),@blockingBookmarks varchar(900)',
+
+@instanceId='074A5D57-C268-43E6-B516-DFE49894D7A7',
+
+@surrogateLockOwnerId=26,@handleInstanceVersion=-1, @handleIsBoundToLock=0,@pendingTimer=NULL,@unlockInstance=1, @suspensionStateChange=0,@suspensionReason=NULL,@isCompleted=0,@isReadyToRun=1, @operationTimeout=29922, @keysToAssociate=NULL,@keysToComplete=NULL ,@keysToFree=NULL, @concatenatedKeyProperties=NULL,@primitiveDataProperties=NULL, @complexDataProperties=...&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;Transaction&lt;/strong&gt; i&amp;ccedil;erisine alınmış olan ve &lt;strong&gt;SaveInstance&lt;/strong&gt; isimli&amp;nbsp;&lt;strong&gt;Stored Procedure&lt;/strong&gt; i&amp;ccedil;in yapılan bir &amp;ccedil;ağrısı s&amp;ouml;z konusudur. Yapılan &amp;ccedil;ağrıda şu an i&amp;ccedil;in dikkat edilmesi gereken nokta parametre olarak gelen &lt;strong&gt;instanceId&lt;/strong&gt; değeridir. Bu işlemin ardından &lt;strong&gt;Instances&lt;/strong&gt; isimli &lt;strong&gt;View&lt;/strong&gt; i&amp;ccedil;eriğine bakılırsa s&amp;ouml;z konusu &lt;strong&gt;InstanceId&lt;/strong&gt; değerini i&amp;ccedil;eren bir satırın &amp;uuml;retildiği g&amp;ouml;r&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg104_SqlTableLast.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Peki ya şimdi ne olacak?&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;T &lt;/strong&gt;zaman sonra&lt;em&gt;(G&amp;uuml;n, Ay, Yıl bile olabilir. Yeterki SQL tarafındaki bilgilere zarar gelmesin), &lt;/em&gt;bu &lt;strong&gt;Workflow&lt;/strong&gt; &amp;ouml;rneğinin kaldığı yerden ayağa kaldırılarak devam etmesi istenebilir. İşte bu durumda &lt;strong&gt;Persist&lt;/strong&gt; edilmiş olan &amp;ouml;rneğin,&amp;nbsp;kaydedildiği haliyle tekrardan&amp;nbsp;y&amp;uuml;klenmesi gerekecektir. Geliştirdiğimiz &amp;ouml;rnek senaryoya g&amp;ouml;re, &lt;strong&gt;CurrentNumber&lt;/strong&gt; değerinin kaldığı yerden başlayarak devam etmesi gerekmektedir. &lt;strong&gt;Persist&lt;/strong&gt; edilmiş olan bir &lt;strong&gt;Workflow&lt;/strong&gt; &amp;ouml;rneğinin tekrardan ayağa kaldırılması i&amp;ccedil;in &lt;strong&gt;GUID&lt;/strong&gt; tipinden olan &lt;strong&gt;InstanceId&lt;/strong&gt; değerinin &lt;strong&gt;Load&lt;/strong&gt; metoduna parametre olarak ge&amp;ccedil;irilmesi yeterlidir. İşte Persist edilmiş olan Workflow &amp;ouml;rneğini ayağa kaldırmak i&amp;ccedil;in kullanacağımız kodlarımız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg104_Code.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Tam &lt;strong&gt;Load&lt;/strong&gt; metodunun olduğu yerde &lt;strong&gt;breakpoint&lt;/strong&gt; koyarak ilerlemenizi &amp;ouml;neririm. &lt;strong&gt;Persist&lt;/strong&gt; edilen &lt;strong&gt;Workflow&lt;/strong&gt; &amp;ouml;rneğinin canlandırılması esnasında &lt;strong&gt;SQL&lt;/strong&gt; tarafında &lt;strong&gt;LoadInstance&lt;/strong&gt; isimli bir Stored Procedure' &amp;uuml;n &amp;ccedil;alıştırılması sağlanmaktadır. İşte &amp;ccedil;alıştırılan SQL sorgusu.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;exec [System.Activities.DurableInstancing].[LoadInstance] @surrogateLockOwnerId=27,@operationType=3, @keyToLoadBy='00000000-0000-0000-0000-000000000000',
+
+@instanceId='074A5D57-C268-43E6-B516-DFE49894D7A7',
+
+@handleInstanceVersion=-1,@handleIsBoundToLock=0,@keysToAssociate=NULL, @encodingOption=1,@concatenatedKeyProperties=NULL, @operationTimeout=29812&lt;/pre&gt;
+&lt;p&gt;Hatta bu noktada iken &lt;strong&gt;IsLocked&lt;/strong&gt; alanın s&amp;ouml;z konusu &lt;strong&gt;Workflow&lt;/strong&gt; &amp;ouml;rneği i&amp;ccedil;in 1 olarak set edildiği g&amp;ouml;zlemlenebilir. Bir başka deyişle Workflow &amp;ouml;rneği bu işlem sırasında diğer bir talebe kapatılmış durumdadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg104_SqlTable2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Peki ya uygulamanın durumu? Uygulama yeniden &amp;ccedil;alıştırıldığında &lt;strong&gt;CurrentNumber&lt;/strong&gt; değerinin kaldığı yerden devam ettiği g&amp;ouml;zlemlenecektir. Bunu g&amp;ouml;rme zevkini siz değerli okurlarıma bırakıyorum &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;&lt;strong&gt;Persistence&lt;/strong&gt; işlemi bu &amp;ouml;rneğimizde &lt;strong&gt;WorkflowApplication&lt;/strong&gt; nesnesi tarafından ele alınmıştır. Ancak &lt;strong&gt;Workflow Service&lt;/strong&gt; isimli &amp;ouml;nemli bir ger&amp;ccedil;ekde vardır. Bir &lt;strong&gt;Workflow Service'&lt;/strong&gt; in uzun s&amp;uuml;reli olarak saklanması da,&amp;nbsp;ger&amp;ccedil;ek hayat senaryolarında yaşanan vakalardan birisidir. Bu durumu bir sonraki yazımızda ele almaya &amp;ccedil;alışacağız. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Kişisel Not : Kalıcı olarak saklama işlemini yazımızın başında belirttiğimiz &amp;uuml;zere, Persist aktivitesi ilede kolayca ger&amp;ccedil;ekleştirebiliriz. Bu konu ile ilişkili bir g&amp;ouml;rsel dersi ilerleyen tarihlerde yayınlamaya &amp;ccedil;alışıyor olacağım.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;a href="/pics/2009%2f11%2fWFPersistence.rar"&gt;WFPersistence.rar (37,63 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2009-11-30 23:29:00</pubDate>
+  <slug>Workflow-Foundation-40-Persistence</slug>
+  <tags>
+    <tag>wf</tag>
+    <tag>wf-40</tag>
+  </tags>
+  <categories>
+    <category>WF 4.0 Beta 2</category>
+  </categories>
+</post>

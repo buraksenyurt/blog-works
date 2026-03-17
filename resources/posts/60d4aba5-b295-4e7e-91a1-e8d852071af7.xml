@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Rust Pratikleri - GDB ile Debug İşlemleri</title>
+  <description>Rust ile ilgili öğretilerde bellek yönetimi konusunu incelerken fonksiyon ve değişkenlere ait kapsamların bellekte nasıl açıldığını görmek için GNU Debugger'dan(kısaca GDB) yararlanıldığını gördüm. Kodu debug etmek deyince insanın aklına Visual Studio gibi gelişmiş IDE'lerin kolaylıkları geliyor ve bu nedenle GDB ilkel bir araç gibi görünebilir. Yine de rust kodunu terminalden adım adım işletmek ve bellek üzerindeki konumlandırmaları görmek(stack açılımlarını izleyip pointer'ları analiz etmek gibi) adına son derece faydalı bir araç. Rust dilinde ilerlemek isteyenlerin bilmesi ve kullanması gereken bir yardımcı. Öncelikle üzerine çalıştığım Ubuntu platformuna yüklemem lazım. Bu arada GDB ile ilgili detaylar için şu adrese bakılabilir.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2022/Subat/gdb.png" alt="" /&gt;Rust dilinin en g&amp;uuml;&amp;ccedil;l&amp;uuml; olduğu yer etkili bellek y&amp;ouml;netimi ve olası kaosların &amp;ouml;n&amp;uuml;ne herhangi bir garbage collector veya başka bir unsura ihtiya&amp;ccedil; duymadan ge&amp;ccedil;ebilecek kural setleri barındırmasıdır. &amp;Ouml;zellikle Memory Leak, Double Free, Data Race gibi C, C++ dillerinde sıklıkla rastlanan durumların oluşmaması i&amp;ccedil;in basit kurallar barındırır. Bu kurallar ilk başlarda rust &amp;ouml;ğrenenleri epey zorlar fakat bir kez alışılınca her şey &amp;ccedil;ok daha net ve berrak hale gelir. Bellek y&amp;ouml;netimi denilince i&amp;ccedil;eride neler oluyor bitiyor g&amp;ouml;rmek de &amp;ouml;nemlidir. Fonksiyonlar birer kapsam olarak Stack'e yığılır, &amp;ccedil;eşitli veri t&amp;uuml;rleri(String gibi) heap'e a&amp;ccedil;ılıp pointer alır, kapsamlar sonlandığında bir şeyler olur vs&lt;/p&gt;
+&lt;p&gt;Rust ile ilgili &amp;ouml;ğretilerde bellek y&amp;ouml;netimi konusunu incelerken fonksiyon ve değişkenlere ait kapsamların stack ve heap b&amp;ouml;lgelerine nasıl a&amp;ccedil;ıldığını g&amp;ouml;rmek i&amp;ccedil;in GNU Debugger'dan&lt;em&gt;(kısaca GDB)&lt;/em&gt; yararlanılabilir. Kodu debug etmek deyince insanın aklına Visual Studio gibi gelişmiş IDE'lerin kolaylıkları geliyor ve bu nedenle ilk kez karşılaşanlar i&amp;ccedil;in GDB ilkel bir ara&amp;ccedil; gibi g&amp;ouml;r&amp;uuml;nebilir elbette. Ancak rust ile yazılmış programları terminalden adım adım işletmek ve bellek &amp;uuml;zerindeki konumlandırmaları g&amp;ouml;rmek&lt;em&gt;(stack a&amp;ccedil;ılımlarını izleyip pointer'ları analiz etmek gibi)&lt;/em&gt; adına son derece faydalı bir ara&amp;ccedil;tır. Rust dilinde ilerlemek isteyenlerin bilmesi ve kullanması gereken bir yardımcı olduğunu d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum. Tabii her şeyden &amp;ouml;nce onu &amp;uuml;zerinde &amp;ccedil;alıştığım Ubuntu platformuna y&amp;uuml;klemem gerekiyor. Bu arada GDB ile ilgili detaylar i&amp;ccedil;in &lt;a title="GDB" href="http://www.gdbtutorial.com/" target="_blank"&gt;şu adrese&lt;/a&gt; bakılabilir.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo apt-get update
+sudo apt-get install gdb
+
+gdb --version&lt;/pre&gt;
+&lt;p&gt;Eğer her şey yolunda giderse aşağıdaki gibi versiyon numarasını g&amp;ouml;rebilmeliyiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Subat/debugging_1.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Gelelim &amp;ouml;rnek kodlara. Debugger kullanımını basit seviyede deneyimlemek&amp;nbsp;i&amp;ccedil;in bir rust projesi oluşturup ilerleyelim.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;cargo new debugging&lt;/pre&gt;
+&lt;p&gt;main.rs i&amp;ccedil;eriğini&amp;nbsp;aşağıdaki kod par&amp;ccedil;asında olduğu gibi geliştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;fn main() {
+    let mut calderon = Player {
+        id: 1,
+        name: String::from("Hoze Kalderon"),
+        level: 78,
+    };
+    increase_level(&amp;amp;mut calderon);
+    dbg!(calderon.level);
+    decrease_level(&amp;amp;mut calderon);
+    dbg!(calderon.level);
+}
+
+fn increase_level(p: &amp;amp;mut Player) {
+    p.level += 10;
+}
+fn decrease_level(p: &amp;amp;mut Player) {
+    let rate = 10;
+    p.level -= rate;
+}
+
+#[allow(dead_code)]
+struct Player {
+    id: u16,
+    name: String,
+    level: u16,
+}&lt;/pre&gt;
+&lt;p&gt;Player isimli bir veri yapısı ve onun level alan değerini artırıp azaltan iki fonksiyon kullanmaktayız. Fonksiyonlara Player nesne &amp;ouml;rneğini referans olarak ge&amp;ccedil;iyoruz&lt;em&gt;(bir başka deyişle fonksiyon kapsamlarına onu &amp;ouml;d&amp;uuml;n&amp;ccedil; veriyoruz - borrowing)&lt;/em&gt; ve dbg! makrosunu kullanarak debug ekranına bilgi yazdırıyoruz. Kodun uygunluğunu clippy ile iyileştirdikten sonra &amp;ccedil;alıştığından emin olmalı ve daha da &amp;ouml;nemlisi debug işlemleri i&amp;ccedil;in build etmeliyiz. İşte kullanacağımız terminal komutları.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;cargo new debugging
+cd debugging
+cargo clippy
+cargo run
+
+# kodun &amp;ccedil;alıştığından emin olduktan sonra build etmeliyiz
+cargo build&lt;/pre&gt;
+&lt;p&gt;Artık kodu adım adım debug etmeye başlayabiliriz. GDB aracının belli başlı komutları var. İzleyen terminal komutlarına ait yorum satırlarında kullanımlarına ait kısa bilgiler bulabilirsiniz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;# Programa ait binary'yi debug modda a&amp;ccedil;alım
+gdb debugging
+# &amp;Ccedil;alıştığını g&amp;ouml;relim
+run
+# ve ilk satırından itibaren kod i&amp;ccedil;eriğine bir bakalım
+list
+
+# ardından &amp;ouml;rneğin increase_level ve decrease_level fonksiyonlarına birer breakpoint koyalım
+b increase_level
+b decrease_level
+
+# kodu &amp;ccedil;alıştıralım
+r
+
+# Artık breakpoint noktalarında bir takım bilgilere bakabiliriz.
+# &amp;Ouml;rneğin o andaki local değişkenlere ve arg&amp;uuml;manlara bakalım
+info locals
+info args
+
+# Kodu bir adım ilerletelim
+n
+
+# Aynı bilgilere tekrar bakalım ve hatta stack bellek b&amp;ouml;lgesine bir g&amp;ouml;z atalım.
+bt
+info locals
+info args
+
+# Hatta pointer olarak gelen değişkenlerin i&amp;ccedil;eriklerini ş&amp;ouml;yle g&amp;ouml;rebiliriz
+print *p
+
+# Bir sonraki breakpoint noktasına ge&amp;ccedil;mek i&amp;ccedil;in c komutunu kullanırız
+c
+
+# stack &amp;uuml;zerindeki scope'ları g&amp;ouml;rmek i&amp;ccedil;in yine bt'den yararlanabiliriz
+bt
+
+# debugger'dan &amp;ccedil;ıkmak i&amp;ccedil;inse aşağıdaki komutu kullanırız.
+q
+
+# Bu arada minik bir ipucu bırakalım. Ekran &amp;ccedil;ok kalabalıklaştığında
+# muhtemelen silmek isteyeceksiniz. Ctrl + L işinizi g&amp;ouml;recektir.&lt;/pre&gt;
+&lt;p&gt;Tabii bu komutları denerken ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; aşağıya doğru uzayıp gidebilir :)&amp;nbsp;Neyse ki sağdaki dikey monit&amp;ouml;r bana epeyce yardımcı oldu. Yine de sonu&amp;ccedil;ları iki par&amp;ccedil;a halinde paylaşacağım.&amp;nbsp;İlk kısımda gdb aracını başlatıp kodun i&amp;ccedil;eriğini g&amp;ouml;steriyoruz. Bu arada binary dosyanın olduğu klas&amp;ouml;re gittiğimize dikkat edelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Subat/debugging_2.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Devam eden kısımda ise kalan komutların verdiği sonu&amp;ccedil;larını g&amp;ouml;rmekteyiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Subat/debugging_3.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu kısmı yorumlamak olduk&amp;ccedil;a &amp;ouml;nemli. Kodumuzdaki fonksiyonlar Player verisini referans olarak &amp;ouml;d&amp;uuml;n&amp;ccedil; alıp kullanmaktalar. Bu nedenle girdiğimiz fonksiyonlarda birer pointer g&amp;ouml;rmekteyiz. Pointer adresi ve hatta kullandığı String değişkeninki değişmiyor elbette. Dikkat &amp;ccedil;ekici bir diğer nokta da fonksiyonlara parametre olarak gelen Player nesnesinin işaret ettiği veri yapısı. Dikkat edileceği &amp;uuml;zere String olarak tasarladığımız name değişkeni String veri yapısının tasarımı gereği heap b&amp;ouml;lgesindeki i&amp;ccedil;eriği işaret etmekte. Diğer yandan String t&amp;uuml;r&amp;uuml;n&amp;uuml;n kendisi esasında bir Smart Pointer'dır. Yani scope dışına &amp;ccedil;ıkıldığı anda otomatik olarak heap i&amp;ccedil;eriği deallocate edilir. GDB aracını kullanarak &amp;ouml;zellikle Smart Pointer gibi enstr&amp;uuml;manların işleyişini anlamak &amp;ccedil;ok daha kolaydır. Bunun i&amp;ccedil;in &amp;ouml;rneğimize aşağıdaki fonksiyonu eklediğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;fn change_level(p: &amp;amp;mut Player) {
+    let level = Box::new(90);
+    p.level = *level;
+}&lt;/pre&gt;
+&lt;p&gt;Fonksiyon kendisine referansı verilen Player nesnesinin yine level isimli değerini değiştirmekte. Ancak yeni level bilgisinin kasıtlı olarak bir Smart Pointer tarafından tutulduğuna dikkat edelim. Box t&amp;uuml;r&amp;uuml;nden bu değişken heap alanında duracak şekilde ilkel bir tamsayı verisi taşımakta.&amp;nbsp;İlgili fonksiyonu main i&amp;ccedil;erisinde aşağıdaki gibi kullanabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;fn main() {
+    let mut calderon = Player {
+        id: 1,
+        name: String::from("Hoze Kalderon"),
+        level: 78,
+    };
+    increase_level(&amp;amp;mut calderon);
+    dbg!(calderon.level);
+    decrease_level(&amp;amp;mut calderon);
+    dbg!(calderon.level);
+    change_level(&amp;amp;mut calderon);
+    dbg!(calderon.level);
+}&lt;/pre&gt;
+&lt;p&gt;Sadece konuyu değerlendirmek i&amp;ccedil;in level isimli bir smart pointer kullanıyoruz. Smart Pointer'lar scope sonlandığında otomatik olarak heap'ten atılırlar ki bu &amp;ouml;zellikle silmeyi unuttuğumuz pointer'ların oluşturacağı Memory Leak durumunun &lt;span style="text-decoration: underline;"&gt;oluşmamasını&lt;/span&gt; garanti eder. Ger&amp;ccedil;ekten b&amp;ouml;yle olup olmadığını anlamanın&lt;em&gt;(yani fonksiyon sonlanıp scope dışına &amp;ccedil;ıkıldığında pointer'ın işaret ettiği bellek b&amp;ouml;lgesinde bir değer kalmadığını g&amp;ouml;rmenin)&lt;/em&gt; bir yolu kodu debug ederken fonksiyon &amp;ccedil;ağrısı tamamlandıktan sonraki fotoğrafa bakmaktır. &amp;Ouml;yleyse tekrardan terminale d&amp;ouml;n&amp;uuml;p debug işlemlerine başlayalım.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;gdb debugging
+# breakpoint'i ekleyelim
+b change_level
+# programı &amp;ccedil;alıştıralım(run)
+r
+# Birka&amp;ccedil; satır ilerleyelim
+n
+n
+n
+# change_level fonksiyonu i&amp;ccedil;inde tanımlanan local değişkenlere bir bakalım
+info locals
+#pointer değerini okuyalım (Tabii siz denerken adres farklı olacaktır)
+x /d 0x5555555a5af0
+
+# Kodu ilerletip scope'u sonlandıralım. Yani fonksiyon işleyişini tamamlayalım.
+n
+n
+# Şimdi tekrar aşağıdaki komutu &amp;ccedil;alıştıralım
+x /d 0x5555555a5af0
+
+# sonu&amp;ccedil; 0 olmalı. Bu Smart Pointer'ın s&amp;ouml;ylediği &amp;uuml;zere ilgili bellek b&amp;ouml;lgesinin kaldırıldığı anlamına gelir.&lt;/pre&gt;
+&lt;p&gt;&amp;Ccedil;alışma zamanı sonu&amp;ccedil;ları aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Subat/debugging_4.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere fonksiyon dışına &amp;ccedil;ıkıldığında ilgili adres değeri 0 olarak elde edilmiştir. Smart Pointer'ın &amp;ccedil;alıştığının bir nevi ispatı olarak d&amp;uuml;ş&amp;uuml;nebiliriz. Tabii b&amp;uuml;y&amp;uuml;k projelerde ve kalabalık kod par&amp;ccedil;alarında GDB ile debug işlemleri &amp;ccedil;ok kolay olmayabilir. Hatta sağlıklı loglar daha &amp;ccedil;ok işe yarayabilir. Yine de i&amp;ccedil; dinamikleri &amp;ouml;ğrenme aşamasındayken bu debugger'ı kullanmak bence olduk&amp;ccedil;a &amp;ouml;nemli. B&amp;ouml;ylece geldik Rust Pratiklerinde bir b&amp;ouml;l&amp;uuml;m&amp;uuml;n daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2022-02-27 09:00:00</pubDate>
+  <slug>rust-pratikleri-gdb-ile-debug-islemleri</slug>
+  <tags>
+    <tag>rust</tag>
+    <tag>rust-pratikleri</tag>
+    <tag>rust-programming-language</tag>
+    <tag>debugging</tag>
+    <tag>gdb</tag>
+    <tag>gnu-debugger</tag>
+    <tag>ubuntu</tag>
+  </tags>
+  <categories>
+    <category>Rust</category>
+  </categories>
+</post>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>İlişkili Tabloları DataSet İle Kullanmak - 1</title>
+  <description>Bugünkü makalemizde, aralarında relationship (ilişki) bulunan tabloların, bir DataSet nesnesinin bellekte temsil ettiği alanda nasıl saklandığını incelemeye çalışıcacağız. Bunu yaparken de, geliştireceğimiz uygulama ile parant-child (ebeveyn-çocuk) yada master-detail (efendi-detay) adı verilen ilişkileri taşıyan tablolarımızı bir windows application’da bir dataGrid nesnesi ile nasıl kolayca göstereceğimizi göreceğ</description>
+  <content>&lt;p&gt;Değerli Okurlarım, Merhabalar.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Bug&amp;uuml;nk&amp;uuml; makalemizde, aralarında relationship (ilişki) bulunan tabloların, bir DataSet nesnesinin bellekte temsil ettiği alanda nasıl saklandığını incelemeye &amp;ccedil;alışıcacağız. Bunu yaparken de, geliştireceğimiz uygulama ile parant-child (ebeveyn-&amp;ccedil;ocuk) yada master-detail (efendi-detay) adı verilen ilişkileri taşıyan tablolarımızı bir windows application&amp;rsquo;da bir dataGrid nesnesi ile nasıl kolayca g&amp;ouml;stereceğimizi g&amp;ouml;receğiz.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;İşin sırrı Olin&amp;rsquo;de diye bir reklam vardı eskiden. Şimdi aklıma o reklam geldi. Burada da işin sırrı DataRelation adı verilen sınıftadır. DataRelation sınıfına ait nesneler, aralarında ilişkisel bağ olan tablolarının, aralarındaki ilişkiyi temsil ederler. Bir DataRelation nesnesi kullandığımızda, bu nesneyi mutlaka bir DataSet sınıfı nesnesine eklememiz gerekmektedir. Dolayısıyla DataSet sınıfımız, aralarında ilişki olan tabloları temsil eden DataTable nesnelerini ve bu tablolar arasındaki ilişkiyi temsil eden DataRelation nesnesini(lerini) taşımak durumundadır.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Aşağıdaki şekil ile , bu konuyu zihnimizde daha kolay canlandırabiliriz. S&amp;ouml;z konusu tablolar, yazacağımız uygulamayada da kullanacağımız tablolardır. Dikkat edilecek olursa buradaki iki tablo arasında Siparis isimli tablodan, Sepet isimli tabloya bire-&amp;ccedil;ok ( one to many ) bir ilişki s&amp;ouml;z konusudur. DataRelation nesnemiz bu ilişkiyi DataSet i&amp;ccedil;inde temsil etmektedir.&amp;nbsp;&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left;" align="center"&gt;&lt;img src="/makale/images/mk16_1.gif" alt="" width="500" height="400" /&gt;&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left;" align="center"&gt;&lt;em&gt;Şekil 1 . DataRelation&amp;nbsp;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Bir DataRelation nesnesi oluşturmak i&amp;ccedil;in kullanabileceğimiz Constructor metodlar şunlardır.&amp;nbsp;&lt;/p&gt;
+&lt;div&gt;
+&lt;table id="AutoNumber1" style="width: 58%;" border="1" cellspacing="1" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="100%"&gt;1 - public DataRelation(string, DataColumn, DataColumn);&amp;nbsp;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="100%"&gt;
+&lt;p&gt;2 - public DataRelation(string, DataColumn[], DataColumn[]);&amp;nbsp;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="100%"&gt;
+&lt;p&gt;3 - public DataRelation(string, DataColumn, DataColumn, bool);&amp;nbsp;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="100%"&gt;
+&lt;p&gt;4 -public DataRelation(string, DataColumn[], DataColumn[], bool);&amp;nbsp;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;p&gt;T&amp;uuml;m yapıcı metodlar ilk parametre olarak DataRelation i&amp;ccedil;in string t&amp;uuml;rde bir isim alırlar. İl yapıcı metodumuz, iki adet DataColumn tipinde parametre almaktadır. İlk parametre master tabloya ati primary key alanını, ikinci DataColumn parametresi ise detail tabloya ait secondary key alanını temsil etmektedir.&amp;nbsp;İkinci yapıcı metodu ise aralarındaki ilişkiler birden fazla tablo alanına bağlı olan tablo ilişkilerini tanımlamak i&amp;ccedil;indir. Dikkat edilicek olursa, DataColumn[] dizileri s&amp;ouml;z konusudur.&amp;Uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; ve d&amp;ouml;rd&amp;uuml;nc&amp;uuml; yapıcılarında kullanım tarzaları bir ve ikinci yapıcılar ile benzer olmasına karşın aldıkları bool tipinde d&amp;ouml;rd&amp;uuml;nc&amp;uuml; bir parametre daha vardır. D&amp;ouml;rd&amp;uuml;nc&amp;uuml; parametre , tablolar arası kullanılacak veri b&amp;uuml;t&amp;uuml;nl&amp;uuml;ğ&amp;uuml; kuralları uygulanacak ise True değerini alır eğer bu kurallar uygulanmayacak ise false değeri verilir. &amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Şimdi gelin kısa bir uygulama ile bu konuyu işleyelim. Uygulamamızda kullanılan tablolara ait alanlar ve &amp;ouml;zellikleri ş&amp;ouml;yledir. İlk tablomuz Siparis isimli tablomuz. Bu tabloda kullanıcının vermiş olduğu siparişin numarası ve tarihi ile ilgili bilgiler tutuluyor. Bu tablo bizim parent( master) tablomuzdur.&amp;nbsp;&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left;" align="center"&gt;&lt;em style="mso-bidi-font-style: normal;"&gt; &amp;nbsp;&lt;img src="/makale/images/mk16_2.gif" alt="" width="356" height="200" /&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left;" align="center"&gt;&lt;em style="mso-bidi-font-style: normal;"&gt; Şekil 2. Siparis Tablosu&lt;/em&gt; &amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Diğer tablomuzda ise, verilen siparişin hangi &amp;uuml;r&amp;uuml;nlerden oluştuğuna dair bilgiler yer almakta.Bu tablomuz ise bizim child tablomuzdur.&amp;nbsp;&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left;" align="center"&gt;&lt;em style="mso-bidi-font-style: normal;"&gt; &lt;img src="/makale/images/mk16_3.gif" alt="" width="358" height="191" /&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left;" align="center"&gt;&lt;em style="mso-bidi-font-style: normal;"&gt; Şekil 3. Sepet Tablosu&lt;/em&gt; &amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Uygulamamızı bir windows application olarak geliştireceğim. Bu nedenle vs.net ortamında, yeni bir windows application oluşturuyoruz. Sayfanın tasarımı son derece basit. Bir adet dataGrid nesnemiz var ve bu nesnemiz ilişkil tabloların kayıtlarını g&amp;ouml;sterecek.&amp;nbsp;Dilerseniz kodlarımızı yazmaya başlayalım.&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void Form1_Load(object sender, System.EventArgs e)
+{
+     /* &amp;Ouml;nce sql sunucumuzda yer alan Friends isimli veritabanımız i&amp;ccedil;in bir bağlantı nesnesi oluşturuyoruz. */
+
+     SqlConnection conFriends=new SqlConnection("data source=localhost;initial catalog=Friends;integrated security=sspi"); 
+     /* SqlDataAdapter nesneleri yardımıyla, Friends veritabanında yer alan Siparis ve Sepet tablolarındaki verileri alıyoruz ve sonrada bunları DataTable nesnelerimize aktarıyoruz.*/
+
+     SqlDataAdapter daSiparis=new SqlDataAdapter("Select * From Siparis",conFriends);
+     SqlDataAdapter daSepet=new SqlDataAdapter("Select * From Sepet",conFriends);
+     DataTable dtSiparis=new DataTable("Siparisler");
+     DataTable dtSepet=new DataTable("SiparisDetaylari"); 
+     daSiparis.Fill(dtSiparis);
+     daSepet.Fill(dtSepet); 
+     /* Şimdi ise bu iki tablo arasındaki bire &amp;ccedil;ok ilişkiyi temsil edecek DataRelation nesmemizi oluşturuyoruz. */ 
+
+     DataRelation drSiparisToSepet=new DataRelation("Siparis_To_Sepet",dtSiparis.Columns["SiparisID"],dtSepet.Columns["SiparisID"]);
+     /* Artık oluşturduğumuz bu DataTable nesnelerini ve DataRelation nesnemizi DataSet nesnemize ekleyebiliriz. Dikkat edicek olursanız, DataRelation nesnemizi dataSet nesnemizin Relations koleksiyonuna ekledik. DataRelation nesneleri DataTable nesneleri gibi DataSet'e ait ilgili koleksiyonlarda tutulmaktadırlar. Dolayısıyla bir DataSet'e birden fazla tabloyu nasıl ekleyebiliyorsak birden fazla ilişkiyide ekleyebiliriz. */
+
+     DataSet ds=new DataSet();
+     ds.Tables.Add(dtSiparis);
+     ds.Tables.Add(dtSepet);
+     ds.Relations.Add(drSiparisToSepet);
+     /* Şimdi ise dataGrid nesnemizi dataSet nesnemiz ile ilişkilendirelim */
+
+     dataGrid1.DataSource=ds.Tables["Siparisler"];
+}  &lt;/pre&gt;
+&lt;p&gt;Uygulamamızı &amp;ccedil;alıştrıdığımızda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;n&amp;uuml; elde ederiz. G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi Siparis tablosundaki veriler g&amp;ouml;r&amp;uuml;nmektedir. L&amp;uuml;tfen satırların yanlarındaki + işaretine dikkat edelim.( Şekil 4) Bu artı işaretine tıkladığımızda oluşturmuş olduğumuz DataRelation&amp;rsquo;ın adını g&amp;ouml;r&amp;uuml;r&amp;uuml;z.(Şekil 5 ) &amp;nbsp;&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left;" align="center"&gt;&lt;em style="mso-bidi-font-style: normal;"&gt; &amp;nbsp;&lt;img src="/makale/images/mk16_4.gif" alt="" width="246" height="169" /&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left;" align="center"&gt;&lt;em style="mso-bidi-font-style: normal;"&gt; Şekil 4.&lt;/em&gt; &amp;nbsp;&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left;" align="center"&gt;&lt;em style="mso-bidi-font-style: normal;"&gt; &lt;img src="/makale/images/mk16_5.gif" alt="" width="185" height="148" /&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left;" align="center"&gt;&lt;em style="mso-bidi-font-style: normal;"&gt; Şekil 5.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Bu isimler birer link i&amp;ccedil;ermektedir. Bu linklerden birine tıkladığımızda bu satıra ait detaylı bilgiler child tablodan(Sepet) g&amp;ouml;sterilirler. (Şekil 6)&amp;nbsp;&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left;" align="center"&gt;&lt;em style="mso-bidi-font-style: normal;"&gt; &lt;img src="/makale/images/mk16_6.gif" alt="" width="559" height="167" /&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left;" align="center"&gt;&lt;em style="mso-bidi-font-style: normal;"&gt; Şekil 6.&lt;/em&gt; &amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Bir sonraki makalemizde tablolar arasındaki veri b&amp;uuml;t&amp;uuml;nl&amp;uuml;ğ&amp;uuml;n&amp;uuml; sağlayan Constraint kurallarının nasıl DataSet&amp;rsquo;e aktarıldığını inceleyeceğiz. Geldik bir makalemizin daha sonuna. Hepinize mutlu g&amp;uuml;nler dilerim.&amp;nbsp;&lt;/p&gt;</content>
+  <pubDate>2003-12-09 10:00:00</pubDate>
+  <slug>Iliskili-Tablolarc4b1-DataSet-Ile-Kullanmak-1c2a0-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>adonet</tag>
+    <tag>dataset</tag>
+  </tags>
+  <categories>
+    <category>Ado.Net</category>
+  </categories>
+</post>

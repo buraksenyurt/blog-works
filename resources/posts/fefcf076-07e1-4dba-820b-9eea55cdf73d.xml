@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Biyütıful Kod - Ninject ile Bir Dependency Injection Macerası</title>
+  <description>Her yazılım geliştirici özellikle büyük bir projeye girdiğinde kodlarının kaliteli olması için uğraşır. Bu yönde adımlar atar. Çoğu zaman bu bir sanata dahi dönüşebilir. Okunabilir kodlar oluşturmanın dışında, mimari açıdan büyüleyici olan, yeniden kullanılabilirliğin üst seviyede olduğu, fazla uğraşılmadan genişleyebilen ürünler ortaya çıkartmak en büyük gayelerden birisi haline gelir. Martin Fowler' ın ilkeleri sıkı sıkıya takip edilir. Kurumsal çözüm içerisinde Fluent API' ler kullanılmaya, "Dependency Injection Container" gibi kavramlar konuşulmaya başlanır. Ne kadar başarılabilir bilinmez ama amaçlardan birisi de Biyütıful Kodu ortaya çıkartmaktır.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/legoninjas.jpg"&gt;&lt;img style="background-image: none; float: right; padding-top: 0px; padding-left: 0px; margin: 4px 0px; display: inline; padding-right: 0px; border-width: 0px;" title="OLYMPUS DIGITAL CAMERA         " src="/pics/legoninjas_thumb.jpg" alt="OLYMPUS DIGITAL CAMERA         " width="280" height="180" align="right" border="0" /&gt;&lt;/a&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Her yazılım geliştirici &amp;ouml;zellikle b&amp;uuml;y&amp;uuml;k bir projeye girdiğinde kodlarının kaliteli olması i&amp;ccedil;in uğraşır. Bu y&amp;ouml;nde adımlar atar. &amp;Ccedil;oğu zaman bu bir sanata dahi d&amp;ouml;n&amp;uuml;şebilir. Okunabilir kodlar oluşturmanın dışında, mimari a&amp;ccedil;ıdan b&amp;uuml;y&amp;uuml;leyici olan, yeniden kullanılabilirliğin &amp;uuml;st seviyede olduğu, fazla uğraşılmadan genişleyebilen &amp;uuml;r&amp;uuml;nler ortaya &amp;ccedil;ıkartmak en b&amp;uuml;y&amp;uuml;k gayelerden birisi haline gelir. Martin Fowler' ın ilkeleri sıkı sıkıya takip edilir. Kurumsal &amp;ccedil;&amp;ouml;z&amp;uuml;m i&amp;ccedil;erisinde Fluent API' ler kullanılmaya, &lt;strong&gt;"Dependency Injection Container"&lt;/strong&gt; gibi kavramlar konuşulmaya başlanır. Ne kadar başarılabilir bilinmez ama ama&amp;ccedil;lardan birisi de Biy&amp;uuml;tıful Kodu ortaya &amp;ccedil;ıkartmaktır.&lt;/p&gt;
+&lt;h1&gt;Dependency Injection Container Hakkında&lt;/h1&gt;
+&lt;p&gt;Nesne y&amp;ouml;nelimli programlama&lt;em&gt;(Object Oriented Programming)&lt;/em&gt; d&amp;uuml;nyasından bakıldığında &lt;strong&gt;Dependency Injection&lt;/strong&gt;, yazılımların&lt;em&gt;(Software)&lt;/em&gt; harici bileşenlere&lt;em&gt;(External Components)&lt;/em&gt; olan bağımlılıklarının kontrol altın alınmasında &amp;ouml;nem arz eden bir prensiptir. Ama&amp;ccedil;, yazılımların kullandıkları bileşenler ile&lt;em&gt;(veya sınıfların birbirleri ile)&lt;/em&gt; gevşek bağlar&lt;em&gt;(loose coupling) &lt;/em&gt;kurabilmesini sağlamaktır. S&amp;ouml;z konusu prensibin kolayca uygulanabilmesi de &amp;ouml;nemlidir. &amp;Ouml;yle ki, gevşek bağlanan bileşenler arasında kolayca ve zahmetsizce ge&amp;ccedil;işler yapılabilmeli ya da sorumluluk zincirine yeni bağımlılıklar zahmetsizce eklenebilmelidir. &amp;Uuml;stelik bu değişiklikler koda minimum seviyede dokunarak ve sadece gerekli olanlar yeniden &lt;strong&gt;Build &lt;/strong&gt;edilerek yapılabilmelidir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Kısaca Dependency Injection, bileşenler arasındaki hard-coded bağımlılıkların, tasarım zamanı&lt;em&gt;(design time)&lt;/em&gt; yerine &amp;ccedil;alışma zamanında&lt;em&gt;(run time)&lt;/em&gt; enjekte edilmesidir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Bu esenkliğin pek &amp;ccedil;ok noktada faydası vardır. &amp;Ouml;rneğin;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Test g&amp;uuml;d&amp;uuml;ml&amp;uuml; geliştirilen&lt;em&gt;(Test Driven Development)&lt;/em&gt; uygulamalarda, o an i&amp;ccedil;in ihtiya&amp;ccedil; duyulmayan bileşenlerin sahteleri ile kolayca değiştirilerek birim testlerin&lt;em&gt;(Unit Test)&lt;/em&gt; &amp;ccedil;alıştırılmasında,&lt;/li&gt;
+&lt;li&gt;Miras olarak kalmış kod par&amp;ccedil;alarının&lt;em&gt;(Legacy Codes)&lt;/em&gt; yazılım tarafında fazla kod davranışı değiştirmeden kullanılabilmesinde,&lt;/li&gt;
+&lt;li&gt;Asıl uygulamaların yeniden derlenmeye gerek kalmadan kolayca bileşen değiştirebilmesinde,&lt;/li&gt;
+&lt;li&gt;Mikro servis mimarisinde,&lt;/li&gt;
+&lt;li&gt;Log' lama gibi Cross Cutting bileşenlerinin dış bağımlılıklarının esnek bir şekilde değiştirilebilmesinde,&lt;/li&gt;
+&lt;li&gt;İzole edilmiş 3nc&amp;uuml; parti bileşenler arasında ge&amp;ccedil;işler yapılabilmesinde,&lt;/li&gt;
+&lt;li&gt;Belli bir bağımlılığın n sayıda bileşene enjekte edilmesi gerektiği durumlarda&lt;em&gt;(&amp;Ouml;zellikle DAO-Data Access Object' ler de sıklıkla g&amp;ouml;rebiliriz)&lt;/em&gt;,&lt;/li&gt;
+&lt;li&gt;Bir bileşenin farklı &amp;ouml;rneklerinin diğer bileşenlere farklı konfigurasyonlar ile bağlanması gerektiği durumlarda vb...&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Depedency Injection&lt;/strong&gt; ile ilişkili olarak akla gelen en b&amp;uuml;y&amp;uuml;k soru aslında ne zaman kullanılması gerektiğidir. Bu noktada &lt;a href="http://blog.ploeh.dk/2012/11/06/WhentouseaDIContainer/" target="_blank"&gt;şu adresteki&lt;/a&gt; makaleyi takip etmenizi şiddetle &amp;ouml;neririm.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Yukarıda bahsettiğimiz vakalar g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında &lt;strong&gt;Dependency Injetcion&lt;/strong&gt;' ın basit&amp;ccedil;e uygulanmasının da &amp;ouml;nemli olduğunu ifade edebiliriz. Bunun i&amp;ccedil;in geliştirilmiş pek &amp;ccedil;ok &lt;strong&gt;Container &lt;/strong&gt;k&amp;uuml;t&amp;uuml;phanesi mevcuttur. En pop&amp;uuml;lerleri &lt;strong&gt;Castle Windsor&lt;/strong&gt;, &lt;strong&gt;Spring.Net&lt;/strong&gt;, &lt;strong&gt;Unity &lt;/strong&gt;ve &lt;strong&gt;Ninject' &lt;/strong&gt;tir. Elbette kendimiz de bir Dependency Injection Container bileşeni yazabiliriz. Ancak kurumsal &amp;ccedil;aptaki uygulamalarda &amp;ccedil;oğunlukla hazır k&amp;uuml;t&amp;uuml;phanelerden faydalanıldığını da unutmamalıyız&lt;em&gt;(Reinventing the Square Wheel gibi bir anti-pattern oluşmaması i&amp;ccedil;in. Tabi sıfırdan &amp;ouml;ğrenmek istiyorsak istisnai bir durum m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r)&lt;/em&gt;&lt;/p&gt;
+&lt;h1&gt;Başlangı&amp;ccedil;&lt;/h1&gt;
+&lt;p&gt;İşte bu yazımızdaki amacımız temel anlamda bu tip Container' ların nasıl kullanılabildiğini anlamaktır. Neredeyse t&amp;uuml;m &lt;strong&gt;Conatiner &lt;/strong&gt;ara&amp;ccedil;ları aynı temeller &amp;uuml;zerine oturmaktadır. &lt;strong&gt;Ninject &lt;/strong&gt;k&amp;uuml;t&amp;uuml;phanesini g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alarak ilerlemeye &amp;ccedil;alışalım. Konuyu basit&amp;ccedil;e değerlendirmek i&amp;ccedil;in ele alacağımız &lt;strong&gt;Console &lt;/strong&gt;uygulamasına &lt;strong&gt;Ninject &lt;/strong&gt;k&amp;uuml;t&amp;uuml;phanesini &lt;strong&gt;NuGet &lt;/strong&gt;paket y&amp;ouml;netim aracı ile y&amp;uuml;kleyerek devam edebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/htn_1.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="htn_1" src="/pics/htn_1_thumb.png" alt="htn_1" width="420" height="236" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Ninject a&amp;ccedil;ık kaynak kodlu bir projedir. &lt;a href="https://github.com/ninject/ninject" target="_blank"&gt;GitHub&lt;/a&gt; &amp;uuml;zerinden bakılabilir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1&gt;İlk Kodlar&lt;/h1&gt;
+&lt;p&gt;&lt;strong&gt;Ninject&lt;/strong&gt; ile bağımlılıkları enjekte etmeden &amp;ouml;nce aşağıdaki gibi bir kod i&amp;ccedil;eriğine sahip olduğumuzu d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/htn_2.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="htn_2" src="/pics/htn_2_thumb.png" alt="htn_2" width="521" height="425" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace HowTo_UsingNinject 
+{ 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; class Program 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; static void Main(string[] args) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; IEncryptor dv = new DaVinciEncryptor(); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; MessageProvider provider = new MessageProvider(dv); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; string encryptedMessage=provider.EncryptMessage("Bir not"); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; string decryptedMessage = provider.DecryptMessage(encryptedMessage); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; class MessageProvider 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; private IEncryptor _encryptor; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public MessageProvider(IEncryptor Encryptor) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; _encryptor = Encryptor; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public string EncryptMessage(string Message) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; return _encryptor.Encrypt(Message); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public string DecryptMessage(string Message) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; return _encryptor.Decrypt(Message); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; interface IEncryptor 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; string Encrypt(string Message); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; string Decrypt(string Message); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; class MichalengeloEncryptor 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; : IEncryptor 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public string Decrypt(string Message) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; // Bir takım işlemler yapıldığını d&amp;uuml;ş&amp;uuml;nelim 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; return Message; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public string Encrypt(string Message) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; // Bir takım işlemler yapıldığını d&amp;uuml;ş&amp;uuml;nelim 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; return Message; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; class DaVinciEncryptor 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; : IEncryptor 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public string Decrypt(string Message) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; // Bir takım işlemler yapıldığını d&amp;uuml;ş&amp;uuml;nelim 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; return Message; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public string Encrypt(string Message) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; // Bir takım işlemler yapıldığını d&amp;uuml;ş&amp;uuml;nelim 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; return Message; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+}&lt;/pre&gt;
+&lt;h1&gt;İlk Kod Par&amp;ccedil;asında Ne Yaptık?&lt;/h1&gt;
+&lt;p&gt;&amp;Ouml;rnek senaryoda bir mesajlaşma sisteminde hareket eden i&amp;ccedil;eriklerin şifrelenme ile ilgili işlemlerin ele alındığını ifade edebiliriz. &lt;strong&gt;IEncryptor &lt;/strong&gt;isimli aray&amp;uuml;z&lt;em&gt;(Interface) &lt;/em&gt;bilginin şifrelenmesi veya şifrelenmiş bilginin &amp;ccedil;&amp;ouml;z&amp;uuml;lmesi i&amp;ccedil;in gerekli iki temel fonkisyonellik sunmaktadır. Asıl şifreleme işini ise&amp;nbsp; &lt;strong&gt;DaVinciEncryptor &lt;/strong&gt;ve &lt;strong&gt;MichalengeloEncryptor &lt;/strong&gt;isimli sınıflar &amp;uuml;stlenmektedir. Elbette yeni şifreleme teknikleri bu aray&amp;uuml;z s&amp;ouml;zleşmesinden yararlanılarak sisteme kolayca entegre edilebilir ve MessageProvider tarafında ele alınabilir. Bir nevi şifreleme s&amp;ouml;zleşmesi&lt;em&gt;(Contract) &lt;/em&gt;tanımladığımızı ve iki basit uyarlamasını hazırladığımızı d&amp;uuml;ş&amp;uuml;nebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;MessageProvider &lt;/strong&gt;sınıfı ise aslında manuel olarak bir &lt;strong&gt;Dependency Injection &lt;/strong&gt;uygulamaktadır. Dikkat edileceği &amp;uuml;zere yapıcı metod&lt;em&gt;(constructor)&lt;/em&gt; &lt;strong&gt;IEncryptor &lt;/strong&gt;aray&amp;uuml;z&amp;uuml; tipinden bir parametre almakta ve &lt;strong&gt;private &lt;/strong&gt;tanımlanmış &lt;strong&gt;_encrpytor&lt;/strong&gt; değişkeninin set edilmesinde kullanılmaktadır. Bu değişkenin alabileceği &amp;ccedil;alışma zamanı nesne &amp;ouml;rnekleri, &lt;strong&gt;IEncryptor &lt;/strong&gt;s&amp;ouml;zleşmesini uygulayan sınıflardan olabilir. İ&amp;ccedil;erdiği &lt;strong&gt;EncryptMessage &lt;/strong&gt;ve &lt;strong&gt;DecryptMessage &lt;/strong&gt;metodları ise, &amp;ccedil;alışma zamanında atanacak şifreleme tipini kullanmaktadır.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;nemli olan nokta ise; &lt;strong&gt;IEncryptor&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml;n taşıyacağı ger&amp;ccedil;ek nesne &amp;ouml;rneğinin ne olacağına &lt;strong&gt;MessageEncryptor&lt;/strong&gt; sınıfı i&amp;ccedil;inde değil, &lt;strong&gt;MessageEncryptor&lt;/strong&gt;' ı &amp;ccedil;ağıran yerde&lt;em&gt;(senaryoda Console uygulamasının kendisidir)&lt;/em&gt; karar verilmesidir.&lt;/p&gt;
+&lt;h1&gt;Ninject ile Bağımlılıkların Enjekte Edilmesi&lt;/h1&gt;
+&lt;p&gt;Peki bu manuel olarak bağımlılıkları enjekte etme y&amp;ouml;ntemi yerine &lt;strong&gt;Ninject &lt;/strong&gt;aracını kullanmak istesek nasıl bir yol izleriz? Dahası Ninject bize bu bağımlılıkların enjekte edilmesi noktasında nasıl bir avantaj sağlamaktadır? Kod i&amp;ccedil;eriğini aşağıdaki şekilde değiştirerek devam edelim bu soruların cevabını bulmaya &amp;ccedil;alışalım.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/htn_3.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="htn_3" src="/pics/htn_3_thumb.png" alt="htn_3" width="215" height="144" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Reflection; 
+using Ninject; 
+using Ninject.Modules;
+
+namespace HowTo_UsingNinject 
+{ 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; class Program 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; static void Main(string[] args) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; #region Ninject Kullanarak
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; IKernel kernel = new StandardKernel(); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; kernel.Load(new MessageBindingModule()); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; IEncryptor dv = kernel.Get&amp;lt;IEncryptor&amp;gt;();
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; MessageProvider provider = new MessageProvider(dv); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; string encryptedMessage = provider.EncryptMessage("Bir not"); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; string decryptedMessage = provider.DecryptMessage(encryptedMessage);
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; #endregion 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; class MessageBindingModule 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; :NinjectModule 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public override void Load() 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Bind&amp;lt;IEncryptor&amp;gt;().To&amp;lt;DaVinciEncryptor&amp;gt;(); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; // Diğer kodlar 
+}&lt;/pre&gt;
+&lt;p&gt;İlk dikkat edilmesi gereken nokta var olan sınıflarda ve aray&amp;uuml;z de herhangibir kod değişikliği &lt;span style="text-decoration: underline;"&gt;yapılmamış&lt;/span&gt; olmasıdır. Bağımlılıkların tanımlanması tamamen yeni bir sınıf i&amp;ccedil;erisinde ger&amp;ccedil;ekleştirilmektedir. &lt;strong&gt;MessageBindingModule &lt;/strong&gt;sınıfının ve &lt;strong&gt;Main &lt;/strong&gt;metodundaki enjekte etme adımlarının farklı bir &lt;strong&gt;assembly&lt;/strong&gt;' da olabileceğini d&amp;uuml;ş&amp;uuml;n&amp;uuml;rsek &amp;ouml;zellikle var olan bileşen yapılarını da bozmadan ilerlenebileceğini ifade edebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;MessageBindingModule&lt;/strong&gt;, &lt;strong&gt;NinjectModule&lt;/strong&gt; sınıfından t&amp;uuml;remiştir ve &lt;strong&gt;Load&lt;/strong&gt; metodu ezilmiştir. Bu mod&amp;uuml;l tahmin edileceği &amp;uuml;zere bağımlılıkların tanımlandığı yerdir. Koda g&amp;ouml;re &lt;strong&gt;IEncryptor &lt;/strong&gt;aray&amp;uuml;z&amp;uuml;n&amp;uuml;n &lt;strong&gt;DaVinciEncryptor&lt;/strong&gt;' a bağlanması s&amp;ouml;z konusudur ki bu &amp;ccedil;alışma zamanında icra edilecek bir operasyondur.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Mod&amp;uuml;l kullanımı bu tip bağımlılıkların tanımlanması i&amp;ccedil;in bir zorunluluk değildir. Farklı Injection Pattern teknikleri de bulunmaktadır. Diğer yandan &amp;ccedil;oklu bağımlılık tanımlamalarında(Multi Injection) mod&amp;uuml;l yaklaşımı tercih edilmelidir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Main&lt;/strong&gt; metodu i&amp;ccedil;erisinde ise dikkat &amp;ccedil;ekici işlemler vardır. &lt;strong&gt;IKernel&lt;/strong&gt; referansı bir &lt;strong&gt;StandartKernel&lt;/strong&gt; nesne &amp;ouml;rneği olarak alındıktan sonra bağımlılıkların &lt;strong&gt;Load&lt;/strong&gt; metodu i&amp;ccedil;erisine verilen &lt;strong&gt;MessageBindingModule&lt;/strong&gt; &amp;uuml;zerinden yapılması gerektiği ifade edilmektedir. &lt;strong&gt;kernel.Get&amp;lt;T&amp;gt;&lt;/strong&gt; metoduna verilen aray&amp;uuml;z adı, mod&amp;uuml;l i&amp;ccedil;erisindeki &lt;strong&gt;Load &lt;/strong&gt;metodunca otomatik olarak bulunacak ve geriye &lt;strong&gt;DaVinciEncryptor&lt;/strong&gt; &amp;ouml;rneği d&amp;ouml;nd&amp;uuml;r&amp;uuml;lecektir. Kodun geri kalan kısmında yapılanlar ise aynıdır.&lt;/p&gt;
+&lt;h1&gt;Nasıl Bir Avantaj?&lt;/h1&gt;
+&lt;p&gt;Aslında &lt;strong&gt;Ninject&lt;/strong&gt; ile bağımlılıkları enjekte ettiğimiz yukarıdaki &amp;ouml;rnekte &amp;ccedil;ok da fazla avantaj yok gibi g&amp;ouml;r&amp;uuml;nmektedir. Hatta manuel yazdığımız &amp;ouml;rnektekine g&amp;ouml;re daha fazla kod satırı oluştuğunu d&amp;uuml;ş&amp;uuml;nebiliriz. &lt;strong&gt;Ninject&lt;/strong&gt;' in veya benzer bir &lt;strong&gt;Container&lt;/strong&gt;' ın hangi noktada avatantaj sağladığını g&amp;ouml;rmek i&amp;ccedil;in, bileşenler arası bağımlılıkların sayısının arttığını d&amp;uuml;ş&amp;uuml;nmemiz yerinde olacaktır. Nitekim bir ger&amp;ccedil;ek hayat projesinde bileşenler arasındaki bağımlılıkların proje b&amp;uuml;y&amp;uuml;d&amp;uuml;k&amp;ccedil;e arttığı g&amp;ouml;zlemlenir. Bu artış sonrası bağımlılık zincirlerinin tesit edilmesi, component&amp;rsquo; ler in değiştirilmesi giderek zorlaşır. İşte b&amp;ouml;yle bir durumda bağımlılıkları otomatik olarak algılayabilecek ve kod eforunu aza indirgeyecek &lt;strong&gt;Container'&lt;/strong&gt; ların kullanılması &amp;ouml;nemlidir.&lt;/p&gt;
+&lt;p&gt;Bu anlamda senaryoya ş&amp;ouml;yle bir ek yaptığımızı d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;interface IAlgorithmProcessor 
+{ 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; string Calculate(string Info); 
+}
+
+class IntelligenceProcessor 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; : IAlgorithmProcessor 
+{ 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; public string Calculate(string Info) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; // Bir algoritma kullanılıyor 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; return Info; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+}
+
+class MichalengeloEncryptor 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; : IEncryptor 
+{ 
+&amp;nbsp;&amp;nbsp; private IAlgorithmProcessor _processor;
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; public MichalengeloEncryptor(IAlgorithmProcessor Processor) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; _processor = Processor; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; public string Decrypt(string Message) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; {&amp;nbsp;&amp;nbsp; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; // Bir takım işlemler yapıldığını d&amp;uuml;ş&amp;uuml;nelim 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; return _processor.Calculate(Message); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; public string Encrypt(string Message) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; // Bir takım işlemler yapıldığını d&amp;uuml;ş&amp;uuml;nelim 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; return _processor.Calculate(Message); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;MichalengeloEncryptor&lt;/strong&gt; i&amp;ccedil;erisinde &lt;strong&gt;IAlgorithmProcessor&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml; uygulayan sınıflar i&amp;ccedil;in bir bağımlılık daha s&amp;ouml;z konusudur. &amp;Ccedil;ok doğal olarak &lt;strong&gt;MessageProvider&lt;/strong&gt; sınıfı da bu bağımlılık &amp;uuml;zerinden &lt;strong&gt;IAlgorithmProcessor'&lt;/strong&gt; a bağlanmıştır. Bu yeni bağımlılığın sisteme enjekte edilmesi i&amp;ccedil;in &lt;strong&gt;Ninject &lt;/strong&gt;mod&amp;uuml;l&amp;uuml; i&amp;ccedil;erisinde aşağıdaki kodlamayı yapmak yeterli olacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;class MessageBindingModule 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; :NinjectModule 
+{ 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; public override void Load() 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Bind&amp;lt;IEncryptor&amp;gt;().To&amp;lt;MichalengeloEncryptor&amp;gt;(); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Bind&amp;lt;IAlgorithmProcessor&amp;gt;().To&amp;lt;IntelligenceProcessor&amp;gt;(); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+}&lt;/pre&gt;
+&lt;p&gt;Dolayısıyla bir &lt;strong&gt;Dependency Injection Container&lt;/strong&gt; bileşeni, uygulamada kullanılan sınıflar arası bağımlılıklar arttık&amp;ccedil;a etkisini g&amp;ouml;sterecektir. &lt;strong&gt;Ninject Container &lt;/strong&gt;aracını kullanmak g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere son derece kolaydır. Diğer yandan aracın &amp;ccedil;ok daha farklı yetenekleri bulunmaktadır. Ninject pop&amp;uuml;ler olanlarından sadece birisidir. Diğerleri de benzer ilkeler ile &amp;ccedil;alışmakta ve temel olarak &lt;strong&gt;IoC&lt;em&gt;(Inversion of Control)&lt;/em&gt;&lt;/strong&gt; prensibini baz almaktadır.&lt;/p&gt;
+&lt;p&gt;Bu yazımızda &lt;strong&gt;Ninject &lt;/strong&gt;aracının &amp;ccedil;ok basit seviyede bağımlılıkları enjekte etme notkasında nasıl kullanılabileceği ele alınmıştır. &lt;a href="http://www.ninject.org/learn.html" target="_blank"&gt;Detaylı bilgi i&amp;ccedil;in Dojo' ya&lt;/a&gt;&amp;nbsp; uğramanız gerekmektedir. İlerleyen g&amp;uuml;nlerde Ninject ile bağımlılıkların farklı seviyelerde nasıl oluşturulabileceğini de incelemeye &amp;ccedil;alışacağız. Yani yapıcı metod haricindeki metodlarda veya &amp;ouml;zellik&lt;em&gt;(Property) &lt;/em&gt;seviyesinde bu bağımlılıkları nasıl tanımlayabileceğimize bakacağız. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2015-01-04 20:00:00</pubDate>
+  <slug>Biyutiful-Kod-Ninject-ile-Bir-Dependency-Injection-Macerasi</slug>
+  <tags>
+    <tag>dependency-injection</tag>
+    <tag>ninject</tag>
+    <tag>design-principles</tag>
+    <tag>software-design-principles</tag>
+    <tag>c#</tag>
+    <tag>net</tag>
+    <tag>inversion-of-control</tag>
+    <tag>dependency-injection-container</tag>
+  </tags>
+  <categories>
+    <category>C#</category>
+    <category>Tasarım Prensipleri(Design Principles)</category>
+  </categories>
+</post>

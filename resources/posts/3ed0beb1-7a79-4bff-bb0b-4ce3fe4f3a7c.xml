@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WCF 4.0 Yenilikleri - Default EndPoints [Beta 1]</title>
+  <description>Çok eskinden .Net Remoting ile ilişkili uygulamalarda çalışırken, servis ve istemci taraflarının konfigurasyon dosyası bazlı ayarlamaları sırasında, Visual Studio.Net 2003 intelli-sense özelliğinin kaybolduğuna şahit olmuştum.  Gerçektende config dosyası içerisindeki intelli-sense özelliği belirli bir elemente kadar destek veriyor ama sonrasında kayboluyordu. Böyle bir durumda pek çok ayarlamayı ezbere yapmak zorunda kaldığımı hatırlıyorum.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/pics/2009%2f8%2fblg59_Giris.jpg" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;ok&amp;nbsp;eskinden &lt;strong&gt;.Net Remoting&lt;/strong&gt; ile ilişkili uygulamalarda &amp;ccedil;alışırken, servis&amp;nbsp;ve istemci taraflarının konfigurasyon dosyası bazlı ayarlamaları sırasında,&amp;nbsp;&lt;strong&gt;Visual Studio.Net 2003&lt;/strong&gt; &lt;strong&gt;intelli-sense &lt;/strong&gt;&amp;ouml;zelliğinin kaybolduğuna şahit olmuştum.&amp;nbsp; Ger&amp;ccedil;ektende &lt;strong&gt;config&lt;/strong&gt; dosyası i&amp;ccedil;erisindeki&lt;strong&gt; intelli-sense&lt;/strong&gt; &amp;ouml;zelliği belirli bir elemente kadar destek veriyor ama sonrasında kayboluyordu. B&amp;ouml;yle bir durumda pek &amp;ccedil;ok ayarlamayı ezbere yapmak zorunda kaldığımı hatırlıyorum.&lt;/p&gt;
+&lt;p&gt;Bu durum,&amp;nbsp;&lt;strong&gt;.Net Remoting &lt;/strong&gt;tabanlı&amp;nbsp;&lt;strong&gt;dağıtık uygulamaların(Distributed Applications)&amp;nbsp;TCP&lt;/strong&gt; bazlı hızlı bir iletişim sağlama avantajını kimi zaman g&amp;ouml;z ardı ettirebilen bir zorluktur. Nitekim ezbere kod yazmak,&amp;nbsp;hi&amp;ccedil; bir zaman iyi bir şey değildir. &amp;Ouml;zellikle işlerin arap sa&amp;ccedil;ına d&amp;ouml;nmesine neden olabilir.&lt;/p&gt;
+&lt;p&gt;Gel gelelim bir&amp;nbsp;başka dağıtık uygulama geliştirme modeli olan&amp;nbsp;&lt;strong&gt;Xml Web Servislerinde, .Net Remoting &lt;/strong&gt;i&amp;ccedil;in karşılaştığımız ayarlama zorluklarını g&amp;ouml;remeyiz. &amp;Ouml;yleki, &lt;strong&gt;WebService&lt;/strong&gt; ve &lt;strong&gt;WebMethod niteliklerinin(Attributes) &lt;/strong&gt;kullanılması yeterli olmaktadır. &amp;Ccedil;&amp;uuml;nk&amp;uuml; &amp;ccedil;alışma zamanı, bu niteliklere g&amp;ouml;re otomatik olarak servis tarafını ayağa kaldırır.&lt;/p&gt;
+&lt;p&gt;Ancak &lt;strong&gt;WCF(Windows Communication Foundation)&lt;/strong&gt; tarafına ge&amp;ccedil;tiğimizde konfigurasyon tarafında g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınması gereken &amp;ccedil;ok fazla şey olduğunu g&amp;ouml;rd&amp;uuml;k. &lt;strong&gt;WCF'&lt;/strong&gt; in pek &amp;ccedil;ok dağıtık uygulama geliştirme modelini tek bir &amp;ccedil;atı altında birleştirmesinin oluşturduğu zorluklardan biriside, &amp;ccedil;ok fazla ince ayarı i&amp;ccedil;ermesi olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Hal b&amp;ouml;yle olunca WCF takımı boş durmamış ve&lt;strong&gt; 4.0&lt;/strong&gt; versiyonunda daha kolay konfigrasyon yapılabilmesini sağlamak adına bir takım geliştirmelerde bulunmuştur&lt;em&gt;.(&amp;Ouml;rneklerimizi Visual Studio 2010 Beta 1 ve .Net Framework 4.0 Beta 1 &amp;uuml;zerinde geliştirdiğimizden, Release s&amp;uuml;r&amp;uuml;mde bir takım değişiklikler veya farklılıklar olabileceğini hatırlatmak isterim)&lt;/em&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Bu geliştirmelerden birisi &lt;strong&gt;DefaultEndPoints&lt;/strong&gt; kavramıdır. Bu &amp;ouml;zelliği, varsayılan olarak &lt;strong&gt;EndPoint&lt;/strong&gt; adreslerinin biz s&amp;ouml;ylemeden &amp;ccedil;alışma zamanına entegre edilmesinin sağlanması olarak d&amp;uuml;ş&amp;uuml;nebiliriz. Aslında olaya &lt;strong&gt;.Net 3.0/3.5&lt;/strong&gt; a&amp;ccedil;ısından bakmamızda yarar vardır. Bu nedenle &lt;strong&gt;.Net 3.5&lt;/strong&gt;&amp;nbsp;tabanlı geliştirilmiş aşağıdaki Console uygulamasını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+
+namespace OldStyle
+{
+    [ServiceContract]
+    interface IProductService
+    {
+        [OperationContract]
+        double GetExpensiveProduct(int categoryId);
+    }
+
+    class ProductService
+        : IProductService
+    {
+        public double GetExpensiveProduct(int categoryId)
+        {
+            Random rnd = new Random();
+            double price = rnd.NextDouble() * 100;
+            return price;
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            ServiceHost host = new ServiceHost(
+                typeof(ProductService),
+                new Uri("net.tcp://localhost:1500/adventure/"),
+                new Uri("http://localhost:1400/adventure/")
+                );
+
+            // Herhangibir configurasyon tanımlaması ve &amp;ouml;zellikle EndPoint bildirilmeleri yapılmadığı i&amp;ccedil;in Open metodundan sonra &amp;ccedil;alışma zamanı istisnası alınır(Runtime Exception)
+            // Dolayısıyla ya kod tarafında yada config dosyasında EndPoint bildirimleri yapılmalıdır.
+            host.Open();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Uyulamada basit bir servis kullanılmaktadır. &lt;strong&gt;ServiceHost&lt;/strong&gt; nesne &amp;ouml;rneğinin oluşturulması sırasında, iki farklı &lt;strong&gt;Uri&lt;/strong&gt; bilgisi verildiğine dikkat etmeliyiz. Bunlardan birisi &lt;strong&gt;Tcp &lt;/strong&gt;bazlı diğeri ise &lt;strong&gt;Http&lt;/strong&gt; bazlı iletişimleri desteklemektedir. ServiceHost nesnesi, &amp;ouml;rneklenmesinin ardından istemcilerden gelecek talepleri dinlemek &amp;uuml;zere Open metodu ile a&amp;ccedil;ılmaktadır. Ancka &amp;ouml;rneği &amp;ccedil;alıştırdığımızda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; ile karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f8%2fblg59_Exception.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Hemen şunu belirteyim; uygulamamızda herhangibir konfigurasyon dosyası kullanmadık. Hal b&amp;ouml;yle olunca &lt;strong&gt;WCF &amp;ccedil;alışma zamanı&amp;nbsp;&lt;/strong&gt;belirtilen &lt;strong&gt;Uri'&lt;/strong&gt; ler i&amp;ccedil;in hangi &lt;strong&gt;EndPoint&lt;/strong&gt; tanımlamalarını kullanması gerektiğini bulamadı ve bir istisna fırlatarak uygulamanın sonlanmasına neden oldu. EndPoint kavramı WCF tarafının olmazsa olmaz b&amp;uuml;t&amp;uuml;nlerinden birisidir. Basit olarak servisin nerede durduğu, hangi hizmeti ve nasıl sunacağı ile ilişkili temel bilgileri i&amp;ccedil;ermektedir. Yani &lt;strong&gt;AddressBindingContract&lt;/strong&gt; kavramından&lt;strong&gt;(WCF'&amp;nbsp;in ABC' si)&lt;/strong&gt;&amp;nbsp;bahsediyoruz. Bir servis birden fazla EndPoint i&amp;ccedil;erebilir. Her ne olursa olsun, EndPoint' lerin ya config dosyası i&amp;ccedil;erisinde yada kod tarafında tanımlanıp eklenmesi gerekir. Peki aynı &amp;ouml;rneği .Net 4.0 tabanlı olarak Visual Studio 2010 &amp;uuml;zerinde geliştirseydik.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+using System.ServiceModel.Description;
+
+namespace DefaultEndPoints
+{
+    [ServiceContract]
+    interface IProductService
+    {
+        [OperationContract]
+        double GetExpensiveProduct(int categoryId);
+    }
+
+    class ProductService
+        : IProductService
+    {
+        public double GetExpensiveProduct(int categoryId)
+        {
+            Random rnd = new Random();
+            double price=rnd.NextDouble()*100;
+            return price;
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // ServiceHost nesnesi &amp;ouml;rneklenir
+            // İki farklı adres bilgisi verilmiştir. Bunlardan birisi tcp bazlı diğeri ise http bazlıdır
+            ServiceHost host = new ServiceHost(
+                typeof(ProductService),
+                new Uri("net.tcp://localhost:1500/adventure/"),
+                new Uri("http://localhost:1400/adventure/")
+                );
+
+            // Host a&amp;ccedil;ılır.
+            host.Open(); 
+            Console.WriteLine("Servis durumu {0}\n",host.State.ToString());
+            
+            // Ne config i&amp;ccedil;erisinde nede kod tarafında a&amp;ccedil;ık bir şekilde EndPoint bildirilimi yapılmamıştır. Buna rağmen &amp;ccedil;alışma zamanı ServiceHost nesnesinin yapıcı metodundaki Uri bilgilerinden yararlanarak varsayılan EndPoint bilgilerini oluşturmuştur.
+
+            // Servis i&amp;ccedil;in oluşturulan EndPoint' lerin listesi alınır
+            ServiceEndpointCollection endPoints = host.Description.Endpoints;
+
+            Console.WriteLine("{0} EndPoint oluşturuldu.\n",endPoints.Count.ToString());
+
+            // EndPoint nesnelerinin her biri dolaşılır
+            foreach (var endPoint in endPoints)
+            {
+                // EndPoint adı, adres(Address), bağlayıcı tip(Binding Type) adı, s&amp;ouml;zleşme(Contract) adı yazdılır.
+                Console.WriteLine("Name : {0} , Address : {1} , Binding : {2} , Contract : {3}\n", endPoint.Name,endPoint.Address.Uri,endPoint.Binding.Name,endPoint.Contract.Name);
+            }
+
+            Console.WriteLine("Kapatmak i&amp;ccedil;in bir tuşa basın");
+            Console.ReadLine();
+
+            host.Close();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu kez 4.0 ile birlikte gelen varsayılan EndPoint kavramına g&amp;uuml;venerek, y&amp;uuml;klenen EndPoint' lere ait bilgileride ekrana yazdırıyoruz. Ancak yine bilin&amp;ccedil;li olarak EndPoint oluşturmadığımızı veya config dosyası kullanmadığımızı belirtelim. Uygulamayı &amp;ccedil;alıştırdığımızda aşağıdaki sonu&amp;ccedil;lar ile karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f8%2fblg59_Scenario1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Hımmm... &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;Harika! &lt;strong&gt;Uri&lt;/strong&gt; bilgisindeki protokol tanımalamarına bakılarak, &amp;ccedil;alışma zamanı bizim i&amp;ccedil;in iki farklı &lt;strong&gt;EndPoint&lt;/strong&gt; bilgisini otomatik olarak oluşturmuştur. &lt;strong&gt;Tcp &lt;/strong&gt;bazlı adresleme i&amp;ccedil;in varsayılan olarak &lt;strong&gt;NetTcpBinding&lt;/strong&gt;,&lt;strong&gt; Http &lt;/strong&gt;bazlı adresleme i&amp;ccedil;inse varsayılan olarak &lt;strong&gt;BasicHttpBinding &lt;/strong&gt;bağlayıcı tipleri oluşturulmuştur. Diğer yandan &lt;strong&gt;Address&lt;/strong&gt; &amp;ouml;zelliklerinde, &lt;strong&gt;Uri&lt;/strong&gt; bilgisi sonuna &lt;strong&gt;s&amp;ouml;zleşme tipi(Contract Type)&lt;/strong&gt;&amp;nbsp;adının eklendiğine dikkat edilmelidir. Buradan şu sonuca varabiliriz. Servis tarafında ka&amp;ccedil; s&amp;ouml;zleşme ve adres sunuluyorsa bunların &amp;ccedil;arpanı kadar EndPoint otomatik olarak oluşturulacaktır. Elbetteki biz &lt;strong&gt;EndPoint&lt;/strong&gt; bildirimlerini bilin&amp;ccedil;li olarak yapmassak. Peki ya servis tarafında&amp;nbsp;&lt;strong&gt;EndPoint&lt;/strong&gt; bilgisini eklemişsek? &amp;Ouml;rneğin aşağıdaki kod par&amp;ccedil;asında olduğu gibi &lt;strong&gt;ServiceHost&lt;/strong&gt; nesnesinin &amp;ouml;rneklenmesinden sonra &lt;strong&gt;AddServiceEndpoint&lt;/strong&gt; metodunu kullanırsak...&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;host.AddServiceEndpoint(typeof(IProductService), new WSHttpBinding(), "");&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Bu durumda aynı &amp;ouml;rneğin &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı aşağıdaki gibi olacaktır.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f8%2fblg59_Scenario2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &amp;ccedil;alışma zamanı sadece bizim eklediğimiz &lt;strong&gt;EndPoint&lt;/strong&gt; bilgisini kullanmaktadır. Tam bu noktada&lt;strong&gt; WCF 4.0&lt;/strong&gt; ile birlikte gelen &lt;strong&gt;AddDefaultEndpoints&lt;/strong&gt; metodunu değerlendirmeye &amp;ccedil;alışalım. Normal şartlarda servis tarafına &lt;strong&gt;EndPoint&lt;/strong&gt; bilgilerini eklemessek, WCF &amp;ccedil;alışma zamanı, yeni gelen &lt;strong&gt;AddDefaultEndpoints&lt;/strong&gt; metodunu kullanmakta ve &lt;strong&gt;Uri&lt;/strong&gt; bilgilerine g&amp;ouml;re varsayılan atamaları yapmaktadır. Peki yukarıdaki gibi &lt;strong&gt;AddServiceEndpoint&lt;/strong&gt; metodundan sonra birde &lt;strong&gt;AddDefaultEndpoints&lt;/strong&gt; metodunu yukarıdaki &amp;ouml;rneğe g&amp;ouml;re aşağıdaki gibi kullanırsak...&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;host.AddDefaultEndpoints();&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Bu durumda &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f8%2fblg59_Scenario3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere hem bizim bilin&amp;ccedil;li olarak eklediğimiz hemde AddDefaultEndpoints metodu nedeniyle eklenen EndPoint bilgileri yer almaktadır. Yani WCF &amp;Ccedil;alışma ortamı 3 EndPoint noktasını kullanıma a&amp;ccedil;maktadır.&lt;/p&gt;
+&lt;p&gt;Ş&amp;uuml;phesizki bu yenilik, varsayılan olarak standart &lt;strong&gt;EndPoint&lt;/strong&gt; bilgilerini kullandığımız vakalarda son derece işe yarardır. Geliştiricinin işi kolaylaştırılmaktadır. Ama elbetteki pek &amp;ccedil;ok ger&amp;ccedil;ek hayat senaryosunda; &amp;ouml;rneğin &lt;strong&gt;WSDL&lt;/strong&gt; &amp;ccedil;ıktılarının yasaklandığı, &lt;strong&gt;iletişim seviyesinde g&amp;uuml;venliğin(Transport&amp;nbsp;Layer Security)&lt;/strong&gt;&amp;nbsp;sağlanması gerektiği veya &lt;strong&gt;&amp;ccedil;ift taraflı haberleşmenin(Duplex Communication)&lt;/strong&gt; olduğu durumlarda varsayılan olarak atanan &lt;strong&gt;EndPoint'&lt;/strong&gt; ler dışındakilerin kullanılması gerekmektedir.&lt;/p&gt;
+&lt;p&gt;Bu kısa yazımızda &lt;strong&gt;WCF 4.0&lt;/strong&gt; tarafında, &lt;strong&gt;basitleştirilmiş konfigurasyon(Simplified Configuration)&lt;/strong&gt;&amp;nbsp;ayarlamalarının &amp;ouml;zelliklerinden birisi olan &lt;strong&gt;Default EndPoints&lt;/strong&gt; kavramına değinmeye &amp;ccedil;alıştık. İlerleyen yazılarımızda diğer WCF 4.0 yeniliklerinede değinmeye &amp;ccedil;alışıyor olacağız. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2009%2f8%2fDefaultEndPoints.rar"&gt;DefaultEndPoints.rar (40,08 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2009-08-09 16:51:00</pubDate>
+  <slug>WCF-40-Yenilikleri-Default-EndPoints</slug>
+  <tags>
+    <tag>wcf</tag>
+    <tag>wcf-40</tag>
+  </tags>
+  <categories>
+    <category>WCF 4.0 Beta 1</category>
+  </categories>
+</post>

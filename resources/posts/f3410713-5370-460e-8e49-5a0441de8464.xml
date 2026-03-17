@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Log4Net’ i Tanıyalım</title>
+  <description>Geliştirdiğimiz uygulama çözümlerde, programın herhangibir zaman diliminde neler yaptığının bilgisini tutmak, geriye dönük yapılan araştırmalarda, performans ölçümlerinde, bug’ ların ayıklanmasında veya bir sonraki iterasyon için gerekli backlog’ ların oluşturulmasında önemli bir unsurdur.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/910898_who_am_i_.jpg"&gt;&lt;img style="display: inline; margin-left: 0px; margin-right: 0px;" title="910898_who_am_i_" src="/pics/910898_who_am_i__thumb.jpg" alt="910898_who_am_i_" width="216" height="300" align="right" /&gt;&lt;/a&gt; Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Herkesin kendine has bir parmak izi vardır. DNA gibi benzersizdir. Her ne kadar bazı ajanlı filmelerinde bu izler silinebilse de&lt;em&gt;(belki de silinebilyordur)&lt;/em&gt; :) Krimonoloji labaratuvarlarından tutunda, şirketlerdeki giriş kapılarına kadar pek &amp;ccedil;ok noktada parmak izlerimiz devreye girer. Hatta g&amp;uuml;n&amp;uuml;m&amp;uuml;zde kullandığımız bilgisayarların &amp;ccedil;oğunun a&amp;ccedil;ılması i&amp;ccedil;in parmak izi kullanılabilmektedir.&lt;/p&gt;
+&lt;p&gt;Parmak izinin sahibi, sistem i&amp;ccedil;erisinde yaptığı hareketliliklere ait pek &amp;ccedil;ok bilgi bırakır geriye. Ne zaman gelmiş, nerede durmuş, hangi eşyayı tutmuş, ka&amp;ccedil; saat &amp;ccedil;alışmış, bilgisayarını ne zaman a&amp;ccedil;mış vs&amp;hellip;Bu tip bilgiler bazı senaryolarda &amp;ccedil;ok kritiktir ve &amp;ouml;nemli anlamlar ifade etmektedir.&lt;/p&gt;
+&lt;p&gt;Ancak izlenen sadece parmak izi sahip insanlar değildir. Zaman zaman sistemlerin ve onun par&amp;ccedil;ası olan akt&amp;ouml;rlerin de&lt;em&gt;(cihazlar&amp;nbsp; veritabanları, uygulamalar &amp;ouml;rneğin)&lt;/em&gt; takip edilmesi ve toplanan bilgilerden yola &amp;ccedil;ıkılarak, ya oluşan hataların giderilmesi ya da gelecek i&amp;ccedil;in gerekli y&amp;ouml;n&amp;uuml;n nasıl olacağına karar verilmesi aşamalarında da bilgi toplamak &amp;ouml;nem kazanır. Gelelim bu geniş evrenden bizim d&amp;uuml;nyamıza. Yani yazılıma.&lt;/p&gt;
+&lt;p&gt;Geliştirdiğimiz uygulama &amp;ccedil;&amp;ouml;z&amp;uuml;mlerde, programın herhangibir zaman diliminde neler yaptığının bilgisini tutmak, geriye d&amp;ouml;n&amp;uuml;k yapılan araştırmalarda, performans &amp;ouml;l&amp;ccedil;&amp;uuml;mlerinde, bug&amp;rsquo; ların ayıklanmasında veya bir sonraki iterasyon i&amp;ccedil;in gerekli backlog&amp;rsquo; ların oluşturulmasında &amp;ouml;nemli bir unsurdur.&lt;/p&gt;
+&lt;p&gt;Benzer şekilde sistem i&amp;ccedil;erisine dahil olan kullanıcıların veya sistemin par&amp;ccedil;ası olan diğer akt&amp;ouml;rlerin, zaman dilimi i&amp;ccedil;erisindeki hareketliliklerini de kayıt altına almamız &amp;ouml;nemlidir. Nitekim bu şekilde akt&amp;ouml;rlerin geriye d&amp;ouml;n&amp;uuml;k izlerine ulaşabilir, bazı yasal s&amp;uuml;re&amp;ccedil;lerdeki ispatlardan tutunda, &amp;uuml;r&amp;uuml;n&amp;uuml;n sonraki versiyonları i&amp;ccedil;in gerekli kullanıcı deneyimi raporlarının &amp;ccedil;ıkartılmasına kadar pek &amp;ccedil;ok noktada faydalı verilere ulaşabiliriz. Burada loglama kavramı devreye girmekte olup bilginin toplanması noktasında &amp;ouml;nemli bir Concern olarak karşımıza &amp;ccedil;ıkmaktadır.&lt;/p&gt;
+&lt;p&gt;Dolayısıyla loglama uygulamalar i&amp;ccedil;in hayati bir anlama sahiptir. &amp;Uuml;stelik mimari a&amp;ccedil;ıdan baktığımızda, katmanlar arasında bir &lt;strong&gt;kıstas(Concern)&lt;/strong&gt; olarak da g&amp;ouml;z &amp;ccedil;arpmaktadır. S&amp;ouml;z gelimi &amp;ccedil;ok basit anlamda &lt;strong&gt;SOA(Service Oriented Architecture)&lt;/strong&gt; tabanlı bir mimari modeli d&amp;uuml;ş&amp;uuml;nd&amp;uuml;ğ&amp;uuml;m&amp;uuml;zde, pek &amp;ccedil;ok katman arasında dikine ilişki taşıyan kıstaslardan birisi de Loglama par&amp;ccedil;asıdır ve Cross-Cutting d&amp;uuml;zleminde yer alan enstr&amp;uuml;manlardan birisidir. Aşağıdaki şekilde bu durum &amp;ouml;zetlenmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/l4n_1.png"&gt;&lt;img style="display: inline;" title="l4n_1" src="/pics/l4n_1_thumb.png" alt="l4n_1" width="624" height="480" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;Sunum(Presentation), servis(Service), iş(Business)&lt;/strong&gt; ve &lt;strong&gt;veri(Data)&lt;/strong&gt; katmanlarının tamamı, &lt;strong&gt;Cross-Cutting&lt;/strong&gt; i&amp;ccedil;erisinde yer alan bloklara erişebilmektedir. &lt;strong&gt;Logging&lt;/strong&gt; bloğu dışında diğer &lt;strong&gt;Concern&amp;rsquo;&lt;/strong&gt; lerde s&amp;ouml;z konusudur elbette. &amp;Ouml;rneğin g&amp;uuml;venlik, performans odaklı Caching, hata y&amp;ouml;netimi vb&amp;hellip;&lt;/p&gt;
+&lt;p&gt;Gelelim Loglama konusuna.&lt;/p&gt;
+&lt;p&gt;Yazılım evrenimizde Loglama amacıyla kullanılan pek &amp;ccedil;ok yardımcı ara&amp;ccedil; da bulunmaktadır. Bunların &amp;ccedil;oğu &amp;uuml;cretsiz birer k&amp;uuml;t&amp;uuml;phanedir ve kullanımları da son derece basittir. S&amp;ouml;z gelimi Microsoft &lt;strong&gt;Enterprise Library&lt;/strong&gt; ile birlikte gelen &lt;strong&gt;Caching Application Block, Log4Net, NLog&lt;/strong&gt; ve diğerleri. Loglama işlemleri i&amp;ccedil;in kullanılan bloklar, &lt;strong&gt;Cross Cutting&amp;rsquo;&lt;/strong&gt; de yer alan diğerleri gibi &lt;strong&gt;Inversion Of Control&lt;/strong&gt; prensibini başarılı bir şekilde uygulayan ve dolayısıyla &lt;strong&gt;Dependency Injection&lt;/strong&gt; kavramını i&amp;ccedil;eren yapılardır. Daha doğrusu bu şekilde tasarlanmaları &amp;ccedil;ok daha doğrudur.&lt;/p&gt;
+&lt;p&gt;Genellikle loglama amacıyla kullanılan ara&amp;ccedil;lar, loglama stratejilerini, uygulama yeniden derlenmeye gerek kalmadan &amp;ccedil;alışma zamanında değişiklikler yapılabilmesine olanak tanımaktadır. Burada &amp;ccedil;ok doğal olarak uygulama harici &lt;strong&gt;konfigurasyon&lt;/strong&gt; ayarlarının kullanımı s&amp;ouml;z konusudur. &amp;Ouml;zellikle &lt;strong&gt;XML&lt;/strong&gt; tabanlı olarak tutulan ve bu sayede basit bir edit&amp;ouml;r ile dahi d&amp;uuml;zenlenebilecek konfigurasyon dosyaları bulunmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;.Net Framwork&lt;/strong&gt; tarafındaki masa&amp;uuml;st&amp;uuml; uygulamalar&lt;em&gt;(Console, Windows, WPF, Windows Service vb)&lt;/em&gt; i&amp;ccedil;in &lt;strong&gt;app.config&lt;/strong&gt; dosyası s&amp;ouml;z konusu iken, &lt;strong&gt;Web&lt;/strong&gt; tabanlı uygulamalarda &lt;strong&gt;Web.config&lt;/strong&gt; dosyası &amp;ouml;n plana &amp;ccedil;ıkmaktadır. Ancak &amp;ccedil;oğu loglama aracı, başka bir &lt;strong&gt;XML&lt;/strong&gt; konfigurasyon dosyasının da &lt;strong&gt;App.config&lt;/strong&gt; veya &lt;strong&gt;Web.config&lt;/strong&gt; i&amp;ccedil;erisinden işaret edilmesine izin vermektedir.&lt;/p&gt;
+&lt;p&gt;Loglama stratejisinin konfigurasyon dosyaları yardımıyla kolayca belirlenmesi bu işin ilk &amp;ouml;nemli adımlarından birisidir. Genellikle bu noktadan sonra, loglamanın hangi kaynağa doğru yapılacağına dair bir takım kararlar verilmeli ve uygun sınıf oluşumları sağlanmalıdır. Loglama pop&amp;uuml;ler olarak metin tabanlı dosyalara &lt;strong&gt;d&amp;uuml;z yazı(Plaint Text &amp;ndash; ki en az yer kaplayan ve performanslı olan &amp;ccedil;&amp;ouml;z&amp;uuml;mlerdendir)&lt;/strong&gt; veya &lt;strong&gt;XML&lt;/strong&gt; gibi formatlarda aktarılabilir. İstenirse bir veritabanı &amp;uuml;zerinde ilişkisel anlamda tablolara yazılması da sağlanabilir. Dosya ve veritabanı sistemlerine ek olarak servis veya &lt;strong&gt;Windows Event&lt;/strong&gt; sistemi odaklı &amp;ccedil;&amp;ouml;z&amp;uuml;mler de d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Yani log bilgilerinin bir servis aracılığıyla farklı ve &amp;ccedil;oğunlukla arkasında nasıl bir sistem olduğunu bilmediğimiz ortamlara aktarılması ya da &lt;strong&gt;Windows Event Log&amp;rsquo;&lt;/strong&gt; larda uygulama bazlı olacak şekilde ayrıştırılarak saklanması da s&amp;ouml;z konusudur.&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;ok doğal olarak bu işleri &amp;uuml;stlenmesi ve se&amp;ccedil;ilen &lt;strong&gt;provider&amp;rsquo;&lt;/strong&gt; lara g&amp;ouml;re ilgili ortamlara log bilgilerini &amp;ccedil;alışma zamanında g&amp;ouml;ndermesi gereken bir takım akıllı tiplerin olması gerekmektedir. Dolayısıyla ilgili loglama ara&amp;ccedil;larının bu tip desteğini sunduğunu da ifade edebiliriz.&lt;/p&gt;
+&lt;p&gt;Konfigurasyon ile loglama stratejisini belirlemek, uygun tiplerin devreye girerek bir veya daha fazla ortama log mesajı atılabilmesine olanak sağlamaktadır. Bundan sonraki adımda ise geliştiricinin uygun tiplere ait nesne &amp;ouml;rneklerini oluşturarak, uygulamanın ilgili ve doğru yerlerinde log atması yeterli olacaktır.&lt;/p&gt;
+&lt;p&gt;Tabi unutulmaması gereken bir husus da, her yerde her şeyi ve her zaman i&amp;ccedil;in &lt;span style="text-decoration: underline;"&gt;loglamamak&lt;/span&gt; gerekliliğidir. Nitekim her şeyli loglamak bir s&amp;uuml;re sonra bir veri &amp;ccedil;&amp;ouml;pl&amp;uuml;ğ&amp;uuml;n&amp;uuml;n oluşmasına ve bilginin ayrımının zorlaşmasına neden olmaktadır. Ayrıca performans a&amp;ccedil;ısından adım başı loglamanın maliyeti d&amp;uuml;ş&amp;uuml;n&amp;uuml;lmelidir. Bazen sadece test senaryolarının işletildiği sırada kullanılan logların &amp;uuml;r&amp;uuml;n&amp;uuml;n &lt;strong&gt;Production&lt;/strong&gt; ortamına &amp;ccedil;ıkmasında kaldırılması veya &lt;span style="text-decoration: underline;"&gt;kullanılmaması&lt;/span&gt; &amp;ouml;ng&amp;ouml;r&amp;uuml;lebilir. Kısacası loglama stratejimizi belirlerken, neyi, ne zaman, hangi vaka da, ne şekilde loglayacağımıza da karar vermek gerekebilir.&lt;/p&gt;
+&lt;p&gt;Şimdi lafı fazla uzatmadan makalemizin asıl konusuna gelelim. Bu yazımızda &amp;uuml;cretsiz olarak indirip kullanabileceğimiz loglama ara&amp;ccedil;larından birisi olan &lt;strong&gt;log4Net&amp;rsquo;&lt;/strong&gt; e değiniyor olacağız. &lt;a href="http://logging.apache.org/log4net/download_log4net.cgi" target="_blank"&gt;Bu adresten &amp;uuml;cretsiz&lt;/a&gt; olarak indirebileceğiniz &amp;uuml;r&amp;uuml;n basit bir &lt;strong&gt;dll&lt;/strong&gt; k&amp;uuml;t&amp;uuml;phanesidir ve 3 &amp;ouml;nemli unsurun yerine getirilmesini beklemektedir. &lt;em&gt;(Ben makaleyi yazdığım tarih itibariyle &amp;uuml;r&amp;uuml;n&amp;uuml;n 1.2.11.0 versiyonunu değerlendiriyor olacağım)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/l4n_2.png"&gt;&lt;img style="display: inline;" title="l4n_2" src="/pics/l4n_2_thumb.png" alt="l4n_2" width="394" height="347" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Log4Net&lt;/strong&gt; &amp;uuml;r&amp;uuml;n&amp;uuml;n&amp;uuml; indirdiğimizde beraberinde olduk&amp;ccedil;a b&amp;uuml;y&amp;uuml;k bir &lt;strong&gt;XML&lt;/strong&gt; konfigurasyon dosyası da gelmektedir. Bu dosya i&amp;ccedil;erisinde, yapılacak konfigurasyon ayarlarına ait t&amp;uuml;m detaylı bilgiler yer alır. &lt;strong&gt;Log4Net&amp;rsquo;&lt;/strong&gt; de diğer pek &amp;ccedil;ok loglama aracında olduğu gibi, loglanacak bilgilnin seviyelendirilmesini &amp;ouml;nerir. Bu anlamda &lt;strong&gt;Fatal, Error, Warn, Info, Debug, All&lt;/strong&gt; ve &lt;strong&gt;Off&lt;/strong&gt; gibi &amp;ccedil;eşitli seviyeler sunar. Konfigurasyon dosyasını oluşturmak son derece kolaydır. &amp;Ouml;rneğin aşağıdaki konfigurasyon i&amp;ccedil;eriğinde veritabanına log mesajı yazacak şekilde yapılmış ayarlamalar vardır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt; 
+&amp;lt;configuration&amp;gt; 
+  &amp;lt;configSections&amp;gt; 
+    &amp;lt;section name="log4net" type="log4net.Config.Log4NetConfigurationSectionHandler,log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821" /&amp;gt; 
+  &amp;lt;/configSections&amp;gt; 
+  &amp;lt;log4net&amp;gt; 
+  &amp;lt;appender name="AdoNetAppender" type="log4net.Appender.AdoNetAppender"&amp;gt; 
+  &amp;lt;bufferSize value="100" /&amp;gt; 
+  &amp;lt;connectionType value="System.Data.SqlClient.SqlConnection, System.Data, Version=1.0.3300.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" /&amp;gt; 
+  &amp;lt;connectionString value="data source=.;initial catalog=SpeedyShop;integrated security=true;" /&amp;gt; 
+  &amp;lt;commandText value="INSERT INTO ApplicationLog ([Date],[Thread],[Level],[Logger],[Message],[Exception]) VALUES (@log_date, @thread, @log_level, @logger, @message, @exception)" /&amp;gt; 
+  &amp;lt;parameter&amp;gt; 
+    &amp;lt;parameterName value="@log_date" /&amp;gt; 
+    &amp;lt;dbType value="DateTime" /&amp;gt; 
+    &amp;lt;layout type="log4net.Layout.RawTimeStampLayout" /&amp;gt; 
+  &amp;lt;/parameter&amp;gt; 
+  &amp;lt;parameter&amp;gt; 
+    &amp;lt;parameterName value="@thread" /&amp;gt; 
+    &amp;lt;dbType value="String" /&amp;gt; 
+    &amp;lt;size value="255" /&amp;gt; 
+    &amp;lt;layout type="log4net.Layout.PatternLayout"&amp;gt; 
+      &amp;lt;conversionPattern value="%thread" /&amp;gt; 
+    &amp;lt;/layout&amp;gt; 
+  &amp;lt;/parameter&amp;gt; 
+  &amp;lt;parameter&amp;gt; 
+    &amp;lt;parameterName value="@log_level" /&amp;gt; 
+    &amp;lt;dbType value="String" /&amp;gt; 
+    &amp;lt;size value="50" /&amp;gt; 
+    &amp;lt;layout type="log4net.Layout.PatternLayout"&amp;gt; 
+      &amp;lt;conversionPattern value="%level" /&amp;gt; 
+    &amp;lt;/layout&amp;gt; 
+  &amp;lt;/parameter&amp;gt; 
+  &amp;lt;parameter&amp;gt; 
+    &amp;lt;parameterName value="@logger" /&amp;gt; 
+    &amp;lt;dbType value="String" /&amp;gt; 
+    &amp;lt;size value="255" /&amp;gt; 
+    &amp;lt;layout type="log4net.Layout.PatternLayout"&amp;gt; 
+      &amp;lt;conversionPattern value="%logger" /&amp;gt; 
+    &amp;lt;/layout&amp;gt; 
+  &amp;lt;/parameter&amp;gt; 
+  &amp;lt;parameter&amp;gt; 
+    &amp;lt;parameterName value="@message" /&amp;gt; 
+    &amp;lt;dbType value="String" /&amp;gt; 
+    &amp;lt;size value="4000" /&amp;gt; 
+    &amp;lt;layout type="log4net.Layout.PatternLayout"&amp;gt; 
+      &amp;lt;conversionPattern value="%message" /&amp;gt; 
+    &amp;lt;/layout&amp;gt; 
+  &amp;lt;/parameter&amp;gt; 
+  &amp;lt;parameter&amp;gt; 
+    &amp;lt;parameterName value="@exception" /&amp;gt; 
+    &amp;lt;dbType value="String" /&amp;gt; 
+    &amp;lt;size value="2000" /&amp;gt; 
+    &amp;lt;layout type="log4net.Layout.ExceptionLayout" /&amp;gt; 
+  &amp;lt;/parameter&amp;gt; 
+&amp;lt;/appender&amp;gt; 
+  &amp;lt;root&amp;gt; 
+    &amp;lt;level value="DEBUG"/&amp;gt; 
+    &amp;lt;appender-ref ref="AdoNetAppender"/&amp;gt; 
+  &amp;lt;/root&amp;gt; 
+  &amp;lt;/log4net&amp;gt; 
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Burada dikkat edileceği &amp;uuml;zere &lt;strong&gt;Appender&lt;/strong&gt; sekmesinde &lt;strong&gt;AdoNetAdppender&lt;/strong&gt; isimli bir kısım tanımlanmıştır. Bu appender, &lt;strong&gt;connectionString&lt;/strong&gt; bilgisine g&amp;ouml;re yerel sunucu &amp;uuml;zerinde yer alan &lt;strong&gt;SpeedyShop&lt;/strong&gt; isimli veritabanındaki &lt;strong&gt;Log&lt;/strong&gt; tablosuna kayıt atacak şekilde tasarlanmıştır.&lt;/p&gt;
+&lt;p&gt;Sorgu c&amp;uuml;mlesine dikkat edilecek olarak &lt;strong&gt;@&lt;/strong&gt; harfi ile başlayan parametrelerinin değerleri &lt;strong&gt;% &lt;/strong&gt;ile başlayan &amp;ouml;zel &lt;strong&gt;keyword&amp;rsquo;&lt;/strong&gt; lerdir. &amp;Ouml;rneğin, &lt;strong&gt;@log_level&lt;/strong&gt; i&amp;ccedil;in &lt;strong&gt;%level&lt;/strong&gt;, uygulamanın &lt;strong&gt;thread&lt;/strong&gt; bilgisine ait değer i&amp;ccedil;in &lt;strong&gt;%thread&lt;/strong&gt; gibi &amp;ouml;zel &lt;strong&gt;keyword&amp;rsquo;&lt;/strong&gt; ler kullanılmaktadır. &lt;strong&gt;% &lt;/strong&gt;ile başlayan anahtar kelimeler &lt;strong&gt;log4Net&amp;rsquo;&lt;/strong&gt; e &amp;ouml;zg&amp;uuml; yapılmış tanımlamalardır. &lt;strong&gt;%date, %level, %exception, %newline, %identity, %method&lt;/strong&gt; ve benzerleri gibi, uygulama ortamında otomatik olarak loglama katına veri taşıyan sabitlerde mevcuttur.&lt;/p&gt;
+&lt;p&gt;Yukarıdaki &lt;strong&gt;config&lt;/strong&gt; dosyasında &lt;strong&gt;Appender&lt;/strong&gt; isimli bir kavramdan bahsettik. Veritabanı odaklı &amp;ccedil;alışan dışında dosyaya yazma amacıyla kullanılabilen &lt;strong&gt;FileAppender&lt;/strong&gt; veya &amp;ouml;zellikle &lt;strong&gt;Console&lt;/strong&gt; tabanlı test projelerinde ekrana log bilgisi vermek i&amp;ccedil;in kullanılan &lt;strong&gt;ConsoleAppender&lt;/strong&gt; gibi versiyonlar da mevcuttur.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/l4n_3.png"&gt;&lt;img style="display: inline;" title="l4n_3" src="/pics/l4n_3_thumb.png" alt="l4n_3" width="275" height="418" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Object Browser&lt;/strong&gt; yardımıyla &lt;strong&gt;Log4Net&lt;/strong&gt; k&amp;uuml;t&amp;uuml;phanesine baktığımızda pek &amp;ccedil;ok &lt;strong&gt;Appender&lt;/strong&gt; tipinin tanımlanmış olduğunu g&amp;ouml;r&amp;uuml;r&amp;uuml;z. &lt;strong&gt;Udp, SMTP, ASP.Net Trace&lt;/strong&gt; bazlı vb gibi pek &amp;ccedil;ok &lt;strong&gt;Appender&lt;/strong&gt; bulunmaktadır.&lt;/p&gt;
+&lt;p&gt;Peki bu tipleri nasıl devreye alacağız? Gelin basit bir &lt;strong&gt;Console&lt;/strong&gt; uygulaması &amp;uuml;zerinden ilerleyelim ve &lt;strong&gt;Log4Net&lt;/strong&gt; i&amp;ccedil;in alışılageldiği &amp;uuml;zere bir &lt;strong&gt;HelloWorld&lt;/strong&gt; &amp;ouml;rneği geliştirelim. İlk olarak projemize &lt;strong&gt;Log4Net&lt;/strong&gt; &lt;strong&gt;Assembly&amp;rsquo;&lt;/strong&gt; ının referans edilmesi gerekmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/l4n_4.png"&gt;&lt;img style="display: inline;" title="l4n_4" src="/pics/l4n_4_thumb.png" alt="l4n_4" width="250" height="299" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;İkinci olarak uygun bir loglama stratejisi belirlemeli ve &lt;strong&gt;App.config&lt;/strong&gt; dosyasında buna ait ayarlamalar yapılabilmelidir. Bu &amp;ouml;rneğimizde loglarımızı dosya bazlı olarak tutuyor olacağız. Bu sebepten dolayı &lt;strong&gt;FileAppender&lt;/strong&gt; tipini ele alacağız. Dolayısıyla &lt;strong&gt;app.config&lt;/strong&gt; dosyasının i&amp;ccedil;eriğini aşağıdaki gibi geliştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0"?&amp;gt; 
+&amp;lt;configuration&amp;gt; 
+  &amp;lt;configSections&amp;gt; 
+    &amp;lt;section name="log4net" type="log4net.Config.Log4NetConfigurationSectionHandler,log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821"/&amp;gt; 
+  &amp;lt;/configSections&amp;gt; 
+  &amp;lt;log4net&amp;gt; 
+    &amp;lt;appender name="FileAppender" type="log4net.Appender.FileAppender"&amp;gt; 
+      &amp;lt;file value="Logs.txt" /&amp;gt; 
+      &amp;lt;appendToFile value="true" /&amp;gt; 
+      &amp;lt;lockingModel type="log4net.Appender.FileAppender+MinimalLock" /&amp;gt; 
+      &amp;lt;layout type="log4net.Layout.PatternLayout"&amp;gt; 
+        &amp;lt;conversionpattern value="%date [%thread] %-5level  &amp;ndash; %message%newline" /&amp;gt; 
+      &amp;lt;/layout&amp;gt; 
+      &amp;lt;filter type="log4net.Filter.LevelRangeFilter"&amp;gt; 
+        &amp;lt;levelMin value="INFO" /&amp;gt; 
+        &amp;lt;levelMax value="FATAL" /&amp;gt; 
+      &amp;lt;/filter&amp;gt; 
+    &amp;lt;/appender&amp;gt; 
+    &amp;lt;root&amp;gt; 
+    &amp;lt;level value="DEBUG"/&amp;gt; 
+    &amp;lt;appender-ref ref="FileAppender"/&amp;gt; 
+  &amp;lt;/root&amp;gt; 
+  &amp;lt;/log4net&amp;gt; 
+&amp;lt;startup&amp;gt; 
+   &amp;lt;supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.0"/&amp;gt; 
+&amp;lt;/startup&amp;gt; 
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Loglanacak metinsel i&amp;ccedil;erik &lt;strong&gt;layout&lt;/strong&gt; boğumu i&amp;ccedil;erisinde yer alan &lt;strong&gt;conversionPattern&lt;/strong&gt; elementine ait &lt;strong&gt;value&lt;/strong&gt; niteliğinde belirtilmektedir. &amp;Ouml;nce tarih bilgisi ve arkasından sırasıyla &lt;strong&gt;thread&lt;/strong&gt;, &lt;strong&gt;log seviyesi&lt;/strong&gt;,&amp;nbsp; &lt;strong&gt;mesaj&lt;/strong&gt; ve &lt;strong&gt;alt satıra&lt;/strong&gt; ge&amp;ccedil;me işlemleri uygulanmaktadır. Loglamayı yaparken minimum seviyemiz &lt;strong&gt;INFO&lt;/strong&gt; dur. Maksimum ise &lt;strong&gt;FATAL&lt;/strong&gt; olarak set edilmiştir. Bu basit ayarlamalardan sonra uygulamanın kod tarafına ge&amp;ccedil;erek gerekli &lt;strong&gt;Setup&lt;/strong&gt; işlemlerini yazabiliriz. İşte kodumuz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Data; 
+using System.Data.SqlClient; 
+using log4net;
+
+namespace HelloLog4Net 
+{ 
+    class Program 
+    { 
+        static ILog log = log4net.LogManager.GetLogger(typeof(Program));
+
+        static void Main(string[] args) 
+        { 
+            log4net.Config.BasicConfigurator.Configure();
+
+            SqlConnection connection = null; 
+            try 
+            { 
+                const string connectionString = @"data source=.\SQLEXPRESS;database=AdventureWorks;user id=sa;pwd=1234."; 
+                log.Warn(String.Format("Bağlantı a&amp;ccedil;ılacak. Connection String :{0}",connectionString)); 
+                connection=new SqlConnection(connectionString); 
+                if(connection.State==ConnectionState.Closed) 
+                    connection.Open();
+
+                log.Info(String.Format("Bağlantı durumu : {0}",connection.State)); 
+            } 
+            catch (Exception excp) 
+            { 
+                log.Error(excp.Message); 
+            } 
+            finally 
+            { 
+                if (connection != null &amp;amp;&amp;amp; connection.State == ConnectionState.Open) 
+                { 
+                    connection.Close(); 
+                    log.Debug(String.Format("Finally bloğundayız. Bağlantı durumu {0}", connection.State)); 
+                } 
+            }
+
+            log.Info("Program sonu"); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere loglama nesne &amp;ouml;rneği &amp;uuml;retilirken &lt;strong&gt;LogManager&lt;/strong&gt; tipinin &lt;strong&gt;GetLogger&lt;/strong&gt; metodu kullanılmakta ve sonu&amp;ccedil; &lt;strong&gt;ILog&lt;/strong&gt; aray&amp;uuml;z&amp;uuml; referansına taşınmaktadır. İşte size &lt;strong&gt;IoC &amp;ouml;rneği&lt;/strong&gt; :) Kodun ilerleyen kısımlarında konfigurasyon ayarlarının okunması işlemi ger&amp;ccedil;ekleştirilir ve sonrasında istenilen noktalardan &amp;ccedil;eşitli seviyelerde log mesajları, konfigurasyon dosyasında belirtildiği &amp;uuml;zere ilgili dosyaya yazdırılır. Son olarak &lt;strong&gt;AssemblyInfo&lt;/strong&gt; dosyasında yapmamız gereken basit bir nitelik&lt;strong&gt;(Attribute)&lt;/strong&gt; bildirimi daha s&amp;ouml;z konusudur.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;hellip; 
+[assembly: AssemblyVersion("1.0.0.0")] 
+[assembly: AssemblyFileVersion("1.0.0.0")] 
+[assembly: log4net.Config.XmlConfigurator(Watch = true)]&lt;/pre&gt;
+&lt;p&gt;Uygulamayı &amp;ccedil;alıştırdığımızda aynı zamanda bir ekran &amp;ccedil;ıktısı aldığımızı da g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Varsayılan olarak &lt;strong&gt;ConsoleAppender&amp;rsquo;&lt;/strong&gt; da devrededir. Tabiki bunu kapatabilirsiniz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/l4n_5.png"&gt;&lt;img style="display: inline;" title="l4n_5" src="/pics/l4n_5_thumb.png" alt="l4n_5" width="588" height="127" /&gt;&lt;/a&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Test dosyasının i&amp;ccedil;eriği de aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/l4n_6.png"&gt;&lt;img style="display: inline;" title="l4n_6" src="/pics/l4n_6_thumb.png" alt="l4n_6" width="525" height="397" /&gt;&lt;/a&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;log4Net&lt;/strong&gt; kullanılarak &amp;ccedil;ok basit bir şekilde loglama işlemleri yapılabilmekte ve uygulamanın herhangibir noktasından &lt;strong&gt;feedback&amp;rsquo;&lt;/strong&gt; ler verilebilmektedir. Siz siz olun uygulamalarınızda loglama konusunu ihmal etmeyin. Nitekim hataları ayıklama, kullanıcı ve sistem gibi genel akt&amp;ouml;rlerin hareketliliklerini izleme ve backlog oluşturma noktasında hayati &amp;ouml;neme sahip bir mevzudur. İlerleyen makalelerimizde Log4Net&amp;rsquo; in farklı kullanımlarına da değinmeye &amp;ccedil;alışıyor olacağız. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2012%2f1%2fHelloLog4Net.zip"&gt;HelloLog4Net.zip (2,28 mb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2012-03-01 07:22:00</pubDate>
+  <slug>Log4Nete28099-i-Tanc4b1yalc4b1m</slug>
+  <tags>
+    <tag>net</tag>
+    <tag>c#</tag>
+    <tag>cross-cutting</tag>
+    <tag>logging</tag>
+    <tag>concern</tag>
+    <tag>log4net</tag>
+    <tag>nlog</tag>
+    <tag>logging-application-block</tag>
+  </tags>
+  <categories>
+    <category>.Net Framework 4.0</category>
+  </categories>
+</post>

@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WCF Serileştirme(Serialization)</title>
+  <description>Serileştirme(Serialization) ve çözümleme(Encoding) çoğu zaman bir birlerine karıştırılan kavramlar olabilmektedir. Oysaki aralarında çok ince ama bir o kadarda önemli farklılıklar vardır. Serileştirme ve çözümleme, SOA(Service Oritented Architecture) tarzındaki uygulama çözümlerinde sıklıkla kullanılmaktadır.</description>
+  <content>&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Değerli Okurlarım Merhabalar,&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;Serileştirme(Serialization) &lt;/strong&gt;ve &lt;strong&gt;&amp;ccedil;&amp;ouml;z&amp;uuml;mleme(Encoding) &lt;/strong&gt;&amp;ccedil;oğu zaman bir birlerine karıştırılan kavramlar olabilmektedir. Oysaki aralarında &amp;ccedil;ok ince ama bir o kadarda &amp;ouml;nemli farklılıklar vardır. Serileştirme ve &amp;ccedil;&amp;ouml;z&amp;uuml;mleme, &lt;strong&gt;SOA(Service Oritented Architecture)&lt;/strong&gt; tarzındaki uygulama &amp;ccedil;&amp;ouml;z&amp;uuml;mlerinde sıklıkla kullanılmaktadır. Nitekim bu tip mimarilerde servis ve istemci arasında yapılan veri transferlerinde bilginin serileştirilmesi ve mesajların &amp;ccedil;&amp;ouml;z&amp;uuml;mlenmesi gerekmektedir. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Serileştirme &amp;ouml;zet olarak &lt;strong&gt;nesne grafiğinin(Object Graph)&lt;/strong&gt; &lt;strong&gt;byte&lt;/strong&gt; dizisine d&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;lmesi olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Bu sayede &lt;strong&gt;&amp;ccedil;alışma zamanı(Run-Time)&lt;/strong&gt; nesne &amp;ouml;rneklerinin herhangibir kaynakta s&amp;uuml;rekli olarak saklanması m&amp;uuml;mk&amp;uuml;n olabilmektedir. Bir başka deyişle nesneye ait veri i&amp;ccedil;eriğinin, bir dosyada, veritabanında, bellekte tutulması m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Ancak en &amp;ouml;nemli olan kısmı s&amp;ouml;z konusu nesne i&amp;ccedil;eriğinin başka bir ortama herhangibir protokol &amp;uuml;zerinden taşınabiliyor olmasıdır ki bu &lt;strong&gt;dağıtık uygulama(Distributed Applications)&lt;/strong&gt; &amp;ccedil;&amp;ouml;z&amp;uuml;mlerinde kilit rollerden birisidir. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Peki duruma &lt;strong&gt;WCF(Windows Communication Foundation)&lt;/strong&gt; a&amp;ccedil;ısından bakıldığında g&amp;ouml;ze &amp;ccedil;arpan noktalar nelerdir? WCF tarafında serileştirme sadece nesne grafiğinin bir byte dizisine d&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;lmesi olarak yorumlanmaz. Bunun yerine nesne grafiğinin bir &lt;strong&gt;XML InfoSet(XML Information Set) &lt;/strong&gt;i&amp;ccedil;eriğine d&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;lmesi olarak yorumlanır. &lt;strong&gt;XML&lt;/strong&gt; &lt;strong&gt;InfoSet&lt;/strong&gt; i&amp;ccedil;eriği WCF mesajlarının oluşturulmasında kullanılmaktadır. &lt;strong&gt;XML InfoSet&lt;/strong&gt;, &lt;strong&gt;XML&lt;/strong&gt;' in bir &amp;uuml;st k&amp;uuml;mesi olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. XML InfoSet sayesinde, XML i&amp;ccedil;eriğinin sadece &lt;strong&gt;Text&lt;/strong&gt; formatında olma zorunluluğu ortadan kalkmaktadır. Bir başka deyişle nesne i&amp;ccedil;eriğinin, &amp;ouml;rneğin &lt;strong&gt;binary&lt;/strong&gt; &lt;strong&gt;XML&lt;/strong&gt; formatında &amp;uuml;retilmesi m&amp;uuml;mk&amp;uuml;n olabilmektedir. Bu WCF a&amp;ccedil;ısından &amp;ouml;nemlidir &amp;ccedil;&amp;uuml;nk&amp;uuml; &lt;strong&gt;interoperability&lt;/strong&gt;, &lt;strong&gt;performans&lt;/strong&gt; gibi konularda &lt;strong&gt;XML&lt;/strong&gt; formatının &lt;strong&gt;Text&lt;/strong&gt; bazlı olmayan versiyonlarının kullanılmasının avantajlarından yararlanılabilinir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;XML InfoSet, WCF mimarisine &amp;ouml;zg&amp;uuml; bir kavram değildir. Nitekim &lt;strong&gt;Asp.Net Web Service &lt;/strong&gt;modelindeki uygulamalarda XML InfoSet yaklaşımını kullanmaktadır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;WCF mimarisinde kullanılmakta olan serileştirici tipler aşağıdaki gibidir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk254_1.gif" alt="" width="379" height="259" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;&amp;Ccedil;&amp;ouml;z&amp;uuml;mleme(Encoding) &lt;/strong&gt;kısaca, &lt;strong&gt;WCF&lt;/strong&gt; mesajlarının byte dizisi haline d&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;lmesi olarak ele alınabilir. Bu sayede mesajın i&amp;ccedil;eriğinin &lt;strong&gt;iletişim kanalları(Transport Channels)&lt;/strong&gt; &amp;uuml;zerinden aktarılabilmesi m&amp;uuml;mk&amp;uuml;n olmaktadır. WCF mimarisi temel olarak beş farklı &lt;strong&gt;&amp;ccedil;&amp;ouml;z&amp;uuml;mleme formatını(Encoding Formats) &lt;/strong&gt;desteklemektedir. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk254_2.gif" alt="" width="329" height="279" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;WCF&lt;/strong&gt; tarafında duruma g&amp;ouml;re yukarıda bahsedilen formatları ele alan hazır encoder tipleri bulunmaktadır. &amp;Ouml;zellikle .&lt;strong&gt;Net&lt;/strong&gt; uygulamaları arasında bir mesajlaşma s&amp;ouml;z konusu ise performans adına &lt;strong&gt;BinaryMessageEncoder&lt;/strong&gt;, platformlar arası &lt;strong&gt;uyumluluk (Interoperability)&lt;/strong&gt; gerekiyorsa &lt;strong&gt;TextMessageEncoder&lt;/strong&gt; veya &lt;strong&gt;MtomMessageEncoder&lt;/strong&gt;, &lt;strong&gt;Ajax&lt;/strong&gt; tabanlı web istemcilerinin yer aldığı senaryolarda ise, &lt;strong&gt;JsonMessageEncoder&lt;/strong&gt; tipleri devreye girmektedir. &amp;Ouml;nemli olan noktalardan biriside WCF tarafında &lt;strong&gt;encoding&lt;/strong&gt; sisteminin genişletilebilmesidir. Yani yeni &amp;ccedil;ıkan &amp;ccedil;&amp;ouml;z&amp;uuml;mleme formatlarına uygun eklemeler ve ilaveler yapılabilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Serileştirme ve &amp;ccedil;&amp;ouml;z&amp;uuml;mleme &lt;strong&gt;WCF&lt;/strong&gt; tarafında bir arada d&amp;uuml;ş&amp;uuml;n&amp;uuml;lmesi gereken konulardır. Nitekim, nesne i&amp;ccedil;eriğinin serileştirilerek &lt;strong&gt;XML&lt;/strong&gt; &lt;strong&gt;InfoSet&lt;/strong&gt; haline getirilmesi sadece s&amp;uuml;recin ilk adımıdır. Sonrasında bu &lt;strong&gt;InfoSet&lt;/strong&gt; bilgisinden yararlanılarak karşı tarafa g&amp;ouml;nderilecek olan mesajın &amp;uuml;retilmesi i&amp;ccedil;in bir &lt;strong&gt;&amp;ccedil;&amp;ouml;z&amp;uuml;mleme(Encoding)&lt;/strong&gt; işlemi yapılır. Bu s&amp;uuml;recin sonunda oluşturulan mesaj, iletişim kanalları &amp;uuml;zerinden karşı tarafa g&amp;ouml;nderilir. Burada hatırlanması gereken noktalardan biriside, encoding işlemlerinde &amp;ccedil;alışma zamanında oluşan &lt;strong&gt;kanal yığının(Channel Stack)&lt;/strong&gt; i&amp;ccedil;eriğidir. Bilindiği gibi bu yığınında mutlaka &lt;strong&gt;Encoding&lt;/strong&gt; &lt;strong&gt;Channel&lt;/strong&gt; ve &lt;strong&gt;Transport&lt;/strong&gt; &lt;strong&gt;Channel&lt;/strong&gt; kanallarının olması gerekir. İşte &lt;strong&gt;Encoding&lt;/strong&gt; &lt;strong&gt;Channel&lt;/strong&gt; i&amp;ccedil;erisinde, serileştirilerek &lt;strong&gt;InfoSet&lt;/strong&gt; haline gelen bilginin ilgili &lt;strong&gt;Encoder&lt;/strong&gt; tipine g&amp;ouml;re &amp;ccedil;&amp;ouml;z&amp;uuml;mlenerek mesaj i&amp;ccedil;eriği haline getirilmesi sağlanmaktadır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;İlk olarak &lt;strong&gt;WCF&lt;/strong&gt; serileştirme opsiyonlarına bakmakta yarar bulunmaktadır. &lt;strong&gt;WCF,&lt;/strong&gt; varsayılan olarak &lt;strong&gt;DataContractSerializer&lt;/strong&gt; tipini baz alarak serileştirme işlemlerini ger&amp;ccedil;ekleştirmektedir. &lt;strong&gt;DataContractSerializer&lt;/strong&gt;, nesneyi serileştirirken &lt;strong&gt;XSD&lt;/strong&gt; şemalarını kullanır. Bir başka deyişle s&amp;ouml;z konusu &lt;strong&gt;CLR(Common Language Runtime)&lt;/strong&gt; tipini, karşılığı olan &lt;strong&gt;XSD&lt;/strong&gt; tipi ile ifade eder. Bu sayede farklı platformların serileştirilen nesneyi kullanabilme imkanı doğar. &amp;Ouml;rneğin .&lt;strong&gt;Net&lt;/strong&gt; tarafındaki &lt;strong&gt;System.String&lt;/strong&gt; tipi &lt;strong&gt;XSD &lt;/strong&gt;tarafında &lt;strong&gt;xs:String &lt;/strong&gt;olarak ele alınır. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bu tipin kullanıldığı &lt;strong&gt;veri s&amp;ouml;zleşmesini(Data Contract) &lt;/strong&gt;kullanacak olan bir java uygulamasıda &lt;strong&gt;java.lang.String&lt;/strong&gt; tipini karşılık olarak ele alır. Bir başka deyişle &lt;strong&gt;XSD&lt;/strong&gt; formatı ilkel veri tiplerini baz alaraktan bir k&amp;ouml;pr&amp;uuml; vazifesini g&amp;ouml;r&amp;uuml;r. Elbette &lt;strong&gt;karmaşık tiplerde(Complex Type)&lt;/strong&gt; ilkel tip seviyelerine indirilerekten serileştirme işlemine tabi tutulurlar. Tabiki burada g&amp;ouml;z ardı edilmemesi gereken &amp;ouml;nemli bir nokta vardır. &amp;Ouml;zellikle karmaşık tiplerde &lt;strong&gt;DataContract&lt;/strong&gt; ve &lt;strong&gt;DataMember&lt;/strong&gt; &lt;strong&gt;nitelikleri(attributes) &lt;/strong&gt;ile serileştirme işlemi sağlanmaktadır. &lt;em&gt;(İlerleyen &amp;ouml;rneklerde aşağıdaki yer alan &lt;strong&gt;Urun&lt;/strong&gt; isimli tip kullanılmaktadır.) &lt;/em&gt; &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk254_3.gif" alt="" width="383" height="285" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Runtime.Serialization;
+
+namespace Formatters
+{ 
+    [DataContract(Namespace="http://www.bsenyurt.com/Urun")]
+    class Urun
+    {
+        private int _id;
+        private string _ad;
+        private double _listeFiyati;
+        private DateTime _stokTarihi;
+
+        public Urun(int id, string ad, double listeFiyati, DateTime stokTarihi)
+        {
+            Id = id;
+            Ad = ad;
+            ListeFiyati = listeFiyati;
+            StokTarihi = stokTarihi;
+        }
+
+        [DataMember]
+        public DateTime StokTarihi
+        {
+            get { return _stokTarihi; }
+            set { _stokTarihi = value; }
+        }
+
+        [DataMember]
+        public double ListeFiyati
+        {
+            get { return _listeFiyati; }
+            set { _listeFiyati = value; }
+        }
+
+        [DataMember]
+        public string Ad
+        {
+            get { return _ad; }
+            set { _ad = value; }
+        }
+
+        [DataMember]
+        public int Id
+        {
+            get { return _id; }
+            set { _id = value; }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;&lt;span style="font-family: Verdana;"&gt;DataContractSerializer ile Serileştirme&lt;/span&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;DataContractSerializer&lt;/strong&gt; tipi .&lt;strong&gt;Net&lt;/strong&gt; &lt;strong&gt;Framework&lt;/strong&gt; &lt;strong&gt;3.0&lt;/strong&gt; ile birlikte gelen ve &lt;strong&gt;WCF&lt;/strong&gt; tarafında varsayılan olarak kullanılan bir serileştiricidir. Yukarıda yer alan &lt;strong&gt;Urun&lt;/strong&gt; sınıfına ait nesne &amp;ouml;rneğini serileştirmek amacıyla &lt;strong&gt;DataContractSerializer&lt;/strong&gt; tipi, &amp;ouml;rnek bir &lt;strong&gt;Console&lt;/strong&gt; uygulamasına ait aşağıdaki kod par&amp;ccedil;ası ile ele alınabilir.&lt;em&gt;(S&amp;ouml;z konusu &lt;strong&gt;Console&lt;/strong&gt; uygulaması .&lt;strong&gt;Net&lt;/strong&gt; &lt;strong&gt;Framework&lt;/strong&gt; &lt;strong&gt;3.5&lt;/strong&gt; şablonunda geliştirilmiştir.)&lt;/em&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.IO;
+using System.Xml.Schema;
+using System.Runtime.Serialization;
+
+namespace Formatters
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            #region DataContractSerilazier ile Type Serileştirme
+
+            // Serileştirilecek nesne &amp;ouml;rneği.
+            Urun mouse=new Urun(1,"Mx Mouse Optic",10,new DateTime(2004,1,1));
+
+            // Serileştirici sınıf &amp;ouml;rneklenir.
+            // Parametre olarak serileştirilecek veri s&amp;ouml;zleşmesi tipi verilir.
+            DataContractSerializer dcSerializer = new DataContractSerializer(typeof(Urun));
+
+            // Serileştirme sonu&amp;ccedil;larının yazılacağı &amp;ouml;rnek bir Stream oluşturulur.
+            FileStream stream2 = new FileStream("Urun.xml", FileMode.Create, FileAccess.Write);
+            // WriteObject metodu ile stream2 nesnesi ile tanımlanan Stream &amp;uuml;zerine mouse isimli Urun nesne &amp;ouml;rneği verisi aktarılır
+            dcSerializer.WriteObject(stream2, mouse);
+            stream2.Close(); // Stream kapatılır.
+
+            #endregion
+
+            #region DataContractSerializer ile Type Ters-Serileştirme 
+
+            // Urun.xml dosyası var ise ters serileştirme işlemleri yapılır.
+            if (File.Exists("Urun.xml"))
+            {
+                // DataContractSerializer nesnesi &amp;ouml;rneklenir.
+                DataContractSerializer dcDeSerializer = new DataContractSerializer(typeof(Urun));
+                // Serileştirilmiş veri i&amp;ccedil;eriğinin bulunduğu dosyayı okumak i&amp;ccedil;in bir Stream &amp;ouml;rneklenir.
+                FileStream stream5 = new FileStream("Urun.xml", FileMode.Open, FileAccess.Read);
+                // ReadObject metodu ile parametre olarak verilen Stream i&amp;ccedil;erisindeki bilgi ters serileştirme işlemine tabi tutulur.
+                // D&amp;ouml;n&amp;uuml;ş t&amp;uuml;r&amp;uuml; object olduğu i&amp;ccedil;in sonucun uygun t&amp;uuml;re cast edilmesi gereklidir.
+                Urun urn=(Urun)dcDeSerializer.ReadObject(stream5);
+                // Elde edilen nesne &amp;ouml;rneği bilgisi ekrana yazdırılır.
+                Console.WriteLine("Id :{0} Ad:{1} Fiyat:{2} Stok Tarihi:{3}", urn.Id.ToString(), urn.Ad, urn.ListeFiyati.ToString("C2"), urn.StokTarihi.ToString());
+                // Stream kapatılır.
+                stream5.Close();
+            }
+
+            #endregion
+
+            #region DataContractSerializer ile Array Serileştirme
+        
+            Urun[] urunler ={
+                                        new Urun(2,"A Mouse Optic",11.2,DateTime.Now),
+                                        new Urun(3,"Y Mouse Optic, Kablolu",9.49,DateTime.Now),
+                                        new Urun(5,"Z Mouse",3.45,new DateTime(2008,2,3)),
+                                    };    
+
+            // DataContractSerializer nesne &amp;ouml;rneğini oluşturulurken parametre olarak Urun tipinden dizi verilmiştir
+            DataContractSerializer dcArraySerializer = new DataContractSerializer(typeof(Urun[]));
+            FileStream stream3 = new FileStream("Urunler.xml", FileMode.Create, FileAccess.Write);
+            dcArraySerializer.WriteObject(stream3, urunler);
+            stream3.Close();
+        
+            #endregion
+
+            #region DataContractSerializer ile Array Ters-Serileştirme
+        
+            if (File.Exists("Urunler.xml"))
+            {
+                DataContractSerializer dcDeSerializer = new DataContractSerializer(typeof(Urun[]));
+                FileStream stream6 = new FileStream("Urunler.xml", FileMode.Open, FileAccess.Read);
+                Urun[] gelenUrunler = (Urun[])dcDeSerializer.ReadObject(stream6);
+                Console.WriteLine("&amp;Uuml;r&amp;uuml;nler");
+                foreach (Urun urun in gelenUrunler)
+                {
+                    Console.WriteLine("Id :{0} Ad:{1} Fiyat:{2} Stok Tarihi:{3}", urun.Id.ToString(), urun.Ad, urun.ListeFiyati.ToString("C2"), urun.StokTarihi.ToString());
+                } 
+                stream6.Close();
+            }
+
+            #endregion
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu kod par&amp;ccedil;asında &lt;strong&gt;Urun&lt;/strong&gt; tipine ait bir nesne &amp;ouml;rneği ve bir dizinin serileştirilmesi ve serileşen dosya i&amp;ccedil;eriğinden tekrardan elde edilmesi&lt;strong&gt;(DeSerialization) &lt;/strong&gt;işlenmektedir. Serileştirme işleminde &lt;strong&gt;WriteObject&lt;/strong&gt; metodu, ters serileştirme işleminde ise &lt;strong&gt;ReadObject&lt;/strong&gt; metodları kullanılmaktadır. Serileştirme ve TersSerileştirme işlemlerinde tipe ait bilgilerin alınması i&amp;ccedil;in &lt;strong&gt;DataContractSerializer&lt;/strong&gt; nesne &amp;ouml;rneğinin &amp;uuml;retimi sırasında devreye giren &lt;strong&gt;yapıcı(Constructor) &lt;/strong&gt;metoddan yararlanılır. Dikkat edileceği &amp;uuml;zere, &lt;strong&gt;Urun&lt;/strong&gt; ve &lt;strong&gt;Urun[]&lt;/strong&gt; tip bilgileri yapıcı metoda parametre olarak verilmektedir. &lt;strong&gt;ReadObject&lt;/strong&gt; metodu, ilgili &lt;strong&gt;Stream&lt;/strong&gt; &amp;uuml;zerinden gelen veriyi okumakta ve ters serileştirme işlemine tabi tutmaktadır. Elbette d&amp;ouml;nen veri t&amp;uuml;r&amp;uuml; &lt;strong&gt;object&lt;/strong&gt; olduğundan uygun tipe d&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;lmesi gerekir. &amp;Ouml;rnekte dosya sistemi &lt;strong&gt;Stream&lt;/strong&gt; olarak kullanılmaktadır. Uygulamanın &amp;ccedil;alışması sonrasında serileştirme işlemi sonucu &amp;uuml;retilen &lt;strong&gt;Urun.xml&lt;/strong&gt; ve &lt;strong&gt;Urunler.xml &lt;/strong&gt;dosyalarının i&amp;ccedil;erikleri aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt;&lt;span style="font-family: Verdana;"&gt;Urun.xml i&amp;ccedil;eriği;&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk254_5.gif" alt="" width="622" height="122" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt;&lt;span style="font-family: Verdana;"&gt;Urunler.xml i&amp;ccedil;eriği;&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk254_6.gif" alt="" width="638" height="341" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&amp;Ccedil;alışma zamanında oluşan ekran &amp;ccedil;ıktısı ise aşağıdaki gibidir. Dikkat edileceği &amp;uuml;zere &lt;strong&gt;Stream&lt;/strong&gt; i&amp;ccedil;erisindeki bilgilerden &lt;strong&gt;Urun&lt;/strong&gt; ve &lt;strong&gt;Urun[]&lt;/strong&gt; tipleri elde edilerek sonu&amp;ccedil;lar ekrana yazdırılmaktadır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk254_4.gif" alt="" width="588" height="115" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Burada merak edilen noktalardan biriside mesajlaşma sırasında kullanılan &lt;strong&gt;XSD&lt;/strong&gt; şemasının i&amp;ccedil;eriğinin ne olduğudur. .&lt;strong&gt;Net&lt;/strong&gt; &lt;strong&gt;Framework&lt;/strong&gt; &lt;strong&gt;3.0&lt;/strong&gt; ile birlikte gelen &lt;strong&gt;XsdDataContractExporter&lt;/strong&gt; tipinden yararlanılaraktan, s&amp;ouml;z konusu &lt;strong&gt;XSD&lt;/strong&gt; şemasının i&amp;ccedil;eriği manuel olaraktan &amp;uuml;retilebilir ve incelenebilir. Aşağıdaki kod par&amp;ccedil;asında bu durum ele alınmaktadır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;// XSD formatına d&amp;ouml;n&amp;uuml;şt&amp;uuml;rme yapacak tip tanımlanır
+XsdDataContractExporter exporter = new XsdDataContractExporter();
+exporter.Options = new ExportOptions();
+exporter.Export(typeof(Urun)); // Export işlemi ger&amp;ccedil;ekleştirilir
+
+// Export işlemi sonucu oluşan XSD bilgisi herhangibir stream &amp;uuml;zerine aktarılabilir
+FileStream stream = new FileStream("UrunSchema.xsd", FileMode.Create, FileAccess.Write);
+
+// Export edilen XmlSchemaSet i&amp;ccedil;erisindeki t&amp;uuml;m XmlSchema tipleri dolaşılır
+foreach (XmlSchema set in exporter.Schemas.Schemas())
+{
+    // &amp;Ccedil;ıktının kolay anlaşılır olması a&amp;ccedil;ısından o anki XmlSchema &amp;ouml;rneğinin TargetNamespace &amp;ouml;zelliğinin değerinin DataContract niteliğinde belirtilen Namespace bilgisine eşit olup olmadığına bakılır
+    if (set.TargetNamespace == "http://www.bsenyurt.com/Urun")
+        set.Write(stream); // Eşit ise XmlSchema i&amp;ccedil;eriği dosyaya yazılır
+}
+stream.Close();&lt;/pre&gt;
+&lt;p&gt;Bu kodun &amp;ccedil;alışması sonucu aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan &lt;strong&gt;XSD&lt;/strong&gt; şemasının &amp;uuml;retildiği g&amp;ouml;r&amp;uuml;l&amp;uuml;r. &lt;em&gt;(Burada if ifadesi kaldırıldığı takdirde i&amp;ccedil;erikte oluşacak farklılığın izlenmesi ve analiz edilmesi &amp;ouml;nerilir.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk254_7.gif" alt="" width="525" height="253" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi Urun isimli karmaşık tip i&amp;ccedil;erisindeki ilkel tiplerin(Primitive Type) tamamı, &lt;strong&gt;XSD&lt;/strong&gt; karşılıklarına &amp;ccedil;evrilerek ele alınmaktadır. İşte &lt;strong&gt;DataContractFormatter&lt;/strong&gt; ile serileştirilen bir Urun nesne &amp;ouml;rneği iki uygulama arasında hareket ederken bu şema bilgisinden yararlanılmaktadır. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt;&lt;span style="font-family: Verdana;"&gt;NetDataContractSerializer ile Serileştirme&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bazı durumlarda hem istemci hemde sunucu tarafında veri s&amp;ouml;zleşmelerinin aslına uygun şekilde kullanıldığı durumlar s&amp;ouml;z konusu olabilir. Bu &amp;ouml;zellikle aynı tip .&lt;strong&gt;Net&lt;/strong&gt; uygulamaların olduğu senaryolarda s&amp;ouml;z konusudur. Bu sebepten &lt;strong&gt;WCF&lt;/strong&gt; i&amp;ccedil;erisinde buna destek olacak şekilde &lt;strong&gt;NetDataContractSerializer&lt;/strong&gt; tipi kullanılmaktadır. Ne yazıkki &lt;strong&gt;WCF&lt;/strong&gt;' in bu tipe doğrudan desteği yoktur. Bu sebepten ekstra kod yazılması ve &lt;strong&gt;WCF&lt;/strong&gt; tarafında serileştirilecek olan tipin &amp;ccedil;alışma zamanı i&amp;ccedil;in &amp;ouml;zel bir &lt;strong&gt;nitelik(attribute)&lt;/strong&gt; tasarlanması gerekmektedir. Yukarıda tasarlanan &amp;ouml;rnek i&amp;ccedil;in &lt;strong&gt;NetDataContractSerializer&lt;/strong&gt; aşağıdaki kod par&amp;ccedil;asında olduğu gibi kullanılabilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.IO;
+using System.Runtime.Serialization;
+
+namespace Formatters
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            #region NetDataContractSerializer ile Type Serileştirme
+
+            // Urun tipine ait nesne &amp;ouml;rneği oluşturulur.
+            Urun lcd = new Urun(9, "LCD 17inch", 125.45, DateTime.Now);
+            // NetDataContractSerializer nesnesi &amp;ouml;rneklenir.
+            NetDataContractSerializer netSerializer = new NetDataContractSerializer();
+            // Serileştirmenin yapılacağı fiziki dosyayı işaret eden Stream a&amp;ccedil;ılır.
+            FileStream stream4 = new FileStream("NetUrun.xml", FileMode.Create, FileAccess.Write);
+            // WriteObject metodu ile lcd isimli Urun nesne &amp;ouml;rneği, stream4 ile belirtilen Stream &amp;uuml;zerine aktarılır.
+            netSerializer.WriteObject(stream4, lcd);
+            // Stream kapatılır
+            stream4.Close();
+
+            #endregion
+
+            #region NetDataContractSerializer ile Type Ters Serileştirme
+    
+            // NerUrun.xml dosyası var ise işlemleri yap.
+            if (File.Exists("NetUrun.xml"))
+            {
+                // NetDataContractSerializer nesnesi &amp;ouml;rneklenir
+                NetDataContractSerializer netDeSerializer = new NetDataContractSerializer();
+                // FileStream nesnesi &amp;ouml;rneklenir
+                FileStream stream7 = new FileStream("NetUrun.xml", FileMode.Open, FileAccess.Read);
+                // ReadObject metodu parametre olarak ters serileştirilecek tipe ait verileri taşıyan Stream &amp;ouml;rneğini alır.
+                // Metod geriye object tipini d&amp;ouml;nd&amp;uuml;rd&amp;uuml;ğ&amp;uuml; i&amp;ccedil;in cast işlemi yapılır.
+                Urun gelenLcd = (Urun)netDeSerializer.ReadObject(stream7);
+                // Elde edilen nesneye ait bilgiler ekrana yazdırılır
+                Console.WriteLine("Id :{0} Ad:{1} Fiyat:{2} Stok Tarihi:{3}", gelenLcd.Id.ToString(), gelenLcd.Ad, gelenLcd.ListeFiyati.ToString("C2"), gelenLcd.StokTarihi.ToString());
+                // Stream kapatılır
+                stream7.Close();
+            }
+
+            #endregion
+
+            #region NetDataContractSerializer ile Array Serileştirme
+        
+            Urun[] urunler ={
+                                    new Urun(2,"A Mouse Optic",11.2,DateTime.Now),
+                                    new Urun(3,"Y Mouse Optic, Kablolu",9.49,DateTime.Now),
+                                    new Urun(5,"Z Mouse",3.45,new DateTime(2008,2,3)),
+                                    };
+
+            NetDataContractSerializer netdcArraySerializer = new NetDataContractSerializer();
+            FileStream stream8 = new FileStream("NetUrunler.xml", FileMode.Create, FileAccess.Write);            
+            netdcArraySerializer.WriteObject(stream8, urunler);
+            stream8.Close();
+        
+            #endregion
+    
+            #region NetDataContractSerializer ile Array Ters Serileştirme
+    
+            if (File.Exists("NetUrunler.xml"))
+            {
+                NetDataContractSerializer netdcDeSerializer = new NetDataContractSerializer();
+                FileStream stream9 = new FileStream("NetUrunler.xml", FileMode.Open, FileAccess.Read);
+                Urun[] gelenUrunler = (Urun[])netdcDeSerializer.ReadObject(stream9);
+                Console.WriteLine("Net &amp;Uuml;r&amp;uuml;nler");
+                foreach (Urun urun in gelenUrunler)
+                {
+                    Console.WriteLine("Id :{0} Ad:{1} Fiyat:{2} Stok Tarihi:{3}", urun.Id.ToString(), urun.Ad, urun.ListeFiyati.ToString("C2"), urun.StokTarihi.ToString());
+                }
+                stream9.Close();
+            }
+
+            #endregion
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rnekte &lt;strong&gt;Urun&lt;/strong&gt; ve &lt;strong&gt;Urun[]&lt;/strong&gt; dizilerinin &lt;strong&gt;NetDataContractSerializer&lt;/strong&gt; kullanılarak serileştirme işlemlerine tabi tutulması ele alınmaktadır. Dikkat edileceği &amp;uuml;zere &lt;strong&gt;NetDataContractSerializer&lt;/strong&gt; tipine ait nesneler &amp;ouml;rneklenirken &lt;strong&gt;DataContractSerializer&lt;/strong&gt;' da olduğu gibi tip bildirimi yapılmamaktadır. Bunun sebebi, serileştirilen tipin zaten uygulama tarafındaki ilgili assembly i&amp;ccedil;erisinde var olmasıdır. Diğer taraftan yine &lt;strong&gt;WriteObject&lt;/strong&gt; metodu ile serileştirme, &lt;strong&gt;ReadObject&lt;/strong&gt; metodu ilede ters serileştirme işlemleri ger&amp;ccedil;ekleştirilmektedir. &amp;Uuml;retilen &lt;strong&gt;NetUrun.xml&lt;/strong&gt; ve &lt;strong&gt;NetUrumler.xml&lt;/strong&gt; dosyalarının i&amp;ccedil;erikleri ise aşağıda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt;&lt;span style="font-family: Verdana;"&gt;NetUrun.xml i&amp;ccedil;eriği;&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk254_8.gif" alt="" width="500" height="168" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt;&lt;span style="font-family: Verdana;"&gt;NetUrunler.xml i&amp;ccedil;eriği;&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk254_9.gif" alt="" width="500" height="392" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;DataContractSerializer&lt;/strong&gt; ile &amp;uuml;retilen &lt;strong&gt;XML&lt;/strong&gt; &amp;ccedil;ıktılarında farklı bir sonu&amp;ccedil; oluşmaktadır. Herşeyden &amp;ouml;nce &lt;strong&gt;z:Assembly &lt;/strong&gt;niteliği i&amp;ccedil;erisinde Urun tipinin yer aldığı &lt;strong&gt;Assembly&lt;/strong&gt; bilgisi bulunmaktadır. Bunun &amp;ouml;nemli bir sonucu vardır. Serileşen i&amp;ccedil;eriğin ele alındığı taraflarda Urun tipinin yer aldığı &lt;strong&gt;Assembly&lt;/strong&gt;' ın var olması şarttır ki aslında bu durum &lt;strong&gt;SOA&lt;/strong&gt; mimarisinin uygulanış bi&amp;ccedil;imlerinde tercih edilen yollardan birisi değildir. İ&amp;ccedil;erikte g&amp;ouml;ze &amp;ccedil;arptan noktalardan biriside &lt;strong&gt;z:Id&lt;/strong&gt; isimli &lt;strong&gt;niteliklerdir(Attributes)&lt;/strong&gt;. Bu niteliklerin sadece referans tiplerine uygulandığına dikkat edilmelidir&lt;strong&gt;(String,Array gibi)&lt;/strong&gt;. &lt;strong&gt;z:Id&lt;/strong&gt; temel olarak referans tiplerinin korunmasına y&amp;ouml;nelik olarak kullanılmaktadır. Bir diğer dikkat &amp;ccedil;ekici nitelik ise &lt;strong&gt;Urun[]&lt;/strong&gt; dizisinin serileştirilmesi sonrası ortaya &amp;ccedil;ıkan &lt;strong&gt;z:Size &lt;/strong&gt;bilgisidir. Buradada serileştirilen dizi i&amp;ccedil;erisindeki eleman sayısı yer almaktadır. &amp;Ouml;zet olarak &lt;strong&gt;NetDataContractSerializer&lt;/strong&gt;, &lt;strong&gt;WCF&lt;/strong&gt; alt yapısında doğrudan desteklenmemektedir. Her iki taraftada tipe ait &lt;strong&gt;Assembly&lt;/strong&gt; bilgisinin olmasını gerektirmektedir. &amp;Uuml;st&amp;uuml;ne &amp;uuml;stelik nesne &amp;ouml;rneğinin bilinen &lt;strong&gt;.Net CLR &lt;/strong&gt;tiplerine eşleştirilerek &lt;strong&gt;XML&lt;/strong&gt; i&amp;ccedil;eriğine alınmasını sağlamaktadır. Bu sebeplerden dolayı ilgili serileştiricinin kullanılması pek yaygın değildir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt;&lt;span style="font-family: Verdana;"&gt;DataContractJsonSerializer ile Serileştirme&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bilindiği &amp;uuml;zere &lt;strong&gt;.Net Framework 3.5&lt;/strong&gt; ile birlikte &lt;strong&gt;WCF&lt;/strong&gt; mimarisinde &lt;strong&gt;Ajax&lt;/strong&gt; tabanlı istemciler i&amp;ccedil;in destek gelmektedir. Bu desteğin temelinde ise &lt;strong&gt;JSON(JavaScript Object Notation) &lt;/strong&gt;formatlı veriler s&amp;ouml;z konusudur. Bu noktada WCF alt yapısı &lt;strong&gt;DataContractJsonSerializer&lt;/strong&gt; tipini ele almaktadır. Bu tipte serileştirme desteği i&amp;ccedil;in &lt;strong&gt;WebScriptEnablingBehavior&lt;/strong&gt; niteliğinin veya &lt;strong&gt;WebHttpBehavior&lt;/strong&gt; niteliğinde &amp;ccedil;&amp;ouml;z&amp;uuml;mle i&amp;ccedil;in &lt;strong&gt;JSON&lt;/strong&gt; tipinin se&amp;ccedil;ilmesi yeterlidir. S&amp;ouml;z konusu serileştirme tipi sayesinde &lt;strong&gt;Javascript, Asp.Net Ajax&lt;/strong&gt; ve &lt;strong&gt;Silverlight&lt;/strong&gt; tabanlı web uygulmalarına destek verilebilmektedir. Aşağıdaki kod par&amp;ccedil;asında yukarıdaki &amp;ouml;rneklerde kullanılan &lt;strong&gt;Urun&lt;/strong&gt; ve &lt;strong&gt;Urun[] &lt;/strong&gt;dizi &amp;ouml;rneklerinin &lt;strong&gt;JSON&lt;/strong&gt; serileştirilmesi ele alınmaktadır. &lt;em&gt; (&lt;strong&gt;DataContractJsonSerializer&lt;/strong&gt; tipi &lt;strong&gt;System.Runtime.Serialization.Json&lt;/strong&gt; &lt;strong&gt;isim&lt;/strong&gt; &lt;strong&gt;alanı(Namespace)&lt;/strong&gt; altında yer almaktadır. Ancak bu isim alanına erişebilmek i&amp;ccedil;in projeye &lt;strong&gt;System.ServiceModel.Web.dll assembly&lt;/strong&gt;' ının referans edilmesi gerekmektedir.)&lt;/em&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.IO;
+using System.Xml.Schema;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
+
+namespace Formatters
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            #region DataContractJsonSerilazier ile Type Serileştirme
+
+            // Serileştirilecek nesne &amp;ouml;rneği.
+            Urun mouse = new Urun(1, "Mx Mouse Optic", 10, new DateTime(2004, 1, 1));
+
+            // Serileştirici sınıf &amp;ouml;rneklenir.
+            // Parametre olarak serileştirilecek veri s&amp;ouml;zleşmesi tipi verilir.
+            DataContractJsonSerializer dcJsonSerializer = new DataContractJsonSerializer(typeof(Urun));
+
+            // Serileştirme sonu&amp;ccedil;larının yazılacağı &amp;ouml;rnek bir Stream oluşturulur.
+            FileStream stream10 = new FileStream("UrunJson.xml", FileMode.Create, FileAccess.Write);
+            // WriteObject metodu ile stream10 nesnesi ile tanımlanan Stream &amp;uuml;zerine mouse isimli Urun nesne &amp;ouml;rneği verisi aktarılır
+            dcJsonSerializer.WriteObject(stream10, mouse);
+            stream10.Close(); // Stream kapatılır.
+
+            #endregion
+
+            #region DataContractJsonSerializer ile Type Ters-Serileştirme
+        
+            // UrunJson.xml dosyası var ise ters serileştirme işlemleri yapılır.
+            if (File.Exists("UrunJson.xml"))
+            {
+                // DataContractJsonSerializer nesnesi &amp;ouml;rneklenir.
+                DataContractJsonSerializer dcJsonDeSerializer = new DataContractJsonSerializer(typeof(Urun));
+                // Serileştirilmiş veri i&amp;ccedil;eriğinin bulunduğu dosyayı okumak i&amp;ccedil;in bir Stream &amp;ouml;rneklenir.
+                FileStream stream11 = new FileStream("UrunJson.xml", FileMode.Open, FileAccess.Read);
+                // ReadObject metodu ile parametre olarak verilen Stream i&amp;ccedil;erisindeki bilgi ters serileştirme işlemine tabi tutulur.
+                // D&amp;ouml;n&amp;uuml;ş t&amp;uuml;r&amp;uuml; object olduğu i&amp;ccedil;in sonucun uygun t&amp;uuml;re cast edilmesi gereklidir.
+                Urun urn = (Urun)dcJsonDeSerializer.ReadObject(stream11);
+                // Elde edilen nesne &amp;ouml;rneği bilgisi ekrana yazdırılır.
+                Console.WriteLine("Id :{0} Ad:{1} Fiyat:{2} Stok Tarihi:{3}", urn.Id.ToString(), urn.Ad, urn.ListeFiyati.ToString("C2"), urn.StokTarihi.ToString());
+                // Stream kapatılır.
+                stream11.Close();
+            }
+
+            #endregion
+    
+            #region DataContractJsonSerializer ile Array Serileştirme
+        
+            Urun[] urunler ={
+                                    new Urun(2,"A Mouse Optic",11.2,DateTime.Now),
+                                    new Urun(3,"Y Mouse Optic, Kablolu",9.49,DateTime.Now),
+                                    new Urun(5,"Z Mouse",3.45,new DateTime(2008,2,3)),
+                                    };
+
+            DataContractJsonSerializer dcJsonArraySerializer = new DataContractJsonSerializer(typeof(Urun[]));
+            FileStream stream12 = new FileStream("UrunlerJson.xml", FileMode.Create, FileAccess.Write);
+            dcJsonArraySerializer.WriteObject(stream12, urunler);
+            stream12.Close();
+        
+            #endregion
+
+            #region DataContractJsonSerializer ile Array Ters-Serileştirme
+        
+            if (File.Exists("UrunlerJson.xml"))
+            {
+                DataContractJsonSerializer dcJsonDeSerializer = new DataContractJsonSerializer(typeof(Urun[]));
+                FileStream stream13 = new FileStream("UrunlerJson.xml", FileMode.Open, FileAccess.Read);
+                Urun[] gelenUrunler = (Urun[])dcJsonDeSerializer.ReadObject(stream13);
+                Console.WriteLine("JSON &amp;Uuml;r&amp;uuml;nler");
+                foreach (Urun urun in gelenUrunler)
+                {
+                    Console.WriteLine("Id :{0} Ad:{1} Fiyat:{2} Stok Tarihi:{3}", urun.Id.ToString(), urun.Ad, urun.ListeFiyati.ToString("C2"), urun.StokTarihi.ToString());
+                }
+                stream13.Close();
+            }
+
+            #endregion
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;DataContractJsonSerializer&lt;/strong&gt; sınıfına ait nesne &amp;ouml;rnekleri kullanılılırken yapıcı metoda, type bilgisi verilmektedir. &lt;strong&gt;DataContractSerializer&lt;/strong&gt; tipine benzer olaraktan &lt;strong&gt;WriteObject&lt;/strong&gt; ve &lt;strong&gt;ReadObject&lt;/strong&gt; metodları ile &lt;strong&gt;stream&lt;/strong&gt; &amp;uuml;zerine serileştirme yapmak ve &lt;strong&gt;stream&lt;/strong&gt; &amp;uuml;zerinden serileştirilen bilgileri okumak m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Kodun &amp;ccedil;alışması sonrası &amp;uuml;retilen &amp;ccedil;ıktılar ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt;&lt;span style="font-family: Verdana;"&gt;UrunJson.xml i&amp;ccedil;eriği;&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk254_10.gif" alt="" width="319" height="128" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt;&lt;span style="font-family: Verdana;"&gt;UrunlerJson.xml i&amp;ccedil;eriği;&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk254_11.gif" alt="" width="637" height="104" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;JSON&lt;/strong&gt; &amp;ccedil;ıktısı, &lt;strong&gt;XML&lt;/strong&gt; &amp;ccedil;ıktısına g&amp;ouml;re daha az yer tutmaktadır. Bununla birlikte &amp;ccedil;ıktının okunurluğu &amp;ccedil;ok daha kolaydır. Dikkat edileceği &amp;uuml;zere bilgiler &lt;strong&gt;key:value&lt;/strong&gt; &amp;ccedil;iftleri şeklinde yazılmıştır. Buda &amp;ouml;zellikle &lt;strong&gt;javascript&lt;/strong&gt; tarafında veriye erişimde b&amp;uuml;y&amp;uuml;k kolaylık sağlamaktadır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt;&lt;span style="font-family: Verdana;"&gt;XmlSerializer ile Serileştirme&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;.Net Framework 2.0&lt;/strong&gt; ile birlikte gelen tiplerden birisi olan &lt;strong&gt;XmlSerializer&lt;/strong&gt; ile, serileştirme adımlarını &amp;ouml;zelleştirmek m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Diğer taraftan t&amp;uuml;m &lt;strong&gt;Asp.Net Web Service&lt;/strong&gt; modeli, &lt;strong&gt;XmlSerializer&lt;/strong&gt; &amp;uuml;zerine kurulmuştur. Bu nedenle &lt;strong&gt;Asp.Net Web Service&lt;/strong&gt; uygulamalarının &lt;strong&gt;WCF&lt;/strong&gt; tarafına aktarılmasında kolaylık sağlamaktadır. Diğer taraftan bazı vakalarda tiplerin kaynak kodlarına erişilemediği veya yeniden derleme işlemlerinin yapılamadığı durumlar bulunmaktadır. Bu durumlarda &lt;strong&gt;XmlSerializer&lt;/strong&gt; tipinden faydalanılabilir. Nitekim bu vakalarda tiplere &lt;strong&gt;DataContract&lt;/strong&gt; yada &lt;strong&gt;DataMember&lt;/strong&gt; niteliklerinin uygulanması s&amp;ouml;z konusu değildir. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;XmlSerializer&lt;/strong&gt; ile temel olarak &amp;uuml;&amp;ccedil; farklı modelde serileştirme işlemi ger&amp;ccedil;ekleştirilebilir. İlk modele g&amp;ouml;re &lt;strong&gt;varsayılan yapıcı(Default Constructor) &lt;/strong&gt;kullanılır ve tipin &lt;strong&gt;public&lt;/strong&gt; olan &lt;strong&gt;&amp;ouml;zellik(Property) &lt;/strong&gt;veya &lt;strong&gt;alanları(Field) &lt;/strong&gt;serileşir. Diğer modelde serileşen &amp;uuml;yelerin &amp;ccedil;ıktılarının &amp;ouml;zelleştirilmesi amacıyla &lt;strong&gt;XmlElement&lt;/strong&gt;, &lt;strong&gt;XmlAttribute&lt;/strong&gt; gibi nitekiklerden yararlanılır. Son modelde ise &lt;strong&gt;IXmlSerializable&lt;/strong&gt; &lt;strong&gt;aray&amp;uuml;z&amp;uuml;(Interface)&lt;/strong&gt; implemantasyonu ger&amp;ccedil;ekleştirilerek serileştirme işleminin &amp;ouml;zelleştirilmesi sağlanır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;WCF tarafında tanımlı bir &lt;strong&gt;servis s&amp;ouml;zleşmesinin(Service Contract)&lt;/strong&gt; &amp;ccedil;ıktılarda &lt;strong&gt;XmlSerializer&lt;/strong&gt; modelini kullanması i&amp;ccedil;in &lt;strong&gt;XmlSerializerFormat&lt;/strong&gt; niteliğinden yararlanılması gerekmektedir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt;&lt;span style="font-family: Verdana;"&gt;Karar Vermek&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Eğer serileştirme işlemi sırasında serileşen tipe ait &amp;ouml;zel işlemler yapılması isteniyorsa &lt;strong&gt;XmlSerializer&lt;/strong&gt; tipinden yararlanılabilir. Bununla birlikte istemcilerin &lt;strong&gt;AJAX(AsynchronousJavascriptAndXml)&lt;/strong&gt; veya &lt;strong&gt;Silverlight&lt;/strong&gt; tabanlı olmaları halinde &lt;strong&gt;JSON&lt;/strong&gt; formatında serileştirmeyi tercih etmekte yarar bulunmaktadır. &lt;strong&gt;NetDataContractFormatter&lt;/strong&gt; tipi ne yazıkki her iki taraftada serileşecek tipe ait &lt;strong&gt;Assembly&lt;/strong&gt;' ın olmasını ve &amp;ouml;zel kodlamalar yapılmasını gerektirdiğinden&lt;em&gt;(Nitekim &amp;ccedil;alışma zamanına bu serileştiricinin kullanılacağının s&amp;ouml;ylenmesi i&amp;ccedil;in &amp;ouml;zel attribute yazılması gerekmektedir)&lt;/em&gt; &amp;ccedil;ok fazla tercih edilmemektedir. Bunların dışında kalan varsayılan durumlarda ise &lt;strong&gt;WCF&lt;/strong&gt; zaten otomatik olarak &lt;strong&gt;DataContractFormatter&lt;/strong&gt; tipinden yararlanmaktadır. Bu sebepten geliştiricinin sadece &lt;strong&gt;DataContract&lt;/strong&gt; ve &lt;strong&gt;DataMember&lt;/strong&gt; niteliklerini kullanması yeterlidir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt;&lt;span style="font-family: Verdana;"&gt;Versiyonlama(Versioning)&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Buraya kadarki kısımda WCF tarafında ele alınabilecek olan serileştirici tiplerden kısaca bahsedilmiştir. Serileştirme s&amp;uuml;recinde &amp;ouml;nem arz eden konulardan biriside versiyonlamadır. Nitekim eski istemcilerin yeni servis ile yada tam tersine, eski servislerin yeni istemciler ile &amp;ccedil;alışması gerektiği durumlar s&amp;ouml;z konusu olabilir. &lt;strong&gt;Servis&lt;/strong&gt; ve &lt;strong&gt;istemci&lt;/strong&gt; tarafının aynı &lt;strong&gt;veri s&amp;ouml;zleşmesine(Data Contract) &lt;/strong&gt;sahip oldukları durumlarda versiyon farklılıklarına karşı hazırlıklı olmaları gerekebilir. WCF tarafında versiyonlama problemi aslında sessiz bir şekilde g&amp;ouml;rmezden gelinmektedir. Ancak yinede veri s&amp;ouml;zleşmelerine ait versiyon farklılıkları olduğunda, vakanın nasıl ele alınması gerektiğinin bilinmesinde yarar vardır. Temel olarak &amp;uuml;&amp;ccedil; farklı versiyonlama senaryosu bulunmaktadır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt;&lt;span style="font-family: Verdana;"&gt;Yeni &amp;Uuml;yeler(New Members)&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk254_12.gif" alt="" width="514" height="311" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bu senaryoda taraflardan birisi veri s&amp;ouml;zleşmesinin yeni versiyonunu karşı tarafa g&amp;ouml;ndermektedir. Yeni &amp;uuml;yelere sahip s&amp;ouml;zleşemeyi g&amp;ouml;nderen tarafın istemci veya servis olması farketmemektedir. Bu vakada alıcı taraf, gelen yeni &amp;uuml;yeleri g&amp;ouml;rmezden gelmektedir. &amp;Ouml;rneğin yukarıdaki şekilde taraflardan birisi &lt;strong&gt;Urun&lt;/strong&gt; tipinin yeni bir versiyonunu karşı tarafa g&amp;ouml;ndermektedir. Yeni versiyonda &lt;strong&gt;Id&lt;/strong&gt;,&lt;strong&gt;Ad&lt;/strong&gt; ve &lt;strong&gt;Fiyat&lt;/strong&gt; alanlarına ek olarak &lt;strong&gt;Stok&lt;/strong&gt; isimli yeni bir alan daha bulunmaktadır. Karşı tarafta ise bu alan g&amp;ouml;rmezden gelinir. Yinede yeni versiyona ait veri i&amp;ccedil;eriğinin tamamı karşı tarafa g&amp;ouml;nderilmekte ve &lt;strong&gt;ters serileştirme(Deserializing)&lt;/strong&gt; işlemi sırasında gelen yeni &amp;uuml;ye i&amp;ccedil;erikleri &lt;strong&gt;atlanılmaktadır(Ignore)&lt;/strong&gt;.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt;&lt;span style="font-family: Verdana;"&gt;Kayıp &amp;Uuml;yeler(Missing Members)&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk254_13.gif" alt="" width="512" height="294" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&amp;Ouml;zellikle eski veri s&amp;ouml;zleşmelerini kullanan istemciler ile servis tarafında yeni veri s&amp;ouml;zleşmesinin yer aldığı durumlarda s&amp;ouml;z konusudur. Burada servis tarafı istemciden gelen eksik &amp;uuml;yelerin yer aldığı veri s&amp;ouml;zleşmesini ters serileştirme işlemine tabi tutarken varsayılan değerlerin atanmasını sağlamaktadır. Bir başka deyişle yine sessiz bir şekilde versiyon farkı g&amp;ouml;rmezden gelinir ve eksik &amp;uuml;yeler i&amp;ccedil;in ilk değerler atanır. Elbette &lt;strong&gt;OnDeserializing&lt;/strong&gt; niteliği ile imzalanmış bir metoddan yararlanılarak eksik &amp;uuml;yeler i&amp;ccedil;in farklı değerlerin verilmesi sağlanabilir. Tabi bu senaryoda ekstra bir durumda vardır. Bilindiği &amp;uuml;zere &lt;strong&gt;DataMember&lt;/strong&gt; niteliğinin &lt;strong&gt;IsRequired&lt;/strong&gt; &amp;ouml;zelliği bulunmaktadır. Bu &amp;ouml;zelliğe g&amp;ouml;re ilgili &amp;uuml;yeye ait değerin istemci tarafından gelmesi şarttır. Bu durum ilerleyen kısımlardaki &amp;ouml;rneklerde irdelenmektedir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt;&lt;span style="font-family: Verdana;"&gt;Round-Trip&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk254_14.gif" alt="" width="514" height="311" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bu durumda istemci yeni &amp;uuml;yelere sahip veri s&amp;ouml;zleşmesi i&amp;ccedil;eriğini servis tarafına g&amp;ouml;ndermektedir. Ancak servis tarafıda operasyon &amp;ccedil;ağrısı sonucunda geriye aynı veri tipini d&amp;ouml;nd&amp;uuml;rmektedir. &lt;strong&gt;Servis&lt;/strong&gt; tarafı, ters serileştirme işlemi sırasında gelen fazla &amp;uuml;yeyi kesip dışarıda bıraktığı i&amp;ccedil;in, operasyon sonucunda istemci tarafına eksik veri i&amp;ccedil;eriği g&amp;ouml;nderilecektir. Diğer tarafan senaryo aşağıdaki şekildeki gibi olabilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk254_15.gif" alt="" width="545" height="326" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Burada istemci tarafında veri s&amp;ouml;zleşmesinin yeni &amp;uuml;yeler i&amp;ccedil;eren bir versiyonu bulunmaktadır. &lt;strong&gt;Urun&lt;/strong&gt; sınıfında yer alan &lt;strong&gt;Stok&lt;/strong&gt; isimli &amp;ouml;zellik yeni &amp;uuml;yedir. Ancak &lt;strong&gt;Service&lt;/strong&gt; &lt;strong&gt;1&lt;/strong&gt; tarafında &lt;strong&gt;Stok&lt;/strong&gt; &amp;ouml;zelliğine sahip olmayan eski veri s&amp;ouml;zleşmesi kullanılmaktadır. Bu durumda &lt;strong&gt;Service&lt;/strong&gt; &lt;strong&gt;1,&lt;/strong&gt; doğal olaraktan &lt;strong&gt;Stok&lt;/strong&gt; &amp;ouml;zelliğini ve değerini g&amp;ouml;rmezden gelecektir. Ne varki &lt;strong&gt;Service&lt;/strong&gt; &lt;strong&gt;1&lt;/strong&gt; kendisine gelen &lt;strong&gt;Urun&lt;/strong&gt; nesne verisini kırptıktan sonra, son haliyle &lt;strong&gt;Service&lt;/strong&gt; &lt;strong&gt;2&lt;/strong&gt; tarafına g&amp;ouml;ndermektedir. Oysaki &lt;strong&gt;Service&lt;/strong&gt; &lt;strong&gt;2&lt;/strong&gt; tarafında &lt;strong&gt;Urun &lt;/strong&gt;tipine ait yeni veri s&amp;ouml;zleşmesi yer almaktadır. Bu durumdada &lt;strong&gt;Stok&lt;/strong&gt; &amp;ouml;zelliğine varsayılan ilk değer atanır. Dolayısıyla istemcinin ilk etapta &lt;strong&gt;Stok&lt;/strong&gt; değeri tamamen ortadan kaybolmaktadır. Burada istemci ve &lt;strong&gt;Service&lt;/strong&gt; &lt;strong&gt;1&lt;/strong&gt; arasında &lt;strong&gt;New&lt;/strong&gt; &lt;strong&gt;Members&lt;/strong&gt; versiyonlama koşulları; &lt;strong&gt;Service&lt;/strong&gt; &lt;strong&gt;1&lt;/strong&gt; ile &lt;strong&gt;Service&lt;/strong&gt; &lt;strong&gt;2&lt;/strong&gt; arasında ise &lt;strong&gt;Missing&lt;/strong&gt; &lt;strong&gt;Members&lt;/strong&gt; versiyonlama koşulları oluşmaktadır. &lt;strong&gt;Round-Trip&lt;/strong&gt; senaryosunda, &lt;strong&gt;IExtensibleDataObject&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;nden yararlanılarak durumun belirli &amp;ouml;l&amp;ccedil;&amp;uuml;lerde kontrol altına alınmasıda sağlanabili ki ilerleyen &amp;ouml;rneklerde bu durumda incelenmektedir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;B&amp;ouml;ylece geldik WCF mimarisinde serileştirme, versiyonlama ve &amp;ccedil;&amp;ouml;z&amp;uuml;mleme ile ilgili ilk makalemizin sonuna. Devam eden makalemizde versiyonlama koşullarını &amp;ouml;rnekler &amp;uuml;zerinden incelemeye &amp;ccedil;alışacağız. &amp;Ouml;zellikle &lt;strong&gt;Round&lt;/strong&gt;-&lt;strong&gt;Trip&lt;/strong&gt; hallerinde &lt;strong&gt;IExtensibleDataObject&lt;/strong&gt; aray&amp;uuml;z&amp;uuml; kullanımını, &lt;strong&gt;IsRequired&lt;/strong&gt; &amp;ouml;zelliğinin değerinin &lt;strong&gt;Missing&lt;/strong&gt; &lt;strong&gt;Members&lt;/strong&gt; vakasına olan etkisini, serileştirilen tipler i&amp;ccedil;in &lt;strong&gt;vekil(Surrogate) &lt;/strong&gt;tip kullanımını ve &lt;strong&gt;&amp;ccedil;&amp;ouml;z&amp;uuml;mleyiciler(Encoders)&lt;/strong&gt; arasında karar vermede dikkat edilmesi gereken hususları irdeliyor olacağız. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt; &lt;a href="/makale/images/WCFSerializationAndEncoding.rar"&gt;&amp;Ouml;rnek Uygulama i&amp;ccedil;in Tıklayın&lt;/a&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;</content>
+  <pubDate>2008-06-16 12:00:00</pubDate>
+  <slug>WCF-Serilestirme(Serialization)-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>wcf</tag>
+    <tag>windows-communication-foundation</tag>
+  </tags>
+  <categories>
+    <category>WCF</category>
+  </categories>
+</post>

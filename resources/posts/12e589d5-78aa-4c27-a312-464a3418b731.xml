@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WCF–SOAP Servislerinde Custom Header Kullanmak</title>
+  <description>Bazen kurum içerisinde kullanılan SOAP(Simpe Object Access Protocol) bazlı servisler istemcilerin kimliklerine göre operasyonlarını farklılaştırmak isterler. Böyle bir durumda istemcilerin kendilerini servis tarafına bir şekilde tanıtmaları ve özelleştirilmiş operasyon için gerekli bilgileri iletmeleri beklenir. En bilinen yollardan birisi de SOAP zarfının(Hah işte mektup meselesi ile bağlayabildiğimiz nokta) Header kısmına bu tip bilgileri ilave etmektir. XML Web Service zamanlarından beri var olan bu yaklaşım, WCF tabanlı SOAP servisleri için de geçerlidir. Pek tabi Header bilgisi network trafiğini dinleyenler tarafından yakalansa da sorun teşkil etmeyecek vakalarda ele alınması daha uygundur.</description>
+  <content>&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/OldMail.jpg"&gt;&lt;img style="background-image: none; float: right; padding-top: 0px; padding-left: 0px; margin: 4px 0px; display: inline; padding-right: 0px; border-width: 0px;" title="OldMail" src="/pics/OldMail_thumb.jpg" alt="OldMail" width="240" height="194" align="right" border="0" /&gt;&lt;/a&gt;&amp;Ccedil;ok uzun zamandır Sosyal ağlardan uzağım. Ne Facebook, ne Twitter ne de bir başkasını kullanmıyorum. Google+ &amp;uuml;zerinde bile sırf Hangout s&amp;ouml;yleşileri nedeniyle mecburen a&amp;ccedil;ık tuttuğum bir hesap var. Sosyal ağları terk ettiğim ilk g&amp;uuml;nlerde &amp;ccedil;evremdeki pek &amp;ccedil;ok yakın dostumla olan iletişimimi de yeniden tesis etmem gerekmişti. Ne acıdır ki pek &amp;ccedil;oğunun iletişim bilgisi sadece Tweet ve Facebook mesaj kısmı ile sınırlı kalmıştı. Hani nerede telefon numaraları, nerede e-posta adresleri? &amp;Ccedil;oğunu tedarik etmek epeyce zor oldu.&lt;/p&gt;
+&lt;p&gt;O vakitlerde yine yakın arkadaşlarımdan birisi ile işte bu sosyal ağ mevzularını ve insanlar &amp;uuml;zerindeki olumsuz etkilerini konuşmaya başlamıştık. Bir arkadaşımla uzun zamandır e-posta &amp;uuml;zerinden b&amp;ouml;ylesine yoğun iletişim kurmamıştım. Heyecan verici ve s&amp;uuml;r&amp;uuml;kleyici bir deneyim idi. Şirkette u&amp;ccedil;uşan e-posta trafiğinden &amp;ccedil;ok daha farklıydı. Duygusal anlamı vardı. Suni, bayağı değildi. İletişim kurmak isteyen iki arkadaşın yazışmalarıydı.&lt;/p&gt;
+&lt;p&gt;Derken acaba eski g&amp;uuml;nlerdeki gibi postaneden mektup g&amp;ouml;ndererek iletişim kursak nasıl olur diye d&amp;uuml;ş&amp;uuml;nmeye başladık. İlk okul sıralarına kadar gittik. Yurt dışında mektup arkadaşı bulmaya &amp;ccedil;alıştığımız g&amp;uuml;nleri hatırladık. Şimdi tabi benim bir şekilde bu mektup meselesinden makalenin konusu olan SOAP Header&amp;rsquo; a inmem gerekiyor&amp;hellip;Bir deneyelim.&lt;/p&gt;
+&lt;p&gt;Bazen kurum i&amp;ccedil;erisinde kullanılan &lt;strong&gt;SOAP&lt;em&gt;(Simpe Object Access Protocol)&lt;/em&gt;&lt;/strong&gt; bazlı servisler istemcilerin kimliklerine g&amp;ouml;re operasyonlarını farklılaştırmak isterler. B&amp;ouml;yle bir durumda istemcilerin kendilerini servis tarafına bir şekilde tanıtmaları ve &amp;ouml;zelleştirilmiş operasyon i&amp;ccedil;in gerekli bilgileri iletmeleri beklenir. En bilinen yollardan birisi de &lt;strong&gt;SOAP&lt;/strong&gt; zarfının&lt;em&gt;(Hah işte mektup meselesi ile bağlayabildiğimiz nokta)&lt;/em&gt;&amp;nbsp;&lt;strong&gt;Header&lt;/strong&gt; kısmına bu tip bilgileri ilave etmektir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;XML Web Service&lt;/strong&gt; zamanlarından beri var olan bu yaklaşım, &lt;strong&gt;WCF&lt;/strong&gt; tabanlı &lt;strong&gt;SOAP&lt;/strong&gt; servisleri i&amp;ccedil;in de ge&amp;ccedil;erlidir. Pek tabi &lt;strong&gt;Header&lt;/strong&gt; bilgisi network trafiğini dinleyenler tarafından yakalansa da sorun teşkil etmeyecek vakalarda ele alınması daha uygundur.&lt;/p&gt;
+&lt;h1&gt;SOAP Hakkında Kısa Bilgi&lt;/h1&gt;
+&lt;p&gt;&lt;strong&gt;SOAP&lt;/strong&gt;, uygulamalar arası mesajlaşmayı tanımlayan iletişim protokollerinden birisidir. &lt;strong&gt;W3C&lt;/strong&gt; tarafından tavsiye edilen, &lt;strong&gt;XML&lt;/strong&gt; tabanlı olan, genişletilebilen bir yapıya sahiptir. Dilden ve platformdan bağımsız olması onu servis d&amp;uuml;nyasında pop&amp;uuml;ler hale getiren etkenler arasında yer alır. &lt;strong&gt;HTTP&lt;/strong&gt; &amp;uuml;zerinde koşan bu standart yıllarca &lt;strong&gt;internet/intranet&lt;/strong&gt; tabanlı uygulamaların birbirleriyle haberleşmesi noktasında &amp;ouml;n plana &amp;ccedil;ıkmıştır. Kurumsal &amp;ccedil;&amp;ouml;z&amp;uuml;mler, miras sistemler ile olan iletişim bi&amp;ccedil;imlerinde halen daha pop&amp;uuml;lerliğini korumaktadır. &lt;strong&gt;SOAP&lt;/strong&gt; standardının tanımladığı mesaj i&amp;ccedil;eriği temel olarak aşağıdaki şekilde yer alan şema yapısına sahiptir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wcfch_5.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wcfch_5" src="/pics/wcfch_5_thumb.png" alt="wcfch_5" width="558" height="345" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;SOAP Header&lt;/strong&gt; i&amp;ccedil;eriklerinin istemci tarafında oluşturulması ve&amp;nbsp; servis tarafında ele alınması son derece basittir. Kod yoluyla veya konfigurasyon dosyası i&amp;ccedil;erisinden doğrudan bildirilerek kullanılabilir. Nasıl mı? Haydi gelin birlikte inceleyelim.&lt;/p&gt;
+&lt;h1&gt;Senaryo&lt;/h1&gt;
+&lt;p&gt;İstemcilerin, &lt;strong&gt;Header&lt;/strong&gt; bilgisinde g&amp;ouml;nderdikleri kullanıcı adına g&amp;ouml;re kurum &lt;strong&gt;network&amp;rsquo;&lt;/strong&gt; &amp;uuml; i&amp;ccedil;erisinde yapabilecekleri aksiyonları taşıyan rolleri y&amp;uuml;kleyecek operasyonelliği sunan bir servise ihtiyacımız olduğunu d&amp;uuml;ş&amp;uuml;nelim. Burada s&amp;ouml;z konusu olan operasyonu bir &lt;strong&gt;WCF&lt;/strong&gt; servisi i&amp;ccedil;erisinde konuşlandırmayı planlıyoruz. Buna g&amp;ouml;re istemcilerin servisten talepte bulunmadan &amp;ouml;nce &lt;strong&gt;SOAP&lt;/strong&gt; zarfının &lt;strong&gt;Header&lt;/strong&gt; kısmına bir bilgi koyması ve servisin bu bilgiyi ilgili operasyon i&amp;ccedil;erisinde yakalayarak değerlendirmesi gerekiyor. Gelin adım adım bu işi nasıl yapabileceğimize bir bakalım.&lt;/p&gt;
+&lt;h1&gt;Servis Tarafı&lt;/h1&gt;
+&lt;p&gt;Geliştireceğimiz &lt;strong&gt;WCF&lt;/strong&gt; &lt;strong&gt;Service&lt;/strong&gt; Application i&amp;ccedil;erisinde, aşağıdaki sınıf diagramında g&amp;ouml;r&amp;uuml;len tiplerin olduğunu varsayalım. &lt;em&gt;(Bunlar bir anlamda senaryomuzu zevkli ve eğlenceli hale getirmek i&amp;ccedil;in yaptığımız &amp;ccedil;abalar aslında)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wcfch_4.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wcfch_4" src="/pics/wcfch_4_thumb.png" alt="wcfch_4" width="311" height="569" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Sadece &amp;ouml;rnek senaryomuza hizmet etmek &amp;uuml;zere tasarlanmış olan bu &lt;strong&gt;Dummy&lt;/strong&gt; tiplerin i&amp;ccedil;erikleri ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;Bir kullanıcının rollerini ve bu role i&amp;ccedil;erisinde yapabildiklerini temsilen kullanılan &lt;strong&gt;MemberRole&lt;/strong&gt; ve &lt;strong&gt;RoleAction&lt;/strong&gt; sınıflarımız;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Collections.Generic;
+
+namespace RoleServer 
+{ 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; public class MemberRole 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public int MemberRoleId { get; set; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public string Description { get; set; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public List&amp;lt;RoleAction&amp;gt; ActionList{ get; set; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+}
+
+namespace RoleServer 
+{ 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; public class RoleAction 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public int RoleActionID { get; set; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public string Name { get; set; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public string Status { get; set; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Header&lt;/strong&gt; i&amp;ccedil;erisinden gelen kullanıcı bilgisine g&amp;ouml;re rolleri y&amp;uuml;kleyecek servise ait s&amp;ouml;zleşme&lt;strong&gt;&lt;em&gt;(Service Contract)&lt;/em&gt; &lt;/strong&gt;ve tip i&amp;ccedil;eriğimiz;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Collections.Generic; 
+using System.ServiceModel;
+
+namespace RoleServer 
+{ 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; [ServiceContract] 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; public interface IRoleLoader 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; [OperationContract] 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; List&amp;lt;MemberRole&amp;gt; GetRoles(); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+}
+
+using System.Collections.Generic; 
+using System.ServiceModel; 
+using System.ServiceModel.Channels;
+
+namespace RoleServer 
+{ 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; public class RoleLoader 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; : IRoleLoader 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public List&amp;lt;MemberRole&amp;gt; GetRoles() 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; List&amp;lt;MemberRole&amp;gt; roles = new List&amp;lt;MemberRole&amp;gt;();
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; OperationContext operationContext = OperationContext.Current; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; RequestContext requestContext = operationContext.RequestContext; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; MessageHeaders headers = requestContext.RequestMessage.Headers; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; int headerValue = headers.FindHeader("Username", string.Empty); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; string userName = (headerValue &amp;lt; 0) ? "Bulunamadı" : headers.GetHeader&amp;lt;string&amp;gt;(headerValue);
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; // memberID bilgisine g&amp;ouml;re kullanıcının rolleri y&amp;uuml;klenir. 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; // Sembolik olarak bazı roller y&amp;uuml;klenmiştir. 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; // Ger&amp;ccedil;ek hayat odaklı bir &amp;uuml;r&amp;uuml;nde userName bilgisi 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; // bir Repository &amp;uuml;zerinden sorgulanarak getirilir 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; if(userName=="bsenyurt") 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; roles.Add(new MemberRole 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; MemberRoleId = 1, 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Description = "Geliştirici Rolleri", 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; ActionList = new List&amp;lt;RoleAction&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; new RoleAction{ RoleActionID=8, Name="Download_From_NuGet", Status="Grant"}, 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; new RoleAction{ RoleActionID=8, Name="Access_To_Social",Status="Deny"}, 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; return roles; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+}&lt;/pre&gt;
+&lt;p&gt;ve servis tarafındaki standart web.config i&amp;ccedil;eriğimiz.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt; 
+&amp;lt;configuration&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;system.diagnostics&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;sources&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;source name="System.ServiceModel.MessageLogging" switchValue="Warning,ActivityTracing"&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;listeners&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;add type="System.Diagnostics.DefaultTraceListener" name="Default"&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;filter type="" /&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/add&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;add name="ServiceModelMessageLoggingListener"&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;filter type="" /&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/add&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/listeners&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/source&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/sources&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;sharedListeners&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;add initializeData="c:\web_messages.svclog" 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; type="System.Diagnostics.XmlWriterTraceListener, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; name="ServiceModelMessageLoggingListener" traceOutputOptions="Timestamp"&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;filter type="" /&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/add&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/sharedListeners&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/system.diagnostics&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;system.serviceModel&amp;gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;diagnostics&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;messageLogging logEntireMessage="true" logMalformedMessages="true" 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; logMessagesAtServiceLevel="true" logMessagesAtTransportLevel="true" /&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/diagnostics&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;behaviors&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;serviceBehaviors&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;behavior name=""&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;serviceMetadata httpGetEnabled="true" httpsGetEnabled="true" /&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;serviceDebug includeExceptionDetailInFaults="true" /&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/behavior&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/serviceBehaviors&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/behaviors&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;serviceHostingEnvironment aspNetCompatibilityEnabled="false" 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; multipleSiteBindingsEnabled="true" /&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/system.serviceModel&amp;gt; 
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Konfigurasyon dosyasında, istemci tarafından gelen mesaj i&amp;ccedil;eriklerini g&amp;ouml;rebilmek i&amp;ccedil;in &lt;strong&gt;Trace&lt;/strong&gt; mekanizmasının etkinleştirildiğini &amp;ouml;nceden belirtelim. B&amp;ouml;ylece &lt;strong&gt;SOAP&lt;/strong&gt; zarfının &lt;strong&gt;Header&lt;/strong&gt; kısmındaki i&amp;ccedil;eriği sunucuya ulaştıktan sonra g&amp;ouml;rme şansımız da olacaktır.&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere tipik olarak &lt;strong&gt;SOAP&lt;/strong&gt; tabanlı basit bir &lt;strong&gt;WCF&lt;/strong&gt; servisi s&amp;ouml;z konusudur. Servisin can alıcı noktası ise &lt;strong&gt;GetRoles&lt;/strong&gt; metodunun i&amp;ccedil;eriğidir.&lt;/p&gt;
+&lt;h1&gt;GetRoles Metodunun İşleyişi&lt;/h1&gt;
+&lt;p&gt;Bu metod i&amp;ccedil;erisindeki kritik planlama, istemciden gelen mesaj i&amp;ccedil;eriğindeki &lt;strong&gt;Header&lt;/strong&gt; elementinin yakalanmasıdır. İlk olarak g&amp;uuml;ncel &amp;ccedil;alışma zamanı i&amp;ccedil;eriği yakalanır. &lt;strong&gt;OperationContext&lt;/strong&gt; tipinden ele alınan i&amp;ccedil;erik &amp;uuml;zerinden &lt;strong&gt;RequestContext&lt;/strong&gt; &amp;ouml;rneği yakalanır. Bu bilgi i&amp;ccedil;erisinde istemciden gelen mesaj bulunmaktadır. &amp;Ccedil;ok doğal olarak &lt;strong&gt;RequestMessage.Headers&lt;/strong&gt; &amp;ouml;zelliği, mesaj i&amp;ccedil;erisindeki olası &lt;strong&gt;Header&lt;/strong&gt; elementlerini d&amp;ouml;nd&amp;uuml;recektir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;OperationContext aslında Web uygulamalarından aşina olduğumuz HttpContext kullanımına olduk&amp;ccedil;a benzemektedir. Her ikiside &amp;ccedil;alışma zamanında oluşan Context &amp;ouml;zelliklerine ve i&amp;ccedil;eriklerine erişim notkasında değerlendirilir. Burada da benzer bir yaklaşım s&amp;ouml;z konusu olmuş ve istemciden gelen mesaj i&amp;ccedil;eriği g&amp;uuml;ncel Context &amp;uuml;zerinden yakalanmıştır.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;FindHeader&lt;/strong&gt; metoduna yapılan &amp;ccedil;ağrıda iki parametre kullanılmıştır. İlk parametre &lt;strong&gt;Header&lt;/strong&gt; elementinin adıdır. İkinci parametre ile &lt;strong&gt;Namespace&lt;/strong&gt; bildirimi yapılır. &amp;Ouml;rnekte bir &lt;strong&gt;Namespace&lt;/strong&gt; ele alınmamıştır. &lt;strong&gt;FindHeader&lt;/strong&gt; metodu geriye &lt;strong&gt;integer&lt;/strong&gt; tipinden bir değer d&amp;ouml;nd&amp;uuml;r&amp;uuml;r. Aslında bu bilgi ilk parametre ile belirtilen &lt;strong&gt;Header&amp;rsquo;&lt;/strong&gt; ın koleksiyon i&amp;ccedil;erisindeki &lt;strong&gt;indis&lt;/strong&gt; değeridir. 0 veya &amp;uuml;st&amp;uuml; bir değer olması, bulunduğu anlamına gelmektedir. &lt;strong&gt;Header&lt;/strong&gt; i&amp;ccedil;erisinde ki bilgiye ulaşmak i&amp;ccedil;in &lt;strong&gt;GetHeader&amp;lt;T&amp;gt;&lt;/strong&gt; fonksiyonundan yararlanılır.&lt;/p&gt;
+&lt;p&gt;Metodun ilerleyen kısımlarında &lt;strong&gt;dummy&lt;/strong&gt; bir kod par&amp;ccedil;ası uygulanmış ve sembolik olarak rol y&amp;uuml;kleme işlemi ger&amp;ccedil;ekleştirilmiştir. Ger&amp;ccedil;ek hayat &amp;ouml;rneğinde buradaki y&amp;uuml;klemelerin bir &lt;strong&gt;repository&lt;/strong&gt; &amp;uuml;zerinden yapılması elbette daha uygun olacaktır.&lt;/p&gt;
+&lt;h1&gt;İstemci Tarafı&lt;/h1&gt;
+&lt;p&gt;Senaryomuzda istemci tarafının basit bir &lt;strong&gt;Console&lt;/strong&gt; uygulaması olarak geliştirilmesinde her hangi bir sakınca yoktur. &lt;strong&gt;WCF&lt;/strong&gt; servisine ait referansın indirilmesi ve &lt;strong&gt;Proxy&lt;/strong&gt; tipinin hazırlanmasını takiben aşağıdaki kod i&amp;ccedil;eriği geliştirilerek ilerlenebilir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Consumer.Rolehost; 
+using System; 
+using System.ServiceModel; 
+using System.ServiceModel.Channels;
+
+namespace Consumer 
+{ 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; class Program 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; static void Main(string[] args) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; RoleLoaderClient client = new RoleLoaderClient();
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; EndpointAddressBuilder addressBuilder = new EndpointAddressBuilder(client.Endpoint.Address);
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; addressBuilder.Headers.Add(AddressHeader.CreateAddressHeader("Username",string.Empty,"bsenyurt")); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; client.Endpoint.Address = addressBuilder.ToEndpointAddress();
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; var roles=client.GetRoles();
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; foreach (var role in roles) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Console.WriteLine(role.Description); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; foreach (var action in role.ActionList) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Console.WriteLine("{0} -&amp;gt; {1}" 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; ,action.Name.PadRight(20) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; ,action.Status.PadRight(10)); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; client.Close(); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+}&lt;/pre&gt;
+&lt;p&gt;İstemci a&amp;ccedil;ısından bakıldığında yapılması gereken iş &lt;strong&gt;Username&lt;/strong&gt; isimli &lt;strong&gt;Header&lt;/strong&gt; elementini oluşturup buna bir bilgi eklemektir. Bunun i&amp;ccedil;in &lt;strong&gt;EndpointAddressBuilder&lt;/strong&gt; nesne &amp;ouml;rneğinden yararlanılmaktadır. Dikkat edileceği &amp;uuml;zere bu &amp;ouml;rnek hali hazırda var olan servisin &lt;strong&gt;Endpoint&lt;/strong&gt; tanımındaki adres bilgisi kullanılarak oluşturulur. Sonrasında &lt;strong&gt;Headers&lt;/strong&gt; koleksiyonuna bir &lt;strong&gt;AddressHeader&lt;/strong&gt; bilgisi eklenir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;AddressHeader&lt;/strong&gt; tipinin &lt;strong&gt;CreateAddressHeader&lt;/strong&gt; metodu &amp;uuml;&amp;ccedil; parametre almaktadır.İlk parametre eklenecek &lt;strong&gt;Header&lt;/strong&gt; elementinin adıdır. İkinci parametre &lt;strong&gt;Namespace&lt;/strong&gt; bilgisidir ki bu &amp;ouml;rnekte boş ge&amp;ccedil;ilmiştir. Son parametre ise elementin değeridir.&lt;/p&gt;
+&lt;p&gt;Hazırlanan bu yeni bilgiler ışığında &lt;strong&gt;EndPoint&lt;/strong&gt; bilgisinin yeniden &amp;uuml;retilmesi gerekir. Bu aşamada &lt;strong&gt;EndpointAddressBuilder&lt;/strong&gt; sınıfının &lt;strong&gt;ToEndpointAddress&lt;/strong&gt; metodundan yararlanılmış ve oluşan &amp;ouml;rnek, &lt;strong&gt;proxy&lt;/strong&gt; tipinin kullanmakta olduğu &lt;strong&gt;Endpoint&amp;rsquo;&lt;/strong&gt; in &lt;strong&gt;Address&lt;/strong&gt; bilgisine atanmıştır. Bu kısımdan sonra normal olarak servis &amp;uuml;zerindeki &lt;strong&gt;GetRoles&lt;/strong&gt; metodunun &amp;ccedil;ağırılması ve elde edilen &lt;strong&gt;Role&lt;/strong&gt; ve &lt;strong&gt;Action&lt;/strong&gt; listelerinde dolaşılması s&amp;ouml;z konusudur.&lt;/p&gt;
+&lt;h1&gt;&amp;Ccedil;alışma Zamanı Sonu&amp;ccedil;ları&lt;/h1&gt;
+&lt;p&gt;Uygulama test edildiğinde istemci tarafının aşağıdaki &amp;ccedil;alışma zamanı g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ne sahip olması beklenmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wcfch_3.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wcfch_3" src="/pics/wcfch_3_thumb.png" alt="wcfch_3" width="286" height="88" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Tahmin edileceği &amp;uuml;zere bsenyurt bilgisine ait &lt;strong&gt;Rol&lt;/strong&gt; tanımlamaları elde edilmiştir. Diğer yandan oluşan &lt;strong&gt;svclog&lt;/strong&gt; dosyaları incelenirse aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;lerinde olduğu gibi &lt;strong&gt;Header&lt;/strong&gt; bilgilerinin sunucu tarafına ulaştığı anlaşılabilir.&lt;/p&gt;
+&lt;p&gt;Formatlanmış g&amp;ouml;r&amp;uuml;n&amp;uuml;m;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wcfch_1.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wcfch_1" src="/pics/wcfch_1_thumb.png" alt="wcfch_1" width="627" height="539" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;XML i&amp;ccedil;eriği;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wcfch_2.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wcfch_2" src="/pics/wcfch_2_thumb.png" alt="wcfch_2" width="600" height="476" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Pek tabi bir &lt;strong&gt;Header&lt;/strong&gt; bilgisinin g&amp;ouml;nderilmemesi veya yanlış olması halinde istemci tarafına bir Role listesi g&amp;ouml;nderilmeyecektir&lt;em&gt;(Belki bu durumda varsayılan bir listenin g&amp;ouml;nderilmesi d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir)&lt;/em&gt;&lt;/p&gt;
+&lt;h1&gt;Bir Diğer Yol&lt;/h1&gt;
+&lt;p&gt;&lt;strong&gt;Header&lt;/strong&gt; bilgisi g&amp;ouml;ndermenin bir diğer yolu da konfigurasyon i&amp;ccedil;erisinde bunu doğrudan yazmaktır. İstemci tarafında ki &lt;strong&gt;EndPoint&lt;/strong&gt; elementi i&amp;ccedil;erisinde aşağıdaki gibi bir değişiklik yeterli olacaktır.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt; 
+&amp;lt;configuration&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;startup&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.5.1" /&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/startup&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;system.serviceModel&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;bindings&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;basicHttpBinding&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;binding name="BasicHttpBinding_IRoleLoader" /&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/basicHttpBinding&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/bindings&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;client&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;endpoint address="http://localhost:4718/RoleLoader.svc" binding="basicHttpBinding" 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; bindingConfiguration="BasicHttpBinding_IRoleLoader" contract="Rolehost.IRoleLoader" 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; name="BasicHttpBinding_IRoleLoader"&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;!-- Alternatif bir yol olarak client header kısmına config dosyasından da bilgi eklenebilir. 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Tabi hem bu y&amp;ouml;ntem hem de kod tarafından Header bilgisinin eklenmesi &amp;ccedil;alışma zamanında exception 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; oluşmasına neden olacaktır. İkisinden biri tercih edilmelidir. 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; --&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;headers&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;Username&amp;gt;bsenyurt&amp;lt;/Username&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/headers&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/endpoint&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/client&amp;gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/system.serviceModel&amp;gt; 
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Tabi bu teknik se&amp;ccedil;ildiğinde kod tarafındaki &lt;strong&gt;Header&lt;/strong&gt; ekleme kısımlarının &lt;span style="text-decoration: underline;"&gt;kullanılmaması&lt;/span&gt; gerekir. Aksi durumda &amp;ccedil;alışma zamanında iki yerden birden Header kısmı eklenmeye &amp;ccedil;alışıldığına y&amp;ouml;nelik &lt;strong&gt;Exception&lt;/strong&gt; mesajı alınacaktır.&lt;/p&gt;
+&lt;h1&gt;Peki Ya Custom Type Kullanmak İstersek?&lt;/h1&gt;
+&lt;p&gt;&amp;Ouml;rnek senaryoda istemci tarafından &lt;strong&gt;Header&lt;/strong&gt; bilgisi olarak &lt;strong&gt;string&lt;/strong&gt; bir i&amp;ccedil;eriğin g&amp;ouml;nderilmesi ele alınmıştır. &amp;Ccedil;ok doğal olarak istemci tarafının &amp;ouml;rneğin bir &lt;strong&gt;POCO&lt;/strong&gt;&lt;em&gt;&lt;strong&gt;(Plain Old CLR Object)&lt;/strong&gt; &lt;/em&gt;tipine ait nesneyi g&amp;ouml;ndermesi de d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. &amp;Ouml;rneğin hem servis hem de istemci tarafı i&amp;ccedil;in aşağıdaki gibi ortak bir tipin var olduğunu d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace Consumer 
+{&amp;nbsp;&amp;nbsp;&amp;nbsp; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; public class CustomMessageHeader 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public string Text { get; set; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public DateTime Date { get; set; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+}&lt;/pre&gt;
+&lt;p&gt;Şimdi istemci tarafında bu tipe ait bir nesne &amp;ouml;rneğini &lt;strong&gt;Header&lt;/strong&gt; i&amp;ccedil;eriğine g&amp;ouml;mmek istediğimizi d&amp;uuml;ş&amp;uuml;nelim. Bu durumda &lt;strong&gt;AddressHeader.CreateAddressHeader&lt;/strong&gt; metodunu biraz daha farklı kullanmamız gerekecektir. Nitekim &lt;strong&gt;XML&lt;/strong&gt; i&amp;ccedil;erisine serileştirilmesi gereken bir tip s&amp;ouml;z konusudur.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;XmlObjectSerializer serializer = new DataContractSerializer(typeof(CustomMessageHeader)); 
+addressBuilder.Headers.Add( 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; AddressHeader.CreateAddressHeader("ConsumerMessage", 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; "http://RoleServer/Header/ConsumerMessage", 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; new CustomMessageHeader 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Text = "Bu g&amp;uuml;n hava bir harika!" 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; , Date = DateTime.Now 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; ,serializer) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; );&lt;/pre&gt;
+&lt;p&gt;&lt;br /&gt;İlk olarak &lt;strong&gt;CustomMessageHeader&lt;/strong&gt; tipi i&amp;ccedil;in &lt;strong&gt;XmlIObjectSerializer&lt;/strong&gt; t&amp;uuml;revi bir nesne &amp;ouml;rneği oluşturulmlaktadır. Bu &amp;ouml;rnek &lt;strong&gt;CreateAddressHeader&lt;/strong&gt; metodunun son parametresinde kullanılmakta olup, istemcinin servis tarafına mesaj g&amp;ouml;nderdiği noktada devreye girecek ve &lt;strong&gt;CustomMessageHeader&lt;/strong&gt; nesne &amp;ouml;rneğini &lt;strong&gt;Xml&lt;/strong&gt; formatında serileştirecektir.&lt;/p&gt;
+&lt;h1&gt;Servis Tarafına Gelen Mesaj&lt;/h1&gt;
+&lt;p&gt;Eğer uygulama test edilir ve servis tarafına inen mesaj i&amp;ccedil;eriğine bakılırsa, &lt;strong&gt;CustomeMessageHeader&lt;/strong&gt; sınıfının &amp;ouml;zelliklerine ait değerlerin eklendiği g&amp;ouml;zlemlenebilir. &lt;strong&gt;Trace&lt;/strong&gt; log&amp;rsquo; ların da bu i&amp;ccedil;erik aşağıda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wcfch_7.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wcfch_7" src="/pics/wcfch_7_thumb.png" alt="wcfch_7" width="517" height="346" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;SOAP zarf i&amp;ccedil;eriğine bakıldığında durum daha net fark edilebilir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;s:Header&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;Username xmlns=""&amp;gt;bsenyurt&amp;lt;/Username&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;ConsumerMessage xmlns="http://RoleServer/Header/ConsumerMessage" xmlns:i="http://www.w3.org/2001/XMLSchema-instance"&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;Date xmlns="http://schemas.datacontract.org/2004/07/Consumer"&amp;gt;2014-04-03T13:12:48.4474218+03:00&amp;lt;/Date&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;Text xmlns="http://schemas.datacontract.org/2004/07/Consumer"&amp;gt;Bu g&amp;uuml;n hava bir harika!&amp;lt;/Text&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/ConsumerMessage&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;To s:mustUnderstand="1" xmlns="http://schemas.microsoft.com/ws/2005/05/addressing/none"&amp;gt; http://localhost:4718/RoleLoader.svc&amp;lt;/To&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;Action s:mustUnderstand="1" xmlns="http://schemas.microsoft.com/ws/2005/05/addressing/none"&amp;gt; http://tempuri.org/IRoleLoader/GetRoles&amp;lt;/Action&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/s:Header&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;s:Body&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;GetRoles xmlns="http://tempuri.org/"&amp;gt;&amp;lt;/GetRoles&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/s:Body&amp;gt; 
+&amp;lt;/s:Envelope&amp;gt;&lt;/pre&gt;
+&lt;h1&gt;Servis Bunu Nasıl Anlayacak?&lt;/h1&gt;
+&lt;p&gt;Servis tarafına istemcinin &amp;ouml;zel bir &lt;strong&gt;.Net&lt;/strong&gt; nesne i&amp;ccedil;eriğini &lt;strong&gt;Header&lt;/strong&gt; bilgisi olarak g&amp;ouml;ndermesi bu kadar basittir. Peki ya servis tarafı bu tipi nasıl &amp;ccedil;&amp;ouml;z&amp;uuml;mleyecek? &lt;strong&gt;XML&lt;/strong&gt; olarak gelen bu element yapısının kod tarafında anlaşılabilir olması/değerlendirilmesi i&amp;ccedil;in bir ka&amp;ccedil; yol mevcuttur. Her şeyden &amp;ouml;nce &lt;strong&gt;Header&lt;/strong&gt; i&amp;ccedil;eriğinin bir &lt;strong&gt;XML&lt;/strong&gt; element ağacından oluştuğunu d&amp;uuml;ş&amp;uuml;necek olursak bunu &lt;strong&gt;parse&lt;/strong&gt; ederek yorumlamak &amp;ccedil;ok da zor değil. Bu ama&amp;ccedil;la &lt;strong&gt;GetRoles&lt;/strong&gt; metodu i&amp;ccedil;erisinde aşağıdaki gibi bir kod par&amp;ccedil;asını kullanabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;XElement root = XElement.Parse(requestContext.RequestMessage.ToString());
+
+var date= root 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; .Descendants() 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; .Where( 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; n =&amp;gt; n.Name == XName.Get("Date","http://schemas.datacontract.org/2004/07/Consumer")) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; .FirstOrDefault() 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; .Value;
+
+var text = root 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; .Descendants() 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; .Where( 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; n =&amp;gt; n.Name == XName.Get("Text", "http://schemas.datacontract.org/2004/07/Consumer")) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; .FirstOrDefault() 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; .Value;&lt;/pre&gt;
+&lt;p&gt;Aslında tek yaptığımız gelen &lt;strong&gt;Request&lt;/strong&gt; mesajının &lt;strong&gt;XML&lt;/strong&gt; i&amp;ccedil;eriği &amp;uuml;zerinde &lt;strong&gt;Text&lt;/strong&gt; ve &lt;strong&gt;Date&lt;/strong&gt; isimli elementleri aramaktır. Eğer &amp;ccedil;alışma zamanı g&amp;ouml;r&amp;uuml;n&amp;uuml;m&amp;uuml;ne bakarsak değişken değerlerini başarılı bir şekilde elde edebildiğimizi g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wcfch_8.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wcfch_8" src="/pics/wcfch_8_thumb.png" alt="wcfch_8" width="637" height="256" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Tabi ki s&amp;ouml;z konusu i&amp;ccedil;eriği servis tarafında bir nesne olarak ele almak &amp;ccedil;ok daha mantıklıdır. Fakat bu senaryoda servis tarafında bir tip bildirimi s&amp;ouml;z konusu değildir. Yani istemci tarafında &lt;strong&gt;Header&lt;/strong&gt; bilgisini oluşturmak i&amp;ccedil;in kullanılan ve &lt;strong&gt;XML&lt;/strong&gt; serileştirmeye tabi tutulan &lt;strong&gt;CustomMessageHeader&lt;/strong&gt; sınıfı servis tarafında &lt;span style="text-decoration: underline;"&gt;oluşturulmamıştır&lt;/span&gt;.&lt;/p&gt;
+&lt;h1&gt;Message Contracts&lt;/h1&gt;
+&lt;p&gt;Bu senaryo haricinde Header kullanımları i&amp;ccedil;in &lt;strong&gt;WCF&lt;/strong&gt; tarafında farklı bir kavramı da değerlendirmeyi d&amp;uuml;ş&amp;uuml;nebiliriz. O da &lt;strong&gt;MessageContract&lt;/strong&gt; kullanımıdır. Mesaj s&amp;ouml;zleşmeleri sayesinde &lt;strong&gt;SOAP &lt;/strong&gt;zarflarının &lt;strong&gt;Header &lt;/strong&gt;ve &lt;strong&gt;Body &lt;/strong&gt;kısımlarının servis tarafında tanımlanması m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Bir başka deyişle &lt;strong&gt;SOAP&lt;/strong&gt; mesaj i&amp;ccedil;eriklerinin nesnel olarak kod tarafında tanımlanabilmesi s&amp;ouml;z konusudur. Bu durumda &lt;strong&gt;Header&lt;/strong&gt; i&amp;ccedil;eriklerinin birer &lt;strong&gt;POCO&lt;/strong&gt; gibi ele alınması daha kolay olmaktadır.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Aslında SOAP zarflarının i&amp;ccedil;eriklerinin kesinleştirilmek istendiği, mesajların interoperability noktasında XSD yerine farklı kurallara g&amp;ouml;re oluşması gerektiği durumlarda Message Contract kullanımı tercih edilebilir. Mesaj s&amp;ouml;zleşmeleri ile ilişkili olarak eski bir yazıya &lt;a href="/post/Mesaj-Sozlesmeleri(Message-Contracts)-bsenyurt-com-dan" target="_blank"&gt;bu adresten ulaşabilirsiniz&lt;/a&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere istemciler &lt;strong&gt;Header&lt;/strong&gt; kısımlarını kullanarak da kendilerini servis tarafına tanıtabilir ve operasyonların istemci bazında &amp;ouml;zelleştirilmesi sağlanabilir. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2014-11-06 12:00:00</pubDate>
+  <slug>WCF-SOAP-Servislerinde-Custom-Header-Kullanmak</slug>
+  <tags>
+    <tag>wcf</tag>
+    <tag>soa</tag>
+    <tag>windows-communication-foundation</tag>
+    <tag>header</tag>
+    <tag>soap-envelope</tag>
+    <tag>message-contract</tag>
+    <tag>xsd</tag>
+    <tag>xml</tag>
+  </tags>
+  <categories>
+    <category>WCF</category>
+  </categories>
+</post>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Rust Pratikleri - Value Moved Here</title>
+  <description>Sıklıkla vurguladığım üzere Rust programlama dili bellek yönetimi ve güvenliği konusunda son derece hassas kurallar içeriyor. Değişken sahipliği kuralları ve ödünç alma kontrolcüleri(Ownership, borrow checker) olası bir çok bellek probleminin henüz derleme aşamasındayken önüne geçilmesini sağlıyor ancak dilin öğrenme eğrisini de oldukça dikleştiriyor(En azından ilk zamanlarda) Esasında C,C++ türevi sayabileceğimiz Rust bir Garbage Collector mekanizması kullanmaması belleğin iç dinamiklerini daha iyi bilmemizi de gerektiriyor. Stack ve heap özelinde değişkenlerin nasıl tutulduğu, yer ayarlamalarının nasıl yapıldığını bilmek programcı açısından oldukça önemli. Bu sayede pek çok derleme zamanı hatasını anlamlandırmak kolaylaşıyor. Bu yazıdaki amacımız Rust öğrenenlerin sıklıkla yakalandığı "Value borrowed here after move" hatasını bellek çalışma prensipleri kapsamında özetlemek.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2022/Mayis/moved_cover.png" alt="" /&gt;Sıklıkla vurgulandığı &amp;uuml;zere Rust programlama dili bellek y&amp;ouml;netimi ve g&amp;uuml;venliği konusunda son derece hassas kurallar i&amp;ccedil;eriyor. Değişken sahipliği kuralları ve &amp;ouml;d&amp;uuml;n&amp;ccedil; alma kontrol&amp;uuml;&lt;em&gt;(Ownership, Borrow Checker)&lt;/em&gt; olası bir &amp;ccedil;ok bellek probleminin hen&amp;uuml;z derleme aşamasındayken &amp;ouml;n&amp;uuml;ne ge&amp;ccedil;ilmesini sağlıyor ancak dilin &amp;ouml;ğrenme eğrisini de olduk&amp;ccedil;a dikleştiriyor&lt;em&gt;(En azından ilk zamanlarda)&lt;/em&gt; Esasında C,C++ t&amp;uuml;revi sayabileceğimiz Rust'ın bir Garbage Collector mekanizması kullanmaması belleğin &amp;ccedil;alışma dinamiklerini daha iyi bilmemizi gerektiriyor. Ancak sanılanın aksin Rust'ın bir Garbage Collector mekanizması&amp;nbsp;i&amp;ccedil;ermemesi&amp;nbsp;bellek y&amp;ouml;netimi yapmadığı anlamına gelmemeli. Nitekim Rust bellek y&amp;ouml;netimi i&amp;ccedil;in Ownership, Resource Acquisition is Initialization&lt;em&gt;(RAII)&lt;/em&gt;, Borrow Checker, Lifetimes ve Smart Pointers gibi bir&amp;ccedil;ok enstr&amp;uuml;man kullanmakta.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Yine de Rust ile ilk kez tanışanların Stack ve Heap &amp;ouml;zelinde değişkenlerin nasıl tutulduğunu,&amp;nbsp;kaynak tahsislerinin&amp;nbsp;nasıl yapıldığını, hangi noktada verilerin bellekten atıldığını bilmeleri işleri kolaylaştırmak adına olduk&amp;ccedil;a&amp;nbsp;&amp;ouml;nemli. Bu sayede pek &amp;ccedil;ok derleme zamanı hatasını anlamlandırmak m&amp;uuml;mk&amp;uuml;n hale geliyor&lt;em&gt;(&amp;Ouml;zellikle Garbage Collector destekli bir dilden geliyorsanız)&lt;/em&gt; Bu yazıdaki amacımız Rust &amp;ouml;ğrenenlerin sıklıkla yakalandığı &lt;strong&gt;"Value borrowed here after move"&lt;/strong&gt; hatasını bellek &amp;ccedil;alışma prensipleri kapsamında &amp;ouml;zetleyerek anlamaya &amp;ccedil;alışmak.&lt;/p&gt;
+&lt;p&gt;Başlamadan &amp;ouml;nce Rust'ın bellek y&amp;ouml;netim sistemi hakkında birka&amp;ccedil; kısa bilgi&amp;nbsp;de verelim. Bir Rust programı &amp;ccedil;alıştığında işletim sistemince ona ayrılan bir sanal bellek&lt;em&gt;(Virtual Memory)&lt;/em&gt; b&amp;ouml;lgesini kullanmaya başlıyor.&amp;nbsp;Pek tabii Stack ve Heap bellek b&amp;ouml;lgeleri kullanılıyor. Derleme zamanında boyutu bilinen statik veriler ile fonksiyonlara ait &amp;ccedil;er&amp;ccedil;eveler&lt;em&gt;(Function Frames),&lt;/em&gt;&amp;nbsp;dile ait birincil tipler&lt;em&gt;(primitive type olarak ifade edilen tamsayı, virg&amp;uuml;ll&amp;uuml; sayı gibiler)&lt;/em&gt;, veri yapıları&lt;em&gt;(struct)&lt;/em&gt; ve işaret&amp;ccedil;iler&lt;em&gt;(pointers)&lt;/em&gt;&amp;nbsp;boyutu heap ile kıyaslandığında &amp;ccedil;ok daha k&amp;uuml;&amp;ccedil;&amp;uuml;k olan&lt;em&gt;(varsayılan hali ile 8Mb b&amp;uuml;y&amp;uuml;kl&amp;uuml;ğ&amp;uuml;nde bir alandır)&lt;/em&gt; Stack bellek b&amp;ouml;lgesinde tutulmaktalar.&lt;/p&gt;
+&lt;p&gt;Dinamik &amp;ouml;zellikli olarak ifade edilen, yani boyutu&amp;nbsp;derleme zamanında tam olarak kestirilemeyen&lt;em&gt;(sanırım en g&amp;uuml;zel &amp;ouml;rnekleri String ve Vector veri yapılarıdır)&lt;/em&gt; veya &amp;ccedil;alışma zamanında değişmesi muhtemel verilerse &amp;ccedil;ok daha geniş bir kullanım alanına sahip olan Heap &amp;uuml;zerinde tutuluyorlar. Heap kısmının y&amp;ouml;netimi i&amp;ccedil;in Rust sahiplik&lt;em&gt;(ownership)&lt;/em&gt;&amp;nbsp;kuramı kurallarını işletiyor. Bu arada sabit uzunlukta bir verinin Heap'e alınarak Stack &amp;uuml;st&amp;uuml;nden referans edilmesi de m&amp;uuml;mk&amp;uuml;n. Bu noktada smart pointer olarak bilinen Box&amp;lt;T&amp;gt; enstr&amp;uuml;manının devreye girdiğini s&amp;ouml;yleyebiliriz.&lt;/p&gt;
+&lt;p&gt;İşletilebilir Rust programlarında mutlaka main fonksiyonu yer alır. Program &amp;ccedil;alıştığında main fonksiyonu i&amp;ccedil;in stack &amp;uuml;st&amp;uuml;nde bir frame bloğu a&amp;ccedil;ılır. Esasında her fonksiyon &amp;ccedil;ağrımında stack'de bir frame a&amp;ccedil;ılmaktadır. &amp;Ccedil;ağırılan fonksiyonun i&amp;ccedil;erdiği değişkenler, aldığı parametreler ve d&amp;ouml;n&amp;uuml;ş t&amp;uuml;r&amp;uuml; dahil kullandığı t&amp;uuml;m arg&amp;uuml;manlar onun i&amp;ccedil;in a&amp;ccedil;ılan frame i&amp;ccedil;erisinde tutulurlar. Stack'in LIFO&lt;em&gt;(Last In First Out)&lt;/em&gt; ilkesine g&amp;ouml;re &amp;ccedil;alıştığını d&amp;uuml;ş&amp;uuml;n&amp;uuml;rsek&amp;nbsp;&amp;ccedil;ağırılan bir fonksiyon Stack'te &amp;uuml;st sıraya konulur&lt;em&gt;(push fonksiyon &amp;ccedil;ağrımı gibi d&amp;uuml;ş&amp;uuml;nelim)&lt;/em&gt; &amp;Ccedil;ok doğal olarak ilgili fonksiyon işleyişini tamamladığında yani ona ait scope sonlandığında Stack'ten alınır&lt;em&gt;(pop olarak d&amp;uuml;ş&amp;uuml;nelim)&lt;/em&gt; ve kullandığı arg&amp;uuml;manlar da bellekten atılır.&lt;/p&gt;
+&lt;p&gt;Tahmin edeceğiniz &amp;uuml;zere main fonksiyonunun sonlanması&amp;nbsp;ana s&amp;uuml;recin de&lt;em&gt;(main process)&lt;/em&gt; sonlanması demektir ve bu noktada programın Heap'te kalan verileri de yok edilir. Stack &amp;uuml;st&amp;uuml;ndeki bu &amp;ccedil;alışma mekaniği zaten otomatik olarak işletim sistemi tarafından y&amp;ouml;netilir. Ancak bu Heap b&amp;ouml;lgesi i&amp;ccedil;in s&amp;ouml;z konusu değildir. Heap &amp;ccedil;ok daha b&amp;uuml;y&amp;uuml;k bir alandır ve i&amp;ccedil;erisinde yer alan dinamik veriler bu sahanın kolayca dolmasına sebebiyet verir. &amp;Ouml;zellikle kopyalanan veriler d&amp;uuml;ş&amp;uuml;n&amp;uuml;l&amp;uuml;rse. Bu orantısız b&amp;uuml;y&amp;uuml;me uygulamada yavaşlamalara da neden olur ki Rust'ın bellek y&amp;ouml;netimi i&amp;ccedil;in kullandığı sahiplenme&lt;em&gt;(Ownership)&lt;/em&gt; kuralları da burada işe yaramaktadır.&lt;/p&gt;
+&lt;p&gt;Biliyorum kafalar epeyce karıştı. Dilerseniz odağımızı daha fazla dağıtmadan "Value Moved Here" durumuna bakalım. İşe aşağıdaki kod par&amp;ccedil;asını&amp;nbsp;ile başlayabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;fn main() {
+    let player_name=String::from("Obi Wan");
+    let name=player_name;
+}&lt;/pre&gt;
+&lt;p&gt;main fonksiyonu i&amp;ccedil;erisinde player_name isimli String veri yapısından bir değişkenin kullanımı s&amp;ouml;z konusu. Dikkat edeceğimiz nokta name değişkenine yapılan atama. Aslında burada sahipliğin&lt;em&gt;(ownership)&lt;/em&gt; taşındığını&lt;em&gt;(moved)&lt;/em&gt; ifade edebiliriz. Gelin program &amp;ccedil;alışırken belleğin nasıl&amp;nbsp;y&amp;ouml;netildiğine kaba taslak bir bakalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mayis/moved_1.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;İlk olarak main fonksiyonu i&amp;ccedil;in Stack'te bir alan a&amp;ccedil;ılır. 1nci durumda player_name değişkeni i&amp;ccedil;in stack bellek b&amp;ouml;lgesinde bir tanımlama yapıldığını s&amp;ouml;yleyebiliriz. String bilindiği &amp;uuml;zere verisini g&amp;ouml;steren bir işaret&amp;ccedil;i t&amp;uuml;r&amp;uuml;d&amp;uuml;r. Veri yapısında heap'teki bellek alanını işaret eden bir referans, ayrılan kapasite ve uzunluk bilgileri yer alır. Şimdi&amp;nbsp;bir alt satıra ge&amp;ccedil;elim&lt;em&gt;(Resmen hayali debug yapıyoruz. Keşke belleğin &amp;ccedil;alışırken ki r&amp;ouml;ntgenini &amp;ccedil;ekecek bir yol bilsem. Bilsen yorumlara yazsın.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mayis/moved_2.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;2nci durumda player_name'in stack &amp;uuml;st&amp;uuml;ndeki bilgileri name isimli yeni değişkene taşınır. name isimli değişken de heap &amp;uuml;st&amp;uuml;ndeki aynı veri b&amp;ouml;lgesini işaret etmektedir. Bu işlem taşıma&lt;em&gt;(move) &lt;/em&gt;operasyonu olarak ifade edilebilir. Atama sonrasında&lt;em&gt;(veya birlikte)&lt;/em&gt;&amp;nbsp;aşağıdaki g&amp;ouml;rselde yer alan 3nc&amp;uuml; durum oluşur.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mayis/moved_3.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Rust'ın sahiplik kurallarına g&amp;ouml;re bir verinin t anında tek bir sahibi olabilir. Dolayısıyla taşıma işlemi sonrasında player_name artık kullanılabilir değildir, yok edilir. Onun verisini artık name isimli değişken işaret etmektedir. İşte bu y&amp;uuml;zden aşağıdaki kod par&amp;ccedil;ası hata verecektir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;fn main() {
+    let player_name=String::from("Obi Wan");
+    let name=player_name;
+    println!("User name is '{}'",player_name)
+}&lt;/pre&gt;
+&lt;p&gt;Nitekim player_name sahipliğini name isimli değişkene taşıdıktan sonra yine ona erişilmeye &amp;ccedil;alışılmıştır. Sonu&amp;ccedil;ta aynı veriye işaret eden iki stack değişkeni olması hem bellek b&amp;ouml;lgesini hovardaca kullanmak hem de herhangi bir deallocate işlemi vuku bulduktan sonra double free gibi sorunların ortaya &amp;ccedil;ıkmasına neden olacaktır. Ayrıca bu tip g&amp;uuml;venliğini bozan&amp;nbsp;bir durumdur.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mayis/moved_4.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Tekrar &amp;ccedil;alışan eski kod par&amp;ccedil;asına d&amp;ouml;nelim ve her şey yolunda giderse işleyiş nasıl devam eder kısaca&amp;nbsp;bakalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mayis/moved_5.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Scope sonuna gelindiğinde, bir başka deyişle artık main fonksiyonundan d&amp;ouml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde name değişkeni silinecektir. Ardından,&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mayis/moved_5_2.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;String veri t&amp;uuml;r&amp;uuml; i&amp;ccedil;in bellekten atılma işlemi icra edilir. Bu drop trait'inin uygulandığı t&amp;uuml;rler i&amp;ccedil;in ge&amp;ccedil;erli bir operasyondur. Yani heap &amp;uuml;st&amp;uuml;nde kalan verinin yok edilmesi s&amp;ouml;z konusudur.&amp;nbsp;Son olarak işletim sistemi stack &amp;ccedil;er&amp;ccedil;evesinde kalan main fonksiyonunu da kaldırır. Onu da aşağıdaki temiz sayfa ile g&amp;ouml;rselleştirebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mayis/moved_5_3.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Sanıyorum bu şekilde g&amp;ouml;rselleştirerek anlattığımızda konuyu anlamak &amp;ccedil;ok daha kolay. &amp;Ouml;yleyse gelin ikinci bir senaryoya daha bakalım ;) Bu sefer&amp;nbsp;String&amp;nbsp;değişkenin bir fonksiyona parametre olarak ge&amp;ccedil;ilmesi s&amp;ouml;z konusu.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;fn main() {
+    let player_name = String::from("Obi Wan");
+    print_with_me(player_name);
+}
+
+fn print_with_me(input: String) {
+    println!("User name is '{}'", input.to_uppercase());
+    let something = input;
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;nceki &amp;ouml;rnekten farklı olarak main i&amp;ccedil;erisinde tanımlanan player_name değişkeni print_with_me isimli bir fonksiyona parametre yoluyla aktarılmakta. Ayrıca print_with_me fonksiyonu i&amp;ccedil;erisinde parametre olarak gelen input değişkeninin, something isimli bir başka değişkene atanması da s&amp;ouml;z konusu. Burada birka&amp;ccedil; move hareketi olduğunu ifade edebiliriz. Programın bellek &amp;uuml;zerindeki akışını yine &amp;ccedil;izimlerle ifade etmeye &amp;ccedil;alışalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mayis/moved_6.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;main fonksiyonu i&amp;ccedil;in stack &amp;uuml;zerinde bir &amp;ccedil;er&amp;ccedil;eve a&amp;ccedil;ıldıktan sonra i&amp;ccedil;erisine de ilk satır itibariyle player_name isimli String değişken konur. player_name, heap'teki "Obi Wan"&amp;nbsp;metin katarının olduğu bellek sahasını işaret edecek şekilde bir pointer, kapasite ve uzunluk bilgisini taşıyan veri yapısı olarak konumlanır. Şimdi kodu bir alt satıra ge&amp;ccedil;irelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mayis/moved_7.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Burada bir fonksiyon &amp;ccedil;ağrımı s&amp;ouml;z konusu olduğundan stack &amp;uuml;st&amp;uuml;nde print_with_me i&amp;ccedil;in yeni bir &amp;ccedil;er&amp;ccedil;eve a&amp;ccedil;ılır&lt;em&gt;(push işlemini hatırlayalım)&lt;/em&gt; Ancak daha da &amp;ouml;nemlisi fonksiyona player_name değişkeninin input ismiyle alınmasıdır. Bu da bir taşıma işlemi&lt;em&gt;(move)&lt;/em&gt; anlamına gelir. Dolayısıyla print_with_me i&amp;ccedil;in a&amp;ccedil;ılan stack &amp;ccedil;er&amp;ccedil;evesi i&amp;ccedil;erisine input isimli alan eklenirken, taşıma sebebiyle main &amp;ccedil;er&amp;ccedil;evesinde yer alan player_name artık ge&amp;ccedil;ersizdir. Heap &amp;uuml;zerindeki veri b&amp;ouml;lgesinin şimdiki sahibi print_with_me fonksiyonundaki input isimli değişkendir. Kod artık print_with_me fonksiyonu i&amp;ccedil;erisinde akmaktadır. Burada println makro &amp;ccedil;ağrısını g&amp;ouml;z ardı edersek devam eden kısımda input değişkeninin bu kez something isimli başka bir değişkene atanması işlemi yapılmaktadır. Yani aşağıdaki gibi bir durum oluşacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mayis/moved_9.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu sefer print_with_me i&amp;ccedil;in ayrılan &amp;ccedil;er&amp;ccedil;eve i&amp;ccedil;erisinde bir move operasyonu ger&amp;ccedil;ekleşir. Heap &amp;uuml;st&amp;uuml;ndeki veri alanının yeni sahibi bu atmaya g&amp;ouml;re something isimli değişkendir. Atama sonrası input isimli değişken yine kullanılamaz hale gelir. Tam bu noktada durup ikinci &amp;ouml;rnek kodun aşağıdaki gibi değiştirildiğini d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;fn main() {
+    let player_name = String::from("Obi Wan");
+    print_with_me(player_name);
+    println!("{}", player_name);
+}
+
+fn print_with_me(input: String) {
+    println!("User name is '{}'", input.to_uppercase());
+    let something = input;
+}&lt;/pre&gt;
+&lt;p&gt;main fonksiyonunda print_with_me &amp;ccedil;ağrısından sonra player_name değişkenini kullanmak istiyoruz. Lakin player_name &amp;ccedil;oktan devre dışı kalmıştır. Dolayısıyla bir taşıma ihlali bir başka deyişle &lt;strong&gt;"value borrowed here after move"&lt;/strong&gt; durumu s&amp;ouml;z konusudur. Bu durumu aşağıdaki &amp;ccedil;izelgeyle g&amp;ouml;rselleştirelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mayis/moved_8.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Burada dikkat edilmesi gereken bir husus daha var. Dikkat edileceği &amp;uuml;zere player_name değişkeninin tanımlandığı yerle ilgili olarak Rust derleyicisinin &amp;ouml;nemli bir yorumu bulunuyor; &lt;strong&gt;"move occurs because 'player_name' has type 'String', which does not implement the 'Copy' trait"&lt;/strong&gt;... Burayı anlamamız olduk&amp;ccedil;a &amp;ouml;nemli. Şu ana kadar anlattığımız taşıma halleri String veri t&amp;uuml;r&amp;uuml; &amp;uuml;zerinden ele alındı. String, heap alanını kullandığı i&amp;ccedil;in&amp;nbsp;sahiplik ve buna bağlı olarak taşıma&amp;nbsp;ihlallerine yakalanıyoruz. Yani C# tarafından gelenler i&amp;ccedil;in değer t&amp;uuml;r&amp;uuml;&lt;em&gt;(value type)&lt;/em&gt; olarak ifade&amp;nbsp;edebileceğimiz&amp;nbsp;int, float gibi sabit uzunlukta olduğu bilinen ve stack &amp;uuml;st&amp;uuml;nde yaşayan değişkenler i&amp;ccedil;in aynı durum s&amp;ouml;z konusu değildir. Nitekim bu t&amp;uuml;rler varsayılan olarak kopyalama yolu ile taşınabilirler. Bu sebepten copy trait'inin uygulandığı hallerde ya da sadece referansın&lt;em&gt;(&amp;amp; ile)&lt;/em&gt;&amp;nbsp;taşındığı durumlarda &lt;strong&gt;"Value moved here"&lt;/strong&gt; ihlali oluşmamamlıdır&lt;em&gt;(Bunun doğru olup olmadığını ispat etmek sizin g&amp;ouml;reviniz olsun)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi yukarıdaki ihlali geri alıp programın kalan akışında belleğin nasıl bir hareket i&amp;ccedil;erisinde olduğuna bakalım.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mayis/moved_10.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Kod akışı şimdi print_with_me fonksiyonuna ait scope'un sonlandığı yerde. Stack'te kalan something değişkenini takiben doğal olarak Heap &amp;uuml;st&amp;uuml;ndeki veri alanı da temizlenir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mayis/moved_11.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Ardından print_with_me fonksiyonu i&amp;ccedil;in a&amp;ccedil;ılmış olan stack &amp;ccedil;er&amp;ccedil;evesi&amp;nbsp;silinir ve son olarak da main i&amp;ccedil;in ayrılmış olan b&amp;ouml;l&amp;uuml;m sonlanır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mayis/moved_12.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;ve yine tertemiz bir bellek sayfası ile karşı karşıya kalırız :)&lt;/p&gt;
+&lt;p&gt;Ele aldığımız &amp;ouml;rnek anlamsız olsa da yukarıda oluşan taşıma ihlalini &amp;ouml;rneğin print_with_me fonksiyonundan d&amp;ouml;n&amp;uuml;ş sağlayarak aşabiliriz. Yani aşağıdaki kod par&amp;ccedil;asında olduğu gibi.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;fn main() {
+    let player_name = String::from("Obi Wan");
+    let changed_name = print_with_me(player_name);
+    println!("{}", changed_name);
+}
+
+fn print_with_me(input: String) -&amp;gt; String {
+    let something = input.to_uppercase();
+    println!("User name is '{}'", something);
+    something
+}&lt;/pre&gt;
+&lt;p&gt;Hatta something değişkenini daha doğru bir yerde konumlandırdık diyebilirim. Bu kod par&amp;ccedil;ası sorunsuz bir şekilde derlenip &amp;ccedil;alışacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mayis/moved_13.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi gelin biraz &amp;ouml;nce bahsettiğimiz stack odaklı t&amp;uuml;rler i&amp;ccedil;in benzer senaryonun nasıl sonu&amp;ccedil;lanacağına bir bakalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;fn main() {
+    let lucky_number = 23;
+    do_something(lucky_number);
+    println!("but original number is {}", lucky_number);
+}
+
+fn do_something(input:i32) {
+    let something = input+1;
+    println!("New number is '{}'", something);
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rnekte lucky_number isimli 32 bitlik bir tam sayının kullanımı s&amp;ouml;z konusu. Bu değişken do_something fonksiyonuna parametre olarak yollandıktan sonra o fonksiyon i&amp;ccedil;erisinde değiştiriliyor. String kullanılan &amp;ouml;rnekten farklı olarak lucky_number main fonksiyonunda, do_something &amp;ccedil;ağrısından sonra da kullanılabilir. Nitekim stack &amp;uuml;zerine a&amp;ccedil;ılan fonksiyon &amp;ccedil;er&amp;ccedil;evesi sınırları i&amp;ccedil;erisinde yaşamaktadır. Bir başka deyişle Heap &amp;uuml;zerindeki bir b&amp;ouml;lgeyi referans etmemektedir. Sabit uzunlukta, kapladığı alan derleme zamanında belli olan bir t&amp;uuml;r kullanılmaktadır ve bu t&amp;uuml;r Copy trait'ini de uygulamaktadır. Dolayısıyla değişken değeri fonksiyona kopyalanarak taşınmaktadır.&amp;nbsp;Buna g&amp;ouml;re&amp;nbsp;bir sahiplik ihlali s&amp;ouml;z konusu değildir. Zaten herkes kendi verisinin sahibidir. İşte &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mayis/moved_14.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu yeni kodun bellekteki &amp;ccedil;alışma modelini &amp;ccedil;izmeye &amp;ccedil;alışarak konuyu daha da iyi bir şekilde pekiştirmeye &amp;ccedil;alışabilirsiniz ;) Yazıyı sonlandırmadan &amp;ouml;nce ikinci senaryomuza geri d&amp;ouml;nmek istiyorum. Sizce String t&amp;uuml;rdeki player_name isimli değişkeni print_with_me isimli fonksiyonda kullanıp something &amp;uuml;st&amp;uuml;nden d&amp;ouml;nd&amp;uuml;rmek yerine farklı bir şekilde yollayıp main fonksiyonunda oluşan taşıma hatasının &amp;ouml;n&amp;uuml;nce ge&amp;ccedil;ebilir miyiz? ;) Bunu bir d&amp;uuml;ş&amp;uuml;n&amp;uuml;n, araştırın ve &amp;ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml;n&amp;uuml;z olursa l&amp;uuml;tfen yorum kısmında paylaşın. B&amp;ouml;ylece geldik bir Rust pratiğimizin daha sonuna. Bu &amp;ouml;rnek kısa olduğu i&amp;ccedil;in github &amp;uuml;zerinde bir &amp;ouml;rneğini oluşturmadım ancak Rust dili ile ilgili &amp;ccedil;alışmalarıma &lt;a title="rust-farm github repom" href="https://github.com/buraksenyurt/rust-farm" target="_blank"&gt;rust-farm&lt;/a&gt; &amp;uuml;zerinden ulaşabilirsiniz. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2022-05-22 09:00:00</pubDate>
+  <slug>rust-pratikleri-value-moved-here</slug>
+  <tags>
+    <tag>rust</tag>
+    <tag>rust-programming-language</tag>
+    <tag>rust-pratikleri</tag>
+    <tag>memory-management</tag>
+    <tag>stack</tag>
+    <tag>heap</tag>
+    <tag>borrow-checker</tag>
+    <tag>ownership</tag>
+  </tags>
+  <categories>
+    <category>Rust</category>
+  </categories>
+</post>

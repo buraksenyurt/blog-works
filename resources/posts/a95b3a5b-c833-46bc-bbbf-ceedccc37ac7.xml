@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WPF - Veriye Bağlanmak (Data Binding)</title>
+  <description>Bu gün geliştirdiğimiz programların çoğu veri(Data) ile ilişkili kaynakları kullanmaktadır. Özellikle büyük ölçekli pek çok proje tipi içerisinde mutlaka verilerin kullanılması söz konusudur. Veriler kimi zaman müşteri bilgilerini, kimiz zaman ürün bilgilerini, kimi zamanda uygulamaya ait konfigurasyon bilgilerini vb...</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Bu g&amp;uuml;n geliştirdiğimiz programların &amp;ccedil;oğu veri&lt;strong&gt;(Data)&lt;/strong&gt; ile ilişkili kaynakları kullanmaktadır. &amp;Ouml;zellikle b&amp;uuml;y&amp;uuml;k &amp;ouml;l&amp;ccedil;ekli pek &amp;ccedil;ok proje tipi i&amp;ccedil;erisinde mutlaka verilerin kullanılması s&amp;ouml;z konusudur. Veriler kimi zaman m&amp;uuml;şteri bilgilerini, kimiz zaman &amp;uuml;r&amp;uuml;n bilgilerini, kimi zamanda uygulamaya ait konfigurasyon bilgilerini vb... tutar. Verilerin &amp;ccedil;oğu zaman veritabanı sistemlerinde, fiziki dosyalarda veya program i&amp;ccedil;erisindeki &amp;ouml;zel tiplerde saklandıklarını g&amp;ouml;r&amp;uuml;r&amp;uuml;z. &amp;Ccedil;ok doğal olarak bu veri depoları i&amp;ccedil;erisinde tutulan bilgilerin son kullanıcılara g&amp;ouml;sterilmeside s&amp;ouml;z konusudur.&lt;/p&gt;
+&lt;p&gt;Bu noktada, geliştirilen uygulamaya bakılmaksızın pek &amp;ccedil;ok veri bağlama tekniği olduğunu s&amp;ouml;yleyebiliriz. Ama bu yazımızda &amp;ouml;zellike &lt;strong&gt;Windows Presentation Foundation(WPF)&lt;/strong&gt; uygulamalarında veri bağlama işlemlerinin nasıl yapılabileceğini basit &amp;ouml;rneklerden hareket ederek incelemeye &amp;ccedil;alışıyor olacağız. Windows tabanlı programlamada &amp;ouml;zellikle &lt;strong&gt;Visual Studio 2005&lt;/strong&gt; ile birlikte veri bağlama işlemlerinin dahada genişletildiğine şahit olduk.&lt;strong&gt; Data Source &lt;/strong&gt;men&amp;uuml;s&amp;uuml; bunun en g&amp;uuml;zel &amp;ouml;rneklerinden birisidir. Hatta XML ve nesne(object) kaynaklarına daha kolay bağlanılmasını sağlayan &lt;strong&gt;XmlDataSource&lt;/strong&gt; ve &lt;strong&gt;ObjectDataSource&lt;/strong&gt; gibi kontrolleri g&amp;ouml;rd&amp;uuml;k. Aslında veri bağlama&lt;strong&gt;(Data Binding)&lt;/strong&gt; denildiği zaman akla gelmesi gereken; "bir tipin herhangibir &amp;uuml;yesinin başka bir tipin sahip olduğu veriye otomatik olarak erişmesidir" diyebiliriz. Form &amp;uuml;zerindeki bir metin kutusunun&lt;strong&gt;(TextBox)&lt;/strong&gt; text &amp;ouml;zelliğinin, veritabanındaki bir alana bağlanması buna verilebilecek basit bir &amp;ouml;rnektir.&lt;/p&gt;
+&lt;p&gt;Ne varki WPF mimarisinde durum biraz farklı bir hal almıştır. &amp;Ouml;zellikle .Net Framework 3.0 ve &lt;strong&gt; LINQ&lt;/strong&gt;(Language Integrated Query) gibi yenilikler, verilerin işleniş ve ele alınış şekillerinide değiştirmektedir. WPF' e kısaca bakıldığında ilk fark edilen noktalardan birisi&lt;strong&gt; .Net Framework 2.0&lt;/strong&gt; formlarındaki kadar &amp;ccedil;ok kontrol&amp;uuml;n &lt;strong&gt;Toolbox&lt;/strong&gt; sekmesine gelmediğidir. Dahası, Visual Studio 2005 uygulama geliştirme ortamından hatırladığımız pek &amp;ccedil;ok veri kontrol&amp;uuml; burada yer almamaktadır. &amp;Uuml;stelik bizleri bekleyen sayısız yeni kontrol bulunmaktadır. Peki bir WPF uygulamasında, pencere&lt;strong&gt;(Window)&lt;/strong&gt; &amp;uuml;zerindeki kontrollerin &amp;ccedil;eşitli &amp;ouml;zelliklerinin verilere olan bağlantılarını nasıl ger&amp;ccedil;ekleştirebiliriz? İşte bu yazımızda araştıracağımız ve &amp;ouml;rnekleyeceğimiz konular bunlar olacaktır.&lt;/p&gt;
+&lt;p&gt;WPF uygulamlarında veri kaynaklarına bağlanabilmek amacıyla kullanılan iki temel sağlayıcı bulunmaktadır. Bunlardan birisi XML kaynaklarına bağlanma işlemini ger&amp;ccedil;ekkleştirmemizi sağlayan &lt;strong&gt;XmlDataProvider&lt;/strong&gt; bileşenidir. Diğeri ise, herhangibir .Net nesnesine (.Net Object) bağlanmamızı kolaylaştıran &lt;strong&gt; ObjectDataProvider&lt;/strong&gt; bileşenidir. &lt;em&gt;(Bunların dışında &amp;ouml;zellikle bağlantısız katman nesneleri ilede kullanılan &lt;strong&gt;DataContext&lt;/strong&gt; &amp;ouml;zelliğide veri bağlama işlemlerinde kullanılmaktadır.)&lt;/em&gt; Bu bileşenler sayesinde &lt;strong&gt;XAML&lt;/strong&gt; i&amp;ccedil;erisinden ilgili kaynaklara bağlanma, tek y&amp;ouml;nl&amp;uuml; ve &amp;ccedil;ift y&amp;ouml;nl&amp;uuml; olarak veri transfer etme işlemlerini ger&amp;ccedil;ekleştirebiliriz. Bu tiplerin kullanımını g&amp;ouml;steren basit &amp;ouml;rneklerimize ge&amp;ccedil;meden &amp;ouml;nce veri bağlama işlemine basit ve genel bir bakış atmakta yarar var. Bu ama&amp;ccedil;la &lt;strong&gt;Visual Studio 2008 Beta 2&lt;/strong&gt; s&amp;uuml;r&amp;uuml;m&amp;uuml;nde yeni bir WPF uygulaması a&amp;ccedil;ıyor ve Window1 penceresinin XAML i&amp;ccedil;eriğini aşağıdaki gibi kodluyoruz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk221_1.gif" alt="" width="302" height="197" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;Window x:Class="DataBindIslemleri.Window1" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Bir kontrol niteliğini başka bir kontrodekine bağlamak" Height="169" Width="275" WindowStartupLocation="CenterScreen" Name="wndBasitBaglama"&amp;gt;
+    &amp;lt;Grid&amp;gt;
+        &amp;lt;Button Background="#FFFFCC66" ClickMode="Release" Height="23" HorizontalAlignment="Left" Margin="10,16,0,0" Name="btnGiris" VerticalAlignment="Top" Width="75" Click="btnGiris_Click"&amp;gt;Giriş&amp;lt;/Button&amp;gt;
+        &amp;lt;TextBox Background="Black" Foreground="{Binding ElementName=btnGiris, Path=Background}" Margin="10,47,44,54" Name="txtSifre" /&amp;gt;
+    &amp;lt;/Grid&amp;gt;
+&amp;lt;/Window&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Bu ilk &amp;ouml;rneğimizde penceremiz &amp;uuml;zerinde bir &lt;strong&gt;Button&lt;/strong&gt; ve birde &lt;strong&gt;TextBox&lt;/strong&gt; kontrol&amp;uuml;m&amp;uuml;z bulunmaktadır. Dikkat edilmesi gereken nokta TextBox kontrol&amp;uuml;n&amp;uuml;n &amp;ouml;n plan renginin, Button kontrol&amp;uuml;n&amp;uuml;n arka plan rengine bağlanmış olmasıdır. Bunun i&amp;ccedil;in TextBox elementi i&amp;ccedil;erisinde &lt;strong&gt;Forground&lt;/strong&gt; niteliğine bir değer ataması ger&amp;ccedil;ekleştirilmiştir. &lt;strong&gt;Binding&lt;/strong&gt; ile başlayan bu ifade i&amp;ccedil;erisinde &lt;strong&gt;ElementName&lt;/strong&gt; isimli &amp;ouml;zellik verinin kaynağı olan nesneyi temsil etmektedir. Bu &amp;ouml;rnekte s&amp;ouml;z konusu nesne btnGiris isimli Button kontrol&amp;uuml;d&amp;uuml;r. Foreground &amp;ouml;zelliğine bağlanmasını istediğimiz veri i&amp;ccedil;eriği ise &lt;strong&gt;Path&lt;/strong&gt; tanımlaması ile belirtilmektedir. Buna g&amp;ouml;re btnGiris isimli veri kaynağındaki &lt;strong&gt;Background&lt;/strong&gt; isimli &amp;ouml;zelliğin değerinin atanması s&amp;ouml;z konusudur. Uygulamayı &amp;ccedil;alıştırıp test ettiğimizde &amp;ouml;rnek olarak aşağıdakine benzer bir g&amp;ouml;r&amp;uuml;nt&amp;uuml; elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk221_2.gif" alt="" width="406" height="169" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Burada bahsedilen teknik en basit haliyle veri bağlamayı g&amp;ouml;stermektedir. Şimdi işi biraz daha ilerletip &amp;ouml;rnek bir &lt;strong&gt;XML&lt;/strong&gt; d&amp;ouml;k&amp;uuml;manı i&amp;ccedil;erisinden, WPF kontrollerine veri bağlama işlemlerini nasıl ger&amp;ccedil;ekleştirebileceğimize bakalım. Aşağıdaki gibi bir XML i&amp;ccedil;eriğimiz olduğunu ve projemizde Urunler.xml adıyla kaydedildiğini g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alabiliriz.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;Depo&amp;gt;
+    &amp;lt;Urun id="1000"&amp;gt;
+        &amp;lt;Ad&amp;gt;Ekran Kartı(VGA)&amp;lt;/Ad&amp;gt;
+        &amp;lt;BirimFiyat&amp;gt;35&amp;lt;/BirimFiyat&amp;gt;
+        &amp;lt;StokMiktari&amp;gt;100&amp;lt;/StokMiktari&amp;gt;
+        &amp;lt;Durum&amp;gt;OK.bmp&amp;lt;/Durum&amp;gt;
+        &amp;lt;Kategori&amp;gt;Yedek Par&amp;ccedil;a&amp;lt;/Kategori&amp;gt;
+    &amp;lt;/Urun&amp;gt;
+    &amp;lt;Urun id="1001"&amp;gt;
+        &amp;lt;Ad&amp;gt;Intel Core Duo İşlemci (CPU)&amp;lt;/Ad&amp;gt;
+        &amp;lt;BirimFiyat&amp;gt;90&amp;lt;/BirimFiyat&amp;gt;
+        &amp;lt;StokMiktari&amp;gt;125&amp;lt;/StokMiktari&amp;gt;
+        &amp;lt;Durum&amp;gt;OK.bmp&amp;lt;/Durum&amp;gt;
+        &amp;lt;Kategori&amp;gt;Yedek Par&amp;ccedil;a&amp;lt;/Kategori&amp;gt;
+    &amp;lt;/Urun&amp;gt;
+    &amp;lt;Urun id="1002"&amp;gt;
+        &amp;lt;Ad&amp;gt;17Inch LCD Monitor&amp;lt;/Ad&amp;gt;
+        &amp;lt;BirimFiyat&amp;gt;150&amp;lt;/BirimFiyat&amp;gt;
+        &amp;lt;StokMiktari&amp;gt;35&amp;lt;/StokMiktari&amp;gt;
+        &amp;lt;Durum&amp;gt;Warning.bmp&amp;lt;/Durum&amp;gt;
+        &amp;lt;Kategori&amp;gt;Ekran&amp;lt;/Kategori&amp;gt;
+    &amp;lt;/Urun&amp;gt;
+    &amp;lt;Urun id="1003"&amp;gt;
+        &amp;lt;Ad&amp;gt;250 GB Usb Harddisk&amp;lt;/Ad&amp;gt;
+        &amp;lt;BirimFiyat&amp;gt;150&amp;lt;/BirimFiyat&amp;gt;
+        &amp;lt;StokMiktari&amp;gt;90&amp;lt;/StokMiktari&amp;gt;
+        &amp;lt;Durum&amp;gt;Serious.bmp&amp;lt;/Durum&amp;gt;
+        &amp;lt;Kategori&amp;gt;Depolama Aygıtı&amp;lt;/Kategori&amp;gt;
+    &amp;lt;/Urun&amp;gt;
+    &amp;lt;Urun id="1004"&amp;gt;
+        &amp;lt;Ad&amp;gt;1 GB Usb Flash Bellek&amp;lt;/Ad&amp;gt;
+        &amp;lt;BirimFiyat&amp;gt;28&amp;lt;/BirimFiyat&amp;gt;
+        &amp;lt;StokMiktari&amp;gt;300&amp;lt;/StokMiktari&amp;gt;
+        &amp;lt;Durum&amp;gt;Warning.bmp&amp;lt;/Durum&amp;gt;
+        &amp;lt;Kategori&amp;gt;Depolama Aygıtı&amp;lt;/Kategori&amp;gt;
+    &amp;lt;/Urun&amp;gt;
+&amp;lt;/Depo&amp;gt;&lt;/pre&gt;
+&lt;p&gt;XML d&amp;ouml;k&amp;uuml;manımız i&amp;ccedil;erisinde &amp;ccedil;eşitli tipte bilgisayar &amp;uuml;r&amp;uuml;nlerine ait bilgiler yer almaktadır. Temel olarak &amp;uuml;r&amp;uuml;n&amp;uuml;n adı, birim fiyatı, stok miktarı , kategorisi ve durumuna ait bilgisi yer almaktadır. S&amp;ouml;z gelimi bu XML veri k&amp;uuml;mesi i&amp;ccedil;erisinde yer alan her bir &amp;uuml;r&amp;uuml;n&amp;uuml;n adlarının bir &lt;strong&gt;ComboBox&lt;/strong&gt; kontrol&amp;uuml;nde g&amp;ouml;sterilmesini istediğimizi d&amp;uuml;ş&amp;uuml;nelim. Bu ama&amp;ccedil;la yine &lt;strong&gt;Visual Studio 2008 Beta 2&lt;/strong&gt; &amp;uuml;zerinde tasarladığımız WPF projemize yeni bir pencere&lt;strong&gt;(Window)&lt;/strong&gt; ekliyor ve &lt;strong&gt;XAML(eXtensible Application Markup Language)&lt;/strong&gt; i&amp;ccedil;eriğini aşağıdaki gibi d&amp;uuml;zenliyoruz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk221_3.gif" alt="" width="311" height="172" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;Window x:Class="DataBindIslemleri.Window2" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="XmlDataProvider ile Xml verilerine basit bağlanmak" Height="150" Width="290" WindowStartupLocation="CenterScreen"&amp;gt; 
+    &amp;lt;Grid&amp;gt;
+        &amp;lt;Grid.Resources&amp;gt;
+            &amp;lt;XmlDataProvider x:Key="UrunlerProvider" Source="Urunler.xml"/&amp;gt;
+        &amp;lt;/Grid.Resources&amp;gt;
+        &amp;lt;ComboBox Height="28" Margin="23,42,60,0" Name="cmbUrunler" VerticalAlignment="Top" ItemsSource="{Binding Source={StaticResource UrunlerProvider},XPath=/Depo/Urun/Ad}" FontSize="13" FontWeight="Bold" /&amp;gt;
+        &amp;lt;Label Height="23" HorizontalAlignment="Left" Margin="18,12,0,0" Name="label1" VerticalAlignment="Top" Width="120" FontSize="12" FontWeight="Bold"&amp;gt;&amp;Uuml;r&amp;uuml;nler&amp;lt;/Label&amp;gt; 
+    &amp;lt;/Grid&amp;gt;
+&amp;lt;/Window&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Daha &amp;ouml;ncedende bahsettiğimiz gibi WPF uygulamalarında veri bağlama işlemleri i&amp;ccedil;in &lt;strong&gt;XmlDataProvider&lt;/strong&gt; ve &lt;strong&gt; ObjectDataProvider&lt;/strong&gt; tipleri kullanılmaktadır. Bu &amp;ouml;rnekte yer alan &lt;strong&gt; Grid&lt;/strong&gt; alanı i&amp;ccedil;erisindeki kontrollerin bir XML veri kaynağını kullanacağını belirtmek amacıyla &lt;strong&gt;Grid.Resources&lt;/strong&gt; elementi i&amp;ccedil;erisinde XmlDataProvider tanımlaması yapılmıştır. XmlDataProvider elementi bu &amp;ouml;rnekte iki &amp;ouml;nemli nitelik(attribute) kullanmaktadır. Bunlardan birisi x isim alanı altında bulunan &lt;strong&gt;Key&lt;/strong&gt; niteliğidir. Key aslında s&amp;ouml;z konusu veri kaynağının diğer kontrollerde ele alınmasını sağlamak amacıyla bir isim tanımlaması yapılmasını sağlar.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;yleki UrunlerProvider adı, &lt;strong&gt;ComboBox&lt;/strong&gt; kontrol&amp;uuml;nde ele alınan Binding ifadesinde kullanılmaktadır. &lt;strong&gt;XmlDataProvider&lt;/strong&gt; elementinin Source niteliğinde ise veri kaynağının yeri işaret edilmektedir. Burada Urunler.xml isimli dosya g&amp;ouml;sterilmektedir. &lt;strong&gt;Source&lt;/strong&gt; &amp;ouml;zelliğine internet &amp;uuml;zerindeki bir URL adresi atanabileceği gibi, başka bir fiziki lokasyondaki XML dosya yeride verilebilir. ComboBox kontrol&amp;uuml;nde &amp;ouml;ğelerin&lt;strong&gt;(Items)&lt;/strong&gt; i&amp;ccedil;eriklerinin aslında XML dosyasındaki Ad elementlerinden geleceğini belirtmek amacıyla aşağıdaki ifade kullanılmıştır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;ItemsSource="{Binding Source={StaticResource UrunlerProvider},XPath=/Depo/Urun/Ad}"&lt;/pre&gt;
+&lt;p&gt;Burada en &amp;ccedil;ok g&amp;ouml;ze &amp;ccedil;arpan nokta &lt;strong&gt; XPath&lt;/strong&gt; niteliğine atanan değerdir. Tahmin edileceği &amp;uuml;zere burada bir XPath ifadesi kullanılmış ve Ad elementine kadar ge&amp;ccedil;işler yapılmıştır. Bu anlamda &amp;ouml;zellikle &lt;strong&gt;XAML&lt;/strong&gt; tarafında, XML veri kaynaklarının s&amp;ouml;z konusu olduğu durumlarda XPath ifadelerinin b&amp;uuml;y&amp;uuml;k &amp;ouml;nem taşıdığını ifade edebiliriz. &amp;Ouml;rneğimizi &amp;ccedil;alıştırdığımızda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; elde edilecektir. Dikkat edilecek olursa Urunler.xml i&amp;ccedil;erisindeki t&amp;uuml;m &amp;uuml;r&amp;uuml;nlerin Ad elementlerinin değerleri gelmiştir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk221_4.gif" alt="" width="302" height="182" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;XmlDataProvider&lt;/strong&gt; tipinin her zaman i&amp;ccedil;in harici bir XML veri k&amp;uuml;mesini işaret etmesine gerek yoktur. &lt;strong&gt; XAML&lt;/strong&gt; i&amp;ccedil;eriğinde yer alan g&amp;ouml;m&amp;uuml;l&amp;uuml;(Embedded) bir XML veri k&amp;uuml;meside bu anlamda kullanılabilir. &amp;Uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; &amp;ouml;rneğimizde bu durumu analiz ederek yazımıza devam edelim. Yeni bir pencereyi(Window) aşağıdaki gibi tasarladığımızı d&amp;uuml;ş&amp;uuml;nelim. Kahramanımız yine bir &lt;strong&gt;ComboBox&lt;/strong&gt; kontrol&amp;uuml; olacak.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk221_5.gif" alt="" width="308" height="202" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;Window x:Class="DataBindIslemleri.Window3" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Inline Xml kaynağını kontrollere bağlamak" Height="173" Width="280"&amp;gt;
+    &amp;lt;Grid&amp;gt;
+        &amp;lt;Grid.Resources&amp;gt;
+            &amp;lt;XmlDataProvider x:Key="SehirVerisi"&amp;gt;
+                &amp;lt;x:XData&amp;gt;
+                    &amp;lt;Sehirler xmlns=""&amp;gt;
+                        &amp;lt;Sehir kod="+90216" ad="Istanbul Anadolu"/&amp;gt;
+                        &amp;lt;Sehir kod="202" ad="Kahire"/&amp;gt;
+                        &amp;lt;Sehir kod="813" ad="Tokyo"/&amp;gt;
+                        &amp;lt;Sehir kod="+44171" ad="Londra"/&amp;gt;
+                        &amp;lt;Sehir kod="+1718" ad="New York City"/&amp;gt;
+                        &amp;lt;Sehir kod="4989" ad="M&amp;uuml;nih"/&amp;gt;
+                    &amp;lt;/Sehirler&amp;gt;
+                &amp;lt;/x:XData&amp;gt;
+            &amp;lt;/XmlDataProvider&amp;gt;
+        &amp;lt;/Grid.Resources&amp;gt;
+        &amp;lt;ComboBox ItemsSource="{Binding Source={StaticResource SehirVerisi}, XPath=/Sehirler/Sehir/@ad}" Margin="15,57,16,51" FontSize="14" FontWeight="Bold" /&amp;gt; 
+        &amp;lt;Label Height="23" HorizontalAlignment="Left" Margin="15,22,0,0" Name="label1" VerticalAlignment="Top" Width="120"&amp;gt;Şehir Telefon Kodları&amp;lt;/Label&amp;gt;
+    &amp;lt;/Grid&amp;gt;
+&amp;lt;/Window&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Bu sefer XML veri k&amp;uuml;mesi &lt;strong&gt;XAML&lt;/strong&gt; d&amp;ouml;k&amp;uuml;manı i&amp;ccedil;erisinde yer alan &lt;strong&gt;Grid&lt;/strong&gt;' in kaynağı olarak tanımlanmıştır. Bunun i&amp;ccedil;in XmlDataProvider elementi i&amp;ccedil;erisinde &lt;strong&gt; x:XData&lt;/strong&gt; isimli bir alt eleman(Child Element) tanımlanmaktadır. Bu elementin i&amp;ccedil;erisinde ise XML veri k&amp;uuml;mesi bulunmaktadır. Buradaki XML i&amp;ccedil;eriği istenilen şekilde tasarlanabilir. &amp;Ouml;nemli olan noktalardan birisi bir &amp;ouml;nceki &amp;ouml;rnekte olduğu gibi yine &lt;strong&gt;x:Key&lt;/strong&gt; niteliğinin tanımlanmış olmasıdır. &lt;strong&gt;ComboBox&lt;/strong&gt; kontrol&amp;uuml;nde Sehir elementi i&amp;ccedil;erisindeki ad niteliklerinin&lt;strong&gt;(attributes) &lt;/strong&gt;değerleri g&amp;ouml;sterilmektedir. &lt;strong&gt; ItemsSource&lt;/strong&gt; niteliğine atanan ifade i&amp;ccedil;erisinde bağlanılacak veri kaynağı SehirVerisi olarak belirtildikten sonra ad niteliklerinin değerlerinin elde edilmesi i&amp;ccedil;in XPath ifadesinde @ işaret kullanılmıştır.&lt;em&gt;(Hatırlayalım; XPath ifadelerinde nitelikleri ele alırken &lt;/em&gt;&lt;strong&gt;@ &lt;/strong&gt;&lt;em&gt;işareti kullanılır) &lt;/em&gt;Uygulama bu haliyle &amp;ccedil;alıştırıldığında aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; ile karşılaşılacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk221_6.gif" alt="" width="276" height="223" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi ad niteliklerinin değerleri ComboBox kontrol&amp;uuml; i&amp;ccedil;erisine alınmıştır. Geliştirdiğimiz son &amp;ouml;rneğin bir &amp;ouml;ncekinden tek farkı, harici bir XML veri k&amp;uuml;mesi kullanmaktansa, g&amp;ouml;m&amp;uuml;l&amp;uuml;&lt;strong&gt;(Embeded)&lt;/strong&gt; bir XML kaynağının kullanılmasıdır. Pek &amp;ccedil;ok kaynakta &amp;ouml;zellikle MSDN' de bu tip bir XML i&amp;ccedil;eriği i&amp;ccedil;in XML veri adası &lt;strong&gt;(XML Data Island)&lt;/strong&gt; tanımlaması yapılmaktadır. XML veri adaları &lt;strong&gt;x:XData&lt;/strong&gt; elementleri arasında tutulmak zorundadır.&lt;/p&gt;
+&lt;p&gt;Sıradaki &amp;ouml;rneğimizde yine bir XML veri kaynağını ele alacağız. Bu sefer diğer &amp;ouml;rneklerden farklı olarak ComboBox' ın &lt;strong&gt;ItemTemplate&lt;/strong&gt; elementini ele alacağız. Bu sayede ComboBox i&amp;ccedil;erisinde birden fazla veri bağlı kontrol&amp;uuml; yan yana g&amp;ouml;stermemiz m&amp;uuml;mk&amp;uuml;n olacaktır. Bu ama&amp;ccedil;la yeni penceremizi aşağıdaki gibi tasarlamamız yeterlidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk221_7.gif" alt="" width="399" height="170" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;Window x:Class="DataBindIslemleri.Window4" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="DataTemplete Yardımıyla Xml verisine bağlanma" Height="154" Width="384"&amp;gt;
+    &amp;lt;Grid&amp;gt;
+        &amp;lt;Grid.Resources&amp;gt;
+            &amp;lt;XmlDataProvider x:Key="UrunVerileri" Source="Urunler.xml"/&amp;gt;
+        &amp;lt;/Grid.Resources&amp;gt;
+        &amp;lt;ComboBox Height="40" Margin="21,37,15,0" Name="cmbUrunler" VerticalAlignment="Top" ItemsSource="{Binding Source={StaticResource UrunVerileri},XPath=Depo/Urun}" FontSize="14" FontWeight="Bold"&amp;gt; 
+            &amp;lt;ComboBox.ItemTemplate&amp;gt; 
+                &amp;lt;DataTemplate&amp;gt;
+                    &amp;lt;TextBlock&amp;gt;
+                        &amp;lt;Label&amp;gt;
+                            &amp;lt;Label.Content&amp;gt;
+                                &amp;lt;Binding XPath="Ad"/&amp;gt;
+                            &amp;lt;/Label.Content&amp;gt;
+                        &amp;lt;/Label&amp;gt;
+                        &amp;lt;Button&amp;gt;
+                            &amp;lt;Button.Content&amp;gt;
+                                &amp;lt;Binding XPath="StokMiktari"/&amp;gt;
+                            &amp;lt;/Button.Content&amp;gt;
+                        &amp;lt;/Button&amp;gt;
+                        &amp;lt;Image&amp;gt;
+                            &amp;lt;Image.Source&amp;gt;
+                                &amp;lt;Binding XPath="Durum"/&amp;gt;
+                            &amp;lt;/Image.Source&amp;gt;
+                        &amp;lt;/Image&amp;gt;
+                        &amp;lt;Button Name="btnSiparisVer" Content="Sipariş Ver" FontSize="10" FontWeight="Bold" Background="Black" Foreground="Gold"/&amp;gt;
+                    &amp;lt;/TextBlock&amp;gt;
+                &amp;lt;/DataTemplate&amp;gt;
+            &amp;lt;/ComboBox.ItemTemplate&amp;gt; 
+        &amp;lt;/ComboBox&amp;gt; 
+    &amp;lt;/Grid&amp;gt;
+&amp;lt;/Window&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Her zamanki gibi &lt;strong&gt;Grid&lt;/strong&gt; i&amp;ccedil;erisindeki kontrollerin bağlanabileceği veri kaynağı sağlayıcısını &lt;strong&gt; XmlDataProvider&lt;/strong&gt; yardımıyla &lt;strong&gt;Grid.Resources&lt;/strong&gt; elementi i&amp;ccedil;erisinde tanımlamaktayız. Bundan sonra ise ComboBox elementi altında bir &lt;strong&gt;ItemTemplate&lt;/strong&gt; elementi a&amp;ccedil;ılmaktadır. Bu element i&amp;ccedil;erisinde yer alan &lt;strong&gt; TextBlock&lt;/strong&gt; elementi altına &lt;strong&gt;Label&lt;/strong&gt;, &lt;strong&gt;Button&lt;/strong&gt;, &lt;strong&gt;Image&lt;/strong&gt; kontrolleri atılmıştır. Hepsinin ortak &amp;ouml;zelliği, hangi niteliklerine veri bağlayacaksak, bununla ilgili alt elementin a&amp;ccedil;ılması ve &lt;strong&gt;Binding&lt;/strong&gt; elementi ile bağlama işleminin ger&amp;ccedil;ekleştirilmesidir. S&amp;ouml;z gelimi &amp;uuml;r&amp;uuml;n&amp;uuml;n Ad elementinin değerini Label kontrol&amp;uuml;n&amp;uuml;n &lt;strong&gt;Content&lt;/strong&gt; &amp;ouml;zelliğine atamak istiyorsak aşağıdaki gibi bir bildirim yapılması yeterlidir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;Label&amp;gt;
+    &amp;lt;Label.Content&amp;gt;
+        &amp;lt;Binding XPath="Ad"/&amp;gt;
+    &amp;lt;/Label.Content&amp;gt;
+&amp;lt;/Label&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Burada &lt;strong&gt;Content&lt;/strong&gt; elementinin değerinin, Ad isimli elementten alınacağı belirtilmiştir. Yanlız dikkat edilmesi gereken bir nokta vardır. Ad elementi aslında XML ağa&amp;ccedil; yapısına bakıldığında Depo/Urun &amp;uuml;zerinden elde edilebilmektedir. Dolayısıyla burada &lt;strong&gt;XPath&lt;/strong&gt; ifadesinde doğrudan Ad değerinin alınabilmesi i&amp;ccedil;in Urun elementlerine ulaşılmış olması gerekmektedir. Bunu sağlamak i&amp;ccedil;in ComboBox bileşeninin &lt;strong&gt;ItemsSource&lt;/strong&gt; niteliğindeki &lt;strong&gt;XPath&lt;/strong&gt; ifadesi Depo/Urun şeklinde ayarlanmıştır. Uygulamayı bu haliyle &amp;ccedil;alıştırdığımızda aşağıdakine benzer bir ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; ile karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk221_8.gif" alt="" width="370" height="244" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Olduk&amp;ccedil;a etkileyici değil mi? Bir ComboBox' ın her bir &amp;ouml;ğesi bir taşıyıcı&lt;strong&gt;(Container)&lt;/strong&gt; gibi davranıp birden fazla farklı bileşeni i&amp;ccedil;eriyor ve i&amp;ccedil;erikleri bir XML veri k&amp;uuml;mesinden geliyor. Bence s&amp;uuml;per.&lt;/p&gt;
+&lt;p&gt;Şu ana kadar geliştirdiğimiz &amp;ouml;rneklerimizde &lt;strong&gt;XmlDataProvider&lt;/strong&gt; tipinden yararlandık ve XML veri k&amp;uuml;melerine bağlandık. XML dışındaki veri kaynakları g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında &lt;strong&gt;ObjectDataProvider&lt;/strong&gt; bileşeninin kullanılması s&amp;ouml;z konusudur. Bu sınıf yardımıyla herhangibir .Net tipine bağlanmak m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. MSDN bu konu ile ilişkili olarak &amp;ccedil;oğunlukla koleksiyonları &amp;ouml;rnekleyerek işe başlamaktadır. Bizde dilerseniz geleneği bozmayalım. Şimdiki &amp;ouml;rneğimizde Urun isimli bir sınıfa ait nesne &amp;ouml;rneklerini barındıran generic bir &lt;strong&gt;List&amp;lt;T&amp;gt;&lt;/strong&gt; koleksiyonunun veri kaynağı olarak kullanılmasını ele alıyor olacağız. İlk olarak aşağıdaki sınıf diagramında&lt;strong&gt; (class diagram)&lt;/strong&gt; g&amp;ouml;r&amp;uuml;len Urun isimli tipi tasarlayarak başlayalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk221_9.gif" alt="" width="169" height="215" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public class Urun
+{
+    public int Id;
+    public string Ad;
+    public double BirimFiyat;
+    public int StokMiktari;
+    public bool Durum;
+    
+    public override string ToString()
+    {
+        return Id.ToString() + " " + Ad+" "+BirimFiyat.ToString();
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Urun sınıfı yine bir &amp;uuml;r&amp;uuml;n&amp;uuml; tanımlayabilecek bazı public alanlara sahiptir. &lt;strong&gt;ToString&lt;/strong&gt; metodunu ezmemizin&lt;strong&gt;(override)&lt;/strong&gt; sebebi ise, &lt;strong&gt;ComboBox&lt;/strong&gt; kontrol&amp;uuml;ne bağlandıklarında ne g&amp;ouml;sterileceğini belirtmektir. Eğer bunu belirtmessek, ComboBox kontrol&amp;uuml;nde IsimAlaniAdi.TipAdi &lt;strong&gt; (Namespace.TypeName) &lt;/strong&gt;notasyonuna uygun olacak şekilde bir g&amp;ouml;r&amp;uuml;nt&amp;uuml; elde edilir. Gelelim &amp;uuml;r&amp;uuml;nlere ait nesne &amp;ouml;rneklerini taşıyacak koleksiyon sınıfını tasarlamaya. UrunListesi isimli sınıfımız aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk221_10.gif" alt="" width="355" height="218" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public class UrunListesi:List&amp;lt;Urun&amp;gt;
+{
+    public UrunListesi()
+    {
+        Add(new Urun() { Id = 1, Ad = "Grafik Kartı", BirimFiyat = 35, StokMiktari = 100,Durum=true });
+        Add(new Urun() { Id = 2, Ad = "Monitor", BirimFiyat = 150, StokMiktari = 50, Durum = false });
+        Add(new Urun() { Id = 3, Ad = "CPU X86", BirimFiyat = 145, StokMiktari = 150, Durum = true });
+        Add(new Urun() { Id = 4, Ad = "USB Bellek", BirimFiyat = 15, StokMiktari = 250, Durum = true });
+        Add(new Urun() { Id = 5, Ad = "HDD 250 Gb", BirimFiyat = 250, StokMiktari = 14, Durum = false });
+    }
+}&lt;/pre&gt;
+&lt;p&gt;UrunListesi sınıfı veri bağlanmasında kullanılacak kaynak bir tip olarak g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığından &lt;strong&gt;List&amp;lt;Urun&amp;gt;&lt;/strong&gt; koleksiyonundan t&amp;uuml;retilmiştir. Daha &amp;ouml;nceki yazılarımızda da değinildiği gibi &lt;strong&gt;C# 3.0&lt;/strong&gt; ile gelen yeniliklerden birisi olan nesne başlatıcıları&lt;strong&gt;(Object Initializers)&lt;/strong&gt; kullanılarak Urun nesneleri &amp;ouml;rneklenmiş bir &lt;strong&gt;List&lt;/strong&gt; koleksiyonuna eklenmiştir. Şimdi UrunListesi sınıfını veri kaynağı olarak kullanacak bir pencereyi&lt;strong&gt;(Window) &lt;/strong&gt; aşağıdaki gibi tasarlayabiliriz. Kahramanımız her zamanki gibi bir ComboBox bileşenidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk221_11.gif" alt="" width="303" height="175" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;Window x:Class="DataBindIslemleri.Window5" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Basit ObjectDataProvider Kullanımı" Height="158" Width="290" xmlns:dahili="clr-namespace:DataBindIslemleri"&amp;gt;
+    &amp;lt;Grid&amp;gt;
+        &amp;lt;Grid.Resources&amp;gt;
+            &amp;lt;ObjectDataProvider x:Key="UrunVerileri" ObjectType="{x:Type dahili:UrunListesi}" /&amp;gt;
+        &amp;lt;/Grid.Resources&amp;gt;
+        &amp;lt;ComboBox FontSize="12" FontWeight="SemiBold" Height="29" Margin="17,44,45,0" Name="comboBox1" VerticalAlignment="Top" ItemsSource="{Binding Source={StaticResource UrunVerileri}}" /&amp;gt; 
+    &amp;lt;/Grid&amp;gt;
+&amp;lt;/Window&amp;gt;&lt;/pre&gt;
+&lt;p&gt;ObjectDataProvider tipide&lt;strong&gt; x:Key &lt;/strong&gt; isimli bir niteliği kullanarak, veriye bağlanacak kontrollerin kullanabilmesi i&amp;ccedil;in ortak bir isim tanımlaması yapmaktadır. XmlDataProvider tipinde Source isimli nitelik ile veri k&amp;uuml;mesi belirtilirken &lt;strong&gt;ObjectDataProvider&lt;/strong&gt; tipinde bu iş i&amp;ccedil;in &lt;strong&gt;ObjectType&lt;/strong&gt; niteliği(attribute) kullanılmaktadır. &lt;strong&gt;ObjectType&lt;/strong&gt; niteliğinde ise UrunListesi isimli bir tipin veri kaynağı olarak kullanılacağı ve bunun, dahili kelimesi ile ifade edilen isim alanında olduğu belirtilmektedir. Peki dahili &lt;strong&gt;XML&lt;/strong&gt; isim alanı nereden tanımlanmıştır? Bunun i&amp;ccedil;in &lt;strong&gt; Window&lt;/strong&gt; elementinde bir XML isim alanı&lt;strong&gt; (XML Namespace)&lt;/strong&gt; tanımlaması aşağıdaki gibi yapılmıştır. Burada, clr-namespace ifadesini izeleyen ismin bir CLR isim alanı(Namespace) adı olduğu ve XAML d&amp;ouml;k&amp;uuml;manı i&amp;ccedil;erisinde dahili kısa adı ile ifade edileceği belirtilmektedir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;xmlns:dahili="clr-namespace:DataBindIslemleri"&lt;/pre&gt;
+&lt;p&gt;Dikkat edilecek olursa, tipin i&amp;ccedil;erisinde yer aldığı isim alanı&lt;strong&gt;(Namespace) &lt;/strong&gt;işaret edilmektedir. Buradan şu sonucada varabiliriz. Veri bağlama amacıyla kullanılan tip farklı bir assembly i&amp;ccedil;erisinde, dolayısıyla farklı bir isim alanında bulunuyorsada ilgili XAML i&amp;ccedil;eriğinde kullanılabilir. Farklı bir &lt;strong&gt;assembly&lt;/strong&gt; s&amp;ouml;z konusu olduğunda aşağıdakine benzer bir tanımlama yeterli olacaktır.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;xmlns:dahili="clr-namespace:DataBindIslemleri,assembly=UrunLibrary"&lt;/pre&gt;
+&lt;p&gt;Uygulamayı &amp;ccedil;alıştırdığımızda aşağıdakine benzer bir ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;n&amp;uuml; elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk221_12.gif" alt="" width="287" height="178" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edilecek olursa ToString metodu i&amp;ccedil;eriği ComboBox kontrollerinde birer &amp;ouml;ğe olarak g&amp;ouml;r&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;p&gt;Veri bağlama işlemlerinde tip olarak &lt;strong&gt; DataTable&lt;/strong&gt; veya &lt;strong&gt;DataSet&lt;/strong&gt; gibi bağlantısız katman nesne &amp;ouml;rneklerinin kullanılması &amp;ccedil;ok daha yaygındır. Bu tip bir senaryoda DataContext sınıfı ele alınmaktadır. Sıradaki &amp;ouml;rneğimizde bir DataTable i&amp;ccedil;erisindeki veri k&amp;uuml;mesinin, WPF kontrollerine nasıl bağlanabileceğini incelemeye &amp;ccedil;alışacağız. &amp;Ouml;rnek bir senaryo olarak &lt;strong&gt;SQL Server 2005&lt;/strong&gt; ile birlikte gelen veritabanlarından birisi olan &lt;strong&gt;AdventureWorks&lt;/strong&gt; ve &lt;strong&gt;Product&lt;/strong&gt;, &lt;strong&gt;ProductPhoto&lt;/strong&gt;, &lt;strong&gt;ProductProductPhoto&lt;/strong&gt; tablolarını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alabiliriz. Bu tablolar arasındaki ilişki aşağıdaki şekilde olduğu gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk221_13.gif" alt="" width="465" height="403" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Amacımız resimli &amp;uuml;r&amp;uuml;n bilgilerini bir &lt;strong&gt;ListBox&lt;/strong&gt; kontrol&amp;uuml;nde g&amp;ouml;sterebilmek. Bu ama&amp;ccedil;la ilk olarak Window6 isimli penceremizin kodlarını aşağıdaki gibi geliştirelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using System.Data;
+using System.Data.SqlClient;
+
+namespace DataBindIslemleri
+{
+    public partial class Window6 : Window
+    {
+        string sqlConn = "data source=.;database=AdventureWorks;integrated security=SSPI";
+        string sorgu = @"SELECT PRD.ProductID, PRD.Name AS ProductName, PRD.SafetyStockLevel , PRD.StandardCost,PRD.ListPrice, PH.ThumbNailPhoto FROM Production.Product PRD INNER JOIN Production.ProductProductPhoto PPH ON PRD.ProductID = PPH.ProductID INNER JOIN Production.ProductPhoto PH ON PPH.ProductPhotoID = PH.ProductPhotoID"; 
+
+        private void VeriyiCek()
+        {
+            DataTable dtUrunler = new DataTable();
+            using (SqlConnection conn = new SqlConnection(sqlConn))
+            {
+                SqlDataAdapter da = new SqlDataAdapter(sorgu, conn);
+                da.Fill(dtUrunler);
+            }
+            DataContext = dtUrunler;
+        }
+
+        public Window6()
+        {
+            InitializeComponent();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            lstUrunler.Items.Clear();
+            VeriyiCek(); 
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu kod par&amp;ccedil;asında &amp;uuml;zerinde durulacak olan tek nokta &lt;strong&gt;Window&lt;/strong&gt; sınıfının &lt;strong&gt;FrameworkElement&lt;/strong&gt; sınıfından kalıtımsal olarak devraldığı &lt;strong&gt;DataContext&lt;/strong&gt; &amp;ouml;zelliğine &lt;strong&gt; DataTable&lt;/strong&gt; nesne &amp;ouml;rneğinin atanmış olmasıdır. B&amp;ouml;ylece bir anlamda &lt;strong&gt; XAML&lt;/strong&gt; i&amp;ccedil;erisindeki bileşenlerin bağlanabileceği veri i&amp;ccedil;eriği set edilmiş olur. Buna g&amp;ouml;re Window6.xaml dosyasının i&amp;ccedil;eriğini aşağıdaki gibi tasarlayabiliriz.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;Window x:Class="DataBindIslemleri.Window6" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Window6" Height="273" Width="567" Loaded="Window_Loaded"&amp;gt;
+    &amp;lt;Grid&amp;gt;
+        &amp;lt;Grid.Resources&amp;gt;
+            &amp;lt;DataTemplate x:Key="Urunler"&amp;gt; 
+                &amp;lt;StackPanel Orientation="Horizontal"&amp;gt;
+                    &amp;lt;Label Content="{Binding Path=ProductID}"/&amp;gt;
+                    &amp;lt;Label Content="{Binding Path=ProductName}"/&amp;gt;
+                    &amp;lt;Label Content="{Binding Path=ListPrice}"/&amp;gt;
+                    &amp;lt;Label Content="{Binding Path=SafetyStockLevel}"/&amp;gt;
+                    &amp;lt;Image Name="imgPhoto" Source="{Binding Path=ThumbNailPhoto}"/&amp;gt;
+                &amp;lt;/StackPanel&amp;gt;
+            &amp;lt;/DataTemplate&amp;gt;
+        &amp;lt;/Grid.Resources&amp;gt;
+        &amp;lt;ListBox Margin="13,28,17,31" Name="lstUrunler" ItemsSource="{Binding}" ItemTemplate="{StaticResource Urunler}"/&amp;gt;
+    &amp;lt;/Grid&amp;gt;
+&amp;lt;/Window&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Şimdi burada neler yaptığımıza kısaca bakalım. &amp;Ouml;ncelikli olarak &lt;strong&gt;Grid.Resources&lt;/strong&gt; elementi i&amp;ccedil;erisinde bir &lt;strong&gt;DataTemplete&lt;/strong&gt; oluşturulmaktadır. Bu veri şablonu, kullanıldığı yerde nasıl bir i&amp;ccedil;erik sunulacağını belirlemektedir. S&amp;ouml;z gelimi, Label kontrollerimizin &lt;strong&gt;Content&lt;/strong&gt; &amp;ouml;zelliklerine yapılan atamalarda &lt;strong&gt; DataContext&lt;/strong&gt;' in işaret ettiği veri k&amp;uuml;mesindeki alanlar belirlenmektedir. Diğer taraftan &lt;strong&gt;Image&lt;/strong&gt; kontrol&amp;uuml;n&amp;uuml;n &lt;strong&gt;Source&lt;/strong&gt; &amp;ouml;zelliğine yapılan atama ile &lt;strong&gt;ThumbNailPhoto&lt;/strong&gt; alanındaki binary i&amp;ccedil;eriğin bağlanması sağlanmıştır. Peki bu veri şablonunu kim kullanacaktır? Bunun i&amp;ccedil;in &amp;ouml;rnek olarak bir ListBox kontrol&amp;uuml; ele alınmaktadır. Bu kontrolde &lt;strong&gt;ItemsSource&lt;/strong&gt; &amp;ouml;zelliğine sadece &lt;strong&gt; Binding&lt;/strong&gt; atanması, veri kaynağı olarak DataContext i&amp;ccedil;eriğinin ele alınacağını g&amp;ouml;stermektedir. Diğer taraftan veri şablonunun set edildiği yer &lt;strong&gt;ItemTemplate&lt;/strong&gt; &amp;ouml;zelliğine yapılan atamadır. Burada atamada Urunler isimli veri şablonunun &lt;strong&gt;(Data Template) &lt;/strong&gt;kullanılacağı belirtilmektedir. Bu durumda uygulama &amp;ccedil;alıştırıldığında aşağıdakine benzer bir ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; ile karşılaşılır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk221_15.gif" alt="" width="567" height="386" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edilecek olursa &lt;strong&gt;ListBox&lt;/strong&gt; i&amp;ccedil;eriği, &lt;strong&gt;DataTable&lt;/strong&gt;' a y&amp;uuml;klenen veriler ile dolmuştur. Her halde buradaki en g&amp;uuml;zel nokta, &amp;uuml;r&amp;uuml;n resimlerininde ListBox i&amp;ccedil;erisinde g&amp;ouml;sterilebiliyor olmasıdır. Şimdi bu &amp;ouml;rneği biraz daha farklılaştıralım. &amp;Ouml;rneğin ListBox kontrol&amp;uuml;nde &amp;uuml;r&amp;uuml;n adları g&amp;ouml;z&amp;uuml;k&amp;uuml;yor olsun. Bunlardan herhangibiri se&amp;ccedil;ildiğindeyse, &amp;uuml;r&amp;uuml;n ile ilgili diğer bilgiler &lt;strong&gt;TextBox&lt;/strong&gt; ve &lt;strong&gt;Image&lt;/strong&gt; kontrollerinde g&amp;ouml;r&amp;uuml;n&amp;uuml;yor olsun. Bunun i&amp;ccedil;in yeni bir pencere&lt;strong&gt;(Window)&lt;/strong&gt; ekleyip aşağıdaki gibi tasarlamamız yeterli olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk221_17.gif" alt="" width="633" height="327" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;Window x:Class="DataBindIslemleri.Window7" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Window7" Height="304" Width="632"&amp;gt;
+    &amp;lt;Grid&amp;gt;
+        &amp;lt;Grid.Resources&amp;gt;
+            &amp;lt;DataTemplate x:Key="Urunler"&amp;gt;
+                &amp;lt;StackPanel Orientation="Horizontal"&amp;gt;
+                    &amp;lt;Label Content="{Binding Path=ProductName}"/&amp;gt;
+                &amp;lt;/StackPanel&amp;gt;
+            &amp;lt;/DataTemplate&amp;gt;
+        &amp;lt;/Grid.Resources&amp;gt;
+        &amp;lt;ListBox Margin="13,19,0,18" Name="lstUrunler" ItemsSource="{Binding}" ItemTemplate="{StaticResource Urunler}" HorizontalAlignment="Left" Width="139" IsSynchronizedWithCurrentItem="True" /&amp;gt;
+        &amp;lt;Label Height="23" HorizontalAlignment="Left" Margin="176,24,0,0" Name="label1" VerticalAlignment="Top" Width="61"&amp;gt;&amp;Uuml;r&amp;uuml;n Adı&amp;lt;/Label&amp;gt;
+        &amp;lt;TextBox Text="{Binding Path=ProductName}" Height="21" Margin="270,24,191,0" Name="txtProductName" VerticalAlignment="Top"&amp;gt;&amp;lt;/TextBox&amp;gt;
+        &amp;lt;Label Height="23" HorizontalAlignment="Left" Margin="176,50,0,0" Name="label2" VerticalAlignment="Top" Width="120"&amp;gt;Birim Fiyatı&amp;lt;/Label&amp;gt;
+        &amp;lt;TextBox Text="{Binding Path=ListPrice}" Height="21" Margin="270,50,193,0" Name="txtListPrice" VerticalAlignment="Top" /&amp;gt;
+        &amp;lt;Label Height="23" HorizontalAlignment="Left" Margin="176,77,0,0" Name="label3" VerticalAlignment="Top" Width="120"&amp;gt;Stok Seviyesi&amp;lt;/Label&amp;gt;
+        &amp;lt;TextBox Text="{Binding Path=SafetyStockLevel}" Margin="270,77,193,0" Name="txtSafetyStockLevel" Height="20" VerticalAlignment="Top" /&amp;gt;
+        &amp;lt;Image Source="{Binding Path=ThumbNailPhoto}" Margin="182,113,195,20" Name="imgPhoto" /&amp;gt;
+        &amp;lt;Label Content="{Binding Path=ProductID}" Height="49" HorizontalAlignment="Right" Margin="0,24,57,0" Name="lblProductID" VerticalAlignment="Top" Width="103" Foreground="Red" FontSize="16" FontWeight="Bold"/&amp;gt;
+    &amp;lt;/Grid&amp;gt;
+&amp;lt;/Window&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Bir &amp;ouml;nceki &amp;ouml;rnek ile karşılaştırıldığında &amp;ouml;nemli olan tek fark ListBox kontrol&amp;uuml;n&amp;uuml;n &lt;strong&gt; IsSynchronizedWithCurrentItem&lt;/strong&gt; &amp;ouml;zelliğinin değerinin &lt;strong&gt;true&lt;/strong&gt; olarak set edilmiş olmasıdır. Eğer bu &amp;ouml;zelliğe true değerini atamassak, ListBox &amp;uuml;zerinde dolaştığımızda, bir başka deyişle başka bir &amp;ouml;ğeye ge&amp;ccedil;tiğimizde diğer kontrollerin i&amp;ccedil;erikleri &lt;strong&gt;DataContext&lt;/strong&gt; nesnesinden dolmayacaktır. Bu durumda ListBox kontrol&amp;uuml;nde diğer &amp;ouml;ğelere tıklasakta hep ilk satırın bilgileri g&amp;ouml;r&amp;uuml;necektir. Uygulamamızı bu haliyle &amp;ccedil;alıştırdığımızda aşağıdakine benzer bir ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk221_16.gif" alt="" width="632" height="304" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &amp;ouml;rnek kaydın &amp;uuml;zerine ListBox ile gidildiğinde, kontrollerin i&amp;ccedil;erikleride o an &lt;strong&gt;DataContext&lt;/strong&gt;' te &amp;uuml;zerinde bulunulan satıra ait değerler olarak değişmiştir.&lt;/p&gt;
+&lt;p&gt;Bazı durumlarda birbirleriyle ilişkili olan tabloların kullanılmasıda s&amp;ouml;z konusudur. &amp;Ouml;zellikle bağlantısız katman&lt;strong&gt;(Disconnected Layer)&lt;/strong&gt; nesneleri g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında bu tip vakkaları karşılamak i&amp;ccedil;in &lt;strong&gt;DataRelation&lt;/strong&gt; nesnelerinden yararlanmaktayız. Peki DataRelation &amp;ouml;rnekleri ile aralarındaki ilişkiler&lt;strong&gt;(Relations)&lt;/strong&gt; ifade edilen tabloları WPF uygulamalarındaki kontrollerimize nasıl bağlayabiliriz? Sıradaki &amp;ouml;rneğimizde bu durumu ele almaya &amp;ccedil;alışacağız. S&amp;ouml;z gelimi, &lt;strong&gt;AdventureWorks&lt;/strong&gt; veritabanında yer alan &lt;strong&gt; ProductSubCategory&lt;/strong&gt; ve &lt;strong&gt;Product&lt;/strong&gt; tablolarını baz alalım. Bu tablolar aşağıdaki diagramdanda g&amp;ouml;r&amp;uuml;leceği gibi birbirlerine &lt;strong&gt; ProductSubCategoryID&lt;/strong&gt; alanları &amp;uuml;zerinden bağlıdırlar.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk221_19.gif" alt="" width="584" height="354" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu ilişkiyi bağlantısız katmanda temsil edebilmek i&amp;ccedil;in &lt;strong&gt;DataSet&lt;/strong&gt;, &lt;strong&gt;DataTable&lt;/strong&gt; ve &lt;strong&gt;DataRelation&lt;/strong&gt; nesnelerine ihtiya&amp;ccedil; vardır. Window8 &amp;ouml;rneğinde, alt kategorilerin g&amp;ouml;sterildiği bir ComboBox kontrol&amp;uuml; ve bu kategoriye bağlı &amp;uuml;r&amp;uuml;nlerin g&amp;ouml;sterildiği bir ListBox kontrol&amp;uuml; bulunmaktadır. Senaryomuza g&amp;ouml;re &lt;strong&gt; ComboBox&lt;/strong&gt; kontrol&amp;uuml;nde değişiklik yapılması halinde, se&amp;ccedil;ilen yeni alt kategoriye bağlı &amp;uuml;r&amp;uuml;nlerinde ListBox kontrol&amp;uuml;nde g&amp;ouml;sterilmesi istenmektedir. Bu ama&amp;ccedil;la ilk olarak verinin &amp;ccedil;ekilmesi ve pencerenin &lt;strong&gt; DataContext&lt;/strong&gt; &amp;ouml;zelliğine gerekli &lt;strong&gt;DataTable&lt;/strong&gt; nesne &amp;ouml;rneğinin atanması gerekmektedir. Bu sebepten Window8.xaml.cs dosyamızın i&amp;ccedil;eriğini aşağıdaki gibi geliştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using System.Data;
+using System.Data.SqlClient;
+
+namespace DataBindIslemleri
+{
+    public partial class Window8 : Window
+    {
+        private string conStr = "data source=.;database=AdventureWorks;integrated security=SSPI";
+        private string kategoriSorgusu = "Select ProductSubCategoryID,Name From Production.ProductSubCategory";
+        private string urunSorgusu = "Select ProductID,ProductSubCategoryID,Name,ListPrice From Production.Product";
+
+        private void VerileriCek()
+        {
+            using (SqlConnection conn = new SqlConnection(conStr))
+            {
+                SqlDataAdapter daKategori = new SqlDataAdapter(kategoriSorgusu, conn);
+                DataTable dtKategori = new DataTable();
+                daKategori.Fill(dtKategori);
+
+                SqlDataAdapter daUrun = new SqlDataAdapter(urunSorgusu, conn);
+                DataTable dtUrun = new DataTable();
+                daUrun.Fill(dtUrun);
+
+                DataSet ds = new DataSet();
+                ds.Tables.Add(dtUrun);
+                ds.Tables.Add(dtKategori);
+        
+                DataRelation iliski = new DataRelation("SubCatToProduct", dtKategori.Columns["ProductSubCategoryID"], dtUrun.Columns["ProductSubCategoryID"]);
+                ds.Relations.Add(iliski);
+        
+                DataContext = dtKategori;
+            }
+        }
+        public Window8()
+        {
+            InitializeComponent();
+            VerileriCek();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Burada dikkat edilmesi gereken nokta, &lt;strong&gt;DataRelation&lt;/strong&gt; nesne &amp;ouml;rneğinin mutlaka belirtilmesi ve &lt;strong&gt;DataSet&lt;/strong&gt; nesne &amp;ouml;rneğinin &lt;strong&gt;Relations&lt;/strong&gt; koleksiyonuna eklenmesi gerektiğidir. Pencerede kullanılacak olan &lt;strong&gt;ComboBox&lt;/strong&gt; bileşeninin asıl bağlanacağı veri dtKategori tablosu olduğundan &lt;strong&gt;DataContext&lt;/strong&gt; &amp;ouml;zelliğine bu tablonun değeri aktarılmıştır. Bundan sonra Window8 penceresinin &lt;strong&gt;XAML&lt;/strong&gt; i&amp;ccedil;eriği aşağıdaki gibi hazırlanabilir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;Window x:Class="DataBindIslemleri.Window8" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Window8" Height="300" Width="440"&amp;gt;
+    &amp;lt;Grid&amp;gt;
+        &amp;lt;Grid.Resources&amp;gt;
+            &amp;lt;DataTemplate x:Key="KategoriVerisi"&amp;gt;
+                &amp;lt;StackPanel&amp;gt;
+                    &amp;lt;TextBlock Text="{Binding Path=Name}"/&amp;gt;
+                &amp;lt;/StackPanel&amp;gt;
+            &amp;lt;/DataTemplate&amp;gt;
+            &amp;lt;DataTemplate x:Key="UrunVerisi"&amp;gt;
+                &amp;lt;StackPanel Orientation="Horizontal"&amp;gt;
+                    &amp;lt;Label Content="{Binding Path=ProductID}"/&amp;gt;
+                    &amp;lt;Label Content="{Binding Path=Name}"/&amp;gt;
+                    &amp;lt;Label Content="{Binding Path=ListPrice}"/&amp;gt;
+                &amp;lt;/StackPanel&amp;gt;
+            &amp;lt;/DataTemplate&amp;gt;
+        &amp;lt;/Grid.Resources&amp;gt;
+        &amp;lt;ComboBox Height="25" HorizontalAlignment="Left" Margin="12,35,0,0" Name="cmbAltKategori" VerticalAlignment="Top" Width="120" ItemsSource="{Binding}" ItemTemplate="{StaticResource KategoriVerisi}" IsSynchronizedWithCurrentItem="True"/&amp;gt;
+        &amp;lt;Label Height="23" HorizontalAlignment="Left" Margin="10,12,0,0" Name="label1" VerticalAlignment="Top" Width="120"&amp;gt;Alt Kategori&amp;lt;/Label&amp;gt;
+        &amp;lt;ListBox Margin="166,35,10,19" Name="lstUrunler" ItemsSource="{Binding SubCatToProduct}" ItemTemplate="{StaticResource UrunVerisi}" /&amp;gt;
+        &amp;lt;Label Height="23" Margin="166,12,132,0" Name="label2" VerticalAlignment="Top"&amp;gt;Urunler&amp;lt;/Label&amp;gt;
+    &amp;lt;/Grid&amp;gt;
+&amp;lt;/Window&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Grid i&amp;ccedil;erisinde iki adet veri şablonu&lt;strong&gt;(Data Templete) &lt;/strong&gt;kullanılmaktadır. Bunlardan birisi &lt;strong&gt;ComboBox&lt;/strong&gt;, diğeri ise &lt;strong&gt;ListBox&lt;/strong&gt; i&amp;ccedil;indir. ComboBox bileşeni kendi i&amp;ccedil;erisinde alt kategori adlarını g&amp;ouml;stermektedir. Veri kaynağını ItemsSource &amp;ouml;zelliği ile &lt;strong&gt;{Binding} &lt;/strong&gt;olarak belirttiğimizden, &lt;strong&gt;DataContext&lt;/strong&gt; i&amp;ccedil;erisinden DataTable kullanılacaktır. Buna g&amp;ouml;re &lt;strong&gt;ItemTemplate&lt;/strong&gt;' in ulaşacağı KategoriVerisi isimli DataTemplete elementinin i&amp;ccedil;eriğine g&amp;ouml;re alt kategori adları g&amp;ouml;r&amp;uuml;necektir. Diğer tarafan, ComboBox &amp;uuml;zerinde gezildik&amp;ccedil;e &lt;strong&gt;DataContext&lt;/strong&gt;' in işaret ettiği veri k&amp;uuml;mesi &amp;uuml;zerindede hareket edilebilmesini sağlamak istediğimizden &lt;strong&gt; IsSynchronizedWithCurrentItem&lt;/strong&gt; niteliğine true değeri verilmesi şarttır.&lt;/p&gt;
+&lt;p&gt;ListBox kontrol&amp;uuml;n&amp;uuml;n ItemsSource &amp;ouml;zelliğine dikkat edilecek olursa Binding ifadesinden sonra, DataSet' e eklenen DataRelation nesne &amp;ouml;rneğinin adı yazılmıştır. İşte bu bizim &amp;ouml;rneğimizin kilit noktasıdır. Bir başka deyişle ListBox kontrol&amp;uuml;, i&amp;ccedil;eriğini oluştururken &lt;strong&gt;Binding&lt;/strong&gt; ifadesinde belirtilen ilişki&lt;strong&gt;(Relation)&lt;/strong&gt; &amp;uuml;zerinden hareket edecek ve buna UrunVerisi isimli DataTemplete' e g&amp;ouml;re verilerini y&amp;uuml;kleyecektir. Uygulamamızı &amp;ccedil;alıştırdığımızda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi alt kategori ve buna bağlı &amp;uuml;r&amp;uuml;nlerin başarılı bir şekilde ilişkilendirildiği ve kontrollere bu değişimin yansıtıldığı g&amp;ouml;r&amp;uuml;l&amp;uuml;r. &amp;Ouml;rnekte Shorts alt kategorisi se&amp;ccedil;ilmiş ve buna bağlı olan &amp;uuml;r&amp;uuml;nlerin bilgiside (DataTemplete ile &amp;ccedil;ektiklerimiz) ListBox i&amp;ccedil;erisinde g&amp;ouml;sterilmiştir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk221_18.gif" alt="" width="438" height="350" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Buraya kadar geliştirdiğimiz &amp;ouml;rneklerimizde, WPF uygulamalarında yer alan kontrollerin &amp;ccedil;eşitli veri kaynaklarına&lt;strong&gt;(XML, Database, Object&lt;/strong&gt; gibi) farklı şekillerde nasıl bağlanabileceklerini incelemeye &amp;ccedil;alıştık. &amp;Ouml;zellikle XML bazlı veri kaynakları i&amp;ccedil;in &lt;strong&gt;XmlDataProvider&lt;/strong&gt; tipini, nesne(Object) bazlı kaynaklar i&amp;ccedil;in &lt;strong&gt;ObjectDataProvider&lt;/strong&gt; tipini kullanmayı, bunlara ek olarak &amp;ouml;zellikle veritabanı bazlı ger&amp;ccedil;ek bağlantılarda da &lt;strong&gt;DataContext&lt;/strong&gt; tipinden yararlanmayı incelemeye &amp;ccedil;alıştık. &amp;Ouml;nceki Windows mantığına g&amp;ouml;re XAML getirdiği bir takım yenilikler ile, veri bağlama işleminin epey bir değiştiği sonucunuda &amp;ccedil;ıkartmamız m&amp;uuml;mk&amp;uuml;n. Konuyla ilişkili detaylı bilgilere ve &amp;ccedil;ok daha g&amp;uuml;zel &amp;ouml;rneklere MSDN' den ulaşabilirsiniz. Ayrıca bir &amp;ouml;nceki makalemizde tanıttığımız kitaplarında &amp;ccedil;ok faydası olacağını s&amp;ouml;yleyebilirim. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. İlerleyen makalelerimizde WPF ile uygulamalar geliştirmeye devam ediyor olacağız. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/makale/images/DataBindIslemleri.zip"&gt;&amp;Ouml;rnek Uygulama i&amp;ccedil;in Tıklayın&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2007-09-03 12:00:00</pubDate>
+  <slug>WPF-Veriye-Baglanmak-(Data-Binding)-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>wpf</tag>
+    <tag>data-binding</tag>
+  </tags>
+  <categories>
+    <category>WPF</category>
+  </categories>
+</post>

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WCF WebHttp Services - JSON Formatlı Response Üretmek</title>
+  <description>Yandaki Logo size neyi çağırıştırıyor? Aslında bakarsanız çok meşhur olan hafif siklette bir veri değiş tokuş formatının logosunu ifade etmekte. JSON(JavaScript Object Notation). Hatırlayacağınız üzere bir süredir WCF Eco System içerisinde yer alan WCF WebHttp Service alt yapısını incelemeye çalışıyoruz.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/pics/2010%2f1%2fblg133_Giris.gif" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Yandaki Logo size neyi &amp;ccedil;ağırıştırıyor? Aslında bakarsanız &amp;ccedil;ok meşhur olan hafif siklette bir veri değiş tokuş formatının logosunu ifade etmekte. &lt;strong&gt;&lt;a title="JSON" href="http://www.json.org/" target="_blank"&gt;JSON(JavaScript Object Notation). &lt;/a&gt;&lt;/strong&gt;Hatırlayacağınız &amp;uuml;zere bir s&amp;uuml;redir &lt;strong&gt;WCF Eco System&lt;/strong&gt; i&amp;ccedil;erisinde yer alan &lt;strong&gt;WCF WebHttp Service&lt;/strong&gt; alt yapısını incelemeye &amp;ccedil;alışıyoruz. &lt;strong&gt;WCF WebHttp Service&lt;/strong&gt;' leri eğer istemci tarafından aksi belirtilmezse varsayılan olarak &lt;strong&gt;XML&lt;/strong&gt; formatında &amp;ccedil;ıktı &amp;uuml;retmektedir. Ancak istenirse &lt;strong&gt;JSON(JavaScript Object Notation)&lt;/strong&gt; formatında &amp;ccedil;ıktı &amp;uuml;retmeside sağlanabilir.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;S&amp;ouml;z konusu&amp;nbsp;&amp;ccedil;ıktı &amp;uuml;retim işlemi iki yolla ger&amp;ccedil;ekleştirilebilir. &lt;strong&gt;Bilin&amp;ccedil;li olarak(Excplicitly)&lt;/strong&gt; veya otomatik olarak. Bu yazımızda s&amp;ouml;z konusu yolları inceleyerek &lt;strong&gt;JSON&lt;/strong&gt; formatında &amp;ccedil;ıktıları nasıl verebileceğimizi basit bir &amp;ouml;rnek &amp;uuml;zerinden g&amp;ouml;rmeye &amp;ccedil;alışıyor olacağız. &amp;Ouml;rnek uygulamamızı bu kez &lt;strong&gt;Visual Studio 2010 Ultimate&amp;nbsp;RC&lt;/strong&gt; ortamı &amp;uuml;zerinde geliştirdiğimizi belirtelim. Dolayısıyla ilerleyen s&amp;uuml;r&amp;uuml;mde bazı&amp;nbsp;farklılıklar olabilir. &lt;strong&gt;Lesson3 &lt;/strong&gt;isimli &lt;strong&gt;WCF REST Service Application &lt;/strong&gt;uygulamamız i&amp;ccedil;erisinde yer alan servis sınıfı i&amp;ccedil;eriğimiz &amp;ccedil;ok basit olarak aşağıdaki kod par&amp;ccedil;asından oluşmaktadır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.ServiceModel;
+using System.ServiceModel.Activation;
+using System.ServiceModel.Web;
+
+namespace Lesson3
+{
+    [ServiceContract]
+    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall)]
+    public class PersonalityService
+    {
+        [WebGet(UriTemplate = "AllPersons")]
+        public List&amp;lt;Person&amp;gt; GetAllPersons()
+        {
+            return new List&amp;lt;Person&amp;gt;() 
+            { 
+                new Person() { Id = 1, Name = "Burak Selim Şenyurt",Birth=new DateTime(1976,12,1) } ,
+                new Person() { Id = 2, Name = "Bill Amca",Birth=new DateTime(1975,4,5) } ,
+                new Person() { Id = 3, Name = "Luka Ton-i",Birth=new DateTime(1980,3,4) } 
+            };
+        }
+    }
+
+    public class Person
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public DateTime Birth { get; set; }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Servisimizde yer alan &lt;strong&gt;GetAllPersons&lt;/strong&gt; isimli operasyon istemci tarafına &lt;strong&gt;Person&lt;/strong&gt; tipinden bir liste i&amp;ccedil;eriği d&amp;ouml;nd&amp;uuml;rmektedir. S&amp;ouml;z konusu operasyon &lt;strong&gt;HTTP &lt;/strong&gt;protokol&amp;uuml;n&amp;uuml;n &lt;strong&gt;GET&lt;/strong&gt; metoduna ait talepleri&amp;nbsp;kabul etmektedir.&amp;nbsp;Varsayılan olarak &lt;strong&gt;URL&lt;/strong&gt; &amp;uuml;zerinden yapacağımız &lt;strong&gt;AllPersons&lt;/strong&gt; &amp;ccedil;ağrısının sonucu aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f1%2fblg133_XmlResponse.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Ancak şimdiki hedefimiz bu &lt;strong&gt;XML&lt;/strong&gt; &amp;ccedil;ıktısı yerine &lt;strong&gt;JSON&lt;/strong&gt; &amp;ccedil;ıktısını vermektir. Bunu iki yol ile ger&amp;ccedil;ekleştirebileceğimizden bahsetmiştik. &amp;Ouml;ncelikle otomatik &lt;strong&gt;JSON&lt;/strong&gt; &amp;ccedil;ıkıtısı &amp;uuml;retiminin nasıl ger&amp;ccedil;ekleştirilebileceğine bakalım. Bu ama&amp;ccedil;la sunucu tarafındaki &lt;strong&gt;web.config&lt;/strong&gt; dosyası i&amp;ccedil;erisinde yer alan &lt;strong&gt;webHttpEndpoint&lt;/strong&gt;&amp;nbsp;i&amp;ccedil;erisindeki &lt;strong&gt;standardEndpoint&amp;nbsp;&lt;/strong&gt;elementinin&amp;nbsp;&lt;strong&gt;automaticFormatSelectionEnabled&lt;/strong&gt; niteliğinin &lt;strong&gt;true&lt;/strong&gt; değere sahip olması yeterlidir. Aynen aşağıda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;system.serviceModel&amp;gt;
+    &amp;lt;serviceHostingEnvironment aspNetCompatibilityEnabled="true"/&amp;gt;
+    &amp;lt;standardEndpoints&amp;gt;
+      &amp;lt;webHttpEndpoint&amp;gt;
+        &amp;lt;standardEndpoint name="" helpEnabled="true" automaticFormatSelectionEnabled="true"/&amp;gt;
+      &amp;lt;/webHttpEndpoint&amp;gt;
+    &amp;lt;/standardEndpoints&amp;gt;
+  &amp;lt;/system.serviceModel&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Peki bu otomatikliğin anlamı nedir? &lt;img title="Undecided" src="/editors/tiny_mce3/plugins/emotions/img/smiley-undecided.gif" alt="Undecided" border="0" /&gt;&amp;nbsp;Nitekim herhangibir yerde JSON &amp;ccedil;ıktısı vereceğimizi belirtmedik. Dolayısıyla birisinin bunu talep ediyor olması gerekmekte. Tahmin edeceğiniz &amp;uuml;zere burada sorumluluk istemci tarafına ait. Bir başka deyişle istemci uygulama talebini g&amp;ouml;nderirken &lt;strong&gt;JSON &lt;/strong&gt;formatında bir i&amp;ccedil;erik istediğini servis tarafına bildirmelidir. Dolayısıyla &amp;ouml;rneğimize aşağıdaki kodları i&amp;ccedil;eren istemci uygulamayı yazarak devam etmeliyiz.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;İstemci uygulama a&amp;ccedil;ısından &amp;ouml;nem arz eden konulardan biriside, HttpClient tipinin kullanımı i&amp;ccedil;in gerekli olan WCF REST Starter Kit Preview 2 assmebly' ları ile ReadAsJsonDataContract genişletme metodunun(Extension Methods)&amp;nbsp;kullanımı i&amp;ccedil;in gerekli olan System.ServiceModel.Web ve System.Runtime.Serialization&amp;nbsp;assembly' larını referans etmesidir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f1%2fblg133_References.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Buna g&amp;ouml;re istemci tarafının kodlarını aşağıdaki şekilde geliştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using Microsoft.Http;
+
+namespace ClientApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            using (HttpClient client = new HttpClient("http://localhost:2360/"))
+            {
+                HttpRequestMessage request = new HttpRequestMessage("GET", "AllPersons");                
+                request.Headers.Accept.AddString("application/json");
+                HttpResponseMessage response = client.Send(request);
+                response.EnsureStatusIsSuccessful();
+                HttpContent content=response.Content;
+                Console.WriteLine(content.ReadAsString());
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu kod par&amp;ccedil;asında en &amp;ccedil;ok dikkat edilmesi gereken nokta talep ile ilişkili &lt;strong&gt;Header&lt;/strong&gt; kısmına eklenen &lt;strong&gt;application/json&lt;/strong&gt; bilgisidir. Bu durumda &lt;strong&gt;HTTP Get &lt;/strong&gt;metoduna g&amp;ouml;re yapılan servis &amp;ccedil;ağrısı &amp;ccedil;ıktısının &lt;strong&gt;JSON&lt;/strong&gt; formatında olması istenmektedir. Servis tarafında da gelen isteğe g&amp;ouml;re bir &amp;ccedil;ıktı &amp;uuml;retildiğinden, &lt;strong&gt;WCF&lt;/strong&gt; &amp;ccedil;alışma zamanı operasyon &amp;ccedil;ıktısını &lt;strong&gt;JSON&lt;/strong&gt; formatına d&amp;ouml;n&amp;uuml;şt&amp;uuml;recektir. Kodun &amp;ccedil;alışması sonrasında aşağıdaki ekran &amp;ccedil;ıktısı ile karşılaştığımızı g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f1%2fblg133_RuntimeJson.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;JSON&lt;/strong&gt; formatında bir &amp;ccedil;ıktı elde edilmiştir.&lt;/p&gt;
+&lt;p&gt;İstemci tarafına gelen bu &amp;ccedil;ıktının &lt;strong&gt;Person&lt;/strong&gt; tipini i&amp;ccedil;eren bir koleksiyon şeklinde ele alınması istediğimizdeyse &lt;strong&gt;HttpContent&lt;/strong&gt; tipi &amp;uuml;zerinden &lt;strong&gt;System.Runtime.Serialization.Json &lt;/strong&gt;isim alanında yer alan &lt;strong&gt;ReadAsJsonDataContract&lt;/strong&gt; genişletme metodunu &amp;ccedil;ağırabiliriz. Tabi burada istemci tarafında &lt;strong&gt;Person&lt;/strong&gt; tipininde bir &amp;ouml;rneğinin yer aldığını varsayıyoruz ki bunu bildiğiniz &amp;uuml;zere &lt;strong&gt;WCF REST Starter Kit Preview 2&lt;/strong&gt; ile gelen &lt;strong&gt;Paste XML As Types &lt;/strong&gt;se&amp;ccedil;eneği ile oluşturabiliriz. Eğer hatırlamıyorsanız biraz araştırmaya ne dersiniz? &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;İşte istemci tarafındaki yeni kod i&amp;ccedil;eriğimiz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization.Json;
+using Microsoft.Http;
+
+namespace ClientApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            using (HttpClient client = new HttpClient("http://localhost:2360/"))
+            {
+                HttpRequestMessage request = new HttpRequestMessage("GET", "AllPersons");                
+                request.Headers.Accept.AddString("application/json");
+                HttpResponseMessage response = client.Send(request);
+                response.EnsureStatusIsSuccessful();
+                HttpContent content=response.Content;
+                //Console.WriteLine(content.ReadAsString());
+             
+                List&amp;lt;Person&amp;gt; personList=response.Content.ReadAsJsonDataContract&amp;lt;List&amp;lt;Person&amp;gt;&amp;gt;();
+
+                foreach (Person person in personList)
+                {
+                    Console.WriteLine("{0} {1} {2}",person.Id,person.Name,person.Birth.ToString());
+                }
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu durumda &amp;ccedil;alışma zamanında aşağıdaki sonucu elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f1%2fblg133_Runtime2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Gelelim bilin&amp;ccedil;li olarak &amp;ccedil;ıktı formatının nasıl belirleneceğine. &amp;Ouml;ncelikli olarak neden bilin&amp;ccedil;li bir şekilde format &amp;ccedil;ıktısını s&amp;ouml;ylememiz gerektiğini kavramamızda yarar olduğu kanısındayım. İstemci tarafının her zaman &lt;strong&gt;HTTP&lt;/strong&gt; talebinin &lt;strong&gt;Header&lt;/strong&gt; kısmına m&amp;uuml;dahale etmesi s&amp;ouml;z konusu olamayabilir. B&amp;ouml;yle bir durumda istemcinin &lt;strong&gt;JSON&lt;/strong&gt; formatında talepte bulunabilmesi de m&amp;uuml;mk&amp;uuml;n değildir. Dolayısıyla bu tip bir vakada &lt;strong&gt;JSON&lt;/strong&gt; formatında &amp;ccedil;ıktı verileceğinin bilin&amp;ccedil;li olarak bildirilmesi gerekmektedir. Peki ya nerede ve nasıl? Cevap: Servis tarafındaki ilgili operasyon i&amp;ccedil;erisinde ve bir par&amp;ccedil;a kod yardımıyla &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;İşte GetAllPersons isimli servis operasyonumuzun bilin&amp;ccedil;li olarak JSON formatında &amp;ccedil;ıktı veren yeni versiyonu.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.ServiceModel;
+using System.ServiceModel.Activation;
+using System.ServiceModel.Web;
+
+namespace Lesson3
+{
+    [ServiceContract]
+    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall)]
+    public class PersonalityService
+    {
+        [WebGet(UriTemplate = "AllPersons?whichFormat={format}")]
+        public List&amp;lt;Person&amp;gt; GetAllPersons(string format)
+        {
+            if (format.ToLower().Equals("json"))
+            {
+                WebOperationContext.Current.OutgoingResponse.Format = WebMessageFormat.Json;
+            }
+            return new List&amp;lt;Person&amp;gt;() 
+            { 
+                new Person() { Id = 1, Name = "Burak Selim Şenyurt",Birth=new DateTime(1976,12,1) } ,
+                new Person() { Id = 2, Name = "Bill Amca",Birth=new DateTime(1975,4,5) } ,
+                new Person() { Id = 3, Name = "Luka Ton-i",Birth=new DateTime(1980,3,4) } 
+            };
+        }
+    }
+
+    public class Person
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public DateTime Birth { get; set; }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;İlk dikkat edilmesi gereken nokta, &lt;strong&gt;WebGet&lt;/strong&gt; niteliğinde belirtilen &lt;strong&gt;format&lt;/strong&gt; isimli parametre ile istemciden hangi formatta &amp;ccedil;ıktı almak istendiğinin sorulmasıdır. Eğer &lt;strong&gt;json&lt;/strong&gt; kelimesi yazılmışsa &lt;strong&gt;WebOperationContext &lt;/strong&gt;&amp;uuml;zerinden g&amp;uuml;ncel &amp;ccedil;alışma zamanı i&amp;ccedil;eriğine ge&amp;ccedil;ilerek cevap formatının &lt;strong&gt;JSON&lt;/strong&gt; olacağı belirtilir ki buda dikkat edilmesi gereken ikinci noktadır. Tahmin edileceği &amp;uuml;zere &lt;strong&gt;json &lt;/strong&gt;dışında bir kelime girildiği takdirde varsayılan &lt;strong&gt;XML&lt;/strong&gt; &amp;ccedil;ıktısının &amp;uuml;retilmesi s&amp;ouml;z konusu olacaktır. Servis operasyonumuzun bu son haline g&amp;ouml;re &lt;strong&gt;Internet Explorer&lt;/strong&gt; &amp;uuml;zerinden &lt;strong&gt;http://localhost:2360/AllPersons?whichFormat=json&lt;/strong&gt;&amp;nbsp;şeklinde bir talepte bulunursak, i&amp;ccedil;eriği kaydetmemiz i&amp;ccedil;in bir iletişim penceresi ile karşılaşırız. İ&amp;ccedil;eriği kaydettikten sonra Notepad programı ile a&amp;ccedil;acak olursa aşağıdaki i&amp;ccedil;eriğin &amp;uuml;retildiğini g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f1%2fblg133_RuntimeJsonText.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;ki buda tam anlamıyla &lt;strong&gt;JSON&lt;/strong&gt; &amp;ccedil;ıktısıdır. &lt;img title="Smile" src="/editors/tiny_mce3/plugins/emotions/img/smiley-smile.gif" alt="Smile" border="0" /&gt;&amp;nbsp;&amp;Ccedil;ıktının &lt;strong&gt;JSON&lt;/strong&gt; veya &lt;strong&gt;XML&lt;/strong&gt; harici formatlarda olması da s&amp;ouml;z konusudur aslında. Bu formatların nasıl&amp;nbsp;ele alınacağını ise&amp;nbsp;ilerleyen yazılarımızda değerlendirmeye &amp;ccedil;alışıyor olacağız. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2010%2f2%2fLesson3_RC.rar"&gt;Lesson3_RC.rar (173,29 kb)&lt;/a&gt; &lt;strong&gt;[&amp;Ouml;rnek Visual Studio 2010 &lt;/strong&gt;&lt;strong&gt;Ultimate &lt;/strong&gt;&lt;strong&gt;Beta 2 S&amp;uuml;r&amp;uuml;m&amp;uuml;nde geliştirilmiş ancak RC s&amp;uuml;r&amp;uuml;m&amp;uuml; &amp;uuml;zerinde de test edilmiştir]&lt;/strong&gt;&lt;/p&gt;</content>
+  <pubDate>2010-02-18 22:50:00</pubDate>
+  <slug>WCF-WebHttp-Services-JSON-Formatli-Response-Uretmek</slug>
+  <tags>
+    <tag>wcf</tag>
+    <tag>wcf-40</tag>
+    <tag>webhttp-services</tag>
+    <tag>restful</tag>
+    <tag>non-soap</tag>
+    <tag>wcf-webhttp-services</tag>
+  </tags>
+  <categories>
+    <category>WCF Eco System</category>
+    <category>WCF WebHttp Services</category>
+  </categories>
+</post>

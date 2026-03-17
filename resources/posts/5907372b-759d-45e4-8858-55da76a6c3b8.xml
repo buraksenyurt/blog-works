@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Persisted Memory-Mapped Files</title>
+  <description>.Net Framework 4.0 ile birlikte gelen yeniliklerden birisi de Memory-Mapped File kullanımı. Herşeyden önce Memory-Mapped File kavramının ne anlama geldiğini irdeleyerek işe başlayalım.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/blg201_Giris.jpg"&gt;&lt;img style="display: inline; margin-left: 0px; margin-right: 0px; border-width: 0px;" title="blg201_Giris" src="/pics/blg201_Giris_thumb.jpg" alt="blg201_Giris" width="300" height="200" align="right" border="0" /&gt;&lt;/a&gt; Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Sene 1997. &amp;Uuml;niversite 3nc&amp;uuml; sınıf &amp;ouml;ğrencisiyim. Eskiden lisanslı bir basketbolcu olan uzun boylu arkadaşım Serkan ve Babası ile birlikte Tepebaşındaki bilgisayar fuarındayız. Serkan, kendisine bir bilgisayar almak istiyor. Tabi Baba&amp;rsquo; sının gelmesinin nedeni işlemci mimarilerini, ram teknolojilerini &amp;ccedil;ok iyi bilmesi değil. Tamamen duygusal :$ Ben de Serkan arkadaşıma teknik olarak destek verip &amp;ouml;nerilerde bulunuyorum. Derken 3m&amp;uuml;z arasında ş&amp;ouml;yle bir konuşma ge&amp;ccedil;iyor;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Burak : &lt;/strong&gt;Serkan bak Pentium 200 MMX var. Creative CD s&amp;uuml;r&amp;uuml;c&amp;uuml;. &amp;Uuml;stelik uzaktan kumandalı. Diamond Stealth ekran kartı 2 mb. İyidir. Seagate Hard Disk. S&amp;uuml;per.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Serkan : &lt;/strong&gt;Abi ka&amp;ccedil; ram var bunda?&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Burak : &lt;/strong&gt;Abi iki model var. Biri 32 Mb diğeri 64 mb. Ben derim ki 64 Mb olanı al.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Serkan : &lt;/strong&gt;Baba bu 64 Mb olanı alalım.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Baba : &lt;/strong&gt;Ka&amp;ccedil; dolar fark var arada?&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Serkan :&lt;/strong&gt; X dolay fark var Baba.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Baba : &lt;/strong&gt;32 Mb olanı alalım.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Serkan :&lt;/strong&gt; Ama baba, 64 Mb olan daha iyi. Uygulamalar i&amp;ccedil;in daha &amp;ccedil;ok yer tahsis ediyor. Daha rahat &amp;ccedil;alışacak uygulamalar. Aynı anda daha &amp;ccedil;ok uygulama &amp;ccedil;alışacak.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Baba : &lt;/strong&gt;Sen &amp;ouml;nce 32 Mb olanı doldur, sonrasına bakarız :S&lt;/p&gt;
+&lt;p&gt;Bu minik hikayeden sonra şu an geldiğimiz noktaya baktığımızda Gb&amp;rsquo; larca Ram&amp;rsquo; den bahsediyoruz. Hatta işlemcilerin birincil ve ikincil &amp;ouml;n bellek kapasitelerinin de olduk&amp;ccedil;a y&amp;uuml;kseldiğini g&amp;ouml;r&amp;uuml;yoruz. Tabi bu bana g&amp;ouml;re yazılımların istedikleri donanımsal ihtiya&amp;ccedil;ların bir sonucu. Gelelim bu g&amp;uuml;nk&amp;uuml; konumuza. Bu g&amp;uuml;nk&amp;uuml; konumuzda aslında sanal bellek(Virtual Memory) ile alakalı ve &amp;ouml;zellikle &amp;ccedil;ok b&amp;uuml;y&amp;uuml;k boyutlu dosyalar ile &amp;ccedil;alışan uygulamalar s&amp;ouml;z konusu olduğunda bir o kadar da &amp;ouml;nemli bir mevzu.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;.Net Framework 4.0&lt;/strong&gt; ile birlikte gelen yeniliklerden birisi de &lt;strong&gt;Memory-Mapped File&lt;/strong&gt; kullanımı. Herşeyden &amp;ouml;nce &lt;strong&gt;Memory-Mapped File&lt;/strong&gt; kavramının ne anlama geldiğini irdeleyerek işe başlayalım.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Memory-Mapped&lt;/strong&gt; dosyalar adından da anlaşılacağı &amp;uuml;zere bellek &amp;uuml;zerine a&amp;ccedil;ılmış i&amp;ccedil;erikler olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilirler. Aslında fiziki bir dosyanın&amp;nbsp;t&amp;uuml;m i&amp;ccedil;eriğinin &lt;strong&gt;Virutal Memory&lt;/strong&gt; &amp;uuml;zerinde oluşturulması ve uygulamanın mantıksal adres alanı i&amp;ccedil;erisinde yer alması s&amp;ouml;z konusudur. İ&amp;ccedil;eriğin y&amp;uuml;klendiği bellek alanı, farklı uygulama &lt;strong&gt;Process&amp;rsquo;&lt;/strong&gt; leri tarafından da ele alınabilir. Buna g&amp;ouml;re farklı &lt;strong&gt;Process&lt;/strong&gt;&amp;rsquo; ler bellek &amp;uuml;zerine a&amp;ccedil;ılmış dosya i&amp;ccedil;eriklerinde okuma ve yazma gibi işlemleri yapabilirler. &lt;strong&gt;.Net Framework 4.0, Memory-Mapped dosyaların&lt;/strong&gt; &lt;strong&gt;Managed Code &lt;/strong&gt;tarafından da ele alınabilmesini sağlamaktadır. Nitekim bu versiyona kadar &lt;strong&gt;unmanaged code&lt;/strong&gt; yardımıyla ele alabildiğimiz bir kavramdır. Dolayısıyla &lt;strong&gt;C++&lt;/strong&gt; ve &lt;strong&gt;Win32 API&lt;/strong&gt; &amp;uuml;zerinde değerlendirdiğimiz d&amp;uuml;ş&amp;uuml;k seviyeli bir konudur.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Memory-Mapped&lt;/strong&gt; dosyalar iki şekilde değerlendirilmektedir. &lt;strong&gt;Persisted&lt;/strong&gt; ve &lt;strong&gt;Non-Persisted &lt;/strong&gt;olarak. &lt;strong&gt;Persisted &lt;/strong&gt;modelinde bellek &amp;uuml;zerinde a&amp;ccedil;ılan dosya ile fiziki dosya arasında bir ilişki bulunmaktadır. Bu modele g&amp;ouml;re bellek &amp;uuml;zerindeki i&amp;ccedil;erikte değişiklik yapan son &lt;strong&gt;Process &lt;/strong&gt;işini tamamladığında, yapılanların fiziki dosyaya yansıtılması s&amp;ouml;z konusudur. &lt;strong&gt;MSDN&lt;/strong&gt; kaynaklarına g&amp;ouml;re bu model, &lt;strong&gt;&amp;ccedil;ok b&amp;uuml;y&amp;uuml;k boyutlu dosyaların farklı Process&amp;rsquo; ler tarafında ele alındığı durumlarda &lt;/strong&gt;tercih edilmektedir.&lt;/p&gt;
+&lt;p&gt;İkinci modele g&amp;ouml;re bellek &amp;uuml;zerine a&amp;ccedil;ılan i&amp;ccedil;erik ile fiziki kaynak arasında herhangibir bağ yoktur. Bir başka deyişle fiziki disk &amp;uuml;zerindeki bir dosya işaret edilmemektedir. Dolayısıyla bellek &amp;uuml;zerinde &lt;strong&gt;Process&amp;rsquo;&lt;/strong&gt; ler tarafından yapılan değişiklikler fiziki bir kaynağa &lt;span style="text-decoration: underline;"&gt;yansıtılmamaktadır&lt;/span&gt;. Daha &amp;ccedil;ok &lt;strong&gt;IPC(Inter Process Communication) tipindeki iletişimlerim s&amp;ouml;z konusu olduğu durumlarda&lt;/strong&gt; tercih edilen bir modeldir.&lt;/p&gt;
+&lt;p&gt;Aslında &lt;strong&gt;Memory-Mapped File&lt;/strong&gt; kavramını aşağıdaki şekil ile biraz daha anlaşılır hale getirebiliriz. &lt;br /&gt;&lt;a href="/pics/blg201_Schema.gif"&gt;&lt;img style="display: inline; border: 0px;" title="blg201_Schema" src="/pics/blg201_Schema_thumb.gif" alt="blg201_Schema" width="586" height="538" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Bu şekilde,&lt;strong&gt; Memory-Mapped File&lt;/strong&gt; i&amp;ccedil;erisindeki farklı blokların, farklı &lt;strong&gt;Process&amp;rsquo; &lt;/strong&gt;ler tarafından nasıl ele alınabildiği temsil edilmektedir. Buna g&amp;ouml;re &amp;ouml;rneğin &lt;strong&gt;Block 2, Process 1&lt;/strong&gt; ve &lt;strong&gt;2 &lt;/strong&gt;i&amp;ccedil;erisindeki farklı &lt;strong&gt;View&amp;rsquo;&lt;/strong&gt; lar ile ifade edilebilmektedir. Aslında &lt;strong&gt;Memory-Mapped&lt;/strong&gt; dosyaları ile &amp;ccedil;alışabilmek i&amp;ccedil;in mutlaka &lt;strong&gt;View&lt;/strong&gt; oluşturmak gerekmektedir. &lt;strong&gt;View&lt;/strong&gt; nesneleri, ilgili bellek alanında a&amp;ccedil;ılan dosya i&amp;ccedil;eriğinin tamamını işaret edebileceği gibi bir kısmını da i&amp;ccedil;erebilir. Bir dosya bloğunun farklı &lt;strong&gt;View&lt;/strong&gt; nesneleri de oluşturulabilmektedir&lt;strong&gt;(Multiple Views)&lt;/strong&gt;. Zaten dosya boyutunun, uygulamanının &lt;strong&gt;mantıksal bellek alanının(Logical Memory Space)&lt;/strong&gt; dışına taştığı durumlarda &lt;strong&gt;Multi-View&lt;/strong&gt; nesnelerinin oluşturulması şarttır. &amp;Ouml;zellikle &lt;strong&gt;Gb&lt;/strong&gt; boyutuna varan dosyalar ile &amp;ccedil;alışan uygulamalar d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde &lt;strong&gt;Multi-View&lt;/strong&gt; kullanımı ka&amp;ccedil;ınılmazdır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;View&lt;/strong&gt; nesnelerinin de iki &amp;ccedil;eşidi bulunmaktadır. &lt;strong&gt;Stream Access View&lt;/strong&gt; ve &lt;strong&gt;Random Access View&lt;/strong&gt;. Eğer dosya i&amp;ccedil;eriğine sıralı olarak erişilecekse&lt;strong&gt;(Sequential Access)&lt;/strong&gt; &lt;strong&gt;Stream Access View&lt;/strong&gt; nesneleri kullanılır. &lt;strong&gt;Non-Persisted&lt;/strong&gt; ve &lt;strong&gt;IPC&lt;/strong&gt; kullanımı s&amp;ouml;z konusu olduğu durumlarda &amp;ouml;nerilen metoddur. &lt;strong&gt;Persisted&lt;/strong&gt; modelin kullanıldığı durumlarda ise &lt;strong&gt;Random Access View&lt;/strong&gt; nesneleri tercih edilmelidir. Bu teorik bilgilerden sonra dilerseniz basit bir &amp;ouml;rnek ile konuyu anlamaya &amp;ccedil;alışalım.&lt;/p&gt;
+&lt;p&gt;İlk olarak aynı &lt;strong&gt;Solution&lt;/strong&gt; i&amp;ccedil;erisinde iki farklı &lt;strong&gt;Console&lt;/strong&gt; uygulaması geliştiriyor olacağız. Bu &lt;strong&gt;Console&lt;/strong&gt; uygulamalarından bir tanesi sistemde yer alan bir &lt;strong&gt;MP3&lt;/strong&gt; dosyasını&lt;strong&gt; Memory-Mapped File&lt;/strong&gt; olarak oluşturacak ve i&amp;ccedil;inden belirli bir aralığı &lt;strong&gt;View&lt;/strong&gt; olarak &amp;uuml;retecektir. Diğer uygulamada, aynı dosyanın belleğe a&amp;ccedil;ılmış alanına erişecek ve i&amp;ccedil;erisinde farklı bir bloğu &lt;strong&gt;View&lt;/strong&gt; olarak kullanacaktır. İlk olarak &lt;strong&gt;ProcessB&lt;/strong&gt; olarak adlandırdığımız uygulama kodlarını ele alalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Collections.Generic; 
+using System.Linq; 
+using System.Text; 
+using System.IO.MemoryMappedFiles; 
+using System.IO;
+
+namespace ProcessB 
+{ 
+    class ProgramB 
+    { 
+        static void Main(string[] args) 
+        { 
+            // Persisted Memory-Mapped File Kullanımı
+
+            Console.Title = "Process B"; 
+            string filePath = @"D:\MusicFile.mp3";
+
+            using (MemoryMappedFile mappedFile = MemoryMappedFile.CreateFromFile(filePath, FileMode.Open, "Mapped1")) 
+            { 
+                using (MemoryMappedViewAccessor view = mappedFile.CreateViewAccessor(30000, 50000)) 
+                { 
+                    for (int i = 0; i &amp;lt; 20; i++) 
+                    { 
+                        Console.Write("{0} ",view.ReadByte(i)); 
+                    } 
+                } 
+                Console.WriteLine("Kapatmak i&amp;ccedil;in bir tuşa basınız"); 
+                Console.ReadLine(); 
+            } 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Kod par&amp;ccedil;asında ilk olarak &lt;strong&gt;MemoryMappedFile&lt;/strong&gt; tipinden bir &amp;ouml;rnek &amp;uuml;retildiği g&amp;ouml;r&amp;uuml;lmektedir. Bu &amp;uuml;retim işlemi i&amp;ccedil;in &lt;strong&gt;CreateFromFile&lt;/strong&gt; metodundan yararlanılmaktadır. Bu metod &lt;strong&gt;Persisted&lt;/strong&gt; modele g&amp;ouml;re bir &lt;strong&gt;Memory-Mapped File&lt;/strong&gt; oluşturmaktadır. Bu sebepten dolayı fiziki disk &amp;uuml;zerinde var olan bir dosya adresini parametre olarak almaktadır.&lt;/p&gt;
+&lt;p&gt;Metodun ilk parametresi fiziki dosya adresidir. İkinci parametre ile dosyanın a&amp;ccedil;ılacağı ifade edilmektedir. Son parametre ile de &lt;strong&gt;Memory-Mapped File&lt;/strong&gt; i&amp;ccedil;in bir isim verilmektedir. Bu isim &amp;ouml;nemlidir. Nitekim diğer bir uygulama tarafından ilgili bellek adresindeki alana erişilmek istendiğinde kullanılacaktır.&lt;/p&gt;
+&lt;p&gt;Program kodunun ilerleyen kısmında &lt;strong&gt;MemoryMappedFile&lt;/strong&gt; nesne &amp;ouml;rneğinin &lt;strong&gt;CreateViewAccessor&lt;/strong&gt; metodundan yararlanılarak bir &lt;strong&gt;MemoryMappedViewAccessor&lt;/strong&gt; oluşturulmaktadır. Bir başka deyişle bir &lt;strong&gt;View&lt;/strong&gt; &amp;uuml;retildiğini s&amp;ouml;yleyebiliriz. Bu &amp;uuml;retim işlemi sırasında verilen değerler ise bellek &amp;uuml;zerinde okunmak istenen bloğun başlangıcı ile okunacak uzunluğu ifade etmektedir. Bir başka deyişle ka&amp;ccedil;ıncı &lt;strong&gt;byte&amp;rsquo;&lt;/strong&gt; tan itibaren ne kadar uzunlukta okuma yapılacağı belirtilir. &lt;strong&gt;for&lt;/strong&gt; d&amp;ouml;ng&amp;uuml;s&amp;uuml; i&amp;ccedil;erisinde sembolik olarak &lt;strong&gt;View&lt;/strong&gt; şeklinde ele alınan bloğun ilk &lt;strong&gt;20&lt;/strong&gt; &lt;strong&gt;byte&amp;rsquo;&lt;/strong&gt; ı ekran yazdırılmaktadır. &amp;Ccedil;ok doğal olarak burada veri &amp;uuml;zerinde değişiklikler de yapılması s&amp;ouml;z konusu olabilir. Gelelim diğer &lt;strong&gt;Console&lt;/strong&gt; uygulamasının kodlarına.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Collections.Generic; 
+using System.Linq; 
+using System.Text; 
+using System.IO.MemoryMappedFiles;
+
+namespace ProcessA 
+{ 
+    class ProgramA 
+    { 
+        static void Main(string[] args) 
+        { 
+            Console.Title = "Process A"; 
+            Console.WriteLine("Diğer Process ilgili dosyayı a&amp;ccedil;ana kadar bekleyelim"); 
+            Console.ReadLine();
+
+            using (MemoryMappedFile mappedFile = MemoryMappedFile.OpenExisting("Mapped1")) 
+            { 
+                using (MemoryMappedViewAccessor view2 = mappedFile.CreateViewAccessor(70000, 120000)) 
+                { 
+                    for (int i = 0; i &amp;lt; 10; i++) 
+                    { 
+                        Console.Write("{0} ", view2.ReadByte(i)); 
+                    } 
+                } 
+                Console.WriteLine("Kapatmak i&amp;ccedil;in bir tuşa basınız"); 
+                Console.ReadLine(); 
+            } 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Bir &amp;ouml;nceki koda benzer olaraktan yine bir &lt;strong&gt;MemoryMappedFile&lt;/strong&gt; ve &lt;strong&gt;View&lt;/strong&gt; &amp;uuml;retimi s&amp;ouml;z konusudur. Ancak &lt;strong&gt;MemoryMappedFile&lt;/strong&gt; &amp;uuml;retimi i&amp;ccedil;in &lt;strong&gt;OpenExisting&lt;/strong&gt; metodundan yararlanılmaktadır. Bu metoda verilen parametre dikkat edileceği &amp;uuml;zere bir &amp;ouml;nceki uygulamanın oluşturduğu &lt;strong&gt;Memory-Mapped File&lt;/strong&gt; i&amp;ccedil;in verilen takma isimdir. Dolayısıyla program kodunun bu noktasında eğer bellek &amp;uuml;zerinde &lt;strong&gt;Mapped1&lt;/strong&gt; isimli bir&lt;strong&gt; Memory-Mapped File&lt;/strong&gt; varsa ilgili nesne &amp;ouml;rneklenebilmektedir.&lt;/p&gt;
+&lt;p&gt;Nesne &amp;ouml;rneklemesini takiben yine bir &lt;strong&gt;MemoryMappedViewAccessor&lt;/strong&gt; oluşturulmaktadır. Bu kez farklı bir blok ele alınmakta ve yine i&amp;ccedil;eriğinin ilk &lt;strong&gt;10&lt;/strong&gt; &lt;strong&gt;byte&lt;/strong&gt;&amp;rsquo; lık b&amp;ouml;l&amp;uuml;m&amp;uuml; ekrana yazdırılmaktadır. &amp;Ouml;nce &lt;strong&gt;ProgramB&lt;/strong&gt; ardından &lt;strong&gt;ProgramA&lt;/strong&gt; &amp;ccedil;alıştırılacak şekilde &lt;strong&gt;Solution&lt;/strong&gt; ayarlanırsa aşağıdaki &amp;ccedil;alışma zamanı g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; elde edilecektir&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg201_Runtime.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg201_Runtime" src="/pics/blg201_Runtime_thumb.gif" alt="blg201_Runtime" width="615" height="163" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Bu &amp;ouml;rnekte iki farklı &lt;strong&gt;Process&amp;rsquo;&lt;/strong&gt; in aynı&lt;strong&gt; Memory-Mapped File&lt;/strong&gt; &amp;uuml;zerinde farklı bloklarını işaret eden &lt;strong&gt;View&amp;rsquo;&lt;/strong&gt; lar oluşturarak &amp;ccedil;alıştığı g&amp;ouml;sterilmektedir. Ancak tabiki dikkat edilmesi gereken bazı durumlar s&amp;ouml;z konusudur. &amp;Ouml;rneğin &lt;strong&gt;Memory-Mapped File&lt;/strong&gt; i&amp;ccedil;eriğini ilk &amp;uuml;reten &lt;strong&gt;Process&lt;/strong&gt; diğeri &amp;ccedil;alışmadan &amp;ouml;nce kapatılır ve diğer &lt;strong&gt;Process&lt;/strong&gt; &lt;strong&gt;Mapped1 &lt;/strong&gt;isimli bellek alanına erişmeye &amp;ccedil;alışırsa, aşağıdaki istisna mesajı ile karşılaşılır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg201_Exception.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg201_Exception" src="/pics/blg201_Exception_thumb.gif" alt="blg201_Exception" width="643" height="292" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Bu son derece doğaldır. Nitekim &lt;strong&gt;ProcessB&lt;/strong&gt; başlatılmamış, &lt;strong&gt;using&lt;/strong&gt; blokları dışına &amp;ccedil;ıkılmış veya uygulama sonlandırılmıştır. Ancak t&amp;uuml;m bunlar ger&amp;ccedil;ekleşirken &lt;strong&gt;ProcessA&lt;/strong&gt; hen&amp;uuml;z &amp;ccedil;alıştırılmamış olabilir.&lt;/p&gt;
+&lt;p&gt;Geliştirdiğimiz &amp;ouml;rnekte bellek &amp;uuml;zerine a&amp;ccedil;tığımız dosya i&amp;ccedil;eriğinde bir yazma işlemi ger&amp;ccedil;ekleştirilmemiştir. Ancak &lt;strong&gt;CreateFromFile&lt;/strong&gt; metodunun kullanılması halinde &lt;strong&gt;Persisted&lt;/strong&gt; model s&amp;ouml;z konusudur. Dolayısıyla yapılan değişiklikler son olarak fiziki dosyaya da aktarılabilir.&lt;/p&gt;
+&lt;p&gt;Biraz dinlenmeye ne dersiniz. Takip eden yazımızda&lt;strong&gt; Non-Persisted&lt;/strong&gt; modele g&amp;ouml;re &lt;strong&gt;Memory-Mapped File&lt;/strong&gt; kavramını ele almaya &amp;ccedil;alışıyor olacağız. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2010%2f6%2fMemoryMappedFileKavrami.rar"&gt;MemoryMappedFileKavrami.rar (40,21 kb)&lt;/a&gt;&lt;strong&gt;&amp;nbsp;[&amp;Ouml;rnek Visual Studio 2010 Ultimate s&amp;uuml;r&amp;uuml;m&amp;uuml; &amp;uuml;zerinde geliştirilmiş ve test edilmiştir]&lt;/strong&gt;&lt;/p&gt;</content>
+  <pubDate>2010-12-17 10:30:00</pubDate>
+  <slug>Persisted-Memory-Mapped-Files</slug>
+  <tags>
+    <tag>net-framework-40</tag>
+    <tag>c#-40</tag>
+    <tag>memory-mapped-files</tag>
+    <tag>visual-studio-2010-ultimate</tag>
+  </tags>
+  <categories>
+    <category>.Net Framework 4.0</category>
+    <category>C# 4.0</category>
+  </categories>
+</post>

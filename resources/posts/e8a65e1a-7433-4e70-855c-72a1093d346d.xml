@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Tasarım Desenleri - Memento</title>
+  <description>Sanıyorum yandaki resmi görenler Guy Pearce ve Carrie Anne Moss' un başrolde yer aldıkları bu filmi hatırlayacaklardır. Benimde favori klasiklerim arasında yer alan bu film, tersten ilerlemesi bir yana herşeyi unutan ve bazı kritik kuralları hatırlamak için dövemeler yaptırmak zorunda kalan bir adamın hikayesi ile ilgiliydi...</description>
+  <content>&lt;p&gt;&lt;img style="float: left;" src="/pics/2009%2f7%2fmemento-1-1024.jpg" alt="" /&gt;Merhaba Arkadaşlar,&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Sanıyorum yandaki resmi g&amp;ouml;renler&amp;nbsp;&lt;strong&gt;Guy Pearce &lt;/strong&gt;ve &lt;strong&gt;Carrie Anne Moss' &lt;/strong&gt;un başrolde yer aldıkları&amp;nbsp;bu filmi hatırlayacaklardır. Benimde favori klasiklerim arasında yer alan bu film, tersten ilerlemesi bir yana herşeyi unutan ve bazı kritik kuralları hatırlamak i&amp;ccedil;in d&amp;ouml;vemeler yaptırmak zorunda kalan bir adamın hikayesi ile ilgiliydi. &amp;Ccedil;ok ş&amp;uuml;k&amp;uuml;rki &lt;strong&gt;nesne y&amp;ouml;nelimli(Object Oriented)&lt;/strong&gt;&amp;nbsp;dillerde, &amp;ouml;nceki hallerinin hatırlanılması istenilen varlıklar i&amp;ccedil;in geliştiricilerin v&amp;uuml;cutlarına d&amp;ouml;vme yaptırmasına gerek yoktur. &lt;img title="Sealed" src="/editors/tiny_mce3/plugins/emotions/img/smiley-sealed.gif" alt="Sealed" border="0" /&gt;&amp;nbsp;İşte bu g&amp;uuml;nk&amp;uuml; konumuz Memento tasarım kalıbı...&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;ok sık kullanılmamakla birlikte&lt;em&gt;(en azından dofactory.com istatistiklerine g&amp;ouml;re %20'&amp;nbsp;ler seviyesinde)&amp;nbsp;&lt;/em&gt;oluşturulması ve kullanılması&amp;nbsp;kolay olan&amp;nbsp;bu desen, &lt;strong&gt;davranışsal(Behavioral) &lt;/strong&gt;kalıplar arasında yer almaktadır. Esas itibariyle&amp;nbsp;bir nesnenin daha &amp;ouml;nceki halinin(hallerinin) saklanması ve istenildiğinde tekrardan elde edilmesi&amp;nbsp;&amp;uuml;zerine&amp;nbsp;tasarlanmış bir kalıptır.&amp;nbsp;Nesnelere, dahili durumları i&amp;ccedil;in&lt;strong&gt;(Initial State)&amp;nbsp;&lt;/strong&gt;geri alma işlemi&lt;strong&gt;(Undo) &lt;/strong&gt;yeteneğininin kazandırılması olarak da&amp;nbsp;d&amp;uuml;ş&amp;uuml;nebiliriz. Bu kalıpta durumu korunmak istenen nesnenin birebir veya en azından saklanmak istenen alanlarını(&amp;ouml;zelliklerini) tutan kopyası yer alır&lt;strong&gt;(Memento)&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Diğer taraftan memento nesnesini oluşturan, bir başka deyişle kaydeden yada var olduğu son durumu y&amp;uuml;kleyerek geri getiren fonksiyonelliklere sahip olan asıl tipimiz yer almaktadır&lt;strong&gt;(Originator)&lt;/strong&gt;. Bu temel tiplerin yanında, saklanan memento nesnesinin g&amp;uuml;venli bir şekilde korunmasını sağlayacak bakıcı bir tipde yer almaktadır&lt;strong&gt;(Caretaker)&lt;/strong&gt;. Şimdi tabi olaya bu şekilde bakınca(şekilsiz olarak) anlamak zor olabiliyor. Yaşasın UML şemaları diyerek yola devam etmek lazım. &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;Bu ama&amp;ccedil;la &amp;ouml;rnek Console uygulamamızın sınıf diagramına bir bakalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f7%2fblg42_uml.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Uygulamanın &amp;ccedil;ok basit bir amacı var. Product tipinden bir nesne &amp;ouml;rneğinin istenildiği durumda bir &amp;ouml;nceki haline d&amp;ouml;nd&amp;uuml;r&amp;uuml;lmesi. Dikkat edileceği &amp;uuml;zere &lt;strong&gt;Product&lt;/strong&gt; tipinin &amp;ouml;zelliklerinin birebir aynısını i&amp;ccedil;eren &lt;strong&gt;Memento&lt;/strong&gt; isimli bir sınıf bulunmaktadır. Bu sınıf, Product nesne &amp;ouml;rneğinin herhangibir anda saklanmak istenen dahili i&amp;ccedil;eriğini tutmak amacıyla oluşturulmuştur. Product isimli sınıfımız i&amp;ccedil;erisinde de Memento nesne &amp;ouml;rneğini oluşturan &lt;strong&gt;Save&lt;/strong&gt; ve tekrar geri alıp dolduran &lt;strong&gt;Restore&lt;/strong&gt; metodları yer almaktadır. Memory tipi ise, Memento nesne &amp;ouml;rneğinin g&amp;uuml;venli bir şekilde saklamasından sorumludur. Buna ek olarak Memento nesnesi &amp;uuml;zerinde hi&amp;ccedil; bir operasyon ger&amp;ccedil;ekleştirilmesine izin vermemektedir. Gelelim uygulama kodlarımıza.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace MementoPattern
+{
+&amp;nbsp;&amp;nbsp;&amp;nbsp; // Originator Class
+&amp;nbsp;&amp;nbsp;&amp;nbsp; // Yaratıcı sınıf
+&amp;nbsp;&amp;nbsp;&amp;nbsp; class Product
+&amp;nbsp;&amp;nbsp;&amp;nbsp; {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public int ProductId { get; set; }
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public string Name { get; set; }
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public decimal ListPrice { get; set; }
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; // O anki Product nesne &amp;ouml;rneğinin i&amp;ccedil;eriğini yeni bir Memento nesne &amp;ouml;rneğinde toplar ve bunu dış ortama verir.
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public Memento Save()
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; return new Memento { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; ProductId = this.ProductId
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; , Name = this.Name
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; , ListPrice = this.ListPrice 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; };
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; // Saklanan Memento nesne &amp;ouml;rneğini alarak o anki Product nesne &amp;ouml;rneğinin dahili i&amp;ccedil;eriğinin doldurulmasında kullanılır.
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public void Restore(Memento memento)
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; this.ListPrice = memento.ListPrice;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; this.Name = memento.Name;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; this.ProductId = memento.ProductId;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public override string ToString()
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; return String.Format("{0} : {1} ( {2} )", ProductId, Name, ListPrice.ToString("C2"));
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; // Memento Class
+&amp;nbsp;&amp;nbsp;&amp;nbsp; // Akıl defteri sınıfı
+&amp;nbsp;&amp;nbsp;&amp;nbsp; // Product tipi i&amp;ccedil;erisinden saklanmak amacıyla kullanılacak t&amp;uuml;m &amp;ouml;zellikleri tanımlar
+&amp;nbsp;&amp;nbsp;&amp;nbsp; class Memento
+&amp;nbsp;&amp;nbsp;&amp;nbsp; {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public int ProductId { get; set; }
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public string Name { get; set; }
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public decimal ListPrice { get; set; }
+&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; // Caretaker class
+&amp;nbsp;&amp;nbsp;&amp;nbsp; // Bakıcı sınıf
+&amp;nbsp;&amp;nbsp;&amp;nbsp; class Memory
+&amp;nbsp;&amp;nbsp;&amp;nbsp; {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public Memento ProductMemento { get; set; }
+&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; class Program
+&amp;nbsp;&amp;nbsp;&amp;nbsp; {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; static void Main(string[] args)
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; // &amp;Ouml;rnek bir Product nesnesi oluşturulur
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Product prd = new Product
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; ProductId = 1000,
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Name = "Starbucks Kahve Fincanı 330 mililitre",
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; ListPrice = 12
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; };
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Console.WriteLine(prd.ToString());
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; // Caretaker nesnesi oluşturulur.&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Memory memory = new Memory();
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; // Memento nesnesi i&amp;ccedil;eriği o anki Product &amp;ouml;rneğinden elde edilir.
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; memory.ProductMemento = prd.Save();
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Console.WriteLine("Product nesnesi kaydedildi.Değişiklik yapılacak.");
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; prd.ProductId = 9999;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; prd.Name = "STARBUCKS KAHVE KABI";
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; prd.ListPrice = 24;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Console.WriteLine("Yeni hali : \n\t{0}", prd.ToString());
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; // Restore işlemi ger&amp;ccedil;ekleştirilir
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; prd.Restore(memory.ProductMemento);
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Console.WriteLine("Undo : \n\t{0}",prd.ToString());
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+}&lt;/pre&gt;
+&lt;p&gt;Ve uygulamamızın &amp;ccedil;alışma zamanındaki durumu.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f7%2fblg42_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi Product nesne &amp;ouml;rneği oluşturulup i&amp;ccedil;eriği &amp;uuml;zerinde değişiklik yapıldıktan sonra bir &amp;ouml;nceki konumuna d&amp;ouml;nd&amp;uuml;r&amp;uuml;lebilmiştir. Olduk&amp;ccedil;a basit ama etkileyici olan bu deseni, nesne &amp;ouml;rnekleri &amp;uuml;zerinde Undo operasyonunun kullanılması istenen pek &amp;ccedil;ok senaryoda ele alabiliriz. Tabi burada dikkat edilmesi gereken bir hususda vardır. Sadece tek bir Undo işlemi yapılabilmektedir. Oysaki istenirse &lt;strong&gt;birden fazla adım geriye gidilmesi de&lt;/strong&gt; sağlanabilir. Bunu bir d&amp;uuml;ş&amp;uuml;nmenizi ve yapmaya &amp;ccedil;alışmanızı &amp;ouml;neririm &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;iframe src="https://www.youtube.com/embed/yio36Q5g5vU" width="560" height="315" frameborder="0" allowfullscreen="allowfullscreen"&gt;&lt;/iframe&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2009%2f7%2fMementoPattern.rar"&gt;MementoPattern.rar (23,01 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2009-07-05 20:45:00</pubDate>
+  <slug>Tasarc4b1m-Desenleri-Memento</slug>
+  <tags>
+    <tag>design-patterns</tag>
+    <tag>oop</tag>
+    <tag>c#</tag>
+  </tags>
+  <categories>
+    <category>Tasarım Kalıpları(Design Patterns)</category>
+  </categories>
+</post>

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Asp.Net 4.5–Asenkron HTTP Module Geliştirmek</title>
+  <description>İşte bu günkü konumuzda HttpModule tipleri içerisindeki işlemleri asenkron olarak nasıl yaptırabileceğimizi incelemeye çalışıyor olacağız. Bildiğiniz üzere .Net Framework 4.0 ile hayatımıza giren Task ve doğal olarak Task Parallel Library kavramı, 4.5 sürümünde gelen async ve await anahtar kelimeleri ile birlikte alt yapının pek çok noktasında daha sık görülmeye başladı. Bu açıdan bakıldığında Asp.Net 4.5 tarafında da ilgili anahtar kelime ve Task tiplerini kullanarak bazı senkronize edilmiş işlemlerin asenkron hale getirilmesi sağlanabilmekte.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/Pioneer%20Stereo%20Ad%201974.jpg"&gt;&lt;img style="float: right; margin: 4px 0px; display: inline;" title="Pioneer Stereo Ad 1974" src="/pics/Pioneer%20Stereo%20Ad%201974_thumb.jpg" alt="Pioneer Stereo Ad 1974" width="240" height="313" align="right" /&gt;&lt;/a&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Bir &amp;ccedil;oğunuz gibi ben de d&amp;uuml;zenli olarak bazı dergilerin abonesiyim ve her ay onları alıp biraz karıştırdıktan sonra arşive&lt;em&gt;(yani &amp;ccedil;alışma odasındaki k&amp;uuml;t&amp;uuml;phaneye)&lt;/em&gt; kaldırmaktayım.&lt;/p&gt;
+&lt;p&gt;Tabi g&amp;uuml;n oluyor pek &amp;ccedil;oğuna d&amp;ouml;n&amp;uuml;p bakmıyorum bile. Hatta kimisinin rengi sararıp soluyor bir k&amp;ouml;şede mazlum mazlum kalıyor. Ama eminim ki geride kalanlar i&amp;ccedil;in bazıları g&amp;uuml;ncel i&amp;ccedil;eriklere sahip iken, bazıları da tam anlamıyla bir Retro havası veriyor. Ve hatta &amp;ccedil;oğu, yıllar ge&amp;ccedil;tik&amp;ccedil;e daha fazla değer kazanıyor.&lt;/p&gt;
+&lt;p&gt;S&amp;ouml;z gelimi yandaki basılı medya g&amp;ouml;rselinde 1974 model bir Pioneer ses sisteminin reklamı yer almakta. Bu pek &amp;ccedil;oğumuzun daha hen&amp;uuml;z hayatta bile olmadığı, olsa da pek hatırlamadığı bir yıl belki de? Sanıyorum blog tutan bizlerin yazıları da, zaman i&amp;ccedil;erisinde bu şekilde eskiyor. Hele de yazılım teknolojileri gibi &amp;ccedil;ok &amp;ccedil;abuk gelişen konular ele alınıyorsa.&lt;/p&gt;
+&lt;p&gt;Ben bazen ge&amp;ccedil;mişte yazmış olduğum yazılara bakıyorum ve ne kadar da &amp;ccedil;abuk eskidiklerini g&amp;ouml;r&amp;uuml;yorum. Ancak bir yandan da, &amp;ldquo;acaba yeni s&amp;uuml;r&amp;uuml;mde bu konuda neler yapılmış?&amp;rdquo; sorusunun cevabını da kurcalamaya &amp;ccedil;alışıyorum.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Nostalji : &lt;a href="/post/HTTPHandler-ve-HttpModule-Kavramlarc4b1-bsenyurt-com-dan" target="_blank"&gt;2006 dan&lt;/a&gt; bir makale. O zamanlar Asp.Net Pipeline&amp;rsquo; ın &amp;ouml;nemli par&amp;ccedil;aları olan HttpModule ve HttpHandler kavramlarını incelemeye &amp;ccedil;alışmıştım.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;İşte bu g&amp;uuml;nk&amp;uuml; konumuzda &lt;strong&gt;HttpModule&lt;/strong&gt; tipleri i&amp;ccedil;erisindeki işlemleri asenkron olarak nasıl yaptırabileceğimizi incelemeye &amp;ccedil;alışıyor olacağız. Bildiğiniz &amp;uuml;zere &lt;strong&gt;.Net Framework 4.0&lt;/strong&gt; ile hayatımıza giren &lt;strong&gt;Task&lt;/strong&gt; ve doğal olarak &lt;strong&gt;Task Parallel Library&lt;/strong&gt; kavramı, &lt;strong&gt;4.5&lt;/strong&gt; s&amp;uuml;r&amp;uuml;m&amp;uuml;nde gelen &lt;strong&gt;async&lt;/strong&gt; ve &lt;strong&gt;await&lt;/strong&gt; anahtar kelimeleri ile birlikte alt yapının pek &amp;ccedil;ok noktasında daha sık g&amp;ouml;r&amp;uuml;lmeye başladı. Bu a&amp;ccedil;ıdan bakıldığında&lt;strong&gt; Asp.Net 4.5&lt;/strong&gt; tarafında da ilgili anahtar kelime ve &lt;strong&gt;Task&lt;/strong&gt; tiplerini kullanarak bazı senkronize edilmiş işlemlerin asenkron hale getirilmesi sağlanabilmekte.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Asp.Net&lt;/strong&gt; ve asenkron &amp;ccedil;alışma diyince bir duraksayıp d&amp;uuml;ş&amp;uuml;nmek gerekir.&lt;/p&gt;
+&lt;p&gt;Asp.Net aslında client-server modelini baz alarak &amp;ccedil;alışır ve stateless bir ortam sunar. Bu y&amp;uuml;zden istemciden gelen her talep(Request) sonrası, uygulama ve talep g&amp;ouml;ren sayfanın Lifecycle&amp;rsquo; ının tekrar işletilmesi gerekir. Web tarafında asenkronluk diyince bunu belki de iki taraflı olarak d&amp;uuml;ş&amp;uuml;nmek gerekebilir. Sunucu tarafında &amp;ccedil;alışan asenkron işlemler ve istemcinin kendi a&amp;ccedil;ısından asenkron olarak başlatıp, Response&amp;rsquo; u beklemeye gerek kalmadan başka talepleri de g&amp;ouml;nderebildiği işlemler&lt;em&gt;(Genelde AJAX tarzı &amp;ccedil;ağrılar ile hallettiğimiz &amp;ccedil;alışma şekli)&lt;/em&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Module ve Handler gibi tipler sunucu tarafında &amp;ccedil;alışan yapılar olduklarından, yazıda bahsedeceğimiz asenkron &amp;ccedil;alışma aslında, sunucu &amp;uuml;zerinde s&amp;ouml;z konusu olan ve LifeCycle yaşamı boyunca ele alınan yapılar olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lmelidirler.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Bu işten nasibini alan kısımlardan ikisi de &lt;strong&gt;Asp.Net&lt;/strong&gt; uygulamalarının yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml;nde &amp;ouml;nemli yere sahip olan &lt;strong&gt;Module&lt;/strong&gt; ve &lt;strong&gt;Handler&amp;rsquo;&lt;/strong&gt; lardır. Aslında bir Web sayfasını talep ettiğimizde, sunucu tarafında ger&amp;ccedil;ekleşen bir dizi işlem s&amp;ouml;z konusudur.&amp;nbsp; Ayrıca yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml;ne ait s&amp;uuml;re&amp;ccedil;te devreye giren bir kanal yapısı mevcuttur. Bu kanal yapısına g&amp;ouml;re istemciden gelen &lt;strong&gt;Request&amp;rsquo;&lt;/strong&gt; in &amp;ouml;nce &lt;strong&gt;Http&lt;/strong&gt; bazlı &lt;strong&gt;Module&amp;rsquo;&lt;/strong&gt; lerden ge&amp;ccedil;mesi ve ardından da &lt;strong&gt;Handler&amp;rsquo;&lt;/strong&gt; lar tarafından değerlendirilmesi s&amp;ouml;z konusudur. Klasik &amp;ccedil;alışma modeline baktığımızda aşağıdaki grafikte yer alan ve &amp;ouml;zetle ifade edilmeye &amp;ccedil;alışılan işleyişin ger&amp;ccedil;ekleştiğini s&amp;ouml;yleyebiliriz.&lt;/p&gt;
+&lt;h1&gt;&lt;strong&gt;Klasik Senkron &amp;Ccedil;alışma Modeli&lt;/strong&gt;&lt;/h1&gt;
+&lt;p&gt;&lt;a href="/pics/ahm_1.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="ahm_1" src="/pics/ahm_1_thumb.png" alt="ahm_1" width="611" height="252" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi gelen talep, &lt;strong&gt;Built-In&lt;/strong&gt; bazı &lt;strong&gt;Http&lt;/strong&gt; &lt;strong&gt;Module&amp;rsquo;&lt;/strong&gt; lerinden ge&amp;ccedil;mekte ve &lt;strong&gt;Handler&lt;/strong&gt; seviyesinde de değerlendirildikten sonra geriye d&amp;ouml;nd&amp;uuml;r&amp;uuml;lmektedir. &lt;em&gt;(Bu &amp;ccedil;izelgede talep edilen i&amp;ccedil;eriğe ait sayfa veya user control&amp;rsquo; un i&amp;ccedil; &amp;ccedil;alışma şekli g&amp;ouml;z ardı edilmiştir)&lt;/em&gt; Dikkat edilmesi gereken husus, &lt;strong&gt;Module&lt;/strong&gt; ve &lt;strong&gt;Handler&amp;rsquo;&lt;/strong&gt; lardan oluşan bu kanal yapısının &lt;strong&gt;Thread&lt;/strong&gt; havuzundan &amp;ccedil;ekilen tek bir &lt;strong&gt;Thread&lt;/strong&gt; i&amp;ccedil;erisinde u&amp;ccedil;tan uca &amp;ccedil;alışıyor olmasıdır. Dolayısıyla bir &lt;strong&gt;module&amp;rsquo;&lt;/strong&gt; den diğerine olan ge&amp;ccedil;iş sırasında, işlemekte olan module&amp;rsquo; &amp;uuml;n işini &lt;span style="text-decoration: underline;"&gt;tamamlamış&lt;/span&gt; olması gerekmektedir. Aynı durum doğal olarak &lt;strong&gt;Handler&amp;rsquo;&lt;/strong&gt; lar i&amp;ccedil;in de ge&amp;ccedil;erlidir.&lt;/p&gt;
+&lt;h1&gt;Asenkron &amp;Ccedil;alışma Modeli&lt;/h1&gt;
+&lt;p&gt;Asenkron &amp;ccedil;alışma modeline g&amp;ouml;re ise, bir &lt;strong&gt;Module&lt;/strong&gt; veya &lt;strong&gt;Handler&amp;rsquo;&lt;/strong&gt; ın kendi &amp;ccedil;alışmasını farklı bir &lt;strong&gt;Thread&amp;rsquo;&lt;/strong&gt; e yıkması ve daha sonra ana &lt;strong&gt;Thread&amp;rsquo;&lt;/strong&gt; e sonu&amp;ccedil; d&amp;ouml;nerek işleyişi uzun s&amp;uuml;re &lt;span style="text-decoration: underline;"&gt;duraksatmaması&lt;/span&gt; hedeflenmektedir. Bu, &amp;ouml;zellikle geliştirici tarafından yazılan &lt;strong&gt;Module&lt;/strong&gt; veya &lt;strong&gt;Handler&lt;/strong&gt; tipleri i&amp;ccedil;in kullanılabilecek bir stratejidir. Aşağıdaki grafikte bu yaklaşım modeli &amp;ouml;zetlenmeye &amp;ccedil;alışılmıştır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/ahm_2.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="ahm_2" src="/pics/ahm_2_thumb.png" alt="ahm_2" width="611" height="310" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;X Module&lt;/strong&gt; tipi kendi işleyişini farklı bir &lt;strong&gt;Thread&lt;/strong&gt; altında yapmaktadır. Dolayısıyla işlenmekte olan talebin akışı sırasında &lt;strong&gt;X&lt;/strong&gt; mod&amp;uuml;l&amp;uuml;ne gelindikten sonra, sıradaki &lt;strong&gt;Module&lt;/strong&gt; veya takip eden &lt;strong&gt;Handler&amp;rsquo;&lt;/strong&gt; lara ge&amp;ccedil;ilmesi i&amp;ccedil;in bir duraksama s&amp;ouml;z konusu değildir. İlgili &lt;strong&gt;Module&lt;/strong&gt; &amp;ccedil;alışmasını tamamladığında, kanal i&amp;ccedil;erisindeki işleyişe otomatikman dahil olacaktır.&lt;/p&gt;
+&lt;h1&gt;Asp.Net 4.5 i&amp;ccedil;in &amp;Ouml;rnek Uygulama&lt;/h1&gt;
+&lt;p&gt;Peki bu modeli &lt;strong&gt;Asp.Net 4.5&lt;/strong&gt; i&amp;ccedil;erisinde nasıl ger&amp;ccedil;ekleştirebiliriz? Gelin basit ve klasik bir &amp;ouml;rnek &amp;uuml;zerinden ilerleyelim. Bu ama&amp;ccedil;la &lt;strong&gt;Visual Studio 2012&lt;/strong&gt; ortamında &lt;strong&gt;Asp.Net Empty Web Application&lt;/strong&gt; tipinden bir proje a&amp;ccedil;alım. Bir &lt;strong&gt;Web&lt;/strong&gt; uygulamasında veya bir &lt;strong&gt;Application Pool&lt;/strong&gt; i&amp;ccedil;erisinde kendi &lt;strong&gt;Http&lt;/strong&gt; &lt;strong&gt;Module&amp;rsquo;&lt;/strong&gt; lerimizi kullanabilmenin yolu &lt;strong&gt;IHttpModule&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;nden t&amp;uuml;reyen sınıflar geliştirmekten ge&amp;ccedil;mektedir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;IHttpModule&lt;/strong&gt; kendi i&amp;ccedil;erisinde &lt;strong&gt;Asenkron&lt;/strong&gt; kullanım i&amp;ccedil;in doğal bir metod i&amp;ccedil;ermemektedir. Bunun yerine ezilmesi gereken &lt;strong&gt;Init&lt;/strong&gt; ve &lt;strong&gt;Dispose&lt;/strong&gt; metodlarını sunmaktadır. &lt;strong&gt;Init&lt;/strong&gt; fonksiyonu tahmin edileceği &amp;uuml;zere &lt;strong&gt;Module &lt;/strong&gt;devreye girdiğinde yapılacak işlemleri i&amp;ccedil;ermekte ve icra ettirmektedir. Biz burada asenkron işleyişlere yer verebiliriz. Nasıl mı? İşte uygulama i&amp;ccedil;erisindeki sınıf &amp;ccedil;izelgesi ve kod yapısı.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/ahm_3.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="ahm_3" src="/pics/ahm_3_thumb.png" alt="ahm_3" width="360" height="521" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;RequestLogInfo POCO tipinin i&amp;ccedil;eriği;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace HowTo_AsyncModules 
+{ 
+    public class RequestLogInfo 
+    { 
+        public string IpAddress { get; set; } 
+        public DateTime Time { get; set; } 
+        public bool IsAuthenticated { get; set; } 
+        public string User { get; set; } 
+        public string RequestType { get; set; } 
+        public Uri Url { get; set; }
+
+        public override string ToString() 
+        { 
+            return string.Format("{0}|{1}|{2}|{3}|{4}|{5}" 
+                ,Time.ToLongTimeString() 
+                ,IpAddress 
+                ,IsAuthenticated.ToString() 
+                ,User 
+                ,RequestType 
+                ,Url.ToString() 
+                ); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;RequestLogInfo&lt;/strong&gt; &amp;ouml;rnek senaryoda kullanacağımız ve i&amp;ccedil;erisinde istemciden gelen &lt;strong&gt;talep&lt;em&gt;(Request)&lt;/em&gt;&lt;/strong&gt; ile ilişkili bir ka&amp;ccedil; basit bilgiyi i&amp;ccedil;eren &lt;strong&gt;POCO&lt;em&gt;(Plain Old CLR Object)&lt;/em&gt;&lt;/strong&gt; sınıfımızdır. Gelelim &lt;strong&gt;AsyncHttpLogModule&lt;/strong&gt; sınıfının i&amp;ccedil;eriğine.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Configuration; 
+using System.IO; 
+using System.Threading.Tasks; 
+using System.Web;
+
+namespace HowTo_AsyncModules 
+{ 
+    public class AsyncHttpLogModule 
+        :IHttpModule 
+    { 
+        public void Dispose() 
+        { 
+         // Do Something   
+        }
+
+        public void Init(HttpApplication context) 
+        { 
+            EventHandlerTaskAsyncHelper eventHandler =new EventHandlerTaskAsyncHelper(WriteLogToTextFile); 
+            context.AddOnPostAuthorizeRequestAsync( 
+                eventHandler.BeginEventHandler 
+                , eventHandler.EndEventHandler 
+                ); 
+        }
+
+        private async Task WriteLogToTextFile(object sender, EventArgs e) 
+        { 
+            var context = HttpContext.Current; 
+            string filePath = HttpContext.Current.Server.MapPath(ConfigurationManager.AppSettings["LogFileAddress"]);
+
+            RequestLogInfo requestLog = new RequestLogInfo() 
+            { 
+                Time = DateTime.Now, 
+                IpAddress = context.Request["REMOTE_ADDR"], 
+                User = context.User.Identity.Name, 
+                IsAuthenticated = context.User.Identity.IsAuthenticated, 
+                RequestType = context.Request.RequestType, 
+                Url = context.Request.Url 
+            }; 
+            using (StreamWriter streamWriter = File.AppendText(filePath)) 
+            { 
+                await streamWriter.WriteLineAsync(requestLog.ToString()); 
+            } 
+        } 
+   } 
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rnek kod par&amp;ccedil;asında dikkat edileceği &amp;uuml;zere &lt;strong&gt;Init&lt;/strong&gt; metodu i&amp;ccedil;erisinde ger&amp;ccedil;ekleştirilen olay bazlı bir asenkron &amp;ccedil;alıştırma kayıt bildirimi s&amp;ouml;z konusudur. &lt;strong&gt;Init&lt;/strong&gt; metodu i&amp;ccedil;erisinde kullanılan &lt;strong&gt;EventHandlerTaskAsyncHelper &lt;/strong&gt;sınıfı, &lt;strong&gt;TaskEventHandler&lt;/strong&gt; &lt;strong&gt;temsilci(delegate)&lt;/strong&gt; tipinden bir parametre almaktadır.&lt;/p&gt;
+&lt;p&gt;Aslında bu temsilci geriye &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneği d&amp;ouml;nd&amp;uuml;ren ve &lt;strong&gt;object&lt;/strong&gt; ile &lt;strong&gt;EventArgs&lt;/strong&gt; tipinden parametre alan metodları işaret edebilir ki &amp;ouml;rneğimizde bu fonksiyon &lt;strong&gt;WriteLogToTextFile&lt;/strong&gt;&amp;rsquo; dır. Bu metod &lt;strong&gt;async&lt;/strong&gt; anahtar kelimesi ile işaretlendiğinden kendi i&amp;ccedil;erisinde &lt;strong&gt;awaitable&lt;/strong&gt; operasyonları da i&amp;ccedil;erebilmektedir. &amp;Ouml;rnekte bunu sembolize etmek i&amp;ccedil;in &lt;strong&gt;StreamWriter&lt;/strong&gt; tipinin asenkron &amp;ccedil;alışabilen &lt;strong&gt;WriteLineAsync&lt;/strong&gt; metodu kullanılmıştır.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;Ccedil;ok doğal olarak bir Module her zaman asenkron &amp;ccedil;alışacak şekilde &lt;span style="text-decoration: underline;"&gt;tasarlanmamalıdır&lt;/span&gt;. Nitekim i&amp;ccedil;erisindeki işlemlerin sonucuna g&amp;ouml;re sonraki Module&amp;rsquo; lere bilgi taşınması veya &amp;ccedil;alışmanın kesilerek anında bir Exception d&amp;ouml;nd&amp;uuml;r&amp;uuml;lmesi vb durumlar s&amp;ouml;z konusu olabilir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;İlgili asenkron işleyişlerde &lt;strong&gt;text&lt;/strong&gt; tabanlı olarak fiziki bir dosyaya &lt;strong&gt;log&lt;/strong&gt; atma işlemi sembolize edilmiştir. Pek tabi bunun yerine &lt;strong&gt;log&lt;/strong&gt; i&amp;ccedil;eriğinin veritabanına aktarılması, bir servise &amp;ccedil;ağrıda bulunulması, harici 3nc&amp;uuml; parti bir aray&amp;uuml;z ile konuşulması&lt;em&gt;(&amp;Ouml;rneğin bir Bussines Process Management sistemine mesaj g&amp;ouml;nderilmesi)&lt;/em&gt; ve benzeri zaman alabilecek ve dolayısıyla asenkron hale getirilebilecek işlemler ele alınabilir. Uygulamayı teste tabi tutmadan &amp;ouml;nce &lt;strong&gt;Web.config&lt;/strong&gt; dosyası i&amp;ccedil;erisinde, tasarlanmış olan yeni &lt;strong&gt;HttpModule&lt;/strong&gt; tipine ait bildirimin de yapılması gerekmektedir ki &amp;ccedil;alışma zamanı var olan &lt;strong&gt;Module&amp;rsquo;&lt;/strong&gt; lere ek olarak &lt;strong&gt;AsyncHttpLogModule &lt;/strong&gt;&amp;ouml;rneğini de devreye alabilsin. Bunun i&amp;ccedil;in &lt;strong&gt;system.webServer&lt;/strong&gt; elementi i&amp;ccedil;erisinde aşağıdaki &lt;strong&gt;module&lt;/strong&gt; tanımlaması yapılmalıdır.&lt;/p&gt;
+&lt;h1&gt;Config Ayarlarmaları&lt;/h1&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0"?&amp;gt; 
+&amp;lt;configuration&amp;gt; 
+    &amp;lt;system.web&amp;gt; 
+      &amp;lt;compilation debug="true" targetFramework="4.5" /&amp;gt; 
+      &amp;lt;httpRuntime targetFramework="4.5" /&amp;gt; 
+    &amp;lt;/system.web&amp;gt; 
+    &amp;lt;system.webServer&amp;gt; 
+      &amp;lt;modules&amp;gt; 
+        &amp;lt;add name="AsyncLogModule" type="HowTo_AsyncModules.AsyncHttpLogModule,HowTo_AsyncModules"/&amp;gt; 
+      &amp;lt;/modules&amp;gt; 
+  &amp;lt;/system.webServer&amp;gt; 
+  &amp;lt;appSettings&amp;gt; 
+    &amp;lt;add key="LogFileAddress" value="~/App_Data/Logs.txt"/&amp;gt; 
+  &amp;lt;/appSettings&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;modules&lt;/strong&gt; elementi i&amp;ccedil;erisinde dikkat edilmesi gereken nokta &lt;strong&gt;type&lt;/strong&gt; niteliğine atanan değerdir. Burada &lt;strong&gt;[Namespace Adı].[Module Tip Ad],[Assembly Adı]&lt;/strong&gt; notasyonundan yararlanılmıştır. Bu, &amp;ouml;zellikle ilgili &lt;strong&gt;Module&lt;/strong&gt; tipinin harici bir &lt;strong&gt;Class Library&lt;/strong&gt; i&amp;ccedil;erisinde olduğu durumlarda &amp;ouml;n plana &amp;ccedil;ıkan &amp;ouml;nemli kurallardan birisidir.&lt;/p&gt;
+&lt;h1&gt;Test&lt;/h1&gt;
+&lt;p&gt;&lt;strong&gt;Test&lt;/strong&gt; i&amp;ccedil;in dilerseniz &amp;ccedil;ok basit bir de &lt;strong&gt;aspx&lt;/strong&gt; sayfası hazırlayalım. B&amp;ouml;ylece basit anlamda &lt;strong&gt;Get&lt;/strong&gt;, &lt;strong&gt;Post&lt;/strong&gt; gibi aksiyonları sim&amp;uuml;le ettirmiş oluruz.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&amp;Ouml;rnek aspx i&amp;ccedil;eriği;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="HowTo_AsyncModules.Default" %&amp;gt;
+
+&amp;lt;!DOCTYPE html&amp;gt;
+
+&amp;lt;html xmlns="http://www.w3.org/1999/xhtml"&amp;gt; 
+&amp;lt;head runat="server"&amp;gt; 
+    &amp;lt;title&amp;gt;&amp;lt;/title&amp;gt; 
+&amp;lt;/head&amp;gt; 
+&amp;lt;body&amp;gt; 
+    &amp;lt;form id="form1" runat="server"&amp;gt; 
+    &amp;lt;div&amp;gt; 
+    Mesajınız : &amp;lt;asp:TextBox ID="txtMessage" runat="server" /&amp;gt;&amp;lt;br /&amp;gt; 
+        &amp;lt;asp:Button ID="btnSendMessage" runat="server" Text="Send My Message" OnClick="btnSendMessage_Click"/&amp;gt; 
+    &amp;lt;/div&amp;gt; 
+    &amp;lt;/form&amp;gt; 
+&amp;lt;/body&amp;gt; 
+&amp;lt;/html&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;WebForm&lt;/strong&gt; i&amp;ccedil;erisinde bir &lt;strong&gt;TextBox&lt;/strong&gt; ve &lt;strong&gt;Button&lt;/strong&gt; kontrol&amp;uuml; bulunmaktadır. Kullanıcı sayfayı ilk kez talep ettiğinde &lt;strong&gt;HTTP&lt;/strong&gt; &lt;strong&gt;Get&lt;/strong&gt; ve &lt;strong&gt;Button&amp;rsquo;&lt;/strong&gt; a her bastığında da &lt;strong&gt;HTTP&lt;/strong&gt; &lt;strong&gt;Post&lt;/strong&gt; tipinden talepler &amp;uuml;retilmesine neden olmaktadır. &amp;Ccedil;alışma zamanında yapılan &amp;ccedil;eşitli aksiyonlar sonrası oluşan &amp;ouml;rnek bir &lt;strong&gt;log&lt;/strong&gt; i&amp;ccedil;eriği ise aşağıda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/ahm_4.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="ahm_4" src="/pics/ahm_4_thumb.png" alt="ahm_4" width="579" height="345" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere geliştirici tanımlı bir &lt;strong&gt;HttpModule&lt;/strong&gt; tipinin işleyişinin asenkron hale getirilmesi m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Aynı prensiplerden yola &amp;ccedil;ıkarak bir &lt;strong&gt;HttpHandler&lt;/strong&gt; tipinin de asenkron &amp;ccedil;alışacak hale getirilmesi s&amp;ouml;z konusu olabilir elbette. Lakin &lt;strong&gt;Asp.Net 4.5,&lt;/strong&gt; &lt;strong&gt;HttpHandler&lt;/strong&gt; tiplerinin asenkron yazılabilmesi i&amp;ccedil;in daha g&amp;uuml;&amp;ccedil;l&amp;uuml; bir yol sunmaktadır. Bu yolun başında &lt;strong&gt;HttpTaskAsyncHandler&lt;/strong&gt; isimli &lt;strong&gt;soyut sınıf&lt;em&gt;(Abstract Class)&lt;/em&gt;&lt;/strong&gt; yer almaktadır. B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2012%2f9%2fHowTo_AsyncModules.zip"&gt;HowTo_AsyncModules.zip (25,83 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2013-10-13 11:00:00</pubDate>
+  <slug>AspNet-4-5-Asenkron-HTTP-Module-Gelistirmek</slug>
+  <tags>
+    <tag>aspnet-45</tag>
+    <tag>aspnet</tag>
+    <tag>http-handler</tag>
+    <tag>async</tag>
+    <tag>await</tag>
+    <tag>http-module</tag>
+    <tag>asynchttpmodule</tag>
+    <tag>module</tag>
+    <tag>aspnet-pipeline</tag>
+    <tag>aspnet-runtime</tag>
+  </tags>
+  <categories>
+    <category>Asp.Net 4.5</category>
+  </categories>
+</post>

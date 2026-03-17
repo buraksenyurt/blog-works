@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WCF - Adım Adım IIS Hosting</title>
+  <description>Windows Communication Foundation ile ilişkili bir önceki makalemizde mimarinin detaylarına yakından bakmaya çalışmış ve örnek bir uygulama geliştirmiştik. Bu makalemizde ise bir WCF Service projesi geliştirmeye çalışacağız.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Windows Communication Foundation ile ilişkili bir &amp;ouml;nceki makalemizde mimarinin detaylarına yakından bakmaya &amp;ccedil;alışmış ve &amp;ouml;rnek bir uygulama geliştirmiştik. Bu makalemizde ise bir &lt;strong&gt;WCF Service&lt;/strong&gt; projesi geliştirmeye &amp;ccedil;alışacağız. Bir başka deyişle &lt;strong&gt;HTTP&lt;/strong&gt; protokol&amp;uuml;n&amp;uuml; kullanarak, &lt;strong&gt;IIS&lt;/strong&gt; &amp;uuml;zerinden bir .Net k&amp;uuml;t&amp;uuml;phanesini servis olarak yayınlayacağız.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;WCF servislerini &lt;strong&gt;Self Hosting&lt;/strong&gt; ve &lt;strong&gt;IIS Hosting &lt;/strong&gt;olmak &amp;uuml;zere iki farklı şekilde yayınlayabiliyoruz. Bununla birlikte Self Hosting modeli kendi i&amp;ccedil;erisinde &lt;strong&gt;Console&lt;/strong&gt;, &lt;strong&gt;Windows&lt;/strong&gt;, &lt;strong&gt;Windows Service&lt;/strong&gt; ve Vista ile gelen &lt;strong&gt;Windows Activation Service (WAS)&lt;/strong&gt; olmak &amp;uuml;zere d&amp;ouml;rt farklı se&amp;ccedil;enekten oluşmaktadır.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Ayrıca kendi tiplerimizi d&amp;ouml;nd&amp;uuml;ren metodlar s&amp;ouml;z konusu olduğunda veri s&amp;ouml;zleşmelerini(&lt;strong&gt;DataContract&lt;/strong&gt;) nasıl kullanabileceğimize yakından bakma fırsatı bulacağız. Bunlara ek olarak &amp;ouml;zellikle &lt;strong&gt;.Net Remoting&lt;/strong&gt; mimarisinde bizi her zaman zorlayan konfigurasyon ayarlarının&lt;em&gt;(&amp;Ccedil;oğu zaman ezberlemek zorunda olduğumuz ve hatırlamakta g&amp;uuml;&amp;ccedil;l&amp;uuml;k &amp;ccedil;ektiğimiz)&lt;/em&gt;, WCF i&amp;ccedil;erisinde &lt;strong&gt;Edit WCF Configuration&lt;/strong&gt; se&amp;ccedil;eneği yardımıyla Visual Studio 2005 i&amp;ccedil;erisinden g&amp;ouml;rsel olarak nasıl daha kolay hazırlanabileceğinide incelemeye &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;p&gt;Aslında IIS(Internet Informatin Service) &amp;uuml;zerinden &amp;ccedil;eşitli tipte istemcilerin (hangi platformda olduklarına bakılmaksızın) belirli fonksiyonellikleri kullanabilmesi amacıyla &lt;strong&gt;Xml Web Servisleri&lt;/strong&gt; (Xml Web Services) olduk&amp;ccedil;a fazla kullanılan bir &lt;strong&gt;SOA&lt;/strong&gt; &lt;strong&gt;(Service Oriented Architecture)&lt;/strong&gt; modelidir. Dolayısıyla WCF i&amp;ccedil;erisinde de buna benzer bir model vardır ve &lt;strong&gt;WCF Service&lt;/strong&gt; olarak adlandırılmaktadır. Visual Studio 2005 i&amp;ccedil;in, Framework 3.0' a y&amp;ouml;nelik eklentileri y&amp;uuml;klediğinizde Web Site şablonları arasında &lt;strong&gt;WCF Service&lt;/strong&gt; se&amp;ccedil;eneğide gelmektedir. Ancak biz bunu kullanmayıp biraz daha elle ilerleyeceğiz ve alt yapı i&amp;ccedil;erisinde yer alan par&amp;ccedil;aları daha net olarak g&amp;ouml;rmeye &amp;ccedil;alışacağız. Konuyu daha iyi kavrayabilmek i&amp;ccedil;in &amp;ouml;rnek bir senaryo &amp;uuml;zerinden gideceğiz ve bazı basit veritabanı işlemlerini ele alacağız. Gelin hi&amp;ccedil; vakit kaybetmeden işe başlayalım ve adım adım ilerleyelim.&lt;/p&gt;
+&lt;p&gt;Bildiğiniz gibi WCF tamamen nitelik(&lt;strong&gt;attribute&lt;/strong&gt;) tabanlı bir mimariye dayanmaktadır. Bununla birlikte istemci tarafına yayınlanacak olan, başka bir deyişle &lt;strong&gt;metadata&lt;/strong&gt; i&amp;ccedil;eriği g&amp;ouml;nderilecek olan tip(type) aslında ilgili nitelikler ile imzalanmış bir s&amp;ouml;zleşme(&lt;strong&gt;contract&lt;/strong&gt;) dir. S&amp;ouml;zleşmeler genellikle bir aray&amp;uuml;z şeklinde tasarlanmakta olup asıl işlevsellikleri yerine getirecek olan uzak nesne modellerinin(sınıflar) t&amp;uuml;retilmesinde de kullanılır.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;.Net Remoting mimarisinden hatırlarsanız eğer; uzak nesneleri&lt;strong&gt; (Remote Objects)&lt;/strong&gt; yayınlamada ele alınan modellerden birisi aray&amp;uuml;z(Interface) kullanımını i&amp;ccedil;ermektedir. Burada temel ama&amp;ccedil; istemci tarafında, sunucuda &amp;ouml;rneklenen uzak nesne referansını taşıyabilecek bir tip olmasıdır. Bununla birlikte istemci tarafının kesin olarak uzak nesne fonksiyonelliklerinin nasıl &amp;ccedil;alıştığını g&amp;ouml;rmesi gibi bir şansı yoktur. (Elbette bu durum &lt;strong&gt;MarshalByReference&lt;/strong&gt; nesneler i&amp;ccedil;in ge&amp;ccedil;erlidir. Bildiğiniz gibi &lt;strong&gt;MarshalByValue&lt;/strong&gt; tipler zaten sunucuda &amp;ouml;rneklenip istemci tarafına t&amp;uuml;m varlığı ile serileştirilerek(Serialization) ge&amp;ccedil;erler). Ayrıca, sunucu tarafındaki uzak nesne metodlarının i&amp;ccedil; yapılarında meydana gelecek değişiklilikler sonucu, istemcilere yeniden dağıtım(&lt;strong&gt;deployement&lt;/strong&gt;) işlemi uygulanmasına gerek kalmamaktadır.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&amp;Ouml;yleyse ilk yapmamız gereken i&amp;ccedil;erisinde servis s&amp;ouml;zleşmesini&lt;strong&gt;(Service Contract)&lt;/strong&gt; ve gerekli fonksiyonelliklere ait tanımlamaları barındıracak bir aray&amp;uuml;z&lt;strong&gt;(interface)&lt;/strong&gt; tasarlamaktır. &amp;Ouml;rneğimizde, WCF servisimizi IIS &amp;uuml;zerinden sunacağımızdan bahsetmiştik. Bu sebepten ilk olarak bir sınıf k&amp;uuml;t&amp;uuml;phanesi&lt;strong&gt;(class library)&lt;/strong&gt; geliştirmeli ve bu k&amp;uuml;t&amp;uuml;phane i&amp;ccedil;erisine servis s&amp;ouml;zleşmemizi(Service Contract), uzak nesnemizin modelini(class), veri s&amp;ouml;zleşmesine(Data Contract) sahip tipimizi katmalıyız. Sonrasında IIS &amp;uuml;zerinden ilgili k&amp;uuml;t&amp;uuml;phanemizi işaret edecek bir sanal klas&amp;ouml;r (virtual path) oluşturmalıyız. Yayınlama ortamı IIS olduğundan, WCF i&amp;ccedil;in gerekli konfigurasyon ayarlarını &lt;strong&gt;web.config&lt;/strong&gt; dosyası i&amp;ccedil;erisinde tutmamız gerekmektedir. Bu noktada konfigurasyon ayarlarını g&amp;ouml;rsel bir aray&amp;uuml;z&amp;uuml; kullanarak kolay bir şekilde oluşturabiliriz. Diğer taraftan aynı web servislerinde olduğu gibi asmx uzantılı dosyaların g&amp;ouml;revini &amp;uuml;stlenen svc uzantılı bir dosya oluşturmalıyız.&lt;/p&gt;
+&lt;p&gt;İlk olarak bilgisayarımızın herhangibir yerinde konuşlandırılacak bir sınıf k&amp;uuml;t&amp;uuml;phanesi (class library) projesi oluşturalım. UrunKutuphanesi isimli projemizi yine &lt;strong&gt;.Net Framework 3.0&lt;/strong&gt; sonrası Visual Studio 2005 i&amp;ccedil;in gelen eklentilerden &lt;strong&gt;WCF Service Library&lt;/strong&gt; olarak a&amp;ccedil;abiliriz. Ama bu şablon yoksada &amp;ouml;nemli değildir. &amp;Ccedil;&amp;uuml;nk&amp;uuml; yapmamız gereken &lt;strong&gt;System.ServiceModel,&lt;/strong&gt; &lt;strong&gt;System.Runtime.Serialization&lt;/strong&gt; ve &lt;strong&gt;System.IdentityModel&lt;/strong&gt; assembly' larını referans edecek olan bir proje geliştirmektir. &lt;em&gt;(Bu assembly' ların .Net Framework 3.0 ile geldiklerine dikkat edelim.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk201_1.gif" alt="" width="238" height="227" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Sınıf k&amp;uuml;t&amp;uuml;phanemiz i&amp;ccedil;erisinden, &lt;strong&gt;AdventureWorks&lt;/strong&gt; i&amp;ccedil;erisindeki tablolara ilişkin bazı hizmetler vereceğiz. Bunlardan biriside &lt;strong&gt;HumanResources&lt;/strong&gt; şemasındaki &lt;strong&gt;Employee&lt;/strong&gt; tablosundan herhangibir &amp;ccedil;alışan bilgisini d&amp;ouml;nd&amp;uuml;recek bir metod olacaktır. Lakin bu metodun d&amp;ouml;n&amp;uuml;ş&amp;uuml;nde biz kendi geliştireceğimiz sınıfımıza ait bir nesne &amp;ouml;rneğini d&amp;ouml;nd&amp;uuml;receğiz. Bu nedenle ilk olarak aşağıdaki gibi bir sınıfı, k&amp;uuml;t&amp;uuml;panemiz i&amp;ccedil;erisine katarak işe başlayabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk201_2.gif" alt="" width="349" height="216" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[DataContract]
+public class Employee
+{
+    [DataMember]
+    public int EmployeeId;
+
+    [DataMember]
+    public string Title;
+
+    [DataMember]
+    public DateTime BirthDate;
+
+    [DataMember]
+    public int VacationHours;
+
+    public Employee()
+    {
+    }
+    public Employee(int id, string title, DateTime birth, int vacation)
+    {
+        EmployeeId = id;
+        Title = title;
+        BirthDate = birth;
+        VacationHours = vacation;
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Employee isim sınıfımız &amp;ccedil;ok basit olarak bir ka&amp;ccedil; public alan(&lt;strong&gt;Field&lt;/strong&gt;) ile, aşırı y&amp;uuml;klenmiş(&lt;strong&gt;overload&lt;/strong&gt;) ve varsayılan yapıcı&lt;strong&gt;(default constructor)&lt;/strong&gt; metodları i&amp;ccedil;ermektedir. Ancak burada asıl dikkat edilmesi gereken sınıfın ve &amp;uuml;yelerin nitelikleridir. Dikkat ederseniz sınıfımız &lt;strong&gt;DataContract&lt;/strong&gt; niteliği(attribute) ile, public olan alanlarımız ise &lt;strong&gt;DataMember&lt;/strong&gt; nitelikleri ile işaretlemiş durumdadır. DataContract ve DataMember isimli niteliklerimiz &lt;strong&gt;System.Runtime.Serialization&lt;/strong&gt; isim alanı altında yer alan sınıflardır. B&amp;ouml;ylece servisimizin d&amp;ouml;nd&amp;uuml;receği &amp;ouml;zel bir tip i&amp;ccedil;in gerekli veri s&amp;ouml;zleşmesini bildirmiş bulunuyoruz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk201_3.gif" alt="" width="262" height="201" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Eğer servis metodlarımız geriye ilkel tipler d&amp;ouml;nd&amp;uuml;rm&amp;uuml;yorsa (int, double, string gibi), &amp;ouml;zellikle Employee gibi geliştirici tarafından tasarlanmış tipler s&amp;ouml;z konusu ise mutlaka bir veri s&amp;ouml;zleşmesinin&lt;strong&gt;(data contract)&lt;/strong&gt; tanımlanması gerekmektedir. &lt;em&gt;(İlerleyen makalelerimizde veri s&amp;ouml;zleşmelerine daha detaylı bir şekilde bakmaya &amp;ccedil;alışacağız.) &lt;/em&gt;Artık kendi veri s&amp;ouml;zleşmemizide(Data Contract) tanımladığımıza, bir başka deyişle servisteki ilgili metoddan geriye nasıl bir tip d&amp;ouml;nd&amp;uuml;r&amp;uuml;leceğini bildirdiğimize g&amp;ouml;re, iş yapan metodlarımızı i&amp;ccedil;erecek tip i&amp;ccedil;in gerekli servis s&amp;ouml;zleşmesini&lt;strong&gt; (service contract)&lt;/strong&gt; yazarak işlemlerimize devam edebiliriz. IAdventure isimli aray&amp;uuml;z&amp;uuml;m&amp;uuml;n i&amp;ccedil;eriği aşağıda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk201_4.gif" alt="" width="281" height="155" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[ServiceContract(Name="Adventure Works Services")]
+public interface IAdventure
+{
+    [OperationContract]
+    Employee GetEmployee(int employeeId);
+
+    [OperationContract]
+    DataSet GetAllProducts();
+
+    [OperationContract]
+    List&amp;lt;string&amp;gt; GetAllSubCategoryNames();
+
+    [OperationContract]
+    double AverageSubTotalFromHeaders();
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;IAdventure&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;m&amp;uuml;ze(interface) ait &amp;uuml;yelerde &amp;ouml;zellikle &amp;ccedil;eşitli tiplerden d&amp;ouml;n&amp;uuml;ş değerleri kullanmaya &amp;ccedil;alıştık. Bildiğiniz gibi, yazacağımız servisin istemciler tarafından kullanılacak bir s&amp;ouml;zleşmesi olması gerekmektedir. Herhanbiri aray&amp;uuml;z&amp;uuml;n veya sınıfın bir servis s&amp;ouml;zleşmesi (Service Contract) sağlayacağını bildirmek i&amp;ccedil;in &lt;strong&gt;ServiceContract&lt;/strong&gt; niteliği ile imzalamak gerekmektedir. Benzer şekilde servisin sunabileceği metodları bildirmek i&amp;ccedil;inse &lt;strong&gt;OperationContract&lt;/strong&gt; isimli nitelik kullanılmaktadır. ServiceContract ve OperationContract isimli nitelikler(attributes), &lt;strong&gt;System.ServiceModel&lt;/strong&gt; isim alanı(namespace) altında yer almaktadır.&lt;/p&gt;
+&lt;p&gt;Servis s&amp;ouml;zleşmemizi tanımladıktan sonra, uzak nesne olarak asıl iş yapan metodları taşıyacak ve istemcilerin başvuruda bulanabileceği sınıfı tasarlayabiliriz. &lt;strong&gt;AdventureManager&lt;/strong&gt; isimli sınıfımız herşeyden &amp;ouml;nce &lt;strong&gt;IAdventure&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml; uyarlamalıdır(Implementation).&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk201_5.gif" alt="" width="301" height="198" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;class AdventureManager:IAdventure
+{
+    #region IAdventure Members
+
+    public Employee GetEmployee(int employeeId)
+    {
+        Employee emp=null;
+        using (SqlConnection conn = new SqlConnection("data source=localhost;database=AdventureWorks;integrated security=SSPI"))
+        {
+            SqlCommand cmd = new SqlCommand("Select EmployeeId,Title,BirthDate,VacationHours From HumanResources.Employee Where EmployeeId=@EmpId", conn);
+            cmd.Parameters.AddWithValue("@EmpId", employeeId);
+            conn.Open();
+            SqlDataReader dr = cmd.ExecuteReader();
+            if (dr.Read())
+            {
+                emp = new Employee();
+                emp.EmployeeId = Convert.ToInt32(dr["EmployeeId"]);
+                emp.Title = dr["Title"].ToString();
+                emp.VacationHours = Convert.ToInt32(dr["VacationHours"]);
+                emp.BirthDate = Convert.ToDateTime(dr["BirthDate"]);
+            }
+            dr.Close();
+        }
+        return emp;
+    }
+
+    public DataSet GetAllProducts()
+    {
+        DataSet ds=null;
+        using (SqlConnection conn = new SqlConnection("data source=localhost;database=AdventureWorks;integrated security=SSPI"))
+        {
+            SqlDataAdapter da = new SqlDataAdapter("Select ProductId,Name,ListPrice,Class,SellStartDate From Production.Product", conn);
+            ds = new DataSet();
+            da.Fill(ds);
+        }
+        return ds;
+    }
+
+    public List&amp;lt;string&amp;gt; GetAllSubCategoryNames()
+    {
+        List&amp;lt;string&amp;gt; categoryNames = null;
+        using (SqlConnection conn = new SqlConnection("data source=localhost;database=AdventureWorks;integrated security=SSPI"))
+        {
+            SqlCommand cmd = new SqlCommand("Select ProductSubCategoryId,Name From Production.ProductSubCategory Order By Name", conn);
+            conn.Open();
+            SqlDataReader dr = cmd.ExecuteReader();
+            categoryNames = new List&amp;lt;string&amp;gt;();
+            while (dr.Read())
+            {
+                categoryNames.Add(dr["Name"].ToString());
+            }
+            dr.Close();
+        }
+        return categoryNames;
+    }
+
+    public double AverageSubTotalFromHeaders()
+    {
+        double average=0;
+        using (SqlConnection conn = new SqlConnection("data source=localhost;database=AdventureWorks;integrated security=SSPI"))
+        {
+            SqlCommand cmd = new SqlCommand("Select Avg(SubTotal) From Sales.SalesOrderHeader", conn);
+            conn.Open();
+            average = Convert.ToDouble(cmd.ExecuteScalar());
+        }
+        return average;
+    }
+
+    #endregion
+}&lt;/pre&gt;
+&lt;p&gt;AdventureManager isimli sınıfımız i&amp;ccedil;erisinde kullandığımız metodlar basit Ado.Net fonksiyonelliklerini ele alarak farklı tiplerde sonu&amp;ccedil;lar &amp;uuml;retmektedir. Konumuz WCF olduğu i&amp;ccedil;in metod i&amp;ccedil;erisindeki kod par&amp;ccedil;alarının işleyiş şekline &amp;ccedil;ok fazla değinmeyeceğiz. Sırada servis i&amp;ccedil;in gerekli sanal klas&amp;ouml;r&amp;uuml;n, svc dosyasının ve web.config dosyasının oluşturulması adımları yer almaktadır.&lt;/p&gt;
+&lt;p&gt;İlk olarak IIS &amp;uuml;zerinde sanal klas&amp;ouml;r&amp;uuml;m&amp;uuml;z&amp;uuml; oluşturalım. &amp;Ouml;zellikle IIS &amp;uuml;zerinden host edilen assembly' lar g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında, dll' in &lt;strong&gt;Bin&lt;/strong&gt; klas&amp;ouml;r&amp;uuml; altında yer alması ve Bin klas&amp;ouml;r&amp;uuml; ile aynı seviyede bir &lt;strong&gt;web.config&lt;/strong&gt; dosyası olması gerekmektedir. S&amp;ouml;z konusu web.config dosyası uzak nesne kullanımı i&amp;ccedil;in gerekli alt yapı ayarlarını barındırmaktadır. &amp;Ouml;rneğimizde IIS altına a&amp;ccedil;acağımız sanal klas&amp;ouml;r(Virtual Directory) i&amp;ccedil;inde aynı durumu ele almak istediğimizden proje &amp;ouml;zelliklerine girip &lt;strong&gt; Build&lt;/strong&gt; sekmesinde yer alan &lt;strong&gt;Output Path&lt;/strong&gt; &amp;ouml;zelliğinin değerinin &lt;strong&gt;bin\debug&lt;/strong&gt; adresinden &lt;strong&gt;bin\ &lt;/strong&gt;adresine &amp;ccedil;ekilmesi yeterli olacaktır. B&amp;ouml;ylece, kodda yapacağımız değişikliker anında canlı ortamada yansıyacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk201_6.gif" alt="" width="319" height="109" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu tarz bir işlem zorunlu değildir. Sanal Klas&amp;ouml;r&amp;uuml;n(Virtual Directory) işaret edeceği başka bir fiziki adreste belirlenebilir ancak yine &lt;strong&gt;Bin&lt;/strong&gt; klas&amp;ouml;r&amp;uuml;n&amp;uuml;n olması, dll' in kopyasının burada yer alması ve bin ile aynı seviyede bir &lt;strong&gt;web.config &lt;/strong&gt;dosyasının alt yapı ayarlarını i&amp;ccedil;erecek şekilde olması şarttır. &amp;Ouml;rneğimizde, yapacağımız derlemelerin anında yansımalarını test edebilmek amacıyla bu tarz bir &amp;ouml;n hazırlık yapmayı tercih ediyoruz. Artık IIS altında sanal klas&amp;ouml;r&amp;uuml;m&amp;uuml;z&amp;uuml; oluşturabiliriz. Aşağıdaki flash animasyonunda basit olarak IIS &amp;uuml;zerinde yapmamız gereken adımlar g&amp;ouml;sterilmektedir. &lt;em&gt;(Flash animasyonunun boyutu 187 kb olup y&amp;uuml;klenmesi zaman alabilir.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;object id="obj3" width="481" height="373" classid="clsid:D27CDB6E-AE6D-11CF-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0" border="0"&gt;
+&lt;param name="movie" value="http://www.buraksenyurt.com/makale/images/mk201_video1.swf" /&gt;
+&lt;param name="quality" value="High" /&gt; &lt;embed type="application/x-shockwave-flash" width="481" height="373" src="http://www.buraksenyurt.com/makale/images/mk201_video1.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" name="obj3" /&gt;&lt;/object&gt;&lt;/p&gt;
+&lt;p&gt;Makalemizde ilerlemeden &amp;ouml;nce Web servisleri ile HTTP &amp;uuml;zerinden iletişime ge&amp;ccedil;erken devreye giren asmx uzantılı dosyaları g&amp;ouml;z &amp;ouml;n&amp;uuml;ne almamızda fayda olacaktır. Sonu&amp;ccedil; itibariyle WCF servisimizi IIS &amp;uuml;zerinden host ederken &lt;strong&gt;asmx&lt;/strong&gt; ile aynı amaca y&amp;ouml;nelik bir dosya var olmalıdır ki bu sayede istemciler URL &amp;uuml;zerinden servis metadata i&amp;ccedil;eriğini talep edebilsinler. İşte WCF i&amp;ccedil;in bu g&amp;ouml;revi yerine getiren &lt;strong&gt;svc&lt;/strong&gt; uzantılı bir servis dosyası olacaktır. Bu dosya aynı zamanda &lt;strong&gt;EndPoint&lt;/strong&gt; i&amp;ccedil;in gerekli adres tanımlanırkende ele alınacaktır. &lt;em&gt;(Bildiğiniz gibi bir WCF servisi i&amp;ccedil;erisinde birden fazla EndPoint yer alabilir ve bunların ayrıt edici &amp;ouml;zelliklerinden biriside adresleridir.) &lt;/em&gt;Bu nedenle projemize aşağıdaki i&amp;ccedil;eriğe sahip olan svc uzantılı bir dosya eklememiz gerekmektedir. Bu dosya tipini &amp;ouml;ğeler arasından bulamayabilirsiniz. Bu nedenle boş bir text dosyasını svc uzantısı ile kaydederek sorunu aşabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk201_9.gif" alt="" width="211" height="174" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;%@ServiceHost Service="UrunKutuphanesi.AdventureManager"%&amp;gt;
+&amp;lt;%@Assembly Name="UrunKutuphanesi"%&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Svc dosyamız i&amp;ccedil;erisinde iki direktif yer almaktadır. &lt;strong&gt;ServiceHost&lt;/strong&gt; direktifi i&amp;ccedil;erisinde Service' e ait tip bilgisi yer alır. Bir başka deyişle uzak nesne g&amp;ouml;revini &amp;uuml;stlenecek olan tipimizi bildiririz. Dikkat ederseniz notasyon olarak isimAlanı.tipAdı formatı kullanılmıştır. &lt;strong&gt;Assembly&lt;/strong&gt; direktifinde ise s&amp;ouml;z konusu tipin, i&amp;ccedil;erisinde yer aldığı assembly adı bildirilmektedir.&lt;/p&gt;
+&lt;p&gt;Artık web.config dosyamız i&amp;ccedil;in gerekli konfigurasyon tanımlamalarını yapabiliriz. (&lt;em&gt;Yada g&amp;ouml;rsel aracımız yardımıyla kolayca inşa edebiliriz :) ) &lt;/em&gt;Bu ama&amp;ccedil;la projemize yeni bir &lt;strong&gt;Application Configuration File&lt;/strong&gt; &amp;ouml;ğesi (Item) ekleyelim ve ismini &lt;strong&gt;web.config&lt;/strong&gt; olarak değiştirelim. Konfigurasyon ayarlarımızı yapmak i&amp;ccedil;in web.config dosyamıza sağ tıklayıp&lt;strong&gt;, Edit WCF Configuration&lt;/strong&gt; se&amp;ccedil;eneğini işaretlememiz yeterli olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk201_7.gif" alt="" width="210" height="201" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Edit WCF Configuration vasıtasıyla a&amp;ccedil;ılan yardımcı arabirim aslında, IIS &amp;uuml;zerinde yer alan Asp.Net sekmesindeki Edit Configuration linki yardımıyla a&amp;ccedil;ılana benzemektedir. Ancak kullanım amacı tamamıyla WCF' a y&amp;ouml;neliktir ve daha da &amp;ouml;nemlisi IDE dışına &amp;ccedil;ıkmadan gerekli &amp;ouml;n hazırlıkların yapılabilmesini sağlamaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk201_8.gif" alt="" width="433" height="296" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Elbette buradaki ayarları yapmadan &amp;ouml;nce bir WCF servisi i&amp;ccedil;in gereken temel konfigurasyon ayarlarının ne olduğunu bilmek gerekmektedir. Bu konu ile ilgili bir &amp;ouml;nceki &lt;a href="http://www.bsenyurt.com/MakaleGoster.aspx?ID=191"&gt;makalemizden&lt;/a&gt; de hatırlayacağınız gibi, WCF' nin &lt;strong&gt;ABC&lt;/strong&gt;' si &amp;ouml;nemli bir rol oynamaktadır. Yani &lt;strong&gt;AddressBindingContract&lt;/strong&gt; &amp;uuml;&amp;ccedil;lemesinden s&amp;ouml;z ediyoruz. Bu kuralları konfigurasyon dosyamızda da g&amp;ouml;z &amp;ouml;n&amp;uuml;ne almalıyız. WCF Configuration arabirimi, service ve istemci&lt;strong&gt;(Client)&lt;/strong&gt; tarafı i&amp;ccedil;in ayrı ayrı konfigurasyon dosyaları hazırlanabilmesine olanak tanımaktadır. Şu aşamadan biz servis&lt;strong&gt;(Service)&lt;/strong&gt; tarafı i&amp;ccedil;in gerekli konfigurasyon ayarlarını yapacağız. Bu ama&amp;ccedil;la &lt;strong&gt;Create a New Service&lt;/strong&gt; linkinden faydalanabilir yada manuel olarak &lt;strong&gt;Configuration&lt;/strong&gt; sekmesini kullanabiliriz. Biz &amp;ouml;rneğimizde Create a New Service linkinden faydalanacağız.&lt;/p&gt;
+&lt;p&gt;Bu linke tıklandıktan sonra sihirbaz bizden uzak nesne g&amp;ouml;revini &amp;uuml;stlenecek tipi se&amp;ccedil;memizi isteyecektir. &amp;Ouml;rneğimizde s&amp;ouml;z konusu olan tip &lt;strong&gt;AdventureManager&lt;/strong&gt; sınıfıdır. Bu se&amp;ccedil;imin arkasından sihirbaz, servis s&amp;ouml;zleşmesini&lt;strong&gt;(Service Contract)&lt;/strong&gt; i&amp;ccedil;eren tipi belirtmemizi isteyecektir. &amp;Ouml;rneğimizde bu y&amp;uuml;k&amp;uuml; &amp;uuml;stlenen &lt;strong&gt; IAdventure&lt;/strong&gt; isimli aray&amp;uuml;zd&amp;uuml;r(Interface). WCF Configuration IDE' si eğer ilk adımda se&amp;ccedil;ilen tipin uyarladığı ve &lt;strong&gt;ServiceContract&lt;/strong&gt; niteliğini taşıyan bir aray&amp;uuml;z var ise bunu otomatik olarak bulacaktır. Bir sonraki adımda bağlantı tipi se&amp;ccedil;ilir. Burada &lt;strong&gt;HTTP, TCP, MSMQ, Peer To Peer&lt;/strong&gt; gibi se&amp;ccedil;enekler yer almaktadır. &amp;Ouml;rneğimizde HTTP tipini se&amp;ccedil;erek ilerleyeceğiz. Takip eden adımımızda &lt;strong&gt;WSI (Web Service Interoperability)&lt;/strong&gt; ayarları yapılabilir veya varsayılan hali ile bırakılabilir. Biz bu adımı değiştirmeden devam edebiliriz. Son adımda ise servisimiz i&amp;ccedil;in bir &lt;strong&gt;endpoint&lt;/strong&gt; adresi bildirilmesi gerekmektedir.&lt;/p&gt;
+&lt;p&gt;WCF mimarisinde istemciler(Clients), WCF Servisleri ile haberleşirken taleplerini &lt;strong&gt;proxy&lt;/strong&gt; sınıflarına iletirler. Proxy sınıfları ise servis &amp;uuml;zerinde yer alan endpoint' ler ile haberleşebilirler. Bu sebepten servis tarafında endpoint tanımlamalarının yapılması gerekmektedir. Bir endpoint tanımlaması i&amp;ccedil;erisinde servisin adres bilgiside bulunur. Bu sebepten bu adımda &lt;strong&gt;HTTP&lt;/strong&gt; protokol&amp;uuml;ne uygun bir adres girilmesi gerekir. Zaten &amp;ouml;rneğimizi IIS &amp;uuml;zerinden sunduğumuz ve sanal klas&amp;ouml;r&amp;uuml;m&amp;uuml;z&amp;uuml; buna g&amp;ouml;re oluşturduğumuz i&amp;ccedil;in vereceğimiz adres bellidir.http://localhost/AdventureService/Adventure.svc .Dikkat ederseniz adresimizde daha &amp;ouml;nceden oluşturduğumuz Adventure.svc isimli dosyamızda yer almaktadır. B&amp;ouml;ylece şimdilik gerekli WCF ayarlarını tamamlamış bulunuyoruz. Aşağıdaki Flash animasyonuda gerekli ayarların nasıl yapıldığını izleyebilirsiniz. &lt;em&gt;(Flash dosyasının boyutu 229 kb olduğu i&amp;ccedil;in y&amp;uuml;klenmesi zaman alabilir)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;object id="obj2" width="633" height="493" classid="clsid:D27CDB6E-AE6D-11CF-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0" border="0"&gt;
+&lt;param name="movie" value="http://www.buraksenyurt.com/makale/images/mk201_video2.swf" /&gt;
+&lt;param name="quality" value="High" /&gt; &lt;embed type="application/x-shockwave-flash" width="633" height="493" src="http://www.buraksenyurt.com/makale/images/mk201_video2.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" name="obj2" /&gt;&lt;/object&gt;&lt;/p&gt;
+&lt;p&gt;Bu işlemlerin ardından web.config dosyamızın i&amp;ccedil;eriğide aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+    &amp;lt;configuration&amp;gt;
+        &amp;lt;system.serviceModel&amp;gt;
+            &amp;lt;services&amp;gt;
+                &amp;lt;service name="UrunKutuphanesi.AdventureManager"&amp;gt;
+                    &amp;lt;endpoint address="http://localhost/AdventureService/Adventure.svc" binding="basicHttpBinding" bindingConfiguration="" contract="UrunKutuphanesi.IAdventure" /&amp;gt;
+                &amp;lt;/service&amp;gt;
+            &amp;lt;/services&amp;gt;
+        &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Artık servisimizin &amp;ccedil;alışıp &amp;ccedil;alışmadığını tarayıcı penceremiz &amp;uuml;zerinden test edebiliriz. Tek yapmamız gereken http://localhost/AdventureService/Adventure.svc adresini talep etmek olacaktır. Bu talep sonucunda eğer herşey yolunda ise aşağıdakine benzer bir ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; ile karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk201_10.gif" alt="" width="604" height="384" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Yine dikkat edilecek olursa servisin metadata yayınlamasının&lt;strong&gt;(MetaData Publishing)&lt;/strong&gt; aktif olmadığını g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Bildiğiniz gibi metadata bilgisi istemcilerin proxy sınıflarını oluşturabilmeleri i&amp;ccedil;in gereklidir. Bunu sağlamak maksadıyla yeni bir servis davranışı&lt;strong&gt;(Service Behavior)&lt;/strong&gt; oluşturulmalı ve servise bildirilmelidir. Bu ama&amp;ccedil;la ilk olarak &lt;strong&gt;Advanced&lt;/strong&gt; sekmesinde yer alan &lt;strong&gt;Service Behaviors&lt;/strong&gt; kısmından yeni bir davranış nesnesi eklenmeli ve aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan ayarlar yapılmalıdır. Bu ayarlara g&amp;ouml;re eklenen servis davranışına bir isim verilmiş (Name &amp;ouml;zelliği ile) ve &lt;strong&gt;serviceMetadata&lt;/strong&gt; elementi dahil edilmiştir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk201_11.gif" alt="" width="621" height="356" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ServiceMetadata&lt;/strong&gt; elementinin i&amp;ccedil;eriğininde aşağıdaki gibi d&amp;uuml;zenlenmesi gerekmektedir. Burada &lt;strong&gt;HttpGetEnabled&lt;/strong&gt; &amp;ouml;zelliğinin değerini &lt;strong&gt;true&lt;/strong&gt; olarak belirlemeliyiz ki HTTP &amp;uuml;zerinden servis metadata i&amp;ccedil;eriğini &amp;ccedil;ekebilelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk201_13.gif" alt="" width="514" height="152" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Sonrasında ise servisimizin belirtilen davranışı kullanacağını bildirmemiz gerekmektedir. Bunun i&amp;ccedil;inde servisin, &lt;strong&gt; BehaviorConfiguration&lt;/strong&gt; elementine aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi az &amp;ouml;nce oluşturulan Service Behavior nesnesinin adını vermeliyiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk201_12.gif" alt="" width="620" height="144" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu işlemlerin ardından servisimize ait web.config dosyasının son halide aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;system.serviceModel&amp;gt;
+        &amp;lt;behaviors&amp;gt;
+            &amp;lt;serviceBehaviors&amp;gt;
+                &amp;lt;behavior name="AdventureServiceBehavior"&amp;gt;
+                    &amp;lt;serviceMetadata httpGetEnabled="true" /&amp;gt;
+                &amp;lt;/behavior&amp;gt;
+            &amp;lt;/serviceBehaviors&amp;gt;
+        &amp;lt;/behaviors&amp;gt;
+        &amp;lt;services&amp;gt;
+            &amp;lt;service behaviorConfiguration="AdventureServiceBehavior" name="UrunKutuphanesi.AdventureManager"&amp;gt;
+                &amp;lt;endpoint address="http://localhost/AdventureService/Adventure.svc" binding="basicHttpBinding" bindingConfiguration="" contract="UrunKutuphanesi.IAdventure" /&amp;gt;
+            &amp;lt;/service&amp;gt;
+        &amp;lt;/services&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi servisimiz i&amp;ccedil;in berlilediğimiz davranış ve servis ile olan ilişkisi otomatik olarak konfigurasyon dosyasına element ve nitelikler yardımıyla yansıtılmıştır. Servisimizi tarayıcı penceresi &amp;uuml;zerinden yeniden talep edersek aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; ile karşılaşırız. Dikkat edersek, servise ait Wsdl d&amp;ouml;k&amp;uuml;manını elde edebilmemizi sağlayacak bir link bilgiside yer almaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk201_14.gif" alt="" width="599" height="255" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu kadar işlemden sonra artık istemcimizi yazmaya başlayabiliriz. İstemci tarafında herhangibir uygulama s&amp;ouml;z konusu olabilir. Biz mimariyi basit bir şekilde ele almaya &amp;ccedil;alıştığımızdan bir Console uygulaması geliştireceğiz. Yine Visual Studio 2005' in &lt;strong&gt;Add Service Reference&lt;/strong&gt; se&amp;ccedil;eneğini kullanarak ilgili servisi otomatik olarak uygulamamıza ekleyebilir ve gerekli proxy sınıfının kolay bir şekilde oluşturulmasını sağlayabiliriz.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Visual Studio 2005 dışında, bir WCF servisine ait metadata bilgisini elde edip proxy sınıfını ve istemci i&amp;ccedil;in gereken konfigurasyon dosyasını elde etmek amacıyla, &lt;strong&gt;svcutil&lt;/strong&gt; isimli Framework 3.0 aracıda kullanılabilmektedir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Console uygulamamızı oluşturduktan sonra projeye sağ tıklayıp &lt;strong&gt;Add Service Reference&lt;/strong&gt; se&amp;ccedil;eneğini kullanarak WCF servisimizi projemize eklememiz gerekmektedir. Burada i&amp;ccedil;eride kullanmak istediğimiz isim alanının adınıda belirtebiliriz. Varsayılan olarak aynı web servislerinde olduğu gibi localhost verilmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk201_15.gif" alt="" width="530" height="216" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu işlemin ardından istemci i&amp;ccedil;in gereken proxy sınıfı ve konfigurasyon dosyası otomatik olarak oluşturulacaktır. Artık aşağıdaki kod satırlarını kullanarak sanki sıradan bir web servisini kullanıyormuş gibi WCF Servisimizi ele alabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Data;
+using Istemci.localhost;
+
+namespace Istemci
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            localhost.AdventureWorksServicesClient adw = new Istemci.localhost.AdventureWorksServicesClient();
+            DataSet ds = adw.GetAllProducts();
+            Console.WriteLine("Urun sayısı {0} dır",ds.Tables[0].Rows.Count.ToString());
+
+            string[] categoryNames=adw.GetAllSubCategoryNames();
+            foreach (string category in categoryNames)
+                Console.WriteLine(category);
+
+            Employee emp=adw.GetEmployee(1);
+            Console.WriteLine(emp.Title + " " + emp.BirthDate.ToShortDateString() + " " + emp.VacationHours.ToString());
+
+            Console.WriteLine("Ortalama Sub Total {0}",adw.AverageSubTotalFromHeaders().ToString("C2"));
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Uygulamayı bu haliyle &amp;ccedil;alıştırdığımızda GetAllProducts metodu i&amp;ccedil;in aşağıdaki gibi &amp;ccedil;alışma zamanı istisnası (run-time exception) alırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk201_16.gif" alt="" width="602" height="142" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bunun sebebi istemci tarafında oluşturulan konfigurasyon dosyasında belirtilen &lt;strong&gt;MaxReceivedMessageSize&lt;/strong&gt; boyutunun d&amp;uuml;ş&amp;uuml;k olmasıdır. Nitekim d&amp;ouml;nen DataSet i&amp;ccedil;eriğinin yer aldığı paketin boyutu &amp;ccedil;ok daha fazladır. Bu nedenle istemci uygulamaya ait App.config dosyasını Edit WCF Configuration ile a&amp;ccedil;ıp aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi &lt;strong&gt; MaxReceivedMessageSize&lt;/strong&gt; ve &lt;strong&gt;MaxBufferSize&lt;/strong&gt; &amp;ouml;zelliklerinin aynı değere set edilmesi gerekir. &amp;Ouml;rneğimizde bu değerlerin sonuna bir 0 eklenmiştir. Burada dikkat edilmesi gereken noktalardan birisi de, her iki değerinde aynı olması zorunluluğudur. Aksi takdire &amp;ccedil;alışma zamanında yine bir istisna alırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk201_19.gif" alt="" width="402" height="89" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu sebepten ayarlarımız &amp;ouml;rneğin aşağıdaki gibi olmalıdır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk201_17.gif" alt="" width="635" height="306" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğimizdeki kodlarımızı incelersek eğer, ilgin&amp;ccedil; olan bir nokta olduğunu farkederiz. &lt;strong&gt;GetAllSubCategoryNames&lt;/strong&gt; metodu servis tarafında geriye generic bir List koleksiyonu d&amp;ouml;nd&amp;uuml;r&amp;uuml;yorkan, istemci tarafında metodun d&amp;ouml;n&amp;uuml;ş&amp;uuml; &lt;strong&gt;string[]&lt;/strong&gt; tipinden bir dizi olmuştur. Buda aslında farklı tipteki istemciler i&amp;ccedil;in ortak bir standart koyulmaya &amp;ccedil;alışıldığı şeklinde yorumlanabilir. Uygulamayı &amp;ccedil;alıştırdığımızda aşağıdakine benzer bir ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk201_18.gif" alt="" width="349" height="535" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu makalemizde Windows Communication Foundation &amp;ccedil;atısı altında, servislerimizi IIS &amp;uuml;zerinden nasıl yayınlayıp kullanabileceğimizi incelemeye &amp;ccedil;alıştık. Bunu yaparken bir servis s&amp;ouml;zleşmesini&lt;strong&gt;(Service Contract)&lt;/strong&gt; nasıl tanımlayabileceğimizi, bu s&amp;ouml;zleşmeyi uygulayan asıl uzak nesne sınıfının geriye kullanıcı tanımlı bir tip d&amp;ouml;nd&amp;uuml;rmesi halide veri s&amp;ouml;zleşmesini&lt;strong&gt;(data contract)&lt;/strong&gt; nasıl geliştirmemiz gerektiğini g&amp;ouml;rd&amp;uuml;k. Bunlara ek olarak &amp;ouml;zellikle &lt;strong&gt;IIS Hosting&lt;/strong&gt; i&amp;ccedil;in &lt;strong&gt;svc&lt;/strong&gt; uzantılı dosyaların rol&amp;uuml;n&amp;uuml; inceledik ve konfigurasyon dosyalarını daha kolay oluşturabilmemizi sağlayan &lt;strong&gt;Edit WCF Configuration&lt;/strong&gt; se&amp;ccedil;eneğini ele aldık. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;şmek dileğiyle hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/makale/images/UrunKutuphanesi.rar"&gt;&amp;Ouml;rnek Uygulama İ&amp;ccedil;in Tıklayınız.&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2007-04-28 03:00:00</pubDate>
+  <slug>WCF-Adc4b1m-Adc4b1m-IIS-Hosting-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>wcf</tag>
+    <tag>windows-communication-foundation</tag>
+    <tag>iis</tag>
+    <tag>internet-information-services</tag>
+  </tags>
+  <categories>
+    <category>WCF</category>
+  </categories>
+</post>

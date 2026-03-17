@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Rust Pratikleri - State Tasarım Kalıbı</title>
+  <description>Belli bir akış içerisinde ele alınan nesneler belli durumlara sahiptirler. Bu durumlar arasındaki geçişler için fonksiyonlardan yararlanılırken bazı kuralların işletilmesi de istenebilir. Örneğin belli bir duruma sahipken diğer bir duruma geçilmesini engelleyen karar mekanizmaları ve koşullar söz konusudur. Hatta programın belli bir t anında içinde bulunabileceği durumlar bellidir. Nesne yönelimli dillerde bu gibi ihtiyaçlar için davranışsal(Behavioral) kalıplardan olan State tasarım deseni sıklıkla kullanılır. Hatta oyun programlamada State Machine türevli motorlarda nesne durumlarının yönetimi için bu desene ait pratikler söz konusudur.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2022/Mayis/state_pattern_2.png" alt="" /&gt;Belli bir akış i&amp;ccedil;erisinde ele alınan nesneler belli durumlara sahiptirler. Bu durumlar arasındaki ge&amp;ccedil;işler i&amp;ccedil;in fonksiyonlardan yararlanılırken bazı kuralların işletilmesi de istenebilir. &amp;Ouml;rneğin belli bir duruma sahipken diğer bir duruma ge&amp;ccedil;ilmesini engelleyen karar mekanizmaları ve koşullar s&amp;ouml;z konusudur. Hatta programın belli bir t anında i&amp;ccedil;inde bulunabileceği durumlar bellidir. Nesne y&amp;ouml;nelimli dillerde bu gibi ihtiya&amp;ccedil;lar i&amp;ccedil;in davranışsal&lt;em&gt;(Behavioral)&lt;/em&gt; kalıplardan olan State tasarım deseni sıklıkla kullanılır. Hatta oyun programlamada State Machine t&amp;uuml;revli motorlarda nesne durumlarının y&amp;ouml;netimi i&amp;ccedil;in bu desene ait pratikler s&amp;ouml;z konusudur.&lt;/p&gt;
+&lt;p&gt;Pek tabii nesne y&amp;ouml;nelimli diller denince işin i&amp;ccedil;erisine interface, class ve object gibi kavramlar da dahil olur. Rust a&amp;ccedil;ısından olaya baktığımızda ise elimizde struct ve ortak davranış modellemesi i&amp;ccedil;in kullanabileceğimiz trait'ler vardır. Her ne kadar bazı kaynaklarda ve tartışmalarda Rust'ın nesne y&amp;ouml;nelimli bir dil hedefi ile geliştirilmediği ifade edilse de&lt;em&gt;(ki pek &amp;ccedil;ok noktada haklılık payı var)&lt;/em&gt;&amp;nbsp;eldeki enstr&amp;uuml;manlar bu &amp;ouml;rnekte olduğu gibi bir&amp;ccedil;ok kalıbın uygulanabilmesine de imkan tanımaktadır. Biz bu &amp;ouml;rnekte State tasarım kalıbını Rust tarafında nasıl uygulayabiliriz &amp;ouml;ğrenmeye &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;ncelikle işletilebilir&amp;nbsp;bir senaryo d&amp;uuml;ş&amp;uuml;nelim. &amp;Ouml;rneğin iş biriminin bir &amp;uuml;r&amp;uuml;nle ilgili yazılım değişiklik taleplerinin belli bir akışı olduğunu d&amp;uuml;ş&amp;uuml;nelim. Talebin kendisini ChangeRequest gibi bir veri modeli olarak tasarlayabiliriz. Bu nesnenin kullanıldığı akışın da belli kuralları olduğunu d&amp;uuml;ş&amp;uuml;nelim. Ş&amp;ouml;yle ki,&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Talepler başlangı&amp;ccedil;ta Draft durumundadır ve boş bir şekilde oluşur.&lt;/li&gt;
+&lt;li&gt;Draft tamamlandıktan sonra s&amp;ouml;z konusu değişiklik talebi g&amp;ouml;zden ge&amp;ccedil;irilmek &amp;uuml;zere bir onaya g&amp;ouml;nderilir ki bu noktada nesnenin durumu &amp;ouml;rneğin WaitingForApproval gibi bir konumdadır.&lt;/li&gt;
+&lt;li&gt;Talep onaylandığı takdirde yazılım ekibinin backlog'una &amp;ouml;nceliklendirilmek &amp;uuml;zere girebilir. Bu noktada talep Committed gibi bir konumda olabilir.&lt;/li&gt;
+&lt;li&gt;Sadece onaylanan yazılım değişiklik talepleri backlog'a akar. Bir başka deyişle onaylanmayan yazılım değişiklik talepleri hi&amp;ccedil;bir şekilde Committed durumuna ge&amp;ccedil;ememelidir.&lt;/li&gt;
+&lt;li&gt;Benzer şekilde hen&amp;uuml;z Draft olarak d&amp;uuml;nyaya gelen bir yazılım değişiklik talebi, g&amp;ouml;zden ge&amp;ccedil;irilme ve onay mekanizmasını atlayarak Committed durumuna ge&amp;ccedil;emez. Bir başka deyişle g&amp;ouml;zden ge&amp;ccedil;irme durumu i&amp;ccedil;in bir ge&amp;ccedil;iş işlemi uygulanmamışsa Draft konumunda kalması gerekir.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Benzer şekilde farklı senaryoları da d&amp;uuml;ş&amp;uuml;nebiliriz. &amp;Ouml;rneğin bir veritabanında personel tarafından a&amp;ccedil;ılan ve birtakım onay mekanizmaları sonrası işletilebilen SQL betiklerine ait akışta da State tasarımının kullanılması d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Ya da bir terminal oyununun men&amp;uuml;s&amp;uuml;nden oyunun oynandığı duruma ge&amp;ccedil;mek, oyuncu yandığında oyunu tekrardan başlatmak &amp;uuml;zere başlangı&amp;ccedil; konumuna getirmek gibi durumların ele alınmasında da bu kalıbı pekala kullanabiliriz.&amp;nbsp;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Onay mekanizmaları i&amp;ccedil;eren akışlarda zincir t&amp;uuml;r&amp;uuml;nde bir uygulama olması&amp;nbsp;gerektiğinde State tasarım kalıbı yerine yine davranışsal desenlerden olan Chain of Responsibility tercih edilebilir. Buna g&amp;ouml;re&amp;nbsp;&amp;ouml;rnekte ele aldığımız talep y&amp;ouml;netim sistemi i&amp;ccedil;in "hangisini uygulamak daha doğru olur" şeklinde bir tartışma da a&amp;ccedil;abiliriz ;) Keza bu tartışmayı sadece Rust &amp;ouml;zelinde değil nesne y&amp;ouml;nelimli herhangi bir dil &amp;ouml;zelinde de d&amp;uuml;ş&amp;uuml;nmek doğru olacaktır.&amp;nbsp;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;En nihayetinde amacımız Rust'ı kullanarak bir takım nesne y&amp;ouml;nelimli dil pratiklerini nasıl ele alabileceğimizi g&amp;ouml;rmek olduğundan&amp;nbsp;kararlaştırdığımız&amp;nbsp;senaryoya geri d&amp;ouml;nelim ve program kodlarını yazmaya &amp;ccedil;alışalım. Yazılım değişiklik talebinin kendisini ChangeRequest isimli bir struct olarak tanımlayabiliriz. State olarak ifade edilen hallerini ise Draft, WaitingForApproval ve Committed şeklinde &amp;uuml;&amp;ccedil; struct veri yapısı ile ifade edebiliriz. Durumlar arasındaki ge&amp;ccedil;işleri sağlamak i&amp;ccedil;inse ortak davranışlar tanımlamamızı sağlayacak bir trait nesnesinden yararlanabiliriz.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğimizi aşağıdaki terminal komutunu kullanarak bir k&amp;uuml;t&amp;uuml;phane olarak a&amp;ccedil;abiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;cargo new --lib state_pattern&lt;/pre&gt;
+&lt;p&gt;Program kodumuzu aşağıdaki gibi tek seferde yazarak ilerleyebiliriz. tests mod&amp;uuml;l&amp;uuml;nde yer alan birim testlerde senaryo i&amp;ccedil;in belirttiğimiz kuralların işlerlikleri kontrol edilmektedir. Yorum satırları ile konuyu m&amp;uuml;mk&amp;uuml;n mertebe netleştirmeye &amp;ccedil;alıştım.&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn should_new_change_request_info_is_empty() {
+        // Yeni bir RCF oluşturulduğunda get_info'nun boş bir String d&amp;ouml;nmesi beklenir.
+        // Nitekim nesne Draft durumundadır.
+        let mut rfc_1 = ChangeRequest::new();
+        rfc_1.add_info(
+            "Men&amp;uuml; arka plan rengi".to_string(),
+            "Men&amp;uuml; arka planının kullanıcı isteğine g&amp;ouml;re değişebilmesini istiyorum".to_string(),
+        );
+        assert_eq!(rfc_1.get_info(), "");
+    }
+
+    #[test]
+    fn should_next_state_after_draft_is_waiting_for_approval() {
+        // Bu vakada ise yeni bir RFC oluşturulduktan sonra durumu onay bekliyora &amp;ccedil;ekilir.
+        // Buna g&amp;ouml;re title, description gibi bilgiler girildiği gibi alınabilmeli ve hatta
+        // nesenin kendisi WaitingForApproval modunda olmalıdır.
+        let mut rfc_1 = ChangeRequest::new();
+        rfc_1.add_info(
+            "Men&amp;uuml; arka plan rengi".to_string(),
+            "Men&amp;uuml; arka planının kullanıcı isteğine g&amp;ouml;re değişebilmesini istiyorum".to_string(),
+        );
+        let current_info = rfc_1.get_info();
+        assert_eq!(current_info, "".to_string());
+        rfc_1.request_approve();
+        let current_info = rfc_1.get_info();
+        assert_eq!(current_info, "Onay Bekliyor|Men&amp;uuml; arka plan rengi|Men&amp;uuml; arka planının kullanıcı isteğine g&amp;ouml;re değişebilmesini istiyorum".to_string());
+    }
+
+    #[test]
+    fn should_next_state_after_waiting_for_approval_is_committed() {
+        // Bu vakada ise yeni bir RFC oluşturulduktan sonra durumu onay bekliyora &amp;ccedil;ekilir.
+        // Sonrasında da submit &amp;ccedil;ağrısı ile durumu Committed'a &amp;ccedil;ekilir.
+        let mut rfc_1 = ChangeRequest::new();
+        rfc_1.add_info(
+            "Men&amp;uuml; arka plan rengi".to_string(),
+            "Men&amp;uuml; arka planının kullanıcı isteğine g&amp;ouml;re değişebilmesini istiyorum".to_string(),
+        );
+        let current_info = rfc_1.get_info();
+        assert_eq!(current_info, "".to_string());
+        rfc_1.request_approve();
+        let current_info = rfc_1.get_info();
+        assert_eq!(current_info, "Onay Bekliyor|Men&amp;uuml; arka plan rengi|Men&amp;uuml; arka planının kullanıcı isteğine g&amp;ouml;re değişebilmesini istiyorum".to_string());
+        rfc_1.submit();
+        let current_info = rfc_1.get_info();
+        assert_eq!(current_info, "Onaylandı, Backlog'a eklendi|Men&amp;uuml; arka plan rengi|Men&amp;uuml; arka planının kullanıcı isteğine g&amp;ouml;re değişebilmesini istiyorum".to_string());
+    }
+}
+
+// Durumlar arasındaki ge&amp;ccedil;işlere ait davranışları tanımladığımız trait
+trait State {
+    // ChangeRequest nesne i&amp;ccedil;eriğini &amp;ccedil;ekmek i&amp;ccedil;in bildirilen davranış.
+    // Varsayılan olarak boş bir string referansı d&amp;ouml;ner.
+    // Bu davranışı State trait'ini implemente eden WaitingForApproval ile Committed
+    // veri yapıları yeniden uygulayabilirler.
+    // B&amp;ouml;ylece nesnenin bulunduğu duruma ait değerleri elde edebiliriz.
+    // information fonksiyonu bir g&amp;ouml;vdeye sahip olduğu i&amp;ccedil;in State'i implemente eden her struct
+    // i&amp;ccedil;in yeniden yazılmak zorunda değildir. Mesela Draft veri yapısı i&amp;ccedil;in uyarlanmamıştır,
+    // nitekim zaten Draft durumundayken title ve description bilgilerinin boş olması istenmektedir.
+    fn information(&amp;amp;self, _cr: &amp;amp;ChangeRequest) -&amp;gt; String {
+        "".to_string()
+    }
+    // Draft halinden WaitingForApproval'a ge&amp;ccedil;işi tanımladığımız davranış
+    fn request_approve(self: Box&amp;lt;Self&amp;gt;) -&amp;gt; Box&amp;lt;dyn State&amp;gt;;
+    // WaitingForApproval durumundan Committed durumuna ge&amp;ccedil;işi tanımlayan davranış
+    fn commit(self: Box&amp;lt;Self&amp;gt;) -&amp;gt; Box&amp;lt;dyn State&amp;gt;;
+}
+
+// ChangeRequest nesnesinin ilk halini ifade eden veri yapısı
+struct Draft {}
+// Sonraki duruma ge&amp;ccedil;iş de dahil olmak &amp;uuml;zere State &amp;uuml;st&amp;uuml;nden gelen davranışlar uyarlanıyor
+impl State for Draft {
+    fn request_approve(self: Box&amp;lt;Self&amp;gt;) -&amp;gt; Box&amp;lt;dyn State&amp;gt; {
+        // Draft i&amp;ccedil;in bu davranışın uygulanması bir sonraki durum olan WaitingForApproval'a ge&amp;ccedil;iştir.
+        Box::new(WaitingForApproval {})
+    }
+
+    // Nesne, Draft halindeyken doğrudan Committed durumuna ge&amp;ccedil;emez. Bu nedenle self d&amp;ouml;n&amp;uuml;l&amp;uuml;r.
+    fn commit(self: Box&amp;lt;Self&amp;gt;) -&amp;gt; Box&amp;lt;dyn State&amp;gt; {
+        self
+    }
+}
+
+// Draft modundan sonra ge&amp;ccedil;ilebilecek olan durumu ifade eden veri yapısı
+struct WaitingForApproval {}
+// Bu veri yapısı i&amp;ccedil;inde State trait'inde tanıumlı davranışları uyarlamalıyız.
+impl State for WaitingForApproval {
+    // ChangeRequest nesnesi bu konumdayken zaten request_approve gibi bir davranışı uygulamamalıdır.
+    fn request_approve(self: Box&amp;lt;Self&amp;gt;) -&amp;gt; Box&amp;lt;dyn State&amp;gt; {
+        // bu nedenle kendisini d&amp;ouml;nd&amp;uuml;r&amp;uuml;r
+        self
+    }
+    // Talep onaylandıktan sonra WaitingForApproval'dan  Committed'a ge&amp;ccedil;ebilir
+    // Bu nedenle smart pointer &amp;uuml;st&amp;uuml;nden Committed nesne &amp;ouml;rneği d&amp;ouml;n&amp;uuml;l&amp;uuml;r.
+    fn commit(self: Box&amp;lt;Self&amp;gt;) -&amp;gt; Box&amp;lt;dyn State&amp;gt; {
+        Box::new(Committed {})
+    }
+    // Nesnemiz WaitingForApproval durumuna ge&amp;ccedil;tiğinde artık title ve description gibi bilgilerin
+    // g&amp;ouml;r&amp;uuml;lebilmesi gerekir. Bu nedenle State trait'i i&amp;ccedil;indeki information davranışını yeniden
+    // yazmaktayız.
+    fn information(&amp;amp;self, cr: &amp;amp;ChangeRequest) -&amp;gt; String {
+        format!("Onay Bekliyor|{}|{}", cr.title, cr.description)
+    }
+}
+
+// WaitingForApproval durumundaki sonraki durumu ifade eden veri yapısı
+struct Committed {}
+
+// &amp;Ouml;rnek akışımızda Committed nesnenin i&amp;ccedil;inde olabileceği son haldir.
+// Bu nedenle request_approve veya commit gibi davranışlar self ile kendi durumunu d&amp;ouml;ner.
+// Nitekim Committed durumunda diğer durumlar ge&amp;ccedil;ilmemektedir. En azından bu senaryo gereği.
+impl State for Committed {
+    fn information(&amp;amp;self, cr: &amp;amp;ChangeRequest) -&amp;gt; String {
+        format!(
+            "Onaylandı, Backlog'a eklendi|{}|{}",
+            cr.title, cr.description
+        )
+    }
+
+    fn request_approve(self: Box&amp;lt;Self&amp;gt;) -&amp;gt; Box&amp;lt;dyn State&amp;gt; {
+        self
+    }
+
+    fn commit(self: Box&amp;lt;Self&amp;gt;) -&amp;gt; Box&amp;lt;dyn State&amp;gt; {
+        self
+    }
+}
+
+// İş akışındaki ana nesnemiz. Bir yazılım değişiklik talebini ifade ediyor.
+// Basit olması a&amp;ccedil;ısında title ve description gibi alanlar i&amp;ccedil;ermekte.
+// Dikkat edileceği &amp;uuml;zere state, title ve description alanları private.
+// Nitekim nesnenin o anki durumuna ait değerlerin dışarıdan doğrudan m&amp;uuml;dahele ile değiştirilmemesi gerekiyor.
+pub struct ChangeRequest {
+    // Nesne durumunu bir Option enum sabiti ile smart pointer kullanarak tanımladık.
+    // nesnenin kullanacağı trait &amp;ccedil;alışma zamanında belli olacağından Dynamic Dispatch yaklaşımı bizim i&amp;ccedil;in ideal.
+    state: Option&amp;lt;Box&amp;lt;dyn State&amp;gt;&amp;gt;,
+    title: String,
+    description: String,
+}
+
+impl ChangeRequest {
+    // ChangeRequest new fonksiyonu ile ilk kez oluşturulurken title ve description alanları boş olmalı.
+    // Daha da &amp;ouml;nemlisi ilk kez oluşturulduğundan nesne Draft durumunda başlamalı.
+    pub fn new() -&amp;gt; Self {
+        Self {
+            state: Some(Box::new(Draft {})),
+            title: String::new(),
+            description: String::new(),
+        }
+    }
+    // Taleple ilgili bilgileri eklemek i&amp;ccedil;in bir fonksiyondan yararlanabiliriz.
+    pub fn add_info(&amp;amp;mut self, title: String, description: String) {
+        self.title = title;
+        self.description = description;
+    }
+
+    // Nesnenin bilgilerini &amp;ccedil;ekmek i&amp;ccedil;in &amp;ccedil;ağırılan fonksiyon.
+    // Dikkat edilmesi gereken nokta nesnenin o an sahip olduğu durum bilgisine g&amp;ouml;re
+    // information fonksiyonunun &amp;ccedil;ağırılmakta oluşudur.
+    // &amp;Ouml;rneğin nesne o anda WaitingForApproval veya Committed durumunda ise bu veri yapılarında
+    // State trait'inden gelip yeniden yazılan information fonksiyonu &amp;ccedil;ağırılır.
+    // Dolayısıyla nesnenin i&amp;ccedil;inde bulunduğum durumdaki verisini saklayarak da akışı ilerletme şansımız olur.
+    pub fn get_info(&amp;amp;self) -&amp;gt; String {
+        self.state.as_ref().unwrap().information(self)
+    }
+
+    // Nesnenin Draft durumundan WaitingForApproval durumuna ge&amp;ccedil;işi sırasında kullanılan fonksiyon
+    pub fn request_approve(&amp;amp;mut self) {
+        // Eğer nesne durumunu alabiliyorsak
+        if let Some(s) = self.state.take() {
+            // O anki trait kimse onun &amp;uuml;st&amp;uuml;nden asıl durum nesnesinin uyguladığı request_approve fonksiyonu &amp;ccedil;ağırılır.
+            self.state = Some(s.request_approve())
+        }
+    }
+
+    // Nesnenin WaitingForApproval durumundan Committed durumuna ge&amp;ccedil;işi sırasında kullanılan fonksiyon
+    pub fn submit(&amp;amp;mut self) {
+        if let Some(s) = self.state.take() {
+            // O anki trait kimse onun &amp;uuml;st&amp;uuml;nden asıl durum nesnesinin uyguladığı commit fonksiyonu &amp;ccedil;ağırılır.
+            self.state = Some(s.commit())
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Kod epey uzun ve kalabalık g&amp;ouml;r&amp;uuml;n&amp;uuml;yor ancak bir kere benzerini yazmayı deneyip ona sorular sorduktan sonra daha anlaşılır olacaktır. Dikkat edilmesi gereken noktalar ChangeRequest nesnesi i&amp;ccedil;in durumlar arası ge&amp;ccedil;işlerin nasıl yapıldığı ve burada State&amp;nbsp;isimli trait nesnesinin nasıl etkin kullanıldığıdır. State trait nesnesi i&amp;ccedil;inde tanımlanan information, request_approve ve commit davranışlarının nesne durumlarını ifade eden veri yapılarındaki kullanımına dikkat etmeliyiz. Her state nesnesi sadece kendisi ile ilgili olan davranışı uygulayıp diğerleri i&amp;ccedil;in kendisini&lt;em&gt;(self)&lt;/em&gt; d&amp;ouml;nd&amp;uuml;rmektedir. &amp;Ouml;yle ya, nesne durumu WaitingForApproval'dayken yeniden bir onay talebinin g&amp;ouml;nderilmesi mantıklı değildir. Lakin bir sonraki durum olan Committed'a ge&amp;ccedil;mek i&amp;ccedil;inse commit davranışının uyarlanması anlamlıdır. Bir diğer dikkat &amp;ccedil;ekici noktada bir&amp;ccedil;ok enstr&amp;uuml;manda Box&amp;lt;T&amp;gt; t&amp;uuml;r&amp;uuml;nden smart pointer kullanılmasıdır. State trait'indeki davranışları uygulayan veri yapılarına ait nesnelerin durumlar arası ge&amp;ccedil;işlerde neyi kullanacağının &amp;ccedil;alışma zamanında &amp;ccedil;&amp;ouml;z&amp;uuml;mlenmesi tercih edildiğinden dolayı b&amp;ouml;yle bir kullanım s&amp;ouml;z konusudur. Bu aynı zamanda dynamic dispatch kullanımı i&amp;ccedil;in de g&amp;uuml;zel bir &amp;ouml;rnektir&lt;em&gt;(Trait Object ile ilgili detaylı bilgi i&amp;ccedil;in &lt;a title="Rust Pratikleri - Trait Objects" href="/post/rust-pratikleri-trait-objects" target="_blank"&gt;şu yazıya&lt;/a&gt; bakabilirsiniz)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Uygulamanın işe yarayıp yaramadığını anlamak i&amp;ccedil;in basit testler koşturabiliriz. İşte kendi sistemimdeki &amp;ccedil;alışma zamanı sonu&amp;ccedil;ları.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mayis/state_pattern_1.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bence uygulamayı daha da geliştirmek ve başka pratikler yapmak da m&amp;uuml;mk&amp;uuml;n.&amp;nbsp;&amp;Ouml;rneğin bir terminal oyunundaki ana nesnenin durumlarını y&amp;ouml;netmek adına bu kalıbı kullanmayı deneyebilirsiniz. Game olarak adlandırabileceğiniz oyun nesnesinin program akışı i&amp;ccedil;erisindeki olası durumları MENU, INIT, PLAYING, END_GAME ve PLAY_AGAIN şeklinde tanımlanabilir. Yukarıdaki &amp;ouml;rnekte yaptıklarımızı g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alarak bu senaryoyu Rust ile yazmayı deneyebilir, yazılmış bir halini g&amp;ouml;rmek i&amp;ccedil;inse &lt;a title="State Tasarım Kalıbı &amp;Ouml;rneği 2" href="https://github.com/buraksenyurt/rust-farm/tree/main/Practices/re_state_pattern" target="_blank"&gt;şuraya&lt;/a&gt; uğrayabilirsiniz. Bu &amp;ouml;rnekteki kodlara ise her zaman olduğu gibi &lt;a title="State Tasarım Kalıbı &amp;ouml;rnek" href="https://github.com/buraksenyurt/rust-farm/tree/main/Practices/state_pattern" target="_blank"&gt;github reposu&lt;/a&gt; &amp;uuml;zerinden ulaşabilirsiniz. B&amp;ouml;ylece geldik bir Rust pratiğinin daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2022-05-15 09:00:00</pubDate>
+  <slug>rust-pratikleri-state-tasarim-kalibi</slug>
+  <tags>
+    <tag>rust</tag>
+    <tag>rust-pratikleri</tag>
+    <tag>rust-programming-language</tag>
+    <tag>state-design-pattern</tag>
+    <tag>oop</tag>
+    <tag>trait</tag>
+    <tag>trait-objects</tag>
+  </tags>
+  <categories>
+    <category>Rust</category>
+  </categories>
+</post>

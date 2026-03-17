@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Serileştirme (Serialization) İçin Püf Noktalar</title>
+  <description>Uygulamalarımızda kullandığımız tipler (types) pek çok amaçla serileştirilirler (Serialization). Framework Class Library içerisinde var olan pek çok tip serileştirilebilir (Serializable) halde tasarlanmıştır. Bizde çoğu zaman kendi yazmış olduğumuz tipleri serileştirme ihtiyacı duyarız. Örnek olarak, XML Web Servislerinde istemci taleplerine gönderilecek olan nesnelerin, network üzerinde taşıyacağımız paketlerin veya bir web uygulamasında yer alan Session nesnelerinin veritabanında saklanması sırasında kullanılan tiplerin serileştirilmesini göz önüne alabiliriz. Hangi türü olursa olsun serileştirmede dikkat edilmesi gereken bazı noktalar vardır. İşte bu günkü makalemizde özellikle Binary ve SOAP formatlı serileştirmelere yönelik püf noktalara değinmeye çalışacağız.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Uygulamalarımızda kullandığımız tipler (types) pek &amp;ccedil;ok ama&amp;ccedil;la serileştirilirler (Serialization). Framework Class Library i&amp;ccedil;erisinde var olan pek &amp;ccedil;ok tip serileştirilebilir (Serializable) halde tasarlanmıştır. Bizde &amp;ccedil;oğu zaman kendi yazmış olduğumuz tipleri serileştirme ihtiyacı duyarız. &amp;Ouml;rnek olarak, XML Web Servislerinde istemci taleplerine g&amp;ouml;nderilecek olan nesnelerin, network &amp;uuml;zerinde taşıyacağımız paketlerin veya bir web uygulamasında yer alan Session nesnelerinin veritabanında saklanması sırasında kullanılan tiplerin serileştirilmesini g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alabiliriz. Hangi t&amp;uuml;r&amp;uuml; olursa olsun serileştirmede dikkat edilmesi gereken bazı noktalar vardır. İşte bu g&amp;uuml;nk&amp;uuml; makalemizde &amp;ouml;zellikle Binary ve SOAP formatlı serileştirmelere y&amp;ouml;nelik p&amp;uuml;f noktalara değinmeye &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;p&gt;Kendi yazmış olduğumuz bir tipi serileştirmek i&amp;ccedil;in tek yapmamız gereken &lt;strong&gt;Serializable&lt;/strong&gt; niteliğini(Attribute) kullanmaktır. Bu zaten bir tipin serileştirilebilmesi i&amp;ccedil;in gerekli kuraldır. Serileştirme doğası gereği, tipin i&amp;ccedil;erisinde yer alan alanları(fields) ele alır ve bu alanların değerlerini isimleri ile birlikte herhangibir stream' e yazabilir. Bu durumda, tip i&amp;ccedil;erisinde var olan alanların da serileştirilebilir olmaları gerekir.&lt;/p&gt;
+&lt;table id="table22" style="border-collapse: collapse;" border="1" width="100%" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;Serileştirilen bir tipin var olan alanlarının serileştirilebilir &amp;ouml;zelliğe sahip olması, başka bir deyişle Serializable niteliğini uygulamış olması gerekir. &lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Konuyu daha iyi anlayabilmek i&amp;ccedil;in &amp;ouml;rnekler &amp;uuml;zerinden gitmeye &amp;ccedil;alışacağız. .Net Framework 2.0 &amp;uuml;zerinde bir Console uygulamasını ele alacağız. &amp;Ouml;rneğin RadyoKanal ve RadyoSahip isimli iki sınıfımızın olduğu bir &amp;ouml;rneği g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım. Bu &amp;ouml;rneğimizde temel amacımız RadyoKanal sınıfına ait bir nesne &amp;ouml;rneğini SOAP formatında seriliştirmek ve DeSerialize işlemine tabi tutmak.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk146_1.gif" alt="" width="445" height="419" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-family: Tahoma; font-size: small;"&gt;RadyoKanal sınıfımız;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Runtime.Serialization;
+
+namespace Serilestirme
+{
+    [Serializable()]
+    public class RadyoKanal
+    {
+        private string _Frekans;
+        private string _KanalAdi;
+        private string _MuzikTuru;
+        private RadyoSahip _Sahip;
+
+        public RadyoKanal(string fre,string ad,string tur,RadyoSahip s)
+        {
+            _Frekans=fre;
+            _KanalAdi=ad;
+            _MuzikTuru=tur;
+            _Sahip=s;
+        }        
+      public override string ToString()
+      {
+        return _Frekans + " " + _KanalAdi + " " + _MuzikTuru + " " + _Sahip.ToString();
+      } 
+    }
+}&lt;/pre&gt;
+&lt;p&gt;RadyoSahip sınıfımız;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace Serilestirme
+{
+    public class RadyoSahip
+    {
+        private string _AdSoyad;
+        private System.Int32 _VergiNo;
+
+        public RadyoSahip(string adS,System.Int32 vergiNo)
+        {
+            _AdSoyad=adS;
+            _VergiNo=vergiNo;
+        }
+        public override string ToString()
+        {
+            return _AdSoyad;
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;RadyoKanal sınıfımız serileştirilebilir bir tiptir. Bu sınıfa ait herhangibir nesne &amp;ouml;rneğine Binary veya SOAP formatında serileştirme işlemini uyguladığımızda i&amp;ccedil;erdiği t&amp;uuml;m alanlarda serileştirilme işlemine tabi tutucaktır. RadyoKanal isimli sınıfımız i&amp;ccedil;erisinde yer alan alanların tipleri şu an i&amp;ccedil;in string ve RadyoSahip' tir. String tipi zaten serileştirilebilir bir sınıftır. Oysaki RadyoSahip isimli sınıfımızın şu aşamada serileştirilme &amp;ouml;zelliği yoktur. Eğer yukarıdaki sınıflarımızı şağıdaki &amp;ouml;rnek uygulamada olduğu gibi kullanmaya kalkarsak &amp;ccedil;alışma zamanıda istisna(Exception) alırız.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Soap;
+
+namespace Serilestirme
+{
+    class Program
+    {
+        private static void Serialize()
+        {
+            FileStream fs=null;
+            try
+            {
+                RadyoKanal kanal=new RadyoKanal("999.00","BurkiFM","Alternative Rock",new RadyoSahip("Burak Selim Senyurt",10000));
+                fs=new FileStream("Test.xml",FileMode.OpenOrCreate);
+                SoapFormatter bf=new SoapFormatter(); 
+                bf.Serialize(fs,kanal);
+            }
+            catch(Exception err)
+            {
+                Console.WriteLine(err.Message);
+            }
+            finally
+            {
+                fs.Close();
+            }
+        }
+
+        private static void DeSerialize()
+        {
+            FileStream fs=null;
+            try
+            {
+                fs=new FileStream("Test.xml",FileMode.Open);
+                SoapFormatter sf=new SoapFormatter();
+                RadyoKanal kanal=(RadyoKanal)sf.Deserialize(fs);
+                Console.WriteLine(kanal.ToString());
+            }
+            catch(Exception err)
+            {
+                Console.WriteLine(err.Message);
+            }
+            finally
+            {
+                fs.Close();
+            }
+        }
+
+        [STAThread]
+        static void Main(string[] args)
+        {
+            Serialize();
+            DeSerialize();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk146_2.gif" alt="" width="639" height="90" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Uygulamamızda Soap formatında serialize ve deserialize işlemlerini uygulamaktayız. Bu arada, SoapFormatter' ı kullanabilmek i&amp;ccedil;in bu sınıfa ait referansı uygulamaya a&amp;ccedil;ık&amp;ccedil;a eklememiz gerektiğini hatırlatmak isterim. Gelelim hata mesajımıza. Hata mesajı RadyoSahip isimli tipin serileştirilebilir bir tip olarak işaretlenmemiş olduğunu ifade etmektedir. Dolayısıyla tek yapmamız gereken, RadyoSahip isimli sınıfımıza da Serializable niteliğini eklemek olacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[Serializable()]
+public class RadyoSahip&lt;/pre&gt;
+&lt;p&gt;Bu haliyle uygulamamızı &amp;ccedil;alıştırdığımızda her hangibir problem ile karşılaşmayız. Nesne &amp;ouml;rneğimizi xml uzantısı ile SOAP formatında serileştirdiğimizden Binary formata g&amp;ouml;re okunurluğu daha kolaydır. XML d&amp;ouml;k&amp;uuml;manımıza dikkat ederseniz, RadyoKanal ve RadyoSahip tipleri ayrı node' lar halinde ifade edilmiş ve o anki nesne i&amp;ccedil;in sahip oldukları alan değerleride bu node' lar i&amp;ccedil;erisinde ayrıştırılmıştır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk146_3.gif" alt="" width="468" height="95" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk146_4.gif" alt="" width="574" height="451" border="0" /&gt;&lt;/p&gt;
+&lt;table id="table31" style="border-collapse: collapse;" border="1" width="100%" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;Kendi yazmış olduğumuz bir tipi serileştirilebilir olarak tanımlamassak, bu tipi kullanan başka tiplerinde serileştirilmesini engellemiş oluruz. Ancak bu sonu&amp;ccedil;, yazdığımız her tipin serileştirilebilir olması gerektiği zorunluluğunu doğurmaz.&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Gelelim bir diğer &amp;ouml;nemli noktaya. Bazen tipimiz i&amp;ccedil;erisinde yer alan filed(alan)' lardan bazılarının serileştirilme işlemine dahil edilmemesini isteriz. Bunun &amp;ccedil;eşitli sebepleri olabilir. İlk akla gelen, bir nesnenin gizli olan bazı alansal bilgilerinin serileştirilmesinin &amp;ouml;n&amp;uuml;ne ge&amp;ccedil;mektir. &amp;Ouml;rneğin serileştirilen bir paketin network &amp;uuml;zerinde dolaştığını d&amp;uuml;ş&amp;uuml;necek olursak, gereksiz bilgilerin bu pakette yer almamasını isteyebiliriz.&lt;/p&gt;
+&lt;table id="table26" style="border-collapse: collapse;" border="1" width="100%" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;Serileştirilen bir tip i&amp;ccedil;erisinde, serileştirilme işlemine dahil edilmesini istemediğimiz alanlar i&amp;ccedil;in &lt;strong&gt;NonSerialized&lt;/strong&gt; niteliğini kullanırız.&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;&amp;Ouml;rneğin, RadyoSahip isimli sınıfımız i&amp;ccedil;erisinde yer alan _VergiNo isimli alanımızın serileştirme işlemine dahil edilmemesini istediğimizi d&amp;uuml;ş&amp;uuml;nelim. Tek yapmamız gereken NonSerialized niteliğini bu alana uygulamak olacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[NonSerialized()] 
+private System.Int32 _VergiNo;&lt;/pre&gt;
+&lt;p&gt;Uygulamamızı bu haliyle &amp;ccedil;alıştırdığımızda _VergiNo alanının serileştirme işlemine dahil edilmediğini g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk146_5.gif" alt="" width="575" height="226" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Eğer serileştirme işlemi &amp;uuml;zerinde tam hakimiyet sağlamak istiyorsak &lt;strong&gt;ISerializable&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;ne(interface) başvurmamız gerekecektir. Burada s&amp;ouml;z konusu olan hakimiyet serileştirme işlemi sırasında hangi alanların, hangi isimler ile ve hangi sırada yazılacağı ve hatta farklı versiyonlara sahip tiplerin s&amp;ouml;z konusu olması halinde serileştirme işlemlerinin y&amp;ouml;netilebilmesidir. RadyoKanal isimli sınıfımıza ISerializable aray&amp;uuml;z&amp;uuml;n&amp;uuml; uyguladığımızı d&amp;uuml;ş&amp;uuml;nelim. Bu aray&amp;uuml;z beraberinde sadece tek bir metodun uygulanma zorunluluğunu getirmektedir. Bu metod &lt;strong&gt;GetObjectData&lt;/strong&gt;' dır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Runtime.Serialization;
+
+namespace Serilestirme
+{
+    [Serializable()]
+    public class RadyoKanal:ISerializable
+    {
+        // Diğer &amp;uuml;yeler
+
+        #region ISerializable Members
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("Kanal Adi", _KanalAdi);
+               info.AddValue("Radyo Frekans", _Frekans);
+            info.AddValue("Muzik Turu", _MuzikTuru);
+            info.AddValue("Kanal Sahibi", _Sahip);
+        }
+
+        #endregion
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;GetObjectData&lt;/strong&gt; metodu, sınıfa ait nesne &amp;ouml;rneğinin serileştirilmesi işlemi sırasında devreye girer. Şu aşamada &lt;strong&gt;SerializationInfo&lt;/strong&gt; tipinde olan info isimli parametre yardımıyla serileştirme i&amp;ccedil;erisinde yer alacak anahtar-değer (key-value) &amp;ccedil;iftlerini belirlemekteyiz. &lt;em&gt;(Bildiğiniz gibi, bir tipin serileştirilen t&amp;uuml;m alanları anahtar-değer &amp;ccedil;iftleri esasına dayanılarak aktarılırlar.) &lt;/em&gt;Buna g&amp;ouml;re &amp;ouml;rneğin RadyoKanal isimli sınıfımızın herhangibir nesne &amp;ouml;rneğinin o an sahip olduğu _Frekans alanının değeri, serileştirilen dosyada Radyo Frekans ismi ile tutulacaktır. Hatta dikkat ederseniz, ilk iki alanın yazılış sırasıda değiştirilmiştir. &amp;Ouml;yleki varsayılan serileştirme halinde, tip i&amp;ccedil;erisindeki alanların diziliş sırası dikkate alınmaktadır. Oysaki biz burada bu sıralamayı GetObjectData metodu i&amp;ccedil;erisinde belirleyebileceğimizi g&amp;ouml;rmekteyiz. Ne varki uygulamamızı bu haliyle &amp;ccedil;alıştırdığımızda aşağıdaki hata mesajını alırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk146_6.gif" alt="" width="639" height="87" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Aslında serileştirme işleminde her hangibir problem yoktur. Bunu oluşturulan xml dosyasının i&amp;ccedil;eriğine bakarak g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk146_7.gif" alt="" width="566" height="222" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Sorun DeSerialize işlemi sırasında meydana gelmektedir. Bir sınıfa ISerializable aray&amp;uuml;z&amp;uuml;n&amp;uuml; uyguladığımızda, nesneye ait alanların eşleştirilme işlemlerini her iki y&amp;ouml;ndede doğru ve tutarlı bir bi&amp;ccedil;imde yapmamız gerekir. Yani sınıfımza deSerialize işlemi uygulandığı takdirde gereken eşleştirme bilgisini de vermemiz gerekir. Bu ama&amp;ccedil;la genel bir desen kullanılır. Bu desene g&amp;ouml;re tipe ait bir private constructor (yapıcı metod) aşağıdaki kod par&amp;ccedil;asında olduğu gibi kullanılmalıdır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private RadyoKanal(SerializationInfo info, StreamingContext ctx)
+{
+    _Frekans = info.GetString("Radyo Frekans");
+    _KanalAdi = info.GetString("Kanal Adi");
+    _MuzikTuru = info.GetString("Muzik Turu");
+    _Sahip = (RadyoSahip)info.GetValue("Kanal Sahibi", typeof(RadyoSahip));
+}&lt;/pre&gt;
+&lt;p&gt;Burada dikkat edecek olursanız SerializationInfo tipine ait Get metodlarını kullanarak stream i&amp;ccedil;erisinde gelen anahtar-değer &amp;ccedil;iftlerinin, RadyoKanal sınıfı i&amp;ccedil;erisinde denk geldiği &amp;uuml;yeleri belirlemekteyiz. Bu haliyle uygulamamızı &amp;ccedil;alıştırdığımızda her hangibir problem ile karşılaşmayız.&lt;/p&gt;
+&lt;table id="table30" style="border-collapse: collapse;" border="1" width="100%" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;Serileştirilebilir bir sınıfa ISerializable aray&amp;uuml;z&amp;uuml;n&amp;uuml; (interface) uyguladığımızda, deserialize işlemininde başarılı olması i&amp;ccedil;in tipe ait bir private constructor' ın yazılması ve i&amp;ccedil;eride serileştirilmiş &amp;uuml;yelere değer atamasının a&amp;ccedil;ık&amp;ccedil;a yapılması gerekmektedir. Bu yapıcı metoda DeSerialize Constructor ismini verebiliriz.&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Elbetteki bir sınıfa ISerializable aray&amp;uuml;z&amp;uuml;n&amp;uuml; uyguladığımızda, bu sınıftan t&amp;uuml;reyecek sınıfları yazarkende dikkat etmemiz gereken hususlar vardır. Eğer taban sınıfı (base class) serileştirilebilir olarak tanımlarsak ve ISerializable aray&amp;uuml;z&amp;uuml;n&amp;uuml; uygularsak, ilk olarak t&amp;uuml;reyen sınıfların(derived class) taban sınıf i&amp;ccedil;indeki DeSerialize Constructor metoduna erişebilmelerini sağlamamız gerekir. Bu nedenle temel sınıf i&amp;ccedil;erisindeki DeSerialize Constructor metodunu protected erişim belirleyicisi ile işaretleriz. Bu konuyu daha iyi anlayabilmek i&amp;ccedil;in &amp;ouml;rneğimize RadyoKanal sınıfından t&amp;uuml;reyen RadyoPersonel isimli yeni bir sınıf ekleyelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk146_8.gif" alt="" width="466" height="540" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[Serializable()]
+class RadyoPersonel:RadyoKanal
+{
+    private int _PersonelNo;
+    private string _PersonelAd;
+
+    public RadyoPersonel(int no, string ad)
+    {
+        _PersonelNo = no;
+        _PersonelAd = ad;
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu kez uygulamamızda t&amp;uuml;reyen sınıfımıza ait bir nesne &amp;ouml;rneğini serileştirmek istediğimizi g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private static void Serialize()
+{
+    FileStream fs=null;
+    try
+    {
+        //RadyoKanal kanal=new RadyoKanal("999.00","BurkiFM","Alternative Rock",new RadyoSahip("Burak Selim Senyurt",10000));
+        RadyoPersonel rp = new RadyoPersonel(10001, "DJ Burak");
+        fs=new FileStream("Test.xml",FileMode.OpenOrCreate);
+        SoapFormatter bf=new SoapFormatter(); 
+        bf.Serialize(fs,rp);
+    }
+    catch(Exception err)
+    {
+        Console.WriteLine(err.Message);
+    }
+    finally
+    {
+        fs.Close();
+    }
+}
+
+private static void DeSerialize()
+{
+    FileStream fs=null;
+    try
+    {
+        fs=new FileStream("Test.xml",FileMode.Open);
+        SoapFormatter sf=new SoapFormatter();
+        RadyoPersonel rp=(RadyoPersonel)sf.Deserialize(fs);
+        Console.WriteLine(rp.ToString());
+    }
+    catch(Exception err)
+    {
+        Console.WriteLine(err.Message);
+    }
+    finally
+    {
+        fs.Close();
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Eğer RadyoPersonel sınıfımız bu haldeyken uygulamamızı &amp;ccedil;alıştırırsak serileştirme işleminin istediğimiz gibi olmadığını, hatta deserialize işlemi sırasındada aşağıdaki hata mesajını aldığımızı g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk146_9.gif" alt="" width="639" height="73" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu hata mesajını ele almadan &amp;ouml;nce Xml dosyamıza bakarsak, taban sınıfa ait &amp;uuml;yelerin null değerler ile işaretlendiğini, RadyoPersonel sınıfına ait hi&amp;ccedil; bir &amp;uuml;yenin ise serileştirme işlemine dahil edilmediğini a&amp;ccedil;ık&amp;ccedil;a g&amp;ouml;rebiliriz. Dolayısıyla serileştirme işleminde de s&amp;uuml;re gelen bir problem s&amp;ouml;z konusudur.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk146_10.gif" alt="" width="568" height="319" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Burada problem şudur. Taban sınıfımız olan RadyoKanal, ISerializable aray&amp;uuml;z&amp;uuml;n&amp;uuml; uygulamış ve serileştirme işlemi sırasında GetObjectData metodunu kullanarak &amp;uuml;yeleri stream i&amp;ccedil;erisine aktarmıştır. Oysaki, aynı işlemin t&amp;uuml;reyen sınıf tarafındanda yapılması gerekmektedir.&lt;/p&gt;
+&lt;table id="table37" style="border-collapse: collapse;" border="1" width="100%" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;ISerializable aray&amp;uuml;z&amp;uuml;n&amp;uuml; uygulamış serileştirilebilir bir taban sınıftan t&amp;uuml;retme işlemi yapıldığında, t&amp;uuml;reyen sınıfa ait nesne &amp;ouml;rneklerinin sahip olduğu alanların başarılı bir şekilde serileştirilebilmesi i&amp;ccedil;in, Temel sınıftaki GetObjectData prensibinin, t&amp;uuml;reyen sınıf i&amp;ccedil;erisindede a&amp;ccedil;ık&amp;ccedil;a uygulanması gerekir.&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Bunu ger&amp;ccedil;ekleştirmek i&amp;ccedil;in taban sınıfa sanal bir metod (virtual method) ekleyebilir ve bunun t&amp;uuml;reyen sınıf i&amp;ccedil;erisinde ezdirilmesini (override) sağlayabiliriz. İlk olarak taban sınıfımıza sanal metodumuzu eklemeli ve bu metodu ISerializable aray&amp;uuml;z&amp;uuml;n&amp;uuml;n uyguladığı GetObjectData metodu i&amp;ccedil;erisinde &amp;ccedil;ağırmalıyız. Bu ama&amp;ccedil;la RadyoKanal sınıfımızda aşağıdaki değişiklikleri yapmamız gerekmektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;protected virtual void WriteData(SerializationInfo info, StreamingContext context)
+{
+}
+
+public void GetObjectData(SerializationInfo info, StreamingContext context)
+{
+    info.AddValue("Kanal Adi", _KanalAdi);
+    info.AddValue("Radyo Frekans", _Frekans); 
+    info.AddValue("Muzik Turu", _MuzikTuru);
+    info.AddValue("Kanal Sahibi", _Sahip);
+    WriteData(info, context);
+}&lt;/pre&gt;
+&lt;p&gt;Diğer yandan, t&amp;uuml;reyen sınıfımız i&amp;ccedil;erisinde bu sanal metodumuzu aşağıdaki kod par&amp;ccedil;asında olduğu gibi ezmemiz gerekmektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;protected override void WriteData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
+{
+    info.AddValue("Personel Numarasi", _PersonelNo);
+    info.AddValue("Personel Adi", _PersonelAd);
+}&lt;/pre&gt;
+&lt;p&gt;Bu haliyle uygulamamızı &amp;ccedil;alıştırdığımızda yine yukarıdaki istisnayı alırız. Ancak bu kez serileştirme işleminde, t&amp;uuml;reyen sınıfımıza ait alanlarında aktarıldığını g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Dolayısıyla serileştirme işlemi sırasında s&amp;uuml;re gelen problemi aşmış durumdayız. Geriye DeSerialize işlemi sırasında oluşan problem kalmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk146_11.gif" alt="" width="567" height="168" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Tahmin edeceğiniz gibi DeSerialize işlemi sırasındaki problem, t&amp;uuml;reyen sınıfın kendisine ait bir DeSerialize Constructor metodu olmayışından kaynaklanmaktadır. Bu metod olmadığı i&amp;ccedil;in DeSerialize işlemi sırasında, hangi &amp;uuml;yeye hangi değerin hangi stream' den aktarılacağı bilinememektedir.&lt;/p&gt;
+&lt;table id="table38" style="border-collapse: collapse;" border="1" width="100%" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;ISerializable aray&amp;uuml;z&amp;uuml;n&amp;uuml; uygulamış serileştirilebilir bir taban sınıftan t&amp;uuml;retme işlemi yapıldığında, t&amp;uuml;reyen sınıf i&amp;ccedil;in DeSerialization işleminin başarılı bir şekilde yapılabilmesi i&amp;ccedil;in, t&amp;uuml;reyen sınıf i&amp;ccedil;erisindede DeSerialize Constructor metodunun uygulanması gerekir.&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Bu problemi &amp;ccedil;&amp;ouml;zmek i&amp;ccedil;in, t&amp;uuml;reyen sınıfımıza aşağıdaki constructor metodu eklememiz yeterli olacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private RadyoPersonel(SerializationInfo info, StreamingContext context)
+{
+    _PersonelNo = info.GetInt32("Personel Numarasi");
+    _PersonelAd = info.GetString("Personel Adi");
+}&lt;/pre&gt;
+&lt;p&gt;Uygulamamız bu haliyle başarılı bir şekilde &amp;ccedil;alışacak ve hem Serialize hemde DeSerialize işlemlerini başarılı bir şekilde ger&amp;ccedil;ekleştirecektir. RadyoKanal ve RadyoPersonel sınıflarının son haline aşağıdaki UML şemasından daha kolay takip edebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk146_12.gif" alt="" width="434" height="556" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Makalemiz boyunca geliştirdiğimiz &amp;ouml;rnek uygulamamızın son halini bu linkten &lt;a href="/makale/images/Serilestirme.rar"&gt;indirebilirsiniz&lt;/a&gt;. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek, hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2006-02-02 10:00:00</pubDate>
+  <slug>Serileştirme-(Serialization)-İçin-Püf-Noktalar-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>c#</tag>
+    <tag>serialization</tag>
+    <tag>tips-and-tricks</tag>
+  </tags>
+  <categories>
+    <category>C#</category>
+  </categories>
+</post>

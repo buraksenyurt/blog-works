@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Parent-Child Tasks Kavramı</title>
+  <description>Ancak Task nesne örneklerinin devreye girdiği noktada, Parent-Child ilişkiler kurularak Planlanmış/Yapılandırılmış görevlerin(Structured Tasks) oluşturulması da mümkündür.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/pics/2010%2f3%2fblg171_Giris.jpg" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Planlama ger&amp;ccedil;ek hayatta her zaman karşımıza &amp;ccedil;ıkan ve yaşamımızın, işlerimizin d&amp;uuml;zenli devam edebilmesi i&amp;ccedil;in gereken olmazsa olmazlar arasında yer alan bir kavramdır. Toplantıların planlanmasından tutun da, işlerin hangi sırada yapılacağına karar verilmesine kadar pek &amp;ccedil;ok yerde planlamanın &amp;ouml;nemini g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Aslında başarılı sistemlerin tasarlanması, &amp;ccedil;alışması ve istenen sonu&amp;ccedil;ları &amp;uuml;retmesi iyi planlamayla ilişkilidir. Tasarımın planlanması, kaynakların planlanması, sistemin &amp;ouml;nceliklerinin planlanması, m&amp;uuml;şteri toplantılarının planlanması vs...Bazen kafamızda hayatımızın ilerleyişini planlarız ve bazende yazdığımız kodun fonksiyonelliklerini.&lt;/p&gt;
+&lt;p&gt;Dolayısıyla planlamanın yazılımın pek &amp;ccedil;ok noktasında da son derece &amp;ouml;nemli bir rol &amp;uuml;stlendiğine şahit oluruz. Aslında planlı olmak, neyin ne zaman nasıl ve ne şekilde yapılacağının bilinmesi, ortaya &amp;ccedil;ıkacak sonu&amp;ccedil;larda nasıl hareket edileceğinin tespit edilmesi noktasında son derece hayatidir.&lt;/p&gt;
+&lt;p&gt;Planlama, bu yazımızda ele alacağımız gibi &lt;strong&gt;Task Parallel Library &lt;/strong&gt;i&amp;ccedil;erisinde de ele alınan bir konudur. &amp;Ouml;zellikle &lt;strong&gt;Parallel.ForEach, Parallel.For, Parallel.Invoke &lt;/strong&gt;gibi metodlar zaten paralel &amp;ccedil;alışma i&amp;ccedil;in gerekli planlamaları&lt;em&gt;(yapılandırmaları ki neden yapılandırma dediğimi biraz sonra anlayacağız)&lt;/em&gt; kendi i&amp;ccedil; yapılarında ger&amp;ccedil;ekleştiren fonksiyonellikler sunmaktadır.&lt;/p&gt;
+&lt;p&gt;Ancak &lt;strong&gt;Task&lt;/strong&gt; nesne &amp;ouml;rneklerinin devreye girdiği noktada, &lt;strong&gt;Parent-Child &lt;/strong&gt;ilişkiler kurularak &lt;strong&gt;Planlanmış/Yapılandırılmış g&amp;ouml;revlerin(Structured Tasks)&lt;/strong&gt; oluşturulması da m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Ger&amp;ccedil;i Structured kelimesini Yapılandırılmış, Denetim Altında Olan anlamlarında da kullanabiliriz ancak burada mevzu bahis olan konu bana g&amp;ouml;re Task nesne &amp;ouml;rneklerinin planlı bir şekilde Parent-Child ilişki i&amp;ccedil;erisine alınması ve &amp;ccedil;alıştırılmasıdır. Tabi ki evdeki hesap her zaman i&amp;ccedil;in &amp;ccedil;arşıya uymaz, uymayabilir. Bu nedenle Parent Task nesne &amp;ouml;rneklerinin n sayıda Child Task &amp;ouml;rneğini i&amp;ccedil;eriyor olması da, bir yapının-Structure kurulması olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;İşte bu yazımızda &lt;strong&gt;Task&lt;/strong&gt; nesne &amp;ouml;rnekleri arasında &lt;strong&gt;Parent-Child &lt;/strong&gt;ilişkiyi incelemeye &amp;ccedil;alışıyor olacağız. İşe ortam gereklilikleri ile başlamakta yarar olduğu kanısındayım.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Task &lt;/strong&gt;nesne &amp;ouml;rnekleri arasında &lt;strong&gt;Parent-Child &lt;/strong&gt;ilişki oluşturulabilmesi i&amp;ccedil;in gerekli iki şart vardır. İlk olarak &lt;strong&gt;Child &lt;/strong&gt;olacak &lt;strong&gt;Task &lt;/strong&gt;&amp;ouml;rneğinin, &lt;strong&gt;Parent Task &lt;/strong&gt;&amp;ouml;rneğinin &amp;ccedil;alıştığı &lt;strong&gt;yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml;(Life Cycle)&lt;/strong&gt; i&amp;ccedil;erisindeyken &lt;strong&gt;oluşturulması(Create)&lt;/strong&gt; gerekmektedir. İkincil olarak &lt;strong&gt;Child Task&lt;/strong&gt; &amp;ouml;rneklerinin oluşturulma işlemleri sırasında, &lt;strong&gt;TaskCreationOptions enum &lt;/strong&gt;sabitlerinden &lt;strong&gt;AttachedToParent &lt;/strong&gt;değeri ile &amp;uuml;retilmesi gerekmektedir. Bir başka deyişle oluşturulan &lt;strong&gt;Task &lt;/strong&gt;nesne &amp;ouml;rneğinin, i&amp;ccedil;erisinde &amp;ccedil;alıştığı &lt;strong&gt;Task &lt;/strong&gt;nesne &amp;ouml;rneğinin &lt;strong&gt;Child&lt;/strong&gt;' ı olacağının bilin&amp;ccedil;li bir şekilde bildirilmesi gerekir. Nitekim normal şartlarda varsayılan olarak t&amp;uuml;m &lt;strong&gt;Task &lt;/strong&gt;nesne &amp;ouml;rnekleri &lt;strong&gt;Detached &lt;/strong&gt;pozisyondadır. &amp;Ccedil;ok doğal olarak &lt;strong&gt;Parent-Child Task &lt;/strong&gt;ilişkisi i&amp;ccedil;in en az iki &lt;strong&gt;Task &lt;/strong&gt;nesne &amp;ouml;rneğinin olması gerektiği ortadadır. &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Child Task&lt;/strong&gt; &amp;ouml;rnekleri, &lt;strong&gt;Parent Task &lt;/strong&gt;&amp;ouml;rneklerine &lt;strong&gt;d&amp;ouml;n&amp;uuml;ş durumlarının(Return States)&lt;/strong&gt; değerlerine g&amp;ouml;re etkide bulunabilirler. &lt;strong&gt;TaskStatus enum &lt;/strong&gt;sabiti i&amp;ccedil;in olası değerler bu noktada &amp;ouml;nem taşımaktadır. Aşağıdaki şemada olası durumların hangi zaman aralıklarında anlam kazandığı g&amp;ouml;sterilmeye &amp;ccedil;alışılmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f3%2fblg171_SchemaNew.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bir başka deyişe, &lt;strong&gt;Child Task &lt;/strong&gt;nesne &amp;ouml;rnekleri d&amp;ouml;n&amp;uuml;ş değerlerine g&amp;ouml;re &lt;strong&gt;Parent &lt;/strong&gt;&amp;ouml;rneklerin &lt;strong&gt;yaşam d&amp;ouml;ng&amp;uuml;lerine(Life Cycle)&lt;/strong&gt; etkilde bulunurlar diyebiliriz. Peki en basit haliyle &lt;strong&gt;Parent-Child Task &lt;/strong&gt;ilişkisini canlandırmak istersek nasıl bir kod deseni oluşturmamız gerekir? Aşağıda &lt;strong&gt;Visual Studio 2010 Ultimate RC &lt;/strong&gt;ortamında buna istinaden oluşturulmuş bir kod &amp;ouml;rneği g&amp;ouml;r&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Threading.Tasks;
+
+namespace StructuredTasking
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Task parentTask = Task.Factory.StartNew(
+                () =&amp;gt;
+                {
+                    Console.WriteLine("Parent Task...");
+                    Task childTaskOne = Task.Factory.StartNew(() =&amp;gt; { Console.WriteLine("\tChild Task 1"); }, TaskCreationOptions.AttachedToParent);
+                    Task childTaskTwo = Task.Factory.StartNew(() =&amp;gt; { Console.WriteLine("\tChild Task 2"); }, TaskCreationOptions.AttachedToParent);
+                    Task childTaskThree = Task.Factory.StartNew(() =&amp;gt; { Console.WriteLine("\tChild Task 3"); }, TaskCreationOptions.AttachedToParent);
+                }
+            );
+            parentTask.Wait();
+            Console.WriteLine("İşlemlerin sonu");
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Kod par&amp;ccedil;asında dikkat edileceği &amp;uuml;zere &lt;strong&gt;childTaskOne&lt;/strong&gt;, &lt;strong&gt;childTaskTwo &lt;/strong&gt;ve &lt;strong&gt;childTaskThree &lt;/strong&gt;isimli &lt;strong&gt;Task &lt;/strong&gt;nesne &amp;ouml;rnekleri &lt;strong&gt;parentTask&lt;/strong&gt; nesne &amp;ouml;rneğinin oluşturulduğu metod i&amp;ccedil;erisinde &amp;uuml;retilmiş ve başlatışmıştır. Buna g&amp;ouml;re &lt;strong&gt;&amp;ccedil;alışma zamanında(Runtime)&lt;/strong&gt; aşağıdakine benzer bir sonu&amp;ccedil; ile karşılaşılabilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f3%2fblg171_Runtime1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Karşılaşılabilir diyoruz, nitekim&lt;strong&gt; Parent Task &lt;/strong&gt;nesne &amp;ouml;rneğine dahil olan&lt;strong&gt; Child Task&lt;/strong&gt; nesne &amp;ouml;rnekleri farklı sıralarda &amp;ccedil;alıştırılabilirler. &amp;Ouml;rneğimizde &lt;strong&gt;Task &lt;/strong&gt;sırası &lt;strong&gt;1,3,2 &lt;/strong&gt;şeklindedir ama bu sıra sabit ve kesin değildir. Yani &lt;strong&gt;3,2,1 &lt;/strong&gt;veya &lt;strong&gt;3,1,2 &lt;/strong&gt;vb sonu&amp;ccedil;lar elde edilebilir.&lt;em&gt;(Toplamda 6 farklı sonu&amp;ccedil; olabileceğini de ifade edebiliriz&lt;img title="Smile" src="/editors/tiny_mce3/plugins/emotions/img/smiley-smile.gif" alt="Smile" border="0" /&gt;) &lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Biraz &amp;ouml;nce &lt;strong&gt;Child Task&lt;/strong&gt; nesne &amp;ouml;rneklerinin &lt;strong&gt;Parent Task &lt;/strong&gt;&amp;ouml;rneğine dahil olmaları i&amp;ccedil;in &lt;strong&gt;AttachedToParent &lt;/strong&gt;sabit değerini belirtmeleri gerektiğini s&amp;ouml;ylemiştik. Aksi durumda varsayılan olarak &lt;strong&gt;Detached &lt;/strong&gt;olduklarını ifade etmiştik. Yukarıdaki kod par&amp;ccedil;asında &lt;strong&gt;AttachedToParent &lt;/strong&gt;değerlerini kullanmassak aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;lerinde yer alanlara benzer sonu&amp;ccedil;lar ile karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;İlk deneme;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f3%2fblg171_Test1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;İkinci deneme;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f3%2fblg171_Test2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&amp;Uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; deneme;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f3%2fblg171_Test3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;D&amp;ouml;rd&amp;uuml;nc&amp;uuml; deneme;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f3%2fblg171_Test4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi bilin&amp;ccedil;li olarak bir planlama belirtilmediğinden &lt;strong&gt;Task &lt;/strong&gt;&amp;ouml;rneklerinin yapılandırılmasında sorunlar oluşmuş, bazı &amp;ccedil;alışmalarda bazı &lt;strong&gt;Task &lt;/strong&gt;&amp;ouml;rneklerinin sonu&amp;ccedil;ları &lt;span style="text-decoration: underline;"&gt;alınamamıştır&lt;/span&gt;.&lt;em&gt;(3 ve 4 teki durumlar)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Parent-Child Task&lt;/strong&gt; senaryolarında dikkat edilmesi gereken hususlardan birisi de,&lt;strong&gt; Parent task&lt;/strong&gt; nesne &amp;ouml;rneğinin&lt;strong&gt; Final State&lt;/strong&gt; zaman dilimine girebilmesi i&amp;ccedil;in, i&amp;ccedil;erdiği&lt;strong&gt; Child Task&lt;/strong&gt; nesne &amp;ouml;rneklerinin &amp;ccedil;alışmalarını tamamlamış olmaları gerektiğidir. Bu durumu analiz etmek i&amp;ccedil;in aşağıdaki kod par&amp;ccedil;asını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Threading.Tasks;
+using System.Threading;
+
+namespace StructuredTasking
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Task parentTask = Task.Factory.StartNew(
+                () =&amp;gt;
+                {
+                    Console.WriteLine("Parent Task...");
+
+                    #region IsCompleted
+
+                    Task childTaskOne = Task.Factory.StartNew(() =&amp;gt; { 
+                        Console.WriteLine("\tChild Task 1 Başladı");
+                        Thread.Sleep(2000);
+                        Console.WriteLine("\tChild Task 1 Bitti");
+                    }, TaskCreationOptions.AttachedToParent);
+                    Task childTaskTwo = Task.Factory.StartNew(() =&amp;gt; {
+                        Console.WriteLine("\tChild Task 2 Başladı");                        
+                        Thread.Sleep(3000);
+                        Console.WriteLine("\tChild Task 2 Bitti");
+                    }, TaskCreationOptions.AttachedToParent);
+                    Task childTaskThree = Task.Factory.StartNew(() =&amp;gt; { 
+                        Console.WriteLine("\tChild Task 3 Başladı");
+                        Thread.Sleep(5000);
+                        Console.WriteLine("\tChild Task 3 Bitti");
+                    }, TaskCreationOptions.AttachedToParent);
+
+                    #endregion
+                }
+            );
+
+            while (!parentTask.IsCompleted)
+            {
+                Console.WriteLine("{0} Parent Task Durumu : {1}",DateTime.Now.ToLongTimeString(),parentTask.Status);
+                Thread.Sleep(500);
+            }
+            Console.WriteLine("{0} Parent Task Durumu : {1}", DateTime.Now.ToLongTimeString(), parentTask.Status);
+            Console.WriteLine("İşlemlerin sonu");
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Kodu &amp;ccedil;alıştırdığımızda aşağıdakine benzer sonu&amp;ccedil;lar ile karşılaşırız. &lt;strong&gt;Child Task&lt;/strong&gt;' ler i&amp;ccedil;erisinde bilin&amp;ccedil;li olarak &lt;strong&gt;Thread.Sleep&lt;/strong&gt; metodu kullanılmış ve uygulamanın belirli s&amp;uuml;reler boyunca duraksatılması sağlanmıştır. while d&amp;ouml;ng&amp;uuml;s&amp;uuml;nde ise&lt;strong&gt; Parent Task &lt;/strong&gt;nesne &amp;ouml;rneğinin tamamlanıp tamamlanmadığı s&amp;uuml;rekli olarak denetlenmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f3%2fblg171_WaitFor.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;parentTask &lt;/strong&gt;nesne &amp;ouml;rneğinin &lt;strong&gt;RanToCompletion &lt;/strong&gt;moduna, bir başka deyişle &lt;strong&gt;Final State&lt;/strong&gt;' e ge&amp;ccedil;mesi i&amp;ccedil;in &lt;strong&gt;Child Task&lt;/strong&gt; nesne &amp;ouml;rneklerinin tamamının bitmesi beklenmiştir. &amp;Uuml;stelik &lt;strong&gt;Child Task&lt;/strong&gt; nesne &amp;ouml;rnekleri &amp;ccedil;alışmalarını s&amp;uuml;rd&amp;uuml;r&amp;uuml;rken&lt;strong&gt; Parent Task &lt;/strong&gt;nesne &amp;ouml;rneğine kendisini beklemesini bildirmektedir ki bu durumda&lt;strong&gt; Parent Task&lt;/strong&gt; ara zaman diliminde durmaktadır ve bu nedenle &lt;strong&gt;WaitingForChildrenToComplete &lt;/strong&gt;modundadır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Parent Task&lt;/strong&gt; nesne &amp;ouml;rneğinin &lt;strong&gt;Final State &lt;/strong&gt;zaman dilimine girmesi anında olası 3 &lt;strong&gt;Status &lt;/strong&gt;değeri bulunmaktadır. Şemamızdan hatırlayacağınız &amp;uuml;zere bunlar &lt;strong&gt;RanToCompletion, Canceled &lt;/strong&gt;ve &lt;strong&gt;Faulted &lt;/strong&gt;olarak belirlenmiştir.&lt;strong&gt; Child Task &lt;/strong&gt;&amp;ouml;rneklerinin başarılı bir şekilde tamamlanmış olmaları, &lt;strong&gt;Parent Task&lt;/strong&gt; &amp;ouml;rneğinin &lt;strong&gt;RanToCompletion &lt;/strong&gt;değeri &amp;uuml;retmesi i&amp;ccedil;in yeterlidir. Peki ya &lt;strong&gt;Child Task&lt;/strong&gt; nesne &amp;ouml;rneklerinden herhangibirinin başlattığı kod i&amp;ccedil;erisinden &amp;ccedil;alışma zamanına bir &lt;strong&gt;Exception&lt;/strong&gt; fırlatılırsa? &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt; S&amp;ouml;z gelimi bir &amp;ouml;nceki &amp;ouml;rnek kodumuzda yer alan &lt;strong&gt;Child Task&lt;/strong&gt; &amp;ouml;rneklerinden birisinden bir &lt;strong&gt;Exception &lt;/strong&gt;fırlattığımızı ve bunu yakalamak istediğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;Task childTaskOne = Task.Factory.StartNew(() =&amp;gt; { 
+                        Console.WriteLine("\tChild Task 1 Başladı");
+                        Thread.Sleep(2000);
+                        throw new Exception("Muahahahaha!");
+                    }, TaskCreationOptions.AttachedToParent);
+
+...
+
+while (!parentTask.IsCompleted)
+            {
+                Console.WriteLine("{0} Parent Task Durumu : {1} Exception : {2}", DateTime.Now.ToLongTimeString(), parentTask.Status, parentTask.Exception);
+                Thread.Sleep(500);
+            }
+
+            Console.WriteLine("{0} Parent Task Durumu : {1} Exception : {2}", DateTime.Now.ToLongTimeString(), parentTask.Status,parentTask.Exception);
+            Console.WriteLine("İşlemlerin sonu");&lt;/pre&gt;
+&lt;p&gt;Bu durumda uygulama aşağıdaki &amp;ouml;rnek &amp;ccedil;ıktıyı verecektir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f3%2fblg171_ExceptionNew.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edilmesi gereken 3 &amp;ouml;nemli nokta vardır. &lt;strong&gt;Parent Task&lt;/strong&gt; nesne &amp;ouml;rneği &lt;strong&gt;Faulted Status&lt;/strong&gt; değerini &amp;uuml;reterek sonlanmıştır. Diğer yandan ilk &lt;strong&gt;Child Task, &lt;/strong&gt;bir&lt;strong&gt; Exception &lt;/strong&gt;ile sonlandırılsa bile diğer &lt;strong&gt;Task&lt;/strong&gt;' lerin başlattığı işler y&amp;uuml;r&amp;uuml;t&amp;uuml;lmeyi s&amp;uuml;rd&amp;uuml;rm&amp;uuml;ş ve tamamlanmıştır. Bu dikkat edilmesi gereken bir durumdur. Nitekim&lt;strong&gt; Child Task&lt;/strong&gt;' ler ortak bir takım verileri etkiliyor olabilirler ki bu durumda herhangibir istisna, diğer &lt;strong&gt;Task&lt;/strong&gt;' lerin yanlış veriler &amp;uuml;zerinden işlem yapmaya devam etmesine neden olabilir. &amp;Uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; nokta ise &lt;strong&gt;Parent Task&lt;/strong&gt; nesne &amp;ouml;rneğinin &lt;strong&gt;Exception &lt;/strong&gt;&amp;ouml;zelliğinin değeridir. Yukarıdaki senaryoya g&amp;ouml;re bu &amp;ouml;zellik, &lt;strong&gt;Parent Task &lt;/strong&gt;nesne &amp;ouml;rneği &lt;strong&gt;WaitingForChildrenToComplete &lt;/strong&gt;durumundayken &lt;strong&gt;null &lt;/strong&gt;değer d&amp;ouml;nd&amp;uuml;rmektedir. Bir başka deyişle &lt;strong&gt;Child Task&lt;/strong&gt; i&amp;ccedil;erisinden fırlatılan &lt;strong&gt;Exception &lt;/strong&gt;nesnesi aslında bu zaman dilimi i&amp;ccedil;erisinde &lt;strong&gt;Parent Task&lt;/strong&gt; &amp;ouml;rneğine &lt;span style="text-decoration: underline;"&gt;bildirilmemektedir&lt;/span&gt;. Ancak &lt;strong&gt;Faulted &lt;/strong&gt;durumuna d&amp;uuml;ş&amp;uuml;ld&amp;uuml;kten sonra s&amp;ouml;z konusu &lt;strong&gt;Exception &lt;/strong&gt;nesnesi yakalanmaktadır.&lt;/p&gt;
+&lt;p&gt;Son olarak &lt;strong&gt;Parent-Child&lt;/strong&gt; ilişki ile ilgili olarak şu notu d&amp;uuml;şebiliriz; &lt;strong&gt;Parent Task&lt;/strong&gt; nesne &amp;ouml;rnekleri, ka&amp;ccedil; adet &lt;strong&gt;Child Task &lt;/strong&gt;&amp;ouml;rneği i&amp;ccedil;erdiğini bilmektedir. Bir başka deyişle kendisine eklenen&lt;strong&gt; Child Task&lt;/strong&gt;' lerin sayısını tutar. Dolayısıyla &lt;strong&gt;Child Task &lt;/strong&gt;nesne &amp;ouml;rneklerinin, dahil oldukları&lt;strong&gt; Parent Task&lt;/strong&gt; &amp;ouml;rneğine bir referans bildiriminde bulunduğunu ve hatta tamamlanma durumlarını ilettiklerini ifade edebiliriz. Parent-Child Task' ler arasındaki ilişkiyi fırsat bulduk&amp;ccedil;a incelemeye devam ediyor olacağız. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2010%2f4%2fStructuredTasking_RTM.rar"&gt;StructuredTasking_RTM.rar (23,32 kb)&lt;/a&gt; &lt;strong&gt;[&amp;Ouml;rnek Visual Studio 2010 Ultimate RTM S&amp;uuml;r&amp;uuml;m&amp;uuml; &amp;uuml;zerinde geliştirilmiş ve test edilmiştir]&lt;/strong&gt;&lt;/p&gt;</content>
+  <pubDate>2010-06-11 02:00:00</pubDate>
+  <slug>Parent-Child-Tasks-Kavrami</slug>
+  <tags>
+    <tag>tpl</tag>
+    <tag>task-parallel-library</tag>
+    <tag>parallel-programming</tag>
+    <tag>parallel-computing</tag>
+  </tags>
+  <categories>
+    <category>Parallel Programming</category>
+    <category>TPL</category>
+  </categories>
+</post>

@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Ado.Net Data Services Ders Notları - 4 (CUD Operasyonları)</title>
+  <description>Ders notlarımızı tutmaya devam ediyoruz. Bu gün Ado.Net Data Service' ler yardımıyla istemcilerden veri ekleme(Insert), silme(Delete) ve güncelleme(Update) işlemlerinin nasıl yapılabileceğini incelemeye karar verdim. Tabiki Ado.Net Data Services konusu halen daha Astoria kod adıyla anılmakta...</description>
+  <content>&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Değerli Okurlarım Merhabalar,&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Ders notlarımızı tutmaya devam ediyoruz. Bu g&amp;uuml;n &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt;' ler yardımıyla istemcilerden &lt;strong&gt;veri ekleme(Insert), silme(Delete) ve g&amp;uuml;ncelleme(Update)&lt;/strong&gt; işlemlerinin nasıl yapılabileceğini incelemeye karar verdim. Tabiki &lt;strong&gt;Ado.Net Data Services&lt;/strong&gt; konusu halen daha &lt;strong&gt;Astoria&lt;/strong&gt; kod adıyla anılmakta. Dolayısıyla zaman i&amp;ccedil;erisinde uygulanan metod adlarında ve kullanılış bi&amp;ccedil;imlerinde değişiklikler olması muhtemel. Yine şu an itibariyle neler yapabileceğimize bakmakta yarar var nitekim bir &lt;strong&gt;WCF&lt;/strong&gt; fanatiği olarak &lt;strong&gt;Ado.Net Data Services&lt;/strong&gt; a&amp;ccedil;ılımı beni son derece heyecanlandırıyor. Bu kadar laf salatasından sonra kısaca konuya girmeye ve basit bir &amp;ouml;rnek geliştirmeye ne dersiniz?&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;Ado.Net Data Service&lt;/strong&gt; operasyonlarına yapılan istemci &amp;ccedil;ağrılarının &lt;strong&gt;HTTP&lt;/strong&gt; bazlı olduklarını ve &lt;strong&gt;GET,POST,PUT,DELETE&lt;/strong&gt; gibi metodlara g&amp;ouml;re uygulandıklarını biliyoruz. İstemci tarafından servis operasyonlarına doğru eklenmek, silinmek veya g&amp;uuml;ncellenmek amacıyla g&amp;ouml;nderilen verilerin &amp;ccedil;oğunluğuda &lt;strong&gt;POST&lt;/strong&gt; metoduna uygun olacak şekilde paketlenmektedir. Ancak elbetteki istemci tarafında bu paketin manuel olarak hazırlanması gibi işlemler ile uğraşmamıza gerek yoktur. Nitekim istemci tarafında oluşturulan servis &amp;ouml;rneğine ait &amp;uuml;ye metodlar yardımıyla bu paketlerin otomatik olarak hazırlanması, g&amp;ouml;nderilmesi sağlanabilmektedir. Her zamanki gibi adım adım ilerleyeceğimiz bir &amp;ouml;rnek konuyu pekiştirmek a&amp;ccedil;ısından &amp;ccedil;ok daha yararlı olacaktır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;İlk olarak veritabanı &amp;uuml;zerindeki hazırlıklarımızı yapalım. &amp;Ouml;rneğimizde &lt;strong&gt;Azon&lt;/strong&gt; isimli&lt;em&gt;(Benim seminerlerimi takip edenler bu isimdeki hayali şirketi hatırlayacaktır :) )&lt;/em&gt; bir veritabanını ve bunun &amp;uuml;zerinde yer alan &lt;strong&gt;Kategori&lt;/strong&gt; ve &lt;strong&gt;Kitap&lt;/strong&gt; isimli tabloları kullanıyor olacağız. Şimdi hi&amp;ccedil; vakit kaybetmeden aşağıdaki &lt;strong&gt;SQL Script&lt;/strong&gt;' ini &lt;strong&gt;SQL&lt;/strong&gt; &lt;strong&gt;Management&lt;/strong&gt; &lt;strong&gt;Studio&lt;/strong&gt; &amp;uuml;zerinde &amp;ccedil;alıştırabilir ve &amp;ouml;rnek veritabanı, tablo ve test verilerinin eklenmesini sağlayabilirsiniz.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;--Test veritabanı oluşturulur
+Create Database Azon
+GO
+
+--Test veritabanını kullan
+Use Azon
+GO
+
+-- Kategori tablosu oluşturulur
+Create Table Kategori
+(
+    KategoriId int identity(1,1) not null,
+    Ad nvarchar(20) not null,
+    Constraint Pk_Kategori Primary Key(KategoriId)
+)
+GO
+
+--Kategori tablosu i&amp;ccedil;in test verileri girilir
+Insert into Kategori (Ad) Values ('Programlama');
+Insert into Kategori (Ad) Values ('SOA &amp;Ccedil;&amp;ouml;z&amp;uuml;mleri');
+Insert into Kategori (Ad) Values ('Web Programlama');
+
+--Kitap tablosu oluşturulur
+Create Table Kitap
+(
+    KitapId int Identity(1,1) not null,
+    Ad nvarchar(50) not null,
+    Fiyat money not null,
+    StokMiktari int not null,
+    KategoriId int not null,
+    Constraint Pk_Kitap Primary Key(KitapId) 
+)
+GO
+
+--Kitap tablosu i&amp;ccedil;in test verileri eklenir
+Insert into Kitap (Ad,Fiyat,StokMiktari,KategoriId) Values ('Her Y&amp;ouml;n&amp;uuml;yle C#',50,100,1);
+Insert into Kitap (Ad,Fiyat,StokMiktari,KategoriId) Values ('Essential C# 3.0',80,25,1);
+Insert into Kitap (Ad,Fiyat,StokMiktari,KategoriId) Values ('Programming WCF',75,120,2);
+Insert into Kitap (Ad,Fiyat,StokMiktari,KategoriId) Values ('SOA For Dummies',35,45,2);
+Insert into Kitap (Ad,Fiyat,StokMiktari,KategoriId) Values ('Asp.Net 3.5 Step By Step',70,80,3);
+
+--Relation Oluşturulur
+ALTER TABLE Kitap WITH CHECK ADD CONSTRAINT FK_Kitap_Kategori FOREIGN KEY(KategoriId)
+REFERENCES Kategori (KategoriId)
+GO
+
+ALTER TABLE Kitap CHECK CONSTRAINT FK_Kitap_Kategori
+GO&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Kategori&lt;/strong&gt; ve &lt;strong&gt;Kitap&lt;/strong&gt; tabloları yine bir birlerine bağlı k&amp;uuml;meler olarak tasarlanmıştır. B&amp;ouml;ylece bir &lt;strong&gt;Kategori&lt;/strong&gt; ve buna bağlı &lt;strong&gt;Kitap&lt;/strong&gt; satırlarının &lt;strong&gt;Entity&lt;/strong&gt; &amp;ouml;rnekleri &amp;uuml;zerinden eklenmesinin analizi i&amp;ccedil;in gerekli ortam hazırlanmış olur. Her iki tablo arasındaki ilişkinin veritabanı &amp;uuml;zerinde tanımlanmış olmasıda son derece &amp;ouml;nemlidir. Nitekim bu tanımla &lt;strong&gt;yapılmadığı&lt;/strong&gt; takdirde &lt;strong&gt;EDM(Entity Data Model)&lt;/strong&gt; i&amp;ccedil;erisinde oluşturulan &lt;strong&gt;Entity&lt;/strong&gt; tipleri arasındada bir &lt;strong&gt;Association&lt;/strong&gt; en azından otomatik olarak oluşmayacaktır.&lt;/p&gt;
+&lt;p&gt;Sıradaki aşamada servisimiz i&amp;ccedil;in gerekli &lt;strong&gt;host&lt;/strong&gt; uygulamanın yazılması gerekmektedir. &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt;' leri bu ana kadarki ders notlarımızda s&amp;uuml;rekli olarak &lt;strong&gt;WCF&lt;/strong&gt; &lt;strong&gt;Service&lt;/strong&gt; şablonları &amp;uuml;zerinde tuttuk. Şimdilik geleneği bozmuyoruz. Yine işlerimizi kolaylaştırması a&amp;ccedil;ısından &lt;strong&gt;EDM&lt;/strong&gt; katmanını kullanıyor olacağız. Daha &amp;ouml;nceki ders notlarımızda ve g&amp;ouml;rsel derslerimizde bu konuya değindiğimiz i&amp;ccedil;in tekrar etmeyeceğiz ancak oluşan &lt;strong&gt;EDM&lt;/strong&gt; modelinin aşağıdakine benzer olması gerektiğinide hemen vurgulayalım.&lt;em&gt;(Bu aşamayı tamamlarken &amp;ouml;nceki ders notları veya g&amp;ouml;rsel derslere bakmadan ilerlemeye &amp;ccedil;alışmanız sizin yararınıza olacaktır. Bildiğiniz gibi pratik m&amp;uuml;kemmelleştirir.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk261_1.gif" alt="" width="382" height="211" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;KitapServisi&lt;/strong&gt; olarak isimlendirdiğimiz &lt;strong&gt;svc&lt;/strong&gt; dosyasına ait kod i&amp;ccedil;eriği ise aşağıdaki gibi olmalıdır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Linq;
+using System.Data.Services;
+using System.ServiceModel.Web;
+using System.Collections.Generic;
+using AzonModel;
+
+public class KitapServisi 
+    : DataService&amp;lt;AzonEntities&amp;gt;
+{ 
+    public static void InitializeService(IDataServiceConfiguration config)
+    {
+        config.SetEntitySetAccessRule("*", EntitySetRights.All); 
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Tahmin edileceği &amp;uuml;zere &lt;strong&gt;AzonEntites&lt;/strong&gt; isimli taşıyıcı tip i&amp;ccedil;erisindeki t&amp;uuml;m &lt;strong&gt;Entity&lt;/strong&gt; tipleri t&amp;uuml;m haklar ile istemcilere a&amp;ccedil;ılmaktadır. Burada varsayılan olarak bulunan &lt;strong&gt;AllRead&lt;/strong&gt; değerini kullanamayız. Nitekim verilerin eklenmesi, g&amp;uuml;ncellenmesi ve silinmesi operasyonları i&amp;ccedil;in izin verilmesi gerekir. Burada kolaya ka&amp;ccedil;arak &lt;strong&gt;All&lt;/strong&gt; &lt;strong&gt;enum&lt;/strong&gt; sabiti değerini kullandık. Bu adıma kadar geldikten sonra yapmamız gereken ilk iş servisin &amp;ccedil;alışıp &amp;ccedil;alışmadığını test etmek olmalıdır. Bu ama&amp;ccedil;la servisin herhangibir tarayıcıda a&amp;ccedil;ılması yeterlidir. Eğer bir sorun yoksa aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ne benzer bir &amp;ccedil;ıktının elde edilmesi gerekir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk261_2.gif" alt="" width="611" height="320" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Sıradaki adımımızda istemci uygulamanın oluşturulması ve servis referansının eklenmesi yer almaktadır. Yine &amp;ccedil;ok sevineceğiniz ve yazarken b&amp;uuml;y&amp;uuml;k keyif alacağınız bir &lt;strong&gt;Console&lt;/strong&gt; &lt;strong&gt;Application&lt;/strong&gt; :) geliştiriyor olacağız. &lt;strong&gt;Console&lt;/strong&gt; uygulamamıza aynı &lt;strong&gt;solution&lt;/strong&gt; i&amp;ccedil;erisinde oluşturduğumuz &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt; &amp;ouml;rneğini ise &lt;strong&gt;Add Service Reference&lt;/strong&gt; se&amp;ccedil;eneği ile ekleyeceğiz. Aynen aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk261_3.gif" alt="" width="535" height="436" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bu işlemin ardından &lt;strong&gt;solution&lt;/strong&gt; i&amp;ccedil;eriğinin aşağıdakine benzer olmasını bekleyebiliriz. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk261_4.gif" alt="" width="309" height="320" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Artık birazda kod yazalım. İlk kod &amp;ouml;rneğinde toplu bir &lt;strong&gt;insert&lt;/strong&gt; işleminide ger&amp;ccedil;ekleştiriyor olacağız. İlk &amp;ouml;nce bir &lt;strong&gt;Kategori&lt;/strong&gt; &amp;ouml;rneğini oluşturup istemci tarafındaki &lt;strong&gt;Entity&lt;/strong&gt; nesnesine ilave edecek ve bu değişikliği veritabanına doğru g&amp;ouml;ndereceğiz. Sonrasında ise bu &lt;strong&gt;Kategori&lt;/strong&gt; altında olacak &lt;strong&gt;Kitap&lt;/strong&gt; nesnelerini &amp;ouml;rneklerinin değerlerini veri tabanına g&amp;ouml;ndereceğiz. İşte kodlarımız;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using ClientApp.AzonSpace;
+
+namespace ClientApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // Proxy nesnesi &amp;ouml;rneklenir
+            AzonEntities proxy = new AzonEntities(new Uri("http://localhost:1630/HostApp/KitapServisi.svc"));
+
+            // Yeni bir kategori nesnesi &amp;ouml;rneklenir
+            Kategori windowsClient = new Kategori { Ad = "Windows Programlama" };
+
+            // Oluşturulan Kategori nesne &amp;ouml;rneği bellek &amp;uuml;zerindeki Entity &amp;ouml;rneğine ilave edilir
+            proxy.AddToKategori(windowsClient);
+            // Yeni kategorinin veritabanındaki tabloya eklenmesi i&amp;ccedil;in SaveChanges metodu &amp;ccedil;ağırılır.
+            // (Bu noktada SaveChanges &amp;ccedil;ağırılması şart değildir. Bu sadece KategoriId' nin tablodan elde edilmesini sağlamada rol oynamaktadır)
+            proxy.SaveChanges();
+            Console.WriteLine("{0} ID si ile {1} Kategorisi eklendi",windowsClient.KategoriId.ToString(),windowsClient.Ad);
+
+            // Generic bir List koleksiyonunda tutulacak şekilde Kitap nesne &amp;ouml;rnekleri oluşturulur.
+            List&amp;lt;Kitap&amp;gt; kitaplar = new List&amp;lt;Kitap&amp;gt;()
+                {
+                    new Kitap { Ad = "Windows Form 2.0 Programming", Fiyat = 90, StokMiktari = 10 },
+                    new Kitap { Ad = "Pro WPF", Fiyat = 75, StokMiktari = 12 },
+                    new Kitap { Ad = "Core Windows Programming", Fiyat = 90, StokMiktari = 16 }
+                };
+
+            // T&amp;uuml;m kitaplar dolaşılır
+            foreach (Kitap k in kitaplar)
+            {
+                // Her bir Kitap nesne &amp;ouml;rneği ilgili Entity &amp;ouml;rneğine ilave edilir.
+                proxy.AddToKitap(k); 
+                // O andaki kitap ile yukarıda oluşturulan Kategori arasındaki ilişki kurulur
+                proxy.AddLink(windowsClient, "Kitap", k);
+            }
+
+            // Değişiklikler veritabanına g&amp;ouml;nderilir
+            // Batch enum sabit değeri ile t&amp;uuml;m isteklerin tek bir HTTP paketinde g&amp;ouml;nderilmesi sağlanır
+            proxy.SaveChanges(System.Data.Services.Client.SaveChangesOptions.Batch);
+
+            // Eklenen kategori servis tarafından talep edilir
+            var eklenenKategori = (from k in proxy.Kategori
+                                            where k.KategoriId == windowsClient.KategoriId
+                                            select k).First();
+            // Elde edilen kategoriye ait kitap bilgilerinin y&amp;uuml;klenmesi istenir
+            proxy.LoadProperty(eklenenKategori, "Kitap");
+    
+            Console.WriteLine("\n{0} kategorisine eklenen kitaplar\n",eklenenKategori.Ad);
+            // Eklenen kategoriye bağlı kitaplar listelenir
+            foreach (Kitap k in eklenenKategori.Kitap)
+            { 
+                Console.WriteLine("{0} {1} {2} {3}",k.KitapId.ToString(),k.Ad,k.StokMiktari.ToString(),k.Fiyat.ToString("C2"));
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Kodlarda &amp;ouml;zellikle &amp;uuml;zerinde durmamız gereken nokta bir &lt;strong&gt;Entity&lt;/strong&gt; nesne &amp;ouml;rneğinin oluşturulması sonrasında kullanılan &lt;strong&gt;AddTo[EntityAdı]&lt;/strong&gt;, &lt;strong&gt;AddLink&lt;/strong&gt; ve &lt;strong&gt;SaveChanges&lt;/strong&gt; isimli metodlardır. &lt;strong&gt;AddTo[EntityAdı]&lt;/strong&gt; metodları, servis referansının eklenmesi sırasında istemci tarafında oluşturulan &lt;strong&gt;Entity&lt;/strong&gt; tiplerinin her birisi i&amp;ccedil;in service tipine eklenir. S&amp;ouml;z gelimi &lt;strong&gt;Kitap&lt;/strong&gt; i&amp;ccedil;in &lt;strong&gt;AddToKitap&lt;/strong&gt;, &lt;strong&gt;Kategori&lt;/strong&gt; i&amp;ccedil;inse &lt;strong&gt;AddToKategori&lt;/strong&gt;. Bunu sınıf diagramındanda g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk261_7.gif" alt="" width="343" height="317" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;AddTo[EntityAdı]&lt;/strong&gt; metodları parametre olarak aldıkları &lt;strong&gt;Entity&lt;/strong&gt; nesne &amp;ouml;rneklerini taşıyıcı servis tipinin takip etmesinde rol oynarlar. Aslında kendi i&amp;ccedil;lerinde &lt;strong&gt;AdoToObject&lt;/strong&gt; metodunu &amp;ccedil;ağırmaktadırlar. Bu izleme işlemi aslında &lt;strong&gt;SaveChanges&lt;/strong&gt; metodu i&amp;ccedil;in &amp;ouml;nem arz etmektedir. Nitekim eklenen, silinen veya g&amp;uuml;ncellenen nesne değerlerinin veritabanına doğru yansıtılması işlemini ger&amp;ccedil;ekleştirmektedir. Bu noktada durup kodu &lt;strong&gt;debug&lt;/strong&gt; ederek ilerlemenizi &amp;ouml;neririm. &amp;Ouml;zellikle &lt;strong&gt;SaveChanges&lt;/strong&gt; metodu &amp;ccedil;ağırılmadan &amp;ouml;nce &lt;strong&gt;proxy&lt;/strong&gt; nesne &amp;ouml;rneği i&amp;ccedil;erisinde &lt;strong&gt;Kategori&lt;/strong&gt; veya &lt;strong&gt;Kitap&lt;/strong&gt; &amp;ouml;zellikleri i&amp;ccedil;eriği ile &lt;strong&gt;SaveChanges&lt;/strong&gt; &amp;ccedil;ağrısı sonrası i&amp;ccedil;eriklere bakıldığında durum daha net bir şekilde g&amp;ouml;r&amp;uuml;lebilir. S&amp;ouml;z gelimi ben testleri yaparken aşağıdaki sonu&amp;ccedil;ları elde ettim.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;SaveChanges &amp;ccedil;ağrısı &amp;ouml;ncesi;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk261_8.gif" alt="" width="587" height="488" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;SaveChanges &amp;ccedil;ağrısı sonrası;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk261_9.gif" alt="" width="617" height="520" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;SaveChanges&lt;/strong&gt; metodunun &amp;ccedil;ağırılması sırasında birde &lt;strong&gt;System.Data.Services.Client.SaveChangesOptions.Batch&lt;/strong&gt; &lt;strong&gt;enum&lt;/strong&gt; sabiti değeri kullanılmıştır. Bu değer ile birden fazla &lt;strong&gt;HTTP&lt;/strong&gt; paketinin yerine t&amp;uuml;m isteğin tek bir &lt;strong&gt;HTTP&lt;/strong&gt; paketi i&amp;ccedil;erisinde g&amp;ouml;nderilmesi sağlanabilmektedir bu servis ile istemci arasındaki trafik akışının yoğunluğunu azaltıcı bir etkendir. &lt;em&gt;(Bu konu ile ilişkili olarak(Batching) bir g&amp;ouml;rsel ders hazırlıyor olacağım.)&lt;/em&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Tabi &lt;strong&gt;SaveChanges&lt;/strong&gt; &amp;ccedil;ağrısı sırasında sunucu tarafındaki veri kaynağı &amp;uuml;zerindede bir takım &lt;strong&gt;SQL&lt;/strong&gt; sorgu ifadeleri &amp;ccedil;alışacaktır. Burada &lt;strong&gt;SQL&lt;/strong&gt; &lt;strong&gt;Server&lt;/strong&gt; &lt;strong&gt;Profiler&lt;/strong&gt; aracının kullanmanızı şiddetle tavsiye ederim. &amp;Ouml;rneğin veri ekleme testleri sırasında benim yakaladığım &amp;ouml;rnek sql ifadeleri aşağıdaki gibi olumuştur.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;-- Kategori i&amp;ccedil;in Insert &amp;ccedil;ağrısı
+exec sp_executesql N'insert [dbo].[Kategori]([Ad])
+values (@0)
+select [KategoriId]
+from [dbo].[Kategori]
+where @@ROWCOUNT &amp;gt; 0 and [KategoriId] = scope_identity()',N'@0 nvarchar(19)',@0=N'Windows Programlama'
+-- İlk Kitap i&amp;ccedil;in Insert &amp;ccedil;ağrısı
+exec sp_executesql N'insert [dbo].[Kitap]([Ad], [Fiyat], [StokMiktari], [KategoriId])
+values (@0, @1, @2, @3)
+select [KitapId]
+from [dbo].[Kitap]
+where @@ROWCOUNT &amp;gt; 0 and [KitapId] = scope_identity()',N'@0 nvarchar(28),@1 decimal(19,4),@2 int,@3 int',@0=N'Windows Form 2.0 Programming',@1=90.0000,@2=10,@3=27
+
+-- İkinci kitap i&amp;ccedil;in Insert &amp;ccedil;ağrısı
+exec sp_executesql N'insert [dbo].[Kitap]([Ad], [Fiyat], [StokMiktari], [KategoriId])
+values (@0, @1, @2, @3)
+select [KitapId]
+from [dbo].[Kitap]
+where @@ROWCOUNT &amp;gt; 0 and [KitapId] = scope_identity()',N'@0 nvarchar(7),@1 decimal(19,4),@2 int,@3 int',@0=N'Pro WPF',@1=75.0000,@2=12,@3=27
+
+-- &amp;Uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; kitap i&amp;ccedil;in Insert &amp;ccedil;ağrısı
+exec sp_executesql N'insert [dbo].[Kitap]([Ad], [Fiyat], [StokMiktari], [KategoriId])
+values (@0, @1, @2, @3)
+select [KitapId]
+from [dbo].[Kitap]
+where @@ROWCOUNT &amp;gt; 0 and [KitapId] = scope_identity()',N'@0 nvarchar(24),@1 decimal(19,4),@2 int,@3 int',@0=N'Core Windows Programming',@1=90.0000,@2=16,@3=27&lt;/pre&gt;
+&lt;p&gt;İlk kodda dikkat &amp;ccedil;ekici noktalardan biriside &lt;strong&gt;Kategori&lt;/strong&gt; nesne &amp;ouml;rneği eklendikten sonra &lt;strong&gt;Kitap&lt;/strong&gt; nesne &amp;ouml;rneklerinden oluşan bir koleksiyonun nasıl ilave edildiğidir. Burada d&amp;ouml;ng&amp;uuml; i&amp;ccedil;erisinde &amp;ccedil;ağırılan &lt;strong&gt;AddToKitap&lt;/strong&gt; metodu haricinde &lt;strong&gt;AddLink&lt;/strong&gt; isimli bir fonksiyon yer almaktadır. Bu metod, o anki &lt;strong&gt;Kitap&lt;/strong&gt; nesne &amp;ouml;rneğinin hangi &lt;strong&gt;Kategori&lt;/strong&gt;' ye bağlı olacağının belirlenmesinde rol oynamaktadır. Bu sebepten dolayıda kodun &lt;strong&gt;SQL&lt;/strong&gt; tarafındaki &amp;uuml;retiminde 3 Kitap i&amp;ccedil;in &amp;ccedil;alıştırılan &lt;strong&gt;Insert&lt;/strong&gt; sorgularında &lt;strong&gt;KategoriID&lt;/strong&gt; değerleri otomatik olarak set edilmiştir. &lt;strong&gt;AddLink&lt;/strong&gt; metodu &amp;ccedil;ağırılmadığı takdirde bu ilişkinin sağlanması m&amp;uuml;mk&amp;uuml;n olmamaktadır. İlk &amp;ouml;rnek kodumuzu tamamlamış bulunuyor. İşte testler sırasında oluşan &amp;ouml;rnek bir ekran &amp;ccedil;ıktısı.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk261_5.gif" alt="" width="414" height="134" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Sırada g&amp;uuml;ncelleştirme işlemleri var. Bu ama&amp;ccedil;la aşağıdaki &amp;ouml;rnek kod satırlarını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alabiliriz;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;// G&amp;uuml;ncellenecek veri k&amp;uuml;mesi &amp;ccedil;ekilir.
+// &amp;Ouml;rneğin KategoriId değeri 1 olan Kitaplar &amp;ccedil;ekilir
+var tumKitaplar = from k in proxy.Kitap
+                            where k.Kategori.KategoriId==1
+                            select k;
+
+// Elde edilen sonu&amp;ccedil; k&amp;uuml;mesindeki her bir Kitap nesne &amp;ouml;rneği &amp;uuml;zerinde basit bir g&amp;uuml;ncelleştirme yapılır
+foreach (Kitap k in tumKitaplar)
+{
+    Console.WriteLine("G&amp;uuml;ncelleştirme &amp;ouml;ncesi {0} i&amp;ccedil;in Fiyat {1}",k.Ad,k.Fiyat.ToString("C2"));
+    k.Fiyat += 10;
+    // Yapılan g&amp;uuml;ncellemeler entity &amp;uuml;zerinde onaylanır
+    proxy.UpdateObject(k);
+}
+// Değişiklikler veritabanına g&amp;ouml;nderilir
+proxy.SaveChanges();
+
+// Sonu&amp;ccedil;ları test etmek i&amp;ccedil;in servis tarafından 1 numaralı kategoriye bağlı kitaplar tekrar istenir
+Console.WriteLine("\nDeğişiklikler Sonrası Liste\n");
+var kategori1Kitaplari = from k in proxy.Kitap
+                                        where k.Kategori.KategoriId == 1
+                                            select k;
+// Her bir kitabın bilgisi ekrana yazdırılır
+foreach (Kitap k in tumKitaplar)
+{
+    Console.WriteLine("G&amp;uuml;ncelleştirme &amp;ouml;ncesi {0} i&amp;ccedil;in Fiyat {1}", k.Ad, k.Fiyat.ToString("C2"));
+}&lt;/pre&gt;
+&lt;p&gt;Bu kod par&amp;ccedil;asında &amp;ouml;rnek olarak &lt;strong&gt;KategoriId&lt;/strong&gt; değeri &lt;strong&gt;1&lt;/strong&gt; olan Kategoriye bağlı &lt;strong&gt;Kitap&lt;/strong&gt; nesnelerinin fiyatlarının &lt;strong&gt;10&lt;/strong&gt; birim arttırılması sağlanmaktadır. Bizim i&amp;ccedil;in bu kod par&amp;ccedil;asında dikkat edilmesi gereken fonksiyonellikler &lt;strong&gt;UpdateObject&lt;/strong&gt; ve yine &lt;strong&gt;SaveChanges&lt;/strong&gt; metodlarıdır. &lt;strong&gt;SaveChanges&lt;/strong&gt; metodu &lt;strong&gt;SQL&lt;/strong&gt; tarafında aşağıdaki sorgu ifadelerinin oluşmasına neden olur.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;-- İki Update yakalanır. Nitekim 1 numaralı kategoride sadece iki Kitap vardır.
+exec sp_executesql N'update [dbo].[Kitap]
+set [Ad] = @0, [Fiyat] = @1, [StokMiktari] = @2
+where ([KitapId] = @3)
+',N'@0 nvarchar(14),@1 decimal(19,4),@2 int,@3 int',@0=N'Her Y&amp;ouml;n&amp;uuml;yle C#',@1=90.0000,@2=100,@3=1
+
+exec sp_executesql N'update [dbo].[Kitap]
+set [Ad] = @0, [Fiyat] = @1, [StokMiktari] = @2
+where ([KitapId] = @3)
+',N'@0 nvarchar(16),@1 decimal(19,4),@2 int,@3 int',@0=N'Essential C# 3.0',@1=120.0000,@2=25,@3=2&lt;/pre&gt;
+&lt;p&gt;Burada iki adet &lt;strong&gt;Update&lt;/strong&gt; sorgusunun oluşturulması son derece doğaldır. Nitekim &lt;strong&gt;1&lt;/strong&gt; numaralı &lt;strong&gt;Kategori&lt;/strong&gt;' ye bağlı sadece iki adet &lt;strong&gt;Kitap&lt;/strong&gt; bulunmaktadır. Kodun &amp;ccedil;alıştırılması sonrasında ise programın ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; aşağıdakine benzer olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk261_6.gif" alt="" width="449" height="132" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Burada hemen bir test yapmanızı &amp;ouml;neririm. İlk &lt;strong&gt;Console.WriteLine&lt;/strong&gt; &amp;ccedil;ağrısını &lt;strong&gt;UpdateObject&lt;/strong&gt; metodunun sonrasına koyduğunuz takdirde &lt;strong&gt;Kitap&lt;/strong&gt; nesne &amp;ouml;rneklerinin değerlerinin anında g&amp;uuml;ncellenip g&amp;uuml;ncellenmediğini(Entity tarafında) analiz edebilirsiniz.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Son olarak basit bir silme operasyonu işlemini ele alıyor olacağız. Bu son kod par&amp;ccedil;asındaki amacımız bir &lt;strong&gt;Kategori&lt;/strong&gt; ve buna bağlı &lt;strong&gt;Kitap&lt;/strong&gt; verilerinin silinmesini sağlamak. İşte &amp;ouml;rnek kod par&amp;ccedil;amız;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;// &amp;Ouml;nce kullanıcıya Kategori listesi sunulur
+Console.WriteLine("\nSilme Operasyonu\n");
+var kategoriler = from k in proxy.Kategori
+                        select k;
+foreach (Kategori kategori in kategoriler)
+{
+    Console.WriteLine("{0} {1}",kategori.KategoriId.ToString(),kategori.Ad);
+}
+// Kullanıcıdan silmek istediği kategorinin KategoriId değeri istenir
+Console.WriteLine("Silmek istediğini kategori id' yi se&amp;ccedil;in");
+int secilenKategoriId;
+
+// Eğer ekrandan alınan değer Int32' ye Parse edilebilirse
+if (Int32.TryParse(Console.ReadLine(),out secilenKategoriId))
+{
+    Kategori secilenKategori = null;
+    try
+    {
+        // Ekrandan girilen ID değerine ait Kategori nesne &amp;ouml;rneği talep edilir
+        secilenKategori = (from k in proxy.Kategori
+                                        where k.KategoriId == secilenKategoriId
+                                            select k).First&amp;lt;Kategori&amp;gt;();
+
+        // &amp;Ouml;nce bu Kategorinin KategoriId değerine sahip Kitap listesi alınır
+        var kitapListesi = from k in proxy.Kitap
+                                        where k.Kategori.KategoriId == secilenKategoriId
+                                            select k;
+        // Elde edilen her bir Kitap nesne &amp;ouml;rneği DeleteObject metodu ile &amp;ccedil;ıkartılır
+        foreach (Kitap kitap in kitapListesi)
+        {
+            proxy.DeleteObject(kitap);
+            Console.WriteLine("{0} &amp;ccedil;ıkartılacak",kitap.Ad);
+        }
+
+        // Son olarak se&amp;ccedil;ilmiş olan Kategori nesnesi &amp;ccedil;ıkartılır
+        proxy.DeleteObject(secilenKategori);
+        Console.WriteLine("{0} kategorisi &amp;ccedil;ıkartılacak", secilenKategori.Ad);
+    
+        // Değişikliklerin veri kaynağı &amp;uuml;zerinde de yapılması i&amp;ccedil;in SaveChanges metodu &amp;ccedil;ağırılır.
+        proxy.SaveChanges(System.Data.Services.Client.SaveChangesOptions.Batch);
+        Console.WriteLine("Değişiklikler g&amp;ouml;nderildi...");
+    }
+    catch
+    {
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Kodda &amp;ouml;ncelikli olarak kullanıcıya var olan &lt;strong&gt;Kategori&lt;/strong&gt; listesi g&amp;ouml;sterilir ve silmek istediği &lt;strong&gt;Kategoriye&lt;/strong&gt; ait &lt;strong&gt;KategoriId&lt;/strong&gt; değerini girmesi istenir. Bunun sonrasında s&amp;ouml;z konusu &lt;strong&gt;Kategori&lt;/strong&gt; ve buna bağlı &lt;strong&gt;Kitaplar&lt;/strong&gt; bulunur. &amp;Ouml;nce &lt;strong&gt;Kitap&lt;/strong&gt; nesne &amp;ouml;rnekleri tek tek &lt;strong&gt;DeleteObject&lt;/strong&gt; metodu ile &amp;ccedil;ıkartılmak &amp;uuml;zere işaretlenir. Sonrasında ise aynı işlem se&amp;ccedil;ilen &lt;strong&gt;Kategori&lt;/strong&gt; i&amp;ccedil;in yapılır. Son olarak t&amp;uuml;m işlemlerin &lt;strong&gt;SaveChanges&lt;/strong&gt; metodu ile veritabanına g&amp;ouml;nderilmesi sağlanır. Bu noktada &lt;strong&gt;SQL&lt;/strong&gt; tarafında oluşturulan sorgu ifadeleri aşağıdakilere benzer olacaktır. &lt;em&gt;(Bu ifadelerin yakalanması i&amp;ccedil;in SQL Server Profiler aracını kullandığımızı hatırlayalım)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;-- 43 nolu KategoriId değerine sahip Kitap verileri silinir
+exec sp_executesql N'delete [dbo].[Kitap]
+where (([KitapId] = @0) and ([KategoriId] = @1))',N'@0 int,@1 int',@0=75,@1=43
+
+exec sp_executesql N'delete [dbo].[Kitap]
+where (([KitapId] = @0) and ([KategoriId] = @1))',N'@0 int,@1 int',@0=76,@1=43
+
+exec sp_executesql N'delete [dbo].[Kitap]
+where (([KitapId] = @0) and ([KategoriId] = @1))',N'@0 int,@1 int',@0=77,@1=43
+
+-- 43 nolu KategoriId değerine sahip Kategori silinir
+exec sp_executesql N'delete [dbo].[Kategori]
+where ([KategoriId] = @0)',N'@0 int',@0=43&lt;/pre&gt;
+&lt;p&gt;Sonu&amp;ccedil; olarak &amp;ouml;rnek ekran &amp;ccedil;ıktısı aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk261_10.gif" alt="" width="376" height="302" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Burada hemen bir noktayı vurgulayalım. Normal şartlar altında aynı silme operasyonunu veritabanı &amp;uuml;zerinde ger&amp;ccedil;ekleştirmek istesek, &amp;ouml;nce &lt;strong&gt;Kitap&lt;/strong&gt; verilerini sonra ise &lt;strong&gt;Kategori&lt;/strong&gt; verilerini silmemiz gerekirdi. Bildiğinin gibi bunun nedeni &lt;strong&gt;Kategori&lt;/strong&gt; ve &lt;strong&gt;Kitap&lt;/strong&gt; tabloları arasında tanımlı olan &lt;strong&gt;Foreign Key&lt;/strong&gt; bağımlılığı ve bunun sonucu olan &lt;strong&gt;Constraint&lt;/strong&gt; tir.Aynı mantık kod tarafında şart değildir. Bir başka deyişle &amp;ouml;nce &lt;strong&gt;Kategori&lt;/strong&gt; i&amp;ccedil;in &lt;strong&gt;DeleteObject&lt;/strong&gt; sonrasında ise &lt;strong&gt;Kitap&lt;/strong&gt; topluluğu i&amp;ccedil;in &lt;strong&gt;DeleteObject&lt;/strong&gt; metodu &amp;ccedil;ağırılabilir. Nitekim organizasyon ve doğru &lt;strong&gt;SQL&lt;/strong&gt; &amp;ccedil;alıştırma sırası &lt;strong&gt;SaveChanges&lt;/strong&gt; metodu sonrasında oluşmaktadır. Bunu kod &amp;uuml;zerinde deneyerek test etmenizi &amp;ouml;neririm.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Buraya kadar yaptıklarımızı kısaca &amp;ouml;zetlersek eğer veri ekleme, g&amp;uuml;ncelleme ve silme işlemleri sırasında &lt;strong&gt;SaveChanges&lt;/strong&gt; metodunun asıl işi y&amp;uuml;klendiğini ve veri kaynağında sorgu ifadelerinin oluşturulması i&amp;ccedil;in gerekli &lt;strong&gt;HTTP&lt;/strong&gt; paketlerini hazırladığını d&amp;uuml;ş&amp;uuml;nebiliriz. İstemci tarafında nesne &amp;ouml;rneği eklemek i&amp;ccedil;in &lt;strong&gt;AddTo[EntityAdı] &lt;/strong&gt;yada &lt;strong&gt;AddToObject&lt;/strong&gt; metodlarını kullanabileceğimizi g&amp;ouml;rd&amp;uuml;k&lt;em&gt;(Sonu&amp;ccedil;ta AddTo[EntityAdı] kendi i&amp;ccedil;inde AddToObject metodunu &amp;ccedil;ağırmakta)&lt;/em&gt;. Ayrıca silme işlemlerinde &lt;strong&gt;DeleteObject&lt;/strong&gt; ve g&amp;uuml;ncelleştirme işlemlerinde ise &lt;strong&gt;UpdateObject&lt;/strong&gt; fonksiyonlarını ele aldık. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Diğer taraftan ilişkisel nesnelerin bağlanması i&amp;ccedil;inse &lt;strong&gt;AddLink&lt;/strong&gt; fonksiyonelliğinin ele alınması gerektiğini &amp;ouml;ğrendik. Nihayetinde bir ders notumuzun sonunda daha geldik. Ancak akıllarda(en azından benim aklımda ve biraz sonra sizin aklınızda) ş&amp;ouml;yle bir soru oluşabilir. &lt;strong&gt;Eğer servis tarafında &amp;ouml;zel bir LINQ Provider ve buna bağlı tipler kullanılıyorsa Insert,Update ve Delete işlemleri nasıl ger&amp;ccedil;ekleştirilebilir?&lt;/strong&gt; Nitekim &lt;strong&gt;EDM&lt;/strong&gt; modelinde veri kaynağında &lt;strong&gt;SQL&lt;/strong&gt; olduğundan bu işlemler i&amp;ccedil;in &lt;strong&gt;SQL&lt;/strong&gt; sorgu ifadeleri kullanılmaktadır. İşte bu analizi bir sonraki ders notlarımızda inceliyor olacağız. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Makalemizde yer alan &lt;strong&gt;CRUD&lt;/strong&gt; işlemlerini &lt;a href="http://www.csharpnedir.com/videoindir.asp?id=116"&gt;şu&lt;/a&gt; ve &lt;a href="http://www.csharpnedir.com/videoindir.asp?id=117"&gt;bu&lt;/a&gt; g&amp;ouml;rsel derslerden de inceleyebilirsiniz. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt; &lt;a href="/makale/images/InsertUpdateDelete.rar"&gt; &amp;Ouml;rneği indirmek i&amp;ccedil;in tıklayın&lt;/a&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;</content>
+  <pubDate>2008-10-16 12:00:00</pubDate>
+  <slug>Ado-Net-Data-Services-Ders-Notlarc4b1-4-(CUD-Operasyonlarc4b1)-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>adonet-data-services</tag>
+    <tag>wcf-data-services</tag>
+    <tag>wcf</tag>
+    <tag>windows-communication-foundation</tag>
+  </tags>
+  <categories>
+    <category>Ado.Net Data Services</category>
+  </categories>
+</post>

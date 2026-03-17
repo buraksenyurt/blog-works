@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Ado.Net Data Services Ders Notları - 2 (Custom LINQ Providers)</title>
+  <description>Son bahar yada kış gibi mevsimler ile özellikle yağmurlu ve kasvetli günlerde her geliştiricinin araştırma ve öğrenme süreci ve verimliliğinde belirgin bir artış gözlemlenir. Bu herkes için böyle olmasada en azından benim için geçerli bir durumdur.</description>
+  <content>&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Değerli Okurlarım Merhabalar,&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Son bahar yada kış gibi mevsimler ile &amp;ouml;zellikle yağmurlu ve kasvetli g&amp;uuml;nlerde her geliştiricinin araştırma ve &amp;ouml;ğrenme s&amp;uuml;reci ve verimliliğinde belirgin bir artış g&amp;ouml;zlemlenir. Bu herkes i&amp;ccedil;in b&amp;ouml;yle olmasada en azından benim i&amp;ccedil;in ge&amp;ccedil;erli bir durumdur. İşte bu felsefe ve ruh haliyle &amp;ccedil;ıktığımız yolda son makalemizde &lt;strong&gt;Ado.Net Data Services&lt;/strong&gt; konusuna değinmeye başlamış ve ders notlarımızı kaleme almıştık. İkinci ders notlarımızın konusu ise&lt;strong&gt; LINQ Provider&lt;/strong&gt; kullanarak &amp;ouml;zel bir bağlama işleminin nasıl yapılabileceğini g&amp;ouml;rmek.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt; Hatırlayacağınız gibi &lt;strong&gt;Ado.Net Data Service Entry Point&lt;/strong&gt;' leri istemcilerden gelen &lt;strong&gt;HTTP&lt;/strong&gt; taleplerini ele almak &amp;uuml;zere tasarlanmaktadır. Bu tipteki servislerin belirgin amacı, veriler &amp;uuml;zerindeki hizmetleri operasyonel bazda istemcilere sunabilmektir. Bu nedenle arka planda bir &lt;strong&gt;veri erişim katmanı(Data Access Layer)&lt;/strong&gt; mutlaka s&amp;ouml;z konusudur. Temel olarak &lt;strong&gt;DAL&lt;/strong&gt; i&amp;ccedil;erisinde iki farklı a&amp;ccedil;ılım olduğundan bir &amp;ouml;nceki yazımızda kısaca bahsetmiştik. Buna g&amp;ouml;re &lt;strong&gt;Entity Data Model&lt;/strong&gt; veya &lt;strong&gt;LINQ&lt;/strong&gt; &lt;strong&gt;Provider&lt;/strong&gt; se&amp;ccedil;enekleri s&amp;ouml;z konusudur. Bu g&amp;uuml;nk&amp;uuml; ders notlarımızda ele alacağımız &lt;strong&gt;LINQ&lt;/strong&gt; &lt;strong&gt;Provider&lt;/strong&gt;, &amp;ccedil;oğunlukla &lt;strong&gt;Entity&lt;/strong&gt; tiplerinin geliştirici tarafından tasarlanıp farklı veri kaynaklarına bağlanması istendiği durumlarda d&amp;uuml;ş&amp;uuml;n&amp;uuml;l&amp;uuml;r. Bilindiği &amp;uuml;zere g&amp;uuml;n&amp;uuml;m&amp;uuml;zde pek &amp;ccedil;ok veri kaynağı i&amp;ccedil;in yazılmış &lt;strong&gt;LINQ&lt;/strong&gt; &lt;strong&gt;Provider&lt;/strong&gt; ara&amp;ccedil;ları s&amp;ouml;z konusudur. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;S&amp;ouml;z gelimi Active Directory &amp;uuml;zerinde &amp;ccedil;alışacak şekilde tasarlanmış &lt;a href="http://www.codeplex.com/LINQtoAD"&gt; &lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;LINQ to Active Directory&lt;/strong&gt;&lt;/span&gt;&lt;/a&gt; sağlayıcısı mevcuttur. Hatta daha ilgin&amp;ccedil;lerinden biriside k&amp;uuml;t&amp;uuml;phanemde yer alan sayısızı kitabı getirdiğim Amazon sitesi i&amp;ccedil;in yazılmış olan &lt;a href="http://weblogs.asp.net/fmarguerie/archive/2006/06/26/Introducing-Linq-to-Amazon.aspx"&gt; &lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;LINQ to Amazon&lt;/strong&gt;&lt;/span&gt;&lt;/a&gt; sağlayıcısıdır ki kitap arama işlemleri i&amp;ccedil;in geliştirilmiştir. Sayısız LINQ sağlayıcısının olduğunu ve &lt;a href="http://rshelton.com/archive/2008/07/11/list-of-linq-providers.aspx"&gt; &lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;Robert Shelton &lt;/strong&gt; &lt;/span&gt; &lt;/a&gt;un blog adresinden bazılarını inceleyebileceğinizi belirtmek isterim. Madem &amp;ouml;zel LINQ Provider tipleri yazılabiliyor ve &amp;ccedil;ok farklı veri kaynaklarına bağlanılabiliyor, bağlanırken &lt;strong&gt;LINQ&lt;/strong&gt; mimarisinin nimetlerinden yararlanıyor; bu sistemler neden servis bazlı olacak şekilde istemcilere yayınlanamasınlar? İşte bu noktad devreye &lt;strong&gt;Ado.Net Data Services&lt;/strong&gt; girmektedir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Sanıyorumki bu kadar laf kalabalığından sonra bir &amp;ouml;rnek geliştirerek hareket etmekte yarar vardır. İşe yine &lt;strong&gt;Ado&lt;/strong&gt;.&lt;strong&gt;Net&lt;/strong&gt; &lt;strong&gt;Data&lt;/strong&gt; &lt;strong&gt;Service&lt;/strong&gt; &amp;ouml;rneğinin &lt;strong&gt;Host&lt;/strong&gt; edileceği bir &lt;strong&gt;WCF&lt;/strong&gt; &lt;strong&gt;Service&lt;/strong&gt; uygulaması ile başlanacaktır. Sonrasında ise kendi &lt;strong&gt;LINQ&lt;/strong&gt; &lt;strong&gt;Provider&lt;/strong&gt; ortamımız i&amp;ccedil;in gerekli tipler ve &amp;uuml;yeleri geliştirilecektir. T&amp;uuml;m bu işlemler tamamlandığında ise her zamanki gibi istemci uygulama yazmaya gerek kalmadan basit bir tarayıcı &amp;uuml;zerinde gerekli testler yapılacaktır. &amp;Ouml;ncelikli olarak &lt;strong&gt;DepoServisleri&lt;/strong&gt; isimli bir &lt;strong&gt;WCF&lt;/strong&gt; &lt;strong&gt;Service&lt;/strong&gt; uygulamasını &lt;strong&gt;Visual&lt;/strong&gt; &lt;strong&gt;Studio&lt;/strong&gt; &lt;strong&gt;2008&lt;/strong&gt; &lt;strong&gt;Professional&lt;/strong&gt; &lt;strong&gt;Service&lt;/strong&gt; &lt;strong&gt;Pack&lt;/strong&gt; &lt;strong&gt;1&lt;/strong&gt; &amp;uuml;zerinde oluşturalım. Sonrasında ise sınıf diagramı ve kod i&amp;ccedil;eriği aşağıdaki gibi olan tipleri projemize ilave edelim.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;img src="/makale/images/mk259_1.gif" alt="" width="597" height="510" /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Data.Services.Common;
+
+public class Kategori
+{
+    public int KategoriID { get; set; }
+    public string Ad { get; set; }
+    // Kategori bağlı Kitaplara ulaşmak i&amp;ccedil;in IList&amp;lt;Kitap&amp;gt; tipinden bir &amp;ouml;zellik kullanılmaktadır
+    public IList&amp;lt;Kitap&amp;gt; Kitaplar { get; set; }
+}
+
+// DataServiceKey niteliği ile Kitap sınıfının anahtar-Key &amp;ouml;zelliğinin Numara olduğu belirtilir.
+[DataServiceKey("Numara")] 
+public class Kitap
+{ 
+    public int Numara { get; set; }
+    public string Ad { get; set; }
+    public double BirimFiyat { get; set; }
+    // Bir kitabın yazalarına ge&amp;ccedil;iş yapmak i&amp;ccedil;in IList&amp;lt;Yazar&amp;gt; tipinden bir &amp;ouml;zellik kullanılır
+    public IList&amp;lt;Yazar&amp;gt; Yazarlar { get; set; }
+}
+
+// Yazar sınıfı i&amp;ccedil;in Key &amp;ouml;zelliği string tipinden olan SicilNo' dur.
+[DataServiceKey("SicilNo")]
+public class Yazar
+{
+    public string SicilNo { get; set; }
+    public string AdSoyad { get; set; }
+}
+
+// Entity tiplerini i&amp;ccedil;erisinde barındıran sınıf
+public class DukkanEntities
+{ 
+    static List&amp;lt;Kategori&amp;gt; _kategoriler;
+    static List&amp;lt;Kitap&amp;gt; _kitaplar;
+    static List&amp;lt;Yazar&amp;gt; _yazarlar;
+
+    // static yapıcı DukkanEntities' e ait taleplerin sayısı ne olursa olsun ilk seferde bir kereliğine &amp;ccedil;alıştığı i&amp;ccedil;in, bellek &amp;uuml;zerinde tutulacak nesne topluluklarının oluşturulması sırasında performans kazanımı sağlamaktadır.
+    static DukkanEntities()
+    {
+        // &amp;Ouml;rnek kategori verileri oluşturulur.
+        _kategoriler = new List&amp;lt;Kategori&amp;gt;
+            {
+                new Kategori{ KategoriID=1, Ad="Bilgisayar Kitapları"},
+                new Kategori{ KategoriID=2, Ad="Bilim Teknik Kitapları"},
+                new Kategori{ KategoriID=3, Ad="&amp;Ccedil;izgi Roman"},
+            };
+
+        // &amp;ouml;rnek kitap verileri oluşturulur.
+        _kitaplar = new List&amp;lt;Kitap&amp;gt;
+            {
+                new Kitap{ Numara=9001, Ad="Red Kit", BirimFiyat=10},
+                new Kitap{ Numara=9002, Ad="Ten Ten' in Maceraları", BirimFiyat=9.99},
+                new Kitap{ Numara=9003, Ad="&amp;Ouml;r&amp;uuml;mcek Adım", BirimFiyat=8.99},
+                new Kitap{ Numara=9004, Ad="Batman", BirimFiyat=6.99},
+                new Kitap{ Numara=9005, Ad="Barbar Conan", BirimFiyat=13.44},
+                new Kitap{ Numara=9006, Ad="Superman", BirimFiyat=12.34},
+                new Kitap{ Numara=9007, Ad="Martin Myster", BirimFiyat=23.45},
+                new Kitap{ Numara=8002, Ad="Programming C#", BirimFiyat=45},
+                new Kitap{ Numara=8003, Ad="LINQ Unleashed", BirimFiyat=44.45},
+                new Kitap{ Numara=7450, Ad="Essential WCF For .Net Framework 3.5", BirimFiyat=44.50},
+                new Kitap{ Numara=1240, Ad="Fermant' nın Son Teoremi", BirimFiyat=5},
+                new Kitap{ Numara=2450, Ad="Sayıların G&amp;uuml;c&amp;uuml;", BirimFiyat=7.5},
+                new Kitap{ Numara=2470, Ad="Evrenin Kısa Tarihi", BirimFiyat=9.99}
+            };
+
+        // Kategori ve Kitaplar arasındaki ilişkiler veriler &amp;uuml;zerinden sağlanır
+        for (int i = 0; i &amp;lt; _kategoriler.Count; i++)
+            _kategoriler[i].Kitaplar = new List&amp;lt;Kitap&amp;gt;();
+        for (int i = 0; i &amp;lt;= 6; i++)
+            _kategoriler[2].Kitaplar.Add(_kitaplar[i]);
+        for (int i = 7; i &amp;lt;= 9; i++)
+            _kategoriler[0].Kitaplar.Add(_kitaplar[i]);
+        for (int i = 10; i &amp;lt;= 12; i++)
+            _kategoriler[1].Kitaplar.Add(_kitaplar[i]);
+
+        // &amp;Ouml;rnek yazarlar oluşturulur
+        _yazarlar = new List&amp;lt;Yazar&amp;gt;
+            {
+                new Yazar{ SicilNo="Y100", AdSoyad="Ali"},
+                new Yazar{ SicilNo="Y101", AdSoyad="Veli"},
+                new Yazar{ SicilNo="Y104", AdSoyad="Mehmet"},
+                new Yazar{ SicilNo="Y103", AdSoyad="Burak"},
+                new Yazar{ SicilNo="Y107", AdSoyad="Selim"},
+                new Yazar{ SicilNo="Y108", AdSoyad="Kamil"},
+                new Yazar{ SicilNo="Y109", AdSoyad="Cemil"},
+                new Yazar{ SicilNo="Y110", AdSoyad="Nazlı"},
+                new Yazar{ SicilNo="Y120", AdSoyad="Ayşe"},
+                new Yazar{ SicilNo="Y111", AdSoyad="Fatma"},
+                new Yazar{ SicilNo="Y110", AdSoyad="Melike"}
+            };
+
+        // Kitaplar ile yazalar arasındaki verisel bağlantılar sağlanır
+        Random rnd = new Random();
+        for (int i = 0; i &amp;lt; _kitaplar.Count; i++)
+        {
+            _kitaplar[i].Yazarlar = new List&amp;lt;Yazar&amp;gt;();
+            for(int j=0;j&amp;lt;3;j++) 
+                _kitaplar[i].Yazarlar.Add(_yazarlar[rnd.Next(0,_yazarlar.Count-1)]);
+        }
+    }
+
+    // REST modelinde talep edilebilecek &amp;ouml;zellikler IQueryable&amp;lt;T&amp;gt; tipinden tanımlanır
+    public IQueryable&amp;lt;Kategori&amp;gt; Kategoriler
+    {
+        get
+        {
+            return _kategoriler.AsQueryable&amp;lt;Kategori&amp;gt;();
+        }
+    }
+    public IQueryable&amp;lt;Kitap&amp;gt; Kitaplar
+    {
+        get
+        {
+            return _kitaplar.AsQueryable&amp;lt;Kitap&amp;gt;();
+        }
+    }
+    public IQueryable&amp;lt;Yazar&amp;gt; Yazarlar
+    {
+        get
+        {
+            return _yazarlar.AsQueryable&amp;lt;Yazar&amp;gt;();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Yukarıdaki kod satırları ilk etapta karmaşık g&amp;ouml;r&amp;uuml;nebilir ancak işin teorisi olduk&amp;ccedil;a kolaydır. Herşeyden &amp;ouml;nce &lt;strong&gt;REST&lt;/strong&gt; modeline g&amp;ouml;re dışarıya sunmak isteyeceğimiz tiplerin bir tasarımının servis tarafında olması gerekir. Bu tasarımın karşılığı tahmin edileceği &amp;uuml;zere sınıftır. &amp;Ouml;rnek senaryoda bir kitap d&amp;uuml;kkanında olması muhtemel materyallere ait sınıflar tasarlanmıştır. &lt;strong&gt;Kategori&lt;/strong&gt;, &lt;strong&gt;Kitap&lt;/strong&gt; ve &lt;strong&gt;Yazar&lt;/strong&gt;. Elbetteki bunlar tamamen farazi tasarımlardır. &amp;Ouml;nemli olan ve kavramamız gereken nokta, &lt;strong&gt;Entity Data Model&lt;/strong&gt;' dan bağımsız ve &lt;strong&gt;LINQ&lt;/strong&gt; yapısını kullanarak &lt;strong&gt;Ado.Net Services&lt;/strong&gt; i&amp;ccedil;in gerekli &lt;strong&gt;Data&lt;/strong&gt; &lt;strong&gt;Access&lt;/strong&gt; &lt;strong&gt;Layer&lt;/strong&gt;' ın geliştirilmesidir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bir &amp;ouml;nceki makaleyi hatırlıyorsak eğer, &lt;strong&gt;URL&lt;/strong&gt; satırından &lt;strong&gt;ProductSubcategory(2)&lt;/strong&gt; gibi taleplerde bulunabileceğimizi g&amp;ouml;rm&amp;uuml;şt&amp;uuml;k. Buradaki &lt;strong&gt;2&lt;/strong&gt; sayısalı aslında, &lt;strong&gt;ProductSubCategory&lt;/strong&gt; tablosunun &lt;strong&gt;PrimaryKey&lt;/strong&gt; olarak set edilmiş &lt;strong&gt;ProductSubCategoryID&lt;/strong&gt; alanının değeriydi. Dolayısıyla &lt;strong&gt;EDM&lt;/strong&gt; i&amp;ccedil;erisinde bunu işaret edecek bi&amp;ccedil;imde tasarlanmış &lt;strong&gt;Property&lt;/strong&gt;' ler s&amp;ouml;z konusudur. Şimdi tekrardan Kategori, Kitap ve Yazar sınıflarına d&amp;ouml;nelim. Dikkat edileceği &amp;uuml;zere Kitap ve Yazar sınıflarının başında &lt;strong&gt;DataServiceKey&lt;/strong&gt; isimli bir &lt;strong&gt;nitelik(Attribute)&lt;/strong&gt; kullanılmaktadır. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bu nitelik sayesinde sınıfın &lt;strong&gt;anahtar &amp;ouml;zelliği(Key Property)&lt;/strong&gt; belirlenir. &lt;strong&gt;Kitap&lt;/strong&gt; i&amp;ccedil;in bu &amp;ouml;zellik &lt;strong&gt;int&lt;/strong&gt; tipinden olan &lt;strong&gt;Numara&lt;/strong&gt; iken, &lt;strong&gt;Yazar&lt;/strong&gt; i&amp;ccedil;in &lt;strong&gt;string&lt;/strong&gt; tipinden olan &lt;strong&gt;SicilNo&lt;/strong&gt;' dur. Tabi burada diğer bir vaka daha vardır. Kategori sınıfı i&amp;ccedil;in bu tip bir nitelik kullanılmamıştır. Bunun sebebi ise, &amp;ccedil;alışma zamanının &lt;strong&gt;Key&lt;/strong&gt; &lt;strong&gt;Property&lt;/strong&gt;' lere bakarken ya &lt;strong&gt;[SınıfAdı][ID]&lt;/strong&gt; yada &lt;strong&gt;ID&lt;/strong&gt; isiminde &amp;ouml;zellikler aramasıdır. Dikkat edilecek olursa &lt;strong&gt;Kategori&lt;/strong&gt; sınıfında &lt;strong&gt;KategoriID&lt;/strong&gt; isimli bir &amp;ouml;zellik bulunmaktadır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;DataServiceKey&lt;/strong&gt; niteliği(Attribute) sadece sınıf seviyesinde(Class Level) uygulanabilir ve &lt;strong&gt;System.Data.Services.Common &lt;/strong&gt;isim alanı(Namespace) altında yer almaktadır. İki adet aşırı y&amp;uuml;klenmiş yapıcısı(Overloaded Constructor) vardır. İstenirse bir sınıfın birden fazla &amp;ouml;zelliğine &lt;strong&gt;Key&lt;/strong&gt; &lt;strong&gt;Property&lt;/strong&gt; niteliğinin kazandırılmasını sağlayabilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Sınıf tasarımlarında dikkat &amp;ccedil;ekici noktalardan bir diğeri ise &lt;strong&gt;IList&amp;lt;T&amp;gt;&lt;/strong&gt; tipinden &amp;ouml;zelliklerin kullanılmasıdır. &amp;Ouml;rneğin &lt;strong&gt;Kategori&lt;/strong&gt; ve &lt;strong&gt;Kitap&lt;/strong&gt; sınıfları i&amp;ccedil;erisinde sırasıyla &lt;strong&gt;IList&amp;lt;Kitap&amp;gt;&lt;/strong&gt; ve &lt;strong&gt;IList&amp;lt;Yazar&amp;gt;&lt;/strong&gt; tipinden &amp;ouml;zellikler yer almaktadır. Bu yaklaşım &lt;strong&gt;EDM&lt;/strong&gt;' nin kullandığının neredeyse aynısıdır. Ama&amp;ccedil;; bir entity nesne &amp;ouml;rneği &amp;uuml;zerinden ilişkisel diğer entity nesne &amp;ouml;rneklerine ge&amp;ccedil;iş yapabilmektir. S&amp;ouml;z konusu entity nesne &amp;ouml;rnekleri birer sınıf olduğundan bu ge&amp;ccedil;işte liste bazlı &amp;ouml;zelliklerin kullanılması son derece doğaldır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Buraya kadarki kısımlarda kafa karıştırıcı herhangibir nokta olmadığı d&amp;uuml;ş&amp;uuml;ncesindeyim. Eğer sıkıldıysanız benim gecenin ilerleyen şu saatlerinde yaptığım gibi sıcak bir nescafeyi yudumlanızı yada demlenmiş g&amp;uuml;zel bir &amp;ccedil;ayı i&amp;ccedil;menizi tavsiye ederim.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Artık kalan detaylara bakabiliriz. Servis tarafında dışarıya sunulacak olan tipler birer koleksiyon i&amp;ccedil;erisinde tutulmalıdır. Hatta bu koleksiyonları birer &amp;ouml;zellik olarak barındıracak bir başka deyişle &lt;strong&gt;entity&lt;/strong&gt; tiplerini i&amp;ccedil;erecek bir &lt;strong&gt;taşıyıcının(Container)&lt;/strong&gt; var olmasıda gerekir. Bu nedenle &lt;strong&gt;DukkanEntity&lt;/strong&gt; isimli bir sınıf tasarlanmalıdır. Bu sınıf i&amp;ccedil;erisinde bellek &amp;uuml;zerinde tutulacak olan &lt;strong&gt;Entity&lt;/strong&gt; nesneleri i&amp;ccedil;in gerekli &amp;uuml;yeler ve kodlar yer almaktadır. Ancak dikkat edilmesi gereken en &amp;ouml;nemli unsur &lt;strong&gt;Entity&lt;/strong&gt; &amp;ouml;zelliklerinin &lt;strong&gt;IQueryable&amp;lt;T&amp;gt;&lt;/strong&gt; tipinden tanımlanmış olmamılardır ki &lt;strong&gt;Ado.Net Data Services &lt;/strong&gt;tarafı i&amp;ccedil;in bu sorgulanabilmeyi sağlayan k&amp;uuml;&amp;ccedil;&amp;uuml;k bir detaydır. Bu ama&amp;ccedil;la &lt;strong&gt;Kategoriler&lt;/strong&gt;, &lt;strong&gt;Kitaplar&lt;/strong&gt; ve &lt;strong&gt;Yazarlar&lt;/strong&gt; isimli &lt;strong&gt;yanlız okunabilir &amp;ouml;zellikler(Read Only Properties)&lt;/strong&gt; oluşturulmuş ve &lt;strong&gt;DukkanEntities&lt;/strong&gt; sınıfı i&amp;ccedil;erisine dahil edilmiştir. S&amp;ouml;z konusu &amp;ouml;zelliklerin &lt;strong&gt;get&lt;/strong&gt; bloklarında &lt;strong&gt;AsQueryable&lt;/strong&gt; metodunun kullanıldığı hemen dikkat &amp;ccedil;ekmektedir. AsQueryable fonksiyonu, IList&amp;lt;T&amp;gt; tipinden olan sınıf i&amp;ccedil;in liste bazlı koleksiyonların IQueryable&amp;lt;T&amp;gt; aray&amp;uuml;z&amp;uuml;(Interface) tarafından taşınabilmesi i&amp;ccedil;in geliştirilmiş bir metoddur. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Sanıyorumki yazıyı okumakta olan herkesin i&amp;ccedil;inde(ve hatta yazmakta olan benim) sistemin nasıl &amp;ccedil;alışacağına dair yoğun bir merak var. Bu merakı gidermeden &amp;ouml;nce yapmamız gereken k&amp;uuml;&amp;ccedil;&amp;uuml;k bir iş daha var. Oda &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt;' i WCF Service tipindeki projemize Add New Item se&amp;ccedil;eneği ile eklemek. &lt;em&gt; (Bu noktada hemen şunu vurgulayalım; Ado.Net Data Service tiplerinin illede bir WCF Service şablonunda olması şart değildir. İstenirse bir Web projesine eklenebilir. Hatta istenirse manuel olarak bir host uygulamada yazılabilir ki bu konuya ilerleyen yazılarımızda değiniyor olacağız.)&lt;/em&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt; &lt;img src="/makale/images/mk259_2.gif" alt="" width="436" height="235" border="0" /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&amp;Ouml;rneğe &lt;strong&gt;DukkanServisleri.svc&lt;/strong&gt; olarak eklenen &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt;' in kod i&amp;ccedil;eriği ise aşağıdaki gibi geliştirilebilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Data.Services;
+using System.Collections.Generic;
+using System.Linq;
+using System.ServiceModel.Web;
+
+public class DukkanServisleri 
+     : DataService&amp;lt;DukkanEntities&amp;gt;
+{ 
+    public static void InitializeService(IDataServiceConfiguration config)
+    {
+        config.SetEntitySetAccessRule("*", EntitySetRights.AllRead); 
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Her zamanki gibi servis &amp;ouml;rneklenirken devreye giren &lt;strong&gt;InitializeService&lt;/strong&gt; metodu i&amp;ccedil;erisinde, gerekli erişim hakları tanımlanır. &lt;strong&gt;*&lt;/strong&gt; işaretini kullandığımız i&amp;ccedil;in &lt;strong&gt;DukkanEntities&lt;/strong&gt; i&amp;ccedil;erisinde tanımlı&lt;strong&gt; IQueryable&amp;lt;T&amp;gt; &lt;/strong&gt;temelli t&amp;uuml;m &amp;ouml;zellikler dışarıya a&amp;ccedil;ılmaktadır. &lt;strong&gt;AllRead&lt;/strong&gt; sabit değeri kullanıldığı i&amp;ccedil;inde, s&amp;ouml;z konusu tiplerin sadece okuma ama&amp;ccedil;lı olaraktan dış ortama sunulması sağlanır.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Artık &amp;ouml;rnekler test edilebilir. Bir &amp;ouml;nceki makalemizdede belirttiğimiz gibi herhangibir istemci uygulama yazmamıza gerek yoktur(Bu noktada biraz tembellik ettiğimi a&amp;ccedil;ık&amp;ccedil;a belirtebilirim). Basit bir tarayıcı uygulama, &amp;ouml;rneğin &lt;strong&gt;Internet Explorer&lt;/strong&gt; bizim i&amp;ccedil;in yeterlidir. &amp;Ouml;rnekteki kodları doğru olarak geliştirdiysek eğer, DukkanServisleri.svc i&amp;ccedil;in &amp;ccedil;alışma zamanında aşağıdakine benzer bir &amp;ccedil;ıktının alınması gerekir. Eğer sizlerde eş zamanlı geliştirdiğiniz &amp;ouml;rneğinizde benzer sonu&amp;ccedil;ları alıyorsanız herşey yolunda gidiyor demektir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt; &lt;img src="/makale/images/mk259_3.gif" alt="" width="620" height="371" border="0" /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Sistem &amp;ccedil;alıştığına g&amp;ouml;re bir ka&amp;ccedil; sorgulama denemesi yapılabilir. Aşağıda test ama&amp;ccedil;lı bir ka&amp;ccedil; sorgu yer almaktadır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;table style="border-collapse: collapse; width: 100%;" border="1" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="background-color: #ffffff;" bgcolor="#336699"&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt; &lt;span style="font-family: Verdana;"&gt;&amp;Ouml;rnek 1: T&amp;uuml;m Kategorilerin elde edilmesi.&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;URL : http://localhost:1304/CustomLinqProvider/DukkanServisleri.svc/&lt;strong&gt;Kategoriler &lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt; &lt;img src="/makale/images/mk259_4.gif" alt="" width="622" height="474" border="0" /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="background-color: #ffffff;" bgcolor="#336699"&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt; &lt;span style="font-family: Verdana;"&gt;&amp;Ouml;rnek 2: İki numaralı kategorideki kitapların elde edilmesi&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;URL : http://localhost:1304/CustomLinqProvider/DukkanServisleri.svc/&lt;strong&gt;Kategoriler(2)/Kitaplar&lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt; &lt;img src="/makale/images/mk259_5.gif" alt="" width="598" height="540" border="0" /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="background-color: #ffffff;" bgcolor="#336699"&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt; &lt;span style="font-family: Verdana;"&gt;&amp;Ouml;rnek 3: Kitaplar i&amp;ccedil;erisinden en pahalı 3 &amp;uuml;n&amp;uuml;n elde edilmesi&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;URL : http://localhost:1304/CustomLinqProvider/DukkanServisleri.svc/&lt;strong&gt;Kitaplar?$orderby=BirimFiyat desc&amp;amp;$top=3 &lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;em&gt;&lt;span style="font-family: Verdana;"&gt;Burada &amp;amp; kullanılarak birden fazla anahtar kelimenin birlikte kullanımı ele alınmaktadır.&lt;/span&gt;&lt;/em&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt; &lt;img src="/makale/images/mk259_6.gif" alt="" width="590" height="522" border="0" /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="background-color: #ffffff;" bgcolor="#336699"&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;&amp;Ouml;rnek 4: Kitaplar ve her kitaba ait Yazar listelerinin elde edilmesi&lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;URL : http://localhost:1304/CustomLinqProvider/DukkanServisleri.svc/&lt;strong&gt;Kitaplar?$expand=Yazarlar&lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;em&gt;&lt;span style="font-family: Verdana;"&gt;expand anahtar kelimesi sayesinde her Kitaba ait Yazar listelerinin &amp;ccedil;ekilmesi ve XML i&amp;ccedil;erisine g&amp;ouml;m&amp;uuml;lmesi sağlanır.&lt;/span&gt;&lt;/em&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt; &lt;img src="/makale/images/mk259_8.gif" alt="" width="609" height="594" border="0" /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="background-color: #ffffff;" bgcolor="#336699"&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;&amp;Ouml;rnek 5: SicilNo değeri Y100 olan yazarın elde edilmesi&lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;URL : http://localhost:1304/CustomLinqProvider/DukkanServisleri.svc/&lt;strong&gt;Yazarlar('Y100') &lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;em&gt;&lt;span style="font-family: Verdana;"&gt;Burada SicilNo &lt;strong&gt;string&lt;/strong&gt; bir &amp;ouml;zellik olduğunda parantezler i&amp;ccedil;erisinde &lt;strong&gt;tek tırnak&lt;/strong&gt; işareti kullanılmıştır.&lt;/span&gt;&lt;/em&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt; &lt;img src="/makale/images/mk259_7.gif" alt="" width="601" height="361" border="0" /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="background-color: #ffffff;" bgcolor="#336699"&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt; &lt;span style="font-family: Verdana;"&gt;&amp;Ouml;rnek 6 : 1 numaralı Kategorideki 8002 numaralı kitabın yazalarının elde edilmesi&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;URL : http://localhost:1304/CustomLinqProvider/DukkanServisleri.svc/&lt;strong&gt;Kategoriler(1)/Kitaplar(8002)/Yazarlar&lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;em&gt;&lt;span style="font-family: Verdana;"&gt;Bu &amp;ouml;rnektede &amp;ouml;zellikler arasında iki kademeli ge&amp;ccedil;iş yapılmaktadır. Kategori' den Kitap' a, Kitap' tan Yazara. Bu noktada sınıflar i&amp;ccedil;erisinde tanımlanan &amp;ouml;zellikleri hatırlamanızı &amp;ouml;neririm.&lt;/span&gt;&lt;/em&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt; &lt;img src="/makale/images/mk259_9.gif" alt="" width="570" height="473" border="0" /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;L&amp;uuml;tfen sizlerde değişik sorgulamaları deneyerek konuyu &amp;ouml;z&amp;uuml;msemeye ve başka neler yapılabileceğini g&amp;ouml;rmeye &amp;ccedil;alışınız.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &lt;strong&gt;EDM&lt;/strong&gt;' den bağımsız olarak &lt;strong&gt;Ado.Net Data Services&lt;/strong&gt; &amp;uuml;zerinden geliştirme yapmak olduk&amp;ccedil;a kolaydır. Yazımızın başlarındada belirttiğimiz gibi, farklı &lt;strong&gt;LINQ&lt;/strong&gt; &lt;strong&gt;Provider&lt;/strong&gt; geliştirmeleri yapabilir ve bunları &lt;strong&gt;Ado.Net Data Services&lt;/strong&gt; &amp;uuml;zerinden &lt;strong&gt;REST&lt;/strong&gt; modeline g&amp;ouml;re sunabiliriz. Biz makalemizde ele aldığımız &amp;ouml;rnekte bellek &amp;uuml;zerinde tutulan(Memory Based) nesne koleksiyonlarını kullandık. Burada verinin kaynağı &lt;strong&gt;XML&lt;/strong&gt; tabanlı dosyalarda olabilirdi. Size tavsiyem &lt;strong&gt;XML&lt;/strong&gt; &amp;uuml;zerinde tutulan verileri &amp;ouml;zel &lt;strong&gt;LINQ&lt;/strong&gt; &lt;strong&gt;Provider&lt;/strong&gt; yardımıyla bir &lt;strong&gt;Ado.Net Data Service &lt;/strong&gt;&amp;uuml;zerinden dışarıya sunmaya &amp;ccedil;alışmanızdır&lt;strong&gt;.&amp;nbsp;&lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;a href="/makale/images/CustomLinqProvider.rar"&gt; &amp;Ouml;rneği indirmek i&amp;ccedil;in tıklayın&lt;/a&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;</content>
+  <pubDate>2008-09-24 12:00:00</pubDate>
+  <slug>Ado-Net-Data-Services-Ders-Notlarc4b1-2-(Custom-LINQ-Providers)-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>adonet-data-services</tag>
+    <tag>wcf-data-services</tag>
+    <tag>wcf</tag>
+    <tag>windows-communication-foundation</tag>
+  </tags>
+  <categories>
+    <category>Ado.Net Data Services</category>
+  </categories>
+</post>

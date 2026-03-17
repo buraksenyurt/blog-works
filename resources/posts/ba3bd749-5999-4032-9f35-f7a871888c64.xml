@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Nasıl Yapılır : Connected(Bağlı) Web Parts</title>
+  <description>Web uygulamalarımızda kullanabileceğimiz sayısız sunucu tabanlı kontrol vardır. Geliştirdiğimiz uygulamalarda bazı durumlarda birden fazla kontrolün kullanıldığı web sayfalarımız söz konusu olabilir. Bu tarz durumlarda kodları merkezileştirmek, istenen kontrolleri tek bir noktadan güncelleyebilmek amacıyla kullanıcı web kontrollerine (web user control) başvurabilir yada kendi web sunucu kontrollerimizi yazabiliriz...</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Web uygulamalarımızda kullanabileceğimiz sayısız sunucu tabanlı kontrol vardır. Geliştirdiğimiz uygulamalarda bazı durumlarda birden fazla kontrol&amp;uuml;n kullanıldığı web sayfalarımız s&amp;ouml;z konusu olabilir. Bu tarz durumlarda kodları merkezileştirmek, istenen kontrolleri tek bir noktadan g&amp;uuml;ncelleyebilmek amacıyla kullanıcı web kontrollerine (web user control) başvurabilir yada kendi web sunucu kontrollerimizi yazabiliriz. &amp;Ouml;zellikle kendi web sunucu kontrollerimizi var olan bir kontrolden t&amp;uuml;retme (inheritance) yardımıyla geliştirebileceğimiz gibi sıfırdan da yazabiliriz. &lt;em&gt; (Kendi web kontrollerimizi oluşturmak ile ilgili olarak ilerleyen zamanlarda bir makale hazırlamayı d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Asp.Net 2.0 mimarisi ile birlikte sayfaya bağlı olan kullanıcılara g&amp;ouml;re &amp;ouml;zelleştirebileceğimiz Web Part kavramı ile karşılaştık. Web Part kontrolleri birer sunucu kontrol&amp;uuml; olmakla birlikte, &amp;ouml;zelliklerini kişileştirebilme ve farklı kullanıcılar i&amp;ccedil;in farklı veriler taşıyabilme yeteneğine sahip kontroller olarak karşımıza &amp;ccedil;ıkmaktadır. Aslında SharePoint mimarisini kendi web uygulamalarımızda kullanabilme amacıyla tasarlanmış kontrollerdir.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğin web part kontrolleri sayfa &amp;uuml;zerinde s&amp;uuml;r&amp;uuml;kleme, minimize etme gibi g&amp;ouml;rsel işlemleri ger&amp;ccedil;ekleştirebiliriz ki buda SharePoint tarzı portal uygulamalarının en b&amp;uuml;y&amp;uuml;k &amp;ouml;zelliklerindendir. Web Part kontrolleri, kişiselleştirme (&lt;strong&gt;Personalization&lt;/strong&gt;) i&amp;ccedil;inde &amp;ouml;nemli kabiliyetler sunmasına rağmen bazı noktalarda kullanımı olduk&amp;ccedil;a karmaşık olabilmektedir. &amp;Ouml;rneğin web part kontrolleri arasında veri iletişiminde bulunmak bir başka deyişle, birbirleriyle haberleşebilen web part kontrolleri geliştirmek. İşte bu makalemizde web part kontrolleri arası bağlantıların nasıl sağlanabileceğini adım adım incelemeye &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;zellikle kendi geliştireceğimiz Web Part kontrollerinde, kontroller arasında bilgi taşımak isteyeceğimiz durumlar s&amp;ouml;z konusu olabilir. Bu istek, var olan kontroller d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde &amp;ccedil;ok da &amp;ouml;zel bir konu değildir. Ama işin i&amp;ccedil;erisine kişiselleştirilebilir, bir Web Part Zone' dan diğerine s&amp;uuml;r&amp;uuml;klenebilir, minimize edilebilir vb Web Part kontrolleri girdiğinde farklı bir teknik kullanmak gerekmektedir. &amp;Ouml;rneğin herhangibir veri i&amp;ccedil;eriği &amp;uuml;zerinde arama yapmamızı sağlayacak bir web part kontrol&amp;uuml;n&amp;uuml;n başka bir web part kontrol&amp;uuml;ne aranacak değeri aktarmasını istediğimizi d&amp;uuml;ş&amp;uuml;nelim. Verinin aktarıldığı Web Part kontrol&amp;uuml; &amp;uuml;zerinde de arama yapılan değere g&amp;ouml;re ilgili sonu&amp;ccedil;ların g&amp;ouml;sterilmesini isteyebiliriz. Peki bu tarz bir ihtiya&amp;ccedil; i&amp;ccedil;in gerekenler nelerdir?&lt;/p&gt;
+&lt;p&gt;Kendi Web Part kontrollerimizden bahsettiğimiz i&amp;ccedil;in &lt;strong&gt;WebPart&lt;/strong&gt; tipinden t&amp;uuml;reyen sınıflar geliştirmemiz gerekiyor. Bu web part kontrollerimizden birisi diğer web part kontrol&amp;uuml; i&amp;ccedil;in veri sağlayıcı nitelik olucakken diğeride bu veriyi t&amp;uuml;ketici nitelikte olacaktır. Genellikle veriyi sağlayacak olan web part kontrol&amp;uuml; &lt;strong&gt;Provider&lt;/strong&gt; olarak adlandırılmaktadır. Provider Web Part kontrol&amp;uuml;n&amp;uuml;n sunacağı i&amp;ccedil;eriği kullanacak olan diğer Web Part kontrol&amp;uuml;m&amp;uuml;z ise &lt;strong&gt;Consumer&lt;/strong&gt; (t&amp;uuml;ketici) olarak adlandırılmaktadır. Provider g&amp;ouml;revini &amp;uuml;stlenen bir Web Part kontrol&amp;uuml;n&amp;uuml; birden fazla Consumer kullanabilir. Provider Web Part kontrol&amp;uuml;n&amp;uuml;n g&amp;ouml;ndereceği veriyi, Consumer niteliğinde olan bir Web Part kontrol&amp;uuml;n&amp;uuml;n(lerinin) alabilmesi i&amp;ccedil;in, Provider Web Part kontrol&amp;uuml;ne bir aray&amp;uuml;z (interface) uygulanması gerekmektedir.&lt;/p&gt;
+&lt;p&gt;Bu aray&amp;uuml;z&lt;strong&gt;(Interface),&lt;/strong&gt; Provider Web Part kontrol&amp;uuml;nden Consumer Web Part kontrol&amp;uuml;ne nesne referansı taşınmasında rol almaktadır. B&amp;ouml;ylece ilgili referans &amp;uuml;zerinden Provider Web Part kontrol&amp;uuml; ile gelen veriyi taşıma ve Consumer Web Part kontrol&amp;uuml;nden(lerinden) alma şansına sahip olabiliriz. Son olarak her iki web part kontrol&amp;uuml; arasında aray&amp;uuml;z yardımıyla refarans taşıyabilmek i&amp;ccedil;in bağlantı noktalarına &lt;strong&gt;(Connection Part)&lt;/strong&gt; ihtiyacımız olacaktır. Bağlantı noktaları aslında &amp;ouml;zel nitelikler(&lt;strong&gt;attribute&lt;/strong&gt;) ile imzalanmış metodlardır. Aşağıdaki şekilde ihtiyacımız olanlar &amp;ouml;zetlenmeye &amp;ccedil;alışılmıştır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk185_1.gif" alt="" width="426" height="441" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Artık bir &amp;ouml;rnek &amp;uuml;zerinden adım adım ilerleyerek Web Part kontrolleri arası nasıl veri taşıyabileceğimizi incelemeye başlayabiliriz. İlk olarak &amp;ouml;rnek bir senaryo g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım. Provider (Sağlayıcı) g&amp;ouml;revini &amp;uuml;stlenecek kontrol&amp;uuml;m&amp;uuml;zde arama işlemi i&amp;ccedil;in veri girilebilecek bir kutucuk olduğunu ve buraya bir &amp;uuml;r&amp;uuml;n adı yazılabileceğini d&amp;uuml;ş&amp;uuml;nelim. &lt;em&gt;( &amp;Uuml;r&amp;uuml;nlerimizi Sql Server 2005 ile gelen AdventureWorks veritabanındaki Product tablosundan &amp;ccedil;ekebiliriz. )&lt;/em&gt; Bu noktadan sonra arama s&amp;ouml;zc&amp;uuml;ğ&amp;uuml; Consumer g&amp;ouml;revini &amp;uuml;stlenecek olan Web Part kontrol&amp;uuml;ne aktarılacak ve bulunan bilgiler bir GridView kontrol&amp;uuml; i&amp;ccedil;erisinde g&amp;ouml;sterilecektir. Senaryo gereği en az iki web part kontrol&amp;uuml;ne ihtiyacımız olacak. Bu kontrollerin en b&amp;uuml;y&amp;uuml;k &amp;ouml;zelliği WebPart sınıfından t&amp;uuml;reyecek olmalarıdır. B&amp;ouml;ylece i&amp;ccedil;lerine kişiselleştirilebilir &amp;uuml;yeler dahil edebilir, aynı zamanda birbirlerine bağlayabiliriz. Web Part kontrollerimizi ve aradaki bağlantıyı tesis etmekte kullanacağımız aray&amp;uuml;z(interface) tipimizi ayrı bir k&amp;uuml;t&amp;uuml;phane (library) halinde tasarlarsak, Visual Studio.Net ToolBox' ına ekleme ve farklı web projelerinde kullanma şansına da sahip oluruz. Bu nedenle basit bir Web Control Library projesi geliştirerek işe başlayabiliriz. Yazacağımız tipler aşağıda yer almaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk185_2.gif" alt="" width="630" height="486" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;IcerikSaglayici ve IcerikKullanici isimli Web Part kontrollerimiz, &lt;strong&gt;WebPart&lt;/strong&gt; abstract sınıfından t&amp;uuml;retilmiştir. B&amp;ouml;ylece kişiselleştirme gibi &amp;ouml;zelliklere sahip olabilirler. En &amp;ouml;nemliside birbirlerine bağlanabilirler. IAnlasma isimli aray&amp;uuml;z&amp;uuml;m&amp;uuml;z, IcerikSaglayici' dan, IcerikKullanici kontrol&amp;uuml;ne aktarılacak olan veriyi basit bir &amp;ouml;zellik(property) olarak tanımlamaktadır. Şu anda bu veri bizim i&amp;ccedil;in ArananBilgi isimli &amp;ouml;zelliktir. Hatırlarsanız veri sağlayıcı Web Part kontrol&amp;uuml;n&amp;uuml;n, taşınacak veriyi i&amp;ccedil;eren referansı aktarabilecek bir aray&amp;uuml;z kullanması gerektiğinden bahsetmiştik. İşte bu nedenle IcerikSaglayici kontrol&amp;uuml;m&amp;uuml;ze IAnlasma aray&amp;uuml;z&amp;uuml; uygulanmaktadır.&lt;/p&gt;
+&lt;p&gt;Web Part kontrollerimizdeki belkide en &amp;ouml;nemli &amp;uuml;yeler bağlantı noktası &lt;strong&gt;(Connection Point)&lt;/strong&gt; metodlarıdır. IcerikSaglayici Web Part kontrol&amp;uuml;m&amp;uuml;zde bu g&amp;ouml;revi SaglayiciBaglantiNoktasi isimli metodumuz &amp;uuml;stlenmektedir. IcerikKullanici Web Part kontrol&amp;uuml;m&amp;uuml;zde ise TuketiciBaglantiNoktasi bu g&amp;ouml;revi &amp;uuml;stlenir. SaglayiciBaglantiNoktasi metodu geriye IAnlasma aray&amp;uuml;z&amp;uuml;n&amp;uuml;n taşıyacağı bir referansı g&amp;ouml;ndermektedir. S&amp;ouml;z konusu referans &amp;ccedil;alışma zamanında, IcerikSaglayici kontrol&amp;uuml;n&amp;uuml;n nesne &amp;ouml;rneğinden başkası değildir. Bu referansı alacak olan t&amp;uuml;ketici(consumer) &amp;uuml;yemiz TuketiciBaglantiNoktasi ise, IAnlasma tipinden bir aray&amp;uuml;z&amp;uuml; parametre olarak almaktadır. Dolayısıyla &amp;ccedil;alışma zamanında bu iki metod birbirleri ile haberleşme (şu an i&amp;ccedil;in tek y&amp;ouml;nl&amp;uuml; bir haberleşme s&amp;ouml;z konusudur) yeteneğini kazanmaktadır. Tabiki bu &amp;uuml;yelerin, birbirlerine ulaşabilmelerini sağlamak i&amp;ccedil;in ilgili niteliklerle (attributes) imzalanmaları ve Web Part' ların bir birlerine ya dinamik olarak yada statik olarak bağlanmaları gerekecektir. Ama &amp;ouml;ncesinde kod tarafında yaptıklarımıza kısaca bakalım.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;IAnlasma aray&amp;uuml;z&amp;uuml; (interface);&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public interface IAnlasma
+{
+    string ArananBilgi
+    {
+        get;
+        set;
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;IcerikSaglayici Web Part kontrol&amp;uuml;;&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public class IcerikSaglayici:WebPart,IAnlasma
+{
+    private string _urunAdi;
+    private TextBox _aramaAlani;
+    private Button _btnAra;
+
+    /* Web Part i&amp;ccedil;erisindeki kontrolleri oluşturmak i&amp;ccedil;in CreateChildControls metodunu eziyoruz.*/
+    protected override void CreateChildControls()
+    {
+        // &amp;Ouml;nce Web Part &amp;uuml;zerindeki kontrolleri temizleyelim.
+        Controls.Clear();
+
+        // Web Part kontrol&amp;uuml;n&amp;uuml;n başlık bilgisini değiştiriyoruz.
+        Title = "&amp;Uuml;r&amp;uuml;n Arama";
+
+        // Aranacak bilginin girileceği TextBox kontrol&amp;uuml;n&amp;uuml; tanımlayıp Controls koleksiyonuna ekliyoruz.
+        _aramaAlani = new TextBox();
+        Controls.Add(_aramaAlani);
+
+        // Arama emrini verecek olan Button kontrol&amp;uuml;m&amp;uuml;z&amp;uuml; oluşturuyoruz.
+        _btnAra = new Button(); 
+        _btnAra.Text = "Bakacağım &amp;Uuml;r&amp;uuml;n";
+        _btnAra.BackColor = System.Drawing.Color.Gold;
+        _btnAra.BorderColor = System.Drawing.Color.Gray;
+        _btnAra.BorderStyle = BorderStyle.Dashed;
+        _btnAra.BorderWidth = 2;
+        _btnAra.Font.Bold = true;
+        // Anonymous(isimsiz) metod yardımıyla Button' a basıldığında yapılması gerekenleri belirtiyoruz.
+        _btnAra.Click += delegate(object sender, EventArgs e)
+        {
+            // TextBox' a girilen bilgiyi ArananBilgi isimli &amp;ouml;zelliğe atıyoruz.
+            ArananBilgi = _aramaAlani.Text;
+        };
+        Controls.Add(_btnAra);
+    }
+
+    #region IAntlasmaYuzu Members
+
+    /* ArananBilgi isimli &amp;ouml;zelliği kişiselleştirilebilir olarak tanımlıyoruz. B&amp;ouml;ylece siteye giren her farklı kullanıcı i&amp;ccedil;in farklı şekilde tutulabilecektir. */
+    [Personalizable( PersonalizationScope.User)]
+    public string ArananBilgi
+    {
+        get {
+            return _urunAdi;
+        }
+        set { 
+            _urunAdi = value; 
+        }
+    }
+
+    #endregion
+
+    // Bağlantı noktamızı ConnectionProvider niteliği ile belirtiyoruz.
+    [ConnectionProvider("Arama Bağlantı Noktası","SaglayiciNokta")]
+    public IAnlasma SaglayiciBaglantiNoktasi()
+    {
+        return (IAnlasma)this; // O anki IcerikSaglayici nesne &amp;ouml;rneğinin referansını IAnlasma tipinden olacak şekilde geri d&amp;ouml;nd&amp;uuml;r&amp;uuml;yoruz.
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;IcerikKullanici Web Part kontrol&amp;uuml;;&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public class IcerikKullanici : WebPart
+{
+    private string _arananUrun;
+    private Label _lblGelenUrunAdi;
+    private GridView _grdUrunler;
+
+    // Bağlantı noktası olması i&amp;ccedil;in ConnectionConsumer niteliği ile imzalıyoruz.
+    [ConnectionConsumer("T&amp;uuml;ketici Bağlantı Noktası","TuketiciNokta")]
+    public void TuketiciBaglantiNoktasi(IAnlasma anls)
+    { 
+        _arananUrun= anls.ArananBilgi; // Sağlayıcıdan gelen referansın &amp;uuml;zerinden ArananBilgi &amp;ouml;zelliğinin değerini alıyoruz.
+        CreateChildControls(); // Alınan değer g&amp;ouml;re web part &amp;uuml;zerindeki kontrollerin tekrardan oluşturulmasını sağlıyoruz.
+    }
+
+    protected override void CreateChildControls()
+    {
+        Controls.Clear(); // &amp;Ouml;nce kontrolleri kaldırıp sahayı temizliyoruz.
+
+        // Web Part' ın başlık bilgisini değiştiriyoruz.
+        Title = "Arama Sonu&amp;ccedil;ları"; 
+
+        // Aranan bilgiyi g&amp;ouml;sterecek Label kontrol&amp;uuml;n&amp;uuml; oluşturup Web Part' a ekliyoruz.
+        _lblGelenUrunAdi = new Label();
+        if (!String.IsNullOrEmpty(_arananUrun)) // Eğer _arananUrun alanının değeri boş yada null değilse eklemesini sağlıyoruz
+            _lblGelenUrunAdi.Text = _arananUrun;
+        _lblGelenUrunAdi.ForeColor = System.Drawing.Color.Red;
+        _lblGelenUrunAdi.Font.Bold = true;
+        _lblGelenUrunAdi.Font.Size = 12;
+        Controls.Add(_lblGelenUrunAdi);
+
+        // Bir alt satıra ge&amp;ccedil;me i&amp;ccedil;in Literal kontrol kullanıyoruz.
+        Literal ltr = new Literal();
+        ltr.Text = "&amp;lt;br/&amp;gt;";
+        Controls.Add(ltr);
+
+        // gelen arama bilgisine g&amp;ouml;re veri &amp;ccedil;ekme ve GridView kontrol&amp;uuml;ne bağlama işlemlerini ger&amp;ccedil;ekleştiriyoruz.
+        if (!String.IsNullOrEmpty(_arananUrun))
+        {
+            using (SqlConnection conn = new SqlConnection("data source=localhost;database=AdventureWorks;integrated security=SSPI"))
+            {
+                SqlDataAdapter da = new SqlDataAdapter("Select ProductId,Name,ListPrice,SellStartDate From Production.Product Where Name Like '%" + _arananUrun + "%'", conn);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+                _grdUrunler = new GridView();
+                _grdUrunler.DataSource = dt;
+                _grdUrunler.DataBind();
+                Controls.Add(_grdUrunler);
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Şimdi geliştirmiş olduğumuz bu k&amp;uuml;t&amp;uuml;phaneyi herhangibi web uygulamasında kullanmak &amp;uuml;zere aşağıdaki gibi ToolBox' a ekleyelim. Bunun i&amp;ccedil;in ToolBox' ta &lt;strong&gt;Choose Items&lt;/strong&gt;' a ge&amp;ccedil;memiz ve assembly' ımızı bulup IcerikSaglayici ve IcerikKullanici kontrollerini se&amp;ccedil;memiz yeterli olacaktır. &amp;Ouml;rnek olarak ben General sekmesi altına ekledim.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Assembly' ın se&amp;ccedil;ildiği iletişim kutusu;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk185_3.gif" alt="" width="571" height="414" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt; ToolBox' ın g&amp;ouml;r&amp;uuml;n&amp;uuml;m&amp;uuml;;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk185_4.gif" alt="" width="255" height="94" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Geliştirdiğimiz kontroller birer Web Part kontrol&amp;uuml;d&amp;uuml;r. Bu sebeptende ilgili web sayfasında Web Part Zone' lar i&amp;ccedil;erisinde kullanılıp birbirlerine bağlanabilmeleri i&amp;ccedil;in statik veya dinamik bağlama tekniklerinden birisini tercih etmemiz gerekmektedir. Dinamik bağlama tekniğine g&amp;ouml;re, web part kontrollerinin birbirlerine bağlanmasını sayfa &amp;uuml;zerinden ger&amp;ccedil;ekleştirme imkanına sahip oluruz. Bunun i&amp;ccedil;in web sayfası &amp;uuml;zerinde bir &lt;strong&gt;ConnectionsZone&lt;/strong&gt; olması yeterlidir. Ayrıca kullanıcının dinamik bağlama se&amp;ccedil;eneğini kullanması halinde ilgili Web Part Zone' lar &amp;uuml;zerinden &lt;strong&gt;Connect Verb&lt;/strong&gt;' &amp;uuml;n&amp;uuml;n kullanılabilir olması gerekecektir. Bu nedenlede sayfada yer alan &lt;strong&gt;WebPartManager&lt;/strong&gt; kontrol&amp;uuml;n&amp;uuml;n &lt;strong&gt;DisplayMode&lt;/strong&gt; &amp;ouml;zelliğinin &lt;strong&gt;ConnectDisplayMode&lt;/strong&gt; olması gerekir. &amp;Ccedil;oğunlukla Web Part kullanıldığında, Display Mode' ların &amp;ccedil;alışma zamanında değiştirilebilmesi i&amp;ccedil;in Menu kullanımı tercih edilmektedir. Bizim amacımız sadece ConnectionsZone' u kullanmak olduğu i&amp;ccedil;in, fazla uğraşmadan sayfanın &lt;strong&gt;Page_Load&lt;/strong&gt; kısmında aşağıdaki kod par&amp;ccedil;asında g&amp;ouml;sterildiği gibi DisplayMode' u belirliyoruz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public class IcerikKullanici : WebPart
+{
+    private string _arananUrun;
+    private Label _lblGelenUrunAdi;
+    private GridView _grdUrunler;
+
+    // Bağlantı noktası olması i&amp;ccedil;in ConnectionConsumer niteliği ile imzalıyoruz.
+    [ConnectionConsumer("T&amp;uuml;ketici Bağlantı Noktası","TuketiciNokta")]
+    public void TuketiciBaglantiNoktasi(IAnlasma anls)
+    { 
+        _arananUrun= anls.ArananBilgi; // Sağlayıcıdan gelen referansın &amp;uuml;zerinden ArananBilgi &amp;ouml;zelliğinin değerini alıyoruz.
+        CreateChildControls(); // Alınan değer g&amp;ouml;re web part &amp;uuml;zerindeki kontrollerin tekrardan oluşturulmasını sağlıyoruz.
+    }
+
+    protected override void CreateChildControls()
+    {
+        Controls.Clear(); // &amp;Ouml;nce kontrolleri kaldırıp sahayı temizliyoruz.
+
+        // Web Part' ın başlık bilgisini değiştiriyoruz.
+        Title = "Arama Sonu&amp;ccedil;ları"; 
+
+        // Aranan bilgiyi g&amp;ouml;sterecek Label kontrol&amp;uuml;n&amp;uuml; oluşturup Web Part' a ekliyoruz.
+        _lblGelenUrunAdi = new Label();
+        if (!String.IsNullOrEmpty(_arananUrun)) // Eğer _arananUrun alanının değeri boş yada null değilse eklemesini sağlıyoruz
+            _lblGelenUrunAdi.Text = _arananUrun;
+        _lblGelenUrunAdi.ForeColor = System.Drawing.Color.Red;
+        _lblGelenUrunAdi.Font.Bold = true;
+        _lblGelenUrunAdi.Font.Size = 12;
+        Controls.Add(_lblGelenUrunAdi);
+
+        // Bir alt satıra ge&amp;ccedil;me i&amp;ccedil;in Literal kontrol kullanıyoruz.
+        Literal ltr = new Literal();
+        ltr.Text = "&amp;lt;br/&amp;gt;";
+        Controls.Add(ltr);
+
+        // gelen arama bilgisine g&amp;ouml;re veri &amp;ccedil;ekme ve GridView kontrol&amp;uuml;ne bağlama işlemlerini ger&amp;ccedil;ekleştiriyoruz.
+        if (!String.IsNullOrEmpty(_arananUrun))
+        {
+            using (SqlConnection conn = new SqlConnection("data source=localhost;database=AdventureWorks;integrated security=SSPI"))
+            {
+                SqlDataAdapter da = new SqlDataAdapter("Select ProductId,Name,ListPrice,SellStartDate From Production.Product Where Name Like '%" + _arananUrun + "%'", conn);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+                _grdUrunler = new GridView();
+                _grdUrunler.DataSource = dt;
+                _grdUrunler.DataBind();
+                Controls.Add(_grdUrunler);
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Sayfamızın tasarımını ise aşağıdaki gibi geliştirebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk185_5.gif" alt="" width="640" height="598" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Artık uygulamamızı test edebiliriz. Sağlıklı sonu&amp;ccedil;lar alabilmek i&amp;ccedil;in web uygulamasında Form tabanlı g&amp;uuml;venlik sistemi uygulanmıştır. Ama&amp;ccedil; hem Web Part kontrolleri arası bilgi taşımak hemde bu Web Part' ların giren kullanıcılara g&amp;ouml;re kişiselleştirilebilmesini sağlamaktır. Biz dinamik bağlama tekniğini tercih ettiğimiz i&amp;ccedil;in &amp;ouml;ncelikli olarak kullanıcıların ilgili Web Part kontrollerini birbirlerine bağlamaları gerekecektir. &amp;Ouml;rneğimizde bu bağlantı y&amp;ouml;n&amp;uuml; IcerikSaglayici kontrolden, IcerikKullanici kontrole doğru olmalıdır. Bu sebepten &amp;ccedil;alışma zamanında IcerikSaglayici Web Part kontrol&amp;uuml;m&amp;uuml;z&amp;uuml;n bulunduğu Zone' da &lt;strong&gt;Connect&lt;/strong&gt; men&amp;uuml; &amp;ouml;ğesi se&amp;ccedil;ilmelidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk185_6.gif" alt="" width="419" height="134" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Connect linkine tıkladığımızda ConnectionsZone bileşeni g&amp;ouml;r&amp;uuml;n&amp;uuml;r hale gelecektir. Hen&amp;uuml;z bir bağlantı tanımlamadığımız i&amp;ccedil;in No active connections mesajını almaktayız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk185_7.gif" alt="" width="440" height="229" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi &lt;strong&gt;Create a Connection to a Consumer&lt;/strong&gt; linkine tıklarsak, IcerikSaglayici Web Part kontrol&amp;uuml;nden, IcerikKullanici Web Part kontr&amp;uuml;ne doğru bir bağlantı tanımlamamız yeterli olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk185_8.gif" alt="" width="366" height="289" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Artık Web Part kontrollerimiz arasında veri taşıyabiliriz. Aşağıdaki Flash animasyonunda uygulamanın &amp;ouml;rnek &amp;ccedil;alışması g&amp;ouml;sterilmektedir. &lt;em&gt;(Animasyonu izleyebilmek i&amp;ccedil;in en azından sisteminizde Flash 6 Player' ının y&amp;uuml;kl&amp;uuml; olması geremektedir.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;object id="obj1" width="437" height="457" classid="clsid:D27CDB6E-AE6D-11CF-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0" border="0"&gt;
+&lt;param name="movie" value="http://www.buraksenyurt.com/makale/images/mk185_Video.swf" /&gt;
+&lt;param name="quality" value="High" /&gt; &lt;embed type="application/x-shockwave-flash" width="437" height="457" src="http://www.buraksenyurt.com/makale/images/mk185_Video.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" name="obj1" /&gt;&lt;/object&gt;&lt;/p&gt;
+&lt;p&gt;Buraksenyurt isimli kullanıcı sisteme girdikten sonra &amp;Uuml;r&amp;uuml;n Arama başlıklı Web Part kontrol&amp;uuml;nden, aramak istediği kelimeleri giriyor. Button kontrol&amp;uuml;ne basıldığında ise bulunan sonu&amp;ccedil;lar Arama Sonu&amp;ccedil;ları başlıklı Web Part kontrol&amp;uuml;nde GridView nesnesinde g&amp;ouml;steriliyor. Şu anda buradaki t&amp;uuml;m ayarlar buraksenyurt kullanıcısı i&amp;ccedil;in kişiselleştirilmiştir. &amp;Ouml;zellikle arama alanı bilgisi kişiselleştirildiğinden, buraksenyurt isimli kullanıcı sisteme tekrar girdiğinde son aradığı &amp;uuml;r&amp;uuml;n bilgisi ve sonu&amp;ccedil;ları ile karşılaşacaktır. Dolayısıyla farklı kullanıcılar i&amp;ccedil;in farklı arama bilgisi ve sonu&amp;ccedil;ları tutulabilecektir.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğimizde kullandığımız dinamik bağlama tekniği dışında, Web Part kontrollerini birbirlerine statik olarakta bağlayabiliriz. Tek yapmamız gereken Web Part Manager elementi i&amp;ccedil;eriğini aşağıdaki gibi değiştirmektir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;asp:WebPartManager ID="wpManager" runat="server"&amp;gt;
+    &amp;lt;StaticConnections&amp;gt;
+        &amp;lt;asp:WebPartConnection ID="StatikBaglayici" ProviderConnectionPointID="SaglayiciNokta" ProviderID="IcerikSaglayici1" ConsumerConnectionPointID="TuketiciNokta" ConsumerID="IcerikKullanici1" /&amp;gt; 
+    &amp;lt;/StaticConnections&amp;gt;
+&amp;lt;/asp:WebPartManager&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Dikkat ederseniz &lt;strong&gt;WebPartConnection&lt;/strong&gt; elementi i&amp;ccedil;erisinde icerik sağlayıcı ve t&amp;uuml;ketici i&amp;ccedil;in gerekli Id tanımlamaları yapılmaktadır. &lt;strong&gt;ProviderConnectionPointID&lt;/strong&gt; niteliği (attribute), IcerikSaglayici Web Part kontrol&amp;uuml;ndeki bağlantı noktası metodunda yer alan &lt;strong&gt;ConnectionProvider&lt;/strong&gt; niteliğinin ikinci parametresinin değeridir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[ConnectionProvider("Arama Bağlantı Noktası","SaglayiciNokta")]
+public IAnlasma SaglayiciBaglantiNoktasi()
+{&lt;/pre&gt;
+&lt;p&gt;Benzer şekilde &lt;strong&gt;ConsumerConnectionPointID&lt;/strong&gt; niteliğinin değeride, IcerikKullanici Web Part kontrol&amp;uuml;ndeki bağlantı noktası metodunda yer alan &lt;strong&gt;ConnectionConsumer&lt;/strong&gt; niteliğinin ikinci parametresinin değeridir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[ConnectionConsumer("T&amp;uuml;ketici Bağlantı Noktası","TuketiciNokta")]
+public void TuketiciBaglantiNoktasi(IAnlasma anls)
+{&lt;/pre&gt;
+&lt;p&gt;&lt;br /&gt;&lt;strong&gt;ProviderID&lt;/strong&gt; ve &lt;strong&gt;ConsumerID&lt;/strong&gt; niteliklerinin değerleri ise, ilgili Web Part kontrollerimizin ID niteliklerinin değerleridir. Uygulamamızı bu haliyle test ettiğimizde sonu&amp;ccedil;ların değişmediğini g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Tabiki test amacıyla sayfadaki &lt;strong&gt;ConnectionsZone&lt;/strong&gt; nesnesini kaldırmak ve Web Part Manager kontrol&amp;uuml; i&amp;ccedil;in DisplayMode &amp;ouml;zelliğini set etmemek gerekmektedir.&lt;/p&gt;
+&lt;p&gt;Bu makalemizde kendi Web Part kontrollerimiz arasında veri aktarımı amacıyla bağlantıların (&lt;strong&gt;Connections&lt;/strong&gt;) nasıl kurulabileceğini incelemeye &amp;ccedil;alıştık. Burada g&amp;ouml;rd&amp;uuml;ğ&amp;uuml;m&amp;uuml;z teknik sadece tek y&amp;ouml;nl&amp;uuml; bir bağlama se&amp;ccedil;eneği sunmaktadır. Birde Consumer' dan Provider' a doğru veri aktarmak isteyebileceğimiz vakkalar olduğunu d&amp;uuml;ş&amp;uuml;nmek gerekir. Bu durumda iki y&amp;ouml;nl&amp;uuml; bağlantılar s&amp;ouml;z konusu olacaktır. Bu konunun araştırmasınıda siz değerli okurlarımıza bırakıyorum. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/makale/images/BaglantiliWebParts.rar"&gt;&amp;Ouml;rnek uygulama i&amp;ccedil;in tıklayın.&lt;/a&gt; &lt;em&gt;(&amp;Ouml;nemli Not: Dosya boyutunun b&amp;uuml;y&amp;uuml;k olması nedeniyle, kişiselleştirme amacıyla kullanılan ve &lt;strong&gt;App_Data&lt;/strong&gt; klas&amp;ouml;r&amp;uuml;nde yer alan &lt;strong&gt;Aspnetdb.mdf&lt;/strong&gt; veritabanı dosyası silinmiştir. Test ederken l&amp;uuml;tfen Asp.Net Configuration Tool' unda ilgili veritabanının oluşturulmasını sağlayınız ve en azından &amp;ouml;rnek iki kullanıcıyı sisteme dahil ediniz.)&lt;/em&gt;&lt;/p&gt;</content>
+  <pubDate>2006-12-26 12:00:00</pubDate>
+  <slug>Nasc4b1l-Yapc4b1lc4b1r-Connected(Baglc4b1)-Web-Parts-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>aspnet-20</tag>
+    <tag>web-parts</tag>
+    <tag>aspnet</tag>
+  </tags>
+  <categories>
+    <category>Asp.Net 2.0</category>
+  </categories>
+</post>

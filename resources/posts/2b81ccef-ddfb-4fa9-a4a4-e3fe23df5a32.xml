@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Entity Framework Üzerinde TransactionScope Kullanımı</title>
+  <description>Yıllar yıllar önce .Net Framework 2.0 ile gelen yenilikleri takip etmeye çalıştığım dönemlerde, Amazon üzerinden getirttiğim kitaplardan birisi de yandaki resimde görülen Ado.Net and System.Xml v2.0 kitabı idi. Şu an halen kitaplığımda durmakta. O sıralar CSharpNedir? bünyesinde Ado.Net bölüm editörlüğü yaptığımdan, bu kitabı tedarik etmiş ve çalışmıştım. .Net Framework 2.0 ile gelen yeni Xml alt yapısının beta hali ile alması bir yana Ado.Net’ in  yeni 2.0 sürümü için planlanan bazı kabiliyetlerde anlatılmaktaydı ki bunlardan bekli de en önemlisi System.Transaction.dll assembly içerisinde yer alan ve özellikle Distributed Transaction yönetimini daha etkili ve kolay bir şekilde ele almamızı sağlayan TransactionScope tipiydi.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/blg231_Giris.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; float: right; padding-top: 0px; border-width: 0px;" title="blg231_Giris" src="/pics/blg231_Giris_thumb.gif" alt="blg231_Giris" width="205" height="300" align="right" border="0" /&gt;&lt;/a&gt;G&amp;uuml;nlerden Salı, sonbahar. Neredeyse hi&amp;ccedil; uyumadan ge&amp;ccedil;en bir gecenin ardından sabaha karşı yorgunluktan sızan &lt;strong&gt;Netspecter&lt;/strong&gt;, &lt;strong&gt;CAD&lt;/strong&gt;&amp;rsquo; in baş ucunda dakikalarca miyavlaması sonucu ancak kendine gelebilir. Eksi ve k&amp;ouml;hne divanı, o doğrulurken olabildiğince haykırarak gıcırdamaktadır. &amp;Ouml;nce terliklerini arar. Oda darma dağınıktır. T&amp;uuml;m gece k&amp;uuml;t&amp;uuml;phanedeki sayısız kitabı indirmiş ve bir sonu&amp;ccedil; bulmak i&amp;ccedil;in saatlerce araştırma yapmıştır. Sonu&amp;ccedil;ta terliğin tekinin dahi bulunamadığı bir kalabalık kitap yığınıdır.&lt;/p&gt;
+&lt;p&gt;Kafada korkun&amp;ccedil; bir baş ağrısı, dışarıdan gelen metronun raylarda bıraktığı ses ve CAD&amp;rsquo; in cılız miyavlamaları&amp;hellip;Netspecter divandan kalkarken ş&amp;ouml;yle bir belinden geriye doğru esner. Derken tavan lambasının biraz &amp;uuml;st&amp;uuml;ne vuran dikd&amp;ouml;rtgen bi&amp;ccedil;imli g&amp;ouml;lgeyi fark eder. Nasıl olur? Bu kitap g&amp;ouml;z&amp;uuml;nden nasıl ka&amp;ccedil;mıştır. Gece karanlığında fark edemediği kaynağı g&amp;uuml;n ışığı a&amp;ccedil;ığa &amp;ccedil;ıkarmıştır. İşte oradadır. G&amp;ouml;lgenin kaynağına doğru gider. &lt;strong&gt;Ado.Net and System.Xml v2.0 The Beta Version&lt;/strong&gt; &lt;img class="wlEmoticon wlEmoticon-openmouthedsmile" style="border-style: none;" src="/pics/wlEmoticon-openmouthedsmile_1.png" alt="Open-mouthed smile" /&gt; Yaşasın diyerek haykırır.&lt;/p&gt;
+&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Yıllar yıllar &amp;ouml;nce &lt;strong&gt;.Net Framework 2.0 &lt;/strong&gt;ile gelen yenilikleri takip etmeye &amp;ccedil;alıştığım d&amp;ouml;nemlerde, &lt;strong&gt;Amazon &lt;/strong&gt;&amp;uuml;zerinden getirttiğim kitaplardan birisi de yandaki resimde g&amp;ouml;r&amp;uuml;len &lt;strong&gt;Ado.Net and System.Xml v2.0 &lt;/strong&gt;kitabı idi. Şu an halen kitaplığımda durmakta. O sıralar &lt;strong&gt;CSharpNedir?&lt;/strong&gt; b&amp;uuml;nyesinde &lt;strong&gt;Ado.Net &lt;/strong&gt;b&amp;ouml;l&amp;uuml;m edit&amp;ouml;rl&amp;uuml;ğ&amp;uuml; yaptığımdan, bu kitabı tedarik etmiş ve &amp;ccedil;alışmıştım. &lt;strong&gt;.Net Framework 2.0 &lt;/strong&gt;ile gelen yeni &lt;strong&gt;Xml&lt;/strong&gt; alt yapısının beta hali ile alması bir yana &lt;strong&gt;Ado.Net&lt;/strong&gt;&amp;rsquo; in&amp;nbsp; yeni 2.0 s&amp;uuml;r&amp;uuml;m&amp;uuml; i&amp;ccedil;in planlanan bazı kabiliyetlerde anlatılmaktaydı ki bunlardan bekli de en &amp;ouml;nemlisi &lt;strong&gt;System.Transaction.dll assembly &lt;/strong&gt;i&amp;ccedil;erisinde yer alan ve &amp;ouml;zellikle &lt;strong&gt;Distributed Transaction &lt;/strong&gt;y&amp;ouml;netimini daha etkili ve kolay bir şekilde ele almamızı sağlayan &lt;strong&gt;TransactionScope&lt;/strong&gt; tipiydi.&lt;/p&gt;
+&lt;p&gt;Bilindiği &amp;uuml;zere bu tip sayesinde &amp;ouml;zellikle blok i&amp;ccedil;erisine alınan birden fazla ve farklı &lt;strong&gt;bağlantı(Connection)&lt;/strong&gt; &amp;uuml;zerinden ger&amp;ccedil;ekleştirilecek veritabanı işlemlerinin, aynı &lt;strong&gt;Transaction&lt;/strong&gt; alanı i&amp;ccedil;erisinde ele alınması ve toplu olarak &lt;strong&gt;Commit/Rollback&lt;/strong&gt; edilmeleri m&amp;uuml;mk&amp;uuml;n olmaktadır. &amp;Ccedil;ok doğal olarak ardışıl olarak ger&amp;ccedil;ekleştirilen ve belirli iş kuralları i&amp;ccedil;erisinde sıralanan bazı veritabanı işlemlerinin, tamamen başarılı oldukları takdirde onaylanmasının istendiği durumlar son derece yaygındır.&lt;em&gt;(L&amp;uuml;tfen Transaction kavramı ve ACID ilkelerini hatırlayınız)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Bu durum &lt;strong&gt;Entity Framework &lt;/strong&gt;i&amp;ccedil;inde ge&amp;ccedil;erlidir. &amp;Ccedil;ok doğal olarak basit bir &lt;strong&gt;Entity&lt;/strong&gt; nesne &amp;ouml;rneğinin veri i&amp;ccedil;eriğinin veritabanına eklenmesi işleminden tutunda da, farklı &lt;strong&gt;Context &lt;/strong&gt;&amp;ouml;rnekleri i&amp;ccedil;erisinde ger&amp;ccedil;ekleştirilen veri işlemlerinin de bir &lt;strong&gt;Transaction&lt;/strong&gt; alanı i&amp;ccedil;erisinde ger&amp;ccedil;ekeştirilmesi istenebilir &lt;img class="wlEmoticon wlEmoticon-sarcasticsmile" style="border-style: none;" src="/pics/wlEmoticon-sarcasticsmile_1.png" alt="Sarcastic smile" /&gt;&amp;nbsp; İşte bu yazımızda &lt;strong&gt;Transaction&lt;/strong&gt; yapısının &lt;strong&gt;Entity Framework &lt;/strong&gt;tarafındaki kullanımını incelemeye &amp;ccedil;alışıyor olacağız. İşe ilk olarak aşağıdaki basit kod par&amp;ccedil;ası ile başlayabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace EFTransactionManagement 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            using (ChinookEntities entities = new ChinookEntities()) 
+            {                
+                Artist newArtist = new Artist 
+                { 
+                     Name="Sertap Erener" 
+                }; 
+                entities.AddToArtists(newArtist);
+
+                Album newAlbum = new Album() 
+                { 
+                     Title="Rengarenk"                     
+                }; 
+                newArtist.Albums.Add(newAlbum); 
+                entities.AddToAlbums(newAlbum);
+
+                entities.SaveChanges();                
+            } 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Chinook&lt;/strong&gt; model veritabanını kullanan bu &amp;ouml;rnekte &lt;strong&gt;Context&lt;/strong&gt; nesnesine ait &lt;strong&gt;SaveChanges&lt;/strong&gt; metodunun &amp;ccedil;ağırılmasından &amp;ouml;nce iki &lt;strong&gt;Insert&lt;/strong&gt; işlemi ger&amp;ccedil;ekleştirildiği g&amp;ouml;r&amp;uuml;lmektedir. &amp;Ouml;ncelikli olarak &lt;strong&gt;Artist&lt;/strong&gt; tipinden bir &amp;ouml;rnek oluşturulmuş ve &lt;strong&gt;Context&lt;/strong&gt; tipine ait koleksiyona eklenmiştir. Hemen arından da bir &lt;strong&gt;Album&lt;/strong&gt; &amp;ouml;rneği oluşturulmuş ve yine ilgili koleksiyona ilave edilmiştir. Tabi bu &amp;ouml;rnekte &lt;strong&gt;Album&lt;/strong&gt; ile &lt;strong&gt;Artist&lt;/strong&gt; &amp;ouml;rnekleri arasında bir ilişki de s&amp;ouml;z konusudur. Yani &amp;uuml;retilen yeni &lt;strong&gt;Album&lt;/strong&gt; nesne &amp;ouml;rneği, &amp;uuml;retilen yeni &lt;strong&gt;Artist&lt;/strong&gt; &amp;ouml;rneğinin &lt;strong&gt;Albums&lt;/strong&gt; &amp;ouml;zelliği ile işaret edilen koleksiyonuna da eklenmiştir. Eğer &lt;strong&gt;SaveChanges&lt;/strong&gt; metodunun &amp;ccedil;ağırılması sonrasındaki &lt;strong&gt;SQL Server Profiler &lt;/strong&gt;g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ne bakarsak aşağıdaki &amp;ccedil;ıktı ile karşılaştığımızı g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg231_ImplicitlyTransaction.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="blg231_ImplicitlyTransaction" src="/pics/blg231_ImplicitlyTransaction_thumb.gif" alt="blg231_ImplicitlyTransaction" width="627" height="115" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere iki &lt;strong&gt;insert&lt;/strong&gt; işleminden &amp;ouml;nce bir &lt;strong&gt;Transaction&lt;/strong&gt; başlatılmış ve sonrasında ise &lt;strong&gt;Commit&lt;/strong&gt; işlemi ile bu girişler onaylanmıştır. Bir başka deyişle &lt;strong&gt;Entity Framework &lt;/strong&gt;tarafında, &lt;strong&gt;SaveChanges &lt;/strong&gt;metodunun &amp;ccedil;ağırılması sonrasında &lt;strong&gt;bilin&amp;ccedil;siz olarak(Implicitly) &lt;/strong&gt;bir &lt;strong&gt;Transaction &lt;/strong&gt;oluşturulduğu g&amp;ouml;r&amp;uuml;lmektedir. Elbette bu davranış şekli değiştirilebilir. Bir başka deyişle developer bazlı bir &lt;strong&gt;Transaction&lt;/strong&gt; kullanımı da s&amp;ouml;z konusu olabilir. Bunun i&amp;ccedil;in ilk akla gelen bilin&amp;ccedil;li olarak &lt;strong&gt;TransactionScope&lt;/strong&gt; &amp;ouml;rneğinin kullanılması ve &lt;strong&gt;SaveChanges&lt;/strong&gt; &amp;ccedil;ağrısının burada kullanılmasıdır. Şimdi &amp;ouml;rnek uygulamamıza &lt;strong&gt;System.Transaction.dll assembly&amp;rsquo; &lt;/strong&gt;ını referans ederek vakamızı incelemeye devam edelim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg231_TransactionReference.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="blg231_TransactionReference" src="/pics/blg231_TransactionReference_thumb.gif" alt="blg231_TransactionReference" width="226" height="264" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rnek kod i&amp;ccedil;eriğini ise aşağıdaki gibi geliştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Transactions;
+
+namespace EFTransactionManagement 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            bool acceptStatus = false;
+
+            using (ChinookEntities entities = new ChinookEntities()) 
+            {                 
+                    Artist newArtist = new Artist 
+                    { 
+                        Name = "Sertap Erener" 
+                    }; 
+                    entities.AddToArtists(newArtist);
+
+                    Album newAlbum = new Album() 
+                    { 
+                        Title = "Rengarenk" 
+                    }; 
+                    newArtist.Albums.Add(newAlbum); 
+                    entities.AddToAlbums(newAlbum);
+
+                using (TransactionScope scope = new TransactionScope()) 
+                { 
+                    try 
+                    { 
+                        entities.SaveChanges(); 
+                        scope.Complete(); 
+                        acceptStatus = true; 
+                    } 
+                    catch //Exception kontrol&amp;uuml; yapmamızda yarar var 
+                    { 
+                        Console.WriteLine("Sorun var!"); 
+                    }
+
+                    if (acceptStatus) 
+                        entities.AcceptAllChanges(); 
+                } 
+            } 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;Album&lt;/strong&gt; ve &lt;strong&gt;Artist&lt;/strong&gt; nesne &amp;ouml;rneklerinin giriş işlemlerinin onaylandığı &lt;strong&gt;SaveChanges&lt;/strong&gt; metod &amp;ccedil;ağrısı bir &lt;strong&gt;try&amp;hellip;catch &lt;/strong&gt;bloğu i&amp;ccedil;erisinde kontrol altına alınmıştır. Dahası s&amp;ouml;z konusu &lt;strong&gt;try&amp;hellip;catch &lt;/strong&gt;bloğu da &lt;strong&gt;TransactionScope &lt;/strong&gt;bloğu i&amp;ccedil;erisinde konuşlandırılmıştır. Eğer kod &lt;strong&gt;try&lt;/strong&gt; bloğunun son satırına kadar başarılı bir şekilde gelebilirse &lt;strong&gt;TransactionScope&lt;/strong&gt; nesne &amp;ouml;rneğine ait &lt;strong&gt;Complete&lt;/strong&gt; metodunun &amp;ccedil;ağırılması ile, yapılan t&amp;uuml;m işlemlerin onaylanması sağlanmaktadır. &lt;em&gt;(Elbette catch bloğuna girilmesi halinde ilgili Transaction i&amp;ccedil;eriğinin Rollback edilmesi&amp;nbsp; s&amp;uuml;reci de otomatik olarak işletilecektir)&lt;/em&gt; Burada bilin&amp;ccedil;li olarak bir transaction bloğu a&amp;ccedil;ılması s&amp;ouml;z konusudur. Uygulama kodunu &amp;ccedil;alıştırdığımızda ve &lt;strong&gt;SQL Server Profiler &lt;/strong&gt;aracının &amp;ccedil;ıktısına baktığımızda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan sonu&amp;ccedil;ların &amp;uuml;retildiği g&amp;ouml;r&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg231_ExplicitlyTransaction.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="blg231_ExplicitlyTransaction" src="/pics/blg231_ExplicitlyTransaction_thumb.gif" alt="blg231_ExplicitlyTransaction" width="505" height="126" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere ilk &amp;ouml;rneğimizde olduğu gibi bir &lt;strong&gt;transaction(Begin Transaction)&lt;/strong&gt; başlatılmış ve &lt;strong&gt;insert &lt;/strong&gt;işlemleri sonrasında &lt;strong&gt;commit(Commint Transaction) &lt;/strong&gt;edilmiştir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Peki ya İki farklı Context nesnesi &amp;uuml;zeriden bilin&amp;ccedil;li TransactionScope kullanımı s&amp;ouml;z konusu olabilir mi? &lt;/strong&gt;&lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_1.png" alt="Winking smile" /&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;ok doğal olarak uygulama i&amp;ccedil;erisinde farklı veri kaynaklarını temsil eden farklı &lt;strong&gt;Context&lt;/strong&gt; nesneleri kullanılıyor olabilir. Buna g&amp;ouml;re ilgili &lt;strong&gt;Context&lt;/strong&gt; nesneleri arasında akan bazı iş fonksiyonelliklerinin &lt;strong&gt;transaction&lt;/strong&gt; kullanımını gerektirmesi de d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Dilerseniz bu durumu incelemek i&amp;ccedil;in senaryomuza aşağıdaki &lt;strong&gt;Product&lt;/strong&gt; isimli tablo i&amp;ccedil;eriğine sahip &lt;strong&gt;AzonStore&lt;/strong&gt; isimli bir veritabanını daha ekleyelim. &lt;strong&gt;AzonStore&lt;/strong&gt; tahmin edeceğiniz &amp;uuml;zere buradaki &lt;strong&gt;TransactionScope&lt;/strong&gt; kullanımını ele almamız i&amp;ccedil;in d&amp;uuml;ş&amp;uuml;n&amp;uuml;lm&amp;uuml;ş kobay veritabanıdır ve her hangibir &amp;ouml;zel tarafı yoktur &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_1.png" alt="Winking smile" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg231_AzonStoreProductTable.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="blg231_AzonStoreProductTable" src="/pics/blg231_AzonStoreProductTable_thumb.gif" alt="blg231_AzonStoreProductTable" width="392" height="111" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Tabi bu durumda uygulamamızda iki adet &lt;strong&gt;Entity Data Model&lt;/strong&gt; olması gerektiğini de ifade etmeliyiz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg231_DoubleEDM.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="blg231_DoubleEDM" src="/pics/blg231_DoubleEDM_thumb.gif" alt="blg231_DoubleEDM" width="171" height="81" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rnek kod par&amp;ccedil;amızı da aşağıdaki gibi geliştirdiğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Transactions;
+
+namespace EFTransactionManagement 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            bool acceptStatus = false; 
+            ChinookEntities chinookEntities = null; 
+            AzonStoreEntities azonEntities = null;
+
+            using (chinookEntities = new ChinookEntities()) 
+            { 
+                Artist newArtist = new Artist 
+                { 
+                    Name = "Sertap Erener" 
+                }; 
+                chinookEntities.AddToArtists(newArtist);
+
+                Album newAlbum = new Album() 
+                { 
+                    Title = "Rengarenk" 
+                }; 
+                newArtist.Albums.Add(newAlbum); 
+                chinookEntities.AddToAlbums(newAlbum);
+
+                azonEntities = new AzonStoreEntities(); 
+                Product newProduct = new Product 
+                { 
+                    OrgId = newAlbum.AlbumId, 
+                    Name = newAlbum.Title, 
+                    ListPrice = 10 
+                }; 
+                azonEntities.AddToProducts(newProduct);
+
+                using (TransactionScope scope = new TransactionScope()) 
+                { 
+                    try 
+                    { 
+                        chinookEntities.SaveChanges(); 
+                        azonEntities.SaveChanges();
+
+                        scope.Complete(); 
+                        acceptStatus = true; 
+                    } 
+                    catch (Exception excp) 
+                    { 
+                        Console.WriteLine(excp.Message); 
+                    } 
+                } 
+                if (acceptStatus) 
+                { 
+                    chinookEntities.AcceptAllChanges(); 
+                    azonEntities.AcceptAllChanges(); 
+                } 
+            } 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Bu kez işin i&amp;ccedil;erisine ikinci bir &lt;strong&gt;Context&lt;/strong&gt; &amp;ouml;rneği daha girmektedir. &lt;strong&gt;Chinook&lt;/strong&gt; &amp;uuml;zerinde yapılan &lt;strong&gt;Album&lt;/strong&gt; ekleme işleminden sonra bu alb&amp;uuml;me ait bilgilerden bazıları &lt;strong&gt;AzonStore&lt;/strong&gt; &lt;strong&gt;Context&amp;rsquo;&lt;/strong&gt; I i&amp;ccedil;erisindeki &lt;strong&gt;Product &lt;/strong&gt;nesnesine de eklenmektedir. Dolayısıyla iki farklı veritabanı &amp;uuml;zerinde ger&amp;ccedil;ekleşecek bir işlem s&amp;ouml;z konusudur. Burada s&amp;ouml;z konusu &lt;strong&gt;Context&amp;rsquo;&lt;/strong&gt; lerin işaret ettiği/kullandığı veritabanları farklı sunucular &amp;uuml;zerinde de olabilir ki bu durumda &lt;strong&gt;TransactionScope, Distirbuted Transaction Coordinator(DTC) &lt;/strong&gt;aracını otomatik olarak devreye alarak bir &lt;strong&gt;dağıtık transaction &lt;/strong&gt;alanı başlatacaktır. Dilerseniz bir de &lt;strong&gt;SQL Server Profiler&lt;/strong&gt; aracının &amp;uuml;rettiği &amp;ccedil;ıktıya bakalım.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg231_MultiContextTrx.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="blg231_MultiContextTrx" src="/pics/blg231_MultiContextTrx_thumb.gif" alt="blg231_MultiContextTrx" width="642" height="222" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;Chinook&lt;/strong&gt; ve &lt;strong&gt;AzonStore &lt;/strong&gt;veritabanları &amp;uuml;zerindeki t&amp;uuml;m &lt;strong&gt;Insert &lt;/strong&gt;işlemleri aynı &lt;strong&gt;Transaction &lt;/strong&gt;alanı i&amp;ccedil;erisine dahil edilmişlerdir&lt;em&gt;(Begin Transaction &amp;lt;&amp;ndash;&amp;gt; Commit Transaction)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Peki son senaryodaki Context nesne &amp;ouml;rnekleri &amp;uuml;zerinden ger&amp;ccedil;ekleştirilen işlemleri bir TransactionScope bloğu i&amp;ccedil;erisine ele almasaydık? &lt;img class="wlEmoticon wlEmoticon-sarcasticsmile" style="border-style: none;" src="/pics/wlEmoticon-sarcasticsmile_1.png" alt="Sarcastic smile" /&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Nitekim bu son derece doğal bir davranış bi&amp;ccedil;imi olacaktır. &amp;Ouml;zellike &lt;strong&gt;Entity Framework&lt;/strong&gt;&amp;rsquo; &amp;uuml; ilk kez kullanmaya başlayan bir geliştirici i&amp;ccedil;in. Bu durumu analiz etmek i&amp;ccedil;in kodu aşağıdaki gibi yenilediğimizi d&amp;uuml;ş&amp;uuml;nebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace EFTransactionManagement 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        {            
+            ChinookEntities chinookEntities = null; 
+            AzonStoreEntities azonEntities = null;
+
+            using (chinookEntities = new ChinookEntities()) 
+            { 
+                Artist newArtist = new Artist 
+                { 
+                    Name = "Sertap Erener" 
+                }; 
+                chinookEntities.AddToArtists(newArtist);
+
+                Album newAlbum = new Album() 
+                { 
+                    Title = "Rengarenk" 
+                }; 
+                newArtist.Albums.Add(newAlbum); 
+                chinookEntities.AddToAlbums(newAlbum);
+
+                azonEntities = new AzonStoreEntities(); 
+                Product newProduct = new Product 
+                { 
+                    OrgId = newAlbum.AlbumId, 
+                    Name = newAlbum.Title, 
+                    ListPrice = 10 
+                }; 
+                azonEntities.AddToProducts(newProduct);
+
+                chinookEntities.SaveChanges(); 
+                azonEntities.SaveChanges(); 
+            } 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Bu kez sadece ilgili Context nesne &amp;ouml;rneklerine ait &lt;strong&gt;SaveChanges&lt;/strong&gt; metodlarının ardışıl olarak &amp;ccedil;ağırılması s&amp;ouml;z konusudur ki bunun &lt;strong&gt;SQL Server Profiler &lt;/strong&gt;aracına baktığımızda &amp;uuml;reteceği sonu&amp;ccedil; aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg231_NoneTransactionScope.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="blg231_NoneTransactionScope" src="/pics/blg231_NoneTransactionScope_thumb.gif" alt="blg231_NoneTransactionScope" width="614" height="199" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere her &lt;strong&gt;SaveChanges&lt;/strong&gt; &amp;ccedil;ağrısı i&amp;ccedil;in ayrı bir &lt;strong&gt;Transaction &lt;/strong&gt;işlemi başlatılmıştır. Burada &lt;strong&gt;AzonStore&lt;/strong&gt; i&amp;ccedil;in kullanılan &lt;strong&gt;Context&lt;/strong&gt; &amp;ouml;rneğinin, &lt;strong&gt;Chinook&lt;/strong&gt; i&amp;ccedil;in &amp;uuml;retilen &lt;strong&gt;Context&lt;/strong&gt; nesnesine ait &lt;strong&gt;using&lt;/strong&gt; bloğu i&amp;ccedil;erisinde olmasının dahi bir &amp;ouml;nemi yoktur. Olay sadece &lt;strong&gt;SaveChanges&lt;/strong&gt; metod &amp;ccedil;ağrılarına aittir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Entity Framework&lt;/strong&gt; tarafında bu yazıda ele aldığımız gibi basit veritabanı modellerinin s&amp;ouml;z konusu olduğu durumlarda &lt;strong&gt;Transaction&lt;/strong&gt; kullanımına dikkat &lt;span style="text-decoration: underline;"&gt;edilmemesi&lt;/span&gt; s&amp;ouml;z konusu olabilir. Hatta gerekmeyebilir. Nitekim Transaction oluşturmanın da veritabanı kaynağı &amp;uuml;zerinde bir maliyeti vardır. Ancak &lt;strong&gt;Enterprise&lt;/strong&gt; seviyedeki uygulamalar ve kullandıkları veritabanı sistemleri ile karmaşık ve b&amp;uuml;t&amp;uuml;nl&amp;uuml;ğ&amp;uuml; &amp;ouml;nem arz eden iş kuralları s&amp;ouml;z konusu olduğunda, &lt;strong&gt;TransactionScope &lt;/strong&gt;kullanımına ciddi anlamda dikkat edilmesi gerekmektedir. Tabi bilindiği &amp;uuml;zere &lt;strong&gt;TransactionScope&lt;/strong&gt; nesne &amp;ouml;rneği &amp;uuml;zerinden yapılabilecek farklı ayarlamalar da s&amp;ouml;z konusudur. Şu anki &amp;ouml;rneklerimizde bu tipin son derece yalın ve sade kullanımı değerlendirilmiştir. Size tavsiyem s&amp;ouml;z konusu &amp;ouml;rneği &lt;strong&gt;farklı sunucular&lt;/strong&gt; veya &lt;strong&gt;SQL Instance&lt;/strong&gt;&amp;rsquo; ları &amp;uuml;zerindeki n sayıda veritabanında ele alacak şekilde değiştirmeniz ve g&amp;ouml;zlemlemenizdir. &lt;img class="wlEmoticon wlEmoticon-berightback" style="border-style: none;" src="/pics/wlEmoticon-berightback.png" alt="Be right back" /&gt;&amp;nbsp; B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2011-04-01 08:52:00</pubDate>
+  <slug>Entity-Framework-Uzerinde-TransactionScope-Kullanc4b1mc4b1</slug>
+  <tags>
+    <tag>entity-framework</tag>
+    <tag>ef-40</tag>
+    <tag>transaction</tag>
+    <tag>transaction-scope</tag>
+  </tags>
+  <categories>
+    <category>Entity Framework</category>
+  </categories>
+</post>

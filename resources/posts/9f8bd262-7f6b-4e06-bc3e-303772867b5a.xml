@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>ObservableCollection’ ı Anlamak</title>
+  <description>WPF(Windows Presentation Foundation) bilindiği üzere Microsoft .Net Framework 3.0 ile birlikte tanıtılmış bir alt yapı(Infrastructure). Windows tabanlı masaüstü uygulamalarına(ve hatta Browser tabanlı da çalışabiliyorlar) yeni bir soluk getiren yapının XAML(eXtensible Application Markup Language) ile olan sıkı bir ilişkisi de bulunmakta. Dolayısıyla anlatacağımız konu aslında çok uzun zamandır var olan bir mevzu, lakin WPF tarafına yeni başlayan birisi için de epey yabancı sayılabilir. İşe ilk olarak bu koleksiyona olan ihtiyacı ortaya koyarak başlamakta yarar var.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/Formspring.me.jpg"&gt;&lt;img style="background-image: none; float: right; padding-top: 0px; padding-left: 0px; margin: 4px 0px; display: inline; padding-right: 0px; border-width: 0px;" title="Formspring.me" src="/pics/Formspring.me_thumb.jpg" alt="Formspring.me" width="225" height="225" align="right" border="0" /&gt;&lt;/a&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;31 Mart 2013 deki kapanma kararına kadar &lt;strong&gt;Formspring&lt;/strong&gt; &amp;lsquo;in sadık kullanıcılarından birisiydim. Her ne kadar anlık bir soru-cevap ortamı olmasa da, takip edenler a&amp;ccedil;ısından faydalı bir sosyal ağ idi. &amp;Ouml;zellikle &lt;strong&gt;Facebook, Twitter&lt;/strong&gt; gibi eklentileri de, cevapların farklı sosyal ağlara bağlanmasında &amp;ouml;nemli rol oynuyordu. Bu sayede verilen cevapların daha fazla kitleye ulaşması m&amp;uuml;mk&amp;uuml;nd&amp;uuml;. Ama maya bir şekilde tutmadı, kullanıcı sayısı git gide azaldı ve sonunda kapatılma kararı verildi&lt;em&gt;.(Şu anda o adrese girmek isterseniz aslında &lt;/em&gt;&lt;a href="http://new.spring.me/" target="_blank"&gt;&lt;em&gt;şu adrese y&amp;ouml;nleniyor&lt;/em&gt;&lt;/a&gt;&lt;em&gt; ve yeni bir oluşumla karşılaşıyorsunuz)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;İşte o d&amp;ouml;nemlerde &lt;strong&gt;WCF &lt;/strong&gt;tarafında &lt;strong&gt;Interceptor&lt;/strong&gt;' ların nasıl kullanıldığına dair bir makale talebi almıştım &lt;strong&gt;Formspring&lt;/strong&gt; &amp;uuml;zerinden. &lt;a href="/post/WCF-Interceptors" target="_blank"&gt;Onu ge&amp;ccedil;tiğimiz zamanlarda cevaplamayı başardım&lt;/a&gt;. Derken bunun ardından benzer bir soru daha gelmişti. &lt;strong&gt;Someone&lt;/strong&gt;' dan gelen soru ş&amp;ouml;yleydi ve hen&amp;uuml;z cevaplamayı başaramamıştım&amp;hellip;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;burak abi merhaba senden wpf de sık kullanılan observablecollection konusunu anlatmanı rica ediyorum mmalesef bu konuda derinlemesine anlatım yapan t&amp;uuml;rk&amp;ccedil;e kaynak yok saygılarımla başarılar hayırlı işler&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;İşte bu makalemizde s&amp;ouml;z konusu soruya cevap bulmaya &amp;ccedil;alışıyor olacağız.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;WPF&lt;em&gt;(Windows Presentation Foundation)&lt;/em&gt;&lt;/strong&gt; bilindiği &amp;uuml;zere &lt;strong&gt;Microsoft .Net Framework 3.0&lt;/strong&gt; ile birlikte tanıtılmış bir alt yapı&lt;em&gt;(Infrastructure)&lt;/em&gt;. &lt;strong&gt;Windows&lt;/strong&gt; tabanlı masa&amp;uuml;st&amp;uuml; uygulamalarına&lt;em&gt;(ve hatta Browser tabanlı da &amp;ccedil;alışabiliyorlar) &lt;/em&gt;yeni bir soluk getiren yapının &lt;strong&gt;XAML(eXtensible Application Markup Language)&lt;/strong&gt; ile olan sıkı bir ilişkisi de bulunmakta. Dolayısıyla anlatacağımız konu aslında &amp;ccedil;ok uzun zamandır var olan bir mevzu, lakin &lt;strong&gt;WPF&lt;/strong&gt; tarafına yeni başlayan birisi i&amp;ccedil;in de epey yabancı sayılabilir. İşe ilk olarak bu koleksiyona olan ihtiyacı ortaya koyarak başlamakta yarar var.&lt;/p&gt;
+&lt;h1&gt;Gereksinim&lt;/h1&gt;
+&lt;p&gt;G&amp;uuml;n&amp;uuml;m&amp;uuml;z yazılım &amp;uuml;r&amp;uuml;nlerinin pek &amp;ccedil;oğu ister web tabanlı olsunlar, ister mobil cihaz &amp;uuml;zerinde koşsunlar vb, genellikle &lt;strong&gt;Data-Centric&lt;/strong&gt;&lt;em&gt;(Veri odaklı)&lt;/em&gt; olarak geliştirilmekteler. İ&amp;ccedil;erik bir veritabanı sunucusundan&lt;em&gt;(hatta &lt;strong&gt;NoSQL &lt;/strong&gt;tabanlı bir kaynak bile olabilir)&lt;/em&gt; gelebileceği gibi, bellek &amp;uuml;zerinde oluşturulmuş bir koleksiyon veya basit bir &lt;strong&gt;POCO&lt;/strong&gt;&lt;em&gt;(Plain Old CLR Object)&lt;/em&gt; tipi dahi olabilir.&lt;/p&gt;
+&lt;p&gt;Bu a&amp;ccedil;ıdan bakıldığında veri odaklı uygulamaların &amp;ouml;n y&amp;uuml;zlerinin&lt;em&gt;(User Interface)&lt;/em&gt; veri ile olan iletişiminde karşılıklı olarak bir bilgi transferi s&amp;ouml;z konusudur. Yani aray&amp;uuml;zler, veride meydana gelecek en ufak bir değişiklikten haberdar olmak isterlerken, aray&amp;uuml;zde meydana gelen değişikliklerin de veri tarafına yansıtılması gibi bir ihtiya&amp;ccedil; ortaya &amp;ccedil;ıkmış durumdadır.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Şimdi burada durup biraz daha derin d&amp;uuml;ş&amp;uuml;nmemiz gerekiyor. Tarafların birisinde meydana gelen değişiklikler sonucu başka bir tarafın/tarafların uyarılması&lt;em&gt;(Notify edilmesi diyelim)&lt;/em&gt; yazılım d&amp;uuml;nyasında &amp;ccedil;ok sık rastlanan bir durum olsa gerek. İşte bu sebepten zaten bir tasarım kalıbı bile ortaya &amp;ccedil;ıkmış. Observer Design Pattern. Bu konuda daha &amp;ouml;nceden &lt;a href="/post/Tasarc4b1m-Desenleri-Observer.aspx" target="_blank"&gt;yazdığım bir makaleye şu adresten ulaşabilirsiniz&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1&gt;Observer Tasarım Kalıbı ile Olan İlişki&lt;/h1&gt;
+&lt;p&gt;Peki bu desenin konumuzla ilgisi nedir? Sadece k&amp;ouml;k kelime isim benzerliği olabilir mi? Aslında pek değil. &lt;strong&gt;ObservableCollection'&lt;/strong&gt; un i&amp;ccedil; yapısına bakıldığında &lt;strong&gt;Observer&lt;/strong&gt; &lt;strong&gt;Tasarım&lt;/strong&gt; &lt;strong&gt;Kalıbını&lt;/strong&gt; uyguladığını fark edebiliriz. &amp;Ccedil;&amp;uuml;nk&amp;uuml; bu koleksiyonun en b&amp;uuml;y&amp;uuml;k &amp;ouml;zelliği, veri bağlı kontroller ile ilişkilendirildiğinde ekleme, &amp;ccedil;ıkartma ve tazeleme gibi işlemlerde uyarı verilmesine zemin hazırlıyor olmasıdır. Bu uyarı genellikle bir aray&amp;uuml;z kontrol&amp;uuml;n&amp;uuml;n durum değişikliğinden haberdar olması olarak algılanır. &amp;Ouml;rneğin koleksiyona bir veri eklendiğinde, bu koleksiyon ile ilişkili kontrol&amp;uuml;n ilgili &amp;ouml;ğeyi otomatik olarak g&amp;ouml;stermesi gibi.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ObservableCollection&amp;lt;T&amp;gt; &lt;/strong&gt;sınıfı ve &amp;ccedil;evresinde etkileşimde olduğu tiplerin genel bir fotoğrafı şekilde g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/htoc_1.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="htoc_1" src="/pics/htoc_1_thumb.png" alt="htoc_1" width="638" height="609" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;System.Collections.ObjectModel&lt;/strong&gt; isim alanı&lt;em&gt;(namespace)&lt;/em&gt; i&amp;ccedil;erisinde yer alan &lt;strong&gt;generic&lt;/strong&gt; &lt;strong&gt;ObservableCollection&amp;lt;T&amp;gt;&lt;/strong&gt; sınıf, iki aray&amp;uuml;z&amp;uuml;&lt;em&gt;(Interface)&lt;/em&gt; implemente etmektedir. Bunlardan birisi &amp;ouml;zellik bazlı&lt;em&gt;(Property Based)&lt;/em&gt; değişiklikler sonrası tetiklenecek olayı&lt;em&gt;(Event)&lt;/em&gt; uygulatan &lt;strong&gt;INotifyPropertyChanged&lt;/strong&gt; iken, diğeri de koleksiyon değişimleri sonrası tetiklenmesi gereken olayı uygulatan &lt;strong&gt;INotifyCollectionChanged&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;d&amp;uuml;r&lt;em&gt;(Interface)&lt;/em&gt; Zaten bu iki aray&amp;uuml;z&amp;uuml;n belirttiği olaylar &lt;strong&gt;ObservableCollection&lt;/strong&gt; i&amp;ccedil;erisinde uygulanırken, bağlandıkları kontrolleri uyaracak şekilde tasarlanmışlardır.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;yleyse &lt;strong&gt;ObservableCollection&amp;lt;T&amp;gt;&lt;/strong&gt; ın temel amacı bellidir; &lt;strong&gt;Generic T&lt;/strong&gt; tipi i&amp;ccedil;in s&amp;ouml;z konusu olan ekleme&lt;em&gt;(Add),&lt;/em&gt; silme&lt;em&gt;(Remove) &lt;/em&gt;veya yeniden tazeleme&lt;em&gt;(Refresh) &lt;/em&gt;gibi işlemlerde bir uyarı(&lt;em&gt;Notify)&lt;/em&gt; yayınlamak.&lt;/p&gt;
+&lt;h1&gt;&amp;Ouml;rnek&lt;/h1&gt;
+&lt;p&gt;Konuyu daha net anlamak adına basit bir &amp;ouml;rnek &amp;uuml;zerinden ilerlemeye &amp;ccedil;alışalım. &amp;Ouml;ncelikli olarak aşağıdaki sınıf &amp;ccedil;izelgesinde&lt;em&gt;(Class Diagram)&lt;/em&gt; g&amp;ouml;r&amp;uuml;nen tipleri i&amp;ccedil;eren bir &lt;strong&gt;WPF&lt;/strong&gt; uygulaması oluşturduğumuzu d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/htoc_2.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="htoc_2" src="/pics/htoc_2_thumb.png" alt="htoc_2" width="235" height="309" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace HowTo_ObservableCollection 
+{ 
+    public class Book 
+    { 
+        public int BookId { get; set; } 
+        public string Title { get; set; } 
+        public int PageSize { get; set; } 
+        public string Producer { get; set; } 
+    } 
+}
+
+using System.Collections.ObjectModel;
+
+namespace HowTo_ObservableCollection 
+{ 
+    public class BookList 
+        :ObservableCollection&amp;lt;Book&amp;gt; 
+    { 
+        public BookList() 
+           :base() 
+        { 
+            Add( 
+                new Book 
+                { 
+                    BookId = 1 
+                    , Title = "Advanced WCF Programming" 
+                    , Producer = "Maybe Me" 
+                    , PageSize = 1280 
+                } 
+                ); 
+            Add( 
+                new Book 
+                { 
+                    BookId = 2, 
+                    Title = "SOA: from a Developer Vision", 
+                    Producer = "Maybe Me", 
+                    PageSize = 740 
+                } 
+                ); 
+       } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;BookList&lt;/strong&gt;, &lt;strong&gt;ObservableCollection&amp;lt;Book&amp;gt;&lt;/strong&gt; t&amp;uuml;revli olacak şekilde tanımlanmış olup i&amp;ccedil;erisindeki yapıcı metod&lt;em&gt;(Constructor)&lt;/em&gt; ile bir ka&amp;ccedil; &lt;strong&gt;Book&lt;/strong&gt; nesne &amp;ouml;rneğinin y&amp;uuml;klenmesini sağlamaktadır. &lt;strong&gt;Book&lt;/strong&gt; tipi i&amp;ccedil;erisinde &amp;ccedil;ok basit bir ka&amp;ccedil; &amp;ouml;zelliğe yer verilmiştir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;BookList&lt;/strong&gt; bir &lt;strong&gt;ObservableCollection&amp;lt;T&amp;gt;&lt;/strong&gt; &amp;ouml;rneğidir. Bu nedenle veri bağlı kontroller ile ilişkilendirildiğinde ekleme, silme gibi operasyonlar sonrasında bildirimlerde bulunabilir. Bu durumu test etmek ve hangi hallerde koleksiyonun nasıl &amp;ccedil;alıştığını g&amp;ouml;rmek adına geliştirmekte olduğumuz WPF uygulamasının aray&amp;uuml;z&amp;uuml;n&amp;uuml; aşağıdaki gibi tasarlayarak devam edelim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/htoc_3.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="htoc_3" src="/pics/htoc_3_thumb.png" alt="htoc_3" width="564" height="672" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Window&lt;/strong&gt; seviyesinde bir &lt;strong&gt;Resource&lt;/strong&gt; tanımlanmış ve &lt;strong&gt;BookList&lt;/strong&gt; koleksiyonu işaret edilmiştir. &lt;strong&gt;BookList&lt;/strong&gt; koleksiyonunun kendisi, &lt;strong&gt;ListBox&lt;/strong&gt; kontrol&amp;uuml;ne bu &lt;strong&gt;static&lt;/strong&gt; &lt;strong&gt;resource&lt;/strong&gt; yardımıyla &lt;strong&gt;ItemsSource&lt;/strong&gt; &amp;ouml;zelliği &amp;uuml;zerinden bağlanmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Book&lt;/strong&gt; tipine ait &amp;ouml;zelliklerin, &lt;strong&gt;DataTemplate&lt;/strong&gt; i&amp;ccedil;erisindeki kontrollerin &lt;strong&gt;Text&lt;/strong&gt; &amp;ouml;zelliklerine nasıl bağlandığına dikkat etmekte yarar vardır. Bir başka kayda değer nokta ise şudur; &lt;strong&gt;Visual Studio&lt;/strong&gt;' nun &lt;strong&gt;WPF Designer&lt;/strong&gt;' ı &amp;uuml;zerinde &amp;ccedil;alışılmakta olup, uygulama &amp;ccedil;alışmadığı halde koleksiyon i&amp;ccedil;erisinde yer alan kitap bilgileri, kontrollerin &lt;strong&gt;Text&lt;/strong&gt; &amp;ouml;zelliklerine bağlanmış ve i&amp;ccedil;erikleri g&amp;ouml;sterilmiştir.&lt;/p&gt;
+&lt;p&gt;Lakin burada ayrı bir nokta daha vardır. Eğer &lt;strong&gt;BookList&lt;/strong&gt; sınıfını&lt;strong&gt; ObservableCollection&amp;lt;Book&amp;gt;&lt;/strong&gt; yerine &lt;strong&gt;List&amp;lt;Book&amp;gt;&lt;/strong&gt; tipinden t&amp;uuml;retirsek de, az &amp;ouml;nce belirttiğimiz davranış sergilenecektir. Yani &lt;strong&gt;Visual Studio&lt;/strong&gt; tasarım zamanı yine kitap bilgilerini bağlanan kontrollerde g&amp;ouml;sterecektir. O zaman &lt;strong&gt;ObservableCollection&amp;lt;T&amp;gt;&lt;/strong&gt; nin hen&amp;uuml;z kullanım amacı tam olarak tespit edilebilmiş değildir. Eğer &lt;strong&gt;List&amp;lt;T&amp;gt;&lt;/strong&gt; tipi de yukarıdaki senaryoda aynı davranışı g&amp;ouml;sterdiyse, neden&lt;strong&gt; ObservableCollection&amp;lt;T&amp;gt;&lt;/strong&gt; kullanalım ki.&lt;/p&gt;
+&lt;h1&gt;Neden ObservableCollection&amp;lt;T&amp;gt; Kullanırız ki?&lt;/h1&gt;
+&lt;p&gt;Gelin &amp;ouml;rneğimizi biraz daha değiştirelim ve aşağıdaki hale getirelim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/htoc_4.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="htoc_4" src="/pics/htoc_4_thumb.png" alt="htoc_4" width="506" height="617" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Windows;
+
+namespace HowTo_ObservableCollection 
+{ 
+    public partial class MainWindow 
+        : Window 
+    { 
+        BookList sourceList = null;
+
+        public MainWindow() 
+        { 
+            InitializeComponent();
+
+            sourceList = ListBoxBooks.ItemsSource as BookList; 
+        }
+
+        private void ButtonAdd_Click_1(object sender, RoutedEventArgs e) 
+        { 
+           sourceList.Add(new Book 
+            { 
+                BookId=94, 
+                 Title="Starwars Clone Wars", 
+                  Producer="Lucas Arts", 
+                   PageSize=180 
+            } 
+            ); 
+        }
+
+        private void ButtonRemove_Click_1(object sender, RoutedEventArgs e) 
+        { 
+           sourceList.RemoveAt(0); 
+        }
+
+        private void ButtonChange_Click_1(object sender, RoutedEventArgs e) 
+        { 
+            sourceList[1].Title = "Changed..."; 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;İlk olarak &lt;strong&gt;ListBox&lt;/strong&gt; kontrol&amp;uuml;n&amp;uuml;n &amp;ccedil;alıştığı veri kaynağını &lt;strong&gt;ItemsSource&lt;/strong&gt; &amp;ouml;zelliğini &lt;strong&gt;BookList&lt;/strong&gt; tipine &lt;strong&gt;d&amp;ouml;n&amp;uuml;şt&amp;uuml;rerek&lt;em&gt;(cast)&lt;/em&gt;&lt;/strong&gt; elde etmekteyiz. Nitekim ekleme, &amp;ccedil;ıkartma ve &amp;ouml;zellik değiştirme işlemlerini bu kaynak &amp;uuml;zerinden ger&amp;ccedil;ekleştireceğiz.&lt;/p&gt;
+&lt;p&gt;3 farklı Button kontrol&amp;uuml;m&amp;uuml;z ile &lt;strong&gt;Add, Remove&lt;/strong&gt; ve &lt;strong&gt;Property Change&lt;/strong&gt; senaryolarını ele almaya &amp;ccedil;alışıyoruz&lt;em&gt;(Burada &amp;ouml;zellikle kodun ilgili yerlerine &lt;strong&gt;Breakpoint&lt;/strong&gt;' ler koyup &lt;strong&gt;Debug&lt;/strong&gt; ederek ilerlememiz de yarar var)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;İlk olarak &lt;strong&gt;Add&lt;/strong&gt; işlemine bakalım. &lt;strong&gt;BookList&lt;/strong&gt;' e yeni bir &lt;strong&gt;Book&lt;/strong&gt; nesne &amp;ouml;rneği eklendiğinde veriye bağlanmış olan kontrollerde otomatik olarak bu değişim i&amp;ccedil;in haberdar edilecek ve aşağıdaki &amp;ccedil;alışma zamanı durumu s&amp;ouml;z konusu olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/htoc_5.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="htoc_5" src="/pics/htoc_5_thumb.png" alt="htoc_5" width="538" height="518" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi 94 numaralı &lt;strong&gt;Book&lt;/strong&gt; nesne &amp;ouml;rneği koleksiyona eklendikten sonra yeni i&amp;ccedil;erik &lt;strong&gt;ListBox&lt;/strong&gt; kontrol&amp;uuml;ne de anında yansımıştır. Eğer &lt;strong&gt;Remove&lt;/strong&gt; işlemini ger&amp;ccedil;ekleştirirsek de benzer bir durum ortaya &amp;ccedil;ıkacak ve &lt;strong&gt;ListBox&lt;/strong&gt; kontrol&amp;uuml; g&amp;uuml;ncellendiği gibi, kaynak koleksiyondan da s&amp;ouml;z konusu kitap &amp;ccedil;ıkartılacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/htoc_6.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="htoc_6" src="/pics/htoc_6_thumb.png" alt="htoc_6" width="582" height="184" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Add&lt;/strong&gt; sonrası &lt;strong&gt;Remove&lt;/strong&gt; işlemi icra edildiğinde ise koleksiyondaki eleman sayısının 1 eksildiği g&amp;ouml;r&amp;uuml;lecektir. Ayrıca &lt;strong&gt;ListBox&lt;/strong&gt; kontrol&amp;uuml;nden de ilgili Book &amp;ouml;rneği kaldırılacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/htoc_7.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="htoc_7" src="/pics/htoc_7_thumb.png" alt="htoc_7" width="525" height="263" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Peki &lt;strong&gt;Change&lt;/strong&gt; işlemine gelirsek. Aslında &lt;strong&gt;Change&lt;/strong&gt; vakasında, koleksiyondaki bir &lt;strong&gt;Book&lt;/strong&gt; nesne &amp;ouml;rneğinin &lt;strong&gt;Title&lt;/strong&gt; &amp;ouml;zelliğinde yapılan değişiklik s&amp;ouml;z konusudur. Bu durumda aşağıdaki sonu&amp;ccedil;lar ile karşılaşılır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/htoc_8.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="htoc_8" src="/pics/htoc_8_thumb.png" alt="htoc_8" width="562" height="170" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere koleksiyondaki &lt;strong&gt;Book&lt;/strong&gt; &amp;ouml;rneğinin &lt;strong&gt;Title&lt;/strong&gt; &amp;ouml;zelliğinin i&amp;ccedil;eriği &lt;strong&gt;Changed&lt;/strong&gt; olarak değişmiştir. &lt;span style="text-decoration: underline;"&gt;Ne varki kullanıcı aray&amp;uuml;z&amp;uuml;ne baktığımızda aynı etkinin oluşmadığı g&amp;ouml;r&amp;uuml;l&amp;uuml;r&lt;/span&gt;. &lt;strong&gt;Title&lt;/strong&gt; ilk ve orjinal hali ile kalmıştır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/htoc_9.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="htoc_9" src="/pics/htoc_9_thumb.png" alt="htoc_9" width="525" height="263" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Bu davranış doğaldır. Nitekim &lt;strong&gt;INotifyPropertyChanged&lt;/strong&gt; aslında &lt;strong&gt;ObservableCollection&amp;lt;T&amp;gt;&lt;/strong&gt; tipi i&amp;ccedil;in&lt;em&gt;(ki &amp;ouml;rneğimizde bundan t&amp;uuml;reyen BookList)&lt;/em&gt; i&amp;ccedil;in ge&amp;ccedil;erlidir. Ancak yaptığımız değişiklik, aslında bir &lt;strong&gt;Book&lt;/strong&gt; nesne &amp;ouml;rneğinin &amp;ouml;zelliği &amp;uuml;zerinde meydana gelmektedir. Bir başka deyişle &lt;strong&gt;Book&lt;/strong&gt; sınıfına &lt;strong&gt;INotifyPropertyChanged&lt;/strong&gt; aray&amp;uuml;z&amp;uuml; implemente edilmediği takdirde, &lt;strong&gt;User Interface&lt;/strong&gt;' in de durum değişikliğinden haberdar olması pek m&amp;uuml;mk&amp;uuml;n değildir.&lt;/p&gt;
+&lt;p&gt;Şimdi gelelim &amp;ouml;nemli bir noktaya; Eğer &lt;strong&gt;BookList&lt;/strong&gt;' i &lt;strong&gt;List&amp;lt;Book&amp;gt;&lt;/strong&gt; tipinden t&amp;uuml;retirsek, &lt;strong&gt;Add&lt;/strong&gt; ve &lt;strong&gt;Remove&lt;/strong&gt; işlemleri sonrasında,&lt;strong&gt; User Interface&lt;/strong&gt; kontrollerine ait i&amp;ccedil;eriklerin g&amp;uuml;ncellenmediğini g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Şu anda &lt;strong&gt;ObservableCollection&amp;lt;T&amp;gt;&lt;/strong&gt; ile &lt;strong&gt;List&amp;lt;T&amp;gt;&lt;/strong&gt; arasında oluşan &amp;ouml;nemli bir davranış farkını da yakalamış bulunuyoruz.&lt;/p&gt;
+&lt;p&gt;Sanıyorum &lt;strong&gt;ObservableCollection&amp;lt;T&amp;gt; &lt;/strong&gt;tipinin kullanım amacını ve şeklini biraz daha net anlayabilmişizdir. &lt;strong&gt;ObservableCollection&amp;lt;T&amp;gt;&lt;/strong&gt; bildirim yapmak i&amp;ccedil;in gerekli aray&amp;uuml;z tanımlamalarını uyguladığından, &amp;ouml;zellikle veri bağlı kontrollerin s&amp;ouml;z konusu olduğu senaryolarada, hem bileşenlerin hem de kaynak koleksiyonun &lt;strong&gt;Add,Remove,Refresh&lt;/strong&gt; işlemleri sonrası uyarılmasında hazır bir alt yapı sunmaktadır. &amp;Ouml;rneği test ederken Debug ederek ilerlemenizi ve &amp;ouml;zellikle &lt;strong&gt;BookList &lt;/strong&gt;koleksiyonunu &lt;strong&gt;ListBox&amp;lt;Book&amp;gt; &lt;/strong&gt;t&amp;uuml;revli ele alarak analiz etmenizi &amp;ouml;neririm.&lt;/p&gt;
+&lt;p&gt;Tabi bakabileceğiniz/araştırabileceğiniz başka vakalar da var. &amp;Ouml;rneğin,&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;ListBox&lt;/strong&gt; kontrol&amp;uuml;n&amp;uuml;n &lt;strong&gt;Items&lt;/strong&gt; &amp;ouml;zelliği ile g&amp;ouml;rsel i&amp;ccedil;erik de değişiklikler yaparsak ne olur? Bundan asıl koleksiyon&lt;em&gt;(uygulamada &lt;strong&gt;BookList&lt;/strong&gt; tipinin &amp;ccedil;alışma zamanı &amp;ouml;rneği)&lt;/em&gt; i&amp;ccedil;eriği etkilenir mi?&lt;/li&gt;
+&lt;li&gt;Ya da bu senaryo aslında &lt;strong&gt;Workflow&lt;/strong&gt; &lt;strong&gt;Foundation&lt;/strong&gt; tarafında &amp;ouml;zellikle g&amp;ouml;rsel i&amp;ccedil;eriğe sahip olan &lt;strong&gt;Custom Component&lt;/strong&gt;&amp;rsquo; ler de g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir mi? S&amp;ouml;z gelimi, kullanılabilir &lt;strong&gt;WCF&lt;/strong&gt; servislerin listesini bir kaynaktan &amp;ccedil;ekip, &lt;strong&gt;Workflow Component&lt;/strong&gt;&amp;rsquo; inin i&amp;ccedil;erisinde yer alan bir &lt;strong&gt;ListBox &lt;/strong&gt;bileşeninde g&amp;ouml;sterebilir miyiz? vb&amp;hellip;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Bu tip soruları da ben size sormuş olayım.&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;şmek dileğiyle hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2012%2f12%2fHowTo_ObservableCollection.zip"&gt;HowTo_ObservableCollection.zip (71,13 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2014-05-01 13:59:00</pubDate>
+  <slug>ObservableCollectione28099-c4b1-Anlamak</slug>
+  <tags>
+    <tag>design-pattern</tag>
+    <tag>observablecollection</tag>
+    <tag>wpf</tag>
+    <tag>design-patterns</tag>
+  </tags>
+  <categories>
+    <category>WPF</category>
+  </categories>
+</post>

@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WCF - Mesaj Seviyesinde Güvenlik</title>
+  <description>Dağıtık mimariye yönelik olarak geliştirilen uygulamalarda güvenlik son derece önemli bir faktördür. Özellikle farklı süreçler (process) içerisinde yer alan uygulamalar, birbirleriyle haberleşirken aradaki veri trafiği mesajlar üzerine kuruludur.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Dağıtık mimariye y&amp;ouml;nelik olarak geliştirilen uygulamalarda g&amp;uuml;venlik son derece &amp;ouml;nemli bir fakt&amp;ouml;rd&amp;uuml;r. &amp;Ouml;zellikle farklı s&amp;uuml;re&amp;ccedil;ler (process) i&amp;ccedil;erisinde yer alan uygulamalar, birbirleriyle haberleşirken aradaki veri trafiği mesajlar &amp;uuml;zerine kuruludur. Bu mesajların ağ ortamları &amp;uuml;zerinden (Internet-Intranet) hareket etmeside g&amp;uuml;venlik ile ilgili olarak dikkat edilmesi gereken noktaların sayısını arttırır. Temel olarak dağıtık mimarilerde g&amp;uuml;venlik d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde, kullanıcıların sunucu tarafından doğrulanması &lt;strong&gt; (authentication)&lt;/strong&gt;, doğrulanan kullanıcıların hangi fonksiyonellikleri kullanabileceğine bakılması&lt;strong&gt; (authorization)&lt;/strong&gt;, arada hareket etmekte olan mesajların ne şekilde şifreleneceğinin&lt;strong&gt;(encryption)&lt;/strong&gt; veya &amp;ccedil;&amp;ouml;z&amp;uuml;mleneceğinin&lt;strong&gt;(decryption)&lt;/strong&gt; belirlenmesi gibi konular yer almaktadır. Bu tip işlemlere ihtiya&amp;ccedil; duyulmasının bilinen pek &amp;ccedil;ok nedeni vardır. Bunlardan bir ka&amp;ccedil;ı aşağıda maddeler halinde listelenmiştir.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;İyi geliştiriciler veya sistem bakımından sorumlu olanlar, genellikle ağ &amp;uuml;zerindeki trafiği kontrol etmek, performans kayıplarını tespit etmek amacıyla &amp;ccedil;eşitli programlar kullanırlar.&lt;em&gt;(&amp;Ouml;rneğin biz makalemizde istemci ile sunucu arasındaki mesajları g&amp;ouml;rmek adına &lt;strong&gt;Microsoft Service Trace Viewer &lt;/strong&gt;aracından faydalanacağız.) &lt;/em&gt;Bu programlar sayesinde ağ &amp;uuml;zerinde istemciler ve sunucu arasında hareket eden mesajlar g&amp;ouml;r&amp;uuml;lebilir. Ancak k&amp;ouml;t&amp;uuml; niyetli kişilerde bu paketleri takip edebilirler. Eğer paketler i&amp;ccedil;erisinde hassas bilgiler var ise s&amp;ouml;z konusu bilgilerin g&amp;ouml;r&amp;uuml;lmesi istenmeyen bir durumdur. Dolayısıyla mesajların &amp;ccedil;eşitli algoritmalar ile (&lt;strong&gt;TripleDes, SHA&lt;/strong&gt; vb...) şifrelenmesi &amp;ccedil;ok doğrudur.&lt;/li&gt;
+&lt;li&gt;Yine olayların baş kahramanı olan k&amp;ouml;t&amp;uuml; niyetli kullanıcılar istemciler ve sunucu arasındaki mesajları yakalayıp değiştirebilirler. Bu bir &amp;ouml;nceki durumdan biraz daha farklıdır. Nitekim mesajın orjinal haliyle gitmesi yerine bozulmuş haliyle taşınması s&amp;ouml;z konusudur. Bu yaklaşım elbetteki veri b&amp;uuml;t&amp;uuml;nl&amp;uuml;ğ&amp;uuml;n&amp;uuml; tamamen bozan bir etki yapar. Sertifikalandırma ve dijital imza gibi tekniklerin kullanılması tercih edilerek gereken tedbirler alınabilir.&lt;/li&gt;
+&lt;li&gt;Bazı durumlarda istemciler ger&amp;ccedil;ek sunucu yerine, araya alınmış başka bir yalancı sunucuya başvuruda bulunuyor olabilir. &amp;Ouml;zellikle internet tabanlı bankacılık uygulamalarında zaman zaman duyduğumuz bu senaryo dağıtık mimari uygulamaları i&amp;ccedil;inde s&amp;ouml;z konusu olabilir. &amp;Ouml;nlem olarak &amp;ccedil;ift taraflı doğrulama modeli ele alınabilir.&lt;/li&gt;
+&lt;li&gt;K&amp;ouml;t&amp;uuml; niyetli kişilerin yakaladığı mesajlar, sadece bozulmakla kalmaz defalarca sunucuya g&amp;ouml;nderilebilir. Dolayısıyla sunucunun doğru bir şekilde &amp;ccedil;alışması engellenmişte olur. Bu gibi bir duruma &amp;ouml;nlem olarak g&amp;uuml;venli bir iletişim ortamı sağlanması gerekmektedir.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Dikkat edilecek olursa bu basit senaryolar bile, bir dağıtık mimari sisteminin &amp;ccedil;&amp;ouml;kmesi i&amp;ccedil;in yeterlidir. WCF mimarisinde kullanıcıların doğrulanması sırasında veya doğrulama işlemleri sonrasında arada hareket edecek mesajlar s&amp;ouml;z konusu olduğunda taşınan hassas bilgiler s&amp;ouml;z konusudur. S&amp;ouml;z konusu bilgilerin g&amp;uuml;venliğini iletişim seviyesinde &lt;strong&gt;(transport level) &lt;/strong&gt;ve mesaj seviyesinde &lt;strong&gt; (message level)&lt;/strong&gt; olmak &amp;uuml;zere iki şekilde sağlayabiliriz. İletişim seviyesinde g&amp;uuml;venliği sağlamanın bilinen yollarından birisi &lt;strong&gt;HTTPS&lt;/strong&gt;' dir. Dolayısıyla iletişim seviyesinde sağlanan g&amp;uuml;venliğin işletim sistemi ve donanıma bağlı olaraktan daha etkili ve performanslı olduğunu d&amp;uuml;ş&amp;uuml;nebiliriz. Mesaj seviyesinde sağlanan g&amp;uuml;venlik g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında sorumluluk servisin &amp;uuml;zerindedir. Diğer taraftan servis ve istemci arasında gidecek bilgilerin şifrelenmesi hem sunucuyu hemde istemciyi ilgilendirmektedir.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;zellikle Web servisleri &amp;uuml;zerinde uygulanabilen g&amp;uuml;venlik se&amp;ccedil;enekleri d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde &lt;strong&gt;(Web Service Enhancements)&lt;/strong&gt;, Windows Communication Foundation i&amp;ccedil;erisinde benzer imkanları sağlamak &amp;ccedil;ok daha kolaydır. Bu makalemizde ilk olarak mesaj seviyesinde g&amp;uuml;venliğin nasıl sağlanabileceğine dair adım adım ilerleyeceğimiz bir &amp;ouml;rnek &amp;uuml;zerinde durmaya &amp;ccedil;alışacağız. Her zaman olduğu gibi basit bir sınıf k&amp;uuml;t&amp;uuml;phanesi ile işe başlamak gerekiyor. Sınıf k&amp;uuml;t&amp;uuml;phanesi (Class Library) bir &lt;strong&gt;WCF Library &lt;/strong&gt;olarak tasarlanabilir ve i&amp;ccedil;erisinde aşağıdaki servis s&amp;ouml;zleşmesi ile tip yer alabilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk204_1.gif" alt="" width="254" height="254" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Servis s&amp;ouml;zleşmemize ait aray&amp;uuml;z (Interface) aşağıdaki gibidir;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+
+namespace AritmetikLib
+{
+    [ServiceContract(Name="AritmetikServisi",Namespace="http://www.bsenyurt.com/AritmetikServisi")]
+    public interface IAritmetik
+    {
+        [OperationContract]
+        double Toplam(double x, double y);
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Aray&amp;uuml;z&amp;uuml; uyarlayan sınıf ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace AritmetikLib
+{
+    public class Aritmetik:IAritmetik
+    {
+        #region IAritmetik Members
+        public double Toplam(double x, double y)
+        {
+            return x + y;
+        }
+        #endregion
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu noktada istenirse &amp;uuml;retilen assembly' dan faydalanarak istemci i&amp;ccedil;in gerekli &lt;strong&gt;proxy&lt;/strong&gt; sınıfının yazdırılması sağlanabilir. Daha &amp;ouml;nceki makalelerden hatırlayacağınız gibi bu ama&amp;ccedil;la &lt;strong&gt;svcutil&lt;/strong&gt; aracı kullanılabilir.&lt;/p&gt;
+&lt;p&gt;Artık servis uygulamasını tasarlamaya başlayabiliriz. Amacımız g&amp;uuml;venlik konusuna değinmek olduğundan servis ve istemci uygulamayı basit birer Console uygulaması olarak ele alacağız. İlk olarak servis uygulaması ile başlayalım. Her zaman olduğu gibi bu uygulama i&amp;ccedil;in kritik olan referans &lt;strong&gt;System.ServiceModel.dll&lt;/strong&gt; isimli assmebly' dir. Servis uygulaması i&amp;ccedil;in gereken konfigurasyon bilgileri başlangı&amp;ccedil; aşamasında aşağıdaki gibi olmalıdır. Bu bilgileri kolay bir şekilde &lt;strong&gt;Edit WCF Configuration&lt;/strong&gt; se&amp;ccedil;eneği ile a&amp;ccedil;ılan &lt;strong&gt;Microsoft Service Configuration Editor &lt;/strong&gt;arabirimi yardımıylada hazırlayabiliriz.&lt;/p&gt;
+&lt;p&gt;Servis uygulaması i&amp;ccedil;in konfigurasyon dosyası;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;system.serviceModel&amp;gt;
+        &amp;lt;services&amp;gt;
+            &amp;lt;service name="AritmetikLib.Aritmetik"&amp;gt;
+                &amp;lt;endpoint address="net.tcp://localhost:9002/AritmetikServisi" binding="netTcpBinding" name="AritmetikServerEndPoint" contract="AritmetikLib.IAritmetik" /&amp;gt;
+            &amp;lt;/service&amp;gt;
+        &amp;lt;/services&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Servis tarafında TCP protokol&amp;uuml;n&amp;uuml; baz alacak şekilde bir ayarlama yapılmıştır. Buna g&amp;ouml;re istemciler s&amp;ouml;z konusu endPoint erişimi i&amp;ccedil;in &lt;strong&gt;net.tcp://localhost:9002/AritmetikServisi&lt;/strong&gt; adresini kullanacaktır. Diğer taraftan bağlayıcı tip olarak &lt;strong&gt; NetTcpBinding&lt;/strong&gt; tipi ele alınmaktadır. Bu noktadan sonra sunucu uygulamanın kodları aşağıdaki gibi tasarlanabilir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+using AritmetikLib;
+
+namespace Server
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            ServiceHost host = new ServiceHost(typeof(Aritmetik), new Uri("net.tcp://localhost:9002/AritmetikServisi"));
+            host.Open();
+            Console.WriteLine("Host state " + host.State);
+            Console.ReadLine();
+            host.Close();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Sunucu uygulamanın &amp;ccedil;alıştığı s&amp;uuml;re boyunca istemcilere hizmet verebilmesi ve s&amp;ouml;z konusu endPoint' e ait nesne referanslarını kullandırtması i&amp;ccedil;in her zaman olduğu gibi ServiceHost tipinden bir &amp;ouml;rnek kullanılmaktadır. Open metodu ile servis a&amp;ccedil;lmakta, uygulama kapatılırken Close metodu ile s&amp;ouml;z konusu servis sonlandırılmaktadır.&lt;/p&gt;
+&lt;p&gt;İstemci uygulamamıza ait konfigurasyon dosyasıda başlangı&amp;ccedil; i&amp;ccedil;in aşağıdaki gibi tasarlanabilir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;system.serviceModel&amp;gt; 
+        &amp;lt;client&amp;gt;
+            &amp;lt;endpoint address="net.tcp://localhost:9002/AritmetikServisi" binding="netTcpBinding" contract="AritmetikServisi" name="TemelMatClientEndPoint" /&amp;gt;
+        &amp;lt;/client&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;İstemci uygulamaya ait kodlar ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+
+namespace Client
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            try
+            {
+                AritmetikServisiClient client = new AritmetikServisiClient("TemelMatClientEndPoint");
+                double sonuc = client.Toplam(3, 5);
+                Console.WriteLine(sonuc.ToString());
+                Console.ReadLine();
+            }
+            catch (FaultException excp)
+            {
+                Console.WriteLine(excp.Message);
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;İstemci uygulamada yer alan &lt;strong&gt; AritmetikServisiClient&lt;/strong&gt; isimli sınıf, svcutil aracı yardımıyla AritmetikLib.dll isimli assembly &amp;uuml;zerinden elde edilmektedir. &lt;em&gt;(Buraya kadarki adımlarımız daha &amp;ouml;nceki makalelerimizde incelendiğinden detaylı bir şekilde a&amp;ccedil;ıklanmamıştır.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Bu makalemizde bizim i&amp;ccedil;in &amp;ouml;nemli olan mesaj seviyesinde g&amp;uuml;venliğin &lt;strong&gt;(Message Level Security)&lt;/strong&gt; nasıl sağlanacağıdır. İlk olarak servis tarafında bazı ayarlamaların yapılması gerekmektedir. &amp;Ouml;rneğin, mesaj seviyesinde g&amp;uuml;venlik uygulanacağının, mesajların belirtilen ve bilinen bir algoritmaya g&amp;ouml;re şifreleneceğinin belirtilmesi vb... Bu ama&amp;ccedil;la servis tarafında yer alan App.config dosyası &lt;strong&gt;Microsoft Service Configuration Editor&lt;/strong&gt; yardımıyla a&amp;ccedil;ılıp yeni bir bağlayıcı konfigurasyon &lt;strong&gt;(Binding Configuration)&lt;/strong&gt; eklenmeli ve &lt;strong&gt;EndPoint&lt;/strong&gt; ile ilişkilendirilmelidir. &amp;Ouml;ncelikle &lt;strong&gt;New Binding Configuration&lt;/strong&gt; linkine tıklanarak &lt;strong&gt;netTcpBinding&lt;/strong&gt; tipi se&amp;ccedil;ilir ve eklenir. Bir başka deyişle servis tarafında kullanılan Binding tipi i&amp;ccedil;in gereken ayarlamaların yapılması i&amp;ccedil;in yeni bir element eklenmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk204_2.gif" alt="" width="528" height="527" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Uygulama netTcpBinding bağlayıcı tipini kullandığı i&amp;ccedil;in, bağlayıcı konfigurasyon ayarları buna g&amp;ouml;re yapılmalıdır. Yeni eklenen elementin &lt;strong&gt;Security&lt;/strong&gt; sekmesine ge&amp;ccedil;ildiği takdirde gereken g&amp;uuml;venlik ayarları ile ilişkili &amp;ouml;zellikler olduğu g&amp;ouml;r&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk204_3.gif" alt="" width="640" height="447" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Mode&lt;/strong&gt; &amp;ouml;zelliğinde g&amp;uuml;veinlik seviyesinin mesaj, iletişim veya bunların kombinasyonu olup olmadığı belirlenir. &amp;Ouml;rneğimizde mesaj seviyesinde g&amp;uuml;venlik ger&amp;ccedil;ekleştirileceğinden Mode &amp;ouml;zelliğine &lt;strong&gt;Message&lt;/strong&gt; değeri verilmiştir. &lt;strong&gt;AlgorithmSuite&lt;/strong&gt; &amp;ouml;zelliğinde, mesajların hangi modele g&amp;ouml;re şifreleneceği belirlenir. Burada olduk&amp;ccedil;a fazla ve yeterli seviyede şifreleme algoritmasına ait tanımlamalar yer almaktadır. Dikkat edilmesi gereken nokta burada belirtilen şifreleme modelinin istemci i&amp;ccedil;inde aynı olması gerektiğidir. Bu durum Mode &amp;ouml;zelliğinin değeri i&amp;ccedil;inde ge&amp;ccedil;erlidir. Yani servis tarafında mesaj seviyesinde g&amp;uuml;venlik kullanılacağı belirtiliyorsa, istemci uygulamada aynı model kullanılmalıdır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk204_4.gif" alt="" width="387" height="310" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Biz &amp;ouml;rnek olarak &lt;strong&gt;TripleDesSha256&lt;/strong&gt; modelini g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alabiliriz. AlgorithmSuite i&amp;ccedil;in varsayılan değer Basic256' dır. Security kısmında yer alan &amp;ouml;zelliklerden bir diğeri olan &lt;strong&gt;MessageClientCredentialType&lt;/strong&gt; ile, istemcilerin doğrulamasının (Authentication) nasıl yapılacağı belirlenmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk204_5.gif" alt="" width="197" height="84" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ndende izlenebileceği gibi s&amp;ouml;z konusu &amp;ouml;zelliğe, &lt;strong&gt;Windows, UserName, Certificate, IssuedToken ve None&lt;/strong&gt; değerlerinden birisi verilebilir. &amp;Ouml;rnekte Windows değeri verilmiştir. Bir başka deyişle istemcilerin servise g&amp;ouml;nderecekleri ehliyet bilgileri (&lt;strong&gt;Credentials&lt;/strong&gt;) windows tabanlı doğrulama modeline g&amp;ouml;re aktarılacaktır. &amp;Ouml;rnekte yer alan istemci ve sunucu uygulamalar aynı makine &amp;uuml;zerinde yer aldıklarında varsayılan olarak makineyi a&amp;ccedil;an kullanıcı bilgileri ele alınacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;TransportSecurity&lt;/strong&gt; kısmındaki &amp;ouml;zellikler iletişim seviyesinde g&amp;uuml;venlik modeli i&amp;ccedil;in gerektiğinden şu aşamada varsayılan halleri ile bırakılabilirler. Bu işlemlerin ardından bağlayıcı konfigurasyon bilgileri i&amp;ccedil;in &lt;strong&gt;ServiceBindingConfiguration&lt;/strong&gt; adı belirtilerek gereken değişiklikler kaydedilebilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk204_6.gif" alt="" width="374" height="60" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Artık tek yapılması gereken servisten sunulan ilgili endPoint i&amp;ccedil;in &lt;strong&gt;BindingConfiguration&lt;/strong&gt; &amp;ouml;zelliğine hazırlanan ServiceBindingConfiguration değerini vermektir. B&amp;ouml;ylece endPoint i&amp;ccedil;erisinde kullanılan binding tipinin belirttiği g&amp;uuml;venlik ayarları aktif olarak set edilmiş olunur.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk204_7.gif" alt="" width="617" height="298" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu işlemlerin ardından servis tarafı i&amp;ccedil;in konfigurasyon dosyasının i&amp;ccedil;eriği aşağıdaki gibi yenilenecektir. Dikkat edilecek olursa g&amp;ouml;rsel tarafta yapılan t&amp;uuml;m eklentiler buraya element ve nitelikler olarak ge&amp;ccedil;irilmiştir. Dikkat edilmesi gereken nokta, endPoint elementi i&amp;ccedil;erisindeki bindingConfiguration elementinin değerinin, netTcpBinding alt elementindeki name &amp;ouml;zelliğinin değeri oluşudur.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;system.serviceModel&amp;gt;
+        &amp;lt;bindings&amp;gt;
+            &amp;lt;netTcpBinding&amp;gt;
+                &amp;lt;binding name="ServiceBindingConfiguration"&amp;gt;
+                    &amp;lt;security mode="Message"&amp;gt;
+                        &amp;lt;message algorithmSuite="TripleDesSha256" /&amp;gt;
+                    &amp;lt;/security&amp;gt;
+                &amp;lt;/binding&amp;gt;
+            &amp;lt;/netTcpBinding&amp;gt;
+        &amp;lt;/bindings&amp;gt;
+        &amp;lt;services&amp;gt;
+            &amp;lt;service name="AritmetikLib.Aritmetik"&amp;gt;
+                &amp;lt;endpoint address="net.tcp://localhost:9002/AritmetikServisi" bindingConfiguration="ServiceBindingConfiguration" binding="netTcpBinding" name="AritmetikServerEndPoint" contract="AritmetikLib.IAritmetik" /&amp;gt;
+            &amp;lt;/service&amp;gt;
+        &amp;lt;/services&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Sırada istemci tarafı i&amp;ccedil;in yapılması gereken ayarlar var. Yine istemci tarafındaki konfigurasyon dosyasında, aynen servis tarafındaki konfigurasyon dosyasındakine benzer g&amp;uuml;venlik ayarlamaların yapılması gerekmektedir. İlk olarak bir &lt;strong&gt; bindingConfiguration&lt;/strong&gt; elementi oluşturulmalıdır. Bu elementin &lt;strong&gt; security&lt;/strong&gt; ile ilişkili &amp;ouml;zelliklerinde mesaj seviyesi i&amp;ccedil;in &lt;strong&gt; AlgorithmSuite&lt;/strong&gt; değeri servis tarafındaki ile aynı olacak şekilde &lt;strong&gt; TripleDesSha256&lt;/strong&gt; olarak belirlenmelidir. Diğer taraftan aynı sunucu tarafında yapıldığı gibi g&amp;uuml;venlik modu mesaj seviyesine &amp;ccedil;ekilmelidir. Bu değer, konfigurasyon dosyasında security elementi i&amp;ccedil;erisinde yer alan mode niteliği ile set edilmektedir ve Message olarak ayarlanmıştır. Bundan sonra oluşturulan bindingConfiguration elementi istemci tarafındaki endPoint ile bindingConfiguration niteliği yardımıyla ilişkilendirilmelidir. Bunun sonucu olarak istemci uygulama i&amp;ccedil;in konfigurasyon dosyasının son hali aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;system.serviceModel&amp;gt; 
+        &amp;lt;bindings&amp;gt;
+            &amp;lt;netTcpBinding&amp;gt;
+                &amp;lt;binding name="ClientBindingConfiguration"&amp;gt;
+                    &amp;lt;security mode="Message"&amp;gt;
+                        &amp;lt;message algorithmSuite="TripleDesSha256" /&amp;gt;
+                    &amp;lt;/security&amp;gt;
+                &amp;lt;/binding&amp;gt;
+            &amp;lt;/netTcpBinding&amp;gt;
+        &amp;lt;/bindings&amp;gt;
+        &amp;lt;client&amp;gt;
+            &amp;lt;endpoint address="net.tcp://localhost:9002/AritmetikServisi" binding="netTcpBinding" bindingConfiguration="ClientBindingConfiguration" contract="AritmetikServisi" name="TemelMatClientEndPoint" /&amp;gt;
+        &amp;lt;/client&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Artık istemci ve sunucu tarafı i&amp;ccedil;in mesaj seviyesinde g&amp;uuml;venlik ayarları hazırdır. Ancak bunu test ederek analiz etmek gerekmektedir. Microsft Windows SDK tam bu ama&amp;ccedil; i&amp;ccedil;in tasarlanmış ve Windows Communication Foundation uygulamalarında istemci ile sunucu arasındaki mesaj trafiğini izlememizi sağlayan &lt;strong&gt;Service Trace Viewer&lt;/strong&gt; isimli bir ara&amp;ccedil; ile birlikte gelmektedir.&lt;/p&gt;
+&lt;p&gt;Ancak s&amp;ouml;z konusu aracın geliştirilen WCF uygulamasını izleyebilmesi i&amp;ccedil;inde servis tarafında &lt;strong&gt;Diagnostics&lt;/strong&gt; ayarlarının tesis edilmesi gerekir. Bu ayarlarıda yine Microsoft Service Configuration Editor yardımıyla kolayca ger&amp;ccedil;ekleştirebiliriz. Burada s&amp;ouml;z konusu ayarlar &amp;uuml;zerinde şu an i&amp;ccedil;in &amp;ccedil;ok fazla durmayacağız. &amp;Ouml;ncelikli olarak amacımız servis ve istemciler arasındaki mesajlaşmayı izlemektir.&lt;/p&gt;
+&lt;p&gt;İzleme&lt;strong&gt;(Trace)&lt;/strong&gt; işlemi i&amp;ccedil;in yapılan ayarlardan sonra servis tarafındaki konfigurasyon dosyasının i&amp;ccedil;eriği aşağıdaki gibi olacaktır. Dikkat edilmesi gereken noktalardan birisi &lt;strong&gt;sharedListeners&lt;/strong&gt; elementi i&amp;ccedil;erisinde yer alan &lt;strong&gt;initializeData&lt;/strong&gt; niteliğinin değeridir. Burada uygulamanın yazıldığı klas&amp;ouml;r altında &lt;strong&gt;svclog(Service Log)&lt;/strong&gt; uzantılı bir fiziki dosya bildirimi yapılmıştır. Bu bildirim Service Trace Viewer uygulaması tarafından ele alınacak dosyayı işaret etmektedir ve log bilgilerinin tamamı burada tutulmaktadır.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;system.diagnostics&amp;gt;
+        &amp;lt;sources&amp;gt;
+            &amp;lt;source name="System.ServiceModel.MessageLogging" switchValue="Verbose,ActivityTracing"&amp;gt;
+                &amp;lt;listeners&amp;gt;
+                    &amp;lt;add type="System.Diagnostics.DefaultTraceListener" name="Default"&amp;gt;
+                        &amp;lt;filter type="" /&amp;gt;
+                    &amp;lt;/add&amp;gt;
+                    &amp;lt;add name="MessageListener"&amp;gt;
+                        &amp;lt;filter type="" /&amp;gt;
+                    &amp;lt;/add&amp;gt;
+                &amp;lt;/listeners&amp;gt;
+            &amp;lt;/source&amp;gt;
+        &amp;lt;/sources&amp;gt;
+        &amp;lt;sharedListeners&amp;gt;
+            &amp;lt;add initializeData="E:\Vs2005Projects\WCF Samples\MesajSeviyesiGuvenlikTcp\Server\app_tracelog.svclog" type="System.Diagnostics.XmlWriterTraceListener, System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" name="MessageListener" traceOutputOptions="None"&amp;gt;
+                &amp;lt;filter type="" /&amp;gt;
+            &amp;lt;/add&amp;gt;
+        &amp;lt;/sharedListeners&amp;gt;
+    &amp;lt;/system.diagnostics&amp;gt;
+    &amp;lt;system.serviceModel&amp;gt;
+        &amp;lt;diagnostics&amp;gt;
+            &amp;lt;messageLogging logEntireMessage="true" logMessagesAtServiceLevel="true" logMessagesAtTransportLevel="true" /&amp;gt;
+        &amp;lt;/diagnostics&amp;gt;
+        &amp;lt;bindings&amp;gt;
+            &amp;lt;netTcpBinding&amp;gt;
+                &amp;lt;binding name="ServiceBindingConfiguration"&amp;gt;
+                    &amp;lt;security mode="Message"&amp;gt;
+                        &amp;lt;message algorithmSuite="TripleDesSha256" /&amp;gt;
+                    &amp;lt;/security&amp;gt;
+                &amp;lt;/binding&amp;gt;
+            &amp;lt;/netTcpBinding&amp;gt;
+        &amp;lt;/bindings&amp;gt;
+        &amp;lt;services&amp;gt;
+            &amp;lt;service name="AritmetikLib.Aritmetik"&amp;gt;
+                &amp;lt;endpoint address="net.tcp://localhost:9002/AritmetikServisi" binding="netTcpBinding" bindingConfiguration="ServiceBindingConfiguration" name="AritmetikServerEndPoint" contract="AritmetikLib.IAritmetik" /&amp;gt;
+            &amp;lt;/service&amp;gt;
+       &amp;lt;/services&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Bu noktadan sonra istemci ve sunucu uygulamalar test edilebilirler. &amp;Ccedil;alışma zamanında istemci ve sunucu aktif iken Service Trace Viewer programı &amp;ccedil;alıştırılıp s&amp;ouml;z konusu svclog dosyası a&amp;ccedil;ılırsa ilk başta aşağıdakine benzer bir ekran ile karşılaşılacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk204_8.gif" alt="" width="631" height="457" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu ekranda &amp;ouml;zellikle dikkat edilmesi gereken kısımlar sol taraftaki &lt;strong&gt;Message&lt;/strong&gt; sekmesinde yer alan son d&amp;ouml;rt mesajdır. Bu mesajlar aslında istemciden sunucuya gelen talepleri ve sunucudan istemciye d&amp;ouml;nen cevapları i&amp;ccedil;eren mesajlardır. İstemci uygulamanın kodları hatırlanacak olursa burada Toplam isimli metoda bir &amp;ccedil;ağır yapılmaktadır. Topla metodu servis tarafında &amp;ccedil;alıştırılıp sonucu istemci tarafına gelmektedir. Dolayısıyla istemci Topla metoduna &amp;ccedil;ağrı yaptığında aktarılan parametre ve diğer bilgiler servise g&amp;ouml;nderilecek, serviste ilgili fonksiyon &amp;ccedil;alıştırılacak ve sonucu istemci tarafına geri bildirilecektir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk204_9.gif" alt="" width="636" height="75" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu mesajlardan ilki istemciden sunucya gelen bilginin şifreli olarak nasıl geldiğini g&amp;ouml;stermektedir. Şifrelenmiş veriyi g&amp;ouml;rmek i&amp;ccedil;in sağ alt tarafta yer alan &lt;strong&gt;Formatter&lt;/strong&gt;, &lt;strong&gt;XML&lt;/strong&gt; yada &lt;strong&gt;Message&lt;/strong&gt; kısımları kullanılabilir. Formatter kısmına baktığımızda &lt;strong&gt;Envelope Information&lt;/strong&gt; b&amp;ouml;l&amp;uuml;m&amp;uuml;ndeki &lt;strong&gt; e:ChiperData&lt;/strong&gt; kısmında, istemciden sunucuya gelen parametrelerin &lt;strong&gt; TripleDesSha256&lt;/strong&gt; algoritmasına g&amp;ouml;re şifrelenmiş halinin yer aldığı g&amp;ouml;r&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk204_10.gif" alt="" width="639" height="289" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Eğer takip eden mesaj i&amp;ccedil;in aynı kısma tekrar bakarsak verinin servis tarafından &amp;ccedil;&amp;ouml;z&amp;uuml;mlenmiş olan hali g&amp;ouml;r&amp;uuml;lmektedir. Dikkat edilecek olursa s&amp;ouml;z konusu değerler, istemcideki Toplam metodunun aldığı parametre i&amp;ccedil;erikleridir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk204_11.gif" alt="" width="330" height="90" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bir sonraki mesaj servisin bu metod &amp;ccedil;ağırısına karşılık vereceği cevap hakkında bilgiler i&amp;ccedil;ermektedir. Yine &lt;strong&gt;Parameters&lt;/strong&gt; kısmına bakılacak olursa aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi 8 değerinin yer aldığını farkedilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk204_12.gif" alt="" width="300" height="52" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Ancak son mesaj istemciye g&amp;ouml;nderilecek verinin şifrelenmiş halini işaret etmektedir. Bir başka deyişle, 8 değeri aslında servisten istemciye g&amp;ouml;nderilmeden &amp;ouml;nce TripleDesSha256 modeline g&amp;ouml;re şifrelenecek ondan sonra iletilecektir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk204_13.gif" alt="" width="621" height="79" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Eğer aynı &amp;ouml;rnek g&amp;uuml;venlik ayarları yapılmadan test edilirse ve yine &lt;strong&gt;Service Trace Viewer&lt;/strong&gt; yardımıyla istemci ile sunucu arasındaki mesajlaşmalar izlenirse verilerin herhangibir şekilde şifrelenmediği g&amp;ouml;r&amp;uuml;lebilir. Bu ama&amp;ccedil;la istemci ve sunucu tarafındaki konfigurasyon dosyalarında security elementlerinin i&amp;ccedil;erisinde yer alan &lt;strong&gt;Mode&lt;/strong&gt; niteliklerinin değerini &lt;strong&gt;None&lt;/strong&gt; olarak belirlemek yeterlidir.&lt;/p&gt;
+&lt;p&gt;Bu makalemizde &amp;ouml;zellikle mesaj seviyesinde g&amp;uuml;venliği nasıl sağlayabileceğimizi incelemeye &amp;ccedil;alıştık. İlerleyen makalelerimizde windows tabanlı ve iletişim seviyesinde g&amp;uuml;venlik işlemlerini nasıl yapabileceğimizi incelemeye devam edeceğiz. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;şmek dileğiyle hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/makale/images/MesajSeviyesiGuvenlikTcp.rar"&gt;&amp;Ouml;rnek Uygulama İ&amp;ccedil;in Tıklayınız.&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2007-05-16 12:00:00</pubDate>
+  <slug>WCF-Mesaj-Seviyesinde-Guvenlik-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>wcf</tag>
+    <tag>windows-communication-foundation</tag>
+    <tag>security</tag>
+    <tag>service-security</tag>
+    <tag>tracing</tag>
+    <tag>authentication</tag>
+    <tag>authorization</tag>
+  </tags>
+  <categories>
+    <category>WCF</category>
+  </categories>
+</post>

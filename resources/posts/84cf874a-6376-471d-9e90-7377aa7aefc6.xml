@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Windows Servislerinin Kontrolü -1</title>
+  <description>Bu makalemizde, windows servislerinin, bir windows uygulamasından nasıl kontrol edilebileceğini incelemeye çalışacağız. Bir önceki makalemizde, windows servislerinin nasıl oluşturulduğunu ve sisteme nasıl yüklendiklerini incelemiştik. Oluşturduğumuz windows servislerini(sistemdeki windows servislerini), SCM yardımıyla yönetibilmekteyiz. Ancak dilersek, bu yönetimi programlarımız içindende gerçekleştirebiliriz. Bunu sağlayabilmek için, System.ServiceProcess isim alanında yer alan ServiceController sınıfını ve üyelerini kullanmaktayız.</description>
+  <content>&lt;p&gt;Değerli&amp;nbsp;Okurlarım, Merhabalar.&lt;/p&gt;
+&lt;p&gt;Bu makalemizde, windows servislerinin, bir windows uygulamasından nasıl kontrol edilebileceğini incelemeye &amp;ccedil;alışacağız. Bir &amp;ouml;nceki makalemizde, windows servislerinin nasıl oluşturulduğunu ve sisteme nasıl y&amp;uuml;klendiklerini incelemiştik. Oluşturduğumuz windows servislerini(sistemdeki windows servislerini), SCM yardımıyla y&amp;ouml;netibilmekteyiz. Ancak dilersek, bu y&amp;ouml;netimi programlarımız i&amp;ccedil;indende ger&amp;ccedil;ekleştirebiliriz. Bunu sağlayabilmek i&amp;ccedil;in, System.ServiceProcess isim alanında yer alan ServiceController sınıfını ve &amp;uuml;yelerini kullanmaktayız.&lt;/p&gt;
+&lt;p&gt;ServiceController sınıfı ile windows servislerine bağlanabilir ve onları kontrol edebiliriz. &amp;Ouml;rneğin servisleri başlatabilir, durdurabilir veya sistemdeki servisleri elde edebiliriz. Bu ve benzeri olanaklar dışında SCM ile yapamıyacağımız bir olayıda ger&amp;ccedil;ekleştirebiliriz. Bu olay windows servislerinin OnCustomCommand metodu &amp;uuml;zerinde işlemektedir. Bir windows servisinin OnCustomCommand metodu sayesinde servisimize standart işlevselliklerinin haricinde yeni işlevsellikler kazandırabiliriz. Prototipi aşağıdaki gibi olan OnCustomCommand metodu integer tipinden bir parametre almaktadır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;protected virtual void OnCustomCommand(int command);&lt;/pre&gt;
+&lt;p&gt;OnCustomCommand metodunu herhangibir windows uygulamasından &amp;ccedil;ağırabilmek i&amp;ccedil;in, ServiceController sınıfının ExecuteMethod metodu kullanılır. Integer tipindeki parametre 128 ile 256 arasında sayısal değerler alır. Metoda g&amp;ouml;nderilen parametre değerine g&amp;ouml;re, OnCustomCommand metodunun farklı işlevsellikleri yerine getirmesini sağlayabiliriz. ServiceController sınıfı ile yapabileceklerimiz aşağıdaki şekilde kısaca &amp;ouml;zetlenmiştir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk68_1.gif" alt="" width="417" height="267" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 1. ServiceController Sınıfı İle Yapabileceklerimiz.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Servislerimizi programatik olarak nasıl kontrol edebileceğimize ge&amp;ccedil;meden &amp;ouml;nce, konumuz ile ilgili basit bir windows servisi yazarak işe başlayalım. Bu servisimizde, kendi oluşturacağımız bir Event Log i&amp;ccedil;erisinde, sistemdeki s&amp;uuml;r&amp;uuml;c&amp;uuml;lerinin boş alan kapasitelerine ait bilgileri tutacağız. Bu ama&amp;ccedil;lada, servisimize bir Performance Counter ekleyeceğiz. Ayrıca servisimize bir timer kontrol&amp;uuml; koyacak ve bu kontrol ile belirli periyotlarda servisin, boş alan bilgilerini kontrol etmesini ve belli bir serviyenin altına inilirse Event Log'umuza bunu bir uyarı simgesi ile birlikte yazmasını sağlayacağız.&lt;/p&gt;
+&lt;p&gt;Bununla birlikte, OnCustomCommand metodunu uygulamamızdan &amp;ccedil;alıştıracak ve g&amp;ouml;nderdiğimiz parametre değerine g&amp;ouml;re servisin değişik işlevleri yerine getirmesini sağayacağız. &amp;Ouml;rneğin kullanıcının boş alan kontrol s&amp;uuml;resini ve alt sınır değerlerini programatik olarak belirleyebilmesini ve servisteki ilgili değerleri buna g&amp;ouml;re değiştirebilmesini sağlayacağız. Elbette bu değişiklikler servisin &amp;ccedil;alışma s&amp;uuml;resi boyunca ge&amp;ccedil;erli olucaktır.&lt;/p&gt;
+&lt;p&gt;Şimdi dilerseniz servisimi oluşturalım. &amp;Ouml;ncelikle vs.net ortamında, yeni bir windows service projesi a&amp;ccedil;ıyoruz. Projemizin adı, BosAlanTakip olsun. Ardından servisimizin &amp;ouml;zelliklerinden adını ve servise ait kodlarda yer alan Service1'i , BosAlanTakipServis olarak değiştirelim. Bununla birlikte Soluiton Explorer'da Service1.cs kod dosyamızın adınıda BosAlanTakipServis.cs olarak değiştirelim. Sonraki adımımız ise, servisin &amp;ouml;zelliklerinden AutoLog &amp;ouml;zelliğine false değerini atamak. Nitekim biz bu servisimizde kendi yazacağımız Event Log'u kullanmak istiyoruz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk68_2.gif" alt="" width="263" height="263" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 2. Servisimizin &amp;ouml;zelliklerinin belirlenmesi.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Servisimizin kodlarını yazmadan &amp;ouml;nce,&amp;nbsp; Custom Event Log'umuzu ekleyeceğiz. Bunun i&amp;ccedil;in, Components sekmesinden EventLog nesnesini servisimizin tasarım ekranına s&amp;uuml;r&amp;uuml;kl&amp;uuml;yoruz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk68_3.gif" alt="" width="179" height="295" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 3. EventLog nesnesi.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi EventLog nesnemizin &amp;ouml;zelliklerini belirleyelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk68_4.gif" alt="" width="391" height="259" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 4. EventLog nesnemizin &amp;ouml;zellikleri.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Artık log bilgilerini, servisimize eklediğimiz eventLog1 nesnesini kullanararak oluşturacağız. Sırada servisimize bir Performance Counter nesnesi eklemek var. Servislerimizde kullanabileceğimiz Performance Counter &amp;ouml;ğelerini, Solution Explorer pencersinde yer alan Performance Counter sekmesinden izleyebiliriz. Sistemde y&amp;uuml;kl&amp;uuml; olan pek &amp;ccedil;ok Performance Counter vardır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk68_5.gif" alt="" width="299" height="353" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 5. Sistemdeki Performance Counter'lardan bazıları.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Biz bu &amp;ouml;rneğimizde, LogicalDisk sekmesinde yer alan Free MegaBytes &amp;ouml;ğesini kullancağız. Bu saya&amp;ccedil; yardımıyla, servisimizden, sistemdeki bir hardisk'in boş alan bilgilerini elde edebileceğiz. Bu ama&amp;ccedil;la buradaki C: s&amp;uuml;r&amp;uuml;c&amp;uuml;s&amp;uuml;n&amp;uuml; servisimiz &amp;uuml;zerine s&amp;uuml;r&amp;uuml;kl&amp;uuml;yoruz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk68_6.gif" alt="" width="221" height="448" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 6. Kullancağımız Performance Counter &amp;ouml;ğesi.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Diğer ihtiyacımız olan nesne bir Timer. Bunun i&amp;ccedil;in yine Components sekmesinden Timer nesnesini , servisimizin tasarım ekranına s&amp;uuml;r&amp;uuml;klememiz yeterli. Daha sonra Timer nesnesinin interval &amp;ouml;zelliğinin değerini 600000 olarak değiştirelim. Bu yaklaşık olarak 10 dakikada (1000 milisaniye * 10 dakika * 60 saniye) bir, Timer nesnesinin Elapsed olayının &amp;ccedil;alıştırılılacağını belirtmektedir. Biz bu olay i&amp;ccedil;erisinden C s&amp;uuml;r&amp;uuml;c&amp;uuml;s&amp;uuml;ndeki boş alan miktarını kontrol etmeyi planlıyoruz. Elbette s&amp;uuml;reyi başlangı&amp;ccedil;ta 10 dakika olarak belirlememize rağmen geliştireceğimiz windows uygulamasında bu s&amp;uuml;renin kullanıcı tarafından değiştirilebilmesini sağlıyacağız. Bu ayarlamaların ardından servisimiz i&amp;ccedil;in gerekli kodları yazmaya ge&amp;ccedil;ebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections;
+using System.ComponentModel;
+using System.Data;
+using System.Diagnostics;
+using System.ServiceProcess;
+
+namespace BosAlanTakip
+{
+    public class BosAlanTakipServis : System.ServiceProcess.ServiceBase
+    {
+        ...   
+        private long BosMiktar;
+        private long Sinir;
+
+        /* Servisimiz &amp;ccedil;alıştırıldığında(start),durdurulduğunda(stop), duraksatıldığında(pause) ve yeniden &amp;ccedil;alıştırıldığında(continue) , zaman bilgisini ve performanceCounter1 nesnesinin RawValue &amp;ouml;zelliğini kullanarak C s&amp;uuml;r&amp;uuml;c&amp;uuml;s&amp;uuml;ndeki boş alan miktarını, oluşturduğumuz Event Log'a WriteEntry metodu ile yazıyoruz. Servisin durum bilgisini ise metoda g&amp;ouml;nderdiğimiz string t&amp;uuml;r&amp;uuml;nden parametre ile elde ediyoruz.*/
+        private void Bilgilendir(string durum)
+        {
+            eventLog1.WriteEntry(durum+" "+DateTime.Now.ToShortDateString()+ " C:"+performanceCounter1.RawValue.ToString()+" mb");
+        }
+        protected override void OnStart(string[] args)
+        {
+            Bilgilendir("START");
+            BosMiktar=performanceCounter1.RawValue; /* Servis &amp;ccedil;alıştırıldığında, C s&amp;uuml;r&amp;uuml;c&amp;uuml;s&amp;uuml;ndeki boş alan miktarını, BosMiktar isimli long t&amp;uuml;r&amp;uuml;nden değişkenimize aktarıyoruz. performanceCounter'ımızın RawValue &amp;ouml;zelliği burada se&amp;ccedil;tiğimiz saya&amp;ccedil; kriteri gereği sonucu megabyte cinsinden d&amp;ouml;nd&amp;uuml;rmektedir.*/
+            Sinir=3300; // Yaklaşık olarak 3.3 GB.
+            timer1.Enabled=true;  // Timer nesnemizi &amp;ccedil;alıştırıyoruz.
+        }    
+        protected override void OnStop() 
+        {
+            Bilgilendir("STOP");
+        }
+        protected override void OnPause()
+        {
+            Bilgilendir("PAUSE");
+        }
+        protected override void OnContinue()
+        {
+            Bilgilendir("CONTINUE");
+        }
+        /* &amp;Ouml;zel komutumuzu yazıyoruz. */
+        protected override void OnCustomCommand(int command)
+        {
+            /* if koşullarında OnCustomCommand'a g&amp;ouml;nderilecek parametre değerine g&amp;ouml;re, boş alan uyarısı i&amp;ccedil;in gerekli alt sınır değeri belirleniyor. Ayrıca, timer nesnemizin interval değeride gelen parametre değerine g&amp;ouml;re belirleniyor ve b&amp;ouml;ylece timer nesnesinin Elapsed olayının &amp;ccedil;alışma aralığı belirlenmiş oluyor.*/
+            if(command==200)
+            {
+                Sinir=3000; // Yaklaşık olarak 3gb.
+            }
+            else if(command==201)
+            {
+                Sinir=2000; // Yaklaşık olarak 2gb.
+            }
+            else if(command==202)
+            {
+                Sinir=4000; // Yaklaşık olarak 4gb.
+            }
+            else if(command==203)
+            {
+                timer1.Enabled=false;
+                timer1.Interval=1800000; // 30 dakikada bir.
+                timer1.Enabled=true;
+            }
+            else if(command==204)
+            {
+                timer1.Enabled=false;
+                timer1.Interval=3600000; // Saatte bir.
+                timer1.Enabled=true;
+            }
+            else if(command==205)
+            {
+                timer1.Enabled=false;
+                timer1.Interval=3000; // 3 Saniyede bir.
+                timer1.Enabled=true;
+            }
+        }     
+        private void timer1_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            if(BosMiktar&amp;lt;=Sinir)
+            {
+                /* Eğer C s&amp;uuml;r&amp;uuml;c&amp;uuml;s&amp;uuml;ndeki boş alan mikarı Sinir değişkeninin sahip olduğu değerin altına d&amp;uuml;şerse, bu bilgi Event Log'umuza bir warning singesi ile birlikte eklenecek. */
+                string bilgi=DateTime.Now.ToShortDateString()+ " C: Surucusu Bos Alan : "+performanceCounter1.RawValue.ToString();
+            eventLog1.WriteEntry(bilgi,EventLogEntryType.Warning);
+            }
+            else
+            {
+                Bilgilendir("");
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Servisimizin kodlarınıda b&amp;ouml;ylece hazırlamış olduk. Şimdi servisimiz i&amp;ccedil;in gerekli olan installer'larımızı servisimizin tasarım ekranında sağ tuşla a&amp;ccedil;tığımız men&amp;uuml;den, Add Installer &amp;ouml;ğesini se&amp;ccedil;erek ekleyelim. &amp;Ouml;nce ServiceInstaller1'in &amp;ouml;zelliklerinden Display Name &amp;ouml;zelliğinin değerini, Bos Alan Takip olarak değiştirelim. B&amp;ouml;ylece servisimizin, services sekmesinde g&amp;ouml;r&amp;uuml;nen ismini belirlemiş oluruz. Ardından ServiceProcessInstaller1 nesnemizin, Account &amp;ouml;zelliğinin değerini, LocalSystem olarak değiştirelim. B&amp;ouml;ylece sistemi a&amp;ccedil;an herkes bu servisi kullanabilecek.&lt;/p&gt;
+&lt;p&gt;Diğer yandan oluşturduğumuz Custom Event Log i&amp;ccedil;inde bir installer oluşturmamız gerekiyor ki installUtil tool'u ile servisimizi sisteme kurduğumuzda, sistedeki Event Log'lar i&amp;ccedil;erisine, oluşturduğumuz Custom Event Log'da kurulabilsin. Bu ama&amp;ccedil;la, eventLog1 nesnemiz &amp;uuml;zerinde sağ tuşa basıp &amp;ccedil;ıkan men&amp;uuml;den Add Installer'ı se&amp;ccedil;iyoruz. Bu sayede, Event Log'umuz i&amp;ccedil;in, bir adet eventLogInstaller'ın oluşturulduğunu g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Bu işemlerin ardından windows servis uygulamamızı derleyelim ve servisimizi sisteme y&amp;uuml;kleyebilmek i&amp;ccedil;in installUtil, vs.net tool'unu aşağıdaki gibi kullanalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;installUtil BosAlanTakip.exe&lt;/pre&gt;
+&lt;p&gt;Bu işlemlerin ardından servisimiz başarı ile y&amp;uuml;klendiyse, server explorer'daki services sekmesinde g&amp;ouml;r&amp;uuml;necektir. Servisimizi bu aşamada denemek amacı ile, başlatıp durdurmayı deneyelim. Ancak bu noktada servisimizin pause ve continue olaylarının ge&amp;ccedil;ersiz olduğunu g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Bunun sebebi, servisimizin OnPauseContinue &amp;ouml;zelliğinin değerinin false olmasıdır. Şimdi bu değeri true yapalım. Servis uygulamamızı tekrar derleyelim. Ardından servisimizi sisteme yeniden y&amp;uuml;kleyelim. Şimdi server explorer'dan servisimizi &amp;ccedil;alıştırıp deneyelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk68_7.gif" alt="" width="397" height="383" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 7. Servisin &amp;Ccedil;alışan Hali.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Ben servisi test etmek i&amp;ccedil;in, C s&amp;uuml;r&amp;uuml;c&amp;uuml;s&amp;uuml;ndeki boş alanı biraz daha d&amp;uuml;ş&amp;uuml;rd&amp;uuml;m. G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi servis başarılı bir şekilde &amp;ccedil;alışıyor. Şu an i&amp;ccedil;in her 10 dakikada bir timer nesnesinin Elapsed olayı devreye giriyor ve C s&amp;uuml;r&amp;uuml;c&amp;uuml;s&amp;uuml;ndeki boş alan miktarının 3.3 gb'ın altına d&amp;uuml;ş&amp;uuml;p d&amp;uuml;şmediği kontrol ediliyor. Servisimiz bunu tespit ettiği anlarda Event Log'umuza bir uyarı işareti ekleyecektir.&lt;/p&gt;
+&lt;p&gt;Şimdi yazmış olduğumuz bu servisi başka bir windows uygulaması i&amp;ccedil;erisinden nasıl y&amp;ouml;netebileceğimizi incelemeye başlayalım. Burada bizim i&amp;ccedil;in anahtar nokta, windows uygulamamızda, System.ServiceProcess isim alanını kullanmak. Oluşturmuş olduğumuz servise ait OnCustomCommand metodunu &amp;ccedil;alıştırmak i&amp;ccedil;in, bu isim alanında yer alan ServiceController sınıfının ExecuteCommand metodunu kullanacağız. &amp;Ouml;ncelikle aşağıdaki gibi bir form tasarlayarak işe başlayalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk68_8.gif" alt="" width="312" height="248" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 8. Form Tasarımımız.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi ServiceProcess isim alanını kullanabilmek i&amp;ccedil;in Add Referance kısmından uygulamamıza eklememiz gerekiyor.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk68_9.gif" alt="" width="566" height="446" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 9. System.ServiceProcess isim alanının uygulamaya eklenmesi.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;ncelikle servisimizi temsil edicek ServiceController sınıfı t&amp;uuml;r&amp;uuml;nden bir nesne oluşturacağız. ServiceController sınıfından nesnemizi oluştururken aşağıda prototipi verilen yapıcı metodu kullanıyoruz. Bu yapıcı, servisin tam adını parametre olarak string t&amp;uuml;r&amp;uuml;nden almaktadır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public ServiceController(string serviceName);&lt;/pre&gt;
+&lt;p&gt;ServiceController sınıfına ait nesne &amp;ouml;rneğini kullanarak servisimize ilişkin pek &amp;ccedil;ok bilgiyi elde edebiliriz. &amp;Ouml;rneğin, servisin g&amp;ouml;r&amp;uuml;nen adını DisplayName &amp;ouml;zelliği ile , servisin &amp;ccedil;alıştığı makine adını MachineName &amp;ouml;zelliği ile elde edebiliriz. ServiceController sınıfının &amp;uuml;yeleri yardımıyla sistemimizde kurulu olan servislere ait pek &amp;ccedil;ok bilgiyi temin edebiliriz. Bu konuyu bir sonraki makalemizde incelemeye &amp;ccedil;alışacağız. Şimdi dilerseniz servisimizi kontrol ediceğimiz kısa windows uygulamamızın kodlarını yazalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;ServiceController sc; /* Servisimizi kontrol edicek olan ServiceController sınıf nesnemiz tanımlanıyor.*/
+
+private void Form1_Load(object sender, System.EventArgs e)
+{
+    sc=new ServiceController("BosAlanTakipServis"); /* ServiceController nesnemiz, kullanmak istediğimiz servisin adını parametre olarak almak suretiyle oluşturuluyor.*/
+    lblServisAdi.Text=sc.DisplayName.ToString()+"/"+sc.MachineName.ToString(); /* Servisimizin , sistemdeki services kısmında g&amp;ouml;r&amp;uuml;nen ismi ve &amp;uuml;zerinde &amp;ccedil;alıştığı makine adı elde ediliyor ve label kontrol&amp;uuml;m&amp;uuml;ze ekleniyor.*/
+}
+
+private void btnPeriyod_Click(object sender, System.EventArgs e)
+{
+    if(lbPeriyod.SelectedIndex==0)
+    {
+        sc.ExecuteCommand(203); /* Servisimizdeki OnCustomCommand metodu &amp;ccedil;alıştırılıyor ve bu metoda parametre değeri olarak 203 g&amp;ouml;nderiliyor. Artık servisimiz, 203 parametre değerine g&amp;ouml;re bir takım işlevler ger&amp;ccedil;ekleştirecek. 203 değeri karşılığında servisimizdeki OnCustomCommand metodu, log tutma s&amp;uuml;resini yarım saat olarak belirleyecektir.*/
+    }
+    else if(lbPeriyod.SelectedIndex==1)
+    {
+        sc.ExecuteCommand(204);
+    }
+    else if(lbPeriyod.SelectedIndex==2)
+    {
+        sc.ExecuteCommand(205);
+    } 
+}
+
+private void btnAltSinirAyarla_Click(object sender, System.EventArgs e)
+{
+    if(lbAltSinir.SelectedIndex==0) 
+    {
+        sc.ExecuteCommand(201);
+    }
+    else if(lbAltSinir.SelectedIndex==1)
+    {
+        sc.ExecuteCommand(200);
+    }
+    else if(lbAltSinir.SelectedIndex==2)
+    {
+        sc.ExecuteCommand(202);
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Şimdi uygulamamızı &amp;ccedil;alıştıralım ve ilk olarak s&amp;uuml;reyi 3 saniyede 1 se&amp;ccedil;erek Event Log'ların tutuluşunu izleyelim. Windows uygulamamızı başlatmadan &amp;ouml;nce servisimizi manuel olarak başlatmayı unutmayalım. Diğer yandan bunu dilersek SCM yardımıyla otomatik hale getirebilir ve sistem a&amp;ccedil;ıldığında servisin otomatik olarak başlatılmasını sağlayabiliriz. Event Log s&amp;uuml;resini 3 saniye olarak belirleyip Ayarla başlıklı butona tıkladığımızda, servisimizi temsil eden ServiceController nesnesinin ExecuteCommand metodu devreye girerek, ListBox'tan se&amp;ccedil;ilen &amp;ouml;ğenin indeksine g&amp;ouml;re bir değeri, temsil ettiği servis i&amp;ccedil;indeki OnCustomCommand metoduna parametre olarak g&amp;ouml;nderir. Bunun sonucu olarak Event Log'umuzda 3 saniyede bir durum bilgisinin yazılıyor olması gerekir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk68_10.gif" alt="" width="363" height="159" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 10. Servisin Event Log tutma s&amp;uuml;resinin ayarlanması.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi servisimiz bu yeni ayarlamadan sonra, kendi oluşturduğumuz Event Log'a 3 saniyede 1 bilgi yazmaktadır. Servisimizde, C s&amp;uuml;r&amp;uuml;c&amp;uuml;s&amp;uuml; i&amp;ccedil;in belli bir miktar kapasitenin altına d&amp;uuml;ş&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde, Event Log'a yazılan mesaj bir uyarı simgesi ile birlikte yazılıyor. Şu an i&amp;ccedil;in, belirtilen kapasitenin altında olduğumuzdan warning simgesi , servisin timer nesnesinin elapsed olayında değerlendiriliyor ve Event Log'umuza yazılıyor. Şimdi bu kapasiteyi 2 GB yapalım ve durumu g&amp;ouml;zlemleyelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk68_11.gif" alt="" width="365" height="128" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 11. Alt Sinir değerinin değiştirilmesi.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi, servisimizin alt sınıra g&amp;ouml;re Event Log'ların simgesini belirleyen davranışını değiştirmeyi başardık. Bu işlemi ExecuteCommand metodu ile servisimizdeki OnCustomCommand'a g&amp;ouml;nderdiğimiz parametrenin değerini ele alarak ger&amp;ccedil;ekleştirdik.&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde sistemimizde yer alan servisleri, ServiceController sınıfındaki metod ve &amp;ouml;zellikler ile nasıl kontrol edebileceğimizi incelemeye &amp;ccedil;alışacağız. Bu makalede g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2004-05-05 09:00:00</pubDate>
+  <slug>Windows-Servislerinin-Kontrolu-1-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>windows-services</tag>
+    <tag>service-controller</tag>
+    <tag>eventlog</tag>
+  </tags>
+  <categories>
+    <category>Windows Services</category>
+  </categories>
+</post>

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Asp.Net Web API’ leri ASPX’ den Asenkron Çağırmak</title>
+  <description>Bilindiği gibi Asenkron(Asynchronous) çalışma, günümüz yazılım geliştirme araçlarının olmazsa olmaz parçalarından birisidir. Nitekim kullanıcı deneyimi(User Experience) yüksek olan uygulamalarda, istemcilerin uzun sürebilecek işlemleri beklemeden başkalarına devam edebilmesi tercih edilen ve işlem sürelerini kısaltan bir kabiliyettir.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/baterist-290x290.jpg"&gt;&lt;img style="margin: 4px 0px; display: inline; float: right;" title="baterist-290x290" src="/pics/baterist-290x290_thumb.jpg" alt="baterist-290x290" width="290" height="290" align="right" /&gt;&lt;/a&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Bateri &amp;ccedil;alanları her zaman i&amp;ccedil;in b&amp;uuml;y&amp;uuml;k bir hayranlıkla izlerim/izlemişimdir. &amp;Ouml;zellikle 4 uzuvlarını da(iki kol iki ayak &lt;img class="wlEmoticon wlEmoticon-smilewithtongueout" style="border-style: none;" src="/pics/wlEmoticon-smilewithtongueout_6.png" alt="Smile with tongue out" /&gt;) kullanırlar ama daha da &amp;ouml;nemlisi t&amp;uuml;m bu unsurları eş zamanlı olarak &amp;ccedil;alıştırabilirler.&lt;/p&gt;
+&lt;p&gt;Sadece iki kolu &amp;ccedil;alıştırmak nispeten bir dereceye kadar kolay olabilir biz normal insan oğulları i&amp;ccedil;in ama bir de ayakları devreye sokmak. Hele de t&amp;uuml;m bu hareketli par&amp;ccedil;alardan anlamlı bir melodi &amp;ccedil;ıkartmak ger&amp;ccedil;ekten &amp;ccedil;ok ama &amp;ccedil;ok zor bir iştir.&lt;/p&gt;
+&lt;p&gt;Tabi eğitimler ile belirli seviyede bateri &amp;ccedil;alabilmek pek &amp;ccedil;ok insan i&amp;ccedil;in m&amp;uuml;mk&amp;uuml;n olabilir ama tabi ritim tutturmak, ataklarda bulunmak veya &amp;ccedil;ok uzun s&amp;uuml;re boyunca aynı tempoyu hi&amp;ccedil; bozulmadan devam ettirebilmek inanılmaz bir konsantrasyon veya yetenek gerektirmektedir. Peki bu eş zamanlı &amp;ccedil;alışabilme bir yazılımcı i&amp;ccedil;in ne ifade edebilir? Tabi ki de asenkron &amp;ccedil;alışan kod par&amp;ccedil;alarını &lt;img class="wlEmoticon wlEmoticon-openmouthedsmile" style="border-style: none;" src="/pics/wlEmoticon-openmouthedsmile_31.png" alt="Open-mouthed smile" /&gt;&lt;/p&gt;
+&lt;p&gt;Bilindiği gibi &lt;strong&gt;Asenkron(Asynchronous)&lt;/strong&gt; &amp;ccedil;alışma, g&amp;uuml;n&amp;uuml;m&amp;uuml;z yazılım geliştirme ara&amp;ccedil;larının olmazsa olmaz par&amp;ccedil;alarından birisidir. Nitekim &lt;strong&gt;kullanıcı deneyimi(User&lt;/strong&gt; &lt;strong&gt;Experience)&lt;/strong&gt; y&amp;uuml;ksek olan uygulamalarda, istemcilerin uzun s&amp;uuml;rebilecek işlemleri beklemeden başkalarına devam edebilmesi tercih edilen ve işlem s&amp;uuml;relerini kısaltan bir kabiliyettir.&lt;/p&gt;
+&lt;p&gt;Ne varki bu &amp;ccedil;alışma mantığı &amp;ouml;zellikle &lt;strong&gt;Asp.Net&lt;/strong&gt; gibi sunucu tabanlı &amp;ccedil;alışan web uygulama modelleri d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde biraz daha farklı ele alınmalıdır/anlaşılmalıdır. Bunun en b&amp;uuml;y&amp;uuml;k sebeplerinden birisi de Web' in sunucu taraflı &amp;ccedil;alışması sırasında devreye girmekte olan sayfa yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml;d&amp;uuml;r&lt;strong&gt;(Page Life Cycle)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Asp.Net&lt;/strong&gt; tabanlı uygulamalar &amp;ccedil;ok doğal olarak istemciden gelen taleplere cevap &amp;uuml;retirken sunucu &amp;uuml;zerinde y&amp;uuml;r&amp;uuml;yen bir s&amp;uuml;reci devreye sokar. Bu s&amp;uuml;re&amp;ccedil; i&amp;ccedil;erisinde talepte bulunulan sayfaların da belirli yaşam d&amp;ouml;ng&amp;uuml;leri ve dolayısıyla olay metodları devreye girer. Dolayısıyla şu senaryo her zaman i&amp;ccedil;in benim gibi yazılım geliştiricilerin kafasını karıştırır;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Bir web sayfası metodu i&amp;ccedil;inden asenkron olarak bir servis &amp;ccedil;ağrısı ger&amp;ccedil;ekleştirirsem sunucu tarafındaki yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml;nde nasıl bir hareketlilik olur?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;span style="color: #ff0000;"&gt;[Dikkat edileceği &amp;uuml;zere burada konu, istemcinin AJAX tabanlı bir servis &amp;ccedil;ağrısı yapmasından farklıdır. İrdelenmek istenen sunucu tarafındaki bir servis &amp;ccedil;ağrısına ait asenkron &amp;ccedil;alışma mantığıdır]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Aslında senaryomuza g&amp;ouml;re istemci herhangibir şekilde web sayfasına talep de bulunduğunda, sayfanın yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml; i&amp;ccedil;erisinde kalan bazı servis &amp;ccedil;ağrılarının asenkron olarak y&amp;uuml;r&amp;uuml;t&amp;uuml;lebilmesi ele alınmaktadır. İstemciler standart &lt;strong&gt;HTTP Get&lt;/strong&gt; &amp;ccedil;ağrısı dışında kendi tarayıcılarından bir d&amp;uuml;ğmeye bastıklarında da sunucu tarafında bazı olayları tetiklerler. Ancak sıkıntı şudur. Sayfanın yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml; gereği kontrollere ait &lt;strong&gt;Click/Change&lt;/strong&gt; olay metodlarının da devreye girdiği bir an vardır. En azından o ana gelene kadar bile, bazı servislere olan &amp;ccedil;ağrıların asenkron olarak başlatılıp sonu&amp;ccedil;larının alınması d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;Sanırım kendi kafamı karıştırdığım kadar sizin kafanızı da epeyce karıştırmış olabilir! &lt;img class="wlEmoticon wlEmoticon-smile" style="border-style: none;" src="/pics/wlEmoticon-smile_46.png" alt="Smile" /&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Başlangı&amp;ccedil; noktası olarak Asp.Net Server Based Web uygulamalarının yaşam d&amp;ouml;ng&amp;uuml;lerine ve web dışında normal bir Console uygulaması &amp;uuml;zerinde yapılabilen asenkron &amp;ccedil;alışma mantığına bakmanızı &amp;ouml;neririm.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Peki biz bu yazımızda neyi değerlendiriyor olacağız? Bize ne kaldı &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_114.png" alt="Winking smile" /&gt;&lt;/p&gt;
+&lt;p&gt;Malum &lt;strong&gt;.Net Framework 4.5&lt;/strong&gt; ile birlikte, asenkron programlamayı biraz daha kolaylaştıran ve &lt;strong&gt;Task Parallel Library&lt;/strong&gt;' nin tamamlayıcısı olarak da g&amp;ouml;rebileceğimiz &lt;strong&gt;async&lt;/strong&gt; ve &lt;strong&gt;await&lt;/strong&gt; isimli iki yetenekli &lt;strong&gt;keyword&lt;/strong&gt; ile tanıştık&lt;em&gt;(Yetenekli diyorum nitekim &lt;strong&gt;Intermediate Language&lt;/strong&gt; tarafında &amp;ouml;nemli eklemeler yapıyorlar)&lt;/em&gt; Dolayısıyla &lt;strong&gt;Asp.Net Web Forms&lt;/strong&gt; uygulamalarında asenkron &amp;ccedil;alışma mantığını yeni baştan ele almamızı gerektirecek bazı kabiliyetler s&amp;ouml;z konusu.&lt;/p&gt;
+&lt;p&gt;İşte bu ama&amp;ccedil;a bir &lt;strong&gt;Asp.Net Web Forms&lt;/strong&gt; uygulamasından bir &lt;strong&gt;Asp.Net Web API&lt;/strong&gt; servis operasyonunu asenkron olarak nasıl &amp;ccedil;ağırabileceğimizi adım adım incelemeye &amp;ccedil;alışıyor olacağız. Bu sayede bir &lt;strong&gt;Web&lt;/strong&gt; uygulamasında asenkron erişim tekniklerini nasıl ele alabileceğimizi de &lt;strong&gt;.Net Framework 4.5&lt;/strong&gt; stilinde g&amp;ouml;rm&amp;uuml;ş olacağız &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_114.png" alt="Winking smile" /&gt;&lt;/p&gt;
+&lt;p&gt;İşe bir adet &lt;strong&gt;Empty Asp.Net Web Application&lt;/strong&gt;, bir adet&lt;strong&gt; Asp.Net MVC 4.0 Application&lt;/strong&gt;&lt;em&gt;(ama Web API şablonunu kullanan) &lt;/em&gt;ve bir adet te &lt;strong&gt;Class Library&lt;em&gt;&amp;nbsp;&lt;/em&gt;&lt;/strong&gt;oluşturarak başlayalım. Web API uygulamamız i&amp;ccedil;erisinde &lt;strong&gt;Entity Framework&lt;/strong&gt; tabanlı bir &lt;strong&gt;Web API&lt;/strong&gt; servisini de kullanıyor olacağız. Temel olarak solution i&amp;ccedil;eriğimizin aşağıdaki şekilde tesis edileceğini ifade edebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/asynwa_3.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="asynwa_3" src="/pics/asynwa_3_thumb.png" alt="asynwa_3" width="538" height="379" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Her iki uygulamada da aynı Entity tipleri kullanılacağından basit olarak Class Library&amp;rsquo; nin her iki projeye de referans edilmesi yolunu tercih ettik.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;MVC&lt;/strong&gt; uygulamamızda &amp;ouml;rnek veritabanı olarak &lt;strong&gt;Chinook'&lt;/strong&gt; u işaret eden bir &lt;strong&gt;Entity Model'&lt;/strong&gt; imiz bulunmakta. Buna uygun olacak şekilde &amp;ouml;rneğin &lt;strong&gt;Employee&lt;/strong&gt; &lt;strong&gt;Entity&lt;/strong&gt; tipi ile &amp;ccedil;alışacak bir de &lt;strong&gt;Controller&lt;/strong&gt; eklediğimizi d&amp;uuml;ş&amp;uuml;nelim. &lt;strong&gt;Controller&lt;/strong&gt; tipimizi &lt;strong&gt;Empty&lt;/strong&gt; &lt;strong&gt;Controller&lt;/strong&gt; şablonunda ekleyebiliriz. Nitekim veri &amp;ccedil;ekme işlemine ait kod i&amp;ccedil;eriğini kendimiz geliştiriyor olacağız. &lt;strong&gt;EmployeeController&lt;/strong&gt; ismiyle &amp;uuml;retilen sınıfımızın i&amp;ccedil;eriğini ise aşağıdaki gibi geliştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using ChinookEntityLibrary; 
+using System.Collections.Generic; 
+using System.Linq; 
+using System.Threading; 
+using System.Web.Http;
+
+namespace ChinookWebApi.Controllers 
+{ 
+    public class EmployeeController 
+        : ApiController 
+    { 
+        private ChinookEntities db = new ChinookEntities();
+
+       public IEnumerable&amp;lt;Employee&amp;gt; GetEmployees() 
+        { 
+            ChinookEntities db = new ChinookEntities(); 
+            var allEmployees = from e in db.Employees 
+                               orderby e.LastName 
+                               select e; 
+            Thread.Sleep(5000); // Bilin&amp;ccedil;li olarak duraksatma yapıyoruz 
+            return allEmployees; 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Tabi WebApi &amp;ouml;rneğinin &amp;ccedil;alışabilmesi i&amp;ccedil;in WebApiConfig sınıfı i&amp;ccedil;erisinde yer alan Register metodunun da aşağıdaki şekilde g&amp;uuml;ncellenmesi gerekmektedir.&lt;/p&gt;
+&lt;p&gt;using System.Web.Http;&lt;/p&gt;
+&lt;p&gt;namespace ChinookWebApi &lt;br /&gt;{ &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; public static class WebApiConfig &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; { &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public static void Register(HttpConfiguration config) &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; config.Routes.MapHttpRoute( &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; name: "EmployeeApi", &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; routeTemplate: "api/{controller}/{id}", &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; defaults: new { id = RouteParameter.Optional } &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; ); &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; } &lt;br /&gt;}&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;EmployeeController tipi i&amp;ccedil;erisinde yer alan &lt;strong&gt;Get&lt;/strong&gt; metodu klasik olarak&lt;strong&gt; Chinook Entity Model'&lt;/strong&gt; i sorgulamakta ve t&amp;uuml;m &lt;strong&gt;Employee&lt;/strong&gt; listesini &lt;strong&gt;LastName&lt;/strong&gt; alanına g&amp;ouml;re sıralayarak geriye d&amp;ouml;nd&amp;uuml;rmektedir. Metodun &amp;ouml;rneğimiz i&amp;ccedil;in &amp;ouml;nemli olan kısmı ise &amp;ccedil;alışmakta olan &lt;strong&gt;Thread'&lt;/strong&gt; in &lt;strong&gt;5 saniye boyunca&lt;/strong&gt; &lt;strong&gt;duraksatıldığı&lt;/strong&gt; kısımdır. Bu, verinin en az 5 saniye ge&amp;ccedil; gelmesine neden olacak ve asenkron i&amp;ccedil;in gerekli senaryoya zemin hazırlayacaktır.&lt;/p&gt;
+&lt;p&gt;Bu arada &amp;ouml;rneği test etmemizde ve servis &amp;ccedil;ağrısı sonucu ge&amp;ccedil;erli bir veri i&amp;ccedil;eriğini elde edebildiğimizi g&amp;ouml;rmemiz de yarar var. Eğer sıkıntı yoksa aşağıdakine benzer bir ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; almamız gerekecektir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/asynwa_1.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="asynwa_1" src="/pics/asynwa_1_thumb.png" alt="asynwa_1" width="428" height="511" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi elimizde &lt;strong&gt;HTTP&lt;/strong&gt; tabanlı &amp;ccedil;alışan bir &lt;strong&gt;REST&lt;/strong&gt; servisi bulunmakta. Bu servisi konuşlandırdığımız adresi kullanarak, diğer &lt;strong&gt;Web&lt;/strong&gt; uygulamasındaki &lt;strong&gt;Web Form&lt;/strong&gt; &amp;uuml;zerinden bir &lt;strong&gt;Request&lt;/strong&gt; g&amp;ouml;nderiyor olacağız. Ancak bu &lt;strong&gt;Request'&lt;/strong&gt; in asenkron şekilde ger&amp;ccedil;ekleştirilmesi de &amp;ouml;nemli. Bunu sağlamak i&amp;ccedil;in &amp;ouml;ncelikli olarak istemci &lt;strong&gt;Web Form'&lt;/strong&gt; u i&amp;ccedil;erisine aşağıdaki metodları yazdığımızı g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using ChinookEntityLibrary; 
+using Newtonsoft.Json; 
+using System; 
+using System.Collections.Generic; 
+using System.Configuration; 
+using System.Diagnostics; 
+using System.Net.Http; 
+using System.Threading.Tasks; 
+using System.Web.UI;
+
+namespace ClientApp 
+{ 
+    public partial class AsyncTestPage : System.Web.UI.Page 
+    { 
+        protected void Page_Load(object sender, EventArgs e) 
+        { 
+            RegisterAsyncTask(new PageAsyncTask(GetEmployeeDataFromServiceAsync)); 
+        }
+
+        public async Task&amp;lt;List&amp;lt;Employee&amp;gt;&amp;gt; InvokeEmployeeService() 
+        { 
+            using (HttpClient client = new HttpClient()) 
+            { 
+                HttpResponseMessage serviceCallResponse = await client.GetAsync(ConfigurationManager.AppSettings["EmployeeServiceAddress"]); 
+                string jsonContent = (await serviceCallResponse.Content.ReadAsStringAsync()); 
+                List&amp;lt;Employee&amp;gt; employees = JsonConvert.DeserializeObject&amp;lt;List&amp;lt;Employee&amp;gt;&amp;gt;(jsonContent); 
+                return employees; 
+            } 
+        }
+
+        private async Task GetEmployeeDataFromServiceAsync() 
+        { 
+            Stopwatch stopWatch = new Stopwatch(); 
+            stopWatch.Start();
+
+            var taskInvokeEmployee = InvokeEmployeeService();
+
+            await taskInvokeEmployee;
+
+            List&amp;lt;Employee&amp;gt; data1 = taskInvokeEmployee.Result;
+
+            stopWatch.Stop(); 
+            lblResult.Text = string.Format("&amp;lt;h2&amp;gt;{0} adet Employee {1} saniye de &amp;ccedil;ekilmiştir.&amp;lt;/h2&amp;gt;" 
+                ,data1.Count, stopWatch.Elapsed.TotalSeconds); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Client uyulamasında HttpClient tipinin kullanımı i&amp;ccedil;in System.Net assembly' ının referans edilmesi gerekir. Ayrıca JSON i&amp;ccedil;eriğinin daha kolay bir şekilde ele alınabilmesi i&amp;ccedil;in Newtonsoft' un Json.Net k&amp;uuml;t&amp;uuml;phanesinden yararlanılmaktadır. Bu k&amp;uuml;t&amp;uuml;phane NuGet Package Manager ile uygulamaya kolayca y&amp;uuml;klenebilir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;InvokeEmployeeService&lt;/strong&gt; metodu dikkat edileceği &amp;uuml;zere &lt;strong&gt;async&lt;/strong&gt; anahtar kelimesi(keyword) ile işaretlenmiştir. Bunun en &amp;ouml;nemli nedenlerinden birisi de, i&amp;ccedil;erisinde &lt;strong&gt;awatiable&lt;/strong&gt; iki fonksiyon i&amp;ccedil;ermesidir. Bu fonksiyonlardan birisi servis operasyonunu asenkron olarak &amp;ccedil;ağıran &lt;strong&gt;GetAsync'&lt;/strong&gt; dir. Diğeri ise servis operasyonuna ait &lt;strong&gt;response'&lt;/strong&gt; daki i&amp;ccedil;eriği &lt;strong&gt;Json&lt;/strong&gt; formatında &amp;ccedil;eken &lt;strong&gt;ReadAsStringAsync'&lt;/strong&gt; dir. Her iki asenkron metodun &amp;ccedil;ağrısı sırasında &lt;strong&gt;await&lt;/strong&gt; &lt;strong&gt;keyword'&lt;/strong&gt; &amp;uuml;n&amp;uuml;n kullanıldığına dikkat edilmelidir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;InvokeEmployeeService&lt;/strong&gt; metodu aslında &lt;strong&gt;Employee&lt;/strong&gt; tipinden olan &lt;strong&gt;generic&lt;/strong&gt; &lt;strong&gt;List&lt;/strong&gt; koleksiyonunu sarmallayan bir &lt;strong&gt;Task&lt;/strong&gt; nesne &amp;ouml;rneğini d&amp;ouml;nd&amp;uuml;rmektedir. &lt;strong&gt;await&lt;/strong&gt; ile işaretlenmiş olan metodlar aslında bir sonraki satıra ge&amp;ccedil;ilmesi noktasında beklenilmesi gerektiğini belirtmektedir. Dolayısıyla &lt;strong&gt;GetAsync&lt;/strong&gt; metodu ile &lt;strong&gt;Response&lt;/strong&gt; alınmadan sonraki ifadeye ge&amp;ccedil;ilmemesi gerektiği &lt;strong&gt;await&lt;/strong&gt; ile bildirilmektedir.&lt;/p&gt;
+&lt;p&gt;Gelelim &lt;strong&gt;GetEmployeeDataFromServiceAsync&lt;/strong&gt; metoduna. Bu metod i&amp;ccedil;erisinde aslında &lt;strong&gt;Stopwatch&lt;/strong&gt; nesne &amp;ouml;rneği ile yapılan s&amp;uuml;re &amp;ouml;l&amp;ccedil;&amp;uuml;m&amp;uuml; haricinde, &lt;strong&gt;InvokeEmployeeService&lt;/strong&gt; metoduna yapılan bir &amp;ccedil;ağrı da s&amp;ouml;z konusudur. Bu &amp;ccedil;ağrı yapılırken dikkat edileceği &amp;uuml;zere, &lt;strong&gt;taskInvokeEmployee&lt;/strong&gt; isimli &lt;strong&gt;Task&lt;/strong&gt; tipinden nesne &amp;ouml;rneği i&amp;ccedil;in &lt;strong&gt;await&lt;/strong&gt; keyword' &amp;uuml;n&amp;uuml;n kullanıldığı g&amp;ouml;r&amp;uuml;lmektedir. Dolayısıyla &lt;strong&gt;taskInvokeEmployee&lt;/strong&gt; nesne &amp;ouml;rneğinin sarmalladığı(Wrap) generic &lt;strong&gt;Employee&lt;/strong&gt; listesi d&amp;ouml;nmeden, sonraki ifadeye &lt;span style="text-decoration: underline;"&gt;ge&amp;ccedil;ilmemesi&lt;/span&gt; gerektiği ifade edilmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;async&lt;/strong&gt; keyword' &amp;uuml; ile işaretlediğimiz &lt;strong&gt;GetEmployeeDataFromServiceAsync&lt;/strong&gt; metodunun &lt;strong&gt;Page&lt;/strong&gt; &lt;strong&gt;Framework'&lt;/strong&gt; e register edilmesi i&amp;ccedil;in &lt;strong&gt;Page_Load&lt;/strong&gt; olay metodu i&amp;ccedil;erisinde &lt;strong&gt;Page&lt;/strong&gt; &amp;ouml;zelliği ile erişilebilen &lt;strong&gt;RegisterAsyncTask&lt;/strong&gt; metodunun kullanıldığını g&amp;ouml;r&amp;uuml;yoruz. Bu metoda yapılan &amp;ccedil;ağrı ile, parametre olarak gelen &lt;strong&gt;async&lt;/strong&gt; şeklinde işaretlenmiş asenkron &amp;ccedil;ağırılabilen metodun sayfa ile ilişkilendirilmesi sağlanmış olunmaktadır.&lt;/p&gt;
+&lt;p&gt;Ancak işlemlerimiz bunlarla sınırlı değil &lt;img class="wlEmoticon wlEmoticon-confusedsmile" style="border-style: none;" src="/pics/wlEmoticon-confusedsmile_23.png" alt="Confused smile" /&gt; Son olarak sayfanın &lt;strong&gt;Page&lt;/strong&gt; direktifi i&amp;ccedil;erisindeki &lt;strong&gt;Async&lt;/strong&gt; niteliğine &lt;strong&gt;true&lt;/strong&gt; değerinin atanması gerekmektedir. B&amp;ouml;ylece web sayfanın asenkron olarak &amp;ccedil;alıştırılacağı belirtilmektedir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;%@ Page Async="true" Language="C#" AutoEventWireup="true" CodeBehind="AsyncTestPage.aspx.cs" Inherits="ClientApp.AsyncTestPage" %&amp;gt;
+
+&amp;lt;!DOCTYPE html&amp;gt;
+
+&amp;lt;html xmlns="http://www.w3.org/1999/xhtml"&amp;gt; 
+&amp;lt;head runat="server"&amp;gt; 
+    &amp;lt;title&amp;gt;&amp;lt;/title&amp;gt; 
+&amp;lt;/head&amp;gt; 
+&amp;lt;body&amp;gt; 
+    &amp;lt;form id="form1" runat="server"&amp;gt; 
+    &amp;lt;div&amp;gt; 
+        &amp;lt;asp:Label ID="lblResult" runat="server" /&amp;gt; 
+    
+    &amp;lt;/div&amp;gt; 
+    &amp;lt;/form&amp;gt; 
+&amp;lt;/body&amp;gt; 
+&amp;lt;/html&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Artık Web sayfamızı &amp;ccedil;alıştırabiliriz. İlk &amp;ccedil;ağrı sırasında servisin ayağa kalkması veya sayfanın ilk kez y&amp;uuml;r&amp;uuml;t&amp;uuml;lmesinden kaynaklanan bir gecikme sorunu yaşanabilir ve beklemediğimiz kadar uzun bir s&amp;uuml;re ile karşılaşabiliriz. Ancak sonraki &amp;ccedil;ağrılarda aşağıdakine benzer bir &amp;ccedil;ıktı alırız. Yaklaşık olarak 5 saniye civarında bir &amp;ccedil;alışma zamanı s&amp;ouml;z konusudur ki bu son derece normaldir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/asynwa_2.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="asynwa_2" src="/pics/asynwa_2_thumb.png" alt="asynwa_2" width="473" height="128" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Yine de bu sayfanın tam anlamıyla asenkron &amp;ccedil;alıştığına dair bir kanıt değildir&lt;em&gt;(Unutmayın ki sayfanın sunucu tarafındaki yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml; i&amp;ccedil;erisinde bir asenkron &amp;ccedil;alışma senaryosu g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınmaktadır)&lt;/em&gt; Bu kanıt i&amp;ccedil;in kodu biraz daha ilgin&amp;ccedil;leştirelim ve sayfa i&amp;ccedil;eriğini aşağıdaki hale getirelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using ChinookEntityLibrary; 
+using Newtonsoft.Json; 
+using System; 
+using System.Collections.Generic; 
+using System.Configuration; 
+using System.Diagnostics; 
+using System.Net.Http; 
+using System.Threading; 
+using System.Threading.Tasks; 
+using System.Web.UI;
+
+namespace ClientApp 
+{ 
+    public partial class AsyncTestPage : System.Web.UI.Page 
+    {        
+        protected void Page_Load(object sender, EventArgs e) 
+        { 
+            RegisterAsyncTask(new PageAsyncTask(GetEmployeeDataFromServiceAsync)); 
+            DoSomething(); 
+        }
+
+        public async Task&amp;lt;List&amp;lt;Employee&amp;gt;&amp;gt; InvokeEmployeeService() 
+        { 
+                . 
+                . 
+                . 
+        }
+
+        private async Task GetEmployeeDataFromServiceAsync() 
+        { 
+                . 
+                . 
+                . 
+        }
+
+        private void DoSomething() 
+        { 
+            Thread.Sleep(5000); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;RegisterAsyncTask&lt;/strong&gt; metoduna yapılan &amp;ccedil;ağrının hemen ardından i&amp;ccedil;erisinde sayfaya ait &lt;strong&gt;Thread'&lt;/strong&gt; i &lt;strong&gt;5&lt;/strong&gt; saniye kadar geciktiren bir fonksiyon &amp;ccedil;ağrısı daha yapılmıştır. Buna g&amp;ouml;re &amp;ccedil;alışma zamanında aşağıdakine benzer bir sonucun alındığı g&amp;ouml;r&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/asynwa_4.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="asynwa_4" src="/pics/asynwa_4_thumb.png" alt="asynwa_4" width="462" height="133" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Normal şartlarda sayfanın yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml;n&amp;uuml; d&amp;uuml;ş&amp;uuml;nd&amp;uuml;ğ&amp;uuml;m&amp;uuml;zde, senkron yapılan bir işleyiş de servis tarafındaki 5 saniyelik gecikme ve i&amp;ccedil;erideki DoSomething &amp;uuml;zerinden gelen 5 saniyelik gecikme sonrası en az 10 saniyelik bir işlem s&amp;uuml;resi olması gerekmektedir. Aslında b&amp;ouml;yledir de &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_114.png" alt="Winking smile" /&gt; Eğer sayfanın &lt;strong&gt;Trace&lt;/strong&gt; modunu a&amp;ccedil;arsak aşağıdaki &lt;strong&gt;Trace Information &lt;/strong&gt;sonu&amp;ccedil;ları ile karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/asynwa_5.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="asynwa_5" src="/pics/asynwa_5_thumb.png" alt="asynwa_5" width="620" height="606" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere sayfanın render edilme s&amp;uuml;resi yine &lt;strong&gt;11&lt;/strong&gt; saniyeler civarındadır. Yaklaşık 5 saniyelik servis &amp;ccedil;ağrı s&amp;uuml;resi + 5 saniyelik DoSomething s&amp;uuml;resi. Peki biz neyi başarmış olduk? &lt;img class="wlEmoticon wlEmoticon-openmouthedsmile" style="border-style: none;" src="/pics/wlEmoticon-openmouthedsmile_31.png" alt="Open-mouthed smile" /&gt;&lt;/p&gt;
+&lt;p&gt;Başarılan, servis &amp;ccedil;ağrısının sayfanın yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml; i&amp;ccedil;erisinde asenkron olarak ger&amp;ccedil;ekleştirilebilmesidir &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_114.png" alt="Winking smile" /&gt;&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Bu makalemizde bir&lt;strong&gt; ASP.Net Web API&lt;/strong&gt; servisinin, bir Web uygulaması i&amp;ccedil;erisinden asenkron olarak nasıl &amp;ccedil;ağırılabileceğini, &lt;strong&gt;.Net Framework 4.5 &lt;/strong&gt;ile birlikte gelen &lt;strong&gt;async&lt;/strong&gt; ve &lt;strong&gt;await&lt;/strong&gt; &lt;strong&gt;keyword'&lt;/strong&gt; lerini de işin i&amp;ccedil;erisine katarak değerlendirmeye &amp;ccedil;alıştık. Benim i&amp;ccedil;in de olduk&amp;ccedil;a yeni ve halen daha &amp;ouml;ğrenmeye &amp;ccedil;alıştığımı bir konu. &amp;Ouml;zellikle &lt;strong&gt;MVC(Model View Controller)&lt;/strong&gt; tabanlı &lt;strong&gt;Asp.Net &lt;/strong&gt;uygulamalarında bu asenkron &amp;ccedil;ağırımları nasıl değerlendirebileceğimizi de incelemeye &amp;ccedil;alışıyorum. Elde ettiğim bulguları ve &amp;ouml;ğrendiklerimi her zaman ki gibi bloğumda sizlerle paylaşıyor olacağım. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2012-11-14 00:00:00</pubDate>
+  <slug>AspNet-Web-APIleri-ASPXden-Asenkron-Cagirmak</slug>
+  <tags>
+    <tag>aspnet-web-api</tag>
+    <tag>net-framework-45</tag>
+    <tag>mvc</tag>
+    <tag>newtonsoft</tag>
+    <tag>jsonnet</tag>
+    <tag>task-parallel-library</tag>
+    <tag>async</tag>
+    <tag>await</tag>
+    <tag>asynchronous-programming</tag>
+    <tag>tpl</tag>
+  </tags>
+  <categories>
+    <category>.Net Framework 4.5</category>
+  </categories>
+</post>

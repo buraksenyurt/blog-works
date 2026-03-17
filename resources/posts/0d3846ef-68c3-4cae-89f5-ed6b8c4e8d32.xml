@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Entity Framework 6 – Code First için Convention Nedir?</title>
+  <description>Entity Framework alt yapısının sunduğu önemli yaklaşımlardan birisi de Code-First modelidir. Bu modele göre geliştiriciler, önce sınıfları basit POCO(Plain Old CLR Objects) tipler şeklinde tasarlar. Böylece Conceptual(Domain) Model oluşturulur. POCO tiplerinin tek başına tasarlanması elbette yeterli değildir. DbContext türevli bir sınıfında, model de kullanılması düşünülen POCO tiplerine ait koleksiyon bazlı özellikleri içeriyor olması gerekmektedir. Bu noktada DbSet&lt;T&gt; tipinden yararlanılır. Ayrıca tipler arasın ilişkileri betimleyen Navigation Property’ ler de tasarlanır.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/themask.jpg"&gt;&lt;img style="margin: 4px 0px; display: inline; float: right;" title="themask" src="/pics/themask_thumb.jpg" alt="themask" width="218" height="240" align="right" /&gt;&lt;/a&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Entity Framework&lt;/strong&gt; takımı aldı başını gidiyor. Kim durduracak onları. Onlarda &lt;strong&gt;The Mask&lt;/strong&gt; filmindeki karakter gibi &lt;strong&gt;&amp;ldquo;Somebody stop me!&amp;rdquo;&lt;/strong&gt;&amp;nbsp; demiyor ki &lt;img class="wlEmoticon wlEmoticon-justkidding" style="border-style: none;" src="/pics/wlEmoticon-justkidding.png" alt="Just kidding" /&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Aslında bakarsanız olaylar bana g&amp;ouml;re, Microsoft geliştirici takımlarının, diğer geliştiricilerin seslerini duymaya ve dikkate almaya başlamasından sonra epeyce gelişti.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Microsoft&lt;/strong&gt;&amp;rsquo; un &amp;ccedil;eşitli takımlarının a&amp;ccedil;tığı anketler sayesinde, geliştiricilerin talepleri dinleniyor, değerlendiriliyor ve kayda değer olanlar planlanıp peyder pey yeni s&amp;uuml;r&amp;uuml;mlere ilave ediliyor. Hatta takımların ortaya koyduğu &amp;ldquo;şu da olsa nasıl olur?&amp;rdquo; ruh halindeki &amp;ouml;ğeler de geliştiriciler tarafından oylanıyor ve aynı s&amp;uuml;rece dahil edilebiliyor.&lt;em&gt;(Bloğumdaki takip ettiklerim listesinde bir ka&amp;ccedil; survey adresini bulabilirsiniz)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Hal b&amp;ouml;yle olunca &amp;ccedil;ok doğal olarak bir s&amp;uuml;r&amp;uuml; s&amp;uuml;r&amp;uuml;m &amp;ccedil;ıkıyor ve var olanlar &amp;ccedil;abucak eskiyor. Takip edilmesi zor olan ve &amp;ouml;zellikle &lt;strong&gt;Enterprise&lt;/strong&gt; seviyede ki projelerde &amp;ldquo;&lt;strong&gt;acaba bu teknolojiyi kullanabilir miyiz?&amp;rdquo;&lt;/strong&gt; gibi soruların doğmasına ve ne yazık ki negatif olarak yanıtlanmasına neden olabilecek bir durum bu. Fakat biz yine de &amp;uuml;st&amp;uuml;m&amp;uuml;ze d&amp;uuml;şen g&amp;ouml;revi yapalım ve gerekli anlatımımızı icra ederek &amp;ouml;ğrendiklerimizi sizlerle paylaşalım. &amp;Ouml;yleyse başlayalım &lt;img class="wlEmoticon wlEmoticon-smile" style="border-style: none;" src="/pics/wlEmoticon-smile_74.png" alt="Smile" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="color: #ff0000;"&gt;[Makalede yazılanlar Entity Framework 6 Alpha 2 s&amp;uuml;r&amp;uuml;m&amp;uuml;n&amp;uuml; baz almaktadır]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Entity Framework&lt;/strong&gt; alt yapısının sunduğu &amp;ouml;nemli yaklaşımlardan birisi de &lt;strong&gt;Code-First&lt;/strong&gt; modelidir. Bu modele g&amp;ouml;re geliştiriciler, &amp;ouml;nce sınıfları basit &lt;strong&gt;POCO&lt;/strong&gt;&lt;em&gt;(Plain Old CLR Objects)&lt;/em&gt; tipler şeklinde tasarlar. B&amp;ouml;ylece &lt;strong&gt;Conceptual(Domain) Model&lt;/strong&gt; oluşturulur. &lt;strong&gt;POCO&lt;/strong&gt; tiplerinin tek başına tasarlanması elbette yeterli değildir. &lt;strong&gt;DbContext&lt;/strong&gt; t&amp;uuml;revli bir sınıfında, model de kullanılması d&amp;uuml;ş&amp;uuml;n&amp;uuml;len &lt;strong&gt;POCO&lt;/strong&gt; tiplerine ait koleksiyon bazlı &amp;ouml;zellikleri i&amp;ccedil;eriyor olması gerekmektedir. Bu noktada &lt;strong&gt;DbSet&amp;lt;T&amp;gt;&lt;/strong&gt; tipinden yararlanılır. Ayrıca tipler arasın ilişkileri betimleyen &lt;strong&gt;Navigation Property&lt;/strong&gt;&amp;rsquo; ler de tasarlanır.&lt;/p&gt;
+&lt;p&gt;Sonrasında ise &lt;strong&gt;Entity Framework&lt;/strong&gt; ilgili &lt;strong&gt;Context&lt;/strong&gt; tipinden yararlanarak &amp;ccedil;alışma zamanında gerekli veritabanı &amp;uuml;retimini icra eder. Peki hi&amp;ccedil; şu soru aklınıza geldi mi;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Bu &amp;uuml;retim işlemi sırasında tablolar hangi kuralar g&amp;ouml;re oluşur, hangi alan Primary Key kabul edilir, tablolar arasındaki ilişkiler(Relations) nasıl belirlenir vb. &lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;İşte bu yazımızda bu soruya biraz daha a&amp;ccedil;ıklık getirmeye &amp;ccedil;alışıyor olacağız.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Code First&lt;/strong&gt; yaklaşımında, veritabanı tarafının &amp;uuml;retilmesi aşamasında devreye girmekte olan bir takım kurallar b&amp;uuml;t&amp;uuml;n&amp;uuml; bulunmaktadır. &lt;strong&gt;Convention&lt;/strong&gt; olarak adlandırılan bu kurallar b&amp;uuml;t&amp;uuml;n&amp;uuml; aslında &lt;strong&gt;System.Data.Entity.ModelConfiguration.Conventions&lt;/strong&gt; isim alanı altında yer alan bazı tipler yardımıyla ifade edilmektedir. &lt;em&gt;(Entity Framework 5.0 s&amp;uuml;r&amp;uuml;m&amp;uuml; i&amp;ccedil;in ilgili isim alanında(namespace) yer alan tipleri &lt;/em&gt;&lt;a href="http://msdn.microsoft.com/en-us/library/system.data.entity.modelconfiguration.conventions(v=vs.103).aspx" target="_blank"&gt;&lt;em&gt;bu adresten inceleyebilirsiniz&lt;/em&gt;&lt;/a&gt;&lt;em&gt;)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Burada pek &amp;ccedil;ok &lt;strong&gt;Convention&lt;/strong&gt; tipi yer almaktadır. İlk olarak bu basit &lt;strong&gt;Convention&lt;/strong&gt; tiplerinden bazılarını kavramsal olarak incelemeye &amp;ccedil;alışalım. Bu ama&amp;ccedil;la aşağıdaki basit i&amp;ccedil;eriğe sahip olduğumuz bir &amp;ouml;rnek &amp;uuml;zerinden ilerleyebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/efcon_2.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="efcon_2" src="/pics/efcon_2_thumb.png" alt="efcon_2" width="313" height="463" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Collections.Generic; 
+using System.Data.Entity;
+
+namespace HowTo_EFCodeFirstConvetions 
+{ 
+    public class AzonBookShop 
+       :DbContext 
+    { 
+        public DbSet&amp;lt;Book&amp;gt; Books { get; set; } 
+        public DbSet&amp;lt;Category&amp;gt; Categories { get; set; }
+
+        static AzonBookShop() 
+        { 
+            Database.SetInitializer(new DropCreateDatabaseIfModelChanges&amp;lt;AzonBookShop&amp;gt;()); 
+        } 
+    }
+
+    public class Category 
+    { 
+        public Guid ID { get; set; } 
+        public string Name { get; set; } 
+        public virtual ICollection&amp;lt;Book&amp;gt; Books { get; set; } 
+    }
+
+    public class Book 
+    { 
+        public int BookID { get; set; } 
+        public string Title { get; set; } 
+        public decimal ListPrice { get; set; } 
+        public virtual Category Category { get; set; } 
+        public int CategoryId { get; set; } 
+    } 
+}&lt;/pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;Ouml;rnek &amp;uuml;zerinde ilerlerken modeli sık&amp;ccedil;a değiştireceğimizden, static yapıcı metod&lt;em&gt;(Constructor)&lt;/em&gt; i&amp;ccedil;erisinde bir strateji se&amp;ccedil;erek, Initialize sırasında eğer model de bir değişiklik olmuşsa Drop işlemlerinin uygulanması gerektiği belirtilmiştir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Şimdi bu modele g&amp;ouml;re &amp;uuml;retilen veritabanı şemasını ş&amp;ouml;yle kısaca bir inceleyelim dilerseniz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/efcon_1.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="efcon_1" src="/pics/efcon_1_thumb.png" alt="efcon_1" width="490" height="442" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;Categories&lt;/strong&gt; ve &lt;strong&gt;Books&lt;/strong&gt; isimli iki tablo &amp;uuml;retilmiştir. Her iki tabloda birer &lt;strong&gt;Primary Key&lt;/strong&gt; alan bulunmaktadır. İşte burada &lt;strong&gt;Primary Key Convention&lt;/strong&gt; kural k&amp;uuml;mesi devreye girmektedir. Bu kural setine g&amp;ouml;re, &lt;strong&gt;Guid&lt;/strong&gt; veya &lt;strong&gt;int&lt;/strong&gt; tipinden olup adı &lt;strong&gt;ID&lt;/strong&gt; veya &lt;strong&gt;[SınıfAdı][Id]&lt;/strong&gt; notasyonunda olan &amp;ouml;zellikler, veritabanı şemasında birer &lt;strong&gt;Identity&lt;/strong&gt; alan olarak &amp;uuml;retilecek ve hatta &lt;strong&gt;Primary Key&lt;/strong&gt; şeklinde işaretleneceklerdir.&lt;/p&gt;
+&lt;p&gt;Senaryomuza &lt;strong&gt;Class&lt;/strong&gt; seviyesinde baktığımızda, bir kategorinin altında birden fazla kitabın yer alabileceği g&amp;ouml;r&amp;uuml;lmektedir. Nesneler arası kurulan bu &lt;strong&gt;ilişkiyi&lt;em&gt;(association)&lt;/em&gt;&lt;/strong&gt;&amp;nbsp; tanımlamak adına &lt;strong&gt;Category&lt;/strong&gt; sınıfı i&amp;ccedil;erisinde &lt;strong&gt;ICollection&amp;lt;Book&amp;gt;&lt;/strong&gt; tipinden bir &amp;ouml;zellik kullanılmıştır. Bunun karşılığı olarak veritabanı şemasında g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere iki tablo arasında bir &lt;strong&gt;relation&lt;/strong&gt; kurulmuştur. Bu ilişki, &lt;strong&gt;Categories&lt;/strong&gt; tablosundan &lt;strong&gt;Books&lt;/strong&gt; tablosuna doğru &lt;strong&gt;one-to-many&lt;/strong&gt; olacak şekildedir. Burada ise &lt;strong&gt;Relation&lt;/strong&gt; &lt;strong&gt;Convention&lt;/strong&gt; kuralları devreye girmektedir.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rnekte kasıtlı olarak &lt;strong&gt;Book&lt;/strong&gt; sınıfı i&amp;ccedil;erisidne &lt;strong&gt;CategoryId&lt;/strong&gt; isimli ayrı bir &amp;ouml;zellik daha tanımlanmıştır. Mantıksal olarak bu &amp;ouml;zellik bir kitabın bağlı olduğu &lt;strong&gt;Category&lt;/strong&gt; tipini işaret etmek &amp;uuml;zere planlanmıştır. Ancak &lt;strong&gt;Relation&lt;/strong&gt; &lt;strong&gt;Convention&lt;/strong&gt; kurallarına g&amp;ouml;re isimlendirme de bir sorun vardır. &lt;strong&gt;Category&lt;/strong&gt; tablosunun &lt;strong&gt;Identity&lt;/strong&gt; şeklindeki &lt;strong&gt;Primary Key&lt;/strong&gt; alanı &lt;strong&gt;ID&lt;/strong&gt; olarak belirlenmiştir. Bu sebepten tablo şemasına bakıldığında &lt;strong&gt;Category_ID&lt;/strong&gt; isimli bir alanın daha eklendiği ve iki tablo arasındaki bire &amp;ccedil;ok ilişkinin, bu alan &amp;uuml;zerinden sağlandığı g&amp;ouml;r&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/efcon_3.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="efcon_3" src="/pics/efcon_3_thumb.png" alt="efcon_3" width="570" height="490" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;USE [AzonBookShop] 
+GO
+
+ALTER TABLE [dbo].[Books]  WITH CHECK ADD  CONSTRAINT [FK_dbo.Books_dbo.Categories_Category_ID] FOREIGN KEY([Category_ID]) 
+REFERENCES [dbo].[Categories] ([ID]) 
+GO
+
+ALTER TABLE [dbo].[Books] CHECK CONSTRAINT [FK_dbo.Books_dbo.Categories_Category_ID] 
+GO&lt;/pre&gt;
+&lt;p&gt;Relation ile ilişkili SQL script&amp;rsquo; i i&amp;ccedil;inde de g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;Books&lt;/strong&gt; tablosunda yer alan &lt;strong&gt;Category_ID&lt;/strong&gt; &lt;strong&gt;ForeignKey&lt;/strong&gt; olarak belirlenmiş ve &lt;strong&gt;Books&lt;/strong&gt; tablosundaki &lt;strong&gt;ID&lt;/strong&gt; alanına bağlanmıştır.&lt;/p&gt;
+&lt;p&gt;Şimdi dilerseniz &amp;ouml;rneğimizi biraz daha genişletelim ve Context i&amp;ccedil;in aşağıdaki sınıf &amp;ccedil;izelgesinde yer alan &lt;strong&gt;POCO&lt;/strong&gt; tipini eklediğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/efcon_5.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="efcon_5" src="/pics/efcon_5_thumb.png" alt="efcon_5" width="488" height="486" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public class Book 
+{ 
+    public int BookID { get; set; } 
+    public string Title { get; set; } 
+    public decimal ListPrice { get; set; } 
+    public virtual Category Category { get; set; } 
+    //public int CategoryId { get; set; } 
+    public Detail BookDetail { get; set; } 
+}
+
+public class Detail 
+{ 
+    public int PageSize { get; set; } 
+    public double Weight { get; set; } 
+    public bool HardCover { get; set; } 
+    public string Language { get; set; } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Book&lt;/strong&gt; sınıfına &lt;strong&gt;Detail&lt;/strong&gt; tipinden &lt;strong&gt;BookDetail&lt;/strong&gt; isimli bir &amp;ouml;zellik eklenmiştir. &lt;strong&gt;Detail&lt;/strong&gt; sınıfının dikkat &amp;ccedil;ekici &amp;ouml;zelliği ise &lt;strong&gt;Primary&lt;/strong&gt; &lt;strong&gt;Key&lt;/strong&gt; &lt;strong&gt;Convention&lt;/strong&gt; kuralına uygun bir &amp;ouml;zellik i&amp;ccedil;ermiyor olmasıdır. Bu durumuda &lt;strong&gt;Complex Type Convention&lt;/strong&gt; kural seti devreye girecektir ve veritabanı tarafında aşağıdaki sonu&amp;ccedil;ların oluşmasına neden olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/efcon_4.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="efcon_4" src="/pics/efcon_4_thumb.png" alt="efcon_4" width="371" height="453" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;Detail&lt;/strong&gt; sınıfının &amp;ouml;zellikleri, &lt;strong&gt;Book&lt;/strong&gt; tablosu i&amp;ccedil;erisinde birer alan&lt;em&gt;(Field)&lt;/em&gt; haline getirilmiştir.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rnekte, makinede y&amp;uuml;kl&amp;uuml; olan &lt;strong&gt;SQL 2008&lt;/strong&gt; sunucusu kullanılmıştır. Bu nedenle &lt;strong&gt;app.config&lt;/strong&gt; dosyası i&amp;ccedil;erisinde aşağıdakine benzer bir &lt;strong&gt;ConnectionString&lt;/strong&gt; bilgisi yer almaktadır. &lt;strong&gt;name&lt;/strong&gt; niteliğinin değerinin &lt;strong&gt;Context&lt;/strong&gt; sınıf adı ile aynı olması &amp;ouml;nemlidir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;connectionStrings&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;add name="AzonBookShop" connectionString="data source=.;database=AzonBookShop;integrated security=SSPI" providerName="System.Data.SqlClient"/&amp;gt; 
+&amp;lt;/connectionStrings&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Bu noktada aslında &lt;strong&gt;Connection String Convention&lt;/strong&gt; kural seti devreye girmektedir. Bu kural setinin veritabanı şemasını oluştururken baktığı yerlerden birisi, &lt;strong&gt;config&lt;/strong&gt; dosyasındaki &lt;strong&gt;connectionStrings&lt;/strong&gt; elementi i&amp;ccedil;eriğidir. Eğer &lt;strong&gt;name&lt;/strong&gt; &amp;ouml;zelliğinin değeri ile &lt;strong&gt;DbContext&lt;/strong&gt; t&amp;uuml;revli &lt;strong&gt;Context&lt;/strong&gt; tipinin adı eşlenirse, o elemente ait &lt;strong&gt;Connection&lt;/strong&gt; bilgisi kullanılaraktan bir şema &amp;uuml;retimi ger&amp;ccedil;ekleştirilecektir.&lt;/p&gt;
+&lt;h2&gt;&lt;strong&gt;&amp;Ouml;tesi&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;Buraya kadar anlatmaya &amp;ccedil;alıştığımız &lt;strong&gt;Convention&lt;/strong&gt; kural setlerinin daha pek &amp;ccedil;ok &amp;ouml;zelliği bulunmaktadır.&lt;strong&gt; Data Annotations&lt;/strong&gt; ve &lt;strong&gt;Fluent API&lt;/strong&gt; kullanımı gibi durumlarda ilgili &lt;strong&gt;Convention&lt;/strong&gt; kural k&amp;uuml;melerinin ezilmesi vb m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. İstenirse bir &lt;strong&gt;Convention&lt;/strong&gt; kural seti devre dışı bırakılabilir de. Bunun i&amp;ccedil;in &lt;strong&gt;DbContext&lt;/strong&gt; &amp;uuml;zerinden gelen &lt;strong&gt;OnModelCreating&lt;/strong&gt; metodunun ezilmesi ve i&amp;ccedil;erisinde aşağıdakine benzer bir kodun kullanılması yeterlidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Collections.Generic; 
+using System.Data.Entity; 
+using System.Data.Entity.ModelConfiguration.Conventions;
+
+namespace HowTo_EFCodeFirstConvetions 
+{ 
+    public class AzonBookShop 
+        :DbContext 
+    { 
+        public DbSet&amp;lt;Book&amp;gt; Books { get; set; } 
+        public DbSet&amp;lt;Category&amp;gt; Categories { get; set; }
+
+        static AzonBookShop() 
+        { 
+            Database.SetInitializer(new DropCreateDatabaseIfModelChanges&amp;lt;AzonBookShop&amp;gt;()); 
+        }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder) 
+        { 
+            modelBuilder.Conventions.Remove&amp;lt;PluralizingTableNameConvention&amp;gt;(); 
+        } 
+    } 
+    ...&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;modelBuilder&lt;/strong&gt; tipi &amp;uuml;zerinden &lt;strong&gt;Conventions&lt;/strong&gt; &amp;ouml;zelliği ile &lt;strong&gt;Remove&lt;/strong&gt; metoduna erişilmekte ve &lt;strong&gt;PluralizingTableNameConvention&lt;/strong&gt; sınıfı generic parametre olarak belirtilmektedir. &amp;Ouml;rneğimizin &amp;ouml;nceki kısımlarında veritabanı tarafında &amp;uuml;retilen tablo adları mutlaka dikkatinizi &amp;ccedil;ekmiştir. &amp;Ccedil;oğul isimlendirme kuralına g&amp;ouml;re &amp;uuml;retilmişlerdir. Ancak &lt;strong&gt;OnModelCreating&lt;/strong&gt; i&amp;ccedil;erisinden bu kural setini kaldırmamız, tablo adlarının sınıf adları olarak tanımlanmasını sağlamaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/efcon_6.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="efcon_6" src="/pics/efcon_6_thumb.png" alt="efcon_6" width="178" height="232" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Peki, &lt;strong&gt;Convention&lt;/strong&gt; kuralları ile ilişkili olarak daha başka neler yapabiliriz? &amp;Ouml;zellikle bunları manuel olarak ele abilir miyiz? Var olan Convention kurallarını ge&amp;ccedil;ersiz kılarak kendi istediğimiz ayarların devreye girmesini nasıl sağlarız?&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Convetion&lt;/strong&gt; kurallarını manuel olarak ele almanın bir ka&amp;ccedil; yolu bulunmaktadır. Bunlardan birisi &lt;strong&gt;Lightweight&lt;/strong&gt; modelidir. Bu modelde &amp;ouml;nce bir filtreleme işlemi yapılır ve işlem sonucuna g&amp;ouml;re konfigurasyonun değiştirilerek uygulanması sağlanır. &amp;Ouml;rneğin modelimizde yer alan &lt;strong&gt;Category&lt;/strong&gt; sınıfının i&amp;ccedil;eriğini aşağıdaki gibi değiştirdiğimiz d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public class Category 
+{ 
+	public Guid Signature { get; set; } 
+	public string Name { get; set; } 
+	public virtual ICollection&amp;lt;Book&amp;gt; Books { get; set; } 
+}&lt;/pre&gt;
+&lt;p&gt;Burada &lt;strong&gt;ID&lt;/strong&gt; isimli &amp;ouml;zelliğin &lt;strong&gt;Signature&lt;/strong&gt; olarak değiştirildiği g&amp;ouml;r&amp;uuml;lmektedir. Bu değişiklik nedeniyle pek tabi &lt;strong&gt;Primary&lt;/strong&gt; &lt;strong&gt;Key&lt;/strong&gt; &lt;strong&gt;Convention&lt;/strong&gt; kural seti &lt;span style="text-decoration: underline;"&gt;uygulanamayacaktır&lt;/span&gt;. Daha da k&amp;ouml;t&amp;uuml;s&amp;uuml;, senaryomuz gereği &lt;strong&gt;Category&lt;/strong&gt; ile &lt;strong&gt;Book&lt;/strong&gt; arasında bir &lt;strong&gt;relation&lt;/strong&gt; tesis edilebilmesi i&amp;ccedil;in gerekli &lt;strong&gt;Foreign&lt;/strong&gt; &lt;strong&gt;Key&lt;/strong&gt; bulunamayacak ve &amp;ccedil;alışma zamanında aşağıdaki &lt;strong&gt;Exception&lt;/strong&gt; ile karşılaşılacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/efcon_7.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="efcon_7" src="/pics/efcon_7_thumb.png" alt="efcon_7" width="582" height="317" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;İşte bu noktada &lt;strong&gt;Lightweight&lt;/strong&gt; &lt;strong&gt;Convention&lt;/strong&gt; tekniği ile durum &amp;ccedil;&amp;ouml;z&amp;uuml;mlenebilir. Bunun i&amp;ccedil;in yine &lt;strong&gt;OnModelCreating&lt;/strong&gt; i&amp;ccedil;erisinde bazı işlemler yapılması gerekmektedir. Aynen aşağıda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;S&amp;ouml;z konusu kodda yer alan Properties &amp;ouml;zelliği EF 6.0 Alpha 2 s&amp;uuml;r&amp;uuml;m&amp;uuml;nde duyurulmuştur. Dolayısıyla bundan sonraki kodlar i&amp;ccedil;in g&amp;uuml;ncel PreRelease s&amp;uuml;r&amp;uuml;m&amp;uuml;n&amp;uuml; kurarak devam etmelisiniz. Kurulum i&amp;ccedil;in&amp;nbsp; &lt;a href="http://msdn.microsoft.com/en-us/data/ee712906" target="_blank"&gt;şuradaki adresten&lt;/a&gt; yararlanabilirsiniz&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;protected override void OnModelCreating(DbModelBuilder modelBuilder) 
+{ 
+    modelBuilder.Conventions.Remove&amp;lt;PluralizingTableNameConvention&amp;gt;(); 
+    modelBuilder 
+        .Properties() 
+        .Where(p =&amp;gt; p.Name.Contains("Signature")) 
+        .Configure(p =&amp;gt; p.IsKey()); 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;modelBuilder&lt;/strong&gt; &amp;uuml;zerinden &lt;strong&gt;Properties&lt;/strong&gt; metodu kullanılarak, &lt;strong&gt;Entity&lt;/strong&gt;' deki &amp;ouml;zellikler arasında &lt;strong&gt;Signature&lt;/strong&gt; kelimesini i&amp;ccedil;eren bir tane olup olmadığına bakılmakta ve eğer var ise &lt;strong&gt;IsKey&lt;/strong&gt; metodu &amp;ccedil;ağrısı ile bunun bir &lt;strong&gt;Identity&lt;/strong&gt; alan olması gerektiği&lt;em&gt;(bir başka deyişle Primary Key Convention kurallarının uygulanması gerektiği)&lt;/em&gt; vurgulanmaktadır. Buna g&amp;ouml;re &amp;ccedil;alışma zamanı sonucunda veritabanı tarafında aşağıdaki şemanın &amp;uuml;retildiği g&amp;ouml;zlemlenecektir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/efcon_8.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="efcon_8" src="/pics/efcon_8_thumb.png" alt="efcon_8" width="401" height="457" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Convention&lt;/strong&gt; &amp;ccedil;eşitlerinden bir diğeri de &lt;strong&gt;Model-Based&lt;/strong&gt; olan versiyondur. Bu teknikte doğrudan model ile &amp;ccedil;alışma ve ayarlama şansına sahip oluruz. İlgili tekniği uygulayabilmek i&amp;ccedil;in &lt;strong&gt;IEdmConvention&lt;/strong&gt;, &lt;strong&gt;IDbConvention&lt;/strong&gt; ve &lt;strong&gt;IDbMappingConvention&lt;/strong&gt; &lt;strong&gt;aray&amp;uuml;zlerini&lt;em&gt;(interface)&lt;/em&gt;&lt;/strong&gt; implemente eden sınıflardan yararlanırız. Aşağıdaki basit &amp;ouml;rneği g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/efcon_10.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="efcon_10" src="/pics/efcon_10_thumb.png" alt="efcon_10" width="402" height="135" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Data.Entity.Core.Metadata.Edm; 
+using System.Data.Entity.ModelConfiguration.Conventions;
+
+namespace HowTo_EFCodeFirstConvetions 
+{ 
+    public class StringLengthConversion 
+        : IEdmConvention&amp;lt;EdmProperty&amp;gt; 
+    { 
+        public void Apply(EdmProperty edmDataModelItem, EdmModel model) 
+        { 
+            if (edmDataModelItem.PrimitiveType.PrimitiveTypeKind == PrimitiveTypeKind.String) 
+                edmDataModelItem.MaxLength = 200; 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;IEdmConvention&amp;lt;EdmProperty&amp;gt;&lt;/strong&gt; &lt;strong&gt;interface'&lt;/strong&gt; ini implemente eden &lt;strong&gt;StringLengthConversion&lt;/strong&gt; sınıfı &lt;strong&gt;Apply&lt;/strong&gt; metodunu uygulamaktadır. Bu metodun i&amp;ccedil;erisinde, &lt;strong&gt;edmDataModelItem&lt;/strong&gt; isimli değişkenin &lt;strong&gt;String&lt;/strong&gt; tipi olup olmadığına bakılmakta ve eğer &amp;ouml;yleyse &lt;strong&gt;Max&lt;/strong&gt; &lt;strong&gt;Length&lt;/strong&gt; değeri &lt;strong&gt;200&lt;/strong&gt; karakter ile sınırlandırılmaktadır.&lt;/p&gt;
+&lt;p&gt;Bu işlem pek tabi &lt;strong&gt;Model&lt;/strong&gt; i&amp;ccedil;erisinde yer alan ne kadar &lt;strong&gt;String&lt;/strong&gt; tipte &amp;ouml;ğe var ise ge&amp;ccedil;erli olacktır. Tabi s&amp;ouml;z konusu sınıfın devreye girebilmesi i&amp;ccedil;in yine &lt;strong&gt;OnModelCreating&lt;/strong&gt; i&amp;ccedil;erisine m&amp;uuml;dahale edilmelidir. Aşağıdaki kod par&amp;ccedil;asında g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;protected override void OnModelCreating(DbModelBuilder modelBuilder) 
+{ 
+    modelBuilder.Conventions.Remove&amp;lt;PluralizingTableNameConvention&amp;gt;(); 
+    modelBuilder 
+        .Properties() 
+        .Where(p =&amp;gt; p.Name.Contains("Signature")) 
+        .Configure(p =&amp;gt; p.IsKey()); 
+    modelBuilder 
+    .Conventions 
+    .AddBefore&amp;lt;StringLengthAttributeConvention&amp;gt;(new StringLengthConversion()); 
+}&lt;/pre&gt;
+&lt;p&gt;Bu işlem sonucunda veritabanı şemasında aşağıdaki sonu&amp;ccedil;ların oluştuğu g&amp;ouml;zlemlenecektir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/efcon_9.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="efcon_9" src="/pics/efcon_9_thumb.png" alt="efcon_9" width="356" height="447" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Bir başka &lt;strong&gt;Convention&lt;/strong&gt; modeli ise &lt;strong&gt;Configuration&lt;/strong&gt; tabanlı olanıdır. Bu teknikte &lt;strong&gt;IConfigurationConvention&lt;/strong&gt; &lt;strong&gt;aray&amp;uuml;z&amp;uuml;n&amp;uuml;n(intercace)&lt;/strong&gt; implenente edildiği bir sınıfın devreye girerek &lt;strong&gt;Convention&lt;/strong&gt; kurallarına m&amp;uuml;dahale etmesi s&amp;ouml;z konusudur. Aşağıdaki &amp;ouml;rnek sınıfı g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/efcon_11.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="efcon_11" src="/pics/efcon_11_thumb.png" alt="efcon_11" width="518" height="132" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Data.Entity.ModelConfiguration.Configuration.Properties.Primitive; 
+using System.Data.Entity.ModelConfiguration.Conventions; 
+using System.Reflection;
+
+namespace HowTo_EFCodeFirstConvetions 
+{ 
+    public class StringColumnTypeConvention 
+        :IConfigurationConvention&amp;lt;PropertyInfo,StringPropertyConfiguration&amp;gt; 
+    { 
+        public void Apply(PropertyInfo memberInfo 
+           , Func&amp;lt;StringPropertyConfiguration&amp;gt; configuration) 
+        { 
+           if (configuration().ColumnType == null) 
+            { 
+                configuration().ColumnType = "nvarchar"; 
+                configuration().IsNullable = false; 
+                configuration().MaxLength = 50; 
+            } 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;ncelikli olarak ColumnType &amp;ouml;zelliğinin değerinin null olup olmadığın bakılmaktadır. Bu işlem, ilgili alanın daha &amp;ouml;nceden oluşturulup oluşturulmadığını da işaret etmektedir. Pek tabi &lt;strong&gt;Convention&lt;/strong&gt; kurallarının devreye girebilmesi i&amp;ccedil;in yine &lt;strong&gt;OnModelCreating&lt;/strong&gt; metoduna bir m&amp;uuml;dahale de bulunmak gerekmektedir. Aşağıdaki kod par&amp;ccedil;asında bu durumu g&amp;ouml;rebilirsiniz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;protected override void OnModelCreating(DbModelBuilder modelBuilder) 
+{ 
+    modelBuilder.Conventions.Remove&amp;lt;PluralizingTableNameConvention&amp;gt;(); 
+    modelBuilder 
+        .Properties() 
+        .Where(p =&amp;gt; p.Name.Contains("Signature")) 
+        .Configure(p =&amp;gt; p.IsKey());
+
+    modelBuilder.Conventions.Add&amp;lt;StringColumnTypeConvention&amp;gt;(); 
+}&lt;/pre&gt;
+&lt;p&gt;Bu işlem sonrasında veri tabanı şemasının aşağıdaki gibi &amp;uuml;retildiği g&amp;ouml;r&amp;uuml;lecektir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/efcon_12.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="efcon_12" src="/pics/efcon_12_thumb.png" alt="efcon_12" width="357" height="377" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;String&lt;/strong&gt; &amp;ouml;zelliklerin karşılığı olarak &lt;strong&gt;nvarchar&lt;/strong&gt; tipinde olan, &lt;strong&gt;null&lt;/strong&gt; değer i&amp;ccedil;eremeyen ve &lt;strong&gt;maksimum 50&lt;/strong&gt; karakter uzunluğunda i&amp;ccedil;erik tutabilen alanlar &amp;uuml;retilmiştir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Code First&lt;/strong&gt; yaklaşımında &lt;strong&gt;Convention&lt;/strong&gt; kullanımı ile ilişkili olarak daha ileri seviye uygulamalar da mevcuttur. S&amp;ouml;z gelimi Custom Attribute&amp;rsquo; lar le yeni Convention kural setleri tanımlanabilir. &amp;Ouml;zellikle LightWeight modelinde kullanılabilecek epey fazla fonksiyonllik bulunmaktadır. Bu konuda &lt;a href="http://msdn.microsoft.com/en-us/data/jj819164" target="_blank"&gt;şu adresteki&lt;/a&gt; yazının son kısımlarını da değerlendirebilir ve kendi denemelerinizi yaparak konuyu irdelemeye &amp;ccedil;alışabilirsiniz. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_162.png" alt="Winking smile" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="color: #ff0000;"&gt;[Makalede yazılanlar Entity Framework 6 Alpha 2 s&amp;uuml;r&amp;uuml;m&amp;uuml;n&amp;uuml; baz almaktadır]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2012%2f12%2fHowTo_EFCodeFirstConvetions.zip"&gt;HowTo_EFCodeFirstConvetions.zip (2,14 mb)&lt;/a&gt;&lt;em&gt;&amp;nbsp;(Dosya boyutunun b&amp;uuml;y&amp;uuml;memesi i&amp;ccedil;in Packages klas&amp;ouml;r&amp;uuml; &amp;ccedil;ıkartılmıştır. EF' in 6ncı s&amp;uuml;r&amp;uuml;m&amp;uuml;n&amp;uuml; projeye indirmeniz gerekebilir)&lt;/em&gt;&lt;/p&gt;</content>
+  <pubDate>2012-12-12 05:15:00</pubDate>
+  <slug>Entity-Framework-6-Code-First-Convention</slug>
+  <tags>
+    <tag>entity-framework</tag>
+    <tag>entity-framework-60</tag>
+    <tag>dbcontent</tag>
+    <tag>convention</tag>
+    <tag>fluent-api</tag>
+    <tag>dbset</tag>
+    <tag>navigationproperty</tag>
+    <tag>primary-key-convention</tag>
+    <tag>relation-convention</tag>
+    <tag>complex-type-convention</tag>
+    <tag>connection-string-convention</tag>
+    <tag>lightweight-convention-model</tag>
+    <tag>model-based-convention</tag>
+    <tag>configuration-based-covention</tag>
+    <tag>iedmconvention</tag>
+    <tag>idbconvention</tag>
+    <tag>idbmappingconvention</tag>
+  </tags>
+  <categories>
+    <category>Entity Framework</category>
+  </categories>
+</post>

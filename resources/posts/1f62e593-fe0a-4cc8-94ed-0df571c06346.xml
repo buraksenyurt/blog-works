@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WF Rule Engine’ i Dışarıdan Kullanmak</title>
+  <description>Hangi sektörde olunursa olunsun, işler ister kağıt üstünde, ister elektronik ortamda yürüsün, iş süreçleri kendi içerisinde tanımlı bir çok kural kümesi içerir. İş bu kural kümeleri, gerekli durumlarda doğal yollarla sistemin bir parçası olarak ya da yürütme usulü ile manuel olarak devreye girerek, sürecin şekillenmesi ve bir takım aksiyonların alınması noktasında önemli rol üstlenirler. Biz geliştiricilerde, iş akışı mantığına dayalı sistemleri tasarladığımız durumlarda bu kural kümelerinin esnekliklerine sahip olmak isteriz. Bu Biztalk, Sharepoint, TIBCO vb iş akışı modellerini içeren gelişmiş ürünlerde çoğu zaman karşımıza çıkmaktadır.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/mfln2687l.jpg"&gt;&lt;img style="margin: 4px 0px; display: inline; float: right;" title="mfln2687l" src="/pics/mfln2687l_thumb.jpg" alt="mfln2687l" width="280" height="233" align="right" /&gt;&lt;/a&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Kurallar, kurallar, kurallar!Hayatın hemen her noktasında karşımıza tonlarca kural &amp;ccedil;ıkar. Tabi mevzumuz kuralların zorlayıcılığı ve saire değil, kuralların ihlal edilmesi veya uyulması halinde ger&amp;ccedil;ekleşen aksiyonların neler olduğu ile ilgilidir. Ki bu d&amp;uuml;ş&amp;uuml;nce tarzı aslına bakarsanız iş d&amp;uuml;nyasının &amp;ccedil;ekirdek s&amp;uuml;re&amp;ccedil;lerinden tutun, en ince ve hatta u&amp;ccedil; noktalarına kadar yayılır.&lt;/p&gt;
+&lt;p&gt;Hangi sekt&amp;ouml;rde olunursa olunsun, işler ister kağıt &amp;uuml;st&amp;uuml;nde, ister elektronik ortamda y&amp;uuml;r&amp;uuml;s&amp;uuml;n, iş s&amp;uuml;re&amp;ccedil;leri kendi i&amp;ccedil;erisinde tanımlı bir &amp;ccedil;ok kural k&amp;uuml;mesi i&amp;ccedil;erir. İş bu kural k&amp;uuml;meleri, gerekli durumlarda doğal yollarla sistemin bir par&amp;ccedil;ası olarak ya da y&amp;uuml;r&amp;uuml;tme usul&amp;uuml; ile manuel olarak devreye girerek, s&amp;uuml;recin şekillenmesi ve bir takım aksiyonların alınması noktasında &amp;ouml;nemli rol &amp;uuml;stlenirler.&lt;/p&gt;
+&lt;p&gt;Biz geliştiricilerde, iş akışı mantığına dayalı sistemleri tasarladığımız durumlarda bu kural k&amp;uuml;melerinin esnekliklerine sahip olmak isteriz. Bu Biztalk, Sharepoint, TIBCO vb iş akışı modellerini i&amp;ccedil;eren gelişmiş &amp;uuml;r&amp;uuml;nlerde &amp;ccedil;oğu zaman karşımıza &amp;ccedil;ıkmaktadır.&lt;/p&gt;
+&lt;p&gt;Aslına bakarsınız uzun bir s&amp;uuml;re &amp;ouml;nce &lt;a href="/post/Business-Rule-Engine-ile-Programlama(Biztalk-Server-2006)"&gt;Business Rule Engine ile Programlama(Biztalk Server 2006)&lt;/a&gt; başlıklı bir makale yazmıştım. Bu makalede ana konu &lt;strong&gt;Biz Talk&amp;rsquo;&lt;/strong&gt; un gelişmiş&lt;strong&gt; Business Rule Engine&lt;/strong&gt; ara birimini &lt;strong&gt;BizTalk&lt;/strong&gt; ortamı dışında nasıl kullanabileceğimizi g&amp;ouml;rmekti. O zamanlar bir &lt;strong&gt;POC(Proof of Concept)&lt;/strong&gt; &amp;ccedil;alışması i&amp;ccedil;in yapmış olduğum araştırmanın sonu&amp;ccedil;larının kayıt altına alınmış hali olan bu yazı pek &amp;ccedil;oğu gibi atıl oldu tabi...&lt;/p&gt;
+&lt;p&gt;Ancak nasıl ki &lt;strong&gt;Biztalk&lt;/strong&gt; tarafında dışarıdan kullanabileceğimiz bir&lt;strong&gt; Rule Engine&lt;/strong&gt; bulunmaktadır, benzer şekilde &lt;strong&gt;Workflow Foundation&lt;/strong&gt; tarafında da kural setleri tanımlayıp, uygulatabileceğimiz bir &amp;ccedil;alışma zamanı motoru &lt;em&gt;(Runtime Rule Engine) &lt;/em&gt;mevcuttur. İşte bu yazımızda s&amp;ouml;z konusu &lt;strong&gt;WF Rule Engine&lt;/strong&gt; arabirimini herhangibir .Net uygulamasında basit anlamda nasıl kullanabileceğimizi bir ka&amp;ccedil; temel adımla g&amp;ouml;rmeye/anlamaya &amp;ccedil;alışıyor olacağız.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rnek senaryomuzda &lt;strong&gt;Product&lt;/strong&gt; isimli bir &lt;strong&gt;POCO(Plain Old CLR Object)&lt;/strong&gt; tip &amp;uuml;zerinden &lt;em&gt;kural tanımlanması, kuralların kayıt edilmesi, yeniden y&amp;uuml;klenmesi&lt;/em&gt; ve istenildiği zaman canlı bir &lt;strong&gt;Product&lt;/strong&gt; &amp;ouml;rneği &amp;uuml;zerinde &lt;em&gt;işletilmesi&lt;/em&gt; gibi fonksiyonellikleri sağlıyor olacağız. İşe ilk olarak aşağıdaki basit g&amp;ouml;r&amp;uuml;n&amp;uuml;me sahip olan bir &lt;strong&gt;Windows Forms&lt;/strong&gt; uygulaması geliştirerek başlayabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wfrule_Form.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wfrule_Form" src="/pics/wfrule_Form_thumb.png" alt="wfrule_Form" width="443" height="284" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Test ama&amp;ccedil;lı olarak kullanacağımız bu &lt;strong&gt;Windows Form&lt;/strong&gt; uygulamasında &lt;strong&gt;Product&lt;/strong&gt; tipine ait basit kuralları tanımlayabileceğimiz, kayıt altına alabileceğimiz, tekrardan y&amp;uuml;kleyebileceğimiz ve &amp;ccedil;alıştırıp sonu&amp;ccedil;larını g&amp;ouml;rebileceğimiz işlevsellikler s&amp;ouml;z konusudur.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Pek tabi Workflow Foundation Rule Set Engine kullanılmak istendiğinden, projeye aşağıdaki .Net Assembly&amp;rsquo; larının da referans edilmesi gerekmektedir.&lt;a href="/pics/wfrule_References.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wfrule_References" src="/pics/wfrule_References_thumb.png" alt="wfrule_References" width="278" height="472" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Şimdi arka planda gerekli olan kod &amp;uuml;retimlerini ger&amp;ccedil;ekleştirerek işlemlerimize devam edelim. Kural motoru i&amp;ccedil;in kullanacağımız &lt;strong&gt;Product&lt;/strong&gt; tipi ve bir kuralın &lt;strong&gt;XAML(eXtensible Application Markup Language)&lt;/strong&gt; olarak &lt;em&gt;serileştirilmesi(Serialization)&lt;/em&gt; ile tekrardan &lt;em&gt;geri y&amp;uuml;klenmesi(DeSerialization)&lt;/em&gt; i&amp;ccedil;in gerekli fonksiyonellikleri i&amp;ccedil;eren &lt;strong&gt;Utility&lt;/strong&gt; sınıfının kod i&amp;ccedil;erikleri aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Sınıf diyagramı;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wfrule_Model.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wfrule_Model" src="/pics/wfrule_Model_thumb.png" alt="wfrule_Model" width="288" height="486" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Product.cs;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace WFRuleSetHowTo 
+{ 
+    public class Product 
+    { 
+        public Guid ProductId { get; set; } 
+        public string Name { get; set; } 
+        public decimal ListPrice { get; set; } 
+        public int StockLevel { get; set; } 
+       public string ErrorInformation { get; set; }
+
+        public override string ToString() 
+        { 
+            return string.Format("{0} {1} {2} {3} [{4}]" 
+                , ProductId 
+                , Name 
+                , ListPrice 
+                , StockLevel 
+                ,ErrorInformation 
+                ); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Utility.cs;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Workflow.Activities.Rules; 
+using System.Workflow.ComponentModel.Serialization; 
+using System.Xml;
+
+namespace WFRuleSetHowTo 
+{ 
+    public static class Utility 
+    { 
+        // Workflow RuleSet' lerin XAML bazlı serileştirilmesi/ters serileştirilmesi i&amp;ccedil;in gerekli nesne &amp;ouml;rneklenir 
+        private static WorkflowMarkupSerializer serializer = new WorkflowMarkupSerializer(); 
+        
+        public static RuleSet Load(string ruleSetFileName) 
+        { 
+            RuleSet ruleSet = null; 
+            try 
+            { 
+                // RuleSet dosyası okunmak &amp;uuml;zere reader' a y&amp;uuml;klenir 
+                XmlTextReader reader = new XmlTextReader(ruleSetFileName); 
+                // Ters serileştirme işlemi uygulanarak RuleSet i&amp;ccedil;eriği nesnelleştirilir 
+                ruleSet = serializer.Deserialize(reader) as RuleSet; 
+                reader.Close(); 
+            } 
+            catch (Exception excp) 
+            { 
+                //TODO@Burak Do Something   
+            }
+
+            return ruleSet; 
+        }
+
+        public static bool Save(string ruleSetFileName, RuleSet ruleset) 
+        { 
+            bool result = false; 
+            try 
+            { 
+                // RuleSet' i kaydetmek i&amp;ccedil;in bir writer oluşturulur 
+                XmlTextWriter writer = new XmlTextWriter(ruleSetFileName, null); 
+                // RuleSet ilgili dosya i&amp;ccedil;erisine serileştirilir 
+                serializer.Serialize(writer, ruleset); 
+                result = true; 
+                writer.Flush(); 
+                writer.Close(); 
+            } 
+            catch (Exception excp) 
+            { 
+                //TODO@Burak Do Something 
+            } 
+            return result;         
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Utility&lt;/strong&gt; sınıfı temel olarak bir &lt;strong&gt;RuleSet&lt;/strong&gt; &amp;ouml;rneğinin fiziki dosyaya &lt;strong&gt;XAML&lt;/strong&gt; formatında serileştirilmesi veya tam tersi olarak &lt;strong&gt;XAML&lt;/strong&gt; formatından geriye y&amp;uuml;klenerek &amp;ccedil;alışma zamanında kullanılabilmesi işlevlerini barındırmaktadır. &lt;strong&gt;Product&lt;/strong&gt; sınıfı ise &amp;ouml;rneğimizde kullanacağımız ve kural seti i&amp;ccedil;erisinde ele alacağımız nesne şablonu olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lmelidir. Gelelim &lt;strong&gt;Form&lt;/strong&gt; &amp;uuml;zerindeki Button arkası kod par&amp;ccedil;alarına.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.IO; 
+using System.Windows.Forms; 
+using System.Workflow.Activities.Rules; 
+using System.Workflow.Activities.Rules.Design;
+
+namespace WFRuleSetHowTo 
+{ 
+    public partial class Form1 : Form 
+    { 
+        Product sampleProduct = null; 
+        RuleSet sampleRuleSet = null; 
+        string ruleSetFileName = Path.Combine(Environment.CurrentDirectory, "Product.rules");
+
+        public Form1() 
+        { 
+            InitializeComponent(); 
+            // Kullanılacak olan RuleSet &amp;ouml;rneklenir 
+           sampleRuleSet = new RuleSet(); 
+        }
+
+       private void btnCreateProduct_Click(object sender, EventArgs e) 
+        { 
+            decimal price; 
+            int stockLevel; 
+            
+            // RuleSet testi i&amp;ccedil;in &amp;ouml;rnek bir Product instance' ı oluşturulur 
+           sampleProduct = new Product 
+            { 
+                ProductId=Guid.NewGuid(), 
+                Name=!String.IsNullOrEmpty(txtProductName.Text)?txtProductName.Text:"Ornektir", 
+                ListPrice=decimal.TryParse(txtProductListPrice.Text,out price)?price:1M, 
+                StockLevel=int.TryParse(txtStockLevel.Text,out stockLevel)?stockLevel:100 
+            };
+
+            MessageBox.Show(string.Format("{0} &amp;ouml;rnek kullanım i&amp;ccedil;in &amp;uuml;retildi",sampleProduct.ToString())); 
+        }
+
+        private void btnCreateRule_Click(object sender, EventArgs e) 
+        { 
+            // RuleSet' in oluşturulacağı Dialog nesnesi &amp;ouml;rneklenir 
+            // ilk parametre kuralın uygulanacağı nesne tipidir 
+            RuleSetDialog rsDialog = new RuleSetDialog(typeof(Product), null, sampleRuleSet); 
+            if (rsDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) 
+            { 
+               if (Utility.Save(ruleSetFileName,rsDialog.RuleSet)) 
+                    MessageBox.Show("Rule Set başarılı bir şekilde kayıt edildi"); 
+                else 
+                    MessageBox.Show("İşlemlerinizi g&amp;ouml;zden ge&amp;ccedil;iriniz. RuleSet kayıt edilemedi"); 
+            } 
+        }
+
+        private void btnLoadRule_Click(object sender, EventArgs e) 
+        { 
+            sampleRuleSet = Utility.Load(ruleSetFileName); 
+            if (sampleRuleSet != null) 
+                MessageBox.Show("RuleSet başarılı bir şekilde y&amp;uuml;klendi"); 
+            else 
+                MessageBox.Show("RuleSet y&amp;uuml;klenemedi!"); 
+        }
+
+        private void btnRunRule_Click(object sender, EventArgs e) 
+        { 
+            // Elimizde bir RuleSet' imiz var ise 
+            if (sampleRuleSet != null) 
+            { 
+                // Kuralı işletmek i&amp;ccedil;in gerekli doğrulama nesnesi &amp;ouml;rnek Product tipi i&amp;ccedil;in &amp;uuml;retilir 
+                RuleValidation validation = new RuleValidation(sampleProduct.GetType(), null); 
+                // Kuralı işletecek olan motor &amp;ouml;rneklenir. İlk parametre doğrulama kriterlerini ikinci parametre ise doğrulamaya tabi olacak canlı nesne &amp;ouml;rneğini i&amp;ccedil;erir 
+                RuleExecution engine = new RuleExecution(validation, sampleProduct); 
+                // Kural işletilir. 
+                sampleRuleSet.Execute(engine); 
+                MessageBox.Show(sampleProduct.ToString()); 
+            } 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Geliştirici bu arabirim &amp;uuml;zerinden bir &lt;strong&gt;Product&lt;/strong&gt; tipi i&amp;ccedil;in yeni &lt;strong&gt;RuleSet&lt;/strong&gt; tanımlayabilir, kayıt altına alabilir, kayıtlı olanı y&amp;uuml;kleyebilir ve işletebilir. İşin temelinde &lt;strong&gt;RuleSetDialog, RuleValidation, RuleExecution&lt;/strong&gt; ve &lt;strong&gt;RuleSet&lt;/strong&gt; tipleri yer almaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;RuleSet&lt;/strong&gt; nesne &amp;ouml;rneğine ait &lt;strong&gt;Execute&lt;/strong&gt; metodu parametre olarak gelen &lt;strong&gt;RuleExecution&lt;/strong&gt; &lt;strong&gt;instance&amp;rsquo;&lt;/strong&gt; ını baz alarak bir kural k&amp;uuml;mesi işletimini ger&amp;ccedil;ekleştirmektedir. &lt;strong&gt;RuleExecution&lt;/strong&gt;, hangi nesne &amp;ouml;rneği i&amp;ccedil;in ilgili kural k&amp;uuml;mesinin &amp;ccedil;alıştırılacağını, ikinci parametresi sayesinde bilmekte olup ilk parametre ile de bir doğrulama işlemini s&amp;uuml;rece dahil etmektedir. Bu doğrulama, &lt;strong&gt;RuleValidation&lt;/strong&gt; &amp;ouml;rneğine g&amp;ouml;re bir&lt;strong&gt; .Net&lt;/strong&gt; tipi i&amp;ccedil;in&lt;em&gt;(&amp;ouml;rneğimizde Product sınıfıdır)&lt;/em&gt; icra edilmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;RuleSetDialog&lt;/strong&gt; tipi ile aşağıdakine benzer bir iletişim kutucuğunun&lt;em&gt;(Rule Set Editor)&lt;/em&gt; &amp;ccedil;alışma zamanında a&amp;ccedil;ılması ve yine resimde g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &amp;ouml;rnek bir kuralın tanımlanması m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wfrule_dialog.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wfrule_dialog" src="/pics/wfrule_dialog_thumb.png" alt="wfrule_dialog" width="640" height="533" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rnekte tanımlanan &lt;strong&gt;StockLevelRule&lt;/strong&gt; ile, herhangibir &lt;strong&gt;Product&lt;/strong&gt; nesne &amp;ouml;rneğinin &lt;strong&gt;StockLevel&lt;/strong&gt; &lt;strong&gt;değerinin 250&amp;rsquo; nin altında olması&lt;/strong&gt; hali ele alınmış ve durumun &lt;strong&gt;true&lt;/strong&gt; veya &lt;strong&gt;false&lt;/strong&gt; olmasına g&amp;ouml;re yine o anki canlı &lt;strong&gt;Product&lt;/strong&gt; nesne &amp;ouml;rneğinin &lt;strong&gt;ErrorInformation&lt;/strong&gt; &amp;ouml;zelliğine bazı bilgilendirme mesajları atanmıştır. &lt;em&gt;(&amp;Ccedil;ok doğal olarak burada başka atamaların yapılması da s&amp;ouml;z konusu olabilir) &lt;/em&gt;Tanımlanan bu kural seti serileştirilerek kayıt altına alındığında ise aşağıdaki &lt;strong&gt;XAML&lt;/strong&gt; i&amp;ccedil;eriğinin &amp;uuml;retildiği g&amp;ouml;r&amp;uuml;l&amp;uuml;r.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;RuleSet Description="{p1:Null}" Name="{p1:Null}" ChainingBehavior="Full" xmlns:p1="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/workflow"&amp;gt; 
+    &amp;lt;RuleSet.Rules&amp;gt; 
+        &amp;lt;Rule Priority="0" ReevaluationBehavior="Always" Description="{p1:Null}" Active="True" Name="StockLevelRule"&amp;gt; 
+            &amp;lt;Rule.Condition&amp;gt; 
+                &amp;lt;RuleExpressionCondition Name="{p1:Null}"&amp;gt; 
+                    &amp;lt;RuleExpressionCondition.Expression&amp;gt; 
+                        &amp;lt;ns0:CodeBinaryOperatorExpression Operator="LessThan" xmlns:ns0="clr-namespace:System.CodeDom;Assembly=System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"&amp;gt; 
+                            &amp;lt;ns0:CodeBinaryOperatorExpression.Right&amp;gt; 
+                                &amp;lt;ns0:CodePrimitiveExpression&amp;gt; 
+                                    &amp;lt;ns0:CodePrimitiveExpression.Value&amp;gt; 
+                                        &amp;lt;ns1:Int32 xmlns:ns1="clr-namespace:System;Assembly=mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"&amp;gt;250&amp;lt;/ns1:Int32&amp;gt; 
+                                    &amp;lt;/ns0:CodePrimitiveExpression.Value&amp;gt; 
+                                &amp;lt;/ns0:CodePrimitiveExpression&amp;gt; 
+                            &amp;lt;/ns0:CodeBinaryOperatorExpression.Right&amp;gt; 
+                            &amp;lt;ns0:CodeBinaryOperatorExpression.Left&amp;gt; 
+                                &amp;lt;ns0:CodePropertyReferenceExpression PropertyName="StockLevel"&amp;gt; 
+                                    &amp;lt;ns0:CodePropertyReferenceExpression.TargetObject&amp;gt; 
+                                        &amp;lt;ns0:CodeThisReferenceExpression /&amp;gt; 
+                                    &amp;lt;/ns0:CodePropertyReferenceExpression.TargetObject&amp;gt; 
+                                &amp;lt;/ns0:CodePropertyReferenceExpression&amp;gt; 
+                            &amp;lt;/ns0:CodeBinaryOperatorExpression.Left&amp;gt; 
+                        &amp;lt;/ns0:CodeBinaryOperatorExpression&amp;gt; 
+                    &amp;lt;/RuleExpressionCondition.Expression&amp;gt; 
+                &amp;lt;/RuleExpressionCondition&amp;gt; 
+            &amp;lt;/Rule.Condition&amp;gt; 
+            &amp;lt;Rule.ThenActions&amp;gt; 
+                &amp;lt;RuleStatementAction&amp;gt; 
+                    &amp;lt;RuleStatementAction.CodeDomStatement&amp;gt; 
+                        &amp;lt;ns0:CodeAssignStatement LinePragma="{p1:Null}" xmlns:ns0="clr-namespace:System.CodeDom;Assembly=System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"&amp;gt; 
+                            &amp;lt;ns0:CodeAssignStatement.Left&amp;gt; 
+                                &amp;lt;ns0:CodePropertyReferenceExpression PropertyName="ErrorInformation"&amp;gt; 
+                                    &amp;lt;ns0:CodePropertyReferenceExpression.TargetObject&amp;gt; 
+                                        &amp;lt;ns0:CodeThisReferenceExpression /&amp;gt; 
+                                    &amp;lt;/ns0:CodePropertyReferenceExpression.TargetObject&amp;gt; 
+                                &amp;lt;/ns0:CodePropertyReferenceExpression&amp;gt; 
+                            &amp;lt;/ns0:CodeAssignStatement.Left&amp;gt; 
+                            &amp;lt;ns0:CodeAssignStatement.Right&amp;gt; 
+                                &amp;lt;ns0:CodePrimitiveExpression&amp;gt; 
+                                    &amp;lt;ns0:CodePrimitiveExpression.Value&amp;gt; 
+                                        &amp;lt;ns1:String xmlns:ns1="clr-namespace:System;Assembly=mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"&amp;gt;Stok seviyesi kritik&amp;lt;/ns1:String&amp;gt; 
+                                    &amp;lt;/ns0:CodePrimitiveExpression.Value&amp;gt; 
+                                &amp;lt;/ns0:CodePrimitiveExpression&amp;gt; 
+                            &amp;lt;/ns0:CodeAssignStatement.Right&amp;gt; 
+                        &amp;lt;/ns0:CodeAssignStatement&amp;gt; 
+                    &amp;lt;/RuleStatementAction.CodeDomStatement&amp;gt; 
+                &amp;lt;/RuleStatementAction&amp;gt; 
+            &amp;lt;/Rule.ThenActions&amp;gt; 
+            &amp;lt;Rule.ElseActions&amp;gt; 
+                &amp;lt;RuleStatementAction&amp;gt; 
+                    &amp;lt;RuleStatementAction.CodeDomStatement&amp;gt; 
+                        &amp;lt;ns0:CodeAssignStatement LinePragma="{p1:Null}" xmlns:ns0="clr-namespace:System.CodeDom;Assembly=System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"&amp;gt; 
+                            &amp;lt;ns0:CodeAssignStatement.Left&amp;gt; 
+                                &amp;lt;ns0:CodePropertyReferenceExpression PropertyName="ErrorInformation"&amp;gt; 
+                                    &amp;lt;ns0:CodePropertyReferenceExpression.TargetObject&amp;gt; 
+                                        &amp;lt;ns0:CodeThisReferenceExpression /&amp;gt; 
+                                    &amp;lt;/ns0:CodePropertyReferenceExpression.TargetObject&amp;gt; 
+                                &amp;lt;/ns0:CodePropertyReferenceExpression&amp;gt; 
+                            &amp;lt;/ns0:CodeAssignStatement.Left&amp;gt; 
+                            &amp;lt;ns0:CodeAssignStatement.Right&amp;gt; 
+                                &amp;lt;ns0:CodePrimitiveExpression&amp;gt; 
+                                    &amp;lt;ns0:CodePrimitiveExpression.Value&amp;gt; 
+                                        &amp;lt;ns1:String xmlns:ns1="clr-namespace:System;Assembly=mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"&amp;gt;Stok seviyesi normal&amp;lt;/ns1:String&amp;gt; 
+                                    &amp;lt;/ns0:CodePrimitiveExpression.Value&amp;gt; 
+                                &amp;lt;/ns0:CodePrimitiveExpression&amp;gt; 
+                            &amp;lt;/ns0:CodeAssignStatement.Right&amp;gt; 
+                        &amp;lt;/ns0:CodeAssignStatement&amp;gt; 
+                    &amp;lt;/RuleStatementAction.CodeDomStatement&amp;gt; 
+                &amp;lt;/RuleStatementAction&amp;gt; 
+            &amp;lt;/Rule.ElseActions&amp;gt; 
+        &amp;lt;/Rule&amp;gt; 
+    &amp;lt;/RuleSet.Rules&amp;gt; 
+&amp;lt;/RuleSet&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Her ne kadar bu &amp;ccedil;ıktıyı g&amp;ouml;zle takip etmek zor olsa da şu noktaya dikkat edilmelidir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;XAML olarak &amp;uuml;retilen i&amp;ccedil;erik Notepad gibi basit bir metin edit&amp;ouml;r&amp;uuml; ile a&amp;ccedil;ılıp d&amp;uuml;zenlenebilir. Bir başka deyişle kuralların dekleratif olarak tanımlanabilmesi, g&amp;uuml;ncellenmesi ve devreye alınması s&amp;ouml;z konusudur.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Pek tabi kayıt altına serileştirerek almış olduğumuz bu &lt;strong&gt;XAML&lt;/strong&gt; i&amp;ccedil;eriğini uygulamayı kapatsak bile tekrardan aynı veya farklı uygulamalara y&amp;uuml;kleyebilir ve işletebiliriz. Uygulamamızda &amp;ouml;rnek bir &lt;strong&gt;Product&lt;/strong&gt; i&amp;ccedil;in kural &amp;ccedil;alıştırıldığında aşağıdaki sonucun alındığı g&amp;ouml;zlemlenir.&lt;/p&gt;
+&lt;p&gt;Stok seviyesinin kuralda tanımlanan &lt;strong&gt;250 birimin altında&lt;/strong&gt; olması halinde,&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wfrule_Run1.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wfrule_Run1" src="/pics/wfrule_Run1_thumb.png" alt="wfrule_Run1" width="502" height="404" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Stok seviyesinin kuralda tanımlanan &lt;strong&gt;250 birimin &amp;uuml;st&amp;uuml;nde&lt;/strong&gt; olması halinde,&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wfrule_Run2.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wfrule_Run2" src="/pics/wfrule_Run2_thumb.png" alt="wfrule_Run2" width="465" height="420" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &lt;strong&gt;Workflow Foundation&lt;/strong&gt; ile birlikte gelen kural motorunun herhangibir&lt;strong&gt; .Net&lt;/strong&gt; uygulaması &amp;uuml;zerinden kullanılabilmesi son derece kolaydır. Hatta bu tip bir arabirim yardımıyla, iş analistlerinin &amp;ccedil;eşitli kurallar tanımlayıp kayıt altına alabilecekleri ve aslında s&amp;uuml;re&amp;ccedil; y&amp;ouml;netim ara&amp;ccedil;larında &amp;ouml;nemli yere sahip olan bir takım depolama programlarının geliştirilmesi de kolaylaşmaktadır. &amp;Ccedil;ok doğal olarak bu kurallar bir servis arkasında işletilebilirler de.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;WF Rule Set Editor&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;, kullanıcısına daha esnek bir şekilde kural tanımlayabilme ve bunları kayıt altına alarak saklayabilme imkanı sunmaktadır.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;XAML formatlı olarak kayıt altına alınabilen kural k&amp;uuml;meleri(RuleSet) istenildiği zaman &amp;ccedil;alışma zamanına y&amp;uuml;klenebilir ve tanımın ait olduğu nesne &amp;ouml;rneği/&amp;ouml;rnekleri i&amp;ccedil;in işletilebilir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Rule Set Edit&amp;ouml;r i&amp;ccedil;erisinde birden fazla kural tanımlanabilir ve bunlar &amp;ccedil;alışma zamanında y&amp;uuml;r&amp;uuml;t&amp;uuml;lebilir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Bu yazımızda &amp;ccedil;ok basit olarak &lt;strong&gt;Workfow Rule Engine&lt;/strong&gt; alt yapısına bir Merhaba demeye &amp;ccedil;alıştık. Kapıyı aralamak benden i&amp;ccedil;eri girip y&amp;uuml;r&amp;uuml;mek ise sizden. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;span style="color: #ff0000;"&gt;[&amp;Ouml;rnek her nedense halen RC s&amp;uuml;r&amp;uuml;m&amp;uuml;nde olan Visual Studio 2012 ile geliştirilmiştir. Ancak Visual Studio 2010 ile de &amp;ccedil;alışmaktadır]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2012%2f7%2fWFRuleSetHowTo.zip"&gt;WFRuleSetHowTo.zip (60,57 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2012-09-02 19:45:00</pubDate>
+  <slug>WF-Rule-Engine-How-To</slug>
+  <tags>
+    <tag>rule-engine</tag>
+    <tag>workflow-foundation</tag>
+    <tag>workflow-foundation-40</tag>
+    <tag>wf-rule-engine</tag>
+    <tag>rule-set</tag>
+    <tag>ruleset</tag>
+    <tag>windows-forms</tag>
+  </tags>
+  <categories>
+    <category>WF</category>
+    <category>WF 4.0</category>
+  </categories>
+</post>

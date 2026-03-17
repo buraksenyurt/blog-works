@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>TPL Senkronizasyonu Sağlamak - 1</title>
+  <description>TPL ve Shared Data Isolation başlıklı yazımızda, n sayıda Task örneğinin ortaklaşa kullandıkları bir veri alanı üzerindeki işlemlerinin, ne gibi sonuçlara yol açabileceğini incelemiş ve bunun önün geçmek için basit bir kaç yolu ele almıştık.</description>
+  <content>&lt;p&gt;&lt;img style="display: inline; margin-left: 0px; margin-right: 0px; border: 0px;" title="blg212_Giris" src="/pics/blg212_Giris.jpg" alt="blg212_Giris" width="204" height="304" align="right" border="0" /&gt; Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Pek &amp;ccedil;oğumuzun anahtarlığında sayısız anahtar bulunmaktadır. &amp;Ouml;zellike gerilim filmlerinde bu anahtarlardan doğru olanı bulmak ve anahtar deliğine sokmak, hep zaman alan başarısız ka&amp;ccedil;ış girişimleri olarak sahnelenir. Genellikle bu başarız girişimlerin sonunda ne olduğu malumdur.&lt;/p&gt;
+&lt;p&gt;Ancak ister gerilim filmi olsun ister olmasın sonu&amp;ccedil;ta anahtar deliğine herhangibir zamanda takılabilecek sadece tek bir anahtar s&amp;ouml;z konusudur. &amp;Uuml;stelik bu anahtar, aynı yere başka bir anahtarın takılmasına da izin vermez. Aslında izin verip vermemesi, anahtarı tutan veya kullanan kişinin elindedir.&lt;/p&gt;
+&lt;p&gt;Aslında şu anda varmak istediğim nokta &lt;strong&gt;lock&lt;/strong&gt; kelimesidir. &lt;strong&gt;lock&lt;/strong&gt;, &amp;ccedil;ok kanallı uygulamalarda &lt;strong&gt;Thread&lt;/strong&gt; senkronizasyon işlemlerinde ele alınan tekniklerden yanlızca birisidir. &amp;Ccedil;ok doğal olarak farklı ama&amp;ccedil;larla ele alınan tipler de s&amp;ouml;z konusudur.&lt;/p&gt;
+&lt;p&gt;T&amp;uuml;m bunlara ek olarak uzun zamandır bilinen &lt;strong&gt;Task Parallel Library &lt;/strong&gt;ve doğal olarak yeni paralel programlama yapısı mevcuttur. Dolayısıyla aynı senkronizasyon vakaları &lt;strong&gt;TPL &lt;/strong&gt;i&amp;ccedil;erisinde de ge&amp;ccedil;erlidir ve bu ama&amp;ccedil;la eklenmiş yeni &amp;ouml;zellikler bulunmaktadır. İşte bu yazımız ile birlikte &lt;strong&gt;TPL&lt;/strong&gt; i&amp;ccedil;erisinde senkronizasyon konusunu incelemeye &amp;ccedil;alışıyor olacağız.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/post/TPL-ve-Shared-Data-Isolation"&gt;TPL ve Shared Data Isolation&lt;/a&gt; başlıklı yazımızda, &lt;strong&gt;n&lt;/strong&gt; &lt;strong&gt;sayıda&lt;/strong&gt; &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneğinin ortaklaşa kullandıkları bir veri alanı &amp;uuml;zerindeki işlemlerinin, ne gibi sonu&amp;ccedil;lara yol a&amp;ccedil;abileceğini incelemiş ve bunun &amp;ouml;n&amp;uuml;n ge&amp;ccedil;mek i&amp;ccedil;in basit bir ka&amp;ccedil; yolu ele almıştık. Hatırlayacağınız &amp;uuml;zere değerlendirdiğimiz senaryoda, &lt;strong&gt;Plane&lt;/strong&gt; tipinden olan nesne &amp;ouml;rneğine ait &lt;strong&gt;Altitude&lt;/strong&gt; &amp;ouml;zelliğinin değerinin, &lt;strong&gt;Task&lt;/strong&gt; blokları i&amp;ccedil;erisinde değiştirildiği nokta, sorunun oluşmasına neden olan kritik b&amp;ouml;lgeydi.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;for (int i = 0; i &amp;lt; 5; i++) 
+{ 
+	tasks[i] = new Task(() =&amp;gt; 
+   { 
+		for (int j = 0; j &amp;lt; 1000; j++) 
+		{ 
+		   f16.Altitude += j - 5; 
+		} 
+	} 
+	); 
+	tasks[i].Start(); 
+}&lt;/pre&gt;
+&lt;p&gt;Aslında ezelden beri &lt;strong&gt;Multi-Thread&lt;/strong&gt; programlamada, &lt;strong&gt;Thread&amp;rsquo;&lt;/strong&gt; lerin senkronizasyonu konusu &amp;ouml;yle ya da b&amp;ouml;yle bir şekilde kulağımıza gelmiştir. &amp;Ccedil;ok doğal olarak benzer ihtiya&amp;ccedil;lar &lt;strong&gt;.Net Framework 4.0 &lt;/strong&gt;Paralel Programlama alt yapısı i&amp;ccedil;inde ge&amp;ccedil;erlidir. Ancak &lt;strong&gt;.Net Framework 4.0 &lt;/strong&gt;tarafında &lt;strong&gt;Lightweight Primitives &lt;/strong&gt;adında yeni ve daha basit senkronizasyon tipleri de s&amp;ouml;z konusudur. Bu tipler klasik senkronizasyon tiplerine g&amp;ouml;re daha kola uygulanabilir. Tabi klasik senkronizasyon &lt;strong&gt;Primitive&lt;/strong&gt;&amp;rsquo; lerinin uygulanması her ne kadar zor olsa da, birden fazla &lt;strong&gt;Application Domain&lt;/strong&gt; &amp;uuml;zerinde kontrole izin vermektedirler. Oysa ki &lt;strong&gt;LightWeight Primitive&lt;/strong&gt;&amp;rsquo; ler sadece tek bir&lt;strong&gt; Application Domain&lt;/strong&gt; i&amp;ccedil;in uygulanabilir. Olayı daha fazla karmaşıklaştırmadan &amp;ouml;nce senkronizasyon ile neyi ifade ettiğimizi ortaya koymamızda yarar vardır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;a href="/pics/Exclamation_3.gif"&gt;&lt;img style="display: inline; margin-left: 0px; margin-right: 0px; border: 0px;" title="Exclamation" src="/pics/Exclamation_thumb_3.gif" alt="Exclamation" width="48" height="48" align="left" border="0" /&gt;&lt;/a&gt; &amp;ldquo;Herhangibir t anında kritik olan b&amp;ouml;lgeyde sadece tek bir Task &amp;ouml;rneğinin işlem yapmasını sağlamak&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Senkronizasyonu sağlamak i&amp;ccedil;in &lt;strong&gt;.Net Framework &lt;/strong&gt;&amp;uuml;zerinde &amp;ouml;nceden tanımlı &amp;ccedil;eşitli &lt;strong&gt;Primitive&lt;/strong&gt;&amp;rsquo; lerden yararlanılmaktadır. Aslında &amp;ouml;zel veri tipleri olarak d&amp;uuml;ş&amp;uuml;nebileceğimiz &lt;strong&gt;Primitive&lt;/strong&gt;&amp;rsquo; ler, kritik b&amp;ouml;lgelere doğru yapılan &lt;strong&gt;Task&lt;/strong&gt; erişimlerini kontrol altına alan varlıklar olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilirler.&lt;/p&gt;
+&lt;p&gt;Genel işleyiş şekline bakıldığında, kritik b&amp;ouml;lgede yer alan veriye erişmek isteyen bir &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneği, bu isteğini ilk &amp;ouml;nce &lt;strong&gt;Primitive&lt;/strong&gt;&amp;rsquo; e iletmektedir. Eğer s&amp;ouml;z konusu kritik b&amp;ouml;lge m&amp;uuml;sait ise, &lt;strong&gt;Task&lt;/strong&gt; işlemlerini icra etmeye başlayabilir. Ancak m&amp;uuml;sait değilse, &lt;strong&gt;Task&lt;/strong&gt;, &lt;strong&gt;Primitive&lt;/strong&gt; nesnesinin belirlediği ilkelere g&amp;ouml;re beklemede kalacaktır. Bu anda, s&amp;ouml;z konusu b&amp;ouml;lgede &amp;ccedil;alışmakta olan &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneği de, işini bitirdiğinde &lt;strong&gt;Primitive&lt;/strong&gt;&amp;rsquo; e bildirimde bulunacaktır. Bu bildirimin ardından &lt;strong&gt;Primitive&lt;/strong&gt; nesne, bekleyen &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneğinin s&amp;ouml;z konusu b&amp;ouml;lgede işlem yapmasına izin verecektir. Tabi işlem yapmaya başlayan &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneği, s&amp;ouml;z konusu b&amp;ouml;lgeyi en azından kilitlediğini, &lt;strong&gt;Primitive&lt;/strong&gt;&amp;rsquo; e bildirecektir. Elbette ger&amp;ccedil;ek hayat senaryolarında durum bu anlatım şeklinde olduğu gibi basit değildir. &lt;strong&gt;N&lt;/strong&gt; sayıda &lt;strong&gt;Task&lt;/strong&gt; s&amp;ouml;z konusu olduğunda birbirlerine g&amp;ouml;re &amp;ouml;nceliklerini belirlemek gibi ihtiya&amp;ccedil;larımız da olabilir.&lt;/p&gt;
+&lt;p&gt;Bu yazımızla birlikte s&amp;ouml;z konusu senkronizasyon tiplerini basit bir şekilde incelemeye başlıyor olacağız. Haydi başlayalım.&lt;/p&gt;
+&lt;h2&gt;&lt;strong&gt;En Basit Askerimiz : lock&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;lock&lt;/strong&gt; anahtar kelimesi aslında &lt;strong&gt;System.Threading.Monitor&lt;/strong&gt; sınıfının daha basit bir şekilde uygulanmasını sağlayan bir &lt;strong&gt;Primitive&lt;/strong&gt; olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Normal şartlar altında kritik b&amp;ouml;lgeyle olan etkileşimlerde &lt;strong&gt;Monitor&lt;/strong&gt; tipinin &lt;strong&gt;Enter, TryEnter, Exit&lt;/strong&gt; gibi metodlarının kullanılması gerekmektedir. &lt;strong&gt;Monitor&lt;/strong&gt; tipi &lt;strong&gt;HeavyWeight&lt;/strong&gt; &lt;strong&gt;Primitive&lt;/strong&gt; olarak bilinmektedir ve daha alt seviyedeki vakaların karşılanmasında kullanılmaktadır. Aşağıdaki kod par&amp;ccedil;asında daha &amp;ouml;nceki yazımızda ele aldığımız sorunlu senaryonun &lt;strong&gt;lock&lt;/strong&gt; ile &amp;ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml; g&amp;ouml;sterilmektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Threading.Tasks;
+
+namespace SynchronizationPrimitives 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            for (int i = 0; i &amp;lt; 10; i++) 
+            { 
+                TestMethod(); 
+            }
+
+            Console.WriteLine("İşlemler tamamlandı.\nProgramı kapatmak i&amp;ccedil;in bir tuşa basınız"); 
+            Console.ReadLine(); 
+        }
+
+        private static void TestMethod() 
+        { 
+            Plane f16 = new Plane(); 
+            Task[] tasks = new Task[5];
+
+            object obj = new object();
+
+            for (int i = 0; i &amp;lt; 5; i++) 
+            { 
+                tasks[i] = new Task(() =&amp;gt; 
+                { 
+                    for (int j = 0; j &amp;lt; 1000; j++) 
+                    { 
+                        lock (obj) 
+                        { 
+                            f16.Altitude += j - 5; 
+                        }                        
+                    } 
+                } 
+                ); 
+                tasks[i].Start(); 
+            }
+
+            Task.WaitAll(tasks);
+
+            Console.WriteLine("[ {0} ]", f16.Altitude); 
+        } 
+    }
+
+    class Plane 
+    { 
+        public int Altitude { get; set; } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;İlk olarak t&amp;uuml;m &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneklerinin, kritik b&amp;ouml;lgede işlem yapılırken &lt;strong&gt;lock&lt;/strong&gt; bloğuna girdiklerini ifade edebiliriz. Bu &lt;strong&gt;lock&lt;/strong&gt; bloğu i&amp;ccedil;erisindeki &amp;ccedil;alışma s&amp;uuml;resi boyunca, y&amp;uuml;r&amp;uuml;t&amp;uuml;c&amp;uuml; &lt;strong&gt;Task&lt;/strong&gt; dışında başka bir &lt;strong&gt;Task &lt;/strong&gt;&amp;ouml;rneğinin &lt;strong&gt;Altitude&lt;/strong&gt; değerini değiştirmesine izin verilmemektedir. &lt;strong&gt;lock&lt;/strong&gt; keyword&amp;rsquo; &amp;uuml; kullanılırken &lt;strong&gt;object&lt;/strong&gt; tipinden bir nesneyi parametre olarak alır. Bu nesne de aslında t&amp;uuml;m &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rnekleri i&amp;ccedil;in ortaktır. Uygulamayı ka&amp;ccedil; kere &amp;ccedil;alıştırırsanız &amp;ccedil;alıştırın beklediğimiz aynı sonu&amp;ccedil;ları elde ettiğimizi g&amp;ouml;rebiliriz. Aynen aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg212_Runtime1.gif"&gt;&lt;img style="display: inline; border: 0px;" title="blg212_Runtime1" src="/pics/blg212_Runtime1_thumb.gif" alt="blg212_Runtime1" width="336" height="181" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi senaryomuzu biraz daha ilgin&amp;ccedil;leştirelim. Bu sefer iki ayrı &lt;strong&gt;Task&lt;/strong&gt; k&amp;uuml;mesinin, &lt;strong&gt;Altitude&lt;/strong&gt; &amp;ouml;zelliği &amp;uuml;zerinden farklı hesaplamalar yaptığını varsayacağız. Bu ama&amp;ccedil;la vaka kodumuzu aşağıdaki gibi geliştirdiğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Threading.Tasks;
+
+namespace SynchronizationPrimitives 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            for (int i = 0; i &amp;lt; 10; i++) 
+            { 
+                TestMethod(); 
+            }
+
+            Console.WriteLine("İşlemler tamamlandı.\nProgramı kapatmak i&amp;ccedil;in bir tuşa basınız"); 
+            Console.ReadLine(); 
+        }
+
+        private static void TestMethod() 
+        { 
+            Plane f16 = new Plane(); 
+            Task[] taskSet1 = new Task[5]; 
+            Task[] taskSet2 = new Task[5];
+
+            for (int i = 0; i &amp;lt; 5; i++) 
+            { 
+                taskSet1[i] = new Task(() =&amp;gt; 
+                { 
+                    for (int j = 0; j &amp;lt; 1000; j++) 
+                    { 
+                        f16.Altitude += j - 5; 
+                    } 
+                } 
+                ); 
+                taskSet1[i].Start(); 
+            }
+
+            for (int i = 0; i &amp;lt; 5; i++) 
+            { 
+                taskSet2[i] = new Task(() =&amp;gt; 
+                { 
+                    for (int j = 0; j &amp;lt; 1000; j++) 
+                    { 
+                        f16.Altitude += j+7; 
+                    } 
+                } 
+                ); 
+                taskSet2[i].Start(); 
+            }
+
+            Task.WaitAll(taskSet1); 
+            Task.WaitAll(taskSet2);
+
+            Console.WriteLine("[ {0} ]", f16.Altitude); 
+        } 
+    }
+
+    class Plane 
+    { 
+        public int Altitude { get; set; } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Bu sefer &lt;strong&gt;taskSet1&lt;/strong&gt; ve &lt;strong&gt;taskSet2&lt;/strong&gt; isimli iki farklı &lt;strong&gt;Task&lt;/strong&gt; dizisinin &lt;strong&gt;Altitude&lt;/strong&gt; &amp;ouml;zelliği &amp;uuml;zerinde ger&amp;ccedil;ekleştirdiği farklı işlemler s&amp;ouml;z konusudur. &amp;Ccedil;ok doğal olarak ortaklaşa kullanılan değişken s&amp;ouml;z konusu olduğundan &amp;ccedil;alışma zamanında aynı sonu&amp;ccedil;ların elde edilmesi nadir bir durumdur. Uygulamanın aşağıdaki &amp;ouml;rnek &amp;ccedil;ıktısında bu durum a&amp;ccedil;ık bir şekilde g&amp;ouml;r&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg212_Case.gif"&gt;&lt;img style="display: inline; border: 0px;" title="blg212_Case" src="/pics/blg212_Case_thumb.gif" alt="blg212_Case" width="329" height="185" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Bildiğiniz &amp;uuml;zere her denemenin aynı sonucu &amp;uuml;retiyor olmasını beklemekteyiz. Peki &lt;strong&gt;lock&lt;/strong&gt; mekanizmasını bu tip senaryoda nasıl kullanabiliriz? Aşağıdaki kod par&amp;ccedil;asında bu &amp;ccedil;&amp;ouml;z&amp;uuml;mleme işlemi değerlendirilmektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Threading.Tasks;
+
+namespace SynchronizationPrimitives 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            for (int i = 0; i &amp;lt; 10; i++) 
+            { 
+                TestMethod(); 
+            }
+
+            Console.WriteLine("İşlemler tamamlandı.\nProgramı kapatmak i&amp;ccedil;in bir tuşa basınız"); 
+            Console.ReadLine(); 
+        }
+
+        private static void TestMethod() 
+        { 
+            Plane f16 = new Plane(); 
+            Task[] taskSet1 = new Task[5]; 
+            Task[] taskSet2 = new Task[5];
+
+            object obj = new object();
+
+            for (int i = 0; i &amp;lt; 5; i++) 
+            { 
+                taskSet1[i] = new Task(() =&amp;gt; 
+                { 
+                    for (int j = 0; j &amp;lt; 1000; j++) 
+                    { 
+                        lock (obj) 
+                        { 
+                            f16.Altitude += j - 5;    
+                        }                        
+                    } 
+                } 
+                ); 
+                taskSet1[i].Start(); 
+            }
+
+            for (int i = 0; i &amp;lt; 5; i++) 
+            { 
+                taskSet2[i] = new Task(() =&amp;gt; 
+                { 
+                    for (int j = 0; j &amp;lt; 1000; j++) 
+                    { 
+                        lock (obj) 
+                        { 
+                            f16.Altitude += j + 7; 
+                        } 
+                    } 
+                } 
+                ); 
+                taskSet2[i].Start(); 
+            }
+
+            Task.WaitAll(taskSet1); 
+            Task.WaitAll(taskSet2);
+
+            Console.WriteLine("[ {0} ]", f16.Altitude); 
+        } 
+    }
+
+    class Plane 
+    { 
+        public int Altitude { get; set; } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere ilk &amp;ouml;rneğimizdeki kodlama stilinden farklı bir uygulanış bi&amp;ccedil;imi yoktur. Dikkat edilmesi gereken nokta ise, her iki &lt;strong&gt;lock &lt;/strong&gt;bloğu i&amp;ccedil;inde aynı &lt;strong&gt;object&lt;/strong&gt; &amp;ouml;rneğinin kullanılmış olmasıdır.&lt;/p&gt;
+&lt;h2&gt;&lt;strong&gt;lock Aslında Montior Tipini Kullanır&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;Daha &amp;ouml;nceden de bahsettiğimiz &amp;uuml;zere &lt;strong&gt;lock&lt;/strong&gt; bloğu aslında &lt;strong&gt;Monitor&lt;/strong&gt; tipinin ilgili metodlarını kullanmaktadır. Bu durum kodun arka planda &amp;uuml;retilen &lt;strong&gt;IL&lt;/strong&gt; &amp;ccedil;ıktısında rahat bir şekilde g&amp;ouml;r&amp;uuml;lebilir.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;.method public hidebysig instance void  '&amp;lt;TestMethod&amp;gt;b__3'() cil managed 
+{ 
+  // Code size       85 (0x55) 
+  .maxstack  4 
+  .locals init ([0] int32 j, 
+           [1] bool '&amp;lt;&amp;gt;s__LockTaken1', 
+           [2] object CS$2$0000, 
+           [3] bool CS$4$0001) 
+  IL_0000:  nop 
+  IL_0001:  ldc.i4.0 
+  IL_0002:  stloc.0 
+  IL_0003:  br.s       IL_0048 
+  IL_0005:  nop 
+  IL_0006:  ldc.i4.0 
+  IL_0007:  stloc.1 
+  .try 
+  { 
+    IL_0008:  ldarg.0 
+    IL_0009:  ldfld      object SynchronizationPrimitives.Program/'&amp;lt;&amp;gt;c__DisplayClass6'::obj 
+    IL_000e:  dup 
+    IL_000f:  stloc.2 
+    IL_0010:  ldloca.s   '&amp;lt;&amp;gt;s__LockTaken1' 
+    IL_0012:  call       void [mscorlib]System.Threading.Monitor::Enter(object, bool&amp;amp;) 
+    IL_0017:  nop 
+    IL_0018:  nop 
+    IL_0019:  ldarg.0 
+    IL_001a:  ldfld      class SynchronizationPrimitives.Plane SynchronizationPrimitives.Program/'&amp;lt;&amp;gt;c__DisplayClass6'::f16 
+    IL_001f:  dup 
+    IL_0020:  callvirt   instance int32 SynchronizationPrimitives.Plane::get_Altitude() 
+    IL_0025:  ldloc.0 
+    IL_0026:  ldc.i4.7 
+    IL_0027:  add 
+    IL_0028:  add 
+    IL_0029:  callvirt   instance void SynchronizationPrimitives.Plane::set_Altitude(int32) 
+    IL_002e:  nop 
+    IL_002f:  nop 
+    IL_0030:  leave.s    IL_0042 
+  }  // end .try 
+  finally 
+  { 
+    IL_0032:  ldloc.1 
+    IL_0033:  ldc.i4.0 
+    IL_0034:  ceq 
+    IL_0036:  stloc.3 
+    IL_0037:  ldloc.3 
+    IL_0038:  brtrue.s   IL_0041 
+    IL_003a:  ldloc.2 
+    IL_003b:  call       void [mscorlib]System.Threading.Monitor::Exit(object) 
+    IL_0040:  nop 
+    IL_0041:  endfinally 
+  }  // end handler 
+  IL_0042:  nop 
+  IL_0043:  nop 
+  IL_0044:  ldloc.0 
+  IL_0045:  ldc.i4.1 
+  IL_0046:  add 
+  IL_0047:  stloc.0 
+  IL_0048:  ldloc.0 
+  IL_0049:  ldc.i4     0x3e8 
+  IL_004e:  clt 
+  IL_0050:  stloc.3 
+  IL_0051:  ldloc.3 
+  IL_0052:  brtrue.s   IL_0005 
+  IL_0054:  ret 
+} // end of method '&amp;lt;&amp;gt;c__DisplayClass6'::'&amp;lt;TestMethod&amp;gt;b__3'&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;IL(Intermediate Language) &lt;/strong&gt;koduna baktığımızda &lt;strong&gt;Monitor.Enter&amp;nbsp; &lt;/strong&gt;ve &lt;strong&gt;Monitor.Exit &lt;/strong&gt;metod &amp;ccedil;ağrılarının ger&amp;ccedil;ekleştirildiği g&amp;ouml;r&amp;uuml;lmektedir. &amp;Uuml;stelik &lt;strong&gt;lock &lt;/strong&gt;ifadesi i&amp;ccedil;erisine alınan kod kısmı i&amp;ccedil;in arka planda bir &lt;strong&gt;try&amp;hellip;finally &lt;/strong&gt;bloğu oluşturulmuştur. &lt;strong&gt;Finally&lt;/strong&gt; bloğunda ger&amp;ccedil;ekleştirilen &lt;strong&gt;Monitor.Exit&lt;/strong&gt; &amp;ccedil;ağrısı, tahmin edileceği &amp;uuml;zere her ne olursa olsun devreye girecektir. Tabi ki &lt;strong&gt;Monitor&lt;/strong&gt; tipinin bilin&amp;ccedil;li olarak kullanılması gerektiği durumlarda s&amp;ouml;z konusu olabilir. Bu ve diğer durumları ilerleyen yazılarımızda ele almaya &amp;ccedil;alışıyor olacağız. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2010%2f6%2fSynchronizationPrimitives.rar"&gt;SynchronizationPrimitives.rar (22,26 kb)&lt;/a&gt;&lt;strong&gt;&amp;nbsp;[&amp;Ouml;rnek Visual Studio 2010 Ultimate s&amp;uuml;r&amp;uuml;m&amp;uuml;nde geliştirilmiş ve test edilmiştir]&lt;/strong&gt;&lt;/p&gt;</content>
+  <pubDate>2011-01-27 13:40:00</pubDate>
+  <slug>TPL-Senkronizasyonu-Saglamak</slug>
+  <tags>
+    <tag>tpl</tag>
+    <tag>task-parallel-library</tag>
+    <tag>net-framework-40</tag>
+    <tag>synchronization-primitives</tag>
+    <tag>parallel-programming</tag>
+  </tags>
+  <categories>
+    <category>Parallel Programming</category>
+    <category>TPL</category>
+  </categories>
+</post>

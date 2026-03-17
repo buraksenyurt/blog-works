@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Tasarım Prensipleri - Loose Coupling</title>
+  <description>Yazılım teknolojilerinde uygulanan tekniklerin çoğunda temel tasarım prensipleri sıklıkla ele alınmaktadır/Alınmalıdı. Örneğin eXtreme Programming, Aspect Oriented Programming vb... yazılım geliştirme tekniklerinde bu prensiplerin çoğuna rastlayabiliriz. Bu yazı ile birlikte Temel Tasarım Prensiplerinin incelenmesine başlıyor olacağız ki özellikle büyük çaplı projelerde bu tip disiplinler büyük bir öneme sahiptir.</description>
+  <content>&lt;p&gt;Merhaba Arkadaşlar&lt;/p&gt;
+&lt;p&gt;Yazılım teknolojilerinde uygulanan tekniklerin &amp;ccedil;oğunda temel tasarım&amp;nbsp;prensipleri sıklıkla&amp;nbsp;ele alınmaktadır/Alınmalıdı. &amp;Ouml;rneğin &lt;strong&gt;eXtreme Programming, Aspect Oriented Programming vb... &lt;/strong&gt;yazılım geliştirme tekniklerinde bu prensiplerin &amp;ccedil;oğuna rastlayabiliriz. Bu yazı ile birlikte &lt;strong&gt;Temel Tasarım Prensiplerinin&lt;/strong&gt; incelenmesine başlıyor olacağız ki &amp;ouml;zellikle b&amp;uuml;y&amp;uuml;k &amp;ccedil;aplı projelerde bu tip disiplinler b&amp;uuml;y&amp;uuml;k bir &amp;ouml;neme sahiptir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Enterprise&lt;/strong&gt; yazılım s&amp;uuml;re&amp;ccedil;lerinde en &amp;ccedil;ok zorlanılan noktalardan biriside m&amp;uuml;şteri ihtiya&amp;ccedil;larının s&amp;uuml;rekli olarak en hızlı şekilde karşılanması gerekliliğidir. Bu durumda yazılımın bir s&amp;uuml;re sonra kendinden ge&amp;ccedil;erek&amp;nbsp;&lt;img title="Sealed" src="/editors/tiny_mce3/plugins/emotions/img/smiley-sealed.gif" alt="Sealed" border="0" /&gt; dağılmasını engellemek gerekmektedir. Bu anlamda uygulanan s&amp;uuml;re&amp;ccedil;lerin i&amp;ccedil;erisinde &amp;ouml;nem arz eden noktalardan biriside, kullanılacak yazılım disiplinleridir. Bu nedenle Hatta bu presipler i&amp;ccedil;erisinde &lt;strong&gt;tasarım desenlerininde(Design Patterns)&lt;/strong&gt;&amp;nbsp;&amp;ouml;nemli bir yeri vardır. Serimizin bu ilk yazısına en kolay prensip ile başlıyor olacağız; &lt;strong&gt;Zayıf Bağlılık(Loose Coupling) prensibi.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Konuyu kavramamın en g&amp;uuml;zel yolu tahmin edeceğiniz &amp;uuml;zere basit bir &amp;ouml;rnek &amp;uuml;zerinden ilerlemek olacaktır. Bu ama&amp;ccedil;la aşağıdaki &lt;strong&gt;Console&lt;/strong&gt; uygulamasını geliştirdiğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f6%2fblg35_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace Problem
+{
+    // WinScreen tipine ait nesne &amp;ouml;rneklerinin yaratıcısı olan sınıf
+    class ScreenCreator
+    {
+        private WinScreen winScreen = null;
+
+        public ScreenCreator()
+        {
+
+        }
+        public ScreenCreator(WinScreen winScr)
+        {
+            winScreen = winScr;
+        }
+
+        public void InitializeScreen()
+        {
+            winScreen.Initialize();
+        }
+        public void DrawScreen()
+        {
+            winScreen.Draw();
+        }
+    }
+
+    // Windows tabanlı sistemleri i&amp;ccedil;in d&amp;uuml;ş&amp;uuml;n&amp;uuml;len bir ekran
+    class WinScreen
+    {
+        public void Initialize()
+        {
+            Console.WriteLine("WinScreen initialize işlemi");
+        }
+        public void Draw()
+        {
+            Console.WriteLine("WinScreen Draw işlemi");
+        }
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Ekran &amp;uuml;retme işlemi başladı");
+
+            ScreenCreator creator = new ScreenCreator(new WinScreen());
+            creator.InitializeScreen();
+            creator.DrawScreen();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu &amp;ouml;rnek uygulama &lt;strong&gt;ScreenCreator&lt;/strong&gt; ve &lt;strong&gt;WinScreen&lt;/strong&gt; isimli iki sınıf ve arasındaki ilişki ele alınmaktadır. &lt;strong&gt;ScreenCreator&lt;/strong&gt; sınıfına ait nesne &amp;ouml;rnekleri,&amp;nbsp;aşırı y&amp;uuml;klenmiş yapıcı metoda&amp;nbsp;gelen &lt;strong&gt;WinScreen&lt;/strong&gt; referansları &amp;uuml;zerinden &lt;strong&gt;Initialize&lt;/strong&gt; ve &lt;strong&gt;Draw&lt;/strong&gt; isimli fonksiyonelliklerin uygulanabilmesine imkan tanımaktadır. B&amp;ouml;ylece bir Windows Formunun başlatılması ve ekrana &amp;ccedil;izilmesi işlemlerinin ger&amp;ccedil;ekleştirileceği d&amp;uuml;ş&amp;uuml;n&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;p&gt;Uygulamayı &amp;ccedil;alıştırdığımızda aşağıdaki sonu&amp;ccedil;ları alırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f6%2fblg35_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Aslında kodu dikkatlice incelediğimizde ve yazılım tasarımına baktığımızda bazı sıkıntılar olduğunu g&amp;ouml;rebiliriz. &amp;Ouml;rneğin;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;ScreenCreator nesne &amp;ouml;rnekleri tek başlarına anlamsızdır. Kullanışlı olmaları i&amp;ccedil;in WinScreen sınıfı ile birlikte ele alınmaları gerekir.&lt;/li&gt;
+&lt;li&gt;WinScreen sınıfı i&amp;ccedil;erisinde yapılacak değişiklikler ScreenCreator tipinide etikeyecektir.&lt;/li&gt;
+&lt;li&gt;ScreenCreator sadece WinScreen tipini ele almaktadır. Oysaki web ekranları, WPF ekranları, mobile ekranlar veya x ekranlar&amp;nbsp;i&amp;ccedil;in tasarlanmış sınıfların ScreenCreator tarafından ele alınması m&amp;uuml;mk&amp;uuml;n değildir. Kuvvetli bağ buna m&amp;uuml;sade etmemektedir.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Bu sonu&amp;ccedil;lara g&amp;ouml;re &lt;strong&gt;ScreenCreator&lt;/strong&gt; ve &lt;strong&gt;WinScreen&lt;/strong&gt; nesne &amp;ouml;rnekleri arasında aşağıdaki &lt;strong&gt;UML&lt;/strong&gt; diagramında g&amp;ouml;r&amp;uuml;len ilişkinin olduğunu d&amp;uuml;ş&amp;uuml;nebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f6%2fblg35_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;İşte&amp;nbsp;&lt;strong&gt;Loose Coupling&lt;/strong&gt; ilkesi s&amp;ouml;z konusu sorunlara &amp;ccedil;&amp;ouml;z&amp;uuml;m getirmeyi kolaylaştırmaktadır. Aslında nesneler arasındaki bu kuvvetli bağların kaldırılması işi k&amp;ouml;kten&amp;nbsp;&amp;ccedil;&amp;ouml;zebilir. Ne varki &lt;strong&gt;OOP(Object Oriented Programming)&lt;/strong&gt;&amp;nbsp;dillerinde bu m&amp;uuml;mk&amp;uuml;n değildir. Dolayısıyla bağı zayıflaştırmaya &amp;ccedil;alışmak &amp;uuml;zere bir takım işlemler yapılabilir. &lt;strong&gt;.Net&lt;/strong&gt; tarafından olaya baktığımızda &lt;strong&gt;interface&lt;/strong&gt; veya &lt;strong&gt;abstract&lt;/strong&gt; tipleri kullanarak zayıf bağlı bir ortam oluşturabiliriz. İşte Loose Coupling prensibini uygulayan yeni kod i&amp;ccedil;eriğimiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f6%2fblg35_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace Solution
+{
+    public interface IScreen
+    {
+        void Initialize();
+        void Draw();
+    }
+
+   public class WinScreen
+       : IScreen
+   {
+       #region IScreen Members
+
+       public void Initialize()
+       {
+           Console.WriteLine("WinScreen Initialize işlemi");
+       }
+
+       public void Draw()
+       {
+           Console.WriteLine("WinScreen draw işlemi");
+       }
+
+       #endregion
+   }
+
+   public class WebScreen
+       :IScreen
+   {
+       #region IScreen Members
+
+       public void Initialize()
+       {
+           Console.WriteLine("WebScreen initialize işlemi");
+       }
+
+       public void Draw()
+       {
+           Console.WriteLine("WebScreen draw işlemi");
+       }
+
+       #endregion
+   }
+
+    public class MobileScreen
+        : IScreen
+    {
+        #region IScreen Members
+
+        public void Initialize()
+        {
+            Console.WriteLine("MobileScreen initialize işlemi");
+        }
+
+        public void Draw()
+        {
+            Console.WriteLine("MobileScreen draw işlemi");
+        }
+
+        #endregion
+    }
+
+    public class ScreenCreator
+    {
+        private IScreen _screen;
+
+        public ScreenCreator(IScreen scr)
+        {
+            _screen = scr;
+        }
+        public void InitializeScreen()
+        {
+            _screen.Initialize();
+        }
+        public void DrawScreen()
+        {
+            _screen.Draw();
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            ScreenCreator creator = new ScreenCreator(new WebScreen());
+            creator.InitializeScreen();
+            creator.DrawScreen();
+
+            creator = new ScreenCreator(new WinScreen());
+            creator.InitializeScreen();
+            creator.DrawScreen();
+
+            creator=new ScreenCreator(new MobileScreen());
+            creator.InitializeScreen();
+            creator.DrawScreen();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Yeni tasarımızda &lt;strong&gt;Initialize&lt;/strong&gt; ve &lt;strong&gt;Draw&lt;/strong&gt; isimli operasyonlar &lt;strong&gt;IScreen&lt;/strong&gt; isimli bir aray&amp;uuml;z i&amp;ccedil;erisinde bildirilmiş ve bu aray&amp;uuml;zden t&amp;uuml;reyen tiplerde ayrı ayrı uygulanmışlardır. &lt;strong&gt;ScreenCreator&lt;/strong&gt; sınıfı ise kendi i&amp;ccedil;erisinde &lt;strong&gt;IScreen&lt;/strong&gt; interface referansını ele almaktadır. Buna g&amp;ouml;re &lt;strong&gt;IScreen&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml; implemente eden her sınıf, &lt;strong&gt;ScreenCreator&lt;/strong&gt; tarafından kullanılabilir. Bir başka deyişle &lt;strong&gt;ScreenCreator&lt;/strong&gt; sınıfının, &amp;uuml;reteceği ekran ile ilişkili herhangibir bilgiye sahip olmasınada gerek yoktur. Sadece &lt;strong&gt;Interface&lt;/strong&gt; referansının &lt;strong&gt;Initialize&lt;/strong&gt; ve &lt;strong&gt;Draw&lt;/strong&gt; operasyonlarını &amp;ccedil;ağırmaktadır. Diğer yandan &lt;strong&gt;IScreen&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml; implemente eden tipler i&amp;ccedil;erisinde yapılacak değişimler, &lt;strong&gt;ScreenCreator&lt;/strong&gt; sınıfını doğrudan etkilemeyecektir. Hatta bu etki en aza indirgenmiş olacaktır. Olaya basit bir UML şeması ile baktığımızdaysa tipler arasındaki ilişkileri daha net g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f6%2fblg35_5.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Programı &amp;ccedil;alıştırdığımızda ise aşağıdaki sonu&amp;ccedil;ları elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f6%2fblg35_6.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece&amp;nbsp;&lt;strong&gt;Temel&amp;nbsp;Tasarım&amp;nbsp;Prensiplerinden &lt;/strong&gt;birisi ve bana kalırsa belkide en basiti olan &lt;strong&gt;Loose Coupling&lt;/strong&gt; ilkesini incelemiş olduk.&amp;nbsp;İlerleyen yazılarımızda diğer prensiplerede bakıyor olacağız. &amp;Ouml;rneğin &lt;strong&gt;Open Closed, Single Responsibility, Liskov Substitution vb...&lt;/strong&gt; &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2009%2f6%2fLooseCoupling.rar"&gt;LooseCoupling.rar (39,67 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2009-06-23 22:46:00</pubDate>
+  <slug>Tasarim-Prensipleri-Loose-Coupling</slug>
+  <tags>
+    <tag>design-principles</tag>
+    <tag>loose-coupling</tag>
+    <tag>oop</tag>
+    <tag>object-oriented-programming</tag>
+    <tag>aspect-oriented-programming</tag>
+  </tags>
+  <categories>
+    <category>Tasarım Prensipleri(Design Principles)</category>
+  </categories>
+</post>

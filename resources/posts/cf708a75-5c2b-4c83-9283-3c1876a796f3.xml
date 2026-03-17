@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>.Net Remoting - Synchronous, Asynchronous, OneWay</title>
+  <description>Remoting gibi mimarilerde bazen istemcilerin (clients) çağırdıkları uzak nesnelere (remote objects) ait metodların dönüş süreleri uzun zaman alabilir. Bu gibi durumlarda istemci doğal olarak, uzak nesne üzerinden çağırdığı metodun geri dönüşünü beklemek durumunda kalır. Dolayısıyla istemci uygulamanın, uzak nesne çağırımına paralel olarak yürütebileceği işlemler var ise bunlarda askıda kalacaktır. Bunun değişik nedenleri olabilir. Gerçektende işlemler uzun sürebilir. Örneğin veritabanı bazlı işlemlerin uzak sunucular üzerinde gerçekleştiği remoting uygulamalarında sıkça rastlanabilen bir durumdur. Varsayılan olarak istemci tarafında eğer hiç bir özelleştirme yapılmaz ise, senkron(Synhronous) çalışan bir yapı söz konusudur. Bu makalemizde Senkron model ile başlayıp, Asenkron ve OneWay metod çağırım modellerini incelemeye çalışacağız.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Remoting gibi mimarilerde bazen istemcilerin (clients) &amp;ccedil;ağırdıkları uzak nesnelere (remote objects) ait metodların d&amp;ouml;n&amp;uuml;ş s&amp;uuml;releri uzun zaman alabilir. Bu gibi durumlarda istemci doğal olarak, uzak nesne &amp;uuml;zerinden &amp;ccedil;ağırdığı metodun geri d&amp;ouml;n&amp;uuml;ş&amp;uuml;n&amp;uuml; beklemek durumunda kalır. Dolayısıyla istemci uygulamanın, uzak nesne &amp;ccedil;ağırımına paralel olarak y&amp;uuml;r&amp;uuml;tebileceği işlemler var ise bunlarda askıda kalacaktır. Bunun değişik nedenleri olabilir. Ger&amp;ccedil;ektende işlemler uzun s&amp;uuml;rebilir. &amp;Ouml;rneğin veritabanı bazlı işlemlerin uzak sunucular &amp;uuml;zerinde ger&amp;ccedil;ekleştiği remoting uygulamalarında sık&amp;ccedil;a rastlanabilen bir durumdur. Varsayılan olarak istemci tarafında eğer hi&amp;ccedil; bir &amp;ouml;zelleştirme yapılmaz ise, senkron(Synhronous) &amp;ccedil;alışan bir yapı s&amp;ouml;z konusudur. Bu makalemizde Senkron model ile başlayıp, Asenkron ve OneWay metod &amp;ccedil;ağırım modellerini incelemeye &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;p&gt;Aşağıdaki kod par&amp;ccedil;asında yer alan remoting uygulaması senkron yapıya bir &amp;ouml;rnektir. Uzak nesnemize ait sınıf modelinde &amp;ccedil;ok basit bir metod yer almaktadır. Bu metodun geri d&amp;ouml;n&amp;uuml;ş s&amp;uuml;resini arttırmak ve istemcinin durumunu analiz edebilmek i&amp;ccedil;in Thread tipinin Sleep metodu ile uzak nesne metodu i&amp;ccedil;erisinde g&amp;uuml;ncel iş par&amp;ccedil;acığı bir s&amp;uuml;re uyutulmuştur.&lt;/p&gt;
+&lt;table id="table40" style="width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#ffffff"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;İstemci tarafında asenkron(Asynchronous) veya tek y&amp;ouml;n (OneWay) i&amp;ccedil;in bir &amp;ouml;zelleştirme yapılmamışsa, uygulama Senkron (Synchronous) kuralları &amp;ccedil;er&amp;ccedil;evesinde işler.&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Uzak nesneye ait interface modelimiz,&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace RemoteLib
+{
+    public interface IRLib
+    {
+        int GetTotal(int orderID);
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Sunucu tarafı uygulama kodlarımız,&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Runtime.Remoting;
+using System.Runtime.Remoting.Channels;
+using System.Runtime.Remoting.Channels.Tcp;
+using RemoteLib;
+
+namespace Server
+{
+    // Uzak nesne tipimiz
+    public class OrderObj:MarshalByRefObject,IRLib 
+    {
+
+        #region IRLib Members
+    
+        public int GetTotal(int orderID)
+        {
+            Console.WriteLine("Metod &amp;ccedil;ağırıldı...");
+            System.Threading.Thread.Sleep(4000);
+            return orderID;
+        }
+
+        #endregion
+    }
+
+    // Sunucu uygulama
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            TcpServerChannel srvC = new TcpServerChannel(8777);
+            RemotingConfiguration.RegisterWellKnownServiceType(typeof(OrderObj), "OrderObj", WellKnownObjectMode.SingleCall);
+            Console.WriteLine("Sunucu dinlemede...");
+            Console.ReadLine();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;İstemci tarafı uygulama kodlarımız,&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Runtime.Remoting;
+using System.Runtime.Remoting.Channels;
+using System.Runtime.Remoting.Channels.Tcp;
+using RemoteLib;
+
+namespace Client
+{
+    // İstemci uygulama
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            TcpClientChannel cliC = new TcpClientChannel();
+            IRLib rl = (IRLib)Activator.GetObject(typeof(IRLib), "tcp://manchester:8777/OrderObj");
+            Console.WriteLine(rl.GetTotal(1001).ToString());
+            Console.WriteLine("Metod sonrası kodlar...");
+            Console.ReadLine();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Sunucu ve istemcinin &amp;ccedil;alışmasına bakalım. &lt;em&gt;(Aşağıdaki video g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; flash player gerektirmektedir.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;object id="obj1" width="481" height="381" classid="clsid:D27CDB6E-AE6D-11CF-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0" border="0"&gt;
+&lt;param name="movie" value="http://www.buraksenyurt.com/makale/images/RemAsync.swf" /&gt;
+&lt;param name="quality" value="High" /&gt; &lt;embed type="application/x-shockwave-flash" width="481" height="381" src="http://www.buraksenyurt.com/makale/images/RemAsync.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" name="obj1" /&gt;&lt;/object&gt;&lt;/p&gt;
+&lt;p&gt;A&amp;ccedil;ık&amp;ccedil;a g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi, istemci uzak nesneye ait GetTotal isimli metodu &amp;ccedil;ağırdıktan sonra, izleyen kod satırına ge&amp;ccedil;ebilmek i&amp;ccedil;in, uzak nesne metodunun tamamlanmasını beklemek zorunda kalmıştır. Yaklaşık 4 saniyelik gecikmenin ardından, istemci tarafında izleyen kod satırları işletilebilmiştir. İşte bu senkron erişim modelidir. Elbette bu modelin dezavantajlı bir model olduğu konusunda kesin yargıya varmak yanlıştır. Nitekim zaman zaman, istemci tarafının izleyen kod satırlarının işleyişi, uzak nesneden d&amp;ouml;necek değerlere bağlı olabilir. Bu gibi durumlarda senkron model dışına &amp;ccedil;ıkmamakta fayda vardır.&lt;/p&gt;
+&lt;table id="table53" style="width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#ffffff"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;Senkron modelde, istemcinin uzak nesneden (remote object) d&amp;ouml;necek olan sonu&amp;ccedil;ları beklemesi her zaman bir dezavantaj olarak g&amp;ouml;r&amp;uuml;lmemelidir. &amp;Ccedil;oğu zaman, uzak nesnenin d&amp;ouml;nd&amp;uuml;rd&amp;uuml;ğ&amp;uuml; değerler, istemcinin izleyen kod satırlarında kullanılacak tipte olabilir.&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Gelelim asenkron (asynchronous) metod &amp;ccedil;ağırım modeline. Eğer Xml Web Servislerindeki asenkron erişim modelini hatırlarsanız, proxy sınıfı i&amp;ccedil;erisinde Begin ve End kelimeleri ile başlayan metodlar yer aldığını bilirsiniz. Bu metodlar yardımıyla Web Metodlarına (Web Method) asenkron olarak erişmek m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Oysaki Remoting mimarisinde, yukarıdaki &amp;ouml;rneği g&amp;ouml;z &amp;ouml;n&amp;uuml;ne aldığımızda fiziki bir proxy sınıfı yer almamaktadır. Dolayısıyla bizim istemci tarafında, asenkron y&amp;uuml;r&amp;uuml;tme i&amp;ccedil;in gereken işlevleri bir temsilci (delegate) yardımıyla başarmamız gerekecektir.&lt;/p&gt;
+&lt;p&gt;Nitekim temsilci tipleri yardımıyla BeginInvoke ve EndInvoke metodlarına erişilebilmektedir. Asenkron erişim modelinde p&amp;uuml;f nokta, uzak nesne &amp;uuml;zerinde yer alan ve asenkron olarak y&amp;uuml;r&amp;uuml;t&amp;uuml;lmek istenen metod modelinin, istemci tarafında bir temsilci (delegate) tipi yardımıyla &amp;ccedil;alışma zamanında işaret edilecek olmasıdır. İstemci tarafındaki bu temsilci tipini kullanarak BeginInvoke ve EndInvoke metodlarına &amp;ccedil;ağırabilir ve b&amp;ouml;ylece uzak nesne metodunu asenkron olarak y&amp;uuml;r&amp;uuml;tebiliriz. Yine yukarıdaki &amp;ouml;rneğimizi g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alacak olursak yapmamız gereken değişiklikler istemci tarafındadır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace Client
+{
+    delegate int dlgGetTotal(int orID);
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            TcpClientChannel cliC = new TcpClientChannel();
+            IRLib rl = (IRLib)Activator.GetObject(typeof(IRLib), "tcp://manchester:8777/OrderObj");
+            dlgGetTotal currGetTotal = new dlgGetTotal(rl.GetTotal);
+            IAsyncResult res=currGetTotal.BeginInvoke(1001, null, null);
+            Console.WriteLine("Metod sonrası kodlar...");
+            Console.WriteLine(currGetTotal.EndInvoke(res).ToString());
+            Console.ReadLine();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi ilk olarak, OrderObj isimli uzak nesnemize ait GetTotal metodunu, istemci tarafında işaret edebilecek bir temsilci tanımladık. &amp;Ccedil;alışma zamanında bu temsilci tipine ait bir nesne &amp;ouml;rneği yardımıyla, istemcinin eriştiği o anki uzak nesne referansı &amp;uuml;zerindeki asıl GetTotal metodunu işaret edebileceğiz. Bunu sağlamak i&amp;ccedil;in currGetTotal isimli delegate &amp;ouml;rneğini nasıl oluşturduğumuza dikkat edin. Buradaki rl aray&amp;uuml;z &amp;ouml;rneğinin &amp;ccedil;ağırdığı GetTotal metodu, &amp;ccedil;alışma zamanında aktif olan uzak nesne referansının sahip olduğu GetTotal metodudur.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;dlgGetTotal currGetTotal = new dlgGetTotal(rl.GetTotal);&lt;/pre&gt;
+&lt;p&gt;Artık bu noktadan itibaren BeginInvoke ve EndInvoke metodlarını &amp;ccedil;ağırabiliriz. BeginInvoke metodu bildiğiniz gibi geriye IAsyncResult aray&amp;uuml;z&amp;uuml; tipinden bir nesne d&amp;ouml;nd&amp;uuml;r&amp;uuml;r.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;IAsyncResult res=currGetTotal.BeginInvoke(1001, null, null);&lt;/pre&gt;
+&lt;p&gt;Bunu elde ettikten sonra, istemci tarafında izleyen kod satırları başarılı bir şekilde &amp;ccedil;alışacaktır. Hemen ardından EndInvoke metodu &amp;ccedil;ağırılıp, ortamdaki IAsyncResult aray&amp;uuml;z nesnesi bu metoda devredilerek asıl sonu&amp;ccedil;lar istemci tarafına alınır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;Console.WriteLine(currGetTotal.EndInvoke(res).ToString());&lt;/pre&gt;
+&lt;p&gt;Burada sembolik olarak istemci tarafında BeginInvoke operasyonundan sonra sadece tek satırlık kod &amp;ccedil;alışmaktadır. Bundan sonra hemen EndInvoke metodunu &amp;ccedil;ağırmaktayız. EndInvoke metodu, eğer sunucu tarafındaki uzak nesne metodu halen geriye bir sonu&amp;ccedil; d&amp;ouml;nd&amp;uuml;rmemiş ise, bu sonu&amp;ccedil; gelene kadar da uygulamayı duraksatacaktır. Bunu unutmamamız gerekir. Sunucu ve istemcinin &amp;ccedil;alışmasına bakalım. &lt;em&gt;(Aşağıdaki video g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; flash player gerektirmektedir.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;object id="obj2" width="481" height="381" classid="clsid:D27CDB6E-AE6D-11CF-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0" border="0"&gt;
+&lt;param name="movie" value="http://www.buraksenyurt.com/makale/images/RemAsync2.swf" /&gt;
+&lt;param name="quality" value="High" /&gt; &lt;embed type="application/x-shockwave-flash" width="481" height="381" src="http://www.buraksenyurt.com/makale/images/RemAsync2.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" name="obj2" /&gt;&lt;/object&gt;&lt;/p&gt;
+&lt;p&gt;Asenkron erişim modelinde genellikle yukarıdaki kullanım tarzı yerine Callback tekniği kullanılır. Bu tekniğe g&amp;ouml;re, uzak nesne metodu asenkron olarak &amp;ccedil;alışmasını bitirdiğinde, istemci tarafındaki callback metodu otomatik olarak devreye girerek sonu&amp;ccedil;ları uygulamaya devredecektir. Şimdi yukarıdaki &amp;ouml;rneğimizi buna g&amp;ouml;re değiştirelim. Tek yapmamız gereken, BeginInvoke metodunda Callback metodu ile ilgili parametreyi bildirmek olacaktır. S&amp;ouml;z konusu parametre AsyncCallback tipinden bir temsilci nesne &amp;ouml;rneğidir. Bu temsilci nesne &amp;ouml;rneği, &amp;ccedil;alışma zamanında asenkron olarak y&amp;uuml;r&amp;uuml;yen metod işleyişini tamamladığı anda devreye girecek olan geri bildirim metodunu işaret etmektedir. Dolayısıyla &amp;ouml;rneğimizin kodlarını aşağıdaki gibi değiştirerek Callback tekniğini uygulayabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace Client
+{
+    delegate int dlgGetTotal(int orID);
+
+    class Program
+    {
+        static dlgGetTotal currGetTotal;
+
+        static void Main(string[] args)
+        {
+            TcpClientChannel cliC = new TcpClientChannel();
+            IRLib rl = (IRLib)Activator.GetObject(typeof(IRLib), "tcp://manchester:8777/OrderObj");
+            currGetTotal = new dlgGetTotal(rl.GetTotal);
+            AsyncCallback acb = new AsyncCallback(CallbackMetod);
+            IAsyncResult res = currGetTotal.BeginInvoke(1001, acb, null);
+            Console.WriteLine("Metod sonrası kodlar...");
+            for (int i = 0; i &amp;lt; 8; i++)
+            {
+                System.Threading.Thread.Sleep(1000);
+                Console.Write("+");
+            }
+            Console.ReadLine();
+        }
+
+        static void CallbackMetod(IAsyncResult res)
+        {
+            if(res.IsCompleted)
+                Console.Write("Metod sonucu {0}",currGetTotal.EndInvoke(res).ToString());
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;AsyncCallback temsilci tipi, IAsyncResult aray&amp;uuml;z&amp;uuml; tipinden nesne &amp;ouml;rnekleri alan ve geriye değer d&amp;ouml;nd&amp;uuml;rmeyen metodları işaret etmektedir. Biz uygulamamıza bu ama&amp;ccedil;la CallbackMetod isimli bir metod ekledik. Bu metod i&amp;ccedil;erisinde, eğer asenkron olarak y&amp;uuml;r&amp;uuml;t&amp;uuml;len uzak nesne metodu işleyişini tamamlamışsa (ki bunu metoda parametre olarak gelen IAsyncResult nesne &amp;ouml;rneğinin IsCompleted &amp;ouml;zelliği ile anlıyoruz) sonu&amp;ccedil;ları ortama aktarmak i&amp;ccedil;in EndInvoke metodu &amp;ccedil;ağırılır. Callback metodunun devreye alınabilmesi i&amp;ccedil;in BeginInvoke metoduna AsyncCallback temsilci tipine ait &amp;ouml;rneğimizi parametre olarak vermemiz gerekir. Sunucu ve istemcinin &amp;ccedil;alışmasına bakalım. &lt;em&gt;(Aşağıdaki video g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; flash player gerektirmektedir.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;object id="obj3" width="481" height="381" classid="clsid:D27CDB6E-AE6D-11CF-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0" border="0"&gt;
+&lt;param name="movie" value="http://www.buraksenyurt.com/makale/images/RemAsync3.swf" /&gt;
+&lt;param name="quality" value="High" /&gt; &lt;embed type="application/x-shockwave-flash" width="481" height="381" src="http://www.buraksenyurt.com/makale/images/RemAsync3.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" name="obj3" /&gt;&lt;/object&gt;&lt;/p&gt;
+&lt;p&gt;Gelelim OneWay tekniğine. OneWay tekniğinde sadece geri d&amp;ouml;n&amp;uuml;ş tipi olmayan uzak nesne metodları s&amp;ouml;z konusu olabilir. Dahası OneWay niteliği (attribute) ile imzalanan bir metod, istemci tarafından &amp;ccedil;alıştırıldıktan sonra unutulur.&lt;/p&gt;
+&lt;table id="table50" style="width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#ffffff"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;OneWay niteliğine sahip metodlar, at-unut f&amp;uuml;zeleri gibidir. İstemci tarafında &amp;ccedil;ağırıldıktan sonra istemci kodları işleyişini s&amp;uuml;rd&amp;uuml;r&amp;uuml;rken, OneWay metodu geriye hi&amp;ccedil; bir bilgi vermez ve sunucu tarafında kendi başına işleyişini tamamlar.&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Yani istemci tarafında metod &amp;ccedil;ağırımı sonrası kodlar işlerken, metodun başına ne geldiğinden istemcinin herhangibir şekilde haberi olmaz. Bu metod i&amp;ccedil;erisinde meydana gelebilecek bir istisnanın, istemci tarafından algılanmaması anlamına gelir. Bu nedenle OneWay metodlar &amp;ccedil;oğunlukla sunucu tarafında log tutma gibi istemci a&amp;ccedil;ısından &amp;ouml;nem arz etmeyen durumlarda, asenkron işleyişi ger&amp;ccedil;ekleştirmek i&amp;ccedil;in tercih edilebilir. Uzak nesnede yer alan bir metodun OneWay davranışını g&amp;ouml;sterebilmesi i&amp;ccedil;in, OneWay niteliği (attribute) ile işaretlenmesi gerekir. Bizim &amp;ouml;rneğimizde bunu interface tarafında yapmamız gerekecektir. OneWay niteliği, System.Runtime.Remoting.Messaging isim alanı altında yer almaktadır. Bu nedenle interface' imizin bulunduğu class library uygulamasına System.Runtime.Remoting referansınıda a&amp;ccedil;ık&amp;ccedil;a eklememiz gerekiyor.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Runtime.Remoting.Messaging;
+
+namespace RemoteLib
+{
+    public interface IRLib
+    {
+        int GetTotal(int orderID);
+        [OneWay]
+        void WriteLog(int orderID);
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu değişiklikten sonra uzak nesnemizide interface' imizin yapısına uygun olarak d&amp;uuml;zenlememiz gerekir. OrderObj sınıfımızın yeni halinde WriteLog isimli ek bir metod olmalıdır. Bu metod i&amp;ccedil;erisinde basit olarak birer saniye aralıklarla sunucu uygulamada mesaj yazdırılmaktadır. Burada ama&amp;ccedil;, istemcinin metodu &amp;ccedil;ağırmasını takiben, istemci uygulamanın sonlanması halinde sunucun bu kodları &amp;ccedil;alıştırmaya devam edeceğini ispatlamaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public void WriteLog(int orderID)
+{
+    for (int i = 0; i &amp;lt; 10; i++)
+    {
+        Console.WriteLine("Log bilgisi yazılıyor...");
+        System.Threading.Thread.Sleep(1000);
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Şimdi istemci tarafındaki kodlarımızı aşağıdaki gibi değiştirelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;static void Main(string[] args)
+{
+    TcpClientChannel cliC = new TcpClientChannel();
+    IRLib rl = (IRLib)Activator.GetObject(typeof(IRLib), "tcp://manchester:8777/OrderObj");
+    rl.WriteLog(1901);
+    Console.WriteLine("Metod sonrası kodlar...");
+    Console.WriteLine("Uygulamayı durdurmak i&amp;ccedil;in bir tuşa basın...");
+    Console.ReadLine();
+}&lt;/pre&gt;
+&lt;p&gt;Bu sefer uygulamayı metodu &amp;ccedil;ağırdıktan sonra sonlandırıyoruz. Buna g&amp;ouml;re OneWay tipindeki WriteLog isimli uzak nesne metodu, sunucu &amp;uuml;zerinde &amp;ccedil;alışmasına devam edecektir. Oysaki metod OneWay davranışı g&amp;ouml;stermeyecek şekilde ayarlansaydı, metod &amp;ccedil;alışması bitene kadar istemci bekleyecekti. Aşağıdaki flash animasyonunda durumu daha iyi g&amp;ouml;rebilirsiniz. &lt;em&gt;(Aşağıdaki video g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; flash player gerektirmektedir.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;object id="obj4" width="481" height="381" classid="clsid:D27CDB6E-AE6D-11CF-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0" border="0"&gt;
+&lt;param name="movie" value="http://www.buraksenyurt.com/makale/images/RemAsync4.swf" /&gt;
+&lt;param name="quality" value="High" /&gt; &lt;embed type="application/x-shockwave-flash" width="481" height="381" src="http://www.buraksenyurt.com/makale/images/RemAsync4.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" name="obj4" /&gt;&lt;/object&gt;&lt;/p&gt;
+&lt;p&gt;OneWay davranışı g&amp;ouml;steren metodların bir diğer sorunu ise exception olması halinde ortaya &amp;ccedil;ıkar. &amp;Ouml;rneğin, OrderObj isimli uzak nesne sınıfımızın WriteLog isimli metodu i&amp;ccedil;erisinde bir istisna durumu oluştuğunu d&amp;uuml;ş&amp;uuml;nelim. Bu durumda istemci tarafında &amp;ccedil;alışan metodu try...catch blokları ile kontrol etsek dahi istisnayı yakalayamayız. Dahası bu istisna sunucu tarafında oluşarak metodun işleyişini bozacaktır. Dolayısıyla istemcinin hi&amp;ccedil; bir şekilde bu istisnadan haberi olmayacaktır. Bu OneWay davranışını sergileyecek metodların kullanımını azaltan bir etkendir. Kısacası OneWay tekniği her ne kadar m&amp;uuml;kemmel bir asenkron modeli gibi g&amp;ouml;r&amp;uuml;nsede, ger&amp;ccedil;ekten istemci a&amp;ccedil;ısından sonu&amp;ccedil;ları &amp;ouml;nemli olmayan durumlarda ele alınabilecek bir yaklaşımdır.&lt;/p&gt;
+&lt;p&gt;Bu makalemizde .Net Remoting i&amp;ccedil;in ge&amp;ccedil;erli olan metod &amp;ccedil;ağırma tekniklerini kısaca incelemeye &amp;ccedil;alıştık. Senkron mimarinin varsayılan tip olduğunu, asenkron mimarinin avantajlarını ve OneWay tekniğinin dezavantajlarını irdelemeye &amp;ccedil;alıştık. G&amp;ouml;r&amp;uuml;nen o ki, bu modellerden hangisinin kullanılacağına karar vermek i&amp;ccedil;in ger&amp;ccedil;ekten ihtiya&amp;ccedil;ları iyi tespit etmek gerekmektedir. B&amp;ouml;ylece geldik bir makalemizin daha sonuna bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2006-03-31 12:00:00</pubDate>
+  <slug>-Net-Remoting-Synchronous-Asynchronous-OneWay-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>net-remoting</tag>
+    <tag>synchronous</tag>
+    <tag>asynchronous</tag>
+    <tag>oneway</tag>
+  </tags>
+  <categories>
+    <category>.Net Remoting</category>
+  </categories>
+</post>

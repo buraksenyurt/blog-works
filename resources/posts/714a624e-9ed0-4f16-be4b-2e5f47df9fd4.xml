@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>TPL ile WinForms Macerası [Beta 1]</title>
+  <description>Dün gece Task Parallel Library ile ilgili olarak internette araştırma yaparken, örnekleri çoğunlukla(hatta tamamen) Console uygulamaları üzerinde geliştirdiğimi farkettim. Oysaki TPL veya PLINQ gibi alt yapıların, WinForms yada WPF(Windows Presentation Foundation) uygulamalarında nasıl kullanılabileceğide önemli bir konuydu. Özellikle Windows Form' larının TPL çalışmalarına karşı nasıl tepkilerde bulunabileceği belkide en önemli noktaydı.</description>
+  <content>&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;D&amp;uuml;n gece &lt;strong&gt;Task Parallel Library&lt;/strong&gt; ile ilgili olarak internette araştırma yaparken, &amp;ouml;rnekleri &amp;ccedil;oğunlukla(hatta tamamen) &lt;strong&gt;Console&lt;/strong&gt; uygulamaları &amp;uuml;zerinde geliştirdiğimi farkettim. Oysaki &lt;strong&gt;TPL&lt;/strong&gt; veya &lt;strong&gt;PLINQ&lt;/strong&gt; gibi alt yapıların, &lt;strong&gt;WinForms&lt;/strong&gt; yada &lt;strong&gt;WPF(Windows Presentation Foundation)&lt;/strong&gt; uygulamalarında nasıl kullanılabileceğide &amp;ouml;nemli bir konuydu. &amp;Ouml;zellikle &lt;strong&gt;Windows Form'&lt;/strong&gt; larının &lt;strong&gt;TPL&lt;/strong&gt; &amp;ccedil;alışmalarına karşı&amp;nbsp;nasıl tepkilerde bulunabileceği belkide en &amp;ouml;nemli noktaydı.&amp;nbsp;Biliyorsunuz &lt;strong&gt;TPL&lt;/strong&gt; alt yapısında, işlemci ve &amp;ccedil;ekirdek g&amp;uuml;c&amp;uuml; sonuna kadar kullanılmakta ve arka planda coşan pek &amp;ccedil;ok &lt;strong&gt;Thread&lt;/strong&gt; yer almaktadır. Fakat &lt;strong&gt;WinForms&lt;/strong&gt; uygulamalarında herşeyin hakimi olan ana &lt;strong&gt;Thread'&lt;/strong&gt; in&amp;nbsp;genellikle bencil olduğuda bilinmektedir. Bu nedenle TPL ile &amp;ccedil;ekilen bir veri i&amp;ccedil;eriğinin, &lt;strong&gt;Form&lt;/strong&gt; &amp;uuml;zerindeki bir kontrole doldurulması ger&amp;ccedil;ekten başa bela olabilir.&lt;img title="Sealed" src="/editors/tiny_mce3/plugins/emotions/img/smiley-sealed.gif" alt="Sealed" border="0" /&gt; İşte bu d&amp;uuml;ş&amp;uuml;nceler i&amp;ccedil;erisinde yola &amp;ccedil;ıktım ve &amp;ouml;rnek bir senaryo &amp;uuml;zerinde durmaya &amp;ccedil;alıştım.&lt;/p&gt;
+&lt;p&gt;İlk olarak senaryodan biraz bahsedeyim; &lt;em&gt;bilgisayarımda resimlerin tutulduğu klas&amp;ouml;rde yer alan jpg dosyalarından 100 KB' ın altında olanları bulup, Form &amp;uuml;zerindeki bir FlowLayoutPanel i&amp;ccedil;erisinde Button bileşenleri ile g&amp;ouml;stermek istemekteyim. Kabaca aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan sonu&amp;ccedil;ları elde etmek istediğimizi d&amp;uuml;ş&amp;uuml;nebiliriz.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f6%2fblg28_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;İşe ilk olarak&amp;nbsp;eski stilde başladım. Yani tek bir &lt;strong&gt;Thread&lt;/strong&gt; ile resimleri doldurmayı denedim. Bunun i&amp;ccedil;in kod i&amp;ccedil;eriğini ilk etapta aşağıdaki gibi geliştirdim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace TPLAntrenmanlari2
+{
+    public partial class Form1 : Form
+    {
+        private string imagesPath = @"C:\Users\Burak Selim Senyurt\Pictures";
+
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void btnStart_Click(object sender, EventArgs e)
+        {            
+            flowLayoutPanel1.Controls.Clear();
+
+            #region Single Thread Kullanılarak
+
+            Stopwatch watch = Stopwatch.StartNew();
+
+            foreach (string f in Directory.GetFiles(imagesPath))
+            {
+                FileInfo fInfo = new FileInfo(f);
+                if (fInfo.Length &amp;lt;= 1024 * 100
+                    &amp;amp;&amp;amp; fInfo.Extension == ".jpg")
+                {
+                    Button btn = new Button();
+                    btn.Width = 64;
+                    btn.Height = 48;
+                    btn.BackgroundImageLayout = ImageLayout.Stretch;
+                    btn.BackgroundImage = Image.FromFile(f);
+                    flowLayoutPanel1.Controls.Add(btn);
+                }
+            }
+
+            watch.Stop();
+            lblElapsedTime.Text = String.Format("İşlemler {0} saniyede bitmiştir.", watch.Elapsed.TotalSeconds.ToString());
+
+            #endregion
+        }
+        
+    }
+}&lt;/pre&gt;
+&lt;p&gt;İlk geliştirmede, resimlerin tutulduğu klas&amp;ouml;rdeki dosyalar bir &lt;strong&gt;foreach&lt;/strong&gt; d&amp;ouml;ng&amp;uuml;s&amp;uuml; yardımıyla dolaşılmaktadır. Sonrasında ise uzantısı &lt;strong&gt;jpg&lt;/strong&gt; olan ve &lt;strong&gt;100 KB&lt;/strong&gt; altında olanlar belirlenmektedir. Bu kritere uyan her bir resim i&amp;ccedil;in bir &lt;strong&gt;Button&lt;/strong&gt; kontrol&amp;uuml; &amp;uuml;retilmekte ve arka plan olarak bulunan resim kullanılmakadır. Tabiki son olarak s&amp;ouml;z konusu Button kontrol&amp;uuml;, &lt;strong&gt;FlowLayoutPanel&lt;/strong&gt; bileşeni i&amp;ccedil;erisine eklenmektedir. Sonu&amp;ccedil;lar benim sisteminde aşağıdaki gibi ger&amp;ccedil;ekleşmiştir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f6%2fblg28_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat &amp;ccedil;ekici nokta işlemlerin tamamlanma s&amp;uuml;residir. Neredeyse 20 saniye. &lt;img title="Undecided" src="/editors/tiny_mce3/plugins/emotions/img/smiley-undecided.gif" alt="Undecided" border="0" /&gt;&amp;nbsp;&amp;Uuml;stelik işlemler sırasında &lt;strong&gt;Form'&lt;/strong&gt; u herhangibir yere &amp;ccedil;ekiştiremediğimizi g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Ayrıca, &lt;strong&gt;Button &lt;/strong&gt;bileşenleri&amp;nbsp;oluşturulup &lt;strong&gt;FlowLayoutPanel&lt;/strong&gt; kontrol&amp;uuml;ne eklenirken &lt;strong&gt;Form&lt;/strong&gt; &amp;uuml;zerinde g&amp;ouml;rsel bir hareketlilik olmadığı g&amp;ouml;zlemlenebilir. Ancak t&amp;uuml;m işlemler bittikten sonra Button' ların g&amp;ouml;r&amp;uuml;lmesi m&amp;uuml;mk&amp;uuml;n olacaktır. Tabiki isteklerimizden ilki işlemlerin daha kısa s&amp;uuml;rede bitirilmesi olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Bu ama&amp;ccedil;la&amp;nbsp;btnStart2_Click&amp;nbsp;kodlarında &lt;strong&gt;Parallel.ForEach&lt;/strong&gt; kullanımını tercih ettim. İşte kodun yeni hali;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void btnStart2_Click(object sender, EventArgs e)
+{
+	flowLayoutPanel1.Controls.Clear();
+
+	#region Parallel.ForEach kullanımı
+
+	Stopwatch watch = Stopwatch.StartNew();
+
+	Parallel.ForEach(Directory.GetFiles(imagesPath), f =&amp;gt;
+	{
+		FileInfo fInfo = new FileInfo(f);
+		if (fInfo.Length &amp;lt;= 1024 * 100
+			&amp;amp;&amp;amp; fInfo.Extension == ".jpg")
+		{
+			Button btn = new Button();
+			btn.Width = 64;
+			btn.Height = 48;
+			btn.BackgroundImageLayout = ImageLayout.Stretch;
+			btn.BackgroundImage = Image.FromFile(f);
+			
+			flowLayoutPanel1.Controls.Add(btn); // Exception: Cross-thread operation not valid: Control 'flowLayoutPanel1' accessed from a thread other than the thread it was created on.
+		}
+	}
+	);
+
+	watch.Stop();
+	lblElapsedTime.Text = String.Format("İşlemler {0} saniyede bitmiştir.", watch.Elapsed.TotalSeconds.ToString());
+
+	#endregion
+}&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi tek fark &lt;strong&gt;Parallel.ForEach&lt;/strong&gt; kullanımıdır. Bu sayede, &lt;strong&gt;ForEach&lt;/strong&gt; i&amp;ccedil;erisinde yer alan işlemlerin paralel iş par&amp;ccedil;alarına b&amp;ouml;l&amp;uuml;nerek ger&amp;ccedil;ekleştirilmesi m&amp;uuml;mk&amp;uuml;n olacaktı. Ancak ortam &lt;strong&gt;Console&lt;/strong&gt; değildi. Artık &lt;strong&gt;WinForms&lt;/strong&gt; ortamındaydık. &amp;Ccedil;evresel fakt&amp;ouml;rler daha farklıydı. Dolayısıyla sonu&amp;ccedil; aşağıdaki gibi oldu.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f6%2fblg28_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;İşte beklenen hayalet. &lt;img title="Sealed" src="/editors/tiny_mce3/plugins/emotions/img/smiley-sealed.gif" alt="Sealed" border="0" /&gt;&amp;nbsp;Durumu şu şekilde a&amp;ccedil;ıklayabiliriz. &lt;strong&gt;Windows&lt;/strong&gt; uygulaması &amp;ccedil;alıştırıldığıda y&amp;uuml;r&amp;uuml;mekte olan ana &lt;strong&gt;Thread&lt;/strong&gt;, kendisini &lt;strong&gt;Form&lt;/strong&gt; &amp;uuml;zerindeki t&amp;uuml;m kontrollerin sahibi olarak ilan etmiştir. Bu nedenle farklı bir Thread i&amp;ccedil;erisinden, sahibi olduğu bir kontrole ulaşılmasına izin vermez. &amp;Ccedil;&amp;ouml;z&amp;uuml;m i&amp;ccedil;in pek &amp;ccedil;ok farklı yol vardır. Ben bu yollardan birisi olan &lt;strong&gt;Invoker'&lt;/strong&gt; lardan faydalanmaya karar verdim. İşte kodun son hali.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void btnStart2_Click(object sender, EventArgs e)
+{
+	flowLayoutPanel1.Controls.Clear();
+
+	#region Parallel.ForEach kullanımı
+
+	Stopwatch watch = Stopwatch.StartNew();
+
+	Parallel.ForEach(Directory.GetFiles(imagesPath), f =&amp;gt;
+	{
+		FileInfo fInfo = new FileInfo(f);
+		if (fInfo.Length &amp;lt;= 1024 * 100
+			&amp;amp;&amp;amp; fInfo.Extension == ".jpg")
+		{
+			Button btn = new Button();
+			btn.Width = 64;
+			btn.Height = 48;
+			btn.BackgroundImageLayout = ImageLayout.Stretch;
+			btn.BackgroundImage = Image.FromFile(f);
+			AddToPanel(btn);
+			// flowLayoutPanel1.Controls.Add(btn); // Exception: Cross-thread operation not valid: Control 'flowLayoutPanel1' accessed from a thread other than the thread it was created on.
+		}
+	}
+	);
+
+	watch.Stop();
+	lblElapsedTime.Text = String.Format("İşlemler {0} saniyede bitmiştir.", watch.Elapsed.TotalSeconds.ToString());
+
+	#endregion
+}
+
+#region  Cross-thread operation not valid hatasına karşı m&amp;uuml;cadele
+
+private delegate void AddControlHandler(Button pb);
+private void AddToPanel(Button pb)
+{
+	if (flowLayoutPanel1.InvokeRequired)
+		flowLayoutPanel1.BeginInvoke(new AddControlHandler(RealAddToPanel), new object[] { pb });
+	else
+		RealAddToPanel(pb);
+}
+private void RealAddToPanel(Button pb)
+{
+	flowLayoutPanel1.Controls.Add(pb);
+}
+
+#endregion&lt;/pre&gt;
+&lt;p&gt;Bu durumda kendi sistemimde aşağıdaki sonu&amp;ccedil;lar ile karşılaştığımı g&amp;ouml;rd&amp;uuml;m.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f6%2fblg28_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Evett...Durumu bir değerlendirelim. 20 saniyelik s&amp;uuml;relerden yaklaşık 8 saniyelik s&amp;uuml;relere indik. Bu &amp;ccedil;ift &amp;ccedil;ekirdekli bir sistem i&amp;ccedil;in iyi bir sonu&amp;ccedil; olarak g&amp;ouml;r&amp;uuml;n&amp;uuml;yor. &lt;em&gt;(Tabi kodu daha fazla &amp;ccedil;ekirdek sayısı bir sistemde ne yazıkki test edemedim. Ama siz değerli okurlarımdan test etme fırsatı olan olursa sonu&amp;ccedil;ları paylaşmasını rica edeceğim.)&lt;/em&gt; Yinede herşey istediğimiz gibi değildir. S&amp;uuml;re azalmasına rağmen, &lt;strong&gt;Form'&lt;/strong&gt; u işlemler sırasında harekete ettiremediğimizi g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Benzer şekilde resimleri i&amp;ccedil;eren &lt;strong&gt;Button&lt;/strong&gt; kontrolleri yine &amp;uuml;retildik&amp;ccedil;e değil t&amp;uuml;m işlemler bittikten sonra bir anda ekranda g&amp;ouml;sterilmektedir. Dolayısıyla &lt;strong&gt;Parallel.ForEach'&lt;/strong&gt; in tam anlamıyla yeterli gelmediğini s&amp;ouml;yleyebiliriz. &amp;Ccedil;&amp;ouml;z&amp;uuml;m olarak &lt;strong&gt;ThreadPool&lt;/strong&gt; sınıfından yararlanabiliriz aslında. Şimdi kodu aşağıdaki gibi değiştirdiğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;#region  Cross-thread operation not valid hatasına karşı m&amp;uuml;cadele
+
+private delegate void AddControlHandler(Button pb);
+private void AddToPanel(Button pb)
+{
+	if (flowLayoutPanel1.InvokeRequired)
+		flowLayoutPanel1.BeginInvoke(new AddControlHandler(RealAddToPanel), new object[] { pb });
+	else
+		RealAddToPanel(pb);
+}
+private void RealAddToPanel(Button pb)
+{
+	flowLayoutPanel1.Controls.Add(pb);
+}
+
+#endregion
+
+private void FillImages(object state)
+{
+	Parallel.ForEach(Directory.GetFiles(imagesPath), f =&amp;gt;
+	{
+		FileInfo fInfo = new FileInfo(f);
+		if (fInfo.Length &amp;lt;= 1024 * 100
+			&amp;amp;&amp;amp; fInfo.Extension == ".jpg")
+		{
+			Thread.Sleep(100); // Bunu koymadığımızda UI istediğimiz gibi reaksiyon vermiyor.
+			Button btn = new Button();
+			btn.Width = 64;
+			btn.Height = 48;
+			btn.BackgroundImageLayout = ImageLayout.Stretch;
+			btn.BackgroundImage = Image.FromFile(f);
+			AddToPanel(btn);
+		}
+	}
+	);
+}
+
+private void btnStart3_Click(object sender, EventArgs e)
+{
+	flowLayoutPanel1.Controls.Clear();
+
+	#region Parallel.ForEach kullanımı
+
+	Stopwatch watch = Stopwatch.StartNew();
+
+	ThreadPool.QueueUserWorkItem(new WaitCallback(FillImages));
+
+	watch.Stop();
+	lblElapsedTime.Text = String.Format("İşlemler {0} saniyede bitmiştir.", watch.Elapsed.TotalSeconds.ToString());
+
+	#endregion
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;QueueUserWorkItem&lt;/strong&gt; metodu parametre olarak &lt;strong&gt;WaitCallback&lt;/strong&gt; temsilcisini kullanmaktadır. Bu temsilci ise &lt;strong&gt;FillImages&lt;/strong&gt; metodunu işaret etmektedir. İşlemler &lt;strong&gt;FillImages&lt;/strong&gt; metodu i&amp;ccedil;erisinde yapılmaktadır. Bu durumsa sonu&amp;ccedil;lar &amp;ccedil;ok daha ilgin&amp;ccedil; olacaktır. Button kontrolleri oluşturulduk&amp;ccedil;a &lt;strong&gt;FlowLayoutPanel&lt;/strong&gt; kontrol&amp;uuml; i&amp;ccedil;erisindede g&amp;ouml;r&amp;uuml;n&amp;uuml;r hale gelecektir. Ayrıca, &lt;strong&gt;Form'&lt;/strong&gt; u işlmeler sırasında s&amp;uuml;r&amp;uuml;kleyebildiğimizi veya oluşturulan Button' lara tıklayabildiğimizide g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;object data="/pics/2009%2f6%2fblg28_5.swf" type="application/x-shockwave-flash" width="524" height="527"&gt;&lt;/object&gt;&lt;/p&gt;
+&lt;p&gt;Ancak zaman ilerlemiştir ve artık Task sınıfı ve &amp;uuml;yeleri ile aynı işlemi nasıl ger&amp;ccedil;ekleştirebileceğimize bakmamız gerekmektedir. Sonu&amp;ccedil; itibaryle .Net 4.0 i&amp;ccedil;in aynı işleyişi aşağıdaki kod par&amp;ccedil;ası ile ger&amp;ccedil;ekleştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void btnStart4_Click(object sender, EventArgs e)
+{
+	flowLayoutPanel1.Controls.Clear();
+	Stopwatch watch = Stopwatch.StartNew();
+
+	Task.Factory.StartNew(() =&amp;gt; FillImages(null));
+
+	watch.Stop();
+	lblElapsedTime.Text = String.Format("İşlemler {0} saniyede bitmiştir.", watch.Elapsed.TotalSeconds.ToString());
+}&lt;/pre&gt;
+&lt;p&gt;Bir &amp;ouml;nceki yazımızdan hatırlayacağınız gibi &lt;strong&gt;Task&lt;/strong&gt; sınıfı &amp;uuml;zerinden &lt;strong&gt;StartNew&lt;/strong&gt; metodunu kullanarak paralel g&amp;ouml;revlerin başlatılması sağlanabilmektedir. Burada metoda parametre olarak &lt;strong&gt;Action&lt;/strong&gt; temsilcisinin işaret edebileceği &lt;strong&gt;FillImage&lt;/strong&gt; fonksiyonu verilmiştir. Sonu&amp;ccedil;lar yine yukarıdaki Flash animasyonundakine benzer olacaktır. Kullanıcılar, resimleri g&amp;ouml;steren &lt;strong&gt;Button&lt;/strong&gt; kontrolleri y&amp;uuml;klenirken, Formun diğer alanları ile etkileşimde bulunubilmektedir. Ayrıca Button bileşenleri oluşturulduk&amp;ccedil;a &lt;strong&gt;FlowLayoutPanel&lt;/strong&gt; i&amp;ccedil;erisinde g&amp;ouml;r&amp;uuml;lebilmektedir. Ancak kod i&amp;ccedil;erisinde k&amp;uuml;&amp;ccedil;&amp;uuml;k bir hile yaptığımı belirtmek isterim. &lt;img title="Embarassed" src="/editors/tiny_mce3/plugins/emotions/img/smiley-embarassed.gif" alt="Embarassed" border="0" /&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Dikkat ederseniz &lt;strong&gt;FillImages&lt;/strong&gt;&amp;nbsp;metodu i&amp;ccedil;erisinde o anki &lt;strong&gt;Thread&lt;/strong&gt; i&amp;ccedil;in&amp;nbsp;&lt;strong&gt;100&lt;/strong&gt; milisaniye kadar bir duraksatma yapılmaktadır. Bu yapılmadığı takdirde &lt;strong&gt;Button&lt;/strong&gt; bileşenlerinin oluşturulduk&amp;ccedil;a &lt;strong&gt;FlowLayoutPanel&lt;/strong&gt; i&amp;ccedil;erisinde g&amp;ouml;sterilmelerinde bir sıkıntı olduğu g&amp;ouml;zlemlenir. A&amp;ccedil;ık&amp;ccedil;ası Tutarsız bir &amp;ccedil;alışma olmaktadır. Ancak şimdilik bu gecikmenin olmasında bir sakınca yoktur. Nitekim, kullanıcı zaten paralel s&amp;uuml;re&amp;ccedil; i&amp;ccedil;erisindeki işlemlerden her biri bittik&amp;ccedil;e, tamamlanan o işi ele alabilmektedir. Yani işlemlerin tamamalanmasının beklenmesine gerek kalınmadan &amp;ccedil;alışmaya devam edilebilmektedir.&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir blog yazımızın daha sonuna. İlerleyen d&amp;ouml;nemlerde aynı senaryoyu bir WPF uygulaması i&amp;ccedil;in ele almaya &amp;ccedil;alışıyor olacağım. G&amp;ouml;r&amp;uuml;şmek dileğiyle.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2009%2f6%2fTPLAntrenmanlari2.rar"&gt;TPLAntrenmanlari2.rar (40,63 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2009-06-07 11:53:00</pubDate>
+  <slug>TPL-ile-WinForms-Macerasc4b1</slug>
+  <tags>
+    <tag>task-parallel-library</tag>
+  </tags>
+  <categories>
+    <category>TPL</category>
+  </categories>
+</post>

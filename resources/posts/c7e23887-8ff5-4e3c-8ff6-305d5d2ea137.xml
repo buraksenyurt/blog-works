@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>.Net Core Tarafından RabbitMQ'ya Mesaj Göndermek ve Java Tarafından Dinlemek</title>
+  <description>Çok sık karşılaştığımız senaryolardan birisidir; Bir uygulama kendi bünyesinde gerçekleşen bir olay sonrası başka bir uygulamayı haberdar etmek ister ya da başka bir uygulamanın yaptıklarından haberdar olmak isteyen bir uygulama vardır :) Bunun bir çok sebebi olabilir. Örneğin uygulamalar farklı teknolojilerde yazılmıştır ancak ortak iş süreçleri üzerinde koşmaktadır. Gerçek bir senaryo üzerinden hareket edersek konu daha anlaşılır olabilir. Kargo çıkışı gerçekleştiren yeni nesil bir uygulama bu çıkışlar için düzenlediği irsaliyelerin bir devlet kurumuna gönderilmesi sırasında yine aynı kurumun legacy diyebileceğimiz başka bir sisteminin süreçlerine dahil olmak durumunda olsun. Bu sürecin belli noktalarında uygulamaların birbirini haberdar etmesi gerektiğini de varsayalım. Tipik olarak gerçekleşen bir olay sonrası bu olaya ait diğer uygulamanın ihtiyacı olan bilgilerin gönderilmesi bekleniyor. Çok doğal olarak bu iletişimi senkronize etmek çok mantıklı olmaz. Nitekim anlık iş yükü çok yüksek sayılara çıkabilir ve bekleme süreleri diğer uygulamanın sürecini olumsuz etkileyebilir. Asenkron kuyruk sistemi bu dar boğazı aşmada önemli bir rol oynamaktadır.</description>
+  <content>&lt;p&gt;&lt;img src="/image.axd?picture=/2020/skynet/38/queue.png" alt="" align="right" /&gt;&amp;Ccedil;ok sık karşılaştığımız senaryolardan birisidir; Bir uygulama kendi b&amp;uuml;nyesinde ger&amp;ccedil;ekleşen bir olay sonrası başka bir uygulamayı haberdar etmek ister ya da başka bir uygulamanın yaptıklarından haberdar olmak isteyen bir uygulama vardır :) Bunun bir &amp;ccedil;ok sebebi olabilir. &amp;Ouml;rneğin uygulamalar farklı teknolojilerde yazılmıştır ancak ortak iş s&amp;uuml;re&amp;ccedil;leri &amp;uuml;zerinde koşmaktadır. Ger&amp;ccedil;ek bir senaryo &amp;uuml;zerinden hareket edersek konu daha anlaşılır olabilir.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Kargo &amp;ccedil;ıkışı ger&amp;ccedil;ekleştiren yeni nesil bir uygulama bu &amp;ccedil;ıkışlar i&amp;ccedil;in d&amp;uuml;zenlediği irsaliyelerin bir devlet kurumuna g&amp;ouml;nderilmesi sırasında yine aynı kurumun legacy diyebileceğimiz başka bir sisteminin s&amp;uuml;re&amp;ccedil;lerine dahil olmak durumunda olsun. Bu s&amp;uuml;recin belli noktalarında uygulamaların birbirini haberdar etmesi gerektiğini de varsayalım. Tipik olarak ger&amp;ccedil;ekleşen bir olay sonrası bu olaya ait diğer uygulamanın ihtiyacı olan bilgilerin g&amp;ouml;nderilmesi bekleniyor. &amp;Ccedil;ok doğal olarak bu iletişimi senkronize etmek &amp;ccedil;ok mantıklı olmaz. Nitekim anlık iş y&amp;uuml;k&amp;uuml; &amp;ccedil;ok y&amp;uuml;ksek sayılara &amp;ccedil;ıkabilir ve bekleme s&amp;uuml;releri diğer uygulamanın s&amp;uuml;recini olumsuz etkileyebilir. Asenkron kuyruk sistemi bu dar boğazı aşmada &amp;ouml;nemli bir rol oynamaktadır.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;yleyse &amp;ccedil;ok basit bir kurgu ile bunu kendi sistemlerimizde uygulamaya &amp;ccedil;alışalım. &amp;Ouml;rnek &amp;ccedil;alışmadaki amacımız RabbitMQ'yu Heimdall &amp;uuml;st&amp;uuml;nde olabilecek en basit haliyle &amp;ccedil;alıştırmak, bir .Net Core Console uygulamasından belli bir konu başlığı&lt;em&gt;(topic)&lt;/em&gt; i&amp;ccedil;in bu kuyruğa mesaj bırakmak ve olduk&amp;ccedil;a yabancısı olduğum Spring tarafındaki bir Java uygulamasından da g&amp;ouml;nderilen mesajları yakalamak. &amp;Ouml;yleyse hi&amp;ccedil; vakit kaybetmeden işe başlayalım. &amp;Ouml;rneği deneyimlediğim Heimdall&lt;em&gt;(Ubuntu 20.04)&lt;/em&gt;&amp;nbsp;&amp;uuml;zerinde koşan bir RabbitMQ hizmeti mevcut değil. Aslında kurmayı da istemiyorum. Docker veya Docker-Compose kullanmak &amp;ccedil;ok daha mantıklı.&lt;/p&gt;
+&lt;p&gt;Aşağıdaki terminal komutları ile başlayalım.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;touch docker-compose.yml
+# &amp;Ccedil;alıştırmak i&amp;ccedil;in
+docker-compose up&lt;/pre&gt;
+&lt;p&gt;docker-compose.yml i&amp;ccedil;eriğini aşağıdaki gibi oluşturabiliriz. Dikkat edileceği &amp;uuml;zere RabbitMQ imajını kullanarak gerekli port ayarlamaları ile birlikte sistemi ayağa kaldırıyoruz.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"&lt;/pre&gt;
+&lt;p&gt;Mesaj g&amp;ouml;nderecek .Net Core uygulamasını oluşturmak i&amp;ccedil;inse aşağıdaki adımları takip edebiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;# SENDER
+# RabbitMQ'ya mesaj g&amp;ouml;nderecek uygulamamız bir .Net Core uygulaması olacak
+dotnet new console --name CargoBase
+# Gerekli Nuget paketleri de aşağıdaki gibi ekleyebiliriz
+# Birisi RabbitMQ ile konuşmak i&amp;ccedil;in
+dotnet add package RabbitMQ.Client
+# Diğer Console uygulamasında nesneyi JSON serileştirmekte yardımcı olsun diye
+dotnet add package Newtonsoft.Json&lt;/pre&gt;
+&lt;p&gt;CargoBase isimli uygulamaya ait program kodunuysa aşağıdaki gibi yazabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using RabbitMQ.Client;
+using System.Text;
+using Newtonsoft.Json;
+
+namespace CargoBase
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+
+            Random _random = new Random();
+            // Factory nesnesi &amp;uuml;st&amp;uuml;nden RabbitMQ'ya bir bağlantı a&amp;ccedil;acağız
+            var factory = new ConnectionFactory() { HostName = "localhost" };
+            using (var connection = factory.CreateConnection())
+            {
+                // sonrasında kanal tanımlama ve mesaj g&amp;ouml;nderme işi i&amp;ccedil;in gerekli nesneleri &amp;uuml;reteceğiz
+                using (var channel = connection.CreateModel())
+                {
+                    string queueName = "package-state-action";
+                    // Bir kuyruk tanımladık. Kargonun durum değişikliği ile alakalı bir kuyruk gibi d&amp;uuml;ş&amp;uuml;nelim
+                    channel.QueueDeclare(queue: queueName,
+                                         durable: false,
+                                         exclusive: false,
+                                         autoDelete: false,
+                                         arguments: null);
+
+                    // Kuyruğu JSON olarak serileştirilmiş bir nesne koyalım. Kobay nesnemiz Package t&amp;uuml;r&amp;uuml;nden bir &amp;ouml;rnek.
+                    var package = JsonConvert.SerializeObject(
+                            new Package
+                            {
+                                SerialNo = _random.Next(1, 1000),
+                                State = "Ready",
+                                Weight = _random.NextDouble()*100,
+                                Time = DateTime.Now.ToString()
+                            });
+                    // nesne i&amp;ccedil;eriğini kanala yazmak i&amp;ccedil;in Byte[] dizisine &amp;ccedil;eviriyoruz
+                    var body = Encoding.UTF8.GetBytes(package);
+                    Console.WriteLine($"{package} i&amp;ccedil;eriği g&amp;ouml;nderilecek");
+
+                    // routingKey bilgisi ile de yukarıda tanımlanan kanala mesajımızı bırakalım
+                    channel.BasicPublish(exchange: "",
+                                         routingKey: queueName,
+                                         basicProperties: null,
+                                         body: body);
+                }
+
+                Console.WriteLine("Kargo i&amp;ccedil;in durum bilgisi yayınlandı. &amp;Ccedil;ıkmak i&amp;ccedil;in bir tuşa basınız");
+                Console.ReadLine();
+            }
+        }
+    }
+
+    public class Package
+    {
+        public int SerialNo { get; set; }
+        public string State { get; set; }
+        public double Weight { get; set; }
+        public string Time { get; set; }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Konsolumuz bazı rastgele değerlerden oluşan bir paket bilgisini kuyruğa g&amp;ouml;ndermekte. Alıcı uygulamayı Java tarafında geliştireceğiz ama işimizi kolaylaştırmak adına Spring Boot'tan yararlanacağız. Bu nedenle &lt;a href="https://start.spring.io/" target="_blank"&gt;Spring Initializer&lt;/a&gt; adresine gidip gerekli proje bilgilerini doldurup oluşan uygulamayı sisteme indirip kullanabiliriz. Ben ilgili bilgileri aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu&amp;nbsp;gibi doldurdum. Tabii burada kritik nokta Spring for RabbitMQ k&amp;uuml;t&amp;uuml;phanesinin de bağımlı bileşen olarak belirtilmesi.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2020/skynet/38/Screenshot_01.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Java projesi oluştuktan sonra RabbitMQ tarafını dinleyecek ve gelen JSON mesajını nesne olarak karşılayacak sınıfları da yazmamız gerekiyor&lt;em&gt;(JSON serileştirme i&amp;ccedil;in com.fasterxml.jackson.core bağımlılığının da eklenmesi gerekir. Ben ilk etapta unutmuşum, siz ihmal etmeyin)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;# RabbitMQ mesajlarını dinleyecek java servisini
+# src/main/java/com/azon/cargotracer altında oluşturabiliriz
+touch EventListener.java PackageInfo.java&lt;/pre&gt;
+&lt;p&gt;EventListener.java i&amp;ccedil;eriğini aşağıdaki gibi yazabiliriz.&lt;/p&gt;
+&lt;pre class="brush:java;auto-links:false;toolbar:false" contenteditable="false"&gt;package com.azon.cargotracer;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageListener;
+import org.springframework.stereotype.Service;
+
+/*
+    MessageListener'dan t&amp;uuml;reyen bu sınıfın ezdiğimiz(override)
+    onMessage metodu &amp;uuml;zerinden, RabbitMQ tarafında ilgili kuyruğa atılmış mesajın g&amp;ouml;vdesini yakalayabiliriz.
+*/
+@Service
+public class EventListener implements MessageListener {
+
+    public void onMessage(Message message) {
+        // Message tipinin getBody fonksiyonu ile kuyruk mesajının i&amp;ccedil;eriğini aldık
+        String content = new String(message.getBody());
+        System.out.println("\n" + content + "\n");
+
+        try {
+            /*
+                İ&amp;ccedil;eriği JSON formatında g&amp;ouml;ndermiştik.
+                Jackson isimli paketten yararlanarak bu i&amp;ccedil;eriği Java tarafındaki PackageInfo nesnemize d&amp;ouml;n&amp;uuml;şt&amp;uuml;rebiliriz.
+                Gelen JSON i&amp;ccedil;eriğini Java tarafında nesne olarak ele alabilmek i&amp;ccedil;in...
+            */
+            ObjectMapper objectMapper = new ObjectMapper();
+            PackageInfo packageInfo = objectMapper.readValue(content, PackageInfo.class);
+            System.out.println(
+                    packageInfo.SerialNo + "," + packageInfo.State + "," + packageInfo.Weight + "," + packageInfo.Time);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;PackageInfo.java;&lt;/p&gt;
+&lt;pre class="brush:java;auto-links:false;toolbar:false" contenteditable="false"&gt;package com.azon.cargotracer;
+
+/*
+    .Net Core tarafında RabbitMQ kuyruğuna attığımız Package sınıfı JSON formatta serileşerek yollanıyor.
+    Onun Java tarafındaki izd&amp;uuml;ş&amp;uuml;m&amp;uuml; kabul edeceğimiz sınıfı aşağıdaki gibi tanımlayabiliriz.
+*/
+public class PackageInfo {
+
+    public int SerialNo;
+    public String State;
+    public double Weight;
+    public String Time;
+
+    public int getSerialNo() {
+        return SerialNo;
+    }
+
+    public void setSerialNo(int value) {
+        SerialNo = value;
+    }
+
+    public String getState() {
+        return State;
+    }
+
+    public void setState(String value) {
+        State = value;
+    }
+
+    public double getWeight() {
+        return SerialNo;
+    }
+
+    public void setWeight(double value) {
+        Weight = value;
+    }
+
+    public String getTime() {
+        return Time;
+    }
+
+    public void setTime(String value) {
+        Time = value;
+    }
+}&lt;/pre&gt;
+&lt;h2&gt;&amp;Ccedil;alışma Zamanı&lt;/h2&gt;
+&lt;p&gt;Kurguyu işletmek i&amp;ccedil;in &amp;uuml;&amp;ccedil; uygulama &amp;ccedil;alıştırmamız gerekiyor. &amp;Ouml;ncelikle docker-compose ile RabbitMQ tarafını ayağa kaldırmalıyız. Ardından mesaj g&amp;ouml;nderecek olan dotnet core uygulamasını başlatabiliriz. Java uygulaması &amp;ccedil;alıştırıldıktan sonra ilgili RabbitMQ kuyruğunu dinleme konumunda kalacaktır. Onu dotnet core uygulamasından &amp;ouml;nce de &amp;ccedil;alıştırabiliriz. Sonu&amp;ccedil; itibariyle .Net uygulamasından mesaj basıldık&amp;ccedil;a Java arabirimine &amp;ccedil;ıkması gerekmektedir.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;# Rabbit tarafı i&amp;ccedil;in
+docker-compose up
+
+# Console uygulaması i&amp;ccedil;in (Mesaj g&amp;ouml;nderen taraf)
+dotnet run
+
+# Maven ile Java tarafını başlatmak i&amp;ccedil;in
+./mvnw spring-boot:run&lt;/pre&gt;
+&lt;p&gt;İşte &amp;ccedil;alışma zamanından bir g&amp;ouml;r&amp;uuml;nt&amp;uuml;.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2020/skynet/38/Screenshot_03.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere Console uygulamasından g&amp;ouml;nderdiğimiz JSON mesaj i&amp;ccedil;eriği, Java uygulamasına ait terminal ekranına da d&amp;uuml;şm&amp;uuml;şt&amp;uuml;r. Bu arada uygulama kodlarına &lt;a href="https://github.com/buraksenyurt/skynet/tree/master/No%2038%20-%20Spring%20RabbitMQ%20and%20DotNetCore" target="_blank"&gt;skynet github reposu&lt;/a&gt; &amp;uuml;zerinden erişebilirsiniz. Kodlara eriştiğinizde şu soruya cevap aramanızı &amp;ouml;neririm; Varsayılan halde Java uygulaması localhost sunucusuna ve standart RabbitMQ portuna gideceğini nereden biliyor? Bu sorulara ek olarak kurguyu biraz daha &amp;ouml;teye taşıyabilirsiniz. &amp;Ouml;rneğin Java uygulamasını birden fazla kuyruğu dinleyecek şekilde organize etmeyi deneyebilir ve hatta kullandığınız kuyruğa başka platformda yazılmış programlardan mesaj g&amp;ouml;nderip&amp;nbsp;kimden geldiğini anlamaya &amp;ccedil;alışabilirsiniz. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2020-11-23 21:00:00</pubDate>
+  <slug>net-core-tarafindan-rabbitmq-ya-mesaj-gondermek-ve-java-tarafindan-dinlemek</slug>
+  <tags>
+    <tag>net-core</tag>
+    <tag>java</tag>
+    <tag>c#</tag>
+    <tag>rabbitmq</tag>
+    <tag>docker</tag>
+    <tag>spring</tag>
+    <tag>spring-boot</tag>
+    <tag>docker-compose</tag>
+    <tag>json</tag>
+    <tag>maven</tag>
+  </tags>
+  <categories>
+    <category>.Net Core</category>
+  </categories>
+</post>

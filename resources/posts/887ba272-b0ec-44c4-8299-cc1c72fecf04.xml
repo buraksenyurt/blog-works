@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>ServiceHost Sınıfından Genişletmek</title>
+  <description>WCF(Windows Communication Foundation) mimarisinde sunucu(Server) tarafındaki çalışma ortamınının(WCF Runtime) hazırlanması ile ilişkili olaraktan ServiceHost sınıfı kullanılmaktadır. Bir başka deyişle ServiceHost sınıfı uygulama sunucusu(Application Server) üzerindeki gerekli hazırlıkların yapılmasını sağlamaktadır.</description>
+  <content>&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Değerli Okurlarım Merhabalar,&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;WCF(Windows Communication Foundation) mimarisinde sunucu(Server) tarafındaki &lt;strong&gt;&amp;ccedil;alışma ortamınının(WCF Runtime)&lt;/strong&gt; hazırlanması ile ilişkili olaraktan &lt;strong&gt;ServiceHost&lt;/strong&gt; sınıfı kullanılmaktadır. Bir başka deyişle &lt;strong&gt;ServiceHost&lt;/strong&gt; sınıfı &lt;strong&gt;uygulama sunucusu(Application Server)&lt;/strong&gt; &amp;uuml;zerindeki gerekli hazırlıkların yapılmasını sağlamaktadır. ServisHost sınıfı &amp;ccedil;oğunlukla, servis nesnesinin &lt;strong&gt;IIS(Internet Information Services)&lt;/strong&gt; veya &lt;strong&gt;WAS(Windows Activation Services) &lt;/strong&gt;&amp;uuml;zerinden yayınlanmadığı durumlarda kullanılmaktadır. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Nitekim IIS ve WAS, ServiceHost tiplerinin &amp;ccedil;alışma zamanında kendileri ele almaktadır. Bununla birlikte geliştirici tarafından t&amp;uuml;retilen ServiceHost tiplerinin IIS veya WAS ortamlarında ele alınacak şekilde &amp;ouml;zelleştirmelerinin yapılmasıda m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. &lt;strong&gt;System.ServiceModel&lt;/strong&gt; isim alanı altında yer alan &lt;strong&gt;ServiceHost&lt;/strong&gt; sınıfı &lt;strong&gt;ServiceHostBase&lt;/strong&gt; isimli &lt;strong&gt;abstract&lt;/strong&gt; sınıftan t&amp;uuml;remektedir. Doğal olarak sunduğu bazı kurallar değiştirilebilir bir başka deyişle &lt;strong&gt;ezilerek(override) &lt;/strong&gt;yenide yorumlanabilir. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&amp;Ouml;zellikle &amp;ccedil;ok sayıda servisin yayınlandığı vakalarda, uygulama sunucusu &amp;uuml;zerindeki &amp;ccedil;alışma zamanı davranışlarının farklı ve daha kolay konfigure edilmesi istenebilir. İşte bu tip ihtiya&amp;ccedil;larda &lt;strong&gt;geliştirici(Developer) &lt;/strong&gt;tarafından &lt;strong&gt;ServiceHost&lt;/strong&gt; tipinden &lt;strong&gt;t&amp;uuml;retilen(Inherit)&lt;/strong&gt; sınıflara ait nesne &amp;ouml;rneklerinin kullanılması tercih edilebilir. &amp;Ouml;rneğin, birden fazla &lt;strong&gt;EndPoint&lt;/strong&gt; i&amp;ccedil;in varsayılan olarak kapalı olan &lt;strong&gt;Metadata&lt;/strong&gt; &lt;strong&gt;yayınlamasının(Metada Publishing)&lt;/strong&gt; kod tarafında a&amp;ccedil;ılması veya &lt;strong&gt;EndPoint&lt;/strong&gt; gibi bilgilerin bir veri kaynağı &amp;uuml;zerinden(&amp;ouml;rneğin bir &lt;strong&gt;veritabanı-database&lt;/strong&gt;) okunmasını sağlamak i&amp;ccedil;in &amp;ouml;zel &lt;strong&gt;ServiceHost&lt;/strong&gt; tiplerinin tasarlanması tercih edilebilir. İşte bu b&amp;ouml;l&amp;uuml;mde &amp;ouml;zel ServiceHost sınıflarının nasıl yazılabileceği incelenmektedir. &amp;Ouml;ncelikli olarak ServiceHost tipinin &lt;strong&gt;sınıf diyagram(Class Diagram)&lt;/strong&gt; daki g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ne bakmakta ve Framework i&amp;ccedil;erisindeki yerini g&amp;ouml;rmekte yarar vardır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk253_1.gif" alt="" width="352" height="439" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Genel olarak t&amp;uuml;retme doğrudan &lt;strong&gt;ServiceHost&lt;/strong&gt; sınıfı &amp;uuml;zerinden yapılmaktadır. &lt;strong&gt;Ezilebilen &amp;uuml;yeler(overridable members) &lt;/strong&gt;arasında en &amp;ccedil;ok kullanılanı &lt;strong&gt;ApplyConfiguration&lt;/strong&gt; metodudur. Bu metod ile &lt;strong&gt;Host&lt;/strong&gt; i&amp;ccedil;in y&amp;uuml;klenen konfigurasyon bilgilerine erişilmesi ve bazı davranışların değiştirilmesi m&amp;uuml;mk&amp;uuml;n olabilmektedir. S&amp;ouml;z gelimi yazının başında belirtilen vakalardan ilkinde, EndPoint noktalarının her biri i&amp;ccedil;in otomatik olarak &lt;strong&gt;Metadata Publishing&lt;/strong&gt; &amp;uuml;retilmesinin istendiği bir durumda &lt;strong&gt;ApplyConfiguration&lt;/strong&gt; metodu i&amp;ccedil;erisinde gerekli eklemelerin yapılması sağlanabilir. B&amp;ouml;ylece servis uygulamasına ka&amp;ccedil; tane EndPoint eklenirse eklensin her biri i&amp;ccedil;in &lt;strong&gt;Metadata Publishing &lt;/strong&gt;otomatik olarak eklenebilmektedir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Varsayılan olarak &lt;strong&gt;Metadata Publishing&lt;/strong&gt; se&amp;ccedil;eneği kapalıdır. Bunun sebebi &lt;strong&gt;Metadata&lt;/strong&gt; bilgisinin istemeden yayınlanmasının &amp;ouml;n&amp;uuml;ne ge&amp;ccedil;mektedir. &lt;strong&gt;Metadata&lt;/strong&gt; yayınlamasının a&amp;ccedil;ık olması halinde kullanılan &lt;strong&gt;EndPoint&lt;/strong&gt;' ler i&amp;ccedil;erisindeki &lt;strong&gt;bağlayıcı tiplerin(Binding Type)&lt;/strong&gt; &amp;ccedil;eşitlerine g&amp;ouml;rede farklı protokoller &amp;uuml;zerinden servis bilgilerinin &amp;ccedil;ekilmesi sağlanabilmektedir. Bir başka deyişle servisin ne yaptığı, hangi operasyonları sunduğu bilgileri &lt;strong&gt;Metadata&lt;/strong&gt; şeklinde sunulabilir. Bu, istemciler i&amp;ccedil;in gerekli olan &lt;strong&gt;proxy&lt;/strong&gt; nesnelerinin &amp;uuml;retilmesinde ele alınmaktadır. S&amp;ouml;z konusu metadata bilgilerinin elde edilmesi i&amp;ccedil;in &lt;strong&gt;svcutil&lt;/strong&gt; aracı komut satırından kullanılabilir. Yada &lt;strong&gt;Visual Studio 2008&lt;/strong&gt; ortamında &lt;strong&gt;Add Service Reference&lt;/strong&gt; se&amp;ccedil;eneğinden yararlanılabilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Lakin &amp;ouml;yle senaryolar vardırki &lt;strong&gt;metadata&lt;/strong&gt; bilgisinin yayınlanması istenmez. S&amp;ouml;z gelimi bir servisi kullanan başka bir servis olduğu g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınsın. T&amp;uuml;ketici servis i&amp;ccedil;in &lt;strong&gt;proxy&lt;/strong&gt; nesnesi &amp;ouml;nemlidir ve manuel olarak &amp;uuml;retilip dağıtılabilir. Ancak servisin &lt;strong&gt;metadata&lt;/strong&gt; bilgisinin bu iki servis dışındaki &lt;strong&gt;istemciler(Clients)&lt;/strong&gt; tarafından elde edilmesi &lt;strong&gt;istenmemektedir&lt;/strong&gt;. İşte bu gibi olasılıklar nedeni ile &lt;strong&gt;Metadata&lt;/strong&gt; yayınlaması varsayılan olarak kapalıdır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Yazıda ilk olarak &lt;strong&gt;Metadata&lt;/strong&gt; yayınlamasının otomatik olarak a&amp;ccedil;ılmasını sağlayacak bir &amp;ouml;rnek &amp;uuml;zerinde durulacaktır. Lakin bu &amp;ouml;rnekte &lt;strong&gt;ServiceHost&lt;/strong&gt; sınıfından t&amp;uuml;reyen bir tip kullanılmaktadır. Ama &amp;ouml;ncesinde Metadata yayınlamasının birden fazla EndPoint &amp;uuml;zerinden yapıldığı bir senaryoda konfigurasyon dosyasın i&amp;ccedil;erisinde nasıl bir ayarlama yapılması gerektiğini incelemekte yarar vardır. Bu ama&amp;ccedil;la aşağıdaki &lt;strong&gt;servis s&amp;ouml;zleşmesinin(Service Contract)&lt;/strong&gt; bulunduğu bir &lt;strong&gt;WCF servis k&amp;uuml;t&amp;uuml;phanesi(WCF Service Library)&lt;/strong&gt; geliştirildiği g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınsın.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk253_2.gif" alt="" width="243" height="293" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Servis s&amp;ouml;zleşmesi ve uygulayıcı tip i&amp;ccedil;eriği;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+
+namespace ServisKutuphanesi
+{
+    [ServiceContract(Name="Cebir Servisi",Namespace="http://www.bsenyurt.com/CebirServisi")]
+    public interface ICebir
+    {
+        [OperationContract]
+        double DaireAlan(double r);
+
+        [OperationContract]
+        double DaireCevre(double r);
+    }
+
+    public class Cebir
+        : ICebir
+    {
+        #region ICebir Members
+
+        public double DaireAlan(double r)
+        {
+            return Math.PI*r * r;
+        }
+
+        public double DaireCevre(double r)
+        {
+            return 2 * Math.PI * r;
+        }
+
+        #endregion
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Senaryoda odaklanılması gereken nokta &amp;ouml;zel &lt;strong&gt;ServiceHost&lt;/strong&gt; tipi geliştirilmesi olduğundan, servis s&amp;ouml;zleşmesi ve uygulayıcı tip m&amp;uuml;mk&amp;uuml;n olduğunca basit tutulmuştur. Service tarafındaki uygulamada en b&amp;uuml;y&amp;uuml;k sorun &lt;strong&gt;Cebir&lt;/strong&gt; servisine ait farklı &lt;strong&gt;EndPoint&lt;/strong&gt; noktaları i&amp;ccedil;in &lt;strong&gt;Metadata&lt;/strong&gt; yayınlamasının yapılmak istenmesidir. Bu nedenle uygulama sunucusu g&amp;ouml;revini &amp;uuml;stlenen programdaki konfigurasyon dosyasında, &lt;strong&gt;Mex&lt;/strong&gt; &lt;strong&gt;EndPoint&lt;/strong&gt; tanımlamalarının yapılması gerekir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;Mex EndPoint &lt;/strong&gt;tanımlamaları ile &lt;strong&gt;TCP&lt;/strong&gt;, &lt;strong&gt;HTTP&lt;/strong&gt;, &lt;strong&gt;HTTPS&lt;/strong&gt;, &lt;strong&gt;NetPipe&lt;/strong&gt; gibi protokoller &amp;uuml;zerinden &lt;strong&gt;Metadata&lt;/strong&gt; yayınlaması yapılabilmektedir. Burada en &amp;ouml;nemli nokta &lt;strong&gt;IMetadataExchange&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;d&amp;uuml;r(interface). Bilindiği gibi bir &lt;strong&gt;EndPoint&lt;/strong&gt; i&amp;ccedil;erisinde &lt;strong&gt;Address&lt;/strong&gt;,&lt;strong&gt;Binding&lt;/strong&gt; ve &lt;strong&gt;Contract&lt;/strong&gt; tanımlamaları yapılmaktadır. &lt;strong&gt;IMetadataExchange&lt;/strong&gt; metadata yayınlaması i&amp;ccedil;in gerekli s&amp;ouml;zleşmeyi(bildirmektedir). Bağlayıcı olarak &lt;strong&gt;mexHttpBinding&lt;/strong&gt;, &lt;strong&gt;mexHttpsBinding&lt;/strong&gt;, &lt;strong&gt;mexNamedPipeBinding&lt;/strong&gt;, &lt;strong&gt;mexTcpBinding&lt;/strong&gt; tipleri kullanılmaktadır. &lt;strong&gt;Address&lt;/strong&gt; bilgisinde ise &amp;ccedil;oğunlukla &lt;strong&gt;baseAddress&lt;/strong&gt; ile tanımlanan bilgiye ilave olaraktan &lt;strong&gt;Mex&lt;/strong&gt; yazılması yeterli olmaktadır. Burada Mex bir takma ad g&amp;ouml;revini &amp;uuml;stlenmektedir.&lt;/span&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Host uygulama basit bir &lt;strong&gt;Console&lt;/strong&gt; projesi olarak tasarlanmıştır ve konfigurasyon dosyası i&amp;ccedil;eriği aşağıda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibidir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;system.serviceModel&amp;gt;
+        &amp;lt;behaviors&amp;gt;
+            &amp;lt;serviceBehaviors&amp;gt;
+                &amp;lt;behavior name="MetadataExchangeBehavior"&amp;gt;
+                    &amp;lt;serviceMetadata/&amp;gt;
+                &amp;lt;/behavior&amp;gt;
+            &amp;lt;/serviceBehaviors&amp;gt;
+        &amp;lt;/behaviors&amp;gt;
+        &amp;lt;services&amp;gt;
+            &amp;lt;service behaviorConfiguration="MetadataExchangeBehavior" name="ServisKutuphanesi.Cebir"&amp;gt;
+                &amp;lt;endpoint address="" binding="netTcpBinding" name="CebirTcpEndPoint" contract="ServisKutuphanesi.ICebir" /&amp;gt;
+                &amp;lt;endpoint address="" binding="basicHttpBinding" name="CebirHttpEndPoint" contract="ServisKutuphanesi.ICebir" /&amp;gt;
+                &amp;lt;endpoint address="" binding="netNamedPipeBinding" name="CebirPipeEndPoint" contract="ServisKutuphanesi.ICebir" /&amp;gt;
+                &amp;lt;endpoint address="Mex" binding="mexTcpBinding" name="CebirMexTcpEndPoint" contract="IMetadataExchange" /&amp;gt;
+                &amp;lt;endpoint address="Mex" binding="mexHttpBinding" bindingConfiguration="" name="CebirMexHttpEndPoint" contract="IMetadataExchange" /&amp;gt;
+                &amp;lt;endpoint address="Mex" binding="mexNamedPipeBinding" bindingConfiguration="" name="CebirMexPipeEndPoint" contract="IMetadataExchange" /&amp;gt;
+                &amp;lt;host&amp;gt;
+                    &amp;lt;baseAddresses&amp;gt;
+                        &amp;lt;add baseAddress="net.tcp://localhost:3400/CebirServisi" /&amp;gt;
+                        &amp;lt;add baseAddress="http://localhost:3401/CebirServisi" /&amp;gt;
+                        &amp;lt;add baseAddress="net.pipe://localhost/CebirServisi" /&amp;gt;
+                    &amp;lt;/baseAddresses&amp;gt;
+                &amp;lt;/host&amp;gt;
+            &amp;lt;/service&amp;gt;
+        &amp;lt;/services&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere senaryoya uygun olması a&amp;ccedil;ısından birden fazla farklı &lt;strong&gt;EndPoint&lt;/strong&gt; kullanılmakta ve farklı protokollerin her biri i&amp;ccedil;in birer &lt;strong&gt;Mex&lt;/strong&gt; &lt;strong&gt;EndPoint&lt;/strong&gt; noktası ilave edilmektedir. Hem &lt;strong&gt;EndPoint&lt;/strong&gt; noktaları hemde &lt;strong&gt;Mex&lt;/strong&gt; &lt;strong&gt;EndPoint&lt;/strong&gt; noktaları i&amp;ccedil;in &lt;strong&gt;TCP&lt;/strong&gt;, &lt;strong&gt;HTTP&lt;/strong&gt; ve &lt;strong&gt;Named Pipe&lt;/strong&gt; formatında gereken &lt;strong&gt;temel adres(base address) &lt;/strong&gt;tanımlamaları &lt;strong&gt;host&lt;/strong&gt; elementi i&amp;ccedil;erisinde yapılmaktadır. Buna g&amp;ouml;re istemciler servis &amp;ccedil;ağrılarında temel adreslerde belirtilen lokasyonlara talepte bulunabilir. Diğer taraftan &lt;strong&gt;Mex&lt;/strong&gt; adres değerlerine sahip &lt;strong&gt;EndPoint&lt;/strong&gt; noktaları &amp;uuml;zerinden &lt;strong&gt;proxy&lt;/strong&gt; &amp;uuml;retimide sağlanabilir. Servis uygulamasının konfigurasyon bilgilerine g&amp;ouml;re aslında aşağıdaki şekilde ifade edilen yayınlamalar s&amp;ouml;z konusudur.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk253_4.gif" alt="" width="546" height="427" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&amp;Ouml;zetle servis &amp;uuml;zerinde &lt;strong&gt;Metadata&lt;/strong&gt; yayınlaması i&amp;ccedil;in sunulan her adres bilgisi &amp;uuml;zerinden &lt;strong&gt;Proxy&lt;/strong&gt; ve &lt;strong&gt;Config&lt;/strong&gt; dosyası &amp;uuml;retimleri ger&amp;ccedil;ekleştirilebilmektedir. Servis uygulamasına ait program kodları ise aşağıdaki gibidir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+using ServisKutuphanesi;
+
+namespace Sunucu
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            ServiceHost host = new ServiceHost(typeof(Cebir));
+            host.Open();
+            Console.WriteLine("Sunucu dinlemede");
+            Console.ReadLine();
+            host.Close();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Program kodlarında standart olarak &lt;strong&gt;ServiceHost&lt;/strong&gt; &amp;ouml;rneği oluşturulmuş ve &lt;strong&gt;Cebir&lt;/strong&gt; nesne &amp;ouml;rneği parametre olarak verilerek gerekli &lt;strong&gt;WCF&lt;/strong&gt; &lt;strong&gt;&amp;ccedil;alışma&lt;/strong&gt; &lt;strong&gt;ortamı&lt;/strong&gt; tesis edilmiştir. Sonrasında ise servis nesnesi a&amp;ccedil;ılarak(Open metodu ile), istemciden gelen talepleri dinlemek &amp;uuml;zere konuşlandırılmıştır. Bu durumda servis uygulaması &amp;ccedil;alışırken, &lt;strong&gt;svcutil&lt;/strong&gt; aracı kullanılaraktan &lt;strong&gt;Mex&lt;/strong&gt; &lt;strong&gt;EndPoint&lt;/strong&gt; noktaları &amp;uuml;zerinden &lt;strong&gt;proxy&lt;/strong&gt; ve &lt;strong&gt;config&lt;/strong&gt; dosyası &amp;uuml;retimleri ger&amp;ccedil;ekleştirilebilmektedir. Aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde bu durum irdelenmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk253_3.gif" alt="" width="587" height="526" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &lt;strong&gt;baseAddress&lt;/strong&gt; elementlerinde belirtilen adreslerin tamamı &amp;uuml;zerinden &lt;strong&gt;proxy&lt;/strong&gt; ve &lt;strong&gt;config&lt;/strong&gt; dosyası &amp;uuml;retimi yapılabilmektedir. Elbetteki &amp;uuml;retilen &lt;strong&gt;config&lt;/strong&gt; dosyalarının her biri &lt;strong&gt;NetTcpBinding&lt;/strong&gt;, &lt;strong&gt;BasicHttpBinding&lt;/strong&gt; ve &lt;strong&gt;NetNamedPipeBinding&lt;/strong&gt; tabanlı &lt;strong&gt;EndPoint&lt;/strong&gt; bildirimlerinin &amp;uuml;&amp;ccedil;&amp;uuml;n&amp;uuml; birden i&amp;ccedil;erecektir. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Artık yazıya konu olan &amp;ouml;rneğe ge&amp;ccedil;ilebilir. &amp;Ouml;zel olarak yazılan &lt;strong&gt;ServiceHost&lt;/strong&gt; t&amp;uuml;revli bir sınıf i&amp;ccedil;erisinde, konfigurasyon dosyasından gelen t&amp;uuml;m &lt;strong&gt;baseAddress&lt;/strong&gt; bilgileri i&amp;ccedil;in otomatik olarak &lt;strong&gt;Mex&lt;/strong&gt; &lt;strong&gt;EndPoint&lt;/strong&gt; eklenmesi sağlanmaya &amp;ccedil;alışılacaktır. Bunun i&amp;ccedil;in aşağıdaki gibi bir sınıf tasarlanması yeterlidir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk253_7.gif" alt="" width="395" height="395" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi tek yapılması gereken &lt;strong&gt;ServiceHost&lt;/strong&gt; tipinden bir sınıf t&amp;uuml;retmek ve bu senaryo i&amp;ccedil;in &lt;strong&gt;ApplyConfiguration&lt;/strong&gt; metodunu ezmektir. &lt;strong&gt;SmartServiceHost&lt;/strong&gt; sınıfının kod i&amp;ccedil;eriği aşağıdaki gibidir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+using System.ServiceModel.Description;
+
+namespace Sunucu
+{
+    class SmartServiceHost
+        :ServiceHost
+    {
+        // Yapıcı metoda gelen servis tipi ve adres bilgileri ServiceHost sınıfının eş d&amp;uuml;şen yapıcı metoduna(Constructor) y&amp;ouml;nlendirilir
+        public SmartServiceHost(Type servisTipi,params Uri[] adresler)
+            :base(servisTipi,adresler)
+        {
+        }
+
+        protected override void ApplyConfiguration()
+        {
+            base.ApplyConfiguration(); // Konfigurasyon dosyasındaki bilgilerin y&amp;uuml;klenmesi i&amp;ccedil;in bu metod &amp;ccedil;ağrısı yapılmalıdır
+
+            // Eğer servis i&amp;ccedil;in Metadata Publishing a&amp;ccedil;ık değilse bunun eklenmesi sağlanır
+            ServiceMetadataBehavior servisDavranisi=this.Description.Behaviors.Find&amp;lt;ServiceMetadataBehavior&amp;gt;();
+            if (servisDavranisi == null)
+            {
+                servisDavranisi=new ServiceMetadataBehavior();
+                this.Description.Behaviors.Add(servisDavranisi); // MEX erişimi i&amp;ccedil;in yeni bir servis davranışı eklenir
+            }
+
+            // host elementi i&amp;ccedil;erisindeki t&amp;uuml;m baseAddress değerleri dolaşılır
+            foreach (Uri temelAdres in this.BaseAddresses)
+            {
+                string schemaBilgisi = temelAdres.Scheme; // Şema bilgisi alınır
+                if (schemaBilgisi == Uri.UriSchemeNetTcp) // Şema Tcp bazlı ise
+                {
+                    // Tcp i&amp;ccedil;in bir Mex EndPoint eklenir
+                    // İlk parametre MEX i&amp;ccedil;in gerekli servis s&amp;ouml;zleşmesidir
+                    // İkinci parametrede yer alan Create metodu ile gereki Mex EndPoint &amp;uuml;retimi sağlanır 
+                    this.AddServiceEndpoint("IMetadataExchange", MetadataExchangeBindings.CreateMexTcpBinding(), "Mex");
+                }
+                else if (schemaBilgisi == Uri.UriSchemeNetPipe) // Şema Pipe bazlı ise
+                {
+                    // Pipe i&amp;ccedil;in Mex EndPoint eklenir
+                    this.AddServiceEndpoint("IMetadataExchange", MetadataExchangeBindings.CreateMexNamedPipeBinding(), "Mex");
+                }
+                else if (schemaBilgisi == Uri.UriSchemeHttp) // Şema Http bazlı ise
+                {
+                    servisDavranisi.HttpGetEnabled = true; // Http &amp;uuml;zerinden yayınlamanın yapılacağı belirtilir
+                    // Http i&amp;ccedil;in Mex EndPoint eklenir
+                    this.AddServiceEndpoint("IMetadataExchange", MetadataExchangeBindings.CreateMexHttpBinding(), "Mex");
+                }
+                else if (schemaBilgisi == Uri.UriSchemeHttps) // Şema Https bazlı ise
+                {
+                    servisDavranisi.HttpsGetEnabled = true; // Https &amp;uuml;zerinden yayınlamanın yapılacağı belirtilir
+                    // Https i&amp;ccedil;in Mex EndPoint eklenir
+                    this.AddServiceEndpoint("IMetadataExchange", MetadataExchangeBindings.CreateMexHttpsBinding(), "Mex");
+                }
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;ServiceHost&lt;/strong&gt; sınıfına ait bir nesne &amp;ouml;rneklenirken servis nesnesinin tipi ve kullanılacak adres bilgileri parametre olarak verilmektedir. Bu nedenle &lt;strong&gt;SmartHostService&lt;/strong&gt; sınıfının ilgili &lt;strong&gt;yapıcı metodundan(Constructor),&lt;/strong&gt; &lt;strong&gt;base&lt;/strong&gt; anahtar kelimesi ile &lt;strong&gt;ServiceHost&lt;/strong&gt; sınıfında eş d&amp;uuml;şen yapıcı metoda parametre aktarımı ger&amp;ccedil;ekleştirilmektedir. Diğer taraftan senaryoda istenen, var olan &lt;strong&gt;EndPoint&lt;/strong&gt; noktaları i&amp;ccedil;in &lt;strong&gt;Mex&lt;/strong&gt; tanımlamalarının yapılmasıdır. Bu nedenle konfigurasyon dosyasının i&amp;ccedil;eriğine ulaşılması ve &lt;strong&gt;servis tanımlamalarında(Service Description)&lt;/strong&gt; gerekli ilavelerin yapılması gerekmektedir. S&amp;ouml;z konusu işlemler i&amp;ccedil;in &lt;strong&gt;ApplyConfiguration&lt;/strong&gt; metodu ezilmiştir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;ApplyConfiguration&lt;/strong&gt; metodu dışında ezilebilecek olan diğer &amp;uuml;yelerde aşağıdaki şekilde g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibidir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk253_5.gif" alt="" width="532" height="242" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Dikkat edileceği &amp;uuml;zere servisi kapatma, a&amp;ccedil;ma veya hata oluşması anındaki olay metodların ezilmesi dahi m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;ApplyConfiguration&lt;/strong&gt; metodu i&amp;ccedil;erisinde ilk olarak &lt;strong&gt;base.ApplyConfiguration()&lt;/strong&gt; fonksiyonuna &amp;ccedil;ağrı yapılarak konfigurasyon dosyasındaki ayarların ortama y&amp;uuml;klenmesi sağlanmaktadır. Sonrasında ise servis davranışında &lt;strong&gt;Metadata&lt;/strong&gt; yayınlaması i&amp;ccedil;in gerekli elementin var olup olmadığına bakılır. Eğer yoksa eklenmesi sağlanır. İlerleyen adımlardaysa konfigurasyon dosyasındaki t&amp;uuml;m temel adresler tek tek dolaşılır. Her temel adresin &lt;strong&gt;şema(Scheme)&lt;/strong&gt; tipine bakılarak uygun bir &lt;strong&gt;Mex&lt;/strong&gt; &lt;strong&gt;EndPoint&lt;/strong&gt; y&amp;uuml;klemesi yapılmaktadır. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Burada şema bilgisi elde edildikten sonra &lt;strong&gt;Uri&lt;/strong&gt; sınıfının &lt;strong&gt;UriSchemeHttps&lt;/strong&gt;, &lt;strong&gt;UriSchemeHttp&lt;/strong&gt;, &lt;strong&gt;UriSchemeNetPipe&lt;/strong&gt;, &lt;strong&gt;UriSchemeNetTcp&lt;/strong&gt; sabit değerleri ile kıyaslama yapılmakta ve duruma g&amp;ouml;re uygun &lt;strong&gt;EndPoint&lt;/strong&gt; &amp;uuml;retimleri ger&amp;ccedil;ekleştirilmektedir. T&amp;uuml;m &lt;strong&gt;Mex&lt;/strong&gt; &lt;strong&gt;EndPoint&lt;/strong&gt; noktaları &lt;strong&gt;IMetadataExchange&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml;, &lt;strong&gt;s&amp;ouml;zleşme(Contract)&lt;/strong&gt; tipi olarak kullanmaktadır. Bununla birlikte uygun &lt;strong&gt;bağlayıcı tiplerin(Binding Type)&lt;/strong&gt; &amp;uuml;retimi i&amp;ccedil;in &lt;strong&gt;MetadataExchangeBindings&lt;/strong&gt; sınıfının &lt;strong&gt;CreateMexHttpsBinding&lt;/strong&gt;, &lt;strong&gt;CreateMexHttpBinding&lt;/strong&gt;, &lt;strong&gt;CreateMexNamedPipeBinding&lt;/strong&gt; ve &lt;strong&gt;CreateMexTcpBinding&lt;/strong&gt; gibi metodları kullanılmaktadır. Artık servis uygulamasında &lt;strong&gt;ServiceHost&lt;/strong&gt; yerine &lt;strong&gt;SmartServiceHost&lt;/strong&gt; sınıfı aşağıdaki kod par&amp;ccedil;asında olduğu gibi kullanılabilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+using ServisKutuphanesi;
+
+namespace Sunucu
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // ServiceHost host = new ServiceHost(typeof(Cebir));
+            SmartServiceHost host = new SmartServiceHost(typeof(Cebir));
+            host.Open();
+            Console.WriteLine("Sunucu dinlemede");
+            Console.ReadLine();
+            host.Close();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Artık konfigurasyon dosyasında yapılan &lt;strong&gt;Mex&lt;/strong&gt; &lt;strong&gt;EndPoint&lt;/strong&gt; noktalarına ait bildirimler kaldırılabilir. Servis uygulaması &amp;ccedil;alıştırıldığında &lt;strong&gt;debug&lt;/strong&gt; moddayken, &lt;strong&gt;SmartServiceHost&lt;/strong&gt; sınıfı i&amp;ccedil;erisinde ezilmiş olan &lt;strong&gt;ApplyConfiguration&lt;/strong&gt; metodunun sonunda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ne ulaşılabilir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk253_6.gif" alt="" width="593" height="349" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Dikkat edileceği &amp;uuml;zere altı adet &lt;strong&gt;EndPoint&lt;/strong&gt; tanımlaması yer almaktadır. Bunlardan &amp;uuml;&amp;ccedil;&amp;uuml;de &lt;strong&gt;Mex&lt;/strong&gt; &lt;strong&gt;EndPoint&lt;/strong&gt; noktalarıdır. Dolayısıyla istemciler kendileri i&amp;ccedil;in gerekli &lt;strong&gt;Proxy&lt;/strong&gt; ve &lt;strong&gt;config&lt;/strong&gt; dosyası &amp;uuml;retimlerini yine ger&amp;ccedil;ekleştirebilirler. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;S&amp;ouml;z konusu &amp;ouml;rnekte &lt;strong&gt;SmartServiceHost&lt;/strong&gt; nesnesi bir &lt;strong&gt;Console&lt;/strong&gt; uygulaması &amp;uuml;zerinde ele alınmaktadır. Oysaki bu tipin &lt;strong&gt;IIS&lt;/strong&gt; veya &lt;strong&gt;WAS&lt;/strong&gt; tabanlı bir &lt;strong&gt;host&lt;/strong&gt; uygulama tarafındanda ele alınması istenebilir. Burada devreye bir &lt;strong&gt;fabrika nesnesi(Factory Object)&lt;/strong&gt; girmektedir. Nitekim &lt;strong&gt;IIS&lt;/strong&gt; &amp;uuml;zerinden yayınlanan &lt;strong&gt;svc&lt;/strong&gt; uzantılı dosyalara ait &lt;strong&gt;ServiceHost&lt;/strong&gt; direktifi i&amp;ccedil;erisinde bulunan &lt;strong&gt;Factory niteliği(attribute)&lt;/strong&gt; ile, kullanılacak olan &lt;strong&gt;ServiceHost&lt;/strong&gt; tipi belirtilebilmektedir. S&amp;ouml;z konusu senaryoda &amp;ouml;zel bir &lt;strong&gt;ServiceHost&lt;/strong&gt; tipi olduğundan bunun &amp;uuml;retiminden sorumlu bir &lt;strong&gt;Factory&lt;/strong&gt; sınıfınında geliştirilmesi gereklidir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Yazının bu b&amp;ouml;l&amp;uuml;m&amp;uuml;nde geliştirilen &lt;strong&gt;ServiceHost&lt;/strong&gt; t&amp;uuml;revli &lt;strong&gt;SmartServiceHost&lt;/strong&gt; sınıfının &lt;strong&gt;IIS&lt;/strong&gt; &amp;uuml;zerinden &lt;strong&gt;host&lt;/strong&gt; edilen bir &lt;strong&gt;WCF&lt;/strong&gt; &lt;strong&gt;Service &lt;/strong&gt;&amp;uuml;zerinden nasıl kullanılacağı ele alınmaktadır. Bu ama&amp;ccedil;la &amp;ouml;ncellikle &lt;strong&gt;IIS&lt;/strong&gt; &amp;uuml;zerinde bir &lt;strong&gt;WCF&lt;/strong&gt; servis a&amp;ccedil;ılması gerekmektedir. S&amp;ouml;z konusu proje servis k&amp;uuml;t&amp;uuml;phanesinide referans etmelidir. Sonrasında ise uygulamaya aşağıdaki sınıfın eklenmesi yeterlidir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk253_8.gif" alt="" width="449" height="334" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel.Activation;
+
+public class SmartServiceHostFactory
+    :ServiceHostFactory
+{
+    protected override System.ServiceModel.ServiceHost CreateServiceHost(Type serviceType, Uri[] baseAddresses)
+    {
+        return new SmartServiceHost(serviceType, baseAddresses);
+    }
+    public SmartServiceHostFactory()
+    {
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;SmartServiceHostFactory&lt;/strong&gt; sınıfı i&amp;ccedil;erisinde &lt;strong&gt;CreateServiceHost&lt;/strong&gt; isimli metod ezilmektedir(overriding). Dikkat edilecek olursa metod geriye &lt;strong&gt;SmartServiceHost&lt;/strong&gt; tipinden bir nesne &amp;ouml;rneği d&amp;ouml;nd&amp;uuml;rmektedir. Bir başka deyişle WCF &amp;ccedil;alışma ortamını tesis edecek nesne &amp;ouml;rneği &amp;uuml;retilmektedir. &lt;strong&gt;CreateServiceHost&lt;/strong&gt; metoduna gelen parametrelerden ilki, &lt;strong&gt;svc&lt;/strong&gt; dosyasında yer alan &lt;strong&gt;Service&lt;/strong&gt; niteliğinin değerini taşımaktadır. Elbette &lt;strong&gt;svc&lt;/strong&gt; dosyası i&amp;ccedil;erisinde hangi &lt;strong&gt;Factory&lt;/strong&gt; nesnesinin kullanılacağının bildirilmeside gereklidir. Bu nedenle &lt;strong&gt;svc&lt;/strong&gt; dosyasının i&amp;ccedil;eriği aşağıdaki gibi d&amp;uuml;zenlenmelidir.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;%@ ServiceHost Language="C#" Debug="true" Service="ServisKutuphanesi.Cebir" Factory="SmartServiceHostFactory" %&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Dikkat edilmesi gereken &amp;ouml;nemli bir nokta vardır. &lt;strong&gt;IIS&lt;/strong&gt; &amp;uuml;zerinden yayınlama yapıldığı ve bu senaryoda WAS kullanılmadığı i&amp;ccedil;in &lt;strong&gt;web.config&lt;/strong&gt; dosyası i&amp;ccedil;erisinde &lt;strong&gt;net.pipe&lt;/strong&gt; ve &lt;strong&gt;net.tcp&lt;/strong&gt; formatındaki adreslere izin verilmeyecektir. Dolayısıyla şu aşamada test olması a&amp;ccedil;ısından sadece &lt;strong&gt;HTTP&lt;/strong&gt; bazlı bir &lt;strong&gt;EndPoint&lt;/strong&gt; noktasına yer verilmektedir. &lt;strong&gt;Web.config&lt;/strong&gt; dosyası i&amp;ccedil;in &amp;ouml;rnek i&amp;ccedil;erik aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0"?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;system.serviceModel&amp;gt;
+        &amp;lt;behaviors&amp;gt;
+            &amp;lt;serviceBehaviors&amp;gt;
+            &amp;lt;/serviceBehaviors&amp;gt;
+        &amp;lt;/behaviors&amp;gt;
+        &amp;lt;services&amp;gt;
+            &amp;lt;service behaviorConfiguration="" name="ServisKutuphanesi.Cebir"&amp;gt;
+                &amp;lt;endpoint address="" binding="basicHttpBinding" name="CebirHttpEndPoint" contract="ServisKutuphanesi.ICebir" /&amp;gt;
+                &amp;lt;host&amp;gt;
+                    &amp;lt;baseAddresses&amp;gt;
+                        &amp;lt;add baseAddress="http://localhost:3401/CebirServisi" /&amp;gt;
+                    &amp;lt;/baseAddresses&amp;gt;
+                &amp;lt;/host&amp;gt;
+            &amp;lt;/service&amp;gt;
+        &amp;lt;/services&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Bu işlemlerin ardından &lt;strong&gt;Service.svc&lt;/strong&gt; dosyası herhangibir tarayıcı uygulamadan talep edilirse otomatik olarak &lt;strong&gt;HTTP&lt;/strong&gt; &lt;strong&gt;Metadata&lt;/strong&gt; &lt;strong&gt;Publishing&lt;/strong&gt;' in a&amp;ccedil;ıldığı g&amp;ouml;r&amp;uuml;lcektir. Tabiki&amp;nbsp;&lt;strong&gt;SvcUtil&lt;/strong&gt; aracı ilede &lt;strong&gt;metadata&lt;/strong&gt; bilgileri &amp;ccedil;ekilebilir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Yazıya ikinci bir &amp;ouml;rnek ile devam edelim. Bu &amp;ouml;rnekte &amp;ouml;zel olarak yazılmış olan &lt;strong&gt;ServiceHost&lt;/strong&gt; sınıfı, WCF &amp;ccedil;alışma ortamı i&amp;ccedil;in gerekli &lt;strong&gt;EndPoint&lt;/strong&gt; bilgilerini bir veritabanı tablosundan almaktadır. B&amp;ouml;yle bir senaryo &amp;ccedil;oğunlukla servis tarafındaki bildirimlerin konfigurasyon dosyası dışarısında daha g&amp;uuml;venli bir yerden tedarik edilmesi istendiği durumlarda g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir. Senaryonun &amp;ccedil;ok karmaşık olmaması amacıyla basit bir tablo &amp;uuml;zerinde &lt;strong&gt;EndPoint&lt;/strong&gt; oluşumları i&amp;ccedil;in gerekli bir ka&amp;ccedil; alan bilgisi tutulmaktadır. İlk olarak bu tablonun tasarımı ile işe başlanabilir. Tablonun oluşturulması i&amp;ccedil;in gerekli sorgu c&amp;uuml;mlesi aşağıdaki şekilde tasarlanabilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk253_9.gif" alt="" width="336" height="179" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;USE [ServiceBase]
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE 
+    [dbo].[EndPoints]
+    (
+        [EndPointId] [int] IDENTITY(1,1) NOT NULL,
+        [Name] [varchar](20) COLLATE Turkish_CI_AS NOT NULL,
+        [ServiceAlias] [nvarchar](20) COLLATE Turkish_CI_AS NOT NULL,
+        [Protocol] [nvarchar](10) COLLATE Turkish_CI_AS NOT NULL CONSTRAINT [DF_EndPoints_Protocol] DEFAULT (N'net.tcp'),
+        [ServerName] [nvarchar](50) COLLATE Turkish_CI_AS NOT NULL CONSTRAINT [DF_EndPoints_ServerName] DEFAULT (N'localhost'),
+        [PortNumber] [int] NULL,
+        [Binding] [nvarchar](20) COLLATE Turkish_CI_AS NOT NULL,
+        [Contract] [nvarchar](50) COLLATE Turkish_CI_AS NOT NULL,
+        CONSTRAINT [PK_EndPoints] PRIMARY KEY CLUSTERED 
+        (
+                [EndPointId] ASC
+            )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+        ) ON [PRIMARY]
+
+GO
+SET ANSI_PADDING OFF
+GO
+ALTER TABLE [dbo].[EndPoints] WITH CHECK ADD CONSTRAINT [CK_Bindings] CHECK (([Binding]='WS2007FederationHttpBinding' OR [Binding]='WS2007HttpBinding' OR [Binding]='WSFederationHttpBinding' OR [Binding]='WebHttpBinding' OR [Binding]='WSDualHttpBinding' OR [Binding]='WSHttpBinding' OR [Binding]='BasicHttpBinding' OR [Binding]='MsmqIntegrationBinding' OR [Binding]='NetPeerTcpBinding' OR [Binding]='NetMsmqBinding' OR [Binding]='NetNamedPipeBinding' OR [Binding]='NetTcpBinding'))
+GO
+ALTER TABLE [dbo].[EndPoints] CHECK CONSTRAINT [CK_Bindings]
+GO
+ALTER TABLE [dbo].[EndPoints] WITH CHECK ADD CONSTRAINT [CK_PortNumber] CHECK (([PortNumber]&amp;gt;=(0) AND [PortNumber]&amp;lt;=(65535)))
+GO
+ALTER TABLE [dbo].[EndPoints] CHECK CONSTRAINT [CK_PortNumber]
+GO
+ALTER TABLE [dbo].[EndPoints] WITH CHECK ADD CONSTRAINT [CK_Protocol] CHECK (([Protocol]='net.p2p' OR [Protocol]='net.pipe' OR [Protocol]='https' OR [Protocol]='http' OR [Protocol]='net.msmq' OR [Protocol]='net.tcp'))
+GO
+ALTER TABLE [dbo].[EndPoints] CHECK CONSTRAINT [CK_Protocol]&lt;/pre&gt;
+&lt;p&gt;Bu sorgu ifadesinde hataların &amp;ouml;n&amp;uuml;ne m&amp;uuml;mk&amp;uuml;n olduğunca ge&amp;ccedil;ebilmek i&amp;ccedil;in Port numarası, bağlayıcı tip adı ve protokol bilgilerinin girişi &lt;strong&gt;kısıtlamalar(Constraints) &lt;/strong&gt;ile kontrol altına alınmaktadır. Bu şekilde Binding, PortNumber ve Protocol alanlarına girilecek olan değerler sınırlandırılmaktadır. Elbette bu tabloya &lt;strong&gt;EndPoint&lt;/strong&gt; bilgilerinin girilmesi i&amp;ccedil;in bir uygulama aray&amp;uuml;z&amp;uuml; kullanılacaksa, giriş kontrollerinin veritabanı yerine program tarafında yapılmasıda s&amp;ouml;z konusudur. Nitekim bu sayede &lt;strong&gt;WCF&lt;/strong&gt; alt yapısından tiplerin(&amp;Ouml;rneğin bağlayıcı sınıflar, enum sabitleri vb...) &amp;ccedil;alışma zamanında validasyon s&amp;uuml;re&amp;ccedil;leri i&amp;ccedil;erisine dahil edilmesi garanti edilmiş olacak ve tutarlı veri girişi sağlanabilecektir. Tabloda &amp;ouml;rnek olarak aşağıdaki verilerin saklandığı g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk253_10.gif" alt="" width="618" height="83" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bu tabloda ye alan &lt;strong&gt;Protocol&lt;/strong&gt;, &lt;strong&gt;ServerName&lt;/strong&gt; ve &lt;strong&gt;PortNumber&lt;/strong&gt; bilgileri yardımıyla &lt;strong&gt;EndPoint&lt;/strong&gt; i&amp;ccedil;in gerekli &lt;strong&gt;adres(Address)&lt;/strong&gt; oluşturulabilir. Adres bilgileri &lt;strong&gt;baseAddress&lt;/strong&gt; olacak şekilde ele alınabilir. Yine &lt;strong&gt;EndPoint&lt;/strong&gt; i&amp;ccedil;in gerekli &lt;strong&gt;s&amp;ouml;zleşme(Contract)&lt;/strong&gt; bilgisi &lt;strong&gt;Contract&lt;/strong&gt; isimli alandan tedarik edilebilir. Son olarak &lt;strong&gt;bağlayıcı(Binding)&lt;/strong&gt; bilgisi i&amp;ccedil;in &lt;strong&gt;Binding&lt;/strong&gt; alanındaki metinsel bilgiden yararlanılmaktadır. Tabiki &amp;ccedil;alışma zamanında ilgili bağlayıcı tipe ait nesne &amp;ouml;rneği gerektiğinden bu metinsel bilginin karşılığı olan bağlayıcı tip i&amp;ccedil;in ek bir kodlama yapılması gerekebilir. EndPoint bilgilerinin saklanacağı bu tabloyu kullanacak olan t&amp;uuml;retilmiş &lt;strong&gt;ServiceHost&lt;/strong&gt; sınıfının tasarımı ise aşağıdaki şekilde yapılabilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+using System.Data.SqlClient;
+using System.ServiceModel.Channels;
+using System.ServiceModel.Description;
+using System.ServiceModel.MsmqIntegration;
+
+namespace Sunucu
+{
+    class TableBasedServiceHost
+        :ServiceHost
+    {
+
+        public TableBasedServiceHost(Type servisTipi, params Uri[] adresler)
+            : base(servisTipi, adresler)
+        {
+        }
+
+        protected override void ApplyConfiguration()
+        {
+            // Service i&amp;ccedil;in Metadata davranışı olup olmadığına bakılır. Yoksa bir tane oluşturulur.
+            ServiceMetadataBehavior servisDavranisi = this.Description.Behaviors.Find&amp;lt;ServiceMetadataBehavior&amp;gt;();
+            if (servisDavranisi == null)
+            {
+                servisDavranisi = new ServiceMetadataBehavior();
+                this.Description.Behaviors.Add(servisDavranisi); // MEX erişimi i&amp;ccedil;in yeni bir servis davranışı eklenir
+            }
+
+            // ServiceBase veritabanındaki EndPoints tablosundan satırlar okunur.
+            using (SqlConnection _conn = new SqlConnection("data source=.;database=ServiceBase;integrated security=SSPI"))
+            {
+                SqlCommand _cmd = new SqlCommand("Select EndPointId,Name,ServiceAlias,Protocol,ServerName,PortNumber,Binding,Contract From EndPoints", _conn);
+                _conn.Open();
+                SqlDataReader reader = _cmd.ExecuteReader();
+                string adres = null;
+                while (reader.Read())
+                {
+                    // Servis i&amp;ccedil;in gerekli baseAddress bilgileri oluşturulurken PortNumber alanının değerinin null olup olmadığına bakılır
+                    // Bu alan null ise sunucu adından sonra port numarası bilgisi verilmez.
+                    if (!String.IsNullOrEmpty(reader["PortNumber"].ToString()))
+                        adres = String.Format("{0}://{1}:{2}/{3}", reader["Protocol"].ToString(), reader["ServerName"].ToString(), reader["PortNumber"].ToString(), reader["ServiceAlias"].ToString());
+                    else
+                        adres = String.Format("{0}://{1}/{2}", reader["Protocol"].ToString(), reader["ServerName"].ToString(), reader["ServiceAlias"].ToString());
+                    // Elde edilen adres verisinden bir Uri nesne &amp;ouml;rneği oluşturulur
+                    Uri baseAddress = new Uri(adres);
+                    // Oluşturulan baseAddress bilgisi servise eklenir.
+                    this.AddBaseAddress(baseAddress);
+                    // EndPoint oluşturulur ve eklenir. 
+                    // EndPoint noktasının oluşturulması sırasında bağlayıcı tip(Binding Type) i&amp;ccedil;in BaglayiciUret isimli yardımcı metod kullanılır.
+                    this.AddServiceEndpoint(reader["Contract"].ToString(), BaglayiciUret(reader["Binding"].ToString()), "");
+        
+                    #region MEX EndPoint Ekleme İşlemleri
+                    
+                    // Adresteki scheme bilgisine g&amp;ouml;re gerekli Mex EndPoint noktaları oluşturulur.
+                    string schemaBilgisi = baseAddress.Scheme;
+                    if (schemaBilgisi == Uri.UriSchemeNetTcp) // TCP i&amp;ccedil;in
+                    { 
+                        this.AddServiceEndpoint("IMetadataExchange",  MetadataExchangeBindings.CreateMexTcpBinding(), "Mex");
+                    }
+                    else if (schemaBilgisi == Uri.UriSchemeNetPipe) // PIPE i&amp;ccedil;in
+                    {
+                        this.AddServiceEndpoint("IMetadataExchange",  MetadataExchangeBindings.CreateMexNamedPipeBinding(), "Mex");
+                    }
+                    else if (schemaBilgisi == Uri.UriSchemeHttp) // HTTP i&amp;ccedil;in
+                    {
+                        servisDavranisi.HttpGetEnabled = true;
+                        this.AddServiceEndpoint("IMetadataExchange",  MetadataExchangeBindings.CreateMexHttpBinding(), "Mex");
+                    }
+                    else if (schemaBilgisi == Uri.UriSchemeHttps) // HTTPS i&amp;ccedil;in
+                    {
+                        servisDavranisi.HttpsGetEnabled = true;
+                        this.AddServiceEndpoint("IMetadataExchange", MetadataExchangeBindings.CreateMexHttpsBinding(), "Mex");
+                    }
+                    
+                    #endregion
+                }
+                reader.Close();
+            }
+        }
+
+        // EndPoints tablosunda bağlayıcı adları string olarak tutulduğundan Binding tipinden nesne &amp;uuml;retimi ger&amp;ccedil;ekleştiren bir metoddan yararlanılmaktadır.
+        private Binding BaglayiciUret(string baglayiciAdi)
+        {
+            Binding baglayici = null;
+            switch (baglayiciAdi)
+            {
+                case "NetTcpBinding":
+                    baglayici= new NetTcpBinding();
+                    break;
+                case "NetNamedPipeBinding":
+                    baglayici = new NetNamedPipeBinding();
+                    break;
+                case "WS2007FederationHttpBinding":
+                    baglayici = new WS2007FederationHttpBinding();
+                    break;
+                case "WS2007HttpBinding":
+                    baglayici = new WS2007HttpBinding();
+                    break;
+                case "WebHttpBinding":
+                    baglayici = new WebHttpBinding(); // System.ServiceModel.Web referansının ekli olması gerekir
+                    break;
+                case "WSDualHttpBinding":
+                    baglayici = new WSDualHttpBinding();
+                    break;
+                case "WSHttpBinding":
+                    baglayici = new WSHttpBinding();
+                    break;
+                case "BasicHttpBinding":
+                    baglayici = new BasicHttpBinding();
+                    break;
+                case "MsmqIntegrationBinding":
+                    baglayici = new MsmqIntegrationBinding();
+                    break;
+                case "NetPeerTcpBinding":
+                    baglayici = new NetPeerTcpBinding();
+                    break;
+                case "NetMsmqBinding":
+                    baglayici = new NetMsmqBinding();
+                    break;
+                default:
+                    baglayici = new NetTcpBinding();
+                    break;
+            }
+            return baglayici;
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;TableBasedServiceHost&lt;/strong&gt; nesnesi i&amp;ccedil;erisinde yer alan &lt;strong&gt;ApplyConfiguration&lt;/strong&gt; metodu i&amp;ccedil;erisinde, &lt;strong&gt; EndPoints&lt;/strong&gt; tablosundaki satırlardan yararlanılarak &lt;strong&gt;base&lt;/strong&gt; &lt;strong&gt; address&lt;/strong&gt;, &lt;strong&gt;EndPoint&lt;/strong&gt; ve &lt;strong&gt;Mex&lt;/strong&gt; &lt;strong&gt;EndPoint&lt;/strong&gt; nesnelerinin oluşturulması sağlanmaktadır. Elbette bu yeni &lt;strong&gt;ServiceHost&lt;/strong&gt; t&amp;uuml;revli sınıfa ait nesne &amp;ouml;rneğinin kullanılması i&amp;ccedil;in bir uygulama sunucusuna ihtiya&amp;ccedil; vardır. Bu ama&amp;ccedil;la &lt;strong&gt;Console&lt;/strong&gt; uygulamasının kodlarını aşağıdaki gibi değiştirmek yeterlidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+using ServisKutuphanesi;
+
+namespace Sunucu
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            TableBasedServiceHost host = new TableBasedServiceHost(typeof(Cebir));
+            host.Open();
+            Console.WriteLine("Sunucu dinlemede");
+            Console.ReadLine();
+            host.Close();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Programın başarılı bir şekilde &amp;ccedil;alıştığı g&amp;ouml;r&amp;uuml;l&amp;uuml;r. &lt;strong&gt;Debug&lt;/strong&gt; mod i&amp;ccedil;erisindekyen &lt;strong&gt; TableBasedServiceHost&lt;/strong&gt; sınıfınına ait &lt;strong&gt;ApplyConfiguration&lt;/strong&gt; metodu işleyişini tamamlandığında servise ait i&amp;ccedil;erik aşağıdaki &lt;strong&gt;Quick&lt;/strong&gt; &lt;strong&gt;Watch&lt;/strong&gt; g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibidir. Dikkat edilecek olursa tabloda &amp;ouml;rnek olarak girilen t&amp;uuml;m &lt;strong&gt;base&lt;/strong&gt; &lt;strong&gt;adres&lt;/strong&gt; değerleri &lt;strong&gt; BaseAddress&lt;/strong&gt; &amp;ouml;zelliğinin işaret ettiği koleksiyona y&amp;uuml;klenmiştir. Bununla birlikte altı adet &lt;strong&gt;EndPoint&lt;/strong&gt; tanımlaması &lt;strong&gt;EndPoints&lt;/strong&gt; &amp;ouml;zelliği ile işaret edilen koleksiyona eklenmiştir. Bunlardan &amp;uuml;&amp;ccedil;&amp;uuml; bir &amp;ouml;nceki &amp;ouml;rnektine benzer olacak şekilde &lt;strong&gt;Mex EndPoint&lt;/strong&gt; bilgileridir. Servis tipi zaten yapıcı metod ile bildirilmektedir. Son olarak s&amp;ouml;zleşme bilgisininde &lt;strong&gt;ImplementedContracts&lt;/strong&gt; &amp;ouml;zelliğine set edildiği g&amp;ouml;r&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk253_11.gif" alt="" width="571" height="581" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Tabiki buradaki senaryo bir &lt;strong&gt;Best&lt;/strong&gt; &lt;strong&gt;Practices&lt;/strong&gt; olarak algılanmamalıdır. Tablo tasarımı daha farklı bir şekilde d&amp;uuml;zenlenebilir. Bununla birlikte bağlantı, tablo adı ve alanlarının değişme ihtimali g&amp;ouml;z &amp;ouml;n&amp;uuml;nde bulundurularak bunların &lt;strong&gt; ServiceHost&lt;/strong&gt; t&amp;uuml;revli sınıf i&amp;ccedil;erisine aktarımı i&amp;ccedil;in gerekli &amp;ouml;nlemlerin alınması gereklidir. Elbette daha ileri bir senaryoda d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. S&amp;ouml;z gelimi, servisin kullanacağı &lt;strong&gt;EndPoint&lt;/strong&gt; tanımlamaları tablodaki alanlarda &lt;strong&gt;serileştirilmiş(Serialize) &lt;/strong&gt;şekilde tutulabilir. Hatta birden fazla &lt;strong&gt;servis nesnesi(Service Instance) &lt;/strong&gt;i&amp;ccedil;in birden fazla &lt;strong&gt;EndPoint&lt;/strong&gt; tanımlamasının yapılabileceği &lt;strong&gt;ilişkisel(Relational)&lt;/strong&gt; bir veritabanı tasarımıda s&amp;ouml;z konusu olabilir. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;S&amp;ouml;z konusu servislerin kullandığı &lt;strong&gt;EndPoint&lt;/strong&gt; bilgilerinin tablolardaki ilgili alanlara eklenmesi i&amp;ccedil;inde &lt;strong&gt;yetkilendirilmiş(Authorized)&lt;/strong&gt; bir ekran(&amp;ouml;rneğin bir &lt;strong&gt;Windows&lt;/strong&gt; uygulaması) tasarlanabilir. B&amp;ouml;ylece &lt;strong&gt;EndPoint&lt;/strong&gt; girişleri yetki dahilinde yapılır. Diğer taraftan &lt;strong&gt;EndPoint&lt;/strong&gt; bilgileri &lt;strong&gt;XML&lt;/strong&gt; gibi a&amp;ccedil;ık bir dosyada durmadıklarından g&amp;ouml;rece daha g&amp;uuml;venli bir ortamda saklanırlar. &amp;Uuml;stelik bu veritabanının servis uygulamasının &lt;strong&gt;host&lt;/strong&gt; edildiği sunucunun arkasında bir sunucuda yer aldığıda g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir. Bu vizyon &amp;ccedil;ok daha fazla genişletilebilir. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bu makalemizde &lt;strong&gt;ServiceHost&lt;/strong&gt; t&amp;uuml;revli bir sınıfın nasıl geliştirilip kullanılabileceği iki &amp;ouml;rnek senaryo &amp;uuml;zerinden incelemeye &amp;ccedil;alıştık. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt; &lt;a href="/makale/images/OzelServiceHost.rar"&gt;&amp;Ouml;rnek Uygulama i&amp;ccedil;in Tıklayın&lt;/a&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;</content>
+  <pubDate>2008-06-05 12:00:00</pubDate>
+  <slug>ServiceHost-Sc4b1nc4b1fc4b1ndan-Genisletmek-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>wcf</tag>
+    <tag>windows-communication-foundation</tag>
+  </tags>
+  <categories>
+    <category>WCF</category>
+  </categories>
+</post>

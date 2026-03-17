@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Entity Framework - Many To Many Relations - Link Tablosunu Okumak</title>
+  <description>Hatırlayacağınız üzere bir önceki yazımızda veritabanı tarafındaki Many-To-Many Relation' ların, Entity Framework tarafında nasıl değerlendirilebileceğine değinmeye çalışmıştık. Dikkat edilmesi gereken önemli noktalardan birisi, veritabanı tarafında yer alan ara bağlantı tablosunun Entity Framework üzerindeki modele alınmayışıydı.</description>
+  <content>&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Hatırlayacağınız &amp;uuml;zere bir &amp;ouml;nceki yazımızda veritabanı tarafındaki &lt;strong&gt;Many-To-Many Relation'&lt;/strong&gt; ların, &lt;strong&gt;Entity Framework&lt;/strong&gt; tarafında nasıl değerlendirilebileceğine değinmeye &amp;ccedil;alışmıştık. Dikkat edilmesi gereken &amp;ouml;nemli noktalardan birisi, veritabanı tarafında yer alan ara bağlantı tablosunun&lt;strong&gt; Entity Framework&lt;/strong&gt; &amp;uuml;zerindeki modele &lt;span style="text-decoration: underline;"&gt;alınmayışıydı&lt;/span&gt;. Ancak tam bu noktada ortaya bir soru işareti &amp;ccedil;ıkmakta. Ya &amp;ccedil;alışma zamanında sadece ilişkili &lt;strong&gt;primary key&lt;/strong&gt; alanlarının değerlerini elde etmek istersek. Bir &amp;ouml;nceki senaryomuza g&amp;ouml;re bu, hangi &lt;strong&gt;Track&lt;/strong&gt; satırının hangi &lt;strong&gt;Playlist'&lt;/strong&gt; ler ile ve hangi &lt;strong&gt;Playlist&lt;/strong&gt;&amp;nbsp;satırının hangi &lt;strong&gt;Track'&lt;/strong&gt; ler ile ilişkili olduğunun g&amp;ouml;r&amp;uuml;lmesi anlamına gelmektedir. Kısacası sadece &lt;strong&gt;TrackId&lt;/strong&gt; ve &lt;strong&gt;PlaylistId&lt;/strong&gt; değerlerinin eşleşmesine bakmak istediğimizi d&amp;uuml;ş&amp;uuml;nebiliriz. Bu durumda aşağıdaki gibi bir kod par&amp;ccedil;ası işimizi g&amp;ouml;recektir. Ş&amp;uuml;k&amp;uuml;rler olsun &lt;strong&gt;isimsiz tiplere(Anonymous Type)&lt;/strong&gt;&lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Linq;
+
+namespace ManyToMany
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            using (ChinookEntities entities = new ChinookEntities())
+            {
+                #region Only Related Columns
+
+                var relations = from t in entities.Tracks
+                                from p in entities.Playlists
+                                where t.Name.StartsWith("Ab")
+                                select new
+                                {
+                                    t.TrackId,p.PlaylistId
+                                };
+
+                foreach (var relation in relations)
+                {
+                    Console.WriteLine(relation.ToString());
+                }
+
+                #endregion
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu &lt;strong&gt;LINQ&lt;/strong&gt; sorgusunda &amp;ccedil;oklu &lt;strong&gt;Select&lt;/strong&gt; işlemi yapılmaktadır. Sorguya g&amp;ouml;re &lt;strong&gt;Track.Name &lt;/strong&gt;değeri &lt;strong&gt;Ab&lt;/strong&gt; ile başlayan par&amp;ccedil;aların &lt;strong&gt;TrackId&lt;/strong&gt; değeleri ile&lt;strong&gt; Playlist Entity&lt;/strong&gt; nesnesi i&amp;ccedil;eriğinde yer alan&amp;nbsp;&lt;strong&gt;PlaylistId&lt;/strong&gt; değerleri arasındaki ilişkiler, yeni bir &lt;strong&gt;isimsiz tip(Anonymous Type)&lt;/strong&gt; i&amp;ccedil;erisine dahil edilmektedir. Kodun &amp;ccedil;alışması sonucu aşağıdakine benzer bir &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı elde edilecektir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f1%2fblg132_Runtime.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Arka planda &amp;ccedil;alışan&lt;strong&gt; SQL Sorgusu&lt;/strong&gt; ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;SELECT 
+[Extent1].[TrackId] AS [TrackId], 
+[Extent2].[PlaylistId] AS [PlaylistId]
+FROM  [dbo].[Track] AS [Extent1]
+CROSS JOIN [dbo].[Playlist] AS [Extent2]
+WHERE [Extent1].[Name] LIKE N'Ab%'&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;Anonymous Type&lt;/strong&gt; kullanımı nedeniyle sadece istediğimiz &lt;strong&gt;TrackId&lt;/strong&gt; ve &lt;strong&gt;PlaylistId &lt;/strong&gt;alanları &lt;strong&gt;Select&lt;/strong&gt; sorgusuna dahil edilmiştir. Buda arka planda &amp;ccedil;alışan &lt;strong&gt;SQL&lt;/strong&gt; sorgusunda,&amp;nbsp;t&amp;uuml;m tablo&amp;nbsp;alanlarının hesaba &lt;span style="text-decoration: underline;"&gt;katılmaması&lt;/span&gt; anlamına gelmektedir ki bizim i&amp;ccedil;in bir avantajdır ve istediğimizde zaten budur &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt; Bir nevi veritabanında yer alan ama &lt;strong&gt;Entity&lt;/strong&gt; olarak kod tarafına &lt;span style="text-decoration: underline;"&gt;aktarılmayan&lt;/span&gt; ara tablo i&amp;ccedil;eriğini, &lt;strong&gt;LINQ&lt;/strong&gt; tarafında elde etmiş olduk. &lt;strong&gt;Entity Framework&lt;/strong&gt; tarafında ipucu tadındaki başka konularlar devam ediyor olacağız. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2010-02-15 22:30:00</pubDate>
+  <slug>Entity-Framework-Many-To-Many-Relations-Link-Tablosunu-Okumak</slug>
+  <tags>
+    <tag>adonet-entity-framework</tag>
+  </tags>
+  <categories>
+    <category>Entity Framework</category>
+  </categories>
+</post>

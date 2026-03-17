@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Web Server Control Yazmak - 1</title>
+  <description>Günümüz program geliştirme ortamların çoğu, geliştiricilerin(developers) daha kullanıcı dostu (user friendly) arabirimler tasarlayabilmeleri için sayısız kontrol içermektedir. Özellikle Asp.Net ortamından Asp.Net 2.0 ortamına geçildiğinde, web tabanlı uygulamaları geliştirirken kullanabileceğimiz kontrollerin sayısı oldukça artmıştır.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;G&amp;uuml;n&amp;uuml;m&amp;uuml;z program geliştirme ortamların &amp;ccedil;oğu, geliştiricilerin(developers) daha kullanıcı dostu (user friendly) arabirimler tasarlayabilmeleri i&amp;ccedil;in sayısız kontrol i&amp;ccedil;ermektedir. &amp;Ouml;zellikle Asp.Net ortamından Asp.Net 2.0 ortamına ge&amp;ccedil;ildiğinde, web tabanlı uygulamaları geliştirirken kullanabileceğimiz kontrollerin sayısı olduk&amp;ccedil;a artmıştır.(70den fazla kontrol) Buna rağmen var olan web sunucu kontrollerinin ihtiyacımızı karşılamadığı durumlar olabilir. Hatta ihtiyacımızı karşılayabilecek bir kontrol olmayabilir de. Bu gibi durumlarda geliştiriciler ya &amp;uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; parti bileşenleri satın alma ve kullanma yolunu tercih ederler yada ilgili sunucu kontrollerini (web server control) kendileri geliştirirler. Bu ilk makalemizde basit anlamda web sunucu kontrollerini nasıl geliştirebileceğimizi incelemeye başlayacağız.&lt;/p&gt;
+&lt;p&gt;Bir web sunucu kontrol&amp;uuml;n&amp;uuml; sıfırdan yazmadan &amp;ouml;nce, var olan web kontrollerinin ne şekilde &amp;ccedil;alıştıklarını analiz etmekte fayda vardır. Web ortamı sunucu taraflı ve istemci taraflı &amp;ccedil;alışabilen kodların i&amp;ccedil;erisinde yer aldığı bir teknolojidir. Asp.Net perspektifinden baktığımızda ise &amp;ccedil;oğunlukla sunucu taraflı kodlamadan ve kontrollerden bahsederiz. Hangi web teknolojisi olursa olsun istemcilerin tarayıcı pencerelerinde elde ettikleri &amp;ccedil;ıktı her zaman i&amp;ccedil;in yorumlanabilir bir HTML &amp;ccedil;ıktısı olacaktır. &amp;Ouml;rneğin aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan web sunucu kontrollerini g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk188_1.gif" alt="" width="169" height="272" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Sayfamızda Label, TextBox, DropDownList, Button, CheckBox, RadioButton gibi basit Asp.Net sunucu kontrolleri yer almaktadır. Bu sayfa herhangibir tarayıcı penceresi &amp;uuml;zerinden talep edildiğinde ise aşağıdaki gibi bir HTML &amp;ccedil;ıktısı elde edilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk188_2.gif" alt="" width="628" height="258" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi web sunucu kontrollerinin her birisi &amp;ccedil;alışma zamanında aslında HTML i&amp;ccedil;eriğine &amp;ccedil;evrilirler. Bunu &lt;strong&gt;Render&lt;/strong&gt; olarak da adlandırabiliriz. Dolayısıyla kendi Asp.Net Web sunucu kontrollerimizi yazarken d&amp;uuml;ş&amp;uuml;nmemiz gereken ilk konu, tasarladığımız kontrol&amp;uuml;n istemci tarafına nasıl aktarılacağıdır. Bir başka deyişle istemci tarayıcı penceresinde g&amp;ouml;nderilecek HTML i&amp;ccedil;eriğinin nasıl olacağıdır. Buda yazdığımız kontrol&amp;uuml;n Html &amp;ccedil;ıktısının tarafımızca oluşturulmasına bağlıdır.&lt;/p&gt;
+&lt;p&gt;Asp.Net platformunda her sunucu kontrol&amp;uuml; &amp;ouml;yle yada b&amp;ouml;yle bir şekilde &lt;strong&gt;System.Web.UI&lt;/strong&gt; isim alanı altında yer alan &lt;strong&gt;Control&lt;/strong&gt; sınıfından t&amp;uuml;remektedir. Control sınıfı &amp;uuml;zerinde geliştireceğimiz bir sınıf web sunucu kontrol&amp;uuml; olarak ele alınabilir. Aslında var olan t&amp;uuml;m web sunucu kontrolleri Control sınıfından t&amp;uuml;reyen &lt;strong&gt;WebControl&lt;/strong&gt; sınıfından t&amp;uuml;rer. WebControl sınıfından t&amp;uuml;retme yaparak kontrol geliştirme işlemlerini ilerleyen makalelerimizde ele almaya &amp;ccedil;alışacağız. System.Web.UI isim alanı altında yer alan Control sınıfının şu anda bizim i&amp;ccedil;in en &amp;ouml;nemli metodu &lt;strong&gt;Render&lt;/strong&gt; metodudur. Render metodu parametre olarak &lt;strong&gt;HtmlTextWriter&lt;/strong&gt; tipinden bir değişken almaktadır. Bu değişken yardımıyla kontrol&amp;uuml;n basılacağı sayfa &amp;uuml;zerine HTML takılarını (Html tags) yazdırabiliriz. Aslında HtmlTextWriter sınıfı &lt;strong&gt;TextWriter&lt;/strong&gt; isimli &amp;ouml;zet sınıftan (abstract class) t&amp;uuml;retilmiş bir sınıftır.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;zellikle windows tabanlı uygulama geliştirenler &lt;strong&gt;DateTimePicker&lt;/strong&gt; kontrol&amp;uuml;n&amp;uuml; bilirler. Ancak bu kontrol&amp;uuml;n benzeri bile, Asp.Net &amp;uuml;zerinde yer almamaktadır. &amp;Ccedil;ok basit olarak b&amp;ouml;yle bir web kontrol&amp;uuml;n&amp;uuml; geliştirmek istediğimizi d&amp;uuml;ş&amp;uuml;nelim. Kendi web kontrollerimizi geliştirirken eğer HTML &amp;ccedil;ıktısının nasıl olacağını tam olarak kestiremiyorsak, kontrol&amp;uuml;m&amp;uuml;z&amp;uuml;n i&amp;ccedil;erisinde yer almasını istediğimiz elemanları diğer web sunucu kontrollerinden oluşturarak &amp;uuml;retilen HTML &amp;ccedil;ıktısını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alabiliriz. Bu biraz hileli bir yol olsada başlangı&amp;ccedil;ta olayları daha kolay algılayabilmemizi sağlayacaktır. Tarih formatındaki bir kontrol temel olarak g&amp;uuml;n, ay ve yıl gibi bilgileri taşıyabilir. Bunları birer DropDownList olarakda d&amp;uuml;ş&amp;uuml;nebiliriz. Bu listelerin başında ise birer Label ile global halede getirilebilecek g&amp;uuml;n, ay, yıl kelimeleride yer alabiliriz. &lt;em&gt;(Global hale getirmekten kastımız ise i&amp;ccedil;eriğin farklı dillere desteğinin olmasıdır. Yani localization)&lt;/em&gt; Tam olarak tasvir etmek istediğimiz bileşen aşağıdakine benzer olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk188_3.gif" alt="" width="345" height="55" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Burada kullanılan Label bileşenleri Html &amp;ccedil;ıktısına birer span takısı (&lt;strong&gt;span&lt;/strong&gt; tag) i&amp;ccedil;erisinde alınmaktadır. DropDownList kontrolleri ise birer &lt;strong&gt;select&lt;/strong&gt; elementi olarak ge&amp;ccedil;ecektir. DropDownList i&amp;ccedil;erisindeki &amp;ouml;ğelerimiz ise, select elementinin i&amp;ccedil;erisinde birer alt element olarak &lt;strong&gt;option&lt;/strong&gt; takıları arasında g&amp;ouml;sterilecektir. &amp;Ouml;yleyse istemci tarafına &amp;ccedil;ıkartmamız gereken HTML i&amp;ccedil;eriği aşağı yukarı bellidir. Peki bu i&amp;ccedil;eriği kendi kontrol&amp;uuml;m&amp;uuml;z i&amp;ccedil;erisinde nasıl &amp;ccedil;izdireceğiz?&lt;/p&gt;
+&lt;p&gt;Her şeyden &amp;ouml;nce temel olarak Control sınıfından t&amp;uuml;reyen bir tipe ihtiyacımız olduğunu belirtmiştik. Eğer bu tipi bir sınıf k&amp;uuml;t&amp;uuml;phanesi i&amp;ccedil;erisinde &lt;strong&gt;(class library)&lt;/strong&gt; ele alırsak, Visual Studio i&amp;ccedil;erisindeki ToolBox' a ekleyebilir ve başka web projeleri i&amp;ccedil;erisindede kullanılmasını sağlayabiliriz. O halde bir Class Library (sınıf k&amp;uuml;t&amp;uuml;phanesi) projesi a&amp;ccedil;arak işe başlayalım. Normal şartlarda kendi web sunucu kontrollerimizi barındıracak k&amp;uuml;t&amp;uuml;phane tipi olarak &lt;strong&gt;Web Control Library&lt;/strong&gt; tercih edebiliriz. Bu proje tipi i&amp;ccedil;erisinde bir web kontrol&amp;uuml; &amp;ouml;rneği, gerekli nitelikleri (&lt;strong&gt;attributes&lt;/strong&gt;) ve &lt;strong&gt;referansları&lt;/strong&gt; (&amp;ouml;rneğin &lt;strong&gt;System.Web.dll&lt;/strong&gt; gibi) ile birlikte hazır bir şablon olarak gelmektedir. Ancak web kontrol geliştirme sanatını temelinden &amp;ouml;ğrenmeye &amp;ccedil;alıştığımızdan, standard bir Class Library &amp;uuml;zerinden devam etmek &amp;ccedil;ok daha &amp;ouml;ğretici olacaktır. Bu nedenle makalemizde Web Control Library se&amp;ccedil;eneğini şu an i&amp;ccedil;in kullanmayacağız.&lt;/p&gt;
+&lt;p&gt;Yazdığımız web sunucu kontrollerini bir sınıf k&amp;uuml;t&amp;uuml;phanesi i&amp;ccedil;erisinde tutarsak, Visual Studio IDE' si i&amp;ccedil;erisinde yer alan ToolBox b&amp;ouml;l&amp;uuml;m&amp;uuml;ne ekleyebilir ve başka web projeleri i&amp;ccedil;erisinden de kullanabiliriz. Hatta aynı solution i&amp;ccedil;erisindeki web projelerinde ilgili kontroller otomatik olarak ToolBox i&amp;ccedil;erisinde g&amp;ouml;r&amp;uuml;necektir.&lt;/p&gt;
+&lt;p&gt;Sınıf k&amp;uuml;t&amp;uuml;phanemiz i&amp;ccedil;erisinde TarihKontrolum isimli bir sınıf(class) geliştireceğiz. Yanlız bu sınıfın System.Web.UI isim alanı i&amp;ccedil;erisindeki &lt;strong&gt;Control&lt;/strong&gt; sınıfından t&amp;uuml;retilebilmesi i&amp;ccedil;in, sınıf k&amp;uuml;t&amp;uuml;phanemizin &lt;strong&gt;System.Web.dll&lt;/strong&gt; assembly' ına a&amp;ccedil;ık bir referansta bulunması gerekmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk188_4.gif" alt="" width="164" height="127" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Referansımızı ekledikten sonra sınıfımızı Control sınıfından t&amp;uuml;retebiliriz. Eklenen referans, sınıfımız i&amp;ccedil;erisinde web ortamına (&amp;ouml;rneğin ViewState' ler, post-back olayları) m&amp;uuml;dahele etmemizide sağlayacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Web.UI;
+
+namespace BenimWebKontrollerim
+{
+    public class TarihKontrolum:Control
+    {
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Tasarlamaya &amp;ccedil;alıştığımız web kontrol&amp;uuml;n&amp;uuml;n bazı par&amp;ccedil;aları otomatik olarak hem tasarım zamanında (design time) hemde &amp;ccedil;alışma zamanında (run time) değiştirilebilmelidir. Eğer sınıfımız bu tip değişebilir değerleri barındıracaksa ve bunların desteğini hem tasarım zamanında hem geliştirme zamanında sağlayacaksa, nasıl bir &amp;uuml;yeye ihtiyacımız olabilir? Cevap olduk&amp;ccedil;a basittir. &amp;Ouml;zellik &lt;strong&gt;(Property)&lt;/strong&gt;. O halde sınıfımızı aşağıdaki gibi geliştirelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk188_7.gif" alt="" width="469" height="381" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Web.UI;
+
+namespace BenimWebKontrollerim
+{ 
+    public class TarihKontrolum:Control
+    {
+        private string _gunMetin;
+        private string _yilMetin;
+        private string _ayMetin;
+
+        public string GunMetin
+        {
+            get { return _gunMetin; }
+            set { _gunMetin = value; }
+        }
+        public string AyMetin
+        {
+            get { return _ayMetin; }
+            set { _ayMetin = value; }
+        }
+        public string YilMetin
+        {
+            get { return _yilMetin; }
+            set { _yilMetin = value; }
+        }
+
+        protected override void Render(HtmlTextWriter writer)
+        {
+            // G&amp;uuml;n yazısını tutacak Label i&amp;ccedil;in Html tarafına bir span elementi atılır.
+            writer.Write("&amp;lt;span id='lblGun'&amp;gt;" + GunMetin + "&amp;lt;/span&amp;gt;");
+            // iki boşluk bırakılır.
+            writer.Write("&amp;nbsp;&amp;nbsp;");
+            // G&amp;uuml;n değerlerini tutacak (1...31 e kadar) select elementi oluşturulur.
+            writer.Write("&amp;lt;select name='Gun' id='Gun'&amp;gt;");
+            // Select elementi i&amp;ccedil;erisinde, her g&amp;uuml;n i&amp;ccedil;in bir option elementi oluşturulur value ve text değerleri i olarak set edilir.
+            for (int i = 1; i &amp;lt;= 31; i++)
+                writer.Write("&amp;lt;option value='" + i.ToString() + "'&amp;gt;" + i.ToString() + "&amp;lt;/option&amp;gt;");
+            // A&amp;ccedil;ılan Select takısı kapatılır.
+            writer.Write("&amp;lt;/select&amp;gt;"); 
+            // İki boşluk bırakılır
+            writer.Write("&amp;nbsp;&amp;nbsp;");
+            // Ay metnini taşıyan Label kontrol&amp;uuml; i&amp;ccedil;in span takısı atılır.
+            writer.Write("&amp;lt;span id='lblAy'&amp;gt;" + AyMetin + "&amp;lt;/span&amp;gt;");
+            // İki boşluk bırakılır
+            writer.Write("&amp;nbsp;&amp;nbsp;");
+            // Aylar i&amp;ccedil;in gerekli select elementi oluşturulur.
+            writer.Write("&amp;lt;select name='Ay' id='Ay'&amp;gt;");
+            // Her bir Ay i&amp;ccedil;in select elementi i&amp;ccedil;erisine birer option elementi a&amp;ccedil;ılır.
+            for (int i = 1; i &amp;lt;= 12; i++)
+                writer.Write("&amp;lt;option value='" + i.ToString() + "'&amp;gt;" + i.ToString() + "&amp;lt;/option&amp;gt;");
+            // select elementi kapatılır.
+            writer.Write("&amp;lt;/select&amp;gt;");
+            // İki boşluk bırakılır.
+            writer.Write("&amp;nbsp;&amp;nbsp;");
+            // Yil metni i&amp;ccedil;in span elementi oluşturulur.
+            writer.Write("&amp;lt;span id='lblYil'&amp;gt;" + YilMetin + "&amp;lt;/span&amp;gt;");
+            // İki boşluk bırakılır
+            writer.Write("&amp;nbsp;&amp;nbsp;");
+            // Yillar i&amp;ccedil;in select elementi oluşturulur
+            writer.Write("&amp;lt;select name='Yil' id='Yil'&amp;gt;");
+            // 1900 ile 2050 arası tarih aralığındaki her bir yıl i&amp;ccedil;in select elementi i&amp;ccedil;erisine birer option elementi a&amp;ccedil;ılır.
+            for (int i = 1950; i &amp;lt;= 2050; i++)
+                writer.Write("&amp;lt;option value='" + i.ToString() + "'&amp;gt;" + i.ToString() + "&amp;lt;/option&amp;gt;");
+            // select elementi kapatılır.
+            writer.Write("&amp;lt;/select&amp;gt;");
+            base.Render(writer);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Sınıfımızın belkide en can alıcı noktası Render metodunun i&amp;ccedil;eriğidir. Burada dikkat ederseniz, kontrol&amp;uuml;m&amp;uuml;z&amp;uuml;n HTML &amp;ccedil;ıktısını &lt;strong&gt;HtmlTextWriter&lt;/strong&gt; nesnesi yardımıyla en başından oluşturuyoruz. Label' larımız i&amp;ccedil;in birer span ve liste kutularımız i&amp;ccedil;inde birer select elementi. Bu noktadan sonra sınıf k&amp;uuml;t&amp;uuml;phanemiz (class library) i&amp;ccedil;erisinde geliştirdiğimiz TarihKontrolum isimli bileşenin, herhangibir web projesindeki herhangibir sayfanın tasarım anında ToolBox' a eklendiğini g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Geliştirilen web sunucu kontrollerini i&amp;ccedil;erisinde barındırdan k&amp;uuml;t&amp;uuml;phaneleri, private assembly şeklinde kullanabileceğimiz gibi (yani web uygulaması ile birlikte taşınacak şekilde), shared (public) olarak GAC' a (Global Assembly Cache) atıp kullanabilirizde. GAC &amp;uuml;zerinde tutmamız halinde Assembly' ın bir strong name' e sahip olması gerektiğini unutmayalım.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk188_5.gif" alt="" width="256" height="253" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi bu kontrol&amp;uuml; herhangibir web sayfası &amp;uuml;zerine s&amp;uuml;r&amp;uuml;kleyip bırakalım. Bu durumda sayfamızın ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk188_6.gif" alt="" width="629" height="77" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Sayfanın kaynak tarafına ge&amp;ccedil;tiğimizde ise kontrol i&amp;ccedil;erisinde &amp;ccedil;izilen liste kutuları veya başlıkların hi&amp;ccedil; birisinin g&amp;ouml;z&amp;uuml;kmediğini, bunun yerine asp.net sunucu kontrollerine benzer tek bir elementin oluşturulduğunu g&amp;ouml;rebiliriz. Bu nokta, kontrol geliştirme metodolojisinde bilgi saklama &lt;strong&gt;(informatin hiding) &lt;/strong&gt;olarak adlandırılmaktadır. &amp;Ouml;yleki, geliştirdiğimiz sunucu kontrol&amp;uuml;n&amp;uuml;n arka tarafında olanlar sayfa tasarımcısından gizlenemiştir. Bu sayfa tasarımcılarının ilgili kontrolleri daha kolay kullanabilmesini ve kod karmaşasından uzaklaşılmasını sağlar. Diğer yandan geliştiriciler (developers) bizim kontrol&amp;uuml;m&amp;uuml;z&amp;uuml; t&amp;uuml;reterek genişletebilirler. &lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Geliştiricilerin bizim yazdığımız kontrolleride genişletebilmeleri i&amp;ccedil;in kontrol i&amp;ccedil;erisinde var olan &amp;uuml;yelerin, virtual (sanal) olarak tanımlanması d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. B&amp;ouml;ylece t&amp;uuml;retilen tipler isterlerse bu &amp;uuml;yeleri override (ezip) ederek kendi istedikleri bi&amp;ccedil;imde &amp;ccedil;alışmalarını sağlayabilirler. L&amp;uuml;tfen hatırlayalım, bu konular OOP (Object Oriented Programming - Nesneye Dayalı Programlama) temellerindendir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Tekrar konumuza d&amp;ouml;necek olursak.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;%@ Page Language="C#" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="_Default" %&amp;gt;
+
+&amp;lt;%@ Register Assembly="BenimWebKontrollerim" Namespace="BenimWebKontrollerim" TagPrefix="cc1" %&amp;gt;
+
+&amp;lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&amp;gt;
+
+&amp;lt;html xmlns="http://www.w3.org/1999/xhtml" &amp;gt;
+&amp;lt;head runat="server"&amp;gt;
+&amp;lt;title&amp;gt;Untitled Page&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    &amp;lt;form id="form1" runat="server"&amp;gt;
+        &amp;lt;cc1:tarihkontrolum id="TarihKontrolum1" runat="server"&amp;gt;&amp;lt;/cc1:tarihkontrolum&amp;gt;
+    &amp;lt;/form&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Sayfanın arka planına baktığımızda dikkati &amp;ccedil;eken ilk noktalardan birisi BenimWebKontrollerim.dll' ine ait referans bilgisinin &lt;strong&gt;Register&lt;/strong&gt; direktifi ile sayfaya eklenmiş oluşudur. Register elementi i&amp;ccedil;erisinde yer alan &lt;strong&gt;TagPrefix&lt;/strong&gt; niteliği, TarihKontrolum bileşeninin sayfaya eklenmesi halinde kullanılacak takı &amp;ouml;n ekini belirtmektedir. Hatırlayacağınız gibi kontrol sınıfımız i&amp;ccedil;erisine GunMetin,AyMetin ve YilMetin isimli &amp;ouml;zellikler dahil etmiştik. Bu &amp;ouml;zellikler, kontrol&amp;uuml;m&amp;uuml;z se&amp;ccedil;ildiğinde properties penceresinde aşağıdaki gibi g&amp;ouml;r&amp;uuml;necektir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk188_10.gif" alt="" width="283" height="204" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu &amp;ouml;zelliklere &amp;ouml;rnek değerler atayıp sayfamızı tarayıcı penceresinde a&amp;ccedil;tığımızda, kontrol&amp;uuml;m&amp;uuml;z&amp;uuml;n aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi eklendiğini ve HTML &amp;ccedil;ıktısının Render metodunda tasarladığımız şekilde &amp;uuml;retildiğini g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;Sayfa &amp;Ccedil;ıktısı;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk188_8.gif" alt="" width="437" height="106" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;alışma zamanında oluşturulan HTML &amp;ccedil;ıktısı ise aşağıdakine benzer olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk188_9.gif" alt="" width="565" height="368" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Artık elimizde kendi yazdığımız bir web sunucu kontrol&amp;uuml; var. Bunu elbetteki biraz daha fazla geliştirmemiz gerekecek. &amp;Ouml;rneğin formumuz &amp;uuml;zerine bir button ekleyip sayfanın istemciden sunucu tarafına gitmesine neden olacak bir işlem yaparsak &lt;strong&gt; (post-back) &lt;/strong&gt;liste kutularının i&amp;ccedil;eriğinin başlangı&amp;ccedil; değerlerine set edildiğini g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;object id="obj1" width="437" height="177" classid="clsid:D27CDB6E-AE6D-11CF-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0" border="0"&gt;
+&lt;param name="movie" value="http://www.buraksenyurt.com/makale/images/mk188_Video.swf" /&gt;
+&lt;param name="quality" value="High" /&gt; &lt;embed type="application/x-shockwave-flash" width="437" height="177" src="http://www.buraksenyurt.com/makale/images/mk188_Video.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" name="obj1" /&gt;&lt;/object&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat ettiyseniz değerleri değiştirmemize rağmen g&amp;uuml;n, ay ve yıl değerleri ilk değerlerine set edilmiştir. Bunun sebebi son derece doğaldır. Geliştirdiğimiz web kontrol&amp;uuml;, kullanıldığı web sayfasının bir par&amp;ccedil;asıdır. Sayfa ilk talep edildiğinde oluşturulur ve render edilen i&amp;ccedil;eriğe HTML &amp;ccedil;ıktıları dahil edilir. Bundan sonra zaten sunucu tarafında, Asp.Net sayfasına ait nesne &amp;ouml;rneği yok edilmektedir. Bu bir Asp.Net sayfasının yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml;n&amp;uuml;n&lt;strong&gt; (life cycle)&lt;/strong&gt; doğal &lt;strong&gt;&amp;nbsp;&lt;/strong&gt;sonucudur. Dolayısıyla sayfa i&amp;ccedil;erisindeki kontrollerde Dispose edilecektir.&lt;/p&gt;
+&lt;p&gt;O halde ikinci talepte, yani post-back işleminden sonra, aynı işlemler tekrarlanacaktır. Sayfaya ait nesne &amp;ouml;rneği ve i&amp;ccedil;erideki t&amp;uuml;m nesne &amp;ouml;rnekleri tekrardan oluşturulacak ve &amp;ouml;zellikle kontrollerin i&amp;ccedil;erisinde yer alan &amp;ouml;zellikler de ilk değerlerine set edilecektir. Dolayısıyla kontrol&amp;uuml;m&amp;uuml;z&amp;uuml;n, post-back işlemleri sonrasında bir şekilde istemcinin se&amp;ccedil;tiği liste &amp;ouml;ğelerini hatırlaması ve i&amp;ccedil;eride işlemesi gerekecektir. İşte bu kontrol&amp;uuml;m&amp;uuml;z&amp;uuml; daha fazla geliştireceğimiz (geliştirmemiz gerektiği) anlamına gelmektedir. Diğer taraftan, geliştirdiğimiz kontrol&amp;uuml;n tasarım zamanındaki yeteneklerinide arttırabiliriz. T&amp;uuml;m bu gerekenleri yazı dizimizin ikinci makalesinde ele almaya &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;p&gt;Bu makalemizde bir web sunucu kontrol&amp;uuml;n&amp;uuml; geliştirmek i&amp;ccedil;in gereken ilk adımları attık. Yanımıza kar olarak kalanları kısaca aşağıda maddeler halinde bulabilirsiniz.&lt;/p&gt;
+&lt;table id="table6" style="border-collapse: collapse; width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#336699"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="background-color: #ffffff;"&gt;&lt;strong&gt;Şu Ana Kadar Hatırda Kalanlar&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff"&gt;Kullanıcı tarafından bir web kontrol&amp;uuml; geliştirmek nihayetinde, &lt;strong&gt; System.Web.UI.Control &lt;/strong&gt;sınıfından bir sınıf t&amp;uuml;retmektir. &lt;em&gt; (Sonradan bu işlem i&amp;ccedil;in sadece WebControl sınıfını tercih edeceğiz.)&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff"&gt;&amp;Ouml;zel olarak yazılacak bir web kontrol&amp;uuml;n&amp;uuml; iki taraflı olarak d&amp;uuml;ş&amp;uuml;nmek gerekir. İstemci tarafından ve sunucu tarafından. İstemci tarafında d&amp;uuml;ş&amp;uuml;n&amp;uuml;lecek olanlar, kontrol&amp;uuml;n &amp;uuml;reteceği HTML &amp;ccedil;ıktısının nasıl olması gerektiğidir. Sunucu tarafında d&amp;uuml;ş&amp;uuml;n&amp;uuml;lmesi gerekenler ise, istemcide se&amp;ccedil;ilen verilerin nasıl hatırlanacağını ve istemci i&amp;ccedil;in gerekli HTML i&amp;ccedil;eriğinin nasıl hazırlanacağıdır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff"&gt;Kullanıcı tarafından geliştirilen sunucu kontrolleri aynı zamanda, Html &amp;ccedil;ıktısının hazırlanması, viewstate ve post-back işlemlerinin ele alınması gibi kavramların, sayfa geliştiricisinden soyutlanmasına yardımcı olur. &lt;em&gt;(information hiding)&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff"&gt;Bir web sunucu kontrol&amp;uuml;n&amp;uuml;, birden fazla web projesinde hatta Visual Studio IDE' si i&amp;ccedil;erisinden kullanabilmek i&amp;ccedil;in bir class library i&amp;ccedil;erisinde tutulmasında fayda vardır. Ortak kullanım amacıyla bu k&amp;uuml;t&amp;uuml;phane GAC (Global Assembly Cache)&amp;uuml;zerinde de tutulabilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff"&gt;Geliştirilen web sunucu kontrol&amp;uuml;n&amp;uuml;n, tasarım veya &amp;ccedil;alışma zamanında değiştirilebilecek &amp;uuml;yeleri var ise bunları birer &amp;ouml;zellik olarak tasarlamak gerekir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;şmek dileğiyle hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2007-01-17 12:00:00</pubDate>
+  <slug>Web-Server-Control-Yazmak-1-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>aspnet-20</tag>
+    <tag>web-server-control</tag>
+    <tag>aspnet</tag>
+  </tags>
+  <categories>
+    <category>Asp.Net 2.0</category>
+  </categories>
+</post>

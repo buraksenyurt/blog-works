@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Dayanıklı WCF Servisleri(Custom Persistence Providers)</title>
+  <description>Hatırlayacağınız üzere bir önceki makalemizde, dayanıklı WCF servislerinin(Durable WCF Services) nasıl geliştirilebileceğini incelemeye başlamıştık. Kısaca hatırlatmak gerekirse dayanıklı WCF servislerini şu şekilde tanımlayabiliriz; belirli bir süre için durumlarını bir depolama alanında saklayarak koruyabilen ve t süre sonrasında istemci uygulama tarafından bırakıldığı haliyle kullanılabilen servisler.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Hatırlayacağınız &amp;uuml;zere bir &amp;ouml;nceki makalemizde, &lt;strong&gt;dayanıklı WCF servislerinin(Durable WCF Services)&lt;/strong&gt; nasıl geliştirilebileceğini incelemeye başlamıştık. Kısaca hatırlatmak gerekirse dayanıklı WCF servislerini şu şekilde tanımlayabiliriz; belirli bir s&amp;uuml;re i&amp;ccedil;in durumlarını bir depolama alanında saklayarak koruyabilen ve t s&amp;uuml;re sonrasında istemci uygulama tarafından bırakıldığı haliyle kullanılabilen servisler. Konunun ilk aşamasında, varsayılan olarak SQL sunucusu &amp;uuml;zerindeki bir depolama alanının kullanıldığı senaryo &amp;uuml;zerinde durmuştuk. &lt;em&gt;(Hatırlayaım, SQL sunucusu &amp;uuml;zerinde veriyi saklamak y&amp;ouml;netsel a&amp;ccedil;ıdan pek &amp;ccedil;ok işi kolaylaştırmaktadır.)&lt;/em&gt; Bu makalemizde ise kaldığımız yerden devam edeceğiz ve aşağıdaki iki soruya y&amp;ouml;nelik &amp;ccedil;&amp;ouml;z&amp;uuml;mler geliştirmeye gayret edeceğiz.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1- &lt;/strong&gt;İstemci uygulama servis &amp;ouml;rneğini kullandıktan sonra kapatılır&lt;em&gt;(İstemcinin kapatma işlemi sırasında servis &amp;ouml;rneğinin saklama alanından silinmesini sağlayacak metodu &amp;ccedil;ağırmadığı varsayılır)&lt;/em&gt;. Bu durumda t s&amp;uuml;re sonrasında istemci uygulama aynı servis &amp;ouml;rneğinin i&amp;ccedil;eriğini kullanmak isterse nasıl bir s&amp;uuml;re&amp;ccedil; izlenmeli ve kodlama yapılmalıdır?&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2-&lt;/strong&gt; Varsayılan olarak kullanılan &lt;strong&gt;SqlPersistenceProviderFactory&lt;/strong&gt; tipinin sağladığı &lt;strong&gt;SQL&lt;/strong&gt; tabanlı saklama stratejisi yerine &amp;ouml;zelleştirilmiş başka bir sağlayıcı kullanılabilir mi?&lt;em&gt;(&amp;Ouml;rneğin servis &amp;ouml;rnekleri dosya tabanlı bir sistemde veya farklı bir veritabanı &amp;uuml;zerinde saklanabilirler mi? &lt;strong&gt;Oracle, Access&lt;/strong&gt; vb.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;İlk olarak 1nci sorumuza cevap arayarak yazımıza devam edelim. Bilindiği &amp;uuml;zere istemci uygulama, servise ait bir proxy nesnesi &amp;uuml;rettiğinde ve bunun &amp;uuml;zerinde bazı uzak operasyonları &amp;ccedil;ağırdığında, her iki taraf arasında &lt;strong&gt;oturum(Session)&lt;/strong&gt; bazlı olarak dolaşan bir &lt;strong&gt;InstanceId&lt;/strong&gt; değeri s&amp;ouml;z konusudur. Buna g&amp;ouml;re istemci uygulamanın daha &amp;ouml;nceden depolama alanına attığı bir servis i&amp;ccedil;eriğini tekrardan kullanabilmesi i&amp;ccedil;in, depolama alanında duran bu servis &amp;ouml;rneğinin &lt;strong&gt;InstanceId&lt;/strong&gt; değerine ihtiyacı vardır. Bu değer bilindiği &amp;uuml;zere servis tarafında &amp;uuml;retilip istemciye i&amp;ccedil;erik ile birlikte g&amp;ouml;nderilir ve operasyon &amp;ccedil;ağrılarında karşılıklı olarak kullanılır. Dolayısıyla istemci uygulama, kullanmak istediği dayanıklı WCF servisine ait &lt;strong&gt;GUID&lt;/strong&gt; tipinden olan&amp;nbsp; &lt;strong&gt;InstanceId&lt;/strong&gt; değerine sahip ise, saklanan veri i&amp;ccedil;eriğini kullanıp işlemlerine bıraktığı yerden devam edebilir. Bu noktada tabiki istemcinin doğru &lt;strong&gt;InstanceId&lt;/strong&gt; değerine sahip olması &amp;ouml;nemlidir.&lt;/p&gt;
+&lt;p&gt;Diğer taraftan &lt;strong&gt;Exception&lt;/strong&gt; oluşmasına neden olabilecek pek &amp;ccedil;ok durum vardır. S&amp;ouml;z gelimi istemci uygulama servis &amp;ouml;rneğinin depolama alanından kaldırılmasına neden olan bir operasyon &amp;ccedil;ağrısı yaptıktan sonra, &lt;strong&gt;InstanceId&lt;/strong&gt; değerini kullanarak aynı servisin i&amp;ccedil;eriğine kesinlikle ulaşamaz. &amp;Ccedil;&amp;uuml;nk&amp;uuml; servis tarafındaki depolama alanında bu &lt;strong&gt;InstanceId&lt;/strong&gt; değerine sahip i&amp;ccedil;erik artık bulunmamaktadır.&lt;em&gt;(Hemen hatırlayalım, varsayılan olarak &lt;strong&gt;CompleteInstance=true&lt;/strong&gt; değerine sahip olan servis operasyonu, &lt;strong&gt;Instance&lt;/strong&gt; i&amp;ccedil;eriğinin depolama alanından silinmesine neden olmaktadır.)&lt;/em&gt; Geliştirme sırasında bu ve benzeri istisnai durumlara dikkat edilmesi &amp;ouml;nemlidir. En azından istisna y&amp;ouml;netim mekanizmalarından yararlanılmalı ve sistemin işleyişi &amp;ccedil;ok fazla aksatılmamalıdır.&lt;/p&gt;
+&lt;p&gt;Şimdi dilerseniz ilk sorumuzun cevabını bulmak i&amp;ccedil;in kodlamaya yavaş yavaş ge&amp;ccedil;elim. Bu noktada işlemleri daha kolay izleyebilmek adına bir &amp;ouml;nceki makalede geliştirdiğimiz &lt;strong&gt;CommonService&lt;/strong&gt; isimli serviste k&amp;uuml;&amp;ccedil;&amp;uuml;k bir değişiklik yapıyoruz. S&amp;ouml;z konusu değişiklikler ile en b&amp;uuml;y&amp;uuml;k amacımız, istemci tarafında &lt;strong&gt;CommonValue&lt;/strong&gt; değerini takip ederek, ilk sorumuzu daha kolay analiz edebilmektir. Buna g&amp;ouml;re &lt;strong&gt;IncreaseValue&lt;/strong&gt; metodunun, servis i&amp;ccedil;erisindeki &lt;strong&gt;CommonValue&lt;/strong&gt; alanının değerini geriye d&amp;ouml;nd&amp;uuml;rmesini sağlıyoruz. Tabi bu değişikliğin hem servis s&amp;ouml;zleşmesinde hemde servis s&amp;ouml;zleşmesini uyarlayan tipin i&amp;ccedil;erisinde yapılması gerekmektedir&lt;strong&gt;.&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Servis tarafındaki s&amp;ouml;zleşmelerde değişiklik olması halinde(&amp;ouml;rneğin operasyonun d&amp;ouml;n&amp;uuml;ş tipi veya parametrelerinde değişiklik yapılması yada yeni operasyonların eklenmesi vb...) bu hizmeti kullanan istemci uygulamaların, servis referanslarını Update etmeleri mutlak suretle gereklidir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&amp;Ouml;rneğimizde servis k&amp;uuml;t&amp;uuml;phanesinde yapmış olduğu basit değişiklikler aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ICommonService&lt;/strong&gt; isimli servis s&amp;ouml;zleşmesinde yapılan değişiklik;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[OperationContract]
+int IncreaseValue(int value);&lt;/pre&gt;
+&lt;p&gt;Servis s&amp;ouml;zleşmesini uyarlayan &lt;strong&gt;CommonService&lt;/strong&gt; sınıfında yapılan değişiklik;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[DurableOperation()]
+public int IncreaseValue(int value)
+{
+    commonValue += value;
+    return commonValue;
+}&lt;/pre&gt;
+&lt;p&gt;Gelelim istemci tarafına. İstemci tarafında bu kez basit bir &lt;strong&gt;Windows&lt;/strong&gt; uygulaması kullanıyor olacağız. &lt;em&gt; (İstemci uygulamamız sadece test ama&amp;ccedil;lıdır bu nedenle &amp;ccedil;ok fazla beklentimiz olmamalıdır :) &lt;/em&gt;İstemcimizin Form1 tasarımı aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk267_1.gif" alt="" width="485" height="255" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;İstemci uygulamamızın kod i&amp;ccedil;eriği ise şu şekildedir;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
+using WinClientApp.CommonServiceReference;
+using System.ServiceModel;
+using System.ServiceModel.Channels;
+
+namespace WinClientApp
+{
+    public partial class Form1 
+        : Form
+    {
+        private ServiceCommonClient client=null;
+
+        public Form1()
+        {
+            InitializeComponent();
+            // Proxy nesnesi &amp;ouml;rneklenir.
+            client = new ServiceCommonClient("WSHttpContextBinding_ServiceCommon");
+            lblStatus.Text = "Servis i&amp;ccedil;in proxy nesnesi &amp;ouml;rneklendi";
+            Text += " (" + DateTime.Now.ToLongTimeString() + ")";
+        }
+
+        private void btnStart_Click(object sender, EventArgs e)
+        {
+            // Start metodu &amp;ccedil;ağırılır. Bu metod &amp;ccedil;ağrısı ile servis tarafında InstanceData tablosuna kayıt atılır.
+            client.Start();
+            lblStatus.Text = "Start metodu &amp;ccedil;ağırıldı";
+            txtInstanceId.Text = client.GetInstanceId().ToString(); 
+        }
+
+        private void btnIncreaseValue_Click(object sender, EventArgs e)
+        { 
+            // Sembolik olarak değer arttırımı servis &amp;uuml;zerinden yapılır
+            lblCommonValue.Text=client.IncreaseValue(10).ToString();
+            lblStatus.Text = "IncreaseValue metodu &amp;ccedil;ağırıldı";
+        }
+
+        private void btnStop_Click(object sender, EventArgs e)
+        { 
+            // Stop metodu &amp;ccedil;ağırılır. Bu metod &amp;ccedil;ağırıldığında servis tarafında InstanceData tablosunda saklanan satır silinir
+            client.Stop();
+            lblStatus.Text = "Stop metodu &amp;ccedil;ağırıldı";
+        }
+
+        // Daha &amp;ouml;nceden kayıt edilmiş bir instance' ı kullanmak i&amp;ccedil;in aşağıdaki kod par&amp;ccedil;ası kullanılır
+        private void btnGetContext_Click(object sender, EventArgs e)
+        {
+            // IContextManager i&amp;ccedil;in System.WorkflowServices.dll assembly' ının referans edilmesi gerekir
+            IContextManager conMng = ((IContextChannel)client.InnerChannel).GetProperty&amp;lt;IContextManager&amp;gt;();
+            IDictionary&amp;lt;string, string&amp;gt; context = conMng.GetContext();
+        
+            if (!context.ContainsKey("instanceId"))
+            {
+                context.Add("instanceId", txtInstanceId.Text);
+                conMng.SetContext(context);
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu uygulamada daha &amp;ouml;nceden depolanan bir servis &amp;ouml;rneğine ulaşılmak istendiğinden, &lt;strong&gt;System.ServiceModel.Channels&lt;/strong&gt; isim alanındaki &lt;strong&gt;IContextManager&lt;/strong&gt; isimli aray&amp;uuml;zden yararlanılmaktadır. Bu aray&amp;uuml;z &lt;strong&gt;System.WorkflowServices.dll&lt;/strong&gt; &lt;strong&gt;assembly&lt;/strong&gt;' ı i&amp;ccedil;erisinde yer aldığından s&amp;ouml;z konusu &lt;strong&gt;.Net Framework 3.5&lt;/strong&gt; k&amp;uuml;t&amp;uuml;phanesinin istemci uygulamaya referans edilmesi gerekmektedir. &amp;Ouml;rneğimiz tabiki geliştiriciler i&amp;ccedil;in yazılmıştır. Son kullanıcıya verildiği takdirde &amp;ccedil;alışma zamanında pek &amp;ccedil;ok istisnanın oluşması muhtemel ve ka&amp;ccedil;ınılmazdır.&lt;em&gt;(Unutmayın şu anda bir test uygulaması geliştiriyoruz ve analiz yapmaya &amp;ccedil;alışıyoruz.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;İlk olarak servis k&amp;uuml;t&amp;uuml;phanesini&lt;em&gt;(Bir &amp;ouml;nceki makalemizden hatırlayacağınız gibi &lt;strong&gt;WCF&lt;/strong&gt; k&amp;uuml;t&amp;uuml;phaneleri otomatik olarak &lt;strong&gt;WcfSvcHost&lt;/strong&gt; programı yardımıyla host edilebilmekte ve WcfTestClient ile test edilebilmektedir.)&lt;/em&gt; ve windows uygulamamızı &amp;ccedil;alıştıralım. Sonrasında ilk olarak &lt;strong&gt;Start&lt;/strong&gt; d&amp;uuml;ğmesine basacağız. Ardından &lt;strong&gt;IncreaseValue&lt;/strong&gt; değerini arttırmak i&amp;ccedil;in bir ka&amp;ccedil; işlem yaptırılabiliriz. Ancak hi&amp;ccedil; bir şekilde &lt;strong&gt;Stop&lt;/strong&gt; d&amp;uuml;ğmesine basmayacağız. Bu en &amp;ouml;nemli test noktamız. Nitekim &lt;strong&gt;Stop&lt;/strong&gt; d&amp;uuml;ğmesine basılması sonrasında servis tarafında &amp;ccedil;ağırılan operasyon, sahip olduğu &lt;strong&gt;DurableOperation&lt;/strong&gt; niteliğinin &lt;strong&gt;CompleteInstace&lt;/strong&gt; &amp;ouml;zelliğinin &lt;strong&gt;true&lt;/strong&gt; değerine sahip olması nedeni ile &lt;strong&gt;instance&lt;/strong&gt;' ın kaldırılmasına neden olacaktır. Testin bu aşamasında uygulamamızın ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;de aşağıdakine benzer olacaktır. Yine burada testin ikinci aşaması i&amp;ccedil;in &amp;ouml;nem arz eden konulardan biriside servis tarafından &amp;uuml;retilen &lt;strong&gt;InstanceId&lt;/strong&gt; değeridir. Bu değeri saklamamız gerekiyor.&lt;em&gt;(L&amp;uuml;tfen Form &amp;uuml;zerindeki tarihe dikkat edin.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk267_2.gif" alt="" width="452" height="203" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Testimizin ikinci aşamasında uygulamamızı kapatıp &amp;ccedil;ıktığımızı d&amp;uuml;ş&amp;uuml;nelim. Eğer veritabanına gider ve &lt;strong&gt;InstanceData&lt;/strong&gt; tablosuna bakacak olursak, servis &amp;ouml;rneğinin satır bazında eklenmiş olduğunu rahatlıkla g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk267_3.gif" alt="" width="637" height="103" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;XML&lt;/strong&gt; verisinde ise servis tarafındaki &lt;strong&gt;CommonValue&lt;/strong&gt; değişkeninin aşağıdaki şekilde g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &lt;strong&gt;41&lt;/strong&gt; olarak tutulduğu g&amp;ouml;zlemlenebilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk267_4.gif" alt="" width="531" height="186" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Gel zaman git zaman aradan uzunca bir s&amp;uuml;re ge&amp;ccedil;er ve biz aynı uygulamayı bir kere daha &amp;ccedil;alıştırırız. Ancak bu sefer, &lt;strong&gt;Start&lt;/strong&gt; metodu yerine daha &amp;ouml;nceden sakladığımız servis &lt;strong&gt;InstanceId&lt;/strong&gt; değerini &lt;strong&gt;TextBox&lt;/strong&gt; kontrol&amp;uuml;ne ekleyip &lt;strong&gt;GetContext&lt;/strong&gt; isimli metodu &amp;ccedil;ağırmalıyız. Buna g&amp;ouml;re daha &amp;ouml;nceden kayıt edilmiş olan servis &amp;ouml;rneğin i&amp;ccedil;eriğinin kullanılması i&amp;ccedil;in ilk adımı atmış oluruz ki uygulamanın &amp;ccedil;alışma zamanı ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;de aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk267_5.gif" alt="" width="452" height="203" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edilecek olursa uygulamayı &amp;ccedil;alıştırdığımıda &lt;strong&gt;Form&lt;/strong&gt;' un &lt;strong&gt;Text&lt;/strong&gt;' i &amp;uuml;zerinde saat bilgisi olarak &lt;strong&gt;00:16:51&lt;/strong&gt; yazmaktaydı&lt;em&gt;.(Ger&amp;ccedil;ektende aynı g&amp;uuml;n&amp;uuml;n akşamında &amp;ouml;rneği tekrardan &amp;ccedil;alıştırdığımı s&amp;ouml;yleyebilirim)&lt;/em&gt;. Ancak şu anda saat &lt;strong&gt;21:31:45&lt;/strong&gt; ve servis &amp;ouml;rneğinin veritabanında kayıtlı olan i&amp;ccedil;eriğini kullanaraktan, &lt;strong&gt;CommonValue&lt;/strong&gt; değişkeninin son değerini 51 olarak değiştirmiş bulunuyoruz. Dolayısıyla bir servisin nasıl dayanıklı hale getirilebileceğini ve bununla birlikte istemcilerin daha &amp;ouml;nceki &lt;strong&gt;instance&lt;/strong&gt;' lara nasıl ulaşabileceklerini g&amp;ouml;rm&amp;uuml;ş olduk.&lt;/p&gt;
+&lt;p&gt;Elbetteki ger&amp;ccedil;ek hayat vakalarında s&amp;ouml;z konusu &lt;strong&gt;instanceId&lt;/strong&gt; değerlerini istemci tarafında daha d&amp;uuml;zenli bir şekilde saklamak gerekebilir. Belikde uygulama kapatılırken &lt;strong&gt;instanceId&lt;/strong&gt; değeri konfigurasyon d&amp;uuml;zeyinde saklanabilir ve bir sonraki a&amp;ccedil;ılışta değerlendirilerek istemcinin, servis i&amp;ccedil;eriğinin son hali &amp;uuml;zerinden otomatik olarak devam etmeside sağlanabilir. Tahmin edeceğiniz &amp;uuml;zere dayanıklı WCF servisleri, &lt;strong&gt;Workflow&lt;/strong&gt; tarzındaki uygulamalarda daha yaygın olarak kullanılmaktadır. Nitekim &lt;strong&gt;WF&lt;/strong&gt; uygulamaları kendi i&amp;ccedil;lerinde zaten var olan bir s&amp;uuml;rerlik yapısına sahiptir ve bir akışın anlık olarak uzun s&amp;uuml;reliğine saklanması m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. &amp;Ouml;yleki &lt;strong&gt;WCF&lt;/strong&gt; servislerini dayanıklı hale getirmek i&amp;ccedil;inde Workflow' un ana assembly' larından olan &lt;strong&gt;System.WorkflowServices.dll&lt;/strong&gt;' dan yararlanılmaktadır.&lt;/p&gt;
+&lt;p&gt;Gelelim makalemize konu olan ikinci sorumuza. &lt;strong&gt;&amp;Ouml;zelleştirilmiş bir s&amp;uuml;rerlik sağlayıcısını(Custom Persistence Provider) nasıl geliştirebiliriz?&lt;/strong&gt; Burada iş biraz daha zorlaşmaktadır. Bu konudaki en g&amp;uuml;zel &amp;ouml;rnek &lt;strong&gt;Microsoft&lt;/strong&gt; tarafından geliştirilmiş olup &lt;a href="http://go.microsoft.com/fwlink/?LinkId=87352"&gt;&lt;strong&gt;MSDN&lt;/strong&gt;&lt;/a&gt; den indirip inceleyebilirsiniz. Biz &amp;ccedil;ok daha basit haliyle ele alacağız ve bu nedenle &amp;ouml;zellikle asenkron yaklaşımları g&amp;ouml;z ardı edeceğiz.&lt;/p&gt;
+&lt;p&gt;İlk olarak &lt;strong&gt;PersistenceProviders&lt;/strong&gt; isimli bir &lt;strong&gt;sınıf k&amp;uuml;t&amp;uuml;phanesi(Class Library)&lt;/strong&gt; oluşturarak işe başlayabiliriz. S&amp;ouml;z konusu k&amp;uuml;t&amp;uuml;phane i&amp;ccedil;erisinde &amp;ouml;zel bir &lt;strong&gt;s&amp;uuml;rerlik sağlayıcısı(Persistence Provider)&lt;/strong&gt; kullanacağımız i&amp;ccedil;in &lt;strong&gt;System.ServiceModel.dll&lt;/strong&gt;, &lt;strong&gt;System.WorkflowServices.dll assembly&lt;/strong&gt;' larını referans etmemiz gerekiyor. Bunların haricinde &amp;ouml;rneğimizde kullanacağımız &amp;ouml;zel sağlayıcı, &amp;ccedil;alışma zamanındaki servis &amp;ouml;rneklerine ait verileri &lt;strong&gt;SOAP(SimpleObjectAccessProtocol) &lt;/strong&gt;serileştirme yaparak saklayacaktır.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Elbetteki &amp;ouml;zel s&amp;uuml;rerlik sağlayıcısının hangi tipte veri kaynağı ile &amp;ccedil;alışacağı tamamen geliştiriceye ve ortam şartlarına bağlıdır. Sadece dosya sistemi değil Oracle gibi SQL Server harici veritabanları da kolaylıkla ele alınabilir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Biz &amp;ouml;rneğimizde &lt;strong&gt;SOAP&lt;/strong&gt; serileştirmesini kullanacağımızda &lt;strong&gt;System.Runtime.Serialization.Formatters.Soap.dll&lt;/strong&gt; &lt;strong&gt;assembly&lt;/strong&gt;' ınında sınıf k&amp;uuml;t&amp;uuml;phanesine referans edilmesi gerekmektedir. Model temel olarak &lt;strong&gt;Abstract&lt;/strong&gt; &lt;strong&gt;Factory&lt;/strong&gt; &lt;strong&gt;tasarım&lt;/strong&gt; &lt;strong&gt;desenine&lt;/strong&gt; uygun olarak geliştirilmelidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk267_6.gif" alt="" width="635" height="566" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Doğruyu s&amp;ouml;ylemek gerekirse biraz karmaşık g&amp;ouml;r&amp;uuml;nen bir yapı. Ancak incelendiği takdirde i&amp;ccedil;erisinde &lt;strong&gt;asenkron&lt;/strong&gt; operasyonların dahi yer aldığın&lt;em&gt;ı(ki bunun uyarlamalarını eklemedik kodlarımıza)&lt;/em&gt;, &lt;strong&gt;Abstract Factory&lt;/strong&gt; deseninin uygulandığını rahatlıkla g&amp;ouml;rebiliriz. Bir başka deyişle &lt;strong&gt;XmlPersistenceProviderFactory&lt;/strong&gt; sınıfı, &amp;ouml;zel depolama işlemleri i&amp;ccedil;in &lt;strong&gt;XmlPersistenceProvider&lt;/strong&gt; tipini &amp;ouml;rneklemektedir. Bu, &lt;strong&gt;WCF&lt;/strong&gt; servislerinde &amp;ouml;zel sağlayıcıların &amp;uuml;retimi sırasında kullanılan standart yoldur. &amp;Ouml;rnekte kullandığımız &lt;strong&gt;XmlPersistenceProviderFactory&lt;/strong&gt; tipi, &lt;strong&gt;abstract&lt;/strong&gt; &lt;strong&gt;PersistenceProviderFactory&lt;/strong&gt; tipinden t&amp;uuml;remektedir. Bu sınıfın i&amp;ccedil;erisinde &lt;strong&gt;ezilmek(override)&lt;/strong&gt; zorunda olan &lt;strong&gt;CreateProvider&lt;/strong&gt; isimli metod ise &lt;strong&gt;PersistenceProvider&lt;/strong&gt; tipinden bir referans d&amp;ouml;nd&amp;uuml;rmektedir.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğimizde s&amp;ouml;z konusu d&amp;ouml;n&amp;uuml;ş referansı olarak &lt;strong&gt;PersistenceProvider&lt;/strong&gt; sınıfından t&amp;uuml;retilen &lt;strong&gt;XmlPersistenceProvider&lt;/strong&gt; tipi kullanılmaktadır. Buna ek olarak &lt;strong&gt;PersistenceProviderFactory&lt;/strong&gt; tipi &lt;strong&gt;CommunicationObject&lt;/strong&gt;' ten t&amp;uuml;remektedir ve bu sebeptende &lt;strong&gt;CreateProvider&lt;/strong&gt; haricinde ek metodlarıda uyarlamaktadır. S&amp;ouml;z gelimi &lt;strong&gt;OnBeginClose&lt;/strong&gt;, &lt;strong&gt;OnEndClose&lt;/strong&gt; gibi metodlar veya &lt;strong&gt;DefaulfCloseTimeout&lt;/strong&gt;, &lt;strong&gt;DefaultOpenTimeout&lt;/strong&gt; gibi &amp;ouml;zellikler &lt;strong&gt;CommunicationObject&lt;/strong&gt; tipi i&amp;ccedil;erisinde &lt;strong&gt;abstract&lt;/strong&gt; olarak tanımlandıklarından otomatik olarak &lt;strong&gt;XmlPersistenceProviderFactory&lt;/strong&gt; sınıfınada uygulanmaktadırlar. Ek olarak, &lt;strong&gt;XmlPersistenceProvider&lt;/strong&gt; tipinin ortaklaşa kullanacağı &lt;strong&gt;Create&lt;/strong&gt;,&lt;strong&gt;Load&lt;/strong&gt;,&lt;strong&gt;Update&lt;/strong&gt;,&lt;strong&gt;Delete&lt;/strong&gt; gibi işlevselliklere ait metodlar, &lt;strong&gt;XmlPersistenceProviderFactory&lt;/strong&gt; tipi i&amp;ccedil;erisinde yer almaktadır.&lt;/p&gt;
+&lt;p&gt;İki sınıf arasındaki iletişimin sağlanması amacıyla &lt;strong&gt;XmlPersistenceProvider&lt;/strong&gt; tipinin &lt;strong&gt;yapıcı metodu(Constructor Method)&lt;/strong&gt; i&amp;ccedil;erisine, &lt;strong&gt;XmlPersistenceProviderFactory&lt;/strong&gt; sınıfının &amp;ccedil;alışma zamanı referansı aktarılmaktadır. B&amp;ouml;ylece &lt;strong&gt;XmlPersistenceProvider&lt;/strong&gt; tipi i&amp;ccedil;erisinden, factory sınıfında tanımlanan genel &amp;uuml;yelere erişilebilir. &lt;em&gt; (&lt;strong&gt;PersistenceProvider&lt;/strong&gt; t&amp;uuml;revli sınıf istenirse &lt;strong&gt;ProviderPersistenceFactory&lt;/strong&gt; t&amp;uuml;revli sınıf i&amp;ccedil;erisinde &lt;strong&gt;dahili tip-inner type&lt;/strong&gt; olarakta tasarlanabilir. Microsoft'un &amp;ouml;rneğinde bu tarz bir kullanım s&amp;ouml;z konusudur.) &lt;/em&gt;&lt;strong&gt;XmlPersistenceProviderFactory&lt;/strong&gt; tipi ile &amp;uuml;rettiği &lt;strong&gt;XmlPersistenceProvider&lt;/strong&gt; sınıfının i&amp;ccedil;erikleri ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;XmlPersistenceProviderFactory&lt;/strong&gt; i&amp;ccedil;eriği;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel.Persistence;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Soap;
+
+namespace PersistenceProviders
+{
+    public class XmlPersistenceProviderFactory
+        : PersistenceProviderFactory
+    {
+        #region Gerekli Sınıf Değişkenleri
+
+        // Servis &amp;ouml;rneklerinin saklanacağı varsayılan klas&amp;ouml;r&amp;uuml; tutan değişken
+        private string fileStoragePath = Path.Combine(System.Environment.CurrentDirectory, "Instances");
+        // Soap serileştirmesini yapacak olan SoapFormatter değişkeni
+        SoapFormatter sFrmtr = null;
+        Logger lgr = null;
+        Guid InstanceId;
+
+        #endregion
+
+        #region Yardımcı Metodlar
+
+        private string InstanceFileName()
+        {
+            // Dosya adı belirlenir. Ad belirlenirken ayırt edici olması i&amp;ccedil;in base sınıftan Id &amp;ouml;zelliğinin değeri kullanılır
+            string fileName = Path.Combine(fileStoragePath, InstanceId.ToString() + ".sxml");
+            return fileName;
+        }
+
+        #endregion
+
+        #region XmlPersistenceProvider sınıfı i&amp;ccedil;in kullanılan ortak CRUD metodları
+    
+        // Servis &amp;ouml;rneği i&amp;ccedil;in depolama kaynağının oluşturulması ve i&amp;ccedil;eriğinin serileştirilmesi amacıyla kullanılır
+        public object CreateInstance(object instance, TimeSpan timeout)
+        {
+            string fileName = InstanceFileName();
+        
+            // Soap formatter tipinden yararlanılarak servis &amp;ouml;rneğinin serileştirilmesi sağlanır
+            using (FileStream stream = new FileStream(fileName, FileMode.Create, FileAccess.Write))
+            {
+                sFrmtr.Serialize(stream, instance);
+            }
+
+            lgr.AddEventEntry(fileName + " i&amp;ccedil;in Create işlemi yapıldı, Serileştirme ger&amp;ccedil;ekleştirildi.", System.Diagnostics.EventLogEntryType.Information);
+            return null;
+        }
+
+        // Servis &amp;ouml;rneğinin depolama kaynağının silinmesi amacıyla kullanılır
+        public void DeleteInstance(object instance, TimeSpan timeout)
+        {
+            // Dosya adı elde edilir
+            string fileName = InstanceFileName();
+            // Eğer dosya sistemde var ise
+            if (File.Exists(fileName))
+            {
+                // Dosya silinir
+                File.Delete(fileName);
+                // Silme bilgsi loglanır
+                lgr.AddEventEntry(fileName + " i&amp;ccedil;in Delete işlemi yapıldı.", System.Diagnostics.EventLogEntryType.Information);
+            }
+            else // yok ise
+            {
+                // Dosya sistemde bulunamadıysa normal şartların aksine başka bir nedenle silinmiş olabilir. Bu durum loga aktarılır
+                lgr.AddEventEntry(fileName + " sistemde bulunamadığından Delete işlemi yapılamadı", System.Diagnostics.EventLogEntryType.Warning);
+            }
+        }
+
+        // Kaydedilmiş olan servis &amp;ouml;rneğinin kaynaktan alınıp kullanılabilir object haline getirilmesi i&amp;ccedil;in kullanılır
+        public object LoadInstance(TimeSpan timeout)
+        {
+            string fileName = InstanceFileName();
+            object result = null;
+            if (File.Exists(fileName)) // dosya mevcutsa
+            {
+                // loglama yap
+                lgr.AddEventEntry(fileName + " i&amp;ccedil;in Load işlemi yapıldı", System.Diagnostics.EventLogEntryType.Information);
+                // servis &amp;ouml;rneğinin dosya i&amp;ccedil;erisinde tutulan serileştirilmiş &amp;ouml;rneğini deSerialize ederk geriye d&amp;ouml;nd&amp;uuml;r
+                using (FileStream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+                {
+                    result = sFrmtr.Deserialize(stream);
+                    stream.Close();
+                }
+                return result;
+            }
+            else // dosya bulunamıyorsa
+            {
+                // uyarı mesajı niteliğinde loglama yap
+                lgr.AddEventEntry(fileName + " sistemde bulunamadığından Load işlemi ger&amp;ccedil;ekleştirilemedi", System.Diagnostics.EventLogEntryType.Warning);
+                return null;
+            }
+        }
+
+        // Kaynakta tutulan servis &amp;ouml;rneğinin g&amp;uuml;ncellenmesi işlemini ger&amp;ccedil;ekleştirir.
+        public object UpdateInstance(object instance, TimeSpan timeout)
+        {
+            // Dosya adı alınır
+            string fileName = InstanceFileName();
+            
+            // Soap formatter tipinden yararlanılarak servis &amp;ouml;rneğinin serileştirilmesi sağlanır
+            using (Stream stream = new FileStream(fileName, FileMode.Create, FileAccess.Write))
+            {
+                // G&amp;uuml;ncellenen servis &amp;ouml;rneği tekrardan aynı dosya &amp;uuml;zerine serileştirilir
+                sFrmtr.Serialize(stream, instance);
+            }
+
+            lgr.AddEventEntry(fileName + " i&amp;ccedil;in Update işlemi yapıldı, Serileştirme ger&amp;ccedil;ekleştirildi.", System.Diagnostics.EventLogEntryType.Information);
+            return null;
+        }
+
+        #endregion
+    
+        public XmlPersistenceProviderFactory()
+        {
+            // Eğer servis &amp;ouml;rneklerinin saklanacağı varsayılan klas&amp;ouml;r yoksa oluştur
+            if (!Directory.Exists(fileStoragePath))
+                Directory.CreateDirectory(fileStoragePath);
+
+            // Soap Formatter değişkeni oluşturulur
+            sFrmtr = new SoapFormatter();
+    
+            // Loglama işlemini yapacak olan sınıf &amp;ouml;rneği oluşturulur
+            lgr = new Logger("CustomXmlPersistenceProvider", "Custom Xml Persistence Log(WCF)");
+    
+            lgr.AddEventEntry("XmlPersistenceProviderFactory &amp;ouml;rneği oluşturuldu", System.Diagnostics.EventLogEntryType.SuccessAudit);
+        }
+
+        public override PersistenceProvider CreateProvider(Guid id)
+        {
+            InstanceId = id;
+            return new XmlPersistenceProvider(id, this);
+        }
+
+        protected override TimeSpan DefaultCloseTimeout
+        {
+            get { return TimeSpan.FromSeconds(10); }
+        }
+
+        protected override TimeSpan DefaultOpenTimeout
+        {
+            get { return TimeSpan.FromSeconds(10); }
+        }
+
+        protected override void OnAbort()
+        {
+        }
+
+        protected override IAsyncResult OnBeginClose(TimeSpan timeout, AsyncCallback callback, object state)
+        {
+            return null;
+        }
+
+        protected override IAsyncResult OnBeginOpen(TimeSpan timeout, AsyncCallback callback, object state)
+        {
+            return null;
+        }
+
+        protected override void OnClose(TimeSpan timeout)
+        {
+        }
+
+        protected override void OnEndClose(IAsyncResult result)
+        {
+        }
+
+        protected override void OnEndOpen(IAsyncResult result)
+        {
+        }
+
+        protected override void OnOpen(TimeSpan timeout)
+        {
+        }
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi basit &lt;strong&gt;serileştirme(Serialization)&lt;/strong&gt; ve &lt;strong&gt;ters-serileştirme(DeSerialization)&lt;/strong&gt; işlemleri ger&amp;ccedil;ekleştirilmektedir. Bununla birlikte &amp;ouml;rneğin bizim i&amp;ccedil;in&lt;em&gt;(en azından benim i&amp;ccedil;in)&lt;/em&gt; kolay anlaşılabilir olması adına asenkron metodların i&amp;ccedil;erikleri uyarlanmamıştır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;XmlPersistenceProvider&lt;/strong&gt; sınıfının i&amp;ccedil;eriği;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel.Persistence;
+
+namespace PersistenceProviders
+{
+    public class XmlPersistenceProvider
+        : PersistenceProvider
+    {
+        XmlPersistenceProviderFactory XmlPrsFactory;
+
+        public XmlPersistenceProvider(Guid id, XmlPersistenceProviderFactory xmlFactory)
+            : base(id)
+        {
+            XmlPrsFactory = xmlFactory;
+        }
+
+        #region PersistenceProvider ve CommunicationObject &amp;Uuml;yeleri
+
+        // Servis &amp;ouml;rneği depolama alanında ilk oluşturulduğunda &amp;ccedil;alışır.
+        public override IAsyncResult BeginCreate(object instance, TimeSpan timeout, AsyncCallback callback, object state)
+        {
+            return null;
+        }
+
+        // Silme işlemi başladığında devreye girer.
+        public override IAsyncResult BeginDelete(object instance, TimeSpan timeout, AsyncCallback callback, object state)
+        {
+            return null;
+        }
+
+        // Y&amp;uuml;kleme işlemi başladığından devreye girer.
+        public override IAsyncResult BeginLoad(TimeSpan timeout, AsyncCallback callback, object state)
+         {
+            return null;
+        }
+
+        // Servis &amp;ouml;rneği g&amp;uuml;ncellemeye başladığında devreye girer
+        public override IAsyncResult BeginUpdate(object instance, TimeSpan timeout, AsyncCallback callback, object state)
+        {
+            return null;
+        }
+
+        // Depolama alanında servis &amp;ouml;rneğinin kayıt altına alınmasında kullanılır
+        public override object Create(object instance, TimeSpan timeout)
+        {
+            return XmlPrsFactory.CreateInstance(instance, timeout);
+        }
+
+        // Servis &amp;ouml;rneğinin depolama alanında silinmesinin ele alındığı metoddur
+        public override void Delete(object instance, TimeSpan timeout)
+        {
+            XmlPrsFactory.DeleteInstance(instance, timeout);
+        }
+
+        // Servis &amp;ouml;rneğinin veri i&amp;ccedil;eriğinin depolama alanına ilk kayıt edildiği aşamanın sonunda devreye giren metoddur
+        public override object EndCreate(IAsyncResult result)
+        {
+            return null;
+        }
+
+        // Servis &amp;ouml;rneğine ait veri i&amp;ccedil;eriğinin depolama alanında silindiği aşamının sonunda devreye giren metoddur
+        public override void EndDelete(IAsyncResult result)
+        {
+        }
+
+        // Servis &amp;ouml;rneği verisinin depolama alanında ortama y&amp;uuml;klendiği aşamın sonunda devreye giren metoddur
+        public override object EndLoad(IAsyncResult result)
+        {
+            return null;
+        }
+
+        // Servis &amp;ouml;rneği verisinin depolama alanında g&amp;uuml;ncelleştirilmesi sonrasında devreye giren metoddur
+        public override object EndUpdate(IAsyncResult result)
+        {
+            return null;
+        }
+
+        // Servis &amp;ouml;rneği verisinin depolama alanından y&amp;uuml;kenmesi aşamasının ele alındığı metoddur
+        public override object Load(TimeSpan timeout)
+        {
+            return XmlPrsFactory.LoadInstance(timeout);
+        }
+
+        // Servis &amp;ouml;rneği verisinin depolama alanında g&amp;uuml;ncelleştirilmesi aşamasının ele alındığı metoddur
+        public override object Update(object instance, TimeSpan timeout)
+        {
+            return XmlPrsFactory.UpdateInstance(instance, timeout);
+        }
+
+        // Kapatma operasyonun tamamlanması i&amp;ccedil;in gereken varsayılan s&amp;uuml;renin belirlendiği &amp;ouml;zelliktir
+        protected override TimeSpan DefaultCloseTimeout
+        {
+            get
+            {
+                return TimeSpan.FromSeconds(10);
+            }
+        }
+
+        // A&amp;ccedil;ma operasyonunun tamamlanması i&amp;ccedil;in gereken varsayılan s&amp;uuml;renin belirlendiği &amp;ouml;zelliktir
+        protected override TimeSpan DefaultOpenTimeout
+        {
+            get
+            {    
+                return TimeSpan.FromSeconds(10);
+            }
+        }
+
+        protected override void OnAbort()
+        {
+        }
+    
+        protected override IAsyncResult OnBeginClose(TimeSpan timeout, AsyncCallback callback, object state)
+        {
+            return null;
+        }
+
+        protected override IAsyncResult OnBeginOpen(TimeSpan timeout, AsyncCallback callback, object state)
+        {
+            return null;
+        }
+
+        protected override void OnClose(TimeSpan timeout)
+        {
+        }
+
+        protected override void OnEndClose(IAsyncResult result)
+        {
+        }
+    
+        protected override void OnEndOpen(IAsyncResult result)
+        {
+        }
+
+        protected override void OnOpen(TimeSpan timeout)
+        {
+        }
+    
+        #endregion
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;XmlPersistenceProvider&lt;/strong&gt; tipi ağırlıklı olarak &lt;strong&gt;CRUD&lt;/strong&gt; işlemleri i&amp;ccedil;in gerekli olan zorunlu metod &amp;ccedil;ağrılarını &lt;strong&gt;PersistenceProvider&lt;/strong&gt; &lt;strong&gt;abstract&lt;/strong&gt; sınıfından devralmaktadır. &lt;strong&gt;Create&lt;/strong&gt;, &lt;strong&gt;Update&lt;/strong&gt;, &lt;strong&gt;Delete&lt;/strong&gt; ve &lt;strong&gt;Load&lt;/strong&gt; isimli zorunlu olarak ezilen metodlar, &lt;strong&gt;XmlPersistenceProviderFactory&lt;/strong&gt; tipi i&amp;ccedil;erisinde tanımlanmış olan &lt;strong&gt;CreateInstance&lt;/strong&gt;, &lt;strong&gt;UpdateInstance&lt;/strong&gt;, &lt;strong&gt;DeleteInstance&lt;/strong&gt; ve &lt;strong&gt;LoadInstance&lt;/strong&gt; fonksiyonelliklerini &amp;ccedil;ağırmaktadır. Aslında &lt;strong&gt;Factory&lt;/strong&gt; sınıfı kendisini kullanan birden fazla &lt;strong&gt;PersistenceProvider&lt;/strong&gt; t&amp;uuml;revli tipide ele alabilir. Hepsi i&amp;ccedil;in ortak olabilecek pek &amp;ccedil;ok fonksiyonellik fabrika tipi i&amp;ccedil;erisinde toplanabileceği gibi, &lt;strong&gt;PersistenceProvider&lt;/strong&gt; t&amp;uuml;revli tiplerede yayılabilir. &lt;em&gt;(Bence bu konuyu araştırabilirsiniz. Tek bir &lt;strong&gt;PersistenceProviderFactory&lt;/strong&gt; t&amp;uuml;revli tip &amp;uuml;st&amp;uuml;nden birden fazla &lt;strong&gt;PersistenceProvider&lt;/strong&gt; t&amp;uuml;revli tipi kullanabilmek ve bunları farklı vakalar i&amp;ccedil;in ele alabilmek.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Son olarak, k&amp;uuml;t&amp;uuml;phanemizde s&amp;uuml;reci, oluşabilecek &amp;ccedil;alışma zamanı hatalarını loglamak amacıyla &lt;strong&gt;Logger&lt;/strong&gt; isimli birde yardımcı sınıfımız bulunmaktadır. Bu sınıf yardımıyla kodun gerekli yerlerinde ilgili bilgileri g&amp;uuml;nl&amp;uuml;klere işleme şansına sahip oluyoruzki, &lt;strong&gt;geliştirme(Development)&lt;/strong&gt; ve &amp;ouml;zellikle &lt;strong&gt;test&lt;/strong&gt; aşamalarında bu olduk&amp;ccedil;a işimize yarayacak bir &amp;ouml;zelliktir. S&amp;ouml;z gelimi &lt;strong&gt;WCF&lt;/strong&gt; k&amp;uuml;t&amp;uuml;phanesinin bir &lt;strong&gt;Windows&lt;/strong&gt; &lt;strong&gt;Servisi&lt;/strong&gt; i&amp;ccedil;erisinde &lt;strong&gt;host&lt;/strong&gt; edilmesi halinde, hataların ayıklanması i&amp;ccedil;in ekstra &amp;ccedil;aba sarfetmek gerekmektedir. Bu nedenle &lt;strong&gt;Windows&lt;/strong&gt; &lt;strong&gt;Servisinin&lt;/strong&gt; &lt;strong&gt;host&lt;/strong&gt; olarak kullanıldığı bir senaryoda &lt;strong&gt;log&lt;/strong&gt; kayıtları hayati bilgiler verebilir ve hataların tespit edilmesi &amp;ccedil;ok daha kolaylaşabilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk267_7.gif" alt="" width="351" height="156" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Logger&lt;/strong&gt; sınıfımızın i&amp;ccedil;eriği ise aşağıdaki gibidir;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Diagnostics;
+
+namespace PersistenceProviders
+{
+    /// &amp;lt;summary&amp;gt;
+    /// Loglama işlemleri i&amp;ccedil;in yardımcı sınıftır
+    /// &amp;lt;/summary&amp;gt;
+    public class Logger
+    {
+        private string LogSource;
+
+        /// &amp;lt;summary&amp;gt;
+        /// Event Viewer i&amp;ccedil;erisinde ayrı bir log sekmesi oluşturur
+        /// &amp;lt;/summary&amp;gt;
+        /// &amp;lt;param name="logSource"&amp;gt;Log verisinin kaynağı(Genellikle işlem adı yada program adı olarak kullanılabilir)&amp;lt;/param&amp;gt;
+        /// &amp;lt;param name="logName"&amp;gt;Event Viewer altındaki boğumun adıdır&amp;lt;/param&amp;gt;
+        public Logger(string logSource, string logName)
+        {
+            LogSource = logSource;
+            if(!EventLog.Exists(logName))
+                 EventLog.CreateEventSource(logSource, logName);
+        }
+
+        /// &amp;lt;summary&amp;gt;
+        /// Yapıcı metodda oluşturulan log kaynağına event yazdırır
+        /// &amp;lt;/summary&amp;gt;
+        /// &amp;lt;param name="mesaj"&amp;gt;Event ile ilişkili bilgi&amp;lt;/param&amp;gt;
+        /// &amp;lt;param name="entryType"&amp;gt;Event in EventLogEntryType tipinden değeridir&amp;lt;/param&amp;gt;
+        public void AddEventEntry(string mesaj, EventLogEntryType entryType)
+        {
+            EventLog.WriteEntry(LogSource, mesaj, entryType);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rnek s&amp;uuml;rerlik sağlayıcımız, uygulamanın olduğu yerde&lt;em&gt;(yada serivis host eden uygulamanın olduğu yerde)&lt;/em&gt; &lt;strong&gt;Instances&lt;/strong&gt; adlı bir klas&amp;ouml;r a&amp;ccedil;maktadır.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Uygulamada dosyaların kaydedileceği klas&amp;ouml;r bilgisi konfigurasyon seviyesinde de tutulabilir. Hatırlayalım, SqlPersistenceProviderFactory sağlayıcısı kullanıldığında &amp;ouml;rneklerin saklanması i&amp;ccedil;in kullanılacak veritabanı bağlantısı, ConnectionString elementinin &amp;uuml;zerinden alınmaktadır.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&amp;Ccedil;alışma zamanındaki servislere ait &amp;ouml;rnekler bu klas&amp;ouml;r altında &lt;strong&gt;sxml&lt;/strong&gt; uzantılı olarak tutulmaktadır. İ&amp;ccedil;erikleri tahmin edileceği &amp;uuml;zere &lt;strong&gt;SOAP&lt;/strong&gt; formatındadır. Dosya adları servis &amp;ouml;rneğine ait &lt;strong&gt;InstanceId&lt;/strong&gt; değerleri olarak verilmektedir. Akış son derece basittir. &lt;strong&gt;DurableOperation&lt;/strong&gt; niteliğinin &lt;strong&gt;CanCreateInstance&lt;/strong&gt; &amp;ouml;zelliğinin değeri &lt;strong&gt;true&lt;/strong&gt; olan operasyon &amp;ccedil;ağrısı ile bu klas&amp;ouml;rde bir dosya oluşturulmakta ve servis &amp;ouml;rneğine ait i&amp;ccedil;erik serileştirilmektedir. Sonrasında yapılan operasyon &amp;ccedil;ağrılarında bu dosya i&amp;ccedil;eriğinin ters serileştirilerek &lt;strong&gt;object&lt;/strong&gt; olarak elde edilmesi ve i&amp;ccedil;eriğinin kullanılması s&amp;ouml;z konusudur. Yine &lt;strong&gt;DurableOperation&lt;/strong&gt; niteliğinin &lt;strong&gt;CompleteInstance&lt;/strong&gt; &amp;ouml;zelliği &lt;strong&gt;true&lt;/strong&gt; olan operasyon &amp;ccedil;ağırıldığında s&amp;ouml;z konusu servis &amp;ouml;rneğine ait dosya, &lt;strong&gt;Instances&lt;/strong&gt; klas&amp;ouml;r&amp;uuml;nden silinmektedir. Tabi istenirse s&amp;ouml;z konusu dosyanın silinmeyip yeniden isimlendirilerek &amp;ouml;rneğin belirli s&amp;uuml;reliğine sistemde tutulması gibi işlemlerde yapılabilir.&lt;/p&gt;
+&lt;p&gt;Bu teorik akışı elbette test ederek onaylamamız gerekmektedir. Bunun i&amp;ccedil;in basit bir istemci ve servis host uygulaması yazabilir yada &amp;ouml;zel s&amp;uuml;rerlik sağlayıcılarını kullanan servis k&amp;uuml;t&amp;uuml;phanesini doğrudan &lt;strong&gt;Visual Studio 2008&lt;/strong&gt; ortamında &amp;ccedil;alıştırabiliriz. Hangisi kullanılırsa kullanılsın servis tarafındaki konfigurasyon i&amp;ccedil;eriğinde bir &amp;ouml;nceki makalemizde yaptığımız gibi &lt;strong&gt;PersistenceProviderFactory&lt;/strong&gt; t&amp;uuml;revli tipin belirtilmesi gerekmektedir. &amp;Ouml;rnek uygulamada bu ama&amp;ccedil;la geliştirilmiş olan &lt;strong&gt;CustomServiceLib&lt;/strong&gt; isimli servis k&amp;uuml;t&amp;uuml;phanesi bir &amp;ouml;nceki makalede geliştirdiğimiz &lt;strong&gt;ICommonService&lt;/strong&gt; s&amp;ouml;zleşmesi ile &lt;strong&gt;CommonService&lt;/strong&gt; tipini kullanmaktadır. &lt;strong&gt;App.config &lt;/strong&gt;dosyasının i&amp;ccedil;eriği ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;system.serviceModel&amp;gt;
+        &amp;lt;behaviors&amp;gt;
+            &amp;lt;serviceBehaviors&amp;gt;
+                &amp;lt;behavior name="CommonServiceBehavior"&amp;gt;
+                    &amp;lt;serviceDebug includeExceptionDetailInFaults="true" /&amp;gt;
+                    &amp;lt;serviceMetadata httpGetEnabled="true" /&amp;gt;
+                    &amp;lt;persistenceProvider type="PersistenceProviders.XmlPersistenceProviderFactory,PersistenceProviders, Verison=1.0.0.0" /&amp;gt;
+                &amp;lt;/behavior&amp;gt;
+            &amp;lt;/serviceBehaviors&amp;gt;
+        &amp;lt;/behaviors&amp;gt;
+        &amp;lt;services&amp;gt;
+            &amp;lt;service behaviorConfiguration="CommonServiceBehavior" name="CustomServiceLib.CommonService"&amp;gt;
+                &amp;lt;endpoint address="" binding="wsHttpContextBinding" bindingConfiguration="" name="CommonServiceWsHttpEndPoint" contract="CustomServiceLib.ICommonService" /&amp;gt;
+                &amp;lt;endpoint binding="mexHttpBinding" bindingConfiguration="" name="MexEndPoint" contract="IMetadataExchange" address="Mex" /&amp;gt;
+                &amp;lt;host&amp;gt;
+                    &amp;lt;baseAddresses&amp;gt;
+                        &amp;lt;add baseAddress="http://localhost:40001/CommonServiceV2" /&amp;gt;
+                    &amp;lt;/baseAddresses&amp;gt;
+                &amp;lt;/host&amp;gt;
+            &amp;lt;/service&amp;gt;
+        &amp;lt;/services&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere, &lt;strong&gt;persistenceProvider&lt;/strong&gt; elementi i&amp;ccedil;erisinde &amp;ouml;zelleştirilmiş olan &lt;strong&gt;XmlPersistenceProviderFactory&lt;/strong&gt; tipi belirtilmektedir. S&amp;ouml;z konusu tipin bulunduğu k&amp;uuml;t&amp;uuml;phane referans etme yoluyla kullanıldığından br &amp;ouml;nceki &amp;ouml;rnekte olduğu gibi &lt;strong&gt;Culture&lt;/strong&gt; veya &lt;strong&gt;public&lt;/strong&gt; &lt;strong&gt;key&lt;/strong&gt; bilgileri bulunmamaktadır. Elbetteki &amp;ouml;zelleştirilmiş depolama sağlayıcısını b&amp;uuml;nyesinde barındıran k&amp;uuml;t&amp;uuml;phaneyi &lt;strong&gt;Global&lt;/strong&gt; &lt;strong&gt;Assembly&lt;/strong&gt; &lt;strong&gt;Cache&lt;/strong&gt;' e atabiliriz. Bu durumda konfigurasyon i&amp;ccedil;erisinde &lt;strong&gt;Full Qualified Name&lt;/strong&gt;' in belirtilmesi gerekmektedir.&lt;/p&gt;
+&lt;p&gt;CustomServiceLib k&amp;uuml;t&amp;uuml;phanesini direkt olarak &lt;strong&gt;Visual Studio 2008&lt;/strong&gt; &amp;uuml;zerinden &amp;ccedil;alıştırarak ilerleyebiliriz. &lt;strong&gt;WcfSvcHost&lt;/strong&gt; ve paralelinde &lt;strong&gt;Wcf Test Client&lt;/strong&gt; &amp;ccedil;alıştırıldıktan sonra ilk yapmamız gereken &lt;strong&gt;Start&lt;/strong&gt; metodunu &amp;ccedil;ağırmak olmalıdır. Bu noktada uygulamanın &amp;ccedil;alıştığı yerdeki &lt;strong&gt;Instances&lt;/strong&gt; klas&amp;ouml;r&amp;uuml;ne baktığımızda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi &lt;strong&gt;sxml&lt;/strong&gt; uzantılı ve &lt;strong&gt;GUID&lt;/strong&gt; değeri ile adlandırılmış bir dosyanın oluşturulduğunu g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk267_8.gif" alt="" width="635" height="482" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu adımdan sonra test olarak &lt;strong&gt;IncreaseValue&lt;/strong&gt; metodu değişik değerler ile &amp;ccedil;ağırlabilir. Operasyonun her &amp;ccedil;ağırılmasında, servis &amp;ouml;rneğine ait i&amp;ccedil;eriğin oluşturulan dosyadan y&amp;uuml;klenmesi, ters serileştirildikten sonra i&amp;ccedil;eride yer alan &lt;strong&gt;CommonValue&lt;/strong&gt; değerinin arttırılması ve &amp;ouml;rneğin son halinin tekrardan aynı dosya &amp;uuml;zerine serileştirilmesi adımları ger&amp;ccedil;ekleşir. &amp;Ouml;rneğin şu noktada &lt;strong&gt;sxml&lt;/strong&gt; isimli dosyanın i&amp;ccedil;eriğine bakılırsa aşağıdaki &lt;strong&gt;XML&lt;/strong&gt; bilgisinin tutulduğu g&amp;ouml;r&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk267_10.gif" alt="" width="606" height="217" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu andan itibaren &lt;strong&gt;Stop&lt;/strong&gt; metodu &amp;ccedil;ağırılmadan &lt;strong&gt;Wcf&lt;/strong&gt; &lt;strong&gt;Test&lt;/strong&gt; &lt;strong&gt;Client&lt;/strong&gt; uygulamasından &amp;ccedil;ıkılabilir. Hatta aynı &amp;ouml;rnek defalarca &amp;ccedil;ağırılıp &lt;strong&gt;Stop&lt;/strong&gt; operasyonu kullanılmadan test edilebilir. Her durumda &lt;strong&gt;Instances&lt;/strong&gt; klas&amp;ouml;r&amp;uuml;nde birer dosya oluşturulacak ve herhangibir nedenle silinene kadar sahip oldukları &lt;strong&gt;InstanceId&lt;/strong&gt; değerleri i&amp;ccedil;in servis tarafı istemcilere hizmet verebilecektir. Ancak Stop metodu &amp;ccedil;ağırılırsa bu durumda Instances klas&amp;ouml;r&amp;uuml;nde bununla ilişkili olan dosyanın silindiği a&amp;ccedil;ık bir şekilde g&amp;ouml;r&amp;uuml;lebilir. İşleyişi daha net bir şekilde anlayabilmek i&amp;ccedil;in kodu &lt;strong&gt;debug&lt;/strong&gt; ederek &amp;ccedil;alıştırmanızı &amp;ouml;neririm. Bu durumda &lt;strong&gt;Create&lt;/strong&gt;, &lt;strong&gt;Update&lt;/strong&gt;, &lt;strong&gt;Delete&lt;/strong&gt;, &lt;strong&gt;Load&lt;/strong&gt; metodları arasındaki ge&amp;ccedil;işleri &amp;ccedil;ok daha kolay bir şekilde analiz edebilirsiniz. Son olarakta servis k&amp;uuml;t&amp;uuml;phanesini kullanan bir sunucu uygulama ve istemci geliştirerek yeni sağlayıcıyı test etmenizi ve sistemin d&amp;uuml;zg&amp;uuml;n y&amp;uuml;r&amp;uuml;d&amp;uuml;ğ&amp;uuml;nden emin olmanızı &amp;ouml;neririm.&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bu makalemizde dayanıklı WCF servisleri ilişkili iki &amp;ouml;nemli soruya cevap bulmaya &amp;ccedil;alışltık. İlk olarak istemcilerin var olan &lt;strong&gt; InstanceId&lt;/strong&gt;' leri kullanarak servislerin, sunucu &amp;uuml;zerinde uzun s&amp;uuml;reliğine saklanabilen hallerini nasıl kullanabileceklerine değinik. Sonrasında ise &amp;ouml;zel bir s&amp;uuml;rerlik sağlayıcısının&lt;strong&gt;(Custom Persistence Provider)&lt;/strong&gt; nasıl yazılabileceğini g&amp;ouml;rd&amp;uuml;k. Tabiki buradaki &amp;ouml;rnekleri geliştirmek, genişletmek tamamen sizin elinizdedir. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/makale/images/CustomDurableProviders.rar"&gt;&amp;Ouml;rneği İndirmek İ&amp;ccedil;in Tıklayın&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2009-01-23 12:00:00</pubDate>
+  <slug>Dayanc4b1klc4b1-WCF-Servisleri(Custom-Persistence-Providers)-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>wcf</tag>
+  </tags>
+  <categories>
+    <category>WCF</category>
+  </categories>
+</post>

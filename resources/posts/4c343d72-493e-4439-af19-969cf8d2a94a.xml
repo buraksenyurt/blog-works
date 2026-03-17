@@ -1,0 +1,666 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>.Net Tarafında Xml ile Oynamak-2</title>
+  <description>Yıllar önce odamdaki bilgisayarımda arkadaşlarımın telefon ve doğum günü bilgilerini C tabanlı bir programda kütük dosyasına kaydetmeye çalışmıştım. O günlerde sadece bulunduğum oda içerisindeki alanla sınırlıyken, bir süre sonra internet ortamına taşınıvermiştik.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Yıllar &amp;ouml;nce odamdaki bilgisayarımda arkadaşlarımın telefon ve doğum g&amp;uuml;n&amp;uuml; bilgilerini C tabanlı bir programda k&amp;uuml;t&amp;uuml;k dosyasına kaydetmeye &amp;ccedil;alışmıştım. O g&amp;uuml;nlerde sadece bulunduğum oda i&amp;ccedil;erisindeki alanla sınırlıyken, bir s&amp;uuml;re sonra internet ortamına taşınıvermiştik. Dolayısıyla artık k&amp;uuml;t&amp;uuml;k dosyasını başka ortamlara aktarabilme imkanı doğmuştu. Elbetteki bu taşıma işinin bir standart dahilinde olması &amp;ouml;nemli idi. Sonu&amp;ccedil;ta g&amp;uuml;n&amp;uuml;m&amp;uuml;zde bu tip veri taşıma standartları i&amp;ccedil;in Xml kullanır hale geldik. Xml elbette beraberinde pek &amp;ccedil;ok teknolojiyide getirdi.&lt;/p&gt;
+&lt;p&gt;XPath, XQuery, Xslt bunlardan sadece bazılarıdır. Dolayısıyla bu pop&amp;uuml;ler veri standartı pek &amp;ccedil;ok programlama dili tarafından desteklenir hale gelmiştir. Microsoft .Net Framework platformunda buna destek verecek tipler yer almaktadır. Bunlardan biriside bir &amp;ouml;nceki makalemizde değindiğimiz &lt;strong&gt;XmlDocument&lt;/strong&gt; tipidir. Serinin bu ikinci b&amp;ouml;l&amp;uuml;m&amp;uuml;nde bu tipin diğer &amp;ouml;zelliklerinide &amp;ouml;ğrenmeye devam ediyor olacacağız. Hazır k&amp;uuml;t&amp;uuml;k dosyası yazma ve okuma işleminden s&amp;ouml;ze başlamışken aynı işi Xml dosyası &amp;uuml;zerinde nasıl yapabileceğimizi inceleyecebiliriz. Bu makalemizde telefonlardan ziyade kendi k&amp;uuml;t&amp;uuml;phanemizdeki kitaplarımızı taşıyacak olan bir Xml d&amp;ouml;k&amp;uuml;manı &amp;uuml;zerinde bazı işlemler yapmaya &amp;ccedil;alışacağız.&amp;nbsp;Elbette gerekli aksiyonların &amp;uuml;zerinde ger&amp;ccedil;ekleştirileceği bir Xml dosyasının olması gerekir. Bu dosyanın temel desenini aşağıdaki gibi tasarlayabiliriz.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;Kitaplik&amp;gt;
+    &amp;lt;Kitap Id=""&amp;gt;
+        &amp;lt;Ad&amp;gt;&amp;lt;/Ad&amp;gt;
+        &amp;lt;Fiyat&amp;gt;&amp;lt;/Fiyat&amp;gt;
+        &amp;lt;Basim&amp;gt;&amp;lt;/Basim&amp;gt;
+        &amp;lt;Yazarlar&amp;gt;
+            &amp;lt;Yazar&amp;gt;&amp;lt;/Yazar&amp;gt;
+            &amp;lt;Yazar&amp;gt;&amp;lt;/Yazar&amp;gt;
+        &amp;lt;/Yazarlar&amp;gt;
+    &amp;lt;/Kitap&amp;gt;
+.
+.
+.
+.
+&amp;lt;/Kitaplik&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;ncelikli olarak root elementimizin Kitaplik olacağını s&amp;ouml;yleyebiliriz. Kitaplik elementi i&amp;ccedil;erisinde Kitap tipinden bir &amp;ccedil;ok alt element yer alabilir. Her Kitap elementi i&amp;ccedil;in Id isimli bir &lt;strong&gt;nitelik(attribute)&lt;/strong&gt; s&amp;ouml;z konusudur. Bununla birlikte bir kitaba ait yazarlarda, Yazalar isimli element altındaki Yazar &lt;strong&gt;boğumları(nodes)&lt;/strong&gt; i&amp;ccedil;erisinde tutulmaktadır. Dolayısıyla programımız i&amp;ccedil;erisindeki mantığı bu hiyerarşiye g&amp;ouml;re d&amp;uuml;zenlemeliyiz. Xml d&amp;ouml;k&amp;uuml;manı &amp;uuml;zerindeki işlemlerimizi ger&amp;ccedil;ekleştirmek i&amp;ccedil;in yine &lt;strong&gt;DOM(Document Object Model) &lt;/strong&gt;kullanıyor olacağız. Buna g&amp;ouml;re &lt;strong&gt;XmlDocument&lt;/strong&gt; nesnesi olduk&amp;ccedil;a işimize yarayacaktır. Bu makalemizde XmlDocument nesnesi &amp;uuml;zerinden ele alabileceğimiz bazı yardımcı metod ve &amp;ouml;zellikler ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;table id="table17" style="border-collapse: collapse;" border="1" width="100%" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="background-color: #ffffff;" bgcolor="#336699"&gt;&lt;strong&gt; Yardımcı Metod&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="background-color: #ffffff;" bgcolor="#336699"&gt;&lt;strong&gt; A&amp;ccedil;ıklaması&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top"&gt;GetElementsByTagName&lt;/td&gt;
+&lt;td&gt;Parametre olarak verilen elementin adına g&amp;ouml;re geriye bir &lt;strong&gt;XmlNodeList&lt;/strong&gt; d&amp;ouml;nd&amp;uuml;r&amp;uuml;r. &amp;Ouml;rneğimizde t&amp;uuml;m Kitap boğumlarını elde etmek istediğimiz durumlarda bu metoddan faydalanılmaktadır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top"&gt;SelectSingleNode&lt;/td&gt;
+&lt;td&gt;Tek bir node elde etmek istediğimizde kullanabileceğimiz metod. Bir &lt;strong&gt;XPath&lt;/strong&gt; ifadesi alarak &amp;ccedil;alışmaktadır. &amp;Ouml;rneğimiz g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında belirli bir Id değerine sahip bir node elde edilmek istendiği durumlarda kullanılabilir. Geriye &lt;strong&gt;XmlNode&lt;/strong&gt; tipinden bir nesne &amp;ouml;rneği d&amp;ouml;nd&amp;uuml;rmektedir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top"&gt;CreateNode&lt;/td&gt;
+&lt;td&gt;Herhangibir Xml ağacı &amp;uuml;zerinde bir boğum(node) oluşturmak istediğimizde kullanabiliriz. Genellikle oluşturulacak olan boğumun &amp;ccedil;eşidinide belirtiriz. B&amp;ouml;ylece &lt;strong&gt;element&lt;/strong&gt;, &lt;strong&gt;processing&lt;/strong&gt; &lt;strong&gt;instruction&lt;/strong&gt;, &lt;strong&gt; comment&lt;/strong&gt;, &lt;strong&gt;attribute&lt;/strong&gt; gibi Xml &amp;uuml;yelerini ve benzerlerini oluşturabiliriz. &amp;Ouml;rneğimizde yeni bir Kitap eklerken pek &amp;ccedil;ok boğumu oluşturmamız gerekecektir. &lt;strong&gt;CreateNode&lt;/strong&gt; metodu ile bu işlevsellikler sağlanabilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top"&gt;AppendChild&lt;/td&gt;
+&lt;td&gt;Genellikle oluşturulan bir boğumun başka bir boğuma eklenmesi amacıyla kullanılır. &amp;Ouml;rneğimizde, yeni bir Kitap eklenmek istendiğinde sık&amp;ccedil;a kullanacağımız bir metoddur.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top"&gt;Load&lt;/td&gt;
+&lt;td&gt;Xml i&amp;ccedil;eriğini belleğe almak istediğimizde ele alacağımız metoddur.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top"&gt;Save&lt;/td&gt;
+&lt;td&gt;Xml i&amp;ccedil;eriğini fiziki ortama kaydetmek i&amp;ccedil;in kullanabileceğimiz metoddur.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="background-color: #ffffff;" valign="top" bgcolor="#336699"&gt;&lt;strong&gt; Yardımcı &amp;Ouml;zellikler&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="background-color: #ffffff;" bgcolor="#336699"&gt;&lt;strong&gt; A&amp;ccedil;ıklaması&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top"&gt;FirstChild&lt;/td&gt;
+&lt;td&gt;Xml ağacı i&amp;ccedil;erisindeki, root boğum i&amp;ccedil;erisindeki veya herhangibir boğum i&amp;ccedil;erisindeki alt boğumlarından ilkini elde etmemizi sağlar. Bu nedenle geriye bir &lt;strong&gt;XmlNode&lt;/strong&gt; referansı d&amp;ouml;ner.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top"&gt;PreviousSibling&lt;/td&gt;
+&lt;td&gt;Ağa&amp;ccedil; yapısında o an &amp;uuml;zerinde durulan boğum biliniyorsa, bir &amp;ouml;ncekinin elde edilmesini sağlar. Geriye &lt;strong&gt;XmlNode&lt;/strong&gt; tipinden bir referans d&amp;ouml;nd&amp;uuml;r&amp;uuml;r.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top"&gt;NextSibling&lt;/td&gt;
+&lt;td&gt;Ağa&amp;ccedil; yapısında o an &amp;uuml;zerinde durulan boğum biliniyorsa eğer, bir sonraki boğumun elde edilmesini sağlar. Geriye &lt;strong&gt;XmlNode&lt;/strong&gt; tipinden bir referans d&amp;ouml;nd&amp;uuml;r&amp;uuml;r.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top"&gt;LastChild&lt;/td&gt;
+&lt;td&gt;Root element altındaki veya herhangibir boğum altındaki alt boğumlardan sonuncusuna gidilmesini sağlar. Geriye &lt;strong&gt;XmlNode&lt;/strong&gt; tipinden bir referans d&amp;ouml;nd&amp;uuml;r&amp;uuml;r.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top"&gt;Attributes&lt;/td&gt;
+&lt;td&gt;Bir boğumun i&amp;ccedil;erisindeki niteliklere erişmemizi sağlar. &amp;Ouml;zellikle bir Kitap elementinin Id &lt;strong&gt;niteliğini(attribute)&lt;/strong&gt; elde etmek istediğimiz durumlarda kullanabiliriz.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Dilerseniz &amp;ouml;ncelikli olarak uygulama ekranımızı tasarlayarak işe başlayalım. &amp;Ouml;rneğimizi bir Windows uygulaması olacak şekilde tasarlayacağız. Bu ama&amp;ccedil;la aşağıdaki ekran g&amp;ouml;r&amp;uuml;t&amp;uuml;ns&amp;uuml;ndekine benzer bir form oluşturarak işe başlayabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk194_2.gif" alt="" width="459" height="323" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bizim i&amp;ccedil;in gerekli olan bir diğer &amp;uuml;ye ise kitaplarımızı uygulama ortamı i&amp;ccedil;erisinde temsil edebileceğimiz bir tiptir. Bir başka deyişle Xml d&amp;ouml;k&amp;uuml;manı i&amp;ccedil;erisindeki herhangibir Kitap boğumunun alt elementlerinin ve niteliklerinin değerlerini &amp;ccedil;alışma zamanında nesnel olarak taşıyabilecek bir sınıf tasarımına ihtiyacımız vardır. S&amp;ouml;z gelimizi, kullanıcı uygulamayı a&amp;ccedil;tığında eğer Kitaplık.xml isimli bir dosya var ise ve i&amp;ccedil;eriğinde Kitap elementleri bulunuyorsa, bunların liste kutusuna birer Kitap nesne &amp;ouml;rneği olarak atanması sağlanabilir. Bunu yaptığımızda, liste kutusundan se&amp;ccedil;ilen bir &amp;ouml;ğenin işaret ettiği Kitap referansını bulabilir ve bu nesne ile ilişkili verileri &amp;ccedil;ekebiliriz ki bu &amp;ouml;zellikle bir &amp;ouml;nceki yada bir sonraki boğuma ge&amp;ccedil;me işlemleri sırasında da &amp;ouml;nem arz edecektir. Diğer taraftan se&amp;ccedil;ilen kitabın, Xml ağa&amp;ccedil; yapısı i&amp;ccedil;erisindeki yerini bulmak i&amp;ccedil;in kullanılacak &lt;strong&gt;XPath&lt;/strong&gt; sorgusunda Id niteliğinin değeri gerekmektedir ve bunu liste kutusundan se&amp;ccedil;ilen &amp;ouml;ğe &amp;uuml;zerinden elde edebiliriz. &amp;Ouml;yleyse gelin Kitap isimli sınıfımızı aşağıdaki gibi tasarlayalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace ReadAndWrite
+{
+    class Kitap
+    {
+        #region Alanlar(Fields)
+
+        private int _id;
+        private string _ad;
+        private DateTime _basim;
+        private float _fiyat;
+        private string _yazarlar;
+
+        #endregion
+
+        #region &amp;Ouml;zellikler(Properties)
+
+        public int Id
+        {
+            get { return _id; }
+            set { _id = value; }
+        }
+        public string Ad
+        {
+            get { return _ad; }
+            set { _ad = value; }
+        }
+        public DateTime Basim
+        {
+            get { return _basim; }
+            set { _basim = value; }
+        }
+        public float Fiyat
+        {
+            get { return _fiyat; }
+            set { _fiyat = value; }
+        }
+        public string Yazarlar
+        {
+            get { return _yazarlar; }
+            set { _yazarlar = value; }
+        }
+
+        #endregion
+
+        public Kitap(int id,string ad, DateTime basim, float fiyat, string yazarlar)
+        {
+            Id = id;
+            Ad = ad;
+            Basim = basim;
+            Fiyat = fiyat;
+            Yazarlar = yazarlar;
+        }
+        public override string ToString()
+        {
+            return Ad;
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bir kitabın birden fazla yazarı olabilmektedir. Bu ama&amp;ccedil;la bir yazara ait bilgileri tutacak başka bir sınıf tasarımıda d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilirdi. Bu durumda Kitap sınıfımız kendi i&amp;ccedil;erisinde yazarları taşıyabilecek bir koleksiyon veya diziye sahip olmalıdır. Biz &amp;ouml;rneğimizde biraz daha basite ka&amp;ccedil;tık ve birden fazla yazar bilgisini aralarına | işareti koyarak taşıyacak string tipinden tek bir &amp;ouml;zellik kullandık.&lt;/p&gt;
+&lt;p&gt;Şimdi gelelim daha &amp;ouml;nemli olan kısımlara. &amp;Ouml;zellikle Xml &amp;uuml;zerinde yapacağımız genel işlevsellikleri taşıyacak ayrı bir tip tasarlayacağız. &lt;strong&gt;XmlYoneticisi&lt;/strong&gt; isimli tipimiz genel olarak, Xml ağacı &amp;uuml;zerinde navigasyon, Xml i&amp;ccedil;eriğini liste kutusuna aktarma, Xml boğumu g&amp;uuml;ncelleme, silme ve ekleme gibi işlevsellikleri b&amp;uuml;nyesinde barındırmaktadır. Elbette bunların işlenmesi sırasında ele alınacak bazı yardımcı fonksiyonellikler de yer almaktadır. XmlYoneticisi isimli sınıfımızın şeması ve kodları aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk194_4.gif" alt="" width="262" height="310" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Xml;
+using System.IO;
+using System.Windows.Forms;
+using System.Xml.XPath;
+
+namespace ReadAndWrite
+{
+    class XmlYoneticisi
+    {
+        XmlDocument _doc;
+
+        #region Yapıcı Metod(lar)
+
+        public XmlYoneticisi()
+        {
+            _doc = new XmlDocument();
+
+            if (!File.Exists("Kitaplik.xml"))
+            {
+                XmlProcessingInstruction instructor = _doc.CreateProcessingInstruction("xml", "version=\"1.0\" encoding=\"utf-8\"");
+                // Oluşturulan processing instruction XmlDocument nesne &amp;ouml;rneğine eklenir.
+                _doc.AppendChild((XmlNode)instructor);
+                // root element oluşturulur
+                XmlNode rootNode = _doc.CreateNode(XmlNodeType.Element, "Kitaplik", "");
+                // root element XmlDocument nesne &amp;ouml;rneğine eklenir.
+                _doc.AppendChild(rootNode);
+                _doc.Save("Kitaplik.xml"); 
+            }
+            _doc.Load("Kitaplik.xml");
+        } 
+        
+        #endregion
+
+        #region Genel Metodlar
+        /// &amp;lt;summary&amp;gt;
+        /// Herhangibir Kitap boğumu i&amp;ccedil;erisindeki bilgilerini alıp bir Kitap nesne &amp;ouml;rneğinde birleştirilmesini sağlar
+        /// &amp;lt;/summary&amp;gt;
+        /// &amp;lt;param name="bogum"&amp;gt;Bilgileri alınacak olan Kitap boğumu (node)&amp;lt;/param&amp;gt;
+        /// &amp;lt;returns&amp;gt;Bogumdaki bilgilerden &amp;uuml;retilen Kitap nesne &amp;ouml;rneği&amp;lt;/returns&amp;gt;
+        private Kitap BilgileriAl(XmlNode bogum)
+        {
+            int id;
+            string ad = "", yazarlar = "";
+            DateTime basim = DateTime.Now;
+            float fiyat = 0;
+            // Ad elementinin i&amp;ccedil;eriği alınır
+            ad = bogum["Ad"].InnerText;
+            // Fiyat elementinin i&amp;ccedil;eriği alınır
+            fiyat = float.Parse(bogum["Fiyat"].InnerText);
+            // Basim elementinin i&amp;ccedil;eriği alınır
+            basim = DateTime.Parse(bogum["Basim"].InnerText);
+            // Id niteliğinin değeri Attributes &amp;ouml;zelliğine indeksleyici operat&amp;ouml;r&amp;uuml; uygulanarak alınır
+            id = Int32.Parse(bogum.Attributes["Id"].Value);
+            yazarlar = "";
+            // Yazarlar elementi i&amp;ccedil;erisindeki t&amp;uuml;m Yazar alt elementlerinin değerleri alınır.
+            foreach (XmlNode yazar in bogum["Yazarlar"].ChildNodes)
+                yazarlar += yazar.InnerText + "|";
+            // Elde edilen değişken bilgilerinden Kitap nesne &amp;ouml;rneği &amp;uuml;retilir.
+            Kitap ktp = new Kitap(id, ad, basim, fiyat, yazarlar);
+            // &amp;Uuml;retilen nesne &amp;ouml;rneği geri d&amp;ouml;nd&amp;uuml;r&amp;uuml;l&amp;uuml;r.
+            return ktp;
+        }
+    
+        /// &amp;lt;summary&amp;gt;
+        /// XmlDocument nesne &amp;ouml;rneğinin işaret ettiği xml dok&amp;uuml;manındaki Kitap boğumlarını &amp;ccedil;eker ve her biri i&amp;ccedil;in bir Kitap nesne &amp;ouml;rneği oluşturup, parametre olarak gelen         ListBox kontrol&amp;uuml;ne y&amp;uuml;kler.
+        /// &amp;lt;/summary&amp;gt;
+        /// &amp;lt;param name="lst"&amp;gt;Windows formundaki liste kontrol&amp;uuml;&amp;lt;/param&amp;gt;
+        public void KitaplariCek(ListBox lst)
+        {
+            // &amp;Ouml;nce Liste kutusu i&amp;ccedil;eriği temizlenir
+            lst.Items.Clear();
+            /* GetElementsByTagName metodu parametre olarak aldığı takı adlarını ilgili xml ağacından &amp;ccedil;eker ve bir XmlNodeList olarak geri d&amp;ouml;nd&amp;uuml;r&amp;uuml;r. */
+            XmlNodeList kitaplar = _doc.GetElementsByTagName("Kitap");
+            // Elde edilen node listesindeki her bir XmlNode nesne &amp;ouml;rneği dolaşılır.
+            foreach (XmlNode kitapNode in kitaplar)
+            {
+                lst.Items.Add(BilgileriAl(kitapNode));
+            }
+        } 
+        #endregion
+
+        #region Navigasyon Metodları
+        /// &amp;lt;summary&amp;gt;
+        /// &amp;Ouml;nceki ve Sonraki boğumların hareketi sırasında o an xml ağacında bulunulan elementin elde edilmesini sağlar.
+        /// &amp;lt;/summary&amp;gt;
+        /// &amp;lt;param name="id"&amp;gt;Konumu tespit edilecek olan Kitap elementinin Id değeri&amp;lt;/param&amp;gt;
+        /// &amp;lt;returns&amp;gt;&amp;lt;/returns&amp;gt;
+        private XmlNode SecilenNode(int id)
+        {
+            /* Id değerine ait XmlNode' unu bulabilmek i&amp;ccedil;in XPath sorgusundan faydalanılır. Buna g&amp;ouml;re Kitaplik root elementi i&amp;ccedil;erisindeki Kitap elementlerinden Id niteliğinin     değeri parametre olarak gelen değişken değerine eşit olan Kitap elementi bulunur. */
+            XmlNode secilenNode = _doc.SelectSingleNode("/Kitaplik/Kitap[@Id=" + id + "]");
+            return secilenNode;
+        }
+
+        /// &amp;lt;summary&amp;gt;
+        /// Xml ağacında, root element altındaki ilk alt elemente gidilmesini sağlar
+        /// &amp;lt;/summary&amp;gt;
+        /// &amp;lt;returns&amp;gt;Gidilen ilk alt elementteki değerler g&amp;ouml;re &amp;uuml;retilen Kitap nesne &amp;ouml;rneğidir&amp;lt;/returns&amp;gt;
+        public Kitap Ilk()
+        {
+            // FirstChild &amp;ouml;zelliği ile DocumentElement &amp;ouml;zelliği &amp;uuml;zerinden uygulandığı takdirde Kitap node' larından ilkine gidilir.
+            XmlNode bogum = _doc.DocumentElement.FirstChild;
+            return BilgileriAl(bogum);
+        }
+
+        /// &amp;lt;summary&amp;gt;
+        /// Xml ağacında bulunulan boğumdan bir &amp;ouml;ncekine ge&amp;ccedil;ilmesini sağlar
+        /// &amp;lt;/summary&amp;gt;
+        /// &amp;lt;param name="id"&amp;gt;O an &amp;uuml;zerinde bulunulan boğumun tespiti i&amp;ccedil;in gerekli olan id değeri&amp;lt;/param&amp;gt;
+        /// &amp;lt;returns&amp;gt;Bir &amp;ouml;nceki boğuma ait bilgilerden &amp;uuml;retilen Kitap nesne &amp;ouml;rneği&amp;lt;/returns&amp;gt;
+        public Kitap Onceki(int id)
+        {
+            // Eğer ağa&amp;ccedil; &amp;uuml;zerinde hangi boğumda olduğumuzu biliyorsak PreviousSibling &amp;ouml;zelliği sayesinde bir &amp;ouml;nceki boğuma ge&amp;ccedil;ebiliriz
+            XmlNode bogum = SecilenNode(id).PreviousSibling;
+            return BilgileriAl(bogum);
+        }
+
+        /// &amp;lt;summary&amp;gt;
+        /// Xml ağacında bulunulan boğumdan bir sonrakine ge&amp;ccedil;ilmesini sağlar
+        /// &amp;lt;/summary&amp;gt;
+        /// &amp;lt;param name="id"&amp;gt;O an &amp;uuml;zerinde bulunulan boğumun tespiti i&amp;ccedil;in gerekli olan id değeri&amp;lt;/param&amp;gt;
+        /// &amp;lt;returns&amp;gt;Bir sonraki boğuma ait bilgilerden &amp;uuml;retilen Kitap nesne &amp;ouml;rneği&amp;lt;/returns&amp;gt;
+        public Kitap Sonraki(int id)
+        {
+            // Eğer ağa&amp;ccedil; &amp;uuml;zerinde hangi boğumda olduğumuzu biliyorsak NextSibling &amp;ouml;zelliği sayesinde bir sonraki boğuma ge&amp;ccedil;ebiliriz
+            XmlNode bogum = SecilenNode(id).NextSibling;
+            return BilgileriAl(bogum);
+        }
+
+        /// &amp;lt;summary&amp;gt;
+        /// Xml ağacında, root element altındaki son alt elemente gidilmesini sağlar
+        /// &amp;lt;/summary&amp;gt;
+        /// &amp;lt;returns&amp;gt;Gidilen son alt elementteki değerler g&amp;ouml;re &amp;uuml;retilen Kitap nesne &amp;ouml;rneğidir&amp;lt;/returns&amp;gt;
+        public Kitap Son()
+        {
+            // DocumentElement &amp;ouml;zelliği &amp;uuml;zerinden uygulanan LastChild &amp;ouml;zelliği sayesinde root element i&amp;ccedil;erisindeki son elemente gidilir.
+            XmlNode bogum = _doc.DocumentElement.LastChild;
+            return BilgileriAl(bogum);
+        }
+
+        #endregion
+
+        #region Temel Veri Değiştirme Metodları
+        /// &amp;lt;summary&amp;gt;
+        /// Var olan bir boğumun i&amp;ccedil;eriğin g&amp;uuml;nceller
+        /// &amp;lt;/summary&amp;gt;
+        /// &amp;lt;param name="id"&amp;gt;Id değeri&amp;lt;/param&amp;gt;
+        /// &amp;lt;param name="ad"&amp;gt;Kitabın yeni adı&amp;lt;/param&amp;gt;
+        /// &amp;lt;param name="lstYazarlari"&amp;gt;Son haliyle kitabın yazarlarını taşıyan liste kutusu&amp;lt;/param&amp;gt;
+        /// &amp;lt;param name="fiyat"&amp;gt;Kitabın yeni fiyatı&amp;lt;/param&amp;gt;
+        /// &amp;lt;param name="basim"&amp;gt;Kitabın yeni basım tarihi&amp;lt;/param&amp;gt;
+        /// &amp;lt;param name="ktp"&amp;gt;O an &amp;uuml;zerinde durulan Kitap nesne &amp;ouml;rneğinin lstKitaplar liste kutusundaki referansı&amp;lt;/param&amp;gt;
+        public void Guncelle(int id, string ad, ListBox lstYazarlari, float fiyat, DateTime basim, Kitap ktp)
+        {
+            // &amp;Ouml;nce g&amp;uuml;ncelleme yapılacak olan boğum tespit edilir.
+            XmlNode bogum = SecilenNode(id);
+            // Boğumun elemanlarına yeni değerleri atanır
+            bogum["Ad"].InnerText = ad;
+    
+            // Yazalar boğumu bir liste kutusundan geldiği i&amp;ccedil;in &amp;ouml;nce xml ağacındaki yazarlar boğumu kaldırılır.
+            bogum.RemoveChild(bogum["Yazarlar"]);
+            // Sonra son hali ile yazarlar boğumu yeniden oluşturulur. 
+            XmlNode yazarlar = _doc.CreateNode(XmlNodeType.Element, "Yazarlar", "");
+            // Oluşturulan yazarlar boğumu tekrardan ağa&amp;ccedil; yapısı i&amp;ccedil;erisinde o anki Kitap boğumuna eklenir.
+            bogum.AppendChild(yazarlar);
+        
+            // Yazarları taşıyan liste kutusunun son i&amp;ccedil;eriğne g&amp;ouml;re Yazarlar elementi altındaki Yazar alt elementleri tekrardan oluşturulur.
+            string yazarlari = "";
+            for (int i = 0; i &amp;lt; lstYazarlari.Items.Count; i++)
+            {
+                XmlNode yazar = _doc.CreateNode(XmlNodeType.Element, "Yazar", "");
+                yazar.InnerText = lstYazarlari.Items[i].ToString();
+                bogum["Yazarlar"].AppendChild(yazar);
+                yazarlari += lstYazarlari.Items[i] + "|";
+            }
+            bogum["Fiyat"].InnerText = fiyat.ToString();
+            // Tarih bilgisini standart olması a&amp;ccedil;ısından Universal formatında değiştiriyoruz
+            bogum["Basim"].InnerText = basim.ToUniversalTime().ToString();
+            // ağa&amp;ccedil; yapısındaki değişiklikleri son hali ile Xml dosyasına kaydediyoruz.
+            _doc.Save("Kitaplik.xml");
+        
+            // Yapılan değişiklikleri, ilgili Kitap nesne &amp;ouml;rneği &amp;uuml;zerindede ger&amp;ccedil;ekleştiriyoruz.
+            ktp.Ad = ad;
+            ktp.Basim = basim;
+            ktp.Fiyat = fiyat;
+            ktp.Yazarlar = yazarlari;
+        }
+    
+        /// &amp;lt;summary&amp;gt;
+        /// Bir Kitap boğumunun ağa&amp;ccedil; yapısından silinmesini sağlar
+        /// &amp;lt;/summary&amp;gt;
+        /// &amp;lt;param name="id"&amp;gt;Silinecek Kitap' ın Id değeri&amp;lt;/param&amp;gt;
+        public void Sil(int id)
+        {
+            XmlNode bogum = SecilenNode(id);
+            if (bogum != null)
+            {
+                // Secilen boğumun ağa&amp;ccedil; yapısından &amp;ccedil;ıkartılmasını sağlamak i&amp;ccedil;in RemoveChild metodu kullanılır.
+                _doc.DocumentElement.RemoveChild(bogum);
+                // Son değişiklikler i&amp;ccedil;in Save metodu &amp;ccedil;ağırılır
+                _doc.Save("Kitaplik.xml");
+            }
+        }
+
+        /// &amp;lt;summary&amp;gt;
+        /// Yeni bir Kitap boğumunun xml i&amp;ccedil;eriğine dahil edilmesini sağlar
+        /// &amp;lt;/summary&amp;gt;
+        /// &amp;lt;param name="adi"&amp;gt;Eklenecek kitabın adı&amp;lt;/param&amp;gt;
+        /// &amp;lt;param name="fiyati"&amp;gt;Eklenecek kitabın fiyatı&amp;lt;/param&amp;gt;
+        /// &amp;lt;param name="lstYazarlari"&amp;gt;Eklenecek kitabın yazalarını taşıyan liste kutusu&amp;lt;/param&amp;gt;
+        /// &amp;lt;param name="basimTarihi"&amp;gt;Eklenecek kitabın basım tarihi&amp;lt;/param&amp;gt;
+        /// &amp;lt;returns&amp;gt;Yeni bilgilerden elde edilen Kitap nesne &amp;ouml;rneği&amp;lt;/returns&amp;gt;
+        public Kitap Ekle(int yeniId,string adi, float fiyati, ListBox lstYazarlari, DateTime basimTarihi)
+        {
+            // Ağa&amp;ccedil; yapısı i&amp;ccedil;erisinde yeni bir Kitap boğumu oluşturulur
+            XmlElement kitap = _doc.CreateElement("Kitap");
+    
+            // Id niteliği oluşturulur
+            XmlAttribute id = _doc.CreateAttribute("Id");
+            // Id niteliğinin değeri verilir
+
+            id.Value = yeniId.ToString();
+            // Oluşturulan Id niteliği Kitap boğumuna eklenir
+            kitap.Attributes.Append(id);
+ 
+            // Ad boğumu oluşturulur.
+            XmlNode ad = _doc.CreateNode(XmlNodeType.Element, "Ad", "");
+            // Ad boğumuna değeri verilir
+            ad.InnerText = adi;
+            // Ad boğumu Kitap boğumu altına eklenir
+            kitap.AppendChild(ad);
+        
+            // Fiyat boğumu oluşturulur
+            XmlNode fiyat = _doc.CreateNode(XmlNodeType.Element, "Fiyat", "");
+            // Fiyat boğumunun değeri verilir
+            fiyat.InnerText = fiyati.ToString();
+            // Fiyat boğumun Kitap boğumu altına eklenir
+            kitap.AppendChild(fiyat);
+    
+            // Basim boğumu oluşturlur.
+            XmlNode basim = _doc.CreateNode(XmlNodeType.Element, "Basim", "");
+            // Basim boğumun değeri verilir
+            basim.InnerText = basimTarihi.ToUniversalTime().ToString();
+            // Basim boğumu Kitap boğumu altına eklenir
+            kitap.AppendChild(basim);
+    
+            // Yazarlar boğumu oluşturulur
+            XmlNode yazarlar = _doc.CreateNode(XmlNodeType.Element, "Yazarlar", "");
+        
+            string yazarlarStr = "";
+            for (int i = 0; i &amp;lt; lstYazarlari.Items.Count; i++)
+            {
+                // Gelen liste kutusu kontrol&amp;uuml;ndeki her bir yazar i&amp;ccedil;in Yazar boğumu oluşturulur ve Yazarlar boğumu altına eklenir
+                XmlNode yazar = _doc.CreateNode(XmlNodeType.Element, "Yazar", "");
+                yazar.InnerText = lstYazarlari.Items[i].ToString();
+                yazarlar.AppendChild(yazar);
+                yazarlarStr += lstYazarlari.Items[i].ToString() + "|";
+            }
+            kitap.AppendChild(yazarlar);
+            _doc.DocumentElement.AppendChild((XmlNode)kitap);
+            // Xml ağacı Kitaplık.xml dosyasına kaydedilir
+            _doc.Save("Kitaplik.xml");
+            // Gelen bilgilerden elde edilen Kitap nesne &amp;ouml;rneği geri d&amp;ouml;nd&amp;uuml;r&amp;uuml;l&amp;uuml;r
+            return new Kitap(yeniId, adi, basimTarihi, fiyati, yazarlarStr);
+        } 
+        #endregion
+    }
+}&lt;/pre&gt;
+&lt;p&gt;XmlYoneticisi isimli sınıfımızın kodları her ne kadar &amp;ccedil;ok olsada aslında temel ama&amp;ccedil;lar bellidir. Genel olarak sınıfımız belleğe alınan Xml ağa&amp;ccedil; yapısı &amp;uuml;zerinde navigasyon işlemlerini ger&amp;ccedil;ekleştirebilmektedir, ağaca yeni bir kitap eklemek, se&amp;ccedil;ilen kitabı silmek veya g&amp;uuml;ncellemek gibi işlemleride yerine getirebilmektedir. &amp;Ccedil;ok doğal olarak sınıfımızın Windows tarafında kullanılması gerekmektedir. Lakin windows formu i&amp;ccedil;erisindede bazı kodlamalar yapmamız gerekir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Windows tarafında yer alan kalabalık kodları optimize etmek gerekmektedir. Bu ama&amp;ccedil;la buradaki işlemleri &amp;uuml;stlenecek ayrı bir sınıf tasarımı ele alınabilir. Bunu yapmaya &amp;ccedil;alışmak uygulama geliştiriciyi bir adım daha &amp;ouml;teye taşıyacak ve kod optimizasyonu, performans, bakım kolaylığı gibi konularda uygulamaya b&amp;uuml;y&amp;uuml;k avantajlar getirecektir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&amp;Ouml;yleyse gelin ilk aşamada Windows uygulamamızda bize gereken kodları aşağıdaki gibi yazmaya &amp;ccedil;alışalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk194_5.gif" alt="" width="425" height="406" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public partial class Form1 : Form
+{
+    // Y&amp;ouml;netsel işlemler i&amp;ccedil;in gerekli olan XmlYoneticisi tipimizi tanımlıyoruz
+    XmlYoneticisi xmlYnt;
+
+    public Form1()
+    {
+        InitializeComponent();
+
+        // Xml &amp;uuml;zerindeki işlemler i&amp;ccedil;in (ekleme,g&amp;uuml;ncelleme,silme,navigasyon vs...) tasarlanan XmlYoneticisi nesne &amp;ouml;rneği oluşturulur.
+        xmlYnt = new XmlYoneticisi();
+        // Eğer Kitaplik.xml dosyası var ise Kitap bilgileri &amp;ccedil;ekilir
+        xmlYnt.KitaplariCek(lstKitaplar); 
+    }
+
+    /* Id değerini otomatik arttırabilmek i&amp;ccedil;in yardımcı bir metoda başvurabiliriz. Bu metod liste kutusundaki Kitap &amp;ouml;ğelerinde(eğer varsalar) yer alan Id değerlerinin en b&amp;uuml;y&amp;uuml;ğ&amp;uuml;n&amp;uuml; bulur. Bu elbette tek başına &amp;ccedil;alışan bir uygulama olacağından (yani client server mimaride yer almayacağından) eş zamanlı &amp;ccedil;akışma gibi durumlar ele alınmıyor.*/
+    private int EnBuyuk()
+    {
+        int deger1=0;
+        for (int i = 0;i&amp;lt; lstKitaplar.Items.Count; i++)
+        {
+            int deger2=((Kitap)lstKitaplar.Items[i]).Id;
+            if (deger2 &amp;gt; deger1)
+                deger1 = deger2;
+        }
+        return deger1;
+    }
+    private void Form1_Load(object sender, EventArgs e)
+    {
+        // Eğer liste kutusunda eleman var ise ilk elemana konumlan
+        if (lstKitaplar.Items.Count &amp;gt; 0)
+            lstKitaplar.SelectedIndex = 0;
+    }
+
+    #region Navigasyon işlemleri
+    private void lstKitaplar_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        // Liste kutusunda bir &amp;ouml;ğeye tıklandığından buna ait bilgileri diğer kontrollere aktar
+        Goster((Kitap)lstKitaplar.SelectedItem);
+    }
+
+    private bool Goster(Kitap ktp)
+    {
+        // Eğer bir Kitap nesne &amp;ouml;rneği var ise
+        if (ktp != null)
+        {
+            // Diğer kontrolleri doldur
+            lblId.Text = ktp.Id.ToString();
+            txtAd.Text = ktp.Ad;
+            txtBasim.Text = ktp.Basim.ToShortDateString();
+            txtFiyat.Text = ktp.Fiyat.ToString();
+            lstYazarlar.Items.Clear();
+            // Yazar bilgilerinin Yazarlar isimli &amp;ouml;zellikte bir string katarı şeklinde tuttuğumuz i&amp;ccedil;in | işaretine g&amp;ouml;re ayrıştırıp ele alıyoruz.
+            string[] yazarlari = ktp.Yazarlar.Split('|');
+            for (int i = 0; i &amp;lt; yazarlari.Length - 1; i++)
+                lstYazarlar.Items.Add(yazarlari[i]);
+            return true;
+        }
+        else
+            return false;
+    }
+
+    /* Not: Burada, liste kutusu i&amp;ccedil;erisindeki nesnelerden de doğrudan faydalanılabilinir. Ancak Xml i&amp;ccedil;erisindeki navigasyon işlemlerini &amp;ouml;ğrenebilmek i&amp;ccedil;in bu yol tercih edilmemiştir. */
+    private void btnIlk_Click(object sender, EventArgs e)
+    { 
+        // İlk boğuma ge&amp;ccedil;.
+        if ((lstKitaplar.Items.Count &amp;gt; 0) &amp;amp;&amp;amp; (lstKitaplar.SelectedIndex != 0))
+            if (Goster(xmlYnt.Ilk()))
+                lstKitaplar.SelectedIndex = 0;
+    }
+
+    private void btnOnceki_Click(object sender, EventArgs e)
+    {
+        /* &amp;Ouml;nceki boğuma ge&amp;ccedil;me işlemi i&amp;ccedil;in Onceki metodunu &amp;ccedil;ağırıyoruz. Burada doğal olarak eğer ilk elemanda isek ya da var olan eleman yoksa hareket edilmesinide engellemeliyiz. If kontrol&amp;uuml;n&amp;uuml;n yapılmasının sebebi budur. Bu ve benzeri kontrolleri diğer navigasyon işlemlerindede yapıyoruz. */
+        if ((lstKitaplar.Items.Count &amp;gt; 0) &amp;amp;&amp;amp; (lstKitaplar.SelectedIndex != 0))
+            if (Goster(xmlYnt.Onceki(((Kitap)lstKitaplar.SelectedItem).Id)))
+                lstKitaplar.SelectedIndex--;
+    }
+
+    private void btnSonraki_Click(object sender, EventArgs e)
+    {
+        // Sonraki boğuma ge&amp;ccedil;
+        if ((lstKitaplar.Items.Count &amp;gt; 0) &amp;amp;&amp;amp; (lstKitaplar.SelectedIndex &amp;lt; lstKitaplar.Items.Count - 1))
+            if (Goster(xmlYnt.Sonraki(((Kitap)lstKitaplar.SelectedItem).Id)))
+                lstKitaplar.SelectedIndex++;
+    }
+
+    private void btnSon_Click(object sender, EventArgs e)
+    {
+        //Son boğuma ge&amp;ccedil;
+        if ((lstKitaplar.Items.Count &amp;gt; 0) &amp;amp;&amp;amp; (lstKitaplar.SelectedIndex &amp;lt; lstKitaplar.Items.Count - 1))
+            if (Goster(xmlYnt.Son()))
+                lstKitaplar.SelectedIndex = lstKitaplar.Items.Count - 1;
+    } 
+    #endregion
+
+    #region Temel veri işlemleri
+
+    private void btnYazarEkle_Click(object sender, EventArgs e)
+    { 
+        // Eğer yazar liste kutusuna daha &amp;ouml;nce eklenmemişse 
+        if (!lstYazarlar.Items.Contains(txtYazar.Text))
+            if (!String.IsNullOrEmpty(txtYazar.Text)) // ve txtYazar kutucuğu boş değil ise ekle
+                lstYazarlar.Items.Add(txtYazar.Text);
+    }
+
+    private void Temizle()
+    {
+        // Yeni bilgi girişi i&amp;ccedil;in kontrollerin i&amp;ccedil;eriğini temizle
+        txtAd.Text = string.Empty;
+        lblId.Text = string.Empty;
+        txtFiyat.Text = string.Empty;
+        txtBasim.Text = string.Empty;
+        lstYazarlar.Items.Clear();
+        txtYazar.Text=string.Empty;
+    }
+
+    private void btnYeni_Click(object sender, EventArgs e)
+    {
+        // Yeni bir Kitap girilmek istendiğinde &amp;ouml;ncelikle veri girişi yapılacak kontrollerin i&amp;ccedil;eriğini temizleriz.
+        Temizle();
+    }
+
+    // Kullanıcının yeni bir kitap eklerken kontrollere eksik veri girişi yapıp yapmadığını denetliyor
+    private bool GirisKontrol()
+    {
+        DateTime tarih;
+        float fiyat;
+
+        // Kullanıcının eksik kontrol girip girmediğini ele alabilmek i&amp;ccedil;in aşağıdaki bool değişken atamaları kullanılmıştır. TryParse metodunun nasıl kullanıldığına dikkat edelim.
+        bool tarihGecerli = DateTime.TryParse(txtBasim.Text,out tarih);
+        bool fiyatGecerli = float.TryParse(txtFiyat.Text,out fiyat);
+        bool adGecerli = !String.IsNullOrEmpty(txtAd.Text);
+        bool yazarlarGecerli = lstYazarlar.Items.Count == 0 ? false : true;
+        // Eğer eksik veri girişi yok ise ekleme işlemini yap, tersine eksik veri girişi var ise uyarı mesajı ver.
+        if ((tarihGecerli == false) || (fiyatGecerli == false) || (adGecerli == false) || (yazarlarGecerli == false))
+            return false;
+        else
+        {
+            //TODO: Girilen bilginin daha &amp;ouml;nceden eklenip eklenmediğinin kontrol&amp;uuml; konulabilir.
+            return true;
+        }
+    }
+
+    private void btnKaydet_Click(object sender, EventArgs e)
+    {
+        if(!GirisKontrol())
+            MessageBox.Show("Eksik giriş var");
+        else
+        {
+            // Yeni kitabı Ekle metodu ile ekliyoruz. Ekle metodu geriye Kitap tipinden bire referans d&amp;ouml;nd&amp;uuml;rd&amp;uuml;ğ&amp;uuml; i&amp;ccedil;in bunuda alıp liste kontrol&amp;uuml;ne otomatik olarak ekleyebiliriz.
+            Kitap eklenen = xmlYnt.Ekle( EnBuyuk()+1,txtAd.Text, float.Parse(txtFiyat.Text), lstYazarlar, DateTime.Parse(txtBasim.Text));
+            lstKitaplar.Items.Add(eklenen);
+            // Eklenen yeni Kitaba ait bilgileri ilgili kontrollerde g&amp;ouml;ster
+            Goster(eklenen);
+        }
+    }
+
+    private void btnGuncelle_Click(object sender, EventArgs e)
+    {
+        // Se&amp;ccedil;ili olan xml boğumunu g&amp;uuml;ncelle
+        /* G&amp;uuml;ncelleme işlemi i&amp;ccedil;in Guncelle metodunu kullanmaktayız. Bu metodunda Ekle metodunda olduğu gibi geriye bir Kitap referansı d&amp;ouml;nd&amp;uuml;rmesi belki g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir. B&amp;ouml;ylece sunu tarafında g&amp;uuml;ncellenen bilgiler ile ilişkili referansıda son hali ile değiştirmek m&amp;uuml;mk&amp;uuml;n olabilir. */
+        if (lstKitaplar.Items.Count &amp;gt; 0)
+            xmlYnt.Guncelle(int.Parse(lblId.Text), txtAd.Text, lstYazarlar, float.Parse(txtFiyat.Text), DateTime.Parse(txtBasim.Text), (Kitap)lstKitaplar.SelectedItem);
+        else
+            MessageBox.Show("G&amp;uuml;ncellenecek veri yok");
+    }
+
+    // Se&amp;ccedil;ili olan xml boğumunu sil
+    private void btnSil_Click(object sender, EventArgs e)
+    {
+        // Eğer silinebilecek bir eleman var ise
+        if (lstKitaplar.Items.Count &amp;gt; 0)
+        {
+            // Se&amp;ccedil;ili olan elemanı liste kutusundan elde edip, bunun &amp;uuml;zerinden Id &amp;ouml;zelliğinin değerini alıyoruz.
+            int silinecekKitapId = ((Kitap)lstKitaplar.SelectedItem).Id;
+            // Xml ağacından &amp;ccedil;ıkart.Bunun i&amp;ccedil;in Sil metodunu &amp;ccedil;ağırıyoruz.
+            xmlYnt.Sil(silinecekKitapId);
+            // Xml ağacından ve dolayısıylada fiziki Xml dosyasından &amp;ccedil;ıkarttığımız &amp;ouml;ğeyi Liste kutusundan da kaldırıyoruz
+            lstKitaplar.Items.Remove(lstKitaplar.SelectedItem);
+            Temizle();
+            if (lstKitaplar.Items.Count &amp;gt; 0)
+                lstKitaplar.SelectedIndex = 0;
+        }
+    } 
+    #endregion
+
+    private void lstYazarlar_KeyUp(object sender, KeyEventArgs e)
+    {
+        // yazarlardan biri se&amp;ccedil;ili iken Delete tuşuna basılırsa onu lstYazarlar isimli liste kutusundan &amp;ccedil;ıkartıyoruz
+        if ((e.KeyCode == Keys.Delete)&amp;amp;&amp;amp;(lstYazarlar.Items.Count&amp;gt;0))
+            lstYazarlar.Items.Remove(lstYazarlar.SelectedItem);
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Uygulamız &amp;ccedil;alışma zamanında aşağıdaki &amp;ouml;rnek ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi kullanılabilir. &lt;em&gt;(Video formatı flash olup boyutu 239 kb olduğundan y&amp;uuml;klenmesi zaman alabilir.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;object id="obj1" width="445" height="297" classid="clsid:D27CDB6E-AE6D-11CF-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0" border="0"&gt;
+			&lt;param name="movie" value="http://www.buraksenyurt.com/makale/images/mk194_Video.swf" /&gt;
+			&lt;param name="quality" value="High" /&gt;
+			&lt;embed src="http://www.buraksenyurt.com/makale/images/mk194_Video.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" name="obj1" width="445" height="297" /&gt;&lt;/object&gt;&lt;/p&gt;
+&lt;p&gt;Test amacıyla 3 yeni kitap girilmiştir. Kitaplardan birisi &amp;uuml;zerinde değişiklik yapılmıştır. Var olan bir kitap silinmiştir ve navigasyon işlemleri ger&amp;ccedil;ekleştirilmiştir. Ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ndeki işlemleri yaptığımızda Xml dosyamızın son hali aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8"?&amp;gt;
+&amp;lt;Kitaplik&amp;gt;
+    &amp;lt;Kitap Id="1"&amp;gt;
+        &amp;lt;Ad&amp;gt;.Net in ABC' si&amp;lt;/Ad&amp;gt;
+        &amp;lt;Fiyat&amp;gt;10&amp;lt;/Fiyat&amp;gt;
+        &amp;lt;Basim&amp;gt;28.02.2007 22:00:00&amp;lt;/Basim&amp;gt;
+        &amp;lt;Yazarlar&amp;gt;
+            &amp;lt;Yazar&amp;gt;Emrah Uslu&amp;lt;/Yazar&amp;gt;
+            &amp;lt;Yazar&amp;gt;Osman &amp;Ccedil;okakoğlu&amp;lt;/Yazar&amp;gt;
+            &amp;lt;Yazar&amp;gt;Burcu G&amp;uuml;nel&amp;lt;/Yazar&amp;gt;
+        &amp;lt;/Yazarlar&amp;gt;
+    &amp;lt;/Kitap&amp;gt;
+    &amp;lt;Kitap Id="2"&amp;gt;
+        &amp;lt;Ad&amp;gt;Her Y&amp;ouml;n&amp;uuml;yle C#&amp;lt;/Ad&amp;gt;
+        &amp;lt;Fiyat&amp;gt;29&amp;lt;/Fiyat&amp;gt;
+        &amp;lt;Basim&amp;gt;31.12.2002 22:00:00&amp;lt;/Basim&amp;gt;
+        &amp;lt;Yazarlar&amp;gt;
+            &amp;lt;Yazar&amp;gt;Sefer Algan&amp;lt;/Yazar&amp;gt;
+        &amp;lt;/Yazarlar&amp;gt;
+    &amp;lt;/Kitap&amp;gt;
+&amp;lt;/Kitaplik&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Programın elbetteki bazı bugları vardır, olmalıdır. &amp;Ouml;rneğin, kullanıcı arka arkaya Kaydet tuşlarına basabilir ki bu durumda aynı kitap defalarca eklenir. Bir şekilde bunun &amp;ouml;n&amp;uuml;ne ge&amp;ccedil;mek gerekmektedir. Programı test ettik&amp;ccedil;e başka hatalarda &amp;ccedil;ıkacaktır. Bu hataları tespit edip, tedbirlerini almaya &amp;ccedil;alışmak bizi biraz daha ileriye g&amp;ouml;t&amp;uuml;recektir. Sonu&amp;ccedil; itibariyle testler, uygulama geliştirme s&amp;uuml;recinin &amp;ouml;nemli bir par&amp;ccedil;asıdır. İyi yapılan testler sonucu tespit edilen sorunların en optimal şekilde &amp;ccedil;&amp;ouml;z&amp;uuml;lmeside bu s&amp;uuml;rece dahildir. Dolayısıyla uygulamayı geliştirmenin siz değerli okurlar i&amp;ccedil;in &amp;ouml;nemli bir artı olacağı kanısındayım. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bu makalemizde &lt;strong&gt;XmlDocument&lt;/strong&gt; tipini ele alırken&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Fiziki bir Xml verisinin belleğe nasıl alınabileceğini,&lt;/li&gt;
+&lt;li&gt;Bellek &amp;uuml;zerindeki bir ağa&amp;ccedil;ta nasıl hareket edebileceğimizi,&lt;/li&gt;
+&lt;li&gt;Xml bilgisini taşıyan ağa&amp;ccedil;a yeni boğumları nasıl ekleyebileceğimizi,&lt;/li&gt;
+&lt;li&gt;Ağa&amp;ccedil;taki herhangibir Xml bilgisini nasıl değiştirebileceğimizi,&lt;/li&gt;
+&lt;li&gt;Ağa&amp;ccedil;taki herhangibir Xml boğumunu nasıl silebileceğimizi,&lt;/li&gt;
+&lt;li&gt;Ağa&amp;ccedil; &amp;uuml;zerinde ger&amp;ccedil;ekleştirilen değişikliklerin fiziki bir Xml dosyasına nasıl kaydedilebileceğini,&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&amp;ouml;rnek bir uygulama &amp;uuml;zerinden ele almaya &amp;ccedil;alıştık. Umarım sizler i&amp;ccedil;in yararlı bir deneyim olmuştur. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;şmek dileğiyle hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2007-03-08 12:00:00</pubDate>
+  <slug>-Net-Tarafında-Xml-ile-Oynamak-2-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>xml</tag>
+    <tag>document-object-model</tag>
+    <tag>domain</tag>
+    <tag>xpath</tag>
+  </tags>
+  <categories>
+    <category>C#</category>
+  </categories>
+</post>

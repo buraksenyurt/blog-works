@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WF 4.0 - Kod Yoluyla Workflow Service Oluşturmak, Kullanmak [Beta 1]</title>
+  <description>Örneğin her zaman elimizin altında Visual Studio IDE' sinin sunduğu gibi gelişmiş arayüzler bulunmayabilir. Örneğin Visual Studio 2010 Beta 1 üzerinde yaşadığım sorunlardan birisi WPF tabanlı Designer' ı Workflow uygulamaları için kullanamıyor oluşumdu. Bu gerçekten çok üzücü bir durum.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/pics/2009%2f10%2fblg90_Giris.jpg" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Y&amp;uuml;kseklik korkum olmasına rağmen her zaman yandaki gibi tırmanışta olanlara imrenmişimdir. Bu fotoğrafa konu olan kişinin tek yaptığı yoğun bir m&amp;uuml;cadele ve efor ile yukarı doğru tırmanmaktır. Bana g&amp;ouml;re sonu&amp;ccedil;ta elde edilebilecek tek şey zirveye ulaşmak ve oranın eşsiz manzarasını izlemekten ibarettir. Tabi bunun birde inişi olduğunu d&amp;uuml;ş&amp;uuml;nmek gerekiyor &lt;img title="Sealed" src="/editors/tiny_mce3/plugins/emotions/img/smiley-sealed.gif" alt="Sealed" border="0" /&gt;&amp;nbsp;Hangi a&amp;ccedil;ıdan bakarsak bakalım bizde hayatımızda zaman zaman b&amp;ouml;yle m&amp;uuml;cadeleler i&amp;ccedil;erisine gireriz. &amp;Ouml;zellike yazılım geliştirirken &lt;img title="Laughing" src="/editors/tiny_mce3/plugins/emotions/img/smiley-laughing.gif" alt="Laughing" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğin her zaman elimizin altında &lt;strong&gt;Visual Studio IDE' &lt;/strong&gt;sinin sunduğu gibi gelişmiş aray&amp;uuml;zler bulunmayabilir. &amp;Ouml;rneğin &lt;strong&gt;Visual Studio 2010 Beta 1&lt;/strong&gt; &amp;uuml;zerinde yaşadığım sorunlardan birisi &lt;strong&gt;WPF&lt;/strong&gt; tabanlı &lt;strong&gt;Designer' &lt;/strong&gt;ı&lt;strong&gt; Workflow &lt;/strong&gt;uygulamaları i&amp;ccedil;in kullanamıyor oluşumdu. Bu ger&amp;ccedil;ekten &amp;ccedil;ok &amp;uuml;z&amp;uuml;c&amp;uuml; bir durum. &lt;img title="Undecided" src="/editors/tiny_mce3/plugins/emotions/img/smiley-undecided.gif" alt="Undecided" border="0" /&gt;&amp;nbsp;Ama &amp;ccedil;aresiz değiliz. &amp;Ccedil;aresizliğin &amp;ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml; bazı işlemleri basit bir &lt;strong&gt;Console&lt;/strong&gt; uygulamasında, gereklilikleri fark ederek&lt;em&gt;(&amp;ouml;rneğin hangi &lt;strong&gt;Assembly'&lt;/strong&gt; ların referans edilmesinin gerektiğinin bilinmesi...)&lt;/em&gt;, kod bazında yapmaktan ibarettir. Bunun bize sağlayacağı pek &amp;ccedil;ok fayda bulunmaktadır.&lt;/p&gt;
+&lt;p&gt;Kod tarafında her ne kadar m&amp;uuml;cadeleci bir yol izlesekte, neyin nasıl oluşturulması gerektiğini, hangi durumlarda ne gibi istisnalara(Exceptions) d&amp;uuml;şebileceğimizi, nelere ihtiya&amp;ccedil; duyduğumuzu ve arka planda aslında işlemlerin nasıl değerlendirildiğini g&amp;ouml;rmek a&amp;ccedil;ısından yararlı bir yoldur. Bu kadar c&amp;uuml;mleyi elbetteki sizi yazının kalanına motive etmek i&amp;ccedil;in sarfettiğimi d&amp;uuml;ş&amp;uuml;nebilirsiniz. &lt;img title="Cool" src="/editors/tiny_mce3/plugins/emotions/img/smiley-cool.gif" alt="Cool" border="0" /&gt;&amp;nbsp;Haydi gelin kamera arkasına bakalım.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Kişisel Not : Aslında Beta 2 s&amp;uuml;r&amp;uuml;m&amp;uuml;nde(ki hen&amp;uuml;z public olarak yayınlanmadığını biliyorsunuz), designer tarafındaki sorunların aşıldığını ifade edebilirim. Bizzat tecr&amp;uuml;be ile sabitlenmiştir &lt;img title="Smile" src="/editors/tiny_mce3/plugins/emotions/img/smiley-smile.gif" alt="Smile" border="0" /&gt;&amp;nbsp;Hatta bu konu ile ilişkili bir yazımı s&amp;ouml;z konusu s&amp;uuml;r&amp;uuml;m public hale geldikten sonra yayınlıyor olacağım.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Bu yazımızda &lt;strong&gt;.Net Framework 4.0 Beta 1&lt;/strong&gt; ile bir &lt;strong&gt;Workflow Service' &lt;/strong&gt;in oluşturulması, host edilmesi ve bir istemci tarafından kullanılması konusu irdelenmeye &amp;ccedil;alışılacaktır. &lt;strong&gt;Workflow Service &lt;/strong&gt;tek y&amp;ouml;nl&amp;uuml; bir operasyon&lt;strong&gt;(One Way)&lt;/strong&gt;&amp;nbsp;i&amp;ccedil;in hizmet vermekte olup istemci tarafına bir geri bildirimde bulunmamaktadır. Her iki uygulamada birer &lt;strong&gt;Console Application&lt;/strong&gt; olarak tasarlanmıştır. İstemci tarafında &lt;strong&gt;Workflow Service' &lt;/strong&gt;in kullanılabilmesi i&amp;ccedil;in gerekli &lt;strong&gt;Proxy &lt;/strong&gt;nesnesi yine kod yardımıyla&lt;em&gt;(WSDL d&amp;ouml;k&amp;uuml;manından yararlanmadan)&lt;/em&gt;&amp;nbsp;oluşturulmaktadır. Aslında tamamlanmış olan uygulamalara baktığımızda servis ve istemci tarafı i&amp;ccedil;in gerekli olan referans &lt;strong&gt;Assembly'&lt;/strong&gt; ların aşağıdaki şekilde g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi olduğunu fark edebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f10%2fblg90_RequiredReferences.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Tamam &amp;ccedil;ok g&amp;uuml;zel ama biz bu yazımızda tam olarak neyi hedeflemekteyiz?&lt;/p&gt;
+&lt;p&gt;Yapmak istediğimiz ilk şey &lt;strong&gt;WF 4.0&lt;/strong&gt; bazlı olarak bir &lt;strong&gt;Workflow Service&lt;/strong&gt; geliştirmek olacaktır. Bilindiği &amp;uuml;zere &lt;strong&gt;Workflow Service'&lt;/strong&gt; ler, istemcilerin uzaktan erişerek başlatabileceği akışları i&amp;ccedil;erebilecek hizmetler olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. &amp;Ouml;yleyse &lt;strong&gt;Workflow Service' &lt;/strong&gt;in istemciden gelecek talepleri alabilmesi, gerektiğinde istemciye d&amp;ouml;n&amp;uuml;ş yapabilmesi ve kendi i&amp;ccedil;erisinde bir akışı barındırması gerekmektedir.&lt;/p&gt;
+&lt;p&gt;Tahmin edileceği &amp;uuml;zere istemci &amp;uuml;zerinden gelecek taleplerin alınması veya cevapların g&amp;ouml;nderilmesi sırasında hazır aktivite bileşenlerinden yararlanılır. &amp;Ouml;rneğin &lt;strong&gt;Receive&lt;/strong&gt; veya &lt;strong&gt;SendReply&lt;/strong&gt;...Elbette bu tip bir servisin geliştirilmesi yeterli değildir. Bu servisin istemcilere hizmet verebilmesi i&amp;ccedil;in ayrıca host edilmesi de gerekmektedir. İstemci tarafı ise standart bir &lt;strong&gt;Console, WinForms, WPF, Asp.Net &lt;/strong&gt;ucu olabileceği gibi başka bir &lt;strong&gt;Workflow Service &lt;/strong&gt;de olabilir. Biz işe ilk olarak &lt;strong&gt;Workflow Service&lt;/strong&gt; tarafını geliştirerek başlayacağız. Bu ama&amp;ccedil;la &lt;strong&gt;WithWCF&lt;/strong&gt; isimli &lt;strong&gt;Console &lt;/strong&gt;uygulamamızın kodlarını aşağıdaki gibi geliştirdiğimizi d&amp;uuml;ş&amp;uuml;nebiliriz.&lt;/p&gt;
+&lt;p&gt;Workflow Service tarafı kodları;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Activities;
+using System.Activities.Statements;
+using System.ServiceModel;
+using System.ServiceModel.Activities;
+using System.Xml.Linq;
+
+namespace WithWCF
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // &amp;Ouml;rnekte yer alan akış tek-y&amp;ouml;nl&amp;uuml; bir Workflow Service' idir. Sequence tipinden olan bu akış, Receive aktivitesi ile başlamakta olup istemciden gelen double tipinden değişkenin karek&amp;ouml;k&amp;uuml;n&amp;uuml; hesaplamakta ama istemci tarafına bir bilgilendirmede bulunmamaktadır.
+
+            #region Sequence Aktivitesi Oluşturulma İşlemleri
+
+            // Sequence tipinden bir aktivite &amp;ouml;rneklenir
+            Sequence squareRootFlow = new Sequence();           
+
+            // Aktivitede kullanılacak olan Variable tanımlamaları yapılır
+            Variable&amp;lt;double&amp;gt; number = new Variable&amp;lt;double&amp;gt;(); // Receive aktivitesi tarafından alınan değişken
+            Variable&amp;lt;double&amp;gt; square = new Variable&amp;lt;double&amp;gt;(); // Sonu&amp;ccedil; değişkeni
+            Variable&amp;lt;CorrelationHandle&amp;gt; corHandle = new Variable&amp;lt;CorrelationHandle&amp;gt;();
+            // Xml Namespace tanımlaması yapılır. XNamespace kullanılmadığı takdirde &amp;ouml;rneğin Receive aktitivesinin ServiceContractName &amp;ouml;zelliğine adres bilgisi text tabanlı olarak atandığında şekilde g&amp;ouml;r&amp;uuml;len exception &amp;uuml;retilir.
+            XNamespace ns = "http://www.buraksenyurt.com/WF4";
+
+            // Variable tanımlamaları Sequence aktivitesinin Variables koleksiyonuna dahil edilir.
+            squareRootFlow.Variables.Add(number);
+            squareRootFlow.Variables.Add(square);
+            squareRootFlow.Variables.Add(corHandle);
+
+            // Akışın i&amp;ccedil;erisinde yer alan ilk aktivite Receive tipindendir.
+            Receive receive1 = new Receive
+            {
+                 OperationName="SquareRoot",
+                 DisplayName="Square Root Calculation",
+                 ServiceContractName = ns + "CalculatorService",
+                 CanCreateInstance=true,
+                 Value=new OutArgument&amp;lt;double&amp;gt;(number), 
+                 AdditionalCorrelations={
+                      {"ChannelBasedCorellation",new InArgument&amp;lt;CorrelationHandle&amp;gt;(corHandle)}
+                  }
+            };
+
+            // Receive aktivitesi ile istemciden gelen sayısal değer number değişkenine alındıktan sonra &amp;ccedil;alışan InvokeMethod aktivitesi ile Calculator isimli sınıf i&amp;ccedil;erisindeki FindSquareRoot metodu &amp;ccedil;ağırılır.             
+            InvokeMethod&amp;lt;double&amp;gt; invokeMethod1 = new InvokeMethod&amp;lt;double&amp;gt;
+            {
+                 TargetType=typeof(Calculator),
+                 MethodName = "FindSquareRoot",
+                 Result=new OutArgument&amp;lt;double&amp;gt;(square) // FindSquareRoot metodunun &amp;ccedil;alıştırılması sonucu elde edilen sonu&amp;ccedil; square isimli değişken tarafında yakalanabilecektir.
+            };
+            // Metoda parametre olarak number değişkeninin değeri g&amp;ouml;nderilir. Bu değer Receive aktivitesi i&amp;ccedil;erisinde set edilmiş olup istemci tarafından gelmektedir.
+            invokeMethod1.Parameters.Add(new InArgument&amp;lt;double&amp;gt;(number));
+
+            // Ekrana bilgilendirme yapılır. Bu bilgilendirmede istemciden akışa gelen sayının karek&amp;ouml;k&amp;uuml; yazdırılmaktadır.
+            WriteLine writeLine1 = new WriteLine
+            {
+                Text=new InArgument&amp;lt;string&amp;gt;(e=&amp;gt;String.Format("Sonu&amp;ccedil; {0}",square.Get(e).ToString()))
+            };
+
+            // Aktivitelere sırasıyla Sequence aktivitesi i&amp;ccedil;erisine ilave edilir
+            squareRootFlow.Activities.Add(receive1);
+            squareRootFlow.Activities.Add(invokeMethod1);
+            squareRootFlow.Activities.Add(writeLine1);
+            
+            #endregion
+
+            #region Workflow Servis Oluşturma İşlemleri
+
+            // Workflow' un Service olarak host edilmesi i&amp;ccedil;in gerekli hazırlıklar başlar.
+            // İlk olarak bir Service nesne &amp;ouml;rneği oluşturulur
+            Service service = new Service();
+
+            // Service nesne &amp;ouml;rneğinin Implementation &amp;ouml;zelliğine WorkflowServiceImplementation t&amp;uuml;r&amp;uuml;nden bir referans atanırken, Body &amp;ouml;zelliğine yukarıda oluşturulan Workflow aktivitesi bildirilir
+            service.Implementation = new WorkflowServiceImplementation
+            {
+                Name = ns+"CalculatorService",
+                Body=squareRootFlow                
+            };
+
+            // Sonu&amp;ccedil;ta Workflow bir WCF servisi olarak host edileceğinden bir Endpoint bilgisine sahip olmalıdır
+            // Bu nedenle basit bir Endpoint bildirimi yapılır
+            // &amp;Ouml;rnekte Tcp bazlı servis iletişimi tercih edilmiştir
+            service.Endpoints.Add(new Endpoint
+            {                
+                Uri = new Uri("SquareRoot", UriKind.Relative), //Address bilgisi
+                Binding=new NetTcpBinding(), // Binding bilgisi
+                ServiceContractName = ns + "CalculatorService" // Contract bilgisi(Burada verilen isim ile Receive aktivitesine ait ServiceContractName &amp;ouml;zelliğindeki değerler aynı olmalıdır. Aksi halde Exception2 alınır)
+            });
+
+            #endregion
+
+            // Workflow Service' i &amp;ccedil;alıştıracak olan WorkflowServiceHost nesnesi &amp;ouml;rneklenir
+            // İlk parametre host edilecek olan servistir. İkinci parametre ise servisin host edileceği adres bilgisidir.
+            WorkflowServiceHost host = new WorkflowServiceHost(service, new Uri("net.tcp://localhost:4501/Calculator/Workflows/"));
+            host.Open(); // Host a&amp;ccedil;ılır
+
+            Console.WriteLine(host.State.ToString()); //Hostun durumu hakkında bilgilendirme yapılır
+            Console.WriteLine("Kapatmak i&amp;ccedil;in bir tuşa basınız.");
+            Console.ReadLine();
+
+            host.Close(); //Host kapatılır
+        }
+    }
+
+    class Calculator
+    {
+        public double FindSquareRoot(double number)
+        {
+            return Math.Sqrt(number);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Kod i&amp;ccedil;erisinde işleyiş ile ilişkili gerekli a&amp;ccedil;ıklamalar bulunmaktadır.&lt;/p&gt;
+&lt;p&gt;Ancak geliştirme sırasında dikkat edilmesi gereken bazı durumlar da vardır. &amp;Ouml;rneğin &lt;strong&gt;XNamespace&lt;/strong&gt; tipinin kullanılmaması, bunun yerine &lt;strong&gt;URL&lt;/strong&gt; bilgisinin &lt;strong&gt;text&lt;/strong&gt; tabanlı olarak atanması halinde &amp;ccedil;alışma zamanında aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan &lt;strong&gt;XmlException&lt;/strong&gt; istisnası alınacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Exception 1 (Xml Namespace kullanılmaması halinde);&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f10%2fblg90_Exception.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Diğer yandan &lt;strong&gt;ServiceContractName&lt;/strong&gt; değerinin hem &lt;strong&gt;Endpoint&lt;/strong&gt; hemde &lt;strong&gt;Receive &lt;/strong&gt;aktivitesi i&amp;ccedil;in aynı olması gerekmektedir ki aksi durumda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan &amp;ccedil;alışma zamanı istisnası fırlatılmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Exception 2 (ServiceContractName' lerin Receive aktivitesi ve Endpoint i&amp;ccedil;erisinde farklı olmaları halinde);&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f10%2fblg90_Exception2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Gelelim istemci tarafına. Bu noktada kendimizi yine zora sokuyor olacağız. &lt;img title="Yell" src="/editors/tiny_mce3/plugins/emotions/img/smiley-yell.gif" alt="Yell" border="0" /&gt;&amp;nbsp;Elimizde servisin &lt;strong&gt;Publish&lt;/strong&gt; edilen bir &lt;strong&gt;WSDL &lt;/strong&gt;d&amp;ouml;k&amp;uuml;manı olmadığını ve herhangibir şekilde &lt;strong&gt;Proxy &lt;/strong&gt;&amp;uuml;retimi i&amp;ccedil;in bir ara&amp;ccedil; kullanmadığımızı farz edeceğiz. Bu durumda istemci tarafındaki &lt;strong&gt;proxy &lt;/strong&gt;sınıfının ve hatta istemciden servis tarafına g&amp;ouml;nderilecek olan mesaj s&amp;ouml;zleşmesinin manuel kod ile oluşturulması gerekmektedir. Aynen aşağıda olduğu gibi;&lt;/p&gt;
+&lt;p&gt;İstemci tarafı sınıf diagramı;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f10%2fblg90_ClientDiagram.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;ve kodları;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+
+namespace ClientApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Başlamak i&amp;ccedil;in bir tuşa basınız");
+            Console.ReadLine();
+
+            // Binding oluşturulur
+            NetTcpBinding binding = new NetTcpBinding();
+            // Endpoint tanımlaması yapılır. Adres bilgisinin servisin yeri ve &amp;ccedil;ağırılmak istenen operasyonun adıo yer almaktadır. Bu bilgileri service tarafındakiler ile aynı olmalıdır
+            EndpointAddress endpoint = new EndpointAddress("net.tcp://localhost:4501/Calculator/Workflows/SquareRoot");
+            // Kanal fabrikası &amp;uuml;retilir. İlk parametre bağlayıcı ikinci parametre ise EndPoint bilgisidir
+            ChannelFactory&amp;lt;CalculatorService&amp;gt; factory = new ChannelFactory&amp;lt;CalculatorService&amp;gt;(binding, endpoint);
+            // Kanal fabrikasından yararlanılarak istemcinin kullanacağı Transparant Proxy nesnesi &amp;uuml;retilir.
+            CalculatorService proxy = factory.CreateChannel();
+
+            // Talep oluşturulur ve parametre olarak servis tarafındaki akışın ilk aktivitesi olan Receive aktivitesinin alacağı sayısal değer bildirilir
+            SquareRootRequest request = new SquareRootRequest()
+            {
+                Number = 16
+            };
+            // Operasyon &amp;ccedil;ağırılır
+            proxy.SquareRoot(request);
+
+            Console.WriteLine("İşlemler tamamlandı. Kapatmak i&amp;ccedil;in bir tuşa basınız.");
+            Console.ReadLine();
+        }
+    }
+
+    // Talep olarak gidecek mesaj s&amp;ouml;zleşmesi tanımlanır
+    [MessageContract(IsWrapped = false)]
+    public class SquareRootRequest
+    {
+        [MessageBodyMember(Namespace= "http://schemas.microsoft.com/2003/10/Serialization/",Name = "double")]
+        public double Number { get; set; }
+    }
+
+    // Proxy tanımlaması yapılır
+    // Workflow Servisi varsayılan isim alanı(namespace) ile sunulmadığından Namespace bildiriminin istemci tarafındaki proxy i&amp;ccedil;in a&amp;ccedil;ık bir şekilde yapılması gerekmektedir.
+    [ServiceContract(Namespace = "http://www.buraksenyurt.com/WF4")]
+    interface CalculatorService
+    {
+        [OperationContract(IsOneWay=true)] // Operasyonun OneWay olduğunu belirtmessek Exception3' teki &amp;ccedil;alışma zamanı hatasını alırız.
+        void SquareRoot(SquareRootRequest request);
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Yine istemci tarafı a&amp;ccedil;ısından olaya baktığımızda dikkat etmemiz gereken bazı hususlar olduğu ortadadır. &amp;Ouml;rneğin, &lt;strong&gt;Workflow Service&lt;/strong&gt; i&amp;ccedil;erisinden geriye bir d&amp;ouml;n&amp;uuml;ş yapılmamaktadır. Bir başka deyişle tek y&amp;ouml;nl&amp;uuml; bir istek s&amp;ouml;z konusu olabilir. Bu nedenle istemci tarafındaki &lt;strong&gt;SquareRoot &lt;/strong&gt;metoduna uygulanan &lt;strong&gt;OperationContract &lt;/strong&gt;niteliğinde &lt;strong&gt;IsOneWay &lt;/strong&gt;&amp;ouml;zelliğine &lt;strong&gt;true &lt;/strong&gt;değeri atanmıştır. Bu yapılmadığı takdirde &amp;ccedil;alışma zamanında aşağıdaki istisna mesajı ile karşılaşılacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Exception 3 (Service operasyonunun OneWay olduğunu belirtmediğimiz durumda);&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f10%2fblg90_Exception3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Piuuuuuvvvvv!!!&amp;nbsp;&lt;img title="Smile" src="/editors/tiny_mce3/plugins/emotions/img/smiley-smile.gif" alt="Smile" border="0" /&gt; Biraz uğraştık ama faydalı bir &amp;ccedil;alışma oldu sanıyorum ki. Ger&amp;ccedil;i elde edeceğimiz sonu&amp;ccedil; hi&amp;ccedil; bir anlam ifade etmesede, bir Workflow Service' in kod yardımıyla nasıl oluşturulabileceğini ve kullanılacağını g&amp;ouml;rm&amp;uuml;ş olduk. İşte bir yazılımcı olarak tırmandığımız dağın zirvesindeki g&amp;ouml;r&amp;uuml;nt&amp;uuml;...&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f10%2fblg90_Runtime.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Ne kadar muhteşem değil mi? &lt;img title="Tongue out" src="/editors/tiny_mce3/plugins/emotions/img/smiley-tongue-out.gif" alt="Tongue out" border="0" /&gt;&amp;nbsp;Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2009%2f10%2fWithWCF.rar"&gt;WithWCF.rar (42,98 kb)&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p style="text-align: left;"&gt;Kişisel Not : &amp;Ouml;rnekler bildiğiniz &amp;uuml;zere Visual Studio 2010 Beta 1 s&amp;uuml;r&amp;uuml;m&amp;uuml;nde ve .Net Framework Beta 1 &amp;uuml;zerinde geliştirilmektedir. Beta 2 ile arasında farklılıklar olabilir. Hatta Relase s&amp;uuml;r&amp;uuml;mde &amp;ccedil;ok daha fazla farklılık g&amp;ouml;r&amp;uuml;lebilir&lt;strong&gt;&lt;em&gt;.&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;</content>
+  <pubDate>2009-10-16 00:00:00</pubDate>
+  <slug>WF-40-Kod-Yoluyla-Workflow-Service-Olusturmak-Kullanmak</slug>
+  <tags>
+    <tag>wf</tag>
+    <tag>wf-40</tag>
+    <tag>wcf</tag>
+    <tag>wcf-40</tag>
+  </tags>
+  <categories>
+    <category>WF 4.0 Beta 1</category>
+  </categories>
+</post>

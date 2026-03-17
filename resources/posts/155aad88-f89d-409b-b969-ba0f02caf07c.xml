@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Ollama Yardımıyla Deepseek Dil Modelini .Net Platformunda Kullanmak</title>
+  <description>Yakın zamanda AI hizmetlerini .Net uygulamalarına adapte edebilmek için iki soyutlama paketi tanıtıldı. Microsoft.Extensions.AI ve Microsoft.Extensions.AI.Abstractions. Bu kütüphanelerden yararlanarak birçok dil modelini basit metot çağrıları ile kullanabiliyoruz. OpenAI, Azure OpenAI, Azure AI Infrence ve Ollama kullanabileceğimiz servislerden birkaçı. Bu servisler birçok dil modelini çalıştırmak için birer sunucu olarak da hareket ediyorlar. Microsoft .Net kütüphaneleri ise bu servisleri kullanmak için gerekli fonksiyonellikleri sağlayarak kullanımı kolaylaştırıyor.</description>
+  <content>&lt;p&gt;&lt;img src="/image.axd?picture=/2025/Subat/llama_logo.png" alt="" align="right" /&gt;Ge&amp;ccedil;tiğimiz g&amp;uuml;nlerde Bursa Bilişim Topluluğu tarafından d&amp;uuml;zenlenen bir etkinliğe konuşmacı olarak katılma fırsatı buldum. Ben, y&amp;uuml;ksek kalite kodlama ve teknik bor&amp;ccedil;lanma ile m&amp;uuml;cadele &amp;uuml;zerine bazı tecr&amp;uuml;belerimi paylaştım. Benden sonra sevgili dostum Bora Kaşmer &lt;em&gt;(Coderbora)&lt;/em&gt; JWT token senaryolarında &amp;ouml;zellikle &amp;ccedil;ok y&amp;uuml;ksek kullanıcı ve farklı cihazların kullanıldığı senaryolardaki olası g&amp;uuml;venlik a&amp;ccedil;ıkları &amp;uuml;zerine nasıl tedbirler uygulanabileceğini anlatan dikkat &amp;ccedil;ekici bir sunum icra etti.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Son olarak Volosoft'tan Alper Eb&amp;ccedil;ioğlu, birka&amp;ccedil; fotoğrafı arasından sosyal medyada kullanılabilecek en iyi versiyonun tespiti i&amp;ccedil;in Ollama ve Microsoft AI soyutlamalarının nasıl kullanılacağına dair bir başka etkileyici sunum ger&amp;ccedil;ekleştirdi. Alper' in sunumu sonrası bu konuyu mutlaka &amp;ouml;ğrenmeli ve deneyimlerimi yazıya d&amp;ouml;kmeliyim dedim. Maceramızın bundan sonraki kısmı sunumlardan aldığım ilham &amp;uuml;zerine yaptığım araştırma ve denemelerin sonu&amp;ccedil;larını i&amp;ccedil;ermektedir ;)&lt;/p&gt;
+&lt;p&gt;Son yıllarda hayatımıza girmiş bulunan bir &amp;ccedil;ok dil modeli var ve pek tabii bunları işleterek &amp;ccedil;eşitli konularda bizi asiste eden sayısız GenAI &amp;uuml;r&amp;uuml;n&amp;uuml;. Yeni modeller de geliştirilmeye, parametre sayıları milyarlar mertebesinde muazzam değerlere ulaşmaya da devam ediyor. Herhalde en pop&amp;uuml;lerlerinden birisi ChatGPT olsa gerek.&lt;/p&gt;
+&lt;p&gt;Ancak maliyet a&amp;ccedil;ısından bakıldığında bireysel kullanım i&amp;ccedil;in dahi olsa ger&amp;ccedil;ekten işe yarar sonu&amp;ccedil;lara g&amp;ouml;t&amp;uuml;recek olan versiyonlar biraz pahalı. Yazıyı kaleme aldığım tarih itibariyle benimde kullandığım bireysel paket fiyatı aylık 20 dolar seviyesindeydi. Oysa ki OpenAI'ın kuruluş aşamasında her şeyin a&amp;ccedil;ık kaynak ve &amp;uuml;cretsiz olacağına dair verilmiş s&amp;ouml;zler vardı diye hatırlıyorum. Lakin ge&amp;ccedil;en g&amp;uuml;nlerde &amp;ccedil;ıkan &amp;Ccedil;in merkezli &lt;a href="https://github.com/deepseek-ai" target="_blank"&gt;Deepseek&lt;/a&gt; bu durumu değiştirebilir. &amp;Ccedil;ok daha d&amp;uuml;ş&amp;uuml;k bir maliyetle &lt;em&gt;(ki haber kanallarında ge&amp;ccedil;en bilgilere g&amp;ouml;re sadece 5.8 milyon dolar civarında bir yatırımla)&lt;/em&gt; tamamen a&amp;ccedil;ık kaynak sunulup epey de iyi bir sonu&amp;ccedil; elde ederek b&amp;uuml;y&amp;uuml;k oyuncuların t&amp;uuml;m hisselerini kısa s&amp;uuml;reliğine de olsa sarstı.&lt;/p&gt;
+&lt;blockquote&gt;Yapay zeka dil modellerinin ve buna dayalı &amp;ccedil;alışan kod asistanlarının biz programcıların işini elimizden alacağına şahsen pek inanmıyorum. Bunun yerine verimliliğimizi artıracak şekilde bizi daha da iyi asiste edeceklerini d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum.&lt;/blockquote&gt;
+&lt;p&gt;Yakın zamanda AI hizmetlerini .Net uygulamalarına adapte edebilmek i&amp;ccedil;in iki soyutlama paketi tanıtıldı. &lt;a href="https://learn.microsoft.com/en-us/dotnet/ai/ai-extensions" target="_blank"&gt;Microsoft.Extensions.AI&lt;/a&gt; ve Microsoft.Extensions.AI.Abstractions. Bu k&amp;uuml;t&amp;uuml;phanelerden yararlanarak bir&amp;ccedil;ok dil modelini basit metot &amp;ccedil;ağrıları ile kullanabiliyoruz. OpenAI, Azure OpenAI, Azure AI Infrence ve &lt;a href="https://ollama.com/" target="_blank"&gt;Ollama&lt;/a&gt; kullanabileceğimiz servislerden birka&amp;ccedil;ı. Bu servisler bir&amp;ccedil;ok dil modelini &amp;ccedil;alıştırmak i&amp;ccedil;in birer sunucu olarak da hareket ediyorlar. Microsoft .Net k&amp;uuml;t&amp;uuml;phaneleri ise bu servisleri kullanmak i&amp;ccedil;in gerekli fonksiyonellikleri sağlayarak kullanımı kolaylaştırıyor.&lt;/p&gt;
+&lt;p&gt;Bu &amp;ouml;zet yazıda s&amp;ouml;z konusu s&amp;uuml;reci nasıl işleteceğimizi basit &amp;ouml;rnekler &amp;uuml;zerinden ele almaya &amp;ccedil;alışacağız. Senaryomuz C# kod dosyalarının analiz edilmesi ve kod kalitesinin &amp;ouml;l&amp;ccedil;&amp;uuml;lmesi &amp;uuml;zerine bir &amp;ccedil;alışma olacak. Tabii &amp;ccedil;ok basit bir şekilde ele alacağız ki niyetimiz &lt;strong&gt;Sonarqube&lt;/strong&gt; metrikleri ile yarışmak değil. Dilerseniz adım adım ilerleyelim.&lt;/p&gt;
+&lt;h2&gt;Dil Modeli i&amp;ccedil;in Gerekli Ortamın Hazırlanması&lt;/h2&gt;
+&lt;p&gt;İlk olarak se&amp;ccedil;tiğimiz dil modelini işletecek ara&amp;ccedil;ları kurmamız gerekiyor. Bu noktada kodu analiz ettireceğimiz dil modelini &amp;ccedil;alıştıracak bir servise de ihtiyacımız var. Bu yazıda &lt;a href="https://ollama.com/" target="_blank"&gt;Ollama'yı&lt;/a&gt; tercih ettim. Kodu yazmakta olduğum makine Windows 11 işletim sistemine sahip ama Ollama'yı macOs ve Linux platformları i&amp;ccedil;in de kullanabiliyoruz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;# Kurulumun başarılı olup olmadığını versiyon kontrol&amp;uuml; ile sağlayabiliriz
+ollama -v&lt;/pre&gt;
+&lt;p&gt;İndirme ve kurulum işlemi tamamlandıktan sonra birde dil modeline ihtiyacımız olacak elbette. Ollama'nın &lt;a href="https://ollama.com/search" target="_blank"&gt;buradaki sayfasından&lt;/a&gt; yararlanarak &amp;ccedil;alışmak istediğimiz dil modelini &amp;ccedil;alışacağı sisteme alabiliriz. Biraz Docker Image'ı indirmeye benziyor diyebilirim. Dil modeli se&amp;ccedil;imi ile ilgili dikkat edilmesi gereken birka&amp;ccedil; nokta var. Belli konulara &amp;ouml;zel geliştirilmiş dil modelleri mevcut. &amp;Ouml;rneğin kimisi fotoğrafları yorumlamak gibi g&amp;ouml;rsel &amp;ouml;ğelere has kabiliyetlere sahipken &amp;nbsp;kimisi genel dil modeli &amp;ouml;zelliklerini taşımakta. Bazı dil modelleri &amp;ccedil;alışmak i&amp;ccedil;in y&amp;uuml;ksek konfig&amp;uuml;rasyon makinelere ihtiya&amp;ccedil; duyabilir. &amp;Ouml;zellikle ka&amp;ccedil; parametre ile &amp;ccedil;alışacağımızı se&amp;ccedil;erken buna dikkat etmek lazım. &amp;Ouml;rneğimizde ben &lt;strong&gt;deepseek-r1&lt;/strong&gt; modelinin 7 milyar parametre ile &amp;ccedil;alışan s&amp;uuml;r&amp;uuml;m&amp;uuml;n&amp;uuml; kullanmayı tercih ettim. &lt;img src="/image.axd?picture=/2025/Subat/OllamaWithNet_00.png" alt="" /&gt;&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;# Dil modelini sisteme almak i&amp;ccedil;in aşağıdaki komutu kullanmak yeterli
+# Buna g&amp;ouml;re deepseek-r1 in 7 milyar parametre ile &amp;ccedil;alışan versiyonu kullanılacak
+ollama run deepseek-r1:7b&lt;/pre&gt;
+&lt;p&gt;Paket boyutlarına dikkat etmekte de yarar var. Parametre sayısının artması daha iyi ekran kartları haricinde daha fazla disk alanına da ihtiya&amp;ccedil; duymamızı gerektirebilir. &amp;Ouml;rnekte kullandığım &lt;strong&gt;Deepseek-r1:7b&lt;/strong&gt; &lt;em&gt;(7 milyar parametre alan)&lt;/em&gt; versiyon &lt;strong&gt;4.7 Gb'lık download paketine&lt;/strong&gt;&amp;nbsp;sahip.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2025/Subat/OllamaWithNet_01.png" alt="" /&gt; Yazıyı yazdığım zaman itibariyle Chat GPT'nin 4o modelinin tahminen 2 trilyona yakın parametre ile &amp;ccedil;alıştığı ifade ediliyordu. Deepseek'in uzmanlaşmış dil modellerinin bir araya geldiği 671 milyar parametrelik versiyonunun 404 Gb yer tuttuğu d&amp;uuml;ş&amp;uuml;n&amp;uuml;l&amp;uuml;rse ger&amp;ccedil;ekten en iyi kalitede iş&amp;ccedil;ilik i&amp;ccedil;in yine bol miktarda sıfırı olan finansmana ihtiya&amp;ccedil; var gibi :D&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2025/Subat/OllamaWithNet_07.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Artık local makinede &amp;ccedil;alışan bir dil modelimiz mevcut. Hatta bunu &lt;strong&gt;list&lt;/strong&gt;&amp;nbsp;parametresi ile terminalden de g&amp;ouml;rebilmemiz lazım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2025/Subat/OllamaWithNet_02.png" alt="" /&gt; Denemeler sırasında &lt;strong&gt;Ollama&lt;/strong&gt; ile bir dil modeli hizmeti başlatıldığında makine restart olsa bile servisin &amp;ccedil;alışmaya devam ettiğini fark ettim. Makinede y&amp;uuml;kl&amp;uuml; olan servisleri g&amp;ouml;rmek i&amp;ccedil;in &lt;strong&gt;ps&lt;/strong&gt; komutu kullanılabilir.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;# Hali hazırda &amp;ccedil;alışan servisleri g&amp;ouml;rmek i&amp;ccedil;in
+ollama ps
+
+# &amp;Ccedil;alışan bir dil modelini durdurmak i&amp;ccedil;in (&amp;Ouml;rneğin deepseek'i durdurmak i&amp;ccedil;in)
+ollama stop deepseek-r1:7b
+
+# tekrar başlatmak i&amp;ccedil;in
+ollama run deepseek-r1:7b
+
+# &amp;Ccedil;alışan bir dil modeli hakkında bazı bilgileri elde etmek i&amp;ccedil;in
+ollama show deepseek-r1:7b
+
+# İşe yarar diğer terminal komutlarını g&amp;ouml;rmek i&amp;ccedil;in
+ollama help
+
+# Bir komut hakkında kullanım bilgisi edinmek i&amp;ccedil;in (&amp;Ouml;rneğin remove model komutu ile ilgili)
+ollama rm --help&lt;/pre&gt;
+&lt;p&gt;Sıradaki adımımız Ollama servisine erişip se&amp;ccedil;tiğimiz dil modelini bir Console uygulamasında kullanmak.&lt;/p&gt;
+&lt;h2&gt;Hello World&lt;/h2&gt;
+&lt;p&gt;Basit bir adımla başlayalım ve dil modeli ile karşılıklı sohbet edebileceğimiz bir kod par&amp;ccedil;ası geliştirelim. Console uygulamasında AI soyutlamalarını kullanabilmek i&amp;ccedil;in aşağıdaki Nuget paketlerini eklememiz gerekiyor. (Yazıyı yazdığım vakitte AI ve Ollama paketleri hen&amp;uuml;z prerelease s&amp;uuml;r&amp;uuml;mdeydi. Bu nedenle --prerelease anahtarı ile eklemem gerekti) &amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;# &amp;Ouml;nce projeyi oluşturalım
+dotnet new console -o HelloOllama
+
+# Ardından gerekli paketleri ekleyelim
+cd HelloOllama
+dotnet add package Microsoft.Extensions.AI --prerelease
+dotnet add package Microsoft.Extensions.AI.Ollama --prerelease
+dotnet add package Microsoft.Extensions.Hosting # Dependency Injection Container i&amp;ccedil;in gerekli&lt;/pre&gt;
+&lt;p&gt;Console uygulamamızın kodlarını aşağıdaki gibi geliştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Microsoft.Extensions.AI;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
+var builder = Host.CreateApplicationBuilder();
+/*
+    Ollama servisi ile konuşacak bir client nesnesi s&amp;ouml;z konusu.
+    Bu nesne localhost:11434 portundan &amp;ccedil;alışan servise gidip onun deepseek-r1 ile &amp;ccedil;alışmasını istiyor.
+
+    Aşağıdaki sonsuz d&amp;ouml;ng&amp;uuml; kısmında istemci nesne birden &amp;ccedil;ok kez &amp;ccedil;ağırılmakta. Bu nedenle
+    ilgili nesneyi Dependency Injection Container'a alıp oradan tedarik ederek kullandırmak &amp;ccedil;ok daha mantıklı.
+
+    Sonsuz d&amp;ouml;ng&amp;uuml; aslında bir chatbot ile konuşma efektini vermek i&amp;ccedil;in.
+
+    Sorulan sorular (prompts) bir ChatMessage nesnesi haline getirilerek kullanılmakta. 
+    Aslında taraflar i&amp;ccedil;in tek bir nesne modeli var. Bunlardan hangisinin kullanıcıya ait olduğu hangisinin chatbot'tan beklenen 
+    bir mesaj olduğu genellikle ChatRole struct nesnesi &amp;uuml;zerinden belirleniyor. (User ve Assistant kullanımlarına dikkat edelim)
+*/
+builder.Services.AddChatClient(new OllamaChatClient(new Uri("http://localhost:11434"), "deepseek-r1:7b"));
+var app = builder.Build();
+var chatClient = app.Services.GetRequiredService&amp;lt;IChatClient&amp;gt;();
+Console.WriteLine("Asistant mode has been started...");
+
+var chatHistory = new List&amp;lt;ChatMessage&amp;gt;();
+
+while (true)
+{
+    Console.WriteLine("&amp;gt; Waiting for command...");
+    var userPrompt = Console.ReadLine();
+    if (string.IsNullOrWhiteSpace(userPrompt)) continue;
+    if (userPrompt.Equals("exit", StringComparison.CurrentCultureIgnoreCase)) break;
+    if (userPrompt.Equals("clear", StringComparison.CurrentCultureIgnoreCase))
+    {
+        chatHistory.Clear();
+        Console.WriteLine("Clearing history...");
+        Console.Clear();
+        continue;
+    }
+    chatHistory.Add(new ChatMessage(ChatRole.User, userPrompt));
+
+    var chatResponse = string.Empty;
+    await foreach (var item in chatClient.CompleteStreamingAsync(chatHistory))
+    {
+        Console.Write(item.Text);
+        chatResponse += item.Text;
+    }
+    chatHistory.Add(new ChatMessage(ChatRole.Assistant, chatResponse));
+    Console.WriteLine();
+}&lt;/pre&gt;
+&lt;p&gt;Bu kod Deepseek ile karşılıklı sobhet edebileceğimiz basit bir chatbot ortamı oluşturuyor. &amp;Ouml;rneğin d&amp;uuml;nyanın en y&amp;uuml;sek 5 dağının listesini istediğimizi d&amp;uuml;ş&amp;uuml;nelim. İşte sonu&amp;ccedil;. Bu arada Deepseek'in espri anlayışı da var gibi :D&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2025/Subat/OllamaWithNet_03.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Diğer yandan programı &amp;ccedil;alıştırdıktan ve soruyu sorduktan sonra makaleye d&amp;ouml;n&amp;uuml;p d&amp;uuml;zenlemeye devam ettim ve &amp;uuml;st&amp;uuml;nden neredeyse beş dakika ge&amp;ccedil;ti. Deepseek kararsızlıklar yaşayarak cevaplar vermeye devam etti ve duruma g&amp;ouml;re ilk beşteki dağlardan bazıları arasında sıralama değişiklikleri yaptı. Bu elbette kullandığımız dil modelinin 7 milyar parametreli versiyonundan ya da sorduğum sorunun kalitesinden de kaynaklanıyor olabilir. Yani iyi bir prompt verememiş de olabilirim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2025/Subat/OllamaWithNet_04.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Pek tabii daha &amp;uuml;st modelleri &amp;ccedil;alıştırmak i&amp;ccedil;in daha g&amp;uuml;&amp;ccedil;l&amp;uuml; bir sisteme ihtiyacımız var. G&amp;uuml;&amp;ccedil;l&amp;uuml; sunucularda daha iyi ve y&amp;uuml;ksek parametreli dil modellerinden &amp;ccedil;ok daha iyi sonu&amp;ccedil;lar alınabileceği &amp;ouml;ng&amp;ouml;r&amp;uuml;lebilir fakat şu haliyle dahi Deepseek bana kalırsa epey etkili.&lt;/p&gt;
+&lt;p&gt;Şimdi yazımızın başlarında belirttiğim senaryo ile devam edelim. C# dosyalarını bu dil modeline verip kalitesini yorumlatmak istiyoruz. Pek tabii burada &amp;ccedil;ok iyi prompt girilmesi gerekiyor. Dolayısıyla farklı bir yaklaşıma gideceğiz. Console uygulamamıza ait kodları aşağıdaki gibi değiştirelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Microsoft.Extensions.AI;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using System.Diagnostics;
+
+var builder = Host.CreateApplicationBuilder();
+builder.Services.AddChatClient(new OllamaChatClient(new Uri("http://localhost:11434"), "deepseek-r1:7b"));
+var app = builder.Build();
+var chatClient = app.Services.GetRequiredService&amp;lt;IChatClient&amp;gt;();
+
+var codeFiles = Directory.GetFiles("C:\\samples", "*.cs").ToArray();
+Console.WriteLine($"Looking for {codeFiles.Length} code files");
+foreach (var codeFile in codeFiles)
+{
+    var time = Stopwatch.StartNew();
+    Console.WriteLine($"Analysing {codeFile}. Time {DateTime.Now.ToLongTimeString()}");
+    string prompt = $$"""
+    You are an expert in analyzing C# source code. Your task is to quickly summarize the given code file.
+
+    ## Expected Response:
+    - **Purpose**: A one-sentence description of what this code does.
+    - **Main Components**: A list of important classes and methods with a short explanation.
+    - **Potential Issues**: Mention one or two possible problems, if any.
+    
+    ## Response Format:
+    ```json
+    {
+        "purpose": "Short description of the code's functionality.",
+        "main_components": [
+            {
+                "name": "ClassName",
+                "type": "class",
+                "description": "Short explanation."
+            },
+            {
+                "name": "MethodName",
+                "type": "method",
+                "description": "Short explanation."
+            }
+        ],
+        "potential_issues": [
+            "Brief mention of possible issues (if any)."
+        ]
+    }
+    ```
+
+    ## C# Code:
+    {{File.ReadAllText(codeFile)}}
+    """;
+
+    var chatCompletion = await chatClient.CompleteAsync(prompt);
+    Console.WriteLine(chatCompletion.Message.Text);
+    Console.WriteLine(Environment.NewLine);
+    Console.WriteLine($"Total time of analysis {time.Elapsed.TotalSeconds}");
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rnek kodun en &amp;ouml;nemli kısmı prompt i&amp;ccedil;eriği. Burada g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere chatbot konuşmalarından &amp;ccedil;ok daha farklı bir bildiri s&amp;ouml;z konusu. İstediğimiz kod analizini yapması i&amp;ccedil;in dil modeline detaylı bilgiler veriyoruz. &amp;Ouml;rnekte kullandığım promptu chatgpt'ye yaptırdığımı ifade edeyim ama kendisi Deepseek i&amp;ccedil;in bunu istediğimi hen&amp;uuml;z &amp;ouml;nemsememiş gibi :D Dolayısıyla &lt;strong&gt;Prompt Engineering&lt;/strong&gt; mevzusu hayatımızın bundan sonraki aşamalarında olduk&amp;ccedil;a &amp;ouml;nemli hale gelebilir. Diğer yandan bu tip bir promptu yazdırmak i&amp;ccedil;inde iyi seviyede programlama bilgisine, en azından programlama dilinin yapısı ile ilgili kavramlara hakim olmak gerekiyor. &lt;strong&gt;Korkma sayın programcı bize hala iş var :D&lt;/strong&gt; Neyse neyse biz konumuza geri d&amp;ouml;nelim. &amp;Ouml;rneğin aşağıdaki kod par&amp;ccedil;ası i&amp;ccedil;in &amp;ccedil;alıştırabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+public class GameInfo
+{
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public int UserPoint { get; private set; }
+
+    public GameInfo(string name, string description)
+    {
+        Name = name;
+        Description = description;
+    }
+    public void IncreaseAveragePoint(int value)
+    {
+        UserPoint += value;
+    }
+    public override string ToString()
+    {
+        return $"{Name}:{Description}";
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Programı &amp;ccedil;alıştırmadan &amp;ouml;nce bu kod dosyasını yorumlamanızı &amp;ouml;neririm. Birka&amp;ccedil; &amp;ouml;zellik barındıran basit bir sınıf tasarımı s&amp;ouml;z konusu. Object sınıfından gelen ToString metodu override edilmiş halde. Ayrıca set bloğu private olarak belirlenmiş UserPoint &amp;ouml;zelliğinin verisini değiştirebilmek i&amp;ccedil;in ayrı bir metodumuz var. Kimbilir belki i&amp;ccedil;erisine bazı kurallar dahil olacak. String interpolation'da yakalanabilecek diğer &amp;ouml;zelliklerden birisi. Bakalım DeepSeek-r1:7b dil modeli bunu nasıl yorumluyor. İşte &amp;ccedil;alışma zamanına ait bir ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2025/Subat/OllamaWithNet_05.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu basit kod dosyası i&amp;ccedil;in ilgili dil modelinin epey isabetli sonu&amp;ccedil;lara ulaştığını s&amp;ouml;ylemek yanlış olmaz herhalde. T&amp;uuml;m analiz &amp;ouml;rneği geliştirdiğim bilgisayarda yaklaşık olarak 2.5 dakika kadar s&amp;uuml;rd&amp;uuml;. &amp;Ccedil;alışmakta olduğum makinenin &amp;ouml;zellikleri ise ş&amp;ouml;yle.&lt;/p&gt;
+&lt;table style="border: 1px solid black;"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;strong&gt;Key&lt;/strong&gt;&lt;/th&gt;
+&lt;th&gt;&lt;strong&gt;Value&lt;/strong&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="border: 1px solid black;"&gt;System Manufacturer&lt;/td&gt;
+&lt;td style="border: 1px solid black;"&gt;MONSTER&amp;nbsp; &amp;nbsp;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="border: 1px solid black;"&gt;System Model&lt;/td&gt;
+&lt;td style="border: 1px solid black;"&gt;HUMA H4 V5.2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="border: 1px solid black;"&gt;OS Name&lt;/td&gt;
+&lt;td style="border: 1px solid black;"&gt;Microsoft Windows 11 Pro&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="border: 1px solid black;"&gt;Processor&amp;nbsp;&lt;/td&gt;
+&lt;td style="border: 1px solid black;"&gt;12th Gen Intel(R) Core(TM) i7-1255U, 1700 Mhz, 10 Core(s), 12 Logical Processor(s)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="border: 1px solid black;"&gt;RAM&lt;/td&gt;
+&lt;td style="border: 1px solid black;"&gt;32.0 GB&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="border: 1px solid black;"&gt;VGA&lt;/td&gt;
+&lt;td style="border: 1px solid black;"&gt;Intel(R) Iris(R) Xe Graphics&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Elbette prompt i&amp;ccedil;eriğini biraz daha detaylandırıp farklı &amp;ccedil;ıktılar da isteyebiliriz. &amp;Ouml;rneğin sevgili &lt;em&gt;&amp;Ccedil;eto'nun (ChatGpt'ye b&amp;ouml;yle diyorum)&lt;/em&gt; katkılarıyla aşağıdaki promptu deneyebiliriz.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;You are an expert in analyzing and evaluating C# source code. You will receive a C# code file as input, and your task is to analyze it and produce a structured JSON response that includes:
+
+1. **Functionality Summary**: A brief description of what the code does.
+2. **Key Components**: A list of major classes, methods, and their responsibilities.
+3. **Potential Issues**: A list of possible issues such as security vulnerabilities, performance bottlenecks, or bad coding practices.
+4. **Code Quality Score**: A rating (1-10) based on readability, maintainability, and adherence to best practices.
+5. **Recommendations**: Concrete suggestions to improve the code quality.
+
+## Important Notes:
+- Provide **only** a strict RFC8259 compliant JSON response.
+- Do **not** modify or infer missing parts of the code.
+- If the code is incomplete, specify it in the `"notes"` section.
+
+## JSON Format Example:
+```json
+{
+    "functionality_summary": "Brief description of what the code does.",
+    "key_components": [
+        {
+            "name": "ClassName",
+            "type": "class",
+            "description": "Purpose of this class"
+        },
+        {
+            "name": "MethodName",
+            "type": "method",
+            "description": "What this method does"
+        }
+    ],
+    "potential_issues": [
+        "List of possible security risks, performance issues, or bad practices"
+    ],
+    "code_quality_score": 8,
+    "recommendations": [
+        "Improve variable naming",
+        "Refactor long methods into smaller functions"
+    ],
+    "notes": "Additional comments if necessary"
+}&lt;/pre&gt;
+&lt;p&gt;Kendi sistemimde bu prompt i&amp;ccedil;in aşağıdaki &amp;ccedil;ıktıyı elde ettim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2025/Subat/OllamaWithNet_06.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu sefer bu basit C# dosyasının analizi neredeyse beş dakikaya yakın s&amp;uuml;rede tamamlandı ancak biraz daha detaylı bilgi &amp;uuml;retildiğini ifade edebilirim. Hatta yorum kısımlarında Deepseek sanki ger&amp;ccedil;ekten &lt;strong&gt;Code Review&lt;/strong&gt; yapan bir programcıymış gibi davranıyor desek yalan olmaz.&lt;/p&gt;
+&lt;p&gt;Yazının bundan sonraki kısmında farklı modellerden &amp;ccedil;eşitli prompt'lar &amp;uuml;retip s&amp;ouml;z konusu dosyanın yorumlanmasını isteyebiliriz. Lakin end&amp;uuml;striyel anlamda baktığımda milyon satır kod tabanına ulaşabilen sistemlerin kod kalitesinin &amp;ouml;l&amp;ccedil;&amp;uuml;m&amp;uuml; i&amp;ccedil;in &amp;ccedil;ok daha fazla parametre ile &amp;ccedil;alışan &lt;em&gt;(ki tahminlere g&amp;ouml;re Chat Gpt-4o versiyonu neredeyse 2 trilyon parametre ile &amp;ccedil;alışıyor)&lt;/em&gt; ve pek tabii &amp;ccedil;ok daha y&amp;uuml;ksek sistem konfig&amp;uuml;rasyonuna ihtiya&amp;ccedil; duyan ve pek tabiii daha &amp;ccedil;ok enerji ihtiyacı duyacak ortamlara ihtiyacımız olacağı kesin. T&amp;uuml;m bu gelişmelere karşın Microsoft'un yapay zeka modellerini kod tabanında kolayca kullanabilmemiz i&amp;ccedil;in soyutlamalar getirmesi, Ollama'nın OpenAI'ın t&amp;uuml;m karşıt g&amp;ouml;r&amp;uuml;şleri ve tutumlarına rağmen DeepSeek'i model kataloğunda tutması &lt;em&gt;(en azından şimdilik)&lt;/em&gt; &amp;ccedil;ok farklı bir geleceğin g&amp;ouml;stergesi gibi.&lt;/p&gt;
+&lt;h2&gt;Modeli Zorlayalım&lt;/h2&gt;
+&lt;p&gt;Gelin modeli biraz daha zorlayalım. Bu sefer i&amp;ccedil;erisinde bazı &lt;strong&gt;SOLID&lt;/strong&gt;&amp;nbsp;ilkelerinin ihlal edildiği aşağıdaki kod dosyasını ele alalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net.Mail;
+
+public class Developer
+{
+    public string Username { get; set; }
+    public string Password { get; set; }
+    public string Email { get; set; }
+}
+
+public class CompanyManager
+{
+    private List&amp;lt;Developer&amp;gt; _developers = new();
+
+    public void RegisterDeveloper(string username, string password, string email)
+    {
+        var developer = new Developer { Username = username, Password = password, Email = email };
+        _developers.Add(developer);
+        Console.WriteLine($"{username} registered successfully.");
+        SendEmail(email, "Welcome", "Thank you for registering!");
+    }
+
+    public void SendEmail(string to, string subject, string body)
+    {
+        try
+        {
+            var client = new SmtpClient("smtp.azoncorp.com");
+            var mailMessage = new MailMessage("no-reply@example.com", to, subject, body);
+            client.Send(mailMessage);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+}
+
+public class Logger
+{
+    public void Log(string message)
+    {
+        File.AppendAllText("log.txt", $"{DateTime.Now}: {message}\n");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        var companyManager = new CompanyManager();
+        companyManager.RegisterDeveloper("johndoe", "P@ssw0rd", "john.doe@azoncorp.com");
+
+        var logger = new Logger();
+        logger.Log("Developer registered.");
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu sefer cevapları almak biraz daha fazla s&amp;uuml;rd&amp;uuml; elbette. &amp;Ccedil;alışma s&amp;uuml;resi bu sefer yetkin bir programcının bir dakikadan az s&amp;uuml;rede analiz edebileceği kod i&amp;ccedil;eriği i&amp;ccedil;in neredeyse 7 dakika seviyelerine &amp;ccedil;ıktı. DeepSeek bunu aşağıdaki metinle yorumladı.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;Okay, so I'm looking at this C# code that someone provided. Let me try to understand what it does and figure out the analysis parts.
+
+First, there are three main classes: Developer, CompanyManager, and Logger. The Program class has a static Main method which creates instances of these classes and calls some methods.
+
+Starting with the Developer class-it's pretty straightforward. It has properties for Username, Password, and Email, but no constructors or setters beyond those properties. So when you create a new Developer, you have to set all three properties each time.
+
+Next is CompanyManager. It has a private list of Developers called _developers. The RegisterDeveloper method takes in username, password, email, creates a new Developer object, adds it to the list, and sends an email with some standard messages. I notice that in the SendEmail method, they're using the SmtpClient class but not closing the client after sending emails. That might be a resource leak because once the program ends, the client could remain open.
+
+The SendEmail method creates a new MailMessage each time it's called, which is fine but maybe inefficient if done frequently. Also, catching exceptions just logs them to the console without any meaningful error messages-maybe that should provide more details for debugging or include logging of errors.
+
+Looking at the Logger class, the Log method appends messages to log.txt using DateTime.Now. It doesn't have any logging level flags like Debug, Info, Warning, etc., which could be useful for differentiating message severities. Also, if this is part of a larger system, it might not handle rotation or truncation correctly-though that's more about how the file is managed elsewhere.
+
+In the Program class, Main is static and top-level as expected in an executable class. It creates a CompanyManager instance and calls RegisterDeveloper with test values. Then it logs that a developer was registered. There are no issues shown here at first glance-it seems correct but maybe could be made more robust.
+
+Now, moving on to the analysis questions:
+
+1. Functionality Summary: The code appears to manage developers for an application. It allows registering developers with basic information and sends confirmation emails. Logging is done to a file for record-keeping.
+
+2. Key Components:
+   - Developer class: Manages individual developer data.
+   - CompanyManager class: Handles registration of developers, including adding them to the list and sending emails.
+   - Logger class: Logs messages to a text file.
+
+3. Potential Issues:
+   - Resource leak in SendEmail method where the SmtpClient is not closed after use.
+   - Inefficient email sending by recreating MailMessage objects each time.
+   - No logging of error exceptions, which could hinder debugging if something goes wrong during email sending.
+   - Lack of logging for other parts like registration success or failures-though in this code, it's just a test, so maybe not an issue here. But if there were errors in RegisterDeveloper, the logs wouldn't capture them unless added.
+
+4. Code Quality Score: Considering readability and maintainability. The code is okay but could use better variable names (like email instead of to). There are some inefficiencies with creating MailMessage each time. Could benefit from method-level logging for errors or warnings. The list in Program's Main isn't defensive programming, so it might throw an exception if the constructor fails.
+
+5. Recommendations:
+   - Rename variables like 'to' to something more descriptive.
+   - Use string formatting instead of concatenation for better readability and maintainability.
+   - Refactor the SendEmail method to send multiple emails in a single call if possible or improve efficiency.
+   - Close resources properly by using try-with-resources where applicable, especially for the SmtpClient.
+   - Consider adding logging for error cases when email sending fails so that issues can be tracked down more easily.
+
+Notes: The code as provided seems complete. It's a simple example without any missing parts mentioned.s&lt;/pre&gt;
+&lt;p&gt;&amp;Uuml;retilen JSON i&amp;ccedil;eriği ise şu şekilde.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2025/Subat/OllamaWithNet_08.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu kadar şeyden sonra artık daha ne desem bilemedim :D Biz programcılara halen daha &amp;ccedil;ok ihtiya&amp;ccedil; var ve bu d&amp;uuml;ş&amp;uuml;ncemin sonuna kadar arkasındayım. &amp;Ouml;nemli olan noktalardan birisi ise onların bize s&amp;ouml;ylediklerini yorumlamak. &amp;Ouml;rneğin kod kalitesi ile ilgili yorumları değerlendirip kafamıza yatmayan kısımların veya eksiklerin farkında olacak kadar programlamaya hakim olmamız &amp;ouml;nemli. Yazıma burada son vermeden &amp;ouml;nce &amp;ouml;rnek uygulamaları Internet bağlantısı kapalı iken denemenizi de &amp;ouml;neririm. Zira Ollama ile local ortama indirdiğimiz dil modeli offline &amp;ccedil;alışabilme &amp;ouml;zelliğine sahip. Bunu bir deneyin derim.&amp;nbsp;Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rnek kodlar i&amp;ccedil;in &lt;a href="https://github.com/buraksenyurt/friday-night-programmer/tree/develop/src/HelloOllama" target="_blank"&gt;github reposuna&lt;/a&gt; bakabilirsiniz.&lt;/p&gt;</content>
+  <pubDate>2025-02-10 14:00:00</pubDate>
+  <slug>ollama-yardimiyla-deepseek-dil-modelini-net-platformunda-kullanmak</slug>
+  <tags>
+    <tag>ollama</tag>
+    <tag>deepseek</tag>
+    <tag>chatgpt</tag>
+    <tag>genai</tag>
+    <tag>c#</tag>
+    <tag>programming</tag>
+    <tag>large-language-models</tag>
+    <tag>llm</tag>
+    <tag>code-quality</tag>
+  </tags>
+  <categories>
+    <category>C#</category>
+  </categories>
+</post>

@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Microsoft DotNet Platformunda Bir MCP Server Yazmak</title>
+  <description>MCP(Model Context Protocol), yapay zeka araçları için tool desteği sağlamak amacıyla kullanılan bir protokol olarak düşünülebilir. Anthropic tarafından geliştirilmiş bir standarttır. Bu protokolün geliştirilmesinde amaç yapay zeka araçlarına belli bir standart dahilinde harici araç desteği sunabilmektir. Genel senaryoda bir dil modeline gitmeden önce bu protokol üzerinden hizmet veren MCP Server`lara gidilerek sağlanan araçlar kullanılabilir. Araçlar da arka planda çoğunlukla REST API hizmetlerini çağırır ama bu zorunluluk değildir. Bir başka deyişle MCP server'ın sağladığı araç seti arka planda sarmalladığı herhangi bir başka araca da gidebilir. MCP, yapay zeka araçları için standart bir protokol sunduğundan tüm MCP server'lar bir yapay zeka aracı tarafından çağırılabilir.</description>
+  <content>&lt;p&gt;&lt;strong&gt;MCP&lt;em&gt;(Model Context Protocol)&lt;/em&gt;&lt;/strong&gt;, yapay zeka ara&amp;ccedil;ları i&amp;ccedil;in tool desteği sağlamak amacıyla kullanılan bir protokol olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. &lt;strong&gt;Anthropic&lt;/strong&gt; tarafından geliştirilmiş bir standarttır ki detaylarına&amp;nbsp;&lt;a href="https://github.com/modelcontextprotocol" target="_blank"&gt;buradan&lt;/a&gt; ulaşabilirsiniz. Bu protokol&amp;uuml;n geliştirilmesinde ama&amp;ccedil; yapay zeka ara&amp;ccedil;larına belli bir standart dahilinde harici ara&amp;ccedil; desteği sunabilmektir. Genel senaryoda bir dil modeline gitmeden &amp;ouml;nce bu protokol &amp;uuml;zerinden hizmet veren &lt;strong&gt;MCP &lt;/strong&gt;sunucularına&lt;strong&gt;&amp;nbsp;&lt;/strong&gt;ulaşılır ve sağlanan ara&amp;ccedil;lar kullanılarak belli bir domain sınırı i&amp;ccedil;erisinde kalacak şekilde işlemler yapılabilir. &lt;strong&gt;Ara&amp;ccedil;lar&lt;em&gt;(Tools)&lt;/em&gt;&lt;/strong&gt; arka planda &amp;ccedil;oğunlukla &lt;strong&gt;REST API&lt;/strong&gt;&amp;nbsp;gibi hizmetleri kullanır ancak farklı kaynaklarda &amp;ccedil;ağırılabilir. Bir başka deyişle &lt;strong&gt;MCP &lt;/strong&gt;sunucusunun&amp;nbsp;sağladığı ara&amp;ccedil; seti arka planda sarmaladığı herhangi bir başka araca da gidebilir. &lt;strong&gt;MCP&lt;/strong&gt;, yapay zeka ara&amp;ccedil;ları i&amp;ccedil;in standart bir protokol sunduğundan t&amp;uuml;m &lt;strong&gt;MCP Server&lt;/strong&gt;'lar bir yapay zeka aracı tarafından keşfedilebilir, ara&amp;ccedil;ları kullanılabilir.&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;ok basit bir senaryo ile konuyu anlamaya &amp;ccedil;alışalım;&amp;nbsp;Sisteminizde binlerce servis olduğunu ve bu servislerle ilgili keşif dok&amp;uuml;manlarının &lt;strong&gt;yaml&lt;/strong&gt; formatlı dosyalarda tutulduğunu d&amp;uuml;ş&amp;uuml;nelim. Tabii o kadar &amp;ccedil;ok &lt;strong&gt;yaml&lt;/strong&gt; i&amp;ccedil;eriği var ki bunlarla alakalı istatistik toplayan, bilgi veren bir de &lt;strong&gt;Rest Api&lt;/strong&gt; hizmetimiz bulunuyor. Bir &lt;strong&gt;MCP&lt;/strong&gt; &lt;strong&gt;sunucusu&lt;/strong&gt;&amp;nbsp;ile bu API hizmetindeki fonksiyonellikleri birer ara&amp;ccedil;&lt;em&gt;(tool)&lt;/em&gt; olarak tanımlamak ve &amp;ccedil;ağırmak m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Senaryoya dahil olan bir MCP istemcisi&lt;em&gt;(&amp;Ouml;rneğin VS Code veya farklı bir kod geliştirme ortamındaki AI asistanı, Github CLI veya Claude CLI gibi komut satırı ara&amp;ccedil;ları ya da bizim yazacağımız basit bir istemci uygulama)&lt;/em&gt;, MCP sunucumuza bağlanarak ara&amp;ccedil;larımızı &amp;ccedil;ağırabilir ve bu &amp;ccedil;ıktıları değerlendirerek cevap vermesi i&amp;ccedil;in herhangi bir dil modelini kullanabilir. S&amp;ouml;z gelimi bu ortamlarda aşağıdaki gibi sorular sorabiliriz;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;"Sistemimde mongodb veritabanı kullanan ka&amp;ccedil; tane servis var?"&lt;/li&gt;
+&lt;li&gt;"Sipariş y&amp;ouml;netimi s&amp;uuml;re&amp;ccedil;lerinde kullanılan servisler hangileri?"&lt;/li&gt;
+&lt;li&gt;"Sipariş y&amp;ouml;netimi s&amp;uuml;re&amp;ccedil;lerinde kullanılan servislerin YAML dok&amp;uuml;manlarını getir."&lt;/li&gt;
+&lt;li&gt;"5'ten fazla bağımlılığı olan servisleri getir."&lt;/li&gt;
+&lt;li&gt;"M&amp;uuml;şteri mod&amp;uuml;l&amp;uuml;ne hizmet eden servislerin listesini getir."&lt;/li&gt;
+&lt;li&gt;"Varsayılan tech-stack &amp;uuml;zerine kurulu yeni bir yaml i&amp;ccedil;eriği &amp;uuml;ret."&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Burada biraz durup d&amp;uuml;ş&amp;uuml;nd&amp;uuml;ğ&amp;uuml;m&amp;uuml;zde, "yahu bu bilgileri bir SQL tablosunda tutup sorgulayan bir servis ve arabirim de verebilirdik" ya da "bu kadar zahmete ne gerek var, zaten elimizde bir Rest API var, onun &amp;uuml;zerinden sorgula veya &amp;uuml;ret der ge&amp;ccedil;eriz" diye de d&amp;uuml;ş&amp;uuml;nebiliriz. Bu sık rastlanan bir kafa karışıklığıdır zira &lt;strong&gt;MCP sunucular&amp;nbsp;&lt;/strong&gt;ile &lt;strong&gt;REST Api&lt;/strong&gt;'ler birbirlerine &amp;ccedil;ok benzerler. &lt;strong&gt;MCP&lt;/strong&gt; sunucuların Rest API'lerden farkı, yapay zeka ara&amp;ccedil;larının &amp;ccedil;ağırabileceği ara&amp;ccedil; setlerini end&amp;uuml;striyel bir standart &amp;uuml;zerinden sunmasıdır. Onlar yapay zeka ara&amp;ccedil;larının ihtiya&amp;ccedil; duyduğu bilgileri sağlamak i&amp;ccedil;in tasarlanmışlardır. &lt;strong&gt;MCP&lt;/strong&gt; standardı, onların kolayca &lt;strong&gt;keşfedilmesi&lt;em&gt;(discover)&lt;/em&gt;&lt;/strong&gt; ve &amp;ccedil;ağırılması i&amp;ccedil;in gerekli kurallar b&amp;uuml;t&amp;uuml;n&amp;uuml;n&amp;uuml; de sağlar. Zaten bilinen veya g&amp;ouml;rd&amp;uuml;ğ&amp;uuml;m&amp;uuml;z &amp;ccedil;oğu&amp;nbsp;&lt;strong&gt;MCP&lt;/strong&gt;&amp;nbsp;sunucusu sundukları ara&amp;ccedil;larının arkasında genellikle Rest API hizmetleri barındırmaktadır. Ne var ki bu &lt;strong&gt;Rest API&lt;/strong&gt;'ler doğrudan yapay zeka ara&amp;ccedil;ları tarafından &amp;ccedil;ağırılmazlar, &amp;ccedil;&amp;uuml;nk&amp;uuml; yapay zeka ara&amp;ccedil;ları standart bir protokol &amp;uuml;zerinden tanımlanmış ara&amp;ccedil;lara ihtiya&amp;ccedil; duyar &lt;em&gt;(En azından şu an i&amp;ccedil;in b&amp;ouml;yle)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Tabii bu senaryoda tek y&amp;ouml;nl&amp;uuml; bir anlatım s&amp;ouml;z konusu. Yani, yapay zeka aracı ile kullandığı MCP server daha &amp;ccedil;ok soru cevap&lt;em&gt;(ask)&lt;/em&gt; modunda &amp;ccedil;alışıyor. Diğer yandan tam ters y&amp;ouml;nde aksiyonlar ger&amp;ccedil;ekleştirmek de m&amp;uuml;mk&amp;uuml;n. Yani bir MCP sunucusu aracılığı ile bir g&amp;ouml;rev işletmek, bir s&amp;uuml;reci tetiklemek, bir uygulamayı başlatmak gibi aksiyonlar da alınabilir. &amp;Ouml;rneğin, MCP sunucusu &amp;uuml;zerinden bir CI/CD pipeline'ını tetiklemek ya da projeye yeni bir sınıf eklemek veya bir kanban board &amp;uuml;zerinde g&amp;ouml;rev oluşturmak pekala m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. T&amp;uuml;m bunlar MCP sunucularının sağladığı ara&amp;ccedil; setine ve arka planda &amp;ccedil;alışan rest api veya benzeri &lt;strong&gt;kaynakların&lt;em&gt;(resources)&lt;/em&gt;&lt;/strong&gt; nasıl kullanıldığına bağlıdır.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Neden MCP Server yazarız?&lt;/strong&gt; B&amp;uuml;y&amp;uuml;k dil modelleri&lt;em&gt;(Large Language Models)&lt;/em&gt;, devasa veri setlerine sahiptir ama bunlar g&amp;ouml;rece durağandır&lt;em&gt;(static)&lt;/em&gt; ve i&amp;ccedil;eriklerini de &amp;ccedil;oğunlukla bilmeyiz. Ne zaman g&amp;uuml;ncellendiklerini dahi bilmeyiz ki &amp;ccedil;oğu internet &amp;uuml;zerinden anlık arama yapabilme yetisine de sahiptirler. Eğer bahsettiğimiz senaryolara benzer s&amp;uuml;re&amp;ccedil;lerde kaliteli, doğruluğunda ş&amp;uuml;phe duymayacağımız sonu&amp;ccedil;lar almak istiyorsak, yapay zeka modellerine gitmeden &amp;ouml;nce ihtiya&amp;ccedil; duyacakları bilgileri sağlayacak MCP sunucuları yazmak ve kullanmak iyi bir fikir olabilir. Zira yapay zeka ara&amp;ccedil;larının ele aldığı i&amp;ccedil;eriğin&lt;em&gt;(context)&lt;/em&gt; kalitesi &amp;ccedil;ok &amp;ouml;nemlidir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;Genel Mimari Konsept&lt;/h2&gt;
+&lt;p&gt;MCP sunucusu kullanılan senaryolarda aşağıdaki ana akt&amp;ouml;rler mutlaka yer alır.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;MCP Host:&lt;/strong&gt; MCP sunucusuna bağlanan, sağladığı ara&amp;ccedil; setini keşfedebilen ve kullanabilen bir uygulama olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. VS Code'daki AI asistanları, Github CLI veya Claude CLI gibi komut satırı ara&amp;ccedil;ları, chatbot gibi uygulamalar bu kategoriye girer.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;MCP Client:&lt;/strong&gt; MCP sunucusuna olan bağlantıları y&amp;ouml;neten ve host i&amp;ccedil;in gerekli context bilgilerini sağlayan bir bileşen olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Context, LLM'ler i&amp;ccedil;in &amp;ccedil;ok &amp;ouml;nemli bir kavramdır.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;MCP Server:&lt;/strong&gt; Tahmin edileceği &amp;uuml;zere istemcilere sahip olduğu ara&amp;ccedil; seti &amp;uuml;zerinden context sağlama g&amp;ouml;revini &amp;uuml;stlenir.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Kurguyu aşağıdaki &amp;ccedil;izelge ile de &amp;ouml;zetleyebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2026/Mart/MCPServer_00.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Sanıyorum bir &amp;ouml;rnek &amp;uuml;zerinden ilerleyip neler yapabileceğimizi keşfetmeye &amp;ccedil;alışırsak her şey daha kolay anlaşılacaktır diye d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum.&lt;/p&gt;
+&lt;h2&gt;Senaryo&lt;/h2&gt;
+&lt;p&gt;Kobay olarak bir todo listesi ile ilintili API servisi kullanan ilkel bir MCP sunucusu yazıp kullanmayı deneyeceğiz. Todo listemizi &lt;strong&gt;postgresql &lt;/strong&gt;veritabanı &amp;uuml;zerinde bir tabloda tutabiliriz. Pahalı oldu ama işe yarar :D Normalde bu veri setinden sorgulama yapmak veya yeni bir todo eklemek, durum g&amp;uuml;ncellemek ya da silmek i&amp;ccedil;in standart bir yol izleriz. Kullanıcı dostu bir &amp;ouml;ny&amp;uuml;z uygulaması, onun &amp;ccedil;ağırdığı ve bu bahsedilen hizmetleri yerine getiren kuvvetle muhtemel bir rest servisi. Amacımız bir MCP sunucusu yazıp nasıl kullanıldığını deneyimlemek olduğundan todo listesinin ele alındığı projenin &amp;ccedil;apı şu an i&amp;ccedil;in &amp;ccedil;ok da &amp;ouml;nemli değil. Ancak aşağıdakilere benzer işleri icra edeceğimiz bir senaryo kurgulamak pekala m&amp;uuml;mk&amp;uuml;n.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Soru sorup bilgi alabilelim:
+&lt;ul&gt;
+&lt;li&gt;"Todo listemdeki t&amp;uuml;m g&amp;ouml;revleri getir?"&lt;/li&gt;
+&lt;li&gt;"Yapılacaklar listemdeki tamamlanmış g&amp;ouml;revler neler?"&lt;/li&gt;
+&lt;li&gt;"Yapılacaklar listemdeki tamamlanmamış g&amp;ouml;revler neler?"&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Veri manip&amp;uuml;lasyonları:
+&lt;ul&gt;
+&lt;li&gt;"Yapılacaklar listeme '&amp;ccedil;alışma odasını temizle' g&amp;ouml;revini ekle. Bu g&amp;ouml;rev 20 Haziran 2024 tarihine kadar tamamlanmalı. K&amp;uuml;&amp;ccedil;&amp;uuml;k bir zorluk derecesine sahip"&lt;/li&gt;
+&lt;li&gt;"S&amp;uuml;resi ge&amp;ccedil;miş olan g&amp;ouml;revleri undone olarak g&amp;uuml;ncelle."&lt;/li&gt;
+&lt;li&gt;"Yapılacaklar listemdeki '&amp;ccedil;alışma odasını temizle' g&amp;ouml;revini yapıldı olarak g&amp;uuml;ncelle."&lt;/li&gt;
+&lt;li&gt;"'MCP Server Nasıl &amp;Ccedil;alışır?' başlıklı makale yazma g&amp;ouml;revimi inprogress olarak g&amp;uuml;ncelle."&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;&amp;Ouml;nce Arka Plan Hazırlıkları&lt;/h2&gt;
+&lt;p&gt;Veritabanı tarafı ile olan iletişimi&amp;nbsp;&lt;strong&gt;rust&lt;/strong&gt; ile yazılmış bir api servisi &amp;uuml;zerinden sağlayacağız. &lt;strong&gt;Postgresql&lt;/strong&gt; i&amp;ccedil;in aşağıdaki i&amp;ccedil;eriğe sahip bir &lt;strong&gt;docker-compose&lt;/strong&gt; kullanılabilir. Genellikle bu tip kısa s&amp;uuml;reli &amp;ccedil;alışmalarda hep aynı şekilde ilerliyorum. Bana gerekli servisleri bir docker-compose dosyasında kendi ağ ortamında gerekirse farklı portlar &amp;uuml;zerinden ayağa kaldırarak ilerliyorum.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;services:
+
+  postgres:
+    image: postgres:latest
+    container_name: fnp-postgres
+    environment:
+      POSTGRES_USER: johndoe
+      POSTGRES_PASSWORD: somew0rds
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgres/data
+    networks:
+      - fnp-network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: fnp-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: scoth@tiger.com
+      PGADMIN_DEFAULT_PASSWORD: 123456
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - fnp-network
+
+volumes:
+  postgres_data:
+
+networks:
+    fnp-network:
+        driver: bridge&lt;/pre&gt;
+&lt;p&gt;Bu servisleri ayağa kaldırmak i&amp;ccedil;inse komut satırından aşağıdaki gibi ilerleyebiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;docker compose up -d
+# Eğer docker compose dosyası benimki gibi kalabalık ve sadece bu servisleri ayağa kaldırmak isterseniz
+docker compose up -d postgres pgadmin&lt;/pre&gt;
+&lt;p&gt;Bu yazımızla &amp;ccedil;ok alakalı olmadığı ve konuyu dağıtacağı i&amp;ccedil;in &lt;strong&gt;Rust&lt;/strong&gt; ile yazılmış servis kodlarına burada girmeye gerek yok. Yine de&amp;nbsp;&lt;a href="https://github.com/buraksenyurt/friday-night-programmer/tree/main/src/todo-api" target="_blank"&gt;şuradan kaynak kodlarını&lt;/a&gt; inceleyebilirsiniz. &amp;Ouml;nemli olan elimizde bir&amp;ccedil;ok &lt;strong&gt;CRUD&lt;/strong&gt; operasyonuna hizmet veren bir &lt;strong&gt;Rest Api&lt;/strong&gt; servisi olması.&lt;/p&gt;
+&lt;h2&gt;MCP Server Uygulamasının Geliştirilmesi&lt;/h2&gt;
+&lt;p&gt;Gelelim ana mevzuya. Derme &amp;ccedil;atma da olsa todo listesini y&amp;ouml;netebildiğimiz basit bir rest servisi bulunuyor. Bu servis en azından yukarıdaki senaryoda belirtilen işlevleri sağlamakta&lt;em&gt;(Ger&amp;ccedil;ek bir saha kurgusunu hazırlarken ilk olarak soruları ve g&amp;ouml;revleri i&amp;ccedil;erecek bir metin &amp;ccedil;alışması yapmak, mcp ara&amp;ccedil; setinden sunulacak fonksiyonellikleri doğru şekilde tasarlamak adına &amp;ouml;nemli olacaktır)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi bir &lt;strong&gt;dotnet&lt;/strong&gt; projesi oluşturarak işe başlayalım. Bu bir &lt;strong&gt;console&lt;/strong&gt; uygulaması olacak ve bazı yardımcı &lt;strong&gt;nuget&lt;/strong&gt; paketlerine ihtiyacımız var.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet new console -n TodoMCPServer
+cd TodoMCPServer
+# Gerekli paketlerin eklenmesi
+dotnet add package Microsoft.Extensions.Hosting
+dotnet add package Microsoft.Extensions.Http
+dotnet add package ModelContextProtocol&lt;/pre&gt;
+&lt;p&gt;Buradaki en &amp;ouml;nemli paket yazıyı yazdığımız tarih itibariyle 1.1.0 s&amp;uuml;r&amp;uuml;m&amp;uuml;n&amp;uuml; kazanmış olan &lt;strong&gt;ModelContextProtocol&lt;/strong&gt;.&lt;strong&gt;&amp;nbsp;&lt;/strong&gt;Bu paket toolset'i belirlemek i&amp;ccedil;in gerekli attribute'ları kullanmamızı ve MCP server iletişimi i&amp;ccedil;in middleware'in ayarlanmasını sağlayacak fonksiyonları i&amp;ccedil;ermekte.&lt;strong&gt; Console&lt;/strong&gt; uygulamasının &lt;strong&gt;Rust&lt;/strong&gt; ile yazılmış &lt;strong&gt;API&lt;/strong&gt; servisini &amp;ccedil;ağrıması gerekiyor. Bu &amp;ccedil;ağrı ile ilişkili olarak farklı &lt;strong&gt;endpoint&lt;/strong&gt; adreslerine de gidebilmeli. Genel bir yaklaşım olarak api servisi, api key vb bilgilerin &lt;strong&gt;appsettings&lt;/strong&gt; dosyasında tutulup, &lt;strong&gt;build&lt;/strong&gt; sonrasında da &lt;strong&gt;exe&lt;/strong&gt;'nin yanına kopyalanması iyi olabilir. Bu sayede uygulama &amp;ccedil;alışırken bu bilgilere erişebiliriz. Bizim &amp;ouml;rneğimizde &lt;strong&gt;appsettings&lt;/strong&gt; i&amp;ccedil;eriği ise olduk&amp;ccedil;a sade.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;{
+    "TodoApiUrl":"http://localhost:3000/"
+}&lt;/pre&gt;
+&lt;p&gt;Tabii burada &amp;ccedil;ok basit bir senaryo var. Genelde bu tip arka plan API'ler uzak sunucularda ve yetki dahilinde erişilebilen hizmetler olarak karşımıza &amp;ccedil;ıkarlar. Yani bir application key gerekir. Bu ve benzer hassas bilgileri konfigurasyon dosyalarında tutmak da doğru değildir. &lt;strong&gt;Vault&lt;/strong&gt; gibi secret bilgilerinin daha g&amp;uuml;venli tutulacağı ortamları tercih etmek gerekir. Bu kritik hatırlatmalardan sonra kaldığımız yerden devam edelim.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Todo&lt;/strong&gt; servis &amp;ccedil;ağrılarını ger&amp;ccedil;ekleştirecek olan &lt;strong&gt;TodoApiService&lt;/strong&gt; isimli sınıf kodlarını aşağıdaki gibi geliştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Net.Http.Json;
+
+public class TodoApiService(IHttpClientFactory httpClientFactory, string baseUrl)
+{
+    private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
+    private readonly string _baseUrl = baseUrl.TrimEnd('/');
+
+    public async Task&amp;lt;string&amp;gt; GetAllTodosAsync()
+    {
+        var client = _httpClientFactory.CreateClient();
+        var response = await client.GetAsync($"{_baseUrl}/api/todos");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadAsStringAsync();
+    }
+
+    public async Task&amp;lt;string&amp;gt; GetCompletedTodosAsync()
+    {
+        var client = _httpClientFactory.CreateClient();
+        var response = await client.GetAsync($"{_baseUrl}/api/todos/completed");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadAsStringAsync();
+    }
+
+    public async Task&amp;lt;string&amp;gt; GetIncompleteTodosAsync()
+    {
+        var client = _httpClientFactory.CreateClient();
+        var response = await client.GetAsync($"{_baseUrl}/api/todos/incomplete");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadAsStringAsync();
+    }
+
+    public async Task&amp;lt;string&amp;gt; GetTodoByIdAsync(string id)
+    {
+        var client = _httpClientFactory.CreateClient();
+        var response = await client.GetAsync($"{_baseUrl}/api/todos/{id}");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadAsStringAsync();
+    }
+
+    public async Task&amp;lt;string&amp;gt; CreateTodoAsync(string title, string? difficulty = null, string? deadline = null)
+    {
+        var payload = new Dictionary&amp;lt;string, object?&amp;gt; { ["title"] = title };
+        if (difficulty is not null) payload["difficulty"] = difficulty;
+        if (deadline is not null) payload["deadline"] = deadline;
+
+        var client = _httpClientFactory.CreateClient();
+        var response = await client.PostAsJsonAsync($"{_baseUrl}/api/todos", payload);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadAsStringAsync();
+    }
+
+    public async Task&amp;lt;string&amp;gt; UpdateTodoAsync(string id, string? title = null, string? status = null, string? difficulty = null, string? deadline = null)
+    {
+        var payload = new Dictionary&amp;lt;string, object?&amp;gt;();
+        if (title is not null) payload["title"] = title;
+        if (status is not null) payload["status"] = status;
+        if (difficulty is not null) payload["difficulty"] = difficulty;
+        if (deadline is not null) payload["deadline"] = deadline;
+
+        var client = _httpClientFactory.CreateClient();
+        var response = await client.PutAsJsonAsync($"{_baseUrl}/api/todos/{id}", payload);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadAsStringAsync();
+    }
+
+    public async Task DeleteTodoAsync(string id)
+    {
+        var client = _httpClientFactory.CreateClient();
+        var response = await client.DeleteAsync($"{_baseUrl}/api/todos/{id}");
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task&amp;lt;string&amp;gt; UpdateOverdueTodosAsync()
+    {
+        var client = _httpClientFactory.CreateClient();
+        var response = await client.PatchAsync($"{_baseUrl}/api/todos/overdue", content: null);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadAsStringAsync();
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Tahmin edeceğiniz &amp;uuml;zere bu sınıf, todo API'sine gidecek olan t&amp;uuml;m &amp;ccedil;ağrıları y&amp;ouml;netmekten sorumlu. Her bir fonksiyon, API'nin farklı bir endpoint'ine karşılık geliyor. Bu sınıfı kullanarak todo listemizle ilgili &amp;ccedil;eşitli sorgulamalar yapabilir, yeni g&amp;ouml;revler ekleyebilir, var olan g&amp;ouml;revleri g&amp;uuml;ncelleyebilir veya silebiliriz. Sıradaki adım bu servisin sunduğu fonksiyonellikleri yapay zeka ara&amp;ccedil;larının da anlayabilmesi i&amp;ccedil;in gerekli ara&amp;ccedil; setinin oluşturulması. Bunun i&amp;ccedil;in projeye &lt;strong&gt;TodoTools&lt;/strong&gt; isimli yeni bir sınıf ekleyip i&amp;ccedil;eriğini aşağıdaki metotlarla donatabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using ModelContextProtocol.Server;
+using System.ComponentModel;
+
+[McpServerToolType]
+public class TodoTools
+{
+    [McpServerTool, Description("Returns all todo items in the list regardless of their status. Use this to get a full overview of all tasks.")]
+    public static async Task&amp;lt;string&amp;gt; GetAllTodos(TodoApiService todoApiService)
+    {
+        return await todoApiService.GetAllTodosAsync();
+    }
+
+    [McpServerTool, Description("Returns only the completed (done) todo items. Use this when the user asks which tasks have been finished or marked as done.")]
+    public static async Task&amp;lt;string&amp;gt; GetCompletedTodos(TodoApiService todoApiService)
+    {
+        return await todoApiService.GetCompletedTodosAsync();
+    }
+
+    [McpServerTool, Description("Returns only the incomplete (undone) todo items. Use this when the user asks which tasks are still pending or not yet started.")]
+    public static async Task&amp;lt;string&amp;gt; GetIncompleteTodos(TodoApiService todoApiService)
+    {
+        return await todoApiService.GetIncompleteTodosAsync();
+    }
+
+    [McpServerTool, Description("Returns a single todo item by its unique ID. Use this when the user asks about a specific task and you already know its ID.")]
+    public static async Task&amp;lt;string&amp;gt; GetTodoById(
+        TodoApiService todoApiService,
+        [Description("The unique UUID of the todo item to retrieve.")] string id)
+    {
+        return await todoApiService.GetTodoByIdAsync(id);
+    }
+
+    [McpServerTool, Description("Creates a new todo item. Use this when the user wants to add a task to the todo list. Difficulty must be one of: easy, medium, hard. Deadline must be an ISO 8601 UTC datetime string (e.g. '2025-06-20T00:00:00Z').")]
+    public static async Task&amp;lt;string&amp;gt; CreateTodo(
+        TodoApiService todoApiService,
+        [Description("The title or description of the task to create.")] string title,
+        [Description("Difficulty level of the task. Accepted values: easy, medium, hard. Defaults to medium if omitted.")] string? difficulty = null,
+        [Description("Optional deadline for the task in ISO 8601 UTC format, e.g. '2025-06-20T00:00:00Z'.")] string? deadline = null)
+    {
+        return await todoApiService.CreateTodoAsync(title, difficulty, deadline);
+    }
+
+    [McpServerTool, Description("Updates an existing todo item. Only the fields that are provided will be changed; omitted fields keep their current values. Status must be one of: done, undone, inprogress. Difficulty must be one of: easy, medium, hard. Deadline must be an ISO 8601 UTC datetime string.")]
+    public static async Task&amp;lt;string&amp;gt; UpdateTodo(
+        TodoApiService todoApiService,
+        [Description("The unique UUID of the todo item to update.")] string id,
+        [Description("New title for the task. Leave null to keep the current title.")] string? title = null,
+        [Description("New status for the task. Accepted values: done, undone, inprogress. Leave null to keep the current status.")] string? status = null,
+        [Description("New difficulty level. Accepted values: easy, medium, hard. Leave null to keep the current value.")] string? difficulty = null,
+        [Description("New deadline in ISO 8601 UTC format, e.g. '2025-06-20T00:00:00Z'. Leave null to keep the current deadline.")] string? deadline = null)
+    {
+        return await todoApiService.UpdateTodoAsync(id, title, status, difficulty, deadline);
+    }
+
+    [McpServerTool, Description("Permanently deletes a todo item by its ID. Use this when the user explicitly asks to remove or delete a specific task. This action is irreversible.")]
+    public static async Task DeleteTodo(
+        TodoApiService todoApiService,
+        [Description("The unique UUID of the todo item to delete.")] string id)
+    {
+        await todoApiService.DeleteTodoAsync(id);
+    }
+
+    [McpServerTool, Description("Finds all tasks whose deadline has passed and are not yet marked as done, then sets their status to 'undone'. Use this when the user asks to reset or flag overdue tasks. Returns the list of affected todo items.")]
+    public static async Task&amp;lt;string&amp;gt; UpdateOverdueTodos(TodoApiService todoApiService)
+    {
+        return await todoApiService.UpdateOverdueTodosAsync();
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere her bir metot bazı &lt;strong&gt;nitelikler&lt;em&gt;(attribute)&lt;/em&gt;&lt;/strong&gt; kullanıyor. Sınıfın kendisi &lt;strong&gt;McpServerTooType&lt;/strong&gt; niteliği ile donatıldı. Dolayısıyla &amp;ccedil;alışma zamanı bu sınıfın yapay zeka ara&amp;ccedil;larının keşfedeceği ara&amp;ccedil; setini i&amp;ccedil;ereceğini bilecek. Metotlarda ise &lt;strong&gt;McpServerTool&lt;/strong&gt; ve &lt;strong&gt;Description&lt;/strong&gt; nitelikleri yer alıyor. Aracın adı ve ne işe yaradığının burada tariflendiğini belirtelim. Yapay zeka istemcilerinin kullandığı&amp;nbsp;&lt;strong&gt;context&lt;/strong&gt; yapılarında bu a&amp;ccedil;ıklamaların kalitesi de &amp;ouml;ne &amp;ccedil;ıkıyor. Bazı metot parametrelerinde de &lt;strong&gt;Description&lt;/strong&gt; niteliğinin kullanıldığına dikkat edelim. Bu sayede yine yapay zeka ara&amp;ccedil;larına bu arg&amp;uuml;manlar hakkında detay bilgi vermiş oluyoruz.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt; Hatırlayalım;&lt;/strong&gt; &lt;strong&gt;Nitelikler&lt;em&gt;(Attributes)&lt;/em&gt;&lt;/strong&gt; &amp;ccedil;alışma zamanına ekstra bilgiler(metadata) taşımak i&amp;ccedil;in bi&amp;ccedil;ilmiş kaftandır. Bu sayede &amp;ccedil;alışma zamanı, niteliğin kazandırıldığı enstr&amp;uuml;manla ilgili olarak ne yapacağına karar verebilir. Onu bir servis noktası gibi host edilmesi gerektiğine ve bir MCP host'un keşfedeceği bir metod olduğuna vs&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Artık &lt;strong&gt;program.cs&lt;/strong&gt; tarafındaki kodları tamamlayabiliriz. Burada &amp;ccedil;alışma zamanı i&amp;ccedil;in gerekli olan bağımlılıkların y&amp;uuml;klenmesi ve &lt;strong&gt;MCP&lt;/strong&gt; ortamının ayağa kaldırılması ile ilgili işlemler yer alır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using ModelContextProtocol;
+using Microsoft.Extensions.Configuration;
+
+var builder = Host.CreateApplicationBuilder(args);
+
+builder.Logging.AddConsole(options =&amp;gt;
+{
+    options.LogToStandardErrorThreshold = LogLevel.Trace;
+});
+
+builder.Configuration.Sources.Clear();
+builder.Configuration
+    .SetBasePath(AppContext.BaseDirectory)
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false);
+
+var todoApiBaseUrl = builder.Configuration["TodoApiUrl"];
+
+if (string.IsNullOrEmpty(todoApiBaseUrl))
+{
+    Console.WriteLine("TodoApiUrl is missing in configuration.");
+    return;
+}
+
+builder.Services.AddHttpClient();
+builder.Services.AddSingleton(sp =&amp;gt;
+{
+    var httpClientFactory = sp.GetRequiredService&amp;lt;IHttpClientFactory&amp;gt;();
+    return new TodoApiService(httpClientFactory, todoApiBaseUrl);
+});
+
+builder.Services
+    .AddMcpServer()
+    .WithStdioServerTransport()
+    .WithToolsFromAssembly();
+
+await builder.Build().RunAsync();&lt;/pre&gt;
+&lt;p&gt;Eğer her şey yolunda gitmişse projenin başarılı şekilde derleniyor olması gerekir.&lt;/p&gt;
+&lt;h2&gt;MCP Sunucusunu Yayına Alma&lt;/h2&gt;
+&lt;p&gt;Yazdığımız MCP sunucusunun &amp;ccedil;alıştığını kontrol etmek i&amp;ccedil;in işi kolaylaştıran bir &lt;strong&gt;npm&lt;/strong&gt; aracını kullanabiliriz. &amp;Ouml;zellikle geliştirme ve test safhasında değerlendirebileceğimiz bu teknikte &lt;strong&gt;npx&lt;/strong&gt; komutunu kullanarak doğrudan terminal &amp;uuml;zerinden &lt;strong&gt;MCP&lt;/strong&gt;&amp;nbsp;sunucusu başlatılabilir. S&amp;ouml;z konusu komutu &lt;strong&gt;dotnet&lt;/strong&gt; uygulamamızın olduğu klas&amp;ouml;rde &amp;ccedil;alıştırmamız yeterli olacaktır&lt;em&gt;(Sisteminizde node ve npx kullanılabilir durumda diye varsayıyorum)&lt;/em&gt; &lt;strong&gt;@modelcontextprotocol/inspector&lt;/strong&gt; paketi y&amp;uuml;kl&amp;uuml; değilse de &amp;ccedil;alıştırılan &lt;strong&gt;npx&lt;/strong&gt; komutu bunu otomatik olarak yapacaktır.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;npx @modelcontextprotocol/inspector dotnet run&lt;/pre&gt;
+&lt;p&gt;Komut başarılı şekilde &amp;ccedil;alıştığında tarayıcı &amp;uuml;zerinde otomatik olarak bir arabirim a&amp;ccedil;ılır. Bu arabirim &amp;uuml;zerinden MCP sunucusuna bağlanabilir, sağladığı ara&amp;ccedil; setlerini g&amp;ouml;rebilir ve test edebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2026/Mart/MCPServer_02.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Artık bir MCP sunucumuz olduğundan eminiz fakat bunu ortamdaki yapay zeka ara&amp;ccedil;ları nasıl kullanacak? &amp;Ouml;rneğin şu anda edit&amp;ouml;r olarak kullandığımız &lt;strong&gt;Visual Studio Code&lt;/strong&gt;'un &lt;strong&gt;Copilot&lt;/strong&gt; penceresinde &lt;strong&gt;Todo&lt;/strong&gt; hizmetini nasıl kullanabiliriz?&lt;/p&gt;
+&lt;p&gt;Genellikle MCP sunuculara ait bilgiler en azından &lt;strong&gt;VS Code&lt;/strong&gt; y&amp;uuml;kl&amp;uuml; sistemlerde &lt;strong&gt;mcp.json&lt;/strong&gt; isimli bir dosya i&amp;ccedil;erisinde tutulur. Bu sayede &lt;strong&gt;Visual Studio Code&lt;/strong&gt;'a ilgili &lt;strong&gt;MCP Server&lt;/strong&gt; bir &lt;strong&gt;extension&lt;/strong&gt; olarak otomatikman eklenir. Tabii kod edit&amp;ouml;r&amp;uuml;ne eklenebilecek sayısız MCP sunucu &amp;ouml;rneği bulunuyor. Biz şimdilik &amp;ccedil;alıştığımız &lt;strong&gt;workspace&lt;/strong&gt; &amp;uuml;zerinde &lt;strong&gt;.vscode&lt;/strong&gt; isimli bir klas&amp;ouml;r oluşturup buraya aşağıdaki i&amp;ccedil;eriğe sahip bir &lt;strong&gt;mcp.json&lt;/strong&gt; dosyası ekleyerek devam edebiliriz. Tabii bu sadece belirttiğimiz workspace i&amp;ccedil;in ge&amp;ccedil;erli olur, az &amp;ouml;nce belirttiğim gibi makine seviyesinde ekleyerek de kullanabiliriz. Normal şartlarda bu tip mcp sunucularını sadece bu işlere adanmış bir makine &amp;uuml;zerinde konuşlandırıp şirket i&amp;ccedil;i ağa a&amp;ccedil;mak da yaygın pratikler arasındadır.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;{
+    "servers": {
+        "todo-mcp-server": {
+            "type": "stdio",
+            "command": "dotnet",
+            "args": [
+                "run",
+                "--project",
+                "${workspaceFolder}/src/TodoMCPServer"
+            ]
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Makine seviyesinde MCP Server tanımı yapmak i&amp;ccedil;in genelde `C:\Users\{UserName}\AppData\Roaming\Code\User\mcp.json` dosyası kullanılır.&lt;/p&gt;
+&lt;p&gt;Bu işlemin ardından&lt;strong&gt; VS Code Extension&lt;/strong&gt; kısmında &lt;strong&gt;todo&amp;nbsp;mcp&amp;nbsp;server&lt;/strong&gt; isimli sunucu otomatik olarak g&amp;ouml;r&amp;uuml;necektir. &lt;strong&gt;Extension&lt;/strong&gt; arabiriminden MCP sunucusunu başlatabiliriz ama pek tabii &amp;ouml;ncesinde &lt;strong&gt;todo-api&lt;/strong&gt; isimli api servisinin de &amp;ccedil;alıştırılması gerektiğini hatırlatalım :D Sonu&amp;ccedil;ta kendi sistemimde aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan sonu&amp;ccedil;lara ulaştım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2026/Mart/MCPServer_01.png" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;Denemeler&lt;/h2&gt;
+&lt;p&gt;Artık edit&amp;ouml;rdeki&amp;nbsp;&lt;strong&gt;Copilot&lt;/strong&gt;&amp;nbsp;asistanını kullanarak bazı denemeler yapabiliriz. Hemen birka&amp;ccedil; &amp;ouml;rnek &lt;strong&gt;prompt&lt;/strong&gt; ile başlayıp sonu&amp;ccedil;lara bakalım. &amp;Ouml;zellikle merak ettiğim nokta, ara&amp;ccedil;ların a&amp;ccedil;ıklamalarının yapay zeka tarafından ne kadar iyi anlaşıldığı ve doğru şekilde &amp;ccedil;ağrılıp &amp;ccedil;ağrılmadığı. Zira dil farkı da var, ara&amp;ccedil; a&amp;ccedil;ıklamaları İngilizce iken denemelerde T&amp;uuml;rk&amp;ccedil;e s&amp;ouml;z dizimi kullanacağız.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&amp;Ouml;rnek prompt 1:&lt;/strong&gt; Yapılacaklar listeme 'Bir RAG pipeline kurmak konusunda araştırma yap' g&amp;ouml;revini ekle. Bu g&amp;ouml;rev 1 Nisan 2026 tarihine kadar tamamlanmalı. Orta zorluk derecesine sahip olsun.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&amp;Ouml;rnek prompt 2:&lt;/strong&gt; Yapılacaklar listeme 'proje sunumunu hazırla' adında bir g&amp;ouml;rev ekle. Az zaman olduğu i&amp;ccedil;in zor bir g&amp;ouml;rev ve 20 Mart 2026'ya kadar tamamlanmalı.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Birde karmaşık prompt ekleyelim;&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;Aşağıdaki &amp;uuml;&amp;ccedil; g&amp;ouml;revi todo listeme ekle:
+
+1.'Egzersiz rutini oluştur' &amp;mdash; kolay, 15 Mart 2026 son tarih
+2.'Evrenin Askerleri kitabını oku' &amp;mdash; orta, son tarih yok
+3.'G&amp;uuml;ndemdeki teknoloji başlıklarını toparla' &amp;mdash; zor, 31 Mart 2026 son tarih"&lt;/pre&gt;
+&lt;p&gt;Ben denemeleri yaparken &lt;strong&gt;Claude Sonnet 4.6&lt;/strong&gt; modelini agent modunda &amp;ccedil;alıştırarak ilerledim. Ancak farklı modellerle de &amp;ccedil;alışılabilir. Hatta her prompt farklı bir modele sorularak alınan cevaplar ya da ger&amp;ccedil;ekleşen aksiyonlar karşılaştırılabilir. Elde ettiğim ilk sonu&amp;ccedil;lar ise ş&amp;ouml;yle;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2026/Mart/MCPServer_03.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu g&amp;ouml;r&amp;uuml;nt&amp;uuml;den de anlaşılacağı &amp;uuml;zere model otomatik olarak &lt;strong&gt;todo&lt;/strong&gt; ile alakalı &lt;strong&gt;MCP&lt;/strong&gt; ara&amp;ccedil;larını arayarak işe başladı. Ardından ara&amp;ccedil; setinde bulduğu &lt;strong&gt;create_todo&lt;/strong&gt; fonksiyonunu &amp;ccedil;alıştırmak &amp;uuml;zere kullanıcıdan bir izin talep etti. Yazdığımız c&amp;uuml;mleden hangi aracı &amp;ccedil;alıştırıp hangi değerleri g&amp;ouml;ndereceğini buldu dikkatinizi &amp;ccedil;ekerim. Burada oluşturduğu &lt;strong&gt;input&lt;/strong&gt;'u da g&amp;ouml;rebiliyoruz. Sonu&amp;ccedil; olarak ş&amp;ouml;yle bir &amp;ouml;zetle g&amp;ouml;revi tamamladı.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2026/Mart/MCPServer_04.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Tabii hemen &lt;strong&gt;pgadmin&lt;/strong&gt; arabirimi &amp;uuml;zerinde tabloyu sorgulamak istedim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2026/Mart/MCPServer_05.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Diğer promptlar da başarılı şekilde işletildi.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2026/Mart/MCPServer_06.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Burada &amp;ouml;zellikle 3 adımdan oluşan prompt i&amp;ccedil;in g&amp;ouml;revleri aynı anda icra etme şekline dikkatinizi &amp;ccedil;ekmek isterim. Bir s&amp;uuml;redir modeller g&amp;ouml;revleri &lt;strong&gt;alt vekillere&lt;em&gt;(subAgents)&lt;/em&gt;&lt;/strong&gt; verme veya paralel olarak işletebilme gibi yeni kabiliyetler kazanmış durumdalar. Yetenekleri gittik&amp;ccedil;e artıyor. Son denememde ise aşağıdaki promptu kullandım.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;Yapılacaklar listemdeki g&amp;ouml;revleri son tarihlerine g&amp;ouml;re sırala ve en yakın zamanlı &amp;uuml;&amp;ccedil;&amp;uuml;n&amp;uuml; g&amp;ouml;ster.&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2026/Mart/MCPServer_07.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;E ben daha ne diyeyim :D Bundan sonraki aşamada belki de kullanıcı deneyimi daha iyi bir web uygulaması geliştirip onun &amp;uuml;zerinden de bu ara&amp;ccedil;ları kullanmayı deneyebiliriz ya da &amp;ouml;rneğin sistemde y&amp;uuml;kl&amp;uuml; olan bir &lt;strong&gt;CLI&lt;em&gt;(Command Line Interface)&lt;/em&gt;&lt;/strong&gt; aracına bu MCP sunucusunu entegre edip benzer g&amp;ouml;revleri deneyebiliriz. Bu tamamen size bağlı.&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir &amp;ccedil;alışmamızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/buraksenyurt/friday-night-programmer/tree/main/src/TodoMCPServer" target="_blank"&gt;MCP Server uygulamasına ait kodlara buradan erişebilirsiniz&lt;/a&gt;.&lt;/p&gt;</content>
+  <pubDate>2026-03-07 14:34:00</pubDate>
+  <slug>microsoft-dotnet-platformunda-bir-mcp-server-yazmak</slug>
+  <tags>
+    <tag>mcp</tag>
+    <tag>model-context-protocol</tag>
+    <tag>c-sharp</tag>
+    <tag>dotnet</tag>
+    <tag>rust</tag>
+    <tag>webapi</tag>
+    <tag>rest</tag>
+    <tag>restful</tag>
+    <tag>ai</tag>
+    <tag>yapayzeka</tag>
+    <tag>agentic-programming</tag>
+    <tag>claude-sonnet</tag>
+  </tags>
+  <categories>
+    <category>.Net Core</category>
+    <category>C#</category>
+    <category>Rust</category>
+  </categories>
+</post>

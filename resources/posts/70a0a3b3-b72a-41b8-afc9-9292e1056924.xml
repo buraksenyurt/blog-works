@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Silverlight Tarafından Feed Okumak</title>
+  <description>Biliyoruz ki, Silverlight uygulamaları Asp.Net gibi Web uygulamaları içerisinde host edilebilmektedir. Planımıza göre Cross-Domain Policy sorunu ile karşılaşmayacak olan WCF Service' lerinin, Silverlight istemcilerinin talep edeceği RSS içeriklerini ele alması söz konusudur.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/pics/2010%2f4%2fblg176_Giris.jpg" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Yeni bir maceraya hazır mısınız? Hureyyy dediğinizi duyar gibiyim. Bildiğiniz &amp;uuml;zere &lt;strong&gt;Internet &lt;/strong&gt;kaynaklarının takibinin kolay bir şekilde yapılabilmesi adına &lt;strong&gt;RSS &lt;/strong&gt;veya &lt;strong&gt;Atom &lt;/strong&gt;formatındaki &lt;strong&gt;Feed &lt;/strong&gt;i&amp;ccedil;eriklerinden sıklıkla yararlanmaktayız. &lt;strong&gt;Blog, Community, News Group &lt;/strong&gt;ve benzeri pek &amp;ccedil;ok internet kaynağı, g&amp;uuml;ncel i&amp;ccedil;eriklerini yayınlamak amacıyla global olarak standart hale getirilmiş olan bu formatları kullanmaktalar.&lt;/p&gt;
+&lt;p&gt;Pek tabi yayınlanan bu i&amp;ccedil;eriklerin takip edilebilmesi i&amp;ccedil;inde &amp;ccedil;eşitli istemci programlar s&amp;ouml;z konusu. &lt;strong&gt;FeedReader&lt;/strong&gt; bu uygulamalara &amp;ouml;rnek olarak verilebilecek &lt;strong&gt;Windows &lt;/strong&gt;tabanlı iddialı programlardan birisi. &lt;strong&gt;Feed &lt;/strong&gt;i&amp;ccedil;erikleri zaman zaman &lt;strong&gt;internet &lt;/strong&gt;siteleri &amp;uuml;zerinde kontrol şeklinde de barındırılmaktadır. S&amp;ouml;z gelimi pek &amp;ccedil;ok &lt;strong&gt;blog &lt;/strong&gt;i&amp;ccedil;erisinde bu durum s&amp;ouml;z konusudur ve hatta hazır &lt;strong&gt;Widget&lt;/strong&gt;' lar yardımıyla entegrasyonları son derece kolaydır. Peki maceramız nerede başlıyor? &amp;Ouml;zellikle ambulans resminin bu konu ile alakası nedir? &lt;img title="Sealed" src="/editors/tiny_mce3/plugins/emotions/img/smiley-sealed.gif" alt="Sealed" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Doğruyu s&amp;ouml;ylemek gerekirse sıkıldığım bir ara ne yapayım diye d&amp;uuml;ş&amp;uuml;n&amp;uuml;rken &lt;strong&gt;Silverlight 4.0&lt;/strong&gt; tabanlı olarak geliştirilen bir uygulamadan &lt;strong&gt;RSS &lt;/strong&gt;i&amp;ccedil;eriklerini nasıl okuyabileceğimi d&amp;uuml;ş&amp;uuml;nmeye başladım. Daha &amp;ouml;nceden &lt;strong&gt;HTTP &lt;/strong&gt;bazlı &lt;strong&gt;Get,Post,Put, Delete&lt;/strong&gt; metodlarınaa cevap veren &lt;strong&gt;WCF &lt;/strong&gt;tabanlı servislerin t&amp;uuml;ketilmesi i&amp;ccedil;in &lt;strong&gt;WebClient &lt;/strong&gt;tipinden nasıl yararlanıldığını incelemiştim(&lt;a class="postheader taggedlink" href="/admin/app/editor/post/Silverlight-Tarafinda-HTTP-Bazli-Servisleri-Kullanmak" target="_blank"&gt;Silverlight Tarafında HTTP Bazli Servisleri Kullanmak&lt;/a&gt; isimli yazıyı incelemenizi &amp;ouml;neririm) Yine aynı şekilde devam ederek herhangibir &lt;strong&gt;RSS &lt;/strong&gt;i&amp;ccedil;eriğini &amp;ouml;rnek &lt;strong&gt;Silverlight &lt;/strong&gt;uygulamama taşıyabileceğimi d&amp;uuml;ş&amp;uuml;nerek kolları sıvadım ve heyecanlı bir şekilde aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; ve &lt;strong&gt;XAML &lt;/strong&gt;i&amp;ccedil;eriğine sahip kontrol&amp;uuml; oluşturdum.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f4%2fblg176_Design.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;XAML i&amp;ccedil;eriği;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;UserControl x:Class="RSSReaderim.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="337" d:DesignWidth="394" xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk"&amp;gt;
+
+    &amp;lt;Grid x:Name="LayoutRoot" Background="White"&amp;gt;
+        &amp;lt;Button Content="RSS Oku" Height="23" HorizontalAlignment="Left" Margin="313,76,0,0" Name="ReadRSSButton" VerticalAlignment="Top" Width="75" Click="ReadRSSButton_Click" /&amp;gt;
+        &amp;lt;sdk:Label Height="29" HorizontalAlignment="Left" Margin="8,12,0,0" Name="label1" VerticalAlignment="Top" Width="69" Content="RSS Adresi" FontSize="10" /&amp;gt;
+        &amp;lt;ListBox Height="180" HorizontalAlignment="Left" Margin="6,105,0,0" Name="RSSListBox" VerticalAlignment="Top" Width="382" ItemsSource="{Binding}"&amp;gt;
+            &amp;lt;ListBox.ItemTemplate&amp;gt;
+                &amp;lt;DataTemplate&amp;gt;
+                    &amp;lt;TextBlock Text="{Binding Title.Text}" Foreground="BlueViolet" /&amp;gt;
+                &amp;lt;/DataTemplate&amp;gt;
+            &amp;lt;/ListBox.ItemTemplate&amp;gt;
+        &amp;lt;/ListBox&amp;gt;
+        &amp;lt;TextBox Height="23" HorizontalAlignment="Left" Margin="8,47,0,0" Name="RSSTextBox" VerticalAlignment="Top" Width="380" /&amp;gt;
+        &amp;lt;sdk:Label Height="40" HorizontalAlignment="Left" Margin="8,297,0,0" Name="RSSInfoLabel" VerticalAlignment="Top" Width="380" FontSize="9" /&amp;gt;
+    &amp;lt;/Grid&amp;gt;
+&amp;lt;/UserControl&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Aslında teori son derece basitti. Kullanıcı &lt;strong&gt;TextBox &lt;/strong&gt;kontrol&amp;uuml; &amp;uuml;zerinden bir &lt;strong&gt;RSS &lt;/strong&gt;adresi girecekti. Sonra d&amp;uuml;ğmeye basarak i&amp;ccedil;eriğin &lt;strong&gt;ListBox &lt;/strong&gt;kontrol&amp;uuml;ne dolmasını seyredecekti. Son derece basit ve masumane bir talep &amp;ouml;yle değil mi? &lt;img title="Undecided" src="/editors/tiny_mce3/plugins/emotions/img/smiley-undecided.gif" alt="Undecided" border="0" /&gt; Tabi bu işlemler i&amp;ccedil;in kod tarafını da, heyecanlı bir şekilde aşağıdaki gibi geliştirmeye &amp;ccedil;alıştım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Net;
+using System.ServiceModel.Syndication;
+using System.Windows;
+using System.Windows.Controls;
+using System.Xml;
+
+namespace RSSReaderim
+{
+    public partial class MainPage : UserControl
+    {
+        WebClient client;
+
+        public MainPage()
+        {
+            InitializeComponent();
+            // WebClient nesnesi &amp;ouml;rneklenir
+            client = new WebClient();
+            // RSS Adresinden okuma işlemi tamamlanınca devreye girecek olan olay metodu y&amp;uuml;klenir
+            client.OpenReadCompleted += new OpenReadCompletedEventHandler(client_OpenReadCompleted);
+        }
+
+        void client_OpenReadCompleted(object sender, OpenReadCompletedEventArgs e)
+        {
+            if (e.Error == null) // Eğer okuma işlemi sırasında bir hata oluşmadıysa
+            {
+                // RSS bilgisi e.Result &amp;uuml;zerinden Stream şeklinde elde edilir ve XmlReader nesnesinin &amp;ouml;rneklenmesi i&amp;ccedil;in kullanılır. Bu gereklidir nitekim SyndicationFeed.Load metodu XmlReader tipi ile &amp;ccedil;alışmaktadır.
+                XmlReader xReader = XmlReader.Create(e.Result);
+                // System.ServiceModel.Syndication.dll Assembly' ının projeye referans edilmesi gerekmektedir.
+                SyndicationFeed feed = SyndicationFeed.Load(xReader);
+                // Items koleksiyonu ListBox bileşenine veri kaynağı olarak bağlanır
+                RSSListBox.ItemsSource = feed.Items;
+            }
+            else if(e.Error!=null)
+            {
+                // Bir hata oluştuysa istisna mesajını Label kontrol&amp;uuml;nde g&amp;ouml;ster
+                RSSInfoLabel.Content = String.Format("Bir Sorun oluştu. {0}", e.Error);
+            }
+        }
+
+        private void ReadRSSButton_Click(object sender, RoutedEventArgs e)
+        {            
+            // Okuma işlemini başlat.
+            // &amp;Ouml;rnek RSS Adresi : http://www.buraksenyurt.com/syndication.axd?format=rss
+            if (!String.IsNullOrEmpty(RSSTextBox.Text))
+                client.OpenReadAsync(new Uri(RSSTextBox.Text));
+            else
+                RSSInfoLabel.Content = "L&amp;uuml;tfen bir RSS Adresi giriniz";
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Kod par&amp;ccedil;asından da g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;WebClient &lt;/strong&gt;tipini kullanarak &lt;strong&gt;TextBox &lt;/strong&gt;kontrol&amp;uuml;ne girilen adres i&amp;ccedil;in bir talepte bulunulmaktadır. S&amp;ouml;z konusu talepin sonucu elde edildiğinde devreye giren olay metodu i&amp;ccedil;erisinde ise, &amp;ouml;ncelikli olarak bir hata kontrol&amp;uuml; yapılmaktadır. Eğer herhangibir hata s&amp;ouml;z konusu değilse &lt;strong&gt;SyndicationFeed &lt;/strong&gt;tipinden yararlanılarak elde edilen &lt;strong&gt;Stream&lt;/strong&gt; referansının &lt;strong&gt;Feed &lt;/strong&gt;olarak ele alınabilmesi amacıyla gerekli işlemler yapılmaktadır. Son olarak s&amp;ouml;z konusu i&amp;ccedil;erik nesnesi &amp;uuml;zerinden ulaşılan &lt;strong&gt;Items &lt;/strong&gt;koleksiyonu, &lt;strong&gt;ListBox &lt;/strong&gt;kontrol&amp;uuml;ne bağlanır.&lt;/p&gt;
+&lt;p&gt;Şimdi &lt;strong&gt;blog &lt;/strong&gt;girdimizin başında yer alan resmi a&amp;ccedil;ıklayalım. Bu kadar s&amp;uuml;ratli araba kullanırsanız duvara toslamanız an meselesi olabilir. Aynen &amp;ouml;rneğimizde şu an tosladığımız gibi &lt;img title="Undecided" src="/editors/tiny_mce3/plugins/emotions/img/smiley-undecided.gif" alt="Undecided" border="0" /&gt; İşte duvara tosladığımız anda saniyenin milyonda birinde şişen hava yastığı i&amp;ccedil;inden fırlayan &lt;strong&gt;Exception &lt;/strong&gt;mesajımız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f4%2fblg176_Exception.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Hayda breeeee!!! &lt;img title="Surprised" src="/editors/tiny_mce3/plugins/emotions/img/smiley-surprised.gif" alt="Surprised" border="0" /&gt; İşte hızlı gitmenin doğal sonucu.&lt;/p&gt;
+&lt;p&gt;Aslında g&amp;ouml;zden ka&amp;ccedil;ırdığımız &amp;ccedil;ok &amp;ouml;nemli bir durum s&amp;ouml;z konusu. O da &lt;strong&gt;Silverlight &lt;/strong&gt;tarafında &amp;ouml;nem arz eden konuların başında gelen&lt;strong&gt; Cross-Domain Policy&lt;/strong&gt; vakası. Sonu&amp;ccedil; itibariyle &lt;strong&gt;RSS &lt;/strong&gt;&amp;ccedil;ıktısı i&amp;ccedil;in talepte bulunduğumuz &lt;strong&gt;Domain &lt;/strong&gt;adresi ile &amp;ouml;rneği geliştirmekte olduğumuz &lt;strong&gt;Asp.Net Development Server&lt;/strong&gt;' ın &lt;strong&gt;port &lt;/strong&gt;numarası eşliğine a&amp;ccedil;tığı &lt;strong&gt;Domain&lt;/strong&gt; adresleri birbirlerinden farklı. Bu sebepten sunucu tarafının bir &lt;strong&gt;ClientAccessPolicy.xml &lt;/strong&gt;dosyasına sahip olması ve i&amp;ccedil;erisinde s&amp;ouml;z konusu talepler i&amp;ccedil;in gerekli garanti haklarını belirtmiş olması şart. Ancak bu senaryoya g&amp;ouml;re &lt;strong&gt;Silverlight &lt;/strong&gt;istemcileri i&amp;ccedil;in &lt;strong&gt;Cross-Domain Policy &lt;/strong&gt;desteği vermeyen hi&amp;ccedil; bir sunucudan &lt;strong&gt;RSS &lt;/strong&gt;i&amp;ccedil;eriğini okumamız m&amp;uuml;mk&amp;uuml;n değil. Peki &amp;ouml;yleyse ne yapacağız? &amp;Ccedil;&amp;ouml;z&amp;uuml;m olarak biraz dolamba&amp;ccedil;lı bir yol olsa da, aşağıdaki şekilde g&amp;ouml;r&amp;uuml;len planı izleyebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f4%2fblg176_Plan.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Biliyoruz ki, &lt;strong&gt;Silverlight &lt;/strong&gt;uygulamaları &lt;strong&gt;Asp.Net&lt;/strong&gt; gibi Web uygulamaları i&amp;ccedil;erisinde host edilebilmektedir. Planımıza g&amp;ouml;re&lt;strong&gt; Cross-Domain Policy&lt;/strong&gt; sorunu ile karşılaşmayacak olan &lt;strong&gt;WCF Service&lt;/strong&gt;' lerinin, &lt;strong&gt;Silverlight &lt;/strong&gt;istemcilerinin talep edeceği &lt;strong&gt;RSS &lt;/strong&gt;i&amp;ccedil;eriklerini ele alması s&amp;ouml;z konusudur. Buna g&amp;ouml;re &lt;strong&gt;Silverlight &lt;/strong&gt;istemcileri, &lt;strong&gt;RSS &lt;/strong&gt;&amp;ccedil;ıktılarına doğrudan talepte bulunmak yerine s&amp;ouml;z konusu taleplerini &amp;ouml;nce arada &lt;strong&gt;Proxy &lt;/strong&gt;g&amp;ouml;revini &amp;uuml;stlenen bir &lt;strong&gt;WCF &lt;/strong&gt;servisine iletecektir. Bu &lt;strong&gt;WCF &lt;/strong&gt;servisi, ilgili adres bilgisini alarak &lt;strong&gt;Feed &lt;/strong&gt;&amp;ccedil;ıktısını talep edecek ve elde ettiği i&amp;ccedil;eriği tekrardan &lt;strong&gt;Silverlight &lt;/strong&gt;tarafına g&amp;ouml;nderecektir.&lt;/p&gt;
+&lt;p&gt;Şekildeki plana g&amp;ouml;re &lt;strong&gt;1&lt;/strong&gt; ve &lt;strong&gt;2 &lt;/strong&gt;numaralı iki adet &lt;strong&gt;WCF &lt;/strong&gt;servisi s&amp;ouml;z konusudur. Bunlardan hangisinin se&amp;ccedil;ileceği tamamen tercihe bağlıdır. İstersek &lt;strong&gt;Silverlight &lt;/strong&gt;uygulaması ile aynı &lt;strong&gt;Domain &lt;/strong&gt;i&amp;ccedil;erisinde yer alan bir &lt;strong&gt;WCF &lt;/strong&gt;servisini, istersek &lt;strong&gt;IIS &lt;/strong&gt;&amp;uuml;zerinde konuşlandırılan ayrı bir &lt;strong&gt;WCF &lt;/strong&gt;servisini kullanabiliriz. Tabi &lt;strong&gt;IIS&lt;/strong&gt; &amp;uuml;zerinde host edilen bir &lt;strong&gt;WCF &lt;/strong&gt;Servisi s&amp;ouml;z konusu ise, &lt;strong&gt;Silverlight &lt;/strong&gt;istemcisi ile olan iletişiminin g&amp;uuml;venlik sorununa takılmaması i&amp;ccedil;in &lt;strong&gt;ClientAccessPolicy.xml &lt;/strong&gt;kullanılması gerekecektir. Tercih tamamen geliştiriciye bağlıdır. Ancak aynı Web sunucusu &amp;uuml;zerinde yer alan birden fazla &lt;strong&gt;Silverlight &lt;/strong&gt;istemcisi s&amp;ouml;z konusu ise ilgili servisin IIS altında konuşlandırılması daha &amp;ccedil;ok tercih edilebilir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Bu noktada hazır olarak Siverlight istemcilerine hizmette bulunabilen Feed servislerinden de yararlanabileceğimizi belirtmek isterim. &lt;a id="viewpost_ascx_TitleUrl" class="title" title="Title of this entry." href="http://timheuer.com/blog/archive/2008/06/03/use-silverlight-with-any-feed-without-cross-domain-files.aspx"&gt;Reading data and RSS with Silverlight and no cross-domain policy&lt;/a&gt; başlıklı yazıda Tim Heuer s&amp;ouml;z konusu servislerden bahsetmektedir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Ben &amp;ouml;rneğimizde hız kesemeden devam edebilmek adına, aynı uygulamaya &lt;strong&gt;Silverlight &lt;/strong&gt;destekli bir &lt;strong&gt;WCF &lt;/strong&gt;servisini ekleyerek ilerlemeyi tercih ettim. İşte &lt;strong&gt;FeedReaderService &lt;/strong&gt;isimli &lt;strong&gt;Silverlight &lt;/strong&gt;servisinin kod i&amp;ccedil;eriği.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Silverlight destekli WCF Servicelerinin nasıl geliştirileceğini &lt;a class="postheader taggedlink" href="/post/Screencast-Silverlight-Enabled-WCF-Services"&gt;Screencast - Silverlight Enabled WCF Services&lt;/a&gt; isimli g&amp;ouml;rsel dersten takip edebilirsiniz.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.ServiceModel;
+using System.ServiceModel.Activation;
+using System.ServiceModel.Syndication;
+using System.Web.Services.Protocols;
+using System.Xml;
+
+namespace RSSReaderim.Web
+{
+    [ServiceContract(Namespace = "")]
+    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
+    public class FeedReaderService
+    {
+        [OperationContract]
+        public List&amp;lt;SyndItem&amp;gt; ReadRss(string address)
+        {
+            List&amp;lt;SyndItem&amp;gt; feedItems = null;           
+            try
+            {
+                // XmlReader.Create metodu parametre olarak address bilgisini almaktadır. Elde edilen Xml i&amp;ccedil;eriği Load metodu yardımıyla &amp;ccedil;ekilir ve SyndicationItem tipinden olan Items koleksiyonu &amp;ccedil;ekilir.                
+                var syndicationItems =SyndicationFeed.Load(XmlReader.Create(address)).Items;
+                // SyndicationItem &amp;ouml;rneklerinin her biri ele alınıp yeni bir SyndItem &amp;ouml;rneklenmesinde kullanılır.
+                feedItems = (from syndicationItem in syndicationItems
+                             select new SyndItem
+                             {
+                                 Title = syndicationItem.Title.Text,
+                                 PublishDate = syndicationItem.PublishDate.DateTime,
+                                 Summary = syndicationItem.Summary.Text,
+                                 Link=syndicationItem.Links[0].Uri
+                             }
+                           ).ToList();
+            }
+            catch(Exception excp)
+            {
+                throw new SoapException("Bir hata oluştu", new XmlQualifiedName("RssReadError"), excp);
+            }
+            return feedItems;
+        }
+    }
+
+    // SyndicationItem tipi serileştirme sorununa neden olduğundan araya bir Surrogate tip alınmıştır. Bu tip i&amp;ccedil;erisinde Silverlight tarafı i&amp;ccedil;in gerekli temel Feed bilgileri yer almaktadır.
+    public class SyndItem
+    {
+        public string Title { get; set; }
+        public DateTime PublishDate { get; set; }
+        public string Summary { get; set; }
+        public Uri Link { get; set; }
+        //TODO: Diğer bilgilerde getirilmelidir. &amp;Ouml;rneği yazar bilgisi, son g&amp;uuml;ncellenme tarihi veya kategoriler.
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Servis kodunda dikkat edilmesi gereken en &amp;ouml;nemli noktalardan birisi, &lt;strong&gt;ReadRss &lt;/strong&gt;metodunun geriye &lt;strong&gt;SyndItem &lt;/strong&gt;tipinden generic bir &lt;strong&gt;List &lt;/strong&gt;koleksiyonu d&amp;ouml;nd&amp;uuml;rmesidir. Bu noktada akla şu soru gelebilir. Neden &lt;strong&gt;List&amp;lt;SyndicationItem&amp;gt;&lt;/strong&gt; gibi bir koleksiyon d&amp;ouml;nd&amp;uuml;rm&amp;uuml;yoruz? &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt; Aslında buradaki sorun &lt;strong&gt;SyndicationItem &lt;/strong&gt;tipinin serileştirme işlemi sırasında &amp;ccedil;alışma zamanı hatasına neden olmasıdır. Serileştirmedeki bu sıkıntı bizi alternatif bir yola itmiştir. Bu sebepten &amp;ouml;rnekte bir &lt;strong&gt;Surrogate &lt;/strong&gt;tip kullanılmaktadır. Bu işlemin ardından artık &lt;strong&gt;Silverlight &lt;/strong&gt;tarafı i&amp;ccedil;in gerekli geliştirmeler yapılabilir. İlk etapta aynı &lt;strong&gt;Domain &lt;/strong&gt;i&amp;ccedil;erisindeki&lt;em&gt;(bir başka deyişle aynı Solution i&amp;ccedil;erisindeki) &lt;/em&gt;&lt;strong&gt;WCF Servisinin Silverlight &lt;/strong&gt;projesine eklenmesi gerekmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f4%2fblg176_AddServiceRef.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Sonrasında ise istemci tarafı i&amp;ccedil;in gerekli kodlar yazılabilir. Yeni &amp;ouml;rnekte &lt;strong&gt;XAML &lt;/strong&gt;i&amp;ccedil;eriği de aşağıdaki gibi d&amp;uuml;zenlenmiştir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;UserControl x:Class="RSSReaderim.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="337" d:DesignWidth="394" xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk"&amp;gt;
+
+    &amp;lt;Grid x:Name="LayoutRoot" Background="White"&amp;gt;
+        &amp;lt;Button Content="RSS Oku" Height="23" HorizontalAlignment="Left" Margin="313,76,0,0" Name="ReadRSSButton" VerticalAlignment="Top" Width="75" Click="ReadRSSButton_Click" /&amp;gt;
+        &amp;lt;sdk:Label Height="29" HorizontalAlignment="Left" Margin="8,12,0,0" Name="label1" VerticalAlignment="Top" Width="69" Content="RSS Adresi" FontSize="10" /&amp;gt;
+        &amp;lt;ListBox Height="180" HorizontalAlignment="Left" Margin="6,105,0,0" Name="RSSListBox" VerticalAlignment="Top" Width="382" ItemsSource="{Binding}"&amp;gt;
+            &amp;lt;ListBox.ItemTemplate&amp;gt;
+                &amp;lt;DataTemplate&amp;gt;
+                    &amp;lt;StackPanel Orientation="Vertical" Margin="2" Background="Black"&amp;gt;
+                        &amp;lt;TextBlock Text="{Binding Title}" Foreground="Gold" /&amp;gt;
+                        &amp;lt;TextBlock Text="{Binding Link}" Foreground="LightCyan" /&amp;gt;
+                    &amp;lt;/StackPanel&amp;gt;
+                &amp;lt;/DataTemplate&amp;gt;
+            &amp;lt;/ListBox.ItemTemplate&amp;gt;
+        &amp;lt;/ListBox&amp;gt;
+        &amp;lt;TextBox Height="23" HorizontalAlignment="Left" Margin="8,47,0,0" Name="RSSTextBox" VerticalAlignment="Top" Width="380" /&amp;gt;
+        &amp;lt;sdk:Label Height="40" HorizontalAlignment="Left" Margin="8,297,0,0" Name="RSSInfoLabel" VerticalAlignment="Top" Width="380" FontSize="9" /&amp;gt;
+    &amp;lt;/Grid&amp;gt;
+&amp;lt;/UserControl&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Bu kez &lt;strong&gt;ListBox.ItemTemplate &lt;/strong&gt;i&amp;ccedil;erisinde hem &lt;strong&gt;Title &lt;/strong&gt;hemde &lt;strong&gt;Link &lt;/strong&gt;bilgilerinin g&amp;ouml;sterilmesi sağlanmıştır. Yeni &amp;ouml;rnekte &lt;strong&gt;SnydItem &lt;/strong&gt;isimli bir &lt;strong&gt;Surrogate &lt;/strong&gt;tip s&amp;ouml;z konusu olduğundan ve bu tipin &lt;strong&gt;Title &lt;/strong&gt;&amp;ouml;zelliği &lt;strong&gt;String &lt;/strong&gt;tipten tanımlandığından, bir &amp;ouml;nceki &lt;strong&gt;XAML&lt;/strong&gt; kodunda yer alan &lt;strong&gt;{Binding Title.Text} &lt;/strong&gt;eşitlemesi &lt;span style="text-decoration: underline;"&gt;kullanılmamalıdır&lt;/span&gt;. Gelelim kodlarımıza;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Windows;
+using System.Windows.Controls;
+using RSSReaderim.FeedReaderServiceSpace;
+
+namespace RSSReaderim
+{
+    public partial class MainPage : UserControl
+    {
+        FeedReaderServiceClient client = null;
+        public MainPage()
+        {
+            InitializeComponent();
+            client = new FeedReaderServiceClient();
+            client.ReadRssCompleted += new EventHandler&amp;lt;ReadRssCompletedEventArgs&amp;gt;(client_ReadRssCompleted);
+        }
+
+        private void ReadRSSButton_Click(object sender, RoutedEventArgs e)
+        {
+            client.ReadRssAsync(RSSTextBox.Text);
+        }
+        void client_ReadRssCompleted(object sender, ReadRssCompletedEventArgs e)
+        {
+            if (e.Error != null)
+            {
+                RSSInfoLabel.Content = e.Error;
+            }
+            else if (e.Cancelled)
+            {
+                RSSInfoLabel.Content = "İşlem iptal edildi";
+            }
+            else
+            {
+                RSSListBox.ItemsSource = e.Result;
+            }            
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Kod i&amp;ccedil;eriğinden de g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;WCF &lt;/strong&gt;servisine ait &lt;strong&gt;Proxy &lt;/strong&gt;tipinden yararlanılarak &lt;strong&gt;Feed &lt;/strong&gt;i&amp;ccedil;eriğinin asenkron olarak ortama &amp;ccedil;ekilmesi işlemi ger&amp;ccedil;ekleştirilmektedir. İşte &amp;ouml;rnek &amp;ccedil;alışma zamanı &amp;ccedil;ıktılarından birisi.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f4%2fblg176_Runtime.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;ve diğer bir &amp;ouml;rnek;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f4%2fblg176_Runtime2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;RSS &lt;/strong&gt;i&amp;ccedil;erikleri başarılı bir şekilde getirilebilmektedir. Elbetteki &amp;ouml;rnekte eksik olan bir &amp;ccedil;ok kısım vardır. S&amp;ouml;z gelimi &lt;strong&gt;RSS &lt;/strong&gt;ile ilişkili olarak daha &amp;ccedil;ok verinin getirilmesi daha iyi olacaktır. S&amp;ouml;z gelimi &lt;strong&gt;Feed&lt;/strong&gt;' in sahibi olan siteye ait bilgiler. Diğer yandan eksik kalan &amp;ouml;nemli noktalardan biriside &lt;strong&gt;ListBox&lt;/strong&gt;' ta bir &amp;ouml;ğe se&amp;ccedil;ildiğinde ilgili &lt;strong&gt;Feed &lt;/strong&gt;adresine nasıl gidileceğidir. Sonu&amp;ccedil; itibariyle Silverlight uygulaması tarayıcı &amp;uuml;zerinde &amp;ccedil;alışmaktadır ve ilgili &lt;strong&gt;Feed &lt;/strong&gt;i&amp;ccedil;eriğinin &lt;strong&gt;Content &lt;/strong&gt;verisinin g&amp;ouml;sterilmesini herkes isteyecektir. İşte size g&amp;uuml;zel bir araştırma konusu ve &amp;ouml;dev &lt;img title="Smile" src="/editors/tiny_mce3/plugins/emotions/img/smiley-smile.gif" alt="Smile" border="0" /&gt; Benden buraya kadar. Bir s&amp;uuml;re dinlenmeye &amp;ccedil;alışacağım. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2010%2f4%2fRSSReaderim_RTM.rar"&gt;RSSReaderim_RTM.rar (1,48 mb)&lt;/a&gt;&lt;strong&gt;[&amp;Ouml;rnek Visual Studio 2010 Ultimate RTM s&amp;uuml;r&amp;uuml;m&amp;uuml;nde geliştirilmiş ve test edilmiştir]&lt;/strong&gt;&lt;/p&gt;</content>
+  <pubDate>2010-07-22 09:05:00</pubDate>
+  <slug>Silverlight-Tarafindan-Feed-Okumak</slug>
+  <tags>
+    <tag>silverlight</tag>
+    <tag>wcf</tag>
+    <tag>syndication</tag>
+    <tag>wcf-eco-system</tag>
+  </tags>
+  <categories>
+    <category>Silverlight 4.0</category>
+    <category>WCF Eco System</category>
+    <category>WCF RIA Services</category>
+  </categories>
+</post>

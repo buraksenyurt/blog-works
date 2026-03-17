@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Ado.Net 2.0 ve Sql Komutlarını Asenkron Olarak Yürütmek - 3</title>
+  <description>Hatılayacağınız gibi, Asenkron erişim teknikleri ile ilgili önceki makalelerimizde Polling ve Callback modellerini incelemiştik. Bu makalemizde ise, Wait modelini incelemeye çalışacağız. Wait modeli, diğer asenkron sql komutu yürütme tekniklerine göre biraz daha farklı bir işleyişe sahiptir. Bu model, bazı durumlarda asenkron olarak çalışan sql komutları tamamlanıncaya kadar uygulamayı bekletmek istediğimiz durumlarda kullanılmaktadır. WaitHandle modeli aslında birden fazla sunucu üzerinde çalışacak farklı sorgular söz konusu olduğunda işe yarayacak etkili bir tekniktir. Diğer taraftan eş zamanlı çalışan sorgu sonuçlarının uygulamamın kalanında etkili olduğu durumlarda da tercih edilmelidir. Wait modeli şu an için 3 teknik ile gerçekleştirilmektedir. Dilerseniz bu tekniklerin ne olduklarını ve nasıl uygulandıklarını kısaca inceleyelim.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Hatılayacağınız gibi, Asenkron erişim teknikleri ile ilgili &amp;ouml;nceki makalelerimizde Polling ve Callback modellerini incelemiştik. Bu makalemizde ise, Wait modelini incelemeye &amp;ccedil;alışacağız. Wait modeli, diğer asenkron sql komutu y&amp;uuml;r&amp;uuml;tme tekniklerine g&amp;ouml;re biraz daha farklı bir işleyişe sahiptir. Bu model, bazı durumlarda asenkron olarak &amp;ccedil;alışan sql komutları tamamlanıncaya kadar uygulamayı bekletmek istediğimiz durumlarda kullanılmaktadır. WaitHandle modeli aslında birden fazla sunucu &amp;uuml;zerinde &amp;ccedil;alışacak farklı sorgular s&amp;ouml;z konusu olduğunda işe yarayacak etkili bir tekniktir. Diğer taraftan eş zamanlı &amp;ccedil;alışan sorgu sonu&amp;ccedil;larının uygulamamın kalanında etkili olduğu durumlarda da tercih edilmelidir. Wait modeli şu an i&amp;ccedil;in 3 teknik ile ger&amp;ccedil;ekleştirilmektedir. Dilerseniz bu tekniklerin ne olduklarını ve nasıl uygulandıklarını kısaca inceleyelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk104_1.gif" alt="" width="412" height="167" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 1. Wait Modelleri.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Wait Modellerini en kolay haliyle anlayabilmek i&amp;ccedil;in işe, WaitOne modeli ile başlamakta fayda vardır. WaitOne modeli, sadece tek bir sql komutu i&amp;ccedil;in uygulamanın bekletilmesini sağlar. Ne kastettiğimi anlamak i&amp;ccedil;in aşağıdaki &amp;ouml;rneğimizi dikkatle inceleyelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;#region Using directives
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Data.SqlClient;
+using System.Threading;
+
+#endregion
+
+namespace WaitModeli
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            SqlConnection con = new SqlConnection("data source=localhost;initial catalog=AdventureWorks;integrated security=SSPI;async=true");
+            SqlCommand cmd = new SqlCommand("WAITFOR DELAY '0:0:5';UPDATE Production.Product SET ListPrice=ListPrice*1.15", con);
+
+            con.Open();
+            IAsyncResult res1 = cmd.BeginExecuteNonQuery(); //Komutu asenkron olarak &amp;ccedil;alıştır.
+
+            WaitHandle wh1 = res1.AsyncWaitHandle; // WaitHandle nesnesini al.
+            Console.WriteLine("Herhangibir islem"); // Bu aralıkta eş zamanlı kodlar &amp;ccedil;alışır.
+
+            wh1.WaitOne(); // Eğer komut tamamlanmamışsa bekle.
+            int sonucUpdate = cmd.EndExecuteNonQuery(res1); // Komut işleyişini tamamladı sonu&amp;ccedil;ları al.
+            con.Close();
+            Console.WriteLine(sonucUpdate.ToString() + " SATIR GUNCELLENDI");
+
+            Console.ReadLine();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu &amp;ouml;rnek console uygulamasında, Yukon &amp;uuml;zerinde yer alan AdventureWorks veritabanındaki Product isimli tabloda g&amp;uuml;ncelleme işlemi ger&amp;ccedil;ekleştiren bir komut s&amp;ouml;z konusudur. Senaryonun daha ger&amp;ccedil;ek&amp;ccedil;i olması i&amp;ccedil;in sql &amp;uuml;zerinde WaitFor ile işlemi 5 saniye ge&amp;ccedil; başlatıyoruz. Biz komutu asenkron olarak y&amp;uuml;r&amp;uuml;tmek istiyoruz. Lakin komutun sonu&amp;ccedil;larını almadan &amp;ouml;nce bir takım kod satırlarınında &amp;ccedil;alıştırılmasını istiyoruz. Buraya kadar her şey normal. Ancak eş zamanlı y&amp;uuml;r&amp;uuml;yen kod satırlarından sonrada, eğer işlenen komut halen daha tamamlanmamışsa, o komut tamamlanıncaya kadar g&amp;uuml;ncel uygulamanın duraksamasını ve başka bir işlem yapmamasını istiyoruz. İşte bu gibi tek komutlara wait modelini uygulamak istediğimizde, WaitHandle sınıfının statik metodlarından olan WaitOne' ı kullanmaktayız.&lt;/p&gt;
+&lt;p&gt;Uygulama kodlarımızı inceldiğimizde ilk olarak asenkron olarak &amp;ccedil;alışmasını istediğimiz komuta ait Begin metodlarından birisini kullanarak IAsyncResult aray&amp;uuml;z&amp;uuml; tipinden bir nesne &amp;ouml;rneğini elde ediyoruz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;IAsyncResult res1 = cmd.BeginExecuteNonQuery();&lt;/pre&gt;
+&lt;p&gt;Daha sonra ise, bu aray&amp;uuml;z nesnesinin AsyncWaitHandle &amp;ouml;zelliği ile bir WaitHandle nesnesi oluşturuyoruz.&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;WaitHandle wh1 = res1.AsyncWaitHandle;&lt;/pre&gt;
+&lt;p&gt;Bu WaitHandle nesnesinin elde edilişi sırasında ve sonrasındaki uygulama satırları sql komutumuz ile eşzamanlı olarak y&amp;uuml;r&amp;uuml;t&amp;uuml;lmektedir. Biz WaitHandle nesnemizin WaitOne metodunu uyguladığımızda, &amp;ccedil;alışan sql komutunun tamamlandığına dair bir sinyal WaitHandle nesnesine gelinceye kadar aktif thread' in duraksatılmasını sağlamış oluyoruz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;wh1.WaitOne();&lt;/pre&gt;
+&lt;p&gt;Gelelim, WaitAll tekniğine. WaitAll ise, birden fazla sql komutunun asenkron olarak &amp;ccedil;alıştığı durumlarda devreye giren ve t&amp;uuml;m komutlar başarılı bir şekilde tamamlanıncaya kadar aktif uygulamayı duraksatan bir tekniktir. Bu sefer, WaitHandle nesneleri her bir komut i&amp;ccedil;in ayrı ayrı tanımlanmalıdır. Dolayısıyla bize WaitHandle tipinden bir dizi gerekmektedir. Aşağıdaki &amp;ouml;rnek uygulama, WaitAll tekniğinin nasıl uygulandığını g&amp;ouml;stermektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;SqlConnection con1 = new SqlConnection("data source=localhost;initial catalog=AdventureWorks;integrated security=SSPI;async=true");
+SqlConnection con2 = new SqlConnection("data source=localhost;initial catalog=AdventureWorks;integrated security=SSPI;async=true");
+SqlConnection con3 = new SqlConnection("data source=localhost;initial catalog=AdventureWorks;integrated security=SSPI;async=true");
+SqlCommand cmd1 = new SqlCommand("WAITFOR DELAY '0:0:4';UPDATE Production.Product SET ListPrice=ListPrice*1.15", con1);
+SqlCommand cmd2 = new SqlCommand("WAITFOR DELAY '0:0:5';UPDATE Production.Product SET ListPrice=ListPrice*1.20", con2);
+SqlCommand cmd3 = new SqlCommand("WAITFOR DELAY '0:0:2';UPDATE Production.Product SET ListPrice=ListPrice*1.45", con3);
+
+con1.Open();
+IAsyncResult res1 = cmd1.BeginExecuteNonQuery();
+con2.Open();
+IAsyncResult res2 = cmd2.BeginExecuteNonQuery();
+con3.Open();
+IAsyncResult res3 = cmd3.BeginExecuteNonQuery();
+
+WaitHandle[] wh = new WaitHandle[3];
+wh[0] = res1.AsyncWaitHandle;
+wh[1] = res2.AsyncWaitHandle;
+wh[2] = res3.AsyncWaitHandle;
+
+Console.WriteLine("Burada bir şeyler yapılır...");
+for (int i = 1; i &amp;lt; 100; i++)
+{
+    Console.Write(i.ToString()+" ");
+}
+Console.WriteLine();
+
+WaitHandle.WaitAll(wh);
+int sonucGuncel1 = cmd1.EndExecuteNonQuery(res1);
+con1.Close();
+int sonucGuncel2 = cmd2.EndExecuteNonQuery(res2);
+con2.Close();
+int sonucGuncel3 = cmd3.EndExecuteNonQuery(res3);
+con3.Close();
+Console.WriteLine(sonucGuncel1 + " SATIR GUNCELLENDI");
+Console.WriteLine(sonucGuncel2 + " SATIR GUNCELLENDI");
+Console.WriteLine(sonucGuncel3 + " SATIR GUNCELLENDI");
+Console.ReadLine();&lt;/pre&gt;
+&lt;p&gt;Burada g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi, &amp;uuml;&amp;ccedil; adet sql komutumuz var. Her ne kadar anlamsız olsalarda sonu&amp;ccedil;ta amacımız Wait modelinin nasıl işlediğini anlamaktır. WaitHandle dizisi i&amp;ccedil;indeki her eleman, bu elemanlar ile ilişkili komutlara ait IAsyncResult nesnelerinin AsyncWaitHandle &amp;ouml;zellikleri yardımıyla oluşturulur. Bu esnada, sql komutları asenkron olarak y&amp;uuml;r&amp;uuml;t&amp;uuml;lmektedir. Dolayısıyla WaitHandle sınıfının WaitAll metodunu &amp;ccedil;alıştırdığımız satıra kadar olan kodlar, komutlar ile birlikte eş zamanlı olarak y&amp;uuml;r&amp;uuml;mektedir. WaitAll metodunun olduğu satıra gelindiğinde, uygulama &amp;ccedil;alışan komutların hepsi tamamlanmış olmak şartıyla yoluna devam eder. Bir başka deyişle, eğer bu satıra gelindiğinde halen daha tamamlanmamış komutlar varsa, varsayılan timeout s&amp;uuml;resi doluncaya kadar bu komutlarında tamamlanması beklenir.&lt;/p&gt;
+&lt;p&gt;Wait modelindeki son teknik ise, WaitAny yapısıdır. Bu teknik bir &amp;ouml;ncekilere nazaran biraz daha karmaşıktır. WaitAny tekniğinde, asenkron olarak y&amp;uuml;r&amp;uuml;t&amp;uuml;len komutlar sırasıyla tamamlanıncaya kadar uygulama bekletilir. Burada sıralamayı belirten WaitAny metodudur. Nitekim, işleyişi &amp;ouml;nce tamamlanan metodun WaitHandle nesnesi diğerlerine g&amp;ouml;re daha &amp;ouml;ncelikli olarak sinyal alacak ve sonu&amp;ccedil;lar ortama aktarılacaktır. WaitAny tekniğinde işin ilgin&amp;ccedil; ve bir o kadarda &amp;ouml;nemli olan yanı, WaitAny metodunun geriye integer olarak d&amp;ouml;nd&amp;uuml;rd&amp;uuml;ğ&amp;uuml; değerin kullanılmasında yatmaktadır. Bu değer aslında, WaitHandle dizisi i&amp;ccedil;indeki indeksi işaret etmektedir. Yani, WaitAny metodu ile aktif olarak alınan WaitHandle eğer tamamlanmışsa, metodun geriye d&amp;ouml;nd&amp;uuml;receği değer bu komuta bağlı WaitHandle elemanının dizi i&amp;ccedil;erisindeki indeksidir.&lt;/p&gt;
+&lt;p&gt;Buna g&amp;ouml;re, WaitAny tekniğinin, WaitHandle dizisi i&amp;ccedil;indeki t&amp;uuml;m elemanları işleyen bir d&amp;ouml;ng&amp;uuml; i&amp;ccedil;erisinde kullanılması ve bu metodun d&amp;ouml;nd&amp;uuml;rd&amp;uuml;ğ&amp;uuml; değerlerinde dizi indeksleri ile burada karşılaştırılması gerekmektedir. Her ne kadar karışık bir teknikmiş gibi g&amp;ouml;r&amp;uuml;nsede, aşağıdaki kod bloğunu incelediğimizde olayı &amp;ccedil;ok daha kolay anlayabileceğimize inanıyorum.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;SqlConnection con1 = new SqlConnection("data source=Manchester;initial catalog=AdventureWorks;integrated security=SSPI;async=true");
+SqlConnection con2 = new SqlConnection("data source=Manchester;initial catalog=AdventureWorks;integrated security=SSPI;async=true");
+SqlCommand cmd = new SqlCommand("WAITFOR DELAY '0:0:5';UPDATE Production.Product SET ListPrice=ListPrice*1.15", con1);
+SqlCommand cmd2 = new SqlCommand("WAITFOR DELAY '0:0:3';UPDATE Production.Product SET ListPrice=ListPrice*1.20", con2);
+
+con1.Open();
+IAsyncResult res1 = cmd.BeginExecuteNonQuery();
+con2.Open();
+IAsyncResult res2 = cmd2.BeginExecuteNonQuery();
+
+WaitHandle[] wh = new WaitHandle[2];
+wh[0] = res1.AsyncWaitHandle;
+wh[1] = res2.AsyncWaitHandle;
+for (int i = 0; i &amp;lt; 2; i++)
+{
+    int iIndis = WaitHandle.WaitAny(wh);
+    if (iIndis == 0)
+    {
+        int result=cmd.EndExecuteNonQuery(res1);
+        con1.Close();
+        Console.WriteLine(iIndis.ToString()+" tamamlandı." +result.ToString());
+    }
+    if (iIndis == 1)
+    {
+        int result = cmd2.EndExecuteNonQuery(res2);
+        con2.Close();
+        Console.WriteLine(iIndis.ToString() + " tamamlandı." + result.ToString());
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Dilerseniz bu kod par&amp;ccedil;asını inceleyelim. WaitHandle dizimizi, iki sql komut i&amp;ccedil;in gerekli olan WaitHandle nesnelerini tutmak &amp;uuml;zere kullanılıyoruz. Bu dizi i&amp;ccedil;in gerekli WaitHandle nesnelerini elde edebilmek amacıylada, IAsyncResult aray&amp;uuml;z&amp;uuml;ne ait AsyncWaitHandle &amp;ouml;zelliğini kullanmaktayız. Buraya kadar herşey anlaşılır. Asıl &amp;ouml;nemli olan a&amp;ccedil;tığımız for d&amp;ouml;ng&amp;uuml;s&amp;uuml;d&amp;uuml;r. Bu d&amp;ouml;ng&amp;uuml;, WaitHandle dizisinin eleman sayısı kadar iterasyon yapmaktadır. D&amp;ouml;ng&amp;uuml; i&amp;ccedil;erisinde,&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;int iIndis = WaitHandle.WaitAny(wh);&lt;/pre&gt;
+&lt;p&gt;satırı ile, dizi i&amp;ccedil;indeki WaitHandle nesnelerinden her hangibirinin ilgili komutun bittiğine dair bir sinyal alıp almadığına bakılır. Eğer b&amp;ouml;yle ise, komut işleyişini tamamlamış demektir. Bu durumda WaitAny metodu geriye integer bir değer d&amp;ouml;nd&amp;uuml;r&amp;uuml;r. Elbetteki işleyen sql komutlarından her hangibir tamamlanmamış ise, uygulama bu satırda bu komutlardan herhangibiri tamamlanıncaya ve ilgili WaitHandle nesnesine sinyal g&amp;ouml;nderilinceye kadar duraksar. D&amp;ouml;nen integer değer, WaitAny metodunun yapısı gereği, WaitHandle dizisi i&amp;ccedil;indeki ilgili WaitHandle nesnesinin indeks değerini işaret eder. Bu nedenle uygulama bir sonraki satıra ge&amp;ccedil;tiğinde if koşuluna girer ve burada hangi komutun tamamlandığı WaitAny metodundan d&amp;ouml;nen integer değer yardımıyla belirlenir. Tabiki tamamlanan komuta uygun olan Begin metoduda bu if d&amp;ouml;ng&amp;uuml;s&amp;uuml; i&amp;ccedil;inde &amp;ccedil;alıştırılır.&lt;/p&gt;
+&lt;p&gt;Daha sonra ise, d&amp;ouml;ng&amp;uuml; ikinci iterasyondan işleyişine devam eder. Bu kez halen daha &amp;ccedil;alışmakta olan diğer sql komutlarına ait WaitHandle nesnelerinin bir sinyal alıp almadığına bakılır. Yine, ilk iterasyonda olduğu gibi &amp;ouml;nce tamamlanan komuta ait WaitHandle nesnesi gerekli sinyali alır ve geriye dizi i&amp;ccedil;indeki indeks değerini d&amp;ouml;nd&amp;uuml;r&amp;uuml;r. Ardından tekrar if koşulları uygulanır ve gerekli sonu&amp;ccedil;lar elde edilir. Bu işleyiş d&amp;ouml;ng&amp;uuml; i&amp;ccedil;indeki t&amp;uuml;m WaitHandle nesneleri ilişkili oldukları komutların tamamlandığına dair sinyaller alıncaya, dolayısıyla komutlar işleyişini bitirinceye kadar devam eder.&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi Wait modeli i&amp;ccedil;erdiği teknikler itibariyle biraz karışıktır. Ancak ilerleyen zamanlarda, Ado.Net 2.0' ın son s&amp;uuml;r&amp;uuml;m&amp;uuml;nde bu tekniklerin &amp;ccedil;ok daha kullanışlı hale geleceğine inanıyorum. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;şmek dileğiyle hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2004-10-22 12:00:00</pubDate>
+  <slug>Ado-Net-2-0-ve-Sql-Komutlarc4b1nc4b1-Asenkron-Olarak-Yurutmek-3-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>adonet-20</tag>
+    <tag>asynchronous</tag>
+    <tag>async</tag>
+  </tags>
+  <categories>
+    <category>Ado.net 2.0</category>
+  </categories>
+</post>

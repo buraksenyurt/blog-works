@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>LINQ Sorgusu mu? ForEach mi? Bir Türlü Karar Veremedim</title>
+  <description>Bilim Kurgu fanatiklerinin kafasında her zaman hayranı oldukları filmlerden kesitler, sahneler kalır. Matrix filmini izleyenler eminimki Neo' ya uzatılan kırmızı ve mavi hap serenatını gayet iyi hatırlayacaktır. Morpheus haplardan birisinde Alice Harikalar Diyarının kapılarını ardına kadar açabileceğini ifade ederken, diğer hapı yuttuğunda, Neo' nun yatağında hiç bir şey olmamış gibi uyanacağını ve tüm bunların bir hayalden ibaret olduğunu düşüneceğini belirtir. Tabi Neo amacına ulaşmak için zaten hangi hapı içmesi gerektiğini biliyordur ki son bölümde aslında gerçekten hapı yutmaktadır</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/pics/2010%2f5%2fblg196_GirisNew.jpg" alt="" width="277" height="214" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Bilim Kurgu fanatiklerinin kafasında her zaman hayranı oldukları filmlerden kesitler, sahneler kalır. Matrix filmini izleyenler eminimki Neo' ya uzatılan kırmızı ve mavi hap serenatını gayet iyi hatırlayacaktır. Morpheus haplardan birisinde Alice Harikalar Diyarının kapılarını ardına kadar a&amp;ccedil;abileceğini ifade ederken,&amp;nbsp;diğer hapı yuttuğunda, Neo' nun yatağında hi&amp;ccedil; bir şey olmamış gibi uyanacağını ve t&amp;uuml;m bunların bir hayalden ibaret olduğunu d&amp;uuml;ş&amp;uuml;neceğini belirtir. Tabi Neo amacına ulaşmak i&amp;ccedil;in zaten hangi hapı i&amp;ccedil;mesi gerektiğini biliyordur ki son b&amp;ouml;l&amp;uuml;mde aslında ger&amp;ccedil;ekten hapı yutmaktadır &lt;img title="Yell" src="/editors/tiny_mce3/plugins/emotions/img/smiley-yell.gif" alt="Yell" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bizde yazılımcılar olarak bazen karar verirken tabir yerinde ise s&amp;uuml;r&amp;uuml;ncemede kalabiliriz. B&amp;ouml;yle durumlarda ufak tefek g&amp;ouml;z&amp;uuml;ken noktaların aslında &amp;ccedil;ok b&amp;uuml;y&amp;uuml;k riskler taşıdığını da d&amp;uuml;ş&amp;uuml;nmemiz gerekmektedir. &amp;Ccedil;&amp;uuml;nk&amp;uuml; karar vermek i&amp;ccedil;in basit bir ka&amp;ccedil; test kodu &amp;ccedil;ok işimize yarayacaktır. İşte bu yazımızda b&amp;ouml;yle bir konuya değiniyor olacağız.&lt;/p&gt;
+&lt;p&gt;Aslında konunun &amp;ccedil;ıkış noktası &lt;a title="Microsoft Teknoloji G&amp;uuml;nleri Akşam Sınıfı" href="/post/Microsoft-Teknoloji-Gunleri-Aksam-Sinifinda-Bulusalim" target="_blank"&gt;Microsoft Teknoloji G&amp;uuml;nleri Akşam Sınıfındaki &lt;/a&gt;bir meslektaşımın sorusu oldu. Değerli meslektaşım uygulama kodunda koleksiyon bazlı sorgulamaları ger&amp;ccedil;ekleştirirken pek &amp;ccedil;ok vakada&amp;nbsp;foreach d&amp;ouml;ng&amp;uuml;lerini tercih ettiğini s&amp;ouml;yledi. Tabi her durumda değil. Bende bu noktada aynı amaca hizmet eden bir &lt;strong&gt;LINQ&lt;/strong&gt; sorgusu ile &lt;strong&gt;ForEach&lt;/strong&gt; &amp;ccedil;alışması arasındaki performans farklılıklarını irdelemeye karar verdim. Nitekim performans her zaman i&amp;ccedil;in karar vermeden &amp;ouml;nem arz eden kriterlerden birisidir.&amp;nbsp;Anlayacağınız basit bir test ve sonu&amp;ccedil;larını irdeliyor olacağız bu kısa yazımızda.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rnek uygulamamızda &lt;strong&gt;Enumerable.Range&lt;/strong&gt; metodu yardımıyla elde edilen bir &lt;strong&gt;int&lt;/strong&gt; sayı dizisi i&amp;ccedil;erisinde &lt;strong&gt;2&lt;/strong&gt; ile tam b&amp;ouml;l&amp;uuml;nebilen sayıların adedini hesap ettirmekteyiz. Tahmin edeceğiniz &amp;uuml;zere bu tip bir işlemi &lt;strong&gt;LINQ&lt;/strong&gt; sorgusu yardımıyla anlamlı bir kod ifadesi ile yerine getirebiliriz. Ayrıca bunu bir &lt;strong&gt;foreach&lt;/strong&gt; d&amp;ouml;ng&amp;uuml;s&amp;uuml; ile de ger&amp;ccedil;ekleştirebiliriz. İşte test kodlarımız.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Diagnostics;
+
+namespace LINQForEachPerformance
+{
+&amp;nbsp;&amp;nbsp;&amp;nbsp; class Program
+&amp;nbsp;&amp;nbsp;&amp;nbsp; {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; static void Main(string[] args)
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; for (int i = 1; i &amp;lt; 10; i++)
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; IEnumerable&amp;lt;int&amp;gt; range = Enumerable.Range(i,(i+1)*10000000);
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; WithLinq(range);
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; WithForeach(range);
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; static void WithLinq(IEnumerable&amp;lt;int&amp;gt; range)
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Stopwatch sWatch = new Stopwatch();
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; sWatch.Start();
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; int count = (from i in range
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; where i % 2 == 0
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; select i).Count&amp;lt;int&amp;gt;();
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Console.WriteLine(count.ToString());
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; sWatch.Stop();
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Console.WriteLine("LINQ Total Time : {0}",sWatch.ElapsedMilliseconds.ToString());
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; static void WithForeach(IEnumerable&amp;lt;int&amp;gt; range)
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Stopwatch sWatch = new Stopwatch();
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; sWatch.Start();
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; int count = 0;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; foreach (int i in range)
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; if (i % 2 == 0)
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; count++;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Console.WriteLine("{0}",count.ToString());
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; sWatch.Stop();
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Console.WriteLine("ForEach Total Time : {0}", sWatch.ElapsedMilliseconds.ToString());
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rnekte &lt;strong&gt;arka arkaya 10 deneme&lt;/strong&gt; yapılmaktadır. &lt;strong&gt;WithLinq&lt;/strong&gt; metodu &lt;strong&gt;LINQ&lt;/strong&gt; sorgusunu kullanarak ikiye tam b&amp;ouml;l&amp;uuml;nen sayıların adedini vermektedir. &lt;strong&gt;WithForeach&lt;/strong&gt; metodu ise aynı işlemi &lt;strong&gt;foreach &lt;/strong&gt;d&amp;ouml;ng&amp;uuml;s&amp;uuml; yardımıyla ger&amp;ccedil;ekleştirmektedir. &lt;strong&gt;Stopwatch&lt;/strong&gt; tipi yardımıyla her hesaplamanın toplam s&amp;uuml;resi bulunmaktadır. Uygulamanın &lt;strong&gt;Intel &amp;ccedil;ift &amp;ccedil;ekirdek işlemcili, 4Gb Ram'&lt;/strong&gt; i olan makinemdeki &amp;ccedil;alışma zamanı sonu&amp;ccedil;larından bir tanesi aşağıdaki ekran g&amp;ouml;r&amp;uuml;t&amp;uuml;s&amp;uuml;ndeki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f5%2fblg196_FirstReport.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Aslında her zaman i&amp;ccedil;in s&amp;uuml;reler farklı olacaktır ancak grafiksel eğriler benzer olacaktır. Durumun daha net bir şekilde g&amp;ouml;r&amp;uuml;lmesi i&amp;ccedil;in değerlerin &lt;strong&gt;Excel&lt;/strong&gt; &amp;uuml;zerinde &lt;strong&gt;Chart &lt;/strong&gt;olarak g&amp;ouml;sterilmesi yeterlidir. İşte sonu&amp;ccedil;lar.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f5%2fblg196_ExcelReport.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;foreach &lt;/strong&gt;d&amp;ouml;ng&amp;uuml;s&amp;uuml; ile yapılan hesaplamalar değer aralığı b&amp;uuml;y&amp;uuml;se dahi &lt;strong&gt;LINQ&lt;/strong&gt; sorgusuna g&amp;ouml;re daha kısa s&amp;uuml;rede icra edilmektedir. Buna g&amp;ouml;re &lt;strong&gt;foreach' &lt;/strong&gt;in daha hızlı olduğunu s&amp;ouml;yleyebilir miyiz? Bu senaryo i&amp;ccedil;in evet. &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;Ama bildiğiniz &amp;uuml;zere &lt;strong&gt;LINQ&lt;/strong&gt; daha karmaşık sorgular yazılması noktasında elbetteki i&amp;ccedil; i&amp;ccedil;e ge&amp;ccedil;ecek sayısız &lt;strong&gt;foreach&lt;/strong&gt; kullanımından &amp;ccedil;ok daha etkili bir y&amp;ouml;ntemdir. Ancak başta da belirttiğimiz gibi insan bir an i&amp;ccedil;in hangi hapı yutacağına karar veremiyor. Tabi farklı sorgulama senaryoları ile farklı denemeler yaparak karşılaştırmalara devam etmekte yarar olabilir. Bu kutsal g&amp;ouml;revi de siz değerli okurlarıma bırakıyorum. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2010%2f5%2fLINQForEachPerformance.rar"&gt;LINQForEachPerformance.rar (23,30 kb)&lt;/a&gt;&lt;strong&gt;&amp;nbsp;[&amp;Ouml;rnek Visual Studio 2010 Ultimate ile geliştirilmiş ve test edilmiştir]&lt;/strong&gt;&lt;/p&gt;</content>
+  <pubDate>2010-05-27 20:40:00</pubDate>
+  <slug>LINQ-Sorgusumu-ForEach-Mi-Bir-Turlu-Karar-Veremedim</slug>
+  <tags>
+    <tag>c#</tag>
+    <tag>linq</tag>
+    <tag>foreach</tag>
+    <tag>linq-vs-foreach</tag>
+  </tags>
+  <categories>
+    <category>C#</category>
+    <category>LINQ</category>
+  </categories>
+</post>

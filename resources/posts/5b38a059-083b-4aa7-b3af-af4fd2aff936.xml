@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>CORS(Cross-Origin Resource Sharing)</title>
+  <description>Bu yazımızda .Net Core WebAPI servislerine CORS(Cross-Orijin Resource Sharing) özelliklerinin nasıl eklenebildiğini inceliyoruz. Konuyu ele alırken CORS'un ne olduğuna da değinir ve örnekler ile açıklamaya çalışıyoruz.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2017/12/cors_6.gif" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Ge&amp;ccedil;tiğimiz g&amp;uuml;nlerde Asp.Net Core tarafında SignalR kullanımını incelemeye başladım. O sırada incelediğim kaynakların birisinde UseCors isimli bir fonksiyonla karşılaştım. Uzun zamandır Cross-Site Scripting Error almamış birisi olarak .Net Core tarafında Cross-Origin Resource Sharing nasıl yapılır &amp;ouml;ğrenmem gerektiğini fark ettim. Sonunda SignalR ile ilgili araştırmalarıma bir kahve molası verip konuyu inceleyeyim dedim. Aslında W3C'un &lt;a href="https://www.w3.org/TR/cors/" target="_blank"&gt;şu adresinde&lt;/a&gt; ve IETF&lt;em&gt;(havalı isimleri ile Internet Engineering Task Force)&lt;/em&gt; kul&amp;uuml;b&amp;uuml;n&amp;uuml;n &lt;a href="https://tools.ietf.org/html/rfc6454" target="_blank"&gt;bu adresinde&lt;/a&gt; konu ile ilgili standartlara ait olduk&amp;ccedil;a detaylı bilgiler mevcut.&lt;/p&gt;
+&lt;p&gt;Konuyu kısaca &amp;ouml;zetlemek i&amp;ccedil;in aşağıdaki grafiğin yardımcı olabileceğini d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum. Senaryoda sol taraftaki adrese erişmeye &amp;ccedil;alışan farklı kaynaklar yer alıyor. İlk senaryoda http://fabrikam.com/api/products adresine http://fabrikam.com/index.html adresinden gidilmekte. Her iki adresin de ortak &amp;ouml;zelliği aynı orjin(k&amp;ouml;k, kaynak diyelim) &amp;uuml;zerinden sunulmaları.&lt;/p&gt;
+&lt;p&gt;Ancak izleyen senaryolarda servise doğru gelmek isteyen farklı k&amp;ouml;kler g&amp;ouml;r&amp;uuml;yoruz. Farklı bir alan adı&lt;em&gt;(domain)&lt;/em&gt;, alt alan adı&lt;em&gt;(sub domain)&lt;/em&gt;, şema(https ile gelinen) ve port. Bu durumlarda hedef adres gelen talep ile ilişkili olarak bir ş&amp;uuml;pheye d&amp;uuml;ş&amp;uuml;yor. Acaba benim iznim olmayan bir adresten mi geliniyor gibi duruma paranoyak&amp;ccedil;a yaklaşıp isteğe olumlu cevap vermiyor. Bu durumlara &amp;ouml;zellikle AJAX modelli servis &amp;ccedil;ağrılarının yapıldığı &amp;ccedil;&amp;ouml;z&amp;uuml;mlerde sıklıkla rastlanıyor. Dolayısıyla hedef tarafının belirli bir politikaya g&amp;ouml;re istekte bulunanlara izin vermesini sağlamamız gerekiyor. Yani bir CORS policy'nin uygulanması gerekmekte.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/12/cors_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Gelin .Net Core tarafında CORS politikalarının nasıl uygulanabileceğini basit bir &amp;ouml;rnek ile incelemeye &amp;ccedil;alışalım. İlk olarak Illegal Cross Site Script vakasını değerlendirelim. Senaryoyu ele alırken iki uygulama yazacağız. İlki 6001 numaralı port &amp;uuml;zerinden yayın yapan bir Web API servisi olacak. Bu servisin t&amp;uuml;keticisi ise 5000 nolu porttan &amp;ccedil;alışacak olan boş bir Web projesi. Terminal'den aşağıdaki komutu kullanarak Contoso isimli Web API uygulamasını oluşturalım.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet new webapi -o Contoso&lt;/pre&gt;
+&lt;p&gt;.Net Core'un varsayılan şablonuna g&amp;ouml;re ValuesController isimli bir hizmetimiz zaten mevcut. Yenisini yazmaya bu senaryo kapsamında gerek yok. Sadece servisin yayınlanacağı adresi değiştirmemiz yeterli. Bunun i&amp;ccedil;in Program.cs i&amp;ccedil;eriğini aşağıdaki gibi d&amp;uuml;zenleyelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public static IWebHost BuildWebHost(string[] args) =&amp;gt;
+	WebHost.CreateDefaultBuilder(args)
+		.UseUrls("http://localhost:6001/")
+		.UseStartup&amp;lt;Startup&amp;gt;()
+		.Build();&lt;/pre&gt;
+&lt;p&gt;Şimdi ikinci uygulamamızı oluşturabiliriz. Aşağıdaki komutu &amp;ccedil;alıştırarak devam edelim.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet new web -o Customer&lt;/pre&gt;
+&lt;p&gt;Oluşan web uygulamasına ait wwwroot klas&amp;ouml;r&amp;uuml;ne index.html isimli bir web sayfası ekleyelim. Bu sayfanın g&amp;ouml;revi butona basıldığı zaman http://localhost:6001/api/values adresine talepte bulunup d&amp;ouml;nen i&amp;ccedil;eriği ekrana basmak. Bunu yaparken jQuery ve AJAX &amp;ccedil;ağrısı ger&amp;ccedil;ekleştireceğiz.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;meta charset="utf-8"/&amp;gt;
+&amp;lt;html xmlns="http://www.w3.org/1999/xhtml"&amp;gt;
+&amp;lt;head&amp;gt;
+  &amp;lt;title&amp;gt;Contoso Name List&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+ 
+  &amp;lt;div&amp;gt;
+    &amp;lt;h2&amp;gt;Contoso Names&amp;lt;/h2&amp;gt;
+    &amp;lt;ul id="values" /&amp;gt;
+  &amp;lt;/div&amp;gt;
+  &amp;lt;div&amp;gt;    
+    &amp;lt;input type="button" value="Get" onclick="getValues();" /&amp;gt;
+    &amp;lt;p id="Contoso" /&amp;gt;
+  &amp;lt;/div&amp;gt;
+ 
+  &amp;lt;script src="https://code.jquery.com/jquery-3.2.1.js"&amp;gt;&amp;lt;/script&amp;gt;
+  &amp;lt;script&amp;gt;
+   
+    function getValues() {
+      var uri = 'http://localhost:6001/api/values';
+      $('#values').empty();
+       
+      $.getJSON(uri)
+      .done(function (data) {
+        $.each(data, function (key, value) {              
+          $('&amp;lt;li&amp;gt;', { text: value}).appendTo($('#values'));
+        });
+      });
+    }
+     
+  &amp;lt;/script&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;&lt;/pre&gt;
+&lt;p&gt;getValues fonksiyonu i&amp;ccedil;erisinde getJSON jQuery operasyonunu kullanarak webApi adresine talepte bulunuyor, d&amp;ouml;n&amp;uuml;ne i&amp;ccedil;erikte dolaşarak herbir veriyi birer listItem olarak values isimli div altına ekliyoruz. jQuery'nin 3.2.1 versiyonunu kullanmaktayız. index.html, static bir web sayfası olduğundan web uygulamasının Startup.cs i&amp;ccedil;eriğinde ufak bir değişiklik yapmamız gerekiyor.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+{
+	if (env.IsDevelopment())
+	{
+		app.UseDeveloperExceptionPage();
+	}
+	app.UseStaticFiles();
+}&lt;/pre&gt;
+&lt;p&gt;Her iki uygulamada hazır. Servis ve web uygulamalarını ayrı ayrı &amp;ccedil;alıştıralım ve Get butonuna basarak servise &amp;ccedil;ağrıda bulunmaya &amp;ccedil;alışalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/12/cors_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;İki uygulamayı da dotnet run komutlarımız ile &amp;ccedil;alıştırdıktan sonra Get ile servisten sunulan değer listesine ulaşamadığımızı g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/12/Cors_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere CORS Header 'Access-Control-Allow-Origin' missing şeklinde bir uyarı mesajı alınıyor. Bir başka deyişle Contoso servisine http://localhost:5000 adresinden gelinmesi i&amp;ccedil;in gerekli policy belgesinin olmadığı belirtilmektedir. Bu sorunu &amp;ccedil;&amp;ouml;zmek i&amp;ccedil;in servis tarafındaki Startup.cs i&amp;ccedil;eriğine bir ka&amp;ccedil; dokunuş ger&amp;ccedil;ekleştirmemiz yeterli.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Contoso
+{
+    public class Startup
+    {
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; }
+
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddCors();
+            services.AddMvc();
+        }
+
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            app.UseCors(bldr=&amp;gt;bldr.WithOrigins("http://localhost:5000"));
+            app.UseMvc();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;ConfigureServices metounda AddCors fonksiyonu ile Cross-Origin Sharing hizmetini &amp;ccedil;alışma zamanına ekliyoruz. Configure fonksiyonundaki UseCors &amp;ccedil;ağrısı ile de Middleware tarafında ilgili policy'nin etkinleştirilmesini sağlıyoruz. &amp;Ouml;rneğimizde localhost:5000 adresi i&amp;ccedil;in gerekli Header bilgisinin ekleneceğini belirtmekteyiz. Şimdi senaryomuzu tekrar işletelim. Bu kez aşağıdaki g&amp;ouml;r&amp;uuml;nt&amp;uuml;de olduğu gibi değerlerin sayfaya basıldığını g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/12/cors_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu başarılı talebin arka plandaki izlerine baktığımızda servis tarafından d&amp;ouml;nd&amp;uuml;r&amp;uuml;len cevabın i&amp;ccedil;erisinde ek bir Header bilgisi olduğunu da g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/12/cors_5n.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere Access-Control-Allow-Origin isimli header bilgisi i&amp;ccedil;in http://localhost:5000 değeri eklenmiştir. Benzer şekilde Request Header i&amp;ccedil;erisinde de Origin bilgisi yer almaktadır.&lt;/p&gt;
+&lt;p&gt;Aslında CORS politikalarını MVC tabanlı projelerde farklı seviyelerde uygulama şansına da sahibiz. Belli bir Controller operasyonunda uygulamak istersek ilgili fonksiyona EnableCors niteliğini&lt;em&gt;(attribute)&lt;/em&gt; belirtilen policy adıyla eklememiz yeterlidir. Benzer şekilde bu niteliği Controller seviyesinde de kullanabiliriz. Bu durumda Controller i&amp;ccedil;erisindeki t&amp;uuml;m operasyonlar i&amp;ccedil;in nitelik ile belirtilen CORS Policy talimatı uygulanacaktır. Action, Controller bazında uygulanabilen bu yapıyı global seviyede de kullanabiliriz. Ayrıca DisableCors niteliği ile action ve controller bazında CORS dışı bırakılma fonksiyonelliğini de sağlayabiliriz. Bu niteliklerin nasıl kullanılabildiğini araştırmanızı &amp;ouml;neririm. &lt;em&gt;(Bazı haller tarayıcıya bağlı olarak farklılıklar g&amp;ouml;sterebiliyormuş. Ben Firefox kullandım ama Chrome ve IE gibi tarayıcılarda da durumu irdelemekte yarar var)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;CORS bu yazıda ele aldığımız kadar basit de değil aslında. S&amp;ouml;z gelimi kaynak adres i&amp;ccedil;in gelen taleplerin belirli kriterlere g&amp;ouml;re filtrelenerek farklı k&amp;ouml;k adresler i&amp;ccedil;in kullanıma a&amp;ccedil;ılması gerekebilir. &amp;Ouml;rneğin belirli bir k&amp;ouml;kten herhangi bir Header i&amp;ccedil;erecek taleplerden sadece HTTP GET, POST metodunu kullananlara izin vermek istediğinizi d&amp;uuml;ş&amp;uuml;nelim. Bu durumda aşağıdaki gibi kodun yeniden d&amp;uuml;zenlenmesi gerekebilir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;app.UseCors(bldr=&amp;gt;bldr
+   .WithOrigins("http://localhost:5000")
+   .WithMethods("GET","POST")
+   .AllowAnyHeader()
+);&lt;/pre&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bu yazımızda Cross Origin Resource Sharing konusunun .Net Core WebAPI servislerinde nasıl etkinleştirilebileceğini &amp;ccedil;ok basit bir &amp;ouml;rnekle incelemeye &amp;ccedil;alıştık. Sanırım SignalR &amp;ccedil;alışmalarıma geri d&amp;ouml;nebilirim. G&amp;ouml;r&amp;uuml;şmek &amp;uuml;midiyle hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/buraksenyurt/dotnetcore" target="_blank"&gt;.Net Core ile ilgili diğer &amp;ouml;rnekleri GitHub adresinden &amp;ccedil;ekebilirsiniz.&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2017-12-29 21:01:00</pubDate>
+  <slug>cors-cross-origin-resource-sharing</slug>
+  <tags>
+    <tag>net-core-20</tag>
+    <tag>web-api</tag>
+    <tag>cors</tag>
+    <tag>security</tag>
+    <tag>cors-policy</tag>
+    <tag>jquery</tag>
+    <tag>ajax</tag>
+    <tag>ajax-call</tag>
+    <tag>rest</tag>
+    <tag>rest-api</tag>
+  </tags>
+  <categories>
+    <category>.Net Core</category>
+  </categories>
+</post>

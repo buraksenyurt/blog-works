@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Atlas ile Node.js Üzerinden Haberleşmek</title>
+  <description>Bu yazımızda MongoDb'nin Cloud sistemi olan Atlas üzerinde bir proje oluşturarak işe başlıyoruz. Sonrasında Cluster üretip gerekli konfigurasyon ayarlamalarını yaparak MongoDB Compass uygulamasıyla bağlantı gerçekleştiriyor, örnek bir veritabanı ile koleksiyon oluşturup içerisine doküman ekliyoruz. Son aşamada bu içeriği Node.js ile yazdığımız bir kod parçası yardımıyla Ubuntu ortamına indirmeye çalışıyoruz.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2018/03/atlas_node_9.gif" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Atlas denilince aklımıza gelen &amp;ccedil;oğunlukla coğrafya dersleridir. Hatta bu isimde coğrafya dergisi bile var. İşin k&amp;ouml;k&amp;uuml;ne indiğimizde ise aslında bu ismin Yunan mitolojisinden geldiğini g&amp;ouml;rmekteyiz. Yunan mitolojisine g&amp;ouml;re Atlas, Lapetos ve Klymene'nin 13 &amp;ccedil;ocuğundan en g&amp;uuml;&amp;ccedil;l&amp;uuml; olanıdır. Hatta o kadar g&amp;uuml;&amp;ccedil;l&amp;uuml;d&amp;uuml;r ki Olympos'a saldırmış ve bu sebepten Zeus tarafından g&amp;ouml;k kubbeyi omuzlarından taşımakla cezalandırılmıştır. Hatta bu omuzlarda taşıma olayı bizleri o kadar etkilemiştir ki, kafatasını taşıyan ilk omura da tıp d&amp;uuml;nyası tarafından Atlas adı verilmiştir. Sanırım şimdi yandaki fotoğrafın ne anlama geldiğini daha net anladınız. Oysa ki Atlas'ın taşıdığı tek y&amp;uuml;k d&amp;uuml;nya ya da kafataslarımız değil. O, Big Data konusunda da b&amp;uuml;y&amp;uuml;k bir y&amp;uuml;k&amp;uuml;n altına girmiş durumda. İşte bug&amp;uuml;n inceleyeceğimiz konumuz. MongoDB'nin bulut &amp;ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml;&amp;nbsp;hizmeti olan Atlas...&lt;/p&gt;
+&lt;p&gt;Atlas'a giriş mevzum yeni iş yerimdeki gen&amp;ccedil; meslektaşlarım sayesinde ger&amp;ccedil;ekleşti. Beni bu tip araştırmalara ittikleri i&amp;ccedil;in &amp;ccedil;ok memnunum. Bir ka&amp;ccedil; g&amp;uuml;n &amp;ouml;ncesinde katıldıkları Hackathon'la ilgili izlenimlerini paylaşan arkadaşlarıma ne kadar teşekk&amp;uuml;r etsem azdır.&amp;nbsp;Hemen nasıl bir şeydir araştırmaya başladım ve sonunda aşağıdaki &amp;ccedil;izimde yer alan senaryonun ger&amp;ccedil;ekleştirilebileceğini &amp;ouml;ğrendim. Burada Node.js istemcisinin yerine farklı platformlar da gelebiliyor hemen s&amp;ouml;yleyeyim. Dilerseniz Ruby, Python gibi dilleri de katabilirsiniz. Ben son g&amp;uuml;nlerin pop&amp;uuml;ler konuşmaları &amp;ouml;zelinde Node.js tipinde bir istemciyi tercih ettim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/03/atlas_node_11.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;MongoDB aşina olduğumuz &amp;uuml;zere olduk&amp;ccedil;a başarılı ve pop&amp;uuml;ler olan dok&amp;uuml;man bazlı NoSQL veritabanı sistemlerinden birisi. Atlas' da onun bulut tabanlı versiyonu olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Bu şu anlama geliyor. Dilersek MongoDB veritabanımızı Cloud &amp;uuml;zerinde konuşlandırabiliriz. Bu sayede sunucu ve y&amp;ouml;netim maliyetlerini azaltmış, &amp;ouml;l&amp;ccedil;eklenebilirlik gibi işleri de kolaylaştırmış oluruz. Atlas, esas itibariyle AWS, GCP ve Azure&amp;nbsp;sunucu merkezlerini kullanmakta. Normalde bulut bilişim platformları kendi b&amp;uuml;nyelerinde &amp;ccedil;eşitli veritabanlarına hizmet sunarlarken Atlas bu işi belirli bir veritabanını ele alarak yapmakta desek sanırım yeridir. MongoDB kullanacağımız belli ancak hangi platform &amp;uuml;zerinde konuşlandıracağımızı Atlas &amp;uuml;zerinden şekillendirebiliyoruz.&lt;/p&gt;
+&lt;p&gt;Ne demek istediğimi anlamanızın en g&amp;uuml;zel yolu &lt;a href="http://cloud.mongodb.com" target="_blank"&gt;şu adrese&lt;/a&gt; girip bir hesap a&amp;ccedil;makla olacak. Sonrasında bizi bekleyen şey proje a&amp;ccedil;ılması ve bir Cluster oluşturulması. Bu adımda kullanmak istediğiniz sunucu merkezini se&amp;ccedil;ebiliyorsunuz. Ben 0$ maliyeti olan Free plan'ı se&amp;ccedil;erek Freelancer altında Project Zero isimli bir proje oluşturmakla işe başladım. Sandbox olarak ge&amp;ccedil;en &amp;uuml;r&amp;uuml;n i&amp;ccedil;erisinde hemen varsayılan bir Cluster bir ka&amp;ccedil; dakika i&amp;ccedil;erisinde oluşturuldu. Aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nden g&amp;ouml;rebileceğiniz &amp;uuml;zere Frankfurt'ta ki AWS sunucularında 3 node'dan oluşan ve MongoDB'nin 3.4.13 s&amp;uuml;r&amp;uuml;m&amp;uuml;n&amp;uuml; kullanan bir Cluster' ım var.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/03/atlas_node_1.gif" alt="" width="617" height="460" /&gt;&lt;/p&gt;
+&lt;p&gt;Projeyi se&amp;ccedil;ip&amp;nbsp;ilerledikten ve bazı basit operasyonları icra ettiktsen sonra Cluster i&amp;ccedil;erisindeki node'lar da g&amp;ouml;rebildim.&amp;nbsp;İki secondary ve bir primary node s&amp;ouml;z konusuydu.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/03/atlas_node_2.gif" alt="" width="637" height="464" /&gt;&lt;/p&gt;
+&lt;p&gt;Benim amacım yazının başında da belirttiğimi &amp;uuml;zere Atlas &amp;uuml;zerinde oluşturacağım bir MongoDB &amp;ouml;rneğine, West-World'teki Node.js kodlarını kullanarak erişebilmek. Tabii bu tip bir iş i&amp;ccedil;in bazı &amp;ouml;n gereklilikleri yerine getirmek lazım. Atlas &amp;uuml;zerinde proje oluşturup Cluster yaratmak sadece bir başlangı&amp;ccedil;tı. Bunun dışında veritabanı ile ilişkili bir kullanıcının oluşturulması da gerekiyor. Ben &amp;ouml;rnek olarak scothy isimli bir kullanıcı oluşturdum ve bonk&amp;ouml;rl&amp;uuml;k edip ona DBAdmin rol&amp;uuml;n&amp;uuml; verdim.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/03/atlas_node_3.gif" alt="" width="639" height="226" /&gt;&lt;/p&gt;
+&lt;p&gt;Kullanıcı oluşturmakta yeterli değil. Atlas &amp;uuml;zerinde konuşlanacak olan MongoDB &amp;ouml;rneğine nereden erişilecek?&amp;nbsp;Eğer herkesin kullanımına sunulacak bir veritabanı s&amp;ouml;z konusu ise Public erişim hakkı verebiliriz. Ben &amp;ouml;rnekten sadece kendi bilgisayarımdan erişim sağlanması i&amp;ccedil;in var olan o anki IP adresimi IP Whitelist adı verilen b&amp;ouml;l&amp;uuml;me eklettim. Dolayısıyla veritabanına sadece West-World &amp;uuml;zerinden erişilebilecek şekilde bir ayarlama yaptım. Tabii bu senaryo i&amp;ccedil;in işin can sıkıcı tarafı statik bir IP olmadığında yaşanıyor. Bu sebepten &amp;ouml;rnekleri hazırlarken zaman zaman g&amp;uuml;ncel IP bilgisini yeniden eklemek durumunda kaldığım da oldu.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/03/atlas_node_4.gif" alt="" width="639" height="352" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu adımları tamamladıktan sonra artık elimde Atlas &amp;uuml;zerinde konuşlandırılmış bir MongoDB veritabanı olduğunu s&amp;ouml;yleyebilirim. Ama tabii ki bu da yeterli değil. Bir şekilde s&amp;ouml;z konusu veritabanına bilgi atabilmeli ve en azından bunu sorgulayabilmeliyim.&lt;/p&gt;
+&lt;p&gt;Atlas &amp;uuml;zerindeki veritabanı ve i&amp;ccedil;eriğine erişmek i&amp;ccedil;in bir ka&amp;ccedil; alternatif yol var. Kod tarafını denemeden &amp;ouml;nce &lt;a href="https://www.mongodb.com/products/compass" target="_blank"&gt;MongoDB'nin Compass isimli &amp;uuml;r&amp;uuml;n&amp;uuml;n&amp;uuml;&lt;/a&gt; kullandım. Aslında beni buraya g&amp;ouml;t&amp;uuml;ren yol Atlas arabirimindeki Connect d&amp;uuml;ğmesi oldu. Se&amp;ccedil;enekler arasında yer alan Compass'a bakmaya karar verdim&lt;em&gt;(Bunun dışında uygulama ve Shell se&amp;ccedil;enekleri de bulunuyor)&lt;/em&gt; &amp;Ouml;ncelikle West-World'&amp;uuml;n Ubuntu 64bit versiyonu i&amp;ccedil;in gerekli deb uzantılı paketi belirtilen adresten indirdim. Kurulum işini ger&amp;ccedil;ekleştirmek işin en basit kısmıydı.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/03/atlas_node_5.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Bu arada fotoğrafın altındaki bilgiye de dikkatinizi &amp;ccedil;ekerim.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Tahmin edeceğiniz gibi sonrasında Atlas'a bağlanmak gerekiyor. Atlas şu an i&amp;ccedil;in West-World'&amp;uuml;n olduk&amp;ccedil;a uzağında taaaa Frankfurt'ta ikamet ediyor. Bu nedenle bağlantı bilgileri de &amp;ouml;nemli. Yukarıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde bir de ConnectionString bilgisi olduğunu fark etmişsinizdir. Bu bilgiyi panoya kopyalamak aslında yeterli. Compass'i a&amp;ccedil;tığımızda otomatik olarak host, port, username, gibi bilgiler doldurulmakta. Ama dolmayabilir de. Ki ben denemelerimi yaparken eksik olarak eklendiler. Temel olarak aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan bilgilerin doldurulması gerekiyor. Buradaki Hostname, Replica Set Name bilgileri &amp;ouml;nemli. Port aksi belirtilmedik&amp;ccedil;e 27017 olarak veriliyor. Authentication modunda kullanıcı adı ve şifre kullanacağımızı belirtmemiz lazım. Bu, Atlas &amp;uuml;zerinde oluşturduğumuz kullanıcının bilgileri.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/03/atlas_node_10.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Ben bu bilgileri doldurduktan sonra Project Zero'da yer alan Cluster0'a bağlanmayı başarabildim. Sonrasında ilk işim remote isimli bir veritabanı oluşturmak ve i&amp;ccedil;erisine gamers isimli bir koleksiyon(collection) koymak oldu. Hatta aşağıdaki JSON i&amp;ccedil;eriğini alıp,&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;{
+  "primary_info": {
+     "weapon": "lazer cannon",     
+     "motto": "go go gooo",
+     "movie": "star wars - Jedi the last"
+  },
+  "max_point": 385,
+  "min_point": 35,
+  "matches": [
+     { "game_day": 1, "vs": "lord rikken", "player_score": 200, "opponent_score":145 },
+     { "game_day": 2, "vs": "evelyn", "player_score": 189, "opponent_score":485 },
+     { "game_day": 3, "vs": "moka pinku", "player_score": 21, "opponent_score":18 },
+     { "game_day": 4, "vs": "draymmeor", "player_score": 53, "opponent_score":56 }
+  ],
+  "current_rank":3,
+  "nickname": "lord fungus mungus",
+  "player_id": "21454834"
+}&lt;/pre&gt;
+&lt;p&gt;gamers koleksiyonuna yeni bir dok&amp;uuml;man olarak da ekledim. Sonu&amp;ccedil; ş&amp;ouml;yleydi...&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/03/atlas_node_6.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Pek tabii hedefim bir kod par&amp;ccedil;asından faydalanarak Atlas ile haberleşmekti. Hali hazırda basit bir veri i&amp;ccedil;eriği de eklediğime g&amp;ouml;re en azından Atlas'a bağlanıp bu i&amp;ccedil;eriği &amp;ccedil;ekmeyi deneyebilirdim. Pek &amp;ccedil;ok programlama ortamı i&amp;ccedil;in yardımcı paketler mevcut. Ben son ay i&amp;ccedil;erisinde haşırneşir olduğum Node.js tarafında ilerlemek istedim. Bu nedenle West-World'de Visual Studio Code'u kullanarak aşağıdaki kodları i&amp;ccedil;eren basit bir js dosyasyı hazırladım.&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var MongoClient = require('mongodb').MongoClient;
+
+function getAllGamers(url) {
+    console.log("processing...");
+    return new Promise(function (resolve, reject) {
+
+        console.log("connecting...");
+
+        MongoClient.connect(url, function (err, db) {
+            var dbo = db.db("remote");
+            var query = {};
+            console.log("fetching...");
+            dbo.collection("gamers")
+                .find(query)
+                .toArray(function (err, result) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        console.log("we have gamers now...")
+                        resolve(result)
+                    }
+                    db.close();
+                });
+        });
+    })
+};
+
+function main() {
+    url = "mongodb://scothy:tiGeR@cluster0-shard-00-00-m2yq0.mongodb.net:27017/admin?replicaSet=Cluster0-shard-0&amp;amp;ssl=true"
+    getAllGamers(url).then(function (result) {
+        console.log(result);
+    }, function (err) {
+        console.log(err);
+    });
+    console.log("mongodb examples...")
+};
+
+main();&lt;/pre&gt;
+&lt;p&gt;İlerlemeden &amp;ouml;nce kodda neler olup bitttiğini anlatsam iyi olacak. Temel olarak iki fonksiyonumuz bulunuyor. main ve getAllGamers. getAllGamers Atlas &amp;uuml;zerinde konuşlandırdığımız koleksiyonun t&amp;uuml;m i&amp;ccedil;eriğini sorgulamak i&amp;ccedil;in kullanılmakta(Select * from'un hallicesinden) Tabii node.js'in npm paketini kullandığımızı da fark etmişsinizdir. Bu da&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;npm install mongodb&lt;/pre&gt;
+&lt;p&gt;terminal komutunun gerekli olabileceği anlamına geliyor. connect fonksiyonu i&amp;ccedil;erisindeki ilgili metodlarla, remote veritabanındaki gamers koleksiyonuna kadar gidiyor ve t&amp;uuml;m i&amp;ccedil;eriği bir array'e alıyoruz. Tabii kod tarafında dikkatinizi &amp;ccedil;eken bir şey de olmuştur. getAllGamers i&amp;ccedil;erisinde promise isimli bir nesne &amp;ouml;rneği d&amp;ouml;nd&amp;uuml;r&amp;uuml;lmekte. Bu benim yeni duyduğum ve hen&amp;uuml;z idrak etmeye &amp;ccedil;alıştığım farklı bir asenkron&amp;nbsp;uygulama yaklaşımı. Normalde node.js asenkron &amp;ccedil;alışma prensiplerini benimsiyor ancak callback tarzı kullanımların bir takım sıkıntıları olduğu dillendirilmekte. Callback fonksiyonunun hi&amp;ccedil; &amp;ccedil;ağırılmaması, az ya da &amp;ccedil;ok &amp;ccedil;ağırılması, parametrelerinin doğru alınamaması, hataların kaybolması gibi sorunlardan bahsedilmekte. Promise adı verilen yapıda ise belli başlı avantajlar var. &amp;Ouml;rneğin istenilen g&amp;ouml;rev tamamlandığında promise değişikliğe uğramıyor. Immutable bir tip olduğunu ve kararlı bir nesne yapısı bahşettiğini anlayabiliriz. İşlem sonucu sadece bir kereliğine başarıya ulaşabilir veya ulaşamaz. Bu, resolved ve rejected durumları ile ele alınmakta. &amp;Ouml;ng&amp;ouml;r&amp;uuml;lemeyen hatalarda promise otomatikman rejected moduna ge&amp;ccedil;iyor.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Koddan da fark edeceğiniz &amp;uuml;zere toArray fonksiyonunun parametresindeki isimsiz metodda reject ve resolve &amp;ccedil;ağrıları s&amp;ouml;z konusu. Veri&amp;nbsp;sonucu alındığında&amp;nbsp;tetiklenen resolve fonksiyonu sonucun getAllGamers.then metodundan ele alınabiliyor olmasını sağlamakta. Tabii bir hata olması halinde reject operasyonunun tetikleneceği de aşikar. Biraz kafa karıştırıcı değil mi? En azından benim i&amp;ccedil;in &amp;ouml;yle. Oysaki promise kullanımını&amp;nbsp;hamburger siparişi ve siparişin hazır olması sonrası &amp;ccedil;alan masa zili&amp;nbsp;ile&amp;nbsp;gayet&amp;nbsp;g&amp;uuml;zel bir tasvirleyerek anlatan esaslı bir yazı var. &amp;Ouml;zg&amp;uuml;n Bal'ın &lt;a href="https://medium.com/codefiction/javascriptte-promise-kullan%C4%B1m%C4%B1-ccca1123989a" target="_blank"&gt;şu yazısını mutlaka okumanızı&lt;/a&gt; &amp;ouml;neririm.&lt;/p&gt;
+&lt;p&gt;Sonu&amp;ccedil;ta uygulamayı &amp;ccedil;alıştırdığımda gamers koleksiyonunun i&amp;ccedil;eriğini &amp;ccedil;ekebildiğimi fark ettim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/03/atlas_node_7.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;T&amp;uuml;m bu işlemler olurken Atlas &amp;uuml;zerinde de veri hareketlilikleri olmakta tabii ki. Onları izlemek m&amp;uuml;mk&amp;uuml;n, sonu&amp;ccedil;lara g&amp;ouml;re &amp;ouml;l&amp;ccedil;eklendirme ile ilgili bir takım y&amp;ouml;netimsel işlemleri yapmak m&amp;uuml;mk&amp;uuml;n. Eğer kullanılan cluster'lara bakılırsa aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi gayet g&amp;uuml;zel grafikler sunuluyor.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/03/atlas_node_8.gif" alt="" width="639" height="703" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu g&amp;uuml;zel gelişmelerden sonra kod tarafını biraz daha kurcalamak istedim.&amp;nbsp;İlk olarak yeni bir koleksiyonu nasıl oluşturabilirim buna baktım. Promise konusunu şimdilik işe katmadan&lt;em&gt;(ki kullanımına alışana kadar kafamı karıştırsın istemiyorum)&lt;/em&gt; koda aşağıdaki&amp;nbsp;createCollection fonksiyonunu&amp;nbsp;ekledim.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;function createCollection(url, name) {
+    console.log("db create process...");
+    MongoClient.connect(url, function (err, db) {
+        if (err) throw err;
+        var dbOwner = db.db("remote");
+        dbOwner.createCollection(name, function (err, res) {
+            if (err) throw err;
+            console.log("collection created!");
+            db.close();
+        });
+    });
+};&lt;/pre&gt;
+&lt;p&gt;url ve name isimli iki parametre alan createCollection fonksiyonu MongoClient.connect ile Atlas'a bağlantı sağladıktan sonra &amp;uuml;zerinde işlem yapabilmek i&amp;ccedil;in remote veritabanını işaret eden bir db nesnesi &amp;ouml;rnekliyor. Sonrasında dbOwner isimli nesne &amp;ouml;rneği &amp;uuml;zerinden createCollection metodu yardımıyla ilgili koleksiyonun oluşturulması sağlanıyor. Kodun main fonksiyonu i&amp;ccedil;eriği ise şu şekilde.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;function main() {
+    url = "mongodb://scothy:tiGeR@cluster0-shard-00-00-m2yq0.mongodb.net:27017/admin?replicaSet=Cluster0-shard-0&amp;amp;ssl=true"
+    createCollection(url,"designers");
+    console.log("mongodb examples...")
+};
+
+main();&lt;/pre&gt;
+&lt;p&gt;&amp;Ccedil;alışma zamanı &amp;ccedil;ıktısı tam da istediğim gibiydi. gamers dışında designers isimli yeni bir koleksiyon daha oluşmuştu.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/03/atlas_node_12.gif" alt="" width="639" height="510" /&gt;&lt;/p&gt;
+&lt;p&gt;E o zaman birde bu yeni koleksiyona dok&amp;uuml;man eklemeyi denesek mi? İşte bu işi &amp;uuml;stlenecek insertDesigner isimli fonksiyonumuz.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;function insertDesigner(url,content){
+    console.log("inserting...");
+    MongoClient.connect(url,function(err,db){
+        if(err) throw err;
+        var dbOwner=db.db("remote");
+        dbOwner.collection("designers").insertOne(content,function(err,res){
+            if(err)throw err;
+            console.log("a new designer inserted");
+            console.log("ID : %s",res.insertedId);
+            db.close();
+        });
+    });
+};
+
+function main() {
+    url = "mongodb://scothy:tiGeR@cluster0-shard-00-00-m2yq0.mongodb.net:27017/admin?replicaSet=Cluster0-shard-0&amp;amp;ssl=true"
+    var vanDyk={fullName:"Yurri van dayk de la rossa",country:"green age",system:"Tatuin",expLevel:980};
+    insertDesigner(url,vanDyk);
+   
+    console.log("mongodb examples...")
+};
+
+main();&lt;/pre&gt;
+&lt;p&gt;Bu sefer collection fonksiyonu ile yakaladığımız koleksiyon i&amp;ccedil;in insertOne metodu yardımıyla yeni bir JSON nesnesini g&amp;ouml;ndermekteyiz. Kodun West-World tarafındaki &amp;ccedil;alışma zamanı sonu&amp;ccedil;ları aşağıdaki gibi.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/03/atlas_node_13.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere insertOne metodunun ikinci parametresi olarak kullanılan fonksiyondaki res değişkeni &amp;uuml;zerinden, hen&amp;uuml;z eklenen dok&amp;uuml;manın MongoDB tarafında &amp;uuml;retilen objectId bilgisine ulaşabildik.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rnekte yer alan insertOne metodu dışında kullanabileceğimiz bir diğer alternatif de insertMany. Adından da anlaşılacağı &amp;uuml;zere&amp;nbsp;koleksiyona birden fazla&amp;nbsp;dok&amp;uuml;man eklemek istediğimiz durumlarda&amp;nbsp;kullanılabilir. remote veritabanındaki designers koleksiyonu i&amp;ccedil;in ben ş&amp;ouml;yle bir deneme yaptım.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;function insertDesigners(url,content){
+    console.log("inserting...");
+    MongoClient.connect(url,function(err,db){
+        if(err) throw err;
+        var dbOwner=db.db("remote");
+        dbOwner.collection("designers").insertMany(content,function(err,res){
+            if(err)throw err;
+            console.log("%i documents inserted",res.insertedCount);
+            db.close();
+        });
+    });
+};
+
+function main() {
+    url = "mongodb://scothy:tiGeR@cluster0-shard-00-00-m2yq0.mongodb.net:27017/admin?replicaSet=Cluster0-shard-0&amp;amp;ssl=true"
+    var designers=[
+        {fullName:"blue man",country:"ingland",system:"oceanic continent",expLevel:256},
+        {fullName:"Reddick",country:"red sun",system:"world",expLevel:128},
+        {fullName:"mari d&amp;ouml; marş",country:"pari",system:"moon",expLevel:45}
+    ];
+    insertDesigners(url,designers);
+
+    console.log("mongodb examples...")
+};
+
+main();&lt;/pre&gt;
+&lt;p&gt;Bu sefer bir JSON nesne dizisini parametre olarak kullanmaktayız. Her birisi ayrı birer dok&amp;uuml;man olarak değerlendirilecek. İşte benim elde ettiğim sonu&amp;ccedil;lar,&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/03/atlas_node_14.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rnekler &amp;ccedil;oğaltılabilir. Dok&amp;uuml;man sorgulanması, veritabanı &amp;uuml;retilmesi, &amp;ccedil;eşitli kriterlere g&amp;ouml;re sorgulamalar yapılması gibi temel pek &amp;ccedil;ok operasyon kolaylıkla ger&amp;ccedil;ekleştirilebilir. S&amp;ouml;z konusu kodlar birer WebAPI servisi gibi tasarlanabilir de. Siz g&amp;ouml;revinizi anladınız değil mi?&lt;/p&gt;
+&lt;p&gt;Eğer konusunda veri&amp;nbsp;kullanılması gereken bir startup denemesi veya bir proje ya da tez &amp;ouml;devi olsa sanırım Atlas gibi platformların Free Plan stat&amp;uuml;s&amp;uuml;ndeki versiyonlarını kullanmayı tercih edebiliriz. Maliyeti sadece internet &amp;uuml;creti ile sınırlı olacaktır. &amp;Uuml;stelik istemci tarafını geliştirmekte olduk&amp;ccedil;a basit. Senaryolar &amp;ccedil;ok&amp;ccedil;a &amp;ccedil;eşitlendirilebilir. Node.js uygulamasının yine bulut &amp;uuml;zerinde bir yerlde servisleştirilmesi ve bu servisin Atlas ile konuşarak MongoDB tabanlı veri yapılarını kullanması pekala m&amp;uuml;mk&amp;uuml;n. G&amp;uuml;n&amp;uuml;m&amp;uuml;zde birbirine bağlanamayan sistem neredeyse kalmadı gibi ne dersiniz :) B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2018-05-01 21:30:00</pubDate>
+  <slug>atlas-ile-node-js-uzerinden-haberlesmek</slug>
+  <tags>
+    <tag>mongodb</tag>
+    <tag>nodejs</tag>
+    <tag>javascript</tag>
+    <tag>atlas</tag>
+    <tag>cloud-computing</tag>
+    <tag>aws</tag>
+    <tag>amazon</tag>
+    <tag>promise</tag>
+    <tag>asynchronous-programming</tag>
+    <tag>mongodb-compass</tag>
+    <tag>paas</tag>
+    <tag>visual-studio-code</tag>
+    <tag>json</tag>
+    <tag>reject</tag>
+    <tag>async</tag>
+    <tag>await</tag>
+    <tag>crud</tag>
+  </tags>
+  <categories>
+    <category>Node.js</category>
+  </categories>
+</post>

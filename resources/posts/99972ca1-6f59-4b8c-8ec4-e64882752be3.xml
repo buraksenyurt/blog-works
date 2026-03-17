@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>.Net Core Tarafında SignalR Kullanımı</title>
+  <description>Bir süre önce araştırmaya başladığım ama araya giren diğer konular(WebSockets ve CORS) nedeniyle askıda kalan SignalR ile ilgili West-World tarafında haftasonu önemli gelişmeler oldu. Öncelikle çalıştığım kaynaklardan yararlanarak aşağıdaki özet şekli oluşturdum ve bir örnek yapmaya karar verdim.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2017/12/signalr_4.gif" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Bir s&amp;uuml;re &amp;ouml;nce araştırmaya başladığım ama araya giren diğer konular&lt;em&gt;(WebSockets ve CORS-Cross Origin Resource Sharing)&lt;/em&gt; nedeniyle askıda kalan SignalR mevuzusuyla ilgili West-World'de haftasonu &amp;ouml;nemli ve heyecanlı gelişmeler oldu. Epey&amp;nbsp;zorlandığımı itiraf etmek isterim. Bunun en b&amp;uuml;y&amp;uuml;k sebebi standart &amp;ouml;ğretilerde yer alan web tabanlı &amp;ouml;rnekler yerine her şeyi Console &amp;uuml;zerinde&amp;nbsp;uygulamaya &amp;ccedil;alışmamdı. HUB i&amp;ccedil;in bir sunucu, mesaj yayını i&amp;ccedil;in bir başka uygulama ve yayınlanan mesajları alan bir diğeri.&lt;/p&gt;
+&lt;p&gt;Alınan sayısız &amp;ccedil;alışma zamanı hatası ve uykusuz bırakan birka&amp;ccedil; saatin ardından sonunda konuyu bir şekilde toparlamayı başardım. Bu hataları gidermeye &amp;ccedil;alışırken farkına vardığım bir &amp;ccedil;ok şey de oldu. SignalR'ın &amp;ccedil;alışma yapısı haricinde sunucu ve istemci taraflarının birbirleri &amp;uuml;zerinden fonkisyon tetiklemesi noktasında nasıl bir yol izlediklerini .Net Core cephesinden g&amp;ouml;rm&amp;uuml;ş oldum. T&amp;uuml;m bu&amp;nbsp;didinmenin ardından g&amp;uuml;zel bir uyku &amp;ccedil;ektim ve ertesi g&amp;uuml;n gelecekteki kendime not bırakmak i&amp;ccedil;in ge&amp;ccedil;tim bilgisayarımın&amp;nbsp;başına. &amp;Ouml;ncelikle &amp;ccedil;alıştığım kaynaklardan yararlanarak aşağıdaki &amp;ouml;zet şekli oluşturdum.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/12/signalr_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekilden de g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere olayın ana noktasında bir HUB yer alıyor. Bunu host eden bir uygulama kendisine bağlı olan diğer uygulamaların aynı anda etkileşimde olmasına olanak tanıyor. Genellikle meydana gelen bir olay sonrası&lt;em&gt;(stok hareketlerindeki değişim, oyun ağına bağlı oyunculardan birisinin yaptığı bir hamle, kanala atılan ortak bir mesaj-hey gidi MIRC vb)&lt;/em&gt; hub &amp;uuml;zerine bırakılan mesaj, bağlı olan t&amp;uuml;m istemcilere iletilmekte. İstemciler basit web tarayıcıları &amp;uuml;zerindeki uygulamalar olabileceği gibi, mobil &amp;ccedil;&amp;ouml;z&amp;uuml;mler, terminal programları vb de olabilir. Kritik olan nokta HUB sunucusunun kendisine bağlı istemciler &amp;uuml;zerinde fonksiyon &amp;ccedil;ağırabilmesi. Tam tersi iletişim zaten hepimizin aşina olduğu bir durum. SignalR'ın bu oluşum i&amp;ccedil;erisindeki veri alışverişini kolaylaştıracak nimetler sunduğunu ifade edebiliriz. Neredeyse her tipten istemci i&amp;ccedil;in yazılımış k&amp;uuml;t&amp;uuml;phaneler mevcut.&lt;/p&gt;
+&lt;p&gt;Şeklin sağ tarafında SignalR Hub ile istemci arasındaki temel iletişim sırası da yer alıyor. İstemci &amp;ouml;ncelikle HUB'a bağlantı isteği g&amp;ouml;nderiyor. Bağlantı başarılı bir şekilde sağlanırsa arada kalıcı bir iletişim hattı tesis ediliyor. Sonrasında HUB ile kullanıcısı arasında bir etkileşim s&amp;uuml;regeliyor. Burada istemci HUB &amp;uuml;zerine mesaj bırakabileceği gibi dinleme modunda da &amp;ccedil;alışabiliyor. Dinleme modu ağırlıklı olarak HUB'a mesaj bırakan bir başka istemcinin mesajını almak gibi de d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;SignalR, Asp.Net tarafında uzun zamandır beri var olan bir konu olmasına rağmen, .Net Core tarafında halen Alpha s&amp;uuml;r&amp;uuml;m&amp;uuml; olarak yer alıyor&lt;em&gt;(Yazıyı okuduğunuz tarih itibariyle kontrol etmenizi &amp;ouml;neririm. Release versiyon &amp;ccedil;ıkmış olabilir)&lt;/em&gt; Tabii son s&amp;uuml;r&amp;uuml;m yayınlanmadan bir ger&amp;ccedil;ek hayat projesinde kullanmak pek doğru olmayacaktır.&lt;/p&gt;
+&lt;h1&gt;HUB Sunucusu&lt;/h1&gt;
+&lt;p&gt;S&amp;ouml;z&amp;uuml; fazla uzatmadan &amp;ouml;rneğimize ge&amp;ccedil;elim dilerseniz. Senaryomuz standartların biraz dışında. Konuyu kavrayabilmek a&amp;ccedil;ısında HUB &amp;ouml;rneğini sunan bir sunucumuz, buraya abone olup mesaj yayını yapacak ve dinleyecek olan&amp;nbsp;istemcilerimiz birer Console uygulaması olacak. İşe ilk olarak sunucu tarafını yazarak başlayalım&lt;em&gt;(Bu arada &amp;ouml;rneği Ubuntu &amp;uuml;zerinde Visual Studio Code ile geliştirdiğimi belirtmek isterim)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet new console -o FabrikamServer&lt;/pre&gt;
+&lt;p&gt;komutu ile FabrikamServer isimli bir Console uygulaması oluşturalım. SignalR kullanımı i&amp;ccedil;in&amp;nbsp;Microsoft.AspNetCore.All ve Microsoft.AspNetCore.SignalR.1.0.0-alpha2-final paketlerine ihtiyacımız bulunuyor. Aşağıdaki terminal komutları ile bunları projemize dahil edebiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet add package Microsoft.AspNetCore.All
+dotnet add package Microsoft.AspNetCore.SignalR -v "1.0.0-alpha2-final"&lt;/pre&gt;
+&lt;p&gt;Şu an i&amp;ccedil;in versiyon bilgisini belirtmemiz &amp;ouml;nemli. İşlerin yolunda gittiğinden emin olmak i&amp;ccedil;in belki bir restore ve build işlemi uygulamakta yarar olabilir.&amp;nbsp;Uygulamada bir ka&amp;ccedil; sınıfımız var. Web &amp;ccedil;alışma ortamının ayağa kaldırılmasında kullanacağımız Startup.cs ve Hub g&amp;ouml;revini &amp;uuml;stlenecek olan QutoeHub.cs. Evet tahmin edeceğiniz &amp;uuml;zere oyunlardan beğendiğim bir ka&amp;ccedil; s&amp;ouml;z&amp;uuml;n yayınlanmasını sağlayacağız. Tabii online olan istemcilere.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
+
+public class QuoteHub 
+    : Hub
+{
+    public string Send(string incomingQuote)
+    {   
+        Clients.All.InvokeAsync("GetQuote",incomingQuote);
+        return $"[{Context.ConnectionId}]: {incomingQuote}";
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Hub sınıfından t&amp;uuml;retilmiş olan QuoteHub&amp;nbsp;tipinde Send isimli bir metod yer alıyor. Bu metod o an bağlı olan istemci i&amp;ccedil;in &amp;uuml;retilen GUID değeri ile birlikte parametre olarak gelen i&amp;ccedil;eriği geriye d&amp;ouml;nd&amp;uuml;rmekte. Ancak &amp;ouml;nemli bir g&amp;ouml;revi daha var. Bağlı olan ne kadar istemci varsa hepsindeki GetQuote operasyonunu tetiklemek. Buna g&amp;ouml;re, HUB'a bağlı olan bir istemci, Send mesajını kullanarak bir bilgi bıraktığında(ki senaryomuzda bu g&amp;uuml;zel bir oyun c&amp;uuml;mlesi), dinlemede olan ne kadar istemci varsa iletilecek. İşte basit bir broadcasting senaryosu. Startup sınıfı ile devam edelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+public class Startup
+{
+    public void ConfigureServices(
+        IServiceCollection services)
+    {
+        services.AddSignalR();
+    }
+
+    public void Configure(
+        IApplicationBuilder app, 
+        IHostingEnvironment env)
+    {
+        app.UseSignalR(routes =&amp;gt;
+        {
+            routes.MapHub&amp;lt;QuoteHub&amp;gt;("QuoteHub");
+        });
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Startup sınıfında tipik olarak route tanımlamasını yapıyor ve Middleware'e SignalR kabiliyetlerini ekliyoruz. Tahmin edileceği &amp;uuml;zere istemciler belli bir HUB adresine doğru gelmeliler. Buradaki eşleştirme MapHub fonksiyonu ile belirtiliyor. Uygulamanın Program.cs i&amp;ccedil;eriği ise şu şekilde geliştirilebilir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
+
+namespace FabrikamServer
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            WebHost.CreateDefaultBuilder(args)
+            .UseStartup&amp;lt;Startup&amp;gt;()            
+            .Build()
+            .Run();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Tipik olarak Kestrel &amp;ccedil;alışma zamanının ayağa kaldırıldığını ifade edebiliriz.&lt;/p&gt;
+&lt;h1&gt;Yayıncının Geliştirilmesi&lt;/h1&gt;
+&lt;p&gt;Gelelim mesaj yayını yapacak olan uygulamaya. Aslında bu da bir nevi istemci gibi d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Tek farkı sadece Send operasyonunu &amp;ccedil;ağıracak ve GetQuote ile ilgili hi&amp;ccedil;bir şey yapmayacak olması. FabrikamPostman isimli Console projesinde Microsoft.AspNetCore.SignalR.Client paketinin 1.0.0-alpha2-final s&amp;uuml;r&amp;uuml;m&amp;uuml;n&amp;uuml;n kullanılması gerekiyor&lt;em&gt;(Bu Client versiyonu dikkat edin)&lt;/em&gt; Bu nedenle ilgili paketi hem bu hem de biraz sonra yazacağımız Console projelerine aşağıdaki komutu kullanarak eklemeliyiz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet add package Microsoft.AspNetCore.SignalR.Client -v "1.0.0-alpha2-final"&lt;/pre&gt;
+&lt;p&gt;Program.cs i&amp;ccedil;eriğini aşağıdaki gibi geliştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR.Client;
+
+namespace FabrikamPostman
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {   
+            HubConnection conn = new HubConnectionBuilder()
+                 .WithUrl("http://localhost:5000/QuoteHub")
+                 .WithConsoleLogger()
+                 .Build();
+
+            conn.StartAsync().ContinueWith(t=&amp;gt;{
+                if(t.IsFaulted)
+                    Console.WriteLine(t.Exception.GetBaseException());
+                else
+                    Console.WriteLine("Connected to Hub");
+
+            }).Wait();
+
+            conn.On&amp;lt;string&amp;gt;("GetQuote", param =&amp;gt; {                
+            });
+            
+            for(int i=0;i&amp;lt;10;i++)
+            {   
+                Random random=new Random();
+                int index=random.Next(0,QuoteFabric.GetQuotes().Count);
+                conn.InvokeAsync&amp;lt;string&amp;gt;("Send",QuoteFabric.GetQuotes()[index].ToString())
+                .ContinueWith(t=&amp;gt;{
+                    if(t.IsFaulted)
+                        Console.WriteLine(t.Exception.GetBaseException());
+                    else
+                        Console.WriteLine(t.Result);
+                });
+                Thread.Sleep(10000);
+            }
+
+            conn.DisposeAsync().ContinueWith(t=&amp;gt;{
+                if(t.IsFaulted)
+                    Console.WriteLine(t.Exception.GetBaseException());
+                else
+                    Console.WriteLine("Disconnected");
+            });
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;İlk olarak bir HubConnection nesnesi &amp;ouml;rneklenmekte. WithUrl fonkisyonuna parametre olarak ge&amp;ccedil;ilen adrese dikkat edelim. Az &amp;ouml;nce yazdığımız sunucunun yayın yaptığı adresteki y&amp;ouml;nlendirme bilgisine g&amp;ouml;re belirlenmiş durumda. Console penceresine log bırakacağımızı da belirtmekteyiz. İşlemleri izlemek keyifli olacak.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;StartAsync operasyonu ile bağlantının a&amp;ccedil;ılmasını sağlıyoruz. On metodu GetQuote i&amp;ccedil;in yapılan &amp;ccedil;ağrıları dinlemek i&amp;ccedil;in ele alınmakta. Ancak az &amp;ouml;ncede belirttiğimiz gibi bu operasyonu mesaj yayını yapan programımız i&amp;ccedil;in kullanılmıyor. "O zaman yazmasaydın?" dediğinizi duyar gibiyim. Hemen QuoteHub &amp;uuml;zerindeki Send fonksiyonuna d&amp;ouml;nelim o zaman. Orada t&amp;uuml;m bağlı istemciler GetQuote &amp;ccedil;ağrısı s&amp;ouml;z konusu. Burası da bir istemci olduğu i&amp;ccedil;in ilgili operasyonun bulunması gerekiyor. Aksi durumda &amp;ccedil;alışma zamanı hatası alırız.&lt;/p&gt;
+&lt;p&gt;10 elemanlı d&amp;ouml;ng&amp;uuml; i&amp;ccedil;erisinde yapılan InvokeAsync &amp;ccedil;ağırısı &amp;ouml;nemli. İlk parametre dikkat edileceği &amp;uuml;zere QuoteHub sınıfındaki Send metodunun adı. Sonrasında ise g&amp;ouml;ndereceğimiz parametre s&amp;ouml;z konusu. Burada QuoteFabric&lt;em&gt;(github &amp;uuml;zerinden yayınladığım proje kodlarını &lt;a href="https://github.com/buraksenyurt/dotnetcore/tree/master/signalr" target="_blank"&gt;bu adresten&lt;/a&gt; &amp;ccedil;ekebilirsiniz)&lt;/em&gt; sınıfı i&amp;ccedil;erisinde yer alan bir ka&amp;ccedil; &amp;ouml;zl&amp;uuml; s&amp;ouml;zden rastgele se&amp;ccedil;ilen birisinin g&amp;ouml;nderildiğini ifade edebiliriz. Send metodu geriye de bir string veri d&amp;ouml;nd&amp;uuml;rd&amp;uuml;ğ&amp;uuml;nden ContinueWith i&amp;ccedil;erisinden bu sonucu yakalamamız da m&amp;uuml;mk&amp;uuml;n(t.Result)&lt;/p&gt;
+&lt;p&gt;Bu 10 c&amp;uuml;mlelik g&amp;ouml;rev tamamlandıktan sonra DisposeAsync &amp;ccedil;ağrısı yapılarak bağlantının kesilmesi sağlanıyor.&lt;/p&gt;
+&lt;h1&gt;Tipik İstemci&lt;/h1&gt;
+&lt;p&gt;Son olarak istemci tarafını yazabiliriz. İstemci Send metodu ile bir &amp;ccedil;ağrı yapmayacak. Sadece GetQuote mesajlarını dinleyecek. Console olarak oluşturacağımız projeye Microsoft.AspNetCore.SignalR.Client paketini ekledikten sonra Program.cs i&amp;ccedil;eriğini aşağıdaki gibi geliştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR.Client;
+
+namespace FabrikamPostman
+{
+    class Program
+    {
+        static void Main(string[] args)
+        { 
+            HubConnection conn = new HubConnectionBuilder()
+                 .WithUrl("http://localhost:5000/QuoteHub")
+                 .WithConsoleLogger()
+                 .Build();
+
+            conn.StartAsync().ContinueWith(t=&amp;gt;{
+                if(t.IsFaulted)
+                    Console.WriteLine(t.Exception.GetBaseException());
+                else
+                    Console.WriteLine("Connected to Hub");
+
+            }).Wait();              
+
+            conn.On&amp;lt;string&amp;gt;("GetQuote", param =&amp;gt; {
+                Console.WriteLine(param);
+            });
+
+            Console.WriteLine("Press any key to exit.");
+            Console.ReadLine();
+            conn.DisposeAsync().ContinueWith(t=&amp;gt;{
+                if(t.IsFaulted)
+                    Console.WriteLine(t.Exception.GetBaseException());
+                else
+                    Console.WriteLine("Disconnected");
+            });
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bir &amp;ouml;nceki uygulamadan pek bir farkı yok neredeyse. Yine bir HubConnection nesnesi &amp;ouml;rnekleniyor, StartAsync ile bağlantı a&amp;ccedil;ılıyor ve On olay metodu ile GetQuote i&amp;ccedil;in yapılan mesaj yayınları dinleniyor. Bir tuşa basıldıktan sonra da aradaki iletişim kopartılıyor. Tabii GetQuote operasyonuna gelecek olan mesajlar QuoteHub'daki Send metodu i&amp;ccedil;erisinden yayınlanmakta&lt;em&gt;(Clients.All.InvokeAsync("GetQuote",incomingQuote))&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Artık bir ka&amp;ccedil; test yapabiliriz. İlk olarak HUB sunucusunu sonra yayın yapan istemciyi ve son olarak da dinleyici rol&amp;uuml;ndeki programı &amp;ccedil;alıştıralım. Dinleyici rol&amp;uuml;ndeki programdan bir ka&amp;ccedil; tane &amp;ccedil;alıştıraraktan da sonu&amp;ccedil;ları irdeleyebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/12/signalr_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nden de g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere ben iki istemci (FabrikamSomeClient) &amp;ccedil;alıştırarak sonu&amp;ccedil;ları değerlendirdim. FabrikamPostman &amp;uuml;zerinden yayınlanan s&amp;ouml;zler, bağlı olan t&amp;uuml;m istemcilere ulaştırıldı. Ayrıca FabrikamServer &amp;uuml;zerindeki log izlerine bakıldığında bağlanan herbir uygulama i&amp;ccedil;in benzersiz Guid &amp;uuml;retildiği de g&amp;ouml;zlemlendi. SignalR'ın WebSocket modelini baz alan eş zamanlı haberleşebilme yeteneklerini kolaylaştıran yanlarını az &amp;ccedil;ok bu &amp;ouml;rnekle anlamış bulundum. Umarım sizler i&amp;ccedil;in de anlaşılır olmuştur. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2017-12-31 21:02:00</pubDate>
+  <slug>net-core-tarafinda-signalr-kullanimi</slug>
+  <tags>
+    <tag>signalr</tag>
+    <tag>net-core</tag>
+    <tag>aspnet-core</tag>
+    <tag>c#</tag>
+    <tag>websockets</tag>
+    <tag>real-time-messaging</tag>
+    <tag>hub</tag>
+    <tag>signalrclient</tag>
+  </tags>
+  <categories>
+    <category>Asp.Net Core</category>
+  </categories>
+</post>

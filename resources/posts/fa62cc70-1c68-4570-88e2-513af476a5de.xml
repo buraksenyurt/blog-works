@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Post Görünümlü Put</title>
+  <description>Hiç bir REST servisine Post talebi gönderip aslında onun Put işlemini yapmasını istediğiniz oldu mu? Bir kaç değişik sebepten dolayı tasarlayacağınız REST tabanlı servisin bu tip senaryolara hizmet verebilir olmasını isteyebilirsiniz. Haydi gelin bir .Net Core Web API için bunu nasıl yapacağımıza bakalım.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2018/05/tun_giris.gif" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Dışarıda &amp;ccedil;ok g&amp;uuml;zel bir hava var. B&amp;uuml;y&amp;uuml;k ihtimalle t&amp;uuml;m sahil şeritlerimiz hınca hın&amp;ccedil; dolu. Denize girip serinleyenler, &amp;ccedil;imlere serilip g&amp;ouml;lgelenenler, arkadaşlarıyla birlikte naneli limonata i&amp;ccedil;ip hararet giderenler vs...Kimbilir belki de az sonra ahşap &amp;uuml;zerinde &amp;ccedil;ıplak ayaklarınızla y&amp;uuml;r&amp;uuml;yecek ve incecik kumlara basıp b&amp;uuml;t&amp;uuml;n senenin yorgunluğunu&amp;nbsp;atmak &amp;uuml;zere kendinizi serin okyanus sularına bırakacaksınız. Ama birilerinin de şu yazılım d&amp;uuml;nyası i&amp;ccedil;in i&amp;ccedil;erik &amp;uuml;retmesi gerekiyor &amp;ouml;yle değil mi? Doğruyu s&amp;ouml;ylemek gerekirse bu tip bir misyonu &amp;uuml;stlendiğim i&amp;ccedil;in memnunum. &amp;Ouml;yleyse gelin bug&amp;uuml;n ki konumuza başlayalım.&lt;/p&gt;
+&lt;p&gt;Hi&amp;ccedil; bir REST servisine POST talebi g&amp;ouml;nderip aslında onun PUT işlemini yapmasını istediğiniz oldu mu? Bir ka&amp;ccedil; değişik sebepten dolayı tasarlayacağınız REST tabanlı servisin bu tip senaryolara hizmet verebilir olmasını isteyebilirsiniz. Bunun bir ka&amp;ccedil; sebebi olabilir. Basit haliyle ş&amp;ouml;yle bir senaryoyu g&amp;ouml;z &amp;ouml;n&amp;uuml;nde bulundurabiliriz;&lt;/p&gt;
+&lt;p&gt;İstemci tarafı aslında bir g&amp;uuml;ncelleme işlemi yapmak istiyor olsun. &amp;Ouml;rneğin bir kitabın başlığını değiştirecek. Bunun i&amp;ccedil;in tipik olarak HTTP&amp;nbsp;PUT&amp;nbsp;talebini g&amp;ouml;ndermesi yeterli olacaktır.&amp;nbsp;Serviste g&amp;uuml;ncelleme i&amp;ccedil;in PUT operasyonunu destekleyen bir&amp;nbsp;fonksiyon olduğunu da d&amp;uuml;ş&amp;uuml;nelim. Ancak Firewall' a konan katı bir kural, eski bir tarayıcı kullanılıyor olması ya da XmlHttpRequest&amp;nbsp;ile talep g&amp;ouml;nderen kod par&amp;ccedil;asının ilgili komutu işlememesi gibi sebeplerden &amp;ouml;t&amp;uuml;r&amp;uuml; sadece POST ve GET &amp;ccedil;ağrıları yapan/yapabilen istemciler olduğunu d&amp;uuml;ş&amp;uuml;nelim. Yani ben PUT ile bir g&amp;uuml;ncelleme talebi g&amp;ouml;ndermek istediğim halde bunu yollayamıyorum. B&amp;ouml;yle bir durumla karşılaşma ihtimalimiz epey d&amp;uuml;ş&amp;uuml;k gibi g&amp;ouml;r&amp;uuml;nse de olabilir&lt;em&gt;(Karşılaştım o y&amp;uuml;zden s&amp;ouml;yl&amp;uuml;yorum)&lt;/em&gt; Acaba&amp;nbsp;g&amp;ouml;nderilen&amp;nbsp;POST&amp;nbsp;talebinin aslında bir PUT&amp;nbsp;talebi olması gerektiğini karşı tarafa s&amp;ouml;yleyebilir miyiz? İşte yazımızın konusu bu. Normalde .Net Framework &amp;uuml;zerinde WCF servislerinde ele alınan bir konu olmasına rağmen biz .Net Core a&amp;ccedil;ısından olaya bakacağız.&amp;nbsp;&lt;/p&gt;
+&lt;h1&gt;Kobay Web API Servisi&lt;/h1&gt;
+&lt;p&gt;İlk olarak &amp;ouml;rnek uygulamamızı oluşturalım. Ben her zaman ki gibi konuyu West-World'de ele alacağım. Visual Studio Code &amp;uuml;zerindeki terminalden aşağıdaki komutu vererek işe başlayabiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet new webapi -o SmartReaderApi&lt;/pre&gt;
+&lt;p&gt;SmartReaderApi isimi Web API uygulamasında kitaplara ait bir hizmet sunduğumuzu d&amp;uuml;ş&amp;uuml;nelim. Aşağıdaki Entity sınıfını bu ama&amp;ccedil;la değerlendirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace SmartReaderApi.Models
+{
+    public class Book
+    {
+        public int BookID { get; set; }
+        public string Title { get; set; }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;BooksController isimi bir sınıfımız daha var. Tahmin edeceğiniz &amp;uuml;zere Controllers klas&amp;ouml;r&amp;uuml; i&amp;ccedil;erisinde yer alacak. Temel olarak kitap listesinin getirilmesi, eklenmesi, başlık bilgisinin g&amp;uuml;ncellenmesi ve silinmesi gibi operasyonellikler sunacak. Yani Http GET, POST, PUT ve DELETE gibi&amp;nbsp;taleplere hizmet edecek şekilde tasarlanmış durumda.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using SmartReaderApi.Models;
+
+namespace SmartReaderApi.Controllers
+{
+    [Route("smarty/api/[controller]")]
+    public class BooksController : Controller
+    {
+        static List&amp;lt;Book&amp;gt; _books=new List&amp;lt;Book&amp;gt;{
+                new Book{BookID=1023,Title="Essential C# 6.0"},
+                new Book{BookID=985,Title="Big Java, Early Objects"},
+                new Book{BookID=124,Title="Kralın D&amp;uuml;ş&amp;uuml;ş&amp;uuml;"},
+            };
+
+        [HTTPGet]
+        public IActionResult Get()
+        {
+            return Ok(new { Books = _books });
+        }
+
+        [HttpPost]
+        public IActionResult Create([FromBody]Book book)
+        {
+            _books.Add(book);
+            return Ok(book);
+        }
+
+        [HttpPut("{bookId}")]
+        public IActionResult Update(int bookID, [FromBody]Book book)
+        {
+            var findResult = _books.Find(b=&amp;gt;b.BookID==bookID);
+            if (findResult == null)
+            {
+                return NotFound();
+            }
+            findResult.Title = book.Title;
+            return Ok(findResult);
+        }
+
+        [HttpDelete("{bookId}")]
+        public IActionResult Delete(int bookID)
+        {
+            var findResult = _books.Find(b=&amp;gt;b.BookID==bookID);
+            if (findResult == null)
+            {
+                return NotFound();
+            }
+            _books.Remove(findResult);
+            return Ok(findResult);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rnek bir servis olduğu i&amp;ccedil;in &amp;ccedil;ok fazla detaya girmedik. IActionResult d&amp;ouml;n&amp;uuml;şleri sağlayan fonksiyonlar genel olarak sabit bir kitap listesini kullanmakta. Elbette siz &amp;ouml;rneğinizdeki veri setini Entity Framework &amp;uuml;zerinden farklı bir kaynakla bağlayaraktan da ilerleyebilirsiniz.Kitap ekleme ve g&amp;uuml;ncelleme operasyonları talebin g&amp;ouml;vdesindeki JSON i&amp;ccedil;eriklerini okuyarak gerekli işlemleri yapmaktalar. DELETE operasyonu verilen kitabın ID bilgisine g&amp;ouml;re koleksiyondan &amp;ccedil;ıkartma işlemi ger&amp;ccedil;ekleştiriyor. GET metodumuz da tahmin edeceğiniz &amp;uuml;zere t&amp;uuml;m kitap listesini d&amp;ouml;nd&amp;uuml;rmekte. Bunlara ek&amp;nbsp;olarak benim West-World i&amp;ccedil;in yapmam gereken ufak bir değişiklik daha var. 5000 numaralı port başka bir &amp;uuml;r&amp;uuml;n&amp;uuml;n himayesi altında. Bu nedenle farklı bir port &amp;uuml;zerinden uygulamamı &amp;ccedil;alıştırmak durumundayım. O nedenle program sınıfında UseUrls ile ufak bir değişiklik yapmam gerekiyor.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public static IWebHost BuildWebHost(string[] args) =&amp;gt;
+    WebHost.CreateDefaultBuilder(args)
+        .UseStartup&amp;lt;Startup&amp;gt;()
+        .UseUrls("http://localhost:5555")
+        .Build();&lt;/pre&gt;
+&lt;h1&gt;Middleware Sınıfının Geliştirilmesi&lt;/h1&gt;
+&lt;p&gt;Aslında senaryoyu ger&amp;ccedil;ekleştirmek i&amp;ccedil;in yapılması gereken şey belli. Bir şekilde istemciden gelen mesajı yakalamalı, header i&amp;ccedil;erisindeki bilgiye bakıp&lt;em&gt;(X-HTTP-Method-Override anahtarının değerine bakacağız)&lt;/em&gt; asıl HTTP&amp;nbsp;metodu yerine hangi işlemin uygulanması gerektiğini anlamalıyız. Bunu yaparken de bizim izin verdiğimiz HTTP metodları &amp;ccedil;er&amp;ccedil;evesinde ger&amp;ccedil;ekleştirilir olmasına &amp;ouml;zen g&amp;ouml;stermeliyiz. Şimdi projeye middlewares isimli bir klas&amp;ouml;r ekleyelim ve i&amp;ccedil;erisine aşağıdaki sınıfları koyalım &lt;em&gt;(Asp.Net Core tarafında Middleware yazılması ile ilgili olarak &lt;a href="/post/web-api-icin-custom-middleware-yazmak" target="_blank"&gt;şu yazıya da&lt;/a&gt; g&amp;ouml;z atabilirsiniz)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;HttpOverrider sınıfı&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
+
+namespace SmartReaderApi.Middlewares
+{
+    public class HttpOverrider
+    {
+        RequestDelegate _nextRequest;
+        string _headerName;
+        List&amp;lt;string&amp;gt; _allowedHttpMethods;
+
+        public HttpOverrider(RequestDelegate nextRequest, IOptions&amp;lt;HttpOverriderOptions&amp;gt; options)
+        {
+            _nextRequest = nextRequest ?? throw new ArgumentNullException(nameof(nextRequest));
+
+            if (options?.Value == null)
+                throw new ArgumentNullException(nameof(options));
+
+            _headerName = options.Value.HeaderName;
+            _allowedHttpMethods = new List&amp;lt;string&amp;gt;();
+            foreach (string allowedMethod in options.Value.AllowedMethods)
+            {
+                _allowedHttpMethods.Add(allowedMethod);
+            }
+        }
+        
+        public Task Invoke(HttpContext context)
+        {
+            if (HttpMethods.IsPost(context.Request.Method))
+            {
+                if (context.Request.Headers.ContainsKey(_headerName))
+                {
+                    string xHttpValue = context.Request.Headers[_headerName];
+                    if (_allowedHttpMethods.Contains(xHttpValue))
+                    {
+                        var httpRequestFeature = context.Features.Get&amp;lt;IHttpRequestFeature&amp;gt;();
+                        httpRequestFeature.Method = xHttpValue;
+                    }
+                }
+            }
+            return _nextRequest(context);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;HttpOverrider sınıfının yapıcı metodunda ilk değişkenlerin i&amp;ccedil;eriklerini belirlemekteyiz. Header bilgisi ve izin verilen HTTP metodlarını burada y&amp;uuml;kl&amp;uuml;yoruz. Buna ek olarak pipeline'daki bir sonraki adımı tutacak RequestDelegate nesnesine de atama yapıyoruz ki Invoke operasyonunun sonunda akışın devam etmesini sağlayabilelim. Task tipinden nesne &amp;ouml;rneği d&amp;ouml;nd&amp;uuml;ren Invoke metodunun işlevi &amp;ouml;nemli. &amp;Ouml;ncelikle POST tipinde bir talep s&amp;ouml;z konusu ise, istemcinin g&amp;ouml;nderdiği Header bilgisine g&amp;ouml;re ilerlemek gerekiyor. Eğer Header bilgisi bizim beklediğimiz gibi&amp;nbsp;X-HTTP-Method-Override değerini i&amp;ccedil;eriyorsa ve izin verilen operasyonlardan birisiyse, değişiklik yapıyoruz. Bu middleware sınıfını sisteme ekleyebilmek i&amp;ccedil;in bildiğiniz &amp;uuml;zere IApplicationBuilder aray&amp;uuml;z&amp;uuml;n&amp;uuml; uygulayan tipe bir&amp;nbsp;genişletme metodu&lt;em&gt;(Extension method)&lt;/em&gt;&amp;nbsp;yazılması gerekiyor. Aynen aşağıdaki kod par&amp;ccedil;asında g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Builder;
+
+namespace SmartReaderApi.Middlewares
+{
+    public static class HttpOverriderExtensions
+    {
+        public static IApplicationBuilder UseHttpMethodOverriding(this IApplicationBuilder app)
+        {
+            if (app == null)
+                throw new ArgumentNullException(nameof(app));
+
+            return app.UseMiddleware&amp;lt;HttpOverrider&amp;gt;();
+        }
+
+        public static IApplicationBuilder UseHttpMethodOverriding(this IApplicationBuilder app, HttpOverriderOptions options)
+        {
+            if (app == null)
+                throw new ArgumentNullException(nameof(app));
+
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
+
+            return app.UseMiddleware&amp;lt;HttpOverrider&amp;gt;(Options.Create(options));
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Ah tabii middleware i&amp;ccedil;in gerekli se&amp;ccedil;enekleri i&amp;ccedil;eren sınıfı da unutmamak lazım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Collections.Generic;
+
+namespace SmartReaderApi.Middlewares
+{
+    public class HttpOverriderOptions
+    {
+        public string HeaderName { get; set; }
+        public string[] AllowedMethods { get; set; }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Buradaki se&amp;ccedil;enekler ile Header bilgisini ve izin verilecek&amp;nbsp;HTTP metodlarını orta katmana bildirmeyi hedefliyoruz. T&amp;uuml;m bu işlemler elbette yeterli değil. Yazılan HttpOverrider isimli middleware sınıfının &amp;ccedil;alışma zamanına da bildirilmesi lazım. Bunun i&amp;ccedil;in Startup.cs'deki Configure metodunu aşağıdaki gibi d&amp;uuml;zenlemek gerekiyor. UseMiddleware metodu HttpOverrider sınıfını kullanmakta. Parametreyi Options tipinin Create metodu ile ge&amp;ccedil;irmekteyiz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+{
+    if (env.IsDevelopment())
+    {
+        app.UseDeveloperExceptionPage();
+    }
+
+    app.UseMiddleware&amp;lt;HttpOverrider&amp;gt;(Options.Create(new HttpOverriderOptions
+    {
+        HeaderName = "X-HTTP-Method-Override",
+        AllowedMethods = new[] { 
+            HttpMethods.Put
+            ,HttpMethods.Post
+            , HttpMethods.Delete
+            , HttpMethods.Get
+            }
+    }));
+
+    app.UseMvc();
+}&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere UseMiddleware fonksiyonuna HttpOverrider sınıfını kullanacağını&amp;nbsp;s&amp;ouml;yl&amp;uuml;yor ve parametre olarak istediğimiz se&amp;ccedil;enekleri sunuyoruz. Buna g&amp;ouml;re istemciden gelen mesajın Header kısmında X-HTTP-Method-Override anahtarına bakılacak. Burada izin verilen HTTP operasylarını da belirtmekteyiz. Koda g&amp;ouml;re PUT, POST, DELETE ve GET.&lt;/p&gt;
+&lt;h1&gt;Testler&lt;/h1&gt;
+&lt;p&gt;Sunucuyu&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet run&lt;/pre&gt;
+&lt;p&gt;komutuyla &amp;ccedil;alıştırdıktan sonra bir ka&amp;ccedil; deneme yapmakta yarar var. &amp;Ouml;rneğin ilk olarak kitaplar geliyor mu buna bir bakalım. Ben Postman aracını kullanarak işlemleri ger&amp;ccedil;ekleştirdim.&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;HTTP metodu : GET
+Adres: localhost:5555/smarty/api/books&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/05/tun_ilk_durum.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;T&amp;uuml;m kitap listesinin &amp;ccedil;ekildiğini g&amp;ouml;r&amp;uuml;yorsunuz. Bir g&amp;uuml;ncelleme işlemi yapmak istersek PUT metoduyla gidilmesi yeterlidir.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;HTTP metodu : PUT
+Content-Type: application/json
+Adres: localhost:5555/smarty/api/books/1023
+Body: {Title:"Essential C# 7.0"}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/05/tun_normalde.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Senaryoya g&amp;ouml;reyse PUT gibi bir metodu sunucuya g&amp;ouml;nderemiyor olmalıyız. S&amp;ouml;z gelimi sunucu tarafından desteklenmeyen&amp;nbsp;patch&amp;nbsp;metodunu, POST'un kolunun altına&amp;nbsp;alıp g&amp;ouml;ndermeye &amp;ccedil;alışırsak&amp;nbsp;bir&amp;nbsp;HTTP 404 Not Found hatası alabiliriz. Burada elbette Middleware'deki kriterler devreye girmektedir.&amp;nbsp;Hatırlayacağınız &amp;uuml;zere&amp;nbsp;HttpOverrider sınıfının POST, PUT, DELETE ve GET metodlarına izin veriyoruz. Dolayısıyla aşağıdaki sonu&amp;ccedil; olduk&amp;ccedil;a doğaldır.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;HTTP metodu : POST
+Adres: localhost:5555/smarty/api/books/1023
+Content-Type: application/json
+X-HTTP-Method-Override: PATCH
+Body: {Title:""}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/05/tun_desteklenmeyen_cagri.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Peki&amp;nbsp;izin verilen&amp;nbsp;PUT metodunu&amp;nbsp;POST olarak g&amp;ouml;ndermeyi denersek ne olur? &amp;Ouml;yle ya t&amp;uuml;m &amp;ccedil;abamız bunu g&amp;ouml;rebilmek i&amp;ccedil;indi. İstemci &amp;ccedil;eşitli sebeplerden &amp;ouml;t&amp;uuml;r&amp;uuml; sunucuya PUT talebi yapamıyor. Elinde sadece POST se&amp;ccedil;eneği var. Bunu analiz etmek i&amp;ccedil;in Postman'de aşağıdaki hazırlığı yapabiliriz.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;HTTP metodu : POST
+Content-Type: application/json
+X-HTTP-Method-Override: PUT
+Adres: localhost:5555/smarty/api/books/1023
+Body: {Title:"X-Men Triology."}&lt;/pre&gt;
+&lt;p&gt;İşte beklenen sonu&amp;ccedil;.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/05/tun_desteklenen.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere Web API'ye HTTP POST &amp;ccedil;ağrısı yapmaktayız. Ancak Header'a eklediğimiz X-HTTP-Method-Override &amp;ouml;zelliğinin değerine de&amp;nbsp;PUT ifadesini yerleştirdik. Bu, POST talebi g&amp;ouml;nderdiğimiz halde aslında&amp;nbsp;PUT işlemini ger&amp;ccedil;ekleştirmek istediğimiz anlamına geliyor. HTTP 200 OK sonucunu g&amp;ouml;rd&amp;uuml;kten sonra hemen t&amp;uuml;m kitap listesini tekrar &amp;ccedil;ekerek istenen g&amp;uuml;ncellemenin olup olmadığını kontrol etmekte yarar var.&amp;nbsp;Buna g&amp;ouml;re 1023 numaralı kitabın başlığının değişmiş olması gerekiyor.&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;HTTP metodu : GET
+Adres: localhost:5555/smarty/api/books&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/05/tun_sonuc.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Volaaa :)&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi k&amp;uuml;&amp;ccedil;&amp;uuml;k bir&amp;nbsp;hile hatta pek &amp;ccedil;ok kaynakta hacking olarak da&amp;nbsp;ifade ediliyor gibi ancak bizim i&amp;ccedil;in &amp;ouml;nemli olan, istemciden gelen Header bilgisini yakalayan ve duruma g&amp;ouml;re askiyon alan middleware sınıfının yazmış olmamız. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2018-08-02 11:51:00</pubDate>
+  <slug>Post-Gorunumlu-Put</slug>
+  <tags>
+    <tag>http</tag>
+    <tag>net-core</tag>
+    <tag>web-api</tag>
+    <tag>http-tunneling</tag>
+    <tag>x--h-t-t-p--method--override</tag>
+    <tag>c#</tag>
+    <tag>post</tag>
+    <tag>put</tag>
+    <tag>delete</tag>
+    <tag>middleware</tag>
+  </tags>
+  <categories>
+    <category>.Net Core</category>
+  </categories>
+</post>

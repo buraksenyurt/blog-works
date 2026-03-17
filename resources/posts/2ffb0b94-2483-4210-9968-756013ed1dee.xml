@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Bir SOAP Web Servisini Proxy Olmadan WebClient ile Çağırmak</title>
+  <description>Geçtiğimiz günlerde şirket dışı bir kurumun web servislerini çağırma ihtiyacımız oldu. Lakin Header bilgisinde bir OAuth Token değeri de geçmemiz gerekiyordu. Bu Header bilgisini SOAP bazlı Web servisine nasıl ekleyeceğimizi düşünürken WebClient sınıfı ile SOAP bazlı servisleri de çağırabileceğimizi öğrendim.</description>
+  <content>&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Ge&amp;ccedil;tiğimiz g&amp;uuml;nlerde şirket dışı bir kurumun web servislerini &amp;ccedil;ağırma ihtiyacımız oldu. Lakin Header bilgisinde bir OAuth Token değeri de g&amp;ouml;ndermemiz&amp;nbsp;gerekiyordu. Bu Header bilgisini SOAP bazlı Web servisine nasıl ekleyeceğimizi d&amp;uuml;ş&amp;uuml;n&amp;uuml;rken WebClient sınıfı ile de bu işi yapabileceğimizi &amp;ouml;ğrendik. &amp;Uuml;stelik &amp;ccedil;ağrılacak servisin WSDL &amp;uuml;retimi referansını projeye eklemeye gerek kalmadan.&amp;nbsp;Bu kısa ipucunda WebClient sınıfının bu ama&amp;ccedil;la nasıl kullanıldığını incelemeye &amp;ccedil;alışacağız. &amp;Ouml;ncelikle eski nesil bir Asp.Net Web Service geliştirdiğimizi d&amp;uuml;ş&amp;uuml;nelim. İ&amp;ccedil;inde iki değerin toplamını hesap eden basit bir metod yer alacak. Servis kodunu aşağıdaki gibi geliştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Web.Services;
+
+namespace CalculateService
+{
+    [WebService(Namespace = "http://azon.com/services/math")]
+    [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
+    public class Common 
+        : System.Web.Services.WebService
+    {
+        [WebMethod]
+        public double Sum(double x,double y)
+        {
+            return x+y;
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;nemli olan nokta bu servis operasyonunu &amp;ccedil;ağırmak i&amp;ccedil;in g&amp;ouml;ndereceğimiz SOAP Header ve Body i&amp;ccedil;erikleri.&amp;nbsp;Yazılan servisin ilgili operasyonunu herhangibir tarayıcıdan &amp;ccedil;ağırırsak bu i&amp;ccedil;erikleri g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/02/wslook.gif" alt="" /&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Olur da kurumun web servisilerinin yardımcı bir ekran&amp;nbsp;sayfası&amp;nbsp;yoktur&lt;em&gt;(JAVA servisleri gibi)&lt;/em&gt; ve sadece WSDL i&amp;ccedil;eriğini g&amp;ouml;rebiliyorsunuzdur, bu durumda SOAP UI gibi bir ara&amp;ccedil;tan yararlaranak ilgili servisi &amp;ccedil;ağırmak i&amp;ccedil;in kullanılacak SOAP Body ve Header i&amp;ccedil;eriklerinin otomatik olarak &amp;uuml;retilmesini sağlayabilir ve oradan destek alabilirsiniz. Dikkat edilmesi gereken nokta SOAPAction değeridir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Header bilgisinde servis operasyonunun adını&lt;em&gt;(SOAPAction bilgisi)&lt;/em&gt;, HTTP'nin hangi metodu ile &amp;ccedil;ağırım yapılması gerektiğini&lt;em&gt;(bu &amp;ouml;rnekte POST)&lt;/em&gt;, kullanılması gereken SOAP versiyonunu&lt;em&gt;(bu &amp;ouml;rnekte 1.1)&lt;/em&gt; g&amp;ouml;nderilecek i&amp;ccedil;eriğin tipini&lt;em&gt;(text/xml; charset=utf-8)&lt;/em&gt;&amp;nbsp;bulabiliriz. Body kısmında yer alan string i&amp;ccedil;eriği aynen kullanabiliriz. Sadece x ve y i&amp;ccedil;in gerekli sayısal değerleri vermemiz&amp;nbsp;yeterlidir. Kodu basit bir Console uygulamasında aşağıdaki gibi deneyebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Net;
+using System.Text;
+
+namespace CallWSWithWebClient
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string content = @"&amp;lt;?xml version=""1.0"" encoding=""utf-8""?&amp;gt;
+                                &amp;lt;soap:Envelope 
+                                    xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" 
+                                    xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" 
+                                    xmlns:soap=""http://schemas.xmlsoap.org/soap/envelope/""&amp;gt;
+                                    &amp;lt;soap:Body&amp;gt;
+                                    &amp;lt;Sum xmlns=""http://azon.com/services/math""&amp;gt;
+                                        &amp;lt;x&amp;gt;4&amp;lt;/x&amp;gt;
+                                        &amp;lt;y&amp;gt;5&amp;lt;/y&amp;gt;
+                                    &amp;lt;/Sum&amp;gt;
+                                    &amp;lt;/soap:Body&amp;gt;
+                                &amp;lt;/soap:Envelope&amp;gt;";
+
+            try
+            {
+                using (WebClient wClient = new WebClient())
+                {
+                    wClient.Headers.Add("Content-Type", "text/xml; charset=utf-8");
+                    wClient.Headers.Add("SOAPAction", "\"http://azon.com/services/math/Sum\"");
+                    var result = wClient.UploadData("http://localhost:52523/Common.asmx"
+                        , "POST"
+                        , Encoding.UTF8.GetBytes(content));
+                    var response = System.Text.Encoding.Default.GetString(result);
+                    Console.WriteLine(response);
+                }
+            }
+            catch(WebException excp)
+            {
+                Console.WriteLine(excp.Message);
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;WebClient sınıfını oluşturduktan sonra Content-Type ve SOAPAction bilgilerini Headers isimli WebHeaderCollection nesnesine eklemekteyiz. UploadData metodu ile Common.asmx servisine POST tekniğini kullanarak son parametre ile ge&amp;ccedil;ilen byte[] i&amp;ccedil;eriğini yolluyoruz. Bu i&amp;ccedil;erik aslında content ile belirtilen XML bilgisi. Bu noktada WebClient metodu hangi EndPoint'e hangi HTTP metodu ve i&amp;ccedil;erik tipi ile&amp;nbsp;veri&amp;nbsp;g&amp;ouml;ndereceğini biliyor. Eğer WebException &amp;uuml;retilmesine neden olacak bir sorun yoksa gelen byte[] dizisi şeklindeki cevap ekrana basılıyor. Burada string olarak bir veri alımı s&amp;ouml;z konusu olsada gelen i&amp;ccedil;erik aslında XML tabanlı. Yani XDocument&lt;em&gt;(XmlDocument)&amp;nbsp;&lt;/em&gt;gibi tipler yardımıyla daha kolay kullanılabilir. Nitekim daha fazla değer d&amp;ouml;nd&amp;uuml;recek sonu&amp;ccedil; k&amp;uuml;melerinde string ile &amp;ccedil;ağırmak &amp;ccedil;ok da mantıklı değil&lt;em&gt;(Tabii i&amp;ccedil;erik JSON d&amp;ouml;n&amp;uuml;yorsa &amp;ccedil;ok daha g&amp;uuml;zel olur)&lt;/em&gt; Kodun &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/02/wsresult.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;rd&amp;uuml;l&amp;uuml;ğ&amp;uuml; gibi başarılı bir sonu&amp;ccedil; aldık. WebClient sınıfını ağırlıklı olarak&amp;nbsp;REST tabanlı servisleri &amp;ccedil;ağırmak i&amp;ccedil;in kullansak da &amp;ouml;rnekte g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi SOAP tabanlı servisler i&amp;ccedil;in de ele alabiliriz. Tekrar hatırlatmakta fayda var ki referans eklemeden bunu yapmamız m&amp;uuml;mk&amp;uuml;n. Eğer servis JSON i&amp;ccedil;erik d&amp;ouml;n&amp;uuml;yorsa sonu&amp;ccedil;ları NewtonSoft'un JsonConvert sınıfından yararlanarak JObject olarak deserialize edebilir, servisin ihtiya&amp;ccedil;larına g&amp;ouml;re ekstra Header bilgilerini&lt;em&gt;(OAuth Token vb)&lt;/em&gt; kolaylıkla g&amp;ouml;nderebiliriz. B&amp;ouml;ylece geldik ihtiya&amp;ccedil; sonrası ortaya &amp;ccedil;ıkan bir yazının daha sonuna.&amp;nbsp;Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2017-05-22 13:13:00</pubDate>
+  <slug>bir-soap-web-servisini-proxy-olmadan-webclient-ile-cagirmak</slug>
+  <tags>
+    <tag>xml-web-services</tag>
+    <tag>soap-based-web-service</tag>
+    <tag>soap</tag>
+    <tag>simple-object-access-protocol</tag>
+    <tag>web-client</tag>
+    <tag>post</tag>
+    <tag>http-post</tag>
+    <tag>webmethod</tag>
+    <tag>soapaction</tag>
+    <tag>soap-headers</tag>
+  </tags>
+  <categories>
+    <category>XML Web Services</category>
+  </categories>
+</post>

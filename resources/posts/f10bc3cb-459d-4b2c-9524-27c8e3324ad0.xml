@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Single File Assembly ve Multiple-File Assembly Kavramları</title>
+  <description>Bir önceki makalemizde, assembly'ları erişilebilirliklerine göre özel (private) ve paylaştırılmış (shared) olmak üzere iki kategoriye ayırabileceğimizi incelemiştik. Assembly'ları ayrıca, tek dosya (single file) ve çoklu dosya (multiple-file) olmak üzere iki farklı kategoriye daha ayırabiliriz. Bu makelemizde assembly'ların bu tiplerini incelemeye çalışacağız.</description>
+  <content>&lt;p&gt;Değerli Okurlarım, Merhabalar.&lt;/p&gt;
+&lt;p&gt;Bir &amp;ouml;nceki makalemizde, assembly'ları erişilebilirliklerine g&amp;ouml;re &amp;ouml;zel (private) ve paylaştırılmış (shared) olmak &amp;uuml;zere iki kategoriye ayırabileceğimizi incelemiştik. Assembly'ları ayrıca, tek dosya (single file) ve &amp;ccedil;oklu dosya (multiple-file) olmak &amp;uuml;zere iki farklı kategoriye daha ayırabiliriz. Bu makelemizde assembly'ların bu tiplerini incelemeye &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;oğunlukla .net ile uygulama geliştirirken, ger&amp;ccedil;ekleştirmiş olduğumuz uygulamalar tek bir assembly' dan oluşurlar. Bu varsayılan olarakta b&amp;ouml;yledir. İşte bu assembly' lar single file (tek dosya) assembly olarak adlandırılır. Bir multiple-file assembly uygulaması ise, birden fazla assembly'dan oluşabilir. &amp;Ouml;yleki t&amp;uuml;m bu assembly'lar farklı .net dillerince yazılmış uygulama par&amp;ccedil;aları olabilir. T&amp;uuml;m bunların bir araya getirilerek PE(portable executable) olarak kullanılacak teki bir assembly altında birleştirilmesi ile, multiple-file assembly mimarisi elde edilmiş olur.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğin, vb.net module'lerinden, J# k&amp;uuml;t&amp;uuml;phanelerinden oluşan bir uygulamada, giriş noktasına sahip olan uygulamanın (yani Main metodunu i&amp;ccedil;eren uygulamanın) C# ile yazılmış olduğunu ve bu dosyadan diğer module ve k&amp;uuml;t&amp;uuml;phanelere ait elemanların kullanıldığını d&amp;uuml;ş&amp;uuml;nelim. Burada PE(portable executable)'a ati manifesto bilgisi, giriş noktasına sahip olan assembly i&amp;ccedil;in oluşturulacaktır. Bir assembly manifesto' su, uygulamanın başvurduğu diğer assembly'lara ait bilgileri, assembly'da kullanılan t&amp;uuml;r bilgilerini, assembly'a ait dosyalara ait bilgileri, izin bilgilerini vb. i&amp;ccedil;erir. Dolayısıyla mutliple-file assmebly' a ait manifesto i&amp;ccedil;erisinde, multiple-file assembly' ı oluşturan diğer module'lere, k&amp;uuml;t&amp;uuml;phanelere ait bilgilerde yer alıcaktır. B&amp;ouml;ylece yalın bir tabirle elimizde, bir ka&amp;ccedil; .net dili ile yazılmış par&amp;ccedil;alardan oluşan ve tek bir assembly altında birleştirilen bir uygulama olucaktır. Bu bizim, farklı .net dilleri ile yazılmış uygulama par&amp;ccedil;alarını tek bir assembly altında birleştirerek kullanabilmemizi ve uygulamamızı yapılandırabilmemizi sağlar.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rnekler &amp;uuml;zerinden gittiğimizde bu konuyu daha iyi kavrayacağınızı d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum. İlk olarak &amp;ccedil;ok basit bir single-file assembly oluşturacak ve yapısını, .net ara&amp;ccedil;larından ildasm (Intermediate Language DisAssembly) ile inceleyeceğiz. Aşağıda C# dili ile yazılmış basit bir assembly g&amp;ouml;r&amp;uuml;yorsunuz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+public class Giris
+{
+    public static void Main(string[] args)
+    {
+        int a,b;
+        a=5;
+        b=6;
+        int sonuc=Topla(a,b);
+
+        Console.WriteLine("Single File Assembly");
+        Console.WriteLine("Toplam {0}",sonuc.ToString());
+    }
+
+    public static int Topla(int birinci,int ikinci)
+    {
+        return birinci+ikinci;
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu kodu aşağıdaki şekilde g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi derlediğimizde, Merhaba.exe assembly'ının oluşturulduğunu g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Bu assembly'ımız bir Main metodu i&amp;ccedil;erdiğinden ve biz bu assembly'ı exe olarak derleyip ortaya bir PE &amp;ccedil;ıkarttığımızdan,bu assemble'a ait manifesto bilgileride buna g&amp;ouml;re olucaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk65_1.gif" alt="" width="565" height="355" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 1. Single Assembly&lt;/p&gt;
+&lt;p&gt;Şimdi ildasm aracını kullanarak, oluşturmuş olduğumuz bu assembly'ın i&amp;ccedil;eriğine bakalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk65_2.gif" alt="" width="311" height="319" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 2. Giris.exe assembly'ının i&amp;ccedil;eriği.&lt;/p&gt;
+&lt;p&gt;Burada g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi, assembly'ımıza ait manifesto bilgisinde PE olduğuna dair en b&amp;uuml;y&amp;uuml;k işareti g&amp;ouml;steren entry point bilgisinin yer aldığı Main metodu g&amp;ouml;r&amp;uuml;lmektedir. Daha &amp;ouml;nceden belirtiğimiz gibi bu manifesto i&amp;ccedil;erisinde, Merhaba.exe assembly'ının kullanıdığı başka assembly'lara ait referans bilgileri, assembly'a ait module bilgisi, hashcode bilgiler vb. bulunur. T&amp;uuml;m bu manifesto bilgileri metadata verisi olarak Merhaba.exe assembly'ı i&amp;ccedil;erisinde tutulmaktadır. Bu assembly bir PE(portable executable) olduğu i&amp;ccedil;in single assembly olarak değerlendirilir. Merhaba.exe assembly'ımızın manifesto bilgileri aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;.assembly extern mscorlib
+{
+.publickeytoken = (B7 7A 5C 56 19 34 E0 89 ) // .z\V.4..
+.ver 1:0:3300:0
+}
+.assembly Merhaba
+{
+// --- The following custom attribute is added automatically, do not uncomment -------
+// .custom instance void [mscorlib]System.Diagnostics.DebuggableAttribute::.ctor(bool,
+// bool) = ( 01 00 00 01 00 00 ) 
+.hash algorithm 0x00008004
+.ver 0:0:0:0
+}
+.module Merhaba.exe
+// MVID: {C9BE521B-50BF-49DE-A9F9-F6EDB3D31941}
+.imagebase 0x00400000
+.subsystem 0x00000003
+.file alignment 512
+.corflags 0x00000001
+// Image base: 0x07000000&lt;/pre&gt;
+&lt;p&gt;Ancak bu assembly'ın bir single-file assembly olduğunun en b&amp;uuml;y&amp;uuml;k kanıtı Main metoduna ait IL kodlarında yazmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk65_10.gif" alt="" width="640" height="491" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 3. Single-File Assembly Kanıtı.&lt;/p&gt;
+&lt;p&gt;Her .net assembly'ında olduğu gibi burada da manifestomuz, standart olarak, mscorelib k&amp;uuml;t&amp;uuml;phanesine bir başvuru ile başlamaktadır. Daha sonra assembly'a ait bilgiler başlar. Bir single assembly bu manifesto bilgileri dışında elbette uygulama kodlarının MSIL karşılıklarınıda i&amp;ccedil;ermektedir. Bir single file assembly'ın temel yapısı aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk65_3.gif" alt="" width="194" height="232" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 4. Single-File Assembly'ların genel yapısı.&lt;/p&gt;
+&lt;p&gt;Gelelim, multiple-file assembly'lara. Bu assembly t&amp;uuml;r&amp;uuml;n&amp;uuml;n anlamanın en iyi yolu konuyu bir senaryo &amp;uuml;zerinde d&amp;uuml;ş&amp;uuml;nmektir. Uygulamamızın, vb.net ile yazılmış bir module'&amp;uuml;, J# ile yazılmış bir k&amp;uuml;t&amp;uuml;phanesi olduğunu farzedelim. Biz bu kaynaklardaki sınıfları asıl uygulamamızda yani PE olucak assembly'ımızda kullanmaya &amp;ccedil;alışacağız. &amp;Ouml;ncelikle işe, vb.net module'&amp;uuml;n&amp;uuml; oluşturmak ile başlayalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace vbdotnet
+    public class vbselam
+        public shared sub Selam()
+            System.Console.WriteLine("Selam, burası VB.NET module")
+        end sub
+    end class
+end namespace&lt;/pre&gt;
+&lt;p&gt;Şimdi bu vb.net kod dosyasını bir netmodule dosyası olarak derleyeceğiz. Bunun i&amp;ccedil;in aşağıdaki tekniği uygulayacağız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk65_4.gif" alt="" width="545" height="362" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 5. vb.net module&lt;/p&gt;
+&lt;p&gt;L&amp;uuml;tfen, net module dosyasını vbc derleyici aracı ile nasıl oluşturduğumuza dikkat edelim. Bu module, vb.net kodları ile yazılmış olup herhangibir giriş noktası i&amp;ccedil;ermemektedir. Bu nedenle bu assembly aslında bir PE değildir. Tamamıyle başka bir PE assembly'ının kullanabilmesi i&amp;ccedil;in geliştirilmiştir. Bunu yazılım ekibinizin vb.net programcılarının geliştirmiş olduğu bir module olarak d&amp;uuml;ş&amp;uuml;nebilirsiniz. Bizim amacımızda, bu module'&amp;uuml; asıl PE assembly'ımız i&amp;ccedil;erisinde kullanmak ve bir multiple-assembly meydana getirmektir. Şimdide J# kodlarından oluşan bir k&amp;uuml;t&amp;uuml;phane geliştirelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;import System;
+
+package Araclar
+{
+    public class jsharpselam
+    {
+        public static function Selam()
+        {
+            System.Console.WriteLine("Selam, burasi JSharp ekibi");
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk65_5.gif" alt="" width="541" height="362" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 6. J# ile yazılmış k&amp;uuml;t&amp;uuml;phanemiz.&lt;/p&gt;
+&lt;p&gt;Sıra geldi t&amp;uuml;m bu assembly'ları kullancak olan assembly'ımızı yazmaya. Bu , C# ile yazılmış bir assembly olucak ve aynı zamanda, yukarıda yazmış olduğumuz vb.net module'&amp;uuml;n&amp;uuml; ve j# k&amp;uuml;t&amp;uuml;phanesini kullanacak.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using Araclar;
+
+public class Temel
+{
+    public static void Main(string[] args)
+    {
+        System.Console.WriteLine("Ana uygulama");
+        jsharpselam.Selam();
+        vbdotnet.vbselam.Selam(); 
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Kodumuzda, vb.net module'&amp;uuml; i&amp;ccedil;indeki Selam ve j# ile yazılmış k&amp;uuml;t&amp;uuml;phane i&amp;ccedil;indeki Selam metodlarına erişiyoruz. Şimdi yapmamız gereken işlem bu assembly'ı bir netmodule olarak derlemek ve ardından t&amp;uuml;m assembly'lar tek bir assembly altında birleştirmek. PE olucak olan assembly'ımızı netmodule haline getirmek i&amp;ccedil;in aşağıdaki kod satırını kullanacağız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk65_6.gif" alt="" width="639" height="409" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 7. PE uygulamamızın netmodule olarak oluşturulması.&lt;/p&gt;
+&lt;p&gt;Bu komut satırında, PE olucak assembly'ımızı netmodule haline getirirken, kullandığımız j# k&amp;uuml;t&amp;uuml;phanesini nasıl referans ettiğimize ayrıca vb.net module'&amp;uuml;n&amp;uuml; nasıl eklediğimize dikkat edelim. Sıra, t&amp;uuml;m bu assembly'ları tek bir &amp;ccedil;atı altında toplayıp multiple-assembly'ımızı oluşturmaya geldi. Bu işi ger&amp;ccedil;ekleştirmek amacıyla, AL (assembly linker) aracını kullanacağız. Bu ara&amp;ccedil; yardımıyla, yazmış olduğumuz &amp;uuml;&amp;ccedil; assembly'ıda tek bir assembly i&amp;ccedil;inde toplayacak ve multiple-assembly yapımızı ger&amp;ccedil;ekleştirmiş olucağız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk65_7.gif" alt="" width="640" height="410" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 8. al (assembly linker) yardımıyla multiple-assembly &amp;ccedil;atısının oluşturulması.&lt;/p&gt;
+&lt;p&gt;Burada dikkat etmemiz gereken nokta main parametresi ile bildirdiğimiz yerdir. Burada, PE'ımızın &amp;ccedil;alışmaya başlıyacağı yerin, Temel isimli assembly'ımız i&amp;ccedil;indeki Main yordamı olduğunu belirtmiş oluyoruz. Elbette main parametresi, herhangibir assembly i&amp;ccedil;indeki Main yordamını belirtmek zorundadır. PE dosyamıza ayrıca, diğer kullanacağı assembly'larıda bağlamış olduk. Şimdi Uygulama.exe assembly'ımızın yapısını ildasm ile yakından inceleyelim.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;ncelikle ilk dikkati &amp;ccedil;eken nokta, entry point'in eklenmiş olmasıdır. Yazmış olduğumuz diğer assembly'lardan ne vb.net module assembly'ımız ne j# kodlu k&amp;uuml;t&amp;uuml;phane assembly'ımızı nede PE' ımızı oluşturan C# netmodule assembly'ımız (Main metodunu i&amp;ccedil;ermesine rağmen) herhangibir entry point i&amp;ccedil;ermemekteydi. Ancak al (assembly linker) aracı ile t&amp;uuml;m bu assembly'ları tek bir assembly altında birleştirirken, entry point'imizde Temel.netmodule assembly'ı i&amp;ccedil;indeki Main yordamı olarak işaretlemiş olduk.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk65_8.gif" alt="" width="491" height="355" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 9. PE olan assembly'ımızın i&amp;ccedil;eriği.&lt;/p&gt;
+&lt;p&gt;Gelelim i&amp;ccedil;eriğe. İlk dikkat &amp;ccedil;eken nokta diğer assembly'ların başvuru bilgilerinin eklenmiş olmasıdır. Başvuruların olduğu assembly'lar extern anahtar kelimesini i&amp;ccedil;eren satırlardır. Extern anahtar kelimesi, bu assembly'ların PE tarafından erişilen ve kullanılan assembly'lar olduğunu g&amp;ouml;sterir. Bunun dışındaki t&amp;uuml;m satırları ve bilgileri ile birlikte bu assembly aslında bir single-file assembly'dan farksızdır. Ancak kullandığı diğer assembly'lar d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde ortaya bir multiple-file assembly &amp;ccedil;ıkmıştır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;.module extern Temel.netmodule
+.assembly extern mscorlib
+{
+.publickeytoken = (B7 7A 5C 56 19 34 E0 89 ) // .z\V.4..
+.hash = (4E FE C2 93 5B 46 10 72 20 30 9A 9C 31 21 D0 2F // N...[F.r 0..1!./
+9B 84 AF 0E ) 
+.ver 1:0:3300:0
+}
+.assembly extern Microsoft.VisualBasic
+{
+.publickeytoken = (B0 3F 5F 7F 11 D5 0A 3A ) // .?_....:
+.ver 7:0:3300:0
+}
+.assembly extern jsharpselam
+{
+.hash = (FA 10 B8 EE 98 5A F7 81 4F 0D 91 80 38 9D FB 78 // .....Z..O...8..x
+04 14 A0 83 ) 
+.ver 0:0:0:0
+}
+.assembly Uygulama
+{
+// --- The following custom attribute is added automatically, do not uncomment -------
+// .custom instance void [mscorlib]System.Diagnostics.DebuggableAttribute::.ctor(bool,
+// bool) = ( 01 00 00 01 00 00 ) 
+.hash algorithm 0x00008004
+.ver 0:0:0:0
+}
+.file vbselam.netmodule
+.hash = (85 65 08 DF 98 6C 95 7F 61 47 8F 6C 02 DA 04 64 // .e...l..aG.l...d
+B6 AC A2 F9 ) 
+.file Temel.netmodule
+.hash = (89 B4 FA 26 C6 7C 59 23 DB 92 6F 3A 29 5E 31 C7 // ...&amp;amp;.|Y#..o:)^1.
+E7 37 35 AF ) // .75.
+.class extern public vbdotnet.vbselam
+{
+.file vbselam.netmodule
+.class 0x02000002
+}
+.class extern public Temel
+{
+.file Temel.netmodule
+.class 0x02000002
+}
+.module Uygulama.exe
+// MVID: {2F568429-2D83-4AA8-9558-46FB59574BBB}
+.imagebase 0x00400000
+.subsystem 0x00000003
+.file alignment 512
+.corflags 0x00000001
+// Image base: 0x07000000&lt;/pre&gt;
+&lt;p&gt;Uygulamamızı &amp;ccedil;alıştırdığımızda aşağıdaki sonucu elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk65_9.gif" alt="" width="341" height="163" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 10. Uygulamanın &amp;ccedil;alışmasının sonucu.&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Umuyorum ki assembly'ları bu y&amp;ouml;nleri ile incelemek siz değerli okurlarımızın işine yarıyordur. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;şmek dileğiyle hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2004-04-27 12:00:00</pubDate>
+  <slug>Single-File-Assembly-ve-Multiple-File-Assembly-Kavramları-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>framework</tag>
+    <tag>assembly</tag>
+    <tag>clr</tag>
+    <tag>common-language-runtime</tag>
+  </tags>
+  <categories>
+    <category>C#</category>
+  </categories>
+</post>

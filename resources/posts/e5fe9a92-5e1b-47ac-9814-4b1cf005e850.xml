@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Rest Tabanlı WCF Servislerinde İstemci Tarafını Asenkron Geliştirmek</title>
+  <description>Bir önceki yazımızda REST bazlı WCF servisleri için, WCF Rest Stater Kit yardımıyla istemci uygulamaların nasıl geliştirilebileceğini incelemeye çalışmıştık. İstemci açısından önemli olan konulardan biriside, uzun sürebilecek request/response operasyonları sırasında uygulamasını kullanmaya devam edebiliyor olmasıdır.</description>
+  <content>&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Bir &amp;ouml;nceki &lt;a title="REST Tabanlı WCF Servisleri i&amp;ccedil;in İstemci Yazmak" href="/post/Rest-Tabanl%C4%B1-WCF-Servisleri-icin-Istemci-Yazmak" target="_blank"&gt;yazımızda &lt;/a&gt;REST bazlı WCF servisleri i&amp;ccedil;in, &lt;strong&gt;WCF Rest Stater Kit&lt;/strong&gt; yardımıyla istemci uygulamaların nasıl geliştirilebileceğini incelemeye &amp;ccedil;alışmıştık. İstemci a&amp;ccedil;ısından &amp;ouml;nemli olan konulardan biriside, uzun s&amp;uuml;rebilecek &lt;strong&gt;request/response&lt;/strong&gt; operasyonları sırasında uygulamasını kullanmaya devam edebiliyor olmasıdır. Tahmin edeceğiniz &amp;uuml;zere istemci tarafında bir request' in asenkron olarak g&amp;ouml;nderilip, işlenmesi konusunu değerlendiriyor olacağız. Aslında asenkron erişimden kastımız, istemcinin talebi g&amp;ouml;nderdikten sonra cevabın anında gelmesini beklemeden &amp;ccedil;alışmasına devam edebilmesidir. Servis tabanlı uygulamalar s&amp;ouml;z konusu olduğunda, asenkron işlemleri iki lokasyonda tasarlayabiliriz.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Asenkron işlemler &lt;strong&gt;servis&lt;/strong&gt; tarafında uygulanır. Geliştiricinin asenkron modeli kendisinin uygulamasını gerektirebilir.&lt;/li&gt;
+&lt;li&gt;Asenkron işlemler &lt;strong&gt;istemci&lt;/strong&gt; tarafında uygulanır. Hazır olan &lt;strong&gt;temsilci(delegate)&lt;/strong&gt; tabanlı &lt;strong&gt;(Polling, WaitHandle, Callback)&lt;/strong&gt; veya&lt;strong&gt; olay tabanlı(Event Based)&lt;/strong&gt; modeller kullanılır.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Benim bu yazıda ele alacağım istemci tarafındaki asenkron işlemlerdir. Bir &amp;ouml;nceki yazımızda geliştirdiğimiz Windows uygulamasında bu ama&amp;ccedil;la yeni d&amp;uuml;zenlemeler yapılacaktır. Hazırlıklı olmamız gereken konuların başında, &lt;strong&gt;delegate&lt;/strong&gt; kavramı&amp;nbsp;ve asenkron &lt;strong&gt;Callback&lt;/strong&gt; modeli gelmektedir. Ama sonrasıda buna event based asenkron modeli&amp;nbsp;ve&amp;nbsp;lambda operat&amp;ouml;r&amp;uuml;n&amp;uuml;de katıyor olacağız. Arada ise bize bonus bir konu &amp;ccedil;ıkacak. Tedbir almassak ka&amp;ccedil;ınılmaz olan &lt;strong&gt;Illegal Cross Thread Operations&lt;/strong&gt;&lt;img title="Undecided" src="/editors/tiny_mce3/plugins/emotions/img/smiley-undecided.gif" alt="Undecided" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;İlk olarak Form arkası kodlarımızı aşağıdaki gibi geliştirdiğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Linq;
+using System.Net;
+using System.Windows.Forms;
+using System.Xml.Serialization;
+using Microsoft.Http;
+using NorthwindV2;
+
+namespace NorthwindClient
+{
+    public partial class Form1 : Form
+    {
+        // İstemci talepleri i&amp;ccedil;in kullanacağımız sınıf HttpClient
+        HttpClient client = null;
+        // Servis adresi (sondaki / işaretini unutmadım bu sefer)
+        string serviceUri="http://localhost:1000/Service.svc/";
+
+        public Form1()
+        {
+            InitializeComponent();
+            // HttpClient nesnemizi &amp;ouml;rnekliyoruz
+            client = new HttpClient();            
+        }
+
+        private void btnGetProductsAsync_Click(object sender, EventArgs e)
+        {
+            // İletişim i&amp;ccedil;in 10 saniyelik timeout s&amp;uuml;resini belirliyoruz
+            client.TransportSettings.ConnectionTimeout = TimeSpan.FromSeconds(10);
+            // BeginSend metodu yardımıyla asenkron &amp;ccedil;ağrıyı başlatıyoruz. İlk parametreye g&amp;ouml;re http://localhost:1000/Service.svc/ adresine GET metodu ile talepte bulunuyoruz. 
+            // İkinci parametre bu işlem bittiğinde devreye girecek asenkron metodu işaret eden meşhur AsyncCallback temsilcimiz.
+            // HttpClient nesnemiz sınıf seviyesinde tanımlandığı i&amp;ccedil;in 3nc&amp;uuml; parametreyi g&amp;ouml;ndermemize gerek yok.
+            client.BeginSend(new HttpRequestMessage("GET", serviceUri), new AsyncCallback(GetProductsAsyncCallback), null);
+        }
+
+        // BeginSend metodu ile başlatılan asenkron işlemler tamamlandığında devreye girecek olan callback metodudur.
+        private void GetProductsAsyncCallback(IAsyncResult iar)
+        {
+            // EndSend metodu ile tamamlanan operasyon sonucu cevap alınır.
+            using (HttpResponseMessage response = client.EndSend(iar))
+            {
+                // eğer HTTP 200 kodu d&amp;ouml;nd&amp;uuml;yse exception fırlatılmadan devam edilebilir
+                response.EnsureStatusIs(HttpStatusCode.OK);
+                // ItemInfoList tipi ReadAsXmlSerializable metodu ile &amp;ccedil;ekilir
+                ItemInfoList products = response.Content.ReadAsXmlSerializable&amp;lt;ItemInfoList&amp;gt;();               
+
+                grdProducts.DataSource = (from p in products.ItemInfo
+                                          select p.Item).ToList();                
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Buradaki kod par&amp;ccedil;asında,&amp;nbsp;standart &lt;strong&gt;Asynchronous Callback &lt;/strong&gt;modelinin bir uyarlaması yer almaktadır. Asenkron desenler temsilcilerin kullanıldığı senaryolarda ele alınabilirler. Genel olarak 3 farklı asenkron tekniği vardır.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Polling&lt;/strong&gt; modeline g&amp;ouml;re asenkron olarak başlatılan işlemin bitip bitmediği s&amp;uuml;rekli olarak kontrol edilir.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;WaitHandle&lt;/strong&gt; modeli aslında kendi i&amp;ccedil;erisinde &lt;strong&gt;WaitOne, WaitAll, WaitAny&lt;/strong&gt; gibi 3 farklı tekniğe ayrılmaktadır. Ancak tekniklerin &amp;ouml;z&amp;uuml;nde, asenkron başlatılan bir işin, belirli bir noktadan sonra d&amp;ouml;n&amp;uuml;ş değerlerine ihtiya&amp;ccedil; duyuluyorsa, thread' in ilgili noktada duraksatılması vardır. &amp;Ouml;yleki, bazı asenkron işlemler sonucunda gelen veriler daha &amp;ccedil;ekilemeden, program i&amp;ccedil;erisinde onların kullanılacağı yerlere ge&amp;ccedil;işler yapılabilir. Bunu kullanıcıda yapabilir, programın kod akışıda buna m&amp;uuml;sait olabilir.&amp;nbsp;Dolayısıyla ortada d&amp;ouml;nen veriler yoksa istenmeyen sonu&amp;ccedil;lar alınabilir.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Callback&lt;/strong&gt; modeli ise en sık kullanılan tekniklerden birisidir. Bu modele g&amp;ouml;re asenkron başlatılan işleyiş tamamlandığında, &lt;strong&gt;.Net Framework'&lt;/strong&gt; &amp;uuml;n &lt;strong&gt;Built-In&lt;/strong&gt; &lt;strong&gt;Delegate&lt;/strong&gt; tiplerinden olan &lt;strong&gt;AsyncCallback'&lt;/strong&gt; in işaret ettiği(geriye d&amp;ouml;n&amp;uuml;ş değeri olmayan yani &lt;strong&gt;void&lt;/strong&gt; ve&amp;nbsp;&lt;strong&gt;IAsyncResult&lt;/strong&gt; aray&amp;uuml;z&amp;uuml; tipinden parametre alan) metod &amp;ccedil;alıştırılır.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Ancak bir asenkron model WinForms yada WPF gibi g&amp;ouml;rsel bir arabirimde uygulanıldığında &amp;ccedil;ok dikkatli olunmalıdır. Yukarıda yazdığımız program kodunu denediğimizde bu acı ger&amp;ccedil;ekle aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi karşılaşmamız ka&amp;ccedil;ınılmazdır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblg7_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Aslında sebep son derece basittir. Normal şartlarda &lt;strong&gt;Form&lt;/strong&gt; &amp;uuml;zerindenki t&amp;uuml;m bileşenlerin sahibi olan bir ana iş par&amp;ccedil;amız vardır&lt;strong&gt;(Main Thread).&lt;/strong&gt; Biliyoruzki bir .Net uygulaması belleğe a&amp;ccedil;ıldığında mutlaka bir ana Thread' e sahiptir.(Hatta &lt;strong&gt;Process&lt;/strong&gt; i&amp;ccedil;erisinde &amp;ccedil;alışan &lt;strong&gt;Module(Modules)&lt;/strong&gt; ve bunlarında i&amp;ccedil;erisindede&amp;nbsp;en az bir ana thread olmak &amp;uuml;zere birden fazla thread' de olabilir)&amp;nbsp;Diğer taraftan yazdığımız asenkron modelde a&amp;ccedil;ılan farklı bir &lt;strong&gt;thread'&lt;/strong&gt; de bu kontrollerden birisine(&lt;strong&gt;DataGridView&lt;/strong&gt; bileşenimiz &lt;img title="Embarassed" src="/editors/tiny_mce3/plugins/emotions/img/smiley-embarassed.gif" alt="Embarassed" border="0" /&gt;&amp;nbsp;) erişmek istemektedir. Bu durumda ana thread buna kızar(&amp;ccedil;&amp;uuml;nk&amp;uuml; bencildir ve kontrollerini kimse ile paylaşmak istemez) ve &amp;ccedil;alışma zamanına yukarıda g&amp;ouml;rd&amp;uuml;ğ&amp;uuml;m&amp;uuml;z istisna fırlatılır. Bunu &amp;ccedil;&amp;ouml;zmek i&amp;ccedil;in kolaya ka&amp;ccedil;abiliriz. Ancak en etkili &amp;ccedil;&amp;ouml;z&amp;uuml;mlerden birisi Method Invoker kullanmaktır. Bu nedenle yukarıdaki kod par&amp;ccedil;asını aşağıdaki gibi değiştirmemiz gerekmektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Linq;
+using System.Net;
+using System.Windows.Forms;
+using System.Xml.Serialization;
+using Microsoft.Http;
+using NorthwindV2;
+
+namespace NorthwindClient
+{
+    public partial class Form1 : Form
+    {
+        // İstemci talepleri i&amp;ccedil;in kullanacağımız sınıf HttpClient
+        HttpClient client = null;
+        // Servis adresi (sondaki / işaretini unutmadım bu sefer)
+        string serviceUri="http://localhost:1000/Service.svc/";
+
+        public Form1()
+        {
+            InitializeComponent();
+            // HttpClient nesnemizi &amp;ouml;rnekliyoruz
+            client = new HttpClient();            
+        }
+
+        private void btnGetProductsAsync_Click(object sender, EventArgs e)
+        {
+            // İletişim i&amp;ccedil;in 10 saniyelik timeout s&amp;uuml;resini belirliyoruz
+            client.TransportSettings.ConnectionTimeout = TimeSpan.FromSeconds(10);
+            // BeginSend metodu yardımıyla asenkron &amp;ccedil;ağrıyı başlatıyoruz. İlk parametreye g&amp;ouml;re http://localhost:1000/Service.svc/ adresine GET metodu ile talepte bulunuyoruz. 
+            // İkinci parametre bu işlem bittiğinde devreye girecek asenkron metodu işaret eden meşhur AsyncCallback temsilcimiz.
+            // HttpClient nesnemiz sınıf seviyesinde tanımlandığı i&amp;ccedil;in 3nc&amp;uuml; parametreyi g&amp;ouml;ndermemize gerek yok.
+            client.BeginSend(new HttpRequestMessage("GET", serviceUri), new AsyncCallback(GetProductsAsyncCallback), null);
+        }
+
+        // BeginSend metodu ile başlatılan asenkron işlemler tamamlandığında devreye girecek olan callback metodudur.
+        private void GetProductsAsyncCallback(IAsyncResult iar)
+        {
+            // EndSend metodu ile tamamlanan operasyon sonucu cevap alınır.
+            using (HttpResponseMessage response = client.EndSend(iar))
+            {
+                // eğer HTTP 200 kodu d&amp;ouml;nd&amp;uuml;yse exception fırlatılmadan devam edilebilir
+                response.EnsureStatusIs(HttpStatusCode.OK);
+                // ItemInfoList tipi ReadAsXmlSerializable metodu ile &amp;ccedil;ekilir
+                ItemInfoList products = response.Content.ReadAsXmlSerializable&amp;lt;ItemInfoList&amp;gt;();               
+
+                //grdProducts.DataSource = (from p in products.ItemInfo
+                //                         select p.Item).ToList();
+                LoadGrid(products);
+            }
+        }
+
+        #region Method Invoker ile Illegal Cross Thread' in &amp;ouml;n&amp;uuml;ne ge&amp;ccedil;mek
+
+        private delegate void LoadGridHandler(ItemInfoList list);
+        private void LoadGrid(ItemInfoList list)
+        {
+            if (grdProducts.InvokeRequired)
+                grdProducts.Invoke(new LoadGridHandler(LoadGrid), list);
+            else
+                grdProducts.DataSource = (from p in list.ItemInfo
+                                          select p.Item).ToList();
+        }
+
+        #endregion
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu durumda program kodumuz sorunsuz bir şekilde &amp;ccedil;alışacak ve i&amp;ccedil;eriğin asenkron olarak &amp;ccedil;ekilmesi sağlanabilecektir. Tabi&amp;nbsp;şunuda d&amp;uuml;ş&amp;uuml;nmek gerekir. &lt;strong&gt;.Net Framework 2.0&lt;/strong&gt; relase olduğunda &lt;strong&gt;Xml Web Servislerinin&lt;/strong&gt; kullanılması ile ilişkili istemci tarafına gelen yeniliklerden birisi, asenkron modeli olay bazlı uygulayabiliyor olmamızdı. Yani temsilciler ve&amp;nbsp;method invoker' lar ile uğraşmak yerine basit olay(event) y&amp;uuml;klemeleri ile işlemler &amp;ccedil;&amp;ouml;z&amp;uuml;lebilmektedir. Modelin &amp;ouml;z&amp;uuml;nde &lt;strong&gt;Completed&lt;/strong&gt; kelimesi ile biten bir &lt;strong&gt;olay(Event)&lt;/strong&gt;, &lt;strong&gt;Async&lt;/strong&gt; kelimesi ile biten ve asenkron işlemi &lt;span style="text-decoration: underline;"&gt;başlatmamızı&lt;/span&gt; sağlayan, &lt;strong&gt;AsyncCancel&lt;/strong&gt; kelimesi ile biten ve asenkron başlatılan işlemin &lt;span style="text-decoration: underline;"&gt;iptal&lt;/span&gt; edilmesinde kullanılan birer metod bulunmaktadır.&lt;/p&gt;
+&lt;p&gt;Aynı modeli &lt;strong&gt;Rest bazlı WCF&lt;/strong&gt; servis istemcilerinde de uygulayabiliriz. Nitekim &lt;strong&gt;HttpClient&lt;/strong&gt; sınıfının bu ama&amp;ccedil;la tasarlanmış &lt;strong&gt;SendCompleted&lt;/strong&gt; isimli olayı, &lt;strong&gt;SendAsync&lt;/strong&gt; ve &lt;strong&gt;SendAsyncCancel &lt;/strong&gt;isimli metodları bulunmaktadır. Bu noktada kodu ilk etapta&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void btnGetProductsEvent_Click(object sender, EventArgs e)
+{
+      client.SendCompleted += new EventHandler&amp;lt;SendCompletedEventArgs&amp;gt;(client_SendCompleted);
+}
+
+void client_SendCompleted(object sender, SendCompletedEventArgs e)
+{
+      throw new NotImplementedException();
+}&lt;/pre&gt;
+&lt;p&gt;şeklinde tasarlamaya başlayabiliriz. Oysaki C# 3.0 ile birlikte gelen &lt;strong&gt;lambda&lt;/strong&gt; &lt;strong&gt;operat&amp;ouml;r&amp;uuml;n&amp;uuml;(=&amp;gt;)&lt;/strong&gt; kullanarak, olayın y&amp;uuml;klenmesi, olay sonucu &amp;ccedil;alıştırılacak olan metod bloğunuz yazılması ve i&amp;ccedil;erisine gerekli parametrelerin aktarılması işini aşağıdaki kod par&amp;ccedil;asında olduğu gibide ger&amp;ccedil;ekleştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void btnGetProductsEvent_Click(object sender, EventArgs e)
+{
+    client.TransportSettings.ConnectionTimeout = TimeSpan.FromSeconds(10);
+    client.SendCompleted+=(sndr,arg)=&amp;gt;{
+        // İşlem iptal edilmediyse
+        if (arg.Cancelled)
+            MessageBox.Show("İşlem iptal edildi");
+        // İşlem sonucunda bir istisna oluşmamışsa
+        else if (arg.Error != null)
+            MessageBox.Show(arg.Error.Message);
+        else
+        {
+            ItemInfoList products=arg.Response.Content.ReadAsXmlSerializable&amp;lt;ItemInfoList&amp;gt;();
+            grdProducts.DataSource = (from p in products.ItemInfo
+                                              select p.Item).ToList();
+        }
+    };
+    client.SendAsync(new HttpRequestMessage("GET", serviceUri));
+}&lt;/pre&gt;
+&lt;p&gt;Kullanılan bu son teknikte herhangibir şekilde &lt;strong&gt;Illegal Cross Thread Operation&lt;/strong&gt; sorunsalınında yaşanmadığı g&amp;ouml;zlemlenebilir. Bu olay bazlı asenkron mimarinin bir avantajıdır.&amp;nbsp;Yani &lt;strong&gt;Method Invoker&lt;/strong&gt; kullanmamıza gerek kalmadan asenkron olarak &amp;uuml;retilen sonu&amp;ccedil;lar &lt;strong&gt;DataGridView&lt;/strong&gt; kontrol&amp;uuml; i&amp;ccedil;erisine alınabilmektedir.&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğin son hali : &lt;a href="/pics/2009%2f4%2fNorthwindV2.rar"&gt;NorthwindV2.rar (592,24 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2009-04-24 09:26:00</pubDate>
+  <slug>Rest-Tabanlc4b1-WCF-Servislerinde-Istemci-Tarafc4b1nc4b1-Asenkron-Gelistirmek</slug>
+  <tags>
+    <tag>wcf</tag>
+    <tag>rest</tag>
+    <tag>async</tag>
+  </tags>
+  <categories>
+    <category>WCF</category>
+  </categories>
+</post>

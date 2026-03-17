@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Hasura GraphQL Engine ile geliştirilmiş bir API Servisini Vue.js ile Kullanmak</title>
+  <description>API'ler için türlendirilmiş(typed) sorgulama dillerinden birisi olarak öne çıkan GraphQL'e bir süredir uğramıyordum. Daha doğrusu GraphQL sorgusu çalıştırılabilecek şekilde API servis hazırlıklarını yapmaya üşeniyordum. Bu nedenle işi kolaylaştıran ve Heroku üzerinden sunulan Hasura GraphQL Engine hizmetine bakmaya karar verdim. Hasura, veriyi PostgreSQL kullanarak saklıyor ve ayrıca API'yi bir Docker Container içerisinden sunuyor. Amacım Hasura tarafında hazırlayacağım iki kobay veri setini, Vue.js tabanlı bir istemcisinden tüketmek. Basitçe listeleme yapıp, veri ekleme işini yapabilsem başlangıç aşamasında yeterli olur. İşe Hasura servisini hazırlayarak başlamak lazım.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2019/09/37/hasuralogo.png" alt="" /&gt;Yıl 2015. Hindistan'ın Bengaluru şehrinde doğan bir Startup&lt;em&gt;(Sonradan San Fransico'da da bir ofis sahibi olacaklar)&lt;/em&gt;, &lt;a href="https://blogs.technet.microsoft.com/bizspark_featured_startups/2017/09/18/quickly-develop-backend-applications-without-having-to-write-code-with-hasura/" target="_blank"&gt;Microsoft'un BizSpark programından destek&lt;/a&gt; buluyor. Kurucuları&amp;nbsp;Rajoshi Ghosh&lt;em&gt;(Aslen bioinformatik araştırmacısı)&lt;/em&gt; ve Tanmai Gopal&lt;em&gt;(Bulut sistemleri, fonksiyonel programlama ve GraphQL konusunda uzman)&lt;/em&gt; isimli iki Hintli. Şirketlerine şeytanın sanskrit&amp;ccedil;edeki adını veriyorlar; Hasura! Aslında O, fonksiyonel dillerin kralı Haskell ile yazılmış bir platform ve şimdilerde Heroku ile daha yakın arkadaş.&lt;/p&gt;
+&lt;p&gt;Ekibin amacı geliştiricilerin hayatını kolaylaştıracak, y&amp;uuml;ksek hızlı, kolayca &amp;ouml;l&amp;ccedil;eklenebilir, sade ve Kubernetes ile dost PaaS&lt;em&gt;(Platform as a Service)&lt;/em&gt;&amp;nbsp;ile BaaS&lt;em&gt;(Back-end as a Service)&lt;/em&gt; ortamları sunmak.&lt;/p&gt;
+&lt;p&gt;İsimlendirmenin ger&amp;ccedil;ek hikayesi tam olarak nedir bilemiyorum ama eğlenceli bir logoları olduğu kesin :) Startup'ların en sevdiğim yanlarından birisi de bu. &amp;Ouml;zg&amp;uuml;n, tabulara takılmadan, etki bırakacak şekilde&amp;nbsp;d&amp;uuml;ş&amp;uuml;n&amp;uuml;len isimleri,&amp;nbsp;renkleri, logoları...Belki de&amp;nbsp;arka planda sessiz sedasız s&amp;uuml;re&amp;ccedil;ler &amp;ccedil;alıştıran back-end servislerini birer iblis olarak d&amp;uuml;ş&amp;uuml;nd&amp;uuml;klerinden bu ismi kullanmışlardır. Hatta Heroku &amp;uuml;zerinde koştuğunu &amp;ouml;ğrenince Japonca bir kelime olduğunu bile d&amp;uuml;ş&amp;uuml;nm&amp;uuml;şt&amp;uuml;m. Hu novs?! Ama işin &amp;ouml;z&amp;uuml; verdikleri &amp;ouml;nemli hizmetler olduğu. Bunlardan birisi de GraphQL motorları.&lt;/p&gt;
+&lt;p&gt;API'ler i&amp;ccedil;in t&amp;uuml;rlendirilmiş&lt;em&gt;(typed)&lt;/em&gt; sorgulama dillerinden birisi olarak &amp;ouml;ne &amp;ccedil;ıkan GraphQL'e bir s&amp;uuml;redir uğramıyordum. Daha doğrusu GraphQL sorgusu &amp;ccedil;alıştırılabilecek şekilde API servis hazırlıklarını yapmaya &amp;uuml;şeniyordum. Bu nedenle işi kolaylaştıran ve Heroku &amp;uuml;zerinden sunulan &lt;a href="https://hasura.io/" target="_blank"&gt;Hasura GraphQL Engine&lt;/a&gt; hizmetine bakmaya karar vermiştim.&amp;nbsp;Hasura, veriyi PostgreSQL kullanarak saklıyor ve ayrıca API'yi bir Docker Container i&amp;ccedil;erisinden sunuyor. Amacım Hasura tarafında hazırlayacağım iki kobay veri setini, Vue.js tabanlı bir istemcisinden t&amp;uuml;ketmekti. Basit&amp;ccedil;e listeleme ve veri ekleme&amp;nbsp;işlerini yapabilsem başlangı&amp;ccedil; i&amp;ccedil;in yeterli olacaktı. &amp;Ouml;yleyse ne duruyoruz. &lt;a href="https://github.com/buraksenyurt/saturday-night-works/tree/master/No%2037%20-%20Hasura%20with%20Vue" target="_blank"&gt;37nci saturday-night-works &amp;ccedil;alışması&lt;/a&gt;nın derlemesine başlayalım.&amp;nbsp;İlk olarak Hasura servisini hazırlayacağız.&lt;/p&gt;
+&lt;h2&gt;Hasura GraphQL Engine Tarafının Geliştirilmesi&lt;/h2&gt;
+&lt;p&gt;Pek tabii Heroku &amp;uuml;zerinde bir hesabımızın olması gerekiyor. Sonrasında &lt;a href="https://elements.heroku.com/" target="_blank"&gt;şu adrese&lt;/a&gt; gidip elements kısmından Hasura GraphQL Engine'i se&amp;ccedil;mek yeterli.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/37/credit_1.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Gelinen yerden &lt;strong&gt;Deploy to Heroku&lt;/strong&gt; diyerek projeyi oluşturabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/37/credit_2.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Ben aşağıdaki bilgileri kullanarak bir proje oluşturdum.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/37/credit_3.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Deploy başarılı bir şekilde tamamlandıktan sonra,&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/37/credit_4.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;View se&amp;ccedil;eneği ile y&amp;ouml;netim paneline ge&amp;ccedil;ebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/37/credit_5.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere GraphQL sorgularını &amp;ccedil;alıştırabileceğimiz bir aray&amp;uuml;z otomatik olarak sunuluyor. Ancak &amp;ouml;ncesinde &amp;ouml;rnek veri setleri hazırlamalıyız. Bunun i&amp;ccedil;in Data sekmesinden yararlanabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/37/credit_6.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Arabirimin kullanımı olduk&amp;ccedil;a kolay. Ben aşağıdaki &amp;ouml;zelliklere sahip tabloları oluşturdum.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/37/credit_7.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;categories isimli tablomuzda unique tipte, get_random_uuid() fonksiyonu ile eklenen satır i&amp;ccedil;in rastgele &amp;uuml;retilen categoryId ve text tipinden title isimli alanlar bulunuyor. categoryId, aynı zamanda primary key t&amp;uuml;r&amp;uuml;nden bir alan.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/37/credit_8.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;products tablosunda da UUID tipinden productId, text tipinden description, number tipinden listPrice ve yine UUID tipinden categoryId isimli alanlar mevcut. categoryId alanını, &amp;uuml;r&amp;uuml;nleri kategoriye bağlamak i&amp;ccedil;in&lt;em&gt;(foreign key relations)&lt;/em&gt; kullanıyoruz. Ama bu alanı foreign key yapmak i&amp;ccedil;in Modify penceresine ge&amp;ccedil;meliyiz.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/37/credit_9.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/37/credit_10.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;İlişkinin ge&amp;ccedil;erlilik kazanması i&amp;ccedil;inse, categories tablosunun Relationships penceresine gidip &amp;ouml;nerilen bağlantıyı eklemek gerekiyor.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/37/credit_14.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/37/credit_15.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/37/credit_16.png" alt="" /&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Bu durumda categories &amp;uuml;zerinden products'a gidebiliriz. Ters ilişkiyi de kurabiliriz ve bir &amp;uuml;r&amp;uuml;nle birlikte bağlı olduğu kategorinin bilgisini de yansıtabiliriz ki &amp;uuml;r&amp;uuml;nleri &amp;ccedil;ektiğimizde hangi kategoride olduğunu da g&amp;ouml;stermek g&amp;uuml;zel olur. Bunu nasıl yapabileceğinizi bir deneyin isterim.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Hasura'nın Postgresql tarafındaki &amp;ouml;rnek tablolarımız hazır. İstersek Insert Row penceresinden tablolara &amp;ouml;rnek veri girişleri yapabilir ve GraphiQL pencresinden sorgular &amp;ccedil;alıştırabiliriz. Ben yaptığım denemelerle alakalı bir ka&amp;ccedil; &amp;ouml;rnek ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; paylaşayım. Arabirimin sağ tarafında yer alan Docs men&amp;uuml;s&amp;uuml;ne de bakabilirsiniz. Burada query ve mutation &amp;ouml;rnekleri, hazırladığımız veri setleri i&amp;ccedil;in otomatik olarak oluşturuluyorlar.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/37/credit_11.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/37/credit_12.png" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;&amp;Ouml;rnek Sorgular&lt;/h2&gt;
+&lt;p&gt;Veri setimizi oluşturduktan sonra arabirim &amp;uuml;zerinden bazı GraphQL sorgularını deneyebiliriz. Ben&amp;nbsp;aşağıdaki &amp;ouml;rnekleri denedim.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Kategorilerin başlıklarını almak.&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;query{
+  categories{
+    title
+  }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/37/credit_19.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Kategorilere bağlı &amp;uuml;r&amp;uuml;nleri &amp;ccedil;ekmek.&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;query{
+  categories{
+    title
+    products{
+      description
+      listPrice
+    }
+  }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/37/credit_18.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&amp;Uuml;r&amp;uuml;nlerin tam listesi ve bağlı olduğu kategori adlarını &amp;ccedil;ekmek.&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;query{
+  products{
+    description
+    listPrice
+    category{
+      title
+    }
+  }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/37/credit_17.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Listeleme işlemleri dışında veri girişi de yapabiliriz. Bunun i&amp;ccedil;in mutation kullanıldığını daha &amp;ouml;nceden &amp;ouml;ğrenmiştim. &amp;Ouml;rneğin yeni bir kategoriyi aşağıdaki gibi ekleyebiliriz.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;mutation {
+  insert_categories(objects: [{
+    title: "&amp;Ccedil;orap",
+  }]) {
+    returning {
+      categoryId
+    }
+  }&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/37/credit_20.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Hasura, GraphQL API&amp;rsquo;si arkasında PostgreSQL veri tabanını kullanırken SQLden aşina olduğumuz bir &amp;ccedil;ok sorgulama metodunu da hazır olarak sunar. &amp;Ouml;rneğin fiyatı 300 birimin &amp;uuml;st&amp;uuml;nde olan &amp;uuml;r&amp;uuml;nleri aşağıdaki sorgu ile &amp;ccedil;ekebiliriz.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;{
+  products(where: {listPrice: {_gt: 300}}) {
+    description
+    listPrice
+    category {
+      title
+    }
+  }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/37/credit_21.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Where metodu sorgu şemasına otomatik olarak eklenmiştir. _gt tahmin edileceği &amp;uuml;zere greater than anlamındadır. Yukarıdaki sorguya fiyata g&amp;ouml;re tersten sıralama&amp;nbsp;opsiyonunu da koyabiliriz. Sadece where koşulu arkasından order_by &amp;ccedil;ağrısı yapmamız yeterlidir.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;{
+  products(where: {listPrice: {_gt: 300}}, order_by: {listPrice: desc}) {
+    description
+    listPrice
+    category {
+      title
+    }
+  }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/37/credit_22.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;ok b&amp;uuml;y&amp;uuml;k veri setleri d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde &amp;ouml;n y&amp;uuml;zler i&amp;ccedil;in sayfalama &amp;ouml;nemlidir. Bunun i&amp;ccedil;in limit ve offset değerlerini kullanabiliriz. &amp;Ouml;rneğin 5nci &amp;uuml;r&amp;uuml;nden itibaren 5 &amp;uuml;r&amp;uuml;n&amp;uuml;n getirilmesi i&amp;ccedil;in aşağıdaki sorgu kullanılabilir.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;{
+  products(limit: 5, offset: 5) {
+    description
+    listPrice
+    category {
+      title
+    }
+  }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/37/credit_23.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Hasura Query Engine&amp;rsquo;in sorgu se&amp;ccedil;enekleri ile ilgili olarak &lt;a href="https://docs.hasura.io/1.0/graphql/manual/queries/index.html" target="_blank"&gt;buradaki dok&amp;uuml;manı&lt;/a&gt; takip edebilirsiniz.&lt;/p&gt;
+&lt;h2&gt;İstemci(Vue) Tarafı&lt;/h2&gt;
+&lt;p&gt;Gelelim ilgili servisi t&amp;uuml;ketecek olan istemci uygulamamıza. İstemci tarafını basit bir Vue&amp;nbsp;projesi olarak geliştirmeye karar vermiştim. Aşağıdaki terminal komutunu kullanıp varsayılan ayarları ile projeyi oluşturabiliriz. Ayrıca GraphQL tarafı ile konuşabilmek i&amp;ccedil;in gerekli npm paketlerini de y&amp;uuml;klememiz gerekiyor. Apollo&lt;em&gt;(ilerleyen &amp;uuml;nitelerde ondan bir GraphQL Server yazmayı denemiştim),&lt;/em&gt;&amp;nbsp;GraphQL servisimiz ile kolay bir şekilde iletişim kurmamızı sağlayacak. G&amp;ouml;rsel taraf i&amp;ccedil;inse bootstrap kullanabiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo vue create nba-client
+sudo npm install vue-apollo apollo-client apollo-cache-inmemory apollo-link-http graphql-tag graphql bootstrap --save&lt;/pre&gt;
+&lt;h2&gt;Kod Tarafı&lt;/h2&gt;
+&lt;p&gt;Vue uygulaması tarafında yapacaklarımız kabaca ş&amp;ouml;yle&lt;em&gt;(Kod dosyalarındaki yorum bloklarında daha detaylı bilgiler mevcut)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Components klas&amp;ouml;r&amp;uuml;ne tek &amp;uuml;r&amp;uuml;n i&amp;ccedil;in kullanılabilecek ProductItem isimli bir bileşen ekliyoruz. Anasayfa listelemesinde tekrarlanacak t&amp;uuml;rden bir bileşen olacak bu. Bileşende product &amp;ouml;zelliği &amp;uuml;zerinden i&amp;ccedil;erideki elementlere veri bağlama işlemini ger&amp;ccedil;ekleştirmekteyiz. {{nesne.&amp;ouml;zellik}} notasyonlarının nasıl kullanıldığına dikkat edelim.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;template&amp;gt;
+  &amp;lt;div :key="product.productId" class="card w-75"&amp;gt;
+    &amp;lt;div class="card-header"&amp;gt;
+      &amp;lt;p class="card-text"&amp;gt;{{product.description}}&amp;lt;/p&amp;gt;
+    &amp;lt;/div&amp;gt;
+    &amp;lt;div class="card-body text-left"&amp;gt;
+      &amp;lt;h6 class="card-subtitle mb-2 text-muted"&amp;gt;{{product.listPrice}} Lira&amp;lt;/h6&amp;gt;
+      &amp;lt;h6 class="card-subtitle mb-2"&amp;gt;'{{product.category.title}}' kategorisinden&amp;lt;/h6&amp;gt;
+    &amp;lt;/div&amp;gt;
+    &amp;lt;div class="card-footer text-right"&amp;gt;
+      &amp;lt;a href="#" class="btn btn-primary"&amp;gt;Sepete Ekle&amp;lt;/a&amp;gt;
+    &amp;lt;/div&amp;gt;
+      &amp;lt;hr/&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;script&amp;gt;
+export default {
+  name: "ProductItem",
+  props: ["product"]
+};
+&amp;lt;/script&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&amp;Uuml;r&amp;uuml;nlerin listesini g&amp;ouml;sterebilmek i&amp;ccedil;inse ProductList isimli bir bileşen kullanacağız. Bunu da components altında aşağıdaki gibi yazabiliriz.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;template&amp;gt;
+  &amp;lt;div&amp;gt;
+    &amp;lt;!--
+      products dizisindeki her bir &amp;uuml;r&amp;uuml;n i&amp;ccedil;in product-item &amp;ouml;ğesi ekliyoruz.
+      Bu &amp;ouml;ğe bir ProductItem bileşeni esasında
+      --&amp;gt;
+    &amp;lt;product-item v-for="product in products" :key="product.productId" :product="product"&amp;gt;&amp;lt;/product-item&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;script&amp;gt;
+/*
+  div i&amp;ccedil;erisinde kullandığımız product-item elementi i&amp;ccedil;in ProductItem bileşenini eklememi gerekiyor.
+  gql ise GraphQL sorgularını &amp;ccedil;alıştırabilmemiz i&amp;ccedil;in gerekli
+*/
+import ProductItem from "./ProductItem";
+import gql from "graphql-tag";
+
+/*
+  GraphQL sorgumuz.
+  T&amp;uuml;m &amp;uuml;r&amp;uuml;n listeini, kategori adları ile birlikte getirecek
+*/
+const selectAllProducts = gql`
+  query getProducts{
+  products{
+    productId
+    description
+    listPrice
+    category{
+      title
+    }
+  }
+}
+`;
+
+/*
+  Sorguyu GraphQL API'sine g&amp;ouml;nderebilmek i&amp;ccedil;in apollo'ya ihtiyacımız var.
+  products dizisini query parametresine verilen değişken ile &amp;ccedil;ekiyoruz.
+*/
+export default {
+  name: "ProductList",
+  components: { ProductItem }, // Sayfada bu bileşeni kullandığımız i&amp;ccedil;in eklendi
+  data() {
+    return {
+      products: []
+    };
+  },
+  apollo: {
+    products: {
+      query: selectAllProducts
+    }
+  }
+};
+&amp;lt;/script&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&amp;Uuml;r&amp;uuml;n ekleme işini ProductAdd isimli bileşen &amp;uuml;stleniyor. Yine components sekmesinde konuşlandıracağımız tipin kod i&amp;ccedil;eriği aşağıdaki gibi olmalı.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;template&amp;gt;
+  &amp;lt;!-- Veri girişi i&amp;ccedil;in basit bir formumuz var. Input değerlerini v-model niteliklerine verilen isimlerle bileşene bağlıyoruz --&amp;gt;
+  &amp;lt;form @submit="submit"&amp;gt;
+    &amp;lt;fieldset&amp;gt;
+      &amp;lt;div class="form-group w-75"&amp;gt;
+        &amp;lt;input
+          class="form-control"
+          aria-describedby="descriptionHelp"
+          type="text"
+          placeholder="&amp;Uuml;r&amp;uuml;n bilgisi"
+          v-model="description"
+        &amp;gt;
+        &amp;lt;small
+          id="descriptionHelp"
+          class="form-text text-muted"
+        &amp;gt;Satışı olan basketbol malzemesi hakkında kısa bir bilgi...&amp;lt;/small&amp;gt;
+      &amp;lt;/div&amp;gt;
+      &amp;lt;div class="form-group w-75"&amp;gt;
+        &amp;lt;input class="form-control" type="number" v-model="listPrice"&amp;gt;
+        &amp;lt;small id="listPriceHelp" class="form-text text-muted"&amp;gt;&amp;Uuml;r&amp;uuml;n&amp;uuml;n mağaza satış fiyatı&amp;lt;/small&amp;gt;
+      &amp;lt;/div&amp;gt;
+      &amp;lt;div class="form-group w-75"&amp;gt;
+        &amp;lt;input
+          class="form-control"
+          type="text"
+          placeholder="Halledene kadar kategorinin UUID bilgisi :D"
+          v-model="categoryId"
+        &amp;gt;
+      &amp;lt;/div&amp;gt;
+      &amp;lt;!-- Kategoriyi drop down olarak nasıl ekleyebiliriz? --&amp;gt;
+    &amp;lt;/fieldset&amp;gt;
+    &amp;lt;div class="form-group w-75 text-right"&amp;gt;
+      &amp;lt;button class="btn btn-success" type="submit"&amp;gt;D&amp;uuml;kkana Yolla&amp;lt;/button&amp;gt;
+    &amp;lt;/div&amp;gt;
+  &amp;lt;/form&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;script&amp;gt;
+import gql from "graphql-tag";
+//import { InMemoryCache } from "apollo-cache-inmemory";
+
+/*
+  Bu veri girişi yapmak i&amp;ccedil;in kullanacağımız mutation sorgumuz.
+  insert_products'u Hasura tarafında kullanmıştık hatırlarsanız.
+
+  mutation parametrelerini belirlerken veri t&amp;uuml;rlerine dikkat etmemiz lazım.
+  S&amp;ouml;z gelimi listPrice, Hasura tarafında Numeric tanımlandı. CategoryId değeri
+  ise UUID formatında. Buna g&amp;ouml;re case-sensitive olarak veri tiplerini s&amp;ouml;yl&amp;uuml;yoruz.
+  Aslında bunu anlamak i&amp;ccedil;in numeric! yerine Numeric! yazıp deneyin. HTTP 400
+  Bad Request alıyor olmalısınız.
+*/
+const addNewProduct = gql`
+  mutation addProduct(
+    $description: String!
+    $listPrice: numeric!
+    $categoryId: uuid!
+  ) {
+    insert_products(
+      objects: [
+        {
+          description: $description
+          listPrice: $listPrice
+          categoryId: $categoryId
+        }
+      ]
+    ) {
+      returning {
+        productId
+      }
+    }
+  }
+`;
+
+export default {
+  name: "ProductAdd",
+  data() {
+    return {
+      description: "",
+      listPrice: 0,
+      categoryId: ""
+    };
+  },
+  apollo: {},
+  methods: {
+    /*
+    form submit edildiği zaman devreye giren metodumuz.
+    $data ile formdaki veri i&amp;ccedil;eriğini description, listPrice ve categoryId olarak yakalıyoruz
+    */
+    submit(e) {
+      e.preventDefault();
+      const { description, listPrice, categoryId } = this.$data;
+
+      /*
+      apollo'nun mutate metodu ile addNewProduct isimli mutation sorgusunu &amp;ccedil;alıştırıyoruz.
+      Sorgunun beklediği değişkenler this.$data ile zaten yakalanmışlardı.
+      */
+      this.$apollo.mutate({
+        mutation: addNewProduct,
+        variables: {
+          description,
+          listPrice,
+          categoryId
+        },
+        refetchQueries: ["ProductList"] // Insert işlemini takiben &amp;uuml;r&amp;uuml;n lstesini tekrardan talep ediyoruz
+      });
+    }
+  }
+};
+&amp;lt;/script&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Uygulamanın ana bileşeni olan App.Vue'da product-add ve product-list isimli&amp;nbsp;nesnelerimizi&amp;nbsp;aşağıdaki gibi yerleştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;template&amp;gt;
+  &amp;lt;div id="app"&amp;gt;
+    &amp;lt;h2 class="text-left"&amp;gt;Yeni &amp;Uuml;r&amp;uuml;n&amp;lt;/h2&amp;gt;
+    &amp;lt;!-- Bileşenleri altalta dizdik --&amp;gt;
+    &amp;lt;product-add/&amp;gt;
+    &amp;lt;h2 class="text-left"&amp;gt;Basketbol &amp;Uuml;r&amp;uuml;nleri&amp;lt;/h2&amp;gt;
+    &amp;lt;product-list/&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;script&amp;gt;
+/*
+  Ana bileşen i&amp;ccedil;erisinde kullanılan alt bileşenlerin import edilmesi
+*/
+import ProductList from "./components/ProductList.vue";
+import ProductAdd from "./components/ProductAdd.vue";
+
+export default {
+  name: "app",
+  components: {
+    ProductList,
+    ProductAdd
+  }
+};
+&amp;lt;/script&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Main.js i&amp;ccedil;erisinde de &amp;ouml;nemli kodlamalarımız var. Ama&amp;ccedil; Hasura'yı ve GraphQL'i kullanabilir hale getirmek. Kodlarını aşağıdaki gibi geliştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;import Vue from 'vue';
+import App from './App.vue';
+import { ApolloClient } from 'apollo-client';
+import { HttpLink } from 'apollo-link-http';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import VueApollo from 'vue-apollo';
+
+Vue.config.productionTip = false;
+
+// Hasura GraphQL Api adresimiz
+const hasuraLink = new HttpLink({ uri: 'https://basketin-cepte.herokuapp.com/v1alpha1/graphql' });
+
+/* 
+  Servis iletişimini sağlayan nesne
+  GraphQL istemcileri veriyi genellikle cache'de tutar.
+  Tarayıcı ilk olarak cache'ten okuma yapar. 
+  Performans ve network trafiğini azaltmış oluruz bu şekilde.
+*/
+const apolloClient = new ApolloClient({
+  link: hasuraLink, // Kullanacağı servis adresini veriyoruz
+  connectToDevTools: true, // Chrome'da dev tools &amp;uuml;zerinde Apollo tab'ının &amp;ccedil;ıkmasını sağlar. Debug işlerimiz kolaylaşır
+  cache: new InMemoryCache() // ApolloClient'ın varsayılan Cache uyarlaması i&amp;ccedil;in InMemoryCache kullanılıyor. 
+});
+
+// Vue ortamının GraphQL ile entegre edebilmek i&amp;ccedil;in VueApollo k&amp;uuml;t&amp;uuml;phanesini entegre ediyoruz. (https://akryum.github.io/vue-apollo/)
+Vue.use(VueApollo);
+
+/* 
+  Vue tarafında GraphQL sorguları oluşturabilmek ve veri girişleri(mutations)
+  yapabilmek i&amp;ccedil;in ApolloProvider &amp;ouml;rneği kullanmamız gerekiyor.
+  VueApollo'den &amp;uuml;retilen bu nesnenin Hasura tarafına işlemleri commit
+  edebilmesi i&amp;ccedil;inse yukarıdaki apolloClient'ı parametre olarak atıyoruz
+*/
+const apolloProvider = new VueApollo({
+  defaultClient: apolloClient
+});
+
+new Vue({
+  apolloProvider,// Vue uygulamamızın ApolloProvider'ı kullanabilmesi i&amp;ccedil;in eklendi
+  render: h =&amp;gt; h(App),
+}).$mount('#app');&lt;/pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;TODO&amp;nbsp;&lt;em&gt;(Benim tembelliğimden size d&amp;uuml;şen)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Bu servisi JWT Authentication b&amp;uuml;nyesine almak lazım. İşte size g&amp;uuml;zel bir araştırma konusu. Başlangı&amp;ccedil; noktası olarak Auth0'ın &lt;a href="https://auth0.com/docs/quickstart/spa/vuejs" target="_blank"&gt;şu dok&amp;uuml;manına&lt;/a&gt; bakılabilir. Ben şu an i&amp;ccedil;in sadece HASURA_GRAPHQL_ADMIN_SECRET kullanarak servis adresine erişimi kısıtlamış durumdayım. Zaten b&amp;uuml;y&amp;uuml;k ihtimalle yazıyı okuduğunuzda onun yerinde yeller estiğine şahit olacaksınız.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;&amp;Ccedil;alışma Zamanı&lt;/h2&gt;
+&lt;p&gt;Hasura servisimiz ve istemci taraftaki uygulamamız hazır. Artık &amp;ccedil;alışma zamanına ge&amp;ccedil;ip sonu&amp;ccedil;ları irdeleyebiliriz. Programı başlatmak i&amp;ccedil;in&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;npm run serve&lt;/pre&gt;
+&lt;p&gt;terminal komutunu vermemiz yeterli. Sonrasında http://localhost:8080 adresine giderek ana sayfaya ulaşabiliriz. Aynen aşağıdakine benzer bir g&amp;ouml;r&amp;uuml;nt&amp;uuml; elde etmemiz gerekiyor.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/37/credit_24.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Yeni &amp;uuml;r&amp;uuml;n ekleme bileşeni konulduktan sonrasına ait &amp;ouml;rnek bir ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;n&amp;uuml; de buraya iliştirelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/37/credit_25.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Hatta yeni bir forma eklediğimizde g&amp;ouml;nderilen Graphql Mutation sorgusundan d&amp;ouml;nen değer, F12 sonrası Network sekmesinden yakalayabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/37/credit_26.png" alt="" /&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;throw new UnDoneException("Yeni &amp;uuml;r&amp;uuml;n ekleme sayfasında kategori se&amp;ccedil;iminde combobox kullanımı yapılmalı");&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;Ben Neler &amp;Ouml;ğrendim?&lt;/h2&gt;
+&lt;p&gt;Doğruyu s&amp;ouml;ylemek gerekirse bu &amp;ccedil;alışma benim i&amp;ccedil;in olduk&amp;ccedil;a keyifliydi. Heroku platformunu olduk&amp;ccedil;a beğeniyorum. Şirkette Vue tabanlı &amp;uuml;r&amp;uuml;nlerimiz var ama onlar &amp;uuml;zerinden &amp;ccedil;ok iyi değilim. Dolayısıyla Vue tarafında bir şeyler yapmış olmak beni mutlu ediyor. Peki bu &amp;ccedil;alışma kapsamında neler mi &amp;ouml;ğrendim. İşte listem...&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Heroku'da Docker Container i&amp;ccedil;erisinde &amp;ccedil;alışan ve PostgreSQL verilerini GraphQL ile sorgulanabilir olarak sunan Hasura isimli bir motor olduğunu&lt;/li&gt;
+&lt;li&gt;Hasura arabirimden tablolar arası ilişkileri nasıl&amp;nbsp;kuracağımı&lt;/li&gt;
+&lt;li&gt;Bir ka&amp;ccedil; basit GraphQL sorgusunu&lt;em&gt;(sorgularda sayfalama yapmak, ilişkili veri getirmek, where koşulları kullanmak)&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;Vue tarafında GraphQL sorgularının nasıl g&amp;ouml;nderilebileceğini&lt;/li&gt;
+&lt;li&gt;Component i&amp;ccedil;inde Component kullanımlarını&lt;em&gt;(App bileşeni dışında product-list i&amp;ccedil;inde product-item kullanımı)&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;Temel component tasarlama adımlarını&lt;/li&gt;
+&lt;li&gt;Vue tarafından bir Mutation sorgusunun nasıl g&amp;ouml;nderilebileceğini ve schema veri tiplerine dikkat etmem gerektiğini&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir &lt;a href="https://github.com/buraksenyurt/saturday-night-works" target="_blank"&gt;cumartesi gecesi derlemesi&lt;/a&gt;nin daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2019-11-06 10:30:00</pubDate>
+  <slug>hasura-graphql-engine-ile-gelistirilmis-bir-api-servisini-vue-js-ile-kullanmak</slug>
+  <tags>
+    <tag>hasura</tag>
+    <tag>vue</tag>
+    <tag>graphql</tag>
+    <tag>javascript</tag>
+    <tag>api</tag>
+    <tag>html</tag>
+    <tag>mutation</tag>
+    <tag>component</tag>
+    <tag>heroku</tag>
+    <tag>postgresql</tag>
+    <tag>docker</tag>
+    <tag>container</tag>
+    <tag>bootstrap</tag>
+    <tag>grapiql</tag>
+    <tag>crud</tag>
+  </tags>
+  <categories>
+    <category>Vue.js</category>
+  </categories>
+</post>

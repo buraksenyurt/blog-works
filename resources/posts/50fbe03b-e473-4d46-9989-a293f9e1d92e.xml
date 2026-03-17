@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>C# 4.0 - Dynamic Olmak</title>
+  <description>Uzun bir süredir (son bir senelik zaman dilimi içerisinde) C# 4.0 ile birlike gelen yeniliklerden haberdarız. Şöyle bir kaç sene öncesini hatırlıyorum da...Cool Visual Studio 2005, Whidbey kod adı ile yayınlanmış ve C# 2.0 ile birlikte gelen pek çok yenilik olmuştu...</description>
+  <content>&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Uzun bir s&amp;uuml;redir (son bir senelik zaman dilimi i&amp;ccedil;erisinde) &lt;strong&gt;C# 4.0&lt;/strong&gt; ile birlike gelen yeniliklerden haberdarız. Ş&amp;ouml;yle bir ka&amp;ccedil; sene &amp;ouml;ncesini hatırlıyorum da...&lt;img title="Cool" src="/editors/tiny_mce3/plugins/emotions/img/smiley-cool.gif" alt="Cool" border="0" /&gt;&amp;nbsp;&lt;strong&gt;Visual Studio 2005, Whidbey&lt;/strong&gt; kod adı ile yayınlanmış ve &lt;strong&gt;C# 2.0&lt;/strong&gt; ile birlikte gelen pek &amp;ccedil;ok yenilik olmuştu. Ancak bunlar i&amp;ccedil;erisinde belkide en &amp;ouml;nemli olanı, &lt;strong&gt;CLR(Common Language Runtime) &lt;/strong&gt;&amp;ccedil;ekirdiğinde değiştirilme yapılmasını da zorunlu kılan &lt;strong&gt;generic&lt;/strong&gt; mimari kavramıydı. Tabiki generic dışında gelen, &lt;strong&gt;yield&lt;/strong&gt; anahtar kelimesi, &lt;strong&gt;isimsiz metodlar(anonymous methods), static sınıflar&lt;/strong&gt;&amp;nbsp;ve diğerleride &amp;ouml;nemli gelişmelerdi. Zaman ilerledi ve &lt;strong&gt;C# 3.0&lt;/strong&gt; ile birlikte bu kez hayatımıza, generic modelinden daha fazla etki yapan &lt;strong&gt;LINQ(Language INtegrated Query)&lt;/strong&gt; girdi. Bir geliştirici olarak her zaman i&amp;ccedil;in yeniliklere a&amp;ccedil;ık olmamız ve yakalayabildiğimiz &amp;ouml;l&amp;ccedil;&amp;uuml;de takip etmemiz gerektiğini d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum. Bu bir geliştirici i&amp;ccedil;in neredeyse bir yaşam tarzı. Dolayısıyla artık &lt;strong&gt;C# 4.0&lt;/strong&gt; &amp;uuml;zerinde konuşmanın zamanı geldide ge&amp;ccedil;iyor.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;C# 4.0 &lt;/strong&gt;ile birlikte gelen yeniliklerin daha &amp;ccedil;ok&amp;nbsp;&lt;strong&gt;dinamik &amp;ccedil;alışma zamanını(Dynamic Language Runtime-DLR) &lt;/strong&gt;kullanan diller &amp;uuml;zerinde odaklanmış durumda olduğunu s&amp;ouml;yleyebiliriz. Peki bu ne anlama geliyor? &lt;strong&gt;DLR&lt;/strong&gt; tarafını ilgilendiren dillere ait nesneler ile daha kolay konuşulması olarak k&amp;uuml;&amp;ccedil;&amp;uuml;k bir sebep belirtebiliriz. Bu nedenle &lt;strong&gt;C# 4.0&lt;/strong&gt; ile birlikte gelen &amp;ouml;nemli yeniliklerden birisi olan &lt;strong&gt;dynamic&lt;/strong&gt; anahtar kelimesi sayesinde, &lt;strong&gt;Python, Ruby&lt;/strong&gt; veya &lt;strong&gt;Javascript&lt;/strong&gt; ile &amp;uuml;retilen nesnelerin &lt;strong&gt;C# 4.0&lt;/strong&gt; tarafında &lt;strong&gt;late-binding&lt;/strong&gt; ile ele alınması m&amp;uuml;mk&amp;uuml;n. Hatta var olan &lt;strong&gt;.Net&lt;/strong&gt; nesnelerinin &lt;strong&gt;reflection&lt;/strong&gt; kullanılmadan ele alınması veya &lt;strong&gt;COM&lt;/strong&gt; objelerine ait &amp;uuml;yelerin &amp;ccedil;ağırılmasında bu anahtar kelimeyi kullanabiliyoruz. Aslında C#' ın 2.0, 3.0 versiyonunda gelen yenilikler nasıl ki belirli ihtiya&amp;ccedil;lar nedeni ile ortaya &amp;ccedil;ıkmışsa, C# 4.0 ile gelen yenilikleride bu anlamda d&amp;uuml;ş&amp;uuml;nmemiz ve araştırmamız gerekiyor.&lt;/p&gt;
+&lt;p&gt;Bu yazımda sizlerle dynamic kelimesi ile ilgili olan araştırmalarım sonucu elde ettiğim bilgileri paylaşıyor olacağım. İşe ilk olarak aşağıdaki şekilde g&amp;ouml;r&amp;uuml;len yapıya sahip olduğumuzu d&amp;uuml;ş&amp;uuml;nerek başlayacağız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg11_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi bu yapıyı kısaca a&amp;ccedil;ıklayalım. &lt;strong&gt;Commands&lt;/strong&gt; isimli &lt;strong&gt;sınıf k&amp;uuml;t&amp;uuml;phanesi(Class Library)&lt;/strong&gt;&amp;nbsp;&lt;strong&gt;IGraphic&lt;/strong&gt; &lt;strong&gt;aray&amp;uuml;z&amp;uuml;n&amp;uuml;(Interface)&lt;/strong&gt; uygulayan &lt;strong&gt;Circle&lt;/strong&gt; ve &lt;strong&gt;Rectangle&lt;/strong&gt; isimli sınıflara sahiptir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;IGraphic aray&amp;uuml;z&amp;uuml;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace Commands
+{
+    public interface IGraphic
+    {
+        void Draw();
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Circle sınıfı&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace Commands
+{
+    public class Circle
+        :IGraphic
+    {
+        #region IGraphic Members
+
+        public void Draw()
+        {
+            Console.WriteLine("Circle...");
+        }
+
+        #endregion
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Rectangle Sınıfı&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace Commands
+{
+    public class Rectangle
+        :IGraphic
+    {
+        #region IGraphic Members
+
+        public void Draw()
+        {
+            Console.WriteLine("Rectangle...");
+        }
+
+        #endregion
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Console Application&lt;/strong&gt; tipinden olan uygulamamız, &lt;strong&gt;Commands&lt;/strong&gt; isimli sınıf k&amp;uuml;t&amp;uuml;phanesini referans etmekte olup başlangı&amp;ccedil;ta aşağıdaki kod i&amp;ccedil;eriğine sahiptir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Commands;
+
+namespace CSharp4Features
+{
+    class Program
+    {
+        static void Draw&amp;lt;T&amp;gt;(T graphObject) 
+            where T : IGraphic
+        {
+            graphObject.Draw();
+        }
+        static void Main(string[] args)
+        {
+            #region Başlangı&amp;ccedil;taki durumumuz
+
+            Draw&amp;lt;Circle&amp;gt;(new Circle());
+            Draw&amp;lt;Rectangle&amp;gt;(new Rectangle());
+
+            #endregion
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Uygulamayı &amp;ccedil;alıştırdığımızda aşağıdaki sonucu alırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg11_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu kod par&amp;ccedil;asında dikkat edilmesi gereken &amp;ouml;nemli noktalardan birisi, &lt;strong&gt;generic Draw&amp;lt;T&amp;gt;&lt;/strong&gt; metodudur. Burada yer alan generic T tipine &lt;strong&gt;IGraphic&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;nden t&amp;uuml;reme koşulu getirilmiştir. Bu sebepten dolayı, &lt;strong&gt;IGraphic&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml; uygulayan t&amp;uuml;m tiplere ait &lt;strong&gt;Draw&lt;/strong&gt; metounu &amp;ccedil;ağırmamızı sağlayan tek bir metod geliştirmiş oluyoruz. Dolayısıyla tek yapılması gereken, &lt;strong&gt;Draw&amp;lt;T&amp;gt;&lt;/strong&gt; metodunun kullanıldığı yerde, doğru tipe ait&lt;em&gt;(bu &amp;ouml;rnek i&amp;ccedil;in Rectangle veya Circle)&lt;/em&gt; nesne &amp;ouml;rneğini parametre olarak aktarmaktır.&lt;/p&gt;
+&lt;p&gt;Şimdi burada, bizi dynamic kelimesine g&amp;ouml;t&amp;uuml;recek bir veya bir ka&amp;ccedil; sebep arayacağız.&amp;nbsp;&amp;nbsp;İşte bir ka&amp;ccedil; blog i&amp;ccedil;erisinde yakaladığım ortak soru geliyor...Ya &lt;strong&gt;Console&lt;/strong&gt; uygulaması, &lt;strong&gt;IGraphic&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;ne erişemiyor olsaydı. Bunu ayarlamak son derece kolay. Tek yapmamız gereken IGraphic aray&amp;uuml;z&amp;uuml;n&amp;uuml;n &lt;strong&gt;public&lt;/strong&gt; olan erişim belirleyicisini kaldırmak&lt;em&gt;.(Bir başka deyişle internal'a &amp;ccedil;ekmek)&lt;/em&gt; Bu durumda &lt;strong&gt;Draw&amp;lt;T&amp;gt;&lt;/strong&gt; metodumuz i&amp;ccedil;in &lt;strong&gt;derleme zamanı(Compile Time)&lt;/strong&gt;&amp;nbsp;hatası alınacaktır. Peki ne yapılabilir? &lt;strong&gt;Reflection&amp;nbsp;&lt;/strong&gt;tekniklerinden&amp;nbsp;yararlanarak ilgili tipin &lt;strong&gt;Draw&lt;/strong&gt; metodunun &amp;ccedil;ağırılması sağlanabilir. Yani kodu aşağıdaki hale getirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Commands;
+using System.Reflection;
+
+namespace CSharp4Features
+{
+    class Program
+    {
+        static void Draw&amp;lt;T&amp;gt;(T graphObject)
+        {
+            MethodInfo methodInfo = typeof(T).GetMethod("Draw");
+            if (methodInfo == null)
+            {
+                System.Console.WriteLine("Method bulunamadı");
+            }
+            methodInfo.Invoke(graphObject, new object[0]);
+        }
+
+        static void Main(string[] args)
+        {
+            Draw&amp;lt;Circle&amp;gt;(new Circle());
+            Draw&amp;lt;Rectangle&amp;gt;(new Rectangle());
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;İlk olarak &lt;strong&gt;typeof&lt;/strong&gt; metodu ile &lt;strong&gt;T&lt;/strong&gt; tipi elde edilmekte ve&amp;nbsp;&lt;strong&gt;Draw&lt;/strong&gt; isimli metod istenerek &lt;strong&gt;MethodInfo&lt;/strong&gt; tipinden bir referansa aktarılmaktadır. Bilindiği &amp;uuml;zere &lt;strong&gt;reflection&lt;/strong&gt; mimarisinde, &amp;ccedil;alışma zamanında tipler ve &amp;uuml;yelerine ait bilgiler elde edilmekte ve istenirse &amp;uuml;yelerin y&amp;uuml;r&amp;uuml;t&amp;uuml;lmesi&lt;em&gt;(&amp;ouml;rneğin metodların &amp;ccedil;ağırılması)&lt;/em&gt; sağlanabilmektedir. Bu nedenle ilk olarak &lt;strong&gt;T&lt;/strong&gt; tipinin &amp;ccedil;alışma zamanı referansı &amp;uuml;zerinden &lt;strong&gt;Draw&lt;/strong&gt; metodu elde edilmeye &amp;ccedil;alışılır. Sonrasında ise eğer &lt;strong&gt;MethodInfo&lt;/strong&gt; referansı &lt;strong&gt;null&lt;/strong&gt; değilse &lt;strong&gt;Invoke&lt;/strong&gt; fonksiyonuna gerekli parametreler g&amp;ouml;nderilerek &lt;strong&gt;Draw&lt;/strong&gt; metodunun icra edilmesi sağlanır. &lt;em&gt;(Tabiki &amp;ccedil;alışma zamanında gelen T nesne &amp;ouml;rneğine ait olan Draw metodunun) &lt;/em&gt;Uygulamayı bu haliyle &amp;ccedil;alıştırdığımızda yine aynı sonu&amp;ccedil;ları alırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg11_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Ancak tabiki metodun bu yeni halinde tip g&amp;uuml;venliğinden&lt;strong&gt;(type-safety)&lt;/strong&gt; bahsetmemiz m&amp;uuml;mk&amp;uuml;n değildir. T&amp;nbsp;i&amp;ccedil;in herhangibir tip kullanılabilir.&lt;/p&gt;
+&lt;p&gt;Peki dynamic anahtar kelimesi burada nasıl bir yaklaşım sunmaktadır. İşte aynı metodun &lt;strong&gt;C# 4.0&lt;/strong&gt; i&amp;ccedil;in dynamic anahtar kelimesi ile yazılmış hali.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Commands;
+using System.Reflection;
+
+namespace CSharp4Features
+{
+    class Program
+    {     
+        static void Draw&amp;lt;T&amp;gt;(T graphObject)
+        {
+            dynamic obj = graphObject;
+            obj.Draw();
+        }
+
+        static void Main(string[] args)
+        {
+            Draw&amp;lt;Circle&amp;gt;(new Circle());
+            Draw&amp;lt;Rectangle&amp;gt;(new Rectangle());
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu seferde aynı &amp;ccedil;ıktıyı alırız. Tabi burada dikkat edilmesi gereken bir ka&amp;ccedil; nokta vardır ve kodun kısalmış olması bunlardan birisi değildir &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;&amp;Ouml;ncelikli olarak &lt;strong&gt;Draw&lt;/strong&gt; metodu, s&amp;ouml;z konusu &lt;strong&gt;Circle&lt;/strong&gt; veya &lt;strong&gt;Rectangle&lt;/strong&gt; nesne &amp;ouml;rneklerine &amp;ccedil;alışma zamanında bağlanmaktadır. Bu zaten bizim reflection tekniği ile&amp;nbsp;yapmakta&amp;nbsp;olduğumuz bir işlemdir.&amp;nbsp;Diğer yandan &lt;strong&gt;.Net Reflector&lt;/strong&gt; aracı yardımıyla &amp;uuml;retilen uygulama koduna bakıldığında s&amp;ouml;z konusu metod i&amp;ccedil;in aşağıdaki &lt;strong&gt;IL&lt;/strong&gt; &amp;ccedil;ıktısının oluşturulduğunu g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg11_5.gif" alt="" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private static void Draw&amp;lt;T&amp;gt;(T graphObject)
+{
+    object obj = graphObject;
+    if (&amp;lt;Draw&amp;gt;o__SiteContainer0&amp;lt;T&amp;gt;.&amp;lt;&amp;gt;p__Site1 == null)
+    {
+        &amp;lt;Draw&amp;gt;o__SiteContainer0&amp;lt;T&amp;gt;.&amp;lt;&amp;gt;p__Site1 = CallSite&amp;lt;Action&amp;lt;CallSite, object&amp;gt;&amp;gt;.Create(new CSharpInvokeMemberBinder(CSharpCallFlags.None, "Draw", typeof(Program), null, new CSharpArgumentInfo[] { new CSharpArgumentInfo(CSharpArgumentInfoFlags.None, null) }));
+    }
+    &amp;lt;Draw&amp;gt;o__SiteContainer0&amp;lt;T&amp;gt;.&amp;lt;&amp;gt;p__Site1.Target(&amp;lt;Draw&amp;gt;o__SiteContainer0&amp;lt;T&amp;gt;.&amp;lt;&amp;gt;p__Site1, obj);
+}&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &lt;strong&gt;Draw&amp;lt;T&amp;gt;&lt;/strong&gt; metodu i&amp;ccedil;erisinde &lt;strong&gt;&amp;lt;Draw&amp;gt;o_SiteContainer0&amp;lt;T&amp;gt;&lt;/strong&gt; isimli generic bir tipin kullanıldığını ve bununda &lt;strong&gt;IL(IntermediateLanguage)&lt;/strong&gt; tarafına eklendiğini g&amp;ouml;rmekteyiz. Bir başka deyişle derleme işleminden sonra yine reflection kullanılan kod par&amp;ccedil;aları i&amp;ccedil;eriye dahil edilerek, &lt;strong&gt;Circle&lt;/strong&gt; veya &lt;strong&gt;Rectangle&lt;/strong&gt; tiplerinden olan nesnelerin&amp;nbsp;&lt;strong&gt;Draw&lt;/strong&gt; metodunun &amp;ccedil;ağırılması sağlanmış oldu.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Burada dikkat edilmesi gereken &amp;ouml;nemli bir noktada şudur. Eğer Draw&amp;lt;T&amp;gt; metoduna, Circle ve Rectangle dışında bir tip atarsak(&amp;ouml;zellikle Draw metodu olmayan) bu durumda&amp;nbsp;&lt;strong&gt;RuntimeBinderException&lt;/strong&gt; tipinden bir istisna alırız.&lt;/p&gt;
+&lt;p&gt;Tabiki bu kısım ve detaylarını daha iyi kavramak i&amp;ccedil;in belki biraz daha zamana ihtiyacımız olacak. Ancak bu anahtar kelimenin tek kullanım şeklinin, reflection ile elde edilen tiplere&amp;nbsp;ait &amp;uuml;yelerin &amp;ccedil;ağırılmasını kolaylaştırmak olmadığınıda belirtmek isterim. &amp;Ouml;yleki, &lt;strong&gt;dynamic&lt;/strong&gt; kelimesi ile &lt;strong&gt;COM&lt;/strong&gt; objelerinin ve bu sayede &lt;strong&gt;unmanaged API'&lt;/strong&gt; lerin dinamik olarak ele alınması m&amp;uuml;mk&amp;uuml;n olabilir. Hatta, &lt;strong&gt;JSON&lt;/strong&gt; formatına sahip bir nesnenin dynamic kelimesi ile kolayca ele alınabileceğini s&amp;ouml;yleyebiliriz. Bu noktada &lt;strong&gt;Office API'&lt;/strong&gt; sine ait nesnelerin dynamic kelimesi ile son derece etkili&amp;nbsp;ve kolay kullanılabildiğini de belirtmek isterim. &amp;Uuml;stelik işin i&amp;ccedil;erisine yine &lt;strong&gt;C# 4.0&lt;/strong&gt; ile gelen opsiyonel ve isimlendirilmiş parametreler&lt;strong&gt;(Optional and Named Parameters)&lt;/strong&gt;&amp;nbsp;adlı yeniliklerinde girdiğini s&amp;ouml;yleyebilirim. Bunu bir sonraki blog yazımda ele almaya &amp;ccedil;alışacağım.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;&amp;Ouml;zet olarak artık C# programlama dilinin, dinamik olarak t&amp;uuml;rlendirilmiş tiplere ait nesnelerle daha kolay konuşabildiğini s&amp;ouml;yleyebiliriz.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;NOT: &amp;Ouml;rnekler 2008 PDC'de yayımlanmış olan Visual Studio 2010 PreBeta s&amp;uuml;r&amp;uuml;m&amp;uuml; &amp;uuml;zerinden geliştirilmiştir.&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;</content>
+  <pubDate>2009-04-30 15:02:00</pubDate>
+  <slug>C-40-Dynamic-Olmak</slug>
+  <tags>
+    <tag>c#-40</tag>
+  </tags>
+  <categories>
+    <category>C# 4.0</category>
+  </categories>
+</post>

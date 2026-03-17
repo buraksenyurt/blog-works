@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>TFS Version Control Hizmetine Kısa Bir Bakış</title>
+  <description>TFS Web Services kullanımlarını incelediğimiz bu yazımızda, en popüler hizmetlerden birisi olan Work Item Tracking servisine odaklamıştık. Bu servisten yararlanarak özellikle template bazlı öğelerin(Task, Bug, Product Back Log Item gibi) nasıl okunabileceğini öğrenmiştik. Çok doğal olarak daha pek çok servis kullanımı söz konusu. Önemli olan nokta, ilgili servislerin TFS Client Object Model üzerinden kullanılabileceğidir.</description>
+  <content>&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;TFS Web Services &lt;/strong&gt;kullanımlarını incelediğimiz &lt;a href="/post/TFS-Web-Services-ve-Kullanimi" target="_blank"&gt;bu&lt;/a&gt; yazımızda, en pop&amp;uuml;ler hizmetlerden birisi olan &lt;strong&gt;Work Item Tracking&lt;/strong&gt; servisine odaklamıştık. Bu servisten yararlanarak &amp;ouml;zellikle template bazlı &amp;ouml;ğelerin&lt;em&gt;(Task, Bug, Product Back Log Item gibi) &lt;/em&gt;nasıl okunabileceğini &amp;ouml;ğrenmiştik. &amp;Ccedil;ok doğal olarak daha pek &amp;ccedil;ok servis kullanımı s&amp;ouml;z konusu. &amp;Ouml;nemli olan nokta, ilgili servislerin &lt;strong&gt;TFS Client Object&lt;/strong&gt; &lt;strong&gt;Model&lt;/strong&gt; &amp;uuml;zerinden kullanılabileceğidir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="color: #ff0000;"&gt;[Yazı, Team Foundation Server 2012 &amp;uuml;zerinde ele alınmıştır]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;İşte bu yazımızda başka bir servis kullanımını incelemeye &amp;ccedil;alışıyor alacağız. Amacımız &lt;strong&gt;Version&lt;/strong&gt; &lt;strong&gt;Control&lt;/strong&gt; hizmetini ele alarak bir &lt;strong&gt;Team&lt;/strong&gt; &lt;strong&gt;Project&lt;/strong&gt; i&amp;ccedil;erisinde yer alan ve &lt;strong&gt;Source&lt;/strong&gt; &lt;strong&gt;Control&lt;/strong&gt;&amp;rsquo;e dahil edilmiş &amp;ccedil;eşitli i&amp;ccedil;erikleri elde edebilmek. Ağırlıklı olarak kod dosylarını g&amp;ouml;rmeyi hedefliyoruz.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğimizi bir &lt;strong&gt;Windows&lt;/strong&gt; &lt;strong&gt;Forms&lt;/strong&gt; uygulaması olarak geliştirebiliriz. Dilerseniz hi&amp;ccedil; vakit kaybetmeden ilgili &lt;strong&gt;TFS&lt;/strong&gt; &lt;strong&gt;Assembly&lt;/strong&gt; dosyalarını referans ederek işe başlayalım.&lt;em&gt;(Tabi kaynak kodun versiyon kontrol&amp;uuml; denilince aklımıza aşağıdakinden daha iyi bir &amp;ccedil;&amp;ouml;z&amp;uuml;m geliyordur diye var sayıyorum)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/versioncontrolfunny.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="versioncontrolfunny" src="/pics/versioncontrolfunny_thumb.png" alt="versioncontrolfunny" width="640" height="230" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h1&gt;Başlangı&amp;ccedil;&lt;/h1&gt;
+&lt;p&gt;İlk olarak uygulamaya &lt;strong&gt;Microsoft.TeamFoundation.Client&lt;/strong&gt;, &lt;strong&gt;Microsoft.TeamFoundation. Common &lt;/strong&gt;ve &lt;strong&gt;Microsoft.TeamFoundation.VersionControl.Client&lt;/strong&gt; &lt;strong&gt;assembly&lt;/strong&gt; k&amp;uuml;t&amp;uuml;phanelerini referans ederek işe başlayabiliriz. &amp;Ouml;rneğimize konu olan &lt;strong&gt;VersionControlServer&lt;/strong&gt; tahmin edileceği &amp;uuml;zere &lt;strong&gt;Microsoft.TeamFoundation.VersionControl.Client assembly&lt;/strong&gt;&amp;rsquo; ının bir par&amp;ccedil;asıdır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/tfsvc_1.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="tfsvc_1" src="/pics/tfsvc_1_thumb.png" alt="tfsvc_1" width="324" height="417" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Uygulamamıza ait &lt;strong&gt;Form&lt;/strong&gt; ise aşağıdaki gibi tasarlanabilir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/tfsvc_2.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="tfsvc_2" src="/pics/tfsvc_2_thumb.png" alt="tfsvc_2" width="638" height="618" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Kullanıcılar &lt;strong&gt;app.config&lt;/strong&gt; dosyasında belirtilen &lt;strong&gt;TFS&lt;/strong&gt; sunucusuna bağlanabilecektir. Bu &lt;strong&gt;TFS&lt;/strong&gt; sunucusu &amp;ccedil;ok doğal olarak kendi i&amp;ccedil;erisinde n sayıda &lt;strong&gt;Team Project Collection&lt;/strong&gt; barındırabilir. İlgili &lt;strong&gt;Team&lt;/strong&gt; &lt;strong&gt;Project Collection&lt;/strong&gt;&amp;rsquo; a ait bazı bilgilerin &lt;strong&gt;Collections&lt;/strong&gt; bileşeni yanındaki &lt;strong&gt;ComboBox&lt;/strong&gt; kontrol&amp;uuml;ne doldurulması sağlanmalıdır. Kullanıcı, bir &lt;strong&gt;Team&lt;/strong&gt; &lt;strong&gt;Project&lt;/strong&gt; &lt;strong&gt;Collection&lt;/strong&gt; se&amp;ccedil;imi yaptığında ise, buna bağlı &lt;strong&gt;Team&lt;/strong&gt; &lt;strong&gt;Project&lt;/strong&gt; listesinin de ilgili &lt;strong&gt;ComboBox&lt;/strong&gt; kontrol&amp;uuml;ne eklenmesi gerekmektedir. En azından bağlı olan &lt;strong&gt;Team&lt;/strong&gt; &lt;strong&gt;Project&lt;/strong&gt; adlarının listelenmesi gerekir. Kullanıcının yapacağı bir diğer se&amp;ccedil;im de, &lt;strong&gt;source&lt;/strong&gt; &lt;strong&gt;control&lt;/strong&gt; &amp;uuml;zerinden &amp;ccedil;ekilmek istenen dosyaların tipleridir. &amp;Ouml;rneğin &lt;strong&gt;C#&lt;/strong&gt; , &lt;strong&gt;VB&lt;/strong&gt; gibi kod dosyaları olabileceği gibi, &lt;strong&gt;XAML&lt;/strong&gt; i&amp;ccedil;erikli dosyalara da bakılmak istenebilir. &amp;Ouml;rnekte kısıtlı bir k&amp;uuml;me kullanılmıştır ancak bu genişletilebilir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Kendi &amp;ccedil;alışmalarınızı yaparken Team Foundation Server&amp;rsquo; ın tfs.visualstudio.com adresinden sunulan hizmetini g&amp;ouml;z &amp;ouml;n&amp;uuml;ne almanızı ve o ortamda sunulan Code penceresini incelemenizi &amp;ouml;neriririm. Code penceresine gelindiğinde aslında bu, bir Team Project Collection&amp;rsquo; daki bir Team Project i&amp;ccedil;erisindeyiz anlamına gelir. Dolayısıyla bu Team Project i&amp;ccedil;erisindeyken source control &amp;uuml;zerine atılan ne kadar i&amp;ccedil;erik varsa g&amp;ouml;r&amp;uuml;lebilir. Biz &amp;ccedil;ok daha kısıtlı bir &amp;ouml;rneğini yapıyoruz. Aslında kapıyı azcık aralamak niyetindeyiz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/tfsvc_5.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="tfsvc_5" src="/pics/tfsvc_5_thumb.png" alt="tfsvc_5" width="600" height="428" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Dosya tipi se&amp;ccedil;imi de belli olduğunda liste kontrol&amp;uuml;ne, s&amp;ouml;z konusu uzantıya sahip dosyaların bazı bilgileri gelecektir. Eğer herhangibir dosya se&amp;ccedil;ilirse de, bu dosyanın i&amp;ccedil;eriği g&amp;ouml;sterilecektir.&lt;/p&gt;
+&lt;h1&gt;Yardımcı Sınıflar&lt;/h1&gt;
+&lt;p&gt;&amp;Ouml;rnekte işleri biraz olsun kolaylaştırmak adına iki yardımcı &lt;strong&gt;POCO&lt;em&gt;(PlainOldClrObject)&lt;/em&gt; &lt;/strong&gt;tipi kullanılmıştır. Bu tipler i&amp;ccedil;erisinde bir &lt;strong&gt;Team Project Collection&lt;/strong&gt;&amp;rsquo; ın ve &lt;strong&gt;Change Set&lt;/strong&gt;&amp;rsquo; in temel bilgileri tutulmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/tfsvc_3.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="tfsvc_3" src="/pics/tfsvc_3_thumb.png" alt="tfsvc_3" width="512" height="216" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;TeamCollection&lt;/strong&gt; sınıfı i&amp;ccedil;eriği;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace HowTo_TFSVersionControl 
+{ 
+    public class TeamCollection 
+    { 
+        public string DisplayName { get; set; } 
+        public Guid Id { get; set; }
+
+        public override string ToString() 
+        { 
+            return string.Format("[{0}]-{1}", Id.ToString(), DisplayName); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;ve &lt;strong&gt;ChangeSetItem&lt;/strong&gt; sınıfı i&amp;ccedil;eriği;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Microsoft.TeamFoundation.VersionControl.Client;
+
+namespace HowTo_TFSVersionControl 
+{ 
+    public class ChangeSetItem 
+    { 
+        public ItemType ItemType { get; set; } 
+        public string ServerItem { get; set; } 
+        public int ItemId { get; set; } 
+        public int ChangeSetId { get; set; }
+
+        public override string ToString() 
+        { 
+            return string.Format("[{0}]-[{1}]-{2}" 
+                , ChangeSetId.ToString() 
+                , ItemId.ToString() 
+                , ServerItem); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;h1&gt;Kod Tarafı&lt;/h1&gt;
+&lt;p&gt;Dilerseniz &amp;ouml;ncelikle &lt;strong&gt;Form1&lt;/strong&gt;&amp;rsquo; e ait kod i&amp;ccedil;eriklerini &amp;uuml;retelim ve neler yaptığımızı a&amp;ccedil;ıklamaya &amp;ccedil;alışalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Microsoft.TeamFoundation.Client; 
+using Microsoft.TeamFoundation.Framework.Client; 
+using Microsoft.TeamFoundation.Framework.Common; 
+using Microsoft.TeamFoundation.VersionControl.Client; 
+using System; 
+using System.Collections.Generic; 
+using System.Configuration; 
+using System.IO; 
+using System.Windows.Forms;
+
+namespace HowTo_TFSVersionControl 
+{ 
+    public partial class Form1 
+        : Form 
+    { 
+        #region Common Fields
+
+        TfsTeamProjectCollection tfs = null; 
+        VersionControlServer vcServer = null; 
+        ItemSet itemSet = null; 
+        List&amp;lt;ChangeSetItem&amp;gt; csitems = null; 
+        IReadOnlyCollection&amp;lt;CatalogNode&amp;gt; teamCollectionNodes = null; 
+        TfsTeamProjectCollection selectedCollection = null;
+
+        #endregion Common Fields     
+
+        public Form1() 
+        { 
+            InitializeComponent();
+
+            cmbFileTypes.Items.Add("cs|C# Files"); 
+            cmbFileTypes.Items.Add("vb|Visual Basic Files"); 
+            cmbFileTypes.Items.Add("xaml|XAML Files"); 
+            
+            txtTFSAddress.Text = ConfigurationManager.AppSettings["TfsAddress"]; 
+            FillTeamCollections(); 
+        }
+
+        private void FillTeamCollections() 
+        { 
+            tfs = new TfsTeamProjectCollection(new Uri(txtTFSAddress.Text));
+
+            teamCollectionNodes=tfs.ConfigurationServer.CatalogNode.QueryChildren( 
+                new[] {CatalogResourceTypes.ProjectCollection }, 
+                false, 
+                CatalogQueryOptions.None);
+
+            foreach (var teamCollectionNode in teamCollectionNodes) 
+            { 
+                TeamCollection teamCollection = new TeamCollection(); 
+                teamCollection.DisplayName= teamCollectionNode.Resource.DisplayName; 
+                teamCollection.Id = Guid.Parse(teamCollectionNode.Resource.Properties["InstanceId"]);
+
+                cmbTeamCollections.Items.Add(teamCollection);                
+            } 
+        }
+
+        private void lstItems_SelectedIndexChanged(object sender, EventArgs e) 
+        { 
+            ChangeSetItem selectedChangeSetItem=lstItems.SelectedItem as ChangeSetItem; 
+            Item item=vcServer.GetItem(selectedChangeSetItem.ItemId, selectedChangeSetItem.ChangeSetId);
+
+            using(Stream stream = item.DownloadFile()) 
+            { 
+                using(StreamReader reader = new StreamReader(stream)) 
+                { 
+                    txtItemContent.Text=reader.ReadToEnd(); 
+                } 
+            } 
+        }
+
+        private void cmbTeamCollections_SelectedIndexChanged(object sender, EventArgs e) 
+        { 
+            cmbTeamProjects.Items.Clear(); 
+            lstItems.Items.Clear(); 
+            TeamCollection selectedTeamCollection=cmbTeamCollections.SelectedItem as TeamCollection; 
+            selectedCollection=tfs.ConfigurationServer. GetTeamProjectCollection(selectedTeamCollection.Id); 
+            var teamProjectNodes=selectedCollection.CatalogNode.QueryChildren( 
+                new[] { CatalogResourceTypes.TeamProject }, 
+                false, CatalogQueryOptions.None); 
+            
+            foreach (var teamProjectNode in teamProjectNodes) 
+            { 
+                cmbTeamProjects.Items.Add(teamProjectNode.Resource.DisplayName); 
+            }           
+        }
+
+        private void cmbTeamProjects_SelectedIndexChanged(object sender, EventArgs e) 
+        { 
+            lstItems.Items.Clear(); 
+            txtItemContent.Clear();
+
+            vcServer=selectedCollection.GetService&amp;lt;VersionControlServer&amp;gt;(); 
+            string itemPath = string.Format("$/{0}/*.{1}" 
+                , cmbTeamProjects.SelectedItem 
+                ,cmbFileTypes.SelectedItem.ToString().Split('|')[0]); 
+            itemSet = vcServer.GetItems(itemPath, RecursionType.Full); 
+           csitems = new List&amp;lt;ChangeSetItem&amp;gt;();
+
+            foreach (Item item in itemSet.Items) 
+            { 
+                ChangeSetItem csi = new ChangeSetItem();
+
+                csi.ItemId = item.ItemId; 
+                csi.ChangeSetId = item.ChangesetId; 
+                csi.ItemType = item.ItemType; 
+                csi.ServerItem = item.ServerItem;
+
+                lstItems.Items.Add(csi); 
+            }
+
+            lblStatus.Text = itemSet.Items.Length.ToString(); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;TFS&lt;/strong&gt; &amp;uuml;zerindeki &lt;strong&gt;Collection&lt;/strong&gt; nesnelerini elde etmek i&amp;ccedil;in &lt;strong&gt;TfsTeamProjectCollection&lt;/strong&gt; &amp;ouml;rneği &amp;uuml;zerinden &amp;ouml;nce &lt;strong&gt;ConfigurationServer&lt;/strong&gt;, ardından da &lt;strong&gt;CatalogNode&lt;/strong&gt; &amp;ouml;zelliğine gidilmekte ve &lt;strong&gt;Child&lt;/strong&gt; &lt;strong&gt;Node&lt;/strong&gt; i&amp;ccedil;erikleri sorgulanmaktadır. Bu sorgu i&amp;ccedil;erisinde &lt;strong&gt;CatalogResourceTypes&lt;/strong&gt; &lt;strong&gt;enum&lt;/strong&gt; sabitinin &lt;strong&gt;ProjectCollection&lt;/strong&gt; değeri kullanıldığından, &lt;strong&gt;TFS&lt;/strong&gt; sunucusu &amp;uuml;zerindeki &lt;strong&gt;Team&lt;/strong&gt; &lt;strong&gt;Project&lt;/strong&gt; &lt;strong&gt;Collection&lt;/strong&gt;&amp;rsquo; ların i&amp;ccedil;erikleri elde edilir.&lt;/p&gt;
+&lt;p&gt;Bir &lt;strong&gt;Team&lt;/strong&gt; &lt;strong&gt;Project&lt;/strong&gt; &lt;strong&gt;Collection&lt;/strong&gt; sorgulanırken &lt;strong&gt;Guid &lt;/strong&gt;tipinden olan &lt;strong&gt;ID&lt;/strong&gt; değeri &amp;ouml;nem arz eder. Bu y&amp;uuml;zden sorgu sonucu elde edilen &lt;strong&gt;Node&lt;/strong&gt;&amp;rsquo; lar arasında dolaşılırken &lt;strong&gt;Resorce&lt;/strong&gt; &amp;ouml;zelliklerinden yararlanılarak iki değerin alınması sağlanmıştır. &lt;strong&gt;DisplayName&lt;/strong&gt; ve &lt;strong&gt;Properties[&amp;ldquo;InstanceId&amp;rdquo;]&lt;/strong&gt; yardımıyla &lt;strong&gt;Team&lt;/strong&gt; &lt;strong&gt;Project&lt;/strong&gt; &lt;strong&gt;Collection&amp;rsquo;&lt;/strong&gt; ı benzersiz olarak niteyen &lt;strong&gt;Guid&lt;/strong&gt; değeri. İlgili &amp;ouml;zelliklerin toplandığı &lt;strong&gt;TeamCollection&lt;/strong&gt; nesne &amp;ouml;rnekleri de &lt;strong&gt;cmbTeamCollections&lt;/strong&gt; isimli &lt;strong&gt;ComboBox&lt;/strong&gt; kontrol&amp;uuml;n&amp;uuml;n &lt;strong&gt;Items&lt;/strong&gt; koleksiyonuna eklenmektedir.&lt;/p&gt;
+&lt;p&gt;Kullanıcı bu &lt;strong&gt;ComboBox&lt;/strong&gt; bileşeninden bir &amp;ouml;ğe se&amp;ccedil;tiğinde ise, ilgili &lt;strong&gt;Team Project&lt;/strong&gt;&amp;nbsp;&lt;strong&gt;Collection&lt;/strong&gt; altındaki &lt;strong&gt;Team&lt;/strong&gt; &lt;strong&gt;Project&lt;/strong&gt; &amp;ouml;rneklerinin, en azından adlarının &amp;ccedil;ekilmesi gerekmektedir. Nitekim bu &lt;strong&gt;Team Project &lt;/strong&gt;adı ilgili &lt;strong&gt;Version&lt;/strong&gt; &lt;strong&gt;Control&lt;/strong&gt; servisi tarafından, &lt;strong&gt;Change Set &lt;/strong&gt;&amp;ouml;ğelerinin &amp;ccedil;ekilmesi sırasında ele alınacaktır.&lt;/p&gt;
+&lt;p&gt;Se&amp;ccedil;ilen &amp;ouml;ğenin karşılığı olan &lt;strong&gt;TfsTeamProjectCollection&lt;/strong&gt; nesnesine ulaşmak i&amp;ccedil;in &lt;strong&gt;ConfigurationServer&lt;/strong&gt; &amp;ouml;rneğine ait &lt;strong&gt;GetTeamProjectCollection&lt;/strong&gt; metoduna başvurulur. Bu metod parametre olarak se&amp;ccedil;ili &amp;ouml;ğenin &lt;strong&gt;Id&lt;/strong&gt; değerini alır. Tahmin edeceğiniz &amp;uuml;zere bu değeri, &lt;strong&gt;ComboBox&lt;/strong&gt; i&amp;ccedil;erisinde &lt;strong&gt;TeamCollection&lt;/strong&gt; nesne &amp;ouml;rneklerinde birer &amp;ouml;zellik olarak kullanmıştık. Se&amp;ccedil;ilen &amp;ouml;ğenin karşılığı olan &lt;strong&gt;TfsTeamProjectCollection&lt;/strong&gt; yakalandıktan sonra ise &lt;strong&gt;CatalogNode&lt;/strong&gt; &amp;uuml;zerinden tekrar &lt;strong&gt;Child Node&lt;/strong&gt;&amp;rsquo; lara gidilecek şekilde bir &amp;ccedil;ağrı yapılır.&lt;/p&gt;
+&lt;p&gt;Lakin bu kez &lt;strong&gt;CalatogResourceTypes&lt;/strong&gt; &lt;strong&gt;enum&lt;/strong&gt; sabitinin &lt;strong&gt;TeamProject&lt;/strong&gt; değeri kullanılır. Buna g&amp;ouml;re se&amp;ccedil;ili olan &lt;strong&gt;Team Project Collection&lt;/strong&gt;&amp;rsquo;a bağlı olan &lt;strong&gt;Team&lt;/strong&gt; &lt;strong&gt;Project&lt;/strong&gt; listesi, birer &lt;strong&gt;CatalogNode&lt;/strong&gt; olarak elde edilebilir. Sonrasında ise liste d&amp;ouml;n&amp;uuml;l&amp;uuml;r ve her bir &lt;strong&gt;Team Project&lt;/strong&gt;&amp;rsquo; in &lt;strong&gt;Resource &lt;/strong&gt;&amp;ouml;zelliği &amp;uuml;zerinden yakalanacak &lt;strong&gt;DisplayName &lt;/strong&gt;değeri, &lt;strong&gt;cmbTeamProjects &lt;/strong&gt;bileşeninin &lt;strong&gt;Items&lt;/strong&gt; koleksiyonuna eklenir.&lt;/p&gt;
+&lt;h1&gt;Version Control Servisinin &amp;Ccedil;alışması&lt;/h1&gt;
+&lt;p&gt;Yazımıza konu olan &lt;strong&gt;Verison&lt;/strong&gt; &lt;strong&gt;Control&lt;/strong&gt; servisi ise bu noktadan sonra devreye girecektir. İlgili servis &amp;ouml;rneği kullanıcının yaptığı &lt;strong&gt;Team&lt;/strong&gt; &lt;strong&gt;Project&lt;/strong&gt; se&amp;ccedil;imi sonrasında &amp;ouml;nemlidir. Nitekim &lt;strong&gt;Change Set&lt;/strong&gt; veri i&amp;ccedil;eriklerinin elde edilmesi i&amp;ccedil;in ilgili operasyon desteğini sunmaktadır.&lt;/p&gt;
+&lt;p&gt;İlk olarak g&amp;uuml;ncel &lt;strong&gt;Team&lt;/strong&gt; &lt;strong&gt;Project&lt;/strong&gt; &lt;strong&gt;Collection&lt;/strong&gt; tespit edilerek generic &lt;strong&gt;GetService&lt;/strong&gt; metoduna bir &amp;ccedil;ağrıda bulunulur ve &lt;strong&gt;VersionControlServer&lt;/strong&gt; tipinden bir referans alınır. Bu referansın &lt;strong&gt;GetItems&lt;/strong&gt; metodu kilit noktamızdır. İlk parametre ile bir &lt;strong&gt;string&lt;/strong&gt; verilmektedir ama yazım şekli &amp;ouml;zeldir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;$/{0}/*.{1}&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;ifadesinde &lt;strong&gt;{0}&lt;/strong&gt; yerine &lt;strong&gt;Team&lt;/strong&gt; &lt;strong&gt;Project&lt;/strong&gt; adı, &lt;strong&gt;{1}&lt;/strong&gt; yerine ise talep edilen dosya formatının uzantısı gelir. &lt;strong&gt;GetItems&lt;/strong&gt; metodu esas itibariyle bir &lt;strong&gt;ItemSet&lt;/strong&gt; &amp;ouml;rneği d&amp;ouml;nd&amp;uuml;r&amp;uuml;r ve aslında beklediğimiz dosyalar bu tipin &lt;strong&gt;Items&lt;/strong&gt; koleksiyonunca alınır. &amp;Ouml;rnekte &lt;strong&gt;Items&lt;/strong&gt; &amp;ouml;zelliği dolaşılmakta olup her biri i&amp;ccedil;in bir &lt;strong&gt;ChangeSetItem&lt;/strong&gt; &amp;ouml;rneklenir. &lt;strong&gt;ChangeSetItem&lt;/strong&gt; sınıfında bir ka&amp;ccedil; temel &amp;ouml;zellik bulunmaktadır. &lt;strong&gt;ItemId&lt;/strong&gt;, &lt;strong&gt;ChangeSetId&lt;/strong&gt;, &lt;strong&gt;ItemType&lt;/strong&gt; ve &lt;strong&gt;ServerItem&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Bu aşamadan sonra kullanıcının bir &lt;strong&gt;ChangeSetItem&amp;rsquo;&lt;/strong&gt; ı listeden se&amp;ccedil;mesi halinde i&amp;ccedil;eriğinin g&amp;ouml;sterilmesi adımına gelinir. Bu sefer de &lt;strong&gt;VersionControlServer&lt;/strong&gt; &amp;ouml;rneğine ve &lt;strong&gt;GetItem&lt;/strong&gt; isimli metoduna başvurulur. &amp;Ouml;rnekte &lt;strong&gt;GetItem&lt;/strong&gt; metoduna iki parametre girmektedir. &lt;strong&gt;Item&lt;/strong&gt; ve &lt;strong&gt;Change Set&lt;/strong&gt; numaraları. &amp;Ccedil;ok doğal olarak bir &lt;strong&gt;Change Set&lt;/strong&gt; altında farklı numaralara sahip birden fazla &amp;ouml;ğe yer alabilir. Bu sebepten hangi &lt;strong&gt;Change&lt;/strong&gt; &lt;strong&gt;Set&lt;/strong&gt;&amp;rsquo;teki hangi &amp;ouml;ğeyi alacağımızı bildirmemiz gerekir.&lt;/p&gt;
+&lt;p&gt;Elde edilen &lt;strong&gt;Item&lt;/strong&gt; &amp;ouml;ğesinin &lt;strong&gt;DownloadFile&lt;/strong&gt; isimli bir fonksiyonu da bulunmaktadır. Bu metod sayesinde, sunucudaki i&amp;ccedil;eriğin &lt;strong&gt;Stream&lt;/strong&gt; olarak elde edilmesi m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. &amp;Ouml;rnek kod par&amp;ccedil;asında &lt;strong&gt;StreamReader&lt;/strong&gt; sınıfından yararlanılmış ve ilgili sunucu i&amp;ccedil;eriğinin &lt;strong&gt;txtItemContent&lt;/strong&gt; isimli &lt;strong&gt;TextBox&lt;/strong&gt; kontrol&amp;uuml;ne basılması sağlanmıştır.&lt;/p&gt;
+&lt;h1&gt;&amp;Ccedil;alışma Zamanı Sonu&amp;ccedil;ları&lt;/h1&gt;
+&lt;p&gt;&amp;Ouml;rneği &amp;ccedil;alıştırdığımızda ve sırasıyla &lt;strong&gt;Team Project Collection&lt;/strong&gt;, &lt;strong&gt;File Type&lt;/strong&gt; ve &lt;strong&gt;Team Project&lt;/strong&gt; se&amp;ccedil;imlerine yaptığımızda, aşağıdakine benzer sonu&amp;ccedil;lar ile karşılaşabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/tfsvc_4.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="tfsvc_4" src="/pics/tfsvc_4_thumb.png" alt="tfsvc_4" width="640" height="620" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;Default&lt;/strong&gt; &lt;strong&gt;Collection&lt;/strong&gt; altındaki bir &lt;strong&gt;Team Project&lt;/strong&gt;&amp;rsquo; in i&amp;ccedil;erisinde yer alan &lt;strong&gt;C# &lt;/strong&gt;kod dosyalarının temel bilgileri &amp;ccedil;ekilebilmiştir. Bu bilgiler arasında, &lt;strong&gt;Item&lt;/strong&gt; ve &lt;strong&gt;Change Set&lt;/strong&gt; numarası ile &lt;strong&gt;Server&lt;/strong&gt; &amp;uuml;zerinde tutulan &lt;strong&gt;Full Path&lt;/strong&gt; bilgisi yer almaktadır. Hatta istenirse son &lt;strong&gt;Check-In&lt;/strong&gt; bilgisi bile alınabilir&lt;em&gt;(Belki de alınamaz. Neden araştırmıyorsunuz &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_197.png" alt="Winking smile" /&gt;)&lt;/em&gt; İşin g&amp;uuml;zel yanı s&amp;ouml;z konusu &amp;ouml;ğelerden herhangibirisine tıklandığında, i&amp;ccedil;eriğinin de g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml;d&amp;uuml;r.&lt;/p&gt;
+&lt;h1&gt;Uygulamada Neleri Yapmadık?&lt;/h1&gt;
+&lt;p&gt;&lt;strong&gt;Version&lt;/strong&gt; &lt;strong&gt;Control&lt;/strong&gt; hizmetini kullanarak, &lt;strong&gt;Source&lt;/strong&gt; &lt;strong&gt;Control&lt;/strong&gt; i&amp;ccedil;eriğini &amp;ccedil;ekelebilmek olduk&amp;ccedil;a kolaydır. Bu felsefeden yola &amp;ccedil;ıkarak kendi Source Control arabirimlerinizi yazabilirsiniz. &amp;Ouml;rneğin &lt;strong&gt;Windows Phone&lt;/strong&gt; tabanlı &amp;ccedil;alışacak bir istemci s&amp;ouml;z konusu olabilir. Yani mobil bir cihazdan Source Control &amp;uuml;zerindeki hareketlilikleri takip edebilirsiniz. Pek tabi yapabileceğimiz daha pek &amp;ccedil;ok şey var. &amp;Ouml;rneğin,&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Source Control&amp;rsquo; den &amp;ccedil;ekilen bir i&amp;ccedil;eriği g&amp;uuml;ncelleyebilir ve sunucuya kaydedebiliriz.&lt;/li&gt;
+&lt;li&gt;Yeni bir &amp;ouml;ğeyi Source Control&amp;rsquo;a ekleyebiliriz.&lt;/li&gt;
+&lt;li&gt;Bir &amp;ouml;ğeyi silebiliriz.&lt;/li&gt;
+&lt;li&gt;Klas&amp;ouml;r veya Branch gibi &amp;ouml;ğeler oluşturabiliriz.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;ve benzerleri&amp;hellip;&lt;/p&gt;
+&lt;p&gt;Bu konuları &amp;ouml;rneğimizde ele almadık ancak &lt;strong&gt;VersionControlServer&lt;/strong&gt; tipinin işaret ettiği servis metodlarını inceleyerek nasıl yapabileceğinizi araştırmaya başlayabilirsiniz.&amp;nbsp; B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2013%2f3%2fHowTo_VersionControl.zip"&gt;HowTo_VersionControl.zip (218,31 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2013-11-03 14:58:00</pubDate>
+  <slug>TFS-Version-Control-Hizmetine-Kisa-Bir-Bakis</slug>
+  <tags>
+    <tag>tfs</tag>
+    <tag>team-foundation-server</tag>
+    <tag>client-object-model</tag>
+    <tag>tfs-services</tag>
+    <tag>xml-web-service</tag>
+    <tag>version-control</tag>
+  </tags>
+  <categories>
+    <category>Team Foundation Server</category>
+  </categories>
+</post>

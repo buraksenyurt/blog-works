@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WCF - Güvenilir Oturumlar(Reliable Sessions)</title>
+  <description>WCF(Windows Communication Foundation) bilindiği üzere bir servis yönelimli mimari(Service Oriented Architecture) yaklaşımıdır. Buda basitçe, birbirleriyle haberleşen istemci(client) ve sunucu(server) uygulamaların var olması anlamına gelmektedir. Bu haberleşme çok doğal olarak bir ağ(network) ortamı üzerinde gerçekleşir. Ağ ortamı intranet gibi bir sistem olabileceği gibi kablolu veya kablosuz(wireless) bir internet ortamıda olabilir. Hal böyle olunca arada hareket etmekte olan mesajların güvenliği önem arz eden bir konudur. Mesaj güvenliğinden kasıt sadece şifreleme yada sertifikalı bir iletişimin sağlanması demek değildir. Bunların sağlanması için WCF mimarisi içerisindede çeşitli teknikler bulunmaktadır. Bu teknikler bir yana istemci ve sunucu(servis) arasında güvenilir bir oturumun(reliable session) var olması gereken durumlarda söz konusudur.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;WCF(Windows Communication Foundation)&lt;/strong&gt; bilindiği &amp;uuml;zere bir &lt;strong&gt;servis y&amp;ouml;nelimli mimari(Service Oriented Architecture)&lt;/strong&gt; yaklaşımıdır. Buda basit&amp;ccedil;e, birbirleriyle haberleşen&lt;strong&gt; istemci(client) &lt;/strong&gt;ve&lt;strong&gt; sunucu(server) &lt;/strong&gt;uygulamaların var olması anlamına gelmektedir. Bu haberleşme &amp;ccedil;ok doğal olarak bir &lt;strong&gt;ağ(network)&lt;/strong&gt; ortamı &amp;uuml;zerinde ger&amp;ccedil;ekleşir. Ağ ortamı intranet gibi bir sistem olabileceği gibi kablolu veya &lt;strong&gt;kablosuz(wireless) &lt;/strong&gt;bir internet ortamıda olabilir. Hal b&amp;ouml;yle olunca arada hareket etmekte olan mesajların g&amp;uuml;venliği &amp;ouml;nem arz eden bir konudur. Mesaj g&amp;uuml;venliğinden kasıt sadece şifreleme yada sertifikalı bir iletişimin sağlanması demek değildir. Bunların sağlanması i&amp;ccedil;in WCF mimarisi i&amp;ccedil;erisindede &amp;ccedil;eşitli teknikler bulunmaktadır. Bu teknikler bir yana istemci ve sunucu(servis) arasında &lt;strong&gt;g&amp;uuml;venilir bir oturumun(reliable session)&lt;/strong&gt; var olması gereken durumlarda s&amp;ouml;z konusudur. G&amp;uuml;venilir bir oturum sağlanması i&amp;ccedil;in gereken sebepler arasında aşağıdaki maddeler g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Ağ ortamında istemci ve servis arasındaki bağlantının kopması olasıdır.&lt;/li&gt;
+&lt;li&gt;Arada hareket etmekte olan mesajlar kesintiye uğrayabilir.&lt;/li&gt;
+&lt;li&gt;İstemciden servis tarafına gelmekte olan mesajlar farklı yollar &amp;uuml;zerinden hedeflerine ulaşmaktadır. B&amp;ouml;yle bir durumda servise farklı sıralarda ulaşmaları s&amp;ouml;z konusudur. Ancak mesaj sırası &amp;ouml;nemli olabilir.&lt;/li&gt;
+&lt;li&gt;Mesajlar beklenmedik bir şekilde kaybolabilir yada farklı bir yere doğru y&amp;ouml;nlendirilebilir.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Bu se&amp;ccedil;enekler g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında istemci ve sunucu arasında g&amp;uuml;venilir bir oturum a&amp;ccedil;ılma ihtiyacı daha belirgin bir şekilde ortaya &amp;ccedil;ıkmaktadır. Nitekim arada hareket eden mesajların &amp;uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; kişiler tarafından yakalanması &amp;ouml;zellikle &lt;strong&gt;cevaplama saldırıları(Reply Attacks)&lt;/strong&gt; ile &amp;ccedil;ok farklı ama&amp;ccedil;larla kullanılabilir. Bunun i&amp;ccedil;in &amp;ouml;rnek olarak bir alışveriş sitesinin işleyişi ele alınabilir. &amp;Uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; şahıs, bir sipariş bilgisine ait mesajı yakalayıp defalarca sunucuya işlenmesi i&amp;ccedil;in g&amp;ouml;nderebilir. Bunun sonucunda alışverişi yapan ger&amp;ccedil;ek kişi, hi&amp;ccedil; yapmamış olduğu siparişlerle karşı karşıya kalacaktır. &amp;Uuml;stelik &amp;uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; şahıs, bu mesajları istediği zaman g&amp;ouml;nderme imkanına sahip olabilir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Cevaplama saldırılarının(Reply Attack)&lt;/strong&gt; dışında istemcilerin g&amp;ouml;ndereceği taleplere ait mesajların servis tarafında, istemciden g&amp;ouml;nderildiği sırada ele alınması gerekebilir ki buda g&amp;uuml;venilir oturumların sağlanması i&amp;ccedil;in yeterli nedenlerdendir. Windows Communication Foundation mimari alt yapısı i&amp;ccedil;erisinde &lt;strong&gt;g&amp;uuml;venilir oturumlar(Reliable Sessions)&lt;/strong&gt; a&amp;ccedil;ılabilmesi i&amp;ccedil;in gereken &amp;ouml;zellikler yer almaktadır. Nitekim g&amp;uuml;venilir oturumların a&amp;ccedil;ılabilmesi i&amp;ccedil;in gerek ve yeter şart &lt;strong&gt;WS-ReliableMessaging&lt;/strong&gt; protokol&amp;uuml;ne uygun bir ortamın sağlanmış olmasıdır. WCF bu protokol&amp;uuml; doğrudan destekleyen &amp;ccedil;eşitli &lt;strong&gt;bağlayıcı tipler(bindiny types)&lt;/strong&gt; i&amp;ccedil;ermektedir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;WS-ReliableMessaging&lt;/strong&gt;, Web servislerine y&amp;ouml;nelik olarak geliştirilmiş platform bağımsız pek &amp;ccedil;ok standarttan sadece bir tanesidir. Toplu olarak &lt;strong&gt;WS-*&lt;/strong&gt; şeklinde ifade edilen t&amp;uuml;m Web servisi standartları i&amp;ccedil;in &lt;a href="http://en.wikipedia.org/wiki/List_of_Web_service_specifications"&gt;http://en.wikipedia.org/wiki/List_of_Web_service_specifications&lt;/a&gt; adresinden bilgi alınabilir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;WS-ReliableMessaging,&lt;/strong&gt; tek bir kaynak(Source) ve tek bir hedef(Target) arasında g&amp;uuml;venilir bir mesajlaşma i&amp;ccedil;in gereken şartnameleri i&amp;ccedil;eren &lt;strong&gt;Organization for the Advancement of Structured Information Standards&lt;/strong&gt; (&lt;strong&gt;OASIS&lt;/strong&gt; - &lt;a href="http://www.oasis-open.org/home/index.php"&gt; http://www.oasis-open.org/home/index.php&lt;/a&gt;) organizasyonu tarafından kabul edilmiş bir protokold&amp;uuml;r. Son olarak 14 Haziran 2007 tarihinde 1.1 versiyonu yayınlanmıştır. WS-ReliableMessaging standardının amacı; g&amp;uuml;venilir olmayan bir altyapı(Unreliable Infrastructure) &amp;uuml;zerinde koşan bir kaynak uygulamadan hedef uygulamaya doğru g&amp;uuml;venilir bir şekilde mesaj g&amp;ouml;nderilmesini sağlamaktır. Mesajın i&amp;ccedil;eriğinin şifrelenmesi veya iletişim kanalının g&amp;uuml;venli hale getirilmesi(&amp;ouml;rneğin &lt;strong&gt;Secure Socket Layer&lt;/strong&gt; ile) konuları ile ilgilenmez. Bu &lt;strong&gt;şartnameye(Specification)&lt;/strong&gt; g&amp;ouml;re g&amp;uuml;venilir oturumlarda s&amp;ouml;z konusu olan mimari model aşağıdaki şekilde olduğu gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk229_1.gif" alt="" width="608" height="301" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekilde kaynak uygulama ile hedef uygulama arasındaki bir mesajlaşma trafiği yer almaktadır. Burada Uzak Mesajlaşma Kayanağı mesajı g&amp;ouml;nderirken &lt;strong&gt;WS-ReliableMessaging&lt;/strong&gt; kullanır. Diğer taraftan burada tek bir kaynak ve tek bir hedef vardır. WCF(Windows Communication Foundation) bu protokol&amp;uuml;n kullanımına destek vererekten aşağıdaki maddelerde g&amp;ouml;r&amp;uuml;len kazanımları sağlamaktadır;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Kaynaktan g&amp;ouml;nderilen t&amp;uuml;m mesajların hedefe varması garantilenir.&lt;/li&gt;
+&lt;li&gt;Kaynaktan hedefe g&amp;ouml;nderilen mesajların tekrar edilmesi &amp;ouml;nlenir. Bir başka deyişle mesajın sadece bir tane g&amp;ouml;nderilmesi garanti edilir.&lt;/li&gt;
+&lt;li&gt;Kayıp mesajlar tespit edilir ve m&amp;uuml;mk&amp;uuml;nse bunlarında kaynaktan hedefe doğru yeniden g&amp;ouml;nderilmesi sağlanır.&lt;/li&gt;
+&lt;li&gt;Kaybolan mesajların geri alınmayacak durumda olması halinde &lt;strong&gt;istisna(exception) &lt;/strong&gt;fırlatılması sağlanır.&lt;/li&gt;
+&lt;li&gt;Opsiyonel olarak mesajların g&amp;ouml;nderildikleri sırada işlenmeleri garantilenir. WCF bu ama&amp;ccedil;la &lt;strong&gt;tampon(buffer)&lt;/strong&gt; sistemini kullanılır. Buna g&amp;ouml;re t&amp;uuml;m mesajlar tamponda toplanır ve g&amp;ouml;nderildikleri sıraya g&amp;ouml;re hedef tarafında işlenir.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;WS-ReliableMessaging&lt;/strong&gt;, mesajların servis tarafında g&amp;ouml;nderildikleri sırada ele alınmalarını sağlayan &lt;strong&gt;şartnameler(Specifications)&lt;/strong&gt; sunmasına rağmen ger&amp;ccedil;ek anlamda, &lt;strong&gt;MSMQ(MicroSoft Messaging Queing) &lt;/strong&gt;sisteminde olduğu gibi bir mesaj kuyruğu yapısı bildirmez. &lt;strong&gt;MSMQ&lt;/strong&gt; bunun i&amp;ccedil;in farklı bir form kullanır.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;WS-ReliableMessaging, Windows Communication Foundation dışında &lt;strong&gt;BEA WebLogic, IBM WebSphere, Apache Sandesha&lt;/strong&gt; gibi sistemler tarafındanda ele alınmaktadır.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;WCF mimarisinde aslında s&amp;ouml;z konusu protokol&amp;uuml;n sağlanması i&amp;ccedil;in gereken teş şey kaynak ve hedef uygulamaların aynı zaman dilimi i&amp;ccedil;erisinde &amp;ccedil;alışıyor olmalarıdır. WCF sistemi i&amp;ccedil;erisinde yer alan bağlayıcılardan &lt;strong&gt;basicHttpBinding&lt;/strong&gt;, &lt;strong&gt;netNamedPipeBinding&lt;/strong&gt;, &lt;strong&gt;netPeerTcpBinding&lt;/strong&gt; tipleri &lt;strong&gt;g&amp;uuml;venilir oturumları(Reliable Sessions)&lt;/strong&gt; &lt;span style="text-decoration: underline;"&gt;desteklememektedir. Bununla birlikte &lt;strong&gt;wsDualHttpBinding&lt;/strong&gt; tipi i&amp;ccedil;in g&amp;uuml;venilir oturumlar &lt;span style="text-decoration: underline;"&gt;kaldırılamaz. &lt;strong&gt;MSMQ&lt;/strong&gt; desteği veren bağlayıcılardan olan &lt;strong&gt;msmqIntegrationBinding&lt;/strong&gt; ve &lt;strong&gt;netMsmqBinding&lt;/strong&gt; tipleri ise kendi g&amp;uuml;venilir oturum şartnamelerini uygularken WS-ReliableSession standardını kullanmazlar. Aslında konu ile ilişkili olarak aşağıdaki tablonun g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınması &amp;ouml;nemlidir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;table style="border-collapse: collapse; width: 100%;" border="1" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="width: 319px; background-color: #ffcccc;" bgcolor="#336699" width="319"&gt;&lt;strong&gt; Bağlayıcı Tip&lt;br /&gt; (Binding Type)&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="width: 319px; background-color: #ffcccc;" bgcolor="#336699" width="65"&gt;&lt;strong&gt; G&amp;uuml;venilir &lt;br /&gt; Oturum &lt;br /&gt; Desteği&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="width: 319px; background-color: #ffcccc;" bgcolor="#336699" width="88"&gt;&lt;strong&gt; Varsayılan &lt;br /&gt; G&amp;uuml;venilir &lt;br /&gt; Oturum Hali&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="width: 319px; background-color: #ffcccc;" bgcolor="#336699" width="56"&gt;&lt;strong&gt; Sıralı&lt;br /&gt; Mesaj &lt;br /&gt; Desteği&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="width: 319px; background-color: #ffcccc;" bgcolor="#336699" width="79"&gt;&lt;strong&gt; Varsayılan &lt;br /&gt; Sıralı &lt;br /&gt; Mesaj&lt;br /&gt; Desteği&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="width: 319px; background-color: #ffcccc;" bgcolor="#336699" width="319"&gt;&lt;strong&gt; netNamedPipeBinding&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="65"&gt;Yok&lt;/td&gt;
+&lt;td width="88"&gt;
+&lt;p align="center"&gt;&lt;strong&gt;X&lt;/strong&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td width="56"&gt;Var&lt;/td&gt;
+&lt;td width="79"&gt;
+&lt;p align="center"&gt;&lt;strong&gt;X&lt;/strong&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="width: 319px; background-color: #ffcccc;" bgcolor="#336699" width="319"&gt;&lt;strong&gt; netTcpBinding&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="65"&gt;Var&lt;/td&gt;
+&lt;td width="88"&gt;A&amp;ccedil;ık&lt;/td&gt;
+&lt;td width="56"&gt;Var&lt;/td&gt;
+&lt;td width="79"&gt;Kapalı&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="width: 319px; background-color: #ffcccc;" bgcolor="#336699" width="319"&gt;&lt;strong&gt; netPeerTcpBinding&lt;/strong&gt;&lt;/td&gt;
+&lt;td colspan="4" width="328"&gt;
+&lt;p align="center"&gt;&lt;strong&gt;X&lt;/strong&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="width: 319px; background-color: #ffcccc;" bgcolor="#336699" width="319"&gt;&lt;strong&gt; wsDualHttpBinding &lt;/strong&gt;&lt;/td&gt;
+&lt;td width="65"&gt;Var&lt;/td&gt;
+&lt;td width="88"&gt;A&amp;ccedil;ık&lt;/td&gt;
+&lt;td width="56"&gt;Var&lt;/td&gt;
+&lt;td width="79"&gt;A&amp;ccedil;ık&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="width: 319px; background-color: #ffcccc;" bgcolor="#336699" width="319"&gt;&lt;strong&gt; wsHttpBinding&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="65"&gt;Var&lt;/td&gt;
+&lt;td width="88"&gt;Kapalı&lt;/td&gt;
+&lt;td width="56"&gt;Var&lt;/td&gt;
+&lt;td width="79"&gt;A&amp;ccedil;ık&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="width: 319px; background-color: #ffcccc;" bgcolor="#336699" width="319"&gt;&lt;strong&gt; wsFederationHttpBinding&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="65"&gt;Var&lt;/td&gt;
+&lt;td width="88"&gt;Kapalı&lt;/td&gt;
+&lt;td width="56"&gt;Var&lt;/td&gt;
+&lt;td width="79"&gt;A&amp;ccedil;ık&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="width: 319px; background-color: #ffcccc;" bgcolor="#336699" width="319"&gt;&lt;strong&gt; basicHttpBinding&lt;/strong&gt;&lt;/td&gt;
+&lt;td colspan="4" rowspan="3" width="328"&gt;
+&lt;p align="center"&gt;&lt;strong&gt;X&lt;/strong&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="width: 319px; background-color: #ffcccc;" bgcolor="#336699" width="319"&gt;&lt;strong&gt; netMsmqBinding&lt;br /&gt; &lt;em&gt;(&lt;/em&gt;&lt;/strong&gt;&lt;em&gt;Bu bağlayıcı standart Web Servisi(&lt;strong&gt;asmx&lt;/strong&gt;) modelini sunar. Bu modelde varsayılan olarak g&amp;uuml;venilir oturumlar bulunmamaktadır.)&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="width: 319px; background-color: #ffcccc;" bgcolor="#336699" width="319"&gt;&lt;strong&gt; msmqIntegrationBinding&lt;br /&gt; &lt;em&gt;(&lt;/em&gt;&lt;/strong&gt;&lt;em&gt;MSMQ tabanlı bir kuyruk sistemi kullanırlar.)&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Bu teorik bilgilerden sonra artık bir &amp;ouml;rnek ile devam etmekte fayda bulunmaktadır. &amp;Ouml;rnekte basit olarak &lt;strong&gt; netTcpBinding&lt;/strong&gt; kullanan bir WCF sistemi yer almaktadır. Sistemde yer alan servis s&amp;ouml;zleşmesi(Service Contract) ve uygulayıcı tipe ait i&amp;ccedil;erikler aşağıda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi olmakla birlikte, FabrikaLib isimli bir &lt;strong&gt;WCF Sınıf K&amp;uuml;t&amp;uuml;phanesi(WCF Class Library)&lt;/strong&gt; i&amp;ccedil;erisinde yer almaktadırlar.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk229_2.gif" alt="" width="266" height="376" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Servis s&amp;ouml;zleşmesi;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+
+namespace FabrikaLib
+{
+    [ServiceContract(Name="UretimServisi", Namespace="http://www.bsenyurt.com/FabrikaLib/UretimServisi" , SessionMode=SessionMode.Required)]
+    public interface IUretici
+    {
+        [OperationContract(IsInitiating=true)]
+        int BilesenAl(string[] bilesenAdi);
+        [OperationContract(IsInitiating=false)]
+        void Karistir();
+        [OperationContract(IsInitiating=false,IsTerminating=true)]
+        bool UretimiYap();
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Servis s&amp;ouml;zleşmesinde&lt;strong&gt;(Service Contract)&lt;/strong&gt; dikkat edileceği &amp;uuml;zere her istemci(Client) i&amp;ccedil;in bir oturum(Session) a&amp;ccedil;ılmasını garantilemek adına &lt;strong&gt;SessionMode&lt;/strong&gt; &amp;ouml;zelliğine&lt;strong&gt; SessionMode.Required&lt;/strong&gt; değeri atanmıştır. G&amp;uuml;venilir oturumlarda ilk şartlardan birisi, istemci ile servis arasında bir oturumun s&amp;ouml;z konusu olmasıdır. Bu nedenle bir oturumun mutlaka hazırlanması isteğinin Servis s&amp;ouml;zleşmesinde belirtilmesi yerinde bir karardır. Bununla birlikte metodların işleyiş sıralarıda &lt;strong&gt;OperationContract&lt;/strong&gt; niteliklerine(attribute) ait &amp;ouml;zellikler ile belirlenmiştir. Buna g&amp;ouml;re istemci tarafından ilk &amp;ccedil;ağrılabilecek metod BilesenAl fonksiyonu iken oturumu sonlandırma işlemini &amp;uuml;stlenecek olan işlevse UretimiYap isimli fonksiyondur.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Uygulayıcı sınıf;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+
+namespace FabrikaLib
+{
+    [ServiceBehavior(InstanceContextMode= InstanceContextMode.PerSession)]
+    public class Uretici:IUretici
+    {
+        #region IUretici Members
+
+        public int BilesenAl(string[] bilesenler)
+        {
+            // Bileşenin eklenme işlemi
+            return bilesenler.Length;
+        }
+
+        public void Karistir()
+        {
+            // Bileşenin karıştırılma işlemi
+        }
+
+        public bool UretimiYap()
+        {
+            return true;
+        }
+
+        #endregion
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Her bir istemci i&amp;ccedil;in bir oturumun a&amp;ccedil;ılmasını sağlamak adına Uretici sınıfına &lt;strong&gt;ServiceBehavior&lt;/strong&gt; niteliği ile &lt;strong&gt;PerSession&lt;/strong&gt; ataması yapılmıştır. Servis tarafından sunulmakta olan fonksiyonelliklerin ne iş yaptığı şu aşamada &amp;ccedil;ok &amp;ouml;nemli değildir. &amp;Ouml;rnekteki asıl ama&amp;ccedil;, istemci ve servis arasında &lt;strong&gt;g&amp;uuml;venilir bir oturum(Reliable Session)&lt;/strong&gt; a&amp;ccedil;ılması ve arada hareket eden mesajların &lt;strong&gt;izlenerek(Trace)&lt;/strong&gt; durumunun detaylı analizinin yapılmasıdır. Servis tarafı basit olması a&amp;ccedil;ısından bir &lt;strong&gt;Console&lt;/strong&gt; uygulaması olarak tasarlanmıştır. Servis tarafına ait &lt;strong&gt;Main&lt;/strong&gt; kodları ile konfigurasyon dosyasının i&amp;ccedil;eriği başlangı&amp;ccedil;ta aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Servis uygulaması kodları;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+using FabrikaLib;
+
+namespace Sunucu
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            ServiceHost host = new ServiceHost(typeof(Uretici));
+            host.Opened += new EventHandler(host_Opened);
+            host.Closed += new EventHandler(host_Closed);
+            host.Open();
+            Console.ReadLine();
+            host.Close();
+        }
+
+        static void host_Closed(object sender, EventArgs e)
+        {
+            Console.WriteLine("Servis kapatıldı");
+        }
+
+        static void host_Opened(object sender, EventArgs e)
+        {
+            Console.WriteLine("Servis dinlemede");
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Servis tarafı konfigurasyon i&amp;ccedil;eriği;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;system.serviceModel&amp;gt;
+        &amp;lt;bindings /&amp;gt;
+        &amp;lt;behaviors&amp;gt;
+            &amp;lt;serviceBehaviors&amp;gt;
+                &amp;lt;behavior name="UretimServisiBehavior"&amp;gt;
+                    &amp;lt;serviceDebug includeExceptionDetailInFaults="true" /&amp;gt;
+                &amp;lt;/behavior&amp;gt;
+            &amp;lt;/serviceBehaviors&amp;gt;
+        &amp;lt;/behaviors&amp;gt;
+        &amp;lt;services&amp;gt;
+            &amp;lt;service behaviorConfiguration="UretimServisiBehavior" name="FabrikaLib.Uretici"&amp;gt;
+                &amp;lt;endpoint address="net.tcp://localhost:9000/Fabrika/UretimServisi.svc" binding="netTcpBinding" name="UretimServisiEndPoint" contract="FabrikaLib.IUretici" /&amp;gt;
+            &amp;lt;/service&amp;gt;
+        &amp;lt;/services&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;İstemci uygulama &amp;uuml;zerinde, servis tarafında oluşabilecek &lt;strong&gt;istisnaları(Exception) &lt;/strong&gt;detaylı bir şekilde ele alabilmek i&amp;ccedil;in &lt;strong&gt;serviceDebug&lt;/strong&gt; elementinde &lt;strong&gt; includeExceptionDetailInFaults&lt;/strong&gt; niteliğinin değeri &lt;strong&gt;true&lt;/strong&gt; olarak set edilmiştir. İstemci tarafıda servis tarafı gibi bir &lt;strong&gt;Console&lt;/strong&gt; uygulaması olarak tasarlanabilir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;İstemci tarafı i&amp;ccedil;in gerekli olan &lt;strong&gt;proxy&lt;/strong&gt; sınıfı ve servise g&amp;ouml;re otomatik oluşturulan konfigurasyon dosyasının &amp;uuml;retimi i&amp;ccedil;in &lt;strong&gt;svcutil.exe&lt;/strong&gt; aracından aşağıdaki gibi yararlanılması gerekmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;svcutil FabrikaLib.dll&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;svcutil www.bsenyurt.com.FabrikaLib.UretimServisi.wsdl&amp;nbsp; *.xsd /out:UretimServisi.cs&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Bu işlemin ardından proxy sınıfı ve konfigurasyon dosyası, istemci uygulamaya taşınır.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;İstemci tarafındaki kodlar ve konfigurasyon i&amp;ccedil;eriği ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;İstemci uygulaması kodları;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+
+namespace Istemci
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            try
+            {    
+                Console.WriteLine("İşlemi başlatmak i&amp;ccedil;in bir tuşa basınız...");
+                Console.ReadLine();
+                UretimServisiClient cli = new UretimServisiClient("UretimServisiClientEndPoint");
+                cli.BilesenAl(new string[] { "C", "O2", "H2SO4" });
+                cli.Karistir();
+                string durum = cli.UretimiYap()==true?"&amp;Uuml;retim ger&amp;ccedil;ekleştirildi":"&amp;Uuml;retim yapılamadı";
+                Console.WriteLine(durum);
+                Console.ReadLine();
+            }
+            catch (Exception excp)
+            {
+                Console.WriteLine(excp.Message);
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;İstemci tarafı konfigurasyon i&amp;ccedil;eriği;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8"?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;system.serviceModel&amp;gt;
+        &amp;lt;bindings /&amp;gt;
+        &amp;lt;client&amp;gt;
+            &amp;lt;endpoint address="net.tcp://localhost:9000/Fabrika/UretimServisi.svc" binding="netTcpBinding" contract="UretimServisi" name="UretimServisiClientEndPoint" /&amp;gt;
+        &amp;lt;/client&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Normalde &lt;strong&gt;svcutil&lt;/strong&gt; tarafından &amp;uuml;retilen konfigurason dosyası i&amp;ccedil;erisinde &amp;ccedil;ok daha fazla &amp;ouml;zellik yer almaktadır. Bu niteliklerin değerleri şu aşamada &amp;ouml;nemli olmadığından istemci konfigurasyon dosyası bilin&amp;ccedil;li olarak yukarıdaki gibi sadeleştirilmiştir.&lt;/p&gt;
+&lt;p&gt;Asıl işlemler bundan sonra başlamaktadır. Ama&amp;ccedil; g&amp;uuml;venilir bir oturum ortamı hazırlamaktır. Bunu ger&amp;ccedil;ekleştirmek son derece basittir. Tek yapılması gereken bağlayıcı ile ilgili &amp;ouml;zel konfigurasyonları ve i&amp;ccedil;inde yer alan &amp;ouml;zelliklerin değerlerini uygun bir şekilde belirlemektir. Servis tarafında &lt;strong&gt;netTcpBinding&lt;/strong&gt; i&amp;ccedil;in bir &lt;strong&gt;BindingConfiguration&lt;/strong&gt; eklenmelidir. S&amp;ouml;z konusu kısımda, aşağıdaki şekildende g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &lt;strong&gt; ReliableSession&lt;/strong&gt; &lt;strong&gt;Properties&lt;/strong&gt; b&amp;ouml;l&amp;uuml;m&amp;uuml;nden &lt;strong&gt;Enabled&lt;/strong&gt; &amp;ouml;zelliği &lt;strong&gt;true&lt;/strong&gt; olarak belirlenmelidir. B&amp;ouml;ylece g&amp;uuml;venilir bir oturumun tesis edileceği belirtilmiş olunur.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;InactivityTimeout&lt;/strong&gt; &amp;ouml;zelliğinin aldığı değer ile, mesajların kaybolma ihtimali i&amp;ccedil;in gereken bekleme s&amp;uuml;resi ayarlanır. Yani, 10 dakikalık s&amp;uuml;re i&amp;ccedil;erisinde beklenen mesaj alınmassa ters giden bir şeyler olduğuna karar verilir ve &lt;strong&gt;WCF &amp;ccedil;alışma zamanı(Run Time)&lt;/strong&gt; bir &lt;strong&gt;Fault Exception&lt;/strong&gt; &amp;uuml;reterek bunu istemci tarafına g&amp;ouml;nderir. Aynı zamanda o ana kadar yapılmış olan işlemler&lt;strong&gt; geri alınır(Rollback) &lt;/strong&gt;ve istemci ile servis arasındaki g&amp;uuml;ncel oturum sonlandırılır. &lt;strong&gt;Ordered&lt;/strong&gt; &amp;ouml;zelliğine atanan değerin &lt;strong&gt;true&lt;/strong&gt; olarak set edilmesi ile, servise gelen mesajların istemcinin g&amp;ouml;nderdiği sırada ele alınmaları garanti edilmiş olunmaktadır. Bu zorunlu olmamasına rağmen g&amp;uuml;venilir oturumların sağlanması adına &amp;ouml;nemlidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk229_3.gif" alt="" width="496" height="418" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Binding&lt;/strong&gt; ayarlarında dikkat edilmesi gereken noktalardan biriside &lt;strong&gt;TransferMode&lt;/strong&gt; &amp;ouml;zelliğinin değeridir. &lt;strong&gt;netTcpBinding&lt;/strong&gt; &lt;strong&gt;bağlayıcı tipi(Binding Type)&lt;/strong&gt; i&amp;ccedil;in bu değer varsayılan olarak aşağıdaki şekilde g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &lt;strong&gt;Buffered&lt;/strong&gt; olarak belirlenmiştir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk229_4.gif" alt="" width="635" height="315" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;NetTcpBinding&lt;/strong&gt; kullandığı transfer protokol&amp;uuml;(TCP) nedeni ile &lt;strong&gt;Stream&lt;/strong&gt;' lere izin vermektedir. Bir başka deyişle istemcinin g&amp;ouml;nderdiği mesajların servis tarafında tamamlanmasını beklemeden işlenmesine başlanabilmektedir. Ancak g&amp;uuml;venilir oturumlarda, mesajların tamamlandıktan sonra, bir başka deyişle servis tarafına ulaştıktan sonra ele alınmaları doğru sırada işlenmeleri s&amp;ouml;z konusu olduğunda &amp;ouml;nemlidir. Bu sebepten bu varsayılan değerin değiştirilmemesi &amp;ouml;nerilir. Diğer taraftan &amp;ouml;zellikle &lt;strong&gt;WsHttpBinding&lt;/strong&gt; gibi bağlayıcı tipler, &lt;strong&gt;Stream&lt;/strong&gt; yapısını &lt;strong&gt;HTTP&lt;/strong&gt; protokol&amp;uuml; nedeni ile desteklemediklerinden her zaman i&amp;ccedil;in &lt;strong&gt;Buffered&lt;/strong&gt; sistemi ile &amp;ccedil;alışırlar.&lt;/p&gt;
+&lt;p&gt;Yukarıda yapılan değişiklikler sonrasında servis tarafında yer alan konfigurasyon dosyasının son hali aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;system.serviceModel&amp;gt;
+        &amp;lt;bindings&amp;gt;
+            &amp;lt;netTcpBinding&amp;gt;
+                &amp;lt;binding name="BConf" transferMode="Buffered"&amp;gt;
+                    &amp;lt;reliableSession ordered="true" inactivityTimeout="00:10:00"
+enabled="true" /&amp;gt;
+                &amp;lt;/binding&amp;gt;
+            &amp;lt;/netTcpBinding&amp;gt;
+        &amp;lt;/bindings&amp;gt;
+        &amp;lt;behaviors&amp;gt;
+            &amp;lt;serviceBehaviors&amp;gt;
+                &amp;lt;behavior name="UretimServisiBehavior"&amp;gt;
+                    &amp;lt;serviceDebug includeExceptionDetailInFaults="true" /&amp;gt;
+                &amp;lt;/behavior&amp;gt;
+            &amp;lt;/serviceBehaviors&amp;gt;
+        &amp;lt;/behaviors&amp;gt;
+        &amp;lt;services&amp;gt;
+            &amp;lt;service behaviorConfiguration="UretimServisiBehavior" name="FabrikaLib.Uretici"&amp;gt;
+                &amp;lt;endpoint address="net.tcp://localhost:9000/Fabrika/UretimServisi.svc" binding="netTcpBinding" bindingConfiguration="BConf" name="UretimServisiEndPoint" contract="FabrikaLib.IUretici" /&amp;gt;
+            &amp;lt;/service&amp;gt;
+        &amp;lt;/services&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&amp;Ccedil;ok doğal olarak istemci uygulama tarafındada servis tarafındakine benzer olacak şekilde konfigurasyon ayarlarının yapılması gerekmektedir. Aynı adımlar izlenildiğinde istemci tarafındaki konfigurasyon dosyasın son halide aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk229_5.gif" alt="" width="566" height="401" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8"?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;system.serviceModel&amp;gt;
+        &amp;lt;bindings&amp;gt;
+            &amp;lt;netTcpBinding&amp;gt;
+                &amp;lt;binding name="BConf" transferMode="Buffered"&amp;gt;
+                    &amp;lt;reliableSession ordered="true" inactivityTimeout="00:10:00" enabled="true" /&amp;gt;
+                &amp;lt;/binding&amp;gt;
+            &amp;lt;/netTcpBinding&amp;gt;
+        &amp;lt;/bindings&amp;gt;
+        &amp;lt;client&amp;gt;
+            &amp;lt;endpoint address="net.tcp://localhost:9000/Fabrika/UretimServisi.svc" binding="netTcpBinding" bindingConfiguration="BConf" contract="UretimServisi" name="UretimServisiClientEndPoint" /&amp;gt;
+        &amp;lt;/client&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Olaya istemci a&amp;ccedil;ısından bakıldığında &amp;ccedil;alışma aşamasında dikkate değer bazı noktalar vardır. Herşeyden &amp;ouml;nce istemci uygulama, servis tarafında belirtilen &lt;strong&gt;timeout&lt;/strong&gt; s&amp;uuml;resi dahilinde mesaj g&amp;ouml;ndermeyi bırakmış olabilir. Bu &amp;ccedil;oğunlukla istemci uygulama kullanıcısının bu y&amp;ouml;nde bir aksiyon ger&amp;ccedil;ekleştirmediği durumlarda s&amp;ouml;z konusu olabilir. Tabi burada istemci ile servis arasında bir oturum a&amp;ccedil;ıldıktan sonraki s&amp;uuml;re zarfı ele alınmaktadır. Bu tarz bir durumda istemcinin ağ &amp;uuml;zerinde asılı kaldığı yorumu yapılır.&lt;/p&gt;
+&lt;p&gt;Dolayısıyla servisin istenmeyen bir şekilde &lt;strong&gt;Fault Exception&lt;/strong&gt; d&amp;ouml;nd&amp;uuml;rmesi olasıdır. Bu sebepten, istemci taraftaki &lt;strong&gt;WCF &amp;Ccedil;alışma Zamanı(Run Time)&lt;/strong&gt; belirli periyodlarda servis tarafına canlı olduğuna dair mesajlar g&amp;ouml;nderir. B&amp;ouml;ylece servis tarafı, kendisine bağlı oturumun sahibi olan istemcinin halen daha canlı olduğundan haberdar olur. Bununla birlikte istemci uygulama, servis tarafından bir &lt;strong&gt;onay mesajı(Acknowledge Message) &lt;/strong&gt;bekler. Eğer bu mesaj istemci tarafında belirtilen &lt;strong&gt; InactivityTimeout&lt;/strong&gt; s&amp;uuml;resinde alınamıyorsa, servisin bir şekilde &amp;ouml;ld&amp;uuml;ğ&amp;uuml; sonucuna varılır ve istemci tarafında &lt;strong&gt;WCF &amp;ccedil;alışma zamanı(Run Time)&lt;/strong&gt; bir istisna(Exception) fırlatır. Bu istisna, istemci tarafında ele alınmalı ve uygulamanın istem dışı şekilde sonlanmasının &amp;ouml;n&amp;uuml;ne ge&amp;ccedil;ilmelidir.&lt;/p&gt;
+&lt;p&gt;Artık istemci ve servis arasında g&amp;uuml;venilir bir oturum a&amp;ccedil;ılması i&amp;ccedil;in gereken ayarlar tamamlanmıştır. Bu oturumun tesis edilmesi halinde, arada gidip gelen mesajların incelenebilmesi adına servis tarafında gerekli ayarların yapılması gerekmektedir. Bu ama&amp;ccedil;la yine konfigurasyon i&amp;ccedil;erisinde &lt;strong&gt;Diagnostics&lt;/strong&gt; ayarları yapılmalıdır. İlk olarak &lt;strong&gt;EnableMessageLogging&lt;/strong&gt; linkine tıklanarak mesaj g&amp;uuml;nl&amp;uuml;ğ&amp;uuml; aktif hale getirilir. Sonrasında ise &lt;strong&gt; Diagnostics&lt;/strong&gt; klas&amp;ouml;r&amp;uuml;nde yer alan &lt;strong&gt;Message&lt;/strong&gt; &lt;strong&gt;Logging&lt;/strong&gt; kısmına gidilerek &lt;strong&gt;LogEntireMessage&lt;/strong&gt; değeri &lt;strong&gt;true&lt;/strong&gt;, &lt;strong&gt; LogMalformedMessages&lt;/strong&gt; değeride &lt;strong&gt;false&lt;/strong&gt; olarak set edilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk229_6.gif" alt="" width="554" height="255" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu işlemin ardından &lt;strong&gt;Listeners&lt;/strong&gt; klas&amp;ouml;r&amp;uuml;ndeki &lt;strong&gt;ServiceModelMessageLoggingListener&lt;/strong&gt; kısmına gidilerek &lt;strong&gt;InitData&lt;/strong&gt; &amp;ouml;zelliğine bir &lt;strong&gt;svclog&lt;/strong&gt; dosyası adı ve tam adresi aşağıdaki şekilde olduğu gibi bildirilir. Tahmin edileceği &amp;uuml;zere servis tarafına ulaşan ve istemciye giden mesaj i&amp;ccedil;erikleri bu dosya i&amp;ccedil;erisinde toplanacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk229_7.gif" alt="" width="576" height="258" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu işlemlerin ardından servis tarafındaki konfigurasyon dosyasının i&amp;ccedil;eriği aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;system.diagnostics&amp;gt;
+        &amp;lt;sources&amp;gt;
+            &amp;lt;source  name="System.ServiceModel.MessageLogging" 
+switchValue="Warning, ActivityTracing"&amp;gt;
+                &amp;lt;listeners&amp;gt;
+                    &amp;lt;add type="System.Diagnostics.DefaultTraceListener" 
+name="Default"&amp;gt;
+                        &amp;lt;filter type="" /&amp;gt;
+                    &amp;lt;/add&amp;gt;
+                    &amp;lt;add name="ServiceModelMessageLoggingListener"&amp;gt;
+                        &amp;lt;filter type="" /&amp;gt;
+                    &amp;lt;/add&amp;gt;
+                &amp;lt;/listeners&amp;gt;
+            &amp;lt;/source&amp;gt;
+        &amp;lt;/sources&amp;gt;
+        &amp;lt;sharedListeners&amp;gt;
+            &amp;lt;add initializeData="c:\app_messages.svclog"  type="System.Diagnostics.XmlWriterTraceListener, System, 
+Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" 
+name="ServiceModelMessageLoggingListener" traceOutputOptions="Timestamp"&amp;gt;
+                &amp;lt;filter type="" /&amp;gt;
+            &amp;lt;/add&amp;gt;
+        &amp;lt;/sharedListeners&amp;gt;
+    &amp;lt;/system.diagnostics&amp;gt;
+    &amp;lt;system.serviceModel&amp;gt;
+        &amp;lt;diagnostics&amp;gt;
+            &amp;lt;messageLogging logEntireMessage="true" logMalformedMessages="false" logMessagesAtTransportLevel="true" /&amp;gt;
+        &amp;lt;/diagnostics&amp;gt;
+        &amp;lt;bindings&amp;gt;
+            &amp;lt;netTcpBinding&amp;gt;
+                &amp;lt;binding name="BConf" transferMode="Buffered"&amp;gt;
+                    &amp;lt;reliableSession ordered="true" inactivityTimeout="00:10:00" enabled="true" /&amp;gt;
+                &amp;lt;/binding&amp;gt;
+            &amp;lt;/netTcpBinding&amp;gt;
+        &amp;lt;/bindings&amp;gt;
+        &amp;lt;behaviors&amp;gt;
+            &amp;lt;serviceBehaviors&amp;gt;
+                &amp;lt;behavior name="UretimServisiBehavior"&amp;gt;
+                    &amp;lt;serviceDebug includeExceptionDetailInFaults="true" /&amp;gt;
+                &amp;lt;/behavior&amp;gt;
+            &amp;lt;/serviceBehaviors&amp;gt;
+        &amp;lt;/behaviors&amp;gt;
+        &amp;lt;services&amp;gt;
+            &amp;lt;service behaviorConfiguration="UretimServisiBehavior" name="FabrikaLib.Uretici"&amp;gt;
+                &amp;lt;endpoint address="net.tcp://localhost:9000/Fabrika/UretimServisi.svc" binding="netTcpBinding" bindingConfiguration="BConf" name="UretimServisiEndPoint" contract="FabrikaLib.IUretici" /&amp;gt;
+            &amp;lt;/service&amp;gt;
+        &amp;lt;/services&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Mesajların izlenmesi i&amp;ccedil;in &lt;strong&gt;Windows SDK &lt;/strong&gt;ile birlikte gelen&lt;strong&gt; Service Trace Viewer&lt;/strong&gt; programına ihtiya&amp;ccedil; vardır. İstemci ve servis uygulaması &amp;ccedil;alıştırılarak test edildikten sonra Service Trace Viewer yardımıyla mesajlaşma trafiği izlenebilir. İlk testin ardından C klas&amp;ouml;r&amp;uuml; altında &lt;strong&gt;app_messages.svclog&lt;/strong&gt; isimli bir dosya otomatik olarak oluşturulup i&amp;ccedil;eriği doldurulacaktır. Dosya, Service Trace Viewer programı ile a&amp;ccedil;ıldığında aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ne benzer bir şekilde 15 adet mesajın &amp;uuml;retildiği g&amp;ouml;r&amp;uuml;lecektir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk229_8.gif" alt="" width="624" height="646" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi bu mesajlar kısaca analiz edilebilir. İlk mesajın i&amp;ccedil;eriği aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;MessageLogTraceRecord&amp;gt;
+    &amp;lt;s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:a="http://www.w3.org/2005/08/addressing"&amp;gt;
+        &amp;lt;s:Header&amp;gt;
+            &amp;lt;a:Action s:mustUnderstand="1"&amp;gt; http://schemas.xmlsoap.org/ws/2005/02/rm/CreateSequence&amp;lt;/a:Action&amp;gt;
+            &amp;lt;a:MessageID&amp;gt;urn:uuid:1d14de59-6695-4149-b218-cb41783db18d&amp;lt;/a:MessageID&amp;gt;
+            &amp;lt;a:To s:mustUnderstand="1"&amp;gt;
+net.tcp://localhost:9000/Fabrika/UretimServisi.svc&amp;lt;/a:To&amp;gt;
+        &amp;lt;/s:Header&amp;gt;
+        &amp;lt;s:Body&amp;gt;
+            &amp;lt;CreateSequence xmlns="http://schemas.xmlsoap.org/ws/2005/02/rm"&amp;gt;
+                &amp;lt;AcksTo&amp;gt;
+                    &amp;lt;a:Address&amp;gt; http://www.w3.org/2005/08/addressing/anonymous&amp;lt;/a:Address&amp;gt;
+                &amp;lt;/AcksTo&amp;gt;
+                &amp;lt;Offer&amp;gt;
+                    &amp;lt;Identifier&amp;gt; urn:uuid:be73ae30-145a-4bd6-bf04-ee6a3b1edfce&amp;lt;/Identifier&amp;gt;
+                &amp;lt;/Offer&amp;gt;
+            &amp;lt;/CreateSequence&amp;gt;
+        &amp;lt;/s:Body&amp;gt;
+    &amp;lt;/s:Envelope&amp;gt;
+&amp;lt;/MessageLogTraceRecord&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Bu mesaj ile istemci ve servis arasında g&amp;uuml;venilir bir oturum başlatılmaktadır. Tahmin edileceği &amp;uuml;zere mesaj istemci tarafından servise g&amp;ouml;nderilmiştir. Aynı g&amp;uuml;venilir oturumda yer alan t&amp;uuml;m mesajlar aynı benzersiz numara k&amp;uuml;mesini &lt;strong&gt;(Unique Identifier Set)&lt;/strong&gt; kullanırlar. Bu anlamda ilk mesajın i&amp;ccedil;erisinde yer alan &lt;strong&gt; MessageID&lt;/strong&gt; değeri ikinci mesaj i&amp;ccedil;erisinde de ele alınmaktadır. İkinci mesaj, servis tarafından istemciye g&amp;ouml;nderilen mesajdır ve i&amp;ccedil;eriği aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;MessageLogTraceRecord&amp;gt;
+    &amp;lt;s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:a="http://www.w3.org/2005/08/addressing"&amp;gt;
+        &amp;lt;s:Header&amp;gt;
+            &amp;lt;a:Actions:mustUnderstand="1"&amp;gt; http://schemas.xmlsoap.org/ws /2005/02/rm/CreateSequenceResponse&amp;lt;/a:Action&amp;gt;
+            &amp;lt;a:RelatesTo&amp;gt;urn:uuid:1d14de59-6695-4149-b218-cb41783db18d&amp;lt;/a:RelatesTo&amp;gt;
+            &amp;lt;a:To s:mustUnderstand="1"&amp;gt;http://www.w3.org/2005/08/addressing/anonymous&amp;lt;/a:To&amp;gt;
+        &amp;lt;/s:Header&amp;gt;
+        &amp;lt;s:Body&amp;gt;
+            &amp;lt;CreateSequenceResponse xmlns="http://schemas.xmlsoap.org/ws/2005/02/rm"&amp;gt;
+                &amp;lt;Identifier&amp;gt; urn:uuid:27079656-f1cf-460d-9289-28f43f664fbe&amp;lt;/Identifier&amp;gt;
+                &amp;lt;Accept&amp;gt;
+                    &amp;lt;AcksTo&amp;gt;
+                        &amp;lt;a:Address&amp;gt; 
+net.tcp://localhost:9000/Fabrika/UretimServisi.svc&amp;lt;/a:Address&amp;gt;
+                    &amp;lt;/AcksTo&amp;gt;
+                &amp;lt;/Accept&amp;gt;
+            &amp;lt;/CreateSequenceResponse&amp;gt;
+        &amp;lt;/s:Body&amp;gt;
+    &amp;lt;/s:Envelope&amp;gt;
+&amp;lt;/MessageLogTraceRecord&amp;gt;&lt;/pre&gt;
+&lt;p&gt;İkinci mesajda &amp;uuml;retilen &lt;strong&gt;Identifier&lt;/strong&gt; elementinin değerinin, istemci tarafından sonradan g&amp;ouml;nderilecek mesajlarda mutlaka sağlanması gerekmektedir. B&amp;ouml;ylece aradaki mesajların aynı g&amp;uuml;venilir oturum(Reliable Session) i&amp;ccedil;erisinde olacağı anlaşılabilir. Buna g&amp;ouml;re istemci tarafından ilk metod &amp;ccedil;ağrısı i&amp;ccedil;in g&amp;ouml;nderilen &amp;uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; mesaj i&amp;ccedil;eriği aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;MessageLogTraceRecord&amp;gt;
+    &amp;lt;s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope"  xmlns:r="http://schemas.xmlsoap.org/ws/2005/02/rm" xmlns:a="http://www.w3.org/2005/08/addressing"&amp;gt;
+        &amp;lt;s:Header&amp;gt;
+            &amp;lt;r:AckRequested&amp;gt;
+                &amp;lt;r:Identifier&amp;gt; urn:uuid:27079656-f1cf-460d-9289-28f43f664fbe
+&amp;lt;/r:Identifier&amp;gt;
+            &amp;lt;/r:AckRequested&amp;gt;
+            &amp;lt;r:Sequence s:mustUnderstand="1"&amp;gt;
+                &amp;lt;r:Identifier&amp;gt; urn:uuid:27079656-f1cf-460d-9289-28f43f664fbe
+&amp;lt;/r:Identifier&amp;gt;
+                &amp;lt;r:MessageNumber&amp;gt;1&amp;lt;/r:MessageNumber&amp;gt;
+            &amp;lt;/r:Sequence&amp;gt;
+            &amp;lt;a:Action s:mustUnderstand="1"&amp;gt; 
+http://www.bsenyurt.com/FabrikaLib/ UretimServisi/UretimServisi/BilesenAl&amp;lt;/a:Action&amp;gt;
+            &amp;lt;a:MessageID&amp;gt;urn:uuid:a6127691-9534-4f46-a3ff-97943cd19b30&amp;lt;/a:MessageID&amp;gt;
+            &amp;lt;a:ReplyTo&amp;gt;
+                &amp;lt;a:Address&amp;gt; http://www.w3.org/2005/08/addressing/anonymous&amp;lt;/a:Address&amp;gt;
+            &amp;lt;/a:ReplyTo&amp;gt;
+            &amp;lt;a:To s:mustUnderstand="1"&amp;gt; 
+net.tcp://localhost:9000/Fabrika/UretimServisi.svc&amp;lt;/a:To&amp;gt;
+        &amp;lt;/s:Header&amp;gt;
+        &amp;lt;s:Body&amp;gt;
+            &amp;lt;BilesenAl xmlns="http://www.bsenyurt.com/FabrikaLib/UretimServisi"&amp;gt;
+                &amp;lt;bilesenAdi xmlns:b="http://schemas.microsoft.com/2003/10/Serialization/Arrays" xmlns:i="http://www.w3.org/2001/XMLSchema-instance"&amp;gt;
+                    &amp;lt;b:string&amp;gt;C&amp;lt;/b:string&amp;gt;
+                    &amp;lt;b:string&amp;gt;O2&amp;lt;/b:string&amp;gt;
+                    &amp;lt;b:string&amp;gt;H2SO4&amp;lt;/b:string&amp;gt;
+                &amp;lt;/bilesenAdi&amp;gt;
+            &amp;lt;/BilesenAl&amp;gt;
+        &amp;lt;/s:Body&amp;gt;
+    &amp;lt;/s:Envelope&amp;gt;
+&amp;lt;/MessageLogTraceRecord&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&amp;Uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; mesaj &lt;strong&gt;BilesenAl&lt;/strong&gt; isimli metod i&amp;ccedil;in bir &amp;ccedil;ağrı olduğundan &lt;strong&gt;SOAP&lt;/strong&gt; paketinin &lt;strong&gt;g&amp;ouml;vdesi (Body)&lt;/strong&gt; i&amp;ccedil;erisinde parametre değerleride g&amp;ouml;nderilmektedir. Diğer taraftan &lt;strong&gt; MessageNumber&lt;/strong&gt; elementi ile g&amp;ouml;nderilen mesajın sıra numarasıda belirlenmiş olmaktadır. &amp;Uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; mesaj ile gelen metod &amp;ccedil;ağrısına karşılık olaraktan servis tarafı bir cevap mesajını d&amp;ouml;rd&amp;uuml;nc&amp;uuml; mesaj olarak istemciye g&amp;ouml;nderecektir. D&amp;ouml;rd&amp;uuml;nc&amp;uuml; mesajın i&amp;ccedil;eriği aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;MessageLogTraceRecord&amp;gt;
+    &amp;lt;s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:r="http://schemas.xmlsoap.org/ws/2005/02/rm" xmlns:a="http://www.w3.org/2005/08/addressing"&amp;gt;
+        &amp;lt;s:Header&amp;gt;
+            &amp;lt;r:SequenceAcknowledgement&amp;gt;
+                &amp;lt;r:Identifier&amp;gt; urn:uuid:27079656-f1cf-460d-9289-28f43f664fbe&amp;lt;/r:Identifier&amp;gt;
+                &amp;lt;r:AcknowledgementRange Lower="1" Upper="1"&amp;gt;&amp;lt;/r:AcknowledgementRange&amp;gt;
+                &amp;lt;netrm:BufferRemaining xmlns:netrm="http://schemas.microsoft.com/ws/2006/05/rm"&amp;gt; 8&amp;lt;/netrm:BufferRemaining&amp;gt;
+            &amp;lt;/r:SequenceAcknowledgement&amp;gt;
+            &amp;lt;r:AckRequested&amp;gt;
+                &amp;lt;r:Identifier&amp;gt; urn:uuid:be73ae30-145a-4bd6-bf04-ee6a3b1edfce&amp;lt;/r:Identifier&amp;gt;
+            &amp;lt;/r:AckRequested&amp;gt;
+            &amp;lt;r:Sequence s:mustUnderstand="1"&amp;gt;
+                &amp;lt;r:Identifier&amp;gt; urn:uuid:be73ae30-145a-4bd6-bf04-ee6a3b1edfce&amp;lt;/r:Identifier&amp;gt;
+                &amp;lt;r:MessageNumber&amp;gt;1&amp;lt;/r:MessageNumber&amp;gt;
+            &amp;lt;/r:Sequence&amp;gt;
+            &amp;lt;a:Action s:mustUnderstand="1"&amp;gt; http://www.bsenyurt.com/FabrikaLib/ UretimServisi/UretimServisi/BilesenAlResponse&amp;lt;/a:Action&amp;gt;
+            &amp;lt;a:RelatesTo&amp;gt; 
+urn:uuid:a6127691-9534-4f46-a3ff-97943cd19b30&amp;lt;/a:RelatesTo&amp;gt;
+            &amp;lt;a:To s:mustUnderstand="1"&amp;gt; http://www.w3.org/2005/08/addressing/anonymous&amp;lt;/a:To&amp;gt;
+        &amp;lt;/s:Header&amp;gt;
+        &amp;lt;s:Body&amp;gt;
+            &amp;lt;BilesenAlResponse xmlns="http://www.bsenyurt.com/FabrikaLib/UretimServisi"&amp;gt;
+            &amp;lt;BilesenAlResult&amp;gt;3&amp;lt;/BilesenAlResult&amp;gt;
+            &amp;lt;/BilesenAlResponse&amp;gt;
+        &amp;lt;/s:Body&amp;gt;
+    &amp;lt;/s:Envelope&amp;gt;
+&amp;lt;/MessageLogTraceRecord&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Bu mesaj i&amp;ccedil;erisindede istemciye biraz &amp;ouml;nce g&amp;ouml;nderdiği mesajın başarılı bir şekilde alındığı ve onaylandığı bilgisi iletilmektedir. Sıradaki beşinci mesaj ile istemci servise bir onaylama bildirisi g&amp;ouml;ndermektedir ve i&amp;ccedil;eriği aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;MessageLogTraceRecord&amp;gt;
+    &amp;lt;s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:r="http://schemas.xmlsoap.org/ws/2005/02/rm" xmlns:a="http://www.w3.org/2005/08/addressing"&amp;gt;
+        &amp;lt;s:Header&amp;gt;
+            &amp;lt;r:SequenceAcknowledgement&amp;gt;
+                &amp;lt;r:Identifier&amp;gt; urn:uuid:be73ae30-145a-4bd6-bf04-ee6a3b1edfce&amp;lt;/r:Identifier&amp;gt;
+                &amp;lt;r:AcknowledgementRange Lower="1" Upper="1"&amp;gt; &amp;lt;/r:AcknowledgementRange&amp;gt;
+                &amp;lt;netrm:BufferRemaining  xmlns:netrm="http://schemas.microsoft.com/ws/2006/05/rm"&amp;gt;8&amp;lt;/netrm:BufferRemaining&amp;gt;
+            &amp;lt;/r:SequenceAcknowledgement&amp;gt;
+            &amp;lt;a:Action s:mustUnderstand="1"&amp;gt; http://schemas.xmlsoap.org/ ws/2005/02/rm/SequenceAcknowledgement&amp;lt;/a:Action&amp;gt;
+            &amp;lt;a:To s:mustUnderstand="1"&amp;gt; 
+net.tcp://localhost:9000/Fabrika/UretimServisi.svc&amp;lt;/a:To&amp;gt;
+        &amp;lt;/s:Header&amp;gt;
+    &amp;lt;s:Body&amp;gt;&amp;lt;/s:Body&amp;gt;
+&amp;lt;/s:Envelope&amp;gt;
+&amp;lt;/MessageLogTraceRecord&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Bu mesaj d&amp;ouml;rd&amp;uuml;nc&amp;uuml; mesajın ve i&amp;ccedil;eriğinin istemci tarafından alındığını servis tarafına bildirmektedir. &lt;strong&gt; SequenceAcknowledgment&lt;/strong&gt; elementinde yer alan &lt;strong&gt;identifier&lt;/strong&gt; değerine bakılırsa birinci mesajda &amp;uuml;retilen &lt;strong&gt;identifier&lt;/strong&gt; ile aynı olduğu g&amp;ouml;r&amp;uuml;lebilir. Hemen arkasından gelen altıncı mesaja bakıldığında istemcinin ikinci metod &amp;ccedil;ağrısını ger&amp;ccedil;ekleştirdiği g&amp;ouml;r&amp;uuml;l&amp;uuml;r.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;MessageLogTraceRecord&amp;gt;
+    &amp;lt;s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:r="http://schemas.xmlsoap.org/ws/2005/02/rm" xmlns:a="http://www.w3.org/2005/08/addressing"&amp;gt;
+        &amp;lt;s:Header&amp;gt;
+            &amp;lt;r:Sequence s:mustUnderstand="1"&amp;gt;
+                &amp;lt;r:Identifier&amp;gt; urn:uuid:27079656-f1cf-460d-9289-28f43f664fbe&amp;lt;/r:Identifier&amp;gt;
+                &amp;lt;r:MessageNumber&amp;gt;2&amp;lt;/r:MessageNumber&amp;gt;
+            &amp;lt;/r:Sequence&amp;gt;
+            &amp;lt;a:Action s:mustUnderstand="1"&amp;gt;  http://www.bsenyurt.com/FabrikaLib/UretimServisi/UretimServisi/Karistir&amp;lt;/a:Action&amp;gt;
+            &amp;lt;a:MessageID&amp;gt; urn:uuid:180ea9af-ddbc-4249-8880-40c412088ce3&amp;lt;/a:MessageID&amp;gt;
+            &amp;lt;a:ReplyTo&amp;gt;
+                &amp;lt;a:Address&amp;gt; 
+http://www.w3.org/2005/08/addressing/anonymous&amp;lt;/a:Address&amp;gt;
+            &amp;lt;/a:ReplyTo&amp;gt;
+            &amp;lt;a:To s:mustUnderstand="1"&amp;gt; 
+net.tcp://localhost:9000/Fabrika/UretimServisi.svc&amp;lt;/a:To&amp;gt;
+        &amp;lt;/s:Header&amp;gt;
+        &amp;lt;s:Body&amp;gt;
+            &amp;lt;Karistir xmlns="http://www.bsenyurt.com/FabrikaLib/UretimServisi"&amp;gt;&amp;lt;/Karistir&amp;gt;
+        &amp;lt;/s:Body&amp;gt;
+    &amp;lt;/s:Envelope&amp;gt;
+&amp;lt;/MessageLogTraceRecord&amp;gt;&lt;/pre&gt;
+&lt;p&gt;İ&amp;ccedil;eriktende g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi Karistir metoduna bir &amp;ccedil;ağrı gelmektedir. Ancak burada &amp;ouml;nemli olan noktalardan biriside &lt;strong&gt;MessageNumber&lt;/strong&gt; değeridir. Dikkat edilecek olursa 2 değeri gelmektedir. Bir başka deyişle bu mesajın ikinci sırada ele alınması gerektiği belirtilmiş olmaktadır. İstemci tarafından metod &amp;ccedil;ağrıları sonucu oluşturulan mesajların aynı g&amp;uuml;venilir oturumda yer alması ama farklı mesajlar olarak ele alınması &lt;strong&gt;MessageID&lt;/strong&gt; değerleri sayesinde ger&amp;ccedil;ekleştirilir. Bu nedenle burada &amp;uuml;retilen MessageID değeri bir &amp;ouml;nceki metod &amp;ccedil;ağrısında &amp;uuml;retilenden farklı olarak belirlenmektedir. Altıncı mesaj i&amp;ccedil;in servisin &amp;uuml;rettiği yedinci mesajın i&amp;ccedil;eriği aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;MessageLogTraceRecord&amp;gt;
+    &amp;lt;s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:r="http://schemas.xmlsoap.org/ws/2005/02/rm" xmlns:a="http://www.w3.org/2005/08/addressing"&amp;gt;
+        &amp;lt;s:Header&amp;gt;
+            &amp;lt;r:SequenceAcknowledgement&amp;gt;
+                &amp;lt;r:Identifier&amp;gt; urn:uuid:27079656-f1cf-460d-9289-28f43f664fbe&amp;lt;/r:Identifier&amp;gt;
+                &amp;lt;r:AcknowledgementRange Lower="1" Upper="2"&amp;gt;&amp;lt;/r:AcknowledgementRange&amp;gt;
+                &amp;lt;netrm:BufferRemaining xmlns:netrm="http://schemas.microsoft.com/ws/2006/05/rm"&amp;gt; 8&amp;lt;/netrm:BufferRemaining&amp;gt;
+            &amp;lt;/r:SequenceAcknowledgement&amp;gt;
+            &amp;lt;r:Sequence s:mustUnderstand="1"&amp;gt;
+                &amp;lt;r:Identifier&amp;gt; urn:uuid:be73ae30-145a-4bd6-bf04-ee6a3b1edfce&amp;lt;/r:Identifier&amp;gt;
+                &amp;lt;r:MessageNumber&amp;gt;2&amp;lt;/r:MessageNumber&amp;gt;
+            &amp;lt;/r:Sequence&amp;gt;
+            &amp;lt;a:Action s:mustUnderstand="1"&amp;gt; http://www.bsenyurt.com/FabrikaLib/UretimServisi/UretimServisi/KaristirResponse &amp;lt;/a:Action&amp;gt;
+            &amp;lt;a:RelatesTo&amp;gt; urn:uuid:180ea9af-ddbc-4249-8880-40c412088ce3&amp;lt;/a:RelatesTo&amp;gt;
+            &amp;lt;a:To s:mustUnderstand="1"&amp;gt; http://www.w3.org/2005/08/addressing/anonymous&amp;lt;/a:To&amp;gt;
+        &amp;lt;/s:Header&amp;gt;
+        &amp;lt;s:Body&amp;gt;
+            &amp;lt;KaristirResponse xmlns="http://www.bsenyurt.com/FabrikaLib/UretimServisi"&amp;gt; &amp;lt;/KaristirResponse&amp;gt;
+        &amp;lt;/s:Body&amp;gt;
+    &amp;lt;/s:Envelope&amp;gt;
+&amp;lt;/MessageLogTraceRecord&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Bu mesajlaşma trafiği diğer metod &amp;ccedil;ağrısı i&amp;ccedil;inde benzer şekilde işleyecektir. İstemcinin yaptığı metod &amp;ccedil;ağrıları sona erdikten sonra ise, servis tarafına aşağıdaki mesaj g&amp;ouml;nderilir. &lt;em&gt;(&amp;Ouml;rnek uygulamadaki &amp;ccedil;alışma sistemine g&amp;ouml;re &lt;/em&gt;&lt;strong&gt;&lt;em&gt;Service Trace Viewer&lt;/em&gt; &lt;/strong&gt;&lt;em&gt;sonlandırma talebi onuncu mesaj olarak elde edilmektedir.)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;MessageLogTraceRecord&amp;gt;
+    &amp;lt;s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:r="http://schemas.xmlsoap.org/ws/2005/02/rm" xmlns:a="http://www.w3.org/2005/08/addressing"&amp;gt;
+        &amp;lt;s:Header&amp;gt;
+            &amp;lt;r:SequenceAcknowledgement&amp;gt;
+                &amp;lt;r:Identifier&amp;gt; urn:uuid:be73ae30-145a-4bd6-bf04-ee6a3b1edfce&amp;lt;/r:Identifier&amp;gt;
+                &amp;lt;r:AcknowledgementRange Lower="1" Upper="3"&amp;gt;&amp;lt;/r:AcknowledgementRange&amp;gt;
+                &amp;lt;netrm:BufferRemaining xmlns:netrm= "http://schemas.microsoft.com/ws/2006/05/rm"&amp;gt;8&amp;lt;/netrm:BufferRemaining&amp;gt;
+            &amp;lt;/r:SequenceAcknowledgement&amp;gt;
+            &amp;lt;r:Sequence s:mustUnderstand="1"&amp;gt;
+                &amp;lt;r:Identifier&amp;gt; urn:uuid:27079656-f1cf-460d-9289-28f43f664fbe&amp;lt;/r:Identifier&amp;gt;
+                &amp;lt;r:MessageNumber&amp;gt;4&amp;lt;/r:MessageNumber&amp;gt;
+                &amp;lt;r:LastMessage&amp;gt;&amp;lt;/r:LastMessage&amp;gt;
+            &amp;lt;/r:Sequence&amp;gt;
+            &amp;lt;a:Action s:mustUnderstand="1"&amp;gt; http://schemas.xmlsoap.org/ws/2005/02/rm/LastMessage
+&amp;lt;/a:Action&amp;gt;
+            &amp;lt;a:To s:mustUnderstand="1"&amp;gt; net.tcp://localhost:9000/Fabrika/UretimServisi.svc&amp;lt;/a:To&amp;gt;
+        &amp;lt;/s:Header&amp;gt;
+        &amp;lt;s:Body&amp;gt;&amp;lt;/s:Body&amp;gt;
+    &amp;lt;/s:Envelope&amp;gt;
+&amp;lt;/MessageLogTraceRecord&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Son mesaj olduğunun bildirimi i&amp;ccedil;in r adındaki &lt;strong&gt;xml isim alanındaki(Xml Namespace) LastMessage&lt;/strong&gt; elementi kullanılır. Bununla birlikte &lt;strong&gt;Action&lt;/strong&gt; elementi i&amp;ccedil;erisinde yapılan &amp;ccedil;ağrıda &lt;strong&gt;LastMessage&lt;/strong&gt; bildirimi yapılır. Bu mesajın oluşması i&amp;ccedil;in istemcinin oturumu kapatıyor olması gerekmektedir ki geliştirilen &amp;ouml;rnekte zaten &lt;strong&gt;IsTerminating&lt;/strong&gt; olarak işaretlenmiş metod &amp;ccedil;ağrısından sonra a&amp;ccedil;ık olan oturum(Session) kapatılma s&amp;uuml;recine girecektir.&lt;/p&gt;
+&lt;p&gt;Herşey bittikten sonra &amp;uuml;retilen mesajlarda yer alan &lt;strong&gt;TerminateSequence&lt;/strong&gt; elementleri i&amp;ccedil;erisinde yer alan &lt;strong&gt;Identifier&lt;/strong&gt; değerleri ile istemci ve servis birbilerine artık kaynaklarını kullanmayacaklarını ve g&amp;uuml;venilir oturumu(Reliable Session) kapatacakları bilgilerini vermektedirler. Yukarıdaki işleyiş aşağıdaki şekil ilede değerlendirilebilir. &lt;em&gt;( Mesajlar &amp;uuml;zerinden bu tarz bir g&amp;ouml;rseli hazırlamak olduk&amp;ccedil;a zorlayıcı olmuştur. Bu nedenle g&amp;ouml;zden ka&amp;ccedil;an noktalar s&amp;ouml;z konusu olabilir. Asıl dayanak noktası Service Trace Viewer programının &amp;uuml;rettiği Message i&amp;ccedil;erikleri olmalıdır.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Mesaj 1 ile Mesaj 5 arası durum;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk229_9.gif" alt="" width="608" height="532" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Mesaj 5 ile Mesaj 9 arası durum;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk229_10.gif" alt="" width="605" height="533" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Mesaj 9 ile Mesaj 15 arası durum;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk229_11.gif" alt="" width="608" height="511" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Elbette geliştirici olarak arka tarafta hareket eden mesajların i&amp;ccedil;erikleri &amp;ccedil;ok &amp;ouml;nemli olmayabilir. Ancak g&amp;uuml;venilir oturumlarda s&amp;ouml;z konusu olan bir dezavantaj vardır. Buda &amp;ouml;rnektende g&amp;ouml;r&amp;uuml;leceği &amp;uuml;zere ağ &amp;uuml;zerinde istemci ile servis arasında meydana gelen ekstra mesaj y&amp;uuml;k&amp;uuml;d&amp;uuml;r. Dolayısıyla bu ekstra mesaj y&amp;uuml;k&amp;uuml;, &amp;ouml;zellikle &amp;ccedil;ok fazla istemcinin olduğu sistemlerde performans kaybı yaşatmaktadır. Dolayısıyla &lt;strong&gt; g&amp;uuml;venilir oturumları(Reliable Session) &lt;/strong&gt;kullanmadan &amp;ouml;nce gerekliliklerin ortaya konması doğru bir &amp;ccedil;&amp;ouml;z&amp;uuml;msel yaklaşım olacaktır.&lt;/p&gt;
+&lt;p&gt;G&amp;uuml;venilir oturumlarda mesajlar i&amp;ccedil;in benzersiz ve tekrar etmeyen tanımlayıcı değerler kullandığından &lt;strong&gt;cevaplama saldırılarının (Reply Attack) &lt;/strong&gt; azaltılmasıda s&amp;ouml;z konusudur. Yinede g&amp;uuml;venilir oturumlar a&amp;ccedil;ılması cevaplama saldırıları i&amp;ccedil;in yeterli bir savunma mekanizması sunmaz. Kesin &amp;ccedil;&amp;ouml;z&amp;uuml;m i&amp;ccedil;in &amp;ouml;zel bir bağlayıcı kullanmak gerekir. &amp;Ouml;zel bir bağlayıcı yardımıyla cevaplama saldırılarına(Reply Attack) karşı nasıl ayakta kalınabileceğini bir sonraki makalemizde incelemeye &amp;ccedil;alışıyor olacağız.&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik uzun bir makalemizin daha sonuna. Bu makalemizde istemci ve servis arasında g&amp;uuml;venilir bir oturumun nasıl sağlanabileceğini ele alırken arada hareket eden mesajlarıda analiz etmeye gayret ettik. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/makale/images/ReliableMessagingAndWCF.rar"&gt;&amp;Ouml;rnek Uygulama i&amp;ccedil;in Tıklayın&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2007-11-01 12:00:00</pubDate>
+  <slug>WCF-Guvenilir-Oturumlar(Reliable-Sessions)-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>wcf</tag>
+    <tag>windows-communication-foundation</tag>
+    <tag>reliable-session</tag>
+  </tags>
+  <categories>
+    <category>WCF</category>
+  </categories>
+</post>

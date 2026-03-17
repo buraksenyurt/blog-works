@@ -1,0 +1,1231 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Tie Fighter Değil, Project Tye!</title>
+  <description>Açık kaynak olarak yayınlanan Project Tye, Microsoft'un deneysel projelerinden birisi. En azından konuya çalıştığım tarih itibariyle böyleydi. Projenin iki temel amacı var; .Net tabanlı mikroservis çözümlerinin daha kolay geliştirilmesini sağlamak ve söz konusu çözümleri az zahmetle Kubernetes ortamına almak(Deployment) Buna göre birden fazla servisi tek komutla ayağa kaldırmak, Redis, RabbitMQ vb normalde Sidecar container olan bağımlılıkları kolayca yönetmek, kullanılacak servislerin kolayca keşfedilmesini sağlamak(Service Discovery), uygulamaların container olarak evrilmesi için gerekli hazırlıkları otomatikleştirmek, olabildiğince basit ve tekil bir Kubernetes konfigurasyon dosyası desteği vermek, projenin genel amaçları olarak düşünülebilir.</description>
+  <content>&lt;p&gt;&lt;img src="/image.axd?picture=/2021/Nisan/tie-fighter.png" alt="" align="right" /&gt;Star Wars'ın fig&amp;uuml;r kabul edilen gemilerinden birisi imparatorluk g&amp;uuml;&amp;ccedil;lerinin Tie Fighter'ıdır. Lord Vader ile &amp;ouml;zdeşlemiş olan bu fig&amp;uuml;r&amp;uuml;n kulak tırmalayan ama rahatsız etmeyen sesinin Almanların İkinci D&amp;uuml;nya savaşındaki hafif bombardıman u&amp;ccedil;aklarından birisi olan Junkers Ju-87 Stuka'dan (&lt;em&gt;Sturzkampfflugzeug)&lt;/em&gt; geldiği bile s&amp;ouml;ylenir.&lt;/p&gt;
+&lt;p&gt;Aslında ses tasarımcısı Ben Burtt bu efekti oluşturmak i&amp;ccedil;in bir filin başka bir file seslenirken &amp;ccedil;ıkardığı bağrış ile ıslak kaldırımda giden araba seslerini birleştirmiştir. Lakin Tie kelimesi okunurken genellikle Tay veya Taiy diye okunur. Belki de okunmaz :P Benzer sesdeşlik Tie ile Tye arasında da vardır. Ancak Tye esasında Microsoft'un deneysel bir &amp;ccedil;alışmasıdır.&lt;/p&gt;
+&lt;p&gt;Github'un &lt;a href="https://github.com/dotnet/tye" target="_blank"&gt;şuradaki&lt;/a&gt; reposunda a&amp;ccedil;ık kaynak olarak yayınlanan Project Tye, Microsoft'un deneysel projelerinden birisi. En azından konuya &amp;ccedil;alıştığım tarih itibariyle b&amp;ouml;yleydi. Projenin iki temel amacı var; .Net tabanlı mikroservis &amp;ccedil;&amp;ouml;z&amp;uuml;mlerinin daha kolay geliştirilmesini sağlamak ve s&amp;ouml;z konusu &amp;ccedil;&amp;ouml;z&amp;uuml;mleri az zahmetle Kubernetes ortamına almak&lt;em&gt;(Deployment)&lt;/em&gt; Buna g&amp;ouml;re birden fazla servisi tek komutla ayağa kaldırmak, Redis, RabbitMQ, Zipkin, Elastic Stack, Ingress vb normalde Sidecar container olabilecek bağımlılıkları kolayca y&amp;ouml;netmek, kullanılacak servislerin ortam bağımsız rahat&amp;ccedil;a keşfedilmesini sağlamak&lt;em&gt;(Service Discovery)&lt;/em&gt;, uygulamaların container olarak evrilmesi i&amp;ccedil;in gerekli hazırlıkları otomatikleştirmek, olabildiğince basit ve tekil bir Kubernetes konfigurasyon dosyası desteği vermek, projenin genel ama&amp;ccedil;ları olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;Elbette bu komut satırı aracının faydalarını g&amp;ouml;rebilmek i&amp;ccedil;in sahada denemek gerekir. Bu anlamda yararlandığım başlıca iki &amp;ouml;nemli kaynak var. Amazon'dan kısa s&amp;uuml;re &amp;ouml;nce aldığım&amp;nbsp;&lt;a href="https://www.amazon.com/Adopting-NET-Understand-architectures-migration/dp/1800560567" target="_blank"&gt;Adopting .NET 5: Understand modern architectures, migration best practices, and the new features in .NET 5&lt;/a&gt;&amp;nbsp;isimli kitap ve Microsoft Program Y&amp;ouml;neticisi rol&amp;uuml;nde &amp;ccedil;alışan Amiee Lo'nun &lt;a href="https://devblogs.microsoft.com/aspnet/introducing-project-tye/" target="_blank"&gt;şu adresteki&lt;/a&gt;&amp;nbsp;giriş makalesi.&amp;nbsp;Her iki kaynaktaki &amp;ouml;rnekleri de kopyalama yapmadan bizzat yazarak &amp;ccedil;alıştım ve sonu&amp;ccedil;ta github reposundan bazı notlar birikti. Şu anda bu notları bir araya topladığım yazıyı okumaktasınız.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneklere ge&amp;ccedil;meden &amp;ouml;nce uygulamaları geliştirdiğim sistemden bahsetmem gerekiyor. Windows 10 &amp;uuml;zerinde, Visual Studio 2019 Community Edition kullanıyorum. Ortamda .Net 5 y&amp;uuml;kl&amp;uuml; durumda. Kubernetes &amp;ouml;zelliği aktif olan bir Docker Desktop var. Dolayısıyla sonradan ihtiyacımız olacak kubectl komut satırı aracı kullanılabilir halde. Ayrıca Windows Subsystems on Linux&lt;em&gt;(WSL)&lt;/em&gt;, 2.0 s&amp;uuml;r&amp;uuml;m&amp;uuml;ne g&amp;uuml;ncellenmiş durumda. Geliştireceğimiz her iki &amp;ouml;rnekte Service Discovery i&amp;ccedil;in yerel bir adres kullanacak ancak ger&amp;ccedil;ek hayat senaryolarında bunun yerini DockerHub veya Azure Container Registry gibi bir hizmet alması muhtemeldir. Tabii t&amp;uuml;m bunların yanında bize tye komut satırı aracının kendisi de lazım :D İşte başlangı&amp;ccedil; adımları i&amp;ccedil;in gerekli terminal komutlarımız.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;# Sisteme tye y&amp;uuml;klemek i&amp;ccedil;in aşağıdaki terminal komutu kullanılabilir(Son s&amp;uuml;r&amp;uuml;me bakmak lazım. Sonu&amp;ccedil;ta bu şimdilik deneysel bir proje)
+dotnet tool install -g Microsoft.Tye --version "0.5.0-alpha.20555.1"
+
+# Kubernetes deployment &amp;ouml;ncesi Service Discovery i&amp;ccedil;in kullanacağımız local registry
+docker run -d -p 5000:5000 --restart=always --name registry registry:2
+
+# Docker Desktop tarafında Enable Kubernetes se&amp;ccedil;eneğinin de işaretli olması lazım
+# Kubernetes'in etkin olduğunu anlamak i&amp;ccedil;inse aşağıdaki komut işletilebilir
+kubectl config current-context
+# Bize docker-desktop cevabını vermeli&lt;/pre&gt;
+&lt;h1&gt;Hello World &amp;Ouml;rneği: StarCups&lt;/h1&gt;
+&lt;p&gt;StarCups kod adlı ilk&amp;nbsp;&amp;ccedil;alışmada bir frontend, bir backend&lt;em&gt;(servis tabanlı)&lt;/em&gt;&amp;nbsp;ve birde Redis mevzu bahis. Senaryoda StarCups isimli hayali bir kahve firması var. HeadOffice isimli web aray&amp;uuml;z&amp;uuml;nden İstanbul'un &amp;ccedil;eşitli semtlerindeki kahve d&amp;uuml;kkanlarının malzeme taleplerini anlık olarak g&amp;ouml;rebiliyoruz. Malzeme bilgileri StockCollector isimli REST tabanlı &amp;ccedil;alışan bir Web API servisi &amp;uuml;st&amp;uuml;nden geliyor. Redis ise StockCollector'un &amp;ccedil;ektiği veriyi belli s&amp;uuml;re cache'lemek i&amp;ccedil;in kullanılıyor&lt;em&gt;(Aslında en genel uygulama geliştirme pratiği olarak d&amp;uuml;ş&amp;uuml;nebiliriz. &amp;Ouml;ny&amp;uuml;z tarafı iş fonksiyonellikleri i&amp;ccedil;in arka taraftaki bir servisle konuşur)&lt;/em&gt; Bu Hello World kıvamındaki &amp;ouml;rnekte ama&amp;ccedil;, Tye aracı ile uygulamaların kolayca ayağa kaldırılması, denenmesi, zahmetsizce dockerize edilmesi, loglarına bakılması, &amp;ccedil;evre değişkenlerinin yaml bazlı y&amp;ouml;netilmesi ve Kubernetes tarafına en basit şekliyle Deploy edilmesi şeklinde &amp;ouml;zetlenebilir. İlk &amp;ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml; oluşturmak i&amp;ccedil;in aşağıdaki terminal komutları ile hareket edebiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;mkdir Starcups
+cd Starcups
+# Bir tane frontend uygulaması. Razor tipinde.
+dotnet new razor -n HeadOffice
+# frontend'in konuşacağı bir WebAPI
+dotnet new webapi -n StockCollector
+dotnet new sln
+dotnet sln add HeadOffice StockCollector
+
+tye run&lt;/pre&gt;
+&lt;p&gt;Bu komut sonrası solution i&amp;ccedil;erisindeki uygulamalar otomatik olarak kendileri i&amp;ccedil;in tahsis edilmiş process ve adreslerden ayağa kalkacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2021/Mart/screenshot_1.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şu haldeyken tye ile &amp;ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml; &amp;ccedil;alıştırıp localhost:8000 adresine gidebiliriz. Her iki uygulama da Dashboard &amp;uuml;st&amp;uuml;nde g&amp;ouml;r&amp;uuml;n&amp;uuml;r ve ayrı ayrı incelenebilir ki inceleyin derim :) View kısmına bir bakın, Bindings kısmından sayfalara gitmeye &amp;ccedil;alışın. Tabii Api servis i&amp;ccedil;in bir rest &amp;ccedil;ağrısı şeklinde gitmeniz gerekir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2021/Mart/screenshot_2.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şık ve uygulamaların kolayca erişilip, loglarına bakıldığı aray&amp;uuml;z dışında ortada hen&amp;uuml;z bir numara yok. &amp;Ouml;rneğin frontend ile backend şu anda birbirlerinden bihaberler. Frontend'in backend ile konuşuyor olması da lazımdı. Şimdi&amp;nbsp;WebAPI tarafına OrderData sınıfını ekleyip WeatherForecastController tipini de OrderController olarak değiştirip kodlayarak ilerleyelim.&lt;/p&gt;
+&lt;p&gt;OrderData sınıfımız;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace StockCollector
+{
+    public class OrderData
+    {
+        public string ShopName { get; set; }
+
+        public string ItemName { get; set; }
+
+        public double Quantity { get; set; }
+        public DateTime Time { get; set; }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;OrderController sınıfımız;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+
+namespace StockCollector.Controllers
+{
+    [ApiController]
+    [Route("[controller]")]
+    public class OrderController : ControllerBase
+    {
+        private static readonly string[] ShopNames = new[]
+        {
+            "Capitol", "Balat", "Taksim Meydan", "Pendik Marina", "Bebek", "Koşuyolu", "Bakırk&amp;ouml;y", "Moda", "Beşiktaş Arena", "Maslak 1881"
+        };
+        private static readonly string[] Items = new[]
+        {
+            "Pe&amp;ccedil;ete (100 * Adet)", "Karıştırma Kaşığı (100 * Adet)", "Şeker (Kilo)","Short Bardak (100 * Adet)"
+        };
+
+        private readonly ILogger&amp;lt;OrderController&amp;gt; _logger;
+
+        public OrderController(ILogger&amp;lt;OrderController&amp;gt; logger)
+        {
+            _logger = logger;
+        }
+
+        [HttpGet]
+        public IEnumerable&amp;lt;OrderData&amp;gt; Get()
+        {
+            var rng = new Random();
+            return Enumerable.Range(1, 10).Select(index =&amp;gt; new OrderData
+            {
+                ItemName = Items[rng.Next(Items.Length)],
+                Quantity = rng.Next(1, 10),
+                ShopName = ShopNames[rng.Next(ShopNames.Length)],
+                Time = DateTime.Now
+            }).ToArray();
+        }
+    }
+}
+&lt;/pre&gt;
+&lt;p&gt;Kod rastgele OrderData nesneler listesi &amp;uuml;retip geri d&amp;ouml;nd&amp;uuml;ren basit bir operasyona sahip. Frontend tarafının bu servise gelmesini istiyoruz. Normal şartlarda localhost &amp;uuml;st&amp;uuml;ndeki ilgili backend adresini alıp kullanan bir HttpClient nesnesi pekala işimizi g&amp;ouml;rebilir. Lakin bu &amp;ouml;rneği yarın &amp;ouml;b&amp;uuml;r g&amp;uuml;n Kubernetes'e alacağız. Dockerize edilerek &amp;ccedil;alışacak Container i&amp;ccedil;in adres bilgileri &amp;ccedil;evre değişkenlerden gelebilir, hatta uzak bir konfigurasyon y&amp;ouml;neticisinden bile desteklenebilir. Yani frontend'in hangi servisteki backend uygulaması ile konuşacağını kolayca keşfedebilmesi &amp;ouml;nemlidir. Bu işi tye &amp;uuml;st&amp;uuml;nden yapmak istediğimiz i&amp;ccedil;in frontend tarafında k&amp;uuml;&amp;ccedil;&amp;uuml;k bir hazırlık yapmalıyız. İlk olarak Microsoft.Tye.Extensions.Configuration nuget paketini HeadOffice uygulamasına ekleyelim.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;cd HeadOffice
+dotnet add package --prerelease Microsoft.Tye.Extensions.Configuration
+cd ..&lt;/pre&gt;
+&lt;p&gt;Sonrasında HeadOffice isimli frontEnd uygulamasından REST &amp;ccedil;ağrısı&amp;nbsp;yaparken&amp;nbsp;kullanacağımız OrderClient ve gelen veriyi nesne olarak ele alacağımız OrderData&lt;em&gt;(Backend taraftaki ile aynı yapıdadır)&lt;/em&gt; sınıflarını geliştirelim.&lt;/p&gt;
+&lt;p&gt;OrderClient sınıfı REST &amp;ccedil;ağrısı yapmamızı kolaylaştıran bir tip.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Net.Http;
+using System.Text.Json;
+using System.Threading.Tasks;
+
+namespace HeadOffice
+{
+    public class OrderClient
+    {
+        private readonly JsonSerializerOptions options = new JsonSerializerOptions()
+        {
+            PropertyNameCaseInsensitive = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        };
+
+        private readonly HttpClient client;
+
+        public OrderClient(HttpClient client)
+        {
+            this.client = client;
+        }
+
+        public async Task&amp;lt;OrderData[]&amp;gt; GetOrdersAsync()
+        {
+            var responseMessage = await this.client.GetAsync("/order");
+            var stream = await responseMessage.Content.ReadAsStreamAsync();
+            return await JsonSerializer.DeserializeAsync&amp;lt;OrderData[]&amp;gt;(stream, options);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Derken&amp;nbsp;HeadOffice'deki Index.cshtml&lt;em&gt;(cs ile birlikte) &lt;/em&gt;sayfasını da aşağıdaki gibi d&amp;uuml;zenleyelim.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+&amp;lt;div class="text-center"&amp;gt;
+    &amp;lt;h1 class="display-4"&amp;gt;Melaba!!! Kahvenin hası burada.&amp;lt;/h1&amp;gt;
+    &amp;lt;p&amp;gt;Star Cups Mağzaları...&amp;lt;/a&amp;gt;.&amp;lt;/p&amp;gt;
+&amp;lt;/div&amp;gt;
+
+Son Siparişler
+
+&amp;lt;table class="table"&amp;gt;
+    &amp;lt;thead&amp;gt;
+        &amp;lt;tr&amp;gt;
+            &amp;lt;th&amp;gt;Tarih&amp;lt;/th&amp;gt;
+            &amp;lt;th&amp;gt;D&amp;uuml;kkan&amp;lt;/th&amp;gt;
+            &amp;lt;th&amp;gt;İstenen&amp;lt;/th&amp;gt;
+            &amp;lt;th&amp;gt;Miktar&amp;lt;/th&amp;gt;
+        &amp;lt;/tr&amp;gt;
+    &amp;lt;/thead&amp;gt;
+    &amp;lt;tbody&amp;gt;
+        @foreach (var ord in @Model.Orders)
+        {
+            &amp;lt;tr&amp;gt;
+                &amp;lt;td&amp;gt;@ord.Time.Ticks&amp;lt;/td&amp;gt;
+                &amp;lt;td&amp;gt;@ord.ShopName&amp;lt;/td&amp;gt;
+                &amp;lt;td&amp;gt;@ord.ItemName&amp;lt;/td&amp;gt;
+                &amp;lt;td&amp;gt;@ord.Quantity&amp;lt;/td&amp;gt;
+            &amp;lt;/tr&amp;gt;
+        }
+    &amp;lt;/tbody&amp;gt;
+&amp;lt;/table&amp;gt;
+&lt;/pre&gt;
+&lt;p&gt;Index.cshtml.cs sınıfı&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
+
+namespace HeadOffice.Pages
+{
+    public class IndexModel : PageModel
+    {
+        private readonly ILogger&amp;lt;IndexModel&amp;gt; _logger;
+        public OrderData[] Orders { get; set; }
+
+        public IndexModel(ILogger&amp;lt;IndexModel&amp;gt; logger)
+        {
+            _logger = logger;
+        }
+
+        public async Task OnGet([FromServices] OrderClient client)
+        {
+            Orders = await client.GetOrdersAsync();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Tekrar tye tarafına d&amp;ouml;nelim. &amp;Ccedil;&amp;ouml;z&amp;uuml;m i&amp;ccedil;erisindeki servislerle ilgili &amp;ccedil;evre konfigurasyon ayarlamaları i&amp;ccedil;in bir yaml dosyasına ihtiyacımız olacak. Bu dosyayı solution klas&amp;ouml;r&amp;uuml;nde aşağıdaki terminal komutu ile kolayca oluşturabiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;tye init&lt;/pre&gt;
+&lt;p&gt;Tye.yaml i&amp;ccedil;eriği aşağıdaki gibi oluşur. Buna g&amp;ouml;re iki servis s&amp;ouml;z konusudur. Tye, .net odaklı bir enstr&amp;uuml;man olduğundan solution i&amp;ccedil;indeki proje dosyalarını otomatik olarak algılayıp gerekli servis bildirimlerini yapar.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;name: starcups
+services:
+- name: headoffice
+  project: HeadOffice/HeadOffice.csproj
+- name: stockcollector
+  project: StockCollector/StockCollector.csproj&lt;/pre&gt;
+&lt;p&gt;Bu aşamada &amp;ccedil;&amp;ouml;z&amp;uuml;m &amp;ccedil;alıştırılır ve tarayıcı ile HeadOffice uygulamasına gidilirse ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi servis tarafıyla konuşulabildiği g&amp;ouml;r&amp;uuml;l&amp;uuml;r. Şu noktada HeadOffice tarafında, backend i&amp;ccedil;in bir adres bildirimi yapmadığımız dikkatinizden ka&amp;ccedil;mamalıdır. Tye &amp;ccedil;alışmaya başladığında backend'i hangi adresten ayağa kaldırdıysa, frontend&amp;nbsp;tarafında da o adres kullanılır.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;tye run&lt;/pre&gt;
+&lt;h2&gt;&lt;img src="/image.axd?picture=/2021/Mart/screenshot_3.png" alt="" /&gt;&lt;br /&gt;StarCups i&amp;ccedil;in Redis Desteğinin Eklenmesi&lt;/h2&gt;
+&lt;p&gt;Dağıtık mimariler s&amp;ouml;z konusu olduğunda Redis, RabbitMQ gibi hizmetler eğer single node &amp;uuml;st&amp;uuml;nde &amp;ccedil;alışılıyorsa genellikle Sidecar Container olarak ele alınabilirler. Tye bu konuda bize bazı kolaylıklar sağlar. Ne demek istediğimi anlatamabilmek i&amp;ccedil;in backend servisine Redis desteğini ekleyerek devam edelim. Redis desteği'ni de yaml dosyaları ile y&amp;ouml;neteceğiz. &amp;Ouml;ncelikle backend uygulamasında Redis kullanabilmek i&amp;ccedil;in gerekli Nuget paketini ilave ediyoruz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;cd StockController
+dotnet add package Microsoft.Extensions.Caching.StackExchangeRedis
+cd ..&lt;/pre&gt;
+&lt;p&gt;Sonrasında OrderController sınıfındaki Get metodunu Redis'i kullanacak hale getiriyoruz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[HttpGet]
+public async Task&amp;lt;string&amp;gt; Get([FromServices] IDistributedCache cache)
+{
+	var keyOrder = await cache.GetStringAsync("keyOrder");
+	if (keyOrder == null)
+	{
+		_logger.LogInformation("Redis Key boştu");
+		var rng = new Random();
+		var orders = Enumerable.Range(1, 10).Select(index =&amp;gt; new OrderData
+		{
+			ItemName = Items[rng.Next(Items.Length)],
+			Quantity = rng.Next(1, 10),
+			ShopName = ShopNames[rng.Next(ShopNames.Length)],
+			Time = DateTime.Now
+		}).ToArray();
+
+		keyOrder = JsonSerializer.Serialize(orders);
+		_logger.LogInformation($"Veri serileştirildi {keyOrder}");
+
+		await cache.SetStringAsync("keyOrder", keyOrder, new DistributedCacheEntryOptions
+		{
+			AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(10)
+		});
+	}
+	return keyOrder;
+}&lt;/pre&gt;
+&lt;p&gt;ve Redis i&amp;ccedil;in Startup.cs i&amp;ccedil;erisindeki ConfigureService metodunda gerekli d&amp;uuml;zenlemeyi yapıyoruz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public void ConfigureServices(IServiceCollection services)
+{
+	services.AddControllers();
+
+	// Redis i&amp;ccedil;in aşağıdaki satır eklendi
+	// Bağlantı bilgisi yaml &amp;uuml;st&amp;uuml;nden gelecek
+	services.AddStackExchangeRedisCache(o =&amp;gt;
+	{
+		o.Configuration = Configuration.GetConnectionString("redis");
+	});
+
+	services.AddSwaggerGen(c =&amp;gt;
+	{
+		c.SwaggerDoc("v1", new OpenApiInfo { Title = "StockCollector", Version = "v1" });
+	});
+}&lt;/pre&gt;
+&lt;p&gt;Burada altını &amp;ccedil;izmemiz gereken bir nokta var ki o da GetConnectionString'e gelen redis ifadesi. Normalde projemizin appSettings.json dosyasında redis i&amp;ccedil;in bir b&amp;ouml;l&amp;uuml;m bulunmuyor. Tahmin edeceğiniz &amp;uuml;zere buradaki redis adres tanımı tye.yaml &amp;uuml;st&amp;uuml;nden okunuyor. Bu nedenle tye.yaml i&amp;ccedil;eriğini aşağıdaki şekilde g&amp;uuml;ncellemeliyiz.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;name: starcups
+services:
+- name: headoffice
+  project: HeadOffice/HeadOffice.csproj
+- name: stockcollector
+  project: StockCollector/StockCollector.csproj
+- name: redis
+  image: redis
+  bindings:
+  - port: 6379
+    connectionString: "${host}:${port}"
+- name: redis-cli
+  image: redis
+  args: "redis-cli -h redis MONITOR"&lt;/pre&gt;
+&lt;p&gt;G&amp;uuml;ncel yaml i&amp;ccedil;eriğinde redis ve redis-cli isimli iki yeni bildirim g&amp;ouml;r&amp;uuml;yorsunuz. Standart olarak 6379 portundan hizmet veren redis sunucusu ve kolay bir şekilde onu monitor etmemizi sağlayan redis-cli hizmeti.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Artık&amp;nbsp;backend uygulaması Redis ile &amp;ccedil;alışır hale geldi. Bu aşamada yine tye run ile &amp;ouml;rneği &amp;ccedil;alıştırıp, redis servislerinin ayağa kalkıp kalkmadığına bakmak ve 10 saniyede bir cache'in d&amp;uuml;ş&amp;uuml;p yeni bilgilerin getirildiğini g&amp;ouml;rmek iyi olacaktır. tye run ile sistem ayağa kaldırıldığında aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nden de g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi redis hizmeti de &amp;ccedil;alışmaya başlar. Bu arada redis i&amp;ccedil;in docker imajı kullanıldığını fark etmiş olmalısınız. Yani redis hizmeti bir Container olarak ayağa kalkar. Aynı işleyip redis-cli hizmeti i&amp;ccedil;in de s&amp;ouml;z konusudur &lt;em&gt;(Buradan terminal komutu loglarını okumanın faydalarını da g&amp;ouml;rebilirsiniz)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;img src="/image.axd?picture=/2021/Mart/screenshot_4.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Tye dashboard &amp;uuml;st&amp;uuml;nde de benzer şekilde redis ve redis-cli hizmetlerinin &amp;ccedil;alışıyor olduğunu g&amp;ouml;rmemiz lazım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2021/Mart/screenshot_5.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Hatta redis-cli loglarına gidersek cache'e atılan JSON i&amp;ccedil;eriklerini de takip edebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2021/Mart/screenshot_6.png" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;StartCups'ın Kubernetes Ortamına Alınması&lt;/h2&gt;
+&lt;p&gt;Gelelim diğer bir hedefimize. Buraya kadar yapılan&amp;nbsp;işlemler sayesinde solution i&amp;ccedil;indeki uygulamaları bağımlı servisleri ile birlikte basit&amp;ccedil;e &amp;ccedil;alıştırıp, monit&amp;ouml;r edebildik. Ancak bunları Kubernetes gibi bir ortama nasıl alırız? Bu aşamada Sidecar gibi g&amp;ouml;r&amp;uuml;nen redis i&amp;ccedil;in ayrı bir yaml dosyasına ihtiyacımız olacak. Bunu redis servisini Kubernetes ortamına ayrıca almak i&amp;ccedil;in kullanacağız. S&amp;ouml;z konusu dosyayı aşağıdaki gibi oluşturabiliriz.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;redis.yaml&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  labels:
+    app.kubernetes.io/name: redis
+    app.kubernetes.io/part-of: starcups
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: redis
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: redis
+        app.kubernetes.io/part-of: starcups
+    spec:
+      containers:
+        - name: redis
+          image: redis
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          ports:
+            - containerPort: 6379
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  labels:
+    app.kubernetes.io/name: redis
+    app.kubernetes.io/part-of: starcups
+spec:
+  ports:
+    - port: 6379
+      targetPort: 6379
+  selector:
+    app.kubernetes.io/name: redis&lt;/pre&gt;
+&lt;p&gt;Redis i&amp;ccedil;in kubernetes&amp;ccedil;e bir i&amp;ccedil;erik s&amp;ouml;z konusu. Kubernetes konusuna &amp;ccedil;ok hakim olmadığım i&amp;ccedil;in anladığım kadarıyla ifade etmeye &amp;ccedil;alışayım. Kubernetes'e redis i&amp;ccedil;in kullanacağı docker imajını, replika adedini, port bilgisini, cpu ve memory gibi ayrılması istenen sistem kaynaklarını, kısaca dağıtım ve servis manifestosunu bildiriyoruz. Bu manifestoyu Kubernetes tarafının işletmesi i&amp;ccedil;inse aşağıdaki terminal komutunu kullanmamız gerekiyor&lt;em&gt;(Yazının başlarında kubectl'ye ihtiyacımız olacağını s&amp;ouml;ylemiştim)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;kubectl apply -f redis.yaml&lt;/pre&gt;
+&lt;p&gt;Redis'in Kubernetes tarafında ayağa kaldırılması tek başına yeterli değil. Buraya yapılan dağıtım sonrası servislerin keşfi i&amp;ccedil;in de bir registry kullanılması gerekiyor. Bunu tye.yaml dosyasında aşağıdaki gibi bildirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;name: starcups
+registry: localhost:5000
+services:
+- name: headoffice
+# Diğer kısımlar&lt;/pre&gt;
+&lt;p&gt;Tabii bunu s&amp;ouml;ylemek de yeterli değil. localhost:5000 adresinde ger&amp;ccedil;ekten bir Registry servisinin olması lazım. Bunun i&amp;ccedil;inse aşağıdaki terminal komutuna ihtiyacımız var.&amp;nbsp;registry imajını kullanan ve a&amp;ccedil;ık&amp;ccedil;a kapatılana kadar s&amp;uuml;rekli &amp;ccedil;alışacak bir container.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;# container registry i&amp;ccedil;in aşağıdaki komut kullanılabilir.
+docker run -d -p 5000:5000 --restart=always --name registry registry:2&lt;/pre&gt;
+&lt;p&gt;Kubernetes deployment işlemi i&amp;ccedil;in deploy komutunu aşağıdaki gibi kullanmamız gerekiyor. Harici bir servis olarak Redis kullandığımızdan, ona hangi adresle erişeceğimiz de sorulur. Bu soruyu &lt;em&gt;redis:6379&lt;/em&gt; şeklinde cevaplayarak ilerleyebiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;tye deploy --interactive
+
+# Aşağıdaki komutlar ile kubernetes deployment ve pod durumları kontrol edilir.
+
+kubectl get deployment
+kubectl get svc
+kubectl get secrets
+kubectl get pods&lt;/pre&gt;
+&lt;p&gt;İşlemler sırasında terminal hareketlilikleri takip edilirse, tye.yaml &amp;uuml;st&amp;uuml;nde belirtilen projeler i&amp;ccedil;in Dockerize işlemlerinin otomatik olarak yapıldığı da g&amp;ouml;r&amp;uuml;lebilir. Dikkat ederseniz herhangibir Dockerfile oluşturmadık. Deployment işlemi başarılı ise get pods ile aktif olarak &amp;ccedil;alışan pod'ları g&amp;ouml;rebilmemiz gerekir. Aynen aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ne olduğu gibi.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2021/Mart/screenshot_7.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Frontend uygulamasının web aray&amp;uuml;z&amp;uuml;ne erişmek i&amp;ccedil;in port-forward işlemi uygulamamız gerekebilir&lt;em&gt;(Cluster dışından erişmek istediğimiz i&amp;ccedil;in)&lt;/em&gt;&amp;nbsp;Bunun i&amp;ccedil;in aşağıdaki terminal komutunu &amp;ccedil;alıştırmak yeterli olacaktır.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;kubectl port-forward svc/headoffice 80:80&lt;/pre&gt;
+&lt;p&gt;Sonrasında localhost:80 adresine gidilirse web uygulamasına ulaşıldığı ve anlık olarak kahve d&amp;uuml;kkanlarımızın beklediği malzemeler g&amp;ouml;r&amp;uuml;lebilir. Aynen aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2021/Mart/screenshot_8.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;ok doğal olarak şu noktada Kubernetes ortamına yapılan dağıtımı geri almak isteyebilirsiniz. Tye bu işlemi basitleştirir.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;tye undeploy&lt;/pre&gt;
+&lt;p&gt;Peki şimdi ne oldu? Normal bir .net &amp;ccedil;&amp;ouml;z&amp;uuml;m ailesini kullanışlı bir dashboard &amp;uuml;st&amp;uuml;nden izlemeyi, kolayca &amp;ccedil;alıştırmay&lt;em&gt;ı(Solution Run'dan farklı olarak)&lt;/em&gt;, redis'i hem development hem kubernetes i&amp;ccedil;in nerededir diye d&amp;uuml;ş&amp;uuml;nmeden bağlamayı ama daha da &amp;ouml;nemlisi&amp;nbsp;bu &amp;ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml; kubernetes'e taşımak istersek o ortamda da &amp;ccedil;alışabileceğini g&amp;ouml;rm&amp;uuml;ş olduk.&amp;nbsp;Sizde bu &amp;ouml;rneği g&amp;uuml;zel bir şekilde tamamladıysanız ikincisine ge&amp;ccedil;ebiliriz. Bu kez senaryo &lt;a href="https://www.amazon.com/Adopting-NET-Understand-architectures-migration/dp/1800560567"&gt;okuduğum kitaptan&lt;/a&gt; geliyor.&lt;/p&gt;
+&lt;h1&gt;Bonus: SchoolOfMath Senaryosu&lt;/h1&gt;
+&lt;p&gt;Yeni pratiğimizde aşağıdaki şekilde g&amp;ouml;r&amp;uuml;len senaryo s&amp;ouml;z konusu olacak.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2021/Nisan/Project_Tye_Senaryo.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;ok daha keyifli bir senaryo olduğunu s&amp;ouml;yleyebilirim. Benim i&amp;ccedil;in yeni deneyimler i&amp;ccedil;eriyordu. Kısaca &amp;ccedil;&amp;ouml;z&amp;uuml;mdeki akt&amp;ouml;rlerin ne işe yaradığını anlatarak devam edelim.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Einstein, gRPC tabanlı bir servis sağlayıcı. İ&amp;ccedil;inde Palindrom sayıları hesap eden&lt;em&gt;(Kitapta asal sayı buluyordu :P)&lt;/em&gt; bir fonksiyon desteği sunuyor. Servis cache stratejisi i&amp;ccedil;in Redis'i kullanacak. Cache'te ne mi tutacağız? Daha &amp;ouml;nceden Palindrome olarak işaretlenmiş bir sayı varsa onu kendi adıyla Cache'e alacağız ve bir saat boyunca saklamasını isteyeceğiz. Aynı sayı tekrar istenirse hesaplanmadan doğrudan cache'den gelecek. Sırf Redis hizmeti bu senaryoda olsun diye. Ayrıca bir mesaj kuyruğu sistemi de var ki bu noktada RabbitMQ'dan yararlanacağız.&lt;/li&gt;
+&lt;li&gt;Evelyne, Bruce ve Madeleine akt&amp;ouml;rleri Worker tipinden istemci servisler&lt;em&gt;(Onları, ayağa kalktıktan sonra s&amp;uuml;rekli olarak talep g&amp;ouml;nderen servisler olarak d&amp;uuml;ş&amp;uuml;nebiliriz)&lt;/em&gt; Belli bir sayıdan başlayarak Eintesein'a talep g&amp;ouml;nderiyorlar ve g&amp;ouml;nderikleri sayının Palindrom olup olmadığını &amp;ouml;ğreniyorlar.&lt;/li&gt;
+&lt;li&gt;Robert ise RabbitMQ kuyruğunu dinleyen diğer bir Worker servis.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Amacımız bir &amp;ouml;nceki &amp;ouml;rnekte olduğu gibi bu &amp;ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml; Tye destekli olarak inşa edip az zahmetle Kubernetes'e alabilmek.&lt;/p&gt;
+&lt;h2&gt;Proje İskeletinin Oluşturulması&lt;/h2&gt;
+&lt;p&gt;Bunun i&amp;ccedil;in aşağıdaki adımları icra edelim. &amp;Ouml;ncelike Palindrom sayı hesaplayan Einstein gRPC servisini geliştirelim.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;mkdir SchoolOfMath
+cd SchoolOfMath
+
+dotnet new sln
+dotnet new grpc -n Einstein
+dotnet sln add Einstein&lt;/pre&gt;
+&lt;p&gt;Protos klas&amp;ouml;r&amp;uuml;ndeki greet.proto ile servis tarafını değiştirmemiz gerekiyor.&lt;/p&gt;
+&lt;p&gt;palindrome.proto i&amp;ccedil;eriği ş&amp;ouml;yle oluşturulabilir. long tipinden değer alıp bool olarak cevap veren iki mesaj s&amp;ouml;z konusu. Fonksiyonumuz ise IsItPalindrome. gRPC i&amp;ccedil;in gerekli şemayı bu şekilde tanımlamış olduk.&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;syntax = "proto3";
+
+option csharp_namespace = "SchoolOfRock";
+
+package palindrome;
+
+service PalindromeFinder {
+  rpc IsItPalindrome (PalindromeRequest) returns (PalindromeReply);
+}
+
+message PalindromeRequest {
+  int64 number= 1;
+}
+
+message PalindromeReply {
+  bool isPalindrome= 1;
+}&lt;/pre&gt;
+&lt;p&gt;PalindromeFinderServis sınıfı;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Grpc.Core;
+using Microsoft.Extensions.Logging;
+using SchoolOfRock;
+using System.Threading.Tasks;
+
+namespace Einstein
+{
+    public class PalindromeFinderService
+        : PalindromeFinder.PalindromeFinderBase
+    {
+        private readonly ILogger&amp;lt;PalindromeFinderService&amp;gt; _logger;
+        public PalindromeFinderService(ILogger&amp;lt;PalindromeFinderService&amp;gt; logger)
+        {
+            _logger = logger;
+        }
+
+        public override async Task&amp;lt;PalindromeReply&amp;gt; IsItPalindrome(PalindromeRequest request, ServerCallContext context)
+        {
+            long r, sum = 0, t;
+            var num = request.Number;
+            for (t = num; num != 0; num /= 10)
+            {
+                r = num % 10;
+                sum = sum * 10 + r;
+            }
+            if (t == sum)
+                return new PalindromeReply { IsPalindrome = true };
+            else
+                return new PalindromeReply { IsPalindrome = false };
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Servis tarafını şimdilik bırakalım ve ilk istemci uygulama kodlarını yazarak devam edelim.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet new worker -n Evelyne
+dotnet sln add Evelyne
+# Evelyne'nin gRPC servisini kullanabilmesi i&amp;ccedil;in gerekli Nuget paketleri eklenmelidir.
+cd Evelyne
+dotnet add package Grpc.Net.Client
+dotnet add package Grpc.Net.ClientFactory
+dotnet add package Google.Protobuf
+dotnet add package Grpc.Tools
+# Ayrıca Tye konfigurasyonu i&amp;ccedil;in gerekli extension paketi de y&amp;uuml;klenir
+dotnet add package --prerelease Microsoft.Tye.Extensions.Configuration
+cd ..&lt;/pre&gt;
+&lt;p&gt;Visual Studio 2019 kullanıyorsak Add new gRPC Service Reference&lt;em&gt;(Connected Services kısmından)&lt;/em&gt; ile Einstein'daki proto dosyasının fiziki adresini g&amp;ouml;stererek gerekli proxy tipinin &amp;uuml;retilmesini kolayca sağlayabiliriz. İşte bu noktalarda Visual Studio ile &amp;ccedil;alışmanın avantajları ortaya &amp;ccedil;ıkıyor. Uygulamanın program.cs ve worker.cs i&amp;ccedil;eriklerini de d&amp;uuml;zenlememiz lazım.&lt;/p&gt;
+&lt;p&gt;Program sınıfı;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using SchoolOfRock;
+using System;
+
+namespace Evelyne
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            CreateHostBuilder(args).Build().Run();
+        }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =&amp;gt;
+            Host.CreateDefaultBuilder(args)
+                .ConfigureServices((hostContext, services) =&amp;gt;
+                {
+                    // gRPC istemcisini &amp;ccedil;alışma zamanına ekliyoruz
+                    services.AddGrpcClient&amp;lt;PalindromeFinder.PalindromeFinderClient&amp;gt;(options =&amp;gt;
+                    {
+                        // servis adresini Tye extension fonksiyonu &amp;uuml;st&amp;uuml;nden &amp;ccedil;ekiyoruz
+                        // Eğer debug modda &amp;ccedil;alışıyorsak (tye.yaml olmadan tye run ile mesela) einstein'ın 7001 nolu adresine y&amp;ouml;nlendiriyoruz.
+                        options.Address = hostContext.Configuration.GetServiceUri("einstein") ?? new Uri("https://localhost:7001");
+                    });
+                    services.AddHostedService&amp;lt;Worker&amp;gt;();
+                });
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Program sınıfında gRPC servis adresinin nasıl alındığına dikkat edelim.&lt;/p&gt;
+&lt;p&gt;Worker sınıfı 100 milisaniyede bir Einstein servisine talep g&amp;ouml;nderecek şekilde kodlanmış durumda.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using SchoolOfRock;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Evelyne
+{
+    public class Worker : BackgroundService
+    {
+        private readonly ILogger&amp;lt;Worker&amp;gt; _logger;
+        private readonly PalindromeFinder.PalindromeFinderClient _client;
+
+        // gRPC servisini constructor &amp;uuml;zerinden i&amp;ccedil;eriye enjekte ediyoruz
+        public Worker(ILogger&amp;lt;Worker&amp;gt; logger,PalindromeFinder.PalindromeFinderClient client)
+        {
+            _logger = logger;
+            _client = client;
+        }
+
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            // Servisin ayağa kalkması i&amp;ccedil;in bir s&amp;uuml;re bekletiyoruz. Makine soğuk. 
+            await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
+            _logger.LogInformation("### Servis başlatılıyor ###");
+            long number = 1; // Evelyne, 1den itibaren sayıları hesap etmeye başlayacak
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                try
+                {
+                    var response = await _client.IsItPalindromeAsync(new PalindromeRequest { Number = number });
+                    _logger.LogInformation($"{number}, palindrom bir sayıdır &amp;ouml;nermesinin cevabı = {response.IsPalindrome}\r");
+                }
+                catch (Exception ex)
+                {
+                    // Bir exception oluşması halinde Worker'ın işleyişini durduracağız
+                    if (stoppingToken.IsCancellationRequested) 
+                        return;
+                    
+                    _logger.LogError(-1, ex, "Bir hata oluştu. Worker &amp;ccedil;alışması sonlanıyor.");
+                    await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
+                }
+
+                number++;
+
+                if (stoppingToken.IsCancellationRequested) 
+                    break;
+
+                await Task.Delay(TimeSpan.FromMilliseconds(100), stoppingToken); // İstemci 100 milisaniyede bir ateş edecek :P
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;İlk Worker servise benzer şekilde Bruce ve Madeleine isimli Worker servisleri de ekleyerek devam edebiliriz. Buradaki kodlar benzer olduğu i&amp;ccedil;in eklemedim ancak github &amp;uuml;st&amp;uuml;nden alabilir ya da aşağıdaki notlarda olduğu gibi Palindrome başlangı&amp;ccedil; değerleriyle oynayarak yukarıdaki kodu kullanabilirsiniz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;# Bruce i&amp;ccedil;in tek fark Palindrome sayı taleplerine 1den değil de 10000den başlamasıdır
+dotnet new worker -n Bruce
+dotnet sln add Bruce
+cd Bruce
+dotnet add package Grpc.Net.Client
+dotnet add package Grpc.Net.ClientFactory
+dotnet add package Google.Protobuf
+dotnet add package Grpc.Tools
+dotnet add package --prerelease Microsoft.Tye.Extensions.Configuration
+cd ..
+
+# Madeleine de benzer şekilde eklenir
+dotnet new worker -n Madeleine
+dotnet sln add Madeleine
+cd Madeleine
+dotnet add package Grpc.Net.Client
+dotnet add package Grpc.Net.ClientFactory
+dotnet add package Google.Protobuf
+dotnet add package Grpc.Tools
+dotnet add package --prerelease Microsoft.Tye.Extensions.Configuration
+cd ..&lt;/pre&gt;
+&lt;p&gt;Yukradaki işlemler tamamlandıktan sonra en azından aşağıdaki terminal komutu ile servislerin ayağa kalkıp kalkmadığına bakmakta yarar var. Bu arada uygulamalarımız i&amp;ccedil;in herhangi bir Dockerize işleminin olmadığı dikkatinizden ka&amp;ccedil;mamıştır diye d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum. Nitekim hen&amp;uuml;z Kubernetes hazırlıklarına başlamadık. Bu nedenle tye s&amp;ouml;z konusu uygulamaları localhost:random_port_number formasyonunda birer process olarak ayağa kaldırmıştır.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;tye run&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2021/Nisan/screenshot_2.png" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;&lt;img src="/image.axd?picture=/2021/Nisan/screenshot_1.png" alt="" /&gt;&lt;br /&gt;Redis ve RabbitMQ Desteğinin Eklenmesi&lt;/h2&gt;
+&lt;p&gt;İlk Hello World &amp;ouml;rneğinde Redis desteğini eklemiştik. Aynı adımları burada da uygulayacağız. Ayrıca rabbitmq hizmetini de dahil edeceğiz. &amp;Ouml;zellikle dağıtık mimarinin event-based modelinde uygulamalar arası haberleşmede mesaj bazlı kuyruk sistemleri sıklıkla karşımıza &amp;ccedil;ıkıyor. Kafka ve RabbitMQ sanıyorum ki en &amp;ccedil;ok başvurduklarımız. Dolayısıyla RabbitMQ i&amp;ccedil;in aranan Sidecar container'lardan birisi olduğunu ifade etsek yeridir. Şimdi gelin bu iki akt&amp;ouml;r&amp;uuml; sisteme dahil ederek Kubernetes hazırlıklarına ge&amp;ccedil;elim.&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;# İşe tye.yaml dosyasının oluşturulmasıyla başlıyoruz.
+tye init
+
+# tye.yaml dosyasına redis i&amp;ccedil;in gerekli ekleri yaptıktan sonra
+# einstein (gRPC API servisimiz) cache desteği i&amp;ccedil;in gerekli nuget paketlerini&amp;nbsp;ekleyip devam ediyoruz
+cd einstein
+dotnet add package Microsoft.Extensions.Configuration
+dotnet add package Microsoft.Extensions.Caching.StackExchangeRedis
+#Sonrasında rabbitmq paketini ekliyoruz.
+dotnet add package RabbitMQ.Client
+cd ..&lt;/pre&gt;
+&lt;p&gt;Palindrome sayılar bulduk&amp;ccedil;a bunları RabbitMQ'ya mesaj olarak yollayacak bir d&amp;uuml;zenek ekleyeceğimizi de s&amp;ouml;ylemiştik. RabbitMQ'da, Redis gibi &amp;ccedil;alışma zamanında ayakta olması beklenen bir servis. Bu nedenle tye.yaml dosyasında RabbitMQ i&amp;ccedil;in gerekli eklemeler aşağıdaki gibi yapılmalı.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;name: schoolofmath
+registry: localhost:5000 # container registry adresi
+services:
+- name: einstein
+  tags:
+    - backend
+  project: Einstein/Einstein.csproj
+  replicas: 1
+  env: #rabbitmq i&amp;ccedil;in kullanıcı adı, şifre ve varsayılan kuyruk adı bildirimi
+  - RABBIT_USER=guest
+  - RABBIT_PSWD=guest
+  - RABBIT_QUEUE=palindromes
+- name: evelyne
+  tags:
+    - client
+  project: Evelyne/Evelyne.csproj
+- name: bruce
+  tags:
+    - client
+  project: Bruce/Bruce.csproj
+- name: madeleine
+  tags:
+    - client
+  project: Madeleine/Madeleine.csproj
+- name: robert
+  tags:
+    - middleware
+  project: Robert/Robert.csproj
+- name: redis
+  tags:
+    - backend
+  image: redis
+  bindings:
+  - port: 6379
+    connectionString: "${host}:${port}"
+- name: redis-cli #redis cache tarafında ne olduğunu izlemek i&amp;ccedil;in ekledik. Ancak mecburi değil. Opsiyonel.
+  tags:
+    - backend
+  image: redis
+  args: "redis-cli -h redis MONITOR"
+- name: rabbitmq # RabbitMQ servisini MUI arabirimi ile birlikte ekliyoruz.
+# Mui arabirimine aşağıdaki kriterlere g&amp;ouml;re localhost:15672'den quest/quest log in bilgisi ile erişebiliriz
+  tags:
+    - middleware
+  image: rabbitmq:3-management
+  bindings:
+  - name: mq-binding # mq_binding veya mui_binding şeklinde kullanınca K8s deploy işleminde kullanılan secret değerlerinde hata alındı. - veya . olarak yazılmalı.
+    port: 5672
+    protocol: rabbitmq
+  - name: mui-binding
+    port: 15672&lt;/pre&gt;
+&lt;p&gt;Elbette PalindromeFinderService sınıfı ve Startup.cs'in de Redis ve RabbitMQ i&amp;ccedil;in yeniden revize edilmeleri gerekiyor.&lt;/p&gt;
+&lt;p&gt;PalindromeFinderService sınıfı&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Einstein.Rabbit;
+using Grpc.Core;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
+using SchoolOfRock;
+using System;
+using System.Threading.Tasks;
+
+namespace Einstein
+{
+    public class PalindromeFinderService
+        : PalindromeFinder.PalindromeFinderBase
+    {
+        private readonly ILogger&amp;lt;PalindromeFinderService&amp;gt; _logger;
+        private readonly IDistributedCache _cache;
+        private readonly PalindromeReply True = new() { IsPalindrome = true };
+        private readonly PalindromeReply False = new() { IsPalindrome = false };
+        private readonly IMessageQueueSender _mqSender;
+        private readonly string _queueName;
+        public PalindromeFinderService(ILogger&amp;lt;PalindromeFinderService&amp;gt; logger, IDistributedCache cache, IMessageQueueSender mqSender)
+        {
+            _logger = logger;
+            _cache = cache; //Dağıtık cache servisi olarak Redis konumlanacak. Startup'ta onu ekledik &amp;ccedil;&amp;uuml;nk&amp;uuml;.
+            _mqSender = mqSender; // MQ nesnesini alıyoruz
+            _queueName = Constants.GetRabbitMQQueueName(); //MQ adını alıyoruz.
+        }
+
+        public override async Task&amp;lt;PalindromeReply&amp;gt; IsItPalindrome(PalindromeRequest request, ServerCallContext context)
+        {
+            long r, sum = 0, t;
+            var number = request.Number;
+
+            var inCache = await _cache.GetStringAsync(request.Number.ToString()); // bu sayı Redis Cache'te var mı?
+            if (inCache == "YES")
+            {
+                _logger.LogInformation($"{request.Number} palindrom bir sayıdır ve şu an Redis'ten getiriyorum. Hesap etmeye gerek yok");
+                return True;
+            }
+
+            for (t = number; number != 0; number /= 10)
+            {
+                r = number % 10;
+                sum = sum * 10 + r;
+            }
+            if (t == sum)
+            {
+                _logger.LogInformation($"{request.Number} palindrom bir sayı ama Redis cache'e atılmamış. Şimdi ekleyeceğim.");
+                // Sayı adını Key olarak kullanıp Cache'e atıyoruz ve ona value olarak YES değerini atıyoruz.
+                await _cache.SetStringAsync(request.Number.ToString(), "YES", new DistributedCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(60)
+                });
+                // Palindrome sayı ise onu Redis Cache'e atıyoruz.
+
+                // Ayrıca RabbitMQ kuyruğuna da sayıyı atıyoruz.
+                _mqSender.Send(_queueName, request.Number.ToString());
+                return True;
+            }
+            else
+                return False;
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Einstein, Startup.cs'in son hali;&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;using Einstein.Rabbit;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
+namespace Einstein
+{
+    public class Startup
+    {
+        public IConfiguration Configuration { get; }
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddGrpc();
+            // RabbitMQ Desteği eklendi
+            services.AddRabbitMQ();
+
+            // Redis bildirimini yaptık. PalindromeFinderService, consturctor'dan alacak.
+            services.AddStackExchangeRedisCache(o =&amp;gt;
+            {
+                o.Configuration = Configuration.GetConnectionString("redis") ?? "localhost:6379";
+            });
+        }
+
+       // Diğer kısımlar&lt;/pre&gt;
+&lt;p&gt;Kod tarafında RabbitMQ kullanımı i&amp;ccedil;in gerekli tipler, GoldenHammer isimli sınıfta yer alıyor. Bunu baştan yazmak biraz zahmetli ama yine de &amp;uuml;şenmeyin yazın derim. Yazarken d&amp;uuml;ş&amp;uuml;necek ve neden b&amp;ouml;yle kullanılmış ki diyeceksiniz. Kitabın y&amp;ouml;nlendirmesi ile&amp;nbsp;ben bu&amp;nbsp;&lt;a href="https://github.com/PacktPublishing/Adopting-.NET-5--Architecture-Migration-Best-Practices-and-New-Features/tree/master/Chapter04/microservicesapp" target="_blank"&gt;adrese&lt;/a&gt;&amp;nbsp;gittim ama kendimde teknik bor&amp;ccedil; riskini g&amp;ouml;ze alarak bir &lt;a href="https://github.com/buraksenyurt/tye_sample_v2/tree/main/SchoolOfMath" target="_blank"&gt;GodObject oluşturdum.&lt;/a&gt;&amp;nbsp;Eğer sayfadan ayrılmadan kodu kullanmak isterseniz notların sonundaki&amp;nbsp;&lt;em&gt;Yardımcı Kodlar&lt;/em&gt; kısmından yararlanabilirsiniz. Bu noktada yine tye run ile ilerlemek &amp;ouml;nemli. Redis'in &amp;ccedil;alıştığından ve http://localhost:15672 adresine&amp;nbsp;gittiğimizde RabbitMQ tarafının işler olduğundan emin olmakta fayda var.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2021/Nisan/screenshot_4.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2021/Nisan/screenshot_5.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2021/Nisan/screenshot_6.png" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;Robert: AMQP İstemcisinin Eklenmesi&lt;/h2&gt;
+&lt;p&gt;Robert isimli Worker tipinden olan son istemci uygulama, RabbitMQ'ya atılan palindrome sayıları i&amp;ccedil;eren mesajları okumakla g&amp;ouml;revli. Basit bir RabbitMQ Consumer olduğunu s&amp;ouml;yleyebiliriz. Einstein isimli servis Palindrome sayı bulduk&amp;ccedil;a&amp;nbsp;RabbitMQ'ya bunu mesaj olarak yollayacak şekilde ayarlanmıştı. Consumer &amp;uuml;st&amp;uuml;nden bunları yakalamayı bekliyoruz. Aşağıdaki terminal komutları ile Worker servisini oluşturalım.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet new worker -n Robert
+dotnet sln add Robert
+cd Robert
+# RabbitMQ istemcisi olacağı i&amp;ccedil;in eklenecek paket
+dotnet add package RabbitMQ.Client
+# ve pek tabii Tye &amp;ouml;zelliklerini kullanabilmesi i&amp;ccedil;in de gerekli konfigurasyon paketi
+dotnet add package --prerelease Microsoft.Tye.Extensions.Configuration&lt;/pre&gt;
+&lt;p&gt;Bu Worker'ın kodlarını da aşağıdaki gibi geliştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
+using System;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Robert
+{
+    public class Worker : BackgroundService
+    {
+        private readonly ILogger&amp;lt;Worker&amp;gt; _logger;
+
+        public Worker(ILogger&amp;lt;Worker&amp;gt; logger)
+        {
+            _logger = logger;
+        }
+
+        // Servis &amp;ccedil;alışmaya başladığı zaman devreye giren metodu ezip kendi istediklerimizi yaptırıyoruz.
+        public override async Task StartAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                // RabbitMQ tarafı hen&amp;uuml;z ayağa kalkmamış olabilir diye burayı 1 dakika kadar duraksatalım
+                await Task.Delay(TimeSpan.FromSeconds(60), cancellationToken);
+
+                // Rabbit ile konuşmak i&amp;ccedil;in kullanılacak kanal nesnesi alınıyor
+                var queue = CreateRabbitModel(cancellationToken);
+
+                // queue tanımlanır
+                queue.QueueDeclare(
+                    queue: "palindromes",
+                    durable: false,
+                    exclusive: false,
+                    autoDelete: false,
+                    arguments: null
+                    );
+
+                // Tanımlanan kuyruğu dinleyecek nesne &amp;ouml;rneklenir
+                var consumer = new EventingBasicConsumer(queue);
+
+                // dinlenen kuyruğa mesaj geldik&amp;ccedil;e tetiklenen olay metodu
+                consumer.Received += (model, arg) =&amp;gt;
+                {
+                    var number = Encoding.UTF8.GetString(arg.Body.Span); // mesaj yakalanır
+                    _logger.LogInformation($"Yeni bir palindrom sayısı bulunmuş: {number}");
+                };
+
+                queue.BasicConsume(
+                    queue: "palindromes",
+                    autoAck: true,
+                    consumer: consumer);
+            }
+            catch (Exception exc)
+            {
+                _logger.LogError($"Bir hata oluştu {exc.Message}");
+                throw;
+            }
+        }
+
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+                await Task.Delay(10000, stoppingToken);
+            }
+        }
+
+        private IModel CreateRabbitModel(CancellationToken cancellationToken)
+        {
+            try
+            {
+                // &amp;Ouml;nce bağlantı oluşturmak i&amp;ccedil;in factory nesnesi &amp;ouml;rneklenir
+                var factory = new ConnectionFactory()
+                {
+                    HostName = Rabbit.Constants.GetRabbitMQHostName(), // Rabbit Host adresi alınır (Environment'ten gelir)
+                    Port = Convert.ToInt32(Rabbit.Constants.GetRabbitMQPort()), // Port bilgisi
+                    UserName=Rabbit.Constants.GetRabbitMQUser(), // Kullanıcı adı
+                    Password=Rabbit.Constants.GetRabbitMQPassword() // ve Şifre
+                };
+
+                var connection = factory.CreateConnection(); // Bağlantı nesnesi oluşturulur. Exception yoksa bağlanmış demektir.
+                _logger.LogInformation("RabbitMQ ile bağlantı sağlandı");
+                return connection.CreateModel(); //Queue işlemleri i&amp;ccedil;in kullanılacak model nesnesi d&amp;ouml;nd&amp;uuml;r&amp;uuml;l&amp;uuml;r
+            }
+            catch (Exception exc) 
+            {
+                _logger.LogError($"Rabbit tarafına bağlanmaya &amp;ccedil;alışırken bir hata oluştu. {exc.Message}");
+                throw;
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Robert'ın kodları tamamlandıktan sonra &lt;em&gt;tye run&lt;/em&gt; ile sistemi &amp;ccedil;alıştırıp dashboard &amp;uuml;zerinden ulaşabileceğimiz logları kontrol etmekte yarar var. Bakalım Robert'ın loglarında RabbitMQ daki &lt;em&gt;palindromes&lt;/em&gt; isimli kuyruğa d&amp;uuml;şen mesajlar var mı?&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2021/Nisan/screenshot_7.png" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;Sadece Belli Uygulamaları &amp;Ccedil;alıştırmak&lt;/h2&gt;
+&lt;p&gt;İlerlemeden &amp;ouml;nce tye ile sadece belli uygulamaları nasıl &amp;ccedil;alıştıracağımıza da bir bakalım isterim. tye.yaml dosyasında tag bildirimlerini kullanarak &lt;em&gt;tye run&lt;/em&gt; sonrası sadece belli servislerin ayağa kaldırılması sağlanabilir. Bu yaklaşım, Debug işlemleri i&amp;ccedil;in idealdir. N tane servisin olduğu bir senaryoda her şeyi ayağa kaldırmak yerine sadece istenenleri kurcalama noktasında &amp;ccedil;ok faydalıdır. S&amp;ouml;z gelimi yaml dosyamızda sadece middleware tag'ine sahip servisleri &amp;ccedil;alıştırmak istediğimizi d&amp;uuml;ş&amp;uuml;nelim. run komutunu aşağıdaki gibi kullanabiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;tye run --tags middleware #sadece middleware tag'ine sahip servisleri &amp;ccedil;alıştırır.&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2021/Nisan/screenshot_8.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Birden fazla namespace'te bir arada ayağa kaldırılabilir.&amp;nbsp;Mesela aşağıdaki kullanım ile backend ve middleware tag'ine sahip servisler ayağa kaldırılacaktır. Şimdi yaml i&amp;ccedil;erisindeki tag elementlerinin ne işe yaradığınız daha iyi anlamış olmalısınız.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;tye run --tags backend middleware&lt;/pre&gt;
+&lt;h3&gt;Debug Etmek ve Breakpoint Noktalarına Ge&amp;ccedil;mek&lt;/h3&gt;
+&lt;p&gt;Kod debug etmek adettendir :D Lakin tye ile &amp;ccedil;alışırken ayağa kaldırılan akt&amp;ouml;rleri debug etmek i&amp;ccedil;in biraz meşakkatli bir yol izlemek gerekiyor. İlk olarak gerekli yerlere breakpoint konulur. &amp;Ouml;rneğin;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2021/Nisan/screenshot_9.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Sonrasında aşağıdaki komut ile &amp;ccedil;&amp;ouml;z&amp;uuml;m &amp;ccedil;alıştırlır.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;tye run --debug&lt;/pre&gt;
+&lt;p&gt;Debug edilmek istenen uygulamanının terminal loglarına d&amp;uuml;şen process id değeri bulunur.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2021/Nisan/screenshot_10.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Visual Studio -&amp;gt; Debug -&amp;gt; Attach to Process adımları kullanılarak ilgili process &amp;ccedil;alışma zamanına alınır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2021/Nisan/screenshot_11.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;ayımızdan/kahvemizden bir yudum alınır ve Breakpoint noktasına gelinmesi beklenir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2021/Nisan/screenshot_12.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Hepsi bu kadar ;) Ya da doğru d&amp;uuml;zg&amp;uuml;n tasarladığımız hata y&amp;ouml;netim mekanizmasının &amp;uuml;rettiği sistem loglarına gidilir ve sorunun ne olduğu anlaşılmaya &amp;ccedil;alışılır.&lt;/p&gt;
+&lt;h2&gt;Kubernetes Deploy İşlemleri&lt;/h2&gt;
+&lt;p&gt;Artık notlarımızın sonuna doğru geliyoruz. Bal yapmayan arı olmamak i&amp;ccedil;in bu &amp;ouml;rneği de Kubernetes tarafına almamız lazım. Windows 10 &amp;uuml;st&amp;uuml;ndeki Docker Desktop'ın K8s Enabled &amp;ouml;zelliğinin a&amp;ccedil;ık olduğundan emin olalım. Buna g&amp;ouml;re sistemde tye.yaml tarafındaki servislerin alınabileceği bir&amp;nbsp;Kubernetes Cluster mevcut kabul edilir. İkinci olarak bir container registry'ye ihtiya&amp;ccedil; vardır ki ilk Hello World &amp;ouml;rneğimizde bunu localhost:5000 adresinde konuşlandırmıştık. G&amp;uuml;ncel &amp;ouml;rnek iki harici servis kullanmakta; Redis ve RabbitMQ. Bunları şu an i&amp;ccedil;in Kubernetes ortamına el yordamıyla kendi manifesto dosyaları &amp;uuml;zerinden deploy etmemiz gerekiyor ama bu durum tye'ın ilerleyen s&amp;uuml;r&amp;uuml;mlerinde daha da kolaylaşabilir. Hello World &amp;ouml;rneğinde kullandığımız redis.yaml'ı burada da kullanabiliriz. RabbitMQ tarafı i&amp;ccedil;inse aşağıdaki manifesto i&amp;ccedil;eriği işimizi g&amp;ouml;recektir.&lt;/p&gt;
+&lt;p&gt;RabbitMQ.yaml&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq
+  labels:
+    app.kubernetes.io/name: rabbitmq
+    app.kubernetes.io/part-of: schoolofmath
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: rabbitmq
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: rabbitmq
+        app.kubernetes.io/part-of: schoolofmath
+    spec:
+      containers:
+        - name: rabbitmq
+          image: rabbitmq:3-management
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          ports:
+            - containerPort: 5672
+            - containerPort: 15672
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq
+  labels:
+    app.kubernetes.io/name: rabbitmq
+    app.kubernetes.io/part-of: schoolofmath
+spec:
+  ports:
+    - port: 5672
+      protocol: TCP
+      targetPort: 5672
+  selector:
+    app.kubernetes.io/name: rabbitmq
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-mui
+  labels:
+    app.kubernetes.io/name: rabbitmq
+    app.kubernetes.io/part-of: schoolofmath
+spec:
+  type: NodePort
+  ports:
+    - port: 15672
+      protocol: TCP
+      targetPort: 15672
+      nodePort: 30072
+  selector:
+    app.kubernetes.io/name: rabbitmq&lt;/pre&gt;
+&lt;p&gt;Hem RabbitMQ hem de onu daha kolay okumamızı sağlayacak g&amp;ouml;rsel MUI arabirimi i&amp;ccedil;in iki ayrı deployment tanımı s&amp;ouml;z konusudur. Bu dosyalardan yararlanarak ilgili servisleri Kubernetes ortamına aşağıdaki terminal komutları ile alabiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;kubectl apply -f .\rabbitmq.yaml
+kubectl apply -f .\redis.yaml&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2021/Nisan/screenshot_13.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Kubernetes deployment adımını da aşağıdaki komutla başlatabiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;tye deploy --interactive&lt;/pre&gt;
+&lt;p&gt;B&amp;uuml;y&amp;uuml;k ihtimalle redis ve rabbitmq i&amp;ccedil;in adres sorulacaktır. Redis i&amp;ccedil;in redis:6379, rabbitmq i&amp;ccedil;inse rabbitmq:5672&lt;em&gt;(Mui sebebiyle iki kez sorulabilir ki bana &amp;ouml;yle oldu)&lt;/em&gt; adresleri kullanılabilir. Sonu&amp;ccedil; olarak Docker Desktop'a baktığımızda dağıtımların yapıldığını g&amp;ouml;rmeliyiz.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2021/Nisan/screenshot_14.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Yukarıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde dikkat edileceği &amp;uuml;zere servislerimiz localhost:5000 &amp;ouml;n adresi &amp;uuml;zerine konumlanmış duruyorlar. Bunun sebebi container registry olarak bu adresi bildirmiş olmamız&lt;em&gt;(yaml dosyasındaki ilgili kısmı hatırlayın)&amp;nbsp;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Tekrar belirtmekte fayda var ki kendi&amp;nbsp;uygulamalarımız dağıtım işlemi sırasında yine otomatik olarak dockerize edilmişlerdir. Robert isimli Worker servise ait tye &amp;ccedil;alışma zamanının yaptıklarını aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde g&amp;ouml;rebilirsiniz&lt;em&gt;(Normalde bunlar i&amp;ccedil;in bir Dockerfile hazırlamamız gerekirdi diye d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2021/Nisan/screenshot_16.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Oluşan diğer imajları Docker Desktop &amp;uuml;zerinde g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2021/Nisan/screenshot_17.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şu anda RabbitMQ tarafı da aktif haldedir ve eğer localhost:30072 adresine gidersek o ana kadar ki mesaj trafiğini izleyebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2021/Nisan/screenshot_15.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Yapılan Deployment işlemini geri almak ve Kubernetes dağıtımlarını kaldırmak i&amp;ccedil;inse tye undeploy terminal komutu kullanılır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2021/Nisan/screenshot_18.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu &amp;ccedil;alışma deneysel bir projeyi hem basılı hem de &amp;ccedil;evrimi&amp;ccedil;i bir kaynaktan yazarak anlamam noktasında bana &amp;ouml;nemli değerler katmış durumda. Ancak işi burada bırakmamak lazım. Tye projesinin bir geleceği olacaksa diğer &amp;ouml;rnek kullanımları incelemekte de yarar var. S&amp;ouml;z gelimi bir loglama senaryosunu işin i&amp;ccedil;erisine katmak, performans izleme akt&amp;ouml;r&amp;uuml;n&amp;uuml; dahil etmek gibi konular &amp;uuml;st&amp;uuml;nde de denemeler yapmak yararlı olabilir. Dahası a&amp;ccedil;ık kaynak kod reposuna gidip tye run dediğimizde arka planda neler nasıl &amp;ccedil;alışıyoru anlamaya &amp;ccedil;alışmak &amp;ccedil;ok daha yararlı olabilir. Bir teknoloji t&amp;uuml;keticisi olarak en azından nasıl kullanılır ve ne işe yararı bir nebze olsun anladığımı ve siz değerli okurlarıma aktarabildiğimi d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;h1&gt;Kaynaklar&lt;/h1&gt;
+&lt;p&gt;&lt;a href="https://www.packtpub.com/product/adopting-net-5/9781800560567" target="_blank"&gt;Adopting .NET 5.&lt;/a&gt; By Hammad Arif , Habib Qureshi&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://devblogs.microsoft.com/aspnet/introducing-project-tye/" target="_blank"&gt;Introducing Project Tye&lt;/a&gt;&amp;nbsp;Amiee Lo, Program Manager, Microsoft ASP.NET&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/dotnet/tye" target="_blank"&gt;Project Tye Github&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://www.codemag.com/Article/2010052/Project-Tye-Creating-Microservices-in-a-.NET-Way" target="_blank"&gt;Project Tye: Creating Microservices in a .NET Way&lt;/a&gt;&amp;nbsp;Shayne Boyer, CODE Focus Magazine: 2020 - Vol. 17 - Issue 1 - .Net 5.0&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://youtu.be/prbYvVVAcRs" target="_blank"&gt;Project Tye: Building Developer Focused Tooling for Kubernetes and .NET&lt;/a&gt; - David Fowler&lt;/p&gt;
+&lt;h1&gt;Yardımcı Kodlar&lt;/h1&gt;
+&lt;p&gt;Notların dışına &amp;ccedil;ıkmadan GoldenHammer ve Constant sınıflarını almak isterseniz aşağıdaki kod par&amp;ccedil;alarından yararlanabilirsiniz.&lt;/p&gt;
+&lt;p&gt;Robert projesindeki Constants.cs sınıfı&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace Robert.Rabbit
+{
+    /// Kaynak: https://github.com/PacktPublishing/Adopting-.NET-5--Architecture-Migration-Best-Practices-and-New-Features/tree/master/Chapter04/microservicesapp
+    public static class Constants
+    {
+        public const string RABBIT_HOST = "SERVICE__RABBITMQ__MQ_BINDING__HOST";
+        public const string RABBIT_PORT = "SERVICE__RABBITMQ__MQ_BINDING__PORT";
+        public const string RABBIT_ALT_HOST = "SERVICE__RABBITMQ__HOST";
+        public const string RABBIT_ALT_PORT = "SERVICE__RABBITMQ__PORT";
+        public const string RABBIT_ALT2_PORT = "RABBITMQ_SERVICE_PORT";
+        public const string RABBIT_USER = "RABBIT_USER";
+        public const string RABBIT_PSWD = "RABBIT_PSWD";
+        public const string RABBIT_QUEUE = "RABBIT_QUEUE";
+
+        public static string GetRabbitMQHostName()
+        {
+            var v = Environment.GetEnvironmentVariable(RABBIT_HOST);
+            if (string.IsNullOrWhiteSpace(v))
+            {
+                v = Environment.GetEnvironmentVariable(RABBIT_ALT_HOST);
+                if (string.IsNullOrWhiteSpace(v))
+                    return "rabbitmq";
+                else return v;
+            }
+            else return v;
+        }
+
+        public static string GetRabbitMQPort()
+        {
+            var v = Environment.GetEnvironmentVariable(RABBIT_PORT);
+            if (string.IsNullOrWhiteSpace(v))
+            {
+                v = Environment.GetEnvironmentVariable(RABBIT_ALT_PORT);
+                if (string.IsNullOrWhiteSpace(v) || v == "-1")
+                    return Environment.GetEnvironmentVariable(RABBIT_ALT2_PORT);
+                else return v;
+            }
+            else return v;
+        }
+
+        public static string GetRabbitMQUser()
+        {
+            var v = Environment.GetEnvironmentVariable(RABBIT_USER);
+            if (string.IsNullOrWhiteSpace(v))
+                return "guest";
+            else return v;
+        }
+
+        public static string GetRabbitMQPassword()
+        {
+            var v = Environment.GetEnvironmentVariable(RABBIT_PSWD);
+            if (string.IsNullOrWhiteSpace(v))
+                return "guest";
+            else return v;
+        }
+
+        public static string GetRabbitMQQueueName()
+        {
+            var v = Environment.GetEnvironmentVariable(RABBIT_QUEUE);
+            if (string.IsNullOrWhiteSpace(v))
+                return "primes";
+            else return v;
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Einstein tarafındaki GoldenHammer sınıfı&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using RabbitMQ.Client;
+using System;
+using System.Text;
+
+namespace Einstein.Rabbit
+{
+    // Kaynak: https://github.com/PacktPublishing/Adopting-.NET-5--Architecture-Migration-Best-Practices-and-New-Features/tree/master/Chapter04/microservicesapp
+    public interface IMQClient
+    {
+        IModel CreateChannel();
+    }
+
+    public interface IMessageQueueSender
+    {
+        public void Send(string queueName, string message);
+    }
+
+    public static class Constants
+    {
+        public const string RABBIT_HOST = "SERVICE__RABBITMQ__MQ_BINDING__HOST";
+        public const string RABBIT_PORT = "SERVICE__RABBITMQ__MQ_BINDING__PORT";
+        public const string RABBIT_ALT_HOST = "SERVICE__RABBITMQ__HOST";
+        public const string RABBIT_ALT_PORT = "SERVICE__RABBITMQ__PORT";
+        public const string RABBIT_ALT2_PORT = "RABBITMQ_SERVICE_PORT";
+        public const string RABBIT_USER = "RABBIT_USER";
+        public const string RABBIT_PSWD = "RABBIT_PSWD";
+        public const string RABBIT_QUEUE = "RABBIT_QUEUE";
+
+        public static string GetRabbitMQHostName()
+        {
+            var v = Environment.GetEnvironmentVariable(RABBIT_HOST);
+            if (string.IsNullOrWhiteSpace(v))
+            {
+                v = Environment.GetEnvironmentVariable(RABBIT_ALT_HOST);
+                if (string.IsNullOrWhiteSpace(v))
+                    return "rabbitmq";
+                else return v;
+            }
+            else return v;
+        }
+
+        public static string GetRabbitMQPort()
+        {
+            var v = Environment.GetEnvironmentVariable(RABBIT_PORT);
+            if (string.IsNullOrWhiteSpace(v))
+            {
+                v = Environment.GetEnvironmentVariable(RABBIT_ALT_PORT);
+                if (string.IsNullOrWhiteSpace(v) || v == "-1")
+                    return Environment.GetEnvironmentVariable(RABBIT_ALT2_PORT);
+                else return v;
+            }
+            else return v;
+        }
+
+        public static string GetRabbitMQUser()
+        {
+            var v = Environment.GetEnvironmentVariable(RABBIT_USER);
+            if (string.IsNullOrWhiteSpace(v))
+                return "guest"; 
+            else return v;
+        }
+
+        public static string GetRabbitMQPassword()
+        {
+            var v = Environment.GetEnvironmentVariable(RABBIT_PSWD);
+            if (string.IsNullOrWhiteSpace(v))
+                return "guest";
+            else return v;
+        }
+
+        public static string GetRabbitMQQueueName()
+        {
+            var v = Environment.GetEnvironmentVariable(RABBIT_QUEUE);
+            if (string.IsNullOrWhiteSpace(v))
+                return "palindromes"; // Consumer'ın dinyeceği varsayılan kuyruk adı. Normalde RABBIT_QUEUE ile &amp;ccedil;evre değişken &amp;uuml;zerinden gelmezse bu kullanılır.
+            else return v;
+        }
+    }
+
+    public class RabbitMQClient : IMQClient
+    {
+        public string hostname { get; }
+        public string port { get; }
+        public string userid { get; }
+        public string password { get; }
+
+        private readonly ILogger _logger;
+        private readonly IConnection _connection;
+        private IModel _channel;
+
+        public RabbitMQClient(ILogger&amp;lt;RabbitMQClient&amp;gt; logger, IConfiguration configuration)
+        {
+            _logger = logger;
+
+            hostname = Constants.GetRabbitMQHostName();
+            port = Constants.GetRabbitMQPort();
+            userid = Constants.GetRabbitMQUser();
+            password = Constants.GetRabbitMQPassword();
+
+            try
+            {
+                logger.LogInformation($"RabbitMQ Bağlantısı oluşturuluyor. @ {hostname}:{port}:{userid}:{password}");
+                var factory = new ConnectionFactory()
+                {
+                    HostName = hostname,
+                    Port = int.Parse(port),
+                    UserName = userid,
+                    Password = password,
+                };
+
+                _connection = factory.CreateConnection();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(-1, ex, "RabbitMQ Bağlantısı oluşturulması sırasında hata oluştu.");
+                throw;
+            }
+        }
+
+        public IModel CreateChannel()
+        {
+            if (_connection == null)
+            {
+                _logger.LogError("RabbiMQ Kanal bağlantısı oluşturulması sırasında hata oluştu.");
+                throw new Exception("RabbitMQClient bağlantı hatası.");
+            }
+            _channel = _connection.CreateModel();
+            return _channel;
+        }
+    }
+
+    public class RabbitMQueueSender : IMessageQueueSender
+    {
+        private readonly ILogger&amp;lt;RabbitMQueueSender&amp;gt; _logger;
+        private readonly IMQClient _mqClient;
+
+        private IModel _mqChannel;
+        private string _queueName;
+
+        private IModel MQChannel
+        {
+            get
+            {
+                if (_mqChannel == null || _mqChannel.IsClosed)
+                    _mqChannel = _mqClient.CreateChannel();
+                return _mqChannel;
+            }
+        }
+
+        public RabbitMQueueSender(ILogger&amp;lt;RabbitMQueueSender&amp;gt; logger, IMQClient mqClient)
+        {
+            _logger = logger;
+            _mqClient = mqClient;
+        }
+
+        public void Send(string queueName, string message)
+        {
+            if (string.IsNullOrWhiteSpace(queueName)) return; 
+
+            if (string.IsNullOrWhiteSpace(_queueName)) 
+            {
+                _logger.LogInformation($"{queueName} isimli kuyruk ilk kez oluşturuluyor.");
+                MQChannel.QueueDeclare(queue: queueName,
+                                            durable: false,
+                                            exclusive: false,
+                                            autoDelete: false,
+                                            arguments: null);
+                _queueName = queueName;
+            }
+
+            _logger.LogInformation($"Mesaj kuyruğunu g&amp;ouml;nderiliyor. Queue Name:{queueName}");
+
+            var body = Encoding.UTF8.GetBytes(message);
+
+            try
+            {
+                MQChannel.BasicPublish(exchange: "",
+                                            routingKey: queueName,
+                                            basicProperties: null,
+                                            body: body);
+            }
+            catch (System.Exception ex)
+            {
+                ex.ToString();
+            }
+            _logger.LogInformation("Mesaj başarılı bir şekilde kuyruğa aktarıldı.");
+        }
+    }
+
+    public static class RabbitMQServiceCollectionExtensions
+    {
+        // Startup.cs'de RabbitMQ'yu servis listesine eklememizi sağlayan genişletme fonksiyonu
+        public static IServiceCollection AddRabbitMQ(this IServiceCollection services)
+        {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
+            services.Add(ServiceDescriptor.Singleton&amp;lt;IMQClient, RabbitMQClient&amp;gt;());
+            services.Add(ServiceDescriptor.Singleton&amp;lt;IMessageQueueSender, RabbitMQueueSender&amp;gt;());
+
+            return services;
+        }
+    }
+}&lt;/pre&gt;</content>
+  <pubDate>2021-03-30 15:00:00</pubDate>
+  <slug>tie-fighter-degil-project-tye</slug>
+  <tags>
+    <tag>net-core</tag>
+    <tag>net-5</tag>
+    <tag>kubernetes</tag>
+    <tag>docker</tag>
+    <tag>redis</tag>
+    <tag>rabbitmq</tag>
+    <tag>c#</tag>
+    <tag>pods</tag>
+    <tag>container</tag>
+    <tag>yaml</tag>
+    <tag>sidecar-pattern</tag>
+    <tag>dağıtık-mimari</tag>
+    <tag>tye</tag>
+    <tag>kubectl</tag>
+    <tag>wsl</tag>
+    <tag>redis-cli</tag>
+    <tag>worker-service</tag>
+    <tag>service-discovery</tag>
+    <tag>docker-hub</tag>
+  </tags>
+  <categories>
+    <category>.Net Core</category>
+  </categories>
+</post>

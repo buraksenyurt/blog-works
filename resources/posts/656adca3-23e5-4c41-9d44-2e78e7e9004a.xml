@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Apollo Server ile Bir GraphQL Sunucusu Yazmak</title>
+  <description>Apollo Server, web, mobile gibi istemciler için GraphQL servisi sunan bir ürün olarak düşünülebilir. Otomatik API doküman desteği sunar ve herhangibir veri kaynağını kullanabilir. Yani bir veri tabanını veya bir mikroservisi ya da bir REST APIyi, GraphQL hizmeti verebilecek şekilde istemcilere açabilir. Tek başına sunucu gibi çalıştırılabileceğinden de ilgimi çekti aslında. Pek tabii Heroku gibi ortamlarca Serverless modda da kullanılabiliyor.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2019/04/38/apollo13.jpg" alt="" /&gt;James A. Lovell, John L. Swigert, ve Fred W. Haise. Bu isimleri d&amp;uuml;ş&amp;uuml;n&amp;uuml;nce belki de &amp;ccedil;oğumuzun aklına bir şey gelmiyordur. Peki ya, Amerikalı veya İngiliz oldukları d&amp;uuml;ş&amp;uuml;n&amp;uuml;len bu şahısların yerine şu isimleri s&amp;ouml;ylersek. Tom Hanks, Bill Paxton ve Kevin Bacon. Hımm...Sanırım birilerinin zihninde bir şeyler canlandı. Evet, evet...Bunlar film yıldızları değil mi? &amp;Uuml;&amp;ccedil;&amp;uuml; bir arada hangi filmde oynamışlardı acaba? Hala anımsayamadıysanız işte bir ipucu daha. "Houston we've got a problem." Şimdi anımsadınız mı?&lt;/p&gt;
+&lt;p&gt;Başta s&amp;ouml;ylediğimiz isimler, 11 Nisan 1970 tarihinde uzaya fırlatılan Apollo 13 m&amp;uuml;rettebatına ait. Apollo programınındaki bu u&amp;ccedil;uşun amacı aya insan g&amp;ouml;t&amp;uuml;rmekti. Ne yazık ki mekik, u&amp;ccedil;uşunun ikinci g&amp;uuml;n&amp;uuml;nde meydana gelen bir kaza sonrası acil olarak d&amp;uuml;nyaya d&amp;ouml;n&amp;uuml;ş yapmak zorunda kalmıştı. Yazılanlardan okuduğumuz ve filmden g&amp;ouml;rd&amp;uuml;ğ&amp;uuml;m&amp;uuml;z kadarıyla astronotlar &amp;ccedil;ok zor koşullara g&amp;ouml;ğ&amp;uuml;s gererek mucizevi bir d&amp;ouml;n&amp;uuml;ş hikayesinin altına imza atmışlardı. Tesad&amp;uuml;f bu ya, ge&amp;ccedil;enlerde filmini tekrardan izlediğim g&amp;uuml;n Apollo isimli Framework GraphQL aray&amp;uuml;z&amp;uuml; ile cumartesi gecesi &amp;ccedil;alışmalarımı y&amp;uuml;r&amp;uuml;t&amp;uuml;yordum. &amp;Ouml;rneği orada tamamladıktan uzun s&amp;uuml;re sonra sağını solunu biraz derleyip bloğuma kendime not olarak d&amp;uuml;şeyim dedim. Haydi başlayalım.&lt;/p&gt;
+&lt;p&gt;Bildiğiniz &amp;uuml;zere Facebook menşeili GraphQL son yılların y&amp;uuml;kselen trendlerinden. &amp;Ccedil;alışmakta olduğum şirket dahil bir &amp;ccedil;ok yerde mikro servisler s&amp;ouml;z konusu olduğunda REST API mi GraphQL mi sıklıkla karşılaştırılıyor. Ben hen&amp;uuml;z emekle aşamasında olduğum i&amp;ccedil;in GraphQL'i anlamaya &amp;ccedil;alıştığım bir d&amp;ouml;nemdeyim. Basit &amp;ouml;rnekler dışında bu seferki amacımsa stand alone olarak &amp;ccedil;alışabilen bir GraphQL sunucusu yazmak. Bu ama&amp;ccedil;la tavsiye edilen Apollo Server API aray&amp;uuml;z&amp;uuml;n&amp;uuml; kullanmaya karar verdim. Bu arada &lt;a href="https://www.apollographql.com/" target="_blank"&gt;Apollo&lt;/a&gt; uzun zamandır kabul g&amp;ouml;rm&amp;uuml;ş bir&lt;a href="https://www.thoughtworks.com/radar/languages-and-frameworks/apollo" target="_blank"&gt; Framework olarak Thoughtworks teknoloji radarının&lt;/a&gt;&amp;nbsp;merceğinde yer alıyor. 2018 Nisan ayında Trial, 2019 Mayısında ise Adopt kategorsinde değerlendiriliyor.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/38/twgql.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Apollo Server program aray&amp;uuml;z&amp;uuml; web, mobile gibi istemciler i&amp;ccedil;in GraphQL servisi sunan bir &amp;uuml;r&amp;uuml;n olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Otomatik API dok&amp;uuml;man desteği sunar ve herhangibir veri kaynağını kullanabilir. Yani bir veri tabanını veya bir mikroservisi ya da bir REST APIyi, GraphQL hizmeti verecek şekilde istemcilere a&amp;ccedil;abilir. Tek başına sunucu gibi &amp;ccedil;alıştırılabilmektedir. Pek tabii Heroku gibi cloud ortamlar &amp;uuml;zerinde Serverless modda da kullanılabilmekte. Takip ettiğim Apollo Server dok&amp;uuml;manlarındaki &amp;ccedil;alışma modelini bende aşağıdaki gibi resmetmeye &amp;ccedil;alıştım.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/38/credit_1.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;İstemciler kendilerine uygun Apollo Client paketlerini kullanarak sunucu tarafı ile kolayca haberleşebilirler. Benim bu &amp;ccedil;alışmadaki amacım stand alone &amp;ccedil;alışan bir Apollo sunucusu yazmak ve arka tarafta bir veri tabanını kullanarak &lt;em&gt;(muhtemelen PostgreSQL)&lt;/em&gt; veriyi GraphQL &amp;uuml;zerinden istemcilere a&amp;ccedil;mak.&lt;/p&gt;
+&lt;h2&gt;Başlangı&amp;ccedil;&lt;/h2&gt;
+&lt;p&gt;Proje iskeletini aşağıdaki gibi oluşturabilir ve Node.js tarafı i&amp;ccedil;in gerekli paketleri y&amp;uuml;kleyebiliriz&amp;nbsp;&lt;em&gt;(&amp;Ouml;rneği her zaman olduğu gibi WestWorld-Ubuntu 18.04, 64bit- &amp;uuml;zerinde denemekteyim)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;mkdir project-server
+cd project-server
+npm init
+npm install apollo-server graphql
+touch server.js&lt;/pre&gt;
+&lt;p&gt;Kodları node.js tarafında geliştireceğiz. Bu nedenle npm init ile işe başlıyoruz. Ardından gerekli paketleri y&amp;uuml;kleyip, server.js isimli dosyamızı oluşturuyoruz. Ben &amp;ouml;rnek kodları Visual Studio Code ile geliştiriyorum.&lt;/p&gt;
+&lt;h2&gt;Birinci S&amp;uuml;r&amp;uuml;m &lt;em&gt;(Dizi Kullanılan)&lt;/em&gt;&lt;/h2&gt;
+&lt;p&gt;İlk s&amp;uuml;r&amp;uuml;mde veriyi bir diziyle beslemeye &amp;ccedil;alışacağız. İlk amacımız Apollo Server'ı ayağa kaldırabilmek. Kodları dikkatlice okumanızı &amp;ouml;neririm. Gerekli a&amp;ccedil;ıklamalarla desteklemeye &amp;ccedil;alıştım.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;const { ApolloServer, gql } = require('apollo-server');
+
+const tasks = []; // İlk denemeler i&amp;ccedil;in veri k&amp;uuml;mesini dummy array olarak tasarlayabiliriz
+
+/*
+    Tip tanımlamalarını yaptığımız bu kısım iki &amp;ouml;nemli par&amp;ccedil;adan oluşuyor.
+
+    Queries: istemciye sunduğumuz sorgu modelleri
+    Schema : veri modelini belirlediğimiz par&amp;ccedil;alar (Task gibi)
+
+    Task isimli bir veri modelimiz var.
+    Ayrıca sundacağımız sorgu modellerini de Query tipinde belirtiyoruz.
+    AllTasks t&amp;uuml;m task i&amp;ccedil;eriklerini geri d&amp;ouml;nd&amp;uuml;r&amp;uuml;rken, TaskById ile Id bazlı olarak
+    tek bir Task d&amp;ouml;necek.
+
+    Veri manip&amp;uuml;lasyonu i&amp;ccedil;in InputTask modeli tanımlanmış durumda.
+    Bu modeli Create, Update, Delete işlemlerine ait Mutation tanımında kullanıyoruz.
+
+    Int değişkeninin Task tipinin tanımlanması dışındaki yerlerde ! ile yazıldığına dikkat edelim.
+*/
+const typeDefs = gql`
+    # Entity modelimiz olarak d&amp;uuml;ş&amp;uuml;nebiliriz
+    type Task{
+        id:Int
+        title:String
+        description:String
+        size:String
+    }
+
+    # Silme operasyonundan deneme mahiyetinde farklı bir tip d&amp;ouml;nd&amp;uuml;k
+    type DeleteResult{
+        DeletedId:Int,
+        Result:String
+    }
+    # Sunduğumuz sorgular
+    type Query{
+        AllTasks:[Task]
+        TaskById(id:Int!): Task
+    }
+    # Insert ve Update operasyonlarında kullanacağımzı model
+    input TaskInput {
+        id:Int!
+        title:String
+        description:String
+        size:String
+    }
+    # CUD operasyonlarına ait tanımlamalar
+    # Burada kullanılan parametre adları, Mutation tarafında da aynen kullanılmalıdır
+    type Mutation{
+        Insert(payload:TaskInput) : Task
+        Update(payload:TaskInput):Task
+        Delete(id:Int!):DeleteResult
+    }
+`;
+
+/*
+    Asıl verini ele alındığı &amp;ccedil;&amp;ouml;z&amp;uuml;c&amp;uuml; tanımı olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir.
+    CRUD operasyonlarının temel işleyişinin yer aldığı, iş kurallarının da
+    konulabildiği kısımdır.
+    İki alt par&amp;ccedil;adan oluşmakta. Select tarzı sorgular i&amp;ccedil;in bir kısım (Query)
+    ve CUD operasyonları i&amp;ccedil;in diğer bir kısım (Mutation)
+    Şimdilik Array kullanıyoruz ama bunu MongoDB'ye &amp;ccedil;ekmek isterim.
+*/
+const resolvers = {
+    Query: {
+        AllTasks: () =&amp;gt; tasks,
+        TaskById: (root, { id }) =&amp;gt; {
+            return tasks.filter(t =&amp;gt; {
+                return t.id === id;
+            })[0];
+        }
+    },
+    Mutation: {
+        Insert: (root, { payload }) =&amp;gt; { // Yeni veri ekleme operasyonu
+            //console.log(payload);
+            tasks.push(payload);
+            return payload;
+        },
+        Update: (root, { payload }) =&amp;gt; { // G&amp;uuml;ncelleme operasyonu
+            // Gelen payload i&amp;ccedil;indeki id değerini kullanarak dizi indisini bul
+            var index = tasks.findIndex(t =&amp;gt; t.id === payload.id);
+            // alanları gelen i&amp;ccedil;erikle g&amp;uuml;ncelle
+            tasks[index].title = payload.title;
+            tasks[index].description = payload.description;
+            tasks[index].size = payload.size;
+            // g&amp;uuml;ncel task bilgisini geri d&amp;ouml;nd&amp;uuml;r
+            return tasks[index];
+        },
+        Delete: (root, { id }) =&amp;gt; { // id &amp;uuml;zerinde silme işlemi operasyonu
+            tasks.splice(tasks.findIndex(t =&amp;gt; t.id === id), 1);
+            return { DeletedId: id, Result: "Silme işlemi başarılı" };
+        }
+    }
+};
+
+/*
+    ApolloServer nesnesini &amp;ouml;rnekliyoruz.
+    Bunu yaparken schema, query ve resolver bilgierini de veriyoruz.
+    Ardından listen metodunu kullanarak sunucuyu etkinleştiriyoruz.
+    Varsayılan olarak 4000 numaralı port &amp;uuml;zerinde yayın yapar.
+*/
+const houston = new ApolloServer({ typeDefs, resolvers });
+houston.listen({ port: 4444 }).then(({ url }) =&amp;gt; {
+    console.log(`Houston ${url} kanalı &amp;uuml;zerinden dinlemede`);
+});&lt;/pre&gt;
+&lt;p&gt;Bu ilk s&amp;uuml;r&amp;uuml;m&amp;uuml; ve sonradan yazacağımız yeni versiyonu&amp;nbsp;&amp;ccedil;alıştırmak i&amp;ccedil;in terminalden&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;npm run serve&lt;/pre&gt;
+&lt;p&gt;koutunu yazmamız yeterli&amp;nbsp;&lt;em&gt;(Tahmin edileceği gibi package.json i&amp;ccedil;erisine eklediğimiz bir run komutu var)&lt;/em&gt; Bunun sonucu olarak http://localhost:4444 adresine gidebilir ve otomatik olarak a&amp;ccedil;ılan Playground arabirimi &amp;uuml;zerinden denemelerimizi yapabiliriz.&amp;nbsp;Array kullanan bu ilk s&amp;uuml;r&amp;uuml;m&amp;uuml;n &amp;ccedil;alışma zamanına ait&amp;nbsp;&amp;ouml;rnek sorguları ile ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;lerini aşağıdaki bulabilirsiniz.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;# Yeni bir g&amp;ouml;rev eklemek
+mutation {
+  Insert(
+    payload: {
+      id: 1
+      title: "G&amp;uuml;nde 50 mekik"
+      description: "Kocaman g&amp;ouml;b&amp;uuml;ş&amp;uuml;n oldu. Her g&amp;uuml;n d&amp;uuml;zenli olarak mekik &amp;ccedil;ekmelisin."
+      size: "S"
+    }
+  ) {
+    id
+    title
+    description
+    size
+  }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/38/credit_2.png" alt="" /&gt;&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;# T&amp;uuml;m g&amp;ouml;revlerin listesi
+{
+  AllTasks {
+    title
+    description
+    size
+    id
+  }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/38/credit_3.png" alt="" /&gt;&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;# Var olan bir satırı g&amp;uuml;ncelleme
+mutation {
+  Update(
+    payload: {
+      id: 1
+      title: "100 Mekik"
+      description: "G&amp;ouml;bek eritme operasyonu"
+      size: "M"
+    }
+  ) {
+    id
+    title
+    description
+    size
+  }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/38/credit_4.png" alt="" /&gt;&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;# Id değerine g&amp;ouml;re g&amp;ouml;rev silinmesi
+mutation {
+  Delete(id: 1) {
+    DeletedId
+    Result
+  }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/38/credit_5.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;İlk s&amp;uuml;r&amp;uuml;m &amp;ouml;nceden de belirttiğimiz &amp;uuml;zere Apollo Server'ı basit&amp;ccedil;e işin i&amp;ccedil;erisine katmak ve nasıl &amp;ccedil;alıştığını anlamak i&amp;ccedil;indi. Array i&amp;ccedil;eriği kalıcı bir ortamda saklanmadığından uygulama sonlandırıldığında t&amp;uuml;m g&amp;ouml;rev listesi kaybolacaktır. Kalıcı bir depolama alanı i&amp;ccedil;in farklı bir alternatif d&amp;uuml;ş&amp;uuml;nmeliyiz. CRUD operasyonlarını başka bir servise atayabilir veya bir veri tabanı kullanabiliriz.&lt;/p&gt;
+&lt;h2&gt;İkinci S&amp;uuml;r&amp;uuml;m &lt;em&gt;(PostgreSQL Kullanılan)&lt;/em&gt;&lt;/h2&gt;
+&lt;p&gt;İkinci s&amp;uuml;r&amp;uuml;mde veriyi kalıcı olarak saklamak i&amp;ccedil;in PostgreSQL kullanıyoruz. &amp;Ouml;rneği &amp;ccedil;alışırken WestWorld'de PostgreSQL'in olmadığını fark ettim. PostgreSQL kurulumları ile ilgili olarak aşağıdaki terminal komutlarını işletmem yeterliydi.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo apt-get install postgresql
+
+sudo su - postgres
+psql
+
+\l
+\du
+\conninfo
+
+CREATE ROLE Scott WITH LOGIN PASSWORD 'Tiger';
+ALTER ROLE Scott CREATEDB;
+
+\q&lt;/pre&gt;
+&lt;p&gt;İlk komut ile postgresql'i Linux ortamına kuruyoruz. Kurma işlemi sonrası ikinci ve &amp;uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; komutları kullanarak varsayılan kullanıcı bilgisi ile Postgresql ortmına giriyoruz. \l ile var olan veri tabanlarının listesini, \du ile kullanıcıları &lt;em&gt;(rolleri ile birlikte)&lt;/em&gt;, \conninfo ile de hangi veri tabanına hangi kullanıcı ile hangi porttan bağlandığımıza dair bilgileri elde ediyoruz. CREATE ROLE ile başlayan satırda Scott isimli yeni bir rol tanımladık. Sonrasında takip eden komutla bu role veri tabanı oluşturma yetkisi verdik. \q ile o an aktif olan oturumu kapatıyoruz. Şimdi scott rol&amp;uuml;n&amp;uuml; kullanarak &amp;ouml;rnek veri tabanımızı ve tablolarını oluşturmaya &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/38/credit_6.png" alt="" /&gt;&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;psql -d postgres -U scott
+CREATE DATABASE ThoughtWorld;
+
+\list
+\c thoughtworld
+
+CREATE TABLE tasks (
+  ID SERIAL PRIMARY KEY,
+  title VARCHAR(50),
+  description VARCHAR(250),
+  size VARCHAR(2)
+);
+
+INSERT INTO tasks (title,description,size) VALUES ('Birinci G&amp;ouml;rev','Her sabah saat 06:00da kalk','L');
+
+SELECT * FROM tasks;&lt;/pre&gt;
+&lt;p&gt;İlk komut ile scott rol&amp;uuml;nde oturum a&amp;ccedil;ıyoruz. Sonrasında ThoughtWorld isimli bir veri tabanı oluşturuyoruz. \list ile var olan veri tabanlarına bakıyoruz ve \c komutuyla ThoughtWorld'e bağlanıyoruz. Ardından tasks isimli bir tablo oluşturuyor ve i&amp;ccedil;erisine deneme ama&amp;ccedil;lı bir satır ekliyoruz. Son olarak basit bir Select işlemi icra etmekteyiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/38/credit_7.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Artık PostgreSQL tarafı hazır. Şimdi veri tabanını Apollo suncusunda kullanmaya başlayabiliriz. Ancak &amp;ouml;ncesinde gerekli npm mod&amp;uuml;l&amp;uuml;n&amp;uuml; y&amp;uuml;klemek lazım&amp;nbsp;&lt;em&gt;(Bir &amp;ouml;nceki senaryo ile kodların karışmaması adına pg-server.js isimli yeni bir dosya &amp;uuml;zerinde &amp;ccedil;alışmaya karar verdim)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo npm install pg&lt;/pre&gt;
+&lt;p&gt;pg-server.js isimli kod dosyamızın i&amp;ccedil;eriği ise aşağıdaki gibi.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;const { ApolloServer, gql } = require('apollo-server');
+
+//  postgresql kullanabilmek i&amp;ccedil;in gerekli mod&amp;uuml;l&amp;uuml; ekledik
+const db = require('pg').Pool;
+// connection string tanımı gibi d&amp;uuml;ş&amp;uuml;nebiliriz.
+const mngr = new db({
+    user: 'scott',
+    host: 'localhost',
+    database: 'thoughtworld',
+    password: 'Tiger',
+    port: 5432
+});
+
+const typeDefs = gql`
+    type Task{
+        id:Int
+        title:String
+        description:String
+        size:String
+    }
+    type DeleteResult{
+        DeletedId:Int,
+        Result:String
+    }
+    type Query{
+        AllTasks:[Task]
+        TaskById(id:Int!): Task
+    }
+    input TaskInput {
+        title:String
+        description:String
+        size:String
+    }
+    input UpdateInput {
+        id:Int!
+        title:String
+        description:String
+        size:String
+    }
+    type Mutation{
+        Insert(payload:TaskInput) : Task
+        Update(payload:UpdateInput):Task
+        Delete(id:Int!):DeleteResult
+    }
+`;
+
+/*
+    sorguyu g&amp;ouml;ndermek i&amp;ccedil;in query metodundan yararlanıyoruz.
+    geriye rows nesnesini d&amp;ouml;nd&amp;uuml;rmekteyiz.
+
+    query metodunun d&amp;ouml;n&amp;uuml;ş&amp;uuml;n&amp;uuml; resolvers'tan &amp;ccedil;ıkartabilmek i&amp;ccedil;in senkronize etmem gerekti.
+    Bu nedenle async-await desenini kullandım.
+*/
+const resolvers = {
+    Query: {
+        AllTasks: async () =&amp;gt; {
+            const res = await mngr.query("SELECT * FROM tasks ORDER BY ID;")
+            // console.log(res);
+            if (res)
+                return res.rows;
+        },
+        TaskById: async (root, { id }) =&amp;gt; {
+            const res = await mngr.query("SELECT * FROM tasks WHERE id=$1", [id]);
+            // console.log(res);
+            return res.rows[0];
+        }
+    },
+    Mutation: {
+        /*
+        Yeni bir g&amp;ouml;revi eklemek i&amp;ccedil;in kullandığımız operasyonu da 
+        async await b&amp;uuml;nyesinde değerlendirdim.
+        Sorguya dikkat edilecek olursa, Insert parametrelerini 
+        $1, $2 benzeri placeholder'lar ile g&amp;ouml;nderiyoruz.
+        Sorgu sonucu elde edilen id değerini payload'a y&amp;uuml;kleyip geri d&amp;ouml;nd&amp;uuml;r&amp;uuml;yoruz.
+
+        Bazı sorgularda RETURNING * kullandım. 
+        Bunu yapmadığım zaman sonu&amp;ccedil; değişkenleri boş verilerle d&amp;ouml;n&amp;uuml;yordu.
+        Sebebini &amp;ouml;ğrenene ve alternatif bir yol bulana kadar bu şekilde ele alacağım.
+            
+        */
+        Insert: async (root, { payload }) =&amp;gt; {
+            const res = await mngr.query('INSERT INTO tasks (title,description,size) VALUES ($1,$2,$3) RETURNING *',
+                [payload.title, payload.description, payload.size]);
+            id = res.rows[0].id;
+            payload.id = id;
+            return payload;
+        },
+        Update: async (root, { payload }) =&amp;gt; {
+            const res = await mngr.query('UPDATE tasks SET title=$1,description=$2,size=$3 WHERE ID=$4 RETURNING *', [payload.title, payload.description, payload.size, payload.id]);
+            // console.log(res);
+            return res.rows[0];
+
+        },
+        Delete: async (root, { id }) =&amp;gt; {
+            const res = await mngr.query('DELETE FROM tasks WHERE ID=$1', [id]);
+            // console.log(res);
+            return { DeletedId: id, Result: "Silme işlemi başarılı" };
+        }
+    }
+};
+
+const houston = new ApolloServer({ typeDefs, resolvers });
+houston.listen({ port: 4445 }).then(({ url }) =&amp;gt; {
+    console.log(`Houston ${url} kanalı &amp;uuml;zerinden dinlemede`);
+});&lt;/pre&gt;
+&lt;p&gt;Birinci senaryodaki GraphQL sorguları benzer şekilde ikinci senaryo i&amp;ccedil;in de denenebilir. Bu arada Visual Studio Code &amp;uuml;zerinde PostgreSQL tarafını kolayca g&amp;ouml;r&amp;uuml;nt&amp;uuml;lemek i&amp;ccedil;in &lt;a href="https://marketplace.visualstudio.com/items?itemName=ckolkman.vscode-postgres" target="_blank"&gt;Chris Kolkman'nın PostgreSQL eklentisini&lt;/a&gt; kullandım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/38/credit_8.png" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;İstemci Tarafı&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;throw new ToDoForYouException("Bu uygulamayı size bırakıyorum. &amp;Ccedil;&amp;uuml;nk&amp;uuml; sonraki konuya ge&amp;ccedil;mek istiyorum :|");&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;TODO &lt;em&gt;(Eklenebilecek şeyler)&lt;/em&gt;&lt;/h2&gt;
+&lt;p&gt;Pek tabii yapılabilecek bir ka&amp;ccedil; şey daha var. Benim aklıma gelenler ş&amp;ouml;yle;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Dependency Injection kurgusu ile Apollo Server'ın istenen veri sağlayıcısına enjekte edilmesi i&amp;ccedil;in uğraşılabilinir. &amp;Ouml;rneğin tasks tablosunu SQlite ile tutmak ya da bir NoSQL sistemi &amp;uuml;zerinden kullanmak isteyebiliriz.&lt;/li&gt;
+&lt;li&gt;apollo-server-express mod&amp;uuml;l&amp;uuml;n&amp;uuml; kullanarak HTTPS desteğinin nasıl sağlanabileceğine bakabiliriz. Nitekim production ortamlarında HTTPS olmazsa olmazlardan.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Ben Neler &amp;Ouml;ğrendim?&lt;/h2&gt;
+&lt;p&gt;Saturday-Night-Works &amp;ccedil;alışmalarım kapsamında denediğim bu &amp;ouml;rnekte de bir s&amp;uuml;r&amp;uuml; şey &amp;ouml;ğrendim. Sanırım aşağıdaki maddeler halinde listeleyebilirim.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;GraphQL'de tip tanımlaması &lt;em&gt;(type definitions)&lt;/em&gt; ve &amp;ccedil;&amp;ouml;z&amp;uuml;c&amp;uuml;lerin &lt;em&gt;(resolvers)&lt;/em&gt; ne anlama geldiğini ve neler barındırdığını&lt;/li&gt;
+&lt;li&gt;Apollo Server paketinin kullanımını&lt;/li&gt;
+&lt;li&gt;Insert, Update, Delete gibi operasyonların Mutation kavramı olarak ele alındığını&lt;/li&gt;
+&lt;li&gt;CRUD operasyonlarına ait iş mekaniklerinin resolvers i&amp;ccedil;indeki Query ve Mutation segmentlerinde y&amp;uuml;r&amp;uuml;t&amp;uuml;ld&amp;uuml;ğ&amp;uuml;n&amp;uuml;&lt;/li&gt;
+&lt;li&gt;Veri kaynağı olarak farklı ortamların kullanılabileceğini &lt;em&gt;(micro service, NoSQL, RDBMS, File System, REST API)&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;Int? ile Int tiplerinin yerine g&amp;ouml;re doğru kullanılmaları gerektiğini &lt;em&gt;(bir ka&amp;ccedil; &amp;ccedil;alışma zamanı hatası sonrası fark ettim)&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;Ubuntu platformuna PostgreSQL'in kurulmasını, yeni rol oluşturulmasını, rol altında veri tabanı ve tablo a&amp;ccedil;ılmasını&lt;/li&gt;
+&lt;li&gt;Apollo metodlarında pg'nin query &amp;ccedil;ağrısına ait sonu&amp;ccedil;ları yakalayabilmek i&amp;ccedil;in async-await&amp;nbsp;kullanılması gerektiğini&lt;/li&gt;
+&lt;li&gt;Visual Studio Code tarafında PostgreSQL i&amp;ccedil;in eklenti kullanımını&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir maceramızın daha sonuna. Bu yazımızda Linux platformunda PostgreSQL kullanan stand alone &amp;ccedil;alışan bir Apollo GraphQL sunucusu yazmayı denedik. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rnek kodlarına &lt;a href="https://github.com/buraksenyurt/saturday-night-works" target="_blank"&gt;Saturday-Night-Works 38 Numaradan&lt;/a&gt; erişebilirsiniz.&lt;/p&gt;</content>
+  <pubDate>2019-04-26 07:07:00</pubDate>
+  <slug>Apollo-Server-ile-Bir-GraphQL-Sunucusu-Yazmak</slug>
+  <tags>
+    <tag>graphql</tag>
+    <tag>apollo-server</tag>
+    <tag>nodejs</tag>
+    <tag>javascript</tag>
+    <tag>postgresql</tag>
+    <tag>sql</tag>
+    <tag>npm</tag>
+    <tag>ubuntu</tag>
+    <tag>query</tag>
+    <tag>mutation</tag>
+  </tags>
+  <categories>
+    <category>Node.js</category>
+  </categories>
+</post>

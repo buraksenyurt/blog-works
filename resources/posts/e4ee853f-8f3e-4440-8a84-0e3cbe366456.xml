@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>.Net Framework 4.0 System.IO.File Tarafındaki Yenilikler</title>
+  <description>Bu yazımızda ele alacağımız konu ile ilişkili olarak kullanacağım giriş resmi için uzun bir süre araştırma yapmak zorunda kaldım. Sanırım yazıyı yazdığım bu sıcak yaz gününde devrelerim istediğim randımanı vermedi. Ancak en azından yandaki resim, anlatacağım ilk konu ile doğrudan alakalı olarak düşünülebilir.</description>
+  <content>&lt;p&gt;&amp;nbsp;&lt;img style="float: right;" src="/pics/2010%2f6%2fblg199_Giris_.jpg" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Bu yazımızda ele alacağımız konu ile ilişkili olarak kullanacağım giriş resmi i&amp;ccedil;in uzun bir s&amp;uuml;re araştırma yapmak zorunda kaldım. Sanırım yazıyı yazdığım bu sıcak yaz g&amp;uuml;n&amp;uuml;nde devrelerim istediğim randımanı vermedi. Ancak en azından yandaki resim, anlatacağım ilk konu ile doğrudan alakalı olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Bu resimde &amp;uuml;st &amp;uuml;ste binmiş onlarca metre y&amp;uuml;ksekliğe varan dosya dolapları olduğu ifade edilemekte. Bunların hepsinin tek bir dosya i&amp;ccedil;erisinde birleştirildiğini d&amp;uuml;ş&amp;uuml;n&amp;uuml;n. &amp;Uuml;stelik bu dosya &lt;strong&gt;text tabanlı&lt;/strong&gt; olsun.&lt;/p&gt;
+&lt;p&gt;Bu tip bir dosyanın bir bankadan g&amp;ouml;nderilme olasılığı aslında &amp;ccedil;ok y&amp;uuml;ksektir. Ge&amp;ccedil;miş deneyimlerimi d&amp;uuml;ş&amp;uuml;nd&amp;uuml;ğ&amp;uuml;mde son derece olağan bir durum. &amp;Ouml;rneğin bundan &amp;ouml;nce &amp;ccedil;alıştığım ve outsource olarak g&amp;ouml;rev yaptığım bankada, boyutları 600 mb&amp;rsquo; ın &amp;uuml;zerinde olan text tabanlı dosyalar sistemler arasında dolaşıp durmaktaydı. Hatta bu dosyalardan bazıları &lt;strong&gt;SSIS&lt;/strong&gt; paketlerine sokularak &lt;strong&gt;veritabanı&lt;/strong&gt; ortamına aktarılmaktaydı. Hatta &lt;strong&gt;SSIS&lt;/strong&gt; uzmanı olmamama rağmen Proje Y&amp;ouml;neticisi tarafından bir d&amp;ouml;nem bana da b&amp;ouml;yle bir iş verildiğini ifade etmek isterim &lt;img title="Undecided" src="/editors/tiny_mce3/plugins/emotions/img/smiley-undecided.gif" alt="Undecided" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Tabi bu tip dosyaların en b&amp;uuml;y&amp;uuml;k &amp;ouml;zelliği de veri taşımak amacıyla satır ve s&amp;uuml;tun kavramlarını kullanmalarıdır. Ayrıca verinin &amp;ccedil;ok yalın bir formatta taşınması ve her t&amp;uuml;r platform tarafından kolayca ele alınması, hatta &amp;ccedil;ıplak g&amp;ouml;zle&lt;em&gt;(Tabi zaman zaman. Nitekim benim &amp;uuml;zerinde &amp;ccedil;alıştığım SSIS paketlerinin s&amp;uuml;tunlarının sayısı 250&amp;rsquo; ye varmaktaydı&amp;nbsp;&lt;img title="Sealed" src="/editors/tiny_mce3/plugins/emotions/img/smiley-sealed.gif" alt="Sealed" border="0" /&gt; )&lt;/em&gt; rahatlıkla okunabilmesi gibi avantajlar da s&amp;ouml;z konusudur. Buna g&amp;ouml;re aşağıdaki gibi bir text i&amp;ccedil;eriği doğru bir veri saklama bi&amp;ccedil;imi olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f6%2fblg199_TextContent_.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Burada birbirleriyle&lt;strong&gt; |&lt;/strong&gt; işaretleri şeklinde ayrılmış s&amp;uuml;tunlar s&amp;ouml;z konusudur. Toplam 4 satırdan oluşan veri i&amp;ccedil;eriğini programatik ortamda da okumak son derece kolaydır. Bunun i&amp;ccedil;in, kolaya ka&amp;ccedil;an geliştiriciler &lt;strong&gt;.Net Framework 2.0 &lt;/strong&gt;ile birlikte &lt;strong&gt;File &lt;/strong&gt;sınıfına eklenmiş &lt;strong&gt;static ReadAllLines&lt;/strong&gt; metodunu kullanır. Aşağıdaki kod par&amp;ccedil;asında g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f6%2fblg199_ReadAllLines_.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ReadAllLines&lt;/strong&gt; metodu parametre olarak dosya adresini almakta ve i&amp;ccedil;eriğinde t&amp;uuml;m satırları &lt;strong&gt;string&lt;/strong&gt; tipinden bir diziye aktarmaktadır. &lt;strong&gt;Debug&lt;/strong&gt; &amp;ccedil;ıktısında, string dizisine aktarılan i&amp;ccedil;erik net bir şekilde g&amp;ouml;r&amp;uuml;lebilir. Tabi bu adımdan sonra elde edilen&lt;strong&gt; string[]&lt;/strong&gt; dizisi &amp;uuml;zerinde dolaşılıp &lt;strong&gt;| &lt;/strong&gt;işaretlerine g&amp;ouml;re ayrıştırma yapılarak s&amp;uuml;tunlara da kolayca erişilebilir. Ancak &amp;ouml;nemli bir sorun da vardır?&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Boyutu &amp;ccedil;ok y&amp;uuml;ksek olan bir dosyanın ReadAllLines metodu yardımıyla okunmasının sakıncıları var mıdır?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Aslında en b&amp;uuml;y&amp;uuml;k sakınca &lt;strong&gt;ReadAllLines&lt;/strong&gt; metodu, dosyanın t&amp;uuml;m satırlarını &lt;strong&gt;string[]&lt;/strong&gt; diziye aktarana kadar, i&amp;ccedil;inde &amp;ccedil;alıştığı &lt;strong&gt;Thread&amp;rsquo;&lt;/strong&gt; i duraksatmaktadır. Bir başka deyişle &lt;strong&gt;ReadAllLines&lt;/strong&gt; metodu ile okunan satırların tamamı &lt;strong&gt;string&lt;/strong&gt; dizisine aktarılmadan kod bir sonraki satıra inmeyecektir. İşte &lt;strong&gt;Base Class Library-&amp;gt;IO&lt;/strong&gt; b&amp;uuml;nyesinde getirilen yeni &lt;strong&gt;static&lt;/strong&gt; metodlardan birisi bu vakayı &amp;ccedil;&amp;ouml;zmek amacıyla getirilmiştir. &lt;strong&gt;File.ReadLines &lt;/strong&gt;metodu.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ReadLines&lt;/strong&gt; static metodunun &lt;strong&gt;aşırı y&amp;uuml;klenmiş(Overload)&lt;/strong&gt; iki versiyonu vardır. Her ikiside satırları okunacak dosyayı parametre olarak almaktadır. Metodlar geriye &lt;strong&gt;IEnumerable&amp;lt;string&amp;gt;&lt;/strong&gt; &lt;strong&gt;Aray&amp;uuml;z&amp;uuml;(Interface)&lt;/strong&gt; tarafından taşınabilecek bir referans d&amp;ouml;nd&amp;uuml;rmektedir. &lt;strong&gt;ReadLines&lt;/strong&gt; metodu aslında dosyanın satırları arasında gezinmeyi sağlayacak bir numaralandırıcıyı hazırlamaktadır. Bu sebepten kod satırı anında alt satıra inebilir. &amp;Uuml;stelik t&amp;uuml;m satırların y&amp;uuml;klenmesi de s&amp;ouml;z konusu değildir. &amp;Ouml;rneğin &amp;ccedil;ok b&amp;uuml;y&amp;uuml;k bir &lt;strong&gt;text&lt;/strong&gt; dosyasının sadece ilk 3 satırını almak istediğimizde aşağıdaki gibi bir kod par&amp;ccedil;ası işe yarayacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.IO; 
+using System.Collections.Generic;
+
+namespace NewIOFeatures 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            string filePath = Path.Combine(Environment.CurrentDirectory, "Bilgiler.txt"); 
+            //string[] lines=File.ReadAllLines(filePath); 
+            IEnumerable&amp;lt;string&amp;gt; lines=File.ReadLines(filePath);            
+            int i = 0; 
+            foreach (string line in lines) 
+            { 
+                if (i &amp;lt; 3) 
+                { 
+                    Console.WriteLine(line); 
+                    i++; 
+                } 
+                else 
+                    break; 
+            } 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f6%2fblg199_ReadLinesRuntime_.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu kod par&amp;ccedil;asında g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;foreach&lt;/strong&gt; d&amp;ouml;ng&amp;uuml;s&amp;uuml; ile &lt;strong&gt;Bilgiler.txt&lt;/strong&gt; dosyasının satırları &amp;uuml;zerinde hareket edilmeye başlanmaktadır. &lt;strong&gt;Integer&lt;/strong&gt; tipinden olan&lt;strong&gt; i&lt;/strong&gt; değişkeninden yararlanılarak bir saya&amp;ccedil; oluşturulmuş ve ilk 3 satır okunduktan sonra&amp;nbsp;&lt;strong&gt;break keyword&lt;/strong&gt;&amp;rsquo; &amp;uuml; yardımıyla d&amp;ouml;ng&amp;uuml;den &amp;ccedil;ıkılması sağlanmıştır. Tabi şunu hatırlatmamızda yarar vardır. &lt;strong&gt;foreach&lt;/strong&gt; d&amp;ouml;ng&amp;uuml;s&amp;uuml; yardımıyla dosya i&amp;ccedil;erisindeki t&amp;uuml;m satırların dolaşılması &lt;strong&gt;ReadAllLines&lt;/strong&gt; metodunun yaptığı işin aynısıdır. Dolayısıyla duruma g&amp;ouml;re uygun olan metodu kullanmakta yarar vardır. &lt;strong&gt;System.IO&lt;/strong&gt; tarafında &lt;strong&gt;BCL &lt;/strong&gt;takımı tarafından getirilen yeniliklerden birisini bu şekilde &amp;ouml;zetlemiş olduk. Gelelim diğer bir yeniliğe.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;File&lt;/strong&gt; tipinin dosya okuma ve yazma işlemlerinde sağladığı kolaylık bilinmektedir. Ancak yine de bazı iyileştirmeler gerekmiştir. S&amp;ouml;z gelimi &lt;strong&gt;WriteAllLines&lt;/strong&gt; metodunun &lt;strong&gt;.Net 4.0&lt;/strong&gt; &amp;ouml;ncesindeki versiyonunu ele alalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f6%2fblg199_WriteAllLinesOld_.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;WriteAllLines&lt;/strong&gt; metodu bir &amp;ouml;nceki s&amp;uuml;r&amp;uuml;mde iki aşırı y&amp;uuml;klenmiş versiyona sahiptir. Bu metod belirtilen dosyaya, satır bazlı string bir i&amp;ccedil;eriğin eklenmesi amacıyla kullanılmaktadır. &amp;Ccedil;ok g&amp;uuml;zel. Ama eksik. Nitekim versiyonda dikkati &amp;ccedil;eken nokta, sadece string tipinden bir dizinin kullanılabiliyor olmasıdır. Peki bunun ne gibi bir sakıncası olabilir?&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;string[] tipinden olmayan, &amp;ouml;rneğin List&amp;lt;string&amp;gt; gibi bir koleksiyon i&amp;ccedil;eriğinin WriteAllLines metodu yardımıyla dosyaya yazılabilmesi i&amp;ccedil;in, &amp;ouml;nce string[] dizisine &amp;ccedil;evrilmesi gerekmektedir.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Visual Studio 2008&lt;/strong&gt; &amp;uuml;zerinde yazılmış &amp;ouml;rnek bir kod par&amp;ccedil;ası ile bu durumu g&amp;ouml;relim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Collections.Generic; 
+using System.IO;
+
+namespace IO 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            string filePath=Path.Combine(Environment.CurrentDirectory,"Bilgiler.txt"); 
+            List&amp;lt;string&amp;gt; content=new List&amp;lt;string&amp;gt;{ 
+                "10001|Burak Selim Şenyurt|1000|A" 
+                ,"10002|Bili Geyt|2000|B" 
+                ,"10003|Maykıl Cordın|3400|B" 
+                ,"10004|Megın Fox|2200|C" 
+            };
+
+            File.WriteAllLines(filePath, content.ToArray()); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Burada &lt;strong&gt;List&amp;lt;string&amp;gt;&lt;/strong&gt; tipinden olan koleksiyonun i&amp;ccedil;eriğinin &lt;strong&gt;Bilgiler.txt&lt;/strong&gt; dosyasına yazıldığını g&amp;ouml;rmektesiniz. Ancak &lt;strong&gt;WriteAllLines&lt;/strong&gt; metodunun i&amp;ccedil;eriğine dikkat edilecek olursa, &lt;strong&gt;content&lt;/strong&gt; isimli değişkenin &lt;strong&gt;ToArray&lt;/strong&gt; metodu yardımıyla &lt;strong&gt;string[]&lt;/strong&gt; dizisine d&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; g&amp;ouml;r&amp;uuml;lmektedir. İşte &lt;strong&gt;BCL&lt;/strong&gt; takımı &lt;strong&gt;.Net Framework 4.0&lt;/strong&gt;&amp;rsquo; da &lt;strong&gt;WriteAllLines&lt;/strong&gt; metodunun yeni bir &lt;strong&gt;aşırı y&amp;uuml;klenmiş(Overload)&lt;/strong&gt; versiyonunu yazarak bu durumu d&amp;uuml;zeltmiştir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f6%2fblg199_WriteAllLinesNew_.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Buna g&amp;ouml;re daha &amp;ouml;nceki versiyonda yapmak zorunda kaldığımız &lt;strong&gt;ToArray &lt;/strong&gt;d&amp;ouml;n&amp;uuml;şt&amp;uuml;rmesine gerek yoktur. Son olarak yazdığımız kodun &lt;strong&gt;Visual Studio 2010&lt;/strong&gt; &amp;uuml;zerinde geliştirilen yeni hali aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;string filePath = Path.Combine(Environment.CurrentDirectory, "Bilgiler.txt"); 
+            List&amp;lt;string&amp;gt; content = new List&amp;lt;string&amp;gt;{ 
+                "10001|Burak Selim Şenyurt|1000|A" 
+                ,"10002|Bili Geyt|2000|B" 
+                ,"10003|Maykıl Cordın|3400|B" 
+                ,"10004|Megın Fox|2200|C" 
+            };
+
+            File.WriteAllLines(filePath, content);&lt;/pre&gt;
+&lt;p&gt;Bu yenilik sayesinde &lt;strong&gt;WriteAllLines&lt;/strong&gt; metodunun &lt;strong&gt;string Array&lt;/strong&gt; dışındaki &lt;strong&gt;IEnumerable&amp;lt;string&amp;gt;&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml; uygulayan tipler ile de &amp;ccedil;alışabilmesi sağlanmıştır. Gelelim bu yazımızda değineceğimiz son yeniliğe.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;WriteAllLines&lt;/strong&gt; metodu &lt;strong&gt;content&lt;/strong&gt; değişkeni ile aldığı i&amp;ccedil;eriği ilgili dosyaya yazarken dosyanın s&amp;uuml;rekli yeniden oluşturulmasına neden olmaktadır. Oysaki dosya sonuna ilave yapmamız da gerekebilir. &lt;strong&gt;.Net Framework 4.0&lt;/strong&gt; &amp;ouml;ncesindeki s&amp;uuml;r&amp;uuml;mde &lt;strong&gt;AppendAllLines&lt;/strong&gt; isimli bir metod &lt;span style="text-decoration: underline;"&gt;bulunmamaktadır&lt;/span&gt;. Ancak &lt;strong&gt;.Net Framework 4.0&lt;/strong&gt; ile birlikte bu metod &lt;strong&gt;File&lt;/strong&gt; tipine eklenmiştir ve aşağıdaki &amp;ouml;rnek kod par&amp;ccedil;asında olduğu gibi kullanılabilir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.IO; 
+using System.Collections.Generic;
+
+namespace NewIOFeatures 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            string filePath = Path.Combine(Environment.CurrentDirectory, "Bilgiler.txt"); 
+            List&amp;lt;string&amp;gt; content = new List&amp;lt;string&amp;gt;{ 
+                "10001|Burak Selim Şenyurt|1000|A" 
+                ,"10002|Bili Geyt|2000|B" 
+                ,"10003|Maykıl Cordın|3400|B" 
+                ,"10004|Megın Fox|2200|C" 
+            };
+
+            File.WriteAllLines(filePath, content);
+
+            List&amp;lt;string&amp;gt; newLines = new List&amp;lt;string&amp;gt; 
+            { 
+                "10006|Komiser Kolomb|2345|Z" 
+            }; 
+            File.AppendAllLines(filePath, newLines); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;AppendAllLines&lt;/strong&gt; metodu&lt;strong&gt; IEnumerable&amp;lt;string&amp;gt;&lt;/strong&gt; tipi ile &amp;ccedil;alışmakta ve bu tipin &amp;ccedil;alışma zamanındaki i&amp;ccedil;eriğini parametre olarak verilen dosyanın sonuna eklemektedir.&lt;/p&gt;
+&lt;p&gt;Tabi &lt;strong&gt;BCL&lt;/strong&gt; takımı tarafından getirilen daha pek &amp;ccedil;ok yenilik daha s&amp;ouml;z konusudur. &amp;Ouml;rneğin bunlardan bazılarını hemen araştırmaya başlayabilirsiniz.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Directory.EnumerateFiles&lt;/li&gt;
+&lt;li&gt;Directory.EnumerateDirectories&lt;/li&gt;
+&lt;li&gt;Directory.EnumerateFileSystemEntries&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;vb...&lt;/p&gt;
+&lt;p&gt;Yeri geldik&amp;ccedil;e bunları toplu olarak ele almaya &amp;ccedil;alışıyor olacağız. Bu yazımızda &lt;strong&gt;File&lt;/strong&gt; tipi i&amp;ccedil;in &amp;ouml;ne &amp;ccedil;ıkan bazı yenilikleri g&amp;ouml;rd&amp;uuml;k. Buna g&amp;ouml;re;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;ReadLines&lt;/strong&gt; metodu yardımıyla satır bazlı bir &lt;strong&gt;text&lt;/strong&gt; i&amp;ccedil;eriğinin bir seferde değil ama bir iterasyon yardımıyla okunabileceğini g&amp;ouml;rd&amp;uuml;k.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;WriteAllLines&lt;/strong&gt; metodunun sadece &lt;strong&gt;string Array&lt;/strong&gt; tipi ile &amp;ccedil;alışan versiyonu yerine &lt;strong&gt;IEnumerable&amp;lt;string&amp;gt;&lt;/strong&gt; ile &amp;ccedil;alışan bir versiyonunun geliştirildiğini g&amp;ouml;rd&amp;uuml;k. Bu sayede bir &amp;ouml;nceki s&amp;uuml;r&amp;uuml;mde s&amp;ouml;z konusu olan &lt;strong&gt;ToArray&lt;/strong&gt; metodu ile diziye d&amp;ouml;n&amp;uuml;şt&amp;uuml;rme zorunluluğunun ortadan kalktığına şahit olduk.&lt;/li&gt;
+&lt;li&gt;Son olarak dosya sonuna &lt;strong&gt;IEnumerable&amp;lt;string&amp;gt;&lt;/strong&gt; ile işaret edilen bir i&amp;ccedil;eriğin eklenebilmesini sağlayan &lt;strong&gt;AppendAllLines&lt;/strong&gt; metoduna değindik.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2010%2f6%2fNewIOFeatures.rar"&gt;NewIOFeatures.rar (21,53 kb)&lt;/a&gt;&lt;strong&gt;&amp;nbsp;[&amp;Ouml;rnek Visual Studio 2010 Ultimate s&amp;uuml;r&amp;uuml;m&amp;uuml;nde geliştirilmiş ve test edilmiştir]&lt;/strong&gt;&lt;/p&gt;</content>
+  <pubDate>2010-10-25 21:45:00</pubDate>
+  <slug>SystemIOFile-Tarafindaki-Yenilikler</slug>
+  <tags>
+    <tag>base-class-library</tag>
+    <tag>net-framework-40</tag>
+    <tag>file</tag>
+    <tag>systemio</tag>
+  </tags>
+  <categories>
+    <category>.Net Framework 4.0</category>
+    <category>BCL</category>
+  </categories>
+</post>

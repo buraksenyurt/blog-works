@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Connection Pooling' in Önemi</title>
+  <description>Connectilon Pooling veritabanı programcılığında, uygulamaların performansını doğrudan etkiliyen unsurlardan birisidir. Bağlantıların bir havuza atılarak buradan kullanılmalarını sağlamaktaki en büyük amaç, çok sayıda kullanıcının bağlı olduğu veri tabanlı uygulamalarda, aynı özelliklere sahip bağlantı bilgilerinin defalarca oluşturulmasınının önüne geçmek bu sayede var olan açık bağlantıların kullanılabilmesini sağlamaktır...</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Connectilon Pooling veritabanı programcılığında, uygulamaların performansını doğrudan etkiliyen unsurlardan birisidir. Bağlantıların bir havuza atılarak buradan kullanılmalarını sağlamaktaki en b&amp;uuml;y&amp;uuml;k ama&amp;ccedil;, &amp;ccedil;ok sayıda kullanıcının bağlı olduğu veri tabanlı uygulamalarda, aynı &amp;ouml;zelliklere sahip bağlantı bilgilerinin defalarca oluşturulmasınının &amp;ouml;n&amp;uuml;ne ge&amp;ccedil;mek bu sayede var olan a&amp;ccedil;ık bağlantıların kullanılabilmesini sağlamaktır. Temel mantık son derece basittir. Bir kullanıcı uygulaması i&amp;ccedil;erisinden bir verikaynağına bağlanmak istediğinde, ge&amp;ccedil;erli bir Connection nesnesi oluşturmak zorundadır. Bu Connection nesnesi eğer ilk kez talep edilmişse, veritabanı tarafında bir bağlantı havuzunun i&amp;ccedil;ine atılacaktır.&lt;/p&gt;
+&lt;p&gt;Ki başka bir kullanıcı aynı veri kaynağına aynı bağlantı bilgisi ile bağlanmak istediğinde, havuzdaki bağlantıyı kullanabilecektir. Burada aynı bağlantı bilgisine başvuran birden fazla kullanıcı olduğunu d&amp;uuml;ş&amp;uuml;nd&amp;uuml;ğ&amp;uuml;m&amp;uuml;zde bu mimarinin &amp;ouml;nemi ortaya &amp;ccedil;ıkmaktadır. &amp;Ouml;zellikle web tabanlı uygulamalarda bu fark b&amp;uuml;y&amp;uuml;k performans kazanımı anlamına gelmektedir. Biz bu makalemizde Connection Pooling' in mimarisini incelemektense onu kullanırken dikkat etmemiz gereken noktalara değineceğiz. Ama herşeyden &amp;ouml;nce connection pooling' i kullanmanın faydasını g&amp;ouml;receğimiz basit bir &amp;ouml;rnek ile yola &amp;ccedil;ıkmakta fayda olacağı kanısındayım.&amp;nbsp; Bunun i&amp;ccedil;in, Vs.2005' de aşağıdaki kodlara sahip basit bir console uygulaması yazarak işe başlayalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Data.SqlClient;
+
+namespace UsingPooling
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            SqlConnection con = new SqlConnection("data source=MANCHESTER;database=AdventureWorks;integrated security=SSPI;Pooling=false");
+            DateTime dtBaslangic = DateTime.Now;
+            for (int i = 0; i &amp;lt; 10000; i++)
+            {
+                con.Open();
+                con.Close();
+            }
+            DateTime dtBitis = DateTime.Now;
+            TimeSpan tsGecerSure = dtBitis - dtBaslangic;
+            Console.WriteLine("Ge&amp;ccedil;en s&amp;uuml;re {0} milisaniyedir.", tsGecerSure.TotalMilliseconds.ToString());
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;ncelikle bu uygulamada ne yapıyoruz kısaca bunu a&amp;ccedil;ıklayalım. Uygulamamız Sql Server 2005 &amp;uuml;zerinde yer alan AdventureWorks isimli veritabanına, 10000 defa bir bağlantı a&amp;ccedil;ıp kapatıyor. Burada d&amp;ouml;ng&amp;uuml; i&amp;ccedil;erisinde ger&amp;ccedil;ekleşen olayları, sisteme bağlanan 10000 farklı kullanıcının kod kısmı olarakta d&amp;uuml;ş&amp;uuml;nebilirisiniz. Aynı bağlantı bilgisi i&amp;ccedil;in defalarca a&amp;ccedil;ma ve kapatma işlemini yapıyoruz ve bu işlemler sonrası oluşan s&amp;uuml;re farkına bakıyoruz. Burada bağlantı bilgisine dikkat ederseniz Pooling &amp;ouml;zelliğinin bilerekten false olarak atandığını g&amp;ouml;r&amp;uuml;rs&amp;uuml;n&amp;uuml;z. Yani ilgili connection bilgisinin herhangibir şekilde havuza atılmayacağını (Connection Pool' da tutulmayacağını) belirtmiş oluyoruz. Bu haliyle uygulamamızı &amp;ccedil;alıştırdığımızda aşağıdaki gibi (ya da kullanıdığınız &amp;ccedil;evresel parametrelere g&amp;ouml;re bu sonuca yakın) bir s&amp;uuml;re farkı elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk149_1.gif" alt="" width="404" height="131" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Ancak Pooling=false &amp;ouml;zelliğini kaldırırsak (ki varsayılan hali true' dur ve pooling' in aktif olmasını sağlar) s&amp;uuml;re farkı &amp;ccedil;ok daha az olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk149_2.gif" alt="" width="420" height="119" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi, her iki uygulamanın &amp;ccedil;alışma s&amp;uuml;releri arasında belirgin ve aynı zamanda dikkate değer bir zaman farkı oluşmuştur. Bu, Connection Pooling' in herhangibir Connection nesnesine ait bağlantı bilgisi i&amp;ccedil;erisinde hi&amp;ccedil; bir şey belirtilmesse zaten aktif olacağına ş&amp;uuml;kredebileceğimiz bir durumdur. Ancak kodlama farklarından dolayı Pooling zaman zaman başımızı derde sokabilir. Bizim i&amp;ccedil;in sancı yaratacak iki farklı durum vardır. Şimdi kısaca bu durumlar inceleyeceğiz. İlk olarak aşağıdaki kodlara sahip olan ve Vs.2005 &amp;uuml;zerinde geliştirilmiş basit bir Windows Uygulamasını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk149_4.gif" alt="" width="275" height="157" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void btnExecute_Click(object sender, EventArgs e)
+{
+    try
+    {
+        SqlConnection con = new SqlConnection("data source=MANCHESTER;database=AdventureWorks;integrated security=SSPI;Min Pool Size=10;Max Pool Size=15"); 
+        SqlCommand cmd = new SqlCommand("SELECT Count(*) FROM Person.Contat", con);
+        con.Open();
+        int kontakSayisi=Convert.ToInt32(cmd.ExecuteScalar());
+        con.Close();
+        }
+        catch(Exception err)
+        {
+            lstExceptions.Items.Add(err.ToString());
+        }
+}&lt;/pre&gt;
+&lt;p&gt;Burada button kontrol&amp;uuml;ne basıldığında &amp;ccedil;alışan kodlarda, Person.Contat isimli tablodaki kayıt sayısını &amp;ouml;ğrenebileceğimiz bir sorgunun &amp;ccedil;alıştırılmasını g&amp;ouml;r&amp;uuml;yoruz. Burada kod, try/catch bloğuna alındığından, sql komutlarının y&amp;uuml;r&amp;uuml;t&amp;uuml;lmesi yada bağlantının a&amp;ccedil;ılması sırasında oluşacak hatalara karşı programı koruma altına aldığımızı d&amp;uuml;ş&amp;uuml;nebiliriz. Ancak Contat(Contact olması gerekirdir) tablosu AdventureWorks isimli veritabanında mevcut değildir. Bu y&amp;uuml;zden kod &amp;ccedil;alışma zamanında bir SqlException verecektir. Ancak bu kodu birden fazla sayıda kullanıcının tetiklediğini d&amp;uuml;ş&amp;uuml;n&amp;uuml;rsek (&amp;ouml;rneğimizde butona defalarca basarak bu durumu canlandırabiliriz) başımıza korkun&amp;ccedil; işler gelebilir.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;yleki, SqlCommand sınıfından olan cmd nesnesi execute edilirken oluşan hata, con nesnesinin kapatılmasını engellemektedir. Bu sunucu &amp;uuml;zerindeki bağlantı havuzunda a&amp;ccedil;ık kalan bir bağlantı demektir. Button kontrol&amp;uuml;m&amp;uuml;z tetiklendik&amp;ccedil;e, a&amp;ccedil;ık bağlantı sayısı artmaya ve bir s&amp;uuml;re sonrada bağlantı havuzundaki maksimum bağlantı sayısını aşmaya başlayacaktır. Bu durum b&amp;ouml;yle devam ederekten sonu&amp;ccedil;ta uygulamanın SqlException istisnasından vazge&amp;ccedil;erek zaman aşımına bağlı olaraktan InvalidOperationException istisnasını fırlatmasına neden olacaktır. Şu aşamada istisnanın tipinden ziyade a&amp;ccedil;ık kalan bağlantıları s&amp;uuml;rekli olarak artması &amp;ccedil;ok tehlikeli bir durumdur. Aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;, yukarıdaki uygulamada button kontrol&amp;uuml;ne defalarca basılaraktan elde edilmiştir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk149_3.gif" alt="" width="635" height="571" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu g&amp;ouml;r&amp;uuml;nt&amp;uuml;de yer alan NumberOfReclaimedConnections sayacı (Counter), .Net 2.0 ile birlikte gelen yeni performans &amp;ouml;l&amp;ccedil;&amp;uuml;m değerlerinden birisidir ve havuzda yer alıpta kapatılamayan bağlantı sayılarına ilişkin bilgileri vermektedir. Grafiktende g&amp;ouml;r&amp;uuml;leceği &amp;uuml;zere a&amp;ccedil;ık bağlantılar s&amp;uuml;rekli artmıştır. Uygulama bunun sonucunda SqlException' dan &amp;ccedil;ıkarak zaman aşımı (Timeout) nedeni ile InvalidOperationException' a s&amp;uuml;r&amp;uuml;klenmiştir.&lt;/p&gt;
+&lt;table id="table30" style="border-collapse: collapse; width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#ffffff"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt; NumberOfReclaimedConnections, .Net 2.0 ile birlikte gelen Performans saya&amp;ccedil;larından (Performance Counter) birisidir. Bu saya&amp;ccedil; .Net Data Provider For Sql Server performans nesnesi (Performance Object) altında yer almaktadır.&lt;/em&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk149_5.gif" alt="" width="384" height="379" border="0" /&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Aslında hatanın nedeni son derece basittir. Connection sınıfına ait nesne &amp;ouml;rneğinin kapatılması garanti altına alınmamıştır. Bu ger&amp;ccedil;ekten &amp;ouml;nemli bir hatadır. Bu durumu d&amp;uuml;zeltmek i&amp;ccedil;in ya finally bloğu eklenmeli ya da işlemler aşağıdaki kod par&amp;ccedil;asında olduğu gibi using blokları i&amp;ccedil;erisinde ger&amp;ccedil;ekleştirilmelidir. Nitekim using bloğu doğal olaraktan kullandığı nesnenin dispose edilmesini garanti altına alır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void btnExecute_Click(object sender, EventArgs e)
+{
+    try
+    {
+        using (SqlConnection con = new SqlConnection("data source=MANCHESTER;database=AdventureWorks;integrated security=SSPI;Min Pool Size=10;Max Pool Size=15"))
+        {
+            using (SqlCommand cmd = new SqlCommand("SELECT Count(*) FROM Person.Contat", con))
+            {
+                con.Open();
+                int kontakSayisi = Convert.ToInt32(cmd.ExecuteScalar());
+            }
+        }
+    }
+    catch (Exception err)
+    {
+        lstExceptions.Items.Add(err.ToString());
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk149_6.gif" alt="" width="596" height="484" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi bu kez havuzda a&amp;ccedil;ık kalan hi&amp;ccedil; bir bağlantı yoktur. Bunu g&amp;ouml;rmek i&amp;ccedil;in uygulamayı test ettiğimizde, yukarıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi NumberOfRecalimedConnections sayacının (Counter) sıfır olarak seyrettiğini g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Dolayısıyla uygulamadaki bağlantılar i&amp;ccedil;in maksimum havuz boyutunun aşılması ve nihayetinde InvalidOperationException istisnasına s&amp;uuml;r&amp;uuml;klenilmesi engellenmiştir. Herşeyden &amp;ouml;nemlisi ne kadar &amp;ccedil;ok kullanıcı bu kodu &amp;ccedil;alışıtırırsa &amp;ccedil;alıştırsın, havuzda a&amp;ccedil;ık kalan herhangibir bağlantı olmayacaktır. Şimdi gelelim connection pooling ile ilgili diğer &amp;ouml;nemli noktaya. Aşağıdaki &amp;ouml;rnek console uygulaması bu durumu canlandırmak i&amp;ccedil;in geliştirilmiştir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Data.SqlClient;
+
+namespace Pooling_3
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            try
+            {
+                for (int i = 1; i &amp;lt; 100; i++)
+                {
+                    KontakSayisiniBul();
+                }
+            }
+            catch (SqlException err)
+            {
+                Console.WriteLine(err.Message.ToString());
+            }
+            Console.ReadLine();
+        }
+    
+        private static void KontakSayisiniBul()
+        {
+            using (SqlConnection con = new SqlConnection("data source=MANCHESTER;database=AdventureWorks;integrated security=SSPI;Min Pool Size=5;Max Pool Size=15"))
+            {
+                SqlCommand cmd = new SqlCommand("Select Count(*) From Person.Contact", con);
+                con.Open();
+                int kontakSayisi = Convert.ToInt32(cmd.ExecuteScalar());
+                System.Threading.Thread.Sleep(1500);
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu &amp;ouml;rnekte son derece anlamsız bir şekilde 100 defa Contact tablosundaki eleman sayısını hesaplatmaktayız. Bu işlemleri yaparken durumu daha iyi analiz edebilmek i&amp;ccedil;inde kodu 1,5 saniye kadar duraksatıyoruz. Bu işlem sonradan Sql Server Servisini restart etmemizde bize zaman kazandıracaktır. Kodu, aynı işlemi sunucuya doğru ger&amp;ccedil;ekleştiren n sayıda kullanıcı ekranına ait bir uygulamanın par&amp;ccedil;ası olarakta d&amp;uuml;ş&amp;uuml;nebiliriz. N sayıda kullanıcı sunucuya bağlanıp sorguyu &amp;ccedil;alıştırdıkları s&amp;uuml;rece, sunucunun başına &amp;ccedil;eşitli haller gelebilir.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğin, Sql Server Servisi bir şekilde baştan başlatılmış (Restart) olabilir. (Bu &amp;ccedil;oğunlukla sql sunucusunu barındıran bilgisayarın istem dışı restart olması halinde ger&amp;ccedil;ekleşebilecek bir durumdur.) Eğer b&amp;ouml;yle bir durum s&amp;ouml;z konusu olursa, havuzda duran bağlantı bilgileri servis yeniden &amp;ccedil;alışsa bile erişilemez hale gelecektir. &amp;Ouml;rneğimizi &amp;ccedil;alıştırdıktan sonra Sql Server servisini baştan başlatacak olursak, servis durup yeniden &amp;ccedil;alışmaya başladığında ilgili uygulama ortama bir SqlException istisnası fırlatacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk149_7.gif" alt="" width="610" height="466" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu istisnanın nedeni artık havuzda duran bağlantı bilgilerinin yapısının, servisin yeniden başlatılması nedeni ile bozulmuş olmasıdır. Bu sorunu &amp;ccedil;&amp;ouml;zebilmek i&amp;ccedil;in yapılabileceklerden bir tanesi ve en kolayı, havuzdaki bağlantıları sıfırlamak bir başka deyişle havuzu boşaltmaktır. Ado.Net 2.0' da Connection sınıflarına bu işlemleri kolay bir şekilde yapabilmek i&amp;ccedil;in iki yeni metod eklenmiştir. Bu metodların prototipleri aşağıdaki gibidir.&lt;/p&gt;
+&lt;table id="table34" style="border-collapse: collapse; width: 100%;" border="1" cellpadding="5" bgcolor="#336699"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="width: 367px; background-color: #ffffff;" width="367"&gt;&lt;strong&gt; Metod&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;Kısa A&amp;ccedil;ıklama&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="367"&gt;&lt;span class="keyword"&gt;public &lt;span class="keyword"&gt;static void &lt;span class="identifier"&gt;ClearAllPools ()&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;td bgcolor="#ffffff"&gt;&lt;span class="identifier"&gt;Havudaki t&amp;uuml;m bağlantıları boşaltır.&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="367"&gt;public static void ClearPool (SqlConnection connection)&lt;/td&gt;
+&lt;td bgcolor="#ffffff"&gt;&lt;span class="identifier"&gt;Parametre olarak verilen bağlantıya ait havuzu boşaltır.&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Bu metodların uygulanması halinde yukarıdaki &amp;ccedil;alışma zamanı hatası ile başedebiliriz. Aslında bu metodlar, bağlantı havuzunu boşaltırken ilgili bağlantı nesnelerini kapatmazlar. Sadece bunların artık kullanılmayacağını belirtirler. Yukarıdaki &amp;ouml;rnek uygulamamızı aşağıdaki gibi değiştirmemiz etkili bir &amp;ccedil;alışma zamanı &amp;ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml; olacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;try
+{
+    for (int i = 1; i &amp;lt; 100; i++)
+    {
+        KontakSayisiniBul();
+    }
+}
+catch (SqlException err)
+{
+    if (err.Number == 233)
+    {
+        SqlConnection.ClearAllPools();
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;br /&gt;&amp;nbsp;Uygulamamızı bu haliyle &amp;ccedil;alıştırırsak &amp;ccedil;alışma zamanında herhangibir istisna almayız. Az &amp;ouml;nce değindiğimiz gibi bu sorunun daha zor olan ama daha g&amp;uuml;&amp;ccedil;l&amp;uuml; olan bir &amp;ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml; daha vardır. Bu Failover Partner adı verilen gene bir &amp;ccedil;&amp;ouml;z&amp;uuml;md&amp;uuml;r. Kısaca, sql sunucusunun yanında ayna(Mirror) g&amp;ouml;revi g&amp;ouml;ren bir sunucu ve birde tanık(Witness) g&amp;ouml;revi g&amp;ouml;ren başka bir sunucu vardır. Bu sistemin konusu makalemizin sınırlarını aşmaktadır. Bu konuya ilerleyen zamanlarda ayrıca vakit ayırmayı d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum. G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi bağlantı havuzlarını kullanırken başımıza gelebilecek iki &amp;ouml;nemli tehlike &amp;uuml;zerinde durmaya &amp;ccedil;alıştık. İlki kesin olarak kapatılmayan bağlantı nesnelerinin yol a&amp;ccedil;tığı sorundu. Bunun &amp;ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml; i&amp;ccedil;in en etkili y&amp;ouml;ntem olarak using bloklarına başvurduk. Diğer sorunumuz ise, &amp;ccedil;alışma zamanında veritabanı sunucusunun herhangibir neden ile sıfırlanmasıyıdı. Bu sorunu ise, hata kodunu ele alıp bağlanyı havuzlarını boşaltarak &amp;ccedil;&amp;ouml;zd&amp;uuml;k. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2006-02-27 08:00:00</pubDate>
+  <slug>Connection-Pooling-in-Onemi-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>adonet</tag>
+    <tag>connection-pooling</tag>
+  </tags>
+  <categories>
+    <category>Ado.net 2.0</category>
+  </categories>
+</post>

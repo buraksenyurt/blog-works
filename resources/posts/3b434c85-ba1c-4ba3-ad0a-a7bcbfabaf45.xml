@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Rust Pratikleri - Değişkenleri Kopyalayarak veya Referans Olarak Taşımak</title>
+  <description>Bu pratikte içinde başka bir enum sabiti kullanan bir enum sabitinin bir fonksiyonda parametre olarak kullanılmasında oluşabilecek Value Moved Here sorununa bakıyoruz. Cümle biraz karışık oldu :D Öyleyse örnek üstünden ilerleyelim. Kod tarafında ilk olarak sorunsuz bir ortam tesis edeceğiz. Problemi oluşturacağız. Ardından iki farklı yolla duruma açıklık getireceğiz.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2022/Mart/ownership.jpg" alt="" /&gt;Rust bellek y&amp;ouml;netimi konusunda epey hassas olduğundan, fonksiyonlara aktarılan değerlerin nasıl taşınacağı da &amp;ouml;nemli bir konudur. Bir .net geliştiricisi olarak değişkenlerin fonksiyonların değer t&amp;uuml;r&amp;uuml; veya referans t&amp;uuml;r&amp;uuml; olarak aktarıldığını biliyorum. S&amp;ouml;z gelimi Rust tarafında olmayan class t&amp;uuml;revli nesneler fonksiyonlara otomatik olarak referans adresleri ile aktarılıyorlar. &amp;Uuml;stelik bunu a&amp;ccedil;ık&amp;ccedil;a belirtmemize gerek olmadığını s&amp;ouml;yleyebilirim. Peki Rust tarafında durum nasıl? Sonu&amp;ccedil;ta ortada bir Garbage Collector yok. Değişkenler varsayılan olarak değiştirilemez&lt;em&gt;(immutable)&lt;/em&gt;. Class diye bir kavram yok ve kodlarda kullandığımız değişkenler katı bir bi&amp;ccedil;imde ownership, borrowing gibi kural denetimlerine tabiler.&lt;/p&gt;
+&lt;p&gt;İşte bu pratikte i&amp;ccedil;inde başka bir enum sabiti kullanan bir başka enum sabitinin uzak diyarlardaki bir fonksiyon tarafından parametre olarak kullanılması sırasında oluşabilecek &lt;em&gt;&lt;strong&gt;Value Moved Here&lt;/strong&gt;&lt;/em&gt; sorununa bakmaya &amp;ccedil;alışacağız ki Rust dilini yeni yeni &amp;ouml;ğrenmeye başlayanların en sık karşılaştığı derleme zamanı hata mesajlarından birisi olduğunu ifade edebilirim. C&amp;uuml;mle biraz karışık oldu :D Haydi gelin basit bir &amp;ouml;rnek &amp;uuml;st&amp;uuml;nden konuyu detayları ile incelemeye &amp;ccedil;alışalım. Senaryomuz gereği ilk olarak sorunsuz bir program kodu yazacağız. Ardından problemi oluşturacak ve son olarak iki farklı&amp;nbsp;kullanım şeklini ele alacağız.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;# projeyi oluşturma aşaması
+cargo new by_val_by_ref&lt;/pre&gt;
+&lt;p&gt;Program kodumuzun ilk versiyonunu aşağıdaki gibi tasarlayabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;fn main() {
+    let binding = Binding::Https(SoapVersion::V1_2);
+    prepare_env(binding);
+}
+
+#[derive(Debug)]
+enum SoapVersion {
+    V1_1,
+    V1_2,
+}
+enum Binding {
+    Http(SoapVersion),
+    Https(SoapVersion),
+    Rest,
+    Grpc,
+}
+
+fn prepare_env(b: Binding) {
+    match b {
+        Binding::Http(v) | Binding::Https(v) =&amp;gt; {
+            println!("HTTP {:?} versiyonu i&amp;ccedil;in ortam hazırlanıyor.", v)
+        }
+        Binding::Rest =&amp;gt; println!("Servis REST protokol&amp;uuml;ne g&amp;ouml;re hazırlanıyor"),
+        Binding::Grpc =&amp;gt; println!("Servis GRPC protokl&amp;uuml;ne g&amp;ouml;re hazırlanıyor"),
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rnek olarak bir servisin bağlantı noktasını temsil eden Binding isimli bir enum sabitimiz var. Bu enum sabiti i&amp;ccedil;inde yer alan Http ve Https değerleri de aslında SoapVersion isimli bir başka enum sabiti ile ifade ediliyorlar. B&amp;ouml;ylece bir servisin bağlantı noktasında kullanılan protokol&amp;uuml; farklı şekillerde ifade etme şansına sahip oluyoruz. Rust'taki enum t&amp;uuml;r&amp;uuml; bu tip kullanımlar d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde bence epey g&amp;uuml;&amp;ccedil;l&amp;uuml; bir enstr&amp;uuml;man. prepare_env isimli fonksiyonumuz parametre olarak gelen Binding sabitinin değerlerine bakmak i&amp;ccedil;in bir match ifadesi kullanıyor. Sadece ekrana bilgi yazdırdığımızı s&amp;ouml;yleyebiliriz. Programımız bu haliyle &amp;ccedil;alıştırdığımızda herhangi bir sıkıntı olmayacaktır. Olduk&amp;ccedil;a sade ve anlaşılır zaten.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mart/by_val_by_ref_1.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi binding değişkeni i&amp;ccedil;in prepare_env fonksiyonunu bir kez daha &amp;ccedil;ağıralım. Şeytanlık yapacağız ya...&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;fn main() {
+    let binding = Binding::Https(SoapVersion::V1_2);
+    prepare_env(binding);
+    prepare_env(binding);
+}&lt;/pre&gt;
+&lt;p&gt;Bu durumda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı ile karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mart/by_val_by_ref_2.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;İşte bahsettiğimiz "value moved here" hatası. Rust'a g&amp;ouml;re kural ş&amp;ouml;yle; &lt;strong&gt;Bir değeri&lt;em&gt;(Value)&lt;/em&gt; bu &amp;ouml;rnekteki gibi bir scope'a taşıdıktan sonra sahipliğini&lt;em&gt;(Ownership)&lt;/em&gt; kaybederiz.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Yukarıdaki gibi bir kullanım &amp;ccedil;ok anlamlı değil ger&amp;ccedil;i ama problemin &amp;ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml; adına değişken sahipliğinin binding_env scope'undan d&amp;ouml;nd&amp;uuml;kten sonra nasıl korunacağını &amp;ouml;ğrenmeliyiz. Sahipliğin korunması i&amp;ccedil;in basit iki y&amp;ouml;ntem bulunuyor. Binding ve SoapVersion enum sabitlerinin bit seviyesinde kopylanmasına izin vermek ki bu değerlerin kopyalanarak taşınması anlamına gelmekte ya da nesne referansını taşımak. İlki i&amp;ccedil;in built-in olarak gelen Clone ve Copy trait'lerini derivable modada&amp;nbsp;uyarlamak&amp;nbsp;yeterli. Aynen aşağıdaki kod par&amp;ccedil;asında g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;#[allow(dead_code)]
+#[derive(Debug, Clone, Copy)]
+enum SoapVersion {
+    V1_1,
+    V1_2,
+}
+
+#[allow(dead_code)]
+#[derive(Clone, Copy)]
+enum Binding {
+    Http(SoapVersion),
+    Https(SoapVersion),
+    Rest,
+    Grpc,
+}&lt;/pre&gt;
+&lt;p&gt;Bu arada Copy ve Clone trait'lerini birlikte uygulamak gerekiyor. Sadece Copy trait'ini uygulamak en azından bu &amp;ouml;rnekteki enum sabitlerimiz i&amp;ccedil;in yeterli değil. Eğer b&amp;ouml;yle yaparsak derleyici yeni durumdan yine hoşnut olmayaca ve bizi şık bir şekilde uyaracaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mart/by_val_by_ref_3.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Clone ve Copy trait'lerini uyguladığımız i&amp;ccedil;in binding değişkeni ilgili fonksiyona kopylanarak ge&amp;ccedil;irilmiş oldu. Bu durumda &amp;ccedil;alışma zamanında bir problemle karşılaşmayız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mart/by_val_by_ref_4.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Değerin kopyalanarak taşınması&amp;nbsp;durumunu daha iyi anlamak i&amp;ccedil;in gdb debugger aracını kullanarak &amp;ccedil;alışma zamanındaki stack oluşumlarına bakmak iyi bir fikir olabilir. Aşağıda gerekli terminal komutlarını g&amp;ouml;rebilirsiniz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;cargo build
+cd target/debug
+gdb by_val_by_ref
+run
+list
+b prepare_env
+r
+info args
+c
+info args
+c&lt;/pre&gt;
+&lt;p&gt;İlk olarak programımızı derlememiz gerekiyor. Ardında oluşan binary dosyasının olduğu klas&amp;ouml;re ge&amp;ccedil;iyoruz. gdb ile debugger arabirimini a&amp;ccedil;tıktan sonra uygulamayı run komutu ile bir kere &amp;ccedil;alıştırmakta yarar var. Ardından b komutu ile prepare_env fonksiyonuna bir breakpoint bırakıyoruz. r ile programı işlettiğimizde iki kez bu fonksiyona d&amp;uuml;şeceğiz. Her seferinde args ile fonksiyona gelen parametrelere bakarsak değişkenin birebir kopyasının aktarıldığını g&amp;ouml;rebiliriz. Yukarıdaki işlemlerin &amp;ccedil;ıktısı kendi ubuntu sistemimde aşağıdaki gibi oldu.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mart/by_val_by_ref_5.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi ikinci kullanım se&amp;ccedil;eneğine bakalım. Değeri referans olarak taşımak. Bir başka deyişle pointer adresini aktarmak. İşin p&amp;uuml;f noktası &amp;amp; sembol&amp;uuml;. Bu ama&amp;ccedil;la uygulama kodumuzu aşağıdaki gibi d&amp;uuml;zenlememiz yeterli.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;fn main() {
+    let binding = Binding::Https(SoapVersion::V1_2);
+    prepare_env(&amp;amp;binding);
+    prepare_env(&amp;amp;binding);
+}
+
+fn prepare_env(b: &amp;amp;Binding) {
+    match b {
+        Binding::Http(v) | Binding::Https(v) =&amp;gt; {
+            println!("HTTP {:?} versiyonu i&amp;ccedil;in ortam hazırlanıyor.", v)
+        }
+        Binding::Rest =&amp;gt; println!("Servis REST protokol&amp;uuml;ne g&amp;ouml;re hazırlanıyor"),
+        Binding::Grpc =&amp;gt; println!("Servis GRPC protokl&amp;uuml;ne g&amp;ouml;re hazırlanıyor"),
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Fonksiyonumuzun parametresini referans alacak şekilde değiştirdik ve elbette binding değişkenlerini g&amp;ouml;nderdiğimiz yerde de referans belirterek&amp;nbsp;yolladık. Ayrıca match ifadesi i&amp;ccedil;erisine dikkat edecek olursanız SoapVersion enum tipinin de referans olarak alındığını g&amp;ouml;rebiliriz. Tabii bunu g&amp;ouml;steren IDE'nin kendisi. IntelliJ IDE veya Visual Studio Code ile baktığımızda gri tonlamalı alanlardan bunu anlayabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mart/by_val_by_ref_6.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Koplayama y&amp;ouml;ntemiyle taşımada yaptığımız gibi bu kullanımı da GDB Debugger ile analiz edelim derim. Sonu&amp;ccedil;ta kod par&amp;ccedil;amız olduk&amp;ccedil;a az. Kolayca debug edebiliriz. İşte program kodunun son halini derleyerek başlıyoruz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;cargo build
+cd target/debug
+gdb by_val_by_ref
+run
+list
+b prepare_env
+r
+info args
+print *b
+c
+info args
+print *b
+c&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;zellikle prepare_env fonksiyonundaki breakpoint noktalarında arg&amp;uuml;manın bir pointer olduğuna ve her iki &amp;ccedil;ağrıda da aynı referans adresinin kullanıldığında dikkat edelim.&amp;nbsp;Pointer i&amp;ccedil;eriklerini g&amp;ouml;rmek i&amp;ccedil;in &lt;em&gt;&lt;strong&gt;print *b&lt;/strong&gt;&lt;/em&gt; komutunu kullanıyoruz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mart/by_val_by_ref_7.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Sanıyorum ki aktif olarak kullanmakta olduğunuz programlama dilinde değişken verilerini fonksiyonlara atarken bir kere daha d&amp;uuml;ş&amp;uuml;neceksiniz :) &amp;Ccedil;oğu y&amp;uuml;ksek seviyeli dilde bu tip ayrımlara hi&amp;ccedil; takılmadan geliştirme yapmaktayız. Bu geliştirme hızımızı elbette y&amp;uuml;kseltiyor ancak g&amp;uuml;venli bellek sahaları ve performans &amp;ouml;ne &amp;ccedil;ıktığında sistemin daha da yavaşlamasına sebebiyet veriyor. Tabii bu noktada aklımıza bir soru takılıyor olabilir. Rust varsayılan olarak neden bir değişkenin tek bir sahibi olmasını istiyor? İşte hem size hem de bana g&amp;uuml;zel bir soru :D&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir Rust pratiğimizin daha sonuna. Her zaman olduğu gibi &lt;a href="https://github.com/buraksenyurt/rust-farm/tree/main/Practices/by_val_by_ref" target="_blank"&gt;&amp;ouml;rneğe ait kodlara github reposundan erişebilirsiniz&lt;/a&gt;. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2022-04-17 09:00:00</pubDate>
+  <slug>rust-pratikleri-degiskenleri-kopyalayarak-veya-referans-olarak-tasimak</slug>
+  <tags>
+    <tag>rust</tag>
+    <tag>rust-pratikleri</tag>
+    <tag>rust-programming-language</tag>
+    <tag>memory-management</tag>
+    <tag>stack</tag>
+    <tag>heap</tag>
+    <tag>gdb</tag>
+  </tags>
+  <categories>
+    <category>Rust</category>
+  </categories>
+</post>

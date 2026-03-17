@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Asp.Net Web API ile OData Kullanımı</title>
+  <description>İşlerin epeyce hafiflediği bir haftaydı diyebilirim. Dolayısıyla kırda parkta bayırda oturup dinlenmek için epeyce vaktim vardı. Ya da bir şeyler araştırmayı da tercih edebilirdim ki ben de öyle yaptım. Uzun zamandır Asp.Net Web API tarafında bir şeyler yapmıyordum. Araştırmalarım sırasında OData'nın Web API tarafındaki kullanımına denk geldim. Her zaman ki gibi konuyu olabildiğince basit bir halde öğrenmenin iyi olacağını düşündüm. Sonunda konuyu kaleme almayı başardım. Haydi başlayalım.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2016/04/ODataWebAPI_G.gif" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;İşlerin epeyce hafiflediği bir haftaydı diyebilirim. Dolayısıyla kırda parkta bayırda oturup dinlenmek i&amp;ccedil;in epeyce vaktim vardı. Ya da bir şeyler araştırmayı da tercih edebilirdim ki ben de &amp;ouml;yle yaptım. Uzun zamandır &lt;strong&gt;Asp.Net Web API&lt;/strong&gt; tarafında bir şeyler yapmıyordum. Araştırmalarım sırasında &lt;strong&gt;OData&lt;/strong&gt;'nın &lt;strong&gt;Web API&lt;/strong&gt; tarafındaki kullanımına denk geldim. Her zaman ki gibi konuyu olabildiğince basit bir halde &amp;ouml;ğrenmenin iyi olacağını d&amp;uuml;ş&amp;uuml;nd&amp;uuml;m. Sonunda konuyu kaleme almayı başardım. Haydi başlayalım.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;OData&lt;em&gt;(Open Data Protocol)&lt;/em&gt;&lt;/strong&gt; ile veri kaynaklarına &lt;strong&gt;HTTP&lt;/strong&gt; &amp;uuml;zerinden sorgu atabilmek ve bunu &lt;strong&gt;REST&lt;/strong&gt; stilinde ger&amp;ccedil;ekleştirmek m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. &lt;strong&gt;OData&lt;/strong&gt; standartları sayesinde veri &amp;uuml;zerinde filtreleme, belirli alanlarını &amp;ccedil;ekme&lt;em&gt;(Projection)&lt;/em&gt;, ana i&amp;ccedil;eriklerden detay i&amp;ccedil;erikleri genişletme&lt;em&gt;(Expand), &lt;/em&gt;gruplamalı hesaplamalar yapma&lt;em&gt;(Aggregations)&lt;/em&gt;&amp;nbsp;ve benzeri &lt;strong&gt;SQL&lt;/strong&gt;'den aşina olduğumuz belli başlı fonksiyonellikleri servis odaklı kullanabiliriz.&lt;/p&gt;
+&lt;p&gt;Bu standardı dilersek &lt;strong&gt;Asp.Net Web API&lt;/strong&gt; tabanlı servisler ile de ele alabiliriz. Tek yapmamız gereken &lt;strong&gt;Microsoft.AspNet.OData&lt;/strong&gt; isimli &lt;strong&gt;NuGet&lt;/strong&gt; paketinden yararlanmaktır. İşte bu yazımızda &amp;ccedil;ok basit bir &amp;ouml;rnek ile s&amp;ouml;z konusu senaryoyu incelemeye &amp;ccedil;alışacağız. Senaryomuzda kategori ve bu kategoriler bağlı &amp;uuml;r&amp;uuml;nlerimizin olduğu &lt;strong&gt;In-Memory&lt;/strong&gt; bir veri depomuz olacak. Bu veri k&amp;uuml;mesine &lt;strong&gt;Web API&lt;/strong&gt; servisleri &amp;uuml;zerinden &lt;strong&gt;OData&lt;/strong&gt; sorgusu atmaya &amp;ccedil;alışacağız. Gelin adım adım ilerleyerek &amp;ouml;rneğimizi geliştirelim.&lt;/p&gt;
+&lt;h2&gt;Projenin Oluşturulması ve Gerekli NuGet Paketlerinin Y&amp;uuml;klenmesi&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Visual Studio&lt;/strong&gt; ortamında&lt;em&gt;(ki ben &amp;ouml;rneği 2013 s&amp;uuml;r&amp;uuml;m&amp;uuml;nde geliştirdim)&lt;/em&gt; bir &lt;strong&gt;Asp.Net&lt;/strong&gt; projesi oluşturarak işe başlayalım. &lt;strong&gt;Empty&lt;/strong&gt;&amp;nbsp;şablonunu tercih edip &lt;strong&gt;Web API&lt;/strong&gt; se&amp;ccedil;eneğini işaretleyerek devam edelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/04/ODataWebAPI_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Proje oluşturulduktan sonra &lt;strong&gt;OData&lt;/strong&gt; kullanımını kolaylaştıracak olan &lt;strong&gt;NuGet&lt;/strong&gt; paketinin y&amp;uuml;klenmesi gerekmektedir. &lt;strong&gt;NuGet Package Manager Console&lt;/strong&gt; &amp;uuml;zerinden ilgili paket aşağıdaki komut ile projeye y&amp;uuml;klenir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;install-package Microsoft.AspNet.OData&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;Ouml;rneği Entity Framework tabanlı olacak şekilde geliştirebilirsiniz de. Bu durumda install-package EntityFramework komutu ile gerekli NuGet paketini y&amp;uuml;klemeniz yeterlidir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;&amp;Ouml;rnek Model Sınıflarının Y&amp;uuml;klenmesi&lt;/h2&gt;
+&lt;p&gt;İşlemlerimizi &amp;ccedil;ok basit bir şekilde ele alacağız. Aşağıdaki sınıf &amp;ccedil;izelgesinde g&amp;ouml;r&amp;uuml;len tipleri&amp;nbsp;&lt;strong&gt;Models&lt;/strong&gt; klas&amp;ouml;r&amp;uuml;ne ekleyerek ilerleyebiliriz. Teorik olarak kategoriler ve bunlara bağlı &amp;uuml;r&amp;uuml;nlerin olduğu miniminacık bir d&amp;uuml;nyamız var. Her iki &lt;strong&gt;Entity&lt;/strong&gt; arasında bir ilişki kurduğumuzu g&amp;ouml;rebilirsiniz. Yani bir kategoriye bağlı n sayıda &amp;uuml;r&amp;uuml;n s&amp;ouml;z konusudur.&lt;/p&gt;
+&lt;p&gt;Burada &amp;ouml;nemli olan kısım &lt;strong&gt;Contained&lt;/strong&gt; &lt;strong&gt;niteliğinin&lt;em&gt;(Attribute)&lt;/em&gt;&lt;/strong&gt; kullanımıdır. Bu nitelik ile &lt;strong&gt;OData&lt;/strong&gt; sorgularının &lt;strong&gt;Entity&lt;/strong&gt;' ler arası &lt;strong&gt;ilişkileri&lt;em&gt;(Relations)&lt;/em&gt;&lt;/strong&gt; &amp;ccedil;alışma zamanında tanıyabilmesini sağlamaktayız. &lt;strong&gt;AzonDataSources&lt;/strong&gt; sınıfı temel olarak veriyi doldurduğumuz yerdir. &amp;Ouml;rnek &amp;ccedil;alışmamızda &lt;strong&gt;Entity Framework&lt;/strong&gt; yerine &lt;strong&gt;In-Memory&lt;/strong&gt; &amp;ccedil;alışan bir &amp;ccedil;&amp;ouml;z&amp;uuml;m kullandığımızı bir kere daha hatırlatmak isterim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/04/ODataWebAPI_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Data Source Sınıfımız&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Collections.Generic;
+using System.Data.Entity;
+
+namespace UsingOData.Models
+{
+    public class AzonDataSources
+    {
+        private static AzonDataSources ds = null;
+        public List&amp;lt;Category&amp;gt; Categories { get; set; }
+        public List&amp;lt;Product&amp;gt; Products { get; set; }
+
+        private AzonDataSources()
+        {
+            Categories = new List&amp;lt;Category&amp;gt;();
+            Products = new List&amp;lt;Product&amp;gt;();
+            this.PrepareData();
+        }
+
+        public static AzonDataSources Instance
+        {
+            get
+            {
+                if (ds == null)
+                {
+                    ds = new AzonDataSources();
+                }
+                return ds;
+            }
+        }
+
+        public void PrepareData()
+        {
+            Category kitapCategory = new Category
+            {
+                 CategoryID=1,
+                 Name="Kitap"
+            };
+            Category elektronikCategory = new Category
+            {
+                CategoryID=2,
+                 Name="Elektronik"
+            };
+
+            kitapCategory.Products = new List&amp;lt;Product&amp;gt;
+            {
+                new Product{ 
+                    Category=kitapCategory,
+                    ListPrice=20,
+                    ProductID=1,
+                    Title="C# All in One"
+                },
+                new Product{ 
+                    Category=kitapCategory,
+                    ListPrice=8.95M,
+                    ProductID=91,
+                    Title="Asp.Net Web API Introduction"
+                },
+                new Product{ 
+                    Category=kitapCategory,
+                    ListPrice=12.50M,
+                    ProductID=8,
+                    Title="Pragmatic Programmer"
+                },
+                new Product{ 
+                    Category=kitapCategory,
+                    ListPrice=5,
+                    ProductID=14,
+                    Title="The Last Lecture"
+                }
+            };
+
+            elektronikCategory.Products = new List&amp;lt;Product&amp;gt;
+            {
+                new Product{ 
+                    Category=elektronikCategory,
+                    ListPrice=200,
+                    ProductID=28,
+                    Title="LG Tablet x10"
+                },
+                new Product{ 
+                    Category=elektronikCategory,
+                    ListPrice=280.95M,
+                    ProductID=92,
+                    Title="Apple Smart Watch"
+                },
+                new Product{ 
+                    Category=elektronikCategory,
+                    ListPrice=1200M,
+                    ProductID=55,
+                    Title="Diesel Watch Blue"
+                }
+            };
+
+            this.Categories.Add(kitapCategory);
+            this.Categories.Add(elektronikCategory);
+            this.Products.AddRange(kitapCategory.Products);
+            this.Products.AddRange(elektronikCategory.Products);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Category isimli sınıfımız,&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Collections.Generic;
+using System.Web.OData.Builder; 
+
+namespace UsingOData.Models
+{
+    public class Category
+    {
+        public int CategoryID { get; set; }
+        public string Name { get; set; }
+        [Contained]
+        public IList&amp;lt;Product&amp;gt; Products { get; set; }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Product isimli sınıfımız&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Web.OData.Builder;
+
+namespace UsingOData.Models
+{
+    public class Product
+    {
+        public int ProductID { get; set; }
+        public string Title { get; set; }
+        public decimal ListPrice { get; set; }
+        [Contained]
+        public Category Category { get; set; }
+    }
+}&lt;/pre&gt;
+&lt;h2&gt;OData Endpoint' inin Ayarlanması&lt;/h2&gt;
+&lt;p&gt;Şimdi &lt;strong&gt;OData&lt;/strong&gt; i&amp;ccedil;in gerekli &lt;strong&gt;Route&lt;/strong&gt; ayarlarını yapalım. Bunun i&amp;ccedil;in &lt;strong&gt;WebApiConfig.cs&lt;/strong&gt; i&amp;ccedil;eriğini aşağıdaki gibi d&amp;uuml;zenlemeliyiz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Microsoft.OData.Edm;
+using System.Web.Http;
+using System.Web.OData.Batch;
+using System.Web.OData.Builder;
+using System.Web.OData.Extensions;
+using UsingOData.Models;  
+
+namespace UsingOData
+{
+    public static class WebApiConfig
+    {
+        public static void Register(HttpConfiguration config)
+        {
+            config.MapODataServiceRoute("odata", null, GetEdmModel(), 
+                new DefaultODataBatchHandler(GlobalConfiguration.DefaultServer));
+            config.EnsureInitialized();
+        }
+        private static IEdmModel GetEdmModel()
+        {
+            ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
+            builder.Namespace = "ODataSample";
+            builder.ContainerName = "DefaultContainer";
+            builder.EntitySet&amp;lt;Category&amp;gt;("Categories");
+            builder.EntitySet&amp;lt;Product&amp;gt;("Products");
+            return builder.GetEdmModel();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Kritik nokta &lt;strong&gt;MapODataServiceRoute&lt;/strong&gt; metodunda kullanılan &lt;strong&gt;GetEdmModel&lt;/strong&gt; fonksiyonudur. &lt;strong&gt;ODataConventionModelBuilder&lt;/strong&gt; tarafından &amp;ccedil;ağırılan &lt;strong&gt;GetEdmModel&lt;/strong&gt; fonksiyonunun sonucunu d&amp;ouml;nd&amp;uuml;rmektedir. Burada builder i&amp;ccedil;in gerekli&amp;nbsp;&lt;strong&gt;Namespace&lt;/strong&gt;, &lt;strong&gt;Container&lt;/strong&gt; ve kullanılacak &lt;strong&gt;EntitySet&lt;/strong&gt; bildirimleri yapılır. &lt;strong&gt;EntitySet&lt;/strong&gt; bildirimlerinde kullanılan isimler biraz sonra yazacağımız &lt;strong&gt;Controller&lt;/strong&gt; sınıflarının da adı olacaktır. &lt;em&gt;(&amp;Ouml;rneğin Categories i&amp;ccedil;in CategoriesController gibi)&lt;/em&gt;&lt;/p&gt;
+&lt;h2&gt;Controller Sınıflarının Yazılması&lt;/h2&gt;
+&lt;p&gt;Pek tabi &lt;strong&gt;Web API&lt;/strong&gt; servisimizin &amp;ouml;nemli akt&amp;ouml;rlerinden birisi de&amp;nbsp;&lt;strong&gt;Controller&lt;/strong&gt; sınıflarıdır. Senaryomuzda iki &lt;strong&gt;Entity&lt;/strong&gt; s&amp;ouml;z konusu olduğu i&amp;ccedil;in yine iki adet &lt;strong&gt;Controller&lt;/strong&gt; ekleyeceğiz. &lt;strong&gt;Controller&lt;/strong&gt; i&amp;ccedil;eriklerimiz son derece basit.&lt;/p&gt;
+&lt;p&gt;CategoriesController sınıfı&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Linq;
+using System.Web.Http;
+using System.Web.OData;
+using UsingOData.Models;
+
+namespace UsingOData.Controllers
+{
+    public class CategoriesController 
+        : ODataController
+    {
+        [EnableQuery]
+        public IHttpActionResult Get()
+        {
+            return Ok(AzonDataSources.Instance.Categories.AsQueryable());
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;ve ProductsController sınıfı&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Linq;
+using System.Web.Http;
+using System.Web.OData;
+using UsingOData.Models;
+
+namespace UsingOData.Controllers
+{
+    public class ProductsController 
+        : ODataController
+    {
+        [EnableQuery]
+        public IHttpActionResult Get()
+        {
+            return Ok(AzonDataSources.Instance.Products.AsQueryable());
+        }      
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Her iki sınıf birer &lt;strong&gt;Get&lt;/strong&gt; metoduna sahip. &amp;Ouml;rneğimizi &amp;ccedil;ok basit bir şekilde ele alacağımızdan &lt;strong&gt;Post&lt;/strong&gt;, &lt;strong&gt;Put&lt;/strong&gt;, &lt;strong&gt;Delete&lt;/strong&gt; gibi operasyonları hari&amp;ccedil; tuttuk. &lt;strong&gt;IHttpActionResult&lt;/strong&gt; &lt;strong&gt;aray&amp;uuml;z&amp;uuml;n&amp;uuml;n&lt;em&gt;(Interface)&lt;/em&gt;&lt;/strong&gt; taşıyabileceği nesne &amp;ouml;rnekleri cinsinden değer d&amp;ouml;nd&amp;uuml;ren &lt;strong&gt;Get&lt;/strong&gt;&amp;nbsp;metodlarımız &lt;strong&gt;EnableQuery&lt;/strong&gt; &lt;strong&gt;niteliği&lt;em&gt;(Attribute)&lt;/em&gt;&lt;/strong&gt; ile işaretlenmiş durumdalar. Bu nitelik sayesinde &amp;ccedil;alışma zamanında &lt;strong&gt;OData&lt;/strong&gt; sorgu komutlarını kullanabileceğimizi belirtmiş oluyoruz. &lt;strong&gt;Ok&lt;/strong&gt; isimli fonksiyon&amp;nbsp;&lt;strong&gt;OkNegotiatedContentResult&amp;lt;T&amp;gt;&lt;/strong&gt; tipinden değer d&amp;ouml;nd&amp;uuml;rmekte. &amp;Ouml;rneğimizde &lt;strong&gt;HTTP 200&lt;/strong&gt; d&amp;ouml;nmesini bekliyoruz.&lt;/p&gt;
+&lt;h2&gt;Test Etmeye Hazırız&lt;/h2&gt;
+&lt;p&gt;Herhangibir tarayıcıdan aşağıdaki komutları deneyerek &amp;ouml;rneğimizi test edebiliriz. Sonu&amp;ccedil;lar tahmin edileceği gibi &lt;strong&gt;JSON&lt;/strong&gt; formatında g&amp;ouml;r&amp;uuml;necektir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;http://localhost:61708/$metadata&lt;/strong&gt; &amp;ccedil;ağrısı ile aslında servisin metadata i&amp;ccedil;eriğine ulaşabiliriz. B&amp;ouml;ylece servisin hangi entity' leri sunduğunu da g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/04/ODataWebAPI_5.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;http://localhost:61708/Categories&lt;/strong&gt; ile t&amp;uuml;m kategorileri elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/04/ODataWebAPI_7.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;http://localhost:61708/Categories?$expand=Products&lt;/strong&gt; ile kategorileri ve bunlara bağlı &amp;uuml;r&amp;uuml;nlerin listesini komple elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/04/ODataWebAPI_6.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;http://localhost:61708/Products?$select=Title,ListPrice&lt;/strong&gt;&amp;nbsp;ile t&amp;uuml;m &amp;uuml;r&amp;uuml;nlerin sadece Title ve ListPrice değerlerini elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/04/ODataWebAPI_8.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;http://localhost:61708/Products?$filter=startswith(Title,'A') ile A harfiyle başlayan &amp;uuml;r&amp;uuml;n listesini elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/04/WebAPI_9.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Pek tabi &lt;strong&gt;OData&lt;/strong&gt; sorgularında kullanabileceğimiz pek &amp;ccedil;ok anahtar kelime var. Bu kabiliyetlere&amp;nbsp;&lt;a href="http://docs.oasis-open.org/odata/odata/v4.0/odata-v4.0-part2-url-conventions.html"&gt;http://docs.oasis-open.org/odata/odata/v4.0/odata-v4.0-part2-url-conventions.html&lt;/a&gt;&amp;nbsp;adresinden detaylı bir şekilde bakabilirsiniz.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Bu makalemizde bir &lt;strong&gt;Web API&lt;/strong&gt; hizmetini &lt;strong&gt;OData&lt;/strong&gt; sorgularını destekleyecek hale nasıl getirebileceğimizi incelemeye &amp;ccedil;alıştık. Bir diğer makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2016-04-21 09:00:00</pubDate>
+  <slug>asp-net-web-api-ile-odata-kullanimi1</slug>
+  <tags>
+    <tag>aspnet-web-api</tag>
+    <tag>wcf</tag>
+    <tag>odata</tag>
+    <tag>open-data-protocol</tag>
+    <tag>http</tag>
+    <tag>service</tag>
+    <tag>aspnet</tag>
+    <tag>web-api</tag>
+    <tag>rest</tag>
+    <tag>c#</tag>
+  </tags>
+  <categories>
+    <category>Asp.Net Web API</category>
+  </categories>
+</post>

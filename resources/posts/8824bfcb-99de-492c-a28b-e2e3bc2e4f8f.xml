@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Mesaj Sözleşmeleri(Message Contracts)</title>
+  <description>Servis tabanlı uygulamalarda en önemli noktalardan biriside aradaki bilgi transferlerinin nasıl ve ne şekilde gerçekleştirildiğidir. Gerçek şuki, bu bilgi transferinin oluşma şekli çoğu zaman geliştiricinin gözünden kaçan yada çok fazla ilgilenmediği bir konu olmaktadır. Nitekim çoğu servis geliştirme aracı buradaki söz konusu içeriğin hazırlanmasını , gönderilmesini veya alınmasını otomatikleştirmektedir. Özellikle Windows Communication Foundation tarafında, bilginin istemci ve servis arasındaki dolaşımında bağlayıcı tiplerin(Binding Type) seçilmesi ile zaten arka tarafta ne şekilde bir haberleşme olacağı ve paketlerin nasıl hazırlanacağı belirlenmiş olur.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Servis tabanlı uygulamalarda en &amp;ouml;nemli noktalardan biriside aradaki bilgi transferlerinin nasıl ve ne şekilde ger&amp;ccedil;ekleştirildiğidir. Ger&amp;ccedil;ek şuki, bu bilgi transferinin oluşma şekli &amp;ccedil;oğu zaman geliştiricinin g&amp;ouml;z&amp;uuml;nden ka&amp;ccedil;an yada &amp;ccedil;ok fazla ilgilenmediği bir konu olmaktadır. Nitekim &amp;ccedil;oğu servis geliştirme aracı buradaki s&amp;ouml;z konusu i&amp;ccedil;eriğin hazırlanmasını , g&amp;ouml;nderilmesini veya alınmasını otomatikleştirmektedir. &amp;Ouml;zellikle &lt;strong&gt;Windows Communication Foundation &lt;/strong&gt;tarafında, bilginin istemci ve servis arasındaki dolaşımında &lt;strong&gt;bağlayıcı tiplerin(Binding Type) &lt;/strong&gt;se&amp;ccedil;ilmesi ile zaten arka tarafta ne şekilde bir haberleşme olacağı ve paketlerin nasıl hazırlanacağı belirlenmiş olur.&lt;/p&gt;
+&lt;p&gt;Aslında servis ve istemci tarafında mesaj bazlı bir iletişim olduğu son derece a&amp;ccedil;ıktır. Farklı platformlar &amp;uuml;zerinde koşan servislerin haberleşmeleri yada farklı tipteki istemci uygulamaların servisleri kullanabilmeleri gerektiğinde ise, aradaki haberleşmenin bir standart &amp;uuml;zerinde ve esnek olması beklenir. Bu nedenle &amp;ouml;zellikle &lt;strong&gt;SOAP&lt;/strong&gt; bazlı web servisleri g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında mesajın tipi ve i&amp;ccedil;eriğide bellidir. İşte burada&lt;strong&gt; SOAP(Simpe Object Access Protocol)&lt;/strong&gt; tarzı mesajlardan s&amp;ouml;z edilebilir. Tipik olarak &lt;strong&gt;SOAP&lt;/strong&gt; mesajları bir zarf olarak temsil edilmekte&lt;strong&gt;(SOAP Envelope)&lt;/strong&gt; ve &lt;strong&gt;Header&lt;/strong&gt;, &lt;strong&gt;Body&lt;/strong&gt; isimli iki par&amp;ccedil;adan oluşmaktadır. Aşağıdaki şekilde bu i&amp;ccedil;erik temsil edilmeye &amp;ccedil;alışılmıştır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk269_1.gif" alt="" width="216" height="214" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Peki bu mesajların makalemize konu olmasının sebebi nedir? Bilindiği &amp;uuml;zere &lt;strong&gt;WCF&lt;/strong&gt; mimarisinde &amp;ccedil;eşitli tipte &lt;strong&gt;s&amp;ouml;zleşmeler(Contracts)&lt;/strong&gt; s&amp;ouml;z konusudur. &amp;Ouml;rneğin servislerin ne iş yaptığının, nasıl fonksiyonellikler sunduğunun ifade edilmesinde &lt;strong&gt;Sevis S&amp;ouml;zleşmeleri(Service Contracts)&lt;/strong&gt; kullanılmaktadır. Benzer şekilde istemci tarafına aktarılacak &lt;strong&gt;serileştirilebilir(Serializable)&lt;/strong&gt; tipler s&amp;ouml;z konusu ise &lt;strong&gt;Veri S&amp;ouml;zleşmeleri(Data Contracts) &lt;/strong&gt;tanımlanır. Yine istemci tarafına aktarılacak istisna mesajlarının &amp;ccedil;eşitli durumlar i&amp;ccedil;in &amp;ouml;zelleştirilmesi d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde &lt;strong&gt;Hata S&amp;ouml;zleşmeleri(Fault Contracts)&lt;/strong&gt; kullanılır. Ancak bu s&amp;ouml;zleşme &amp;ccedil;eşitleri dışında birde &lt;strong&gt;Mesaj S&amp;ouml;zleşmeleri(Message Contracts)&lt;/strong&gt; bulunmaktadır. İşte bu yazımızın konusuda budur.&lt;/p&gt;
+&lt;p&gt;Yazımıza servis odaklı uygulamalarda mesajların yerini konumlandırmaya &amp;ccedil;alışarak başladık. &amp;Ouml;zellikle &lt;strong&gt;SOAP&lt;/strong&gt; tabanlı bu mesajlar gerektiğinde &amp;ouml;zel olarak tasarlanabilirler. &lt;strong&gt;WCF&lt;/strong&gt; tarafında bunu ger&amp;ccedil;ekleştirebilmek i&amp;ccedil;in &lt;strong&gt;Mesaj&lt;/strong&gt; &lt;strong&gt;S&amp;ouml;zleşmelerinden&lt;/strong&gt; yararlanılır. Mesaj s&amp;ouml;zleşmelerinin ne zaman kullanılacağına karar verilmesi genellikle zordur. Farklı platformlar i&amp;ccedil;in destek verebilme imkanı&lt;strong&gt;(Interoperability) &lt;/strong&gt;ve mesaj kontrol&amp;uuml; &amp;ccedil;oğunlukla karar vermeyi kolaylaştırmaktadır. Ger&amp;ccedil;ektende servis tarafından istemciye g&amp;ouml;nderilecek veya alınacak mesajların farklı platformlara destek verebilecek şekilde tasarlanması gerektiği durumlarda &amp;ouml;zel &lt;strong&gt;Mesaj&lt;/strong&gt; &lt;strong&gt;S&amp;ouml;zleşmeleri&lt;/strong&gt; g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir. Diğer taraftan &lt;strong&gt;Mesaj S&amp;ouml;zleşmeleri&lt;/strong&gt; ile taşınacak bilginin değişik par&amp;ccedil;alarının &lt;strong&gt;SOAP&lt;/strong&gt; paketinin &lt;strong&gt;Header&lt;/strong&gt; veya &lt;strong&gt;Body&lt;/strong&gt; kısmına ayrıştırılması ve bu sayede de, gerekli olmayan par&amp;ccedil;aların mesaj ile birlikte &lt;span style="text-decoration: underline;"&gt;taşınmaması sağlanabilmektedir. Bu tam anlamıyla aradaki mesajlaşmanın kontrol altına alınması anlamına gelmektedir. Hatta, istemci ve servislerin belirli olduğu vakalarda, arada &amp;ouml;zel bir mesaj formatına g&amp;ouml;re veri i&amp;ccedil;eriğinin taşınmasıda m&amp;uuml;mk&amp;uuml;n olabilir. Diğer taraftan g&amp;ouml;z ardı edilmemesi gereken bir noktada, mesaj seviyesinde g&amp;uuml;venliktir. Mesaj S&amp;ouml;zleşmeleri kullanılırken bir tipin &lt;strong&gt;SOAP&lt;/strong&gt; zarfının i&amp;ccedil;erisindeki yayılımı belirlenebildiği gibi&lt;em&gt;(hangi kısımları Header' da olacak vb...) &lt;/em&gt; verinin &lt;strong&gt;şifrelenmeside(Encryption)&lt;/strong&gt; &amp;ouml;zelleştirilebilir. B&amp;ouml;ylece vakaya g&amp;ouml;re bir mesaj deseninin oluşturulması ve kullanılması m&amp;uuml;mk&amp;uuml;n olabilmektedir.&lt;/span&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;Ccedil;oğu durumda Mesaj S&amp;ouml;zleşmeleri yerine Veri S&amp;ouml;zleşmelerininde aynı işi yapıyor olduğu g&amp;ouml;r&amp;uuml;l&amp;uuml;r. Ancak genel kanıya g&amp;ouml;re, eğer bir tip n sayıda mesaj i&amp;ccedil;erisinde kullanılacaksa(yani reusable type olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilirse) Veri S&amp;ouml;zleşmesi olarak tanımlanması &amp;ouml;nerilmektedir. Ancak tip(type) sadece istek/cevap(Request/Respone) modeline g&amp;ouml;re bir kereliğine kullanılıyorsa, Mesaj S&amp;ouml;zleşmesi olacak şekilde tanımlanır.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Mesaj s&amp;ouml;zleşmelerinin uygulanması son derece kolaydır. Ancak dikkat edilmesi gereken noktalar vardır. Herşeyden &amp;ouml;nce &lt;strong&gt;MessageContract&lt;/strong&gt;, &lt;strong&gt;MessageHeader&lt;/strong&gt;, &lt;strong&gt;MessageBodyMember&lt;/strong&gt;, &lt;strong&gt;MessageHeaderArray&lt;/strong&gt; gibi &lt;strong&gt;niteliklerinden(attributes)&lt;/strong&gt; yararlanılarak &lt;strong&gt;Mesaj&lt;/strong&gt; &lt;strong&gt;S&amp;ouml;zleşmesi&lt;/strong&gt; tanımlanabilmektedir. Bununla birlikte servis operasyonlarında &lt;strong&gt;Mesaj&lt;/strong&gt; &lt;strong&gt;S&amp;ouml;zleşmelerinin&lt;/strong&gt; kullanılması s&amp;ouml;z konusu ise metod yapısında uyulması gereken kurallar vardır. Buna g&amp;ouml;re metod desenleri aşağıdaki &amp;ouml;rnekler olduğu gibi olmalıdır. Bu tablodaki &amp;ouml;rnek kullanımlarda yer alan &lt;strong&gt;ProductOrderResponse&lt;/strong&gt; ve &lt;strong&gt;ProductOrderRequest&lt;/strong&gt; isimli tipler &amp;ouml;rnek Mesaj S&amp;ouml;zleşmesi sınıflarıdır.&lt;/p&gt;
+&lt;table style="width: 100%;" border="1"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td colspan="2"&gt;&lt;strong&gt;Ge&amp;ccedil;erli Mesaj S&amp;ouml;zleşme Kullanımları&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;[OperationContract]&lt;br /&gt; &lt;strong&gt;ProductOrderResponse&lt;/strong&gt; CompleteOrderProcess(&lt;strong&gt;ProductOrderRequest&lt;/strong&gt; request);&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;Operasyonun d&amp;ouml;n&amp;uuml;ş tipi ve parametresi Mesaj S&amp;ouml;zleşmesi tipindendir.&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;[OperationContract]&lt;br /&gt; &lt;strong&gt;ProductOrderResponse&lt;/strong&gt; CompleteOrderProcess();&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;Operasyon parametre almamakta ve Mesaj S&amp;ouml;zleşmesi tipinden referans d&amp;ouml;nd&amp;uuml;rmektedir.&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;[OperationContract]&lt;br /&gt; &lt;strong&gt;void&lt;/strong&gt; CompleteOrderPrococes2(&lt;strong&gt;ProductOrderRequest&lt;/strong&gt; request);&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;Operasyon Mesaj S&amp;ouml;zleşmesi tipinden parametre almakta ama değer d&amp;ouml;nd&amp;uuml;rmemektedir.&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td colspan="2"&gt;&lt;strong&gt;Ge&amp;ccedil;ersiz Mesaj S&amp;ouml;zleşme Kullanımları&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;[OperationContract]&lt;br /&gt; &lt;strong&gt;int&lt;/strong&gt; CompleteOrderProcess(&lt;strong&gt;ProductOrderRequest&lt;/strong&gt; request);&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;Parametrenin Mesaj S&amp;ouml;zleşmesi olduğu durumlarda d&amp;ouml;n&amp;uuml;ş tipi olarak Mesaj S&amp;ouml;zleşmesi harici bir tip kullanılamaz. &lt;strong&gt;Exception&lt;/strong&gt; &amp;uuml;retir.&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;[OperationContract]&lt;br /&gt; void ComplteOrderProcess(&lt;strong&gt;ProductOrderRequest&lt;/strong&gt; request1, &lt;strong&gt; ProductOrderRequest&lt;/strong&gt; request2);&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;Birden fazla Mesaj S&amp;ouml;zleşmesi parametre olarak kullanılamaz. &lt;strong&gt;Exception&lt;/strong&gt; &amp;uuml;retir.&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Bu kısa teorik bilgileri devam ettireceğiz ancak dilerseniz basit bir &amp;ouml;rnek &amp;uuml;zerinden ilerleyerek devam edelim. &amp;Ouml;ncelikli olarak bir &lt;strong&gt;WCF Sınıf K&amp;uuml;t&amp;uuml;phanesi &lt;/strong&gt;projesi oluşturduğumuzu d&amp;uuml;ş&amp;uuml;nelim. Bu projemizde yer alacak olan tiplerin sınıf diygramındaki g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; aşağıdaki gibi tasarlanabilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk269_2.gif" alt="" width="634" height="507" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Sınıf&lt;/strong&gt; &lt;strong&gt;diyagramı(Class Diagram)&lt;/strong&gt; g&amp;ouml;z&amp;uuml;m&amp;uuml;z&amp;uuml; korkutmasın. Senaryomuz aslında sadece &lt;strong&gt;Mesaj&lt;/strong&gt; &lt;strong&gt;S&amp;ouml;zleşmelerinin&lt;/strong&gt; nasıl kullanılacağını g&amp;ouml;stermeye y&amp;ouml;nelik olduğundan &amp;ccedil;ok anlamlı olmayan operasyonlar i&amp;ccedil;ermekte. Bu y&amp;uuml;zden &amp;ouml;rnek olarak bir sipariş s&amp;uuml;recine &amp;ouml;zel mesajları tasarladığımız bir durum s&amp;ouml;z konusu. Kullanılan tiplerin i&amp;ccedil;erikleri sırasıyla aşağıdaki gibidir;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Product&lt;/strong&gt; Sınıfı. &lt;em&gt;(&lt;strong&gt;Veri S&amp;ouml;zleşmesi-Data Contract &lt;/strong&gt;olarak tanımlanmıştır)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Runtime.Serialization;
+
+namespace ProductTransferLib
+{
+    [DataContract(Namespace = "http://Northwind/ProductTransferService/Product")]
+    public class Product
+    {
+        [DataMember(Order=0)]
+        public int ProductId { get; set; }
+        [DataMember(Order=1)]
+        public string Name { get; set; }
+        [DataMember(Order=2)]
+        public double ListPrice { get; set; }
+        [DataMember(Order=3)]
+        public DateTime OrderDate { get; set; }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;CustomerNumber&lt;/strong&gt; yapısı-struct.&lt;em&gt;(&lt;strong&gt;Veri S&amp;ouml;zleşmesi-Data Contract&lt;/strong&gt; olarak tanımlanmıştır)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Runtime.Serialization;
+
+namespace ProductTransferLib
+{
+    [DataContract(Namespace = "http://Northwind/ProductTransferService/CustomerNumber")]
+    public struct CustomerNumber
+    {
+        [DataMember]
+        public char Region { get; set; }
+        [DataMember]
+        public int Number { get; set; }
+        [DataMember]
+        public string LastName { get; set; }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Receiver&lt;/strong&gt; Sınıfı&lt;em&gt;(&lt;strong&gt;Veri&lt;/strong&gt; &lt;strong&gt;S&amp;ouml;zleşmesi&lt;/strong&gt; olarak tanımlanmıştır)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Runtime.Serialization;
+
+namespace ProductTransferLib
+{
+    [DataContract(Namespace="http://Northwind/ProductTransferService/Receiver")]
+    public class Receiver
+    {
+        [DataMember]
+        public int ReceiverId { get; set; }
+        [DataMember]
+        public string Name { get; set; }
+        [DataMember]
+        public CustomerNumber Number { get; set; }
+        [DataMember]
+        public int RequestedProductCount { get; set; }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Sender&lt;/strong&gt; Sınıfı.&lt;em&gt;(&lt;strong&gt;Veri&lt;/strong&gt; &lt;strong&gt;S&amp;ouml;zleşmesi&lt;/strong&gt; olarak tanımlanmıştır)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Runtime.Serialization;
+
+namespace ProductTransferLib
+{
+    [DataContract(Namespace = "http://Northwind/ProductTransferService/Sender")]
+    public class Sender
+    {
+        [DataMember]
+        public int SenderId { get; set; }
+        [DataMember]
+        public string Name { get; set; }
+        [DataMember]
+        public CustomerNumber SenderNumber { get; set; }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;RequestStatus&lt;/strong&gt; &lt;strong&gt;Enum&lt;/strong&gt; sabiti.&lt;em&gt;(&lt;strong&gt;Veri&lt;/strong&gt; &lt;strong&gt;S&amp;ouml;zleşmesi&lt;/strong&gt; olarak tanımlanmıştır. Enum sabiti s&amp;ouml;z konusu olduğu i&amp;ccedil;in değerler DataMember yerine EnumMember isimli nitelik ile işaretlenmiştir.)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Runtime.Serialization;
+
+namespace ProductTransferLib
+{
+    [DataContract(Namespace = "http://Northwind/ProductTransferService/RequestStatus")]
+    public enum RequestStatus
+    {
+        [EnumMember]
+        Ok,
+        [EnumMember]
+        Error,
+        [EnumMember]
+        Waiting
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Buraya kadar tanımladığımız tipler i&amp;ccedil;erisinde sınıf, yapı ve enum sabiti tipleri s&amp;ouml;z konusudur. Bu tipler birer &lt;strong&gt;Veri&lt;/strong&gt; &lt;strong&gt;S&amp;ouml;zleşmesi&lt;/strong&gt; olarak tanımlanmıştır ve &lt;strong&gt;Mesaj&lt;/strong&gt; &lt;strong&gt;S&amp;ouml;zleşmeleri&lt;/strong&gt; i&amp;ccedil;erisinde ele alınmaktadır. Yazımızın konusu olan &lt;strong&gt;Mesaj&lt;/strong&gt; &lt;strong&gt;S&amp;ouml;zleşmelerinden&lt;/strong&gt; iki adet tanımlanmalıdır. Bu tanımlamalardan birisi &lt;strong&gt;istek(Request)&lt;/strong&gt; diğer ise &lt;strong&gt;cevap(Response)&lt;/strong&gt; i&amp;ccedil;eriklerinin yapısını işaret etmektedir. Bir başka deyişle, istemciden servise gelecek veya geriye d&amp;ouml;nd&amp;uuml;r&amp;uuml;lecek olan &lt;strong&gt;SOAP&lt;/strong&gt; zarflarının i&amp;ccedil;erikleri kod yardımıyla belirlenmektedir. İstemci tarafından gelecek olan taleplere ait Mesaj S&amp;ouml;zleşmesi aşağıdaki kod par&amp;ccedil;asında olduğu gibi tanımlanmıştır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+
+namespace ProductTransferLib
+{
+    [MessageContract]
+    public class ProductOrderRequest
+    {
+        #region Header Kısmına yazılacak &amp;ouml;zellikler
+
+        [MessageHeader]
+        public Guid OrderNumber { get; set; }
+        [MessageHeader]
+        public DateTime OrderDate { get; set; }
+        [MessageHeader]
+        public Product OrderedProduct { get; set; }
+
+        #endregion
+
+        #region Body kısmına yazılacak &amp;ouml;zellikler
+
+        [MessageBodyMember(ProtectionLevel=System.Net.Security.ProtectionLevel.None)] // ProtectionLevel i&amp;ccedil;in varsayılan değre None' dur.
+        public Sender OrderSender { get; set; }
+        [MessageBodyMember]
+        public Receiver[] Receivers { get; set; }
+
+        #endregion
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;ProductOrderRequest&lt;/strong&gt; isimli sınıf bir &lt;strong&gt;Mesaj&lt;/strong&gt; &lt;strong&gt;S&amp;ouml;zleşmesi&lt;/strong&gt; olacak şekilde tanımlanmıştır. Bu nedenle &lt;strong&gt;MessageContract&lt;/strong&gt; niteliği ile imzalanmıştır. Bu nitelik sadece&lt;strong&gt; sınıf(Class) &lt;/strong&gt;veya &lt;strong&gt;yapılara(Structs) &lt;/strong&gt;uygulanabilir. Yazımızın başında mesajın &lt;strong&gt;Header&lt;/strong&gt; ve &lt;strong&gt;Body&lt;/strong&gt; kısımlarından bahsetmiştik. &lt;strong&gt;Header&lt;/strong&gt; kısmında taşınacak olan &lt;strong&gt;alan(Field)&lt;/strong&gt; veya &lt;strong&gt;&amp;ouml;zellikleri(Property)&lt;/strong&gt; belirtmek i&amp;ccedil;in &lt;strong&gt;MessageHeader&lt;/strong&gt; niteliği kullanılmaktadır. &amp;Ouml;rnektende g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi, &lt;strong&gt;Header&lt;/strong&gt; kısmında &lt;strong&gt;Guid&lt;/strong&gt;, &lt;strong&gt;DateTime&lt;/strong&gt; gibi bilinen tipler dışında &lt;strong&gt;Product&lt;/strong&gt; isimli geliştirici tanımlı bir sınıfada yer verilmiştir. S&amp;ouml;z konusu tipler mesaj i&amp;ccedil;erisine alınırken serileştirilmektedir. Bu nedenle &lt;strong&gt;Product&lt;/strong&gt; sınıfı ve diğer geliştirici tanımlı tipler birer &lt;strong&gt;Veri&lt;/strong&gt; &lt;strong&gt;S&amp;ouml;zleşmesi&lt;/strong&gt; olarak tanımlanmıştır. &lt;strong&gt;Body&lt;/strong&gt; kısmında yer alacak &amp;ouml;zellik veya alanlar ise &lt;strong&gt;MessageBodyMember&lt;/strong&gt; niteliği ile tanımlanırlar. Yine &lt;strong&gt;Body&lt;/strong&gt; kısmındada, &lt;strong&gt;Sender&lt;/strong&gt; ve &lt;strong&gt;Receiver&lt;/strong&gt; isimli geliştirici tanımlı &lt;strong&gt;Veri S&amp;ouml;zleşmelerine&lt;/strong&gt; yer verilmektedir. &amp;Ouml;zellikle &lt;strong&gt;Receiver&lt;/strong&gt; tipinden bir &lt;strong&gt;Array&lt;/strong&gt; kullanıldığınada dikkat edilmelidir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Header&lt;/strong&gt; veya &lt;strong&gt;Body&lt;/strong&gt; kısımlarında &lt;strong&gt;Array&lt;/strong&gt;' ler kullanılıyorsa &lt;strong&gt;MessageHeader&lt;/strong&gt; ve &lt;strong&gt;MessageBodyMember&lt;/strong&gt; nitelikleri bu dizilerin elemanlarını bir elementin &lt;strong&gt;alt&lt;/strong&gt; &lt;strong&gt;elementleri(Child Element)&lt;/strong&gt; olacak şekilde konumlandırır. &amp;Ouml;rneğin;&lt;/p&gt;
+&lt;p&gt;&amp;lt;diziAdi&amp;gt;&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;diziElemanTipiAdi&amp;gt;i&amp;ccedil;eriği&amp;lt;/diziElemanTipiAdi&amp;gt;&lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;diziElemanTipiAdi&amp;gt;i&amp;ccedil;eriği&amp;lt;/diziElemanTipiAdi&amp;gt;&lt;br /&gt;&amp;lt;/diziAdi&amp;gt;&lt;/p&gt;
+&lt;p&gt;Ancak istenirse her bir dizi elemanının ayrı birer boğum olarak ele alınması sağlanabilir. Bunun i&amp;ccedil;in &lt;strong&gt;MessageHeaderArray&lt;/strong&gt; niteliği kullanılır.&lt;/p&gt;
+&lt;p&gt;&amp;lt;diziAdi&amp;gt;i&amp;ccedil;eriği&amp;lt;/diziAdi&amp;gt;&lt;br /&gt;&amp;lt;diziAdi&amp;gt;i&amp;ccedil;eriği&amp;lt;/diziAdi&amp;gt;&lt;/p&gt;
+&lt;p&gt;Yanlız bu nitelik sadece dizilere uygulanabilir. Bir başka deyişle &lt;strong&gt;koleksiyonlara&lt;/strong&gt; &lt;span style="text-decoration: underline;"&gt;uygulanamamaktadır.&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Eğer SOAP i&amp;ccedil;eriğinde byte tipinden bir diziye yer verilmişse MessageHeader veya MessageBodyMember niteliklerinin kullanılması halinde bunlar doğrudan Base64 tipine d&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;l&amp;uuml;rler.&amp;nbsp; Ancak, eğer MessageHeaderArray niteliği kullanılıyorsa, ele alınan serileştirme tipine g&amp;ouml;re(DataContractSerializer, XmlSerializer gibi) bir aktarım ger&amp;ccedil;ekleştirilir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;MessageHeader&lt;/strong&gt; ve &lt;strong&gt;MessageBodyMember&lt;/strong&gt; niteliklerinde yer alan &lt;strong&gt;ProtectionLevel&lt;/strong&gt; &amp;ouml;zelliği kullanılarak &lt;strong&gt;dijital olarak imzalama(Sign)&lt;/strong&gt; veya &lt;strong&gt;şifreleme(Encryption)&lt;/strong&gt; sağlanabilir. &lt;strong&gt;ProtectionLevel&lt;/strong&gt; &amp;ouml;zelliği &lt;strong&gt;System.Net.Security.ProtectionLevel enum&lt;/strong&gt; sabiti tipinden bir değer alabilir. Bu değerler &lt;strong&gt;None&lt;/strong&gt;, &lt;strong&gt;EncryptAndSign&lt;/strong&gt;, &lt;strong&gt;Sign&lt;/strong&gt; olabilir. Varsayılan değeri &lt;strong&gt;None&lt;/strong&gt;' dur. &lt;strong&gt;Sign&lt;/strong&gt; se&amp;ccedil;ilirse dijital imzalama s&amp;ouml;z konusudur. &lt;strong&gt;EncryptAndSign&lt;/strong&gt; se&amp;ccedil;ilirsede &lt;strong&gt;şifreleme&lt;/strong&gt; ve &lt;strong&gt;dijital&lt;/strong&gt; &lt;strong&gt;imzalama&lt;/strong&gt; s&amp;ouml;z konusudur.&lt;/p&gt;
+&lt;p&gt;Elbette &lt;strong&gt;None&lt;/strong&gt; dışındaki değerlerin işe yaraması i&amp;ccedil;in WCF &amp;ccedil;alışma ortamına y&amp;ouml;nelik olaraktan gerekli &lt;strong&gt;Binding&lt;/strong&gt; ve &lt;strong&gt;Behavior&lt;/strong&gt; ayarlamalarının yapılması gerekir. Aksi durumda &amp;ccedil;alışma zamanında doğrulama işlemi sırasında bir istisnası alınır. &lt;strong&gt;ProtectionLevel&lt;/strong&gt;, &lt;strong&gt;Header&lt;/strong&gt; kısmında her bir eleman i&amp;ccedil;in ayrı ayrı uygulanmaktadır. &lt;strong&gt;Body&lt;/strong&gt; kısmı s&amp;ouml;z konusu olduğunda ise ka&amp;ccedil; eleman olursa olsun hepsi i&amp;ccedil;in aynı &lt;strong&gt;ProtectionLevel&lt;/strong&gt; seviyesi s&amp;ouml;z konusudur. Buna g&amp;ouml;re &lt;strong&gt;MessageBodyMember&lt;/strong&gt; niteliği i&amp;ccedil;inde seviyesi y&amp;uuml;ksek olan &lt;strong&gt;ProtectionLevel&lt;/strong&gt; değeri, diğerleri i&amp;ccedil;inde uygulanır. S&amp;ouml;z gelimi 3 farklı &lt;strong&gt;MessageBodyMember&lt;/strong&gt; i&amp;ccedil;in sırasıyla &lt;strong&gt;None&lt;/strong&gt;, &lt;strong&gt;EncryptAndSign&lt;/strong&gt;, &lt;strong&gt;Sign&lt;/strong&gt; değerleri belirlenmişse, t&amp;uuml;m mesaj g&amp;ouml;vdesi i&amp;ccedil;in &lt;strong&gt;EncrptyAndSign&lt;/strong&gt; se&amp;ccedil;eneği g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınmaktadır.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;SOAP ile ilişkili web servisi standartlarında 1.1 versiyonu i&amp;ccedil;in Actor ve 1.2 i&amp;ccedil;in Role adı verilen bir &amp;ouml;zellik yer almaktadır. Bu &amp;ouml;zelliğin değerini WCF tarafında ele almak i&amp;ccedil;in MessageHeader niteliğinin Actor &amp;ouml;zelliği kullanılır. Bunun dışında MustUnderstand ve Relay &amp;ouml;zelliklerindende yararlanılarak, SOAP standarlarına g&amp;ouml;re bazı niteliklerin mesajlaşma s&amp;uuml;re&amp;ccedil;lerine kazandırılması da sağlanabilir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;İstemciye g&amp;ouml;nderilecek cevap mesajının i&amp;ccedil;eriği ise ProductOrderResponse isimli Mesaj S&amp;ouml;zleşmesi ile tanımlanmaktadır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.ServiceModel;
+using System;
+
+namespace ProductTransferLib
+{
+    [MessageContract]
+    public class ProductOrderResponse
+    {
+        [MessageBodyMember]
+        public RequestStatus Status { get; set; }
+
+        [MessageBodyMember]
+        public DateTime ProcessDate{ get; set; }
+
+        [MessageBodyMember]
+        public byte[] OrderPicture { get; set; } // Burada byte[] tipinden bir dizi s&amp;ouml;z konusu olduğu i&amp;ccedil;in SOAP body' si i&amp;ccedil;erisinde Base64 tipinden bir kodlama(encoding) s&amp;ouml;z konusu olacaktır
+
+        [MessageHeader]
+        public int OrderdProductCount { get; set; }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;ProductOrderResponse&lt;/strong&gt; tipi &lt;strong&gt;Mesaj&lt;/strong&gt; &lt;strong&gt;S&amp;ouml;zleşmesi&lt;/strong&gt; olarak tanımlanırken ama&amp;ccedil; istemci tarafına g&amp;ouml;nderilecek olan &lt;strong&gt;SOAP&lt;/strong&gt; mesajının &lt;strong&gt;Header&lt;/strong&gt; ve &lt;strong&gt;Body&lt;/strong&gt; kısımlarında neler olacağına karar verilmesidir. Dikkat edileceği &amp;uuml;zere &lt;strong&gt;Body&lt;/strong&gt; kısmında &lt;strong&gt;RequestStatus&lt;/strong&gt; &lt;strong&gt;enum&lt;/strong&gt; sabiti, &lt;strong&gt;DateTime&lt;/strong&gt; ve&lt;strong&gt; byte[] &lt;/strong&gt;dizisi tipinden bir i&amp;ccedil;erik yer almaktadır. Diğer taraftan &lt;strong&gt;Header&lt;/strong&gt; kısmında ise &amp;ouml;rnek olarak &lt;strong&gt;int&lt;/strong&gt; veri tipinden bir değer d&amp;ouml;nd&amp;uuml;r&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Bir tipin hem MessageContract hemde DataContract olacak şekilde tanımlanması da m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. B&amp;ouml;yle bir vakada, WCF &amp;ccedil;alışma zamanında servis operasyonları uygulanırken, s&amp;ouml;z konusu tip i&amp;ccedil;in Mesaj S&amp;ouml;zleşmesi kriterleri g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınmaktadır.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Artık istemci ve servis arasında dolaşacak olan &lt;strong&gt;SOAP&lt;/strong&gt; mesajlarına ait i&amp;ccedil;erikler tanımlanmıştır. Dolayısıyla bu mesajlaşma modelini kullanacak bir &lt;strong&gt;Servis&lt;/strong&gt; &lt;strong&gt;S&amp;ouml;zleşmesi&lt;/strong&gt; ve uygulayıcı sınıfı tasarlanabilir. Dikkat edileceği &amp;uuml;zere &lt;strong&gt;Servis&lt;/strong&gt; &lt;strong&gt;S&amp;ouml;zleşmesinde&lt;/strong&gt; yer alan &lt;strong&gt;CompleteOrderProcess&lt;/strong&gt; isimli operasyonun d&amp;ouml;n&amp;uuml;ş tipi ve parametresi birer &lt;strong&gt;Mesaj&lt;/strong&gt; &lt;strong&gt;S&amp;ouml;zleşmesidir&lt;/strong&gt;.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.ServiceModel;
+
+namespace ProductTransferLib
+{
+    [ServiceContract(
+                                Name="ProductTransferService"
+                                ,Namespace="http://Northwind/ProductTransferService")]
+    public interface IProductTransferService
+    {
+        [OperationContract]
+        ProductOrderResponse CompleteOrderProcess(ProductOrderRequest request);
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Operasyonun uygulanışı i&amp;ccedil;inse aşağıdaki gibi bir kod &amp;ouml;rneği geliştirilebilir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.IO;
+
+namespace ProductTransferLib
+{
+public class ProductTransferService
+    :IProductTransferService
+{
+    #region IProductTransferService Members
+
+    public ProductOrderResponse CompleteOrderProcess(ProductOrderRequest request)
+    {
+        DateTime requestDate = request.OrderDate;
+        Guid requestOrderNumber = request.OrderNumber;
+        Sender requestSender = request.OrderSender;
+        Receiver[] requestReceivers = request.Receivers;
+
+        int orderedProductCount = 0;
+        foreach (Receiver receiver in requestReceivers)
+        {
+            orderedProductCount += receiver.RequestedProductCount;
+        }
+
+        // Not : XP_HDD.gif resminin byte i&amp;ccedil;eriğinin dizi boyutu istemci tarafına g&amp;ouml;nderilebilecek varsayılan dizi limini aşabilir. Bu nedenle istemci tarafındaki konfigurasyon ayarlarında maxArrayLength değerinin bilin&amp;ccedil;li olarak arttırılması gerekebilir.
+        return new ProductOrderResponse
+                        {
+                            ProcessDate=DateTime.Now,
+                            Status= RequestStatus.Ok,
+                            OrderPicture=File.ReadAllBytes(System.Environment.CurrentDirectory + "\\XP_HDD.gif"),
+                            OrderdProductCount=orderedProductCount
+                        };
+        }
+
+        #endregion
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Burada &lt;strong&gt;request&lt;/strong&gt; değişkeninden yararlanılarak istemci tarafından gelen &lt;strong&gt;SOAP&lt;/strong&gt; paketindeki mesaj i&amp;ccedil;eriği ele alınmakta ve kullanılmaktadır. Sembolik olarak paket i&amp;ccedil;erisinde gelen &lt;strong&gt;Receivers&lt;/strong&gt; dizisindeki her bir &lt;strong&gt;Receiver&lt;/strong&gt; nesne &amp;ouml;rneğinin sipariş sayısının toplamı tespit edilmektedir. Ayrıca &amp;ouml;rnek &lt;strong&gt;byte[] &lt;/strong&gt;i&amp;ccedil;eriği d&amp;ouml;nd&amp;uuml;r&amp;uuml;lmesi i&amp;ccedil;in k&amp;uuml;&amp;ccedil;&amp;uuml;k bir resim dosyasından(XP_HDD.gif) yararlanılmaktadır. İşlemin tarihi, durumu, sipariş ile ilişkili resim ve toplam sipariş sayısı bilgileri kullanılaraktanda bir cevap mesajı oluşturulmakta ve istemci tarafına g&amp;ouml;nderilmektedir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;SOAP mesajlarının i&amp;ccedil;erikleri aslında XML tabanlıdır. Bu i&amp;ccedil;eriği y&amp;ouml;netirken Mesaj S&amp;ouml;zleşmeleri, nesne tabanlı bir modeli ele alabilmemizi sağlamaktadır. Bir başka deyişle, kod tarafında XML yapısı ile uğraşmak yerine, nesne tabanlı bir modeli kullanarak mesaj i&amp;ccedil;eriğini kolayca oluşturabilmemiz olanaklı hale gelmektedir ki bu geliştirme s&amp;uuml;reci i&amp;ccedil;in &amp;ouml;nemli bir &lt;span style="text-decoration: underline;"&gt;avantajdır.&lt;/span&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Bu işlemlerin tamamlanmasının ardından servis k&amp;uuml;t&amp;uuml;phanesini &lt;strong&gt;Host&lt;/strong&gt; edecek basit bir uygulama geliştirilebilir. Biz &amp;ouml;rneğimizde her zaman olduğu gibi, sunucu ve istemci tarafları i&amp;ccedil;in birer &lt;strong&gt;Console&lt;/strong&gt; uygulaması geliştiriyor olacağız. Sunucu uygulama kodları ve konfigurasyon i&amp;ccedil;eriği aşağıdaki kod par&amp;ccedil;alarında olduğu gibi tanımlanabilirler.&lt;/p&gt;
+&lt;p&gt;Sunucu uygulama kodları;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+using ProductTransferLib;
+
+namespace ServerApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            ServiceHost host = new ServiceHost(typeof(ProductTransferService));
+            host.Open();
+            Console.WriteLine("Servis dinlemede.\nKapatmak i&amp;ccedil;in bir tuşa basınız.");
+            Console.ReadLine();
+            host.Close();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Sunucu tarafı konfigurasyon i&amp;ccedil;eriği;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;system.serviceModel&amp;gt;
+        &amp;lt;behaviors&amp;gt;
+            &amp;lt;serviceBehaviors&amp;gt;
+                &amp;lt;behavior name="ProductTransferServiceBehavior"&amp;gt;
+                    &amp;lt;serviceDebug includeExceptionDetailInFaults="true" /&amp;gt;
+                    &amp;lt;serviceMetadata /&amp;gt;
+                &amp;lt;/behavior&amp;gt;
+            &amp;lt;/serviceBehaviors&amp;gt;
+        &amp;lt;/behaviors&amp;gt;
+        &amp;lt;services&amp;gt;
+            &amp;lt;service behaviorConfiguration="ProductTransferServiceBehavior" name="ProductTransferLib.ProductTransferService"&amp;gt;
+                &amp;lt;endpoint address="" binding="basicHttpBinding" bindingConfiguration="" name="ProductTransferServiceHttpEndPoint" contract="ProductTransferLib.IProductTransferService" /&amp;gt;
+                &amp;lt;endpoint address="Mex" binding="mexHttpBinding" bindingConfiguration="" name="ProductTransferServiceMexEndPoint" contract="IMetadataExchange" /&amp;gt;
+                &amp;lt;host&amp;gt;
+                    &amp;lt;baseAddresses&amp;gt;
+                        &amp;lt;add baseAddress="http://buraksenyurt:1000/ProductTransferService" /&amp;gt;
+                    &amp;lt;/baseAddresses&amp;gt;
+                &amp;lt;/host&amp;gt;
+            &amp;lt;/service&amp;gt;
+        &amp;lt;/services&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Sunucu uygulama basit olarak &lt;strong&gt;HTTP&lt;/strong&gt; tabanlı bir sunum yapmakta ve &lt;strong&gt;BasicHttpBinding&lt;/strong&gt; bağlayıcı tipini ele almaktadır. Bununla birlikte istemci tarafının, servise ait &lt;strong&gt; Metadata&lt;/strong&gt; bilgisini &amp;ccedil;ekebilmesi i&amp;ccedil;in &lt;strong&gt;IMetadataExchange&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml; kullanan bir &lt;strong&gt;MexHttpBinding&lt;/strong&gt; &lt;strong&gt;EndPoint&lt;/strong&gt;' ide kullanılmaktadır.&lt;/p&gt;
+&lt;p&gt;İstemci uygulamamızı kullanırken yine &lt;strong&gt;Add&lt;/strong&gt; &lt;strong&gt;Service&lt;/strong&gt; &lt;strong&gt;Reference&lt;/strong&gt; se&amp;ccedil;eneği ile aynı &lt;strong&gt;solution&lt;/strong&gt; i&amp;ccedil;erisinde yer alan &amp;ouml;rnek servise ait referans &amp;uuml;retimini ger&amp;ccedil;ekleştirebiliriz. İstemci tarafına ait konfigurasyon i&amp;ccedil;eriği aşağıdaki gibidir&lt;em&gt;(Bu i&amp;ccedil;erik &lt;strong&gt;Add Service Reference&lt;/strong&gt; se&amp;ccedil;eneğinin kullanılması sonucunda otomatik olarak &amp;uuml;retilmektedir.)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;system.serviceModel&amp;gt;
+        &amp;lt;bindings&amp;gt;
+            &amp;lt;basicHttpBinding&amp;gt;
+                &amp;lt;binding name="ProductTransferServiceHttpEndPoint" closeTimeout="00:01:00" openTimeout="00:01:00" receiveTimeout="00:10:00" sendTimeout="00:01:00" allowCookies="false" bypassProxyOnLocal="false" hostNameComparisonMode="StrongWildcard" maxBufferSize="65536" maxBufferPoolSize="524288" maxReceivedMessageSize="65536" messageEncoding="Text" textEncoding="utf-8" transferMode="Buffered" useDefaultWebProxy="true"&amp;gt;
+                    &amp;lt;readerQuotas maxDepth="32" maxStringContentLength="8192" maxArrayLength="163840" maxBytesPerRead="4096" maxNameTableCharCount="16384"/&amp;gt;
+                    &amp;lt;security mode="None"&amp;gt;
+                        &amp;lt;transport clientCredentialType="None" proxyCredentialType="None" realm="" /&amp;gt;
+                        &amp;lt;message clientCredentialType="UserName" algorithmSuite="Default" /&amp;gt;
+                    &amp;lt;/security&amp;gt;
+                &amp;lt;/binding&amp;gt;
+            &amp;lt;/basicHttpBinding&amp;gt;
+        &amp;lt;/bindings&amp;gt;
+        &amp;lt;client&amp;gt;
+            &amp;lt;endpoint address="http://buraksenyurt:1000/ProductTransferService" binding="basicHttpBinding" bindingConfiguration="ProductTransferServiceHttpEndPoint"
+contract="ProductTransferServiceReference.ProductTransferService" name="ProductTransferServiceHttpEndPoint" /&amp;gt;
+        &amp;lt;/client&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;İstemci tarafındaki &amp;ouml;rnek kod i&amp;ccedil;eriği ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.IO;
+using ClientApp.ProductTransferServiceReference;
+
+namespace ClientApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            ProductTransferServiceClient client = new ProductTransferServiceClient("ProductTransferServiceHttpEndPoint");
+
+            Sender sndr = new Sender
+                                {
+                                    Name="Burak Selim",
+                                    SenderId=10001,
+                                    SenderNumber=new CustomerNumber{ Number=1, Region='A', LastName="SENYURT"} 
+                                };
+
+            Receiver[] receivers = {
+                new Receiver{ Name="Bil", Number=new CustomerNumber{ LastName="Geyts", Region='B', Number=1}, ReceiverId=10002, RequestedProductCount=100},
+                new Receiver{ Name="Deyv", Number=new CustomerNumber{ LastName="Masteyn", Region='C', Number=2}, ReceiverId=10003, RequestedProductCount=150},
+                new Receiver{ Name="Co", Number=new CustomerNumber{ LastName="Satriyani", Region='C', Number=3}, ReceiverId=10055, RequestedProductCount=75}
+            };
+
+            RequestStatus requestStatus;
+            DateTime processDate;
+            byte[] orderPicture;
+
+            Console.WriteLine("Sipariş i&amp;ccedil;in bir tuşa basınız.");
+            Console.ReadLine();
+    
+            int result=client.CompleteOrderProcess(
+                                                                        DateTime.Now,
+                                                                        Guid.NewGuid(),
+                                                                        new Product{ ProductId=1, Name="Her Y&amp;ouml;n&amp;uuml;yle WCF", ListPrice=10, OrderDate=DateTime.Now},
+                                                                        sndr,
+                                                                        receivers,
+                                                                        out orderPicture,
+                                                                        out processDate,
+                                                                        out requestStatus);
+
+            Console.WriteLine("result {0}",result.ToString());
+            File.WriteAllBytes(System.Environment.CurrentDirectory + "\\ResponsePicture.gif", orderPicture);
+
+            Console.WriteLine("İşlemler tamamlandı. &amp;Ccedil;ıkmak i&amp;ccedil;in bir tuşa basınız.");
+            Console.ReadLine();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;İstemci uygulamada servise ait proxy nesnesi &amp;ouml;rneklendikten sonra &lt;strong&gt;CompleteOrderProcess&lt;/strong&gt; metodunun ihtiyacı olan parametreler hazırlanmaktadır. &lt;strong&gt;CompleteOrderProcess&lt;/strong&gt; metodu aslında &lt;strong&gt;ProcessOrderResponse&lt;/strong&gt; &lt;strong&gt;Mesaj&lt;/strong&gt; &lt;strong&gt;S&amp;ouml;zleşmesi&lt;/strong&gt; tipinden bir parametre almaktadır. Ne varki istemci tarafında metodun uygulanış şekli biraz farklıdır. Herşeyden &amp;ouml;nce, servise g&amp;ouml;nderilecek &lt;strong&gt;SOAP&lt;/strong&gt; paketi i&amp;ccedil;erisinde yer alacak &lt;strong&gt;Header&lt;/strong&gt; ve &lt;strong&gt;Body&lt;/strong&gt; elementlerinin her biri, istemci tarafında ayrı birer &lt;strong&gt;metod parametresi&lt;/strong&gt; şekline ele alınmaktadır.&lt;/p&gt;
+&lt;p&gt;Metodun &amp;ccedil;ağırılması sonucu istemciye d&amp;ouml;necek olan &lt;strong&gt;SOAP&lt;/strong&gt; mesajındaki &lt;strong&gt;Header&lt;/strong&gt; kısmında yer alan &lt;strong&gt;int&lt;/strong&gt; değer aslında istemci tarafında, &lt;strong&gt;CompleteOrderProcess&lt;/strong&gt;' in d&amp;ouml;n&amp;uuml;ş değeridir. Yine istemciye d&amp;ouml;nd&amp;uuml;r&amp;uuml;len ve &lt;strong&gt;Body&lt;/strong&gt; kısmında yer alan &lt;strong&gt;orderPicture&lt;/strong&gt;,&lt;strong&gt;processDate&lt;/strong&gt; ve &lt;strong&gt;requestStatus&lt;/strong&gt; değişkenleri ise, &lt;strong&gt;CompleteOrderProcess&lt;/strong&gt; metodunun &lt;strong&gt;out&lt;/strong&gt; tipinden parametreleri olarak ele alınmaktadır. &lt;strong&gt;orderPicture&lt;/strong&gt; değişkeni bir &lt;strong&gt;byte[]&lt;/strong&gt; dizisi olarak mesaj i&amp;ccedil;eriğinden toparlanmakta ve fiziki olarak istemci tarafındaki bir dosyaya yazdırılmaktadır. Bu tahmin edileceği &amp;uuml;zere servis tarafından g&amp;ouml;nderilen resimdir. Projemizde hem sunucu hemde istemci uygulamamızı &amp;ccedil;alıştırdığımızda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan sonu&amp;ccedil;ları elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk269_3.gif" alt="" width="469" height="193" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Aslında burada şaşırtıcı bir sonu&amp;ccedil; yoktur. Nesne tabanlı olacak şekilde istemci ve servis arasındaki tipler kolay bir şekilde kullanılmıştır. Ancak bizim i&amp;ccedil;in &amp;ouml;nemli olan arka planda hareket eden &lt;strong&gt;SOAP&lt;/strong&gt; mesajlarının i&amp;ccedil;eriklerinin ne hale geldiğidir. Bu ama&amp;ccedil;la &lt;strong&gt;Fiddler&lt;/strong&gt; isimli &lt;strong&gt;HTTP&lt;/strong&gt; &lt;strong&gt;Debugging&lt;/strong&gt; aracından yararlanırsak, &amp;ouml;rneğin &amp;ccedil;alıştırılması sonrasında ağ trafiğinde, aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan mesajlaşmanın oluştuğunu g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk269_4.gif" alt="" width="633" height="489" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere, Mesaj S&amp;ouml;zleşmelerinde &lt;strong&gt;Header&lt;/strong&gt; ve &lt;strong&gt;Body&lt;/strong&gt; kısımlarında hangi bilgilerin yer almasını istiyorsak buna g&amp;ouml;re bir ağa&amp;ccedil; yapısı oluşmuştur. &lt;strong&gt;Request&lt;/strong&gt; kısmına ait olan &lt;strong&gt;SOAP&lt;/strong&gt; zarfının &lt;strong&gt;XML&lt;/strong&gt; i&amp;ccedil;eriği tam olarak aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"&amp;gt;
+    &amp;lt;s:Header&amp;gt;
+        &amp;lt;h:OrderDate xmlns:h="http://Northwind/ProductTransferService"&amp;gt;2009-02-08T01:53:03+02:00&amp;lt;/h:OrderDate&amp;gt;
+        &amp;lt;h:OrderNumber xmlns:h="http://Northwind/ProductTransferService"&amp;gt;9476df3d-0f74-4643-9fcf-b7344d5da37d&amp;lt;/h:OrderNumber&amp;gt;
+        &amp;lt;h:OrderedProduct xmlns:h="http://Northwind/ProductTransferService" xmlns:i="http://www.w3.org/2001/XMLSchema-instance"&amp;gt;
+            &amp;lt;ProductId xmlns="http://Northwind/ProductTransferService/Product"&amp;gt;1&amp;lt;/ProductId&amp;gt;
+            &amp;lt;Name xmlns="http://Northwind/ProductTransferService/Product"&amp;gt;Her Y&amp;ouml;n&amp;uuml;yle WCF&amp;lt;/Name&amp;gt;
+            &amp;lt;ListPrice xmlns="http://Northwind/ProductTransferService/Product"&amp;gt;10&amp;lt;/ListPrice&amp;gt;
+            &amp;lt;OrderDate xmlns="http://Northwind/ProductTransferService/Product"&amp;gt;2009-02-08T01:53:03+02:00&amp;lt;/OrderDate&amp;gt;
+        &amp;lt;/h:OrderedProduct&amp;gt;
+    &amp;lt;/s:Header&amp;gt;
+    &amp;lt;s:Body&amp;gt;
+        &amp;lt;ProductOrderRequest xmlns="http://Northwind/ProductTransferService"&amp;gt;
+            &amp;lt;OrderSender xmlns:a="http://Northwind/ProductTransferService/Sender" xmlns:i="http://www.w3.org/2001/XMLSchema-instance"&amp;gt;
+                &amp;lt;a:Name&amp;gt;Burak Selim&amp;lt;/a:Name&amp;gt;
+                &amp;lt;a:SenderId&amp;gt;10001&amp;lt;/a:SenderId&amp;gt;
+                &amp;lt;a:SenderNumber xmlns:b="http://Northwind/ProductTransferService/CustomerNumber"&amp;gt;
+                    &amp;lt;b:LastName&amp;gt;SENYURT&amp;lt;/b:LastName&amp;gt;
+                    &amp;lt;b:Number&amp;gt;1&amp;lt;/b:Number&amp;gt;
+                    &amp;lt;b:Region&amp;gt;65&amp;lt;/b:Region&amp;gt;
+                &amp;lt;/a:SenderNumber&amp;gt;
+            &amp;lt;/OrderSender&amp;gt;
+            &amp;lt;Receivers xmlns:a="http://Northwind/ProductTransferService/Receiver" xmlns:i="http://www.w3.org/2001/XMLSchema-instance"&amp;gt;
+                &amp;lt;a:Receiver&amp;gt;
+                    &amp;lt;a:Name&amp;gt;Bil&amp;lt;/a:Name&amp;gt;
+                    &amp;lt;a:Number xmlns:b="http://Northwind/ProductTransferService/CustomerNumber"&amp;gt;
+                        &amp;lt;b:LastName&amp;gt;Geyts&amp;lt;/b:LastName&amp;gt;
+                        &amp;lt;b:Number&amp;gt;1&amp;lt;/b:Number&amp;gt;
+                        &amp;lt;b:Region&amp;gt;66&amp;lt;/b:Region&amp;gt;
+                    &amp;lt;/a:Number&amp;gt;
+                    &amp;lt;a:ReceiverId&amp;gt;10002&amp;lt;/a:ReceiverId&amp;gt;
+                    &amp;lt;a:RequestedProductCount&amp;gt;100&amp;lt;/a:RequestedProductCount&amp;gt;
+                &amp;lt;/a:Receiver&amp;gt;
+                &amp;lt;a:Receiver&amp;gt;
+                    &amp;lt;a:Name&amp;gt;Deyv&amp;lt;/a:Name&amp;gt;
+                    &amp;lt;a:Number xmlns:b="http://Northwind/ProductTransferService/CustomerNumber"&amp;gt;
+                        &amp;lt;b:LastName&amp;gt;Masteyn&amp;lt;/b:LastName&amp;gt;
+                        &amp;lt;b:Number&amp;gt;2&amp;lt;/b:Number&amp;gt;
+                        &amp;lt;b:Region&amp;gt;67&amp;lt;/b:Region&amp;gt;
+                    &amp;lt;/a:Number&amp;gt;
+                    &amp;lt;a:ReceiverId&amp;gt;10003&amp;lt;/a:ReceiverId&amp;gt;
+                    &amp;lt;a:RequestedProductCount&amp;gt;150&amp;lt;/a:RequestedProductCount&amp;gt;
+                &amp;lt;/a:Receiver&amp;gt;
+                &amp;lt;a:Receiver&amp;gt;
+                    &amp;lt;a:Name&amp;gt;Co&amp;lt;/a:Name&amp;gt;
+                    &amp;lt;a:Number xmlns:b="http://Northwind/ProductTransferService/CustomerNumber"&amp;gt;
+                        &amp;lt;b:LastName&amp;gt;Satriyani&amp;lt;/b:LastName&amp;gt;
+                        &amp;lt;b:Number&amp;gt;3&amp;lt;/b:Number&amp;gt;
+                        &amp;lt;b:Region&amp;gt;67&amp;lt;/b:Region&amp;gt;
+                    &amp;lt;/a:Number&amp;gt;
+                    &amp;lt;a:ReceiverId&amp;gt;10055&amp;lt;/a:ReceiverId&amp;gt;
+                    &amp;lt;a:RequestedProductCount&amp;gt;75&amp;lt;/a:RequestedProductCount&amp;gt;
+                &amp;lt;/a:Receiver&amp;gt;
+            &amp;lt;/Receivers&amp;gt;
+        &amp;lt;/ProductOrderRequest&amp;gt;
+    &amp;lt;/s:Body&amp;gt;
+&amp;lt;/s:Envelope&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Bu &lt;strong&gt;XML&lt;/strong&gt; i&amp;ccedil;eriği incelendiğinde tam olarak &lt;strong&gt;Mesaj&lt;/strong&gt; &lt;strong&gt;S&amp;ouml;zleşmesinde&lt;/strong&gt; belirttiğimiz kriterlere uyulduğu g&amp;ouml;r&amp;uuml;lmektedir. S&amp;ouml;z gelimi &lt;strong&gt;Header&lt;/strong&gt; kısmında &lt;strong&gt;OrderDate&lt;/strong&gt;, &lt;strong&gt;OrderNumber&lt;/strong&gt; ve &lt;strong&gt;OrderProduct&lt;/strong&gt; elementleri yer almaktayken, &lt;strong&gt;Body&lt;/strong&gt; kısmında &lt;strong&gt;ProductOrderRequest&lt;/strong&gt; elementi tarafından sarmalanmış olan, &lt;strong&gt;OrderSender&lt;/strong&gt; ve &lt;strong&gt;Receivers&lt;/strong&gt; elementleri bulunmaktadır. &lt;strong&gt;Receivers&lt;/strong&gt; aslında &lt;strong&gt;Receiver[]&lt;/strong&gt; &lt;strong&gt;dizisinin&lt;/strong&gt; kullanılması nedeni ile kendi i&amp;ccedil;erisinde birden fazla &lt;strong&gt;Receiver&lt;/strong&gt; alt elementi i&amp;ccedil;ermektedir. Burada geliştirici tanımlı tiplerin&lt;em&gt;(Product,Receiver,Sender gibi)&lt;/em&gt; &lt;strong&gt;Veri S&amp;ouml;zleşmesi &lt;/strong&gt;olarak tanımlanmaları nedeniyle &lt;strong&gt;XML&lt;/strong&gt; elemetleri i&amp;ccedil;erisine aktarılmış olmalarıda g&amp;ouml;zden ka&amp;ccedil;ırılmamalıdır. Yine istemciye &lt;strong&gt;d&amp;ouml;nen mesajın(Response)&lt;/strong&gt; tam i&amp;ccedil;eriğine bakıldığında aşağıdakine benzer bir &lt;strong&gt;SOAP&lt;/strong&gt; &amp;ccedil;ıktısı ile karşılaşılmaktadır.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"&amp;gt;
+    &amp;lt;s:Header&amp;gt;
+        &amp;lt;h:OrderdProductCount xmlns:h="http://Northwind/ProductTransferService"&amp;gt;325&amp;lt;/h:OrderdProductCount&amp;gt;
+    &amp;lt;/s:Header&amp;gt;
+    &amp;lt;s:Body&amp;gt;
+        &amp;lt;ProductOrderResponse xmlns="http://Northwind/ProductTransferService"&amp;gt;                 
+        &amp;lt;OrderPicture&amp;gt;R0lGODlhIAAgAPcAAAAAAB8hNR4hODMpHCQgLiIkNyYqRysvUC4wQy
+0wTi0xUzU3SzE1VjE1WzU5Xjs +VDw/WDU6Yzk+ZTk/bDg5dTFILDl0FzpGRz5BXD5CYz1CbD5EdVYzLXI/SF9OMF1
+WP05tK0JoN0pxNVF5JVR1M2lfPn FHKn5GP3VpL31vN31wL3d0OEZIVkZUSUFFY0FGbURIZEZKaklLYExPaEJIek1SaEx
+Td1VWalNXd1prWFp1Rl96bWRcS 2JNYGtrRnhuRGdlaGNkdmh5eTc3mDxDxT5P2Dxdxj5d3T9g1z9r40VMg0pRiVZbhFR
+bl1hkilljl0Nxr0h2t1tlqFVzqGFmjW ZpgWtthGlti2Npl25xiGd6l25xkG1ym3ByhnN0inl2h3N2kXF2m3R4lnR5mXp8lWNqq2p
+zp2xzsXN5q3l+pXp/qnR7tEFW0E Jt0EN85l+fGkmLJ0mSIVOKJFWJNVeXJFqpH1y2GFqiJGOWKWK3Hm2oIV6KVFnFGGn
+NF3POGnrSGWHJIHbNInvQIHiDiH qAonyCuH6Qr0qK3kOF7EeP8EqU8Vua6lWb8miW1XGYzWWk8XSq73et8H+x8YM2N
+5oxJ7MsG4pfPIN4K5J7LpR0OKFV KaB2HbB+FYNtQpp8eKRNR7JyRtAqE+UsEfg+D/Q2ENRNE9dyH8F0NuxHD/pJDfxWDO
+1+HP1lDv12EbeDC7OaFKmUIqm XNruDK72nEKyMfoHSHYTRJMeKCMiRCN+GH9WWBc2xDNqjA8GnIv2GE/uaF/CGIf2W
+IOCrBOS1BfqlHPq0HfysIfu3I+vG A/fXBPrcFvzeKfzeOP3gOIKDj4yDlZCCkYaKrYGHs4CGu4SJtYWLvYqPtIiNuo6TvJWXp
+pGVu5+ivoiOwIySwpGWxJSZxJ ecyJmdxJmeyJ2hw52iy4i28JK88aGlxqGmzKSpzqmsyaar0Kmt0a6xzK2x07a4zbG11bS4
+17a52Lq907m92ZzC8b7B3K3J 7aXH8MTG3MjL4c7R5dHT5gAAAAAAAAAAACH5BAEAAP8ALAAAAAAgACAAAAj/AP8JH
+EiwoMGDCNvNsCcvHjx37tixW 5cuHTpy5MSB++atW7UM2BDaszduGxkyXrp0AWMFTBYrYqpY+8bxmxpu0xDSs5eGTIIX
+DjRIcCBBgoYAWxCE4ditG45 q1Q7mo0ePEJkFCAoM8GCCA4ECBWAsCAOuo1OPB/nJgzdP3z5auY4Ra6UK1ad3+aaKa1r
+NBreoBvM5hLf21K9jv+iOCu VlkLhv1TxWe1ponsF58DK707bKWDFfrFKRopRDzpwdY8II2QMHS2WD9B5C9BRMri9Vojvo
+oGOnT58/f/pYoFLonMF0E CeCClZsLm5RN0bw/g2cTwUsa74ZRAdP4jhTxIr9/2KlalSlG3Tq8KHeh88DJ2uobU+QThw0YLI
+yWdJUitSk0nX4VosgfcT BhAsNoGHQQ9es8wwLNzjhhA01nNADCXTk0YcftgQCSAhmwGeGQe6MQ006UjhyTzmPJGLEEl
+yAcIeGgXTIBwtrPLHGG QXls04Y6URziDn4lMMIIkcM8cUNLcjxhh54iHABE2tg8QSPBOmDDhbsmPFIPfVEwogbR1CQyS2Y
+8LAACx9ckoIZa5SBA 5YDtUMOF+JAAQk+5jyiSBJEBMEJL8Mko0wzyiRTghlnYNFEGe0Q5A453VATRTlFPoLkEEDowgsyh
+jKTDDIxnHHGE2WU oQ5BF4lDyCL14P8jphtsUNCJLsIkY+gyybzChKlnpGoNQdpoNEUjhmjxBBRtEPHCJroUmswyia5wJTep
+SiHfQN885gQLz4 BBhRMwUHDDLZ/q2oyuLEgjTqplSFEGQeBsRA013dCTDzloUBGEK8KAqgyvu1hRDbxSSPEEQZA11c01
+3HTjDj/6qNPFD 7DM0kssKDzwaLwJN9HEQO9QY8A13fxVzTTTFFJIN95EcwUONdCwBKogS6GEAiMPhFxEE1Fk0UXhFB0
+OTdqEow022i zN9IgDMbCBEgUYoEADEUQwAQ00NKCAAgd8DfbUSpQ9NQ4EZUCDElZnPcEGG3DttQNifz01EzgoYfMVB
+ME9sLYBAhj QgAZxr+2113XH7cMKeivhBUHZxBADBA9U/gAGGLjgAgYZYO555pprHgMNCJVu+umop6766gcFBAA7
+        &amp;lt;/OrderPicture&amp;gt;
+        &amp;lt;ProcessDate&amp;gt;2009-02-08T01:53:03.46875+02:00&amp;lt;/ProcessDate&amp;gt;
+        &amp;lt;Status&amp;gt;Ok&amp;lt;/Status&amp;gt;
+        &amp;lt;/ProductOrderResponse&amp;gt;
+    &amp;lt;/s:Body&amp;gt;
+&amp;lt;/s:Envelope&amp;gt;&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;zden ka&amp;ccedil;mayacak olan nokta &lt;strong&gt;OrderPicture&lt;/strong&gt; elementinin i&amp;ccedil;eriğidir :) Tahmin edileceği &amp;uuml;zere bu elementin i&amp;ccedil;eriği, servis tarafındaki resmimizin &lt;strong&gt;byte[]&lt;/strong&gt; dizisi haline geldikten sonra, &lt;strong&gt;SOAP&lt;/strong&gt; mesajı i&amp;ccedil;eriğine &lt;strong&gt;Base64&lt;/strong&gt; kodlamasına g&amp;ouml;re serileştirilmiş halidir. Bu i&amp;ccedil;erik, istemci tarafında ters serileştirilme işleminden sonra yine &lt;strong&gt;byte[]&lt;/strong&gt; dizisi olacak şekilde ele alınabilmektedir. Bunların haricinde &lt;strong&gt;Header&lt;/strong&gt; kısmında &lt;strong&gt;OrderProductCount&lt;/strong&gt; elementinin, &lt;strong&gt;Body&lt;/strong&gt; kısmında ise &lt;strong&gt;ProductOrderResponse&lt;/strong&gt; elementi ile sarmalanmış olan &lt;strong&gt;OrderPicture&lt;/strong&gt;, &lt;strong&gt;ProcessDate&lt;/strong&gt; ve &lt;strong&gt;Status&lt;/strong&gt; alt elementlerinin olduğu g&amp;ouml;r&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Mesaj&lt;/strong&gt; &lt;strong&gt;S&amp;ouml;zleşmelerinde&lt;/strong&gt; ele alınan bir diğer durumda t&amp;uuml;rlendirilmemiş versiyonların kullanılmasıdır&lt;strong&gt;(Untyped Message Contracts)&lt;/strong&gt;. Burada &lt;strong&gt;System.ServiceModel.Channels&lt;/strong&gt; isim alanında yer alan &lt;strong&gt;Message&lt;/strong&gt; sınıfı ele alınmaktadır. &lt;strong&gt;SOAP&lt;/strong&gt; &lt;strong&gt;1.1&lt;/strong&gt; ve &lt;strong&gt;SOAP 1.2&lt;/strong&gt; uyumlu mesajları işaret edebilen bu sınıf yardımıyla, istemciden gelen talepler ele alınabilir ve cevaplar oluşturularak &lt;strong&gt;Message&lt;/strong&gt; tipinden &amp;ouml;rnekler &amp;uuml;zerinden karşı tarafa g&amp;ouml;nderilebilir. Son olarak bu durumu değerlendirip makalemizi tamamlayalım. Bu ama&amp;ccedil;la &lt;strong&gt;Servis S&amp;ouml;zleşmemize &lt;/strong&gt;aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan yeni bir operasyon ilave ettiğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk269_5.gif" alt="" width="541" height="270" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;RunProcess isimli operasyon parametre ve d&amp;ouml;n&amp;uuml;ş değeri olarak &lt;strong&gt;Message&lt;/strong&gt; tipini kullanmaktadır. S&amp;ouml;z konusu operasyon metodunun &lt;strong&gt;ProductTransferService&lt;/strong&gt; i&amp;ccedil;erisindeki uyarlaması ise aşağıdaki gibi yapılabilir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;// Untyped Message alıp veren &amp;ouml;rnek servis operasyonu metodu.
+public Message RunProcess(Message request)
+{ 
+    // Servise gelen Untyped Message ' ın Body kısmında yer alan Product dizi i&amp;ccedil;eriğini elde etmek i&amp;ccedil;in GetBody metodunun generic versiyonundan yararlanılır.
+    Product[] products = request.GetBody&amp;lt;Product[]&amp;gt;();
+
+    // İstemciye d&amp;ouml;nd&amp;uuml;relecek Untyped Message' ın Body kısmında yer alacak &amp;ouml;rnek Product i&amp;ccedil;eriği i&amp;ccedil;in dizi oluşturulur.
+    Product[] resultSet=new Product[products.Length];
+
+    // Gelen mesajın Body kısmından elde edilen dizi &amp;uuml;zerinde &amp;ouml;rnek işlemler yapılır.
+    // &amp;Ouml;rnekte ListPrice bilgisi 1 birim arttırılmıştır.
+    for (int i = 0; i &amp;lt; products.Length; i++)
+    {
+        products[i].ListPrice += 1;
+        resultSet[i] = products[i];
+    }
+
+    // Operasyondan d&amp;ouml;nd&amp;uuml;relecek olan Untyped Message oluşturulur.
+    // İlk parametre SOAP versiyonunu belirtir. &amp;Ouml;rneğin "SOAP 1.1".
+    // İkinci parametre servis operasyonunda ReplyAction &amp;ouml;zelliğine atanan değerdir.
+    // &amp;Uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; parametre ise Body kısmında yer alacak olan nesne &amp;ouml;rneğidir.
+    Message response = Message.CreateMessage(request.Version, "ReplyAction",resultSet);
+
+    // Untyped Message geriye d&amp;ouml;nd&amp;uuml;r&amp;uuml;l&amp;uuml;r.
+    return response;
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;RunProcess&lt;/strong&gt; isimli servis operasyonu, istemciden gelen mesajın &lt;strong&gt;Body&lt;/strong&gt; kısmında yer alan &lt;strong&gt; Product&lt;/strong&gt; nesne verilerini ele almakta ve &amp;ouml;rnek olarak &lt;strong&gt;ListPrice&lt;/strong&gt; değerlerini 1 birim arttırarak geriye d&amp;ouml;nd&amp;uuml;rmektedir. Metoda gelen t&amp;uuml;rlendirilmemiş mesajın g&amp;ouml;vdesindeki veri i&amp;ccedil;eriğini ele alabilmek i&amp;ccedil;in &lt;strong&gt;GetBody&amp;lt;T&amp;gt;&lt;/strong&gt; metodundan yararlanılır. Tahmin edileceği &amp;uuml;zere metodun kullandığı generic tip &amp;uuml;zerinden bir &lt;strong&gt;XML&lt;/strong&gt; ters serileştirme işlemi s&amp;ouml;z konusudur. Nitekim istemciden gelen mesaj &lt;strong&gt;XML&lt;/strong&gt; tipindedir ve kod i&amp;ccedil;erisinde nesnel olarak kullanılması gerekmektedir.&lt;/p&gt;
+&lt;p&gt;Bunlara ek olaraktan, servisin istemciye g&amp;ouml;ndereceği t&amp;uuml;rlendirilmemiş mesajın &amp;uuml;retimi i&amp;ccedil;in, &lt;strong&gt;Message&lt;/strong&gt; sınıfının &lt;strong&gt;static&lt;/strong&gt; &lt;strong&gt; CreateMessage&lt;/strong&gt; fonksiyonundan yararlanılır. Metodun &lt;strong&gt;aşırı y&amp;uuml;klenmiş(overload)&lt;/strong&gt; 11 farklı versiyonu bulunmaktadır. &amp;Ouml;rneğimizde kullandığımız halinde, ilk parametre ile &lt;strong&gt;SOAP&lt;/strong&gt; versiyonu, ikinci parametre ile &lt;strong&gt;SOAP&lt;/strong&gt; &lt;strong&gt;Action&lt;/strong&gt; adı ve son olarak &amp;uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; parametre ilede &lt;strong&gt;Body&lt;/strong&gt; kısmına gelecek olan nesne &amp;ouml;rneği belirtilmiştir. Eklenen bu yeni fonksiyonellik nedeniyle istemci tarafında yer alan servis referansınında g&amp;uuml;ncellenmesi gerekmektedir. Bu g&amp;uuml;ncelleme işleminin ardından &lt;strong&gt;RunProcess&lt;/strong&gt; isimli operasyon istemci tarafında &amp;ouml;rnek olarak aşağıdaki kod par&amp;ccedil;asında g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi kullanılabilir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;Console.WriteLine("\nUntyped Message\n");
+
+// G&amp;uuml;ncel kanal implementasyonundan yararlanarak OperationContextScope nesnesi &amp;ouml;rneklenir.
+// OperationContextScope nesnesinden yararlanarak gelen ve giden mesajların i&amp;ccedil;erikleri y&amp;ouml;netilebilir, Header, Body gibi kısımlarına m&amp;uuml;dahale edilebilir.
+using (new OperationContextScope(client.InnerChannel))
+{
+    // Untyped mesaj i&amp;ccedil;erisinde g&amp;ouml;nderilecek olan Product nesneleri i&amp;ccedil;in bir dizi hazırlanır.
+    Product[] products = 
+        {
+            new Product{ Name="Programming WCF", ListPrice=12, OrderDate=DateTime.Now, ProductId=19},
+            new Product{ Name="Programming C# 3.0", ListPrice=16, OrderDate=DateTime.Now, ProductId=21}
+        };
+
+    // İstemciden servise g&amp;ouml;nderilecek olan Untyped Message hazırlanır.
+    // İlk parametre mesaj versiyonudur. (SOAP 1.1 gibi).
+    // İkinci parametre servis s&amp;ouml;zleşmesinde RunProcess operasyonunda belirtilen Action &amp;ouml;zelliğinin değeridir.
+    // &amp;Uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; parametre ise mesaj i&amp;ccedil;eriğinde g&amp;ouml;nderilecek olan serileştirilebilir nesne &amp;ouml;rneğidir. Bu &amp;ouml;rnekte Product tipinden bir dizi kullanılmaktadır.
+    Message request = Message.CreateMessage(OperationContext.Current.OutgoingMessageHeaders.MessageVersion, "RequestAction", products);
+
+    // Operasyon &amp;ccedil;ağrısı yapılır ve parametre olarak hazırlanan Untyped Message &amp;ouml;rneği g&amp;ouml;nderilir.
+    // &amp;Ccedil;ağrı sonucu yine bir Untyped Message &amp;ouml;rneğidir.
+    Message reply = client.RunProcess(request);
+
+    // Servisten gelen Untyped Message i&amp;ccedil;erisindeki Body kısmında tutulan Product topluluğunu dizi olarak ele almak i&amp;ccedil;in GetBody metodunun generic versiyonu kullanılır.     Bunun sonucu olarak elde edilen sonu&amp;ccedil; Product tipinden bir dizi olacaktır.
+    Product[] response = reply.GetBody&amp;lt;Product[]&amp;gt;();
+
+    foreach (Product product in response)
+    {
+        Console.WriteLine(product.Name+" "+product.ListPrice);
+    }
+}&lt;/pre&gt;
+&lt;p&gt;İstemci tarafında &lt;strong&gt;RunProcess&lt;/strong&gt; metodu &amp;ccedil;ağırılmadan &amp;ouml;nce g&amp;ouml;nderilecek mesajın oluşturulması i&amp;ccedil;in yine &lt;strong&gt; CreateMessage&lt;/strong&gt; &lt;strong&gt;static&lt;/strong&gt; metodundan yararlanılmaktadır. Yine ilk parametre olarak &lt;strong&gt;SOAP&lt;/strong&gt; versiyonu, ikinci parametre olarak &lt;strong&gt;SOAP&lt;/strong&gt; &lt;strong&gt;Action&lt;/strong&gt; değeri ve &amp;uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; parametre olarakta &lt;strong&gt;Body&lt;/strong&gt; kısmına serileştirilecek nesne &amp;ouml;rneği belirtilmiştir. Servis tarafından gelen mesaja ait Body bilgisinin okunması i&amp;ccedil;inde &lt;strong&gt;GetBody&amp;lt;T&amp;gt;&lt;/strong&gt; metodundan yararlanılmaktadır. İstemci tarafında dikkat edilmesi gereken noktalardan biriside t&amp;uuml;m bu işlemleri i&amp;ccedil;erisine alan &lt;strong&gt;Using&lt;/strong&gt; bloğunda &lt;strong&gt;OperationContextScope&lt;/strong&gt; nesnesinden yararlanılması ve o anki &lt;strong&gt; kanal(Channel)&lt;/strong&gt; bilgisinin kullanılmasıdır. &amp;Ouml;rnek uygulamamız bu haliyle test edildiğinde &amp;ccedil;alışma zamanı g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; aşağıdakine benzer olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk269_8.gif" alt="" width="424" height="232" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Ancak elbetteki arka planda yer alan mesaj i&amp;ccedil;eriğine &lt;strong&gt;Fiddler&lt;/strong&gt; aracı yardımıyla bakıldığında &lt;strong&gt;Body&lt;/strong&gt; kısmında hareket eden &lt;strong&gt;Product&lt;/strong&gt; verilerinin i&amp;ccedil;eriği a&amp;ccedil;ık bir şekilde g&amp;ouml;r&amp;uuml;lebilmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk269_6.gif" alt="" width="625" height="747" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;Request&lt;/strong&gt; mesajında g&amp;ouml;nderilen &lt;strong&gt;Product&lt;/strong&gt; nesnelerine ait &lt;strong&gt;ListPrice&lt;/strong&gt; değerleri, &lt;strong&gt;Response&lt;/strong&gt; mesajı i&amp;ccedil;erisinde &lt;strong&gt;1&lt;/strong&gt; birim arttırılmıştır. Eğer mesajların &lt;strong&gt;RAW&lt;/strong&gt; i&amp;ccedil;eriklerine bakılırsa &lt;strong&gt;SOAP&lt;/strong&gt; &lt;strong&gt;Action&lt;/strong&gt; bilgisininde set edilmiş olduğu g&amp;ouml;r&amp;uuml;lebilir. &lt;em&gt;(Size tavsiyem &lt;strong&gt; GetBody&lt;/strong&gt; metodlarına olan &amp;ccedil;ağrılarda &lt;strong&gt;BreakPoint&lt;/strong&gt; kullanarak &lt;strong&gt; request&lt;/strong&gt; ve &lt;strong&gt;response&lt;/strong&gt; değişkenlerinin &amp;ccedil;alışma zamanı i&amp;ccedil;eriklerini &lt;strong&gt;QuickWatch&lt;/strong&gt; ile izlemenizdir.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk269_7.gif" alt="" width="632" height="554" border="0" /&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Eğer istemciden talep g&amp;ouml;nderildikten sonra varsayılan olarak 1 dakikalık zaman dilimi i&amp;ccedil;erisinde servis tarafından cevap gelmezse aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan TimeoutException istisnası ile karşılaşılır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk269_9.gif" alt="" width="487" height="206" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu sorun SendTimeout değeri arttırılarak &amp;ccedil;&amp;ouml;z&amp;uuml;mlenebilir. Bu sorun, uzun s&amp;uuml;ren operasyonların s&amp;ouml;z konusu olduğu durumda dikkate alınması gereken istisnaların başında gelmektedir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Buraya kadar yaptıklarımıza baktığımızda, istemci ve sunucu arasındaki &lt;strong&gt;Mesaj&lt;/strong&gt; i&amp;ccedil;eriklerinin y&amp;ouml;netiminin &lt;strong&gt;Mesaj&lt;/strong&gt; &lt;strong&gt;S&amp;ouml;zleşmeleri&lt;/strong&gt; yardımıyla ele alınabildiği sonucu ortaya &amp;ccedil;ıkmaktadır. Buna g&amp;ouml;re istenirse, istemci ve sunucu arasında taşınacak bir veri tipinin belirli par&amp;ccedil;alarının &lt;strong&gt;SOAP&lt;/strong&gt; zarfı i&amp;ccedil;erisindek &lt;strong&gt;Header&lt;/strong&gt; veya &lt;strong&gt;Body&lt;/strong&gt; b&amp;ouml;l&amp;uuml;mleri arasında ayrıştırılması m&amp;uuml;mk&amp;uuml;n olabilmektedir. Hatta, istemci ve servis arasında &amp;ouml;zel mesaj desenlerinin oluşturulması da s&amp;ouml;z konusu ve olasıdır. Elbette bu işi tamamlayıcı en &amp;ouml;nemli nokta &lt;strong&gt;şifreleme(Encryption)&lt;/strong&gt; işlemlerininde hesaba katılmasıdır.&lt;/p&gt;
+&lt;p&gt;Buda yapıldığı takdirde mesajın daha g&amp;uuml;venilir bir şekilde ele alınması ve korunması m&amp;uuml;mk&amp;uuml;n hale gelmektedir. Diğer taraftan istemci ve servis arasındaki mesajların t&amp;uuml;rlendirilmemiş olmaları halindede ele alınabildikleri ve i&amp;ccedil;eriklerinin y&amp;ouml;netilebildikleride ortadadır. &lt;strong&gt;Mesaj&lt;/strong&gt; &lt;strong&gt;S&amp;ouml;zleşmeleri&lt;/strong&gt; ile ilişkili olarak daha detayı bilgi almak i&amp;ccedil;in, &lt;a href="http://msdn.microsoft.com/en-us/library/ms730255(printer).aspx"&gt; MSDN&lt;/a&gt;' de yayınlanan i&amp;ccedil;eriği takip etmenizi &amp;ouml;neririm. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim&lt;/p&gt;
+&lt;p&gt;&lt;a href="/makale/images/UsingMessageContracts.rar"&gt;&amp;Ouml;rneği İndirmek İ&amp;ccedil;in Tıklayın&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2009-02-09 12:00:00</pubDate>
+  <slug>Mesaj-Sozlesmeleri(Message-Contracts)-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>windows-communication-foundation</tag>
+    <tag>wcf</tag>
+  </tags>
+  <categories>
+    <category>WCF</category>
+  </categories>
+</post>

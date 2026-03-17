@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>C# 4.0 Default Parameter Kullanımına Dikkat</title>
+  <description>İşte bu yazımızın konusu da; C# 4.0 ile birlikte gelen yeni dil özelliklerden birisi olan Default Parameters ile ilişkili tuzaklar. Öncelikli olarak konuya aşağıdaki hazır kod parçası ile başlayalım.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/blg215_Giris.jpg"&gt;&lt;img style="display: inline; margin-left: 0px; margin-right: 0px; border-width: 0px;" title="blg215_Giris" src="/pics/blg215_Giris_thumb.jpg" alt="blg215_Giris" width="302" height="226" align="right" border="0" /&gt;&lt;/a&gt; Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;2004 ve&amp;nbsp; 2005 yıllarında uzun bir s&amp;uuml;re edit&amp;ouml;rl&amp;uuml;ğ&amp;uuml;n&amp;uuml; yaptığım &lt;a title="C#Nedir?" href="http://www.csharpnedir.com/" target="_blank"&gt;C#Nedir?&lt;/a&gt; topluluğunun d&amp;uuml;zenlediği&lt;strong&gt; C# Akademi&lt;/strong&gt; eğitimlerinde, yarı zamanlı eğitmen olarak g&amp;ouml;rev yapmıştım. Genellikle &lt;strong&gt;C#&lt;/strong&gt; programlama dilinin basit ve temel konularını, ayrıca &lt;strong&gt;Object Oriented&lt;/strong&gt; &amp;ouml;zelliklerini aktarmaya &amp;ccedil;alışırdım. Elbette sınıfımdaki &amp;ouml;ğrencilerim yanda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi her zaman p&amp;uuml;r neşe olmazlardı.&lt;/p&gt;
+&lt;p&gt;Ancak insan zaman i&amp;ccedil;erisinde profesyonelleşme yolunda ilerledik&amp;ccedil;e konuları &amp;ccedil;ok daha farklı a&amp;ccedil;ılardan ele alması gerektiğini de &amp;ouml;ğreniyor. Profesyonel bir eğitmenin en iyi yaptığı işlerin başında, en zor konuları &amp;ccedil;&amp;ouml;p adam kullanarak anlatmak gelmektedir. Tabi eğitmenin ger&amp;ccedil;ek hayat tecr&amp;uuml;belerini ve ip u&amp;ccedil;larını da aktarıyor olması, profesyonelliğinin diğer bir g&amp;ouml;stergesidir. B&amp;ouml;yle bir eğitmenin vereceği &amp;ouml;nerileri p&amp;uuml;r dikkat dinlemekte yarar vardır.&lt;/p&gt;
+&lt;p&gt;Ben eğitmenliği bırakalı uzun bir s&amp;uuml;re oldu ama makale yazarken veya g&amp;ouml;rsel ders &amp;ccedil;ekerken, konunun anlatımı sırasında yukarıdaki hususlara dikkat etmeye &amp;ccedil;alışıyorum. Bu anlamda bazen &amp;ccedil;ok basit olarak g&amp;ouml;r&amp;uuml;nen bir konunun, aslında derinlere inildiğinde dikkat edilmesi gereken noktalar i&amp;ccedil;erdiğini s&amp;uuml;rekli vurgulamaya &amp;ccedil;alışan yazıları da hazırlama uğraşısı i&amp;ccedil;erisindeyim. İşte bu yazımızın konusu da; &lt;strong&gt;C# 4.0&lt;/strong&gt; ile birlikte gelen yeni dil &amp;ouml;zelliklerden birisi olan &lt;strong&gt;Default Parameters&lt;/strong&gt; ile ilişkili tuzaklar. &amp;Ouml;ncelikli olarak konuya aşağıdaki hazır kod par&amp;ccedil;ası ile başlayalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace DefaultAndOptionalParametersCase 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            Connection myConn = new Connection(); 
+            Console.WriteLine(myConn.ToString()); 
+            myConn = new Connection("localhost", "AdventureWorks"); 
+            Console.WriteLine(myConn.ToString()); 
+        } 
+    }
+
+    class Connection 
+    { 
+        public string Server { get; set; } 
+        public string Database { get; set; } 
+        public int Timeout { get; set; } 
+        public int PacketSize { get; set; }
+
+        #region Constructors
+
+        public Connection(string server,string databaseName,int timeout,int packetSize) 
+        { 
+            Server = server; 
+            Database = databaseName; 
+            Timeout = timeout; 
+            PacketSize = packetSize; 
+        } 
+        public Connection(string server, string databaseName, int timeout) 
+            : this(server, databaseName, timeout, 4096) 
+        { 
+        } 
+        public Connection(string server, string databaseName) 
+            : this(server, databaseName, 45, 4096) 
+        { 
+        } 
+        public Connection() 
+            : this(".", "master", 45, 4096) 
+        { 
+        }
+
+        #endregion
+
+        public override string ToString() 
+        { 
+            return String.Format("server={0};database={1};timeout={2},packetSize={3}", Server, Database, Timeout, PacketSize); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;a href="/pics/blg215_Runtime1.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg215_Runtime1" src="/pics/blg215_Runtime1_thumb.gif" alt="blg215_Runtime1" width="557" height="76" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Bu kod par&amp;ccedil;asında dikkat etmemiz gereken nokta &lt;strong&gt;Constructor&lt;/strong&gt; metodlarıdır. G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere en fazla sayıda parametre alan yapıcı metod, diğer yapıcı metodlar tarafından kullanılmaktadır. Burada &lt;strong&gt;this&lt;/strong&gt; anahtar kelimesini takip eden ifadeler i&amp;ccedil;erisinde gerekli aktarma işlemlerinin yapıldığı g&amp;ouml;r&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/Exclamation_5.gif"&gt;&lt;img style="display: inline; margin-left: 0px; margin-right: 0px; border-width: 0px;" title="Exclamation" src="/pics/Exclamation_thumb_5.gif" alt="Exclamation" width="48" height="48" align="left" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Eski bilgilerimizi bir hatırlayalım. Bilindiği &amp;uuml;zere &lt;strong&gt;yapıcı metodlarda(Constructors)&lt;/strong&gt; &lt;strong&gt;this&lt;/strong&gt; yerine &lt;strong&gt;base&lt;/strong&gt; anahtar kelimesini kullanarak, metod parametrelerinin bir &amp;uuml;st sınıftaki versiyonuna g&amp;ouml;nderilmesi de sağlanabilir.&lt;/p&gt;
+&lt;p&gt;Tabi burada &lt;strong&gt;C# 4.0&lt;/strong&gt; ile gelen &lt;strong&gt;Default Parameters&lt;/strong&gt; yeteneğinin devreye girmesi ile &lt;strong&gt;n sayıda metod yerine tek bir metodun kullanılması &lt;/strong&gt;s&amp;ouml;z konusu olabilir. Nitekim ele aldığımız &amp;ouml;rnek senaryoda yapıcı metodların tek yaptığı, uygun olan versiyona parametre değerlerini taşımaktır. Dikkat edileceği &amp;uuml;zere sadece tek bir yapıcı metod i&amp;ccedil;erisinde &amp;ouml;zellik değer atama işlemleri yapılmaktadır. Diğer yapıcı metodlar sadece parametre değerlerini taşımak i&amp;ccedil;in kullanılmaktadır. Aşağıdaki şekilde bu durum ifade edilmeye &amp;ccedil;alışılmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg215_CopyConstructors.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg215_CopyConstructors" src="/pics/blg215_CopyConstructors_thumb.gif" alt="blg215_CopyConstructors" width="624" height="470" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Aslında &lt;strong&gt;Constructor&lt;/strong&gt; kullanımının buradaki amacı, &lt;strong&gt;Connection&lt;/strong&gt; tipine ait nesne &amp;ouml;rneklerinin oluşturulması sırasında alternatif versiyonları varsayılan parametre değerlerine g&amp;ouml;re sunabilmektir. Bu ama&amp;ccedil; d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde &lt;strong&gt;Default Parameters&lt;/strong&gt; yeteneği &amp;ouml;nemli bir avantaj sağlamaktadır. Gelin kodumuzu&lt;strong&gt; Default Parameters&lt;/strong&gt; kabiliyetini kullanarak aşağıdaki hale getirelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace DefaultAndOptionalParametersCase 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            Connection myConn = new Connection(); 
+            Console.WriteLine(myConn.ToString()); 
+            myConn = new Connection("localhost", "AdventureWorks"); 
+            Console.WriteLine(myConn.ToString()); 
+            myConn = new Connection("localhost", "AdventureWorks",20,512); 
+            Console.WriteLine(myConn.ToString()); 
+        } 
+    }
+
+    class Connection 
+    { 
+        public string Server { get; set; } 
+        public string Database { get; set; } 
+        public int Timeout { get; set; } 
+        public int PacketSize { get; set; }
+
+        public Connection(string server=".", string databaseName="master", int timeout=45, int packetSize=4096) 
+        { 
+            Server = server; 
+            Database = databaseName; 
+            Timeout = timeout; 
+            PacketSize = packetSize; 
+        }
+
+        public override string ToString() 
+        { 
+            return String.Format("server={0};database={1};timeout={2},packetSize={3}", Server, Database, Timeout, PacketSize); 
+        } 
+    }    
+}&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;tek bir yapıcı metod&lt;/strong&gt; kullanımı s&amp;ouml;z konusudur. Bir başka deyişle kod kısalmıştır. Yapıcı metodun parametrelerinde verilen varsayılan değerler sayesinde, &lt;strong&gt;Connection&lt;/strong&gt; tipine ait nesne &amp;ouml;rneklerinin oluşturulması şekillendirilmiştir. &amp;Ouml;rneğin, &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg215_Runtime2.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg215_Runtime2" src="/pics/blg215_Runtime2_thumb.gif" alt="blg215_Runtime2" width="556" height="87" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Aslında işin i&amp;ccedil;erisine &lt;strong&gt;Named Parameters&lt;/strong&gt; kullanımını da katmamız yerinde olacaktır. Neden? &lt;strong&gt;Main&lt;/strong&gt; metodu i&amp;ccedil;erisindeki aşağıdaki kod satırını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;myConn = new Connection("localhost", "AdventureWorks",20,512);&lt;/pre&gt;
+&lt;p&gt;Geliştirici kodu yazarken parametrelerin ne anlama geldiğini, isimlerinden veya varsa eğer &lt;strong&gt;XML Comment&amp;rsquo;&lt;/strong&gt; lerden &amp;ccedil;ıkartabilir. Ancak tamamlanmış kodun okunması sırasında &lt;strong&gt;20&lt;/strong&gt; ve &lt;strong&gt;512&lt;/strong&gt; rakamlarının en anlama geldiği kolayca &lt;span style="text-decoration: underline;"&gt;anlaşılamayabilir&lt;/span&gt;. İşte bu noktada parametreleri isimlendirerek kullanmak aşağıdaki okunurluğu sağlayacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;myConn = new Connection(server:"localhost", databaseName:"AdventureWorks", timeout:20, packetSize:512);&lt;/pre&gt;
+&lt;h2&gt;&lt;strong&gt;Parametre Sayısının Arttırılması&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;Gelelim &lt;strong&gt;default parameters&lt;/strong&gt; kullanımında dikkatli olmamız gereken hususlara. İlk olarak parametre sayısının arttırılması durumunu g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alacağız. Ancak senaryonun oluşumunda &lt;strong&gt;Named Parameters&lt;/strong&gt; kullanmadığımızı varsayıyoruz. Bu ama&amp;ccedil;la &lt;strong&gt;Connection&lt;/strong&gt; tipine ait yapıcı metodu aşağıdaki gibi değiştirdiğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace DefaultAndOptionalParametersCase 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            Connection myConn = new Connection(); 
+            Console.WriteLine(myConn.ToString()); 
+            myConn = new Connection("localhost", "AdventureWorks"); 
+            Console.WriteLine(myConn.ToString()); 
+            myConn = new Connection("localhost", "AdventureWorks",20,512);            
+            Console.WriteLine(myConn.ToString()); 
+        } 
+    }
+
+    class Connection 
+    { 
+        public string Server { get; set; } 
+        public string Database { get; set; } 
+        public int Timeout { get; set; } 
+        public int PacketSize { get; set; } 
+        public int ProcessId { get; set; }
+
+        public Connection(string server=".", string databaseName="master", int timeout=45,int processId=10, int packetSize=4096) 
+        { 
+            Server = server; 
+            Database = databaseName; 
+            Timeout = timeout; 
+            PacketSize = packetSize; 
+            ProcessId = processId; 
+        }
+
+        public override string ToString() 
+        { 
+            return String.Format("server={0};database={1};timeout={2},packetSize={3},PId:{4}", Server, Database, Timeout, PacketSize,ProcessId); 
+        } 
+    }    
+}&lt;/pre&gt;
+&lt;p&gt;Kodda sadece &lt;strong&gt;processId&lt;/strong&gt; isimli bir metod parametresi eklendiğini g&amp;ouml;rmekteyiz. Bu aslında sonradan yapılan bir değişiklik olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lmelidir. Bir başka deyişle geliştirdiğimiz projelerde sonradan varsayılan parametre eklenmesi s&amp;ouml;z konusu olabilir. Buna g&amp;ouml;re &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg215_Runtime3.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg215_Runtime3" src="/pics/blg215_Runtime3_thumb.gif" alt="blg215_Runtime3" width="618" height="87" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Dikkatinizi &amp;ccedil;eken bir nokta var mı?&lt;/p&gt;
+&lt;p&gt;Son &amp;ccedil;ıktıya g&amp;ouml;re &lt;strong&gt;ProcessId&lt;/strong&gt; değerinin &lt;strong&gt;512 &lt;/strong&gt;olduğu g&amp;ouml;r&amp;uuml;lmektedir. Oysaki &lt;strong&gt;512&lt;/strong&gt; değeri daha &amp;ouml;nceki kodlamaya g&amp;ouml;re &lt;strong&gt;PacketSize&lt;/strong&gt; &amp;ouml;zelliği i&amp;ccedil;in atanan bir değerdir. Bir başka deyişle yanlış bir değer ataması s&amp;ouml;z konusudur. İşin k&amp;ouml;t&amp;uuml; yanı bu senaryoda derleme zamanında bir hata veya uyarı mesajı alınmamaktadır. Dolayısıyla kodun hatalı &amp;ccedil;alışması olasıdır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/Exclamation_6.gif"&gt;&lt;img style="display: inline; margin-left: 0px; margin-right: 0px; border-width: 0px;" title="Exclamation" src="/pics/Exclamation_thumb_6.gif" alt="Exclamation" width="48" height="48" align="left" border="0" /&gt;&lt;/a&gt; &amp;Ouml;yleyse varsayılan parametre kullanımı gibi senaryolarda, metodlara yeni parametrelerin eklenmesi s&amp;ouml;z konusu ise, bu parametrelerin en sona eklenmesi daha doğru olacaktır. &lt;strong&gt;Named Parameters&lt;/strong&gt; aslında k&amp;ouml;kl&amp;uuml; &amp;ccedil;&amp;ouml;z&amp;uuml;m olsa da, ilgili tip metodlarını kullanan diğer geliştiricilerin bu kullanımı g&amp;ouml;z ardı etmesi ihtimali vardır.&lt;/p&gt;
+&lt;p&gt;Yani metod yapısını aşağıdaki gibi değiştirmemiz doğru bir &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı elde etmemizi sağlayacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public Connection(string server = ".", string databaseName = "master", int timeout = 45, int packetSize = 4096,int processId = 10)&lt;/pre&gt;
+&lt;p&gt;,sonucu &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg215_Runtime4.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg215_Runtime4" src="/pics/blg215_Runtime4_thumb.gif" alt="blg215_Runtime4" width="613" height="89" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;&lt;strong&gt;T&amp;uuml;retme(Inheritance) ve Varsayılan Parametreler&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;Gelelim diğer bir vakaya. Bu vaka &amp;ccedil;ok daha kritik ve &amp;ouml;nemlidir. Nitekim işin i&amp;ccedil;erisinde &lt;strong&gt;t&amp;uuml;retme(Inheritance)&lt;/strong&gt; kavramı vardır. Konuyu netleştirmek i&amp;ccedil;in aşağıdaki sınıf şemasına sahip &amp;ouml;rnek kod par&amp;ccedil;asını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alarak ilerleyelim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg215_ClassDiagram.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg215_ClassDiagram" src="/pics/blg215_ClassDiagram_thumb.gif" alt="blg215_ClassDiagram" width="436" height="437" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace DefaultAndOptionalParametersCase 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            MyCommand myCmd = new MyCommand(); 
+            ICommand iCmd = myCmd; 
+            Command cmd = myCmd;
+
+            Console.WriteLine(myCmd.PrepareSelectTop("Product")); 
+            Console.WriteLine(iCmd.PrepareSelectTop("Product")); 
+            Console.WriteLine(cmd.PrepareSelectTop("Product")); 
+        } 
+    }
+
+    interface ICommand 
+    { 
+        string PrepareSelectTop(string tableName, int topNumber = 3); 
+    } 
+    class Command 
+       : ICommand 
+    { 
+        #region ICommand Members
+
+        public virtual string PrepareSelectTop(string tableName, int topNumber = 10) 
+        { 
+            return String.Format("Select top {0} from {1}",topNumber,tableName);            
+        }
+
+        #endregion 
+    } 
+    class MyCommand 
+       : Command 
+    { 
+        public override string PrepareSelectTop(string tableName, int topNumber = 50) 
+        { 
+            return String.Format("Select top {0} from {1}",topNumber,tableName); 
+        } 
+    }   
+}&lt;/pre&gt;
+&lt;p&gt;Aslında bu senaryo &lt;a href="/post/Temeller-Kolay-Unutulur-(CSharp-Implicitly-Name-Hiding-Sorunsali)"&gt;Temeller Kolay Unutulur (C# &amp;ndash; Implicitly Name Hiding Sorunsalı)&lt;/a&gt; başlıklı yazımızdan size tanıdık gelecektir.&lt;/p&gt;
+&lt;p&gt;Sınıf şemasından da g&amp;ouml;r&amp;uuml;leceği &amp;uuml;zere &lt;strong&gt;ICommand&lt;/strong&gt; &lt;strong&gt;aray&amp;uuml;z&amp;uuml;n&amp;uuml;(Interface)&lt;/strong&gt; uygulayan &lt;strong&gt;Command&lt;/strong&gt; isimli bir tip ve bundan t&amp;uuml;reyen &lt;strong&gt;MyCommand&lt;/strong&gt; sınıfı s&amp;ouml;z konusudur. &lt;strong&gt;MyCommand&lt;/strong&gt; sınıfı, &lt;strong&gt;Command&lt;/strong&gt; tipinde &lt;strong&gt;virtual &lt;/strong&gt;olarak tanımlanmış ve aslında &lt;strong&gt;ICommand&lt;/strong&gt; aray&amp;uuml;z&amp;uuml; tarafından zorunlu hale getirilmiş &lt;strong&gt;PrepareSelectTop&lt;/strong&gt; metodunu ezmektedir&lt;strong&gt;(Overriding)&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Kritik olan yer &lt;strong&gt;Main&lt;/strong&gt; metodu i&amp;ccedil;erisindeki değişken atamalardır. Dikkat edileceği &amp;uuml;zere &lt;strong&gt;ICommand&lt;/strong&gt; ve &lt;strong&gt;Command &lt;/strong&gt;tipinden olan değişkenlere aynı &lt;strong&gt;MyCommand&lt;/strong&gt; nesne &amp;ouml;rneği atanmıştır. Eğer &amp;ccedil;ok bi&amp;ccedil;imlilik ilkesini biliyorsak, &lt;strong&gt;iCmd&lt;/strong&gt; ve &lt;strong&gt;cmd&lt;/strong&gt; isimli nesne &amp;ouml;rnekleri &amp;uuml;zerinden yapılan &lt;strong&gt;PrepareSelectTop&lt;/strong&gt; &amp;ccedil;ağrılarının aslında &lt;strong&gt;MyCommand&lt;/strong&gt; tipindeki metod i&amp;ccedil;eriğine doğru yapılması gerektiğini biliriz. Buna g&amp;ouml;re de t&amp;uuml;m &lt;strong&gt;Select&lt;/strong&gt; sorgularında &lt;strong&gt;Top 50&lt;/strong&gt; değerinin kullanılıyor olması gerekmektedir. Oysaki &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg215_Runtime5.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg215_Runtime5" src="/pics/blg215_Runtime5_thumb.gif" alt="blg215_Runtime5" width="269" height="86" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi son iki &amp;ccedil;ağrıda &lt;strong&gt;topNumber&lt;/strong&gt; i&amp;ccedil;in &lt;strong&gt;Default Parameter&lt;/strong&gt; değerleri tanımlandıkları yerdekiler olmuştur. &lt;strong&gt;ICommand&lt;/strong&gt; i&amp;ccedil;in &lt;strong&gt;3&lt;/strong&gt; iken &lt;strong&gt;Command&lt;/strong&gt; i&amp;ccedil;in &lt;strong&gt;10&lt;/strong&gt; olarak ele alınmıştır. Tam bu noktada&lt;strong&gt; &amp;ldquo;Amanın! Yoksa ICommand ve Command tipleri &amp;ccedil;ok bi&amp;ccedil;imlilik g&amp;ouml;stermiyorlarmış!&amp;rdquo;&lt;/strong&gt; diye haykırabilirsiniz. Ama dereyi g&amp;ouml;rmeden pa&amp;ccedil;aları sıvamamak lazım. Nitekim uygulamayı &lt;strong&gt;debug&lt;/strong&gt; modda değerlendirdiğimizde, aslında t&amp;uuml;m &lt;strong&gt;PrepareSelectTop&lt;/strong&gt; &amp;ccedil;ağrılarının, &lt;strong&gt;MyCommand&lt;/strong&gt; i&amp;ccedil;inden yapıldığı g&amp;ouml;r&amp;uuml;lecektir.&lt;/p&gt;
+&lt;p&gt;Sorun tamamen &lt;strong&gt;Default Parameter&amp;rsquo;&lt;/strong&gt; lar ile alakalıdır. S&amp;ouml;z gelimi &lt;strong&gt;ICommand&lt;/strong&gt; &amp;uuml;zerinden yapılan &amp;ccedil;ağrı sonucu &lt;strong&gt;topNumber&lt;/strong&gt; değeri aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg215_Debug1.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg215_Debug1" src="/pics/blg215_Debug1_thumb.gif" alt="blg215_Debug1" width="641" height="225" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;veya &lt;strong&gt;Command&lt;/strong&gt; tipi i&amp;ccedil;in şu şekilde olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg215_Debug2.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg215_Debug2" src="/pics/blg215_Debug2_thumb.gif" alt="blg215_Debug2" width="640" height="214" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;yle bir vakanın oluşmasının sebebi &lt;strong&gt;Defaul Parameter&lt;/strong&gt;&amp;rsquo; ların &lt;strong&gt;&amp;ccedil;alışma zamanı(Runtime)&lt;/strong&gt; yerine&lt;strong&gt; derleme zamanında(Compile Time)&lt;/strong&gt; &amp;ccedil;&amp;ouml;z&amp;uuml;mleniyor olmalarıdır. Bu durum IL(Intermediate Language) kodunda a&amp;ccedil;ık bir şekilde g&amp;ouml;r&amp;uuml;lebilir ve ispatlanabilir.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;.method private hidebysig static void  Main(string[] args) cil managed 
+{ 
+  .entrypoint 
+  // Code size       68 (0x44) 
+  .maxstack  3 
+  .locals init ([0] class DefaultAndOptionalParametersCase.MyCommand myCmd, 
+           [1] class DefaultAndOptionalParametersCase.ICommand iCmd, 
+           [2] class DefaultAndOptionalParametersCase.Command cmd) 
+  IL_0000:  nop 
+  IL_0001:  newobj     instance void DefaultAndOptionalParametersCase.MyCommand::.ctor() 
+  IL_0006:  stloc.0 
+  IL_0007:  ldloc.0 
+  IL_0008:  stloc.1 
+  IL_0009:  ldloc.0 
+  IL_000a:  stloc.2 
+  IL_000b:  ldloc.0 
+  IL_000c:  ldstr      "Product" 
+  IL_0011:  ldc.i4.s   50 
+  IL_0013:  callvirt   instance string DefaultAndOptionalParametersCase.Command::PrepareSelectTop(string, 
+                                                                                                  int32) 
+  IL_0018:  call       void [mscorlib]System.Console::WriteLine(string) 
+  IL_001d:  nop 
+  IL_001e:  ldloc.1 
+  IL_001f:  ldstr      "Product" 
+  IL_0024:  ldc.i4.3 
+  IL_0025:  callvirt   instance string DefaultAndOptionalParametersCase.ICommand::PrepareSelectTop(string, 
+                                                                                                   int32) 
+  IL_002a:  call       void [mscorlib]System.Console::WriteLine(string) 
+  IL_002f:  nop 
+  IL_0030:  ldloc.2 
+  IL_0031:  ldstr      "Product" 
+  IL_0036:  ldc.i4.s   10 
+  IL_0038:  callvirt   instance string DefaultAndOptionalParametersCase.Command::PrepareSelectTop(string, 
+                                                                                                  int32) 
+  IL_003d:  call       void [mscorlib]System.Console::WriteLine(string) 
+  IL_0042:  nop 
+  IL_0043:  ret 
+} // end of method Program::Main&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;IL&lt;/strong&gt; kodunda yer alan &lt;strong&gt;ldc&lt;/strong&gt; komutlaraına bakıldığında&lt;strong&gt; Defualt Parameter&lt;/strong&gt; değerlerinin, tip tanımlamaları sırasında yazıldığı gibi &lt;strong&gt;set&lt;/strong&gt; edildiği a&amp;ccedil;ık bir şekilde g&amp;ouml;r&amp;uuml;lebilmektedir.&lt;/p&gt;
+&lt;p&gt;Kolayca g&amp;ouml;zden ka&amp;ccedil;abilecek bir durum olduğu i&amp;ccedil;in tehlikeli bir vaka olduğunu ifade edebiliriz. Dolayısıyla en azından bu senaryoya g&amp;ouml;re &lt;strong&gt;Default Parameter&lt;/strong&gt; kullanımını aslında &lt;strong&gt;Interface&lt;/strong&gt; seviyesinde bırakmak &amp;ccedil;&amp;ouml;z&amp;uuml;m olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2010%2f8%2fDefaultAndOptionalParametersCase.rar"&gt;DefaultAndOptionalParametersCase.rar (25,52 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2011-02-13 16:00:00</pubDate>
+  <slug>C-40-Default-Parameter-Kullanimina-Dikkat!</slug>
+  <tags>
+    <tag>c#-40</tag>
+    <tag>c#-temelleri</tag>
+    <tag>default-parameters</tag>
+    <tag>optional-parameters</tag>
+    <tag>named-parameters</tag>
+  </tags>
+  <categories>
+    <category>C# 4.0</category>
+  </categories>
+</post>

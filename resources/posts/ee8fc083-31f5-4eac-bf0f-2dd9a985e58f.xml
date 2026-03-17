@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WCF Rest Servislerinde Önbellekleme(Caching)</title>
+  <description>REST(REpresentational State Transfer) modelini uygulayan WCF servislerinin geliştirilmesinde, WCF Rest Starter Kit ile birlikte gelen kolaylıklardan biriside, önbellekleme(Caching) işlemlerinin dekleratif(Declarative) olarak yapılabilmesidir. Burada dekleratiflikten kastımız, önbellekleme bildirimlerinin çalışma zamanına nitelik(Attribute) yoluyla bildirilmesidir.</description>
+  <content>&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;REST(REpresentational&amp;nbsp;State Transfer)&amp;nbsp;&lt;/strong&gt;modelini uygulayan &lt;strong&gt;WCF&lt;/strong&gt; servislerinin geliştirilmesinde, &lt;strong&gt;WCF Rest Starter Kit&lt;/strong&gt; ile birlikte gelen kolaylıklardan biriside, &lt;strong&gt;&amp;ouml;nbellekleme(Caching)&lt;/strong&gt; işlemlerinin &lt;strong&gt;dekleratif(Declarative)&lt;/strong&gt; olarak yapılabilmesidir. Burada dekleratiflikten kastımız, &amp;ouml;nbellekleme bildirimlerinin &amp;ccedil;alışma zamanına &lt;strong&gt;nitelik(Attribute)&lt;/strong&gt; yoluyla bildirilmesidir. Web programlama modeline g&amp;ouml;re geliştirilen servislerin &amp;ccedil;eşidi ne olursa olsun, performans kriterleri s&amp;ouml;z konusu olduğunda &amp;ouml;nemli olan noktalardan biriside verilerin istemciye g&amp;ouml;nderilmeden &amp;ouml;nce gerekiyorsa belirli s&amp;uuml;reler boyunca veya bazı koşullar sağlanıncaya kadar sunucu &amp;ouml;n belleğinde&lt;em&gt;(hatta bazen istemci tarafında tarayıcı uygulama i&amp;ccedil;in ayrılan &amp;ouml;zel b&amp;ouml;lgelerde)&lt;/em&gt; tutulmasıdır.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;zellikle &lt;strong&gt;Asp.Net&lt;/strong&gt; web uygulamalarını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alırsak, &amp;ouml;n bellekleme ile ilişkili olarak kullanılan mod&amp;uuml;llerin pek &amp;ccedil;ok farklı yapıyı desteklediğini g&amp;ouml;r&amp;uuml;r&amp;uuml;z. S&amp;ouml;z gelimi, absolute caching(Kesin bir s&amp;uuml;re kadar &amp;ouml;nbellekte tutulması), sliding expiration caching(belirli s&amp;uuml;re i&amp;ccedil;erisinde talep geldik&amp;ccedil;e &amp;ouml;nbellekte tutulma s&amp;uuml;resinin ileriye &amp;ouml;telenmesi), file dependency caching(&amp;ouml;nbellekteki verinin yenilenme koşulunun dosyadaki değişimlere bağlanması),sql dependency caching(&amp;ouml;n bellekteki verinin yenilenme koşulunun bir tablodaki değişimlere bağlanması)&amp;nbsp;vb... Hal b&amp;ouml;yle olunca, genellikle Asp.Net destekli sunucularda host edilen WCF servislerindende bu hazır &lt;strong&gt;Caching&lt;/strong&gt; mod&amp;uuml;llerinden yararlanılması ka&amp;ccedil;ınılmazdır. Startet Kit ise, &lt;strong&gt;Microsoft.ServiceModel.Web&lt;/strong&gt; assembly' ı i&amp;ccedil;erisinde sunduğu &lt;strong&gt;WebCache&lt;/strong&gt; niteliği ile bu &amp;ouml;zelliğin REST bazlı WCF servislerinede uygulanabilmesini, olanaklı kılmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblg8_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu yazımızda s&amp;ouml;z konusu &amp;ouml;n bellekleme sisteminin Atom formatında i&amp;ccedil;erik yayınlaması&lt;strong&gt;(Atom Feed Syndication)&lt;/strong&gt;&amp;nbsp;yapan bir WCF Rest servisinde nasıl ele alınabileceğini incelemeye &amp;ccedil;alışacağız. İşe ilk olarak Atom Feed WCF Service şablonunda bir proje a&amp;ccedil;arak başlayabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblg8_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Atom Feed WCF Service&lt;/strong&gt; proje tipi, tahmin edeceğiniz &amp;uuml;zere &lt;strong&gt;WCF Rest Starter Kit&lt;/strong&gt; ile birlikte &lt;strong&gt;Visual Studio 2008&lt;/strong&gt; ortamına y&amp;uuml;klenen hazır şablonlardan birisidir. Şablon i&amp;ccedil;eriği zaten hazır bir kod yapısına sahiptir ve gerekli &lt;strong&gt;TODO&lt;/strong&gt; işaretlemeleri ile geliştiriciye neler yapması gerektiğini varsayılan &amp;ouml;l&amp;ccedil;&amp;uuml;lerde bildirmektedir. Ancak bundan daha da &amp;ouml;nemlisi şablonun kullanım amacıdır. Bu şablon, &lt;strong&gt;ATOM&lt;/strong&gt; formatında i&amp;ccedil;erik yayınlaması yapan bir &lt;strong&gt;WCF&lt;/strong&gt; servis operasyonunun &lt;strong&gt;REST&lt;/strong&gt; bazlı olacak şekilde sunulabilmesini sağlamaktadır. Bu sebeten hazır olarak sunulan &lt;strong&gt;GetFeed&lt;/strong&gt; isimli operasyonun d&amp;ouml;n&amp;uuml;ş tipi &lt;strong&gt;Atom10FeedFormatter&lt;/strong&gt; nesne &amp;ouml;rneğindendir. Servis kodlarını tamamlamadan &amp;ouml;nce &lt;strong&gt;web.config &lt;/strong&gt;dosyası i&amp;ccedil;erisinde &amp;ouml;nbellekleme i&amp;ccedil;in gerekli profil &amp;ouml;zelliklerini aşağıdaki şekilde g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi belirleyebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblg8_6.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Buradaki ayarlamalara g&amp;ouml;re iki farklı &amp;ouml;nbellekleme profili tanımlanmaktadır. &lt;strong&gt;Cache1&lt;/strong&gt; isimli profile g&amp;ouml;re, &amp;ouml;nbellekleme s&amp;uuml;resi &lt;strong&gt;60&lt;/strong&gt; saniyedir ve sunucu taraflı bir &amp;ouml;nbellekleme yapılacağı &lt;strong&gt;location&lt;/strong&gt; niteliğine atanan &lt;strong&gt;Server&lt;/strong&gt; değeri ile belirtilmektedir. Diğer taraftan &lt;strong&gt;Cache2&lt;/strong&gt; isimli profilde ise sadece s&amp;uuml;re ve lokasyon bilgileri farklıdır. Konfigurasyon dosyasında &amp;ouml;nem arz eden konulardan biriside &lt;strong&gt;aspNetCompatibilityEnabled&lt;/strong&gt; niteliğine atanan &lt;strong&gt;true&lt;/strong&gt; değeridir. Asp.Net ortamının &amp;ouml;nbellekleme mod&amp;uuml;l&amp;uuml;nden yararlanılacağı i&amp;ccedil;in bu değerin true olması &amp;ouml;nemlidir.&lt;/p&gt;
+&lt;p&gt;Artık bizim yapmamız gereken tek şey, servis tarafında kullanacağımız &lt;strong&gt;WebGet&lt;/strong&gt; niteliğine hangi &lt;strong&gt;Cache&lt;/strong&gt; profilini kullanacağını bildirmektir. Buna g&amp;ouml;re başlangı&amp;ccedil;ta &lt;strong&gt;FeedService&lt;/strong&gt; adıyla oluşturulmuş olan ama &amp;ouml;rneğimizde &lt;strong&gt;ProductFeedService&lt;/strong&gt; ismiyle tanımlanan servisimize ait kod i&amp;ccedil;eriğini aşağıdaki gibi değiştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Globalization;
+using System.Net;
+using System.ServiceModel;
+using System.ServiceModel.Activation;
+using System.ServiceModel.Syndication;
+using System.ServiceModel.Web;
+using Microsoft.ServiceModel.Web;
+
+namespace Caching
+{    
+    [ServiceBehavior(IncludeExceptionDetailInFaults = true), AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed), ServiceContract]
+    public partial class ProductFeedService
+    {
+        [WebHelp(Comment = "Stok bilgisine g&amp;ouml;re t&amp;uuml;m &amp;uuml;r&amp;uuml;n bilgileri Atom formatında getirilir.")]
+        [WebGet(UriTemplate = "?size={stockSize}")]
+        [WebCache(CacheProfileName="Cache1")] // web.config dosyasında, Cache1 isimli &amp;ouml;nbellekleme profilininin takip eden operasyon i&amp;ccedil;in kullanılacağı belirtilir.
+        [OperationContract]
+        public Atom10FeedFormatter GetFeed(short stockSize)
+        {            
+            SyndicationFeed feed;
+
+            // varsayılan kontroller
+
+            if (stockSize &amp;lt; 0)  // stok değeri parametresi 0' ın altında ise
+                throw new WebProtocolException(HttpStatusCode.BadRequest, "Stok miktarı eksi değer olamaz.", null);
+            // stok değeri parametresi girilmemişse(ki servis querystring kullanılmadan talep edilirse bu &amp;ccedil;alışır)
+            if (stockSize == 0) 
+                stockSize = 10;
+
+            // Kritere uyan her bir Product i&amp;ccedil;in birer SyndicationItem &amp;ouml;rneği oluşturulup, SyndicationItem tipinden generic List koleksiyonuna eklenir.
+            List&amp;lt;SyndicationItem&amp;gt; items = new List&amp;lt;SyndicationItem&amp;gt;();
+            foreach(Product product in GetProducts(stockSize))
+            {
+                items.Add(new SyndicationItem()
+                {
+                    // Syndication i&amp;ccedil;eriğinde olması gereken standart bazı &amp;ouml;zelliklerin değerleri set edilir.
+
+                    Id = String.Format(CultureInfo.InvariantCulture, "http://northwind.com/ProductID{0}", product.ProductId),
+                    Title = new TextSyndicationContent(String.Format("'{0}' &amp;uuml;r&amp;uuml;n&amp;uuml;", product.Name)),                    
+                    LastUpdatedTime = DateTime.Now,                    
+                    Authors = {new SyndicationPerson() {Name = ""} // Yazar bilgisi kullanılmadığı i&amp;ccedil;in boş bırakıldı
+                    },
+                    
+                    Content = new TextSyndicationContent(String.Format("{0}, {1}, {2}, {3}",product.ProductId.ToString(),product.Name,product.UnitPrice.ToString("C2"),product.UnitsInStock.ToString())),
+                     PublishDate=DateTime.Now,
+                      Summary=new TextSyndicationContent(String.Format("{0} isimli &amp;uuml;r&amp;uuml;nden stokta {1} adet bulunmaktadır",product.Name,product.UnitsInStock.ToString())),                      
+                });
+            }
+            
+            // Feed hazrılanır ve Items &amp;ouml;zelliğine, List&amp;lt;SyndicationItem&amp;gt; tipinden olan ve yukarıda hazırlanan itemsi isimli koleksiyon atanır.
+            feed = new SyndicationFeed()
+            {
+                Id = "http://northwind.com/ProductsWithStock",
+                Title = new TextSyndicationContent("Stok miktarı bazlı &amp;uuml;r&amp;uuml;n listesi"),
+                Items = items
+            };
+            feed.AddSelfLink(WebOperationContext.Current.IncomingRequest.GetRequestUri());        
+            // Operasyonun &amp;ccedil;ıktı formatının Atom olacağı ContentType &amp;ouml;zelliğine atanan değer ile belirlenir
+            WebOperationContext.Current.OutgoingResponse.ContentType = ContentTypes.Atom;            
+            // syndication i&amp;ccedil;eriği operasyondan geriye d&amp;ouml;nd&amp;uuml;r&amp;uuml;l&amp;uuml;r.
+            return feed.GetAtom10Formatter();
+        }
+
+        // Yardımcı metod. UnitsInStock değeri stockSize ile gelen değerin altında olan &amp;uuml;r&amp;uuml;nleri Product tipinden bir koleksiyon olarak geriye d&amp;ouml;nd&amp;uuml;rmektedir.
+        private List&amp;lt;Product&amp;gt; GetProducts(short stockSize)
+        {
+            List&amp;lt;Product&amp;gt; products = new List&amp;lt;Product&amp;gt;();
+            using (SqlConnection conn = new SqlConnection("data source=.;database=Northwind;integrated security=SSPI"))
+            {
+                SqlCommand cmd = new SqlCommand("Select ProductID,ProductName,UnitPrice,UnitsInStock From Products Where UnitsInStock&amp;lt;@UnitsInStock", conn);
+                cmd.Parameters.AddWithValue("@UnitsInStock", stockSize);
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader(System.Data.CommandBehavior.CloseConnection);
+                while (reader.Read())
+                {
+                    products.Add(
+                        new Product
+                        {
+                             ProductId=Convert.ToInt32(reader["ProductID"]),
+                              Name=reader["ProductName"].ToString(),
+                               UnitPrice=Convert.ToDecimal(reader["UnitPrice"]),
+                                UnitsInStock=Convert.ToInt16(reader["UnitsInStock"])
+                        }
+                        );
+                }
+                reader.Close();
+            }
+            return products;
+        }
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;GetFeed metodu&amp;nbsp;Products tablosundan, stok miktarı parametre olarak gelen stockSize değerinden d&amp;uuml;ş&amp;uuml;k olan &amp;uuml;r&amp;uuml;n bilgilerini &lt;strong&gt;Atom&lt;/strong&gt; formatından bir i&amp;ccedil;erik olarak istemciye g&amp;ouml;ndermektedir. Burada verinin &amp;ccedil;ekilmesi sırasında yardımcı bir metod olarak &lt;strong&gt;GetProducts&lt;/strong&gt; fonksiyonu kullanılmaktadır. Elbetteki yazımızın konusu itibariyle &amp;ouml;nem arz eden tek satır WebGet niteliğinin kullanıldığı yerdir. Niteliğin &lt;strong&gt;CacheProfileName&lt;/strong&gt; &amp;ouml;zelliğine atanan değer ile, &lt;strong&gt;GetFeed&lt;/strong&gt; metodunun &amp;uuml;reteceği &amp;ccedil;ıktının hangi kriterlere g&amp;ouml;re nasıl &amp;ouml;n bellekleneceği belirtilmektedir. Servis bu haliyle talep edildiğinde ve &amp;ouml;rneğin stok miktarı 15 birimin altında olan &amp;uuml;r&amp;uuml;n listesi istendiğinde, aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ne benzer bir &amp;ccedil;ıktı ile karşılaşılabilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblg8_5.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Tabi bu g&amp;ouml;r&amp;uuml;nt&amp;uuml; yazımız i&amp;ccedil;in yeterli değildir. Nitekim amacımız &amp;ouml;n bellekleme sistemini test edebilmek. Burada izlenebilecek bir ka&amp;ccedil; yol var. En kolayı geliştiricinin &lt;strong&gt;GetFeed&lt;/strong&gt; metodu başına &lt;strong&gt;breakpoint&lt;/strong&gt; koyarak &lt;strong&gt;debug&lt;/strong&gt; modunda ilerlemesidir. Bu durumda, servise gelen ilk talep ile birlikte &lt;strong&gt;GetFeed&lt;/strong&gt; metodunun &amp;uuml;reteceği i&amp;ccedil;erik &lt;strong&gt;60&lt;/strong&gt; saniyeliğine&lt;strong&gt;(duration=60)&lt;/strong&gt; sunucunun &amp;ouml;n belleğinde tutulamaya başlancaktır. Bu sırada tarayıcı &amp;uuml;zerinden aynı sayfa tekrardan talep edilirse metodun i&amp;ccedil;erisinde d&amp;uuml;ş&amp;uuml;lmediği ve az &amp;ouml;nce &amp;uuml;retilen &amp;ccedil;ıktının geldiği g&amp;ouml;zlemlenecektir. Tabi burada &amp;ccedil;ok dikkat edilmesi gereken bir nokta vardır.&lt;/p&gt;
+&lt;p&gt;Servis bu haliyle talep edildiğinde, stockSize değeri 0 olduğundan if koşuluna g&amp;ouml;re 10 birimin altında olanlar getirilmektedir. Şayet bundan sonra tarayıcıdan &lt;strong&gt;http://localhost:1000/Service.svc/?size=100&lt;/strong&gt; gibi bir talep girilirse yine stok miktarı 10 birimin altında olanlar getirilecektir. Neden? Tabiki ilk talep &amp;ouml;nbellekte tutulduğu i&amp;ccedil;in &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;Elbette, 60 saniyelik &amp;ouml;n bellekleme s&amp;uuml;resi beklendikten sonra bu talep g&amp;ouml;nderilirse, stok miktarı 100' &amp;uuml;n altında olan &amp;uuml;r&amp;uuml;nlerin elde edilebildiği ve doğal olarak &lt;strong&gt;debug&lt;/strong&gt; moddayken ,GetFeed metodu i&amp;ccedil;erisine&amp;nbsp;d&amp;uuml;ş&amp;uuml;lebildiği g&amp;ouml;zlemlenecektir. Bu tam olarak istenen bir şey olmayabilidir aslında. Belkide size parametresine g&amp;ouml;re ayrı ayrı &amp;ouml;n bellekleme yapılabilmesi daha doğru olabilir ki buda son derece basittir. Tek yapılması gereken &amp;ouml;n bellekleme profilini aşağıdaki gibi g&amp;uuml;ncelleştirmektir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblg8_7.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi tek yaptığımız &lt;strong&gt;varyByParam&lt;/strong&gt; niteliğine size değerini vermektir. &amp;Ouml;nbellekleme ile ilişkili detayları &lt;strong&gt;web.config&lt;/strong&gt; dosyası i&amp;ccedil;erisinde taşımanın en b&amp;uuml;y&amp;uuml;k avantajlarından biriside, koda girmeden değiştirilebilme olanağı sağlamasıdır. &amp;Ouml;rneğin &amp;uuml;r&amp;uuml;n&amp;uuml;n &lt;strong&gt;IIS&lt;/strong&gt; altına atılmasından sonra, &lt;strong&gt;size&lt;/strong&gt; parametresine g&amp;ouml;re &amp;ouml;nbellekleme yapılacağına karar verildiyse eğer, kodu tekrardan a&amp;ccedil;madan &lt;strong&gt;web.config&lt;/strong&gt; dosyasına m&amp;uuml;dahale edilerek bu g&amp;uuml;ncelleme ger&amp;ccedil;ekleştirilebilir. Diğer yandan istenirse web.config dosyası kullanılmadan, WebGet niteliğinin &amp;ouml;zellikleri i&amp;ccedil;erisindede &amp;ouml;nbellekleme bilgileri tanımlanabilir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[WebHelp(Comment = "Stok bilgisine g&amp;ouml;re t&amp;uuml;m &amp;uuml;r&amp;uuml;n bilgileri Atom formatında getirilir.")]
+[WebGet(UriTemplate = "?size={stockSize}")]
+[WebCache(Duration=60, Location=System.Web.UI.OutputCacheLocation.Any, VaryByParam="size")]
+[OperationContract]
+public Atom10FeedFormatter GetFeed(short stockSize)
+{&lt;/pre&gt;
+&lt;p&gt;şeklinde...&lt;/p&gt;
+&lt;p&gt;Evettt..B&amp;ouml;ylece geldik bir blog yazımızın daha sonuna. Bu kısa yazımızda &lt;strong&gt;WCF REST Starter Kit'&lt;/strong&gt; i kullanarak bir &lt;strong&gt;Atom Feed WCF Service'&lt;/strong&gt; in nasıl geliştirilebileceğini g&amp;ouml;rd&amp;uuml;k. Ama dahada &amp;ouml;nemlisi, &lt;strong&gt;WebGet&lt;/strong&gt; niteliği yardımıyla &amp;ouml;n bellekleme işlemlerinin nasıl yapılabileceğine bakmaya &amp;ccedil;alıştık. G&amp;ouml;r&amp;uuml;şmek dileğiyle...&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rnek Dosya; &lt;a href="/pics/2009%2f4%2fCaching.rar"&gt;Caching.rar (107,66 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2009-04-27 12:28:00</pubDate>
+  <slug>WCF-Rest-Servislerinde-Onbellekleme(Caching)</slug>
+  <tags>
+    <tag>wcf</tag>
+    <tag>rest</tag>
+  </tags>
+  <categories>
+    <category>WCF</category>
+  </categories>
+</post>

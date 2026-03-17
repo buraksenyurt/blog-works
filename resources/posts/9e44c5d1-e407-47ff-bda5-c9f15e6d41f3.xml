@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Transaction' larda Izolasyon Seviyeleri -2 (IsolationLevel Numaralandırıcısı)</title>
+  <description>Bu makalemizde, Sql izolasyon seviyelerinin, .net uygulamalarında nasıl kullanıldığını incelemeye çalışacağız. Bir önceki makalemizde, izolasyon seviyeleri için söz konusu olabilecek 3 problemi ele almıştık.</description>
+  <content>&lt;p&gt;Değerli Okurlarım, Merhabalar.&lt;/p&gt;
+&lt;p&gt;Bu makalemizde, Sql izolasyon seviyelerinin, .net uygulamalarında nasıl kullanıldığını incelemeye &amp;ccedil;alışacağız. Bir &amp;ouml;nceki makalemizde, izolasyon seviyeleri i&amp;ccedil;in s&amp;ouml;z konusu olabilecek 3 problemi ele almıştık. Bu olası problemler phantoms, non-repeatable read ve dirty read durumlarıdır. Eş zamanlı olarak &amp;ccedil;alışan Transaction' larda meydana gelebilecek bu problemleri, IsolationLevel numaralandırıcısı&amp;nbsp; yardımıyla kontrol altına alabiliriz. Bu numaralandırıcının alabileceği değerler ve bu değerlerin izin verdiği(vermediği) durumlar aşağıdaki tabloda yer almaktadır.&lt;/p&gt;
+&lt;table id="table1" class="dtTABLE" style="width: 589px; height: 283px;" border="1" cellspacing="0"&gt;
+&lt;tbody&gt;
+&lt;tr valign="top"&gt;
+&lt;th rowspan="2" width="34%"&gt;&lt;br /&gt; IsolationLevel Numaralandırıcı Değeri&lt;/th&gt;
+&lt;th colspan="3" width="66%" height="26"&gt;Olası Problemler&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td align="center" width="16%"&gt;&lt;strong&gt;&lt;br /&gt; Phantoms&lt;/strong&gt;&lt;/td&gt;
+&lt;td align="center" width="20%"&gt;&lt;strong&gt; Non-Repeatable Read&lt;/strong&gt;&lt;/td&gt;
+&lt;td align="center" width="22%"&gt;&lt;strong&gt;&lt;br /&gt; Dirty-Read&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="34%" height="25"&gt;&lt;strong&gt;Chaos&lt;/strong&gt;&lt;/td&gt;
+&lt;td colspan="3" width="66%" height="25"&gt;SqlServer tarafından desteklenmez.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="34%"&gt;&lt;strong&gt;ReadCommitted&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="22%"&gt;
+&lt;p align="center"&gt;&lt;img src="/makale/images/mk75_1.gif" alt="" width="25" height="25" border="0" /&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td width="20%"&gt;
+&lt;p align="center"&gt;&lt;img src="/makale/images/mk75_1.gif" alt="" width="25" height="25" border="0" /&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td width="22%"&gt;
+&lt;p align="center"&gt;&lt;img src="/makale/images/mk75_2.gif" alt="" width="25" height="25" border="0" /&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="34%"&gt;&lt;strong&gt;ReadUncommitted&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="22%"&gt;
+&lt;p align="center"&gt;&lt;img src="/makale/images/mk75_1.gif" alt="" width="25" height="25" border="0" /&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td width="20%"&gt;
+&lt;p align="center"&gt;&lt;img src="/makale/images/mk75_1.gif" alt="" width="25" height="25" border="0" /&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td width="22%"&gt;
+&lt;p align="center"&gt;&lt;img src="/makale/images/mk75_1.gif" alt="" width="25" height="25" border="0" /&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="34%"&gt;&lt;strong&gt;RepeatableRead&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="22%"&gt;
+&lt;p align="center"&gt;&lt;img src="/makale/images/mk75_1.gif" alt="" width="25" height="25" border="0" /&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td width="20%"&gt;
+&lt;p align="center"&gt;&lt;img src="/makale/images/mk75_2.gif" alt="" width="25" height="25" border="0" /&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td width="22%"&gt;
+&lt;p align="center"&gt;&lt;img src="/makale/images/mk75_2.gif" alt="" width="25" height="25" border="0" /&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="34%"&gt;&lt;strong&gt;Serializable&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="22%"&gt;
+&lt;p align="center"&gt;&lt;img src="/makale/images/mk75_2.gif" alt="" width="25" height="25" border="0" /&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td width="20%"&gt;
+&lt;p align="center"&gt;&lt;img src="/makale/images/mk75_2.gif" alt="" width="25" height="25" border="0" /&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td width="22%"&gt;
+&lt;p align="center"&gt;&lt;img src="/makale/images/mk75_2.gif" alt="" width="25" height="25" border="0" /&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="34%"&gt;&lt;strong&gt;Unspecified&lt;/strong&gt;&lt;/td&gt;
+&lt;td colspan="3" width="66%"&gt;SqlServer tarafından desteklenmez.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi IsolationLevel numaralandırıcısının alabileceği değerler altı adettir. Chaos ve Unspecified numaralandırıcı değerleri sql server tarafından desteklenmemektedir. Bununla birlikte, bir Transaction sınıfının IsolationLevel &amp;ouml;zelliğinin varsayılan değeri ReadCommitted olarak belirtilmiştir. Bu tablonun okunuşuna gelince. &amp;Ouml;rneğin, RepeatableRead değerini ele alalım. Bir uygulamada, Transaction nesnesine izolasyon seviyesi olarak bu değer atandığı takdirde, eş zamanlı olarak &amp;ccedil;alışan Transaction' lar arasında sadece Phantoms durumuna izin verilir. Dolayısıyla, Non-repeatable Read ve Dirty-Read durumlarına izin verilmez. Burada t&amp;uuml;m olası problemlere izin veren IsolationLevel numaralandırıcı değeri ReadUncommitted değeridir. Aksine, Serializable değeri Transaction' lar arasında doğabilecek bu problemlerin hi&amp;ccedil; birisinin olmasına izin vermez.&lt;/p&gt;
+&lt;p&gt;Şimdi dilerseniz, bu değerlerin aynı zamanda &amp;ccedil;alışan Transaction' lar &amp;uuml;zerindeki etkilerini &amp;ouml;rnek uygulamamız &amp;uuml;zerinde incelemeye &amp;ccedil;alışalım. Bu makalemizde yine bir &amp;ouml;nceki makalemizde geliştirdiğimiz uygulamayı &amp;ouml;rnek olarak kullanabiliriz. Bu kez formumuza izolasyon seviyelerini &amp;ccedil;alışma zamanında belirlememize yarayacak 4 adet RadioButton kontrol&amp;uuml; yerleştirdik. Formumuzun g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk75_3.gif" alt="" width="536" height="368" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Elbette, ger&amp;ccedil;ek uygulamalarda burada olduğu gibi izolasyon seviyelerinin &amp;ccedil;alışma zamanında bu şekilde belirlenmesi pek doğru olmayabilir. Ancak şu an i&amp;ccedil;in amacımız, bu izolasyon seviyelerinde aynı anda &amp;ccedil;alışan Transaction' larda nelerin olup nelerin olmadığını kontrol edebilmektir. Uygulama kodlarımız ise, aşağıda olduğu gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;SqlConnection con;
+SqlTransaction trans;
+SqlDataAdapter da;
+
+private void btnBegin_Click(object sender, System.EventArgs e)
+{
+    if(con.State==ConnectionState.Closed)
+    {
+        con.Open();
+    } 
+    if(this.rdbReadCommited.Checked==true)
+    {
+        trans=con.BeginTransaction(IsolationLevel.ReadCommitted);
+    }
+    else if(this.rdbReadUncommited.Checked==true)
+    {
+        trans=con.BeginTransaction(IsolationLevel.ReadUncommitted);
+    }
+    else if(this.rdbRepeatableRead.Checked==true)
+    {
+        trans=con.BeginTransaction(IsolationLevel.RepeatableRead);
+    }
+    else if(this.rdbSerializable.Checked==true)
+    {    
+        trans=con.BeginTransaction(IsolationLevel.Serializable);
+    }
+
+    lblDurum.Text=trans.IsolationLevel.ToString();
+}
+
+private void Form1_Load(object sender, System.EventArgs e)
+{
+    con=new SqlConnection("data source=localhost;database=Northwind;integrated security=SSPI"); 
+}
+
+private void btnCommit_Click(object sender, System.EventArgs e)
+{
+    trans.Commit();
+}
+
+private void btnRollBack_Click(object sender, System.EventArgs e)
+{
+    trans.Rollback();
+}
+
+private void btnBak_Click(object sender, System.EventArgs e)
+{
+    try
+    {
+        SqlCommand cmdBak=new SqlCommand("SELECT * FROM Personel",con);
+        cmdBak.Transaction=trans;
+        da=new SqlDataAdapter(cmdBak);
+        DataTable dt=new DataTable();
+        da.Fill(dt);
+        dataGrid1.DataSource=dt;
+    }
+    catch(SqlException hata)
+    {
+        MessageBox.Show(hata.Message.ToString());
+    }    
+}
+
+private void btnEkle_Click(object sender, System.EventArgs e)
+{
+    SqlCommand cmdGir=new SqlCommand("INSERT INTO Personel (ISIM,SOYISIM) VALUES ('"+txtIsim.Text+"','"+txtSoyisim.Text+"')",con);
+    cmdGir.Transaction=trans;
+    int sonuc=cmdGir.ExecuteNonQuery();
+    MessageBox.Show(sonuc+" SATIR GIRILDI");
+}
+
+private void btnGuncelle_Click(object sender, System.EventArgs e)
+{
+    SqlCommand cmdGuncelle=new SqlCommand("UPDATE Personel SET     ISIM='"+txtIsim.Text+"', SOYISIM='"+txtSoyisim.Text+"' WHERE ID="+txtID.Text,con);
+    cmdGuncelle.Transaction=trans;
+    int sonuc=cmdGuncelle.ExecuteNonQuery();
+    MessageBox.Show(sonuc+" SATIR GUNCELLENDI");
+}
+
+private void btnBakID_Click(object sender, System.EventArgs e)
+{
+    try
+    {
+        SqlCommand cmd=new SqlCommand("SELECT ISIM,SOYISIM FROM Personel WHERE ID="+txtID.Text,con);
+        cmd.Transaction=trans;
+        da=new SqlDataAdapter(cmd);
+        DataTable dt=new DataTable();
+        da.Fill(dt);
+        dataGrid1.DataSource=dt;
+    }
+    catch(SqlException hata)
+    {
+        MessageBox.Show(hata.Message.ToString());
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Kodumuzdaki en &amp;ouml;nemli nokta, başlatılacak Transaction' lar i&amp;ccedil;in IsolationLevel değerlerinin belirlenmesidir. Bu ama&amp;ccedil;la, SqlConnection sınıfının, BeginTransaction metodunun aşağıdaki prototipi kullanılmaktadır. Bu prototipte BeginTransaction metodu, parametre olarak IsolationLevel numaralandırıcısı t&amp;uuml;r&amp;uuml;nden bir değer alır. B&amp;ouml;ylece belirtilen bağlantı i&amp;ccedil;in a&amp;ccedil;ılacak Transaction, bu parametrede belirtilen izolasyon seviyesini kullanarak &amp;ccedil;alışacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public SqlTransaction BeginTransaction(IsolationLevel iso);&lt;/pre&gt;
+&lt;p&gt;Şimdi ilk olarak IsolationLevel &amp;ouml;zelliğinin varsayılan değeri olan ReadCommitted değerinden işe başlayalım. ReadCommitted değeri, Phantoms ve Non-Repeatable Read durumlarına izin verirken, Dirty-Read durumuna izin vermez. Şimdi &amp;ouml;rnek uygumamamızdan iki adet &amp;ccedil;alıştıralım ve aşağıdaki tabloda yer alan hareketleri sırasıyla uygulayalım. Elbette t&amp;uuml;m &amp;ouml;rneklerimizde ilk olarak Başlat başlıklı butona basarak Transaction' ların başlamasını sağlamalıyız.&lt;/p&gt;
+&lt;table id="table4" style="width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#cccccc"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td colspan="3" align="center" bgcolor="#cccccc"&gt;&lt;strong&gt; IsolationLevel.ReadCommitted&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td rowspan="6" align="center" bgcolor="#cccccc" width="9%"&gt;&lt;strong&gt; Phantoms&lt;/strong&gt;&lt;/td&gt;
+&lt;td align="center" bgcolor="#cccccc" width="40%"&gt;&lt;strong&gt; Transaction 1&lt;/strong&gt;&lt;/td&gt;
+&lt;td align="center" bgcolor="#cccccc" width="46%"&gt;&lt;strong&gt; Transaction 2&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="40%"&gt;Veri &amp;Ccedil;eker. (Bak başlıklı button)&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="46%"&gt;&amp;nbsp;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="40%"&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="46%"&gt;Veri &amp;Ccedil;eker. (Bak başlıklı button)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="40%"&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="46%"&gt;Yeni satır ekler. (Ekle başlıklı button)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="40%"&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="46%"&gt;Transaction onaylanır. Commit (Onayla başlıklı button)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="40%"&gt;Tekrardan Veri &amp;Ccedil;eker. Phantoms durumu oluşur.&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="46%"&gt;&amp;nbsp;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;&lt;img src="/makale/images/mk75_4.gif" alt="" width="536" height="717" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdide, Non-Repeatable Read durumunu inceleyelim. Bunun i&amp;ccedil;inde, yine aynı uygulamadan iki tane başlatabilir yada halen &amp;ccedil;alışan uygulamalarda a&amp;ccedil;ık kalan Transaction' ları onaylayarak yeni baştan oluşturabilirsiniz. Bu kez aşağıdaki tabloda izleyen adımları ger&amp;ccedil;ekleştireceğiz.&lt;/p&gt;
+&lt;table id="table5" style="width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#cccccc"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td colspan="3" align="center" bgcolor="#cccccc"&gt;&lt;strong&gt; IsolationLevel.ReadCommitted&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td rowspan="6" align="center" bgcolor="#cccccc" width="9%"&gt;&lt;strong&gt; Non-Repeatable Read&lt;/strong&gt;&lt;/td&gt;
+&lt;td align="center" bgcolor="#cccccc" width="40%"&gt;&lt;strong&gt; Transaction 1&lt;/strong&gt;&lt;/td&gt;
+&lt;td align="center" bgcolor="#cccccc" width="46%"&gt;&lt;strong&gt; Transaction 2&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="40%"&gt;Belirli bir satır veri &amp;ccedil;ekilir. (&amp;Ouml;rneğin ID=58)&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="46%"&gt;&amp;nbsp;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="40%"&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="46%"&gt;Aynı satır &amp;ccedil;ekilir. (ID=58)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="40%"&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="46%"&gt;Bu satırdaki verilerde değişiklikler yapılır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="40%"&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="46%"&gt;Transaction onaylanır. Commit.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="40%"&gt;Aynı satıra tekrar bakılır. Non-Repeatable Read durumu oluşur.&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="46%"&gt;&amp;nbsp;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;&lt;img src="/makale/images/mk75_5.gif" alt="" width="530" height="708" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;ReadCommitted seviyesi ile ilgili olarak son durum ise Dirty Read durumudur. Bu izolasyon seviyesi, Dirty Read durumlarının oluşmasına izin vermez. Hatırlayacağınız gibi bu durumda, eş zamanlı olarak &amp;ccedil;alışan Transaction' larda herhangibir Commit işlemi olmadan s&amp;ouml;z konusu olan problemler yer almaktadır. Şimdi bu durumu incelemek i&amp;ccedil;in aşağıdaki tabloda yer alan işlemleri ger&amp;ccedil;ekleştirelim.&lt;/p&gt;
+&lt;table id="table6" style="width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#cccccc"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td colspan="3" align="center" bgcolor="#cccccc"&gt;&lt;strong&gt; IsolationLevel.ReadCommitted&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td rowspan="6" align="center" bgcolor="#cccccc" width="9%"&gt;&lt;strong&gt; Dirty Read&lt;/strong&gt;&lt;/td&gt;
+&lt;td align="center" bgcolor="#cccccc" width="40%"&gt;&lt;strong&gt; Transaction 1&lt;/strong&gt;&lt;/td&gt;
+&lt;td align="center" bgcolor="#cccccc" width="46%"&gt;&lt;strong&gt; Transaction 2&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="40%"&gt;Belirli bir satır veri &amp;ccedil;ekilir. (&amp;Ouml;rneğin ID=73)&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="46%"&gt;&amp;nbsp;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="40%"&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="46%"&gt;Aynı satır &amp;ccedil;ekilir. (ID=73)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="40%"&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="46%"&gt;Bu satırdaki verilerde değişiklikler yapılır. Ancak Transaction Commit edilmez.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="40%"&gt;Aynı satıra tekrar bakılmak istenir. Hata Oluşur.&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="46%"&gt;&amp;nbsp;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="40%"&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="46%"&gt;&amp;nbsp;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi, aşağıdaki hata bildirisi &amp;ccedil;alışma zamanında oluşur.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk75_6.gif" alt="" width="573" height="107" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dolayısıyla şunu s&amp;ouml;yleyebiliriz. ReadCommitted değerine sahip Transaction' lardan herhangibiri i&amp;ccedil;erisinde yapılan g&amp;uuml;ncelleme, silme veya ekleme gibi işlemlerin, diğer Transaction tarafından g&amp;ouml;r&amp;uuml;lebilmesi i&amp;ccedil;in, bu değişiklikleri i&amp;ccedil;eren Transaction' ın Commit edilmesi veya RollBack edilmesi gerekmektedir. Bu nedenle, ReadCommitted değeri, Dirty Read durumuna izin vermez.&lt;/p&gt;
+&lt;p&gt;Gelelim, ReadUncommitted değerine. Bu değerin ReadCommitted değerinden tek farkı Dirty Read durumuna izin vermesidir. Bu durumu analiz etmek i&amp;ccedil;in, aşağıdaki tablodaki işlemleri sırasıyla uygulayalım. (Transaction' ları Başlat başlıklı Button ile başlatmadan &amp;ouml;nce, ReadUncommitted RadioButton kontrol&amp;uuml;n&amp;uuml;n se&amp;ccedil;ili olmasına dikkat edelim.)&lt;/p&gt;
+&lt;table id="table7" style="width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#cccccc"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td colspan="3" align="center" bgcolor="#cccccc"&gt;&lt;strong&gt; IsolationLevel.ReadUncommitted&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td rowspan="7" align="center" bgcolor="#cccccc" width="9%"&gt;&lt;strong&gt; Dirty Read&lt;/strong&gt;&lt;/td&gt;
+&lt;td align="center" bgcolor="#cccccc" width="40%"&gt;&lt;strong&gt; Transaction 1&lt;/strong&gt;&lt;/td&gt;
+&lt;td align="center" bgcolor="#cccccc" width="46%"&gt;&lt;strong&gt; Transaction 2&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="40%"&gt;Belirli bir satır veri &amp;ccedil;ekilir. (&amp;Ouml;rneğin ID=70)&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="46%"&gt;&amp;nbsp;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="40%"&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="46%"&gt;Aynı satır &amp;ccedil;ekilir. (ID=70)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="40%"&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="46%"&gt;Bu satırdaki verilerde değişiklikler yapılır. Ancak Transaction Commit edilmez.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="40%"&gt;Aynı satıra tekrar bakılmak istenir. (ID=70) Meydana gelen yeni değişiklikler g&amp;ouml;r&amp;uuml;l&amp;uuml;r.&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="46%"&gt;&amp;nbsp;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="40%"&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="46%"&gt;Yapılan işlemler geri alınır. RollBack.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="40%"&gt;Bu Transaction' da ger&amp;ccedil;ekleşmemiş değişiklikler g&amp;ouml;r&amp;uuml;nmeye devam eder. Dirty Read durumu.&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="46%"&gt;&amp;nbsp;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Dolayısıyla ReadUncommitted değerinin en &amp;ouml;nemli &amp;ouml;zelliği, Dirty Read durumuna neden olacak işlemlere izin vermesidir. Başka bir deyişle, &amp;ccedil;alışan iki Transaction' dan herhangibirinde yapılan değişikliklerin diğer Transaction tarafından g&amp;ouml;r&amp;uuml;lmesi i&amp;ccedil;in, işlemlerin mutlaka Commit edilmesi veya RollBack edilmesi gerekmez.&lt;/p&gt;
+&lt;p&gt;Sırada, RepeatableRead değeri var. Bu değeride ReadCommitted ile kıyaslayarak anlamaya &amp;ccedil;alışmak daha mantıklıdır. RepeatableRead değeri, sadece phantoms durumlarına izin verir. Diğer durumların oluşması halinde, yine zaman aşımı nedeniyle bir SqlException istisnası firlatılır. IsolationLevel' ların belirlenmesi ile ilgili &amp;ouml;nemli olan bir diğer değerde Serializable değeridir. Bu değer, Phantoms, Non-Repeatable Read ve Dirty Read durumlarından herhangibirisinin oluşmasına izin vermez. &amp;Ouml;rneğin aşağıdaki tabloda yer alan işlemleri yapmaya &amp;ccedil;alıştığımızı d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;table id="table8" style="width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#cccccc"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td colspan="3" align="center" bgcolor="#cccccc"&gt;&lt;strong&gt; IsolationLevel.Serializable&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td rowspan="4" align="center" bgcolor="#cccccc" width="9%"&gt;&lt;strong&gt; Phantoms&lt;/strong&gt;&lt;/td&gt;
+&lt;td align="center" bgcolor="#cccccc" width="40%"&gt;&lt;strong&gt; Transaction 1&lt;/strong&gt;&lt;/td&gt;
+&lt;td align="center" bgcolor="#cccccc" width="46%"&gt;&lt;strong&gt; Transaction 2&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="40%"&gt;Tablodan veriler &amp;ccedil;ekilir.&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="46%"&gt;&amp;nbsp;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="40%"&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="46%"&gt;Tablodan veriler &amp;ccedil;ekilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="40%"&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="46%"&gt;Yeni bir satır eklenmeye &amp;ccedil;alışılır. Ancak buna izin verilmez. &amp;Ccedil;&amp;uuml;nk&amp;uuml; satırlar, Serializable değeri nedeniyle diğer Transaction tarafından kilitlenmiştir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Dolayısıyla Serializable değerinin eş zamanlı Transaction' lar i&amp;ccedil;in sadece veri bakmaya izin verdiğini s&amp;ouml;yleyebiliriz. Başka bir deyişle, aynı anda &amp;ccedil;alışan iki Transaction' dan herhangibiri, Transaction' lardan diğeri a&amp;ccedil;ık olduğu s&amp;uuml;rece veri girişi, d&amp;uuml;zenlemesi veya silme işlemlerini yapamaz. B&amp;ouml;ylece Sql Server &amp;uuml;zerinde &amp;ccedil;alışan eş zamanlı Transaction' lar i&amp;ccedil;in var olabilecek sorunları değerlendiren izolasyon seviyelerini kısaca g&amp;ouml;rm&amp;uuml;ş olduk. İlerleyen makalelerimizde, Sql Server kilitlerinin Ado.Net i&amp;ccedil;indeki yerini incelemeye &amp;ccedil;alışacağız. Hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2004-06-28 12:00:00</pubDate>
+  <slug>Transaction-larda-Izolasyon-Seviyeleri-2-(IsolationLevel-Numaralandc4b1rc4b1cc4b1sc4b1)-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>adonet</tag>
+    <tag>transactions</tag>
+    <tag>isolation-levels</tag>
+  </tags>
+  <categories>
+    <category>Ado.Net</category>
+  </categories>
+</post>

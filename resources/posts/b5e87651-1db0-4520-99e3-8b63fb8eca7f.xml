@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Dayanıklı WCF Servisleri (Durable WCF Services)</title>
+  <description>Uzun zamandır Windows Communication Foundation(WCF) konulu bir araştırma üzerinde durmamıştık. Aslında WCF 4.0 ve WF 4.0 ile ilgili yeniliklerin uzun süredir konuşulduğu şu günlerde, WCF tarafında oldukça önemli bir yere sahip olan ve hatta Workflow Foundation açısından da değer arz eden bir konuya değiniyor olacağız. Dayanıklı WCF Servisleri(Durable WCF Services).</description>
+  <content>&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Değerli Okurlarım Merhabalar,&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Uzun zamandır Windows Communication Foundation(WCF) konulu bir araştırma &amp;uuml;zerinde durmamıştık. Aslında &lt;strong&gt; WCF 4.0 &lt;/strong&gt;ve &lt;strong&gt;WF 4.0&lt;/strong&gt; ile ilgili yeniliklerin uzun s&amp;uuml;redir konuşulduğu şu g&amp;uuml;nlerde, WCF tarafında olduk&amp;ccedil;a &amp;ouml;nemli bir yere sahip olan ve hatta Workflow Foundation a&amp;ccedil;ısından da değer arz eden bir konuya değiniyor olacağız. &lt;strong&gt;Dayanıklı WCF Servisleri(Durable WCF Services)&lt;/strong&gt;. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Durable deyince aklıma gelen ilk şey, uzun &amp;ouml;m&amp;uuml;rl&amp;uuml; bir pil markası oluyor :) S&amp;uuml;rer...S&amp;uuml;rer...S&amp;uuml;rerrr...İşin mizahi yanı bir tarafa dursun, &lt;strong&gt;Servis Y&amp;ouml;nelimli Mimari(ServiceOrientedArchitecture) &lt;/strong&gt; uygulamalarında, bir servisin herhangibir zaman dilimindeki konumunun i&amp;ccedil;eriği ile birlikte uzun s&amp;uuml;reliğine saklanabiliyor olması bazen elzem olan gereksinimlerden bir tanesidir. Nitekim bazı servis operasyonlarının ger&amp;ccedil;ekleştirilmesi sırasında servisin kapanması veya istemcinin tekrardan başlatılması gibi vakaları olasıdır. Yada &amp;ccedil;ok uzun s&amp;uuml;ren, i&amp;ccedil;erisinde insan fakt&amp;ouml;r&amp;uuml; olan bir s&amp;uuml;recin ele alındığı herhangibir servisin, belirli zaman dilimlerinde son i&amp;ccedil;eriğinden y&amp;uuml;klenerek &amp;ccedil;alıştırılması gerekebilir. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Normal şartlarda &lt;strong&gt;WCF&lt;/strong&gt; servisleri istemci ile &lt;strong&gt;oturum bazlı(Session Based)&lt;/strong&gt; haberleşmektedir. Buna g&amp;ouml;re istemciler her proxy nesnesi &amp;ouml;rnekleyip servise bağlandıklarında bir oturum a&amp;ccedil;mış olurlar. Ne varki servisin herhangibir nedenle d&amp;uuml;şmesi, istemcinin programı kapatması gibi durumlarda bu oturum bilgileri &amp;ccedil;ok doğal olarak kaybolabilir. Servisin d&amp;uuml;şmesi sonrasında, &amp;uuml;zerinde taşıdığı t&amp;uuml;m veriler bir tedbir alınmadığı s&amp;uuml;rece yok olabilir. İstemci uygulama yeniden başlatıldığında, servis ayakta bile olsa yeni bir &lt;strong&gt;proxy&lt;/strong&gt; &amp;ouml;rneği oluşturduğundan, daha &amp;ouml;nceki servis verilerine &amp;ccedil;ok doğal olarak ulaşılamayadabilir. Halbuki belkide istemci tarafından &amp;ccedil;ağırılan operasyonların bazıları, kendisini zaman dilimleri i&amp;ccedil;erisinde koruyan verilerin son haline ihtiya&amp;ccedil; duyabilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&amp;Ouml;zellikle &lt;strong&gt;WF&lt;/strong&gt; yapısı i&amp;ccedil;erisinde de, bu tip durağansızlıklar olduk&amp;ccedil;a &amp;ouml;nemli vakalar arasında yer almaktadır. &amp;Ouml;yleki bir WF i&amp;ccedil;erisinde &lt;strong&gt;&amp;ccedil;ok uzun s&amp;uuml;ren operasyonların(Long Running Operations)&lt;/strong&gt; olması &amp;ccedil;ok daha y&amp;uuml;ksek bir ihtimaldir. Bu nedenle WF' in kendi doğasında olan akışın herhangibir zamandaki durumunu o anki verileri ile saklamak gibi bir misyonuda var&lt;strong&gt;(Persistence)&lt;/strong&gt;. G&amp;uuml;n&amp;uuml;m&amp;uuml;zde WF ile WCF' in &amp;ouml;zellikle &lt;strong&gt;.Net Framework 3.5 &lt;/strong&gt;s&amp;uuml;r&amp;uuml;m&amp;uuml;nden itibaren birbirleri ile daha sıkı fıkı olduklarıda g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında, konunun &amp;ouml;nemi bir kat daha artmaktadır. Bu basit bilgiler dahi, bir servisin i&amp;ccedil;erisindeki operasyon bazlı verilerin kalıcı olarak saklanabilmesinin gerekliliğinide ortaya &amp;ccedil;ıkarmaktadır. &amp;Ouml;yleyse biraz daha derinlere dalmaya ne dersiniz?&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Herşeyden &amp;ouml;nce servis tarafında kalıcı olarak saklanacak olan nesne nedir? Bu &amp;ccedil;ok doğal olarak servis sınıfına ait sunucu tarafından &amp;uuml;retilen &amp;ouml;rneğin kendisi olmalıdır. Diğer bir noktada, servis nesnesinin nerede saklanacağıdır? Burada akla gelen en pratik &amp;ccedil;&amp;ouml;z&amp;uuml;m &amp;ccedil;ok doğal olarak bir veritabanıdır. Nitekim veritabanı i&amp;ccedil;erisinde fiziki olarak servis verilerin saklanması, saklanan satırların kolayca y&amp;ouml;netilmesi ve daha pek &amp;ccedil;ok avantaj s&amp;ouml;z konusudur. &amp;Ccedil;ok ş&amp;uuml;k&amp;uuml;rki veritabanı tarafında gerekli &lt;strong&gt;tabloların(Tables) &lt;/strong&gt;ve &lt;strong&gt;saklı yordamların(Stored Procedures) betikleri(scripts)&lt;/strong&gt; &lt;strong&gt;.Net Framework 3.5&lt;/strong&gt; ile birlikte gelmektedir.&lt;em&gt;(.Net Framework 3.0 i&amp;ccedil;erisindede bu script dosyalarını olduğunu vurgulayalım. Ancak 3.5 tarafında pek &amp;ccedil;ok bug' ın d&amp;uuml;zeldiğide bir ger&amp;ccedil;ektir.)&lt;/em&gt; Her ne kadar buradaki veritabanı yapısını kurmak d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde &amp;ccedil;ok zor olmasada, &lt;strong&gt;.Net Framework 3.5&lt;/strong&gt; i&amp;ccedil;erisinde bu işlem i&amp;ccedil;in gerekli tipler(Types) ve veritabanı oluşturma betiklerinin hazır olarak gelmesi geliştiricilerin işini olduk&amp;ccedil;a kolaylaştırmaktadır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Servis nesnelerinin depolanması i&amp;ccedil;in bir SQL veritabanının kullanılması şart değildir. Varsayılan olarak System.WorkflowServices.dll assembly' ı i&amp;ccedil;erisindeki System.ServiceModel.Persistence isim alanı(Namespace) altında yer alan SqlPersistenceProviderFactory tipi kullanılmaktadır.Bu tip doğrudan belirtilen SQL bağlantı c&amp;uuml;mlesindenki depolama alanını kullanmaktadır. Ancak istenirse, PersistenceProviderFactory abstract sınıfından t&amp;uuml;retme yapılarak &amp;ouml;zel bir depolama alanının kullanılmasıda sağlanabilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Depolama alanının belirtilmesi elbetteki yeterli değildir. Bununla birlikte &lt;strong&gt;WCF &amp;ccedil;alışma zamanının(Runtime)&lt;/strong&gt;, &lt;strong&gt;niteliklerden(Attributes) &lt;/strong&gt;yararlanarak depolama alanına servis &amp;ouml;rneklerini ekleme veya kaldırma gibi işlemleri hangi operasyonlar ger&amp;ccedil;ekleştiğinde yapacağının bildirilmesi gerekmektedir. Hatta hangi servis tipinin &lt;strong&gt;durable&lt;/strong&gt; olarak bırakılacağınında WCF &amp;ccedil;alışma zamanına s&amp;ouml;ylenmesi &amp;ouml;nemlidir. Bu noktada devreye &lt;strong&gt;Durable&lt;/strong&gt;, &lt;strong&gt;DurableOperation&lt;/strong&gt; gibi &lt;strong&gt;nitelikler(Attribute)&lt;/strong&gt; girmektedir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Aslında &lt;strong&gt;SQL&lt;/strong&gt; depolama alanı varsayılan olarak kullanıldığında, sistem son derece basit bir &amp;ccedil;alışma mantığına sahiptir. Dayanıklı WCF servislerinde istemcinin servis tipine ait bir proxy oluşturmasının ve Durable hale gelme &amp;ouml;zelliğini başlatan operasyonu &amp;ccedil;ağırmasının ardından, sunucu tarafındaki depolama alanında servis &amp;ouml;rneğinin serileştirilmiş bir &amp;ouml;rneği hemen ilgili tabloya kayıt olarak eklenmektedir. Bu kayıt bir &lt;strong&gt;GUID&lt;/strong&gt; ile ilişkilendirilmekte ve b&amp;ouml;ylece istemci s&amp;ouml;z konusu &lt;strong&gt;GUID&lt;/strong&gt;' e sahip olduğunda, istediği zaman&lt;em&gt;(elbetteki tablodaki verinin başına bir şey gelmediği, istemci ile servis arasındaki ağ bağlantısında bir aksaklık olmadığı s&amp;uuml;rece vb...)&lt;/em&gt; aynı servis &amp;ouml;rneğinin verisine erişip operasyonlarında kullanabilir. Anlattığımız bu &amp;ccedil;alışma sistemi varsayılan olarak &lt;strong&gt;SQL&lt;/strong&gt; depolama alanı kullanıldığı durum i&amp;ccedil;in ge&amp;ccedil;erlidir. Nitekim &lt;strong&gt;GUID&lt;/strong&gt; &amp;uuml;retimi, serileştirilen servis nesne &amp;ouml;rneğinin tabloya eklenmesi, bilgisinin g&amp;uuml;ncellenmesi, silinmesi gibi adımlar veritabanı bağımlı işlemlerdir. Bu durumu aslında aşağıdaki şekil ile kafamızda biraz daha netleştirebiliriz.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk266_14.png" alt="" width="639" height="509" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bu g&amp;ouml;rselde sadece iki farklı zaman dilimi i&amp;ccedil;in &amp;ouml;rnek bir durum g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınmaktadır. İlk olarak istemci proxy &amp;ouml;rneğini oluşturduktan sonra bir operasyon &amp;ccedil;ağrısı ger&amp;ccedil;ekleştirir. Bu operasyon &amp;ccedil;ağrısı sonrasında, servis &amp;ouml;rneğinin depolama alanına atılması ve bir &lt;strong&gt;GUID&lt;/strong&gt;' in &amp;uuml;retilerek sonraki zaman dilimleri i&amp;ccedil;in istemciye g&amp;ouml;nderilmesi s&amp;ouml;z konusudur. Senaryo gereği ileri bir zaman diliminde istemci aynı servis &amp;ouml;rneğini daha &amp;ouml;nceden kaydettiği i&amp;ccedil;eriği ile yeniden kullanmak istemektedir. Bu durumda servisin &lt;strong&gt;T&lt;/strong&gt; zamanındaki &amp;ouml;rnek i&amp;ccedil;eriği depolama alanında durduğundan ve istemcinin bu servisi bulması i&amp;ccedil;in gerekli &lt;strong&gt;GUID&lt;/strong&gt; değeri var olduğundan&lt;em&gt;(ki bu değer aynı zamanda servisin instanceId değeri ile eşittir)&lt;/em&gt;, &lt;strong&gt;T+N&lt;/strong&gt; zamanında istemci uygulama, daha &amp;ouml;nceki servis i&amp;ccedil;eriğini son haliyle kullanmaya devam edebilir. Elbette zaman dilimi ilerledik&amp;ccedil;e servisin durağanlığı devam ettirilebilir. Ne zamanki istemci, servis &amp;ouml;rneğinin tablodan silinmesi i&amp;ccedil;in gerekli talepte bulunursa&lt;em&gt;(ki bunu ilerleyen kısımlarda g&amp;ouml;receğiz)&lt;/em&gt;, ilgili &amp;ouml;rnek depolama alanından kaldırılır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Dilerseniz bu kadar konuşmayı bir kenara bırakalım ve adım adım dayanıklı, sapa sağlam bir WCF Servis &amp;ouml;rneği nasıl yazılabilir &amp;ouml;ğrenmeye ve en &amp;ouml;nemliside anlayama &amp;ccedil;alışalım. İlk olarak veritabanı tarafındaki gerekli hazırlıkları yapmamız gerekiyor. Bir başka deyişle depolama tablolarını, ve &lt;strong&gt;CRUD(CreateReadUpdateDelete)&lt;/strong&gt; işlemleri i&amp;ccedil;in gerekli &lt;strong&gt;Stored&lt;/strong&gt; &lt;strong&gt;Procedure&lt;/strong&gt;' lerin oluşturulması lazım. Bu ama&amp;ccedil;la varsayılan olarak Windows XP tabanlı bir sistemde varsayılan olarak &lt;strong&gt;C:\WINDOWS\Microsoft.NET\Framework\v3.5\SQL\EN&lt;/strong&gt; adresinde bulunan &lt;strong&gt;SqlPersistenceProviderSchema&lt;/strong&gt; ve &lt;strong&gt;SqlPersistenceProviderLogic&lt;/strong&gt; isimli &lt;strong&gt;SQL&lt;/strong&gt; betiklerini sırasıyla &amp;ccedil;alıştırıyoruz. Hemen belirtelim, ilk olarak şemaları oluşturan &lt;strong&gt;SqlPersistenceProviderSchema&lt;/strong&gt; betiğinin &amp;ccedil;alıştırılması gerekiyor.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk266_1.gif" alt="" width="408" height="116" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Yine &amp;ouml;nemli bir noktada şu. Aman &lt;strong&gt;Master&lt;/strong&gt; veritabanı altında &amp;ccedil;alıştırmayın :) Depolama alanının veritabanı adını istediğiniz gibi belirleyebilirsiniz. &amp;Ouml;rnekte s&amp;ouml;z konusu betikler, &lt;strong&gt;SQL&lt;/strong&gt; &lt;strong&gt;Server&lt;/strong&gt; &lt;strong&gt;2008&lt;/strong&gt; &amp;uuml;zerinde&lt;em&gt;(ki 2005 &amp;uuml;zerindede yapabilirsiniz) &lt;/em&gt;&lt;strong&gt;WCFPersistenceStore&lt;/strong&gt; isimli veritabanı altında &amp;ccedil;alıştırılmaktadır. Sonu&amp;ccedil; olarak aşağıdaki şekilde g&amp;ouml;r&amp;uuml;len nesneler oluşur.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk266_2.gif" alt="" width="394" height="523" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi servis &amp;ouml;rneklerini tutacak olan &lt;strong&gt;InstanceData&lt;/strong&gt; isimli basit bir tablo ve &lt;strong&gt;CRUD&lt;/strong&gt; operasyonları ile kilit a&amp;ccedil;ma işlemleri i&amp;ccedil;in birer &lt;strong&gt;saklı&lt;/strong&gt; &lt;strong&gt;yordam&lt;/strong&gt; oluşturulmuştur. Tablo alanları ş&amp;ouml;yle bir g&amp;ouml;zden ge&amp;ccedil;irildiğinde &lt;strong&gt;uniquidentifier&lt;/strong&gt; tipinden bir &lt;strong&gt;id&lt;/strong&gt; alanının olduğunu g&amp;ouml;r&amp;uuml;yoruz ki bu aslında istemci tarafı i&amp;ccedil;inde &amp;ouml;nem arz eden &lt;strong&gt;instanceId&lt;/strong&gt; değeri olacaktır. &amp;Ouml;yleki istemcinin uygulamayı kapatıp tekrar a&amp;ccedil;tıktan sonra daha &amp;ouml;nceden var olan bir &lt;strong&gt;instance&lt;/strong&gt;' a ait servis ve verisine erişebilmesi istenebilir. Bu durumu bir sonraki makalemizde ele almaya &amp;ccedil;alışacağız. Bunlara ek olarak &lt;strong&gt;instanceXML&lt;/strong&gt; isimli &lt;strong&gt;XML&lt;/strong&gt; veri tipindeki alanında bizim i&amp;ccedil;in şu aşamada dikkate değer olduğunu s&amp;ouml;yleyebiliriz. Nitekim servis &amp;ouml;rneğinin veri i&amp;ccedil;eriği bu alanda serileştirilmiş olarak tutulacaktır. Dolayısıyla servisin serileştirilebilir olmasının gerektiği ortaya &amp;ccedil;ıkmaktadır. &lt;em&gt;(Bu durum g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında aklıma hep web tarafında Session' ların veritabanında tutulması gelmektedir. Nitekim bu durumdada &lt;strong&gt;Session&lt;/strong&gt; i&amp;ccedil;eriğinin veritabanındaki k&amp;uuml;&amp;ccedil;&amp;uuml;k bir alana olduğu gibi aktarılabilmesi i&amp;ccedil;in serileştirilebilir olması şarttır :) )&lt;/em&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Veritabanı tarafındaki hazırlıklarıda bu şekilde tamamlandıktan sonra artık &amp;ouml;rnek bir servisin yazılmasına başlayabiliriz. &amp;Ouml;rnek WCF servisimiz &lt;strong&gt;.Net Framework 3.5&lt;/strong&gt; tabanlı bir &lt;strong&gt;WCF Service Library&lt;/strong&gt;' dir ve k&amp;uuml;t&amp;uuml;phane i&amp;ccedil;in belkide en &amp;ouml;nemli nokta &lt;strong&gt;System.WorkflowServices&lt;/strong&gt; (.Net Framework 3.5) &lt;strong&gt;assembly&lt;/strong&gt;' ını referans edilmesi gerekliliğidir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk266_3.gif" alt="" width="625" height="185" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bu nedenle sınıf k&amp;uuml;t&amp;uuml;phanesine s&amp;ouml;z konusu &lt;strong&gt;assembly&lt;/strong&gt;' ı ekleyerek yolumuza devam edebiliriz. Servis k&amp;uuml;t&amp;uuml;phanesi i&amp;ccedil;erisinde yer alan tiplerin kod i&amp;ccedil;erikleri, sınıf diagramı g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; ve app.config i&amp;ccedil;eriği ise aşağıda olduğu gibidir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt; &lt;span style="font-family: Verdana;"&gt;Sınıf diagramı;&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk266_7.gif" alt="" width="244" height="399" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt; &lt;span style="font-family: Verdana;"&gt;ICommonService isimli servis s&amp;ouml;zleşmesi i&amp;ccedil;eriği;&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+
+namespace ServiceLib
+{
+    [ServiceContract(
+        Name="ServiceCommon"
+        ,Namespace="http://www.bsenyurt.com/CommonService")]
+    interface ICommonService
+    {
+        [OperationContract]
+        void Start();
+
+        [OperationContract]
+        void IncreaseValue(int value);
+    
+        [OperationContract]
+        Guid GetInstanceId();
+
+        [OperationContract]
+        void Stop();
+    }
+}&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere servis s&amp;ouml;zleşmesi i&amp;ccedil;erisinde sembolik olarak 4 farklı operasyon tanımı bulunmaktadır. Şu anda amacımız sadece dayanıklı bir WCF servisi yazmak olduğundan bize &amp;ccedil;okda anlamlı gelmeyen operasyonlarımızın mevcut olduğunu s&amp;ouml;yleyebiliriz. Operasyonların uyarlamasının yapıldığı &lt;strong&gt;CommonService&lt;/strong&gt; isimli sınıf i&amp;ccedil;eriği ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt;&lt;span style="font-family: Verdana;"&gt;CommonService sınıfının i&amp;ccedil;eriği;&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel.Description;
+
+namespace ServiceLib
+{
+    [Serializable]
+    [DurableService]
+    class CommonService
+        :ICommonService
+    {
+        int commonValue;
+
+        #region ICommonService Members
+
+        [DurableOperation(CanCreateInstance=true)]
+        public void Start()
+        {
+            commonValue = 1; 
+        }
+
+        [DurableOperation()]
+        public void IncreaseValue(int value)
+        {
+            commonValue += value;
+        }
+
+        [DurableOperation()]
+        public Guid GetInstanceId()
+        {
+            return System.ServiceModel.Dispatcher.DurableOperationContext.InstanceId;
+        }
+
+        [DurableOperation(CompletesInstance=true)]
+        public void Stop()
+        { 
+        }
+
+        #endregion
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Aslında burada daha &amp;ouml;nceki servis geliştirmelerimizden farklı olarak dikkate değer bir ka&amp;ccedil; nokta bulunmaktadır. Herşeyden &amp;ouml;nce sınıfın &lt;strong&gt;Serializable&lt;/strong&gt; ve &lt;strong&gt;DurableService&lt;/strong&gt; nitelikleri ile imzalandığını g&amp;ouml;r&amp;uuml;yoruz. Serileştirilebilir olması bir gereklilik. Nitekim servis tipinin &amp;ccedil;alışma zamanı &amp;ouml;rneğinin, &lt;strong&gt;InstanceData&lt;/strong&gt; tablosundaki &lt;strong&gt;instanceXML&lt;/strong&gt; veya &lt;strong&gt;instance&lt;/strong&gt; alanlarına serileşmesi s&amp;ouml;z konusudur. Hangi alana serileşeceği bilgisi ise konfigurasyon dosyasında belirtilebilir. Yani servis nesne &amp;ouml;rneğinin veri i&amp;ccedil;eriğinin &lt;strong&gt;XML&lt;/strong&gt; olarak yada &lt;strong&gt;binary&lt;/strong&gt; formatta tutulması sağlanabilir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Dayanıklı bir servis tanımlamasında en &amp;ouml;nemli noktalar &lt;strong&gt;DurableService&lt;/strong&gt; ve &lt;strong&gt;DurableOperation&lt;/strong&gt; nitelikleridir. &amp;Ouml;rneğin servis operasyonlarında olan &lt;strong&gt;Start&lt;/strong&gt; metodu &amp;ccedil;alıştığında &lt;strong&gt;SQL&lt;/strong&gt; &amp;uuml;zerinde &lt;strong&gt;CommonService&lt;/strong&gt; &amp;ouml;rneği i&amp;ccedil;in bir satır oluşturulacaktır. Diğer taraftan bu satırın devamlılığı herhangibir istisnai durum oluşmassa &lt;strong&gt;Stop&lt;/strong&gt; operasyonuna yapılan &amp;ccedil;ağrı ile son bulacaktır. Nitekim &lt;strong&gt;Stop&lt;/strong&gt; operasyonundaki &lt;strong&gt;DurableOperation&lt;/strong&gt; niteliğinde &lt;strong&gt;CompleteInstance&lt;/strong&gt; &amp;ouml;zelliğine &lt;strong&gt;true&lt;/strong&gt; değeri verilmiştir. Dayanıklı servisler tasarlanırken oturum bazlı &amp;ccedil;alışma &amp;ouml;nemlidir. Bu nedenle aşağıdaki koşullara dikkat edilmesi gerekmektedir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Dayanıklı WCF servislerinde &lt;strong&gt;i&amp;ccedil;erik bazlı bağlayıcı tipler(Content Based Binding Types)&lt;/strong&gt; kullanılmalıdır. &amp;Ouml;rneğin &lt;strong&gt;WSHttpContextBinding&lt;/strong&gt;, &lt;strong&gt;BasicHttpContextBinding&lt;/strong&gt; veya &lt;strong&gt;NetTcpContextBinding&lt;/strong&gt; gibi.&lt;/span&gt;&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;InstanceContextMode&lt;/strong&gt; &amp;ouml;zelliğinin değeri &lt;strong&gt;PerSession&lt;/strong&gt; olmalıdır ki varsayılan olarak &amp;ouml;rneğimizde b&amp;ouml;yledir.&lt;/span&gt;&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;ConcurrencyMode&lt;/strong&gt; &amp;ouml;zelliğinin değeri &lt;strong&gt;Multiple&lt;/strong&gt; olmamalıdır.&lt;/span&gt;&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Eğer s&amp;ouml;zleşmede sessionlar desteklenmiyorsa t&amp;uuml;m operasyonlara ait &lt;strong&gt;DurableOperation&lt;/strong&gt; niteliklerinin &lt;strong&gt;CanCreateInstance&lt;/strong&gt; &amp;ouml;zelliklerine &lt;strong&gt;true&lt;/strong&gt; değeri atanmalıdır ve eğer b&amp;ouml;yle bir durum s&amp;ouml;z konusu ise &lt;strong&gt;IsOneWay&lt;/strong&gt; &lt;strong&gt;true &lt;/strong&gt;olarak set edilmemelidir.&lt;/span&gt;&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Eğer &lt;strong&gt;DurableService&lt;/strong&gt; niteliğinin &lt;strong&gt;SaveStateInOperationTransaction&lt;/strong&gt; değeri &lt;strong&gt;true&lt;/strong&gt; olarak belirlenirse, t&amp;uuml;m operasyonların &lt;strong&gt;OperationBehavior&lt;/strong&gt; niteliği ile imzalanması ve &lt;strong&gt;TransactionScopeRequired&lt;/strong&gt; &amp;ouml;zelliklerinede &lt;strong&gt;true&lt;/strong&gt; değeri atanması gerekmektedir. Yada, &lt;strong&gt;TransactionFlowOption&lt;/strong&gt; &amp;ouml;zelliğinin değerinin &lt;strong&gt;Mandatory&lt;/strong&gt; olması gerekir. T&amp;uuml;m bunlara ilavetende &lt;strong&gt;ServiceBehavior&lt;/strong&gt; niteliğinin &lt;strong&gt;ConcurrencyMode&lt;/strong&gt; &amp;ouml;zelliğinin değerinin &lt;strong&gt;Single&lt;/strong&gt; olarak belirlenmesi gerekmektedir.&lt;/span&gt;&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi olduk&amp;ccedil;a kafa karıştırıcı bir şartname dizisi ile karşı karşıyayız. Ancak ger&amp;ccedil;ek hayat vakalarında bu durumlar altın değerinde &amp;ouml;nem taşımaktadır. Gelelim servis tarafındaki konfigurasyon dosyası i&amp;ccedil;eriğine. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt;&lt;span style="font-family: Verdana;"&gt;Servis tarafındaki App.config i&amp;ccedil;eriği;&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;connectionStrings&amp;gt;
+        &amp;lt;add name="WCFPerstConStr" connectionString="data source=.;database=WCFPersistenceStore;integrated security=SSPI"/&amp;gt;
+    &amp;lt;/connectionStrings&amp;gt;
+    &amp;lt;system.web&amp;gt;
+        &amp;lt;compilation debug="true" /&amp;gt;
+    &amp;lt;/system.web&amp;gt; 
+    &amp;lt;system.serviceModel&amp;gt;
+        &amp;lt;services&amp;gt;
+            &amp;lt;service name="ServiceLib.CommonService" behaviorConfiguration="ServiceLib.CommonServiceBehavior"&amp;gt;
+                &amp;lt;host&amp;gt;
+                    &amp;lt;baseAddresses&amp;gt;
+                        &amp;lt;add baseAddress = "http://localhost:8731/Design_Time_Addresses/ServiceLib/CommonService/" /&amp;gt;
+                    &amp;lt;/baseAddresses&amp;gt;
+                &amp;lt;/host&amp;gt;
+                &amp;lt;endpoint address ="" binding="wsHttpContextBinding" contract="ServiceLib.ICommonService"&amp;gt; 
+                    &amp;lt;identity&amp;gt;
+                        &amp;lt;dns value="localhost"/&amp;gt;
+                    &amp;lt;/identity&amp;gt;
+                &amp;lt;/endpoint&amp;gt; 
+                &amp;lt;endpoint address="mex" binding="mexHttpBinding" contract="IMetadataExchange"/&amp;gt;
+            &amp;lt;/service&amp;gt;
+        &amp;lt;/services&amp;gt;
+        &amp;lt;behaviors&amp;gt;
+            &amp;lt;serviceBehaviors&amp;gt;
+                &amp;lt;behavior name="ServiceLib.CommonServiceBehavior"&amp;gt; 
+                    &amp;lt;serviceMetadata httpGetEnabled="True"/&amp;gt;
+                    &amp;lt;serviceDebug includeExceptionDetailInFaults="False" /&amp;gt;
+                        &amp;lt;persistenceProvider
+                            type="System.ServiceModel.Persistence.SqlPersistenceProviderFactory, System.WorkflowServices, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
+                            connectionStringName="WCFPerstConStr"
+                            persistenceOperationTimeout="00:00:10"
+                            lockTimeout="00:01:00"
+                            serializeAsText="true"/&amp;gt;
+                &amp;lt;/behavior&amp;gt;
+            &amp;lt;/serviceBehaviors&amp;gt;
+        &amp;lt;/behaviors&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Bu şekilde bakıldığında kimimize korkutucu gelebilen konfigurasyon i&amp;ccedil;eriğindeki ayarların &amp;ccedil;oğunu &lt;strong&gt;Microsoft Service Configuration Editor &lt;/strong&gt;aracılığıyla yapabileceğimizi unutmayalım. Konfigurasyon dosyasındanda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;bağlayıcı tip(Binding Type)&lt;/strong&gt; olarak i&amp;ccedil;erik tabanlı &lt;strong&gt;wsHttpContextBinding&lt;/strong&gt; &amp;ouml;rneği kullanılmaktadır. Daha &amp;ouml;ncedende belirttiğimiz gibi &lt;strong&gt;NetTcpContextBinding&lt;/strong&gt; veya &lt;strong&gt;BasicHttpContextBinding&lt;/strong&gt; bağlayıcı tipleride ele alınabilir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&amp;Ouml;nemli noktalardan ilki &lt;strong&gt;connectionString&lt;/strong&gt; elementi değeridir. Hatırlayacağınız gibi &amp;ouml;rneğimizdeki servis verilerini kalıcı olarak &lt;strong&gt;WCFPersistenceStore&lt;/strong&gt; isimli &amp;ouml;rnek bir veritabanı &amp;uuml;zerinde tutmak amacıyla bir takım &amp;ouml;n hazırlıklar yapmıştık. Bu bilgi &lt;strong&gt;SqlPersistenceProviderFactory&lt;/strong&gt; tipi i&amp;ccedil;in &amp;ouml;nemlidir. Nitekim provider' ın hangi bağlantıyı kullanarak işlemler yapacağını bilmesi gerekmektedir. Bu sebepten dolayıda &lt;strong&gt;persistenceProvider&lt;/strong&gt; isimli servis davranışı i&amp;ccedil;erisinde bir &lt;strong&gt;connectionStringName&lt;/strong&gt; niteliği bulunmaktadır. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;İkinci &amp;ouml;nemli nokta elbetteki &lt;strong&gt;persistenceProvider&lt;/strong&gt; isimli servis davranışı ve i&amp;ccedil;eriğidir. Burada dayanıklı depolama alanı i&amp;ccedil;in gerekli pek &amp;ccedil;ok ayar yapılmaktadır. &amp;Ouml;rneğin servis verisinin &lt;strong&gt;text&lt;/strong&gt; tabanlı olarak serileştirilip serileştirilmeyeceği &lt;strong&gt;serializeAsText&lt;/strong&gt; değeri ile belirtilir. Kilitleme ve operasyonlar i&amp;ccedil;in zaman aşımı s&amp;uuml;releri &lt;strong&gt;lockTimeout&lt;/strong&gt; ve &lt;strong&gt;persistenceOperationTimeout&lt;/strong&gt; niteliklerine atanan değerler ile belirtilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&amp;Uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; &amp;ouml;nemli nokta ise, &lt;strong&gt;persistenceProvider&lt;/strong&gt; elementi i&amp;ccedil;erisinde yer alan &lt;strong&gt;type&lt;/strong&gt; niteliğine &lt;strong&gt;SqlPersistenceProviderFactory&lt;/strong&gt; değerinin atanmasıdır. Bu varsayılan olarak ve s&amp;uuml;rekli vurguladığımız &amp;uuml;zere &lt;strong&gt;SQL&lt;/strong&gt; &amp;uuml;zerinde depolama yapılacağını belirtmektedir. type niteliğindeki bu tanımlama sırasında tipin &lt;strong&gt;qualified&lt;/strong&gt; &lt;strong&gt;name&lt;/strong&gt; değerinin tam olarak verilmesi gerekir &lt;em&gt;(&lt;strong&gt;TipAdı, AssemblyAdı, Assembly Versiyonu,Assembly Culture bilgisi, Assembly PublicKeyToken değeri&lt;/strong&gt;)&lt;/em&gt;.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;PublicKeyToken değerini kolay bir şekilde Global Assembly Cache(GAC) i&amp;ccedil;erisinden de bulabiliriz. Bunun i&amp;ccedil;in aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi Assembly klas&amp;ouml;r&amp;uuml;ne gitmemiz yeterlidir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk266_8.gif" alt="" width="476" height="443" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Servis tarafında yaptığımız bu hazırlıkların ardından artık istemci tarafını da geliştirmeye başlayabiliriz. Dayanıklı bir WCF servisini test ederken en basit haliyle bir &lt;strong&gt;Console&lt;/strong&gt; &lt;strong&gt;Application&lt;/strong&gt; bizim i&amp;ccedil;in bi&amp;ccedil;ilmiş kaftan olacaktır. Console uygulamamızı servis ile aynı &lt;strong&gt;Solution&lt;/strong&gt; &amp;uuml;zerinde geliştirdiğimizden, servise referansını eklememizde son derece kolay olacaktır. Bu ama&amp;ccedil;la &lt;strong&gt;Console&lt;/strong&gt; uygulamasında &lt;strong&gt;Add&lt;/strong&gt; &lt;strong&gt;Service&lt;/strong&gt; &lt;strong&gt;Reference&lt;/strong&gt; se&amp;ccedil;eneğini kullandıktan sonra aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi WCF servisine ulaşılabilinir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk266_5.gif" alt="" width="579" height="436" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Servis referansını istemci tarafına ekledikten sonra otomatik olarak &amp;uuml;retilen konfigurasyon dosyası i&amp;ccedil;eriği aşağıdaki gibi olacaktır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;system.serviceModel&amp;gt;
+        &amp;lt;bindings&amp;gt;
+            &amp;lt;wsHttpContextBinding&amp;gt;
+                &amp;lt;binding name="WSHttpContextBinding_ServiceCommon" closeTimeout="00:01:00"
+                    openTimeout="00:01:00" receiveTimeout="00:10:00" sendTimeout="00:01:00"
+                    bypassProxyOnLocal="false" transactionFlow="false" hostNameComparisonMode="StrongWildcard"
+                    maxBufferPoolSize="524288" maxReceivedMessageSize="65536"
+                    messageEncoding="Text" textEncoding="utf-8" useDefaultWebProxy="true"
+                    allowCookies="false" contextProtectionLevel="Sign"&amp;gt;
+                    &amp;lt;readerQuotas maxDepth="32" maxStringContentLength="8192" maxArrayLength="16384" maxBytesPerRead="4096" maxNameTableCharCount="16384" /&amp;gt;
+                    &amp;lt;reliableSession ordered="true" inactivityTimeout="00:10:00" enabled="false" /&amp;gt;
+                    &amp;lt;security mode="Message"&amp;gt;
+                        &amp;lt;transport clientCredentialType="Windows" proxyCredentialType="None" realm="" /&amp;gt;
+                        &amp;lt;message clientCredentialType="Windows" negotiateServiceCredential="true" algorithmSuite="Default" establishSecurityContext="true" /&amp;gt;
+                    &amp;lt;/security&amp;gt;
+                &amp;lt;/binding&amp;gt;
+            &amp;lt;/wsHttpContextBinding&amp;gt;
+        &amp;lt;/bindings&amp;gt;
+        &amp;lt;client&amp;gt;
+            &amp;lt;endpoint address="http://localhost:8731/Design_Time_Addresses/ServiceLib/CommonService/" binding="wsHttpContextBinding" bindingConfiguration="WSHttpContextBinding_ServiceCommon" contract="CommonServiceReference.ServiceCommon" name="WSHttpContextBinding_ServiceCommon"&amp;gt;
+                &amp;lt;identity&amp;gt;
+                    &amp;lt;dns value="localhost" /&amp;gt;
+                &amp;lt;/identity&amp;gt;
+            &amp;lt;/endpoint&amp;gt;
+        &amp;lt;/client&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere istemci tarafında oluşturulan &lt;strong&gt;EndPoint&lt;/strong&gt; i&amp;ccedil;erisinde de aynen servis tarafındaki konfigurasyon dosyasında olduğu gibi &lt;strong&gt;wsHttpContextBinding&lt;/strong&gt; bağlayıcı tipi kullanılmaktadır. Sınıf diagramındada izlenebileceği gibi servis referansının eklenmesi ile birlikte proxy &amp;uuml;retimi i&amp;ccedil;in gerekli tiplerde otomatik olarak istemci tarafına eklenmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk266_9.gif" alt="" width="524" height="443" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Program kodlarımızı ise test ama&amp;ccedil;lı olarak aşağıdaki gibi geliştirebiliriz.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using ClientApp.CommonServiceReference;
+
+namespace ClientApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            ServiceCommonClient client = new ServiceCommonClient("WSHttpContextBinding_ServiceCommon");
+
+            client.Start();
+            Console.WriteLine("Service başlatıldı");
+            client.IncreaseValue(10);
+            Guid instanceId=client.GetInstanceId();
+            Console.WriteLine("Instance değeri {0}",instanceId.ToString());
+            client.Stop();
+            Console.WriteLine("Uygulamadan &amp;ccedil;ıkmak i&amp;ccedil;in bir tuşa basınız");
+            Console.ReadLine();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;İlk olarak proxy sınıfına ait nesne &amp;ouml;rneği oluşturulmaktadır. Hemen ardından &lt;strong&gt;Start&lt;/strong&gt;, &lt;strong&gt;IncreaseValue&lt;/strong&gt;, &lt;strong&gt;GetInstanceId&lt;/strong&gt; ve &lt;strong&gt;Stop&lt;/strong&gt; servis metodları sırasıyla &amp;ccedil;ağırılır. Hatırlanacağı &amp;uuml;zere &lt;strong&gt;Start&lt;/strong&gt; metodu ile &lt;strong&gt;Servis&lt;/strong&gt; &amp;ouml;rneğinin tabloya atılması, &lt;strong&gt;Stop&lt;/strong&gt; metodundan sonra ise tablodan servise ait ilgili satırın silinmesi gerekmektedir. Bu ilk vakayı analiz etmek i&amp;ccedil;in servis k&amp;uuml;t&amp;uuml;phanesi ve istemci uygulamayı aynı anda &amp;ccedil;alıştırmalıyız. Bu nedenle iki &amp;ouml;n hazırlık yapılmalıdır. Bildiğiniz gibi &lt;strong&gt;Visual Studio&lt;/strong&gt; &lt;strong&gt;2008&lt;/strong&gt; ile birlikte &lt;strong&gt;WCF&lt;/strong&gt; &lt;strong&gt;Servis&lt;/strong&gt; k&amp;uuml;t&amp;uuml;phanelerini başlatılabilir ve built-in gelen servis, istemci uygulamalarını kullanarak testler yapılabilir. Bu &amp;ouml;rneğimizde istemci tarafını kendimiz geliştirdiğimiz i&amp;ccedil;in servis k&amp;uuml;t&amp;uuml;phanesi &amp;ouml;zelliklerinden &lt;strong&gt;WcfTestClient.exe&lt;/strong&gt;' nin &amp;ccedil;alıştırıldığı komut satırı parametresini kaldırmamız gerekmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk266_4.gif" alt="" width="466" height="247" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bu işlemin ardından ise &lt;strong&gt;Solution&lt;/strong&gt; &amp;ouml;zelliklerine gidip &amp;ouml;nce sınıf k&amp;uuml;t&amp;uuml;phanesinin sonrasında ise istemci uygulamanın &amp;ccedil;alıştırılması gerektiğini belirtmeliyiz.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk266_6.gif" alt="" width="448" height="153" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;B&amp;ouml;ylece servis k&amp;uuml;t&amp;uuml;phanesine ait test sunucusu &amp;ouml;nce &amp;ccedil;alışacak sonrasında ise istemci uygulamamız y&amp;uuml;r&amp;uuml;t&amp;uuml;lecektir ki bu hazırlık &amp;ouml;zellikle kodu debug etmemizi kolaylaştıracaktır. İlk test i&amp;ccedil;in istemci tarafındaki &lt;strong&gt;Start&lt;/strong&gt; metodu &amp;ccedil;ağrısına bir &lt;strong&gt;breakpoint&lt;/strong&gt; koymamız gerekmektedir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt; &lt;img src="/makale/images/mk266_10.gif" alt="" width="516" height="397" border="0" /&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Şimdi uygulamayı &amp;ccedil;alıştırıp &lt;strong&gt;Start&lt;/strong&gt; metodunu &lt;strong&gt;Step&lt;/strong&gt; &lt;strong&gt;Over&lt;/strong&gt; ile ge&amp;ccedil;tiğimizde &lt;strong&gt;SQL&lt;/strong&gt; sunucusu &amp;uuml;zerindeki &lt;strong&gt;instanceData&lt;/strong&gt; tablosunda yeni bir satır oluşturulduğunu g&amp;ouml;rebiliriz. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk266_11.gif" alt="" width="489" height="312" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Dikkat ederseniz servis &amp;ouml;rneklendiğinde değil, &lt;strong&gt;DurableOperation&lt;/strong&gt; niteliğinde &lt;strong&gt;CanStartCreateInstance&lt;/strong&gt; değeri &lt;strong&gt;true&lt;/strong&gt; olan &lt;strong&gt;Start&lt;/strong&gt; metodu &amp;ccedil;ağrısından sonra bu satır eklenmiştir. Satırın &lt;strong&gt;id&lt;/strong&gt; değeri, servis &amp;ccedil;ağrısı i&amp;ccedil;in &amp;uuml;retilen &lt;strong&gt;GUID&lt;/strong&gt; değeridir ve aslında bu değer i&amp;ccedil;erik ile birlikte istemciyede g&amp;ouml;nderilmektedir. Bu nedenle oturum i&amp;ccedil;erisinde yapılacak olan diğer operasyon &amp;ccedil;ağrılarında bu GUID numarası kullanılır. &lt;strong&gt;instanceXml&lt;/strong&gt; isimli alanın i&amp;ccedil;eriğine bakıldığında &lt;em&gt;(&amp;ouml;zellikle &lt;strong&gt;IncreaseValue&lt;/strong&gt; metodundan &amp;ouml;nce)&lt;/em&gt; servisin aşağıdaki i&amp;ccedil;eriğe sahip olduğu g&amp;ouml;r&amp;uuml;lebilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk266_12.gif" alt="" width="620" height="153" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;CommonService&lt;/strong&gt; i&amp;ccedil;erisinde tanımlanmış olan &lt;strong&gt;commonValue&lt;/strong&gt; alanının ilk atanan değeri burada a&amp;ccedil;ık bir şekilde g&amp;ouml;r&amp;uuml;lmektedir. Elbetteki serileşen tipin i&amp;ccedil;erisinde ka&amp;ccedil; tane alan(field) varsa, bunların anlık olarak değerlerinin tamamı serileştirilen bu i&amp;ccedil;eriğe atanmaktadır. Eğer kodda &lt;strong&gt;F10(Step Over)&lt;/strong&gt; ile ilerlenmeye devam edilirse &lt;strong&gt;IncreaseValue&lt;/strong&gt; metodu ge&amp;ccedil;ildikten sonra &lt;strong&gt;XML&lt;/strong&gt; i&amp;ccedil;eriğinin aşağıdaki hale geldiği g&amp;ouml;r&amp;uuml;l&amp;uuml;r.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk266_13.gif" alt="" width="608" height="142" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bir başka deyişle servis nesne &amp;ouml;rneğinin depolama alanında tutulan i&amp;ccedil;eriğindeki alanda da g&amp;uuml;ncelleme yapılmıştır. Kod bu şekilde sonuna kadar devam ettirildiğinde ve &lt;strong&gt;Stop&lt;/strong&gt; metodu &amp;ccedil;ağrısıda &lt;strong&gt;F10&lt;/strong&gt; ile ge&amp;ccedil;ildiğinde artık &lt;strong&gt;CommonService&lt;/strong&gt;' in şu anki &amp;ouml;rneği i&amp;ccedil;in a&amp;ccedil;ılan satırın artık olmadığı a&amp;ccedil;ık bir şekilde g&amp;ouml;zlemlenebilir. Ki burada Stop metodundaki &lt;strong&gt;DurableOperation&lt;/strong&gt; niteliğinde &lt;strong&gt;CompleteInstance&lt;/strong&gt; &amp;ouml;zelliğine &lt;strong&gt;true&lt;/strong&gt; değerini atadığımızı hatırlamamızda yarar vardır. Bu basit işleyişi tekrar edip &lt;strong&gt;SQL Server Profiler&lt;/strong&gt; aracı yardımıyla arka plana bakıldığında ise aşağıdaki gibi bir sorgu dizisinin &amp;ccedil;alıştırıldığı g&amp;ouml;zlemlenmektedir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;table style="border-collapse: collapse; width: 100%;" border="1" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="background-color: #ffffff;" rowspan="2" bgcolor="#336699"&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt; &lt;span style="font-family: Verdana;"&gt;Start Metodu&amp;nbsp; &amp;Ccedil;ağrısında&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;td style="background-color: #ffffff;" bgcolor="#336699"&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;InsertInstance SP' si i&amp;ccedil;in &amp;ccedil;ağrı&lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;declare @p3 xml&lt;br /&gt; set @p3=convert(xml,N'&amp;lt;CommonService xmlns="http://schemas.datacontract.org/2004/07/ServiceLib" xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/" z:Id="1" z:Type="ServiceLib.CommonService" z:Assembly="ServiceLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"&amp;gt;&amp;lt;commonValue&amp;gt;1&amp;lt;/commonValue&amp;gt;&amp;lt;/CommonService&amp;gt;')&lt;br /&gt; declare @p7 int&lt;br /&gt; set @p7=0&lt;br /&gt; &lt;strong&gt;exec InsertInstance&lt;/strong&gt; @id='&lt;strong&gt;1B9F9AA9-4F5C-46F1-97ED-C520716CE7AE&lt;/strong&gt;', @instance=default, @instanceXml=@p3,@unlockInstance=1,@hostId='97CE292D-D465-49B9-9200-4A55BCE2D7B3',@lockTimeout=60,@result=@p7 output&lt;br /&gt; select @p7&lt;/span&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="background-color: #ffffff;" rowspan="4" bgcolor="#336699"&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt; &lt;span style="font-family: Verdana;"&gt;IncreaseValue Metodu &amp;Ccedil;ağrısında&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;td style="background-color: #ffffff;" bgcolor="#336699"&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;LoadInstance SP' si i&amp;ccedil;in &amp;ccedil;ağrı&lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;declare @p5 int&lt;br /&gt; set @p5=0&lt;br /&gt; &lt;strong&gt;exec LoadInstance&lt;/strong&gt; @id='&lt;strong&gt;1B9F9AA9-4F5C-46F1-97ED-C520716CE7AE&lt;/strong&gt;', @lockInstance=1,@hostId='97CE292D-D465-49B9-9200-4A55BCE2D7B3', @lockTimeout=60,@result=@p5 output&lt;br /&gt; select @p5&lt;/span&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="background-color: #ffffff;" bgcolor="#336699"&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;UpdateInstance SP' si i&amp;ccedil;in &amp;ccedil;ağrı&lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;declare @p3 xml&lt;br /&gt; set @p3=convert(xml,N'&amp;lt;CommonService xmlns="http://schemas.datacontract.org/2004/07/ServiceLib" xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/" z:Id="1" z:Type="ServiceLib.CommonService" z:Assembly="ServiceLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"&amp;gt;&amp;lt;commonValue&amp;gt;11&amp;lt;/commonValue&amp;gt;&amp;lt;/CommonService&amp;gt;')&lt;br /&gt; declare @p7 int&lt;br /&gt; set @p7=0&lt;br /&gt; &lt;strong&gt;exec UpdateInstance&lt;/strong&gt; @id='&lt;strong&gt;1B9F9AA9-4F5C-46F1-97ED-C520716CE7AE&lt;/strong&gt;', @instance=default, @instanceXml=@p3,@unlockInstance=1,@hostId='97CE292D-D465-49B9-9200-4A55BCE2D7B3',@lockTimeout=60,@result=@p7 output&lt;br /&gt; select @p7&lt;/span&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="background-color: #ffffff;" rowspan="4" bgcolor="#336699"&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt; &lt;span style="font-family: Verdana;"&gt;GetInstanceId Metodu &amp;Ccedil;ağrısında&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;td style="background-color: #ffffff;" bgcolor="#336699"&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;LoadInstance SP'si i&amp;ccedil;in &amp;ccedil;ağrı&lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;declare @p5 int&lt;br /&gt; set @p5=0&lt;br /&gt; &lt;strong&gt;exec LoadInstance&lt;/strong&gt; @id='&lt;strong&gt;1B9F9AA9-4F5C-46F1-97ED-C520716CE7AE&lt;/strong&gt;', @lockInstance=1, @hostId='97CE292D-D465-49B9-9200-4A55BCE2D7B3',@lockTimeout=60,@result=@p5 output&lt;br /&gt; select @p5&lt;/span&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="background-color: #ffffff;" bgcolor="#336699"&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;UpdateInstance SP'si i&amp;ccedil;in &amp;ccedil;ağrı&lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;declare @p3 xml&lt;br /&gt; set @p3=convert(xml,N'&amp;lt;CommonService xmlns="http://schemas.datacontract.org/2004/07/ServiceLib" xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/" z:Id="1" z:Type="ServiceLib.CommonService" z:Assembly="ServiceLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"&amp;gt;&amp;lt;commonValue&amp;gt;11&amp;lt;/commonValue&amp;gt;&amp;lt;/CommonService&amp;gt;')&lt;br /&gt; declare @p7 int&lt;br /&gt; set @p7=0&lt;br /&gt; &lt;strong&gt;exec UpdateInstance&lt;/strong&gt; @id='&lt;strong&gt;1B9F9AA9-4F5C-46F1-97ED-C520716CE7AE&lt;/strong&gt;', @instance=default, @instanceXml=@p3,@unlockInstance=1,@hostId='97CE292D-D465-49B9-9200-4A55BCE2D7B3',@lockTimeout=60,@result=@p7 output&lt;br /&gt; select @p7&lt;/span&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="background-color: #ffffff;" rowspan="4" bgcolor="#336699"&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt; &lt;span style="font-family: Verdana;"&gt;Stop Metodu &amp;Ccedil;ağrısında&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;td style="background-color: #ffffff;" bgcolor="#336699"&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;LoadInstance SP' si i&amp;ccedil;in &amp;ccedil;ağrı&lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;declare @p5 int&lt;br /&gt; set @p5=0&lt;br /&gt; &lt;strong&gt;exec LoadInstance&lt;/strong&gt; @id='&lt;strong&gt;1B9F9AA9-4F5C-46F1-97ED-C520716CE7AE&lt;/strong&gt;', @lockInstance=1, @hostId='97CE292D-D465-49B9-9200-4A55BCE2D7B3', @lockTimeout=60,@result=@p5 output&lt;br /&gt; select @p5&lt;/span&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="background-color: #ffffff;" bgcolor="#336699"&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt; &lt;span style="font-family: Verdana;"&gt;DeleteInstance SP' si i&amp;ccedil;in &amp;ccedil;ağrı&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;declare @p4 int&lt;br /&gt; set @p4=0&lt;br /&gt; &lt;strong&gt;exec DeleteInstance&lt;/strong&gt; @id='&lt;strong&gt;1B9F9AA9-4F5C-46F1-97ED-C520716CE7AE'&lt;/strong&gt;, @hostId='97CE292D-D465-49B9-9200-4A55BCE2D7B3',@lockTimeout=60,@result=@p4 output&lt;br /&gt; select @p4&lt;/span&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Biraz karmaşık ve gereksiz gibi g&amp;ouml;r&amp;uuml;lebilir ama bu sorgular i&amp;ccedil;erisinde &amp;ccedil;ağırılan saklı yordamlara ve atamalara dikkat etmenizi, ayrıca incelemenizi şiddetle tavsiye ederim. İlk testimiz başarılı bir şekilde &amp;ccedil;alıştı. Depolama alanına WCF servis &amp;ouml;rneğimizin başarılı bir şekilde eklendiği, operasyon &amp;ccedil;ağrıları sırasında g&amp;uuml;ncellendiğini ve son olarakta silindiğini g&amp;ouml;rd&amp;uuml;k. Ancak başka vakalarda s&amp;ouml;z konusudur. &amp;Ouml;rneğin istemci uygulama s&amp;uuml;reci başlattıktan sonra herhangibir sebeple sonlanırsa, servis tarafında başlattığı &lt;strong&gt;instance&lt;/strong&gt;' ın i&amp;ccedil;eriğine tekrar nasıl ulaşabilir? &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bir başka deyişle, daha &amp;ouml;nceden başlattığı servisin verilerine nasıl ulaşabilir? Diğer taraftan, servis tarafında &lt;strong&gt;SQL&lt;/strong&gt; tabanlı bir depolama alanı kullanılmaktadır. Peki ya &amp;ouml;zel bir depolama yapmak istersek. Yani SQL dışından bir ortam kullanmak istersek. S&amp;ouml;z gelimi dosya tabanlı bir sistem kullanılabilir mi? Yada &amp;ouml;rneğin bir &lt;strong&gt;Access&lt;/strong&gt; tablosu bu iş i&amp;ccedil;in g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir mi? Bu durumda nasıl ayarlamalar yapılması gerekmektedir? Kalıcı servislerde transaction' lar s&amp;ouml;z konusu olabilir mi, eğer olursa s&amp;uuml;re&amp;ccedil;ler nasıl kontrol altına alınabilir? İşte bu ve benzer sorularımız cevabını ilerleyen makalelerimizde bulmaya &amp;ccedil;alışıyor olacağız. Şimdilik hevesimizi burada dayanıklı olarak saklı tutuyor ve bir sonraki makalemizde g&amp;ouml;r&amp;uuml;şmek &amp;uuml;zere diyoruz. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;a href="/makale/images/DurableService.rar"&gt;&amp;Ouml;rneği İndirmek İ&amp;ccedil;in Tıklayın&lt;/a&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;</content>
+  <pubDate>2009-01-16 10:00:00</pubDate>
+  <slug>Dayanc4b1klc4b1-WCF-Servisleri-(Durable-WCF-Services)-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>wcf</tag>
+    <tag>windows-communication-foundation</tag>
+  </tags>
+  <categories>
+    <category>WCF</category>
+  </categories>
+</post>

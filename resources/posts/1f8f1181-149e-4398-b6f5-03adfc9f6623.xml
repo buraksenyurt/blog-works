@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>NoSQL Maceraları - STSdb ile Hello World</title>
+  <description>Bilindiği üzere bir süredir NoSQL(Not only SQL) veritabanlarını incelemeye(öğrenmeye) çalışıyoruz. Daha önceki yazılarımızda Apache Cassandra, RavenDB ve DEX ürünlerine bir göz atmış ve .Net uygulamalarında nasıl kullanılabileceklerini görmüştük. Klasik olarak yaptığımız Hello World uygulamalarının bir benzerini de bu gün inceleyeceğimiz STSdb için gerçekleştiriyor olacağız.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/Cadillac_STS_2.jpg"&gt;&lt;img style="float: right; margin: 4px 0px; display: inline;" title="Cadillac_STS" src="/pics/Cadillac_STS_thumb_2.jpg" alt="Cadillac_STS" width="320" height="164" align="right" /&gt;&lt;/a&gt;&lt;span style="color: #ff0000;"&gt;[İlk Yazım Tarihi 2013-01-15]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://en.wikipedia.org/wiki/The_Matrix_Reloaded" target="_blank"&gt;Matrix Reloaded'&lt;/a&gt; ı seyrettiğim zamanları d&amp;uuml;ş&amp;uuml;nd&amp;uuml;ğ&amp;uuml;mde, anımsadıklarım arasında heyecanlı aksiyon sahnelerinde yer alan ve eski Amerikan stilini de yansıtan kocaman otomobiller vardı. &lt;em&gt;(Hatta bildiğim kadarı ile ikinci d&amp;uuml;nya savaşı sonrası &amp;ccedil;elik stoklarının fazlalığı nedeniyle Amerikan otoları hep kocaman olmuşlardı)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;General Motors &lt;/strong&gt;firmasına ait olan otomobillerden birisi de, &lt;strong&gt;Cadillac STS&lt;/strong&gt;' in farklı bir versiyonu olan &lt;strong&gt;CTS&lt;/strong&gt; idi. Tabi ben konuyu bir şekilde bu g&amp;uuml;nk&amp;uuml; yazının konusu olan &lt;strong&gt;STSdb&lt;/strong&gt;' ye getirmek istediğimden &lt;a href="http://en.wikipedia.org/wiki/Cadillac_STS" target="_blank"&gt;Cadillac STS&lt;/a&gt;' e ait bir fotoğrafa yer vermek istedim &lt;img class="wlEmoticon wlEmoticon-smile" style="border-style: none;" src="/pics/wlEmoticon-smile_80.png" alt="Smile" /&gt; &amp;Ouml;yleyse vakit kaybetmeden konumuza ge&amp;ccedil;elim.&lt;/p&gt;
+&lt;p&gt;Bilindiği &amp;uuml;zere bir s&amp;uuml;redir &lt;strong&gt;NoSQL(Not only SQL)&lt;/strong&gt; veritabanlarını incelemeye&lt;em&gt;(&amp;ouml;ğrenmeye)&lt;/em&gt; &amp;ccedil;alışıyoruz. Daha &amp;ouml;nceki yazılarımızda &lt;strong&gt;Apache Cassandra, RavenDB&lt;/strong&gt; ve &lt;strong&gt;DEX&lt;/strong&gt; &amp;uuml;r&amp;uuml;nlerine bir g&amp;ouml;z atmış ve &lt;strong&gt;.Net&lt;/strong&gt; uygulamalarında nasıl kullanılabileceklerini g&amp;ouml;rm&amp;uuml;şt&amp;uuml;k. Klasik olarak yaptığımız Hello World uygulamalarının bir benzerini de bu g&amp;uuml;n inceleyeceğimiz &lt;strong&gt;STSdb&lt;/strong&gt; i&amp;ccedil;in ger&amp;ccedil;ekleştiriyor olacağız.&lt;/p&gt;
+&lt;p&gt;Bu veritabanı i&amp;ccedil;in bazı kaynaklarda &lt;strong&gt;Revolutionary&lt;em&gt;(Devrimci, devrimsel, devrim niteliğinde) &lt;/em&gt;&lt;/strong&gt;sıfatı kullanılmış. Ger&amp;ccedil;ekten b&amp;ouml;yle bir sistem olduğunu ispat etmemiz olduk&amp;ccedil;a zor tabi. Yine de bu konu ile ilişkili yapılmış bir ka&amp;ccedil; veritabanı testine bakmak az da olsa fikir verebilir. S&amp;ouml;z gelimi kaynağının ne kadar g&amp;uuml;venilir olduğunu tam olarak bilmediğim &lt;a href="http://www.techmixer.com/revolutionary-database-paradigm-stsdb/" target="_blank"&gt;bu adreste&lt;/a&gt;, karşılaştırıldığı veritabanlarına g&amp;ouml;re en hızlısı olduğu iddia edilmiş.&lt;/p&gt;
+&lt;p&gt;Aslında bizim temel amacımız &lt;strong&gt;key-value&lt;/strong&gt; modeline g&amp;ouml;re &amp;ccedil;alışan &lt;strong&gt;NoSQL&lt;/strong&gt; veritabanlarından bir diğerini incelemektir &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_174.png" alt="Winking smile" /&gt; Dilerseniz &lt;strong&gt;STSdb&lt;/strong&gt; &amp;uuml;r&amp;uuml;n&amp;uuml;n&amp;uuml; kısaca mercek atlına almaya başlayalım.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;STSdb ile ilişkili olarak karşılaştığım ilk sıkıntı dok&amp;uuml;mantasyonun yeteri kadar doyurucu olmamasıydı. MSDN benzeri API dok&amp;uuml;mantasyonu ve bir ka&amp;ccedil; &amp;ouml;rnek kod par&amp;ccedil;ası haricinde, &lt;a href="http://stsdb.com/forum/forum.html" target="_blank"&gt;forumlarda&lt;/a&gt; da yeteri kadar doyurucu i&amp;ccedil;eriğe rastlayamadım. Amazon.com' da konu ile ilişkili bir kitabı da ne yazık ki bulamadım. Pek tabi zaman ilerledik&amp;ccedil;e bu durum değişebilir.&lt;/p&gt;
+&lt;p&gt;Hal b&amp;ouml;yle olunca biraz dene-keşfet modeline g&amp;ouml;re &amp;ouml;ğrenilmeye &amp;ccedil;alışılan bir &amp;uuml;r&amp;uuml;n oldu benim i&amp;ccedil;in. Kaldı ki API dok&amp;uuml;mantasyonuna baktığımızda ger&amp;ccedil;ekten &amp;ccedil;ok &amp;ouml;nemli g&amp;ouml;r&amp;uuml;nen pek &amp;ccedil;ok fonksiyonellik var. &amp;Ouml;rneğin Snapshot almak i&amp;ccedil;in XTable sınıfına ait bir metod var ama &amp;ouml;rnek bir kod par&amp;ccedil;ası yok. Dolayısıyla biraz kurcalanması gereken bir &amp;uuml;r&amp;uuml;n olarak karşımıza &amp;ccedil;ıkmakta.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;STSdb, Key-Value&lt;/strong&gt; modeline g&amp;ouml;re &amp;ccedil;alışan a&amp;ccedil;ık kaynak&lt;em&gt;(GPL 2 ve GPL 3. Ancak Community lisanslaması da yapılabiliyor)&lt;/em&gt; &lt;strong&gt;NoSql&lt;/strong&gt; depolama &lt;strong&gt;API&lt;/strong&gt;' lerinden birisidir. .&lt;strong&gt;Net Framework&lt;/strong&gt; &amp;uuml;zerinde &lt;strong&gt;C#&lt;/strong&gt; programlama dili kullanılarak geliştirilmiş g&amp;ouml;m&amp;uuml;l&amp;uuml;&lt;em&gt;(Embedded)&lt;/em&gt; bir sistem olarak karşımıza &amp;ccedil;ıkıyor. Her platformu destekleyebilir ilkesini ilgili platformlarda &lt;strong&gt;Mono&lt;/strong&gt; y&amp;uuml;kl&amp;uuml; olması halinde karşılamakta&lt;em&gt;(Tam bir plaform bağımsızlık olduğunu ifade edemeyiz ama Mono ile Linux, MacOS X ve Unix gibi sistemlere de entegre edilebilir)&lt;/em&gt;&amp;nbsp;&lt;/p&gt;
+&lt;h1&gt;Genel &amp;Ouml;zellikler&lt;/h1&gt;
+&lt;p&gt;Genel &amp;ouml;zelliklerini ise aşağıdaki maddeler halinde ifade edebiliriz.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;.Net Framework&lt;/strong&gt;&amp;rsquo; e g&amp;ouml;m&amp;uuml;l&amp;uuml; olarak geliştirildiğinden doğrudan uygulama ile ilişkilendirilip &amp;ccedil;alıştırılabiliyor. Yani ek bir konfigurasyon hazırlığına ihtiya&amp;ccedil; yok.&lt;/li&gt;
+&lt;li&gt;Veriyi &lt;strong&gt;disk&lt;/strong&gt; &amp;uuml;zerinde, &lt;strong&gt;bellekte&lt;em&gt;(In-Memory)&lt;/em&gt; &lt;/strong&gt;veya her ikisinin kombinasyonu olacak şekilde hibrid bir yapıda tutabilir.&lt;/li&gt;
+&lt;li&gt;Kullanılabilirlik alanları olduk&amp;ccedil;a geniştir. İnsan Makine Aray&amp;uuml;zleri&lt;em&gt;(Human Machine Interface)&lt;/em&gt;, S&amp;uuml;re&amp;ccedil; kontrol sistemleri&lt;em&gt;(Process Control System)&lt;/em&gt;, Otomotiv End&amp;uuml;st&amp;uuml;risi, &amp;ccedil;eşitli tipte finansal uygulamalar vb...&lt;/li&gt;
+&lt;li&gt;Mantıksal modeli iki katmandan oluşmaktadır. Birinci kat dahili &lt;strong&gt;dosya sistemidir&lt;em&gt;(File System)&lt;/em&gt;&lt;/strong&gt;. Bu katman 2&amp;uuml;zeri64 dosyaya&lt;em&gt;(Her biri ile de 2&amp;uuml;zeri64 byte&amp;rsquo; a &amp;ccedil;ıkılabilir)&lt;/em&gt; kadar destek vermektedir. &lt;br /&gt;İkinci katman ise tabloların tutulduğu &lt;strong&gt;veritabanıdır&lt;em&gt;(Database Layer)&lt;/em&gt;&lt;/strong&gt;. Burada tablo y&amp;ouml;netimine ilişkin işlemler yapılır. Tabloların oluşturulması, silinmesi, tablolar &amp;uuml;zerinde ileri/geri hareket edilmesi, veya d&amp;uuml;zenlenmesi bu operasyonlar arasında sayılabilir.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Transaction&lt;/strong&gt; desteği vardır. Bu nedenle &lt;strong&gt;Atomicity, Consistency, Isolation&lt;/strong&gt; ve &lt;strong&gt;Durability&lt;/strong&gt; olarak bilinen &lt;strong&gt;ACID&lt;/strong&gt; prensiplerini karşılamaktadır.&lt;/li&gt;
+&lt;li&gt;Karmaşık bir &lt;strong&gt;.Net&lt;/strong&gt; tipi, &lt;strong&gt;primary key&lt;/strong&gt; olarak kullanılabilir.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Snapshot&lt;/strong&gt; &amp;ouml;zelliği sayesinde &lt;strong&gt;ger&amp;ccedil;ek zamanlı yedekleme&lt;em&gt;(Real-time Backup)&lt;/em&gt;&lt;/strong&gt; imkanı da sunar.&lt;/li&gt;
+&lt;li&gt;&amp;Ccedil;ok doğal olarak &lt;strong&gt;.Net Framework&lt;/strong&gt; &amp;uuml;zerinde geliştirilmiş olduğundan &lt;strong&gt;LINQ&lt;em&gt;(Language INtegrated Query)&lt;/em&gt; &lt;/strong&gt;desteğine sahiptir.&lt;/li&gt;
+&lt;li&gt;Veriyi bir algoritma yardımıyla sıkıştırmaktadır. Sıkıştırma &amp;ouml;nemli &amp;ouml;l&amp;ccedil;&amp;uuml;de yer kazanımına da imkan sağlamaktadır.&lt;/li&gt;
+&lt;li&gt;Belki de en &amp;ouml;nemli &amp;ouml;zelliklerinden birisi tutabileceği tablo veya kayıt i&amp;ccedil;in bir &amp;uuml;st limit değerinin olmayışıdır. Bu nedenle &amp;ccedil;ok b&amp;uuml;y&amp;uuml;k boyutlu veri k&amp;uuml;meleri i&amp;ccedil;in tercih edilebilir.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;İlk olarak &amp;uuml;r&amp;uuml;n&amp;uuml; tedarik etmemiz gerekiyor tabi ki &lt;img class="wlEmoticon wlEmoticon-laughingoutloud" style="border-style: none;" src="/pics/wlEmoticon-laughingoutloud_5.png" alt="Laughing out loud" /&gt;&amp;nbsp; Bunun i&amp;ccedil;in &lt;a href="http://stsdb.com/products/stsdb-w4.0/downloads/embedded-server/" target="_blank"&gt;şu adresi&lt;/a&gt; kullanabiliriz. İndirilen i&amp;ccedil;erik aşağıdaki gibidir. &lt;em&gt;&lt;span style="color: #ff0000;"&gt;(Yazının yayınlandığı tarihi itibariyle 4.0 RC s&amp;uuml;r&amp;uuml;m&amp;uuml;de mevcut)&lt;/span&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/sts_2.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="sts_2" src="/pics/sts_2_thumb.png" alt="sts_2" width="184" height="202" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Tahmin edileceği &amp;uuml;zere STSdb.dll assembly&amp;rsquo; ının, projeye referans edilmesi kullanılması i&amp;ccedil;in yeterlidir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/sts_1.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="sts_1" src="/pics/sts_1_thumb.png" alt="sts_1" width="346" height="337" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Console&lt;/strong&gt; uygulaması olarak geliştireceğimiz programımızda &lt;strong&gt;Hello World&lt;/strong&gt; demek maksadıyla aşağıdaki kod i&amp;ccedil;eriğini yazdığımızı d&amp;uuml;ş&amp;uuml;nelim. &lt;strong&gt;Table Record&lt;/strong&gt; olarak &lt;strong&gt;AutoMobile&lt;/strong&gt; isimli bir sınıftan yararlanıyor olacağız.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/sts_3.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="sts_3" src="/pics/sts_3_thumb.png" alt="sts_3" width="263" height="195" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h1&gt;Veri Ekleme Operasyonu&lt;/h1&gt;
+&lt;p&gt;ilk olarak veri ekleme işini sembolize edelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using STSdb.Data; 
+using System; 
+using System.Linq;
+
+namespace HelloSTSdb 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            Add(); 
+        }
+
+        private static void Add() 
+        { 
+            var index1 = new XKey&amp;lt;byte[], string&amp;gt;(Guid.NewGuid().ToByteArray(), "Kadillak STS"); 
+            var index2 = new XKey&amp;lt;byte[], string&amp;gt;(Guid.NewGuid().ToByteArray(), "Lamborjini Diyablo"); 
+            var index3 = new XKey&amp;lt;byte[], string&amp;gt;(Guid.NewGuid().ToByteArray(), "Ferrarriim"); 
+            var index4 = new XKey&amp;lt;byte[], string&amp;gt;(Guid.NewGuid().ToByteArray(), "Doğanım");
+
+            #region &amp;Ouml;rnek veri k&amp;uuml;mesi oluşturulması
+
+            using (StorageEngine sEngine = StorageEngine.FromFile("gm.stsdb")) 
+           { 
+               var table = sEngine.Scheme 
+                    .CreateOrOpenXTable&amp;lt;XKey&amp;lt;byte[], string&amp;gt;, AutoMobile&amp;gt;(new Locator("Automobile")); 
+                table.KeyMap = new XKeyMap&amp;lt;byte[], string&amp;gt;(null, 16, null, 512);
+
+                sEngine.Scheme.Commit();
+
+                table[index1] = new AutoMobile 
+               { 
+                    Manufacturer = "Ceneral Motor Kampani", 
+                    Model = "STS Turbo CRDI AK/S", 
+                    Price = 90000, 
+                    ProductionDate = "2005" 
+                }; 
+                table[index2] = new AutoMobile 
+                { 
+                    Manufacturer = "İtalyan cob", 
+                    Model = "Diablo III", 
+                    Price = 250000, 
+                    ProductionDate = "2008" 
+                }; 
+                table[index3] = new AutoMobile 
+                { 
+                    Manufacturer = "Ferrari", 
+                    Model = "799", 
+                    Price = 350000, 
+                    ProductionDate = "2013" 
+                }; 
+                table[index4] = new AutoMobile 
+                { 
+                    Manufacturer = "T&amp;uuml;rk işi", 
+                    Model = "Doğan SLX/AK 8 ileri", 
+                    Price = 450, 
+                    ProductionDate = "2014" 
+                };
+
+                table.Commit(); 
+                table.Close(); 
+            }
+
+            #endregion 
+        }
+
+    }
+
+    public class AutoMobile 
+    { 
+        public string Model { get; set; } 
+        public string Manufacturer { get; set; } 
+        public string ProductionDate { get; set; } 
+        public decimal Price { get; set; }
+
+        public override string ToString() 
+        { 
+            return string.Format("{0} {1}({2}) by {3}", ProductionDate, Model, Price, Manufacturer); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;StorageEngine&lt;/strong&gt; ana nesnedir. &lt;strong&gt;using&lt;/strong&gt; bloğu ile kullanılabilen, bir başka deyişle &lt;strong&gt;Dispose&lt;/strong&gt; edilebilir olan bu nesne &amp;ouml;rneğinin &lt;strong&gt;FromFile&lt;/strong&gt; metodundan yararlanarak depolama işlemini yapan dosya belirtilmektedir. &lt;strong&gt;Key&lt;/strong&gt; değerleri i&amp;ccedil;in &lt;strong&gt;XKey&amp;lt;byte[],string&amp;gt;&lt;/strong&gt; tipinden nesneler &amp;ouml;rneklenmiştir. Veriyi tutacak olan ise &lt;strong&gt;XTable&lt;/strong&gt; tipine ait nesne &amp;ouml;rnekleridir. Bu tanımlama i&amp;ccedil;in &lt;strong&gt;StorageEngine&lt;/strong&gt; nesne &amp;ouml;rneği &amp;uuml;zerinden hareket edilir ve &lt;strong&gt;CreateOrOpenXTable&lt;/strong&gt; metoduna başvurulur. Bir başka deyişle bir şema tanımı yaptığımızı ifade edebiliriz.&lt;/p&gt;
+&lt;p&gt;Dikkat edilmesi gereken noktalardan birisi de &lt;strong&gt;Key&lt;/strong&gt; olarak &lt;strong&gt;Primitive&lt;/strong&gt; tip &lt;span style="text-decoration: underline;"&gt;kullanmadığımız&lt;/span&gt; i&amp;ccedil;in &lt;strong&gt;KeyMap&lt;/strong&gt; &amp;ouml;zelliğine bir değer atama zorunluluğumuz olmasıdır. Bu atama sırasında, &lt;strong&gt;XKey&lt;/strong&gt; i&amp;ccedil;erisindeki tip yapısına g&amp;ouml;re maksimum boyutlar belirtilmek zorundadır. Aksi durumda &amp;ccedil;alışma zamanında &lt;strong&gt;null&lt;/strong&gt; &lt;strong&gt;referans&lt;/strong&gt; nedeniyle bir&lt;strong&gt; istisna&lt;em&gt;(Exception)&lt;/em&gt;&lt;/strong&gt; alınacaktır.&lt;/p&gt;
+&lt;p&gt;Veri ekleme işlemi aslında son derece basittir. &lt;strong&gt;XTable&lt;/strong&gt; tipinin indeksleyici operat&amp;ouml;r&amp;uuml;ne tanımlanan &lt;strong&gt;Key&lt;/strong&gt; &amp;ouml;rnekleri atanır. Eşitlikten sonra ise yine bildirimi yapılmış olan tipten&lt;em&gt;(ki &amp;ouml;rneğimizde AutoMobile sınıfına ait nesnelerdir)&lt;/em&gt; &amp;ouml;rnekler atanır. T&amp;uuml;m işlemlerin tamamlanmasının ardından bir &lt;strong&gt;Close &lt;/strong&gt;ve &lt;strong&gt;Commit &lt;/strong&gt;&amp;ccedil;ağrısının yapılması, verilerin kalıcı olarak yazılması a&amp;ccedil;ısından kritiktir. &lt;strong&gt;Console&lt;/strong&gt; uygulamasını bu şekilde &amp;ccedil;alıştırdığımızda dosya sistemi &amp;uuml;zerinde &lt;strong&gt;gm.stsdb&lt;/strong&gt; isimli bir dosya oluşturulduğu g&amp;ouml;zlemlenir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/sts_4.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="sts_4" src="/pics/sts_4_thumb.png" alt="sts_4" width="273" height="255" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h1&gt;Veri Okuma&lt;/h1&gt;
+&lt;p&gt;Gelelim veri okuma işine. &amp;Ouml;rneğin az &amp;ouml;nce eklemiş olduğumuz XTable i&amp;ccedil;eriğini ekrana yazdırmayı deneyelim. Bu ama&amp;ccedil;la aşağıdaki Read metodunu ele alabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private static void Read() 
+{ 
+    #region Veri okunması
+
+    using (StorageEngine sEngine = StorageEngine.FromFile("gm.stsdb")) 
+   { 
+        var table = sEngine.Scheme 
+           .OpenXTable&amp;lt;XKey&amp;lt;byte[], string&amp;gt;, AutoMobile&amp;gt;(new Locator("Automobile"));
+
+        foreach (var row in table.Where(r =&amp;gt; r.Record.Price &amp;gt; 100000)) 
+        { 
+            Console.WriteLine("{0}\n{1}\n" 
+                , row.Key.ToString() 
+                , row.Record.ToString() 
+                ); 
+        }
+
+        Console.WriteLine("\nT&amp;uuml;m Kayıtlar\n"); 
+        foreach (var row in table) 
+        { 
+            Console.WriteLine("{0}-{1}\n{2}\n" 
+                , (new Guid(row.Key.SubKey0)).ToString() 
+                , row.Key.SubKey1 
+                , row.Record.ToString()                 
+                ); 
+        }
+
+        table.Close(); 
+    }
+
+    #endregion Veri okunması 
+}&lt;/pre&gt;
+&lt;p&gt;Okuma işleminde başrol oyuncusu olarak yine, &lt;strong&gt;StorageEngine&lt;/strong&gt; sınıfı devreye girmektedir. &lt;strong&gt;FromFile&lt;/strong&gt; metodu ile &lt;strong&gt;sts&lt;/strong&gt; veritabanı dosyası y&amp;uuml;klendikten sonra ise, veri okuması yapılmak istenen &lt;strong&gt;XTable&lt;/strong&gt;&amp;rsquo; ın a&amp;ccedil;ılması gerekmektedir. Bu işlem i&amp;ccedil;in &lt;strong&gt;OpenXTable&lt;/strong&gt; metodundan yararlanılmaktadır. &lt;strong&gt;Generic&lt;/strong&gt; parametreye&lt;em&gt;&lt;strong&gt;(&amp;lt;XKey&amp;lt;byte[], string&amp;gt;, AutoMobile&amp;gt;)&lt;/strong&gt;&lt;/em&gt; dikkat edileceği &amp;uuml;zere, oluşturulan &lt;strong&gt;XTable&lt;/strong&gt;&amp;rsquo; ın şema yapısına uygun olacak şekilde verildiği g&amp;ouml;r&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;table&lt;/strong&gt; nesne &amp;ouml;rneği elde edildikten sonra basit bir &lt;strong&gt;foreach&lt;/strong&gt; iterasyonu ile kayıtlar arasından dolaşılabilinir. Hatta &amp;ouml;rnekte g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &lt;strong&gt;Where&lt;/strong&gt; genişletme metodundan yararlanılarak bir &lt;strong&gt;LINQ&lt;/strong&gt; sorgusunun icra edilmesi de sağlanabilir. &lt;strong&gt;lambda(=&amp;gt;) &lt;/strong&gt;operat&amp;ouml;r&amp;uuml; etrafında kullanılan &lt;strong&gt;r&lt;/strong&gt; değişkeni, &lt;strong&gt;AutoMobile&lt;/strong&gt; sınıfından bir nesne &amp;ouml;rneğidir. Dolayısıyla &amp;ouml;zellikleri sorgulamada filtre kriteri olarak kullanılabilir. Uygulamanın &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/sts_5_1.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="sts_5" src="/pics/sts_5_thumb_1.png" alt="sts_5" width="588" height="307" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Temel olarak &lt;strong&gt;key-value &lt;/strong&gt;teorisini baz alarak &amp;ccedil;alışan &lt;strong&gt;STSdb&lt;/strong&gt; sisteminde, tablo anahtar&lt;em&gt;(Table Key)&lt;/em&gt; ve kayıtlarının&lt;em&gt;(Table Record)&lt;/em&gt; hangi t&amp;uuml;rlerden oluşabileceği belirlidir. Burada olduk&amp;ccedil;a geniş bir nesne yelpazesinin olduğunu ifade edebiliriz.&lt;/p&gt;
+&lt;p&gt;Tablo anahtarlarına&lt;em&gt;&lt;strong&gt;(Table Keys)&lt;/strong&gt;&lt;/em&gt; baktığımızda aşağıdaki tiplerin desteklendiğini g&amp;ouml;rmekteyiz.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;.Net primitive types &lt;em&gt;(Boolean, Byte, Char, DateTime, Decimal, Double, Int16, Int32, Int64, TimeSpan, SByte, Single, String, UInt16, UInt32, Uınt64)&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;byte[] dizisi&lt;em&gt;(&amp;Ouml;rneğin bir resmin byte i&amp;ccedil;eriğini Key olarak kullanabilirsiniz &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_174.png" alt="Winking smile" /&gt; )&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;STSdb&amp;rsquo; ye &amp;ouml;zg&amp;uuml;n Locator tipi&lt;/li&gt;
+&lt;li&gt;Tn primitive olmak suretiyle XKey&amp;lt;T1, T2[, T3[, T4[, T5[, T6[, T7]]]]]&amp;gt;,&lt;/li&gt;
+&lt;li&gt;IKeyMap&amp;lt;TKey&amp;gt; aray&amp;uuml;z&amp;uuml;&lt;em&gt;(Interface)&lt;/em&gt; t&amp;uuml;retmeleri&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Tablo kayıtlarına&lt;em&gt;&lt;strong&gt;(Table Records)&lt;/strong&gt;&lt;/em&gt; baktığımızda ise benzer tiplerin desteklendiğini g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;.Net primitive types &lt;em&gt;(Boolean, Byte, Char, DateTime, Decimal, Double, Int16, Int32, Int64, TimeSpan, SByte, Single, String, UInt16, UInt32, Uınt64)&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;byte[] dizisi, enum, Type &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_174.png" alt="Winking smile" /&gt;, Image, Icon, MemoryStream, Guid, XElement gibi diğer tipler&lt;/li&gt;
+&lt;li&gt;STSdb&amp;rsquo; ye &amp;ouml;zg&amp;uuml; Locator ve BlobStream&lt;em&gt;(&amp;Ccedil;ok b&amp;uuml;y&amp;uuml;k boyutlu binary i&amp;ccedil;erikleri alabilirsiniz demek)&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;Serileştirilebilir nesneler(Serializable Objects)&lt;/li&gt;
+&lt;li&gt;IBinaryPersist&amp;lt;IIndexer&amp;lt;TRecord&amp;gt;&amp;gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml;n t&amp;uuml;revleri &lt;em&gt;(&amp;Ouml;zellikle kendi Persistence mekanizmamızı yazmak istediğimiz durumlarda yine bu aray&amp;uuml;zden t&amp;uuml;retilmiş tipler s&amp;ouml;z konusu olacaktır. Bir başka deyişle Binary olarak yazma ve okuma işlemlerine m&amp;uuml;dahale edip Persistence şeklini değiştirebiliriz)&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &amp;ouml;zellikle &lt;strong&gt;Key&lt;/strong&gt; değerlerini karmaşık tipler şeklinde tutmak m&amp;uuml;mk&amp;uuml;n. Burada nesne y&amp;ouml;nelimli d&amp;uuml;nyanın&lt;em&gt;(Object Oriented World)&lt;/em&gt; faydalarını da g&amp;ouml;r&amp;uuml;yoruz. &lt;strong&gt;Interface&lt;/strong&gt; t&amp;uuml;retmeli tiplerin &lt;strong&gt;Key&lt;/strong&gt; veya &lt;strong&gt;Record&lt;/strong&gt; olarak kullanılabilmesi bunun en g&amp;uuml;zel &amp;ouml;rneği belki de.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;STSdb&lt;/strong&gt;&amp;rsquo; yi g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alırken &lt;strong&gt;.Net Framework&lt;/strong&gt; platformu i&amp;ccedil;in garanti, embedded bir &lt;strong&gt;NoSQL&lt;/strong&gt; &amp;ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml; olduğunu ve &amp;ouml;zellikle&lt;strong&gt; Cross-Platform&lt;/strong&gt; alanında &lt;strong&gt;Mono&lt;/strong&gt;&amp;rsquo; ya bağımlı olduğunu unutmamalıyız. Bu bir kısıtlama gibi g&amp;ouml;r&amp;uuml;nse de, &amp;uuml;r&amp;uuml;nlerini .Net ortamında geliştirenler i&amp;ccedil;in &amp;ccedil;ok da b&amp;uuml;y&amp;uuml;k bir sorun değil. Ayrıca sunduğu &amp;uuml;st limitsiz depolama alanı, &lt;strong&gt;Transaction&lt;/strong&gt;, &lt;strong&gt;Snapshot, sıkıştırma&lt;/strong&gt; kabiliyetleri vb diğer imkanlar nedeniyle, &amp;ouml;zellikle b&amp;uuml;y&amp;uuml;k boyutlu veri k&amp;uuml;meleri i&amp;ccedil;in ideal g&amp;ouml;r&amp;uuml;n&amp;uuml;yor. &lt;strong&gt;STS&lt;/strong&gt; firmasının bir &amp;uuml;r&amp;uuml;n&amp;uuml; olan bu veritabanı, şirketin uzun yıllardır &lt;strong&gt;FOREX&lt;/strong&gt; pazarı &amp;uuml;zerine yaptığı uygulama geliştirmelerine ait tecr&amp;uuml;belerinin bir &amp;ccedil;ıktısı aslında.&lt;/p&gt;
+&lt;p&gt;Bu yazımızda kısaca &lt;strong&gt;STSdb&lt;/strong&gt; &amp;uuml;r&amp;uuml;n&amp;uuml;n&amp;uuml; incelemeye &amp;ccedil;alıştık. Bir Hello World uygulaması geliştirdik ve veri ekleme ile okuma işlemlerinin nasıl yapılabildiğine baktık. Elbette &amp;ouml;rnekleri zenginleştirmek ve ger&amp;ccedil;ek saha tecr&amp;uuml;besini yapmak sizin elinizde. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2013%2f1%2fHelloSTSdb.zip"&gt;HelloSTSdb.zip (249,52 kb)&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="color: #ff0000;"&gt;[İlk Yazım Tarihi 2013-01-15]&lt;/span&gt;&lt;/p&gt;</content>
+  <pubDate>2013-07-24 12:24:00</pubDate>
+  <slug>STSdb-ile-Hello-World</slug>
+  <tags>
+    <tag>nosql</tag>
+    <tag>sts-db</tag>
+    <tag>key-value-storage</tag>
+    <tag>not-only-sql</tag>
+  </tags>
+  <categories>
+    <category>NoSQL</category>
+  </categories>
+</post>

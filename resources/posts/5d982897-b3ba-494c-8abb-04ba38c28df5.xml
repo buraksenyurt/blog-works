@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WCF Servisleri için Unit Test</title>
+  <description>Yazdığımız programların belirli kriterlere göre test edilmesi proje süreçleri içerisinde önem arz eden konulardan birisidir. Bilindiği üzere pek çok test çeşidi vardır. Bunların bir kısmı standart haline gelmiş tekniklerden oluşmaktadır. Örneğin web uygulamalarının beliri bir düzenle çalıştırılaran Request' ler ile test edilmesi. Stres testlerine tabi tutularaktan çok sayıda request sonrası web uygulamasının çalışmasının analiz edilmesi veya en basit anlamda bir programın çalışmasının ana parçalarından olan metodlarının, beklenen sonuçları verip vermediğinin araştırılması vb...</description>
+  <content>&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Yazdığımız programların belirli kriterlere g&amp;ouml;re test edilmesi proje s&amp;uuml;re&amp;ccedil;leri i&amp;ccedil;erisinde &amp;ouml;nem arz eden konulardan birisidir. Bilindiği &amp;uuml;zere pek &amp;ccedil;ok test &amp;ccedil;eşidi vardır. Bunların bir kısmı standart haline gelmiş tekniklerden oluşmaktadır. &amp;Ouml;rneğin web uygulamalarının beliri bir d&amp;uuml;zenle &amp;ccedil;alıştırılaran Request' ler ile test edilmesi. Stres testlerine tabi tutularaktan &amp;ccedil;ok sayıda request sonrası web uygulamasının &amp;ccedil;alışmasının analiz edilmesi veya en basit anlamda bir programın &amp;ccedil;alışmasının ana par&amp;ccedil;alarından olan metodlarının, beklenen sonu&amp;ccedil;ları verip vermediğinin araştırılması vb...&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Nesne y&amp;ouml;nelimli programlama(Object Oriented Programming)&lt;/strong&gt;&amp;nbsp;dilleri ile geliştirilen uygulamalarda, &amp;ouml;zellikle metod bazında yapılan &lt;strong&gt;birim testlerini(Unit Test) WCF&lt;/strong&gt; servislerine de uygulayabiliriz. Bu kısa yazımızda s&amp;ouml;z konusu işlemin&lt;strong&gt; Visual Studio&lt;/strong&gt; ile birlikte gelen &lt;strong&gt;Test Tool'&lt;/strong&gt; u yardımıyla nasıl ger&amp;ccedil;ekleştirebileceğimizi incelemeye &amp;ccedil;alışacağız. Konu ile ilişkili olarak internette eğer araştırma yaparsanız, test amacıyla &lt;strong&gt;NUnit&lt;/strong&gt; gibi ara&amp;ccedil;lardan da&amp;nbsp;faydalanabileceğimizi g&amp;ouml;rebilirsiniz. Nitekim bazı durumlarda test yapan tarafta &lt;strong&gt;Visual Studio&lt;/strong&gt; gibi bir ara&amp;ccedil; olmayabilir ve &lt;a title="NUnit" href="http://www.nunit.org/index.php" target="_blank"&gt;NUnit &lt;/a&gt;aracı ile s&amp;ouml;z konusu analizler kolayca yapılabilir.&lt;/p&gt;
+&lt;p&gt;Şimdi elimizde kobay olarak kullanacağımız basit bir &lt;strong&gt;WCF&lt;/strong&gt; servisi olduğunu d&amp;uuml;ş&amp;uuml;nelim.&amp;nbsp;Bu konu ile uğraşırken yaptığım&amp;nbsp;araştırmalarda pek &amp;ccedil;ok sitede,&amp;nbsp;&amp;nbsp;d&amp;ouml;rt işlemin ele alındığına şahid oldum. Geleneği bozmadan devam edelim :) Servisimizi &lt;strong&gt;Visual Studio&amp;nbsp;2008 Professional&lt;/strong&gt;&amp;nbsp;ortamında geliştirebiliriz. S&amp;ouml;zleşme(Contract) ve uygulayıcı tip i&amp;ccedil;eriklerimiz aşağıdaki kodlarda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="text-decoration: underline;"&gt;IAlgebraService aray&amp;uuml;z&amp;uuml;(Interface)&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.ServiceModel;
+
+[ServiceContract]
+public interface IAlgebraService
+{
+    [OperationContract]
+    double Toplama(double x, double y);
+
+    [OperationContract]
+    double Cikarma(double x, double y);
+
+    [OperationContract]
+    double Carpma(double x, double y);
+
+    [OperationContract]
+    double Bolme(double x, double y);
+}&lt;/pre&gt;
+&lt;p&gt;Uygulayıcı sınıf (AlgebraService.cs);&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public class AlgebraService 
+    : IAlgebraService
+{
+    #region IAlgebraService Members
+
+    public double Toplama(double x, double y)
+    {
+        return x + y;
+    }
+
+    public double Cikarma(double x, double y)
+    {
+        return x - y;
+    }
+
+    public double Carpma(double x, double y)
+    {
+        return x * y;
+    }
+
+    public double Bolme(double x, double y)
+    {
+        return x / y;
+    }
+
+    #endregion
+}&lt;/pre&gt;
+&lt;p&gt;Operasyonlarımızı AlgebraService.svc isimli servis &amp;uuml;zerinden host ettiğimizi d&amp;uuml;ş&amp;uuml;necek olursak aşağıdaki &lt;strong&gt;web.config&lt;/strong&gt; ayarlarını test amacıyla kullanabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblog2_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &amp;ccedil;ok basit olarak &lt;strong&gt;BasicHttpBinding&lt;/strong&gt; bağlayıcı tipini kullanan dolayısıyla &lt;strong&gt;HTTP&lt;/strong&gt; bazlı hizmet veren bir servisimiz var. B&amp;ouml;yle bir servis geliştirildiğinde developer' ların test etmek amacıyla ilk yapacağı iş servisin tarayıcı &amp;uuml;zerinden erişilebilirliğidir. Ki bu sayede geliştirici kendini biraz iyi hisseder :) Ancak bizim amacımız servis metodlarının birim olarak test edilmesidir. Bu ama&amp;ccedil;la Solution i&amp;ccedil;erisinde yeni bir &lt;strong&gt;Test Project&lt;/strong&gt; a&amp;ccedil;mak ilk adımımız olacaktır. (Test Project şablon olarak Unit Test i&amp;ccedil;in gerekli nitelikleri i&amp;ccedil;eren assembly' ın referansını otomatik olarak i&amp;ccedil;erir. Dolayısıyla işimiz kolaylaştıran bir şablondur.)&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblog2_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Test projesi i&amp;ccedil;erisinde &amp;ouml;nemli olan noktalardan birisi, test edilmek istenen metodları kaps&amp;uuml;lleyen tipin bir servis sınıfı olmasıdır. Bir başka deyişle, test projesi s&amp;ouml;z konusu metodları deneyecekse eğer, AlgebraService isimli servise ulaşabiliyor ve metodlarını &amp;ccedil;ağırabiliyor olmalıdır. Bu a&amp;ccedil;ıdan bakıldığında yapılan testin ger&amp;ccedil;ekten birim testi olduğu a&amp;ccedil;ıktır.&lt;/p&gt;
+&lt;p&gt;İlerlemek i&amp;ccedil;in servisin, test projesine referans edilmesi yeterlidir.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblog2_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekildende g&amp;ouml;r&amp;uuml;leceği &amp;uuml;zere amacıma ancak ikinci test projesinde ulaşabilmiş durumdayım :) Dikkat edilmesi gereken bir hususda proje referanslarında &lt;strong&gt;Microsoft.VisualStudio.QualityTools.UnitTestFramework assembly'&lt;/strong&gt; ının var olmasıdır. Bu assembly i&amp;ccedil;erisinde yer alan &lt;strong&gt;nitelikleri(attributes)&lt;/strong&gt; birim testini yapacak sınıfı yazarken kullanıyor olacağız. Tahmin edileceği &amp;uuml;zere bir &lt;strong&gt;Test&lt;/strong&gt; &lt;strong&gt;Project&lt;/strong&gt; oluşturulduğunda Wizard yardımıyla hızlı ve kolay bir şekilde ilerlenebilir. Ben &amp;ouml;rneğimizde Wizard kullanmadan ilerlemeyi denedim ve aşağıdaki test sınıfını oluşturdum.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TestProject2.Calculus;
+
+namespace TestProject2
+{
+    [TestClass]
+    public class CalculusUnitTest
+    {
+        private AlgebraServiceClient client = null;
+
+        [TestInitialize]
+        public void Baslat()
+        {
+            client = new AlgebraServiceClient();
+        }
+
+        [TestCleanup]
+        public void Bitir()
+        {
+            if(client.State== System.ServiceModel.CommunicationState.Opened)
+                client.Close();        
+        }
+
+        [TestMethod]
+        [Description("Toplama testi")]        
+        public void ToplamaTest()
+        {
+            Assert.AreEqual(3, client.Toplama(2, 1));
+        }
+
+        [TestMethod]
+        public void CikartmaTest()
+        {
+            Assert.AreEqual(2, client.Cikarma(3, 2));
+        }
+
+        [TestMethod]
+        public void BolmeTest()
+        {
+            Assert.AreEqual(5, client.Bolme(25, 5));
+        }
+
+        [TestMethod]
+        public void CarpmaTest()
+        {
+            Assert.AreEqual(8, client.Carpma(2, 4));
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;İşte yazımızın en &amp;ouml;nemli kısmı bu sınıftır. Dikkat edileceği &amp;uuml;zere sınıfımız &lt;strong&gt;TestClass&lt;/strong&gt; isimli bir nitelikle imzalanmıştır. Diğer taraftan &lt;strong&gt;TestInitialize, TestCleanup, TestMethod &lt;/strong&gt;isimli nitelikler yardımıyla imzalanmış olan metodlarda vardır. Nitelik kullanılması, &amp;ccedil;alışma zamanında yer alan bir ortamın, bir takım hazırlıklar yapacağı anlamına gelmektedir. &amp;Ouml;zetle bu nitelikler Visual Studio ortamında yer alan Test ara&amp;ccedil;ları tarafından &amp;ccedil;alışma zamanında değerlendirilmektedir. &lt;strong&gt;TestInitialize&lt;/strong&gt; niteliği ile imzalanan metodlarda, test başlamadan &amp;ouml;nce yapılması gereken &amp;ouml;n hazırlıklar yer almaktadır. S&amp;ouml;z gelimi birim testlerine tabi olacak metodları i&amp;ccedil;eren servis nesnesinin &amp;ouml;rneklenmesi gibi. &lt;strong&gt;TestCleanup&lt;/strong&gt; niteliği ilede, testlerin bitmesi ile işletilmesi gereken kodları i&amp;ccedil;eren metod imzalanmaktadır. &amp;Ouml;rneğin birim testleri i&amp;ccedil;in kullanılan servis &amp;ouml;rneğinin kapatılması burada yapılacak işlemlerden birisi olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;TestMethod&lt;/strong&gt; niteliği ile imzalanmış olan metod i&amp;ccedil;erikleri ise, &lt;strong&gt;VS&lt;/strong&gt; ortamındaki test aracı tarafından ele alınacak ve testleri yapılacak i&amp;ccedil;eriklere sahiptir. Metod i&amp;ccedil;eriklerine dikkat edilirse &lt;strong&gt;Assert&lt;/strong&gt; tipine ait &lt;strong&gt;AreEqual&lt;/strong&gt; fonksiyonlarının kullanıldığı g&amp;ouml;r&amp;uuml;lmektedir. İlk parametre ile test sonucu beklenilen değer yazılırken, ikinci parametre ilede test edilecek fonksiyon &amp;ccedil;ağrısı ger&amp;ccedil;ekleştirilir. Cikarma metodunu test ettiğimiz yerde 2 sonucu beklenirken biz Cikarma metoduna (ki Cikartma olarak yazsam dilimize daha uygun olurmuş, hata yapmışım&amp;nbsp;&lt;img title="Frown" src="/editors/tiny_mce3/plugins/emotions/img/smiley-frown.gif" alt="Frown" border="0" /&gt; ) 3 ile 2 parametrelerini g&amp;ouml;ndermekteyiz. Yani aslında sonucun 1 olması gerekiyor. Bunu bilin&amp;ccedil;li olarak eklediğimi ve hata sonucu test aracının nasıl davrandığını g&amp;ouml;rmek istediğimi belirteyim. Artık projemiz hazır. &lt;strong&gt;Build&lt;/strong&gt; ettikten sonra &amp;ccedil;alıştırırsak, Visual Studio ortamında aşağıdaki g&amp;ouml;r&amp;uuml;nt&amp;uuml; ile karşılaşma ihtimalimiz y&amp;uuml;ksektir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblog2_6.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi CikartmaTest isimli metod haricindeki t&amp;uuml;m testlerde beklenen sonu&amp;ccedil;lara ulaşılmıştır. Yapılan testlere ait sonu&amp;ccedil;lar aynı zamanda &lt;strong&gt;trx&lt;/strong&gt; uzantılı dosyalarda klas&amp;ouml;r bazlı olaraktan saklanmaktadır. Aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi.&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;img src="/pics/2009%2f4%2fblog2_10.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;Not :&lt;/strong&gt; Eğer servisi host eden uygulama (IIS, Windows Servisi veya diğer host se&amp;ccedil;eneklerinde yer alan uygulama &amp;ccedil;eşitleri&amp;nbsp;olabilir) &amp;ccedil;alışmıyorsa, &amp;ccedil;ok doğal olarak test ger&amp;ccedil;ekleşmeyecek ve aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; ile karşılaşılacaktır.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblog2_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Burada &lt;strong&gt;.Net Remoting'&lt;/strong&gt; den bu yana bildiğimiz meşhur hata mesajını alırız. &lt;strong&gt;"No connection could be made because the target machine actively refused it"&lt;/strong&gt; &lt;img title="Cool" src="/editors/tiny_mce3/plugins/emotions/img/smiley-cool.gif" alt="Cool" border="0" /&gt;&amp;nbsp;Hatta hata mesajlarından birisine &amp;ccedil;ift tıklarsak aşağıdaki detaylı bilgi penceresinede ulaşma şansımız bulunmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblog2_5.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Peki Visual Studio yerine &lt;strong&gt;NUnit&lt;/strong&gt; aracını kullanarak birim testi ger&amp;ccedil;ekleştirmek istersek...&lt;/p&gt;
+&lt;p&gt;İlk olarak &lt;strong&gt;NUnit&lt;/strong&gt; programının&amp;nbsp;sistemimizde&amp;nbsp;kurulu olduğunu g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alıyoruz. Sonrasında ise aynen bir &amp;ouml;nceki projemizde olduğu gibi servis referansını eklememiz gerekiyor. Bunlara ek olarak, &lt;strong&gt;NUnit&lt;/strong&gt; test programının &amp;ccedil;alışma ortamına bilgi vermek amacıyla kullanacağımız nitelikleri i&amp;ccedil;in, projeye &lt;strong&gt;nunit framwork'&lt;/strong&gt; ununde (blog girişini yaptığım tarihlerde varsayılan olarak &lt;span style="font-size: xx-small;"&gt;&lt;strong&gt;C:\Program Files\NUnit 2.5\bin\net-2.0\framework\nunit.framework.dll&lt;/strong&gt; klas&amp;ouml;r&amp;uuml;nde yer almaktadır) referans edilmesi gerekir. &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblog2_7.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;ServiceTestClass isimli sınıfın i&amp;ccedil;eriği ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using TestLib.Calculus;
+using NUnit.Framework;
+
+namespace TestLib
+{
+    [TestFixture]
+    public class ServiceTestClass
+    {
+        private AlgebraServiceClient client=null;
+
+        [TestFixtureSetUp]
+        public void Ornekle()
+        {
+            client = new AlgebraServiceClient();
+            client.Open();
+        }
+
+        [TestFixtureTearDown]
+        public void Kapat()
+        {
+            if(client.State== System.ServiceModel.CommunicationState.Opened)
+                client.Close();
+        }
+
+        [Test]
+        public void ToplamaTest()
+        {
+            Assert.AreEqual(5, client.Toplama(2, 3));
+        }
+
+        [Test]
+        public void CikartmaTest()
+        {
+            Assert.AreEqual(7, client.Cikarma(10, 3));
+        }
+
+        [Test]
+        public void BolmeTest()
+        {
+            Assert.AreEqual(3, client.Bolme(9, 3));
+        }
+
+        [Test]
+        public void CarpmaTest()
+        {
+            Assert.AreEqual(6, client.Carpma(2, 3));
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;İlk projemizdekine benzer olaraktan buradada &amp;ccedil;alışma zamanını ilgilendiren bir takım nitelikler bulunmaktadır. Teste tabi olacak metodlarımız i&amp;ccedil;in &lt;strong&gt;Test&lt;/strong&gt; niteliği, testin başlamasından &amp;ouml;nce yapılması istenen &amp;ouml;n hazırlıklar i&amp;ccedil;in &lt;strong&gt;TestFixtureSetUp&lt;/strong&gt;, test sonrasında yapılması istenen işlemler i&amp;ccedil;inse &lt;strong&gt;TestFixtureTearDown&lt;/strong&gt; nitelikleri ele alınır. Yine beklenen değerleri tespit etmek amacıyla &lt;strong&gt;Assert&lt;/strong&gt; tipinin &lt;strong&gt;AreEqual&lt;/strong&gt; metodundan yararlanılmaktadır. Projenin &amp;ccedil;alıştırılması halinde genellikle &lt;strong&gt;NUnit&lt;/strong&gt; aracının otomatik olarak başlatıldığına şahit oldum. Bu nedenle projenin &amp;ouml;zelliklerinde aşağıdaki ayarlamayı yapmamız yeterli olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblog2_8.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi bu dll &amp;ccedil;alıştırıldığında &lt;strong&gt;NUnit&lt;/strong&gt; &lt;strong&gt;tool'&lt;/strong&gt; unuda başlatıyoruz. &lt;strong&gt;Command&lt;/strong&gt; &lt;strong&gt;line&lt;/strong&gt; &lt;strong&gt;arguments&lt;/strong&gt; kısmında ise &lt;strong&gt;/run [dll adı]&lt;/strong&gt; parametrelerini vererekten, &lt;strong&gt;NUnit&lt;/strong&gt; aracının&lt;strong&gt; [dll adı]&lt;/strong&gt; isimli &lt;strong&gt;assembly'&lt;/strong&gt; daki testleri başlatmasını belirtiyoruz. Artık tek yapmamız gereken servise ait host uygulamanın &amp;ccedil;alıştığından emin olmak. Sonrasında &lt;strong&gt;TestLib.dll&lt;/strong&gt; isimli assembly &amp;ccedil;alışıtırılırsa aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi NUnit aracının &amp;ccedil;alıştığını ve testlerin yapıldığını g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblog2_9.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;İşte bu kadar. Hemen son bir noktayı daha aklıma gelmişken belirteyim. &lt;strong&gt;Visual Studio Test Tool'&lt;/strong&gt; unu kullandığımız senaryoda istenirse &lt;strong&gt;debug&lt;/strong&gt; işlemleride yapılabilir.&lt;/p&gt;
+&lt;p&gt;Umuyorumki yararlı bir yazı olmuştur. Tekrardan g&amp;ouml;r&amp;uuml;şmek dileğiyle...&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2009%2f4%2fWCFUnitTesting.rar"&gt;WCFUnitTesting.rar (725,67 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2009-04-17 07:28:00</pubDate>
+  <slug>WCF-Servisleri-icin-Unit-Test</slug>
+  <tags>
+    <tag>wcf</tag>
+    <tag>unit-test</tag>
+  </tags>
+  <categories>
+    <category>WCF</category>
+  </categories>
+</post>

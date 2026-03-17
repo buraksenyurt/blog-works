@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Parent-Child Task Exception Durumları</title>
+  <description>Hatırlayacağınız üzere Parent-Child Tasks Kavramı başlıklı yazımızda .Net Framework 4.0 tarafında paralel programlamada önemli bir yere sahip olan Task örnekleri arasındaki Parent, Child ilişkiyi incelemeye çalışmıştık. Parent-Task nesne örnekleri arasındaki ilişkilerde bilinmesi gereken konulardan birisi de, istisnaların nasıl ele alındığıdır(Exception Handling). Aslında konuya hızlı bir giriş yaparak ilerlememiz şu aşamada avantajımız olacaktır.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/pics/2010%2f4%2fblg174_Giris.jpg" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Daha orta okul sıralarındayken havacılığa karşı m&amp;uuml;thiş bir ilgim vardı. Hi&amp;ccedil; unutmuyorum o yıllarda &lt;strong&gt;U&amp;ccedil;an T&amp;uuml;rk &lt;/strong&gt;dergisinin sıkı bir fanatiğiydim. Pek &amp;ccedil;ok savaş u&amp;ccedil;ağının teknik &amp;ouml;zelliklerini ezbere bilirdim ve hatta onları arşivlediğim bir not defterim dahi vardı. U&amp;ccedil;maktan korkan birisi olmama rağmen bunu yeneceğimi d&amp;uuml;ş&amp;uuml;nerekten &lt;strong&gt;Lise &lt;/strong&gt;yıllarında &lt;strong&gt;Hava Harp Okuluna &lt;/strong&gt;girebilmek i&amp;ccedil;in &amp;ouml;zel bir &amp;ccedil;alışma programı bile uygulamıştım. D&amp;uuml;zenli olarak spor yapıyor, kondisyon arttırmaya &amp;ccedil;alışıyor, g&amp;uuml;nde değil 3, 5 kere dişlerimi fır&amp;ccedil;alıyor, g&amp;ouml;zlerimi yormamak i&amp;ccedil;in uykuma &amp;ouml;zen g&amp;ouml;steriyordum.&lt;/p&gt;
+&lt;p&gt;Tabi &amp;ouml;ğrenciliğim &amp;ccedil;ok parlak olmadığı i&amp;ccedil;in &lt;strong&gt;&amp;Ouml;SS &lt;/strong&gt;sınavında aşmam gereken &lt;strong&gt;150&lt;/strong&gt;' lik puan barajı konusunda teredd&amp;uuml;tler yaşıyordum. Nitekim barajı da ge&amp;ccedil;emedim. Hayallerim yıkılmış mıydı? Elbette hayır. Heleki o yıllardaki &amp;ccedil;alışma azmimim bana kazandırdığı &amp;ouml;nemli avantajlar olduğu d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde. Bunlardan birisi de derin detaylara inebilmek i&amp;ccedil;in gerekli eforu, gayreti g&amp;ouml;sterme isteğidir. Neden b&amp;ouml;yle bir giriş yaptığıma gelince...Bu seferki konumuz &lt;strong&gt;Paralel Programlamada&lt;/strong&gt;, ilişkisel &lt;strong&gt;Task &lt;/strong&gt;&amp;ouml;rneklerinin &lt;strong&gt;Exception &lt;/strong&gt;y&amp;ouml;netimi hakkındadır. Konu sıkıcı ve bir o kadarda detaylıdır. Ama neyseki araştırıp, sıkılmadan derinlerine inmek ve analiz etmek i&amp;ccedil;in gerekli gayret mevcut &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Hatırlayacağınız &amp;uuml;zere &lt;a class="postheader taggedlink" href="/admin/app/editor/post/Parent-Child-Tasks-Kavrami" target="_blank"&gt;Parent-Child Tasks Kavramı&lt;/a&gt; başlıklı yazımızda &lt;strong&gt;.Net Framework 4.0&lt;/strong&gt; tarafında paralel programlamada &amp;ouml;nemli bir yere sahip olan &lt;strong&gt;Task &lt;/strong&gt;&amp;ouml;rnekleri arasındaki &lt;strong&gt;Parent&lt;/strong&gt;, &lt;strong&gt;Child&lt;/strong&gt; ilişkiyi incelemeye &amp;ccedil;alışmıştık.&lt;strong&gt; Parent-Task&lt;/strong&gt; nesne &amp;ouml;rnekleri arasındaki ilişkilerde bilinmesi gereken konulardan birisi de, istisnaların nasıl ele alındığıdır&lt;strong&gt;(Exception Handling)&lt;/strong&gt;. Aslında konuya hızlı bir giriş yaparak ilerlememiz şu aşamada avantajımız olacaktır. Bu nedenle &lt;strong&gt;Visual Studio 2010 Ultimate&lt;/strong&gt; ortamında geliştireceğimiz &lt;strong&gt;Console &lt;/strong&gt;uygulamasında aşağıdaki kod i&amp;ccedil;eriğinin yer aldığını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Data.SqlClient;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace ParentChildTasksExceptionHandling
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            #region Case 1
+
+            Task parent = Task.Factory.StartNew(() =&amp;gt;
+            {
+                Console.WriteLine("Parent task...");
+
+                Task child1 = Task.Factory.StartNew(() =&amp;gt;
+                    {
+                        Console.WriteLine("Child Task 1 başladı...");
+                        Thread.Sleep(5000);
+                        Console.WriteLine("Child Task 1 bitti...");
+                    }
+                , TaskCreationOptions.AttachedToParent);
+                Task child2 = Task.Factory.StartNew(() =&amp;gt;
+                {
+                    Console.WriteLine("Child Task 2 başladı...");
+                    FileStream stream=File.OpenRead("OlmayanDosya.txt");
+                    Console.WriteLine("Child Task 2 bitti...");
+                }
+                , TaskCreationOptions.AttachedToParent);
+
+                Task child3 = Task.Factory.StartNew(() =&amp;gt;
+                {
+                    Console.WriteLine("Child Task 3 başladı...");
+                    Thread.Sleep(3000);
+                    Console.WriteLine("Child Task 3 bitti...");
+                }
+                , TaskCreationOptions.AttachedToParent);
+
+                Task child4 = Task.Factory.StartNew(() =&amp;gt;
+                {
+                    Console.WriteLine("Child Task 4 başladı...");
+                    Thread.Sleep(10000);
+                    SqlConnection conn = new SqlConnection();
+                    conn.Open();
+                    Console.WriteLine("Child Task 4 bitti...");
+                }
+                , TaskCreationOptions.AttachedToParent);
+            }
+            );
+
+            try
+            {
+                Console.WriteLine("İşlemler y&amp;uuml;r&amp;uuml;t&amp;uuml;l&amp;uuml;yor");
+                parent.Wait();
+                Console.WriteLine("İşlemler tamamlandı");
+            }
+            catch(AggregateException excp)
+            {
+                Console.WriteLine("Parent task durumu {0}",parent.Status);
+                Console.WriteLine(excp.Message);
+                foreach (var innerExcp in excp.InnerExceptions)
+                {
+                    Console.WriteLine(innerExcp.InnerException.Message);
+                }
+            }
+
+            #endregion
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Buradaki kod par&amp;ccedil;asında bir &lt;strong&gt;Parent Task&lt;/strong&gt; ve bunun i&amp;ccedil;erisinde &amp;ccedil;alışacak şekilde planlanan 4 farklı &lt;strong&gt;Child Task &lt;/strong&gt;&amp;ouml;rneği yer almaktadır. Bu &amp;ouml;rneklerden birisi, olmayan bir dosyayı a&amp;ccedil;maya &amp;ccedil;alışmaktadır. Dolayısıyla &lt;strong&gt;FileNotFoundException &lt;/strong&gt;tipinden bir istisna nesnesi &amp;uuml;reteceği garantidir. Diğer bir &lt;strong&gt;Task &lt;/strong&gt;ise parametresiz bir &lt;strong&gt;SqlConnection &lt;/strong&gt;nesnesi oluşturmakta ve belli olmayan bir yere doğru &lt;strong&gt;SQL&lt;/strong&gt; bağlantısı a&amp;ccedil;maya &amp;ccedil;alışmaktadır ki bu da &lt;strong&gt;InvalidOperationException &lt;/strong&gt;t&amp;uuml;r&amp;uuml;nden bir istisna nesnesinin fırlatılmasına neden olacaktır.&lt;/p&gt;
+&lt;p&gt;Daha &amp;ouml;nceki yazımızdan hatırlayacağınız &amp;uuml;zere &lt;strong&gt;Child Task&lt;/strong&gt; &amp;ouml;rneklerinin başlattığı metod g&amp;ouml;vdeleri i&amp;ccedil;erisinde oluşabilecek olan &lt;strong&gt;istisnalar(Exception), Parent Task &lt;/strong&gt;&amp;ouml;rneğinin&lt;strong&gt; Final State&lt;/strong&gt; durumunu da doğrudan etkilemektedir. Ayrıca &lt;strong&gt;Child Task&lt;/strong&gt;' lerde bir istisna oluşsa bile, diğer &lt;strong&gt;Task &lt;/strong&gt;&amp;ouml;rnekleri &amp;ccedil;alışmalarını devam ettirmektedir. &amp;Ouml;rnek kod par&amp;ccedil;amızda &lt;strong&gt;Parent Task &lt;/strong&gt;tarafına &amp;ccedil;ıkartılan &lt;strong&gt;Exception &lt;/strong&gt;&amp;ouml;rneklerinin yakalanabilmesi amacıyla &lt;strong&gt;try...catch &lt;/strong&gt;bloğuna başvurulduğu g&amp;ouml;r&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;p&gt;Burada dikkat edilmesi gereken iki nokta vardır. Bunlardan birisi &lt;strong&gt;try &lt;/strong&gt;bloğu i&amp;ccedil;erisinde &lt;strong&gt;Parent Task &lt;/strong&gt;nesne &amp;ouml;rneği &amp;uuml;zerinden bilin&amp;ccedil;li olarak &lt;strong&gt;Wait &lt;/strong&gt;metodunu kullanılmış olmasıdır. Bu şekilde uygulamanın ana &lt;strong&gt;Thread &lt;/strong&gt;bloğu sonlanmadan &lt;strong&gt;Parent Task &lt;/strong&gt;ve i&amp;ccedil;eriğinin işlerinin tamamlanmasının beklenmesi garanti edilmiş olmaktadır. Diğer yandan ikinci &amp;ouml;nemli nokta &lt;strong&gt;catch &lt;/strong&gt;bloğu i&amp;ccedil;erisinde, &lt;strong&gt;Parent Task &lt;/strong&gt;&amp;ouml;rneği altında &amp;ccedil;alışan &lt;strong&gt;Child Task&lt;/strong&gt;' ler tarafından fırlatılan &lt;strong&gt;Exception &lt;/strong&gt;nesnelerinin nasıl yakalandığıdır. Burada &lt;strong&gt;AggregateException &lt;/strong&gt;sınıfının &lt;strong&gt;InnerExceptions &lt;/strong&gt;isimli koleksiyonu &amp;uuml;zerinden hareket edildiğine dikkat edilmelidir. Uygulama kodu &lt;strong&gt;Debug &lt;/strong&gt;modda &amp;ccedil;alıştırıldığında aşağıdaki sonu&amp;ccedil;ların elde edildiği g&amp;ouml;r&amp;uuml;lecektir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f4%2fblg174_DebugException.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &lt;strong&gt;AggregateException &lt;/strong&gt;nesnesi &lt;strong&gt;Child Task&lt;/strong&gt;' lerde oluşan istisnaları bir koleksiyon dahilinde saklamaktadır. &lt;strong&gt;Count &lt;/strong&gt;değerinin iki d&amp;ouml;nmesinin sebebi tahmin edeceğiniz &amp;uuml;zere iki &lt;strong&gt;Child Task&lt;/strong&gt;' in &lt;strong&gt;Exception &lt;/strong&gt;fırlatmış olmasıdır. Uygulamamızın &amp;ccedil;alışma zamanı g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; ise aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f4%2fblg174_RuntimeCase1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;Parent Task&lt;/strong&gt; &amp;ouml;rneğinin&lt;strong&gt; Final State&lt;/strong&gt; durumundaki karşılığı &lt;strong&gt;Faulted &lt;/strong&gt;olmuştur ki bu son derece doğaldır. &amp;Ccedil;&amp;uuml;nk&amp;uuml; &lt;strong&gt;Child Task &lt;/strong&gt;&amp;ouml;rneklerinden ikisi &lt;strong&gt;Exception &lt;/strong&gt;&amp;uuml;retimi bildirmiştir. Bu istisna bildirimlerinin &lt;strong&gt;Child Task&lt;/strong&gt;' lerden, &lt;strong&gt;Parent Task&lt;/strong&gt;' e bildirildiğini ve &lt;strong&gt;AggregateException &lt;/strong&gt;i&amp;ccedil;erisinde toplandıklarını da unutmamak gerekir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Exception &lt;/strong&gt;y&amp;ouml;netimi ile ilişkili tek durum bu değildir. Şimdi de aşağıdaki kod &amp;ouml;rneğini g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Data.SqlClient;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+
+namespace ParentChildTasksExceptionHandling
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            #region Case 2
+
+            Task parentTask = null;
+            Task childTask = null;
+            ManualResetEvent mre = new ManualResetEvent(false);
+
+            parentTask = Task.Factory.StartNew(() =&amp;gt;
+                {
+                    childTask = Task.Factory.StartNew(() =&amp;gt;
+                        {
+                            throw new Exception("Child Task i&amp;ccedil;in Exception");
+                        }, TaskCreationOptions.AttachedToParent);
+                    mre.Set();
+                    throw new Exception("Parent Task i&amp;ccedil;in Exception");
+                }
+             );
+
+            mre.WaitOne();
+
+            try
+            {
+                //Task.WaitAll(parentTask, childTask);
+                parentTask.Wait();
+            }
+            catch (AggregateException excp)
+            {
+                Console.WriteLine("{0} adet Exception s&amp;ouml;z konusudur",excp.InnerExceptions.Count);
+            }
+
+            #endregion
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu kod par&amp;ccedil;asında iki adet &lt;strong&gt;Task &lt;/strong&gt;&amp;ouml;rneği bulunmaktadır ve aralarında &lt;strong&gt;Parent-Child&lt;/strong&gt; ilişki s&amp;ouml;z konusudur. Dikkat edilmesi gereken nokta ise, kodun bu haliyle &lt;strong&gt;debug &lt;/strong&gt;edilmesi veya &amp;ccedil;alıştırılması sonrasında &lt;strong&gt;AggregateException&lt;/strong&gt; nesne &amp;ouml;rneği &amp;uuml;zerinden yaklanan dahili istisna &amp;ouml;rnekleri ve toplam sayısıdır. &lt;strong&gt;parentTask.Wait(); &lt;/strong&gt;metod &amp;ccedil;ağrısı kullanıldığında &lt;strong&gt;debug &lt;/strong&gt;modda iken aşağıdaki sonu&amp;ccedil;lar ulaşılabildiğim g&amp;ouml;zlemlenecektir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f4%2fblg174_RuntimeCase2_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Aslında beklediğimiz gibi bir sonu&amp;ccedil; s&amp;ouml;z konusudur. &lt;strong&gt;parentTask &lt;/strong&gt;nesne &amp;ouml;rneği &amp;uuml;zerinden &lt;strong&gt;Wait &lt;/strong&gt;metodu kullanıldığı i&amp;ccedil;in &lt;strong&gt;AggregateException &lt;/strong&gt;nesne &amp;ouml;rneğinin &lt;strong&gt;InnerExceptions &lt;/strong&gt;koleksiyonunun ilk elemanı &lt;strong&gt;Parent Task &lt;/strong&gt;&amp;ouml;rneğinin &amp;ccedil;alıştırdığı metod i&amp;ccedil;erisinden fırlatılan istisna bilgisini i&amp;ccedil;ermektedir. &lt;strong&gt;InnerExceptions &lt;/strong&gt;&amp;ouml;zelliğinin 1 numaralı indis değeri i&amp;ccedil;inse, &lt;strong&gt;Child Task&lt;/strong&gt; i&amp;ccedil;erisinden &amp;uuml;retilen &lt;strong&gt;Exception &lt;/strong&gt;s&amp;ouml;z konusudur. Ancak hem &lt;strong&gt;Parent Task&lt;/strong&gt; hemde i&amp;ccedil;erdiği &lt;strong&gt;Child Task &lt;/strong&gt;nesne &amp;ouml;rnekleri i&amp;ccedil;in &lt;strong&gt;Wait &lt;/strong&gt;işlemi ger&amp;ccedil;ekleştirilirse? &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;Yani yorum satırı a&amp;ccedil;ılıp &lt;strong&gt;Task.WaitAll(parentTask,childTask)&lt;/strong&gt; kullanılırsa, bu durumda &lt;strong&gt;Debug &lt;/strong&gt;modda aşağıdaki sonu&amp;ccedil;lar ile karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f4%2fblg174_RuntimeCase2New.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;AggregateException, 3 &lt;/strong&gt;adet &lt;strong&gt;InnerException &lt;/strong&gt;i&amp;ccedil;erdiğini bildirmektedir. Her ne kadar &lt;strong&gt;throw new &lt;/strong&gt;satırlarının sayısı iki olsa da &lt;strong&gt;3 &lt;/strong&gt;sonu&amp;ccedil; d&amp;ouml;nd&amp;uuml;r&amp;uuml;lm&amp;uuml;şt&amp;uuml;r. Yakından bakıldığında ise durum aslında şu şekilde &amp;ouml;zetlenebilir; &lt;strong&gt;AggregateException, WaitAll &lt;/strong&gt;&amp;ccedil;ağrısı nedeniyle ne kadar &lt;strong&gt;Task &lt;/strong&gt;&amp;ouml;rneği varsa bunların tamamının &amp;uuml;rettiği &lt;strong&gt;Exception &lt;/strong&gt;bilgilerini&lt;em&gt;(parentTask' in &amp;uuml;rettiği ve yukarıya g&amp;ouml;nderdiği Exception dahil) &lt;/em&gt;&lt;strong&gt;InnerExceptions&lt;/strong&gt; altında toplamıştır.&lt;/p&gt;
+&lt;p&gt;Bunlara ilaveten&lt;strong&gt; Parent Task&lt;/strong&gt; &amp;ouml;rneği i&amp;ccedil;erisindeki &lt;strong&gt;Child Task &lt;/strong&gt;&amp;ouml;rneğinden fırlatılan &lt;strong&gt;Exception, &lt;/strong&gt;ayrıca &lt;strong&gt;InnerExceptions &lt;/strong&gt;i&amp;ccedil;erisindeki &lt;strong&gt;2 &lt;/strong&gt;numaralı indise atanmıştır. Dolayısıyla birden fazla &lt;strong&gt;Task &lt;/strong&gt;&amp;ouml;rneğinin &lt;strong&gt;WaitAll &lt;/strong&gt;ile beklenmesi halinde &lt;strong&gt;AggregateException &lt;/strong&gt;nesnesinin istisna toplama yaklaşımı, sadece &lt;strong&gt;Parent Task &lt;/strong&gt;&amp;ouml;rneğine uygulanan &lt;strong&gt;Wait &lt;/strong&gt;metodu s&amp;ouml;z konusu olduğundakinden farklıdır. Bu &amp;ccedil;ok tabi olarak &amp;uuml;st tarafta Exception &amp;ouml;rneklerinin yakalanıp değerlendirildiği konumlarda &amp;ouml;nem kazanan k&amp;uuml;&amp;ccedil;&amp;uuml;k bir farktır.&lt;/p&gt;
+&lt;p&gt;Şu ana kadar yaptıklarımızı değerlendirdiğimizde &lt;strong&gt;Child Task&lt;/strong&gt; tamamlandığında eğer bir &lt;strong&gt;Exception &lt;/strong&gt;i&amp;ccedil;eriyorsa bunu &lt;strong&gt;Parent Task&lt;/strong&gt;' e bildirdiği y&amp;ouml;n&amp;uuml;ndedir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Exception &lt;/strong&gt;nesnelerinin ele alınması ile ilişkili bir diğer yaklaşımı ise aşağıdaki kod par&amp;ccedil;asından devam ederek değerlendirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace ParentChildTasksExceptionHandling
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            #region Case 3
+
+            Task parentTask = null;
+            Task childTask = null;
+
+            parentTask = Task.Factory.StartNew(() =&amp;gt;
+            {
+                childTask = Task.Factory.StartNew(() =&amp;gt;
+                {
+                    throw new Exception("Child Task i&amp;ccedil;in Exception");
+                }, TaskCreationOptions.AttachedToParent);
+
+                try
+                {
+                    childTask.Wait();
+                }
+                catch
+                {
+                }
+            }
+             );
+
+            try
+            {
+                parentTask.Wait();
+                Console.WriteLine("Parent Task Status : {0}",parentTask.Status);
+            }
+            catch (AggregateException excp)
+            {
+                Console.WriteLine("{0} adet Exception s&amp;ouml;z konusudur", excp.InnerExceptions.Count);
+            }
+
+            #endregion
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu sefer &lt;strong&gt;Parent Task&lt;/strong&gt; i&amp;ccedil;in a&amp;ccedil;ılan kod i&amp;ccedil;erisinde &lt;strong&gt;Child Task&lt;/strong&gt; &amp;ouml;rneği i&amp;ccedil;in &lt;strong&gt;Wait &lt;/strong&gt;metodu &amp;ccedil;ağrısı yapılmış ve s&amp;ouml;z konusu &amp;ccedil;ağrı sırasında bir &lt;strong&gt;Exception &lt;/strong&gt;oluşrsa, boş bir catch bloğunda yakalanmıştır. Dikkat &amp;ccedil;ekici nokta da zaten burasıdır. Boş &lt;strong&gt;catch &lt;/strong&gt;bloğu i&amp;ccedil;erisinde herhangibir şekilde &lt;strong&gt;Exception &lt;/strong&gt;nesne &amp;ouml;rneği fırlatılmadığından,&lt;strong&gt; Child Task&lt;/strong&gt; tarafından &amp;uuml;retilen istisna, &lt;strong&gt;Parent Task&lt;/strong&gt; &amp;ouml;rneğine bildirilmemektedir. Bir başka deyişle Child Task &amp;ouml;rneğinin &amp;uuml;rettiği istisna kendi i&amp;ccedil;erisinde ele alınarak s&amp;uuml;p&amp;uuml;r&amp;uuml;lm&amp;uuml;şt&amp;uuml;r. Dolayısıyla bu &amp;ouml;rnek kod par&amp;ccedil;asının &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı aşağıdaki gibi olacak, bir başka deyişle, &lt;strong&gt;Parent Task&lt;/strong&gt; nesne &amp;ouml;rneğinin &lt;strong&gt;Final State &lt;/strong&gt;durumu &lt;strong&gt;RanToCompletion&lt;/strong&gt; olarak belirlenecektir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f4%2fblg174_RuntimeCase3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi burada durup &amp;ouml;nemli bir noktayı vurgulamak gerektiği d&amp;uuml;ş&amp;uuml;ncesindeyim. &lt;strong&gt;WaitAll &lt;/strong&gt;metodunu kullandığımız &amp;ouml;rnekte&lt;strong&gt; Child Task&lt;/strong&gt; ve&lt;strong&gt; Parent Task&lt;/strong&gt; &amp;ouml;rneklerinin durumları &lt;strong&gt;Faulted &lt;/strong&gt;olarak set edilmektedir. Ancak son senaryoda &lt;strong&gt;Parent Task&lt;/strong&gt; &amp;ouml;rneğine &lt;strong&gt;Child Task &lt;/strong&gt;i&amp;ccedil;erisinde fırlatılan &lt;strong&gt;Exception &lt;/strong&gt;bildirilmediğinden sadece&lt;strong&gt; Child Task&lt;/strong&gt;, &lt;strong&gt;Faulted &lt;/strong&gt;durumuna d&amp;uuml;şecek ve &lt;strong&gt;Parent Task&lt;/strong&gt;, &lt;strong&gt;RanToCompletion &lt;/strong&gt;modunda olacaktır. Bunun belirgin olan sebebi az &amp;ouml;ncede belirttiğimiz &amp;uuml;zere, &lt;strong&gt;Child Task&lt;/strong&gt; i&amp;ccedil;erisinden fırlatılan istisnanın &lt;strong&gt;Parent Task&lt;/strong&gt;' e &amp;ccedil;ıkartılmadan bir&lt;strong&gt; try...catch &lt;/strong&gt;bloğu ile kontrol altına alınmasıdır. Ancak yine son senaryoda aşağıdaki gibi bir kullanım ile &lt;strong&gt;Parent Task&lt;/strong&gt;' e &lt;strong&gt;Child Task&lt;/strong&gt;' ten fırlatılan &lt;strong&gt;Exception&lt;/strong&gt; durumunun bildirilmesi sağlanabilir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace ParentChildTasksExceptionHandling
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            #region Case 4
+
+            Task parentTask = null;
+            Task childTask = null;
+
+            parentTask = Task.Factory.StartNew(() =&amp;gt;
+            {
+                childTask = Task.Factory.StartNew(() =&amp;gt;
+                {
+                    throw new Exception("Child Task i&amp;ccedil;in Exception");
+                }, TaskCreationOptions.AttachedToParent);
+
+                childTask.ContinueWith(_ =&amp;gt;
+                {
+                    try
+                    {
+                        childTask.Wait();
+                    }
+                    catch(AggregateException excp)
+                    {
+                    }
+                }
+                );
+            }
+            );
+
+            try
+            {
+                parentTask.Wait();
+                Console.WriteLine("Parent Task Status : {0}", parentTask.Status);
+            }
+            catch (AggregateException excp)
+            {
+                Console.WriteLine("{0} adet Exception s&amp;ouml;z konusudur\nParent Task Durumu : {1}", excp.InnerExceptions.Count,parentTask.Status);
+            }
+
+            #endregion
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu kod par&amp;ccedil;asında&lt;strong&gt; Child Task&lt;/strong&gt; nesne &amp;ouml;rneği &amp;uuml;zerinden &lt;strong&gt;Continue &lt;/strong&gt;metodu kullanılmış ve&lt;strong&gt; try...catch&lt;/strong&gt; bloğu ile alt task &amp;ouml;rneğinin &amp;uuml;rettiği istisnanın yine aynı blok i&amp;ccedil;erisinde ele alınması sağlanmıştır. Bu durumda &lt;strong&gt;Parent Task&lt;/strong&gt; yine &lt;strong&gt;Child Task&lt;/strong&gt; i&amp;ccedil;erisinden &amp;uuml;retilen &lt;strong&gt;Exception &lt;/strong&gt;nesnesi i&amp;ccedil;in bilgilendirilecektir, &amp;uuml;stelik &lt;strong&gt;Continue &lt;/strong&gt;bloğu i&amp;ccedil;erisindeki &lt;strong&gt;catch &lt;/strong&gt;bloğundan dışarıya doğru bir &lt;strong&gt;Exception &lt;/strong&gt;fırlatımı a&amp;ccedil;ık bir şekilde yapılmasa bile. Tabi bu durumda &lt;strong&gt;Parent Task &lt;/strong&gt;nesne &amp;ouml;rneğinin &lt;strong&gt;Final State &lt;/strong&gt;durumu yine &lt;strong&gt;Faulted &lt;/strong&gt;olacaktır. İşte &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f4%2fblg174_RuntimeCase4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &lt;strong&gt;Parent-Child Task&lt;/strong&gt; diyerek ge&amp;ccedil;memek lazım &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt; Ele alınması gereken bir ka&amp;ccedil; durum s&amp;ouml;z konusu ki bunlardan birisi de iptal &lt;strong&gt;işlemleri(Cancellation)&lt;/strong&gt;. Bu konuyu da bir sonraki yazımızda ele almaya &amp;ccedil;alışıyor olacağız. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2010%2f8%2fParentChildTasksExceptionHandling.rar"&gt;ParentChildTasksExceptionHandling.rar (25,96 kb)&lt;/a&gt;&lt;strong&gt;&amp;nbsp;[&amp;Ouml;rnek Visual Studio 2010 Ultimate s&amp;uuml;r&amp;uuml;m&amp;uuml; &amp;uuml;zerinde geliştirilmiş ve test edilmiştir]&lt;/strong&gt;&lt;/p&gt;</content>
+  <pubDate>2010-08-02 21:10:00</pubDate>
+  <slug>Parent-Child-Task-Exception-Durumlari</slug>
+  <tags>
+    <tag>tpl</tag>
+    <tag>task-parallel-library</tag>
+    <tag>parallel-programming</tag>
+    <tag>parallel-computing</tag>
+  </tags>
+  <categories>
+    <category>C# 4.0</category>
+    <category>Parallel Programming</category>
+    <category>TPL</category>
+  </categories>
+</post>

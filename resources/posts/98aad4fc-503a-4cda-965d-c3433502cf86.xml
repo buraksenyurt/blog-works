@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Node.js - Asenkron Talep Karşılama</title>
+  <description>Bu yazımızda Node.js ile geliştirilmiş sunucu uygulamalarında async kullanımını inceleyeceğiz. Amacımız istemci talebi sonrası arka planda paralel servis çağrıları gerçekleştirmek ve ayrıca bu süreç sırasında sunucuya gelecek diğer isteklerinde değerlendirilebileceğini görmek. Bunlara ilaveten ön tarafta konuşlandıracağımız ana servisin bir yönlendirici(router) gibi kullanılabileceğini öğreneceğiz. Haydi gelin hiç vakit kaybetmeden serüvenimize başlayalım. Konuyu basit bir şekilde anlayabilmek adına örnek bir senaryo üzerinden gitmekte yarar var...</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2018/10/async_viking.jpg" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Adrenali olduk&amp;ccedil;a y&amp;uuml;ksek&lt;em&gt;(&amp;ouml;zellikle benim i&amp;ccedil;in)&lt;/em&gt; ve zorlayıcı bir Cumartesi g&amp;uuml;n&amp;uuml;n&amp;uuml; geride bıraktım. Yo yo sandığınız gibi Cape Town'da b&amp;uuml;y&amp;uuml;k beyazlar ile dalış yapmadım ya da Helikopter'den&amp;nbsp;Bungee Jumping... Hatta deployment sırasında canlı ortam datalarını da silmedim. Tek yaptığım Vialand'e gitmek oldu. Daha ilk turda bindiğim Vikings beni yeterince heyecanlndırırken, "Nefes Kesen"&amp;nbsp;neredeyse ses hızına yaklaştığımı hissettirdi :P&lt;/p&gt;
+&lt;p&gt;Ehh, yanınızda bu adrenaline doymayan bir arkadaşınız veya &amp;ccedil;ocuğunuz varsa o aletten diğerine koşturmayı bırakın her bir aleti defalarca deneyimlemek zorunda da kalabilirsiniz. Hoş bunu sevenler ve etkilenmeyenler i&amp;ccedil;in inanılmaz derecede eğlenceli bir ortam s&amp;ouml;z konusu. Lakin benim gibi yaşlı b&amp;uuml;nyeler i&amp;ccedil;in aslında bu kadar adrenalin biraz&lt;em&gt;(belki birazdan da fazla)&lt;/em&gt; &amp;uuml;rk&amp;uuml;t&amp;uuml;c&amp;uuml; diyebilirim. Bu yoğun heyecan &amp;uuml;zerine beni dengeleyen tek yer &amp;ccedil;alışma odam oldu.&amp;nbsp; Viking'deki sulu inişleri, Rollar Coaster'daki 38 saniyelik &amp;ouml;ld&amp;uuml;r&amp;uuml;c&amp;uuml; heyecanı, Adelet Kulesinden yapılan 50 metrelik sert d&amp;uuml;ş&amp;uuml;ş&amp;uuml; bir kenara bıraktım ve West World'e doğru yol aldım. Elimde incelenmeyi bekleyen ve hafta boyu gerek Pluralsight eğitimleri gerek dok&amp;uuml;manlar olsun &amp;ccedil;alıştığım g&amp;uuml;zel bir konu vardı.&lt;/p&gt;
+&lt;p&gt;Bu yazımızda Node.js ile geliştirilmiş sunucu uygulamalarında async kullanımını inceleyeceğiz. Amacımız istemci talebi sonrası arka planda paralel servis &amp;ccedil;ağrıları ger&amp;ccedil;ekleştirmek ve ayrıca bu s&amp;uuml;re&amp;ccedil; sırasında sunucuya gelecek diğer isteklerinde değerlendirilebileceğini g&amp;ouml;rmek. Bunlara&amp;nbsp;ilaveten &amp;ouml;n tarafta konuşlandıracağımız ana servisin bir y&amp;ouml;nlendirici&lt;em&gt;(router)&lt;/em&gt; gibi kullanılabileceğini &amp;ouml;ğreneceğiz. Haydi gelin hi&amp;ccedil; vakit kaybetmeden ser&amp;uuml;venimize başlayalım. Konuyu basit bir şekilde anlayabilmek adına &amp;ouml;rnek bir senaryo &amp;uuml;zerinden gitmekte yarar var. Başlangı&amp;ccedil; i&amp;ccedil;in aşağıdaki şemayı g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/10/async_node_0.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;İki farklı MongoDb &lt;em&gt;(farklı t&amp;uuml;rlerden de olabilir)&lt;/em&gt; veri depomuz olduğunu d&amp;uuml;ş&amp;uuml;nelim. Bunların sayısı daha da artabilir. Her iki mongodb ile ayrı ayrı &amp;ccedil;alışan servislerimiz var. JSON&amp;nbsp;tabanlı basit Rest servisleri olarak ele alabiliriz. Bu iki oluşumun farklı sunucular &amp;uuml;zerinde tesis edildiğini varsayalım. &amp;Ouml;nde duran ve belirli talepler i&amp;ccedil;in arka taraftaki ilgili servislere y&amp;ouml;nlendirme&lt;em&gt;(routing)&lt;/em&gt; işini &amp;uuml;stlenen bir başka servis var. Bu servise vereceğimiz temel g&amp;ouml;rev, player ve team servislerine paralel talep g&amp;ouml;nderek &amp;ccedil;ıktıların istemciye yollanması. Yani &amp;ouml;ndeki servisimiz takım ve oyuncu listelerini veren servis metodlarını paralel olarak işletip tamamı elde edilince istemciye cevap d&amp;ouml;necek.&lt;/p&gt;
+&lt;p&gt;Testlerimiz sırasında arkadaki servislerin standart get operasyonlarında duraksatma yapacağız&lt;em&gt;(&amp;Ouml;rneğin 7şer saniye kadar)&lt;/em&gt;&amp;nbsp;Bu durumda ervisleri arka arkaya &amp;ccedil;alıştıracak olsak &amp;ccedil;ıktıların toplamda 14 saniye civarında&amp;nbsp;elde edilmesi beklenir. Ancak paralel &amp;ccedil;alıştırıp her iki &amp;ccedil;ıktıyı da 7 saniye civarlarında elde etmemiz m&amp;uuml;mk&amp;uuml;n. İşte bu noktada async mod&amp;uuml;l&amp;uuml; ve paralel fonksiyon &amp;ccedil;alıştırma &amp;ouml;zellikleri işimize yarayacak. Hatta bu veri elde etme işlemi yapıldığı s&amp;uuml;re boyunca &amp;ouml;ndeki servisimiz farklı talepleri de karşılayabilir durumda olacak ki bu da Node.js'in doğal &amp;ccedil;alışma prensipleri ile m&amp;uuml;mk&amp;uuml;n. Ger&amp;ccedil;ek hayat senaryolarında sıklıkla ihtiya&amp;ccedil; duyacağımız bir senaryo. Bakalım Node.js tarafında bu iş nasıl yapılabiliyor basit&amp;ccedil;e inceleyelim.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;ncelikle West-World&lt;em&gt;(Ubuntu 16.04 - 64bit)&lt;/em&gt; &amp;uuml;zerinde &amp;ccedil;alıştığımı ve MongoDB'nin Compass Community Edition'ının y&amp;uuml;kl&amp;uuml; olduğunu ifade edeyim. Bunlara ek olarak tabii ki node.js'de sistemde y&amp;uuml;kl&amp;uuml; durumda. Biz &amp;uuml;&amp;ccedil; servisimizi de aynı makine &amp;uuml;zerinde ama farklı portlardan sunacağız. Bu şekilde grafikteki senaryoyu taklit etmeye &amp;ccedil;alışacağız. &amp;Ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml;m&amp;uuml;ze ait temel klas&amp;ouml;r yapısını&amp;nbsp;aşağıdaki&amp;nbsp;gibi kurgulayarak işe başlayalım.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;models&lt;br /&gt;---player.js&lt;br /&gt;---team.js&lt;br /&gt;server&lt;br /&gt;---MainServer.js&lt;br /&gt;---PlayerServer.js&lt;br /&gt;---TeamServer.js&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneklerde kullanacağımız bir takım npm paketleri var. İşlerimizi kolaylaştırması a&amp;ccedil;ısından. MongoDb ORM eşlemesi i&amp;ccedil;in mongoose,&amp;nbsp;REST servis tarafı i&amp;ccedil;in express, asenkron işlemleri kolaylaştırmak i&amp;ccedil;in async ve son olarak JSON parsing i&amp;ccedil;in body-parser... Terminalden aşağıdaki komutları kullanarak gerekli kurulum işlemlerini yapabiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo npm install mongoose
+sudo npm install express
+sudo npm install request
+sudo npm install async
+sudo npm install body-parser&lt;/pre&gt;
+&lt;p&gt;MongoDb tarafında kullanılacak iki temsili veritabanı modelimiz var. Player ve Team. Bunlara ait entity nesnelerini aşağıdaki gibi tanımlayabiliriz.&lt;/p&gt;
+&lt;p&gt;Player.js&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;var mongoose = require('mongoose');
+
+var playerSchema = mongoose.Schema({
+    fullName: String,
+    size: String,
+    position: String
+});
+
+module.exports = mongoose.model('Player', playerSchema);&lt;/pre&gt;
+&lt;p&gt;Team.js&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;var mongoose = require('mongoose');
+
+var teamSchema = mongoose.Schema({
+    name: String,
+    city: String
+});
+
+module.exports = mongoose.model('Team', teamSchema);&lt;/pre&gt;
+&lt;p&gt;Her iki kod par&amp;ccedil;asında mongoose paketinden yararlanılıyor. Schema metodunda Team ve Player nesnelerinin &amp;ouml;zelliklerini tanımlıyoruz. Bu &amp;ouml;zellikler aynen MongoDb tarafında da kullanılacaklar. Team ve Player nesnelerini mod&amp;uuml;l &amp;uuml;zerinden dışarıya a&amp;ccedil;arken de model fonksiyonundan yararlanılmakta. Burada model adlarını ve eşleştikleri şemaları belirtmekteyiz. Şimdi de Player ve Team nesneleri ve dolayısıyla MongoDb veritabanı ile &amp;ccedil;alışacak olan REST servislerine ait kodlarımızı yazalım. PlayerServer sınıfının kod i&amp;ccedil;eriğini aşağıdaki gibi geliştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;var express = require('express');
+var app = express();
+var bodyParser = require('body-parser');
+var Player = require('../models/player.js');
+
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/player', { useMongoClient: true });
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+
+app.post('/players', function (req, res) {
+    var newPlayer = new Player(req.body);
+    newPlayer.save(function (err) {
+        if (err) {
+            res.json({ error: err });
+        };
+        res.json({ info: 'oyuncu bilgisi oluşturuldu' });
+    });
+});
+
+app.get('/players', function (req, res) {
+    Player.find(function (err, players) {
+        if (err) {
+            res.json({ error: err });
+        };
+        setTimeout(function () {
+            res.json({ data: players });
+        }, 7000);
+    });
+});
+
+app.get('/players/:id', function (req, res) {
+    Player.findById(req.params.id, function (err, player) {
+        if (err) {
+            res.json({ error: err });
+        };
+        if (player) {
+            res.json({ data: player });
+        } else {
+            res.json({ info: 'oyuncu bulunamadı' });
+        }
+    });
+});
+
+var server = app.listen(7001, function () {
+    console.log('PlayerServer is online http://localhost:7001/');
+});&lt;/pre&gt;
+&lt;p&gt;Yerele makinenin 7001 nolu portu &amp;uuml;zerinden hizmet veren PlayerServer, express ve mongoose mod&amp;uuml;llerini etkin bir şekilde kullanmakta. Model olarak Player.js dosyasından yararlanılıyor. İşlemleri basitleştirmek adına sadece &amp;uuml;&amp;ccedil; operasyon sunmaktayız. T&amp;uuml;m oyuncu listesini &amp;ccedil;ekebiliyoruz ya da mongoDb'de oluşturulan objectId bilgisini kullanarak tek bir tanesini talep edebiliyoruz. Birde oyuncu ekleme işini kolaylaştırmak i&amp;ccedil;in yazdığımız Post tabanlı &amp;ccedil;alışan metodumuz var. MongoDb bağlantısı connect metodu &amp;uuml;zerinden sağlanmakta. Eğer&amp;nbsp;MongoDb &amp;ouml;rneğinde&amp;nbsp;Player veya Team gibi veritabanları yoksa ilk bağlantı sırasında oluşturulacaklardır. Kodda dikkat edilmesi gereken noktalardan birisi de setTimeout metodunu kullanmış olmamız. Bunu&amp;nbsp;testimizin bir par&amp;ccedil;ası olarak d&amp;uuml;ş&amp;uuml;nebilirsiniz. Senaryomuza g&amp;ouml;re t&amp;uuml;m oyuncu listesinin &amp;ccedil;ekilmesi yaklaşık olarak yedi saniyede ger&amp;ccedil;ekleşiyor. PlayerServer kendi başına &amp;ccedil;alışabilen bir servis olduğundan belli bir port &amp;uuml;zerinden yayın yapacak şekilde ayarlanmış durumda. &amp;Ouml;rneğimize g&amp;ouml;re yerel makinedeki 7001 nolu port &amp;uuml;zerinden hizmet verecek. TeamServer dosyasındaki kodlarda PlayerServer tarafındakine olduk&amp;ccedil;a benzer. Sadece Team modeli ile &amp;ccedil;alıştığını s&amp;ouml;yleyebiliriz.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;var express = require('express');
+var app = express();
+var bodyParser = require('body-parser');
+var Team = require('../models/team.js');
+
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/team', { useMongoClient: true });
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+
+app.post('/teams', function (req, res) {
+    var newteam = new Team(req.body);
+    newteam.save(function (err) {
+        if (err) {
+            res.json({ error: err });
+        };
+        res.json({ info: 'takım bilgisi oluşturuldu' });
+    });
+});
+
+app.get('/teams', function (req, res) {
+    Team.find(function (err, teams) {
+        if (err) {
+            res.json({ error: err });
+        };
+        setTimeout(function () {
+            res.json({ data: teams });
+        }, 7000);
+    });
+});
+
+app.get('/teams/:id', function (req, res) {
+    Team.findById(req.params.id, function (err, team) {
+        if (err) {
+            res.json({ error: err });
+        };
+        if (team) {
+            res.json({ data: team });
+        } else {
+            res.json({ info: 'takım bulunamadı' });
+        }
+    });
+});
+
+var server = app.listen(7002, function () {
+    console.log('TeamServer is online http://localhost:7002/');
+});&lt;/pre&gt;
+&lt;p&gt;PlayerServer i&amp;ccedil;erisindeki &amp;ccedil;alışma prensiplerinin Team nesnesi i&amp;ccedil;in değiştirilmiş olduğunu g&amp;ouml;rebilirsiniz. Birde tabii farklı bir port &amp;uuml;zerinden yayın yapmaktayız. Bu iki servisi kullanan MainServer isimli y&amp;ouml;nlendirme servisinin kodları biraz daha farklı olacak. Aynen aşağıda olduğu gibi.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;var express = require('express');
+var app = express();
+var bodyParser = require('body-parser');
+var async = require('async');
+var request = require('request').defaults({
+    json: true
+});
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+
+app.get('/sports/api', function (req, res) {
+    async.parallel({
+        player: function (callback) {
+            request({ uri: 'http://localhost:7001/players' }, function (error, response, body) {
+                if (error) {
+                    callback({ service: 'player', error: error });
+                    return;
+                };
+                if (!error &amp;amp;&amp;amp; response.statusCode === 200) {
+                    callback(null, body.data);
+                } else {
+                    callback(response.statusCode);
+                }
+            });
+        },
+        team: function (callback) {
+            request({ uri: 'http://localhost:7002/teams' }, function (error, response, body) {
+                if (error) {
+                    callback({ service: 'team', error: error });
+                    return;
+                };
+                if (!error &amp;amp;&amp;amp; response.statusCode === 200) {
+                    callback(null, body.data);
+                } else {
+                    callback(response.statusCode);
+                }
+            });
+        }
+    }, function (error, results) {
+        res.json({
+            error: error,
+            results: results
+        });
+    });
+});
+
+app.get('/aloha', function (req, res) {
+    res.json({ yuhuuu: Date.now() });
+});
+
+var server = app.listen(7000, function () {
+    console.log('MainServer is online http://localhost:7000/');
+});&lt;/pre&gt;
+&lt;p&gt;MainServer i&amp;ccedil;erisinde async ve request mod&amp;uuml;llerinden yararlanarak paralel &amp;ccedil;alışma disiplinlerini uyguluyoruz. sports/api şeklinde gelecek olan bir talep ele alınırken async mod&amp;uuml;l&amp;uuml;n&amp;uuml;n parallel metodu &amp;ccedil;ağrılıyor. Burada player ve team isimli iki task oluşturulduğunu g&amp;ouml;rebilirsiniz. Herbiri request nesnesini kullanarak arka taraftaki servislere HTTP Get talebinde bulunuyor. Eğer &amp;uuml;&amp;ccedil; servisinde ayrı makinelerde barındırıldıklarını d&amp;uuml;ş&amp;uuml;necek olursak, MainServer Router Service g&amp;ouml;revini de icra ediyor diyebiliriz. parallel fonksiyonu i&amp;ccedil;erisindeki g&amp;ouml;revler tamamlandığında&lt;em&gt;(yani arka servislere yapılan &amp;ccedil;ağrıların sonu&amp;ccedil;ları elde edildiğinde)&lt;/em&gt; ikinci parametredeki fonksiyon devreye giriyor ve istemci tarafına sonu&amp;ccedil;ların JSON formatında d&amp;ouml;nd&amp;uuml;r&amp;uuml;lmesi sağlanıyor. Paralel talep işlenen get fonksiyonu dışında aloha şeklinde gelecek taleplerin ele alındığı bir metodumuz daha var. Yani MainServer birisi parelel task barındırmak suretiyle iki HTTP Get operasyonu sunmakta. Bu fonksiyonu neden koyduğumuzu yazının sonlarında daha net anlayacağımızı d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum.&lt;/p&gt;
+&lt;p&gt;PlayerServer ve TeamServer &amp;ouml;nceden de belirttiğimiz &amp;uuml;zere tek başlarına da hizmet verebilirler. 7001 ve 7002 gibi iki farklı porttan aynı anda yayınlanabilirler. Her ikisi i&amp;ccedil;in deneysel olması adına POST, GET, GET(ID ile) olmak &amp;uuml;zere &amp;uuml;&amp;ccedil; operasyon sunuluyor. İlerlemeden &amp;ouml;nce bu operasyonların işlerliğini basit&amp;ccedil;e test etmekte yarar var. &amp;Ouml;rneğin Postman kullanılarak aşağıdaki komut ile yeni bir oyuncu bilgisini eklememiz m&amp;uuml;mk&amp;uuml;n.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;Request : HTTP Post
+Address :&amp;nbsp;http://localhost:7001/players
+Body : {"fullName":"toni kuko&amp;ccedil;","size":"2.06cm","position":"power forward"}&lt;/pre&gt;
+&lt;p&gt;Sonu&amp;ccedil; aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/10/async_node_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Eğer eklenen oyuncuların tamamını &amp;ccedil;ekmek istersek aşağıdaki gibi bir talepten yararlanabiliriz.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;Request : HTTP Get
+Address :&amp;nbsp;http://localhost:7001/players&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/10/async_node_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Tabii i&amp;ccedil;eriye koyduğumuz 7 saniyelik şaşırtmaca sebebiyle sonu&amp;ccedil;lar anında ekrana yansımayacaktır. Belli bir IDye bağlı oyuncuyu g&amp;ouml;rmek istersek de aşağıdakine benzer bir talep yapmamız yeterli olur.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;Request : HTTP Get
+Address :&amp;nbsp;http://localhost:7001/players/5b9e5423c826230460cc0310&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/10/async_node_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Benzer &amp;ccedil;alışmalar TeamServer servisi &amp;ccedil;alıştırılarak da deneyimlenebilir. İlerlemden &amp;ouml;nce yazdığını TeamServer hizmetinin operasyonlarını da test etmenizi &amp;ouml;neririm.&lt;/p&gt;
+&lt;p&gt;Gelelim asıl senaryomuza. Şimdi &amp;uuml;&amp;ccedil; servisi de terminalden ayağa kaldırmamız lazım&lt;em&gt;(ayrı terminal pencereleri kullanarak bu işi yapabiliriz ya da forever gibi bir npm paketinden faydalanabiliriz)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;node PlayerServer.js
+node TeamServer.js
+node MainServer.js&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/10/async_node_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Yine Postman'den yararlanarak aşağıdaki talebi g&amp;ouml;nderelim.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;Request : HTTP Get
+Address : http://localhost:7000/sports/api&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/10/async_node_5.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Hem oyuncu hem de takım listeleri aynı JSON i&amp;ccedil;eriğinde &amp;ccedil;ıktı olarak d&amp;ouml;nd&amp;uuml;r&amp;uuml;ld&amp;uuml;ler. Ancak dikkat edilmesi gereken nokta sadece arka planda yapılan adres y&amp;ouml;nlendirmesinin başarılı bir şekilde &amp;ccedil;alışmış olması değil. Her iki servisin get operasyonu 7 saniyelik duraksatma i&amp;ccedil;eriyor ve servisin toplam cevap s&amp;uuml;resi de 7 saniye civarında. Bu MainServer'a gelen talep sonrası PlayerServer ve TeamServer'a eş zamanlı olarak taleplerin g&amp;ouml;nderilmiş olduğu anlamına da geliyor. Bu noktada servislerden birisinin duraksatma s&amp;uuml;resini kaldırıp tekrardan test etmenizi tavsiye ederim. Hatta MainServer'a yapılan talep sonrası oluşan 7 saniyelik bekleme s&amp;uuml;resince şu talebi g&amp;ouml;ndermenizi &amp;ouml;neririm.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;Request : HTTP Get
+Address : http://localhost:7000/aloha&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/10/async_node_6.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Yani sorumuz şu; Yedi saniyelik talep cevaplama s&amp;uuml;resi boyunca yapılacak olan yukarıdaki istek anında cevaplandırılır mı? ;) Tahmin edeceğiniz &amp;uuml;zere node.js doğal &amp;ccedil;alışma dinamikleri gereği ilgili talebi duraksatmayacaktır. Dolayısıyla paralel olarak n sayıda talebin servis tarafında ele alınması m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r.&lt;/p&gt;
+&lt;p&gt;Bu yazıdaki &amp;ouml;rneğimizde bir y&amp;ouml;nlendirici servisin nasıl yazılabileceğini ve herhangibir talebin asenkron &amp;ccedil;alışma prensipleri doğrultusunda paralel g&amp;ouml;revleri nasıl başlatabileceğini g&amp;ouml;rm&amp;uuml;ş olduk. Ayrıca&amp;nbsp;eş zamanlı&amp;nbsp;başlatılan g&amp;ouml;revlerin yer aldığı taleplerin &amp;ccedil;alışması uzun s&amp;uuml;rse bile, diğer&amp;nbsp;isteklerin bloke olmadan cevaplanabileceğini&amp;nbsp;&amp;ouml;ğrenmiş olduk. Bu bilgiler &amp;ccedil;er&amp;ccedil;evesinde y&amp;uuml;ksek performanslı, eş zamanlı talep karşılama yeteneklerine sahip ve talep i&amp;ccedil;in paralel g&amp;ouml;revler icra edebilen servislerin Node.js ile kolayca geliştirilebileceğini ifade edebiliriz.&lt;/p&gt;
+&lt;p&gt;Ben aynı durumu .Net Core tarafında da deneyimlemeye &amp;ccedil;alışacağım. Nitekim o tarafta da bu tip geliştirmeler yapmak m&amp;uuml;mk&amp;uuml;n. Ayrıca melez &amp;ccedil;&amp;ouml;z&amp;uuml;mler de uygulanabilir. &amp;Ouml;rnek senaryomuzdaki Player ve Team servisleri pekala farklı teknolojiler ile geliştirilmiş REST API servisleri olabilirler. Hatta MongoDb dışında veri depolama aygıtlarını da kullanabiliriz. Player servisinin MySQL ile konuşan Scala ile yazılmış bir uygulama olduğunu, Team servisinin de MongoDB ile y&amp;uuml;r&amp;uuml;yen .Net Core ile yazılmış başka bir servis olduğunu d&amp;uuml;ş&amp;uuml;n&amp;uuml;n&lt;em&gt;(Hatta d&amp;uuml;ş&amp;uuml;nmeyin kendi denemelerinizde bu kurguyu &amp;ccedil;alışın)&lt;/em&gt; Servis sayıları arttırılabilir ve &amp;ccedil;eşitlendirilebilir. Bir a&amp;ccedil;ıdan n sayıda microservice &amp;ouml;n&amp;uuml;ne Node.js ile yazılmış bir MainServer'ı koyduğumuzu da d&amp;uuml;ş&amp;uuml;nebiliriz. Konuyu derinlemesine araştırmakta yarar var. Ancak g&amp;ouml;zlerim iyiden iyiye kapanmak &amp;uuml;zere. Dolayısıyla m&amp;uuml;sadenizi istemek durumundayım. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneği &lt;a href="https://github.com/buraksenyurt/nodejs-tutorials/tree/master/Day07" target="_blank"&gt;github &amp;uuml;zerinden&lt;/a&gt; indirebilirsiniz.&lt;/p&gt;</content>
+  <pubDate>2019-01-10 17:00:00</pubDate>
+  <slug>Nodejs-Asenkron-Talep-Karsılama</slug>
+  <tags>
+    <tag>nodejs</tag>
+    <tag>async</tag>
+    <tag>asynchronous-programming</tag>
+    <tag>rest</tag>
+    <tag>rest-api</tag>
+    <tag>web-service</tag>
+    <tag>mongodb</tag>
+    <tag>mongoose</tag>
+    <tag>javascript</tag>
+    <tag>visual-studio-code</tag>
+    <tag>npm</tag>
+    <tag>node</tag>
+    <tag>express</tag>
+  </tags>
+  <categories>
+    <category>Node.js</category>
+  </categories>
+</post>

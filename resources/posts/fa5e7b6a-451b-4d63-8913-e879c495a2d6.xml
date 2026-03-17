@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>T-SQL ile Dinlenmece Eğlenmece</title>
+  <description>Açıkçası geçtiğimiz günlerde böyle sıkkın ve bıkkın bir ruh halindeyken ve konuşmak istediğim tüm arkadaşlarım yoğunken, ekranımda duran Management Studio' daki bembeyaz ve bomboş Query penceresi ile muhabbet etmeye karar verdim. Aslında amacım basitti. Daha önceki tecrübelerime dayanarak ihtiyaçlar dahilinde kullandığım T-SQL ifadelerini şöyle bir tekrar etmeye çalışacak ve siz değerli okurlarıma bir blog girdisi olarak sunacaktım. Aklıma geldikçe ihtiyaçlarımın T-SQL karşılıklarını yazmaya başladım. Düşündüğüm ilk gereksinim, sistemimde yüklü olan kaç veritabanı olduğunu ve bunlara ait bazı temel bilgileri edinmekti...İşte serüvenimiz bu ilk sorgumuz ile başlıyor.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/fun.jpg"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; float: right; padding-top: 0px; border: 0px;" title="fun" src="/pics/fun_thumb.jpg" alt="fun" width="320" height="240" align="right" border="0" /&gt;&lt;/a&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Hi&amp;ccedil; canınızın sıkıldığı ve b&amp;ouml;yle bir buhran anına girdiğinizde &lt;strong&gt;SQL Server Management Studio&lt;/strong&gt;' yu a&amp;ccedil;ıp &lt;strong&gt;T-SQL&lt;/strong&gt; ile eğlenceli bir şeyler yapmaya &amp;ccedil;alıştığınız oldu mu? &lt;img class="wlEmoticon wlEmoticon-smile" style="border-style: none;" src="/pics/wlEmoticon-smile_25.png" alt="Smile" /&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;A&amp;ccedil;ık&amp;ccedil;ası ge&amp;ccedil;tiğimiz g&amp;uuml;nlerde b&amp;ouml;yle sıkkın ve bıkkın bir ruh halindeyken ve konuşmak istediğim t&amp;uuml;m arkadaşlarım yoğunken, ekranımda duran &lt;strong&gt;Management Studio&lt;/strong&gt;' daki bembeyaz ve bomboş &lt;strong&gt;Query &lt;/strong&gt;penceresi ile muhabbet etmeye karar verdim. Aslında amacım basitti. Daha &amp;ouml;nceki tecr&amp;uuml;belerime dayanarak ihtiya&amp;ccedil;lar dahilinde kullandığım &lt;strong&gt;T-SQL&lt;/strong&gt; ifadelerini ş&amp;ouml;yle bir tekrar etmeye &amp;ccedil;alışacak ve siz değerli okurlarıma bir blog girdisi olarak sunacaktım. Aklıma geldik&amp;ccedil;e ihtiya&amp;ccedil;larımın &lt;strong&gt;T-SQL&lt;/strong&gt; karşılıklarını yazmaya başladım. D&amp;uuml;ş&amp;uuml;nd&amp;uuml;ğ&amp;uuml;m ilk gereksinim, sistemimde y&amp;uuml;kl&amp;uuml; olan ka&amp;ccedil; veritabanı olduğunu ve bunlara ait bazı temel bilgileri edinmekti...İşte ser&amp;uuml;venimiz bu ilk sorgumuz ile başlıyor.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;select 
+    database_id [Id] 
+    ,name [Database Name] 
+    ,create_date [Create Date] 
+    ,Case [compatibility_level] 
+        when '60' then 'SQL Server 6.0' 
+        when '65' then 'SQL Server 6.5' 
+        when '70' then 'SQL Server 7.0' 
+        when '80' then 'SQL Server 2000' 
+        when '90' then 'SQL Server 2005' 
+        when '100' then 'SQL Server 2008' 
+        else 'unknown' 
+    end as [Compatibility Level] 
+    ,collation_name [Collation] 
+    ,Case is_fulltext_enabled 
+        when 1 then 'Enabled' 
+        else 'Disabled' 
+    end as [FullText] 
+    ,user_access_desc [User Access] 
+    ,state_desc [State] 
+    ,snapshot_isolation_state_desc [Snapshot Isolation] 
+    ,Case is_read_only 
+        when 1 then 'Yes' 
+        else 'No' 
+    end as [Read Only] 
+    ,Case is_broker_enabled 
+        when 1 then 'Yes' 
+        else 'No' 
+    end as [Service Broker] 
+from sys.databases 
+order by [Database Name]&lt;/pre&gt;
+&lt;p&gt;Yukarıdaki SQL sorgusunu kullanarak sistemde var olan veritabanlarına ait bazı temel bilgileri elde edebiliriz. S&amp;ouml;z konusu ifadenin &amp;ccedil;alışma zamanındaki &amp;ccedil;ıktısı aşağıdakine benzer olabilir&lt;em&gt;.&lt;/em&gt; Bu sonu&amp;ccedil;lada pek tabi benim sistemimde yer alan veritabanları ve onlara ait bilgileri bulunmaktadır.&lt;em&gt; (Ekran &amp;ccedil;ıktısının orjinal halini g&amp;ouml;rmek i&amp;ccedil;im fotoğrafa tıklayın)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/artcl_3_1.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="artcl_3_1" src="/pics/artcl_3_1_thumb.gif" alt="artcl_3_1" width="640" height="154" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere sistemimde var olan veritabanlarının adlarını, oluşturulma zamanlarını, SQL Server uyumluluk s&amp;uuml;r&amp;uuml;mlerini, hangi Collation&amp;rsquo; ı kullandıklarını ve bunlara benzer bilgilerini elde etmiş bulunuyoruz&lt;em&gt;(Doğruyu s&amp;ouml;ylemek gerekirse SQL tarafında sys &amp;ouml;n eki ile başlayan View&amp;rsquo; lar i&amp;ccedil;erisinde inanılmaz s&amp;uuml;rprizler bulumaktadır. İncelemediyseniz bile araştırmanızı şiddetle &amp;ouml;neririm&lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_76.png" alt="Winking smile" /&gt; )&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Gelelim sıradaki sorgumuza. Bu sefer sistemimde kullanıcı tanımlı ne kadar &lt;strong&gt;table, stored procedure, function, view &lt;/strong&gt;ve &lt;strong&gt;trigger &lt;/strong&gt;varsa, &lt;strong&gt;şema adları(Schema Name)&lt;/strong&gt; ile birlikte elde etmek istedim. Bunun i&amp;ccedil;inde yine sys &amp;ouml;n ekli view' lardan yararlanabiliriz. İşte sorgumuz;&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;select 
+    S.name+'.'+O.name [Object] 
+    ,object_id [Id] 
+    ,type 
+    ,type_desc 
+    ,create_date [Create Date] 
+    ,modify_date [Modify Date] 
+from sys.all_objects O 
+join sys.schemas S on O.schema_id=S.schema_id 
+where type in ('U','V','TR','FN','P') 
+order by [Object]&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;sys.schema &lt;/strong&gt;ve &lt;strong&gt;sys.all_objects &lt;/strong&gt;isimli sistem g&amp;ouml;r&amp;uuml;n&amp;uuml;mlerinden yararlanmaktayız. &lt;strong&gt;sys.all_objects &lt;/strong&gt;t&amp;uuml;m veritabanı nesnelerini tutan bir g&amp;ouml;r&amp;uuml;n&amp;uuml;m sunmaktadır. Aslında sadece belirli bir veritabanı bağlantısı ile ilişkili olan nesnelere gitmek istersek &lt;strong&gt;sys.objects &lt;/strong&gt;g&amp;ouml;r&amp;uuml;n&amp;uuml;m&amp;uuml;nden de yararlanabiliriz. S&amp;ouml;z konusu &lt;strong&gt;T-SQL &lt;/strong&gt;ifademizin benim sistemimde &amp;uuml;rettiği sonu&amp;ccedil;lar ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/artcl_3_2.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="artcl_3_2" src="/pics/artcl_3_2_thumb.gif" alt="artcl_3_2" width="640" height="323" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Eğlenceli değil mi? &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_76.png" alt="Winking smile" /&gt; O zaman hıs kesmeden devam edelim. &amp;Ccedil;alıştığım sırada aklıma gelen ve merak ettiğim sorgulardan birisi de şuydu : Acaba sistemimde yer alan tablolarda kullanılan &lt;strong&gt;alanların(Columns)&lt;/strong&gt; tablo bazlı toplam sayıları neydi? &amp;Ccedil;ok doğal olarak hangi tabloda ka&amp;ccedil; alan kullanıldığını bilmek istiyordum. Bunun i&amp;ccedil;in basit bir SQL ifadesi yeterli olacaktı. Aynen aşağıdaki gibi.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;select 
+    T.Name 
+    ,Count(C.column_id) [Total Column Count] 
+    from sys.tables T 
+    join sys.columns C on T.object_id=C.object_id 
+    where T.type='U' 
+group by T.Name 
+order by Count(C.Column_id) desc&lt;/pre&gt;
+&lt;p&gt;Bu kez &lt;strong&gt;sys.tables &lt;/strong&gt;ve &lt;strong&gt;sys.columns &lt;/strong&gt;view nesnelerini ele alıp ve kullanıcı tanımlı tabloları adlarına g&amp;ouml;re gruplandırarak sonuca ulaşmaya &amp;ccedil;alıştım. Tabi kendi sistemimde bu tabloyu y&amp;uuml;r&amp;uuml;tt&amp;uuml;ğ&amp;uuml;mde aşağıdaki ekran &amp;ccedil;ıktısında yer alan sonu&amp;ccedil;ları elde ettim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/artcl_3_3.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="artcl_3_3" src="/pics/artcl_3_3_thumb.gif" alt="artcl_3_3" width="298" height="408" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Tabi kendi sistemimde gayet makul seviyelerde rakamlara ulaştığımı ifade edebilirim. Nasıl ki kod yazarken bazı metrikleri uyguluyor ve &amp;ouml;rneğin satır sayısı 25i ge&amp;ccedil;en metodları tespit edip kod standartları a&amp;ccedil;ısından denetlemeler yapıyoruz, benzer şekilde SQL tarafında da bu tip metrikleri uygulayabiliriz. Bu sorgu s&amp;ouml;z konusu metriklerden birisi olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Tabi &amp;ccedil;alışmakta olduğum bankada aynı sorguyu denediğim de piuvvvvv &lt;img class="wlEmoticon wlEmoticon-openmouthedsmile" style="border-style: none;" src="/pics/wlEmoticon-openmouthedsmile_20.png" alt="Open-mouthed smile" /&gt; Ehem&amp;hellip;Ehem&amp;hellip;Tekrar sistemime d&amp;ouml;neyim.&lt;/p&gt;
+&lt;p&gt;Bu kez aklımda ş&amp;ouml;yle bir soru vardı : Acaba sistemimde yer alan &lt;strong&gt;AdventureWorks &lt;/strong&gt;veritabanında, hangi &lt;strong&gt;Stored Procedure&lt;/strong&gt;&amp;rsquo; ler i&amp;ccedil;erisinde &lt;strong&gt;Update &lt;/strong&gt;anahtar kelimesi(Keyword) kullanılmaktaydı &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_76.png" alt="Winking smile" /&gt; Bir başka deyişle hangi SP' ler i&amp;ccedil;erisinde g&amp;uuml;ncelleme ile ilişkili işlemler yapıldığını g&amp;ouml;rmek istiyordum. Bu tip bir ihtiya&amp;ccedil; pek &amp;ccedil;ok durumda gerekebilir. &amp;Ouml;zellikle SQL tarafına yıkılmış iş s&amp;uuml;re&amp;ccedil;lerinde değişiklikler yapmanız gerektiği durumlarda kullanabileceğiniz bir tespit y&amp;ouml;ntemidir. S&amp;ouml;z gelimi bir tablonun adının değişmesi sonucu ilgili SP' lerde de ge&amp;ccedil;tiği yerlerde de pansumanlar yapmak gerekecektir&lt;em&gt;(SQL Tarafında Visual Studio' da olduğu gibi Refactor-Rename &amp;ouml;zelliği olsaydı fena olmazı aslında)&lt;/em&gt;Bunu &amp;ouml;ğrenmek i&amp;ccedil;in aşağıdaki sorguyu kullandım.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;Use AdventureWorks 
+Go 
+select 
+    SPECIFIC_CATALOG 
+    ,SPECIFIC_SCHEMA+'.'+SPECIFIC_NAME [SP NAME] 
+    ,ROUTINE_DEFINITION 
+from INFORMATION_SCHEMA.ROUTINES
+where ROUTINE_TYPE='PROCEDURE' and ROUTINE_DEFINITION like '%UPDATE%'&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere farklı bir &lt;strong&gt;View &lt;/strong&gt;i&amp;ccedil;erisinde &lt;strong&gt;Stored Procedure&lt;/strong&gt;&amp;rsquo; lerin &lt;strong&gt;T-SQL &lt;/strong&gt;i&amp;ccedil;erikleri de tutulmaktadır. Sorgunun sonucu olarak aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan &amp;ccedil;ıktıları elde ettim.&lt;em&gt; (Size bir antrenman &amp;ouml;nerebilirim. Eğer &amp;ccedil;ok sayıda veritabanı ve &amp;ccedil;ok sayıda SP ile karmaşık iş s&amp;uuml;re&amp;ccedil;lerini barındıran bir sistemde g&amp;ouml;rev alıyorsanız, &amp;ouml;rneğin i&amp;ccedil;erisinde&lt;strong&gt; @@IDENTITY, BEGIN TRANSACTION &lt;/strong&gt;gibi kritik terimleri i&amp;ccedil;eren SP&amp;rsquo; leri araştırmayı deneyebilirisiniz &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_76.png" alt="Winking smile" /&gt; )&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/artcl_3_4.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="artcl_3_4" src="/pics/artcl_3_4_thumb.gif" alt="artcl_3_4" width="640" height="99" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Aklıma sorgu geldik&amp;ccedil;e geliyordu. Karşımdaki &lt;strong&gt;SQL Query&lt;/strong&gt; pencersi iyi bir arkadaştım. Ne sorsam cevap veriyordu&lt;em&gt;(Yani sayılır)&lt;/em&gt;. Ger&amp;ccedil;i bazen ırım kırım ediyor naz yapıyordu ama olsun &lt;img class="wlEmoticon wlEmoticon-smile" style="border-style: none;" src="/pics/wlEmoticon-smile_25.png" alt="Smile" /&gt; Şimdi merak ettiğim sorgu ise şuydu : Acaba bir veritabanında veya daha da iyisi t&amp;uuml;m sistemde yer alan tabloların kapladıkları alanların boyut bilgileri nelerdi? Burada &amp;ccedil;&amp;ouml;z&amp;uuml;me giderken biraz sıkıntı &amp;ccedil;ektiğimi ifade etmek isterim. &lt;strong&gt;Query &lt;/strong&gt;pencersi ile bir t&amp;uuml;rl&amp;uuml; mutabakat sağlayamadık. &amp;Ouml;nce tek ve herhangibir tablo i&amp;ccedil;in bunu &amp;ouml;ğrenmeye &amp;ccedil;alıştım. Bunun i&amp;ccedil;in tasarlanmış &amp;ouml;zel bir sistem SP&amp;rsquo; si mevcuttu nitekim&lt;em&gt;(Sanırım T&amp;uuml;me varım y&amp;ouml;ntemi ile hareket edeceğim)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;Use AdventureWorks 
+Go 
+sp_spaceused 'Production.Product'&lt;/pre&gt;
+&lt;p&gt;Sonu&amp;ccedil; ise ş&amp;ouml;yleydi.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/artcl_3_5.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="artcl_3_5" src="/pics/artcl_3_5_thumb.gif" alt="artcl_3_5" width="349" height="68" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi işi bir adım daha ileri g&amp;ouml;t&amp;uuml;rmeliydim. &amp;Ccedil;&amp;uuml;nk&amp;uuml; asıl amacım sistemde ne kadar tablo varsa her birinin boyutsal &amp;ouml;zelliklerini &amp;ouml;ğrenmekti&lt;em&gt;(Yani ne kadar alanı reserve ettikleri, bu alanın ne kadarını kullandıkları vb)&lt;/em&gt; Bunun i&amp;ccedil;inde aslında bir &lt;strong&gt;for each &lt;/strong&gt;ifadesini &amp;ccedil;alıştırmam gerekiyordu. Yani her bir tabloyu gezmeli ve her biri i&amp;ccedil;in &lt;strong&gt;sp_spaceused &lt;/strong&gt;SP&amp;rsquo; sini &amp;ccedil;alıştırmalıydım. Bu &lt;strong&gt;foreach &lt;/strong&gt;i&amp;ccedil;inde aslında sistem de yer alan g&amp;uuml;zel bir SP bulunmaktadır. &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_76.png" alt="Winking smile" /&gt;&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;EXEC sp_MSforeachtable @command1="EXEC sp_spaceused '?'"&lt;/pre&gt;
+&lt;p&gt;ve işte sonu&amp;ccedil; ;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/artcl_3_6.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="artcl_3_6" src="/pics/artcl_3_6_thumb.gif" alt="artcl_3_6" width="469" height="410" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Aslına bakarsanız istediğim bilgileri elde etmiştim. Ancak g&amp;ouml;r&amp;uuml;nt&amp;uuml; pek hoş değildi. Keşke tablo bazlı bir &lt;strong&gt;ızgara &amp;ccedil;ıktısı(Grid View)&lt;/strong&gt; elde edebilseydim &lt;img class="wlEmoticon wlEmoticon-confusedsmile" style="border-style: none;" src="/pics/wlEmoticon-confusedsmile_14.png" alt="Confused smile" /&gt; Ama &amp;ccedil;aresiz değildim. Biraz &lt;strong&gt;Cursor, &lt;/strong&gt;biraz &lt;strong&gt;Temp &lt;/strong&gt;tablo işimi g&amp;ouml;rebilirdi pekala. Kolları sıvadım ve uzun bir uğraştan sonra aşağıdaki SQL ifadesini yazmayı başardım.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;Use AdventureWorks 
+Go 
+declare @TableName nvarchar(100) 
+create table #TempTable 
+( 
+    [Table Name] nvarchar(100), 
+    [Row Count] varchar(100), 
+    [Reserved Size] varchar(50), 
+    [Data Size] varchar(50), 
+    [Index Size] varchar(50), 
+    [Unused Size] varchar(50) 
+)
+
+declare tableCursor cursor forward_only 
+for 
+    select S.name+'.'+T.[name] 
+    from sys.tables T 
+    join sys.schemas S on T.Schema_id=S.Schema_id 
+    where T.type='U' 
+for read only
+
+open tableCursor 
+    while (1=1) 
+    begin 
+        fetch next from tableCursor into @TableName 
+            if(@@FETCH_STATUS&amp;lt;&amp;gt;0) 
+                break; 
+            insert #TempTable exec sp_spaceused @TableName 
+    end
+
+close tableCursor 
+deallocate tableCursor
+
+select * from #TempTable Order by [Table Name] 
+drop table #TempTable&lt;/pre&gt;
+&lt;p&gt;Aslında teori basitti. Tablo ve Şema adlarını elde ettikten sonra her birisi i&amp;ccedil;in &lt;strong&gt;sp_spaceused&lt;/strong&gt; SP&amp;rsquo; ini &amp;ccedil;alıştıracak ama sonu&amp;ccedil;larını bir &lt;strong&gt;Temp &lt;/strong&gt;tabloya ekleyecektim. Şimdi sonu&amp;ccedil;lar ve elde edilen g&amp;ouml;r&amp;uuml;nt&amp;uuml; &amp;ccedil;ok daha g&amp;uuml;zeldi.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/artcl_3_7.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="artcl_3_7" src="/pics/artcl_3_7_thumb.gif" alt="artcl_3_7" width="517" height="405" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Tam bu sorguyu bitirmiştim ki aklıma başka bir ihtiya&amp;ccedil; geldi. Acaba sistemde yer alan tablo adlarının tamamını, aralarına virg&amp;uuml;l koyarak tek bir h&amp;uuml;creye indirgiyebilir miydim? Hımm&amp;hellip;Eğer kod tarafında olsaydık bu benim &amp;ccedil;ocuk oyuncağı sayılırdı. Ama SQL &amp;ouml;z&amp;uuml;rl&amp;uuml; birisi olarak biraz araştırma yapmam gerekecekti. Sonu&amp;ccedil;ta &lt;strong&gt;COALESCE &lt;/strong&gt;fonksiyonundan yararlanarak bu isteği karşılayabileceğimi g&amp;ouml;rd&amp;uuml;m. Nasıl mı?&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;DECLARE @Names VARCHAR(8000) 
+SELECT @Names = COALESCE(COALESCE(@Names + ',', '') + Name, @Names) 
+    FROM sys.tables 
+    where type='U' 
+select @Names&lt;/pre&gt;
+&lt;p&gt;ve sonu&amp;ccedil;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/artcl_3_8.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="artcl_3_8" src="/pics/artcl_3_8_thumb.gif" alt="artcl_3_8" width="637" height="66" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Query Explorer&lt;/strong&gt; ile olan sohbetim harika ilerliyordu. Bu kez ondan bana sistem de yer alan veritabanlarının ne zaman yedeklendiğini&lt;em&gt;(ve hatta yedeklenmediğini) &lt;/em&gt;s&amp;ouml;ylemesini istiyordum. Aslına bakarsanız bu &amp;ouml;nemli bir sorguydu. &amp;Ccedil;&amp;uuml;nk&amp;uuml; ilk &amp;ccedil;alıştırdığımda &lt;strong&gt;AdventureWorks &lt;/strong&gt;i&amp;ccedil;in hi&amp;ccedil; bir zaman &lt;strong&gt;Backup &lt;/strong&gt;almadığımı fark etmiştim &lt;img class="wlEmoticon wlEmoticon-confusedsmile" style="border-style: none;" src="/pics/wlEmoticon-confusedsmile_14.png" alt="Confused smile" /&gt;&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;SELECT 
+    D.name [Database Name] 
+    ,case when MAX(b.backup_finish_date) is NULL 
+    then 'Bakcup Yok' 
+    else Convert(varchar(100), MAX(b.backup_finish_date)) 
+    end AS [Last Backup Time] 
+FROM sys.databases D 
+LEFT JOIN msdb.dbo.backupset B ON D.name = B.database_name AND B.type = 'D' 
+WHERE D.database_id NOT IN (2) 
+GROUP BY D.name 
+ORDER BY [Database Name] DESC&lt;/pre&gt;
+&lt;p&gt;Tabi burada anahtar nokta &lt;strong&gt;backupset &lt;/strong&gt;i&amp;ccedil;eriğinden yararlanılmasıydı. İlk sonu&amp;ccedil;larda hi&amp;ccedil; backup almamış olduğumu g&amp;ouml;r&amp;uuml;nce, hemen bir tane &amp;uuml;rettirdim ve yeni sonu&amp;ccedil;lara baktığımda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan &amp;ccedil;ıktıyı elde ettim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/artcl_3_9.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="artcl_3_9" src="/pics/artcl_3_9_thumb.gif" alt="artcl_3_9" width="323" height="240" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Derken aklıma biraz daha eğlenceli bir sorgu geldi. S&amp;ouml;z gelimi &amp;ccedil;alışanlarımızdan&lt;em&gt;(Hani o anda koca bir fabrikanın sahibi olduğunu d&amp;uuml;ş&amp;uuml;nd&amp;uuml;m de)&lt;/em&gt; rastgele 5 farklı kişiyi getirip onlara hediye dağıtmak istediğimi d&amp;uuml;ş&amp;uuml;nd&amp;uuml;m. &lt;em&gt;(Bu o g&amp;uuml;n indirimli olarak satılacak rastgele 10 &amp;uuml;r&amp;uuml;n de olabilirdi)&lt;/em&gt;. Eğlenceli bir sorguydu. &lt;strong&gt;NewId() &lt;/strong&gt;fonksiyonu burada işi eğlenceli hale getiren kişiydi. &amp;Ouml;rnek olarak &lt;strong&gt;Employee &lt;/strong&gt;tablosu i&amp;ccedil;in şanslı 5 kişiyi bulmaya &amp;ccedil;alıştım.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;Select 
+    Top 5 NewId() Id 
+    ,EmployeeID 
+    ,Title 
+    ,BirthDate 
+    ,ManagerID 
+    ,VacationHours 
+from HumanResources.Employee 
+order by 1&lt;/pre&gt;
+&lt;p&gt;ve aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan sonu&amp;ccedil;ları elde ettim. Tabi ki her &amp;ccedil;alıştırılmada farklı sonu&amp;ccedil;lar elde edilmesi garantiydi.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/artcl_3_10.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="artcl_3_10" src="/pics/artcl_3_10_thumb.gif" alt="artcl_3_10" width="626" height="448" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Ger&amp;ccedil;i şimdi fark ettim ki &lt;strong&gt;114 &lt;/strong&gt;numaralı &amp;ccedil;alışan olduk&amp;ccedil;a şanslıymış. &amp;Ccedil;&amp;uuml;nk&amp;uuml; ilk iki sorguda tesad&amp;uuml;fen &amp;ccedil;ıkmış &lt;img class="wlEmoticon wlEmoticon-smile" style="border-style: none;" src="/pics/wlEmoticon-smile_25.png" alt="Smile" /&gt; Buna tabi bir tedbir almak gerektiği kanısındayım. Aslında bu tedbiri size bırakıyorum. En azından hediye &amp;ccedil;ıkmış iş&amp;ccedil;ileri bir flag ile işaretlemeye veya farklı bir tabloda belirli s&amp;uuml;reliğine saklayarak tekrardan sorgu sonu&amp;ccedil;larında &amp;ccedil;ıkmalarını engellemeyi d&amp;uuml;ş&amp;uuml;nebilirsiniz.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;SQL &lt;/strong&gt;sorgularını denediğim sırada arka planda &amp;ccedil;alışmakta olan diğer SQL penceresine g&amp;ouml;z&amp;uuml;m ilişmişti. Aslında arada sırada oraya bakmak zorundaydım. Nitekim &lt;strong&gt;Test &lt;/strong&gt;ortamında yer alan bir veritabanı &amp;uuml;zerinde bazı işlemler yapılması gerekiyordu. Ne varki ilgili sistemde yer alan tablo &lt;strong&gt;32 milyon satırlık &lt;/strong&gt;veri i&amp;ccedil;erdiğinden ve test makinesi nuhnebiden kalma bir &lt;strong&gt;Pentium III &lt;/strong&gt;olduğundan miniminnacık sıkıntılar vardı. O anda aklıma acaba &lt;strong&gt;index &lt;/strong&gt;kullanılmayan&lt;em&gt;(&amp;ouml;rneğin Clustered Index) &lt;/em&gt;tablolar var mıdır acaba sorusu geldi? Hemen local sistemimde bunu araştırmak i&amp;ccedil;in aşağıdaki sorgu ifadesini hazırladım.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;select 
+    S.name+'.'+T.name AS [TableName] 
+from sys.tables T 
+inner join sys.schemas S 
+on S.schema_id = T.schema_id 
+where OBJECTPROPERTY(OBJECT_ID,'TableHasClustIndex') =0 and T.Type='U' 
+order by[TableName] ASC&lt;/pre&gt;
+&lt;p&gt;Bir de ne g&amp;ouml;reyim &lt;img class="wlEmoticon wlEmoticon-smile" style="border-style: none;" src="/pics/wlEmoticon-smile_25.png" alt="Smile" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/artcl_3_11.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="artcl_3_11" src="/pics/artcl_3_11_thumb.gif" alt="artcl_3_11" width="218" height="86" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;AdventureWorks &lt;/strong&gt;veritabanındaki &lt;strong&gt;ProductProductPhoto &lt;/strong&gt;tablosunda &lt;strong&gt;ClusteredIndex &lt;/strong&gt;yok&amp;hellip;Bak bak baaakk &lt;img class="wlEmoticon wlEmoticon-smile" style="border-style: none;" src="/pics/wlEmoticon-smile_25.png" alt="Smile" /&gt; Tabi bu işin şaka tarafı ama performans araştırmaları yaparken belki de işe yarayacak bir sorgu olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;İşler gayet eğlenceli gidiyordu ama enerjim de bitmek &amp;uuml;zereydi. Son olarak basit bir sorgu yardımıyla&lt;strong&gt; Query &lt;/strong&gt;penceresi ile olan muhabbetime son vereyim istemiştim. Bu sefer merak ettiğim, &amp;ccedil;evrede var olan SQL sunucularının hangileri olduğuydu. Aşağıdaki sorgu bunu karşılıyordu.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;Select 
+    server_id Id 
+    ,name [Server Name] 
+    ,product [Product Type] 
+    ,provider [Provider Name] 
+    ,data_source [Data Source] 
+    ,catalog 
+    ,case is_data_access_enabled 
+    when 1 then 'Enabled' 
+    else 'Disabled' 
+    end as [Data Access] 
+from sys.servers&lt;/pre&gt;
+&lt;p&gt;İşte sonu&amp;ccedil;lar,&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/artcl_3_12.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="artcl_3_12" src="/pics/artcl_3_12_thumb.gif" alt="artcl_3_12" width="539" height="76" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Elbette ben yerel makinemden sadece tek bir veri sunucusuna bağlandığımdan cılız bir sonu&amp;ccedil; &amp;ccedil;ıkmıştı. Ancak aynı sorguyu arka planda &amp;ccedil;alışmakta olduğum test makinesinde y&amp;uuml;r&amp;uuml;tt&amp;uuml;ğ&amp;uuml;mde piuvvvvv!!! &lt;img class="wlEmoticon wlEmoticon-smile" style="border-style: none;" src="/pics/wlEmoticon-smile_25.png" alt="Smile" /&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Buraya kadar yazılmış olan sorguları eğlence ama&amp;ccedil;lı olarak veya ciddi manada g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alarak &amp;ccedil;alışmakta olduğunuz ger&amp;ccedil;ek hayat SQL sunucuları &amp;uuml;zerinde de deneyebilirsiniz. &amp;Ccedil;ok ilgin&amp;ccedil; sonu&amp;ccedil;lar elde edeceğinizi ama olduk&amp;ccedil;a faydalı bilgiler alabileceğinizi belirtmek isterim.&lt;/p&gt;
+&lt;p&gt;Peki ya bundan sonrasında ne olacak? Aslında bakarsanız burada yazılmış olan pek &amp;ccedil;ok &lt;strong&gt;SQL &lt;/strong&gt;ifadesi birer &lt;strong&gt;View &lt;/strong&gt;haline d&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;l&amp;uuml;p sunucu &amp;uuml;zerindeki farklı bir veritabanında saklanabilirler. Hatta bu veritabanının karşılığı olan bir &lt;strong&gt;Entity Framework &lt;/strong&gt;k&amp;uuml;t&amp;uuml;phanesi &amp;uuml;retilip ilgili raporların &amp;ouml;rneğin bir &lt;strong&gt;WCF Data Service &lt;/strong&gt;yardımıyla dış ortama sunulması da sağlanabilir. Tabi hassas veriler s&amp;ouml;z konusu olduğundan bu pek de iyi bir fikir değildir. Ama dilerseniz basit bir &lt;strong&gt;WCF(Windows Communication Foundation) Servisini &lt;/strong&gt;g&amp;uuml;venli hale getirerek ilgili i&amp;ccedil;erikleri dış d&amp;uuml;nyaya servis bazlı olarak sunabilirsiniz. Sanırım bir sonraki makalemde hangi konuyu/senaryoyu ele alacağımı anlamışsınızdır &lt;img class="wlEmoticon wlEmoticon-openmouthedsmile" style="border-style: none;" src="/pics/wlEmoticon-openmouthedsmile_20.png" alt="Open-mouthed smile" /&gt; Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2011%2f11%2fEglencelikSQL.sql"&gt;EglencelikSQL.sql (5,39 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2011-12-14 16:25:00</pubDate>
+  <slug>T-SQL-ile-Dinlenmece-Eglenmece</slug>
+  <tags>
+    <tag>sql</tag>
+    <tag>sysobjects</tag>
+    <tag>systables</tag>
+    <tag>syscolumns</tag>
+    <tag>stored-procedures</tag>
+    <tag>newid</tag>
+    <tag>sysservers</tag>
+    <tag>transact-sql</tag>
+    <tag>cursor</tag>
+    <tag>database</tag>
+    <tag>adventure-works</tag>
+    <tag>sql-server-2008-r2</tag>
+    <tag>temp-table</tag>
+  </tags>
+  <categories>
+    <category>T SQL</category>
+  </categories>
+</post>

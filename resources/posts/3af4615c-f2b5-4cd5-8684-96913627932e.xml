@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>ArrayList Koleksiyonu ve DataGrid</title>
+  <description>Bugünkü makalemizde, veritabanlarındaki tablo yapısında olan bir ArrayList'i bir DataGrid kontrolüne nasıl veri kaynağı olarak bağlayacağımızı inceleyeceğiz. Bildiğiniz gibi ArrayList bir koleksiyon sınıfıdır ve System.Collections isim uzayında yer almaktadır. Genelde ArrayList koleksiyonlarını tercih etmemizin nedeni, dizilere olan üstünlüklerinden kaynaklanmaktadır.</description>
+  <content>&lt;p align="left"&gt;Değerli Okurlarım, Merhabalar.&lt;/p&gt;
+&lt;p align="left"&gt;Bug&amp;uuml;nk&amp;uuml; makalemizde, veritabanlarındaki tablo yapısında olan bir ArrayList'i bir DataGrid kontrol&amp;uuml;ne nasıl veri kaynağı olarak bağlayacağımızı inceleyeceğiz. Bildiğiniz gibi ArrayList bir koleksiyon sınıfıdır ve System.Collections isim uzayında yer almaktadır. Genelde ArrayList koleksiyonlarını tercih etmemizin nedeni, dizilere olan &amp;uuml;st&amp;uuml;nl&amp;uuml;klerinden kaynaklanmaktadır.&lt;/p&gt;
+&lt;p align="left"&gt;En b&amp;uuml;y&amp;uuml;k tercih nedeni, normal dizilerin boyutlarının &amp;ccedil;alışma esnasında değiştirilemeyişidir. B&amp;ouml;yle bir işlemi ger&amp;ccedil;ekleştirmek i&amp;ccedil;in, dizi elemanları yeni boyutlu başka boş bir diziye kopyalanır. Oysaki, ArrayList koleksiyonunda b&amp;ouml;yle bir durum s&amp;ouml;z konusu değildir. Koleksiyonu, aşağıdaki yapıcı metodu ile oluşturduğunuzda boyut belirtmezsiniz. Eleman ekledik&amp;ccedil;e, ArrayList'in kapasitesi otomatik olarak b&amp;uuml;y&amp;uuml;yecektir.&lt;/p&gt;
+&lt;p align="left"&gt;&lt;strong&gt;public&lt;/strong&gt; ArrayList();&lt;/p&gt;
+&lt;p align="left"&gt;Bu şekilde tanımlanan bir ArrayList koleksiyonu varsayılan olarak 16 elemalı bir koleksiyon dizisi olur. Eğer kapasite aşılırsa, koleksiyonun boyutu otomatik olarak artacaktır. Bu elbette karşımıza 17 elemanlı bir koleksiyonumuz varsa fazladan yer harcadığımız anlamınada gelmektedir. Ancak sorunu TrimToSize metodu ile halledebiliriz. Dilerseniz bu konuyu aşağıdaki basit console uygulaması ile a&amp;ccedil;ıklayalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections;
+
+namespace TrimToSizeArray
+{
+    class Class1
+    {
+        static void Main(string[] args)
+        {
+            ArrayList list = new ArrayList();
+            Console.WriteLine("ArrayList'in başlangı&amp;ccedil;taki kapasitesi " + list.Capacity.ToString()); /*Capacity koleksiyonun &amp;uuml;st eleman limitini verir. */
+
+            Console.WriteLine("--------");
+
+            for (int i = 1; i &amp;lt;= 15; ++i)
+            {
+                list.Add(i);
+                /* ArrayList koleksiyonunun sonuna eleman ekler. */
+            }
+
+            Console.WriteLine("ArrayList'in g&amp;uuml;ncel eleman sayısı " + list.Count.ToString());
+
+            /* Count &amp;ouml;zelliği koleksiyonun o anki eleman sayısını verir. */
+            Console.WriteLine("ArrayList'in g&amp;uuml;ncel kapasitesi " + list.Capacity.ToString());
+
+            Console.WriteLine("--------");
+
+            for (int j = 1; j &amp;lt; 8; ++j)
+            {
+                list.Add(j);
+            }
+            Console.WriteLine("ArrayList'in g&amp;uuml;ncel eleman sayısı " + list.Count.ToString());
+            Console.WriteLine("ArrayList'in g&amp;uuml;ncel kapasitesi " + list.Capacity.ToString());
+            Console.WriteLine("--------");
+            list.TrimToSize();
+            /* TrimToSize dizideki eleman sayısı ile kapasiteyi eşitler. */
+            Console.WriteLine("TrimToSize sonrası:");
+            Console.WriteLine("ArrayList'in g&amp;uuml;ncel eleman sayısı " + list.Count.ToString());
+            Console.WriteLine("ArrayList'in g&amp;uuml;ncel kapasitesi " + list.Capacity.ToString());
+        }
+    }
+}&lt;/pre&gt;
+&lt;p align="left"&gt;Bu &amp;ouml;rneği &amp;ccedil;alıştırdığımızda aşağıdaki sonucu elde ederiz.&lt;/p&gt;
+&lt;p align="left"&gt;&lt;img src="/makale/images/mk37_1.gif" alt="" width="356" height="205" border="0" /&gt;&lt;/p&gt;
+&lt;p align="left"&gt;Şekil 1. TrimToSize'ın etkisi.&lt;/p&gt;
+&lt;p align="left"&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi koleksiyonumuz ilk oluşturulduğunda kapasitesi 16'dır. Daha sonra koleksiyona 15 eleman ekledik. Halen koleksiyonun kapasite limitleri i&amp;ccedil;inde olduğumuzdan, kapasitesi 16 dır. Ancak sonra 8 eleman daha ekledik. 17nci eleman koleksiyona girdiğinde, koleksiyonun kapasitesi otomatik olarak iki katına &amp;ccedil;ıkar. Bu durumda Capacity &amp;ouml;zelliğimiz 32 değerini verecektir. TrimToSize metodunu uyguladığımızda koleksiyonun kapasitesinin otomatik olarak eleman sayısı ile eşleştrildiğini g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p align="left"&gt;&amp;Ouml;rneğimizde koleksiyonumuza eleman eklemek i&amp;ccedil;in Add metodunu kullandık. Add metodu her zaman yeni elemanı koleksiyonun sonuna ekler. Eğer koleksiyonda araya eleman eklemek istiyorsak insert metodunu, koleksiyonumuzdan bir eleman &amp;ccedil;ıkartmak istediğimizde ise Remove metodunu kullanırız. Insert metodunun prototipi aşağıdaki gibidir.&lt;/p&gt;
+&lt;p align="left"&gt;&lt;strong&gt;public virtual &lt;/strong&gt;void&lt;strong&gt; Insert(&lt;/strong&gt;int &lt;em&gt;index&lt;/em&gt;&lt;strong&gt;,&lt;/strong&gt;object &lt;em&gt;value&lt;/em&gt; &lt;strong&gt;);&lt;/strong&gt;&lt;/p&gt;
+&lt;p align="left"&gt;İlk parametremiz 0 indeks tabanlı bir değerdir ve object tipindeki ikinci parametre değerinin hangi indeksli eleman olarak yerleştirileceğini belirtmektedir. Dolayısıyla bu elemanın insert edildiği yerdeki eleman bir ileriye &amp;ouml;telenmiş olucaktır.&lt;/p&gt;
+&lt;p align="left"&gt;Remove metodu ise belirtilen elemanı koleksiyondan &amp;ccedil;ıkartmaktadır. Prototipi aşağıdaki gibidir.&lt;/p&gt;
+&lt;p align="left"&gt;&lt;strong&gt;public virtual &lt;/strong&gt;void&lt;strong&gt; Remove(&lt;/strong&gt;object &lt;em&gt;obj&lt;/em&gt;&lt;strong&gt;);&lt;/strong&gt;&lt;/p&gt;
+&lt;p align="left"&gt;Metodumuz direkt olarak, &amp;ccedil;ıkartılmak istenen elemanın değerini alır. ArrayList koleksiyonu, Remove metoduna alternatif başka metodlarada sahiptir. Bunlar, RemoveAt ve RemoveRange metodlarıdır. RemoveAt metodu parametre olarak bir indeks değeri alır ve bu indeks değerindeki elemanı koleksiyondan &amp;ccedil;ıkartır. Eğer girilen indeks değeri 0 dan k&amp;uuml;&amp;ccedil;&amp;uuml;k yada koleksiyonun eleman sayısına eşit veya b&amp;uuml;y&amp;uuml;k ise ArgumentOutOfRangeException istisnası fırlatılır.&lt;/p&gt;
+&lt;p align="left"&gt;RemoveRange metodu ise, ilk parametrede belirtilen indeks'ten, ikinci parametrede belirtilen sayıda elemanı koleksiyondan &amp;ccedil;ıkartır. Elbette eğer indeks değeri 0 dan k&amp;uuml;&amp;ccedil;&amp;uuml;k yada koleksiyonun eleman sayısına eşit veya b&amp;uuml;y&amp;uuml;k ise ArgumentOutOfRangeException istisnası alınır. Tabi girdiğimiz ikinci parametre değeri, &amp;ccedil;ıkartılmak istenen eleman sayısını, indeksten itibaren ele alındığında, koleksiyonun count &amp;ouml;zelliğinin değerinin &amp;uuml;st&amp;uuml;ne &amp;ccedil;ıkabilir. Bu durumda ise ArgumentException istisnası &amp;uuml;retilecektir.&lt;/p&gt;
+&lt;p align="left"&gt;&lt;strong&gt;public virtual &lt;/strong&gt;void&lt;strong&gt; RemoveAt(&lt;/strong&gt;int &lt;em&gt;index&lt;/em&gt;&lt;strong&gt;);&lt;/strong&gt;&lt;/p&gt;
+&lt;p align="left"&gt;&lt;strong&gt;public virtual void&lt;strong&gt; RemoveRange(&lt;/strong&gt;int &lt;em&gt;index&lt;/em&gt;&lt;strong&gt;,&lt;/strong&gt;int &lt;em&gt;count&lt;/em&gt;&lt;strong&gt;);&lt;/strong&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p align="left"&gt;Şimdi dilerseniz bu metodları k&amp;uuml;&amp;ccedil;&amp;uuml;k bir console uygulaması ile deneyelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+using System.Collections;
+
+namespace TrimToSizeArray
+{
+    class Class1
+    {
+        static void Main(string[] args)
+        {
+            ArrayList kullanicilar = new ArrayList(); /* ArrayList koleksiyonumuz oluşturuluyor. */
+
+            /* ArrayList koleksiyonumuza elemanlar ekleniyor. */
+            kullanicilar.Add("Burki");
+            kullanicilar.Add("Selo");
+            kullanicilar.Add("Melo");
+            kullanicilar.Add("Alo");
+            kullanicilar.Add("Neo");
+            kullanicilar.Add("Ceo");
+            kullanicilar.Add("Seko");
+            kullanicilar.Add("Dako");
+            /* Foreach d&amp;ouml;ng&amp;uuml;s&amp;uuml; yardımıyla, koleksiyonumuz i&amp;ccedil;indeki t&amp;uuml;m elemanları ekrana yazdırıyoruz. Elemanların herbirinin object tipinden ele alındığına dikkat edin. */
+
+            foreach (object k in kullanicilar)
+            {
+                Console.Write(k.ToString() + "|");
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("-----");
+            kullanicilar.Insert(3, "Melodan Sonra");
+            /* 3 noldu indeks'e "Melodan Sonra" elemanını yerleştirir. Bu durumda, "Alo" isimli eleman ve sonrakiler bir ileriye kayarlar. */
+
+            foreach (object k in kullanicilar)
+            {
+                Console.Write(k.ToString() + "|");
+            }
+            Console.WriteLine();
+            Console.WriteLine("-----");
+            kullanicilar.Remove("Melodan Sonra");
+            /* "Melodan Sonra" isimli elemanı koleksiyondan &amp;ccedil;ıkartır. */
+
+            foreach (object k in kullanicilar)
+            {
+                Console.Write(k.ToString() + "|");
+            }
+            Console.WriteLine();
+            Console.WriteLine("-----");
+            kullanicilar.RemoveAt(2);
+            /* 2nci indeks'te bulunan eleman koleksiyondan &amp;ccedil;ıkartılır. Yani "Melo" &amp;ccedil;ıkartılır. */
+
+            foreach (object k in kullanicilar)
+            {
+                Console.Write(k.ToString() + "|");
+            }
+            Console.WriteLine();
+            Console.WriteLine("-----");
+            kullanicilar.RemoveRange(3, 2);
+            /* 3nc&amp;uuml; indeks'ten itibaren, 2 eleman koleksiyondan &amp;ccedil;ıkartılır. Yani "Neo" ve "Ceo" koleksiyondan &amp;ccedil;ıkartılır. */
+            foreach (object k in kullanicilar)
+            {
+                Console.Write(k.ToString() + "|");
+            }
+            Console.WriteLine();
+            Console.WriteLine("-----");
+        }
+    }
+}&lt;/pre&gt;
+&lt;p align="left"&gt;Uygulamamızı &amp;ccedil;alıştırdığımızda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;n&amp;uuml; elde ederiz.&lt;/p&gt;
+&lt;p align="left"&gt;&lt;img src="/makale/images/mk37_2.gif" alt="" width="460" height="193" border="0" /&gt;&lt;/p&gt;
+&lt;p align="left"&gt;Şekil 2. Insert,Remove,RemoveAt ve RemoveRange metodları.&lt;/p&gt;
+&lt;p align="left"&gt;ArrayList koleksiyonu ile ilgili bu bilgilerden sonra sıra geldi DataGrid ile ilişkili olan kısma. Bildiğiniz gibi ArrayList'ler t&amp;uuml;m koleksiyon sınıfları gibi elemanları object olarak tutarlar. Dolayısıyla bir sınıf nesnesinide bir ArrayList koleksiyonuna eleman olarak ekleyebiliriz. Şimdi geliştireceğimiz &amp;ouml;rnek uygulamada, bir veri tablosu gibi davranan bir ArrayList oluşturacağız. Bir veritablosu gibi alanları olucak. Peki bunu nasıl yapacağız?&lt;/p&gt;
+&lt;p align="left"&gt;&amp;Ouml;ncelikle, tablodaki her bir alanı birer &amp;ouml;zellik olarak tutacak bir sınıf tanımlayacağız. Bu durumda, bu sınıftan t&amp;uuml;rettiğimiz her bir nesnede sahip olduğu &amp;ouml;zellik değerleri ile, tablodaki bir satırlık veriyi temsil etmiş olucak. Daha sonra bu nesneyi, oluşturduğumuz ArrayList koleksiyonuna ekleyeceğiz. Son olarakta bu ArrayList koleksiyonunu , DataGrid kontrol&amp;uuml;m&amp;uuml;ze veri kaynağı olarak bağlıyacağız.&lt;/p&gt;
+&lt;p align="left"&gt;&amp;Ouml;ncelikle Formumuzu tasarlayalım.&lt;/p&gt;
+&lt;p align="left"&gt;&amp;nbsp;&lt;em&gt;&lt;img src="/makale/images/mk37_3.gif" alt="" width="382" height="333" border="0" /&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p align="left"&gt;Şekil 3. Form Tasarımımız.&lt;/p&gt;
+&lt;p align="left"&gt;Şimdi koleksiyonumuzun taşıyacağı nesnelerin sınıfını tasarlayalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections;
+namespace ArrayListAndDataGrid
+{
+    public class MailList
+    {
+        public MailList(string k, string m)
+        {
+            mailAdresi = m;
+            kullanici = k;
+        }
+        public MailList()
+        {
+        }
+        protected string mailAdresi;
+        protected string kullanici;
+        public string MailAdresi
+        {
+            get
+            {
+                return mailAdresi;
+            }
+            set
+            {
+                mailAdresi = value;
+            }
+        }
+        public string Kullanici
+        {
+            get
+            {
+                return kullanici;
+            }
+            set
+            {
+                kullanici = value;
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p align="left"&gt;MailList sınıfımız Kullanici ve MailAdresi isimli iki &amp;ouml;zelliğe sahip. İşte bunlar tablo alanlarımızı temsil etmektedir. Şimdi program kodlarımızı yazalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Collections;
+using System;
+
+ArrayList mList; /* ArrayList koleksiyonumuzu tanımlıyoruz. */
+
+private void Form1_Load(object sender, System.EventArgs e)
+{
+    mList = new ArrayList(); /* Form y&amp;uuml;klenirken, ArrayList koleksiyonumuz oluşturuluyor. */
+    lblElemanSayisi.Text = mList.Count.ToString();
+
+    /* Koleksiyonumuzun eleman sayısı alınıyor ve label kontrol&amp;uuml;ne yazdırılıyor. */
+}
+
+private void btnEkle_Click(object sender, System.EventArgs e)
+{
+    if (txtKullanici.Text.Length == 0 &amp;amp;&amp;amp; txtMail.Text.Length == 0)
+    {
+        MessageBox.Show("L&amp;uuml;tfen veri girin");
+    }
+    else
+    {
+        MailList kisi = new MailList(txtKullanici.Text, txtMail.Text); /* MailList sınıfından bir nesne oluşturuluyor. Yapıcı metodumuz parametre olarak, textBox kontrollerine girilen değerleri alıyor ve bunları ilgili alanlara atıyor. */
+
+        mList.Add(kisi);
+        /* MailList sınıfından oluşturduğumuz nesnemizi koleksiyonumuza ekliyoruz. */
+        dgListe.DataSource = null; /* DataGrid' veri kaynağı olarak &amp;ouml;nce null değer atıyor. Nitekim, koleksiyonumuza her bir sınıf nesnesi eklendiğinde, koleksiyon g&amp;uuml;ncellenirken, dataGrid'in g&amp;uuml;ncellenmediğini g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Yapılacak tek şey veri kaynağını &amp;ouml;nce null olarak ayarlamaktır. */
+        dgListe.Refresh();
+        dgListe.DataSource = mList;
+
+        /* Şimdi işte, dataGrid kontol&amp;uuml;m&amp;uuml;ze veri kaynağı olarak koleksiyonumuzu bağlıyoruz. */
+        dgListe.Refresh();
+        lblElemanSayisi.Text = mList.Count.ToString();
+        txtKullanici.Clear();
+        txtMail.Clear();
+    }
+}
+
+private void btnSil_Click(object sender, System.EventArgs e)
+{
+    int index;
+    index = dgListe.CurrentCell.RowNumber; /* Silinmek istenen eleman DataGrid'te se&amp;ccedil;ildiğinde, hangi satırın se&amp;ccedil;ildiğini &amp;ouml;ğrenmek i&amp;ccedil;in CurrentCell.RowNumber &amp;ouml;zelliğini kullanıyoruz. */
+
+    try
+    {
+        MailList kisi = new MailList(); /* Bir MailList nesnesi oluşturuyoruz. */
+        kisi = (MailList)mList[index];
+        /* index değerimiz, DataGrid kontrol&amp;uuml;nde, bizim se&amp;ccedil;tiğimiz satırın, koleksiyonda karşılık gelen index değeridir. mList koleksiyonunda ilgili indeks'teki elemanı alıp (MailList) s&amp;ouml;z dizimi ile MailList tipinden bir nesneye d&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;yoruz. Nitekim koleksiyonlar elemanlarını object olarak tutarken, bu elemanları dışarı alırken a&amp;ccedil;ık&amp;ccedil;a bir d&amp;ouml;n&amp;uuml;şt&amp;uuml;rme işlemi uygulamamız gerekir. */
+        mList.Remove(kisi);
+        /* Remove metodu ile, kisi nesnemiz, dolayısıyla dataGrid kontrol&amp;uuml;nde se&amp;ccedil;tiğimiz eleman koleksiyondan &amp;ccedil;ıkartılıyor. */
+
+        dgListe.DataSource = null;
+        dgListe.Refresh();
+        dgListe.DataSource = mList;
+        dgListe.Refresh();
+        lblElemanSayisi.Text = mList.Count.ToString();
+    }
+    catch (Exception hata)
+    {
+        MessageBox.Show(hata.Message.ToString());
+    }
+}&lt;/pre&gt;
+&lt;p align="left"&gt;Şimdi uygulamamızı &amp;ccedil;alıştıralım.&lt;/p&gt;
+&lt;p align="left"&gt;&lt;img src="/makale/images/mk37_4.gif" alt="" width="384" height="336" border="0" /&gt;&lt;/p&gt;
+&lt;p align="left"&gt;Şekil 4. Programın &amp;Ccedil;alışması&lt;/p&gt;
+&lt;p align="left"&gt;Bir sonraki adımımız bu ArrayList'in sahip olduğu verilerin ger&amp;ccedil;ek bir tabloya yazdırılması olabilir. Bu adımın geliştirilesini siz değerli Okurlarıma bırakıyorum. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;şmek dileğiyle hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2004-01-07 12:00:00</pubDate>
+  <slug>ArrayList-Koleksiyonu-ve-DataGrid-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>c#</tag>
+    <tag>arraylist</tag>
+    <tag>collections</tag>
+  </tags>
+  <categories>
+    <category>C#</category>
+  </categories>
+</post>

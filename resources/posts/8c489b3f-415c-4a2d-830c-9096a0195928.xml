@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Composite Cancellations</title>
+  <description>Bildiğiniz üzere Task iptal taleplerinde, CancellationTokenSource örneğine ait Cancel metodunun çağırılması gerekmektedir. CancellationTokenSource örneği üzerinden yapılan iptal taleplerinin hangi Task işleyişini keseceğinin belirlenmesinde ise CancellationToken örneklerinden yararlanılmaktadır.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/blg205_Giris.jpg"&gt;&lt;img style="display: inline; margin-left: 0px; margin-right: 0px; border: 0px;" title="blg205_Giris" src="/pics/blg205_Giris_thumb.jpg" alt="blg205_Giris" width="302" height="202" align="right" border="0" /&gt;&lt;/a&gt; Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Hatırlayacağınız &amp;uuml;zere bir &amp;ouml;nceki yazımızda (&lt;a href="/post/Task-Iptal-Islemlerinin-Izlenmesi(Monitoring-Cancellation)"&gt;Task İptal İşlemlerinin İzlenmesi(Monitoring Cancellation)&lt;/a&gt; ) &lt;strong&gt;Task Cancellation&lt;/strong&gt; işlemlerinin izlenmesi ile ilişkili teknikleri ve konuları irdelemeye başlamıştık. Bu yazımızda da iptal işlemleri ile ilgili farklı bir konuya değinmeye &amp;ccedil;alışıyor olacağız. Bu g&amp;uuml;n k&amp;uuml; konumuz &lt;strong&gt;Composite Cancellation&lt;/strong&gt; vakası.&lt;/p&gt;
+&lt;p&gt;Bildiğiniz &amp;uuml;zere &lt;strong&gt;Task&lt;/strong&gt; iptal taleplerinde, &lt;strong&gt;CancellationTokenSource&lt;/strong&gt; &amp;ouml;rneğine ait &lt;strong&gt;Cancel&lt;/strong&gt; metodunun &amp;ccedil;ağırılması gerekmektedir. &lt;strong&gt;CancellationTokenSource&lt;/strong&gt; &amp;ouml;rneği &amp;uuml;zerinden yapılan iptal taleplerinin hangi &lt;strong&gt;Task&lt;/strong&gt; işleyişini keseceğinin belirlenmesinde ise &lt;strong&gt;CancellationToken&lt;/strong&gt; &amp;ouml;rneklerinden yararlanılmaktadır. &lt;strong&gt;CancellationToken&lt;/strong&gt; &amp;ouml;rnekleri hatırlayacağını &amp;uuml;zere &lt;strong&gt;CancellationTokenSource &lt;/strong&gt;&amp;ouml;rnekleri tarafından &amp;uuml;retilmekte ve &lt;strong&gt;Task&lt;/strong&gt;&amp;rsquo; ler ile ilişkilendirilmektedir. Bu sebepten &lt;strong&gt;Cancel&lt;/strong&gt; metodunun hangi &lt;strong&gt;Task&lt;/strong&gt; ile ilişkili olduğu bellidir. Bir &amp;ouml;nceki yazımızda geliştirdiğimiz son &amp;ouml;rnekte aynı &lt;strong&gt;Token&lt;/strong&gt; &amp;ouml;rneğini kullanan birden fazla &lt;strong&gt;Task&amp;rsquo;&lt;/strong&gt; in tek bir iptal &amp;ccedil;ağrısı ile nasıl kesilebileceğini incelemiştik. Bir diğer durum da şudur;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Birden fazla CancellationTokenSource birbirlerine bağlanarak bir zincir oluşturulabilir ve bunlardan herhangibiri &amp;uuml;zerinden Cancel işleminin yapılması, zincirdeki t&amp;uuml;m source&amp;rsquo; lar i&amp;ccedil;in de aynı talebin ger&amp;ccedil;ekleştirilmesi anlamına gelmektedir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Konuyu daha net kavrayabilmek i&amp;ccedil;in aşağıdaki kod par&amp;ccedil;asını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Collections.Generic; 
+using System.Linq; 
+using System.Threading; 
+using System.Threading.Tasks;
+
+namespace CancellationScenarios2 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            IEnumerable&amp;lt;int&amp;gt; numbers = Enumerable.Range(0, 100000000);
+
+            CancellationTokenSource tokenSource1 = new CancellationTokenSource(); 
+            CancellationTokenSource tokenSource2 = new CancellationTokenSource(); 
+            CancellationTokenSource tokenSource3 = new CancellationTokenSource();
+
+            CancellationTokenSource compositeSource = CancellationTokenSource.CreateLinkedTokenSource(tokenSource1.Token, tokenSource2.Token,tokenSource3.Token);
+
+            Task startedTask = Task.Factory.StartNew(() =&amp;gt; 
+            { 
+                for (int i = 0; i &amp;lt; numbers.Count(); i++) 
+                { 
+                    compositeSource.Token.ThrowIfCancellationRequested(); 
+                    i++; 
+                    i--; 
+                    i *= 2; 
+                    Console.Write("."); 
+                } 
+            } 
+            , compositeSource.Token);
+
+            Task startedTask2 = Task.Factory.StartNew(() =&amp;gt; 
+            { 
+                for (int i = 0; i &amp;lt; numbers.Count(); i++) 
+                { 
+                    compositeSource.Token.ThrowIfCancellationRequested(); 
+                    i++; 
+                    i--; 
+                    i++; 
+                    i *= 2; 
+                    Console.Write("+"); 
+                } 
+            } 
+            , compositeSource.Token);
+
+            Task startedTask3 = Task.Factory.StartNew(() =&amp;gt; 
+            { 
+                for (int i = 0; i &amp;lt; numbers.Count(); i++) 
+                { 
+                   compositeSource.Token.ThrowIfCancellationRequested(); 
+                    i++; 
+                    i *= 2; 
+                    Console.Write("/"); 
+                } 
+            } 
+            , compositeSource.Token);
+
+            compositeSource.Token.Register(() =&amp;gt; 
+            { 
+                Console.WriteLine("İşlem iptali"); 
+            } 
+            );
+
+            Console.WriteLine("İşlemler devam ediyor. İptal etmek i&amp;ccedil;in bir tuşa basınız"); 
+            Console.ReadLine();
+
+            tokenSource3.Cancel();
+
+            Console.ReadLine(); 
+            Console.WriteLine("Task 1 Status = {0}\nTask 2 Status = {1}\nTask 3 Status = {2}", startedTask.Status, startedTask2.Status,startedTask3.Status); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rnek uygulamamızda 3 adet &lt;strong&gt;CancellationTokenSource&lt;/strong&gt; nesnesi &amp;ouml;rneklendiği g&amp;ouml;r&amp;uuml;lmektedir. Sonrasında ise bu &amp;ouml;rnekler &lt;strong&gt;CancellationTokenSource&lt;/strong&gt; sınıfının&lt;strong&gt; static CreateLinkedTokenSource&lt;/strong&gt; metodu yardımıyla birbirlerine bağlanmıştır. 3 Task &amp;ouml;rneği oluşturulduğu sırada yapılan &lt;strong&gt;Token&lt;/strong&gt; bildirimlerinde, &lt;strong&gt;CreateLinkedTokenSource&lt;/strong&gt; metodu ile &amp;uuml;retilen &lt;strong&gt;CancellationTokenSource&lt;/strong&gt; nesne &amp;ouml;rneğine ait &lt;strong&gt;Token&lt;/strong&gt; &amp;ouml;zelliğinden yararlanılmıştır.&lt;/p&gt;
+&lt;p&gt;Kodun ilerleyen kısımlarında &lt;strong&gt;Task&lt;/strong&gt; fonksiyonellikleri icra ettikleri işleri tamamlanmadan &amp;ouml;nce kullanıcı bir tuşa basarsa &lt;strong&gt;tokenSource3&lt;/strong&gt; isimli değişken &amp;uuml;zerinden yapılan &lt;strong&gt;Cancel&lt;/strong&gt; &amp;ccedil;ağırısı devreye girmektedir. Buna g&amp;ouml;re zincir i&amp;ccedil;erisinde yer alan &lt;strong&gt;CancellationTokenSource&lt;/strong&gt; &amp;ouml;rneklerinin her biri i&amp;ccedil;in bir iptal talebi s&amp;ouml;z konusu olacaktır. Dolayısıyla uygulamanın &amp;ccedil;alışması sonrasında aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ne benzer sonu&amp;ccedil;lar &amp;uuml;retilecektir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg205_CompositeTest1.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg205_CompositeTest1" src="/pics/blg205_CompositeTest1_thumb.gif" alt="blg205_CompositeTest1" width="405" height="119" border="0" /&gt;&lt;/a&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere 3 Task i&amp;ccedil;inde &lt;strong&gt;Status&lt;/strong&gt; değeri &lt;strong&gt;Canceled&lt;/strong&gt; olmuştur. &lt;strong&gt;CancellationTokenSource&lt;/strong&gt; &amp;ouml;rneklerinin birden fazla olduğu ve herhangibiri &amp;uuml;zerinde yapılan iptal işleminin diğerleri i&amp;ccedil;inde s&amp;ouml;z konusu olması gerektiği durumlarda bu teknikten yararlanılabilir. İlk &amp;ouml;rneğimizdeki durumu kafamızda daha kolay canlandırmak i&amp;ccedil;in aşağıdaki tasviri g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg205_Schema.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg205_Schema" src="/pics/blg205_Schema_thumb.gif" alt="blg205_Schema" width="367" height="319" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi konuyu farklı bir bakış a&amp;ccedil;ısından değerlendirmek i&amp;ccedil;in kodu biraz değiştirip aşağıdaki hale getirelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Collections.Generic; 
+using System.Linq; 
+using System.Threading; 
+using System.Threading.Tasks;
+
+namespace CancellationScenarios2 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            IEnumerable&amp;lt;int&amp;gt; numbers = Enumerable.Range(0, 100000000);
+
+            CancellationTokenSource tokenSource1 = new CancellationTokenSource(); 
+            CancellationTokenSource tokenSource2 = new CancellationTokenSource(); 
+            CancellationTokenSource tokenSource3 = new CancellationTokenSource();
+
+            CancellationTokenSource compositeSource = CancellationTokenSource.CreateLinkedTokenSource(tokenSource1.Token, tokenSource2.Token);
+
+            Task startedTask = Task.Factory.StartNew(() =&amp;gt; 
+            { 
+                for (int i = 0; i &amp;lt; numbers.Count(); i++) 
+                { 
+                    compositeSource.Token.ThrowIfCancellationRequested(); 
+                    i++; 
+                    i--; 
+                    i *= 2; 
+                    Console.Write("."); 
+                } 
+            } 
+            , compositeSource.Token);
+
+            Task startedTask2 = Task.Factory.StartNew(() =&amp;gt; 
+            { 
+                for (int i = 0; i &amp;lt; numbers.Count(); i++) 
+                { 
+                    compositeSource.Token.ThrowIfCancellationRequested(); 
+                    i++; 
+                    i--; 
+                    i++; 
+                    i *= 2; 
+                    Console.Write("+"); 
+                } 
+            } 
+            , compositeSource.Token);
+
+            Task startedTask3 = Task.Factory.StartNew(() =&amp;gt; 
+            { 
+                for (int i = 0; i &amp;lt; numbers.Count(); i++) 
+                { 
+                    tokenSource3.Token.ThrowIfCancellationRequested(); 
+                    i++; 
+                    i *= 2; 
+                    Console.Write("/"); 
+                } 
+            } 
+            , tokenSource3.Token);
+
+            compositeSource.Token.Register(() =&amp;gt; 
+            { 
+                Console.WriteLine("İşlem iptali"); 
+            } 
+            );
+
+            Console.WriteLine("İşlemler devam ediyor. İptal etmek i&amp;ccedil;in bir tuşa basınız"); 
+            Console.ReadLine();
+
+            tokenSource1.Cancel();
+
+            Console.ReadLine(); 
+            Console.WriteLine("Task 1 Status = {0}\nTask 2 Status = {1}\nTask 3 Status = {2}", startedTask.Status, startedTask2.Status,startedTask3.Status);
+
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Bu &amp;ouml;rnekte sadece tokenSource1 ve tokenSource2 &amp;ouml;rnekleri birbirlerine bağlanmış ancak tokenSource3 bu zincirin dışında tutulmuştur. Buna g&amp;ouml;re tokenSource1.Cancel &amp;ccedil;ağrısının ger&amp;ccedil;ekleştirilmesi sonucunda sadece zincir i&amp;ccedil;erisinde dahil edilmiş Task&amp;rsquo; lerin iptal işlemi ger&amp;ccedil;ekleşecektir. &amp;Ccedil;alışma zamanı &amp;ccedil;ıktısında bu durum net bir şekilde g&amp;ouml;r&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg205_CompositeTest2.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg205_CompositeTest2" src="/pics/blg205_CompositeTest2_thumb.gif" alt="blg205_CompositeTest2" width="409" height="126" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &lt;strong&gt;Task 1&lt;/strong&gt; ve &lt;strong&gt;2 &lt;/strong&gt;i&amp;ccedil;in &lt;strong&gt;Status&lt;/strong&gt; değerleri &lt;strong&gt;Canceled&lt;/strong&gt; olarak set edilmişken, &lt;strong&gt;Task 3&lt;/strong&gt; &amp;ccedil;alışmaya devam ettiğinden &lt;strong&gt;Running&lt;/strong&gt; değerini almıştır.&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Paralel programlama ile ilişkili konuları incelemeye devam ediyor olacağız. Bundan sonraki yazımızda &lt;strong&gt;Task'&lt;/strong&gt; lerin belirli s&amp;uuml;reler boyunca bekletilmesi amacıyla kullanabileceğimiz teknikleri araştırıyor ve &amp;ouml;rnekliyor olacağız. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2010%2f6%2fCancellationScenarios2.rar"&gt;CancellationScenarios2.rar (21,79 kb)&lt;/a&gt;&lt;strong&gt;&amp;nbsp;[&amp;Ouml;rnek Visual Studio 2010 Ultimate s&amp;uuml;r&amp;uuml;m&amp;uuml;nde geliştirilmiş ve test edilmiştir]&lt;/strong&gt;&lt;/p&gt;</content>
+  <pubDate>2011-04-26 12:15:00</pubDate>
+  <slug>Composite-Cancellations</slug>
+  <tags>
+    <tag>c#-40</tag>
+    <tag>parallel-programming</tag>
+    <tag>cancellationtokensource</tag>
+    <tag>cancellationtoken</tag>
+    <tag>visual-studio-2010-ultimate</tag>
+    <tag>task-parallel-library</tag>
+    <tag>task-cancellation</tag>
+    <tag>monitoring-cancellation</tag>
+    <tag>composite-cancellationtokensource</tag>
+  </tags>
+  <categories>
+    <category>Parallel Programming</category>
+    <category>TPL</category>
+  </categories>
+</post>

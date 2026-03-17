@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>GoLang - Concurrency (goroutine, channel)</title>
+  <description>Go dilinin en önemli özelliklerinden birisi de eş zamanlı görevlerdeki performansıdır. Concurrency ile bir sürece ait n sayıda görevi(Task) aynı anda başlatabiliriz. Okuduğum kaynaklarda buna verilen en güzel örnek web sunucuları. İstemcilerden gelen talepler(Request) web sunucusu üzerinde ait oldukları uygulamalara yönlendirilip işletilmekte. Hiç bir talep için bir diğerini bekleme söz konusu değil. Web sunucusu bu görevleri eş zamanlı olarak yürütebilmekte. Concurrency'deki temel amaç da bu zaten. Görevleri aynı anda işletebilmek. Go dilinde Goroutine ve Channel yapıları ile Concurrency işlemlerini gerçekleştirebiliriz.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2017/02/goconcurrency2.gif" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Yazılım &amp;uuml;r&amp;uuml;nlerinde&amp;nbsp;eş zamanlı &amp;ccedil;alışma modeli olduk&amp;ccedil;a&amp;nbsp;&amp;ouml;nemli.&amp;nbsp;Uygulamalarda yer alan s&amp;uuml;re&amp;ccedil;ler &amp;ccedil;oğu zaman alt iş par&amp;ccedil;alarından oluşmakta ve bu par&amp;ccedil;alar uygun koşullarda&amp;nbsp;eş zamanlı olarak y&amp;uuml;r&amp;uuml;t&amp;uuml;lebilmekte. Eş zamanlılık i&amp;ccedil;in bir &amp;ccedil;ok dilde destek mevcut.&amp;nbsp;Go dili i&amp;ccedil;in&amp;nbsp;de &amp;ouml;ne &amp;ccedil;ıkan kavramlarından birisi&amp;nbsp;aslında. Concurrency denildiğinde aklımıza&amp;nbsp;bir s&amp;uuml;rece ait n sayıda g&amp;ouml;revin&lt;em&gt;(Task)&lt;/em&gt; aynı anda &amp;ccedil;alışması gelmeli. Okuduğum kaynakta&amp;nbsp;buna g&amp;uuml;zel bir &amp;ouml;rnek veriliyor: Web Sunucusu.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Bir web sunucusu istemcilerden gelen talepleri&lt;em&gt;(Request)&lt;/em&gt; ait oldukları uygulamalara y&amp;ouml;nlendirip&amp;nbsp;işleten bir &amp;ccedil;alışma mekaniğine sahiptir. Hi&amp;ccedil; bir talep i&amp;ccedil;in bir diğerini bekleme s&amp;ouml;z konusu değil. Web sunucusu bu g&amp;ouml;revleri eş zamanlı olarak y&amp;uuml;r&amp;uuml;t&amp;uuml;yor. Concurrency'deki temel ama&amp;ccedil; da bu zaten. G&amp;ouml;revleri aynı anda işletebilmek. Go dilinde goroutine fonksiyonu ve channel y&amp;ouml;ntemi&amp;nbsp;ile Concurrency işlemlerini ger&amp;ccedil;ekleştirebiliriz. İlk olarak goroutine fonksiyonunu inceleyecek sonrasında channel kavramına değineceğiz.&lt;/p&gt;
+&lt;h1&gt;goroutine&lt;/h1&gt;
+&lt;p&gt;goroutine bir fonksiyon aslında. Eş zamanlı &amp;ccedil;alışacak fonksiyonları &amp;ccedil;ağırmak i&amp;ccedil;in kullanılıyor. Goroutine &amp;ccedil;alışma modeline g&amp;ouml;re belleğin stack adı verilen b&amp;ouml;lgesinde başlangı&amp;ccedil; i&amp;ccedil;in 2Kb kadar yer ayrıldığı&amp;nbsp;ve bu alanın gerektiğinde b&amp;uuml;y&amp;uuml;d&amp;uuml;ğ&amp;uuml; ifade ediliyor.&amp;nbsp;Bir Thread i&amp;ccedil;in bu alan 1 Mb civarında. Thread oluşturma ve y&amp;ouml;netmedeki pek &amp;ccedil;ok karmaşık detay goroutine tasarımına dahil edilmemiş. Goroutine'ler işletim sistemi seviyesinde &amp;ccedil;oklu thread' de &amp;ccedil;alışabiliyor. Bu nedenle bir goroutine bloklansa bile diğeri&lt;em&gt;(diğerleri)&lt;/em&gt; &amp;ccedil;alışmasına devam edebilir. Son olarak kullanım maliyeti d&amp;uuml;ş&amp;uuml;k, hafif ve hızlı bir tasarıma sahip olduklarını belirtebiliriz&lt;em&gt;(goroutine'lerin &amp;ccedil;alışma prensipleri ve Thread kavramı ile arasındaki farkları incelemek i&amp;ccedil;in &lt;a href="http://blog.nindalf.com/how-goroutines-work/" target="_blank"&gt;şu yazıya bakmanızı&lt;/a&gt; şiddetle tavsiye ederim)&amp;nbsp;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi basit bir &amp;ouml;rnekle konuyu anlamaya &amp;ccedil;alışalım.&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;package main
+
+import (
+	"fmt"
+	"time"
+	"sort"
+	"math/rand"
+	)
+	
+func main(){
+	names:=[]string{"captain kirk","barbara","nik","jon calloway","rici ric","sem vitmor"}
+	go sort.Strings(names)
+	
+	go SaySomething("Hello Concurrency")
+	
+	//gorouting anonymous func sample
+	go func(value int){
+		fmt.Printf("%d part is going to go\n",value)
+		time.Sleep(time.Second*2)
+	}(1000)
+	
+	for i:=0;i&amp;lt;5;i++{
+		start:=rand.Intn(250)
+		go Calculate(start,start+1000,time.Second*1)
+	}
+	
+	var userInput string
+	fmt.Scanln(&amp;amp;userInput)
+	fmt.Println("All is well")
+}
+
+func Calculate(start int,stop int,sleep time.Duration){
+	for i:=start;i&amp;lt;=stop;i++{
+		time.Sleep(sleep)
+		fmt.Printf("%d...",i)
+	}
+}
+
+func SaySomething(message string){
+	fmt.Println("Saying...")
+	time.Sleep(time.Second*3)
+	fmt.Println(message)
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rnek kod par&amp;ccedil;asında goroutine'lerin farklı kullanımlarına ait birer &amp;ouml;rnek verilmiştir.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;İlk kullanımda var olan bir Go fonksiyonunun(sort.Strings) eş zamanlı &amp;ccedil;alıştırılması &amp;ouml;rneklenmiştir. SaySomething fonksiyonu geliştirici tarafından yazılmıştır ve yine go komutu ile eş zamanlı y&amp;uuml;r&amp;uuml;t&amp;uuml;l&amp;uuml;r. &amp;Uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; kullanımda anonymous fonksiyon s&amp;ouml;z konusudur. Fonksiyon tanımından sonra parantez i&amp;ccedil;erisinde verilen 1000 rakımı, value değişkenin değeridir. Ayrıca bu isimsiz fonksiyon i&amp;ccedil;erisinde 2 saniyelik bir duraksatma yapılmıştır&lt;em&gt;(Bizim .net d&amp;uuml;nyasından aşina olduğumuz Thread.Sleep gibi)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;for d&amp;ouml;ng&amp;uuml;s&amp;uuml;ndeki kullanım şekli de olduk&amp;ccedil;a şıktır. 5 defa Calculate isimli fonksiyonun farklı parametre değerlerini alarak eş zamanlı y&amp;uuml;r&amp;uuml;t&amp;uuml;lmesi işlemi &amp;ouml;rneklenmiştir. Dikkat edilmesi gereken noktalardan birisi de main fonksiyonunun sonunda ekrandan giriş beklenmesidir. Eğer bunu yapmazsak tahmin edeceğiniz &amp;uuml;zere program kodu anında sonlanır. &amp;Ouml;rnek kodun &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ndekine benzer olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/02/goroutines_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;h1&gt;channel&lt;/h1&gt;
+&lt;p&gt;Aslında goroutine' ler pratik olsalar da tamamlandıklarında sinyal vermemeleri gibi bir sorunları da vardır. Sessizce işlerini tamamlayıp kaynaklarını iade ederler. İşte bu noktada channel y&amp;ouml;ntemi devreye girmektedir. Temel olarak bir channel ile&amp;nbsp;goroutine'ler arasında iletişim kurabilir ve eş zamanlı &amp;ccedil;alışan iş par&amp;ccedil;aları arasında senkronizasyonu sağlayabiliriz. Channel konusu i&amp;ccedil;erisinde bir &amp;ccedil;ok alt konu da bulunuyor. &amp;Ouml;ğrenmeye &amp;ccedil;alışırken biraz zorlandığımı itiraf edebilirim ve konunun &amp;ccedil;ok daha fazla derinliği var.&amp;nbsp;&lt;/p&gt;
+&lt;h2&gt;İlk &amp;Ouml;rnek&lt;/h2&gt;
+&lt;p&gt;Basit bir kod par&amp;ccedil;ası ile başlayalım ve kanallar nasıl kullanılıyor ele alalım.&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;package main
+
+import(
+	"fmt"
+	"time"
+	)
+
+func main(){
+	payload:=make(chan string)
+	
+	go Foo(payload,"code:1234")
+	go Bar(payload)
+	
+	var userInput string
+	fmt.Scanln(&amp;amp;userInput)
+	fmt.Println("All is well")
+}
+
+func Foo(channel chan string,content string){
+	time.Sleep(time.Second*3)
+	fmt.Println("Foo...")
+	channel&amp;lt;-content
+}
+
+func Bar(channel chan string){
+	fmt.Println("Bar...")
+	ctx:=&amp;lt;-channel
+	fmt.Println(ctx)
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rnek kod par&amp;ccedil;asında iki goroutine arasında kanal a&amp;ccedil;ıp veri transferi ger&amp;ccedil;ekleştirmekteyiz. Foo ve Bar isimli fonksiyonlar chan string tipinden parametre alıyorlar. Burada chan ifadesinden sonra gelen string, kanalda hangi tipten veri taşınacağını ifade etmekte. Dolayısıyla farklı veri tiplerini de bir kanal &amp;uuml;zerinden eş zamanlı iş par&amp;ccedil;acıkları arasında taşıyabiliriz. Bir kanalı oluşturmak i&amp;ccedil;in make fonksiyonu kullanılıyor. İşin g&amp;uuml;zel yanı ise &amp;lt;- operat&amp;ouml;r&amp;uuml;&lt;em&gt;(Bir anda Ruby'deki &amp;lt;&amp;lt; geldi aklıma)&lt;/em&gt; Bu operat&amp;ouml;r ile kanala veri bırakıp kanaldaki veriyi alma işlemlerini ger&amp;ccedil;ekleştiriyoruz. Akla son derece yatkın. Operat&amp;ouml;r&amp;uuml;n sağından soluna doğru bir işlem akışı ger&amp;ccedil;ekleşmekte.&lt;/p&gt;
+&lt;p&gt;Foo fonksiyonda belli bir s&amp;uuml;re duraksatma yapmaktayız&lt;em&gt;(Olayı biraz daha dramatize edelim diye)&lt;/em&gt; Pek tabi Foo ve Bar fonksiyonları birer iş par&amp;ccedil;acığı olarak &amp;ccedil;ağırılıyor. Yani goroutine haline getirilmişlerdir. Sonrasında payload isimli channel tipi bu par&amp;ccedil;acıklar tarafından kullanılarak veri transferi işlemi ger&amp;ccedil;ekleştirilmiştir. Burada b&amp;uuml;y&amp;uuml;leyici olan eş zamanlı &amp;ccedil;alışan iki fonksiyona arasında bir kanal a&amp;ccedil;arak veri akışı sağlanmış olmasıdır. Bu ilkel kodun &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı aşağıdaki gibi olacaktır.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/02/gochannels_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;Senkronizasyon&lt;/h2&gt;
+&lt;p&gt;Kanalları kullanarak eş zamanlı &amp;ccedil;alışan iş par&amp;ccedil;aları arasında senkronizasyon da yapılabilir. Bir başka deyişle&amp;nbsp;goroutine olarak başlatılan bir işin sonunda kanala işaret bırakılıp&lt;em&gt;(true veya 1 gibi bir değer &amp;ouml;rneğin)&lt;/em&gt;&amp;nbsp;diğer goroutine'in&amp;nbsp;ilgili işareti alana&amp;nbsp;kadar bekletilmesi sağlanabilir. &amp;Ouml;rneğin ana fonksiyon i&amp;ccedil;erisinden başlatılan ve uzun s&amp;uuml;recek bir iş sonlanmadan uygulamanın kapanmasını engellemek istediğimi durumlarda bu tekniği kullanabiliriz. Aşağıdaki basit kod par&amp;ccedil;asında bu durum &amp;ouml;rneklenmektedir.&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;package main  
+
+import
+(
+	"fmt" 
+	"time"
+)
+
+func main() {     
+    chnFlag:=make(chan int,1)    
+    go DoHeavyWork(chnFlag)    
+    &amp;lt;-chnFlag    
+}
+
+func DoHeavyWork(flag chan int){
+    fmt.Println("Start...")
+    time.Sleep(time.Second*5)
+    fmt.Println("Done...")
+    flag&amp;lt;-1
+}&lt;/pre&gt;
+&lt;p&gt;Kodun &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/02/sync_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Burada kritik nokta main fonksiyonundaki &amp;lt;-chnFlag ifadesidir. Bu satırı kaldırınca kod durmadan akacak ve program sonlanacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/02/sync_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;Y&amp;ouml;nlendirme(Direction)&lt;/h2&gt;
+&lt;p&gt;Kanalları fonksiyon parametresi olarak kullanabiliyoruz. Bu durumda tip g&amp;uuml;venliği adına kanalın &amp;ccedil;alışma y&amp;ouml;n&amp;uuml;n&amp;uuml; de belirleyebiliriz. Yani fonksiyon parametresi olan bir kanalın sadece alıcı veya verici olması garanti edilebilir. Aşağıdaki kod par&amp;ccedil;asında bu kullanıma bir &amp;ouml;rnek verilmektedir.&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;package main  
+
+import(
+        "fmt"
+    )
+
+func sender(channel chan&amp;lt;- string, message string) {
+    channel &amp;lt;- message
+}
+
+func comm(receiver &amp;lt;-chan string, sender chan&amp;lt;- string) {
+    message := &amp;lt;-receiver
+    sender &amp;lt;- message    
+}
+
+func main() {    
+    scott := make(chan string, 1)
+    tiger := make(chan string, 1)
+    sender(scott, "My name is Bond.James Bond.")
+    comm(scott, tiger)
+    fmt.Println(&amp;lt;-tiger)
+}&lt;/pre&gt;
+&lt;p&gt;sender isimli fonksiyon sadece mesaj g&amp;ouml;nderme &amp;ouml;zelliğine sahip bir kanal ile &amp;ccedil;alışır. İkinci parametre ile gelen string bilgi ilk parametredeki kanala yazılır. comm isimli fonksiyonun ilk parametresi mesaj okuma yeteneği olan bir kanaldır. İkinci parametre yine mesaj g&amp;ouml;nderme amacıyla kullanılabilecek bir kanalı ifade etmektedir. İlk parametre ile okunan mesaj ikinci parametre ile gelen kanala aktarılır. Kodun &amp;ccedil;alışmasında muazzam bir şey yoktur aslında. &amp;Ouml;ğrenmemiz gereken kanalların alıcı veya verici şeklinde sabit y&amp;ouml;nlerde kullanılmaya zorlanabilmesidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/02/directions.gif" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;buffer Kullanımı&lt;/h2&gt;
+&lt;p&gt;Kanallar normalde senrkon &amp;ccedil;alışırlar. Yani mesajı g&amp;ouml;nderen taraf ile mesajı alacak olan taraf birbirlerini beklerler. Buffer kullanan kanallar inşa ederek birbirleriyle asenkron &amp;ccedil;alışmalarını sağlayabiliri&lt;em&gt;z(Varsayılan olarak buffer kullanılmamaktadır)&lt;/em&gt; Buffer kullanacak bir kanal ile kanal tipinden ka&amp;ccedil; adet g&amp;ouml;ndereceğimizi de belirtiriz. Yani kanal &amp;uuml;zerinden akacak i&amp;ccedil;eriği sayı bazında sınırlandırabiliriz. Bu kısıtlama bir anlamda semaphore tekniği uygulamak olarak da d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Aşağıda buffer kullanmına ilişkin basit bir kod par&amp;ccedil;ası yer almaktadır.&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;package main  
+
+import "fmt" 
+
+func main() {             
+    channel:=make(chan string,3)
+    channel&amp;lt;-"dam"
+    channel&amp;lt;-"van dam"    
+    channel&amp;lt;-"cloud van dam"
+    channel&amp;lt;-"jan cloud van dam"
+    
+    fmt.Println(&amp;lt;-channel)
+    fmt.Println(&amp;lt;-channel)
+    fmt.Println(&amp;lt;-channel)
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/02/buffered_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Oluşturulan channel tipi 3 string i&amp;ccedil;eriği taşıyacak kapasitede tanımlanmıştır. Pek tabii kapasitesinden fazla mesaj atamaya &amp;ccedil;alışırsak Deadlock oluşmasına neden oluruz. Aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/02/buffered_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;select&amp;nbsp;ifadesi&lt;/h2&gt;
+&lt;p&gt;n sayıda goroutine &amp;ccedil;alıştırdığımızda kanallar ve select ifadesini kullanarak işi bitenlerin sonu&amp;ccedil;larını almayı başarabiliriz. Bir nevi wait any hali diyelim. Aşağıdaki kod par&amp;ccedil;asını ele alalım.&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;package main  
+
+import 
+    (
+        "fmt" 
+        "time"
+    )
+
+func CalculateOne(channel chan string){
+    fmt.Println("Calculation phase one...")
+    time.Sleep(time.Second*2)
+    channel&amp;lt;-"phase one is done"
+}
+
+func CalculateTwo(channel chan string){
+    fmt.Println("Calculation phase two...")
+    time.Sleep(time.Second*5)
+    channel&amp;lt;-"phase two is done"
+}
+
+func EvaluateTestData(channel chan string){
+    fmt.Println("Creting test data...")
+    time.Sleep(time.Second*3)
+    channel&amp;lt;-"Evaluation is done"
+}
+
+func main() {    
+    channelOne:=make(chan string,1)
+    channelTwo:=make(chan string,1)
+    channelEval:=make(chan string,1)
+    
+    go CalculateOne(channelOne)
+    go CalculateTwo(channelTwo)
+    go EvaluateTestData(channelEval)
+    
+    for i:=0;i&amp;lt;3;i++{
+        select{
+         case messageOne := &amp;lt;-channelOne:
+            fmt.Println(messageOne)
+        case messageTwo := &amp;lt;-channelTwo:
+            fmt.Println(messageTwo)   
+        case messageEval:=&amp;lt;-channelEval:
+            fmt.Println(messageEval)
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rnekte &amp;uuml;&amp;ccedil;&amp;nbsp;farklı fonksiyon bulunmaktadır. Her birisinde uzun s&amp;uuml;ren işler olduğunu g&amp;ouml;stermek i&amp;ccedil;in time.Sleep fonksiyonundan yararlanılmaktadır. Fonksiyonlar birer goroutine haline getirilip eş zamanlı olarak &amp;ccedil;alıştırılmaya başladıktan sonra select ifadesi ile kontrol altına alınırlar. 3 goroutine olduğundan for d&amp;ouml;ng&amp;uuml;s&amp;uuml; de 3 iterasyon ilerleyecektir. Her bir case bloğunda ilgili kanalın d&amp;ouml;n&amp;uuml;ş&amp;uuml;n&amp;uuml;n olup olmadığına bakılır. Senkronizasyon &amp;ouml;rneğinde olduğu gibi her fonksiyonun sonunda kanala bırakılan bir sinyal vardır. Bu mesajlar case ifadelerinde ele alınırlar. Tahmin edileceği &amp;uuml;zere g&amp;ouml;revler bittik&amp;ccedil;e ekrana kanaldan gelen mesajlar basılacaktır. Aynen aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/02/cselect.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir gopher olma &amp;ccedil;alışmamızın daha sonuna. Bu yazımızda Concurrency konusunun iki &amp;ouml;nemli kavramına değinmeye &amp;ccedil;alıştık. Go dili ile ilgili bir şeyler &amp;ouml;ğrendik&amp;ccedil;e yazmaya devam edeceğim. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2017-05-15 11:52:00</pubDate>
+  <slug>GoLang-Concurrency-goroutine-channel</slug>
+  <tags>
+    <tag>golang</tag>
+    <tag>go-programming-language</tag>
+    <tag>concurrency</tag>
+    <tag>goroutine</tag>
+    <tag>channel</tag>
+    <tag>channel-direction</tag>
+    <tag>buffered-channel</tag>
+  </tags>
+  <categories>
+    <category>GoLang</category>
+  </categories>
+</post>

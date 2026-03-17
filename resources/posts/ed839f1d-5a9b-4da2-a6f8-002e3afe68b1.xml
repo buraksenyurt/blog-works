@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>PLINQ - ForAll [Beta 1]</title>
+  <description>Bildiğiniz gibi bir süredir LINQ sorgularının paralel çalıştırılması ile ilişkili çalışmalarıma ve araştırmalarıma devam etmekteyim. Bu yazımdaki konumuz ise System.Linq.ParallelEnumerable static sınıfı içerisinde tanımlanmış olan ForAll genişletme metodudur(extension methods).</description>
+  <content>&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Bildiğiniz gibi bir s&amp;uuml;redir LINQ sorgularının paralel &amp;ccedil;alıştırılması ile ilişkili &amp;ccedil;alışmalarıma ve araştırmalarıma devam etmekteyim. Bu yazımdaki konumuz ise&amp;nbsp;&lt;strong&gt;System.Linq.ParallelEnumerable static &lt;/strong&gt;sınıfı i&amp;ccedil;erisinde tanımlanmış olan &lt;strong&gt;ForAll genişletme metodudur(extension methods).&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;public static void ForAll&amp;lt;TSource&amp;gt;(this ParallelQuery&amp;lt;TSource&amp;gt; source, Action&amp;lt;TSource&amp;gt; action);&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ForAll&lt;/strong&gt; metodu yukarıdaki prototipinden de g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &lt;strong&gt;ParallelQuery &lt;/strong&gt;referanslarına uygulanabilmektedir. Bununla birlikte metod ikinci parametre olarak, &lt;strong&gt;Action&amp;lt;TSource&amp;gt;&lt;/strong&gt; tipinden generic bir temsilci almaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;public delegate void Action&amp;lt;in T&amp;gt;(T obj);&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Yukarıdaki prototipe g&amp;ouml;reyse, &lt;strong&gt;Action&amp;lt;T&amp;gt;&lt;/strong&gt; temsilcisi(delegate), generic tip olarak ForAll metoduna gelen tipi&lt;strong&gt;(TSource)&lt;/strong&gt; kullanmaktadır. Bu generic tip tahmin edeceğiniz &amp;uuml;zere &lt;strong&gt;ParalleQuery&lt;/strong&gt; referansınında kaynak tipidir. Ayrıca temsilci geriye herhangibir &lt;strong&gt;değer d&amp;ouml;nd&amp;uuml;rmeyen(void)&lt;/strong&gt; metodları işaret edebilmektedir.&lt;/p&gt;
+&lt;p&gt;Sonu&amp;ccedil; olarak ForAll metodu aslında, &lt;strong&gt;AsParallel&lt;/strong&gt; metodunun kullanılması sonucu &amp;uuml;retilen referans &amp;uuml;zerinden gelen her bir nesne &amp;ouml;rneği i&amp;ccedil;in yapılması istenen işlemleri ele almaktadır. Bu a&amp;ccedil;ıdan bakıldığında akla gelen soru şu olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Paralel sorguların &amp;ccedil;alışması sonucu &amp;uuml;retilen &amp;ccedil;ıktılar &amp;uuml;zerinde&amp;nbsp;&lt;strong&gt;foreach&lt;/strong&gt; d&amp;ouml;ng&amp;uuml;leri yardımıyla da dolaşabiliyorken, &lt;strong&gt;ForAll&lt;/strong&gt; metodunu neden kullanırız?&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Aşağıdaki kod par&amp;ccedil;asını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Threading;
+
+namespace UsingForAll
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            List&amp;lt;Product&amp;gt; productList = GetProductList();
+
+            var result = from p in productList.AsParallel()//.WithExecutionMode(ParallelExecutionMode.ForceParallelism)
+                         where p.ListPrice&amp;gt;=400 &amp;amp;&amp;amp; p.Color=="Black"
+                         select p;
+
+            result.ForAll(p=&amp;gt;Console.WriteLine("("+Thread.CurrentThread.ManagedThreadId.ToString()+")\t"+p.Name));
+        }
+
+        static List&amp;lt;Product&amp;gt; GetProductList()
+        {
+            List&amp;lt;Product&amp;gt; productList = new List&amp;lt;Product&amp;gt;();
+
+            SqlConnection conn = new SqlConnection("data source=Manchester;database=AdventureWorks2008;integrated security=true");
+            SqlCommand cmd = new SqlCommand("Select ProductId,Name,ListPrice,ProductNumber,Color,SafetyStockLevel From Production.Product", conn);
+            conn.Open();
+            SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+            while (reader.Read())
+            {
+                productList.Add(new Product
+                {
+                    ProductId = Convert.ToInt32(reader[0]),
+                    Name = reader[1].ToString(),
+                    ListPrice = Convert.ToDecimal(reader[2]),
+                    ProductNumber = reader[3].ToString(),
+                    Color = reader[4].ToString(),
+                    SafetyStockLevel = Convert.ToInt32(reader[5])
+                }
+                );
+            }
+            reader.Close();
+            return productList;
+        }
+    }
+
+    class Product
+    {
+        public int ProductId { get; set; }
+        public string Name { get; set; }
+        public decimal ListPrice { get; set; }
+        public string ProductNumber { get; set; }
+        public string Color { get; set; }
+        public int SafetyStockLevel { get; set; }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu kod par&amp;ccedil;asında odaklanmamız gereken nokta &lt;strong&gt;result&lt;/strong&gt; referansı &amp;uuml;zerinden &lt;strong&gt;ForAll&lt;/strong&gt; metodunun &amp;ccedil;ağırılışıdır. Bu &amp;ccedil;ağrı sırasında &lt;strong&gt;labmda&lt;/strong&gt; &lt;strong&gt;operat&amp;ouml;r&amp;uuml;nden(=&amp;gt;)&lt;/strong&gt; yaralanılmaktadır ve bulunan &amp;uuml;r&amp;uuml;nlerin adları ile o an &amp;ccedil;alışmakta olan &lt;strong&gt;Thread'&lt;/strong&gt; in numarası(&lt;strong&gt;ManagedThreadId&lt;/strong&gt;) &lt;strong&gt;Console &lt;/strong&gt;ekranına yazdırılmaktadır. Sonu&amp;ccedil; aşağıdakine benzer olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg23_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Her ne kadar &lt;strong&gt;Thread &lt;/strong&gt;sayıları eşit olmasada &lt;strong&gt;4 &lt;/strong&gt;ve &lt;strong&gt;1 &lt;/strong&gt;nolu iki ayrı iş par&amp;ccedil;asının &amp;ccedil;alıştırıldığı g&amp;ouml;r&amp;uuml;lmektedir. Şimdi aynı sorgu sonu&amp;ccedil;larını foreach d&amp;ouml;ng&amp;uuml;s&amp;uuml; yardımıyla&amp;nbsp;elde etmeye &amp;ccedil;alıştığımızı d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;List&amp;lt;Product&amp;gt; productList = GetProductList();
+
+var result = from p in productList.AsParallel()//.WithExecutionMode(ParallelExecutionMode.ForceParallelism)
+                 where p.ListPrice&amp;gt;=400 &amp;amp;&amp;amp; p.Color=="Black"
+                 select p;
+
+foreach (Product p in result)
+{
+   Console.WriteLine("(" + Thread.CurrentThread.ManagedThreadId.ToString() + ")\t" + p.Name);
+}&lt;/pre&gt;
+&lt;p&gt;Bu kez uygulama &amp;ccedil;alıştırıldığında aşağıdaki sonu&amp;ccedil;ları alırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg23_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Volaaa!!! &lt;img title="Cool" src="/editors/tiny_mce3/plugins/emotions/img/smiley-cool.gif" alt="Cool" border="0" /&gt;&amp;nbsp;1 numaralı sadece tek bir thread g&amp;ouml;r&amp;uuml;n&amp;uuml;yor.&lt;/p&gt;
+&lt;p&gt;Bu nasıl oldu? Acaba &lt;strong&gt;foreach&lt;/strong&gt; d&amp;ouml;ng&amp;uuml;s&amp;uuml; kullanıldığında sorgu &lt;strong&gt;AsParallel&lt;/strong&gt; metodu olmasına rağmen paralel &amp;ccedil;alıştırılmadı mı? Yoksa &amp;ccedil;alışma zamanı(runtime) sorgunun paralel &amp;ccedil;alıştırılmaya değer olmadığına mı kanaat getirdi(ki b&amp;ouml;yle bir meselede var)?&lt;/p&gt;
+&lt;p&gt;Aslında farklı &amp;ccedil;alışmanın sebebi şu. LINQ sorguları bilindiği gibi kullanıldıkları yerde &amp;ccedil;alıştırılırlar(&lt;strong&gt;deferred execution ilkesi&lt;/strong&gt;). Bu nedenle sorgunun &amp;ccedil;alıştırılması foreach d&amp;ouml;ng&amp;uuml;s&amp;uuml;nde ilk eleman elde edilmeye &amp;ccedil;alışıldığı sırada olur. Lakin sorgu &lt;strong&gt;AsParallel&lt;/strong&gt; metodu nedeniyle paralel &amp;ccedil;alışmasına rağmen, foreach metodu okuma işlemine başlamadan &amp;ouml;nce t&amp;uuml;m y&amp;ouml;netimli thread' leri tekrardan tek bir thread i&amp;ccedil;erisinde birleştirir. Yani foreach d&amp;ouml;ng&amp;uuml;s&amp;uuml;n&amp;uuml;n kendisi paralel &amp;ccedil;alışma &amp;ouml;zelliğne sahip değildir. Bu nedenle paralel &amp;ccedil;alıştırılan sorgu sonu&amp;ccedil;larını, o an &amp;uuml;zerinde &amp;ccedil;alıştığı thread' de birleştirmeden ilerleyemez. &lt;strong&gt;ForAll&lt;/strong&gt; metodu ise tam aksine &amp;ccedil;alışmakta olup, okuma işlemlerininde paralel y&amp;uuml;r&amp;uuml;t&amp;uuml;lmesini sağlamaktadır. Aslında durumu basit iki resim ile canlandırmaya &amp;ccedil;alışalım. Aşağıdaki şekilde foreach &amp;ccedil;alışması sırasındaki işleyiş sembolize edilmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg23_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Buna g&amp;ouml;re sorgu paralel olarak &amp;ccedil;alışan g&amp;ouml;revlere ayrılmakta ve herbir g&amp;ouml;rev i&amp;ccedil;erisinde where gibi koşullar ele alınmaktadır. Ancak t&amp;uuml;m PLINQ ifadesi tamamlandığında sonu&amp;ccedil;lar tek bir Task altında birleştirilmektedir. (Kahverengi &amp;ccedil;er&amp;ccedil;eveli kutucuklar&amp;nbsp;bulunan nesne &amp;ouml;rnekleri &amp;uuml;zerinden yapılan işlemleri sembolize etmektedir. &amp;Ouml;rneğin Console.WriteLine gibi) Sonrasında ise herbir &amp;ouml;ğe i&amp;ccedil;in foreach d&amp;ouml;ng&amp;uuml;s&amp;uuml; i&amp;ccedil;erisinde yazılan kodlar işletilmektedir.&lt;/p&gt;
+&lt;p&gt;Aşağıdaki şekilde ise&amp;nbsp;ForAll kullanımı sırasındaki senaryo ifade edilmeye &amp;ccedil;alışılmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg23_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Yine PLINQ ifadesinin &amp;ccedil;alışması sırasında n adet Task paralel olarak başlatılır. Ancak foreach' ten farklı olarak her task' in i&amp;ccedil;erisinde hem Where gibi koşulların&amp;nbsp;kontrol&amp;uuml; ele alınmakta hemde &amp;ouml;rneğimizde ki her bir sonu&amp;ccedil; i&amp;ccedil;in ayrı ayrı işlemler(Console.WriteLine gibi) ger&amp;ccedil;ekleştirilmektedir. Yani task' ler paralel olarak işledikten sonra tek bir Task altında birleştirilmezler. Sanıyorum şekil yardımıyla sizde benim gibi, ger&amp;ccedil;ekleşen iki farklı işleyişi&amp;nbsp;daha net canlandırabildiniz. &lt;em&gt;(Tabi işlemcinin i&amp;ccedil;erisine girip olan biteni canlı canlı g&amp;ouml;rmemiz m&amp;uuml;mk&amp;uuml;n değil. Ama kim bilir, belki gelecek nesil sistemlerde &amp;ccedil;alışma zamanını, tıpkı bir doktorun sanal bir hastanın organları i&amp;ccedil;erisinde ilerleyişi gibi, bilgisayar donanımı &amp;uuml;zerindem g&amp;ouml;zlemleyebiliriz. &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Herşey g&amp;uuml;zel ama, hangisini ne zaman kullanmak gerekir &amp;ouml;yleyse?&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Aslında foreach d&amp;ouml;ng&amp;uuml;s&amp;uuml;n&amp;uuml; daha &amp;ccedil;ok sorgu sonu&amp;ccedil;larının &lt;strong&gt;sırasını(order)&lt;/strong&gt; korumak istediğimiz durumlarda değerlendirebiliriz. Bununla birlikte, sonu&amp;ccedil; listesi &amp;uuml;zerinde ardışıl olarak işlemler yapmak istiyorsakta tercih edebiliriz.&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik kısa bir yazımızın daha sonuna. Bir sonraki yazımızda g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2009%2f5%2fUsingForAll.rar"&gt;UsingForAll.rar (22,17 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2009-05-28 08:43:00</pubDate>
+  <slug>PLINQ-ForAll</slug>
+  <tags>
+    <tag>plinq</tag>
+    <tag>linq</tag>
+  </tags>
+  <categories>
+    <category>LINQ</category>
+    <category>PLINQ</category>
+  </categories>
+</post>

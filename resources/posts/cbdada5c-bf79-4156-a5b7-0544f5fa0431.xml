@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Asp.Net Web API için Sayfalama Tekniği</title>
+  <description>Asp.Net Web API alt yapısının popüler olmasının ardında yatan en büyük sebeplerden birisi, HTTP tabanlı servis yayılımına izin vermesidir. Hemen her fonksiyonel birimin veya bütünlüğün servis odaklı teknolojiler ile ele alındığı ve istemcilere sunulduğu bir dünyada, bu ihtiyacı eskiden beri var olan HTTP protokolünün Post, Put, Get, Delete gibi standart metodlarına göre karşılamak elbette önemlidir. Bu sayede Microsoft tabanlı olarak geliştirilen Web API servislerinin, dış dünyadaki herhangibir Client tarafından tüketilmesi de oldukça kolaydır. Üstelik OData(Open Data Protocol) desteği sayesinde, veri odaklı servislerin standart URL bazlı parametreler ile sorgulanabilmesi mümkün hale gelmektedir.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/lazy-baby-laptop.jpg"&gt;&lt;img style="margin: 4px 0px; display: inline; float: right;" title="lazy-baby-laptop" src="/pics/lazy-baby-laptop_thumb.jpg" alt="lazy-baby-laptop" width="280" height="200" align="right" /&gt;&lt;/a&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Bu aralar şirkette işler olduk&amp;ccedil;a kesat. En azından benim bulunduğum departman itibariyle b&amp;ouml;yle bir durum s&amp;ouml;z konusu. Sanırım kurumsal kimlik kazanmış firmaların genel sorunu da bu olsa gerek. Kaynak planlaması ve dağıtımının bir t&amp;uuml;rl&amp;uuml; istenen şekilde yapılamayışı. Hal b&amp;ouml;yle olunca aynı firmada hatta aynı departman i&amp;ccedil;erisinde, &amp;ccedil;ok yoğun &amp;ccedil;alışan insanlara ve beraberinde her hangi bir işi olmayanlara&lt;em&gt;(benim gibi)&lt;/em&gt; rastlamak m&amp;uuml;mk&amp;uuml;n.&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;yle bir durumda keyif s&amp;uuml;rmek ve tembel tembel internette gezmek&lt;em&gt;(Video paylaşmak, onun bunun ciklemesine yetişmeye &amp;ccedil;alışmak vb)&lt;/em&gt; yapılabilecek en cazip işlerden birisi gibi g&amp;ouml;z&amp;uuml;kse de, hızla ilerleyen teknoloji ne yazık ki buna m&amp;uuml;sade etmemekte. Neredeyse her hafta yeni konuların ele alındığı bilmem ka&amp;ccedil; katlık &lt;a href="http://en.wikipedia.org/wiki/Yottabyte" target="_blank"&gt;yottabyte&lt;/a&gt;&amp;rsquo; lık bilgi denizinde s&amp;uuml;rekli bir şeyler &amp;ouml;ğrenmek zorunda olan biz k&amp;ouml;le geliştiricilerin iş olmasa da kendisine iş yaratması şart. &lt;strong&gt;Eğitim şart&lt;/strong&gt; da diyebiliriz &lt;img class="wlEmoticon wlEmoticon-smile" style="border-style: none;" src="/pics/wlEmoticon-smile_97.png" alt="Smile" /&gt; &amp;Ouml;yleyse tembel tembel oturmayalım ve gelin birlikte yeni bir mevzuya dalalım.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Asp.Net Web API&lt;/strong&gt; alt yapısının pop&amp;uuml;ler olmasının ardında yatan en b&amp;uuml;y&amp;uuml;k sebeplerden birisi, &lt;strong&gt;HTTP&lt;/strong&gt; tabanlı servis yayılımına izin vermesidir. Hemen her fonksiyonel birimin veya b&amp;uuml;t&amp;uuml;nl&amp;uuml;ğ&amp;uuml;n servis odaklı teknolojiler ile ele alındığı ve istemcilere sunulduğu bir d&amp;uuml;nyada, bu ihtiyacı eskiden beri var olan &lt;strong&gt;HTTP &lt;/strong&gt;protokol&amp;uuml;n&amp;uuml;n &lt;strong&gt;Post, Put, Get, Delete&lt;/strong&gt; gibi standart metodlarına g&amp;ouml;re karşılamak elbette &amp;ouml;nemlidir. Bu sayede &lt;strong&gt;Microsoft&lt;/strong&gt; tabanlı olarak geliştirilen Web API servislerinin, dış d&amp;uuml;nyadaki herhangibir &lt;strong&gt;Client&lt;/strong&gt; tarafından t&amp;uuml;ketilmesi de olduk&amp;ccedil;a kolaydır. &amp;Uuml;stelik &lt;strong&gt;OData&lt;em&gt;(Open Data Protocol)&lt;/em&gt;&lt;/strong&gt; desteği sayesinde, veri odaklı servislerin standart &lt;strong&gt;URL&lt;/strong&gt; bazlı parametreler ile sorgulanabilmesi m&amp;uuml;mk&amp;uuml;n hale gelmektedir.&lt;/p&gt;
+&lt;p&gt;Bir &amp;ouml;nceki c&amp;uuml;mlede belirttiğimiz &lt;strong&gt;veri odaklı servis&lt;em&gt;(Data-Centric Service)&lt;/em&gt;&lt;/strong&gt; aslında bu yazımızdaki senaryomuzun da ana konularındandır. Veri odaklı servisler tahmin edileceği &amp;uuml;zere b&amp;uuml;y&amp;uuml;k boyutlu verileri de ele alabilirler. &amp;Ccedil;ok eskilerden de bildiğimiz &amp;uuml;zere &lt;strong&gt;Asp.Net &lt;/strong&gt;ile web programlamanın ilk yıllarında yaşanan en b&amp;uuml;y&amp;uuml;k sıkıntılardan birisi, verinin sayfalanarak getirilmesiydi. &lt;strong&gt;Stored Procedure&lt;/strong&gt;&amp;rsquo; ler de yapılan bazı hamleler ile bu işi &amp;ccedil;&amp;ouml;zebiliyor olsak da, SP desteği olmayan bir veri kaynağının kullanılma olasılığını da g&amp;ouml;z ardı etmemek gerekiyor.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Hatırlayacağınız gibi web tarafındaki ilk veri bağlı kontrollerde sayfalama sistemi ş&amp;ouml;yle &amp;ccedil;alışmaktaydı:&lt;/p&gt;
+&lt;p&gt;Sorgulama sırasında t&amp;uuml;m veri &amp;ccedil;ekilir ve i&amp;ccedil;inden &amp;ouml;rneğin Xnci sıradaki 10 luk eleman k&amp;uuml;mesi getirilirdi. &amp;Ccedil;ok doğal olarak her seferinde t&amp;uuml;m veri k&amp;uuml;mesinin &amp;ccedil;ekilmesi &amp;ccedil;ok da istenen bir yaklaşım değildi. &amp;Ouml;rneğin 10 milyon satır i&amp;ccedil;inden 3nc&amp;uuml; 50lik k&amp;uuml;meyi getirmek istediğimizde &lt;img class="wlEmoticon wlEmoticon-confusedsmile" style="border-style: none;" src="/pics/wlEmoticon-confusedsmile_31.png" alt="Confused smile" /&gt;&lt;/p&gt;
+&lt;p&gt;Ancak ilerleyen s&amp;uuml;r&amp;uuml;mler de bu durum değişti ve &amp;ouml;zellikle SQL tarafında row_number kullanımı ile doğru sayfalama işlemlerinin yapılabilmesinin yolu a&amp;ccedil;ıldı. Buna bir de LINQ tarafındaki anahtar kelime desteği eklenince, Entity Framework gibi alanlarda doğru sayfalama stratejilerini kullanabilir olduk.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Peki &lt;strong&gt;Asp.Net Web API&lt;/strong&gt; tarafında sayfalama işlevselliği nasıl karşılanabilir? İşte bu yazımızda cevap bulmaya &amp;ccedil;alışacağımız soru bu. Şimdi basit bebek adımları ile ilerleyerek senaryomuzu hayata ge&amp;ccedil;irmeye &amp;ccedil;alışalım.&lt;/p&gt;
+&lt;h1&gt;Proje i&amp;ccedil;in &amp;Ouml;n Hazırlıklar&lt;/h1&gt;
+&lt;p&gt;İlk olarak &lt;strong&gt;Visual Studio 2012&lt;/strong&gt; ortamında &lt;strong&gt;Empty MVC 4&lt;/strong&gt; şablonunda bir web uygulaması a&amp;ccedil;arak yola koyulabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wapip_1.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wapip_1" src="/pics/wapip_1_thumb.png" alt="wapip_1" width="250" height="422" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;S&amp;ouml;z konusu senaryomuzda istemci tarafında yazacağımız kodlar olduk&amp;ccedil;a &amp;ouml;nemlidir. Bu y&amp;uuml;zden &lt;strong&gt;jQuery&lt;/strong&gt; ve &lt;strong&gt;Knockout.js&lt;/strong&gt;&amp;rsquo; in son s&amp;uuml;r&amp;uuml;mlerinin kullanılmasında yarar vardır. Ayrıca &lt;strong&gt;OData&lt;/strong&gt; sorgularını kullanacağımız i&amp;ccedil;in &lt;strong&gt;Microsoft ASP.NET Web API OData&lt;/strong&gt; paketini de eklememiz gerekmektedir. Bu referansları &lt;strong&gt;NuGet&lt;/strong&gt; paket y&amp;ouml;netim aracı ile projeye kolayca dahil edebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;jQuery&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wapip_3.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wapip_3" src="/pics/wapip_3_thumb.png" alt="wapip_3" width="384" height="97" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;knockout.js&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wapip_4.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wapip_4" src="/pics/wapip_4_thumb.png" alt="wapip_4" width="382" height="95" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;ve &lt;strong&gt;Microsoft ASP.NET&lt;/strong&gt; &lt;strong&gt;Web API OData&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wapip_5.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wapip_5" src="/pics/wapip_5_thumb.png" alt="wapip_5" width="380" height="68" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Bu eklentilerin y&amp;uuml;klenmesi sonrasında &lt;strong&gt;jQuery&lt;/strong&gt; ve &lt;strong&gt;knockout.js&lt;/strong&gt; i&amp;ccedil;in &lt;strong&gt;scripts&lt;/strong&gt; klas&amp;ouml;r&amp;uuml; aşağıdaki hale gelecektir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wapip_6.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wapip_6" src="/pics/wapip_6_thumb.png" alt="wapip_6" width="195" height="127" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Buradaki &lt;strong&gt;Javascript&lt;/strong&gt; k&amp;uuml;t&amp;uuml;phaneleri &lt;strong&gt;cshtml&lt;/strong&gt; tarafında kullanılacaktır.&lt;/p&gt;
+&lt;h1&gt;Veri Modelinin Eklenmesi&lt;/h1&gt;
+&lt;p&gt;&amp;Ccedil;ok doğal olarak senaryomuzda veri odaklı bir uygulama &amp;ouml;ng&amp;ouml;r&amp;uuml;lmektedir. &amp;Ouml;rneğimizde &lt;strong&gt;Entity Framework&lt;/strong&gt;&amp;rsquo; den yararlanılabilir. Bu nedenle &lt;strong&gt;Model&lt;/strong&gt; klas&amp;ouml;r&amp;uuml;ne yeni bir &lt;strong&gt;Ado.Net Entity Data Model&lt;/strong&gt; &amp;ouml;ğesi ekleyelim. &amp;Ouml;rneğimizde kobay veritabanlarımızdan birisi olan &lt;strong&gt;Chinook&lt;/strong&gt;&amp;rsquo; a bağlanıyor olacağız. Bu veritabanın yer alan &lt;strong&gt;Invoice&lt;/strong&gt; tablosu &lt;strong&gt;400&lt;/strong&gt; satırdan fazla veri i&amp;ccedil;ermekte ve senaryomuz i&amp;ccedil;in ideal bir veri k&amp;uuml;mesi sunmaktadır. Bu sebpeten sadece ilgili tabloyu kullansak yeterli olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wapip_2.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wapip_2" src="/pics/wapip_2_thumb.png" alt="wapip_2" width="218" height="312" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h1&gt;Controller Eklenmesi&lt;/h1&gt;
+&lt;p&gt;Pek tabi veri modelinin oluşturulmasının ardından bir de &lt;strong&gt;Controller&lt;/strong&gt;&amp;rsquo; ın eklenmesi gerekmektedir. &lt;strong&gt;Model&lt;/strong&gt; ile &lt;strong&gt;View&lt;/strong&gt; arasındaki k&amp;ouml;pr&amp;uuml;y&amp;uuml; kuracak olan &lt;strong&gt;Controller&lt;/strong&gt; sınıfının temel &amp;ouml;zelliklerini aşağıdaki gibi belirleyebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wapip_7.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wapip_7" src="/pics/wapip_7_thumb.png" alt="wapip_7" width="604" height="346" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Sınıf i&amp;ccedil;eriği bizim i&amp;ccedil;in otomatik olarak &amp;uuml;retilecektir. Ancak senaryomuz i&amp;ccedil;in gerekli olmayan detayları &amp;ccedil;ıkartabiliriz. Buna g&amp;ouml;re i&amp;ccedil;eriği aşağıdaki kod par&amp;ccedil;asında g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi değiştirmemiz yeterli olacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Web.Http; 
+using MvcApplication5.Models;
+
+namespace MvcApplication5.Controllers 
+{ 
+    public class InvoicesController : ApiController 
+    { 
+        private ChinookEntities db = new ChinookEntities();
+
+        // GET api/Invoices 
+        [Queryable] 
+        public IQueryable&amp;lt;Invoice&amp;gt; GetInvoices() 
+       { 
+            return db.Invoices.AsQueryable(); 
+        } 
+        
+        protected override void Dispose(bool disposing) 
+        { 
+            db.Dispose(); 
+            base.Dispose(disposing); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;ApiController&lt;/strong&gt; t&amp;uuml;revli &lt;strong&gt;InvoicesController&lt;/strong&gt; sınıfı i&amp;ccedil;erisinde yer alan &lt;strong&gt;GetInvoices&lt;/strong&gt; metodu, &lt;strong&gt;Queryable&lt;/strong&gt; tipi ile nitelendirilmiştir. Bu &lt;strong&gt;nitelik&lt;em&gt;(Attribute)&lt;/em&gt;&lt;/strong&gt; sayesinde &lt;strong&gt;OData&lt;/strong&gt; sorgu desteği sağlanmış olmaktadır ki bu, sayfalama i&amp;ccedil;in kullanılacak olan &lt;strong&gt;top,&lt;/strong&gt;&lt;strong&gt;skip&lt;/strong&gt; ve &lt;strong&gt;orderby&lt;/strong&gt; komutları i&amp;ccedil;in gereklidir.&lt;/p&gt;
+&lt;h1&gt;G&amp;ouml;rsel Taraf(İstemci) i&amp;ccedil;in Controller Eklenmesi&lt;/h1&gt;
+&lt;p&gt;&lt;strong&gt;ApiController&lt;/strong&gt; bilindiği &amp;uuml;zere &lt;strong&gt;Web API&lt;/strong&gt; servis desteği i&amp;ccedil;in gereklidir. Ancak istemci tarafını d&amp;uuml;ş&amp;uuml;nd&amp;uuml;ğ&amp;uuml;m&amp;uuml;zde standart bir &lt;strong&gt;MVC Controller&lt;/strong&gt;&amp;rsquo; ının kullanılması gerekecektir. Nitekim &lt;strong&gt;cshtml&lt;/strong&gt; i&amp;ccedil;eriğini kullanarak &lt;strong&gt;Web API&lt;/strong&gt; servisi &amp;uuml;zerinden &lt;strong&gt;OData&lt;/strong&gt; anahtar kelimeleri ile sayfalama talebinin g&amp;ouml;nderilip, sonu&amp;ccedil;ların g&amp;ouml;sterileceği bir &lt;strong&gt;View&lt;/strong&gt; &amp;ouml;ğesi gerekmektedir. Bunun i&amp;ccedil;in projeye yeni bir &lt;strong&gt;MVC 4&lt;/strong&gt; &lt;strong&gt;Controller&lt;/strong&gt; ekleyerek ilerleyebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wapip_8.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wapip_8" src="/pics/wapip_8_thumb.png" alt="wapip_8" width="548" height="418" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Bu işlem sonucunda aşağıdaki sınıf i&amp;ccedil;eriği &amp;uuml;retilmiş olacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Web.Mvc;
+
+namespace MvcApplication5.Controllers 
+{ 
+    public class InvoiceListController 
+        : Controller 
+    { 
+        // 
+        // GET: /InvoiceList/
+
+        public ActionResult Index() 
+        { 
+            return View(); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;h2&gt;View &amp;Ouml;ğesinin Eklenmesi (index.cshtml)&lt;/h2&gt;
+&lt;p&gt;Tahmin edileceği &amp;uuml;zere bir de &lt;strong&gt;View&lt;/strong&gt; &amp;ouml;ğesine ihtiyacımız bulunmakta. Bu ama&amp;ccedil;la &lt;strong&gt;Views&lt;/strong&gt; klas&amp;ouml;r&amp;uuml; i&amp;ccedil;erisinde &lt;strong&gt;InvoicesList&lt;/strong&gt; isimli bir alt klas&amp;ouml;r a&amp;ccedil;arak i&amp;ccedil;erisine yeni bir &lt;strong&gt;View&lt;/strong&gt; ilave edip devam edebiliriz. &lt;em&gt;(&lt;strong&gt;View&lt;/strong&gt;&amp;rsquo; un adını &lt;strong&gt;index&lt;/strong&gt; olarak belirleyip &lt;strong&gt;Razor Engine&amp;rsquo;&lt;/strong&gt; i kullanacak şekilde tesis edelim)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;İ&amp;ccedil;eriği ise aşağıdaki şekilde d&amp;uuml;zenleyelim.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;@{ 
+    ViewBag.Title = "Index"; 
+}
+
+&amp;lt;h2&amp;gt;Invoice List&amp;lt;/h2&amp;gt;
+
+&amp;lt;script src="~/Scripts/jquery-2.0.0.min.js"&amp;gt;&amp;lt;/script&amp;gt; 
+&amp;lt;script src="~/Scripts/knockout-2.2.1.js"&amp;gt;&amp;lt;/script&amp;gt;
+
+&amp;lt;div&amp;gt; 
+    G&amp;ouml;sterilmek istenen satır sayısı&amp;lt;br /&amp;gt; 
+    &amp;lt;input type="text" id="txtRowSize" /&amp;gt; 
+    &amp;lt;br /&amp;gt; 
+    Başlangı&amp;ccedil; Noktası&amp;lt;br /&amp;gt; 
+    &amp;lt;input type="text" id="txtRowIndex" /&amp;gt; 
+    &amp;lt;br /&amp;gt; 
+  &amp;lt;input type="button" id="btnGetInvoices" value="Get Inovices" data-bind="click: InvoiceModel.GetInvoices"/&amp;gt; 
+&amp;lt;/div&amp;gt;
+
+&amp;lt;table border="1"&amp;gt;
+
+&amp;lt;thead&amp;gt; 
+  &amp;lt;tr&amp;gt; 
+   &amp;lt;th&amp;gt;InvoiceId&amp;lt;/th&amp;gt; 
+   &amp;lt;th&amp;gt;CustomerId&amp;lt;/th&amp;gt; 
+   &amp;lt;th&amp;gt;InvoiceDate&amp;lt;/th&amp;gt; 
+   &amp;lt;th&amp;gt;BillingAddress&amp;lt;/th&amp;gt; 
+   &amp;lt;th&amp;gt;BillingCity&amp;lt;/th&amp;gt; 
+   &amp;lt;th&amp;gt;BillingState&amp;lt;/th&amp;gt; 
+   &amp;lt;th&amp;gt;BillingCountry&amp;lt;/th&amp;gt; 
+   &amp;lt;th&amp;gt;BillingPostalCode&amp;lt;/th&amp;gt; 
+   &amp;lt;th&amp;gt;Total&amp;lt;/th&amp;gt; 
+  &amp;lt;/tr&amp;gt; 
+&amp;lt;/thead&amp;gt;
+
+&amp;lt;tbody data-bind="template: { name: 'InvoiceDataModel', foreach: InvoiceModel.Invoices }"&amp;gt; 
+&amp;lt;/tbody&amp;gt; 
+&amp;lt;/table&amp;gt; 
+&amp;lt;script type="text/html" id="InvoiceDataModel"&amp;gt; 
+&amp;lt;tr&amp;gt; 
+  &amp;lt;td&amp;gt; 
+   &amp;lt;span style="width:100px;"  data-bind="text: $data.InvoiceId" /&amp;gt; 
+  &amp;lt;/td&amp;gt; 
+  &amp;lt;td&amp;gt; 
+   &amp;lt;span style="width:100px;"  data-bind="text: $data.CustomerId" /&amp;gt; 
+  &amp;lt;/td&amp;gt; 
+  &amp;lt;td&amp;gt; 
+   &amp;lt;span style="width:100px;"  data-bind="text: $data.InvoiceDate" /&amp;gt; 
+  &amp;lt;/td&amp;gt; 
+  &amp;lt;td&amp;gt; 
+   &amp;lt;span style="width:100px;" data-bind="text: $data.BillingAddress"  /&amp;gt; 
+  &amp;lt;/td&amp;gt; 
+  &amp;lt;td&amp;gt; 
+   &amp;lt;span style="width:100px;"  data-bind="text: $data.BillingCity" /&amp;gt; 
+  &amp;lt;/td&amp;gt; 
+      &amp;lt;td&amp;gt; 
+   &amp;lt;span style="width:100px;"  data-bind="text: $data.BillingState" /&amp;gt; 
+  &amp;lt;/td&amp;gt; 
+    &amp;lt;td&amp;gt; 
+   &amp;lt;span style="width:100px;"  data-bind="text: $data.BillingCountry" /&amp;gt; 
+  &amp;lt;/td&amp;gt; 
+    &amp;lt;td&amp;gt; 
+   &amp;lt;span style="width:100px;"  data-bind="text: $data.BillingPostalCode" /&amp;gt; 
+  &amp;lt;/td&amp;gt; 
+    &amp;lt;td&amp;gt; 
+   &amp;lt;span style="width:100px;"  data-bind="text: $data.Total" /&amp;gt; 
+  &amp;lt;/td&amp;gt; 
+&amp;lt;/tr&amp;gt; 
+&amp;lt;/script&amp;gt;
+
+&amp;lt;script type="text/javascript"&amp;gt;
+
+var InvoiceModel = { 
+  Invoices:ko.observableArray([]) 
+};
+
+InvoiceModel.GetInvoices= function () 
+{ 
+    InvoiceModel.Invoices([]);
+
+  var rowSize = $("#txtRowSize").val(); 
+  var rowIndex = $("#txtRowIndex").val();
+
+  
+  var url = "/api/Invoices?$top=" + rowSize + '&amp;amp;$skip=' + (rowIndex * rowSize) + '&amp;amp;$orderby=InvoiceId'; 
+  
+  $.ajax({ 
+   type: "GET", 
+   url: url, 
+   success: function (data) 
+   { 
+    InvoiceModel.Invoices(data); 
+   }, 
+   error: function (err) 
+   { 
+    alert(err.status + "," + err.statusCode); 
+   } 
+  }); 
+}; 
+ko.applyBindings(InvoiceModel); 
+&amp;lt;/script&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Kısa da olsa neler yaptığımıza bir bakalım. En &amp;ouml;nemli kısım tabi ki &lt;strong&gt;btnGetInvoices&lt;/strong&gt; isimli d&amp;uuml;ğmeye basıldıktan sonra &amp;ccedil;alışan kod i&amp;ccedil;eriğidir. Burada kilit nokra &lt;strong&gt;url&lt;/strong&gt; değişkenine atanan ifadedir. Dikkat edileceği &amp;uuml;zere burada bir &lt;strong&gt;OData&lt;/strong&gt; sorgusu oluşturulmakta ve &lt;strong&gt;top&lt;/strong&gt; ile &lt;strong&gt;skip&lt;/strong&gt; komutlarından yararlanılarak bir veri &amp;ccedil;ekme işlemi ger&amp;ccedil;ekleştirilmektedir. Elde edilen sonu&amp;ccedil; k&amp;uuml;mesinin ilgili veri kontrol&amp;uuml;ne bağlanması noktasında ise bir &lt;strong&gt;Ajax&lt;/strong&gt; &amp;ccedil;ağrısı s&amp;ouml;z konusudur. &lt;strong&gt;success&lt;/strong&gt; bloğunda sorgu sonu&amp;ccedil;larının ilgili veri kontrol&amp;uuml;ne doldurulması işlemi icra edilmektedir.&lt;/p&gt;
+&lt;h1&gt;Route Ayarları&lt;/h1&gt;
+&lt;p&gt;Testlere başlamadan &amp;ouml;nce &lt;strong&gt;InvoiceList&lt;/strong&gt; g&amp;ouml;r&amp;uuml;n&amp;uuml;m&amp;uuml; i&amp;ccedil;in &lt;strong&gt;Route&lt;/strong&gt; ayarlarını g&amp;uuml;ncellememizde yarar vardır. Bunun i&amp;ccedil;in &lt;strong&gt;App&lt;/strong&gt;_Start klas&amp;ouml;r&amp;uuml;nde yer alan &lt;strong&gt;RouteConfig.cs&lt;/strong&gt; i&amp;ccedil;eriğini aşağıdaki gibi değiştirelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Web.Mvc; 
+using System.Web.Routing;
+
+namespace MvcApplication5 
+{ 
+    public class RouteConfig 
+    { 
+        public static void RegisterRoutes(RouteCollection routes) 
+        { 
+            routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+
+            routes.MapRoute( 
+                name: "Default", 
+                url: "{controller}/{action}/{id}", 
+                defaults: new { controller = "InvoiceList", action = "Index", id = UrlParameter.Optional } 
+            ); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Buna g&amp;ouml;re uygulamamızı &amp;ccedil;alıştırdığımızda varsayılan olarak &lt;strong&gt;InoviceList&lt;/strong&gt; ile ilişkili &lt;strong&gt;View&lt;/strong&gt;&amp;rsquo; a gidilecektir.&lt;/p&gt;
+&lt;h1&gt;Test&lt;/h1&gt;
+&lt;p&gt;İlk olarak &lt;strong&gt;Web API&lt;/strong&gt; servisinin &amp;ccedil;alıştığından emin olmalıyız. Bu ama&amp;ccedil;la &lt;strong&gt;URL&lt;/strong&gt; satırına &lt;a title="http://localhost:46672/api/Invoices" href="http://localhost:46672/api/Invoices"&gt;http://localhost:46672/api/Invoices&lt;/a&gt; benzer bir ifade girildiğinde, aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ndekine benzer bir i&amp;ccedil;eriğin &amp;uuml;retilmiş olması gerekmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wapip_9.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wapip_9" src="/pics/wapip_9_thumb.png" alt="wapip_9" width="514" height="490" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Eğer aşağıya doğru inerseniz t&amp;uuml;m Invoice i&amp;ccedil;eriğinin &amp;ccedil;ekildiğini g&amp;ouml;rebilirsiniz.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Ne var ki, &lt;strong&gt;Web API&lt;/strong&gt; servisimiz i&amp;ccedil;in test noktasında &amp;ouml;nem arz eden bir mevzuda &lt;strong&gt;top, &lt;/strong&gt;&lt;strong&gt;skip&lt;/strong&gt; ve &lt;strong&gt;orderby&lt;/strong&gt; komutlarına cevap verebiliyor olmasıdır. &amp;Ouml;rneğin &lt;a href="http://localhost:46672/api/invoices?$top=3&amp;amp;$skip=10&amp;amp;$orderby=InvoiceId"&gt;http://localhost:46672/api/invoices?$top=3&amp;amp;$skip=10&amp;amp;$orderby=InvoiceId&lt;/a&gt; şeklinde bir talep girdiğimizi d&amp;uuml;ş&amp;uuml;nelim. Aslında bu talep ile servis tarafına şu mesajı iletmiş oluyoruz;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&amp;Ouml;nce Invoice satırlarını InvoiceId değerine g&amp;ouml;re bir diz bakalım. Sonra da10ncu indisten itibaren bana ilk 3 sıradakini getir.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Talebin işlenmesi sonrası tarayıcı &amp;uuml;zerinde aşağıdakine benzer bir sonu&amp;ccedil; elde etmemiz gerekmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wapip_10.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wapip_10" src="/pics/wapip_10_thumb.png" alt="wapip_10" width="584" height="654" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi asıl &lt;strong&gt;View&lt;/strong&gt; i&amp;ccedil;eriğini test ederek asıl senaryomuzu y&amp;uuml;r&amp;uuml;tebiliriz. Uygulamamızı varsayılan olarak &amp;ccedil;alıştırdığımızda &lt;strong&gt;Route&lt;/strong&gt; tanımlaması nedeniyle doğrudan &lt;strong&gt;index.cshtml&lt;/strong&gt; i&amp;ccedil;eriğini g&amp;ouml;r&amp;uuml;yor oluruz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wapip_11.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wapip_11" src="/pics/wapip_11_thumb.png" alt="wapip_11" width="640" height="185" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi bazı veriler girerek &amp;ouml;rneğimizi test edelim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wapip_12.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wapip_12" src="/pics/wapip_12_thumb.png" alt="wapip_12" width="640" height="251" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;51 numaralı InvoiceId değerinden itibaren 5 adet satır&lt;/strong&gt; getirilmesi istenmiş ve buna g&amp;ouml;re bir sonu&amp;ccedil; k&amp;uuml;mesi elde edilmiştir. Tabi burada &amp;ouml;nemli olan bir diğer nokta da fonksiyonun icra edilmesi sırasında &lt;strong&gt;SQL &lt;/strong&gt;tarafında &amp;ccedil;alıştırılan sorgu ifadesidir. &amp;Ouml;zellikle bu sorgu ifadesinde doğru bir sayfalama yapılması da &amp;ccedil;ok &amp;ouml;nemlidir. Bu ama&amp;ccedil;la &lt;strong&gt;SQL Server Profiler&lt;/strong&gt; aracından yararlanabiliriz. Sonu&amp;ccedil; itibariyle aşağıdakine benzer bir &lt;strong&gt;T-SQL&lt;/strong&gt; sorgusunun &amp;ccedil;alıştırılmış olduğunu g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wapip_13.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wapip_13" src="/pics/wapip_13_thumb.png" alt="wapip_13" width="640" height="255" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;row_number&lt;/strong&gt; komutundan yararlanılarak ger&amp;ccedil;ek anlamda sayfalama işlemi uygulanmıştır.&lt;/p&gt;
+&lt;h1&gt;Sonu&amp;ccedil;&lt;/h1&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;OData&lt;/strong&gt; sorgu desteği sunan &lt;strong&gt;Asp.Net Web API&lt;/strong&gt; servislerini kullanarak sayfalama işlemlerini ger&amp;ccedil;ekleştirmek olduk&amp;ccedil;a kolaydır. Bu iş de başrol oyuncu olan &lt;strong&gt;top, skip&lt;/strong&gt; ve &lt;strong&gt;orderby&lt;/strong&gt; anahtar kelimeleri bir &lt;strong&gt;OData&lt;/strong&gt; standardı olduğundan, istemci tarafı &lt;strong&gt;Microsoft&lt;/strong&gt; dışı bir platform da olabilir. Tabi burada tek bağlayıcı nokta &lt;strong&gt;SQL&lt;/strong&gt; veritabanı ve &lt;strong&gt;Entity Framework&lt;/strong&gt; kullanımıdır. Farklı veri kaynaklarında&lt;strong&gt; row_number&lt;/strong&gt; gibi bir kullanım şekli s&amp;ouml;z konusu olmayabilir. B&amp;ouml;yle bir vaka da tahmin edileceği &amp;uuml;zere &lt;strong&gt;Web API Controller&lt;/strong&gt; i&amp;ccedil;erisindeki ilgili operasyon noktalarında m&amp;uuml;dahale de bulunmak gerekebilir&lt;em&gt;(Araştırmadım benim yerime siz bu işi yapın &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_204.png" alt="Winking smile" /&gt; )&lt;/em&gt; B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2013-05-20 06:11:00</pubDate>
+  <slug>AspNet-Web-API-Paging</slug>
+  <tags>
+    <tag>web-api</tag>
+    <tag>http</tag>
+    <tag>restful-services</tag>
+    <tag>odata</tag>
+    <tag>open-data-protocol</tag>
+    <tag>data-centric-apps</tag>
+    <tag>paging</tag>
+    <tag>aspnet</tag>
+    <tag>c#</tag>
+    <tag>java-script</tag>
+    <tag>ajax-call</tag>
+    <tag>ajax</tag>
+  </tags>
+  <categories>
+    <category>Asp.Net Web API</category>
+  </categories>
+</post>

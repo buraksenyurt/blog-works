@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WCF 4.0 Yenilikleri - Routing Service - Hata Yönetimi [Beta 1]</title>
+  <description>Bir önceki blog yazımızda WCF 4.0 ile basit bir yönlendirme servisinin(Router Service) nasıl yazılabileceğini incelemeye çalışmıtık. Tabi bu tip bir sistemde dikkat edilmesi gereken vakalardan biriside, Downstream servislerde istisnaların(Exceptions) oluşması halinde nasıl davranılacağıdır.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/pics/2009%2f8%2fblg74_Giris.jpg" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Bir &amp;ouml;nceki &lt;a title="WCF 4.0 - Route Service Geliştirmek" href="/post/WCF-40-Yenilikleri-Routing-Service-Gelistirmek-Hello-World" target="_blank"&gt;blog yazımızda &lt;/a&gt;&lt;strong&gt;WCF 4.0&lt;/strong&gt; ile basit bir &lt;strong&gt;y&amp;ouml;nlendirme servisinin(Router Service) &lt;/strong&gt;nasıl yazılabileceğini incelemeye &amp;ccedil;alışmıtık. Tabi bu tip bir sistemde dikkat edilmesi gereken vakalardan biriside, &lt;strong&gt;Downstream&lt;/strong&gt; servislerde &lt;strong&gt;istisnaların(Exceptions)&lt;/strong&gt; oluşması halinde nasıl davranılacağıdır. Peki ne gibi durumlardan bahsediyoruz? &amp;Ouml;rneğin, Router servisine gelen paketin y&amp;ouml;nlendirildiği bir alt servis &amp;ccedil;alışmıyor olabilir.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Bu durumda bir &lt;strong&gt;TimeoutException&lt;/strong&gt; oluşması muhtemeldir. Benzer şekilde &lt;strong&gt;CommunicationException&lt;/strong&gt; ve t&amp;uuml;revi olan istisna tiplerinin fırlatılmasıda s&amp;ouml;z konusudur. Bu gibi istisnaların&amp;nbsp;ortaya &amp;ccedil;ıkması&amp;nbsp;halinde en azından işleyişin devamlılığını sağlamak ve sistemin &amp;ccedil;&amp;ouml;kmesini engellemek i&amp;ccedil;in,&amp;nbsp;WCF 4.0 tarafı konfigurasyon dosyasında &lt;strong&gt;Alternatif Endpoint &lt;/strong&gt;tanımlamaları yapılmasına izin vermektedir.&lt;/p&gt;
+&lt;p&gt;Buna g&amp;ouml;re &lt;strong&gt;Downstream&lt;/strong&gt; servislerinden bahsedilen tipteki istisnalardan birisi alınırsa, istemciden gelen talebin karşılanmak &amp;uuml;zere alternatif olarak tanımlanmış olan bir servise y&amp;ouml;nlendirilmesi sağlanmış olunur. Bu alternatif servise olan y&amp;ouml;nlendirme tamamen &amp;ccedil;alışma zamanında ve router servisin y&amp;ouml;netimi altında ger&amp;ccedil;ekleşmektedir. Konuyu daha net kavrayabilmek adına bir &amp;ouml;nceki blogumuzda yazdığımız &amp;ouml;rneği aşağıdaki vakaya g&amp;ouml;re test ettiğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;p&gt;İlk etapta Router Servisimiz ile t&amp;uuml;m DownStream servislerimiz &amp;ccedil;alıştırılır. Sonrasında istemci uygulama a&amp;ccedil;ıkken ve hen&amp;uuml;z taleplerini iletmeden &amp;ouml;nce Downstream servislerinden herhangibiri kapatılır. &amp;Ouml;rneğin &lt;strong&gt;UserService&lt;/strong&gt; servisinin kapatıldığını d&amp;uuml;ş&amp;uuml;nebiliriz. Bu durumda istemci tarafının bir &lt;strong&gt;CommunicationException&lt;/strong&gt; istisnası ile sonlanması gerekmektedir.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneği kolay bir şekilde canlandırabilmek i&amp;ccedil;in Router servisimizde &lt;strong&gt;includeExceptionDetailInFaults&lt;/strong&gt; &amp;ouml;zelliğine &lt;strong&gt;true&lt;/strong&gt; değeri atayıp, istemci tarafındaki kod i&amp;ccedil;eriğini ise aşağıdaki gibi g&amp;uuml;ncelleştirmemiz yerinde olacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+using ClientApp.MemberManagementSpace;
+
+namespace ClientApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("İstemci hazır...Başlamak i&amp;ccedil;in tuşa basınız");
+            Console.ReadLine();
+
+            try
+            {
+                MemberManagementServiceClient client = new MemberManagementServiceClient();
+
+                User burak = new User { Name = "Burak Selim Şenyurt" };
+
+                string registerResult = client.RegisterUser(burak);
+                Console.WriteLine(registerResult);
+
+                string updateResult = client.UpdateUserName(burak, "Burki");
+                Console.WriteLine(updateResult);
+
+                Console.ReadLine();
+                client.Close();
+            }
+            catch (CommunicationException excp)
+            {
+                Console.WriteLine(excp.Message);
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Test sonrasında aşağıdaki gibi bir sonu&amp;ccedil;la karşılaşmamız muhtemeldir.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f8%2fblg74_Case.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &lt;strong&gt;RegisterService&lt;/strong&gt; &amp;uuml;zerinden yapılan kullanıcı kayıt operasyonu başarılı bir şekilde &amp;ccedil;alışmış ancak, &lt;strong&gt;UserService&lt;/strong&gt; &amp;uuml;zerinden yapılan &amp;ccedil;ağrı i&amp;ccedil;in ortama bir &lt;strong&gt;CommunicationException&lt;/strong&gt; d&amp;ouml;nd&amp;uuml;r&amp;uuml;lm&amp;uuml;şt&amp;uuml;r. Bu son derece doğaldır, nitekim s&amp;ouml;z konusu servis kapalıdır. &lt;img title="Sealed" src="/editors/tiny_mce3/plugins/emotions/img/smiley-sealed.gif" alt="Sealed" border="0" /&gt;&amp;nbsp;Peki alternatif bir yolumuz var mıdır? Yazımızın başındada belirttiğimiz gibi, &lt;strong&gt;Downstream&lt;/strong&gt; servislerinden birisinin &amp;ccedil;&amp;ouml;kmesi halinde en azından istemci talebinin bir başka yedek servis &amp;uuml;zerine pas edilmesi sağlanabilir. İlk &amp;ouml;nce bu &lt;strong&gt;yedek servisi(Backup Service)&lt;/strong&gt; geliştireceğiz. Sonrasında ise, &lt;strong&gt;Router&lt;/strong&gt; servisimize ait konfigurasyon dosyasında bazı değişiklikler yapmamız gerekmektedir. &amp;Ouml;rneğimizin yeni modeli grafiksel olarak aşağıdaki gibi d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f8%2fblg74_Architecture.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;UserBackupService&lt;/strong&gt; isimli yedek servisimizin konfigurasyon dosyası ve kod yapısı aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+  &amp;lt;system.serviceModel&amp;gt;
+    &amp;lt;services&amp;gt;
+      &amp;lt;service name="UserBackupService.UserService"&amp;gt;
+        &amp;lt;endpoint address="" binding="wsHttpBinding" contract="ContractLibrary.IManagementContract" /&amp;gt;
+        &amp;lt;host&amp;gt;
+          &amp;lt;baseAddresses&amp;gt;
+            &amp;lt;add baseAddress="http://localhost:3446/UserBackupService" /&amp;gt;
+          &amp;lt;/baseAddresses&amp;gt;
+        &amp;lt;/host&amp;gt;
+      &amp;lt;/service&amp;gt;
+    &amp;lt;/services&amp;gt;
+  &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;ve kod i&amp;ccedil;eriği;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using ContractLibrary;
+using System.ServiceModel;
+
+namespace UserBackupService
+{
+    class UserService
+
+        : IManagementContract
+    {
+        public string RegisterUser(User newUser)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string UpdateUserName(User oldUser, string newName)
+        {
+            Console.WriteLine("UpdateUserName metodu başlatıldı...");
+            return String.Format("{0} isimli kullanıcı adı {1} olarak değiştirildi", oldUser.Name, newName);
+        }
+
+        public UserService()
+        {
+            Console.WriteLine("UserBACKUPService nesnesi &amp;ouml;rneklendi");
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            ServiceHost host = new ServiceHost(typeof(UserService));
+            host.Open();
+
+            Console.WriteLine("UserBACKUPService hazır...");
+            Console.ReadLine();
+
+            host.Close();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Aslında &lt;strong&gt;UserService'&lt;/strong&gt; in bire bir kopyası olan sadece farklı bir port &amp;uuml;zerinden sunulan bir servis geliştirmiş bulunuyoruz. Elbetteki bu servisi farklı bir makine &amp;uuml;zerinde farklı &lt;strong&gt;Endpoint&lt;/strong&gt; kuralları ilede sunabilir ve alternatif Endpoint olarak kullanabiliriz. Gelelim bu yazının en can alıcı noktasına. Router servisine ait konfigurasyon dosyasının i&amp;ccedil;eriği...&lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+  &amp;lt;system.serviceModel&amp;gt;
+    &amp;lt;behaviors&amp;gt;
+      &amp;lt;serviceBehaviors&amp;gt;
+        &amp;lt;behavior&amp;gt;
+          &amp;lt;routing routingTableName="RTable"/&amp;gt;
+          &amp;lt;serviceDebug includeExceptionDetailInFaults="true"/&amp;gt;
+        &amp;lt;/behavior&amp;gt;
+      &amp;lt;/serviceBehaviors&amp;gt;
+    &amp;lt;/behaviors&amp;gt;
+    &amp;lt;client&amp;gt;
+      &amp;lt;endpoint address="http://localhost:3445/UserService" binding="wsHttpBinding" contract="*" name="UserServiceEndpoint" /&amp;gt;
+      &amp;lt;endpoint address="http://localhost:3446/UserBackupService" binding="wsHttpBinding" contract="*" name="UserBackupServiceEndpoint"/&amp;gt;
+      &amp;lt;endpoint address="net.tcp://localhost:4001/RegisterService" binding="netTcpBinding" contract="*" name="RegisterServiceEndpoint" /&amp;gt;
+    &amp;lt;/client&amp;gt;
+    &amp;lt;services&amp;gt;
+      &amp;lt;service name="System.ServiceModel.Routing.RoutingService"&amp;gt;
+        &amp;lt;host&amp;gt;
+          &amp;lt;baseAddresses&amp;gt;
+            &amp;lt;add baseAddress="http://localhost:6501/User/Management/RouterService"/&amp;gt;
+          &amp;lt;/baseAddresses&amp;gt;
+        &amp;lt;/host&amp;gt;
+        &amp;lt;endpoint binding="basicHttpBinding" contract="System.ServiceModel.Routing.IRequestReplyRouter"/&amp;gt;
+      &amp;lt;/service&amp;gt;
+    &amp;lt;/services&amp;gt;
+    &amp;lt;routing&amp;gt;
+      &amp;lt;filters&amp;gt;
+        &amp;lt;filter name="RegisterFilter" filterType="Action" filterData="http://www.azon.com/Registration"/&amp;gt;
+        &amp;lt;filter name="UpdateUserFilter" filterType="Action" filterData="http://www.azon.com/UpdateUser"/&amp;gt;
+      &amp;lt;/filters&amp;gt;
+      &amp;lt;routingTables&amp;gt;
+        &amp;lt;table name="RTable"&amp;gt;
+          &amp;lt;entries&amp;gt;
+            &amp;lt;add filterName="RegisterFilter" endpointName="RegisterServiceEndpoint"/&amp;gt;
+            &amp;lt;add filterName="UpdateUserFilter" endpointName="UserServiceEndpoint" alternateEndpoints="alternateEndpointList"/&amp;gt;
+          &amp;lt;/entries&amp;gt;
+        &amp;lt;/table&amp;gt;
+      &amp;lt;/routingTables&amp;gt;
+      &amp;lt;alternateEndpoints&amp;gt;
+        &amp;lt;list name="alternateEndpointList"&amp;gt;
+          &amp;lt;endpoints&amp;gt;
+            &amp;lt;add endpointName="UserBackupServiceEndpoint"/&amp;gt;
+          &amp;lt;/endpoints&amp;gt;
+        &amp;lt;/list&amp;gt;
+      &amp;lt;/alternateEndpoints&amp;gt;
+    &amp;lt;/routing&amp;gt;
+  &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;İlk etapta, &lt;strong&gt;Backup&lt;/strong&gt; servisi i&amp;ccedil;inde bir &lt;strong&gt;Endpoint&lt;/strong&gt; bildirimi yapıldığı ve yedek servisin işaret edildiği farkedilmektedir. Diğer yandan &lt;strong&gt;routingTables &lt;/strong&gt;i&amp;ccedil;erisinde yapılan &lt;strong&gt;entries&lt;/strong&gt; bildirimlerinden &lt;strong&gt;UpdateUserFilter&lt;/strong&gt; isimli olanında &lt;strong&gt;alternateEndpoints&lt;/strong&gt; isimli bir &lt;strong&gt;nitelik(attribute)&lt;/strong&gt; dikkati &amp;ccedil;ekmektedir. Bu nitelik, dosyanın ilerleyen kısımlarında yer alan &lt;strong&gt;alternateEndpoints&lt;/strong&gt; elementi altındaki listeyi işaret etmektedir.&lt;/p&gt;
+&lt;p&gt;Bu liste i&amp;ccedil;erisinde &lt;strong&gt;n&lt;/strong&gt; sayıda alternatif &lt;strong&gt;endPoint&lt;/strong&gt; ismi belirtilebilir. Bir başka deyişle bir &lt;strong&gt;endPoint'&lt;/strong&gt; in karşılayamadığı istekleri, birden fazla &lt;strong&gt;endPoint&lt;/strong&gt; noktasına denenmek &amp;uuml;zere aktarabiliriz. Tabi bu durumu hen&amp;uuml;z test etme şansım olmadı.&amp;nbsp;Ki beklenen sırasıyla servislerin denenmesi ve başarılı olandan sonrakilere ge&amp;ccedil;ilmemesi y&amp;ouml;n&amp;uuml;nde olmalıdır.&amp;nbsp;Ancak entries/add elementi i&amp;ccedil;erisinde priority isimli bir nitelikte bulunmakta ve &amp;ouml;ncelik seviyesini belirlemektedir. İşte size bir garajda araştırma &amp;ouml;devi.&lt;img title="Cool" src="/editors/tiny_mce3/plugins/emotions/img/smiley-cool.gif" alt="Cool" border="0" /&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Artık vakamızı tekrardan test edebiliriz. Yine t&amp;uuml;m servisleri(Backup servisimiz dahil) &amp;ccedil;alıştıracak, ancak istemci talepte bulunmadan &amp;ouml;nce &lt;strong&gt;UserService'&lt;/strong&gt; ini &lt;span style="text-decoration: underline;"&gt;kapatacağız&lt;/span&gt;. İşte sonu&amp;ccedil;lar;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f8%2fblg74_Result.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi, &lt;strong&gt;UserService'&lt;/strong&gt; in kapalı olması ve &lt;strong&gt;Exception&lt;/strong&gt; &amp;uuml;retmesi durumunda, &lt;strong&gt;Router&lt;/strong&gt; servisimiz talebi bu kez alternatif &lt;strong&gt;endPoint&lt;/strong&gt; listesinde belirtilen UserBackupService isimli yedek servise doğru y&amp;ouml;nlendirmiş ve istemcinin talebinin buradan karşılanmasını sağlamıştır. Tabiki burada ele alınan &lt;strong&gt;alternatif Endpoint' &lt;/strong&gt;lerin işaret ettiği servisler farklı makinelereden, farklı &lt;strong&gt;bağlayıcı tiplerle(Binding Types)&lt;/strong&gt;, farklı iletişim protokolleri ile dağıtılabilir. Bu tamamen yedek servis stratejimize bağlıdır. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2009%2f8%2fRouter+Project+2.rar"&gt;Router Project 2.rar (128,25 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2009-09-09 13:02:00</pubDate>
+  <slug>WCF-40-Yenilikleri-Routing-Service-Hata-Yonetimi</slug>
+  <tags>
+    <tag>wcf</tag>
+    <tag>wcf-40</tag>
+  </tags>
+  <categories>
+    <category>WCF 4.0 Beta 1</category>
+  </categories>
+</post>

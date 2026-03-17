@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Floyd-Warshall Algoritması ile En Kısa Yolu Bulmak</title>
+  <description>Uzun zamandır algoritmalar üzerinde çalışmadığımı fark ettim. İşlerin biraz olsun hafiflediği şu vakitlerde de bir tanesini inceleyeyim dedim. Derken kendimi Floyd-Warshall algoritmasını anlamaya çalışırken buldum. Söz konusu algoritma Graph yapılarında boğumlar arasındaki en kısa yolların bulunmasında kullanılmaktadır.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2016/04/FWa_6.gif" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Uzun zamandır algoritmalar &amp;uuml;zerinde &amp;ccedil;alışmadığımı fark ettim. İşlerin biraz olsun hafiflediği şu vakitlerde&amp;nbsp;de bir tanesini inceleyeyim dedim. Derken kendimi &lt;a href="https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm" target="_blank"&gt;&lt;strong&gt;Floyd-Warshall&lt;/strong&gt; algoritmasını&lt;/a&gt; anlamaya &amp;ccedil;alışırken buldum. S&amp;ouml;z konusu algoritma &lt;strong&gt;Graph&lt;/strong&gt; yapılarında boğumlar&amp;nbsp;arasındaki en kısa yolların bulunmasında kullanılmaktadır.&lt;/p&gt;
+&lt;p&gt;Ger&amp;ccedil;ek hayat &amp;ouml;rnekleri d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde &lt;strong&gt;Regular Expression&lt;/strong&gt;, &lt;strong&gt;Network Routing&lt;/strong&gt;, &lt;strong&gt;Dynamic Programming&lt;/strong&gt;, y&amp;ouml;ns&amp;uuml;z graph'ların iki par&amp;ccedil;alı graph'lar d&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;lmesi ve daha bir &amp;ccedil;ok alanda kullanıldığına şahit oluruz. Algoritmanın matematiksel &amp;ccedil;alışmasına bakıldığında boğumların birbirlerine olan yakınlıklarını ele alan matrisleri&amp;nbsp;kullandığını g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;Aslında konuyu eğlenceli olabileceğini d&amp;uuml;ş&amp;uuml;nd&amp;uuml;ğ&amp;uuml;m bir senaryo &amp;uuml;zerinden ele alırsak &amp;ccedil;ok daha iyi olur. Bu anlamda aşağıdaki grafiği g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım. &lt;em&gt;(Grafiğin oluşmasında &lt;a href="https://www.quora.com/What-is-an-intuitive-explanation-of-the-Floyd-Warshall-algorithm" target="_blank"&gt;Quora&lt;/a&gt;'nın bana &amp;ccedil;ok g&amp;uuml;zel fikir verdiğini ifade etmek isterim)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/04/FWa_1nn.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Biz evimizde oturuyoruz ve &amp;ouml;rneğin Haldun Taner sahnesine gideceğiz. Normal şartlarda direkt bir g&amp;uuml;zergah kullanırsak 5 km yol gitmemiz gerekiyor. Diğer yandan &amp;ouml;nce Capitol'e, oradan Burhan Felek'e ve oradan'da Haldun Taner'e ge&amp;ccedil;ersek toplamda 4 km yol katediyoruz. 1 km kazancımız var bu g&amp;uuml;zergahı takip edersek. Eğer &amp;ouml;nce Burhan Felek'e oradan Haldun Taner'e ge&amp;ccedil;ersek de 7 km yol kat edeceğiz.&amp;nbsp;Senaryoyu biraz daha geliştirelim. Diyelim ki evden Burger House'a gideceğiz. Karnımız acıkmış.&amp;nbsp;Doğrudan gidersek 4 km yol almamız lazım. Farklı g&amp;uuml;zergahlar da tercih edebiliriz. &amp;Ouml;rneğin Haldun Taner &amp;uuml;zerinden ge&amp;ccedil;ersek 9km, Okul &amp;uuml;zerinden ge&amp;ccedil;ersek 24km yol. Bunun gibi bir yerden diğer bir yere giderken&amp;nbsp;pek &amp;ccedil;ok g&amp;uuml;zergah ve mesafe belirlenebilir.&lt;/p&gt;
+&lt;p&gt;İşte &lt;strong&gt;Floyd-Warshall&lt;/strong&gt; algoritması bir boğumdan diğer bir boğuma gitmek i&amp;ccedil;in kullanılabilecek en kısa yolların &amp;ccedil;ıkartılmasında devreye girerek karar vermemizi kolaylaştırır.&amp;nbsp;&lt;span style="line-height: 1.8;"&gt;Şimdi yukarıdaki senaryoyu biraz daha bilimsel hale getirip lokasyonlar arasındaki en kısa &lt;/span&gt;&lt;span style="line-height: 1.8;"&gt;mesafeleri&lt;/span&gt;&lt;span style="line-height: 1.8;"&gt;&amp;nbsp;bulmaya &amp;ccedil;alışalım. &amp;Ouml;ncelikle boğumlarımıza aşağıdaki gibi numaralar verelim ve ilk olarak yakınlık matrisimizi oluşturalım. &lt;em&gt;(Yakınlık matrisinin ilk versiyonu boğumların&amp;nbsp;komşu boğumlar ile arasındaki mesafelerini tanımlamaktadır)&lt;/em&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/04/FWa_2n.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Matrisimizin ilk hali aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/04/FWa_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu matris bize ne s&amp;ouml;yl&amp;uuml;yor acaba?&lt;/p&gt;
+&lt;p&gt;Bazı h&amp;uuml;crelerde sonsuzluk sembol&amp;uuml;, bazı h&amp;uuml;crelerde ise sıfır değeri var. İki boyutlu bu matris boğumların en yakın diğer boğuma olan mesafelerini g&amp;ouml;stermekte. Bir boğumun kendisiyle arasındaki mesafe 0, doğrudan bağlı olmadığı bir boğumlar arasındaki mesafe ise sonsuz sembol&amp;uuml; ile işaret edilmekte. &amp;Ouml;rneğin n1 boğumundan n3 ve n4 boğumlarına doğrudan bir hat olmadığı i&amp;ccedil;in sonsuz sembol&amp;uuml; kullanıldı. Algoritmanın&amp;nbsp;becerisi&amp;nbsp;sonsuz sembollerini eritmek ve hatta sayısal değer alan h&amp;uuml;crelerde olabilecek daha kısa mesafeler var ise bunları matris &amp;uuml;zerinde g&amp;uuml;ncellemektir.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğin n1'den n3'e direkt gidişimiz olmadığından sonsuz olarak işaretlenmiş durumda. Oysa ki n1-&amp;gt;n2-&amp;gt;n3 şeklinde bir ulaşım var. Yani n2 &amp;uuml;zerinden ge&amp;ccedil;iş yaparak n3'e varabiliriz. Elbette n3'e varmak i&amp;ccedil;in n6 &amp;uuml;zerinden de hareket edebiliriz. Yani n1-&amp;gt;n6-&amp;gt;n3 şeklinde bir g&amp;uuml;zergah da s&amp;ouml;z konusu olabilir. Hatta n1-&amp;gt;n5-&amp;gt;n4-&amp;gt;n3 şeklinde de gidebiliriz.&lt;/p&gt;
+&lt;p&gt;İşte matrisimizi bu şekilde algoritma i&amp;ccedil;erisinde işleterek nihai haline getirmemiz gerekiyor. Tahmin edeceğiniz &amp;uuml;zere bu, &amp;ccedil;ok da uğraşmak isteyeceğimiz t&amp;uuml;rden bir iş değil :) Bu y&amp;uuml;zden zaten kod yolu ile ilgili algoritmayı &amp;ccedil;alıştırmayı tercih etmekteyiz. Aşağıda algoritmanın kullanımına ilişkin bir kod par&amp;ccedil;ası yer almaktadır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Linq;
+
+namespace FloydWarshallCode
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            double[][] proximityMatrix = PrepareFirstState();
+            Solve(ref proximityMatrix);
+            Dump(proximityMatrix);
+        }
+
+        public static void Solve(ref double[][] matrix)
+        {
+            int size = matrix.Count();
+
+            for (int i = 0; i &amp;lt; size; i++)
+            {
+                for (int j = 0; j &amp;lt; size; j++)
+                {
+                    for (int k = 0; k &amp;lt; size; k++)
+                    {
+                        matrix[j][k] = Math.Min(matrix[j][k], matrix[j][i] + matrix[i][k]);
+                    }
+                }
+            }
+        }
+
+        private static double[][] PrepareFirstState()
+        {
+            double[][] matrix = new double[6][]{
+                new double[6],
+                new double[6],
+                new double[6],
+                new double[6],
+                new double[6],
+                new double[6]
+            };
+
+            matrix[0][0] = 0;
+            matrix[0][1] = 5;
+            matrix[0][2] = double.PositiveInfinity;
+            matrix[0][3] = double.PositiveInfinity;
+            matrix[0][4] = 16;
+            matrix[0][5] = 8;
+
+            matrix[1][0] = 5;
+            matrix[1][1] = 0;
+            matrix[1][2] = 1;
+            matrix[1][3] = double.PositiveInfinity;
+            matrix[1][4] = double.PositiveInfinity;
+            matrix[1][5] = 2;
+
+            matrix[2][0] = double.PositiveInfinity;
+            matrix[2][1] = 1;
+            matrix[2][2] = 0;
+            matrix[2][3] = 1;
+            matrix[2][4] = double.PositiveInfinity;
+            matrix[2][5] = 6;
+
+            matrix[3][0] = double.PositiveInfinity;
+            matrix[3][1] = double.PositiveInfinity;
+            matrix[3][2] = 1;
+            matrix[3][3] = 0;
+            matrix[3][4] = 4;
+            matrix[3][5] = 5;
+
+            matrix[4][0] = 16;
+            matrix[4][1] = double.PositiveInfinity;
+            matrix[4][2] = double.PositiveInfinity;
+            matrix[4][3] = 4;
+            matrix[4][4] = 0;
+            matrix[4][5] = 4;
+
+            matrix[5][0] = 8;
+            matrix[5][1] = 2;
+            matrix[5][2] = 6;
+            matrix[5][3] = 5;
+            matrix[5][4] = 4;
+            matrix[5][5] = 0;
+
+            return matrix;
+        }
+
+        public static void Dump(double[][] matrix)
+        {
+            int size = matrix.Count();
+
+            for (int i = 0; i &amp;lt; size; i++)
+            {
+                for (int j = 0; j &amp;lt; size; j++)
+                {
+                    Console.Write("{0}\t", matrix[i][j]);
+                }
+                Console.WriteLine();
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Console uygulamasının 3 &amp;ouml;nemli fonksiyonu vardır. İlk olarak makalemizin başında bahsettiğimiz yakınlık matrisinin birinci versiyonunu hazırlayan basit bir metod bulunur. Pek tabii ger&amp;ccedil;ek hayat senaryolarında ilgili matrisin belli bir Graph kaynağından otomatik olarak hazırlanması s&amp;ouml;z konusudur. Uygulamayı &amp;ccedil;alıştırdığımızda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan sonu&amp;ccedil; matrisini elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/04/FWa_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Buna g&amp;ouml;re bir noktadan bir noktaya gidilebilecek en kısa mesafeler bulunmuştur. &amp;Ouml;rneğin &lt;strong&gt;n3 noktasından n5 noktasına gitmek istediğimizde en kısa g&amp;uuml;zergah 5km&lt;/strong&gt; &lt;strong&gt;uzunluğunda olup n3-&amp;gt;n4-&amp;gt;n5 rotası&lt;/strong&gt; şeklindedir. Diğer alternatif yollara bakıldığında ger&amp;ccedil;ekten de en kısa mesafenin bu olduğu a&amp;ccedil;ık&amp;ccedil;a g&amp;ouml;r&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/04/FWa_5.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;Floyd-Warshal,&lt;/strong&gt;&amp;nbsp;&lt;strong&gt;Graph&lt;/strong&gt; tabanlı veri k&amp;uuml;melerinde boğumlar arası en kısa mesafelerin buluması i&amp;ccedil;in kullanılabilecek basit ve hızlı algoritmalardan birisidir. Konu hakkında internet &amp;uuml;zerinden de ulaşabileceğiniz bir &amp;ccedil;ok kaynak mevcut. Bunları inceleyerek algoritmayı&amp;nbsp;&amp;ccedil;alışma sistematiğini anlamaya &amp;ccedil;alışmanızı &amp;ouml;neririm. Ger&amp;ccedil;ek hayat vakalarına bakılmasında da yarar olduğu kanısındayım. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2016-04-23 12:00:00</pubDate>
+  <slug>floyd-warshall-algoritmasi-ile-en-kisa-yolu-bulmak</slug>
+  <tags>
+    <tag>algorithms</tag>
+    <tag>c#</tag>
+    <tag>regular-expression</tag>
+    <tag>network-routing</tag>
+    <tag>dynamic-programming</tag>
+    <tag>floyd-warshall</tag>
+  </tags>
+  <categories>
+    <category>Algoritma</category>
+  </categories>
+</post>

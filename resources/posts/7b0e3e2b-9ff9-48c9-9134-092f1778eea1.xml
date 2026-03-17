@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Python Loglamada ELK Kullanımı</title>
+  <description>ELK yani Elasticsearch, Logstash ve Kibana üçlüsü. Microservis'lerde log stratejisi olarak sıklıkla kullanılıyorlar. Uygulamaların log bilgileri logstash tarafından dinlenip JSON formatına dönüştürülüyor ve Elasticsearch'e basılıyor. Elasticsearch'e alınan log'lar Kibana arayüzü ile izleniyor. Benim amacım ELK üçlüsünü WestWorld'de _(Ubuntu 18.04, 64bit)_ deneyimlemek ve loglama işini yapan uygulama tarafında basit bir Python kodunu kullanmak. WestWorld'ün uzun denemeler sonrası bozulan ekosistemini daha da dağıtmak istemediğimden Elasticsearch ve Kibana tarafı için Docker Container'larını kullanmak istiyorum. Kabaca aşağıdaki gibi bir senaryo söz konusu.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2019/04/20/elk.png" alt="" /&gt;Laptop ekranına kitlenmiş error seviyesindeki logları inceliyordum. HTTP 400 en sevdiğim&lt;em&gt;(yazar burada kendisiyle dalga ge&amp;ccedil;iyor)&lt;/em&gt; ama &amp;ccedil;&amp;ouml;zmekte en &amp;ccedil;ok zorlandıklarımdan birisiydi. Neyse ki monit&amp;ouml;r ettiğimiz ara&amp;ccedil; bize g&amp;uuml;zel detaylar veriyordu. Pek tabii iş yoğunluğundan olsa gerek, &amp;uuml;zerinde geliştirme yaptığımız &amp;uuml;r&amp;uuml;nlerin bazı kurgularını inceleme fırsatı bulamıyordum. Lakin zaman zaman takım arkadaşlarımla veya mimari ekiptekilerle yaptığım konuşmalarda havada u&amp;ccedil;uşan, daha &amp;ouml;nceden duyduğum ama derinlemesine bilgi sahibi olmadığım kelimelere rastlıyordum.&lt;/p&gt;
+&lt;p&gt;ELK kısaltmasını ilk telaf&amp;uuml;z ettiklerinde zihnimde hi&amp;ccedil;bir şey canlanmamıştı. Bilmediğim ve &amp;ouml;ğrenmem gereken bir konu daha ortaya &amp;ccedil;ıkmıştı işte. 2019 yılına girerken aldığım karar doğrultusunda &amp;ouml;ncelikle sağdan soldan adını duyduğum enstr&amp;uuml;manları anlamaya &amp;ccedil;alışacak ve bunları &lt;a href="https://github.com/buraksenyurt/saturday-night-works" target="_blank"&gt;saturday-night-works&lt;/a&gt; altında kabataslak notlarla deneyimleyecektim. Sanırım bu yıl i&amp;ccedil;in aldığım en doğru karardı diyebilirim. Şimdi bunun nimetlerini toplamak &amp;uuml;zere bazı &amp;ccedil;alışmaları bloğumda kendime not olarak d&amp;uuml;ş&amp;uuml;yorum. Sırada ELK kelimesinin derin anlamını &amp;ouml;ğrenmek var. Tabii onu Kanada'nın simgelerinden biri olan 800 kiloluk koca bir geyik t&amp;uuml;r&amp;uuml; olarak d&amp;uuml;ş&amp;uuml;nm&amp;uuml;yoruz. En azından şimdilik...&lt;/p&gt;
+&lt;p&gt;ELK...Yani Elasticsearch, Logstash ve Kibana &amp;uuml;&amp;ccedil;l&amp;uuml;s&amp;uuml;.&amp;nbsp;Mikroservislerde log stratejisi olarak sıklıkla kullanılıyorlar. Tabii bazı &amp;uuml;r&amp;uuml;nlerde &amp;ccedil;eşitli performans sıkıntıları nedeniyle tercih edilmediklerine dair yazılara da rastlamadım değil. Ancak şirketimizde de kullanılan bir d&amp;uuml;zenek olduğu i&amp;ccedil;in onu anlamamın en iyi yolu denemekten ge&amp;ccedil;iyordu. Aslında d&amp;uuml;zenek son derece basit. İzlemek istediğimiz uygulamalara ait log bilgileri logstash tarafından dinlenip JSON formatına d&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;l&amp;uuml;yor ve Elasticsearch'e basılıyor. Elasticsearch'e alınan log kayıtları da Kibana aray&amp;uuml;z&amp;uuml; ile izleniyor.&lt;/p&gt;
+&lt;p&gt;Benim amacım ELK &amp;uuml;&amp;ccedil;l&amp;uuml;s&amp;uuml;n&amp;uuml; WestWorld'de&lt;em&gt;(Ubuntu 18.04, 64bit)&lt;/em&gt;&amp;nbsp;deneyimlemek ve loglama işini yapan uygulama tarafında basit bir Python kodunu kullanmak. WestWorld'&amp;uuml;n uzun denemeler sonrası bozulan ekosistemini daha da dağıtmak istemediğimden Elasticsearch ve Kibana tarafı i&amp;ccedil;in Docker Container'larını kullanacağım. Kabaca aşağıdaki gibi bir senaryonun s&amp;ouml;z konusu olduğunu ifade edebilirim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/20/Cover_1.jpg" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;&amp;Ouml;rnek Uygulama Kodları&lt;/h2&gt;
+&lt;p&gt;Aşağıdaki i&amp;ccedil;eriğe sahip ve izlemek i&amp;ccedil;in log &amp;uuml;reten &amp;ccedil;ok basit bir Python kod dosyamız var. Dosyanın başındaki import bildirimlerinden de g&amp;ouml;r&amp;uuml;leceği &amp;uuml;zere logging, time ve random isimli mod&amp;uuml;ller kullanılıyor. Built-in logging mod&amp;uuml;l&amp;uuml;nden yararlanılarak appLogs isimli dosyaya appende modda log atılacağı belirtiliyor. Logun mesaj ve tarih formatları da basicConfig metodunun son parametreleri ile tanımlanıyor.&lt;/p&gt;
+&lt;pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false"&gt;# Python tarafında logging sistemi built-in olarak gelmektedir.
+import logging
+import time
+import random
+
+logging.basicConfig(filename="appLogs.txt",
+                    filemode='a',
+                    format='%(asctime)s %(levelname)s-%(message)s',
+                    datefmt='%Y-%m-%d %H:%M:%S')
+logging.warning('Sistem a&amp;ccedil;ılışında tutarsızlık')
+
+for i in range(0, 10):  # 10 tane log atıyoruz
+    # zamanı 0 ile 4 arası rastgele s&amp;uuml;relerde duraksatıp log attırıyoruz
+    d = random.randint(0, 4)
+    time.sleep(d)
+    if d == 3:
+        logging.exception('Fatal error oluştu')
+    else:
+        logging.warning('Sistemde yavaşlık var...')
+
+logging.critical('Sistem kapatılamıyor')
+&lt;/pre&gt;
+&lt;h2&gt;Kurulumlar&amp;nbsp;&lt;/h2&gt;
+&lt;p&gt;Şimdi bu kodun logları i&amp;ccedil;in gerekli ELK d&amp;uuml;zeneğini kuracağız. Gerekenleri aşağıdaki gibi maddeleştirmeye &amp;ccedil;alıştım.&lt;/p&gt;
+&lt;h3&gt;Elasticsearch ve Kibana Tarafı&lt;/h3&gt;
+&lt;p&gt;Elasticsearch'&amp;uuml;n Docker kurulumu ve başlatılması i&amp;ccedil;in,&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;docker pull docker.elastic.co/elasticsearch/elasticsearch:6.6.0
+docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:6.6.0&lt;/pre&gt;
+&lt;p&gt;Kibana'ya ait Docker imajı i&amp;ccedil;in,&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;docker pull docker.elastic.co/kibana/kibana:6.6.0
+sudo docker run --net=host -e "ELASTICSEARCH_URL=http://localhost:9200" docker.elastic.co/kibana/kibana:6.6.0&lt;/pre&gt;
+&lt;p&gt;terminal komutlarını &amp;ccedil;alıştırmak yeterli. Ben &amp;ouml;rneği denediğim d&amp;ouml;nemde stabil olan versiyonları kullandım ancak siz kendi denemelerinizi yaparken konuları google'layıp doğru s&amp;uuml;r&amp;uuml;mleri kullanmaya &amp;ccedil;alışın. Bu arada Elasticsearch ve Kibana container'ları &amp;ccedil;alıştıktan sonra aşağıdaki adreslere gidip aktif hale gelip gelmediklerini kontrol etmekte yarar var.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;http://localhost:9200/ -&amp;gt; Elasticsearch
+http://localhost:5601/status -&amp;gt; Kibana&lt;/pre&gt;
+&lt;p&gt;Elastichsearch &amp;ccedil;alışır durumda.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/20/Cover_2.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Monitoring aracımız olan Kibana'da &amp;ouml;yle.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/20/Cover_3.png" alt="" /&gt;&lt;/p&gt;
+&lt;h3&gt;Logstash Tarafı&lt;/h3&gt;
+&lt;p&gt;Logstash tarafı i&amp;ccedil;in &amp;ouml;ncelikle &lt;a href="https://www.elastic.co/downloads/logstash" target="_blank"&gt;şu adresten&lt;/a&gt; ilgili i&amp;ccedil;eriği indirip kurmak gerekiyor &lt;em&gt;(Docker imajı yerine neden bu yolu tercih ettim şu anda hatırlamıyorum)&lt;/em&gt; Bundan sonra python uygulamamızın &amp;uuml;rettiği logları takip etmesi i&amp;ccedil;in aşağıdaki i&amp;ccedil;eriğe sahip bir konfigurasyon dosyasına ihtiyacımız var. Dosyayı etc/logstash/conf.d altına oluşturuyoruz. Bu klas&amp;ouml;r i&amp;ccedil;erisindeki conf uzantılı dosyalar logstash servisi tarafından takip edilmekte. B&amp;ouml;ylece logstash hangi logları takip edeceğini&amp;nbsp;bilecek ve onları Kibana tarafına g&amp;ouml;nderecek.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Bu ve benzeri konfigurasyon dosyalarının logstash servisi tarafından otomatik olarak ele alınabilmesi i&amp;ccedil;in etc/logstash/conf.d klas&amp;ouml;r&amp;uuml; altında konuşlandırılmaları &amp;ouml;nemli. Tabii Ubuntu i&amp;ccedil;in ge&amp;ccedil;erli bir durum olduğunu ifade edelim.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;logstash-python.conf&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;input{
+ file{
+ path =&amp;gt; "/home/burakselyum/Development/saturday-night-works/No 20 - Python Logging with ELK/appLogs.txt"
+ start_position =&amp;gt; "beginning"
+ }
+}
+filter
+{
+ grok{
+ match =&amp;gt; {"message" =&amp;gt; "%{TIMESTAMP_ISO8601:timestamp} %{LOGLEVEL:log-level}-%{GREEDYDATA:message}"}
+ }
+    date {
+    match =&amp;gt; ["timestamp", "ISO8601"]
+  }
+}
+output{
+ elasticsearch{
+ hosts =&amp;gt; ["localhost:9200"]
+ index =&amp;gt; "index_name"}
+stdout{codec =&amp;gt; rubydebug}
+}&lt;/pre&gt;
+&lt;p&gt;Dosyanın &amp;uuml;&amp;ccedil; ana kısımdan oluştuğunu s&amp;ouml;yleyebiliriz. Log dosya kaynağına ait bilgilerin olduğu input, dosya i&amp;ccedil;inden bilginin nasıl alınacağına dair filter ve d&amp;ouml;n&amp;uuml;ş&amp;uuml;m sonrası i&amp;ccedil;eriğin nereye basılacağının belirtildiği output. path &amp;ouml;zelliğinin değeri logstash'in izleyeceği dosyayı ifade etmektedir. grok elementinin i&amp;ccedil;eriği de &amp;ouml;nemlidir. Nitekim text dosyasına atılan standart log mesajlarını nasıl yakalayacağına dair bir desen tanımlamaktadır. Kısacası Grok filtreleme aracı ile text dosyaları gibi hedeflere atılan unstructured log bilgilerini parse etmenin olduk&amp;ccedil;a kolaylaştığını ifade edebiliriz. Sistem logları, Apache logları, SQL logları vb bir &amp;ccedil;ok enstr&amp;uuml;manın loglama yapısı buradaki desenlere uygundur zaten. output kısmında dikkat edileceği &amp;uuml;zere Elasticsearch'&amp;uuml;n host bilgisi yer alıyor.&amp;nbsp;&lt;/p&gt;
+&lt;h2&gt;&amp;Ccedil;alışma Zamanı&lt;/h2&gt;
+&lt;p&gt;Tabii d&amp;uuml;zeneğin işlerliğini g&amp;ouml;rebilmek adına en az bir kereliğine de olsa main.py dosyasını &amp;ccedil;alıştırmamız lazım. Bunu aşağıdaki terminal komutu ile yapabiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;python3 main.py&lt;/pre&gt;
+&lt;p&gt;Bu arada logstash servisinin aktif olduğundan emin olmak gerekiyor ki yazılan log'lar takip edilsin. Eğer &amp;ccedil;alışmıyorsa Logstash servisini başlatmak i&amp;ccedil;in terminalden&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;service logstash service&lt;/pre&gt;
+&lt;p&gt;komutunu y&amp;uuml;r&amp;uuml;tmek yeterli.&lt;/p&gt;
+&lt;h2&gt;Kibana Monitoring&lt;/h2&gt;
+&lt;p&gt;logstash etkinleştirildikten sonra Kibana'ya gidip yeni bir index oluşturabiliriz. index_name* ve @timestamp field'ını se&amp;ccedil;erek ilerlediğimizde python uygulaması tarafından &amp;uuml;retilen logların yakalandığını g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/20/Cover_4.png" alt="" /&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Visualize kısmını kurcalayarak &amp;ccedil;eşitli tipte grafikler hazırlayıp Dashboard'u etkili bir monitoring aracı haline d&amp;ouml;n&amp;uuml;şt&amp;uuml;rmemiz de m&amp;uuml;mk&amp;uuml;n.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;Docker Tarafı&lt;/h2&gt;
+&lt;p&gt;Testler sonrası Docker tarafında ihtiya&amp;ccedil; duyabileceğimiz komutlar da olabilir. S&amp;ouml;z gelimi Container'ların listesini g&amp;ouml;rmek ve durdurmak i&amp;ccedil;in aşağıdaki komutlardan yararlanabiliriz ki &amp;ccedil;alışma sırasında benim &amp;ccedil;ok işime yaradılar&amp;nbsp;&lt;em&gt;(Container ID'ler farklılık g&amp;ouml;sterecektir)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo docker ps -a
+sudo docker stop 3402e6aaced3&lt;/pre&gt;
+&lt;h2&gt;Ben Neler &amp;Ouml;ğrendim&lt;/h2&gt;
+&lt;p&gt;Cumartesi gecesi &amp;ccedil;alışmalarının &lt;a href="https://github.com/buraksenyurt/saturday-night-works" target="_blank"&gt;20nci b&amp;ouml;l&amp;uuml;m&amp;uuml;n&amp;uuml; de bu şekilde tamamlamıştım&lt;/a&gt;. Bu macerada da &amp;ouml;ğrendiklerim oldu.&amp;nbsp;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;ELK &amp;uuml;&amp;ccedil;lemesinin nasıl bir &amp;ccedil;&amp;ouml;z&amp;uuml;m sunduğunu&lt;/li&gt;
+&lt;li&gt;Mikro servis d&amp;uuml;nyasında nasıl kurgulanabileceklerini&lt;/li&gt;
+&lt;li&gt;Ubuntu platformunda Docker imajlarından nasıl yararlanılabileceğini&lt;/li&gt;
+&lt;li&gt;Python kodundan logging paketini kullanarak nasıl log atılabileceğini&lt;/li&gt;
+&lt;li&gt;Elastichsearch ve Kibana'nın docker imajları ile &amp;ccedil;alışmayı&lt;/li&gt;
+&lt;li&gt;logstash config dosyasında ne gibi tanımlamalara yer verildiğini&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir maceramızın daha sonuna. Sizde merak ettiklerinizi &amp;ouml;ğrenmek i&amp;ccedil;in kendinize vakit ayırın. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2019-04-27 19:32:00</pubDate>
+  <slug>Python-Loglamada-ELK-Kullanımı</slug>
+  <tags>
+    <tag>elk</tag>
+    <tag>elasticsearch</tag>
+    <tag>kibana</tag>
+    <tag>logstash</tag>
+    <tag>python</tag>
+    <tag>logging</tag>
+    <tag>docker</tag>
+    <tag>ubuntu</tag>
+    <tag>json</tag>
+    <tag>gork</tag>
+  </tags>
+  <categories>
+    <category>python</category>
+  </categories>
+</post>

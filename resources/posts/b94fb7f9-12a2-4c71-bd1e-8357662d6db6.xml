@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WCF - Özelleştirilmiş UsernamePassword Validator Kullanımı</title>
+  <description>Bu makalemizde WCF tarafında Custom UserNamePasswordValidator kullanarak özel doğrulama işlemlerinin nasıl yapılabileceğini incelemeye çalışıyoruz. Senaryomuzda WsHttpBinding ve Message Based Security seçeneklerine yer veriyor, sertifika tabanlı bir alt yapı kurguluyoruz.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2017/11/custa_8.gif" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Yeni ekibimdeki &amp;ccedil;alışmalar doğrultusunda bir s&amp;uuml;redir servis tabanlı mimarimizde WCF &amp;uuml;zerine oturan hafif bir &amp;ccedil;atı oluşturmaya &amp;ccedil;alışmaktayız. &amp;Ouml;nemli &amp;ouml;l&amp;ccedil;&amp;uuml;de ilerleme kaydettik. Tabii WCF'in en temel fonksiyonelliklerini kullanırken ne kadar geniş bir alan olduğunun da farkına varıyoruz. Bizi zorlayan pek &amp;ccedil;ok nokta var. Bunlardan birisi de g&amp;uuml;venlik. Neredeyse sayısız kombinasyon se&amp;ccedil;eneği ile WCF tarafındaki g&amp;uuml;venlik yetenekleri &amp;ccedil;ok geniş&lt;em&gt;(Bazen ne istediğimizi bile bilemez duruma geldiğimizi itiraf etmek isterim)&lt;/em&gt; Hal b&amp;ouml;yle olunca benim de eski bilgilerimi tazeleyip bazı şeyleri yeniden araştırmam ve &amp;ouml;ğrenmeye &amp;ccedil;alışmam gerekti. En &amp;ccedil;ok takıldığım noktalardan birisi de geliştirme ortamında sertifikalar &amp;uuml;retip bunları WCF tarafında kullanmak. Not aldığım konular &amp;uuml;zerinden adım adım giderken belki benim yolumdan ge&amp;ccedil;en veya ge&amp;ccedil;ecek olan arkadaşlar da vardır diye vakalardan birisini bloğumda kaleme almak istedim.&lt;/p&gt;
+&lt;p&gt;Senaryomuz şu; istemcilerin &amp;ouml;zel bir doğrulama mekanizması ile ele alınmasını sağlamak istiyoruz. Ancak bunu mesaj seviyesinde g&amp;uuml;venli olan bir iletişim hattı &amp;uuml;zerinde ger&amp;ccedil;ekleştirmeliyiz. Binding konusunda serbestiz. Bir başka deyişle WsHttpBinding'i Message Based g&amp;uuml;venlik modunda kullanıp &amp;ouml;zel bir UserNamePasswordValidator tipi ele alacağız. Mesaj tabanlı g&amp;uuml;venlik s&amp;ouml;z konusu olduğu i&amp;ccedil;in sunucu ve istemcinin birbirlerine olan g&amp;uuml;venini sertifikalarıyla sağlamamız gerekiyor. Biliyorum terimlerle kavramlar birbirine girdi ve kafalar karıştı. O zaman gelin adım adım ilerlemeye &amp;ccedil;alışalım.&lt;/p&gt;
+&lt;h1&gt;Sertifikaların Oluşturulması&lt;/h1&gt;
+&lt;p&gt;Aynı ortamda geliştirme yapmaktayız. Sunucu ve istemcinin birbirlerini doğrulaması noktasında iki adet sertifikaya ihtiyacımız olacak. Bu sertifikaları makecert aracını kullanarak &amp;uuml;retebiliriz.&lt;/p&gt;
+&lt;p&gt;İlk olarak sunucu sertifikasını oluşturalım.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;C:\C\Certificates&amp;gt;makecert -sr CurrentUser -ss My -a sha1 -n "CN=AzonServer" -sky exchange -pe&lt;/pre&gt;
+&lt;p&gt;Benzer şekilde istemci sertifikasını...&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;C:\C\Certificates&amp;gt;makecert -sr CurrentUser -ss My -a sha1 -n "CN=AzonServer" -sky exchange -pe&lt;/pre&gt;
+&lt;p&gt;Komutlarda kullanılan anahtarların belli anlamları var. &amp;Ouml;rneğin -sr ile kayıt lokasyonunu&lt;em&gt;(Registry Location)&lt;/em&gt;, -ss ile sertifika deposunu&lt;em&gt;(Certificate Store)&lt;/em&gt;, -a ile hangi kriptografi algoritmasını kullanacağımızı&lt;em&gt;(MD5, SHA1 gibi)&lt;/em&gt;, -n ile &amp;uuml;reteceğimiz sertifikanın genel adını&lt;em&gt;(Common Name)&lt;/em&gt;, -sky ile anahtar tipini&lt;em&gt;(Exchange, Signature gibi)&lt;/em&gt;, -pe ile ilgili anahtarın ihra&amp;ccedil; edilip edilemeyeceğini&lt;em&gt;(Exportable)&lt;/em&gt; belirtmekteyiz. Oluşturulan sertifikalar o anki kullanıcı i&amp;ccedil;in Personal - Certificates deposuna eklenecektir. Bunu Microsoft Management Console(MMC) aracı ile g&amp;ouml;rebiliriz. Komut satırından MMC aracını a&amp;ccedil;ıp File - Add Remove/Snap-in ile Certificates sekmesini ekleyelim. Bu durumda AzonServer ve AzonClient sertifikalarının aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi ilgili depoya dahil edildiklerini g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/11/custa_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Sertifika &amp;uuml;retimleri geliştireceğimiz &amp;ouml;rnekte ilerlememiz i&amp;ccedil;in yeterli değil. İlgili sertifikaları WCF &amp;ccedil;alışma zamanında hem sunucu hem de istemci tarafında kullanabilmek i&amp;ccedil;in Trusted People sekmesi altına da kopyalamamız gerekiyor. Dolayısıyla bir ger&amp;ccedil;ek hayat senaryosunda bu sertifikaların birbirleriyle konuşacak olan uygulama sunucularında da y&amp;uuml;kl&amp;uuml; olması lazım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/11/custa_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;h1&gt;Sunucu Tarafının Geliştirilmesi&lt;/h1&gt;
+&lt;p&gt;Sunucu tarafında basit bir servisimiz bulunacak. Bu servisi WsHttpBinding destekli olacak şekilde konuşlandıracağız. Kullanacağı g&amp;uuml;venlik ayarlarını bu &amp;ouml;rnek &amp;ouml;zelinde programatik olarak d&amp;uuml;zenleyeceğiz. Tabii bir de &amp;ouml;zel kullanıcı doğrulama sınıfımızı ilave edeceğiz. Host uygulamasını Console tabanlı bir proje olarak geliştirebiliriz. System.ServiceModel ve System.IdentityModel k&amp;uuml;t&amp;uuml;phanelerinin projeye referans edilmesi &amp;ouml;nemli. &amp;Ouml;nce servis s&amp;ouml;zleşmesini ve ilgili servis tipini yazalım.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Servis S&amp;ouml;zleşmesi:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.ServiceModel;
+
+namespace AzonHostApp
+{
+    [ServiceContract]
+    public interface IMathService
+    {
+        [OperationContract]
+        double Sum(double x, double y);
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Servis tipi:&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace AzonHostApp
+{
+    public class MathService
+        : IMathService
+    {
+        public double Sum(double x, double y)
+        {
+            return x + y;
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Kobay sınıfımız toplama işlemi i&amp;ccedil;eren bir servis sunmakta. Şimdi &amp;ouml;zel kullanıcı doğrulama(Custom Authentication) işlemini &amp;uuml;stlenecek sınıfı yazalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.IdentityModel.Selectors;
+using System.IdentityModel.Tokens;
+
+namespace AzonHostApp
+{
+    public class AzonUsernamePasswordValidator
+        :UserNamePasswordValidator
+    {
+        public override void Validate(string userName, string password)
+        {
+            if(userName!="barbarian"||password!="P@ssw0rd")
+                throw new SecurityTokenException("");
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;AzonUsernamePasswordValidator sınıfı UserNamePasswordValidator tipinden t&amp;uuml;remekte. &amp;Uuml;st tipten gelen Validate fonksiyonunun ezildiğine&lt;em&gt;(override)&lt;/em&gt; dikkat edelim. &amp;Ouml;rneği olduk&amp;ccedil;a basit bir şekilde ele almak istediğimizden tek yaptığımız belli bir kullanıcı ve şifresini kontrol etmekten ibaret. &amp;Ouml;nemli olan ise ge&amp;ccedil;ersiz oldukları takdirde bir SecurityTokenException fırlatıyor olmamız. Ger&amp;ccedil;ek hayat senaryosunda buradaki kontrol operasyonunun&amp;nbsp;bir Identity Server &amp;uuml;zerinden ger&amp;ccedil;ekleştirilmesi de&amp;nbsp;d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir.&lt;/p&gt;
+&lt;h1&gt;Host Uygulamanın Geliştirilmesi&lt;/h1&gt;
+&lt;p&gt;Gelelim host tarafına. Burada standart olarak servis &amp;ccedil;alışma zamanını ayağa kaldıracak işlemler yapacağız. Normalde konfigurasyon bazlı olarak da ilerleyebiliriz. Ne var ki projelerimizde standart .config se&amp;ccedil;enekleri dışında kod yoluyla bir takım yetenekleri ortama dahil ediyoruz. Aslında tasarlanacak IoC yapısındaki konfigurasyon se&amp;ccedil;enekleri ile WCF &amp;ccedil;alışma ortamını genişletmeyi planladığımızı itiraf edebilirim. Lafı fazla uzatmadan Main metodundaki kodları aşağıdaki gibi d&amp;uuml;zenleyerek devam edelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Security.Cryptography.X509Certificates;
+using System.ServiceModel;
+using System.ServiceModel.Description;
+using System.ServiceModel.Security;
+
+namespace AzonHostApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            ServiceHost host = new ServiceHost(typeof(MathService), new Uri[] { new Uri("http://localhost:6002") });
+            host.Description.Behaviors.Add(new ServiceMetadataBehavior() { HttpGetEnabled = true, HttpsGetEnabled = true });
+            host.Description.Behaviors.Find&amp;lt;ServiceDebugBehavior&amp;gt;().IncludeExceptionDetailInFaults = true;
+            host.Credentials.ClientCertificate.Authentication.CertificateValidationMode = X509CertificateValidationMode.PeerOrChainTrust;
+            host.Credentials.ServiceCertificate.SetCertificate(StoreLocation.CurrentUser, StoreName.My, X509FindType.FindBySubjectName, "AzonServer");
+
+            WSHttpBinding binding = new WSHttpBinding();
+            binding.Security.Mode = SecurityMode.Message;
+            binding.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
+            host.AddServiceEndpoint(typeof(IMathService), binding, "soap12");
+            host.Credentials.UserNameAuthentication.UserNamePasswordValidationMode = UserNamePasswordValidationMode.Custom;
+            host.Credentials.UserNameAuthentication.CustomUserNamePasswordValidator = new AzonUsernamePasswordValidator();
+
+            host.Open();
+            if (host.State == CommunicationState.Opened)
+            {
+                Console.WriteLine("Host dinlemede. Kapatmak i&amp;ccedil;in bir tuşa basın");
+                Console.ReadLine();
+
+                host.Close();
+                Console.WriteLine("Host kapatıldı");
+                Console.ReadLine();
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Şimdi neler yaptığımıza bir bakalım. ServiceHost nesnesini &amp;uuml;retirken hangi tipi kullanacağımızı ve adres bilgisini veriyoruz. Buna g&amp;ouml;re servisimiz http://localhost:6002 adresinden yayınlanacak. WSDL ve Exception detayı paylaşımı i&amp;ccedil;in &amp;ccedil;alışma zamanına varsayılan olarak eklenen ServiceMetadataBehavior ve ServiceDebugBehavior niteliklerini yakalayıp gerekli &amp;ouml;zelliklerini true olarak belirliyoruz. Sonrasında ise istemci ve sunucu arasındaki sertifika doğrulama işlemlerinin hangi modda yapılacağını belirtmekteyiz. &amp;Ouml;rnekte PeerOrChainTrust kullandık. Aslında farklı Trust modları bulunuyor&lt;em&gt;(Detaylar i&amp;ccedil;in &lt;a href="https://msdn.microsoft.com/en-us/library/system.servicemodel.security.x509certificatevalidationmode(v=vs.110).aspx" target="_blank"&gt;şu adrese&lt;/a&gt; bakabilirsiniz)&lt;/em&gt; Devam eden kodda Comman Name değerini AzonServer olarak verdiğimiz sertifikanın bildirimi ger&amp;ccedil;ekleştiriliyor. Sertifikanın CurrentUser deposunda SubjectName'e g&amp;ouml;re aranacağı belirtilmekte.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rnekte Ws standartlarını destekleyen bir binding tipi kullanılmakta. Bu tipin g&amp;uuml;venlik modunu mesaj tabanlı olacak şekilde belirliyoruz. İstemcinin de kullanıcı adı ve şifre doğrulamasına tabi tutulacağını ClientCredentialType &amp;ouml;zelliğine atadığımız değerle işaret etmekteyiz. Bu ayarlamalardan sonra ilgili ServiceEndpoint tipinin eklenmesi s&amp;ouml;z konusu. Host tarafında kullanıcı doğrulama işlemi i&amp;ccedil;in AzonUsernamePasswordValidator isimli bir sınıf yazmıştık. Bu tipin kullanılacağını belirtmemiz lazım. Bu nedenle &amp;ouml;ncelikle UserNamePasswordValidationMode değerini Custom'a &amp;ccedil;ekip CustomUserNamePasswordValidator &amp;ouml;zelliğine de kendi nesne &amp;ouml;rneğimizi ekliyoruz. Tabii burada işin sırrı bu atamanın ger&amp;ccedil;ekleşmesi i&amp;ccedil;in AzonUsernamePasswordValidator tipinin System.IdentityModel.Selectors isim alanındaki UserNamePasswordValidator tipinden t&amp;uuml;remiş olması&lt;em&gt;(İşte size bir &amp;ccedil;alışma zamanının basit genişletilebilirlik tasarımı)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Son olarak Open ve Close metodları kullanılarak gerekli a&amp;ccedil;ma ve kapatma işlemlerinin tatbik edildiğini belirtelim. Console uygulamasını bu haliyle &amp;ccedil;alıştırdığımızda aşağıdaki sonu&amp;ccedil;ları g&amp;ouml;rmemiz gerekiyor.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/11/custa_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;h1&gt;İstemci Tarafının Geliştirilmesi&lt;/h1&gt;
+&lt;p&gt;Artık istemci tarafını yazmaya başlayabiliriz. Onu da basitlik olması a&amp;ccedil;ısından bir Console uygulaması olarak geliştirelim. Host uygulaması a&amp;ccedil;ıkken aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi servis referansını istemci tarafına ekleyebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/11/custa_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;İstemci tarafına ait kodları da aşağıdaki gibi yazabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using AzonClientApp.Azon;
+using System;
+
+namespace AzonClientApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Test i&amp;ccedil;in bir tuşa basın");
+            Console.ReadLine();
+
+            MathServiceClient client = new MathServiceClient("WSHttpBinding_IMathService");
+                      
+            client.ClientCredentials.UserName.UserName = "barbarian";
+            client.ClientCredentials.UserName.Password = "P@ssw0rd";
+            double result = client.Sum(4.12, 3.41);
+
+            Console.WriteLine(result);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Dikkat edilmesi gereken nokta MathServiceClient nesne &amp;ouml;rneği &amp;uuml;zerinden ClientCredentials bilgisinin doldurulması. UserName &amp;uuml;zerinden kullanıcı adı ve şifre bilgilerini belirttikten sonra Sum operasyonunu &amp;ccedil;ağırmaktayız. Şimdi test s&amp;uuml;r&amp;uuml;ş&amp;uuml;ne &amp;ccedil;ıkabiliriz. &amp;Ouml;nce sunucu sonra da istemci uygulamaları &amp;ccedil;alıştıralım. Ne yazık ki aşağıdakine benzer bir hata ile karşılaşma olasılığımız y&amp;uuml;ksek.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/11/custa_5.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Sertifikanın doğrulanması sırasında bir hata oluştuğu ortada. Servis referansının eklenmesi sonrası oluşan web.config i&amp;ccedil;eriğine biraz m&amp;uuml;dahalede bulunmamız gerekiyor. İ&amp;ccedil;eriği aşağıdaki hale getirerek devam edelim.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;startup&amp;gt; 
+        &amp;lt;supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.6.1" /&amp;gt;
+    &amp;lt;/startup&amp;gt;
+    &amp;lt;system.serviceModel&amp;gt;
+        &amp;lt;bindings&amp;gt;
+            &amp;lt;wsHttpBinding&amp;gt;
+                &amp;lt;binding name="WSHttpBinding_IMathService"&amp;gt;
+                    &amp;lt;security&amp;gt;
+                        &amp;lt;message clientCredentialType="UserName" /&amp;gt;
+                    &amp;lt;/security&amp;gt;
+                &amp;lt;/binding&amp;gt;
+            &amp;lt;/wsHttpBinding&amp;gt;
+        &amp;lt;/bindings&amp;gt;
+      &amp;lt;behaviors&amp;gt;
+        &amp;lt;endpointBehaviors&amp;gt;
+          &amp;lt;behavior name="EndpointBehaviorForCertificate"&amp;gt;
+            &amp;lt;clientCredentials&amp;gt;
+              &amp;lt;clientCertificate findValue="AzonClient" x509FindType="FindBySubjectName"
+                storeLocation="CurrentUser" storeName="My" /&amp;gt;
+              &amp;lt;serviceCertificate&amp;gt;
+                &amp;lt;authentication certificateValidationMode="PeerOrChainTrust"/&amp;gt;
+              &amp;lt;/serviceCertificate&amp;gt;
+            &amp;lt;/clientCredentials&amp;gt;
+          &amp;lt;/behavior&amp;gt;
+        &amp;lt;/endpointBehaviors&amp;gt;
+      &amp;lt;/behaviors&amp;gt;
+        &amp;lt;client&amp;gt;
+            &amp;lt;endpoint address="http://localhost:6002/soap12" binding="wsHttpBinding"
+                bindingConfiguration="WSHttpBinding_IMathService" contract="Azon.IMathService"
+                name="WSHttpBinding_IMathService" behaviorConfiguration="EndpointBehaviorForCertificate"&amp;gt;
+                &amp;lt;identity&amp;gt;
+                  &amp;lt;dns value="AzonServer"/&amp;gt;
+                &amp;lt;/identity&amp;gt;
+            &amp;lt;/endpoint&amp;gt;
+        &amp;lt;/client&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Aslında bir endpointBehavior ekledik. EndpointBehaviorForCertificate kısmında istemci tarafına ait sertifika bildirimini yapmaktayız. AzonClient isimli sertifikanın kullanılacağını ifade ediyoruz. Diğer yandan servis sertifikasının doğrulama modelini de PeerOrChainTrust olarak verdiğimize dikkat edelim. Ger&amp;ccedil;i sunucu tarafında da bu şekilde belirttiğimizden istemci tarafında sadece PeerTrust&lt;em&gt;(Bir Chain Store olmadığından ChainStore değil)&lt;/em&gt; da kullanabiliriz. İkinci değişiklik ise endpoint'e ait identity elementinde yer alan dns değeri. Burada servise ait sertifikanın Common Name bilgisinin verildiği g&amp;ouml;r&amp;uuml;lmekte. Uygulamaları tekrar &amp;ccedil;alıştırdığımızda aşağıdaki gibi başarılı bir &amp;ccedil;ağırım ger&amp;ccedil;ekleştirdiğimizi g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/11/custa_6.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Elbette hatalı kullanıcı bilgisi ile ilerlenirse bir istisna alınacağı aşikardır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/11/custa_7.gif" alt="" /&gt;&lt;/p&gt;
+&lt;h1&gt;Sonu&amp;ccedil;&lt;/h1&gt;
+&lt;p&gt;Bu &amp;ouml;rnekte istemci ve servis arasında WS standartlarında mesaj tabanlı g&amp;uuml;venlikle sağlanan bir iletişim ger&amp;ccedil;ekleştirildiğini g&amp;ouml;rd&amp;uuml;k. Ayrıca istemciyi kendi doğrulama modelimize dahil ettik. Kritik nokta bu &amp;ouml;rnekte yer alan sunucu ve istemcinin farklı makinelerde birer uygulama olması hali. B&amp;ouml;yle bir vakada AzonServer ve AzonClient isimli sertifikaların her iki makinenin Trusted People kısmında y&amp;uuml;kl&amp;uuml; olması gerekecektir. İstemci ve sunucuyu ayrı birer uygulama sunucusu olarak da d&amp;uuml;ş&amp;uuml;nebiliriz. &amp;Ouml;rneği farklı g&amp;uuml;venlik modları ile denemenizi &amp;ouml;neririm. &amp;Ouml;rneğin Transport seviyesinde g&amp;uuml;venlik moduna ge&amp;ccedil;meyi deneyebilirsiniz. Bu durumda https şemasını destekleyecek bir sunucuya da sahip olabilirsiniz. İlk başta da belirttiğim &amp;uuml;zere WCF tarafındaki g&amp;uuml;venlik bazlı senaryolar ve kullanılabilecek kombinasyon olduk&amp;ccedil;a fazla. Benim bu &amp;ouml;rnekte yaptığım gibi denemelerden yararlanarak kendiniz keşfetmeye &amp;ccedil;alışırsanız &amp;ouml;ğrendiklerinizin daha kalıcı olacağını g&amp;ouml;rebilirsiniz. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Tekrarda g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2017-10-24 14:18:00</pubDate>
+  <slug>wcf-ozellestirilmis-usernamepasswordvalidator-kullanimi</slug>
+  <tags>
+    <tag>wcf</tag>
+    <tag>windows-communication-foundation</tag>
+    <tag>ws-http-binding</tag>
+    <tag>wcf-security</tag>
+    <tag>security</tag>
+    <tag>x509-certificates</tag>
+    <tag>makecert</tag>
+    <tag>user-name-password-validator</tag>
+    <tag>certificate</tag>
+    <tag>message-based-security</tag>
+  </tags>
+  <categories>
+    <category>WCF</category>
+  </categories>
+</post>

@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WCF Tarafında Task Bazlı Asenkron Operasyonlar</title>
+  <description>Uzun bir zamandır .Net Framework içerisinde, fonksiyonların asenkronize edilmesi üzerinde çalışılmaktadır. Daha önceleri Thread bazlı veya Delegate tipleri ile gerçekleştirdiğimiz asenkron çağırımlar, .Net Framework 4.0’ a gömülü olarak gelen Task Parallel Library sayesinde daha da gelişmiş ve alt yapının her noktasına enjekte edilebilir olmuştur. Şu günlerde .Net Framework 4.5 ile birlikte gündeme gelen ve uzun zamandır da haberdar olduğumuz async, await gibi anahtar kelimeler de, temel de Task tiplerine dayanmaktadır. Bir başka deyişle TPL kütüphanesi ve içeriği, ilerleyen zamanlarda .Net Framework’ ün pek çok önemli alt yapısında etkisini hissettirecektir.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/delegating.jpg"&gt;&lt;img style="display: inline; margin-left: 0px; margin-right: 0px;" title="delegating" src="/pics/delegating_thumb.jpg" alt="delegating" width="300" height="237" align="right" /&gt;&lt;/a&gt; Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Yandaki karikat&amp;uuml;r, aşağıdaki yazıyı bitirdiğim zaman aradığım giriş resmi ile ilişkili olarak karşıma &amp;ccedil;ıkan &amp;ouml;rneklerden sadece bir tanesiydi. Beni epey bir g&amp;uuml;ld&amp;uuml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml; ve neşelendirdiğini ifade edebilirim&amp;nbsp;&lt;img title="Laughing" src="/editors/tiny_mce3/plugins/emotions/img/smiley-laughing.gif" alt="Laughing" border="0" /&gt; Konumuz işlerimizi birilerine y&amp;ouml;nlendirip yan gelip yatmak değil elbette, ama ona benzer olduğunu ifade edebilirim.&lt;/p&gt;
+&lt;p&gt;Bu adamın g&amp;ouml;revlerini başkaların atadıktan sonra, s&amp;ouml;z konusu işler yapılırken başka işlere&lt;em&gt;(&amp;ouml;rneğin koltuğunda ş&amp;ouml;yle bir geriye doğru yaslanarak vakit ge&amp;ccedil;irmek) &lt;/em&gt;y&amp;ouml;nelebildiğine odaklanmaya &amp;ccedil;alışalım. &lt;strong&gt;.Net Framework &lt;/strong&gt;tarafındaki &lt;strong&gt;Delegate &lt;/strong&gt;tipleri de benzer bir ihtiyacı karşılamıyor mu?&amp;nbsp;&lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt; Asenkron olarak fonksiyonların &amp;ccedil;ağırılabilmesini sağlamak&lt;em&gt;(Elbette başka yetenekleri de var ama bu en &amp;ouml;nemlileri arasında sayılabilir)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Uzun bir zamandır&lt;strong&gt; .Net Framework &lt;/strong&gt;i&amp;ccedil;erisinde, fonksiyonların asenkronize edilmesi &amp;uuml;zerinde &amp;ccedil;alışılmaktadır. Daha &amp;ouml;nceleri &lt;strong&gt;Thread&lt;/strong&gt; bazlı veya &lt;strong&gt;Delegate&lt;/strong&gt; tipleri ile ger&amp;ccedil;ekleştirdiğimiz asenkron &amp;ccedil;ağırımlar,&lt;strong&gt; .Net Framework 4.0&amp;rsquo;&lt;/strong&gt; a g&amp;ouml;m&amp;uuml;l&amp;uuml; olarak gelen &lt;strong&gt;Task Parallel Library&lt;/strong&gt; sayesinde daha da gelişmiş ve alt yapının her noktasına enjekte edilebilir olmuştur. Şu g&amp;uuml;nlerde &lt;strong&gt;.Net Framework 4.5&lt;/strong&gt; ile birlikte g&amp;uuml;ndeme gelen ve uzun zamandır da haberdar olduğumuz &lt;strong&gt;async&lt;/strong&gt;, &lt;strong&gt;await&lt;/strong&gt; gibi anahtar kelimeler de, temel de &lt;strong&gt;Task&lt;/strong&gt; tiplerine dayanmaktadır. Bir başka deyişle &lt;strong&gt;TPL&lt;/strong&gt; k&amp;uuml;t&amp;uuml;phanesi ve i&amp;ccedil;eriği, ilerleyen zamanlarda&lt;strong&gt; .Net Framework&amp;rsquo;&lt;/strong&gt; &amp;uuml;n pek &amp;ccedil;ok &amp;ouml;nemli alt yapısında etkisini hissettirecektir.&lt;/p&gt;
+&lt;p&gt;Bu yazımızda &lt;strong&gt;Task&lt;/strong&gt; tiplerinden yararlanarak, &lt;strong&gt;WCF(Windows Communication Foundation)&lt;/strong&gt; servislerinde asenkron operasyon tanımlamalarının nasıl yapılabileceğini ve incelemeye &amp;ccedil;alışıyor olacağız. Ger&amp;ccedil;ekleştirmeyi planladığımız işlemlerde &amp;ouml;nemli olan nokta ise, asenkron y&amp;uuml;r&amp;uuml;tmelerin&lt;strong&gt; istemci(Client)&lt;/strong&gt; tarafında değil, servis tarafındaki operasyonlar i&amp;ccedil;in s&amp;ouml;z konusu olmasıdır. Bir başka deyişle &lt;strong&gt;eş zamanlı olarak &amp;ccedil;alışabilen(Concurrent)&lt;/strong&gt; servis operasyonlarının, &lt;strong&gt;Task &lt;/strong&gt;tiplerinden yararlanarak nasıl asenkron hale getirilebileceğini g&amp;ouml;rmeye &amp;ccedil;alışacağız. Elbette bu asenkronize edilmiş metodlar servis tarafında değerlendirilen bir yaklaşımı i&amp;ccedil;erecektir.&lt;/p&gt;
+&lt;p&gt;Aslında bir servis operasyonunun asenkron &amp;ccedil;alışacak hale getirilmesi, &lt;strong&gt;delegate&lt;/strong&gt; tipleri ile kullanabildiğimiz&lt;em&gt;(hatta Ado.Net 2.0&amp;rsquo; dan bu yana pek &amp;ccedil;ok XCommand gibi tipinde var olan)&lt;/em&gt; &lt;strong&gt;Begin&lt;/strong&gt;&amp;hellip; ve &lt;strong&gt;End&lt;/strong&gt;&amp;hellip; &amp;ouml;n ekli metod oluşumlarının uygulanmasından ibarettir. Aşağıdaki &amp;ouml;rnek kod par&amp;ccedil;asında sadece hatırlatıcı olması a&amp;ccedil;ısından bir &lt;strong&gt;Delegate&lt;/strong&gt; tipi &amp;uuml;zerinden ilgili &lt;strong&gt;BeginInvoke &lt;/strong&gt;ve &lt;strong&gt;EndInvoke&lt;/strong&gt; metodlarına nasıl ulaşılabildiği g&amp;ouml;sterilmeye &amp;ccedil;alışılmıştır. &amp;Ouml;rnekte &lt;strong&gt;Async Callback&lt;/strong&gt; modeli değerlendirilmiştir. Bir başla deyişle asenkron olarak başlatılan metod işleyişini tamamladığında, uygulama ortamındaki başka bir geri bildirim fonksiyonu tetiklenmektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Collections.Generic;
+
+namespace AzonTestClient 
+{ 
+    // &amp;Ouml;rnek bir generic temsilci 
+    delegate int SaveToFileDelegate&amp;lt;T&amp;gt;(IEnumerable&amp;lt;T&amp;gt; list);
+
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            #region Async Callback modeli
+
+            // Temsilci &amp;ouml;rneklenir 
+            SaveToFileDelegate&amp;lt;object&amp;gt; dlg=new SaveToFileDelegate&amp;lt;object&amp;gt;(SaveToFile); 
+            // BeginInvoke &amp;ccedil;ağrısı ile dlg' nin işaret ettiği SaveToFile metodunun &amp;ccedil;ağırılması ve kodun ifade sonundan itibaren akmaya devam etmesi sağlanır 
+            // ilk parametre SaveToFile metodunun alacağı değişken, ikinci parametre işlem bittiğinde tetiklenecek geri bildirim fonksiyonunun işaret&amp;ccedil;isi olan temsilci, &amp;uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; parametre ise geri bildirim metodunda AsyncState &amp;ouml;zelliği &amp;uuml;zerinden yakalanacan Delegate referansı 
+            IAsyncResult asyncResult = dlg.BeginInvoke(new List&amp;lt;object&amp;gt;(), new AsyncCallback(Callback), dlg); 
+            // akış buradan kesilmeden devam eder
+
+            #endregion
+
+            Console.ReadLine(); 
+        }
+
+        // Uzun s&amp;uuml;reli işlem i&amp;ccedil;eren &amp;ouml;rnek metod 
+        static int SaveToFile&amp;lt;T&amp;gt;(IEnumerable&amp;lt;T&amp;gt; list) 
+        { 
+            //TODO: &amp;Ccedil;ok b&amp;uuml;y&amp;uuml;k boyutlu bir veri i&amp;ccedil;eriğinin dosyaya yazılması s&amp;ouml;z konusudur. Zaman alan bir işlem olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir 
+            return 1; 
+        } 
+        // Async Callback tekniğine g&amp;ouml;re SaveToFileDelegate&amp;lt;T&amp;gt; ile işaret edilen metod sonlandığında devreye girecek olan geri bildirim fonksiyonu 
+        static void Callback(IAsyncResult asyncResult) 
+        { 
+            // EndInvoke &amp;ccedil;ağrısı ile ilişkili olan delegate tipi yakalanır 
+            var dlg = asyncResult.AsyncState as SaveToFileDelegate&amp;lt;object&amp;gt;; 
+            // delegate tipi &amp;uuml;zerinden EndInvoke &amp;ccedil;ağrısı yapılarak SaveToFile metodunun sonucu alınır 
+            int result = dlg.EndInvoke(asyncResult); 
+            // Sonu&amp;ccedil; değerlendirilir 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Delegate&lt;/strong&gt; tiplerinin kullanımı g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında, &lt;strong&gt;Polling&lt;/strong&gt;, &lt;strong&gt;Callback&lt;/strong&gt;, &lt;strong&gt;WaitHandle&lt;/strong&gt; gibi modelleri destekleyebilen &lt;strong&gt;BeginInvoke&lt;/strong&gt; ve &lt;strong&gt;EndInvoke&lt;/strong&gt; metod &amp;ccedil;ağırımlarının s&amp;ouml;z konusu olduğu bilinmektedir. &lt;strong&gt;BeginInvoke&lt;/strong&gt; metodu &lt;strong&gt;IAsyncResult&lt;/strong&gt; &lt;strong&gt;aray&amp;uuml;z&amp;uuml;(Interface)&lt;/strong&gt; tipinden bir referans d&amp;ouml;nd&amp;uuml;rmekte olup, program kod akışının izleyen satırdan devam edebilmesini sağlmaktadır. Pek tabi, &lt;strong&gt;EndInvoke&lt;/strong&gt; metodu i&amp;ccedil;erisinde de ilgili &lt;strong&gt;IAsyncResult&lt;/strong&gt; aray&amp;uuml;z referansından yararlanarak sonu&amp;ccedil;ların alınması s&amp;ouml;z konusudur. Bu iki metod arasındaki &amp;ccedil;alışma s&amp;uuml;reci, ana s&amp;uuml;rece&lt;em&gt;(varsayılan olarak uygulamanın Main Thread&amp;rsquo; i olarak da d&amp;uuml;ş&amp;uuml;nebiliriz)&lt;/em&gt; veya diğer s&amp;uuml;re&amp;ccedil;lere paralel olarak y&amp;uuml;r&amp;uuml;t&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;p&gt;Dolayısıyla benzer bir yaklaşımı &lt;strong&gt;WCF&lt;/strong&gt; servislerinde, asenkron hale getirilmek istenen operasyonlar i&amp;ccedil;in de d&amp;uuml;ş&amp;uuml;nebiliriz. Gelin &amp;ouml;ncelikle senkron olarak uzun s&amp;uuml;ren işlem i&amp;ccedil;eren &amp;ouml;rnek bir &lt;strong&gt;WCF&lt;/strong&gt; servisini geliştirelim. Bu ama&amp;ccedil;la aşağıdaki &lt;strong&gt;servis s&amp;ouml;zleşmesini(Service Contract)&lt;/strong&gt; i&amp;ccedil;eren bir servis uygulamasını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/awcf_1.png"&gt;&lt;img style="display: inline;" title="awcf_1" src="/pics/awcf_1_thumb.png" alt="awcf_1" width="528" height="265" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;IProductService aray&amp;uuml;z tipi(Interface);&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.ServiceModel;
+
+namespace AzonServices 
+{ 
+    [ServiceContract] 
+    public interface IProductService 
+    { 
+        [OperationContract] 
+        int CreateProducts(int totalProductCount); 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;ProductService sınıfı;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Collections.Generic;
+
+namespace AzonServices 
+{ 
+    public class ProductService 
+       : IProductService 
+    { 
+        public int CreateProducts(int totalProductCount) 
+        { 
+            int createdProductCount = 0; 
+            char[] classes = {'C', 'D', 'E', 'L', 'S'}; 
+            List&amp;lt;Product&amp;gt; products = new List&amp;lt;Product&amp;gt;(); 
+            Random randomizer = new Random();
+
+            for (int i = 0; i &amp;lt; totalProductCount; i++) 
+            { 
+                Product newProduct = new Product 
+                                         { 
+                                             ProductId=i, 
+                                             Name="PRD-"+i.ToString(), 
+                                             ListPrice=randomizer.Next(1,100), 
+                                             StockSize=randomizer.Next(50,500), 
+                                             Class=classes[randomizer.Next(0,classes.Length)] 
+                                         }; 
+                products.Add(newProduct); 
+                createdProductCount++; 
+            } 
+            //TODO: product listesinin veritabanın yazılma veya dosyaya kayıt edilme işlemi yapılacak 
+            return createdProductCount; 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Product POCO sınıfı;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace AzonServices 
+{ 
+    class Product 
+    { 
+        public char Class { get; set; } 
+        public int StockSize { get; set; } 
+        public int ListPrice { get; set; } 
+        public string Name { get; set; } 
+        public int ProductId { get; set; } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;CreateProducts&lt;/strong&gt; metodu istemciden aldığı toplam miktara g&amp;ouml;re bir &lt;strong&gt;Product&lt;/strong&gt; listesi &amp;uuml;retmektedir. Test ama&amp;ccedil;lı olarak &amp;uuml;retilen bu listenin i&amp;ccedil;erisinde yer alan &amp;uuml;r&amp;uuml;n bilgileri, rastgele değerlerden oluşmaktadır. İstemcinin vereceği maksimum &amp;uuml;r&amp;uuml;n sayısına g&amp;ouml;re ilgili operasyonun uzun s&amp;uuml;rmesi olasıdır. İstemci a&amp;ccedil;ısından bakıldığında, s&amp;ouml;z konusu operasyonunun tamamlanana kadar uygulama i&amp;ccedil;erisinde beklenmesine gerek yoktur. Bu, zaten istemci tarafında sahip olduğumuz ilgili servisi asenkron olarak &amp;ccedil;ağırma yeteneğidir. Hatta servisi istemci tarafına eklerken &lt;strong&gt;Add Service Reference&lt;/strong&gt; arabirimindeki ilgili opsiyon etkinleştirilerek servis operasyonlarının &lt;strong&gt;olay bazlı(Event Based) &lt;/strong&gt;asenkron &amp;ccedil;ağırım versiyonlarının &amp;uuml;retilmesi sağlanabilmektedir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;İstemci tarafında servis &amp;ccedil;ağırımlarına ait asenkron operasyon desteğini etkinleştirmek i&amp;ccedil;in, Generate asynchronous operations &amp;ouml;zelliğinin işaretlenmiş olması gerekmektedir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;a href="/pics/awcf_2.png"&gt;&lt;img style="display: inline;" title="awcf_2" src="/pics/awcf_2_thumb.png" alt="awcf_2" width="551" height="517" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Sonu&amp;ccedil; olarak &amp;uuml;retilen &lt;strong&gt;Async&lt;/strong&gt; uzantılı asenkron &amp;ccedil;ağırım metodu ve servis operasyon işleminin tamamlanması sonrası devreye girecek fonksiyonu işaret edecek olan &lt;strong&gt;olay(Event), &lt;/strong&gt;kod tarafında değerlendirilebilir olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/awcf_3.png"&gt;&lt;img style="display: inline;" title="awcf_3" src="/pics/awcf_3_thumb.png" alt="awcf_3" width="631" height="230" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Gayet g&amp;uuml;zel&amp;nbsp;&lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt; Buraya kadar ki kısımda zaten pek bir sıkıntı yok a&amp;ccedil;ık&amp;ccedil;ası. Ancak ş&amp;ouml;yle bir durum da s&amp;ouml;z konusu,&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Servise eş zamanlı olarak gelen &amp;ccedil;ağrılarda ve tek bir servis &amp;ouml;rneğinin(Instance) oluşmasının tercih edildiği durumlarda, servis &amp;uuml;zerindeki bu y&amp;uuml;k nasıl asenkronize edilebilir?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;İşte yazımızın asıl konusu da budur.&lt;/p&gt;
+&lt;p&gt;Başlarda da belirttiğimiz gibi servis tarafında &lt;strong&gt;IAsyncResult&lt;/strong&gt; aray&amp;uuml;z&amp;uuml; ve &lt;strong&gt;Task&lt;/strong&gt; tiplerini kullanarak, &lt;strong&gt;eş zamanlı(Concurrent)&lt;/strong&gt; olarak gelen &amp;ccedil;ağrılarda, ilgili operasyonların servis tarafını gereksiz yere duraksatması engellenebilir. Bunun i&amp;ccedil;in &lt;strong&gt;IProductService&lt;/strong&gt; &lt;strong&gt;servis s&amp;ouml;zleşmesini(Service Contract)&lt;/strong&gt; ve &lt;strong&gt;ProductService&lt;/strong&gt; sınıfını aşağıdaki gibi değiştirmemiz yeterli olacaktır.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;nce &lt;strong&gt;Class Diagram &lt;/strong&gt;&amp;uuml;zerinden ilgili değişikliklere bir bakalım.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/awcf_4.png"&gt;&lt;img style="display: inline;" title="awcf_4" src="/pics/awcf_4_thumb.png" alt="awcf_4" width="595" height="470" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;IProductService aray&amp;uuml;z&amp;uuml;n&amp;uuml;n yeni versiyonu;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.ServiceModel; 
+using System;
+
+namespace AzonServices 
+{ 
+    [ServiceContract] 
+    public interface IProductService 
+    { 
+        [OperationContract(AsyncPattern=true, Action="CreateProducts", Name="CreateProducts", ReplyAction ="CreateProductsReply")] 
+        IAsyncResult BeginCreateProducts(int totalProductCount,AsyncCallback callback,object asyncState);
+
+        int EndCreateProducts(IAsyncResult result); 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Servis s&amp;ouml;zleşmesinde &lt;strong&gt;Begin&lt;/strong&gt; ve &lt;strong&gt;End&lt;/strong&gt; &amp;ouml;n ekleri ile başlayan iki metod yer almaktadır. Dikkat edilmesi gereken noktalardan birisi, &lt;strong&gt;EndCreateProducts&lt;/strong&gt; metodunun &lt;strong&gt;OperationContract&lt;/strong&gt; &lt;strong&gt;niteliği(Attribute)&lt;/strong&gt; ile &lt;span style="text-decoration: underline;"&gt;imzalanmamış&lt;/span&gt; oluşudur. Nitekim bu metod, &lt;strong&gt;BeginCreateProducts&lt;/strong&gt; metodunun tamamlanması sonucu devreye giren metod olmakla birlikte, sadece servis tarafını ilgilendiren bir fonksiyondur. Dolayısıyla istemci tarafına a&amp;ccedil;ılmasına s&amp;ouml;z konusu değildir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;BeginCreateProducts&lt;/strong&gt; metoduna ait &lt;strong&gt;OperationContract&lt;/strong&gt; niteliğinde ise bazı &amp;ouml;zellikler set edilmiştir. Herşeyden &amp;ouml;nce ilgili operasyonun &lt;strong&gt;Asenkron&lt;/strong&gt; desene uygun olarak &amp;ccedil;alışacağının belirtilmesi gerekmektedir. Bu ama&amp;ccedil;la &lt;strong&gt;AsyncPattern&lt;/strong&gt; &amp;ouml;zelliğine &lt;strong&gt;true&lt;/strong&gt; değeri verilmiştir. Diğer taraftan aksiyon, operasyonun istemci tarafından g&amp;ouml;r&amp;uuml;necek olan adı ve istemci tarafında verilecek olan cevaba ait &lt;strong&gt;Action&lt;/strong&gt; bilgisi de ilgili &amp;ouml;zelliklerce set edilmiştir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;BeginCreateProducts&lt;/strong&gt; metodu ve &lt;strong&gt;EndCreateProducts&lt;/strong&gt; metodlarının şema yapılarına bakıldığında, &lt;strong&gt;temsilci(Delegate)&lt;/strong&gt; tiplerinin &lt;strong&gt;BeginInvoke&lt;/strong&gt; ve &lt;strong&gt;EndInvoke&lt;/strong&gt; metodlarından farksız oldukları g&amp;ouml;zlemlenmektedir. &lt;em&gt;(İsimlendirme standartdını bozmamak a&amp;ccedil;ısından da bu şekilde bir adlandırma tercih edilmelidir)&lt;/em&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;BeginCreateProducts&lt;/strong&gt; metodu, ilk parametre olarak istemciden gelecek olan &lt;strong&gt;integer&lt;/strong&gt; değeri almaktadır. Son iki parametre ise değişmez sırada olmalıdır. Bunlardan birisi &lt;strong&gt;Callback&lt;/strong&gt; metodunu işaret edecek olan &lt;strong&gt;AsyncCallback&lt;/strong&gt; temsilcisi iken, son parametre de &lt;strong&gt;EndCreateProducts&lt;/strong&gt; metodu i&amp;ccedil;erisinde &lt;strong&gt;BeginCreateProducts&lt;/strong&gt; fonksiyonunda başlatılan &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneğini yakalamak ve dolasıyıyla sonucunu almak &amp;uuml;zere kullanılan &lt;strong&gt;object&lt;/strong&gt; referansıdır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ProductService sınıfının yeni versiyonu;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Collections.Generic; 
+using System.ServiceModel; 
+using System.Threading.Tasks;
+
+namespace AzonServices 
+{ 
+    [ServiceBehavior(InstanceContextMode= InstanceContextMode.Single, ConcurrencyMode= ConcurrencyMode.Multiple)] 
+    public class ProductService 
+        : IProductService 
+    { 
+        public IAsyncResult BeginCreateProducts(int totalProductCount, AsyncCallback callback, object asyncState) 
+        { 
+            var task = new Task&amp;lt;int&amp;gt;((s) =&amp;gt; 
+                                         { 
+                                             int createdProductCount = 0; 
+                                             char[] classes = {'C', 'D', 'E', 'L', 'S'}; 
+                                             List&amp;lt;Product&amp;gt; products = new List&amp;lt;Product&amp;gt;(); 
+                                             Random randomizer = new Random();
+
+                                             for (int i = 0; i &amp;lt; totalProductCount; i++) 
+                                             { 
+                                                 Product newProduct = new Product 
+                                                                          { 
+                                                                              ProductId = i, 
+                                                                              Name = "PRD-" + i.ToString(), 
+                                                                              ListPrice = randomizer.Next(1, 100), 
+                                                                              StockSize = randomizer.Next(50, 500), 
+                                                                              Class = 
+                                                                                  classes[ 
+                                                                                      randomizer.Next(0, classes.Length) 
+                                                                                  ] 
+                                                                          }; 
+                                                 products.Add(newProduct); 
+                                                 createdProductCount++; 
+                                             } 
+                                             return createdProductCount; 
+                                         }, asyncState);
+
+            task.ContinueWith((t) =&amp;gt; { callback(t); }); 
+            task.Start();
+
+            return task; 
+        }
+
+        public int EndCreateProducts(IAsyncResult result) 
+        { 
+            var task = (Task&amp;lt;int&amp;gt;) result; 
+            return task.Result; 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;ProductService&lt;/strong&gt; tipinin ilk dikkat &amp;ccedil;eken noktalarından birisi, &lt;strong&gt;ServiceBehvaior&lt;/strong&gt; niteliğinde set edilen &amp;ouml;zelliklerdir. Servisin bellek &amp;uuml;zerinde tek bir &amp;ouml;rnek olarak oluşturulması belirlendikten sonra&lt;strong&gt;(InstanceContextMode.Single),&lt;/strong&gt; servis operasyonlarında &lt;strong&gt;Async&lt;/strong&gt; değeri &lt;strong&gt;true&lt;/strong&gt; olanlara da eş zamanlı olarak erşilebileceği ifade edilmektedir&lt;strong&gt;(ConcurrencyMode.Multiple)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;BeginCreateProducts&lt;/strong&gt; metodunun i&amp;ccedil;erisinde &lt;strong&gt;Task&lt;/strong&gt; tipinden yararlanıldığı g&amp;ouml;r&amp;uuml;lmektedir. &lt;strong&gt;Asenkron&lt;/strong&gt; olarak y&amp;uuml;r&amp;uuml;t&amp;uuml;lmek istenen operasyona ait kod par&amp;ccedil;aları &lt;strong&gt;Task&lt;/strong&gt; tipi &amp;ouml;rneklenirken ilgili &lt;strong&gt;isimsiz metod(Anonymous Method)&lt;/strong&gt; i&amp;ccedil;erisine yazılmıştır. Bu &amp;ouml;rnekte &lt;strong&gt;Task&lt;/strong&gt; tipinin &lt;strong&gt;generic&lt;/strong&gt; bir versiyonun kullanıldığı g&amp;ouml;r&amp;uuml;lmektedir. Nitekim metod geriye &lt;strong&gt;int&lt;/strong&gt; tipinden bir sonu&amp;ccedil; d&amp;ouml;nd&amp;uuml;recek şekilde tasarlanmıştır. &lt;strong&gt;Task&lt;/strong&gt; tipinin &amp;ouml;rneklenmesi sırasında kullanılan &lt;strong&gt;asyncState&lt;/strong&gt; nesne &amp;ouml;rneği &lt;strong&gt;EndCreateProducts&lt;/strong&gt; metodu i&amp;ccedil;erisinde yakalanacak olan &lt;strong&gt;Task&lt;/strong&gt; nesne &amp;ouml;rneğine ait referans olacaktır.&lt;/p&gt;
+&lt;p&gt;İlerleyen satırlarda &lt;strong&gt;task&lt;/strong&gt; nesne &amp;ouml;rneğinin tamamlanması sonucu &lt;strong&gt;callback&lt;/strong&gt; değişkeni ile ifade edilen &amp;ccedil;alışma zamanı metodunun tetiklenmesi ve &lt;strong&gt;t&lt;/strong&gt; isimli &lt;strong&gt;Task&lt;/strong&gt; değişkeninin&lt;em&gt;(ki bu t, task isimli değişkeni ifade etmektedir)&lt;/em&gt; ilgili geri bildirim metodunun&lt;em&gt;(ki EndCreateProducts olmaktadır)&lt;/em&gt; &lt;strong&gt;IAsyncResult&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;ne atanması sağlanır&lt;em&gt;(&lt;strong&gt;ContinueWith&lt;/strong&gt; kısmı).&lt;/em&gt; &lt;strong&gt;Start&lt;/strong&gt; metodu ile bildiğiniz &amp;uuml;zere ilgili task &amp;ouml;rneği başlatılmaktadır. Bundan sonraki aşama ise olduk&amp;ccedil;ta basittir. &lt;strong&gt;EndCreateProducts&lt;/strong&gt; metoduna gelecek olan &lt;strong&gt;IAsyncResult&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;nden yararlanılarak &amp;ccedil;alışma zamanındaki &lt;strong&gt;Task&amp;lt;int&amp;gt;&lt;/strong&gt; referansı yakalanmakta ve &lt;strong&gt;Result&lt;/strong&gt; &amp;ouml;zelliği ile &amp;ccedil;alışma sonucu &amp;uuml;retilen tamsayı değeri geriye, bir başka deyişle itemci tarafına d&amp;ouml;nd&amp;uuml;r&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;p&gt;Biraz karmaşık g&amp;ouml;z&amp;uuml;ken bir desen olduğunun farkındayım&amp;nbsp;&lt;img title="Undecided" src="/editors/tiny_mce3/plugins/emotions/img/smiley-undecided.gif" alt="Undecided" border="0" /&gt; Ancak kalıp olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde pek &amp;ccedil;ok servis operasyonuna kolayca entegre edilebilecek bir yapı olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Elbette bu konuyu bir de, &lt;strong&gt;.Net Framework 4.5&amp;rsquo;&lt;/strong&gt; e entegre olarak gelen yeni &lt;strong&gt;async&lt;/strong&gt; ve &lt;strong&gt;await&lt;/strong&gt; anahtar kelimelerini g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alarak değerlendirmekte yarar vardır. Bunu da ilerleyen zamanlarda incelemeyi planlamaktayım&amp;nbsp;&lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt; B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Bir sonraki yazımızda g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2012%2f3%2fAzonServices.zip"&gt;AzonServices.zip (67,73 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2012-05-24 14:50:00</pubDate>
+  <slug>WCF-Task-Bazli-Asenkron-Operasyonlar</slug>
+  <tags>
+    <tag>wcf</tag>
+    <tag>windows-communication-foundation</tag>
+    <tag>task-parallel-library</tag>
+    <tag>tpl</tag>
+    <tag>iasyncresult</tag>
+  </tags>
+  <categories>
+    <category>WCF 4.0</category>
+  </categories>
+</post>

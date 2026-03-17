@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Azure SignalR Servisini Kullanmak</title>
+  <description>Amacım Azure platformunda sunulan SignalR hizmetini kullanarak abonelere bildirimlerde bulunabilmek. Normal SignalR senaryosundan farklı olarak, istemciler ve tetikleyici arasındaki eş zamanlı iletişimi (Real Time Communications) Azure platformundaki bir SignalR servisi ile gerçekleştirmeye çalışacağım. Senaryomuzda bildirimleri gören en az bir istemci (ki n tane olması daha anlamlı), local ortamda çalışan ve bildirim yayan bir Azure Function uygulaması ve Azure platformunda konuşlandırılan bir SignalR servisi olacak. Azure üzerinde koşan SignalR servisi Serverless modda çalışacak şekilde ayarlanacak.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2019/09/34/emcey.png" alt="" /&gt;Basketbolu neden bu kadar &amp;ccedil;ok seviyorum diye d&amp;uuml;ş&amp;uuml;nd&amp;uuml;m ge&amp;ccedil;enlerde. Oturduğumuz sitenin basket sahasını futbol oynamak i&amp;ccedil;in kullanan onca &amp;ccedil;ocuk ve gen&amp;ccedil; gibi bir ger&amp;ccedil;ek varken ben neden bu spora b&amp;ouml;ylesine sevdalıydım. İnanılmaz enerjisi ve s&amp;uuml;rekli değiştirdiği NBA şapkaları ile rahmetli İsmet Badem mi sevdirmişti? Yoksa final serisi ma&amp;ccedil;ları sabahın ka&amp;ccedil;ında olursa olsun uyanamayıp okula ge&amp;ccedil; gitmeme neden olan majestelerinin ma&amp;ccedil;ları mı? Basketbolun t&amp;uuml;m efsanelerini kendi kardeşiymiş gibi tanıyan ve ma&amp;ccedil;ları kendine has heyecanı ile anlatan Murat Murathanoğlu muydu yoksa?&lt;/p&gt;
+&lt;p&gt;Belki de Kora&amp;ccedil; kupasını alarak Avrupa'da bir ilke imza atan Efes'in Abdi İpek&amp;ccedil;i salonundaki Stefanel Milano ma&amp;ccedil;ına girmek i&amp;ccedil;in kuyrukta beklerken arabasından bizi seyreden yaşıtım Mirsad T&amp;uuml;rkcan'ın onca seyirciyi coşkuyla selamlamasıydı. Kim bilir belki de h&amp;uuml;cum s&amp;uuml;resi hen&amp;uuml;z otuz saniyeyken Peter Naumovski'nin eliyle tshirt'&amp;uuml;n&amp;uuml;n sağ yakasını ağzına g&amp;ouml;t&amp;uuml;rerek verdiği setin adıydı. Belki de zamanında her g&amp;uuml;n b&amp;uuml;y&amp;uuml;k bir i&amp;ccedil; motivasyonla gittiğim turuncu bankanın CBL&lt;a href="http://www.cbl.com.tr/" target="_blank"&gt;&lt;em&gt;(corporate basketball league)&lt;/em&gt;&lt;/a&gt; se&amp;ccedil;melerinde ko&amp;ccedil;un bana gelip "abi kusura bakma" dedikten sonra yaşımı &amp;ouml;ğrenip "sen ciddi misin abi? Ben bu kadar b&amp;uuml;y&amp;uuml;k olduğunu bilmiyordum. &amp;Ccedil;ok daha gen&amp;ccedil; duruyorsun. Basketbol sevgine hayran kaldım" s&amp;ouml;ylemine rağmen takıma almayışı&amp;nbsp;ve Bill Murray'ın Space Jam'de Larry Bird ile olan konuşmasında ona "You can't play" demesini hatırlayışım mıydı? İnanın hi&amp;ccedil; bilmiyorum. Ama &amp;ccedil;ok sevip de hi&amp;ccedil; bir zaman beceremediğim bu oyunu mesleki &amp;ccedil;alışmalarımda kullanmaya bayılıyorum. İşte &amp;ouml;yle bir &amp;ccedil;alışmanın girizgahındasın şu anda sevgili okur :)&lt;/p&gt;
+&lt;p&gt;O&amp;nbsp;&lt;a href="https://github.com/buraksenyurt/saturday-night-works" target="_blank"&gt;cumartesi gecesi &amp;ccedil;alışması&lt;/a&gt;ndaki amacım Azure platformundaki SignalR hizmetini kullanarak abone programlara &amp;ccedil;eşitli tipte bildirimlerde bulunabilmekti. Normal SignalR senaryosundan farklı olarak istemciler ve tetikleyici arasındaki eş zamanlı iletişimi&lt;em&gt;(Real Time Communications)&lt;/em&gt; Azure platformundaki bir SignalR servisi ile ger&amp;ccedil;ekleştirmek istemiştim. Senaryoda bildirimleri g&amp;ouml;ren en az bir istemci&lt;em&gt;(ki n tane olması daha anlamlı)&lt;/em&gt;, local ortamda &amp;ccedil;alışan ve bildirim yayan bir Azure Function uygulaması ve Azure platformunda konuşlandırılan bir SignalR servisi olmasını planlamıştım. Ayrıca Azure &amp;uuml;zerinde koşan bu SignalR servisini Serverless modda &amp;ccedil;alışacak şekilde ayarlamayı planlıyordum. Bir takım sonu&amp;ccedil;lara ulaşmayı başardım. Şimdi &amp;ccedil;alışmaya ait notları derleme zamanı. &amp;Ouml;yleyse ne duruyoruz. Haydi başlayalım.&lt;/p&gt;
+&lt;p&gt;SignalR servisi t&amp;uuml;m Azure fonskiyonları ile kullanılabilir. &amp;Ouml;rneğin Azure Cosmos DB'deki değişiklikleri SignalR servisi ile istemcilere yollayabiliriz. Benzer şeyi kuyruk mesajlarını veya HTTP taleplerini işleyen Azure fonksiyonları i&amp;ccedil;in de sağlayabiliriz. Kısacası Azure fonksiyonlarından yapılan tetiklemeler sonrasında SignalR servislerinden yararlanarak bağlı olan aboneleri bilgilendirebiliriz. Şimdi WestWorld'&amp;uuml;n gereksinimlerini tamamlayaraktan &amp;ouml;rneğimizi geliştirmeye başlayalım.&lt;/p&gt;
+&lt;h2&gt;&amp;Ouml;n Gereksinimler&lt;/h2&gt;
+&lt;p&gt;Azure platformunda SignalR servisini oluşturmadan &amp;ouml;nce WestWorld&lt;em&gt;(Ubuntu 18.04, 64bit)&lt;/em&gt; tarafında Azure Function geliştirebilmek i&amp;ccedil;in gerekli kurulumları yapmam gerekiyordu. İlk olarak &lt;a href="https://github.com/Azure/azure-functions-core-tools" target="_blank"&gt;Azure Functions Core Tools&lt;/a&gt;'un y&amp;uuml;klenmesi lazım. Aşağıdaki terminal komutları ile bunu ger&amp;ccedil;ekleştirmek m&amp;uuml;mk&amp;uuml;n. &amp;Ouml;nce Microsoft &amp;uuml;r&amp;uuml;n anahtarını Ubuntu&amp;nbsp;ortamına kaydediyor ve sonrasında bir g&amp;uuml;ncelleme yapıp devamında azure-functions-core-tools paketini y&amp;uuml;kl&amp;uuml;yoruz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor &amp;gt; microsoft.gpg
+sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
+
+sudo apt-get update
+
+sudo apt-get install azure-functions-core-tools&lt;/pre&gt;
+&lt;p&gt;Kurulumdan sonra terminalden Azure Function projeleri oluşturmaya başlanabilir. Lakin bu işin Visual Studio Code tarafında daha kolay bir yolu var. O da&amp;nbsp;&lt;a href="https://code.visualstudio.com/docs/azure/extensions" target="_blank"&gt;Azure Functions isimli&amp;nbsp;aracı&lt;/a&gt;&amp;nbsp;kullanmak.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/34/credit_1.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Visual Studio Code'a gelen bu ara&amp;ccedil;la kolayca Azure Function projeleri oluşturabiliriz.&lt;/p&gt;
+&lt;h2&gt;Azure SignalR Servisinin Hazırlanması&lt;/h2&gt;
+&lt;p&gt;Adım adım ilerlemeye &amp;ccedil;alışalım. &amp;Ouml;ncelikle Azure platformunda bir SignalR servisi oluşturmamız gerekiyor. Ben&amp;nbsp;&lt;a href="https://portal.azure.com" target="_blank"&gt;Azure Portal adresinden&lt;/a&gt; SignalR Service &amp;ouml;ğesini aratarak işe başladım. Sonrasında aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan bilgiler ile servisi oluşturdum.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/34/credit_2.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Free Tier planında, learning-rg Resource Group altında, basketcini.service.signalr.net isimli bir SignalR servisimiz var.&amp;nbsp;Bu servisinin oluşması biraz zaman alabilir ki ben bir s&amp;uuml;re beklediğimi hatırlıyorum.&amp;nbsp;Servis etkinleştikten sonra &amp;ouml;zelliklerine giderek Serverless modda &amp;ccedil;alışacak şekilde ayarlayabiliriz. Bunun i&amp;ccedil;in Service Mode &amp;ouml;zelliğini Serverless'a &amp;ccedil;ekmek yeterli. Tabii ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nden de fark edeceğiniz &amp;uuml;zere PREVIEW modunda. Kuvvetle muhtemel sizin denemelerinizi yapacağınız durumda son halini almış olabilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/34/credit_3.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu SignalR servisi ile local makinede &amp;ccedil;alışacak ve tetikleyici g&amp;ouml;revini &amp;uuml;stlenecek Azure Function uygulamasının haberleşebilmesi i&amp;ccedil;in, Key değerlerine ihtiyacımız olacak. Bu değerleri Azure Function uygulamasının local.settings.json dosyasında kullanmamız gerekiyor. O nedenle aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ndeki gibi ilgili değerleri kopyalayıp g&amp;uuml;venli bir yerlerde saklayın.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/34/credit_4.png" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;Azure Functions Projesinin Oluşturulması&lt;/h2&gt;
+&lt;p&gt;Y&amp;uuml;klenen Azure Functions aracından &lt;strong&gt;Create New Project&lt;/strong&gt;&amp;nbsp;se&amp;ccedil;imini yaparak ilerleyebiliriz. Proje i&amp;ccedil;in bir klas&amp;ouml;r belirleyip&lt;em&gt;(Ben NotifierApp isimli klas&amp;ouml;r&amp;uuml; kullandım)&lt;/em&gt;&amp;nbsp;dil olarak C#'ı tercih ederek devam edelim. Sonrasında &lt;strong&gt;Create Function&lt;/strong&gt;&amp;nbsp;se&amp;ccedil;eneği ile projeye Scorer isimli bir fonksiyon ekleyelim.&amp;nbsp;Ben bu işlem sırasında sorulan sorulara aşağıdaki cevapları verdim. Siz kendi projenize &amp;ouml;zg&amp;uuml;n hareket ederseniz daha iyi olabilir. &amp;Ouml;zetle HTTP metodları ile tetiklenen bir fonksiyon s&amp;ouml;z konusu diyebiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;Fonksiyon Adı : Scorer
+Klas&amp;ouml;r : NotifierApp
+Tipi : Http Trigger
+Namespace : Basketcini.Function
+Erişim Yetkisi : Anonymous&lt;/pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;Ouml;rnekte Table Storage se&amp;ccedil;eneği değerlendirilmiştir. Bunun i&amp;ccedil;in &amp;ouml;ncelikle Azure Portal &amp;uuml;zerinde learningsignalrstorage isimli bir Storage Account oluşturdum ve Access Keys kısmında verilen Connection Strings bilgisini kullandım. Yani bildirimlerin depolanacağı Storage alanını sevgili Azure'a devrettim. &amp;Ccedil;&amp;uuml;nk&amp;uuml; WestWorld'&amp;uuml;n disk kapasitesi&amp;nbsp;epeyce azalmış durumdaydı :P&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3&gt;Azure Functions Projesinde Yapılanlar&lt;/h3&gt;
+&lt;p&gt;Azure fonksiyonu oluşturulduktan sonra elbette biraz kodlama yapmamız gerekecek. Ama &amp;ouml;ncesinde bizim i&amp;ccedil;in gerekli nuget paketlerini y&amp;uuml;klemeliyiz.&amp;nbsp;Aşağıdaki terminal komutlarını NotifierApp klas&amp;ouml;r&amp;uuml;nde &amp;ccedil;alıştırarak devam edelim.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet add package Microsoft.Azure.WebJobs.Extensions.EventGrid 
+dotnet add package Microsoft.Azure.WebJobs.Extensions.SignalRService 
+dotnet add package Microsoft.Azure.WebJobs.Extensions.Storage&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;nemli değişikliklerden birisi local.settings.json dosyasında yer alıyor. Burada Azure SignalR servisine ait Connection String bilgisi ve CORS tanımı&lt;em&gt;(Senaryoya g&amp;ouml;re isimsiz t&amp;uuml;m istemciler Azure Function Api'sini kullanabilecek)&lt;/em&gt; eklemek lazım. Nasıl yapıldığını s&amp;ouml;ylemek isterdim ama gitignore dosyasında bu json i&amp;ccedil;eriğini dışarıda bırakmışım. Yani hatırlamıyorum :) Yani sizin keşfetmeniz gerekecek ;)&lt;/p&gt;
+&lt;p&gt;Bunun haricinde skor durumunu ve anlık olarak meydana gelen olay bilgisini tutan Timeline ve Action isimli sınıfları da aşağıdaki gibi kodlayabiliriz. Biliyorum hen&amp;uuml;z senaryo tam olarak şekillenmiş değil. Ama &amp;ccedil;alışma zamanına geldiğimizde ne olduğunu gayet iyi anlayacaksınız.&amp;nbsp;Action sınıfı ile başlayalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace Basketcini.Function
+{
+    /*
+        Table Storage'e yazılacak veri i&amp;ccedil;eriğini temsil eden sınıftır.
+        Azure Table Storage'a aşağıdaki &amp;ouml;zellikler birer alan olarak a&amp;ccedil;ılacaktır.
+     */
+    public class Action
+    {
+        public string PartitionKey { get; set; }
+        public string RowKey { get; set; }
+        public string Player { get; set; }
+        public string Summary { get; set; }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;ve Timeline sınıfımız;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace Basketcini.Function
+{
+    /*
+        Abonelere d&amp;ouml;nd&amp;uuml;r&amp;uuml;lecek veri i&amp;ccedil;eriğini taşıyacan temsili sınıftır.
+        Kim, hangi olayı ger&amp;ccedil;ekleştirdi bilgisini tutar.
+    */
+    public class Timeline
+    {
+        public string Who { get; set; }
+        public string WhatHappend { get; set; }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Scorer isimli Function sınıfında da &amp;uuml;&amp;ccedil; metod bulunuyor. Birisi tetikleyici olarak yeni bir olay ger&amp;ccedil;ekleştirmek i&amp;ccedil;in, birisi istemcinin kendisini SignalR Hub'ına bağlaması i&amp;ccedil;in&lt;em&gt;(negotiation aşaması)&lt;/em&gt;, birisi de servisin istemciye olay bildirimlerini basması i&amp;ccedil;in&lt;em&gt;(push message aşaması) &lt;/em&gt;Her zaman ki gibi kod i&amp;ccedil;erisindeki yorum satırlarında anladıklarımı basit&amp;ccedil;e anlatmaya &amp;ccedil;alıştım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.IO;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Azure.WebJobs.Extensions.SignalRService;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+
+namespace Basketcini.Function
+{
+    public static class Scorer
+    {
+        /*
+        Scorer fonskiyonu HTTP Post tipinden tetiklemeleri karşılar.
+        Oluşan aksiyonları saklamak i&amp;ccedil;in Table Storage kullanılır. Actions isimli tablo Table niteliği ile bildirilmiştir.
+        Ayrıca ger&amp;ccedil;ekleşen olaylar bir kuyruğa atılır(Queue niteliğinin olduğu kısım)
+        Console'a log yazdırmak i&amp;ccedil;in ILogger t&amp;uuml;revli log değişkeni kullanılır.
+        */
+        [FunctionName("Scorer")]
+        public static async Task&amp;lt;IActionResult&amp;gt; Run(
+            [HttpTrigger(AuthorizationLevel.Function, "post")] Timeline timelineEvent,
+            [Table("Actions")]IAsyncCollector&amp;lt;Action&amp;gt; actions,
+            [Queue("new-action-notification")]IAsyncCollector&amp;lt;Timeline&amp;gt; actionNotifications,
+            ILogger log)
+        {
+            log.LogInformation("HTTP tetikleme ger&amp;ccedil;ekleşti");
+            log.LogInformation($"{timelineEvent.Who} i&amp;ccedil;in {timelineEvent.WhatHappend} olayı");
+
+            /* HTTP Post metodu ile gelen timeline bilgilerini de kullanarak bir Action nesnesi 
+            oluşturuyor ve bunu Table Storage'e atıyoruz.
+            Ama&amp;ccedil;, meydana gelen olaylarla ilgili gelen bilgileri bir tabloda kalıcı olarak saklamak.
+            Pek tabii bunun yerine farklı repository'ler de tercih edilebilir. Cosmos Db gibi &amp;ouml;rneğin.
+            */
+            await actions.AddAsync(new Action
+            {
+                PartitionKey = "US",
+                RowKey = Guid.NewGuid().ToString(),
+                Player = timelineEvent.Who,
+                Summary = timelineEvent.WhatHappend
+            });
+
+            /* 
+                new-action-notification ile ilintili olan kuyruğa ger&amp;ccedil;ekleşen olay bilgilerini atıyoruz.
+                İstemci tarafını bu kuyruk i&amp;ccedil;eriği ile besleyebiliriz.
+            */
+            await actionNotifications.AddAsync(timelineEvent);
+
+            return new OkResult();
+        }
+
+        /*
+        Azure SignalR servisine bağlanmak i&amp;ccedil;in kullanılan metodumuz. 
+        HTTP Post ile tetiklenir.
+        Fonksiyon bir SignalRConnectionInfo nesnesini d&amp;ouml;nd&amp;uuml;r&amp;uuml;r.
+        Bu nesne Azure SignalR'a bağlanırken gerekli benzersiz id ve access token bilgisini i&amp;ccedil;erir.
+        SignalR Hub-Name olarak notifications ismi kullanılır.
+         */
+        [FunctionName("negotiate")]
+        public static SignalRConnectionInfo GetNotificationSignal(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post")]HttpRequest request,
+            [SignalRConnectionInfo(HubName = "notifications")]SignalRConnectionInfo connection,
+            ILogger log
+        )
+        {
+            log.LogInformation("Negotiating...");
+            return connection;
+        }
+
+        /*
+        Abone olan tarafa veri g&amp;ouml;ndermek (push) i&amp;ccedil;in kullanılan fonksiyondur.
+        QueueTrigger niteliğindeki isimlendirme ve tipin Scorer fonksiyonundaki ile aynı olduğuna dikkat edelim.
+        İstemciye mesaj taşıyan nesne bir SignalRMessage &amp;ouml;rneğidir. 
+        Bu nesnenin Arguments &amp;ouml;zelliğinde timeline i&amp;ccedil;eriği (yani ger&amp;ccedil;ekleşen ma&amp;ccedil; olayları) taşınır.
+        Peki aboneler buradaki olayları nasıl dinleyecek dersiniz? Bunun i&amp;ccedil;inde Target &amp;ouml;zelliğine atanan i&amp;ccedil;erik &amp;ouml;nem kazanır. 
+        &amp;Ouml;rneğimizide aboneler 'actionHappend' isimli olayı dinleyerek mesajları yakalayacaktır.
+         */
+        [FunctionName("PushTimelineNotification")]
+        public static async Task PushNofitication(
+            [QueueTrigger("new-action-notification")]Timeline timeline,
+            [SignalR(HubName = "notifications")]IAsyncCollector&amp;lt;SignalRMessage&amp;gt; message,
+            ILogger log
+        )
+        {
+            log.LogInformation($"{timeline.Who} i&amp;ccedil;in ger&amp;ccedil;ekleşen olay bildirimi");
+
+            await message.AddAsync(
+                new SignalRMessage
+                {
+                    Target = "actionHappend",
+                    Arguments = new[] { timeline }
+                }
+            );
+        }
+    }
+}&lt;/pre&gt;
+&lt;h2&gt;İstemci Uygulama Tarafı&lt;/h2&gt;
+&lt;p&gt;İstemci tarafı Node.js tabanlı basit bir Console uygulaması. Aslında web tabanlı bir aray&amp;uuml;z&amp;uuml; takip etmem gerekiyordu ancak amacım kısa yoldan SignalR servisinden akan verileri g&amp;ouml;rmek olduğundan Node.js kullanmayı tercih ettim. Siz istemci tarafında tamamen &amp;ouml;zg&amp;uuml;ns&amp;uuml;n&amp;uuml;z. SignalR tarafı ile rahat konuşabilmek i&amp;ccedil;in @aspnet/signalr isimli npm paketini kullanabiliriz. Terminalden aşağıdaki komutları kullanarak kobay istemcimizi oluşturalım.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;mkdir FollowerApp
+cd FollowerApp
+npm init
+touch index.js
+npm install @aspnet/signalr&lt;/pre&gt;
+&lt;p&gt;İstemci tarafında index.js ve package.json dosyalarını kodlayacağız. Aşağıda index sınıfına ait kod i&amp;ccedil;eriğini bulabilirsiniz. Uygulama Hub'a bağlandıktan sonra bildirimleri dinler modda yaşamını s&amp;uuml;rd&amp;uuml;recek diyebiliriz.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;const signalR = require("@aspnet/signalr"); // signalR istemci mod&amp;uuml;l&amp;uuml;n&amp;uuml; bildirdik
+
+/* 
+    Hub bağlantı bilgisini inşa ediyoruz.
+    withUrl parametresi Azure Function uygulamasının yayın yaptığı adrestir
+*/
+const connection = new signalR.HubConnectionBuilder()
+    .withUrl('http://localhost:4503/api')
+    .build();
+
+console.log('Bağlantı sağlanıyor...');
+
+/*
+    Bağlantıyı başlatıyoruz. Başarılı ise then metodunun i&amp;ccedil;eriği,
+    bir hata oluşursa da catch metodunun i&amp;ccedil;eriği &amp;ccedil;alışır.
+*/
+connection.start()
+    .then(() =&amp;gt; console.log('Bağlantı sağlandı...'))
+    .catch(console.error);
+
+/*
+    actionHappend olayını dinlemeye başladık.
+    Eğer SignalR servisi &amp;uuml;zerinden bir push mesajı s&amp;ouml;z konusu olursa
+    bu olay &amp;uuml;zerinden ge&amp;ccedil;eceği i&amp;ccedil;in istemci tarafından yakalanıp
+    doSomething metodu &amp;ccedil;ağırılacaktır.
+    doSomething'e gelen parametre Azure Function'daki
+    PushTimelineNotification fonksiyonundan d&amp;ouml;nen mesajın Arguments i&amp;ccedil;eriğini taşır.
+
+*/
+connection.on("actionHappend", doSomething);
+
+function doSomething(action) {
+    console.log(action);
+}
+
+connection.onclose(() =&amp;gt; console.log('Bağlantı koparılıyor...'));&lt;/pre&gt;
+&lt;p&gt;ve package.json&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;{
+  "name": "followerapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" &amp;amp;&amp;amp; exit 1",
+    "dev": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aspnet/signalr": "^1.1.2"
+  }
+}&lt;/pre&gt;
+&lt;h2&gt;&amp;Ccedil;alışma Zamanı&lt;em&gt;(NotifierApp Uygulaması)&lt;/em&gt;&lt;/h2&gt;
+&lt;p&gt;Bu adam neler anlattı, neler yazdı diyor gibisiniz biliyorum. O nedenle &amp;ccedil;alışma zamanına ge&amp;ccedil;meden &amp;ouml;nce&amp;nbsp;senaryodan bahsetmem &amp;ccedil;ok doğru olacaktır. WestWorld &amp;uuml;zerinde NotifierApp isimli Azure Function uygulaması ayağa kalkar. Bu, Azure SignalR servisi ile haberleşen programımız. Postman ile hayali olarak o anda oynanan bir basketbol ma&amp;ccedil;ından &amp;ccedil;eşitli bilgiler g&amp;ouml;ndereceğiz. Sayı oldu, blok yapıldı vs gibi. Bu bilgiler Azure tarafındaki SignalR servisimiz tarafından karşılanacak ve Table Storage &amp;uuml;st&amp;uuml;nde kuyruğa yazılacak. Yine WestWorld &amp;uuml;zerinde &amp;ccedil;alışan bir başka uygulama&lt;em&gt;(Etkili bir g&amp;ouml;rsellik i&amp;ccedil;in bir web sayfası ya da konuyu anlamak i&amp;ccedil;in bir console uygulaması olabilir)&lt;/em&gt;&amp;nbsp;Local ortamda &amp;ccedil;alışan Azure Function servisine&amp;nbsp;bağlanıp &lt;strong&gt;actionHappend&lt;/strong&gt; olaylarını dinleyecek. Postman &amp;uuml;zerinden ma&amp;ccedil;a ait bir basketbol olayı g&amp;ouml;nderildik&amp;ccedil;e bu bilgilerin tamamının yer aldığı kuyruk i&amp;ccedil;eriği abone olan istemcilere otomatik olarak dağıtılacak. Sonu&amp;ccedil;ta canlı bir ma&amp;ccedil;ın ger&amp;ccedil;ekleşen anlık olayları bu haber kanalını dinleyen istemcilerine eş zamanlı olarak&amp;nbsp;basılmış olacak&lt;em&gt;(en azından senaryonun bu şekilde &amp;ccedil;alışmasını bekliyoruz)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Yazılan Azure Function uygulamasını &amp;ccedil;alıştırmak i&amp;ccedil;in terminalden aşağıdaki komutu vermek yeterli. Tabii bu komutu Azure Function projesinin olduğu klas&amp;ouml;rde&amp;nbsp;icra etmeliyiz ;)&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;func host start&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/34/credit_5.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Function uygulamamız şu anda local ortamda &amp;ccedil;alışır durumda olmalı ve Azure SignalR ile haberleşmesi gerekli. En azından WestWorld &amp;uuml;zerinde bu şekilde işledi. Şimdi Postman aracını kullanarak api/Scorer adresine bir HTTP Post talebi g&amp;ouml;nderebiliriz. &amp;Ouml;rneğin aşağıdaki gibi.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;Url : http://localhost:4503/api/Scorer
+Method : HTTP Post
+Body : {
+"Who":"Mitsi&amp;ccedil;",
+"WhatHappend":"3 sayılık basket. Skor 33-21 Anadolu Efes &amp;ouml;nde"
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/34/credit_6.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bir şeyleri doğru yazmış olmalıyım ki log mesajlarında&amp;nbsp;istediğim hareketliliği g&amp;ouml;rd&amp;uuml;m. Hatta Azure Storage tarafında bir tablonun oluşturulduğunu ve g&amp;ouml;nderdiğim bilginin i&amp;ccedil;erisine yazıldığını da fark ettim&lt;em&gt;(Tekrar eden bilgileri nasıl normalize etmek gerekir bunun yolunu bulmak lazım) &lt;/em&gt;Şu aşamaya gelen okurlarım, umarım sizler de benzer sonu&amp;ccedil;ları g&amp;ouml;rm&amp;uuml;şs&amp;uuml;n&amp;uuml;zd&amp;uuml;r.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/34/credit_7.png" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;&amp;Ccedil;alışma Zamanı&lt;em&gt;(İstemci/Abone olan taraf)&lt;/em&gt;&lt;/h2&gt;
+&lt;p&gt;Bildirim yapmayı başardık. Bildirimlerin kuyruğa gittiğini de g&amp;ouml;rd&amp;uuml;k. Peki ya abonelerden ne haber? Senaryonun tam işlerliğini g&amp;ouml;rmek i&amp;ccedil;in her iki uygulamayı da birlikte &amp;ccedil;alıştırmak lazım elbette. Node.js tabanlı FollowerApp i&amp;ccedil;in terminalden aşağıdaki komutu vermek yeterli.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;npm run dev&lt;/pre&gt;
+&lt;p&gt;İlk ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; istemci ile Azure SignalR servisinin, Azure Function uygulaması aracılığıyla el sıkışmasını g&amp;ouml;steriyor.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/34/credit_8.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Alt ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde dikkat edileceği &amp;uuml;zere Negotiation başarıyla sağlandıktan sonra bir id ve token bilgisinin &amp;uuml;retildiği g&amp;ouml;r&amp;uuml;lmekte. Buradaki &amp;ccedil;ıktı, Azure Function uygulamasındaki negotiate sonrası d&amp;ouml;nd&amp;uuml;rd&amp;uuml;ğ&amp;uuml;m&amp;uuml;z connection bilgisine ait. Dikkat &amp;ccedil;ekici noktalardan birisi de Web Socket adresi. G&amp;ouml;rebildiniz mi?&lt;/p&gt;
+&lt;p&gt;İkinci ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde http://localhost:4503/api/Scorer adresine HTTP Post talebi ile &amp;ouml;rnek bir olay bilgisi g&amp;ouml;nderilmekte. Bu talep sonrası uygulamalardaki log hareketliliklerine dikkat etmek lazım. Oluşan i&amp;ccedil;erik bağlı olan istemciye yansımış olmalıdır. Bu yılın flaş takımı Anadolu Efes'ten 4 ve 5 numara pozisyonlarında oynayabilen ve &amp;uuml;&amp;ccedil;l&amp;uuml;k y&amp;uuml;zdesi de fena olmayan&amp;nbsp;Moaerman epey ribaund toplamış sanki.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/34/credit_9.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; &amp;ccedil;alışma zamanı g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde ekrana ikinci bir istemci dahil etmekteyiz. Bu durumda push edilen bilgiler bağlı olan t&amp;uuml;m abonelere g&amp;ouml;nderilecektir ki istediğimiz senaryolardan birisi de bu&lt;em&gt;(Bırayn Danstın mı? Yok artık Babi diksın mı? :D )&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/34/credit_10.png" alt="" /&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Eğer bu senaryoda yaptığımız gibi bir ma&amp;ccedil;ın canlı anlatımını &amp;ccedil;evrimi&amp;ccedil;i t&amp;uuml;m abonelere g&amp;ouml;ndermek istiyorsak, sonradan dahil olanların ma&amp;ccedil;ın başından itibaren ka&amp;ccedil;ırdıkları olayları da g&amp;ouml;rmesini isteyebiliriz. Burada Table Storage veya benzeri bir depoda ma&amp;ccedil; bazlı tutulacak verileri, istemci ilk bağlandığında ona nasıl yollayabiliriz&amp;nbsp;doğrusu &amp;ccedil;ok&amp;nbsp;merak ediyorum. İşte size g&amp;uuml;zel bir TODO ;)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;Ben Neler &amp;Ouml;ğrendim?&lt;/h2&gt;
+&lt;p&gt;Aslında hepsi bu. Temel bir kurgu ile Azure tarafındaki SignalR servisimizi kullanarak bir push notification s&amp;uuml;recini deneyimledik diyebilirim. Her cumartesi gecesi &amp;ccedil;alışmasında olduğu gibi bu uygulamadan da bir şeyler &amp;ouml;ğrendim elbette. Bunları aşağıdaki gibi sıralayabilirim. Unutana kadar bendeler :)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Azure tarafında bir SignalR Servisinin nasıl oluşturulacağını&lt;/li&gt;
+&lt;li&gt;Geliştirme ortamında bir Azure Function projesinin nasıl inşa edilebileceğini&lt;/li&gt;
+&lt;li&gt;SignalR &amp;uuml;zerinden Hub&amp;nbsp;dinleyicisi&amp;nbsp;istemcilerde @aspnet/signalr npm paketinin nasıl kullanılabileceğini&lt;/li&gt;
+&lt;li&gt;Azure Storage oluşturmadan Function projesindeki Table Storage'ın kullanılamayacağını&lt;/li&gt;
+&lt;li&gt;SignalR servisini kullanan Azure Function projesinin herhangi bir istemci tarafından kullanılabilmesi i&amp;ccedil;in CORS tarafında '*' kullanılması gerektiğini&lt;em&gt;(Bunu makalede bulamayacaksınız sizin keşfetmeniz gerekebilir:( )&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;Azure Function tarafında abonelerin SignalR ile el sıkıştığı fonksiyon adının 'negotiate' olması gerektiğini&lt;em&gt;(Farklı bir isim kullanınca istemci tarafında HTTP 404 NotFound hatası aldım)&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;Benzer şekilde SignalR Hubname olarak &lt;strong&gt;notifications&lt;/strong&gt; kullanılması gerektiğini&lt;em&gt;(Farklı bir isimlendirme kullanınca oluşan bilgilerin SignalR servisi tarafından yorumlandığını ama abonelere akmadığına şahit oldum)&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik doğduğum, yaşadığım ve asla kopamayacağım &lt;a href="https://github.com/buraksenyurt/saturday-night-works/tree/master/No%2034%20-%20Using%20Azure%20SignalR" target="_blank"&gt;İstanbul plakalı cumartesi gecesi derlemesinin sonuna&lt;/a&gt;. Umarım sizler i&amp;ccedil;in de yararlı bir &amp;ccedil;alışma olmuştur. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2019-09-30 13:00:00</pubDate>
+  <slug>azure-signalr-servisini-kullanmak</slug>
+  <tags>
+    <tag>azure</tag>
+    <tag>signalr</tag>
+    <tag>real-time-communications</tag>
+    <tag>node</tag>
+    <tag>javascript</tag>
+    <tag>net-core</tag>
+    <tag>c#</tag>
+    <tag>cors</tag>
+    <tag>azure-functions</tag>
+    <tag>cloud-computing</tag>
+    <tag>table-storage</tag>
+    <tag>webjobs</tag>
+    <tag>azure-webjobs</tag>
+    <tag>websockets</tag>
+  </tags>
+  <categories>
+    <category>Azure</category>
+  </categories>
+</post>

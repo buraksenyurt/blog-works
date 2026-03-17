@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>XML Web Service Paketlerini Yakalamak</title>
+  <description>Yine karşımıza çıkan bir problem çözümü ile birlikteyiz. Öncelikle senaryomuzu anlatarak işe başlayalım. Şirket içerisinde kullanılan bir XML Web Service'in Oracle tarafındaki bir Stored Procedure içerisinden çağırılması gerekiyordu. Burada kullanılacak teknikten ziyade XML Web Service' e gidecek olan SOAP mesajının içeriği daha önemliydi. Nitekim giden örnek bir mesaj elimizde olduğu takdirde Stored Procedure tarafındaki string içeriğin(SOAP XML yapısını ifade eden) oluşturulması daha kolay olacaktı. Haliyle bizim XML Web Service'e istemci tarafından gönderilen mesaj içeriklerine ait örneklere ihtiyacımız vardı. Bunun için Fiddler gibi araçları da kullanabilirdik. Ama bilin bakalım ne var? Şirketteki bilgisayarlara bu tip araçları indirip kurmamız mümkün değil. Dolayısıyla kendi kodumuzu yazarak servise giden paketlerin içeriğini görmemiz gerekiyor.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2016/04/wslog_0.gif" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Yine karşımıza &amp;ccedil;ıkan bir problem &amp;ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml; ile birlikteyiz.&amp;nbsp;&amp;Ouml;ncelikle senaryomuzu anlatarak işe başlayalım. Şirket i&amp;ccedil;erisinde kullanılan bir &lt;strong&gt;XML Web Service&lt;/strong&gt;'in &lt;strong&gt;Oracle&lt;/strong&gt; tarafındaki bir &lt;strong&gt;Stored Procedure&lt;/strong&gt; i&amp;ccedil;erisinden &amp;ccedil;ağırılması gerekiyordu. Burada kullanılacak teknikten ziyade &lt;strong&gt;XML Web Service&lt;/strong&gt;' e gidecek olan &lt;strong&gt;SOAP&lt;/strong&gt; mesajının i&amp;ccedil;eriği daha &amp;ouml;nemliydi. Nitekim giden &amp;ouml;rnek bir mesaj elimizde olduğu takdirde &lt;strong&gt;Stored Procedure&lt;/strong&gt; tarafındaki &lt;strong&gt;string&lt;/strong&gt; i&amp;ccedil;eriğin&lt;em&gt;(SOAP XML yapısını ifade eden)&lt;/em&gt; oluşturulması daha kolay olacaktı. Haliyle bizim &lt;strong&gt;XML Web Service&lt;/strong&gt;'e istemci tarafından g&amp;ouml;nderilen mesaj i&amp;ccedil;eriklerine ait &amp;ouml;rneklere ihtiyacımız vardı. Bunun i&amp;ccedil;in &lt;strong&gt;Fiddler&lt;/strong&gt; gibi ara&amp;ccedil;ları da kullanabilirdik. Ama bilin bakalım ne var? Şirketteki bilgisayarlara bu tip ara&amp;ccedil;ları indirip kurmamız m&amp;uuml;mk&amp;uuml;n değil. Dolayısıyla kendi kodumuzu yazarak servise giden paketlerin i&amp;ccedil;eriğini g&amp;ouml;rmemiz gerekiyor.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Bir &lt;strong&gt;XML Web Service&lt;/strong&gt;'e giden ve d&amp;ouml;nen &lt;strong&gt;SOAP&lt;/strong&gt; i&amp;ccedil;eriklerini g&amp;ouml;rmek i&amp;ccedil;in kullanılabilecek bir ka&amp;ccedil; yol var. Bunlardan birisi de konfigurasyon tabanlı. Nasıl yapacağımızı basit bir &amp;ouml;rnek &amp;uuml;zerinden inceleyelim. &amp;Ouml;ncelikle bir &lt;strong&gt;XML Web Service&lt;/strong&gt;' e ihtiyacımız var. Boş bir&lt;strong&gt; Asp.Net&lt;/strong&gt; uygulaması oluşturduktan sonra&lt;em&gt;(CommonWebService isimli bir uygulama olabilir)&lt;/em&gt; &lt;strong&gt;Operations.asmx&lt;/strong&gt; isimli bir &lt;strong&gt;Web Service&lt;/strong&gt; ekleyerek devam edelim.&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Web.Services;
+
+namespace CommonWebService
+{
+    [WebService(Namespace = "http://www.buraksenyurt.com/services/common/road/operations")]
+    [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
+    public class Operations : 
+        WebService
+    {
+        [WebMethod]
+        public double FindOptimalDuration(Location[] locations)
+        {
+            //Do Something
+            Random rnd=new Random();
+            return rnd.Next(1, 60);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;ve i&amp;ccedil;eride kullandığımız &lt;strong&gt;Location&lt;/strong&gt; tipi.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace CommonWebService
+{
+    public class Location
+    {
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Z { get; set; }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Servisimiz i&amp;ccedil;erisinde anlamsız bir operasyon var aslına bakarsanız. &lt;strong&gt;Location&lt;/strong&gt; tipinden diziyi parametre olarak alan FindOptimalDuration metodu&amp;nbsp;geriye g&amp;uuml;ya en optimal yol&amp;nbsp;s&amp;uuml;resini d&amp;ouml;nd&amp;uuml;r&amp;uuml;yor. Tabii bizim i&amp;ccedil;in &amp;ouml;nemli olan i&amp;ccedil;erik alıp veren bir servis olması.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;alışmamızın ikinci aşamasında ise bir istemciye ihtiyacımız var. Basit bir &lt;strong&gt;Console&lt;/strong&gt; uygulaması bu aşamada işimizi g&amp;ouml;recektir. Kullandığımız servis eski stilde bir &lt;strong&gt;XML Web Service&lt;/strong&gt;. Dolayısıyla istemci tarafına &lt;strong&gt;Add Service Reference&lt;/strong&gt; se&amp;ccedil;eneği ile eklenirken aslında &lt;strong&gt;Add Web Reference&lt;/strong&gt; kısmında ilerlememiz gerektiğini unutmamalıyız. &amp;Ccedil;&amp;uuml;nk&amp;uuml; bir &lt;strong&gt;WCF Service s&amp;ouml;z&lt;/strong&gt; konusu değil.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/04/wslog_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Sonrasında aynı &lt;strong&gt;Solution&lt;/strong&gt; i&amp;ccedil;erisindeki servisimizi ekleyerek ilerleyebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/04/wslog_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;İstemci tarafındaki kodlarımızı aşağıdaki şekilde yazmamız şu an i&amp;ccedil;in yeterli.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using CommonWebClient.localhost;
+using System;
+
+namespace CommonWebClient
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Operations proxy = new Operations();
+            Location[] locations = new Location[3];
+            locations[0] = new Location { X = 10, Y = 10, Z = 10 };
+            locations[0] = new Location { X = 20, Y = 5, Z = 40 };
+            locations[0] = new Location { X = 30, Y = -10, Z = 50 };
+
+            var result=proxy.FindOptimalDuration(locations);
+            Console.WriteLine(result.ToString());
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;İstemci tarafında servise bir &amp;ccedil;ağrı g&amp;ouml;nderiyor ve sonucu ekrana basıyoruz. Yazının can alıcı kısmı ise &lt;strong&gt;app.config&lt;/strong&gt; dosyasının i&amp;ccedil;eriği.&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;configSections&amp;gt;
+        &amp;lt;sectionGroup name="applicationSettings" type="System.Configuration.ApplicationSettingsGroup, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" &amp;gt;
+            &amp;lt;section name="CommonWebClient.Properties.Settings" type="System.Configuration.ClientSettingsSection, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" requirePermission="false" /&amp;gt;
+        &amp;lt;/sectionGroup&amp;gt;
+    &amp;lt;/configSections&amp;gt;
+    &amp;lt;startup&amp;gt; 
+        &amp;lt;supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.5" /&amp;gt;
+    &amp;lt;/startup&amp;gt;
+    &amp;lt;applicationSettings&amp;gt;
+        &amp;lt;CommonWebClient.Properties.Settings&amp;gt;
+            &amp;lt;setting name="CommonWebClient_localhost_Operations" serializeAs="String"&amp;gt;
+                &amp;lt;value&amp;gt;http://localhost:51499/Operations.asmx&amp;lt;/value&amp;gt;
+            &amp;lt;/setting&amp;gt;
+        &amp;lt;/CommonWebClient.Properties.Settings&amp;gt;
+    &amp;lt;/applicationSettings&amp;gt;
+  &amp;lt;system.diagnostics&amp;gt;
+    &amp;lt;trace autoflush="true"/&amp;gt;
+    &amp;lt;sources&amp;gt;
+      &amp;lt;source name="System.Net"&amp;gt;
+        &amp;lt;listeners&amp;gt;
+          &amp;lt;add name="TraceFile"/&amp;gt;
+        &amp;lt;/listeners&amp;gt;
+      &amp;lt;/source&amp;gt;
+      &amp;lt;source name="System.Net.Sockets"&amp;gt;
+        &amp;lt;listeners&amp;gt;
+          &amp;lt;add name="TraceFile"/&amp;gt;
+        &amp;lt;/listeners&amp;gt;
+      &amp;lt;/source&amp;gt;
+    &amp;lt;/sources&amp;gt;
+    &amp;lt;sharedListeners&amp;gt;
+      &amp;lt;add name="TraceFile" type="System.Diagnostics.TextWriterTraceListener"
+        initializeData="service.log"/&amp;gt;
+    &amp;lt;/sharedListeners&amp;gt;
+    &amp;lt;switches&amp;gt;
+      &amp;lt;add name="System.Net" value="Verbose"/&amp;gt;
+      &amp;lt;add name="System.Net.Sockets" value="Verbose"/&amp;gt;
+    &amp;lt;/switches&amp;gt;
+  &amp;lt;/system.diagnostics&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;nemli olan kısım &lt;strong&gt;system.diagnostics&lt;/strong&gt; sekmesinin i&amp;ccedil;eriği. Burada servis tarafı ile ilgili mesajlaşma trafiğini dinleyeceğimizi belirtiyoruz. Aslında soket haberleşmesini yakaladığımızı ifade edebiliriz. &lt;strong&gt;initilalizeData&lt;/strong&gt; niteliğinin değerine g&amp;ouml;re istemci uygulama &amp;ccedil;alıştırıldığında exe'nin olduğu klas&amp;ouml;rde &lt;strong&gt;service.log&lt;/strong&gt; isimli bir dosya oluşacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/04/wslog_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dosya i&amp;ccedil;eriğine baktığımızda ise soket giriş ve &amp;ccedil;ıkışlarının olduğu gibi indirildiğini g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/04/wslog_5.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Burada &lt;strong&gt;XML&lt;/strong&gt; mesajlarını okumak biraz zahmetli olabilir ancak sonu&amp;ccedil; itibariyle istediğimiz &lt;strong&gt;XML&lt;/strong&gt; paketlerini yakalamış bulunuyoruz. Gidip gelen XML i&amp;ccedil;erikleri aşağıdakine benzer olacaktır.&lt;/p&gt;
+&lt;p&gt;İstemciden &amp;ccedil;ıkan SOAP i&amp;ccedil;eriği&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8"?&amp;gt;
+&amp;lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&amp;gt;
+&amp;lt;soap:Body&amp;gt;
+	&amp;lt;FindOptimalDuration xmlns="http://www.buraksenyurt.com/services/common/road/operations"&amp;gt;
+		&amp;lt;locations&amp;gt;
+			&amp;lt;Location&amp;gt;
+				&amp;lt;X&amp;gt;10&amp;lt;/X&amp;gt;
+				&amp;lt;Y&amp;gt;10&amp;lt;/Y&amp;gt;
+				&amp;lt;Z&amp;gt;10&amp;lt;/Z&amp;gt;
+			&amp;lt;/Location&amp;gt;
+			&amp;lt;Location&amp;gt;
+				&amp;lt;X&amp;gt;20&amp;lt;/X&amp;gt;
+				&amp;lt;Y&amp;gt;5&amp;lt;/Y&amp;gt;
+				&amp;lt;Z&amp;gt;40&amp;lt;/Z&amp;gt;
+			&amp;lt;/Location&amp;gt;
+			&amp;lt;Location&amp;gt;
+				&amp;lt;X&amp;gt;30&amp;lt;/X&amp;gt;
+				&amp;lt;Y&amp;gt;-10&amp;lt;/Y&amp;gt;
+				&amp;lt;Z&amp;gt;50&amp;lt;/Z&amp;gt;
+			&amp;lt;/Location&amp;gt;
+		&amp;lt;/locations&amp;gt;
+	&amp;lt;/FindOptimalDuration&amp;gt;
+&amp;lt;/soap:Body&amp;gt;
+&amp;lt;/soap:Envelope&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Servisten istemciye gelen &lt;strong&gt;SOAP&lt;/strong&gt; i&amp;ccedil;eriği ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8"?&amp;gt;
+&amp;lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&amp;gt;
+	&amp;lt;soap:Body&amp;gt;
+		&amp;lt;FindOptimalDurationResponse xmlns="http://www.buraksenyurt.com/services/common/road/operations"&amp;gt;
+			&amp;lt;FindOptimalDurationResult&amp;gt;52&amp;lt;/FindOptimalDurationResult&amp;gt;
+		&amp;lt;/FindOptimalDurationResponse&amp;gt;
+	&amp;lt;/soap:Body&amp;gt;
+&amp;lt;/soap:Envelope&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Bu adımdan sonra artık elimizde &lt;strong&gt;Oracle&lt;/strong&gt; tarafı i&amp;ccedil;in gerekli &amp;ouml;rnek bir&amp;nbsp;&lt;strong&gt;SOAP&lt;/strong&gt; i&amp;ccedil;eriğinin oluştuğunu ifade edebiliriz. Dilerseniz &amp;uuml;retilen &lt;strong&gt;log&lt;/strong&gt; dosyasının daha insancıl okunabilmesi amacıyla bir kod par&amp;ccedil;ası geliştirmeyi deneyebilirsiniz. Bu m&amp;uuml;mk&amp;uuml;n. Araştırın ve deneyin. B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2016-03-30 23:00:00</pubDate>
+  <slug>xml-web-service-paketlerini-yakalamak</slug>
+  <tags>
+    <tag>xml-web-service</tag>
+    <tag>logging</tag>
+    <tag>soap</tag>
+    <tag>trace</tag>
+    <tag>c#</tag>
+    <tag>xml</tag>
+    <tag>servicestack</tag>
+  </tags>
+  <categories>
+    <category>XML Web Services</category>
+  </categories>
+</post>

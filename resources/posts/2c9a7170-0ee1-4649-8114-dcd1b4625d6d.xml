@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Yine Yeni Yeniden ELK(Bu sefer E ve K için docker-compose işin içinde)</title>
+  <description>Her ne kadar artık .Net 5.0 hayatımızın içinde olsa da bu yıl içinde bir yerlerde .Net Core 3.1 ile ELK kurgusunu yeniden değerlendirme ihtiyacı hissetmişim. Elasticsearch, Logstash ve Kibana kurgusu aslında günümüz uygulamalarında son derece popüler. Genellikle uygulama loglarının devasa şekilde biriktiği durumların çözümünde ideal bir kurgu. Uygulama loglarını standart bir formata uygun olacak şekilde Elasticsearch'e atar ve bizler de Kibana gibi arayüzleri kullanarak burayı monitör ederek çeşitli durumların kontrolünü yapmaya çalışırız. Ağırlıklı olarak üretim ortamında oluşacak hataların, dar boğazların yakalanması noktasında işimize yarayan bir düzenek olarak düşünebiliriz. Şunu da belirtmekte yarar var. Günümüz uygulamalarında hataları debug ederek bulmak yerine detaylı ve iyi bir strateji ile oluşturulmuş logları takip ederek tedbir almak son derece kıymetlidir. Benim bu çalışmadaki amacım .Net Core 3.1 üstünden ELK düzeneğini kurgulayıp loglama, izleme işlerini tekrarlamaktı. Ancak bu sefer ElasticSearch ve Kibana containerları için docker compose aracını kullanmayı da öğrenmek istemiştim. Yani çalışmanın ana noktası ilgili düzeneği Docker Compose ile kurgulamak.</description>
+  <content>&lt;p&gt;&lt;img src="/image.axd?picture=/2020/skynet/08/elk_2.png" alt="" align="right" /&gt;Her ne kadar artık .Net 5.0 hayatımızın i&amp;ccedil;inde olsa da bu yıl i&amp;ccedil;inde bir yerlerde .Net Core 3.1 ile ELK kurgusunu yeniden değerlendirme ihtiyacı hissetmişim. Elasticsearch, Logstash ve Kibana kurgusu aslında g&amp;uuml;n&amp;uuml;m&amp;uuml;z uygulamalarında son derece pop&amp;uuml;ler. Genellikle uygulama loglarının devasa şekilde biriktiği durumların &amp;ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml;nde ideal bir kurgu olarak karşımıza &amp;ccedil;ıkıyor. Bu kurguda uygulama loglarını standart bir formata uygun olacak şekilde Elasticsearch'e atar, Kibana aray&amp;uuml;z&amp;uuml;n&amp;uuml; kullanarak izleme yapar ve &amp;ccedil;eşitli durumların kontrol&amp;uuml;n&amp;uuml; ger&amp;ccedil;ekleştiririz. Ağırlıklı olarak &amp;uuml;retim ortamında oluşacak hataların, performans kayıplarının ve dar boğazların yakalanması noktasında işimize yarayan bir d&amp;uuml;zenek olarak d&amp;uuml;ş&amp;uuml;nebiliriz.&lt;/p&gt;
+&lt;p&gt;Şunu da belirtmekte yarar var;&lt;strong&gt; g&amp;uuml;n&amp;uuml;m&amp;uuml;z uygulamalarında hataları debug ederek bulmak yerine detaylı ve iyi bir strateji ile oluşturulmuş logları takip ederek tedbir almak son derece kıymetlidir.&lt;/strong&gt; Benim bu &amp;ccedil;alışmadaki amacım&amp;nbsp;.Net Core 3.1 &amp;uuml;st&amp;uuml;nden ELK d&amp;uuml;zeneğini kurgulayıp loglama ve izleme işlerini tekrarlamaktı. Ancak bu sefer ElasticSearch ve Kibana ortamları i&amp;ccedil;in docker compose aracını kullanmayı tercih etmiştim. Yani &amp;ccedil;alışmanın ana noktası ilgili d&amp;uuml;zeneği Docker Compose ile kurgulamak ve &amp;ccedil;alışma sonu&amp;ccedil;larını g&amp;ouml;rmekten ibaret. &amp;Ouml;yleyse kurgumuza başlayalım&lt;/p&gt;
+&lt;h2&gt;D&amp;uuml;zeneğin Hazırlanması&lt;/h2&gt;
+&lt;p&gt;Aşağıdaki&amp;nbsp;terminal komutlarında&amp;nbsp;g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &amp;ccedil;alışmanın iskeleti ve Asp.Net Web API servisimizin ihtiya&amp;ccedil; duyacağı Nuget paketlerini y&amp;uuml;kleyerek işe başlanabilir. Evet senaryoda kobay bir servisimi var ve bu servisin &amp;ouml;rnek bir fonksiyonu i&amp;ccedil;erisinde log fırlatıp izlemeyi planlıyoruz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;mkdir docker
+touch docker/docker-compose.yml
+dotnet new webapi --no-https -o Readers
+cd Readers
+dotnet add package Serilog.AspNetCore
+dotnet add package Serilog.Enrichers.Environment
+dotnet add package Serilog.Sinks.Debug
+dotnet add package Serilog.Sinks.Elasticsearch
+dotnet add package Serilog.Exceptions&lt;/pre&gt;
+&lt;p&gt;Bu arada Heimdall&lt;em&gt;(Ubuntu-20.04) &amp;uuml;st&amp;uuml;nde&lt;/em&gt; docker-compose yoktu. Bu nedenle sudo apt install docker-compose ile y&amp;uuml;klemem gerekti. Sizin sisteminizde de buna benzer bir kurulum gerekebilir. Senaryo gereği elbette kobay bir web api servisine ihtiyacımız var. Readers isimli bu servisin temel kodlarını aşağıda bulabilirsiniz.&lt;/p&gt;
+&lt;p&gt;Kitap ve yazar bilgilerini tutan Book sınıfı &lt;em&gt;(Siz ger&amp;ccedil;ek hayatta yazarları bu şekilde tutmayın tabii)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace Readers
+{
+    public class Book
+    {
+        public string Name { get; set; }
+        public string Authors { get; set; }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Controller sınıfımız.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+
+namespace Readers.Controllers
+{
+    [ApiController]
+    [Route("[controller]")]
+    public class BookController : ControllerBase
+    {
+        private readonly ILogger&amp;lt;BookController&amp;gt; _logger;
+
+        public BookController(ILogger&amp;lt;BookController&amp;gt; logger)
+        {
+            _logger = logger;
+        }
+
+        [HttpGet]
+        public Book Get()
+        {
+            _logger.LogInformation("{date} zamanı itibariyle bir kitap &amp;ouml;nerildi...", DateTime.UtcNow);
+
+            _logger.LogError(new System.IO.FileNotFoundException(), "Yeni bir kitap eklemeye &amp;ccedil;alışırken hata oluştu");
+
+            return new Book { Name = "Yabancı", Authors = "Alber Camus" };
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Get fonksiyonunda sadece loglama operasyonları i&amp;ccedil;in bir bilgi ve hata bildirimi yapmaktayız. Tabii burada soru Loglama'yı kimin, hangi formatta, nereye ve&amp;nbsp;nasıl yapacağı?........................................................................................................................................................................................................................................Bu "fill in the blanks" kısmında bir s&amp;uuml;re d&amp;uuml;ş&amp;uuml;nd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z&amp;uuml; varsayıyorum :P Tahmin edeceğiniz &amp;uuml;zere Program.cs, Serilog tanımlarını yaptığımız yerdir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Sinks.Elasticsearch;
+using Serilog.Formatting.Elasticsearch;
+
+namespace Readers
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // ElasticSearch log i&amp;ccedil;in gerekli konfigurasyon ayarları
+            Log.Logger = new LoggerConfiguration()
+                .Enrich.FromLogContext()
+                .Enrich.WithMachineName()
+                .Enrich.WithProperty("Application", "Readers") // Hangi uygulama log atıyor
+                .WriteTo.Debug()
+                .WriteTo.Console()
+                .WriteTo.Elasticsearch(
+                    new ElasticsearchSinkOptions(
+                        new Uri("http://localhost:9200/"))
+                    {
+                        AutoRegisterTemplate = true,
+                        TemplateName = "serilog-events-template",
+                        IndexFormat = "readers-api-log-{0:yyyy.MM.dd}"
+                    })
+                //.MinimumLevel.Verbose()
+                .CreateLogger();
+
+            try
+            {
+                CreateHostBuilder(args).Build().Run();
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex.Message);
+                throw;
+            }
+        }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =&amp;gt;
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =&amp;gt;
+                {
+                    webBuilder.UseStartup&amp;lt;Startup&amp;gt;();
+                }).UseSerilog();
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Kobay servisimiz hazır. Şimdi docker compose dosyasını hazırlayalım&lt;em&gt;(Bu arada Visual Studio Code i&amp;ccedil;in kullanılan Docker Extension, yaml dosyasının hazırlanmasında bana epey yardımcı oldu diyebilirim)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;version: '3.7'
+
+services: 
+
+    elasticsearch:
+        container_name: elasticsearch
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.7.0
+        ports:
+            - 9200:9200
+        volumes: 
+            - elasticsearch-data:/usr/share/elasticsearch/data
+        environment: 
+            - xpack.monitoring.enabled=true
+            - xpack.watcher.enabled=false
+            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+            - discovery.type=single-node
+        networks:
+            - elastics
+
+    kibana:
+        container_name: kibana
+        image: docker.elastic.co/kibana/kibana:7.7.0
+        ports:
+            - 5601:5601
+        depends_on: 
+            - elasticsearch
+        environment: 
+            - ELASTICSEARCH_URL=http://localhost:9200
+        networks:
+            - elastic
+
+networks:
+    elastic:
+        driver: bridge
+
+volumes: 
+    elasticsearch-data:&lt;/pre&gt;
+&lt;p&gt;Bu kompozisyonda Elasticsearch ve Kibana&amp;nbsp;servisleri i&amp;ccedil;in bazı tanımlamalar yer alıyor. Her iki container elastic isimli aynı ağ &amp;uuml;zerinden birbirleriyle haberleşmekte. Servis tanımlamalarında&lt;em&gt;(elasticsearch: , kibana: kısımları)&lt;/em&gt; hangi imajların kullanılacağı, container adlarının ne olacağı, port bilgileri ile yayınlanma adresleri gibi &amp;uuml;r&amp;uuml;ne &amp;ouml;zel ayarlara yer verilmekte&lt;em&gt;(Docker Compose ile ilgili detaylı bilgi i&amp;ccedil;in &lt;a href="https://docs.docker.com/compose/gettingstarted/" target="_blank"&gt;şuraya&lt;/a&gt; bakabilirsiniz)&lt;/em&gt; T&amp;uuml;m hazırlıklar tamam diyebilirim.&lt;/p&gt;
+&lt;h2&gt;&amp;Ccedil;alışma Zamanı&lt;/h2&gt;
+&lt;p&gt;&amp;Ouml;ncelikle Elasticsearch ve Kibana ortamlarının ayağa kaldırılması gerekiyor. Aşağıdaki terminal komutu ile bunu sağlayabiliriz. G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere Elastichsearch i&amp;ccedil;in ayrıca veya Kibana i&amp;ccedil;in ayrıca docker komutlarını kullanmaya gerek yok. Tek bir kompozisyon altında ihtiyacımız olan docker birimlerinin işletilmesini sağlıyoruz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;cd docker
+sudo docker-compose up -d&lt;/pre&gt;
+&lt;p&gt;Bunun arından belki k&amp;uuml;&amp;ccedil;&amp;uuml;k bir kontrol yapmakta yarar olabilir. Nitekim http://localhost:9200 adresinden ElasticSearch, http://localhost:5601 adresinden de Kibana&amp;nbsp;servislerine sorunsuz erişebiliyor olmalıyız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2020/skynet/08/Screenshot_3.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Sonrasında kobay web api servisimizi ayağa kaldırılabilir ve bazı denemeler yapabiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;cd Readers
+dotnet run&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rneğin http://localhost:5000/book adresinden bir HTTP Get talebi yollayabiliriz. Hatırlarsanız Get fonksiyonu i&amp;ccedil;inden Information ve Error t&amp;uuml;rlerinde &amp;ouml;rnek log mesajları fırlatmıştık&lt;em&gt;(Tabii ki pratikte Error tipinden mesajları exception oluştuğu durumlarda g&amp;ouml;ndermek lazım)&lt;/em&gt; Bu arada Kibana'ya erişmek log bilgilerini takip etmek i&amp;ccedil;in kafi ama yeterli değil. http://localhost:5601 adresine uğradıktan sonra Readers isimli web api servisi i&amp;ccedil;in aşağıdaki g&amp;ouml;rsellerde olduğu gibi bir index eklemek gerekir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2020/skynet/08/Screenshot_1.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2020/skynet/08/Screenshot_2.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Sonrasında &amp;ouml;rneğin Kibana ortamında&lt;em&gt;(&lt;a href="https://www.elastic.co/guide/en/kibana/master/kuery-query.html" target="_blank"&gt;KQL - Kibana Query Language&lt;/a&gt;)&lt;/em&gt; ile Error seviyesinde olan veya mesaj i&amp;ccedil;eriğinde "zamanı" kelimesi ge&amp;ccedil;en logları aratabiliriz.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;level : "Error" or message : "zamanı"&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2020/skynet/08/Screenshot_4.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere ELK i&amp;ccedil;in docker-compose'dan yararlanarak ideal loglama senaryosunu kurgulamak olduk&amp;ccedil;a basit. Ger&amp;ccedil;ek hayat senaryosuna baktığımızda docker-compose pekala ayrık ve dağıtık suncularda hizmet edecek şekilde konuşlandırılabilir. Mikroservisler veya başka t&amp;uuml;rden uygulamalar docker-compose ile ayağa kalkan Elastichsearch servisine erişebildiği s&amp;uuml;rece Kibana ile logları izlemek ve belki de alarm sistemleri kurarak sistemi kontrol altında tutmak pekala m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r.&lt;/p&gt;
+&lt;p&gt;Konuya ait &amp;ouml;rnek kodların tamamını&amp;nbsp;&lt;a href="https://github.com/buraksenyurt/skynet/tree/master/No%2008%20-%20ELK%20Again" target="_blank"&gt;skynet github reposu&lt;/a&gt;nda bulabilirsiniz. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2020-07-22 20:23:00</pubDate>
+  <slug>yine-yeni-yeniden-elk-bu-sefer-e-ve-k-icin-docker-compose-isin-icinde</slug>
+  <tags>
+    <tag>docker</tag>
+    <tag>docker-compose</tag>
+    <tag>net</tag>
+    <tag>net-core-31</tag>
+    <tag>elk</tag>
+    <tag>elasticsearch</tag>
+    <tag>kibana</tag>
+    <tag>logstash</tag>
+  </tags>
+  <categories>
+    <category>.Net Core</category>
+  </categories>
+</post>

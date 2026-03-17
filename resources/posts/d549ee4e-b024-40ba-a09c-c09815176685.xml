@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WCF Service' lerine Silverlight İstemcilerinden Channel Bazlı Erişim</title>
+  <description>WCF Servislerinin herhangibir istemci uygulama tarafından kullanılmasını sağlamak için tercih ettiğimiz yollardan birisi de Proxy tiplerinden faydalanmaktır. Genellikle Add Service Reference veya Svcutil.exe ya da SlSvcUtil.exe(Silverlight versiyonu) gibi araçlar yardımıyla Proxy üretimi kolayca gerçekleştirilebilir.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/pics/2010%2f3%2fblg170_Giris.jpg" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Bir zamanlar&lt;em&gt;(aslında &amp;ccedil;ok uzun zaman olmadı ayrılalı)&lt;/em&gt; &amp;ouml;zel bir eğitim firmasında &lt;strong&gt;Yazılım Eğitmeni &lt;/strong&gt;olarak g&amp;ouml;rev yapmaktaydım. &lt;strong&gt;Freelance &lt;/strong&gt;olarak başladığım ilk d&amp;ouml;nemlerde kurumda en &amp;ccedil;ok dikkatimi &amp;ccedil;eken nokta, şirketin gece koruyuculuğunu yapan k&amp;ouml;pekleri olmuştu. Aslında herkes yandaki resimde g&amp;ouml;r&amp;uuml;len ki kadar etkili ve caydırıcı olmasını bekleyebilir ancak son derece sakin ve kendi halinde sevimli bir k&amp;ouml;pekti. Bilişim sekt&amp;ouml;r&amp;uuml;nde sistem eğitimleri de veren bu şirketin, geceleri koruma g&amp;ouml;revi ile barındırdığı k&amp;ouml;peğinin adı ise, şirketin yaptığı işle ilintili olarak &lt;strong&gt;Proxy&lt;/strong&gt; olarak verlimişti. Bilenler bilir...Neredeyse gıkı bile&lt;em&gt;(pardon havı bile) &lt;/em&gt;&amp;ccedil;ıkmayan bu sevimli k&amp;ouml;peğin yersiz serzenişte bulunmamasının da bir nedeni vardı elbette. &lt;strong&gt;Proxy&lt;/strong&gt;...Gelen veriyi s&amp;uuml;z&amp;uuml;p ona g&amp;ouml;re aksiyon veriyordu &amp;ccedil;&amp;uuml;nk&amp;uuml;&lt;img title="Laughing" src="/editors/tiny_mce3/plugins/emotions/img/smiley-laughing.gif" alt="Laughing" border="0" /&gt; Şaka bir yana tesad&amp;uuml;fe bakın ki bu g&amp;uuml;nk&amp;uuml; konumuzda &lt;strong&gt;Proxy &lt;/strong&gt;kavramı ile alakalı.&lt;/p&gt;
+&lt;p&gt;WCF Servislerinin herhangibir istemci uygulama tarafından kullanılmasını sağlamak i&amp;ccedil;in tercih ettiğimiz yollardan birisi de &lt;strong&gt;Proxy &lt;/strong&gt;tiplerinden faydalanmaktır. Genellikle &lt;strong&gt;Add Service Reference &lt;/strong&gt;veya &lt;strong&gt;Svcutil.exe &lt;/strong&gt;ya da &lt;strong&gt;SlSvcUtil.exe(Silverlight versiyonu) &lt;/strong&gt;gibi ara&amp;ccedil;lar yardımıyla &lt;strong&gt;Proxy &lt;/strong&gt;&amp;uuml;retimi kolayca ger&amp;ccedil;ekleştirilebilir. &lt;strong&gt;Proxy &lt;/strong&gt;tipleri, servislere erişilmesi sırasında istemci tarafında yazılan kodu hafifletmekle kalmaz aynı zamanda &amp;ccedil;alışma zamanının ayağa kaldırılması gereken ya da iletişim sırasında oluşturulması gereken pek &amp;ccedil;ok nesnenin iş y&amp;uuml;k&amp;uuml;n&amp;uuml; de &amp;uuml;zerine alır. Ancak bazı durumlarda istemci tarafında &lt;strong&gt;Proxy &lt;/strong&gt;tipi kullanımı yerine, servis ile olan iletişimde gerekli olan &lt;strong&gt;kanal(Channel)&lt;/strong&gt; yapısının manuel kod ile oluşturulması ve diğer hazırlıkların yapılarak iletişim kurulması istenebilir.&lt;/p&gt;
+&lt;p&gt;Bu istek &amp;ouml;zellikle servis tarafındaki &amp;ouml;zel &lt;strong&gt;serileştirilebilir tiplerin(Serializable Types)&lt;/strong&gt; &amp;ccedil;eşitli yardımcı fonksiyonelliklere sahip olduğu durumlarda &amp;ouml;nem kazanmaktadır. &amp;Ouml;rneğin sunucu tarafındaki bu tiplerde &lt;strong&gt;doğrulama işlemleri(Validation) &lt;/strong&gt;i&amp;ccedil;in yazılmış bazı &amp;ouml;zel fonksiyonlar yer alabilir ve bunların istemci tarafında &amp;uuml;retilen tiplere de alınması istenebilir. B&amp;ouml;ylece bu fonksiyonelliklerin i&amp;ccedil;erdiği bazı iş kurallarının istemci tarafında da y&amp;uuml;klenilmesi istenebilir ki normal &lt;strong&gt;Proxy &lt;/strong&gt;&amp;uuml;retiminde bu metodların istemci tarafına taşınmadığı bilinmektedir. İşte bu teoriden yola &amp;ccedil;ıkarak yazdığımız bu blog girdimizde, s&amp;ouml;z konusu durumun &lt;strong&gt;Silverlight &lt;/strong&gt;uygulamalarında nasıl &amp;ccedil;&amp;ouml;z&amp;uuml;mlenebileceğini incelemeye &amp;ccedil;alışıyor olacağız. &lt;em&gt;(Aslında &amp;ccedil;ok eskiden &lt;strong&gt;.Net Remoting &lt;/strong&gt;ile uğraşmış birisi olarak, dağıtık uygulama geliştirirken servis tarafında &amp;ccedil;alışan bileşenlerin, istemci tarafına da referans edildikleri bir y&amp;ouml;ntem olduğunu ifade edebilirim)&lt;/em&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Silverlight tarafında Proxy tabanlı olarak WCF servislerinin nasıl kullanılabileceğini &lt;a class="postheader taggedlink" href="/admin/post/Screencast-Silverlight-Enabled-WCF-Services.aspx"&gt;Screencast - Silverlight Enabled WCF Services&lt;/a&gt; g&amp;ouml;rsel dersinden izleyebilirsiniz.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Dilerseniz vakit kaybetmeden &amp;ouml;rneğimize başlayalım. &lt;strong&gt;Visual Studio 2010 RC&lt;/strong&gt; s&amp;uuml;r&amp;uuml;m&amp;uuml;nde oluşturduğumuz &lt;strong&gt;Silverlight 4.0 &lt;/strong&gt;uygulamamızın i&amp;ccedil;erisinde aşağıdaki &lt;strong&gt;IAlbumProducer &lt;/strong&gt;isimli &lt;strong&gt;aray&amp;uuml;z&amp;uuml;n(Interface) &lt;/strong&gt;olduğunu d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Runtime.Serialization;
+using System.ServiceModel;
+
+namespace WithChannelBased.Web
+{
+    [ServiceContract]
+    public interface IAlbumProducer
+    {
+        // Silverlight istemcilerin asenkron &amp;ccedil;ağrı yapmalarını zorlamak i&amp;ccedil;in aşağıdaki &amp;ouml;n işlemci direktifi(Pre Proccesor Directive) eklenmiştir.
+#if SILVERLIGHT
+        
+        [OperationContract(AsyncPattern=true)]
+        IAsyncResult BeginGetAlbum(int albumId, AsyncCallback callback, object state);
+
+        Album EndGetAlbum(IAsyncResult result);
+        
+#else
+
+        [OperationContract]
+        Album GetAlbum(int albumId);
+
+#endif
+    }
+
+    [DataContract]
+    public class Album
+    {
+        [DataMember]
+        public int Id { get; set; }
+        [DataMember]
+        public string Title { get; set; }
+        [DataMember]
+        public string Genre { get; set; }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;Interface &lt;/strong&gt;tipi aslında bir &lt;strong&gt;servis s&amp;ouml;zleşmesi(Service Contract) &lt;/strong&gt;tanımlamaktadır. Bu s&amp;ouml;zleşmenin &lt;strong&gt;Siverlight &lt;/strong&gt;istemcilerinde asenkron &amp;ccedil;ağrıları zorunlu kılması i&amp;ccedil;inse bir &amp;ouml;n işlemci direktifi kullanılmıştır. Yanlız bu &amp;ouml;n işlemci direktifinin b&amp;uuml;y&amp;uuml;k harfler ile yazılması &amp;ouml;nemlidir. Peki neden b&amp;ouml;yle bir gereksinimimiz olmuştur?&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;ncelikli olarak sunucu tarafında &lt;strong&gt;BeginGetAlbum &lt;/strong&gt;ve &lt;strong&gt;EndGetAlbum &lt;/strong&gt;metodlarının, aray&amp;uuml;z zorlaması nedeniyle servis sınıfı i&amp;ccedil;erisinde uygulanması &lt;span style="text-decoration: underline;"&gt;istenmemektedir&lt;/span&gt;. Diğer yandan aynı dosyayı istemci tarafına alıyor olacağız ki bu durumda &lt;strong&gt;Silverlight &lt;/strong&gt;istemcisinin &lt;strong&gt;asnekron &lt;/strong&gt;&amp;ccedil;ağrılar i&amp;ccedil;in s&amp;ouml;z konusu &lt;strong&gt;BeginGetAlbum &lt;/strong&gt;ve &lt;strong&gt;EndGetAlbum&lt;/strong&gt; metodlarını da kullanabilmesi gerekmektedir. İşte bu sebepten bir &amp;ouml;n işlemci direktifi kullanılması tercih edilmiştir.&lt;/p&gt;
+&lt;p&gt;Diğer yandan s&amp;ouml;zleşmenin bulunduğu dosya i&amp;ccedil;erisinde &lt;strong&gt;Album &lt;/strong&gt;isimli serileştirilebilir bir tipin de yer aldığı g&amp;ouml;r&amp;uuml;lmektedir. &lt;strong&gt;Album &lt;/strong&gt;sınıfı bir &lt;strong&gt;veri s&amp;ouml;zleşmesi(Data Contract) &lt;/strong&gt;şeklinde tanımlanmıştır. &amp;Ouml;nemli olan noktalardan birisi servis s&amp;ouml;zleşmesi ve veri s&amp;ouml;zleşmesinin aynı fiziki dosya i&amp;ccedil;erisinde tutulmuş olmalarıdır. Nitekim bu dosya &lt;strong&gt;Silverlight &lt;/strong&gt;uygulamasına doğrudan link olarak bağlanacaktır. Servis s&amp;ouml;zleşmesini uygulayacak tipin aslında &lt;strong&gt;Silverlight &lt;/strong&gt;destekli bir &lt;strong&gt;WCF Servisi &lt;/strong&gt;olduğu d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde projeye &lt;strong&gt;Silverlight-enabled WCF Service &lt;/strong&gt;şablonunda &lt;strong&gt;AlbumProducer &lt;/strong&gt;isimli bir &amp;ouml;ğenin eklenmesi &lt;strong&gt;web.config &lt;/strong&gt;dosyası i&amp;ccedil;erisinde bazı &amp;ouml;n hazırlıkların yapılmasını sağlayacaktır. Elbette eklenen bu tipin yukarıda tanımlı olan servis s&amp;ouml;zleşmesini uygulaması gerekmektedir. Aşağıdaki kod par&amp;ccedil;asında g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Runtime.Serialization;
+using System.ServiceModel;
+
+namespace WithChannelBased.Web
+{
+    public class AlbumProducer
+        :IAlbumProducer
+    {
+        #region IAlbumProducer Members
+
+        public Album GetAlbum(int albumId)
+        {
+            return new Album { Id = 1000, Title = "Benim Şarkılarım", Genre="T&amp;uuml;rk&amp;ccedil;e Pop" };
+        }
+
+        #endregion
+    }
+}&lt;/pre&gt;
+&lt;p&gt;GetAlbum metodunun ne yaptığı &amp;ccedil;ok fazla &amp;ouml;nemli değildir. Sadece test amacıyla kullanacağımız bir i&amp;ccedil;erik d&amp;ouml;nd&amp;uuml;rmektedir. Bu işlemlerin ardından servisin bulunduğu sunucu tarafındaki &lt;strong&gt;web.config&lt;/strong&gt; dosyasının i&amp;ccedil;eriğinde bazı d&amp;uuml;zenlemeler yapılması gerekmektedir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0"?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;system.web&amp;gt;
+        &amp;lt;compilation debug="true" targetFramework="4.0" /&amp;gt;
+    &amp;lt;/system.web&amp;gt;
+    &amp;lt;system.serviceModel&amp;gt;
+        &amp;lt;behaviors&amp;gt;
+            &amp;lt;serviceBehaviors&amp;gt;
+                &amp;lt;behavior name=""&amp;gt;
+                    &amp;lt;serviceMetadata httpGetEnabled="true" /&amp;gt;
+                    &amp;lt;serviceDebug includeExceptionDetailInFaults="false" /&amp;gt;
+                &amp;lt;/behavior&amp;gt;
+            &amp;lt;/serviceBehaviors&amp;gt;
+        &amp;lt;/behaviors&amp;gt;
+        &amp;lt;bindings&amp;gt;
+            &amp;lt;customBinding&amp;gt;
+                &amp;lt;binding name="WithChannelBased.Web.AlbumProducer.customBinding0"&amp;gt;
+                    &amp;lt;binaryMessageEncoding /&amp;gt;
+                    &amp;lt;httpTransport /&amp;gt;
+                &amp;lt;/binding&amp;gt;
+            &amp;lt;/customBinding&amp;gt;
+        &amp;lt;/bindings&amp;gt;
+        &amp;lt;!--&amp;lt;serviceHostingEnvironment aspNetCompatibilityEnabled="true" multipleSiteBindingsEnabled="true" /&amp;gt;--&amp;gt;
+        &amp;lt;services&amp;gt;
+            &amp;lt;service name="WithChannelBased.Web.AlbumProducer"&amp;gt;
+                &amp;lt;endpoint address="" binding="customBinding" bindingConfiguration="WithChannelBased.Web.AlbumProducer.customBinding0"
+                    contract="WithChannelBased.Web.IAlbumProducer" /&amp;gt;
+                &amp;lt;endpoint address="mex" binding="mexHttpBinding" contract="IMetadataExchange" /&amp;gt;
+            &amp;lt;/service&amp;gt;
+        &amp;lt;/services&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Aslında &lt;strong&gt;Siverlight-enabled WCF Service&lt;/strong&gt;' i &lt;strong&gt;AlbumProcuder.svc &lt;/strong&gt;adıyla eklediğimizden &lt;strong&gt;web.config &lt;/strong&gt;dosyasında yukarıdaki &lt;strong&gt;XML &lt;/strong&gt;i&amp;ccedil;eriği otomatik olarak oluşturulmaktadır. Bir ka&amp;ccedil; k&amp;uuml;&amp;ccedil;&amp;uuml;k fark ile...İlk olarak &lt;strong&gt;Contract &lt;/strong&gt;tipinin aslında &lt;strong&gt;IAlbumProcuder &lt;/strong&gt;aray&amp;uuml;z&amp;uuml; olarak belirtilmesi gerekmektedir. Diğer yandan &lt;strong&gt;Asp.Net Compatibility Enabled &lt;/strong&gt;opsiyonunun pasif olması gerekmektedir. Aksi durumda servisi, herhangibir tarayıcı uygulama &amp;uuml;zerinden g&amp;ouml;r&amp;uuml;nt&amp;uuml;lemek istediğimizde aşağıda yer alan hata ile karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f3%2fblg170_Exception.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şu aşamdan sunucu tarafındaki hazırlıklar tamamlanmıştır. Buna g&amp;ouml;re &lt;strong&gt;AlbumProducer.svc &lt;/strong&gt;sayfasının tarayıcı uygulamadan talep edilmesi halinde aşağıdaki g&amp;ouml;r&amp;uuml;nt&amp;uuml; ile karşılaşılması işlerin iyi gittiğinin habercisidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f3%2fblg170_Ok.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Hemen bir hatırlatmada bulunalım. Servisi &amp;ccedil;alıştıran &lt;strong&gt;Asp.Net Development Server&lt;/strong&gt; uygulamasının a&amp;ccedil;tığı &lt;strong&gt;port &lt;/strong&gt;numarası &amp;ouml;nemlidir. Nitekim istemci tarafında yazılacak olan kod i&amp;ccedil;erisinde bu port numarası değerlendirilecektir &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;İşin belkide kodlama a&amp;ccedil;ısından en sıkıcı noktası ise istemci tarafını geliştirmektir. Her şeyden &amp;ouml;nce istemci tarafının, sunucu tarafında yer alan&lt;strong&gt; IAlbumProducer.cs&lt;/strong&gt; dosyasını referans etmesi gerekmektedir ki bunu ilgili dosyayı ilave ederken&lt;strong&gt; Add As Link&lt;/strong&gt; se&amp;ccedil;eneğinin kullanılmasında yarar vardır. B&amp;ouml;ylece dosyanın tek bir noktada durması garanti edilmiş olur. Diğer yandan &lt;strong&gt;System.ServiceModel.dll&lt;/strong&gt;&lt;em&gt;(Servis &amp;ccedil;alışma zamanının tesisi i&amp;ccedil;in gerekli tipleri kullanabilmek i&amp;ccedil;in)&lt;/em&gt; ve&lt;strong&gt; System.Runtime.Serialization.dll&lt;/strong&gt;&lt;em&gt;(Veri s&amp;ouml;zleşme nitelikleri i&amp;ccedil;in) &lt;/em&gt;&lt;strong&gt;Assembly&lt;/strong&gt;' larının &lt;strong&gt;Silverlight &lt;/strong&gt;uygulamasının olduğu projeye referans edilmesi şarttır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f3%2fblg170_ReferencesNew.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;MainPage.xaml &lt;/strong&gt;i&amp;ccedil;eriğimizde basit olarak bir &lt;strong&gt;Button &lt;/strong&gt;bileşenine basıldığında &lt;strong&gt;TextBlock &lt;/strong&gt;kontrol&amp;uuml;n&amp;uuml;n i&amp;ccedil;eriğinin sunucundan gelen &lt;strong&gt;Album &lt;/strong&gt;bilgisi ile doldurulması planlanmaktadır. Buna g&amp;ouml;re kod i&amp;ccedil;eriğini aşağıdaki gibi oluşturmamız yeterli olacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.ServiceModel;
+using System.ServiceModel.Channels;
+using System.Threading;
+using System.Windows;
+using System.Windows.Controls;
+using WithChannelBased.Web;
+
+namespace WithChannelBased
+{
+    public partial class MainPage : UserControl
+    {
+        // User Interface i&amp;ccedil;in ayrı bir Thread' in değerlendirileceği nesne tanımlanır
+        SynchronizationContext syncContext;
+
+        public MainPage()
+        {
+            InitializeComponent();
+        }
+
+        private void GetAlbumButton_Click(object sender, RoutedEventArgs e)
+        {
+            // BindingElement listesi tanımlanır
+            List&amp;lt;BindingElement&amp;gt; bindings = new List&amp;lt;BindingElement&amp;gt;();
+            // Sunucu tarafındaki web.config dosyasından hatırlanacağı &amp;uuml;zere BinaryMessageEncoding tipinden bir Binding tipi mevcuttur. &amp;Ouml;ncelikle bu bağlayıcı listesine eklenir.
+            bindings.Add(new BinaryMessageEncodingBindingElement());
+            // Yine sunucu tarafındaki Binding listesine bakıldığında HttpTransport tipinden bir bağlayıcının da olduğu g&amp;ouml;r&amp;uuml;lmektedir. Dolayısıyla bu tipten bir nesne &amp;ouml;rneğide oluşturulur.
+            bindings.Add(new HttpTransportBindingElement());
+
+            // Aynen Web.config dosyasında olduğu gibi, yukarıda tanımlanan Binding nesne &amp;ouml;rnekleri bir CustomBinding nesne &amp;ouml;rneği i&amp;ccedil;erisinde toplanır. Bu nedenle parametre olarak bindings isimli liste verilmiştir.
+            CustomBinding cBinding = new CustomBinding(bindings);
+
+            // WCF &amp;ccedil;alışma zamanının bir kanal oluşturması i&amp;ccedil;in gerekli fabrika tipi tanımlanır.
+            // İlk parametre kanalın kullanacağı bağlayıcı listesidir. İkinci parametre ise EndPoint i&amp;ccedil;in gerekli adres bilgisini i&amp;ccedil;ermektedir. (Port numarasını saklayın demiştim :) )
+            var channelFactory = new ChannelFactory&amp;lt;IAlbumProducer&amp;gt;(
+                cBinding,
+                new EndpointAddress("http://localhost:57845/AlbumProducer.svc")
+                );
+
+            syncContext = SynchronizationContext.Current;
+
+            // Kanal oluşturulu ve dolayısla a&amp;ccedil;ılır
+            IAlbumProducer cnl = channelFactory.CreateChannel();
+
+            // Servis tarafındaki GetAlbum metodu asenkron olarak &amp;ccedil;ağırılır.
+            cnl.BeginGetAlbum(
+                1102
+                , iar =&amp;gt; {
+                    Album albm=((IAlbumProducer)iar.AsyncState).EndGetAlbum(iar);
+                    syncContext.Post(
+                        obj =&amp;gt;
+                        {
+                            AlbumInfoTextBlock.Text = String.Format("{0}\n{1}\n{2}", albm.Id, albm.Genre, albm.Title);
+                        }
+                        , albm);
+            }
+            , cnl
+            );
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Volaaa!!! Uygulamayı test ettiğimizde aşağıdaki &amp;ccedil;alışma zamanı &amp;ccedil;ıktısını almamız beklenmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f3%2fblg170_Runtime.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere istemci tarafında bir konfigurasyon dosyası i&amp;ccedil;eriği hazırlanmamıştır. Bir başka deyişe &lt;strong&gt;WCF &amp;Ccedil;alışma Zamanı(WCF Runtime)&lt;/strong&gt; i&amp;ccedil;in gerekli &lt;strong&gt;Endpoint, CustomBinding &lt;/strong&gt;bildirimlerinin tamamı kod i&amp;ccedil;erisinde ger&amp;ccedil;ekleştirilmiştir. &amp;Ouml;zet olarak &lt;strong&gt;Silverlight &lt;/strong&gt;istemcisinin &lt;strong&gt;Proxy &lt;/strong&gt;tipine ihtiya&amp;ccedil; duymadan &amp;ccedil;alışması sağlanabilmiştir. B&amp;ouml;ylece geldik bir g&amp;ouml;rsel dersimizin daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2010%2f4%2fWithChannelBased_RTM.rar"&gt;WithChannelBased_RTM.rar (72,10 kb)&lt;/a&gt;&lt;strong&gt; [&amp;Ouml;rnek Visual Studio 2010 RC s&amp;uuml;r&amp;uuml;m&amp;uuml; &amp;uuml;zerinde geliştirilmiş ve RTM s&amp;uuml;r&amp;uuml;m&amp;uuml; &amp;uuml;zerinden de test edilmiştir. Son s&amp;uuml;r&amp;uuml;mle birlikte test etmenizde yarar bulunmaktadır.]&lt;/strong&gt;&lt;/p&gt;</content>
+  <pubDate>2010-06-02 01:55:00</pubDate>
+  <slug>WCF-Servicelerine-Silverlight-Istemcilerinden-Channel-Bazli-Erisim</slug>
+  <tags>
+    <tag>silverlight</tag>
+    <tag>wcf</tag>
+    <tag>windows-communication-foundation</tag>
+    <tag>svcutil</tag>
+  </tags>
+  <categories>
+    <category>Silverlight 4.0</category>
+    <category>WCF</category>
+  </categories>
+</post>

@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Ado.Net Data Services Ders Notları - 5 (Custom LINQ Provider-CUD)</title>
+  <description>Ado.Net Data Services konusu ile ilintili bir önceki ders notlarımızda, EDM(Entity Data Model) üzerinden CUD(CreateUpdateDelete) işlemlerinin nasıl yapılabileceğini incelemeye çalışmıştık. Ancak durum özel LINQ Provider kullanımı söz konusu olduğunda biraz daha karmaşıklaşmakta.</description>
+  <content>&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Değerli Okurlarım Merhabalar,&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;Ado.Net Data Services&lt;/strong&gt; konusu ile ilintili bir &amp;ouml;nceki ders notlarımızda, &lt;strong&gt;EDM(Entity Data Model)&lt;/strong&gt; &amp;uuml;zerinden &lt;strong&gt;CUD(CreateUpdateDelete)&lt;/strong&gt; işlemlerinin nasıl yapılabileceğini incelemeye &amp;ccedil;alışmıştık. Ancak durum &amp;ouml;zel &lt;strong&gt;LINQ&lt;/strong&gt; &lt;strong&gt; Provider&lt;/strong&gt; kullanımı s&amp;ouml;z konusu olduğunda biraz daha karmaşıklaşmakta. Nitekim &lt;strong&gt;Custom&lt;/strong&gt; &lt;strong&gt;LINQ&lt;/strong&gt; &lt;strong&gt;Provider&lt;/strong&gt; kullanılması halinde istemci tarafından gelen &lt;strong&gt;CUD&lt;/strong&gt; taleplerine karşılık servis tarafında &amp;ouml;zel kodlamaların yapılması gerekiyor. Bu noktada ders notlarımız i&amp;ccedil;erisinde belkide &amp;ccedil;oğumuzun korkup fazla bulaşmak istemediği bir konuya kısacada olsa değineceğimizi şimdiden ifade etmek isterim. &lt;strong&gt; Reflection(Yansıma)&lt;/strong&gt; :) &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;"Hayda brea nereden &amp;ccedil;ıktı bu reflection" diyenelerimiz eminim ki vardır. &amp;Ouml;yleyse kısaca bu kavramı hatırlamaya &amp;ccedil;alışalım. &lt;strong&gt;Reflection&lt;/strong&gt; teknikleri ile &lt;strong&gt;&amp;ccedil;alışma zamanında(Runtime) .Net CLR&lt;/strong&gt; tiplerine ait(ister kullanıcı tanımlı ister &amp;ouml;nceden tanımlanmış tipler) &lt;strong&gt;metadata&lt;/strong&gt; bilgilerine ulaşılabilmektedir. Bu a&amp;ccedil;ıdan bakıldığında &amp;ouml;zellikle&lt;strong&gt; plug-in&lt;/strong&gt; tabanlı uygulama geliştirmelerde, &lt;strong&gt;IDE&lt;/strong&gt; tasarımlarında kullanılmaktadır. Hatta &amp;ccedil;alışma zamanında tiplere ait canlı nesne &amp;ouml;rneklerinin &amp;uuml;retilip kullanılması bile m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. S&amp;ouml;z gelimi &lt;strong&gt;.&lt;a href="http://www.red-gate.com/products/reflector/"&gt;Net Reflector&lt;/a&gt;&lt;/strong&gt; gibi ara&amp;ccedil;lar &lt;strong&gt;Reflection&lt;/strong&gt; teknikleri yardımıyla geliştirilirler. Peki konunun &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt;' ler ile olan ilişkisi nedir? Neden bu tekniklere ihtiya&amp;ccedil; vardır?&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;Reflection&lt;/strong&gt; tekniklerinin kalbinde &lt;strong&gt;Type&lt;/strong&gt; isimli tip yer alır. Bu basit tipten yararlanarak &amp;ccedil;alışma zamanında herhangibir tipe ait bilgileri elde etmek, tiplere ait nesne &amp;ouml;rnekleri oluşturmak gibi işlemler yapılabilir. Bu basit işlemler ile &lt;strong&gt;plug-in&lt;/strong&gt; uygulamaları, &lt;strong&gt;Reflection&lt;/strong&gt; gibi &lt;strong&gt;.Net Assembly&lt;/strong&gt;' larının i&amp;ccedil;eriğini g&amp;ouml;steren programlar yazılabilir. Hatta &lt;strong&gt;IDE&lt;/strong&gt; geliştirmelerindede &lt;strong&gt;Reflection&lt;/strong&gt; tekniklerinden yararlanılmaktadır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bu sorunun sorulmasını nedeni servis tarafında &lt;strong&gt;Custom&lt;/strong&gt; &lt;strong&gt;LINQ&lt;/strong&gt; &lt;strong&gt;Provider&lt;/strong&gt; kullanılmasıdır. İstemciler &lt;strong&gt;CUD&lt;/strong&gt; işlemleri i&amp;ccedil;in servis tarafına nesne verisi i&amp;ccedil;eren &lt;strong&gt;HTTP&lt;/strong&gt; paketleri g&amp;ouml;nderirler. Servis tarafında yer alan herhangibir &lt;strong&gt;LINQ&lt;/strong&gt; &lt;strong&gt;Provider&lt;/strong&gt;' ın bu nesne i&amp;ccedil;eriklerini ilgili veri kaynaklarına eklemesi, &amp;ccedil;ıkartması yada değiştirmesi i&amp;ccedil;in &amp;ccedil;alışma zamanının anlayabileceği belirli kurallara uyması gerekir. B&amp;ouml;ylece herhangibir &lt;strong&gt;Custom&lt;/strong&gt; &lt;strong&gt;LINQ&lt;/strong&gt; &lt;strong&gt;Provider&lt;/strong&gt; alt yapısının &lt;strong&gt; CUD&lt;/strong&gt; işlemlerini ger&amp;ccedil;ekleştirebilmesi bir standart altına alınmış olunur. &amp;Ouml;yleyse burada servis tarafında uyulması gereken bir kurallar dizisi s&amp;ouml;z konusudur. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bu kurallar &amp;ouml;yle bir yapı i&amp;ccedil;erisinde tanımlanmalıdırki &lt;strong&gt;.Net CLR&lt;/strong&gt;' a &amp;ouml;zg&amp;uuml; olmalıdır. İşte bu noktada nasıl bir tip olabilir sorusunu kendinize sormanız gerekmektedir? &lt;strong&gt; Interface(Aray&amp;uuml;z)&lt;/strong&gt;. Bilindiği &amp;uuml;zere bir aray&amp;uuml;z, uygulandığı tipin uyması gereken kuralları belirtmektedir. Ancak bunun yanında &amp;ccedil;ok bi&amp;ccedil;imlilik &amp;ouml;zelliğine sahiptir ve bu nedenle &amp;ccedil;alışma zamanında kendisini implemente eden tiplere ait nesne &amp;ouml;rneklerini taşıyabilmektedir. Buda &lt;strong&gt; plug-in&lt;/strong&gt; tabanlı mimarilerde &amp;ouml;nem arz eden bir konudur. Bu şimdiki senaryomuzda gerekli bir bilgi değildir belki ama aray&amp;uuml;zlerin ne işe yaradığınıda anlatan g&amp;uuml;zel bir tanımlamadır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;Interface(Aray&amp;uuml;z)&lt;/strong&gt; tipi sadece kendisini uyarlayan tiplerin uyması gereken &lt;strong&gt; &amp;uuml;ye(member)&lt;/strong&gt; tanımlamalarını i&amp;ccedil;erir. Bunun dışında iş yapan &lt;strong&gt;&amp;uuml;yeler(members)&lt;/strong&gt; i&amp;ccedil;ermez. Ayrıca &lt;strong&gt;polimorfik&lt;/strong&gt; bir başka deyişle &amp;ccedil;ok bi&amp;ccedil;imliliğe destek verirler. Dolayısıyla bir aray&amp;uuml;z tipini kullanarak &amp;ccedil;alışma zamanında kendisinden t&amp;uuml;reyen birden fazla nesneyi işaret etmek ve bunların hepsi i&amp;ccedil;in ortak işlemler y&amp;uuml;r&amp;uuml;tmek m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Nitekim bu ortak işlemler aray&amp;uuml;z i&amp;ccedil;erisinde tanımlanmış olup, aray&amp;uuml;z&amp;uuml; implemente eden tiplerde yazılma zorunluluğu bulunan ve farklı şekillerde uygulanabilen &amp;uuml;yelerdir. (Bu noktada ah keşke şu C# derslerindeki temel konuları biraz daha araştırsaydım diyenleriniz olabilir. Vakit &amp;ccedil;ok ge&amp;ccedil; değil...)&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bu anlatılanlardan &amp;ouml;zet olarak şu sonucu &amp;ccedil;ıkartabiliriz. &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt; i&amp;ccedil;erisinde kullanılan &lt;strong&gt; taşıyıcı varlık tipinin(Container Entity Type)&lt;/strong&gt; &lt;strong&gt;CUD&lt;/strong&gt; işlemleri i&amp;ccedil;in belirli kurallara uyması ve bu kuralları uygulaması gerekmektedir. Bu dayatma i&amp;ccedil;in &lt;strong&gt;.Net CLR &lt;/strong&gt;i&amp;ccedil;erisinde &lt;strong&gt;System.Data.Services&lt;/strong&gt; isim alanında yer alan &lt;strong&gt;IUpdatable&lt;/strong&gt; adlı bir &lt;strong&gt;interface&lt;/strong&gt; tipi tanımlanmıştır. Bu aray&amp;uuml;z&amp;uuml;n &amp;uuml;ye metodları ile &lt;strong&gt;CUD&lt;/strong&gt; işlemleri i&amp;ccedil;in gerekli uyarlamaların yapılması istenir. Bakın hen&amp;uuml;z &lt;strong&gt;Reflection&lt;/strong&gt; tekniklerinden birisini kullanmaktan bahsetmediğimizi belirtelim. Bunu bir nesneyi servis tarafında &amp;ouml;rneklerken kullanıyor olacağız. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Şu anda neler hissetiğinizi biliyoru ve size hak veriyorum. Bu yazılanlar biraz sıkıcı. Aslında adım adım bir &amp;ouml;rneğe ge&amp;ccedil;erek ilerlemekte yarar var. Gelin hi&amp;ccedil; vakit kaybetmeden bir &lt;strong&gt; WCF Service&lt;/strong&gt; uygulaması geliştirelim ve i&amp;ccedil;erisinde &lt;strong&gt;Custom&lt;/strong&gt; &lt;strong&gt; LINQ&lt;/strong&gt; &lt;strong&gt;Provider&lt;/strong&gt; kullanan bir &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt; &amp;ouml;ğesi oluşturalım. Bu ama&amp;ccedil;la a&amp;ccedil;ılan &lt;strong&gt;WCF&lt;/strong&gt; &lt;strong&gt;Service&lt;/strong&gt; uygulamasına sırasıyla aşağıdaki tipleri entegre etmemiz yeterli olacaktır. İlk olarak servis tarafındaki geliştirmelerimizin genel g&amp;ouml;r&amp;uuml;n&amp;uuml;m&amp;uuml;ne sınıf diagramı g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nden bir bakalım.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;Sınıf diagramı(Class Diagram);&lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk262_4.gif" alt="" width="629" height="514" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&amp;Ouml;ncelikli olarak &lt;strong&gt;Entity&lt;/strong&gt; tipimizi geliştirelim. &lt;strong&gt;Product&lt;/strong&gt; isimli sınıfımız basit olarak bir &amp;uuml;r&amp;uuml;ne ait Id, ad, fiyat, stok miktari gibi bilgileri taşıyacak şekilde tasarlanmıştır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;Product sınıfı;&lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Linq;
+
+namespace ServerApp
+{
+    public class Product
+    {
+        public int ProductID { get; set; }
+        public string Name { get; set; }
+        public double ListPrice { get; set; }
+        public int UnitsInStcok { get; set; }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Product &lt;strong&gt;entity&lt;/strong&gt; tipini i&amp;ccedil;erisinde kullanan ve istemcilere sunan taşıyıcı tipimiz ise aşağıdaki gibidir. Yanlız burada dikkat edilmesi gereken en &amp;ouml;nemli nokta s&amp;ouml;z konusu tipin &lt;strong&gt;IUpdatable&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml; uygulamış olmasıdır.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;ShopEntites sınıfı;&lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Linq;
+using System.Reflection;
+using System.Data.Services;
+using System.Collections.Generic;
+
+namespace ServerApp
+{
+    // CUD işlemlerine destek vermesi amacıyla ShopEntities tipine IUpdatable aray&amp;uuml;z&amp;uuml; uyarlanmıştır.
+    public class ShopEntities
+        :IUpdatable
+    {
+        // Product tipinden listeyi tutacak generic koleksiyonumuz
+        static List&amp;lt;Product&amp;gt; _products;
+
+        // Static yapıcı metod(Constructor) i&amp;ccedil;erisinde bir kereliğine _product koleksiyonu &amp;ouml;rnek veriler ile doldurulur.
+        static ShopEntities()
+        {
+            _products = new List&amp;lt;Product&amp;gt;
+                {
+                    new Product{ ProductID=1, Name="Dvd Player", ListPrice=100, UnitsInStcok=100},
+                    new Product{ ProductID=2, Name="Mp3 Player 8 Gb", ListPrice=50, UnitsInStcok=150},
+                    new Product{ ProductID=3, Name="15.4 inch LCD", ListPrice=190, UnitsInStcok=50},
+                    new Product{ ProductID=4, Name="320 Gb Hdd", ListPrice=120, UnitsInStcok=200},
+                    new Product{ ProductID=5, Name="1 Tb Hdd 3.5inch", ListPrice=250, UnitsInStcok=175}
+                };
+        }
+
+        // İstemci tarafına sunulacak olan readonly(yanlız okunabilir) &amp;ouml;zellik
+        public IQueryable&amp;lt;Product&amp;gt; Products
+        {
+            get
+            {
+                // AsQueryable&amp;lt;&amp;gt; ile generic List koleksiyonunun sorgulanabilir olması sağlanır
+                return _products.AsQueryable&amp;lt;Product&amp;gt;();
+            }
+        }
+
+        #region IUpdatable Members
+    
+        // Yeni bir Product nesnesinin oluşturulması ve eklenmesi sırasında devreye girer
+        public object CreateResource(string containerName, string fullTypeName)
+        {
+            // Activator kullanılarak tipin full adından bir nesne oluşturulması sağlanır
+            var newProduct = Activator.CreateInstance(Type.GetType(fullTypeName));
+            // Oluşturulan nesne &amp;ouml;rneği Product tipine d&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;lerek _products isimli generic koleksiyona eklenir
+            _products.Add((Product)newProduct);
+            // Eklenen yeni nesne &amp;ouml;rneği metoddan geriy d&amp;ouml;nd&amp;uuml;r&amp;uuml;l&amp;uuml;r
+            return newProduct;
+        }
+
+        // Silme işlemi sırasında devreye giren metod
+        // Parametre olarak silinecek entity nesne &amp;ouml;rneği gelir
+        public void DeleteResource(object targetResource)
+        {
+            // Gelen nesne &amp;ouml;rneği Product tipine d&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;l&amp;uuml;r ve _products isimli koleksiyondan Remove metodu ile &amp;ccedil;ıkartılır
+            _products.Remove((Product)targetResource);
+        }
+
+        // Update(g&amp;uuml;ncelleme) işlemi sırasında devreye giren metoddur.
+        public object GetResource(IQueryable query, string fullTypeName)
+        {
+            object r = null;
+            var numarator = query.GetEnumerator();
+            while (numarator.MoveNext())
+            {
+                if (numarator.Current != null)
+                {
+                    r = numarator.Current;
+                    break;
+                }
+            }
+            return r; 
+        }
+
+        // gelen nesnenin belirtilen &amp;ouml;zelliğinin değerini geriye d&amp;ouml;nd&amp;uuml;ren metoddur
+        public object GetValue(object targetResource, string propertyName)
+        {
+            var targetType = targetResource.GetType();
+            PropertyInfo targetProperty = targetType.GetProperty(propertyName);
+            return targetProperty.GetValue(targetType, null);
+        }
+
+        // Gelen nesnenin ilgili &amp;ouml;zelliğine gelen değeri atayan metoddur.
+        // Bu metod veri ekleme ve g&amp;uuml;ncelleştirme işlemleri sırasında ilgili nesne &amp;ouml;rneğinin her bir &amp;ouml;zelliği i&amp;ccedil;in &amp;ccedil;alışır
+        public void SetValue(object targetResource, string propertyName, object propertyValue)
+        {
+            Type targetType = targetResource.GetType();
+            PropertyInfo targetProperty = targetType.GetProperty(propertyName);
+            targetProperty.SetValue(targetResource, propertyValue, null);
+        }
+
+        public object ResolveResource(object resource)
+        {
+            return resource;
+        }
+
+        // Değişikliklerin kaydedilmesini sağlayan metoddur.
+        // S&amp;ouml;z konusu &amp;ouml;rnekte veriler bellek &amp;uuml;zerinden tutulduğundan uygulanmasına gerek yoktur.
+        public void SaveChanges()
+        {
+        }
+
+        public void RemoveReferenceFromCollection(object targetResource, string propertyName, object resourceToBeRemoved)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object ResetResource(object resource)
+        {
+            throw new NotImplementedException();
+        } 
+
+        public void SetReference(object targetResource, string propertyName, object propertyValue)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddReferenceToCollection(object targetResource, string propertyName, object resourceToBeAdded)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ClearChanges()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Woooww! Evet biraz korkutucu bir implemantasyon. Ama en azından &lt;strong&gt;Custom&lt;/strong&gt; &lt;strong&gt;Membership&lt;/strong&gt; &lt;strong&gt; Provider&lt;/strong&gt; yazarkenki kadar korkutucu değil :) Aslında t&amp;uuml;m aray&amp;uuml;z&amp;uuml;n uyarlamasını ger&amp;ccedil;ekleştirmiş değiliz. Nitekim s&amp;ouml;z konusu &amp;ouml;rnekte kullanılan &lt;strong&gt;Product&lt;/strong&gt; tipi i&amp;ccedil;erisinde herhangibir navigasyon &amp;ouml;zelliği bulunmamaktadır. Diğer taraftan sadece &lt;strong&gt;CUD&lt;/strong&gt; işlemleri i&amp;ccedil;in gerekli temel metodların uygulandığını ifade edebiliriz. Herşeyden &amp;ouml;nce &lt;strong&gt;CreateResource&lt;/strong&gt; metoduna dikkat etmemiz gerekiyor. Notlarımızın başında belirtmiş olduğumuz gibi &lt;strong&gt;Reflection&lt;/strong&gt; tekniklerinin burada iyi bir kullanımını g&amp;ouml;r&amp;uuml;yoruz.&lt;/p&gt;
+&lt;p&gt;Nitekim ilk olarak parametre olarak gelen &lt;strong&gt;string&lt;/strong&gt; ifadeden yararlanılarak bir nesne &amp;ouml;rneği oluşturuluyor ki bu noktada &lt;strong&gt;.Net Remoting&lt;/strong&gt; g&amp;uuml;nlerinden hatırlayacağımız meşhur &lt;strong&gt;Activator&lt;/strong&gt; sınıfı kullanılmakta. Yine &lt;strong&gt; GetValue&lt;/strong&gt; ve &lt;strong&gt;SetValue&lt;/strong&gt; metodları i&amp;ccedil;erisinde parametre olarak gelen bilgilerden yararlanılarak bir &amp;ouml;zellik değerinin set edilmesi veya elde edilmesi işlemlerinde &lt;strong&gt;Reflection&lt;/strong&gt; teknikleri kullanılıyor. Tabi bizim odaklanmak istediğimiz nokta &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt; i&amp;ccedil;erisinde &lt;strong&gt;Custom&lt;/strong&gt; &lt;strong&gt;LINQ&lt;/strong&gt; &lt;strong&gt;Provider&lt;/strong&gt; kullanılması halinde &lt;strong&gt;CUD&lt;/strong&gt; işlemlerinin nasıl ger&amp;ccedil;ekleşeceği. Buraya kadar yaptıklarımız ile işin zor kısmını az da olsa aştık. Şimdi aşağıdaki &lt;strong&gt; svc&lt;/strong&gt; i&amp;ccedil;eriğine sahip &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt; &amp;ouml;ğesinide &lt;strong&gt;WCF&lt;/strong&gt; projemize ekleyelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Data.Services;
+using System.Collections.Generic;
+using System.Linq;
+using System.ServiceModel.Web;
+using ServerApp;
+
+public class ShopServices 
+     : DataService&amp;lt;ShopEntities&amp;gt;
+{ 
+    public static void InitializeService(IDataServiceConfiguration config)
+    {
+        config.SetEntitySetAccessRule("*", EntitySetRights.All);
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;CUD&lt;/strong&gt; işlemeri ger&amp;ccedil;ekleştireceğimiz i&amp;ccedil;in &lt;strong&gt;SetEntitySetAccessRule&lt;/strong&gt; metodu i&amp;ccedil;erisinde &lt;strong&gt;All&lt;/strong&gt; sabit değerini kullanıyoruz. Artık istemci tarafını ve istemci i&amp;ccedil;in gerekli test kodlarını yazabiliriz. Her zamanki gibi basit bir &lt;strong&gt;Console&lt;/strong&gt; uygulaması işimizi g&amp;ouml;recektir. Elbette servisimizide &lt;strong&gt;Add&lt;/strong&gt; &lt;strong&gt; Service&lt;/strong&gt; &lt;strong&gt;Reference&lt;/strong&gt; se&amp;ccedil;eneği ile istemci uygulamaya eklememiz gerekiyor. İstemci tarafında yapılan servis ekleme işlemi sonrasında aşağıdaki sınıf diagramında g&amp;ouml;r&amp;uuml;len tipler oluşacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk262_6.gif" alt="" width="435" height="562" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Daha &amp;ouml;nceki ders notlarımızdan da hatırlayabileceğimiz gibi, veri ekleme işlemleri i&amp;ccedil;in &lt;strong&gt;AddToProducts&lt;/strong&gt; metodu oluşturulmuştur. Bunun dışında &lt;strong&gt;DataServiceContext&lt;/strong&gt; &amp;uuml;zerinden &lt;strong&gt;UpdateObject&lt;/strong&gt;, &lt;strong&gt;DeleteObject&lt;/strong&gt; metodlarınıda kullanıyor olacağız. Nitekim bu metodlar ile, silme ve g&amp;uuml;ncelleme operasyonları ger&amp;ccedil;ekleştirilecektir. İstemci uygulamamızın kod i&amp;ccedil;eriği ise &amp;ouml;rnek olarak aşağıdaki gibi geliştirilebilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt;&lt;span style="font-family: Verdana;"&gt;İstemci uygulama kodları;&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Linq;
+using System.Collections.Generic;
+using ClientApp.ShopServiceReference;
+
+// Not: Kod i&amp;ccedil;erisinde Exception kontrolleri yapılmamıştır
+namespace ClientApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            ShopEntities proxy = new ShopEntities(new Uri("http://buraksenyurt:1000/ServerApp/ShopServices.svc"));
+
+            // Yeni bir Product nesne &amp;ouml;rneği oluşturulur
+            Product newProduct = new Product
+                {
+                    ProductID = 6,
+                    Name = "HP Mouse",
+                    ListPrice = 12,
+                    UnitsInStcok = 100
+                };
+
+            // Nesne &amp;ouml;rneği eklenir
+            proxy.AddToProducts(newProduct);
+
+            // Ekleme operasyonu servis tarafına g&amp;ouml;nderilir
+            proxy.SaveChanges();
+
+            // ProductID değeri 2 olan Product nesnesi istenir.
+            var prd = (from p in proxy.Products
+                            where p.ProductID==2
+                            select p).First&amp;lt;Product&amp;gt;();
+
+            // Bazı &amp;ouml;zelliklerin değerleri sembolik olarak değiştirilir
+            prd.ListPrice += 10;
+            prd.UnitsInStcok += 15;
+            // Nesne g&amp;uuml;ncellemesi yapılır
+            proxy.UpdateObject(prd);
+
+            // Update operasyonu servis tarafına g&amp;ouml;nderilir
+            proxy.SaveChanges();
+
+            // Silme işlemine &amp;ouml;rnek olması i&amp;ccedil;in son eklenen Product istenir
+            var lastPrd = (from p in proxy.Products
+                                where p.ProductID == newProduct.ProductID
+                                select p).First&amp;lt;Product&amp;gt;();
+        
+            // Nesne silinmesi yapılır
+            proxy.DeleteObject(lastPrd);
+            // Delete operasyonu servis tarafına g&amp;ouml;nderilir
+            proxy.SaveChanges();        
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rnekte ilk olarak bir &lt;strong&gt;Product&lt;/strong&gt; nesne &amp;ouml;rneği oluşturulmakta ve sonra &lt;strong&gt;AddToProducts&lt;/strong&gt; metodu ile ilave edilmektedir. Tabiki bu ekleme işleminin servis tarafına g&amp;ouml;nderilmesi i&amp;ccedil;in, &lt;strong&gt;SaveChanges&lt;/strong&gt; metodunun &amp;ccedil;ağırılması gerekir. G&amp;uuml;ncelleme işlemi i&amp;ccedil;in &lt;strong&gt;UpdateObject&lt;/strong&gt; metodu kullanılmaktadır. Silme işlemi i&amp;ccedil;inse &lt;strong&gt;DeleteObject&lt;/strong&gt; metodu. Elbette her iki işleminde &lt;strong&gt;HTTP&lt;/strong&gt; paketleri i&amp;ccedil;erisine g&amp;ouml;m&amp;uuml;lerek servis tarafına g&amp;ouml;nderilmesi i&amp;ccedil;in &lt;strong&gt;SaveChanges&lt;/strong&gt; metodu &amp;ccedil;ağırılmalıdır. İstemci uygulama bu haliyle &amp;ccedil;alıştırıldığında herhangibir sorun olmadan işlemlerin ger&amp;ccedil;ekleştiği g&amp;ouml;r&amp;uuml;l&amp;uuml;r. &lt;em&gt;(Ancak siz bu uygulamayı test ederken mutlaka &lt;strong&gt;Debug&lt;/strong&gt; modda &amp;ccedil;alıştırın ve k&amp;uuml;&amp;ccedil;&amp;uuml;k bir tavsiye; &lt;strong&gt; WCF&lt;/strong&gt; tarafındaki &lt;strong&gt;debug&lt;/strong&gt; işlemleri i&amp;ccedil;in hem servis hemde istemci uygulamayı debug modda &amp;ccedil;alıştırmalısınız.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Uygulama test edilirken eğer &lt;strong&gt; SaveChanges&lt;/strong&gt; metodlarında &lt;strong&gt;breakpoint&lt;/strong&gt;' ler ile ilerlenir ve arka planda &lt;strong&gt;Fiddler&lt;/strong&gt; gibi bir &lt;strong&gt;Http&lt;/strong&gt; &lt;strong&gt;Debugging&lt;/strong&gt; &lt;strong&gt; Proxy&lt;/strong&gt; aracı kullanılırsa uygulamanın tamamının &amp;ccedil;alışması sonrasında aşağıdaki sonu&amp;ccedil;ların elde edildiği g&amp;ouml;r&amp;uuml;l&amp;uuml;r.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;&lt;a href="http://www.fiddlertool.com/fiddler/"&gt;Fiddler&lt;/a&gt;&lt;/strong&gt; aracı basit bir &lt;strong&gt;HTTP&lt;/strong&gt; &lt;strong&gt;Debugging&lt;/strong&gt; &lt;strong&gt;Proxy&lt;/strong&gt; uygulamasıdır ve &lt;strong&gt;IIS&lt;/strong&gt; &amp;uuml;zerinde &lt;strong&gt;80&lt;/strong&gt; numaralı porta gelen ve giden t&amp;uuml;m &lt;strong&gt;HTTP&lt;/strong&gt; paketlerini izleyebilmenizi, i&amp;ccedil;eriğini g&amp;ouml;rebilmenizi sağlar. Lakin &lt;strong&gt;Asp.Net Development Server &lt;/strong&gt;ile kullanımında bazı &amp;ouml;n ayarlar yapılması gerekmektedir. &lt;strong&gt;Fiddler&lt;/strong&gt; aracının kullanımı &lt;strong&gt;Ado.Net Data Services&lt;/strong&gt;' lerde &lt;strong&gt;Batch&lt;/strong&gt; &lt;strong&gt;Processing&lt;/strong&gt; işlemlerinin ele alındığı &lt;a href="http://www.csharpnedir.com/videoindir.asp?id=121"&gt;&lt;strong&gt;g&amp;ouml;rsel dersimizde&lt;/strong&gt;&lt;/a&gt; incelenmiştir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt;&lt;span style="font-family: Verdana;"&gt;HTTP Paketlerinin Fiddler aracı &amp;uuml;zerinden incelenmesi;&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk262_7.gif" alt="" width="447" height="353" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bu durumu biraz analiz edelim. İlk olarak yeni bir &lt;strong&gt;Product&lt;/strong&gt; ekleniyor. Bu ekleme işlemi istemci tarafında yapılan &lt;strong&gt;SaveChanges&lt;/strong&gt; metodu &amp;ccedil;ağrısı sonrasında, servis tarafına bir &lt;strong&gt;HTTP&lt;/strong&gt; paketi olarak gidiyor ki bu &lt;strong&gt;POST&lt;/strong&gt; metoduna g&amp;ouml;re hazırlanmış bir pakettir. Yine Fiddler yardımıyla paketin i&amp;ccedil;eriğinin aşağıdaki gibi olduğu g&amp;ouml;r&amp;uuml;lebilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;Header i&amp;ccedil;eriği;&lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk262_8.gif" alt="" width="300" height="79" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;Paket i&amp;ccedil;eriği;&lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk262_9.gif" alt="" width="443" height="323" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Sonrasında ise bir &lt;strong&gt;HTTP&lt;/strong&gt; &lt;strong&gt;Get&lt;/strong&gt; talebi gelmektedir. Nitekim kod i&amp;ccedil;erisinde g&amp;uuml;ncelleme &amp;ouml;rneği i&amp;ccedil;in, &lt;strong&gt; ProductID&lt;/strong&gt; değeri &lt;strong&gt;2&lt;/strong&gt; olan &amp;uuml;r&amp;uuml;n bilgisi istenmiştir. Bunun sonucu olarak tabiki istemci tarafına da bir i&amp;ccedil;erik g&amp;ouml;nderilmektedir. Yine Fiddler aracı yardımıyla bu i&amp;ccedil;eriğe bakılabilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk262_10.gif" alt="" width="459" height="607" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;ProductId değeri 2 olan &amp;uuml;r&amp;uuml;n&amp;uuml;n istemci tarafına &amp;ccedil;ekilmesinin ardından bir g&amp;uuml;ncelleme işlemi ger&amp;ccedil;ekleştirilir. Koda dikkat edecek olursak bu işlemler i&amp;ccedil;in &lt;strong&gt;UpdateObject&lt;/strong&gt; ve ardından &lt;strong&gt;SaveChanges&lt;/strong&gt; metodları &amp;ccedil;ağırılmaktadır. &lt;strong&gt;SaveChanges&lt;/strong&gt; metodu bu kez istemciden servis tarafına &lt;strong&gt;HTTP&lt;/strong&gt; &lt;strong&gt;Merge&lt;/strong&gt; paketi g&amp;ouml;nderir ve bu paket i&amp;ccedil;erisinde g&amp;uuml;ncelleştirilen yeni değerler yer alır. Buna g&amp;ouml;re servise gelen &lt;strong&gt;Request&lt;/strong&gt; paketinin &lt;strong&gt;Header&lt;/strong&gt; i&amp;ccedil;eriği aşağıdaki gibidir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk262_11.gif" alt="" width="354" height="108" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Paket ile g&amp;ouml;nderilen bilgiler ise yine Fiddler aracı ile g&amp;ouml;r&amp;uuml;lebilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk262_12.gif" alt="" width="442" height="336" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Son olarak silme operasyonunda &amp;ouml;nce silinmek istenen veri servis tarafından talep edilmiştir. Bu noktada yine bir &lt;strong&gt;HTTP&lt;/strong&gt; &lt;strong&gt;Get&lt;/strong&gt; &amp;ccedil;ağrısı ger&amp;ccedil;ekleşir. Bu işlemden sonra istemci kodlarında &lt;strong&gt;DeleteObject&lt;/strong&gt; ve ardından yine &lt;strong&gt;SaveChanges&lt;/strong&gt; metodları &amp;ccedil;ağırılmıştır. &lt;strong&gt;SaveChanges&lt;/strong&gt; &amp;ccedil;ağrısı sonrasında ise bu kez bir &lt;strong&gt;HTTP&lt;/strong&gt; &lt;strong&gt;Delete&lt;/strong&gt; talebi istemciden servis tarafına doğru g&amp;ouml;nderilecektir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk262_13.gif" alt="" width="416" height="94" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Arka planda HTTP paketlerinde neler gittiğini g&amp;ouml;rd&amp;uuml;k. Burada Fiddler aracına &amp;ccedil;oğunuzun aşık olduğunu hisseder gibiyim. Aynı &lt;strong&gt;SQL&lt;/strong&gt; &lt;strong&gt;Server&lt;/strong&gt; &lt;strong&gt;Profiler&lt;/strong&gt; gibi son derece başarılı bir izleme aracı.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Gelelim kod tarafındaki metod işleyişlerine. S&amp;ouml;z gelimi veri ekleme işlemi sırasında istemci tarafında &lt;strong&gt;AddToProducts&lt;/strong&gt; ve &lt;strong&gt;SaveChanges&lt;/strong&gt; metodlarını kullanıyoruz. Peki ya servis tarafında uyguladığımız &lt;strong&gt;IUpdatable&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;ne ait hangi metodlar devreye giriyor. Bu durumu analiz etmek i&amp;ccedil;in &lt;strong&gt;Debug&lt;/strong&gt; modda biraz dolaşmam gerektiğini ifade etmek isterim. Sonunda aşağıdaki sonu&amp;ccedil;lara ulaşabildim. Tabi s&amp;ouml;z konusu s&amp;uuml;re&amp;ccedil;ler yukarıdaki geliştirdiğimiz &amp;ouml;rneğe g&amp;ouml;re işlemektedir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt;&lt;span style="font-family: Verdana;"&gt;Insert işlemine ait s&amp;uuml;re&amp;ccedil;;&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk262_1.gif" alt="" width="541" height="356" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;İstemci tarafında ilk olarak &lt;strong&gt; AddTo[EntityName](&amp;ouml;rneğin AddToProducts) &lt;/strong&gt;metodu &amp;ccedil;ağırılır. Sonrasında ise &lt;strong&gt;SaveChanges&lt;/strong&gt; metodu y&amp;uuml;r&amp;uuml;t&amp;uuml;l&amp;uuml;r. &lt;strong&gt;SaveChanges&lt;/strong&gt; metodu &lt;strong&gt;insert&lt;/strong&gt; işlemi i&amp;ccedil;in gerekli &lt;strong&gt;HTTP&lt;/strong&gt; paketinin &lt;strong&gt;Post&lt;/strong&gt; metoduna g&amp;ouml;re servis tarafına g&amp;ouml;nderilmesinde rol oynar. Bunun karşılığında servis tarafında sırasıyla &lt;strong&gt;CreateResource&lt;/strong&gt;, &lt;strong&gt; SetValue&lt;/strong&gt;, &lt;strong&gt;SaveChanges&lt;/strong&gt; ve &lt;strong&gt;ResolveResource&lt;/strong&gt; metodları &amp;ccedil;ağırılır. &lt;strong&gt;CreateResource&lt;/strong&gt; metodu ile &lt;strong&gt;HTTP&lt;/strong&gt; paketinde gelen istekte yer alan tipin, &amp;ccedil;alışma zamanında oluşturulması ve ilgili veri kaynağına eklenmesi işlemleri ger&amp;ccedil;ekleştirilir. &lt;strong&gt;SetValue&lt;/strong&gt; metodu ise oluşturulan tipin her &amp;ouml;zelliği i&amp;ccedil;in &amp;ccedil;alışır. Bir başka deyişle &amp;ouml;zelliklerin değerlerinin verilmesinde devreye girer. &amp;Ouml;rnekte veriler bellekteki koleksiyonlarda tutulduğu i&amp;ccedil;in geri d&amp;ouml;n&amp;uuml;ş değeri olmayan ve parametre almayan &lt;strong&gt;SaveChanges&lt;/strong&gt; metodu i&amp;ccedil;erisinde herhangibir işlem yapılmamıştır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;Update işlemine ait s&amp;uuml;re&amp;ccedil;;&lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk262_2.gif" alt="" width="540" height="357" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;İstemci tarafında bu kez &amp;ouml;ncelikli olarak &lt;strong&gt;UpdateObject&lt;/strong&gt; ve sonrasında &lt;strong&gt;SaveChanges&lt;/strong&gt; metodları &amp;ccedil;ağırılır. Servis tarafında ise &amp;ouml;ncelikli olarak g&amp;uuml;ncellenecek verinin elde edilmesi i&amp;ccedil;in &lt;strong&gt;GetResource&lt;/strong&gt; metodu devreye girer. &lt;strong&gt;Insert&lt;/strong&gt; s&amp;uuml;recine benzer bir şekilde &lt;strong&gt;SetValue&lt;/strong&gt; metodu g&amp;uuml;ncellenecek &amp;ouml;zellikler i&amp;ccedil;in tek tek &amp;ccedil;alışır ve yine sırasıyla &lt;strong&gt;SaveChanges&lt;/strong&gt;, &lt;strong&gt; ResolveResource&lt;/strong&gt; metodları devreye girer.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;Delete işlemine ait s&amp;uuml;re&amp;ccedil;;&lt;/strong&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk262_3.gif" alt="" width="541" height="356" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Silme işleminde istemci tarafında sırasıyla &lt;strong&gt;DeleteObject&lt;/strong&gt; ve &lt;strong&gt;SaveChanges&lt;/strong&gt; metodları &amp;ccedil;alışır. Bunun karşılığında &lt;strong&gt;Delete&lt;/strong&gt; metodunu i&amp;ccedil;eren bir &lt;strong&gt;HTTP&lt;/strong&gt; paketi servis tarafına g&amp;ouml;nderilir. Servis tarafında ise yine silinmek istenen verinin elde edilmesi i&amp;ccedil;in &lt;strong&gt;GetResource&lt;/strong&gt; metodu ilk olarak devreye girer. Sonrasında ise &lt;strong&gt;DeleteResource&lt;/strong&gt; ile bu verinin kaynaktan &amp;ccedil;ıkartılması sağlanır. &amp;Ouml;rnekte bir koleksiyon kullanıldığından bu basit bir &lt;strong&gt;Remove&lt;/strong&gt; işleminden &amp;ouml;te değildir. Son olarak yine &lt;strong&gt; SaveChanges&lt;/strong&gt; ve &lt;strong&gt;ResolveResource&lt;/strong&gt; metodları &amp;ccedil;ağırılır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere kendi geliştirdiğimiz &lt;strong&gt; Custom&lt;/strong&gt; &lt;strong&gt;LINQ&lt;/strong&gt; &lt;strong&gt;Provider&lt;/strong&gt;' ların kullanıldığı senaryolarda en kritik nokta &lt;strong&gt;IUpdatable&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml;n kullanılmasıdır. Bu aray&amp;uuml;z&amp;uuml;n yazımızda kullanılan &amp;ouml;rnek implemantasyonu ile basit CUD işlemleri ger&amp;ccedil;ekeştirilebilir. B&amp;ouml;ylece geldik &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt;' ler ile ilişkili bir ders notumuzun daha sonuna. Bir sonraki yazımızda g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt; &lt;a href="/makale/images/UsingIUpdatable.rar"&gt;&amp;Ouml;rneği indirmek i&amp;ccedil;in tıklayın&lt;/a&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;</content>
+  <pubDate>2008-10-24 12:00:00</pubDate>
+  <slug>Ado-Net-Data-Services-Ders-Notlarc4b1-5-(Custom-LINQ-Provider-CUD)-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>adonet-data-services</tag>
+    <tag>wcf-data-services</tag>
+    <tag>wcf</tag>
+    <tag>windows-communication-foundation</tag>
+  </tags>
+  <categories>
+    <category>Ado.Net Data Services</category>
+  </categories>
+</post>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Parallel.For Metodu için Stop, Break Kullanımı [Beta 1]</title>
+  <description>Parallel.For metodu bildiğiniz gibi döngüsel işlemleri birden fazla göreve bölerek kısa sürede yapılmasına olanak sağlamaktadır. Bu yazımda, kelimeler ile ifade etmeyi bir türlü beceremediğim ancak bir örnek üzerinden sizlere aktarabileceğim Stop ve Break metodları üzerinde durmaya çalışacağım.</description>
+  <content>&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Parallel.For metodu bildiğiniz gibi d&amp;ouml;ng&amp;uuml;sel işlemleri birden fazla g&amp;ouml;reve b&amp;ouml;lerek kısa s&amp;uuml;rede yapılmasına olanak sağlamaktadır. Bu yazımda, kelimeler ile ifade etmeyi bir t&amp;uuml;rl&amp;uuml; beceremediğim ancak bir &amp;ouml;rnek &amp;uuml;zerinden sizlere aktarabileceğim &lt;strong&gt;Stop&lt;/strong&gt; ve &lt;strong&gt;Break&lt;/strong&gt; metodları &amp;uuml;zerinde durmaya &amp;ccedil;alışacağım. Aslında ama&amp;ccedil; tahmin edeceğiniz &amp;uuml;zere paralel &amp;ccedil;alışan d&amp;ouml;ng&amp;uuml; i&amp;ccedil;erisinden &amp;ccedil;ıkmak. Bu ardışıl &amp;ccedil;alışan bir for d&amp;ouml;ng&amp;uuml;s&amp;uuml; g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında problem değil. Ya da &amp;ouml;nemsenmesi gereken sorunlara yol a&amp;ccedil;abilecek bir konu değil. Nitekim tek bir Thread s&amp;ouml;z konusu. Ancak Parallel.For metodu işlemleri ger&amp;ccedil;ekleştirirken birden fazla Task' in başlatılmasına neden olmaktadır. Bu durumdada Stop veya Break gibi iki farklı metodun nasıl davranış g&amp;ouml;stereceğini bilmekte yarar vardır. İşte konuyu anlayabilmek i&amp;ccedil;in &lt;strong&gt;Visual Studio 2010 Beta 1 &lt;/strong&gt;s&amp;uuml;r&amp;uuml;m&amp;uuml;nde geliştirdiğim &amp;ouml;rnek &lt;strong&gt;Console &lt;/strong&gt;uygulaması kodları.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Collections.Concurrent;
+using System.Threading;
+
+namespace ParallelForStopBreak
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            ConcurrentDictionary&amp;lt;int, DateTime&amp;gt; values = new ConcurrentDictionary&amp;lt;int, DateTime&amp;gt;();
+
+            // ls ParallelLoopState tipinden olup derleyici tarafından &amp;uuml;retilmektedir.
+            Random rnd = new Random();
+
+            Parallel.For(0, 1000, (i,ls) =&amp;gt;
+                {
+                    // G&amp;uuml;ncel ThreadId değerini alalım.
+                    string threadId=Thread.CurrentThread.ManagedThreadId.ToString();
+
+                    values.TryAdd(i, DateTime.Now);
+                    Thread.Sleep(500);
+                    Console.Write("({0}) {1} ",threadId,i.ToString());
+
+                    #region Stop Durumu
+
+                    if (rnd.Next(1, 100) == 3) // Eğer rastgele &amp;uuml;retilen sayı 3 ise Stop metodu &amp;ccedil;ağırılır.
+                    {
+                        ls.Stop();
+                        Console.WriteLine("\t\n {0} i&amp;ccedil;in Stop &amp;ccedil;ağrısı yapıldı", threadId);
+                    }
+                    if (ls.IsStopped) // Eğer &amp;ccedil;alışan paralel Thread durdurulmuşsa
+                        Console.WriteLine("\n{0} durduruldu", threadId);
+
+                    #endregion
+                }
+            );
+
+            Console.WriteLine("{0} eleman eklendi.\n&amp;Ccedil;ıkmak i&amp;ccedil;in bir tuşa basınız.",values.Count.ToString());
+            Console.ReadLine();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Program kodumuzda 0' dan 1000'e kadar zaman değerlerinin &amp;uuml;retilip bir &lt;strong&gt;ConcurrentDictionary&amp;lt;int,DateTime&amp;gt;&lt;/strong&gt; koleksiyonuna eklenmesi s&amp;ouml;z konusudur. D&amp;ouml;ng&amp;uuml; i&amp;ccedil;erisinde &lt;strong&gt;Random&lt;/strong&gt; sınıfından yararlanılarak 3 değeri kontrol edilmektedir. Eğer 3 değerine denk gelinirse &lt;strong&gt;Stop &lt;/strong&gt;metodu &amp;ccedil;ağırılır. Program &amp;ccedil;alışması sonucu her seferinde farklı sonu&amp;ccedil;lar &amp;uuml;retilmesi olasıdır. Bunu peşinen s&amp;ouml;yliyim. Nitekim her defasında farklı sayıda ve sırada g&amp;ouml;revler &amp;ccedil;alışmaktadır. &amp;Ouml;rnek sonu&amp;ccedil;lardan birisi aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f6%2fblg33_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Evettt. Şimdi bu &amp;ccedil;alışma şeklini bir değerlendirelim. &lt;strong&gt;Parallel.For&lt;/strong&gt; metodu, &lt;strong&gt;12,6,10,11,21,20,19,18,13,16,17,15,14&lt;/strong&gt; numaralı &lt;strong&gt;Thread'&lt;/strong&gt; leri oluşturmuştur. &amp;Ccedil;alışma sırasında, 12 nolu Thread g&amp;ouml;revini y&amp;uuml;r&amp;uuml;t&amp;uuml;rkende Stop &amp;ccedil;ağrısı gelmiştir. Bu durumda &amp;ccedil;alışmakta olan t&amp;uuml;m paralel g&amp;ouml;revlere durdurulma emri gitmektedir. Ancak 12 nolu Thread sırasında Stop emri gelmesine rağmen diğer&amp;nbsp;Thread' ler&amp;nbsp;kısa bir s&amp;uuml;rede olsa(&amp;ouml;rneğe g&amp;ouml;re birer eleman ekleme s&amp;uuml;resi kadar) ge&amp;ccedil; durmuştur. Thread' lerin durup durmadıkları, dikkat edeceğini &amp;uuml;zere &lt;strong&gt;ParallelLoopState&lt;/strong&gt; referansının &lt;strong&gt;IsStopped&lt;/strong&gt; &amp;ouml;zelliği ile anlaşılmaktadır.&lt;/p&gt;
+&lt;p&gt;Peki ya Break metodu nasıl bir etkide bulunmaktadır. Bu ama&amp;ccedil;la Parallel.For metodu i&amp;ccedil;erisine aşağıdaki kodları ekledim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;if (rnd.Next(1, 100) == 3) // Eğer rastgele &amp;uuml;retilen sayı 3 ise Break metodu &amp;ccedil;ağırılır.
+{
+ ls.Break();
+ Console.WriteLine("\t\n {0} i&amp;ccedil;in Break &amp;ccedil;ağrısı yapıldı.", threadId);
+}&lt;/pre&gt;
+&lt;p&gt;Aslında bu kez &lt;strong&gt;Stop&lt;/strong&gt; metodu yerine sadece &lt;strong&gt;Break&lt;/strong&gt; metodunu kullandığımızı g&amp;ouml;rebiliriz. Peki ya &amp;ccedil;alışma zamanı? Her zamanki her &amp;ccedil;alışma sonrası farklı sonu&amp;ccedil;ların &amp;uuml;retildiği ortadadır. Aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde bu &amp;ccedil;alışmalardan birisi ele alınmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f6%2fblg33_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Durumu değerlendirmeye &amp;ccedil;alışalım. Herşeyden &amp;ouml;nce birden fazla &lt;strong&gt;Thread' &lt;/strong&gt;in &amp;ccedil;alıştığı kolayca g&amp;ouml;zlemlenebilir. &amp;Ouml;rnekte 10, 11, 6, 13, 12, 14, 15, 19, 21, 17 numaralı &lt;strong&gt;Thread'&lt;/strong&gt; ler &amp;ccedil;alıştırılmaktadır.&amp;nbsp;Derken &amp;ccedil;alışma zamanının bir anından, 14nc&amp;uuml; Thread i&amp;ccedil;in &lt;strong&gt;Break&lt;/strong&gt; &amp;ccedil;ağrısı gelmiştir. Bunun &amp;uuml;zerine 14 numaralı Thread durdurulmuştur. Diğer yandan, Break metodu ile karşılaşıncaya kadar başlatılan diğer Thread' ler &amp;ccedil;alışmalarına devam etmektedir. İşte Stop metodu ile aradaki &amp;ouml;nemli&amp;nbsp;bir farklılık. Yinede ilerleyen kısımlarda diğer Thread' lerden bazılarının y&amp;uuml;r&amp;uuml;t&amp;uuml;lmesi esnasında &lt;strong&gt;Break&lt;/strong&gt; &amp;ccedil;ağrısı ile karşılaşılması olasıdır ki 13nc&amp;uuml; &lt;strong&gt;Thread &lt;/strong&gt;i&amp;ccedil;in bu ger&amp;ccedil;ekleşmiştir. Tabiki bu &amp;ccedil;ağrı sonrasında 13nc&amp;uuml; Thread' de sonlandırılmış ama daha &amp;ouml;nceden başlatılmış diğer Thread' ler kendilerine ayrılan &amp;uuml;st sınır değerine kadar y&amp;uuml;r&amp;uuml;meye devam etmiştir. Nitekim ilerleyen kısımlarda diğer Thread' ler i&amp;ccedil;in Break komutu ile karşılaşılmamıştır.&lt;/p&gt;
+&lt;p&gt;Sanıyorumki &lt;strong&gt;Stop&lt;/strong&gt; ve &lt;strong&gt;Break&lt;/strong&gt; metodları arasındaki farkı biraz biraz kendini g&amp;ouml;stermeye başladı.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Yinede şu ana kadar yaptığım analizde havada kalan noktalar var gibi hissediyorum. &lt;img title="Undecided" src="/editors/tiny_mce3/plugins/emotions/img/smiley-undecided.gif" alt="Undecided" border="0" /&gt;&amp;nbsp;Farklılığı tam olarak g&amp;ouml;remediğimi itirifat etemliyim. Bu nedenle &lt;strong&gt;Break&lt;/strong&gt; tekniği ile ilişkili kod par&amp;ccedil;asında &lt;strong&gt;if&lt;/strong&gt; kontrol&amp;uuml;n&amp;uuml; aşağıdaki gibi değiştirdim ve &lt;strong&gt;Thread.Sleep&lt;/strong&gt; s&amp;uuml;resini biraz daha kısalttım. Ama&amp;ccedil; &amp;ccedil;alışan &lt;em&gt;&lt;strong&gt;Thread'&lt;/strong&gt; lerden &lt;strong&gt;10&lt;/strong&gt; numaralı Id' ye sahip olana denk gelindiğinde &lt;strong&gt;Break&lt;/strong&gt; komutu kullanmak ve diğer Thread' lere ne olacağını&lt;/em&gt; anlamaktı.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;if(threadId=="10")&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Volaaaa... &lt;img title="Laughing" src="/editors/tiny_mce3/plugins/emotions/img/smiley-laughing.gif" alt="Laughing" border="0" /&gt;&amp;nbsp;Bu durumda&amp;nbsp;oluşan farklı&amp;nbsp;&amp;ccedil;alışma zamanı sonu&amp;ccedil;larından birisi&amp;nbsp;aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ndeki gibi oldu.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f6%2fblg33_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Ve diğer bir denemenin sonucu;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f6%2fblg33_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu sonu&amp;ccedil;lara ve diğerlerine baktığımda 1000 adımlık iterasyonun, &lt;strong&gt;Thread'&lt;/strong&gt; lere farklı sayılarda b&amp;ouml;l&amp;uuml;nd&amp;uuml;ğ&amp;uuml;n&amp;uuml; farkettim. Diğer yandan &lt;strong&gt;10 numaralı Thread&lt;/strong&gt; &amp;ccedil;alışmaya başlayıp bir eleman eklendikten sonra gelen &lt;strong&gt;Break&lt;/strong&gt; metodu &amp;ccedil;ağrısı nedeniyle durdurulmuştu. Diğer Thread' ler ise &amp;ccedil;alışmalarına devam ederek kendilerine ayrılan limitler dahilinde eleman eklemeyi s&amp;uuml;rd&amp;uuml;rm&amp;uuml;şlerdi. O zaman aynı vakada Stop metodu ne yapar diye insan ister istemez merak ediyor. Bunun &amp;uuml;zerine Stop metodunun kullanıldığı senaryodaki if koşulunda 10 numaralı Thread' i kontrol etmeye karar verdim. Ve işte &amp;ccedil;alışma zamanı sonu&amp;ccedil;larından birisi;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f6%2fblg33_5.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi 10ncu &lt;strong&gt;Thread&lt;/strong&gt; &amp;ccedil;alışmaya başlayıp 1 eleman ekledikten sonra gelen &lt;strong&gt;Stop&lt;/strong&gt; metodu nedeniyle hem kendisi hemde diğer Thread' ler m&amp;uuml;mk&amp;uuml;n olan en kısa s&amp;uuml;rede durdurulmuştur.&lt;/p&gt;
+&lt;p&gt;Sanıyorumki artık &lt;strong&gt;Stop&lt;/strong&gt; ve &lt;strong&gt;Break&lt;/strong&gt; arasındaki farkı daha iyi g&amp;ouml;rebiliyoruz. &lt;img title="Laughing" src="/editors/tiny_mce3/plugins/emotions/img/smiley-laughing.gif" alt="Laughing" border="0" /&gt;&amp;nbsp;Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2009%2f6%2fParallelForStopBreak.rar"&gt;ParallelForStopBreak.rar (21,27 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2009-06-18 06:32:00</pubDate>
+  <slug>ParallelFor-Metodu-icin-Stop-Break-Kullanc4b1mc4b1</slug>
+  <tags>
+    <tag>parallel-programming</tag>
+  </tags>
+  <categories>
+    <category>Parallel Programming</category>
+  </categories>
+</post>

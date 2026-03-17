@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Transaction Kavramı</title>
+  <description>Bu makalemizde sizlere veritabanı programcılığında ve özellikle de çok katlı mimaride çok önemli bir yere sahip olan Transaction’lar hakkında bilgi vermeye çalışacağım. Her zaman olduğu gibi konuyu iyi anlayabilmek için bir de örnek uygulamamız olucak.</description>
+  <content>&lt;p&gt;Değerli Okurlarım,&amp;nbsp;Merhabalar.&amp;nbsp;&amp;nbsp;&lt;/p&gt;
+&lt;p class="MsoNormal" align="justify"&gt;Bu makalemizde sizlere veritabanı programcılığında ve &amp;ouml;zellikle de &amp;ccedil;ok katlı mimaride &amp;ccedil;ok &amp;ouml;nemli bir yere sahip olan Transaction&amp;rsquo;lar hakkında bilgi vermeye &amp;ccedil;alışacağım. Her zaman olduğu gibi konuyu iyi anlayabilmek i&amp;ccedil;in bir de &amp;ouml;rnek uygulamamız olucak.&amp;nbsp;&amp;Ouml;ncelikle Transaction nedir , ne işe yarar bunlardan bahsedelim. &amp;Ccedil;oğu zaman programlarımızda ardı arkasına veritabanı işlemleri uygulatırız. &amp;Ouml;rneğin, bir veritabanındaki bir tablodan kayıt silerken, aynı olayın sonucunda başka bir ilişkli tabloya silinen bu &amp;nbsp;verileri ekleyebilir veya g&amp;uuml;ncelleyebiliriz. Hatta bu işlemin arkasından da silinen kayıtların bulunduğu tablo ile ilişkili başka tablolaradan da aynı verileri sildiğimiz işlemleri başlatabiliriz. Dikkat edicek olursanız burada birbirleriyle ilintili ve ardışık işlemlerden s&amp;ouml;z ediyoruz. &amp;nbsp;&lt;/p&gt;
+&lt;p class="MsoNormal" align="justify"&gt;Farzedelim ki , &amp;uuml;zerinde &amp;ccedil;alıştığımız bu tablolara farklı veritabanı sunucularında bulunsun. &amp;Ouml;rneğin, birisi Adana&amp;rsquo;da diğeri Arnavutluk&amp;rsquo;ta ortağı olduğumuz şirketin sunucularında. Hatta bir diğeride Kazakistandaki ortağımızın bir ka&amp;ccedil; sunucusunda bulunuyor olsun. E hadi bir tanede bizim sunucumuzda farklı bir veya bir ka&amp;ccedil; tablo olsun. Şimdi d&amp;uuml;ş&amp;uuml;n&amp;uuml;n ki, biz Kazakistan&amp;rsquo; a sattığımız malların bilgisini , Arnavutluk&amp;rsquo; taki ortağımızın sunucularınada bildiriyoruz.&lt;/p&gt;
+&lt;p class="MsoNormal" align="justify"&gt;Stoğumuzda bulunan mallarda 1000 adet televizyonu Kazakistana g&amp;ouml;ndermek amacıyla ihra&amp;ccedil; birimimize rapor ediyoruz. İhra&amp;ccedil; birimi ilgili işlemleri yaptıktan sonra, Kazakistandaki sunuculardan gelen &amp;ouml;deme bilgisini alıyor. Sonra ise stok tan&amp;rsquo; 1000 televizyonu d&amp;uuml;ş&amp;uuml;yor , muhasebe kayıtlarını g&amp;uuml;ncelliyor, Kazakistan&amp;rsquo; daki sunucularda stok artışını ve hesap eksilişlerini bildiriyor. Daha sonra ise , Arnavutluk&amp;rsquo; taki sunuculara stok artışı ve stok azalışlarını ve muhasebe hareketlerini belirtiyor. Senaryo bu ya. &amp;Ccedil;ok hızlı bir teknolojik alt yapıya sahip olduğumuzu ve bankalardan şirkete olan para akışlarının anında g&amp;ouml;r&amp;uuml;l&amp;uuml;p , tablolara yansıtılabildiğini ve bu sayede de stoklardaki hareketlerin ve şirket muhasebe kayıtlarındaki hareketlerin hemen ger&amp;ccedil;ekleşebileceğini yani m&amp;uuml;mk&amp;uuml;n olduğunu d&amp;uuml;ş&amp;uuml;nelim. (Değerli okuyucalarım biliyorum ki uzun bir c&amp;uuml;mle oldu ama umarım gelmek istediğim noktayı anlamaya başlamışsınızdır)&amp;nbsp;&lt;/p&gt;
+&lt;p class="MsoNormal" align="justify"&gt;Bahsettiğimiz t&amp;uuml;m bu işlemler birer iş par&amp;ccedil;acığıdır ve aslında hepsi toplu olarak tek bir amaca hizmet etmektedir. T&amp;uuml;m sunucuları stok hareketlerinden ve gerekli muhasebe değişikliklerinden eş zamanlı olarak (aşağı yukarı yani ) haberdar etmek ve veritabanı sunucularını g&amp;uuml;ncellemek. Dolayısıyla t&amp;uuml;m bu iş par&amp;ccedil;acıklarını, tek bir b&amp;uuml;t&amp;uuml;n işi ger&amp;ccedil;ekleştirmeye &amp;ccedil;alışan unsurlar olduğunu s&amp;ouml;yleyebiliriz. İşte burada t&amp;uuml;m bu iş par&amp;ccedil;acıkları i&amp;ccedil;in s&amp;ouml;ylenebilecek bazı hususlar vardır. &amp;Ouml;ncelikle, &amp;nbsp;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li class="MsoNormal"&gt;İş par&amp;ccedil;acıklarının birinde meydana gelen aksaklık , diğer işlerin ve &amp;ouml;zellikle takib eden iş par&amp;ccedil;acıklarının doğru şekilde işlemesine neden olabilir. Dolayısıyla t&amp;uuml;m bu iş par&amp;ccedil;acıkları başarılı olduğu takdirde b&amp;uuml;t&amp;uuml;n iş başarılı olmuş sayılabilir.&lt;/li&gt;
+&lt;li class="MsoNormal"&gt;Diğer yandan iş par&amp;ccedil;acıklarının işleyişi sırasında veriler &amp;uuml;zerindeki değişikliklerin de tutarlı olması birbirlerini tamamlayıcı nitelik taşıması gerekir. S&amp;ouml;z gelimi stoklarımızıda 2000 televiyon varken 1000 televizyon ihra&amp;ccedil; ettiğimizde stoğumuza mal eklenmediğini d&amp;uuml;ş&amp;uuml;necek olursak 1000 televizyon kalması gerekir. 1001 televizyon veya 999 televizyon değil. İşte bu verilerin tutarlılığını gerektirir.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p class="MsoNormal" align="justify"&gt;İşte bu nedenlerde &amp;ouml;t&amp;uuml;r&amp;uuml; Transaction kavramı ortaya &amp;ccedil;ıkarmıştır. Bu kavrama g&amp;ouml;re aslında bahsedilen t&amp;uuml;m iş par&amp;ccedil;akları kusursuz olarak başarılı olduklarında &amp;ldquo;işlem tamam&amp;rdquo; denebilir. İşte bizde veritabanı uygulamalarımızı geliştirirken, bu tip iş par&amp;ccedil;acıklarını bir Transaction bloğuna alırız. Şimdi ise karşımıza iki yeni kavram &amp;ccedil;ıkacaktır. Commit ve Rollback.Eğer Transaction bloğuna dahil edilen iş par&amp;ccedil;acıklarının t&amp;uuml;m&amp;uuml; başarılı olmuş ise Transaction Commit edilir ve iş par&amp;ccedil;acıklarındaki t&amp;uuml;m veri değişimleri ger&amp;ccedil;ekten veritabanlarına yansıtılır. Ama iş par&amp;ccedil;acıklarından her hangibirinde tek bir hata oluşup iş par&amp;ccedil;acığının işleyişi bozulur ise bu durumda t&amp;uuml;m Transaction Rollback edilir ve bu durumda, o ana kadar işleyen t&amp;uuml;m iş par&amp;ccedil;acıklarındaki işlemler geri alınarak , veritabanları Transaction başlamadan &amp;ouml;nceki haline d&amp;ouml;nd&amp;uuml;r&amp;uuml;l&amp;uuml;r. Bu bir anlamda g&amp;uuml;venlik ve verileri koruma adına oluşturulmuş bir &amp;nbsp; koruma mekanizmasıdır.&amp;nbsp;&lt;/p&gt;
+&lt;p class="MsoNormal" align="justify"&gt;Peki ya iş par&amp;ccedil;acıklarının d&amp;uuml;zg&amp;uuml;n işlemiyişine sebep olarak neler g&amp;ouml;sterebiliriz. Tabiki &amp;ccedil;evresel fakt&amp;ouml;rler en b&amp;uuml;y&amp;uuml;k etkendir. Sunucuları birbirine bağlayan hatlar &amp;uuml;zerinde olabilecek fiziki bir hasar işlemleri yarıda bırakabilir ve Kazakistan&amp;rsquo; daki sunuculardaki 1000 televizyonluk artış buraya hi&amp;ccedil; yansımayabilir. Kazakistan&amp;rsquo;daki yetkili T&amp;uuml;rkiye&amp;rsquo;deki merkezi arayıp &amp;ldquo;stoğumda hala 1000 televizyon g&amp;ouml;r&amp;uuml;nm&amp;uuml;yor.&amp;rdquo; diyebilir. Merkezdeki yetkili ise. &amp;ldquo;Bizim stoklardan 1000 tv d&amp;uuml;n &amp;ccedil;ıkmış. Bilgisayar kayıtları yalan mı s&amp;ouml;yliyecek kardeşim.&amp;rdquo; diyebilir. &amp;nbsp;Neyseki Transactionlar sayesinde olay ş&amp;ouml;yle gelişir.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Kazakistan B&amp;uuml;ro :&lt;/strong&gt; Stokta bir hareket yok bir sorunmu var acaba?&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Merkez:&lt;/strong&gt; Evet . Karadenizden ge&amp;ccedil;en boru hattında fırtına nedeni ile kopma olmuş. Mallar bizim stokta halen daha &amp;ccedil;ıkmadılar. Gemide bekletiyoruz. &amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;ok abartı bir senaryo oldu aslında. Nitekim o televizyonlar bir şekilde yerine ulaşır Transaction&amp;rsquo;lara gerek kalmadan. Ama olayı umarım size betimleyebilmişimdir. Şimdi gelin olayın teknik kısmını bir de grafik &amp;uuml;zerinde g&amp;ouml;relim. &amp;nbsp;&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left;" align="center"&gt;&lt;img src="/makale/images/mk5_1.gif" alt="" width="502" height="502" /&gt;&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left;" align="center"&gt;&lt;em style="mso-bidi-font-style: normal;"&gt; Şekil 1. Transaction Kavramı&lt;/em&gt;&lt;/p&gt;
+&lt;p class="MsoNormal" align="justify"&gt;Şekilde g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &amp;ouml;rnek olarak 3 adet işlem par&amp;ccedil;acığı i&amp;ccedil;eren bir Transaction bloğumuz var. Bu işlemler birbirine &amp;nbsp; bağlı olarak tasvir edilmiştir. Eğer herhangibiri başarısız olursa veriler &amp;uuml;zerinde o ana kadar olan değişiklikler geri alınır ve sistem Transaction başlamadan &amp;ouml;nceki haline konumlandırılır. Şekilimize bunlar R-point yani Rollback Noktasına git olarak tasvir edilmiştir.&amp;nbsp;Ancak t&amp;uuml;m işlemler başarılı olursa Transaction i&amp;ccedil;inde ger&amp;ccedil;ekleşen t&amp;uuml;m veri değişiklikleri onaylanmış demektir. &amp;nbsp;&lt;/p&gt;
+&lt;p class="MsoNormal" align="justify"&gt;Transactionlar ile ilgili olarak &amp;ouml;nemli bir konu ise yukarıdaki &amp;ouml;rneklerde anlattığımız gibi birden fazla veritabanı olması durumunda bu Transaction işlemlerinin nasıl koordine edilceğedir. Burada Dağıtık Transaction dediğimiz Distributed Transaction kavramı ortaya &amp;ccedil;ıkar. Bu konuyu ilerliyen makalelerimizde işlemey &amp;ccedil;alışacağım. Şimdilik sadece tek bir veritabanı &amp;uuml;zerinde yazabileceğimiz Transaction&amp;rsquo; lardan bahsetmek istiyorum..NET i&amp;ccedil;erisinde SqlClient sınıfında yer alan nesneleri Transaction nesneleri kullanılarak bu işlemi ger&amp;ccedil;ekleştirebiliriz. Ben SqlTransaction nesnesini ele alacağım. Bu nesneyi oluşturmak i&amp;ccedil;in herhangibir yapıcı metod yoktur. SqlDataReader sınfınıda olduğu gibi bu sınıfa ait nesneler birer değişkenmiş gibi tanımlanır. Nesne atamaları SqlConnection nesnesi ile ger&amp;ccedil;ekleştirilir ve bu aynı zamanda Transaction&amp;rsquo;ın hangi SqlConnection bağlantısı i&amp;ccedil;in başlatılacağını belirlemeye yarar.&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;SqlTransaction tran;
+tran = conNorthwind.BeginTransaction();&lt;/pre&gt;
+&lt;p class="MsoNormal" align="justify"&gt;Yukarıdaki ifadeye dikkat edersek, bir SqlTransaction nesnesi tanımlanmış ve daha sonra conNorthwind isimli SqlConnection nesnesi i&amp;ccedil;in başlatılmıştır. İşte Transaction bloğunun başladığı nokta burasıdır. Şimdi ise , hangi Sql komutlarını dolayısıyla hangi iş par&amp;ccedil;acıklarını bu transaction nesnesine(yani bloğuna) dahil ediceğimizi belirlemeliyiz. Bu işlem genelde &amp;ccedil;alıştırılıcak olan SqlCommand nesnelerinin Transaction &amp;ouml;zelliklerine Transaction nesnesinin atanması ile ger&amp;ccedil;ekleştirilir.&amp;nbsp;Dilerseniz ger&amp;ccedil;ek&amp;ccedil;i bir &amp;ouml;rnek &amp;uuml;zerinde &amp;ccedil;alışalım ve Transaction kavramını daha iyi anlayalım.&lt;/p&gt;
+&lt;p class="MsoNormal" align="justify"&gt;Merkezi İstanbul&amp;rsquo;da olan uluslararası devre m&amp;uuml;lk satan bir &amp;nbsp;şirket, &amp;uuml;lke ofislerinde satışını yaptığı devre m&amp;uuml;lkler i&amp;ccedil;in, satışı yapan personele ait &amp;nbsp; banka hesaplarına EFT işlemi i&amp;ccedil;eren bir uygulamaya sahip olsun. Bahsi ge&amp;ccedil;en uygulamanın &amp;ccedil;alışmasına bir &amp;ouml;rnek verelim;&amp;nbsp;Brezilya&amp;rsquo;daki ofisimizde bir satış personelimizin, devre m&amp;uuml;lk sattığını ve satış tutarı &amp;uuml;zerinden %1 prim aldığını farz edelim. Yapılan satış sonucunda İstanbul&amp;rsquo;daki suncuda yer alan veritabanına ait tablolarda peşisıra işlemler yapıldığını varsayalım. &amp;nbsp;&lt;/p&gt;
+&lt;p class="MsoNormal" align="justify"&gt;Personelin bilgilerinin olduğu tabloda alacağı toplam prim tutarı satış tutarının %1&amp;rsquo;i oranında artsın , &amp;ouml;dencek prime ait bilgiler ayrı bir tabloya işlensin ve aynı zamanda, şirkete ait finans kurumundaki toplam para hesabından bu prim tutarı kadar TL eksilsin. İşte bu &amp;uuml;&amp;ccedil; işlemi g&amp;ouml;z &amp;ouml;n&amp;uuml;nde bulundurduğumuzda, tek bir işleme ait iş par&amp;ccedil;acıkları olduğunu anlayabiliriz. Dolayısıyla burada bir Transaction&amp;rsquo;dan rahatlıkla s&amp;ouml;z edebiliriz.Dilerseniz uygulamamıza ge&amp;ccedil;elim. &amp;Ouml;ncelikle tablolarımıza bir g&amp;ouml;z atalım. IstanbulMerkez isimli veritabanımızda şu tablolar yer alıyor.&amp;nbsp;&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left;" align="center"&gt;&amp;nbsp;&lt;img src="/makale/images/mk5_2.gif" alt="" width="372" height="275" /&gt;&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left;" align="center"&gt;&lt;em style="mso-bidi-font-style: normal;"&gt; Şekil 2. IstanbulMerkez veritabanındaki tablolar.&lt;/em&gt;&lt;/p&gt;
+&lt;p class="MsoNormal" align="justify"&gt;Buradaki tablolardan ve g&amp;ouml;revlerinden kısaca bahsedelim. Personel tablosunda personele ait bilgiler yer alıyor. Bu tablo Prim isimli tablo ile bire-&amp;ccedil;ok ilişkiye sahip. AFinans ise, bize ait finas kurumunun kasasındaki g&amp;uuml;ncel TL&amp;rsquo;sı miktarını tutan bir tablo. Personel satış yaptığında, satış tutarı &amp;uuml;zerinde prim Personel tablosundaki PrimToplami alanının değerini %1 arttırıyor sonra Prim tablosuna bunu işliyor ve son olarakta AFinans tablosundaki Tutar alanından bahsi ge&amp;ccedil;en %1 lik prim miktarını azaltıyor. &amp;nbsp;&lt;/p&gt;
+&lt;p class="MsoNormal" align="justify"&gt;Peki buradaki &amp;uuml;&amp;ccedil; işlem i&amp;ccedil;in neden Transaction kullanıyoruz? Farz edelim ki, Personel tablosunda PrimToplami alanının değeri arttıktan sonra, bir sorun nedeni ile veritabanına olan bağlantı kesilmiş olsun ve diğer işlemler ger&amp;ccedil;ekleşmemiş olsun. Bu durumda personelin artan prim tutarını karşılayacak kadar TL&amp;rsquo;sı finans kurumunun ilgili hesabından d&amp;uuml;ş&amp;uuml;lmemiş olacağı i&amp;ccedil;in , finansal dengeler bozulmuş olucaktır. İşin i&amp;ccedil;ine para girdiği zaman Transaction&amp;rsquo;lar daha bir &amp;ouml;nem kazanmaktadır. Uygulamamızı basit olması a&amp;ccedil;ısından Console uygulaması olarak geliştireceğim. Haydi başlayalım. &amp;nbsp;İşlemlerin kolay olması a&amp;ccedil;ısından başlangı&amp;ccedil; i&amp;ccedil;in Personel tablosuna bir kayıt girdim. Şu an i&amp;ccedil;in g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi PrimToplami alanının değeri 0 TL&amp;rsquo;sıdır. Ayıraca AFinans tablosunda bir başlangı&amp;ccedil; tutarımızın olması gerelkiyor.&amp;nbsp;&lt;/p&gt;
+&lt;p class="MsoNormal" align="left"&gt;&amp;nbsp;&lt;img src="/makale/images/mk5_3.gif" alt="" width="637" height="64" border="0" /&gt;&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left;" align="center"&gt;&lt;em style="mso-bidi-font-style: normal;"&gt; Şekil 3. Personel Tablosu&lt;/em&gt;&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left;" align="center"&gt;&amp;nbsp;&lt;img src="/makale/images/mk5_4.gif" alt="" width="220" height="58" /&gt;&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left;" align="center"&gt;&lt;em style="mso-bidi-font-style: normal;"&gt; Şekil 4. Afinans tablosu&lt;/em&gt; &amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Uygulamamızda , Personel tablosunda yer alan PrimToplami alanının değerini prim tutarı kadar arttırmak i&amp;ccedil;in aşağıdaki Stored Procedure&amp;rsquo;&amp;uuml; kullanacağız.&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;CREATE PROCEDURE [Prim Toplami Arttir] 
+@prim float,
+
+@pid int 
+
+AS 
+UPDATE Personel SET PrimToplami = PrimToplami+@prim
+WHERE PersonelID=@pid 
+GO&lt;/pre&gt;
+&lt;p&gt;Prim tablosuna eklenecek veriler i&amp;ccedil;in ise INSERT sql c&amp;uuml;mleciği i&amp;ccedil;eren bir Stored Procedure&amp;rsquo;&amp;uuml;m&amp;uuml;z var.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;CREATE PROCEDURE [Prim Bilgisi Gir] 
+@pid int,
+@st float,
+@p float,
+@str datetime 
+AS 
+INSERT INTO Prim (PersonelID,SatisTutari,Prim,SatisTarihi)
+VALUES (@pid,@st,@p,@str) 
+GO&lt;/pre&gt;
+&lt;p&gt;Son olarak AFinans isimli tablomuzdan prim miktarı kadar TL&amp;rsquo;sını d&amp;uuml;şecek olan Stored Procedure&amp;rsquo;&amp;uuml;m&amp;uuml;z&amp;uuml; yazalım.&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;CREATE PROCEDURE [Prim Dus]  
+@prim float 
+AS 
+UPDATE AFinans SET Tutar=Tutar-@prim 
+GO &lt;/pre&gt;
+&lt;p&gt;Artık program kodlarımıza ge&amp;ccedil;ebiliriz. Kodları C# ile yazmayı tercih ettim. &amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Data;
+using System.Data.SqlClient;  
+namespace TransactionSample1
+{
+     class Trans
+     {
+          [STAThread]
+          static void Main(string[] args)
+          {
+			/* IstanbulMerkez veritabanına bir bağlantı nesnesi referans ediyoruz. */
+			SqlConnection conIstanbulMerkez=new SqlConnection("initial catalog=IstanbulMerkez;data source=localhost;integrated security=sspi");
+
+			/* Transaction nesnemizi tanımlıyor ve bu Transaction'ın conIstanbulMerkez isimli SqlConnection nesnesinin belirttiği bağlantıya ait komutlar i&amp;ccedil;in &amp;ccedil;alıştırılacağını belirtiyoruz. */
+
+			SqlTransaction tr;
+			conIstanbulMerkez.Open();
+			tr=conIstanbulMerkez.BeginTransaction(); 
+			double satisTutari=150000000000;
+			double primTutari=satisTutari*0.01; 
+			/* Şimdi, Personel tablosundaki PrimToplami alanın değerini primTutari değişkeninin değerin kadar arttıracak Stored Procedure'&amp;uuml; &amp;ccedil;alıştıracak SqlCommand nesnesini tanımlıyor ve gerekli parametreleri ekleyerek bu parametrelere değerlerini veriyoruz. Son olaraktan da SqlCommand'in Transaction &amp;ouml;zelliğine oluşturduğumuz tr isimli SqlTransaction nesnesini atıyoruz. Bu şu anlama geliyor. "Artık bu SqlCommand tr isimli Transaction i&amp;ccedil;inde &amp;ccedil;alışıcak olan bir iş par&amp;ccedil;acaığıdır." */
+			SqlCommand cmdPrimToplamiArttir=new SqlCommand("Prim Toplami Arttir",conIstanbulMerkez);               cmdPrimToplamiArttir.CommandType=CommandType.StoredProcedure;               cmdPrimToplamiArttir.Parameters.Add("@prim",SqlDbType.Float);               cmdPrimToplamiArttir.Parameters.Add("@pid",SqlDbType.Int);
+			cmdPrimToplamiArttir.Parameters["@prim"].Value=primTutari;
+			cmdPrimToplamiArttir.Parameters["@pid"].Value=1;
+			cmdPrimToplamiArttir.Transaction=tr; 
+			/* Aşağıdaki satırlarda ise "Prim Bilgisi Gir" isimli Stored Procedure'&amp;uuml; &amp;ccedil;alıştıracak olan SqlCommand nesnesi oluşturulup gerekli paramtere ayarlamaları yapılıyor ve yine Transaction nesnesi belirlenerek bu komut nesneside Transaction bloğu i&amp;ccedil;erisine bir iş par&amp;ccedil;acığı olarak bildiriliyor.*/
+			SqlCommand cmdPrimBilgisiGir=new SqlCommand("Prim Bilgisi Gir",conIstanbulMerkez);
+			cmdPrimBilgisiGir.CommandType=CommandType.StoredProcedure;               cmdPrimBilgisiGir.Parameters.Add("@pid",SqlDbType.Int);               cmdPrimBilgisiGir.Parameters.Add("@st",SqlDbType.Float);               cmdPrimBilgisiGir.Parameters.Add("@p",SqlDbType.Float);               cmdPrimBilgisiGir.Parameters.Add("@str",SqlDbType.DateTime);
+			cmdPrimBilgisiGir.Parameters["@pid"].Value=1;               cmdPrimBilgisiGir.Parameters["@st"].Value=satisTutari;
+			cmdPrimBilgisiGir.Parameters["@p"].Value=primTutari;             cmdPrimBilgisiGir.Parameters["@str"].Value=System.DateTime.Now;
+			cmdPrimBilgisiGir.Transaction=tr; 
+			/* Son olarak AFinans isimli tablodaki Tutar alanından prim tutarı kadar TL'sını d&amp;uuml;ş&amp;uuml;cek olan Stored Procedure i&amp;ccedil;in bir SqlCommand nesnesi tanımlanıyor, prim tutarını taşıyacak olan parametre eklenip değeri veriliyor. Tabiki en &amp;ouml;nemlisi, bu komut nesnesi i&amp;ccedil;inde SqlTransaction nesnemiz belirleniyor.*/
+			SqlCommand cmdTutarDus=new SqlCommand("Prim Dus",conIstanbulMerkez);
+			cmdTutarDus.CommandType=CommandType.StoredProcedure;
+			cmdTutarDus.Parameters.Add("@prim",SqlDbType.Float);
+			cmdTutarDus.Parameters["@prim"].Value=primTutari;
+			cmdTutarDus.Transaction=tr; 
+			/* Evet sıra geldi programın can alıcı kodlarına. Aşağıda bir Try-Catch-Finally bloğu var. Bu bloklarda dikkat edicek olursanız t&amp;uuml;m SqlCommand nesnelerinin &amp;ccedil;alıştırılması try bloğunda yapılamktadır. Eğer t&amp;uuml;m bu komutlar sorunsuz bir şekilde &amp;ccedil;alışırsa bu durumda, tr.Commit() ile transaction onaylanır vee değişikliklerin veritabanı &amp;uuml;zerindeki tablolara yazılması onaylanmış olur*/
+			try
+			{
+				int etkilenen=cmdPrimToplamiArttir.ExecuteNonQuery();
+				Console.WriteLine("Personel tablosunda {0} kayıt g&amp;uuml;ncellendi",etkilenen);
+				int eklenen=cmdPrimBilgisiGir.ExecuteNonQuery();
+				Console.WriteLine("Prim tablosunda {0} kayıt eklendi",eklenen);
+				int hesaptaKalan= cmdTutarDus.ExecuteNonQuery();
+				Console.WriteLine("AFinans tablosunda {0} kayıt g&amp;uuml;ncellendi",hesaptaKalan);
+				tr.Commit();
+			}
+			catch(Exception hata) /* Ancak bir hata olması durumdan ise, kullanıcı hatanın bilgisi ile uyarılır ve tr.Rollback() ile hatanın oluştuğu ana kadar olan t&amp;uuml;m işlemler iptal      edilir.*/
+			{
+				Console.WriteLine(hata.Message+" Nedeni ile işlmeler iptal edildi");
+				tr.Rollback();
+			}
+			finally /* hata oluşsada oluşmasada a&amp;ccedil;ık bir bağlantı var ise bunun kapatılmasını garanti altına almak i&amp;ccedil;in finally bloğunda bağlantı nesnemizi Close metodu ile kapatırız.*/
+			{
+				conIstanbulMerkez.Close();
+			}
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk5_5.gif" alt="" width="484" height="102" border="0" /&gt;&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left;" align="center"&gt;&lt;em style="mso-bidi-font-style: normal;"&gt; Şekil 5. Programın &amp;ccedil;alışması sonucu.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Bu durumda veritabanındaki tabloalara bakıcak olursak; Personel tablosuna PrimToplami alanının değeri artmış,&amp;nbsp;&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left;" align="center"&gt;&lt;img src="/makale/images/mk5_6.gif" alt="" width="637" height="68" border="0" /&gt;&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left;" align="center"&gt;&lt;em style="mso-bidi-font-style: normal;"&gt; Şekil 6. Personel tablosunda PrimToplami alanının değeri arttırıldı.&lt;/em&gt; &amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Prim tablosuna ilgili personele ait bilgiler eklenmiş,&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left;" align="center"&gt;&lt;img src="/makale/images/mk5_7.gif" alt="" width="394" height="52" /&gt;&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left;" align="center"&gt;&lt;em style="mso-bidi-font-style: normal;"&gt; Şekil 7. Prim tablosuna &amp;ouml;denecek prime ait bilgiler girildi.&lt;/em&gt; &amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Son olarakta, AFinans isimli tablondaki Tutar alanının değeri g&amp;uuml;ncellenmiştir.&amp;nbsp;&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left;" align="center"&gt;&amp;nbsp;&lt;img src="/makale/images/mk5_8.gif" alt="" width="224" height="52" /&gt;&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left;" align="center"&gt;&lt;em style="mso-bidi-font-style: normal;"&gt; Şekil 8. AFinans&lt;/em&gt;&amp;nbsp; &lt;em style="mso-bidi-font-style: normal;"&gt; tablosundaki Tutar alanının değeri prim tutarı kadar azaldı.&lt;/em&gt; &amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Şimdi dilerseniz bir hata tetikleyelim ve ne olacağına bakalım. Bir hata &amp;uuml;retmek aslında isteyince o kadar kolay değil malesef. Ben Stored Procedure&amp;rsquo; lerden birinin ismini yanlış yazıcam. Bakalım ne olucak. Şu anda tablodaki veriler yukardıaki Şekil 6,7 ve Şekil 8&amp;rsquo;da olduğu gibi.&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;SqlCommand cmdPrimBilgisiGir=new SqlCommand("Prim Bisi Gir",conIstanbulMerkez); &lt;/pre&gt;
+&lt;p&gt;Burada&amp;nbsp; Stored Procedure&amp;rsquo;&amp;uuml;n ismi &amp;ldquo;Prim Bilgisi Gir&amp;rdquo; iken ben &amp;ldquo;Prim Bisi Gir &amp;ldquo; yaptım. Şimdi &amp;ccedil;alıştıracak olursak; aşağıdaki ekran ile karşılaşırız. İşlemler iptal edilir.&amp;nbsp;&lt;/p&gt;
+&lt;p class="MsoNormal" align="left"&gt;&lt;img src="/makale/images/mk5_9.gif" alt="" width="639" height="91" border="0" /&gt;&lt;/p&gt;
+&lt;p class="MsoNormal" align="left"&gt;&lt;em&gt; 10.&amp;nbsp; İşlemler iptal edildi.&lt;/em&gt; &amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Eğer&amp;nbsp; transaction kullanmasaydık ilk SqlCommand &amp;ccedil;alışır ve Personel tablosunda PrimToplami alanın değeri artartdı.&amp;nbsp; Oysa şimdi bu tabloyu kontrol edicek olursak,&lt;/p&gt;
+&lt;p class="MsoNormal" align="left"&gt;&lt;img src="/makale/images/mk5_10.gif" alt="" width="620" height="124" /&gt;&lt;/p&gt;
+&lt;p class="MsoNormal" align="left"&gt;&lt;em&gt; Şekil 11.&amp;nbsp; Bir etki olmadı.&lt;/em&gt;&amp;nbsp;&amp;nbsp; &amp;nbsp;&lt;/p&gt;
+&lt;p class="MsoNormal" align="left"&gt;Tekrar &amp;ouml;nemli bir noktayı vurgulamak isterim. Bu Transaction tek br veritabanı &amp;uuml;zerinde &amp;ccedil;alışmaktadır. Eğer birden fazla veritabanı s&amp;ouml;z konusu olursa , Distibuted Transaction tekniklerini kullanmamız gerekiyor. Bunu ilerliyen makalelerimizde incelemeye &amp;ccedil;alışacağım.&amp;nbsp;Umarım buraya kadar anlattıklarımla Transaction&amp;rsquo;lar hakkında bilgi sahibi olmuşsunuzdur. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;şmek dileğiyle hepinize mutlu g&amp;uuml;nler dilerim.&amp;nbsp;&lt;/p&gt;</content>
+  <pubDate>2003-11-17 10:00:00</pubDate>
+  <slug>Transaction-Kavramc4b1c2a0-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>adonet</tag>
+    <tag>transactions</tag>
+    <tag>sql</tag>
+    <tag>stored-procedures</tag>
+  </tags>
+  <categories>
+    <category>Ado.Net</category>
+  </categories>
+</post>

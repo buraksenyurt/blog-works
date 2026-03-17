@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>gRPC Nedir, Nasıl Uygulanır?</title>
+  <description>Bu yazımızda protobuf tabanlı çalışan Google Remote Procedure Call(gRPC) protokolünü inclemeye çalışacağız. Özellikle dağıtık sistemlerde taraflar arası haberleşmede TCP bazlı binary serileştirm ilkelerine dayanan bu protokol REST'in standart iletişim teknikleri yerine daha çok tercih edilmeye başlanmış görünüyor. Genel amaç binary serileştirmenin performans avantajını kullanarak Remote Procedure Call tekniğini microservice sistemlerinde uygulayabilmek. Bizde bu konuyu Node.js tabanlı bir örnekle incelemeye çalışacağız.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2018/11/grpc_zero.jpg" alt="" /&gt;Oturduğum masanın hemen sağındaki pencerede ufak bir aralık kalmış olmalı ki "Vuuuu..." diye &amp;ouml;ten r&amp;uuml;zgarın sesini fark ettim bir anda. Aslında işime konstantre olmuştum ama o sesle birlikte olduğum yerden uzaklaşmıştım. Dışarısı soğuktu. Havan kapalı ve biraz da kasvetliydi. Yağmur damlalarının cama vuruşunu fark ettim sonrasında. G&amp;ouml;zlerim uzaklara daldı ve r&amp;uuml;zgarın sesi ile birikte Lise yıllarında buldum kendimi. Doğal gaz İstanbul'a hen&amp;uuml;z gelmiş ve bizimki gibi kimi&amp;nbsp;sobalı ev kalorifer petekleriyle tanışmıştı.&amp;nbsp;Ge&amp;ccedil;miş yılların&amp;nbsp;ardından&amp;nbsp;bu yeni konfor sayesinde sabahları &amp;uuml;ş&amp;uuml;yerek uyanmıyorduk artık. Benim en b&amp;uuml;y&amp;uuml;k keyiflerimden birisi olan &amp;ouml;ğle sonrası uykularım i&amp;ccedil;inse yeni mekanımı bulmuştum bile. Okuldan her geldiğimde &amp;ouml;nce karnımı doyuruyor sonra o k&amp;ouml;şeye kuruluyordum. Minderler camın altındaki peteğin yanına seriliyor, &amp;uuml;ste hafif bir battaniye alınıyor, zaten sessiz olan sokağın s&amp;uuml;kunetini bozmak isteyen yağmur damlalarının cama vuruşu dinlenerek derin bir uykuya dalınıyor. Bazen de o sessizliğe eski sokak kapısının altındaki s&amp;uuml;ngerden ka&amp;ccedil;an "Vuuuu" sesi ortak olurdu...&lt;/p&gt;
+&lt;p&gt;Kısa s&amp;uuml;reli bu seyahatin ardından tekrar bilgisayarıma d&amp;ouml;nd&amp;uuml;m ve araştırdığım konu &amp;uuml;zerinde ilerlemeye başladım.&amp;nbsp;Son zamanlarda micro service mimarisinin uygulanması ile ilgili bir &amp;ccedil;ok dok&amp;uuml;man okumaktayım. Şirket b&amp;uuml;nyesinde bu tip bir oluşuma gidilmesi de araştırmalarımda beni motive etmekte. Tabii uygulama pratiklerine, &amp;ccedil;eşitli desenlerin kullanılışına baktık&amp;ccedil;a bilmediğim bir &amp;ccedil;ok şey g&amp;ouml;r&amp;uuml;yorum. Bug&amp;uuml;ne kadar &amp;ouml;zellikle microservisler seviyesinde u&amp;ccedil;lar arasındaki iletişimde hep REST/HTTP1 tabanlı haberleşildiğini d&amp;uuml;ş&amp;uuml;n&amp;uuml;yordum. Oysa ki HTTP/2 ile stream desteği veren, TCP soket haberleşmesini benimseyen, binary serileştirmeyi kullanan ve REST/HTTP1 e g&amp;ouml;re 2.5 kat daha hızlı olduğu s&amp;ouml;ylenen gRPC isimli bir &amp;ccedil;atı da varmış&lt;em&gt;(Ger&amp;ccedil;i .Net'in en başından beri var olan arkadaşlarım, TCP, Binary serileştirme denilince .Net Remoting konusunu ve onun WCF i&amp;ccedil;erisindeki evrimini gayet iyi hatırlayacaklardır)&lt;/em&gt; Bende bunu g&amp;ouml;r&amp;uuml;nce gRPC'nin ne olduğunu araştırmaya başladım.&lt;/p&gt;
+&lt;p&gt;İşte bu yazımızda Google'ın protobuf protokol&amp;uuml; &amp;uuml;zerine kurguladığı ve Remote Procedure Call modelinde hizmet sunan gRPC isimli &amp;ccedil;atısını inclemeye &amp;ccedil;alışacağız. &amp;Ouml;zellikle dağıtık sistemlerde taraflar arası haberleşmede TCP bazlı binary serileştirme ilkelerine dayanan bu protokol REST'in standart iletişim teknikleri yerine daha &amp;ccedil;ok tercih edilmeye&lt;em&gt;(&amp;ouml;nerilmeye)&lt;/em&gt; başlanmış g&amp;ouml;r&amp;uuml;n&amp;uuml;yor. Google'ın bu &amp;ccedil;atıyı geliştirmekteki temel amacının, binary serileştirmenin performans avantajını kullanıp Remote Procedure Call tekniğini microservice sistemlerde&amp;nbsp;uygulayabilmek olduğun d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;İşin temelleri olduk&amp;ccedil;a basit aslında. RPC'ye g&amp;ouml;re istemciler, uzak sunucudaki metodları sanki kendi ortamlarının birer par&amp;ccedil;asıymış gibi &amp;ccedil;ağırabilirler. Taraflar farklı makinelerde dolayısıyla farklı domain sınıflarında olabilirler. Bu nedenle dağıtık sistem kurgularında ideal bir uygulama senaryosu olarak ele alınabileceğini ifade edebiliriz. Aşağıdaki şekille konuyu &amp;ouml;zetlemek m&amp;uuml;mk&amp;uuml;n. Node.js ile geliştirilmiş &amp;ouml;rnek bir gRPC sunucusu ile protoBuf bazlı mesajlarla anlaşan farklı dillerde istemcier veya servisler. Aslında olduk&amp;ccedil;a bilindik ve tanıdık bir senaryo.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/11/grpc_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Peki bu &amp;ccedil;atıyı sahada nasıl kullanabiliriz?&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;ncelikle her iki taraf i&amp;ccedil;in ortak olan bir Proto dosyasına ihtiyacımız var&lt;em&gt;(.Net Remoting zamanlarındaki Marshall By Value g&amp;uuml;nlerimiz geldi aklıma)&lt;/em&gt;&amp;nbsp;Bu dosya aslında bir servis s&amp;ouml;zleşmesi ve kullanılacak tiplere ait bilgileri i&amp;ccedil;erecek. Buradaki s&amp;ouml;zleşme sunucu tarafında uygulanırken, istemci tarafından sadece uzak fonksiyon &amp;ccedil;ağrısı yapabilmek amacıyla ele alınıyor. Gelin basit bir &amp;ouml;rnek ile konuyu anlamaya &amp;ccedil;alışalım. Kurgumuzda klas&amp;ouml;r yapısını aşağıdaki gibi oluşturabiliriz. Aynı makine &amp;uuml;zerinden test yapacağız ancak rahatlıkla dağıtık senaryoları deneyebilirsiniz.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;client(Folder)&lt;/strong&gt;&lt;br /&gt;&amp;nbsp; &amp;nbsp;index.js&lt;br /&gt;&amp;nbsp; &amp;nbsp;product.proto&lt;br /&gt;&lt;strong&gt;server(Folder)&lt;/strong&gt;&lt;br /&gt;&amp;nbsp; &amp;nbsp;index.js&lt;br /&gt;&amp;nbsp; &amp;nbsp;Product.js&lt;br /&gt;&amp;nbsp; &amp;nbsp;product.proto&lt;br /&gt;package.json&lt;br /&gt;&lt;strong&gt;node_modules(Folder)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Bu arada node.js tarafında gRPC kullanımını kolaylaştırabilmek i&amp;ccedil;in grpc mod&amp;uuml;l&amp;uuml;n&amp;uuml;n npm ile sisteme y&amp;uuml;klenmesi lazım. İstemcinin tipine g&amp;ouml;re tabii farklı bir paket kullanmak gerekebilir. &amp;Ouml;rneğin .Net Core tarafında Grpc.Core isimli nuget paketini kullanmak gerekiyor. Gerekli mod&amp;uuml;l&amp;uuml; kurduktan sonra proto uzantılı servis s&amp;ouml;zleşmesini hazırlayarak devam edebiliriz.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;syntax = "proto3"; //Specify proto3 version.
+
+package products; //benzersiz bir paket ismi
+
+//Service. GRPC sunucusunun istemci tarafına sundugu servis s&amp;ouml;zlesmesi
+service ProductService {
+  rpc List (Empty) returns (ProductList);
+  rpc Insert (Product) returns (Empty);
+  rpc Get (ProductId) returns (Product);  
+}
+
+// Serviste kullanilan mesaj tipi
+message Product {
+  int32 id = 1;
+  string name = 2;
+  double listPrice = 3;
+}
+
+// Ornek bir liste
+message ProductList {
+  repeated Product Product = 1;
+}
+
+message ProductId {
+  int32 id = 1;
+}
+
+message Empty {}&lt;/pre&gt;
+&lt;p&gt;product.proto isimli dosya i&amp;ccedil;erisinde ProductService isimli bir aray&amp;uuml;z tanımlandığını g&amp;ouml;rebilirsiniz. Bu aray&amp;uuml;z ile &amp;uuml;&amp;ccedil; operasyon sunuyoruz. Her biri Remote Procedure Call tipinden. Yani uzaktan tetiklenebilecek operasyon bildirimleri. List fonksiyonu bir parametre almıyor&lt;em&gt;(bunu Empty isimli message tipi ile tanımladık)&lt;/em&gt; ve ProductList t&amp;uuml;r&amp;uuml;nden sonu&amp;ccedil; d&amp;ouml;nd&amp;uuml;r&amp;uuml;yor. ProductList bir message tipi ve i&amp;ccedil;inde tekrarlı sayıda Product mesajı i&amp;ccedil;erebiliyor. Product mesajı id, name ve listPrice gibi &amp;ouml;zellikler i&amp;ccedil;eren bir tip olarak ifade edilmekte. Kısaca bu dosya&amp;nbsp;i&amp;ccedil;eriği ile bir servisin operasyonları ile birlikte kullandığı tipleri tanımlayabiliyoruz. Web servislerine ait Service Description Language(WSDL) dok&amp;uuml;manlarına benzetebiliriz. Senaryomuz gereği bu dosyanın hem sunucu hem de istemci tarafında olması lazım. Bu pek tabii servis i&amp;ccedil;eriğinin g&amp;uuml;ncellenmesi halinde istemci tarafının ne yapacağı sorusunu da akla getiriyor&lt;em&gt;(Doğru bir cevap verebimek i&amp;ccedil;in gRPC ile ilgili vakaları incelemeye devam ediyorum)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Sunucu tarafında bir &amp;uuml;r&amp;uuml;n&amp;uuml; bulunduğu programlama ortamında ifade edebilmek i&amp;ccedil;in Product isimli entity tipimiz de var. Hani makaledeki &amp;ouml;rneği uyguladıktan sonra belki i&amp;ccedil;erideki &amp;uuml;r&amp;uuml;nleri MongoDB gibi bir ortama almak veya oradan &amp;ccedil;ekmek isterseniz sizlere kolaylık sağlasın diye :)&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;let product = class Product {
+	constructor(id, name, listPrice) {
+		this._id = id;
+		this._name = name;
+		this._listPrice = listPrice;
+	}
+	get ProductId() {
+		return this._id;
+	}
+	get Name() {
+		return this._name;
+	}
+	get ListPrice() {
+		return this._listPrice;
+	}
+	set Id(value) {
+		this._Id = value;
+	}
+	set Name(value) {
+		this._name = value;
+	}
+	set ListPrice(value) {
+		this._listPrice = value;
+	}
+}
+
+module.exports = product;&lt;/pre&gt;
+&lt;p&gt;&amp;Uuml;r&amp;uuml;n numarası, ismi ve liste fiyatını tanımlayan bir node.js sınıfı s&amp;ouml;z konusu. Gelelim en baba kodlarımızdan birisine. Sunucu tarafındaki index.js'i aşağıdaki gibi geliştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;const grpc = require('grpc');
+const proto = grpc.load('./product.proto');
+const server = new grpc.Server();
+const product = require('./Product');
+
+function allProducts() {
+	console.log('[Server]:List all product');
+
+	var products = [
+		{ id: 1009, name: "lego mind storm", listPrice: 1499 },
+		{ id: 1010, name: "star wars bardak altığı", listPrice: 35 },
+		{ id: 1011, name: "ışıldak 40w", listPrice: 85.50 },
+		{ id: 1012, name: "A4 X 100 adet", listPrice: 5 }
+	];
+	return products;
+}
+function singleProduct(productId) {
+	console.log('[Server]:Get single product');
+	console.log('[Server]:Incoming product id ' + productId);
+
+	var product = {
+		id: 1009,
+		name: "lego mind storm",
+		listPrice: 55
+	};
+	return product;
+}
+function addProduct(call) {
+	console.log('[Server]:Insert new product');
+
+	let p = new product(
+		call.request.id,
+		call.request.name,
+		call.request.listPrice,
+	);
+	console.log(p);
+}
+function list(call, callback) {
+	callback(null, allProducts());
+}
+function single(call, callback) {
+	callback(null, singleProduct(call.request.id));
+}
+
+function insert(call, callback) {
+	callback(null, addProduct(call));
+}
+
+server.addService(proto.products.ProductService.service, {
+	List: list,
+	Insert: insert,
+	Get: single
+});
+
+server.bind('0.0.0.0:7500', grpc.ServerCredentials.createInsecure());
+server.start();
+console.log('grpc server is live', '0.0.0.0:7500');&lt;/pre&gt;
+&lt;p&gt;Proto dosyasını ortama y&amp;uuml;klemek i&amp;ccedil;in grpc mod&amp;uuml;l&amp;uuml;n&amp;uuml;n load fonksiyonundan yararlanıyoruz. Kodun en &amp;ouml;nemli kısımlarından birisi server nesnesinin addService metoduna ait i&amp;ccedil;erikte yer alıyor. İlk parametre ile grpc sunucusunun hangi servis s&amp;ouml;zleşmesini kullanacağını belirtiyoruz. İkinci parametrede yer alan eşleştirmelere dikkat etmemiz lazım. Sol taraf servis s&amp;ouml;zleşmesindeki metod adları ile aynı olmalı. Sağ taraftaki atamalarla, uzak &amp;ccedil;ağrının yapıldığı servis operasyonu i&amp;ccedil;in, sunucu tarafında hangi metodun tetikleneceğini belirtiyoruz. &amp;Ouml;rneğin List operasyonuna yapılan &amp;ccedil;ağrı list isimli metod tarafından ele alınıyor.&lt;/p&gt;
+&lt;p&gt;grpc sunucusunu 0.0.0.0:7500 portu &amp;uuml;zerinden herhangi bir g&amp;uuml;venlik protokl&amp;uuml; uygulatmadan yayına alıyoruz. Bu işlem i&amp;ccedil;in bind ve start metodlarını kullanmaktayız. Kodun &amp;uuml;st kısımlarında yer alan allProducts, singleProduct ve addProduct gibi&amp;nbsp;metodlar basit işlemler ger&amp;ccedil;ekleştirmekteler. Ancak dikkate değer kısımları var. İstemciye i&amp;ccedil;erik d&amp;ouml;nd&amp;uuml;ren operasyonlar hep JSON formatında veri &amp;uuml;retiyorlar. Diğer yandan istemciden gelen payload i&amp;ccedil;eriğini yakalamak i&amp;ccedil;in call.request&amp;nbsp;değişkenini kullanıyoruz&lt;em&gt;(addProduct metodunu inceleyin)&amp;nbsp;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Sunucu tarafındaki işlerimiz şimdilik bu kadar. Artık istemci tarafını geliştirmeye başlayabilriz. Client klas&amp;ouml;r&amp;uuml;nde de product.proto dosyasının olması gerektiğini &amp;ouml;nceden belirtmiştik. Ayrıca node.js tabanlı geliştirilen istemcinin de grpc mod&amp;uuml;l&amp;uuml;ne ihtiyacı olacak. Kod tarafını aşağıdaki gibi yazabiliriz.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;const grpc = require('grpc');
+const proto = grpc.load('./product.proto');
+const client = new proto.products.ProductService('localhost:7500', grpc.credentials.createInsecure());
+
+client.List({}, (error, response) =&amp;gt; {
+	if (!error) {
+		console.log("Response : ", response)
+	}
+	else {
+		console.log("Error:", error.message);
+	}
+});
+
+client.get({ id: 1001 }, (error, response) =&amp;gt; {
+	if (!error) {
+		console.log("Response : ", response)
+	}
+	else {
+		console.log("Error:", error.message);
+	}
+});
+
+client.Insert({ id: 1001, name: "Scrum Post-It Kağıdı", listPrice: 5 }, (error, response) =&amp;gt; {
+	if (!error) {
+		console.log("Response : ", response)
+	}
+	else {
+		console.log("Error:", error.message);
+	}
+});&lt;/pre&gt;
+&lt;p&gt;Burada &amp;ouml;ncelikle proto dosyasını y&amp;uuml;kl&amp;uuml;yor ve sonrasında client isimli ProductService nesnesini &amp;ouml;rnekliyoruz. Sunucu tarafını aynı makinede 7500 nolu port &amp;uuml;zerinden yayınladığımız i&amp;ccedil;in burada da aynı adres bilgisini kullanmamız gerekiyor. Sonrasında servis s&amp;ouml;zleşmesi ile sunulan operasyonları tek tek deniyoruz. client &amp;uuml;zerinden List, get ve Insert isimli metodlara &amp;ccedil;ağrı yapmaktayız. Basit olması a&amp;ccedil;ısından herhangi bir hata varsa bunu g&amp;ouml;steriyor yoksa sunucudan d&amp;ouml;nd&amp;uuml;r&amp;uuml;len mesaj i&amp;ccedil;eriğini ekrana bastırıyoruz.Tabii giden veya gelen mesajların JSON babında ele alınması gerektiğini bir kez daha hatırlatalım.&lt;/p&gt;
+&lt;p&gt;Yaptıklarımızı test etmek i&amp;ccedil;in &amp;ouml;nce sunucu tarafını, ardından istemci tarafını &amp;ccedil;alıştırmamız yeterli. Ben aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan sonu&amp;ccedil;ları elde ettim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/11/grPC_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi istemci uygulama, uzak sunucu &amp;uuml;zerinden sunulan servis operasyonlarını başarılı bir şekilde kullandı. Benim gRPC ile ilgili olarak ilk &amp;ouml;ğrendiklerim kısac bunlar. Aslında Microservice mimarisinde REST alternatifi bir iletişim tekniği olduğunu g&amp;ouml;rmek benim i&amp;ccedil;in g&amp;uuml;zel oldu. Diğer yandan gRPC'nin y&amp;uuml;ksek performanslı, TCP soket haberleşmesi &amp;uuml;zerinden binary serileştirme kullanan ve uygulanması kolay bir &amp;ccedil;atı olduğunu s&amp;ouml;yleyebiliriz. Performans konusunda bende Google'ın yalancısıyım dolayısıyla ger&amp;ccedil;ek &amp;ouml;l&amp;ccedil;&amp;uuml;mlemelere bakmakta yarar var. Bununla birlikte &amp;ouml;zellikle stream kullanımı &amp;ouml;rneğini de bir bakın derim ki &lt;a href="https://grpc.io/docs/tutorials/basic/node.html" target="_blank"&gt;burada g&amp;uuml;zel bir anlatımı var&lt;/a&gt;. gRPC'yi farklı dillerde uygulamak isterseniz google'ın &lt;a href="https://grpc.io/docs/tutorials/" target="_blank"&gt;bu adresteki pratiklerine&lt;/a&gt; bakabilirsiniz.&amp;nbsp;B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/buraksenyurt/nodejs-tutorials/tree/master/Day10" target="_blank"&gt;Github'dan &amp;Ouml;rnek Kodları Alabilirsiniz&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2019-04-24 07:06:00</pubDate>
+  <slug>grpc-nedir-nasil-uygulanir</slug>
+  <tags>
+    <tag>nodejs</tag>
+    <tag>rpc</tag>
+    <tag>remote-procedure-call</tag>
+    <tag>microservice</tag>
+    <tag>protobuf</tag>
+    <tag>g-r-p-c</tag>
+    <tag>google</tag>
+    <tag>service</tag>
+    <tag>soa</tag>
+    <tag>npm</tag>
+  </tags>
+  <categories>
+    <category>Node.js</category>
+  </categories>
+</post>

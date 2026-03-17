@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WF - XAML Bazlı Workflow Örnekleri Geliştirmek</title>
+  <description>Geçtiğimiz günlerde Workflow 4.0 ile ilişkili araştırmalarıma devam ederken, özellikle dekleratif olarak tanımlanabilen WF servislerindeki önemli bir noktayı farkettim. Bu, aynı zamanda WF 4.0 ile birlikte gelen en önemli yenilikler arasındaydı.</description>
+  <content>&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Ge&amp;ccedil;tiğimiz g&amp;uuml;nlerde &lt;strong&gt;Workflow 4.0&lt;/strong&gt; ile ilişkili araştırmalarıma devam ederken, &amp;ouml;zellikle dekleratif olarak tanımlanabilen WF servislerindeki &amp;ouml;nemli bir noktayı farkettim. Bu, aynı zamanda WF 4.0 ile birlikte gelen en &amp;ouml;nemli yenilikler arasındaydı. &lt;em&gt;(Hatta WF motorunun-Engine- değişmesi veya&lt;strong&gt; temel aktivite k&amp;uuml;t&amp;uuml;phanesinde(Base Activity Library),&lt;/strong&gt; ata tip olarak &lt;strong&gt;WorkflowElement&lt;/strong&gt; isimli yeni bir sınıfın getirilmesi kadar &amp;ouml;nemliydi)&lt;/em&gt;&amp;nbsp;Bir workflow &amp;ouml;rneğinin&amp;nbsp;sadece &lt;strong&gt;XAML&lt;/strong&gt; i&amp;ccedil;eriğinden oluşacak şekilde koda ihtiya&amp;ccedil; duymadan tasarlanabilmesi(design), derlenebilmesi(Compile) ve gerektiğinde &amp;ccedil;alışma zamanında basit bir notepad uygulaması ile değiştirilerek g&amp;uuml;ncellenebilmesi...Burada &amp;ouml;zellikle derleme konusu son derece dikkat &amp;ccedil;ekici. Nedeni mi?&lt;/p&gt;
+&lt;p&gt;Nedeni araştırmak i&amp;ccedil;in elbette basit bir senaryo &amp;uuml;zerinden ilerlemem gerekiyordu. Bu y&amp;uuml;zden d&amp;uuml;n gece biraz ge&amp;ccedil; bir vakittede olsa &amp;uuml;şenmeden kodlamaya başladım. Senaryoya g&amp;ouml;re, &lt;strong&gt;.Net 3.5&lt;/strong&gt; a&amp;ccedil;ısından olaya bakıp, sadece XAML i&amp;ccedil;eriğinden oluşacak bir Workflow &amp;ouml;rneğini oluşturmak ve &amp;ccedil;alıştırmak istiyordum. Bu sebeple &amp;ouml;ncelikle, &amp;ouml;rnek bir aktivite tipi geliştirmeye karar verdim. &lt;strong&gt;ProductOrderActivity&lt;/strong&gt; isimli aktivite bileşenini, ayrı bir &lt;strong&gt;Workflow Activity Library&lt;/strong&gt; projesi i&amp;ccedil;erisinde aşağıdaki sınıf diagramında olduğu gibi tasarladım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg13_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Kod i&amp;ccedil;eriği&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ComponentModel;
+using System.Workflow.Activities;
+using System.Workflow.ComponentModel;
+
+namespace NorthwindActivities
+{
+ public class ProductOrderActivity
+        : SequenceActivity
+ {
+        public static DependencyProperty ProductNumberProperty = DependencyProperty.Register("ProductNumber", typeof(string), typeof(ProductOrderActivity));
+        public static DependencyProperty PartCountProperty = DependencyProperty.Register("PartCount", typeof(int), typeof(ProductOrderActivity));
+        public static DependencyProperty OrderDateProperty = DependencyProperty.Register("OrderDate", typeof(DateTime), typeof(ProductOrderActivity));
+
+        [Description("&amp;Uuml;r&amp;uuml;n Numarası")]
+        [Category("Sipariş Parametreleri")]
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public string ProductNumber
+        {
+            get
+            {
+                return ((string)(base.GetValue(ProductOrderActivity.ProductNumberProperty)));
+            }
+            set
+            {
+                base.SetValue(ProductOrderActivity.ProductNumberProperty, value);
+            }
+        }
+
+        [Description("Par&amp;ccedil;a sayısı")]
+        [Category("Sipariş Parametreleri")]
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public int PartCount
+        {
+            get
+            {
+                return ((int)(base.GetValue(ProductOrderActivity.PartCountProperty)));
+            }
+            set
+            {
+                base.SetValue(ProductOrderActivity.PartCountProperty, value);
+            }
+        }
+
+        [Description("Sipariş Tarihi")]
+        [Category("Sipariş Parametreleri")]
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public DateTime OrderDate
+        {
+            get
+            {
+                return Convert.ToDateTime(base.GetValue(ProductOrderActivity.OrderDateProperty));
+            }
+            set
+            {
+                base.SetValue(ProductOrderActivity.OrderDateProperty, value);
+            }
+        }
+
+        protected override ActivityExecutionStatus Execute(ActivityExecutionContext executionContext)
+        {
+            Console.WriteLine("{0} numaralı &amp;uuml;r&amp;uuml;nden {1} adet sipariş işlemi...",ProductNumber,PartCount.ToString());
+            Console.WriteLine("{0}  tarihine kadar sipariş edilmelidir.",OrderDate.ToShortDateString());
+            return base.Execute(executionContext);
+        }
+ }
+}&lt;/pre&gt;
+&lt;p&gt;Aktivite aslında basit olarak bir &amp;uuml;r&amp;uuml;n&amp;uuml;n belirli bir tarihe kadar, istenen miktarda sipariş edilmesi adımını y&amp;uuml;r&amp;uuml;ten bir modele sahipti. Tabiki sembolik olarak. Bu sebepten &lt;strong&gt;ProductNumber&lt;/strong&gt;, &lt;strong&gt;PartCount&lt;/strong&gt; ve &lt;strong&gt;OrderDate&lt;/strong&gt; isimli &amp;ouml;zellikleri bulunmaktaydı. Bu &amp;ouml;zellikler,, aktivitenin başka aktivitiler i&amp;ccedil;ermesi veya başka aktivitelere &lt;strong&gt;bağlanması(Binding)&lt;/strong&gt; gibi ihtiya&amp;ccedil;lara sahip olabileceğinden &lt;strong&gt;DependencyProperty&lt;/strong&gt; tipi ile ilişkilendirilmiştim. &amp;Ouml;zellikler, tasarım zamanında Visual Studio IDE' si tarafından değerlendirileceğinden, &lt;strong&gt;Description, Category, Browsable&lt;/strong&gt; ve &lt;strong&gt;DesignerSerializationVisibility&lt;/strong&gt; gibi niteliklerlede sahipti. Aktivite icra edildiğinde ise &lt;strong&gt;ezilen(override) Exeute&lt;/strong&gt; metodu i&amp;ccedil;eriği &amp;ccedil;alıştırılmaktadır. Bu kısımda işin modeline g&amp;ouml;re bir takım işlemler yapılması gerekmekte. Ben sembolik olarak sadece ekrana bazı bilgiler yazdırmayı hedefledim.&lt;/p&gt;
+&lt;p&gt;Şimdi gelelim bu aktiviteyi kullanacağımız &amp;ouml;rnek &lt;strong&gt;Workflow&lt;/strong&gt; uygulamasına. Bu ama&amp;ccedil;la testleri kolayca yapabileceğim bir &lt;strong&gt;Sequential Workflow Console Application&lt;/strong&gt; projesi oluşturdum. Projenin, &lt;strong&gt;ProductOrderActivity&lt;/strong&gt; aktivitesini kullanabilmesi i&amp;ccedil;inde, tanımlandığı &lt;strong&gt;NorthwindActivities&lt;/strong&gt; k&amp;uuml;t&amp;uuml;phanesini referans ettim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg13_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Artık &amp;ouml;n hazırlıklar tamamlanmıştı. Sırada XAML bazlı &lt;strong&gt;Sequential Activity&lt;/strong&gt; &amp;ouml;ğesinin eklenmesi vardı. Yanlız burada yapacağımız se&amp;ccedil;imin &amp;ouml;nemli olduğunu vurgulamak isterim. Nitekim amacımız kod i&amp;ccedil;ermeyen ve XAML i&amp;ccedil;eriğine sahip bir Workflow &amp;ouml;rneği geliştirmek olduğundan, proje &amp;ouml;ğelerinden&lt;strong&gt; Sequential Workflow (with no code)&lt;/strong&gt; tipini se&amp;ccedil;memiz gerekiyor. Tabi eğer&amp;nbsp;&lt;strong&gt;State Machine Workflow&lt;/strong&gt;&amp;nbsp;tipinden bir proje s&amp;ouml;z konusuysa, &lt;strong&gt;State Machine Workflow(with no code)&lt;/strong&gt; &amp;ouml;ğesinin se&amp;ccedil;memiz gerekiyor.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg13_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bunun sonucunda projeye aşağıdaki şekilde g&amp;ouml;r&amp;uuml;len ProductOrderFlow isimli &lt;strong&gt;XOML&lt;/strong&gt; uzantılı bir &amp;ouml;ğenin eklendiği g&amp;ouml;r&amp;uuml;l&amp;uuml;r.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg13_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Ancak g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi bu oluşum sırasında &lt;strong&gt;xoml&lt;/strong&gt; uzantılı i&amp;ccedil;erik dışında &lt;strong&gt;cs&lt;/strong&gt; uzantılı bir kod i&amp;ccedil;eriğide &amp;uuml;retilmektedir. Şunu hemen hatırlatayım. Amacımız kesin olarak kod dosyasından bağımsız bir Workflow &amp;ouml;rneği oluşturmaktır. Peki bunun i&amp;ccedil;in ne yapmalıyız? Aslında şu an i&amp;ccedil;in &amp;ccedil;&amp;ouml;z&amp;uuml;m son derece basit. cs uzantılı dosya silinir &lt;img title="Laughing" src="/editors/tiny_mce3/plugins/emotions/img/smiley-laughing.gif" alt="Laughing" border="0" /&gt;&amp;nbsp;Bende aynen b&amp;ouml;yle yaptım.&amp;nbsp;Tabi şu anda&amp;nbsp;Workflow i&amp;ccedil;erisinde herhangibir aktivite kullanılmamakta.&lt;/p&gt;
+&lt;p&gt;Ancak dikkat edilmesi gereken &amp;ouml;nemli bir nokta daha var.&amp;nbsp;Bu Workflow i&amp;ccedil;in bir kod bloğu olmadığından, i&amp;ccedil;eride kullanacağımız aktivitelerin Codebehind dosyası i&amp;ccedil;erisine kod atmayacak şekilde kullanılmaları gerekmekte. S&amp;ouml;z gelimi bir &lt;strong&gt;CodeActivity&lt;/strong&gt; bileşenini kullanmak istediğimizde, bu bileşenin &amp;ccedil;alıştırılması sonucu devreye girecek metodun, cs kod dosyası i&amp;ccedil;erisinde yer alması gerekmektedir. Oysaki şu anki teorimize g&amp;ouml;re b&amp;ouml;yle bir dosya bulunmamaktadır(olmamalıdır). Buda bizi, &amp;ouml;zel aktivite tiplerinin yazılmasına itmektedir. Ama elbetteki kod dosyasına ihtiya&amp;ccedil; duymayan bazı aktivite bileşenleri burada ele alınabilir. &amp;Ouml;rneğin &lt;strong&gt;DelayActivity&lt;/strong&gt; aktivitesi. Bu bilgilerden yola &amp;ccedil;ıkarak &lt;strong&gt;ProductOrderFlow.xoml&lt;/strong&gt; i&amp;ccedil;eriğini tasarım zamanında aşağıdaki gibi oluşturdum.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg13_5.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekildende g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi, &lt;strong&gt;Workflow&lt;/strong&gt; i&amp;ccedil;erisinde &amp;ouml;nce &lt;strong&gt;delayActivity&lt;/strong&gt; bileşeni ve peşinden yazdığım &lt;strong&gt;productOrderActivity&lt;/strong&gt; bileşeni &amp;ccedil;alıştırılmakta. &lt;strong&gt;productOrderActivity1&lt;/strong&gt; bileşeninin OrderDate, PartCount ve ProductNumber isimli &amp;ouml;zelliklerine ise sembolik değerler aktarılmış durumdadır.&amp;nbsp;Şimdi &lt;strong&gt;xoml&lt;/strong&gt; i&amp;ccedil;eriğini &lt;strong&gt;XML Editor&lt;/strong&gt; yardımıyla a&amp;ccedil;arsak, aşağıdaki i&amp;ccedil;eriğin oluşturulduğunu g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;SequentialWorkflowActivity x:Class="NorthwindActivities.ProductOrderFlow" x:Name="ProductOrderFlow" xmlns:ns0="clr-namespace:NorthwindActivities;Assembly=NorthwindActivities, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/workflow"&amp;gt;
+ &amp;lt;DelayActivity TimeoutDuration="00:00:05" x:Name="delayActivity1" /&amp;gt;
+ &amp;lt;ns0:ProductOrderActivity x:Name="productOrderActivity1" ProductNumber="PART-1001" PartCount="100" OrderDate="2009-05-07T00:00:00.0000000" /&amp;gt;
+&amp;lt;/SequentialWorkflowActivity&amp;gt;&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &lt;strong&gt;Workflow&lt;/strong&gt; i&amp;ccedil;erisinde aktivitilerin tamamı, &lt;strong&gt;XAML&lt;/strong&gt; i&amp;ccedil;eriği olarak oluşturulmuştur. Bu, zihinlerde yeni ufuklar a&amp;ccedil;acak kadar &amp;ouml;nemli bir ayrıntır. &amp;Ccedil;&amp;uuml;nk&amp;uuml;, istenirse bu i&amp;ccedil;erikte yer alan elementlerin yerleri değiştirilerek akışın şekline m&amp;uuml;dahele edilebilir(Koda girmeye gerek kalmadan). Yada başka elementler basit bir notepad programı yardımıyla i&amp;ccedil;eriğe dahil edilip akışa yeni adımların eklenmesi sağlanabilir. Hatta bu i&amp;ccedil;erik belki bir depolama ortamında saklanarak farklı g&amp;ouml;rsel uygulamaların bu akışları ele alabilmesi, değiştirebilmesi sağlanabilir&lt;em&gt;(&lt;strong&gt;Oslo, Quadrant&lt;/strong&gt; kavramına gitmeye &amp;ccedil;alıştığımı sanıyorumki anlamışsınızdır)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Sonrasında aşırı&amp;nbsp;heyecan yapmaya gerek olmadığını farkedip devam etmeye karar verdim.&amp;nbsp;Bu nedenle&amp;nbsp;projeyi derleyerek yoluma devam etmek istedim. Ancak olduk&amp;ccedil;a ilgin&amp;ccedil; bir durumla karşılaştım. Proje i&amp;ccedil;erisinde birden &lt;strong&gt;ProductOrderFlow.xoml.cs&lt;/strong&gt; isimli kod dosyası ortaya &amp;ccedil;ıktı.&lt;img title="Sealed" src="/editors/tiny_mce3/plugins/emotions/img/smiley-sealed.gif" alt="Sealed" border="0" /&gt;&amp;nbsp;Gecenin karanlığında sanki bir korku filminde yaşanan gerilimi hissetmiştim. Ensemden soğuk bir ter damlası ilerlerken, bu hortlağın nereden &amp;ccedil;ıktığını d&amp;uuml;ş&amp;uuml;n&amp;uuml;yordum. Aslında bu son derece doğaldı. Nitekim proje derlendiğinde, &lt;strong&gt;xoml&lt;/strong&gt; dosyası da hesaba katıldığından, cs dosyası otomatik olarak &amp;uuml;retilmekteydi. Bu tabiki&amp;nbsp;istediğim bir durum değildi. Bu nedenle&lt;strong&gt; ProductOrderFlow.xoml&lt;/strong&gt; dosyasının &lt;strong&gt;Build Action&lt;/strong&gt; &amp;ouml;zelliğinin değerini &lt;strong&gt;None&lt;/strong&gt; olarak belirlemek yeterliydi. Tabiki sonrasında(&amp;ouml;ncesinde) cs dosyasını silmeyi unutmamak da gerekiyordu.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg13_6.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Evettt...Herşey hazır gibi. Mi acaba? Aslında unuttuğum &amp;ouml;nemli bir nokta var. S&amp;ouml;z konusu &lt;strong&gt;Workflow&lt;/strong&gt; nasıl &amp;ccedil;alıştırılacak? Nitekim, &lt;strong&gt;build&lt;/strong&gt; işlemi sırasında &lt;strong&gt;ProductOrderFlow.xoml &lt;/strong&gt;i&amp;ccedil;eriğini devre dışı bıraktığımızdan, bunun &amp;ccedil;alışma zamanında bir şekilde y&amp;uuml;kleniyor olması gerekiyor. Ancak derlenmiş kod i&amp;ccedil;erisinde bu Workflow' a ait bir tip tanımlamasıda yer almadığından&lt;em&gt;(&amp;ccedil;&amp;uuml;nk&amp;uuml; Build Action=None olarak belirlendi)&lt;/em&gt; &amp;ccedil;alışma zamanında &lt;strong&gt;xoml&lt;/strong&gt; dosyasının i&amp;ccedil;eriğinin ele alınması gerekmekte. Bunu sağlamak i&amp;ccedil;in tek yapılması gereken &amp;ccedil;alışma zamanı kodlamasını aşağıdaki gibi değiştirmek.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Threading;
+using System.Workflow.Runtime;
+using System.Xml;
+
+namespace NorthwindActivities
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            using(WorkflowRuntime workflowRuntime = new WorkflowRuntime())
+            {
+                AutoResetEvent waitHandle = new AutoResetEvent(false);
+                workflowRuntime.WorkflowCompleted += delegate(object sender, WorkflowCompletedEventArgs e) {
+                    waitHandle.Set();
+                    Console.WriteLine("İşlemler tamamlandı");
+                };
+                workflowRuntime.WorkflowTerminated += delegate(object sender, WorkflowTerminatedEventArgs e)
+                {
+                    Console.WriteLine(e.Exception.Message);
+                    waitHandle.Set();
+                };
+
+                XmlReader reader = XmlReader.Create("..\\..\\ProductOrderFlow.xoml");
+                WorkflowInstance instance = workflowRuntime.CreateWorkflow(
+                    reader
+                    );
+                instance.Start();
+
+                waitHandle.WaitOne();
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Koddanda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi yapılması gereken, &lt;strong&gt;xoml&lt;/strong&gt; i&amp;ccedil;eriğini &lt;strong&gt;XmlReader&lt;/strong&gt; nesnesi yardımıyla ortama almak ve &lt;strong&gt;WorkflowInstance&lt;/strong&gt; &amp;ouml;rneğinin oluşturulması sırasında &lt;strong&gt;CreateWorkflow&lt;/strong&gt; metoduna parametre olarak vermektir. Uygulamayı bu haliyle &amp;ccedil;alıştırdığımda aşağıdaki sonucu elde ettim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg13_7.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Sanıyorumki ben dahil herkes, uygulamanın &amp;ccedil;alışmasını bekliyordu. Ancak yukarıda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi bir istisna(Exception) aldım. Karabasan devam ediyordu sanki. &amp;Ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml; bulmam biraz zamanımı aldı. Aslında problem, xoml i&amp;ccedil;eriğinde yer alan&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;x:Class="NorthwindActivities.ProductOrderFlow"&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;bildirimiydi. &amp;Ccedil;alışma zamanının kızması son derece doğaldı. Hak vermem gerekiyordu.&amp;nbsp;Hata mesajındanda anlaşılacağı &amp;uuml;zere bir doğrulama(Validation) sorunu vardı. Bunun kaynadğında ise &lt;strong&gt;ProductOrderFlow&lt;/strong&gt; tipi yer almakta. Derken tepemde bir amp&amp;uuml;l yanıverdi.&lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;&lt;strong&gt;cs&lt;/strong&gt; dosyasını &amp;ccedil;ıkarmış ve &lt;strong&gt;xoml&lt;/strong&gt; i&amp;ccedil;eriğini uygulamaya dahil etmemiştim. Dolayısıyla s&amp;ouml;z konusu tip zaten yoktu ve &amp;ccedil;alışma zamanı, akışı doğrulamaya &amp;ccedil;alışırken tam bu noktada &amp;ccedil;atlıyordu.&amp;nbsp;Neden b&amp;ouml;yle olmuştu peki? Tabiki &lt;strong&gt;Visual Studio&lt;/strong&gt; ortamında&amp;nbsp;sadece &lt;strong&gt;XAML&lt;/strong&gt; i&amp;ccedil;eriğinden oluşan bir akış geliştirme desteği bulunmamaktaydı ve ben kod par&amp;ccedil;alı oluşturulan akışın &amp;uuml;zerinde değişiklikler yapıyordum.&amp;nbsp;Yani varsayılan modele karşı gelmiştim. Haliyle xoml i&amp;ccedil;eriğini aşağıdaki gibi değiştirmem gerekti.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;SequentialWorkflowActivity x:Name="ProductOrderFlow" xmlns:ns0="clr-namespace:NorthwindActivities;Assembly=NorthwindActivities, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/workflow"&amp;gt;
+ &amp;lt;DelayActivity TimeoutDuration="00:00:05" x:Name="delayActivity1" /&amp;gt;
+ &amp;lt;ns0:ProductOrderActivity x:Name="productOrderActivity1" ProductNumber="PART-1001" PartCount="100" OrderDate="2009-05-07T00:00:00.0000000" /&amp;gt;
+&amp;lt;/SequentialWorkflowActivity&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Artık tekrar testi yapabilirdim. Programı &amp;ccedil;alıştırdığımda aşağıdaki sonu&amp;ccedil;la karşılaştım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg13_8.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Nihayet &lt;img title="Smile" src="/editors/tiny_mce3/plugins/emotions/img/smiley-smile.gif" alt="Smile" border="0" /&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Artık xoml i&amp;ccedil;eriği ile biraz oynayabilirdim. Bu ama&amp;ccedil;la xoml dosyasını notepad ile a&amp;ccedil;tım ve aşağıdaki hale getirdim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg13_10.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &lt;strong&gt;productOrderActivity2&lt;/strong&gt; isimli yeni bir bileşeni akış i&amp;ccedil;erisine dahil edip &amp;ouml;zelliklerine sembolik değerler atadım. Bundan sonra program kodunu &lt;span style="text-decoration: underline;"&gt;&lt;strong&gt;derlemeden&lt;/strong&gt;&lt;/span&gt; &amp;ccedil;alıştırdığımdaysa aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; ile karşılaştım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg13_11.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi yeni eklenen bileşende başarılı bir şekilde &amp;ccedil;alıştırıldı. Sonu&amp;ccedil; olarak; bir workflow &amp;ouml;rneğinin&amp;nbsp;koddan bağımsız olacak şekilde tasarlanabilmesi, &lt;strong&gt;XAML&lt;/strong&gt; i&amp;ccedil;eriğinin basit bir editor yardımıyla değiştirilip akışın g&amp;uuml;ncellenebilmesi sağlanabilmektedir. Burada &amp;ouml;nemli olan noktalardan birisi, s&amp;ouml;z konusu &lt;strong&gt;xoml&lt;/strong&gt; dosyalarının, &amp;ccedil;alışma zamanında değerlendirilip y&amp;uuml;r&amp;uuml;t&amp;uuml;lmeleridir.&lt;/p&gt;
+&lt;p&gt;Şimdi ş&amp;ouml;yle bir senaryoyu g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım. Buradaki gibi tamamen XAML bazlı akışların bir depoda saklandığını d&amp;uuml;ş&amp;uuml;nelim. &amp;Ouml;rneğin &lt;strong&gt;SQL&lt;/strong&gt; sunucusu &amp;uuml;zerinde veya bir x veri depolama sisteminde. Sonrasında ise, bu akışları kullanan(i&amp;ccedil;eren) s&amp;uuml;re&amp;ccedil;ler ve programların g&amp;ouml;rsel bir ara&amp;ccedil; yardımıyla tasarlanabildiğini ve değiştirilebildiğini g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım. Hatta bu akışların istenirse &lt;strong&gt;export&lt;/strong&gt; edilip farklı uygulama alanlarına &lt;strong&gt;import&lt;/strong&gt; edilebildiklerini farz edelim...Derken zaten &lt;strong&gt;Microsoft'&lt;/strong&gt; un gitmek istediği noktada yer alan bir ka&amp;ccedil; temel ihtiya&amp;ccedil;tan bir kısmını &amp;ouml;zetlemiş oluyoruz.&lt;/p&gt;
+&lt;p&gt;Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2009%2f5%2fUsingXAML.rar"&gt;UsingXAML.rar (43,63 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2009-05-06 11:23:00</pubDate>
+  <slug>WF-XAML-Bazlc4b1-Workflow-Ornekleri</slug>
+  <tags>
+    <tag>wf</tag>
+    <tag>xaml</tag>
+  </tags>
+  <categories>
+    <category>WF</category>
+  </categories>
+</post>

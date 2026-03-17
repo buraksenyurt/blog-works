@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Nasıl Yapılır? Adım Adım Özel HttpHandler</title>
+  <description>Uzun zaman önce Asp.Net 2.0 ile ilişkili makalelerimizden birisinde HttpHandler ve HttpModule kavramlarından bahsetmeye çalışmıştık. Bu makalemizde kendi Handler sınıfımızı geliştirmek isteyebileceğimiz örnek bir senaryo üzerinde daha durmaya çalışacağız. Bu sayede HttpHandler sınıfları yazarak neler yapılabileceğinide daha net bir şekilde görmüş olacağız. Konuyu daha net kavrayabilmek adına örnek senaryomuz üzerinden adım adım ilerleyeceğiz.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Uzun zaman &amp;ouml;nce &lt;strong&gt;Asp.Net 2.0&lt;/strong&gt; ile ilişkili makalelerimizden birisinde &lt;strong&gt;HttpHandler&lt;/strong&gt; ve &lt;strong&gt;HttpModule&lt;/strong&gt; kavramlarından bahsetmeye &amp;ccedil;alışmıştık. Bu makalemizde kendi Handler sınıfımızı geliştirmek isteyebileceğimiz &amp;ouml;rnek bir senaryo &amp;uuml;zerinde daha durmaya &amp;ccedil;alışacağız. Bu sayede HttpHandler sınıfları yazarak neler yapılabileceğinide daha net bir şekilde g&amp;ouml;rm&amp;uuml;ş olacağız. Konuyu daha net kavrayabilmek adına &amp;ouml;rnek senaryomuz &amp;uuml;zerinden adım adım ilerleyeceğiz.&lt;/p&gt;
+&lt;p&gt;Bilindiği &amp;uuml;zere web sunucusuna istemci tarafından gelen &lt;strong&gt;talepler(Requests) &lt;/strong&gt;bazı &lt;strong&gt;program ara y&amp;uuml;zleri(API) &lt;/strong&gt;tarafından karşılanır ve uygun ortamlara işletilmek &amp;uuml;zere iletilirler. &amp;Ouml;zellikle&lt;strong&gt; Asp.Net&lt;/strong&gt; ile geliştirilen web uygulamalarında, talep edilen dosya tipine g&amp;ouml;re devreye giren HttpHandler sınıfları bulunmaktadır. S&amp;ouml;z gelimi &lt;strong&gt;aspx&lt;/strong&gt; uzantılı dosyalar &lt;strong&gt;PageHandlerFactory&lt;/strong&gt; isimli sınıf tarafından ele alınırlar. &lt;strong&gt;PageHandlerFactory&lt;/strong&gt; ve benzer işlevselliklere sahip handler tipleri &lt;strong&gt;IHttpHandler aray&amp;uuml;z&amp;uuml;n&amp;uuml;(interface) &lt;/strong&gt;uygularlar. Dolayısıyla geliştiriciler kendi Handler tiplerini &lt;strong&gt;IHttpHandler&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml; kullanarak yazabilirler.&lt;/p&gt;
+&lt;p&gt;Gelelim &amp;ouml;rnek senaryomuza. Sunucu &amp;uuml;zerinde barındırılan &lt;strong&gt;XML(eXtensible Markup Language) &lt;/strong&gt;tabanlı basit bir metin dosyasını ele alacak &amp;ouml;zel bir &lt;strong&gt;Handler&lt;/strong&gt; tipi geliştiriyor olacağız. XML tabanlı dosya i&amp;ccedil;erisinde yer alan bilgilerden yararlanılarak ekrana herhangibir sorguya ait raporlama sonu&amp;ccedil;ları aktarılacak. Dosyanın uzantısının &amp;ouml;rnek olarak &lt;strong&gt;rapx&lt;/strong&gt; olduğunu d&amp;uuml;ş&amp;uuml;nebiliriz. Peki bu raporlama işleminde &amp;ouml;nemli bir rol oynacak olan XML i&amp;ccedil;eriğinde neler olması gerekmektedir? Bunların tespiti &lt;strong&gt;XML&lt;/strong&gt; dosyasının mantıksal ağa&amp;ccedil; yapısının oluşturulmasınıda kolaylaştıracaktır. S&amp;ouml;z konusu ihtiya&amp;ccedil;ları aşağıdaki maddeler halinde sıralanabilirler.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Hazırlanan rapor i&amp;ccedil;in bir &lt;strong&gt;başlık(Title) &lt;/strong&gt;bilgisi tutulabilir. Hatta başlığın &lt;strong&gt;arka plan rengi(Background Color)&lt;/strong&gt; verilerek zengin g&amp;ouml;r&amp;uuml;nmesi sağlanabilir.&lt;/li&gt;
+&lt;li&gt;Rapor dosyasının ka&amp;ccedil; adet &lt;strong&gt;sorgu c&amp;uuml;mlesi(Query) &lt;/strong&gt;i&amp;ccedil;in destek vereceğine karar vermek gerekmektedir. &amp;Ouml;rneğin basit olması a&amp;ccedil;ısından başlangı&amp;ccedil; itibariyle sadece tek bir sorgu sonucunun ele alınmasında fayda vardır.&lt;/li&gt;
+&lt;li&gt;Sorgu c&amp;uuml;mlesi, &lt;strong&gt;saklı yordam(stored procedure)&lt;/strong&gt; veya text tabanlı ifadeleri işaret edebilir. Hatta bir veritabanı &lt;strong&gt; g&amp;ouml;r&amp;uuml;n&amp;uuml;m&amp;uuml;n&amp;uuml;n(View) &lt;/strong&gt;desteklenmesi bile sağlanabilir.&lt;/li&gt;
+&lt;li&gt;Sorgu c&amp;uuml;mlesinde parametre kullanımına destek verilebilir. Bu parametrelerinin &lt;strong&gt;QueryString&lt;/strong&gt; yardımıyla Url &amp;uuml;zerinden veya XML i&amp;ccedil;eriğinden alınacağına dair tanımlamalar yapılabilir.&lt;/li&gt;
+&lt;li&gt;Sorgu c&amp;uuml;mlesinin &amp;ccedil;alışacağı &lt;strong&gt;sunucu(Server)&lt;/strong&gt; ve &lt;strong&gt;veritabanı(Database) &lt;/strong&gt;adı belirtilmelidir. Hatta SSPI ile bağlantıya destek verilmeside g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınmalıdır.&lt;/li&gt;
+&lt;li&gt;Hazırlanan raporların &lt;strong&gt;XML&lt;/strong&gt; i&amp;ccedil;eriğinde belirtilen mail adreslerine g&amp;ouml;nderilmesi de sağlanabilir.&lt;/li&gt;
+&lt;li&gt;Raporun kimler tarafında g&amp;ouml;r&amp;uuml;lebileceğine dair tanımlamalar yapılabilir. Bu tanımlamalar &lt;strong&gt;kullanıcı(User)&lt;/strong&gt; ve hatta &lt;strong&gt;rol(Role)&lt;/strong&gt; bazında ger&amp;ccedil;ekleştirilebilir.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Bu ihtiya&amp;ccedil;lar dahada arttırılabilir. Bir anlamda geliştiricinin hayal g&amp;uuml;c&amp;uuml; burada &amp;ouml;nem kazanmaktadır. Yukarıdaki maddelerde s&amp;ouml;z&amp;uuml; ge&amp;ccedil;en ihtiya&amp;ccedil;ların tamamı &lt;strong&gt;XML&lt;/strong&gt;' in temel kavramları ile karşılanabilir. Bir başka deyişle &lt;strong&gt;eleman(element)&lt;/strong&gt; ve &lt;strong&gt;nitelikler(attributes)&lt;/strong&gt; sayesinde yukarıdaki istekler standartlara uygun olacak şekilde tasarlanabilir.&lt;/p&gt;
+&lt;table id="table180" style="width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#ffffff"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;S&amp;ouml;z konusu XML i&amp;ccedil;eriğinin &lt;strong&gt;&amp;ccedil;alışma zamanında(run time)&lt;/strong&gt; uygun bir standartta olduğunun garanti altına alınması i&amp;ccedil;in &lt;strong&gt;şema (Xml Schema)&lt;/strong&gt; kullanılması yararlı olacaktır. Bu şema ile Xml i&amp;ccedil;eriğinin &amp;ccedil;arpıştırılması Handler tipi i&amp;ccedil;erisinde yapılabilir. Şemaya uymayan XML i&amp;ccedil;erikleri i&amp;ccedil;in &lt;strong&gt;Handler&lt;/strong&gt;, istekleri &amp;ouml;zel olarak tasarlanmış bir hata sayfasına doğru y&amp;ouml;nlendirebilir.&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Yukarıdaki maddeler ışığında aşağıdaki gibi &amp;ouml;rnek bir &lt;strong&gt;XML&lt;/strong&gt; i&amp;ccedil;eriği g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;Raporlar&amp;gt;
+    &amp;lt;Rapor Id=""&amp;gt;
+        &amp;lt;Baslik ArkaPlan=""&amp;gt;&amp;lt;/Baslik&amp;gt;
+        &amp;lt;Baglanti SSPI=""&amp;gt;
+            &amp;lt;Sunucu&amp;gt;&amp;lt;/Sunucu&amp;gt;
+            &amp;lt;Veritabani&amp;gt;&amp;lt;/Veritabani&amp;gt;
+            &amp;lt;KullaniciAdi&amp;gt;&amp;lt;/KullaniciAdi&amp;gt;
+            &amp;lt;Sifre&amp;gt;&amp;lt;/Sifre&amp;gt;
+        &amp;lt;/Baglanti&amp;gt;
+        &amp;lt;Sorgu Sp=""&amp;gt;
+            &amp;lt;Cumle&amp;gt;&amp;lt;/Cumle&amp;gt;
+            &amp;lt;Parametreler Nereden=""&amp;gt;
+                &amp;lt;Parametre Ad="" Deger=""/&amp;gt;
+            &amp;lt;/Parametreler&amp;gt;
+        &amp;lt;/Sorgu&amp;gt;
+        &amp;lt;MailListesi MailGonder=""&amp;gt;
+            &amp;lt;Mail&amp;gt;&amp;lt;/Mail&amp;gt;
+            &amp;lt;Mail&amp;gt;&amp;lt;/Mail&amp;gt;
+        &amp;lt;/MailListesi&amp;gt;
+    &amp;lt;/Rapor&amp;gt;
+&amp;lt;/Raporlar&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Raporlar &lt;strong&gt;ana boğumu(Root Node)&lt;/strong&gt; birden fazla &lt;strong&gt;Rapor&lt;/strong&gt; elementi i&amp;ccedil;erebilir. Biz &amp;ouml;rneğin daha kolay ele alınabilmesi amacıyla tek bir Rapor elementi kullanıyor olacağız. Raporun alınacağı &lt;strong&gt;sunucu(Server), veritabanı adı(Database Name), kullanıcı adı(User name) &lt;/strong&gt;ve &lt;strong&gt;şifre(Password)&lt;/strong&gt; bilgileri ise Baglanti elementi altında tutulmaktadır. Hatta &lt;strong&gt;SSPI&lt;/strong&gt; kullanımınada destek verilmesi amacıyla Baglanti elementi i&amp;ccedil;erisinde bir &lt;strong&gt;nitelik(attribute)&lt;/strong&gt; tanımlanmaktadır. Sorguların &lt;strong&gt;saklı yordam(Stored Procedure)&lt;/strong&gt; olup olmadığı Sp niteliği ile belirtilebilir. Bunun dışında sorgu i&amp;ccedil;erisinde kullanılan parametreler var ise bunların nereden alınacağı Nereden isimli &lt;strong&gt;nitelik(attribute)&lt;/strong&gt; ile belirlenmektedir. &amp;Ouml;yleki raporun parametreleri, rapx dosyasına tarayıcı &amp;uuml;zerinden yapılan &amp;ccedil;ağrılarda &lt;strong&gt;QueryString&lt;/strong&gt; yardımıyla gelebilir. Yada Parametre elementleri i&amp;ccedil;erisindeki Deger niteliklerinde doğrudan tanımlanabilir. &amp;Uuml;retilen raporların mail yolu ile kimlere bildirileceğine dair MailListesi elementi ve Mail alt elementleri kullanılabilir.&lt;/p&gt;
+&lt;p&gt;Burada ortaya &amp;ccedil;ıkan &amp;ouml;nemli bir ihtiya&amp;ccedil; vardır. &lt;strong&gt;XML&lt;/strong&gt; bilgilerinin tutulduğu rapx uzantılı dosyaların işlenmesi, bir &lt;strong&gt;HTML&lt;/strong&gt; &amp;ccedil;ıktısının &amp;uuml;retilmesi ve talepte bulunan istemcilere g&amp;ouml;nderilmesi sağlanmalıdır. Bunu sadece &amp;ouml;zel bir Handler tipi karşılayabilir.&lt;/p&gt;
+&lt;p&gt;Dilerseniz vakit kaybetmeden &lt;strong&gt;Handler&lt;/strong&gt; tipini yazarak işe başlayalım. Geliştirilecek olan Handler sınıfı ilk etapta tek bir web uygulamasında kullanılacaktır. Sonrasında ise bu handler tipinin sunucu &amp;uuml;zerindeki her Asp.Net web uygulaması i&amp;ccedil;in ge&amp;ccedil;erli olması sağlanacaktır. Bu nedenle &lt;strong&gt;Handler&lt;/strong&gt; tipinin bir &lt;strong&gt;sınıf k&amp;uuml;t&amp;uuml;phanesi(Class Library) &lt;/strong&gt;i&amp;ccedil;erisinde olmasında yarar vardır. Handler sınıfının &lt;strong&gt;IHttpHandler&lt;/strong&gt; &lt;strong&gt;aray&amp;uuml;z&amp;uuml;nden(Interface)&lt;/strong&gt; t&amp;uuml;retilmesi i&amp;ccedil;inde sınıf k&amp;uuml;t&amp;uuml;phanesine &lt;strong&gt;System.Web.dll assembly&lt;/strong&gt;' ının referans edilmesi şarttır. S&amp;ouml;z konusu &lt;strong&gt;Handler&lt;/strong&gt; sınıfının diagram g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; ve i&amp;ccedil;eriği aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk234_8.gif" alt="" width="448" height="270" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Web;
+using System.Data;
+using System.Web.Hosting;
+using System.Data.SqlClient;
+using System.Xml;
+using System.Web.UI.WebControls;
+using System.Web.UI;
+using System.IO;
+
+namespace ReportHandlerLibrary
+{
+    public class RaporHandler:IHttpHandler
+    {
+        #region IHttpHandler Members
+
+        public bool IsReusable
+        {
+            get { return false; }
+        }
+
+        // Gelen talep sonrası &amp;uuml;retilecek HTML &amp;ccedil;ıktısını bu metod i&amp;ccedil;erisinden veriyor olacağız
+        public void ProcessRequest(HttpContext context)
+        {
+            // Talep edilen sayfa Request.Path ile yakalanır. 
+            // VirtualPathProvider metodu ile sanal adresin karşılığı olan fiziki yoldaki dosya a&amp;ccedil;ılarak Stream halinde elde edilir. 
+            // Stream'den yararlanılarak XML i&amp;ccedil;eriği XmlDocument nesnesi i&amp;ccedil;erisine alınır.
+            XmlDocument xDoc = new XmlDocument();
+            xDoc.Load(VirtualPathProvider.OpenFile(context.Request.Path));
+            if (context.Request.QueryString["MailGonder"] == null)
+            {
+                // Baslik elementinden raporun başlığı bilgisi alınır
+                string baslik = xDoc.SelectSingleNode("Raporlar/Rapor/Baslik").InnerText;
+                string baslikArkaPlanRengi = xDoc.SelectSingleNode("Raporlar/Rapor/Baslik").Attributes["ArkaPlan"].InnerText;
+        
+                // Ekran tasarımı oluşturulmaya başlanır
+                // &amp;Uuml;retilen &amp;ccedil;ıktı bir HTML sayfası olacağından HTML elementlerinin kullanılması gerekmektedir.
+                context.Response.Write("&amp;lt;HTML&amp;gt;&amp;lt;HEAD&amp;gt;&amp;lt;TITLE&amp;gt;" + baslik + "&amp;lt;/TITLE&amp;gt;&amp;lt;/HEAD&amp;gt;");
+                context.Response.Write("&amp;lt;BODY&amp;gt;");
+                // Table elementi oluşturulur.
+                context.Response.Write("&amp;lt;TABLE border='1' width='100%' cellspacing='0' cellpadding='5'&amp;gt;");
+                // Tablo 3 satırdan oluşmaktadır. İlk satırın arka plan rengi ve i&amp;ccedil;erisinde yer alacak metin bilgisi Baslik elementi ve ArkaPlan niteliklerinden alınır
+                context.Response.Write("&amp;lt;TD style='background-color:" + baslikArkaPlanRengi + "'&amp;gt;");
+                context.Response.Write("&amp;lt;H3&amp;gt;" + baslik + "&amp;lt;/H3&amp;gt;");
+                context.Response.Write("&amp;lt;/TD&amp;gt;&amp;lt;/TR&amp;gt;");
+                // İkinci satır i&amp;ccedil;erisinde rapor sonucu &amp;uuml;retilen grid i&amp;ccedil;eriği olmalıdır.
+                context.Response.Write("&amp;lt;TR&amp;gt;&amp;lt;TD&amp;gt;");
+
+                // Bu h&amp;uuml;creye veri ile doldurulan Grid i&amp;ccedil;eriğinin HTML &amp;ccedil;ıktısı yazdırılır
+                context.Response.Write(GridHTMLUret(xDoc,context).ToString());
+    
+                context.Response.Write("&amp;lt;/TD&amp;gt;&amp;lt;/TR&amp;gt;");
+                context.Response.Write("&amp;lt;TR&amp;gt;&amp;lt;TD&amp;gt;");
+    
+                // Mail g&amp;ouml;nderme aksiyonu i&amp;ccedil;in basit bir hyperLink elementi eklenir
+                context.Response.Write("&amp;lt;a href='"+context.Request.Path + "?MailGonder=1'&amp;gt;" + "Raporu Mail Olarak G&amp;ouml;nder" + "&amp;lt;/a&amp;gt;");
+            
+                context.Response.Write("&amp;lt;/TD&amp;gt;&amp;lt;/TR&amp;gt;");
+                context.Response.Write("&amp;lt;/BODY&amp;gt;");
+                context.Response.Write("&amp;lt;/HTML&amp;gt;");
+            }
+            else
+            {
+                bool mailGondersinmi = false;
+                Boolean.TryParse(xDoc.SelectSingleNode("Raporlar/Rapor/MailListesi").Attributes["MailGonder"].Value, out mailGondersinmi);
+                if (mailGondersinmi)
+                    MailGonder(xDoc,context);
+            }
+        }
+
+        #endregion
+
+        // GridView kontrol&amp;uuml;n&amp;uuml;n i&amp;ccedil;eriği doldurulduktan sonra HTML i&amp;ccedil;eriği elde edilir ve bu i&amp;ccedil;eriği taşıyan StringWriter geriye d&amp;ouml;nd&amp;uuml;r&amp;uuml;l&amp;uuml;r.
+        private StringWriter GridHTMLUret(XmlDocument xDoc,HttpContext ctx)
+        {
+            // SqlDataAdapter nesne oluşturulur
+            SqlDataAdapter adapter = new SqlDataAdapter(KomutHazirla(xDoc,ctx));
+            DataTable table = new DataTable();
+            // DataTable doldurulur
+            adapter.Fill(table);
+    
+            // GridView kontrol&amp;uuml; &amp;uuml;retilir ve veriye bağlanır
+            GridView grd = new GridView();
+            grd.DataSource = table;
+            grd.DataBind();
+    
+            //GridView kontrol&amp;uuml;n&amp;uuml;n HTML &amp;ccedil;ıktısı elde edilir
+            StringWriter strWriter = new StringWriter();
+            HtmlTextWriter writer = new HtmlTextWriter(strWriter);
+            grd.RenderControl(writer);
+            return strWriter;
+        }
+
+        // Raporun &amp;uuml;retilmesi i&amp;ccedil;in gerekli SqlCommand hazırlanıyor.
+        private SqlCommand KomutHazirla(XmlDocument xDoc,HttpContext ctx)
+        {
+            bool sp = false;
+            // Sorgu c&amp;uuml;mlesinin Stored Procedure olup olmadığı belirlenir.
+            Boolean.TryParse(xDoc.SelectSingleNode("Raporlar/Rapor/Sorgu").Attributes["Sp"].Value, out sp);
+            
+            // SqlCommand tipi hazırlanır
+            SqlCommand cmd = new SqlCommand();
+            // Sorgu c&amp;uuml;mlesi alınır
+            cmd.CommandText = xDoc.SelectSingleNode("Raporlar/Rapor/Sorgu/Cumle").InnerText.Trim();
+            // Bağlantı c&amp;uuml;mlesi BaglantiCumlesiOlustur metodundan elde edilir ve Command i&amp;ccedil;in gerekli SqlConnection hazırlanır.
+            cmd.Connection = new SqlConnection(BaglantiCumlesiOlustur(xDoc));
+            // Eğer c&amp;uuml;mle Stored Procedure adını işaret ediyorsa CommandType i&amp;ccedil;in StoredProcedure enum sabiti değeri verilir
+            if (sp)
+                cmd.CommandType = CommandType.StoredProcedure;
+    
+            // Eğer girilmiş parametreler varsa bu parametreler Command nesnesine AddWithValue metodu ile teker teker eklenir.
+            if (xDoc.SelectSingleNode("Raporlar/Rapor/Sorgu/Parametreler").ChildNodes.Count &amp;gt; 0)
+            {
+                string parametreNereden = xDoc.SelectSingleNode("Raporlar/Rapor/Sorgu/Parametreler").Attributes["Nereden"].Value;
+                XmlNodeList parametreler = xDoc.SelectSingleNode("Raporlar/Rapor/Sorgu/Parametreler").ChildNodes;
+                foreach (XmlNode parametre in parametreler)
+                {
+                    if(parametreNereden=="Xml")
+                        cmd.Parameters.AddWithValue(parametre.Attributes["Ad"].Value, parametre.Attributes["Deger"].Value);
+                    else if(parametreNereden=="QueryString")
+                        cmd.Parameters.AddWithValue(parametre.Attributes["Ad"].Value, ctx.Request.QueryString[parametre.Attributes["Ad"].Value.Substring(1, parametre.Attributes["Ad"].Value.Length - 1)]);
+                }
+            }
+            // Oluşturulan Command nesnesi geri d&amp;ouml;nd&amp;uuml;r&amp;uuml;l&amp;uuml;r.
+            return cmd;
+        }
+
+        // Sorguların &amp;ccedil;alıştırılması i&amp;ccedil;in gerekli Bağlantı c&amp;uuml;mlesini oluşturan metod
+        private string BaglantiCumlesiOlustur(XmlDocument xDoc)
+        {
+            bool sspi = false;
+    
+            // Sql bağlantısı i&amp;ccedil;in gerekli bağlantı c&amp;uuml;mlesi(Connection String) SqlConnectionStringBuilder sınıfı yardımıyla oluşturulur.
+            SqlConnectionStringBuilder conStrBuilder = new SqlConnectionStringBuilder();
+        
+            // Sunucu ve veritabanı bilgileri XPath ifadeleri ile alınır.
+            conStrBuilder.DataSource = xDoc.SelectSingleNode("Raporlar/Rapor/Baglanti/Sunucu").InnerText;
+            conStrBuilder.InitialCatalog = xDoc.SelectSingleNode("Raporlar/Rapor/Baglanti/Veritabani").InnerText;
+            Boolean.TryParse(xDoc.SelectSingleNode("Raporlar/Rapor/Baglanti").Attributes["Sspi"].Value, out sspi);
+            if (!sspi) // Eğer integrated security ile bağlanılmıyorsa kullanıcı adı(UserID) ve şifre(Password) bilgileri alınır.
+            {
+                conStrBuilder.UserID = xDoc.SelectSingleNode("Raporlar/Rapor/Baglanti/KullaniciAdi").InnerText;
+                conStrBuilder.Password = xDoc.SelectSingleNode("Raporlar/Rapor/Baglanti/Sifre").InnerText;
+            }
+            else
+                conStrBuilder.IntegratedSecurity = true;
+
+            // Oluşturulan bağlantı c&amp;uuml;mlesi(Connection String) geri d&amp;ouml;nd&amp;uuml;r&amp;uuml;l&amp;uuml;r.
+            return conStrBuilder.ConnectionString;
+        }
+
+        // Mail g&amp;ouml;nderme se&amp;ccedil;eneği aktif ise postaların g&amp;ouml;nderilme işlemini ger&amp;ccedil;ekleştirecek olan metod.
+        private void MailGonder(XmlDocument doc,HttpContext ctx)
+        {
+            // Mail listesi MailListesi elementinin alt elementlerinden &amp;ccedil;ekilir.
+            XmlNodeList mailler = doc.SelectSingleNode("Raporlar/Rapor/MailListesi").ChildNodes;
+            foreach (XmlNode mail in mailler)
+            {
+                //TODO: Bu noktada raporun mail olarak g&amp;ouml;nderilmesine ait işlemler yapılacaktır.
+                ctx.Response.Write(mail.InnerText + " adresine rapor mail olarak g&amp;ouml;nderildi&amp;lt;br/&amp;gt;");
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Geliştirilen sınıf i&amp;ccedil;erisinde par&amp;ccedil;aları daha kolay ele alabilmek adına yardımcı metodlar yer almaktadır. Dikkat edileceği &amp;uuml;zere rapx i&amp;ccedil;eriğinin &lt;strong&gt;XML&lt;/strong&gt; formatında tasarlanması, işlemleri son derece kolaylaştırmaktadır. Nitekim i&amp;ccedil;eriğin &lt;strong&gt;XmlDocument&lt;/strong&gt; sınıfına ait bir nesne &amp;ouml;rneği ile belleğe alınması, i&amp;ccedil;erisindeki elementlerin veya niteliklerin &lt;strong&gt;XPath&lt;/strong&gt; ifadeleri ile yakalanması son derece kolaydır. &amp;Uuml;stelik XML, platform bağımsızlık sunduğundan bu d&amp;ouml;k&amp;uuml;manın başka bir ortama g&amp;ouml;nderilerek ele alınmasının sağlanması daha kolaydır.&lt;/p&gt;
+&lt;p&gt;Bu sebepten dolayı g&amp;uuml;n&amp;uuml;m&amp;uuml;z&amp;uuml;n pop&amp;uuml;ler kavramlarından olan &lt;strong&gt;Reporting Services &lt;/strong&gt;veya &lt;strong&gt;LINQ To SQL&lt;/strong&gt; i&amp;ccedil;erisinde yer alan &lt;strong&gt;Database Markup Language(dbml) &lt;/strong&gt;gibi yapılar XML &amp;uuml;zerine oturmaktadır. Sınıf i&amp;ccedil;erisinde dikkat edilmesi gereken noktalardan bir diğeri ise, &lt;strong&gt;HttpContext&lt;/strong&gt; tipinin ektin şekilde kullanımıdır. HttpContext &amp;uuml;zerinden ele alınan &amp;uuml;yeler ile, &amp;uuml;retilecek &lt;strong&gt;HTML&lt;/strong&gt; i&amp;ccedil;eriğinin tasarlanması veya talep ile gelen QueryString' lerin yakalanması s&amp;ouml;z konusudur. Hatta talep edilen sayfanın &lt;strong&gt;sanal yolu(Virtual Path) &lt;/strong&gt;elde edilip &lt;strong&gt;XML&lt;/strong&gt; i&amp;ccedil;eriğinin &lt;strong&gt;VirtualPathProvider&lt;/strong&gt; sınıfının &lt;strong&gt;OpenFile&lt;/strong&gt; metodu ile kolay bir şekilde &lt;strong&gt;Stream&lt;/strong&gt;' e d&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;lmeside sağlanmaktadır. İşlemleri kolaylaştıran noktalardan biriside web kontrollerinin &lt;strong&gt;RenderControl&lt;/strong&gt; metodudur. Bu metod ile kompleks bir &lt;strong&gt;GridView&lt;/strong&gt; kontrol&amp;uuml;n&amp;uuml;n veri dolu i&amp;ccedil;eriğinin &lt;strong&gt;HTML&lt;/strong&gt; &amp;ccedil;ıktısını almak son derece kolaylaşmaktadır.&lt;/p&gt;
+&lt;p&gt;Şimdi geliştirilen &lt;strong&gt;Handler&lt;/strong&gt; tipini &amp;ouml;rnek bir web uygulamasında test edebiliriz. İlk olarak tek bir web uygulamasına &amp;ouml;zel olacak şekilde Handler tipinin kullanılmasını ele alacağız. B&amp;ouml;yle bir durumda &amp;ouml;ncelikli olarak web uygulamasının Handler tipini i&amp;ccedil;eren &lt;strong&gt;sınıf k&amp;uuml;t&amp;uuml;phanesini(Class Library)&lt;/strong&gt; referans etmesi gerekmektedir. &amp;Ouml;rnek olarak OzelHandlerKullanimi isimli web uygulaması aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nden de anlaşılacağı &amp;uuml;zere ReportHandlerLibrary isimli &lt;strong&gt; assembly&lt;/strong&gt;' ı referans etmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk234_1.gif" alt="" width="283" height="372" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bunun dışında web uygulamasına ait &lt;strong&gt;web.config &lt;/strong&gt;dosyası i&amp;ccedil;erisinde aşağıda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi gerekli bildirimler yapılmalıdır.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0"?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;appSettings/&amp;gt;
+    &amp;lt;connectionStrings/&amp;gt;
+    &amp;lt;system.web&amp;gt;
+        &amp;lt;httpHandlers&amp;gt;
+            &amp;lt;add path="*.rapx" type="ReportHandlerLibrary.RaporHandler,ReportHandlerLibrary" verb="*" validate="true"/&amp;gt;
+        &amp;lt;/httpHandlers&amp;gt;
+        &amp;lt;compilation debug="true"/&amp;gt;
+        &amp;lt;authentication mode="Windows"/&amp;gt;
+    &amp;lt;/system.web&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;httpHandlers&lt;/strong&gt; elementi &lt;strong&gt;system.web&lt;/strong&gt; elementi i&amp;ccedil;erisinde tanımlanmalıdır. &amp;Ouml;rnekte &lt;strong&gt;rapx&lt;/strong&gt; uzantılı dosyalara gelecek herhangibir talebin&lt;strong&gt;(Get, Post vb...)&lt;/strong&gt; &lt;strong&gt;type niteliğinde(attribute) &lt;/strong&gt;belirtilen &lt;strong&gt;RaporHandler&lt;/strong&gt; sınıfına ait nesne &amp;ouml;rneği tarafından karşılanacağı belirtilmektedir. Bu adım tek başına yeterli değildir. Ayrıca &lt;strong&gt;IIS(Internet Information Services&lt;/strong&gt;) &amp;uuml;zerinden, rapx uzantılı dosyalara gelecek olan talepler i&amp;ccedil;in &lt;strong&gt;AspNet_Isapi.dll&lt;/strong&gt;' inin devreye gireceğinin belirtilmesi gerekmektedir. &amp;Ouml;rnek senaryo &lt;strong&gt;IIS 7.0&lt;/strong&gt; &amp;uuml;zerinde geliştirilmektedir. IIS 7.0 &amp;uuml;zerinden &lt;strong&gt;OzelHandlerKullanimi&lt;/strong&gt; isimli web uygulaması adına&lt;strong&gt; rapx-AspNet_Isapi.dll&lt;/strong&gt; eşleştirmesi i&amp;ccedil;in &amp;ouml;ncelikli olaran &lt;strong&gt;InetMgr&lt;/strong&gt; aracı &amp;uuml;zerinden ilgili web uygulamasına ge&amp;ccedil;ilmeli ve &lt;strong&gt;Handler Mappings&lt;/strong&gt; kısmı aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi se&amp;ccedil;ilmelidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk234_2.gif" alt="" width="630" height="485" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Handler Mappings&lt;/strong&gt; kısmında varsayılan ve izin verilen uzantı eşleştirmeleri yer almaktadır. Bu kısımda sağ tıklanarak a&amp;ccedil;ılan men&amp;uuml;den &lt;strong&gt;Add Script Map&lt;/strong&gt; se&amp;ccedil;ilmeli ve gerekli eşleştirme IIS tarafına bildirilmelidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk234_3.gif" alt="" width="620" height="480" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Add Script Map&lt;/strong&gt; ile a&amp;ccedil;ılan iletişim kutusunda ise aşağıdaki ayarların yapılması gerekmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk234_4.gif" alt="" width="471" height="382" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Buna g&amp;ouml;re &lt;strong&gt;rapx&lt;/strong&gt; uzantılı taleplerin &lt;strong&gt;.Net 2.0 &lt;/strong&gt;&amp;ccedil;alışma zamanında yer alan &lt;strong&gt;AspNet_Isapi.dll &lt;/strong&gt;tarafından ele alınacağı belirtilmektedir. Uygulamaya ait &lt;strong&gt;web.config&lt;/strong&gt; dosyası i&amp;ccedil;erisinde gerekli Handler tanımlamaları yapıldığı i&amp;ccedil;in &lt;strong&gt;AspNet_Isapi.dll&lt;/strong&gt; program aray&amp;uuml;z&amp;uuml;, gelen &lt;strong&gt;talep(Request)&lt;/strong&gt; i&amp;ccedil;in &lt;strong&gt;RaporHandler&lt;/strong&gt; sınıfının devreye girmesini sağlayacaktır. Bu işlemin ardından &lt;strong&gt;Handler&lt;/strong&gt; &lt;strong&gt;Mappings&lt;/strong&gt; kısmına aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde de g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi rapx uzantısı i&amp;ccedil;in gerekli eşleştirme eklenecektir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk234_5.gif" alt="" width="532" height="301" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Yapılan bu değişikliker sonrasında web uygulmasında ait &lt;strong&gt;web.config&lt;/strong&gt; dosyası i&amp;ccedil;erisindede aşağıdaki gibi yeni bir tanımlama oluşacaktır. Bir başka deyişle &lt;strong&gt;IIS(Internet Information Services)&lt;/strong&gt; &amp;uuml;zerinde yapılan eşleştirmeye ait bilgiler &lt;strong&gt;system.webServer&lt;/strong&gt; elementi i&amp;ccedil;erisindeki &lt;strong&gt;handlers&lt;/strong&gt; kısmına eklenmektedir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="UTF-8"?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;appSettings /&amp;gt;
+    &amp;lt;connectionStrings /&amp;gt;
+    &amp;lt;system.web&amp;gt;
+        &amp;lt;httpHandlers&amp;gt;
+            &amp;lt;add path="*.rapx" type="ReportHandlerLibrary.RaporHandler,ReportHandlerLibrary" verb="*" validate="true" /&amp;gt;
+        &amp;lt;/httpHandlers&amp;gt;
+        &amp;lt;compilation debug="true" /&amp;gt;
+        &amp;lt;authentication mode="Windows" /&amp;gt;
+    &amp;lt;/system.web&amp;gt;
+    &amp;lt;system.webServer&amp;gt;
+        &amp;lt;handlers&amp;gt;
+            &amp;lt;add name="Rapor X" path="*.rapx" verb="*" modules="IsapiModule" scriptProcessor="C:\Windows\Microsoft.NET\ Framework\v2.0.50727\aspnet_isapi.dll" resourceType="File" /&amp;gt;
+        &amp;lt;/handlers&amp;gt;
+    &amp;lt;/system.webServer&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Artık test amacıyla web uygulamasına &lt;strong&gt;rapx&lt;/strong&gt; uzantılı &amp;ouml;rnek bir i&amp;ccedil;erik eklenebilir. &amp;Ouml;rnek olarak &lt;strong&gt;AdventureWorks&lt;/strong&gt; veritabanında yer alan &lt;strong&gt;Products&lt;/strong&gt; tablosu ile ilişkili bir rapor d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Bu raporun stok seviyesi belirli bir değerin altında olan &amp;uuml;r&amp;uuml;nlerin kategori bazlı sayılarını verdiğini d&amp;uuml;ş&amp;uuml;nelim. Buna g&amp;ouml;re web uygulaması altında tutulacak olan rapx uzantılı metin dosyasının i&amp;ccedil;eriği aşağıdaki gibi tasarlanabilir.&lt;em&gt;(Bu dosyayı eklerken &lt;strong&gt;Add New Item-Text File&lt;/strong&gt; se&amp;ccedil;erek &lt;strong&gt;KategoriBazliUrunler.rapx &lt;/strong&gt;gibi bir se&amp;ccedil;im yapılması gerektiğine dikkat edilmelidir.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;KategoriBazliUrunler.rapx;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;Raporlar&amp;gt;
+    &amp;lt;Rapor Id="1"&amp;gt;
+        &amp;lt;Baslik ArkaPlan="#FFCC11"&amp;gt;Kategori Bazlı &amp;Uuml;r&amp;uuml;n Sayıları&amp;lt;/Baslik&amp;gt;
+        &amp;lt;Baglanti Sspi="true"&amp;gt;
+            &amp;lt;Sunucu&amp;gt;localhost&amp;lt;/Sunucu&amp;gt;
+            &amp;lt;Veritabani&amp;gt;AdventureWorks&amp;lt;/Veritabani&amp;gt;
+            &amp;lt;KullaniciAdi&amp;gt;&amp;lt;/KullaniciAdi&amp;gt;
+            &amp;lt;Sifre&amp;gt;&amp;lt;/Sifre&amp;gt;
+        &amp;lt;/Baglanti&amp;gt;
+        &amp;lt;Sorgu Sp="false"&amp;gt;
+            &amp;lt;Cumle&amp;gt; Select Count(P.ProductID) [Toplam &amp;Uuml;r&amp;uuml;n Sayısı],PSC.Name [Kategori Adı] From Production.Product P Join Production.ProductSubCategory PSC On P.ProductSubCategoryID=PSC.ProductSubCategoryID Group By PSC.Name,SafetyStockLevel Having P.SafetyStockLevel&amp;lt;@StockLevel
+            &amp;lt;/Cumle&amp;gt;
+            &amp;lt;Parametreler Nereden="Xml"&amp;gt;
+                &amp;lt;Parametre Ad="@StockLevel" Deger="10"/&amp;gt;
+            &amp;lt;/Parametreler&amp;gt;
+        &amp;lt;/Sorgu&amp;gt;
+        &amp;lt;MailListesi MailGonder="true"&amp;gt;
+            &amp;lt;Mail&amp;gt;selim(at)buraksenyurt.com&amp;lt;/Mail&amp;gt;
+            &amp;lt;Mail&amp;gt;bsenyurt@csharpnedir.com&amp;lt;/Mail&amp;gt;
+        &amp;lt;/MailListesi&amp;gt;
+    &amp;lt;/Rapor&amp;gt;
+&amp;lt;/Raporlar&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Burada basit olarak &lt;strong&gt;Product&lt;/strong&gt; ve &lt;strong&gt;ProductSubCategory&lt;/strong&gt; tablolarının &lt;strong&gt;Join&lt;/strong&gt; ile birleştirilmiş hali &amp;uuml;zerinden bir gruplama sorgusu ger&amp;ccedil;ekleştirilmektedir. Sorgular &lt;strong&gt;StockLevel&lt;/strong&gt; parametresinin değeri 10'dan k&amp;uuml;&amp;ccedil;&amp;uuml;k olanlar i&amp;ccedil;in yapılmaktadır. Parametrenin değerinin &lt;strong&gt;XML&lt;/strong&gt; i&amp;ccedil;erisinden geleceğini belirtmek i&amp;ccedil;in Nereden niteliğine &lt;strong&gt;XML&lt;/strong&gt; değeri atanmıştır. S&amp;ouml;z konusu rapor i&amp;ccedil;in &lt;strong&gt;MailListesinde&lt;/strong&gt; belirtilen kişilere mail g&amp;ouml;nderme opsiyonu a&amp;ccedil;ık bırakılmıştır. Rapor, &lt;strong&gt;localhost&lt;/strong&gt; isimli sunucudaki &lt;strong&gt;AdventureWorks&lt;/strong&gt; veritabanı &amp;uuml;zerinden &lt;strong&gt;SSPI&lt;/strong&gt; ile ger&amp;ccedil;ekleştirilen bir bağlantı &amp;uuml;zerinden alınmaktadır. Artık &lt;strong&gt;OzelHandlerKullanimi&lt;/strong&gt; adresi &amp;uuml;zerinden &lt;strong&gt;KategoriBazliUrunler.rapx&lt;/strong&gt; dosyasına bir talepte bulunulursa aşağıdaki gibi bir sonu&amp;ccedil; ortaya &amp;ccedil;ıkacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk234_6.gif" alt="" width="515" height="721" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi sorgu sonucu elde edilen rapor ekrana basit bir tablo olarak basılmıştır. Mail g&amp;ouml;nderme se&amp;ccedil;eneği aktif olduğu i&amp;ccedil;inde &lt;strong&gt;Raporu Mail Olarak G&amp;ouml;nder&lt;/strong&gt; başlıklı linkte sayfa &amp;ccedil;ıktısında yer almaktadır. Bu linke basıldığı takdirde sunucuya yeni bir talep daha g&amp;ouml;nderilecektir. Şimdilik sadece ilgili MailListesi elementinin i&amp;ccedil;eriği değerlendirilmiştir. Aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde bu durum g&amp;ouml;sterilmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk234_12.gif" alt="" width="556" height="173" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Yeni bir test ile devam edelim. Bu kez raporun parametrelerine ait değerlerin &lt;strong&gt;QueryString&lt;/strong&gt; yardımıyla geldiğini g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım. Ayrıca raporun sonu&amp;ccedil;larının &lt;strong&gt;Northwind&lt;/strong&gt; veritabanı altında yer alan &lt;strong&gt;SalesByCategory&lt;/strong&gt; isimli &lt;strong&gt;saklı yordam(stored procedure)&lt;/strong&gt; &amp;uuml;zerinden elde edildiğini d&amp;uuml;ş&amp;uuml;nelim. MailGonderme se&amp;ccedil;eneği yine aktif olsun. Bu durumda &lt;strong&gt;rapx&lt;/strong&gt; dosyasının i&amp;ccedil;eriğinin aşağıdaki gibi tasarlanması gerekecektir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;KategoriBazliSatislar.rapx;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;Raporlar&amp;gt;
+    &amp;lt;Rapor Id="1"&amp;gt;
+        &amp;lt;Baslik ArkaPlan="#CCBB77"&amp;gt;Kategori Bazlı Satışlar&amp;lt;/Baslik&amp;gt;
+        &amp;lt;Baglanti Sspi="true"&amp;gt;
+            &amp;lt;Sunucu&amp;gt;localhost&amp;lt;/Sunucu&amp;gt;
+            &amp;lt;Veritabani&amp;gt;Northwind&amp;lt;/Veritabani&amp;gt;
+            &amp;lt;KullaniciAdi&amp;gt;&amp;lt;/KullaniciAdi&amp;gt;
+            &amp;lt;Sifre&amp;gt;&amp;lt;/Sifre&amp;gt;
+        &amp;lt;/Baglanti&amp;gt;
+        &amp;lt;Sorgu Sp="true"&amp;gt;
+            &amp;lt;Cumle&amp;gt;SalesByCategory&amp;lt;/Cumle&amp;gt;
+            &amp;lt;Parametreler Nereden="QueryString"&amp;gt;
+                &amp;lt;Parametre Ad="@CategoryName"/&amp;gt;
+                &amp;lt;Parametre Ad="@OrdYear"/&amp;gt;
+            &amp;lt;/Parametreler&amp;gt;
+        &amp;lt;/Sorgu&amp;gt;
+        &amp;lt;MailListesi MailGonder="false"&amp;gt;
+            &amp;lt;Mail&amp;gt;selim(at)buraksenyurt.com&amp;lt;/Mail&amp;gt;
+            &amp;lt;Mail&amp;gt;bsenyurt@csharpnedir.com&amp;lt;/Mail&amp;gt;
+        &amp;lt;/MailListesi&amp;gt;
+    &amp;lt;/Rapor&amp;gt;
+&amp;lt;/Raporlar&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Buna g&amp;ouml;re tarayıcı penceresinden &lt;strong&gt;http://localhost/OzelHandlerKullanimi/KategoriBazliSatislar.rapx?CategoryName=Beverages&amp;amp;OrdYear=1999&lt;/strong&gt; adresi talep edilirse aşağıdakine benzer bir ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; ile karşılaşılacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk234_7.gif" alt="" width="625" height="517" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Elbette uygulamada pek &amp;ccedil;ok hata g&amp;ouml;z ardı edilmektedir. S&amp;ouml;z gelimi &lt;strong&gt;KategoriBazliSatislar&lt;/strong&gt;.&lt;strong&gt;rapx&lt;/strong&gt; i&amp;ccedil;in &lt;strong&gt;QueryString&lt;/strong&gt; parametreleri kullanılmassa &lt;strong&gt;&amp;ccedil;alışma zamanı hataları(Run time exceptions)&lt;/strong&gt; alınması &amp;ccedil;ok doğaldır. Bu gibi hataların ele alınması bir başka deyişle kodun tekrardan revize edilerek d&amp;uuml;zenlenmesi gerekmektedir.&lt;/p&gt;
+&lt;p&gt;Gelelim &lt;strong&gt;Handler&lt;/strong&gt; tipinin sunucu &amp;uuml;zerinde nasıl ele alınabileceğine. Bunun i&amp;ccedil;in geliştirilen Handler tipini i&amp;ccedil;eren &lt;strong&gt;assembly&lt;/strong&gt;' ın &lt;strong&gt;Global Assembly Cache(GAC)&lt;/strong&gt; i&amp;ccedil;erisine atılması ve &lt;strong&gt;root web.config &lt;/strong&gt;dosyası i&amp;ccedil;erisindeki &lt;strong&gt;httpHandlers&lt;/strong&gt; elementi altında bildirilmesi yeterlidir. &amp;Ouml;rneğimizde geliştirdiğimiz &lt;strong&gt;ReportHandlerLibraray.dll &lt;/strong&gt;isimli &lt;strong&gt;assembly&lt;/strong&gt;' ı &lt;strong&gt;GAC'a&lt;/strong&gt; atmadan &amp;ouml;nce &lt;strong&gt;Visual Studio 2005&lt;/strong&gt; ortamında aşağıdaki gibi &lt;strong&gt;Strong Name&lt;/strong&gt; ile imzalamamız gerekmektedir. &lt;em&gt;(İstenirse bu imzalama işlemi komut satırından &lt;strong&gt; sn.exe &lt;/strong&gt;aracı ilede ger&amp;ccedil;ekleştirilebilir.) &lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk234_9.gif" alt="" width="553" height="478" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu işlemin ardından &lt;strong&gt;ReportHandlerLibrary&lt;/strong&gt;' in &lt;strong&gt;gacutil.exe&lt;/strong&gt; aracı yardımıyla yada s&amp;uuml;r&amp;uuml;kle bırak tekniği ile &lt;strong&gt;Windows\Assembly&lt;/strong&gt; klas&amp;ouml;r&amp;uuml;ne atılarak &lt;strong&gt;GAC&lt;/strong&gt;' a eklenmesi yeterlidir.&lt;/p&gt;
+&lt;table id="table181" style="width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#ffffff"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;Burada ReportHandlerLibrary projesinin &lt;strong&gt;Relase&lt;/strong&gt; modda &amp;uuml;retiminin yapılarak&lt;strong&gt;, Output Path&lt;/strong&gt; olarak &amp;ccedil;ıktının &lt;a href="file:///C:/Windows/Microsoft.NET/Framework/v2.0.50727/"&gt; &lt;strong&gt;C:\Windows\Microsoft.NET\Framework\v2.0.50727\&lt;/strong&gt;&lt;/a&gt; klas&amp;ouml;r&amp;uuml;n&amp;uuml; işaret edecek şekilde d&amp;uuml;zenlenmesi ve daha sonra buradan &lt;strong&gt;GAC&lt;/strong&gt;' a atılmasıda tercih edilebilir.&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Sonu&amp;ccedil; olarak &lt;strong&gt;Windows\Assembly&lt;/strong&gt; klas&amp;ouml;r&amp;uuml; altına &lt;strong&gt;ReportHandlerLibrary&lt;/strong&gt;' si aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi eklenmiş olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk234_10.gif" alt="" width="514" height="239" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi tek yapılması gereken bu &lt;strong&gt;assembly&lt;/strong&gt;' ın &lt;strong&gt;root&lt;/strong&gt; &lt;strong&gt;web.config&lt;/strong&gt; i&amp;ccedil;erisinde bildirilmesidir. Bunun i&amp;ccedil;in &lt;strong&gt;C:\Windows\Microsoft.NET\Framework\v2.0.50727\CONFIG&lt;/strong&gt; klas&amp;ouml;r&amp;uuml;nde yer alan web.config dosyasına aşağıdaki gibi handler bildiriminin yapılması gerekmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk234_11.gif" alt="" width="577" height="160" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu işlemlerin ardından &lt;strong&gt;IIS&lt;/strong&gt; &amp;uuml;zerinden &lt;strong&gt;rapx&lt;/strong&gt; uzantılı dosyalara gelecek olan taleplerin &lt;strong&gt;AspNet_Isapi.dll &lt;/strong&gt;tarafından ele alınacağınında belirtilmesi gerekir. Makalemizin başında &lt;strong&gt;OzelHandlerKullanimi&lt;/strong&gt; isimli web sitesi i&amp;ccedil;in yaptığımız bu işlemin aynısı bu kez &lt;strong&gt;root web sitesi&lt;/strong&gt; i&amp;ccedil;in benzer şekilde yapılarak ger&amp;ccedil;ekleştirilmelidir. Sonu&amp;ccedil; itibariyle sunucu &amp;uuml;zerinde &lt;strong&gt;Asp.Net&lt;/strong&gt; &lt;strong&gt;2.0 &lt;/strong&gt;ile geliştirilen herhangibir web sitesi altında tasarlanacak olan t&amp;uuml;m &lt;strong&gt;rapx&lt;/strong&gt; uzantılı dosyalar &lt;strong&gt;RaporHandler&lt;/strong&gt; sınıfı tarafından ele alınabilecektir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Kendi handler tipimizi &lt;strong&gt; root web.config&lt;/strong&gt; dosyasında tanımladığımızda, web uygulaması i&amp;ccedil;erisinde yer alan web.config dosyası i&amp;ccedil;erisinde bırakılan handler tanımlamaları nedeni ile &lt;strong&gt;&amp;ccedil;alışma zamanı hataları(Run time exceptions) &lt;/strong&gt;alınır. Bu nedenle makaledeki &amp;ouml;rnekte yer alan OzelHandlerKullanimi sitesindeki &lt;strong&gt;rapx&lt;/strong&gt; dosyaları, root web.config' de yapılan handler bildirimleri sonrası &amp;ccedil;alışmayacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk234_13.gif" alt="" width="492" height="717" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Sebep handler tanımlamasının hem root web.config hemde site i&amp;ccedil;erisindeki web.config'de iki kez yapılmış olmasıdır. Bunu d&amp;uuml;zeltmek i&amp;ccedil;in OzelHandlerKullanimi sitesine ait web.config i&amp;ccedil;erisinde yapılan handler bildirimlerini kaldırmak gerekmektedir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Kendi &lt;strong&gt;HttpHandler&lt;/strong&gt; tiplerimizi tasarlamak i&amp;ccedil;in ele aldığımız &amp;ouml;rnek senaryo &amp;ccedil;ok daha fazla geliştirilebilir. Hatta bir web sunucusu &amp;uuml;zerinde konuşlandırılacak olan &lt;strong&gt;rapx&lt;/strong&gt; dosyalarının daha kolay hazırlanabilmesini sağlamak i&amp;ccedil;in g&amp;ouml;rsel bir arabirimde geliştirilebilir. Sadece Rapx uzantılı dosyaları barındıracak olan bir &lt;strong&gt;Asp.Net&lt;/strong&gt; uygulaması geliştirilerek t&amp;uuml;m raporların tek bir merkezde toplanması sağlanabilir. Hatta bu işi dahada ileriye g&amp;ouml;t&amp;uuml;recek olursak, raporların yetki tabanlı olacak şekilde ele alınabilmesi i&amp;ccedil;in gerekli hazırlıklarda yapılabilir. Bu noktada, tasarlanan bu sistemin &lt;strong&gt;Reporting Service&lt;/strong&gt; alt yapısına ne kadar benzediğini tartışmakta yarar vardır. Sistemin herhangibir veritabanına destek verecek şekilde ele alınması ise &amp;ccedil;ok daha etkili bir raporlama aray&amp;uuml;z&amp;uuml; oluşturulmasına &amp;ouml;n ayak olacaktır.&lt;/p&gt;
+&lt;p&gt;Bu makalemizde daha &amp;ouml;nceden ele aldığımız ancak ge&amp;ccedil;erli bir ihtiya&amp;ccedil; veya senaryo &amp;uuml;zerine oturtamadığımız &lt;strong&gt;HttpHandler&lt;/strong&gt; kavramını bir &amp;ouml;rnek &amp;uuml;zerinde adım adım incelemeye &amp;ccedil;alıştık. Sizlerde farklı senaryoları g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alarak ve makalede yer alan &amp;ouml;rneği dahada geliştirirek son derece etkili sonu&amp;ccedil;lara varabilirsiniz. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/makale/images/OzelHandler.rar"&gt;&amp;Ouml;rnek Uygulama i&amp;ccedil;in Tıklayın&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2007-12-10 12:00:00</pubDate>
+  <slug>Nasc4b1l-Yapc4b1lc4b1r-Adc4b1m-Adc4b1m-Ozel-HttpHandler-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>aspnet-20</tag>
+    <tag>http-handler</tag>
+    <tag>aspnet</tag>
+  </tags>
+  <categories>
+    <category>Asp.Net 2.0</category>
+  </categories>
+</post>

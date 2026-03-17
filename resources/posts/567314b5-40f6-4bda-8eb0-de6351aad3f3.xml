@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Stored Procedure Yardımıyla Yeni Bir Kayıt Eklemek</title>
+  <description>Bu yazımızda Sql Server üzerinde, kendi yazdığımız bir Saklı Yordam (Saklı Yordam) ile , veritabanındaki ilgili tabloya nasıl kayıt ekleyeceğimizi incelemeye çalışacağız. Öncelikle, Saklı Yordamlar hakkında kısa bir bilgi vererek hızlı bir giriş yapalım. Saklı yordamlar derlenmiş sql cümlecikleridir. Bunlar birer veritabanı nesnesi oldukları için, doğrudan veritabanı yöneticisi olan programda (örneğin Sql Server) yer alırlar. Bu nedenle veritabanınızı bir yere taşıdığınızda otomatik olarak, saklı yordamlarınızıda taşımış olursunuz. Bu Saklı Yordam'lerin tercih edilme nedenlerinden sadece birisidir.</description>
+  <content>&lt;p&gt;Bu yazımızda Sql Server &amp;uuml;zerinde, kendi yazdığımız bir Saklı Yordam (Saklı Yordam) ile , veritabanındaki ilgili tabloya nasıl kayıt ekleyeceğimizi incelemeye &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;ncelikle, Saklı Yordamlar hakkında kısa bir bilgi vererek hızlı bir giriş yapalım. Saklı yordamlar derlenmiş sql c&amp;uuml;mlecikleridir. Bunlar birer veritabanı nesnesi oldukları i&amp;ccedil;in, doğrudan veritabanı y&amp;ouml;neticisi olan programda (&amp;ouml;rneğin Sql Server) yer alırlar. Bu nedenle veritabanınızı bir yere taşıdığınızda otomatik olarak, saklı yordamlarınızıda taşımış olursunuz. Bu Saklı Yordam'lerin tercih edilme nedenlerinden sadece birisidir.&lt;/p&gt;
+&lt;p&gt;Diğer yandan, derlenmiş olmaları aslında bu sql c&amp;uuml;mleciklerinin doğrudan makine diline d&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; anlamına gelmez. Aslında , &amp;ccedil;alıştırmak istediğimiz sql c&amp;uuml;mleciklerini bir Saklı Yordam i&amp;ccedil;ine yerleştirerek, bunun bir veritabanı nesnesi haline gelmesini ve &amp;ccedil;alışıtırıldığında doğrudan, veritabanı y&amp;ouml;neticisini &amp;uuml;zerinde barındıran sunucu makinede işlemesini sağlarız. Bu doğal olarak, istemci makinelerdeki iş y&amp;uuml;k&amp;uuml;n&amp;uuml; azaltır ve performansı arttırır. Nitekim bir program i&amp;ccedil;inde &amp;ccedil;alışıtırılan sql c&amp;uuml;mleleri, Saklı Yordam&amp;rsquo; lardan &amp;ccedil;ok daha yavaş sonu&amp;ccedil; d&amp;ouml;nd&amp;uuml;r&amp;uuml;r. Dolayısıyla Saklı Yordamlar &amp;ouml;zellikle &amp;ccedil;ok katlı mimariyi uygulamak isteğimiz projelerde faydalıdır. Saklı Yordamların faydalarını genel hatları ile &amp;ouml;zetlemek gerekirse ;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk1_1.gif" alt="" width="405" height="244" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 1. Saklı Yordam Kullanmanın Avantajları.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;İşte bizim bug&amp;uuml;nk&amp;uuml; uygulamamızda yapacağımız işlemde budur. Bu uygulamamızda basit bir Saklı Yordam yaratacak, SqlCommand nesnesinin CommandType &amp;ouml;zelliğini, SqlParameters koleksiyonunu vb. kullanarak geniş bir bilgi sahibi olucağız. &amp;Ouml;ncelikle &amp;uuml;zerinde &amp;ccedil;alışacağımız tablodan bahsetmek istiyorum. Basit ve konuyu hızlı &amp;ouml;ğrenebilmemiz a&amp;ccedil;ısından &amp;ccedil;ok detaylı bir kodlama tekniği uygulamıyacağım. Amacımız Saklı Yordamımıza parametreler g&amp;ouml;ndererek doğrudan veritabanına kaydetmek olucak. Dilerseniz tablomuzu inceleyelim ve oluşturalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk1_2.gif" alt="" width="404" height="450" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 2. Tablonun Yapısı.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 2' de tablomuzda yer alan alanlar g&amp;ouml;r&amp;uuml;lmekte. Bu tabloda arkadaşlarımızın doğum g&amp;uuml;nlerini, işlerini , isim ve soyisim bilgilerini tutmayı planlıyoruz. Tablomuzda FriendsID isminde Primary Key olan ve otomatik olarak artan bir alanda yer alıyor.&amp;nbsp;Şimdi ise insert sql deyimini kullandığımız Saklı Yordamımıza bir g&amp;ouml;ze atalım.&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;img src="/makale/images/mk1_3.gif" alt="" width="503" height="470" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 3. Insert Friend Saklı Yordamının Kodları.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 3 kullanacağımız Saklı Yordamın T-SQL(Transact SQL) deyimlerini g&amp;ouml;steriyor. Burada g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi Sql ifademizin 4 parametresi var. Bu parametrelerimiz; &amp;nbsp;&lt;/p&gt;
+&lt;table id="AutoNumber1" style="width: 606px; height: 143px;" border="1" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td align="center" bgcolor="#cccccc" width="122" height="42"&gt;&lt;strong&gt; Parametre Adı&lt;/strong&gt;&lt;/td&gt;
+&lt;td align="center" bgcolor="#cccccc" width="76" height="42"&gt;&lt;strong&gt; Veri Tipi&lt;/strong&gt;&lt;/td&gt;
+&lt;td align="center" bgcolor="#cccccc" width="133" height="42"&gt;&lt;strong&gt; Veri Uzunluğu&lt;/strong&gt;&lt;/td&gt;
+&lt;td align="center" bgcolor="#cccccc" width="252" height="42"&gt;&lt;strong&gt; A&amp;ccedil;ıklama&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align="left" width="122" height="19"&gt;@fn&lt;/td&gt;
+&lt;td align="left" width="76" height="19"&gt;Nvarchar&lt;/td&gt;
+&lt;td align="center" width="133" height="19"&gt;50&lt;/td&gt;
+&lt;td align="left" width="252" height="19"&gt;&amp;nbsp; First Name alanı i&amp;ccedil;in kullanılacak.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align="left" width="122" height="19"&gt;@ln&lt;/td&gt;
+&lt;td align="left" width="76" height="19"&gt;Nvarchar&lt;/td&gt;
+&lt;td align="center" width="133" height="19"&gt;50&lt;/td&gt;
+&lt;td align="left" width="252" height="19"&gt;&amp;nbsp; Last Name alanı i&amp;ccedil;in kullanılacak.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align="left" width="122" height="19"&gt;@bd&lt;/td&gt;
+&lt;td align="left" width="76" height="19"&gt;Datetime&lt;/td&gt;
+&lt;td align="center" width="133" height="19"&gt;-&lt;/td&gt;
+&lt;td align="left" width="252" height="19"&gt;&amp;nbsp; BirthDay alanı i&amp;ccedil;in kullanılacak.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align="left" width="122" height="19"&gt;@j&lt;/td&gt;
+&lt;td align="left" width="76" height="19"&gt;Nvarchar&lt;/td&gt;
+&lt;td align="center" width="133" height="19"&gt;50&lt;/td&gt;
+&lt;td align="left" width="252" height="19"&gt;&amp;nbsp; Job alanı i&amp;ccedil;in kullanılacak.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;em&gt;Tablo 1. Saklı Yordamımızda Kullanılan Giriş Parametreleri.&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;Insert Into Base (FirstName,LastName,BirthDay,Job) values (@fn,@ln,@bd,@j)&lt;/pre&gt;
+&lt;p&gt;c&amp;uuml;mleciği ile standart bir kayıt ekleme işlemi yapıyoruz. Tek &amp;ouml;nemli nokta values(değerler) olarak, parametre değerlerini g&amp;ouml;nderiyor olmamız. B&amp;ouml;ylece, Saklı Yordamımız, .net uygulamamızdan alacağı parametre değerlerini bu sql c&amp;uuml;mleciğine alarak,&amp;nbsp; tablomuz &amp;uuml;zerinde yeni bir satır oluşturulmasını sağlıyor. Peki bu parametre değerlerini .net uygumlamamızdan nasıl vereceğiz? Bunun i&amp;ccedil;in uygulamamızda bu Saklı Yordamı kullanan bir SqlCommand nesnesi oluşturacağız. Daha sonra, Saklı Yordamımızda yer alan parametreleri, bu SqlCommand nesnesi i&amp;ccedil;in oluşturacak ve Parameters koleksiyonuna ekleyeceğiz. Bu işlemin tamamlanamasının ardından tek yapacağımız Saklı Yordama ge&amp;ccedil;icek parametre değerlerinin, SqlCommand nesnesindeki uygun SqlParameter nesnelerine aktarılması ve Saklı Yordamın &amp;ccedil;alıştırılması olucak.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;ncelikle C# i&amp;ccedil;in yeni bir Windows Application oluşturalım ve formumuzu aşağıdaki şekilde d&amp;uuml;zenleyelim. Burada 3 adet textBox nesnemiz ve tarih bilgisini girmek i&amp;ccedil;inde bir adet DateTimePicker nesnemiz yer alıyor. Elbette insert işlemi i&amp;ccedil;inde bir Button kontrol&amp;uuml; koymayı ihmal etmedik. Kısaca formun işleyişinden bahsetmek istiyorum. Kullanıcı olarak biz gerekli bilgileri girdikten sonra insert başlıklı Button kontrol&amp;uuml;ne bastığımızda, girdiğimiz bilgiler Saklı Yordam&amp;rsquo; daki parametre değerleri olucak. Ardından Saklı Yordamımız &amp;ccedil;alıştırılıacak ve girdiğimiz bu parametre değerleri ile, sql sunucumuzda yer alan veritabanımızdaki Base isimli tablomuzda yeni bir satır oluşturulacak.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk1_4.gif" alt="" width="529" height="335" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 4. Formun Tasarım Zamanındaki G&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Şimdide kodumuzu inceleyelim. Her zaman olduğu gibi &lt;strong&gt;SQLClient&lt;/strong&gt; sınıfına ait nesneleri kullanacağımız i&amp;ccedil;in bu sınıfı &lt;strong&gt;using&lt;/strong&gt; ile projemizin en başına ekliyoruz.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Drawing;
+using System.Collections;
+using System.ComponentModel;
+using System.Windows.Forms;
+using System.Data;
+using System.Data.SqlClient;&lt;/pre&gt;
+&lt;p&gt;Sırada veritabanına olan bağlantımızı referans edicek olan &lt;strong&gt;SQLConnection&lt;/strong&gt; nesnemiz var.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;SqlConnection conFriends = new SqlConnection("initial catalog=Friends;data source=localhost;integrated security=sspi;packet size=4096");&lt;/pre&gt;
+&lt;p&gt;Kısaca anlatmak gerekirse, SQL Sunucumuz' daki Friends isimli Database&amp;rsquo; e bağlantı sağlıyacak bir &lt;strong&gt;SqlConnection&lt;/strong&gt; nesnesi tanımladık. Burada &lt;strong&gt; SqlConnection&lt;/strong&gt; sınıfının prototipi aşağıda verilen &lt;strong&gt;Constructor&lt;/strong&gt;(yapıcı metodunu) metodunu kullandık. Bildiğiniz gibi SqlConnection nesnesi, Sql Sunucusu ile ado.net nesneleri arasında iletişimin sağlanabilmesi i&amp;ccedil;in bir bağlantı hattı tesis etmektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public SqlConnection(string connectionString);&lt;/pre&gt;
+&lt;p&gt;Şimdi btnInsert isimli butonumuzun click olay procedure' &amp;uuml;ndeki kodumuzu yazalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void btnInsert_Click(object sender, System.EventArgs e)
+{
+     conFriends.Open();/* Baglanti a&amp;ccedil;iliyor. SqlCommand nesnesi ile ilgili ayarlamalara ge&amp;ccedil;iliyor. Komut SQL Server&amp;rsquo; da Friends database&amp;rsquo;inde yazili olan "Insert Friend" isimli Saklı Yordam&amp;rsquo;ı &amp;ccedil;alistiracak. Bu Procedure&amp;rsquo; &amp;uuml;n ismini, CommandText parametresine ge&amp;ccedil;irdikten sonar ikinci parameter olarak SqlConnection nesnemizi belirtiyoruz.*/
+     SqlCommand cmdInsert = new SqlCommand("Insert Friend",conFriends);
+
+     /* SqlCommand nesnesinin CommandType degerinide CommandType.StoredProcedure yapiyoruz. Bu sayede CommandText&amp;rsquo;e girilen değerin bir Saklı Yordam&amp;rsquo;e işaret ettiğini belirtmiş oluyoruz.*/
+     cmdInsert.CommandType=CommandType.StoredProcedure;
+     /* Şimdi bu Saklı Yordam i&amp;ccedil;in gerekli parametreleri olusturacagiz. Bunun i&amp;ccedil;in SqlCommand nesnesininin parameters koleksiyonunun Add metodunu kullaniyoruz. Parametreleri eklerken, parametre isimlerinin SQL Server&amp;rsquo;da yer alan Saklı Yordamlardaki parametre isimleri ile ayni olmasina ve baslarina @ isareti gelmesine dikkat ediyoruz. Bu Add metodunun ilk parametresinde belirtiliyor. Add metodu ikinci parametre olarak bu parametrenin veri tipini alıyor. &amp;Uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; parametresi ise bu parametrik degiskenin boyutu oluyor.*/
+     SqlParameter paramFirstName=cmdInsert.Parameters.Add("@fn",SqlDbType.NVarChar,50);
+     /* Burada SqlCommand nesnesine @fn isimli nvarchar tipinde ve uzunluğu 50 karaketerden olusan bir parametre ekleniyor. Aynı şekilde diğer parametrelerimizi de belirtiyoruz.*/
+
+     SqlParameter paramLastName=cmdInsert.Parameters.Add("@ln",SqlDbType.NVarChar,50);
+     SqlParameter paramBirthDay=cmdInsert.Parameters.Add("@bd",SqlDbType.DateTime);
+     SqlParameter paramJob=cmdInsert.Parameters.Add("@j",SqlDbType.NVarChar,50);
+     // Şimdide paremetrelerimize degerlerini verelim.
+     paramFirstName.Value=txtFirstName.Text;
+     paramLastName.Value=txtLastName.Text;
+     paramBirthDay.Value=dtBirthDay.Text;
+     paramJob.Value=txtJob.Text;
+     // B&amp;ouml;ylece ilgili paremetrelere degerleri ge&amp;ccedil;irilmis oldu. simdi komutu &amp;ccedil;alistiralim.
+     cmdInsert.ExecuteNonQuery();
+     /* B&amp;ouml;ylece Saklı Yordamimiz, paremetrelerine atanan yeni degerler ile &amp;ccedil;alisitirlir. Bunun sonucu olarak SQL Server&amp;rsquo; daki Saklı Yordama burada belirttiğimiz parametre değerleri gider ve insert c&amp;uuml;mleciği &amp;ccedil;alıştırılarak yeni bir kayit eklenmis olur.*/
+     conFriends.Close(); // Son olarak SqlConnection&amp;rsquo; ımızı kapatıyoruz.
+}&lt;/pre&gt;
+&lt;p&gt;Şimdi bir deneme yapalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk1_5.gif" alt="" width="472" height="256" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 5. Programın &amp;Ccedil;alışması.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;img src="/makale/images/mk1_6.gif" alt="" width="529" height="112" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Ş&lt;em&gt;ekil 6. Saklı Yordam'&amp;uuml;n işlemesinin Sonucu.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi Saklı Yordamlar yardımıyla tablolarımıza veri eklemek son derece kolay, hızlı ve etkili. Bununla birlikte Saklı Yordamlar sağladıkları g&amp;uuml;venlik kazanımları nedeni ilede tercih edilirler. Saklı Yordamları geliştirmek son derece kolaydır. İstediğini sql işlemini ger&amp;ccedil;ekleştirebilirisiniz. Satır silmek, satır aramak gibi. Saklı Yordamlar ile ilgili bir sonraki makalemizde, tablolardan nasıl satır silebileceğimizi incelemeye &amp;ccedil;alışacağız. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;şmek dileğiyle hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2003-11-08 12:00:00</pubDate>
+  <slug>Stored-Procedure-Yardc4b1mc4b1yla-Yeni-Bir-Kayc4b1t-Eklemek-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>adonet</tag>
+    <tag>stored-procedures</tag>
+  </tags>
+  <categories>
+    <category>Ado.Net</category>
+  </categories>
+</post>

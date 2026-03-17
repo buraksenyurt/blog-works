@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>GoLang - REST Servisimizi SQLite'a Bağlayalım</title>
+  <description>Son yazılarımızda GoLang ile web uygulamalarının geliştirilmesi üzerinde duruyoruz. Yeni şeyler öğrendikçe bunları farklı örnekler üzerinden denemeye gayret ediyorum. Bu sefer HTTP yönlendiricimizi SQLite ile çalışan basit bir REST servisi haline getirmeye çalışacağız.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2017/06/gosqlite_7.gif" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Son yazılarımızda GoLang ile web uygulamalarının geliştirilmesi &amp;uuml;zerinde durduk. Yeni şeyler &amp;ouml;ğrendik&amp;ccedil;e bunları farklı &amp;ouml;rnekler &amp;uuml;zerinden denemeye gayret ediyorum. Bu sefer HTTP y&amp;ouml;nlendiricimizi SQLite ile &amp;ccedil;alışan basit bir REST servisi i&amp;ccedil;in kullanmaya&amp;nbsp;&amp;ccedil;alışacağız. Kodlara ge&amp;ccedil;meden &amp;ouml;nce&amp;nbsp;sisteminize SQLite y&amp;uuml;klemiş olduğunuzdan emin olun&amp;nbsp;&lt;em&gt;(Kendi sisteminiz i&amp;ccedil;in uygun s&amp;uuml;r&amp;uuml;m&amp;uuml; SQLite'ın &lt;a href="https://sqlite.org/download.html" target="_blank"&gt;şuradaki resmi adresinden&lt;/a&gt; bulup indirebilirsiniz)&lt;/em&gt; SQLite yazımızın kapsamı dışında ama bizim i&amp;ccedil;in hafif bir veri saklamak fonksiyonelliğini sunacağını ifade edebiliriz. Bu tipteki veritabanları fiziki birer dosya olarak&amp;nbsp;tutulmaktalar. Bu nedenle geliştireceğimiz Go &amp;ouml;rneğinin erişebileceği bir konumda ilgili veritabanı dosyasının bulunması yeterli.&lt;/p&gt;
+&lt;p&gt;Ben &amp;ouml;rnek veri k&amp;uuml;mesi i&amp;ccedil;in bir &amp;ouml;nceki yazıda kullandığım Star Wars &amp;ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml;n&amp;uuml;&amp;nbsp;baz aldım. Yani Category ve buna bağlı Model isimli birer tablo s&amp;ouml;z konusu. Tablolar arasında bire-&amp;ccedil;ok ilişkili CategoryId alanı &amp;uuml;zerinden sağlayabiliriz. B&amp;ouml;ylece bir kategori altındaki t&amp;uuml;m modelleri ele alacağımız basit bir senaryo &amp;uuml;zerinde de durabiliriz. Tabii &amp;ouml;ncelikle komut satırından aşağıdaki betikler yardımıyla starwars.sdb&amp;nbsp;isimli veritabanını oluşturmamız gerekiyor&amp;nbsp;&lt;em&gt;(Aslında istediğiniz bir uzantıyı kullanabilirsiniz nitekim SQLite dosyaları ikili-binary formatta tutulan i&amp;ccedil;eriklere sahiptirler. Yani uzantısının ne olduğunu bir &amp;ouml;nemi yok)&lt;/em&gt;&amp;nbsp;Sonrasında Category ve Model isimli iki tablo ekleyip &amp;ouml;rnek veriler ile doldurursak da g&amp;uuml;zel olabilir.&lt;/p&gt;
+&lt;h1&gt;Veritabanı ve Tabloların Hazırlanması&lt;/h1&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;sqlite3 starwars.sdb
+
+.databases
+
+.open starwars.sdb
+
+create table Category(
+Id number primary key,
+Name varchar(30)
+);
+insert into Category (Id,Name) values (1,"fighter");
+insert into Category (Id,Name) values (2,"cruiser");
+select * from Category;
+
+create table Model(
+Id number primary key,
+Title varchar(50),
+ListPrice real,
+CategoryId number
+);
+
+insert into Model values (1,"V-Wing Fighter",45.50,1);
+insert into Model values (2,"Naboo N-1 Starfighter",250.45,1);
+insert into Model values (3,"Republic Cruiser",450.00,2);
+insert into Model values (4,"Republic Attack Cruiser",950.00,2);
+insert into Model values (5,"ETA-2 Jedi Starfighter",650.50,1);
+insert into Model values (6,"Delta-7 Jedi Starfighter",250.35,1);
+insert into Model values (7,"B-Wing",195.50,1);
+insert into Model values (8,"Y-Wing",45.50,1);
+insert into Model values (9,"Mon Calamari Star Cruiser",1500.50,1);
+select * from Model where CategoryId=1;&lt;/pre&gt;
+&lt;p&gt;Eğer SQLite kurulumunuzda bir sorun yoksa yukarıdaki komutların hatasız &amp;ccedil;alışması gerekir. Aynen aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ndekine benzer olacak şekilde.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/06/gosqlite_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;h1&gt;Servis Tarafı&lt;/h1&gt;
+&lt;p&gt;&amp;Ouml;nceki yazılarımızda olduğu gibi y&amp;ouml;nlendirme işlemlerimiz i&amp;ccedil;in Julien Schmidt'in&amp;nbsp;&lt;em&gt;(bu soyadını tek seferde asla yazamadım)&lt;/em&gt;&amp;nbsp;httpRouter paketinden yararlanacağız. Diğer yandan SQLite veritabanını kullanacağımız i&amp;ccedil;in yardımcı bir k&amp;uuml;t&amp;uuml;phaneyi daha işin i&amp;ccedil;ine katacağız.&amp;nbsp;github.com/mattn/go-sqlite3 adresinde yer alan paket SQLite &amp;uuml;zerinde ger&amp;ccedil;ekleştireceğimiz işlemlerde bize kolaylıklar sağlayacak&lt;em&gt;(Paketin yazarı Japon'ya Osaka'dan. Hen&amp;uuml;z ingilizceye &amp;ccedil;eviremediğim ama olduk&amp;ccedil;a merak ettiğim &lt;a href="http://mattn.kaoriya.net/" target="_blank"&gt;blog adresi de burada&lt;/a&gt;)&lt;/em&gt; Aynen httpRouter paketinin elde edilişinde olduğu gibi LiteIDE'nin Build-&amp;gt;Get komutunu kullanarak ilgili k&amp;uuml;t&amp;uuml;phanenin sisteme y&amp;uuml;klenmesini sağlayabilirsiniz. &lt;em&gt;(Ben y&amp;uuml;kleme işlemi sırasında 64Bit Windows'umdaki farklı MinGW ve GCC s&amp;uuml;r&amp;uuml;mleri nedeniyle hatalarla karşılatım ve g&amp;uuml;ncel versiyonunu y&amp;uuml;kleyerek sorunu aştım. &lt;a href="http://tdm-gcc.tdragon.net/download" target="_blank"&gt;Şu adrese&lt;/a&gt; uğramanız gerekebilir)&lt;/em&gt; Şimdi Server.go isimli dosyamızın i&amp;ccedil;eriğini aşağıdaki gibi oluşturalım.&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;package main
+
+import (
+	"database/sql"
+	"encoding/json"
+	"entity/starwars"
+	"fmt"
+	"log"
+	"net/http"
+	"strconv"
+
+	"github.com/julienschmidt/httprouter"
+	_ "github.com/mattn/go-sqlite3"
+)
+
+func main() {
+	router := httprouter.New()
+
+	router.GET("/", home)
+	router.GET("/categories", getCategories)
+	router.GET("/categories/:categoryId", getModelsByCategoryId)
+	router.GET("/models/:firstLetter", getModelsByFirstLetter)
+	router.POST("/newCategory", createCategory)
+
+	http.ListenAndServe(":4571", router)
+}
+
+func createCategory(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	category := starwars.Category{}
+	json.NewDecoder(r.Body).Decode(&amp;amp;category)
+	log.Printf("Insert request. %d,%s\n", category.Id, category.Name)
+	conn, _ := sql.Open("sqlite3", "starwars.sdb")
+	defer conn.Close()
+	_, err := conn.Exec("Insert into Category values (?,?)", category.Id, category.Name)
+	if err == nil {
+		render(w, category)
+	} else {
+		log.Println(err.Error())
+		//404 basılabilir
+	}
+}
+
+func getCategories(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	conn, _ := sql.Open("sqlite3", "starwars.sdb")
+	defer conn.Close()
+	rows, _ := conn.Query("Select Id,Name from Category order by Name")
+	defer rows.Close()
+	categories := make([]*starwars.Category, 0)
+	for rows.Next() {
+		category := new(starwars.Category)
+		rows.Scan(&amp;amp;category.Id, &amp;amp;category.Name)
+		categories = append(categories, category)
+	}
+	render(w, categories)
+}
+
+func getModelsByCategoryId(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	conn, _ := sql.Open("sqlite3", "starwars.sdb")
+	defer conn.Close()
+	id, _ := strconv.Atoi(params.ByName("categoryId"))
+	cRow := conn.QueryRow("Select * from Category Where Id=?", id)
+	ctgry := new(starwars.Category)
+	if cRow != nil {
+		cRow.Scan(&amp;amp;ctgry.Id, &amp;amp;ctgry.Name)
+		rows, _ := conn.Query("Select Id,Title,ListPrice from Model where CategoryId=?", id)
+		defer rows.Close()
+		models := make([]*starwars.Model, 0)
+		for rows.Next() {
+			model := new(starwars.Model)
+			model.Category = starwars.Category{Id: ctgry.Id, Name: ctgry.Name}
+			rows.Scan(&amp;amp;model.Id, &amp;amp;model.Title, &amp;amp;model.Price)
+			models = append(models, model)
+		}
+		render(w, models)
+	}
+}
+
+func getModelsByFirstLetter(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	conn, _ := sql.Open("sqlite3", "starwars.sdb")
+	defer conn.Close()
+	statement := fmt.Sprintf("Select Id,Title,ListPrice from Model where Title like '%s%%'", params.ByName("firstLetter"))
+	rows, _ := conn.Query(statement)
+	defer rows.Close()
+	models := make([]*starwars.Model, 0)
+	for rows.Next() {
+		model := new(starwars.Model)
+		rows.Scan(&amp;amp;model.Id, &amp;amp;model.Title, &amp;amp;model.Price)
+		models = append(models, model)
+	}
+	render(w, models)
+}
+
+func home(rWriter http.ResponseWriter, request *http.Request, _ httprouter.Params) {
+	fmt.Fprintf(rWriter, "Star Wars universe!")
+}
+
+func render(w http.ResponseWriter, d data) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	jContent, _ := json.Marshal(d)
+	fmt.Fprintf(w, "%s", jContent)
+}
+
+type data interface {
+}&lt;/pre&gt;
+&lt;p&gt;Bu kez kodlarımız biraz karmaşık gibi&lt;em&gt;(Kendime not: Kod tekrarlarını azalt)&lt;/em&gt; Uygulamamız temel olarak aşağıdaki taleplere cevap verecek şekilde geliştirildi.&lt;/p&gt;
+&lt;p&gt;HTTP Get; / ; root taleb&lt;br /&gt;HTTP Get ; /categories ; kategorileri getirecek&lt;br /&gt;HTTP Get ; /categories/:categoryId ;belli bir kateogori numarasındaki modelleri listeleyecek&lt;em&gt;(models/:categoryId de olabilirdi belki)&lt;/em&gt;&lt;br /&gt;HTTP Get ; /models/:firstLetter ; modellerin baş harfine g&amp;ouml;re listelenmesini sağlayacak&lt;br /&gt;HTTP Post; /newCategory ; yeni bir kategorinin sisteme eklenmesi i&amp;ccedil;in kullanılacak&lt;/p&gt;
+&lt;p&gt;Aslında &amp;ouml;nceki yazılarımızdan farklı olarak bir tane HTTP Post&amp;nbsp;metodumuz bulunduğunu ifade edebiliriz. /newCategory talebimiz ile yeni bir kategoriyi Category tablosuna eklemeyi&amp;nbsp;planlıyoruz. main fonksiyonumuz y&amp;ouml;nlendirici nesnenin yukarıdaki adresler i&amp;ccedil;in eşleştireceği metod bildirimleri ile başlıyor. Sunucumuz localhost adresinden ve 4571 nolu port &amp;uuml;zerinden hizmet verecek şekilde ayarlanıyor.&lt;/p&gt;
+&lt;h2&gt;Yeni Bir Kategori Eklemek&lt;/h2&gt;
+&lt;p&gt;İlk olarak createCategory fonksiyonunu ele alalım.&amp;nbsp;SQLite veritabanımızdaki Category tablosuna yeni bir kategori eklemek istiyoruz. İstemci taleplerini HTTP Post metodu ile ve JSON formatında olacak&amp;nbsp;şekilde kabul edeceğiz. Category yapısı &amp;ouml;nceki yazılarımızdan da hatırlayacağınız gibi sistemde ayrı bir paket i&amp;ccedil;erisinde duruyor(entity/starwars) İstemciden g&amp;ouml;nderilecek JSON i&amp;ccedil;eriğinde Id ve Name alanlarının olması yeterli. NewDecoder ile &amp;uuml;retilen &amp;ccedil;&amp;ouml;z&amp;uuml;mleyici, Request nesnesinden gelen Body i&amp;ccedil;eriğini ayrıştırıyor ve sonu&amp;ccedil;ları category değişkenine aktarıyor. &amp;amp; ile bir adres aldığımıza dikkat edelim&lt;em&gt;(Pointer'ları hatırlayalım)&lt;/em&gt;. Decode fonskiyonunun parametre yapısına baktığınızda interface kabul ettiğini g&amp;ouml;receksiniz. Bu teoriyi kodun ilerleyen kısımlarında biz de değerlendireceğiz.&lt;/p&gt;
+&lt;p&gt;Gelen bilgileri logladıktan sonra SQLite operasyonumuza başlıyoruz. Open fonksiyonu ile sqlite3 veritabanı s&amp;uuml;r&amp;uuml;c&amp;uuml;s&amp;uuml;n&amp;uuml; kullanarak, sunucu ile aynı adreste yer alan starwars.sdb isimli veritabanını belleğe a&amp;ccedil;ıyoruz. Exec fonksiyonu basit bir Insert sorgusu i&amp;ccedil;eriyor. Bu sorgunun parametrik olduğuna ve parametre bildirimleri i&amp;ccedil;in soru işareti kullanıldığına dikkat edelim. Eğer Exec fonksiyonunu bir hata d&amp;ouml;nd&amp;uuml;rmediyse insert işleminin başarılı olduğunu d&amp;uuml;ş&amp;uuml;nerek gelen JSON i&amp;ccedil;eriğine g&amp;ouml;re oluşturulan category değişkenini bu kez render fonksiyonu &amp;uuml;zerinden istemciye basıyoruz. Bu render işlemlerini diğer fonksiyonlarda da kullanacağımız i&amp;ccedil;in kod tekrarını biraz olsun &amp;ouml;nlemek amacıyla geliştirdik. Yanlız fonksiyonun ikinci parametresine bilhassa dikkat edelim. data isimli bir interface tipi almakta. Aslında bu sayede render fonksiyonuna JSON olarak serileşebilecek herhangibir tipi&amp;nbsp;aktarabiliriz. Bu tip tek bir Category &amp;ouml;rneği olabileceği gibi Model &amp;ouml;rnekleri i&amp;ccedil;eren bir slice'da olabilir. Fonksiyon Header bilgisini JSON formatında işaretleyip HTTP 200 kodunu da ekleyerek bir &amp;ccedil;ıktı oluşturuyor. Bu &amp;ccedil;ıktı ilk parametre ile gelen ResponseWriter &amp;uuml;zerinden istemciye g&amp;ouml;nderiliyor. &amp;Ccedil;alışma zamanında &lt;a href="https://www.getpostman.com/" target="_blank"&gt;Postman&lt;/a&gt;&amp;nbsp;veya muadili&amp;nbsp;bir uygulamayı kullanarak yeni bir kategori oluşturmayı deneyebiliriz. Aşağıdaki &amp;ouml;rnek bir POST &amp;ccedil;ağrısı g&amp;ouml;r&amp;uuml;yorsunuz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/06/gosqlite_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Buna g&amp;ouml;re kategorileri getiren talebi yaptığımızda aşağıdaki gibi Destroyer sınıfının da eklendiğini g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/06/gosqlite_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;Kategori Listesi Nasıl Geliyor?&lt;/h2&gt;
+&lt;p&gt;T&amp;uuml;m kategorilerin istendiği talebe karşılık gelen fonksiyonumuz getCategories. /categories şeklinde gelecek bir istemci talebi sonrası devreye giriyor. Fonksiyon yine SQLite veritabanını a&amp;ccedil;arak işe başlıyor. Bu sefer Category tablosunun i&amp;ccedil;eriğini Name alanına g&amp;ouml;re alfabetik sırada talep ediyoruz. Select sorgusu i&amp;ccedil;in Query fonksiyonu &amp;ccedil;alıştırılıyor. Fonksiyonun geriye d&amp;ouml;nd&amp;uuml;r&amp;uuml;ğ&amp;uuml; sonu&amp;ccedil; k&amp;uuml;mesi &amp;uuml;zerinde bir for d&amp;ouml;ng&amp;uuml;s&amp;uuml; ile hareket ediyoruz. Next fonksiyonu satırlarda ileri doğru hareket etmemizi sağlıyor. D&amp;ouml;ng&amp;uuml; &amp;ouml;ncesinde starwars.Category tipinden oluşturulan bir slice &amp;ouml;rneği mevcut. T&amp;uuml;m kategoriler bu listeye ekleniyorlar. Ekleme işlemi sırasında dikkat edilmesi gereken nokta ise Scan isimli fonksiyonun kullanılması. &amp;amp; ile adresleri &amp;uuml;zerinden yakaladığımız Id ve Name alanlarını sorgu sonucu gelen kolon değerleri&amp;nbsp;ile eşleştiriyoruz. append fonksiyonu da slice i&amp;ccedil;eriğine ilgili satırı eklememizi sağlıyor. defer &amp;ccedil;ağrıları ile fonksiyon sonlanırken gerekli kapatma işlemlerinin yapılmasını bildiriyoruz.&amp;nbsp;&lt;/p&gt;
+&lt;h2&gt;Belli Bir Kategorideki &amp;Uuml;r&amp;uuml;nlerin &amp;Ccedil;ekilmesi&lt;/h2&gt;
+&lt;p&gt;4571/categories/1 şeklinde gelecek bir talebe karşılık CategoryID alanının değeri 1 olan modelleri listelemek niyetindeyiz. T&amp;uuml;m kategorileri getirmekten farklı olarak params ile yakaladığımız categoryId değerinin SQL'e ait where ifadesinde parametrik kullanılması s&amp;ouml;z konusu diyebiliriz. K&amp;uuml;&amp;ccedil;&amp;uuml;k bir de problemimiz var. Nesne modeli ilişkisinde modelleri kategorileri ile bağlarken tip kullandık. Yani bir Model aslında CategoryId değil Category nesne &amp;ouml;rneğini i&amp;ccedil;eriyor. Veritabanında ki modelimizde ise bir modeli kategori numarası &amp;uuml;zerinden ilişkilendirdik. Bu sebepten fonksiyon &amp;ouml;ncelikle ilgili kategori numarasına bağlı Category satırını buluyor. Eğer b&amp;ouml;yle bir kategori varsa nesne olarak &amp;ouml;rnekleyip bulunan modeller ile ilişkilendiriyor. Sonrasında &amp;uuml;retilen models i&amp;ccedil;eriğinin render fonksiyonuna g&amp;ouml;nderilerek JSON formatında istemciye g&amp;ouml;nderilmesi s&amp;ouml;z konusu. Aşağıda &amp;ccedil;alışma zamanına ait &amp;ouml;rnek bir g&amp;ouml;r&amp;uuml;nt&amp;uuml; yer alıyor.&amp;nbsp;Aslında &amp;ccedil;ekilen Model nesne topluluğu i&amp;ccedil;in Category nesnelerini doldurmak zorunda değiliz. İşin aslı bize g&amp;uuml;zel bir ORM(Object Relational Mapping) sistemi lazım. İlerleyen yazılarımızda bu konuyu da ele almaya &amp;ccedil;alışacağım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/06/gosqlite_5.gif" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;Baş Harfi "A" Olan Modelleri Bulalım&lt;/h2&gt;
+&lt;p&gt;getModelsByFirstLetter fonksiyonunun g&amp;ouml;revi bu. Baş harfine g&amp;ouml;re modellerin listesini JSON formatında d&amp;ouml;nd&amp;uuml;rmek i&amp;ccedil;in &amp;ccedil;alışıyor. Aslında model depomuz olduk&amp;ccedil;a fakir diyebilirim. Aynı harf ile başlayan modeller yok gibi. Ancak siz model &amp;uuml;retmek i&amp;ccedil;in yazacağınız POST temelli yeni operasyonunuz ile bu test i&amp;ccedil;eriklerini kolaylıkla &amp;uuml;retebilirsiniz. Hatta belki bir .Net arabiriminden bu servisi &amp;ccedil;ağırarak modelleri oluşturmayı daha kolay hale de getirebilirsiniz. .Net olmak zorunda değil, basit bir HTML sayfası bile olabilir. Sanırım size &amp;ccedil;aktırmadan bir g&amp;ouml;rev verdim :) Fonksiyonumuza geri d&amp;ouml;nelim. Buradaki SQL sorgusu i&amp;ccedil;erisinde Like kullanımı s&amp;ouml;z konusu. Nitekim baş harfi 'şununla' başlayanları &amp;ccedil;ek gibi bir şey demek istiyoruz. Bu nedenle gelen parametreyi 'A%' gibi bir formata d&amp;ouml;n&amp;uuml;şt&amp;uuml;rmek gerekiyor. Bunun i&amp;ccedil;in fmt paketinin Sprintf fonksiyonundan yararlanıyoruz. Kodun kalan kısmı &amp;ouml;ncekilere benziyor. Next fonksiyonu ile dolaştığımız veri i&amp;ccedil;eriğini ekrana basıyoruz. Tabii kategori ile ilgili sorunumuz var. İ&amp;ccedil;eriği varsayılan değerleri ile geliyor ki bu son derece normal. &amp;Ccedil;&amp;uuml;nk&amp;uuml; CategoryId ye karşılık gelen Category i&amp;ccedil;eriğini bulup y&amp;uuml;klemedik. Ah Burak ah :[] Demek ki bir Id'ye bağlı kategoriyi bulup geriye Category &amp;ouml;rneği olarak d&amp;ouml;nd&amp;uuml;recek bir fonksiyonellik burada işimize yarayabilir. Nitekim iki yerde ihtiyacımız oldu. Bu eklemeyi benim i&amp;ccedil;in yaparsınız değil mi?&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/06/gosqlite_6.gif" alt="" /&gt;&lt;/p&gt;
+&lt;h1&gt;Sonu&amp;ccedil;&lt;/h1&gt;
+&lt;p&gt;Bu kısa araştırma yazımızın amacı REST&lt;em&gt;(Representational State Transfer)&lt;/em&gt; tabanlı bir GO servisinde SQLite i&amp;ccedil;in gerekli bağlantıları nasıl tesis edebileceğimizi ilkel bir &amp;ouml;rnek &amp;uuml;zerinden g&amp;ouml;rmekti. SQLite dışında elbette farklı veri depolama &amp;uuml;r&amp;uuml;nlerini de kullanmak isteyebiliriz. GitHub &amp;uuml;zerinden yayınlanan &lt;a href="https://github.com/golang/go/wiki/SQLDrivers" target="_blank"&gt;şu adreste&lt;/a&gt; olduk&amp;ccedil;a geniş bir k&amp;uuml;t&amp;uuml;phane topluluğu bulunuyor. Firebird'ten DB2'ya, MySQL'den Oracle'a, YQL(Yahoo Query Language)'ten, SQLite'a kadar geniş bir yelpaze s&amp;ouml;z konusu diyebilirim.&amp;nbsp;&amp;Ouml;rneğimizde HTTP Get taleplerinden farklı olarak HTTP Post metoduna da yer verdik. Pek tabii Push, Delete gibi operasyonlar da s&amp;ouml;z konusu. &amp;Ouml;rneğin bu kodun &amp;uuml;st&amp;uuml;ne bir kategori veya &amp;uuml;r&amp;uuml;n&amp;uuml; silmek i&amp;ccedil;in gerekli HTTP Delete operasyonunu ilave edebilirsiniz. Başlangı&amp;ccedil; benden devam ettirmesi sizden. REST&amp;nbsp;testleri yapmamız da olduk&amp;ccedil;a kolay. Chrome tarayıcısına&amp;nbsp;eklenti olarak da gelen&amp;nbsp;Postman aracı ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;lerinde de g&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z &amp;uuml;zere olduk&amp;ccedil;a pratik ve basit. Post gibi HTTP g&amp;ouml;vdesinden bir şeyler g&amp;ouml;ndermemiz gereken senaryoları ele almak i&amp;ccedil;in ideal. B&amp;ouml;ylece geldik bir makalemizin&amp;nbsp;daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2017-07-10 09:05:00</pubDate>
+  <slug>golang-rest-servisimizi-sqlite-a-baglayalim</slug>
+  <tags>
+    <tag>golang</tag>
+    <tag>go-programming-language</tag>
+    <tag>sqlite</tag>
+    <tag>rest</tag>
+    <tag>rest-services</tag>
+    <tag>postman</tag>
+  </tags>
+  <categories>
+    <category>GoLang</category>
+  </categories>
+</post>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>GoLang - Unit Test Yazmak</title>
+  <description>Aranızda birim test(Unit Test) yazmayan hala var mı? diyerek konuya giriş yapmak istiyorum. Yazdığımız atomik fonksiyonelliklerin taşınan ortamlarda başımızı ağrıtmasını istemiyorsak birim testleri mutlaka yazmalıyız. Belki birim testler uygulama geliştirme süresini uzatabilirler ancak uzun vadede kalp krizi geçirme riskini de azaltırlar. Üstelik test senaryoları sayesinde gerçekten ne yapmak istediğimizin farkında olarak da hareket edebiliriz. Eğer test güdümlü yaklaşımla ilerliyorsak bilinçli olarak yaptırılan hata sonrası kodun çalışır hale getirilmesi ve iyileştirilmesi(Refactoring) de önemli kazanımlarımızdır.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2017/06/gotesting_5.gif" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Aranızda hala birim test(Unit Test) yazmayan/yazmamış olan var mı? diyerek konuya giriş yapmak istiyorum. Yazdığımız atomik fonksiyonelliklerin taşınan ortamlarda başımızı ağrıtmasını istemiyorsak birim testlerini mutlaka yazmalıyız. &amp;Uuml;stelik iyi yazmalıyız. Belki birim testler uygulama geliştirme s&amp;uuml;resini uzatabilirler ancak uzun vadede kalp krizi ge&amp;ccedil;irme riskini de azaltırlar. &amp;Uuml;stelik test senaryoları sayesinde ger&amp;ccedil;ekten ne yapmak istediğimizin farkında olarak da hareket edebiliriz. Eğer test g&amp;uuml;d&amp;uuml;ml&amp;uuml; yaklaşımla&lt;em&gt;(Test Driven Development)&lt;/em&gt; ilerliyorsak bilin&amp;ccedil;li olarak yaptırılan hata sonrası kodun &amp;ccedil;alışır hale getirilmesi ve iyileştirilmesi(Refactoring) de &amp;ouml;nemli kazanımlarımızdır&lt;em&gt;(Red-Green-Blue konusuna bir bakın)&lt;/em&gt;&amp;nbsp;En &amp;ouml;nemlisi de beklenen testleri başarılı bir şekilde aşmış temiz bir kodun ortaya &amp;ccedil;ıkmasıdır.&lt;/p&gt;
+&lt;p&gt;Neredeyse her programlama dilinin Unit Test yazılmasına y&amp;ouml;nelik imkanları vardır. Geliştirme IDE'lerinde pek &amp;ccedil;ok kolaylık bulunmaktadır. &amp;Ccedil;oğu ortam zaten standart k&amp;uuml;t&amp;uuml;phaneler veya paketlerler ile bizleri olabildiğince Unit Test yazmaya y&amp;ouml;nlendirir. GO tarafında bu iş i&amp;ccedil;in dahili paketlerden olan testing kullanılmakta. Pek tabii github &amp;uuml;zerinden bulabileceğiniz farklı test paketleri de mevcut. Bu kısa yazımızda basit bir Unit Test'in nasıl yazılabileceğini incelemeye &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;h1&gt;&amp;Ouml;nce Anlamsız İki Fonksiyon&lt;/h1&gt;
+&lt;p&gt;İşe ilk olarak anlamsız iki fonksiyon i&amp;ccedil;eren aşağıdaki kod par&amp;ccedil;asını yazarak başlayabiliriz &lt;em&gt;(Amacımız GO tarafında Unit Test'lerin nasıl yazıldığını kurcalamak)&lt;/em&gt; Operations.go i&amp;ccedil;erisinde daire alanı hesaplayan ve n sayıda float32 tipinden sayının toplamını bulan birer fonksiyon(Variadic) bulunmaktadır.&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;package operations
+
+import (
+	"math"
+)
+
+func CircleSpace(r float32) float32 {
+	return math.Pi * (r * r)
+}
+
+func Sum(numbers ...int) int {
+	var total int = 0
+	for _, n := range numbers {
+		total += n
+	}
+	return total
+}&lt;/pre&gt;
+&lt;p&gt;Tasarladığımız paketteki CircleSpace ve Sum isimli operasyonlar i&amp;ccedil;in birer test metodu yazalım.&lt;/p&gt;
+&lt;h1&gt;Test Paketinin Yazılması&lt;/h1&gt;
+&lt;p&gt;GO'nun alışageldiğimiz kurallarına g&amp;ouml;re bir paket i&amp;ccedil;erisinde yer alan fonksiyonların testini i&amp;ccedil;eren ayrı bir dosyanın _test şeklinde isimlendirilerek oluşturulması gerektiğini s&amp;ouml;ylesem sanıyorum yadırgamazsınız. Bu bana &amp;ccedil;ok mantıklı geliyor. Paketlerin adlarına baktığımızda kimin test dosyası olduğunu g&amp;ouml;rmemiz kolay. Anlamsal bir b&amp;uuml;t&amp;uuml;nl&amp;uuml;k oluşuyor ve herkes aynı stilde test dosya adı vermek durumunda. G&amp;uuml;zel bir standart oluşturulduğu kesin. &amp;Ouml;rneğimize g&amp;ouml;re bu dosyanın adı operations_test.go şeklinde olmalı. Farklı bir isim verip test etmek istersek aşağıdaki gibi bir sonu&amp;ccedil;la karşılaşma ihtimalimiz olduk&amp;ccedil;a y&amp;uuml;ksek.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/06/gotesting_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Gelelim operations_test.go i&amp;ccedil;eriğine.&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;package operations
+
+import (
+	"testing"
+)
+
+func TestCircleSpace(t *testing.T) {
+	//var expected float32 = 314.159271
+	var expected float32 = 314.15
+	calculated := CircleSpace(10)
+	if expected != calculated {
+		t.Errorf("Test Fail : Calculated [%f]\tExpected [%f]\n", calculated, expected)
+	}
+}
+
+func TestSum(t *testing.T) {
+	//expected := 13
+	expected := -1
+	calculated := Sum(3, 4, 1, 5)
+	if expected != calculated {
+		t.Errorf("Test Fail : Calculated [%d]\tExptected [%d]\n", calculated, expected)
+	}
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;ncelikle test paketinin adının test edeceğimiz paket ile aynı olduğuna dikkat edelim. Diğer yandan testing paketini de import ediyoruz. TestCircleSpace ve TestSum isimli fonksiyonların testing.T tipinden olan değişken ile test ortamına log bildiriminde bulunmamız m&amp;uuml;mk&amp;uuml;n ki bunu Errorf fonksiyon &amp;ccedil;ağrıları ile sağlamaktayız. Test akışı son derece pratik. Beklenen ve hesaplanan değerleri alıp karşılaştırıyoruz. Eğer aynı değillerse testin hatalı sonlandığını ifade edecek şekilde log &amp;ccedil;ıktısı bırakıyoruz. Hepsi bu.&lt;/p&gt;
+&lt;h1&gt;Sonu&amp;ccedil;lar&lt;/h1&gt;
+&lt;p&gt;İlk olarak senaryomuzu beklenmeyen sonu&amp;ccedil;lar i&amp;ccedil;in test edelim. Bu durumda iki fonksiyon testinin de Fail olmasını bekliyoruz. LiteIDE &amp;uuml;zerinden Test se&amp;ccedil;eneği ile veya komut satırından go test ile ger&amp;ccedil;ekleştirilen işlemlerin sonucu aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ndeki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/06/gotesting_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Komut satırından test yaparken o klas&amp;ouml;rde sadece go test yazmamız yeterlidir. Test dosyasının adını vermeye gerek yoktur. _Test uzantısı onu ele veriyor diyebiliriz. Buna g&amp;ouml;re bir klas&amp;ouml;rde n sayıda test dosyası varsa tamamını tek seferde &amp;ccedil;alıştırma imkanımız da olabilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/06/gotesting_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi elde edilen sonu&amp;ccedil;lar istenen sonu&amp;ccedil;lar olmamış ve Fail bildirimleri alınmıştır. Şimdi beklediğimiz değerlerin yorum satırlarını kaldıralım. Bu durumda her iki testte başarılı olmalı. Aynen aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/06/gotesting_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere GO tarafında birim testler yazmak olduk&amp;ccedil;a kolay. O zaman bundan sonraki ilk geliştirmenizde elinizdeki atomikleri &amp;ouml;nce TDD ilkelerine uyarak yazmaya gayret edin. Hatta FizzBuzz kod katasını baz alıp GO ile yazmayı deneyebilirsiniz. B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2017-07-26 21:31:00</pubDate>
+  <slug>golang-unit-test-yazmak</slug>
+  <tags>
+    <tag>golang</tag>
+    <tag>go-programming-language</tag>
+    <tag>test-case</tag>
+    <tag>unit-test</tag>
+    <tag>test</tag>
+    <tag>birim-test</tag>
+    <tag>test-güdümlü-programlama</tag>
+    <tag>test-driven-development</tag>
+    <tag>go</tag>
+  </tags>
+  <categories>
+    <category>GoLang</category>
+  </categories>
+</post>

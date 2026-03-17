@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WCF Web Http Services - ETags</title>
+  <description>WCF WebHttp Service' leri ile ilişkili yazılarımıza kaldığımız yerden devam ediyoruz. Bu yazımızda ETag(Entity Tag) kullanarak sunucu ile istemci arasındaki veri trafiğini nasıl azaltabileceğimizi incelemeye çalışacağız. Öncelikle istemci ile servis arasındaki iletişimi düşünerek ilerlemeye çalışalım. İstemci, sunucu üzerinde yer alan bir operasyon için talepte bulunduğunda bir cevap üretilecek ve buna bağlı bir içerik verisi istemci tarafına indirilecektir.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/pics/2010%2f2%2fblg159_Giris.jpg" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;WCF WebHttp Service&lt;/strong&gt;' leri ile ilişkili yazılarımıza kaldığımız yerden devam ediyoruz. Bu yazımızda &lt;strong&gt;ETag(Entity Tag)&lt;/strong&gt; kullanarak sunucu ile istemci arasındaki veri trafiğini nasıl azaltabileceğimizi incelemeye &amp;ccedil;alışacağız. &amp;Ouml;ncelikle istemci ile servis arasındaki iletişimi d&amp;uuml;ş&amp;uuml;nerek ilerlemeye &amp;ccedil;alışalım. İstemci, sunucu &amp;uuml;zerinde yer alan bir operasyon i&amp;ccedil;in talepte bulunduğunda bir cevap &amp;uuml;retilecek ve buna bağlı bir i&amp;ccedil;erik verisi istemci tarafına indirilecektir.&lt;/p&gt;
+&lt;p&gt;Bu s&amp;uuml;re&amp;ccedil; tipik olarak&lt;strong&gt; Request-Response&lt;/strong&gt; senaryosundan farklı bir işleyiş değildir. İstemci sonraki bir zaman diliminde aynı operasyona yeni bir talepte bulunduğunda ise, &amp;uuml;retilecek olan sunucu &lt;strong&gt;cevabının(Response)&lt;/strong&gt; bir &amp;ouml;ncekine g&amp;ouml;re hi&amp;ccedil; değişmemiş olma ihtimalide bulunmaktadır. Eğer istemci tarafı bir şekilde g&amp;ouml;nderdiği talebin karşılığı olan cevabın değişmediğini anlayabilirse ve kendisinde bu i&amp;ccedil;erik zaten tampon alanda duruyorsa, aynı i&amp;ccedil;eriğin sunucudan istemci tarafına bir kere daha indirilmesine gerek yoktur. İşte &lt;strong&gt;ETag&lt;/strong&gt; takısının devreye girdiği nokta burasıdır.&lt;/p&gt;
+&lt;p&gt;Peki &lt;strong&gt;&lt;a title="ETag Nedir?" href="http://en.wikipedia.org/wiki/HTTP_ETag"&gt;ETag(Entity Tag)&lt;/a&gt; &lt;/strong&gt;tam olarak nedir? &lt;strong&gt;Entity Tag&lt;/strong&gt;, sunucudan istemci tarafına g&amp;ouml;nderilen &lt;strong&gt;Response &lt;/strong&gt;paketlerinin &lt;strong&gt;Header &lt;/strong&gt;kısmında kullanılabilen bir takıdır. Bu takı yardımıyla bilginin değişikliğe uğrayıp uğramadığı kolayca anlaşılabilir. Bu ayrım bize performans a&amp;ccedil;ısından bir kazanım sağlayabilir. &amp;Ouml;yleki, sunucu aynı &lt;strong&gt;ETag &lt;/strong&gt;verisine sahip iki &lt;strong&gt;Response &lt;/strong&gt;&amp;uuml;rettiğinde, aslında istemcinin talebinin karşılığının bir &amp;ouml;ncekisi ile aynı olduğu sonucuna varılabilir. Bu noktada istemcinin i&amp;ccedil;eriği tampon bir b&amp;ouml;lgede tuttuğu d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde, bir &amp;ouml;nceki ile aynı olan veri i&amp;ccedil;eriğini sunucudan indirmesine gerek kalmayacaktır. B&amp;ouml;yle bir durumda sunucun istemci tarafına &lt;strong&gt;HTTP 304 Not Modified &lt;/strong&gt;bilgisi g&amp;ouml;ndermesi s&amp;ouml;z konusudur. Tabi burada &lt;strong&gt;ETag &lt;/strong&gt;i&amp;ccedil;erisine yazılacak verinin nasıl &amp;uuml;retileceği de &amp;ouml;nemlidir. Genellikle &lt;strong&gt;Entity &lt;/strong&gt;ile alakalı olaraktan son g&amp;uuml;ncelleme zamanı veya &lt;strong&gt;checksum &lt;/strong&gt;kullanılabilir. Hatta &lt;strong&gt;SQL &lt;/strong&gt;veritabanında kullanılabilen &lt;strong&gt;Timestamp &lt;/strong&gt;tipide &lt;strong&gt;ETag &lt;/strong&gt;verisi olarak ciddi anlamda d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Sonu&amp;ccedil; itibariyle &lt;strong&gt;ETag &lt;/strong&gt;kavramının &lt;strong&gt;Caching &lt;/strong&gt;modeli i&amp;ccedil;in &amp;ccedil;ok &amp;ouml;nemli bir kriter olduğunu s&amp;ouml;yleyebiliriz.&lt;/p&gt;
+&lt;p&gt;Şimdi konuyu aşağıdaki i&amp;ccedil;eriğe sahip bir &lt;strong&gt;WebHttp Service&lt;/strong&gt; &amp;ouml;rneği &amp;uuml;zerinden değerlendirmeye &amp;ccedil;alışalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.ServiceModel;
+using System.ServiceModel.Activation;
+using System.ServiceModel.Web;
+
+namespace Lesson2
+{
+    [ServiceContract]
+    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall)]
+    public class ProductService
+    {
+        static List&amp;lt;Product&amp;gt; products = new List&amp;lt;Product&amp;gt;
+        {
+            new Product{ ProductId="1",Name="Zedojen 500 Gb HDD", Version=Guid.NewGuid()},
+            new Product{ ProductId="2",Name="Zedojen 750 Gb HDD", Version=Guid.NewGuid()},
+            new Product{ ProductId="3",Name="Leveno Laptop XK 5301", Version=Guid.NewGuid()}
+        };
+
+        [WebGet(UriTemplate = "Products/{productId}")]
+        public Product GetProduct(string productId)
+        {
+            var product = (from p in products
+                           where p.ProductId == productId
+                           select p).FirstOrDefault();
+            // Eğer bir Product nesne &amp;ouml;rneği mevcutsa...
+            if (product != null)
+            {
+                // İstemciden gelen paket Header' ındaki If-None-Match değeri alınır ve sunucu tarafında bulunan Product nesne &amp;ouml;rneğinin Version &amp;ouml;zelliğinin değeri ile kıyaslanır. Eğer aynı ise bu istemci tarafına HTTP 304 Not Modified d&amp;ouml;nd&amp;uuml;r&amp;uuml;leceği anlamına gelir.
+                WebOperationContext.Current.IncomingRequest.CheckConditionalRetrieve(product.Version);
+                // Response i&amp;ccedil;erisinde yer alan HTTP Header i&amp;ccedil;erisindeki ETag değeri sunucu tarafından bulunan Product nesne &amp;ouml;rneğinin Version &amp;ouml;zelliği ile set edilir.
+                WebOperationContext.Current.OutgoingResponse.SetETag(product.Version);
+            }
+
+            return product;
+        }                
+    }
+
+    public class Product
+    {
+        public string ProductId { get; set; }
+        public string Name { get; set; }
+        public Guid Version { get; set; }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Servisimizde yer alan &lt;strong&gt;GetProduct &lt;/strong&gt;isimli operasyon geriye &lt;strong&gt;Product &lt;/strong&gt;tipinden bir nesne i&amp;ccedil;eriği d&amp;ouml;nd&amp;uuml;rmektedir. &lt;strong&gt;Product &lt;/strong&gt;tipinin en &amp;ouml;nemli &amp;ouml;zelliklerinden birisi ise &lt;strong&gt;Guid &lt;/strong&gt;tipinden olan &lt;strong&gt;Version&lt;/strong&gt;' dur. Burada veritabanında yer alan bir &amp;uuml;r&amp;uuml;n&amp;uuml;n &lt;strong&gt;ETag &lt;/strong&gt;i&amp;ccedil;in kullanılabilecek veri tipi sim&amp;uuml;le edilmeye &amp;ccedil;alışılmaktadır. Yazımızın başında da belirttiğimiz gibi tablo bazlı kaynağın s&amp;ouml;z konusu olması halinde, &lt;strong&gt;Guid &lt;/strong&gt;yerine &lt;strong&gt;Timestamp &lt;/strong&gt;tipinden bir alan da tercih edilebilir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;GetProduct &lt;/strong&gt;metodu i&amp;ccedil;erisinde &lt;strong&gt;Exception &lt;/strong&gt;kontrol&amp;uuml; yapılmamaktadır. Daha &amp;ccedil;ok &amp;uuml;zerinde durmak istediğimiz nokta &lt;strong&gt;ETag &lt;/strong&gt;veri kontrol&amp;uuml; ve &amp;uuml;retimidir. Bu nedenle &lt;strong&gt;WebOperationContext.Current&lt;/strong&gt; &amp;uuml;zerinden &amp;ccedil;ağırılan &lt;strong&gt;CheckConditionalRetrieve &lt;/strong&gt;ve &lt;strong&gt;SetETag &lt;/strong&gt;metodlarına konsantre olmamızda yarar vardır. &lt;strong&gt;CheckConditionalRetrieve &lt;/strong&gt;metodu istemciden gelen talebe ait i&amp;ccedil;erikteki &lt;strong&gt;If-None-Match &lt;/strong&gt;değeri kontrol&amp;uuml;n&amp;uuml; yapmaktadır. Eğer istemci aynı i&amp;ccedil;eriği bir kere daha talep etmişse, bu durumda istediği &lt;strong&gt;Product &lt;/strong&gt;tipinin &lt;strong&gt;Version &lt;/strong&gt;değeri ile g&amp;ouml;nderdiği &lt;strong&gt;If-None-Match &lt;/strong&gt;değeri aynı olmalıdır. Tabiki buradaki &amp;ouml;rnek senaryomuzda şu an i&amp;ccedil;in veri tarafında yer alan &lt;strong&gt;Version &lt;/strong&gt;alanının değişmediğini d&amp;uuml;ş&amp;uuml;n&amp;uuml;yoruz.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;zellikle tarih bazlı olarak tutulan veri i&amp;ccedil;eriklerinde ve &amp;ouml;rneğin son g&amp;uuml;ncelleme tarihinin &lt;strong&gt;ETag&lt;/strong&gt; olarak kullanıldığı durumlarda ya da herhangibir değişiklik sonrası ilgili versiyon kontrol&amp;uuml; alanlarının değerlerinin değiştirildiği hallerde, sunucu tarafından istemciye doğru &lt;strong&gt;veri indirilmesi(Download)&lt;/strong&gt; işlemi yinelenecektir. &lt;strong&gt;SetETag &lt;/strong&gt;metodu ise ilk gelen talep sonrası veya i&amp;ccedil;eriğin istemciye indirilmesi gerektiği talep sonrası, &lt;strong&gt;Response&lt;/strong&gt;' a ait i&amp;ccedil;eriğe o anki &lt;strong&gt;Product &lt;/strong&gt;nesne &amp;ouml;rneğinin &lt;strong&gt;Version &lt;/strong&gt;değerini atayacaktır. Her iki metodunda farklı tipte&lt;strong&gt; aşırı y&amp;uuml;klenmiş(Overload)&lt;/strong&gt; versiyonları bulunmaktadır. Bu versiyonlardan birisi de &amp;ouml;rneğimizde ele aldığımız &lt;strong&gt;Guid &lt;/strong&gt;veri tipi ile &amp;ccedil;alışanıdır. Dilerseniz durumu daha iyi anlamak i&amp;ccedil;in hemen testlerimize başlayalım. &amp;Ouml;rneğimizi tarayıcı uygulama &amp;uuml;zerinden talep ettiğimizde ilk etapta aşağıdaki &amp;ouml;rnek sonu&amp;ccedil;lar ile karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f2%2fblg159_Runtime.gif" alt="" /&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Burada ipv4.fiddler:1000 şeklindeki k&amp;ouml;k adres kullanımı mutlaka dikkatinizi &amp;ccedil;ekmiştir. Bunu Fiddler &amp;uuml;zerinden &amp;ouml;rneğimize ait HTTP paketlerini debug edebilmek i&amp;ccedil;in kullandığımızı belirtmek isterim.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&amp;Ouml;rnekte &lt;strong&gt;ProductId &lt;/strong&gt;değeri &lt;strong&gt;1 &lt;/strong&gt;olan &amp;uuml;r&amp;uuml;ne ait bilgilerin elde edildiği g&amp;ouml;r&amp;uuml;lmektedir. Bundan sonra &lt;strong&gt;1 numaralı &amp;uuml;r&amp;uuml;n&amp;uuml; tekrardan talep edecek olursak Fiddler &lt;/strong&gt;tarafından aşağıdaki &lt;strong&gt;HTTP &lt;/strong&gt;hareketliliklerinin yakalandığını g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f2%2fblg159_Fiddler1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkatinizi &amp;ccedil;eken bir şey var mı? &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt; İlk talep sonrasında sunucudan istemiye&lt;strong&gt; HTTP 200 Ok&lt;/strong&gt; bilgisi d&amp;ouml;nm&amp;uuml;ş ve &lt;strong&gt;237 Byte&lt;/strong&gt;' lık bir &lt;strong&gt;Body &lt;/strong&gt;i&amp;ccedil;eriği indirilmiştir. Diğer yandan aynı talebin ikinci kez yapılması sonrasında istemci tarafına &lt;strong&gt;HTTP 304 Not Modified&lt;/strong&gt; mesajının d&amp;ouml;nd&amp;uuml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; g&amp;ouml;r&amp;uuml;lmektedir. &amp;Uuml;stelik ikinci talep sonrası &lt;strong&gt;Body &lt;/strong&gt;i&amp;ccedil;eriği &lt;strong&gt;0 byte &lt;/strong&gt;uzunluğundadır. Volaaa!!! &lt;img title="Laughing" src="/editors/tiny_mce3/plugins/emotions/img/smiley-laughing.gif" alt="Laughing" border="0" /&gt; Yani ikinci talebin ilki ile aynı veri &amp;uuml;retimine sahip olduğu anlaşılmış ve bu sebepten &amp;uuml;retilen paketin istemci tarafına yeniden indirilmesine gerek kalınmamıştır. &amp;Ouml;rneğimize g&amp;ouml;re &lt;strong&gt;byte &lt;/strong&gt;seviyesinde bu &amp;ccedil;ok &amp;ouml;nemli bir performans kazanımına neden &lt;span style="text-decoration: underline;"&gt;olmamaktadır&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Ne varki&lt;strong&gt; video, resim, m&amp;uuml;zik&lt;/strong&gt; gibi b&amp;uuml;y&amp;uuml;k boyutlu &lt;strong&gt;binary &lt;/strong&gt;i&amp;ccedil;eriklerin yer aldığı paketlerde &lt;strong&gt;304 &lt;/strong&gt;d&amp;ouml;nd&amp;uuml;r&amp;uuml;lmesinin b&amp;uuml;y&amp;uuml;k &amp;ouml;nemi vardır. Nitekim az &amp;ouml;nce &amp;uuml;retilip istemci tarafına indirilen b&amp;uuml;y&amp;uuml;k boyutlu i&amp;ccedil;eriğin, ikinci talep sonrası zaten istemci tarafındaki tamponda duran versiyonu ile aynı olması nedeniyle, yeniden g&amp;ouml;nderilmesi durumu ortadan kaldırılmakta ve b&amp;ouml;ylece istemci ile sunucu arasındaki ağ trafiğinden akan veri boyutu minimize edilmektedir.&lt;/p&gt;
+&lt;p&gt;Şimdi &lt;strong&gt;Fiddler &lt;/strong&gt;aracı yardımıyla paketlerin i&amp;ccedil;eriklerine biraz daha yakından bakalım. İlk talep sonrası istemcinin g&amp;ouml;nderdiği i&amp;ccedil;erik aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;GET http://127.0.0.1:1000/Adventures/Products/1 HTTP/1.1
+Accept: application/x-ms-application, image/jpeg, application/xaml+xml, image/gif, image/pjpeg, application/x-ms-xbap, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, application/x-shockwave-flash, */*
+Accept-Language: tr
+User-Agent: Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; InfoPath.2; OfficeLiveConnector.1.4; OfficeLivePatch.1.3; .NET4.0C; .NET4.0E; MS-RTC LM 8)
+Accept-Encoding: gzip, deflate
+Connection: Keep-Alive
+Host: 127.0.0.1:1000&lt;/pre&gt;
+&lt;p&gt;Bu talebe karşılık sunucunu cevabı ise aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;HTTP/1.1 200 OK
+Server: ASP.NET Development Server/10.0.0.0
+Date: Fri, 26 Feb 2010 09:43:00 GMT
+X-AspNet-Version: 4.0.30128
+Content-Length: 237
+ETag: "2c1cd636-3058-4985-8f10-3d3cb8c9e5fa"
+Cache-Control: private
+Content-Type: application/xml; charset=utf-8
+Connection: Close
+
+&amp;lt;Product xmlns="http://schemas.datacontract.org/2004/07/Lesson2" xmlns:i="http://www.w3.org/2001/XMLSchema-instance"&amp;gt;&amp;lt;Name&amp;gt;Zedojen 500 Gb HDD&amp;lt;/Name&amp;gt;&amp;lt;ProductId&amp;gt;1&amp;lt;/ProductId&amp;gt;&amp;lt;Version&amp;gt;2c1cd636-3058-4985-8f10-3d3cb8c9e5fa&amp;lt;/Version&amp;gt;&amp;lt;/Product&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;Response &lt;/strong&gt;i&amp;ccedil;erisinde bir &lt;strong&gt;ETag &lt;/strong&gt;değeri olduğu g&amp;ouml;r&amp;uuml;lmektedir. Sizce bu değerin &lt;strong&gt;1&lt;/strong&gt; numaralı &lt;strong&gt;Product&lt;/strong&gt;' ın g&amp;uuml;ncel &lt;strong&gt;Version &lt;/strong&gt;değeri ile aynı olması bir tesad&amp;uuml;f m&amp;uuml;d&amp;uuml;r? &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt; Ayrıca i&amp;ccedil;eriğin uzunluğu &lt;strong&gt;237 byte' &lt;/strong&gt;tır.&lt;/p&gt;
+&lt;p&gt;Gelelim ikinci talebe. İstemci tarafından sunucuya g&amp;ouml;nderilen ikinci talebin i&amp;ccedil;eriği aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;GET http://127.0.0.1:1000/Adventures/Products/1 HTTP/1.1
+Accept: application/x-ms-application, image/jpeg, application/xaml+xml, image/gif, image/pjpeg, application/x-ms-xbap, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, application/x-shockwave-flash, */*
+Accept-Language: tr
+User-Agent: Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; InfoPath.2; OfficeLiveConnector.1.4; OfficeLivePatch.1.3; .NET4.0C; .NET4.0E; MS-RTC LM 8)
+Accept-Encoding: gzip, deflate
+If-None-Match: "2c1cd636-3058-4985-8f10-3d3cb8c9e5fa"
+Host: 127.0.0.1:1000
+Connection: Keep-Alive&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere&lt;strong&gt; Guid &lt;/strong&gt;değerine sahip olan&lt;strong&gt; If-None-Match&lt;/strong&gt; isimli element bulunmaktadır. Bu değer biraz &amp;ouml;nceki talep sonucu istemciye g&amp;ouml;nderilen &lt;strong&gt;ETag &lt;/strong&gt;değeridir aslında. Şimdi bu noktada sunucu &amp;uuml;zerinde yer alan &lt;strong&gt;1 &lt;/strong&gt;numaralı &amp;uuml;r&amp;uuml;n&amp;uuml;n i&amp;ccedil;eriğinin değiştirilmediği ve bu nedenle &lt;strong&gt;Guid &lt;/strong&gt;değerinin de aynı olduğu d&amp;uuml;ş&amp;uuml;n&amp;uuml;lmektedir. Bu sebepten sunucu tarafından istemciye g&amp;ouml;nderilen cevabın i&amp;ccedil;eriği aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;HTTP/1.1 304 Not Modified
+Server: ASP.NET Development Server/10.0.0.0
+Date: Fri, 26 Feb 2010 09:43:05 GMT
+X-AspNet-Version: 4.0.30128
+ETag: "2c1cd636-3058-4985-8f10-3d3cb8c9e5fa"
+Cache-Control: private
+Connection: Close&lt;/pre&gt;
+&lt;p&gt;Her hangibir&lt;strong&gt; i&amp;ccedil;erik(Content)&lt;/strong&gt; yoktur. Hatta&lt;strong&gt; 0 byte&lt;/strong&gt; uzunluğunda bir &lt;strong&gt;Content &lt;/strong&gt;mevcuttur. Ama daha &amp;ouml;nemlisi yine &lt;strong&gt;ETag &lt;/strong&gt;elementi vardır ve &lt;strong&gt;Guid &lt;/strong&gt;değerini i&amp;ccedil;ermektedir. Ayrıca &lt;strong&gt;HTTP 304 Not Modified&lt;/strong&gt; bilgisinin d&amp;ouml;nd&amp;uuml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; dikkatlerden ka&amp;ccedil;mamalıdır.&lt;/p&gt;
+&lt;p&gt;Peki sunucu tarafındaki &lt;strong&gt;Product &lt;/strong&gt;i&amp;ccedil;eriğinde ve dolayısıyla &lt;strong&gt;Version &lt;/strong&gt;değerinde bir değişme olursa? Bir veritabanı &amp;ouml;rneği geliştirmediğimiz i&amp;ccedil;in bu durumu şu şekilde sim&amp;uuml;le edebiliriz&lt;br /&gt;; &lt;strong&gt;1 &lt;/strong&gt;numaralı &lt;strong&gt;ProductId &lt;/strong&gt;değerine sahip &amp;uuml;r&amp;uuml;n&amp;uuml;n adını &lt;strong&gt;Visual Studio 2010 &lt;/strong&gt;ortamında değiştirip &amp;ouml;rneği tekrardan &lt;strong&gt;build &lt;/strong&gt;ederek. Yeniden build işlemi sonucu &lt;strong&gt;static &lt;/strong&gt;olarak tanımlanan &lt;strong&gt;List&amp;lt;Product&amp;gt; &lt;/strong&gt;koleksiyon i&amp;ccedil;eriğinin &amp;uuml;retimi &lt;span style="text-decoration: underline;"&gt;yinelenecektir&lt;/span&gt;. Bu da yeni &lt;strong&gt;Guid &lt;/strong&gt;değerlerinin &amp;uuml;retimi anlamına gelmektedir. Bu durumda servis operasyonuna yeniden talepte bulunursak aşağıdaki cevabı aldığımız g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;HTTP/1.1 200 OK
+Server: ASP.NET Development Server/10.0.0.0
+Date: Fri, 26 Feb 2010 11:52:38 GMT
+X-AspNet-Version: 4.0.30128
+Content-Length: 237
+ETag: "2fadf1be-d5c3-4fe0-a9c6-ecf20437ffe4"
+Cache-Control: private
+Content-Type: application/xml; charset=utf-8
+Connection: Close
+
+&amp;lt;Product xmlns="http://schemas.datacontract.org/2004/07/Lesson2" xmlns:i="http://www.w3.org/2001/XMLSchema-instance"&amp;gt;&amp;lt;Name&amp;gt;Zedojen 250 Gb HDD&amp;lt;/Name&amp;gt;&amp;lt;ProductId&amp;gt;1&amp;lt;/ProductId&amp;gt;&amp;lt;Version&amp;gt;2fadf1be-d5c3-4fe0-a9c6-ecf20437ffe4&amp;lt;/Version&amp;gt;&amp;lt;/Product&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;Guid &lt;/strong&gt;değeri bir &amp;ouml;ncekinden farklıdır ve istemciye&lt;strong&gt; HTTP 200 Ok&lt;/strong&gt; koduyla &lt;strong&gt;Product &lt;/strong&gt;i&amp;ccedil;eriği tekrardan g&amp;ouml;nderilmiştir. Tabi bunun sonrasında 1 numaralı &amp;uuml;r&amp;uuml;n&amp;uuml; yeninden talep edersek yine HTTP 304 Not Modified durumu ile karşılaşırız.&lt;/p&gt;
+&lt;p&gt;Buraya kadar her şey iyi gitti. Ancak testlerimizi farkettiğiniz &amp;uuml;zere &lt;strong&gt;Internet Explorer &lt;/strong&gt;gibi tarayıcı uygulamalar &amp;uuml;zerinden ger&amp;ccedil;ekleştirdik. Oysaki istemci uygulamayı biz yazıyorsa &lt;strong&gt;ETag &lt;/strong&gt;kullanımı i&amp;ccedil;in de yapmamız gereken ekstra işlemler s&amp;ouml;z konusudur. Bu ama&amp;ccedil;la az &amp;ouml;nce geliştirdiğimiz servis uygulamasını test edeceğimiz basit bir &lt;strong&gt;Console Application&lt;/strong&gt; geliştirdiğimizi d&amp;uuml;ş&amp;uuml;nelim. Kod i&amp;ccedil;eriğini aşağıdaki gibi yazmamız &lt;strong&gt;ETag &lt;/strong&gt;desteği i&amp;ccedil;in yeterli olacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using Microsoft.Http;
+using Microsoft.Http.Headers;
+
+namespace Client
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Uri serviceAddress = new Uri(@"http://ipv4.fiddler:1000/Adventures/");
+            using (HttpClient client = new HttpClient(serviceAddress))
+            {
+                EntityTag eTag=null;
+                Process(client, "1",ref eTag);
+                Process(client, "1",ref eTag);
+            }
+        }
+
+        static void Process(HttpClient client, string ProductId,ref EntityTag ETag)
+        {
+            Console.WriteLine("***{0} i&amp;ccedil;in Talep***\n",ProductId);
+            // Talebin hazırlanması ve g&amp;ouml;nderilmesi
+            using (HttpRequestMessage request = new HttpRequestMessage("GET", "Products/"+ProductId))
+            {
+                // Metoda referans olarak gelen EntityTag tipinden olan ETag değerine bakılır. Eğer null değil ise ki ilk talep sonrası sunucu tarafından &amp;uuml;r&amp;uuml;n&amp;uuml;n Version değeri ile doldurulacaktır; bu durumda Header kısmına If-None-Match değerinin eklenmesi sağlanır.
+                if (ETag != null)
+                    request.Headers.IfNoneMatch.Add(ETag);
+
+                // If-None-Match değeri i&amp;ccedil;eren talep g&amp;ouml;nderilir
+                using (HttpResponseMessage response = client.Send(request))
+                {
+                    // ETag değeri gelen cevaptan alınır ve ref tipinden olan metod parametresine aktarılır. B&amp;ouml;ylece Process metoduna yapılacak olan sonraki &amp;ccedil;ağrılarda aynı ETag değerinin taşınması kolaylaşmaktadır.
+                    ETag = response.Headers.ETag;
+                    // Sonu&amp;ccedil;lar ekran yazdırılır.
+                    Console.WriteLine("StatusCode : {0}\n", response.StatusCode);
+                    Console.WriteLine("Content : {0}\n",response.Content.ReadAsString());
+                    Console.WriteLine("ETag Değeri : {0}\n", ETag.Tag);
+                }
+            }
+            Console.WriteLine("*******");
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Uygulamamızı &amp;ccedil;alıştırdığımızd aşağıdaki sonu&amp;ccedil;lar ile karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f2%2fblg159_Runtime2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi, ikinci talep sonrasında istemci tarafına &lt;strong&gt;HTTP 304 Not Modified &lt;/strong&gt;bilgisi ve &lt;strong&gt;0 Byte &lt;/strong&gt;uzunluğunda i&amp;ccedil;erik g&amp;ouml;nderilmiştir. B&amp;ouml;ylece&lt;strong&gt; WCF WebHttp Service&lt;/strong&gt;' leri ile ilişkili bir yazımızın daha sonuna geldik. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2010%2f2%2fLesson9_RC.rar"&gt;Lesson9_RC.rar (175,04 kb)&lt;/a&gt;&lt;strong&gt; [&amp;Ouml;rnek Visual Studio 2010 Ultimate RC s&amp;uuml;r&amp;uuml;m&amp;uuml; &amp;uuml;zerinde geliştirilmiş ve test edilmiştir]&lt;br /&gt;&lt;/strong&gt;&lt;/p&gt;</content>
+  <pubDate>2010-04-09 05:05:00</pubDate>
+  <slug>WCF-Web-Http-Services-ETags</slug>
+  <tags>
+    <tag>wcf-40</tag>
+    <tag>wcf</tag>
+    <tag>wcf-webhttp-services</tag>
+    <tag>rest</tag>
+  </tags>
+  <categories>
+    <category>WCF Eco System</category>
+    <category>WCF WebHttp Services</category>
+  </categories>
+</post>

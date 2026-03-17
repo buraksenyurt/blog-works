@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>REST Bazlı WCF Servislerinde AdapterStream Kullanımı</title>
+  <description>REST bazlı WCF servislerinde zaman zaman istemcilere içerik boyutları yüksek olan çıktılar veriyor olabiliriz. Bunlara örnek olarak resim veya metin dosyaları verilebilir. Aslında Stream veya TextWriter bazlı içerikler dersek çok daha doğru olacaktır.(Neden TextWriter olarak belirttiğimi yazının sonunda öğrenebileceğiz.) Özellikle istemci/sunucu bazlı uygulamalar göz önüne alındığında, büyük boyutlu içeriklerin karşı tarafa aktarılması sırasında karşılaşılabilecek pek çok performans kaybı söz konusudur.</description>
+  <content>&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;REST bazlı WCF servislerinde zaman zaman istemcilere i&amp;ccedil;erik boyutları y&amp;uuml;ksek olan &amp;ccedil;ıktılar veriyor olabiliriz. Bunlara &amp;ouml;rnek olarak &lt;strong&gt;resim&lt;/strong&gt; veya &lt;strong&gt;metin&lt;/strong&gt; dosyaları verilebilir. Aslında &lt;strong&gt;Stream&lt;/strong&gt; veya &lt;strong&gt;TextWriter&lt;/strong&gt; bazlı i&amp;ccedil;erikler dersek &amp;ccedil;ok daha doğru olacaktır&lt;em&gt;.(Neden TextWriter olarak belirttiğimi yazının sonunda&amp;nbsp;&amp;ouml;ğrenebileceğiz.)&lt;/em&gt;&amp;nbsp;&amp;Ouml;zellikle istemci/sunucu bazlı uygulamalar g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında, b&amp;uuml;y&amp;uuml;k boyutlu i&amp;ccedil;eriklerin karşı tarafa aktarılması sırasında karşılaşılabilecek pek &amp;ccedil;ok performans kaybı s&amp;ouml;z konusudur. Sunucu tarafından bakıldığında, istemcinin talep ettiği i&amp;ccedil;eriğin &lt;strong&gt;Stream&lt;/strong&gt; olarak elde edilmesi sırasında bellek ve işlemci bazında y&amp;uuml;klenmeler olabilir. Buda sunucunun performansının olumsuz y&amp;ouml;nde etkiliyebilir. Nitekim kaynakların israfı s&amp;ouml;z konusudur. Tabi istemci tarafı a&amp;ccedil;ısından bakıldığında da, gelen Stream i&amp;ccedil;eriğinin işlenmesi esnasında bazı sıkıntılar ile karşılaşılabilir.&lt;/p&gt;
+&lt;p&gt;Biz bu yazımızda sunucu tarafındaki i&amp;ccedil;eriğin Stream olarak elde edilmesi sırasında performans kazanımı i&amp;ccedil;in ne yapabileceğimize bakacağız. Neyse ki &amp;ccedil;ok fazla uğraşmamıza gerek yok. Nitekim &lt;strong&gt;WCF Rest Starter Kit&lt;/strong&gt; ile birlikte gelen &lt;strong&gt;AdapterStream&lt;/strong&gt; sınıfı tam bu iş i&amp;ccedil;in geliştirilmiş bir tip. &amp;Uuml;stelik kit ile birlikte gelen &amp;ouml;rnek solution i&amp;ccedil;erisinde kaynak kodunu g&amp;ouml;rmenizde m&amp;uuml;mk&amp;uuml;n.&amp;nbsp;Bu sınıf yardımıyla bir Stream' in hazırlanması sırasında, i&amp;ccedil;eriğin&amp;nbsp;tamamıyla değil, par&amp;ccedil;a par&amp;ccedil;a aktarılması sağlanabiliyor. Buda bir anlamda sunucunun bellek ve işlemci kaynaklarının daha az yorulması anlamına gelmekte.&lt;/p&gt;
+&lt;p&gt;Aslında hi&amp;ccedil; vakit kaybetmeden bu konu ile ilişkili geliştirdiğim &amp;ouml;rneği sizinle paylaşmak istiyorum. &amp;Ouml;ncesinde nacizane senaryomdan biraz&amp;nbsp;bahsedeyim. Servis tarafında yer alan basit bir operasyon, talep ile kendisine gelen kelimeye bakarak, istemci i&amp;ccedil;in bir duvar kağıdı resminin &amp;uuml;retilmesini sağlamakta. Burada gelen kelimeleri &amp;ccedil;ok basit bir d&amp;uuml;ş&amp;uuml;nce ile bazı resim dosyaları ile eşleştirmekteyim. Eşleştirme i&amp;ccedil;in basit bir &lt;strong&gt;XML&lt;/strong&gt; d&amp;ouml;k&amp;uuml;manı kullanıyorum. B&amp;ouml;ylece servis tarafına yeni resimler ve bu resimlere eş d&amp;uuml;şecek kelimelerin koda m&amp;uuml;dahale etmeye gerek kalmadan eklenmesi m&amp;uuml;mk&amp;uuml;n olabilir. Kabaca aşağıdaki gibi bir durumdan bahsediyorum aslında.&lt;/p&gt;
+&lt;p&gt;Servis projesinin &lt;strong&gt;klas&amp;ouml;r&lt;/strong&gt; yapısı,&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblg10_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;ve &lt;strong&gt;Mapper.xml&lt;/strong&gt; i&amp;ccedil;eriği,&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;Mapper&amp;gt;
+&amp;nbsp; &amp;lt;Map Keyword="ay" Image="images/Ay.jpg"/&amp;gt;
+&amp;nbsp; &amp;lt;Map Keyword="bizimsokak" Image="images/BizimSokak.jpg"/&amp;gt;
+&amp;nbsp; &amp;lt;Map Keyword="cilgin" Image="images/cilgin.jpg"/&amp;gt;
+&amp;nbsp; &amp;lt;Map Keyword="firtinaoncesi" Image="images/firtinaoncesi.jpg"/&amp;gt;
+&amp;nbsp; &amp;lt;Map Keyword="gunes" Image="images/gunes.jpg"/&amp;gt;
+&amp;nbsp; &amp;lt;Map Keyword="kopru" Image="images/kopru.jpg"/&amp;gt;
+&amp;nbsp; &amp;lt;Map Keyword="maldivler" Image="images/maldivler.jpg"/&amp;gt;
+&amp;nbsp; &amp;lt;Map Keyword="meksikasahili" Image="images/meksikasahili.jpg"/&amp;gt;
+&amp;nbsp; &amp;lt;Map Keyword="mistik" Image="images/mistik.jpg"/&amp;gt;
+&amp;nbsp; &amp;lt;Map Keyword="sahil" Image="images/sahil.jpg"/&amp;gt;
+&amp;nbsp; &amp;lt;Map Keyword="tatil" Image="images/tatil.jpg"/&amp;gt;&amp;nbsp; 
+&amp;lt;/Mapper&amp;gt;&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &lt;strong&gt;images&lt;/strong&gt; klas&amp;ouml;r&amp;uuml; altındaki her bir resim ve eş d&amp;uuml;şen kelime, Xml i&amp;ccedil;eriğinde&amp;nbsp;tanımlanmış durumda. Tabi bu benim minik hayal g&amp;uuml;c&amp;uuml;m&amp;uuml;n bir &amp;uuml;r&amp;uuml;n&amp;uuml;. Buradaki sistem dahada etkili geliştirilebilir. S&amp;ouml;z gelimi kullanıcının girdiği kelimeye g&amp;ouml;re, sunucu tarafında &amp;ccedil;alışacak akıllı bir robot, resim kataloğundan, kelime bire bir uymasa bile en yakın olanı bulup istemciye g&amp;ouml;nderebilir. Bu kısmı siz değerli okurlarıma bırakayım &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Gelelim projenin kod yapısına. Burada &lt;strong&gt;WCF Rest Starter Kit&lt;/strong&gt; kullandığımız i&amp;ccedil;in herhangibir REST şablonuna ait projelerden birisini&amp;nbsp;oluşturmak yeterli. &amp;Ouml;nemli olan noktalardan birisi servis tarafındaki &amp;ccedil;alışma zamanı i&amp;ccedil;in &lt;strong&gt;WebServiceFactory2&lt;/strong&gt; isimli fabrikanın(Factory Class)&amp;nbsp;kullanılmasıdır. O y&amp;uuml;zden Servis' e ait markup i&amp;ccedil;eriğinin aşağıdaki gibi olmasına &amp;ouml;zen g&amp;ouml;stermekte yarar vardır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;%@ ServiceHost Language="C#" Debug="true" Service="Streaming.Service" Factory="Streaming.AppServiceHostFactory"%&amp;gt;
+
+using System;
+using System.ServiceModel;
+using System.ServiceModel.Activation;
+using Microsoft.ServiceModel.Web;
+using Microsoft.ServiceModel.Web.SpecializedServices;
+
+namespace Streaming 
+{
+    class AppServiceHostFactory : ServiceHostFactory
+    {
+        protected override ServiceHost CreateServiceHost(Type serviceType, Uri[] baseAddresses)
+        {
+            return new WebServiceHost2(serviceType, true, baseAddresses);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Servise ait kod i&amp;ccedil;eriğini ise senaryoya g&amp;ouml;re aşağıdaki gibi geliştirdim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Runtime.Serialization;
+using System.ServiceModel;
+using System.ServiceModel.Activation;
+using System.ServiceModel.Web;
+using System.Xml.Linq;
+using Microsoft.ServiceModel.Web;
+
+[assembly: ContractNamespace("", ClrNamespace = "Streaming")]
+
+namespace Streaming
+{ 
+    [ServiceBehavior(IncludeExceptionDetailInFaults = true, InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Single)]
+    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
+    [ServiceContract]
+    public class Service
+    {        
+        [WebHelp(Comment="Şansına g&amp;ouml;re bir duvar kağıdı d&amp;ouml;nd&amp;uuml;r&amp;uuml;r")]
+        [WebGet(UriTemplate="yourimage?keyword={keyword}")]
+        [OperationContract]
+        public Stream GetImage(string keyword)
+        {
+            // &amp;Ouml;zellikle ilk talep sırasında keyword değeri gelmeyeceği i&amp;ccedil;in istemci tarafına BadRequest tipinden Http hatası d&amp;ouml;nd&amp;uuml;r&amp;uuml;l&amp;uuml;r
+            // İstenirse varsayılan bir resimde &amp;uuml;rettirilebilir
+            if (String.IsNullOrEmpty(keyword))
+                throw new WebProtocolException(HttpStatusCode.BadRequest);
+
+            // gelen kelimeye eş d&amp;uuml;şen resim adresi Xml d&amp;ouml;k&amp;uuml;manı i&amp;ccedil;erisinden LINQ sorgusu ile &amp;ccedil;ekilir
+            XDocument doc = new XDocument();
+            doc = XDocument.Load(System.Web.HttpContext.Current.Server.MapPath("~/Mapper.xml"));
+            // TODO: Xml i&amp;ccedil;eriğinde Keyword niteliğinde olmayan bir bilgi gelirse aşağıdaki sorgu patlar. Buna tedbir alınması ve uygun Http hatasının d&amp;ouml;nd&amp;uuml;r&amp;uuml;lmesi &amp;ouml;nerilir.
+            string imagePath = (from img in doc.Document.Elements("Mapper").Elements("Map")                             
+                            where img.Attribute("Keyword").Value == keyword.ToLower()
+                            select img.Attribute("Image").Value).First();
+
+            // eğer kelimeye denk d&amp;uuml;şen resim yoksa NotFound tipinden Http hatası d&amp;ouml;nd&amp;uuml;r&amp;uuml;l&amp;uuml;r
+            if (String.IsNullOrEmpty(imagePath))
+                throw new WebProtocolException(HttpStatusCode.NotFound);
+
+            // Image tipi resim adresinden &amp;uuml;retilir.
+            Image image = Image.FromFile(System.Web.HttpContext.Current.Server.MapPath(imagePath));            
+            // &amp;Ccedil;ıktının i&amp;ccedil;erik tipi jpeg formatı olarak belirlenir.
+            WebOperationContext.Current.OutgoingResponse.ContentType = "image/jpeg";
+            // AdapterStream yapıcısı kullanılarak stream istemci tarafına hazırlanıp g&amp;ouml;nderilir.
+            return new AdapterStream(str =&amp;gt; image.Save(str, ImageFormat.Jpeg));
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Kodun belkide en basit ama en &amp;ouml;nemli kısmı &lt;strong&gt;AdapterStream&lt;/strong&gt; tipinin &amp;uuml;retildiği satırdır. Bu satıra kadarki kısımda, gelen talebe g&amp;ouml;re &lt;strong&gt;Xml&lt;/strong&gt; d&amp;ouml;k&amp;uuml;manı i&amp;ccedil;erisinden, denk d&amp;uuml;şen resim adresinin elde edilmesi ve buna g&amp;ouml;re &lt;strong&gt;Image&lt;/strong&gt; nesnesinin &amp;ouml;rneklenmesi işlemleri yapılır. Sonrasında ise &amp;ccedil;ıktının tipi&lt;strong&gt;(image/jpeg)&lt;/strong&gt; olarak belirlenir ve son adıma gelinir. AdapterStream sınıfının yapıcı metodu parametre olarak &lt;strong&gt;Action&amp;lt;Stream&amp;gt;&lt;/strong&gt; veya &lt;strong&gt;Action&amp;lt;TextWriter&amp;gt;&lt;/strong&gt; tipinden bir &lt;strong&gt;temsilci(delegate)&lt;/strong&gt; almaktadır. Bu temsilci, geriye değer d&amp;ouml;nd&amp;uuml;rmeyen(void) ve parametre olarak bir Stream veya TextWriter referansı&amp;nbsp;alan metodları işaret edecek şekilde tanımlanmıştır. Elimizde &lt;strong&gt;=&amp;gt;(lambda)&lt;/strong&gt; operat&amp;ouml;r&amp;uuml; gibi bir yardımcıda olduğundan nesne &amp;ouml;rneklenmesi sırasında temsilcinin tanımlanması, işaret ettiği metodun g&amp;ouml;vdesinin yazılması aynı ifade i&amp;ccedil;erisinde m&amp;uuml;mk&amp;uuml;n olmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Peki ya sonu&amp;ccedil;lar?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Servisi tarayıcıdan ilk seferde parametre kullanmadan talep ettiğimde aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; ile karşılaştım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblg10_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu son derece doğaldı. Nitekim bu talep sonrasında servis operasyonuna herhangibir &lt;strong&gt;keyword&lt;/strong&gt; değeri gelmemektedir. Ancak tarayıcıdan, &lt;strong&gt;http://buraksenyurt:1000/Service.svc/yourimage?keyword=sahil&lt;/strong&gt; gibi bir talepte bulunduğumda aşağıdaki sonucu elde ettim. &lt;img title="Cool" src="/editors/tiny_mce3/plugins/emotions/img/smiley-cool.gif" alt="Cool" border="0" /&gt;&amp;nbsp;Sanırım şansıma deniz kıyısında ş&amp;ouml;yle g&amp;uuml;zel bir tatil &amp;ccedil;ıktı.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblg10_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Hemen arka planda &amp;ccedil;alışan &lt;strong&gt;Fiddler&lt;/strong&gt; aracına baktığımdaysa, gelen talebe karşılık &amp;uuml;retilen cevabın resim i&amp;ccedil;erikli olarak &amp;uuml;retildiğini g&amp;ouml;rd&amp;uuml;m.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f4%2fblg10_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &lt;strong&gt;AdapterStream&lt;/strong&gt; kullanımı son derece kolay. &amp;Ouml;zellikle REST bazlı WCF servislerini t&amp;uuml;keten web uygulamalarında g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir.&amp;nbsp;Umarım size faydalı bir bilgi daha aktarabilmişimdir. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2009%2f4%2fStreaming.rar"&gt;Streaming.rar (5,62 mb)&lt;/a&gt;&amp;nbsp;(Dosya i&amp;ccedil;erisinde bir TODO var. Bu kısmı g&amp;ouml;zden ka&amp;ccedil;ırmayın &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;)&lt;/p&gt;</content>
+  <pubDate>2009-04-29 16:03:00</pubDate>
+  <slug>REST-Bazlc4b1-WCF-Servislerinde-AdapterStream-Kullanc4b1mc4b1</slug>
+  <tags>
+    <tag>wcf</tag>
+    <tag>rest</tag>
+    <tag>adapterstream</tag>
+  </tags>
+  <categories>
+    <category>WCF</category>
+  </categories>
+</post>

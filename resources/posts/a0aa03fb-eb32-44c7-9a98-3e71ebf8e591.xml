@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>C# 2.0 Covariance ve Contravariance Delegates</title>
+  <description>Bildiğiniz gibi temsilciler (delegates) çalışma zamanında metodların başlangıç adreslerini işaret eden tiplerdir. Bu tipleri uygulamalarımızda tanımlarken çalışma zamanında işaret edebilecekleri metodların geri dönüş tipi ve parametrik yapılarını bildirecek şekilde oluştururuz. Ancak özellikle , C# 1.1 ortamında temsilcilerin kullanımında parametre ve dönüş tipileri açısından iki önemli sıkıntımız vardır. Bu sıkıntıların kaynağında birbirlerinden türeyen yani aralarında kalıtımsal (inheritance) ilişkiler olan tipler yer alır.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Bildiğiniz gibi temsilciler (delegates) &amp;ccedil;alışma zamanında metodların başlangı&amp;ccedil; adreslerini işaret eden tiplerdir. Bu tipleri uygulamalarımızda tanımlarken &amp;ccedil;alışma zamanında işaret edebilecekleri metodların geri d&amp;ouml;n&amp;uuml;ş tipi ve parametrik yapılarını bildirecek şekilde oluştururuz. Ancak &amp;ouml;zellikle , C# 1.1 ortamında temsilcilerin kullanımında parametre ve d&amp;ouml;n&amp;uuml;ş tipileri a&amp;ccedil;ısından iki &amp;ouml;nemli sıkıntımız vardır. Bu sıkıntıların kaynağında birbirlerinden t&amp;uuml;reyen yani aralarında kalıtımsal (inheritance) ilişkiler olan tipler yer alır.&lt;/p&gt;
+&lt;p&gt;Nitekim temsilciler C# 1.1 versiyonunda oluşturulacakları zaman, işaret edecekleri metodlar i&amp;ccedil;in kesin d&amp;ouml;n&amp;uuml;ş ve parametre tipi uyumluluğunu ararlar. Dolayısıla bu tiplerde kalıtımsal ilişkiler s&amp;ouml;z konusu olduğunda ortaya &amp;ccedil;ıkan iki temel problem vardır. Bu iki temel sorunumuza bakmadan &amp;ouml;nce, konunun odağında aralarında kalıtım ilişkisi olan iki sınıf olduğunu g&amp;ouml;z &amp;ouml;n&amp;uuml;ne almalıyız. &amp;Ouml;rneğin Sekil ve Dortgen isimli iki sınıfımız olduğunu ve Dortgen sınıfının Sekil sınıfından t&amp;uuml;rediğini varsayalım. Bu sınıfların sahip olduğu i&amp;ccedil;eriğin bizim i&amp;ccedil;in şu aşamada &amp;ccedil;ok fazla &amp;ouml;nemi yoktur. İlk olarak covariance' lığa neden olan sorunu ele alalım. Aşağıdaki uygulamamızı dikkatle inceleyelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace UsingCovariance
+{
+    public class Sekil
+    {
+        public Sekil()
+        {
+        }
+    }
+    public class Dortgen:Sekil
+    {
+        public Dortgen()
+        {
+        }
+    }
+
+    public delegate Sekil Temsilci(); 
+
+    class Class1
+    {
+        public static Sekil Metod_1()
+        {
+            return null;
+        }
+
+        public static Dortgen Metod_2()
+        {
+            return null;
+        }
+
+        [STAThread]
+        static void Main(string[] args)
+        {
+            Temsilci temsilci=new Temsilci(Metod_1);
+            temsilci=new Temsilci(Metod_2); // Derleme zamanı hatası
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu uygulamayı derlediğimizde,&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;temsilci=new Temsilci(Metod_2);&lt;/pre&gt;
+&lt;p&gt;satırı i&amp;ccedil;in &lt;strong&gt;&lt;em&gt;Method 'UsingCovariance.Class1.Metod_2()' does not match delegate 'UsingCovariance.Sekil UsingCovariance.Temsilci()' &lt;/em&gt;&lt;/strong&gt;hatasını alırız. Peki burada sorun nedir? Temsilci isimli delegate tipimiz, Sekil sınıfından nesne &amp;ouml;rneklerini geriye d&amp;ouml;nd&amp;uuml;ren ve parametre almayan metodları işaret edebilecek şekilde tanımlanmıştır . Bu durumda,&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;Temsilci temsilci=new Temsilci(Metod_1);&lt;/pre&gt;
+&lt;p&gt;satırı d&amp;uuml;zg&amp;uuml;n olarak &amp;ccedil;alışacaktır. Nitekim Metod_1 delegate tipimizin tanımlamalarına uyan tarzda bir metoddur. Oysaki Metod_2 metodumuzun geriye d&amp;ouml;nd&amp;uuml;rd&amp;uuml;ğ&amp;uuml; değer Dortgen sınıfı tipindendir. Dolayısıyla temsilci nesnemizin tanımladığı bildirimin dışında bir d&amp;ouml;n&amp;uuml;ş tipininin d&amp;ouml;n&amp;uuml;ş&amp;uuml; s&amp;ouml;z konusudur. Hatırlayın, temsilciler işaret edecekleri metodlar i&amp;ccedil;in kesin d&amp;ouml;n&amp;uuml;ş tipi ve parametre tipi uyumluluğu ararlar. Oysaki Dortgen ve Sekil sınıfı arasında kalıtımsal bir ilişki s&amp;ouml;z konusudur ve bu sebeple bu tarz bir kullanımın sorunsuz olarak &amp;ccedil;alışacağı d&amp;uuml;ş&amp;uuml;n&amp;uuml;lmektedir. &amp;Ccedil;&amp;uuml;nk&amp;uuml; kalıtımın doğası gereği bu Dortgen sınıfına ait nesne &amp;ouml;rnekleri Sekil sınıfına ait nesne &amp;ouml;rneklerine d&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;lebilir. Ancak temsilcimiz a&amp;ccedil;ısından bu kural ne yazık ki ge&amp;ccedil;erli değildir. Yani temsilcimiz belirtilen tipler i&amp;ccedil;in &amp;ccedil;alışma zamanında &amp;ccedil;ok bi&amp;ccedil;imliliği destekleyememiştir.&lt;/p&gt;
+&lt;p&gt;Peki bu sorunu nasıl &amp;ccedil;&amp;ouml;zebiliriz? Tek yapabileceğimiz Dortgen sınıfına ait nesne &amp;ouml;rneklerini d&amp;ouml;nd&amp;uuml;ren Metod_2 isimli metodumuzu işaret edecek yeni bir delegate nesnesini aşağıdaki &amp;ouml;rnek kod par&amp;ccedil;asında olduğu gibi tanımlamak ve kullanmak olacaktır. Bu tahmin edeceğiniz gibi hantal bir &amp;ccedil;&amp;ouml;z&amp;uuml;md&amp;uuml;r. Bir birleri arasında t&amp;uuml;r d&amp;ouml;n&amp;uuml;ş&amp;uuml;m&amp;uuml; yapılabilecek iki sınıf i&amp;ccedil;in gereksiz yere iki ayrı temsilci tipi tanımlamak zorunda kalışımız dahi istenmeyen bir durumdur.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public delegate Sekil Temsilci();
+public delegate Dortgen Temsilci2();
+
+class Class1
+{
+    public static Sekil Metod_1()
+    {
+        return null;
+    }
+
+    public static Dortgen Metod_2()
+    {
+        return null;
+    }
+
+    [STAThread]
+    static void Main(string[] args)
+    {
+        Temsilci temsilci=new Temsilci(Metod_1);
+          Temsilci2 temsilci2i=new Temsilci2(Metod_2);
+    }
+}&lt;/pre&gt;
+&lt;p&gt;İşte C# 2.0' da, delegate tipi i&amp;ccedil;in s&amp;ouml;z konusu olan bu sorun ortadan kaldırılmıştır. Yukarıdaki &amp;ouml;rneğimizin aynısını C# 2.0' da yazdığımızı d&amp;uuml;ş&amp;uuml;n&amp;uuml;rsek her hangi bir derleme zamanı hatası almayız. Covariance' ın desteklenebilmesi i&amp;ccedil;in C# 2.0' a getirilen ekstra bir kodlama tekniği yoktur.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk127_1.gif" alt="" width="502" height="525" border="0" /&gt;&lt;br /&gt; &lt;br /&gt; Bu tamamen .net &amp;ccedil;ekirdeğinde delegate tipi &amp;uuml;zerinde yapılan bir d&amp;uuml;zenlemenin sonucudur.&lt;/p&gt;
+&lt;table id="table10" border="1" width="100%" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;&lt;em&gt;Covariance, temsilcilerin &amp;ccedil;alışma zamanında işaret etmek istediği metodların, aralarında kalıtımsal ilişki olan d&amp;ouml;n&amp;uuml;ş tipleri arasındaki poliformik uyum sorununu ortadan kaldıran bir &amp;ouml;zellik olarak nitelendirilebilir.&lt;/em&gt;&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Temsilci nesnelerimizin işaret edeceği metodların d&amp;ouml;n&amp;uuml;ş tiplerinin kalıtımsal ilişkilere izin verecek şekilde d&amp;uuml;zenlenmiş olması elbetteki &amp;ccedil;alışma zamanında bize b&amp;uuml;y&amp;uuml;k bir esneklik getirmektedir. Nitekim bu sayede birbirlerinden t&amp;uuml;remiş n sayıda sınıfa ait nesne &amp;ouml;rneklerinin d&amp;ouml;n&amp;uuml;ş tipi olarak kullanıldığı metodları tek bir delegate nesnesi vasıtasıyla &amp;ccedil;alışma zamanında işaret edebiliriz.&lt;/p&gt;
+&lt;p&gt;Gelelim contravariance durumuna. Bu kez kalıtım ilişkisine sahip olan sınıf &amp;ouml;rnekleri, temsilcilerin işaret edeceği metodların parametrik yapıları i&amp;ccedil;erisinde kullanılmaktadır. Aşağıdaki &amp;ouml;rnek kod par&amp;ccedil;ası C# 1.1 i&amp;ccedil;in bu durumu &amp;ouml;rneklemektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace UsingContravariance
+{
+    public class Sekil
+    {
+        public Sekil()
+        {
+        }
+    }
+    public class Dortgen:Sekil
+    {
+        public Dortgen()
+        {
+        }
+    }
+
+    public delegate int Temsilci(Dortgen dortgen);
+
+    class Class1
+    {
+        public static int Metod_1(Dortgen dortgen)
+        {    
+            return 0;
+        }
+        public static int Metod_2(Sekil sekil)
+        {
+            return 0;
+        }
+
+        [STAThread]
+        static void Main(string[] args)
+        {
+            Temsilci temsilci=new Temsilci(Metod_1);
+            temsilci=new Temsilci(Metod_2); // Derleme zamanı hatası
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu kez delegate tipimiz geriye int tipinden değer d&amp;ouml;nd&amp;uuml;ren ve parametre olarak Dortgen sınıfı tipinden nesne &amp;ouml;rneklerini alan metodları işaret edebilecek şekilde tanımlanmıştır. Kodu derlediğimizde &lt;em&gt;Method 'UsingContravariance.Class1. Metod_2(UsingContravariance.Sekil)' does not match delegate 'int UsingContravariance.Temsilci(UsingContravariance .Dortgen)' &lt;/em&gt;hatasını alırız. Yine delegate tipimiz burada parametrik imza uyuşmazlığından bahsetmektedir. Sorun,&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;temsilci=new Temsilci(Metod_2);&lt;/pre&gt;
+&lt;p&gt;satırında oluşur. &amp;Ccedil;&amp;uuml;nk&amp;uuml; Metod_2 Dortgen sınıfı tipinden bir nesne &amp;ouml;rneğini parametre olarak almaktansa Dortgen sınıfının &amp;uuml;st sınıfı olan Sekil sınıfından bir nesne &amp;ouml;rneğini parametre olarak almaktadır. Buradaki problem tersi durum i&amp;ccedil;inde s&amp;ouml;z konusudur. Yani temsilcimizi tanımlarken metodun alacağı parametrenin, t&amp;uuml;reyen sınıf yerine temel sınıftan (base class) bir nesne &amp;ouml;rneğini kullanacak şekilde aşağıdaki kod par&amp;ccedil;asında g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi tanımlandığını d&amp;uuml;ş&amp;uuml;n&amp;uuml;rsek;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public delegate int Temsilci(Sekil sekil);
+
+class Class1
+{
+    public static int Metod_1(Dortgen dortgen)
+    {
+        return 0;
+    }
+    public static int Metod_2(Sekil sekil)
+    {
+        return 0;
+    }
+
+    [STAThread]
+    static void Main(string[] args)
+    {
+        Temsilci temsilci=new Temsilci(Metod_1); // Derleme zamanı hatası
+        temsilci=new Temsilci(Metod_2);
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;span style="line-height: 23.4px;"&gt;bu sefer Metod_1 i&amp;ccedil;in oluşturulan temsilci isimli nesnemiz &amp;uuml;zerinden aynı hata mesajını alırız. Doğal olarak, metod parametlerinin &amp;uuml;st sınıftan veya t&amp;uuml;reyen sınıftan olması durumu değiştirmeyecektir.&amp;nbsp;&lt;/span&gt;&lt;/p&gt;
+&lt;table id="table21" border="1" width="100%" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;&lt;em&gt;Contravariance, temsilcilerin &amp;ccedil;alışma zamanında işaret etmek istediği metodların parametreleri arasında kalıtımsal ilişkiye sahip tiplerin neden olduğu polimorfik uyum sorununu ortadan kaldıran bir &amp;ouml;zellik olarak nitelendirilebilir.&lt;/em&gt;&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Parametrelerin uyumsuzluğunun neden olduğu bu sorunu C# 1.1 ile &amp;ccedil;&amp;ouml;zmek i&amp;ccedil;in, covariance tekniğinde olduğu gibi her bir metod i&amp;ccedil;in ayrı temsilci nesnelerini aşağıdaki kod par&amp;ccedil;asında olduğu gibi tanımlamamız gerekecektir.&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public delegate int Temsilci(Sekil sekil);
+public delegate int Temsilci2(Dortgen dortgen);
+
+class Class1
+{
+    public static int Metod_1(Sekil sekil)
+    {
+        return 0;
+    }
+    public static int Metod_2(Dortgen Dortgen)
+    {
+        return 0;
+    }
+
+    [STAThread]
+    static void Main(string[] args)
+    {
+        Temsilci temsilci=new Temsilci(Metod_1);
+          Temsilci2 temsilci2=new Temsilci2(Metod_2);
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Yukarıdaki &amp;ouml;rneğimizi C# 2.0 ile derlediğimizde ise her hangi bir sorun olmadığını g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk127_2.gif" alt="" width="584" height="528" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Parametrelerin arasındaki kalıtımsal ilişki, &amp;ccedil;alışma zamanında temsilciler oluşturulurken de değerlendirilecek ve nesneler arasındaki t&amp;uuml;r d&amp;ouml;n&amp;uuml;ş&amp;uuml;m&amp;uuml; başarılı bir şekilde parametrelerede yansıyacaktır. Bu covarince probleminde olduğu gibi bize yine b&amp;uuml;y&amp;uuml;k bir esneklik sağlar. Aralarında kalıtımsal ilişki olan n sayıda sınıf nesne &amp;ouml;rneğini kullanan metodları tek bir temsilci nesnesi ile &amp;ccedil;alışma zamanında işaret edebilme yeteneği. B&amp;ouml;ylece geldik bir makalemizin daha sonuna, bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2005-06-30 12:00:00</pubDate>
+  <slug>C#-2-0-Covariance-ve-Contravariance-Delegates-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>c#-2</tag>
+    <tag>covariance-generic</tag>
+    <tag>contravariance-generic</tag>
+    <tag>covariance</tag>
+    <tag>delegate</tag>
+  </tags>
+  <categories>
+    <category>C#</category>
+  </categories>
+</post>

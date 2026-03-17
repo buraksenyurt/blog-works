@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>EF Core ile MariaDb Kullanımı</title>
+  <description>Bu yazımızda MySQL’in yaratıcısı olan Monty Widenius‘un MySQL’in kodunu çatallayıp oluşturduğu ve kızının adını verdiği MariaDB'nin Entity Framework Core ile nasıl kullanılabileceğini incelemeye çalışıyoruz.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2017/12/mariacore_5.gif" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Son bir ka&amp;ccedil; aydır Cumartesi gecelerimi bir şeyler yazmak veya araştırmak i&amp;ccedil;in değerlendirmekteyim. Bu tip &amp;ccedil;alışma disiplinlerini daha &amp;ouml;nceden de denemiş ve epeyce faydasını g&amp;ouml;rm&amp;uuml;şt&amp;uuml;m. Sonu&amp;ccedil;ta &amp;uuml;zerinde &amp;ccedil;alıştığımız yazılım platformları ve &amp;uuml;r&amp;uuml;nler s&amp;uuml;rekli ve d&amp;uuml;zenli olarak değişim i&amp;ccedil;erisindeler. Dolayısıyla yeniliklerin ucundan da olsa tutabilmek lazım. Bir anlamda şu meşhur Pomodoro &amp;ccedil;alışma tekniğini haftalık periyotlara b&amp;ouml;ld&amp;uuml;ğ&amp;uuml;m&amp;uuml; ifade edebilirim.&lt;/p&gt;
+&lt;p&gt;Ge&amp;ccedil;tiğimiz hafta i&amp;ccedil;erisinde .Net Core tarafında nelere bakabilirim diye internette s&amp;ouml;rf yaparken eski dostumuz Entity Framework'e rastladım. Tabii oyun sahası&amp;nbsp;benim i&amp;ccedil;in artık değişmişti. West-World, Microsoft Sql Server nedir pek bilmiyordu. Hatta&amp;nbsp;IIS'e bile burun kıvırıp Nginx ya da Apache ile konuşuyordu. Elimde pek &amp;ccedil;ok makalede kullanılan Visual Studio' da yoktu.&amp;nbsp;Buna rağmen yetenekleri daha kısıtlı olan Visual Studio Code ile hayat olduk&amp;ccedil;a g&amp;uuml;zeldi. Sonunda bir s&amp;uuml;redir merak ettiğim MariaDb'yi, Entity Framework Core ile basit&amp;ccedil;e&amp;nbsp;nasıl konuşturabilleceğimi&amp;nbsp;g&amp;ouml;rmeye&amp;nbsp;karar verdim. &amp;Ouml;ncelikle MariaDb'yi tanımlayalım...&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://mariadb.org/" target="_blank"&gt;MariaDB&lt;/a&gt;&amp;nbsp;GNU&amp;nbsp;lisansı ile sunulan, MySQL&amp;rsquo;in yaratıcısı Monty Widenius&amp;lsquo;un kodlarını &amp;ccedil;atallayarak(fork işlemi) aynı komutları, aray&amp;uuml;zleri ve API&amp;rsquo;leri destekleyecek şekilde geliştirmeye başlanmış bir ilişkisel veritabanı y&amp;ouml;netim sistemi&lt;em&gt;(Relational Database Management System) &lt;/em&gt;Her ne kadar sevimsiz bir tanımlama gibi dursa da logosu&amp;nbsp;en az MySQL'in sevimli yunusu kadar dikkat &amp;ccedil;ekici. Nihayetinde neden b&amp;ouml;yle bir oluşma gidildiğine dair internette pek &amp;ccedil;ok tartışma var. Onları araştırmanızı &amp;ouml;neririm. Benim dikkatimi &amp;ccedil;eken işin i&amp;ccedil;erisine Oracle girdikten sonra inanılmaz derecede artan destek &amp;uuml;cretleri&lt;em&gt;(Sun'ın 2010 da satın alınması ve MySQL'in Oracle'e ge&amp;ccedil;mesi sonrası destek &amp;uuml;cretinin %600 arttığı s&amp;ouml;yleniyor)&lt;/em&gt; Bu d&amp;uuml;ş&amp;uuml;nceler ışığında ge&amp;ccedil;tim evdeki Ubuntu'nun başına.&lt;/p&gt;
+&lt;h1&gt;MariaDb kurulumu&lt;/h1&gt;
+&lt;p&gt;Tabii ilk olarak West-World'e MariaDb'yi kurmam lazım. Son zamanlarda bu d&amp;uuml;nya &amp;uuml;zerinde &amp;ccedil;ok fazla şey y&amp;uuml;klenip kaldırıldı ama bana mısın demedi. Sanırım o da bu yeni deneyimlerden keyif alıyor. Kendisine sırasıyla aşağıdaki komutları g&amp;ouml;nderek MariaDb'yi y&amp;uuml;klemesini ve gerekli servisleri &amp;ccedil;alıştırmasını s&amp;ouml;yledim.&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo apt-get update
+sudo apt-get install mariadb-server mariadb-client
+sudo mysql_secure_installation&lt;/pre&gt;
+&lt;p&gt;Son komut sonrası bazı sorularla karşılaştım.&amp;nbsp;İlk etapta&amp;nbsp;root user şifresinin&amp;nbsp;değiştirilmesinin yerinde olacağını belirteyim. Kurulum sorasında root kullanıcının şifresi boştur. Dolayısıyla&amp;nbsp;Enter tuşuna basarak ge&amp;ccedil;ilebilir.&amp;nbsp;Ardından&amp;nbsp;bir şifre vermek gerekecektir. Şifre&amp;nbsp;adımından&amp;nbsp;sonra isimsiz kullanıcılara&lt;em&gt;(anonymous user)&lt;/em&gt; izin verilip verilmeyeceği, root kullanıcı i&amp;ccedil;in uzaktan erişim sağlanıp sağlanmayacağı, test veritabanının kaldırılıp kaldırılmayacağı ve benzeri sorulara verilecek cevaplarla kurulum işlemi sonlandırılır. Kurulum sonrası aşağıdaki komutu kullanarak MariaDb ortamına giriş yapabiliyor olmamız gerekir.&lt;/p&gt;
+&lt;p&gt;sudo mysql -u root -p&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/12/mariacore_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Yukarıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde show databases; komutu kullanılarak y&amp;uuml;kl&amp;uuml; olan veritabanlarının listesinin elde edilmesi sağlanmışıtır. Burada&amp;nbsp;basit SQL sorgu ifadeleri kullanarak bir takım işlemler yapabiliriz. Bir deneyin derim.&lt;/p&gt;
+&lt;p&gt;Bu arada eğer sudo kullanmadan giriş yapmak istersek yada ERROR 1698 (28000): Access denied for user 'burakselyum'@'localhost' benzeri bir hata alırsak, root user'ın mysql_native_password plug-in'inini kullanabilmesini s&amp;ouml;yleyerek&amp;nbsp;&amp;ccedil;&amp;ouml;z&amp;uuml;m &amp;uuml;retebiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;use mysql;
+update user set plugin='mysql_native_password' where user='root';
+flush privileges; 
+exit;&lt;/pre&gt;
+&lt;p&gt;sonrasında&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;service mysql restart &lt;/pre&gt;
+&lt;p&gt;ile mysql hizmetini yeniden başlatmak gerekir.&lt;/p&gt;
+&lt;h1&gt;Console Uygulamasının Yazılması&lt;/h1&gt;
+&lt;p&gt;Gelelim MariaDb ile konuşacak uygulama kodlarının yazımına. Konuya basit bir girizgah yapmak&amp;nbsp;istediğim i&amp;ccedil;in her zaman ki gibi tercihim Console uygulaması geliştirmek. Ancak siz &amp;ouml;rneği denerken bir Web API servisi arkasınada da kullanmayı tercih edebilirsiniz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet new console -o MariaDbSample&lt;/pre&gt;
+&lt;p&gt;Şimdi gerekli paketleri de eklemek lazım. MariaDb'yi Entity Framework Core ile kolayca kullanabilmek i&amp;ccedil;in &lt;a href="https://github.com/PomeloFoundation/Pomelo.EntityFrameworkCore.MySql" target="_blank"&gt;Pomelo&lt;/a&gt; tarafından geliştirilmiş bir paket bulunmakta. Bu ve diğer EF paketlerini aşağıdaki komutları kullanarak projeye entegre edebiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet add package Microsoft.EntityFrameworkCore.Tools -v:'2.0.0'
+dotnet add package Microsoft.EntityFrameworkCore.Tools.DotNet -v:'2.0.0'
+dotnet add package Pomelo.EntityFrameworkCore.MySql -v:'2.0.0.1'&lt;/pre&gt;
+&lt;p&gt;Paketler y&amp;uuml;klendikten&amp;nbsp;sonra bir restore işlemi uygulamakta yarar var.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet restore &lt;/pre&gt;
+&lt;p&gt;Program.cs&amp;nbsp;i&amp;ccedil;eriği&amp;nbsp;ise aşağıdaki gibi. Kalabalık g&amp;ouml;r&amp;uuml;nd&amp;uuml;ğ&amp;uuml;n&amp;uuml; bakmayın. B&amp;uuml;y&amp;uuml;k bir kısmı kitap ve kategori ekleme kodlarından oluşuyor.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
+
+namespace MariaDbSample
+{
+    [Table("Book")]
+    public class Book
+    {
+        public long BookID { get; set; }
+        [Required]
+        [MaxLength(50)]
+        public string Title { get; set; }
+        public bool InStock { get; set; }
+        public double Price { get; set; }
+        public virtual BookCategory Category { get; set; }
+    }
+
+    [Table("Category")]
+    public class BookCategory
+    {
+        [Key]
+        public long CategoryID { get; set; }
+        [Required]
+        [MaxLength(20)]
+        public string Name { get; set; }
+        public virtual ICollection&amp;lt;Book&amp;gt; Books { get; set; }
+    }
+
+    public partial class BeautyBooksContext : DbContext
+    {
+        public DbSet&amp;lt;Book&amp;gt; Books { get; set; }
+        public DbSet&amp;lt;BookCategory&amp;gt; BookCategories { get; set; }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseMySql(@"uid=root;pwd=rootşifre;Host=localhost;Database=BeautyBooks;");
+        }
+    }
+
+    public class Program
+    {
+        public static void Main()
+        {
+            using (var context = new BeautyBooksContext())
+            {
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+
+                var scienceCategory = new BookCategory()
+                {
+                    Name = "Science"
+                };
+                var programmingCategory = new BookCategory()
+                {
+                    Name = "Programming"
+                };
+                var mathCategory = new BookCategory()
+                {
+                    Name = "Math"
+                };
+                context.BookCategories.Add(scienceCategory);
+                context.BookCategories.Add(programmingCategory);
+
+                context.Books.Add(new Book()
+                {
+                    Title = "2025 : Go to the MARS",
+                    Price = 8.99,
+                    InStock = true,
+                    Category = scienceCategory
+                });
+                context.Books.Add(new Book()
+                {
+                    Title = "The 9nth Element",
+                    Price = 6.99,
+                    InStock = false,
+                    Category = scienceCategory
+                });
+                context.Books.Add(new Book()
+                {
+                    Title = "Calculus - I",
+                    Price = 19.99,
+                    InStock = false,
+                    Category = mathCategory
+                });
+                context.Books.Add(new Book()
+                {
+                    Title = "Advanced Asp.Net Core 2.0",
+                    Price = 38.10,
+                    InStock = true,
+                    Category = programmingCategory
+                });
+                context.Books.Add(new Book()
+                {
+                    Title = "C# 7.0 Introduction",
+                    Price = 15.33,
+                    InStock = false,
+                    Category = programmingCategory
+                });
+                context.Books.Add(new Book()
+                {
+                    Title = "Vue.js for Dummies",
+                    Price = 28.49,
+                    InStock = false,
+                    Category = programmingCategory
+                });
+                context.Books.Add(new Book()
+                {
+                    Title = "GoLang - The New Era",
+                    Price = 55.55,
+                    InStock = false,
+                    Category = programmingCategory
+                });
+
+                context.SaveChanges();
+
+                Console.WriteLine("Book List\n");
+
+                var query = context.Books.Include(p =&amp;gt; p.Category)
+                    .Where(p =&amp;gt; p.Price &amp;lt; 30.0)
+                    .ToList();
+
+                Console.WriteLine("{0,-8} | {1,-50} | {2,-8} | {3}\n\n", "BookID", "Title", "Price", "Category");
+                foreach (var book in query)
+                    Console.WriteLine("{0,-8} | {1,-50} | {2,-8} | {3}", book.BookID, book.Title, book.Price, book.Category.Name);
+
+                Console.WriteLine("Press any key to exit");
+                Console.ReadKey();
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Aslında Entity Framework ile kod geliştirenlerin gayet aşina olduğu işlemler s&amp;ouml;z konusu. Senaryoda kitaplar ve kategorilerini tuttuğumuz tipler s&amp;ouml;z konusu. Book ve BookCategory tipleri i&amp;ccedil;in &amp;ouml;rnek olması a&amp;ccedil;ısından Table attribute'ları ile MariaDb tarafındaki tablo adları belirtiliyor. Normal şartlarda Primary Key olan alanın [TipAdı]ID olarak ifade edilmesi yeterli. Ancak BookCategory sınıfı i&amp;ccedil;in anahtar alanı işaret etmek &amp;uuml;zere Key niteliğinden yararlanmaktayız. Bazı alanlar i&amp;ccedil;in maksimum alan uzunluğu ve gereklilik gibi kriterleri de yine nitelikler yardımıyla belirliyoruz&lt;em&gt;(Required, MaxLength nitelikleri)&amp;nbsp;&lt;/em&gt;İki sınıf arasında birer ilişki de s&amp;ouml;z konusu. Tek y&amp;ouml;nl&amp;uuml; kurduğumuz ilişkide bir kategori altında birden fazla kitap olabileceğini ifade ediyoruz. Bu ilişki sağlanırken ICollection&amp;lt;Book&amp;gt; tipinden de yararlanıyoruz.&lt;/p&gt;
+&lt;p&gt;DbContext t&amp;uuml;revli BeautyBooksContext sınıfı i&amp;ccedil;erisinde sunduğumuz DbSet'ler var&lt;em&gt;(Books ve BookCategories isimli &amp;ouml;zellikler)&lt;/em&gt; OnConfiguring metodu eziliyor ve i&amp;ccedil;erisinde UseMySql ile provider'ın değiştirilmesi sağlanıyor.&amp;nbsp;Parametre,&amp;nbsp;MariaDb i&amp;ccedil;in kullanılacak Connection String bilgisini i&amp;ccedil;ermekte.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Main fonksiyonu i&amp;ccedil;erisinde peş peşe iki Ensure operasyonunun &amp;ccedil;ağırıldığı g&amp;ouml;r&amp;uuml;lebilir. İlk olarak eğer BeautyBooks veritabanı varsa siliniyor ki bu şart değil. Sadece &amp;ouml;rnekte deneme olarak kullandım. EnsureCreated &amp;ccedil;ağrısı ile de veritabanı ve ilgili nesnelerin&lt;em&gt;(tabloların)&lt;/em&gt; olmaması halinde yaratılmaları sağlanıyor. &amp;Ouml;rnek ilk &amp;ccedil;alıştırıldığında aslında bu veritabanı ve tablolar sistemde yok. Bu y&amp;uuml;zden &amp;ouml;nce oluşturulacaklar.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;İlerleyen kod satırlarında Context'e bir ka&amp;ccedil; veri girişi yapılıyor. SaveChanges ile de yapılan eklemelerin veritabanına yazılması sağlanıyor. Ekleme işlemleri sonrası bir LINQ sorgusu var. Fiyatı 30 birim altında olan &amp;uuml;r&amp;uuml;nleri kategorileri ile birlikte&amp;nbsp;&amp;ccedil;ekip ve ekrana d&amp;uuml;zg&amp;uuml;n bir formatta basıyor.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Artık&amp;nbsp;uygulama&amp;nbsp;&amp;ccedil;alışabilir. Console penceresine yansıyan &amp;ccedil;ıktı aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/12/mariacore_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Diğer yandan MariaDb &amp;uuml;zerindeki duruma da kendi arabiriminden bakılabilir. Ben aşağıdaki komutları denedim.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;show databases;
+use BeautyBooks;
+show tables;
+select * from Book;
+select * from Category;&lt;/pre&gt;
+&lt;p&gt;İlk komut ile veritabanlarını g&amp;ouml;steriyoruz. Kodun &amp;ccedil;alışması sonrası oluşan BeautyBooks &amp;uuml;zerinde işlemler yapmak istediğimiz i&amp;ccedil;in use komutunu kullanıyoruz. Veritabanı se&amp;ccedil;iminin ardından show tables ile tabloları g&amp;ouml;steriyoruz ki Book ve Category&amp;nbsp;nesnelerinin oluşturulduğunu g&amp;ouml;rebiliriz. İki standart Select sorgusu ile de tablo i&amp;ccedil;eriklerini g&amp;ouml;stermekteyiz&lt;em&gt;(Bu arada MariaDb'nin terminal &amp;ccedil;ıktıları &amp;ccedil;ok hoşuma gitti. Bana &amp;uuml;niversite yıllarımda DOS ekranında Pascal ile tablo &amp;ccedil;izip i&amp;ccedil;ini&amp;nbsp;verilerle doldurmaya &amp;ccedil;alıştığım&amp;nbsp;g&amp;uuml;nleri anımsattı. &amp;Ccedil;ok basit bir g&amp;ouml;r&amp;uuml;n&amp;uuml;m ama sade ve anlaşılır)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/12/mariacore_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;h1&gt;Log Eklemeyi Unutunca Ben&lt;/h1&gt;
+&lt;p&gt;Aslında arka planda MariaDb &amp;uuml;zerinde ne gibi SQL ifadelerinin &amp;ccedil;alıştırıldığını g&amp;ouml;rebilsem hi&amp;ccedil; de fena olmazdı. Ben tabii bunu unuttum ve makaleyi tekrardan d&amp;uuml;zenlediğim&amp;nbsp;bir ara fark ettim. Hemen Microsoft dok&amp;uuml;manlarını kurcalayarak en azından Console'a log'ları nasıl atabilirimi araştırdım. Sonrasında&amp;nbsp;BeautyBookContext&amp;nbsp;i&amp;ccedil;eriğini aşağıdaki hale getirdim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public partial class BeautyBooksContext : DbContext
+    {
+        public static readonly LoggerFactory EFLoggerFactory
+            = new LoggerFactory(new[] {new ConsoleLoggerProvider((cat, level) =&amp;gt;
+            cat== DbLoggerCategory.Database.Command.Name &amp;amp;&amp;amp; level==LogLevel.Information,true)});
+
+        public DbSet&amp;lt;Book&amp;gt; Books { get; set; }
+        public DbSet&amp;lt;BookCategory&amp;gt; BookCategories { get; set; }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseLoggerFactory(EFLoggerFactory);
+            optionsBuilder.UseMySql(@"uid=root;pwd=rootşifre;Host=localhost;Database=BeautyBooks;");
+        }
+    }&lt;/pre&gt;
+&lt;p&gt;Aslında bu kod par&amp;ccedil;asında &amp;ccedil;ok g&amp;uuml;zel bir ders var. Bir Log mekanizmasını EF &amp;ccedil;alışma motoruna enjekte ediyoruz.&amp;nbsp; EFLoggerFactory, LoggerFactory t&amp;uuml;r&amp;uuml;nden &amp;uuml;retilirken ilk parametrede ConsoleLoggerProvider &amp;ouml;rneği verilmekte. Farklı LoggerProvider'lar da var ve hatta biz de kendi LoggerProvider tipimizi buraya ekleyebiliriz.&amp;nbsp;Yapıcı metodda verilen parametrelerle&amp;nbsp;bir filtreleme yaparak hangi bilgilerin hangi seviyede&amp;nbsp;kayıt altına alınacağını&amp;nbsp;belirtiyoruz. İlgili LoggerFactory'nin kullanılabilmesi i&amp;ccedil;inse UseLoggerFactory operasyonunu devreye alıyoruz. Sonu&amp;ccedil;ta kodu &amp;ccedil;alıştırdığımızda arka planda hareket eden SQL ifadelerinin Console penceresine basıldığını g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/12/mariacore_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere Entity Framework ile&amp;nbsp;MySQL t&amp;uuml;revli MariaDb'yi kullanmak olduk&amp;ccedil;a basit. Elbette &amp;ouml;nemli olan konulardan birisi EF &amp;ccedil;alışma zamanına MariaDb provider'ının enjekte edilmesi. Yani DbContext t&amp;uuml;revli sınıfın ezilen OnConfiguring fonksiyonu i&amp;ccedil;erisinde yapılan UseMySql &amp;ccedil;ağrısı. Bu sebepten github'taki kod i&amp;ccedil;eriğini incelemekte de olduk&amp;ccedil;a b&amp;uuml;y&amp;uuml;k yarar olduğu kanısındayım. Nitekim kendi veritabanı sistemimizin Entity Framework Core tarafında kullanılmasını istediğimiz durumlarda benzer kod &amp;ccedil;alışmasını yapmamız gerekecektir. B&amp;ouml;ylece bir cumartesi gecesini daha eğlenceli şekilde&amp;nbsp;bitiriyorum. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek&amp;nbsp;hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2018-02-19 17:18:00</pubDate>
+  <slug>ef-core-ile-mariadb-kullanimi</slug>
+  <tags>
+    <tag>entity-framework</tag>
+    <tag>entity-framework-core</tag>
+    <tag>net-core</tag>
+    <tag>mariadb</tag>
+    <tag>mysql</tag>
+    <tag>linux</tag>
+    <tag>ubuntu</tag>
+    <tag>sql</tag>
+  </tags>
+  <categories>
+    <category>.Net Core</category>
+  </categories>
+</post>

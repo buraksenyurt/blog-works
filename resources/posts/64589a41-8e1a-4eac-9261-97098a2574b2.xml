@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WF 4.0 : WorkflowInvoker ile Single Thread, WorkflowApplication ile Multi-Thread [Beta 2]</title>
+  <description>WF 4.0 öncesinde bir Workflow örneğini çalıştırmak için WorkflowRuntime sınıfından yararlanılmaktadır. Aşağıdaki kod parçasında Visual Studio 2008 üzerinde geliştirilen basit bir WF örneğinin çalıştırılması için otomatik olarak üretilen kod görülmektedir. Ancak Workflow Foundation 4.0 içerisinde bir Workflow örneğini çalıştırmak için iki farklı yol sunulmaktadır. İlk yol daha önceki yazı ve görsel derslerimizde de sıklıkla bahsettiğimiz WorkflowInvoker sınıfına ait static Invoke metodunun kullanılmasıdır. Bu tekniğin en önemli özelliği Workflow örneğinin çalıştığı uygulamaya ait Thread içerisinde senkron olaran yürütülmesini sağlamasıdır. Dilerseniz ne demek istediğimize basit bir örnek yardımıyla bakmaya çalışalım. Visual Studio 2010 Ultimate Beta 2 sürümü üzerinden oluşturduğumuz Workflow Console Application içerisinde aşağıdaki Workflow1 içeriği göz önüne alınmaktadır.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/pics/2009%2f11%2fblg94_Giris.jpg" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Hi&amp;ccedil; m&amp;uuml;zik dinlerken bir yandan da kod yazmayı denediniz mi? &amp;Uuml;stelik &amp;ccedil;evre ile olan etkileşiminiz devam ederken&amp;nbsp;&lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt; S&amp;ouml;z gelimi hareketli bir par&amp;ccedil;ayı tempo tutarak dinleyip ondan tamamen bağımsız bir şekilde geliştirmeye devam ederken yan masadaki arkadaşınızdan gelen "D&amp;uuml;n akşamki ma&amp;ccedil;ı seyrettin mi?...Ronaldo ne gol attı &amp;ouml;yle..." sorusuna da rakip takımın orta sahasını kattığınız bir yorumda bulunup diğer taraftanda kahve i&amp;ccedil;tiğinizi d&amp;uuml;ş&amp;uuml;nebilirsiniz.&lt;/p&gt;
+&lt;p&gt;Tabiki insan beyninin b&amp;uuml;y&amp;uuml;l&amp;uuml; d&amp;uuml;nyası ve eş zamanlı olarak &amp;ccedil;alışma yetenekleri zaman zaman geliştirdiğimiz uygulamalara da yansımaktadır. B&amp;ouml;yle bir giriş yaptığımıza g&amp;ouml;re&lt;strong&gt; multi-thread&lt;/strong&gt; bir takım işlemleri anlatacağımı d&amp;uuml;ş&amp;uuml;nm&amp;uuml;ş olmalısınız. İşte bu g&amp;uuml;n konumuz&amp;nbsp;&lt;strong&gt;Workflow Foundation&amp;nbsp;4.0 &lt;/strong&gt;&amp;uuml;zerindeki &lt;strong&gt;Single-Thread &lt;/strong&gt;ve &lt;strong&gt;Multi-Thread &lt;/strong&gt;&amp;ccedil;alıştırma modelleri.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;WF 4.0 &lt;/strong&gt;&amp;ouml;ncesinde bir &lt;strong&gt;Workflow&lt;/strong&gt; &amp;ouml;rneğini &amp;ccedil;alıştırmak i&amp;ccedil;in &lt;strong&gt;WorkflowRuntime&lt;/strong&gt; sınıfından yararlanılmaktadır.&amp;nbsp;Aşağıdaki kod par&amp;ccedil;asında &lt;strong&gt;Visual Studio 2008 &lt;/strong&gt;&amp;uuml;zerinde geliştirilen basit bir &lt;strong&gt;WF &lt;/strong&gt;&amp;ouml;rneğinin &amp;ccedil;alıştırılması i&amp;ccedil;in otomatik olarak &amp;uuml;retilen kod g&amp;ouml;r&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using(WorkflowRuntime workflowRuntime = new WorkflowRuntime())
+            {
+                AutoResetEvent waitHandle = new AutoResetEvent(false);
+
+                workflowRuntime.WorkflowCompleted += delegate(object sender, WorkflowCompletedEventArgs e) {waitHandle.Set();};
+
+                workflowRuntime.WorkflowTerminated += delegate(object sender, WorkflowTerminatedEventArgs e)
+                {
+                    Console.WriteLine(e.Exception.Message);
+                    waitHandle.Set();
+                };
+
+                WorkflowInstance instance = workflowRuntime.CreateWorkflow(typeof(WorkflowConsoleApplication1.Workflow1));
+                instance.Start();
+
+                waitHandle.WaitOne();
+            }&lt;/pre&gt;
+&lt;p&gt;Ancak &lt;strong&gt;Workflow Foundation 4.0&lt;/strong&gt; i&amp;ccedil;erisinde bir &lt;strong&gt;Workflow &lt;/strong&gt;&amp;ouml;rneğini &amp;ccedil;alıştırmak i&amp;ccedil;in iki farklı yol sunulmaktadır. İlk yol daha &amp;ouml;nceki yazı ve g&amp;ouml;rsel derslerimizde de sıklıkla bahsettiğimiz &lt;strong&gt;WorkflowInvoker &lt;/strong&gt;sınıfına ait &lt;strong&gt;static Invoke &lt;/strong&gt;metodunun kullanılmasıdır. Bu tekniğin en &amp;ouml;nemli &amp;ouml;zelliği &lt;strong&gt;Workflow &lt;/strong&gt;&amp;ouml;rneğinin &amp;ccedil;alıştığı uygulamaya ait &lt;strong&gt;Thread &lt;/strong&gt;i&amp;ccedil;erisinde senkron olaran y&amp;uuml;r&amp;uuml;t&amp;uuml;lmesini sağlamasıdır. Dilerseniz ne demek istediğimize basit bir &amp;ouml;rnek yardımıyla bakmaya &amp;ccedil;alışalım. &lt;strong&gt;Visual Studio 2010 Ultimate Beta 2 &lt;/strong&gt;s&amp;uuml;r&amp;uuml;m&amp;uuml; &amp;uuml;zerinden oluşturduğumuz &lt;strong&gt;Workflow Console Application &lt;/strong&gt;i&amp;ccedil;erisinde aşağıdaki &lt;strong&gt;Workflow1 &lt;/strong&gt;i&amp;ccedil;eriği g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg94_Workflow1Design.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Akışın xaml i&amp;ccedil;eriği ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;Activity mc:Ignorable="sap" x:Class="WorkflowConsoleApplication5.Workflow1" mva:VisualBasic.Settings="Assembly references and imported namespaces serialized as XML namespaces" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mv="clr-namespace:Microsoft.VisualBasic;assembly=Microsoft.VisualBasic, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" xmlns:mv1="clr-namespace:Microsoft.VisualBasic;assembly=System" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:s="clr-namespace:System;assembly=mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" xmlns:s1="clr-namespace:System;assembly=mscorlib" xmlns:s2="clr-namespace:System;assembly=System" xmlns:s3="clr-namespace:System;assembly=System.Xml" xmlns:s4="clr-namespace:System;assembly=System.Core" xmlns:sad="clr-namespace:System.Activities.Debugger;assembly=System.Activities" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System" xmlns:scg1="clr-namespace:System.Collections.Generic;assembly=System.ServiceModel" xmlns:scg2="clr-namespace:System.Collections.Generic;assembly=System.Core" xmlns:scg3="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data" xmlns:sd1="clr-namespace:System.Data;assembly=System.Data.DataSetExtensions" xmlns:sl="clr-namespace:System.Linq;assembly=System.Core" xmlns:st="clr-namespace:System.Threading;assembly=mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" xmlns:st1="clr-namespace:System.Text;assembly=mscorlib" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"&amp;gt;
+  &amp;lt;Sequence sad:XamlDebuggerXmlReader.FileName="c:\documents and settings\bsenyurt\my documents\visual studio 10\Projects\WorkflowConsoleApplication5\WorkflowConsoleApplication5\Workflow1.xaml" sap:VirtualizedContainerService.HintSize="232,344"&amp;gt;
+    &amp;lt;sap:WorkflowViewStateService.ViewState&amp;gt;
+      &amp;lt;scg3:Dictionary x:TypeArguments="x:String, x:Object"&amp;gt;
+        &amp;lt;x:Boolean x:Key="IsExpanded"&amp;gt;True&amp;lt;/x:Boolean&amp;gt;
+      &amp;lt;/scg3:Dictionary&amp;gt;
+    &amp;lt;/sap:WorkflowViewStateService.ViewState&amp;gt;
+    &amp;lt;WriteLine sap:VirtualizedContainerService.HintSize="210,59" Text="[String.Format("WF Başlangı&amp;ccedil; {0} Thread ID:{1}", TimeString, Thread.CurrentThread.ManagedThreadId.ToString())]" /&amp;gt;
+    &amp;lt;Delay Duration="00:00:05" sap:VirtualizedContainerService.HintSize="210,22" /&amp;gt;
+    &amp;lt;WriteLine sap:VirtualizedContainerService.HintSize="210,59" Text="[String.Format("WF Bitiş {0}", TimeString)]" /&amp;gt;
+  &amp;lt;/Sequence&amp;gt;
+&amp;lt;/Activity&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Workflow1&lt;/strong&gt; i&amp;ccedil;erisinde dikkat &amp;ccedil;ekici noktalardan birisi &lt;strong&gt;Delay &lt;/strong&gt;aktivitesi ile sanal bir geciktirmenin uygulanmış olmasıdır. Bunun yanında ilk &lt;strong&gt;WriteLine &lt;/strong&gt;bileşeni i&amp;ccedil;erisinde g&amp;uuml;ncel &lt;strong&gt;ManagedThreadId &lt;/strong&gt;değerinin yazdırılması sağlanmaktadır. Şimdi bu &lt;strong&gt;Workflow &lt;/strong&gt;&amp;ouml;rneğini y&amp;uuml;r&amp;uuml;tmek i&amp;ccedil;in aşağıdaki kod par&amp;ccedil;asını geliştirdiğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Activities;
+using System.Threading;
+
+namespace WorkflowConsoleApplication5
+{
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            #region Senkron &amp;ccedil;alışma(Aynı Thread i&amp;ccedil;erisinde)
+
+            WorkflowInvoker.Invoke(new Workflow1());
+            Console.WriteLine("Invoke &amp;ccedil;ağrısının hemen sonrası {0} Thread ID :{1}",DateTime.Now.ToLongTimeString(),Thread.CurrentThread.ManagedThreadId.ToString());
+
+            #endregion
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;İlk olarak &lt;strong&gt;WorkflowInvoker&lt;/strong&gt; sınıfının &lt;strong&gt;static Invoke &lt;/strong&gt;metodu ile &lt;strong&gt;Workflow1 &lt;/strong&gt;nesne &amp;ouml;rneğinin &amp;ccedil;alıştırılması sağlanmaktadır. Devam eden kod satırının devreye girmesi i&amp;ccedil;in &lt;strong&gt;Delay &lt;/strong&gt;s&amp;uuml;resi kadar beklenmesi gerekecektir ki bu &amp;ouml;rnekte &amp;ouml;nemli olan noktada budur. Diğer taraftan hem &lt;strong&gt;Workflow1 &lt;/strong&gt;i&amp;ccedil;in hemde &lt;strong&gt;Program &lt;/strong&gt;sınıfı i&amp;ccedil;in aynı &lt;strong&gt;ManagedThreadId &lt;/strong&gt;değerlerinin&amp;nbsp;&amp;uuml;retildiği g&amp;ouml;zlemlenecektir. İşte &amp;ccedil;alışma zamanı sonu&amp;ccedil;larımız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg94_InvokerRuntime.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &lt;strong&gt;Invoke&lt;/strong&gt; metodu &amp;ccedil;ağrısı sonrasındaki kod satırına ge&amp;ccedil;mek i&amp;ccedil;in &lt;strong&gt;Workflow1' &lt;/strong&gt;in tamamlanması beklenmiştir. Bu senkron &amp;ccedil;alışmanın bir sonucu ve ispatıdır. Ayrıca bir &lt;strong&gt;Workflow &lt;/strong&gt;&amp;ouml;rneğini &amp;ccedil;alıştırmanın en basit yolu olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Ancak bazı zamanlarda &amp;ouml;zellikle &lt;strong&gt;Long Running Process' &lt;/strong&gt;lerde s&amp;ouml;z konusu olduğunda, sunucu tarafındaki Workflow &amp;ouml;rneğinin farklı bir&amp;nbsp;Thread i&amp;ccedil;erisinde y&amp;uuml;r&amp;uuml;t&amp;uuml;lmesi ve buna bağlı olarakta Host uygulamanın paralel olarak &amp;ccedil;alışmaya devam etmesi istenebilir. Bir başka deyişle Workflow &amp;ouml;rneklerini host eden uygulamanın s&amp;ouml;z konusu akışları &lt;strong&gt;Multi-Thread&lt;/strong&gt; olarak y&amp;uuml;r&amp;uuml;tmesi istenebilir. İşte bu durumda &lt;strong&gt;WorkflowApplication &lt;/strong&gt;tipinden yararlanılmaktadır.&lt;/p&gt;
+&lt;p&gt;Bu tip ve &amp;uuml;yeleri sayesinde &lt;strong&gt;Workflow &lt;/strong&gt;&amp;ouml;rneğinin farklı bir &lt;strong&gt;Thread &lt;/strong&gt;i&amp;ccedil;erisine a&amp;ccedil;ılması ve ana uygulama ile paralel olarak y&amp;uuml;r&amp;uuml;t&amp;uuml;lmesi sağlanabilir. &amp;Uuml;stelik &amp;ccedil;eşitli olayları sayesinde &lt;strong&gt;Workflow &lt;/strong&gt;&amp;ouml;rneğinin tamamlanması, ele alınmamış bir istisna&lt;strong&gt;(Unhandled Exception) &lt;/strong&gt;nedeniyle sonlanması gibi durumlar kontrol altına alınabilir. Aslında bir &amp;ouml;nceki versiyonda yer alan &lt;strong&gt;WorkflowRuntime &lt;/strong&gt;tipinin &amp;uuml;stlendiği misyonun aynısıdır diyebiliriz. Şimdi bu &amp;ccedil;alışmayı farklı bir &lt;strong&gt;Workflow &lt;/strong&gt;&amp;ouml;rneği &amp;uuml;zerinden değerlendirmeye &amp;ccedil;alışalım. Bu sefer parametre kullanımı ve geri d&amp;ouml;n&amp;uuml;ş tiplerinide s&amp;ouml;z konusu sınıf olayları i&amp;ccedil;erisinde değerlendirmeye &amp;ccedil;alışacağız. İşte &lt;strong&gt;Workflow2 &lt;/strong&gt;tasarım g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg94_Workflow2Design.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Workflow1'deki aktivitemizde olan bileşenleri kullanmakla beraber bu kez&lt;strong&gt; X&lt;/strong&gt; ve &lt;strong&gt;Y &lt;/strong&gt;isimli iki &lt;strong&gt;In &lt;/strong&gt;ve &lt;strong&gt;Sum &lt;/strong&gt;isimli bir &lt;strong&gt;Out &lt;/strong&gt;arg&amp;uuml;manımız olduğunu belirtelim. &lt;strong&gt;Main &lt;/strong&gt;metodu i&amp;ccedil;eriğimizi ise aşağıdaki gibi geliştirdiğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Activities;
+using System.Threading;
+
+namespace WorkflowConsoleApplication5
+{
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            #region Asenkron &amp;ccedil;alışma
+
+            AutoResetEvent aResetEvent = new AutoResetEvent(false);
+
+            // Workflow2 nesnesi &amp;ouml;rneklenir ve In arg&amp;uuml;manlarına ilk değerleri atanır
+            Workflow2 wf2 = new Workflow2
+            {
+                X = 10,
+                Y = 12
+            };
+
+            // WorkflowApplcation nesnesi &amp;ouml;rneklenirken parametre olarak &amp;ccedil;alıştırılmak istenen Workflow nesne &amp;ouml;rneği verilir.
+            WorkflowApplication wfApp = new WorkflowApplication(wf2);
+
+            // Completed olay metodu, WorkflowApplicationCompletedEventArgs tipinden olay parametresi alır.
+            // Workflow &amp;ccedil;alışmasını tamamladığında devreye girecek olay metodudur
+            wfApp.Completed = (e) =&amp;gt;
+                {
+                    // e parametresinden yararlanarak Outputs &amp;ouml;zelliğine ve dolayısıyla &amp;ccedil;alıştırılmakta olan Workflow' un Out arg&amp;uuml;manlarına ilgili Dictionary koleksiyonu &amp;uuml;zerinden erişilebilir.
+                    Console.WriteLine("Toplam Sonucu {0}, Thread ID : {1}", e.Outputs["Sum"].ToString(), Thread.CurrentThread.ManagedThreadId.ToString());
+                    aResetEvent.Set(); // Workflow' un tamamlandığı bilgisi Thread' e sinyal olarak g&amp;ouml;nderilir.
+                };
+
+            // Aborted olayı WorkflowApplicationAbortedEventArgs tipinden parametre almaktadır.
+            // Workflow bir sebepten iptal olduğunda devreye giren olay metodudur.(&amp;Ouml;rneğin, Abort metodu ile yapılan &amp;ccedil;ağrı veya bir Exception nedeniyle)            
+            wfApp.Aborted = (e) =&amp;gt;
+                {
+                    // Akışın bir istisna(Exception) nedeniyle iptal olması halinde Exception tipinden olan Reason &amp;ouml;zelliği değerlendirilir. 
+                    if(e.Reason!=null)
+                        Console.WriteLine("Workflow2 {0} sebebiyle iptal oldu", e.Reason.Message);                    
+                    aResetEvent.Set(); // Workflow' un tamamlandığı bilgisi Thread' e sinyal olarak g&amp;ouml;nderilir.
+                };
+
+            wfApp.Run(); // İşlemler başlatılır
+
+            Console.WriteLine("WorkflowApplication.Run &amp;ccedil;ağrısının hemen sonrası {0} Thread ID :{1}", DateTime.Now.ToLongTimeString(), Thread.CurrentThread.ManagedThreadId.ToString());
+
+            // Ana Thread i&amp;ccedil;erisindeki işlemlerin paralel y&amp;uuml;r&amp;uuml;d&amp;uuml;ğ&amp;uuml;n&amp;uuml; g&amp;ouml;stermek i&amp;ccedil;in kullanılan hile d&amp;ouml;ng&amp;uuml;s&amp;uuml;
+            for (int i = 0; i &amp;lt; 10; i++)
+            {
+                Console.WriteLine("Workflow &amp;ccedil;alışıyor...");
+                Thread.Sleep(1000);
+            }
+
+            aResetEvent.WaitOne(); // Eğer Workflow halen daha tamamlanmamışsa bekle.
+
+            #endregion
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rneği bu haliyle &amp;ccedil;alıştırdığımızda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ne benzer &amp;ccedil;alışma zamanı sonu&amp;ccedil;larını alırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg94_Wf2Runtime.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;Workflow2&lt;/strong&gt; &amp;ouml;rneği &amp;ccedil;alıştırıldıktan sonra ana uygulama akmaya devam etmiştir. &amp;Uuml;stelik ana uygulama akmaya devam ederken tamamlanan &lt;strong&gt;Workflow&lt;/strong&gt; ile ilişkili &lt;strong&gt;Completed &lt;/strong&gt;olay metodu da devreye girmiştir. Dikkat edilmesi gereken noktalardan biriside ana uygulamaya ait &lt;strong&gt;ManagedThreadId &lt;/strong&gt;ile &lt;strong&gt;WorkflowApplication &lt;/strong&gt;tarafından a&amp;ccedil;ılan&amp;nbsp;&lt;strong&gt;ManagedThreadId&lt;/strong&gt; değerlerinin farklı olmasıdır ki istediğimiz sonu&amp;ccedil;lardan bir diğeride budur. Nitekim &lt;strong&gt;Multi-Thread &lt;/strong&gt;&amp;ccedil;alışmanın ispatıdır. Aslında&amp;nbsp;&lt;strong&gt;WF4.0 &lt;/strong&gt;&amp;ouml;ncesindeki &lt;strong&gt;WorkflowRuntime &lt;/strong&gt;kullanımına baktığımızda neredeyse aynı&amp;nbsp;işleyiş modelinin kullanıldığını g&amp;ouml;rebiliriz. &amp;Ouml;nceki modelde de olay bazlı olarak &lt;strong&gt;Workflow &lt;/strong&gt;&amp;ouml;rneklerinin tamamlanması ve&amp;nbsp;sonlanması durumları ele alınabilmektedir. Ancak&amp;nbsp;WorkflowApplication tipinin bu şekilde kalıp kalmayacağıda&amp;nbsp;hen&amp;uuml;z belli değildir. Bunu ancak son s&amp;uuml;r&amp;uuml;mde net olarak &amp;ouml;ğrenebileceğimizi ifade edebilirim.&amp;nbsp;B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;Kişisel Not : &lt;/strong&gt;Tabiki halen Beta 2 s&amp;uuml;r&amp;uuml;m&amp;uuml;nde olduğumuzu hatırlatmak isterim. Yani bu &amp;ouml;zelliklerde değişiklikler olabilir, bazıları kaldırılabilir veya tekrardan geriye d&amp;ouml;n&amp;uuml;şler yapılabilir.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2009%2f11%2fWorkflowConsoleApplication5.rar"&gt;WorkflowConsoleApplication5.rar (43,99 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2009-11-02 02:35:00</pubDate>
+  <slug>WF-40-WorkflowInvoker-ile-Single-Thread-WorkflowApplication-ile-Multi-Thread-Beta-2</slug>
+  <tags>
+    <tag>wf</tag>
+    <tag>wf-40</tag>
+  </tags>
+  <categories>
+    <category>WF 4.0 Beta 2</category>
+  </categories>
+</post>

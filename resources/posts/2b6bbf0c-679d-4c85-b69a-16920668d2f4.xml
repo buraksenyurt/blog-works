@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Ruby Kod Parçacıkları 21 - Basit Web Server Geliştirmek</title>
+  <description>Web tabanlı çalışan uygulamalar genellikle IIS(Internet Information Services) ve benzeri ortamlar üzerinde barındırılırlar. Aslında IIS basitçe TCP soket haberleşmesi gerçekleştiren bir ürün olarak düşünülebilir. Üzerinde konuşlandırılan kaynaklara olan erişimde ise genellikle HTTP protokolü ve Get, Post vb metodları kullanılır. Gelen taleplere göre uygun servislerin devreye girmesi söz konusudur.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2016/02/web-server.gif" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Web tabanlı &amp;ccedil;alışan uygulamalar genellikle &lt;strong&gt;IIS&lt;em&gt;(Internet Information Services)&lt;/em&gt;&lt;/strong&gt; ve benzeri ortamlar &amp;uuml;zerinde barındırılırlar. Aslında &lt;strong&gt;IIS&lt;/strong&gt; basit&amp;ccedil;e &lt;strong&gt;TCP&lt;/strong&gt; soket haberleşmesi ger&amp;ccedil;ekleştiren bir &amp;uuml;r&amp;uuml;n olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. &amp;Uuml;zerinde konuşlandırılan kaynaklara olan erişimde ise genellikle &lt;strong&gt;HTTP&lt;/strong&gt; protokol&amp;uuml; ve &lt;strong&gt;Get&lt;/strong&gt;, &lt;strong&gt;Post&lt;/strong&gt; vb metodları kullanılır. Gelen taleplere g&amp;ouml;re uygun servislerin devreye girmesi s&amp;ouml;z konusudur.&lt;/p&gt;
+&lt;p&gt;İlgili &lt;strong&gt;taleplere&lt;em&gt;(Request)&lt;/em&gt;&lt;/strong&gt; verilecek &lt;strong&gt;cevaplar&lt;em&gt;(Response)&lt;/em&gt; &lt;/strong&gt;da bu hizmetler &amp;uuml;zerinden karşılanır. &amp;Ouml;rneğin .Net &amp;ccedil;alışma zamanı aspx, svc, asmx, html gibi uzantılara gelecek talepleri&amp;nbsp;ele alarak uygun cevapları d&amp;ouml;nd&amp;uuml;r&amp;uuml;r. İstenirse handler' lar veya modul' ler &amp;ouml;zelleştirilerek farklı uzantılar i&amp;ccedil;in farklı &amp;ccedil;alışma şekilleri de d&amp;uuml;zenlenebilir. Ana fikirde ise evrensel bir standarda g&amp;ouml;re gelen mesajların irdelenip uygun i&amp;ccedil;eriklerin d&amp;ouml;nd&amp;uuml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; sunucu uygulamaları s&amp;ouml;z konusudur.&lt;/p&gt;
+&lt;p&gt;Pek tabii kendi web sunucularımızı da geliştirebiliriz. İşin temel noktası &lt;strong&gt;TCP&lt;/strong&gt; soket haberleşmesini uygulayabilmek ve istemci taleplerine doğru&amp;nbsp;cevapları d&amp;ouml;nebilmektir. İşte bu yazımızda &lt;strong&gt;Ruby&lt;/strong&gt; dilini kullanarak bir web sunucusunu geliştirmek i&amp;ccedil;in gerekli bilgilere merhaba demeye &amp;ccedil;alışacağız.&amp;nbsp;İlk olarak &lt;strong&gt;IIS&lt;/strong&gt; &amp;uuml;zerinden host edilen bir web sayfasına g&amp;ouml;nderdiğimiz talebe karşılık nasıl bir &lt;strong&gt;HTTP&lt;/strong&gt; haberleşmesi ger&amp;ccedil;ekleştirildiğine bakalım.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Bunu kolayca anlayabilmek i&amp;ccedil;in &lt;a href="https://chrome.google.com/webstore/detail/live-http-headers/iaiioopjkcekapmldfgbebdclcnpgnlo" target="_blank"&gt;Live HTTP Header&lt;/a&gt;&amp;nbsp;isimli bir &lt;strong&gt;Chrome&lt;/strong&gt; eklentisine başvurdum. Malum şirket bilgisayarlarına &lt;strong&gt;Fiddler&lt;/strong&gt; gibi gelişmiş dinleyiciler kurabilmek i&amp;ccedil;in bir &amp;ccedil;ok prosed&amp;uuml;r&amp;uuml; atlatmanız lazım. Ancak &lt;strong&gt;chrome&lt;/strong&gt; eklentisi bir şekilde kurulabildi. Şşştt, kimseye s&amp;ouml;ylemeyin.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;IIS&lt;/strong&gt; &amp;uuml;zerinde host edilen&amp;nbsp;&lt;strong&gt;Asp.Net&lt;/strong&gt; ile geliştirilmiş &lt;strong&gt;WorksTodo&lt;/strong&gt; isimli bir web uygulamamız olduğunu ve &lt;strong&gt;main.aspx&lt;/strong&gt; isimli sayfasına tarayıcı &amp;uuml;zerinden bir talepte bulunduğumuzu d&amp;uuml;ş&amp;uuml;nelim. Bu durumda taraflar arasında aşağıdaki &lt;strong&gt;HTTP Header&lt;/strong&gt;&amp;nbsp;paketlerinin&amp;nbsp;hareket ettiğini g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;http://localhost/workstodo/main.aspx&lt;/strong&gt;&amp;nbsp;talebi i&amp;ccedil;in sunucuya aşağıdaki paket gider.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;GET&lt;/strong&gt; &lt;strong&gt;/workstodo/main.aspx&lt;/strong&gt; HTTP/1.1&lt;br /&gt;&lt;strong&gt;Host: localhost&lt;/strong&gt;&lt;br /&gt;Accept-Encoding: gzip, deflate, sdch&lt;br /&gt;Accept-Language: en-US,en;q=0.8,cs;q=0.6,de;q=0.4,ja;q=0.2,tr;q=0.2&lt;br /&gt;Cookie: SID={COOKIE BİLGİSİ KALDIRILDI}:&lt;br /&gt;User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36&lt;br /&gt;X-Client-Data: CKO2yQEIxLbJAQj9lcoB&lt;/p&gt;
+&lt;p&gt;IIS deki Asp.Net &amp;ccedil;alışma zamanı ise şu cevabı d&amp;ouml;ner.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;HTTP/1.1 200 OK&lt;/strong&gt;&lt;br /&gt;Cache-Control: private&lt;br /&gt;&lt;strong&gt;Content-Length: 102&lt;/strong&gt;2&lt;br /&gt;&lt;strong&gt;Content-Type: text/html; charset=utf-8&lt;/strong&gt;&lt;br /&gt;Date: Tue, 23 Feb 2016 08:09:21 GMT&lt;br /&gt;Server: Microsoft-IIS/7.5&lt;br /&gt;X-AspNet-Version: 4.0.30319&lt;br /&gt;X-Powered-By: ASP.NET&lt;/p&gt;
+&lt;p&gt;Şimdi kendimizi web sunucusu yerine koyalım ve konuyu anlamaya &amp;ccedil;alışalım. İlk olarak kulağımız s&amp;uuml;rekli a&amp;ccedil;ık olmalı. Bize gelen t&amp;uuml;m mesajları dinleyebilmeliyiz. Tabi gelen mesajların hedefi &lt;strong&gt;bsenyurt&lt;/strong&gt;&lt;em&gt;(ya da &lt;strong&gt;localhost&lt;/strong&gt; veya &lt;strong&gt;127.0.0.1&lt;/strong&gt;)&lt;/em&gt;&lt;strong&gt;&amp;nbsp;&lt;/strong&gt;isimli makine ve portuda &lt;strong&gt;8080 &lt;/strong&gt;olmalı. Şu an i&amp;ccedil;in sadece bu &lt;strong&gt;adres:port&lt;/strong&gt; &amp;uuml;zerine gelen fısıltıları&amp;nbsp;dinliyorum &amp;ccedil;&amp;uuml;nk&amp;uuml;.&lt;/p&gt;
+&lt;p&gt;Tam bu konumda iken birisi kulağıma &lt;strong&gt;workstodo/main.aspx&lt;/strong&gt; adresini i&amp;ccedil;eren bir c&amp;uuml;mle fısıldıyor. C&amp;uuml;mlede yer alan bilgileri ayrıştırıp istenen kaynağın sahibi olan &amp;ccedil;alışma zamanını tespit ediyorum. Sevgili dostum &lt;strong&gt;.Net CLR&lt;/strong&gt;. Talebi ona g&amp;ouml;nderiyorum ve buna g&amp;ouml;re bana bir cevap hazırlamasını bekliyorum. Vereceğim cevapta ise &amp;ouml;nem arz eden bazı hususlar var.&lt;/p&gt;
+&lt;p&gt;Her şeyden &amp;ouml;nce i&amp;ccedil;erik uzunluğunu&lt;em&gt;&lt;strong&gt;(Content-Length)&lt;/strong&gt;&lt;/em&gt; karşı tarafa iletmeliyim. Tabi talebin &amp;ccedil;alışması sonucu dostum bana her şey yolunda mesajını veriyorsa, karşı tarafa &lt;strong&gt;OK&lt;/strong&gt; diyebilmeliyim. Bunu derken de karşımdakinin lisanını &amp;ouml;nemsemeden evrensel bir terimle konuşmalıyım. &lt;strong&gt;HTTP 200 OK&lt;/strong&gt; gibi. Son olarak &amp;ouml;nemli olan bir diğer şey de karşı tarafa ne tip bir i&amp;ccedil;erik g&amp;ouml;nderdiğimi ifade edebilmem. Ona &lt;strong&gt;HTML&lt;/strong&gt; tipinde bir &lt;strong&gt;text&lt;/strong&gt; i&amp;ccedil;eriği g&amp;ouml;nderdiğimi s&amp;ouml;ylersem o da beni anlayıp gelen i&amp;ccedil;eriği yorumlayabilir. Tabii t&amp;uuml;m bunlara ek olarak dostumun karşı tarafa iletmek istediği asıl i&amp;ccedil;eriği de yollamam gerekiyor. Yani &lt;strong&gt;HTML&lt;/strong&gt; i&amp;ccedil;eriğinin kendisini.&lt;/p&gt;
+&lt;p&gt;Teorik olarak hikaye bu kadar basit aslında. Elbette &lt;strong&gt;IIS&lt;/strong&gt; gibi gelişmiş web suncuları yazmak sanıldığı kadar kolay değil. Hatta gerek de olmayabilir. Yine de LightWeight tadında web sunucuları yazmak istediğimiz durumlar s&amp;ouml;z konusu olabilir. &lt;strong&gt;Ruby&lt;/strong&gt;' de bu iş olduk&amp;ccedil;a basit. Aşağıdaki kod par&amp;ccedil;asında basit bir &lt;strong&gt;HTTP Web Server&lt;/strong&gt;&amp;nbsp;yazmış bulunuyoruz.&lt;/p&gt;
+&lt;pre class="brush:ruby;auto-links:false;toolbar:false" contenteditable="false"&gt;#Bsait bir "Hello World" HTTP Server
+
+require "socket" #TCPServer ve TCPSocket siniflari burada yer almakta
+
+server=TCPServer.new('localhost',8082)
+
+begin
+
+while(session=server.accept)
+	request=session.gets #gelen talebin ilk satiri okunuyor
+	STDERR.puts request #log' lar console' a yazilacak
+	
+	response="&amp;lt;b1&amp;gt;Hello Rubyist!&amp;lt;/b1&amp;gt;&amp;lt;br/&amp;gt;&amp;lt;i&amp;gt;This is xion control. Wellcome home&amp;lt;/i&amp;gt;"
+	session.print "HTTP/1.1 200 OK\r\n" +
+				"Content-Type: text/html\r\n" +
+				"Content-Length: #{response.bytesize}\r\n" +
+				"Connection: close\r\n"
+	session.print "\r\n"	#HTTP protokolu geregi bir alt satira gecilmesi gerekiyor
+	session.print response #asil body mesaji yazdiriliyor
+	session.close #sokect baglantisi kapatiliyor
+end
+
+rescue Errno::EPIPE
+  STDERR.puts "Connection broke!"
+  end&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;ncelikli olarak uygulamamızı test edelim. Ruby kod dosyasını &amp;ccedil;alıştırdıktan sonra &lt;strong&gt;localhost:8082&lt;/strong&gt; adresine herhangi bir talepte bulunmamız yeterlidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/02/rubywebserver_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Neler yaptığımıza kısaca bakalım. Her şeyden &amp;ouml;nce &lt;strong&gt;TCP&lt;/strong&gt; protokol&amp;uuml;ne g&amp;ouml;re basit bir soket haberleşmesi s&amp;ouml;z konsuudur. Bu nedenle socket mod&amp;uuml;l&amp;uuml;nde bulunan &lt;strong&gt;TCPServer&lt;/strong&gt; sınıfından yararlanıyoruz. Sınıfa ait nesne &amp;ouml;rneğini oluştururken verdiğimiz iki parametre ile makine adını ve port bilgisini bildiriyoruz. &amp;Ouml;rneğimize g&amp;ouml;re &lt;strong&gt;localhost:8082&lt;/strong&gt; adresini ele almaktayız. Sonrasında istemciden gelen talepler olduğu s&amp;uuml;rece devam edecek bir while d&amp;ouml;ng&amp;uuml;m&amp;uuml;z bulunuyor&lt;em&gt;(Burada sonsuz bir d&amp;ouml;ng&amp;uuml; de s&amp;ouml;z konusu olabilir tabii)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Gelen talepler sonucu istemci ile aramızdaki iletişimi bir &lt;strong&gt;oturum&lt;em&gt;(Session)&lt;/em&gt;&lt;/strong&gt; olarak da d&amp;uuml;ş&amp;uuml;nebiliriz. &lt;strong&gt;session.gets&lt;/strong&gt; &amp;ccedil;ağrısı kodun kritik olan ifadelerinden&lt;em&gt;(pek kullanmasakta)&lt;/em&gt;. Burada gelen &lt;strong&gt;HTTP Header&lt;/strong&gt; bilgisinin ilk satırını okuyoruz ki bu bilgilerden yararlanarak pek &amp;ccedil;ok işlem yapabiliriz. &amp;Ouml;rneğin talebin ne tip bir kaynağa yapıldığını ve HTTP metodunun ne olduğunu &amp;ouml;ğrenebiliriz. &amp;Ouml;rnek kodumuzda ise bu bilgiyi sadece console penceresine basıyoruz.&lt;/p&gt;
+&lt;p&gt;Bir diğer &amp;ouml;nemli kısım ise istemciye d&amp;ouml;nd&amp;uuml;r&amp;uuml;lecek olan cevap. &lt;strong&gt;HTTP response&lt;/strong&gt;' a ait bilgileri &lt;strong&gt;case-sensitive&lt;/strong&gt; olarak eksiksiz bir şekilde hazırlamalıyız. &lt;strong&gt;HTTP 200 OK&lt;/strong&gt; dışında, &lt;strong&gt;Content-Type&lt;/strong&gt; ve &lt;strong&gt;Content-Length&lt;/strong&gt; değerleri de &amp;ccedil;ok &amp;ouml;nemli. Oluşturulan&amp;nbsp;&lt;strong&gt;Header&lt;/strong&gt; bilgisinin arkasınada response' u basıyoruz. O da basit bir &lt;strong&gt;HTML&lt;/strong&gt; i&amp;ccedil;eriği aslında. D&amp;ouml;ng&amp;uuml;m&amp;uuml;z&amp;uuml;n son satırında ise session' ı kapatıyoruz. T&amp;uuml;m kod par&amp;ccedil;ası bir hata kontrol&amp;uuml; i&amp;ccedil;erisinde yer almakta. &amp;Ouml;zellikle iletişim kanalının kopması gibi bir sorun oluşabilir(ki ben denemelerim sırasında buna rastladım) Bu nedenle EPIPE durumunu kontrol altına almaya &amp;ccedil;alıştık ancak ger&amp;ccedil;ek hayat senaryosunda servisin tekrardan ayağa kaldırılması da gerekecektir.&lt;/p&gt;
+&lt;p&gt;Kodumuz ilgili adrese nasıl bir talep gelirse gelsin hep aynı cevabı verecektir aslında. Nitekim gelen HTTP Header bilgisini herhangi bir şekilde ayrıştırmış ve anlamaya &amp;ccedil;alışmış değiliz. Oysa ki gelen talebin hedef olarak g&amp;ouml;sterdiği adres bilgisine g&amp;ouml;re bir aksiyon alabiliriz. S&amp;ouml;z gelimi bir pdf talebi geliyorsa buna uygun bir &amp;ccedil;ıktı &amp;uuml;retmeyi sağlayabiliriz. Dilerseniz bu durumu ele alaraktan &amp;ouml;rnek kodumuzu biraz daha geliştirelim ve aşağıdaki hale getirelim.&lt;/p&gt;
+&lt;pre class="brush:ruby;auto-links:false;toolbar:false" contenteditable="false"&gt;require 'socket'
+require 'uri'
+
+server=TCPServer.new('localhost',8082) #taleplerin dinlenecegi makine:port
+
+begin
+
+	while(session=server.accept) #talep geldigi surece devam
+		request=session.gets #Header bilgisini al
+		STDERR.puts request	#ekrana bas
+		request_uri  = request.split(" ")[1] #bosluklara gore ayirip talep edilen dosyayi bul
+		path         = URI.unescape(URI(request_uri).path) #escape karakterleri cikart
+		File.join('c:\\docs', path) #Fiziki yolu belirle
+		ext = File.extname(path).split(".").last #dosya uzantisini al
+		
+		if File.exist?(path) &amp;amp;&amp;amp; ext=="jpg" &amp;amp;&amp;amp; !File.directory?(path) #dosya varsa uzanti dogruysa
+			File.open(path, "rb") do |file| #dosyayi ac ve HTTP 200 OK paketini hazirla
+				session.print "HTTP/1.1 200 OK\r\n" +
+					   "Content-Type: image/jpeg\r\n" +
+					   "Content-Length: #{file.size}\r\n" +
+					   "Connection: close\r\n"
+				session.print "\r\n"
+				IO.copy_stream(file, session) #Resim icerigine ait byte array'i gonder
+			end
+		else #dosya bulunamadiysa HTTP 404 hatasini don
+			message = "File not found\n"		
+			session.print "HTTP/1.1 404 Not Found\r\n" +
+						 "Content-Type: text/plain\r\n" +
+						 "Content-Length: #{message.size}\r\n" +
+						 "Connection: close\r\n"
+			session.print "\r\n"
+			session.print message
+		end
+		session.close #oturumu kapat
+	end
+
+rescue Errno::EPIPE
+  STDERR.puts "Connection broke!"
+  end&lt;/pre&gt;
+&lt;p&gt;Bu sefer &lt;strong&gt;localhost:8082&lt;/strong&gt; adresinde &lt;strong&gt;docs/[bir dosya adı].jpg&lt;/strong&gt; ile gelen talepleri değerlendirdiğimiz bir web sunucusu geliştirdik. Yani &lt;strong&gt;localhost:8082/docs/resim1.jpg&lt;/strong&gt; gibi talepleri ele alan&amp;nbsp;ve dosya varsa ilgili resim i&amp;ccedil;eriğini tarayıcıya basan bir kod s&amp;ouml;z konusu. Gelen talepler&lt;strong&gt;&amp;nbsp;c:\\docs&lt;/strong&gt; klas&amp;ouml;r&amp;uuml;ndeki &lt;strong&gt;jpg&lt;/strong&gt; uzantılı dosyalar ile ilişkilendirilmeye &amp;ccedil;alışılmakta. &amp;Ccedil;alışma zamanında aşağıdakine benzer sonu&amp;ccedil;lar elde edebiliriz.&lt;/p&gt;
+&lt;p&gt;Var olan bir dosyanın talep edilmesi sonucu&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/02/rubywebserver_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Olmayan bir dosyanın talep edilmesi sonucu&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/02/rubywebserver_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;jpg dışı bir uzantının talep edilmesi sonucu&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/02/rubywebserver_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rnek biraz daha geliştirilebilir. S&amp;ouml;z gelimi sadece jpg uzantılı değil normal bir web sunucusu gibi farklı tipte&amp;nbsp;i&amp;ccedil;erikleri ele alacak hale de getirilebilir&lt;em&gt;(Bu noktada farklı &lt;strong&gt;content-type&lt;/strong&gt;' ların nasıl ele alınması gerektiğine bakılabilir)&lt;/em&gt; Ayrıca sadece &lt;strong&gt;Get&lt;/strong&gt; değil &lt;strong&gt;Post&lt;/strong&gt; gibi taleplerin ele alınması da s&amp;ouml;z konusu olabilir. Sunucu servis bazlı i&amp;ccedil;erikleri de barındırıp buna uygun &amp;ccedil;alışabilir vb... Tahmin edileceği &amp;uuml;zere bu g&amp;uuml;zel araştırma konularını siz değerli okurlarıma bırakıyorum.&amp;nbsp;B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2016-02-22 14:00:00</pubDate>
+  <slug>ruby-kod-parcaciklari-21-basit-web-server-gelistirmek</slug>
+  <tags>
+    <tag>tcpserver</tag>
+    <tag>socket</tag>
+    <tag>ruby</tag>
+    <tag>socket-programming</tag>
+    <tag>http</tag>
+    <tag>http-header</tag>
+    <tag>get</tag>
+    <tag>tcp</tag>
+    <tag>iis</tag>
+  </tags>
+  <categories>
+    <category>Ruby</category>
+  </categories>
+</post>

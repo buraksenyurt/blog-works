@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WF 4.0 - Veri(Data)[Beta 1]</title>
+  <description>Bir süredir Workflow Foundation 4.0 ile ilişkili blog yazılarını, makaleleri ve görsel dersleri takip etmekteyim. Bu araştırmalarım sırasında Workflow Foundation 4.0 modelinde veriye(Data) olan bakış açısının WF 3.X sürümüne göre oldukça farklılaştığını gördüm.</description>
+  <content>&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Bir s&amp;uuml;redir &lt;strong&gt;Workflow Foundation 4.0 &lt;/strong&gt;ile ilişkili blog yazılarını, makaleleri ve g&amp;ouml;rsel dersleri takip etmekteyim. Bu araştırmalarım sırasında &lt;strong&gt;Workflow Foundation 4.0 &lt;/strong&gt;modelinde &lt;strong&gt;veriye(Data) &lt;/strong&gt;olan bakış a&amp;ccedil;ısının &lt;strong&gt;WF 3.X &lt;/strong&gt;s&amp;uuml;r&amp;uuml;m&amp;uuml;ne g&amp;ouml;re olduk&amp;ccedil;a farklılaştığını g&amp;ouml;rd&amp;uuml;m. &lt;strong&gt;WF 3.X &lt;/strong&gt;tabanlı modelde, aktivite bazlı verileri temsil etmek i&amp;ccedil;in genellikle standart sınıf &lt;strong&gt;&amp;ouml;zelliklerinden(Property)&lt;/strong&gt; veya &lt;strong&gt;WPF'&lt;/strong&gt; ten esinlenilen &lt;strong&gt;bağımlı &amp;ouml;zelliklerden(Dependency Property)&lt;/strong&gt; yararlanılmaktadır. &lt;strong&gt;WF 4.0&lt;/strong&gt; modelinde ise veriyi temsil etmek amacıyla &lt;strong&gt;Variable&lt;/strong&gt; veya &lt;strong&gt;Argument&lt;/strong&gt; t&amp;uuml;revli tiplerden yararlanıldığı g&amp;ouml;r&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;p&gt;Bu tiplerin t&amp;uuml;revleri&amp;nbsp;veriyi doğrudan tutmazlar. Bunun yerine veriyi tanımlar ve elde edilmesini sağlarlar. Verinin i&amp;ccedil;eriği &lt;strong&gt;Workflow&lt;/strong&gt; &amp;uuml;zerinde bir yerlerde saklanmaktadır. Bu noktada &lt;strong&gt;Variable &lt;/strong&gt;kavramını aynen &lt;strong&gt;Imperative&lt;/strong&gt; programlama dillerindeki kullanılış bi&amp;ccedil;imi ile d&amp;uuml;ş&amp;uuml;nebiliriz. Bu nedenle &lt;strong&gt;Variable&lt;/strong&gt; veya &lt;strong&gt;Argument &lt;/strong&gt;t&amp;uuml;revli tipler tanımlandıkları scope dahilinde kullanılabilirler. Dolayısıyla bir &lt;strong&gt;Variable &lt;/strong&gt;bir Workflow i&amp;ccedil;in &lt;strong&gt;k&amp;ouml;k seviyede(Root Level) &lt;/strong&gt;tanımlanırsa t&amp;uuml;m alt aktiviteler tarafından kullanılabilir. Bug&amp;uuml;nk&amp;uuml; &amp;ouml;rneğimizde &lt;a title="WF 4.0 - Workflow ve Object Initialization" href="/post/WF-40-Workflow-ve-Object-Initialization.aspx" target="_blank"&gt;bir &amp;ouml;nceki blog &lt;/a&gt;yazımızda olduğu gibi kod bazlı bir &lt;strong&gt;Workflow&lt;/strong&gt; &amp;ouml;rneği geliştirecek ve &lt;strong&gt;Variable&lt;/strong&gt; kullanımı ile veriyi nasıl ele alacağımızı g&amp;ouml;rmeye &amp;ccedil;alışacağız. Aslında .Net 4.0 i&amp;ccedil;erisindeki oluşuma baktığımızda &lt;strong&gt;Variable&amp;lt;T&amp;gt;&lt;/strong&gt; i&amp;ccedil;in &lt;strong&gt;Variable&lt;/strong&gt; isimli bir abstract sınıftan t&amp;uuml;retme yapıldığını g&amp;ouml;rebiliriz. Aşağıdaki sınıf diyagramında bu durum g&amp;ouml;r&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f10%2fblg89_ClassDiagram.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Burada dikkat edilmesi gereken noktalardan birisi, &lt;strong&gt;Variable&amp;lt;T&amp;gt;&lt;/strong&gt; tipinin &lt;strong&gt;sealed &lt;/strong&gt;olarak tanımlanmış olmasıdır. Yani kendisinden t&amp;uuml;retme yapamayız. Diğer yandan &lt;strong&gt;Variable &lt;/strong&gt;tipi &lt;strong&gt;abstract &lt;/strong&gt;bir sınıftır ve bu nedenle kendisinden t&amp;uuml;retme yapılarak &amp;ouml;zel &lt;strong&gt;Variable &lt;/strong&gt;t&amp;uuml;revlerinin &amp;uuml;retilmesi m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r.&lt;/p&gt;
+&lt;p&gt;Evet bu kadar laf kalabalığından sonra yeni veri modeline kısaca bakmaya &amp;ccedil;alışalım. Bu ama&amp;ccedil;la&lt;strong&gt; Visual Studio 2010 Beta 1&lt;/strong&gt; &amp;uuml;zerinden a&amp;ccedil;tığımız basit bir &lt;strong&gt;Console&lt;/strong&gt; projesini kullanıyor olacağız. Projede &lt;strong&gt;Workflow&lt;/strong&gt; alt yapısını ele almak i&amp;ccedil;in tek yapmamız gereken&lt;strong&gt; System.Activities&lt;/strong&gt; isimli &lt;strong&gt;assembly' &lt;/strong&gt;ın referans edilmesi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f10%2fblg89_ActivityReference.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Uygulama kodlarını ise aşağıdaki gibi geliştirdiğimizi d&amp;uuml;ş&amp;uuml;nebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Activities;
+using System.Activities.Statements;
+
+namespace UsingVariables
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // Değişken tanımlanır. Tanımlanırken varsayılan olarak(Default) bir nesne &amp;ouml;rneğide verilir
+            Variable&amp;lt;Player&amp;gt; firstPlayer = new Variable&amp;lt;Player&amp;gt;
+            {
+                Name = "FirstPlayer",
+                Default = new Player { Name = "Zen-R2", Location = new Location { X = 10, Y = 12, Altitude = 100 }, PlayerType = PlayerType.Computer, TotalPoint=10 }               
+            };
+
+            // Bir Sequence aktivitesi tanımlanır. Root aktivite.
+            Sequence gameFlow = new Sequence();
+            // Variable Sequence nesne &amp;ouml;rneğinin Variables koleksiyonuna eklenir.
+            gameFlow.Variables.Add(firstPlayer);
+
+            // Atama işlemi i&amp;ccedil;in basit bir Assign aktivitesi gameFlow isimli Sequence nesne &amp;ouml;rneğinin Activities koleksiyonuna eklenir.
+            // To kısmında kime atama yapılacağı belirlenir. Tasarım zamanından farklı olarak bir expression kullanılır. firstPlayer isimli değişkenin işaret ettiği veri alanında TotalPoint değeri alınır.
+            // Value &amp;ouml;zelliğine verilen değer ile atama yapılır. Atamada o anki variable' ın TotalPoint değeri 10.1 birim arttırılmaktadır.
+            gameFlow.Activities.Add(
+                new Assign&amp;lt;double&amp;gt;() { 
+                     To=new OutArgument&amp;lt;double&amp;gt;(v=&amp;gt;firstPlayer.Get(v).TotalPoint),
+                     Value=new InArgument&amp;lt;double&amp;gt;(v=&amp;gt;firstPlayer.Get(v).TotalPoint+10.1)
+                }
+                );
+
+            // &amp;Ouml;rnek olarak birde Location &amp;ouml;zelliğinin işaret ettiği i&amp;ccedil;erik değiştirilmektedir.
+            gameFlow.Activities.Add(
+                new Assign&amp;lt;Location&amp;gt;()
+                {
+                    To = new OutArgument&amp;lt;Location&amp;gt;(v =&amp;gt; firstPlayer.Get(v).Location),
+                    Value = new Location { X = 10, Y = 15, Altitude = 99 }
+                }
+                );
+
+            // Ekrana bilgi yazdırmak i&amp;ccedil;in WriteLine tipinden bir aktivite daha eklenir
+            // Text &amp;ouml;zelliğinde ekrana bilgi yazdırabilmek i&amp;ccedil;in InArgument nesne &amp;ouml;rneğinden yararlanılır ve o anki firstPlayer variable' ının Name ve TotalPoint değerleri yazdırılır.
+            gameFlow.Activities.Add(
+                new WriteLine { 
+                     Text=new InArgument&amp;lt;string&amp;gt;(v=&amp;gt;String.Format("{0} isimli oyuncunun puanı {1}. Deniz seviyesinden y&amp;uuml;ksekliği {2}",firstPlayer.Get(v).Name,firstPlayer.Get(v).TotalPoint.ToString(),firstPlayer.Get(v).Location.Altitude))
+                }
+                );
+            
+            // gameFlow isimli Workflow &amp;ccedil;ağırılır ve başlatılır
+            WorkflowInvoker.Invoke(gameFlow);
+        }
+    }
+
+    class Player
+    {
+        public string Name { get; set; }
+        public Location Location { get; set; }
+        public PlayerType PlayerType { get; set; }
+        public double TotalPoint { get; set; }
+    }
+
+    class Location
+    {
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Altitude { get; set; }
+    }
+
+    enum PlayerType
+    {
+        Computer,
+        Human,
+        Hybrid
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rneğin herhangibir ger&amp;ccedil;ek hayat işlevselliği bulunmamaktadır ancak kullanıcı tanımlı bir tipten&lt;em&gt;(&amp;ouml;rneğimizde Player isimli sınıf)&lt;/em&gt;&amp;nbsp;oluşturulan&amp;nbsp;&lt;strong&gt;Variable'&lt;/strong&gt; ın &lt;strong&gt;Sequence &lt;/strong&gt;tipinden bir nesne &amp;ouml;rneği i&amp;ccedil;erisinde nasıl değerlendirilebildiği a&amp;ccedil;ık bir şekilde g&amp;ouml;r&amp;uuml;lmektedir. Aslında konsept son derece basittir. &lt;strong&gt;Variable&amp;lt;T&amp;gt; &lt;/strong&gt;tipinden bir nesne &amp;ouml;rneği tanımlanırken &lt;strong&gt;Default &lt;/strong&gt;&amp;ouml;zelliği ile ilk değer ataması yapılmaktadır ki zorunlu değildir. Yani &lt;strong&gt;Variable' &lt;/strong&gt;ın i&amp;ccedil;eriği akışa dışarıdan gelebilir. Sonrasında bu değişkenin kullanılmak istenen scope i&amp;ccedil;erisine bildirilmesi gerekmektedir. &amp;Ouml;rnekte &lt;strong&gt;gameFlow &lt;/strong&gt;isimli &lt;strong&gt;Sequence &lt;/strong&gt;aktivite &amp;ouml;rneğinin &lt;strong&gt;Variables &lt;/strong&gt;koleksiyonuna yapılan ekleme ile bu bildirim ger&amp;ccedil;ekleştirilmektedir. Nitekim s&amp;ouml;z konusu değişkeninin, i&amp;ccedil;eride yer alan t&amp;uuml;m aktiviteler tarafından kullanılması istenmektedir.&lt;/p&gt;
+&lt;p&gt;Kodun ilerleyen kısımlarında sembolik olarak &lt;strong&gt;firstPlayer &lt;/strong&gt;isimli &lt;strong&gt;Variable&amp;lt;Player&amp;gt; &lt;/strong&gt;tipine ait &amp;ouml;zelliklerin bazılarında değişiklikler yapılmıştır. Bu işlemler i&amp;ccedil;in &lt;strong&gt;Expression' &lt;/strong&gt;lardan yararlanılmaktadır. Değiştirme işlemlerinde dikkat edileceği &amp;uuml;zere &lt;strong&gt;Assign&amp;lt;T&amp;gt; &lt;/strong&gt;isimli aktiviteden yararlanılmaktadır. İlk Assign aktivitesine ait &lt;strong&gt;To &lt;/strong&gt;ve &lt;strong&gt;Value &lt;/strong&gt;&amp;ouml;zelliklerinde &lt;strong&gt;InArgument &lt;/strong&gt;ve &lt;strong&gt;OutArgument &lt;/strong&gt;tiplerinden yararlanılarak verinin elde edilmesi ve değer&amp;nbsp;ataması işlemleri&amp;nbsp;yapılmaktadır.&lt;/p&gt;
+&lt;p&gt;İkinci&amp;nbsp;Assign aktivitesinde ise generic olarak Location tipi belirtildiğinden Value kısmında doğrudan yeni bir&amp;nbsp;Location nesne &amp;ouml;rneğine atama yapılmaktadır.&amp;nbsp;Her iki aktivite i&amp;ccedil;inde dikkat edilmesi gereken noktalardan&amp;nbsp;birisi, değeri alınmak istenen &amp;ouml;zelliğe erişilirken &lt;strong&gt;firstPlayer &lt;/strong&gt;isimli değişkenin&amp;nbsp;&lt;strong&gt;Get &lt;/strong&gt;metodundan&amp;nbsp;yararlanılıyor&amp;nbsp;olmasıdır. Zaten&amp;nbsp;kodlama sırasında &lt;strong&gt;intelli-sense &lt;/strong&gt;&amp;ouml;zelliği devreye girmekte ve&amp;nbsp;&lt;strong&gt;Get &lt;/strong&gt;metodu sonrasında kullanılabilecek t&amp;uuml;m &lt;strong&gt;Player&lt;/strong&gt; tipi &amp;ouml;zellikleri g&amp;ouml;sterilmektedir. Programda son olarak &lt;strong&gt;Workflow &lt;/strong&gt;&amp;ouml;rneğinin &amp;ccedil;alıştırılması sağlanmaktadır. Uygulamanın &amp;ccedil;alışma zamanı g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f10%2fblg89_WfRuntime.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere başlangı&amp;ccedil;ta 10 olan puan 10.1 birim arttırılmış ve&amp;nbsp;Location tipi &amp;uuml;zerinde tutulan Altitude değeride 1 birim azaltılmıştır.&lt;/p&gt;
+&lt;p&gt;Elbette &lt;strong&gt;Workflow 4.0' &lt;/strong&gt;ın &lt;strong&gt;WPF &lt;/strong&gt;tabanlı bir &lt;strong&gt;IDE &lt;/strong&gt;kullanıyor olması g&amp;ouml;z ardı edilemez. Bir başka deyişle s&amp;ouml;z konusu &lt;strong&gt;Variable &lt;/strong&gt;ekleme işlemleri aslında tasarım zamanında &amp;ccedil;ok daha kolay bir şekilde ger&amp;ccedil;ekleştirilebilmektedir. Ancak yazıyı hazırladığım zaman diliminde kullandığım ve public olan &lt;strong&gt;Visual Studio 2010 Beta 1 &lt;/strong&gt;s&amp;uuml;r&amp;uuml;m&amp;uuml;ne ait &lt;strong&gt;WF designer &lt;/strong&gt;ne yazıkki IDE tekrardan başlatılmasına nedenl olmaktadır. &lt;img title="Undecided" src="/editors/tiny_mce3/plugins/emotions/img/smiley-undecided.gif" alt="Undecided" border="0" /&gt;&amp;nbsp;Bu nedenle şimdilik kod tarafı ile idare etmeniz gerekiyor.&lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2009%2f10%2fUsingVariablesV2.rar"&gt;UsingVariablesV2.rar (26,44 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2009-10-12 14:48:00</pubDate>
+  <slug>WF-40-Veri(Data)</slug>
+  <tags>
+    <tag>wf</tag>
+    <tag>wf-40</tag>
+  </tags>
+  <categories>
+    <category>WF 4.0 Beta 1</category>
+  </categories>
+</post>

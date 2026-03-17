@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Dosya Satır Sayısını Bulmak</title>
+  <description>Malum Bankaların sistemleri halen daha eski olabildiğinden, bölümler arası veya uygulamalar arası veri aktarmanın en popüler yollarından birisi olarak Text tabanlı dosya formatları göz önüne alınmaktadır. Bazen onlarca megabyte' ı aşan ve milyonlarca satırdan oluşabilen düzenli text dosyaları söz konusu olur ve bunların bir şekilde uygulamaların konuştuğu veritabanı ortamlarına işlenerek, ilişkisel veri bütünlüğü içerisinde yerlerini alması beklenir.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/1370555_lots_of_files_2.jpg"&gt;&lt;img style="margin-left: 0px; display: inline; margin-right: 0px; border-width: 0px;" title="1370555_lots_of_files_2" src="/pics/1370555_lots_of_files_2_thumb.jpg" alt="1370555_lots_of_files_2" width="240" height="180" align="right" border="0" /&gt;&lt;/a&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Eğer sizde zamanında benim gibi bankaların teknoloji departmanlarında &amp;ccedil;alışmış ve yazılım geliştirmişseniz, eminimki hayatınızın bir d&amp;ouml;neminde b&amp;uuml;y&amp;uuml;k boyutlu &lt;strong&gt;Text &lt;/strong&gt;dosyaları ile &amp;ccedil;alışmak zorunda kalmışsınızdır.&lt;/p&gt;
+&lt;p&gt;Malum Bankaların sistemleri halen daha eski olabildiğinden, b&amp;ouml;l&amp;uuml;mler arası veya uygulamalar arası veri aktarmanın en pop&amp;uuml;ler yollarından birisi olarak &lt;strong&gt;Text &lt;/strong&gt;tabanlı dosya formatları g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınmaktadır. Bazen onlarca &lt;strong&gt;megabyte&lt;/strong&gt;' ı aşan ve milyonlarca satırdan oluşabilen d&amp;uuml;zenli text dosyaları s&amp;ouml;z konusu olur ve bunların bir şekilde uygulamaların konuştuğu veritabanı ortamlarına işlenerek, ilişkisel veri b&amp;uuml;t&amp;uuml;nl&amp;uuml;ğ&amp;uuml; i&amp;ccedil;erisinde yerlerini alması beklenir.&lt;/p&gt;
+&lt;h1&gt;Vaka&lt;/h1&gt;
+&lt;p&gt;Aktarım işlemleri sırasında &amp;ccedil;oğunlukla &lt;strong&gt;SSIS(Sql Server Integration Services) &lt;/strong&gt;paketlerinden yararlanılmaktadır veya ekstra 3nc&amp;uuml; parti ara&amp;ccedil;lar kullanılır. Lakin bazen kendi uygulamalarımız i&amp;ccedil;erisinde bu tip dosyaların kod yardımıyla ayrıştırılması ve işlenmesi de gerekebilir. B&amp;ouml;yle bir halde ise son kullanıcının durumdan haberdar edilmesi ve &amp;ouml;zellikle işlem &amp;ccedil;ok uzun s&amp;uuml;recekse bir&lt;strong&gt; Progress Bar&lt;/strong&gt; bileşeni ile&lt;em&gt;(En azından Windows Forms tarafı i&amp;ccedil;in)&lt;/em&gt; anlık ilerleme durumunun g&amp;ouml;sterilmesi uygun olabilir. Tabi anlık durumun bir dosya i&amp;ccedil;in g&amp;ouml;sterilmesi s&amp;ouml;z konusu ise, dosyanın toplam satır sayısının da bilinmesi gerekecektir.&lt;/p&gt;
+&lt;p&gt;Hımmm&amp;hellip;Bir dosyanın toplam satır sayısı nasıl bulunabilir peki? Bunun i&amp;ccedil;in aklımıza gelecek ve uygulayabileceğimiz bir &amp;ccedil;ok yol bulunmakta. Ancak hangisinin daha efektif olduğunu bir şekilde tespit etmemiz ve g&amp;ouml;rmemiz &amp;ouml;nemlidir. Dolayısıyla bu yazımızda, bir text dosyanın satır sayısını bulmak i&amp;ccedil;in kullanabileceğimiz metodlardan bazılarını ve bu fonksiyonların toplam &amp;ccedil;alışma s&amp;uuml;relerini hesaplatacağız. Tabi alacağımız sonu&amp;ccedil;lar sistemden sisteme farklılık g&amp;ouml;sterebilirler.&lt;/p&gt;
+&lt;h1&gt;Hazırlıklar&lt;/h1&gt;
+&lt;p&gt;İlk olarak operasyonel işlemleri &amp;uuml;stlenen tipimizi ve test kodumuzu geliştirip &amp;uuml;zerinde kısaca konuşalım. Uygulamamıza ait sınıf diagramı ve kod i&amp;ccedil;eriği aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/diagram.png"&gt;&lt;img style="display: inline; border-width: 0px;" title="diagram" src="/pics/diagram_thumb.png" alt="diagram" width="247" height="369" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Diagnostics; 
+using System.IO; 
+using System.Linq; 
+using System.Reflection; 
+using System.Text.RegularExpressions;
+
+namespace FindLineCountsApp 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            // Satır sayısı hesap edilecek olan dosya adresi alınır 
+            string file = Path.Combine(Environment.CurrentDirectory, "Content.txt");
+
+            // Hesaplama işlemlerini &amp;uuml;stlenen tipimiz 
+           FileProcessor prcsr=new FileProcessor(file);
+
+            // Reflection' dan yararlanarak, FileProcessor tipi i&amp;ccedil;erisinde LineTest niteliği ile işaretlenmiş ne kadar metod varsa &amp;ccedil;ağırıyor ve her birinin hesaplama s&amp;uuml;relerini buluyoruz. 
+            Type t = prcsr.GetType(); 
+            foreach (var method in t.GetMethods()) 
+            { 
+               if (method.GetCustomAttributes(false).Length == 1) 
+                { 
+                    var lAttr = (method.GetCustomAttributes(false)[0]) as LineTestAttribute; 
+                    if (lAttr != null) 
+                    { 
+                        // Kronometremizi her metod &amp;ccedil;ağrısı i&amp;ccedil;erisinde oluşturuyoruz 
+                        Stopwatch watcher = new Stopwatch(); 
+                       watcher.Start(); // Kronometre start 
+                        var result = method.Invoke(prcsr, BindingFlags.InvokeMethod, null, null, null); 
+                            // Metod &amp;ccedil;ağırılıyor 
+                        watcher.Stop(); // Kronometre stop 
+                        Console.WriteLine("Method {0}\tLineCount {1}\tDuration {2} milisaniye", method.Name,  result.ToString(), watcher.ElapsedMilliseconds.ToString()); 
+                    } 
+                } 
+            } 
+        } 
+    }
+
+    class FileProcessor 
+    { 
+        private string _fileName;
+
+        public FileProcessor(string fileName) 
+        { 
+            _fileName = fileName; 
+        }
+
+        // Hesaplama metodlarımızdan birisi File tipinin ReadAllLines metodunu kullanarak d&amp;ouml;nen dizinin uzunluğuna bakar 
+        [LineTest] 
+        public int Compute1() 
+        { 
+            int lineCount = 0;
+
+            lineCount=File.ReadAllLines(_fileName).Length;
+
+            return lineCount; 
+        } 
+        // Dosya baştan sona okunurken Alt Satıra ge&amp;ccedil;me karakteri araştırılır '\n' bu -1 olmadığı s&amp;uuml;rece yani dosya sonuna gelinmediği s&amp;uuml;rece satır sayısı ve pozisyon arttırılarak devam edilir. 
+       [LineTest] 
+        public int Compute2() 
+        { 
+            int lineCount = 0; 
+            int position = 0; 
+            while ((position = File.ReadAllText(_fileName).IndexOf('\n', position)) != -1) 
+            { 
+                lineCount++; 
+                position++; 
+            } 
+            return lineCount+1; 
+        }
+
+        // RegEx ifadesinden yararlanılarak \n' lerin sayısı hesaplanır. 
+        [LineTest] 
+        public int Compute3() 
+        { 
+            int lineCount = 0;
+
+            Regex regEx = new Regex("\n", RegexOptions.Multiline); 
+            MatchCollection matchCollection = regEx.Matches(File.ReadAllText(_fileName)); 
+            lineCount=matchCollection.Count;
+
+            return lineCount+1; 
+        }
+
+        // Bu sefer \n karakterlerinin tespiti i&amp;ccedil;in Linq sorgusundan yararlanılmaktadır. 
+        [LineTest] 
+        public int Compute4() 
+        { 
+            int lineCount = 0;
+
+            lineCount=(from ch in File.ReadAllText(_fileName) 
+             where ch == '\n' 
+             select ch).Count();
+
+            return lineCount+1; 
+        }
+
+        // Bu kez dosya i&amp;ccedil;eriği bir char dizisine atanır ve t&amp;uuml;m dizide d&amp;ouml;n&amp;uuml;lerek \n' lerin toplam sayısı bulunur 
+        [LineTest] 
+        public int Compute5() 
+        { 
+            int lineCount = 0; 
+            string text = File.ReadAllText(_fileName); 
+            int posMax = text.Length; 
+            char[] a = text.ToCharArray();
+
+            for (int position = 0; position &amp;lt; posMax; ) 
+                if (a[position++] == '\n') 
+                    lineCount++; 
+            return lineCount+1; 
+        }
+
+        // Bu seferki metodumuzda dosyanın uzunluğundan, dosya i&amp;ccedil;erisinde new line karakterlerinin kaldırılması sonucu oluşan i&amp;ccedil;eriğin uzunluğunu &amp;ccedil;ıkartarak hesaplama yaptırıyoruz 
+        [LineTest] 
+        public int Compute6() 
+        { 
+            int lineCount = 0;
+
+            string text = File.ReadAllText(_fileName); 
+            lineCount=text.Length - text.Replace("\n", "").Length;
+
+            return lineCount+1; 
+        }
+
+        // Count Extension Method' unun kullanılması ve new line' ların sayılarının bulunarak satır sayısının hesap edilmesi işlemini &amp;uuml;stlenir 
+        [LineTest] 
+        public int Compute7() 
+        { 
+            int lineCount = 0;
+
+            lineCount=File.ReadAllText(_fileName).Count(c =&amp;gt; (c == '\n'));
+
+            return lineCount+1; 
+        }
+
+        // Bu sefer dosyanın her bir karekteri foreach d&amp;ouml;ng&amp;uuml;s&amp;uuml; ile dolaşılıyor ve new line karakterlerinin sayısı hesap ediliyor 
+        [LineTest] 
+        public int Compute8() 
+        { 
+            int lineCount = 0;
+
+            foreach (char c in File.ReadAllText(_fileName)) 
+                if (c == '\n') 
+                    lineCount++;
+
+            return lineCount+1; 
+        } 
+    }
+
+    // Satır sayısını hesaplama ile ilişkili test metodlarımızı belirtmek amacıyla basit bir attribute tanımlıyoruz 
+    [AttributeUsage(AttributeTargets.Method)] 
+    class LineTestAttribute 
+        :Attribute 
+    { 
+    } 
+}&lt;/pre&gt;
+&lt;h1&gt;Kod Ne Yapıyor?&lt;/h1&gt;
+&lt;p&gt;&lt;strong&gt;FileProcessor &lt;/strong&gt;isimli sınıfımız &lt;strong&gt;ComputeX &lt;/strong&gt;isimli 8 adet metod i&amp;ccedil;ermektedir. Her bir metod yorum satırlarında belirtildiği &amp;uuml;zere, ilgili dosyanın satır sayısını bulmak i&amp;ccedil;in farklı bir y&amp;ouml;ntem kullanılmaktadır. &lt;strong&gt;Constructor(Yapıcı Metod)&lt;/strong&gt; teste tabi tutulacak olan dosya adını alır.&lt;/p&gt;
+&lt;p&gt;Dikkat edilmesi gereken noktalardan birisi de, &lt;strong&gt;ComputeX &lt;/strong&gt;metodlarının&lt;strong&gt; LineTest &lt;/strong&gt;isimli bir&lt;strong&gt; nitelik(Attribute) &lt;/strong&gt;ile imzalanmış olmalarıdır. Bu niteliği metodları &amp;ccedil;alışma zamanında test i&amp;ccedil;in &amp;ccedil;ağırırken kullanacağımız &lt;strong&gt;Reflection &lt;/strong&gt;bazlı kodlarda değerlendireceğiz.&lt;em&gt; (Nitekim her test metodunu &lt;strong&gt;Main &lt;/strong&gt;i&amp;ccedil;erisinde arka arkaya yazıp, her biri i&amp;ccedil;in s&amp;uuml;re hesabını o kod satırlarında yazıp, satır sayısını arttırmak istemiyorum. &lt;strong&gt;Maintability &lt;/strong&gt;ve &lt;strong&gt;Readability &lt;/strong&gt;a&amp;ccedil;ısından biraz daha y&amp;uuml;ksek bir kod olsun niyetindeyim)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Main &lt;/strong&gt;metodu i&amp;ccedil;erisinde dikkat edileceği &amp;uuml;zere &lt;strong&gt;Reflection&lt;/strong&gt;&amp;rsquo; dan yararlanılarak &lt;strong&gt;FileProcessor &lt;/strong&gt;tipinin &amp;uuml;ye metodları arasında gezilmekte ve &lt;strong&gt;LineTest &lt;/strong&gt;niteliği uygulanmış olanların &amp;ccedil;ağırılması sağlanmaktadır.&lt;/p&gt;
+&lt;h1&gt;Testler&lt;/h1&gt;
+&lt;p&gt;Teste tabi tutacağımız &lt;strong&gt;text &lt;/strong&gt;dosyası i&amp;ccedil;erisinde &lt;strong&gt;Lorem Ipsum&lt;/strong&gt; metinlerinden bolca yer almaktadır. İlk testler i&amp;ccedil;in dosyamızda &lt;strong&gt;10891 &lt;/strong&gt;satır yer alıyor. Buna g&amp;ouml;re ilk sonu&amp;ccedil;lar aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/runtime2.png"&gt;&lt;img style="display: inline; border-width: 0px;" title="runtime2" src="/pics/runtime2_thumb.png" alt="runtime2" width="420" height="136" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Şu hemen dikkatinizi &amp;ccedil;ekmiş olmalıdır. &lt;strong&gt;Compute2 &lt;/strong&gt;metodu inanılmaz derecede yavaştır. En hızlı metod ise &lt;strong&gt;Compute1 &lt;/strong&gt;olmuştur ki i&amp;ccedil;erisinde &lt;strong&gt;File &lt;/strong&gt;tipinin &lt;strong&gt;static ReadAllLines &lt;/strong&gt;metodunu kullandığımızı belirtmek isterim. Bu sonu&amp;ccedil;lara g&amp;ouml;re &lt;strong&gt;Compute2 &lt;/strong&gt;metodunu doğrudan elemeliyiz. İkinci testimizde bu metodu g&amp;ouml;z ardı edeceğiz. Şimdi dosyanın satır sayısını belirgin &amp;ouml;l&amp;ccedil;&amp;uuml;de arttırdığımızı d&amp;uuml;ş&amp;uuml;nelim. &amp;Ouml;rneğin &lt;strong&gt;152487 &lt;/strong&gt;satır olsun.&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;ok mu sizce? Ben milyonları g&amp;ouml;rd&amp;uuml;ğ&amp;uuml;m i&amp;ccedil;in bana normal geliyor aslında . Ger&amp;ccedil;i bu durumu &lt;strong&gt;Visual Studio&lt;/strong&gt; bile yadırgadı. &lt;strong&gt;50 Mb&lt;/strong&gt;&amp;rsquo; a yaklaşan boyutuyla &lt;strong&gt;Text &lt;/strong&gt;dosyasını sadece &lt;strong&gt;Notepad++&lt;/strong&gt; ile a&amp;ccedil;abildim. Neyse tekrar konumuza d&amp;ouml;nelim. Amacımız boyutun artması halinde, hesaplama metodlarının aynı performans istikrarını sağlayıp sağlamadığını g&amp;ouml;rebilmek. İşte sonu&amp;ccedil;lar;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/runtime3.png"&gt;&lt;img style="display: inline; border-width: 0px;" title="runtime3" src="/pics/runtime3_thumb.png" alt="runtime3" width="459" height="126" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Compute2 &lt;/strong&gt;metodunu hari&amp;ccedil; tuttuğumuzda &lt;strong&gt;1nci &lt;/strong&gt;ve &lt;strong&gt;2nci &lt;/strong&gt;testlerin sonu&amp;ccedil;larını aşağıdaki tablo grafiğinde g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi yorumlayabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/report.png"&gt;&lt;img style="display: inline; border-width: 0px;" title="report" src="/pics/report_thumb.png" alt="report" width="493" height="741" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h1&gt;Sonu&amp;ccedil;lar&lt;/h1&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere sonu&amp;ccedil;lar gayet a&amp;ccedil;ık ve net. &lt;strong&gt;File.ReadAllLines &lt;/strong&gt;metodunun eline pek su d&amp;ouml;ken olmadı. Ancak yaklaşabilenler var. Peki bu metod kendi i&amp;ccedil;erisinde nasıl bir &amp;ccedil;alışma modeline sahipte bu kadar hızlı sonu&amp;ccedil; d&amp;ouml;nd&amp;uuml;r&amp;uuml;lmesine olanak sağlıyor?&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private static string[] InternalReadAllLines(string path, Encoding encoding)
+
+{ 
+    List&amp;lt;string&amp;gt; list = new List&amp;lt;string&amp;gt;(); 
+    using (StreamReader reader = new StreamReader(path, encoding)) 
+    { 
+       string str; 
+        while ((str = reader.ReadLine()) != null) 
+        { 
+            list.Add(str); 
+        } 
+   } 
+    return list.ToArray(); 
+}&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;ReadAllLines &lt;/strong&gt;metodu aslında i&amp;ccedil;eride başka bir metodu tetiklemekte&lt;em&gt;(InternalReadAllLines)&lt;/em&gt;. Bu metod i&amp;ccedil;erisinde &lt;strong&gt;StreamReader&lt;/strong&gt;' dan yararlanılarak bir okuma işlemi yapılmakta ve satırların generic bir &lt;strong&gt;List&lt;/strong&gt; koleksiyonunda toplanması sağlanmakta. S&amp;ouml;z konusu metod, &lt;strong&gt;generic list &lt;/strong&gt;koleksiyonun &lt;strong&gt;Array&lt;/strong&gt;' e indirgenmiş halini d&amp;ouml;nd&amp;uuml;rmektedir. Sonrasında zaten bu d&amp;ouml;n&amp;uuml;ş dizisinin eleman sayısını bulmamız yeterlidir.&lt;/p&gt;
+&lt;p&gt;Tabi satır sayısını bulmak i&amp;ccedil;in alternatif yollarda d&amp;uuml;ş&amp;uuml;nebilir ve mutlaka vardır. S&amp;ouml;z gelimi &lt;strong&gt;Pointer &lt;/strong&gt;kullanımı daha hızlı sonu&amp;ccedil;lar alabilmemizi sağlayabilir. Ya da paralel programlama desenlerinden yararlanarak &amp;ouml;zellikle &amp;ccedil;ok b&amp;uuml;y&amp;uuml;k boyutlu bir dosyanın par&amp;ccedil;alara b&amp;ouml;l&amp;uuml;nmek suretiyle satır sayısının hesaplanması ve &lt;strong&gt;&lt;a href="/post/Parallel-Programming-Reduction.aspx" target="_blank"&gt;Reduction&lt;/a&gt; &lt;/strong&gt;ile k&amp;uuml;m&amp;uuml;latif toplamın ortaya konulması d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Ancak &amp;ouml;nerilen yol &amp;ccedil;ok b&amp;uuml;y&amp;uuml;k boyutlu dosyalarda &lt;strong&gt;File.ReadAllLines &lt;/strong&gt;metodunun kullanılmasıdır. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2012%2f1%2fFindLineCountsApp.zip"&gt;FindLineCountsApp.zip (32,62 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2013-10-06 12:02:00</pubDate>
+  <slug>Dosya-Satir-Sayisi-Bulmak</slug>
+  <tags>
+    <tag>c#</tag>
+    <tag>text-files</tag>
+    <tag>reflection</tag>
+    <tag>notepad++</tag>
+    <tag>line-codes</tag>
+    <tag>file</tag>
+    <tag>systemio</tag>
+  </tags>
+  <categories>
+    <category>C#</category>
+  </categories>
+</post>

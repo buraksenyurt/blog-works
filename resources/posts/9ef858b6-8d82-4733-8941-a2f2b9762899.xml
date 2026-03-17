@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Ruby Kod Parçacıkları 26 - Eğlenerek Binary Dosya Okumak</title>
+  <description>Vakit buldukça Ruby programlama dili ile ilgili bir şeyler yapmaya çalışıyorum. Halen daha dilin kabiliyetlerini tanıma aşamasındayım. Geçtiğimiz günlerde de Ruby Cookbook kitabından binary dosyalar üzerinde yapılan işlemlere ait örnekleri inceliyordum. Hoşuma giden uygulamalardan birisi de MP3 dosyalarına ait Tag bilgilerinin elde edilmesiydi. Gerçek hayat örneği olduğundan benim için daha öğretici idi. Örnekleri inceledim ve kendime göre farklılaştırarak basit bir kod parçası oluşturmaya çalıştım.</description>
+  <content>&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Vakit bulduk&amp;ccedil;a Ruby programlama dili ile ilgili bir şeyler yapmaya &amp;ccedil;alışıyorum. Halen daha dilin kabiliyetlerini&amp;nbsp;tanıma aşamasındayım. Ge&amp;ccedil;tiğimiz g&amp;uuml;nlerde de Ruby Cookbook kitabından binary dosyalar &amp;uuml;zerinde yapılan işlemlere ait &amp;ouml;rnekleri inceliyordum. Hoşuma giden uygulamalardan&amp;nbsp;birisi de MP3 dosyalarına ait Tag bilgilerinin elde edilmesiydi. Ger&amp;ccedil;ek hayat &amp;ouml;rneği olduğundan benim i&amp;ccedil;in daha &amp;ouml;ğretici idi. &amp;Ouml;rnekleri inceledim ve kendime g&amp;ouml;re farklılaştırarak basit bir kod par&amp;ccedil;ası oluşturmaya &amp;ccedil;alıştım.&lt;/p&gt;
+&lt;p&gt;Ama&amp;ccedil; bir MP3 dosyası &amp;uuml;zerinde eğer varsa kayıtlı Tag bilgilerini elde etmek. Tag bilgilerine bakarak şarkının adını, s&amp;ouml;yleyen sanat&amp;ccedil;ı veya grubu, yayınlandığı yılı ve i&amp;ccedil;inde bulunduğu alb&amp;uuml;m bilgilerini elde etmek m&amp;uuml;mk&amp;uuml;n. Hatta alb&amp;uuml;mdeki sıra numarası, t&amp;uuml;r&amp;uuml;n&amp;uuml;, başlangı&amp;ccedil; ve bitiş s&amp;uuml;relerini dahi&amp;nbsp;elde edebiliyoruz. Tabii MP3 dosya formatlarına ve ID3 standartlarına g&amp;ouml;re farklılıklar s&amp;ouml;z konusu olabiliyor. Uzatılmış tag yapısı gibi bir kavram ve ID3 &amp;uuml;n farklı versiyonları var. Buna g&amp;ouml;re farklı bilgileri de elde etmek m&amp;uuml;mk&amp;uuml;n. Lakin ben 128&amp;nbsp;byte' lık segment yapısına&amp;nbsp;sahip&amp;nbsp;dosyaları ele almaya &amp;ccedil;alıştım&lt;em&gt;(&lt;a href="https://en.wikipedia.org/wiki/ID3" target="_blank"&gt;ID3 formatına ait detaylı bilgi almak i&amp;ccedil;in wikipedia adresine bakmanızı &amp;ouml;neririm&lt;/a&gt;)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;nce kod i&amp;ccedil;eriğine&amp;nbsp;bir bakalım ve sonrasında neler &amp;ouml;ğrendiğimi sizlere aktarayım.&lt;/p&gt;
+&lt;pre class="brush:ruby;auto-links:false;toolbar:false" contenteditable="false"&gt;class TagInfo
+	attr_accessor :track_name,:artist_name,:album_name,:year
+	
+	def initialize(track_name,artist_name,album_name,year)
+		@track_name,@artist_name,@album_name,@year=track_name,artist_name,album_name,year
+	end
+	
+	def to_s
+		"#{@artist_name}-#{@album_name}-#{@track_name} (#{@year})"
+	end
+end
+
+def get_tag_info(mp3)
+	info=nil
+	open(mp3) do |f|
+		f.seek(-128,File::SEEK_END)
+		if f.read(3)=="TAG"
+			info=TagInfo.new(
+				f.read(30),
+				f.read(30),
+				f.read(30),
+				f.read(4)
+			)
+		end
+	end
+	return info
+end
+
+songs=Dir.glob("*.mp3")
+songs.each{
+	|s|
+	puts get_tag_info(s).to_s
+	}&lt;/pre&gt;
+&lt;p&gt;Kodumuz TagInfo isimli bir sınıf tasarımı ile başlıyor. Bana g&amp;ouml;re MP3 şarkısının tag yapısı sistem i&amp;ccedil;erisinde bir varlık olarak ifade edilmeli&lt;em&gt;(Hatta daha geniş kapsamlı d&amp;uuml;ş&amp;uuml;n&amp;uuml;sek MP3 dosya i&amp;ccedil;eriğini ve ilgili Tag bilgilerini barındıran bir sınıf tasarımı da m&amp;uuml;mk&amp;uuml;n olabilir. Bu sınıfa ait nesne &amp;ouml;rnekleri NoSQL tabanlı bir yapıda saklanabilir. Alın size db tabanlı&amp;nbsp;bir m&amp;uuml;zik seti)&lt;/em&gt;&amp;nbsp;Ben &amp;ccedil;ok daha&amp;nbsp;y&amp;uuml;zeysel&amp;nbsp;basit bir sınıf tanımladım. İ&amp;ccedil;erisinde d&amp;ouml;rt nitelik yer alıyor. track, artist, album ve year bilgilerini tutmayı planlıyorum. &amp;Ouml;rnek &amp;ccedil;ıktılarını ekrana bastırmak gibi bir amacım da olduğundan to_s metodunu eziyorum&lt;em&gt;(Bu arada initialize metodu i&amp;ccedil;erisinde &amp;ccedil;oklu atama işlemi ger&amp;ccedil;ekleştirdiğimize dikkat edelim)&lt;/em&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Kodun &amp;ouml;nemli operasyonu tabii ki get_tag_info isimli metod. MP3 dosyaları normalde binary olarak okunabiliyorlar. Standartlara g&amp;ouml;re 128nci byte'tan sonra gelen ilk 3 byte i&amp;ccedil;erisinde TAG yazıyorsa bahsettiğimiz bilgilere ulaşma şansımız var. &amp;Ouml;ncelikle dosyayı okuma modunda a&amp;ccedil;mamız gerekiyor. open fonksiyonunu bu ama&amp;ccedil;la kullanıyoruz. Fonksiyona ge&amp;ccedil;ecek blokta dosyanın kendisini f ile işaret etmekteyiz. seek metodu 128nci byte'tan itibaren dosya sonuna kadarlık kısmı almamızı sağlayacak. Yani dosya &amp;uuml;zerindeki işaret&amp;ccedil;iyi 128nci byte'a aldığımızı d&amp;uuml;ş&amp;uuml;nebiliriz. read metoduna verilen parametre ile ne kadarlık bilgi okuyacağımızı belirtiyoruz. Buna g&amp;ouml;re read(3) ile aradığımız TAG bilgisinin olduğu b&amp;ouml;l&amp;uuml;m&amp;uuml; okumaktayız. Okuma işlemi sonrası dosya &amp;uuml;zerindeki konumumuz 3 byte ilerlemiş olacak. Eğer buradaki i&amp;ccedil;erik TAG ise sonrasında ID3 standartına g&amp;ouml;re dosya &amp;uuml;zerindeki konumumuzu ileri doğru hareket ettirerek bir okuma ger&amp;ccedil;ekleştiriyoruz.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;İlk 30 byte ile track_name, sonrasında gelen 30 byte ile artist_name, sonrasında gelen 30 byte ile album_name ve sonrasında gelen 4 byte ile de year bilgisini okumaktayız. Okuduğumuz bilgileri kullanarak bir TagInfo nesne &amp;ouml;rneği oluşturuyor ve metodumuzdan geriye d&amp;ouml;nd&amp;uuml;r&amp;uuml;yoruz.&lt;/p&gt;
+&lt;p&gt;Tabii kodu uygulamak i&amp;ccedil;in MP3 şarkılarının olduğu bir konumda &amp;ccedil;alıştırmak gerekiyor&lt;em&gt;(Siz kendi &amp;ouml;rneğinizi yaparken klas&amp;ouml;r bilgisini programa parametre olarak almayı denemelisiniz)&lt;/em&gt; İşte o anda bir klas&amp;ouml;r ve i&amp;ccedil;erisindeki MP3 uzantılı dosyaları nasıl &amp;ccedil;ekebileceğimi &amp;ouml;ğrendim. Dir tipine ait glob metoduna ge&amp;ccedil;irilecek desen ile bu işlemi ger&amp;ccedil;ekleştirmemiz m&amp;uuml;mk&amp;uuml;n. sonrasında each metodunu &amp;ccedil;ağırıyor ve blok i&amp;ccedil;erisinde get_tag_info fonksiyonunu kullanarak MP3 dosyalarına ait bilgileri ekrana basıyoruz. &amp;Ouml;rnek şarkılarıma ait klas&amp;ouml;r i&amp;ccedil;eriğini tarattığımda aşağıdaki gibi bir &amp;ccedil;ıktı elde ettim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/11/mp3read_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi Binary dosya i&amp;ccedil;eriklerini iler y&amp;ouml;nl&amp;uuml; okumak ve i&amp;ccedil;lerinden bilgi almak son derece kolay. open fonksiyonu haricinde seek ve read metodlarının kullanımı da &amp;ouml;nemli. &amp;Ouml;rneğimizde sınıf oluşturulması ve Dir tipine ait globe metodunun kullanılmasını da &amp;ouml;ğrenmiş bulunuyoruz. Bilgilerimiz &amp;ccedil;oğaldık&amp;ccedil;a&amp;nbsp;Ruby ile kodlama daha da eğlenceli hale gelmeye başlıyor. Bir başka kod par&amp;ccedil;asında g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2016-11-14 21:30:00</pubDate>
+  <slug>ruby-kod-parcaciklari-26-eglenerek-binary-dosya-okumak</slug>
+  <tags>
+    <tag>ruby</tag>
+    <tag>binary-read</tag>
+    <tag>file-read-operations</tag>
+    <tag>mp3</tag>
+    <tag>idtag-standarts</tag>
+    <tag>fun-with-code</tag>
+  </tags>
+  <categories>
+    <category>Ruby</category>
+  </categories>
+</post>

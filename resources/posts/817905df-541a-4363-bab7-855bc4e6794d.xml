@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Ado.Net Data Services Ders Notları - 3 (İstemci Geliştirmek)</title>
+  <description>Hatırlayacağınız gibi daha önceki iki ders notumuzda Ado.Net Data Service örneklerinin nasıl geliştirilebileceğini incelemeye çalışmıştık. Hatırlatmak gerekirse, Ado.Net Data Service' ler ile verilerin Entity Data Model(EDM) veya Custom LINQ Provider bazlı katmanlar üzerinden REST modeline göre sunulması mümkün olmaktadır...</description>
+  <content>&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Değerli Okurlarım Merhabalar,&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Hatırlayacağınız gibi daha &amp;ouml;nceki iki ders notumuzda &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt; &amp;ouml;rneklerinin nasıl geliştirilebileceğini incelemeye &amp;ccedil;alışmıştık. Hatırlatmak gerekirse, &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt;' ler ile verilerin &lt;strong&gt;Entity Data Model(EDM)&lt;/strong&gt; veya &lt;strong&gt;Custom LINQ Provider&lt;/strong&gt; bazlı katmanlar &amp;uuml;zerinden &lt;strong&gt;REST&lt;/strong&gt; modeline g&amp;ouml;re sunulması m&amp;uuml;mk&amp;uuml;n olmaktadır. Bu noktada s&amp;ouml;z konusu servislerin &lt;strong&gt;WCF&lt;/strong&gt;' in &lt;strong&gt;REST&lt;/strong&gt; modelini kullanan ve &lt;strong&gt;Ado.Net&lt;/strong&gt; &amp;uuml;zerine odaklanmış bir a&amp;ccedil;ılımı olduğu g&amp;ouml;r&amp;uuml;ş&amp;uuml;nde hem fikir olabiliriz. Ne varki &lt;strong&gt;Servis Y&amp;ouml;nelimli Mimari(Service Oriented Architecture-SOA)&lt;/strong&gt; temelli &amp;ccedil;&amp;ouml;z&amp;uuml;mlerde yap-bozun en &amp;ouml;nemli iki par&amp;ccedil;asını servis ve istemciler oluşturmaktadır. Bir başka deyişle, servislerin tamamlayıcısı olan ve ilgili hizmetleri kullanacak &lt;strong&gt;istemci uygulamalar(Client Applications)&lt;/strong&gt; olmalıdır. İşte bu yazımızda istemci uygulamaları g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alacağız.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;Ado.Net Data Service&lt;/strong&gt; ve istemci arasında ge&amp;ccedil;en bu hikayede, anahtar &amp;ouml;neme sahip bir ka&amp;ccedil; kelimede yer almaktadır. &lt;strong&gt;WCF&lt;/strong&gt;, &lt;strong&gt;Ado.Net&lt;/strong&gt;, &lt;strong&gt;REST&lt;/strong&gt; vb. Bunlar az &amp;ccedil;ok istemcilerin kimler olabileceğinide ortaya &amp;ccedil;ıkartan terimlerdir. Aslında bir servis istemcisinin herhangibir uygulama olabilmesi istenir. Platform kriterleri g&amp;ouml;zetilmeksizin. Fakat ge&amp;ccedil;miş zamanlarda sadece belirli platformlara y&amp;ouml;nelik &amp;ccedil;&amp;ouml;z&amp;uuml;mler de ele alınmamış değildir ki halen daha pop&amp;uuml;ler olarak pek &amp;ccedil;ok alt yapıda kullanılmaktadır. Buna verilebilecek en g&amp;uuml;zel &amp;ouml;rnek belkide &lt;strong&gt;.Net Remoting &lt;/strong&gt;&amp;ccedil;&amp;ouml;z&amp;uuml;mleridir. .&lt;strong&gt;Net Remoting&lt;/strong&gt; temelli uygulamalar sadece &lt;strong&gt;.Net&lt;/strong&gt; tabanlı istemci ve sunucuları baz almaktadır. Bu bir kısıtlamadır ama performans ve verimlilik gibi avantajlarıda getirmektedir. Ancak zaman ilerledik&amp;ccedil;e farklı tipte platformların ortaklaşa haberleşebilmesi daha b&amp;uuml;y&amp;uuml;k &amp;ouml;nem arz etmeye başlamıştır. Buda &lt;strong&gt;Xml&lt;/strong&gt; &lt;strong&gt;Web&lt;/strong&gt; &lt;strong&gt;Service&lt;/strong&gt;' lerin pop&amp;uuml;ler olmasının nedenlerinden birisidir :) Ama uzun zamandır elimizde &amp;ccedil;ok daha g&amp;uuml;&amp;ccedil;l&amp;uuml; bir kozun olduğunu da belirtmek isterim; &lt;strong&gt;Windows&lt;/strong&gt; &lt;strong&gt;Communication&lt;/strong&gt; &lt;strong&gt;Foundation&lt;/strong&gt;.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Tekrardan sihirli kelimelerimize d&amp;ouml;nelim. &lt;strong&gt;WCF&lt;/strong&gt; kelimesi, geliştireceğimiz servisin WCF kurallarının bir sonucu olarak ortaya &amp;ccedil;ıktığının a&amp;ccedil;ık bir g&amp;ouml;stergesidir. Buda kendi i&amp;ccedil;erisinde WCF' in nimetlerini barındıracak bir servis &amp;ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml;n&amp;uuml; ifade eder ki buna &lt;strong&gt;JSON(JavaScript Object Notation)&lt;/strong&gt;, &lt;strong&gt;Syndication&lt;/strong&gt;, &lt;strong&gt;Web Programming Model&lt;/strong&gt; gibi pek &amp;ccedil;ok &amp;ouml;nemli kriterde dahil olur. Dolayısıyla &lt;strong&gt;WCF&lt;/strong&gt; servislerini ele alabilen t&amp;uuml;m istemci &amp;ccedil;eşitleri bu senaryoda olasıdır. Ancak &lt;strong&gt;Ado.Net&lt;/strong&gt; kelimesi, servisimizi belirli bir y&amp;ouml;ne doğru odaklamaktadır. Buna g&amp;ouml;re geliştirilen servis tamamen verilerin(Data) sunumu &amp;uuml;zerine konuşlandırılmaktadır. Bu zorunluluk olmamakla birlikte b&amp;uuml;t&amp;uuml;nl&amp;uuml;ğ&amp;uuml; sağlayıcı bir hedef olarak g&amp;ouml;r&amp;uuml;lmelidir. Buda istemci tipini belirleyici diğer bir etkendir. Ancak &lt;strong&gt;REST(REpresentationalStateTransfer)&lt;/strong&gt; kelimesi olayı biraz daha belirginleştirmektedir. S&amp;ouml;z konusu istemciler &lt;strong&gt;REST&lt;/strong&gt; modeline g&amp;ouml;re talepte bulunabilmelidir. Yani &lt;strong&gt;HTTP&lt;/strong&gt; protokol&amp;uuml; &amp;uuml;zerinde &lt;strong&gt;GET&lt;/strong&gt;,&lt;strong&gt;HEAD&lt;/strong&gt;,&lt;strong&gt;POST&lt;/strong&gt;,&lt;strong&gt;DELETE&lt;/strong&gt; gibi metodlara g&amp;ouml;re talepte bulunabilmeli ve gelen sonu&amp;ccedil;larıda irdeleyebilmelidirler. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Doğruyu s&amp;ouml;ylemek gerekirse bu kelimeleri bir kenara bırakıp herhangi &amp;ccedil;eşit istemci uygulama ele alınabilir diyerekten işin i&amp;ccedil;erisinden de sıyrılabiliriz :) Yinede g&amp;uuml;ncel teknolojiler g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında aşağıdaki maddelerde yer alan istemci tiplerinin dikkat &amp;ccedil;ekeceği ortadadır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Ajax Tabanlı Web Sayfaları (Ajax Based Web Pages)&lt;/span&gt;&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Silverlight Nesneleri&lt;/span&gt;&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;WPF(Windows Presentation Foundation), WinForms gibi Windows Uygulamaları&lt;/span&gt;&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Diğer Servisler (WCF Servisleri, Xml Web Servisleri, .Net Remoting Uygulamaları, Windows Servisleri vb...)&lt;/span&gt;&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Sınıf K&amp;uuml;t&amp;uuml;phaneleri-Class Libraries&lt;/span&gt;&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bu tipler &amp;ccedil;oğaltılabilir. Ancak benimde dikkatimi &amp;ccedil;eken ve &amp;ouml;zellikle &amp;uuml;zerinde durulmaya değer &amp;ccedil;eşitler &lt;strong&gt;Ajax&lt;/strong&gt; tabanlı web sayfaları ve &lt;strong&gt;Silverlight&lt;/strong&gt; nesneleridir ki bunlar şu zaman itibariyle son derece pop&amp;uuml;ler uygulamalardır. Yanlız dikkat edilmesi gereken başka noktalarda vardır. S&amp;ouml;z gelimi bir &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt; &amp;ouml;rneği farklı servisler tarafındanda t&amp;uuml;ketilebilir. B&amp;ouml;yle bir durumda t&amp;uuml;ketici servisin kendisi, aslında t&amp;uuml;kettiği servis i&amp;ccedil;in bir istemci olmaktadır. Yine extreme senaryolar g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir. S&amp;ouml;z gelimi &lt;strong&gt;Active&lt;/strong&gt; &lt;strong&gt;Directory&lt;/strong&gt; hizmetini &amp;ouml;zel bir &lt;strong&gt;LINQ&lt;/strong&gt; &lt;strong&gt;Provider&lt;/strong&gt; ile g&amp;uuml;venli bir şekilde farklı bir lokasyona bir &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt; olarak sunabiliriz. &amp;Ouml;rneğin d&amp;uuml;nya &amp;uuml;zerindeki bir otele ait t&amp;uuml;m nesnel verilerin &lt;strong&gt;Active&lt;/strong&gt; &lt;strong&gt;Directory&lt;/strong&gt; k&amp;ouml;kenli olaraktan tek bir merkezde tutulduğunu d&amp;uuml;ş&amp;uuml;n&amp;uuml;n. Diğer lokasyonlardaki oteller bu merkezi verileri kullanmak isteyecektir. Bu noktada t&amp;uuml;ketici istemciler bir servis olup s&amp;ouml;z konusu hizmeti kapalı ağ i&amp;ccedil;erisinde(&lt;strong&gt;Intranet&lt;/strong&gt; diyebiliriz) ele alabilir ve diğer istemcilere sunabilir. Ki bu kapalı ağ istemcileride s&amp;ouml;z konusu lokasyondaki otelin i&amp;ccedil;erisinde yer alan &amp;ccedil;eşitli tipteki uygulamalardır. Bu tabiki ger&amp;ccedil;ek bir vaka değil ancak sizlerde bu c&amp;uuml;mlede bir ka&amp;ccedil; dakikalığına durup &amp;ccedil;eşitli &lt;strong&gt;Ado.Net Data Service &lt;/strong&gt;senaryoları d&amp;uuml;ş&amp;uuml;nebilir ve bunları yakın &amp;ccedil;evrenizdeki yetkin kişiler ile tartışarak analiz edebilirsiniz. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;İstemci hangi &amp;ccedil;eşitten olursa olsun servis ile olan iletişimini kod seviyesinde kolaylaştırmak a&amp;ccedil;ısından genellikle &lt;strong&gt;Proxy&lt;/strong&gt; nesneleri g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınır. Bu bir zorunluluk değildir. Nitekim &lt;strong&gt;REST&lt;/strong&gt; modeline g&amp;ouml;re servise gidecek olan &lt;strong&gt;HTTP&lt;/strong&gt; paketlerinin manuel olarak hazırlanıp g&amp;ouml;nderilmeside m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. &amp;Ouml;yleki bu işlem i&amp;ccedil;in &lt;strong&gt;HttpWebRequest&lt;/strong&gt; yada &lt;strong&gt;HttpWebResponse&lt;/strong&gt; tipleri kolayca g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir. Bir anlamda &amp;ouml;rneğin, &lt;strong&gt;XML&lt;/strong&gt; &lt;strong&gt;Web&lt;/strong&gt; &lt;strong&gt;Servislerinde&lt;/strong&gt; bir &lt;strong&gt;SOAP(Simple Object Access Protocol)&lt;/strong&gt; paketinin bahsettiğimiz tipler ile hazırlanıp g&amp;ouml;nderilmesinden ve geri gelen cevabın a&amp;ccedil;ılarak ele alınmasından farklı bir işlem değildir. Ne varki &lt;strong&gt;Proxy&lt;/strong&gt; kullanımı kodlamacının işini olduk&amp;ccedil;a kolaylaştırır. &amp;Ccedil;&amp;uuml;nk&amp;uuml; bu sayede geliştirici bildik kodları yazarken sanki kendi ortamındaki bir nesneyi kullanıyormuş hissine kapılır. Gelip giden paket i&amp;ccedil;erikleri ile uğraşmak zorunda kalmaz. Halbuki s&amp;ouml;z konusu servis talepleri, proxy tarafından servisin anlayacağı paketler haline getirilerek g&amp;ouml;nderilir. Benzer şekilde servisten gelen paketlerde proxy tarafından a&amp;ccedil;ılarak istemcideki &lt;strong&gt;&amp;ccedil;alışma zamanı(RunTime)&lt;/strong&gt; nesnelerine devredilir. Bu konuda aşağıdaki şekil biraz daha aydınlatıcı bilgi verebilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk260_1.gif" alt="" width="580" height="355" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Tabi burada proxy tiplerinin geliştirme zamanında eklenmesi gibi bir zorunluluk yoktur. Bazı uygulama &amp;ccedil;eşitlerinde &amp;ouml;rneğin &lt;strong&gt;Ajax&lt;/strong&gt; temelli web sayfalarında s&amp;ouml;z konusu proxy tiplerine ait nesne &amp;ouml;rnekleri &amp;ccedil;alışma zamanında transparant olarak oluşturulup kullanılabilirler. Ajax tabanlı bir web istemcisi &amp;uuml;zerinden bir Ado.Net Data Service' in kullanımı &amp;ccedil;okda kolay değildir. İşin &amp;ouml;zellikle benim a&amp;ccedil;ımdan keyifsizleştiği nokta istemci tarafı i&amp;ccedil;in &lt;strong&gt;javascript&lt;/strong&gt; kodları d&amp;ouml;kt&amp;uuml;r&amp;uuml;lmesi gerekliliğidir. Ajax tabanlı bir web formunda bir &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt;' inin nasıl kullanılabileceğini ilgili &lt;span style="color: #ff0000;"&gt; &lt;a href="http://www.csharpnedir.com/videoindir.asp?id=118"&gt;g&amp;ouml;rsel dersten&lt;/a&gt;&lt;/span&gt; takip edebilirsiniz.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Peki biz bu yazımızda neler yapacağız? Aslında yukarıdaki listede yer almayan bir istemci uygulama geliştiriyor olacağız :) Tahmin edeceğiniz &amp;uuml;zere bir &lt;strong&gt;Console&lt;/strong&gt; uygulaması. Sonu&amp;ccedil;ta amacımız bir istemci uygulamada basit &lt;strong&gt;REST&lt;/strong&gt; taleplerinde bulunabilmek. Bunun i&amp;ccedil;inde g&amp;ouml;rsel detayların fazla olmadığı ve odağın tamamen koda kaydığı bir ortam kullanmamız &amp;ouml;ğrenmemiz a&amp;ccedil;ısından &amp;ouml;nemli olacaktır. İşte &lt;strong&gt;Console&lt;/strong&gt; uygulaması se&amp;ccedil;memizin(yada se&amp;ccedil;memin) nedenide budur? Her zaman olduğu gibi basit bir &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt;' i geliştireceğiz. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Senaryomuzda yine &lt;strong&gt;AdventureWorks&lt;/strong&gt; veritabanını ve buradaki &lt;strong&gt;ProductSubCategory&lt;/strong&gt;, &lt;strong&gt;Product&lt;/strong&gt; tablolarını ele alacağız. Bu tablolar arasındaki bire &amp;ccedil;ok ilişki istemci tarafında ilişkisel veri &amp;ccedil;ekme işlemlerini analiz etmemizi sağlayacaktır. Ado.Net Data Service' in nasıl geliştirileceğini daha &amp;ouml;nceki notlarımızda ve g&amp;ouml;rsel derslerimizde yeterince ele almıştık. Bu nedenle sadece &lt;strong&gt;EDM(Entity Data Model)&lt;/strong&gt; grafiğinin, &lt;strong&gt;AdventureWorksServices.svc.cs&lt;/strong&gt; kodlarının ve &lt;strong&gt;Solution&lt;/strong&gt; i&amp;ccedil;eriğininin aşağıdakilere benzer olmasına &amp;ouml;zen g&amp;ouml;stermeniz yeterli olacaktır.&lt;em&gt;(Servis uygulamasının bir &lt;strong&gt;WCF Service&lt;/strong&gt; şablonu olduğunu hatırlatalım.)&lt;/em&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;EDM Grafiği;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk260_2.gif" alt="" width="446" height="505" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Solution İ&amp;ccedil;eriği;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk260_3.gif" alt="" width="572" height="308" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;AdventureWorksServices.svc.cs i&amp;ccedil;eriği;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Data.Services;
+using System.Collections.Generic;
+using System.Linq;
+using System.ServiceModel.Web;
+using AdventureWorksModel;
+
+public class AdventureWorksServices 
+    : DataService&amp;lt;AdventureWorksEntities&amp;gt;
+{
+    public static void InitializeService(IDataServiceConfiguration config)
+    {
+        config.SetEntitySetAccessRule("*", EntitySetRights.All);
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Sonrasında ise istemci &lt;strong&gt;Console&lt;/strong&gt; uygulaması i&amp;ccedil;in gerekli &lt;strong&gt;proxy&lt;/strong&gt; tiplerini &amp;uuml;reteceğiz. &lt;strong&gt;Proxy&lt;/strong&gt; &amp;uuml;retimi i&amp;ccedil;in iki farklı se&amp;ccedil;eneğimiz bulunmaktadır. Bunlardan birisi &lt;strong&gt;WCF&lt;/strong&gt; Servislerindende aşina oluğumuz &lt;strong&gt;Add&lt;/strong&gt; &lt;strong&gt;Service&lt;/strong&gt; &lt;strong&gt;Reference&lt;/strong&gt; se&amp;ccedil;eneğidir. Bu se&amp;ccedil;eneği kullandığımızda karşımıza gelen dialog penceresinde &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt; adresinin yazılması yeterli olacaktır. Elbette geliştirilen &amp;ouml;rnek gereği &lt;strong&gt;Discover&lt;/strong&gt; men&amp;uuml;s&amp;uuml;nden &lt;strong&gt;Services&lt;/strong&gt; &lt;strong&gt;in&lt;/strong&gt; &lt;strong&gt;Solution&lt;/strong&gt; se&amp;ccedil;eneği ele alınabilir. Nitekim servis ve istemci uygulamalarımız aynı &lt;strong&gt;solution&lt;/strong&gt; i&amp;ccedil;erisinde yer almaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk260_4.gif" alt="" width="583" height="459" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bu noktada normal bir &lt;strong&gt;WCF&lt;/strong&gt; &lt;strong&gt;Service&lt;/strong&gt; referansı eklerken karşımıza &amp;ccedil;ıkan se&amp;ccedil;eneklerden tamamının aktif olmadığı hemen g&amp;ouml;ze &amp;ccedil;arpmaktadır. &amp;Ouml;yleki bir &lt;strong&gt;WCF&lt;/strong&gt; servisi bu teknik ile eklenirken aktif olan &lt;strong&gt;Advanced&lt;/strong&gt; d&amp;uuml;ğmesi &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt; eklenirken aktif değildir. Buda olay bazlı asenkron ayarlamalar, erişim belirleyicileri(Internal veya Public) gibi bazı se&amp;ccedil;eneklerin kullanılamadığı anlamına gelmektedir. Ekleme işlemi sonrasında istemci uygulama tarafında servis ile ilişkili proxy referanslarının oluşturulduğu a&amp;ccedil;ık bir şekilde g&amp;ouml;r&amp;uuml;lebilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk260_5.gif" alt="" width="260" height="344" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Yine burada &lt;strong&gt;edmx&lt;/strong&gt; uzantılı tip dikkati &amp;ccedil;ekmektedir. Bu a&amp;ccedil;ık&amp;ccedil;ası bir &lt;strong&gt;XML&lt;/strong&gt; i&amp;ccedil;eriğidir ve istemci tarafına indirilmiş olan serileştirilebilir tipler ile ilgili eşleştirmeleri &amp;uuml;zerinde taşımaktadır. Yine dikkat &amp;ccedil;ekici noktalardan birisi istemci tarafı i&amp;ccedil;in bir &lt;strong&gt;config&lt;/strong&gt; dosyası oluşturulmamış olmasıdır. Nitekim bu modelde &lt;strong&gt;EndPoint&lt;/strong&gt; kullanımı s&amp;ouml;z konusu değildir. Zaten talepler basit &lt;strong&gt;HTTP&lt;/strong&gt; metodları olacak şekilde servise ulaştırılmaktadır ki bu aşamada &amp;uuml;retilen &lt;strong&gt;taşıyıcı(Container)&lt;/strong&gt; sınıf devreye girmektedir(AdventureWorksEntities). Oluşturulan tiplere bakıldığında ise aşağıdaki sınıf diagramında yer alan a&amp;ccedil;ılımların oluştuğu g&amp;ouml;r&amp;uuml;l&amp;uuml;r. Dikkat edileceği &amp;uuml;zere servis tarafından sunulan entity tipleri istemci tarafındada oluşturulmuştur. Asıl y&amp;uuml;klenici tip ise &lt;strong&gt;AdventureWorksEntities&lt;/strong&gt; isimli &lt;strong&gt;DataServiceContext&lt;/strong&gt; t&amp;uuml;revli sınıftır. Bu sınıf sayesinde &lt;strong&gt;CRUD&lt;/strong&gt; operasyonlarının tamamı kolay bir şekilde istemci tarafında ele alınabilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk260_6.gif" alt="" width="488" height="310" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Diğer &lt;strong&gt;Proxy&lt;/strong&gt; &amp;uuml;retme tekniği ise &lt;strong&gt;SvcUtil&lt;/strong&gt; aracının &lt;strong&gt;Ado.Net Data Service'&lt;/strong&gt; ler i&amp;ccedil;in geliştirilmiş olan versiyonu &lt;strong&gt;DataSvcUtil&lt;/strong&gt; komut satırı programıdır. Komut satırından &lt;strong&gt;proxy&lt;/strong&gt; &amp;uuml;retimi i&amp;ccedil;in &lt;strong&gt;Visual&lt;/strong&gt; &lt;strong&gt;Studio&lt;/strong&gt; &lt;strong&gt;2008&lt;/strong&gt; &lt;strong&gt;Command&lt;/strong&gt; &lt;strong&gt;Prompt&lt;/strong&gt; &amp;uuml;zerinden &lt;strong&gt;DataSvcUtil&lt;/strong&gt; aracının aşağıdaki resimde olduğu gibi kullanılması yeterli olacaktır. &amp;Ccedil;ıktı AdventureProxy.cs isimli dosya i&amp;ccedil;erisine yapılmaktadır. Uri parametresinden sonra ise Proxy &amp;uuml;retimi i&amp;ccedil;in kaynak olan Ado.Net Data Service adresi verilmiştir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk260_7.gif" alt="" width="588" height="161" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Elbette elimizde &lt;strong&gt;Visual Studio 2008&lt;/strong&gt; gibi bir &lt;strong&gt;IDE&lt;/strong&gt; olmadığı durumlarda &lt;strong&gt;proxy&lt;/strong&gt; &amp;uuml;retimi i&amp;ccedil;in &lt;strong&gt;DataSvcUtil&lt;/strong&gt; aracını kullanmak gerekmektedir. Aksi durumda ise &lt;strong&gt;Add&lt;/strong&gt; &lt;strong&gt;Service&lt;/strong&gt; &lt;strong&gt;Reference&lt;/strong&gt; se&amp;ccedil;eneği &amp;ccedil;ok daha mantıklıdır. Sonu&amp;ccedil; olarak ben &amp;ouml;rneğimizde &lt;strong&gt;Add&lt;/strong&gt; &lt;strong&gt;Service&lt;/strong&gt; &lt;strong&gt;Reference&lt;/strong&gt; se&amp;ccedil;eneğini ele aldım.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Artık ve nihayet istemci tarafındaki kodlarımızı geliştirmeye başlayabiliriz. &amp;Ouml;ncelikli olarak k&amp;uuml;&amp;ccedil;&amp;uuml;k bebek adımları ile başlamakta yarar vardır. &amp;Ouml;rneğin t&amp;uuml;m &lt;strong&gt;ProductSubCategory&lt;/strong&gt; listesini elde etmek istediğimizi d&amp;uuml;ş&amp;uuml;nelim. Bu durumda kodlarımızı aşağıdaki gibi geliştirmemiz yeterli olacaktır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Data.Services.Client;
+using ClientApp.AdventureSpace;
+
+namespace ClientApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // &amp;Ouml;ncelikli olarak Proxy nesnesi &amp;ouml;rneklenir.
+            // Parametre olarak Ado.Net Data Service' in URL bilgisi kullanılır.
+            AdventureWorksEntities proxy = new AdventureWorksEntities(new Uri("http://localhost:1740/AdventureServices/AdventureWorksServices.svc"));
+
+            // CreateQuery metodu parametre olarak Entity adını almaktadır.
+            // Metodun d&amp;ouml;nd&amp;uuml;rd&amp;uuml;ğ&amp;uuml; sonu&amp;ccedil; k&amp;uuml;mesi DataServiceQuery tipi ile ele alınabilir.
+            // İstenirse var anahtar kelimeside g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir. Her iki durumdada for d&amp;ouml;ng&amp;uuml;s&amp;uuml; &amp;ccedil;alışacaktır.
+            DataServiceQuery&amp;lt;ProductSubcategory&amp;gt; subCategories=proxy.CreateQuery&amp;lt;ProductSubcategory&amp;gt;("ProductSubcategory");
+            // var subCategories = proxy.CreateQuery&amp;lt;ProductSubcategory&amp;gt;("ProductSubcategory");
+
+            // Elde edilen sonu&amp;ccedil; k&amp;uuml;mesinin her bir elemanı ProductSubcategory sınıfı tipindendir.
+            foreach (ProductSubcategory subCategory in subCategories)
+            {
+                //Her bir alt kategorinin Name ve ProductSubcategoryID &amp;ouml;zelliklerinin değerleri yazdırılır.
+                Console.WriteLine("{0} : {1}",subCategory.ProductSubcategoryID,subCategory.Name);
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bunun sonucu olarak aşağıdakine benzer bir ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk260_8.gif" alt="" width="238" height="295" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Şimdi işi biraz daha ilerletelim. S&amp;ouml;z gelimi bu alt kategorilerin isimlerine g&amp;ouml;re tersten sıralı bir şekilde gelmesini istediğimizi d&amp;uuml;ş&amp;uuml;nelim. Bu durumda &lt;strong&gt;CreateQuery&lt;/strong&gt; metodu i&amp;ccedil;erisinde &lt;strong&gt;ProductSubcategory?$orderby=Name desc&lt;/strong&gt; şeklinde bir ifade kullanmamız ka&amp;ccedil;ınılmazdır. Ne varki &lt;strong&gt;CreateQuery&lt;/strong&gt; metodu sadece &lt;strong&gt;Entity&lt;/strong&gt; adları ile &amp;ccedil;alışmaktadır ve bu nedenle ek parametreler alamaz. Dolayısıyla bu denemenin sonucu olarak aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan &lt;strong&gt;istisnaya(Exception) &lt;/strong&gt;d&amp;uuml;ş&amp;uuml;l&amp;uuml;r.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk260_9.gif" alt="" width="633" height="183" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&amp;Ouml;yleyse &amp;ccedil;are nedir? Parametrik bir sorgu s&amp;ouml;z konusu ise eğer bu durumda &lt;strong&gt;Execute&lt;/strong&gt; metodunun kullanılması gerekmektedir. Bir başka deyişle kodları aşağıdaki şekilde değiştirmek yeterli olacaktır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;AdventureWorksEntities proxy = new AdventureWorksEntities(new Uri("http://localhost:1740/AdventureServices/AdventureWorksServices.svc"));
+
+// Parametrik sorgu g&amp;ouml;nderimi i&amp;ccedil;in Execute metodu kullanılmalıdır.
+var subCategories = proxy.Execute&amp;lt;ProductSubcategory&amp;gt;(new Uri("/ProductSubcategory?$orderby=Name desc", UriKind.Relative));
+
+foreach (ProductSubcategory subCategory in subCategories)
+{
+    Console.WriteLine("{0} : {1}",subCategory.ProductSubcategoryID,subCategory.Name);
+}&lt;/pre&gt;
+&lt;p&gt;Program &amp;ccedil;alıştırıldığında aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; elde edilir. Dikkat edileceği &amp;uuml;zere alt kategoriler isimlerine g&amp;ouml;re tersten sıralı olacak şekilde elde edilmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk260_10.gif" alt="" width="247" height="259" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bu sorgular son derece basittir. İşi biraz daha karıştırmaya ne dersiniz? &amp;Ouml;rneğin A dan Z' ye sıralanmış alt kategorilerden ilk &amp;uuml;&amp;ccedil;&amp;uuml;n&amp;uuml; ve bunlara bağlı &amp;uuml;r&amp;uuml;nleri elde etmek istediğimizi d&amp;uuml;ş&amp;uuml;nelim. Bu noktada &lt;strong&gt;ProductSubcategory&lt;/strong&gt; ve &lt;strong&gt;Product&lt;/strong&gt; tipleri arasındaki &lt;strong&gt;ilişki(Association)&lt;/strong&gt; son derece &amp;ouml;nemlidir. Bu sonu&amp;ccedil;ları elde etmek i&amp;ccedil;in kodları ilk etapta aşağıdaki gibi geliştiririz.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;AdventureWorksEntities proxy = new AdventureWorksEntities(new Uri("http://localhost:1740/AdventureServices/AdventureWorksServices.svc"));
+
+var subCategories = proxy.Execute&amp;lt;ProductSubcategory&amp;gt;(new Uri("/ProductSubcategory?$orderby=Name&amp;amp;$top=3", UriKind.Relative));
+
+foreach (ProductSubcategory subCategory in subCategories)
+{
+    Console.WriteLine("{0} : {1}",subCategory.ProductSubcategoryID,subCategory.Name);
+    // O andaki alt kategoriye bağlı &amp;uuml;r&amp;uuml;nleri gezmek i&amp;ccedil;in Product &amp;ouml;zelliğinden yararlanılır.
+    foreach (Product product in subCategory.Product)
+    {
+        Console.WriteLine("\t {0}, {1}, {2}",product.ProductID.ToString(),product.Name,product.ListPrice.ToString());
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Ancak program &amp;ccedil;alıştırıldığında hi&amp;ccedil; beklenmedik bir sonu&amp;ccedil; elde edilir. Aynen aşağıdaki resimde olduğu gibi. Dikkat edileceği &amp;uuml;zere sadece Alt kategori adları ve ID değerleri elde edilmiş bağlı olan &amp;uuml;r&amp;uuml;n listeleri gelmemiştir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk260_11.gif" alt="" width="237" height="78" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Sebep son derece a&amp;ccedil;ıktır. &amp;Ccedil;&amp;uuml;nk&amp;uuml; sadece &lt;strong&gt;ProductSubcategory&lt;/strong&gt; i&amp;ccedil;eriği servis tarafından istenmiştir. Bunlara bağlı &lt;strong&gt;Product&lt;/strong&gt; nesne toplulukları alınmamıştır. G&amp;ouml;rsel derslerimizdende hatırlayacağınız &amp;uuml;zere &lt;strong&gt;expand&lt;/strong&gt; anahtar kelimesininin kullanılmasının sebebide budur. Dolayısıyla kodda aşağıda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi k&amp;uuml;&amp;ccedil;&amp;uuml;k bir değişiklik yapmak gerekecektir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var subCategories = proxy.Execute&amp;lt;ProductSubcategory&amp;gt;(new Uri("/ProductSubcategory?$orderby=Name&amp;amp;$top=3&amp;amp;$expand=Product", UriKind.Relative));&lt;/pre&gt;
+&lt;p&gt;Bu haliyle kod &amp;ccedil;alıştırıldığında aşağıdaki sonu&amp;ccedil;lar elde edilir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk260_12.gif" alt="" width="351" height="147" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Makalenin bu kısımlarında i&amp;ccedil;imden &lt;strong&gt;"b&amp;ouml;ylesine &amp;ouml;nemli ve bir o kadar da g&amp;uuml;zide bir teknoloji i&amp;ccedil;erisinde LINQ kullanılmaz mı?"&lt;/strong&gt; diye ge&amp;ccedil;irmiyor değilim. Tahmin ediyorumki sizlerinde bu y&amp;ouml;nde bazı beklentileri vardır. &amp;Ouml;yleyse gelin kolları sıvayalım ve aşağıdaki kod par&amp;ccedil;asını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Data.Services.Client;
+using ClientApp.AdventureSpace;
+
+namespace ClientApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            AdventureWorksEntities proxy = new AdventureWorksEntities(new Uri("http://localhost:1740/AdventureServices/AdventureWorksServices.svc"));
+
+            var subCategories = from sc in proxy.ProductSubcategory
+            orderby sc.Name descending
+            select sc;
+    
+            foreach (ProductSubcategory subCategory in subCategories)
+            {
+                Console.WriteLine("{0} : {1}",subCategory.ProductSubcategoryID,subCategory.Name);
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu kez g&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi &lt;strong&gt;Execute&lt;/strong&gt; yada &lt;strong&gt;CreateQuery&lt;/strong&gt; gibi metodlar kullanmadık. Bunların yerine doğrudan bir &lt;strong&gt;LINQ&lt;/strong&gt; sorgusu yazdık ve işte sonu&amp;ccedil;;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk260_14.gif" alt="" width="232" height="307" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Aslında yazılan &lt;strong&gt;LINQ&lt;/strong&gt; sorgusu istemci tarafında bir &lt;strong&gt;HTTP&lt;/strong&gt; ifadesinin oluşturulmasına ve servise doğru g&amp;ouml;nderilmesine neden olmaktadır. &amp;Ouml;yleki &lt;strong&gt;debug&lt;/strong&gt; modda &lt;strong&gt;subCategories&lt;/strong&gt; değişkenine bakıldığında aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi bir &lt;strong&gt;QueryString&lt;/strong&gt; ifadesi oluştuğu g&amp;ouml;zlemlenir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk260_13.gif" alt="" width="640" height="82" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Buna g&amp;ouml;re &lt;strong&gt;ProductSubcategory&lt;/strong&gt; ve bunlara bağlı &amp;uuml;r&amp;uuml;nlerin elde edilmesi i&amp;ccedil;in yazılmış olan kod par&amp;ccedil;asında &lt;strong&gt;LINQ&lt;/strong&gt; ifadelerini aşağıdaki gibi kullanarak aynı sonu&amp;ccedil;ların elde edilebileceği a&amp;ccedil;ık bir şekilde g&amp;ouml;r&amp;uuml;lebilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;AdventureWorksEntities proxy = new AdventureWorksEntities(new Uri("http://localhost:1740/AdventureServices/AdventureWorksServices.svc"));
+
+// Take metodu ile A...Z ye sıralanmış listenin ilk 3 elemanı alınmış olunur.
+var subCategories = (from sc in proxy.ProductSubcategory 
+orderby sc.Name 
+select sc).Take&amp;lt;ProductSubcategory&amp;gt;(3);
+
+// Elde edilen alt kategoriler dolaşışır
+foreach (ProductSubcategory subCategory in subCategories)
+{
+    Console.WriteLine("{0} : {1}",subCategory.ProductSubcategoryID,subCategory.Name);
+    // O andaki alt kategoriye bağlı &amp;uuml;r&amp;uuml;nlerin &amp;ccedil;ekilmesi i&amp;ccedil;in LoadProperty metodu kullanılır. İkinci parametre ilişkinin taşındığı &amp;ouml;zellik adıdır.
+    proxy.LoadProperty(subCategory, "Product");
+    // Artık o andaki alt kategori i&amp;ccedil;in y&amp;uuml;klenen Product satırları dolaşılabili
+    foreach (Product product in subCategory.Product)
+    {
+        Console.WriteLine("\t{0} {1} {2}",product.ProductID.ToString(),product.Name,product.ListPrice.ToString());
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu kod par&amp;ccedil;asında tek dikkat edilmesi gereken nokta &lt;strong&gt;LoadProperty&lt;/strong&gt; &amp;ouml;zelliğinin kullanımıdır. Nitekim bu &amp;ouml;zellik ile ilişkisel veriler y&amp;uuml;klenmediği takdirde alt kategoriye bağlı &amp;uuml;r&amp;uuml;n listeleri servis tarafında &amp;ccedil;ekilmez.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;span style="font-family: Verdana;"&gt;İster &lt;strong&gt;Execute&lt;/strong&gt; metodu olsun ister &lt;strong&gt;LINQ&lt;/strong&gt; sorgusu olsun, ilişkisel &amp;ouml;zelliklerce taşınan verilerin &amp;ccedil;ekilmesi i&amp;ccedil;in sırasıyla &lt;strong&gt;expand&lt;/strong&gt; anahtar kelimesinin yada &lt;strong&gt;LoadProperty&lt;/strong&gt; metodunun kullanılması gerekir.&lt;/span&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Artık sizde farklı sorgulama &amp;ouml;rnekleri deniyerek istemci tarafında neler yapılabileceğini analiz edebilirsiniz. G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere bir Ado.Net Data Service' in istemci tarafından ele alınması standart bir servis kullanımına &amp;ccedil;ok benzemektedir. Proxy tipleri burada işi kolaylaştırmakla birlikte LINQ sorgularınında kullanılabiliyor olması kişisel g&amp;ouml;r&amp;uuml;ş&amp;uuml;me g&amp;ouml;re son derece &amp;ouml;nemlidir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;B&amp;ouml;ylece bug&amp;uuml;nk&amp;uuml; ders notlarımızında sonuna gelmiş bulunuyoruz. Bu ders notlarımızda basit bir istemcinin nasıl geliştirilebileceğini incelemeye &amp;ccedil;alıştık. Konu ile ilişkili olaraktan ilgili &lt;a href="http://www.csharpnedir.com/videoindir.asp?id=115"&gt;g&amp;ouml;rsel dersi&lt;/a&gt; takip etmenizi &amp;ouml;neririm. Bir sonraki ders notlarımızda istemci tarafında &lt;strong&gt;CRUD(CreateReadUpdateDelete)&lt;/strong&gt; operasyonlarının nasıl ele alınabileceğini analiz etmeye &amp;ccedil;alışacağız; ve eğer m&amp;uuml;mk&amp;uuml;n olursa &amp;ouml;zel &lt;strong&gt;LINQ&lt;/strong&gt; &lt;strong&gt;Provider&lt;/strong&gt; kullanılması halinde, servis tarafında &lt;strong&gt;Insert&lt;/strong&gt;, &lt;strong&gt;Update&lt;/strong&gt;, &lt;strong&gt;Delete&lt;/strong&gt; oparasyonlarına olanak sağlamak i&amp;ccedil;in neler yapılması gerektiğine değiniyor olacağız. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;a href="/makale/images/DevelopingAstoriaClient.rar"&gt; &amp;Ouml;rneği indirmek i&amp;ccedil;in tıklayın&lt;/a&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;</content>
+  <pubDate>2008-10-06 12:00:00</pubDate>
+  <slug>Ado-Net-Data-Services-Ders-Notlarc4b1-3-(Istemci-Gelistirmek)-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>adonet-data-services</tag>
+    <tag>wcf-data-services</tag>
+    <tag>wcf</tag>
+    <tag>windows-communication-foundation</tag>
+  </tags>
+  <categories>
+    <category>Ado.Net Data Services</category>
+  </categories>
+</post>

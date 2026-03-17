@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Ado.Net 2.0 ve Bulk-Data Kopyalama Mekanizması</title>
+  <description>Sql Server'da bir veritabanı tablosundan, başka bir hedef tabloya veri taşıma işlemi bulk-data kopyalama olarak adlandırılır. Veritabanı yöneticileri çoğunlukla bu operasyonu gerçekleştirmek amacıyla, BCP adı verilen komut satırı aracını kullanırlar. Burada amaç, kaynak tablodaki satırların veya bir satır kümesinin farklı konumda olabilecek bir tabloya taşınmasıdır. Hedef tablo aynı veritabanında olabileceği gibi, diğer bir sql sunucusu üzerindeki başka bir veritabanında da yer alabilir. Ado.Net 2.0' da SqlClient isim alanına eklenen yeni sınıflar yardımıyla bu işlemleri yönetimli kodda (managed-code) gerçekleştirme imkanına da artık sahibiz. Bu makalemizde, bu işlemleri gerçekleştirmek için kullanabileceğimiz yeni Ado.Net 2.0 sınıflarını incelemeye çalışacağız.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Sql Server'da bir veritabanı tablosundan, başka bir hedef tabloya veri taşıma işlemi bulk-data kopyalama olarak adlandırılır. Veritabanı y&amp;ouml;neticileri &amp;ccedil;oğunlukla bu operasyonu ger&amp;ccedil;ekleştirmek amacıyla, BCP adı verilen komut satırı aracını kullanırlar. Burada ama&amp;ccedil;, kaynak tablodaki satırların veya bir satır k&amp;uuml;mesinin farklı konumda olabilecek bir tabloya taşınmasıdır. Hedef tablo aynı veritabanında olabileceği gibi, diğer bir sql sunucusu &amp;uuml;zerindeki başka bir veritabanında da yer alabilir. Ado.Net 2.0' da SqlClient isim alanına eklenen yeni sınıflar yardımıyla bu işlemleri y&amp;ouml;netimli kodda (managed-code) ger&amp;ccedil;ekleştirme imkanına da artık sahibiz. Bu makalemizde, bu işlemleri ger&amp;ccedil;ekleştirmek i&amp;ccedil;in kullanabileceğimiz yeni Ado.Net 2.0 sınıflarını incelemeye &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;p&gt;Bulk-Data kopyalama işlemi i&amp;ccedil;in Ado.Net 2.0 ile gelen en &amp;ouml;nemli sınıf, SqlClient isim alanında yer alan SqlBulkCopy sınıfıdır. Bu sınıfa ait nesne &amp;ouml;rnekleri yardımıyla, kaynak tablodan hedef tabloya veri transferi işlemleri kolayca ger&amp;ccedil;ekleştirilebilir. Bu işlemler sırasında SqlBulkCopy nesne &amp;ouml;rnekleri, taşıma işlemini varsayılan olarak a&amp;ccedil;tığı bir transaction i&amp;ccedil;erisinde ger&amp;ccedil;ekleştirmektedir. Yani, hedef tabloya yapılan taşıma işlemleri sırasında oluşabilecek olan hatalar sonrasında, transaction işlemi iptal edilerek roll-back operasyonu ger&amp;ccedil;ekleşir ve hedef tabloya o ana kadar girilen satırlar geri alınır.&lt;/p&gt;
+&lt;p&gt;Burada &amp;ouml;nemli olan noktalardan birisi, kaynak ve hedef tabloların aynı şema yapısına sahip olmalarının &amp;ouml;nemli olmayışıdır. Yani, aynı alan adları, eşit alan sayıları ve aynı alan sıraları olmak zorunda değildir. Nitekim, hedef tablo ile kaynak tablo arasında alan eşleşmelerinde uyumsuzluk olabilir. &amp;Ouml;rneğin, alan adları ve sayılar birbirinden farklı olabilir. İşte bu durumda, kaynak ve hedef tablodaki alanları birbirleriyle eşleştirmekte kullanılan SqlBulkCopyColumnMapping sınıfına ait nesne &amp;ouml;rnekleri kullanılır. Bu sınıf yardımıyla kaynak ve hedef alanların kolayca eşleştirilmesi sağlanmış olur. Bulk-Data kopylama işlemi i&amp;ccedil;in &amp;ouml;nemli olan bir diğer sınıf ise, SqlBulkCopyColumnMappingCollection' dır. Bu sınıf ise, tahmin edeceğiniz gibi SqlBulkCopyColumnMapping sınıfı t&amp;uuml;r&amp;uuml;nden nesne &amp;ouml;rneklerinin bir koleksiyonunu ifade etmektedir.&lt;/p&gt;
+&lt;p&gt;Bulk-Data kopyalama operasyonunda, kaynak veriler i&amp;ccedil;in yine SqlClient isim alanındaki standart nesneler kullanılabilir. Esasen bu tip bir operasyonda, kaynak verileri herhangibir SqlDataReader nesnesinden, bir DataTable' dan veya bir DataRow dizisinden alabiliriz. Hatta bir Xml d&amp;ouml;k&amp;uuml;manınıda kaynak olarak kullanabiliriz. B&amp;ouml;ylece y&amp;ouml;netimsel koda kazandırılan bu imkanlar ile veri taşıma işlemi i&amp;ccedil;in b&amp;uuml;y&amp;uuml;k esneklik kazanmış olmaktayız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk93_10.gif" alt="" width="429" height="306" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 1. SqlBulkCopy Sınıfının &amp;Ccedil;alışma Şekli.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Bulk-Data kopylama işleminin daha kolay anlaşılabilmesi i&amp;ccedil;in elbette &amp;ouml;rnekler ile olayı incelememiz daha faydalı olacaktır. Şimdi aşağıdaki basit Console uygulamasını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;#region Using directives
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Data;
+using System.Data.SqlClient;
+
+#endregion
+
+namespace BulkCopy
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            SqlConnection con = new SqlConnection("data source=localhost;initial catalog=AdventureWorks;integrated security=SSPI;MultipleActiveResultSets=true");
+            
+            /*Hedef tablodaki satırları &amp;ouml;nlem olarak siliyoruz.*/
+            SqlCommand cmd = new SqlCommand("DELETE FROM YEDEK_MailList", con);
+            con.Open();
+            cmd.ExecuteNonQuery();
+
+            /* Kaynak tablodan verileri SqlDataReader yardımıyla &amp;ccedil;ekiyoruz.*/
+            SqlCommand cmdCek = new SqlCommand("SELECT * FROM MailList", con);
+            SqlDataReader dr;
+            dr = cmdCek.ExecuteReader();
+
+            /*SqlBulkCopy nesnemizi hedef bağlantıyı belirterek oluşturuyoruz.*/
+            SqlBulkCopy bc = new SqlBulkCopy(con);
+            
+            /* Hedef tabloyu belirtiyoruz.*/
+            bc.DestinationTableName = "YEDEK_MailList";
+           
+             /*WriteToServer metodu ile SqlDataReader' dan okuduğumuz satırları, hedefe insert ediyoruz.*/
+            bc.WriteToServer(dr);
+
+            /* Nesneleri kapatıyoruz.*/
+            bc.Close();
+            dr.Close();
+            con.Close();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rneğimizi incelemeden &amp;ouml;nce, Yukon sunucumuz &amp;uuml;zerinde, AdventureWorks veritabanı altında MailList ve YEDEK_MailList isimli iki tablomuz olduğunu ve bu tabloların şema yapılarının birbirleriyle tamamen aynı olduklarını belirtelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk93_1.gif" alt="" width="392" height="155" border="0" /&gt;&lt;br /&gt; &lt;img src="/makale/images/mk93_2.gif" alt="" width="386" height="144" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 2. Her iki tablonunda şema yapısı aynıdır.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Burada ger&amp;ccedil;ekleştirdiğimiz operasyon, bulk-data kopyalama işleminin en basit halidir. Şimdi neler yaptığımıza biraz daha yakından bakalım. İlk olarak Yukon sunucumuzdaki AdventureWorks veritabanına bir bağlantı a&amp;ccedil;tık. Daha sonra, tedbir olarak YEDEK_MailList tablosundaki t&amp;uuml;m satırları sildik. Nitekim b&amp;ouml;yle bir işlem yapmasaydık YEDEK_MailList tablosuna taşınan satırlar s&amp;uuml;rekli arka arkaya eklenecekti. Daha sonra ise, klasik olarak kaynak tablomuzdan verileri bir SqlDataReader nesnesi yardımıyla &amp;ccedil;ektik. Bizi asıl ilgilendiren kısım aşağıdaki kod satırlarının yer aldığı kısımdır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;SqlBulkCopy bc = new SqlBulkCopy(con);
+            
+bc.DestinationTableName = "YEDEK_MailList";
+
+bc.WriteToServer(dr);&lt;/pre&gt;
+&lt;p&gt;Burada ilk satırda, SqlBulkCopy nesnemizi o anki ge&amp;ccedil;erli SqlConnection nesnesi ile oluşturuyoruz. Yapıcı metoda ait parametre hedef bağlantıyı temsil etmektedir. Nitekim, hedef tablomuz aynı sunucuda olmayabilir. Ya da, aynı veritabanı &amp;uuml;zerinde olmayabilir. Bu nedenle burada bağlantıyı dikkatli se&amp;ccedil;mek gerekmektedir. Sonraki satırda ise, taşıma işleminin hedef alındığı tablo, SqlBulkCopy nesnemize DestinationTableName &amp;ouml;zelliği ile bildirilir. Buradaki tablo, SqlBulkCopy nesnesi &amp;ouml;rneklendirilirken parametre olarak verdiğimiz SqlConnection nesnesinin belirttiği bağlantı &amp;uuml;zerinde aranır. Son satırımızda ise, WriteToServer metodu kullanılmıştır. Bu metoda da parametre olarak, kaynak tabloya ait veri k&amp;uuml;mesini taşıyan SqlDataReader nesnesi verilmiştir. B&amp;ouml;ylece WriteToServer metodu, SqlDataReader nesnesi ile MailList tablosundan okuduğumuz satırları, SqlBulkCopy nesnesi oluşturulurken belirtilen bağlantı &amp;uuml;zerindeki hedef tabloya yazmaktadır.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneği &amp;ccedil;alıştırdığımızda, kaynak verilerin hedef tabloya taşındığını g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Burada enteresan bir nokta vardır. Bu işlemi &amp;uuml;st &amp;uuml;ste bir ka&amp;ccedil; kez uyguladığımızda, hedef tablodaki ID alanının değerlerinin s&amp;uuml;rekli olarak arttığını g&amp;ouml;r&amp;uuml;r&amp;uuml;z. &amp;Ouml;yleki kaynak tablomuzda 1,2,3 olarak giden ID alanı değerleri, uygulama bir ka&amp;ccedil; kez &amp;ccedil;alıştırıldıktan sonra hedef tabloda aşağıdaki gibi olabilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk93_3.gif" alt="" width="442" height="138" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 3. ID alanının durumu.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Her ne kadar biz ID alanını her iki tabloda otomatik olarak artan identity değeri ile belirtsekte, Bulk-Data kopyalama işleminde, ID değerlerinin bozulmadan hedef tabloya yansıtılabilmeside m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Bunun i&amp;ccedil;in, SqlBulkCopy nesnemizin bir diğer yapıcı metodunu kullanırız.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public SqlBulkCopy(connectionString, SqlBulkCopyOptions copyOptions);&lt;/pre&gt;
+&lt;p&gt;Bu yapıcı metod SqlBulkCopyOptions numaralandırıcısı t&amp;uuml;r&amp;uuml;nden bir parametre daha alır. Bu numaralandırıcının alabileceği değerler şunlardır.&lt;/p&gt;
+&lt;table id="table8" border="1" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;th style="border-style: solid; border-width: 1px;" align="left" height="41"&gt;
+&lt;p align="center"&gt;&lt;strong&gt; SqlBulkCopyOptions Numaralandırıcı Değeri&lt;/strong&gt;&lt;/p&gt;
+&lt;/th&gt;
+&lt;th style="border-style: solid; border-width: 1px;" align="left" height="41"&gt;
+&lt;p align="center"&gt;&lt;strong&gt;A&amp;ccedil;ıklaması&lt;/strong&gt;&lt;/p&gt;
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="40%"&gt;CheckConstraints&lt;/td&gt;
+&lt;td width="50%"&gt;Hedef tablodaki kısıtlamalar var ise bunlar g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınarak veri girişi ger&amp;ccedil;ekleşir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="40%"&gt;Default&lt;/td&gt;
+&lt;td width="50%"&gt;Varsayılan değerler kullanılır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="40%"&gt;KeepIdentity&lt;/td&gt;
+&lt;td width="50%"&gt;Kaynak tablodaki identity değerleri hedef tablodada korunur. Yani değiştirilmeden eklenir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="40%"&gt;KeepNulls&lt;/td&gt;
+&lt;td width="50%"&gt;Null değerlerin hedef tabloya korunarak ge&amp;ccedil;irilmesini sağlar.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="40%"&gt;TableLock&lt;/td&gt;
+&lt;td width="50%"&gt;Bulk-Data kopylama işlemi sırasında tabloya kilit koyar.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Bizim &amp;ouml;rneğimizde kullanmamız gereken değer, KeepIdentity' dir. Şimdi kodumuzdaki SqlBulkCopy nesnemizin yapıcı metodunu aşağıdaki parametreleri ile &amp;ccedil;ağıralım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;SqlBulkCopy bc = new SqlBulkCopy("data source=localhost;initial catalog=AdventureWorks;integrated security=SSPI", SqlBulkCopyOptions.KeepIdentity);&lt;/pre&gt;
+&lt;p&gt;Uygulamamızı şimdi tekrar &amp;ccedil;alıştıracak olursak, hedef tablomuz olan YEDEK_MailList i&amp;ccedil;indeki ID alanlarının değerlerinin, kaynak tablodaki ile aynı olduğunu bir başka deyişle korunduğunu g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Uygulamamızı bir ka&amp;ccedil; sefer &amp;uuml;st &amp;uuml;ste &amp;ccedil;alıştırsakta sonu&amp;ccedil; &amp;ouml;ncekinde olduğu gibi değişmeyecek ve kaynak tablodaki ID alanlarının değerleri hedef tabloya korunarak ge&amp;ccedil;ecektir.&lt;/p&gt;
+&lt;p&gt;Veri taşımalarındaki diğer bir noktada, null değerlerin hedef tabloya taşınmasıdır. Dikkat edecek olursanız, SqlBulkCopyOptions numaralandırıcısı Null değerlerin hedef tabloya korunarak ge&amp;ccedil;irilmesini sağlayan KeepNulls değerine sahiptir. Bu &amp;ouml;zelliği daha iyi anlayabilmek amacıyla hedef tablomuzda ufak bir değişiklik yapalım. MAIL alanının null değer i&amp;ccedil;erebildiğini biliyoruz. Hedef tablomuzda bu alan i&amp;ccedil;in bir default değer verelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk93_4.gif" alt="" width="567" height="337" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 4. Default Değer belirledik.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi bu koşullarda MailList isimli kaynak tablomuzda yeni bir satır oluşturalım ancak MAIL alanını null olarak bırakalım. Uygulamayı &amp;ccedil;alıştırdığımızda, bu satırın null değerinin hedef tabloya taşınmadığını ve hedef tabloya "MAIL TANIMLI DEGIL" değerinin yazıldığını g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk93_5.gif" alt="" width="452" height="137" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 5. Null değer taşınmadı.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Ancak SqlBulkCopy nesnemizi aşağıdaki gibi oluşturduğumuzda, null değerin hedef tablodaki alana taşındığını g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;SqlBulkCopy bc = new SqlBulkCopy("data source=localhost;initial catalog=AdventureWorks;integrated security=SSPI", SqlBulkCopyOptions.KeepNulls);&lt;/pre&gt;
+&lt;p&gt;Şimdiye kadar ki kodlarımızda, SqlBulkCopy nesnesi i&amp;ccedil;in iki yapıcı metod kullandık. SqlBulkCopy nesnelerini oluşturabileceğimiz yapıcı metodların tamamı aşağıdaki tabloda yer almaktadır.&lt;/p&gt;
+&lt;table id="table7" border="1" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;th style="border-style: solid; border-width: 1px;" align="left" height="41"&gt;Name&lt;/th&gt;
+&lt;th style="border-style: solid; border-width: 1px;" align="left" height="41"&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="40%"&gt;SqlBulkCopy (SqlConnection)&lt;/td&gt;
+&lt;td width="50%"&gt;Hedef bağlantıyı bir SqlConnection nesnesi belirtir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="40%"&gt;SqlBulkCopy (String)&lt;/td&gt;
+&lt;td width="50%"&gt;Hedef bağlantı i&amp;ccedil;in SqlConnection String kullanılır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="40%"&gt;SqlBulkCopy (String, SqlBulkCopyOptions)&lt;/td&gt;
+&lt;td width="50%"&gt;Hedef bağlantıyı string bilgisi olarak alır ve SqlBulkCopy nesnesini, SqlBulkCopyOptions numaralandırıcısı ile bertilen şartlara g&amp;ouml;re oluşturulur.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="40%"&gt;SqlBulkCopy (SqlConnection, SqlBulkCopyOptions, SqlTransaction)&lt;/td&gt;
+&lt;td width="50%"&gt;SqlBulkCopy nesnesini hedef bağlantıda, SqlBulkCopyOptions ile belirtilen şartlarda, SqlTransaction nesnesi ile belirtilen Transaction i&amp;ccedil;inde oluşturur.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Bulk-Data kopyalama işlemini asıl ger&amp;ccedil;ekleştiren WriteToServer metodununda &amp;ccedil;eşitli aşırı y&amp;uuml;klenmiş (overload) verisyonları vardır. Bu versiyonlar aşağıdaki tabloda olduğu gibidir.&lt;/p&gt;
+&lt;table id="table9" border="1" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;th style="border-style: solid; border-width: 1px;" align="left"&gt;Overload Versiyonu&lt;/th&gt;
+&lt;th style="border-style: solid; border-width: 1px;" align="left"&gt;A&amp;ccedil;ıklaması&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="49%"&gt;SqlBulkCopy.WriteToServer (DataRow[])&lt;/td&gt;
+&lt;td width="47%"&gt;Bir DataRow dizisini hedef tabloya taşır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="49%"&gt;SqlBulkCopy.WriteToServer (DataTable)&lt;/td&gt;
+&lt;td width="47%"&gt;Bir DataTable' ı hedef tabloya taşır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="49%"&gt;SqlBulkCopy.WriteToServer (IDataReader)&lt;/td&gt;
+&lt;td width="47%"&gt;Bir SqlDataReader' dan okuduğu veri k&amp;uuml;mesini hedef tabloya taşır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="49%"&gt;SqlBulkCopy.WriteToServer (DataTable, DataRowState)&lt;/td&gt;
+&lt;td width="47%"&gt;Bir DataTable' dan DataRowState numaralandırıcısını belirttiği kriterlere uyan satırlarını, hedef tabloya taşır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;G&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi, WriteToServer metodunu etkili versiyonları vardır. &amp;Ouml;rneğin, bir DataTable &amp;uuml;zerinde sadece değiştirilmiş olan satırların hedef tabloya yazılmasını sağlayabiliriz. Bunun i&amp;ccedil;in tek yapmamız gereken, DataRowState numaralandırıcısının Modified değerini kullanmak olacaktır. Bildiğiniz gibi DataRowState numaralandırıcısı, Modified, Unchanged, Inserted ve Deleted değerlerinden birisini alabilir. Bu durumu dilerseniz bir &amp;ouml;rnek &amp;uuml;zerinde inceleyelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;static void Main(string[] args)
+{
+    SqlConnection con = new SqlConnection("data source=localhost;initial catalog=AdventureWorks;integrated security=SSPI");
+/*Hedef tablodaki satırları &amp;ouml;nlem olarak siliyoruz.*/
+    SqlCommand cmd = new SqlCommand("DELETE FROM YEDEK_MailList", con);
+    con.Open();
+    cmd.ExecuteNonQuery();
+
+    SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM MailList", con);
+    DataTable dt = new DataTable();
+    da.Fill(dt);
+    DataRow drYeni;
+    drYeni = dt.NewRow();
+    drYeni["ID"] = "10";
+    drYeni["AD"] = "Maykıl";
+    drYeni["SOYAD"] = "Cordın";
+    drYeni["MAIL"] = "michael@jordan.com";
+    dt.Rows.Add(drYeni);
+
+    drYeni = dt.NewRow();
+    drYeni["ID"] = "11";
+    drYeni["AD"] = "Kerim Abdul";
+    drYeni["SOYAD"] = "Cabbar";
+    drYeni["MAIL"] = "nba@nba.com";
+    dt.Rows.Add(drYeni);
+
+    /*SqlBulkCopy nesnemizi hedef bağlantıyı belirterek oluşturuyoruz.*/
+    SqlBulkCopy bc = new SqlBulkCopy("data source=localhost;initial catalog=AdventureWorks;integrated security=SSPI",SqlBulkCopyOptions.KeepIdentity);
+    /* Hedef tabloyu belirtiyoruz.*/
+    bc.DestinationTableName = "YEDEK_MailList";
+    /*WriteToServer metodu ile DataTable i&amp;ccedil;inde sadece yeni eklenmiş olan satırları, hedef tabloya yazdırıyoruz.*/
+    bc.WriteToServer(dt, DataRowState.Added);
+
+    /* Nesneleri kapatıyoruz.*/
+    bc.Close();
+    con.Close();
+}&lt;/pre&gt;
+&lt;p&gt;Bu kodda g&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi, MailList tablomuzun i&amp;ccedil;eriğini bağlantısız katman nesnelerinden birisi olan DataTable' a aktardık. Daha sonra ise basit bir şekilde iki adet satır ekledik. Bu satırlar yeni eklendikleri i&amp;ccedil;in, DataRowState değerleri Added olarak belirlenmiştir. SqlBulkCopy nesnemizin WriteToServer metodunu uygularken,&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;bc.WriteToServer(dt, DataRowState.Added);&lt;/pre&gt;
+&lt;p&gt;ikinci parametreye DataRowState.Added değerini verdik. B&amp;ouml;ylece hedef tabloya, dataTable nesnesinin sahip olduğu veri k&amp;uuml;mesinden sadece yeni eklenen satırlar yazılacaktır. Uygulamamızı &amp;ccedil;alıştırdığımızda YEDEK_MailList tablomuzun aşağıdaki satırlara sahip olduğunu g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Bu satırlar uygulamada eklenen satırlardır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk93_6.gif" alt="" width="466" height="110" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 5. Sadece DataTable' a eklenen satırların hedef tabloya aktarılması sonucu.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi SqlBulkCopy nesnesi sayesinde, verilerin başka tablolara aktarılması son derece kolaydır. Bununla birlikte, bu tekniği yedekleme işlemleri i&amp;ccedil;in sıklıkla kullanabiliriz. Herşeyden &amp;ouml;nce, var olan bir tablonun t&amp;uuml;m satırılarını, satırların belirli bir k&amp;uuml;mesini, yada son kullanıcı tarafından bağlantısız katmanda yeni eklenmiş, silinmiş, g&amp;uuml;ncellenmiş satırların tamamını başka bir hedef tabloya kolayca aktarabilme yeteneğine sahip olmuş oluyoruz.&lt;/p&gt;
+&lt;p&gt;Şu ana kadar ger&amp;ccedil;ekleştirdiğimiz &amp;ouml;rnekler, aynı SqlConnection' ı kullamaktadır. Oysaki ger&amp;ccedil;ek hayatta bu tip taşıma işlemlerini, farklı sunucularda yer alan farklı tablolara doğru ger&amp;ccedil;ekleştirmek isteyebiliriz. Bununla birlikte, hedef tablomuz nerede olursa olsun farklı bir şema yapısınada sahip olabilir. B&amp;ouml;yle bir durumda &amp;ouml;zellikle alanların doğru ve uygun bir şekilde eşleştirilmesi &amp;ouml;nem kazanmaktadır. Şimdi bu durumu incelemek amacıyla &amp;ouml;ncelikle, YEDEK_MailList tablomuzu farklı alan isimleri ve sıralama ile aynı sunucuda bulunan farklı bir veritabanı altına koyalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk93_7.gif" alt="" width="599" height="265" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 7. YEDEK_MailList Tablomuz.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Bu sefer tablomuzu hem farklı bir veritabanı altına koyduk, hemde şema yapısını biraz daha değiştirdik. Herşeyden &amp;ouml;nemlisi, alan adlarını, sıralarını değiştirdik. Bununla birlikte fazladan bir alanımız(AccountStatus) daha mevcuttur. Bu nedenle, kaynak ve hedef tablolardaki alanları birbirleriyle eşleştirmemiz gerekmektedir. İşte bu ama&amp;ccedil;la, kodlarımızda SqlBulkCopyColumnMapping sınıfına ait nesne &amp;ouml;rneklerini kullanmalıyız. Şimdi uygulama kodlarımızı aşağıdaki gibi değiştirelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;static void Main(string[] args)
+{
+    try
+    {
+        SqlConnection con = new SqlConnection("data source=localhost;initial catalog=Dukkan;integrated security=SSPI");
+        /*Hedef tablodaki satırları &amp;ouml;nlem olarak siliyoruz.*/
+        SqlCommand cmd = new SqlCommand("DELETE FROM YEDEK_MailList", con);
+        con.Open();
+        cmd.ExecuteNonQuery();
+        con.Close();
+
+        /* Kaynak tablodan verileri SqlDataReader yardımıyla &amp;ccedil;ekiyoruz.*/
+        SqlConnection con1 = new SqlConnection("data source=localhost;initial catalog=AdventureWorks;integrated security=SSPI");
+        SqlCommand cmdCek = new SqlCommand("SELECT * FROM MailList",con1);
+        SqlDataReader dr;
+        con1.Open();
+        dr = cmdCek.ExecuteReader();
+
+        /*SqlBulkCopy nesnemizi hedef bağlantıyı belirterek oluşturuyoruz.*/
+        SqlBulkCopy bc = new SqlBulkCopy("data source=localhost;initial catalog=Dukkan;integrated security=SSPI", SqlBulkCopyOptions.KeepIdentity);
+        /* Hedef tabloyu belirtiyoruz.*/
+        bc.DestinationTableName = "YEDEK_MailList";
+
+        /* Kaynak ve Hedef tabloların alanları eşleştiriliyor.*/
+        SqlBulkCopyColumnMapping cm1 = new SqlBulkCopyColumnMapping("ID", "UserID");
+        SqlBulkCopyColumnMapping cm2 = new SqlBulkCopyColumnMapping("AD", "UserName");
+        SqlBulkCopyColumnMapping cm3 = new SqlBulkCopyColumnMapping("SOYAD", "UserLastName");
+        SqlBulkCopyColumnMapping cm4 = new SqlBulkCopyColumnMapping("MAIL", "MailAddress");
+        /* Eşleştirmeler i&amp;ccedil;in oluşturulan SqlBulkCopyColumnMapping nesneleri, SqlBulkCopy nesnemizin ColumnMappings koleksiyonuna ekleniyor.*/
+        bc.ColumnMappings.Add(cm1);
+        bc.ColumnMappings.Add(cm2);
+        bc.ColumnMappings.Add(cm3);
+        bc.ColumnMappings.Add(cm4);
+    
+        /*WriteToServer metodu ile SqlDataReader' dan okuduğumuz satırları, hedefe insert ediyoruz.*/
+        bc.WriteToServer(dr);
+        
+        /* Nesneleri kapatıyoruz.*/
+        bc.Close();
+        dr.Close();
+        con1.Close();
+    }
+    catch (SqlException ex)
+    {
+        Console.WriteLine(ex.Message);
+        Console.ReadLine();
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Burada bizim i&amp;ccedil;in &amp;ouml;nemli olan, kaynak ve hedef tablolardaki alan eşleştirmesini nasıl bildirdiğimizdir. Bunun i&amp;ccedil;in, aşağıdaki &amp;ouml;rnek s&amp;ouml;z dizimini kullandık.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;SqlBulkCopyColumnMapping cm1 = new SqlBulkCopyColumnMapping("ID", "UserID");&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rneğimizde, SqlBulkCopyColumnMapping sınıfının aşağıdaki prototipe sahip olan yapıcısını kullandık.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public SqlBulkCopyColumnMapping(string sourceColumn, string destinationColumn);&lt;/pre&gt;
+&lt;p&gt;Bu yapıcı haricinde kullanabileceğimiz diğer yapıcılarda aşağıdaki tabloda yer almaktadır.&lt;/p&gt;
+&lt;table id="table15" border="1" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;th style="border-style: solid; border-width: 1px;" align="left"&gt;Yapıcı Metod&lt;/th&gt;
+&lt;th style="border-style: solid; border-width: 1px;" align="left"&gt;A&amp;ccedil;ıklama&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="40%"&gt;SqlBulkCopyColumnMapping ()&lt;/td&gt;
+&lt;td width="50%"&gt;&amp;nbsp;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="40%"&gt;SqlBulkCopyColumnMapping (Int32, Int32)&lt;/td&gt;
+&lt;td width="50%"&gt;Kaynak ve Hedef alanların indeksini alır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="40%"&gt;SqlBulkCopyColumnMapping (Int32, String)&lt;/td&gt;
+&lt;td width="50%"&gt;Kaynak alanın indeksini, hedef alanın ismini alır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="40%"&gt;SqlBulkCopyColumnMapping (String, Int32)&lt;/td&gt;
+&lt;td width="50%"&gt;Kaynak alanın ismini, hedef alanın indeksini alır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;SqlBulkCopyColumnMapping nesnelerimizi yarattıktan sonra bu nesnelerin, SqlBulkCopy nesnemizin ilgili ColumnMappings koleksiyonuna eklenmesi gerekmektedir. Bunun i&amp;ccedil;in Add metodunu kullandık. B&amp;ouml;ylece SqlBulkCopy nesnemiz, kaynak tablodaki hangi alanın, hedef tablodaki hangi alana denk geleceğini bilmektedir. Aynı &amp;ouml;rneği, aşağıdaki kodlar ilede ger&amp;ccedil;ekleştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;bc.ColumnMappings.Add("ID", "UserID");
+bc.ColumnMappings.Add("AD", "UserName");
+bc.ColumnMappings.Add("SOYAD", "UserLastName");
+bc.ColumnMappings.Add("MAIL", "MailAddress");&lt;/pre&gt;
+&lt;p&gt;Burada daha kısa bir &amp;ccedil;&amp;ouml;z&amp;uuml;m uygulanmıştır. Bu sefer doğrudan ColumnMappings &amp;ouml;zelliğinin Add metodu kullanılarak, ilgili alan eşleştirmeleri SqlBulkCopy nesnesine eklenmiştir. Bir SqlBulkCopyColumnMapping nesnesinin oluşturulmasında kullanılan aşırı y&amp;uuml;klenmiş yapıcılardaki parametreler buradaki Add metodu i&amp;ccedil;inde ge&amp;ccedil;erlidir. Yani dilersek, Add metodunda alanların indeks değerlerinide kullanabiliriz. &amp;Ouml;rneğimizi &amp;ccedil;alıştırdığımızda, kaynak tablodaki satırların yeni tablomuza başarılı bir şekilde eklendiğini g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk93_8.gif" alt="" width="544" height="156" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 8. Alanların eşleştirilmesi sonucu.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;SqlBulkCopy sınıfının SqlRowsCopied isimli tek bir olayı vardır. Bu olay, SqlBulkCopy sınıfının NotifyAfter &amp;ouml;zelliğine verilen değeri baz alır ve bu değeri kullanarak Bulk-Data kopyalama işlemleri sırasında periyodik olarak &amp;ccedil;alışır. Yani, eğer biz NotifyAfter &amp;ouml;zelliğine 20 değerini atarsak, kaynaktan hedefe taşınan her 20 satırda bir SqlRowsCopied olayı &amp;ccedil;alışacaktır. Bu olayın prototipi aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public event SqlRowsCopiedEventHandler SqlRowsCopied;&lt;/pre&gt;
+&lt;p&gt;Olayın ger&amp;ccedil;ekleşmesi sonucu &amp;ccedil;alıştırılacak metodu, SqlRowsCopiedEventHandler delegesi aşağıdaki gibi tanımlar.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public sealed delegate void SqlRowsCopiedEventHandler(object sender, SqlRowsCopiedEventArgs e);&lt;/pre&gt;
+&lt;p&gt;Şimdi &amp;ouml;rneğimizdeki SqlBulkCopy nesnesi i&amp;ccedil;in SqlRowsCopied olayını kullanalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;static void Main(string[] args)
+{
+    try
+    {
+        .
+        .
+        .
+        SqlBulkCopy bc = new SqlBulkCopy("data source=localhost;initial catalog=Dukkan;integrated security=SSPI", SqlBulkCopyOptions.KeepIdentity);
+        bc.DestinationTableName = "YEDEK_MailList";
+        bc.ColumnMappings.Add("ID", "UserID");
+        bc.ColumnMappings.Add("AD", "UserName");
+        bc.ColumnMappings.Add("SOYAD", "UserLastName");
+        bc.ColumnMappings.Add("MAIL", "MailAddress");
+
+        bc.NotifyAfter = 1;
+          bc.SqlRowsCopied+=new SqlRowsCopiedEventHandler(bc_SqlRowsCopied);
+        bc.WriteToServer(dr);
+        .
+        .
+        .
+    }
+    catch (SqlException ex)
+    {
+        Console.WriteLine(ex.Message);
+        Console.ReadLine();
+    }
+}
+
+static void bc_SqlRowsCopied(object sender, SqlRowsCopiedEventArgs e)
+{
+    Console.WriteLine("ŞU ANA KADAR "+e.RowsCopied.ToString() + " SATIR TAŞINDI...");
+}&lt;/pre&gt;
+&lt;p&gt;Burada, SqlBulkCopy nesnemize SqlRowsCopied olayını ekledikten sonra bu olayın ger&amp;ccedil;ekleşmesi sonucu &amp;ccedil;alıştırılacak olan bc_SqlRowsCopied metodunda, o ana kadar taşınmış olan satır sayısını ekrana yazdırıyoruz. NotifyAfter &amp;ouml;zelliğine 1 değerini atadığımız i&amp;ccedil;in, olay metodumuz her bir satır hedef tabloya başarılı bir şekilde taşındıktan sonra tetiklenecektir. Sonu&amp;ccedil; aşağıdaki gibi olur.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk93_9.gif" alt="" width="324" height="107" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 9. SqlRowsCopied olayının işlenmesi sonucu.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Bu makalemizde, Ado.Net 2.0 ile gelen yeni kabiliyetlerden birisine değinmeye &amp;ccedil;alıştık. İlerleyen makalelerimizde Ado.Net 2.0' ın yeni &amp;ouml;zelliklerini incelemeye devam edeceğiz. Hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2004-09-17 12:00:00</pubDate>
+  <slug>Ado-Net-2-0-ve-Bulk-Data-Kopyalama-Mekanizmasc4b1-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>adonet-20</tag>
+    <tag>bulk</tag>
+    <tag>data</tag>
+    <tag>copy</tag>
+  </tags>
+  <categories>
+    <category>Ado.net 2.0</category>
+  </categories>
+</post>

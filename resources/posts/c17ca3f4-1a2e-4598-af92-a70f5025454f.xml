@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Web Uygulamalarında Özel Doğrulama İşlemleri</title>
+  <description>Web uygulamalarında, kullanıcıların girmiş olduğu verilerin istenen şartlara göre doğruluklarının kontrol edilmesi son derece önemlidir. Asp.Net ile geliştirilen web uygulamalarında, kullanıcı girişlerinin kontrolü için çoğunlukla validation kontrolleri kullanılır. Validation bileşenleri hem istemci tarafında hemde sunucu tarafından veri kontrol işlemlerini gerçekleştirebilir. (Bu makaleyi daha kolay takip edebilmeniz açısından var olan Validator kontrollerinin kullanımını bildiğiniz varsayılmaktadır.)</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Web uygulamalarında, kullanıcıların girmiş olduğu verilerin istenen şartlara g&amp;ouml;re doğruluklarının kontrol edilmesi son derece &amp;ouml;nemlidir. Asp.Net ile geliştirilen web uygulamalarında, kullanıcı girişlerinin kontrol&amp;uuml; i&amp;ccedil;in &amp;ccedil;oğunlukla validation kontrolleri kullanılır. Validation bileşenleri hem istemci tarafında hemde sunucu tarafından veri kontrol işlemlerini ger&amp;ccedil;ekleştirebilir. &lt;em&gt;(Bu makaleyi daha kolay takip edebilmeniz a&amp;ccedil;ısından var olan Validator kontrollerinin kullanımını bildiğiniz varsayılmaktadır.)&lt;/em&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Temel olarak bir verinin doğruluğunun Validator bileşenleri ile kontrol işlemi, eğer istemci script &amp;ccedil;alıştırılmasına izin veriyorsa, &amp;ouml;nce istemci tarafında client script' ler yolu ile ger&amp;ccedil;ekleştirilir. İstemci tarafında kontrol yapılsada, yapılmasada mutlaka ve mutlaka server tarafında da bir doğrulama işlemi ger&amp;ccedil;ekleştirilmektedir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Temel doğrulama işlemlerinde, girilen verinin belli bir formata uygun olup olmadığı (&amp;ouml;rneğin ge&amp;ccedil;erli bir mail adresi olup olmadığı), boş olup olmadığı, herhangibir değerden k&amp;uuml;&amp;ccedil;&amp;uuml;k, b&amp;uuml;y&amp;uuml;k, eşit vb... olup olmadığı ve benzeri durumlar kontrol edilir. Ger&amp;ccedil;ek şudurki, var olan Validation kontrolleri ile hemen hemen her t&amp;uuml;r doğrulama işlemini ger&amp;ccedil;ekleştirebiliriz. Ancak bazı durumlarda veri &amp;uuml;zerinde doğrulama işlemleri i&amp;ccedil;in &amp;ouml;zel algoritmalara ihtiyacımı olabilir.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğin, girilen verinin uygun bir kredi kartı numarası olup olmadığının kontrol edilmesini sağlayan bir algoritmayı, bir validation kontol&amp;uuml; i&amp;ccedil;erisinde kullanmak isteyebiliriz. Yada birden fazla doğrulama işlemini bir arada sunmak isteyebiliriz. İşte bu ve benzer durumlar i&amp;ccedil;in Asp.Net, CustomValidator isimli bir bileşen i&amp;ccedil;ermektedir. Bu bileşen yardımıyla sunucu ve istemci tarafında &amp;ccedil;alışacak &amp;ouml;zel kontrol algoritmalarımızı veya s&amp;uuml;re&amp;ccedil;lerimizi, &amp;ccedil;eşitli veri giriş kontolleri ile ilişkili olacak şekilde yazabiliriz. Bu makalemizde, basit olarak Lhun algoritması yardımıyla kredi kartı doğrulama kriterini uygulayan bir CustomValidator &amp;ouml;rneği geliştireceğiz. Uygulamamız sadece Lhun Algoritma kontrol&amp;uuml;n&amp;uuml; yapacak.&lt;/p&gt;
+&lt;p&gt;CustomValidator kontrol&amp;uuml;m&amp;uuml;z&amp;uuml; kullanmaya başlamadan &amp;ouml;nce, kısaca Lhun algoritması hakkında da bilgi vermekte fayda olacağı kanısındayım. Lhun algoritması basit olarak kredi kartı gibi sayısal ifadelerin doğruluğunu kontrol etmek amacıyla kullanılan bir matematik algoritmasıdır. Bu algoritmaya "mod 10 algoritması" da denmektedir. Basit olarak bir dizi matematiksel işlem ile, verinin uygun bir kredi kartı numarası olup olmadığı tespit edilir. Eğer kredi kartı numarası uygun ise, sıradaki diğer işlemlere ge&amp;ccedil;ilebilir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Lhun algoritması sadece girilen sayısal ifadenin uygun bir kredi kartı numarası olup olmadığını belirten bir model sunar. İstemci tarafından girilen kredi kartı numarasının doğru olması sadece numaranın d&amp;uuml;nya &amp;ccedil;apında kabul g&amp;ouml;rm&amp;uuml;ş bir algoritma ile doğrulanabildiğini g&amp;ouml;sterir. Oysaki, girilen kredi kartı numarasının ge&amp;ccedil;erlilik s&amp;uuml;resinin, kart sahibinin isminin ve CVV2 gibi diğer kriterlerin kontrol&amp;uuml;de gerekir ki bu tamamen ayrı bir s&amp;uuml;re&amp;ccedil;tir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Kısaca Lhun algoritması şu şekilde &amp;ccedil;alışır.&lt;/p&gt;
+&lt;p&gt;1 - İlk olarak kredi kartı numarasının en sağ ikinci dijitinden başlanarak sırasıyla sola doğru ilerlenir. &lt;em&gt;(Kod yazılırken bunu g&amp;ouml;z ardı edip soldan ikinci dijitten başlayıp ikişer ikişer de atlayabiliriz. )&lt;/em&gt; İkişer ikişer atlanırken her bir dijitin iki katı hesap edilir. Elde edilen sonu&amp;ccedil;lardan değeri 10 ve 10' dan b&amp;uuml;y&amp;uuml;k olanlar var ise bunların basamakları toplanır ve diğer 10' dan k&amp;uuml;&amp;ccedil;&amp;uuml;k olan değerler eklenerek bir toplam değeri elde edilir.&lt;/p&gt;
+&lt;p&gt;2 - Daha sonra, iki katı alınan dijitlerin dışında kalan dijitler ele alınır ve bu dijitler bir birleriyle toplanarak bir toplam değeri daha elde edilir.&lt;/p&gt;
+&lt;p&gt;3 - Son olarak 1nci ve 2nci işlemlerdeki toplamların toplamı alınır ve sonucun 10 ile b&amp;ouml;l&amp;uuml;n&amp;uuml;p b&amp;ouml;l&amp;uuml;nmediğine (bir başka deyişle mod 10' un sıfır olup olmadığına) bakılır. Eğer 10 ile tam b&amp;ouml;l&amp;uuml;nebiliyorsa bu sayı dizisi bir kredi kartı numarasıdır. Olayı daha iyi anlamak i&amp;ccedil;in &amp;ouml;rnek bir 16 haneli sayı dizisini ele alalım.&lt;br /&gt; &lt;br /&gt; &lt;img src="/makale/images/mk144_1.gif" alt="" width="623" height="386" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Burada 1234 5678 9876 5432 sayı dizisinin ge&amp;ccedil;erli bir kredi kartı numarası olup olmadığının Lhun algoritmasına g&amp;ouml;re nasıl tespit edilebildiğini g&amp;ouml;rmektesiniz. Dikkat ederseniz sonu&amp;ccedil; 10 ile tam olarak b&amp;ouml;l&amp;uuml;nemediğinden sayı dizisi ge&amp;ccedil;erli bir kredi kartı numarasını temsil etmemektedir. Sahip olduğunuz kredi kartları &amp;uuml;zerinde yukarıdaki algoritmayı deneyebilir ve sonu&amp;ccedil;larını irdeleyebilirsiniz. Şunuda belirtmekte fayda vardır ki, d&amp;uuml;nya &amp;ccedil;apında kullanılan &amp;ccedil;eşitli tipte kredi kartları mevcuttur. &amp;Ouml;rneğin master card, visa gibi. Bunlarında kendilerine has bir takım sayı dizisi kuralları vardır. &amp;Ouml;rneğin bir master card' a ait kredi kartı numarasının ilk iki hanesi, 55 yada 50 olmak zorundadır. Bu, kartın bir master card olduğunun işaretidir. Konumuz validation işlemlerinin CustomValidator kontrol&amp;uuml; ile nasıl ger&amp;ccedil;ekleştirilebileceğini incelemek olduğundan, Lhun algoritması &amp;uuml;zerinde daha fazla durmayacağız.&lt;/p&gt;
+&lt;p&gt;Gelelim bu algoritmayı kullanacağımız uygulama kodlarımıza. CustomValidator kontrol&amp;uuml;m&amp;uuml;z sıradan bir Validator kontrol&amp;uuml;nden farksızdır. Sadece kontrol işleminin yapılacağı olay metodlarını hem client(istemci) tarafında hem de sunucu(server) tarafında kendimiz yazmamız gerekmektedir. Elbette istemci tarafında bir kontrol kodu yazmak zorunda değiliz. Ancak sunucu tarafında mutlaka yazmalıyız. Aksi takdirde doğrulama işlemlerini ger&amp;ccedil;ekleştiremeyiz. Server tarafında yazılan kodlar, ServerValidate olay metodunda ele alınır. Client tarafında yazılacak olan script kodların yer alacağı fonksiyon ise, ClientValidationFunciton &amp;ouml;zelliğinde belirtiriz.&lt;/p&gt;
+&lt;table id="table24" style="border-collapse: collapse; width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#ffffff"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;Normalde, diğer Validator kontrolleri, client script &amp;ouml;zellikleri kapatılmadığı takdirde, istemci tarafında &amp;ccedil;alışacak script kodlarını otomatik olarak &amp;uuml;retmektedir. Ancak CustomValidator kontrol&amp;uuml; s&amp;ouml;z konusu olduğunda, istemci tarafında &amp;ccedil;alışacak script kodlarınıda manuel olarak yazmamız gerekmektedir.&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;ServerValidate metodunun ServerValidateEventArgs parametresi, kontrol edilecek bileşene ait &amp;ouml;zelliğin değerini temsil eder. &amp;Ouml;rneğin kredi kartı numarasının girileceği TextBox bileşeninin, Text &amp;ouml;zelliğinin değerini bu parametrenin Value &amp;ouml;zelliği ile metod i&amp;ccedil;erisinde alabiliriz. Bu parametrik yapı client tarafında &amp;ccedil;alışacak script metodu i&amp;ccedil;inde ge&amp;ccedil;erlidir. Bizim &amp;ouml;rnek kodumuzda yapacağımız kontroller sırasıyla, girilen sayı dizisinin 16 haneli olduğu, sadece sayılardan oluştuğu ve Lhun algoritmasını sağlayıp sağlamadığıdır. Default.aspx sayfamızın tasarımı aşağıdaki gibi olacaktır. &lt;em&gt;(&amp;Ouml;rneğimiz Asp.Net 2.0 platformunda geliştirilmiştir.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk144_2.gif" alt="" width="380" height="118" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;CustomValidator bileşenin ControlToValidate &amp;ouml;zelliği, TextBox bileşenine ayarlanmıştır. Nitekim doğrulama işlemi i&amp;ccedil;in TextBox kontrol&amp;uuml;m&amp;uuml;z ele alınacaktır. Son olarak, Kontrol başlıklı butonumuz sadece sayfayı postback etmek ve bu sayede server tarafındaki doğrulama s&amp;uuml;recine ge&amp;ccedil;ebilmek amacıyla kullanılmaktadır. Yani herhangibir kod i&amp;ccedil;ermemektedir. Sadece postback işlemini sağlar. İlk olarak ServerValidate olay metodunu aşağıdaki gibi kodlayalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;protected void custVldtr_ServerValidate(object source, ServerValidateEventArgs args)
+{
+    #region Hane Sayısı Kontrol&amp;uuml;
+
+    if (args.Value.Length != 16)
+    {
+        // Hata mesajı değiştirilir.
+        custVldtr.ErrorMessage = "Kart numarası 16 haneli olmalıdır.";
+        args.IsValid = false; // Validation işlemi ge&amp;ccedil;ersizdir.
+        return; // Metoddan &amp;ccedil;ıkılır.
+    }
+
+    #endregion
+
+    #region Sayısal değer kontrol&amp;uuml;
+
+    for (int i = 1; i &amp;lt; args.Value.Length; i++)
+    {
+        if (!char.IsDigit(args.Value[i]))
+        {
+            // Hata mesajı değiştirilir.
+            custVldtr.ErrorMessage = "Sadece sayısal değer girilmelidir.";
+            args.IsValid = false; // Validation işlemi ge&amp;ccedil;ersizdir.
+            return; // Metoddan &amp;ccedil;ıkılır.
+        }
+    }
+
+    #endregion
+
+    #region Lhun Kontrol&amp;uuml;
+
+    List&amp;lt;int&amp;gt; kartNumarasi = new List&amp;lt;int&amp;gt;();
+    List&amp;lt;int&amp;gt; ciftKartNumaralari = new List&amp;lt;int&amp;gt;();
+    int toplam1=0,toplam2 = 0;
+
+    // TextBox' a girilen string formattaki kart numarasina ait sayı dizisinin her bir elemanı List tipinde int' değerler tutan generic kartNumarasi isimli koleksiyona aktarılır.
+    for (int i =0;i&amp;lt;args.Value.Length;i++)
+    {
+        kartNumarasi.Add(Convert.ToInt16(args.Value[i].ToString()));
+    } 
+
+    // ilk olarak iki katı hesaplaması ve &amp;ccedil;ıkan sayıların toplamı işlemi yapılır.
+    for (int i =0; i &amp;lt;kartNumarasi.Count; i =i+ 2)
+    {
+        ciftKartNumaralari.Add(kartNumarasi[i] * 2);
+    }
+
+    for (int i = 0; i &amp;lt; ciftKartNumaralari.Count; i++)
+    {
+        if (ciftKartNumaralari[i] &amp;gt; 9)
+        {
+            string var = ciftKartNumaralari[i].ToString();
+            toplam1 += Convert.ToInt16(var[0].ToString()) + Convert.ToInt16(var[1].ToString());
+        }
+        else
+        {
+            toplam1 += ciftKartNumaralari[i];
+        }
+    }
+
+    // iki katı hesabı dışında kalan elemanların toplamı hesaplanır.
+    for (int i = 1; i &amp;lt; kartNumarasi.Count; i += 2)
+    {
+        toplam2 += kartNumarasi[i];
+    }
+
+    // Genel toplam alınır ve 10 ile tam b&amp;ouml;l&amp;uuml;n&amp;uuml;p b&amp;ouml;l&amp;uuml;nmediğine bakılır.
+    int toplam = toplam1 + toplam2;
+    if (toplam % 10 == 0)
+    {
+        args.IsValid = true; // hata mesajı d&amp;ouml;nd&amp;uuml;r&amp;uuml;lmez. Validation işlemi ge&amp;ccedil;erlidir.
+    }
+    else
+    {
+        // Hata mesajı değiştirilir.
+        custVldtr.ErrorMessage = "Ge&amp;ccedil;ersiz kredi kartı numarası girdiniz.";
+        args.IsValid = false; // Validation işlemi ge&amp;ccedil;ersizdir.
+    }
+
+    #endregion
+}&lt;/pre&gt;
+&lt;p&gt;ServerValidate metodu geri d&amp;ouml;n&amp;uuml;ş değeri olmayan bir metoddur. ServerValidateEventArgs parametresi sayesinde, ControlToValidate &amp;ouml;zelliği ile bağlanan kontrol&amp;uuml;n (ki burada TextBox kontrol&amp;uuml;d&amp;uuml;r) doğrulama s&amp;uuml;recine girecek değerine erişilmektedir. Bu parametrenin IsValid &amp;ouml;zelliği bool tipinden bir &amp;ouml;zelliktir ve doğrulama işleminin doğruluğunu belirtmektedir. True değerini aldığı takdirde doğrulama ge&amp;ccedil;erlidir. False değerinde ise doğrulama işlemi ge&amp;ccedil;ersizdir. Doğrulama işlemi ge&amp;ccedil;ersiz olduğu takdirde uygulama işleyişini durduracak ve hata mesajı ile kullanıcı bilgilendirilecektir. Bu sayede izleyen s&amp;uuml;re&amp;ccedil;lerinde tutarlılığını sağlamış oluruz. ServerValidate metodumuz Server(sunucu) tarafında &amp;ccedil;alışmaktadır. Uygulamamızı bu haliyle &amp;ccedil;alıştırdığımızda aşağıdaki Flash animasyonunda g&amp;ouml;r&amp;uuml;len sonu&amp;ccedil;ları elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;(Not : Aşağıdaki g&amp;ouml;r&amp;uuml;nt&amp;uuml;y&amp;uuml; seyredebilmek i&amp;ccedil;in tarayıcınızda Flash Player' ın son s&amp;uuml;r&amp;uuml;m&amp;uuml;n&amp;uuml;n olması tavsiye edilir. Eğer sisteminizde XP Service Pack 2 y&amp;uuml;kl&amp;uuml;yse ilgili uyarıyı dikkate alıp i&amp;ccedil;eriğe izin vermelisiniz. (Allow Blocked Content). Videoyu y&amp;ouml;netmek i&amp;ccedil;in sağ tıklayıp &amp;ccedil;ıkan men&amp;uuml;y&amp;uuml; kullanabilirsiniz.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;object id="obj2" width="345" height="337" classid="clsid:D27CDB6E-AE6D-11CF-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0" border="0"&gt;
+&lt;param name="movie" value="http://www.buraksenyurt.com/makale/images/ServerValidation.swf" /&gt;
+&lt;param name="quality" value="High" /&gt; &lt;embed type="application/x-shockwave-flash" width="345" height="337" src="http://www.buraksenyurt.com/makale/images/ServerValidation.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" name="obj2" /&gt;&lt;/object&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat ederseniz, sayfa sunucuya geri g&amp;ouml;nderildikten sonra doğrulama işlemi devreye girmektedir. Şu anda client(istemci) tarafı i&amp;ccedil;in bir script kodu yazmadığımızdan, normal doğrulama s&amp;uuml;recine ait olan istemci kontrol&amp;uuml; kısmı otomatik olarak devre dışıdır. Oysaki &amp;ccedil;oğu zaman sunucuya geri d&amp;ouml;n&amp;uuml;lmeden istemci tarafında kontroller yapmak isteyebiliriz. Ancak .Net doğrulama sistemi g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında istemci tarafında herşey doğru olsa bile, sunucu tarafında yinede doğrulama işlemi ger&amp;ccedil;ekleştirilmektedir. O halde client(istemci) tarafında yapılan doğrulamanın ne gibi bir avantajı olabilir? İstemci tarafında yapılan doğrulama ile, sunucuya gereksiz yere gidip gelme işleminin &amp;ouml;n&amp;uuml;ne ge&amp;ccedil;miş oluruz.&lt;/p&gt;
+&lt;table id="table26" style="border-collapse: collapse; width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#ffffff"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;Hatırlatma; Doğrulama s&amp;uuml;reci şu şekilde işler.&lt;/em&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk144_3.gif" alt="" width="399" height="471" border="0" /&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Şimdi CustomValidator kontrol&amp;uuml;m&amp;uuml;z i&amp;ccedil;in bir de client(istemci) script kodunu ekleyelim. Bu ama&amp;ccedil;la javascript kullanmayı se&amp;ccedil;tiğimizi d&amp;uuml;ş&amp;uuml;necek olursak tek yapmamız gereken aspx sayfamıza aşağıdaki script kodlarını eklemek olacaktır.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;script type="text/javascript"&amp;gt;
+function ValidateCreditCard(sender,args)
+{
+    if (args.Value.length != 16)
+    {
+        alert("Kart numarası 16 haneli olmalıdır.");
+        args.IsValid = false;
+        return;
+    }
+
+    var rakamlar = '0123456789';
+
+    for (i=0; i&amp;lt;args.Value.length; i++) 
+    {
+        if (rakamlar.indexOf(args.Value.charAt(i),0) == -1) 
+        {
+            alert("Sadece sayısal değerler girilebilir.");
+            args.IsValid=false;
+            return;
+        }
+    }
+
+    var toplam=0;
+    for (i=0; i &amp;lt; args.Value.length; i++) 
+    {
+        var numara=args.Value.charAt(i);
+        if (i % 2 == 0) 
+            numara=numara * 2;
+        if (numara &amp;gt; 9) numara=numara - 9;
+            toplam = toplam + parseInt(numara);
+    }
+    if(toplam % 10!=0)
+    {
+        alert("Ge&amp;ccedil;ersiz kredi kartı.");
+        args.IsValid=false;
+        return;
+    } 
+}
+&amp;lt;/script&amp;gt;&lt;/pre&gt;
+&lt;p&gt;CustomValidator kontrol&amp;uuml;m&amp;uuml;z&amp;uuml;n aspx tarafındaki kodları ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;asp:CustomValidator ID="custVldtr" runat="server" ControlToValidate="txtCreditCardNumber" OnServerValidate=custVldtr_ServerValidate" ClientValidationFunction="ValidateCreditCard"&amp;gt; &amp;lt;/asp:CustomValidator&amp;gt;&lt;/pre&gt;
+&lt;p&gt;İstemci tarafında &amp;ccedil;alışan uygulamamızı aşağıdaki flash animasyonunda daha kolay izleyebilirsiniz.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;(Not : Aşağıdaki g&amp;ouml;r&amp;uuml;nt&amp;uuml;y&amp;uuml; seyredebilmek i&amp;ccedil;in tarayıcınızda Flash Player' ın son s&amp;uuml;r&amp;uuml;m&amp;uuml;n&amp;uuml;n olması tavsiye edilir. Eğer sisteminizde XP Service Pack 2 y&amp;uuml;kl&amp;uuml;yse ilgili uyarıyı dikkate alıp i&amp;ccedil;eriğe izin vermelisiniz. (Allow Blocked Content). Videoyu y&amp;ouml;netmek i&amp;ccedil;in sağ tıklayıp &amp;ccedil;ıkan men&amp;uuml;y&amp;uuml; kullanabilirsiniz.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;object id="obj1" width="341" height="337" classid="clsid:D27CDB6E-AE6D-11CF-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0" border="0"&gt;
+&lt;param name="movie" value="http://www.buraksenyurt.com/makale/images/ClientValidation.swf" /&gt;
+&lt;param name="quality" value="High" /&gt; &lt;embed type="application/x-shockwave-flash" width="341" height="337" src="http://www.buraksenyurt.com/makale/images/ClientValidation.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" name="obj1" /&gt;&lt;/object&gt;&lt;/p&gt;
+&lt;p&gt;İstemcilerin doğası gereği, her zaman client tarafında &amp;ccedil;alışacak script' lere izin verilmez. İstemci tarafında &amp;ccedil;alışan doğrulama script' leri, sunucuya doğru yapılan gidiş-geliş işlemlerinin sayısını azaltan bir etkendir; ki buda ağ &amp;uuml;zerindeki gereksiz y&amp;uuml;k&amp;uuml; azaltır. Ancak bazı istemcilerin, script &amp;ccedil;alıştırma izni olmadığını i&amp;ccedil;in, sunucu tarafında doğrulama işlemi yapılması gerekliliği s&amp;ouml;z konusudur. Biz &amp;ouml;rneğimizde CustomValidator kontrol&amp;uuml; i&amp;ccedil;in hem istemci tarafında hem de server tarafında doğrulama işlemini uygulayabileceğimiz iki metod kullandık. B&amp;ouml;ylece istemci izin veriyorsa doğrulamayaı o tarafta yapıp gereksiz ağ y&amp;uuml;k&amp;uuml;n&amp;uuml; azaltmış olduk. &amp;Ouml;zel algoritmalar i&amp;ccedil;eren veya birden fazla doğrulama işlemini bir kontrol &amp;uuml;zerinde birleştirmek istediğimiz durumlarda CustomValidator kontrol&amp;uuml; olduk&amp;ccedil;a işimize yaramaktadır. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2006-01-14 10:00:00</pubDate>
+  <slug>Web-Uygulamalarc4b1nda-Ozel-Dogrulama-Islemleri-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>aspnet</tag>
+    <tag>validation</tag>
+    <tag>custom-validation</tag>
+  </tags>
+  <categories>
+    <category>Asp.Net</category>
+  </categories>
+</post>

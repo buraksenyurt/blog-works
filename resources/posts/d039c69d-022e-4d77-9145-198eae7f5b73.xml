@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Entity Framework - POCO(Plain Old CLR Objects)</title>
+  <description>Aslında Ado.Net Entity Framework 4.0 tarafında yer alan önemli kavramlardan birisi de POCO nesnelerinin kullanımı. Ado.Net Entity Framework 3.5(Service Pack 1) sürümünde net bir şekilde ele alınmayan POCO nesneleri için, 4.0 versiyonunda tam destek söz konusu. POCO(Plain Old CLR Objects), .Net Framework üzerinde herhangibir bağımlılığı olmadan tanımlanabilen nesneler olarak düşünülebilir. POCO nesneleri herhangibir sınıftan türemez(Class Inheritance), çeşitli arayüzleri uygulamaz(Interface Implementation) veya özel nitelikler(Attributes) ile işaretlenmezler.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/pics/2010%2f2%2fblg152_Giris.gif" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Yandaki resimde &lt;strong&gt;Seychelles Blue Pigeon &lt;/strong&gt;olarak adlandırılan ve&lt;strong&gt; Hint Okyanusundaki 115&lt;/strong&gt; adadan birisi olan &lt;strong&gt;Republic of Seychelles&lt;/strong&gt; kolonisine has bir g&amp;uuml;vercin resmi yer almaktadır. Aslında bu kuş olduk&amp;ccedil;a meşhurdur. Nitekim &amp;ccedil;eşitli hayvan t&amp;uuml;rlerini genellikle kitap kapaklarında kullanan &lt;strong&gt;O'Reilly&lt;/strong&gt; yayınlarının uzun zaman &amp;ouml;nce &amp;ccedil;ıkarttığı ve &lt;strong&gt;Julia Lerman &lt;/strong&gt;tarafından yazılmış olan &lt;a title="Programming Entity Framework" href="http://www.amazon.com/Programming-Entity-Framework-Julia-Lerman/dp/059652028X/ref=sr_1_1?ie=UTF8&amp;amp;s=books&amp;amp;qid=1266336933&amp;amp;sr=8-1-spell" target="_blank"&gt;Programming Entity Framework&lt;/a&gt; baskısında bu kuşa yer verilmiştir. Kitaptan bahsetmişken...Bendeki baskısı &lt;strong&gt;Ado.Net Entity Framework 3.5&amp;nbsp;&lt;/strong&gt;&amp;nbsp;s&amp;uuml;r&amp;uuml;m&amp;uuml;n&amp;uuml; i&amp;ccedil;ermekteydi. Doğal olarak k&amp;ouml;pr&amp;uuml;n&amp;uuml;n altından &amp;ccedil;ok sular ge&amp;ccedil;ti ve artık &lt;strong&gt;4.0&lt;/strong&gt; s&amp;uuml;r&amp;uuml;m&amp;uuml; ile karşı karşıyayız. Kitabın &lt;strong&gt;Aralık 2009&lt;/strong&gt; baskısında &lt;strong&gt;4.0 &lt;/strong&gt;vesiyonu i&amp;ccedil;inde ek bilgiler yer almakta. Ancak sanıyorum ki yakın zamanda son s&amp;uuml;r&amp;uuml;m&amp;uuml;ne kavuşacak olan &lt;strong&gt;.Net Framework 4.0&lt;/strong&gt; ile birlikte yeni bir baskısı daha &amp;ccedil;ıkacaktır.&lt;/p&gt;
+&lt;p&gt;Aslında &lt;strong&gt;Ado.Net Entity Framework&lt;/strong&gt; &lt;strong&gt;4.0&lt;/strong&gt; tarafında yer alan &amp;ouml;nemli kavramlardan birisi de &lt;strong&gt;POCO&lt;/strong&gt; nesnelerinin kullanımı. &lt;strong&gt;Ado.Net Entity Framework&amp;nbsp;3.5(Service Pack 1)&lt;/strong&gt;&amp;nbsp;s&amp;uuml;r&amp;uuml;m&amp;uuml;nde&amp;nbsp;net bir şekilde ele alınmayan&lt;strong&gt; POCO&lt;/strong&gt; nesneleri i&amp;ccedil;in, &lt;strong&gt;4.0&lt;/strong&gt; versiyonunda tam destek s&amp;ouml;z konusu.&amp;nbsp;&lt;strong&gt;POCO(Plain Old CLR Objects),&lt;/strong&gt; &lt;strong&gt;.Net Framework &lt;/strong&gt;&amp;uuml;zerinde herhangibir bağımlılığı olmadan tanımlanabilen nesneler olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. &lt;strong&gt;POCO&lt;/strong&gt; nesneleri herhangibir sınıftan t&amp;uuml;remez&lt;em&gt;(Class Inheritance)&lt;/em&gt;, &amp;ccedil;eşitli aray&amp;uuml;zleri uygulamaz&lt;em&gt;(Interface Implementation)&lt;/em&gt; veya &amp;ouml;zel nitelikler&lt;em&gt;(Attributes) &lt;/em&gt;ile işaretlenmezler. Sadece verinin &amp;uuml;zerlerinden akmasını sağlayan &lt;strong&gt;hafif siklet(Lightweight)&lt;/strong&gt; nesnelerdir. Oysaki &lt;strong&gt;Entity Framework&lt;/strong&gt; tarafında &amp;uuml;retilen tipler d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde, t&amp;uuml;retmelerin, nitelik işaretlemelerinin ve &lt;strong&gt;IPOCO&lt;/strong&gt; olarak adlandırabileceğimiz&amp;nbsp;bazı aray&amp;uuml;z uyarlamalarının yapıldığı g&amp;ouml;r&amp;uuml;l&amp;uuml;r. Bu nedenle &lt;strong&gt;Entity&lt;/strong&gt; nesnelerinin,&amp;nbsp;&lt;strong&gt;Persistence&lt;/strong&gt; kıstasını g&amp;ouml;z ardı etmesi veya test senaryoları d&amp;uuml;ş&amp;uuml;n&amp;uuml;lerek &lt;strong&gt;Entity Framework&lt;/strong&gt; yapısı i&amp;ccedil;erisinde ele alınmaları zorlaşmaktadır. Dolayısıyla &lt;strong&gt;Entity Framework&lt;/strong&gt; tarafına getirilen&amp;nbsp;&lt;strong&gt;POCO&lt;/strong&gt; desteğinin &amp;ouml;nemi b&amp;uuml;y&amp;uuml;kt&amp;uuml;r.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Visual Studio 2010&lt;/strong&gt; ortamında geliştirilen&lt;strong&gt; Ado.Net Entity Framework&lt;/strong&gt; bazlı uygulamalarda &lt;strong&gt;POCO&lt;/strong&gt; nesnelerinin oluşturulması ve kullanımı son derece kolaydır. İşte bu yazımızda &lt;strong&gt;POCO&lt;/strong&gt; nesnelerinin ne işe yaradığını, nasıl tanımlandıklarını ve kullanıldıklarını incelemeye &amp;ccedil;alışıyor olacağız. İşe başlamadan &amp;ouml;nce &lt;strong&gt;POCO'&lt;/strong&gt; suz bir hayatın nasıl olacağına bakmamızda yarar olduğu kanısındayım. Bu ama&amp;ccedil;la &amp;ouml;rnek bir &lt;strong&gt;Console&lt;/strong&gt; uygulamasını &lt;strong&gt;Visual Studio 2010 Ultimate RC&amp;nbsp;&lt;/strong&gt;s&amp;uuml;r&amp;uuml;m&amp;uuml; &amp;uuml;zerinden geliştirerek devam edebiliriz.&amp;nbsp;&amp;Ouml;rneğimizde &lt;strong&gt;Chinook&lt;/strong&gt; veritabanını baz alan&amp;nbsp;ve&amp;nbsp;aşağıdaki &lt;strong&gt;Entity Model&lt;/strong&gt; diagramında g&amp;ouml;r&amp;uuml;len tiplere sahip olduğumuzu d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f2%2fblg152_ModelDiagram.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;ok basit anlamda &lt;strong&gt;Customer&lt;/strong&gt; ve &lt;strong&gt;Invoice&lt;/strong&gt; tablolarına karşılık gelen &lt;strong&gt;Entitiy&lt;/strong&gt; tipleri s&amp;ouml;z konusudur. Bu tipler arasında &lt;strong&gt;bire &amp;ccedil;ok(one-to-many)&lt;/strong&gt; ilişki mevcuttur.&amp;nbsp;&lt;strong&gt;Entity Model&lt;/strong&gt; tarafında &amp;uuml;retilen sınıf kodlarına baktığımızda aşağıdaki i&amp;ccedil;eriklerin oluşturulduğunu g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Customer sınıfı;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[EdmEntityTypeAttribute(NamespaceName="ChinookModel", Name="Customer")]
+[Serializable()]
+[DataContractAttribute(IsReference=true)]
+public partial class Customer : EntityObject
+{
+
+Invoice sınıfı;
+
+[EdmEntityTypeAttribute(NamespaceName="ChinookModel", Name="Invoice")]
+[Serializable()]
+[DataContractAttribute(IsReference=true)]
+public partial class Invoice : EntityObject
+{&lt;/pre&gt;
+&lt;p&gt;Aslında her iki &lt;strong&gt;Entity&lt;/strong&gt; sınıfı i&amp;ccedil;inde dikkat edilmesi gereken nokta, &lt;strong&gt;EntityObject &lt;/strong&gt;tipinden t&amp;uuml;remeleri ve bazı &lt;strong&gt;nitelikler(Attribute)&lt;/strong&gt; tarafından imzalanmış olmalarıdır.&amp;nbsp;&amp;Uuml;stelik sınıflar i&amp;ccedil;erisinde yer alan &lt;strong&gt;&amp;ouml;zelliklere(Properties)&lt;/strong&gt; de bazı &lt;strong&gt;niteliklerin(Attribute)&lt;/strong&gt; uygulandığı g&amp;ouml;r&amp;uuml;l&amp;uuml;r. &amp;Ouml;rneğin;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+[DataMemberAttribute()]
+public global::System.Int32 CustomerId
+{
+	get
+	{
+		return _CustomerId;
+	}
+	set
+	{
+		if (_CustomerId != value)
+		{
+			OnCustomerIdChanging(value);
+			ReportPropertyChanging("CustomerId");
+			_CustomerId = StructuralObject.SetValidValue(value);
+			ReportPropertyChanged("CustomerId");
+			OnCustomerIdChanged();
+		}
+	}
+}
+private global::System.Int32 _CustomerId;&lt;/pre&gt;
+&lt;p&gt;gibi.&lt;/p&gt;
+&lt;p&gt;Bu noktada s&amp;ouml;z konusu tiplerin bazı bağımlıklar taşıdığını d&amp;uuml;ş&amp;uuml;nebiliriz. Ancak &lt;strong&gt;POCO&lt;/strong&gt; nesnelerinde, yazımızın başında da belirttiğimiz &amp;uuml;zere bu tip bağımlılıklar s&amp;ouml;z konusu değildir. &lt;em&gt;(Buna g&amp;ouml;re POCO nesneleri i&amp;ccedil;in şu tip bir tanımlama da yapılabilir; buradaki Entity tiplerinde yer alan bağımlılıklara ihtiya&amp;ccedil; duymayan tiplere olan ihtiya&amp;ccedil;larda g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınan tiplerdir &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;)&lt;/em&gt;&amp;nbsp;Şimdi &amp;ouml;rneğimizde ilerlemek i&amp;ccedil;in, her iki tipten sadece belirli &amp;ouml;zellikleri projemizde kullanmak istediğimizi d&amp;uuml;ş&amp;uuml;nelim. Ger&amp;ccedil;ekten de kod tarafında s&amp;ouml;z konusu &lt;strong&gt;Entity&lt;/strong&gt; tipleri i&amp;ccedil;erisinde yer alan t&amp;uuml;m &amp;ouml;zelliklere ihtiyacımız olmayabilir. Bu ama&amp;ccedil;la&amp;nbsp;sembolik olarak, Entity tiplerinden bazı &amp;ouml;zellikleri&lt;em&gt;(&lt;strong&gt;Nullable&lt;/strong&gt;&amp;nbsp;değeri &lt;strong&gt;true&lt;/strong&gt; olanlar se&amp;ccedil;ilirse&amp;nbsp;iyi olur)&lt;/em&gt; silip diagramı aşağıdaki şekilde g&amp;ouml;r&amp;uuml;len hale getirelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f2%2fblg152_Kalan.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Senaryomuz gereği sadece bu &amp;ouml;zellikler ile ilgilendiğimiz bir vakamız olduğunu d&amp;uuml;ş&amp;uuml;n&amp;uuml;yoruz. Buna g&amp;ouml;re &lt;strong&gt;Console&lt;/strong&gt; uygulamamızda &amp;ccedil;ok basit bir &lt;strong&gt;LINQ&lt;/strong&gt; sorgusu yazarak&amp;nbsp;Entity tiplerin kullanılabilir olduğundan emin olmamızda yarar vardır. İşte &amp;ouml;rnek kod par&amp;ccedil;amız ve &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı...&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Linq;
+
+namespace POCODans
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            using (ChinookEntities entities = new ChinookEntities())
+            {
+                var results = from c in entities.Customers
+                              join i in entities.Invoices on c.CustomerId equals i.CustomerId
+                              where c.City=="Sidney"
+                              select new
+                              {
+                                  c.CustomerId,
+                                  Name=c.FirstName+" "+c.LastName,
+                                  c.Email,
+                                  c.Company,
+                                  c.City,
+                                  c.Country,
+                                  i.BillingCity,
+                                  i.BillingCountry,
+                                  i.InvoiceDate,
+                                  i.Total
+                              };
+
+                foreach (var r in results)
+                {
+                    Console.WriteLine(r.ToString());
+                }
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rnek &lt;strong&gt;LINQ&lt;/strong&gt; sorgusuna g&amp;ouml;re &lt;strong&gt;Customer&lt;/strong&gt; ve &lt;strong&gt;Invoice&lt;/strong&gt; verileri &lt;strong&gt;CustomerId&lt;/strong&gt; alanı &amp;uuml;zerinden birleştirilerek, Sidney' de yaşayan m&amp;uuml;şteri ve fatura bilgileri &lt;strong&gt;isimsiz tip(Anonymous Type)&lt;/strong&gt; i&amp;ccedil;erisinde toplamakta ve ekrana yazdırmaktadır. Modelimizi test ettiğimizde aşağıdaki sonu&amp;ccedil;ları aldığımızı dolayısıyla &amp;ccedil;alıştığını g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f2%2fblg152_Runtime.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Buraya kadar yaptıklarımızı &amp;ouml;zetlediğimizde, aslında&amp;nbsp;&lt;strong&gt;Wizard&lt;/strong&gt; yardımıyla bir modelin oluşturulduğunu fark edebiliriz. Bu otomatik s&amp;uuml;re&amp;ccedil; sonrasında &lt;strong&gt;Storage, Conceptual&lt;/strong&gt; ve &lt;strong&gt;Mapping &lt;/strong&gt;modellerinin &amp;uuml;retildiğini ve bunların &lt;strong&gt;edmx&lt;/strong&gt; dosyası i&amp;ccedil;erisine aktarıldığını da anlayabiliriz. Peki bu otomatik &amp;uuml;retim hattı g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında, herhangibir bağımlılığı bulunmayan, dolayısıyla otomatik olarak &lt;span style="text-decoration: underline;"&gt;&amp;uuml;retilmemesi&lt;/span&gt; gereken ve sadece veri aktarımı amacıyla kullanılacak olan bir nesnenin(POCO) entegrasyonunu nasıl ger&amp;ccedil;ekleştirebiliriz?&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;ncelikli olarak otomatik kod &amp;uuml;retimi se&amp;ccedil;eneğini pasifleştirmeliyiz. Bu ama&amp;ccedil;la aşağıdaki şekilden de g&amp;ouml;r&amp;uuml;leceği &amp;uuml;zere, &lt;strong&gt;EDMX'&lt;/strong&gt; in &amp;ouml;zelliklerinden&lt;strong&gt; Code Generation Strategy&lt;/strong&gt; değerini &lt;strong&gt;None &lt;/strong&gt;olarak set etmeliyiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f2%2fblg152_CodeGStrategy.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu işlemin sonu&amp;ccedil;larını aslında hemen g&amp;ouml;rebiliriz. Uygulamanın build edilmesinin ardından &lt;strong&gt;ChinookModel.Designer.cs&lt;/strong&gt; i&amp;ccedil;eriğine baktığımızda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan &amp;ccedil;ıktı ile karşılaşırız. Dikkat edileceği &amp;uuml;zere normalde var olması gereken tiplerin hi&amp;ccedil; birisi mevcut değildir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f2%2fblg152_AutoGClose.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi işin en &amp;ouml;nemli kısımlarından birisine geldik. &lt;strong&gt;Entity Model&lt;/strong&gt; &amp;uuml;zerinde g&amp;ouml;r&amp;uuml;len &lt;strong&gt;Customer&lt;/strong&gt; ve &lt;strong&gt;Invoice&lt;/strong&gt; tiplerinin &lt;strong&gt;POCO&lt;/strong&gt; versiyonlarını eklemek. Bunun i&amp;ccedil;in yapacağımız tek şey birer sınıf oluşturup i&amp;ccedil;erisine gerekli &amp;ouml;zellikleri koymak olacaktır. Bunu zaten&amp;nbsp;yapmamız gerekmektedir nitekim otomatik &amp;uuml;retimi kapattığımız i&amp;ccedil;in elimizde artık Customer ve Invoice isimli Entity tipleri de bulunamamaktadır. &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;&amp;nbsp;Bu ama&amp;ccedil;la uygulamamıza aşağıdaki sınıfları eklediğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+
+// Namespace adının ChinookModel olması &amp;ouml;nemlidir.
+namespace ChinookModel
+{
+    public class Customer
+    {
+        public int CustomerId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Company { get; set; }
+        public string City { get; set; }
+        public string Country { get; set; }
+        public string Email { get; set; }
+        private List&amp;lt;Invoice&amp;gt; _invoices = new List&amp;lt;Invoice&amp;gt;();// Bir Customer' ın birden fazla faturası olabilir
+
+        public List&amp;lt;Invoice&amp;gt; Invoices
+        {
+            get { return _invoices; }
+            set { _invoices = value; }
+        }
+    }
+
+    public class Invoice
+    {
+        public int InvoiceId { get; set; }
+        public int CustomerId { get; set; }
+        public DateTime InvoiceDate{ get; set; }
+        public string BillingCity { get; set; }
+        public string BillingCountry { get; set; }
+        public decimal Total { get; set; }
+        public Customer Customer { get; set; } // Birden fazla fatura tek bir Customer ile ilişkilidir.
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bir anlamda otomatik olarak &amp;uuml;retilen &lt;strong&gt;Entitiy&lt;/strong&gt; sınıflarını yazdığımızı d&amp;uuml;ş&amp;uuml;nebiliriz ancak &amp;ccedil;ok &amp;ouml;nemli bir fark bulunmaktadır. &lt;strong&gt;Bağımlılıklar&lt;/strong&gt;. Hi&amp;ccedil; bir sınıf t&amp;uuml;retmesi, aray&amp;uuml;z uygulaması veya nitelik işaretlemesi mevcut değildir dikkat edeceğiniz &amp;uuml;zere. Elbette &lt;strong&gt;Customer&lt;/strong&gt; ve &lt;strong&gt;Invoice&lt;/strong&gt; sınıflarının yazılmış olmaları yeterli değildir. Birde bu tiplerin &amp;ccedil;alışma zamanındaki y&amp;ouml;netimini &amp;uuml;stelenebilecek bir &lt;strong&gt;i&amp;ccedil;erik(Context) &lt;/strong&gt;tipi olmalıdır. Bu ama&amp;ccedil;la uygulamaya aşağıdaki sınıfı eklememiz yeterli olacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Data.Objects;
+
+namespace ChinookModel
+{
+    public class ChinookEntities
+        :ObjectContext
+    {
+        private ObjectSet&amp;lt;Customer&amp;gt; _customers;
+        private ObjectSet&amp;lt;Invoice&amp;gt; _invoices;
+        
+        public ChinookEntities()
+            :base("name=ChinookEntities")
+        {
+        }
+
+        public ObjectSet&amp;lt;Customer&amp;gt; Customers
+        {
+            get
+            {
+                if (_customers == null)
+                {
+                    _customers = base.CreateObjectSet&amp;lt;Customer&amp;gt;();
+                }
+                return _customers;
+            }
+        }
+
+        public ObjectSet&amp;lt;Invoice&amp;gt; Invoices
+        {
+            get
+            {
+                if (_invoices == null)
+                {
+                    _invoices = base.CreateObjectSet&amp;lt;Invoice&amp;gt;();
+                }
+                return _invoices;
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;ObjectContext&lt;/strong&gt; tipinden t&amp;uuml;reyen &lt;strong&gt;ChinookEntities&lt;/strong&gt; sınıfı i&amp;ccedil;erisinde &lt;strong&gt;Customer&lt;/strong&gt; ve &lt;strong&gt;Invoice&lt;/strong&gt; sınıflarını kullanan &lt;strong&gt;ObjectSet&lt;/strong&gt; tipli &amp;ouml;zellikler yer almaktadır. Dikkat edilmesi gereken noktalardan birisi de &lt;strong&gt;yapıcı metodun(Constructor)&lt;/strong&gt; &lt;strong&gt;base&lt;/strong&gt; &amp;ccedil;ağrısı yardımıyla &lt;strong&gt;ObjectContext&lt;/strong&gt; tipinin yapıcısına&lt;strong&gt; App.config&lt;/strong&gt; dosyasında yer alan &lt;strong&gt;Connection String&lt;/strong&gt; bilgisini g&amp;ouml;nderiyor olmasıdır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f2%2fblg152_Appconfig.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ChinookEntities&lt;/strong&gt; isimli sınıfı &lt;strong&gt;ChinookModel&lt;/strong&gt; &lt;strong&gt;isim alanı(Namespace)&lt;/strong&gt; i&amp;ccedil;erisinde tasarladığımızdan, &lt;strong&gt;Main&lt;/strong&gt; metodunda gerekli bildirimi yapmamız, biraz &amp;ouml;nceki kodun değiştirilmeden &amp;ccedil;alışması i&amp;ccedil;in yeterli olacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Linq;
+using ChinookModel;
+
+namespace POCODans
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            using (ChinookEntities entities = new ChinookEntities())
+            {
+                ...&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f2%2fblg152_Runtime2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Volaaaa!!! Dikkat edecek olursanız var olan kodu bozmadan ama bu kez POCO nesnelerinden yararlanarak &amp;ccedil;alıştırmayı başardık. &lt;img title="Laughing" src="/editors/tiny_mce3/plugins/emotions/img/smiley-laughing.gif" alt="Laughing" border="0" /&gt;&amp;nbsp;Bu işlemlerin ardından uygulamamızın tip yapısını &lt;strong&gt;Class Diagram&lt;/strong&gt; &amp;uuml;zerinden incelediğimizde, aşağıdaki gibi bir oluşumun s&amp;ouml;z konusu olduğunu g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f2%2fblg152_ClassDia2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu yazımızda &lt;strong&gt;POCO(Plain Old CLR Objects)&lt;/strong&gt;&amp;nbsp;nesnelerinin ne olduğunu kısaca tanımaya &amp;ccedil;alışırken, &amp;ccedil;ok basit bir &amp;ouml;rnek geliştirerek yolumuza devam ettik. Diğer yandan&amp;nbsp;&lt;strong&gt;POCO&lt;/strong&gt; nesnelerinin, &lt;strong&gt;Entity Framework'&lt;/strong&gt; &amp;uuml;n otomatik &amp;uuml;retim aracı tarafından oluşturulan &lt;strong&gt;Entitiy &lt;/strong&gt;tipleri ile olan farklarını&amp;nbsp;anlamaya &amp;ccedil;alıştık. Artık &lt;strong&gt;Ado.Net Entity Framework&lt;/strong&gt; tabanlı projelerimizde &lt;strong&gt;POCO &lt;/strong&gt;nesnelerini kullanma ihtiyacını duyduğumuzda, nasıl hareket etmemiz gerektiğini az &amp;ccedil;ok &amp;ouml;ğrenmiş olduğumuzu d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum. Tabi &lt;strong&gt;POCO &lt;/strong&gt;nesnelerini kullanmanın getirdiği bazı dezavantajlar da yok değil. Herşeyden &amp;ouml;nce &lt;strong&gt;EntityObject &lt;/strong&gt;i&amp;ccedil;erisindeki elemanların t&amp;uuml;retme olmayışı nedeniyle kullanılamayışı, veritabanı tablolarındaki alan adları ile bir mapping işleminin yapılamayışı başlıca dezavantajlar olarak sayılabilir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;POCO&lt;/strong&gt; ile ilişkili yeni bilgiler &amp;ouml;ğrendik&amp;ccedil;e sizlerle paylaşıyor olacağım. &amp;Ouml;zellikle bu yazıda hen&amp;uuml;z değerlendirmediğimiz bir durum var o da&lt;strong&gt; Lazy Loading&lt;/strong&gt; durumlarında &lt;strong&gt;POCO&lt;/strong&gt; nesnelerinin nasıl hazırlanması gerektiği? Bunu bir sonraki yazımızda aynı &amp;ouml;rnek &amp;uuml;zerinden test ederek incelemeye &amp;ccedil;alışacağız. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2010%2f4%2fPOCO_RTM.rar"&gt;POCO_RTM.rar (44,97 kb)&lt;/a&gt; &lt;strong&gt;[&amp;Ouml;rnek Visual Studio 2010 Ultimate RTM s&amp;uuml;r&amp;uuml;m&amp;uuml; &amp;uuml;zerinde geliştirilmiş ve test edilmiştir]&lt;/strong&gt;&lt;/p&gt;</content>
+  <pubDate>2010-04-30 12:01:00</pubDate>
+  <slug>Entity-Framework-POCO(Plain-Old-CLR-Objects)</slug>
+  <tags>
+    <tag>adonet-entity-framework</tag>
+    <tag>adonet-entity-framework-40</tag>
+  </tags>
+  <categories>
+    <category>Entity Framework</category>
+  </categories>
+</post>

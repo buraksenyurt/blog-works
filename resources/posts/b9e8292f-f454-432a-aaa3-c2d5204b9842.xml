@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Web Servisleri İçin Dört Püf Nokta</title>
+  <description>Web Servislerini yazmak ve kullanmak, çoğu zaman bir web service projesi oluşturmak ve istemci tarafında Add Web Reference tekniği ile oluşturulan proxy sınıfını kullanmaktan ibaret basit bir mimari olarak düşünülür. Ancak sanılanın aksine Web servislerinin yazılmasında ve kullanılmasında dikkate değer çeşitli püf noktalar vardır. İşte bu makalemizde bu püf noktalardan dördünü maddeler halinde incelemeye çalışacağız.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Web Servislerini yazmak ve kullanmak, &amp;ccedil;oğu zaman bir web service projesi oluşturmak ve istemci tarafında Add Web Reference tekniği ile oluşturulan proxy sınıfını kullanmaktan ibaret basit bir mimari olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;l&amp;uuml;r. Ancak sanılanın aksine Web servislerinin yazılmasında ve kullanılmasında dikkate değer &amp;ccedil;eşitli p&amp;uuml;f noktalar vardır. İşte bu makalemizde bu p&amp;uuml;f noktalardan d&amp;ouml;rd&amp;uuml;n&amp;uuml; maddeler halinde incelemeye &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;1 - Bir web metodunun overload edilmesi (aşırı y&amp;uuml;klenmesi) standart bir metodun overload edilmesinden daha farklıdır.&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rnek bir web servisinde aşağıdaki gibi aşırı y&amp;uuml;klenmiş (overload) iki web metodumuz olduğunu g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım. Bu metodların aşırı y&amp;uuml;klenmiş olduklarını rahatlıkla s&amp;ouml;yleyebiliriz. Nitekim, her iki metodunda imzaları farklıdır.&lt;em&gt; (Aşırı y&amp;uuml;klemede(Overloading) metod imzasının, metodun aldığı parametre sayısı ve parametrelerin tiplerine bağlı olduğunu anımsayalım.)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[WebMethod()]
+public double Carp(double x,double y)
+{
+    return x*y;
+}
+
+[WebMethod()]
+public int Carp(int x,int y)
+{
+    return x*y;
+}&lt;/pre&gt;
+&lt;p&gt;Normal şartlar altında bu metodları &amp;ccedil;alışma zamanında bir problem olmadan y&amp;uuml;r&amp;uuml;tebilmemiz gerekir. Ancak metodları i&amp;ccedil;eren herhangibir web servisini &amp;ccedil;ağırdığımızda, &amp;ccedil;alışma zamanında aşağıdaki ekran ile karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk151_1.gif" alt="" width="528" height="265" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Sebep web servisinde yer alan SOAP mesajlarının yapısı ile ilgilidir. Aynı isimli metodlar SOAP mesajları i&amp;ccedil;erisine aynı isimler ile g&amp;ouml;m&amp;uuml;lmeye &amp;ccedil;alışıldığından ve birbirlerinden ayırt edilebilmeleri i&amp;ccedil;in xml i&amp;ccedil;erisinde var olan bir overload mekanizması olmadığından b&amp;ouml;yle bir problem yaşanmıştır. Bu sorunu &amp;ccedil;&amp;ouml;zmek i&amp;ccedil;in hata mesajında belirtildiği gibi WebMethod niteliğinin (attribute) &lt;em&gt;&lt;strong&gt;MessageName&lt;/strong&gt;&lt;/em&gt; &amp;ouml;zelliğinden yararlanırız. Bu &amp;ouml;zellik ile her iki metodu birbirinden benzersiz olacak şekilde ayırabiliriz. Bu nedenle yukarıdaki &amp;ouml;rnek kod par&amp;ccedil;asında yazdığımız metodlara ait WebMethod niteliklerini aşağıdaki gibi yeniden d&amp;uuml;zenlemeliyiz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[WebMethod(MessageName="CarpForDoubles")]
+public double Carp(double x,double y)
+{
+    return x*y;
+}
+
+[WebMethod(MessageName="CarpForIntegers")]
+public int Carp(int x,int y)
+{
+    return x*y;
+}&lt;/pre&gt;
+&lt;p&gt;Bu haliyle web servisi sorunsuz bir şekilde &amp;ccedil;alışacaktır. Değişikliğin yaptığı etkileri kullandığınız web servisinin wsdl d&amp;ouml;k&amp;uuml;manında daha rahat izleyebilirsiniz.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;2 - Aralarında kalıtımsal ilişki olan nesneler s&amp;ouml;z konusu olduğunda, taban sınıfa (base class) ait nesne &amp;ouml;rneklerinden oluşan dizi tiplerinin d&amp;ouml;nd&amp;uuml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; web metodlarında uymamız gereken kurallar vardır.&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;ok basit olarak aralarında kalıtımsal ilişki bulunan aşağıdaki Sekil, Dortgen ve Ucgen sınıflarını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım. Şekildende g&amp;ouml;r&amp;uuml;leceği &amp;uuml;zere, Dortgen ve Ucgen sınıfları Sekil taban sınıfından t&amp;uuml;reyen (derived) sınıflarımızdır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk151_2.gif" alt="" width="218" height="138" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Sınıflar;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public class Sekil
+{
+}
+public class Dortgen:Sekil
+{
+}
+public class Ucgen:Sekil
+{
+}&lt;/pre&gt;
+&lt;p&gt;Şimdi bu ilişkiyi kullanan aşağıdaki gibi bir web metodumuz olduğunu d&amp;uuml;ş&amp;uuml;nelim. Kalıtımın bir etkisi olarak , Sekil sınıfına ait bir nesne &amp;ouml;rneği, kendisinden t&amp;uuml;reyen Dortgen ve Ucgen sınıfı tipinden nesne &amp;ouml;rneklerini taşıyabilmektedir. SekilleriAl isimli web metodumuz aslında Sekil sınıfı tipinden bir diziyi geriye d&amp;ouml;nd&amp;uuml;rmektedir. Ancak bu dizi kodlardanda g&amp;ouml;rebileceğiniz gibi Dortgen ve Ucgen tipinden nesne &amp;ouml;rneklerini taşımaktadır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[WebMethod()]
+public Sekil[] SekilleriAl()
+{
+    Sekil[] sekiller=new Sekil[3];
+    sekiller[0]=new Dortgen();
+    sekiller[1]=new Ucgen();
+    sekiller[2]=new Dortgen();
+    return sekiller;
+}&lt;/pre&gt;
+&lt;p&gt;Bu web metodunu &amp;ccedil;ağırdığımızda &amp;ccedil;alışma zamanında bir istisna(excpetion) alırız. İstisnanın sebebi son derece basittir. Web metodunun &amp;ccedil;alışma zamanında &amp;uuml;reteceği &amp;ccedil;ıktıya g&amp;ouml;re, web metodundan mutlaka ve mutlaka Sekil tipinden elemanlar barındırdan bir dizi tipi d&amp;ouml;nd&amp;uuml;r&amp;uuml;leceği d&amp;uuml;ş&amp;uuml;n&amp;uuml;lmektedir. Bunu web servisimizin WSDL (Web Service Description Language) d&amp;ouml;k&amp;uuml;manında daha kolay g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk151_3.gif" alt="" width="602" height="368" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat ederseniz, Web metodumuzun geri d&amp;ouml;nd&amp;uuml;receği tip i&amp;ccedil;erisinde tanımlanan ArrayOfSekil kompleks tipi (Complex Type), sadece Sekil tipinden değerler almaktadır. Dolayısıyla Sekil tipinin, Dortgen veya Ucgen tipinden nesne &amp;ouml;rneklerini barındırabileceğini, dolayısıyla ArrayOfSekil kompleks tipinin yapısı i&amp;ccedil;erisinde bu tiplerinde yer alabileceğini XML tarafında s&amp;ouml;ylememiz gerekmektedir. İşte bu ama&amp;ccedil;la &lt;em&gt;&lt;strong&gt;System.Xml.Serialization&lt;/strong&gt;&lt;/em&gt; isim alanında yer alan &lt;em&gt;&lt;strong&gt;Xmlnclude&lt;/strong&gt;&lt;/em&gt; niteliğinden yararlanabiliriz. Web metodumuzu aşağıdaki hali ile g&amp;uuml;ncelleyelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[WebMethod()]
+[XmlInclude(typeof(Dortgen))]
+[XmlInclude(typeof(Ucgen))]
+public Sekil[] SekilleriAl()
+{
+    Sekil[] sekiller=new Sekil[3];
+    sekiller[0]=new Dortgen();
+    sekiller[1]=new Ucgen();
+    sekiller[2]=new Dortgen();
+    return sekiller;
+}&lt;/pre&gt;
+&lt;p&gt;Şimdi WSDL d&amp;ouml;k&amp;uuml;manımıza yeniden bakacak olursak ArrayOfSekil isimli kompleks tipin Dortgen ve Ucgen tiplerinide barındırabilecek şekilde tanımlandığını g&amp;ouml;r&amp;uuml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk151_4.gif" alt="" width="358" height="374" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Diğer taraftan web metodumuz artık başarılı bir şekilde &amp;ccedil;alışacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;3 - Web metodlarında performans i&amp;ccedil;in Caching kullanabiliriz.&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Web uygulamalarını geliştirirken performansı arttırıcı tedbirlerden birisi olarak caching mekanizmalarına başvururuz. Dilersek bu tekniği web servislerinde yer alan web metodların d&amp;ouml;nd&amp;uuml;rd&amp;uuml;ğ&amp;uuml; sonu&amp;ccedil;lar i&amp;ccedil;inde uygulayabiliriz. Web metodların WebMethod niteliğinin (attribute) &lt;em&gt;&lt;strong&gt;CacheDuration&lt;/strong&gt;&lt;/em&gt; isimli &amp;ouml;zelliği saniye cinsinden &amp;ouml;n bellekleme s&amp;uuml;resini belirtir. Bu &amp;ouml;zellik yardımıyla bir web metodun d&amp;ouml;nd&amp;uuml;receği sonu&amp;ccedil;ları, web sunucusunun &amp;ouml;n belleğine alabiliriz. Bu da performans olarak web metodunu kullanan istemcilere hızlı cevap d&amp;ouml;nmesi anlamına gelmektedir. Nitekim cevaplar hazır olarak ara bellekte tutulan &amp;ccedil;ıktılardan d&amp;ouml;nd&amp;uuml;r&amp;uuml;l&amp;uuml;r.&lt;/p&gt;
+&lt;p&gt;Basit olarak aşağıdaki kod par&amp;ccedil;asında, Northwind veritabanında yer alan Order Details tablosundan belirli bir OrderID' ye ait satırlar bir DataSet nesnesi i&amp;ccedil;erisinde geri d&amp;ouml;nd&amp;uuml;r&amp;uuml;lmektedir. CacheDuration burada &amp;ouml;n bellekleme s&amp;uuml;resini 120 saniye olarak belirtmektedir. Buna g&amp;ouml;re yapılan sorgu sonucu d&amp;ouml;nd&amp;uuml;rlecek olan veri k&amp;uuml;mesi web sunucusunun &amp;ouml;n belleğinde 120 saniye s&amp;uuml;reyle tutulacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[WebMethod(CacheDuration=120)]
+public DataSet GetOrderDetails(int OrderId)
+{
+    using(SqlConnection con=new SqlConnection("data source=LONDON;database=Northwind;integrated security=SSPI"))
+    {
+        using(SqlCommand cmd=new SqlCommand("Select OrderID,ProductID,UnitPrice,Quantity,Discount From [Order Details] Where OrderID=@OrderID",con))
+        {
+            cmd.Parameters.Add("@OrderID",SqlDbType.Int);
+            cmd.Parameters["@OrderID"].Value=OrderId;
+            SqlDataAdapter da=new SqlDataAdapter(cmd);
+            DataSet ds=new DataSet();
+            da.Fill(ds,"Siparisler");
+            return ds;
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Şimdi bu web metodu barındırdan bir servisi kullanan basit bir console uygulamamız olduğunuzu d&amp;uuml;ş&amp;uuml;nelim. Console uygulamamızın kodları aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;static void Main(string[] args)
+{
+    AltinSerivisi.AltinServis altin=new UsingCacheDuration.AltinSerivisi.AltinServis();
+    DataSet ds=altin.GetOrderDetails(10250);
+    foreach(DataRow dr in ds.Tables[0].Rows)
+    {
+        for(int i=0;i&amp;lt;ds.Tables[0].Columns.Count;i++)
+        {
+            Console.Write(dr[i].ToString()+" ");
+        }
+        Console.WriteLine();
+    }
+}&lt;/pre&gt;
+&lt;p&gt;İlk olarak uygulamamızı &amp;ccedil;alıştıralım ve elde ettiğimiz değerlere bakalım. Daha sonra Order Details tablosunda 10250 numaralı siparişe ait bilgilerde ufak bir değişiklik yapalım. &amp;Ouml;rneğin Quantity değerini 10' dan 20' ye &amp;ccedil;ıkartalım. 120 saniyelik s&amp;uuml;re dolmadan metodumuzu tekrar &amp;ccedil;ağıracak olursak, Quantity değerinin halen daha 10 olarak geldiğini g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Bunun sebebi verinin o an i&amp;ccedil;in web servisinin bulunduğu web sunucusunun &amp;ouml;n belleğinden geliyor oluşudur. Elbetteki 120 saniyelik bu &amp;ouml;nbellekleme s&amp;uuml;resi sonunda Quantity değerinin yenilendiğini g&amp;ouml;rebiliriz. &amp;Ouml;n belleğe alma işlemi bu &amp;ouml;rnekte g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi sadece parametrik bazda değil, parametresiz web metodları i&amp;ccedil;inde ge&amp;ccedil;erlidir.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;4 - Web Servisi tarafında security i&amp;ccedil;in en basit haliyle Windows Authentication' ı kullandığımızda istemci tarafında da yapmamız gerekenler vardır.&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Web servisleri, web uygulamalarında olduğu gibi bir web sunucu &amp;uuml;zerinden yayımlanırlar. Bu anlamda bakıldığında bir web uygulaması i&amp;ccedil;in s&amp;ouml;z konusu olan authentication se&amp;ccedil;eneklerini, web servisleri i&amp;ccedil;inde ele alabiliriz. &amp;Ouml;zellikle windows tabanlı doğrulama g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında istemci tarafında &amp;ccedil;alışan uygulamaların, g&amp;uuml;venlik bilgilerini doğru bir şekilde g&amp;ouml;nderebiliyor olması gerekir. İlk olarak doğrulama metodu &lt;em&gt;&lt;strong&gt;Basic Authentication &lt;/strong&gt;&lt;/em&gt;olarak ayarlanmış bir web servisimiz olduğunu d&amp;uuml;ş&amp;uuml;nelim. IIS tarafında ilgili web servisimiz i&amp;ccedil;in gerekli g&amp;uuml;venlik ayarlarının aşağıdaki şekilde g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi olması gerekmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk151_5.gif" alt="" width="371" height="425" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi istemci tarafında bu web servisini kullanacak olan uygulamamızı g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım. Web metodumuzu &amp;ccedil;ağırabilmemiz i&amp;ccedil;in &amp;ouml;ncelikle bu servise istemci tarafından bir g&amp;uuml;venlik belgesi g&amp;ouml;ndermemiz gerekir. (&lt;em&gt;&lt;strong&gt;Credential&lt;/strong&gt;&lt;/em&gt;) Bu g&amp;uuml;venlik belgesini taşıyacak olan tip &lt;em&gt;&lt;strong&gt;ICredential&lt;/strong&gt;&lt;/em&gt; aray&amp;uuml;z&amp;uuml;d&amp;uuml;r. İstemci tarafında bu bilgiyi hazırlayabilmek i&amp;ccedil;in ICredential aray&amp;uuml;z&amp;uuml;n&amp;uuml; (Interface) uygulayan &lt;em&gt;&lt;strong&gt;NetworkCredential&lt;/strong&gt;&lt;/em&gt; tipini kullanabiliriz. Aşağıdaki kod par&amp;ccedil;asında GoldServis isimli web servisimizdeki GetOrderDetails isimli metodu &amp;ccedil;ağırmadan &amp;ouml;nce, servisi &amp;ccedil;alıştırmak i&amp;ccedil;in gerekli credential bilgisinin nasıl eklendiği g&amp;ouml;sterilmektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;AltinSerivisi.AltinServis altin=new UsingCacheDuration.AltinSerivisi.AltinServis();
+System.Net.NetworkCredential credential=new System.Net.NetworkCredential("admin","admin1234");
+altin.Credentials=credential;
+DataSet ds=altin.GetOrderDetails(10250);
+foreach(DataRow dr in ds.Tables[0].Rows)
+{
+    for(int i=0;i&amp;lt;ds.Tables[0].Columns.Count;i++)
+    {
+        Console.Write(dr[i].ToString()+" ");
+    }
+    Console.WriteLine();
+}&lt;/pre&gt;
+&lt;p&gt;Eğer istemci uygulama doğru şifre ve kullanıcı bilgisini g&amp;ouml;nderemez ise HTTP 401 : Access Denied istisnasını alırız. Ancak doğru g&amp;uuml;venlik bilgilerinin g&amp;ouml;nderilmesi sonucunda web metodu başarılı bir şekilde &amp;ccedil;alıştırılacaktır.&lt;/p&gt;
+&lt;p&gt;Bu makalemizde kısaca web servislerini kullanırken dikkate alabileceğimiz bir ka&amp;ccedil; noktaya değindik. Aynı isimli aşırı y&amp;uuml;klenmiş metodların kullanılma tarzını, web metodlardan geriye d&amp;ouml;nen kompleks tiplerin i&amp;ccedil;erisinde kalıtım ilişkisi olduğu takdirde bunu Xml tarafınada bildirmemiz gerektiğini, performans i&amp;ccedil;in caching' i kullanabileceğimizi ve sunucu tarafında bir authentication olması halinde istemci i&amp;ccedil;in gerekli username ve password bilgilerinin nasıl hazırlanıp g&amp;ouml;nderilebileceğini incelemeye &amp;ccedil;alıştık. Elbetteki web servisleri ile ilgili dikkate değer daha pek &amp;ccedil;ok nokta var. &amp;Ouml;rneğin SoapExtension yardımıyla soap mesajlarının şifrelenmesi gibi. Bu ve benzer diğer konulara ilerki makalelerimizde değinmeye &amp;ccedil;alışacağız. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2006-03-14 10:00:00</pubDate>
+  <slug>Web-Servisleri-Icin-Dort-Puf-Nokta-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>xml-web-service</tag>
+  </tags>
+  <categories>
+    <category>XML Web Services</category>
+  </categories>
+</post>

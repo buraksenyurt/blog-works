@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>JSON to BSON</title>
+  <description>Amacımız çalışan listesinin içeriğini BSON formatında bir dosyaya yazdırmak ve sonrasında bu içeriği tekrar okuyup ters-serileştirme işlemini gerçekleştirerek ekrana yazdırmak.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2017/02/bson.gif" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Sanıyorum her .Net programcısının takım &amp;ccedil;antasında yer alan paketlerden birisi de Newtonsoft'un JSON serileştirme k&amp;uuml;t&amp;uuml;phanesidir. JSON&lt;em&gt;(JavaScriptObjectNotation)&lt;/em&gt; formatı, XML&lt;em&gt;(eXtensibleMarkupLanguage)&lt;/em&gt; şemasından sonra hafif ve az yer kaplama &amp;ouml;zellikleri nedeniyle &amp;ccedil;ok&amp;ccedil;a tercih edilen standartlardan birisi haline gelmiştir. Diğer yandan JSON i&amp;ccedil;eriklerin Binary formatta serileştirilmiş versiyonu olarak adlandırılan BSON formatı da sıklıkla kullanılmaktadır.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;a style="line-height: 1.8;" href="http://bsonspec.org/#/specification" target="_blank"&gt;BSON&lt;/a&gt;&lt;span style="line-height: 1.8;"&gt;, NoSQL camiasının liderlerinden MongoDB ile pop&amp;uuml;lerlik kazanmış bir veri formatı. JSON i&amp;ccedil;eriğinin binary formatta sunulması olduk&amp;ccedil;a hızlı ger&amp;ccedil;ekleşebilecek bir işlem. Bu nedenle NoSQL tabanlı sistemlerde yatay &amp;ouml;l&amp;ccedil;eklenen veri k&amp;uuml;meleri arasındaki iletişimde tercih edilebiliyor. Ağ &amp;uuml;zerinde dolaşan bu k&amp;uuml;&amp;ccedil;&amp;uuml;lt&amp;uuml;lm&amp;uuml;ş paketler i&amp;ccedil;erisinde JSON tipinde veri bulunuyor. Zaten tasarım ama&amp;ccedil;larından birisi de bu.&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Peki .Net tarafında kullanılan nesne &amp;ouml;rneklerini BSON formatına nasıl d&amp;ouml;n&amp;uuml;şt&amp;uuml;rebiliriz? Bunun bilinen pek &amp;ccedil;ok yolu var tabii ki ancak uygulamanızda Newtonsoft ve JSON i&amp;ccedil;erikleri ile &amp;ccedil;alışıyorsanız işi kolaylaştıracak tiplerde bu paketle birlikte geliyor. Newtonsoft.Json paketi, bir&amp;nbsp;JSON i&amp;ccedil;eriğinin binary olarak yazılması ve okunması i&amp;ccedil;in iki temel tip sunmakta. Bu tipleri kullanarak BSON d&amp;ouml;n&amp;uuml;ş&amp;uuml;m işlemleri kolayca ger&amp;ccedil;ekleştirilebilir.&amp;nbsp;Basit bir &amp;ouml;rnekle konuyu &amp;ouml;zetleyelim.&amp;nbsp;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Başlamadan &amp;ouml;nce&amp;nbsp;Newtonsoft'un ilgili paketinin uygulamaya y&amp;uuml;klenmiş olması gerektiğini hatırlatalım. Bunu NuGet Package Manager veya Console &amp;uuml;zerinden ger&amp;ccedil;ekleştirebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/02/bson_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Aşağıdaki sınıf diagramında ve kod par&amp;ccedil;asında g&amp;ouml;r&amp;uuml;len tipleri tasarladığımızı&amp;nbsp;d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/02/bson_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public class Person
+{
+	public int PersonId { get; set; }
+	public string Title { get; set; }
+	public decimal Salary { get; set; }
+	public Job[] Jobs { get; set; } // SOAPFormantter desteği i&amp;ccedil;in Array yapıldı
+
+	public override string ToString()
+	{
+		return string.Format("{0}-{1}-{2}"
+			, PersonId, Title, Salary.ToString("C2"));
+	}
+}
+
+public class Job
+{
+	public int JobId { get; set; }
+	public string Description { get; set; }
+	public DateTime AddingTime { get; set; }
+	public override string ToString()
+	{
+		return string.Format("\t{0}-{1}-{2}"
+			, JobId, Description, AddingTime.ToShortDateString());
+	}
+}&lt;/pre&gt;
+&lt;p&gt;Kişi bilgisini tuttuğumuz Person ve bu kişilerin &amp;ouml;nceden &amp;ccedil;alıştıkları işlerin bilgisini tutan Job isimli iki sınıfımız var. BSON d&amp;ouml;n&amp;uuml;ş&amp;uuml;m&amp;uuml;nde kullanılacak &amp;ouml;rneğin zengin olması i&amp;ccedil;in Person sınıfında Job tipinden &amp;nbsp;bir dizi bulunuyor. B&amp;ouml;ylece bire-&amp;ccedil;ok ilişki barındıran bir nesne ağacını d&amp;ouml;n&amp;uuml;şt&amp;uuml;rme işleminde kullanabiliriz. Tabii bize test verisi ve ters serileştirme sonrası d&amp;ouml;n&amp;uuml;şen liste i&amp;ccedil;eriğini ekrana basacak fonksiyonellikler de gerekiyor. Bunları şimdilik Utility isimli bir sınıfta aşağıdaki kod par&amp;ccedil;asında g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi toplayabiliriz.&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public class Utility
+{
+	public List&amp;lt;Person&amp;gt; FillEmployees()
+	{
+		List&amp;lt;Person&amp;gt; employees = new List&amp;lt;Person&amp;gt;();
+
+		employees.Add(new Person
+		{
+			PersonId = 1,
+			Title = "Coni Minomic",
+			Salary = 1900,
+			Jobs = (new List&amp;lt;Job&amp;gt;
+			{
+				new Job{ 
+					JobId=1
+					, Description="Google's Master Computer Scientist"
+					, AddingTime= DateTime.Now
+				},
+				new Job{ 
+					JobId=2
+					, Description="Amazon Big Cloud System Manager"
+					, AddingTime= DateTime.Now
+				},
+			}).ToArray()
+		});
+
+		employees.Add(new Person
+		{
+			PersonId = 1,
+			Title = "Jon Carter",
+			Salary = 1780,
+			Jobs = (new List&amp;lt;Job&amp;gt;
+			{
+				new Job{ 
+					JobId=1
+					, Description="Microsoft Principle Developer"
+					, AddingTime= DateTime.Now
+				}
+			}).ToArray()
+		});
+
+		return employees;
+	}
+
+	public void WriteLine(List&amp;lt;Person&amp;gt; personOfInterest)
+	{
+		foreach (var person in personOfInterest)
+		{
+			Console.WriteLine(person.ToString());
+			foreach (var job in person.Jobs)
+			{
+				Console.WriteLine(job.ToString());
+			}
+		}
+	}
+}&lt;/pre&gt;
+&lt;p&gt;FillEmployees metodu ile test ama&amp;ccedil;lı&amp;nbsp;bir &amp;ccedil;alışan&amp;nbsp;listesi&amp;nbsp;oluşturuyoruz. WriteLine metodu ise gelen &amp;ccedil;alışan i&amp;ccedil;eriğini ekrana bastırmakla y&amp;uuml;k&amp;uuml;ml&amp;uuml;. Amacımız, &amp;ccedil;alışan listesini BSON formatında bir dosyaya yazdırmak ve sonrasında bu i&amp;ccedil;eriği ters-serileştirme ile geri okuyup ekrana yazdırmak. Bunun i&amp;ccedil;in gerekli &amp;ouml;rnek kod par&amp;ccedil;asını aşağıdaki gibi geliştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Newtonsoft.Json;
+using Newtonsoft.Json.Bson;
+using System;
+using System.Collections.Generic;
+using System.IO;
+
+namespace BsonExample
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var mario = new Utility();
+            var employees = mario.FillEmployees();
+            var root = Environment.CurrentDirectory;
+            var file = Path.Combine(root, "employees.bson");
+            JsonSerializer serializer = new JsonSerializer();
+
+            using (MemoryStream mStream = new MemoryStream())
+            {
+                using (BsonWriter bsonWriter = new BsonWriter(mStream))
+                {
+                    serializer.Serialize(bsonWriter, employees);
+                }
+                File.WriteAllText(file, Convert.ToBase64String(mStream.ToArray()));
+            }
+
+            var fileContent=File.ReadAllText(file);
+            var binaryContent=Convert.FromBase64String(fileContent);
+            using(MemoryStream mStream=new MemoryStream(binaryContent)){
+                using (BsonReader bsonReader = new BsonReader(mStream))
+                {
+                    bsonReader.ReadRootValueAsArray = true;
+                    var result=serializer.Deserialize&amp;lt;List&amp;lt;Person&amp;gt;&amp;gt;(bsonReader);
+                    mario.WriteLine(result);
+                }
+            }
+        }
+    }
+	.
+	.
+	.&lt;/pre&gt;
+&lt;p&gt;Koddaki başrol oyuncuları JsonSerializer, BsonWriter ve BsonReader sınıflarıdır. İlk using bloğunda MemoryStream ile belleğe a&amp;ccedil;ılan employees liste i&amp;ccedil;eriğinin Base64 kodlamasından yararlanılarak dosyaya yazdırılması s&amp;ouml;z konusudur.&amp;nbsp;İkinci using bloğunda ise bir ka&amp;ccedil; satır &amp;ouml;nce&amp;nbsp;dosyaya yazılmış olan binary i&amp;ccedil;eriğin Base64'ten byte[] haline getirilmesi ve ardından BsonReader kullanılarak generic Person listesine d&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;lmesi işlemi yapılmaktadır. Kritik noktalardan birisi dePerson tipinden bir listenin&lt;em&gt;(List&amp;lt;Person&amp;gt;)&lt;/em&gt; kullanılmasıdır. Eğer BsonReader nesne &amp;ouml;rneğinin ReadRootValueAsArray &amp;ouml;zelliğine true verilmezse bu listenin ters-serileştirilme aşamasında aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan JsonSerializationException oluşacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/02/bson_5.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Kodun &amp;ccedil;alışması sırasında &amp;uuml;retilen BSON i&amp;ccedil;eriği ise aşağıdakine benzer olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/02/bson_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Yapılan ters serileştirme işlemi sonrası elde edilen ekran &amp;ccedil;ıktısı da ş&amp;ouml;yledir.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/02/bson_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi BSON i&amp;ccedil;eriği başarılı bir şekilde ters-serileştirilerek nesne haline getirilebilmiştir.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rnekteki kod par&amp;ccedil;alarını biraz daha d&amp;uuml;zenlemeye &amp;ccedil;alışmanızı &amp;ouml;nerebilirim. Nitekim BSON d&amp;ouml;n&amp;uuml;ş&amp;uuml;m operasyonları birer genişletme metodu&lt;em&gt;(extension method)&lt;/em&gt; haline de getirilerek kullanımları daha kolay hele getirilebilir. Ayrıca Newtonsoft'un k&amp;uuml;t&amp;uuml;phanelerine başvurmadan da JSON i&amp;ccedil;eriği oluşturabilir ve Base64 kodlamasından yararlanarak BSON i&amp;ccedil;erikleri &amp;uuml;retebilirsiniz. Sonu&amp;ccedil;ta JSON standartları belli. B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2017-04-30 21:36:00</pubDate>
+  <slug>json-to-bson</slug>
+  <tags>
+    <tag>json</tag>
+    <tag>bson</tag>
+    <tag>binary-json</tag>
+    <tag>javascriptobjectnotation</tag>
+    <tag>net</tag>
+    <tag>newtonsoft</tag>
+    <tag>c#</tag>
+    <tag>serialization</tag>
+    <tag>deserialization</tag>
+    <tag>json-serialization-exception</tag>
+  </tags>
+  <categories>
+    <category>C#</category>
+  </categories>
+</post>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>GoLang - Kalıtım için Gömülü Tiplerin Kullanımı</title>
+  <description>Bir süredir GO dili ile ilgili çalışmalarıma ara vermiştim. Yakın zamanda ise sevgili Murat Özalp'in GO Programlama isimli kitabını takip etmeye başladım. Gerçekten her bölüm son derece doyurucu. Kitabı düzenli olarak hergün çalışıyorum. Bazen çok az zaman ayırsam da her gece bir kaç sayfasını okuyor ve uygulamaya çalışıyorum. Şimdilerdeki en büyük yardımcım LiteIDE isimli kod editörü(ki Murat Hoca'nın tavsiyesidir ve çok memnun kaldığım bir geliştirme aracıdır) Burada yaptığım günlük çalışmaları aksatmamaya gayret ediyor ve kendime göre hazırladığım örnekleri github üzerinde topluyorum. Geçtiğimiz gün gömülü tiplerin kullanımını öğrenmeye çalıştım. Bildiğiniz gibi GO dili tam anlamıyla nesne yönelimli bir dil değil. Her şeyden önce class gibi bir kavram olmayışı kafaları biraz da olsa karıştırıyor. Lakin struct, interface ve struct'lar ile ilişkilendirilebilen metodlar yardımıyla kalıtımı uygulayabilmek mümkün. Hatta çoğu dilde riskli olduğu için izin verilmeyen çoklu kalıtımı biraz daha güvenli bir şekilde sağlama şansımız var. Gömülü tipler(ya da struct içinde kullanılan struct tipinden değişkenler) yardımıyla bunu sağlayabiliriz.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2017/05/zidane.gif" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p style="text-align: left;"&gt;Bir s&amp;uuml;redir GO dili ile ilgili &amp;ccedil;alışmalarıma ara vermiştim. Yakın zamanda ise sevgili Murat &amp;Ouml;zalp'in "GO Programlama" isimli kitabını takip etmeye başladım. Ger&amp;ccedil;ekten her b&amp;ouml;l&amp;uuml;m son derece doyurucu. Kitabı d&amp;uuml;zenli olarak herg&amp;uuml;n &amp;ccedil;alışıyorum. Bazen &amp;ccedil;ok az zaman ayırsam da her gece bir ka&amp;ccedil; sayfasını okuyor ve uygulamaya &amp;ccedil;alışıyorum. Burada yaptığım g&amp;uuml;nl&amp;uuml;k &amp;ccedil;alışmaları aksatmamaya gayret ediyor ve kendime g&amp;ouml;re hazırladığım &amp;ouml;rnekleri &lt;a href="https://github.com/buraksenyurt/golangsamples" target="_blank"&gt;github &amp;uuml;zerinde&lt;/a&gt; topluyorum. Hatta artık kodları yeni bir IDE &amp;uuml;zerinde deniyorum. Yeni g&amp;ouml;zdem&amp;nbsp;&lt;a href="https://sourceforge.net/projects/liteide/" target="_blank"&gt;LiteIDE isimli kod edit&amp;ouml;r&amp;uuml;&lt;/a&gt;&lt;em&gt;(ki Murat Hoca'nın tavsiyesidir ve &amp;ccedil;ok memnun kaldığım bir geliştirme aracıdır)&lt;/em&gt;&lt;/p&gt;
+&lt;p style="text-align: left;"&gt;Son olarak bug&amp;uuml;n g&amp;ouml;m&amp;uuml;l&amp;uuml; tiplerin kullanımını &amp;ouml;ğrenmeye &amp;ccedil;alıştım. Bildiğiniz gibi GO dili tam anlamıyla nesne y&amp;ouml;nelimli&lt;em&gt;(Object Oriented)&lt;/em&gt; bir dil değil. Her şeyden &amp;ouml;nce sınıf&lt;em&gt;(class)&lt;/em&gt; gibi bir kavram olmayışı kafaları biraz da olsa karıştırıyor. &amp;Ccedil;alışmalarım sırasında&amp;nbsp;struct ve interface tiplerini kullanarak GO dilinde kalıtımın nasıl ele alındığını bir &amp;ouml;l&amp;ccedil;&amp;uuml;de kavramıştım. Diğer yandan pek &amp;ccedil;ok&amp;nbsp;dilde karmaşıklığı arttırdığı i&amp;ccedil;in izin verilmeyen &amp;ccedil;oklu kalıtımı biraz daha g&amp;uuml;venli bir şekilde sağlama şansımız var. G&amp;ouml;m&amp;uuml;l&amp;uuml; tipler&lt;em&gt;(ya da struct i&amp;ccedil;inde kullanılan struct tipinden değişkenler)&lt;/em&gt;&amp;nbsp;bu noktada devreye giriyor. Aslında bir nevi Composition işlevselliğini sağlayarak bu &amp;ouml;zelliği kazanıyoruz. Nasıl mı?&amp;nbsp;Kendi anladığım kadarı ile durum ş&amp;ouml;yle...&lt;/p&gt;
+&lt;p style="text-align: left;"&gt;&amp;Ouml;ncelikle basit bir senaryo d&amp;uuml;ş&amp;uuml;nmeye &amp;ccedil;alıştım. Futbolcu, basketbolcu, boks&amp;ouml;r ve benzeri oyuncu t&amp;uuml;rlerinin ortak &amp;ouml;zelliklerini barındıracak bir yapı tasarlamaya karar verdim.&amp;nbsp;Sonrasında bu oyuncuların &amp;ccedil;eşitli yeteneklerini ifade edecek bir tip daha tasarladım. Her oyuncunun takma adı, sistem i&amp;ccedil;in &amp;ouml;nem arz edecek bir numarası ve s&amp;ouml;yleyeceği bir şeyleri olsun istedim&lt;em&gt;(bunu bir metod ile halledebilirdim. Metod derken fonksiyon değil struct ile ilişkilendirilen metod)&lt;/em&gt; Ayrıca oyuncuların t&amp;uuml;rlerine g&amp;ouml;re farklı kabiliyetleri de olabilirdi. Tabii t&amp;uuml;m kabiliyetleri kendisini tanımlayan bir isimden ibaret olacak şekilde basit&amp;ccedil;e ele almam benim i&amp;ccedil;in daha iyi olacaktı. Bu kabiliyetleri uygulayacağım bir metod da pek şık olurdu. Paragraf ile ifade etmeye &amp;ccedil;alıştığım şeyi aslında aşağıdaki grafik ile daha g&amp;uuml;zel anlatabilirim belki de.&lt;/p&gt;
+&lt;p style="text-align: left;"&gt;&lt;img src="/image.axd?picture=/2017/05/golng_et_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p style="text-align: left;"&gt;Player ve Ability isimli yapılar FootballPlayer ve Boxer isimli diğer yapılarda g&amp;ouml;m&amp;uuml;l&amp;uuml; tip olarak kullanılıyorlar. Buna g&amp;ouml;re her futbolcu ve boks&amp;ouml;r &amp;ouml;rneği id, nickName gibi temel bilgilere sahip olacak ve bir şeyler s&amp;ouml;yleyebilecek&lt;em&gt;(saySomething metodu)&lt;/em&gt;. Ayrıca her birisinin n sayıda kabiliyeti de bulunabilecek ve bu kabiliyetleri uygulayabilecek&lt;em&gt;(useAbility metodu)&lt;/em&gt; Bunun i&amp;ccedil;in abilities niteliklerini kullanabiliriz. Gelelim bu fotoğrafın kod g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ne.&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;/*
+ Lesson 09
+ Embedded type kullanımı
+ g&amp;ouml;m&amp;uuml;l&amp;uuml; t&amp;uuml;rlerden yararlanarak &amp;ccedil;oklu t&amp;uuml;retme &amp;ouml;zelliğini kullanabiliriz
+*/
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	var zidane FootballPlayer
+	zidane.self = Player{id: 10, nickName: "Zinadine Zidane"}
+	zidane.position = "Midfield"
+	zidane.abilities = []Ability{
+		Ability{name: "shoot", power: 92},
+		Ability{name: "high pass", power: 84},
+	}
+	zidane.abilities[1].useAbility()
+	zidane.self.saySomething("What can I do sometimes. This is football.")
+	zidane.abilities[0].useAbility()
+
+	var tayson Boxer
+	tayson.self = Player{id: 88, nickName: "Bulldog"}
+	tayson.knockdownCount = 32
+	tayson.abilities = []Ability{
+		Ability{name: "defense", power: 76}, //virg&amp;uuml;l koymayınca derleme hatası verir ;)
+	}
+	tayson.self.saySomething("I will win this game")
+	tayson.abilities[0].useAbility()
+}
+
+// oyuncuların ortak niteliklerini barındıran bir struct
+type Player struct {
+	id       int
+	nickName string
+}
+
+// player yapısına monte edilmiş saySomething metodu
+// oyuncunun bir şeyler s&amp;ouml;ylemesi i&amp;ccedil;in kullanılabilecek bir metod
+func (player *Player) saySomething(message string) {
+	fmt.Printf("%s says that '%s'\n", player.nickName, message)
+}
+
+// oyuncuların farklı yeteneklerini tanımlayacak olan Ability isimli yapı
+type Ability struct {
+	name  string
+	power int
+}
+
+// Ability yapısına monte edilmiş olan useAbility isimli bir metod
+// oyuncunun bir yeteneğini kullandırmak i&amp;ccedil;in
+func (ability *Ability) useAbility() {
+	fmt.Printf("[%s] yeteneği kullanılıyor. G&amp;uuml;&amp;ccedil; %d\n", ability.name, ability.power)
+}
+
+// Player ve Ability yapılarını g&amp;ouml;m&amp;uuml;l&amp;uuml; tip olarak kullanan ve
+// futbolcuları tanımlayan yapı
+type FootballPlayer struct {
+	position  string
+	self      Player
+	abilities []Ability
+}
+
+// farklı bir oyuncu tipi
+type Boxer struct {
+	knockdownCount int
+	self           Player
+	abilities      []Ability
+}&lt;/pre&gt;
+&lt;p style="text-align: left;"&gt;main fonksiyonunda zidane&lt;em&gt;(makale fotoğrafının sebebini de &amp;ouml;zetlemiş olduk)&lt;/em&gt; ve tayson isimli iki değişken kullanılmakta. zidane isimli değişken FootballPlayer yapısı tipinden. tayson ise Boxer tipinden. Kodun akışında her birisinin adını, numarasını belirliyor, bir şeyler s&amp;ouml;ylemelerini sağlıyor ve farklı kabiliyetler ekleyerek bunları uygulayışlarını izliyoruz. Dikkat edilmesi gereken ve kendime s&amp;ouml;ylediğim bir ka&amp;ccedil; nokta da var. Oyuncuların kabiliyetlerini tutan abilities isimli nitelikleri Ability t&amp;uuml;r&amp;uuml;nden bir Slice olarak tanımladık. Bir oyuncunun belli bir yeteneğini uygulamak i&amp;ccedil;in ilgili Slice &amp;ouml;ğesine gitmeli ve sonrasında useAbility metodunu &amp;ccedil;ağırmalıyız. Metodlar hatırlanacağı &amp;uuml;zere yapılara fonksiyonellik kazandırmak &amp;uuml;zere kullanılıyorlar. useAbility ve saySomething isimli metodlar sırasıyla Ability ve Player yapıları ile ilişkilendirilmiş durumdalar. Yazımları sırasında metod adından &amp;ouml;nceki parantezlerde hangi struct i&amp;ccedil;in kullanılacakları belirtilmekte. * işaretine yani pointer kullanıldığına dikkat de edilmeli.&lt;/p&gt;
+&lt;p style="text-align: left;"&gt;Kodu &amp;ccedil;alıştırdığımızda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ndekine benzer bir sonu&amp;ccedil;la karşılaşmamız gerekir.&lt;/p&gt;
+&lt;p style="text-align: left;"&gt;&lt;img src="/image.axd?picture=/2017/05/golng_et_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p style="text-align: left;"&gt;G&amp;ouml;m&amp;uuml;l&amp;uuml; tipleri kullandığımız bu &amp;ouml;rnek kod par&amp;ccedil;asında bir yapının başka yapıları kullanarak &amp;ccedil;oklu kalıtımı nasıl ele alabileceğini incelemeye &amp;ccedil;alıştık. Anahtar nokta struct tiplerini i&amp;ccedil;erme şeklinde değerlendirmekten ibaret. Felsefe olarak, genişletmek istediğimiz t&amp;uuml;r&amp;uuml;n i&amp;ccedil;ereceği nitelikleri yapılar i&amp;ccedil;erisinde toplamak gerekiyor. Eğer g&amp;ouml;m&amp;uuml;l&amp;uuml; tip &amp;uuml;zerinden uygulanması beklenen ortak fonksiyonellikler de s&amp;ouml;z konusu ise bunların metod şeklinde tanımlanması t&amp;uuml;reyen tip i&amp;ccedil;in yeterli.&amp;nbsp;B&amp;ouml;ylece geldik kısa bir GO turumuzun daha sonuna.&amp;nbsp;Bir başka makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2017-06-04 09:25:00</pubDate>
+  <slug>golang-kalitim-icin-gomulu-tiplerin-kullanimi</slug>
+  <tags>
+    <tag>go-programming-language</tag>
+    <tag>golang</tag>
+    <tag>embedded-types</tag>
+    <tag>struct</tag>
+    <tag>inheritance</tag>
+    <tag>oop</tag>
+    <tag>object-oriented-programming</tag>
+  </tags>
+  <categories>
+    <category>GoLang</category>
+  </categories>
+</post>

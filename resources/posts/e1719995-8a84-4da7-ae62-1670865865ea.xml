@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Asp.Net 4.0 - Heryerde Cache [Beta 2]</title>
+  <description>Aslında listenin başında System.Web.Caching.dll assembly' ının Web dışındaki uygulamalara referans edilerek kullanılmasının yer aldığını söyleyebiliriz. Ne varki bir Windows uygulamasına Web alanına ait bir Assembly' ın referans edilmeside son derece gariptir...</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/pics/2009%2f11%2fblg103_Giris.jpg" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Kronometrelerinizi hazır edin! Bu yazımızda &lt;strong&gt;Absolute&lt;/strong&gt; ve &lt;strong&gt;Sliding Expiration &lt;/strong&gt;modelinde &amp;ouml;n bellekleme işlemlerini &lt;strong&gt;Windows &lt;/strong&gt;tabanlı bir uygulama &amp;uuml;zerinde ger&amp;ccedil;ekleştiriyor olacağız. Durun bir dakika...&lt;strong&gt;Windows&lt;/strong&gt; mu? Evet evet yanlış duymadınız &lt;strong&gt;Windows&lt;/strong&gt;. Aslında başlıktaki konu ile tamamen tezat bir durum. Ger&amp;ccedil;ekten de &amp;ouml;yle mi acaba? Gelin şu meseleyi a&amp;ccedil;ıklığa kavuşturalım. &lt;img title="Smile" src="/editors/tiny_mce3/plugins/emotions/img/smiley-smile.gif" alt="Smile" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;n bellekleme işlemleri ile performans arttırımı &amp;ccedil;oğunlukla web uygulamalarında akla gelen bir konudur. Ancak ger&amp;ccedil;ek hayat uygulamaları sadece Web tabanlı değildir. &lt;strong&gt;Windows Forms, WPF&lt;/strong&gt; gibi masa&amp;uuml;st&amp;uuml; uygulamalarından tutunda, katmanları ifade eden &lt;strong&gt;Class Library'&lt;/strong&gt; lere kadar &amp;ccedil;ok &amp;ccedil;eşitli &amp;uuml;r&amp;uuml;nler yer almaktadır. Dolayısıyla performans kazanımı, iş y&amp;uuml;k&amp;uuml;n&amp;uuml;n hafifletilmesi i&amp;ccedil;in &amp;ouml;n bellekleme işleminin sadece Web uygulamalarına bağımlı kalması d&amp;uuml;ş&amp;uuml;n&amp;uuml;lemez. Peki Web ortamı dışında &lt;strong&gt;&amp;ouml;n bellekleme(Caching)&lt;/strong&gt; teknikleri i&amp;ccedil;in hangi imkanlar bulunmaktadır?&lt;/p&gt;
+&lt;p&gt;Aslında listenin başında &lt;strong&gt;System.Web.Caching.dll&lt;/strong&gt; assembly' ının Web dışındaki uygulamalara referans edilerek kullanılmasının yer aldığını s&amp;ouml;yleyebiliriz. Ne varki bir Windows uygulamasına &lt;strong&gt;Web&lt;/strong&gt; alanına ait bir &lt;strong&gt;Assembly'&lt;/strong&gt; ın referans edilmeside son derece gariptir. &lt;img title="Undecided" src="/editors/tiny_mce3/plugins/emotions/img/smiley-undecided.gif" alt="Undecided" border="0" /&gt;&amp;nbsp;Daha etkili bir y&amp;ouml;ntem olarak &lt;strong&gt;Enterprise Library&lt;/strong&gt; i&amp;ccedil;erisinde yer alan &lt;strong&gt;Caching&lt;/strong&gt; bloğunun kullanılması tercih edilebilir. Bunların haricinde hen&amp;uuml;z incelediğim ve yakında sizinle ilk bilgilerimi paylaşacağım &lt;strong&gt;Velocity&lt;/strong&gt; projesi de&amp;nbsp;yer almaktadır ki &lt;strong&gt;dağıtık &amp;ouml;n bellekleme(Distributed Caching)&lt;/strong&gt;&amp;nbsp;ve dolayısıyla &lt;strong&gt;Cache&lt;/strong&gt; &amp;uuml;zerinde&lt;strong&gt; Load Balancing&lt;/strong&gt; vb imkanlar sunmakta olan bir projedir. Ancak &lt;strong&gt;Asp.Net 4.0'&lt;/strong&gt; ın duyurulması ile birlikte &amp;ouml;zellikle Overivew d&amp;ouml;k&amp;uuml;m&amp;uuml;nında belirtilen yeni bir koz daha bulunmaktadır. &lt;strong&gt;System.Runtime.Caching.dll&lt;/strong&gt; &lt;strong&gt;assembly'&lt;/strong&gt; ı. Biz bu g&amp;uuml;n geliştireceğimiz &amp;ouml;rnekte &lt;strong&gt;ObjectCache&lt;/strong&gt; tipinden yararlanarak &amp;ouml;n bellekleme işlemlerini yapmaya &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg103_Browse.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu assembly i&amp;ccedil;erisinde yer alan tiplerden yararlanarak &amp;ouml;zel &lt;strong&gt;Cache&lt;/strong&gt; sağlayıcılar, tipler geliştirebileceğimiz gibi &lt;strong&gt;In-Memory&lt;/strong&gt; &amp;ouml;n bellekleme yeteneklerini web dışındaki uygulamalarda da kullanabiliriz. &amp;Uuml;stelik &lt;strong&gt;.Net Framework&lt;/strong&gt; i&amp;ccedil;erisine dahil edilmiş olması, &lt;strong&gt;Enterprise Library&lt;/strong&gt; gibi &amp;uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; parti kurulumlara ihtiya&amp;ccedil; duymayışı, kullanımının Web tarafındaki &lt;strong&gt;Cache&lt;/strong&gt; nesnesi ile neredeyse aynı olmasıda avantaj olarak g&amp;ouml;r&amp;uuml;lebilir.&amp;nbsp;Bu yazımızda s&amp;ouml;z konusu &amp;ouml;n bellekleme tekniklerine sadece iki a&amp;ccedil;ıdan bakıyor olacağız. &lt;strong&gt;Sliding&lt;/strong&gt; ve &lt;strong&gt;Absolute Expiration &lt;/strong&gt;tipli &amp;ouml;n bellekleme işlemleri.&lt;/p&gt;
+&lt;p&gt;Bilindiği &amp;uuml;zere &amp;ouml;n bellekte tutulacak olan verinin ne kadar s&amp;uuml;re ile duracağının belirtilmesi&lt;strong&gt; Absolute Expiration&lt;/strong&gt; tekniğini ilgilendiren bir meseledir. Diğer yandan belirtilen s&amp;uuml;re i&amp;ccedil;erisinde &amp;ouml;n bellekte tutulan &lt;strong&gt;Cache&lt;/strong&gt; nesnesine talep gelmesi sonrası, o andan itibaren tekrardan belirtilen s&amp;uuml;re kadar yaşam &amp;ouml;mr&amp;uuml;n&amp;uuml;n uzatılması da &lt;strong&gt;Sliding Expiration&lt;/strong&gt; tekniğini ilgilendiren bir konudur. Bunlara ek olarak &amp;ouml;n belleklemede pop&amp;uuml;ler olarak kullanılan &lt;strong&gt;bağımlılık(Dependency)&lt;/strong&gt; gibi tekniklerde bulunmaktadır. Buna g&amp;ouml;rede &lt;strong&gt;Cache&lt;/strong&gt; nesnesinin i&amp;ccedil;eriğinin tazelenmesinin bir sebebe bağımlı hale getirilmesi sağlanabilir. Bu sebep basit bir dosyadaki değişiklik olabilir &amp;ouml;rneğin.&lt;/p&gt;
+&lt;p&gt;Dilerseniz hi&amp;ccedil; vakit kaybetmeden &lt;strong&gt;Visual Studio 2010 Ultimate Beta 2&lt;/strong&gt; &amp;uuml;zerinde basit bir &lt;strong&gt;Windows &lt;/strong&gt;uygulması geliştirerek yolumuza devam edelim. &amp;Ouml;rneğimizde &lt;strong&gt;Product&lt;/strong&gt; tipinden nesne &amp;ouml;rnekleri tutan generic bir &lt;strong&gt;List&amp;lt;T&amp;gt;&lt;/strong&gt; koleksiyonunun i&amp;ccedil;eriğinin &lt;strong&gt;Absolute&lt;/strong&gt; ve &lt;strong&gt;Sliding &lt;/strong&gt;olarak &amp;ouml;n belleklenmesi işlemlerini g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alıyor olacağız. Tabi ilk etapta &lt;strong&gt;System.Runtime.Caching&lt;/strong&gt; assembly' ının &lt;strong&gt;Win Forms &lt;/strong&gt;uygulamasına referans edilmesi gerekmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg103_AddReference.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;WinForms uygulamamızın basit ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg103_Form.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Gelelim kodlarımıza;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Runtime.Caching;
+using System.Windows.Forms;
+
+namespace UsingObjectCache
+{
+    public partial class Form1
+        : Form
+    {
+        // Cache nesnelerine erişmek i&amp;ccedil;in kullanılan tip tanımlanır
+        ObjectCache cachedObject;
+
+        public Form1()
+        {
+            InitializeComponent();
+
+            // Varsayılan MemoryCache referansı elde edilir
+            cachedObject = MemoryCache.Default;
+        }
+
+        // Cache &amp;uuml;zerinden Products Key değerine sahip i&amp;ccedil;eriği getirmek i&amp;ccedil;in kullanılan olay metodudur
+        private void btnGet_Click(object sender, EventArgs e)
+        {
+            // Eğer ProductList Key değerine sahip &amp;ouml;n belleklenmiş bir i&amp;ccedil;erik var ise
+            if (cachedObject["Products"] != null)
+            {
+                // Indeksleyici yardımıyla ilgili Cache nesnesi &amp;ccedil;ekilir
+                lstProducts.DataSource = cachedObject["Products"] as List&amp;lt;Product&amp;gt;;
+                lblInformation.Text = "&amp;Uuml;r&amp;uuml;n listesi i&amp;ccedil;eriği &amp;ouml;n bellekten getirildi";
+            }
+            else
+            {
+                lblInformation.Text = "Cache i&amp;ccedil;erisinde s&amp;ouml;z konusu liste yok\n Bilgiler tekrardan &amp;uuml;retilecek";
+                lstProducts.DataSource = CreateProductList();
+            }
+        }
+
+        // Cache' lenen veriyi belirli bir s&amp;uuml;reliğine tutmak i&amp;ccedil;in gerekli ayarlamaları yapan olay metodudur.
+        private void btnAbsoluteExpiration_Click(object sender, EventArgs e)
+        {
+            // Zaten Products isimli bir Cache i&amp;ccedil;eriği yoksa, bu Key değerine sahip olan bir Cache i&amp;ccedil;eriği oluşturulur ve o andan itibaren 30 saniye s&amp;uuml;reyle &amp;ouml;n bellekleneceği belirtilir.
+            if (cachedObject["Products"] == null)
+                if (cachedObject.Add("Products", CreateProductList(), new DateTimeOffset(DateTime.Now.AddSeconds(30))))
+                    lblInformation.Text = "Absolute Expiration(30 Seconds)";
+        }
+
+        // Kayan s&amp;uuml;reli Cache' leme i&amp;ccedil;in gerekli işlemleri yapan olay metodudur.
+        // Buna g&amp;ouml;re 30 saniyelik s&amp;uuml;re dolmadan gelen talepler, Cache' te tutulmas s&amp;uuml;resini o andan itibaren tekrar 30 saniye ileri g&amp;ouml;t&amp;uuml;r&amp;uuml;rler
+        private void btnSlidingExpiration_Click(object sender, EventArgs e)
+        {
+            // Absolute Expiration, Sliding Expiration, Dependency gibi Cache &amp;ccedil;eşitlerini istersek ilke(Policy) olarak tanımlayabiliriz.
+            CacheItemPolicy policy = new CacheItemPolicy();
+            policy.SlidingExpiration = TimeSpan.FromSeconds(30);
+
+            if (cachedObject["Products"] == null)
+                if (cachedObject.Add("Products", CreateProductList(), policy))
+                    lblInformation.Text = "Sliding Expiration(30 Seconds)";
+        }
+
+        // Maliyetli olduğu varsayılan ve i&amp;ccedil;eriği &amp;ouml;n bellekte tutulabilecek olan sembolik bir fonksiyonellik
+        private List&amp;lt;Product&amp;gt; CreateProductList()
+        {
+            return new List&amp;lt;Product&amp;gt;
+                {
+                    new Product{ ProductId=10, Name="Bardak", ListPrice=1.23M},
+                    new Product{ ProductId=11, Name="Tabak", ListPrice=1.25M},
+                    new Product{ ProductId=12, Name="&amp;Ccedil;atal", ListPrice=0.55M}
+                };
+        }
+    }
+
+    // Yardımcı tip
+    class Product
+    {
+        public int ProductId { get; set; }
+        public string Name { get; set; }
+        public decimal ListPrice { get; set; }
+
+        public override string ToString()
+        {
+            return String.Format("{0}|{1} {2}", ProductId.ToString(), Name, ListPrice.ToString("C2"));
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Cache&lt;/strong&gt; y&amp;ouml;netimi i&amp;ccedil;in &lt;strong&gt;MemoryCache.Default &lt;/strong&gt;&amp;ouml;zelliğinin &amp;uuml;rettiği &lt;strong&gt;ObjectCache &lt;/strong&gt;nesne referansı kullanılmaktadır. &lt;strong&gt;ObjectCache &lt;/strong&gt;tipinin indeksleyicisinden yararlanılarak &amp;ouml;n bellekte tutulan bir &lt;strong&gt;Key&lt;/strong&gt; değerine ve doğal olarak işaret ettiği &lt;strong&gt;Object &lt;/strong&gt;tipinden i&amp;ccedil;eriğe ulaşmak m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Diğer yandan &lt;strong&gt;Add&lt;/strong&gt; ve &lt;strong&gt;Set&lt;/strong&gt; gibi metodlar yardımıyla &amp;ouml;n belleğe veri atılmasıda sağlanabilir. Burada dikkat &amp;ccedil;ekici noktalardan biriside &amp;ouml;n bellekleme tipi i&amp;ccedil;in &lt;strong&gt;ilkelerden(Policy)&lt;/strong&gt; yararlanılabilmesidir. &amp;Ouml;rneğimizde &lt;strong&gt;Sliding Expiration&lt;/strong&gt; i&amp;ccedil;in &lt;strong&gt;CacheItemPolicy&lt;/strong&gt; nesne &amp;ouml;rneği tanımlanmıştır. Bu nesne &amp;ouml;rneği aslında &amp;ouml;n bellekleme ilkesini ifade etmektedir. &amp;Ouml;nbelleğe atılacak nesne i&amp;ccedil;eriğinin bu ilkeye g&amp;ouml;re tutulacağını belirtmek i&amp;ccedil;inse &lt;strong&gt;Add&lt;/strong&gt; metoduna parametre olarak verilmesi yeterli olmuştur. Aslında &lt;strong&gt;Add&lt;/strong&gt; metodunun aşırı y&amp;uuml;klenmiş versiyonlarından birisi de &lt;strong&gt;Absolute Expiration&lt;/strong&gt; tekniğine g&amp;ouml;re parametre almaktadır ki buda &amp;ouml;rneğimizde kullanılmıştır.&lt;/p&gt;
+&lt;p&gt;Gelelim testlerimize. Hatırlarsanız kronometrelerinizi hazır tutmanızı s&amp;ouml;ylemiştim. Bu tabiki işin şakası &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;Nitekim kodun i&amp;ccedil;erisinde de test ama&amp;ccedil;lı olarak bir kronometre kullanılabilir. &amp;Ccedil;alışma zamanındaki testlerimizi aşağıdaki adımlarda olduğu gibi geliştirelim.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1 -&lt;/strong&gt; Uygulama başlatıldıktan sonra Get başlıklı d&amp;uuml;ğmeye basılır ve aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; ile karşılaşılır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg103_Test1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Get i&amp;ccedil;erisinde yapılan &amp;ccedil;ağrıda &lt;strong&gt;ObjectCache&lt;/strong&gt; i&amp;ccedil;erisinde &lt;strong&gt;Products&lt;/strong&gt; isimli bir &lt;strong&gt;Key&lt;/strong&gt; bulunmadığından &amp;uuml;r&amp;uuml;n listesinin maliyeti y&amp;uuml;ksek olduğu d&amp;uuml;ş&amp;uuml;n&amp;uuml;len bir metod ile &amp;uuml;retilmesi ger&amp;ccedil;ekleştirilir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2 -&lt;/strong&gt; 1nci testten sonra Absolute Expiration veya Sliding Expiration d&amp;uuml;ğmelerinden birisi kullanılır. Absolute Expiration başlıklı d&amp;uuml;ğme tıklandığında aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; ile karşılaşılmalıdır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg103_Absolute.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Buna g&amp;ouml;re Product listesi &amp;ouml;n bellekte &lt;strong&gt;30&lt;/strong&gt; &lt;strong&gt;saniye&lt;/strong&gt; s&amp;uuml;reyle saklanacaktır. S&amp;uuml;re dolmadan Get d&amp;uuml;ğmesine basılırsa aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; ile karşılaşılmalıdır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg103_AbsoluteTest.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi &lt;strong&gt;30 saniyelik&lt;/strong&gt; s&amp;uuml;re sona erdikten sonra tekrar Get d&amp;uuml;ğmesine basılırsa artık &amp;ouml;n bellekte bir veri tutulmadığından &amp;uuml;r&amp;uuml;n listesi &amp;uuml;retim işleminin tekrar yapıldığı g&amp;ouml;r&amp;uuml;lmelidir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;3 -&lt;/strong&gt; 2nci testin bitmesinden sonra se&amp;ccedil;iminize g&amp;ouml;re diğer &amp;ouml;n bellekleme tekniğini ele alabilirsiniz. Benim sırama g&amp;ouml;re şimdi &lt;strong&gt;Sliding Expiration&lt;/strong&gt; testinin yapılması gerekmektedir. Program a&amp;ccedil;ık iken &lt;strong&gt;Sliding Expiration &lt;/strong&gt;başlıklı d&amp;uuml;ğmeye asarsanız aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; ile karşılaşırsınız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg103_Sliding.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu adımdan sonra &lt;strong&gt;30 saniyelik&lt;/strong&gt; s&amp;uuml;re dolmadan tekrar Get d&amp;uuml;ğmesine basarsanız i&amp;ccedil;eriğin &amp;ouml;n bellekten getirildiğini g&amp;ouml;rebilirsiniz. Ancak &amp;ouml;nemli olan nokta şudur; &lt;strong&gt;&amp;Ouml;n bellekte durma s&amp;uuml;resi,&amp;nbsp;30 saniyelik s&amp;uuml;re i&amp;ccedil;erisinde Get d&amp;uuml;ğmesine bastığınız andan itibaren 30 saniye sonrasına uzamasıdır&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;4 -&lt;/strong&gt; Uygulamayı herhangibir &lt;strong&gt;Cache&lt;/strong&gt; tekniği uygulandıktan sonra ilgili s&amp;uuml;reler aşılmadan kapatıp tekrar a&amp;ccedil;ınız ve yine Get d&amp;uuml;ğmesine basınız. Bu durumda i&amp;ccedil;eriğin &amp;ouml;n bellekten değil tekrardan &amp;uuml;retim ile geldiğini g&amp;ouml;rmelisiniz ki bu son derece doğaldır. &amp;Ccedil;&amp;uuml;nk&amp;uuml; uygulama sonlandırılmış ve kendisi i&amp;ccedil;in ayrılan bellek i&amp;ccedil;eriği bir sonraki uygulama &amp;ouml;rneği i&amp;ccedil;in ge&amp;ccedil;ersiz hale gelmiştir. Hımmm...!!! Aslında bu &amp;ccedil;okda istediğimiz bir vaka olmayabilir.&lt;/p&gt;
+&lt;p&gt;T&amp;uuml;m bunlar bir yana en iyi test y&amp;ouml;ntemlerinden biriside uygulmayı &lt;strong&gt;Debug&lt;/strong&gt; ederek incelemeniz olacaktır ki bunu yapmanızı şiddetle tavsiye ederim. B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2009%2f11%2fUsingObjectCache.rar"&gt;UsingObjectCache.rar (42,82 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2009-11-18 04:20:00</pubDate>
+  <slug>AspNet-40-Heryerde-Cache</slug>
+  <tags>
+    <tag>aspnet-40-beta-2</tag>
+    <tag>aspnet</tag>
+  </tags>
+  <categories>
+    <category>Asp.Net 4.0 Beta 2</category>
+  </categories>
+</post>

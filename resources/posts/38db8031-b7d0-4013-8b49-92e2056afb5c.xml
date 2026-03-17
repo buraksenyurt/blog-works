@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>C# 3.0: Derinlemesine Extension Method Kavramı</title>
+  <description>Bilindiği üzere Language INtegrated Query(LINQ) mimarisinin uygulanışında C# 3.0(Visual Basic 9.0) ile birlikte gelen yenilikler oldukça önemli bir yere sahiptir. Bu yeniliklerin çoğu var olan .Net Framework 2.0 yapısını bozmadan genişletebilmek amacıyla tasarlanmıştır. Genişletme Metodları(Extension Methods) bu yeniliklerden sadece bir tanesidir.</description>
+  <content>&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Değerli Okurlarım Merhabalar,&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bilindiği &amp;uuml;zere &lt;strong&gt;Language INtegrated Query(LINQ)&lt;/strong&gt; mimarisinin uygulanışında &lt;strong&gt;C# 3.0(Visual Basic 9.0) &lt;/strong&gt;ile birlikte gelen yenilikler olduk&amp;ccedil;a &amp;ouml;nemli bir yere sahiptir. Bu yeniliklerin &amp;ccedil;oğu var olan &lt;strong&gt;.Net Framework 2.0 &lt;/strong&gt;yapısını bozmadan genişletebilmek amacıyla tasarlanmıştır. &lt;strong&gt;Genişletme Metodları(Extension Methods)&lt;/strong&gt; bu yeniliklerden sadece bir tanesidir.&lt;em&gt;(Object Initializers, Anonymous Types, Partial Methods, var anahtar kelimesi, auto-implemented property, =&amp;gt; operat&amp;ouml;r&amp;uuml; diğer C# 3.0 yenilikleri arasında sayılabilir) &lt;/em&gt;S&amp;ouml;z konusu yeniliğin &amp;ccedil;ıkış amacı genişletilemeyen tiplere yeni fonksiyonelliklerin eklenebilmesinin sağlanmasıdır. &amp;Ouml;yleki bu sayede &lt;strong&gt;koleksiyonlar(Collections)&lt;/strong&gt;, &lt;strong&gt; DataTable,&lt;/strong&gt; &lt;strong&gt;dizi(Array)&lt;/strong&gt; gibi var olan &lt;strong&gt;CLR tipleri(Common Lanugage Runtime)&lt;/strong&gt; &amp;uuml;zerinde &lt;strong&gt;LINQ&lt;/strong&gt; tarzı sorgu ifadelerinin yazılabilmesi olanaklı hale gelmiştir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&amp;Ouml;rneğin IEnumerable&amp;lt;T&amp;gt; aray&amp;uuml;z&amp;uuml;ne(Interface) uygulanan genişletme metodları(Extension Methods) sayesinde T t&amp;uuml;r&amp;uuml;nden koleksiyonlar &amp;uuml;zerinde Sum, Count, Select, Average, OrderBy,Distinct gibi fonksiyonellikler uygulanabilmektedir. Bunun i&amp;ccedil;in System.Linq isim alanı(Namespace) altında Enumerable isimli static bir sınıf geliştirilmiş ve i&amp;ccedil;erisine aşağıdaki sınıf diagramda(Class Diagram) bir kısmı g&amp;ouml;r&amp;uuml;nen pek &amp;ccedil;ok genişletme metodu ilave edilmiştir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk246_2.gif" alt="" width="283" height="289" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bilindiği &amp;uuml;zere &lt;strong&gt;SQL&lt;/strong&gt; sorgularına benzeyen LINQ ifadeleri aslında arka planda metodlar yardımıyla işaret edilebilirler. Nitekim programatik ortamlar bu tarz bir yaklaşımı gerektirmektedir. &amp;Uuml;stelik bu işlemler yapılırken var olan tiplerin i&amp;ccedil;eriklerine m&amp;uuml;dahale edilmemekte, sadece ek fonksiyonellikler katılmaktadır. Bu nedenle genişletme metodları &lt;strong&gt;LINQ&lt;/strong&gt; ifadelerinin kullanılabilmesinde &amp;ouml;nemli bir role sahiptir. Bu makalemizde genişletme metodlarını derinlemesine incelemeye &amp;ccedil;alışacak ve ayrıntılara bakıyor olacağız.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Genişletme metodları var olan tiplere ek fonksiyonellikler kazandırılmasını sağlarken bunların orjinal yapısını asla bozmazlar. Tanımlandıkları programda, uygulandıkları tipin bir par&amp;ccedil;ası olarak yaşar ama o tipin orjinalliğine etki etmeden ek işlevselliklerin kullanılabilmesini olanaklı kılarlar.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Herşeyden &amp;ouml;nce &lt;strong&gt;nesne tabanlı programlama dillerinde(Object Oriented Programming Language), kalıtım(Inheritance)&lt;/strong&gt; sayesinde var olan &lt;strong&gt;tiplerin(Type)&lt;/strong&gt; genişletilmesi m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Ancak t&amp;uuml;retilmesine izin verilmeyen tiplerde mevcuttur. S&amp;ouml;z gelimi &lt;strong&gt;sealed&lt;/strong&gt; anahtar kelimesi ile imzalanmış olan tipler t&amp;uuml;retme tekniği yardımıyla genişletilemez. &amp;Uuml;stelik .Net i&amp;ccedil;erisinde bu şekilde tanımlanmış olan sayısız sınıf vardır. &amp;Ouml;rneğin &lt;strong&gt;String&lt;/strong&gt; sınıfı &lt;strong&gt;sealed&lt;/strong&gt; olarak imzalanmış bir sınıf olduğundan kendisinden t&amp;uuml;retme yapılmasına izin verilmemektedir. &lt;em&gt; (&amp;Uuml;stelik String par&amp;ccedil;alı bir sınıf(Partial Class)' da değildir.)&lt;/em&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk246_1.gif" alt="" width="199" height="262" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bu nedenle bu sınıfa ek fonksiyonellikler ilave edilmesi m&amp;uuml;mk&amp;uuml;n değildir. Oysaki var olan &lt;strong&gt; .Net &lt;/strong&gt;tiplerinin&lt;em&gt;(yada kendi geliştirdiğimiz ama t&amp;uuml;retme yapılmasına izin verilmeyen tiplerin)&lt;/em&gt; yapısını bozmadan yeni fonksiyonelliklerin katılarak uygulamalar i&amp;ccedil;erisinde ela alınması istendiği vakalar s&amp;ouml;z konusudur. Ki nesnelerin &lt;strong&gt;SQL&lt;/strong&gt; tarzında sorgulanabilmeside buna bir &amp;ouml;rnek olarak verilebilir. Bu sebepten genişletme metodlarının &amp;ouml;nemi olduk&amp;ccedil;a fazladır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Genişletme metodları(Extension Methods), &lt;strong&gt;değer(value) &lt;/strong&gt;ve &lt;strong&gt;referans(reference)&lt;/strong&gt; t&amp;uuml;rleri ile &lt;strong&gt;aray&amp;uuml;zlere(Interface)&lt;/strong&gt; uygulanabilir. Değer t&amp;uuml;r&amp;uuml; olarak &lt;strong&gt;yapılar(struct)&lt;/strong&gt; g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir. Nitekim yapılar a&amp;ccedil;ık&amp;ccedil;a belirtilmesede kendilerinden t&amp;uuml;retilme yapılmasına izin vermemektedir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Genişletme metodları ele alınırken g&amp;ouml;zden ka&amp;ccedil;ırılmaması gereken bir nokta daha vardır. Genişletme metodları nesne y&amp;ouml;nelimli programlama jargonundaki kurallardan birisi değildir. Sadece &lt;strong&gt;.Net Framework&lt;/strong&gt; mimarisine &amp;ouml;zg&amp;uuml; bir kavramdır. Genişletme metodları bu anlamda bir tipin paylaşımlı fonksiyonları olarakda d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Hatta bu metodlar &lt;strong&gt;.Net Framework 3.5&lt;/strong&gt; &amp;ouml;ncesi s&amp;uuml;r&amp;uuml;mlerdeki tipler i&amp;ccedil;inde uygulanabilirdir. Tabi &amp;ouml;ncelikli olarak &lt;strong&gt; genişletme metodlarının(Extension Methods)&lt;/strong&gt; &lt;strong&gt;C# 3.0&lt;/strong&gt; i&amp;ccedil;erisinde nasıl yazıldığına bakmata yarar vardır. Genişletme metodlarının yazılmasında &amp;uuml;&amp;ccedil; basit kural vardır. Bu metodlar &lt;strong&gt;static&lt;/strong&gt; bir &lt;strong&gt; sınıf&lt;/strong&gt; i&amp;ccedil;erisinde &lt;strong&gt;static&lt;/strong&gt; olarak tanımlanmalı ve uygulanacakları tipi ilk parametrelerinde &lt;strong&gt;this&lt;/strong&gt; anahtar kelimesi ile birlikte almalıdır.&lt;em&gt;(Ki bunların bir takım sebepleri vardır)&lt;/em&gt; &amp;Ouml;rnek olarak ayrı bir sınıf k&amp;uuml;t&amp;uuml;phanesi i&amp;ccedil;erisinde geliştirilmiş olan aşağıdaki sınıfı g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alabiliriz.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk246_3.gif" alt="" width="327" height="147" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Merkez isimli &lt;strong&gt;static&lt;/strong&gt; sınıfın i&amp;ccedil;eriği aşağıdaki gibidir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Drawing;
+
+namespace Genisletmeler
+{
+    /// &amp;lt;summary&amp;gt;
+    /// Genişletme fonksiyonelliklerini i&amp;ccedil;eriri
+    /// &amp;lt;/summary&amp;gt;
+    public static class Merkez
+    {
+        /// &amp;lt;summary&amp;gt;
+        /// Bir string i&amp;ccedil;erisindeki t&amp;uuml;m karakterlerin Ascii değerlerini ele alıp byte dizisi şeklinde geriye d&amp;ouml;nd&amp;uuml;r&amp;uuml;r. Eğer string null veya empty ise exception d&amp;ouml;nd&amp;uuml;r&amp;uuml;r.
+        /// &amp;lt;/summary&amp;gt;
+        /// &amp;lt;param name="s"&amp;gt;Byte değerleri d&amp;ouml;nd&amp;uuml;r&amp;uuml;lecek string parametre&amp;lt;/param&amp;gt;
+        /// &amp;lt;returns&amp;gt;Ascii değerleri&amp;lt;/returns&amp;gt;
+        public static byte[] GetAscii(this string s)
+        {
+            if (String.IsNullOrEmpty(s))
+                throw new Exception("String veri olmalıdır.");
+            byte[] result = new byte[s.Length];
+            for (int i = 0; i &amp;lt; s.Length; i++)
+            {
+                result[i] = (byte)s[i];
+            }
+            return result;
+        }
+
+        /// &amp;lt;summary&amp;gt;
+        /// Int32 tipinden bir sayının fakt&amp;ouml;ryelinin bulunmasını sağlar
+        /// &amp;lt;/summary&amp;gt;
+        /// &amp;lt;param name="sayi"&amp;gt;Fakt&amp;ouml;ryel değeri hesap edilecek değişken&amp;lt;/param&amp;gt;
+        /// &amp;lt;returns&amp;gt;Sayının fakt&amp;ouml;ryeli&amp;lt;/returns&amp;gt;
+        public static double Faktoryel(this Int32 sayi)
+        {
+            if (sayi == 0
+                || sayi == 1)
+                return 1;
+            else
+                return  sayi*Faktoryel(sayi-1);
+        }
+
+        /// &amp;lt;summary&amp;gt;
+        /// İki Point arasındaki uzaklığın pisagor teoremine g&amp;ouml;re hesap edilmesini sağlar.
+        /// &amp;lt;/summary&amp;gt;
+        /// &amp;lt;param name="nokta1"&amp;gt;Birinci nokta&amp;lt;/param&amp;gt;
+        /// &amp;lt;param name="nokta2"&amp;gt;İkinci nokta&amp;lt;/param&amp;gt;
+        /// &amp;lt;returns&amp;gt;Mesafe&amp;lt;/returns&amp;gt;
+        public static double Uzaklik(this Point nokta1,Point nokta2)
+        {
+            int xFarki = nokta1.X - nokta2.X;
+            int yFarki = nokta2.X - nokta2.Y;
+            return Math.Sqrt((xFarki * xFarki) + (yFarki * yFarki));
+        } 
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Merkez isimli &lt;strong&gt;static&lt;/strong&gt; sınıf i&amp;ccedil;erisinde 3 farklı metod yer almaktadır. Bu metodlardan GetAscii &lt;strong&gt; String&lt;/strong&gt; sınıfına, Faktoryel &lt;strong&gt;Int32&lt;/strong&gt;, Uzaklik ise &lt;strong&gt;Point&lt;/strong&gt; &lt;strong&gt; yapılarına(Struct)&lt;/strong&gt; uygulanmaktadır. GetAscii metodu yardımıyla string bir değişkenin karakterlerinin &lt;strong&gt;byte&lt;/strong&gt; tipinden bir dizi olarak elde edilmesi sağlanmaktadır. Faktroyel metodu Int32 tipinden değişkenlere uygulanabilmekte olup, basit olarak sayının fakt&amp;ouml;ryelini hesaplamaktadır. &lt;em&gt;(&amp;Uuml;stelik &lt;strong&gt;yinelemeli-Recursive&lt;/strong&gt; bir metod olarak tasarlanmıştır. &lt;/em&gt;&lt;em&gt;Buna g&amp;ouml;re genişletme metodlarının &lt;/em&gt;&lt;strong&gt; recursive&lt;/strong&gt;&lt;em&gt; formasyonda kullanılabileceği s&amp;ouml;ylenebilir.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Uzaklik isimli metod ise diğerlerinden farklı olarak birde ek parametre almaktadır. Buna g&amp;ouml;re Point tipinden bir değişkenin başka bir Point ile arasındaki uzaklığın bulunabilmesi sağlanmaktadır.&lt;em&gt; (Yani kabaca iki nokta arasındaki mesafenin pisagor teoremi &amp;ccedil;er&amp;ccedil;evesinde hesaplanması ger&amp;ccedil;ekleştirilmeltedir.)&lt;/em&gt; Bir başka deyişle &lt;strong&gt;genişletme metodları(Extension Methods)&lt;/strong&gt; uygulanacakları tipi belirten ilk parametreden sonra ek parametrelerde alabilmektedir. S&amp;ouml;z konusu sınıfın &amp;ouml;zellikle &lt;strong&gt;CIL(Common Intermediate Language)&lt;/strong&gt; tarafına nasıl aktarıldığını incelemeden &amp;ouml;nce kullanımına bakılabilir. Bu ama&amp;ccedil;la Merkez isimli static sınıfı i&amp;ccedil;eren &lt;strong&gt;k&amp;uuml;t&amp;uuml;phaneyi(Class Library)&lt;/strong&gt; referans eden basit bir &lt;strong&gt;Console&lt;/strong&gt; uygulaması geliştirilip aşağıdaki kodlar test amacıyla kullanılabilir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Genisletmeler;
+using System.Drawing;
+
+namespace DerinlemesinExtensionMethods
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // String sınıfı sealed olarak imzalanmıştır bu nedenle kendisinden t&amp;uuml;retme yapılıp ek fonksiyonellikler katılamaz.
+            string ad = "Burak Selim";
+            byte[] asciiDegerleri=ad.GetAscii();
+            foreach(byte b in asciiDegerleri)
+                Console.Write(b.ToString()+" ");
+    
+            // Int32 bir struct' tır. Struct' lar a&amp;ccedil;ık&amp;ccedil;a belirtilmesede sealed' dır. Yani kendilerinden t&amp;uuml;retme yapılamaz. Ancak genişletme metodları yardımıyla bunlar ek fonksiyonellikler     katılabilir.
+            int sayi = 3;
+            Console.WriteLine(sayi.Faktoryel());
+
+            // Point .Net Framework i&amp;ccedil;erisinde System.Drawing isim alanında tanımlanmış olan struct tipidir. Kendisinden t&amp;uuml;retme yapılamaz. Ancak extension method sayesinde Uzaklik isimli bir metoda sahip olabilir
+            Point pn = new Point(10, 20);
+            Console.WriteLine("İki Nokta Arası Uzaklık {0}",pn.Uzaklik(new Point(20, 30)).ToString());
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Uygulama test edildiğinde aşağıdakine benzer sonu&amp;ccedil;lar ile karşılaşılır.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk246_4.gif" alt="" width="331" height="92" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &lt;strong&gt;string, int&lt;/strong&gt; ve &lt;strong&gt; Point&lt;/strong&gt; tipinden değişkenler &amp;uuml;zerinden yeni fonksiyonellikler kullanılabilmektedir. Peki bu sistem alt tarafta nasıl y&amp;uuml;r&amp;uuml;mektedir? Sonu&amp;ccedil; itibariyle var olan bir &lt;strong&gt;CLR tipinin(Common Language Type)&lt;/strong&gt; bozulmadan genişletilebilmesinin ancak &lt;strong&gt;&amp;ccedil;alışma zamanı motoru(Runtime Engine)&lt;/strong&gt; tarafından &amp;ouml;nemli olduğu ortadadır. Hatta dikkat edileceği &amp;uuml;zere &lt;strong&gt;Visual Studio &lt;/strong&gt;geliştirme ortamı, eklenen genişletme metodlarını &lt;strong&gt;intellisense&lt;/strong&gt; &amp;ouml;zelliğinde aynen aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi g&amp;ouml;sterebilmektedir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk246_5.gif" alt="" width="427" height="124" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&amp;Ccedil;alışma zamanında bazı bilgilere bakılması s&amp;ouml;z konusu ise eğer, &lt;strong&gt;niteliklerden(Attribute&lt;/strong&gt;) yararlanılmaktadır. Bilindiği &amp;uuml;zere nitelikler yardımıyla &amp;ccedil;alışma zamanına ekstra &lt;strong&gt;metadata&lt;/strong&gt; bilgileri aktarılabilmektedir. Bu sebepten genişletme metodlarında da başrol oyuncusu olarak &lt;strong&gt; System.Core.dll &lt;/strong&gt;assembly' ında &lt;strong&gt;System.Runtime.CompilerServices isim alanı(Namespace)&lt;/strong&gt; altında bulunan &lt;strong&gt;Extension&lt;/strong&gt; isimli bir &lt;strong&gt; nitelik(Attribute) &lt;/strong&gt;g&amp;ouml;rev almaktadır. Bu her ne kadar kod tarafında sadece &lt;strong&gt;Visual Basic 9.0&lt;/strong&gt; ile g&amp;ouml;r&amp;uuml;lsede, IL tarafında rahat bir şekilde tespit edilebilmektedir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk246_6.gif" alt="" width="640" height="290" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Yukarıdaki &lt;strong&gt;IL&lt;/strong&gt; g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ndende dikkat edileceği &amp;uuml;zere &lt;strong&gt;GetAscii&lt;/strong&gt; isimli metod &lt;strong&gt; ExtensionAttribute&lt;/strong&gt; niteliği ile imzalanmıştır. Bu son derece anlamlıdır nitekim hem &lt;strong&gt;compiler&lt;/strong&gt; hemde &lt;strong&gt;&amp;ccedil;alışma zamanı(Runtime)&lt;/strong&gt; i&amp;ccedil;in, takip eden metodun, ilk parametre ile belirtilen tip i&amp;ccedil;in bir genişletme olduğu belirtilmektedir. Bir başka deyişle s&amp;ouml;z konusu nitelik derleyiciye veya &amp;ccedil;alışma zamanına, ilk parametredeki tip i&amp;ccedil;in bazı ek bilgiler g&amp;ouml;nderir ve yeni fonksiyonelliği kazanmasını sağlar. Buraya kadar genişletme metodlarının ne olduğundan ve nasıl uygulandığından bahsetmeye &amp;ccedil;alıştık. Genişletme metodları ile ilişkili dikkat edilmesi gereken bazı noktalar da vardır. Dilerseniz yazımızın ilerleyen kısımlarında bu konulara değinelim.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;em&gt;&lt;strong&gt;&lt;span style="font-family: Verdana;"&gt;1 - Genişletme metodları aşırı y&amp;uuml;klenebilirler(Overloading)&lt;/span&gt;&lt;/strong&gt;&lt;/em&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Metodlar aynı isim altında birden fazla kez yazılabilirler&lt;em&gt;(Buna şu an i&amp;ccedil;in verilebilecek en g&amp;uuml;zel &amp;ouml;rneklerden birisi WriteLine metodudur. Dikkat edileceği &amp;uuml;zere bu metodun 19 farklı versiyonu bulunmaktadır.)&lt;/em&gt; Bu kısaca &lt;strong&gt;metodun aşırı y&amp;uuml;klenmesi(Method Overloading)&lt;/strong&gt; olarak adlandırılmaktadır. Metodun aşırı y&amp;uuml;klenmesi sırasındaki &amp;ouml;nemli kriter, parametre tipleri ve sayılarının belirlediği imzalardır&lt;strong&gt;(Method Signature)&lt;/strong&gt;. &amp;Ccedil;ok doğal olarak genişletme metodlarıda aşırı y&amp;uuml;klenebilirler. S&amp;ouml;z gelimi Merkez sınıfı i&amp;ccedil;erisinde iki nokta arasındaki uzaklığı bulmak i&amp;ccedil;in tasarlanmış olan Uzaklik metodunun farklı bir versiyonu aşağıdaki gibi yazılabilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;/// &amp;lt;summary&amp;gt;
+/// İki Point arasındaki uzaklığın pisagor teoremine g&amp;ouml;re hesap edilmesini sağlar
+/// &amp;lt;/summary&amp;gt;
+/// &amp;lt;param name="nokta1"&amp;gt;Metodun uygulanacağı Point tipinden değişken&amp;lt;/param&amp;gt;
+/// &amp;lt;param name="x2"&amp;gt;X2 Değeri&amp;lt;/param&amp;gt;
+/// &amp;lt;param name="y2"&amp;gt;Y2 Değeri&amp;lt;/param&amp;gt;
+/// &amp;lt;returns&amp;gt;Mesafe&amp;lt;/returns&amp;gt;
+public static double Uzaklik(this Point nokta1, int x2, int y2)
+{
+    int xFarki = nokta1.X - x2;
+    int yFarki = nokta1.Y - y2;
+    return Math.Sqrt((xFarki * xFarki) + (yFarki * yFarki));
+}&lt;/pre&gt;
+&lt;p&gt;Bu versiyon diğerinden farklı olarak &lt;strong&gt; Point&lt;/strong&gt; tipinden ikinci bir parametre almak yerine &lt;strong&gt;int&lt;/strong&gt; tipinden iki ayrı parametre kullanmaktadır. Burada metodların hem parametre sayıları hemde tipleri farklılaşmayı sağlamaktadır. Merkez sınıfı bu haliyle &amp;ouml;rnek uygulamada kullanıldığında aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nden de izlenebileceği gibi iki farklı Uzaklik metodunun &amp;ccedil;ağırılabileceği g&amp;ouml;r&amp;uuml;l&amp;uuml;r.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk246_7.gif" alt="" width="501" height="141" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Burada akla hemen şu soru gelebilir. Merkez sınıfının haricinde başka bir &lt;strong&gt;static&lt;/strong&gt; sınıf i&amp;ccedil;erisinde, &lt;strong&gt; Point&lt;/strong&gt; tipi i&amp;ccedil;in Uzaklik metodunun aşırı y&amp;uuml;klenmiş başka bir versiyonu yazılabilir mi? Eğer yazılırsa s&amp;ouml;z konusu uygulamada bu versiyon kullanılabilir mi? Bu sorulara cevap verebilmek i&amp;ccedil;in Console uygulaması i&amp;ccedil;erisinde aşağıdaki gibi bir static sınıf tanımlaması yapıldığını varsayalım.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;static class Genisletme
+{
+    public static double Uzaklik(this Point nokta1, double x2, double y2)
+    {
+        double xFarki = nokta1.X - x2;
+        double yFarki = nokta1.Y - y2;
+        return Math.Sqrt((xFarki * xFarki) + (yFarki * yFarki));
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Merkez&lt;/strong&gt; sınıfı &lt;strong&gt;Genisletmeler isim alanı &lt;/strong&gt;altında ve &amp;uuml;stelik farklı &lt;strong&gt;assembly&lt;/strong&gt; i&amp;ccedil;erisinde yer almaktadır. Genisletme isimli sınıf ise &lt;strong&gt;DerinlemesineExtensionMethods&lt;/strong&gt; isimli &lt;strong&gt;Console&lt;/strong&gt; uygulaması i&amp;ccedil;erisinde tanımlanmıştır. Bu durumda &lt;strong&gt;Main&lt;/strong&gt; metodu i&amp;ccedil;erisinde &lt;strong&gt;Point&lt;/strong&gt; tipinden bir değişken kullanılmak istendiğinde Uzaklik isimli fonksiyonun 3 farklı versiyonuna ulaşılabildiği g&amp;ouml;r&amp;uuml;lecektir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk246_8.gif" alt="" width="602" height="59" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bir başka deyişle farklı static sınıflar i&amp;ccedil;erisindede olsalar genişletme metodları aşırı y&amp;uuml;klenebilirler.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;em&gt;&lt;strong&gt;&lt;span style="font-family: Verdana;"&gt;2 - CLR Tipi(Common Language Runtime Type) i&amp;ccedil;erisinde tanımlı olan bir fonksiyonun aynısı extension method olarak yazılıp, &amp;ouml;rnek(Instance) tipe ait metod ezilebilir(Override) mi?&lt;/span&gt;&lt;/strong&gt;&lt;/em&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bu bir anlamda orjinal &lt;strong&gt;CLR tiplerinin&lt;/strong&gt; g&amp;uuml;venliği ile ilişkilide bir konudur. Nitekim t&amp;uuml;retilmesine izin verilmeyen tiplerin asıl tasarım ama&amp;ccedil;larından biriside i&amp;ccedil;eriklerinin değiştirilmesinin engellenmesidir. Bu anlamda &lt;strong&gt; sealed&lt;/strong&gt; olarak işaretlenmiş tiplerin aslında genişletme metodları yardımıyla ek fonksiyonelliklere sahip olabilmesi ve hatta aşırı y&amp;uuml;kleme yapılabilmesi orjinal tipte tanımlı metodların ezilip ezilemeyeceği vakasını ortaya &amp;ccedil;ıkarmaktadır. Bu durumu analiz etmek i&amp;ccedil;in basit olarak &lt;strong&gt;String&lt;/strong&gt; tipinde tanımlı olan bir metodun aynısını extension method olacak şekilde tanımlamaya &amp;ccedil;alışabiliriz.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public static string Insert(this string s,int siraNo, string metin)
+{ 
+    Console.WriteLine("Extension Method");
+    return metin;
+}&lt;/pre&gt;
+&lt;p&gt;Burada &lt;strong&gt;String&lt;/strong&gt; sınıfının &lt;strong&gt; Insert&lt;/strong&gt; metodunun aynısı &lt;strong&gt;extension&lt;/strong&gt; metod olarak yazılmaya &amp;ccedil;alışılmaktadır. Uygulama derlendiğinde herhangibir hata mesajı alınmaz. Ancak string bir değişken &amp;uuml;zerinden Insert metodu &amp;ccedil;ağırıldığında aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi orjinal versiyonun kullanılabileceği g&amp;ouml;r&amp;uuml;l&amp;uuml;r.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk246_9.gif" alt="" width="265" height="94" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Buna g&amp;ouml;re derleyici a&amp;ccedil;ısından &lt;strong&gt;nesne &amp;ouml;rneği(Object Instance)&lt;/strong&gt; metodunun daha &amp;ouml;ncelikli olduğu ortadadır. Bir başka deyişle genişletme metodları yardımıyla orjinal nesne &amp;ouml;rneğine ait metodlar ezilemezler.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt;&lt;em&gt;&lt;span style="font-family: Verdana;"&gt;3 - Bir tip i&amp;ccedil;erisinde tanımlı &amp;ouml;zellik yada alan ile aynı isimde bir extension metod tanımlanırsa.&lt;/span&gt;&lt;/em&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bu durumu analiz edebilmek i&amp;ccedil;in aşağıdaki kod par&amp;ccedil;ası g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;sealed class Materyal
+{
+    public int Katsayi;
+}
+static class Genisletme
+{
+    public static void Katsayi(this Materyal mtr)
+    {
+        Console.WriteLine("Genişletme metodu");
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Burada tanımlanan &lt;strong&gt;Materyal&lt;/strong&gt; isim sınıf &lt;strong&gt;sealed&lt;/strong&gt; olarak imzalanmıştır ve i&amp;ccedil;erisinde &lt;strong&gt;int&lt;/strong&gt; tipinden &lt;strong&gt;Katsayi&lt;/strong&gt; isimli bir &lt;strong&gt;alan(Field)&lt;/strong&gt; i&amp;ccedil;ermektedir. Bu tip bir sınıfın başka bir &lt;strong&gt;nesne kullanıcısı(Object User)&lt;/strong&gt; tarafından genişletilmek istendiği bir durumda, bilin&amp;ccedil;siz olarak aynı isme sahip genişletme metodları eklenebilir. Bunu sembolize eden Genisletme sınıfı kendi i&amp;ccedil;erisinde, Materyal sınıfındaki alanla aynı adda olan Katsayi isimli bir metod i&amp;ccedil;ermektedir. Ne varki kod tarafında Materyal sınıfına ait bir &amp;ouml;rnek oluşturulduğunda, Katsayi genişletme metoduna erişilemediği a&amp;ccedil;ık bir şekilde g&amp;ouml;r&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk246_13.gif" alt="" width="328" height="129" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Dikkat edilecek olursa sadece Katsayi isimli nesne &lt;strong&gt;alanı(Field) &lt;/strong&gt;g&amp;ouml;r&amp;uuml;nmektedir. Fakat burada olduk&amp;ccedil;a enteresan bir durumda s&amp;ouml;z konusudur. Eğer kodda ısrar edilir ve Katsayi genişletme metodu kullanılmak istenirse derleme zamanı hatası alınmadığı g&amp;ouml;r&amp;uuml;l&amp;uuml;r. Hatta kod y&amp;uuml;r&amp;uuml;t&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde, genişletme metodunun &amp;ccedil;alıştığı g&amp;ouml;r&amp;uuml;lecektir. Bu durum aslında genişletme metodlarının isimlendirilmesinin &amp;ouml;nemli olduğunu g&amp;ouml;stermektedir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt;&lt;em&gt;&lt;span style="font-family: Verdana;"&gt;4&lt;/span&gt;&lt;/em&gt;&lt;/strong&gt;&lt;em&gt;&lt;strong&gt;&lt;span style="font-family: Verdana;"&gt; - Extension metodlar dilden bağımsızdır.&lt;/span&gt;&lt;/strong&gt;&lt;/em&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Genişletme metodları daha &amp;ouml;ncedende bahsedildiği gibi &lt;strong&gt;CIL(Common Intermediate Language)&lt;/strong&gt; tarafında &lt;strong&gt; Extension&lt;/strong&gt; niteliği ile imzalanırlar. Bu sebepten dolayıda &lt;strong&gt;.Net &lt;/strong&gt;destekli diller tarafından kullanılabilirler. S&amp;ouml;z gelimi &lt;strong&gt;C#&lt;/strong&gt; kodlaması ile geliştirilmiş genişletme metodları, &lt;strong&gt;Visual Basic&lt;/strong&gt; ile yazılmakta olan bir proje i&amp;ccedil;erisinde kullanılabilir. Elbette tam tersi durumda ge&amp;ccedil;erlidir. Konuyu daha kolay analiz etmek i&amp;ccedil;in Merkez isimli sınıfı i&amp;ccedil;eren &lt;strong&gt;C# tabanlı k&amp;uuml;t&amp;uuml;phaneyi&lt;/strong&gt; basit bir &lt;strong&gt;Visual Basic Console&lt;/strong&gt; uygulamasında aşağıdaki gibi deneyebiliriz.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:vb;auto-links:false;toolbar:false" contenteditable="false"&gt;Imports Genisletmeler
+Imports System.Drawing
+
+Module Module1
+
+    Sub Main()
+
+        Dim str As String = "Burak Selim Şenyurt"
+        Dim dizi As Byte() = str.GetAscii()
+        For i As Int32 = 0 To dizi.Length - 1
+            Console.Write(dizi(i).ToString() + " ")
+        Next
+
+        Console.WriteLine()
+    
+        Dim sayi As Integer = 4
+        Console.WriteLine(sayi.Faktoryel().ToString())
+    
+        Dim nokta1 As New Point(3, 4)
+        Console.WriteLine(nokta1.Uzaklik(6, 8).ToString())
+
+    End Sub
+
+End Module&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Visual Basic&lt;/strong&gt; tarafında kod yazıyor olsakta, &lt;strong&gt;Visual Studio&lt;/strong&gt; arabiriminin &lt;strong&gt;intellisense&lt;/strong&gt; &amp;ouml;zelliği &lt;strong&gt;C#&lt;/strong&gt; ile yazılmış genişletme metodlarını g&amp;ouml;sterecektir. Sonu&amp;ccedil; itibariyle burada yapılan farklı bir &lt;strong&gt;assembly&lt;/strong&gt; i&amp;ccedil;erisinde tip ve &amp;uuml;yelerine erişmektir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk246_11.gif" alt="" width="273" height="268" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Elbetteki kodun &amp;ccedil;alışabilmesi i&amp;ccedil;in C# k&amp;uuml;t&amp;uuml;panesinin Visual Basic tabanlı projeye &lt;strong&gt;referans&lt;/strong&gt; edilmesi gerekmektedir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk246_10.gif" alt="" width="269" height="225" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bu işlemin ardından uygulama &amp;ccedil;alıştırılırsa genişletme metodlarının başarılı bir şekilde &amp;ccedil;alıştığı g&amp;ouml;r&amp;uuml;l&amp;uuml;r.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk246_12.gif" alt="" width="557" height="79" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;strong&gt;&lt;em&gt;&lt;span style="font-family: Verdana;"&gt;5 - Object tipinin genişletilmesi.&lt;/span&gt;&lt;/em&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;Object&lt;/strong&gt; tipide genişletme metodlarına sahip olabilir. &lt;strong&gt;.Net Framework&lt;/strong&gt; i&amp;ccedil;erisinde yer alan tipler object t&amp;uuml;revli olduklarından &amp;ccedil;ok doğal olarak tanımlanan genişletme metodlarını kullanabilirler. Bu durumu test edebilmek i&amp;ccedil;in sembolik olarak aşağıdaki genişletme metodunu eklediğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public static string GetTypeName(this object obj)
+{
+    return obj.GetType().Name;
+}&lt;/pre&gt;
+&lt;p&gt;Metod basit&amp;ccedil;e herhangibir nesnenin tip adını d&amp;ouml;nd&amp;uuml;rmektedir. Metodun uygulanışına bakıldığında ise herhangibir tipteki değişkenden sonra &amp;ccedil;ağırılabildiği g&amp;ouml;r&amp;uuml;lecektir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk246_14.gif" alt="" width="434" height="183" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Aşağıda, &amp;ouml;rnek bir kod par&amp;ccedil;ası kullanımı ve &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı yer almaktadır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;int puan = 51;
+Console.WriteLine(puan.GetTypeName());
+
+Point nokta3 = new Point(3, 4);
+Console.WriteLine(nokta3.GetTypeName());
+
+string firmaAdi = "FreeLancer";
+Console.WriteLine(firmaAdi.GetTypeName());&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk246_15.gif" alt="" width="281" height="86" border="0" /&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Visual Basic 9.0' da &amp;ouml;zellikle Object tipinden bir değişkene atama yapıldığında, genişletme metodlarını &amp;ccedil;ağırmak &amp;ccedil;alışma zamanı istisnasına(Run Time Exception) neden olmaktadır. &lt;/span&gt; &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Dim obj As Object = 3.14F&lt;br /&gt;Console.WriteLine(obj.GetTypeName())&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bu kullanım &amp;ccedil;alışma zamanında MissingMemberException istisnasının(Exception) fırlatılmasına neden olmaktadır. Sorun Object tipinin Late-Bound olmasından kaynaklanmaktadır. Bunun &amp;ccedil;&amp;ouml;zmek i&amp;ccedil;in type inference kavramından(C# karşılığı var anahtar kelimesi) yararlanılabilir. (Dim obj=3.14F)&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Ne varki bu durum C# tarafında ge&amp;ccedil;erli değildir. Bu nedenle C# tarafında aşağıdaki kod par&amp;ccedil;ası sorunsuz olarak &amp;ccedil;alışmaktadır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Object obj = 3.14f;&lt;br /&gt;Console.WriteLine(obj.GetTypeName());&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Object tipi i&amp;ccedil;in genişletme metodları &lt;strong&gt;var&lt;/strong&gt; anahtar kelimesi ile birliktede kullanılabilirler. Aşağıdaki kod par&amp;ccedil;ası bu durumu g&amp;ouml;stermektedir. Bu kod i&amp;ccedil;erisinde &lt;strong&gt;var&lt;/strong&gt; anahtar kelimesi ile tanımlanan nesne isimli değişken eşitliğin sol tarafı g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında&lt;strong&gt; float(Single yapısı-struct) &lt;/strong&gt; tipindendir. Bu sebepten nesne &amp;uuml;zerinden &amp;ccedil;ağırılan &lt;strong&gt;GetTypeName&lt;/strong&gt; isimli genişletme metodu geriye Single değerini d&amp;ouml;nd&amp;uuml;recektir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var nesne = 3.14f;
+Console.WriteLine(nesne.GetTypeName());&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;&lt;span style="font-family: Verdana;"&gt;6 - .Net Framework 2.0 hedefli bir uygulama i&amp;ccedil;erisinde extension metodlar kullanılabilir mi?&lt;/span&gt;&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Extension niteliği &lt;strong&gt;System.Core.dll&lt;/strong&gt; assembly' i&amp;ccedil;erisinde tanımlanmıştır ve &lt;strong&gt;System.Runtime.CompilerServices&lt;/strong&gt; isim alanında bulunmaktadır. &lt;strong&gt;System.Core.dll&lt;/strong&gt;' i .Net Framework 3.5 ile gelmekte olsada .Net Framework 2.0 motorunu kullanarak &amp;ccedil;alışmaktadır. Bu noktada &lt;strong&gt;.Net 2.0&lt;/strong&gt; ile geliştirilmiş bir uygulamada extension metod kullanımı s&amp;ouml;z konusu olabilir mi? Akla ilk gelen y&amp;ouml;ntem &lt;strong&gt;System.Core.dll&lt;/strong&gt; &lt;strong&gt;assembly&lt;/strong&gt;' ının ilgili projeye referans edilmesidir. Ancak &lt;strong&gt;Visual Studio 2008&lt;/strong&gt; i&amp;ccedil;erisinde bu denendiğinde &lt;strong&gt;.Net 2.0 &lt;/strong&gt;tabanlı projeye s&amp;ouml;z konusu referansların eklenemediği g&amp;ouml;r&amp;uuml;lecektir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk246_16.gif" alt="" width="461" height="238" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Browse se&amp;ccedil;eneği ile ekleme yapılmaya &amp;ccedil;alışılsada durum değişmeyecektir. Ancak izlenecek basit bir yol ile &lt;strong&gt;.Net 2.0&lt;/strong&gt; tabanlı projede &lt;strong&gt;extension&lt;/strong&gt; metod kullanımı sağlanabilir. Bunun i&amp;ccedil;in uyulamada&lt;strong&gt; System.Runtime.CompilerServices&lt;/strong&gt; isimli bir &lt;strong&gt;namespace&lt;/strong&gt; tanımlanır ve i&amp;ccedil;erisine &lt;strong&gt;Extension&lt;/strong&gt; isimli bir &lt;strong&gt;attribute&lt;/strong&gt; sınıfı eklenir. Bu işlemin ardından extension metod yazılabildiği hatta kullanılabildiği g&amp;ouml;r&amp;uuml;lecektir. Durumu daha iyi analiz etmek amacıyla &lt;strong&gt;.Net 2.0&lt;/strong&gt; tabanlı bir &lt;strong&gt;Console&lt;/strong&gt; uygulamasına ait aşağıdaki kod par&amp;ccedil;ası g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Runtime.CompilerServices;
+
+// 1nci : İlk olarak System.Runtime.CompilerServices adlı isim alanı i&amp;ccedil;erisinde ExtensionAttribute isimli bir nitelik tanımlanır
+namespace System.Runtime.CompilerServices
+{
+    // 2nci: Nitelik assembly, sınıf ve metod seviyesinde uygulanabilir. Bir kere kullanılabilir.
+    [AttributeUsage(AttributeTargets.Assembly| AttributeTargets.Class| AttributeTargets.Method,AllowMultiple=false,Inherited=false)]
+    public class ExtensionAttribute :
+        Attribute
+    {
+    }
+}
+namespace DerinlemesineExtensionMethods2
+{
+    static class ExtensionMethods
+    { 
+        // Eğer ExtensionAttribute tanımlanmazsa this keyword kullanımı i&amp;ccedil;in derleme zamanı hatası alınacaktır.
+        public static string GetTypeName(this object obj)
+        {
+            return obj.GetType().Name;
+        }    
+        public static double Faktoryel(this Int32 sayi)
+        {
+            if (sayi == 0
+                || sayi == 1)
+                return 1;
+            else
+                return sayi * Faktoryel(sayi - 1);
+        }
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int puan = 12;
+            Console.WriteLine(puan.GetTypeName()); // Extension metod kullanımı
+        
+            int sayi = 4;
+            Console.WriteLine(sayi.Faktoryel().ToString());
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Uygulama &amp;ccedil;alıştırıldığında genişletme metodlarının işe yaradığı g&amp;ouml;r&amp;uuml;lebilir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;span style="font-family: Verdana;"&gt;Tabi bu vaka Visual Studio 2008 &amp;uuml;zerinde .Net 2.0 tabanlı bir proje şablonu i&amp;ccedil;in ger&amp;ccedil;eklenmektedir. Nitekim derleme aşamasında sadece C# 3.0 derleyicisi genişletme metodunu değerlendirebilmektedir. Bir başka deyişle Visual Studio 2005 ortamında aynı &amp;ouml;rnek &amp;ccedil;alıştırılamayacaktır.&lt;/span&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;em&gt;&lt;strong&gt;&lt;span style="font-family: Verdana;"&gt;7 - Aray&amp;uuml;zlere genişletme metodları eklenebilir.&lt;/span&gt;&lt;/strong&gt;&lt;/em&gt; &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;LINQ(LanguageINtegratedQuery) &lt;/strong&gt; mimarisinin temelinde yatan genişletme metodlarının &amp;ccedil;oğu &lt;strong&gt; aray&amp;uuml;zlere(Interface)&lt;/strong&gt; uygulanmaktadır. B&amp;ouml;ylece, genişletme metodlarının uygulandığı aray&amp;uuml;z tiplerinden t&amp;uuml;reyen t&amp;uuml;rlerin tamamı, s&amp;ouml;z konusu ek fonksiyonellikleri kullanabilir duruma gelmektedir. Bu ger&amp;ccedil;ektende &amp;ouml;nemli bir yetenektir. &amp;Ccedil;ok doğal olarak geliştirici tarafından yazılmış olan yada Framework i&amp;ccedil;erisinde yer alan aray&amp;uuml;z tiplerine genişletme metodları eklenebilir. Aşağıdaki &amp;ouml;rnek kod par&amp;ccedil;asında bu duruma &amp;ouml;rnek olacak bir metod i&amp;ccedil;eriği yer almaktadır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public static IEnumerable&amp;lt;string&amp;gt; HaricindeKalanlar(this IEnumerable&amp;lt;string&amp;gt; koleksiyon,string aranan) 
+{
+    foreach (string s in koleksiyon)
+    {
+        if (s != aranan)
+            yield return s;
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;HaricindeKalanlar&lt;/strong&gt; isimli genişletme metodu, &lt;strong&gt;IEnumerable&amp;lt;string&amp;gt;&lt;/strong&gt; tipinden t&amp;uuml;reyen &lt;strong&gt; generic&lt;/strong&gt; koleksiyonlara uygulanabilmektedir. G&amp;ouml;revi parametre olarak verilen &lt;strong&gt;string&lt;/strong&gt; değer dışında kalan elemanları tespit ederek yeni bir &lt;strong&gt;IEnumerable&amp;lt;string&amp;gt; &lt;/strong&gt;tipi i&amp;ccedil;erisinde geriye d&amp;ouml;nd&amp;uuml;rmektedir.&lt;em&gt;(İşlerin kolaylaştırılmasında &lt;strong&gt;.Net 2.0&lt;/strong&gt; ile birlikte gelen &lt;strong&gt;yield&lt;/strong&gt; anahtar kelimesinin &amp;ouml;nemli bir rol&amp;uuml; vardır.)&lt;/em&gt; Buna g&amp;ouml;re &lt;strong&gt; IEnumerable&amp;lt;string&amp;gt;&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;nden t&amp;uuml;reyen her tip, &lt;strong&gt; HaricindeKalanlar&lt;/strong&gt; isimli genişletme metodunu kullanabilmektedir. S&amp;ouml;z gelimi aşağıdaki kod par&amp;ccedil;asında &lt;strong&gt;List&amp;lt;string&amp;gt;, Stack&amp;lt;string&amp;gt;, Queue&amp;lt;string&amp;gt;&lt;/strong&gt; tiplerine uygulanmaktadır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;List&amp;lt;string&amp;gt; isimler = new List&amp;lt;string&amp;gt; { "Burak", "Ahmet", "Mehmet",  "Mehmet", "Ahmet", "&amp;Ouml;zg&amp;uuml;r", "Emrah", "B&amp;uuml;lent" };
+Stack&amp;lt;string&amp;gt; isimler2 = new Stack&amp;lt;string&amp;gt;(isimler);
+Queue&amp;lt;string&amp;gt; isimler3 = new Queue&amp;lt;string&amp;gt;(isimler);
+
+var sonuc1=isimler.HaricindeKalanlar("Ahmet");
+var sonuc2 = isimler3.HaricindeKalanlar("Ahmet");
+var sonuc3 = isimler.HaricindeKalanlar("Mehmet");&lt;/pre&gt;
+&lt;p&gt;&amp;Ccedil;alışma zamanında &amp;ouml;rneğin sonuc3 değişkeninin i&amp;ccedil;eriği aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ndeki gibi olacaktır. Dikkat edileceği &amp;uuml;zere Mehmet ismi dışında kalanlar elde edilmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk246_17.gif" alt="" width="516" height="322" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Buraya kadar bahsedilenler kısaca değerlendirilirse, genişletme metodlarının aşağıdaki avantajları sağladığından bahsedilebilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Var olan &lt;strong&gt;tiplere(Types)&lt;/strong&gt; yeni fonksiyonellikerin eklenebilmesi sağlanır. &amp;Ouml;yleki yazılmış olan uygulamaların &amp;ccedil;alışma sistemini bozmadan yeni fonksiyonellikler katarak genişlemelerine yardımcı olur.&lt;/span&gt;&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Tiplere yeni fonksiyonellikler eklenirken orjinal i&amp;ccedil;eriklerine m&amp;uuml;dahale edilmesine gerek kalmaz.&lt;/span&gt;&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&amp;Ouml;zellikle &lt;strong&gt;kaynak koda(Source Code)&lt;/strong&gt; erişilemediği durumlarda ek işlevselliklerin katılabilmesinde &amp;ouml;nemli rol oynar.&lt;/span&gt;&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Tipleri t&amp;uuml;reterek genişletmek m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r, ancak t&amp;uuml;retilmelerine izin verilmeyen&lt;strong&gt;(Sealed Types)&lt;/strong&gt; tipler s&amp;ouml;z konusu olduğunda &amp;ccedil;&amp;ouml;z&amp;uuml;m genişletme metodlarıdır.&lt;/span&gt;&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Yinede genişletme metodlarının nesne y&amp;ouml;nelimli programlama modeli nosyonunun bir par&amp;ccedil;ası olmadığını d&amp;uuml;ş&amp;uuml;nmekte yarar vardır. &amp;Ouml;yleki nesne y&amp;ouml;nelimli programlama nosyonu g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında, tip genişletmesi aslında t&amp;uuml;retme ile ger&amp;ccedil;eklenmektedir. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bu makalemizde kısaca genişletme metodlarını(Extension Methods) derinlemesine incelemeye &amp;ccedil;alıştık. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt; &lt;a href="/makale/images/DerinlemesinExtensionMethods.rar"&gt;&amp;Ouml;rnek Uygulama i&amp;ccedil;in Tıklayın&lt;/a&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;</content>
+  <pubDate>2008-03-21 04:00:00</pubDate>
+  <slug>C-3-0-Derinlemesine-Extension-Method-Kavramc4b1-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>c#-30</tag>
+    <tag>extension-methods</tag>
+    <tag>linq</tag>
+  </tags>
+  <categories>
+    <category>C# 3.0</category>
+  </categories>
+</post>

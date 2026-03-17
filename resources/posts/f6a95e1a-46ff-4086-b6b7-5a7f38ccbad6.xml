@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Caching Mekanizmasını Anlamak - 2</title>
+  <description>Hatırlayacağınız gibi bir önceki makalemizde, web uygulamalarında caching mekanizmasını incelemeye başlamış ve ara belleğe alma tekniklerinden Output Cache yapısını incelemiştik. Output Cache tekniğinde bir sayfanın tamamının HTML içeriği ara belleğe alınmaktaydı. Oysa çoğu zaman sayfamızda yer alan belirli veri kümelerinin ara bellekte tutulmasını isteyebiliriz. Örneğin, bir alışveriş sitesinin pek çok kısmı dinamik olarak değişebilirken satışı yapılan ürünlerin yer aldığı kategori listeleri çok sık değişmez. Hatta uzun süreler boyunca aynı kalabilirler. İşte böyle bir durumda sayfanın tamamını ara belleğe almak yerine sadece kategori listesini sunan veri kümesini ara belleğe almak daha mantıklıdır. Data Caching olarak adlandırılan bu teknikte çoğunlukla veri kümeleri ara belleğe alınır. Data Caching tekniğinde verileri ara belleğe almak için System.Web.Caching isim alanında yer alan Cache sınıfı ve üyeleri kullanılmaktadır.</description>
+  <content>&lt;p&gt;Değerli Okurlarım, Merhabalar&lt;/p&gt;
+&lt;p&gt;Hatırlayacağınız gibi bir &amp;ouml;nceki makalemizde, web uygulamalarında caching mekanizmasını incelemeye başlamış ve ara belleğe alma tekniklerinden Output Cache yapısını incelemiştik. Output Cache tekniğinde bir sayfanın tamamının HTML i&amp;ccedil;eriği ara belleğe alınmaktaydı. Oysa &amp;ccedil;oğu zaman sayfamızda yer alan belirli veri k&amp;uuml;melerinin ara bellekte tutulmasını isteyebiliriz. &amp;Ouml;rneğin, bir alışveriş sitesinin pek &amp;ccedil;ok kısmı dinamik olarak değişebilirken satışı yapılan &amp;uuml;r&amp;uuml;nlerin yer aldığı kategori listeleri &amp;ccedil;ok sık değişmez. Hatta uzun s&amp;uuml;reler boyunca aynı kalabilirler. İşte b&amp;ouml;yle bir durumda sayfanın tamamını ara belleğe almak yerine sadece kategori listesini sunan veri k&amp;uuml;mesini ara belleğe almak daha mantıklıdır. Data Caching olarak adlandırılan bu teknikte &amp;ccedil;oğunlukla veri k&amp;uuml;meleri ara belleğe alınır. Data Caching tekniğinde verileri ara belleğe almak i&amp;ccedil;in &lt;strong&gt;System.Web.Caching&lt;/strong&gt; isim alanında yer alan &lt;strong&gt; Cache&lt;/strong&gt; sınıfı ve &amp;uuml;yeleri kullanılmaktadır.&lt;/p&gt;
+&lt;table id="table1" style="width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#ffffff"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;Cache sınıfı &lt;strong&gt;sealed&lt;/strong&gt; tipinde olup kendisinden t&amp;uuml;retme yapılmasına izin vermez. Bununla birlikte, her bir &lt;strong&gt;Application Domain&lt;/strong&gt; i&amp;ccedil;in yanlız &lt;strong&gt;bir&lt;/strong&gt; &lt;strong&gt;Cache&lt;/strong&gt; nesne &amp;ouml;rneği oluşturulur ve kullanılır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Cache sınıfına bir veri k&amp;uuml;mesini eklemek bu veriyi ara belleğe almak demektir. Bunun i&amp;ccedil;in aşağıdaki 4 aşırı y&amp;uuml;klenmiş prototipe sahip olan ve bize pek &amp;ccedil;ok imkan sağlayan &lt;strong&gt; Insert&lt;/strong&gt; metodunu kullanabiliriz.&lt;/p&gt;
+&lt;table id="table2" style="border-collapse: collapse; width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#ffffff"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;public &lt;/strong&gt; void&lt;strong&gt; Insert(&lt;/strong&gt;string &lt;em&gt; &lt;a class="synParam"&gt;key&lt;/a&gt;&lt;/em&gt;&lt;strong&gt;,&lt;/strong&gt;object &lt;em&gt;&lt;a class="synParam"&gt;value&lt;/a&gt;&lt;/em&gt;&lt;strong&gt;);&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;public &lt;/strong&gt; void&lt;strong&gt; Insert(&lt;/strong&gt;string &lt;em&gt; &lt;a class="synParam"&gt;key&lt;/a&gt;&lt;/em&gt;&lt;strong&gt;, &lt;/strong&gt; object &lt;em&gt;&lt;a class="synParam"&gt; value&lt;/a&gt;&lt;/em&gt;&lt;strong&gt;,&lt;/strong&gt;CacheDependency &lt;em&gt; &lt;a class="synParam"&gt;dependencies&lt;/a&gt;&lt;/em&gt;&lt;strong&gt;);&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;public &lt;/strong&gt; void&lt;strong&gt; Insert(&lt;/strong&gt;string &lt;em&gt; &lt;a class="synParam"&gt;key&lt;/a&gt;&lt;/em&gt;&lt;strong&gt;,&lt;/strong&gt;object &lt;em&gt;&lt;a class="synParam"&gt;value&lt;/a&gt;&lt;/em&gt;&lt;strong&gt;,&lt;/strong&gt;CacheDependency &lt;em&gt;&lt;a class="synParam"&gt;dependencies&lt;/a&gt;&lt;/em&gt;&lt;strong&gt;,&lt;/strong&gt;DateTime &lt;em&gt;&lt;a class="synParam"&gt; absoluteExpiration&lt;/a&gt;&lt;/em&gt;&lt;strong&gt;,&lt;/strong&gt;TimeSpan &lt;em&gt; &lt;a class="synParam"&gt;slidingExpiration&lt;/a&gt;&lt;/em&gt;&lt;strong&gt;);&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;public &lt;/strong&gt; void&lt;strong&gt; Insert(&lt;/strong&gt;string &lt;em&gt; &lt;a class="synParam"&gt;key&lt;/a&gt;&lt;/em&gt;&lt;strong&gt;, &lt;/strong&gt; object &lt;em&gt;&lt;a class="synParam"&gt; value&lt;/a&gt;&lt;/em&gt;&lt;strong&gt;, &lt;/strong&gt;CacheDependency &lt;em&gt; &lt;a class="synParam"&gt;dependencies&lt;/a&gt;&lt;/em&gt;&lt;strong&gt;, &lt;/strong&gt;DateTime &lt;em&gt; &lt;a class="synParam"&gt;absoluteExpiration&lt;/a&gt;&lt;/em&gt;&lt;strong&gt;,&lt;/strong&gt;TimeSpan &lt;em&gt;&lt;a class="synParam"&gt; slidingExpiration&lt;/a&gt;&lt;/em&gt;&lt;strong&gt;,&amp;nbsp;&amp;nbsp; &lt;/strong&gt;CacheItemPriority &lt;em&gt;&lt;a class="synParam"&gt;priority&lt;/a&gt;&lt;/em&gt;&lt;strong&gt;,&amp;nbsp; &lt;/strong&gt;CacheItemRemovedCallback &lt;em&gt; &lt;a class="synParam"&gt;onRemoveCallback&lt;/a&gt;&lt;/em&gt;&lt;strong&gt;);&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Insert metodu ara belleğe alınan veri k&amp;uuml;mesinin durumuna ilişkin olarak &amp;ccedil;eşitli imkanlar sunar. &amp;Ouml;rneğin veri k&amp;uuml;mesinin ara bellekte ne kadar s&amp;uuml;re ile tutulacağı veya ne kadar s&amp;uuml;re bu veriye erişilmez ise ara bellekten silineceğinin belirlenmesi vb...Şimdi bu imkanları test etmeden &amp;ouml;nce basit olarak bir veri k&amp;uuml;mesini Cache nesnesine nasıl ekleyeceğimizi inceleyeceğiz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private SqlConnection con;
+private SqlCommand cmd;
+private SqlDataAdapter da;
+private DataTable dt;
+
+/*Categories tablosundan CategoryName alanının değerlerini alıyoruz ve bir DataTable nesnesine aktarıyoruz.*/
+private void KategorileriAl()
+{
+    con=new SqlConnection("data source=BURKI;initial catalog=Northwind;integrated security=SSPI");
+    cmd=new SqlCommand("SELECT DISTINCT CategoryName FROM Categories",con);
+    da=new SqlDataAdapter(cmd);
+    dt=new DataTable(); 
+    da.Fill(dt);
+}
+
+private void Page_Load(object sender, System.EventArgs e)
+{
+    //G&amp;uuml;ncel saat bilgisini label kontrol&amp;uuml;ne yazdırıyoruz.
+    Label1.Text=DateTime.Now.ToLongTimeString();
+    /*Eğer ara bellekte kategori isimli Cache nesnesinin i&amp;ccedil;eriği null ise bu durumda verileri &amp;ccedil;ekiyoruz ve DataTable i&amp;ccedil;eriğini ara belleğe Cache sınıfının Insert metodu ile alıyoruz.*/
+    if(Cache["kategori"]==null)
+    {
+        KategorileriAl();
+        Cache.Insert("kategori",dt,null,DateTime.Now.AddMinutes(5),Cache.NoSlidingExpiration); /* Veriler 5 dakika s&amp;uuml;reyle ara bellekte saklanacak daha sonra ise silinecektir.*/
+    }
+    /*DataGrid kontrol&amp;uuml;ne veri kaynağı olarak ara bellekteki kategori isimli Cache nesnesinin i&amp;ccedil;eriğini veriyoruz. Bunu yaparken uygun t&amp;uuml;re d&amp;ouml;n&amp;uuml;şt&amp;uuml;rme işlemini yapıyoruz.*/
+    DataGrid1.DataSource=(DataTable)Cache["kategori"];
+    DataGrid1.DataBind();
+}&lt;/pre&gt;
+&lt;p&gt;Uygulamamızda, Northwind veritabanında yer alan Categories isimli tablodan CategoryName değerlerini &amp;ccedil;ekiyoruz ve elde ettiğimiz DataTable nesnesini 5 dakika s&amp;uuml;reyle ara bellekte tutumak &amp;uuml;zere Insert metodu ile Cache nesnesine ekliyoruz. Uygulamayı ilk &amp;ccedil;alıştırışımızda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;n&amp;uuml; elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk114_1.gif" alt="" width="251" height="346" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Sayfayı yenilediğimizde veya başka bir tarayıcı penceresinde tekrardan talep ettiğimizde s&amp;uuml;renin d&amp;uuml;zenli olarak değiştiğini g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Şimdi 5 dakika dolmadan tablodaki verilerde, &amp;ouml;rneğin Beverages alanının değerini [Beverages] olarak değiştirdiğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk114_2.gif" alt="" width="290" height="156" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Daha sonra sayfayı tekrar &amp;ccedil;ağıralım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk114_3.gif" alt="" width="257" height="349" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi Beverages değerini değiştirmemize rağmen yapılan değişiklikler uygulamamıza yansımamıştır. Bu, verinin ara bellekten Cache nesnesi vasıtasıyla &amp;ccedil;ekildiğinin bir ispatıdır. Veri ara belleğe alındıktan 5 dakika sonra aynı sayfa tekrar talep edilir ise bu kez verinin g&amp;uuml;ncel hali ekrana gelecektir. Burada veriyi Cache nesnesine alırken kullandığımız Insert metodunda &lt;strong&gt;Absolute Expiration (Tam S&amp;uuml;re Sonu)&lt;/strong&gt; zamanı belirlenmiştir. Bu s&amp;uuml;re, verinin ara bellekten kesin olarak ne zaman atılacağını s&amp;ouml;ylemektedir. Bununla birlikte dilersek ara bellekte bulunan veri k&amp;uuml;mesine olan erişim sıklığına g&amp;ouml;re bir &lt;strong&gt;Sliding Expiration ( Kayan S&amp;uuml;re Sonu )&lt;/strong&gt; s&amp;uuml;reside belirleyebiliriz. Buna g&amp;ouml;re,&lt;/p&gt;
+&lt;table id="table4" style="width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#ffffff"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;Ara bellekteki verilere belirtilen &lt;strong&gt;Sliding Expiration&lt;/strong&gt; ile belirtilen s&amp;uuml;re zarfında erişilmez ise bu s&amp;uuml;re sonunda bellekten atılırlar. Eğer s&amp;uuml;re zarfı i&amp;ccedil;inde ara bellekteki verilere s&amp;uuml;rekli erişiliyorsa Sliding Expiration s&amp;uuml;resi ge&amp;ccedil;se dahi veriler ara bellekten atılmaz ve durumlarını korurlar.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;S&amp;uuml;rekli bellekte kalmak deyimi tabiki sistem kaynakları azalıp ara bellek verileri otomatik olarak atılınca veya web sunucusu herhangibir neden ile restart olunca ge&amp;ccedil;erli değildir. Şimdi dilerseniz Sliding Expiration durumunu incelemeye &amp;ccedil;alışalım. Bunun i&amp;ccedil;in tek yapmamız gereken &amp;ouml;rneğimizdeki Insert metodunu aşağıdaki ile değiştirmek olacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;Cache.Insert("kategori",dt,null,Cache.NoAbsoluteExpiration,TimeSpan.FromMinutes(3));&lt;/pre&gt;
+&lt;p&gt;Olayı daha iyi anlayabilmek i&amp;ccedil;in aşağıdaki şekli inceleyebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk114_4.gif" alt="" width="462" height="269" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Sayfa ilk talep edilip veriler ara belleğa alındığında, Sliding Expiration s&amp;uuml;resinin 5 dakika ilerisini g&amp;ouml;sterecek şekilde ayarlandığını d&amp;uuml;ş&amp;uuml;nelim. Bu s&amp;uuml;re dolmadan &amp;ouml;nce ara bellekteki veri tekrardan talep edilirse, Cache nesnesinin i&amp;ccedil;eriğinin boşaltılma s&amp;uuml;resi şekilden de g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi ilerki bir zamana (o anki andan 5 dakika sonrasına) sarkacaktır.&lt;/p&gt;
+&lt;p&gt;Insert metodunun parametrelerine dikkat edecek olursanız, ara bellekteki verilerin durumlarının &lt;strong&gt;CacheDependency&lt;/strong&gt; sınıfına ait nesne &amp;ouml;rnekleri ile başka bir nesneye bağlı olabileceğini g&amp;ouml;r&amp;uuml;rs&amp;uuml;n&amp;uuml;z. Bu bağımılılıkta &amp;ccedil;oğunlukla fiziki dosyalar g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınır. &amp;Ouml;rneğin, bir XML dosyasındaki veriyi ara belleğe alarak kullandığımızı d&amp;uuml;ş&amp;uuml;nelim. Bu veriler pekala g&amp;uuml;ncel haber başlıklarını veya bir alışveriş sitesindeki &amp;uuml;r&amp;uuml;nlerin kategorilerini g&amp;ouml;sterebilir. XML dosyasında meydana gelecek olan g&amp;uuml;ncellemeleri anında ara belleğe yansıtmak i&amp;ccedil;in, Cache nesnesini bu XML dosyasına bağımlı hale getirebiliriz. Şimdi bunun nasıl yapılabileceğini incelemeye &amp;ccedil;alışalım. Yukarıda geliştirdiğimiz &amp;ouml;rneğimizdeki kodlarımızı aşağıdaki gibi değiştirelim.&lt;/p&gt;
+&lt;p&gt;Kategoriler.xml dosyasının i&amp;ccedil;eriği;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt; 
+    &amp;lt;Kategoriler&amp;gt;
+        &amp;lt;Tipi&amp;gt;Muzik CD&amp;lt;/Tipi&amp;gt;
+        &amp;lt;Tipi&amp;gt;Kitap&amp;lt;/Tipi&amp;gt;
+        &amp;lt;Tipi&amp;gt;Film DVD&amp;lt;/Tipi&amp;gt;
+        &amp;lt;Tipi&amp;gt;Muzik DVD&amp;lt;/Tipi&amp;gt;
+        &amp;lt;Tipi&amp;gt;Elektronik Eşyalar&amp;lt;/Tipi&amp;gt;
+        &amp;lt;Tipi&amp;gt;Bilgisayar&amp;lt;/Tipi&amp;gt;
+        &amp;lt;Tipi&amp;gt;Laptop&amp;lt;/Tipi&amp;gt;
+&amp;lt;/Kategoriler&amp;gt;&lt;/pre&gt;
+&lt;p&gt;default.aspx&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private SqlConnection con;
+private SqlCommand cmd;
+private SqlDataAdapter da;
+private DataTable dt;
+private DataSet ds;
+
+/*KategoriAlXML metodu Kategoriler.xml dosyası i&amp;ccedil;inden verileri alır ve DataSet&amp;rsquo; e y&amp;uuml;kler.*/
+private void KategoriAlXML()
+{
+    ds=new DataSet();
+    ds.ReadXml(Server.MapPath("Kategoriler.xml"));
+}
+
+private void Page_Load(object sender, System.EventArgs e)
+{
+    //G&amp;uuml;ncel saat bilgisini label kontrol&amp;uuml;ne yazdiriyoruz.
+    Label1.Text=DateTime.Now.ToLongTimeString();
+    if(Cache["kategori"]==null)
+    {
+        KategoriAlXML();
+        /* Cache nesnesine DataSet i&amp;ccedil;erisindeki xml dosyasından okunan i&amp;ccedil;eriğe ait veri k&amp;uuml;mesi y&amp;uuml;klenir. Bu y&amp;uuml;kleme işlemi yapılırken bir CacheDependency nesnesi ile Cache nesnesinin i&amp;ccedil;eriğinin g&amp;uuml;ncelliği belirtilen XML dosyasına bağlanır.*/
+        Cache.Insert("kategori",ds.Tables[0],new CacheDependency(Server.MapPath("Kategoriler.xml")));
+    }
+    /*DataGrid kontrol&amp;uuml;ne veri kaynagi olarak ara bellekteki kategori isimli Cache nesnesinin i&amp;ccedil;erigini veriyoruz. Bunu yaparken uygun t&amp;uuml;re d&amp;ouml;n&amp;uuml;st&amp;uuml;rme islemini yapiyoruz.*/
+    DataGrid1.DataSource=(DataTable)Cache["kategori"];
+    DataGrid1.DataBind();
+}&lt;/pre&gt;
+&lt;p&gt;Burada, Cache nesnesinin i&amp;ccedil;eriğinin durumunu xml dosyamıza bağlayabilmek i&amp;ccedil;in CacheDependency sınıfına ait bir nesne &amp;ouml;rneği oluşturulmuştur. Burada CacheDependency sınıfına ait nesne &amp;ouml;rneği oluşturulurken yapıcı metoda xml dosyasının sanal adresi atanmıştır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;new CacheDependency(Server.MapPath("Kategoriler.xml"))&lt;/pre&gt;
+&lt;p&gt;Uygulamamızı &amp;ccedil;alıştırdığımızda ilk olarak aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;n&amp;uuml; elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk114_5.gif" alt="" width="264" height="309" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi Kategoriler.xml dosyasının i&amp;ccedil;eriğinde değişiklik yapalım ve bu değişiklikleri kaydedelim. &amp;Ouml;rneğin aşağıdaki gibi bir ka&amp;ccedil; elemanın bilgisini değştirip yeni bir eleman ekleyelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk114_6.gif" alt="" width="389" height="214" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu değişikliklerden sonra sayfayı tekrardan talep edersek, Cache nesnesinin i&amp;ccedil;erdiği verilerin son yapılan g&amp;uuml;ncellemelere g&amp;ouml;re yenilendiğini g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Cache nesnesindeki veriyi bir dosyaya yukarıdaki gibi bağımlı hale getirdiğimizde, sayfaya yapılan her talepde dosyanın i&amp;ccedil;eriğinin değişip değişmediği kontrol edilir. Eğer bir değişiklik var ise, Cache nesnesinin i&amp;ccedil;erdiği veri ara bellekten atılır. Biz uygulamamızda Cache nesnesini null olup olmadığına g&amp;ouml;re y&amp;uuml;kleme yaptığımız i&amp;ccedil;in dosyadaki g&amp;uuml;ncelleme sonucu verinin bu son halini ara belleğe almış ve DataGrid i&amp;ccedil;eriğini yenilemiş oluruz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk114_7.gif" alt="" width="263" height="340" border="0" /&gt;&lt;/p&gt;
+&lt;table id="table9" style="width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#ffffff"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;Asp.Net 2.0&amp;rsquo; da bir Cache nesnesinin doğrudan Sql Server &amp;uuml;zerindeki bir tabloya bağımlı hale getirilebilmesi ve dolayısıyla veritabanı i&amp;ccedil;indeki bir tabloda meydan gelecek değişiklilerin Cache nesnesine anında yanısıtlabilmesi i&amp;ccedil;inde SqlCacheDependency sınıfına ait nesne &amp;ouml;rneklerinin kullanılabileceği &amp;ouml;ng&amp;ouml;r&amp;uuml;lmektedir. &lt;em&gt;(* Bu durumu gelecek g&amp;ouml;rsel derslerimizden birisinde incelemeye &amp;ccedil;alışacağız.)&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Cache nesnelerinin bellekten atılması zamana, dosyaya bağlanabileceği gibi, sistem kaynaklarının azalması durumunda da ger&amp;ccedil;ekleşen bir olaydır. Sistem kaynaklarının azalması ve ara bellekteki nesnelerin atılması gerektiği durumlarda Cache nesnelerinin sahip olduğu &amp;ouml;ncelikler g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınır. Her ne sebep ile olursa olsun bir Cache nesnesinin i&amp;ccedil;eriği ara bellekten atıldığında otomatik olarak &amp;ccedil;alışmasını istediğimiz metodlar bildirebiliriz. Yani CallBack metod tekniğini Cache nesneleri i&amp;ccedil;inde kullanabiliriz. &amp;Ouml;rneğin ara bellekte tutulan bir nesnenin zaman aşımına uğraması nedeni ile silindiğinde otomatik olarak callback metodu devreye girerek g&amp;uuml;ncel halinin tekrardan ara belleğe alınması sağlanabilir. Ya da Cache nesnesi Remove metodu ile a&amp;ccedil;ık&amp;ccedil;a ara bellekten atıldığı durumlarda CallBack metodlarını &amp;ccedil;alıştırabiliriz. Burada bir CallBack metodunun &amp;ccedil;ağırılabilmesi i&amp;ccedil;in, &lt;strong&gt;CacheItemRemovedReason&lt;/strong&gt; temsilcisi (delegate) tipinden bir nesne &amp;ouml;rneğinden faydalanılır. CacheItemRemovedReason temsilcisi aşağıdaki prototipe uyan metodlar işaret edebilir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public delegate void CacheItemRemovedCallback(string anahtar,object deger, CacheItemRemovedReason sebep);&lt;/pre&gt;
+&lt;p&gt;anahtar parametresi Cache nesnesinin key değerine karşılık gelir. deger parametresi ise ilgili Cache nesnesinin taşıdığı veriye sahiptir. Son parametre ise &lt;strong&gt; CacheItemRemovedReason&lt;/strong&gt; numaralandırıcısı (enum sabiti) tipinden bir değerdir ve CallBack metodunun &amp;ccedil;ağırılma nedenini bir başka deyişle Cache nesnesinin hangi sebepten dolayı ara bellekten atıldığının belirlenmesinde kullanılır. &lt;strong&gt;CacheItemRemovedReason&lt;/strong&gt; numaralandırıcısının sahip olduğu değerler aşağıdaki tabloda belirtilmektedir.&lt;/p&gt;
+&lt;table id="table11" class="dtTABLE" style="border-collapse: collapse;" border="1" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr valign="top"&gt;
+&lt;th width="26%" height="28"&gt;&lt;strong&gt;CacheItemRemovedReason&lt;/strong&gt; Numaralandırıcı Değeri&lt;/th&gt;
+&lt;th width="71%" height="28"&gt;A&amp;ccedil;ıklama&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="26%"&gt;&lt;strong&gt; DependencyChanged&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="71%"&gt;Herhangibir bağımlılık nedeni ile Cache nesnesinin i&amp;ccedil;eriği ara bellekten atılmıştır. &amp;Ouml;rneğin Cache nesnesine bağladığımız XML dosyasında yapılan bir değişiklik buna neden olabilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="26%"&gt;&lt;strong&gt;Expired&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="71%"&gt;Cache nesnesinin i&amp;ccedil;eriği zaman aşımları nedeni ile ara bellekten atılmıştır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="26%"&gt;&lt;strong&gt;Removed&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="71%"&gt;Cache nesnesinin i&amp;ccedil;eriği Remove metodu ile a&amp;ccedil;ık&amp;ccedil;a ara bellekten atılmıştır. Yani programatik olarak Cache nesnesinin Remove metodu ilgili &amp;ouml;ğeye uygulanmıştır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="26%"&gt;&lt;strong&gt;Underused&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="71%"&gt;Sistem kaynaklarının azalması sonucunda web sunucusu, Cache nesnelerinin i&amp;ccedil;eriğini sahip oldukları &amp;ouml;nem sıralarına g&amp;ouml;re ara bellekten atmaya başlamıştır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Şimdi CallBack tekniğinin nasıl uygulandığını basit bir &amp;ouml;rnek ile incelemeye &amp;ccedil;alışalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private CacheItemRemovedCallback delCallBack=null;
+private SqlConnection con;
+private SqlCommand cmd;
+private SqlDataAdapter da; 
+private DataTable dt;
+private static string m_Sebep;
+private static bool m_Durum=false;
+
+private void KategorileriAl()
+{
+    con=new SqlConnection("data source=BURKI;initial catalog=Northwind;integrated security=SSPI");
+    cmd=new SqlCommand("SELECT DISTINCT CategoryName FROM Categories",con);
+    da=new SqlDataAdapter(cmd);
+    dt=new DataTable(); 
+    da.Fill(dt);
+}
+
+private void GeriBildirimMetodu(string anahtar,object deger,CacheItemRemovedReason sebep)
+{
+    m_Sebep=sebep.ToString();
+    m_Durum=true;
+} 
+private void btnRemove_Click(object sender, System.EventArgs e)
+{
+    if(Cache["Nesne1"]!=null)
+    { 
+        Cache.Remove("Nesne1"); 
+    }
+}
+private void btnCacheEkle_Click(object sender, System.EventArgs e)
+{
+    delCallBack=new CacheItemRemovedCallback(this.GeriBildirimMetodu);
+    if(Cache["Nesne1"]==null)
+    {
+        KategorileriAl();
+        Cache.Insert("Nesne1",dt,null,DateTime.Now.AddSeconds(10),Cache.NoSlidingExpiration,CacheItemPriority.High,delCallBack);
+        m_Durum=false;
+    }
+}
+private void WebForm1_PreRender(object sender, System.EventArgs e)
+{
+    DataGrid1.DataSource=Cache["Nesne1"];
+    DataGrid1.DataBind();
+    if(m_Durum)
+        lblDurum.Text=m_Sebep;
+    else
+        lblDurum.Text="";
+}&lt;/pre&gt;
+&lt;p&gt;Yukardaki &amp;ouml;rnekte, Cache nesnesine DataTable i&amp;ccedil;eriğini eklerken Insert metodunun aşağıdaki versiyonu kullanılmıştır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;Cache.Insert("Nesne1",dt,null,DateTime.Now.AddSeconds(10),Cache.NoSlidingExpiration,CacheItemPriority.High,delCallBack);&lt;/pre&gt;
+&lt;p&gt;Burada delCallBack, CallBack metodumuz olan GeriBildirimMetodunu işaret eden &lt;strong&gt;CacheItemRemovedCallback&lt;/strong&gt; tipindeki temsilcimidir. Kullanıcı Remove işlemini ger&amp;ccedil;ekleştirdiğinde veya Cache nesnesi zaman aşımı nedeni ile ara bellekten atıldığında, geri bildirim metodu &amp;ccedil;alışacaktır. &amp;Ouml;rneğimizi &amp;ccedil;alıştırdığımızda ve 10 saniyelik zaman aşımı s&amp;uuml;resi dolmadan Ekle ve daha sonra &amp;Ccedil;ıkart başlıklı butonlara tıkladığımızda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;n&amp;uuml; elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk114_8.gif" alt="" width="309" height="140" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Eğer 10 saniye s&amp;uuml;resi dolduktan sonra &amp;Ccedil;ıkart başlıklı butona basarsak Remove metodu &amp;ccedil;alıştırılmayacak ancak geri bildirim metodumuz &amp;ccedil;alışarak nesnenin ara bellekten atılma nedeni Expired olarak değişecektir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk114_9.gif" alt="" width="298" height="133" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;CallBack tekniğinin uygulanışını daha iyi kavrayabilmek i&amp;ccedil;in, &amp;ouml;rnekleri debug modunda &amp;ccedil;alıştırıp breakpoint&amp;rsquo; ler vasıtısayıla kodları izlemenizi &amp;ouml;neririm. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;şmek dileğiyle hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/makale/images/Caching2.rar"&gt;&amp;Ouml;rnek uygulama i&amp;ccedil;in tıklayın.&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2005-02-07 12:00:00</pubDate>
+  <slug>Caching-Mekanizmasc4b1nc4b1-Anlamak-2-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>aspnet</tag>
+    <tag>caching</tag>
+  </tags>
+  <categories>
+    <category>Asp.Net</category>
+  </categories>
+</post>

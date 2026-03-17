@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Vue ve NW.js ile Desktop Uygulaması Geliştirmek</title>
+  <description>Daha önceden Electron ile cross platform desktop uygulamalarının geliştirilmesi üzerine çalışmıştım. Bu kez eskiden node-webkit olarak bilinen NW.js kullanarak WestWorld üzerinden desktop uygulaması geliştirmek istedim. NW.js cephesinde de aynen Electron'da olduğu gibi Chromium, Node.js, HTML, CSS ve javascript kullanılmakta. Lakin ufak tefek farklılıklar var. Electron'da entry point yeri Javascript script'i iken NW.js tarafında script haricinde bir web sayfası da giriş noktası olabiliyor. Build süreçlerinde de bir takım farklılıklar var.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2019/05/16/perfectstr.png" alt="" /&gt;Ge&amp;ccedil;en g&amp;uuml;n fark ettim ki yaş ilerleyince blogumdaki yazıların girişinde kullanabileceğim malzeme sayısı da artmış. S&amp;ouml;z gelimi şu anda lise son yıllarıma yani seksenlerin sonu doksanların başına doğru gitmiş durumdayım. O d&amp;ouml;nemlerde kısa Amerikan dizileri pop&amp;uuml;ler. Hatta Arjantin menşeeli diziler de &amp;ccedil;ok yaygın. Sanıyorum Mariana isimli pop&amp;uuml;ler bir dizi vardı. Kısa boylu, siyah kıvırcık sa&amp;ccedil;lı, buğday tenli ve hayatı acılar i&amp;ccedil;inde ge&amp;ccedil;en bir Latin kadının hikayesiydi. Lakin ben hayatı toz pembe g&amp;ouml;rmemize vesile olan komedileri tercih ediyordum. Hatta en &amp;ccedil;ok sevdiğim komedi dizisi &lt;a href="https://www.imdb.com/title/tt0090501/?ref_=nv_sr_2?ref_=nv_sr_2" target="_blank"&gt;Perfect Strangers&lt;/a&gt;'dı.&lt;/p&gt;
+&lt;p&gt;Mipos isimli Yunan k&amp;ouml;y&amp;uuml;nden Chicago'daki kuzeni Larry Appleton'ın yanına yerleşip "Komik olma kuzen" repliği ile zihnime kazınan Balki Bartokomous bizleri epeyce g&amp;uuml;ld&amp;uuml;r&amp;uuml;rd&amp;uuml;. Aradan &amp;ccedil;eyrek asır ge&amp;ccedil;miş olsa da aptal kutunun bizleri ekrana bağlayan bazı alışkanlıkları değişmiyor. Platformlar belki ama yine komedi dizileri, yine Arjantin dizileri ve yine aklımıza kazınan Balki'ler var. &lt;a href="https://github.com/buraksenyurt/saturday-night-works/tree/master/No%2016%20-%20Build%20Desktop%20App%20with%20Vue%20and%20NWjs" target="_blank"&gt;Saturday-Night-Works'&amp;uuml;n&amp;nbsp;16 numaralı &amp;ccedil;alışması&lt;/a&gt;na konu olan Big Bang Theory'de işte bana bu &amp;ccedil;ağrışımları yapmış durumda. &amp;Ouml;yleyse gelin başlayalım.&lt;/p&gt;
+&lt;p&gt;Daha &amp;ouml;nceden &lt;a href="https://github.com/buraksenyurt/electron" target="_blank"&gt;Electron ile cross platform desktop uygulamaları&lt;/a&gt;nın geliştirilmesi &amp;uuml;zerine &amp;ccedil;alışmıştım&lt;em&gt;(github repo istatistiklerine g&amp;ouml;re kimsenin ilgisini &amp;ccedil;ekmemişti ama malum &amp;ccedil;ok eski bir desktop programıcısı olduğumdan ilgilenmiştim)&lt;/em&gt; Bu kez eskiden node-webkit olarak bilinen &lt;a href="https://nwjs.io/" target="_blank"&gt;NW.js kullanarak&lt;/a&gt; WestWorld &amp;uuml;zerinde desktop uygulaması geliştirmek istedim. NW.js cephesinde de aynen Electron'da olduğu gibi Chromium, Node.js, HTML, CSS ve javascript kullanılmakta. Lakin ufak tefek farklılıklar var. Electron'da entry point yeri Javascript script'i iken NW.js tarafında script haricinde bir web sayfası da giriş noktası olabiliyor. Build s&amp;uuml;re&amp;ccedil;lerinde de bir takım farklılıklar var.&lt;/p&gt;
+&lt;p&gt;Peki bu &amp;ccedil;alışma kapsamında ne yapacağız? Uygulama &amp;ccedil;ok basit bir aray&amp;uuml;ze sahip olacak. Ekrandaki metin kutusuna bir isim&amp;nbsp;girilecek ve Big Bang Theory'nin ilgili b&amp;ouml;l&amp;uuml;m&amp;uuml;ne ait bazı bilgiler ekrana bastırılacak&lt;em&gt;(Akıllı bir arama ekranı değil &amp;ccedil;ok şey beklemeyin)&lt;/em&gt; B&amp;ouml;l&amp;uuml;m bilgisini ise bigbangapi isimli ve .net core ile yazılmış bir web api servisi sağlayacak&lt;em&gt;.&lt;/em&gt;&lt;/p&gt;
+&lt;h2&gt;Başlangı&amp;ccedil;&lt;/h2&gt;
+&lt;p&gt;WestWorld'de&lt;em&gt;(Ubuntu 18.04 64bit)&lt;/em&gt; bu &amp;ouml;rnek i&amp;ccedil;in Vue CLI'a&lt;em&gt;(Vue'nun Command Language Interface aracı olarak d&amp;uuml;ş&amp;uuml;nebiliriz)&lt;/em&gt; ihtiya&amp;ccedil; var. &amp;Ouml;nce versiyonu kontrol edip yoksa y&amp;uuml;klemek lazım. Ayrıca projeyi oluşturduktan sonra NW paketini de eklemek gerekiyor. axios'u servis haberleşmesi i&amp;ccedil;in kullanacağız. Bunun i&amp;ccedil;in terminalden aşağıdaki adımlarla ilerleyebiliriz. vue create ile başlayan satır bbtheory isimli hazır bir Vue uygulaması inşa edecek. npm install satırlarında da bu uygulama i&amp;ccedil;in gerekli paketlerin y&amp;uuml;klenmesi sağlanıyor. Nw sdk ve axios bu anlamda &amp;ouml;nemli.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;vue --version
+sudo npm install -g @vue/cli
+vue create bbtheory
+cd bbtheory
+sudo npm install --save-dev nwjs-builder-phoenix nw@sdk
+sudo npm install axios&lt;/pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Vue projesi varsayılan kurulum ayarları ile oluşturulmuştur.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;Kod Tarafı&lt;/h2&gt;
+&lt;p&gt;Gelelim kodlama tarafına. Uygulamanın masa&amp;uuml;st&amp;uuml; aray&amp;uuml;z&amp;uuml; olan App bileşeni app.vue dosyasında kodlanıyor. Bu dosyayı aşağıdaki gibi değiştirerek ilerleyebiliriz. Sonu&amp;ccedil;ta HTML tabanlı bir ortam var. Elbette Vue'ya &amp;ouml;zg&amp;uuml; bir sentaks da s&amp;ouml;z konusu. S&amp;ouml;z gelimi bileşendeki bir kontrol&amp;uuml; model tarafına bağlamak i&amp;ccedil;in v-model direktifinden yararlanılıyor. Bir section elementinin g&amp;ouml;r&amp;uuml;n&amp;uuml;rl&amp;uuml;ğ&amp;uuml;n&amp;uuml; koşullandıracaksak v-if direktifini kullanabiliyoruz. Button kontrol&amp;uuml;ndeki olayları betikteki bir fonksiyonla ilişkilendirirken @click şeklindeki element adı ele alınıyor. Modeldeki &amp;ouml;zellikleri kontrollerde g&amp;ouml;sterirkense {{propertyName}} notasyonuna başvuruyoruz.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğimizdeki bileşen, &amp;ouml;ny&amp;uuml;z tasarımı ve kodu aynı dosya i&amp;ccedil;erisinde barındırmakta. Ancak hazır olarak gelen şablonu incelerseniz Components klas&amp;ouml;r&amp;uuml;nde bir bileşen geldiğini de g&amp;ouml;rebilirsiniz. Yani alt bileşenleri bu klas&amp;ouml;r altında da toplayabiliriz. Bu arada kodlarda yakaladığınız yorum satırlarını okumayı unutmayın. Destekleyici bilgiler g&amp;ouml;rebilirsiniz.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;template&amp;gt;
+  &amp;lt;div id="app"&amp;gt;
+    &amp;lt;h2&amp;gt;B&amp;ouml;l&amp;uuml;m adını yazar mısın?&amp;lt;/h2&amp;gt;
+    &amp;lt;section class="input-Section"&amp;gt;
+      &amp;lt;input type="text" v-model="query"&amp;gt;
+      &amp;lt;button :disabled="!query.length" @click="findEpisode"&amp;gt;G&amp;ouml;ster&amp;lt;/button&amp;gt;
+      &amp;lt;!-- butona basılınca findEpisode metodu &amp;ccedil;ağırılacak --&amp;gt;
+    &amp;lt;/section&amp;gt;
+    &amp;lt;section v-if="error"&amp;gt;
+      &amp;lt;!-- error değişkeni true olarak set edilmişse bir şeyler ters gitmiştir --&amp;gt;
+      &amp;lt;i&amp;gt;Sanırım b&amp;ouml;l&amp;uuml;m bulunamadı ya da bir şeyler ters gitti&amp;lt;/i&amp;gt;
+    &amp;lt;/section&amp;gt;
+    &amp;lt;section v-if="!error"&amp;gt;
+      &amp;lt;!-- Aranan veri bulunduysa --&amp;gt;
+      &amp;lt;h1&amp;gt;{{name}} ({{season}}/{{number}}) - {{ airdate }}&amp;lt;/h1&amp;gt;
+      &amp;lt;div&amp;gt;&amp;lt;p&amp;gt;{{summary}}&amp;lt;/p&amp;gt;&amp;lt;/div&amp;gt;
+      &amp;lt;div&amp;gt;
+        &amp;lt;img :src="imageLink"/&amp;gt;
+      &amp;lt;/div&amp;gt;
+    &amp;lt;/section&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;script&amp;gt;
+export default {
+  name: "Pilot",
+  data() {
+    // data modelimiz api servisinden d&amp;ouml;nen tipe g&amp;ouml;re d&amp;uuml;zenlendi
+    return {
+      query: "",
+      error: false,
+      id: null,
+      name: "",
+      airdate:"",
+      season: null,
+      number: null,
+      summary: "",
+      imageLink: ""
+    };
+  },
+  methods: {
+    findEpisode() {
+      // api servisine talep g&amp;ouml;nderen metod
+      this.$http
+        .get(`/episode/${this.query}`) // sorguyu tamamlıyoruz. parametre olarak input kontrol&amp;uuml;ne girilen değer alınıyor. query değişkeni &amp;uuml;zerinden.
+        .then(response =&amp;gt; {
+          this.error = false;
+          this.name = response.data.name; // servisten gelen cevabın i&amp;ccedil;indeki alanların, vue data modelindeki karşılıklarına ataması yapılıyor
+          this.season = response.data.season;
+          this.number = response.data.number;
+          this.summary = response.data.summary; 
+          this.airdate=response.data.airDate;
+          this.imageLink=response.data.imageLink;
+          console.log(response.data); //control ama&amp;ccedil;lı
+        })
+        .catch(() =&amp;gt; {
+          // hata alınması durumu
+          this.error = true;
+          this.name = "";
+        });
+    }
+  }
+};
+&amp;lt;/script&amp;gt;
+
+&amp;lt;style&amp;gt;
+#app {
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding:10px;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 10px;
+}
+input {
+  width: 75%;
+  outline: none;
+  height: 20px;
+  font-size: 1em;
+}
+
+button{
+  display: block;
+  width: 25%;
+  height: 25px;
+  outline: none;
+  border-radius: 4px;
+  white-space: nowrap; 
+  margin:0 10px;
+  font-size: 1rem;
+}
+
+.input-Section {
+  display: flex;
+  align-items: center;
+  padding: 20px 0;
+}
+
+&amp;lt;/style&amp;gt;&lt;/pre&gt;
+&lt;p&gt;App bileşeninde dikkat edileceği &amp;uuml;zere $http ile yapılan bir servis &amp;ccedil;ağrısı var. Bu axios tarafından sağlanacak bir hizmet. Bu nedenle main.js dosyasında&amp;nbsp;gerekli hazırlıkların yapılması lazım. Dikkat edileceği &amp;uuml;zere Vue &amp;ccedil;alışma zamanının axios'u $http &amp;ouml;zelliği &amp;uuml;zerinden kullanabilmesini sağlayacak bir enjekte işlemi s&amp;ouml;z konusu.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;import Vue from 'vue'
+import App from './App.vue'
+import axios from 'axios' // API servisine HTTP talebini g&amp;ouml;ndermek i&amp;ccedil;in kullandığımız mod&amp;uuml;l
+
+axios.defaults.baseURL = 'http://localhost:4001/api/'; // base url adresini atadık
+Vue.http = Vue.prototype.$http = axios;
+Vue.config.productionTip = false
+
+new Vue({
+  render: h =&amp;gt; h(App),
+}).$mount('#app')&lt;/pre&gt;
+&lt;p&gt;Bu konu kapsamı dışında&amp;nbsp;ancak .Net Core tabanlı bir Web API hizmetimiz de bulunuyor. Bu servis dizinin b&amp;ouml;l&amp;uuml;mlerini aramak amacıyla kodladığımız sahte bir program. Konumuzla doğrudan ilintili olmadığı i&amp;ccedil;in detayına girmemize gerek yok ama en azından Controller sınıfında neler yaptığımıza bir bakalım derim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
+
+namespace bigbangapi.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class EpisodeController : ControllerBase
+    {
+
+        [HttpGet("{name}")]
+        public ActionResult&amp;lt;Episode&amp;gt; Get(string name)
+        {
+            try
+            {
+                string db = System.IO.File.ReadAllText("db/content.json");
+                JObject json = JObject.Parse(db);
+                JArray episodes = (JArray)json["episodes"];
+                var all = episodes
+                            .Select(e =&amp;gt; new Episode
+                            {
+                                Id = (int)e["id"],
+                                Name = (string)e["name"],
+                                Season = (int)e["season"],
+                                Number = (int)e["number"],
+                                Summary = (string)e["summary"],
+                                ImageLink = (string)e["image"]["medium"],
+                                AirDate=(string)e["airdate"]
+                            });
+                var result = all.Where(e =&amp;gt; e.Name == name).FirstOrDefault();
+                return new ActionResult&amp;lt;Episode&amp;gt;(result);
+            }
+            catch
+            {
+                return NotFound();
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rneğin basitliği a&amp;ccedil;ısından yalın bir Get operasyonu sunuyoruz. Parametre olarak gelen b&amp;ouml;l&amp;uuml;m adını fiziki olarak tuttuğumuz content.json i&amp;ccedil;eriğinde arayarak bir sonu&amp;ccedil; d&amp;ouml;nd&amp;uuml;rmekteyiz. Pek tabii bu sahte bir servis. Veri kaynağı olarak fiziki dosya yerine veri tabanı kullanılan bir moda da ge&amp;ccedil;ebiliriz. Hatta film bilgileri sunan bir ger&amp;ccedil;ek hayat API'sini de tercih edebiliriz. Tercih size kalmış.&lt;/p&gt;
+&lt;p&gt;Ah unutmadan! Geliştirme safhasında kuvvetle muhtemel CORS&lt;em&gt;(Cross Origin Resource Sharing)&lt;/em&gt; ile ilgili bir sorun yaşayabilirsiniz. Bu nedenle Startup.cs i&amp;ccedil;erisinde CORS &amp;ouml;zelliğini etkinleştirmemiz ve masa&amp;uuml;st&amp;uuml;nden gelecek cevapları kabul edebileceğimizi belirtmemiz gerekiyor.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public void ConfigureServices(IServiceCollection services)
+{
+	services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+	// Diğer uygulamanın node.js servisinin buraya axios &amp;uuml;zerinden
+	// talep atabilmesi i&amp;ccedil;in Cors desteği eklenmiştir
+	// Configure metodu i&amp;ccedil;erisinde de 8080 kaynağından gelecek
+	// t&amp;uuml;m metodlar i&amp;ccedil;in izin yetkisi bildirilmiştir.
+	services.AddCors();
+}
+
+public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+{
+	app.UseCors(
+		options=&amp;gt;options.WithOrigins("http://localhost:8080").AllowAnyMethod()
+	);
+	if (env.IsDevelopment())
+	{
+		app.UseDeveloperExceptionPage();
+	}
+	else
+	{
+		app.UseHsts();
+	}
+
+	//app.UseHttpsRedirection();
+	app.UseMvc();
+}&lt;/pre&gt;
+&lt;p&gt;Tekrar Vue tarafına d&amp;ouml;nerek ilerleyelim. Uygulamanın giriş noktasını belirtmek i&amp;ccedil;in package.json dosyasına main &amp;ouml;zelliğini eklememiz ve bir adres y&amp;ouml;nlendirmesi yapmamız gerekiyor. Bu sayede uygulama kodunda yapılan her değişiklik anında &amp;ccedil;alışma zamanına da yansıyacaktır&lt;em&gt;(Program &amp;ccedil;alıştıktan&amp;nbsp;sonra &amp;ouml;ny&amp;uuml;z bileşeni olan App.vue dosyasında değişiklikler yapmayı deneyin)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;"main": "http://localhost:8080",&lt;/pre&gt;
+&lt;h2&gt;&amp;Ccedil;alışma Zamanı&lt;/h2&gt;
+&lt;p&gt;Normalde desktop uygulamasını &amp;ccedil;alıştırmak i&amp;ccedil;in proje klas&amp;ouml;r&amp;uuml;ndeyken birinci terminalden&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;npm run serve&lt;/pre&gt;
+&lt;p&gt;ile sunucuyu etkinleştirmek ve ardından ikinci bir terminal penceresinden&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;./node_modules/.bin/run .&lt;/pre&gt;
+&lt;p&gt;yazmak gerekiyor. Lakin bu durumda NW.js'in ilgili SDK'sı indirilip development ortamı ayağa kalkıyor. Bunu otomatikleştirmek i&amp;ccedil;in nw@sdk isimli paketi y&amp;uuml;klemek ve package.json dosyasındaki script b&amp;ouml;l&amp;uuml;m&amp;uuml;ne &amp;ouml;rneğin&amp;nbsp;&lt;em&gt;desktop&lt;/em&gt;&amp;nbsp;isimli yeni bir &amp;ccedil;alışma zamanı parametresi dahil etmemiz yeterli.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "desktop": "nw ."
+  },&lt;/pre&gt;
+&lt;p&gt;Desktop uygulaması &amp;ccedil;alıştıktan sonra tarayıcının Development Tools'unu kullanarak debug yapılması m&amp;uuml;mk&amp;uuml;n. Masa&amp;uuml;st&amp;uuml; tarafından&amp;nbsp;yapılan API &amp;ccedil;ağrılarını ve d&amp;ouml;nen sonu&amp;ccedil;ları buradan izleme şansımız var.&amp;nbsp;Tabii t&amp;uuml;m bunların başında yazdığımız web api servisinin de &amp;ccedil;alışır durumda olması gerekiyor &amp;ouml;yle değil mi? Sonrasında Node.js server ve desktop uygulaması &amp;ccedil;alıştırılarak ilerlersek yerinde olacaktır. Bunları &amp;uuml;&amp;ccedil; ayrı terminal penceresinden y&amp;uuml;r&amp;uuml;tebiliriz ama temel olarak aşağıdaki komutları kullanmamız lazım.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet run
+npm run serve
+npm run desktop&lt;/pre&gt;
+&lt;p&gt;Eğer bir sorun olmazsa uygulama ayağa kalktıktan sonra Big Bang Theory'den &amp;ouml;rnek bir b&amp;ouml;l&amp;uuml;m&amp;uuml; aratabiliriz. Ben aşağıdaki gibi bir sonuca ulaşmışım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/05/16/cover_1.png" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;Paketleme&lt;/h2&gt;
+&lt;p&gt;Uygulamayı paketlemek &amp;ccedil;ok daha mantıklı ve gerekli elbette. Sonu&amp;ccedil;ta dağıtımını&lt;em&gt;(Deployment)&lt;/em&gt; yapmak isteyeceğiz. Bunun i&amp;ccedil;in packages.json i&amp;ccedil;erisine build b&amp;ouml;l&amp;uuml;m&amp;uuml;n&amp;uuml; aşağıdaki gibi eklememiz lazım.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;  "build": {
+    "nwVersion": "0.35.5"
+  }&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere nw paketinin hangi versiyonunu kullanacağımızı belirtiyoruz&lt;em&gt;(G&amp;uuml;ncel s&amp;uuml;r&amp;uuml;m&amp;uuml;ne bakmanızda yarar var)&lt;/em&gt; bbtheory isimli uygulamanın root klas&amp;ouml;r&amp;uuml;nde aşağıdaki komut ile 64bit linux platformu i&amp;ccedil;in gerekli paketin &amp;uuml;retilmesi sağlanabiliyor.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;./node_modules/.bin/build --tasks linux-x64 .&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/05/16/cover_2.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Paket boyutu olduk&amp;ccedil;a y&amp;uuml;ksek g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere! Zaten cross-platform masa&amp;uuml;st&amp;uuml; uygulamaları i&amp;ccedil;in en rahatsız edici konuların başında da dosya boyutları geliyor. Ancak k&amp;uuml;&amp;ccedil;&amp;uuml;ltmek i&amp;ccedil;in &amp;ccedil;eşitli yollar olduğu ifade edilmekte. Bunu hen&amp;uuml;z araştırma fırsatım olmadı ancak &lt;a href="https://dev.to/thejaredwilcurt/reducing-app-distribution-size-in-nwjs-3d5f" target="_blank"&gt;yakın tarihli şu yazıda bir takım bilgiler&lt;/a&gt; mevcut.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/05/16/cover_3.png" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;Ben&amp;nbsp;Neler &amp;Ouml;ğrendim?&lt;/h2&gt;
+&lt;p&gt;Elbette aptal kutunun başında saatlerimi ge&amp;ccedil;irdiğim Perfect Strangers dizisinin bana alttan alttan verdiği mesajlar gibi bu &amp;ouml;rnek &amp;ccedil;alışma sonrasında &amp;ouml;ğrendiğim bazı şeyler de olmadı değil. Bunları aşağıdaki gibi &amp;ouml;zetlemeye &amp;ccedil;alışayım.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Vue tarafında &amp;ouml;n y&amp;uuml;z nasıl geliştirilir&lt;/li&gt;
+&lt;li&gt;v-model, v-if, {{ }}, @click gibi Vue ilişkili ifadeler ne işe yarar&lt;/li&gt;
+&lt;li&gt;Bileşen ile model &amp;ouml;zellikleri nasıl kullanılır&lt;/li&gt;
+&lt;li&gt;axios ile node.js tarafından servis talepleri nasıl g&amp;ouml;nderilir&lt;/li&gt;
+&lt;li&gt;newtonsoft.json ile bir json dizisinde nasıl linq sorgusu &amp;ccedil;alıştırılır&lt;/li&gt;
+&lt;li&gt;CORS ne işe yarar&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Ne yazık ki Vue konusunda uzman değilim. Aslında onu şirketteki yeni nesil projelerde kullanıyoruz lakin iyi bir başlangıcım yok. Belki de ahch-to&lt;em&gt;(macOS High Sierra)&lt;/em&gt; &amp;uuml;zerinde yapacağım ikinci faz &amp;ccedil;alışmaları kapsamında ona daha fazla zaman ayırabilirim. B&amp;ouml;ylece geldik neşeli &lt;a href="https://github.com/buraksenyurt/saturday-night-works/tree/master/No%2016%20-%20Build%20Desktop%20App%20with%20Vue%20and%20NWjs" target="_blank"&gt;bir cumartesi gecesinin 16ncı b&amp;ouml;l&amp;uuml;m&amp;uuml;ne ait derlemeler&lt;/a&gt;in de sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2019-06-14 13:00:00</pubDate>
+  <slug>vue-ve-nw-js-ile-desktop-uygulamasi-gelistirmek</slug>
+  <tags>
+    <tag>vuejs</tag>
+    <tag>electron</tag>
+    <tag>linux</tag>
+    <tag>cross-platform-development</tag>
+    <tag>nwjs</tag>
+    <tag>node</tag>
+    <tag>nodejs</tag>
+    <tag>net-core</tag>
+    <tag>web-api</tag>
+    <tag>rest</tag>
+    <tag>cors</tag>
+    <tag>dotnet</tag>
+    <tag>chromium</tag>
+    <tag>node-webkit</tag>
+  </tags>
+  <categories>
+    <category>Vue.js</category>
+  </categories>
+</post>

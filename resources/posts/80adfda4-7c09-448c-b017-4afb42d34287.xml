@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Bir .Net Core Web API Servisini Minikube Üzerinden Çalıştırmak</title>
+  <description>Birden fazla konteyner'ın bir araya geldiği, yönetilmeleri, kolayca dağıtılmaları, küçülerek veya büyüyerek ölçeklenebilmeleri gerektiği durumlarda orkestrasyon işi çoğunlukla Kubernetes (k8s) tarafından sağlanır. Kubernetes bir konteyner kümeleme aracı olarak Google tarafından Go dili ile yazılmıştır.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2019/04/24/dumen.png" alt="" /&gt;Soğuk bir Şubat akşamı mıydı, dışarıda kar var mıydı, g&amp;uuml;n&amp;uuml;n tam olarak hangi vakitleriydi tam olarak hatırlamıyorum ama github'a g&amp;ouml;re 24 numaralı &amp;ouml;rneğin son check-in işlemi 20 şubat &amp;Ccedil;arşamba g&amp;uuml;n&amp;uuml;yd&amp;uuml;.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/buraksenyurt/saturday-night-works" target="_blank"&gt;Saturday-Night-Works&lt;/a&gt; &amp;ccedil;alışmalarına başladığımda hedefim sadece Cumartesi geceleri olmasına rağmen i&amp;ccedil;ten gelen bir motivasyon konulara haftanın herhangi bir g&amp;uuml;n&amp;uuml;nde bakmamı sağlıyordu. Genelde ilgi &amp;ccedil;ekici konular se&amp;ccedil;tiğimden&amp;nbsp;başta belirlediğim standart &amp;ccedil;alışma takviminin dışına &amp;ccedil;ıkmıştım.&amp;nbsp;Bu hevesli motivasyon birinci fazın&lt;em&gt;(41 b&amp;ouml;l&amp;uuml;ml&amp;uuml;k ilk faz olarak ifade edebilirim)&lt;/em&gt; tamamı boyunca s&amp;uuml;regeldi.&lt;/p&gt;
+&lt;p&gt;İ&amp;ccedil; motivasyon kişisel gelişim a&amp;ccedil;ısından bence &amp;ccedil;ok &amp;ouml;nemli bir s&amp;uuml;r&amp;uuml;kleyici. Doğruyu s&amp;ouml;ylemek gerekirse&amp;nbsp;onu bulduğumuz anda bir &amp;ccedil;alışmanın peşinden koşturmamıza da gerek&amp;nbsp;kalmıyor. Kendiliğinden gelen disiplin bizi zaten o alana odaklıyor ve sonrasında fırtınada gemisini ustalıkla kullanırken y&amp;uuml;ksek sesle şarkılar s&amp;ouml;yleyen mutlu kaptan misali zaman pr&amp;uuml;ss&amp;uuml;zce akıyor.&lt;/p&gt;
+&lt;p&gt;İşte o Şubat g&amp;uuml;n&amp;uuml; bu motivasyonla tamamladığım bir &amp;ccedil;alışmam olmuş. Minikube konusunu incelemişim. Şimdi notların &amp;uuml;st&amp;uuml;nden ge&amp;ccedil;ip derleme ve &amp;ouml;ğrendiklerimi g&amp;ouml;zden ge&amp;ccedil;irme sırası. Haydi başlayalım.&lt;/p&gt;
+&lt;p&gt;Birden fazla konteyner'ın bir araya geldiği&lt;em&gt;(Docker container'larını d&amp;uuml;ş&amp;uuml;nelim)&lt;/em&gt;, y&amp;ouml;netilmeleri&lt;em&gt;(Manegement)&lt;/em&gt;, kolayca dağıtılmaları&lt;em&gt;(Deployment)&lt;/em&gt;&amp;nbsp;k&amp;uuml;&amp;ccedil;&amp;uuml;lerek veya b&amp;uuml;y&amp;uuml;yerek &amp;ouml;l&amp;ccedil;eklenebilmeleri&lt;em&gt;(Scaling)&lt;/em&gt; gerektiği durumlarda orkestrasyon işi &amp;ccedil;oğunlukla Kubernetes&lt;em&gt;(k8s)&lt;/em&gt; tarafından sağlanmakta. Kubernetes bir konteyner k&amp;uuml;meleme&lt;em&gt;(Clustering)&lt;/em&gt; aracı olarak Google tarafından Go dili ile yazılmış bir &amp;uuml;r&amp;uuml;n. Ancak bazen deneme ama&amp;ccedil;lı olarak geliştirdiğimiz enstr&amp;uuml;manları k8s kurulumuna ihtiya&amp;ccedil; duymadan tek k&amp;uuml;me&lt;em&gt;(Cluster)&lt;/em&gt; &amp;uuml;zerinde &amp;ccedil;alışacak şekilde kurgulamak isteyebiliriz. Bu noktada minikube olduk&amp;ccedil;a işimize yaramaktadır.&lt;/p&gt;
+&lt;p&gt;Benim 24 numaralı bu &lt;a href="https://github.com/buraksenyurt/saturday-night-works/tree/master/No%2024%20-%20WebAPI%20on%20Minikube" target="_blank"&gt;Saturday-Night-Works&lt;/a&gt; &amp;ccedil;alışmamdaki amacım Kubertenes'i WestWorld&lt;em&gt;(Ubuntu 18.04, 64bit)&lt;/em&gt; &amp;uuml;zerine kurmak yerine onu development ortamları i&amp;ccedil;in deneyimlememizi sağlayan Minikube'&amp;uuml; tanımaktı&lt;em&gt;(Kubernetes'in t&amp;uuml;m k&amp;uuml;me yapısının kurulumu &amp;ccedil;ok da kolay değil. &amp;Uuml;stelik sadece geliştirme noktasında onu denemek istersek bu maliyete girmeye gerek yok kanısındayım)&lt;/em&gt;&amp;nbsp;&amp;Ccedil;alışma sırasında, .Net Core tabanlı bir Web API servisini i&amp;ccedil;eren Docker konteynerının Minikube &amp;uuml;zerinde koşturulması i&amp;ccedil;in gerekli işlemlere yer veriliyor.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Minikube sayesinde Kubernetes ortamını local bir makinede deneme şansımız oluyor&lt;em&gt;(Tabii belirli kısıtlar dahilinde)&lt;/em&gt; Minikube, VirtualBox veya muadili bir sanal makine i&amp;ccedil;inde tek node olarak &amp;ccedil;alışan bir Kubernetes k&amp;uuml;mesi sunmakta. Dolayısıyla geliştirme katmanı i&amp;ccedil;in ideal bir ortam.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;İlk Kurulumlar&lt;/h2&gt;
+&lt;p&gt;Linux ortamında Virtual Box isimli sanal makineye, Docker'a, Minikube ve onu komut satırından kontrol eden kubectl ara&amp;ccedil;larına ihtiyacımız var. WestWorld'de docker y&amp;uuml;kl&amp;uuml; olduğu i&amp;ccedil;in diğerlerini kurarak ilerlemeye &amp;ccedil;alıştım.&amp;nbsp;Virtual Box kurulumu i&amp;ccedil;in aşağıdaki terminal komutlarını kullanabiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo add-apt-repository multiverse
+sudo apt-get update
+sudo apt install virtualbox&lt;/pre&gt;
+&lt;p&gt;Minukube kurulumunu i&amp;ccedil;inse ş&amp;ouml;yle ilerleyebiliriz&amp;nbsp;&lt;em&gt;(Minikube ve bağımlılıklarının platforma g&amp;ouml;re farklı kurulumları i&amp;ccedil;in &lt;a href="https://kubernetes.io/docs/tasks/tools/install-minikube/" target="_blank"&gt;şu adrese&lt;/a&gt; bakabilirsiniz)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.34.0/minikube-linux-amd64 &amp;amp;&amp;amp; chmod +x minikube &amp;amp;&amp;amp; sudo cp minikube /usr/local/bin/ &amp;amp;&amp;amp; rm minikube&lt;/pre&gt;
+&lt;p&gt;Kubernetes'i komut satırından y&amp;ouml;netebilmek i&amp;ccedil;in kullanacağımız Kubectl aracını kurmak i&amp;ccedil;inse aşağıdaki adımları takip edebiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo apt-get update &amp;amp;&amp;amp; sudo apt-get install -y apt-transport-https
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+sudo apt-get update
+sudo apt-get install -y kubectl&lt;/pre&gt;
+&lt;h2&gt;Kurulum Sonrası Kontroller&lt;/h2&gt;
+&lt;p&gt;Pek tabii kurulumlar sonrası bir sistem kontrol&amp;uuml; yapmamızda yarar var. Docker, Virtual Box, Minikube ve kubectl gibi d&amp;ouml;rt enstr&amp;uuml;manın bir arada yaşayacağı bir geliştirme s&amp;ouml;z konusu. İlk olarak minikube servisini başlatmak lazım. Aşağıdaki terminal komutu ile bunu yapabiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;minikube start&lt;/pre&gt;
+&lt;p&gt;Hatta Minikube başarılı bir şekilde başladıktan sonra Virtual Box&amp;nbsp;ortamından servis durumunu kontrol edebiliriz de. Aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi minikube servisinin running modda g&amp;ouml;r&amp;uuml;nmesi iyiye işarettir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/24/credit_1.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;ok doğal olarak servisi durdurma ve hatta silme ihtiyacımız da olabilir denemeler sırasında. &amp;Ouml;rneğin Minikube servisini durdurmak i&amp;ccedil;in,&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;minikube stop&lt;/pre&gt;
+&lt;p&gt;silmek i&amp;ccedil;inse,&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;minikube delete&lt;/pre&gt;
+&lt;p&gt;komutlarından yararlanabiliriz.&lt;/p&gt;
+&lt;h2&gt;&amp;Ouml;rnek .Net Core Web API Uygulamasının Geliştirilmesi&lt;/h2&gt;
+&lt;p&gt;Minikube orkestrasyonunda y&amp;ouml;netmek istediğimiz servis veya servisler olması gerekiyor. Ben &amp;ccedil;alışma kapsamında geliştirme noktasında daha rahat hareket edebildiğim i&amp;ccedil;in .Net Core platformunu tercih ettim. Servis uygulaması Docker &amp;uuml;zerinde koşacak. Oluşturmak i&amp;ccedil;in aşağıdaki terminal komutuyla ilerleyebiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet new webapi -o InstaceAPI&lt;/pre&gt;
+&lt;p&gt;InstanceAPI isimli servisimiz rastgele isim d&amp;ouml;nen bir metod sunmakta ki servisin ne iş yaptığı bu &amp;ouml;rnek &amp;ouml;zelinde &amp;ccedil;ok&amp;nbsp;&amp;ouml;nemli değil aslında. Ama pek tabii kodsal olarak yaptıklarımızı &amp;ouml;zetleyerek ilerlemekte yarar var. Ben varsayılan olarak gelen ValuesController sınıfını NamesController olarak&amp;nbsp;aşağıdaki gibi değiştirdim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+
+namespace InstanceAPI.Controllers
+{
+    [Route("api/random/[controller]")]
+    [ApiController]
+    public class NamesController : ControllerBase
+    {
+        List&amp;lt;string&amp;gt; nameList=new List&amp;lt;string&amp;gt;{
+            "Senaida","Armand","Yi","Tyra","Maud",
+            "Dominque","Jayme","Amira","Salome","Anisa",
+            "Spencer","Angelyn","Pete","Hoa","Cherelle",
+            "Lavonne","Gladys","Adrianne","Gussie","Delmar"
+        };
+        
+        // HTTP Get talebine cevap veren metodumuz.
+        // nameList koleksiyonundan rastgele bir isim d&amp;ouml;nd&amp;uuml;r&amp;uuml;yor
+        [HttpGet]
+        public ActionResult&amp;lt;string&amp;gt; Get()
+        {
+            Random randomizer=new Random();
+            var number=randomizer.Next(0,21);
+            return nameList[number];
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Web API uygulamasını Dockerize etmek i&amp;ccedil;in aşina olduğunuz &amp;uuml;zere Dockerfile dosyasına ihtiyacımız var ki onu da aşağıdaki şekilde kodlayabiliriz.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;# Microsoft'ın dotnet sdk imajını aldık
+FROM microsoft/dotnet:sdk AS build-env
+# takip eden komutları &amp;ccedil;alıştıracağımız klas&amp;ouml;r&amp;uuml; set ettik
+WORKDIR /app
+
+# Gerekli dotnet kopyalamalarını yaptırıp
+# Restore ve publish işlemlerini ger&amp;ccedil;ekleştiriyoruz
+COPY *.csproj ./
+RUN dotnet restore
+
+COPY . ./
+RUN dotnet publish -c Release -o out
+
+# &amp;Ccedil;alışma zamanı imajının oluşturulmasını istiyoruz
+FROM microsoft/dotnet:aspnetcore-runtime
+WORKDIR /app
+COPY --from=build-env /app/out .
+# Uygulamanın giriş noktasını belirtiyoruz
+ENTRYPOINT [ "dotnet","InstanceAPI.dll" ]&lt;/pre&gt;
+&lt;p&gt;Minikube i&amp;ccedil;erisine neyin deploy edileceğini belirtmek i&amp;ccedil;in şimdilik deployment.yaml&amp;nbsp;isimli dosyadan yararlanabiliriz. Bildirimlerden de g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere random-names-api-netcore isimli bir dağıtım s&amp;ouml;z konusu. Buna ait replica, label ve container gibi kubernetes odaklı bilgiler dok&amp;uuml;man i&amp;ccedil;erisinde yazılmış durumda &lt;em&gt;(Hen&amp;uuml;z bu konulara tam vakıf değilim. &amp;Ccedil;alışmaya devam)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: random-names-api-netcore
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: random-names-api-netcore
+    spec:
+      containers:
+        - name: random-names-api-netcore
+          imagePullPolicy: Never
+          image: random-names-api-netcore
+          ports:
+          - containerPort: 80&lt;/pre&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;h2&gt;Docker Hazırlıkları&lt;/h2&gt;
+&lt;p&gt;Dockerfile dosyası tamamlandıktan sonra Web API uygulamasının dockerize edilmesine başlanabilir. Sonu&amp;ccedil;ta k8s ya da &amp;ouml;rnekte ele aldığımız Minikube'&amp;uuml;n ana g&amp;ouml;revi dockerize edilmiş &amp;ouml;rneklerin orkestrasyonunun sağlanması. Dockerize işlemi i&amp;ccedil;in build komutunu aşağıdaki gibi kullanmamız yeterli olacaktır.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;docker build -t random-names-api-netcore .&lt;/pre&gt;
+&lt;h2&gt;Minikube Deployment Hazırlıkları&lt;/h2&gt;
+&lt;p&gt;Docker imajı hazır olduktan sonra artık minikube i&amp;ccedil;in gerekli dağıtım işlemine ge&amp;ccedil;ilebilir. Bu notkada kubectl komut satırı aracından yararlanmaktayız. kubectl, deployment.yaml dosyasının i&amp;ccedil;eriğini kullanarak bir dağıtım işlemi icra edecektir. Aşağıdaki terminal komutları ile bu işlemleri ger&amp;ccedil;ekleştirebiliriz. Bu işlemlere başlamadan &amp;ouml;nce minikube servisinin &amp;ccedil;alışır durumda olması gerektiğini hatırlatmak isterim.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;kubectl create -f deployment.yaml
+kubectl get deployments
+kubectl get pods&lt;/pre&gt;
+&lt;p&gt;create sonrasında kullanılan get komutları ile dağıtımı yapılan enstr&amp;uuml;manı ve&amp;nbsp;Podları g&amp;ouml;rebiliriz&lt;em&gt;(Pod = Aynı host &amp;uuml;zerine dağıtımı yapılan bir veya daha fazla container olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir ki senaryomuzda minikube i&amp;ccedil;in 3 pod s&amp;ouml;z konusudur)&lt;/em&gt; Lakin pod i&amp;ccedil;eriklerine bakıldığında image durumlarının ErrImageNeverPull şeklinde kalmış olması gibi bir durum s&amp;ouml;z konusudur. En azından WestWorld'de b&amp;ouml;yle bir sorunla karşılaştığımı ifade edebilirim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/24/credit_2.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Sorun, minikube ile docker'ın birbirlerinden haberdar olmamalarından kaynaklanmaktaymış. Problemi aşmak i&amp;ccedil;in&amp;nbsp;eval komutundan yararlanmak ve sonrasında docker imajını tekrar oluşturup minikube dağıtımını yeniden yapmak gerekiyor. Tabii &amp;ouml;nceki komutlar nedeniyle b&amp;uuml;y&amp;uuml;k ihtimalle sistemde duran dağıtımlar bulunacaktır. &amp;Ouml;nce onları silmek lazım. Aşağıaki ilk komutla dağıtım paketini bulup sonrasında silebiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;kubectl get all
+kubectl delete deployment.apps/random-names-api-netcore service/kubernetes&lt;/pre&gt;
+&lt;p&gt;Temizlik tamamlandıktan sonra&amp;nbsp;aşağıdaki terminak komutları ile ilerleyebiliriz. İlk komut docker'ı minikube &amp;ouml;rneği i&amp;ccedil;erisinde &amp;ccedil;alıştırabilmek i&amp;ccedil;in gerekli yerel ortam parametrelerinin ayarlanmasını sağlıyor. Sonrasındaki komutlar tahmin edeceğiniz &amp;uuml;zere docker imajının oluşturulması ve minikube ortamına dağıtım yapılması ile ilgili.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;eval $(minikube docker-env)
+docker build -t random-names-api-netcore .
+kubectl create -f deployment.yaml
+kubectl get deployments
+kubectl get pods&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/24/credit_3.png" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;&amp;Ccedil;alışma Zamanı&lt;/h2&gt;
+&lt;p&gt;Gelelim &amp;ccedil;alışma zamanına. Dockerize edilmiş servisimiz şu anda Minikube ortamında yaşıyor. Servisi dışarıya a&amp;ccedil;mak i&amp;ccedil;in nodePort tipinden yararlanılmakta. Şu terminal komutları ile işlemlerimize devam edelim.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;kubectl expose deployment random-names-api-netcore --type=NodePort
+minikube service random-names-api-netcore --url&lt;/pre&gt;
+&lt;p&gt;İlk komut ile dağıtımı yapılmış random-names-api-netcore isimli paket dışarıya a&amp;ccedil;ılmakta. İkinci terminal komutu ile servisin hangi adresten a&amp;ccedil;ıldığını &amp;ouml;ğrenebiliriz. &amp;Ouml;rneği denediğim zaman WestWorld'de 192.168.99.100 adresi ve 30046 nolu porttan hizmet verilmişti. Sonu&amp;ccedil; olarak bu adres bilgisinden servise erişip rastgele bir isim &amp;ccedil;ekebiliriz.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;minikube aksini belirtmezsek 30000 ile 32767 port aralığını kullandırtmaktadır.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/24/credit_4.png" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;80 Numaralı Port&lt;/h2&gt;
+&lt;p&gt;Daha yakın bir ger&amp;ccedil;ek hayat senaryosu d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde ervisin 80 numaralı portan hizmet verebilecek şekilde &amp;ccedil;alıştırılması &amp;ouml;nemlidir. Bunu sağlamak&amp;nbsp;minikube tarafında bir servis kurgusuna ihtiyacımız var. Servisleri bir cluster &amp;uuml;zerinde &amp;ccedil;alışan pod grupları olarak d&amp;uuml;ş&amp;uuml;nebiliriz. Dolayısıyla birden fazla pod'un tek bir servismiş gibi dışarıya sunulması s&amp;ouml;z konusudur. 80 numaralı port i&amp;ccedil;inde buna benzer bir hazırlığa ihtiyacımız var. Bunun i&amp;ccedil;in uygulamaya&amp;nbsp;services.yaml isimli bir dosyanın eklenmesi gerekiyor. Bu dosyada NodePort değeri 80 olarak belirtilmekte. Dosya i&amp;ccedil;eriğimiz aşağıdaki gibidir &lt;em&gt;(Pod ve Service konusu ile ilgili olarak daha fazla bilgi i&amp;ccedil;in&amp;nbsp;&lt;a href="https://github.com/chrislusf/seaweedfs/wiki/Deployment-to-Kubernetes-and-Minikube" target="_blank"&gt;şu yazı&lt;/a&gt;ya bir g&amp;ouml;z atabilirsiniz)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;apiVersion: v1
+kind: Service
+metadata:
+  name: random-names-api-netcore
+  labels:
+    app: random-names-api-netcore
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    targetPort: 80
+    nodePort: 80
+    protocol: TCP
+  selector:
+    app: random-names-api-netcore&lt;/pre&gt;
+&lt;p&gt;Sonrasında sırasıyla dağıtımı yapılan varlıklar silinir&lt;em&gt;(Belki de buna gerek yoktur, araştırmak lazım)&lt;/em&gt; minikube 80 ile 30000 aralığını baz alacak şekilde yeniden başlatılır ve servis tekrardan oluşturulur. Bu kez dikkat edileceği &amp;uuml;zere kubectl create komutu deployment.yaml yerine services.yaml dosyasını kullanmaktadır.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;kubectl delete service random-names-api-netcore
+kubectl delete deployment random-names-api-netcore
+minikube start --extra-config=apiserver.service-node-port-range=80-30000
+kubectl create -f services.yaml&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/24/credit_5.png" alt="" /&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;İşlemleri başarılı bir şekilde sonlandırdık diyebiliriz. Evden &amp;ccedil;ıkmadan &amp;ouml;nce &lt;em&gt;minikube stop&lt;/em&gt; komutunu vermek yararlı olabilir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;Ben Neler &amp;Ouml;ğrendim&lt;/h2&gt;
+&lt;p&gt;Bu &amp;ccedil;alışmanın yarattığı eğlenceli dakikaları geride bırakırken aşağıdaki maddelerde yazılanları &amp;ouml;ğrendiğimi not olarak d&amp;uuml;şm&amp;uuml;ş&amp;uuml;m. Bir ka&amp;ccedil; zaman sonra bu notlara baktığımda yeniden d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum. Ger&amp;ccedil;ekten ne kadarı aklımda kalmış ne kadarını doğru hatırlıyorum... Sonu&amp;ccedil;ta unuttuklarım da olmuş ve bunları yeniden ele almak Saturday-Night-Works &amp;ccedil;alışmasına başlamamın ne kadar isabetli bir karar olduğunu kendi adıma ispat ediyor.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Kubernetes kurulumları ile uğraşmak yerine development ama&amp;ccedil;lı olarak Minikube kullanılmasını&lt;/li&gt;
+&lt;li&gt;Temel kubectl komutlarını&lt;/li&gt;
+&lt;li&gt;Pod ve Service kavramlarının ne anlama geldiğini&lt;/li&gt;
+&lt;li&gt;.Net Core Web API uygulamasının basit&amp;ccedil;e Dockerize edilmesini&lt;/li&gt;
+&lt;li&gt;Minkube ortamının sunduğu port numarasının 80e nasıl &amp;ccedil;ekileceğini&lt;/li&gt;
+&lt;li&gt;Dockerfile, deployment.yaml ve services.yaml i&amp;ccedil;eriklerindeki kavramların ne anlama geldiklerini&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir cumartesi gecesi macerasının daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2019-05-10 13:00:00</pubDate>
+  <slug>bir-net-core-web-api-servisini-minikube-uzerinden-calistirmak</slug>
+  <tags>
+    <tag>net-core</tag>
+    <tag>minikube</tag>
+    <tag>k8s</tag>
+    <tag>kubernetes</tag>
+    <tag>golang</tag>
+    <tag>ubuntu</tag>
+    <tag>yaml</tag>
+    <tag>docker</tag>
+    <tag>container</tag>
+    <tag>virtual-box</tag>
+    <tag>kubectl</tag>
+    <tag>c#</tag>
+    <tag>deployment</tag>
+    <tag>pod</tag>
+    <tag>service</tag>
+    <tag>cluster</tag>
+  </tags>
+  <categories>
+    <category>.Net Core</category>
+  </categories>
+</post>

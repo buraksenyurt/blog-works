@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>DataRelation Sınıfı ve Çoğa-Çok (Many-to-many) İlişkiler</title>
+  <description>Bugünkü makalemizde, DataRelation sınıfı yardımıyla, veritabanlarındaki many-to-many(Çoğa-çok) ilişkilerin, bağlantısız katmanda nasıl kullanılabildiğini incelemeye çalışacağız. İlişkisel veri tabanı modelinde, tablolar arası ilişkilerde çoğunlukla bire-çok(one-to-many) ilişkilere rastlarız. Ancak azda olsa, çoğa-çok ilişkilerin kullanıldığı durumlarda söz konusudur.</description>
+  <content>&lt;p&gt;Değerli&amp;nbsp;Okurlarım, Merhabalar.&lt;/p&gt;
+&lt;p&gt;Bug&amp;uuml;nk&amp;uuml; makalemizde, DataRelation sınıfı yardımıyla, veritabanlarındaki many-to-many(&amp;Ccedil;oğa-&amp;ccedil;ok) ilişkilerin, bağlantısız katmanda nasıl kullanılabildiğini incelemeye &amp;ccedil;alışacağız. İlişkisel veri tabanı modelinde, tablolar arası ilişkilerde &amp;ccedil;oğunlukla bire-&amp;ccedil;ok(one-to-many) ilişkilere rastlarız. Ancak azda olsa, &amp;ccedil;oğa-&amp;ccedil;ok ilişkilerin kullanıldığı durumlarda s&amp;ouml;z konusudur. Bu ilişkiye &amp;ouml;rnek olarak &amp;ccedil;oğunlukla, Sql sunucusunda yer alan Pubs veritabanındaki Authors ve Titles tabloları g&amp;ouml;sterilir. Bu iki tablo arasındaki ilişki ş&amp;ouml;yledir; bir yazara ait birden fazla kitap titles tablosunda yer alabilir. Aynı şekilde, bir kitap birden fazla yazar tarafından kaleme alınmış olabilir. Bu bahsedilen iki ilişkide ayrı ayrı bire-&amp;ccedil;ok ilişkilerdir. Yani bir yazarın birden fazla kitabı yazmış olması bire &amp;ccedil;ok ilişki olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilirken, bir kitabın birden fazla yazara ait olmasıda bire-&amp;ccedil;ok ilişki olarak g&amp;ouml;zlemlenebilir.&lt;/p&gt;
+&lt;p&gt;Ancak, bu iki tablo arasında ilişkiyi bu şekilde yansıtmamız m&amp;uuml;mk&amp;uuml;n değildir. Nitekim, bire-&amp;ccedil;ok ilişkilerde, &amp;ccedil;ok ilişkiyi temsil eden tablodaki yabancı anahtar(foreign key), ebeveyn(parent) tabloda unique &amp;ouml;zellikte bir alana ihtiya&amp;ccedil; duyar. Dolayısıyla iki y&amp;ouml;nl&amp;uuml; ilişkinin olduğu authors ve titles gibi tablolar i&amp;ccedil;in bu tarz bir ilişkiyi oluşturmak biraz daha farklıdır. Bunun i&amp;ccedil;in &amp;uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; bir tablo kullanılır ve bu tabloda, her iki tablonun primary key alanlarına yer verilir. Aşağıdaki şekil, pubs veritabanında yer alan authors ve titles tabloları i&amp;ccedil;in &amp;ccedil;oğa-&amp;ccedil;ok ilişkiyi sağlayacak bu tarz bir tablonun yapısını ve aralarındaki ilişkiyi g&amp;ouml;stermektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk62_1.gif" alt="" width="595" height="346" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 1. titleauthor tablosu yardımıyla &amp;ccedil;oğa-&amp;ccedil;ok ilişkinin tanımlanması.&lt;/p&gt;
+&lt;p&gt;Authors tablosunda yer alan her au_id alanı, titleauthors tablosunda yer alır. Aynı durum titles tablosundaki title_id alanı i&amp;ccedil;inde ge&amp;ccedil;erlidir. B&amp;ouml;ylece, author ve titles tabloları arasındaki &amp;ccedil;oğa-&amp;ccedil;ok ilişki, titleauthor tablosu &amp;uuml;zerinden ger&amp;ccedil;ekleştirilebilmektedir.&lt;/p&gt;
+&lt;p&gt;Şimdi dilerseniz, kendimiz &amp;ccedil;oğa-&amp;ccedil;ok ilişkiye sahip iki tablo ve bu tabloların arasındaki ilişkiyi ger&amp;ccedil;ekleştirecek &amp;uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; bir ara tabloyı oluşturalım. &amp;Ouml;rnek olarak, b&amp;uuml;y&amp;uuml;k bir yazılım şirketindeki proje elemanlarını ve ger&amp;ccedil;ekleştirilen projeleri ele alabiliriz. Bir proje m&amp;uuml;hendisi pek &amp;ccedil;ok proje ger&amp;ccedil;ekleştirebileceği gibi, yapılan, halen &amp;ccedil;alışılan veya planlanan projelerde birden fazla proje m&amp;uuml;hendiside g&amp;ouml;rev alabilir. İşte bu &amp;ccedil;oğa-&amp;ccedil;ok ilişki i&amp;ccedil;in g&amp;ouml;sterebileceğimiz g&amp;uuml;zel bir &amp;ouml;rnektir. Bu ama&amp;ccedil;la sql sunucumuzda aşağıdaki yapılara sahip tabloları oluşturalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk62_2.gif" alt="" width="404" height="455" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 2. Projedeki m&amp;uuml;hendislere ait genel bilgileri taşıyan Muhendisler tablosu.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk62_3.gif" alt="" width="404" height="455" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 3. Projelere ait y&amp;uuml;zeysel bilgileri tutacak olan Projeler tablosu.&lt;/p&gt;
+&lt;p&gt;Son olarakta &amp;ccedil;oka-&amp;ccedil;ok ilişkiyi taşıyacak ara tablomuz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk62_4.gif" alt="" width="404" height="455" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 4. MuhendisProje Tablomuz &amp;Ccedil;oka-&amp;ccedil;ok ilişkiyi taşıyacak.&lt;/p&gt;
+&lt;p&gt;MuhendisProje tablosunu oluşturduğumuzda, Muhendisler tablosundan bu tabloya bire-&amp;ccedil;ok ilişki ve yine Projeler tablosundan bu tabloya bire-&amp;ccedil;ok ilişkileri aşağıdaki gibi oluşturmamızda gerekiyor.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk62_5.gif" alt="" width="571" height="150" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 5. MuhendisProje tablosu &amp;uuml;zerinden ger&amp;ccedil;ekleştirilen &amp;ccedil;oka-&amp;ccedil;ok ilişki.&lt;/p&gt;
+&lt;p&gt;Gelelim işin .net kısmına. Tasarladığımız bu yapıyı uygulamalarımızda kullanabilmek i&amp;ccedil;in, &amp;ouml;zellikle bağlantısız katman nesneleri &amp;uuml;zerinde kullanabilmek i&amp;ccedil;in DataRelation sınıfını kullanmamız gerekiyor. Yukarıdaki işlemler ile sql sunucumuzda oluşturduğumuz d&amp;uuml;zenin aynısını , sistemimizdeki bağlantısız katman uygulamasında ger&amp;ccedil;ekleştirmek istediğimiz senaryoyu g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;ncelikle, sahip olduğumuz &amp;uuml;&amp;ccedil; tabloyuda bir DataSet nesnesine aktarmamız gerekiyor. Daha sonra, sql sunucusundaki bu tablolar arasındaki ilişkileri, DataSet i&amp;ccedil;erisindeki tablolarımız arasındada ger&amp;ccedil;ekleştirmemiz gerekli. İşte bu noktada DataRelation sınıfı devreye giriyor. &amp;Ouml;nce, Muhendisler tablosundan, MuhendisProje tablosuna olan bire-&amp;ccedil;ok ilişkiyi oluşturuyoruz. Ardından ise, Projeler tablosundan, MuhendisProje tablosuna olan bire-&amp;ccedil;ok ilişkiyi tasarlıyoruz. Bu ilişkilerin DataRelation nesneleri olarak tanımlanmasının ardından, DataSet sınıfının DataRelation nesnelerini taşıyan Relations koleksiyonunada eklenmeleri gerekiyor. İşte bu son adım ile birlikte, veritabanı sunucusundaki &amp;ccedil;oğa-&amp;ccedil;ok ilişkinin aynısını bağlantısız katman nesnemiz olan DataSet &amp;uuml;zerinde de ger&amp;ccedil;ekleştirmiş oluyoruz.&lt;/p&gt;
+&lt;p&gt;Dilerseniz, yukarıda &amp;ouml;zetlediğimiz işin uygulamada nasıl ger&amp;ccedil;ekleştirilebileceğini incelemeye &amp;ccedil;alışalım. Bunu i&amp;ccedil;in bir windows uygulaması geliştirebiliriz. Bu uygulamada bir proje m&amp;uuml;hendisi se&amp;ccedil;ildiğinde, bu m&amp;uuml;hendisin yer aldığı projeleri ve bu projelerdeki ekip arkadaşlarını g&amp;ouml;sterecek olan bir uygulama geliştirelim. Bu ama&amp;ccedil;la aşağıdakine benzer tarzda bir form hazırlayalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk62_6.gif" alt="" width="585" height="286" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 6. Form Tasarımımız.&lt;/p&gt;
+&lt;p&gt;Sıra geldi uygulamamızın kodlarını yazmaya. Uygulamayı iki kısımda yazarsak daha kolay anlaşılır olucaktır. &amp;Ouml;ncelikle, bir m&amp;uuml;hendisi se&amp;ccedil;tiğimizde bu m&amp;uuml;hendisin g&amp;ouml;rev aldığı projeleri elde edebileceğimiz kodu uygulamamıza ekleyelim. Bu aşamada uygulamamızın kodları aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;SqlConnection con;
+SqlDataAdapter da;
+DataSet ds;
+DataTable dtMuhendisler;
+DataTable dtProjeler;
+DataTable dtMuhendisProje;
+
+private void Form1_Load(object sender, System.EventArgs e)
+{
+    /* Sql sunucumuza bir bağlantı a&amp;ccedil;ıyoruz. */
+    con=new SqlConnection("Data source=localhost;initial catalog=Friends;integrated security=SSPI");
+
+    /* M&amp;uuml;hendisler, MuhendisProje ve Projeler tablolarını referans edicek DataTable nesneleri ile bu DataTable nesnelerini b&amp;uuml;nyesinde barındıracak DataSet nesnemizi oluşturuyoruz.*/
+    DataSet ds=new DataSet(); 
+    dtMuhendisler=new DataTable();
+    dtProjeler=new DataTable();
+    dtMuhendisProje=new DataTable();
+
+    /* SqlDataAdapter nesnemiz ile ilk aşamada, Muhendisler tablosundaki bilgileri alıyor ve dtMuhendisler DataTable nesnesine y&amp;uuml;kl&amp;uuml;yoruz. */
+    da=new SqlDataAdapter("Select * From Muhendisler",con);
+    da.Fill(dtMuhendisler);
+    /* Tanımladığımız primaryKey alanını, listBox kontrol&amp;uuml;ndeki bir Muhendisi se&amp;ccedil;tiğimizde bu Muhendise ait satırı bulucak Find metodunda kullanabilmek i&amp;ccedil;in, PersonelID &amp;uuml;zerinden oluşturuyoruz. */
+    dtMuhendisler.PrimaryKey=new DataColumn[]{dtMuhendisler.Columns["PersonelID"]};
+    /* dtMuhendisler DataTable nesnesini, DataSet in Tables koleksiyonuna ekliyoruz. */
+    ds.Tables.Add(dtMuhendisler);
+
+    /* Şimdi Projeler tablosundaki verileri, dtProjeler DataTable nesnesine ekliyor ve bu dataTable'ıda DataSet nesnemizin Tables koleksiyonuna ekliyoruz.*/
+    da=new SqlDataAdapter("Select * From Projeler",con);
+    da.Fill(dtProjeler);
+    ds.Tables.Add(dtProjeler);
+
+    /* Sıra MuhendisProje tablosundaki verilerin eklenmesinde. */
+    da=new SqlDataAdapter("Select * From MuhendisProje",con);
+    da.Fill(dtMuhendisProje);
+    ds.Tables.Add(dtMuhendisProje);
+
+    /* Şimdi işin &amp;ouml;nemli kısmı. Muhendisler tablosundan MuhendisProje tablosuna olan bire-&amp;ccedil;ok ilişkiyi DataSet nesnemizin Relations koleksiyonuna bir DataRelation nesnesi olarak ekliyoruz.*/
+    ds.Relations.Add("Muhendis_MuhendisProje",dtMuhendisler.Columns["PersonelID"],dtMuhendisProje.Columns["PersonelID"],false);
+
+    /* Burada ise, Projeler tablosunda, MuhendisProje tablosuna olan bire-&amp;ccedil;ok ilişkiyi tanımlıyor ve DataSet nesnemizin Relations koleksiyonuna DataRelation olarak ekliyoruz.*/
+    ds.Relations.Add("Projeler_MuhendisProje",dtProjeler.Columns["ProjeID"],dtMuhendisProje.Columns["ProjeID"],false);
+
+    /* lbMuhendisler ListBox kontrol&amp;uuml;n&amp;uuml;n dtMusteriler DataTable'ındaki verileri g&amp;ouml;stereceğini belirtiyoruz.*/
+lbMuhendisler.DataSource=dtMuhendisler;
+    /* Buradaki satırlarda, Form &amp;uuml;zerindeki lbMuhendisler ListBox kontrol&amp;uuml; i&amp;ccedil;in, Muhendislerin adlarını g&amp;ouml;sterecek DisplayMember ve her bir m&amp;uuml;hendisin PersonelID alanının değerini indis olarak alıcak ValueMember &amp;ouml;zelliklerini belirliyoruz.*/
+    lbMuhendisler.DisplayMember=dtMuhendisler.Columns["Ad"].ToString();
+    lbMuhendisler.ValueMember=dtMuhendisler.Columns["PersonelID"].ToString();
+}
+
+private void btnGetir_Click(object sender, System.EventArgs e)
+{ 
+    lbProjeler.Items.Clear();
+
+    /* &amp;Ouml;ncelikle lbMuhendisler ListBox kontrol&amp;uuml;nden se&amp;ccedil;ilen M&amp;uuml;hendise ait PersonelID alanının değerini alıyor ve DataTable sınıfının Rows koleksiyonunun Find metodu yardımıyla bu PrimaryKey değerini i&amp;ccedil;eren satırı dtMuhendisler tablosundan buluyor ve DataRow nesnesine aktarıyoruz.*/
+    DataRow dr; 
+    dr=dtMuhendisler.Rows.Find(lbMuhendisler.SelectedValue);
+
+    /* Foreach d&amp;ouml;ng&amp;uuml;s&amp;uuml;nde ilk aşamada, se&amp;ccedil;ilen Muhendisin &amp;ccedil;ocuk satırlarını(child rows) MuhendisPersonel tablosundan alıyoruz. Bir veya birden fazla satır geldiğini d&amp;uuml;ş&amp;uuml;n&amp;uuml;rsek her bir satır i&amp;ccedil;inde, Projeler ve MuhendisProje tabloları arasındaki ilişkiyi kullanarak, GetParentRow metodu yardımıyla, M&amp;uuml;hendislerin &amp;ccedil;alıştığı Projelere ait satırları elde ediyoruz. Sonrada bu satırlardaki ProjeAdi alanın değerini lbPorjeler isimli ListBox kontrol&amp;uuml;m&amp;uuml;ze ekliyoruz.*/
+    foreach(DataRow drProjeNo in dr.GetChildRows("Muhendis_MuhendisProje"))
+    {
+        DataRow drProje=drProjeNo.GetParentRow("Projeler_MuhendisProje");
+        lbProjeler.Items.Add(drProje["ProjeAdi"]);
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Kodumuzda neler olduğunu anlayabilmek i&amp;ccedil;in aşağıdaki şekil bize daha fazla yardımcı olucaktır. Burada, foreach d&amp;ouml;ng&amp;uuml;s&amp;uuml; i&amp;ccedil;erisinde meydana gelen olaylar tasvir edilmeye &amp;ccedil;alışılmıştır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk62_7.gif" alt="" width="637" height="460" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 7. Bir M&amp;uuml;hendisin &amp;uuml;zerinde &amp;ccedil;alıştığı projelerin elde edilmesi.&lt;/p&gt;
+&lt;p&gt;Uygulamayı &amp;ccedil;alıştırıp herhangibir M&amp;uuml;hendis i&amp;ccedil;in Getir başlıklı butona tıkladığımızda, bu m&amp;uuml;hendisin &amp;ccedil;alıştığı projelerin elde edildiğini g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk62_8.gif" alt="" width="584" height="288" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 8. Uygulamanın &amp;ccedil;alışmasının sonucu.&lt;/p&gt;
+&lt;p&gt;Şimdi gelelim ilkinci kısma. Foreach d&amp;ouml;ng&amp;uuml;s&amp;uuml; i&amp;ccedil;inde, se&amp;ccedil;ilen M&amp;uuml;hendis satırının, MuhendisPersonel tablosundaki alanlarını GetChildRows metodu ile elde ettik. Daha sonra elde edilen her satırın, Projeler tablosunda karşılık geldiği satırlara ulaştık. Bu işlemi ger&amp;ccedil;ekleştirmemizde, MuhendisProje tablosunun ve bu tablo ile Muhendis ve Projeler tablolarının aralarındaki bire-&amp;ccedil;ok ilişkilerin b&amp;uuml;y&amp;uuml;k bir &amp;ouml;nemi vardır. Şimdi ise amacımız elde edilen projelere kimlerin katıldığı. İşte bunun i&amp;ccedil;in, elde edilen her proje satırından geriye doğru gidecek ve yine ilişkileri kullanarak bu problemi sonuca kavuşturacağız. Bunun i&amp;ccedil;in btnGetir olay prosed&amp;uuml;r&amp;uuml;ndeki kodları aşağıdaki şekilde değiştirmemiz yeterlidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void btnGetir_Click(object sender, System.EventArgs e)
+{ 
+    lbProjeler.Items.Clear();
+    lbEkip.Items.Clear();
+
+    DataRow dr; 
+    dr=dtMuhendisler.Rows.Find(lbMuhendisler.SelectedValue);
+
+    foreach(DataRow drProjeNo in dr.GetChildRows("Muhendis_MuhendisProje"))
+    {
+        DataRow drProje=drProjeNo.GetParentRow("Projeler_MuhendisProje");
+        lbProjeler.Items.Add(drProje["ProjeAdi"]);
+        lbEkip.Items.Add(drProje["ProjeAdi"]);
+            foreach(DataRow drMuh in drProje.GetChildRows("Projeler_MuhendisProje"))
+            {
+                DataRow drMuhBilgi=drMuh.GetParentRow("Muhendis_MuhendisProje");
+                lbEkip.Items.Add(drMuhBilgi["Ad"]+" "+drMuhBilgi["Soyad"]);
+            }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Yeni d&amp;uuml;zenlemeler ile uygulamamızı &amp;ccedil;alıştırdığımızda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;n&amp;uuml; elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk62_9.gif" alt="" width="584" height="288" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 9. Bir M&amp;uuml;hendisin &amp;ccedil;alıştığı projeler ve projelerdeki takım arkadaşlarının elde edilmesi.&lt;/p&gt;
+&lt;p&gt;Burada yaptıklarımız değerlendirirsek kafa karıştırıcı tek unsurun foreach d&amp;ouml;ng&amp;uuml;s&amp;uuml; i&amp;ccedil;erisindeki yaklaşımlar olduğunu g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Bunun yanında, ara tablomuz olan MuhendisProje tablosunun nasıl oluşturulduğu, verileri nasıl tuttuğu ve diğer tablolar arasındaki ilişkilerin .net ortamında bağlantısız katman &amp;uuml;zerinde nasıl sim&amp;uuml;le edildiği &amp;ouml;nemlidir. Bu olgulara dikkat etmenizi ve iyice incelemenizi &amp;ouml;neririm. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde buluşmak dileğiyle hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2004-04-01 09:00:00</pubDate>
+  <slug>DataRelation-Sc4b1nc4b1fc4b1-ve-Coga-Cok-(Many-to-many)-Iliskiler-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>adonet</tag>
+    <tag>relations</tag>
+    <tag>many-to-many</tag>
+    <tag>sql</tag>
+  </tags>
+  <categories>
+    <category>Ado.Net</category>
+  </categories>
+</post>

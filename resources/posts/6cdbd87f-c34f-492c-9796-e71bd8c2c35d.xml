@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>TCP Bazlı WCF Service ve Silverlight İstemcileri</title>
+  <description>Bugün yazımız içinde elimizde bir takım malzemelerimiz bulunmakta. Bir adet TCP bazlı olarak çalışan WCF(Windows Communication Foundation) servisi. Bu servisi kullanan Silverlight 4.0 tabanlı bir istemci. TCP bazlı servisimiz son derece zıpkın bir delikanlı aslında. Nitekim şirketin iç ağı üzerinden Binary tabanlı mesaj formatını kullandığı için ondan daha hızlısı neredeyse yok gibi.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/blg218_Giris_1.jpg"&gt;&lt;img style="display: inline; margin-left: 0px; margin-right: 0px; border-width: 0px;" title="blg218_Giris" src="/pics/blg218_Giris_thumb_1.jpg" alt="blg218_Giris" width="302" height="178" align="right" border="0" /&gt;&lt;/a&gt; Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Bir yazar, hazırlayacağı hikaye i&amp;ccedil;in &amp;ccedil;oğu zaman &amp;ccedil;evrede dolaşıp malzeme toplar. Olayın kahramanlarını tasvir etmek i&amp;ccedil;in &amp;ccedil;evredeki insanları g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alır. Hatta gezdiği yerleri inceler. Bu a&amp;ccedil;ıdan bakıldığında iyi yazarların aslında &amp;ccedil;ok iyi birer g&amp;ouml;zlemci olduğu s&amp;ouml;ylenebilir.&lt;/p&gt;
+&lt;p&gt;Sonu&amp;ccedil; olarak yazarın elinde bir senaryo taslağı oluşur. Artık tek yapması gereken sakin bir k&amp;ouml;şe bulmak ve daktilosunun başına ge&amp;ccedil;erek&lt;em&gt;(ki g&amp;uuml;n&amp;uuml;m&amp;uuml;de b&amp;uuml;y&amp;uuml;k bir olasılıkla bu diz &amp;uuml;st&amp;uuml; bir bilgisayar olacaktır)&lt;/em&gt; yazmaya başlamaktır. &amp;Ccedil;&amp;ouml;z&amp;uuml;lmesi en zor olan par&amp;ccedil;aların başında kitaba bir isim bulmak ve ilk giriş c&amp;uuml;mlesini yazmak gelmektedir. Her ne kadar bu g&amp;uuml;ne kadar yazılmış bir kitabım olmasa da b&amp;ouml;yle olduğunu tahmin etmekteyim.&lt;/p&gt;
+&lt;p&gt;Bug&amp;uuml;n yazımız i&amp;ccedil;inde elimizde bir takım malzemelerimiz bulunmakta. Bir adet &lt;strong&gt;TCP&lt;/strong&gt; bazlı olarak &amp;ccedil;alışan &lt;strong&gt;WCF(Windows Communication Foundation)&lt;/strong&gt; servisi. Bu servisi kullanan &lt;strong&gt;Silverlight 4.0&lt;/strong&gt; tabanlı bir istemci. &lt;strong&gt;TCP&lt;/strong&gt; bazlı servisimiz son derece zıpkın bir delikanlı aslında. Nitekim şirketin i&amp;ccedil; ağı &amp;uuml;zerinden &lt;strong&gt;Binary&lt;/strong&gt; tabanlı mesaj formatını kullandığı i&amp;ccedil;in ondan daha hızlısı neredeyse yok gibi. Diğer yandan &lt;strong&gt;Silverlight&lt;/strong&gt; istemcimiz son derece yakışıklı ve zengin bir kız&lt;em&gt;(Rich Internet Application)&lt;/em&gt;. İşte bu yazımızda bu iki kişiyi buluşturmaya &amp;ccedil;alışıyor olacağız. Ne varki arada zıpkın delikanlının bir de ablası var ki o da&lt;strong&gt; IIS(Internet Information Services)&lt;/strong&gt; mahallesinde oturmayı istemeyen ama hep hayal eden &lt;strong&gt;Self-Hosted &lt;/strong&gt;stilde yazılmış bir &lt;strong&gt;Console&lt;/strong&gt; uygulaması. Neredeyse i&amp;ccedil;i kap kara olmuş birisi&lt;em&gt;(Ama biz &amp;ccedil;alışma zamanı ekranında onun i&amp;ccedil;indeki iyiliği beyaza boyayıp &amp;ccedil;ıkartacağız)&lt;/em&gt; Bakalım abla, kızın, erkek arkadaşına ulaşmasına izin verecek mi? &lt;img title="Laughing" src="/editors/tiny_mce3/plugins/emotions/img/smiley-laughing.gif" alt="Laughing" border="0" /&gt;&lt;/p&gt;
+&lt;h2&gt;&lt;strong&gt;Varsayılan Olarak&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;Normal şartlar altında &lt;strong&gt;Silverlight&lt;/strong&gt; istemcilerinin genellikle &lt;strong&gt;HTTP&lt;/strong&gt; bazlı &amp;ccedil;alışan &lt;strong&gt;WCF&lt;/strong&gt; servislerini kullanması s&amp;ouml;z konusudur. Hatta&lt;strong&gt; WCF RIA Services&lt;/strong&gt;&amp;rsquo; ler en sık kullanılanıdır. Ancak &lt;strong&gt;Intranet&lt;/strong&gt; tabanlı bir sistemde &lt;strong&gt;TCP&lt;/strong&gt; bazlı &lt;strong&gt;WCF&lt;/strong&gt; Servisleri de s&amp;ouml;z konusu olabilir. Dilerseniz olayı &amp;ouml;rnekleyerek canlandırmaya &amp;ccedil;alışalım. İlk olarak elimizin altında aşağıdaki gibi bir &lt;strong&gt;WCF Service Library&lt;/strong&gt; i&amp;ccedil;eriğinin olduğunu d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg218_ServiceClassDiagram_1.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg218_ServiceClassDiagram" src="/pics/blg218_ServiceClassDiagram_thumb_1.gif" alt="blg218_ServiceClassDiagram" width="299" height="308" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Servis s&amp;ouml;zleşmemiz olduk&amp;ccedil;a basit bir i&amp;ccedil;eriğe sahip.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.ServiceModel;
+
+namespace YourMeetingServices 
+{ 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; [ServiceContract] 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; public interface IMeetingService 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; [OperationContract] 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; string FirstHello(string yourName); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+}&lt;/pre&gt;
+&lt;p&gt;Sadece bir Merhaba demek i&amp;ccedil;in gerekli operasyon tanımını i&amp;ccedil;ermekte. Bu operasyon ise aşağıdaki gibi uygulanmakta.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace YourMeetingServices 
+{ 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; public class MeetingService 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; : IMeetingService 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; #region IMeetingService Members
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public string FirstHello(string yourName) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; return string.Format("Merhaba {0}", yourName); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; #endregion 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+}&lt;/pre&gt;
+&lt;p&gt;Bu servis k&amp;uuml;t&amp;uuml;phanesini referans ederek host eden &lt;strong&gt;Console&lt;/strong&gt; uygulamasının i&amp;ccedil;eriği ise aşağıdaki gibi.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.ServiceModel; 
+using YourMeetingServices;
+
+namespace ServerApp 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            ServiceHost host = new ServiceHost( 
+                typeof(MeetingService) 
+                ); 
+            host.Opened += (o, e) =&amp;gt; 
+                { 
+                    Console.WriteLine("Servis dinlemede"); 
+                }; 
+            host.Closed += (o, e) =&amp;gt; 
+                { 
+                    Console.WriteLine("Servis kapatıldı"); 
+                }; 
+            host.Open(); 
+            Console.WriteLine("&amp;Ccedil;ıkmak i&amp;ccedil;in bir tuşa basınız"); 
+            Console.ReadLine(); 
+            host.Close(); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ccedil;ok doğal olarak config dosyası i&amp;ccedil;eriğinin de aşağıdaki gibi olduğunu s&amp;ouml;yleyebiliriz.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt; 
+&amp;lt;configuration&amp;gt; 
+    &amp;lt;system.serviceModel&amp;gt; 
+        &amp;lt;behaviors&amp;gt; 
+            &amp;lt;serviceBehaviors&amp;gt; 
+                &amp;lt;behavior&amp;gt; 
+                    &amp;lt;serviceMetadata/&amp;gt; 
+                &amp;lt;/behavior&amp;gt; 
+            &amp;lt;/serviceBehaviors&amp;gt; 
+        &amp;lt;/behaviors&amp;gt; 
+        &amp;lt;services&amp;gt; 
+            &amp;lt;service name="YourMeetingServices.MeetingService"&amp;gt; 
+                &amp;lt;endpoint address="" binding="netTcpBinding" contract="YourMeetingServices.IMeetingService"/&amp;gt; 
+                &amp;lt;endpoint address="mex" binding="mexTcpBinding" contract="IMetadataExchange" /&amp;gt; 
+                &amp;lt;host&amp;gt; 
+                    &amp;lt;baseAddresses&amp;gt; 
+                        &amp;lt;add baseAddress="net.tcp://localhost:8342/MeetingRoom/MeetingService/" /&amp;gt; 
+                    &amp;lt;/baseAddresses&amp;gt; 
+                &amp;lt;/host&amp;gt; 
+            &amp;lt;/service&amp;gt; 
+        &amp;lt;/services&amp;gt; 
+    &amp;lt;/system.serviceModel&amp;gt; 
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Buna g&amp;ouml;re servisimiz &lt;strong&gt;TCP&lt;/strong&gt; bazlı olaraktan &lt;strong&gt;net.tcp://localhost:8342/MeetingRoom/MeetingService/&lt;/strong&gt; adresi &amp;uuml;zerinden yayın yapmaktadır. Ayrıca &lt;strong&gt;mexTcpBinding&lt;/strong&gt; bağlayıcı tipini kullanan ve &lt;strong&gt;Mex&lt;/strong&gt; son ekini var olan &lt;strong&gt;Base&lt;/strong&gt; &lt;strong&gt;Address&lt;/strong&gt; tanımına ekleyerek, &lt;strong&gt;service&lt;/strong&gt; &lt;strong&gt;metadata&lt;/strong&gt; &lt;strong&gt;publishing&lt;/strong&gt; yapan bir &lt;strong&gt;EndPoint&amp;rsquo;&lt;/strong&gt; e de sahiptir.&lt;/p&gt;
+&lt;p&gt;Buna g&amp;ouml;re basit bir &lt;strong&gt;Console&lt;/strong&gt; istemcisinin s&amp;ouml;z konusu servisi kullanması i&amp;ccedil;in tek yapması gereken, Servis uygulaması &amp;ccedil;alışırken &lt;strong&gt;Add Service Reference&lt;/strong&gt; se&amp;ccedil;eneğinde aşağıdaki şekilde g&amp;ouml;r&amp;uuml;len adres tanımlamasını kullanmak olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg218_AddServiceReference_1.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg218_AddServiceReference" src="/pics/blg218_AddServiceReference_thumb_1.gif" alt="blg218_AddServiceReference" width="635" height="514" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Buna g&amp;ouml;re sıradan bir istemcinin s&amp;ouml;z konusu servisi kullanması m&amp;uuml;mk&amp;uuml;n ve kolaydır.&lt;/p&gt;
+&lt;h2&gt;&lt;strong&gt;İlk Tanışma&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;Ancak s&amp;ouml;z konusu istemci bir &lt;strong&gt;Silverlight&lt;/strong&gt; uygulaması ise biraz daha sıkıntılı bir durumla karşı karşıya olabiliriz. Dilerseniz bu durumu analiz etmek i&amp;ccedil;in yukarıda yazmış olduğumuz servisimizi bir &lt;strong&gt;Silverlight&lt;/strong&gt; istemcisine referans etmeye &amp;ccedil;alışalım. Tabiki Sunucu uygulamanın &amp;ccedil;alışıyor olması gerektiğini hatırlatmayacağım.&lt;/p&gt;
+&lt;p&gt;Sunucu uygulama &amp;ccedil;alışıyor ve servis iletişime a&amp;ccedil;ık iken, &lt;strong&gt;Silverlight&lt;/strong&gt; uygulamasına referans ekleme işlemi başarılı olacaktır. Ancak aşağıdaki şekildeki gibi iki adet &lt;strong&gt;Warning&amp;rsquo;&lt;/strong&gt; in de oluştuğu g&amp;ouml;r&amp;uuml;lecektir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg218_Warnings_1.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg218_Warnings" src="/pics/blg218_Warnings_thumb_1.gif" alt="blg218_Warnings" width="501" height="190" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Uuml;stelik &amp;uuml;retilen config dosyası i&amp;ccedil;eriğine bakıldığında aşağıdaki g&amp;ouml;r&amp;uuml;nt&amp;uuml; ile karşılaşılır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg218_Config_1.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg218_Config" src="/pics/blg218_Config_thumb_1.gif" alt="blg218_Config" width="334" height="83" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Uppsss!!! İlgin&amp;ccedil; bir durum. Nitekim &lt;strong&gt;Endpoint&lt;/strong&gt; &amp;uuml;retimlerinin &lt;span style="text-decoration: underline;"&gt;yapılmaması&lt;/span&gt; bir yana, &lt;strong&gt;WCF&lt;/strong&gt; servisi ile olan iletişim i&amp;ccedil;in gerekli hi&amp;ccedil; bir ayar da &lt;span style="text-decoration: underline;"&gt;bulunmamaktadır&lt;/span&gt;. Buna g&amp;ouml;re &lt;strong&gt;Abla&lt;/strong&gt;&amp;rsquo; nın, iletişimi engellediğini ifade edebiliriz.&lt;/p&gt;
+&lt;h2&gt;&lt;strong&gt;İkinci Karşılaşma&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;İlk karşılaşmanın başarısızlığı &amp;uuml;zerine servis ile ilişkili olarak bir takım ilkelerin uygulanması gerektiğini s&amp;ouml;yleyebiliriz. Her şeyden &amp;ouml;nce sunucunun, &lt;strong&gt;Silverlight&lt;/strong&gt; istemcilerinin &lt;strong&gt;HTTP&lt;/strong&gt; bazlı olarak &lt;strong&gt;80&lt;/strong&gt; portu &amp;uuml;zerinden erişebilmelerine izin veriyor olması gerektiği ip ucunu verebiliriz. Bir başka deyişle &lt;strong&gt;Cross Domain&lt;/strong&gt; i&amp;ccedil;in &lt;strong&gt;ClientAccessPolicy.xml &lt;/strong&gt;ve doğru i&amp;ccedil;eriğin uygulanması gerekliliği s&amp;ouml;z konusudur. Bu ama&amp;ccedil;la servis k&amp;uuml;t&amp;uuml;phanemize aşağıdaki servis s&amp;ouml;zleşmesini eklediğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.IO; 
+using System.ServiceModel; 
+using System.ServiceModel.Web;
+
+namespace YourMeetingServices 
+{ 
+    [ServiceContract] 
+    public interface ITCPPolicy 
+    { 
+        [OperationContract, WebGet(UriTemplate = "/clientaccesspolicy.xml")] 
+        Stream GetPolicy(); 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Burada &lt;strong&gt;WebGet&lt;/strong&gt; niteliğinin de uygulandığı&lt;em&gt;(ki bunun i&amp;ccedil;in System.ServiceModel.Web.dll assembly&amp;rsquo; ının projeye referans edilmesi gerekir) &lt;/em&gt;bir operasyon yer almaktadır. Bu operasyon geriye &lt;strong&gt;Stream&lt;/strong&gt; tipi tarafından taşınabilen bir referans d&amp;ouml;nd&amp;uuml;rmektedir. S&amp;ouml;z konusu operasyona ulaşılırken &lt;strong&gt;HTTP Get&lt;/strong&gt; metodunda &lt;strong&gt;Clientaccesspolicy.xml&lt;/strong&gt; son ekinin kullanılacağı da ifade edilmektedir. Bir başka deyişle bu s&amp;ouml;zleşme istemci i&amp;ccedil;in gerekli olan &lt;strong&gt;ClientAccessPolicy&lt;/strong&gt; i&amp;ccedil;eriğini sunacaktır. &amp;Ccedil;ok doğal olarak bu s&amp;ouml;zleşmenin ilgili tipe uygulanıyor olması gerekmektedir. Aynen aşağıda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.IO; 
+using System.ServiceModel.Web; 
+using System.Text;
+
+namespace YourMeetingServices 
+{ 
+    public class MeetingService 
+        : IMeetingService,ITCPPolicy 
+    { 
+        #region IMeetingService Members
+
+        public string FirstHello(string yourName) 
+        { 
+            return string.Format("Merhaba {0}", yourName); 
+        }
+
+        #endregion
+
+        #region ITCPPolicy Members
+
+        public Stream GetPolicy() 
+       { 
+            string content = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "PolicyContent.xml")); 
+            WebOperationContext.Current.OutgoingResponse.ContentType = "application/xml"; 
+           return new MemoryStream(Encoding.UTF8.GetBytes(content)); 
+        }
+
+        #endregion 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Yapılan bu değişiklikler sonucuda servis k&amp;uuml;t&amp;uuml;phanesinin i&amp;ccedil;eriğinin &amp;ouml;zetle aşağıdaki şekile g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi olduğunu ifade edebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg218_ClassDiagram2_1.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg218_ClassDiagram2" src="/pics/blg218_ClassDiagram2_thumb_1.gif" alt="blg218_ClassDiagram2" width="479" height="314" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;GetPolicy&lt;/strong&gt; metodunun uygulanışı i&amp;ccedil;erisindeki en &amp;ouml;nemli nokta sır gibi duran &lt;strong&gt;content&lt;/strong&gt; değişkeninin değeridir. Bu değer i&amp;ccedil;eriği aşağıdaki gibi olan &lt;strong&gt;PolicyContent.xml&lt;/strong&gt; dosyasından getirilmektedir. S&amp;ouml;z konusu dosyanın &lt;strong&gt;output&lt;/strong&gt; klas&amp;ouml;r&amp;uuml; sunucu uygulamaya ait exe &amp;ccedil;ıktısının olduğu yer olarak belirtilmiştir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8"?&amp;gt; 
+&amp;lt;access-policy&amp;gt; 
+  &amp;lt;cross-domain-access&amp;gt; 
+    &amp;lt;policy&amp;gt; 
+      &amp;lt;allow-from http-request-headers="*"&amp;gt; 
+        &amp;lt;domain uri="*"/&amp;gt; 
+      &amp;lt;/allow-from&amp;gt; 
+      &amp;lt;grant-to&amp;gt; 
+        &amp;lt;socket-resource port="8342" protocol="tcp" /&amp;gt; 
+      &amp;lt;/grant-to&amp;gt; 
+    &amp;lt;/policy&amp;gt; 
+  &amp;lt;/cross-domain-access&amp;gt; 
+&amp;lt;/access-policy&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zre &lt;strong&gt;TCP&lt;/strong&gt; bazlı &lt;strong&gt;8342&lt;/strong&gt; numaralı port i&amp;ccedil;in garanti verilmiştir. Tabi buna g&amp;ouml;re sunucu uygulama &amp;uuml;zerinde de bir takım değişikliklerin yapılması gerekmektedir. Aslında &lt;strong&gt;App.config&lt;/strong&gt; dosyası i&amp;ccedil;erisinde aşağıdaki değişiklikleri yapmamız yeterli olacaktır.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0"?&amp;gt; 
+&amp;lt;configuration&amp;gt; 
+    &amp;lt;system.serviceModel&amp;gt; 
+        &amp;lt;bindings&amp;gt; 
+            &amp;lt;netTcpBinding&amp;gt; 
+                &amp;lt;binding name="TcpBindingConfiguration"&amp;gt; 
+                    &amp;lt;security mode="None" /&amp;gt; 
+                &amp;lt;/binding&amp;gt; 
+            &amp;lt;/netTcpBinding&amp;gt; 
+        &amp;lt;/bindings&amp;gt; 
+        &amp;lt;behaviors&amp;gt; 
+            &amp;lt;endpointBehaviors&amp;gt; 
+                &amp;lt;behavior name="WebBehavior"&amp;gt; 
+                    &amp;lt;webHttp /&amp;gt; 
+                &amp;lt;/behavior&amp;gt; 
+            &amp;lt;/endpointBehaviors&amp;gt; 
+            &amp;lt;serviceBehaviors&amp;gt; 
+                &amp;lt;behavior name=""&amp;gt; 
+                    &amp;lt;serviceMetadata /&amp;gt; 
+                &amp;lt;/behavior&amp;gt; 
+            &amp;lt;/serviceBehaviors&amp;gt; 
+        &amp;lt;/behaviors&amp;gt; 
+        &amp;lt;services&amp;gt; 
+            &amp;lt;service name="YourMeetingServices.MeetingService"&amp;gt; 
+                &amp;lt;endpoint address="" binding="netTcpBinding" bindingConfiguration="TcpBindingConfiguration" 
+                    name="TcpEndpoint" contract="YourMeetingServices.IMeetingService" /&amp;gt; 
+                &amp;lt;endpoint address="mex" binding="mexTcpBinding" name="MexTcpEndpoint" 
+                    contract="IMetadataExchange" /&amp;gt; 
+                &amp;lt;endpoint address="" behaviorConfiguration="WebBehavior" binding="webHttpBinding" 
+                    name="WebHttpEndpoint" contract="YourMeetingServices.ITCPPolicy" /&amp;gt; 
+                &amp;lt;host&amp;gt; 
+                    &amp;lt;baseAddresses&amp;gt; 
+                        &amp;lt;add baseAddress="http://localhost:8080" /&amp;gt; 
+                        &amp;lt;add baseAddress="net.tcp://localhost:8342/MeetingRoom/MeetingService" /&amp;gt; 
+                    &amp;lt;/baseAddresses&amp;gt; 
+                &amp;lt;/host&amp;gt; 
+            &amp;lt;/service&amp;gt; 
+        &amp;lt;/services&amp;gt; 
+    &amp;lt;/system.serviceModel&amp;gt; 
+&amp;lt;startup&amp;gt;&amp;lt;supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.0"/&amp;gt;&amp;lt;/startup&amp;gt;&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;İlk dikkati &amp;ccedil;eken nokta &lt;strong&gt;WebHttp&lt;/strong&gt; davranışını destekleyen &lt;strong&gt;WebHttpBinding&lt;/strong&gt; bağlayıcı tipini kullanan ve &lt;strong&gt;ITCPPolicy&lt;/strong&gt; s&amp;ouml;zleşmesini sunan bir &lt;strong&gt;Endpoint&amp;rsquo;&lt;/strong&gt; in eklenmiş olmasıdır. &amp;Uuml;stelik bu &lt;strong&gt;Endpoint, &lt;/strong&gt;&amp;nbsp;&lt;strong&gt;base &lt;/strong&gt;olarak &lt;strong&gt;http://localhost:8080&lt;/strong&gt; adresini kullanmaktadır.&lt;/p&gt;
+&lt;p&gt;Diğer yandan &lt;strong&gt;TCP&lt;/strong&gt; Bazlı iletişim sağlayan &lt;strong&gt;Endpoint&lt;/strong&gt; i&amp;ccedil;in &lt;strong&gt;security&lt;/strong&gt; &lt;strong&gt;mode&lt;/strong&gt; değeri &lt;strong&gt;none&lt;/strong&gt; olarak işaret edilmiştir. Bu durumda &lt;strong&gt;Silverlight&lt;/strong&gt; uygulamamızda&lt;strong&gt; net.tcp://localhost/8342/MeetingRoom/MeetingService/mex&lt;/strong&gt; adresi &amp;uuml;zerinden yapılan referans ekleme işlemi sonrasında, daha &amp;ouml;nceden aldığımız &lt;strong&gt;Warning&lt;/strong&gt; mesajlarının kalktığı ve aşağıdaki istemci &lt;strong&gt;config&lt;/strong&gt; i&amp;ccedil;eriğinin oluştuğu g&amp;ouml;r&amp;uuml;lecektir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;configuration&amp;gt; 
+    &amp;lt;system.serviceModel&amp;gt; 
+        &amp;lt;bindings&amp;gt; 
+           &amp;lt;customBinding&amp;gt; 
+                &amp;lt;binding name="TcpEndpoint"&amp;gt; 
+                    &amp;lt;binaryMessageEncoding /&amp;gt; 
+                    &amp;lt;tcpTransport maxReceivedMessageSize="2147483647" maxBufferSize="2147483647" /&amp;gt; 
+                &amp;lt;/binding&amp;gt; 
+            &amp;lt;/customBinding&amp;gt; 
+        &amp;lt;/bindings&amp;gt; 
+        &amp;lt;client&amp;gt; 
+            &amp;lt;endpoint address="net.tcp://localhost:8342/MeetingRoom/MeetingService" 
+               binding="customBinding" bindingConfiguration="TcpEndpoint" 
+                contract="MeetingSpace.IMeetingService" name="TcpEndpoint" /&amp;gt; 
+        &amp;lt;/client&amp;gt; 
+    &amp;lt;/system.serviceModel&amp;gt; 
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Artık &lt;strong&gt;Silverlight&lt;/strong&gt; istemcisi &amp;uuml;zerinden bir test ger&amp;ccedil;ekleştirebiliriz. Bu ama&amp;ccedil;la &lt;strong&gt;MainPage&lt;/strong&gt; i&amp;ccedil;eriğini aşağıdaki gibi oluşturduğumuzu d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg218_DesignTime_1.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg218_DesignTime" src="/pics/blg218_DesignTime_thumb_1.gif" alt="blg218_DesignTime" width="284" height="182" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;MainPage.xaml.cs&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Windows; 
+using System.Windows.Controls; 
+using SilverApp.MeetingSpace;
+
+namespace SilverApp 
+{ 
+    public partial class MainPage : UserControl 
+    { 
+        MeetingServiceClient proxy = null;
+
+        public MainPage() 
+        { 
+            InitializeComponent(); 
+            proxy = new MeetingServiceClient("TcpEndpoint"); 
+            proxy.FirstHelloCompleted += new EventHandler&amp;lt;FirstHelloCompletedEventArgs&amp;gt;(proxy_FirstHelloCompleted); 
+        }
+
+        void proxy_FirstHelloCompleted(object sender, FirstHelloCompletedEventArgs e) 
+        { 
+            if (e.Error != null) 
+                lblCallResult.Content = "Bir sorun oluştu"; 
+            else if (e.Cancelled) 
+                lblCallResult.Content = "İşlem iptal edildi"; 
+            else 
+               lblCallResult.Content = e.Result;                
+        }
+
+        private void btnCall_Click(object sender, RoutedEventArgs e) 
+        { 
+            proxy.FirstHelloAsync(txtYourname.Text); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere, &lt;strong&gt;config&lt;/strong&gt; dosyasında &lt;strong&gt;TcpEndpoint&lt;/strong&gt; i&amp;ccedil;in tanımlanmış olan ayarlara g&amp;ouml;re ilgili &lt;strong&gt;WCF&lt;/strong&gt; servisine asenkron olarak bir &amp;ccedil;ağrı ger&amp;ccedil;ekleştirilmektedir.&lt;/p&gt;
+&lt;p&gt;Şimdi ilk testimizi yapalım. &amp;Ouml;nce sunucu uygulamayı ardından da &lt;strong&gt;Silverlight&lt;/strong&gt; &lt;strong&gt;Web&lt;/strong&gt; uygulamamızı &amp;ccedil;alıştıralım. İlk etapta her şey g&amp;uuml;ll&amp;uuml;k g&amp;uuml;listanlıktır. Aynen aşağıdaki şekilde g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg218_FirstRuntime_1.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg218_FirstRuntime" src="/pics/blg218_FirstRuntime_thumb_1.gif" alt="blg218_FirstRuntime" width="559" height="348" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Ancak &lt;strong&gt;Call&lt;/strong&gt; başlıklı &lt;strong&gt;Button&lt;/strong&gt; kontrol&amp;uuml;ne bastığımızda aşağıda g&amp;ouml;r&amp;uuml;len &lt;strong&gt;&amp;ccedil;alışma zamanı istisnasını(Runtime Exception) &lt;/strong&gt;aldığımızı g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg218_FirstRuntimeException_1.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg218_FirstRuntimeException" src="/pics/blg218_FirstRuntimeException_thumb_1.gif" alt="blg218_FirstRuntimeException" width="560" height="202" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Aslında buradaki hata mesajının tam i&amp;ccedil;eriği ş&amp;ouml;yledir;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Could not connect to net.tcp://localhost:8342/MeetingRoom/MeetingService. The connection attempt lasted for a time span of 00:00:00.2250225. TCP error code 10013: An attempt was made to access a socket in a way forbidden by its access permissions.. This could be due to attempting to access a service in a cross-domain way while the service is not configured for cross-domain access. You may need to contact the owner of the service to expose a sockets cross-domain policy over HTTP and host the service in the allowed sockets port range 4502-4534.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Anlaşılacağı &amp;uuml;zere bir &lt;strong&gt;Cross Domain Policy&lt;/strong&gt; sorunsalı baş g&amp;ouml;stermiştir gibi durmaktadır.&lt;/p&gt;
+&lt;h2&gt;&lt;strong&gt;Son Karşılaşma&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;Aslında Servisin geliştirilme mantığına g&amp;ouml;re &lt;strong&gt;IIS&lt;/strong&gt;&amp;rsquo; in olmadığı bir durum sim&amp;uuml;le edilmektedir. Nitekim &lt;strong&gt;Siverlight&lt;/strong&gt; istemcilerinin &lt;strong&gt;TCP&lt;/strong&gt; bazlı bir servisi t&amp;uuml;ketmesi i&amp;ccedil;in bu servisin &lt;strong&gt;IIS&lt;/strong&gt; &amp;uuml;zerinde host edilmesi ve&lt;strong&gt; ClientAccessPolicy.xml&lt;/strong&gt; dosyası ile desteklenerek gerekli g&amp;uuml;venlik izinlerinin verilmesi yeterlidir. Dolayısıyla bizim geliştirdiğimiz senaryoda &lt;strong&gt;Servis&lt;/strong&gt; uygulamasının &lt;strong&gt;IIS&lt;/strong&gt; gibi &amp;ccedil;alıştığı varsayılabilir. Buna g&amp;ouml;re ilk olarak &lt;strong&gt;HTTP base address&lt;/strong&gt; tanımlamasının &lt;strong&gt;http://localhost:80&lt;/strong&gt; şeklinde değiştirilmesi d&amp;uuml;ş&amp;uuml;n&amp;uuml;lmelidir.&lt;/p&gt;
+&lt;p&gt;Diğer yandan &amp;ccedil;alışma zamanındaki hata mesajı &lt;strong&gt;4502&lt;/strong&gt; ile &lt;strong&gt;4534&lt;/strong&gt; numaralı portlar arasında bir değerin kullanılmasını beklemektedir. Bu sebepten servis tarafındanki &lt;strong&gt;TCP based address&lt;/strong&gt; değerinin de &amp;ouml;rnek olarak &lt;strong&gt;net.tcp://localhost:4505/MeetingRoom/MeetingService&lt;/strong&gt; şeklinde değiştirilmesi d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Yani 4502 ile 4534 arasında bir port değeri atanmalıdır. Ancak bu da yeterli olmayacaktır. Nitekim &lt;strong&gt;policy&lt;/strong&gt; i&amp;ccedil;eriğini teşkil eden &lt;strong&gt;XML&lt;/strong&gt; dosyasında yer alan port numarası da &lt;strong&gt;4505&lt;/strong&gt; olarak ayarlanmalıdır. T&amp;uuml;m bu değişiklikler &lt;strong&gt;Silverlight&lt;/strong&gt; istemcisine servis referansının yeniden eklenmesini gerektirecektir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg218_AddServiceReferenceLast.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg218_AddServiceReferenceLast" src="/pics/blg218_AddServiceReferenceLast_thumb.gif" alt="blg218_AddServiceReferenceLast" width="635" height="514" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Artık tanışmak i&amp;ccedil;in son bir deneme yapılabilir. İşte sonu&amp;ccedil;.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg218_Final.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg218_Final" src="/pics/blg218_Final_thumb.gif" alt="blg218_Final" width="557" height="311" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere servis tarafındaki metod başarılı bir şekilde &amp;ccedil;alışmıştır. Peki bu kadar zahmete girmeye gerek var mıdır? Aslında olmadığını s&amp;ouml;ylersem şu anda bana &amp;ccedil;ok kızabileceğinizi d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum. Ancak var. Nitekim &lt;strong&gt;IIS(Internet Information Services)&lt;/strong&gt; &amp;uuml;zerinde &lt;strong&gt;WAS(Windows Process Activation Service)&lt;/strong&gt; kullanımı sayesinde &lt;strong&gt;host&lt;/strong&gt; edebileceğimiz &lt;strong&gt;TCP&lt;/strong&gt; bazlı bir servisin, doğru &lt;strong&gt;ClientAccessPolicy.xml&lt;/strong&gt; i&amp;ccedil;eriği ile bir &lt;strong&gt;Silverlight&lt;/strong&gt; istemcisi tarafından kullanılabilmesi m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Şu anda umuyorum ki i&amp;ccedil;inizde &lt;strong&gt;@#$&amp;frac12;!:=|&amp;lt;&amp;gt;&lt;/strong&gt; gibi bir şey demiyorsunuzdur &lt;img title="Embarassed" src="/editors/tiny_mce3/plugins/emotions/img/smiley-embarassed.gif" alt="Embarassed" border="0" /&gt;&amp;nbsp;Tabi yapılan &amp;ouml;rneğe g&amp;ouml;re kafalarda hale soru işaretleri oluşabilir. S&amp;ouml;z gelimi &lt;strong&gt;80&lt;/strong&gt; yerine &amp;ouml;rneğin &lt;strong&gt;4508&lt;/strong&gt; numaralı bir port &amp;uuml;zerinden iletişim ge&amp;ccedil;erli olsa(&lt;strong&gt;http://localhost:4508&lt;/strong&gt; şeklinde) Yine de hatalar ile karşılaşır mıyız acaba? &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;Bu sorunun araştırılmasını siz değerli okurlarıma bırakıyorum. B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2010%2f7%2fTCPandSilverlight.rar"&gt;TCPandSilverlight.rar (1,80 mb)&lt;/a&gt;&amp;nbsp;&lt;strong&gt;[&amp;Ouml;rnek Visual Studio 2010 Ultimate &amp;uuml;zerinde ve Silverlight 4.0 odaklı olarak geliştirilmiştir]&lt;/strong&gt;&lt;/p&gt;</content>
+  <pubDate>2011-02-27 16:10:00</pubDate>
+  <slug>TCP-Bazlc4b1-WCF-Service-ve-Silverlight-Istemcileri</slug>
+  <tags>
+    <tag>nettcpbinding</tag>
+    <tag>wcf</tag>
+    <tag>wcf-services</tag>
+    <tag>silverlight-40</tag>
+    <tag>silverlight</tag>
+  </tags>
+  <categories>
+    <category>Silverlight 4.0</category>
+    <category>WCF 4.0</category>
+  </categories>
+</post>

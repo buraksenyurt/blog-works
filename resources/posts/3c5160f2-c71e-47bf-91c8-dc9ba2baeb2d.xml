@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Ado.Net 2.0 ve Sql Komutlarını Asenkron Olarak Yürütmek - 1</title>
+  <description>Bir önceki makalemizde MARS etkisini incelemiş ve aynı bağlantı üzerinden birden fazla sayıda sonuç kümesine nasıl erişebileceğimizi görmüştük. Her ne kadar, aynı anda birden fazla sonuç kümesine erişebilsekte, halen daha MARS modeli, sql komutları ile eş zamanlı çalışan kodlar ve asenkron yürütülebilen diğer sql komutları için yeterli değildir.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Bir &amp;ouml;nceki makalemizde MARS etkisini incelemiş ve aynı bağlantı &amp;uuml;zerinden birden fazla sayıda sonu&amp;ccedil; k&amp;uuml;mesine nasıl erişebileceğimizi g&amp;ouml;rm&amp;uuml;şt&amp;uuml;k. Her ne kadar, aynı anda birden fazla sonu&amp;ccedil; k&amp;uuml;mesine erişebilsekte, halen daha MARS modeli, sql komutları ile eş zamanlı &amp;ccedil;alışan kodlar ve asenkron y&amp;uuml;r&amp;uuml;t&amp;uuml;lebilen diğer sql komutları i&amp;ccedil;in yeterli değildir. Ado.Net 2.0 ile, sql komutlarını asenkron olarak y&amp;uuml;r&amp;uuml;tebileceğimiz bir takım yeni &amp;uuml;yeler gelmektedir. Bu &amp;uuml;yeler sayesinde, sql komutlarını asenkron olarak&amp;ccedil;alıştırabilir ve hatta, diğer kod satırlarınında eş zamanlı olarak işleyebilmesini sağlayabiliriz. Bu işleri ger&amp;ccedil;ekleştirebilecek &amp;uuml;yeler şu an i&amp;ccedil;in sadece SqlClient sınıfında yer almaktadır. Ancak .Net Framework 2.0' ın final s&amp;uuml;r&amp;uuml;m&amp;uuml;nde bu &amp;uuml;yelerin, diğer Ado.Net isim alanlarınada yerleştirileceklerini d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum.&lt;/p&gt;
+&lt;p&gt;Asenkron komut y&amp;uuml;r&amp;uuml;t&amp;uuml;menin mantığı, asenkron metodların &amp;ccedil;alıştırılmasına &amp;ccedil;ok benzer. Nitekim burada da, başlatılan bir prosesi kontrol etmemize imkan sağlayan IAsyncResult aray&amp;uuml;z&amp;uuml;n&amp;uuml;ne ait bir nesne &amp;ouml;rneği anahtar g&amp;ouml;revini oynamaktadır.&amp;nbsp; Asenkron sql komutlarını y&amp;uuml;r&amp;uuml;tmek i&amp;ccedil;in, SqlCommand sınıfına aşağıdaki tabloda yer alan altı adet yeni metod ilave edilmiştir.&lt;/p&gt;
+&lt;table id="table1" style="width: 251px;" border="1" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="237"&gt;
+&lt;p align="center"&gt;&lt;strong&gt;SqlCommand sınıfı i&amp;ccedil;in Asenkron komut y&amp;uuml;r&amp;uuml;tme metodları&lt;/strong&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="237"&gt;BeginExecuteNonQuery&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="237"&gt;BeginExecuteReader&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="237"&gt;BeginExecuteXmlReader&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="237"&gt;EndExecuteNonQuery&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="237"&gt;EndExecuteReader&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="237"&gt;EndExecuteXmlReader&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Begin ile başlayan t&amp;uuml;m metodlar, geriye IAsyncResult aray&amp;uuml;z&amp;uuml; tipinden bir nesne &amp;ouml;rneği d&amp;ouml;nd&amp;uuml;r&amp;uuml;rler. Programın &amp;ccedil;alışması esnasında, bu tipe ait &amp;ouml;zellikler kullanılarak &amp;ccedil;alışan sql komutlarına ait proseslerin durumları kontrol edilebilir ve tamamlanıp tamamlanmadıkları &amp;ouml;ğrenilir. Elbetteki, &amp;ccedil;alışması tamamlanan bir sql komut metodunun geriye sonu&amp;ccedil;ları d&amp;ouml;nd&amp;uuml;rebilmesi i&amp;ccedil;in, End ile başlayan uygun metodun &amp;ccedil;alıştırılması ve bu metoda ilgili prosese ait IAsyncResult nesne &amp;ouml;rneğinin parametre olarak g&amp;ouml;nderilmesi gerekmektedir. Temel olarak bu, Asenkron Sql Komutlarının &amp;ccedil;alıştırılmasının ana mantığıdır. Bununla birlikte Ado.Net 2.0, asenkron sql komutlarının y&amp;uuml;r&amp;uuml;t&amp;uuml;lebilmesi i&amp;ccedil;in 3 değişik model sunmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk96_1.gif" alt="" width="461" height="182" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 1. Asenkron Y&amp;uuml;r&amp;uuml;tme Modelleri.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Biz bug&amp;uuml;nk&amp;uuml; makalemizde, Pooling Modelini incelemeye &amp;ccedil;alışacağız. Bu modelde genellikle, IAsyncResult tipinden nesne &amp;ouml;rneği ile sahip olunan prosesin tamamlanıp tamamlanmadığı s&amp;uuml;rekli olarak kontrol edilir. Yani, Begin ile başlayan herhangibir metoddan sonra bu metodun i&amp;ccedil;erdiği Sql komutu y&amp;uuml;r&amp;uuml;t&amp;uuml;l&amp;uuml;rken, elde edilen IAsyncResult tipi nesne &amp;ouml;rneğine ait IsCompleted &amp;ouml;zelliğine bakılarak prosesin tamamlanıp tamamlanmadığı araştırılır. Bu araştırma işlemi s&amp;uuml;rekli tekrar ettiğinden &amp;ccedil;alıştırılan sql komutları tamamlanıncaya kadar, bu aralıklarda başka işlemler ger&amp;ccedil;ekleştirilebilir veya başka sql komutları y&amp;uuml;r&amp;uuml;t&amp;uuml;lebilir. Diğer taraftan bu kontrol işlemi zorunlu değildir. Nitekim biz bu kontrol&amp;uuml; yapmasakta, Begin ve End komutları arasındaki blokların &amp;ccedil;alıştırılması sağlanabilir. Ancak burada ana fikir, uzun s&amp;uuml;rebilecek sql komutlarının asenkron olarak &amp;ccedil;alışmaları halinde zaman kaybının &amp;ouml;n&amp;uuml;ne ge&amp;ccedil;ebilmek, uygulamanın işleyişinin kesilmesini &amp;ouml;nlemek ve bu zaman aralığında başka kodları ve başka kullanıcı aktivitelerini başarılı bir şekilde icra edebilmektir. Şimdi dilerseniz Pooling modelinin en basit haliyle uygulanışını incelemek amacıyla, Visual Studio.Net 2005 ortamında aşağıdaki kodlara sahip basit bir Console uygulaması geliştirelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;#region Using directives
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Data;
+using System.Data.SqlClient;
+
+#endregion
+
+namespace PoolingModeli
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            try
+            {
+                SqlConnection con = new SqlConnection("data source=localhost;initial catalog=AdventureWorks;integrated security=SSPI;Asynchronous Processing=true");
+                SqlCommand cmd = new SqlCommand("UPDATE Production.Product SET ListPrice=ListPrice+100", con);
+                con.Open();
+                IAsyncResult res = cmd.BeginExecuteNonQuery();
+
+                int i = 0;
+                while (!res.IsCompleted)
+                {
+                    Console.WriteLine("İŞLEM DEVAM EDİYOR "+i);
+                    i += 1;
+                }
+
+                int sonuc = cmd.EndExecuteNonQuery(res);
+                Console.WriteLine(sonuc + " SATIR G&amp;Uuml;NCELLENDİ...");
+                Console.ReadLine();
+                con.Close();
+            }
+            catch (Exception hata)
+            {
+                Console.WriteLine(hata.Message);
+                Console.ReadLine();
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Şimdi kodlarımızda ne yaptığımıza yakında bakalım. İlk olarak, aşağıdaki satır ile yeni bir SqlConnection nesnesi yaratıyoruz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;SqlConnection con = new SqlConnection("data source=localhost;initial catalog=AdventureWorks;integrated security=SSPI;Asynchronous Processing=true");&lt;/pre&gt;
+&lt;p&gt;Burada, standart Sql Connection ifademizdekilerinin aksine, ekstradan bir terim kullandık.Asynchronous Processing terimi, a&amp;ccedil;ılan bağlantının asenkron erişimlere izin verip vermeyeceğini belirler. Varsayılan değeri false' tur ve Asenkron komut y&amp;uuml;r&amp;uuml;tmelerine izin vermez. Bu nedenle burada true değerini a&amp;ccedil;ık&amp;ccedil;a atıyoruz. Eğer bu bağlantı &amp;ouml;zelliğini belirtmessek, &amp;ccedil;alışma zamanında aşağıdaki istisnayı alırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk96_4.gif" alt="" width="638" height="75" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 2. Bağlantının Asenkron y&amp;uuml;r&amp;uuml;tmelere izin vermemesi halinde.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Daha sonra ise, SqlCommand nesnemizi oluşturuyoruz. SqlCommand nesnemiz, AdventureWorks veritabanında yer alan Product isimli tablodaki ListPrice değerini 100 birim arttıran bir Update sorgusuna sahip. Bu tablo Yukon kurulduğunda 504 satır veri i&amp;ccedil;ermektedir. Haliyle biraz zaman alabilecek bir g&amp;uuml;ncelleme işlemi s&amp;ouml;z konusu. Ancak biz istiyoruz ki, bu g&amp;uuml;ncelleme komutu y&amp;uuml;r&amp;uuml;t&amp;uuml;l&amp;uuml;rken uygulama ortamında başka şeylerde yapabilelim. En azından uygulama bloke olmadan basit bir takım işlemleri ger&amp;ccedil;ekeştirebilme amacındayız. Bu ama&amp;ccedil;la ilk olarak sql komutumuzu BeginExecuteNonQuery metodu ile &amp;ccedil;alıştırıyoruz ve hemen ortama bir IAsyncResult tipi nesnenin d&amp;ouml;nmesini sağlıyoruz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;IAsyncResult res = cmd.BeginExecuteNonQuery();&lt;/pre&gt;
+&lt;p&gt;Şu aşamada, &amp;ccedil;alışan komuta ait proses res isimli IAsyncResult tipinden nesne &amp;ouml;rneğinin sorumluluğu altında. Biz bu &amp;ouml;rneğimizde pooling modelini kullandığımız i&amp;ccedil;in, eş zamanlı olarak &amp;ccedil;alıştırmak istediğimiz kodlarımızı bir while d&amp;ouml;ng&amp;uuml;s&amp;uuml; i&amp;ccedil;erisine alabiliriz. Bu while d&amp;ouml;ng&amp;uuml;s&amp;uuml; her bir iterasyonunda, IAsyncResult nesnesinin o an sahip olduğu prosesin tamamlanıp tamamlanmadığını kontrol ediyor olacaktır. Bunun i&amp;ccedil;inde, IsCompleted &amp;ouml;zelliğinin değerine bakılıyor. Eğer d&amp;ouml;nen değer false ise, işlemin tamamlanmadığı anlaşılıyor ve d&amp;ouml;ng&amp;uuml; i&amp;ccedil;indeki kodlar y&amp;uuml;r&amp;uuml;t&amp;uuml;l&amp;uuml;yor.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;while (!res.IsCompleted)
+{
+      Console.WriteLine("İŞLEM DEVAM EDİYOR "+i);
+      i += 1;
+}&lt;/pre&gt;
+&lt;p&gt;Sql komutunun y&amp;uuml;r&amp;uuml;t&amp;uuml;lmesi tamamlandığında, IAsyncResult nesnemizin IsCompleted &amp;ouml;zelliği true değerini d&amp;ouml;nd&amp;uuml;recektir. Dolayısıyla d&amp;ouml;ng&amp;uuml;den &amp;ccedil;ıkılmış olunacak ve bir sonraki satıra gelinecektir. Ger&amp;ccedil;ekleştirdiğimiz asenkron işleyişi aşağıdaki şekil ile kafamızda daha kolay canlandırabileceğimizi d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk96_3.gif" alt="" width="579" height="323" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 3. Pooling Modelinde İşleyiş Tarzı.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Tabiki, d&amp;ouml;ng&amp;uuml; i&amp;ccedil;erisinde yer alan işlemlerin daha uzun s&amp;uuml;rede ger&amp;ccedil;ekleşmesi gibi bir durum ilede karşılaşabiliriz. B&amp;ouml;yle bir durumda, IAsyncResult nesnesine ait proses tamamlanmış olsa bile, diğer işlemler devam ettiği i&amp;ccedil;in bu işlemler sonlanana kadar uygulama donacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;int sonuc = cmd.EndExecuteNonQuery(res);&lt;/pre&gt;
+&lt;p&gt;Bu satırda ise, EndExecuteNonQuery metoduna y&amp;uuml;t&amp;uuml;len sql komutuna ait prosesi temsil eden IAsyncResult nesnemiz parametre olarak g&amp;ouml;nderiliyor. B&amp;ouml;ylece, tamamlanan proses sonucu elde edilen değer (ExecuteNonQuery' nin integer bir değer d&amp;ouml;nd&amp;uuml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;, yani sql sorusundan etkilenen satır sayısını verdiğini belirtelim.) uygulama ortamına aktarılıyor. Uygulamamızı &amp;ccedil;alıştırdığımızda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;n&amp;uuml; elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk96_2.gif" alt="" width="324" height="359" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 4. Uygulamanın &amp;ccedil;alışması sonucu.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Elbetteki, bu &amp;ouml;rneğimizde olduğu gibi bir while d&amp;ouml;ng&amp;uuml;s&amp;uuml;n&amp;uuml; kullanmak zorunda değiliz. Sonu&amp;ccedil; olarak, IAsyncResult nesnesi, End metodları ile ortama iade edilinceye kadar yer alan t&amp;uuml;m satırlar &amp;ccedil;alışacaktır. Diğer taraftan, aynı anda birden fazla sql komutunun asenkron olarak &amp;ccedil;alıştırılmasınıda sağlayabiliriz. Dilerseniz pooling modelinin, birden fazla Sql komutunun y&amp;uuml;r&amp;uuml;t&amp;uuml;lebilmesi i&amp;ccedil;in nasıl kullanılabileceğini bir &amp;ouml;rnek ile inceleyelim. Bu ama&amp;ccedil;la, Console uygulamamızdaki kodlarımızı aşağıdaki hale getirelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;try
+{
+    /* Bağlantımızı oluştururken Asynchronous Processing &amp;ouml;zelliğine true değerini vermeyi ihmal etmiyoruz.*/
+    SqlConnection con = new SqlConnection("data source=localhost;initial catalog=AdventureWorks;integrated security=SSPI;MultipleActiveResultSets=true;Asynchronous Processing=true");
+
+    /* SqlCommand nesnelerimizi oluşturuyoruz. İlki bir tablo &amp;uuml;zerinde g&amp;uuml;ncelleme yaparken, ikincisi bir View nesnesinde veri &amp;ccedil;ekiyor.*/
+    SqlCommand cmd = new SqlCommand("UPDATE Production.Product SET ListPrice=ListPrice+10", con);
+    SqlCommand cmd2 = new SqlCommand("SELECT * FROM Sales.vStore", con);
+    con.Open(); // Bağlantımızı a&amp;ccedil;ıyoruz.
+    IAsyncResult res = cmd.BeginExecuteNonQuery();
+     IAsyncResult res2 = cmd2.BeginExecuteReader();
+
+    //Bu aralıktaki satırlar bloke olmadan &amp;ccedil;alışır.
+    /* D&amp;ouml;ng&amp;uuml; her iki sql komutuda tamamlanıncaya kadar &amp;ccedil;alışacaktır. Eğer bunlardan her hangibir &amp;ouml;nce biterseki &amp;ouml;yle olacaktır, diğeride sonlanıncaya kadar d&amp;ouml;ng&amp;uuml; i&amp;ccedil;erisindeki kodlar işletilmeye devam eder.*/
+    while ((!res2.IsCompleted)||(!res.IsCompleted)) 
+    {
+        /* Eğer Update komutu tamamlanmış ise, o anki milisaniye ile birlikte ekrana RES BITTI yazdırır. Eğer işlem tamamlanmamışsa, RES ISLEMINE DEVAM EDIYOR tekstini ve o anki milisaniyeyi yazar.*/
+        if (res.IsCompleted)
+        {
+            Console.WriteLine("RES BITTI ");
+            Console.WriteLine(DateTime.Now.TimeOfDay.Milliseconds.ToString());
+        }
+        else
+        {
+            Console.WriteLine("RES ISLEMINE DEVAM EDIYOR " + DateTime.Now.TimeOfDay.Milliseconds.ToString());
+        }
+         /* Eğer Select komutu tamamlanmış ise, o anki milisaniye ile birlikte ekrana RES2 BITTI yazdırır. Eğer işlem tamamlanmamışsa, RES2 ISLEMINE DEVAM EDIYOR tekstini ve o anki milisaniyeyi yazar.*/
+        if (res2.IsCompleted)
+        {
+            Console.WriteLine("RES2 BITTI ");
+            Console.WriteLine(DateTime.Now.TimeOfDay.Milliseconds.ToString());
+        }
+        else
+        {
+            Console.WriteLine("RES2 ISLEMINE DEVAM EDIYOR " + DateTime.Now.TimeOfDay.Milliseconds.ToString());
+        }
+    }
+    /* Update sorgusunun sonu&amp;ccedil;larını ilgil IAsyncResult nesnesini parametre olarak vererek integer bir değişkene atıyoruz. Burada EndExecuteNonQuery metodu aynen ExecuteNonQuery metodunda olduğu gibi geriye , sorgudan etkilenen satır sayısını d&amp;ouml;nd&amp;uuml;recektir. */
+    int sonuc = cmd.EndExecuteNonQuery(res);
+    Console.WriteLine(sonuc + " SATIR G&amp;Uuml;NCELLENDİ...");
+
+    /* Select sorgusu ile elde edilen kayıt k&amp;uuml;mesini ortama almak i&amp;ccedil;in, EndExecuteReader metoduna res2 isimli IAsyncResult nesne &amp;ouml;rneğini parametre olarak g&amp;ouml;nderiyoruz ve bu k&amp;uuml;medeki ilk satıra ait 0ncı ve 1nci alanların değerlerini ekrana yazdırıyoruz.*/
+    SqlDataReader dr = cmd2.EndExecuteReader(res2);
+    dr.Read();
+    Console.WriteLine(dr[0] + " " + dr[1]);
+    dr.Close(); // SqlDataReader nesnemizi kapatıyoruz.
+    Console.ReadLine();
+    con.Close(); // Bağlantımızı kapatıyoruz.
+}
+catch (Exception hata)
+{
+    Console.WriteLine(hata.Message);
+    Console.ReadLine();
+}&lt;/pre&gt;
+&lt;p&gt;Bu &amp;ouml;rnekte, iki sql komutunu asenkron olarak &amp;ccedil;alıştırmaktayız. Y&amp;uuml;r&amp;uuml;t&amp;uuml;lecek her iki komut i&amp;ccedil;inde birer IAsyncResult tipinden nesne &amp;ouml;rneği oluşturuyoruz. Bu andan itibaren, uygulamada farklı işlemler yapabiliriz. Biz burada, while d&amp;ouml;ng&amp;uuml;s&amp;uuml;n&amp;uuml; her iki IAsyncResult nesne &amp;ouml;rneğinin temsil ettiği proseslerde &amp;ccedil;alışan sql komutları sonlanıncaya kadar &amp;ccedil;alıştırmaktayız. Y&amp;uuml;r&amp;uuml;t&amp;uuml;len komutlar işleyişlerini bitirdiklerinde, kullandıkları IAsyncResult nesne &amp;ouml;rnekleri yardımıyla asıl sonu&amp;ccedil;ları ortama alıyoruz. Sonu&amp;ccedil; itibariyle, &amp;ccedil;alışan sql komutları asenkron olarak y&amp;uuml;r&amp;uuml;t&amp;uuml;lmekte ve &amp;ccedil;alışmaları esnasında programın bloke olması &amp;ouml;nlenmektedir. Aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nden de dikkat edeceğiniz gibi, daha kısa s&amp;uuml;ren UPDATE işlemi tamamlandıktan sonra, diğer komut bitene dek d&amp;ouml;ng&amp;uuml; devam etmiştir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk96_5.gif" alt="" width="324" height="575" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 5. Uygulamanın &amp;ccedil;alışması sonucu.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Bu makalemizde Asenkron Sql Komutların Y&amp;uuml;r&amp;uuml;t&amp;uuml;lmesi konusuna kısaca değinerek kullanabileceğimiz tekniklerden birisi olan Pooling Modelini inceledik. Pooling modeli aslında, &amp;ccedil;ok b&amp;uuml;y&amp;uuml;k boyutlu sorgular i&amp;ccedil;eren sql komutlarının asenkron olarak y&amp;uuml;r&amp;uuml;t&amp;uuml;lmesinde &amp;ccedil;ok faydalı bir teknik değildir. Bunun yerine daha gelişmiş olan diğer modellerden CallBack Modeli veya Wait Modeli yararlanılabilir. Bir sonraki makalemizde, CallBack modelini incelemeye &amp;ccedil;alışacağız. Tekrar g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2004-09-23 12:00:00</pubDate>
+  <slug>Ado-Net-2-0-ve-Sql-Komutlarc4b1nc4b1-Asenkron-Olarak-Yurutmek-1-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>adonet-20</tag>
+    <tag>asynchronous</tag>
+    <tag>async</tag>
+  </tags>
+  <categories>
+    <category>Ado.net 2.0</category>
+  </categories>
+</post>

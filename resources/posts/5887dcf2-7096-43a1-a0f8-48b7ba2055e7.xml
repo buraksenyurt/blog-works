@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WCF 4.0 Yenilikleri - HTTP Cache Desteği [Beta 1]</title>
+  <description>En basit ve popülerlerinden birisi olan Output Caching,REST tabanlı WCF servisleri içinde kullanılabilmektedir. WCF' in önceki sürümünde WebOperationContext tipinden yararlanılarak ekstra kod eforu ile ele alınabilen Output Cache özelliği, 4.0 sürümünde tamamen dekleratif olarak değerlendirilebilmektedir.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/pics/2009%2f9%2fblg77_Performance.jpg" alt="" /&gt;Merhaba arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Performans pek &amp;ccedil;ok uygulama geliştirme ortamında &amp;ouml;nem arz eden konuların başında gelmektedir. &amp;Ouml;zellikle Web tabanlı uygulamalarda performans arttırmak adına g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınan kriterlerden biriside farklı tipteki &lt;strong&gt;&amp;ouml;nbellekleme(Caching) &lt;/strong&gt;işlemleridir.&lt;/p&gt;
+&lt;p&gt;En basit ve pop&amp;uuml;lerlerinden birisi olan&lt;strong&gt; Output Caching,REST &lt;/strong&gt;tabanlı&amp;nbsp;&lt;strong&gt;WCF &lt;/strong&gt;servisleri i&amp;ccedil;inde kullanılabilmektedir.&amp;nbsp;WCF' in &amp;ouml;nceki s&amp;uuml;r&amp;uuml;m&amp;uuml;nde &lt;strong&gt;WebOperationContext&lt;/strong&gt; tipinden yararlanılarak ekstra kod eforu ile ele alınabilen &lt;strong&gt;Output Cache&lt;/strong&gt; &amp;ouml;zelliği, &lt;strong&gt;4.0&lt;/strong&gt; s&amp;uuml;r&amp;uuml;m&amp;uuml;nde tamamen &lt;strong&gt;dekleratif&lt;/strong&gt; olarak değerlendirilebilmektedir. Aslında bu yenilik bilindiği &amp;uuml;zere &lt;strong&gt;WCF Rest Starter Kit Preview 2&lt;/strong&gt; ile birlikte &lt;strong&gt;.Net Framework 3.5 &lt;/strong&gt;&amp;uuml;zerinde de uygulanabilmektedir. &lt;strong&gt;Output Cache&lt;/strong&gt; &amp;ouml;zelliği performans i&amp;ccedil;in &amp;ouml;nemli bir kriter olduğundan, &lt;strong&gt;WCF 4.0&lt;/strong&gt; versiyonunda doğrudan ele alınmaktadır.&lt;/p&gt;
+&lt;p&gt;Bu yazımızda &amp;ouml;n bellekleme işleminin &lt;strong&gt;WCF 4.0&lt;/strong&gt; i&amp;ccedil;erisinde, &lt;strong&gt;REST&lt;/strong&gt; tabanlı servisleri i&amp;ccedil;in&amp;nbsp;nasıl geliştirilebileceğini ele almaya &amp;ccedil;alışacağız. İşe ilk olarak bir &lt;strong&gt;WCF Service Application&lt;/strong&gt; projesi oluşturarak ve i&amp;ccedil;erisine aşağıdaki&amp;nbsp;servis s&amp;ouml;zleşmesi ve uygulayıcı tipi&amp;nbsp;ekleyerek başlayabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Servis S&amp;ouml;zleşmesi(Service Contract)&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.ServiceModel;
+using System.ServiceModel.Web;
+using System.ServiceModel.Web.Caching;
+
+namespace Calculus
+{
+    [ServiceContract(Namespace="http://calculus/BasicMathService")]
+    public interface IBasicMathService
+    {
+        [AspNetCacheProfile("ShortCache")] // Config dosyasındaki outputCacheProfile girdilerinden parametre olarak verilen isimdekini işaret eder
+        [OperationContract]
+        [WebGet]        
+        string Sum(double x, double y);
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Uygulayıcı tip;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel.Activation;
+
+namespace Calculus
+{
+    [AspNetCompatibilityRequirements(RequirementsMode=AspNetCompatibilityRequirementsMode.Allowed)]
+    public class BasicMathService 
+        : IBasicMathService
+    {
+        public string Sum(double x, double y)
+        {
+            return string.Format("{0} zamanlı hesaplama {1}+{2}={3}", DateTime.Now.ToLongTimeString(), x, y, x + y);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Servisimize ait svc i&amp;ccedil;eriği;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;%@ ServiceHost Language="C#" Debug="true" Service="Calculus.BasicMathService" CodeBehind="BasicMathService.svc.cs" Factory="System.ServiceModel.Activation.WebServiceHostFactory" %&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;IBasicMathService&lt;/strong&gt; isimli servis s&amp;ouml;zleşmesi i&amp;ccedil;erisinde yer alan &lt;strong&gt;Sum&lt;/strong&gt; metoduna &lt;strong&gt;WebGet&lt;/strong&gt; ve &lt;strong&gt;OperationContract&lt;/strong&gt; dışında &lt;strong&gt;AspNetCacheProfile &lt;/strong&gt;isimli bir niteliğin(attribute) daha uygulandığı g&amp;ouml;r&amp;uuml;lmektedir. Bu nitelik parametre olarak &lt;strong&gt;string&lt;/strong&gt; bir bilgi alır. Bu bilgi ise biraz sonra yazacağımız &lt;strong&gt;Web.config&lt;/strong&gt; dosyası i&amp;ccedil;erisindeki bir &lt;strong&gt;Cache&lt;/strong&gt; profilini işaret etmektedir. Dolayısıyla bir operasyonun &amp;ccedil;ıktısının &amp;ouml;n belleklenmesi i&amp;ccedil;in gerekli &amp;ouml;zellikler, konfigurasyon dosyasında tanımlanır. Servis kodunda dikkat &amp;ccedil;ekici noktalardan biriside, &lt;strong&gt;BasicMathService&lt;/strong&gt; tipinin, &lt;strong&gt;AspNetCompatibilityRequirements&lt;/strong&gt; isimli niteliği uygulamış olmasıdır. Bu durumu biraz sonra değerlendiriyor olacağız nitekim uygulanmadığı hallerde başımıza iş a&amp;ccedil;acaktır &lt;img title="Undecided" src="/editors/tiny_mce3/plugins/emotions/img/smiley-undecided.gif" alt="Undecided" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Tabikide &amp;uuml;zerinde durmamız gereken en &amp;ouml;nemli kısım config dosyası i&amp;ccedil;eriğidir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0"?&amp;gt;
+&amp;lt;configuration&amp;gt;
+ &amp;lt;system.web&amp;gt;
+  &amp;lt;compilation targetFrameworkMoniker=".NETFramework,Version=v4.0" debug="false"/&amp;gt;
+ &amp;lt;/system.web&amp;gt;
+ &amp;lt;system.web&amp;gt;
+  &amp;lt;caching&amp;gt;
+   &amp;lt;outputCacheSettings&amp;gt;
+    &amp;lt;outputCacheProfiles&amp;gt;
+     &amp;lt;!-- S&amp;uuml;releri farklı olan iki ayrı Cache profili tanımlanmıştır --&amp;gt;
+     &amp;lt;add name="ShortCache" duration="20" varyByParam="none"/&amp;gt;
+     &amp;lt;add name="LongCache" duration="600" varyByParam="none"/&amp;gt;
+    &amp;lt;/outputCacheProfiles&amp;gt;
+   &amp;lt;/outputCacheSettings&amp;gt;
+  &amp;lt;/caching&amp;gt;
+ &amp;lt;/system.web&amp;gt;
+ &amp;lt;system.serviceModel&amp;gt;
+  &amp;lt;serviceHostingEnvironment aspNetCompatibilityEnabled="true"/&amp;gt;
+  &amp;lt;!--WebServiceHostFactory tipini kullandığımız i&amp;ccedil;in aşağıdaki davranışı eklememize gerek kalmamıştır--&amp;gt;
+  &amp;lt;!--&amp;lt;behaviors&amp;gt;
+      &amp;lt;endpointBehaviors&amp;gt;
+        &amp;lt;behavior&amp;gt;
+          &amp;lt;webHttp enableHelp="true" /&amp;gt;
+        &amp;lt;/behavior&amp;gt;
+      &amp;lt;/endpointBehaviors&amp;gt;
+    &amp;lt;/behaviors&amp;gt;--&amp;gt;
+  &amp;lt;services&amp;gt;
+   &amp;lt;service name="Calculus.BasicMathService"&amp;gt;
+    &amp;lt;endpoint binding="webHttpBinding" contract="Calculus.IBasicMathService"/&amp;gt;
+   &amp;lt;/service&amp;gt;
+  &amp;lt;/services&amp;gt;
+ &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;outputCacheSettings&lt;/strong&gt; elementi i&amp;ccedil;erisinde iki farklı &amp;ouml;nbellekleme profili tanımlanmıştır. Buna g&amp;ouml;re, &lt;strong&gt;Sum&lt;/strong&gt; isimli operasyonumuz &lt;strong&gt;20&lt;/strong&gt; saniyelik &amp;ouml;n bellekleme yapan ve &lt;strong&gt;Querystring&lt;/strong&gt; parametrelerini hesaba katmayan bir yapı sunmaktadır.&lt;em&gt; (Tabiki &amp;ouml;nbellekleme profilini oluştururken farklı &amp;ouml;zellikleride değerlendirebiliriz. &lt;/em&gt;&lt;em&gt;&amp;Ouml;rneğin &amp;ouml;n bellekleme lokasyonunu değiştirebilir sunucu tarafı, istemci tarafı veya her iki taraf gibi değerler verilebilir.)&lt;/em&gt; &lt;strong&gt;Config&lt;/strong&gt; dosyasında &lt;strong&gt;bold&lt;/strong&gt; olarak işaretlediğimiz diğer kısımlarda &amp;ouml;nemlidir. &lt;strong&gt;WCF 4.0&lt;/strong&gt; tarafına getirilen &lt;strong&gt;Output Cache&lt;/strong&gt; &amp;ouml;zelliği aslında &lt;strong&gt;Asp.Net&lt;/strong&gt; ortamının hazır olarak sahip olduğu &lt;strong&gt;Output Cache&lt;/strong&gt; kabiliyetlerini kullanmaktadır. Bu nedenle Asp.Net uyumluluğu &amp;ouml;nemlidir.&lt;/p&gt;
+&lt;p&gt;Uygulama basit bir ka&amp;ccedil; ayarlamaya sahip olmasına rağmen geliştirme ve testler sırasında beklenmedik pek &amp;ccedil;ok hata ile karşılabiliriz. &lt;img title="Sealed" src="/editors/tiny_mce3/plugins/emotions/img/smiley-sealed.gif" alt="Sealed" border="0" /&gt;&amp;nbsp;İşte karşılaşabileceğimiz bir ka&amp;ccedil; hata ve &amp;ouml;nerilen &amp;ccedil;&amp;ouml;z&amp;uuml;mler&lt;em&gt;(ki bu &amp;ccedil;&amp;ouml;z&amp;uuml;mlerin bir kısmı must olarak g&amp;ouml;r&amp;uuml;lmelidir)&lt;/em&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Web.config&lt;/strong&gt; dosyasında &lt;strong&gt;targetFrameworkMonikor&lt;/strong&gt; değerinin set edildiğinden emin olmalıyız. Edilmediği takdirde &amp;ccedil;alışma zamanında alınacak hata mesajı : &amp;nbsp;&lt;strong&gt;"The application domain or application pool is currently running version 4.0 or later of the .NET Framework. This can occur if IIS settings have been set to 4.0 or later for this Web application, or if you are using version 4.0 or later of the ASP.NET Web Development Server. The &amp;lt;compilation&amp;gt; element in the Web.config file for this Web application does not contain the required 'targetFrameworkMoniker' attribute for this version of the .NET Framework (for example, '&amp;lt;compilation targetFrameworkMoniker=".NETFramework,Version=v4.0"&amp;gt;'). Update the Web.config file with this attribute, or configure the Web application to use a different version of the .NET Framework."&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;aspNetCompatibilityEnabled&lt;/strong&gt; niteliğinin değeri &lt;strong&gt;true&lt;/strong&gt; olmadığı s&amp;uuml;rece, &lt;strong&gt;AspNetCacheProfile&lt;/strong&gt; &amp;ouml;zelliğini kullanamayız. Alınacak &amp;ccedil;alışma zamanı hata mesajı : &lt;strong&gt;"AspNetCacheProfileAttribute is supported only in AspNetCompatibility mode. "&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;aspNetCompatibilityEnabled&lt;/strong&gt; niteliğinin &lt;strong&gt;true&lt;/strong&gt; olarak atamış olması yeterli olmayacaktır. Nitekim servis&amp;nbsp;sınıfı i&amp;ccedil;in &lt;strong&gt;AspNetCompatibilityRequirements&lt;/strong&gt;&amp;nbsp;niteliğinin de set edilmesi gerekir.&amp;nbsp;Edilmediği takdirde alınacak&amp;nbsp;&amp;ccedil;alışma zamanı hata mesajı : &lt;strong&gt;"The service cannot be activated because it does not support ASP.NET compatibility. ASP.NET compatibility is enabled for this application. Turn off ASP.NET compatibility mode in the web.config or add the AspNetCompatibilityRequirements attribute to the service type with RequirementsMode setting as 'Allowed' or 'Required'"&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Asp.Net Development Server&lt;/strong&gt; &amp;uuml;zerinden geliştirme yapıldığında &lt;strong&gt;Output Cache&lt;/strong&gt; &amp;ouml;zelliği test edilememektedir. &lt;strong&gt;Output Cache&lt;/strong&gt; &amp;ouml;zelliğinin &amp;ccedil;alışabilmesi i&amp;ccedil;in, servis uygulamasının &lt;strong&gt;IIS&lt;/strong&gt; &amp;uuml;zerine dağıtılması gerekmektedir.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;IIS&lt;/strong&gt; &amp;uuml;zerine atılan WCF servis uygulamasının &amp;ouml;zelliklerinden &lt;strong&gt;Target Framework'&lt;/strong&gt; &amp;uuml;n &lt;strong&gt;4.0&lt;/strong&gt;&amp;nbsp;versiyonunu işaret edecek şekilde değiştirilmesi gerekir.&amp;nbsp;&lt;em&gt;(&amp;Ouml;rneği geliştirdiğim zamanda 4.0.20506 versiyonu idi)&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;G&amp;uuml;venlik ile ilişkili bir sıkıntı yaşanabilir. &amp;Ouml;zellikle varsayılan olarak &lt;strong&gt;Anonymous Access&lt;/strong&gt;&amp;nbsp;ve &lt;strong&gt;Integrated Windows Authentication&lt;/strong&gt; modlarından her ikiside se&amp;ccedil;ili gelebilir. Bu noktada WCF &amp;ccedil;alışma zamanı sadece bir tanesinin se&amp;ccedil;ili olmasını isteyebilir. Bu durumda sadece &lt;strong&gt;Anonymous Access&lt;/strong&gt; se&amp;ccedil;eneğini işaretleyerek testleri yapabiliriz. Yapılan değişiklik sonrası yinede hata mesajı alınıyorsa, IIS' in bir kere reset edilmesi gerekebilir.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;varyByParam&lt;/strong&gt; değerini kullanmıyorsak bile &lt;strong&gt;none&lt;/strong&gt; olarak atamalıyız&lt;em&gt;(Asp.Net tarafından bildiğimiz bir kural)&lt;/em&gt;. Yapmadığımız takdirde alacağımız &amp;ccedil;alışma zamanı hata mesajı : &lt;strong&gt;"The cache profile, 'ShortCache', must include value for 'VaryByParam'. "&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Gelelim &amp;ccedil;alışma zamanı sonu&amp;ccedil;larına. &lt;strong&gt;IIS&lt;/strong&gt; &amp;uuml;zerine atılan &lt;strong&gt;WCF&lt;/strong&gt; servisimizi &amp;ccedil;alıştırdıktan sonra &lt;strong&gt;Sum&lt;/strong&gt; operasyonu i&amp;ccedil;in yapılan ilk &lt;strong&gt;HTTP GET&lt;/strong&gt; talebi sonrası aşağıdaki &amp;ouml;rnek ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; elde edilmiştir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f9%2fblg77_Runtime1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi ilk talep karşılanmıştır. Hemen zaman bilgisine dikkat edelim ve &lt;strong&gt;20&lt;/strong&gt; saniyelik &lt;strong&gt;Output Cache &lt;/strong&gt;s&amp;uuml;resi dolmadan &amp;ouml;nce ikinci bir talepte bulunduğumuzu hatta x ve y değerlerini farklı olarak verdiğimizi d&amp;uuml;ş&amp;uuml;nelim. Bu durumda aşağıdaki sonu&amp;ccedil;lar alınacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f9%2fblg77_Runtime2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi istemciye g&amp;ouml;nderilen i&amp;ccedil;erik değişmemiştir. Nitekim şu andaki cevap, &lt;strong&gt;Asp.Net Output Cache&lt;/strong&gt; mekanizması tarafından karışlanmış bir &amp;ouml;nceki talep&amp;nbsp;i&amp;ccedil;in &amp;uuml;retilen hazır &amp;ccedil;ıktıdır. Ancak &lt;strong&gt;Output Cache&lt;/strong&gt; s&amp;uuml;resini aştıktan sonra tekrar talepte bulunursak ikinci talep i&amp;ccedil;in g&amp;uuml;ncel sonu&amp;ccedil;ları aşağıdaki &amp;ouml;rnek &amp;ccedil;ıktıda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi alabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f9%2fblg77_Runtime3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece sistemin &amp;ccedil;alıştığını ispat etmiş olduk &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;&lt;strong&gt;Output Cache&lt;/strong&gt; &amp;ouml;zelliği &lt;strong&gt;REST&lt;/strong&gt; tabanlı &lt;strong&gt;WCF&lt;/strong&gt; servislerinde, perfomansı arttırıcı bir unsur olarak g&amp;ouml;r&amp;uuml;lebilir. Nitekim sunucu ve istemci arasındaki gidiş gelişlerde, s&amp;uuml;rekli hesaplanması gerekmeyen ve &amp;ccedil;oğunlukla sabit olan i&amp;ccedil;eriklerin tekrardan &amp;uuml;retilmesi yerine belirli zaman dilimleri boyunca &amp;ouml;n bellekten karşılanması hem servisin işlem y&amp;uuml;k&amp;uuml;n&amp;uuml; azaltacak hem de hızlı cevap verme s&amp;uuml;relerini doğuracaktır. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2009%2f9%2fRESTSupport.rar"&gt;RESTSupport.rar (37,47 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2009-09-22 13:07:00</pubDate>
+  <slug>WCF-40-Yenilikleri-HTTP-Cache-Destegi</slug>
+  <tags>
+    <tag>wcf</tag>
+    <tag>wcf-40</tag>
+  </tags>
+  <categories>
+    <category>WCF 4.0 Beta 1</category>
+  </categories>
+</post>

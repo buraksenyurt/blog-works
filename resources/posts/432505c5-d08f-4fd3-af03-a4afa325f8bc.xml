@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>BeeWare ile Linux Platformunda Desktop Uygulaması Geliştirmek ve Android Sürümünü Oluşturmak</title>
+  <description>Geçenlerde Python ile ilgili bir şeyler ararken BeeWare isimli çalışmaya rastladım. Her yerde python ile native uygulama geliştirmek gibi bir felsefesi vardı. Eee zaten python her platformda yüklenip kullanılmıyor mu? Yoo tam olarak olay öyle değil aslında. BeeWare ürünü macOS, Linux ve Windows platformlarında native uygulama geliştirmek haricinde iOS ve Android için de destek sunan bir araçlar ve kütüphaneler topluluğu. Söz gelimi iOS ve macOS platformundaki Objective C kütüphaneleri ile Python arasında köprü görevi gören Rubicon ObjC isimli bir araç sunuyor. Java kütüphaneleri ile bir iletişim mi gerekiyor!? O zaman Rubicon Java var. Diğer yandan cross-platform için Toga isimli bir widget kütüphanesi kullanıyor. Ayrıca python projelerini tek başına çalışabilir uygulamalar haline getirmek için(standalone native application) Briefcase isimli başka bir araca sahip ki bir çoğunu birazdan kullanacağız.</description>
+  <content>&lt;p&gt;&lt;img src="/image.axd?picture=/2020/skynet/29/beeware.png" alt="" align="right" /&gt;Ge&amp;ccedil;enlerde Python ile ilgili bir şeyler ararken BeeWare isimli &amp;ccedil;alışmaya rastladım. Her yerde python ile native uygulama geliştirmek gibi bir felsefesi vardı.&amp;nbsp;Eee zaten python her platformda y&amp;uuml;klenip kullanılmıyor mu? Yoo tam olarak olay &amp;ouml;yle değil aslında. BeeWare &amp;uuml;r&amp;uuml;n&amp;uuml; macOS, Linux ve Windows platformlarında native uygulama geliştirmek haricinde iOS ve Android i&amp;ccedil;in de destek sunan bir ara&amp;ccedil;lar ve k&amp;uuml;t&amp;uuml;phaneler topluluğu. S&amp;ouml;z gelimi iOS ve macOS platformundaki Objective C k&amp;uuml;t&amp;uuml;phaneleri ile Python arasında k&amp;ouml;pr&amp;uuml; g&amp;ouml;revi g&amp;ouml;ren Rubicon ObjC isimli bir ara&amp;ccedil; sunuyor. Java k&amp;uuml;t&amp;uuml;phaneleri ile bir iletişim mi gerekiyor!? O zaman Rubicon Java var. Diğer yandan cross-platform i&amp;ccedil;in Toga isimli bir widget k&amp;uuml;t&amp;uuml;phanesi kullanıyor. Ayrıca python projelerini tek başına &amp;ccedil;alışabilir uygulamalar haline getirmek i&amp;ccedil;in&lt;em&gt;(standalone native application)&lt;/em&gt; Briefcase isimli başka bir araca sahip ki bir &amp;ccedil;oğunu birazdan kullanacağız.&lt;/p&gt;
+&lt;p&gt;Aslında olayı ş&amp;ouml;yle d&amp;uuml;ş&amp;uuml;nebiliriz; Bu &amp;ccedil;atı sayesinde Android i&amp;ccedil;in Gradle &amp;ccedil;ıktısı, iOS i&amp;ccedil;in XCode proje &amp;ccedil;ıktısı, Linux i&amp;ccedil;in AppImage, Windows i&amp;ccedil;in MSI Installer ve macOS i&amp;ccedil;in doğrudan &amp;ccedil;alışabilir uygulama &amp;ccedil;ıktıları &amp;uuml;retebiliyoruz. Bana Xamarin ve Electron'u d&amp;uuml;ş&amp;uuml;nd&amp;uuml;rmedi değil&lt;em&gt;(Bu arada BeeWare'in Logo'su epey sevimli)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;İddialı bir platform olduğunu ifade edebilirim. Elbette Skynet &amp;ccedil;alışmasını yaptığım ve derlemeyi hazırladığım tarih itibariyle &amp;uuml;r&amp;uuml;nle ilgili değişiklikler olmuştur. O nedenle &lt;a href="https://beeware.org/" target="_blank"&gt;şu adresten takip etmenizi&lt;/a&gt; &amp;ouml;neririm. Benim amacım her zaman olduğu gibi bunu Heimdal&lt;em&gt;(Ubuntu-20.04)&lt;/em&gt; &amp;uuml;zerinde denemek ve Linux'te &amp;ccedil;alışan bir masa&amp;uuml;st&amp;uuml; uygulaması geliştirmek. Hatta arkasına birde Android s&amp;uuml;r&amp;uuml;m&amp;uuml;n&amp;uuml; eklemek.&amp;nbsp;İşe uzun bir terminal &amp;ccedil;alışması ile başlıyoruz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;# Sistemde Python y&amp;uuml;kl&amp;uuml; olsa bile ekstra bazı k&amp;uuml;t&amp;uuml;phaneler de gerekiyor
+# Lakin bu paketleri hangi ama&amp;ccedil;la y&amp;uuml;kl&amp;uuml;yoruz, araştırmam lazım. Mazallah g&amp;uuml;venlik a&amp;ccedil;ığı filan da olabilir. Aman dikkat!
+sudo apt-get install libgirepository1.0-dev libcairo2-dev libpango1.0-dev libwebkit2gtk-4.0.37 gir1.2-webkit2-4.0
+
+# Şimdi Python paketinin dağıtımında devreye girecek Briefcase aracını y&amp;uuml;kleyelim
+# Bu arada 20.04 &amp;uuml;st&amp;uuml;nde cookiecutter versiyonunu beğenmedi Heimdall. O nedenle cookiecuttor'ı da pip &amp;uuml;st&amp;uuml;nden install ettim
+python3 -m pip install briefcase
+
+# Adettendir kurulan versiyonu bir kontrol etmek iyi olabilir
+briefcase --version
+
+# Şimdi yeni projenin a&amp;ccedil;ılışını yapabiliriz
+briefcase new
+
+# Sorulan sorulara verdiğim cevaplar doğrultusunda cardgame isimli bir proje oluştu. 
+# Carg Game isimli projenin GUI framework olarak Toga'yı se&amp;ccedil;tim. 
+# Buna g&amp;ouml;re projenin Linux, macOS, Windows dağıtımlarındaki gereksinimleri ile birlikte
+# diğer sorduğu sorulara() verdiğim cevaplar pyproject.toml (toml = Tom's Obvious Minimal Language) i&amp;ccedil;erisine yazıldı.
+# Bu dosyayı incelemekte yarar var.&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2020/skynet/29/Screenshot_01.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bir yerlere kod yazmayacak mıyız dediğinizi duyar gibiyim? Sonu&amp;ccedil;ta bir aray&amp;uuml;z tasarlamak gerekiyor &amp;ouml;yle değil mi? Bunu src/cardgame altındaki app.py dosyasında yapabiliriz. Aynen aşağıdaki kod par&amp;ccedil;asında olduğu gibi.&lt;/p&gt;
+&lt;pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false"&gt;"""
+A simple desktop application on Ubuntu
+"""
+import toga
+from toga.style import Pack
+from toga.style.pack import COLUMN, ROW
+
+
+class CardGame(toga.App):
+
+    def startup(self):
+
+        # Bu ana form gibi bir şey. Toga uygulamalarında kutu koleksiyonları da s&amp;ouml;z konusu olabilir(Box Collection)
+        # direction i&amp;ccedil;in verdiğim Column ile main_box'a eklenecek kontrollerin s&amp;uuml;tun formatında aşağıya doğru ineceğini s&amp;ouml;yledik
+        main_box = toga.Box(style=Pack(direction=COLUMN))
+
+        # Şimdi birka&amp;ccedil; kontrol ekleyelim
+        # Birka&amp;ccedil; Label ekliyoruz ve onlara padding stilleri veriyoruz
+        lblNickname = toga.Label(
+            'Takma adını s&amp;ouml;yler misin?', style=Pack(padding=(0, 10)))  # Biraz padding ayarı yaptık
+        lblColor = toga.Label('En sevdiğin renk?', style=Pack(padding=(0, 10)))
+        lblLuckyNumber = toga.Label(
+            'Şans numaran peki?', style=Pack(padding=(0, 10)))
+        self.lblMyGuess = toga.Label('...', style=Pack(flex=1, padding=10))
+
+        # Şimdi yukarıdaki sorular i&amp;ccedil;in birer Input kontrol&amp;uuml; ekleyelim
+        # Bunları sınıfın Instance Variable'ları olarak tanımlıyoruz ki erişmemiz kolay olsun.
+        self.txtNickname = toga.TextInput(style=Pack(padding=5, flex=1))
+        self.txtColor = toga.TextInput()
+        self.txtLuckyNumber = toga.TextInput()
+
+        # Şimdi yukarıdaki kontrolleri bir kutuya koyalım. (Box)
+        boxIdentity = toga.Box(style=Pack(direction=COLUMN))
+        boxIdentity.add(lblNickname)
+        boxIdentity.add(self.txtNickname)
+        boxIdentity.add(lblColor)
+        boxIdentity.add(self.txtColor)
+        boxIdentity.add(lblLuckyNumber)
+        boxIdentity.add(self.txtLuckyNumber)
+
+        # Sonra bu kontrolleri i&amp;ccedil;eren kutuyu ana kutuya ekleyelim
+        main_box.add(boxIdentity)
+
+        # Bir tane de Button oluşturup ana kutuya ilave edelim
+        # Button'a basıldığında da bntGuess_OnPress isimli olay metodu &amp;ccedil;alışacak
+        btnGuess = toga.Button(
+            'Tahmin Yap', on_press=self.btnGuess_OnPress, style=Pack(width=100, padding=10))
+        main_box.add(btnGuess)
+
+        main_box.add(self.lblMyGuess)
+
+        # Title ile biraz oynadım. Keh keh keh :P
+        self.main_window = toga.MainWindow(
+            title=self.formal_name+" Version 1.0")
+        self.main_window.content = main_box
+        self.main_window.show()
+
+        # Windows Forms tarafına ne kadar da benziyor
+    def btnGuess_OnPress(self, widget):
+        print('Belki loglama ama&amp;ccedil;lı kullanılabilir')
+        # Burada validasyon yapmak gerekir mi? Yoksa kontrollerin validasyon i&amp;ccedil;in nitelikleri var mıdır?
+        summary = "Merhaba {nick}. Favori rengin {color} ve şans numaran {number}".format(
+            nick=self.txtNickname.value, color=self.txtColor.value, number=self.txtLuckyNumber.value)
+        self.lblMyGuess.text = summary
+
+
+'''
+    Uygulama y&amp;uuml;klendiğinde main metodu CardGame sınıfını &amp;ouml;rnekler
+    Bunu bir Windows Forms sınıfının y&amp;uuml;klenmesi olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum ;)
+'''
+
+
+def main():
+    return CardGame()&lt;/pre&gt;
+&lt;p&gt;Aslında Windows Forms veya Asp.Net Web Forms ile kodlama yaptıysanız buradaki kontrollerin yerleşimleri ile event'leri anlamanız son derece kolay. Gelelim &amp;ccedil;alışma zamanına. Linux, MacOS, Windows...Hi&amp;ccedil; farketmez. Hepsinde briefcase aracını kullanarak uygulamayı işletebiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;briefcase dev&lt;/pre&gt;
+&lt;p&gt;İlk &amp;ccedil;alışma sırasında &amp;uuml;zerinde olduğumuz platforma g&amp;ouml;re gerekli bazı bağımlılıklar indirilir&lt;em&gt;(Toga paketleri gibi)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2020/skynet/29/Screenshot_02.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Ve ardından uygulama aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi ayağa kalkar.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2020/skynet/29/Screenshot_03.png" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;Dağıtım&lt;em&gt;(Deployment)&lt;/em&gt;&lt;/h2&gt;
+&lt;p&gt;Uygulama şu ana kadar development modda &amp;ccedil;alıştırıldı. Ancak onu paket haline getirip farklı platformlara da dağıtabiliriz. Ben normalde Linux i&amp;ccedil;in bir dağıtım paketi oluşturmayı d&amp;uuml;ş&amp;uuml;n&amp;uuml;yordum ancak uygulamayı Android i&amp;ccedil;in paketleyebilir miyiz diye de merak ettim. İşte uygulamanın android s&amp;uuml;r&amp;uuml;m&amp;uuml;ne d&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;lmesi i&amp;ccedil;in yapmamız gerekenler.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;# Uygulama klas&amp;ouml;r&amp;uuml;ndeyken create ile bir android app oluşturulur(dakikalarca s&amp;uuml;rebiliyor)
+briefcase create android
+# ve build komutu ile de apk dosyası &amp;uuml;retilir. Card Game/app/build/outputs/apk/debug/app-debug.apk altında oluşur (Gerekli SDK, NDK paketlerini indirdiği i&amp;ccedil;in ilk seferinde dakikalarca s&amp;uuml;rebiliyor)
+briefcase build android
+
+# Kontrol ama&amp;ccedil;lı olarak build edilen s&amp;uuml;r&amp;uuml;m aşağıdaki gibi &amp;ccedil;alıştırılabilir.
+# Burada sanal bir em&amp;uuml;lator'den yararlanılabileceği gibi ger&amp;ccedil;ek bir Android cihazda kullanılabilir.
+# Ben Create a new Android Emulator se&amp;ccedil;eneğini tercih ettim.
+briefcase run android&lt;/pre&gt;
+&lt;p&gt;Ve bende tebess&amp;uuml;m bırakan ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;&amp;nbsp;:-)&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2020/skynet/29/Screenshot_04.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu &amp;ouml;rnek i&amp;ccedil;in andorid klas&amp;ouml;r&amp;uuml; t&amp;uuml;m bağımlılıkları ile birlikte 500 megabyte'tan fazla yer tuttu. APK dosyası ise yaklaşık 50 Mb civarındaydı.&amp;nbsp;B&amp;ouml;ylesine basit bir kobay uygulama i&amp;ccedil;in olduk&amp;ccedil;a fazla yer harcandığını ifade edebilirim. Zaten genel olarak bu tip cross-platform &amp;ccedil;&amp;ouml;z&amp;uuml;mlerinin&lt;em&gt;(Xamarin, Electron vb)&lt;/em&gt; &amp;ouml;zellikle mobil taraftaki en b&amp;uuml;y&amp;uuml;k sorunu da sanırım bu optimizasyo konusundaki sıkıntıları.&lt;/p&gt;
+&lt;p&gt;Peki &amp;ouml;rnekle ilgili daha neler yapabilirsiniz? S&amp;ouml;z gelimi&amp;nbsp;verileri SQLite gibi bir fiziki bir depolama alanında saklamayı deneyebilirsiniz&lt;em&gt;(Uzak bir&amp;nbsp;REST servis &amp;uuml;st&amp;uuml;nden de olabilir tabi)&lt;/em&gt; Ayrıca elinizin altında bir&amp;nbsp;macOS varsa iOS s&amp;uuml;r&amp;uuml;m&amp;uuml; i&amp;ccedil;in bir dağıtım paketi &amp;uuml;retip o platformda kullanmayı da d&amp;uuml;ş&amp;uuml;nebilirsiniz. Uygulamamızın &amp;ouml;rnek kodlarına SkyNet&amp;nbsp;&lt;a href="https://github.com/buraksenyurt/skynet/tree/master/No%2029%20-%20What%20is%20BeeWare" target="_blank"&gt;github reposu &amp;uuml;zerinden&lt;/a&gt; erişebilirsiniz. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize iyi g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2020-09-13 21:05:00</pubDate>
+  <slug>beeware-ile-linux-platformunda-desktop-uygulamasi-gelistirmek-ve-android-surumunu-olusturmak</slug>
+  <tags>
+    <tag>pyhton</tag>
+    <tag>cross-platform-development</tag>
+    <tag>widget</tag>
+    <tag>briefcase</tag>
+    <tag>android</tag>
+    <tag>emulator</tag>
+    <tag>togo</tag>
+  </tags>
+  <categories>
+    <category>python</category>
+  </categories>
+</post>

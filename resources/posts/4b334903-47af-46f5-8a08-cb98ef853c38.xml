@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WCF RIA Services - Kendi Sorgularımızı Kullanmak</title>
+  <description>Bir önceki yazımızda WCF RIA Service' lerine kısa bir giriş yapmış ve ilk Hello World uygulamamızı geliştirmiştik. Bu yazımızda yine Chinook veritabanında yer alan albümlerin alfabetik olarak elde edilebildiği ve bunlara bağlı parçalarında gösterilebildiği bir Silverlight uygulaması yazmaya çalışacağız...</description>
+  <content>&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Bir &amp;ouml;nceki yazımızda &lt;strong&gt;WCF RIA Service'&lt;/strong&gt; lerine kısa bir giriş yapmış ve ilk &lt;a title="WCF RIA Services - Bir Merhaba Diyelim" href="/post/WCF-RIA-Services-Bir-Merhaba-Diyelim" target="_blank"&gt;Hello World &lt;/a&gt;uygulamamızı geliştirmiştik. Bu yazımızda yine &lt;strong&gt;Chinook&lt;/strong&gt; veritabanında yer alan alb&amp;uuml;mlerin alfabetik olarak elde edilebildiği ve bunlara bağlı par&amp;ccedil;alarında g&amp;ouml;sterilebildiği bir Silverlight uygulaması yazmaya &amp;ccedil;alışacağız. Bu &amp;ouml;rnekteki temel amacımız&amp;nbsp;ise,&amp;nbsp;kendi sorgulama metodlarımızı ilgili &lt;strong&gt;DomainService&lt;/strong&gt; sınıfı i&amp;ccedil;erisinde nasıl geliştirebileceğimizi g&amp;ouml;rmek ve &lt;strong&gt;Silverlight&lt;/strong&gt; uygulamasında g&amp;ouml;ze daha hoş gelecek&lt;em&gt;(Her ne kadar buna kendimde inanamasam da &lt;img title="Sealed" src="/editors/tiny_mce3/plugins/emotions/img/smiley-sealed.gif" alt="Sealed" border="0" /&gt;&amp;nbsp;)&lt;/em&gt; bir aray&amp;uuml;z&amp;uuml; tasarlayabilmek olacak. İlk etapta hedefimizin aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan uygulama aray&amp;uuml;z&amp;uuml; ve&amp;nbsp;fonksiyonelliğine&amp;nbsp;ulaşmak olduğunu ifade etmek isterim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg106_Goal.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;A...Z'&lt;/strong&gt; ye kadar sıralanmış bir &lt;strong&gt;Button&lt;/strong&gt; k&amp;uuml;mesi g&amp;ouml;r&amp;uuml;lmektedir. Bu d&amp;uuml;ğmelerden herhangibirisine basıldığında, o harf ile başlayan alb&amp;uuml;mlerin isimleri &lt;strong&gt;ComboBox&lt;/strong&gt; bileşenine doldurulmaktadır. Kullanıcı eğer &lt;strong&gt;ComboBox&lt;/strong&gt; bileşeninden bir alb&amp;uuml;m&amp;uuml; se&amp;ccedil;erse, bu alb&amp;uuml;m i&amp;ccedil;erisinde yer alan şarkı listeside alt tarafta yer alan ve arka planında harikulade &lt;img title="Cool" src="/editors/tiny_mce3/plugins/emotions/img/smiley-cool.gif" alt="Cool" border="0" /&gt;&amp;nbsp;bir manzaraya sahip olan &lt;strong&gt;DataGrid &lt;/strong&gt;kontrol&amp;uuml; i&amp;ccedil;erisine doldurulmaktadır. Bu &amp;ouml;rnekte baş harfine g&amp;ouml;re alb&amp;uuml;m' lerin getirilebilmesi ve se&amp;ccedil;ilen alb&amp;uuml;me ait olan şarkıların &amp;ccedil;ekilmesi i&amp;ccedil;in &lt;strong&gt;WCF RIA Service&lt;/strong&gt; i&amp;ccedil;erisinde gerekli sorgu metodlarının yazılmış olması gerekmektedir.&lt;/p&gt;
+&lt;p&gt;Bildiğiniz gibi &lt;strong&gt;Ado.Net Entity Data Model&lt;/strong&gt; nesnesi i&amp;ccedil;eriğinden se&amp;ccedil;ilen &lt;strong&gt;Table, View&lt;/strong&gt; yada &lt;strong&gt;Stored Procedure'&lt;/strong&gt; lere g&amp;ouml;re &lt;strong&gt;Domain Service &lt;/strong&gt;sınıfının i&amp;ccedil;eriğinde&amp;nbsp;hazır&amp;nbsp;metodlar oluşmaktadır. Ancak bu metodlar her zaman i&amp;ccedil;in yeterli olmayabilir. &amp;Ouml;zellikle &amp;ccedil;ok b&amp;uuml;y&amp;uuml;k boyutta veri k&amp;uuml;melerinin d&amp;ouml;nd&amp;uuml;r&amp;uuml;lmesi yerine performans a&amp;ccedil;ısından filtrelenmiş i&amp;ccedil;eriklerin tedarik edilmesi tercih edilmelidir. Bu&amp;nbsp;a&amp;ccedil;ıdan bakıldığında Domain Service sınıfı i&amp;ccedil;erisine kendi operasyonlarımı eklemek veya var olanları uygun bir şekilde g&amp;uuml;ncelleştirmek ka&amp;ccedil;ınılmazıdır. Bu bilgilerden yola &amp;ccedil;ıkarsak, geliştireceğimiz &amp;ouml;rnekte ilk hedefimiz &amp;uuml;retilen &lt;strong&gt;Domain Service &lt;/strong&gt;sınıfının metodlarını kendi istediğimiz şekilde geliştirmek olacaktır.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Kişisel Not:&amp;nbsp;Entity Data Model ve DomainService' in nasıl&amp;nbsp;hazırlanması gerektiğini bir&amp;nbsp;&amp;ouml;nceki yazımızda incelediğimizden burada tekrar edilmeyecektir. Ancak Entity Data Model i&amp;ccedil;erisinde Album ve Track tablolarının karşılıklarının kullanıldığını belirtmek isterim.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;İlk olarak,&amp;nbsp;&lt;strong&gt;ChinookDomainService&lt;/strong&gt; adı ile oluşturacağımız &lt;strong&gt;Domain Service&lt;/strong&gt; sınıfının i&amp;ccedil;eriğindeki t&amp;uuml;m operasyonları silip aşağıdaki hale getirdiğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace SilverlightApplication5.Web
+{
+    using System.Linq;
+    using System.Web.DomainServices.Providers;
+    using System.Web.Ria;
+
+    [EnableClientAccess()]
+    public class ChinookDomainService : LinqToEntitiesDomainService&amp;lt;ChinookEntities&amp;gt;
+    {
+        public IQueryable&amp;lt;Album&amp;gt; GetAlbumsByFirstLetter(string firstLetter)
+        {
+            return from albm in ObjectContext.Album
+                   where albm.Title.StartsWith(firstLetter)
+                   orderby albm.Title
+                   select albm;
+        }
+
+        public IQueryable&amp;lt;Track&amp;gt; GetTracks(int albumId)
+        {
+            return from track in ObjectContext.Track
+                   where track.AlbumId == albumId
+                   orderby track.Name
+                   select track;
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;GetAlbumsByFirstLetter&lt;/strong&gt; ve &lt;strong&gt;GetTracks&lt;/strong&gt; isimli metodlar &lt;strong&gt;IQueryable&amp;lt;T&amp;gt;&lt;/strong&gt; tipinden referanslar d&amp;ouml;nd&amp;uuml;rmektedir.&amp;nbsp;&lt;strong&gt;GetAlbumsByFirstLetter&lt;/strong&gt; metodu parametre olarak&amp;nbsp;&lt;strong&gt;string&lt;/strong&gt; bir bilgi almakta&amp;nbsp;ve&amp;nbsp;&lt;strong&gt;Title&lt;/strong&gt; bilgisi bu i&amp;ccedil;erik ile başlayanların listesini&amp;nbsp;geriye d&amp;ouml;nd&amp;uuml;rmektedir&lt;em&gt;(&amp;Ouml;rneğin baş harfi A olan alb&amp;uuml;mlerin elde edilmesi)&lt;/em&gt;. Diğer yandan &lt;strong&gt;GetTracks&lt;/strong&gt; metodu, &lt;strong&gt;albumId&lt;/strong&gt;&amp;nbsp;isimli parametre&amp;nbsp;sayesinde, bir alb&amp;uuml;me bağlı olan şarkıların listesini&amp;nbsp;&lt;strong&gt;Name&lt;/strong&gt; alanına g&amp;ouml;re alfabetik sırada d&amp;ouml;nd&amp;uuml;rmektedir.&amp;nbsp;B&amp;ouml;ylece &amp;ccedil;ok basit olsalardan kendi operasyonlarımızı tanımlamış&amp;nbsp;bulunmaktayız. Solution' u bu haliyle derlediğimizde &lt;strong&gt;Silverlight&lt;/strong&gt; uygulaması i&amp;ccedil;erisinde yer alan ChinookDomainContext sınıfında uygun metod &amp;ccedil;ağrılarının oluşturulduğunu&amp;nbsp;a&amp;ccedil;ık bir şekilde g&amp;ouml;rebiliriz.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg106_ClientSide.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;DomainService&lt;/strong&gt; sınıfını bu şekilde d&amp;uuml;zenledikten sonra sıra &lt;strong&gt;Silverlight&lt;/strong&gt;&amp;nbsp;uygulamasını geliştirmeye geldi. Bu ama&amp;ccedil;la MainPage.&lt;strong&gt;XAML&lt;/strong&gt; i&amp;ccedil;eriğini aşağıdaki gibi geliştirdiğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;UserControl x:Class="SilverlightApplication5.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="401" d:DesignWidth="640" xmlns:dataInput="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Data.Input" xmlns:data="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Data"&amp;gt;
+
+    &amp;lt;Grid x:Name="LayoutRoot" Background="White"&amp;gt;
+        &amp;lt;ComboBox Height="23" HorizontalAlignment="Left" Margin="11,62,0,0" Name="cmbAlbums" VerticalAlignment="Top" Width="449" SelectionChanged="cmbAlbums_SelectionChanged"&amp;gt;
+            &amp;lt;ComboBox.ItemTemplate&amp;gt;
+                &amp;lt;DataTemplate&amp;gt;
+                    &amp;lt;StackPanel&amp;gt;
+                        &amp;lt;TextBlock Text="{Binding Title}"/&amp;gt;
+                    &amp;lt;/StackPanel&amp;gt;
+                &amp;lt;/DataTemplate&amp;gt;
+            &amp;lt;/ComboBox.ItemTemplate&amp;gt;
+        &amp;lt;/ComboBox&amp;gt;
+        &amp;lt;dataInput:Label Height="28" HorizontalAlignment="Left" Margin="12,46,0,0" Name="label1" VerticalAlignment="Top" Width="120" Content="Alb&amp;uuml;mler" /&amp;gt;
+        &amp;lt;StackPanel ScrollViewer.HorizontalScrollBarVisibility="Auto" Height="26" HorizontalAlignment="Left" Margin="11,14,0,0" Name="pnlButtons" VerticalAlignment="Top" Width="617" Background="#FFEBEBB2" Orientation="Horizontal" UseLayoutRounding="True"&amp;gt;&amp;lt;/StackPanel&amp;gt;
+        &amp;lt;data:DataGrid AutoGenerateColumns="True" Height="285" HorizontalAlignment="Left" Margin="15,104,0,0" Name="grdTracks" VerticalAlignment="Top" Width="613" Visibility="Visible"&amp;gt;
+            &amp;lt;data:DataGrid.Background&amp;gt;
+                &amp;lt;ImageBrush ImageSource="/SilverlightApplication5;component/Images/1243016_70835687.jpg" /&amp;gt;
+            &amp;lt;/data:DataGrid.Background&amp;gt;
+        &amp;lt;/data:DataGrid&amp;gt;
+    &amp;lt;/Grid&amp;gt;
+&amp;lt;/UserControl&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Belkide dikkat &amp;ccedil;eken ilk nokta &lt;strong&gt;ComboBox&lt;/strong&gt; kontrol&amp;uuml; i&amp;ccedil;erisinde bir &lt;strong&gt;DataTemplate&lt;/strong&gt; kullanılmasıdır. Nitekim &lt;strong&gt;DataTemplate&lt;/strong&gt; kullanarak &lt;strong&gt;Title&lt;/strong&gt; alanını g&amp;ouml;stermek istediğimizi belirtmediğimiz durumda, &lt;strong&gt;AlbumId&lt;/strong&gt; alanının getirildiğini g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Bu bilgi son kullanıcı a&amp;ccedil;ısından &amp;ccedil;ok anlamlı değildir. Ama tabiki &lt;strong&gt;DataTemplate&lt;/strong&gt; i&amp;ccedil;erisinde yer alan &lt;strong&gt;StackPanel&lt;/strong&gt; elementinde istenilen kontroller kullanılarak daha fazla &lt;strong&gt;Album&lt;/strong&gt; bilgisinin ComboBox' ın her bir &amp;ouml;ğesinde g&amp;ouml;sterilmeside sağlanabilir.&lt;/p&gt;
+&lt;p&gt;Gelelim MainPage i&amp;ccedil;in kod tarafına;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Windows.Controls;
+using System.Windows.Ria;
+using SilverlightApplication5.Web;
+
+namespace SilverlightApplication5
+{
+    public partial class MainPage 
+        : UserControl
+    {
+        ChinookDomainContext context= new ChinookDomainContext();
+
+        void LoadButtons()
+        {
+            for (int i = 65; i &amp;lt; 91; i++)
+            {
+                Button btn = new Button();
+                btn.Width = 20;
+                btn.Height = 20;
+                btn.Name = "Button_" + i.ToString();
+                btn.Content = ((char)i).ToString();
+                pnlButtons.Children.Add(btn);
+
+                btn.Click += (o,e) =&amp;gt;
+                    {
+                        grdTracks.Visibility = System.Windows.Visibility.Collapsed;
+                        LoadOperation&amp;lt;Album&amp;gt; albumLoadOpt = context.Load&amp;lt;Album&amp;gt;(context.GetAlbumsByFirstLetterQuery(btn.Content.ToString()));
+                        cmbAlbums.ItemsSource = albumLoadOpt.Entities;
+                    };
+            }
+        }
+
+        public MainPage()
+        {
+            InitializeComponent();
+
+            LoadButtons();
+            grdTracks.Visibility = System.Windows.Visibility.Collapsed;
+        }
+
+        private void cmbAlbums_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {            
+            if (e.AddedItems.Count &amp;gt; 0)
+            {
+                int albumId = ((Album)e.AddedItems[0]).AlbumId;
+                LoadOperation&amp;lt;Track&amp;gt; tracks = context.Load&amp;lt;Track&amp;gt;(
+                    context.GetTracksQuery(albumId), 
+                    (load) =&amp;gt; 
+                    { 
+                        grdTracks.Visibility = System.Windows.Visibility.Visible; 
+                    },
+                    null
+                    );
+                grdTracks.ItemsSource = tracks.Entities;
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;MainPage&lt;/strong&gt; yapıcı metodu i&amp;ccedil;erisinde &lt;strong&gt;Button&lt;/strong&gt; bileşenlerinin oluşturulması işlemi ger&amp;ccedil;ekleştirilmektedir. Bu işlem sırasında her &lt;strong&gt;Button&lt;/strong&gt; bileşeni i&amp;ccedil;in &lt;strong&gt;Click&lt;/strong&gt; olayının y&amp;uuml;klenmesi sağlanmaktadır. Dikkat edileceği &amp;uuml;zere &lt;strong&gt;Click&lt;/strong&gt; olay metodu i&amp;ccedil;erisinde, o anda basılan d&amp;uuml;ğmenin &lt;strong&gt;Content&lt;/strong&gt; bilgisinden yararlanılarak bir &lt;strong&gt;LoadOperation&lt;/strong&gt; oluşturulur. Ayrıca,&amp;nbsp;&lt;strong&gt;ChinookDomainContext&lt;/strong&gt; nesne &amp;ouml;rneği &amp;uuml;zerinden yapılan &lt;strong&gt;GetAlbumsByFirstLetterQuery&lt;/strong&gt; metodu ile gerekli sorgunun elde edilmesi sağlanır. Bundan sonra ise &lt;strong&gt;ComboBox&lt;/strong&gt; kontrol&amp;uuml;n&amp;uuml;n &lt;strong&gt;ItemsSource&lt;/strong&gt; &amp;ouml;zelliğine gerekli veri bağlama işlemi yapılır. &lt;strong&gt;ComboBox&lt;/strong&gt; kontrol&amp;uuml;nde bir &amp;ouml;ğenin se&amp;ccedil;ilmesi halinde devreye giren &lt;strong&gt;SelectionChanged&lt;/strong&gt; metodunda ise bu kez &lt;strong&gt;GetTracks&lt;/strong&gt; servis metodunun &amp;ccedil;alıştırılması i&amp;ccedil;in gerekli işlemler yapılmaktadır.&lt;/p&gt;
+&lt;p&gt;Yanlız bu sefer ki kullanımda &lt;strong&gt;ChinookDomainContext &lt;/strong&gt;referansına ait&amp;nbsp;&lt;strong&gt;Load&lt;/strong&gt; metodunun ikinci parametresine dikkat edilmelidir. Bu parametre s&amp;ouml;z konusu &lt;strong&gt;Load&lt;/strong&gt; işlemi tamamlandıktan sonra devreye girecek bir metodu işaret edecek&lt;strong&gt; Action&amp;lt;T&amp;gt;&lt;/strong&gt; tipinden bir &lt;strong&gt;temsilcidir(delegate).&lt;/strong&gt; Burada &lt;strong&gt;Load&lt;/strong&gt; işlemi tamamlandığında g&amp;ouml;r&amp;uuml;n&amp;uuml;r olmayan &lt;strong&gt;DataGrid&lt;/strong&gt; kontrol&amp;uuml;n&amp;uuml;n g&amp;ouml;r&amp;uuml;n&amp;uuml;r hale getirilmesi i&amp;ccedil;in sembolik bir işlem yapıldığını belirtebiliriz. Ancak ana fikir, &lt;strong&gt;Load &lt;/strong&gt;operasyonunun tamamlanması ile kontrol&amp;uuml; ele alabileceğimiz bir metodun işaret edilebiliyor olmasıdır. Bu kodlamanın ardından &lt;strong&gt;DataGrid&lt;/strong&gt; kontrol&amp;uuml;n&amp;uuml;n &lt;strong&gt;ItemsSource&lt;/strong&gt; &amp;ouml;zelliğine gerekli veri bağlama işleminin yapılması yeterlidir. Uygulamayı bu noktadan sonra teste &amp;ccedil;ıkartabiliriz. Sonu&amp;ccedil; olarak yazımızın başında belirttiğimiz ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ne benzer sonu&amp;ccedil;ları elde ebiliyor olmamız gerekmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Peki neler &amp;ouml;ğrendik?&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;WCF RIA Service'&lt;/strong&gt; lerinde sihirbaz yardımıyla &lt;strong&gt;Entity Data Model'&lt;/strong&gt; den otomatik olarak &amp;uuml;retilen&lt;strong&gt; Domain Service&lt;/strong&gt; sınıf metodları yerine kendi sorgulama metodlarımızı kullanabileceğimizi, var olanları istersek g&amp;uuml;ncelleştirebileceğimizi,&lt;/li&gt;
+&lt;li&gt;İstemci tarafında, &lt;strong&gt;Domain Service&lt;/strong&gt; sınıfı i&amp;ccedil;erisindeki operasyonlara yapılacak olan &amp;ccedil;ağrılarda &lt;strong&gt;Callback&lt;/strong&gt; metodlarının değerlendirilerek y&amp;uuml;kleme tamamlandıktan sonrasını anlayıp bazı işlemler yaptırabileceğimizi,&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Silverlight&lt;/strong&gt; uygulaması i&amp;ccedil;erisindeki kontrollerde &lt;strong&gt;DataTemplate&lt;/strong&gt; kullanarak, servis tarafından &amp;ccedil;ekilen &lt;strong&gt;Entiy&lt;/strong&gt; i&amp;ccedil;eriklerinin sadece istediğimiz alanlarının kullanılabileceğini,&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Silverlight&lt;/strong&gt; tarafında dinamik olarak kontrollerin nasıl &amp;uuml;retilip ilgili elementlere&amp;nbsp;eklenebileceğini,&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&amp;ouml;ğrendik.&lt;/p&gt;
+&lt;p&gt;hatta &lt;strong&gt;Background&lt;/strong&gt; &amp;ouml;zelliğine &lt;strong&gt;Picture&lt;/strong&gt; ekleyebileceğimizi ve bu sayede daha hoş bir g&amp;ouml;r&amp;uuml;nt&amp;uuml; sunabileceğimizi farkettik demek istesemde, bu &amp;ouml;nemsenecek bir mevzu değildir. &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2009%2f11%2fSilverlightApplication5.rar"&gt;SilverlightApplication5.rar (5,28 mb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2009-11-25 04:30:00</pubDate>
+  <slug>WCF-RIA-Services-Kendi-Sorgularimizi-Kullanmak</slug>
+  <tags>
+    <tag>wcf-ria-services</tag>
+    <tag>net-ria-services</tag>
+    <tag>wcf</tag>
+    <tag>wcf-eco-system</tag>
+  </tags>
+  <categories>
+    <category>WCF Eco System</category>
+    <category>WCF RIA Services</category>
+  </categories>
+</post>

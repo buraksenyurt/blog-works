@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Ruby Kod Parçacıkları 31 - Kendi gem Paketimizi Hazırlamak</title>
+  <description>Bildiğiniz gibi günümüz popüler programlama dillerinin çoğunun internet üzerinden ulaşılabilen paket destekleri mevcut. Özellikle açık kaynak tabanlı ürünlerde önem verilen bir konu olduğu ortada. Yazılımcıların birbirlerinin kullanımına açtığı bu paketler Ruby tarafında da mevcut ve gem olarak adlandırılmakta. Hatta şu adresten bir çok değerli mücehvere ulaşabilir kendi paketlerinizi de yükleyebilirsiniz. Peki kendi gem paketlerimizi en basit haliyle nasıl yazabiliriz? Hatta yazdığımız bir gem'i herkesin kullanımına nasıl açabiliriz? Gelin bu konuyu kısaca incelemeye çalışalım.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2016/12/rubygems_8.gif" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Bildiğiniz gibi g&amp;uuml;n&amp;uuml;m&amp;uuml;z pop&amp;uuml;ler programlama dillerinin &amp;ccedil;oğunun internet&amp;nbsp;&amp;uuml;zerinden&amp;nbsp;ulaşılabilen paket destekleri mevcut&lt;em&gt;.&lt;/em&gt;&amp;nbsp;&amp;Ouml;zellikle a&amp;ccedil;ık kaynak tabanlı &amp;uuml;r&amp;uuml;nlerde &amp;ouml;nem verilen bir konu olduğu ortada. Yazılımcıların birbirlerinin&amp;nbsp;kullanımına a&amp;ccedil;tığı bu paketler Ruby tarafında da mevcut ve gem olarak adlandırılmakta&lt;em&gt;.&amp;nbsp;&lt;/em&gt;Hatta &lt;a href="https://rubygems.org/" target="_blank"&gt;şu adresten&lt;/a&gt; bir &amp;ccedil;ok değerli m&amp;uuml;cehvere ulaşabilir kendi paketlerinizi de y&amp;uuml;kleyebilirsiniz. Peki kendi gem paketlerimizi en basit haliyle nasıl yazabiliriz? Hatta yazdığımız bir gem'i herkesin kullanımına nasıl a&amp;ccedil;abiliriz? Gelin bu konuyu kısaca incelemeye &amp;ccedil;alışalım.&amp;nbsp;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Bazı firmalarda katı g&amp;uuml;venlik kuralları olabilir. &amp;Ouml;rneğin bir bankanın geliştirme ortamlarından, NuGet, RubyGems gibi k&amp;uuml;resel paket sağlayıcılarına erişim izni verilmeyebilir. Bu gibi hallerde g&amp;uuml;venlik denetimlerinden ge&amp;ccedil;miş olup geliştiricilerin kullanabileceği paketlerin sunulması i&amp;ccedil;in şirket ağı &amp;uuml;zerinde paket depoları oluşturulabilir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;Paket i&amp;ccedil;in Klas&amp;ouml;r Yapısı&lt;/h2&gt;
+&lt;p&gt;Bir gem &amp;uuml;retmeden &amp;ouml;nce belli bir ağa&amp;ccedil; yapısını sistem &amp;uuml;zerinde oluşturmamız gerekir. Aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde&amp;nbsp;bu işin en yalın halini g&amp;ouml;rmektesiniz. Ancak pakete ilişkin teknik dok&amp;uuml;mantasyon, paketle birilikte kullanılacak y&amp;uuml;r&amp;uuml;t&amp;uuml;lebilir dosyalar gibi diğer&amp;nbsp;kaynaklara da ihtiya&amp;ccedil; varsa farklı klas&amp;ouml;rleri konuşlandırmak gerekir. İcra edilebilir&lt;em&gt;(Executable)&lt;/em&gt;&amp;nbsp;dosyalar i&amp;ccedil;in bin, Unit Test'ler i&amp;ccedil;in test isimli klas&amp;ouml;rler vb.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/12/rubygems_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;Paket İ&amp;ccedil;eriğini Hazırlayalım&lt;/h2&gt;
+&lt;p&gt;Paketimizin adı Einstein. İ&amp;ccedil;erisinde lib isimli bir klas&amp;ouml;r ve gemspec uzantılı&amp;nbsp;bir dosya var. Kodlarımızı lib klas&amp;ouml;r&amp;uuml; i&amp;ccedil;erisinde tutmamız&amp;nbsp;gerekiyor. Einstein.rb dosyasına ait kod i&amp;ccedil;eriği aşağıdaki gibi oluşturulabilir.&lt;/p&gt;
+&lt;pre class="brush:ruby;auto-links:false;toolbar:false" contenteditable="false"&gt;#Einstein Gem
+module Algebra
+	class Common
+		def self.factorial(number)
+			if(number==0)
+				return 1
+			else
+				return number*factorial(number-1)
+			end
+		end
+		
+		def self.sum(*numbers)
+			total=0
+			numbers.each{|n|total+=n}
+			total
+		end
+	end
+end&lt;/pre&gt;
+&lt;p&gt;Sadece pratik olması a&amp;ccedil;ısından iki fonksiyonellik sunduğumuz basit bir sınıf s&amp;ouml;z konusu. Bir sayının fakt&amp;ouml;ryelini ve n sayıda rakamın toplamını hesap eden operasyonlar&amp;nbsp;Algebra mod&amp;uuml;l&amp;uuml;ndeki Common sınıfında yer alıyor&lt;em&gt;(self kullanımı nedeniyle sınıfı &amp;ouml;rneklemeden ilgili fonksiyonellikleri &amp;ccedil;ağırabileceğimizi hatırlatalım)&lt;/em&gt; &amp;Ouml;nemli olan kısım&amp;nbsp;gemspec uzantılı dosya i&amp;ccedil;eriği. Paket ile aynı isimde olan dosya da aslına bakarsanız ruby kodları&amp;nbsp;i&amp;ccedil;ermekte. Dikkat edilecek olursa Specification tipinden yeni bir nesne oluşturuyor ve bazı niteliklerine&amp;nbsp;değerler atılıyor.&lt;/p&gt;
+&lt;pre class="brush:ruby;auto-links:false;toolbar:false" contenteditable="false"&gt;Gem::Specification.new do |s|
+  s.name        = 'BuraksEinstein'
+  s.version     = '0.0.2'
+  s.date        = '2016-12-20'
+  s.summary     = "Simple and funny math operations for kids"
+  s.description = "A Simple and Funny Math"
+  s.authors     = ["Burak Selim Senyurt"]
+  s.email       = 'selim@buraksenyurt.com'
+  s.files       = ["lib/einstein.rb"]
+  s.homepage    = 'http://rubygems.org/gems/einstein'
+  s.license     = 'MIT'
+end&lt;/pre&gt;
+&lt;p&gt;Bu dosyayı paket ile ilgili temel bilgileri i&amp;ccedil;eren bir manifesto olarak d&amp;uuml;ş&amp;uuml;nebilirsiniz. Paket adı, versiyon numarası, ne yaptığının &amp;ouml;zeti,&amp;nbsp;kimin yazdığı, irtibat i&amp;ccedil;in&amp;nbsp;elektronik posta adresi, lisanslama modeli ve i&amp;ccedil;erisinde kullanılan kod dosyası vb pek &amp;ccedil;ok bilgi bu dosya i&amp;ccedil;erisinde&amp;nbsp;bildirilmekte.&lt;/p&gt;
+&lt;h2&gt;Paketin &amp;Uuml;retilmesi&lt;/h2&gt;
+&lt;p&gt;Kod ve manifesto i&amp;ccedil;erikleri hazırlandıktan sonra gem aracını kullanarak paketin oluşturulması ve test adımlarına ge&amp;ccedil;ilebilir.&amp;nbsp;Komut satırından yapacaklarımız aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/12/rubygems_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dilerseniz neler olduğuna sırasıyla bakalım. İlk olarak bir build işlemi ger&amp;ccedil;ekleştirmekteyiz. Bu işlem sonrasında gem uzantılı bir dosya oluşur. manifesto i&amp;ccedil;erisinde belirtilen versiyon numarasına g&amp;ouml;re farklı gem i&amp;ccedil;erikleri &amp;uuml;retilebilir. Bu sayede k&amp;uuml;t&amp;uuml;phanenin kullanılacağı platform i&amp;ccedil;in farklı s&amp;uuml;r&amp;uuml;mlerin değerlendirilmesi de m&amp;uuml;mk&amp;uuml;n olabilir&lt;em&gt;(&amp;Ouml;zellikle g&amp;uuml;ncellenen &amp;uuml;r&amp;uuml;nlerin eski s&amp;uuml;r&amp;uuml;mleri ile bir s&amp;uuml;re daha paralel &amp;ccedil;alışması gerektiği hallerde &amp;ouml;nem kazanan bir uygulamadır)&lt;/em&gt; gem i&amp;ccedil;in build komutu sonrası bunu kendi sistemimizde denemek adına install işlemi ger&amp;ccedil;ekleştiriyoruz&lt;em&gt;(3 numara)&lt;/em&gt; Dikkat edilecek olursa paket adını yazarken versiyon numarasını da belirttik&lt;em&gt;(Bir başka deyişle sistemimize farklı versiyonları da&amp;nbsp;y&amp;uuml;kleyebiliriz)&lt;/em&gt;&amp;nbsp;Paketin oluşturulması yeterli değil. Bunu kolay bir şekilde deneyip &amp;ccedil;alıştığından emin olmakta yarar var. irb &amp;uuml;zerinden factorial metodunu kullanarak 8 sayısının faktoryelini hesaplıyoruz &lt;em&gt;(İşte test klas&amp;ouml;r&amp;uuml;n&amp;uuml;n oluşturulması ve test metodlarının icra edilmesi bu noktada anlam kazanan bir durum. Yazımızda yer vermedik ancak kaynak bağlantıdan bakarak konu hakkında detay bilgi alabilirsiniz.)&lt;/em&gt;&lt;/p&gt;
+&lt;h2&gt;Paketi RubGems.org Sitesine Aktarmak&lt;/h2&gt;
+&lt;p&gt;Buraya kadar her şey yolunda gitti. Kodlarımızı kendi sistemimizde gem paketi haline getirip başarılı bir şekilde denedik. Peki bunu herkesin ortaklaşa kullanabileceği paket sunucusuna&amp;nbsp;nasıl atabiliriz? &amp;Ouml;ncelikle rubygems.org'a &amp;uuml;ye olmamız ve bizim i&amp;ccedil;in &amp;uuml;retilecek uygulama anahtarına&lt;em&gt;(rubygems_api_key olarak ge&amp;ccedil;iyor)&lt;/em&gt;&amp;nbsp;ihtiyacımız var. &amp;Uuml;yelik işlemi sonrası ilgili anahtarı &amp;uuml;retmek i&amp;ccedil;in komut satırından curl aracından yararlanabilir veya paketin&amp;nbsp;ilgili sunuculara gitmesi i&amp;ccedil;in gerekli credentials dosyasının i&amp;ccedil;eriğini manuel olarak &amp;ccedil;ekebiliriz.&amp;nbsp;Tek yapmamız gereken &amp;uuml;yelik işlemi sonrası&amp;nbsp;&lt;a href="https://rubygems.org/api/v1/api_key.yaml"&gt;https://rubygems.org/api/v1/api_key.yaml&lt;/a&gt;&amp;nbsp;adresine gidip kullanıcı adı ve şifre bilgisini girdikten sonra indirilen yaml i&amp;ccedil;eriğini credentials dosyasına koymak. Eğer her şey yolunda giderse aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi paketin sunucuya atıldığını g&amp;ouml;rebiliriz. Bunun i&amp;ccedil;in gem aracını push komutu ile birlikte kullanmamız yeterlidir.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/12/rubygems_5.gif" alt="" /&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Artık BuraksEinstein isimli paketimiz rubygems sitesinde kendisine bir yer buldu.&amp;nbsp;Aslında &amp;ouml;rneği Einstein isimli bir paketi atacak şelilde geliştirmiştim ancak bu isimde zaten bir &amp;ccedil;ok paket olduğundan hata aldım. Paket adının BuraksEinstein olmasının sebebi bu.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/12/rubygems_6.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Pek tabii bu gem'in de kullanılıp kullanılmadığını denememiz lazım. Bu y&amp;uuml;zden ilgili paketi sistemimize&amp;nbsp;y&amp;uuml;klemeyi deneyerek ilerleyelim. Sonrasında da irb'den bir test yapalım.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/12/rubygems_7.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi yazdığımız bir gem paketini RubyGems.org sitesine y&amp;uuml;kleyebildik. Ruby ile geliştirdiğimiz paketleri bu şekilde ekleyebilir ve başka geliştiricilerin kullanımına a&amp;ccedil;arak diğer Rubyist'leri sevindirebiliriz. Elbette işe yarar paketler yazmamı &amp;ouml;nemli. Buradaki tek eksi sanıyorum ki gem i&amp;ccedil;eriklerinin kontrol edilemeyişi. Yani k&amp;ouml;t&amp;uuml; ama&amp;ccedil;lı gem paketleri de bu sunuculara atılabilir mi bilemiyorum. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir başka kod par&amp;ccedil;acığında g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Kaynak :&amp;nbsp;&lt;a href="http://guides.rubygems.org/make-your-own-gem/"&gt;http://guides.rubygems.org/make-your-own-gem/&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;</content>
+  <pubDate>2017-01-03 22:30:00</pubDate>
+  <slug>ruby-kod-parcaciklari-31-kendi-gem-paketimizi-hazirlamak</slug>
+  <tags>
+    <tag>ruby-kod-parçacıkları</tag>
+    <tag>gem</tag>
+    <tag>package</tag>
+    <tag>rubygems</tag>
+    <tag>package-management</tag>
+    <tag>rubyist</tag>
+  </tags>
+  <categories>
+    <category>Ruby</category>
+  </categories>
+</post>

@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>C# 2.0 ve Anonymous (İsimsiz) Metodlar</title>
+  <description>İsimsiz metodlar bildiğiniz gibi C# 2.0' a eklenmiş olan yeni özelliklerden birisidir. Temeli C# dilinin temsilci tipine dayanan bu yeni teknikte amaç, temsilcileri işaret edecekleri metodların sahip oldukları kod blokları ile bir seferde tanımlayabilmektir. İsimsiz metodları anlayabilmek için herşeyden önce temsilcilerin (delegates) iyi kavranmış olması gerekmektedir(Ön bilgi veya hatırlatma açısından Örnek makale ve video larımızı incelemenizi öneririm)</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;İsimsiz metodlar bildiğiniz gibi C# 2.0' a eklenmiş olan yeni &amp;ouml;zelliklerden birisidir. Temeli C# dilinin temsilci tipine dayanan bu yeni teknikte ama&amp;ccedil;, temsilcileri işaret edecekleri metodların sahip oldukları kod blokları ile bir seferde tanımlayabilmektir. İsimsiz metodları anlayabilmek i&amp;ccedil;in herşeyden &amp;ouml;nce temsilcilerin (delegates) iyi kavranmış olması gerekmektedir&lt;em&gt;(&amp;Ouml;n bilgi veya hatırlatma a&amp;ccedil;ısından &amp;Ouml;rnek &lt;a href="http://www.bsenyurt.com/MakaleGoster.aspx?ID=43"&gt;makale&lt;/a&gt; ve &lt;a href="http://www.bsenyurt.com/video/Delegates.zip"&gt;video&lt;/a&gt; larımızı incelemenizi &amp;ouml;neririm)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Kısaca temsilciler, &amp;ccedil;alışma zamanında metodların başlangı&amp;ccedil; adreslerini işaret eden tip (type) lerdir. Temsilcilerin herhangibir metodu &amp;ccedil;alışma zamanında işaret edebilmesinin yanı sıra bu metodu(metodları) &amp;ccedil;ağırlabilmesi ve hatta parametreler g&amp;ouml;ndererek d&amp;ouml;n&amp;uuml;ş değerleri vermesi gibi yetenekleride vardır. Ama t&amp;uuml;m bu &amp;ouml;zellikleri arasında en &amp;ouml;nemlisi, &amp;ccedil;alışma zamanında hangi metodu &amp;ccedil;alıştıracağına karar vermesidir.&lt;/p&gt;
+&lt;table id="table1" border="1" width="100%" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;&lt;em&gt;Temsilciler (delegates), multithreading(&amp;ccedil;ok kanallı programlama) modelinde, event-driven (olay g&amp;uuml;d&amp;uuml;ml&amp;uuml;) programlamada, CallBack Modeli ile Asenkron erişim tekniklerinde etkin olarak kullanılmaktadır.&lt;/em&gt;&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;C# 2.0 ile gelen isimsiz (anonymous) metodları anlamak i&amp;ccedil;in &amp;ouml;ncelikle C# dilinde bir temsilciyi nasıl kullandığımıza bakmamızda fayda var. Aşağıdaki &amp;ouml;rnekte basit olarak bir temsilci tanımlanmış ve kullanılmıştır. Bu temsilci iki adet double tipte parametre alan ve geriye double tipinden değerler d&amp;ouml;nd&amp;uuml;ren metodları işaret edebilecek şekilde tanımlanmıştır. Dikkat ederseniz temsilci nesnemize ait nesne &amp;ouml;rneğimiz oluşturulurken işaret edeceği metod parametre olarak verilmektedir. Daha sonra bu temsilci nesne &amp;ouml;rneği &amp;uuml;zerinden işaret edilen metod &amp;ccedil;ağırılabilmektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace DefiningDelegate
+{ 
+    //Temsilcimiz iki adet double tipinden parametre alan ve geriye double tipinden değer d&amp;ouml;nd&amp;uuml;ren metodları işaret edebilecek.
+    public delegate double Temsilci(double pi,double r);
+
+    class Class1
+    {
+        [STAThread]
+        static void Main(string[] args)
+        {
+            // Temsilci nesnemiz oluşturuluyor ve Alan isimli metodu işaret edeceği s&amp;ouml;yleniyor.
+            Temsilci t=new Temsilci(Alan);
+            // Temsilcimizin &amp;ccedil;alışma zamanında işaret ettiği metod &amp;ccedil;ağırılıyor.
+            double daire_Alani=t(3.14,10);
+            Console.WriteLine(daire_Alani);
+        }
+    
+        // Tanımladığımız temsilci tarafından işaret edilebilecek formatta bir metod bildirimi.
+        static double Alan(double pi_Degeri,double yaricap)
+        {
+            return pi_Degeri*(yaricap*yaricap);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;C# 2.0 i&amp;ccedil;in anonymous metodları kullanarak yukarıdaki uygulamayı aşağıdaki kod par&amp;ccedil;asında g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi yazabiliriz. Yeni versiyonda temsilci kullanımındaki tek fark temsilcinin işaret edeceği metod bloğunun, &amp;ccedil;alışma zamanında bu metodu &amp;ccedil;ağıracak olan temsilci nesnesine eklenmiş oluşudur. Buradan temsilcilerin inline (satır i&amp;ccedil;i) kodlama yeteneği kazanmış olduklarını s&amp;ouml;yleyebiliriz.&lt;/p&gt;
+&lt;table id="table8" border="1" width="100%" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;&lt;strong&gt;İsimsiz(Anonymous) metodlar dışarıdan parametre alabilirler ve geriye değer d&amp;ouml;nd&amp;uuml;rebiliriler.&lt;/strong&gt;&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;C# 2.0 versiyonu&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace UsingAnonymousMethods
+{ 
+    // Temsilcimizi tanımlıyoruz.
+    public delegate double Temsilci(double a,double b);
+
+    class Program
+    {    
+        static void Main(string[] args)
+        {
+            // Temsilcimizi hem oluşturuyor hemde işaret edeceği metod bloğunu anonymous olarak tanımlıyoruz.
+            Temsilci t = delegate(double pi,double r) 
+            {
+                return pi * r*r;
+            };
+            // Temsilcimizi parametreler ile birlikte &amp;ccedil;ağırıyoruz ve d&amp;ouml;n&amp;uuml;ş değerini double tipinden bir değişkene atıyoruz.
+            double alan = t(3.14, 10);
+            Console.WriteLine(alan);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Gelelim isimsiz metodların bir diğer kullanım şekline. &amp;Ccedil;ok kanallı (Multithreading) programlama modelinde bildiğiniz gibi ThreadStart isimli bir temsilci(delegate) tipi kullanılmaktadır. Bu temsilci bir Thread nesne &amp;ouml;rneğinin oluşturulması sırasında, yapıcı metod i&amp;ccedil;in parametre olarak kullanılmaktadır. C# 1.1 versiyonunda basit bir thread modeli aşağıdaki kod par&amp;ccedil;asında olduğu gibi &amp;ouml;rneklenebilir. L&amp;uuml;tfen temsilcilerin &amp;ccedil;alışma zamanında işaret edecekleri metodlar ile birlikte nasıl ilişkilendirildiğine dikkat edin.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Threading;
+
+namespace UsingThreading1
+{
+    class Class1
+    {
+        //ThreadStart temsilcimiz &amp;ccedil;alışma zamanında ilgili process i&amp;ccedil;indeki metodu temsil edecek.
+        static ThreadStart threadStart1;
+        static ThreadStart threadStart2;
+
+        // Thread nesnemiz parametre olarak aldığı ThreadStart temsilcisinin işaret ettiğim metodun ait olduğu process i&amp;ccedil;in gerekli işlemleri (start,abort,resume vb...) ger&amp;ccedil;ekleştirecek. 
+        static Thread thread1;
+        static Thread thread2;
+
+        // Thread i&amp;ccedil;inde &amp;ccedil;alışacak metodlarımız.
+        static void Say1()
+        {
+            for(int i=0;i&amp;lt;100;i++)
+            {
+                Console.Write(i);
+                Thread.Sleep(100);
+            }
+        }
+
+        static void Say2()
+        {
+            for(int i=0;i&amp;lt;100;i++)
+            {
+                Console.WriteLine(i);
+                Thread.Sleep(150);
+            }
+        }
+
+        [STAThread]
+        static void Main(string[] args)
+        {
+            // ThreadStart temsilcilerimiz &amp;ccedil;alışma zamanında işaret edecekleri parametre olarak alacak         şekilde tanımlanıyor.
+            threadStart1=new ThreadStart(Say1);
+            threadStart2=new ThreadStart(Say2);
+            // Thread nesnelerimiz ThreadStart temsilcilerinin parametre olarak alacak şekilde tanımlanıyor.
+            thread1=new Thread(threadStart1); 
+            thread2=new Thread(threadStart2);
+            // Threadler &amp;ccedil;alıştırılmaya başlanıyor.
+            thread1.Start();
+            thread2.Start();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Şimdi aynı &amp;ouml;rneğin C# 2.0' da isimsiz metodlar yardımıyla nasıl yazılabileceğine bakalım. Burada dikkat ederseniz ThreadStart temsilcisi g&amp;ouml;r&amp;uuml;lmemektedir. Bu elbetteki ThreadStart temsilcisinin kullanılmadığı anlamına gelmemelidir. Aslında bu tanımlama gizli olarak Thread sınıfına ait nesne &amp;ouml;rnekleri oluşturulurken yapılmaktadır. Yani &amp;ccedil;alışma zamanında Thread nesnesinin zaten bir ThreadStart temsilci nesnesine ihtiyacı olduğu &amp;ccedil;alışma ortamı tarafından bilinmektedir. Diğer yandan kod yazımı a&amp;ccedil;ısından bakıldığında iki işlemin, (ThreadStart' ın işaret edeceği metodu g&amp;ouml;sterecek şekilde &amp;ouml;rneklenmesi ve daha sonrada Thread nesnesinin oluşuturulması i&amp;ccedil;in parametre olarak kullanılması) tek seferde yapılmaktadır.&lt;/p&gt;
+&lt;p&gt;C# 2.0 Versiyonu&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading;
+
+namespace UsingAnonymousMethods
+{ 
+    class Program
+    {
+        // Thread i&amp;ccedil;erisinde &amp;ccedil;alışacak metodumuz.
+        static void Say1()
+        {
+            for(int i=0;i&amp;lt;100;i++)
+            {
+                Console.Write(i);
+                Thread.Sleep(100);
+            }
+        }
+
+        static void Main(string[] args)
+        {
+            // İlk Thread nesnemizi &amp;ouml;rneklerken ThreadStart temsilcisinin işaret edeceği metodu burada anonymous metod olarak tanımlıyoruz.
+            Thread thread1=new Thread(delegate(){
+                Say1();
+            });
+            // Tanımladığımız thread' i &amp;ccedil;alıştırıyoruz.
+            thread1.Start();
+            // İkinci Thread nesne &amp;ouml;rneğimizi oluşturuyoruz. Bu sefer thread1 nesnesinden farklı olarak anonymous metodumuz i&amp;ccedil;erisine direkt kodları g&amp;ouml;md&amp;uuml;k. thread1 nesnesinde ise kodları i&amp;ccedil;eren metodu, anonymous metod bloğumuz i&amp;ccedil;ine g&amp;ouml;mm&amp;uuml;şt&amp;uuml;k.
+            Thread thread2 = new Thread(delegate(){
+                for (int i = 0; i &amp;lt; 100; i++)
+                {
+                    Console.WriteLine(i);
+                    Thread.Sleep(150);
+                }
+            });
+            thread2.Start();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Temsilcilerin kullanıldığı diğer bir tekniğinde olay g&amp;uuml;d&amp;uuml;ml&amp;uuml; (event-driven) programlama modeli olduğunu s&amp;ouml;ylemiştik. Bu modelde de Threading modeline benzer bir yapı vardır. Her event (olay) tanımlanırken bir temsilci kullanılır. Bu temsilci olay meydana geldiğinde &amp;ccedil;alıştırılacak olan metodu &amp;ccedil;alışma zamanında işaret etmek ve &amp;ccedil;ağırmakla y&amp;uuml;k&amp;uuml;ml&amp;uuml;d&amp;uuml;r. &amp;Ouml;rneğin aşağıdaki kod par&amp;ccedil;asında&amp;nbsp; bir windows formu &amp;uuml;zerinde yer alan button kontrol&amp;uuml;n&amp;uuml;n Click olayına ilişkin kodlar yer almaktadır.&lt;/p&gt;
+&lt;p&gt;Bu &amp;ouml;rneğimizde, dikkat ederseniz button kontrol&amp;uuml;m&amp;uuml;ze Click event' ını y&amp;uuml;kleyebilmek i&amp;ccedil;in System.EventHandler temsilci tipi kullanılmaktadır. Bu temsilci, diğer olay metodlarında kullanılan temsilciler gibi sistemde &amp;ouml;nceden tanımlanmış halde yer almaktadır. InitializeComponent metodunda button kontrol&amp;uuml;m&amp;uuml;ze click olayı y&amp;uuml;klenirken, hangi temsilcinin &amp;ccedil;alışma zamanın hangi metodu işaret edeceği ve &amp;ccedil;alıştıracağıda bildirilir. Sonrasında ise bu olay metodunun tanımlanması gerekmektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public class Form1 : System.Windows.Forms.Form
+{
+    private System.Windows.Forms.Button btnAksiyon; 
+    
+   
+    // Diğer kodlar
+    
+    private void InitializeComponent()
+    {
+        
+        
+        // Diğer Kodlar
+        
+        this.btnAksiyon.Click += new System.EventHandler(this.btnAksiyon_Click);
+    }
+    
+    
+    // Diğer Kodlar
+    
+    private void btnAksiyon_Click(object sender, System.EventArgs e)
+    {
+        // Bir takım kodlar.
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Şimdi aynı &amp;ouml;rneğin C# 2.0' da isimsiz metodlar yardımıyla nasıl yazılabileceğine bakalım. G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi System.EventHandler temsilcisi burada g&amp;ouml;r&amp;uuml;lmemektedir. Aslında t&amp;uuml;m isimsiz metod modellerinde, temsilcilerden hangisi kullanılırsa kullanılsın (&amp;ouml;rneğin System.EventHandler veya ThreadStart gibi) bizim tek kullandığımız delegate anahtar s&amp;ouml;zc&amp;uuml;ğ&amp;uuml; ile bir metod bloğunun kombinasyonudur. Bu isimsiz metodların kullanımının bir faydası olarakta g&amp;ouml;r&amp;uuml;lebilir.&lt;/p&gt;
+&lt;table id="table9" border="1" width="100%" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;&lt;strong&gt;İsimsiz(Anonymous) metodlar&lt;/strong&gt;&lt;/em&gt;&lt;strong&gt;&lt;em&gt;da, kullanılan temsilcinin bilinmesine gerek yoktur. delegate anahtar s&amp;ouml;zc&amp;uuml;ğ&amp;uuml; bu işi &amp;uuml;stlenir.&lt;/em&gt;&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;C# 2.0 Versiyonu&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void InitializeComponent()
+{
+    
+    // Diğer kodlar
+    
+    this.btnOnay.Click += delegate(object sender, System.EventArgs arg)
+    {
+        System.Windows.Forms.MessageBox.Show("Onay");
+    };    
+    
+    // Diğer kodlar
+    
+}&lt;/pre&gt;
+&lt;p&gt;İsimsiz metodlar uygulanışları a&amp;ccedil;ısından biraz karışık g&amp;ouml;r&amp;uuml;lebilir. En azından alışıncaya kadar. Ancak kavrandıklarında &amp;ccedil;ok faydalı olduklarını s&amp;ouml;yleyebiliriz. Nitekim temsilci nesnelerimizin tanımlaması gereken yerlerde direkt olarak kod bloklarını kullanmak olduk&amp;ccedil;a kullanışlı bir teknik olarak karşımıza &amp;ccedil;ıkmaktadır. Bu makalemizde C# 2.0 ile birlikte gelen isimsiz metod kavarmını, her zaman i&amp;ccedil;in i&amp;ccedil;i&amp;ccedil;e olduğu temsilciler ile birlikte incelemeye &amp;ccedil;alıştık. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2005-06-16 12:00:00</pubDate>
+  <slug>C#-2-0-ve-Anonymous-(İsimsiz)-Metodlar-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>c#-2</tag>
+  </tags>
+  <categories>
+    <category>C#</category>
+  </categories>
+</post>

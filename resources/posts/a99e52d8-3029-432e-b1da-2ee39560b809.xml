@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Stored Procedure Yardımıyla Tablodan Kayıt Silmek</title>
+  <description>Bugün ki makalemde Stored Procedure yardımıyla bir veritabanı tablosundan, bizim seçtiğimiz herhangi bir satırı nasıl sileceğimizi sizlere anlatmaya çalışacağım.Her zaman olduğu gibi örneğimizi geliştirmek için, SQL Server üzerinde yer alan Northwind veritabanını kullanmak istiyorum. SQL Server üzerinde çalışan örnekler geliştirmek istememin en büyük nedeni, bir veritabanı yönetim sistemi (Database Management System;DBMS) üzerinde .NET ile projeler geliştirmenin gerçekçiliğidir. Güncel yaşantımızda ağ üzerinde çalışan uygulamalar çoğunlukla , iyi bir veritabanı yönetim sistemi üzerinde yazılmış programlar ile gerçekleştirilmektedir.</description>
+  <content>&lt;p&gt;Bug&amp;uuml;n ki makalemde Stored Procedure yardımıyla bir veritabanı tablosundan, bizim se&amp;ccedil;tiğimiz herhangi bir satırı nasıl sileceğimizi sizlere anlatmaya &amp;ccedil;alışacağım.Her zaman olduğu gibi &amp;ouml;rneğimizi geliştirmek i&amp;ccedil;in, SQL Server &amp;uuml;zerinde yer alan Northwind veritabanını kullanmak istiyorum. SQL Server &amp;uuml;zerinde &amp;ccedil;alışan &amp;ouml;rnekler geliştirmek istememin en b&amp;uuml;y&amp;uuml;k nedeni, bir veritabanı y&amp;ouml;netim sistemi (Database Management System;DBMS) &amp;uuml;zerinde .NET ile projeler geliştirmenin ger&amp;ccedil;ek&amp;ccedil;iliğidir. G&amp;uuml;ncel yaşantımızda ağ &amp;uuml;zerinde &amp;ccedil;alışan uygulamalar &amp;ccedil;oğunlukla , iyi bir veritabanı y&amp;ouml;netim sistemi &amp;uuml;zerinde yazılmış programlar ile ger&amp;ccedil;ekleştirilmektedir.&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;ok katlı mimari olarak hepimizin kulağına bir şekilde gelmiş olan bu sistemde, aslında yazmış olduğumuz programlar, birer&amp;nbsp;&amp;nbsp; aray&amp;uuml;z niteliği taşımakta olup kullanıcı ile veritabanı arasındaki iletişimi g&amp;ouml;rsel anlamda kolaylaştıran birer ara&amp;ccedil; haline gelmiştir. İşte bu sunum katmanı (presantation layer) denen yerdir. Burada veri tablolarını ve veritabanlarını &amp;uuml;zerinde barındıran yer olarak veritabanı katmanı (Database Layer) b&amp;uuml;y&amp;uuml;k &amp;ouml;nem kazanmaktadır.&lt;/p&gt;
+&lt;p&gt;İşte bir &amp;ouml;nceki makalemde belirttiğim gibi Stored Procedure' leri kulanmamın en b&amp;uuml;y&amp;uuml;k amacı performans, hız ve g&amp;uuml;venlik kriterlerinin &amp;ouml;nemidir. Dolayısıyla, &amp;ouml;rneklerimizi bu şekilde ger&amp;ccedil;ek uygulamalara yakın tutarak, &amp;ccedil;alışırsak daha başarılı olucağımız inancındayım.Evet bu kadar laf kalabalığından sonra dilerseniz uygulamamıza ge&amp;ccedil;elim.Uygulamamızın kolay ve anlaşılır olması amacıyla az satırlı bir tablo &amp;uuml;zerinde işlemlerimizi yapmak istiyorum. Bu ama&amp;ccedil;la Categories tablosunu kullanacağım.&lt;/p&gt;
+&lt;p align="left"&gt;&lt;img src="/makale/images/mk2_1.gif" alt="" width="587" height="255" /&gt;&lt;/p&gt;
+&lt;p align="left"&gt;&lt;em&gt; Şekil 1. Categories tablosunda yer alan veriler.&lt;/em&gt; &amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Tablomuzun yapısını da kısaca incelersek ;&lt;/p&gt;
+&lt;p align="left"&gt;&lt;img src="/makale/images/mk2_2.gif" alt="" width="404" height="450" /&gt;&lt;/p&gt;
+&lt;p align="left"&gt;Ş&lt;em&gt;ekil 2. Categories tablosunun alan yapısı.&lt;/em&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Burada CategoryID alanı bizim i&amp;ccedil;in &amp;ouml;nemlidir. Nitekim silme işlemi i&amp;ccedil;in kullanacağımız Stored Procedure i&amp;ccedil;erisinde , belirleyici alan olarak bir parametreye d&amp;ouml;n&amp;uuml;şecektir. Şimdi dilerseniz, Stored Procedure&amp;rsquo;&amp;uuml;m&amp;uuml;z&amp;uuml; yazalım.&lt;/p&gt;
+&lt;p align="left"&gt;&lt;img src="/makale/images/mk2_3.gif" alt="" width="495" height="396" /&gt;&lt;/p&gt;
+&lt;p align="left"&gt;&amp;nbsp;&lt;em&gt;Şekil 3. Stored Procedure Kodlari&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;CREATE PROCEDURE [Delete Category]
+@kid int
+AS
+DELETE FROM Categories WHERE CategoryID=@kid
+GO&lt;/pre&gt;
+&lt;p align="left"&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi burada son derece kolay bir T-SQL( Transact SQL ) c&amp;uuml;mleciği var. Burada yapılan işlem aslında @kid parametresine ge&amp;ccedil;ilen değeri CategoryID alanı ile eşleştirmek. Eğer bu parametre değerine karşılık gelen bir CategoryID değeri varsa; bu değeri taşıyan satır Categories isimli tablodan silinecektir. &amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Evet şimdi de .NET ortamında formumuzu tasarlayalım. New Project ile yeni bir C# projesi a&amp;ccedil;arak işe başlıyoruz. Formumuzun tasarımını ben aşağıdaki şekilde yaptım. Sizde buna uygun bir form tasarlayabilir yada aynı tasarımı kullanabilirsiniz. Visual Studio.NET ile program geliştirmenin belkide en zevkli ve g&amp;uuml;zel yanı form tasarımları. Burada ger&amp;ccedil;ekten de i&amp;ccedil;imizdeki sanat&amp;ccedil;ı ruhunu ortaya &amp;ccedil;ıkartma imkanına sahibiz. Ve doğruyu s&amp;ouml;ylemek gerekirse Microsoft firmasıda artık i&amp;ccedil;imizdeki sanat&amp;ccedil;ı &amp;ccedil;ocuğu &amp;ouml;zellikle bu tarz uygulamalarda, daha kolay a&amp;ccedil;ığa &amp;ccedil;ıkartabilmemiz i&amp;ccedil;in elinden geleni yapıyor. Doğal olarakta &amp;ccedil;ok da g&amp;uuml;zel sonu&amp;ccedil;lar ortaya &amp;ccedil;ıkıyor. Birde o eski bankalardaki ( halen daha varya ) siyah ekranlarda, incecik, kargacık, burgacık tasarımları ve aray&amp;uuml;zleri d&amp;uuml;ş&amp;uuml;n&amp;uuml;n. F12 ye bas geri d&amp;ouml;n. Tab yap. Şimdi F4 kodu gir.&lt;/p&gt;
+&lt;p align="left"&gt;&lt;img src="/makale/images/mk2_4.gif" alt="" width="425" height="253" /&gt;&lt;/p&gt;
+&lt;p align="left"&gt;Ş&lt;em&gt;ekil 4. Formun Ilk Yapisi&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Formumuzda bir adet dataGrid nesnesi ve bir adetde button nesnesi yer alıyor. DataGrid nesnesini Categories tablosu i&amp;ccedil;ersinde yer alan bilgileri g&amp;ouml;stermek i&amp;ccedil;in kullanacağız. Datagrid verileri g&amp;ouml;sterirken kullanıcının kayıt eklmek, d&amp;uuml;zenlemek, ve se&amp;ccedil;tiği satırı buradan silmesini egellemek istediğimden ReadOnly &amp;ouml;zelliğine True değerini aktardım. &amp;Ouml;rneğimizin amacı gereği silme işlemini Sil textine sahip btnSil button nesnesinin Click olay procedure&amp;rsquo;&amp;uuml;nden yapıcağız. Elbette burada database&amp;rsquo;deki bilgileri dataGrid i&amp;ccedil;ersinde g&amp;ouml;stermek amacıyla bir SqlDataAdapter nesnesi kullanacağım. Bu sadece Categories isimli tablo i&amp;ccedil;erisindeki t&amp;uuml;m satırları se&amp;ccedil;icek bir Select sorgusuna sahip olucak ve &amp;nbsp;bunları dataGrid ile ilişkili olan bir DataTable nesnesine aktarıcak. &amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Dilerseniz kodlarımızı yazmaya başlayalım. &amp;Ouml;nceliklie SqlConnection nesnemiz yardımıyla, Northwind veritabanına bir bağlantı a&amp;ccedil;ıyoruz. Daha sonra SqlDataAdapter nesnemizi oluşturuyoruz. &amp;nbsp;SqlDataAdapter nesnesini yaratmak i&amp;ccedil;in &amp;nbsp;new anahtar s&amp;ouml;zc&amp;uuml;ğ&amp;uuml; ile kullanabileceğimiz 4 adet overload constructor var. Overload constructor, aynı isme sahip yapıcı metodlar anlamına geliyor. Yani bir SqlDataAdapter nesnesini yaratabileceğimiz 4 kurucu( constructor) metod var ve bunların hepside aynı isme sahip(Overload;aşırı y&amp;uuml;klenmiş) metodlar. Yeri gelmişken bunlardan da bahsederek bilgilerimizi hem tazeleyelim hem de arttırmış olalım. İşte bu yapıcı metodların prototipleri. &amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public SqlDataAdapter();
+public SqlDataAdapter(string selectCommandText,string connectionString);  
+public SqlDataAdapter(string selectCommandText,SqlConnection selectConnection);  
+public SqlDataAdapter(SqlCommadn selectCommand);&lt;/pre&gt;
+&lt;p&gt;Ben uygulamamda ilk yapıcı metodu baz almak istiyorum. Evet artık kodlarımızı yazalım. &amp;nbsp;&lt;/p&gt;
+&lt;table id="AutoNumber2" style="border-collapse: collapse; width: 571px;" border="1" cellspacing="0" cellpadding="5" bgcolor="#ff0000"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;p align="center"&gt;&lt;strong style="mso-bidi-font-weight: normal;"&gt; NOT: Her zaman olduğu gibi projemizin başına System.Data.SqlClient namespace ini eklemeyi unutmayalım.&lt;/strong&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Drawing;
+using System.Collections;
+using System.ComponentModel;
+using System.Windows.Forms;
+using System.Data;
+using System.Data.SqlClient; 
+/* &amp;Ouml;nce SqlConnection nesnesi yardimiyla SQL Server &amp;uuml;zerinde yer alan, Northwind isimli veritabanina bir baglanti nesnesi tanimliyoruz. Ilk parametre yani initial catalog, veritabaninin ismini temsil ediyor. Şu anda SQL Server&amp;rsquo; in &amp;uuml;zerinde yer alan makinede &amp;ccedil;alisitigimizdan Data Source parametresine localhost degerini aktardik. */
+
+SqlConnection conNorthwind=new SqlConnection("initial catalog=Northwind;Data Source=localhost;integrated security=sspi;packet size=4096");
+/* Şimdi Categories tablosunu bellekte temsil edicek olan DataTable nesnemizi yaratiyoruz. Dikkat edersek bellekte dedik. DataTable nesnesi Categories tablosundaki verileri programin &amp;ccedil;alistigi bilgisayar &amp;uuml;zerindeki bellekte sakliyacaktir. Bu durumda SqlConnection nesnemizin a&amp;ccedil;ik kalmasina gerek yoktur. Bu da elbetteki sunucu &amp;uuml;zerindeki y&amp;uuml;k&amp;uuml; azaltan bir etkendir.*/
+DataTable dtbCategories=new DataTable("Kategoriler");
+private void Form1_Load(object sender, System.EventArgs e)
+{
+     conNorthwind.Open();//Bağlantımızı a&amp;ccedil;ıyoruz. 
+
+     SqlDataAdapter da=new SqlDataAdapter();//Bir SqlDataAdapter nesnesi tanimladik.  
+
+     /* Asagidaki satir ile yarattigimiz SqlDataAdapter nesnesine bir Select sorgusu eklemis oluyoruz. Bu sorgu sonucu d&amp;ouml;nen deger k&amp;uuml;mesi, SqlDataAdapter nesnesinin Fill metodunu kullandigimizda DataTable' in i&amp;ccedil;erisini hangi veriler ile dolduracagimizi belirtecek &amp;ouml;nemli bir &amp;ouml;zelliktir. Bir SqlDataAdapter nesnesi yaratildiginda, SelectCommand &amp;ouml;zelligine SqlCommand t&amp;uuml;r&amp;uuml;nden bir nesne atanarak bu islem ger&amp;ccedil;eklestirilir. Burada aslinda, SelectCommand &amp;ouml;zelliginin prototipinden dolayi new anahtar s&amp;ouml;zc&amp;uuml;g&amp;uuml; kullanilarak bir SqlCommand nesnesi parametre olarak verilen select c&amp;uuml;mlecigi ile olusturulmus ve SelectCommand &amp;ouml;zelligine atanmistir.
+
+      *
+
+      * public new SqlCommand SelectCommand
+      * {
+      * get;
+      * set;
+      * }
+      * Prototipten de g&amp;ouml;r&amp;uuml;ld&amp;uuml;g&amp;uuml; gibi SelectCommand &amp;ouml;zelliginin tipi SqlCommand nesnesi t&amp;uuml;r&amp;uuml;ndendir. Bu y&amp;uuml;zden new SqlCommand("....") ifadesi kullanilmistir.
+      * */
+
+     da.SelectCommand=new SqlCommand("SELECT * FROM Categories"); 
+     da.SelectCommand.Connection=conNorthwind; /* Select sorgusunun &amp;ccedil;alistirilacagi baglanti belirlenir.*/
+     da.FillSchema(dtbCategories,SchemaType.Mapped);/* Burada dataTable nesnemize, veritabanında yer alan Categories isimli tablonun Schema bilgilerinide y&amp;uuml;kl&amp;uuml;yoruz. Yani primaryKey bilgileri, alanların bilgileri y&amp;uuml;kleniyor. Bunu yapmamızın sebebi, Stored Procedure ile veritabanındaki Categories tablosundan silme işlemini yapmadan &amp;ouml;nce , bellekteli tablodan da aynı satırı silip dataGrid i&amp;ccedil;indeki g&amp;ouml;r&amp;uuml;nt&amp;uuml;n&amp;uuml;n ve DataTable nesnesinin g&amp;uuml;ncel olarak kalmasını sağlamak. Nitekim silme işleminde DataTable nesnesinden se&amp;ccedil;ili satırı silmek i&amp;ccedil;im kullanacağımız Remove metodu PrimaryKey alanının değerini istemektedir. Bunu verebilmek i&amp;ccedil;in tablonun PrimaryKey bilgisininde belleğe yani bellekteki DataTable nesnesine y&amp;uuml;klenmiş olması gerekir. İşte bu ama&amp;ccedil;la Schema bilgilerinide alıyoruz*/ 
+
+     da.Fill(dtbCategories);/* Burada SqlDataAdapter nesnesinin Fill metodu &amp;ccedil;agirilir. Fill metodu &amp;ouml;ncelikle SelectCommand.CommandText in degeri olan Select sorgusunu &amp;ccedil;alistirir ve d&amp;ouml;nen veri k&amp;uuml;mesini dtbCategories isimli DataTable nesnesinin bellekte referans ettigi alana y&amp;uuml;kler. Artik baglantiyida kapatabiliriz.*/
+
+     conNorthwind.Close(); 
+     /* Simdi dataGrid nesnemize veri kaynagi olarak DataTable nesnemizi g&amp;ouml;sterecegiz. B&amp;ouml;ylece DataGrid, Categories tablosundaki veriler ile dolucak. */
+     dgCategories.DataSource=dtbCategories;
+} 
+
+private void btnDelete_Click(object sender, System.EventArgs e)
+{
+     /* Şİmdi silme işlemini ger&amp;ccedil;ekleştireceğimiz Stored Procedure'e DataGrid nesnesi &amp;uuml;zerinde kullanıcının se&amp;ccedil;miş olduğu satırın CategoryID s&amp;uuml;tununun değerini g&amp;ouml;ndereceğiz. Bunun i&amp;ccedil;in kullanıcının se&amp;ccedil;tiği satırın numarasını CurrentCell.RowNumber &amp;ouml;zelliği ile alıyoruz. Daha sonra, CategoryID s&amp;uuml;tunu dataGrid'in 0 indexli s&amp;uuml;tunu olduğundan CategoryID değerini elde ederken dgCategories[currentRow,0] metodunu kullanıyoruz.*/
+
+     int currentRow; 
+     int selectedCategoryID; 
+     currentRow=dgCategories.CurrentCell.RowNumber; 
+     selectedCategoryID=(int)dgCategories[currentRow,0]; /* Burada dgCategories[currentRow,0] aslında object tipinden bir değer d&amp;ouml;nd&amp;uuml;r&amp;uuml;r. Bu y&amp;uuml;zden a&amp;ccedil;ık olarak d&amp;ouml;n&amp;uuml;şt&amp;uuml;rme dediğimiz (Explicit) bir Parse(d&amp;ouml;n&amp;uuml;şt&amp;uuml;rme) işlemi yapıyoruz. */
+
+     /* Şimdi de Stored Procedure'&amp;uuml;m&amp;uuml;z&amp;uuml; &amp;ccedil;alıştıracak olan SqlCommand nesnesini tanımlayalım*/
+     SqlCommand cmdDelete=new SqlCommand(); 
+     cmdDelete.CommandText="Delete Category";/* Stored Procedure'&amp;uuml;n adı CommandText &amp;ouml;zelliğine atanıyor. Ve bu stringin bir Stored Procedure'e işaret ettiğini belirtmek i&amp;ccedil;in CommandType değerini CommandType.StoredProcedure olarak belirliyoruz.*/ 
+
+     cmdDelete.CommandType=CommandType.StoredProcedure; 
+     cmdDelete.Connection=conNorthwind;//Komutun &amp;ccedil;alıştırılacağı bağlantı belirleniyor. 
+
+     /* Şimdi ise @id isimli parametremizi oluşturacağız ve kullanıcının se&amp;ccedil;miş olduğu satırın CategoryID değerini bu parametre ile Stored Proecedure'&amp;uuml;m&amp;uuml;ze g&amp;ouml;ndereceğiz.*/ 
+     cmdDelete.Parameters.Add("@kid",SqlDbType.Int); 
+     cmdDelete.Parameters["@kid"].Value=selectedCategoryID;
+     /* Ve &amp;ouml;nemli bir nokta. Kullanıcıyı uyarmalıyız. Ger&amp;ccedil;ekten se&amp;ccedil;tiği satırı silmek istiyor mu?* Bunun i&amp;ccedil;in MessageBox nesnesni ve Show metodunu kullanacağız. Bu metodun d&amp;ouml;n&amp;uuml;ş değerini DialogResult tipinde bir değişkenle kontrol ettiğimize dikkat edin.*/ 
+
+     DialogResult result; 
+     result=MessageBox.Show("CategoryID : "+selectedCategoryID.ToString()+". Bu satırı silmek istediğinizden emin misiniz?","Sil",MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
+     if (result==DialogResult.Yes ) /*Eğer kullanıcının cevabı evet ise aşağıdaki kod bloğundaki kodlar &amp;ccedil;alıştırılır ve satır once DataTable nesnesinden sonrada kalıcı olarak databaseden silinir.*/
+     {
+          conNorthwind.Open();// Bağlantımızı a&amp;ccedil;ıyoruz.
+          /* Elbette veritabanından doğrudan sildiğimiz satırı bellekteki DataTable nesnesinin referans ettiği yerdende siliyoruz ki datagrid nesnemiz g&amp;uuml;ncelliğini korusun. Bunun i&amp;ccedil;in se&amp;ccedil;ili olan dataTable satırınu bir DataRow nesnesine aktarıyoruz. Bunu yaparkende se&amp;ccedil;ili kaydı Find metodu ile CategoryID isimli Primary Key alanı &amp;uuml;zerinden arama yapıyoruz. Kayıt bulunduğunda t&amp;uuml;m satırbilgisi bir DataRow t&amp;uuml;r&amp;uuml; olarak geri d&amp;ouml;n&amp;uuml;yor ve bunu DataRow nesnemize atıyoruz. Remove metodu silinmek istenen satır bilgisini parameter olarak alır. Ve bu parameter DataRow tipinden bir parametredir.*/
+          DataRow drSelectedRow;           drSelectedRow=dtbCategories.Rows.Find(selectedCategoryID);           dtbCategories.Rows.Remove(drSelectedRow); 
+          cmdDelete.ExecuteNonQuery();/ * Artık Stored Procedure de &amp;ccedil;alıştırılıyor ve slime işlemi doğrudan veritabanındaki tablo &amp;uuml;zerinden ger&amp;ccedil;ekleştiriliyor. ExecuteNonQuery bu Stored Procedure'&amp;uuml; &amp;ccedil;alıştıracak olan metoddur. Delete,Update,Insert gibi kayıt d&amp;ouml;nd&amp;uuml;rmesi beklenmeyen (Select sorguları gibi) sql c&amp;uuml;mlecikleri i&amp;ccedil;in ExecuteNonQuery metodu kullanılır.*/
+          conNorthwind.Close();
+     } 
+}&lt;/pre&gt;
+&lt;p&gt;Şimdi dilerseniz programımızı &amp;ccedil;alıştırıp sonu&amp;ccedil;larına bir bakalım. &amp;Ouml;ncelikle Categories isimli tabloya doğrudan SQL Server &amp;uuml;zerinden &amp;ouml;rnek olması a&amp;ccedil;ısından bir ka&amp;ccedil; kayıt ekleyelim.&lt;/p&gt;
+&lt;p align="left"&gt;&lt;img src="/makale/images/mk2_5.gif" alt="" width="618" height="222" /&gt;&lt;/p&gt;
+&lt;p align="left"&gt;&lt;em&gt; Şekil 5. Categories tablosuna 3 yeni kayıt ekledik.&lt;/em&gt; &amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Şimdi uygulamamızı &amp;ccedil;alıştıralım. Bu durumda ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; aşağıdaki gibi olucaktır. Şu anda dataGrid i&amp;ccedil;indeki bilgiler veritabanından alınıp , bellekteki dataTable nesnesinin referans ettiği b&amp;ouml;lgedeki verilerden oluşmaktadır. Dolayısıyla Sql Server&amp;rsquo;a olan bağlantımız a&amp;ccedil;ık olmadığı halde verileri izleyebilmekteyiz. Hatta bunların &amp;uuml;zerinde değişiklilkler yapıp normal tablo işlemlerinide (silme,kayıt ekleme,g&amp;uuml;ncelleme vb... gibi) ger&amp;ccedil;ekleştirebiliriz. Bu bağlantısız katman olarak adlandırdığımız olaydır. Bu konuya ilerliyen makalelerimizide daha detaylı olarak inceleyeceğiz.&lt;/p&gt;
+&lt;p align="left"&gt;&lt;img src="/makale/images/mk2_6.gif" alt="" width="424" height="256" /&gt;&lt;/p&gt;
+&lt;p align="left"&gt;&lt;em&gt; Şekil 6. Load Procedure&amp;rsquo;&amp;uuml;n&amp;uuml;n &amp;ccedil;alıştırılmasından sonraki g&amp;ouml;r&amp;uuml;n&amp;uuml;m.&lt;/em&gt; &amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Şimdi se&amp;ccedil;tiğimiz 17 CategoryID satırını silelim. Ekrana bir soru &amp;ccedil;ıkacaktır.&lt;/p&gt;
+&lt;p align="left"&gt;&lt;img src="/makale/images/mk2_7.gif" alt="" width="359" height="121" /&gt;&lt;/p&gt;
+&lt;p align="left"&gt;&lt;em&gt; Şekil 7. MessageBox.Show(.....) metodunun sonucu.&lt;/em&gt; &amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Şimdi Yes butonuna basalım. Bu durumda 17 CategoryID li satır dataTable&amp;rsquo;dan dolayısıyla dataGrid&amp;rsquo;den silinir. Aynı zamanda &amp;ccedil;alıştırdığımız Stored Procedure ile veritabanından da doğrudan silinmiştir.&lt;/p&gt;
+&lt;p align="left"&gt;&lt;img src="/makale/images/mk2_8.gif" alt="" width="424" height="256" /&gt;&lt;/p&gt;
+&lt;p align="left"&gt;&lt;em&gt; Şekil 8. Silme işlemi sonrası.&amp;nbsp;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi SQL Server&amp;rsquo;a geri d&amp;ouml;n&amp;uuml;p tablonun i&amp;ccedil;eriğini kontrol edicek olursak aşağıdaki sonucu elde ederiz.&lt;/p&gt;
+&lt;p align="left"&gt;&lt;img src="/makale/images/mk2_9.gif" alt="" width="433" height="218" /&gt;&lt;/p&gt;
+&lt;p align="left"&gt;&lt;em&gt; Şekil 9. Sonu&amp;ccedil;.&lt;/em&gt; &amp;nbsp;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi CategoryID=17 olan satır veritabanındaki tablodanda silinmiştir. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;şmek dileğiyle.&lt;/p&gt;</content>
+  <pubDate>2003-11-12 12:00:00</pubDate>
+  <slug>Stored-Procedure-Yardc4b1mc4b1yla-Tablodan-Kayc4b1t-Silmekc2a0-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>adonet</tag>
+    <tag>stored-procedures</tag>
+  </tags>
+  <categories>
+    <category>Ado.Net</category>
+  </categories>
+</post>

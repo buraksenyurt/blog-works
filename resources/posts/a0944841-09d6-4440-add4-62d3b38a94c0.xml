@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Socket-IO Yardımıyla RealTime Çalışan Bir Angular Uygulaması Geliştirmek</title>
+  <description>Bilindiği üzere istemci-sunucu geliştirme modelinde gerçek zamanlı ve çift yönlü iletişim için WebSocket yaygın olarak kullanılan protokollerden birisi. Klasik HTTP request/response modelinden farklı olarak WebSocket protokolünde sunucu, istemcinin talep göndermesine gerek kalmadan mesaj gönderebiliyor. Chat uygulamaları, eş zamanlı oyunlar, finansal bildirim yapan ticari programlar, online doküman yönetim sistemleri ve benzerleri WebSocket protokolünün kullanıldığı ideal ortamlar. Benim 29 numaralı Saturday Night Works çalışmasındaki amacım Socket.IO kütüphanesinden yararlanan bir Node sunucusu ile Angular'da yazılmış bir web uygulamasını WebSocket protokolü tabanında deneyimlemekti. Hazırsanız notlarımızı derlemeye başlayalım.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2019/09/29/someprimes.png" alt="" /&gt;D&amp;uuml;nyanın aslen hukuk&amp;ccedil;u olmasına rağmen en &amp;uuml;nl&amp;uuml; matematik&amp;ccedil;ilerinden olan Fermat'nın&lt;em&gt;(1601-1665)&lt;/em&gt; asal sayıları bulduğunu iddia ettiği denklemini bir diğer matematik&amp;ccedil;i Euler&lt;em&gt;(1707-1773)&lt;/em&gt;, n=5 değeri i&amp;ccedil;in bozmuştur. Lakin matematik&amp;ccedil;ilerin ve diğer pek &amp;ccedil;ok kişinin asalları&amp;nbsp;bulma&amp;nbsp;tutkusu bitmemiştir. Bilim, felsefe ve m&amp;uuml;zikle haşırneşir olmayı seven Fransız rahibi Marin Mersenne&lt;em&gt;(1558-1648)&lt;/em&gt;&amp;nbsp;2&lt;em&gt;&lt;sup&gt;n&lt;/sup&gt;&lt;/em&gt;-1 şeklindeki form&amp;uuml;l&amp;uuml; ile &amp;uuml;nlenmiştir. Form&amp;uuml;ldeki n değerinin asal sayı olarak kabul edildiği hallerde&amp;nbsp;bulunan sayıların da asal olduğunun belirtildiği bir teorem s&amp;ouml;z konusudur&lt;em&gt;(&lt;/em&gt;&lt;em&gt;Bu form&amp;uuml;l ile bulunan bir sayının asal olup olmadığı Lucas-Lehmer testi ile kontrol edilebilir)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Nitekim mesele 1000-2000 arası asalları bulmakla ilgili değildir. En b&amp;uuml;y&amp;uuml;k asal değeri bulabilmektir.&amp;nbsp;&amp;Ccedil;&amp;uuml;nk&amp;uuml; n değeri b&amp;uuml;y&amp;uuml;d&amp;uuml;k&amp;ccedil;e en b&amp;uuml;y&amp;uuml;k asalı bulmak da zorlaşır&lt;em&gt;(Nadir olan her zaman daha kıymetlidir)&lt;/em&gt; Mersenne sayıları olarak adlandırılan bu asalların en&amp;nbsp;kocamanı&amp;nbsp;2018 yılında elektrik m&amp;uuml;hendisi&amp;nbsp;Jonathan Pace tarafından keşfedilmiştir. n =&amp;nbsp;82.589.933 değeri i&amp;ccedil;in bulunan 50nci Mersenne asalı tam&amp;nbsp;24.862.048 rakamdan oluşmaktadır&lt;em&gt;(Ocak 2019 itibariyle)&lt;/em&gt; Dilerseniz 51nci Mersenne asalını bulmak i&amp;ccedil;in siz de&amp;nbsp;katkıda bulunabilir hatta bulursanız k&amp;uuml;&amp;ccedil;&amp;uuml;k bir &amp;ouml;d&amp;uuml;l bile alabilirsiniz.&amp;nbsp;&lt;a href="https://www.mersenne.org/" target="_blank"&gt;Şu adrese girip&lt;/a&gt; GIMPS&lt;em&gt;(Great Internet&amp;nbsp;Mersenne Prime&amp;nbsp;Search)&lt;/em&gt;&amp;nbsp;sistemine g&amp;ouml;n&amp;uuml;ll&amp;uuml; olarak katılmanız yeterli.&lt;/p&gt;
+&lt;p&gt;Lakin hangi form&amp;uuml;l olursa olsun &amp;ccedil;ıkan sonucun asal sayı olacağının garantisi veya ispatı hen&amp;uuml;z yoktur&lt;em&gt;(May Be Prime!)&lt;/em&gt; Hatta d&amp;uuml;nyadaki t&amp;uuml;m asal sayılarının dizisini bize getirebilecek bir denklem de hen&amp;uuml;z mevcut değildir.&amp;nbsp;Peki bug&amp;uuml;nk&amp;uuml; konumuzun Mersenne asalları ile bir ilgisi var mı dersiniz? Bu cumartesi gecesi derlemesinin 29ncu &amp;ccedil;alışmaya ait olması haricinde pek yok ;)&lt;/p&gt;
+&lt;p&gt;Bilindiği &amp;uuml;zere istemci-sunucu geliştirme modelinde ger&amp;ccedil;ek zamanlı ve &amp;ccedil;ift y&amp;ouml;nl&amp;uuml; iletişim i&amp;ccedil;in WebSocket yaygın olarak kullanılan protokollerden birisi. Klasik HTTP request/response modelinden farklı olarak WebSocket protokol&amp;uuml;nde sunucu, istemcinin talep g&amp;ouml;ndermesine gerek kalmadan mesaj g&amp;ouml;nderebiliyor. Chat uygulamaları, &amp;ccedil;ok kullanıcılı ger&amp;ccedil;ek zamanlı oyunlar, finansal bildirim yapan ticari programlar, online dok&amp;uuml;man y&amp;ouml;netim sistemleri ve benzerleri WebSocket protokol&amp;uuml;n&amp;uuml;n kullanıldığı ideal ortamlar.&amp;nbsp;Benim &lt;a href="https://github.com/buraksenyurt/saturday-night-works/tree/master/No%2029%20-%20Real%20Time%20App%20with%20Angular" target="_blank"&gt;29 numaralı Saturday Night Works &amp;ccedil;alışması&lt;/a&gt;ndaki amacım Socket.IO k&amp;uuml;t&amp;uuml;phanesinden yararlanan bir Node sunucusu ile Angular'da yazılmış bir web uygulamasını WebSocket protokol&amp;uuml; tabanında deneyimlemekti. Hazırsanız notlarımızı&amp;nbsp;toparlamaya başlayalım.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;ncelikle &amp;ouml;rneğimizde neler yapacağımızdan bahsdelim. Kullanıcıların aynı dok&amp;uuml;man &amp;uuml;zerinde ortaklaşa &amp;ccedil;alışabileceği bir &amp;ouml;rnek geliştirmeye &amp;ccedil;alışacağız. İstemciler yeni bir dok&amp;uuml;man başlatabilecek. Dok&amp;uuml;manların tamamı t&amp;uuml;m kullanıcılar tarafından g&amp;ouml;r&amp;uuml;lebilecek ve yazılanlar her istemcinin penceresine yansıyacak. Bir nevi ortak dashboard &amp;uuml;zerindeki post-it'lerin herkes tarafından d&amp;uuml;zenlenebildiği bir ortam gibi d&amp;uuml;ş&amp;uuml;nebiliriz.&amp;nbsp;Ben &amp;ouml;rneği her zaman olduğu gibi WestWorld&lt;em&gt;(Ubuntu 18.04, 64bit)&lt;/em&gt; &amp;uuml;zerinden denemeye &amp;ccedil;alışıyorum. Bu arada makinenizde node, npm, angular CLI'ın y&amp;uuml;kl&amp;uuml; olduğunu varsayıyorum.&lt;/p&gt;
+&lt;h2&gt;Uygulamanın İnşası&lt;/h2&gt;
+&lt;p&gt;Uygulama iki &amp;ouml;nemli par&amp;ccedil;adan oluşuyor. Soket mesajlaşmasını y&amp;ouml;netecek olan sunucu&lt;em&gt;(node.js tarafı)&lt;/em&gt; ve istemci&lt;em&gt;(Angular tarafı)&amp;nbsp;&lt;/em&gt;Sunucu tarafının inşası i&amp;ccedil;in aşağıdaki terminal komutları ile işe başlayabiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;mkdir docserver
+cd docserver
+mkdir src
+npm init
+npm install --save-dev express socket.io @types/socket.io
+cd src
+touch app.js&lt;/pre&gt;
+&lt;p&gt;Bize yardımcı olacak sunucu ve soket &amp;ouml;zellikleri i&amp;ccedil;in bir epxress ve socket.io paketlerini y&amp;uuml;kl&amp;uuml;yoruz. app.js dosyasının i&amp;ccedil;eriğini ise aşağıdaki gibi geliştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;/*
+    sunucu &amp;ouml;zelliklerini kolayca kazandırmak i&amp;ccedil;in express mod&amp;uuml;l&amp;uuml;n&amp;uuml; kullanıyoruz.
+    WebSocket kullanımı i&amp;ccedil;inse socket.io paketi dahil ediliyor
+*/
+const app = require('express')();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+
+const articles = {}; // &amp;Uuml;zerinde &amp;ccedil;alışılacak yazıların tutulacağı repo. Canlı ortamlar i&amp;ccedil;in fiziki alan ele alınmalı.
+
+/* 
+on metodları birer event listener'dır. İlk parametre olayın adı,
+ikinci parametrede olay tetiklendiğinde &amp;ccedil;alışacak callback fonksiyonudur.
+
+connection Socket.IO i&amp;ccedil;in tahsis edilmiş bir olaydır. 
+Burada soket haberleşmesi tesis edilir ve bağlı olan
+istemciler i&amp;ccedil;in broadcasting başlatılır.
+*/
+
+io.on("connection", socket =&amp;gt; {
+
+    /*
+    updateRoom metodu bağlı olan t&amp;uuml;m istemcilerin aynı dok&amp;uuml;man &amp;uuml;zerinde &amp;ccedil;alışmasını garanti etmek i&amp;ccedil;indir.
+    İstemci bağlantı ger&amp;ccedil;ekleştirip dok&amp;uuml;manla &amp;ccedil;alışmak &amp;uuml;zere bir odaya bağlanır(room).
+    Bağlı olan istemci bu odadayken başka bir dok&amp;uuml;manla &amp;ccedil;alışmasına izin verilmez.
+    N sayıda istemci aynı odadayken aynı dok&amp;uuml;man &amp;uuml;zerinde g&amp;uuml;ncelleme yapabilir.
+    İstemci bir başka dok&amp;uuml;manla &amp;ccedil;alışmak isterse bulunduğu odadan ayrılır ve yeni bir tanesine katılır.
+    Tabii Socket.IO ile n sayıda oda(room) ile &amp;ccedil;alışmak m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Ancak bu senaryoda istenmemektedir.
+    */
+    let preId;
+    const updateRoom = currentId =&amp;gt; {
+        socket.leave(preId);
+        socket.join(currentId);
+        preId = currentId;
+    };
+
+    /*
+    istemci get isimli bir olay yayınladığında &amp;ccedil;alışır.
+    istemci bir odaya gelen id ile dahil edilir.
+    sonrasında sunucu dok&amp;uuml;manı istemciye yollar. 
+    Bunun i&amp;ccedil;in ready isimli bir olay yayınlar ki istemci de bu olayı dinlemektedir.
+    */
+    socket.on("get", id =&amp;gt; {
+        console.log("get event id: " + id);
+        updateRoom(id);
+        socket.emit("ready", articles[id]);
+    });
+
+    /*
+    add yeni bir dok&amp;uuml;manın eklenmesi i&amp;ccedil;in kullanılır.
+    istemci tarafından yayınlanan olayda payload olarak
+    dok&amp;uuml;manın kendisi gelir. 
+
+    io &amp;uuml;zerinden yayınlanan warnEveryone isimli olay
+    istemcilerin t&amp;uuml;m&amp;uuml;n&amp;uuml; yeni bir dok&amp;uuml;manın eklendiği bilgisini vermek &amp;uuml;zere tasarlanmıştır.
+
+    socket &amp;uuml;zerinden yapılan olay bildirimi payload dok&amp;uuml;manı ile birlikte sadece bağlı
+    olan istemci i&amp;ccedil;in ge&amp;ccedil;erlidir. 
+
+    socket ile io nesnelerinin emit kullanımları arasındaki farka dikkat edelim.
+    io.emit bağlı olan t&amp;uuml;m istmecileri ilgilendirirken, socket.emit o anki olayın
+    sahibi bağlı olan istemciyi ilgilendirir.
+    */
+    socket.on("add", payload =&amp;gt; {
+        articles[payload.id] = payload;
+        updateRoom(payload.id);
+        console.log("add event " + payload.id);
+        io.emit("warnEveryone", Object.keys(articles));
+        socket.emit("ready", payload);
+        console.log(articles);
+    });
+
+
+    /*
+    İstemcilerin &amp;uuml;zerinde &amp;ccedil;alıştıkları dok&amp;uuml;manda yaptıkları herhangibir tuş darbesi
+    bu olayın tetiklenmesi ile ilgilidir.
+    Payload i&amp;ccedil;eriğine g&amp;ouml;re odadaki dok&amp;uuml;man g&amp;uuml;ncellenir ve
+    sadece bu dok&amp;uuml;man &amp;uuml;zerinde &amp;ccedil;alışanların bilgilendirimesi sağlanır.
+    */
+    socket.on("update", payload =&amp;gt; {
+        //console.log("update event");
+        articles[payload.id] = payload;
+        socket.to(payload.id).emit("ready", payload);
+    });
+
+    // T&amp;uuml;m bağlı istemcileri template dizisindeki key değerleri i&amp;ccedil;in bilgilendir
+    io.emit("warnEveryone", Object.keys(articles));
+});
+
+http.listen(5004);
+console.log("Ortak makale yazma platformu :P 5004 nolu porttan dinlemede...");&lt;/pre&gt;
+&lt;p&gt;Kodu i&amp;ccedil;erisindeki yorumlar ile m&amp;uuml;mk&amp;uuml;n mertebe a&amp;ccedil;ıklamaya &amp;ccedil;alıştım.&amp;nbsp;Buraya kadar her şey yolunda gittiyse istemci uygulamanın inşası ile devam edebiliriz.&lt;/p&gt;
+&lt;h2&gt;İstemcinin&lt;em&gt;(Angular tarafı)&lt;/em&gt; İnşası&lt;/h2&gt;
+&lt;p&gt;Soket y&amp;ouml;neticisi ile konuşacak olan istemciyi bir Angular uygulaması olarak geliştireceğiz. İşe aşağıdaki terminal komutları ile başlayabiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;ng new authorApp --routing=false --style=css
+cd authorApp
+sudo npm install --save-dev ngx-socket-io
+ng g class article
+ng g component article-list
+ng g component article
+ng g service article&lt;/pre&gt;
+&lt;p&gt;İlk komutla authorApp isimli bir Angular uygulaması oluşturulur. Socket.IO ile Angular tarafında konuşmamızı sağlayacak ngx-socket-io paketi proje klas&amp;ouml;r&amp;uuml; i&amp;ccedil;indeyken npm yardımıyla y&amp;uuml;klenir. Yine aynı klas&amp;ouml;rde article isimli sınıf, article-list ve article isimli bileşenler ve soket sunucusuyla iletişimde kullanacağımız article isimli servis oluşturulur &lt;em&gt;(g sonrasında gelen component ve service&amp;nbsp;anahtar kelimeleri&amp;nbsp;i&amp;ccedil;in c ve skısaltmaları da kullanılabilir)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/29/credit_1.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Gelelim istemci tarafındaki kodlarımıza. &amp;Ouml;ncelikle app.module.ts dosyasında SocketIoModule ile ilgili bir ka&amp;ccedil; konfigurasyon ayarlaması yapalım. B&amp;ouml;ylece hangi sunucu ile web socket haberleşmesi yapılacağı t&amp;uuml;m mod&amp;uuml;ller i&amp;ccedil;in ayarlanmış olur.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+
+import { AppComponent } from './app.component';
+import { ArticleListComponent } from './article-list/article-list.component';
+import { ArticleComponent } from './article/article.component';
+import { FormsModule } from '@angular/forms';
+/*
+  Angular tarafından socket haberleşmesi i&amp;ccedil;in gerekli mod&amp;uuml;l
+  bildirimleri. Web Socket sunucusunun adresi de konfigurasyon bilgisi olarak tanımlanmakta.
+*/
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+const config: SocketIoConfig = { url: 'http://localhost:5004' };
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    ArticleListComponent,
+    ArticleComponent
+  ],
+  imports: [
+    BrowserModule,
+    // &amp;Uuml;stte belirtilen url bilgisi ile birlikte socket mod&amp;uuml;l&amp;uuml;n&amp;uuml; hazır hale getirip i&amp;ccedil;eri alıyoruz
+    SocketIoModule.forRoot(config),
+    BrowserAnimationsModule,
+    FormsModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+&lt;/pre&gt;
+&lt;p&gt;Odalardaki makaleleri temsil eden&amp;nbsp;article.ts sınıfını da ş&amp;ouml;yle yazabiliriz.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;/*
+    Ortaklaşa &amp;ccedil;alışılacak dok&amp;uuml;manı temsilen kullanılacak tip
+*/
+export class Article {
+    id: string;
+    content: string;
+}&lt;/pre&gt;
+&lt;p&gt;Pek tabii asıl iş y&amp;uuml;k&amp;uuml; proxy sınıfı g&amp;ouml;revi &amp;uuml;stlenen article.service.ts i&amp;ccedil;erisinde. Socket sunucusu ile haberleşecek ve aray&amp;uuml;z tarafında kullanacağımız servis kodlarını aşağıdaki gibi geliştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;import { Injectable } from '@angular/core';
+import { Socket } from 'ngx-socket-io';  // Socket sunucusuna event fırlatıp yakalayacağımız i&amp;ccedil;in
+import { Article } from '../app/article'; //Article tipini kullanacağımız i&amp;ccedil;in
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ArticleService {
+
+  /*
+   Socket sunucusundan yayınlanan ready ve warnEveryOne isimli olaylar i&amp;ccedil;in kullanacağımız &amp;ouml;zellikleri tanımlıyoruz.
+   
+   Sunucu t&amp;uuml;m istemcilere makale listesini string array olarak g&amp;ouml;nderirken warnEveryOne olayını yayınlamakta.
+   Dok&amp;uuml;man ekleme, g&amp;uuml;ncelleme ve tek birisini &amp;ccedil;ekme işlemlerine karşılık olarak da ready olayını yayınlıyordu.
+   
+   fromEvent d&amp;ouml;n&amp;uuml;şleri Observable tiptedir. Yani değişiklikler otomatik olarak abonelerine yansıyacaktır. 
+*/
+  currentArticle = this.socket.fromEvent&amp;lt;Article&amp;gt;('ready');
+  allOfThem = this.socket.fromEvent&amp;lt;string[]&amp;gt;('warnEveryone');
+
+  constructor(private socket: Socket) { } //Constructor injection ile Socket mod&amp;uuml;l&amp;uuml;n&amp;uuml; y&amp;uuml;kledik
+
+  /*
+  Boş bir dok&amp;uuml;man &amp;uuml;retmek i&amp;ccedil;in kullanılıyor.
+  emit metodu add olayını tetiklemekte. 
+  Sunucuya ikinci parametrede belirtilen i&amp;ccedil;erik g&amp;ouml;nderiliyor.
+
+  emit metodlarındaki ilk parametrelerdeki olaylar sunucunun dinlediği olaylardır.
+  */
+  add() {
+    let randomArticleName = Math.floor(Math.random() * 1000 + 1).toString();
+    this.socket.emit('add', {id: randomArticleName,content:'' });
+    // console.log(this.allOfThem.forEach(a=&amp;gt;console.log(a)));
+  }
+
+  /*
+  makale i&amp;ccedil;eriğinin g&amp;uuml;ncellenmesi halinde sunucu tarafına update olayı basılır
+  */
+  update(article:Article){
+    this.socket.emit('update',article);
+  }
+
+  /*
+  id değerine g&amp;ouml;re bir makaleyi almak i&amp;ccedil;in get olayını fırlatıyor.
+  */
+  get(id:string){
+    this.socket.emit('get',id);
+  }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;n y&amp;uuml;z&amp;nbsp;tarafında&amp;nbsp;daha &amp;ccedil;ok bileşenleri kodlayacağız. article ve article-list bileşenleri ana bileşen olan app i&amp;ccedil;erisinde kullanılmaktalar. T&amp;uuml;m bu bileşenlere ait html ve typescript i&amp;ccedil;eriklerini aşağıdaki gibi d&amp;uuml;zenleyebiliriz.&lt;/p&gt;
+&lt;p&gt;article-component.html&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;textarea [(ngModel)]='article.content' (keyup)='updateArticle()' placeholder='Haydi bir şeyler yazalım...'&amp;gt;&amp;lt;/textarea&amp;gt;
+&amp;lt;!--textarea'yo ngModel niteliği ile arka plandaki article sınıfının content &amp;ouml;zelliğine bağlıyoruz
+    keyup olayı parmağımızı her tuştan &amp;ccedil;ektiğimizde &amp;ccedil;alışacak ve bileşenin typescript tarafındaki updateArticle
+    metodunu &amp;ccedil;ağıracak.
+--&amp;gt;&lt;/pre&gt;
+&lt;p&gt;article-component.ts&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ArticleService } from 'src/app/article.service';
+import { Subscription } from 'rxjs';
+import { Article } from 'src/app/article';
+import { startWith } from 'rxjs/operators';
+
+@Component({
+  selector: 'app-article',
+  templateUrl: './article.component.html',
+  styleUrls: ['./article.component.css']
+})
+
+export class ArticleComponent implements OnInit, OnDestroy {
+  article: Article;
+  private _subscription: Subscription;
+
+  /*
+  ArticleService, Constructor Injection ile i&amp;ccedil;eriye alınır.
+  */
+  constructor(private ArticleService: ArticleService) { }
+
+  /*
+  Bileşen initialize edilirken g&amp;uuml;ncel makale i&amp;ccedil;in bir abonelik başlatılır.
+  B&amp;ouml;ylece gerek bu aboneliğin sahibinin değişiklikleri
+  gerek diğerlerinin değişiklikleri aynı makalede &amp;ccedil;alışan herkese yansır.
+  */
+  ngOnInit() {
+    this._subscription = this.ArticleService.currentArticle.pipe(
+      startWith({ id: '', content: 'Var olan bir makaleyi se&amp;ccedil; ya da yeni bir tane oluştur' })
+    ).subscribe(a =&amp;gt; this.article = a);
+  }
+
+  // Bileşen &amp;ouml;l&amp;uuml;rken &amp;uuml;zerinde &amp;ccedil;alışan makalenin aboneliğinden &amp;ccedil;ıkılır
+  ngOnDestroy() {
+    this._subscription.unsubscribe();
+  }
+
+  /*
+   Aray&amp;uuml;zdeki keyup olayı ile bağlanmıştır
+  Yani tuştan parmak kaldırdık&amp;ccedil;a servise bir g&amp;uuml;ncelleme olayı fırlatılır 
+  ki bu t&amp;uuml;m abonelerce alınır.
+  */
+  updateArticle() {
+    this.ArticleService.update(this.article);
+  }
+}&lt;/pre&gt;
+&lt;p&gt;article-list.component.html&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;div&amp;gt;
+  &amp;lt;button (click)='newArticle()'&amp;gt;Yeni makale başlat&amp;lt;/button&amp;gt;
+&amp;lt;/div&amp;gt;
+&amp;lt;div style="height: 100%;"&amp;gt;
+  &amp;lt;span *ngFor='let a of articles | async' (click)='getArticle(a)'&amp;gt;
+      &amp;lt;b&amp;gt;{{a}}&amp;lt;/b&amp;gt;  
+      &amp;lt;br/&amp;gt;
+  &amp;lt;/span&amp;gt;
+&amp;lt;/div&amp;gt;
+&amp;lt;!--
+  *ngFor ile Typescript tarafındaki articles isimli diziyi d&amp;ouml;n&amp;uuml;yoruz.
+  Her bir elemanı i&amp;ccedil;in {{a}} ile dizi elemanını basıyoruz ki bu i&amp;ccedil;erde
+  rastgele &amp;uuml;retilen dosya numarası oluyor.
+
+  click olayı tetiklendiğinde dosya numarasının i&amp;ccedil;eriğini &amp;ccedil;eken getArticle metodu
+  &amp;ccedil;ağırılıyor ki o da article-list.component.ts i&amp;ccedil;erisinde yer alıyor.
+
+  button kontrol&amp;uuml;ne basıldığındaysa yine article-list.component.ts i&amp;ccedil;erisindeki
+  newArticle metodu &amp;ccedil;ağırılıyor.
+--&amp;gt;&lt;/pre&gt;
+&lt;p&gt;artcile-list.component.ts&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
+import { ArticleService } from 'src/app/article.service';
+
+@Component({
+  selector: 'app-article-list',
+  templateUrl: './article-list.component.html',
+  styleUrls: ['./article-list.component.css']
+})
+
+/*
+Bileşen, OnInit ve OnDestroy fonksiyonlarını implemente ediyor.
+Yani bileşen oluşturulurken ve iade edilirken yaptığımız bağzı işlemler var.
+
+Init'te g&amp;uuml;ncel makale listesi i&amp;ccedil;in bir stream a&amp;ccedil;ılmakta ve o an &amp;uuml;zerinde &amp;ccedil;alışılan 
+makale i&amp;ccedil;in bir abonelik başlatılmakta. Destroy metodunda ise &amp;uuml;zerinde &amp;ccedil;alışılan makalenin aboneliğinden &amp;ccedil;ıkılmakta.
+
+articles değişkeni Observable tipinden bir string dizisi ve servisin allOfThem 
+&amp;ouml;zelliği ile ilişkilendirilip bir stream oluşması sağlanıyor.
+
+Bileşen &amp;uuml;zerinden socket sunucusuna fırlatılan olayların karşılığından fırlatılan olaylar,
+Observable değişkenin g&amp;uuml;ncel kalmasını sağlayacaktır.
+*/
+export class ArticleListComponent implements OnInit, OnDestroy {
+
+  articles: Observable&amp;lt;string[]&amp;gt;;
+  currentArticle: string;
+  private _subscription: Subscription;
+
+  constructor(private articleService: ArticleService) { }
+
+  ngOnInit() {
+    this.articles = this.articleService.allOfThem;
+    this._subscription = this.articleService.currentArticle.subscribe(a =&amp;gt; this.currentArticle = a.id);
+  }
+
+  ngOnDestroy() {
+    this._subscription.unsubscribe();
+  }
+
+  // id değerine g&amp;ouml;re makale &amp;ccedil;ekilmesi i&amp;ccedil;in gerekli sunucu olayını tetikler
+  getArticle(id: string) {
+    this.articleService.get(id);
+  }
+
+  // Yeni bir makale oluşturulması i&amp;ccedil;in gerekli olayı tetikler
+  newArticle() {
+    this.articleService.add();
+  }
+}&lt;/pre&gt;
+&lt;p&gt;app.component.html &lt;em&gt;(HTML tablosunun &amp;uuml;st tarafında article-list, alt satırında ise article bileşenlerini g&amp;ouml;sterecektir)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;table&amp;gt;
+  &amp;lt;tr&amp;gt;
+    &amp;lt;td&amp;gt;
+      &amp;lt;app-article-list&amp;gt;&amp;lt;/app-article-list&amp;gt;
+    &amp;lt;/td&amp;gt;
+    &amp;lt;td style="width: 200px;"&amp;gt;
+      &amp;lt;app-article&amp;gt;&amp;lt;/app-article&amp;gt;
+    &amp;lt;/td&amp;gt;
+  &amp;lt;/tr&amp;gt;
+&amp;lt;/table&amp;gt;&lt;/pre&gt;
+&lt;p&gt;app.component.ts&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'authorApp';
+}&lt;/pre&gt;
+&lt;p&gt;Sunucu ve istemci tarafı uygulamalarımız artık hazır. &amp;Ccedil;alışma zamana ge&amp;ccedil;ip testlerimize başlayabiliriz.&lt;/p&gt;
+&lt;h2&gt;&amp;Ccedil;alışma Zamanı&lt;/h2&gt;
+&lt;p&gt;İstemcilerin dok&amp;uuml;manlar &amp;uuml;zerinde &amp;ccedil;alışmasını sağlamak i&amp;ccedil;in &amp;ouml;ncelikle node sunucusunu ayağa kaldırmamız gerekiyor. Bunu i&amp;ccedil;in&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;npm run start&lt;/pre&gt;
+&lt;p&gt;komutunu kullanabiliriz. İstemci tarafını &amp;ccedil;alıştırmak i&amp;ccedil;inse,&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;ng serve&lt;/pre&gt;
+&lt;p&gt;terminal komutundan yararlanılabilir.&lt;/p&gt;
+&lt;p&gt;Servis localhost:4200 nolu port'tan ayağa kalkar. Bu zorunlu değildir ve isterseniz geliştirme ortamı i&amp;ccedil;in angular.json dosyasındaki serve kısmına yeni bir options elementi olarak port bilgisi ekleyebilirsiniz veya ng komutu ile --port anahtarını kullanabilirsiniz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;ng serve --port 4003&lt;/pre&gt;
+&lt;p&gt;gibi.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneği daha iyi anlamak i&amp;ccedil;in iki veya daha fazla istemci &amp;ccedil;alıştırmakta yarar var. Bir istemcide yeni bir&amp;nbsp;sayfa a&amp;ccedil;ıp &amp;uuml;zerinde yazarken diğer istemcide de aynı dosya numarası g&amp;ouml;r&amp;uuml;n&amp;uuml;r ve değişiklikler karşılıklı olarak&amp;nbsp;taraflara yansır. Yani Cenifır'ın 399 nolu dok&amp;uuml;manda yaptığı değişikliği aynı dok&amp;uuml;mana bakan Brendon g&amp;ouml;rebilir ve &amp;uuml;st&amp;uuml;ne kendi değişikliklerini yazıp bunları Jenifer'ın g&amp;ouml;rmesini sağlayabilir. Chat uygulaması gibisinden ama değil gibi...&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/29/credit_2.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Tasarım ger&amp;ccedil;ekten &amp;ccedil;ok k&amp;ouml;t&amp;uuml; ancak ama&amp;ccedil; Socket.IO'nun Angular tarafında nasıl kullanılabileceğini anlamak olduğu i&amp;ccedil;in bir ka&amp;ccedil; fikir vermiş olmalı. En azından bana verdi ve aşağıda yazdığım maddelerdeki bilgileri &amp;ouml;ğrendiğimi ifade edebilirim.&lt;/p&gt;
+&lt;h2&gt;Ben Neler &amp;Ouml;ğrendim?&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;WebSocket protokol&amp;uuml;n&amp;uuml;n Node.js tarafında Socket.IO paketi yardımıyla nasıl&amp;nbsp;kullanılabileceğini&lt;/li&gt;
+&lt;li&gt;emit ile bağlı istemciye ya da t&amp;uuml;m istemcilere&amp;nbsp;canlı yayının&lt;em&gt;(broadcasting)&lt;/em&gt; nasıl yapılabileceğini&lt;/li&gt;
+&lt;li&gt;on, event&amp;nbsp;olay dinleyicilerinin ne&amp;nbsp;işe yaradığını&lt;/li&gt;
+&lt;li&gt;ng komutları ile proje oluşturulmasını, class, component ve service &amp;ouml;ğelerinin eklenmesini&lt;/li&gt;
+&lt;li&gt;Angular component'lerinin bir &amp;uuml;st component i&amp;ccedil;erisinde nasıl kullanılabileceğini&lt;/li&gt;
+&lt;li&gt;Bileşenlerin HTML tabanlı &amp;ouml;n y&amp;uuml;z&amp;uuml;nden, Typescript tarafındaki enstr&amp;uuml;manlara&lt;em&gt;(metod, property vb)&lt;/em&gt; nasıl ulaşılabileceğini&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir cumartesi gecesi &amp;ccedil;alışmasına ait derlemenin daha sonuna. Bu derlememizde Angular&amp;nbsp;ile yazılmış istemcilerin Web Socket &amp;uuml;zerinden bir birleriyle nasıl haberleşebileceğini incelemeye &amp;ccedil;alıştık. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2019-08-08 15:17:00</pubDate>
+  <slug>socket-io-yardimiyla-realtime-calisan-bir-angular-uygulamasi-gelistirmek</slug>
+  <tags>
+    <tag>net</tag>
+    <tag>net-core</tag>
+    <tag>angular</tag>
+    <tag>socketio</tag>
+    <tag>nq</tag>
+    <tag>node</tag>
+    <tag>nodejs</tag>
+    <tag>angular-cli</tag>
+    <tag>npm</tag>
+    <tag>typescript</tag>
+    <tag>websockets</tag>
+    <tag>broadcasting</tag>
+  </tags>
+  <categories>
+    <category>Angular</category>
+  </categories>
+</post>

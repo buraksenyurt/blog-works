@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WCF WebHttp Service, JSON, jQuery, Ajax ve CORS ile Yeni Bir Macera</title>
+  <description>Bu yazımızda bir kavram ve terim cümbüşü içerisinde yer alacağımızı söyleyebilirim. Yazacağımız basit bir WCF servisini öncelikle REST tabanlı çalışır hale getireceğiz. Ardından söz konusu servise jQuery kütüphanesinden yararlanarak bir Ajax çağrısı gerçekleştireceğiz. Temel hedefimiz ise HTTP Post metoduna göre bir içeriği tarayıcı üzerinden servise göndermek olacak. Lakin JSON(JavaScript Object Notation) tipinden bir nesne kullanacağız. Kabaca aşağıdaki çizelge de görülen durumun söz konusu olduğunu söyleyebiliriz.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/browser_wars.jpg"&gt;&lt;img style="background-image: none; float: right; padding-top: 0px; padding-left: 0px; margin: 4px 0px; display: inline; padding-right: 0px; border: 0px;" title="browser_wars" src="/pics/browser_wars_thumb.jpg" alt="browser_wars" width="300" height="236" align="right" border="0" /&gt;&lt;/a&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Bir s&amp;uuml;redir şirket i&amp;ccedil;erisinde kullanılacak olan web tabanlı bir .Net uygulamasının geliştirilmesinde g&amp;ouml;rev almaktayım. Uygulama, y&amp;uuml;r&amp;uuml;t&amp;uuml;len s&amp;uuml;re&amp;ccedil; gereği her iterasyon sonunda yeni &amp;ouml;zellikler eklenmiş ve hataları giderilmiş bi&amp;ccedil;imde &amp;Uuml;retim&lt;em&gt;(Production)&lt;/em&gt; ortamına taşınmakta.&lt;/p&gt;
+&lt;p&gt;Projede kaynak sıkıntısı nedeniyle uzun bir s&amp;uuml;re servis katmanı haricinde kalan aray&amp;uuml;z tarafı ile de ilgilenmek zorunda kaldım. Aray&amp;uuml;z tarafı ile uğraşırken iş biriminden gelen isteklere g&amp;ouml;re &lt;strong&gt;CSS&lt;em&gt;(Cascading Style Sheets)&lt;/em&gt;&amp;nbsp;&lt;/strong&gt;ve bol miktarda &lt;strong&gt;Javascript&lt;/strong&gt; kodlamak benim gibi acemiler i&amp;ccedil;in epeyce zorlayıcıydı. Lakin en &amp;ccedil;ok zaman kaybettiğim vaka, şirket i&amp;ccedil;inde kullanılmakta olan eski,yeni ve &amp;ccedil;eşitli tipteki tarayıcıların uyumlu &amp;ccedil;alışmasının sağlanabilmesiydi. Kimi lokasyonda &lt;strong&gt;Internet Explorer 8&lt;/strong&gt;, kimi yerlede &lt;strong&gt;Google Chrome&lt;/strong&gt;&amp;rsquo; un en g&amp;uuml;ncel s&amp;uuml;r&amp;uuml;m&amp;uuml; bulunmakta. Hatta global &amp;ccedil;evrimde &lt;strong&gt;Firefox&lt;/strong&gt; standart olarak her bilgisasyarda y&amp;uuml;kl&amp;uuml; geliyor.&lt;/p&gt;
+&lt;p&gt;Şunu fark ettim ki, tarayıcı savaşları makalelerde okuduğumuzdan &amp;ccedil;ok daha ciddi boyutta. Havada u&amp;ccedil;uşan standartları farklı farklı yorumlama bi&amp;ccedil;imleri nedeniyle her tarayıcıya uygun standart &amp;ccedil;&amp;ouml;z&amp;uuml;mler &amp;uuml;retmek ger&amp;ccedil;ekten zormuş. En azından benim i&amp;ccedil;in &lt;img class="wlEmoticon wlEmoticon-smile" style="border-style: none;" src="/pics/wlEmoticon-smile_105.png" alt="Smile" /&gt; Basit bir &lt;strong&gt;CSS&lt;/strong&gt;' in &lt;strong&gt;Internet Explorer'&lt;/strong&gt; da sorunsuz &amp;ccedil;alışırken &lt;strong&gt;Chrome&lt;/strong&gt;' da problem &amp;ccedil;ıkarttığına, &lt;strong&gt;Chrome&lt;/strong&gt;' da dertsiz işleyen bir &lt;strong&gt;Ajax Control Toolkit &lt;/strong&gt;kontrol&amp;uuml;n&amp;uuml;n, &lt;strong&gt;Firefox&lt;/strong&gt;&amp;rsquo; un eski bir s&amp;uuml;r&amp;uuml;m&amp;uuml;nde hi&amp;ccedil; &amp;ccedil;alışmadığına şahit oldum. Hal b&amp;ouml;yle olunca &amp;ccedil;alışma zamanında, tarayıcıların debug kabiliyetleri ile de haşır neşir olmak zorunda kaldım. Sıkıcı mıydı? Hayır &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_216.png" alt="Winking smile" /&gt; Aksine benim i&amp;ccedil;in farklı ve değer katan deneyimlerdi. İşte bu d&amp;uuml;ş&amp;uuml;nceler ge&amp;ccedil;tiğimiz g&amp;uuml;nlerde yine internet &amp;uuml;zerinde bir şeyler araştırıp &amp;ouml;ğrenmeye &amp;ccedil;alışırken kendimi farklı bir macera i&amp;ccedil;erisinde buldum. Sonunda bunu kaleme almanın yararlı olacağını d&amp;uuml;ş&amp;uuml;nd&amp;uuml;m ve işte buradayım.&lt;/p&gt;
+&lt;h1&gt;Senaryo&lt;/h1&gt;
+&lt;p&gt;Bu yazımızda bir kavram ve terim c&amp;uuml;mb&amp;uuml;ş&amp;uuml; i&amp;ccedil;erisinde yer alacağımızı s&amp;ouml;yleyebilirim. Yazacağımız basit bir &lt;strong&gt;WCF&lt;/strong&gt; servisini &amp;ouml;ncelikle &lt;strong&gt;REST&lt;/strong&gt; tabanlı &amp;ccedil;alışır hale getireceğiz. Ardından s&amp;ouml;z konusu servise &lt;strong&gt;jQuery&lt;/strong&gt; k&amp;uuml;t&amp;uuml;phanesinden yararlanarak bir &lt;strong&gt;Ajax&lt;/strong&gt; &amp;ccedil;ağrısı ger&amp;ccedil;ekleştireceğiz. Temel hedefimiz ise &lt;strong&gt;HTTP&lt;/strong&gt; &lt;strong&gt;Post&lt;/strong&gt; metoduna g&amp;ouml;re bir i&amp;ccedil;eriği tarayıcı &amp;uuml;zerinden servise g&amp;ouml;ndermek olacak. Lakin &lt;strong&gt;JSON&lt;em&gt;(JavaScript Object Notation)&lt;/em&gt;&lt;/strong&gt; tipinden bir nesne kullanacağız. Kabaca aşağıdaki &amp;ccedil;izelge de g&amp;ouml;r&amp;uuml;len durumun s&amp;ouml;z konusu olduğunu s&amp;ouml;yleyebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/restJquery_7_1.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="restJquery_7" src="/pics/restJquery_7_thumb_1.png" alt="restJquery_7" width="605" height="302" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Bu toplu senaryo aslına bakılırsa g&amp;uuml;n&amp;uuml;m&amp;uuml;z&amp;uuml;n pop&amp;uuml;ler pek &amp;ccedil;ok web tabanlı uygulamasında kullanılabilecek t&amp;uuml;rden. Haydi gelin parmaklarımızı sıvayalım...&lt;/p&gt;
+&lt;h1&gt;Servis Tarafının Geliştirilmesi&lt;/h1&gt;
+&lt;p&gt;İlk olarak aşağıdaki servis s&amp;ouml;zleşmesini i&amp;ccedil;eren bir &lt;strong&gt;WCF Service Application&lt;/strong&gt; projesi a&amp;ccedil;arak yola &amp;ccedil;ıkabiliriz. S&amp;ouml;z konusu projede &lt;strong&gt;IProductService&lt;/strong&gt; isimli bir s&amp;ouml;zleşme&lt;em&gt;(Service Contract)&lt;/em&gt; yer alacak.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.ServiceModel; 
+using System.ServiceModel.Web;
+
+namespace AzonServices 
+{ 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; [ServiceContract] 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; public interface IProductService 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; [OperationContract] 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; [WebInvoke(Method = "POST", 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; RequestFormat = WebMessageFormat.Json, 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; ResponseFormat = WebMessageFormat.Json, 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; UriTemplate = "AddProduct")] 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; string PostProduct(Product NewProduct); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+}&lt;/pre&gt;
+&lt;p&gt;Senaryomuzda sadece &lt;strong&gt;HTTP&lt;/strong&gt; &lt;strong&gt;Post&lt;/strong&gt; metodunu ele almak istediğimizden basit bir operasyon s&amp;ouml;z konusu. &amp;Ouml;nemli olan servis operasyonunun &lt;strong&gt;WebInvoke&lt;/strong&gt; niteliği&lt;em&gt;(attribute)&lt;/em&gt; ile işaretlenmiş olmasıdır. &lt;strong&gt;WebInvoke&lt;/strong&gt; niteliği bu operasyonun &lt;strong&gt;HTTP&lt;/strong&gt; tabanlı taleplere cevap verecek şekilde kullanılabileceğini ifade etmektedir.&lt;/p&gt;
+&lt;p&gt;Niteliğin i&amp;ccedil;erisinde dikkat edileceği &amp;uuml;zere bir ka&amp;ccedil; &amp;ouml;zelliğin set edildiği g&amp;ouml;r&amp;uuml;lmektedir. &lt;strong&gt;Method&lt;/strong&gt; &amp;ouml;zelliğine atanan değer ile, operasyonun &lt;strong&gt;HTTP&lt;/strong&gt; &lt;strong&gt;Post&lt;/strong&gt; taleplerine cevap vereceği belirtilmektedir. &lt;strong&gt;RequestFormat&lt;/strong&gt; ve &lt;strong&gt;ResponseFormat&lt;/strong&gt; &amp;ouml;zellikleri ile operasyona gelen ve istemcilere cevap olarak d&amp;ouml;nen i&amp;ccedil;eriklerin &lt;strong&gt;JSON&lt;/strong&gt; formatında serileştirileceği ifade edilir. Son olarak bir &lt;strong&gt;Uri&lt;/strong&gt; şablonu atanmıştır. &lt;strong&gt;UriTemplate'&lt;/strong&gt; e atanan &lt;strong&gt;AddProduct&lt;/strong&gt; ifadesi, istemci tarafının g&amp;ouml;ndereceği&lt;strong&gt; HTTP Post&lt;/strong&gt; talebinde kullanılacaktır.&lt;/p&gt;
+&lt;p&gt;Servis metodu &lt;strong&gt;Product&lt;/strong&gt; tipinden bir nesne &amp;ouml;rneğini alıp geriye &lt;strong&gt;string&lt;/strong&gt; tipte i&amp;ccedil;erik d&amp;ouml;nd&amp;uuml;recek şekilde tasarlanmıştır. &lt;strong&gt;Product&lt;/strong&gt; tipi olduk&amp;ccedil;a basit bir i&amp;ccedil;eriğe sahiptir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace AzonServices 
+{ 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; public class Product 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public int ProductId { get; set; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public string Title { get; set; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public decimal ListPrice { get; set; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+}&lt;/pre&gt;
+&lt;p&gt;Gelelim &lt;strong&gt;ProductService.svc&lt;/strong&gt; &amp;ouml;ğesinin kodlarına.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Collections.Generic;
+
+namespace AzonServices 
+{ 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; public class ProductService 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; : IProductService 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; List&amp;lt;Product&amp;gt; productList = new List&amp;lt;Product&amp;gt;();
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public string PostProduct(Product NewProduct) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; productList.Add(NewProduct); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; return Guid.NewGuid().ToString(); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;ProductService.svc&lt;/strong&gt; i&amp;ccedil;erisinde &amp;ccedil;ok &amp;ouml;zel bir kod par&amp;ccedil;ası yoktur. Sadece generic bir &lt;strong&gt;List&amp;lt;Product&amp;gt;&lt;/strong&gt; &amp;ouml;rneğine, &lt;strong&gt;PostProduct&lt;/strong&gt; metoduna gelen &lt;strong&gt;Product&lt;/strong&gt; &amp;ouml;rneğinin eklenmesi işlemi icra edilmektedir. Test sırasında istemcinin doğru bir cevap aldığını kolayca tespit etmek adına metod geriye benzersiz bir &lt;strong&gt;Guid&lt;/strong&gt; değeri d&amp;ouml;nd&amp;uuml;rmektedir.&lt;/p&gt;
+&lt;h1&gt;EndPoint Bildirimi&lt;/h1&gt;
+&lt;p&gt;Servis tarafı i&amp;ccedil;in &amp;ouml;nem arz eden konulardan birisi de &lt;strong&gt;EndPoint&lt;/strong&gt; tanımlamasıdır. Servis, &lt;strong&gt;REST&lt;/strong&gt; tabanlı olacak şekilde &amp;ccedil;alışabilmelidir. &lt;strong&gt;WCF&lt;/strong&gt; bu noktada &lt;strong&gt;WebHttpBinding&lt;/strong&gt; isimli &lt;strong&gt;Binding&lt;/strong&gt; tipini sağlamaktadır. Bu sebepten&lt;strong&gt; web.config&lt;/strong&gt; i&amp;ccedil;erisinde gerekli tanımlamaların yapılması gerekmektedir. Aynen aşağıda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt; 
+&amp;lt;configuration&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;system.serviceModel&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;services&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;service name="AzonServices.ProductService"&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;endpoint address="" 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; binding="webHttpBinding" 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; contract="AzonServices.IProductService" behaviorConfiguration="webBehavior"&amp;gt;&amp;lt;/endpoint&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/service&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/services&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;behaviors&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;endpointBehaviors&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;behavior name="webBehavior"&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;webHttp/&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/behavior&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/endpointBehaviors&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/behaviors&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;serviceHostingEnvironment multipleSiteBindingsEnabled="true" /&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/system.serviceModel&amp;gt; 
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;endpoint&lt;/strong&gt; elementi i&amp;ccedil;erisinde yer alan &lt;strong&gt;binding&lt;/strong&gt; niteliğine &lt;strong&gt;webHttpBinding&lt;/strong&gt; atanması haricinde bir de &lt;strong&gt;HTTP&lt;/strong&gt; davranışının verilmesi s&amp;ouml;z konusudur. Bunun i&amp;ccedil;in dikkat edileceği &amp;uuml;zere bir &lt;strong&gt;endPoint&lt;/strong&gt; &lt;strong&gt;Behavior&lt;/strong&gt; tanımlaması yapılmış ve &lt;strong&gt;webHttp&lt;/strong&gt; değeri eklenmiştir. Eğer bir problem yoksa &lt;strong&gt;ProductService.svc&lt;/strong&gt; dosyasının tarayıcı &amp;uuml;zerinde aşağıdaki gibi a&amp;ccedil;ılması gerekir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/restJquery_1_1.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="restJquery_1" src="/pics/restJquery_1_thumb_1.png" alt="restJquery_1" width="640" height="348" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Servisin Metadata Publishing &amp;ouml;zelliği kapalıdır. Bilindiği &amp;uuml;zere &lt;strong&gt;REST&lt;/strong&gt; tabanlı servislere HTTP protokol&amp;uuml; ve metodları ile erişilmektedir. Bu y&amp;uuml;zden istemci tarafında bir Proxy nesnesi kullanılmasına gerek yoktur.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1&gt;İstemci Tarafı&lt;/h1&gt;
+&lt;p&gt;Gelelim istemci uygulamanın geliştirilmesi. Servis t&amp;uuml;keticisi bir Web uygulaması olarak inşa edilecektir. Detayları bir kenara bırakıp asıl konuya odaklanmak istediğimizden &lt;strong&gt;Asp.Net Empty Web Application&lt;/strong&gt; projesi bizim i&amp;ccedil;in bi&amp;ccedil;ilmiş kaftandır. &lt;strong&gt;Web&lt;/strong&gt; uygulamamızda &lt;strong&gt;jQuery&lt;/strong&gt; kullanacağımızdan en azından ilgili &lt;strong&gt;javascript&lt;/strong&gt; k&amp;uuml;t&amp;uuml;phanesinin eklenmesi gerekir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Bunun i&amp;ccedil;in &lt;a href="http://jquery.com/download/"&gt;http://jquery.com/download/&lt;/a&gt; adresine giderek istediğiniz bir s&amp;uuml;r&amp;uuml;m&amp;uuml; se&amp;ccedil;ebilirsiniz. S&amp;uuml;r&amp;uuml;m se&amp;ccedil;iminde bu sayfada yazılan notlara dikkat etmenizi &amp;ouml;neririm. Eğer kurumunuzun tarayıcılar ile ilişkili bazı kuralları varsa ve &amp;ouml;zellikle eski tarayıcılar ile &amp;ccedil;alışıyorlarsa uygun jQuery k&amp;uuml;t&amp;uuml;phanesinin se&amp;ccedil;ilmesi doğru olacaktır.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Ben &amp;ouml;rnek projemizde &lt;strong&gt;jQuery-2.1.0.min.js&lt;/strong&gt; s&amp;uuml;r&amp;uuml;m&amp;uuml;n&amp;uuml; kullanmayı tercih ettim. İlgili &lt;strong&gt;Script&lt;/strong&gt; dosyasını projeye ekledikten sonra &lt;strong&gt;Default.aspx&lt;/strong&gt; sayfasını aşağıdaki gibi geliştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="ClientApp.Default" %&amp;gt;
+
+&amp;lt;html xmlns="http://www.w3.org/1999/xhtml"&amp;gt; 
+&amp;lt;head runat="server"&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;title&amp;gt;REST Service Test&amp;lt;/title&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;meta http-equiv="X-UA-Compatible" content="IE=10" /&amp;gt; 
+&amp;lt;/head&amp;gt; 
+&amp;lt;body&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;script type="text/javascript" src="Scripts/jquery-2.1.0.min.js"&amp;gt;
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/script&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;script type="text/javascript"&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; function AddNewProduct() {
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; var product = { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; "ProductId": 1220, 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; "Title": "ElCiii 4580 Laptop", 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; "ListPrice": "1499" 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; $.ajax({ 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; type: "POST", 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; url: "http://localhost:61954/ProductService.svc/AddProduct", 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; data: JSON.stringify(product), 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; contentType: "application/json; charset=utf-8", 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; dataType: "json", 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; success: function (data, status, xmlRequest) { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; alert("JSON i&amp;ccedil;eriği "+JSON.stringify(product)+". "+data + " numaralı &amp;uuml;r&amp;uuml;n eklenmiştir");&amp;nbsp; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }, 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; error: function (xmlRequest,status,errorThrown) { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; alert(xmlRequest.responseText); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/script&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;form id="form1" runat="server"&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;div&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;input type="button" value="Add New Product" onclick="AddNewProduct()" /&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/div&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/form&amp;gt; 
+&amp;lt;/body&amp;gt; 
+&amp;lt;/html&amp;gt;&lt;/pre&gt;
+&lt;h1&gt;&amp;Ccedil;alışma Şekli&lt;/h1&gt;
+&lt;p&gt;Şimdi web sayfasını biraz inceleyelim. Burada koşullara ve şartlara g&amp;ouml;re uygulanmış bazı hileler de bulunmaktadır. İlk olarak projeye ilave edilmiş &lt;strong&gt;jQuery&lt;/strong&gt; k&amp;uuml;t&amp;uuml;phanesinin kullanılacağı belirtilmiştir. &lt;strong&gt;Form&lt;/strong&gt; &amp;uuml;zerinde &lt;strong&gt;button&lt;/strong&gt; tipinden bir &lt;strong&gt;input&lt;/strong&gt; elementi yer almaktadır. İstemci tarafında bu buton tıklandığında ise &lt;strong&gt;AddNewProduct&lt;/strong&gt; isimli &lt;strong&gt;javascript&lt;/strong&gt; fonksiyonu &amp;ccedil;alıştırılmaktadır. Peki fonksiyon i&amp;ccedil;erisinde neler olmaktadır?&lt;/p&gt;
+&lt;p&gt;İlk olarak &lt;strong&gt;product&lt;/strong&gt; isimli bir tip oluşturulduğunu ve &lt;strong&gt;ProductId&lt;/strong&gt;, &lt;strong&gt;Title&lt;/strong&gt;, &lt;strong&gt;ListPrice&lt;/strong&gt; &amp;ouml;zelliklerine bir takım değerler atandığını g&amp;ouml;rebiliriz. Bu tanımlamayı takip eden satırda ise &lt;strong&gt;ajax&lt;/strong&gt; fonksiyon &amp;ccedil;ağrısı ger&amp;ccedil;ekleştirilmektedir. &lt;strong&gt;ajax&lt;/strong&gt; fonksiyonun pek &amp;ccedil;ok parametresi bulunmaktadır. &amp;Ouml;rnekte &lt;strong&gt;HTTP Post&lt;/strong&gt; &amp;ccedil;ağrısı ger&amp;ccedil;ekleştirileceğinden &lt;strong&gt;type&lt;/strong&gt; &amp;ouml;zelliğine &lt;strong&gt;POST&lt;/strong&gt; değeri atanmıştır. &lt;strong&gt;url&lt;/strong&gt; &amp;ouml;zelliği tahmin edileceği &amp;uuml;zere &lt;strong&gt;HTTP&lt;/strong&gt; &lt;strong&gt;Post&lt;/strong&gt; talebinin g&amp;ouml;nderileceği WCF Servis adresini işaret etmektedir. Bu adres tanımında yer alan &lt;strong&gt;AddProduct&lt;/strong&gt; son ekine ayrıca dikkat edilmelidir.&lt;/p&gt;
+&lt;p&gt;Hatırlanacağı &amp;uuml;zere bu bilgi servis operasyonunun &lt;strong&gt;WebInvoke&lt;/strong&gt; niteliğinde belirtilmiştir. data kısmında ger&amp;ccedil;ekleştirilen &lt;strong&gt;stringify&lt;/strong&gt; &amp;ccedil;ağrısı, parametre olarak aldığı &lt;strong&gt;product&lt;/strong&gt; nesne &amp;ouml;rneğini &lt;strong&gt;JSON&lt;/strong&gt; formatına &amp;ccedil;evirmek &amp;uuml;zere kullanılır. B&amp;ouml;ylece servise g&amp;ouml;nderilecek olan &lt;strong&gt;JSON &lt;/strong&gt;i&amp;ccedil;eriği oluşturulur. &lt;strong&gt;contentType&lt;/strong&gt; &amp;ouml;zelliğine atanan değer ile i&amp;ccedil;erik tipinin &lt;strong&gt;JSON &lt;/strong&gt;olacağı ve karakter seti olarak &lt;strong&gt;utf-8&lt;/strong&gt; standardının kullanılacağı belirtilmektedir. &lt;strong&gt;dataType&lt;/strong&gt; &amp;ouml;zelliği &lt;strong&gt;POST&lt;/strong&gt; işlemi sırasında kullanılan veri tipinin &lt;strong&gt;JSON &lt;/strong&gt;olduğunu işaret eder. &lt;strong&gt;success&lt;/strong&gt; ve &lt;strong&gt;error&lt;/strong&gt; değişkenleri tahmin edileceği &amp;uuml;zere &amp;ccedil;ağrının başarılı veya hata olması durumlarnda devreye giren fonksiyonları taşımaktadır. Her iki fonksiyon da standart olarak &lt;strong&gt;XmlHttpRequest&lt;/strong&gt; tipini kullanır.&lt;/p&gt;
+&lt;p&gt;Biz &amp;ouml;rneğimizde bu fonksiyonellikler i&amp;ccedil;erisinde &amp;ouml;nemli bir iş yapmıyoruz. Sadece &amp;ccedil;ağrının başarılı olması halinde g&amp;ouml;nderilen &lt;strong&gt;JSON&lt;/strong&gt; i&amp;ccedil;eriğini ve servisden gelen &lt;strong&gt;GUID&lt;/strong&gt; değerini bir mesaj kutusu i&amp;ccedil;erisine g&amp;ouml;steriyoruz. Pek tabi gelen i&amp;ccedil;eriğin sayfa &amp;uuml;zerinde yer alan bir takım kontrollere basılması da d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;Web sayfasında dikkat edilmesi gereken noktalardan birisi de title elementinin hemen altında kullanılan meta tag' dir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&amp;lt;meta http-equiv="X-UA-Compatible" content="IE=10" /&amp;gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Bunu ş&amp;ouml;yle ifade etmeye &amp;ccedil;alışalım. &amp;Ouml;rneği ger&amp;ccedil;ekleştirdiğimiz sistemde &lt;strong&gt;Internet Explorer&lt;/strong&gt;' ın &lt;strong&gt;10&lt;/strong&gt; s&amp;uuml;r&amp;uuml;m&amp;uuml; bulunmakta ve web sayfasının aslında &lt;strong&gt;IE Compatibility Mode&lt;/strong&gt;' da &amp;ccedil;alıştığı g&amp;ouml;r&amp;uuml;lmektedir. Nitekim bu bildirimin &lt;strong&gt;meta tag&lt;/strong&gt; olarak bildirilmemesi halinde istemci tarafında bir &lt;strong&gt;script&lt;/strong&gt; hatası ile karşılaşılmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/restJquery_2_1.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="restJquery_2" src="/pics/restJquery_2_thumb_1.png" alt="restJquery_2" width="432" height="279" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Bu sorun IE 11' de kendini g&amp;ouml;stermeyebilir. Ya da jQuery k&amp;uuml;t&amp;uuml;phanesinin daha eski bir s&amp;uuml;r&amp;uuml;m&amp;uuml; b&amp;ouml;yle bir hatayı oluşturmayabilir. Hatta bu meta tag a&amp;ccedil;ık olduğunda Document Mode' un IE 9, 8 ve 7 olduğu durumlarda k&amp;uuml;t&amp;uuml;phanenin aynı hatayı vermeye devam ettiği de tespit edilmiştir. Bu tarayıcıları anlamak hakikaten zor &lt;img class="wlEmoticon wlEmoticon-confusedsmile" style="border-style: none;" src="/pics/wlEmoticon-confusedsmile_33.png" alt="Confused smile" /&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1&gt;Uyumluluk Sonrası Chrome &amp;Ouml;ncesi ve CORS&lt;/h1&gt;
+&lt;p&gt;&amp;Ouml;rneğimizi &lt;strong&gt;Internet Explorer&lt;/strong&gt; ile&lt;em&gt;(en azından sistemde var olan s&amp;uuml;r&amp;uuml;m&amp;uuml; ile)&lt;/em&gt; uyumlu hale getirdik diyebiliriz. &lt;strong&gt;Default.aspx&lt;/strong&gt; sayfasında &lt;strong&gt;Add New Product&lt;/strong&gt; başlıklı butona bastığımızda aşağıdakine benzer bir mesaj kutusu ile karşılaşmamız gerekmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/restJquery_3_1.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="restJquery_3" src="/pics/restJquery_3_thumb_1.png" alt="restJquery_3" width="464" height="295" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere başarılı bir şekilde servis &amp;ccedil;ağrısı yapılmıştır. &lt;strong&gt;JSON&lt;/strong&gt; i&amp;ccedil;eriği &amp;uuml;retilmiş ve servisden benzersiz bir &lt;strong&gt;GUID&lt;/strong&gt; değeri elde edilmiştir. Ne var ki &amp;ouml;rnek &lt;strong&gt;Chrome&lt;/strong&gt;' da &amp;ccedil;alışmamaktadır &lt;img class="wlEmoticon wlEmoticon-surprisedsmile" style="border-style: none;" src="/pics/wlEmoticon-surprisedsmile_6.png" alt="Surprised smile" /&gt;&amp;nbsp;&lt;em&gt;(Yine &amp;ouml;rneğin geliştirildiği makinedeki tarayıcı s&amp;uuml;r&amp;uuml;m i&amp;ccedil;in b&amp;ouml;yle bir durum oluştuğunu ifade edelim) &lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/restJquery_4_1.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="restJquery_4" src="/pics/restJquery_4_thumb_1.png" alt="restJquery_4" width="345" height="118" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Pek de sevimli olmayan bir hata mesajı &lt;img class="wlEmoticon wlEmoticon-sadsmile" style="border-style: none;" src="/pics/wlEmoticon-sadsmile_16.png" alt="Sad smile" /&gt; Eğer Chrome tarafında &lt;strong&gt;debug&lt;/strong&gt; işlemi uygulanırsa aşağıdaki gibi bazı hataların oluştuğuna şahit olunur. İşte buton tıklandıktan sonraki durum.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/restJquery_5_1.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="restJquery_5" src="/pics/restJquery_5_thumb_1.png" alt="restJquery_5" width="621" height="477" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;3 hata mesajı s&amp;ouml;z konusudur. Hata mesajlarının ikisi &lt;strong&gt;jQuery&lt;/strong&gt; k&amp;uuml;t&amp;uuml;phanesinden gelmektedir ama ana fikir s&amp;ouml;z konusu metod &amp;ccedil;ağrısına izin verilmemiş olmasıdır. Aslında dikkatli g&amp;ouml;zler şunu hemen fark edecektir. Web uygulamasının host ediliği &lt;strong&gt;port&lt;/strong&gt; ile WCF Service uygulamasının host edildiği &lt;strong&gt;port&lt;/strong&gt; birbirinden farklıdır. Bu &lt;strong&gt;Cross Domain&lt;/strong&gt; &amp;ccedil;ağrı &lt;strong&gt;Chorme&lt;/strong&gt; tarafından işlenmemiştir. &amp;Ccedil;&amp;ouml;z&amp;uuml;m olarak&lt;em&gt;(ki burada istediğimiz sadece servisin Chrome &amp;uuml;zerinden IE' de olduğu gibi &amp;ccedil;ağırılabildiğini g&amp;ouml;rmektir)&lt;/em&gt; ilgili servisin ve web uygulamasının aynı domain' de host edilmesi sağlanabilir. Yani &lt;strong&gt;IIS&lt;/strong&gt; altına atılmaları halinde her hangibir sorun olmadan &amp;ccedil;ağırılabildikleri g&amp;ouml;r&amp;uuml;lecektir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Modern tarayıcıların bu tip Cross Domain referans &amp;ccedil;ağrılarına izin vermediği bilinmektedir. Servislerin bu noktada &amp;ccedil;&amp;ouml;z&amp;uuml;m olarak istemciden gelecek olan bu tip Header' ları kabul edecek şekilde tesis edilmesi gerekmektedir. Bu sıkıntı CROS olarak isimlendirilmiştir. Dolayısıyla servis tarafı CORS &lt;em&gt;(Cross-Origin Resource Sharing)&lt;/em&gt; &amp;ouml;zelliğini desteklemelidir. Bir başka deyişle servisin istemciden gelen Header bilgisine g&amp;ouml;re POST talebini kabul edecek şekilde ayarlanması sorunu &amp;ccedil;&amp;ouml;zecektir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1&gt;Sorunu B&amp;uuml;y&amp;uuml;tt&amp;uuml;k&lt;/h1&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere yeni bir m&amp;uuml;cade ile karşı karşıyayız. &lt;strong&gt;WCF&lt;/strong&gt; servisini &lt;strong&gt;CORS&lt;/strong&gt; destekli hale getirmek &amp;ccedil;&amp;ouml;z&amp;uuml;mlerden bir tanesi. Ancak olduk&amp;ccedil;a zahmetli olan bu yola yazımızda değinmeyeceğiz. Yine de ilgilenler &lt;a href="http://enable-cors.org/server_wcf.html"&gt;http://enable-cors.org/server_wcf.html&lt;/a&gt; adresine uğrayabilirler. Daha basit bir &amp;ccedil;&amp;ouml;z&amp;uuml;m olarak &lt;strong&gt;WCF Service Application'&lt;/strong&gt; ın aslında bir Web uygulaması gibi davranış g&amp;ouml;sterdiğini d&amp;uuml;ş&amp;uuml;nerek hareket edeceğiz. Dolayısıyla bir &lt;strong&gt;global.asax&lt;/strong&gt; dosyası ve gelen uygulamaya gelen taleplerin yakalandığı olay metodları s&amp;ouml;z konusudur. Bu noktada Application_BeginRequest metodu i&amp;ccedil;eriğini aşağıdaki kod par&amp;ccedil;asında g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi yazmamız yeterli olacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;protected void Application_BeginRequest(object sender, EventArgs e) 
+{ 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; HttpContext.Current.Response.AddHeader("Access-Control-Allow-Origin", "*"); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; if (HttpContext.Current.Request.HttpMethod == "OPTIONS") 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; HttpContext.Current.Response.AddHeader("Access-Control-Allow-Methods", "GET, POST"); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; HttpContext.Current.Response.AddHeader("Access-Control-Allow-Headers", "Content-Type"); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; HttpContext.Current.Response.End(); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;BeginRequest&lt;/strong&gt; metodu tahmin edileceği &amp;uuml;zere &lt;strong&gt;WCF&lt;/strong&gt; servisini host ettiğimiz uygulamaya gelecek her talep i&amp;ccedil;in devreye girecektir. &lt;strong&gt;jQuery&lt;/strong&gt; ile ger&amp;ccedil;ekleştirdiğimiz &lt;strong&gt;ajax&lt;/strong&gt; &amp;ccedil;ağrısında &lt;strong&gt;ContentType&lt;/strong&gt; &lt;strong&gt;Header&lt;/strong&gt; bilgisi kullanılmış ve &lt;strong&gt;POST&lt;/strong&gt; metoduna g&amp;ouml;re talep de bulunulmuştur. &lt;strong&gt;BeginRequest&lt;/strong&gt; metodunun yaptığı pratikte bu şekilde gelen istekleri geri &amp;ccedil;evirmemek ve istemci tarafına da uygun olan &lt;strong&gt;Header&lt;/strong&gt; bilgisini g&amp;ouml;ndermektir. S&amp;ouml;z konusu değişiklik sonrası uygulamanın &lt;strong&gt;Chrome&lt;/strong&gt; &amp;uuml;zerinde de sorunsuz bir şekilde &amp;ccedil;alışabildiği g&amp;ouml;r&amp;uuml;lecektir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/restJquery_6_1.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="restJquery_6" src="/pics/restJquery_6_thumb_1.png" alt="restJquery_6" width="485" height="195" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h1&gt;Eksikler&lt;/h1&gt;
+&lt;p&gt;Elbette senaryomuzda &amp;ouml;nemli eksiklikler bulunmaktadır. &amp;Ouml;rneğin,&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Servis tarafının bir sertifika ile &amp;ccedil;ağırılabileceği durumlarda CORS i&amp;ccedil;in nasıl aksiyonlar almak gerekir?&lt;/li&gt;
+&lt;li&gt;Son uygulanan pratik, t&amp;uuml;m tarayıcılar da &amp;ccedil;alışmakta mıdır? &amp;Ouml;rneğin &lt;strong&gt;Firefox&lt;/strong&gt;' ta. Peki ya mobil cihazda bulunan &lt;strong&gt;Native&lt;/strong&gt; kodla geliştirilmiş bir Browser bileşeninde?&lt;/li&gt;
+&lt;li&gt;Acaba Windows Forms i&amp;ccedil;erisinde kullanına WebBrowser gibi kontrollerde sonu&amp;ccedil; nasıl olacaktır?&lt;/li&gt;
+&lt;li&gt;Peki &lt;strong&gt;HTTP&lt;/strong&gt; &lt;strong&gt;Get&lt;/strong&gt; ile bir &lt;strong&gt;JSON&lt;/strong&gt; veri k&amp;uuml;mesi istemci tarafına nasıl &amp;ccedil;ekilebilir?&lt;/li&gt;
+&lt;li&gt;Ya veri g&amp;ouml;ndermek i&amp;ccedil;in sayfa &amp;uuml;zerine konacak kontrollerden nasıl yararlanılabilir?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Bu soruların &amp;ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml;n&amp;uuml;, araştırmasını ve uygulanmasını siz değerli okurlarıma bırakıyorum. Bu m&amp;uuml;cadeleler inanın size &amp;ouml;nemli saha tecr&amp;uuml;beleri kazandıracaktır. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2014%2f2%2fHowTo_RestPostJQuery.rar"&gt;HowTo_RestPostJQuery.rar (111,76 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2014-09-03 08:27:00</pubDate>
+  <slug>WCF-WebHttp-Service-JSON-jQuery-Ajax-ve-CORS-ile-Yeni-Bir-Macera</slug>
+  <tags>
+    <tag>wcf</tag>
+    <tag>web-http-services</tag>
+    <tag>rest</tag>
+    <tag>rest-services</tag>
+    <tag>json</tag>
+    <tag>jquery</tag>
+    <tag>ajax</tag>
+    <tag>cors</tag>
+  </tags>
+  <categories>
+    <category>WCF</category>
+    <category>WCF 4.5</category>
+    <category>WCF WebHttp Services</category>
+  </categories>
+</post>

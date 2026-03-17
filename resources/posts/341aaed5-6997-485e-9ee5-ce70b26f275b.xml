@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>DataTable.Compute Metodu</title>
+  <description>Çoğu zaman, uygulamalarımızda T-Sql' in Aggregate fonksiyonlarını kullanarak, belirli sütunlara ait veriler üzerinden, toplam değer, en büyük değer, en küçük değer, ortalama değer vb. gibi sonuçlara ulaşmaya çalışırız. Bu amaçla T-Sql' in Avg, Sum, Count gibi Aggregate fonksiyonlarından yararlanırız. İşte bu makalemizde, bu fonksiyonları, DataTable sınıfının Compute metodu yardımıyla nasıl kullanabileceğimizi incelemeye çalışacağız.</description>
+  <content>&lt;p&gt;Değerli&amp;nbsp;Okurlarım, Merhabalar.&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;oğu zaman, uygulamalarımızda T-Sql' in Aggregate fonksiyonlarını kullanarak, belirli s&amp;uuml;tunlara ait veriler &amp;uuml;zerinden, toplam değer, en b&amp;uuml;y&amp;uuml;k değer, en k&amp;uuml;&amp;ccedil;&amp;uuml;k değer, ortalama değer vb. gibi sonu&amp;ccedil;lara ulaşmaya &amp;ccedil;alışırız. Bu ama&amp;ccedil;la T-Sql' in Avg, Sum, Count gibi Aggregate fonksiyonlarından yararlanırız. İşte bu makalemizde, bu fonksiyonları, DataTable sınıfının Compute metodu yardımıyla nasıl kullanabileceğimizi incelemeye &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;ncelikle, T-Sql' de yer alan Aggregate fonksiyonlarından kısaca bahsetmekta yarar olduğunu d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum. Bu fonksiyonların en &amp;ouml;nemlileri ve kullanışlıları aşağıdaki tabloda yer almaktadır.&lt;/p&gt;
+&lt;table id="table1" style="border-collapse: collapse; width: 100%;" border="1" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Fonksiyon&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;Prototipi&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;A&amp;ccedil;ıklama&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;D&amp;ouml;n&amp;uuml;ş Tipi&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;&amp;Ouml;rnek&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align: left; vertical-align: top;"&gt;AVG (Ortalama)&lt;/td&gt;
+&lt;td style="text-align: left; vertical-align: top;"&gt;AVG &lt;strong&gt;( &lt;/strong&gt;[ ALL | DISTINCT ] ifade &lt;strong&gt;)&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: left; vertical-align: top;"&gt;Sql sorgusunda belirtilen kritere uyan alanların ortalamasını alır.&lt;/td&gt;
+&lt;td style="text-align: left; vertical-align: top;"&gt;int, decimal, money, float&lt;/td&gt;
+&lt;td style="text-align: left; vertical-align: top;"&gt;SELECT AVG(Prim)&lt;br /&gt; FROM Primler&lt;br /&gt; WHERE PerID = 1002124&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style="text-align: left;"&gt;
+&lt;td style="vertical-align: top;"&gt;SUM (Toplam)&lt;/td&gt;
+&lt;td style="vertical-align: top;"&gt;SUM &lt;strong&gt;( &lt;/strong&gt;[ ALL | DISTINCT ] ifade &lt;strong&gt;)&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="vertical-align: top;"&gt;Sql sorgusunda belirtilen kritere uyan alanların toplam değerini alır.&lt;/td&gt;
+&lt;td style="vertical-align: top;"&gt;int, decimal, money, float&lt;/td&gt;
+&lt;td style="vertical-align: top;"&gt;SELECT SUM(Prim)&lt;br /&gt; FROM Primler&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style="text-align: left;"&gt;
+&lt;td style="vertical-align: top;"&gt;COUNT (Toplam Sayı)&lt;/td&gt;
+&lt;td style="vertical-align: top;"&gt;COUNT &lt;strong&gt;( &lt;/strong&gt; { [ ALL | DISTINCT ] ifade ] | &lt;strong&gt;* &lt;/strong&gt;} &lt;strong&gt; )&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="vertical-align: top;"&gt;Satır sayısını verir.&lt;/td&gt;
+&lt;td style="vertical-align: top;"&gt;int&lt;/td&gt;
+&lt;td style="vertical-align: top;"&gt;SELECT COUNT(*)&lt;br /&gt; FROM Primler&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style="text-align: left;"&gt;
+&lt;td style="text-align: left; vertical-align: top;"&gt;MAX (En b&amp;uuml;y&amp;uuml;k değer)&lt;/td&gt;
+&lt;td style="text-align: left; vertical-align: top;"&gt;MAX &lt;strong&gt;( &lt;/strong&gt;[ ALL | DISTINCT ] ifade &lt;strong&gt;)&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: left; vertical-align: top;"&gt;Belirtilen alana ait s&amp;uuml;tundaki en b&amp;uuml;y&amp;uuml;k değeri verir.&lt;/td&gt;
+&lt;td style="text-align: left; vertical-align: top;"&gt;ifade olarak belirtilen tip ile aynıdır.&lt;/td&gt;
+&lt;td style="text-align: left; vertical-align: top;"&gt;SELECT MAX(Prim)&lt;br /&gt; FROM Primler&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style="text-align: left;"&gt;
+&lt;td style="text-align: left; vertical-align: top;"&gt;MIN (En k&amp;uuml;&amp;ccedil;&amp;uuml;k değer)&lt;/td&gt;
+&lt;td style="text-align: left; vertical-align: top;"&gt;MIN &lt;strong&gt;( &lt;/strong&gt;[ ALL | DISTINCT ] ifade &lt;strong&gt;)&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: left; vertical-align: top;"&gt;Belirtilen alana ait s&amp;uuml;tunlardaki en k&amp;uuml;&amp;ccedil;&amp;uuml;k değeri verir.&lt;/td&gt;
+&lt;td style="text-align: left; vertical-align: top;"&gt;ifade olarak belirtilen tip ile aynıdır.&lt;/td&gt;
+&lt;td style="text-align: left; vertical-align: top;"&gt;SELECT MIN(Prim) FROM Primler&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style="text-align: left;"&gt;
+&lt;td style="text-align: left; vertical-align: top;"&gt;&lt;code&gt;COUNT_BIG (Toplam Sayı)&lt;/code&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style="text-align: left; vertical-align: top;"&gt;COUNT Fonksiyonu gibi satır sayısını verir. Tek fark d&amp;ouml;n&amp;uuml;ş değeridir.&lt;/td&gt;
+&lt;td style="text-align: left; vertical-align: top;"&gt;bigint&lt;/td&gt;
+&lt;td style="text-align: left; vertical-align: top;"&gt;
+&lt;p&gt;SELECT COUNT_BIG(*)&lt;br /&gt;FROM Primler&lt;/p&gt;
+&lt;/td&gt;
+&lt;td style="text-align: left; vertical-align: top;"&gt;&amp;nbsp;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align: left; vertical-align: top;"&gt;STDEV (Standart Sapma)&lt;/td&gt;
+&lt;td style="text-align: left; vertical-align: top;"&gt;STDEV &lt;strong&gt;(&lt;/strong&gt; expression &lt;strong&gt;)&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="text-align: left; vertical-align: top;"&gt;Belirtilen kritere uyan alanlar i&amp;ccedil;in Standart Sapma değerini hesaplar.&amp;nbsp;&lt;/td&gt;
+&lt;td style="text-align: left; vertical-align: top;"&gt;float&lt;/td&gt;
+&lt;td style="text-align: left; vertical-align: top;"&gt;SELECT STDEV(Alan)&lt;br /&gt;FROM Tablo&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Tablo 1. Aggregate Fonksiyonları&lt;/p&gt;
+&lt;p&gt;Bu tip fonksiyonları .net uygulamalarımızda kullanmak i&amp;ccedil;in, akla gelen ilk yol Command nesnelerinden yararlanmaktır. &amp;Ouml;rneğin, Sql sunucumuzda yer alan, Northwind veritabanındaki, Products tablosunu ele alalım. Bu tabloda, Aggregate fonksiyonlarını test edebilmemiz i&amp;ccedil;in kullanabileceğimiz alanlar mevcuttur.(UnitPrice, UnitsInStock vb.) Şimdi ilk d&amp;uuml;ş&amp;uuml;nd&amp;uuml;ğ&amp;uuml;m&amp;uuml;z şekilde, yani bir Command nesnesini kullanarak, belli bir gruba ait UnitPrice ve UnitsInStock alanlarının değerleri &amp;uuml;zerinde, Aggregate fonksiyonları ile denemeler yapalım. &amp;Ouml;rneğin basit olması amacıyla bir Console uygulaması geliştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Data;
+using System.Data.SqlClient;
+
+namespace Compute
+{
+&amp;nbsp;&amp;nbsp;&amp;nbsp; class Class1
+&amp;nbsp;&amp;nbsp;&amp;nbsp; {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; static void Main(string[] args)
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; /* Yerel sql sunucumuzdaki Northwind veritabanına bir bağlantı hattı oluşturuyoruz.*/
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; SqlConnection con=new SqlConnection("Data Source=localhost;initial catalog=Northwind;Integrated Security=SSPI");
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; /* Bu SqlCommand nesnesinin i&amp;ccedil;erdiği sql c&amp;uuml;mleciği ile, SupplierID değeri 11 olan Products tablosu alanlarının UnitPrice değerlerinin toplamını ve ka&amp;ccedil; satır olduklarının sayısını elde ediyoruz. */
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; SqlCommand cmdSum=new SqlCommand("SELECT SUM(UnitPrice),COUNT(SupplierID) FROM Products WHERE SupplierID=11",con);
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; /* Bu SqlCommand nesnesinin i&amp;ccedil;erdiği sql c&amp;uuml;mleciği ile, Products tablosundaki UnitPrice alanının değerlerinin ortalamasını elde ediyoruz. */
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; SqlCommand cmdAvg=new SqlCommand("SELECT AVG(UnitPrice) FROM Products",con);
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;nbsp;/* Bağlantımızı a&amp;ccedil;ıyoruz. */
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; con.Open();
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; SqlDataReader dr; /* SqlDataReader nesnemizi tanımlıyoruz.*/ 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; dr=cmdSum.ExecuteReader(); 
+/* Komutumuzu &amp;ccedil;alıştırıp sonu&amp;ccedil;ları bir akım şeklinde SqlDataReader nesnemize aktarılacağını belirtiyoruz. */
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;nbsp;/* SqlDataReader akım i&amp;ccedil;inde satır okuyabildiği s&amp;uuml;rece devam edicek d&amp;ouml;ng&amp;uuml;m&amp;uuml;z&amp;uuml; başlatıyoruz ve sorgu sonucu elde edilen değerleri ekrana yazdırıyoruz. */
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; while(dr.Read())
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Console.WriteLine("Toplam Fiyat {0}, Satır Sayısı {1} ",dr[0],dr[1]);
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; dr.Close(); /* SqlDataReader nesnemizi kapatıyoruz. */
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; dr=cmdAvg.ExecuteReader(); /* Bu kez SqlDataReader nesnemizi ikinci sorgu c&amp;uuml;mleciğimizi &amp;ccedil;alıştıracak SqlCommand nesnesi ile oluşturuyoruz. */
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; /* SqlDataReader akım i&amp;ccedil;inde satır okuyabildiği s&amp;uuml;rece devam edicek d&amp;ouml;ng&amp;uuml;m&amp;uuml;z&amp;uuml; başlatıyoruz ve sorgu sonucu elde edilen değerleri ekrana yazdırıyoruz. */
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; while(dr.Read())
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Console.WriteLine("Ortalama Fiyat {0}",dr[0]);
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; dr.Close(); /* SqlDataReader nesnemizi kapatıyoruz. */
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; con.Close(); /* SqlConnection nesnemizi kapatıyoruz. */
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+}&lt;/pre&gt;
+&lt;p&gt;Uygulamayı &amp;ccedil;alıştırdığımızda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;n&amp;uuml; elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk61_1.gif" alt="" width="549" height="127" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 1. SqlCommand ile Aggregate Fonksiyonlarının Kullanımı.&lt;/p&gt;
+&lt;p&gt;Şimdi gelelim, bu gibi işlemlerin DataTable sınıfı ile nasıl ger&amp;ccedil;ekleştirilebileceğine. &amp;Ccedil;oğu zaman uygulamalarımızda bağlantısız katman nesneleri ile &amp;ccedil;alışkmaktayız. Bunlardan biriside DataTable nesnesidir. DataTable nesneleri bildiğiniz gibi, veritabanındaki bir tabloya ait i&amp;ccedil;eriğin bellekte tutulduğu b&amp;ouml;lgeyi işaret ederler. Yada uygulama i&amp;ccedil;erisinde bizim oluşturacağımız bir tablonun bellek g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;n&amp;uuml; temsil ederler. Her iki haldede, DataTable nesnesinin temsil ettiği b&amp;ouml;lgede veriler yer alabilir. Bu veriler &amp;uuml;zerinde, Aggregate Fonksiyonlarını kullanmak istediğimizde, aşağıda prototipi belirtilen Compute metodunu kullanabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public object Compute(string ifade,string filtre);&lt;/pre&gt;
+&lt;p&gt;Compute metodu, belirtilen bir alan i&amp;ccedil;in, belirtilen filtreleme mekanizmasının şartları dahilinde, Aggregate Fonksiyonlarının işletilmesinde kullanılır. İlk parametrede SUM, AVG gibi Aggregate fonksiyonlarının kullanıldığı ifade yer alır. İkinci parametre ise karşılaştırma koşulumuzdur. Bu koşul aslında Where koşulunun devamındaki ifadeyi i&amp;ccedil;erir. Dikkat edicek olursanız, Compute metodunun geri d&amp;ouml;n&amp;uuml;ş değerinin tipi Object t&amp;uuml;r&amp;uuml;ndendir. Bunun sebebi, &amp;ccedil;alıştırılan fonksiyonlar sonucu elde edilecek sonu&amp;ccedil;ların veri tipinin tam olarak kestirilememesidir. Aşağıda, Compute metodunun kullanımına ilişkin &amp;ouml;rnek ifadeler yer almaktadır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;object objToplam;
+objToplam= Tablo.Compute("Sum(Primler)", "PerID = 8");
+object objToplam;
+objToplam= Tablo.Compute("Sum(Primler)", "Baslangic &amp;gt; 1/1/2004 AND Bitis &amp;lt; 31/1/2004");&lt;/pre&gt;
+&lt;p&gt;Şimdi yukarıdaki &amp;ouml;rneğimizde, Product isimli veritabanına ait verileri bellekte bir DataTable i&amp;ccedil;inde sakladığımızı d&amp;uuml;ş&amp;uuml;nelim. Şimdi Aggregate fonksiyonlarımızı bu &amp;ouml;rnek &amp;uuml;zerinde kullanalım. Dilerseniz bu sefer, DataTable &amp;uuml;zerindeki Compute metodunun sonu&amp;ccedil;larını daha kolay izleyebileceğimiz bir Windows uygulaması geliştirelim. Form tasarımımız aşağıdakine benzer şekilde olabilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk61_3.gif" alt="" width="494" height="267" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 2. Form tasarımımız.&lt;/p&gt;
+&lt;p&gt;Şimdide uygulamamızın kodlarını yazalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;/* SqlConnection, SqlDataAdapter ve DataTable nesnelerimiz tanımlanıyor.*/
+SqlConnection con;
+SqlDataAdapter da;
+DataTable dtProducts;
+
+private void Form1_Load(object sender, System.EventArgs e)
+{
+&amp;nbsp;&amp;nbsp;&amp;nbsp; con=new SqlConnection("Data Source=localhost;initial catalog=Northwind;Integrated Security=SSPI"); /* SqlConnection nesnemiz oluşturuluyor ve Northwind veritabanı i&amp;ccedil;in bir bağlantı hattı teşkil ediliyor. */
+&amp;nbsp;&amp;nbsp;&amp;nbsp; da=new SqlDataAdapter("Select * From Products",con); /* SqlDataAdapter nesnemiz Products tablosundaki t&amp;uuml;m veriler &amp;uuml;zerinde &amp;ccedil;alışacak şekilde, ge&amp;ccedil;erli bağlantı nesnesi &amp;uuml;zerinden oluşturuluyor. */
+&amp;nbsp;&amp;nbsp;&amp;nbsp; dtProducts=new DataTable("Urunler"); /* Products tablosundaki verilerin bellekte tutulacağı b&amp;ouml;lgeyi temsil edicek DataTable nesnemiz oluşturuluyor. */
+}
+
+private void btnDoldur_Click(object sender, System.EventArgs e)
+{
+&amp;nbsp;&amp;nbsp;&amp;nbsp; da.Fill(dtProducts); /* DataTable nesnemizin bellekte temsil ettiği b&amp;ouml;lge, SqlDataAdapter nesnemiz ile dolduruluyor. */
+&amp;nbsp;&amp;nbsp;&amp;nbsp; dgProducts.DataSource=dtProducts; /* DataGrid nesnemiz veri kaynağına bağlanıyor ve Products tablosundaki verileri g&amp;ouml;stermesi sağlanıyoru. */
+}
+
+private void btnOrtalama_Click(object sender, System.EventArgs e)
+{
+&amp;nbsp;&amp;nbsp;&amp;nbsp; double ortalama;
+&amp;nbsp;&amp;nbsp;&amp;nbsp; ortalama=Convert.ToDouble(dtProducts.Compute("AVG("+cmbAlan.SelectedItem.ToString()+")","SupplierID=11")); /* Burada kullanıcının se&amp;ccedil;tiği alana g&amp;ouml;re SupplierID değeri 11 olanların ortalaması hesaplanıyor. Sonu&amp;ccedil; noktalı sayı &amp;ccedil;ıkabileceğinden Convert sınıfının ToDouble metodu ile Double veri tipine aktarılıyor. */
+&amp;nbsp;&amp;nbsp;&amp;nbsp; lblOrt.Text=ortalama.ToString();
+}
+
+private void btnToplam_Click(object sender, System.EventArgs e)
+{
+&amp;nbsp;&amp;nbsp;&amp;nbsp; double toplam;
+&amp;nbsp;&amp;nbsp;&amp;nbsp; toplam=Convert.ToDouble(dtProducts.Compute("SUM("+cmbAlan.SelectedItem.ToString()+")","SupplierID=11")); /* Bu kezde SupplierID alanının değeri 11 olan alanların Toplam değeri hesaplanıyor. */
+&amp;nbsp;&amp;nbsp;&amp;nbsp; lblToplam.Text=toplam.ToString();
+}&lt;/pre&gt;
+&lt;p&gt;Uygulamadaki en &amp;ouml;nemli nokta Compute metodunun kullanım şeklidir. Burada kullanıcının ekrandaki ComboBox kontrol&amp;uuml;nden se&amp;ccedil;tiği alana g&amp;ouml;re işlemler yapılır. Uygulamayı &amp;ccedil;alıştırdığımızda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;n&amp;uuml; elde ederiz. Bu uygulama daha &amp;ccedil;ok geliştirilebilir. &amp;Ouml;rneğin koşul ifadesininde kullanıcı tarafından belirlenmesi sağlanabilir. Bu geliştirmeleri siz değerli okurlarımıza bırakıyorum.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk61_2.gif" alt="" width="496" height="264" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 3. Compute metodu ile Aggregate fonksiyonlarının &amp;ccedil;alıştırılması.&lt;/p&gt;
+&lt;p&gt;Bu kısa makalemizde DataTable sınıfına ait Compute metodu yardımıyla bağlantısız katman verileri &amp;uuml;zerinde Aggregate Fonksiyonlarını kolayca nasıl kullanabileceğimizi incelemeye &amp;ccedil;alıştık. Umarım siz değerli okurlarım i&amp;ccedil;in yararlı bir makale olmuştur. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;şmek dileğiyle, hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2004-03-29 12:00:00</pubDate>
+  <slug>DataTable-Compute-Metodu-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>adonet</tag>
+    <tag>datatable</tag>
+    <tag>compute</tag>
+    <tag>sqlcommand</tag>
+    <tag>aggregate-functions</tag>
+  </tags>
+  <categories>
+    <category>Ado.Net</category>
+  </categories>
+</post>

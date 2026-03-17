@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Bunu Bir Dene 01 - Çoklu Thread Ortamlarında Ortak Veriyi Değiştirmek (C#, Rust ve Zig)</title>
+  <description>Önceki yazımızda, bir fonksiyona aktarılan parametre üzerinde değişklik yapmak istediğimizde bunun C#, Rust ve Zig programlama dilleri tarafındaki ele alınış biçimlerini farklı örneklerle incelemeye çalışmıştım. Nihayetinde ulaştığım noktada bir nesnenin kendisini tanımlayan değerlerin değiştirilmesinde programlama dili ve hatta kullanılacak yazılım mimarisi bazında farklı yaklaşımlar olduğunu görmüştük. Merak ettiğim bir başka konu ise, multi-thread(çoklu iş parçacığı) ortamlarında ortak veriyi değiştirmek.</description>
+  <content>&lt;p&gt;&lt;a href="/post/bunu-bir-dene-00-metot-argumanlarinda-degisiklik-c-rust-ve-zig" target="_blank"&gt;&amp;Ouml;nceki yazımızda&lt;/a&gt;,&amp;nbsp;bir fonksiyona aktarılan parametre &amp;uuml;zerinde değişklik yapmak istediğimizde bunun &lt;strong&gt;C#&lt;/strong&gt;, &lt;strong&gt;Rust&lt;/strong&gt; ve &lt;strong&gt;Zig&lt;/strong&gt; programlama dilleri tarafındaki ele alınış bi&amp;ccedil;imlerini farklı &amp;ouml;rneklerle incelemeye &amp;ccedil;alışmıştım. Nihayetinde ulaştığım noktada bir nesnenin kendisini tanımlayan değerlerin değiştirilmesinde programlama dili ve hatta kullanılacak yazılım mimarisi bazında farklı yaklaşımlar olduğunu g&amp;ouml;rm&amp;uuml;şt&amp;uuml;k. Merak ettiğim bir başka konuysa, &lt;strong&gt;multi-thread&lt;em&gt;(&amp;ccedil;oklu iş par&amp;ccedil;acığı)&lt;/em&gt;&lt;/strong&gt; ortamlarında ortak veriyi değiştirmek. Aynı veri &amp;uuml;zerinde birden fazla &lt;strong&gt;thread&lt;/strong&gt;'in &lt;strong&gt;okuma/yazma&lt;/strong&gt; işlemi yapması &amp;ccedil;ok sık karşılaşılan bir durum. Şu anda elimde &lt;strong&gt;managed&lt;/strong&gt; ortamı olan, yerleşik framework k&amp;uuml;t&amp;uuml;phanelerinde &amp;uuml;st d&amp;uuml;zey soyutlamalar sunan &lt;strong&gt;C#&lt;/strong&gt;, bellek g&amp;uuml;venliği konusundaki titiz stratejileri ve zorlamaları ile &amp;ouml;ne &amp;ccedil;ıkan &lt;strong&gt;Rust&lt;/strong&gt; ve &lt;strong&gt;C&lt;/strong&gt;'nin modern bir versiyonu olarak g&amp;ouml;rd&amp;uuml;ğ&amp;uuml;m d&amp;uuml;ş&amp;uuml;k seviyeli sistem programlama dili&amp;nbsp;&lt;strong&gt;Zig&lt;/strong&gt; var.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&amp;Ouml;rnek kodların tamamına &lt;a href="https://github.com/buraksenyurt/friday-night-programmer/tree/main/src/try-this-01" target="_blank"&gt;github adresinden&lt;/a&gt; ulaşabilirsiniz.&lt;/em&gt;&lt;/p&gt;
+&lt;h2&gt;&amp;Ouml;nce C# Tarafı&lt;/h2&gt;
+&lt;p&gt;Konuyu olabildiğince basit bir şekilde ele almak istiyorum. S&amp;ouml;z gelimi aynı veri &amp;uuml;zerine birden fazla &lt;strong&gt;thread&lt;/strong&gt;'in yazmaya &amp;ccedil;alıştığı bir &amp;ouml;rnek d&amp;uuml;ş&amp;uuml;nelim. Aşağıdaki kod par&amp;ccedil;ası ile ilerleyebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public class Program
+{
+    static double CalculationResult = 0;
+
+    static void Main(string[] args)
+    {
+        Thread threadA = new(PerformCalculationsA);
+        Thread threadB = new(PerformCalculationsB);
+
+        threadA.Start();
+        threadB.Start();
+
+        threadA.Join();
+        threadB.Join();
+
+        Console.WriteLine($"Final Calculation Result: {CalculationResult}");
+    }
+
+    static void PerformCalculationsA()
+    {
+        for (int i = 0; i &amp;lt; 100; i++)
+        {
+            CalculationResult += Math.Sqrt(i);
+            Thread.Sleep(50);
+        }
+    }
+
+    static void PerformCalculationsB()
+    {
+        for (int i = 0; i &amp;lt; 100; i++)
+        {
+            CalculationResult += Math.Log(i + 1);
+            Thread.Sleep(50);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu programda &lt;strong&gt;CalculationResult&lt;/strong&gt; isimli bir değişkene iki farklı &lt;strong&gt;thread&lt;/strong&gt; tarafından yazma işlemi yapılıyor. &lt;strong&gt;Thread&lt;/strong&gt;'ler tarafından işletilen metotlar kendi i&amp;ccedil;lerinde a&amp;ccedil;tıkları d&amp;ouml;ng&amp;uuml;lerde hesaplama maliyeti y&amp;uuml;ksek sayılabilecek bir takım işlemler icra ediyor. Karek&amp;ouml;k alma ve logaritma hesaplamaları sırasında olayı daha da dramatize etmek i&amp;ccedil;inse &lt;strong&gt;Sleep&lt;/strong&gt; &amp;ccedil;ağrıları ile gecikmeler oluşturuyoruz. Kendi sistemimde bu &amp;ouml;rneğin &amp;ccedil;alışma zamanı &amp;ccedil;ıktıları aşağıdaki gibi oldu.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2026/Subat/TryThis02_00.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Aslında her seferinde aynı değerin oluşmasını bekliyordunuz değil mi? Ortada herhangi bir hata mesajı yok ama sonu&amp;ccedil;lar her seferinde farklı &amp;ccedil;ıkıyor. Burada bir tahmin y&amp;uuml;r&amp;uuml;t&amp;uuml;p bir &lt;strong&gt;thread&lt;/strong&gt; s&amp;ouml;z konusu değişkene yazma işlemi yaparken diğer &lt;strong&gt;thread&lt;/strong&gt;'in onu beklemesi b&amp;ouml;yle bir farka neden oluyor diyebiliriz. Yani i&amp;ccedil;g&amp;uuml;d&amp;uuml;sel olarak &lt;strong&gt;thread&lt;/strong&gt;' lerin aynı anda veriyi değiştirmesini engellemeyi tercih edebiliriz. Buna g&amp;ouml;re kodu aşağıdaki şekilde değiştirerek ilerleyelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Threading;
+public class Program
+{
+    static double CalculationResult = 0;
+    static readonly Lock calculationLock = new();
+
+    static void Main(string[] args)
+    {
+        Thread threadA = new(PerformCalculationsA);
+        Thread threadB = new(PerformCalculationsB);
+
+        threadA.Start();
+        threadB.Start();
+
+        threadA.Join();
+        threadB.Join();
+
+        Console.WriteLine($"Final Calculation Result: {CalculationResult}");
+    }
+
+    static void PerformCalculationsA()
+    {
+        for (int i = 0; i &amp;lt; 100; i++)
+        {
+            double partialResult = Math.Sqrt(i);
+            lock (calculationLock)
+            {
+                CalculationResult += partialResult;
+            }
+            Thread.Sleep(50);
+        }
+    }
+
+    static void PerformCalculationsB()
+    {
+        for (int i = 0; i &amp;lt; 100; i++)
+        {
+            double partialResult = Math.Log(i + 1);
+            lock (calculationLock)
+            {
+                CalculationResult += partialResult;
+            }
+            Thread.Sleep(50);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu sefer sonu&amp;ccedil;lar tam da beklediğimiz gibi. Her seferinde aynı toplam değerini yakalıyoruz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2026/Subat/TryThis02_01.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Yeni &amp;ouml;rneğimizde en basit kilit mekanizması olarak g&amp;ouml;rd&amp;uuml;ğ&amp;uuml;m &lt;strong&gt;Lock&lt;/strong&gt; nesnesini kullanıyorum. Her iki &lt;strong&gt;thread&lt;/strong&gt;'in de ortak veriye erişmeden &amp;ouml;nce bu kilidi alması gerekiyor. Bir &lt;strong&gt;thread&lt;/strong&gt; kilidi aldıktan sonra diğer &lt;strong&gt;thread&lt;/strong&gt;'in s&amp;ouml;z konusu kilit serbest bırakılana kadar da beklemesi gerekiyor. Bu sayede aynı anda sadece tek bir&amp;nbsp;&lt;strong&gt;thread&lt;/strong&gt; ortak veriye erişip &amp;uuml;zerinde değişiklik yapabiliyor. Bu da veri tutarlılığını sağlıyor. Bu zaten &lt;strong&gt;Mutual Exclusion&lt;em&gt;(Karşılıklı Dışlama)&lt;/em&gt;&lt;/strong&gt; prensibinin temel &amp;ccedil;alışma mantığı olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir.&lt;br /&gt;&lt;br /&gt;Elbette farklı kilit mekanizmaları ve stratejileri var. &amp;Ouml;rneğin, &lt;a href="https://learn.microsoft.com/en-us/dotnet/api/system.threading.readerwriterlock?view=net-10.0" target="_blank"&gt;Reader-Writer Lock&lt;/a&gt; mekanizması ile birden fazla thread'in aynı anda okuma yapmasına izin verilip, yazma işlemi yapılacağı zaman t&amp;uuml;m okuma işlemlerinin bitmesi beklenebilir. Bu t&amp;uuml;r stratejiler performans a&amp;ccedil;ısından da &amp;ouml;nemli olabilir. Ancak burada temel prensip olarak ortak veriye erişim sırasında veri tutarlılığını sağlamak i&amp;ccedil;in bir t&amp;uuml;r senkronizasyon mekanizması kullanılması gerekliliğidir. &lt;strong&gt;Interlocked&lt;/strong&gt; sınıfı gibi daha d&amp;uuml;ş&amp;uuml;k seviyeli atomik işlemler sunan yapılar da var. Aynı &amp;ouml;rneği birde &lt;strong&gt;Interlocked&lt;/strong&gt; sınıfı kullanarak ele alalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Threading;
+public class Program
+{
+    static double CalculationResult = 0;
+
+    static void Main(string[] args)
+    {
+        Thread threadA = new(PerformCalculationsA);
+        Thread threadB = new(PerformCalculationsB);
+
+        threadA.Start();
+        threadB.Start();
+
+        threadA.Join();
+        threadB.Join();
+
+        Console.WriteLine($"Final Calculation Result: {CalculationResult}");
+    }
+
+    static void PerformCalculationsA()
+    {
+        for (int i = 0; i &amp;lt; 100; i++)
+        {
+            double partialResult = Math.Sqrt(i);
+            double initialValue, computedValue;
+            do
+            {
+                initialValue = CalculationResult;
+                computedValue = initialValue + partialResult;
+            } while (Interlocked.CompareExchange(ref CalculationResult, computedValue, initialValue) != initialValue);
+            Thread.Sleep(50);
+        }
+    }
+
+    static void PerformCalculationsB()
+    {
+        for (int i = 0; i &amp;lt; 100; i++)
+        {
+            double partialResult = Math.Log(i + 1);
+            double initialValue, computedValue;
+            do
+            {
+                initialValue = CalculationResult;
+                computedValue = initialValue + partialResult;
+            } while (Interlocked.CompareExchange(ref CalculationResult, computedValue, initialValue) != initialValue);
+            Thread.Sleep(50);
+        }
+    }
+}
+&lt;/pre&gt;
+&lt;h2&gt;Peki Ya Rust Tarafı?&lt;/h2&gt;
+&lt;p&gt;Rust, &lt;strong&gt;sahiplik&lt;em&gt;(ownership)&lt;/em&gt;&lt;/strong&gt; ve &lt;strong&gt;bor&amp;ccedil;lanma&lt;em&gt;(borrowing)&lt;/em&gt; &lt;/strong&gt;ilkeleri ile zaten bellek g&amp;uuml;venliğini sıkı sıkıya denetlemeye &amp;ccedil;alışır. Benzer şekilde &lt;strong&gt;multi-thread&lt;/strong&gt; ortamlarda veri yarışlarını &amp;ouml;nlemek i&amp;ccedil;in g&amp;uuml;&amp;ccedil;l&amp;uuml; mekanizmalar da sunar. Ancak senaryoya ve ortak değişkene erişim şekline bağlı olarak&lt;em&gt;(sadece okuma ama&amp;ccedil;lı, &amp;ccedil;ok okuyucu-tek yazıcı vb.)&lt;/em&gt; farklı stratejiler izlemek gerekebilir. Burada karşımıza &amp;ccedil;ıkan en yaygın &amp;ccedil;&amp;ouml;z&amp;uuml;mlerden birisi &lt;strong&gt;Arc&lt;em&gt;(Atomic Reference Counting)&lt;/em&gt;&lt;/strong&gt; ve &lt;strong&gt;Mutex&lt;em&gt;(Mutual Exclusion)&lt;/em&gt;&lt;/strong&gt; kombinasyonudur. İlk olarak &amp;ouml;nceki yazımızda da vurguladığımız gibi dotNet&amp;ccedil;i kafası ile hareket edelim. Bu noktada kodu pekala aşağıdaki gibi yazsak olur.&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;use std::thread;
+
+fn main() {
+    let mut calculation_result: f64 = 0.0;
+
+    let handle_1 = std::thread::spawn(|| {
+        for i in 1..=100 {
+            calculation_result += (i as f64).sqrt();
+            thread::sleep(std::time::Duration::from_millis(50));
+        }
+    });
+
+    let handle_2 = std::thread::spawn(|| {
+        for i in 1..=100 {
+            calculation_result += (i as f64 + 1.0).ln();
+            thread::sleep(std::time::Duration::from_millis(50));
+        }
+    });
+
+    handle_1.join().unwrap();
+    handle_2.join().unwrap();
+
+    println!("Calculation result {}", calculation_result);
+}
+&lt;/pre&gt;
+&lt;p&gt;Yazım stili farklılaşsa da benzer bir işleyiş olduğunu s&amp;ouml;yleyebilirim. &lt;strong&gt;handle_1&lt;/strong&gt; ve &lt;strong&gt;handle_2&lt;/strong&gt; isimliye yumurtlanan &lt;strong&gt;thread&lt;/strong&gt;'ler ortak değişken olan &lt;strong&gt;calculation_result&lt;/strong&gt; &amp;uuml;zerinde yazma işlemi yapıyor. Ne varki bu kodu &amp;ccedil;alıştıramayacağız zira derleyici bizi aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi &amp;uuml;zecek.&lt;br /&gt;&lt;br /&gt;&lt;img src="/image.axd?picture=/2026/Subat/TryThis02_02.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu son derece doğal, zira oluşturulan &lt;strong&gt;thread&lt;/strong&gt;'ler kendi kapsamlarında bir &amp;uuml;st &lt;strong&gt;thread&lt;/strong&gt; olan &lt;strong&gt;main&lt;/strong&gt;'deki bir değişkeni kullanma niyetindeler. Bunu a&amp;ccedil;ık&amp;ccedil;a ifade etmemiz bekleniyor ve bunun yolu da &lt;strong&gt;move&lt;/strong&gt; operat&amp;ouml;r&amp;uuml;n&amp;uuml;n kullanılmasından ge&amp;ccedil;iyor. Dolayısıyla s&amp;ouml;z konusu kodları aşağıdaki gibi değiştirerek ilerlememiz lazım.&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;use std::thread;
+
+fn main() {
+    let mut calculation_result: f64 = 0.0;
+
+    let handle_1 = std::thread::spawn(move || {
+        for i in 1..=100 {
+            calculation_result += (i as f64).sqrt();
+            thread::sleep(std::time::Duration::from_millis(50));
+        }
+    });
+
+    let handle_2 = std::thread::spawn(move || {
+        for i in 1..=100 {
+            calculation_result += (i as f64 + 1.0).ln();
+            thread::sleep(std::time::Duration::from_millis(50));
+        }
+    });
+
+    handle_1.join().unwrap();
+    handle_2.join().unwrap();
+
+    println!("Calculation result {}", calculation_result);
+}
+&lt;/pre&gt;
+&lt;p&gt;&lt;br /&gt;Bu sefer program sorunsuz şekilde &amp;ccedil;alışacaktır ancak sonu&amp;ccedil;lar hi&amp;ccedil; de beklediğimiz gibi olmayacaktır. Programı ka&amp;ccedil; kez &amp;ccedil;alıştırırsak &amp;ccedil;alıştıralım her seferinde&lt;strong&gt; 0&lt;em&gt;(yazıyla sıfır)&lt;/em&gt; &lt;/strong&gt;sonucunu elde ederiz :D &amp;Uuml;stelik &lt;strong&gt;Rust&lt;/strong&gt; derleyicisi &lt;strong&gt;calculation_result&lt;/strong&gt; değişkeninin hi&amp;ccedil; kullanılmadığını bile iddia eder.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2026/Subat/TryThis02_03.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu durum kısa bir a&amp;ccedil;ıklamayı gerektiriyor.&amp;nbsp;&lt;strong&gt;move&lt;/strong&gt; operat&amp;ouml;r&amp;uuml; ile &lt;strong&gt;main thread&lt;/strong&gt; i&amp;ccedil;erisindeki &lt;strong&gt;calculation_result&lt;/strong&gt; değişkeni a&amp;ccedil;ılan &lt;strong&gt;thread&lt;/strong&gt; &lt;strong&gt;scope&lt;/strong&gt;'larına kopyalanarak taşınır. Yani her &lt;strong&gt;thread&lt;/strong&gt; kendi &lt;strong&gt;calculation_result&lt;/strong&gt; kopyasına sahip olarak &amp;ccedil;alışır. Dolayısıyla &lt;strong&gt;+=&lt;/strong&gt; operat&amp;ouml;r&amp;uuml;n&amp;uuml; &lt;strong&gt;main thread&lt;/strong&gt; i&amp;ccedil;erisindeki &lt;strong&gt;calculation_result&lt;/strong&gt; değişkenine uyguluyor gibi g&amp;ouml;rsek de bu aslında o &lt;strong&gt;scope&lt;/strong&gt; i&amp;ccedil;erisine alınmış kopya &amp;uuml;zerinde yapılan bir işlem. Gelin bu teoriyi ispat etmeye &amp;ccedil;alışalım. Bu ama&amp;ccedil;la kodu aşağıdaki gibi değiştirelim.&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;use std::thread;
+
+fn main() {
+    let mut calculation_result: f64 = 0.0;
+
+    let handle_1 = std::thread::spawn(move || {
+        for i in 1..=100 {
+            calculation_result += (i as f64).sqrt();
+            thread::sleep(std::time::Duration::from_millis(50));
+            println!("Intermediate result from Handle 1 {}", calculation_result);
+        }
+    });
+
+    let handle_2 = std::thread::spawn(move || {
+        for i in 1..=100 {
+            calculation_result += (i as f64 + 1.0).ln();
+            thread::sleep(std::time::Duration::from_millis(50));
+            println!("Intermediate result from Handle 2 {}", calculation_result);
+        }
+    });
+
+    handle_1.join().unwrap();
+    handle_2.join().unwrap();
+
+    println!("Calculation result {}", calculation_result);
+}
+&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2026/Subat/TryThis02_04.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Tabii bu benim bakış a&amp;ccedil;ımdan bir ispat. A&amp;ccedil;ılan her &lt;strong&gt;handle&amp;nbsp;scope&lt;/strong&gt;'u kopyalayarak aldığı &lt;strong&gt;calculation_result&lt;/strong&gt; değişkeni &amp;uuml;zerinde işlemler yapıyor ve kendi ara sonu&amp;ccedil;larını yazdırıyor. Ama aynı şey &lt;strong&gt;main thread&lt;/strong&gt; i&amp;ccedil;indeki &lt;strong&gt;calculation_result&lt;/strong&gt; değeri i&amp;ccedil;in ge&amp;ccedil;erli değil. Burada &lt;strong&gt;calculation_result&lt;/strong&gt; değişkeninin &lt;strong&gt;f64&lt;/strong&gt; t&amp;uuml;r&amp;uuml;nden olduğunu ve &lt;strong&gt;Copy&lt;/strong&gt; &lt;strong&gt;trait&lt;/strong&gt;'ini implemente ettiğini hatırlatayım. O halde bu işi &lt;strong&gt;Rust&lt;/strong&gt; tarafında istediğimiz şekilde ele almak i&amp;ccedil;in de birşeyler yapmamız gerekiyor. Her şeyden &amp;ouml;nce ortak verinin iki &lt;strong&gt;thread&lt;/strong&gt; i&amp;ccedil;erisinde de kullanılabiliyor olması lazım. Bunun i&amp;ccedil;in genellikle &lt;strong&gt;Atomic&lt;/strong&gt; &lt;strong&gt;Reference Counting&lt;em&gt;(Arc)&lt;/em&gt;&lt;/strong&gt; isimli &lt;strong&gt;akıllı işaret&amp;ccedil;i&lt;em&gt;(smart pointer)&lt;/em&gt; &lt;/strong&gt;kullanılmakta.&lt;br /&gt;&lt;br /&gt;&lt;strong&gt;Arc&lt;/strong&gt; enstr&amp;uuml;manı bir verinin birden fazla sahibi olmasına olanak tanır ve bunun i&amp;ccedil;in referans sayımı yaparak belleğin doğru şekilde y&amp;ouml;netilmesini sağlar. Ancak &lt;strong&gt;Arc&lt;/strong&gt; tek başına yeterli değildir &amp;ccedil;&amp;uuml;nk&amp;uuml; aynı anda birden fazla &lt;strong&gt;thread&lt;/strong&gt;'in veriyi değiştirmesine izin verilmez. Bu nedenle &lt;strong&gt;Mutex&lt;em&gt;(Mutual Exclusion)&lt;/em&gt;&lt;/strong&gt; yapısını da kullanmamız gerekir. &lt;strong&gt;Mutex&lt;/strong&gt;, aynı anda sadece bir &lt;strong&gt;thread&lt;/strong&gt;'in veriye erişmesine izin verir ve b&amp;ouml;ylece &lt;strong&gt;data race&lt;/strong&gt; durumu &amp;ouml;nlenir. Aynen .net tarafında &lt;strong&gt;Lock&lt;/strong&gt; ile yaptığımız gibi. Bu kombinasyonun uygulanışından &amp;ouml;nce s&amp;ouml;z konusu senaryoda &lt;strong&gt;Arc&lt;/strong&gt; bileşenini &lt;strong&gt;Mutex&lt;/strong&gt; olmadan kullanmayı deneyelim.&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;use std::thread;
+
+// CASE02: Bu senaryoda Arc'ı tek başına Mutex olmadan kullanırsak.
+use std::sync::Arc;
+
+fn main(){
+    let calculation_result = Arc::new(0.0_f64);
+
+    let calc_res_clone_1 = Arc::clone(&amp;amp;calculation_result);
+    let handle_1 = thread::spawn(move || {
+        for i in 1..=100 {
+            *calc_res_clone_1 += (i as f64).sqrt();
+            thread::sleep(std::time::Duration::from_millis(50));
+        }
+    });
+
+    let calc_res_clone_2 = Arc::clone(&amp;amp;calculation_result);
+    let handle_2 = thread::spawn(move || {
+        for i in 1..=100 {
+            *calc_res_clone_2 += (i as f64 + 1.0).ln();
+            thread::sleep(std::time::Duration::from_millis(50));
+        }
+    });
+
+    handle_1.join().unwrap();
+    handle_2.join().unwrap();
+
+    println!("Calculation result {}", *calculation_result);
+}&lt;/pre&gt;
+&lt;p&gt;Programı bu şekilde &amp;ccedil;alıştırdığımızda derleyicinin kırıcı mesajları ile başbaşa kalırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2026/Subat/TryThis02_06.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu mesajlar ilk etapta anlamsız gibi g&amp;ouml;r&amp;uuml;nse de tam olarak konuyla ilgilidir. &lt;strong&gt;cannot assign to data in an Arc &lt;/strong&gt;ifadesini takiben s&amp;ouml;ylenen &lt;strong&gt;trait DerefMut is required to modify through a dereference, but it is not implemented for Arc&amp;lt;f64&amp;gt;&lt;/strong&gt; mesajı &lt;strong&gt;Arc&lt;/strong&gt; ile sarmalanmış bir veriyi değiştirmek i&amp;ccedil;in gerekli olan &lt;strong&gt;DerefMut&lt;/strong&gt; &lt;strong&gt;trait&lt;/strong&gt;'inin implemente edilmediğini s&amp;ouml;yler. Yani &lt;strong&gt;Arc&lt;/strong&gt; tek başına ortak veriyi değiştirmek i&amp;ccedil;in yeterli değildir, zira o sadece &lt;strong&gt;Deref&lt;/strong&gt; &lt;strong&gt;trait&lt;/strong&gt;'ini implemente etmektedir. Bize gerekli olan şeyse &lt;strong&gt;DerefMut&lt;/strong&gt; implementasyonu. Bunu da &lt;strong&gt;Mutex&lt;/strong&gt; kullanarak sağlayabiliriz.&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;use std::thread;
+use std::sync::Arc;
+
+fn main(){
+    let calculation_result = Arc::new(std::sync::Mutex::new(0.0_f64));
+
+    let calc_res_clone_1 = Arc::clone(&amp;amp;calculation_result);
+    let handle_1 = thread::spawn(move || {
+        for i in 1..=100 {
+            let mut result = calc_res_clone_1.lock().unwrap();
+            *result += (i as f64).sqrt();
+            thread::sleep(std::time::Duration::from_millis(50));
+        }
+    });
+
+    let calc_res_clone_2 = Arc::clone(&amp;amp;calculation_result);
+    let handle_2 = thread::spawn(move || {
+        for i in 1..=100 {
+            let mut result = calc_res_clone_2.lock().unwrap();
+            *result += (i as f64 + 1.0).ln();
+            thread::sleep(std::time::Duration::from_millis(50));
+        }
+    });
+
+    handle_1.join().unwrap();
+    handle_2.join().unwrap();
+
+    println!("Calculation result {}", *calculation_result.lock().unwrap());
+}
+&lt;/pre&gt;
+&lt;p&gt;Tabii kilitleri a&amp;ccedil;ık bir şekilde serbest bırakmak i&amp;ccedil;in bir kod kullanmadık ancak scope sonları zaten bu işin otomatik yapılmasını sağlayacaktır. İşte &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2026/Subat/TryThis02_05.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Ay now, ay now...&lt;/strong&gt; Tuhaf bir durum s&amp;ouml;z konusu. Y&amp;uuml;ksek hassasiyetli &lt;strong&gt;64 bit floating point&lt;/strong&gt; değer her deneme i&amp;ccedil;in &lt;strong&gt;%100&lt;/strong&gt; tutarlı değil gibi g&amp;ouml;r&amp;uuml;n&amp;uuml;yor. &amp;Ouml;rneğin ikinci denemede son k&amp;uuml;s&amp;uuml;rat bir &amp;uuml;st değere yuvarlanmış. Alt alta yazınca fark daha net g&amp;ouml;r&amp;uuml;lebilir.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;1039.8174431755524
+1039.817443175553&lt;/pre&gt;
+&lt;p&gt;&amp;Uuml;stelik &lt;strong&gt;.Net&lt;/strong&gt; tarafındaki gibi iki &lt;strong&gt;thread&lt;/strong&gt; ve her birisinde 100er iterasyon i&amp;ccedil;eren d&amp;ouml;ng&amp;uuml;lerde &amp;ccedil;alışırken... Buradaki farkın karek&amp;ouml;k ve logaritma işlemlerinden kaynaklanan k&amp;uuml;&amp;ccedil;&amp;uuml;k yuvarlama hatalarından mı yoksa &lt;strong&gt;Mutex&lt;/strong&gt; kilitlenmesi sırasında ortaya &amp;ccedil;ıkan performans etkilerinden mi kaynaklandığını bilmiyorum. Belki de her ikisi birden. Ancak sonu&amp;ccedil;ların her seferinde aynı olmaması dikkat &amp;ccedil;ekici. Bir nevi &lt;strong&gt;thread&lt;/strong&gt;'lerin farklı sıralarda &amp;ccedil;alışmasından kaynaklı bir durum da s&amp;ouml;z konusu olabilir. Sadece &amp;uuml;st&amp;uuml;nk&amp;ouml;r&amp;uuml; bir bakış a&amp;ccedil;ısıyla &lt;strong&gt;Rust&lt;/strong&gt; tarafındaki hesaplamaların daha y&amp;uuml;ksek rakamlara ulaştığını ifade edebiliriz.&lt;/p&gt;
+&lt;h2&gt;Zig Tarafı&lt;/h2&gt;
+&lt;p&gt;Gelelim yeni yeni &amp;ouml;ğrenemye &amp;ccedil;alıştığım &lt;strong&gt;Zig&lt;/strong&gt; tarafına. &lt;strong&gt;Zig&lt;/strong&gt; tarafında &lt;strong&gt;thread&lt;/strong&gt; a&amp;ccedil;mak ve &lt;strong&gt;mutex&lt;/strong&gt; kullanımı da olduk&amp;ccedil;a basit. &lt;strong&gt;Rust&lt;/strong&gt; dilindekine benzer şekilde bir &lt;strong&gt;spawn&lt;/strong&gt; fonksiyonu var ve &lt;strong&gt;Thread&lt;/strong&gt; mod&amp;uuml;l&amp;uuml; altında tanımlanmış durumda. Yukarıdaki senaryomuzun bir benzerini başlangı&amp;ccedil;ta herhangibir &lt;strong&gt;data race&lt;/strong&gt; tedbiri almadan aşağıdaki şekilde yazabiliriz.&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;const std = @import("std");
+
+pub fn main() !void {
+    var calculation_result: f64 = 0.0;
+
+    const handle_1 = try std.Thread.spawn(
+        .{},
+        calcSqrt,
+        .{&amp;amp;calculation_result},
+    );
+
+    const handle_2 = try std.Thread.spawn(
+        .{},
+        calcLn,
+        .{&amp;amp;calculation_result},
+    );
+
+    handle_1.join();
+    handle_2.join();
+
+    std.debug.print("Calculation result {d}\n", .{calculation_result});
+}
+
+fn calcSqrt(value: *f64) void {
+    for (1..100) |i| {
+        value.* += std.math.sqrt(@as(f64, @floatFromInt(i)));
+        std.time.sleep(50 * std.time.ns_per_ms);
+    }
+}
+
+fn calcLn(value: *f64) void {
+    for (1..100) |i| {
+        value.* += std.math.log2(@as(f64, @floatFromInt(i)) + 1.0);
+        std.time.sleep(50 * std.time.ns_per_ms);
+    }
+}
+&lt;/pre&gt;
+&lt;p&gt;Aslında &lt;strong&gt;Thread&lt;/strong&gt; başlatırken &lt;strong&gt;Rust&lt;/strong&gt; kodunda olduğu gibi fonksiyonu bloğunu bir &lt;strong&gt;closure&lt;/strong&gt; mantığında &lt;strong&gt;spawn&lt;/strong&gt; metodunda kullanmak istememe rağmen başaramadım. Zira &lt;strong&gt;spawn&lt;/strong&gt; metodu ikinci parametre olarak fonksiyon referansı bekliyor. Bu nedenle karek&amp;ouml;k ve logaritma hesaplamalarını yapan fonksiyonları ayrı ayrı tanımladım&lt;em&gt;(ki bu belkide kodun okunabilirliği ya da sorumlulukların doğru dağıtılması adına iyi bir yaklaşımdır)&lt;/em&gt; Her iki fonksiyon da kendilerine aktarılan &lt;strong&gt;f64&lt;/strong&gt; t&amp;uuml;r&amp;uuml;nden nesne işaret&amp;ccedil;isi &amp;uuml;zerinden aynı değişken verisini değiştiriyor. Program kodu herhangi bir hata vermeden &amp;ccedil;alıştı ve kendi sistemimde aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ndekine benzer &amp;ccedil;ıktılar elde ettim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2026/Subat/TryThis02_07.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Diğer &amp;ouml;rneklerdeki değerlere yakın sonu&amp;ccedil;lar elde etsem de kendi &amp;ouml;zelinde değerlendirdiğimizde her seferinde farklı sonu&amp;ccedil;lar elde etmemiz son derece normal. Zira her &lt;strong&gt;thread&lt;/strong&gt; işletim sisteminin de desteğiyle farklı zamanlarda &amp;ccedil;alışarak aynı ortak veri &amp;uuml;zerinde değişiklik yapmakta. &lt;strong&gt;Zig&lt;/strong&gt; dilinde de bu tip senaryolarda verinin tutarlığını sağlamak ve her seferinde aynı sonu&amp;ccedil;lara ulaşmak i&amp;ccedil;in yine bir senkronizasyonu mekanizmasına başvurmamız gerekiyor ve burada da tahmin edeceğiniz &amp;uuml;zere &lt;strong&gt;Mutex&lt;/strong&gt; devreye giriyor&lt;em&gt;(Birde &lt;strong&gt;RwLock&lt;/strong&gt; var)&lt;/em&gt; Aynı kod par&amp;ccedil;asında bu sefer &lt;strong&gt;Mutex&lt;/strong&gt; tabanlı kilit fonksiyonlarını kullanarak ilerleyelim.&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;const std = @import("std");
+
+// CASE 01 : Mutext ile ortak veri &amp;uuml;zerinde thread işlemi
+pub fn main() !void {
+    var guard = std.Thread.Mutex{};
+    var calculation_result: f64 = 0.0;
+
+    const handle_1 = try std.Thread.spawn(
+        .{},
+        calcSqrt,
+        .{ &amp;amp;calculation_result, &amp;amp;guard },
+    );
+
+    const handle_2 = try std.Thread.spawn(
+        .{},
+        calcLn,
+        .{ &amp;amp;calculation_result, &amp;amp;guard },
+    );
+
+    handle_1.join();
+    handle_2.join();
+
+    std.debug.print("Calculation result {d}\n", .{calculation_result});
+}
+
+fn calcSqrt(value: *f64, guard: *std.Thread.Mutex) void {
+    for (1..100) |i| {
+        guard.lock();
+        value.* += std.math.sqrt(@as(f64, @floatFromInt(i)));
+        std.time.sleep(50 * std.time.ns_per_ms);
+        guard.unlock();
+    }
+}
+
+fn calcLn(value: *f64, guard: *std.Thread.Mutex) void {
+    for (1..100) |i| {
+        guard.lock();
+        defer guard.unlock();
+        value.* += std.math.log2(@as(f64, @floatFromInt(i)) + 1.0);
+        std.time.sleep(50 * std.time.ns_per_ms);
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Senaryo burada biraz daha kolay kurgulandı sanki. Bir &lt;strong&gt;Mutex&lt;/strong&gt; değişkeni tanımladık ve s&amp;ouml;z konusu değişkeni &lt;strong&gt;spawn&lt;/strong&gt; metodu &amp;uuml;zerinden ilgili fonksiyonlara referans olarak aktardık. Her iki fonksiyonda da değişken değerini değiştirmeden hemen &amp;ouml;nce ve sonra sırasıyla kilit koyma ve serbest bırakma işlemlerini icra ettik. Aslında sembolik duraksatma s&amp;uuml;relerini &lt;strong&gt;unlock&lt;/strong&gt; &amp;ccedil;ağrılarının hemen arkasına da alabilirdik ama &lt;strong&gt;Rust&lt;/strong&gt; tarafındaki kod par&amp;ccedil;asında d&amp;ouml;ng&amp;uuml; kapsamı bittiği noktada &lt;strong&gt;unlock&lt;/strong&gt; &amp;ccedil;alışacak şekilde kodlama yaptığımdan burada da benzer şekilde ilerlemek istedim. Dikkat etmişsinizdir &lt;strong&gt;calcLn&lt;/strong&gt; fonksiyonu i&amp;ccedil;erisinde &lt;strong&gt;unlock&lt;/strong&gt; işlemi i&amp;ccedil;in &lt;strong&gt;defer&lt;/strong&gt; ifadesi kullanılıyor. Yani iterasyonda devam ederken kilit otomatik olarak &lt;strong&gt;unlock&lt;/strong&gt; &amp;ccedil;ağrısı yapılmadan serbest kalıyor. Bunu sadece bir &amp;ouml;rnek olsun diye ekledim. Bazen aynı &lt;strong&gt;thread&lt;/strong&gt; i&amp;ccedil;erisindeki kod bloklarında satır sayısı &amp;ccedil;ok fazla olabilir. En başta &lt;strong&gt;defer&lt;/strong&gt; ile &lt;strong&gt;unlock&lt;/strong&gt; bildiriminde bulunmak kodun okunabilirliği a&amp;ccedil;ısından faydalı olur. Gelelim &amp;ccedil;alışma zamanı &amp;ccedil;ıktısına. Kendi sistemimde elde ettiğim sonu&amp;ccedil;lar aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2026/Subat/TryThis02_08.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Hatırlarsanız &lt;strong&gt;Rust&lt;/strong&gt; tarafındaki kilitleme &amp;ouml;rneğinde de benzer bir durum s&amp;ouml;z konusuydu. K&amp;uuml;s&amp;uuml;ratlarda ara sıra sapmalar yaşanmakta. Ancak genel olarak &lt;strong&gt;Zig&lt;/strong&gt; tarafındaki sonu&amp;ccedil;ların &lt;strong&gt;Rust&lt;/strong&gt; tarafındaki sonu&amp;ccedil;lara daha yakın olduğunu s&amp;ouml;yleyebilirim. Yine de her iki dilde de thread'lerin &amp;ccedil;alışma zamanlarındaki farklılıklardan &amp;ouml;t&amp;uuml;r&amp;uuml; tam olarak aynı sonu&amp;ccedil;ları elde etmek m&amp;uuml;mk&amp;uuml;n olmayabilir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Zig tarafı i&amp;ccedil;in not:&lt;/strong&gt; Eş zamanlı yazma/okuma s&amp;uuml;re&amp;ccedil;lerinde Mutex dışında daha verimli olabilecek bir se&amp;ccedil;enek daha var; RwLock. RwLock enstr&amp;uuml;manı ile okuma ama&amp;ccedil;lı erişimler sırasında lockShared ve unlockShared metotları ile yazma operasyonuna g&amp;ouml;re daha az maliyetli bir kilitleme akışı sağlamanın m&amp;uuml;mk&amp;uuml;n olduğu ifade ediliyor. &lt;a href="https://github.com/buraksenyurt/learning-zig" target="_blank"&gt;learning-zig&lt;/a&gt; repomda bu konuya dair bir &amp;ouml;rnek mevcut. Ancak buradaki akışta amacım temel kilitleme mekanizmasını g&amp;ouml;stermek olduğu i&amp;ccedil;in RwLock kullanımına değinmedim.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;Başka Nelere Bakmalı?&lt;/h2&gt;
+&lt;p&gt;Bu &amp;ouml;rnekte ele aldığımız senaryo son derece basit, ger&amp;ccedil;ek anlamda kullanılabilir değil ve teoriden &amp;ouml;teye ge&amp;ccedil;mez nitelikte. Yine de ortak verinin değiştirileceği durumlarda basit kilit mekanizmalarının &lt;strong&gt;C#&lt;/strong&gt;, &lt;strong&gt;Rut&lt;/strong&gt; ve &lt;strong&gt;Zig&lt;/strong&gt; &amp;ouml;zelinde nasıl ele alındığını bir dok&amp;uuml;manda birleştirmiş olduk. Bu senaryolarda belki &amp;ccedil;alışma zamanını &amp;ouml;l&amp;ccedil;&amp;uuml;mleyen ve testleri tekrarlı olarak icra eden mekanikler kullanarak ortaya &amp;ccedil;ıkan sonu&amp;ccedil;ları istatistiki anlamda değerlendirmek daha anlamlı olabilir. &lt;strong&gt;Performans/Maliyet&lt;/strong&gt; a&amp;ccedil;ısından da hem birbirlerine g&amp;ouml;re hem de kendi i&amp;ccedil;lerinde ne gibi sonu&amp;ccedil;lar &amp;uuml;rettiklerini değerlendirebiliriz. Zira fark ediliyor ki, kilit mekanizmalarını devreye aldığımız anda toplam işlem s&amp;uuml;releri de uzuyor ki bu &amp;ccedil;ok normal. Ancak &amp;ouml;yle senaryolar olabilir ki veri kaybını g&amp;ouml;ze alabiliriz ve bu durumda kilitleme mekanizmalarını da kullanmayız ya da &lt;strong&gt;Read-Write Lock&lt;/strong&gt; gibi daha performanslı &amp;ccedil;&amp;ouml;z&amp;uuml;mler tercih edebiliriz.&lt;/p&gt;
+&lt;p&gt;Ne yazık ki hayat b&amp;ouml;ylesine toz pembe değil. &amp;Ouml;zellikle &lt;strong&gt;değiştirilebilir&lt;/strong&gt;&lt;em&gt;(mutable)&lt;/em&gt;&amp;nbsp;verilerin &lt;strong&gt;&amp;ccedil;evrimi&amp;ccedil;i&lt;em&gt;(online)&lt;/em&gt; &lt;/strong&gt;platformlardan erişildiği kullanımlarda &amp;ccedil;ok daha karmaşık &amp;ccedil;&amp;ouml;z&amp;uuml;mler gerekiyor. Bu tip senaryolar aynı makinedeki &lt;strong&gt;thread&lt;/strong&gt;'ler arasındaki yarıştan &amp;ccedil;ok, dağıtık ağ ortamındaki makinelerin işin i&amp;ccedil;erisine girdiği durumları d&amp;uuml;ş&amp;uuml;nmemizi gerektiriyor. &lt;strong&gt;&amp;Ouml;l&amp;ccedil;ekleme&lt;em&gt;(scaling)&lt;/em&gt;&lt;/strong&gt; ise işin bambaşka bir boyutu. &amp;Ccedil;&amp;ouml;z&amp;uuml;m olarak genellikle dağıtık kilit mekanizmaları, veri tabanı tabanlı kilitleme stratejileri veya mesaj tabanlı senkronizasyon &amp;ccedil;&amp;ouml;z&amp;uuml;mleri ele alınıyor.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğin, &lt;strong&gt;Redis&lt;/strong&gt; gibi &lt;strong&gt;in-memory&lt;/strong&gt; &amp;ccedil;alışan ve bunu dağıtık &amp;ouml;l&amp;ccedil;ekte performanslı bir şekilde ele alan &amp;uuml;r&amp;uuml;nler sıklıkla tercih ediliyor. Diğer yandan, mikroservis mimarilerinde &lt;strong&gt;olay g&amp;uuml;d&amp;uuml;ml&amp;uuml;&lt;em&gt;(event-driven&lt;/em&gt;)&lt;/strong&gt; iletişim i&amp;ccedil;in değerlendirilen mesaj kuyruğu sistemleri de&lt;em&gt;(RabbitMQ gibi)&lt;/em&gt; veri tutarlılığını sağlamak i&amp;ccedil;in d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Bu tip senaryoları değerlendirmek i&amp;ccedil;in farklı bir laboratuvar ortamı tesis etmek lazım. Zira az &amp;ouml;nce de değindiğim &amp;uuml;zere olay thread'ler arası değil uygulamalar arası bir senkronizasyonu da gerektiriyor. Setup'ı &amp;ccedil;ok kolay olmayabilir belki ama ilerleyen zamanlarda bu konulara da değinmek istiyorum.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&amp;Ouml;rnek kodların tamamına &lt;a href="https://github.com/buraksenyurt/friday-night-programmer/tree/main/src/try-this-01" target="_blank"&gt;github adresinden&lt;/a&gt; ulaşabilirsiniz.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Şimdilik bu kadar. B&amp;ouml;ylece geldik bir denememizin daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2026-02-15 19:31:00</pubDate>
+  <slug>bunu-bir-dene-01-coklu-thread-ortamlarinda-ortak-veriyi-degistirmek-c-rust-ve-zig</slug>
+  <tags>
+    <tag>zig</tag>
+    <tag>zig-lang</tag>
+    <tag>c-sharp</tag>
+    <tag>dotnet</tag>
+    <tag>rust</tag>
+    <tag>multi-thread</tag>
+    <tag>thread</tag>
+    <tag>thread-safe</tag>
+    <tag>multithreading</tag>
+  </tags>
+  <categories>
+    <category>Zig</category>
+  </categories>
+</post>

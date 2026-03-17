@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>EF 4.2 ile Code–First Development</title>
+  <description>Teknolojinin hızına inanın ki yetişilemiyor. Her gün yeni bir bilim ve teknoloji haberi var dünyada. Ancak bir geçek daha var ki o da Microsoft, Google, Apple gibi devlerin de hızına yetişilememsi. Örneğin daha henüz 2011 Mix’ te RTM olarak duyurulan Entity Framework 4.1 sürümü üzerine geçtiğimiz günlerde 4.2 RC(Release Candidate) duyuruldu. Ben de bunun üzerine yeni sürümde Code-First Development’ ın nasıl uygulandığını anlamak ve görmek istedim. Haydi gelin keşfetmeye başlayalım.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/speed.jpg"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; float: right; padding-top: 0px; border: 0px;" title="speed" src="/pics/speed_thumb.jpg" alt="speed" width="240" height="174" align="right" border="0" /&gt;&lt;/a&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Teknolojinin hızına inanın ki yetişilemiyor. Her g&amp;uuml;n yeni bir bilim ve teknoloji haberi var d&amp;uuml;nyada. Ancak bir ge&amp;ccedil;ek daha var ki o da &lt;strong&gt;Microsoft, Google, Apple&lt;/strong&gt; gibi devlerin de hızına yetişilememsi. &amp;Ouml;rneğin daha hen&amp;uuml;z &lt;strong&gt;2011 Mix&amp;rsquo;&lt;/strong&gt; te &lt;strong&gt;RTM&lt;/strong&gt; olarak duyurulan &lt;strong&gt;Entity Framework 4.1&lt;/strong&gt; s&amp;uuml;r&amp;uuml;m&amp;uuml; &amp;uuml;zerine ge&amp;ccedil;tiğimiz g&amp;uuml;nlerde &lt;strong&gt;4.2 RC(Release Candidate)&lt;/strong&gt; duyuruldu. Ben de bunun &amp;uuml;zerine yeni s&amp;uuml;r&amp;uuml;mde &lt;strong&gt;Code-First Development&amp;rsquo;&lt;/strong&gt; ın nasıl uygulandığını anlamak ve g&amp;ouml;rmek istedim. Haydi gelin keşfetmeye başlayalım.&lt;/p&gt;
+&lt;p&gt;İlk olarak &lt;strong&gt;Entity Framework 4.2&lt;/strong&gt; s&amp;uuml;r&amp;uuml;m&amp;uuml; ile ilişkili detaylı bilgilere &lt;a href="http://blogs.msdn.com/b/adonet/"&gt;Ado.Net Team Blog&amp;rsquo;&lt;/a&gt; un ilgili adresi &amp;uuml;zerinden ulaşabileceğinizi belirtmek isterim. Peki herşey g&amp;uuml;zel de nedir bu&lt;strong&gt; Code-First Development? Ado.Net Entity Framework&lt;/strong&gt; tarafında en başından beri var olduğunu bildiğimiz &lt;strong&gt;Model-First&lt;/strong&gt; ve &lt;strong&gt;Database-First Development&lt;/strong&gt; yaklaşımları mevcut. Ancak &lt;strong&gt;Code-First development &lt;/strong&gt;ne ola ki &lt;img class="wlEmoticon wlEmoticon-smile" style="border-style: none;" src="/pics/wlEmoticon-smile_17.png" alt="G&amp;uuml;l&amp;uuml;mseme" /&gt; Doğruyu s&amp;ouml;ylemek gerekirse bu tanımı en sonda yapmanın ve aradan ge&amp;ccedil;en zaman dilimi i&amp;ccedil;erisinde basit bir &amp;ouml;rnek &amp;uuml;zerinden adım adım ilerlemenin daha doğru olacağı kanısındayım.&lt;/p&gt;
+&lt;p&gt;Bu ama&amp;ccedil;la ilk olarak basit bir&lt;strong&gt; Console Application&lt;/strong&gt; projesi a&amp;ccedil;tığımızı ve i&amp;ccedil;erisine aşağıdaki sınıf diagramında g&amp;ouml;r&amp;uuml;len tipleri eklediğimizi var sayalım.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/bei_19.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="bei_19" src="/pics/bei_19_thumb.gif" alt="bei_19" width="342" height="364" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Department.cs&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Collections.Generic;
+
+namespace CodeFirstDevelopment 
+{ 
+    public class Department 
+    { 
+        public int DepartmentId { get; set; } 
+        public string Name { get; set; } 
+        public virtual ICollection&amp;lt;Employee&amp;gt; Employees { get; set; } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Employee.sc&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace CodeFirstDevelopment 
+{ 
+    public class Employee 
+    { 
+        public int EmployeeId { get; set; } 
+        public string Name { get; set; } 
+        public string AccountNumber { get; set; } 
+        public virtual Department Department { get; set; } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Aslında bir departman ve bu departmana bağlı iş&amp;ccedil;ileri temsil etmeye &amp;ccedil;alıştığımız basit iki &lt;strong&gt;POCO(Plain Old CLR Object)&lt;/strong&gt; tipi yazdığımızı g&amp;ouml;rmekteyiz. Bir başka deyişle &amp;ccedil;ok basit tipleri kullanarak aralarında ilişkiler tanımladığımız basit bir &lt;strong&gt;Model&amp;rsquo;&lt;/strong&gt; i kurgulamaktayız. Peki bu iki tipe ait nesne koleksiyonlarını nasıl kullanacağız? Normal şartlarda &lt;strong&gt;Ado.Net Entity Framework&lt;/strong&gt; i&amp;ccedil;erisinde, basit tipleri sarmallayan ve onlara ait koleksiyonları birer &amp;ouml;zellik gibi sunan, ve ayrıca y&amp;uuml;kleme, ekleme, silme gibi temel operasyonları &amp;uuml;stlenen bir tipin daha olduğunu biliyoruz.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Code-First Development&lt;/strong&gt; senaryosunda bu tipin yazılması da geliştiriciye ait. Ancak bu tip sanıldığı kadar karmaşık değil. Tek dikkat edilmesi gereken nokta var olan &lt;strong&gt;EF &lt;/strong&gt;kabiliyetlerini sunabilmesi i&amp;ccedil;in &lt;strong&gt;.Net&amp;rsquo;&lt;/strong&gt; in aşina olduğu bir tipten t&amp;uuml;remesi gerekliliği. İşte bu noktada &lt;strong&gt;NuGet&lt;/strong&gt; ile uygulamamıza &lt;strong&gt;install&lt;/strong&gt; edebileceğimiz bir k&amp;uuml;t&amp;uuml;phane meydana &amp;ccedil;ıkıyor. &lt;strong&gt;EntityFramework.Preview&lt;/strong&gt; &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_68.png" alt="G&amp;ouml;z kırpan g&amp;uuml;l&amp;uuml;mseme" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/bei_18.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="bei_18" src="/pics/bei_18_thumb.gif" alt="bei_18" width="640" height="303" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Teşekk&amp;uuml;rler NuGet &lt;img class="wlEmoticon wlEmoticon-smile" style="border-style: none;" src="/pics/wlEmoticon-smile_17.png" alt="G&amp;uuml;l&amp;uuml;mseme" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;uuml;ncel proje &amp;uuml;zerinden kısa s&amp;uuml;rede ger&amp;ccedil;ekleştirilen &lt;strong&gt;install&lt;/strong&gt; işlemi sonrasında bazı ek library dosyalarının referans edildiğini g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Aşağıdaki şekilde bu k&amp;uuml;t&amp;uuml;phaneler işaretlenmiştir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/bei_20.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="bei_20" src="/pics/bei_20_thumb.gif" alt="bei_20" width="327" height="396" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi projemize yeni bir sınıf daha ekliyor olacağız. Aslında &lt;strong&gt;Context&lt;/strong&gt; diye tabir edilen bu sınıfın g&amp;ouml;revi temel olarak &lt;strong&gt;Model&lt;/strong&gt; i&amp;ccedil;erisindeki &lt;strong&gt;POCO&lt;/strong&gt; tiplerine ait koleksiyon bazlı nesneleri sunmak olacaktır. Tabi &lt;strong&gt;EF&lt;/strong&gt; kabiliyetlerinin kendisine kazandırılması gerektiğinden indirilen paket i&amp;ccedil;erisinde yer alan bir tipten de &lt;strong&gt;t&amp;uuml;retilmesi(Inheritance)&lt;/strong&gt; s&amp;ouml;z konusudur. İşte &lt;strong&gt;Context&lt;/strong&gt; tipimiz;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/bei_21.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="bei_21" src="/pics/bei_21_thumb.gif" alt="bei_21" width="365" height="500" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;ve kod i&amp;ccedil;eriğimiz;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Data.Entity;
+
+namespace CodeFirstDevelopment 
+{ 
+    public class CompanyContext 
+        :DbContext 
+    { 
+        public DbSet&amp;lt;Department&amp;gt; Departments { get; set; } 
+        public DbSet&amp;lt;Employee&amp;gt; Employees { get; set; } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;CompanyContext&lt;/strong&gt; tipi &lt;strong&gt;Department&lt;/strong&gt; ve &lt;strong&gt;Employee&lt;/strong&gt; tiplerine ait nesnel koleksiyonları sunmak i&amp;ccedil;in &lt;strong&gt;DbSet&amp;lt;T&amp;gt;&lt;/strong&gt; tipinden olan &amp;ouml;zellikler sunmaktadır. Buna ek olarak &lt;strong&gt;DbContext&lt;/strong&gt; tipinin de &lt;strong&gt;IObjectContextAdapter&lt;/strong&gt; ve &lt;strong&gt;IDisposable&lt;/strong&gt; aray&amp;uuml;zlerini(Interface) uyguladığını g&amp;ouml;rmekteyiz. Bu &lt;strong&gt;interface&lt;/strong&gt; yardımıyla aslında &lt;strong&gt;Object Context&amp;rsquo;&lt;/strong&gt; e erişilmektedir. Diğer yandan ilgili nesnesinin &lt;strong&gt;Dispose&lt;/strong&gt; edilebilir olması i&amp;ccedil;in &lt;strong&gt;IDisposable&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml;n de uygulandığı g&amp;ouml;r&amp;uuml;lmektedir. Eğer &lt;strong&gt;DbContext&lt;/strong&gt; tipinin &amp;uuml;yelerine bakılacak olursa &lt;strong&gt;SaveChanges&lt;/strong&gt; gibi bir metod olduğunu fark edebiliriz ki bunun EF tarafında ne kadar &amp;ouml;nemli bir metod olduğunu tahmin edebilirsiniz &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_68.png" alt="G&amp;ouml;z kırpan g&amp;uuml;l&amp;uuml;mseme" /&gt; Aslında &lt;strong&gt;DbContext&lt;/strong&gt;, &lt;strong&gt;Entity&lt;/strong&gt; verileri ile birer nesne gibi &amp;ccedil;alışılabilmesini ve sorgulama işlemlerinin yapılabilmesini sağlamaktadır. Bu y&amp;uuml;zden Entity nesneleri &amp;uuml;zerinde yapılan veri değişimlerinin bir kaynağa doğru g&amp;ouml;nderilebilmesi i&amp;ccedil;in &lt;strong&gt;SaveChanges&lt;/strong&gt; gibi metod sunmaktadır.&lt;/p&gt;
+&lt;p&gt;Artık Console uygulamamızda s&amp;ouml;z konusu tipleri kullanarak bir test ger&amp;ccedil;ekleştirebiliriz. Bu ama&amp;ccedil;la aşağıdaki &amp;ouml;rnek kod par&amp;ccedil;asını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Collections.Generic;
+
+namespace CodeFirstDevelopment 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            using (CompanyContext context = new CompanyContext()) 
+            { 
+                Department IT = new Department { DepartmentId = 1, Name = "IT" };
+
+                List&amp;lt;Employee&amp;gt; employees = new List&amp;lt;Employee&amp;gt; 
+                { 
+                    new Employee{ EmployeeId=1000, Name="Burak Senyurt", Department=IT, AccountNumber="IT10235"}, 
+                    new Employee{ EmployeeId=1001, Name="Steve Jobs", Department=IT, AccountNumber="RIP1234"}, 
+                    new Employee{ EmployeeId=1250, Name="Bill Gates", Department=IT, AccountNumber="BIL1222"} 
+                }; 
+                IT.Employees = employees;
+
+                context.Departments.Add(IT);
+
+                context.SaveChanges(); 
+            } 
+            
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;Context&lt;/strong&gt; nesnesi &amp;ouml;rneklendikten sonra &amp;ouml;nce bir &lt;strong&gt;Department&lt;/strong&gt; &amp;uuml;retilmiş ardından bu departmana bağlı bir ka&amp;ccedil; &amp;ouml;rnek &lt;strong&gt;Employee&lt;/strong&gt; eklenmiştir. Yani bir departman ve bu departmana bağlı veri i&amp;ccedil;erikleri bellek &amp;uuml;zerinde ger&amp;ccedil;ekleştirilmiştir. Son olarakta &lt;strong&gt;Context&lt;/strong&gt; nesne &amp;ouml;rneği &amp;uuml;zerinden &lt;strong&gt;SaveChanges&lt;/strong&gt; metodu &amp;ccedil;ağırılmıştır &lt;img class="wlEmoticon wlEmoticon-surprisedsmile" style="border-style: none;" src="/pics/wlEmoticon-surprisedsmile.png" alt="Şaşırmış g&amp;uuml;l&amp;uuml;mseme" /&gt;&amp;nbsp;&lt;strong&gt;SaveChanges&lt;/strong&gt;? Hımmm&amp;hellip;Şimdi burada bir saniye durup d&amp;uuml;ş&amp;uuml;nelim. &lt;strong&gt;SaveChanges&lt;/strong&gt; metodu bellek &amp;uuml;zerinde ger&amp;ccedil;ekleşen ekleme, silme, g&amp;uuml;ncelleme vb işlemler sonucu ilgili varlık i&amp;ccedil;eriklerini nereye kayıt edecektir. Sanki bir yerlerde bir şeyleri s&amp;ouml;ylememiz gerekiyordu. Aslında s&amp;ouml;ylemesekte olur &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_68.png" alt="G&amp;ouml;z kırpan g&amp;uuml;l&amp;uuml;mseme" /&gt; Nitekim &lt;strong&gt;DbContext&lt;/strong&gt; nedeniyle ilgili şema yapıları i&amp;ccedil;in standart bir SQL bağlantısı s&amp;ouml;z konusudur. &lt;strong&gt;SQLExpress&lt;/strong&gt; s&amp;uuml;r&amp;uuml;m&amp;uuml; kullanılaraktan bir veritabanı otomatik olarak oluşturulacak ve s&amp;ouml;z konusu tablolar &amp;uuml;retilerek ilgili veri i&amp;ccedil;erikleri buraya y&amp;uuml;klenecektir. Ancak biz bu davranışı değiştirmek istediğimizi d&amp;uuml;ş&amp;uuml;nelim. S&amp;ouml;z gelimi &lt;strong&gt;SQL Server&lt;/strong&gt; &amp;uuml;zerinde bir veritabanına doğru yazılsın. Bu ama&amp;ccedil;la tek yapmamız gereken uygulamanın &lt;strong&gt;App.Config&lt;/strong&gt; dosyasına aşağıdaki&lt;strong&gt; Connection String&lt;/strong&gt; bilgisini eklemektir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt; 
+&amp;lt;configuration&amp;gt; 
+  &amp;lt;connectionStrings&amp;gt; 
+    &amp;lt;add name="CompanyContext" connectionString="data source=.;database=Company;integrated security=SSPI" providerName="System.Data.SqlClient"/&amp;gt; 
+  &amp;lt;/connectionStrings&amp;gt; 
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Buraya dikkat! Biz şu ana kadar &lt;strong&gt;Company&lt;/strong&gt; isimli bir veritabanı(database) oluşturmadık &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_68.png" alt="G&amp;ouml;z kırpan g&amp;uuml;l&amp;uuml;mseme" /&gt; Dolayısıyla ilk &amp;ccedil;alışma esnasında s&amp;ouml;z konusu veritabanı ve i&amp;ccedil;eriği &amp;uuml;retilse &amp;ccedil;ok iyi olur değil mi? &lt;img class="wlEmoticon wlEmoticon-smile" style="border-style: none;" src="/pics/wlEmoticon-smile_17.png" alt="G&amp;uuml;l&amp;uuml;mseme" /&gt; Haydi gelin uygulamamızı &lt;strong&gt;debug&lt;/strong&gt; modda &amp;ccedil;alıştıralım. Eğer &amp;ccedil;alışma zamanında &lt;strong&gt;Context&lt;/strong&gt; nesne &amp;ouml;rneği &amp;uuml;zerinde biraz dolaşırsak aşağıdaki gibi bir &lt;strong&gt;Connection String&lt;/strong&gt; bilgisinin uygulanmaya &amp;ccedil;alışıldığını g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/bei_22.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="bei_22" src="/pics/bei_22_thumb.gif" alt="bei_22" width="637" height="273" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Burada ,&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Data Source=.\SQLEXPRESS;Initial Catalog=CodeFirstDevelopment.CompanyContext;Integrated Security=True;MultipleActiveResultSets=True;Application Name=EntityFrameworkMUE&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;şeklinde bir bağlantı bilgisi &amp;uuml;retilmiştir. &lt;strong&gt;SaveChanges&lt;/strong&gt; metodunu atladığımızda ise ilk yapmamız gereken aslında yerel sunucuya bakmak olmalıdır. Ve sonu&amp;ccedil; ;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/bei_23.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="bei_23" src="/pics/bei_23_thumb.gif" alt="bei_23" width="339" height="512" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Volaaa!!! Sizce de s&amp;uuml;per değil mi? &lt;img class="wlEmoticon wlEmoticon-smile" style="border-style: none;" src="/pics/wlEmoticon-smile_17.png" alt="G&amp;uuml;l&amp;uuml;mseme" /&gt; &amp;Ccedil;ok basit tipler tanımladık ve code modelimize bakılarak ilgili tablolar ve aralarındaki ilişkiler otomatik olarak oluşturuldu. Hatta verilerin y&amp;uuml;klendiğini de SQL sorgularımızı atarak g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/bei_24.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="bei_24" src="/pics/bei_24_thumb.gif" alt="bei_24" width="430" height="272" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Bu durumda geldiğimiz aşamaya baktığımızda, basit &lt;strong&gt;POCO&lt;/strong&gt; nesnelerini ve &lt;strong&gt;DbContext&lt;/strong&gt; tipini kullanaraktan veritabanı modelimizi, &amp;ouml;nce kodu d&amp;uuml;ş&amp;uuml;nerek geliştirmiş olduğumuzu ifade edebiliriz. Elbette yapılabilecek daha pek &amp;ccedil;ok işlem var. &lt;strong&gt;Code-First Development&lt;/strong&gt; ile ilişkili diğer &amp;ouml;zellikleri ben de zaman i&amp;ccedil;erisinde incelemeyi d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum. Şimdilik bu giriş niteliğindeki Hello World yazısı ile idare etmeye &amp;ccedil;alışacağım. Eğer &lt;strong&gt;Entity Framework&lt;/strong&gt; konusunda ge&amp;ccedil;erli ve g&amp;uuml;ncel bir kaynaktan yararlanmak isterseniz &lt;strong&gt;Julie Lerman&amp;rsquo;&lt;/strong&gt; ın &lt;a href="http://www.amazon.com/Programming-Entity-Framework-Building-Centric/dp/0596807260/ref=sr_1_1?s=books&amp;amp;ie=UTF8&amp;amp;qid=1318495364&amp;amp;sr=1-1"&gt;Programming Entity Framework: Building Data Centric Apps with the ADO.NET Entity Framework&lt;/a&gt;&amp;nbsp; adlı kitabını tavsiye edebilirim. Her ne kadar &lt;strong&gt;2010 Ağustos&lt;/strong&gt; baskısı olsada kalan kısımları &lt;strong&gt;Offical Ado.Net Team Blog&lt;/strong&gt; ile eksik kısımları ve yenilikleri tamamlayabilirsiniz. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2011%2f10%2fCodeFirstDevelopment.rar"&gt;CodeFirstDevelopment.rar (1,01 mb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2011-10-12 20:45:00</pubDate>
+  <slug>EF-42-ile-Code-First-Development</slug>
+  <tags>
+    <tag>entity-framework-42</tag>
+    <tag>code-first-development</tag>
+    <tag>entity-framework</tag>
+  </tags>
+  <categories>
+    <category>Entity Framework</category>
+  </categories>
+</post>

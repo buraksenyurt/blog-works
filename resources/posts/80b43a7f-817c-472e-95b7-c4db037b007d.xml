@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>XML Verilerini XSD ile Yönetimli Kod Üzerinden Doğrulamak</title>
+  <description>Xml içeriğini kullandığımız pek çok platformda, verinin belirli kurallara göre yazılmış olmasını istediğimiz durumlar söz konusu olabilir. Bu durum özellikle, farklı platformlar arasında taşınacak Xml tabanlı verilerin aynı kurallar dizisine uygun olacak şekilde kullanılması istendiği durumlarda karşımıza çıkmaktadır...</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Xml i&amp;ccedil;eriğini kullandığımız pek &amp;ccedil;ok platformda, verinin belirli kurallara g&amp;ouml;re yazılmış olmasını istediğimiz durumlar s&amp;ouml;z konusu olabilir. Bu durum &amp;ouml;zellikle, farklı platformlar arasında taşınacak Xml tabanlı verilerin aynı kurallar dizisine uygun olacak şekilde kullanılması istendiği durumlarda karşımıza &amp;ccedil;ıkmaktadır. Xml verilerinin belirli kurallara g&amp;ouml;re doğruluğunun tespitinde şu anda &lt;strong&gt;DTD (Document Type Definitions), XDR (Xml Data Reduced)&lt;/strong&gt; ve &lt;strong&gt;XSD (Xml Schema Definitions) &lt;/strong&gt;gibi teknolojilerden yararlanılmaktadır.&lt;/p&gt;
+&lt;p&gt;Bu teknolojiler yardımıyla bir Xml verisi i&amp;ccedil;erisindeki elemanlar &amp;uuml;zerinde &amp;ccedil;eşitli kurallar tanımlayabiliriz. &amp;Ouml;rneğin tutulan veri tiplerini sınırlayabilir, Xml ağacının yapısını tanımlayabiliriz vb. B&amp;ouml;ylece verilerin tutarlılığınıda sağlamış oluruz. G&amp;uuml;n&amp;uuml;m&amp;uuml;zde, Xml verilerinin doğrulanması i&amp;ccedil;in kullanılan en yaygın teknoloji XSD ' dir. XSD' yi daha &amp;ouml;nceki t&amp;uuml;revi olan XDR' ın m&amp;uuml;kemmelleştirilmiş hali olarakta d&amp;uuml;ş&amp;uuml;nebiliriz. Zaten WC3' da XSD şemalarının kullanılmasını &amp;ouml;nermektedir. Biz bu makalemizde .Net tarafında yer alan y&amp;ouml;netimli tipleri (Managed Types) kullanarak Xml verilerini XSD ile &amp;ccedil;arpıştırarak doğrulama işlemlerini nasıl yapabileceğimizi incelemeye &amp;ccedil;alışacağız. İlk olarak aşağıdaki gibi bir Xml i&amp;ccedil;eriğimiz olduğunu d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8"?&amp;gt;
+&amp;lt;Dukkanim&amp;gt;
+    &amp;lt;Kitap ID="1000"&amp;gt;
+        &amp;lt;Adi&amp;gt;Her Y&amp;ouml;n&amp;uuml;yle C#&amp;lt;/Adi&amp;gt;
+        &amp;lt;Fiyat&amp;gt;Elli YTL&amp;lt;/Fiyat&amp;gt;
+        &amp;lt;StokDurumu&amp;gt;40&amp;lt;/StokDurumu&amp;gt;
+        &amp;lt;Yazarlar&amp;gt;
+            &amp;lt;Yazar&amp;gt;Sefer Algan&amp;lt;/Yazar&amp;gt;
+        &amp;lt;/Yazarlar&amp;gt;
+        &amp;lt;BasimTarihi&amp;gt;10/11/2003&amp;lt;/BasimTarihi&amp;gt;
+        &amp;lt;Aciklama&amp;gt;C# ile ilgili yazılmış en iyi T&amp;uuml;rk&amp;ccedil;e kaynaklardan birisidir. &amp;lt;/Aciklama&amp;gt;
+    &amp;lt;/Kitap&amp;gt;
+    &amp;lt;Kitap ID="1001"&amp;gt;
+        &amp;lt;Adi&amp;gt;Kahraman Asker&amp;lt;/Adi&amp;gt;
+        &amp;lt;Fiyat&amp;gt;30&amp;lt;/Fiyat&amp;gt;
+        &amp;lt;StokDurumu&amp;gt;Bin Adet&amp;lt;/StokDurumu&amp;gt;
+        &amp;lt;Yazarlar&amp;gt;
+            &amp;lt;Yazar&amp;gt;Anonim&amp;lt;/Yazar&amp;gt;
+        &amp;lt;/Yazarlar&amp;gt;
+        &amp;lt;BasimTarihi&amp;gt;10/11/2004&amp;lt;/BasimTarihi&amp;gt;
+        &amp;lt;Aciklama&amp;gt;C# ile ilgili yazılmış en iyi T&amp;uuml;rk&amp;ccedil;e kaynaklardan birisidir. &amp;lt;/Aciklama&amp;gt;
+    &amp;lt;/Kitap&amp;gt;
+&amp;lt;/Dukkanim&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Bu Xml i&amp;ccedil;eriğinde Kitaplar ile ilgili bir takım bilgileri tutmaktayız. &amp;Ouml;rneğin Kitabın adını, fiyatını, stoktaki durumunu, basım tarihi vb. Bu Xml d&amp;ouml;k&amp;uuml;manını herhangibir tarayıcı yardımıyla a&amp;ccedil;tığımızda geliştiriciler i&amp;ccedil;in okunabilir ve anlaşılabilir bir i&amp;ccedil;erik elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk173_1.gif" alt="" width="610" height="469" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Lakin bu Xml i&amp;ccedil;eriğinin platformlar arasında taşındığını ve işlendiğini d&amp;uuml;ş&amp;uuml;nd&amp;uuml;ğ&amp;uuml;m&amp;uuml;zde hataya neden olacak pek &amp;ccedil;ok problemin olduğunu g&amp;ouml;rebiliriz. &amp;Ouml;rneğin Fiyat alanlarında bir standart yoktur. &amp;Ouml;yleki ilk Kitap elemanı (element) i&amp;ccedil;erisinde Fiyat değeri Elli YTL olarak string bazlı yazılmışken, ikinci Kitap elemanındaki Fiyat elemanının değeri 30 olarak sayısal belirtilmiştir. Başka bir deyişle Fiyat alanının aslında uygun bir veri tipi olma zorunluğu yoktur. Dolayısıla bu Xml d&amp;ouml;k&amp;uuml;manını alıp fiyatlar &amp;uuml;zerinde sayısal işlemler yapacak olan bir uygulama kodu sorunlar ile karşılaşacaktır.&lt;/p&gt;
+&lt;p&gt;Benzer durum StokDurumu elemanı i&amp;ccedil;inde ge&amp;ccedil;erlidir. Bu tip veri uyuşmazlıklarını şemalarda yapacağımız tanımlamalar ile d&amp;uuml;zeltebiliriz. Diğer taraftan dikkat ederseniz her Kitap elemanı i&amp;ccedil;erisinde Yazarlar isimli bir eleman bulunmaktadır ki bu elemanda en az bir Yazar elemanını i&amp;ccedil;ermelidir. Bu da bir kural olarak şema bilgisi i&amp;ccedil;erisine alınabilir. XSD şemalarını sıfırdan herhangibir editor kullanmadan yazmak her zaman keyfi verici bir iş olmayabilir. Lakin Vs.Net 2003 s&amp;uuml;r&amp;uuml;m&amp;uuml;nden bu yana, g&amp;ouml;rsel olaraktan XSD şemalarını kolayca hazırlayabilmemizi sağlayan bir arabirim sunmaktadır. Buna g&amp;ouml;re yukarıdaki Xml d&amp;ouml;k&amp;uuml;manımız i&amp;ccedil;in aşağıdaki gibi bir XSD şemasını kolayca hazırlayabiliriz. &lt;em&gt;(XSD' nin &amp;ouml;ğrenilebilecek daha &amp;ccedil;ok &amp;ouml;zelliği olduğundan ve makalemizin sınırlarını aştığından &amp;ccedil;ok fazla derinine inmeyeceğiz.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk173_2.gif" alt="" width="638" height="233" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8"?&amp;gt;
+&amp;lt;xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema"&amp;gt;
+    &amp;lt;xs:element name="Dukkanim"&amp;gt;
+        &amp;lt;xs:complexType&amp;gt;
+            &amp;lt;xs:sequence&amp;gt;
+                &amp;lt;xs:element name="Kitap" minOccurs="1" maxOccurs="unbounded"&amp;gt;
+                    &amp;lt;xs:complexType&amp;gt;
+                        &amp;lt;xs:sequence&amp;gt;
+                            &amp;lt;xs:element name="Adi" type="xs:string" minOccurs="1" maxOccurs="1"/&amp;gt;
+                            &amp;lt;xs:element name="Fiyat" type="xs:double" minOccurs="1" maxOccurs="1"/&amp;gt;
+                            &amp;lt;xs:element name="StokDurumu" type="xs:integer" minOccurs="1" maxOccurs="1"/&amp;gt;
+                            &amp;lt;xs:element name="Yazarlar" minOccurs="1" maxOccurs="1"&amp;gt;
+                                &amp;lt;xs:complexType&amp;gt;
+                                    &amp;lt;xs:sequence&amp;gt;
+                                        &amp;lt;xs:element name="Yazar" type="xs:string" minOccurs="1" maxOccurs="unbounded" /&amp;gt;
+                                    &amp;lt;/xs:sequence&amp;gt;
+                                &amp;lt;/xs:complexType&amp;gt;
+                            &amp;lt;/xs:element&amp;gt;
+                            &amp;lt;xs:element name="BasimTarihi" type="xs:dateTime" minOccurs="1" maxOccurs="1" /&amp;gt;
+                            &amp;lt;xs:element name="Aciklama" type="xs:string" minOccurs="1" maxOccurs="1" /&amp;gt;
+                        &amp;lt;/xs:sequence&amp;gt;
+                        &amp;lt;xs:attribute name="ID" type="xs:integer" use="required" /&amp;gt;
+                     &amp;lt;/xs:complexType&amp;gt;
+                &amp;lt;/xs:element&amp;gt;
+            &amp;lt;/xs:sequence&amp;gt;
+        &amp;lt;/xs:complexType&amp;gt;
+    &amp;lt;/xs:element&amp;gt;
+&amp;lt;/xs:schema&amp;gt;&lt;/pre&gt;
+&lt;p&gt;İlk olarak&amp;nbsp; şema dosyamızda belirttiğimiz kuralları kısaca incelemeye &amp;ccedil;alışalım. &amp;Ouml;rneğin Adi, Fiyat, StokDurumu, Yazarlar, BasimTarihi, Aciklama gibi elemanlardan sadece ve yanlız bir adet girilebileceği belirtilmektedir. Bu kural &lt;strong&gt;minOccurs&lt;/strong&gt; ve &lt;strong&gt;maxOccurs&lt;/strong&gt; isimli &amp;ouml;zellikler ile belirtiliyor. Dolayısıyla Yazarlar isimli elemanımız, kendi i&amp;ccedil;erisinde en az bir olacak şekilde istenildiği kadar (&lt;strong&gt;unbounded&lt;/strong&gt; sayesinde) Yazar elemanı i&amp;ccedil;erebilir. XSD d&amp;ouml;k&amp;uuml;manımız i&amp;ccedil;erisinde yer alan her eleman (ve hatta ID isimli attribute-nitelik) i&amp;ccedil;in ayrı veri tipi tanımlamaları yapılmıştır. &amp;Ouml;rneğin ID isimli attribute (nitelik) integer tipinden olmalıdır. Fiyat isimli elemanımız double t&amp;uuml;r&amp;uuml;nden olmalıdır vb.&lt;/p&gt;
+&lt;p&gt;Peki bu ve benzeri şema bilgisini(bilgilerini) kullanarak yazdığımız Xml i&amp;ccedil;eriğini y&amp;ouml;netimli kod tarafından (managed-code) nasıl denetleyebiliriz? .Net 2.0 i&amp;ccedil;erisinde bu tip işlemler i&amp;ccedil;in getirilmiş yeni tipler vardır. Bunlar &lt;strong&gt;XmlReaderSettings&lt;/strong&gt;, &lt;strong&gt;XmlSchemaSet&lt;/strong&gt; isimli tiplerdir. Konuyu daha iyi anlayabilmek i&amp;ccedil;in &amp;ouml;rnek kodlar ile devam etmemizde fayda olduğu kanısındayım. Aşağıdaki kod par&amp;ccedil;asında bir Asp.Net formu &amp;uuml;zerinde, Dukkan.xml isimli Xml d&amp;ouml;k&amp;uuml;manının Dukkan.xsd isşmli xml şema d&amp;ouml;k&amp;uuml;manı ile doğrulanmasının nasıl yapılabileceği g&amp;ouml;sterilmektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Data;
+using System.Configuration;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+using System.Xml;
+using System.Text;
+
+public partial class _Default : System.Web.UI.Page 
+{
+    StringBuilder hatalar;
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        string xmlFile = Server.MapPath("Dukkan.xml");
+        string XSDFile =Server.MapPath( "Dukkan.XSD");
+        hatalar = new StringBuilder();
+
+        XmlReaderSettings xrs = new XmlReaderSettings();
+        xrs.ValidationEventHandler += new System.Xml.Schema.ValidationEventHandler(xrs_ValidationEventHandler);
+        xrs.Schemas.Add(null, XmlReader.Create(XSDFile));
+        xrs.ValidationType = ValidationType.Schema;
+        XmlReader reader = XmlReader.Create(xmlFile, xrs);
+        while (reader.Read())
+        {}
+        if (hatalar.ToString() == "")
+            Response.Write("Hata yok");
+        else
+            Response.Write(hatalar.ToString());
+    }
+
+    void xrs_ValidationEventHandler(object sender, System.Xml.Schema.ValidationEventArgs e)
+    {
+        if (e.Severity == System.Xml.Schema.XmlSeverityType.Error)
+            hatalar.Append(e.Message+"&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;");
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rneğimizi &amp;ccedil;alıştırdığımızda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan hata mesajlarını elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk173_3.gif" alt="" width="596" height="335" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat ederseniz XSD şemasında belirtilen kurallara uymayan durumlar i&amp;ccedil;in &amp;ccedil;eşitli hata mesajları &amp;uuml;retilmiş ve ekrana yazılmıştır. Kodumuzdaki kilit nokta &lt;strong&gt; XmlReaderSettings&lt;/strong&gt; isimli tipin XmlReader tipi ile entegrasyonudur. XmlReaderSettings sınıfına ait tek olay(event) olan &lt;strong&gt; ValidationEventHandler&lt;/strong&gt;, doğrulaması yapılan Xml d&amp;ouml;k&amp;uuml;manı i&amp;ccedil;erisinde meydana gelen hatalar (errors) yada uyarılar(Warnings) sonucunda otomatik olarak tetiklenmektedir. Xml verisini kontol etmek i&amp;ccedil;in kullanılacak XSD şemaları, XmlReaderSettings sınıfına &lt;strong&gt;Schemas&lt;/strong&gt; &amp;ouml;zelliği yardımıyla y&amp;uuml;klenir.&lt;/p&gt;
+&lt;p&gt;Schemas &amp;ouml;zelliği .Net 2.0 ile gelen yeni tiplerden birisi olan &lt;strong&gt;XmlSchemaSet&lt;/strong&gt; tipinden nesne &amp;ouml;rnekleri ile de &amp;ccedil;alışabilmektedir. Burada &amp;ouml;nemli olan noktalardan birisi Schemas &amp;ouml;zelliğinin aslında bir koleksiyon sunması ve Add metodu nedeni ile XmlReaderSettings i&amp;ccedil;in birden fazla şema bilgisinin bir arada tutulabilmesidir. &amp;Ouml;yleki farklı xml isim alanlarına ait farklı sayıda şema bilgisini XmlReaderSettings tipleri i&amp;ccedil;erisinde barındırabiliriz. XmlReaderSettings sınıfına ait bir diğer &amp;ouml;nemli &amp;uuml;ye ise &lt;strong&gt;ValidationType&lt;/strong&gt; &amp;ouml;zelliğidir. Bu &amp;ouml;zelliği atadığımız değer ile (&lt;strong&gt;ValidationType.Schema&lt;/strong&gt;), XSD şema tipine g&amp;ouml;re doğrulama yapacağımızı belirtmiş oluruz. Kodun ilerleyen kısımlarındaki adımlarımızda ise XmlReader sınıfımıza ait nesnemizi &lt;strong&gt;Create&lt;/strong&gt; isimli statik metod ile oluşturmaktayız.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rnek kodumuzda XmlReader sınıfına ait nesne &amp;ouml;rneği ile okuma yapmak i&amp;ccedil;in gerekli reader isimli nesneyi oluştururken static Create metodunun ilk parametresi olarak Xml d&amp;ouml;k&amp;uuml;manımızı, ikinci parametresi olarakta doğrulama işlemleri ile ilgili bilgileri i&amp;ccedil;eren XmlReaderSettings nesne &amp;ouml;rneğimizi belirtmekteyiz. Bu işlemlerin ardından tek yapılması gereken XmlReader nesne &amp;ouml;rneğinin taşıdığı i&amp;ccedil;eriği ileri y&amp;ouml;nl&amp;uuml; okumaktır. Bu ama&amp;ccedil;la kullandığımız while d&amp;ouml;ng&amp;uuml;s&amp;uuml; ile Xml i&amp;ccedil;eriğinde ileri y&amp;ouml;nl&amp;uuml; boş bir &amp;ouml;teleme ger&amp;ccedil;ekleştirirken, XSD dosyamızın i&amp;ccedil;erdiği şemada belirtilen kurallara uymayan her noktada, &lt;strong&gt;ValidationEventHandler&lt;/strong&gt; olayı tetiklenir. Bizde bu olaya ilişkin metodumuz i&amp;ccedil;erisinde doğrulama sonucu ortaya &amp;ccedil;ıkan hataları, &lt;strong&gt;ValidationEventArgs&lt;/strong&gt; tipi ile ele alabiliriz. &amp;Ouml;rnek olarak incelediğimiz Xml d&amp;ouml;k&amp;uuml;manımızı aşağıdaki gibi d&amp;uuml;zenlersek (yani şema hatalarını ortadan kaldırırsak) uygulamamız doğrulamayı başarılı bir şekilde ge&amp;ccedil;ecektir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8"?&amp;gt;
+&amp;lt;Dukkanim&amp;gt;
+    &amp;lt;Kitap ID="1000"&amp;gt;
+        &amp;lt;Adi&amp;gt;Her Y&amp;ouml;n&amp;uuml;yle C#&amp;lt;/Adi&amp;gt;
+        &amp;lt;Fiyat&amp;gt;50&amp;lt;/Fiyat&amp;gt;
+        &amp;lt;StokDurumu&amp;gt;40&amp;lt;/StokDurumu&amp;gt;
+        &amp;lt;Yazarlar&amp;gt;
+            &amp;lt;Yazar&amp;gt;Sefer Algan&amp;lt;/Yazar&amp;gt;
+        &amp;lt;/Yazarlar&amp;gt;
+        &amp;lt;BasimTarihi&amp;gt;2003-10-11T12:00:00&amp;lt;/BasimTarihi&amp;gt;
+        &amp;lt;Aciklama&amp;gt;C# ile ilgili yazılmış en iyi T&amp;uuml;rk&amp;ccedil;e kaynaklardan birisidir. &amp;lt;/Aciklama&amp;gt;
+    &amp;lt;/Kitap&amp;gt;
+    &amp;lt;Kitap ID="1001"&amp;gt;
+        &amp;lt;Adi&amp;gt;Kahraman Asker&amp;lt;/Adi&amp;gt;
+        &amp;lt;Fiyat&amp;gt;30&amp;lt;/Fiyat&amp;gt;
+        &amp;lt;StokDurumu&amp;gt;1000&amp;lt;/StokDurumu&amp;gt;
+        &amp;lt;Yazarlar&amp;gt;
+            &amp;lt;Yazar&amp;gt;Anonim&amp;lt;/Yazar&amp;gt;
+        &amp;lt;/Yazarlar&amp;gt;
+        &amp;lt;BasimTarihi&amp;gt;2004-10-11T12:00:00&amp;lt;/BasimTarihi&amp;gt;
+        &amp;lt;Aciklama&amp;gt;C# ile ilgili yazılmış en iyi T&amp;uuml;rk&amp;ccedil;e kaynaklardan birisidir. &amp;lt;/Aciklama&amp;gt;
+    &amp;lt;/Kitap&amp;gt;
+&amp;lt;/Dukkanim&amp;gt;&lt;/pre&gt;
+&lt;p&gt;XSD ile doğrulama işlemleri &amp;ouml;zellikle Xml verisi &amp;uuml;zerinde XmlDocument tipi ile &amp;ccedil;alışırken daha b&amp;uuml;y&amp;uuml;k &amp;ouml;nem taşır. XmlDocument sınıfı bildiğiniz gibi bir Xml i&amp;ccedil;eriğini bellekte &lt;strong&gt;DOM (Document Object Model)&lt;/strong&gt; sistemine g&amp;ouml;re referans eder. Buda ilgili d&amp;ouml;k&amp;uuml;man &amp;uuml;zerinde y&amp;uuml;kleme zamanında bir doğrulama işleminin yapılmasını gerektirir. Eğer bir Xml verisini, XmlDocument sınıfına ait nesneler yardımıyla ele alıyorsak, d&amp;ouml;k&amp;uuml;man i&amp;ccedil;erisine yapılacak m&amp;uuml;dahalelerinde belirleyeceğimiz şema kuralları &amp;ccedil;er&amp;ccedil;evesinde olmasını garanti etmek isteyebiliriz. Durumu daha iyi analiz etmek i&amp;ccedil;in aşağıdaki kod par&amp;ccedil;asını ele alalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;string xmlFile = Server.MapPath("Dukkan.xml");
+string XSDFile =Server.MapPath( "Dukkan.XSD");
+hatalar = new StringBuilder();
+
+XmlDocument doc = new XmlDocument();
+doc.Load(xmlFile);
+XmlElement currElement =(XmlElement)doc.DocumentElement.SelectSingleNode("//Dukkanim/Kitap[@ID='1000']");
+XmlNode newNode = doc.CreateNode(XmlNodeType.Element, "SayfaSayisi", null);
+newNode.InnerText = "600";
+currElement.AppendChild(newNode);
+
+doc.Save(xmlFile);&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rnek kodumuzda, XmlDocument sınıfına ait doc isimli nesne &amp;ouml;rneğimizi Dukkan.xml dosyasına ait xml i&amp;ccedil;eriği ile y&amp;uuml;kledikten sonra ID niteliğinin değeri 1000 olan node (boğum) kısmını elde ediyoruz. Sonrasında ise d&amp;ouml;k&amp;uuml;man &amp;uuml;zerinde yeni bir eleman (element) oluşturuyoruz. Amacımız oluşturduğumuz yeni elemanı (element) 1000 ID numaralı Kitap boğumu altına eklemek. Bunun i&amp;ccedil;in SayfaSayisi isimli bu yeni xml elemanına bir değer atayıp chile node olarak d&amp;ouml;k&amp;uuml;mandaki ilgili boğumun altına ekliyoruz.&lt;/p&gt;
+&lt;p&gt;Bu aslında XSD şemasında &lt;strong&gt;tanımlanmamış&lt;/strong&gt; bir eleman. Dolayısıylada eklenmemesi gereken bir eleman. Ancak XSD doğrulamasını hesaba katmadığımızdan bu yeni eleman Xml i&amp;ccedil;eriğine gayet g&amp;uuml;zel bir şekilde eklenecektir. &amp;Ouml;yleki &amp;ouml;rneğimizi &amp;ccedil;alıştırdığımızda Xml d&amp;ouml;k&amp;uuml;manımızın i&amp;ccedil;eriğinin aşağıdaki gibi değiştiğini g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Her nekadar Vs.Net 2005 IDE' si bizi bu yeni eleman konusunda uyarsada, sonu&amp;ccedil; olarak değişiklik kod tarafından fiziki dosyaya aktarılmıştır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk173_4.gif" alt="" width="544" height="478" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;O halde gelin XSD doğrulamasını işin i&amp;ccedil;erisine katıp bu değişikliklerin yapılmasını engelleyelim. Bunun i&amp;ccedil;in yine XmlReaderSettings ve XmlReader sınıflarından yararlanacağız. Ancak bu kez XmlDocument i&amp;ccedil;erisinde doğrulama işlemini ger&amp;ccedil;ekleştirmek i&amp;ccedil;in,başka bir deyişe bellekteki Xml verisi &amp;uuml;zerinde doğrulama yapabilmek i&amp;ccedil;in, &lt;strong&gt;XmlNodeReader&lt;/strong&gt; isimli sınıftan faydalanacağız. Bu nedenle uygulama kodumuzu aşağıdaki gibi değiştirelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Data;
+using System.Configuration;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+using System.Xml;
+using System.Text;
+
+public partial class _Default : System.Web.UI.Page 
+{
+    StringBuilder hatalar;
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        string xmlFile = Server.MapPath("Dukkan.xml");
+        string XSDFile =Server.MapPath( "Dukkan.XSD");
+        hatalar = new StringBuilder();
+
+        XmlDocument doc = new XmlDocument();
+        doc.Load(xmlFile);
+
+        XmlElement currElement =(XmlElement)doc.DocumentElement.SelectSingleNode("//Dukkanim/Kitap[@ID='1000']");
+        XmlNode newNode = doc.CreateNode(XmlNodeType.Element, "SayfaSayisi", null);
+        newNode.InnerText = "600";
+        currElement.AppendChild(newNode);
+
+        XmlNodeReader nodeReader = new XmlNodeReader(doc);
+        XmlReaderSettings readerSettings = new XmlReaderSettings();
+        readerSettings.ValidationEventHandler+=new System.Xml.Schema.ValidationEventHandler(readerSettings_ValidationEventHandler);
+        readerSettings.ValidationType= ValidationType.Schema;
+        readerSettings.Schemas.Add(null,XmlReader.Create(XSDFile));
+        XmlReader reader = XmlReader.Create(nodeReader, readerSettings);
+
+        while (reader.Read())
+        {}
+
+        if (hatalar.ToString() == "")
+            doc.Save(xmlFile);
+        else
+            Response.Write(hatalar.ToString()+"&amp;lt;b&amp;gt;Hatası Nedeniyle Xml D&amp;ouml;k&amp;uuml;manının yeni i&amp;ccedil;eriği kayıt edilememiştir.&amp;lt;/b&amp;gt;");
+    
+    }
+
+    void readerSettings_ValidationEventHandler(object sender, System.Xml.Schema.ValidationEventArgs e)
+    {
+        if (e.Severity == System.Xml.Schema.XmlSeverityType.Error)
+            hatalar.Append(e.Message + "&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;");
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk173_5.gif" alt="" width="469" height="110" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dilerseniz uygulama kodumuzda neler yaptığımıza kısaca bakalım. Bu sefer XmlDocument sınıfına ait doc isimli nesne &amp;ouml;rneğinin işaret ettiği bellek g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;n&amp;uuml;, ilgili XSD şeması ile kontrol edebilmek amacıyla &lt;strong&gt;XmlNodeReader&lt;/strong&gt; sınıfından yardım alıyoruz. Bu nedenle XmlNodeReader sınıfımıza ait nodeReader isimli nesne &amp;ouml;rneğimizi doc parametresini vererek oluşturuyoruz. Her zamanki gibi, XSD şema dosyası (Dukkan.XSD) i&amp;ccedil;in gerekli ayarların taşınacağı &lt;strong&gt; XmlReaderSettings&lt;/strong&gt; sınıfına ait nesne &amp;ouml;rneğimizi oluşturmaktayız. Burada dikkat edilmesi gereken noktalar; doğrulama tipi (&lt;strong&gt;ValidationType&lt;/strong&gt;)se&amp;ccedil;imi, doğrulama sırasında hatalar veya uyarılar sonrası tetiklenecek olayın ve metodunun hazırlanması (&lt;strong&gt;ValidationEventHandler&lt;/strong&gt;) ve XSD şema dosyasının Schemas koleksiyonuna y&amp;uuml;klenişi (&lt;strong&gt;Schemas.Add&lt;/strong&gt;).&lt;/p&gt;
+&lt;p&gt;XSD d&amp;ouml;k&amp;uuml;manımız ile doc isimli nesnemizin bellekte işaret ettiği Xml i&amp;ccedil;eriğini &amp;ccedil;arpıştırmak dolayısıyla şema denetimi altına doğrulama kontrollerini yapmak i&amp;ccedil;inse, yine XmlReader sınıfı nesne &amp;ouml;rneğinden yararlanıyoruz. Ancak bu sefer ilk parametremiz, XmlNodeReader sınıfımıza ait nodeReader isimli nesne &amp;ouml;rneğimizdir. While d&amp;ouml;ng&amp;uuml;s&amp;uuml; ile yaptığımız boş &amp;ouml;teleme hareketi sırasında da oluşan hata mesajlarını topluyor ve hi&amp;ccedil;bir hata yok ise Xml d&amp;ouml;k&amp;uuml;manımızı son haliyle kaydediyoruz (&lt;strong&gt;doc.Save&lt;/strong&gt;). Aslında d&amp;ouml;ng&amp;uuml; i&amp;ccedil;erisinde ilerlerken, XmlReader.Create metodunda belirtiğimiz kuralları uyguluyoruz. Yani XmlNodeReader' ın taşıdığı i&amp;ccedil;erik &amp;uuml;zerinde ilerlerken XSD yi taşıyan XmlReaderSettings' teki kurallara g&amp;ouml;re doğrulama kontrolleri ger&amp;ccedil;ekleştiriyoruz. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bu makalemizde kısaca XSD şemalarını, Xml d&amp;ouml;k&amp;uuml;manları ile &amp;ccedil;arpıştırarak yapılan doğrulama işlemlerinde .Net y&amp;ouml;netimli tiplerinin (managed code) nasıl kullanılabileceğini incelemeye &amp;ccedil;alıştık. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/makale/images/XmlValidations.rar"&gt;&amp;Ouml;rnek Uygulama İ&amp;ccedil;in Tıklayın&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2006-09-01 09:00:00</pubDate>
+  <slug>XML-Verilerini-XSD-ile-Yonetimli-Kod-Uzerinden-Dogrulamak-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>xml</tag>
+    <tag>xsd</tag>
+  </tags>
+  <categories>
+    <category>XML</category>
+  </categories>
+</post>

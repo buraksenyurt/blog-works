@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Basit Bir .Net Core Worker Servisi(Linux Daemon Olarak)</title>
+  <description>.Net Core Worker Service'ler ile planlanmış görevlerin arka planda icra edilmesi mümkün. Mesela belirli aralıklarla sistemden veri toplayıp kullanan bir Windows Service bu şekilde geliştirilebilir. Lakin o zaman .Net Core kullanmanın bir esprisi kalmıyor öyle değil mi? :) Bunun yerine bir Linux servisi geliştirmeyi ne dersiniz? En azından nasıl geliştirilebileceğini öğrenmeye. İşte benim amacım Heimdall(Ubuntu-20.04) üzerinde Linux Daemon olarak çalışacak bir servis yazmak. Örneğin günlük hava durumu bilgilerini 24 saatte bir toplayıp Redis üzerinde saklayan bir servis pekala güzel ve eğlenceli olabilir(Belki de olmaz, neyse) Daha önceki örneklerde kullandığımız Redis Docker Container'ı burada da kullanabiliriz. Öyleyse ne duruyoruz. Haydi kodlamaya.</description>
+  <content>&lt;p&gt;Konfor alanı dışında &amp;ccedil;alışmak geliştiricileri zaman zaman zorlasa da pek &amp;ccedil;ok yeniliğin de kapısını a&amp;ccedil;ıyor. &amp;Ouml;rneğin yıllar &amp;ouml;nce pek &amp;ccedil;ok kurumsal projede Windows Service'ler geliştirmiş olan ben bunun Linux platformunda yapılıp yapılamayacağını asla bilemezdim; şayet evdeki makineme Ubuntu kurup &amp;uuml;st&amp;uuml;nde .Net Core ile bir şeyler yapmaya &amp;ccedil;alışana kadar. İşte g&amp;uuml;n&amp;uuml;n konusu planlı işler i&amp;ccedil;in bir alternatif olan Worker Service'ler.&lt;/p&gt;
+&lt;p&gt;.Net Core Worker Service'ler ile planlanmış g&amp;ouml;revlerin arka planda icra edilmesinin m&amp;uuml;mk&amp;uuml;n olduğunu biliyoruz. Mesela belirli aralıklarla sistemden veri toplayıp kullanan bir Windows Service bu şekilde geliştirilebilir. Lakin o zaman .Net Core kullanmanın bir esprisi kalmıyor &amp;ouml;yle değil mi? :) Bunun yerine bir Linux servisi geliştirmeyi ne dersiniz? En azından nasıl geliştirilebileceğini &amp;ouml;ğrenmeye...İşte benim amacım da tam olarak bu. Heimdall&lt;em&gt;(Ubuntu-20.04)&lt;/em&gt; &amp;uuml;zerinde Linux Daemon olarak &amp;ccedil;alışacak bir servis yazmak. &amp;Ouml;rneğin g&amp;uuml;nl&amp;uuml;k hava durumu bilgilerini 24 saatte bir toplayıp Redis &amp;uuml;zerinde saklayan bir servis pekala g&amp;uuml;zel ve eğlenceli olabilir&lt;em&gt;(Belki de olmaz, neyse)&lt;/em&gt; Daha &amp;ouml;nceki &amp;ouml;rneklerde&amp;nbsp;kullandığımız Redis Docker Container'ı burada da kullanabiliriz. &amp;Ouml;yleyse ne duruyoruz. Haydi kodlamaya.&lt;/p&gt;
+&lt;h2&gt;Hazırlıklar ve Kodlama&lt;/h2&gt;
+&lt;p&gt;&amp;Ouml;nce Redis Docker Container'ını bir ayağa kaldıralım. Kaldırdıktan sonra onunla ping pong oynamak ve hatta bir anahtar değeri oluşturup okumaya &amp;ccedil;alışmak yararlı olabilir. Aynen aşağıdaki terminal komutlarında olduğu gibi.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo docker run -d --name liverpool -p 6379:6379 redis
+sudo docker exec -it liverpool redis-cli
+ping
+SET name "Merhaba Redis"
+GET name
+DEL name
+GET name&lt;/pre&gt;
+&lt;p&gt;Projemizi iskeletini de aşağıdaki gibi inşa edebiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet new worker -o WeatherCollector
+cd WeatherCollector
+dotnet add package Microsoft.Extensions.Hosting.Systemd
+dotnet add package Microsoft.Extensions.Caching.Redis&lt;/pre&gt;
+&lt;p&gt;Systemd mod&amp;uuml;l&amp;uuml; Linux Daemon'ının uygulamayı kullanılabilmesi i&amp;ccedil;in eklenmiştir.&amp;nbsp;Servisimiz worker.cs i&amp;ccedil;erisinde hayat buluyor. Bu nedenle i&amp;ccedil;eriğini anlamak &amp;ouml;nemli. L&amp;uuml;tfen yorum satırlarını okuyunuz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Caching.Distributed;
+using System.Text;
+
+namespace WeatherCollector
+{
+    public class Worker : BackgroundService
+    {
+        private readonly ILogger&amp;lt;Worker&amp;gt; _logger;
+        private readonly IDistributedCache _distributedCache; //Redis i&amp;ccedil;in gerekli
+        private Task _executingTask;
+        private CancellationTokenSource _cts;
+
+        // Loglama ve Redis i&amp;ccedil;in gerekli nesneleri constructor'dan i&amp;ccedil;eriye enjekte ediyoruz
+        public Worker(ILogger&amp;lt;Worker&amp;gt; logger, IDistributedCache distributedCache) 
+        {
+            _logger = logger;
+            _distributedCache = distributedCache;
+        }
+
+        // Servis başladığında devreye giren metot. Override etmek zorunda değiliz
+        public override Task StartAsync(CancellationToken cancellationToken)
+        {
+            _logger.LogWarning($"Weather Collector service started at {DateTimeOffset.Now}");
+
+            _cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            _executingTask = ExecuteAsync(_cts.Token);
+
+            return _executingTask.IsCompleted ? _executingTask : Task.CompletedTask;
+        }
+
+        // Arka plan g&amp;ouml;revinin başladığı metot
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            var options = new DistributedCacheEntryOptions()
+                       .SetSlidingExpiration(TimeSpan.FromMinutes(5))
+                       .SetAbsoluteExpiration(DateTime.Now.AddHours(1));
+
+            while (!stoppingToken.IsCancellationRequested) // Eğer bir iptal talebi gelmediyse
+            {
+                _logger.LogInformation($"Looking for weather informations at: {DateTimeOffset.Now}");
+
+                // Normalde hava durumu verisi harici bir servisten geliyor olmalı.
+                // Burada tamamen sembolik bir JSON i&amp;ccedil;eriği s&amp;ouml;z konusu
+                var temprature = "[{\"city\":\"İstanbul\",\"value\":\"39\"},{\"city\":\"Ankara\",\"value\":\"34\"}]";
+                var redisValue = Encoding.UTF8.GetBytes(temprature);
+
+                // veriyi Redis Cache'e alıyoruz. Farklı bir veritabanı da kullanılabilir
+                await _distributedCache.SetAsync($"State_{DateTime.Now.Day}_{DateTime.Now.ToString("hh_mm_ss")}", redisValue, options);
+
+                // Arka plan g&amp;ouml;revi bu eğitim &amp;ouml;rneği &amp;ouml;zelinde 3 dakikada bir işleyecek
+                await Task.Delay(3 * 60 * 1000, stoppingToken);
+            }
+        }
+
+        // Servis durdurulduğunda override edilmişse devreye giren metot
+        public override Task StopAsync(CancellationToken cancellationToken)
+        {
+            if (_executingTask == null)
+            {
+                return Task.CompletedTask;
+            }
+
+            _logger.LogWarning($"Weather Collector stopping at: {DateTimeOffset.Now}");
+            _cts.Cancel();
+            Task.WhenAny(_executingTask, Task.Delay(-1, cancellationToken)).ConfigureAwait(true);
+            cancellationToken.ThrowIfCancellationRequested();
+            _logger.LogWarning($"Weather Collector stopped at: {DateTimeOffset.Now}");
+
+            return Task.CompletedTask;
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Program.cs dosyasının i&amp;ccedil;eriği de şu şekilde yazılabilir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+
+namespace WeatherCollector  
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            CreateHostBuilder(args).Build().Run();
+        }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =&amp;gt;
+            Host.CreateDefaultBuilder(args)
+                .UseSystemd()
+                .ConfigureServices((hostContext, services) =&amp;gt;
+                {
+                    services.AddHostedService&amp;lt;Worker&amp;gt;();
+                    // Redis servisini middleware'e ekledik. Artık Worker sınıfının yapıcı metodundan i&amp;ccedil;ine enjekte edilebilir
+                    services.AddDistributedRedisCache(action =&amp;gt;
+                    {
+                        action.Configuration = "localhost:6379";
+                    });
+                });
+    }
+}&lt;/pre&gt;
+&lt;h2&gt;Daemon Kurulumu i&amp;ccedil;in Hazırlıklar&lt;/h2&gt;
+&lt;p&gt;Uygulama kodları tamamlandıktan ve dotnet run sonrası d&amp;uuml;zg&amp;uuml;n bir şekilde &amp;ccedil;alıştığından emin&amp;nbsp;olduktan sonra publish ederek devam edebiliriz. Nitekim servis olarak release edilmiş s&amp;uuml;r&amp;uuml;m&amp;uuml;n kullanılması gerekiyor.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet publish -o artifact&lt;/pre&gt;
+&lt;p&gt;Ardından .service uzantılı bir Unit dosyası hazırlamalıyız. Burada servise ait bazı bilgiler yer alıyor. A&amp;ccedil;ıklaması, t&amp;uuml;r&amp;uuml;, başlangı&amp;ccedil; noktası, kurulum şekli gibi.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;[Unit]
+Description=Hava Durumu Servisi
+
+[Service]
+Type=notify
+ExecStart=/home/buraks/Documents/Services/artifact/WeatherCollector
+
+[Install]
+WantedBy=multi-user.target&lt;/pre&gt;
+&lt;p&gt;Bu dosya &lt;strong&gt;/etc/systemd/system&lt;/strong&gt; altına alınmalı. Normalde ilgili dosya systemd/system klas&amp;ouml;r&amp;uuml;ne atılır atılmaz etkinleşiyor ama etkinleşmezse &lt;em&gt;&lt;strong&gt;dameon-reload&lt;/strong&gt;&lt;/em&gt; &amp;ccedil;ağrımını deneyebiliriz. Durum kontrol&amp;uuml; i&amp;ccedil;inse status komutundan yararlanmak bu aşamada &amp;ouml;nemli. Nitekim servis &amp;ccedil;alışıyor mu, hata mı aldı gibi durumları g&amp;ouml;zlemlemeliyiz. İşte gerekli ilk terminal komutlarımız.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo cp WeatherCollector.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl status WeatherCollector&lt;/pre&gt;
+&lt;p&gt;Servisi yeniden başlatmak, durdurmak veya sistemden kaldırmak i&amp;ccedil;in systemctl aracının belli başlı komutlarını bilmekte de yarar var.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo systemctl daemon-reload
+sudo systemctl status WeatherCollector
+sudo systemctl restart WeatherCollector
+sudo systemctl stop WeatherCollector
+sudo systemctl disable WeatherCollector
+sudo rm WeatherCollector.service&lt;/pre&gt;
+&lt;p&gt;İlk komut servis dosyasında değişiklik olduysa demaon'ı yeniden y&amp;uuml;klemek i&amp;ccedil;in kullanılıyor. İkinci komut servisin g&amp;uuml;ncel durumunu g&amp;ouml;rmek, &amp;uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml;s&amp;uuml; yeniden başlatmak, d&amp;ouml;rd&amp;uuml;nc&amp;uuml;s&amp;uuml; durdurmak ve beşincisi pasif hale &amp;ccedil;ekmek i&amp;ccedil;in. Son komut ile de servis dosyasını kaldırıyoruz. Bu bir &amp;ouml;ğreti &amp;ccedil;alışması olduğu i&amp;ccedil;in servisi i&amp;ccedil;erde unutmamak &amp;ouml;nemli. Yoksa &amp;uuml;&amp;ccedil; dakikada bir... :D&lt;/p&gt;
+&lt;p&gt;İşte uygulamanın en azından Heimdall &amp;uuml;zerindeki &amp;ccedil;alışma zamanına ait iki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2020/skynet/11/Screenshot_1.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2020/skynet/11/Screenshot_2.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Tabii &amp;ouml;rneği ben vakti zamanında .Net Core 3.1 ile geliştirmiştim. Bunu .Net 5.0 ile de kurgulamak gerekli. Hatta servisin ger&amp;ccedil;ekten de ger&amp;ccedil;ek bir dış servisten bilgi alıp Redis'e atmasını da sağlarsanız&amp;nbsp;pek bir g&amp;uuml;zel olur. Ya da biraz daha u&amp;ccedil; &amp;ouml;rnekler g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir. S&amp;ouml;z gelimi sistemin durumu hakkında bir takım bilgileri &amp;ccedil;eşitli periyotlarda toplayıp uzak sunucudaki bir Elasticsearch servisine loglayan bir Dameon kurgulanabilir ;)&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğe ait kodlara &lt;a href="https://github.com/buraksenyurt/skynet/tree/master/No%2011%20-%20.Net%20Core%20Worker%20Services" target="_blank"&gt;skynet github reposu&lt;/a&gt; &amp;uuml;zerinden erişebilirsiniz. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2020-05-26 20:05:00</pubDate>
+  <slug>basit-bir-net-core-worker-servisi-linux-daemon-olarak</slug>
+  <tags>
+    <tag>c#</tag>
+    <tag>net-core</tag>
+    <tag>net-core-31</tag>
+    <tag>linux</tag>
+    <tag>daemon</tag>
+    <tag>redis</tag>
+    <tag>systemctl</tag>
+  </tags>
+  <categories>
+    <category>.Net Core</category>
+  </categories>
+</post>

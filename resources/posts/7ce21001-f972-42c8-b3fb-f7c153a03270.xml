@@ -1,0 +1,532 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WCF 4.0 Yenilikleri - Routing Service Geliştirmek - Hello World [Beta 1]</title>
+  <description>Routing Service konusu ile ilişkili bir önceki yazımızda modelin sunduğu alt yapıya kısaca değinmeye çalışmış ancak bir örnek geliştirme girişiminde bulunmamıştık. Bu yazımızda ise bir Hello World örneğini geliştirmeye çalışacağız. (Örneğimizi .Net Framework Beta 1 ve Visual Studio 2010 Beta 1 ile geliştirdiğimizi bir kere daha hatırlatmak isterim.) İlk olarak sizlere, örnek senaryomuzdan bahsetmek isterim.</description>
+  <content>&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Routing Service&lt;/strong&gt; konusu ile ilişkili &lt;a title="WCF 4.0 Yenilikleri - Routing Service Geliştirmek - Giriş" href="/post/WCF-40-Yenilikleri-Routing-Service" target="_blank"&gt;bir &amp;ouml;nceki yazımızda &lt;/a&gt;modelin sunduğu alt yapıya kısaca değinmeye &amp;ccedil;alışmış ancak bir &amp;ouml;rnek geliştirme girişiminde bulunmamıştık.&amp;nbsp;Bu yazımızda ise bir&lt;strong&gt; Hello World&lt;/strong&gt; &amp;ouml;rneğini geliştirmeye &amp;ccedil;alışacağız. &lt;em&gt;(&amp;Ouml;rneğimizi &lt;strong&gt;.Net Framework Beta 1&lt;/strong&gt; ve &lt;strong&gt;Visual Studio 2010 Beta 1&lt;/strong&gt; ile geliştirdiğimizi bir kere daha hatırlatmak isterim.)&amp;nbsp;&lt;/em&gt;İlk olarak sizlere, &amp;ouml;rnek senaryomuzdan bahsetmek isterim.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Router&lt;/strong&gt; servisimizin arkasında genellikle &lt;strong&gt;Downstream&lt;/strong&gt; olarak adlandırılan servislerimiz yer almaktadır. Bu servislerden birisi, kullanıcı kayıt işlemlerini&lt;strong&gt;(Register)&lt;/strong&gt; &amp;uuml;stlenirken, diğeride kullanıcı adını g&amp;uuml;ncelleştirme işlemini ele almaktadır.&lt;em&gt;(Tabiki bu &amp;ouml;rnekteki ama&amp;ccedil; y&amp;ouml;nlendirme servisini devreye almak olduğundan sadece iki basit operasyonun, farklı servislere&amp;nbsp;dağılması &amp;uuml;zerine yoğunlaşılmıştır)&lt;/em&gt;&amp;nbsp;İstemci uygulama, &lt;strong&gt;Router&lt;/strong&gt; servisi &amp;uuml;zerinden yeni bir kullanıcıyı kayıt etmek veya g&amp;uuml;ncellemek ile ilişkili&amp;nbsp;işlemler i&amp;ccedil;in talepte bulunabilir.&lt;/p&gt;
+&lt;p&gt;Gelen talep aslında bir &lt;strong&gt;SOAP&lt;/strong&gt; paketidir. Geliştirdiğimiz &amp;ouml;rnekte, &lt;strong&gt;Router&lt;/strong&gt; servis tarafında yer alan filtreleme i&amp;ccedil;erisinde, &lt;strong&gt;SOAP Action&lt;/strong&gt; i&amp;ccedil;eriğine g&amp;ouml;re bir ayrıştırma yapılacak ve arka planda uygun olan servis metodlarına y&amp;ouml;nlendirme işlemi ger&amp;ccedil;ekleştirilecektir. Buna g&amp;ouml;re &lt;strong&gt;Router&lt;/strong&gt; servisimizin, istemciden gelen paketin &lt;strong&gt;Action&lt;/strong&gt; değerine bakarak bir karar vereceğini s&amp;ouml;yleyebiliriz. Elbette bunu birde programatik ortamda s&amp;ouml;yleyebilmemiz gerekmektedir &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;&amp;Ouml;rneği tamamladıktan sonra oluşturduğumuz mimari tasarıma bakarsak&lt;em&gt;(ki burada yazımızın başında veriyorum)&lt;/em&gt;, ne yapmak istediğimizi daha net g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f8%2fblg73_Architecture.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Downstream&lt;/strong&gt; servislerimizden olan &lt;strong&gt;RegisterService&lt;/strong&gt; hizmetine &lt;strong&gt;TCP&lt;/strong&gt; bazlı bir iletişim ile erişilebilmektedir. &lt;strong&gt;UserService&lt;/strong&gt; isimli diğer servisimiz ise &lt;strong&gt;Ws HTTP&lt;/strong&gt; protokol&amp;uuml;ne g&amp;ouml;re hizmet sunmaktadır. &lt;strong&gt;RouterService&lt;/strong&gt; isimli y&amp;ouml;nlendirme servisimiz ise &lt;strong&gt;Basic&lt;/strong&gt; &lt;strong&gt;HTTP&lt;/strong&gt; tabanlı bir iletişim kanalı sağlamaktadır. Dikkat edileceği &amp;uuml;zere &lt;strong&gt;RouterService&lt;/strong&gt; &amp;uuml;zerinden ayrılan iki dalın i&amp;ccedil;erisindeki &lt;strong&gt;URL&lt;/strong&gt; adresleri birbirlerinden farklıdır. Bu adresler aslında, &lt;strong&gt;RegisterService&lt;/strong&gt; ve &lt;strong&gt;UserService&lt;/strong&gt; isimli hizmetlerin ortaklaşa uyguladıkları &lt;strong&gt;servis s&amp;ouml;zleşmesi(Service Contract)&lt;/strong&gt; i&amp;ccedil;erisinden tanımlanan &lt;strong&gt;Action&lt;/strong&gt; değerleridir.&lt;/p&gt;
+&lt;p&gt;Dolayısıyla işe ilk olarak her iki servisinde uyguladığı ortak s&amp;ouml;zleşmeyi tasarlayarak başlamamız gerekmektedir. S&amp;ouml;z konusu s&amp;ouml;zleşme ContractLibrary isimli bir sınıf k&amp;uuml;t&amp;uuml;phanesi i&amp;ccedil;erisinde tanımlanmış olup sadece Downstream servisler tarafından kullanılmaktadır. İşte &lt;strong&gt;servis s&amp;ouml;zleşmemiz(Service Contract)&lt;/strong&gt;.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.ServiceModel;
+using System.Runtime.Serialization;
+
+namespace ContractLibrary
+{
+    // Downstream servislerin tamamının uygulayacağı ortak servis s&amp;ouml;zleşmesi
+    // Namespace elementinin i&amp;ccedil;eriği filtrelemelerde Action kısmına yazılacak bilgiler i&amp;ccedil;in &amp;ouml;nem arz etmektedir.
+    [ServiceContract(Name="MemberManagementService",Namespace="http://www.azon.com/Membership/Management")]
+    public interface IManagementContract
+    {
+        // Action değerlerini biz belirliyoruz
+        [OperationContract(Action = "http://www.azon.com/Registration",ReplyAction="http://www.azon.com/RegistrationResponse")] 
+        string RegisterUser(User newUser);
+
+        [OperationContract(Action = "http://www.azon.com/UpdateUser", ReplyAction = "http://www.azon.com/UpdateUserResponse")] 
+        string UpdateUserName(User oldUser, string newName);
+    }
+    
+    [DataContract]
+    public class User
+    {
+        [DataMember]
+        public string Name { get; set; }
+        [DataMember]
+        public string Id { get; set; }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;IManagementContract&lt;/strong&gt; isimli &lt;strong&gt;aray&amp;uuml;z(Interface)&lt;/strong&gt; i&amp;ccedil;erisinde tanımlanan &lt;strong&gt;RegisterUser&lt;/strong&gt; ve &lt;strong&gt;UpdateUserName&lt;/strong&gt; metodlarının &lt;strong&gt;OperationContract&lt;/strong&gt; niteliklerine dikkat edilmelidir. Bu niteliklerde yer alan &lt;strong&gt;Action&lt;/strong&gt; ve &lt;strong&gt;ReplyAction&lt;/strong&gt; değerleri ile, &lt;strong&gt;SOAP&lt;/strong&gt; paketleri ve &lt;strong&gt;WSDL&lt;/strong&gt; i&amp;ccedil;erisindeki bazı tanımlamalar doğrudan etkilenmektedir. &amp;Ccedil;ok doğal olarak, &lt;strong&gt;Router&lt;/strong&gt; servisi i&amp;ccedil;erisindeki filtreleme tablosunda yer alan &lt;strong&gt;Action&lt;/strong&gt; kriterlerinde, bu operasyonlar i&amp;ccedil;in tanımlanan &lt;strong&gt;Action&lt;/strong&gt; değerleri ele alınmalıdır. Şimdi sırasıyla &lt;strong&gt;RegisterService&lt;/strong&gt; ve &lt;strong&gt;UserService&lt;/strong&gt; servislerinin olduğu &amp;ouml;rnek Console projelerimizi geliştirelim.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;UserManagementService&lt;/strong&gt; projesine ait &lt;strong&gt;App.Config&lt;/strong&gt; dosyası;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+  &amp;lt;system.serviceModel&amp;gt;
+    &amp;lt;behaviors&amp;gt;
+      &amp;lt;serviceBehaviors&amp;gt;
+        &amp;lt;behavior&amp;gt;
+          &amp;lt;serviceMetadata httpGetEnabled="true" /&amp;gt;
+        &amp;lt;/behavior&amp;gt;
+      &amp;lt;/serviceBehaviors&amp;gt;
+    &amp;lt;/behaviors&amp;gt;
+    &amp;lt;services&amp;gt;
+      &amp;lt;service name="UserManagementService.UserService"&amp;gt;
+        &amp;lt;endpoint address="" binding="wsHttpBinding" contract="ContractLibrary.IManagementContract" /&amp;gt;
+        &amp;lt;endpoint address="Mex" kind="mexEndpoint" /&amp;gt;
+        &amp;lt;host&amp;gt;
+          &amp;lt;baseAddresses&amp;gt;
+            &amp;lt;add baseAddress="http://localhost:3445/UserService" /&amp;gt;
+          &amp;lt;/baseAddresses&amp;gt;
+        &amp;lt;/host&amp;gt;
+      &amp;lt;/service&amp;gt;
+    &amp;lt;/services&amp;gt;
+  &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;wsHttpBinding&lt;/strong&gt; bağlayıcı tipini kullanılan bu servisin &amp;uuml;zerinden standart &lt;strong&gt;mexEndpoint&lt;/strong&gt; yardımıyla &lt;strong&gt;WSDL&lt;/strong&gt; &amp;ccedil;ıktısıda&lt;strong&gt;(Metadata Publishing)&lt;/strong&gt; sağlanmaktadır. Aslında bu bir zorunluluk değildir. &amp;Ouml;rnekte bu &amp;ouml;zelliği a&amp;ccedil;mamın nedeni, istemci i&amp;ccedil;in gerekli olan &lt;strong&gt;proxy&lt;/strong&gt; tipinin &amp;uuml;retimini kolaylaştırmaktır; ki &lt;strong&gt;proxy&lt;/strong&gt; tipini &amp;uuml;rettikten sonra istemcinin &lt;strong&gt;config&lt;/strong&gt; dosyasını da &amp;ccedil;ok farklı bir şekilde değerlendirdiğimizi s&amp;ouml;yleyebilirim. Nitekim, istemci uygulama &lt;strong&gt;Downstream&lt;/strong&gt; servislerine değil, &lt;strong&gt;Router&lt;/strong&gt; servisine talepte bulunmalıdır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;UserManagementService&lt;/strong&gt; projesine ait &lt;strong&gt;UserService&lt;/strong&gt; sınıfı;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using ContractLibrary;
+using System.ServiceModel;
+
+namespace UserManagementService
+{
+    // Senaryoya g&amp;ouml;re RegisterService sadece RegisterUser operasyonunu &amp;uuml;stlenmek &amp;uuml;zere tasarlanmıştır.
+    class UserService
+        : IManagementContract
+    {
+        public string RegisterUser(User newUser)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string UpdateUserName(User oldUser, string newName)
+        {
+            Console.WriteLine("UpdateUserName metodu başlatıldı...");
+            return String.Format("{0} isimli kullanıcı adı {1} olarak değiştirildi", oldUser.Name, newName);
+        }
+
+        public UserService()
+        {
+            Console.WriteLine("UserService nesnesi &amp;ouml;rneklendi");
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            ServiceHost host = new ServiceHost(typeof(UserService));
+            host.Open();
+
+            Console.WriteLine("UserService hazır...");
+            Console.ReadLine();
+
+            host.Close();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;UserService&lt;/strong&gt; sınıfı, &lt;strong&gt;ContractLibrary&lt;/strong&gt; sınıf k&amp;uuml;t&amp;uuml;phanesi i&amp;ccedil;erisinde yer alan &lt;strong&gt;IManagementContract&lt;/strong&gt; isimli servis s&amp;ouml;zleşmesini implemente etmektedir. Dikkat edileceği &amp;uuml;zere &lt;strong&gt;RegisterUser&lt;/strong&gt; metodu i&amp;ccedil;in bir implemantasyon ger&amp;ccedil;ekleştirilmemiş ve hatta bilin&amp;ccedil;li olarak &lt;strong&gt;NotImplementedExcetion&lt;/strong&gt; tipinden bir &lt;strong&gt;istisna(Exception)&lt;/strong&gt; nesnesi fırlatılmıştır. Nitekim bu istisna mesajını hi&amp;ccedil; almayacağımızı garanti edebilirim. &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;Servisimizi tamamladıktan sonra&amp;nbsp;&amp;ccedil;alıştırıp &lt;strong&gt;WSDL&lt;/strong&gt; &amp;ccedil;ıktısına baktığımızda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan sonu&amp;ccedil;lar ile karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f8%2fblg73_Wsdl.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi kutucuk i&amp;ccedil;ine alınan b&amp;ouml;lgelerde, &lt;strong&gt;OperationContract&lt;/strong&gt; niteliğinin &lt;strong&gt;Action&lt;/strong&gt; &amp;ouml;zelliklerine atanan değerler yer almaktadır. Ben &amp;ouml;rnekte ilerlerken tam bu noktada bir istemci uygulama oluşturup &lt;strong&gt;Add Service Reference&lt;/strong&gt; ile s&amp;ouml;z konusu &lt;strong&gt;WSDL&lt;/strong&gt; &amp;ccedil;ıktısının karşılığı olan &lt;strong&gt;Reference.cs&lt;/strong&gt; dosyasının &amp;uuml;rettirilmesini tercih ettim. Ancak sonrasında istemci uygulama tarafında sadece &lt;strong&gt;Reference.cs&lt;/strong&gt; dosyasının i&amp;ccedil;eriğini bıraktım. Yani &lt;strong&gt;config&lt;/strong&gt; dosyasının i&amp;ccedil;eriğini ve &lt;strong&gt;Service Reference&lt;/strong&gt; klas&amp;ouml;r&amp;uuml;n&amp;uuml;n tamamını(Reference.cs hari&amp;ccedil;) sildim. Bu durumda istemci tarafının &lt;strong&gt;RegisterUser&lt;/strong&gt; ve &lt;strong&gt;UpdateUserName&lt;/strong&gt; metodlara &amp;ccedil;ağrı yapabilmesi &lt;strong&gt;managed&lt;/strong&gt; olarak m&amp;uuml;mk&amp;uuml;n hale geldi. Her neyse...Vakit kaybetmeden &lt;strong&gt;InternalService&lt;/strong&gt; isimli &lt;strong&gt;Console&lt;/strong&gt; uygulamamızı ve &lt;strong&gt;RegisterService&lt;/strong&gt; isimli servisimizi tasarlayarak yolumuza devam edelim.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;InternalService&lt;/strong&gt; projesine ait &lt;strong&gt;App.config&lt;/strong&gt; i&amp;ccedil;eriği;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+  &amp;lt;system.serviceModel&amp;gt;
+    &amp;lt;services&amp;gt;
+      &amp;lt;service name="InternalService.RegisterService"&amp;gt;
+        &amp;lt;endpoint address="" binding="netTcpBinding" contract="ContractLibrary.IManagementContract" /&amp;gt;
+        &amp;lt;host&amp;gt;
+          &amp;lt;baseAddresses&amp;gt;
+            &amp;lt;add baseAddress="net.tcp://localhost:4001/RegisterService" /&amp;gt;
+          &amp;lt;/baseAddresses&amp;gt;
+        &amp;lt;/host&amp;gt;
+      &amp;lt;/service&amp;gt;
+    &amp;lt;/services&amp;gt;
+  &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;RegisterService&lt;/strong&gt; isimli servis &lt;strong&gt;netTcpBinding&lt;/strong&gt; bağlayıcı tipini kullanmakla birlikte aynen &lt;strong&gt;UserService'&lt;/strong&gt; te olduğu gibi &lt;strong&gt;ContractLibrary&lt;/strong&gt; sınıf k&amp;uuml;t&amp;uuml;phanesi i&amp;ccedil;erisindeki &lt;strong&gt;IManagementContract&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml; uygulamaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;InternalService&lt;/strong&gt; projesinde yer alan &lt;strong&gt;RegisterService&lt;/strong&gt; sınıfı i&amp;ccedil;eriği;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using ContractLibrary;
+using System.ServiceModel;
+
+namespace InternalService
+{
+    // Senaryoya g&amp;ouml;re RegisterService sadece RegisterUser operasyonunu &amp;uuml;stlenmek &amp;uuml;zere tasarlanmıştır.
+    class RegisterService
+        :IManagementContract
+    {
+        public string RegisterUser(User newUser)
+        {
+            Console.WriteLine("RegisterUser metodu başlatıldı...");
+            return String.Format("{0} isimli kullanıcı oluşturuldu...Id = {1}", newUser.Name, Guid.NewGuid().ToString());
+        }
+
+        public string UpdateUserName(User oldUser, string newName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public RegisterService()
+        {
+            Console.WriteLine("RegisterService nesnesi &amp;ouml;rneklendi");
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            ServiceHost host = new ServiceHost(typeof(RegisterService));
+            host.Open();
+
+            Console.WriteLine("RegisterService hazır...");
+            Console.ReadLine();
+
+            host.Close();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu kez, &lt;strong&gt;RegisterUser&lt;/strong&gt; metodu uygulanmış ancak &lt;strong&gt;UpdateUserName&lt;/strong&gt; metodu i&amp;ccedil;erisinden &lt;strong&gt;NotImplementedException&lt;/strong&gt; istisna &amp;ouml;rneğinin fırlatılması sağlanmıştır.&lt;/p&gt;
+&lt;p&gt;Artık y&amp;ouml;nlendirme servisinin yazılmasına başlanabilir. Y&amp;ouml;nlendirme servisi i&amp;ccedil;in belkide en &amp;ouml;nemli nokta konfigurasyon i&amp;ccedil;eriğidir. Bununla birlikte y&amp;ouml;nlendirme servisinin, &lt;strong&gt;Downstream&lt;/strong&gt; servislerine ait referansları bilin&amp;ccedil;li olarak&lt;strong&gt;(&amp;Ouml;rneğin Add Service Reference yardımıyla)&lt;/strong&gt; eklemesine de gerek yoktur. Sadece &lt;strong&gt;Client Endpoint&lt;/strong&gt; tanımlamalarını yapması yeterlidir. Bir başka deyişle hangi servise, hangi&amp;nbsp;mesajlaşma tipi ile erişeceğini bilmesi yeterlidir.&amp;nbsp;İşte yazımızın kalbini oluşturan yere geldik...&lt;img title="Laughing" src="/editors/tiny_mce3/plugins/emotions/img/smiley-laughing.gif" alt="Laughing" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+  &amp;lt;system.serviceModel&amp;gt;
+    &amp;lt;behaviors&amp;gt;
+      &amp;lt;serviceBehaviors&amp;gt;
+        &amp;lt;behavior&amp;gt;
+          &amp;lt;routing routingTableName="RTable"/&amp;gt;
+        &amp;lt;/behavior&amp;gt;
+      &amp;lt;/serviceBehaviors&amp;gt;
+    &amp;lt;/behaviors&amp;gt;
+    &amp;lt;client&amp;gt;
+      &amp;lt;endpoint address="http://localhost:3445/UserService" binding="wsHttpBinding" contract="*" name="UserServiceEndpoint" /&amp;gt;
+      &amp;lt;endpoint address="net.tcp://localhost:4001/RegisterService" binding="netTcpBinding" contract="*" name="RegisterServiceEndpoint" /&amp;gt;
+    &amp;lt;/client&amp;gt;
+    &amp;lt;services&amp;gt;
+      &amp;lt;service name="System.ServiceModel.Routing.RoutingService"&amp;gt;
+        &amp;lt;host&amp;gt;
+          &amp;lt;baseAddresses&amp;gt;
+            &amp;lt;add baseAddress="http://localhost:6501/User/Management/RouterService"/&amp;gt;
+          &amp;lt;/baseAddresses&amp;gt;
+        &amp;lt;/host&amp;gt;
+        &amp;lt;endpoint binding="basicHttpBinding" contract="System.ServiceModel.Routing.IRequestReplyRouter"/&amp;gt;
+      &amp;lt;/service&amp;gt;
+    &amp;lt;/services&amp;gt;
+    &amp;lt;routing&amp;gt;
+      &amp;lt;filters&amp;gt;
+        &amp;lt;filter name="RegisterFilter" filterType="Action" filterData="http://www.azon.com/Registration"/&amp;gt;
+        &amp;lt;filter name="UpdateUserFilter" filterType="Action" filterData="http://www.azon.com/UpdateUser"/&amp;gt;
+      &amp;lt;/filters&amp;gt;
+      &amp;lt;routingTables&amp;gt;
+        &amp;lt;table name="RTable"&amp;gt;
+          &amp;lt;entries&amp;gt;
+            &amp;lt;add filterName="RegisterFilter" endpointName="RegisterServiceEndpoint"/&amp;gt;
+            &amp;lt;add filterName="UpdateUserFilter" endpointName="UserServiceEndpoint"/&amp;gt;
+          &amp;lt;/entries&amp;gt;
+        &amp;lt;/table&amp;gt;
+      &amp;lt;/routingTables&amp;gt;
+    &amp;lt;/routing&amp;gt;
+  &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Aslında bu konfigurasyon i&amp;ccedil;eriğine bir ka&amp;ccedil; dakika g&amp;ouml;zle bakmakta ve kafamızda gerekli bağlantıları yaparak neyin ne olduğunu anlamaya &amp;ccedil;alışmakta yarar olduğu kanısındayım. İlk olarak bir &lt;strong&gt;routing&lt;/strong&gt; davranışını belirlendiğini hemen g&amp;ouml;rebiliriz. Bu davranışın &lt;strong&gt;routingTableName&lt;/strong&gt; niteliğine atanan değer ile, hangi filtreleme tablosuna bakılacağı belirlenmektedir. Y&amp;ouml;nlendirme ile ilgili eşleştirmelerin tamamı, &lt;strong&gt;routing&lt;/strong&gt; elementi i&amp;ccedil;erisinde yapılır. Dikkat edileceği &amp;uuml;zere iki adet filtre belirlenmiştir. Bunların her ikiside &lt;strong&gt;Action&lt;/strong&gt; tipindedir. Yani &lt;strong&gt;filterData&lt;/strong&gt; niteliğine atanan değer, gelen taleplerin &lt;strong&gt;SOAP Action&lt;/strong&gt; kısımlarında aranır. Peki bulunduklarında ne olur?&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;table&lt;/strong&gt; elementi altında yer alan &lt;strong&gt;entries&lt;/strong&gt; alt boğumunda, bir filtrenin belirttiği kritere uyulması halinde hangi istemci &lt;strong&gt;endPoint &lt;/strong&gt;noktasının devreye sokulacağı belirtilmektedir. &amp;Ccedil;ok doğal olarak &amp;ccedil;alışma zamanı, gelen &lt;strong&gt;Action&lt;/strong&gt; bilgisinin eş d&amp;uuml;şt&amp;uuml;ğ&amp;uuml; &lt;strong&gt;Endpoint'&lt;/strong&gt; i bulduktan sonra, y&amp;ouml;nlendirmeyi hangi &lt;strong&gt;Downstream&lt;/strong&gt; tipine doğru yapacağını kolayca bilecektir. &amp;Ouml;nemli olan noktalardan bir diğeride, servisin &lt;strong&gt;Endpoint&lt;/strong&gt; bilgisidir. Burada g&amp;ouml;r&amp;uuml;leceği &amp;uuml;zere daha &amp;ouml;nceki yazımızdan da hatırlayacağınız &lt;strong&gt;built-in routing&lt;/strong&gt; s&amp;ouml;zleşmelerinden birisi se&amp;ccedil;ilmiştir. Buna g&amp;ouml;re operasyonlarımızda &lt;strong&gt;request/reply&lt;/strong&gt; modeli s&amp;ouml;z konusu olduğundan &lt;strong&gt;IRequestRepyleRouter&lt;/strong&gt; servis s&amp;ouml;zleşmesinden yararlanılmaktadır. Artık y&amp;ouml;nlendirme servisinin kodlarını aşağıdaki gibi geliştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+using System.ServiceModel.Routing;
+
+namespace Router
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            ServiceHost host = new ServiceHost(typeof(RoutingService));
+            host.Open();
+            Console.WriteLine("Routing Service hazır...");
+            Console.ReadLine();
+            host.Close();
+
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Tek dikkat edilmesi gereken, &lt;strong&gt;System.ServiceModel.Routing assembly'&lt;/strong&gt; ından gelen &lt;strong&gt;RoutingService&lt;/strong&gt; tipinin kullanılmış olmasıdır. Bu sayede &amp;ccedil;alışma zamanında y&amp;ouml;nlendirme işlemleri i&amp;ccedil;in gerekli alt yapının oluşturulması sağlanacaktır. Artık geriye istemci tarafını tamamlamaktan başka bir şey kalmamaktadır. Yupiiii!!! &lt;img title="Cool" src="/editors/tiny_mce3/plugins/emotions/img/smiley-cool.gif" alt="Cool" border="0" /&gt;&amp;nbsp;İşte istemci tarafının &lt;strong&gt;App.config&lt;/strong&gt; dosyası i&amp;ccedil;eriği;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;system.serviceModel&amp;gt;
+      &amp;lt;client&amp;gt;
+        &amp;lt;endpoint address="http://localhost:6501/User/Management/RouterService"
+                  contract="MemberManagementSpace.MemberManagementService"
+                  binding="basicHttpBinding"/&amp;gt;
+      &amp;lt;/client&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;Endpoint&lt;/strong&gt; tanımlamasında, &lt;strong&gt;RoutingService&lt;/strong&gt; adresi belirlenmiş ve s&amp;ouml;zleşme tipi olarak daha &amp;ouml;nceden projeye eklediğimiz&lt;strong&gt; Reference.cs&lt;/strong&gt; i&amp;ccedil;erisine otomatik olarak &amp;uuml;retilen &lt;strong&gt;MemberManagementSpace.MemberManagementService&amp;nbsp;&lt;/strong&gt;atanmıştır.&lt;/p&gt;
+&lt;p&gt;ve &lt;strong&gt;Main&lt;/strong&gt; metodu kodları;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using ClientApp.MemberManagementSpace;
+
+namespace ClientApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("İstemci hazır...Başlamak i&amp;ccedil;in tuşa basınız");
+            Console.ReadLine();
+
+            MemberManagementServiceClient client = new MemberManagementServiceClient();
+
+            User burak = new User { Name = "Burak Selim Şenyurt" };
+            
+            string registerResult=client.RegisterUser(burak);
+            Console.WriteLine(registerResult);
+
+            string updateResult=client.UpdateUserName(burak, "Burki");
+            Console.WriteLine(updateResult);
+
+            Console.ReadLine();
+            client.Close();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi istemci uygulama &amp;ccedil;ok normal olarak servislerin uyguladığı ortak s&amp;ouml;zleşme şemasına sadık kalacak şekilde taleplerde bulunur. &lt;strong&gt;RegisterUser&lt;/strong&gt; ve &lt;strong&gt;UpdateUserName&lt;/strong&gt; metod &amp;ccedil;ağırıları. Ancak hangisi olursa olsun, t&amp;uuml;m bu operasyon &amp;ccedil;ağrılarına ilişkin talepler &lt;strong&gt;Routing Servisine&lt;/strong&gt; uğrayacaktır. G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi istemcinin, &lt;strong&gt;Downstream&lt;/strong&gt; servislerini bilmesine gerek yoktur. Zaten istemci uygulamada, s&amp;ouml;z konusu &lt;strong&gt;Downstream&lt;/strong&gt; servislerine ait referansların ve &lt;strong&gt;config&lt;/strong&gt; i&amp;ccedil;eriğinin olmayışı bunu kanıtlamaktadır. &lt;strong&gt;Action&lt;/strong&gt; talepleri, y&amp;ouml;nlendirme servisi tarafından değerlendirilip alt servislere iletildikten sonra, &amp;uuml;retilen cevaplar yine &lt;strong&gt;Routing&lt;/strong&gt; servisi &amp;uuml;zerinden istemci tarafına g&amp;ouml;nderilir.&lt;/p&gt;
+&lt;p&gt;Artık &amp;ouml;rneği test etmeye ne dersiniz? İşte benim aldığım sonu&amp;ccedil;lar;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f8%2fblg73_Runtime.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Umarım sizlerde benzer sonu&amp;ccedil;ları elde edebilirsiniz. Herşey yolunda g&amp;ouml;r&amp;uuml;n&amp;uuml;yor. &lt;img title="Smile" src="/editors/tiny_mce3/plugins/emotions/img/smiley-smile.gif" alt="Smile" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&amp;Ouml;rnekte &amp;ouml;zetle neler yaptık?&lt;/strong&gt;&lt;/p&gt;
+&lt;table style="width: 100%;" border="1" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="text-align: center;"&gt;
+&lt;p&gt;&lt;strong&gt;A&amp;nbsp;&amp;nbsp;&amp;nbsp; &lt;/strong&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;&lt;strong&gt;DownStream Services&lt;/strong&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;&lt;strong&gt;UserManagementService&lt;/strong&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td style="text-align: right;"&gt;
+&lt;p&gt;Adres&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;http://localhost:3445/UserService&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td style="text-align: right;"&gt;
+&lt;p&gt;Binding&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;wsHttpBinding&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td style="text-align: right;"&gt;
+&lt;p&gt;Metadata Publishing&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;true &lt;em&gt;(Sadece istemci i&amp;ccedil;in gerekli Reference i&amp;ccedil;eriğinin kolay elde edilmesi i&amp;ccedil;in a&amp;ccedil;ıldı. Kapatılabilir)&lt;/em&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td style="text-align: right;"&gt;
+&lt;p&gt;S&amp;ouml;zleşme&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;IManagementContract &lt;em&gt;(ContractLibrary i&amp;ccedil;erisindeki servis s&amp;ouml;zleşmesidir)&lt;/em&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td style="text-align: right;"&gt;
+&lt;p&gt;Action&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;http://www.azon.com/UpdateUser&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;&lt;strong&gt;InternalService&lt;/strong&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td style="text-align: right;"&gt;
+&lt;p&gt;Adres&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;net.tcp://localhost:4001/RegisterService&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td style="text-align: right;"&gt;
+&lt;p&gt;Binding&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;netTcpBinding&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td style="text-align: right;"&gt;
+&lt;p&gt;S&amp;ouml;zleşme&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;IManagementContract &lt;em&gt;(ContractLibrary i&amp;ccedil;erisindeki servis s&amp;ouml;zleşmesidir)&lt;/em&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td style="text-align: right;"&gt;
+&lt;p&gt;Action&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;http://www.azon.com/RegisterUser&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align: center;"&gt;
+&lt;p&gt;&lt;strong&gt;B&lt;/strong&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;&lt;strong&gt;Router Service&lt;/strong&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;&lt;em&gt;(DownStream servislerinin Endpoint&amp;nbsp;bilgilerini&amp;nbsp;barındırır ama bu servislere ait referanslar tiplerini i&amp;ccedil;ermez)&lt;/em&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td style="text-align: right;"&gt;
+&lt;p&gt;Service Endpoint Adresi&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;http://localhost:6501/User/Management/RouterService&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td style="text-align: right;"&gt;
+&lt;p&gt;Binding&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;basicHttpBinding&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td style="text-align: right;" valign="top"&gt;
+&lt;p&gt;Client Endpoint Adresleri&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;http://localhost:3445/UserService&lt;br /&gt;net.tcp://localhost:4001/RegisterService&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;p&gt;&lt;strong&gt;C&lt;/strong&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;&lt;strong&gt;Client Uygulama&lt;/strong&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;Sadece Action bilgilerine sahip olan proxy tipini i&amp;ccedil;erir.&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;Proxy tipinin &amp;uuml;retimi i&amp;ccedil;in UserManagementService &amp;uuml;zerinden a&amp;ccedil;ılan WSDL i&amp;ccedil;eriğinden yararlanılmıştır. Ama bilindiği &amp;uuml;zere ellede &amp;uuml;retimi yapılıp oluşturulan sınıfın istemci tarafına verilmesi yolu da tercih edilebilir.&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;Downstream servislerin ait Endpoint bilgilerini i&amp;ccedil;ermez, bunun yerine Router servise ait Endpoint bilgisini i&amp;ccedil;erir.&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;Proxy nesnesi &amp;uuml;zerinde Register ve UpdateUser &amp;ccedil;ağrılarını, Router servise doğru ger&amp;ccedil;ekleştirir.&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Elbetteki bu &amp;ouml;rnekte en kritik noktalardan birisi filtrelemelerdir. Biz &amp;ouml;rneğimizde &lt;strong&gt;Action&lt;/strong&gt; i&amp;ccedil;eriğine bakarak bir filtreleme işlemi ger&amp;ccedil;ekleştirdik. Ancak &lt;strong&gt;XPath&lt;/strong&gt; kullanımı gibi senaryolarında m&amp;uuml;mk&amp;uuml;n olduğundan bahsetmiştik. Yani&amp;nbsp;talebe ait i&amp;ccedil;erik &amp;uuml;zerinden XPath sorguları ile koşula uyan durumlarıda y&amp;ouml;nlendirme işlemlerinde kullanabiliriz. Bu gibi ince noktalarıda ilerleyen yazılarımızda sizlere aktarmaya &amp;ccedil;alışıyor olacağım. Şimdilik bu kadar. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2009%2f8%2fRouter+Project.rar"&gt;Router Project.rar (104,09 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2009-08-26 15:03:00</pubDate>
+  <slug>WCF-40-Yenilikleri-Routing-Service-Gelistirmek-Hello-World</slug>
+  <tags>
+    <tag>wcf</tag>
+    <tag>wcf-40</tag>
+  </tags>
+  <categories>
+    <category>WCF 4.0 Beta 1</category>
+  </categories>
+</post>

@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>.Net Core ile Amazon DynamoDB'yi Kullanmak</title>
+  <description>Epey zamandır NoSQL veritabanı sistemlerini kurcalamıyordum. Ağırlıklı olarak da .Net tarafında nasıl kullanılabildiklerini incelediğimi hatırlıyorum. 2017nin son çeyreği ve 2018 için kendime koyduğum hedeflerden birisi ise .Net Core dünyasını daha yakından tanımak. West-World'ün kurulum amacı da özellik bu. Sonuç olarak Amazon'un DynamoDb'sini .Net Core tarafında nasıl kullanabileceğimi incelemeye karar verdim. Bir süredir AWS Console üzerinden bir şeyler araştırıyor ve Amazon Web Service ürünleri hakkında giriş niteliğinde bilgiler edinmeye çalışıyorum.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2018/01/dynamocore_halo.gif" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Epey zamandır NoSQL veritabanı sistemlerini kurcalamıyordum. Ağırlıklı olarak .Net Framework tarafında nasıl kullanılabildiklerini incelediğimi hatırlıyorum. 2017nin son &amp;ccedil;eyreği ve 2018in tamamı i&amp;ccedil;in kendime koyduğum hedeflerden birisi ise .Net Core d&amp;uuml;nyasını daha yakından tanımaktı. Zaten Ubuntu &amp;uuml;zerinde koşan West-World'&amp;uuml;n kurulum amacı da buydu. Sonu&amp;ccedil; olarak Amazon'un DynamoDb'sini .Net Core tarafında nasıl kullanabileceğimi incelemeye karar verdim. Bir s&amp;uuml;redir AWS Console &amp;uuml;zerinden bir şeyler araştırıyor ve Amazon Web Service &amp;uuml;r&amp;uuml;nleri hakkında giriş niteliğinde bilgiler edinmeye &amp;ccedil;alışıyorum.&lt;/p&gt;
+&lt;p&gt;Amazon DynamoDb şemasız(schema-less) olarak kullanılabilen bir NoSQL veritabanı sistemi olarak karşımıza &amp;ccedil;ıkıyor. Key-Value&amp;nbsp;tipine g&amp;ouml;re &amp;ccedil;alışan&lt;em&gt;(ama Document Store'a da benzeyen)&lt;/em&gt; bir model sunduğunu s&amp;ouml;yleyebiliriz. Belli koşullar ger&amp;ccedil;ekleşinceye kadar tamamen &amp;uuml;cretsiz kullanılabilen hızlı bir veri tabanı da aynı zamanda. Bununla birlikte veriyi hızlı SSD'ler &amp;uuml;zerinde tuttuğuna dair bir bilgi de var. Bu a&amp;ccedil;ıdan bakıldığında veriyi bellekte konuşlandırmayı se&amp;ccedil;en Redis'ten ayrışıyor.&lt;/p&gt;
+&lt;p&gt;Elastic MapReduce ile entegre olabilen, otomatik olarak &amp;ouml;l&amp;ccedil;eklenebilen, Backup s&amp;uuml;recinde S3 hizmetlerini kullanan DynamoDb ile ilgili Bahadır Akın'un &lt;a href="http://www.bahadirakin.com/aws-dynamodb-nedir/" target="_blank"&gt;şu adreste&lt;/a&gt;&amp;nbsp;olduk&amp;ccedil;a g&amp;uuml;zel ve detaylı bir yazısı da bulunuyor. Okumanızı tavsiye ederim. Onunla ilgili &amp;ccedil;alışmalara &lt;a href="https://aws.amazon.com/dynamodb/getting-started/" target="_blank"&gt;bu adresten&lt;/a&gt; hızlıca başlayabiliriz.&lt;/p&gt;
+&lt;h1&gt;Amazon Console &amp;Uuml;zerinden Basit Bir Giriş&lt;/h1&gt;
+&lt;p&gt;Amazon Console web aray&amp;uuml;z&amp;uuml; &amp;uuml;zerinden DynamoDb ile ilgili pek &amp;ccedil;ok işlem ger&amp;ccedil;ekleştirilebilir. Bir ka&amp;ccedil; dakika i&amp;ccedil;erisinde tablolar oluşturabilir, insert, update, delete gibi temel veri işlemlerini ger&amp;ccedil;ekleştirebiliriz. S&amp;ouml;z gelimi sevdiğimiz oyun karakterlerine ait s&amp;ouml;zleri tutan bir tablo tasarlayabiliriz. Bunun i&amp;ccedil;in Create Table bağlantısından hareket etmemiz&amp;nbsp;ve sayfadaki ilgili alanları doldurmamız yeterli.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/01/dynamocore_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;BEn bu deneme&amp;nbsp;sonucunda aşağıdaki gibi bir ekranla karşılaştım.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/01/dynamocore_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Quote&amp;nbsp;isminde, Primary Key&lt;em&gt;(Partition Key)&lt;/em&gt; olarak Game&amp;nbsp;adında&amp;nbsp;string tipte alan i&amp;ccedil;eren bir tablo oluştu. Partition Key alanı &amp;ouml;zellikle veritabanının &amp;ouml;l&amp;ccedil;eklendirilmesi noktasında &amp;ouml;nem arz eden bir konu. İkinci olarak eklediğimiz Sort Key alanı hızlı bir arama işlemi i&amp;ccedil;in ele alınacak ancak kullanılması elbette zorunlu değil. Game ve Character alanları bir arada yeni bir hash tanımının oluşmasına da neden olmakta. Tablonun tasarımını daha da detaylandırmamız m&amp;uuml;mk&amp;uuml;n.&amp;nbsp;Şunu da unutmamak gerekiyor ki; iyi bir tablo tasarımı i&amp;ccedil;in partition key, sort key, global secondary index ve local secondary index kavramlarını iyi derecede kavramak&amp;nbsp;lazım.&lt;/p&gt;
+&lt;p&gt;Olduk&amp;ccedil;a detaylı ayarların yapılabildiği bir arabirim burası. Pek &amp;ccedil;ok sekmeye yabancı olduğumu itiraf edebilirim. Yeni yeni keşfetmeye &amp;ccedil;alışıyorum. İlk olarak tabloya nasıl veri&amp;nbsp;ekleyeceğimizi g&amp;ouml;stermeye &amp;ccedil;alışayım. Bunun i&amp;ccedil;in Items sekmesinden Create Item d&amp;uuml;ğmesine basmak yeterli.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/01/dynamocore_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Tree olarak adlandırılan ve ağa&amp;ccedil; g&amp;ouml;r&amp;uuml;n&amp;uuml;m&amp;uuml; sunan&amp;nbsp;arabirim kullanılabileceği gibi, Text moduna ge&amp;ccedil;ilerek JSON Formatındaki i&amp;ccedil;eriğin elle&amp;nbsp;yazılması da sağlanabilir.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Tree modundaki g&amp;ouml;r&amp;uuml;n&amp;uuml;m;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/01/dynamocore_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bunun text modundaki g&amp;ouml;r&amp;uuml;n&amp;uuml;m&amp;uuml; ise aşağıdaki gibiydi.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/01/dynamocore_5.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bunun &amp;uuml;zerine bir ka&amp;ccedil;&amp;nbsp;&amp;ouml;ğe daha ekledim ve aşağıdaki i&amp;ccedil;eriğin oluşmasını sağladım. Benim size &amp;ouml;nerim &amp;uuml;cretsiz olarak sunulan REST tabanlı Quote hizmetlerinden yararlanarak veri girişi yapmanız. Bu g&amp;uuml;zel bir vaka &amp;ccedil;alışması da olabilir.&amp;nbsp;&amp;Ouml;rneğin her g&amp;uuml;n bağlanıp o g&amp;uuml;n&amp;uuml;n &amp;ouml;zl&amp;uuml; s&amp;ouml;z&amp;uuml;n&amp;uuml; aldığınız REST servis i&amp;ccedil;eriğini, DynamoDB &amp;uuml;zerindeki tablonuza aktarabilirsiniz ;)&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/01/dynamocore_6.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Sonra bir filtreleme yapmaya &amp;ccedil;alıştım. Text alanı i&amp;ccedil;erisinde "I" kelimesi ge&amp;ccedil;enleri bulmayı denedim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/01/dynamocore_7.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Ardından&amp;nbsp;Halo 2 oyununda karakterin adı G harfi ile başlayanların s&amp;ouml;zlerini nasıl&amp;nbsp;s&amp;uuml;zebileceğime bir&amp;nbsp;baktım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/01/dynamocore_8.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Tabii benim yaptığım sadece arabirimi tanımaya &amp;ccedil;alışmak. Tablo tasarımı aslına bakarsanız yanlış. S&amp;ouml;z gelimi bir oyuna bir karakter i&amp;ccedil;in n sayıda s&amp;ouml;z ekleyemeyiz. Dolayısıyla tasarımı bir oyunun birbirinden farklı karakterlerine ait en iyi s&amp;ouml;zlerin tutulduğu bir depo gibi d&amp;uuml;ş&amp;uuml;nebiliriz. Eğer aynı oyuna aynı karakterden bir s&amp;ouml;z daha girmeye &amp;ccedil;alışırsak şu uzun ifadeye benzer hata mesajı ile karşılaşmanız muhtemel.&lt;/p&gt;
+&lt;p&gt;"The conditional request failed (Service: AmazonDynamoDBv2; Status Code: 400; Error Code: ConditionalCheckFailedException; Request ID: KP8D9MU06E36D9AH50IF9AV99RVV4KQNSO5AEMVJF66Q9ASUAAJG)&lt;/p&gt;
+&lt;p&gt;Tablo oluşturma, i&amp;ccedil;ine veri atma, veriyi sorgulama gibi basit işlemlerin Amazon Console arabirimi ile nasıl yapılabileceğini g&amp;ouml;rd&amp;uuml;k. Ancak amacımız başta da belirttiğimiz gibi bir .Net Core uygulaması &amp;uuml;zerinden Amazon DynamoDb'yi kullanmak.&lt;/p&gt;
+&lt;h1&gt;.Net Core Tarafını Geliştiriyoruz&lt;/h1&gt;
+&lt;p&gt;En b&amp;uuml;y&amp;uuml;k yardımcımız &lt;a href="https://www.nuget.org/packages/AWSSDK.DynamoDBv2/" target="_blank"&gt;şu adresten sunulan DynamoDbv2 isimli NuGet&lt;/a&gt; paketimiz olacak. Tabii birde Amazon servisine erişirken kullanacağımız ge&amp;ccedil;erli bir&amp;nbsp;kimlik bilgimizin(Credential)&amp;nbsp;olması lazım. Dolayısıyla &lt;a href="https://console.aws.amazon.com/iam/home#/home" target="_blank"&gt;IAM adresine giderek&lt;/a&gt; bu uygulama i&amp;ccedil;in bir kullanıcı oluşturabilirsiniz. Ben daha &amp;ouml;nceden oluşturduğum AdministratorAccess rol&amp;uuml;ndeki westworld-buraksenyurt kullanıcısına ait Access Key ID ve Secret Access Key değerlerini kullanacağım. Bu değerler bildiğiniz &amp;uuml;zere IAM &amp;uuml;zerinden kullanıcı oluşturduğunuzda size verilmekte.&lt;/p&gt;
+&lt;p&gt;İşe bir Console projesi oluşturarak başlayabiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet new console -o HowToDynamoDb&lt;/pre&gt;
+&lt;p&gt;Bu işlemin ardından DynamoDb NuGet paketini projeye eklememiz gerekiyor.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet add package AWSSDK.DynamoDBv2 --version 3.3.5&lt;/pre&gt;
+&lt;p&gt;İlk olarak DynamoDb &amp;uuml;zerindeki tablo listesini &amp;ccedil;ekmeye &amp;ccedil;alışalım. Ben deneme olması i&amp;ccedil;in &amp;ouml;nce Amazon Console'dan 3 tablo oluşturdum ve&amp;nbsp;Program dosyasına aşağıdaki kodları yazdım&lt;em&gt;(Visual Studio Code kullanıyorum)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Amazon;
+using Amazon.DynamoDBv2;
+using Amazon.Runtime;
+
+namespace HowToDynamoDb
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var utl=new DynamoDBUtility();
+            var tableNames = utl.GetTables();
+            foreach (var tableName in tableNames)
+            {
+                Console.WriteLine($"{tableName}");
+            }
+            
+        }
+    }
+
+    class DynamoDBUtility
+    {
+        AmazonDynamoDBClient aws;
+        public DynamoDBUtility()
+        {
+            var myCredentials=new BasicAWSCredentials("Application Key ID","Secret Access Key");
+            aws=new AmazonDynamoDBClient(myCredentials,RegionEndpoint.USEast2);
+            
+        }
+        public List&amp;lt;string&amp;gt; GetTables()
+        {
+            var response = aws.ListTablesAsync();
+            return response.Result.TableNames;
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;ncelikle ge&amp;ccedil;erli bir Credential bilgisi oluşturmalıyız. Bunun i&amp;ccedil;in BasicAWSCredentials sınıfını kullanabiliriz&lt;em&gt;(Siz kendi oluşturduğunuz kullanıcıya ait Key bilgilerini girmelisiniz ki bu bilgiler konfigurasyondan da gelebilirler)&lt;/em&gt; Sonrasında AmazonDynamoDBClient t&amp;uuml;r&amp;uuml;nden bir &amp;ouml;rnek oluşturuyoruz. Ben US-East-2 b&amp;ouml;lgesini kullandığım i&amp;ccedil;in ikinci parametrede RegionEndpoint.USEast2 değerini verdim. GetTables isimli metodun yaptığı işlem olduk&amp;ccedil;a basit. ListTablesAsync metodu ile elde edilen tablo adlarını geriye d&amp;ouml;nd&amp;uuml;r&amp;uuml;yor. Sonu&amp;ccedil;lar aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ne benzer olmalı &lt;em&gt;(AmazonDynamoDBClient &amp;uuml;zerindeki pek &amp;ccedil;ok operasyon awaitable nitelikte. Dolayısıyla tamamen asenkron olarak kullanılabilirler de)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;img src="/image.axd?picture=/2018/01/dynamocore_9.gif" alt="" /&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Peki kod ile sıfırdan bir tabloyu nasıl oluşturabiliriz?&amp;nbsp;Kodu aşağıdaki gibi değiştirelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Amazon;
+using Amazon.DynamoDBv2;
+using Amazon.DynamoDBv2.Model;
+using Amazon.Runtime;
+
+namespace HowToDynamoDb
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var utl = new DynamoDBUtility();
+            utl.CreateTable("GameQuotes","QuoteID", ScalarAttributeType.N);
+            utl.CreateTable("Players","Nickname", ScalarAttributeType.S);
+
+            var tableNames = utl.GetTables();
+            foreach (var tableName in tableNames)
+            {
+                Console.WriteLine($"{tableName}");
+            }
+        }
+    }
+
+    class DynamoDBUtility
+    {
+        AmazonDynamoDBClient aws;
+        public DynamoDBUtility()
+        {
+            var myCredentials=new BasicAWSCredentials("Application Key ID","Secret Access Key");
+            aws = new AmazonDynamoDBClient(myCredentials, RegionEndpoint.USEast2);
+        }
+        public List&amp;lt;string&amp;gt; GetTables()
+        {
+            var response = aws.ListTablesAsync();
+            return response.Result.TableNames;
+        }
+
+        public void CreateTable(string tableName,string partionKeyName,ScalarAttributeType partitionKeyType)
+        {
+            var tableResponse = GetTables();
+            if (!tableResponse.Contains(tableName))
+            {
+                var response = aws.CreateTableAsync(new CreateTableRequest
+                {
+                    TableName = tableName,
+                    KeySchema = new List&amp;lt;KeySchemaElement&amp;gt;
+                    {
+                        new KeySchemaElement
+                        {
+                            AttributeName = partionKeyName,
+                            KeyType = KeyType.HASH
+                        }
+                    },
+                    AttributeDefinitions = new List&amp;lt;AttributeDefinition&amp;gt;
+                    {
+                        new AttributeDefinition {
+                            AttributeName = partionKeyName,
+                            AttributeType=partitionKeyType
+                        }
+                    },
+                    ProvisionedThroughput = new ProvisionedThroughput
+                    {
+                        ReadCapacityUnits = 3,
+                        WriteCapacityUnits = 3
+                    },
+                });
+                Console.WriteLine($"HTTP Response : {response.Result.HttpStatusCode}");
+            }
+            else
+            {
+                Console.WriteLine($"{tableName} isimli tablo zaten var");
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;CreateTable isimli operayon DynamoDB &amp;uuml;zerinde bir tablo oluşturmak i&amp;ccedil;in kullanılıyor. &amp;Uuml;&amp;ccedil; parametresi var. Tablo ve Partition Key adları ile, Partition Key'in veri t&amp;uuml;r&amp;uuml;n&amp;uuml; alıyor. ScalarAttributeType &amp;uuml;zerinden N(number), S(string) ve B(Binary) şeklinde anahtar t&amp;uuml;r&amp;uuml;n&amp;uuml;n ne olacağını belirtebiliriz. Tablo oluşturma işlemini asenkron olarak kullanılabilen&lt;em&gt;(ki burada senkron bir işleyiş var)&lt;/em&gt; CreateTableAsync fonksiyonu ger&amp;ccedil;ekleştirmekte. Tabii tabloyu oluşturmadan &amp;ouml;nce var olup olmadığını da kontrol ediyoruz.&amp;nbsp;Ben&amp;nbsp;GameQuotes ve Players isimli iki tabloyu oluşturmayı denedim. İşlemler sorunsuz şekilde&amp;nbsp;tamamlandıktan sonra AWS Console&amp;nbsp;&amp;uuml;zerinden de oluşturulan tabloları g&amp;ouml;rebildim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/01/dynamocore_10.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi tablolardan birisine veri eklemeye &amp;ccedil;alışalım. Hen&amp;uuml;z elimizde bir Entity &amp;ouml;rneği bulunmuyor. &amp;Ouml;ncelikle bu varlığa ait sınıfı tasarlamak lazım. GameQuotes tablomuz i&amp;ccedil;in aşağıdaki gibi bir sınıf yazabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Amazon.DynamoDBv2.DataModel;
+
+namespace HowToDynamoDb
+{
+    [DynamoDBTable("GameQuotes")]
+    public class Quote
+    {
+        [DynamoDBHashKey]
+        public int QuoteID { get; set; }
+        public QuoteInfo QuoteInfo { get; set; }
+    }
+    public class QuoteInfo
+    {
+        public string Character { get; set; }
+        public int Like { get; set; }
+        public string Game { get; set; }
+        public string Text { get; set; }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Quote isimli sınıfın başında DynamoDBTable isimli bir nitelik&lt;em&gt;(attribite)&lt;/em&gt; yer alıyor. Bu nitelikteki isim biraz &amp;ouml;nce oluşturduğumuz tablo adı ile aynı. Ayrıca QuoteID isimli bir Parition Key tanımlamıştık. Bu anahtarı Entity tarafında DynamoDBHashKey niteliği yardımıyla işaretliyoruz. Quote sınıfı, QuoteInfo tipinden bir &amp;ouml;zellik de barındırıyor. Bu sınıfta oyunun adını, s&amp;ouml;z&amp;uuml; s&amp;ouml;yleyen karakteri, beğeni sayısını ve tabii s&amp;ouml;z&amp;uuml;n kendisini tutuyoruz. Aslında QuoteID ile ilişkilendirdiğimiz bir i&amp;ccedil;eriğin s&amp;ouml;z konusu olduğunu ifade edebiliriz. Tam bir key-value ilişkisi.&amp;nbsp;JSONca d&amp;uuml;ş&amp;uuml;nd&amp;uuml;ğ&amp;uuml;m&amp;uuml;zde de i&amp;ccedil;i&amp;ccedil;e bir tip yapısı s&amp;ouml;z konusu.&lt;/p&gt;
+&lt;p&gt;Bir Quote nesne &amp;ouml;rneğini DynamoDB &amp;uuml;zerindeki ilgili tabloya yazmak i&amp;ccedil;in Utility sınıfına aşağıdaki metodu ekleyerek ilerleyelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public void InsertQuote(Quote quote)
+{
+    var context = new DynamoDBContext(aws);           
+    context.SaveAsync&amp;lt;Quote&amp;gt;(quote).Wait();            
+}&lt;/pre&gt;
+&lt;p&gt;Entity Framework d&amp;uuml;nyasındaki Context kullanımına ne kadar benziyor değil mi? :) Tek yapmamız gereken AmazonDynamoDBClient nesnesi ile ilişkilendirilmiş DynamoDBContext &amp;ouml;rneği &amp;uuml;zerinden SaveAsync metodunu &amp;ccedil;ağırmak. Generic parametre olarak Quote tipini kullandığımıza dikkat edelim.&lt;/p&gt;
+&lt;p&gt;Artık bir deneme yapabiliriz. Main metodu i&amp;ccedil;erisinde aşağıdaki gibi bir kod par&amp;ccedil;ası işimizi g&amp;ouml;recektir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var utl = new DynamoDBUtility();
+Quote quote=new Quote{
+QuoteID=1001,
+QuoteInfo=new QuoteInfo{
+    Character="Cortana",
+    Game="Halo 2",
+    Like=192834,
+    Text="Child of my enemy, why have you come? I offer no forgiveness, a father's sins, passed to his son."
+}
+};
+utl.InsertQuote(quote);&lt;/pre&gt;
+&lt;p&gt;Ben Halo 2 oyunundan Cortana isimli karaktere ait bulduğum bir s&amp;ouml;z&amp;uuml; girdim. Programı &amp;ccedil;alıştırdıktan sonra hemen Amazon Console'a gittim ve eklenen yeni satırın aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi eklendiğini g&amp;ouml;rd&amp;uuml;m.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/01/dynamocore_11.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Peki kod tarafında bu i&amp;ccedil;eriği nasıl &amp;ccedil;ekebiliriz? Gelin aşağıdaki fonksiyonu Utility sınıfına dahil ederek devam edelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public Quote FindQuoteByID(int quoteID)
+{
+    var context = new DynamoDBContext(aws);  
+    List&amp;lt;ScanCondition&amp;gt; queryConditions = new List&amp;lt;ScanCondition&amp;gt;();
+    queryConditions.Add(new ScanCondition("QuoteID", ScanOperator.Equal, quoteID));
+    var queryResult = context.ScanAsync&amp;lt;Quote&amp;gt;(queryConditions).GetRemainingAsync();
+    return queryResult.Result.FirstOrDefault();
+}&lt;/pre&gt;
+&lt;p&gt;Aslında bir arama koşulu listesi oluşturmaktayız. Senaryomuzda sadece bir kriter var o da Parition Key alanı olarak belirlediğimiz QuoteID değerine g&amp;ouml;re arama yapmak. ScanCondition ile belirlenen kriterde karşılaştırma koşulu, kullanılacak alan ve aranan değer bilgileri parametre olarak verilmekte. Sonrasında DynamoDBContext nesne &amp;ouml;rneği &amp;uuml;zerinden hareket ederek ScanAsync operasyonunu kullanıyor ve i&amp;ccedil;eriğe ulaşmaya &amp;ccedil;alışıyoruz. Main metodunda bu fonkisyonu kullanarak az &amp;ouml;nce eklediğimiz 1001 numaralı Quote i&amp;ccedil;eriğine ulaşabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var utl = new DynamoDBUtility();
+var findingQuote=utl.FindQuoteByID(1001);
+Console.WriteLine($"{findingQuote.QuoteInfo.Character}\n{findingQuote.QuoteInfo.Text}");&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/01/dynamocore_12.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Siz farklı arama ifadelerini bir araya getirerek değişik denemeler de yapabilirsiniz. &amp;Ouml;rneğin eklediğiniz n sayıda Quote i&amp;ccedil;erisinden, belli bir oyuna ait olup beğeni değerleri&amp;nbsp;1000 ve &amp;uuml;zerinde olanları &amp;ccedil;ekmeyi deneyebilirsiniz.&lt;/p&gt;
+&lt;h1&gt;Daha neler neler yapılabilir?&lt;/h1&gt;
+&lt;p&gt;&amp;Ouml;rneğin oluşturduğumuz tabloların silinmesi, alan i&amp;ccedil;eriklerinin g&amp;uuml;ncellenmesi vb standart operasyonları deneyimleyebilirsiniz. Biraz fonksiyonellikleri&amp;nbsp;araştırmanızda yarar var. NuGet paketinde gelen fonksiyonellikler Amazon DynamoDB'nin sunduğu imkanlara g&amp;ouml;re inşa edilmiş durumdalar. NuGet paketi &amp;uuml;zerinden gelen operayonları asenkron olarak &amp;ccedil;alıştırmayı denemenizi &amp;ouml;neririm. Benim &amp;ouml;rnek tamamen senkron &amp;ccedil;alışıyor&lt;em&gt;(Rezalet!)&lt;/em&gt; G&amp;ouml;rsel aray&amp;uuml;z&amp;uuml; olan bir uygulamada awaitable operayonları dikkate alarak aray&amp;uuml;z&amp;uuml;n donmasını engelleyecek şekilde değişiklikler yapmanız yerinde olur. Ah bir de tabii benim gibi God Object anti-pattern'inin yolunu a&amp;ccedil;an, Single Responsibility ilkesini ihlal etmiş kirli bir Utility sınıfı kullanmayın :)&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bu yazımızda Amazon'un NoSQL veritabanlarından olan key-value t&amp;uuml;revli DynamoDB'sini bir .Net Core uygulamasından nasıl kullanabileceğimizi incelemeye &amp;ccedil;alıştık. Fiyatlandırma kritlerini g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alarak kendi &amp;uuml;r&amp;uuml;nleriniz i&amp;ccedil;in kullanabileceğinizi d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum. Ben her ihtimale karşı onları sildim :) Geliştirmesi olduk&amp;ccedil;a kolay. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/buraksenyurt/dotnetcore/tree/master/HowToDynamoDb" target="_blank"&gt;Yazıdaki kodlara github adresimden de erişebilirsiniz.&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2018-04-16 06:00:00</pubDate>
+  <slug>net-core-ile-amazon-dynamodb-yi-kullanmak</slug>
+  <tags>
+    <tag>nosql</tag>
+    <tag>amazon</tag>
+    <tag>amazon-dynamodb</tag>
+    <tag>dynamodb</tag>
+    <tag>net-core</tag>
+    <tag>c#</tag>
+    <tag>key-value-storage</tag>
+    <tag>dynamo-db-v2</tag>
+  </tags>
+  <categories>
+    <category>.Net Core</category>
+    <category>AWS</category>
+  </categories>
+</post>

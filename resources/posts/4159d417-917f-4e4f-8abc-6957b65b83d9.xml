@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Microsoft Custom Vision Servisini Python ile Kullanmak</title>
+  <description>Amacım, Microsoft Azure platformunda yer alan ve fotoğraf/nesne sınıflandırmaları için kullanılabilen Custom Vision servisini basit bir Python uygulaması ile deneyimlemek. Custom Vision API'si geliştircilere kendi fotoğraf/nesne sınıflandırma servislerini yazma imkanı tanımakta. Onu, imajları belli karakteristik özelliklerine göre çeşitli takılar (tag) altında sınıflandırıp sıralayan bir AI (Artificial Intelligence) servisi olarak düşünebiliriz.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2019/08/asset_12.png" alt="" /&gt;Yandaki resme baktığınızda aklınıza gelen ilk şey nedir? Bir surat? Belki de bir kurbağa. Kedi olabilir mi? Bu m&amp;uuml;rekkep baskısı g&amp;ouml;sterildiği kişide yarattığı algıyı anlamak i&amp;ccedil;in kullanılan Rorschach&lt;em&gt;(Roşa olarak okunuyormuş)&lt;/em&gt; isimli psikolojik testten. &amp;Uuml;nl&amp;uuml; İsvi&amp;ccedil;reli psikiyatrist Hermann Rorschach&lt;em&gt;(1884-1922)&lt;/em&gt; tarafından geliştirilen test &amp;ouml;zellikle&amp;nbsp;kişilik tahlili ve şizofreni vakalarında kullanılmakta. Sonu&amp;ccedil;ların manipule edilmesinin zorluğu nedeniyle adli vakalarda ve hatta kariyerle ilgili kişilik testlerinde bile ele alınmakta.&amp;nbsp;Hermann yandakine benzer kırk m&amp;uuml;rekkep baskısı tasarlamış.&amp;nbsp;Kaynaklardan &amp;ouml;ğrendiğim kadarıyla doktorlar bu setteki kartların neredeyse yarısını kullanıp kişinin o anda nevrotik veya psikotik olup olmadığını anlayabiliyormuş. Tabi konunun uzmanı olmadığım i&amp;ccedil;in ancak giriş hikayemde kullanabilecek kadar bilgi aktarabiliyorum.&lt;/p&gt;
+&lt;p&gt;Filmlerde ve internette sıklıkla g&amp;ouml;rd&amp;uuml;ğ&amp;uuml;m&amp;uuml;z bu m&amp;uuml;rekkep baskılarına az &amp;ccedil;ok aşinayızdır. Peki bu fotoğrafa baktığında bir yapay zeka ne d&amp;uuml;ş&amp;uuml;n&amp;uuml;r? Onun tamamen rasyonel olan d&amp;uuml;nyasında duygulara yer olmadığını varsayarsak t&amp;uuml;m yapay zekalar i&amp;ccedil;in sonu&amp;ccedil; aynı mı olacaktır? Duygusal zeka ile donatılmış bir yapay zekanın tepkimeleri &amp;ccedil;eşitlilik g&amp;ouml;sterir mi? Sanırım onu bu resimlerle ilgili&amp;nbsp;yeterince iyi eğitirsek d&amp;uuml;ş&amp;uuml;ncelerini kolayca &amp;ouml;ğrenebiliriz. Tabii &lt;a href="https://github.com/buraksenyurt/saturday-night-works" target="_blank"&gt;o cumartesi gecesi &amp;ccedil;alışması&lt;/a&gt;nda ben Rorschach resimlerini sınıflandıracak bir yapa zeka servisi aramak yerine elimdeki Lego fotoğraflarını &amp;ouml;ğretebileceğim birisine bakıyordum.&amp;nbsp;Sonunda Microsoft'un Custom Vision servisini incelemeye karar verdim. &amp;Ouml;yleyse derlememize başlayalım.&lt;/p&gt;
+&lt;p&gt;Amacım, Microsoft Azure platformunda yer alan ve fotoğraf/nesne sınıflandırmaları i&amp;ccedil;in kullanılabilen Custom Vision servisini basit bir Python uygulaması ile deneyimlemek. Custom Vision API geliştircilere kendi fotoğraf/nesne sınıflandırma servislerini yazma imkanı sunuyor. Onu, imajları belli karakteristik &amp;ouml;zelliklerine g&amp;ouml;re &amp;ccedil;eşitli takılar&lt;em&gt;(tag)&lt;/em&gt; altında sınıflandırıp sıralayan bir AI&lt;em&gt;(Artificial Intelligence)&lt;/em&gt; servisi olarak d&amp;uuml;ş&amp;uuml;nebiliriz.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rnek &amp;ccedil;alışmada belli takılar i&amp;ccedil;in belli sayıda imajı sisteme &amp;ouml;ğretmeye &amp;ccedil;alışacağız&lt;em&gt;(Custom vision api i&amp;ccedil;in bu oran en az iki tag ve her bir tag i&amp;ccedil;in en az beş fotoğraf/nesne şeklinde)&lt;/em&gt;&amp;nbsp;&amp;Ouml;ğretiyi tamamladıktan sonra sisteme bir fotoğraf g&amp;ouml;sterip ne olduğunu tahmin etmesini isteyeceğiz. Sistem bizim &amp;ouml;ğrettiklerimize g&amp;ouml;re bir tahminlemede bulunacak ve y&amp;uuml;zdesel değerler verecek.&amp;nbsp;Son olarak bu sonu&amp;ccedil;ları sınıfla birlikte tartışacağız :P&lt;/p&gt;
+&lt;h2&gt;&amp;Ouml;n Hazırlıklar&lt;/h2&gt;
+&lt;p&gt;Her zaman olduğu gibi ben uygulamayı Python SDK'sini kullanarak WestWorld&lt;em&gt;(Ubuntu 18.04, 64bit)&lt;/em&gt; &amp;uuml;zerinde geliştiriyorum. Platform bağımsız olarak Python ve pip aracının sistemde y&amp;uuml;kl&amp;uuml; olması gerekiyor. Python tarafından Custom Vision API hizmetini kullanabilmek i&amp;ccedil;in ilgili paketin y&amp;uuml;klenmesi lazım. Aşağıdaki terminal komutu ile bunu yapabiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;pip install azure-cognitiveservices-vision-customvision&lt;/pre&gt;
+&lt;h3&gt;Custom Vision API i&amp;ccedil;in Credential Bilgilerinin Alınması&lt;/h3&gt;
+&lt;p&gt;Diğer pek &amp;ccedil;ok 3nc&amp;uuml; parti serviste olduğu gibi istemci tarafının ilgisi servisi kullanmasını sağlayacak bir ehliyete&lt;em&gt;(Credentials)&lt;/em&gt;&amp;nbsp;sahip olması gerekiyor. Bu nedenle servis i&amp;ccedil;in abone olmamız ve uygulama anahtarını almamız lazım. İlk olarak &lt;a href="https://www.customvision.ai/" target="_blank"&gt;şu adrese gidip login olmalıyız&lt;/a&gt;. Ardından &lt;em&gt;Create new project&lt;/em&gt; sekmesini kullanarak yeni bir proje oluşturmalıyız. Ben buradaki ayarları varsayılan değerlerinde bırakıp CIA &amp;ccedil;akması bir proje oluşturdum. Buna g&amp;ouml;re projemiz sınıflandırma g&amp;ouml;revini &amp;uuml;stleniyor. Sınıflandırılmaya tabi olan tipler birden fazla takıyla işaretlenebilir. &amp;Ouml;zel bir domain belirtmedik&amp;nbsp;ama ihtiyaca g&amp;ouml;re bu se&amp;ccedil;enek general haricindekilerden birisi de olabilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/08/credit_1.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Proje oluşturulduktan sonra &amp;ouml;zelliklerine ulaşıp bizim i&amp;ccedil;in &amp;uuml;retilen &lt;em&gt;Training Key&lt;/em&gt; ve &lt;em&gt;Prediction Key&lt;/em&gt; değerlerini almamız gerekiyor. Bu bilgiler istemci tarafı i&amp;ccedil;in gerekli.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Kodun &amp;ccedil;alışma dinamiklerini anlamadan &amp;ouml;nce Custom Vision API i&amp;ccedil;in ilk başta oluşturduğumuz projeyi tarayıcıdan denemenizi &amp;ouml;neririm. Belirtildiği gibi elinizdeki imajları en az 2 farklı tag ile eşleşecek şekilde ayrıştırıp sisteme y&amp;uuml;kleyin. Sonra eğitim programını&lt;em&gt;(training kısmı)&lt;/em&gt; başlatın&amp;nbsp;ki bu işi Azure tarafı halledecek.&amp;nbsp;Program işleyişini tamamlayınca&amp;nbsp;bir ka&amp;ccedil; imaj y&amp;uuml;kleyip hangi takılardan y&amp;uuml;zde ka&amp;ccedil; oranında karşılandığına bakın. &amp;Ouml;rnek k&amp;uuml;mesi zenginleştik&amp;ccedil;e tahminlerin doğruluk oranları da y&amp;uuml;kselecektir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;Kodlama ve&amp;nbsp;&amp;Ccedil;alışma Zamanı&lt;/h2&gt;
+&lt;p&gt;Azure tarafından Vision servis i&amp;ccedil;in ehliyetimizi aldığımıza g&amp;ouml;re python tarafını kodlamaya başlayabiliriz. İki python dosyamız var. pgadget.py isimli olanı fotoğraf eğitimi i&amp;ccedil;in kullanıyoruz. client.py ise&amp;nbsp;servisi t&amp;uuml;ketip sonu&amp;ccedil;ları almak i&amp;ccedil;in &amp;ccedil;alıştırılıyor.&lt;/p&gt;
+&lt;p&gt;pgadget kodlarımıza gelince;&lt;/p&gt;
+&lt;pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false"&gt;# -*- coding: utf-8 -*-
+
+# Custom Vision API'sini kullanabilemek i&amp;ccedil;in gerekli mod&amp;uuml;llerin bildirimi ile işe başladık
+from azure.cognitiveservices.vision.customvision.training import CustomVisionTrainingClient
+from azure.cognitiveservices.vision.customvision.training.models import ImageFileCreateEntry
+
+# Eğitici servise ait endpoint bilgisi
+apiEndpoint = "https://southcentralus.api.cognitive.microsoft.com"
+
+# Bizim i&amp;ccedil;in &amp;uuml;retiken traning ve prediction key değerleri
+tKey = "c3a53a4fb5f24137a179f0bcaf7754a5"
+pKey = "bf7571576405446782543f832b038891"
+
+# Eğitmen istemci nesnesi tanımlanıyor. İlk parametre traning_key
+# ikinci parametre Cognitive servis adresi
+coach_Rives = CustomVisionTrainingClient(tKey, endpoint=apiEndpoint)
+
+# Projeyi oluşturuyoruz
+print("Lego projesi oluşturuluyor")
+legoProject = coach_Rives.create_project("Agent_Leggooo")  # projemizin adı
+
+# Şimdi deneme ama&amp;ccedil;lı tag'ler oluşturup bu tag'lere &amp;ccedil;eşitli fotoğraflar y&amp;uuml;kleyeceğiz
+technic = coach_Rives.create_tag(legoProject.id, "technic")
+city = coach_Rives.create_tag(legoProject.id, "city")
+
+# Aşağıdaki tag'ler şu anda yorum satırı. Bunları a&amp;ccedil;ıp, create_images_from_files metodlarındaki tag_ids dizisine ekleyebiliriz.
+# Ancak Vision servisi her tag i&amp;ccedil;in en az beş adete fotoğraf olmasını istiyor. Bu k&amp;uuml;meyi &amp;ouml;rnekleyemediğim i&amp;ccedil;in sadece iki tag ile ilerledim.
+
+'''
+helicopter = coach_Rives.create_tag(legoProject.id, "helicopter")
+truck = coach_Rives.create_tag(legoProject.id, "truck")
+yellow = coach_Rives.create_tag(legoProject.id, "yellow")
+plane = coach_Rives.create_tag(legoProject.id, "plane")
+car = coach_Rives.create_tag(legoProject.id, "car")
+racecar = coach_Rives.create_tag(legoProject.id, "racecar")
+f1car = coach_Rives.create_tag(legoProject.id, "f1car")
+crane = coach_Rives.create_tag(legoProject.id, "train")
+building = coach_Rives.create_tag(legoProject.id, "building")
+station = coach_Rives.create_tag(legoProject.id, "station")
+orange = coach_Rives.create_tag(legoProject.id, "orange")
+'''
+
+file_name = "Images/technic/choper.jpg"
+with open(file_name, mode="rb") as image_contents:
+    coach_Rives.create_images_from_files(legoProject.id, [ImageFileCreateEntry(
+        name=file_name, contents=image_contents.read(), tag_ids=[technic.id])])
+
+file_name = "Images/technic/f1car.jpg"
+with open(file_name, mode="rb") as image_contents:
+    coach_Rives.create_images_from_files(legoProject.id, [ImageFileCreateEntry(
+        name=file_name, contents=image_contents.read(), tag_ids=[technic.id])])
+
+file_name = "Images/technic/truck.jpg"
+with open(file_name, mode="rb") as image_contents:
+    coach_Rives.create_images_from_files(legoProject.id, [ImageFileCreateEntry(
+        name=file_name, contents=image_contents.read(), tag_ids=[technic.id])])
+
+file_name = "Images/technic/truck_2.jpg"
+with open(file_name, mode="rb") as image_contents:
+    coach_Rives.create_images_from_files(legoProject.id, [ImageFileCreateEntry(
+        name=file_name, contents=image_contents.read(), tag_ids=[technic.id])])
+
+file_name = "Images/technic/vinc.jpg"
+with open(file_name, mode="rb") as image_contents:
+    coach_Rives.create_images_from_files(legoProject.id, [ImageFileCreateEntry(
+        name=file_name, contents=image_contents.read(), tag_ids=[technic.id])])
+
+file_name = "Images/city/plane.jpg"
+with open(file_name, mode="rb") as image_contents:
+    coach_Rives.create_images_from_files(legoProject.id, [ImageFileCreateEntry(
+        name=file_name, contents=image_contents.read(), tag_ids=[city.id])])
+
+file_name = "Images/city/policestation.jpg"
+with open(file_name, mode="rb") as image_contents:
+    coach_Rives.create_images_from_files(legoProject.id, [ImageFileCreateEntry(
+        name=file_name, contents=image_contents.read(), tag_ids=[city.id])])
+
+file_name = "Images/city/porsche.jpg"
+with open(file_name, mode="rb") as image_contents:
+    coach_Rives.create_images_from_files(legoProject.id, [ImageFileCreateEntry(
+        name=file_name, contents=image_contents.read(), tag_ids=[city.id])])
+
+file_name = "Images/city/racecar.jpg"
+with open(file_name, mode="rb") as image_contents:
+    coach_Rives.create_images_from_files(legoProject.id, [ImageFileCreateEntry(
+        name=file_name, contents=image_contents.read(), tag_ids=[city.id])])
+
+file_name = "Images/city/snowmobile.jpg"
+with open(file_name, mode="rb") as image_contents:
+    coach_Rives.create_images_from_files(legoProject.id, [ImageFileCreateEntry(
+        name=file_name, contents=image_contents.read(), tag_ids=[city.id])])
+
+# Fotoğrafları &amp;ccedil;eşitli tag'ler ile ilişkilendirdiğimize g&amp;ouml;re &amp;ouml;ğretimi başlatabiliriz
+
+print("lego fotoğraflarım i&amp;ccedil;in eğitim başlıyor")
+iteration = coach_Rives.train_project(legoProject.id)
+while (iteration.status != "Completed"):
+    iteration = coach_Rives.get_iteration(legoProject.id, iteration.id)
+    print("Durum..." + iteration.status)
+
+coach_Rives.update_iteration(legoProject.id, iteration.id, is_default=True)
+print("Eğitim tamamlandı...")
+&lt;/pre&gt;
+&lt;p&gt;client.py&lt;/p&gt;
+&lt;pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false"&gt;# -*- coding: utf-8 -*-
+
+# Bu kod ile test klas&amp;ouml;r&amp;uuml;nde yer alan imajları custom vision api servisine sorgulatıyoruz
+
+import requests  # HTTP Post talebini g&amp;ouml;nderirken kullanacağımız mod&amp;uuml;l
+import os  # Klas&amp;ouml;rdeki dosyaları okumak i&amp;ccedil;in kullandığımız mod&amp;uuml;l
+import filetype  # Dosya tipi kontrol&amp;uuml; i&amp;ccedil;in ekledik.
+
+# tahminleme servisine ait endpoint
+prediction_url = "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/334ee5e4-4fc8-4a5f-a209-a145ef857dcb/image"
+# Servisi kullanabilmek i&amp;ccedil;in gerekli API Key
+prediction_key = "bf7571576405446782543f832b038891"
+# HTTP Post header bilgilerimiz
+headers = {"Prediction-Key": prediction_key,
+           "content-type": "application/octet-stream"}
+
+files = os.listdir('./Images/test')  # test klas&amp;ouml;r&amp;uuml;ndeki dosyaları alıyoruz
+for f in files:
+    filepath = os.path.join('./Images/test', f)
+    extension = filetype.guess(filepath).extension # dosya tipini kontrol etmek i&amp;ccedil;in bakıyoruz
+    if extension == 'jpg': # sadece jpg tipinden dosyalarla &amp;ccedil;alışıyoruz
+        # sıradaki dosyayı binary olarak okuyoruz
+        fileData = open(filepath, 'rb').read()
+        # Post talebini g&amp;ouml;nderiyor ve cevabı response değişkenine atıyoruz
+        result = requests.post(url=prediction_url,
+                               data=fileData, headers=headers)
+        print(f)
+        for i in range(0, 2):  # taglerimize g&amp;ouml;re tahminleme bilgilerini okuyoruz
+            print(result.json()['predictions'][i]['tagName'])
+            print(result.json()['predictions'][i]['probability'])
+&lt;/pre&gt;
+&lt;p&gt;İlk &amp;ouml;rnekte belli karakteristiklerine g&amp;ouml;re lego imajlarını sınıflandırmaya &amp;ccedil;alışıyoruz. Koddaki tag yapısı buna g&amp;ouml;re kurgulandı. Birinci &amp;ouml;rneği &amp;ccedil;alıştırmak i&amp;ccedil;in aşağıdaki terminal komutunu kullanabiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;python pgadget.py&lt;/pre&gt;
+&lt;p&gt;Local makinedeki sonu&amp;ccedil;lar ş&amp;ouml;yle olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/08/credit_3.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Azure projesine gidersek de aşağıdaki sınıflandırmalarla karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/08/credit_4.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere fiziki depolama alanından se&amp;ccedil;ilen fotoğraflar ilgili Azure projesine y&amp;uuml;klendiler ve hatta iki kategori ile de tag bazında ilişkilendirildiler. Bu haliyle proje &amp;ouml;zetine baktığımızda şu sonu&amp;ccedil;ları g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/08/credit_9.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Artık servisimize bir fotoğraf g&amp;ouml;nderip ne olduğunu tahmin etmesini isteyebiliriz. Bu &amp;ccedil;ok basit anlamda Postman gibi bir ara&amp;ccedil;la da olabilir, tercih ettiğimiz programlama diliylede.&lt;/p&gt;
+&lt;h3&gt;Postman ile Test&lt;/h3&gt;
+&lt;p&gt;Oluşturduğumuz eğitmeni test etmek i&amp;ccedil;in bize a&amp;ccedil;ılan prediction API servisini kullanmak&amp;nbsp;ve Postman &amp;uuml;zerinden basit bir POST talebi g&amp;ouml;ndermek yeterlidir&lt;em&gt;(Kendi &amp;ouml;rneğinizle ilgili servise ait adres bilgisini site ayarlarından bulabilirsiniz)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/08/credit_5.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Postman ayarlarında Header kısmında ki bilgileri de aşağıdaki gibi doldurmalıyız. Sonu&amp;ccedil;ta ehliyetimizi g&amp;ouml;stermemiz gerekiyor. Bu nedenle Prediction-Key değerini girmemiz şart.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/08/credit_7.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Ben WestWorld'de bulunan bir imajı deneme ama&amp;ccedil;lı olarak g&amp;ouml;ndermek istediğimden Body kısmında Binary se&amp;ccedil;eneğini kullandım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/08/credit_8.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Deneme olarak kullandığım fotoğraf ise şuydu. Hani şimdilerde almaya kalksak bir yıl &amp;ouml;ncesine g&amp;ouml;re neredeyse iki katından fazla&amp;nbsp;para vermek zorunda olduğumuz bir kutu ne yazık ki :(&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/08/credit_6.jpg" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Tahminleme servisim bu fotoğraf i&amp;ccedil;in aşağıdaki sonu&amp;ccedil;ları verdi. %99 ihtimalle Lego City olduğunu ifade ediyor. Olduk&amp;ccedil;a başarılı ;)&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;{
+    "id": "eb190c6e-57a9-404f-ab58-ca106afc895e",
+    "project": "334ee5e4-4fc8-4a5f-a209-a145ef857dcb",
+    "iteration": "82712433-8e16-4e1a-9c52-7d1dc108085f",
+    "created": "2019-02-25T11:12:04.3505905Z",
+    "predictions": [
+        {
+            "probability": 0.9998578,
+            "tagId": "0e0fe67a-9377-426b-88db-98081766c042",
+            "tagName": "city"
+        },
+        {
+            "probability": 0.0000050534627,
+            "tagId": "d6ea80b8-8f44-488a-9e18-20227ef70fd2",
+            "tagName": "technic"
+        }
+    ]
+}&lt;/pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Alakalı alakasız fotoğraflar ile &amp;ouml;rneği denemekte yarar var. Eğitmene ne kadar &amp;ccedil;ok &amp;ouml;rnek anlatır ve tag kullanırsak tahminleme sonu&amp;ccedil;ları da o oranda başarılı olacaktır. Tabi sistemi yanılgıya da d&amp;uuml;ş&amp;uuml;rmeliyiz. S&amp;ouml;z gelimi bir pırasa resmi g&amp;ouml;stersek ne yapar şu kıt bilgisiyle, sorarım?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3&gt;Python Kodları ile Test Etmek&lt;/h3&gt;
+&lt;p&gt;Postman ile test yapmak işin kolay yollarından birisi. Diğer yandan client.py isimli uygulamayı &amp;ccedil;alıştıraraktan da denemeler yapabiliriz. Bu uygulama test klas&amp;ouml;r&amp;uuml; altındaki imajları tarar ve her biri i&amp;ccedil;in POST talebi g&amp;ouml;ndererek tahminleme sonu&amp;ccedil;larını ekrana basar &lt;em&gt;(Eğitime tabii olan &lt;a href="https://github.com/buraksenyurt/saturday-night-works/tree/master/No%2026%20-%20Custom%20Vision%20Service%20with%20Python/Images" target="_blank"&gt;&amp;ouml;rnek fotoğraflar images klas&amp;ouml;r&amp;uuml; altında&lt;/a&gt; yer alıyor. Github &amp;uuml;zerinden alıp kullanabilirsiniz)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;python client.py&lt;/pre&gt;
+&lt;p&gt;Test klas&amp;ouml;r&amp;uuml;ndeki imajlar i&amp;ccedil;in aşağıdaki sonu&amp;ccedil;lar elde edildi.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/08/credit_10.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Einstein ve havadaki u&amp;ccedil;ak i&amp;ccedil;in &amp;ccedil;ok başarılı tahminlemeler yapılmadığını g&amp;ouml;rebiliriz. Bunun sebebi eğitmeni sadece 10 imajla yetiştirmiş olmamızdır. Yani g&amp;ouml;r&amp;uuml;p g&amp;ouml;rd&amp;uuml;ğ&amp;uuml; ve yorumladığı k&amp;uuml;me &amp;ccedil;ok sığ. &amp;Ouml;rnek k&amp;uuml;meyi ve tag yapısını ne kadar geniş tutarsak tahminleme oranlarında o kadar isabetli sonu&amp;ccedil;lar elde ederiz. Bunu sanırım &amp;uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; kez s&amp;ouml;yledim :S&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Bu arada dosya tip kontrol&amp;uuml; i&amp;ccedil;in client.py'de filetype mod&amp;uuml;l&amp;uuml;n&amp;uuml; kullandık. Y&amp;uuml;klemek i&amp;ccedil;in terminalden &lt;em&gt;pip install filetype&lt;/em&gt; yazmamız yeterli.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;Ben Neler &amp;Ouml;ğrendim?&lt;/h2&gt;
+&lt;p&gt;Doğruyu s&amp;ouml;ylemek gerekirse b&amp;ouml;yle hazır Cognitive servislerle eğlencesine de olsa &amp;ouml;rnek &amp;ccedil;alışmalar yapmak son derece keyifli. Sonu&amp;ccedil;ta kafam AI d&amp;uuml;nyasına basmadığı i&amp;ccedil;in sınıflandırma algoritmalarını yazmaya &amp;ccedil;alışmak yerine onu ele alan servisleri kullanmak daha cazip geliyor. Benim bu &amp;ccedil;alışmada torbama kattıklarımı ise ş&amp;ouml;yle &amp;ouml;zetleyebilirim.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Vision API'ye bir fotoğrafı nasıl &amp;ouml;ğretebileceğimi&lt;/li&gt;
+&lt;li&gt;Python ile kod tarafında bunu nasıl yapabileceğimi&lt;/li&gt;
+&lt;li&gt;Temel olarak Azure Custom Vision Service'in AI &amp;ccedil;alışma mantığını &lt;em&gt;(bir takı i&amp;ccedil;in en az beş &amp;ouml;rnekten oluşan fotoğraf k&amp;uuml;meleri oluştur. Ne kadar &amp;ccedil;ok olursa o kadar iyi olur. Bu nedenle koddaki gibi imgeleri tek tek &amp;ouml;ğretmek yerine, bir klas&amp;ouml;r altına n tane imge koyup onları bir tag ile ilişkilendirmek daha mantıklı)&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;Oluşturulan servisin python tarafında nasıl t&amp;uuml;ketilebileceğini&lt;/li&gt;
+&lt;li&gt;Python tarafında request mod&amp;uuml;l&amp;uuml;n&amp;uuml; kullanarak HTTP Post talebinin nasıl yapılabileceğini&lt;/li&gt;
+&lt;li&gt;request mod&amp;uuml;l&amp;uuml; kullanılırken Header ve Data bilgilerinin nasıl eklendiğini&lt;/li&gt;
+&lt;li&gt;Bir klas&amp;ouml;rdeki dosyaları nasıl dolaşabileceğimi&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik &lt;a href="https://github.com/buraksenyurt/saturday-night-works/tree/master/No%2026%20-%20Custom%20Vision%20Service%20with%20Python" target="_blank"&gt;26 numaralı saturday-night-works derlemesi&lt;/a&gt;nin&amp;nbsp;sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2019-08-23 13:00:00</pubDate>
+  <slug>microsoft-custom-vision-servisini-python-ile-kullanmak</slug>
+  <tags>
+    <tag>python</tag>
+    <tag>azure</tag>
+    <tag>vision-api</tag>
+    <tag>ai</tag>
+    <tag>pip</tag>
+    <tag>custom-vision-api</tag>
+    <tag>cognitive-services</tag>
+    <tag>prediction</tag>
+    <tag>post</tag>
+    <tag>http</tag>
+    <tag>postman</tag>
+    <tag>ubuntu</tag>
+    <tag>rest</tag>
+  </tags>
+  <categories>
+    <category>Azure</category>
+  </categories>
+</post>

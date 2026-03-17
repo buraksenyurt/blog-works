@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Web Servislerinde SoapHeader ile Özelleştirilmiş Doğrulama</title>
+  <description>Web servislerinde güvenlik söz konusu olduğunda, geliştiricileri en çok zorlayan noktalardan birisi görsel bir arabirimin olmayışıdır. Bu nedenle özellikle web tabanlı uygulamalarda tercih edilen form tabanlı (form-based) veya windows tabanlı (windows based) doğrulama (authentication) sistemlerini uygulamak biraz daha farklıdır. Biz bu makalemizde form tabanlı doğrulama ve yetkilendirme sistemininin iskeletini, web servisleri üzerinde nasıl geliştirebileceğimizi incelemeye çalışacağız.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Web servislerinde g&amp;uuml;venlik s&amp;ouml;z konusu olduğunda, geliştiricileri en &amp;ccedil;ok zorlayan noktalardan birisi g&amp;ouml;rsel bir arabirimin olmayışıdır. Bu nedenle &amp;ouml;zellikle web tabanlı uygulamalarda tercih edilen form tabanlı (form-based) veya windows tabanlı (windows based) doğrulama (authentication) sistemlerini uygulamak biraz daha farklıdır. Biz bu makalemizde form tabanlı doğrulama ve yetkilendirme sistemininin iskeletini, web servisleri &amp;uuml;zerinde nasıl geliştirebileceğimizi incelemeye &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;p&gt;Konuyu daha iyi anlamak i&amp;ccedil;in vakkamızı analiz edelim. Web servisi tarafında yer alan bazı metodların istemciler tarafından kullanılabilmesi i&amp;ccedil;in ilgili kullanıcıların doğrulanması gerektiğini d&amp;uuml;ş&amp;uuml;nelim. B&amp;ouml;yle bir durumda kullanıcıların ilgili web metod &amp;ccedil;ağrılarından &amp;ouml;nce web servisi tarafından doğrulanması (authenticate) gerekecektir. Sırf bu ama&amp;ccedil; i&amp;ccedil;in tasarlanmış bir web metodu g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir. Kullanıcıların login metodu ile doğrulanmasının en b&amp;uuml;y&amp;uuml;k amacı, iş yapan web metodlarına yapılacak olan &amp;ccedil;ağrılarda tekrar tekrar doğrulama yapılmasının da &amp;ouml;n&amp;uuml;ne ge&amp;ccedil;mektir. Peki bu nasıl sağlanabilir?&lt;/p&gt;
+&lt;p&gt;Eğer kullanıcının elinde bir &lt;strong&gt;g&amp;uuml;ven belgesi (credential) &lt;/strong&gt;olursa bu işlevsellik &amp;ccedil;ok kolay bir şekilde sağlanabilir. Login metodu i&amp;ccedil;erisinde hazırlanacak olan bu g&amp;uuml;ven belgesini, web servisinin kendisine bağlanan istemcileri doğrulaması halinde vereceği bir bilet olarakta d&amp;uuml;ş&amp;uuml;nebiliriz. Bilet bir kere oluşturulduktan sonra istemciye g&amp;ouml;nderilecektir. Bu noktadan sonra istemci uygulama,web servisi tarafından kendisine verilen bu bilet ile web metodlarını &amp;ccedil;ağıracaktır. B&amp;ouml;ylece bir kere doğrulanan kullanıcının, bu işlemden sonra yapacağı &amp;ccedil;ağrılarda tekrardan doğrulanmasına gerek kalmayacaktır. Bu elbette bilet bilgisi korunduğu s&amp;uuml;rece ge&amp;ccedil;erli olacaktır. Istemci uygulamanın kapatılması ve tekrar başlatılması halinde, web servisi tarafından yeni bir biletin hazırlanması ve g&amp;ouml;nderilmesi gerekebilir.&lt;/p&gt;
+&lt;p&gt;Burada &amp;ouml;nemli olan bir sorun vardır. İstemciler i&amp;ccedil;in sunucu tarafında oluşturulan biletler, istemci uygulama ve web servisi arasında nasıl taşınacaktır? İşte burada web servisleri ile istemciler arasında hareket eden verinin taşındığı &lt;strong&gt;Soap zarfları (Soap Envelope)&lt;/strong&gt; devreye girmektedir. Soap zarflarının iki &amp;ouml;nemli par&amp;ccedil;ası vardır. Asıl verinin taşındığı &lt;strong&gt;g&amp;ouml;vde (Soap Body)&lt;/strong&gt; kısmı ve paket ile birlikte taşınabilecek ekstra bilgilerin yer aldığı &lt;strong&gt;başlık (Soap Header)&lt;/strong&gt; kısmı. Soap zarfının başlığında bilet bilgisini taşıyabiliriz. B&amp;ouml;ylece kullanıcı, web servisi tarafından ilk doğrulanışından sonra Soap paketindeki başlık bilgisi ile kendisine gelen bileti alabilir. Bundan sonra yapacağı web metodu &amp;ccedil;ağrılarında ise kendisine verilen bileti yine web servisine Soap başlığında g&amp;ouml;nderecektir.&lt;/p&gt;
+&lt;p&gt;Şimdi gelin biraz daha teknik detaya inelim ve &amp;ouml;rnek bir uygulama &amp;uuml;zerinden hareket ederek form tabanlı doğrulama iskeletini web servisleri i&amp;ccedil;in oluşturmaya &amp;ccedil;alışalım. Web servisi tarafında d&amp;uuml;ş&amp;uuml;nmemiz gereken ilk konu kullanıcı bilgilerini nerede saklayacağımızdır. Kullanıcıların sistem tarafından tanınması i&amp;ccedil;in bazı bilgilerinin herhangibir depolama alanında saklanması gerekecektir. Bu ama&amp;ccedil;la .Net 2.0 ile birlikte gelen &lt;strong&gt;Membership API&lt;/strong&gt;' sini kullanabiliriz yada kendi hazırlayacağımız veri saklama ambarlarını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alabiliriz. Bu ambarlar bir Access veritabanı hatta bir Xml dosyası bile olabilir. Ancak verilerin daha tutarlı ve g&amp;uuml;venli bir şekilde saklanması amacıyla ilişkisel veritabanı (Relational Database Management System - RDMS) sistemlerinden birisi olması &amp;ccedil;ok daha &amp;ouml;l&amp;ccedil;eklenebilir &amp;ccedil;&amp;ouml;z&amp;uuml;mler elde etmemizi sağlayacaktır. Makalemize konu olan &amp;ouml;rneğimizde bu ama&amp;ccedil;la basit bir sql veritabanı dosyası kullanıyoruz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk187_1.gif" alt="" width="225" height="238" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Azondb.mdf veritabanı dosyamızın i&amp;ccedil;erisinde şu an i&amp;ccedil;in tek bir tablo yer almaktadır. Kullanicilar isimli tablomuzun temel amacı, doğrulaması yapılacak olan &amp;uuml;yelere ait bazı bilgileri saklamaktır. &amp;Ouml;rneğin kullanıcıların adı, mail adresi, şifresi gibi.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk187_2.gif" alt="" width="341" height="121" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Tablomuzun veri yapısını olduk&amp;ccedil;a basit d&amp;uuml;ş&amp;uuml;n&amp;uuml;yoruz. Nitekim odaklanmamız gereken nokta tablo yapılarından ziyade web servisi &amp;uuml;zerinde g&amp;uuml;venliği form tabanlı sistem kurallarına g&amp;ouml;re tasarlamak. Ama elbetteki rol y&amp;ouml;netimininin (role management) var olduğu, şifrelerin de şifrelenerek (en azından Hash algoritması ile karıştırılarak) tutulduğu daha g&amp;uuml;&amp;ccedil;l&amp;uuml; bir veri saklama ortamı d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Var olan Membership API' si buna en g&amp;uuml;zel &amp;ouml;rnektir.&lt;/p&gt;
+&lt;p&gt;Gelelim web servisi tarafımıza. Az &amp;ouml;ncede bahsettiğimiz gibi, form tabanlı doğrulama sisteminde iskeleti oluşturan &amp;ouml;nemli noktalar, kullanıcının sunucu tarafından doğrulanması (authentication), bir biletin oluşturulması ve bu biletin Soap başlığında istemciye g&amp;ouml;nderilmesidir. &amp;Ouml;ncelikle kullanıcı bilgilerinden bazılarını web metodları arasında bulmamızı sağlayacak bir sınıf tasarlayarak işe başlayalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk187_3.gif" alt="" width="282" height="250" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public class Kullanici
+{
+    private string _ad;
+    private string _email;
+    private string _biletNumarasi;
+
+    public string Ad
+    {
+        get { return _ad; }
+    }
+    public string Email
+    {
+        get { return _email; }
+    }
+    public string BiletNumarasi
+    {
+        get { return _biletNumarasi; }
+    }
+    public Kullanici(string kullaniciAdi,string email)
+    {
+        _ad = kullaniciAdi;
+        _email = email;
+        _biletNumarasi = Guid.NewGuid().ToString();
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Kullanici isimli sınıfın en can alıcı noktası bir &lt;strong&gt;Global Unique Identifier&lt;/strong&gt; (GUID) değerini sunmasıdır. Bu değer Kullanici isimli sınıfa ait bir nesne &amp;ouml;rneklendiğinde yapıcı metod i&amp;ccedil;erisinde oluşturulmaktadır. GUID değerleri web servisinin &amp;ccedil;alıştığı sistemde benzersiz olarak oluşturulduklarından, her kullanıcının ayrı ayrı ele alınmasını sağlayabiliriz. &amp;Ouml;rneğimizde, Kullanici sınıfına ait nesne &amp;ouml;rneklerini &lt;strong&gt;Application&lt;/strong&gt; nesnesinde taşımayı tercih edeceğiz. Application nesnesi web servisi uygulaması i&amp;ccedil;erisinde heryerden erişilebilir bir nesnedir.&lt;/p&gt;
+&lt;p&gt;Dolayısıyla web metodlarımız i&amp;ccedil;erisinden Application nesnelerine &amp;ccedil;ıkıp gelen bilet numarasına ait bir Kullanici nesne &amp;ouml;rneğinin olup olmadığını kontrol edebiliriz. Yani, doğrulanan kullanıcıları web servisi tarafından Application nesnesinde tutup, istemci ile Soap başlığından gelecek olan biletin numarasına g&amp;ouml;re kontrol edebiliriz. B&amp;ouml;ylece web metodları i&amp;ccedil;erisinde eğer istemcideki bilet numarasının karşılığı olan bir kullanıcı var ise işlemlerin yapılmasını sağlayabiliriz. Ama &amp;ouml;ncesinde Soap zarfının başlığında taşınacak olan sınıfın tasarlanması gerekmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk187_4.gif" alt="" width="263" height="312" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public class Bilet:System.Web.Services.Protocols.SoapHeader
+{
+    private string _biletNumarasi;
+
+    public string BiletNumarasi
+     {
+        get { return _biletNumarasi; }
+        set { _biletNumarasi = value; }
+     }  
+
+    public Bilet(string numara)
+    {
+        _biletNumarasi = numara;
+    }
+
+    public Bilet()
+    {
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Soap zarflarının başlık kısmında bilgi taşıyabilmenin yolu &lt;strong&gt;SoapHeader&lt;/strong&gt; tipinden t&amp;uuml;retilmiş bir sınıf yazılmasıdır. Bu t&amp;uuml;retme sayesinde Bilet isimli sınıfa ait nesne &amp;ouml;rneklerini soap paketlerinde başlık kısmında taşıyabilme imkanına sahip oluruz. Olusturulan bu sınıf, web servisini referans eden istemci uygulamalarada g&amp;ouml;nderilecektir. Aynı zamanda Soap paketi i&amp;ccedil;erisine serileştirilebilir olması gerekmektedir. Bu nedenlede &lt;strong&gt;varsayılan&lt;/strong&gt; &lt;strong&gt;yapıcı metodu (default constructor)&lt;/strong&gt; olmak zorundadır. Dikkat ederseniz başlıkta taşınacak olan bu sınıf sadece tek bir &amp;uuml;ye sunmaktadır. BiletNumarasi. Bilet isimli sınıfın BiletNumarasi isimli &amp;ouml;zelliğinin bir set bloğuna sahip olması &amp;ouml;nemlidir. Aksi halde istemci tarafındaki uygulama sisteme login olduktan sonra yapacağı &amp;ccedil;ağrılarda bu bilgiyi tekrardan set edemez ve web servisi tarafına g&amp;ouml;nderemez. Gelelim web servisimiz i&amp;ccedil;erisinde neler yapacağımıza.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk187_5.gif" alt="" width="309" height="211" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[WebService(Namespace = "http://tempuri.org/")]
+[WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
+public class UrunServisi : System.Web.Services.WebService
+{
+    public Bilet _bilet;
+
+    [WebMethod(Description="Kullanıcı bileti oluşturulmasını sağlar")]
+    [SoapHeader("_bilet", Direction=SoapHeaderDirection.Out)]
+    public void GirisYap(string kullaniciAdi, string sifre)
+    {
+        using(SqlConnection conn=new SqlConnection(@"data source=.\SQLEXPRESS;Integrated Security=SSPI;AttachDBFilename=|DataDirectory|AzonDb.mdf;User Instance=true"))
+        {
+            SqlCommand cmd = new SqlCommand("Select KullaniciAdi,PostaAdresi From Kullanicilar Where KullaniciAdi=@KullaniciAdi and Sifre=@Sifre", conn);
+            cmd.Parameters.AddWithValue("@KullaniciAdi", kullaniciAdi.ToString());
+            cmd.Parameters.AddWithValue("@Sifre", sifre.ToString());
+            conn.Open();
+            SqlDataReader dr=cmd.ExecuteReader();
+            if (dr.Read())
+            {
+                Kullanici kln = new Kullanici(dr["KullaniciAdi"].ToString(), dr["PostaAdresi"].ToString());
+                Application[kln.BiletNumarasi] = kln;
+                _bilet = new Bilet(kln.BiletNumarasi); 
+            }
+            else
+                throw new Exception("Ge&amp;ccedil;ersiz kullanıcı");
+        }
+    }
+
+    private Kullanici KullaniciDogrula(string biletNumarasi)
+    {
+        Kullanici kln = (Kullanici)Application[biletNumarasi];
+        if (kln != null)
+            return kln;
+        else
+            throw new Exception("Ge&amp;ccedil;ersiz bilet numarası"); 
+    }
+
+    [WebMethod(Description="Ortalama endeks hesaplamaları yapılır.")]
+    [SoapHeader("_bilet",Direction=SoapHeaderDirection.In)]
+    public double MaliyetHesapla(double parcaNo)
+    {
+        KullaniciDogrula(_bilet.BiletNumarasi);
+        return parcaNo*10;
+    }
+    public UrunServisi () {
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Web servisimiz i&amp;ccedil;erisinde GirisYap isimli bir metodumuz bulunmaktadır. Bu aslında makalemizin başından beri belirttiğimiz, kullanıcların doğrulanması sağlayan login metodudur. Parametre olarak aldığı ve istemci uygulamadan gelen kullanıcı adı ve şifre bilgilerine g&amp;ouml;re doğrulama işlemini &amp;uuml;stlenir. Yanlız metodun yaptığı iki &amp;ouml;nemli atama vardır. Birincisinde, Kullanici sınıfına ait bir nesne &amp;ouml;rneğinin oluşturulması ve &amp;uuml;retilen GUID değerine g&amp;ouml;re &lt;strong&gt;Application&lt;/strong&gt; nesnesine atanması s&amp;ouml;z konusudur.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;Kullanici kln = new Kullanici(dr["KullaniciAdi"].ToString(), dr["PostaAdresi"].ToString());
+Application[kln.BiletNumarasi] = kln;&lt;/pre&gt;
+&lt;p&gt;B&amp;ouml;ylece kullanıcı eğer doğrulanırsa web servisi kendisine bağlı olan istemciye ait bilgilere &lt;strong&gt;Application&lt;/strong&gt; nesnesi &amp;uuml;zerinden bilet numarasini kullanarak erişebilecektir. İkincisinde ise, &amp;uuml;retilen bilet numarasına g&amp;ouml;re Bilet sınıfından _bilet isimli nesne &amp;ouml;rneği oluşturulur.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;_bilet = new Bilet(kln.BiletNumarasi);&lt;/pre&gt;
+&lt;p&gt;Dikkat ederseniz Bilet isimli sınıfa ait bu nesne &amp;ouml;rneği Soap başlığında taşınmaktadır. Ancak dikkat edilmesi gereken bir nokta vardır. GirisYap isimli metod i&amp;ccedil;in belirtilen &lt;strong&gt;SoapHeader&lt;/strong&gt; niteliği (attribute). Bu niteliğin ilk parametresi ile, metod i&amp;ccedil;erisinde oluşturulan _bilet isimli nesne &amp;ouml;rneğinin Soap başlığında taşınacağı belirtmektedir. İkinci parametre ilede, bu bilginin web servisi tarafından istemciye gidecek olan soap paketlerindeki başlık i&amp;ccedil;eriğine ekleneceği belirtilmektedir. Bu y&amp;ouml;n&amp;uuml; belirlemek i&amp;ccedil;in &lt;strong&gt;SoapHeaderDirection&lt;/strong&gt; enum sabitinden faydalanılmaktadır.&lt;/p&gt;
+&lt;p&gt;KullaniciDogrula isimli metodumuz sadece bu servis sınıfı i&amp;ccedil;erisinde kullanılan bir &amp;uuml;yedir. Dışarıyla bir bağlantısı olmadığından private olarak tanımlanmıştır. G&amp;ouml;revi, metoda parametre olarak gelen bilet numarası değerine sahip bir &lt;strong&gt;Application&lt;/strong&gt; değişkeninin olup olmadığını tespit etmektir. Eğer yoksa bir istisna nesnesi ortama, daha doğrusu istemci uygulamaya fırlatılır. Metodun geriye Kullanici sınıfı tipinden bir değer d&amp;ouml;nd&amp;uuml;rmesinin tek nedeni, bu metodu kullanan web metodlarından, ilgili işlemi ger&amp;ccedil;ekleştiren kullanıcıya ait bazı temel bilgilere ulaşılabilmesini sağlamaktır. Bu &amp;ccedil;oğunlukla o işlemi yapan kullanıcı i&amp;ccedil;in loglama yapılması istendiği durumlarda yada rol&amp;uuml;ne veya yetkisine g&amp;ouml;re ilgili işlemi yapabilip yapamayacağına karar verilmesi gibi durumlarda kullanılabilir.&lt;/p&gt;
+&lt;p&gt;Gelelim iş yapan web metodumuza. Metodun ne iş yaptığı &amp;ccedil;ok &amp;ouml;nemli değil şu aşamada. Dikkat etmemiz gereken nokta, metodun hizmeti nasıl verdiği. MaliyetHesapla isimli metodumuzun da &lt;strong&gt;SoapHeader&lt;/strong&gt; niteliği (attribute) tanımlanmıştır. GirisYap metodundakine g&amp;ouml;re tek fark y&amp;ouml;n&amp;uuml;d&amp;uuml;r. Dikkat ederseniz &lt;strong&gt;SoapDirection.In&lt;/strong&gt; değeri kullanılmaktadır. Bu, ilk parametrede belirtilen _bilet isimli nesne &amp;ouml;rneğinin, istemci uygulamadan web servisine gelecek olan Soap paketi i&amp;ccedil;erisindeki başlık bilgisinde yer alacağını belirtir. Eğer kullanıcı bu metodu &amp;ccedil;ağırmadan &amp;ouml;nce sisteme giriş yapmışsa elinde bir bilet numarası vardır ve Soap paketi ile bunu web servisindeki ilgili metoda ulaştırabilir. Metod i&amp;ccedil;erisinde KullaniciDogrula isimli metod &amp;ccedil;ağırılır ve eğer Application nesnesi &amp;uuml;zerinden gelen bilet numarasına sahip bir nesne var ise s&amp;ouml;z konusu metod y&amp;uuml;r&amp;uuml;t&amp;uuml;l&amp;uuml;r. Ama b&amp;ouml;yle bir bilet numarası yoksa zaten istemciye KullaniciDogrula metodu i&amp;ccedil;erisinden bir istisna fırlatılacaktır.&lt;/p&gt;
+&lt;p&gt;Artık istemci tarafında bir test uygulaması yazarak sistemi sınayabiliriz. Olayı daha basit d&amp;uuml;ş&amp;uuml;nebilmek i&amp;ccedil;in bir Console uygulaması &amp;uuml;zerinden hareket edeceğiz. Uygulamamıza &amp;ouml;ncelikle web servisimizin referansını eklememiz gerektiğini unutmayalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk187_6.gif" alt="" width="161" height="119" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Web referansının eklenmesi ile birlikte istemci uygulama tarafında Soap başlığında taşınabilecek olan Bilet tipine ait bir sınıfta eklenecektir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk187_7.gif" alt="" width="434" height="469" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat ederseniz Bilet sınıfına ait nesne &amp;ouml;rneğini elde etmemizi sağlayan bir &amp;ouml;zellikte (property) UrunServisi isimli proxy sınıfımıza dahil edilmiştir. BiletValue &amp;ouml;zelliği Soap başlığında taşınan Bilet nesne &amp;ouml;rneğini okuyabilmemizi hatta atama yapabilmemizi sağlar. Bu kısa bakışın hemen ardından aşağıdaki kod satırlarını Console uygulamamızın Main metodu i&amp;ccedil;erisine yazarak &amp;ouml;rneğimizi geliştirmeye devam edelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;static void Main(string[] args)
+{
+    try
+    {
+        UrunWebSrv.UrunServisi urnSrv = new Istemci.UrunWebSrv.UrunServisi();
+        urnSrv.GirisYap("bsenyurt", "1234");
+        Console.WriteLine("Sistem tarafından verilen unique Id \n {0}",urnSrv.BiletValue.BiletNumarasi);
+        double sonuc=urnSrv.MaliyetHesapla(1000);
+        Console.WriteLine("Maliyet "+sonuc.ToString()); 
+    }
+    catch(Exception err)
+    {
+        Console.WriteLine(err.Message.ToString());
+    }
+    Console.ReadLine();
+}&lt;/pre&gt;
+&lt;p&gt;Dikkat ederseniz MaliyetHesapla isimli web metodumuzu &amp;ccedil;alıştırmadan &amp;ouml;nce sisteme giriş yapıyoruz. Bunun i&amp;ccedil;in GirisYap metodunu &amp;ccedil;ağırıyoruz. &amp;Ouml;rnek olması a&amp;ccedil;ısından Kullanicilar tablosunda bsenyurt isimli bir kullanci oluşturduk ve 1234 şifresini verdik. &lt;em&gt;( Şifrelerin bu şekilde a&amp;ccedil;ık olarak gitmesi ve hatta tabloda bu şekilde a&amp;ccedil;ık olarak saklanması elbette doğru değil. Burada gerekirse encryption mekanizmalarında faydalanılması &amp;ccedil;ok daha g&amp;uuml;venli bir sistem oluşturulmasını sağlayacaktır. Ancak b&amp;ouml;yle bir durumda istemci tarafındaki uygulamayıda bizim geliştirmemiz gerekecektir ki bu da web servisi kullanımını anlamsız kılmaktadır. &amp;Ccedil;&amp;ouml;z&amp;uuml;m olarak Remoting tercih edilebilir yada WSE 3.0 ile birlikte gelen g&amp;uuml;venlik sistemleri g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir.) &lt;/em&gt;Kullanıcı eğer web servisi tarafından doğrulanırsa, &amp;uuml;retilen bilet numarasını servise ait nesne &amp;ouml;rneğinden BiletValue isimli &amp;ouml;zellik yardımıyla elde ebiliriz. Sonrasında ise MaliyetHesapla isimli metodumuzu &amp;ccedil;ağırmaktayız. Uygulamamızı test ettiğimizde aşağıdakine benzer bir ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk187_8.gif" alt="" width="317" height="83" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Eğer programı bir kere daha &amp;ccedil;alıştırırsak farklı bir &lt;strong&gt;GUID&lt;/strong&gt; değeri ile karşılaşırız. Aşağıdaki ekran &amp;ccedil;ıktısında olduğu gibi.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk187_9.gif" alt="" width="319" height="92" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu son derece doğaldır. &amp;Ccedil;&amp;uuml;nk&amp;uuml; uygulama her &amp;ccedil;alıştığında Login metodu devreye girmekte ve kullanıcıyı bulup yeni bir GUID &amp;uuml;rettirmektedir. Dolayısıyla s&amp;ouml;z konusu doğrulama sistemi uygulamanın a&amp;ccedil;ık olması halinde, birden fazla web metodu &amp;ccedil;ağırıldığında daha efektif işleyecektir. B&amp;ouml;yle bir durumda login olunduktan sonra &amp;uuml;retilen GUID değeri, uygulamanın devamındaki t&amp;uuml;m web metod &amp;ccedil;ağırılarında aynı kalacaktır. Elbette sisteme giriş yapamayan bir kullanıcı ile karşılaşıldığında GirisYap metodu, istemci tarafına bir istisna fırlatacaktır. &amp;Ouml;rneğin var olmayan bir kullanıcı ile console uygulamamızı denediğimizde aşağıdaki gibi bir sonu&amp;ccedil;la karşılaşabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk187_10.gif" alt="" width="643" height="92" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Tasarlanan bu sistem her ne kadar kullanışlı g&amp;ouml;r&amp;uuml;nsede bazı dezavantajları vardır. Herşeyden &amp;ouml;nce web servisinin &amp;ccedil;alıştığı sunucunun &amp;ccedil;&amp;ouml;kmesi halinde t&amp;uuml;m Application nesneleri kaybolacaktır. Hatta &amp;ccedil;&amp;ouml;kmesi haricinde, web uygulamasının herhangibir nedenle yeniden başlatılması halinde de aynı durum s&amp;ouml;z konusudur. Buna sebep olarak yeniden derlemeyi&lt;strong&gt; (compiling)&lt;/strong&gt; ya da yeniden dağıtmayı&lt;strong&gt; (publishing)&lt;/strong&gt; g&amp;ouml;sterebiliriz. Dolayısıyla sisteme giriş yapan kullanıcı bilgilerini daha sağlam bir yerde saklamak isteyebiliriz.&lt;/p&gt;
+&lt;p&gt;Bu durumda Application nesnesi yerine belki bir veritabanı tablosu g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir. Ayrıca performansı arttırmak amacıyla ara bellekleme &lt;strong&gt;(caching)&lt;/strong&gt; tekniklerinden de yararlanılabilir. Sonu&amp;ccedil; itibariye bu iyileştirmeler yapılsada yapılmasada iskelet aynı kalmak zorundadır. Kullanıcıyı bir şekilde doğrulamak (authenticat) ve metod &amp;ccedil;ağrılarından tekrar kullanıcı bilgisi istememek i&amp;ccedil;in bilet kullanmak akıllıca bir yoldur. Buna birde rol tabanlı yetkilendirme gibi &amp;ouml;zellikler eklendiğinde form tabanlı doğrulama sisteminin iskeleti tamamlanmış olacaktır. Bu makalemizde web servislerinde, soap &amp;uuml;zerinden form tabanlı doğrulama sistemini nasıl ger&amp;ccedil;ekleştirebileceğimizi incelemeye &amp;ccedil;alıştık. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2007-01-10 12:00:00</pubDate>
+  <slug>Web-Servislerinde-SoapHeader-ile-Ozellestirilmis-Dogrulama-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>xml-web-services</tag>
+    <tag>xml</tag>
+    <tag>web-service</tag>
+    <tag>soap</tag>
+    <tag>simple-object-access-protocol</tag>
+  </tags>
+  <categories>
+    <category>XML Web Services</category>
+  </categories>
+</post>

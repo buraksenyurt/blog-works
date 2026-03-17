@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Spring Boot ile Eski Usül Soap Based XML Web Service Yazmak Ne Kadar Zor Olabilir?</title>
+  <description>Kısa bir süre önce değerli bir çalışma arkadaşım kullanmaya çalıştığı Java tabanlı XML Web servis ile epeyce sorun yaşadı. Söz konusu servisi .Net tarafından tüketmeye çalışıyordu ancak XML şeması da epeyce karmaşık olan servis iletişim noktasında şema adlarına kızıyor, header içeriğini beğenmiyor sürekli naz yapıyordu. Arkadaşım allem etti kallem etti sorunun altından girip üstünden çıktı ve nihayetinde çözdü. Bu olaylara kısmen tanıklık ettikten sonra "yahu Java tarafında XML Web Service geliştirmek şimdilerde daha bir kolay değil midir!?" diye söylenmeye başladım. Yol doğal olarak beni Spring Boot'a ve resmi dokümantasyonuna götürdü...</description>
+  <content>&lt;p&gt;&lt;img src="/image.axd?picture=/2020/skynet/39/xmlheimdall.png" alt="" align="right" /&gt;Kısa bir s&amp;uuml;re &amp;ouml;nce değerli bir &amp;ccedil;alışma arkadaşım kullanmaya &amp;ccedil;alıştığı Java tabanlı XML Web servis ile epeyce sorun yaşadı. S&amp;ouml;z konusu servisi .Net tarafından t&amp;uuml;ketmeye &amp;ccedil;alışıyordu ancak XML şeması da epeyce karmaşık olan servis iletişim noktasında şema adlarına kızıyor, header i&amp;ccedil;eriğini beğenmiyor s&amp;uuml;rekli naz yapıyordu. Arkadaşım allem etti kallem etti sorunun altından girip &amp;uuml;st&amp;uuml;nden &amp;ccedil;ıktı ve nihayetinde &amp;ccedil;&amp;ouml;zd&amp;uuml;. Bu olaylara kısmen tanıklık ettikten sonra "yahu Java tarafında XML Web Service geliştirmek şimdilerde daha bir kolay değil midir!?" diye s&amp;ouml;ylenmeye başladım. Yol doğal olarak beni Spring Boot'a ve resmi dok&amp;uuml;mantasyonuna g&amp;ouml;t&amp;uuml;rd&amp;uuml;.&lt;/p&gt;
+&lt;p&gt;Şimdiki amacımız y&amp;ouml;nergeleri takip ederek basit bir XML Web servisin Spring Boot &amp;ccedil;er&amp;ccedil;evesinde nasıl yazıldığını deneyimlemek. G&amp;uuml;n&amp;uuml;m&amp;uuml;zde neredeyse t&amp;uuml;m servisler REST, gRPC, OData ve benzeri kavramlar &amp;uuml;zerinde konuşuyor olsalar da &amp;ouml;zellikle kurumsal &amp;ccedil;apta uzun yıllardır var olan pek &amp;ccedil;ok uygulama halen daha SOAP&lt;em&gt;(Simple Object Access Protocol)&lt;/em&gt; temelli XML Web servislerini kullanıyor. Nitekim SOAP protokol&amp;uuml;n&amp;uuml;n de dezavantajları kadar avantajlı olduğu taraflar var. Ancak konumuz bunu tartışmak yerine bir pratik yapmak.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğimizde bir firmanın belli bir b&amp;ouml;lgedeki m&amp;uuml;şteri segmentine ait birka&amp;ccedil; &amp;ouml;zet bilgisinin d&amp;ouml;nd&amp;uuml;r&amp;uuml;leceği kobay bir servis operasyonu s&amp;ouml;z konusu olacak. Mesela b&amp;ouml;lge ve m&amp;uuml;şteri segmenti seviyesini alan ve geriye o b&amp;ouml;lgedeki toplam işlem hacmi, m&amp;uuml;şteri memnuniyeti oranı, strateji &amp;ouml;zeti, temsilci sayısı gibi detayları d&amp;ouml;nd&amp;uuml;ren bir operasyon pekala işe yarayabilir. Daha &amp;ouml;nceden baktığımız diğer Spring Boot &amp;ccedil;alışmalarında da olduğu gibi işe &lt;a href="https://start.spring.io/"&gt;https://start.spring.io/&lt;/a&gt;&amp;nbsp;adresine gidip projeyi &amp;uuml;reterek başlamak gerekiyor. Uygulamanın birka&amp;ccedil; bağımlılığı var. Spring Web, Spring Web Services ve wsdl4j&lt;em&gt;(Java i&amp;ccedil;in WSDL kullanıcığımızı bildireceğimiz dependency)&lt;/em&gt;&amp;nbsp;Detaylar i&amp;ccedil;in&amp;nbsp;kodların da ye aldığı SkyNet &lt;a href="https://github.com/buraksenyurt/skynet/tree/master/No%2039%20-%20SOAP%20Based%20Web%20Service%20with%20Spring/src/services" target="_blank"&gt;github reposuna&lt;/a&gt; uğrayabilir ve pom.xml dosya i&amp;ccedil;eriğine bakabilirsiniz.&lt;/p&gt;
+&lt;p&gt;Yine belirtmem de yarar var; &amp;ouml;rneği Heimdall&lt;em&gt;(Ubuntu-20.04)&lt;/em&gt; &amp;uuml;zerine ve Visual Studio Code arabirimiyle geliştirmekteyim ;)&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2020/skynet/39/Screenshot_01.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi de gerekli dosyalarımızı oluşturalım.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;# SOAP Based Web Servisinin olmassa olmazı tabii ki i&amp;ccedil;ereceği operasyon
+# ve bu operasyonların kullanacağı veri tiplerinin tanımlandığı
+# XSD - XML Schema Definition dosyası (uygulama klas&amp;ouml;r&amp;uuml;ndeyken)
+# Firmanın belli bir şehirdeki m&amp;uuml;şterilerine ait istatistiki &amp;ouml;zet getirecek bir servisi olduğunu varsayalım
+# XSD ile biraz haşırneşir olmak gerekiyor
+touch src/main/resources/customer.xsd
+
+# XSD şeması hazır. Request, Response verimizi tanımladık
+# Kodda kolay kullanabilmek i&amp;ccedil;in onu karşılayacak bir Java sınıfı da gerekiyor
+# Bunun i&amp;ccedil;in JAXB (Java Architecture for XML Binding) plug-in'ini kullanıyoruz
+# XSD yi karşılayacak POJO (Plain Old Java Object) sınıfını otomatik &amp;uuml;retiyor
+# Ancak bu destek i&amp;ccedil;in pom.xml dosyasında bir plug-in tanımı eklemeliyiz (jaxb2-maven-plugin artifact'ini bulun)
+# plug-in eklendikten sonra target klas&amp;ouml;r&amp;uuml;nde XSD'ye bağlı sınıflar otomatik olarak &amp;uuml;retilir
+
+# Şema hazır. Şema karşılığı POJO hazır. Peki ya asıl işi yapan sınıf.
+# Veri odaklı bir iş s&amp;ouml;z konusu olduğu i&amp;ccedil;in bir Repository tasarlanması &amp;ouml;neriliyor
+touch src/main/java/com/bemewe/services/CustomerRepository.java
+
+# Serivse gelecek SOAP talepleri &amp;ccedil;ok doğal olarak kod tarafında bir sınıfla karşılanmalı
+touch src/main/java/com/bemewe/services/CustomerEndpoint.java
+
+# Repository ve Endpoint sınıfları hazır ancak yeterli değil. 
+# Web Service konfigurasyonu i&amp;ccedil;in de bir dosya kullanacağız
+touch src/main/java/com/bemewe/services/ServiceConfiguration.java&lt;/pre&gt;
+&lt;p&gt;XSD şeması aslında okunabilir bir formatta. Servisin request ve response mesajları getCustomerUsageRequest ve getCustomerUsageResponse elementleri ile tanımlanıyor. Bu mesajların i&amp;ccedil;eriğinde ilkel&lt;em&gt;(primitive, xs &amp;ouml;nekli olanlar)&lt;/em&gt; ve karmaşık&lt;em&gt;(complex, tns &amp;ouml;nekli alanlar)&lt;/em&gt; tipler kullanıyoruz. Yani mesajın hangi veri yapılarından oluşacağını XSD &amp;uuml;zerinde tanımlıyoruz. Aynen aşağıdaki kod par&amp;ccedil;asında g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://bemewe.com/services"
+           targetNamespace="http://bemewe.com/services" elementFormDefault="qualified"&amp;gt;
+
+    &amp;lt;xs:element name="getCustomerUsageRequest"&amp;gt;
+        &amp;lt;xs:complexType&amp;gt;
+            &amp;lt;xs:sequence&amp;gt;
+                &amp;lt;xs:element name="region" type="xs:string"/&amp;gt;
+                &amp;lt;xs:element name="size" type="tns:size"/&amp;gt;
+            &amp;lt;/xs:sequence&amp;gt;
+        &amp;lt;/xs:complexType&amp;gt;
+    &amp;lt;/xs:element&amp;gt;
+
+    &amp;lt;xs:simpleType name="size"&amp;gt;
+        &amp;lt;xs:restriction base="xs:string"&amp;gt;
+            &amp;lt;xs:enumeration value="Light"/&amp;gt;
+            &amp;lt;xs:enumeration value="Average"/&amp;gt;
+            &amp;lt;xs:enumeration value="AverageHigh"/&amp;gt;
+            &amp;lt;xs:enumeration value="MVP"/&amp;gt;
+        &amp;lt;/xs:restriction&amp;gt;
+    &amp;lt;/xs:simpleType&amp;gt;
+
+    &amp;lt;xs:element name="getCustomerUsageResponse"&amp;gt;
+        &amp;lt;xs:complexType&amp;gt;
+            &amp;lt;xs:sequence&amp;gt;
+                &amp;lt;xs:element name="usageSummary" type="tns:usageSummary"/&amp;gt;
+            &amp;lt;/xs:sequence&amp;gt;
+        &amp;lt;/xs:complexType&amp;gt;
+    &amp;lt;/xs:element&amp;gt;
+
+    &amp;lt;xs:complexType name="usageSummary"&amp;gt;
+        &amp;lt;xs:sequence&amp;gt;
+            &amp;lt;xs:element name="totalTransactionVolume" type="xs:float"/&amp;gt;
+            &amp;lt;xs:element name="size" type="tns:size"/&amp;gt;
+            &amp;lt;xs:element name="avgCustomerSatisfaction" type="xs:float"/&amp;gt;
+            &amp;lt;xs:element name="numberOfRepresentetive" type="xs:int"/&amp;gt;
+            &amp;lt;xs:element name="evaluation" type="xs:string"/&amp;gt;
+        &amp;lt;/xs:sequence&amp;gt;
+    &amp;lt;/xs:complexType&amp;gt;
+&amp;lt;/xs:schema&amp;gt;&lt;/pre&gt;
+&lt;p&gt;XSD i&amp;ccedil;erisindeki tanımlamarın kod tarafında karşılığı olmazsa kullanmak olduk&amp;ccedil;a zor olabilir. Bu nedenle pom.xml dosyası i&amp;ccedil;erisinde&amp;nbsp;jaxb2-maven-plugin tanımı s&amp;ouml;z konusu. Bu eklenti sonrası XSD'den otomatik olarak gerekli sınıflar &amp;uuml;retilecektir. &amp;Ouml;rnekte yer alan servis operasyonumuzu CustomerRepository tipinde aşağıdaki gibi yazabiliriz.&lt;/p&gt;
+&lt;pre class="brush:java;auto-links:false;toolbar:false" contenteditable="false"&gt;package com.bemewe.services;
+
+import org.springframework.stereotype.Component;
+
+/*
+    Sembolik repository sınıfı. Bu bileşeni Service Endpoint sınıfı kullanıyor.
+*/
+@Component
+public class CustomerRepository {
+
+    /*
+     * Servisin sunduğu fonksiyonelliklerden birisi belli bir b&amp;ouml;lge i&amp;ccedil;in m&amp;uuml;şteri
+     * segmentine g&amp;ouml;re istatistiki bilgi d&amp;ouml;nd&amp;uuml;rmek.
+     * 
+     * UsageSummary ve Size tipleri tahmin edeceğiniz &amp;uuml;zere XSD'den otomatik
+     * &amp;uuml;retilen JAXB t&amp;uuml;rleri.
+     */
+    public UsageSummary GetSummaryByRegion(String region, Size size) {
+        UsageSummary summary = new UsageSummary();
+
+        summary.setAvgCustomerSatisfaction(76.50F);
+        summary.setNumberOfRepresentetive(12);
+        summary.setTotalTransactionVolume(15000000.99F);
+        summary.setSize(size);
+        summary.setEvaluation("Daha agresit satış stratejilerine ihtiyacımız var");
+
+        return summary;
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Aslında Repository i&amp;ccedil;in Interface kullanımını tercih etsek DI kurallarına daha uygun olur mu dersiniz?. Gelelim bu Repository'yi kullanan ve SOAP isteklerini karşılayacak olan Endpoint sınıfına.&lt;/p&gt;
+&lt;pre class="brush:java;auto-links:false;toolbar:false" contenteditable="false"&gt;package com.bemewe.services;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ws.server.endpoint.annotation.Endpoint;
+import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
+import org.springframework.ws.server.endpoint.annotation.RequestPayload;
+import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
+
+/*
+    Endpoint annotation ile sınıfın bir servis endpoint olarak &amp;ccedil;alışacağını belirttik.
+    (Kime belirttik derseniz cevap Spring WS mod&amp;uuml;l&amp;uuml;)
+    Autowired ise constructor'ın Spring'in DI mekanizmasına otomatik olarak bağladı.
+*/
+@Endpoint
+public class CustomerEndpoint {
+
+    private CustomerRepository _repository;
+
+    @Autowired
+    public CustomerEndpoint(CustomerRepository repository) {
+        _repository = repository;
+    }
+
+    /*
+     * Bu Endpoint &amp;uuml;zerinden sunduğumuz operasyonu karşılayacak olan metot. 
+     * Gelen XML paketindeki hangi namespace ve operasyon bilgisine cevaben &amp;ccedil;alışacağını @PayloadRoot ile belirttik.
+     * 
+     * Gelen XML paketi metodun request parametresine bağlanacak. Bunu @RequestPayload ile bildiriyoruz.
+     * 
+     * Tam tersi metod &amp;ccedil;ıktısınında cevaben d&amp;ouml;necek XML paketinde map edileceğiniz @ResponsePayload ile belirtmekteyiz.
+     * 
+     * setUsageSummary'nin UsageSummary'yi otomatik olarak nasıl alabildiğini merak etmiş olabilirsiniz. 
+     * Plug-In ile &amp;uuml;retilen GetCustomerUsageResponse sınıfı bu bilgiyi XSD i&amp;ccedil;eriğinden alıp gerekli sınıf &amp;uuml;retimini ger&amp;ccedil;ekleştirdi.
+     */
+    @PayloadRoot(namespace = "http://bemewe.com/services", localPart = "getCustomerUsageRequest")
+    @ResponsePayload
+    public GetCustomerUsageResponse getUsageSummary(@RequestPayload GetCustomerUsageRequest request) {
+        UsageSummary summary = _repository.GetSummaryByRegion(request.getRegion(), request.getSize());
+        GetCustomerUsageResponse response = new GetCustomerUsageResponse();
+        response.setUsageSummary(summary);
+        return response;
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Endpoint'te hazır ancak yeterli değil. Konfigurasyon i&amp;ccedil;in bir adapt&amp;ouml;r eklememiz de lazım. Adapt&amp;ouml;r&amp;uuml;m&amp;uuml;z XSD dosyasını da baz alarak servisin &amp;ccedil;alışma zamanı kaydını a&amp;ccedil;makta. Bunu yaparken koddanda g&amp;ouml;receğiniz gibi WSDL standardını da belirleyebiliyoruz. &amp;Ouml;rnekte 1.1 standardını baz almaktayız. 1.2'de sorun yaşadığımı hatırlıyorum. Ancak &amp;ccedil;&amp;ouml;z&amp;uuml;m &amp;uuml;reten olursa l&amp;uuml;tfen yorumlarını esirgemesin.&lt;/p&gt;
+&lt;pre class="brush:java;auto-links:false;toolbar:false" contenteditable="false"&gt;package com.bemewe.services;
+
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.ws.config.annotation.EnableWs;
+import org.springframework.ws.config.annotation.WsConfigurerAdapter;
+import org.springframework.ws.transport.http.MessageDispatcherServlet;
+import org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition;
+import org.springframework.xml.xsd.SimpleXsdSchema;
+import org.springframework.xml.xsd.XsdSchema;
+
+/*
+	WS Config dosyası olduğunu belirtiyoruz.
+*/
+@EnableWs
+@Configuration
+public class ServiceConfiguration extends WsConfigurerAdapter {
+	@Bean
+	public ServletRegistrationBean messageDispatcherServlet(ApplicationContext applicationContext) {
+		MessageDispatcherServlet servlet = new MessageDispatcherServlet();
+		servlet.setApplicationContext(applicationContext);
+		servlet.setTransformWsdlLocations(true);
+		return new ServletRegistrationBean(servlet, "/stats/*");
+	}
+
+	/*
+	 * WSDL 1.1 standartlarına g&amp;ouml;re schema &amp;ouml;zelliklerini ayarlıyoruz. PortTipinin
+	 * adını, Uri, namespace...
+	 */
+	@Bean(name = "customers")
+	public DefaultWsdl11Definition defaultWsdl11Definition(XsdSchema serviceSchema) {
+		DefaultWsdl11Definition wsdl11Definition = new DefaultWsdl11Definition();
+		wsdl11Definition.setPortTypeName("CustomerPort");
+		wsdl11Definition.setLocationUri("/stats");
+		wsdl11Definition.setTargetNamespace("http://bemewe.com/services");
+		wsdl11Definition.setSchema(serviceSchema);
+		// wsdl11Definition.setCreateSoap12Binding(true); //SOAP 1.2 Binding oluşturmayı deneyeyim dedim
+		return wsdl11Definition;
+	}
+
+	@Bean
+	public XsdSchema countriesSchema() {
+		return new SimpleXsdSchema(new ClassPathResource("customer.xsd"));
+	}
+}&lt;/pre&gt;
+&lt;p&gt;Kodlama faslı tamamlandıktan sonra &amp;ouml;rneği maven &amp;uuml;zerinden &amp;ccedil;alıştırıp http://localhost:8080/stats/customers.wsdl adresinden ilgili WSDL dosyasına&lt;em&gt;(yani servis s&amp;ouml;zleşmesine)&lt;/em&gt; ulaşmayı deneyebiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;./mvnw spring-boot:run&lt;/pre&gt;
+&lt;p&gt;İlk etapta WSDL i&amp;ccedil;eriğine ulaşabilmek beni olduğu kadar sizi de mutlu edecektir diye d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum. Artık elimizde SOAP standartlarında operasyon desteği sunabilen bir service var.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2020/skynet/39/Screenshot_02.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Tabii bunu birde t&amp;uuml;ketmek gerekiyor. SoapUI bu anlamda ideal ve pratik bir &amp;ccedil;&amp;ouml;z&amp;uuml;m.&amp;nbsp;Ne varki ben ilk Request denemesinden sonra &lt;strong&gt;"Implementation of JAXB-API has not been found on module path or classpath"&lt;/strong&gt;&amp;nbsp;şeklinde bir hata aldım. &amp;Ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml; araştırdığımda konuya &amp;ccedil;alıştığım tarih itibariyle jaxb'nin aşağıdaki paketini kullanmam &amp;ouml;nerildi. Tabii siz bunu denerken aynı problemle karşılaşmayabilirsiniz.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;dependency&amp;gt;
+	&amp;lt;groupId&amp;gt;com.sun.xml.bind&amp;lt;/groupId&amp;gt;
+	&amp;lt;artifactId&amp;gt;jaxb-impl&amp;lt;/artifactId&amp;gt;
+	&amp;lt;version&amp;gt;2.3.3&amp;lt;/version&amp;gt;
+&amp;lt;/dependency&amp;gt;&lt;/pre&gt;
+&lt;p&gt;POM.xml &amp;uuml;zerinde gerekli değişikliği yaptıktan sonra&amp;nbsp;ise ilk talebimizi g&amp;ouml;nderebiliriz.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://bemewe.com/services"&amp;gt;
+	&amp;lt;soapenv:Header/&amp;gt;
+	&amp;lt;soapenv:Body&amp;gt;
+		&amp;lt;ser:getCustomerUsageRequest&amp;gt;
+		&amp;lt;ser:region&amp;gt;East Dublin&amp;lt;/ser:region&amp;gt;
+		&amp;lt;ser:size&amp;gt;Average&amp;lt;/ser:size&amp;gt;
+		&amp;lt;/ser:getCustomerUsageRequest&amp;gt;
+	&amp;lt;/soapenv:Body&amp;gt;
+&amp;lt;/soapenv:Envelope&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Aşağıdaki sonucu almamız gerekiyor.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2020/skynet/39/Screenshot_03.png" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;Peki Ya .Net Core Tarafı!?&lt;/h2&gt;
+&lt;p&gt;Aslında SOAP talebini HttpClient ve benzeri tipler ile yollayıp almak m&amp;uuml;mk&amp;uuml;n. Ancak ilk s&amp;uuml;r&amp;uuml;mlerinden beri .Net tarafında geliştirme yapanlar wsdl ve svcutil gibi ara&amp;ccedil;ların getirdiği kolaylıkları bilirler. Kullanmak istediğimiz servis i&amp;ccedil;in .Net tarafında proxy sınıfını oluşturmak kodlamada işimizi epey kolaylaştırıyor&lt;em&gt;(du)&lt;/em&gt;. Sorun şu ki SOAP tabanlı web servisler &amp;ouml;zellikle protokol&amp;uuml;n hantallığı dolayısıyla artık daha az kullanılmakta. Kurumsal projelerde var olanlar genellikle evrilmeye &amp;ccedil;alışıyor ve yerlerini hafif orta siklet Web API'lere bırakıyorlar.&amp;nbsp;Yine de&amp;nbsp;.Net Core tarafında bu tip servisleri t&amp;uuml;ketmek istediğimizde elimizde Visual Studio varsa servis referansını ekleyerek ilerlemek m&amp;uuml;mk&amp;uuml;n. Bununla birlikte dotnet-svcutil aracına başvurulabiliriz ama o da sistemde .Net Core 2.1 gerektiriyor&lt;em&gt;(.Net 5 d&amp;uuml;nyasında durum nasıl bunu hen&amp;uuml;z incelemedim. Bilen varsa l&amp;uuml;tfen yorumlarını esirgemesin)&lt;/em&gt;&amp;nbsp;Bununla birlikte SoapCore gibi &amp;uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; parti Nuget paketleri de alternatifler arasında yer alıyor.&lt;/p&gt;
+&lt;p&gt;Şimdilik benden bu kadar ancak sizin i&amp;ccedil;in iki g&amp;uuml;zel sorum var ;) Sizce Soap Response mesajında N sayıda nesne i&amp;ccedil;erecek bir koleksiyon d&amp;ouml;nd&amp;uuml;rebilir miyiz; d&amp;ouml;nd&amp;uuml;rebilirsek bunun i&amp;ccedil;in XSD'de nasıl bir değişiklik yapmamız gerekir. İkinci olarak customer.xsd i&amp;ccedil;in &amp;uuml;retilen JAXB dosyalarının nerede olduğuna bakar mısınız? Bu sorulara ek olarak &amp;ouml;rneği zenginleştirmek elbette elinizde. S&amp;ouml;z gelimi CustomerRepository &amp;uuml;st&amp;uuml;nden ger&amp;ccedil;ek bir veritabanına&lt;em&gt;(MongoDB Container olabilir)&lt;/em&gt; bağlanıp ilgili istatistiklerin oradan gelmesini sağlayabilir veya servisi&amp;nbsp;SOAP 1.2 standardına uyumlu hale getirebilirsiniz. B&amp;ouml;ylece geldik bir SkyNet derlememizin daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2020-10-26 17:51:00</pubDate>
+  <slug>spring-boot-ile-eski-usul-soap-based-xml-web-service-yazmak-ne-kadar-zor-olabilir</slug>
+  <tags>
+    <tag>java</tag>
+    <tag>spring-boot</tag>
+    <tag>xml</tag>
+    <tag>xml-web-service</tag>
+    <tag>soap</tag>
+    <tag>wsdl</tag>
+    <tag>dependency-injection</tag>
+    <tag>service-discovery</tag>
+    <tag>soapui</tag>
+  </tags>
+  <categories>
+    <category>Spring Boot</category>
+  </categories>
+</post>

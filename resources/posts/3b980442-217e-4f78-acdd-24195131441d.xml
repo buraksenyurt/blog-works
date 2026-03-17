@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Rust Pratikleri - Channels</title>
+  <description>Thread'ler aralarında haberleşmek için kanallardan(channels) yararlanır. Rust dilinde bu amaçla built-in modüllerinden olan mpsc(multi-producer single-consumer) paketi kullanılır. Bu paket aslında FIFO(First-In First-Out) ilkesine göre çalışan tipik bir kuyruk yapısıdır. Kanallar yardımıyla örneğin iki thread arasında bir kanal açıp tek yönlü olarak mesaj göndermek mümkündür. Böylece bir thread'den diğerine çeşitli verileri aktarabiliriz. Hatta asenkron ve olay güdümlü(event-driven) haberleşmeler tesis edebiliriz. Bir veri türünün kanalda akması için Send trait'ini uyarlamış olması gerekir. Primitive tiplerin hepsi bu davranışa sahiptir...</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2022/Subat/peasant.jpg" alt="" /&gt;Thread'ler aralarında haberleşmek i&amp;ccedil;in kanallardan&lt;em&gt;(channels)&lt;/em&gt; yararlanır. Rust dilinde bu ama&amp;ccedil;la built-in mod&amp;uuml;llerinden olan mpsc&lt;em&gt;(multi-producer single-consumer)&lt;/em&gt; paketi kullanılır. Bu paket aslında FIFO&lt;em&gt;(First-In First-Out)&lt;/em&gt; ilkesine g&amp;ouml;re &amp;ccedil;alışan tipik bir kuyruk yapısıdır. Kanallar yardımıyla &amp;ouml;rneğin iki thread arasında bir yol a&amp;ccedil;ıp tek y&amp;ouml;nl&amp;uuml; olarak mesaj g&amp;ouml;ndermek m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. B&amp;ouml;ylece bir thread'den diğerine &amp;ccedil;eşitli verileri aktarabiliriz. Hatta asenkron ve olay g&amp;uuml;d&amp;uuml;ml&amp;uuml;&lt;em&gt;(event-driven)&lt;/em&gt; haberleşmeler dahi tesis edebiliriz. Bir veri t&amp;uuml;r&amp;uuml;n&amp;uuml;n kanalda akması i&amp;ccedil;in Send trait'ini uyarlamış olması gerekir. Primitive tiplerin hepsi bu davranışa sahiptir.&lt;/p&gt;
+&lt;p&gt;Kanallarla ilgili olarak dikkate değer bir diğer konu da t&amp;uuml;rleridir. Bounded ve Unbounded olmak &amp;uuml;zere iki se&amp;ccedil;enek vardır. Bounded kanallarda kapasite bellidir. Bir başka deyişle bir thread'den diğerine veri taşımak i&amp;ccedil;in kullanılan kanalın kapasitesi sınırlandırılır. Eğer kanal kapasitesi dolarsa, yayın yapan&lt;em&gt;(mesaj g&amp;ouml;nderen)&lt;/em&gt; thread doğal olarak bloklanır. Unbounded kanallarda ise bir kapasite sınırı yoktur. Bellek yetersiz olana ya da sistem bir şekilde &amp;ccedil;&amp;ouml;kene kadar kanal kullanılabilir.&lt;/p&gt;
+&lt;p&gt;Kanalların bu iki t&amp;uuml;r&amp;uuml;n&amp;uuml;n farklı sayıda alıcı ve yayıncıları olabilir. &amp;Ouml;rneğin tek bir yayıncının birden &amp;ccedil;ok alıcısı olabilir ve kanala atılan veri bunlardan herhangi birisi tarafından işlenir. Bu senaryoda kanaldaki veriyi hangi thread'in alacağı ise belirsizdir. &amp;Ccedil;ok doğal olarak birden &amp;ccedil;ok yayıncı thread'de olabilir. Bu sefer hangi mesajın kanala ilk sırada gireceği konusu ortaya &amp;ccedil;ıkar ki kural basittir; ilk bırakılan ilk gider. Esasında kanalların her iki y&amp;ouml;n&amp;uuml;nde de birden &amp;ccedil;ok taraf olabilir. Buna g&amp;ouml;re aynı t anında &amp;ccedil;alışan birden &amp;ccedil;ok yayıncı ve alıcı thread m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r.&lt;/p&gt;
+&lt;p&gt;Tabii bahsettiğimiz bu senaryolarda kanallar hep tek y&amp;ouml;nl&amp;uuml;d&amp;uuml;r. Yani yayıncı taraftan alıcı tarafa doğru kurulan bir iletişim hattı s&amp;ouml;z konusudur. Aksi m&amp;uuml;mk&amp;uuml;n m&amp;uuml;d&amp;uuml;r? Elbette... Pekala ayrı kanallar a&amp;ccedil;arak thread'ler arasındaki iletişimi &amp;ccedil;ift y&amp;ouml;nl&amp;uuml; kanallar &amp;uuml;zerinden de sağlayabiliriz. Ancak bu kullanımda deadlock oluşturma ihtimalimiz vardır. &amp;Ouml;rneğin bounded kanallar kurduğumuz ve verinin d&amp;ouml;ng&amp;uuml;sel bir akış i&amp;ccedil;erisinde yer aldığı bir senaryoda tarafların birbirini beklemesi s&amp;ouml;z konusu olabilir ki bu da deadlock durumunun oluşmasına davetiye &amp;ccedil;ıkarır.&lt;/p&gt;
+&lt;p&gt;Bu teorik bilgiler bazen can sıkıcı olabiliyor. İyisi mi Rust Pratikleri'nin bu b&amp;ouml;l&amp;uuml;m&amp;uuml;ne kolay bir &amp;ouml;rnekle devam edelim.&amp;nbsp;Amacımız Rust'ın kanal kullanımlarında &amp;ouml;ne &amp;ccedil;ıkan k&amp;uuml;t&amp;uuml;phanelerinden crossbeam sandığını kullanarak basit bir senaryoyu işletmek. &amp;Ouml;rnekte bir sim&amp;uuml;lasyon oyunundaki iş&amp;ccedil;ilere &amp;ccedil;eşitli g&amp;ouml;revler atayacağız ve thread'ler arasındaki iletişim i&amp;ccedil;in bir kanal kurgusunu nasıl tesis edebileceğimize bakacağız. Fakat başlamadan &amp;ouml;nce Multi-Producer Single-Consumer paketi ile kanal kullanımını kısaca hatırlayalım. Bu ama&amp;ccedil;la channels isimli bir program oluşturalım.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;cargo new channels&lt;/pre&gt;
+&lt;p&gt;channels isimli projemizin kodlarını aşağıdaki gibi yazarak devam edebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;use std::sync::mpsc;
+use std::thread;
+use std::thread::sleep;
+use std::time::{Duration, SystemTime};
+
+fn main() {
+    /*
+       Olabildiğince basit bir &amp;ouml;rnek.
+       Main thread i&amp;ccedil;inden iki thread başlatalım.
+       Bu thread'ler bir transmitter kullanarak kanala &amp;ccedil;eşitli bilgiler bıraksınlar.
+       Ana thread'de bir dinleyici olarak bu kanala gelen mesajları alsın.
+    */
+
+    let chrono = SystemTime::now();
+
+    // channel fonksiyonu bir transmitter ve birde consumer kanalı oluşturur
+    let (cmd_transmitter, cmd_receiver) = mpsc::channel();
+    // İKinci bir transmitter nesnesini birincisinden klonlarız.
+    // B&amp;ouml;ylece ikinci thread aynı kanala mesaj bırakabilir.
+    let cmd_transmitter2 = cmd_transmitter.clone();
+
+    // İki thread a&amp;ccedil;acağız. Bu thread'ler sonlanmadan main bitsin istemeyiz.
+    let mut handlers = vec![];
+
+    // bir thread a&amp;ccedil;ıyoruz ve cmd_transmitter ile işlem sonunda kanala mesaj bırakıyoruz.
+    handlers.push(thread::spawn(move || {
+        println!("#{:?} Yolcu#23 sefere başlıyor.", thread::current().id());
+        sleep(Duration::from_secs(3));
+        cmd_transmitter.send("Yolcu#23 hedefte.").unwrap();
+    }));
+
+    // Burada ikinci bir thread s&amp;ouml;z konusu ve bu thread işini bitirdiğinde ilk transmitter
+    // clone'u &amp;uuml;st&amp;uuml;nden yine kanala bir mesaj bırakıyor.
+    handlers.push(thread::spawn(move || {
+        println!(
+            "#{:?} Kaşif#24 warp hızlanma motoru aktif.",
+            thread::current().id()
+        );
+        sleep(Duration::from_secs(5));
+        cmd_transmitter2.send("Kaşif#24 &amp;ouml;te evrene ulaştı").unwrap();
+    }));
+
+    // Başlatılan thread'ler bittik&amp;ccedil;e kanala bıraktıkları mesajları okuyoruz.
+    for h in handlers {
+        let _ = h.join();
+        let msg = cmd_receiver.recv().unwrap();
+        println!("İşlem bilgisi : {}", msg);
+    }
+
+    println!(
+        "İşlemler {} saniyede tamamlandı",
+        chrono.elapsed().unwrap().as_secs_f32()
+    );
+}&lt;/pre&gt;
+&lt;p&gt;Main bilindiği &amp;uuml;zere ana thread olarak &amp;ccedil;alışır. &amp;Ouml;rnekte iki farklı thread a&amp;ccedil;ılır. A&amp;ccedil;ılan thread'ler i&amp;ccedil;erisinde sembolik olarak uzun s&amp;uuml;ren işler d&amp;uuml;ş&amp;uuml;n&amp;uuml;lm&amp;uuml;şt&amp;uuml;r. İşler tamamlandığında her bir thread kendi transmitter nesnesini kullanarak aynı kanala birer mesaj bırakır. Ana uygulama thread'i receiver nesnesini kullanarak bu kanala akan mesajları yakalar. Esas itibariyle bir thread'den değer d&amp;ouml;nd&amp;uuml;rebildiğimiz i&amp;ccedil;in aynı işi kanallara başvurmadan da yapabiliriz. Ancak transmitter'ları thread i&amp;ccedil;erisinde &amp;ccedil;eşitli noktalarda kullanıp duruma g&amp;ouml;re farklı anlarda kanala mesaj bırakmak gibi bir durum da s&amp;ouml;z konusu olabilir. Bu tip mesaj akışlarının yer aldığı senaryolarda kanal kullanımı olduk&amp;ccedil;a idealdir. Yukarıdaki &amp;ouml;rneğin &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Subat/channels_1.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi gelelim crossbeam paketini kullandığımız &amp;ouml;rneğe. Bu sefer senaryoyu biraz daha eğlenceli hale getirmeye &amp;ccedil;alışacağız. İşe projemizi oluşturarak başlayalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;cargo new vorcraft
+cd vorcraft
+touch src/lib.rs&lt;/pre&gt;
+&lt;p&gt;&lt;a href="https://crates.io/crates/crossbeam" target="_blank"&gt;Crossbeam&lt;/a&gt; harici bir paket olduğundan projenin toml dosyasında gerekli d&amp;uuml;zenlemeleri yapmalıyız. &amp;Ouml;rneğimizde kod takibi a&amp;ccedil;ısından log mekanizmasından da yararlanıyoruz. Bu nedenle toml dosyasını aşağıdaki gibi d&amp;uuml;zenleyebiliriz.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;[package]
+name = "vorcraft"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+crossbeam = "0.8.1"
+log="0.4.14"
+env_logger = "0.9.0"&lt;/pre&gt;
+&lt;p&gt;Sırada lib dosyası var. Haydi rustgele :P&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;lib.rs&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;use crossbeam::channel::{Receiver, Sender};
+use log::{error, info, warn};
+use std::thread;
+use std::time::Duration;
+
+// Yaptıracağımız işleri tutan bir enum t&amp;uuml;r&amp;uuml;. Receiver tarafından kullanılır.
+#[derive(Debug)]
+pub enum Job {
+    WheatFarm,
+    FishFarm,
+    Shack(u8),       // Ka&amp;ccedil; kişilik bir kul&amp;uuml;be olacağını u8 ile atabiliriz
+    ArcherTower(u8), // Belki u8 ile ok&amp;ccedil;u kulesinin seviyesini ifade ederiz
+    Ditch(f32),      // hendeğin uzunluğunu u32 ile alabiliriz
+}
+
+// İşler tamamlandıktan sonra kanala bırakacağımız mesajlar i&amp;ccedil;in aşağıdaki enum kullanılabilir.
+// Sender tarafından kullanılır.
+#[derive(Debug)]
+pub enum Harvest {
+    WheatFarm,
+    FishFarm,
+    Shack,
+    ArcherTower,
+    Ditch,
+}
+
+// Fonksiyon Receiver ve Sender t&amp;uuml;r&amp;uuml;nden iki parametre almakta.
+// Buna g&amp;ouml;re kanaldan mesaj alma ve kanala mesaj bırakma işlevlerini &amp;uuml;stlendiğini ifade edebiliriz.
+pub fn pesant_worker(job_no: i32, jobs: Receiver&amp;lt;Job&amp;gt;, results: Sender&amp;lt;Harvest&amp;gt;) {
+    warn!("{} numaralı iş", job_no);
+    // Bir d&amp;ouml;ng&amp;uuml; ile gelen Job listesini dolaşıyoruz.
+    for job in jobs {
+        // her bir Job'u match ifadesi ile kontrol ediyor ve sembolik bir gecikme ile işletip
+        // Sender i&amp;ccedil;in bir sonu&amp;ccedil; alıyoruz.
+        let response = match job {
+            Job::ArcherTower(l) =&amp;gt; {
+                info!("{} seviyesinde ok&amp;ccedil;u kulesi inşaası", l);
+                thread::sleep(Duration::from_secs_f32(2.0));
+                Harvest::ArcherTower
+            }
+            Job::Ditch(l) =&amp;gt; {
+                info!("{} uzunluğunda hendek.", l);
+                thread::sleep(Duration::from_secs_f32(1.5));
+                Harvest::Ditch
+            }
+            Job::FishFarm =&amp;gt; {
+                info!("Kıyıya balık &amp;ccedil;ifliği inşaası.");
+                thread::sleep(Duration::from_secs_f32(3.5));
+                Harvest::FishFarm
+            }
+            Job::WheatFarm =&amp;gt; {
+                info!("Buğday tarlası inşaası.");
+                thread::sleep(Duration::from_secs_f32(0.5));
+                Harvest::WheatFarm
+            }
+            Job::Shack(p) =&amp;gt; {
+                info!("{} kişilik kul&amp;uuml;be inşaası.", p);
+                thread::sleep(Duration::from_secs_f32(p as f32 * 0.30));
+                Harvest::Shack
+            }
+        };
+        info!("Yapılan iş {:?}", response);
+        // İstenen işlem tamamlandıktan sonra sonucu Sender ile kanala bırakmaktayız.
+        // send işlemi sırasında bir hata olma ihtimaline karşı da durumu kontrol ediyoruz.
+        if results.send(response).is_err() {
+            error!("Ups bir hata oluştu.");
+            break;
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Sanki Warcraft benzeri bir oyundayız da k&amp;ouml;yl&amp;uuml;lerimize tarla, balık &amp;ccedil;ifliği, kul&amp;uuml;be gibi unsurları inşa etmek gibi g&amp;ouml;revler veriyoruz. İşleri ve yapılan &amp;ccedil;alışma sonu&amp;ccedil;larını birer enum sabiti ile tutmaktayız. Hatta bunları birer olay&lt;em&gt;(event)&lt;/em&gt; gibi de d&amp;uuml;ş&amp;uuml;nebiliriz. pesant_worker isimli fonksiyon transmitter ve receiver nesnelerini parametre olarak alıp&amp;nbsp;kanaldan bilgi okuma ve yazma opsiyonlarına sahip. Dolayısıyla mesaj dinleyip&lt;em&gt;(yani gelen g&amp;ouml;revi alıp)&lt;/em&gt;&amp;nbsp;buna bağlı işi icra ettikten sonra kanala bir bilgi yollayabilir&lt;em&gt;(Hangi işin bittiğini s&amp;ouml;yleyen bir durum bilgisi)&lt;/em&gt;. Kurgunun şekilleneceği yer ise elbette main fonksiyonu.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;main.rs&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;use crossbeam::channel;
+use std::thread;
+use vorcraft::{pesant_worker, Job};
+
+fn main() {
+    env_logger::init();
+
+    println!("Oyun başladı. G&amp;ouml;revler dağıtılacak.");
+
+    // İlk olarak unbounded kanallarımızı oluşturalım.
+    // unbounded bir Tuple d&amp;ouml;ner.
+    // jt -&amp;gt; Jobs Transmitter, jr -&amp;gt; Jobs Receiver anlamında.
+    // rt -&amp;gt; Results Transmitter, rr -&amp;gt; Results Receiver anlamında.
+    let (jt, jr) = channel::unbounded();
+    let (rt, rr) = channel::unbounded();
+
+    let jr2 = jr.clone();
+    let rt2 = rt.clone();
+    let jr3 = jr.clone();
+    let rt3 = rt.clone();
+
+    // Şimdi &amp;uuml;&amp;ccedil; thread oluşturacağız. Bunları JoinHandle serisinde toplayabiliriz.
+    // Tohumlanan thread'ler pesant_worker fonksiyonunu &amp;ccedil;ağırmakta ve buraya birer reciver ile
+    // transmitter nesnesi g&amp;ouml;ndermekte. Ancak her thread kendi transmitter ve receiver'ı ile &amp;ccedil;alışmalı.
+    // Bu nedenle bir &amp;uuml;st satırda clone'landıklarını g&amp;ouml;rebiliriz.
+    let handles = vec![
+        thread::spawn(|| pesant_worker(1001, jr, rt)),
+        thread::spawn(|| pesant_worker(1002, jr2, rt2)),
+        thread::spawn(|| pesant_worker(1003, jr3, rt3)),
+    ];
+
+    // Birka&amp;ccedil; kobay iş isteiğinden oluşan bir vector hazırlayalım
+    let jobs = vec![
+        Job::WheatFarm,
+        Job::FishFarm,
+        Job::Shack(8),
+        Job::Ditch(23.0),
+        Job::ArcherTower(100),
+        Job::Shack(4),
+        Job::FishFarm,
+        Job::ArcherTower(50),
+        Job::Shack(10),
+    ];
+
+    // Herbir iş isteğini ilgili kanala bırakacak bir d&amp;ouml;ng&amp;uuml;.
+    for j in jobs {
+        println!("İstenen iş {:?}", j);
+        let _ = jt.send(j); // Kanala istenen işi bıraktık
+    }
+    // Artık kanala g&amp;ouml;ndereceğimiz bir iş isteği kalmadığından transmitter'ı hemen kapatıyoruz.
+    drop(jt);
+
+    // Burada da thread'lerin yaptığı iş sonu&amp;ccedil;larının aktığı kanalı dinleyerek sonu&amp;ccedil;ları almaktayız.
+    for r in rr {
+        println!("Tamamlanan iş {:?}", r);
+    }
+
+    // İşlemler bitmeden main'in sonlanmasını engelliyoruz
+    for h in handles {
+        let _ = h.join();
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere Job ve Result t&amp;uuml;rleri i&amp;ccedil;in iki ayrı unbounded kanal oluşturulmakta. Dolayısıyla yapılacak işler ve sonu&amp;ccedil;lar i&amp;ccedil;in iki ayrı kanal a&amp;ccedil;tığımızı d&amp;uuml;ş&amp;uuml;nebiliriz. Senaryoda 3 iş&amp;ccedil;imiz var ve her biri i&amp;ccedil;in birer thread oluşturulmakta. Thread'ler pesant_worker fonksiyonunu &amp;ccedil;ağırırken kendileri i&amp;ccedil;in gerekli transmitter ve receiver nesnelerinin birer klonunu almaktalar&lt;em&gt;(Clone kullanmadığımız durumda nasıl bir sorun oluşacağını araştırınız)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Artık &amp;ouml;rneğimizi &amp;ccedil;alıştırıp sonu&amp;ccedil;lara bakabiliriz. Pek tabii clippy ile kodun halini hatırını sorup gerekli d&amp;uuml;zenlemeleri yaparak ilerlediğimi ve olabildiğince idiomatic kod oluşturmaya &amp;ccedil;alıştığımı baştan s&amp;ouml;ylemek isterim.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;# Kendi &amp;ouml;rneğinizi &amp;ccedil;alıştırmadan &amp;ouml;nce sık sık clippy ile uyarıları g&amp;ouml;zden ge&amp;ccedil;irin
+cargo clippy
+# Doğrudan &amp;ccedil;alıştırmak i&amp;ccedil;in aşağıdaki gibi,
+cargo run
+
+# logları g&amp;ouml;rmek i&amp;ccedil;inse aşağıdaki gibi.
+RUST_LOG=info cargo run&lt;/pre&gt;
+&lt;p&gt;İşte kendi sistemimde elde ettiğim &amp;ccedil;alışma zamanı sonu&amp;ccedil;ları.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Subat/channels_2.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Birden &amp;ccedil;ok iş par&amp;ccedil;acığının yer aldığı ve bu işler arasında haberleşmenin &amp;ouml;nce &amp;ccedil;ıktığı senaryolarda kanal kullanımı son derece yaygın.&amp;nbsp;Built-in olarak gelen mpsc k&amp;uuml;t&amp;uuml;phanesini kullanabileceğimiz gibi Rust konusunda ileri seviye olanların &amp;ouml;nerdiği crossbeam paketini de tercih edebiliriz. Ben aradaki farkları yorumlayacak mertebede yetkinliğe sahip olmasam da &amp;ouml;nerilere kulak verip crossbeam'i tercih ediyorum. &amp;Ouml;rnek &amp;uuml;zerinde bol bol uğraşmanızı &amp;ouml;neririm. S&amp;ouml;z gelimi thread'lerin a&amp;ccedil;ılması i&amp;ccedil;in bir for d&amp;ouml;ng&amp;uuml;s&amp;uuml; kullanabilir miyiz ?&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir rust pratiğimizin daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nce dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rnek kodlara &lt;a title="Rust Pratikleri - CrossBeam" href="https://github.com/buraksenyurt/rust-farm/tree/main/Practices/vorcraft" target="_blank"&gt;Rust Pratikleri github reposu&lt;/a&gt;ndan erişebilirsiniz.&lt;/p&gt;</content>
+  <pubDate>2022-02-20 09:00:00</pubDate>
+  <slug>rust-pratikleri-channels</slug>
+  <tags>
+    <tag>rust</tag>
+    <tag>rust-pratikleri</tag>
+    <tag>channel</tag>
+    <tag>crossbeam</tag>
+    <tag>thread</tag>
+    <tag>multi-thread</tag>
+    <tag>unbounded</tag>
+  </tags>
+  <categories>
+    <category>Rust</category>
+  </categories>
+</post>

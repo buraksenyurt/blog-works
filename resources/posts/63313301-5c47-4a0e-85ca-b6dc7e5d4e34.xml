@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Asp.Net Temelleri : Etkili Trace Kullanımı</title>
+  <description>Web uygulamalarında son kullanıcıların(End Users) şikayetçi olabileceği pek çok konu vardır. Bunlar arasında popüler olanlarından biriside sayfaların yavaş açılıyor olmasıdır. Nihayetinde son kullanıcıları her zaman için sabırsız ve acelesi olan kişiler olarak düşünmek doğru bir yaklaşım olacaktır...</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Web uygulamalarında son kullanıcıların&lt;strong&gt;(End Users)&lt;/strong&gt; şikayet&amp;ccedil;i olabileceği pek &amp;ccedil;ok konu vardır. Bunlar arasında pop&amp;uuml;ler olanlarından biriside sayfaların yavaş a&amp;ccedil;ılıyor olmasıdır. Nihayetinde son kullanıcıları her zaman i&amp;ccedil;in sabırsız ve acelesi olan kişiler olarak d&amp;uuml;ş&amp;uuml;nmek doğru bir yaklaşım olacaktır. Sayfaların yavaş a&amp;ccedil;ılıyor yada ge&amp;ccedil; cevap veriyor olmasının donanımsal yada &amp;ccedil;eşitli &amp;ccedil;evre fakt&amp;ouml;rleri nedeniyle bilinen sebepleri vardır.&lt;/p&gt;
+&lt;p&gt;S&amp;ouml;z gelimi bağlantı hızının d&amp;uuml;ş&amp;uuml;k olması ilk akla gelen nedendir. Ancak &lt;strong&gt;geliştiriciler(developers)&lt;/strong&gt; olarak bizlerinde &amp;uuml;zerine d&amp;uuml;şen &amp;ouml;nemli g&amp;ouml;revler vardır. Sonu&amp;ccedil; itibariyle bir geliştirici, mininum donanım gereksinimleri karşılandığı takdirde hızlı ve yeterli performasta &amp;ccedil;alışabilen bir web uygulaması geliştiriyorsa, donanım kapasite ve yeteneklerinin daha y&amp;uuml;ksek olduğu son kullanıcılarda aynı web uygulamasının &amp;ccedil;ok daha iyi sonu&amp;ccedil;lar vereceği d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Trace&lt;/strong&gt; mekanizmasını kullanmak i&amp;ccedil;in k&amp;uuml;&amp;ccedil;&amp;uuml;k bir neden; &amp;ouml;rneğin talep&lt;strong&gt;(request)&lt;/strong&gt; edilen sayfanın &amp;uuml;retilmesi ve &lt;strong&gt;HTML&lt;/strong&gt; &amp;ccedil;ıktısının hazırlanması uzun zaman alıyor olabilir. Sayfanın &amp;uuml;retimi sırasında hangi adımların &amp;ccedil;ok zaman aldığını g&amp;ouml;rmek i&amp;ccedil;in Trace mekanizmasından yararlanılabilir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Elbetteki bir web uygulamasının hızını, performansını ve cevap verebilme yeteneklerini etkiliyecek pek &amp;ccedil;ok fakt&amp;ouml;r vardır. Yine &amp;ouml;rnek olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;l&amp;uuml;rse, 10 kullanıcılı bir intranet ortamında gayet iyi &amp;ccedil;alışan bir web uygulaması, internet' e a&amp;ccedil;ıldığında karşılaşabileceği n kullanıcı talebi sonrasında beklenen performansı g&amp;ouml;steremeyebilir. Buradaki en b&amp;uuml;y&amp;uuml;k etken kullanıcı sayısıdır. Bu nedenle web uygulamalarını ne kadar iyi programladığımızı d&amp;uuml;ş&amp;uuml;nsekte, sonu&amp;ccedil;lara bakıldığında gerek test gerekse ger&amp;ccedil;ek ortamlarda istediğimiz sonu&amp;ccedil;ları alamadığımızı g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;Dolayısıyla test aşamasında uygulamanın genelini izleyebilmek ve sonu&amp;ccedil;ları analiz ederek gerekli tedbirleri alabilmek son derece &amp;ouml;nemli bir konudur. Bu gibi durumlarda web uygulamasının genelinin yada problemli olabileceği d&amp;uuml;ş&amp;uuml;n&amp;uuml;len sayfaların &amp;ccedil;alışma zamanı ve sonrasındaki hareketlerinin izlenmesi adına Asp.Net modelinde &lt;strong&gt;Trace&lt;/strong&gt; mekanizasından faydalanılmaktadır. İşte bu makalemizde Trace kavramını derinlemesine incelemeye &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;p&gt;Trace mekanizması ile &lt;strong&gt;sayfa(Page)&lt;/strong&gt; veya &lt;strong&gt;uygulama seviyesinde(Application Level)&lt;/strong&gt;, kullanıcıdan gelen bir talebin işlenmesi sırasında ve sonu&amp;ccedil;ların elde edilmesinin sonrasında gerekli host bilgileri yakalanabilir. Bu bilgiler değerlendirilerek sorunun nerede olduğu daha kolay bir şekilde tespit edilebilir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Trace; &lt;strong&gt;HTTP&lt;/strong&gt; talebi ile ilgili olaraktan &lt;strong&gt;sunucu(server)&lt;/strong&gt; taraflı &lt;strong&gt;&amp;ccedil;alışma zamanı(run-time)&lt;/strong&gt; ve sonrası detay bilgilerinin alınmasını sağlayan bir Asp.Net mekanizmasıdır.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Trace mekanizması sadece sayfa ve uygulama seviyesinde değil, &lt;strong&gt;bileşen seviyesindede(Component Level)&lt;/strong&gt; ele alınabilir. Nitekim, web uygulamalarında sayfaların &amp;ccedil;oğu buton arkası programlama yerine bileşenleri ele alır. &amp;Ccedil;ok doğal olarak bileşenler i&amp;ccedil;erisinde meydana gelebilecek sorunların ele alınması sırasında yine Trace mekanizması ele alınabilir. Trace ile elde edilen sonu&amp;ccedil;lar &amp;uuml;retilen genellikle sayfa sonlarına &lt;strong&gt;HTML&lt;/strong&gt; bilgisi olarak eklenebilirler. Bunun dışında &lt;strong&gt;Trace.axd&lt;/strong&gt; isimli &amp;ouml;zel dosyalardanda uygulama genelinde, talep sırasına g&amp;ouml;re sayfaların izlenmesi sağlanabilir.&lt;/p&gt;
+&lt;p&gt;İlk olarak Trace işlemlerini sayfa seviyesinde ele almaya &amp;ccedil;alışacağız. Bir sayfanın Trace &amp;ccedil;ıktısını yakalamak i&amp;ccedil;in iki farklı y&amp;ouml;ntem vardır. Bunlardan birincisi &lt;strong&gt;Page&lt;/strong&gt; direktifinde yer alan &lt;strong&gt;Trace&lt;/strong&gt; niteliğine &lt;strong&gt;true&lt;/strong&gt; değeri atanmasıdır. Diğer yol ise kod tarafında &lt;strong&gt;Trace&lt;/strong&gt; nesne &amp;ouml;rneği &amp;uuml;zerinden &lt;strong&gt;IsEnabled&lt;/strong&gt; &amp;ouml;zelliğine true değerini atamaktır.&lt;/p&gt;
+&lt;p&gt;Direktik i&amp;ccedil;erisinden Trace mekanizmasının a&amp;ccedil;ılması;&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;%@ Page Language="C#" Trace="true"%&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Kod tarafından Trace mekanizmasının a&amp;ccedil;ılması;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;protected void Page_Load(object sender, EventArgs ea)
+{
+    Page.Trace.IsEnabled = true; 
+}&lt;/pre&gt;
+&lt;p&gt;Sonu&amp;ccedil; olarak bu iki kullanım şekline g&amp;ouml;re sayfanın sonuna Trace bilgileri aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi eklenecektir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk216_1.gif" alt="" width="613" height="525" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu &amp;ccedil;ıktıda t&amp;uuml;m Trace bilgisi g&amp;ouml;sterilmemektedir. Temel olarak Trace &amp;ccedil;ıktısında yer alan kısımlar aşağıdaki tabloda olduğu gibidir.&lt;/p&gt;
+&lt;table id="table135" style="border-collapse: collapse; width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#ffffff"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="background-color: #ffffff;" colspan="2" bgcolor="#336699"&gt;&lt;strong&gt; Trace &amp;Ccedil;ıktısında Yer Alan B&amp;ouml;l&amp;uuml;mler&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Request Details&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Bu kısımda talep ile ilişkili genel bilgiler yer alır. &amp;Ouml;rneğin &lt;strong&gt;talep tipi(request type)&lt;/strong&gt; ilk &amp;ccedil;ağrıda &lt;strong&gt;Get&lt;/strong&gt; iken sayfa sunucuya g&amp;ouml;nderildikten sonra &lt;strong&gt;Post&lt;/strong&gt; değerini alır. Bir başka &amp;ouml;rnek detay bilgisi olarakta &lt;strong&gt;Session Identity(SessionId)&lt;/strong&gt; değeri verilebilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Trace Information&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Bu kısımda &amp;ouml;zellikle sayfanın yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml;&lt;strong&gt;(Page Life Cycle)&lt;/strong&gt; i&amp;ccedil;erisinde yer alan olayların genel s&amp;uuml;releri yer alır. Buradaki bilgilerden hareket ederek sayfanın &amp;uuml;retimi sırasında hangi kısımların ne kadar s&amp;uuml;re harcadığı g&amp;ouml;r&amp;uuml;lebilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Control Tree&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Sayfa i&amp;ccedil;erisindeki kontrollerin ağa&amp;ccedil; yapısını verir. B&amp;ouml;ylece &amp;ouml;zellikle form i&amp;ccedil;erisinde kullanılan başka &lt;strong&gt;taşıyıcı kontroller(container controls)&lt;/strong&gt; var ise, bunların i&amp;ccedil;erisinde yer alan alt kontrollerin elde edilmesi i&amp;ccedil;in ne kadar derine inilebileceği kolayca tespit edilebilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Session State&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Kullanıcıya ait &lt;strong&gt; oturum(Session)&lt;/strong&gt; i&amp;ccedil;erisinde tutulan verilerin değerlerinin ve tiplerinin g&amp;ouml;sterildiği kısımdır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Application State&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;Application&lt;/strong&gt; nesnesi i&amp;ccedil;erisindeki anahtarlar&lt;strong&gt;(keys)&lt;/strong&gt; ve değerlerinin&lt;strong&gt;(values)&lt;/strong&gt; g&amp;ouml;sterildiği kısımdır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Request Cookies Collection&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Sayfaya gelen talep sırasındaki &amp;ccedil;erezlere ait bilgilerin tutulduğu koleksiyondur.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Response Cookies Collection&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Sayfadan istemciye d&amp;ouml;nen cevap i&amp;ccedil;erisinde yer alan &amp;ccedil;erezlere&lt;strong&gt;(Cookies)&lt;/strong&gt; ait bilgilerin tutulduğu koleksiyondur.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Headers Collection&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;İstemciden sunucuya gelen &lt;strong&gt; HTTP&lt;/strong&gt; paketindeki başlık bilgileri g&amp;ouml;r&amp;uuml;lebilir. &amp;Ouml;rneğin &lt;strong&gt; Accept_Encoding&lt;/strong&gt; bilgisi.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Response Headers Collection&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;İstemciye d&amp;ouml;nen HTTP paketindeki başlık bilgilerini i&amp;ccedil;erir. &amp;Ouml;rneğin &amp;uuml;retilen i&amp;ccedil;erik tipi &lt;strong&gt;(Content Type)&lt;/strong&gt; g&amp;ouml;r&amp;uuml;lebilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Form Collection&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Sunucudan istemciye g&amp;ouml;nderilen form bilgileri g&amp;ouml;r&amp;uuml;lebilir. &amp;Ouml;rneğin &amp;uuml;retilen &lt;strong&gt;_VIEWSTATE&lt;/strong&gt; değerine bakılabilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Querystring Collection&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Sayfadan istenen &lt;strong&gt;query string&lt;/strong&gt; bilgileri var ise bunların adları ve o anki değerleri g&amp;ouml;r&amp;uuml;lebilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Server Variables&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Sunucu değişkenleri elde edilebilir. &amp;Ouml;rneğin, sunucu uygulamanın fiziki yolu&lt;strong&gt;(APPL_PHYSICAL_PATH)&lt;/strong&gt;, yerel ip adresi&lt;strong&gt;(LOCAL_ADDR)&lt;/strong&gt; gibi.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Aynı bilgilere ulaşmak i&amp;ccedil;in adres satırında &lt;strong&gt;Trace.axd&lt;/strong&gt; dosyasıda talep edilebilir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Trace.axd&lt;/strong&gt;, WebResource.axd benzeri bir dosyadır. Dolayısıyla &amp;ccedil;alışma zamanında &amp;ouml;zel şekilde ele alınır. Asp.Net &amp;ccedil;alışma ortamı Trace.axd taleplerinin &lt;strong&gt;TraceHandler&lt;/strong&gt; isimli sınıfa ait nesne &amp;ouml;rneklerine devredilerek karşılanmasını sağlar.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk216_11.gif" alt="" width="303" height="227" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dolayısıyla s&amp;ouml;z konusu talep sonrası oluşan ekran &amp;ccedil;ıktısı &lt;strong&gt;TraceHandler&lt;/strong&gt; sınıfı tarafından hazırlanır. Makinedeki ana web.config dosyasının i&amp;ccedil;eriğine bakıldığında bu a&amp;ccedil;ık&amp;ccedil;a g&amp;ouml;r&amp;uuml;lebilir. Burada dikkat edilmesi gereken noktalardan birisi sadece Trace.axd i&amp;ccedil;in b&amp;ouml;yle bir handler' ın yazılmış olmasıdır. Trace.axd ve &lt;strong&gt;WebResource.axd&lt;/strong&gt; dışında gelecek talepler&lt;strong&gt;HttpNotFoundHandler&lt;/strong&gt; tarafından ele alınmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk216_10.gif" alt="" width="461" height="130" border="0" /&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde &lt;strong&gt; Trace.axd&lt;/strong&gt;' nin talep edilmesinin &amp;ouml;rnek sonu&amp;ccedil;ları g&amp;ouml;sterilmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk216_2.gif" alt="" width="506" height="262" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Kod tarafında Trace bilgilerini ele almak i&amp;ccedil;in &lt;strong&gt;Page&lt;/strong&gt; nesne &amp;ouml;rneği &amp;uuml;zerinden &lt;strong&gt;Trace&lt;/strong&gt; &amp;ouml;zelliği kullanılmaktadır. Aslında Trace &amp;ouml;zelliği doğrudan &lt;strong&gt;TraceContext&lt;/strong&gt; sınıfına ait bir nesne &amp;ouml;rneği d&amp;ouml;nd&amp;uuml;rmektedir. TraceContext sınıfı &lt;strong&gt; sealed&lt;/strong&gt; olarak işaretlenmiş bir tip olduğundan t&amp;uuml;retilerek&lt;strong&gt;(inherit)&lt;/strong&gt; &amp;ouml;zelleştirilemez. Bu sınıfın Framework i&amp;ccedil;erisindeki yeri şekilsel olarak aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk216_3.gif" alt="" width="587" height="307" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;TraceContext&lt;/strong&gt; sınıfının &amp;uuml;yeleri g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında, &lt;strong&gt;Write&lt;/strong&gt; ve &lt;strong&gt;Warn&lt;/strong&gt; metodları kod i&amp;ccedil;erisinden Trace &amp;ccedil;ıktısına bilgi yazdırmak amacıyla kullanılmaktadır. Bunların arasındaki tek fark Warn metodunun yazıyı &lt;strong&gt; &lt;span style="color: #ff0000;"&gt;kırmızı punto&lt;/span&gt;&lt;/strong&gt; ile basıyor olmasıdır. Diğer taraftan her iki metodda 3 farklı aşırı y&amp;uuml;klenmiş versiyona sahiptir. Bu versiyonlar yardımıyla yazdırılan bilginin &lt;strong&gt; kategorisi(Category)&lt;/strong&gt;, i&amp;ccedil;eriği&lt;strong&gt;(Message)&lt;/strong&gt; ve o anda yakalanmış bir &lt;strong&gt;istisna(Exception)&lt;/strong&gt; var ise bu istisna nesne &amp;ouml;rneği Trace &amp;ccedil;ıktısına g&amp;ouml;nderilebilir. &lt;strong&gt;IsEnabled&lt;/strong&gt; &amp;ouml;zelliği ile daha &amp;ouml;ncedende belirtildiği gibi Trace' in etklinleştirilmesi veya pasif moda &amp;ccedil;ekilmesi sağlanabilir. TraceMode &amp;ouml;zelliği &lt;strong&gt;TraceMode&lt;/strong&gt; enum sabiti tipinden değerler alabilmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk216_4.gif" alt="" width="350" height="139" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu değerler sayesinde Trace &amp;ccedil;ıktısında yer alan &lt;strong&gt;Trace Information&lt;/strong&gt; kısmındaki bilgilerin kategori veya s&amp;uuml;re bazlı olarak sıralanıp sıralanmayacağı belirlenebilir. Bu &amp;uuml;yeler dışında TraceContext sınıfı &amp;ouml;zellikle bileşenlerin i&amp;ccedil;erisinde ele alınmak istendiğinde yapıcı metoddan bir &amp;ouml;rnek oluşturulması gerekmektedir. Bunun i&amp;ccedil;in yapıcı metod &lt;strong&gt;HttpContext&lt;/strong&gt; tipinden bir parametre alır. Bunu ilerleyen kısımlarda ele alacağız. TraceContext sınıfının birde &lt;strong&gt;TraceFinished&lt;/strong&gt; isimli olayı vardır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt; TraceContextEventHandler&lt;/strong&gt; temsilcisinin tanımladığı yapıya uygun olay metodu &amp;ccedil;ağırılabilir. Bu olay TraceContext sınıfına .Net 2.0 ile birlikte katılmıştır. TraceFinished olayı, Trace bilgileri toplandıktan sonra TraceContext sınıfının kendisi tarafından tetiklenir. &lt;strong&gt; TraceContextEventArgs&lt;/strong&gt; tipinden olan ikinci parametre sayesinde Trace ile ilgili veriler elde edilebilir ve bu sayede farklı veri kaynaklarına yazılmaları sağlanabilir. Aşağıdaki kod par&amp;ccedil;asında bu olayın kullanımı &amp;ouml;rneklenmeye &amp;ccedil;alışılmaktadır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;protected void Page_Load(object sender, EventArgs ea)
+{
+    Page.Trace.IsEnabled = true;
+    Page.Trace.TraceFinished += new TraceContextEventHandler(Trace_TraceFinished);
+}
+
+void Trace_TraceFinished(object sender, TraceContextEventArgs e)
+{
+    IEnumerator numarator=e.TraceRecords.GetEnumerator();
+    while (numarator.MoveNext())
+    {
+        TraceContextRecord record = (TraceContextRecord)numarator.Current;
+        Response.Write(record.Category + " : " + record.Message + "&amp;lt;br/&amp;gt;");
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;TraceContextEventArgs&lt;/strong&gt; tipinden e değişkeni &amp;uuml;zerinden elde edilen koleksiyon i&amp;ccedil;erisindeki her bir eleman &lt;strong&gt;TraceContextRecord&lt;/strong&gt; sınıfına ait birer nesne &amp;ouml;rneğidir. Bu tip yardımıyla Trace Information kısmındaki kategori, mesaj, istisna tipi ve uyarı olup olmadığı&lt;strong&gt;(IsWarning)&lt;/strong&gt; bilgilerine erişilebilir. Aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde bu bilgiler yer almaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk216_5.gif" alt="" width="554" height="213" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu kodun yer aldığı sayfa ilk talep edildiğinde aşağıdaki ekran &amp;ccedil;ıktısında yer alan i&amp;ccedil;erik elde edilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk216_6.gif" alt="" width="383" height="383" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Post işleminden sonra ise &lt;strong&gt; TraceFinished&lt;/strong&gt; i&amp;ccedil;erisinden yakalanan mesajların sayısı sayfanın yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml; nedeni ile artacak ve aşağıdakine benzer bir ekran &amp;ccedil;ıktısı elde edilecektir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk216_7.gif" alt="" width="377" height="504" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;S&amp;ouml;z konusu olay metodu ile her ne kadar &lt;strong&gt;Trace Information &lt;/strong&gt;ile ilgili &amp;ccedil;ok az bilgiye ulaşsakta zaten geri kalan verilerin &amp;ccedil;oğu &lt;strong&gt;HttpResponse&lt;/strong&gt; veya &lt;strong&gt;HttpRequest&lt;/strong&gt; gibi tipler yardımıyla elde edilebilmektedir. Dolayısıyla bu olay i&amp;ccedil;erisinde bu tipler aracılığıyla elde edilen veriler başka veri ortamlarına da yazdırılabilirler.&lt;/p&gt;
+&lt;p&gt;Şimdi Trace mekanizmasını farklı yollar ile incelemeye devam edeceğiz. İlk olarak sayfa seviyesinde Trace bilgilerini izlemenin nasıl faydası olabiliceğini g&amp;ouml;rmeye &amp;ccedil;alışacağız. Bu ama&amp;ccedil;la aşağıdaki web sayfası ve kodları g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir. &lt;em&gt;(Bu ve sonraki asp.net sayfalarında, işlemlerin kolay takip edilmesi amacıyla inline-coding tekniği kullanılmıştır.)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;%@ Page Language="C#" %&amp;gt;
+&amp;lt;%@ Import Namespace="System.Data" %&amp;gt;
+&amp;lt;%@ Import Namespace="System.Data.SqlClient" %&amp;gt;
+
+&amp;lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&amp;gt;
+
+&amp;lt;script runat="server"&amp;gt;
+
+protected void btnCek_Click(object sender, EventArgs e)
+{
+    string urunAdlari=""; 
+    using (SqlConnection conn = new SqlConnection("data source=.;database=AdventureWorks;integrated security=SSPI"))
+    {
+        SqlCommand cmd = new SqlCommand("Select Top 10000 TransactionId From Production.TransactionHistory", conn);
+        conn.Open();
+        SqlDataReader reader = cmd.ExecuteReader(); 
+        while (reader.Read())
+        {
+            urunAdlari += reader["TransactionId"].ToString()+"|";
+        }
+        reader.Close();
+    }
+    Session.Add("TumKategoriler", urunAdlari);
+} 
+
+&amp;lt;/script&amp;gt;
+
+&amp;lt;html xmlns="http://www.w3.org/1999/xhtml" &amp;gt;
+    &amp;lt;head runat="server"&amp;gt;
+        &amp;lt;title&amp;gt;Untitled Page&amp;lt;/title&amp;gt;
+    &amp;lt;/head&amp;gt;
+    &amp;lt;body&amp;gt;
+        &amp;lt;form id="form1" runat="server"&amp;gt;
+            &amp;lt;div&amp;gt;
+                &amp;lt;asp:Button ID="btnCek" runat="server" Text="Veriyi &amp;Ccedil;ek" OnClick="btnCek_Click" /&amp;gt;
+            &amp;lt;/div&amp;gt;
+        &amp;lt;/form&amp;gt;
+    &amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Web sayfamızda yer alan d&amp;uuml;ğmeye basıldığında, &lt;strong&gt;TransactionHistory&lt;/strong&gt; tablosundaki ilk 10000 TransactionId değeri elde edilir ve bunlar bir string i&amp;ccedil;erisinde birleştirilerek Session' a atılır. Kod her ne kadar anlamlı g&amp;ouml;z&amp;uuml;kmesede (ki g&amp;ouml;z&amp;uuml;kmediği ortada :) ) ortaya &amp;ccedil;ıkardığı sonu&amp;ccedil;lar nedeniyle kayda değerdir. Nitekim sayfa talep edildikten sonra d&amp;uuml;ğmeye basıldığında sayfanın uzun bir s&amp;uuml;rede &amp;ccedil;ıktı verdiği g&amp;ouml;r&amp;uuml;lecektir. Burada herhangibir hata g&amp;ouml;r&amp;uuml;nmemektedir. Ancak sayfanın &amp;ccedil;ıktısının &amp;uuml;retilmesi ve istemciye gelmesinin neden uzun s&amp;uuml;rd&amp;uuml;ğ&amp;uuml;de incelenmelidir. İşte bu ama&amp;ccedil;la bu sayfa &amp;uuml;zerinde &lt;strong&gt;Trace&lt;/strong&gt; işlemi ger&amp;ccedil;eklenmelidir. Hatırlanacağı &amp;uuml;zere bunu kod veya direktif i&amp;ccedil;erisinde yapabileceğimizi belirtmiştik. Bu nedenle &lt;strong&gt;Page&lt;/strong&gt; direktifinde yer alan &lt;strong&gt;Trace&lt;/strong&gt; niteliğine &lt;strong&gt;true&lt;/strong&gt; değerini verelim ve kodlarımızı aşağıdaki gibi değiştirelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using (SqlConnection conn = new SqlConnection("data source=.;database=AdventureWorks;integrated security=SSPI"))
+{
+    SqlCommand cmd = new SqlCommand("Select Top 10000 TransactionId From Production.TransactionHistory", conn);
+    conn.Open();
+    Trace.Warn("TransactionId Cekme", "TransactionId değerleri &amp;ccedil;ekilmeye başlanacak");
+    SqlDataReader reader = cmd.ExecuteReader(); 
+    while (reader.Read())
+    {
+        urunAdlari += reader["TransactionId"].ToString()+"|";
+    }
+    Trace.Warn("TransactionId Cekme", "TransactionId değerleri &amp;ccedil;ekildi...");
+    reader.Close();
+}&lt;/pre&gt;
+&lt;p&gt;Burada &lt;strong&gt;Warn&lt;/strong&gt; metodu kullanılarak urunAdlari toplanmadan &amp;ouml;nce ve toplandıktan sonra Trace &amp;ccedil;ıktısına kategori bazlı değerler yazdırılmaktadır. Bunun sonucunda sayfa &amp;ccedil;ıktısı aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk216_8.gif" alt="" width="631" height="579" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Sonu&amp;ccedil;ları irdelerken &lt;strong&gt;From First(s)&lt;/strong&gt; ve &lt;strong&gt;From Last(s) &lt;/strong&gt;kısımlarındaki s&amp;uuml;reler &amp;ccedil;ok &amp;ouml;nemlidir. From First(s) ile sayfanın talepten sonraki yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml; başladığından beri ge&amp;ccedil;en toplam s&amp;uuml;re ifade edilir. Form Last(s) ise, bir &amp;ouml;nceki işlem ile son işlem arasındaki ge&amp;ccedil;en s&amp;uuml;re farkıdır. B&amp;ouml;ylece kod yardımıyla sayfanın &amp;ccedil;alışma zamanı &amp;ccedil;ıktısına bakılmış ve s&amp;uuml;re uzamasının nerede olduğu tespit edilebilmiştir. G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi string bilgisini oluştururken + operat&amp;ouml;r&amp;uuml; nedeni ile verinin oluşumu son derece fazla zaman almıştır. Aslında burada alınacak tedbir son derece basittir. + operat&amp;ouml;r&amp;uuml; yerine &lt;strong&gt;StringBuilder&lt;/strong&gt; kullanmak. Bunun i&amp;ccedil;in kod aşağıdaki gibi değiştirilebilir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;StringBuilder builder = new StringBuilder();
+using (SqlConnection conn = new SqlConnection("data source=.;database=AdventureWorks;integrated security=SSPI"))
+{
+    SqlCommand cmd = new SqlCommand("Select Top 10000 TransactionId From Production.TransactionHistory", conn);
+    conn.Open();
+    Trace.Warn("TransactionId Cekme", "TransactionId değerleri &amp;ccedil;ekilmeye başlanacak");
+    SqlDataReader reader = cmd.ExecuteReader(); 
+    while (reader.Read())
+    {
+        builder.Append(reader["TransactionId"].ToString());
+        builder.Append("|");
+    }
+    Trace.Warn("TransactionId Cekme", "TransactionId değerleri &amp;ccedil;ekildi...");
+    reader.Close();
+}
+Session.Add("TumKategoriler", builder.ToString());&lt;/pre&gt;
+&lt;p&gt;Buna g&amp;ouml;re sonu&amp;ccedil;lar aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ndeki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk216_9.gif" alt="" width="631" height="347" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi kod i&amp;ccedil;erisinde ş&amp;uuml;pheli bulunulan noktalarda uygulanacak teknikler ile sayfanın &amp;ccedil;alışma zamanındaki hali &amp;ccedil;ok daha kolay bir şekilde izlenebilmektedir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Trace sınıfına ait &lt;strong&gt;Write&lt;/strong&gt; ve &lt;strong&gt;Warn&lt;/strong&gt; metodları uygulama i&amp;ccedil;erisinde pek &amp;ccedil;ok yerde kullanılabilir. Buna g&amp;ouml;re &lt;strong&gt;Trace&lt;/strong&gt; mekanizmasının ge&amp;ccedil;ersiz kılınması haline, s&amp;ouml;z konusu metodlar g&amp;ouml;rmezden gelineceği i&amp;ccedil;in, t&amp;uuml;m uygulama kodunu g&amp;ouml;zden ge&amp;ccedil;irerek bu metodlara ait satırların kaldırılmasına gerek kalmayacaktır.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Uygulama seviyesinde Trace mekanizmasını aktif kılabilmek i&amp;ccedil;in &lt;strong&gt;web.config&lt;/strong&gt; dosyasında &lt;strong&gt; trace&lt;/strong&gt; elementi kullanılmalı ve &lt;strong&gt;enabled&lt;/strong&gt; &amp;ouml;zelliğine &lt;strong&gt;true&lt;/strong&gt; değeri atanmalıdır. Bunun dışında trace elementi i&amp;ccedil;erisinden belirlenebilecek bazı ayarlamalarda yapılabilir. B&amp;ouml;ylece web uygulaması i&amp;ccedil;erisindeki t&amp;uuml;m sayfalar i&amp;ccedil;in izleme yapılabilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk216_12.gif" alt="" width="356" height="343" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;trace elementinin i&amp;ccedil;erisinde kullanılabilecek nitelikler ve anlamları ise aşağıdaki tabloda olduğu gibidir.&lt;/p&gt;
+&lt;table id="table142" style="border-collapse: collapse; width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#ffffff"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="background-color: #ffffff;" colspan="2" bgcolor="#336699"&gt;&lt;strong&gt; trace Elementine Ait Genel &amp;Ouml;zellikler&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top"&gt;&lt;strong&gt;requestLimit&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;trace log i&amp;ccedil;erisinde uygulamaya ait ka&amp;ccedil; &lt;strong&gt;talebin(request)&lt;/strong&gt; saklanacağı belirtilir. Limit aşılması halinde eğer &lt;strong&gt;mostRecent&lt;/strong&gt; &amp;ouml;zelliğinin değeri &lt;strong&gt;false&lt;/strong&gt; ise uygulama yeniden başlatılana veya trace log bilin&amp;ccedil;li bir şekilde temizlenene kadar log' a bilgi atılmaz. Bu niteliğin varsayılan değeri &lt;strong&gt;10&lt;/strong&gt; dur. Maksimum olarak &lt;strong&gt;10000&lt;/strong&gt; değeri verilebilir. 10000' den b&amp;uuml;y&amp;uuml;k bir değer verilmesi halinde ise, bu değer otomatik olarak 10000' e &amp;ccedil;ekilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top"&gt;&lt;strong&gt;pageOutput&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;true&lt;/strong&gt; ise Trace bilgileri web uygulaması i&amp;ccedil;erisindeki sayfaların sonuna eklenir. false olması halinde ise izleme bilgileri sadece &lt;strong&gt;Trace.axd&lt;/strong&gt; &amp;uuml;zerinden takip edilebilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top"&gt;&lt;strong&gt;localOnly&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;true&lt;/strong&gt; olmaslı halinde &lt;strong&gt; Trace&lt;/strong&gt; &amp;ccedil;ıktısını istemciler g&amp;ouml;remez. Sadece web uygulamasının olduğu makinedeki kullanıcı g&amp;ouml;rebilir. Bu bir anlamda Trace &amp;ccedil;ıktısını sadece geliştiricinin izleyebilmesi anlamınada gelebilir ki g&amp;uuml;ncel projelerde sık&amp;ccedil;a başvurulan bir y&amp;ouml;ntemdir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top"&gt;&lt;strong&gt;enabled&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;true&lt;/strong&gt; olması haline uygulama bazında&lt;strong&gt;(Application Level)&lt;/strong&gt; izleme modu a&amp;ccedil;ık olacaktır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top"&gt;&lt;strong&gt;mostRecent&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;varsayılan değeri &lt;strong&gt;false&lt;/strong&gt; olan bu niteliğe &lt;strong&gt;true&lt;/strong&gt; değeri verilirse , &lt;strong&gt;requestLimit&lt;/strong&gt; aşılması halinde gelen talepler son elde edilen taleplerin &amp;uuml;zerine yazılır. B&amp;ouml;ylece son taleplerin g&amp;ouml;r&amp;uuml;lebilmesi sağlanmış olur. Bu nitelik&lt;strong&gt;(attribute) &lt;/strong&gt;Asp.Net 2.0 ile birlikte yeni gelmiştir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top"&gt;&lt;strong&gt;traceMode&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Daha &amp;ouml;ncedende değinildiği gibi, &lt;strong&gt;Trace Information&lt;/strong&gt; kısmında yer alan bilgilerin, kategori veya s&amp;uuml;re bazlı sıralanıp sıralanmayacağını belirtir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top"&gt;&lt;strong&gt; writeToDiagnosticTrace&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Varsayılan değeri &lt;strong&gt;false&lt;/strong&gt; olan bu &amp;ouml;zellik Asp.Net 2.0 ile birlikte gelmiş olup, Trace mesajlarının &lt;strong&gt;System.Diagnostics&lt;/strong&gt; alt yapısına g&amp;ouml;nderilip g&amp;ouml;nderilmeyeceğini belirlemekte kullanılır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Aşağıda &amp;ouml;rnek bir trace elementi i&amp;ccedil;eriği yer almaktadır.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0"?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;appSettings/&amp;gt;
+    &amp;lt;connectionStrings/&amp;gt;
+    &amp;lt;system.web&amp;gt;
+        &amp;lt;trace enabled="true" requestLimit="5" mostRecent="true" pageOutput="false" localOnly="true" writeToDiagnosticsTrace="true" /&amp;gt;
+        &amp;lt;compilation debug="true"/&amp;gt;
+        &amp;lt;authentication mode="Windows"/&amp;gt;
+    &amp;lt;/system.web&amp;gt;
+&amp;lt;/configuration&amp;gt; &lt;/pre&gt;
+&lt;p&gt;Buna g&amp;ouml;re son 5 talebe ait trace bilgileri tutulacak, sayfa &amp;ccedil;ıktısı verilmeyecek bir başka deyişle &lt;strong&gt; trace.axd &lt;/strong&gt;ile talep edilebilecek, yanlızca host makinedeki kullanıcı trace.axd' ye bakabilecek ve bilgiler &lt;strong&gt;System.Diagnostics&lt;/strong&gt; alt yapısına devredilebilecektir. Dolayısıyla uygulama &amp;ccedil;alıştırıldıktan sonra s&amp;ouml;z konusu izleme bilgileri aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk216_13.gif" alt="" width="629" height="417" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Burada sayfalara ait izleme detaylarına bakmak i&amp;ccedil;in &lt;strong&gt;View Details&lt;/strong&gt; linki kullanılabilmektedir. &amp;Ccedil;ıktıda yer alan bilgilere bakıldığında taleplerin zamanı&lt;strong&gt;(Time of Request)&lt;/strong&gt;, durumu-&lt;strong&gt;status code&lt;/strong&gt; (&amp;ouml;rneğin talep edilen sayfa başarılı bir şekilde y&amp;uuml;klendiyse 200, olmayan bir sayfa talep edildiyse 404...), HTTP' nin hangi metoduna g&amp;ouml;re (POST, GET...) talep edildiği&lt;strong&gt;(Verb)&lt;/strong&gt; ve talep sırası&lt;strong&gt;(No)&lt;/strong&gt; gibi bilgiler yer alır.&lt;/p&gt;
+&lt;p&gt;Geliştirilen web uygulaması dağıtılırken trace.axd dosyasının hi&amp;ccedil; bir şekilde &lt;span style="text-decoration: underline;"&gt;talep edilememesi sağlanabilir. Bunun i&amp;ccedil;in web.config dosyasında yer alan system.web elementi altında aşağıdaki değişikliği yapmak yeterlidir.&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;system.web&amp;gt;
+    &amp;lt;httpHandlers&amp;gt;
+        &amp;lt;remove verb="*" path="trace.axd"/&amp;gt;
+    &amp;lt;/httpHandlers&amp;gt;
+&amp;lt;/system.web&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Buna g&amp;ouml;re s&amp;ouml;z konusu web.config dosyasının i&amp;ccedil;eren uygulamada herhangibir şekilde Trace.axd dosyası talep edilirse aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; elde edilecektir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk216_14.gif" alt="" width="636" height="290" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Gelelim izleme ile ilişkili diğer konulara. Bazı durumlarda kod i&amp;ccedil;erisinde kullandığımız Trace ifadelerinin sadece istisnalar oluştuğunda tutulmasını isteyebiliriz. Buna ek olarak, trace i&amp;ccedil;erisine atılacak istisna bilgilerinin sadece host makinedeki kullanıcıya g&amp;ouml;sterilmesi istenebilir. Trace bilgisini sadece yerel kullanıcıya g&amp;ouml;stermek i&amp;ccedil;in &lt;strong&gt;localOnly&lt;/strong&gt; &amp;ouml;zelliği kullanılabilir. Ancak burada durum biraz daha farklıdır. Nitekim, trace basılmakta ama i&amp;ccedil;eride istisna oluşması halinde g&amp;ouml;sterilen i&amp;ccedil;erik sadece yerel kullanıcı i&amp;ccedil;in oluşturulmak istenmektedir. Bu vakkayı &amp;ccedil;&amp;ouml;zmek i&amp;ccedil;in Trace ifadelerinin &lt;strong&gt;catch&lt;/strong&gt; blokları i&amp;ccedil;erisinde ele alınacağı ortadadır. Diğer taraftan &lt;strong&gt;Write&lt;/strong&gt; veya &lt;strong&gt;Warn&lt;/strong&gt; metodlarının &amp;uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; parametreleri burada &amp;ouml;nemlidir. Nitekim &amp;uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; parametre oluşan &lt;strong&gt;istisna(Exception)&lt;/strong&gt; referansını taşımaktadır. Exception tipini trace &amp;ccedil;ıktısına vermek dışında, talepte bulunan kullanıcınında host makineden geldiğini tespit etmek gerekir. Bu nedenle aşağıdaki adımlar izlenebilir.&lt;em&gt;(Olayın daha kolay anlaşılabilmesi i&amp;ccedil;in konu şema ile desteklenmiştir)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1.&lt;/strong&gt; &lt;strong&gt;Request&lt;/strong&gt; ile istemcinin &lt;strong&gt;Host&lt;/strong&gt; adresi &amp;ouml;ğrenilir. Burada &lt;strong&gt;Request&lt;/strong&gt;.&lt;strong&gt;UserHostAddress&lt;/strong&gt;' den faydalanılabilir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2.&lt;/strong&gt; Elde edilen adresin &lt;strong&gt; 127.0.0.1 &lt;/strong&gt;olup olmadığına bakılır. &amp;Ouml;yleyse talep yerel makineden gelmiştir ve trace a&amp;ccedil;ılabilir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;3.&lt;/strong&gt; Talep yerel makineden gelmiyorsa &lt;strong&gt;Requset&lt;/strong&gt;.&lt;strong&gt;ServerVariables&lt;/strong&gt;("&lt;strong&gt;LOCAL_ADDR&lt;/strong&gt;") ile elde edilen ip adresi ve &lt;strong&gt;Request&lt;/strong&gt;.&lt;strong&gt;UserHostAddress&lt;/strong&gt; ile elde edilen istemci adresi karşılaştırılır. Bu yerel host adresinin 127.0.0.1' den farklı olmasına karşı alınan bir tedbirdir. Eğer eşitlerse talebin yine yerel makineden geldiği anlaşılabilir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;4.&lt;/strong&gt; Eğer taleplerin yerelden geldiği anlaşıldıysa &amp;ccedil;ıktı &amp;uuml;retilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk216_15.gif" alt="" width="557" height="440" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Kod tarafında ise &amp;ouml;rnek olarak aşağıdaki sayfa d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Burada bilin&amp;ccedil;li olarak bir &lt;strong&gt; istisna(Exception)&lt;/strong&gt; oluşturulmaktadır.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;%@ Page Language="C#" %&amp;gt;
+&amp;lt;%@ Import Namespace="System.Data" %&amp;gt;
+&amp;lt;%@ Import Namespace="System.Data.SqlClient" %&amp;gt;
+
+&amp;lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&amp;gt;
+
+&amp;lt;script runat="server"&amp;gt;
+
+    protected bool TraceYazilsinmi()
+    {
+        string userHostAddress = Request.UserHostAddress;
+        if (userHostAddress == "127.0.0.1")
+            return true;
+        else
+        {
+            string localAddress = Request.ServerVariables.GetValues("LOCAL_ADDR").ToString();
+            if (localAddress == userHostAddress)
+                return true;
+            else
+                return false; 
+        }
+    }
+
+    protected void btnBaglantiAc_Click(object sender, EventArgs e)
+    {
+        SqlConnection conn = null; 
+        try
+        {
+            conn = new SqlConnection("data source=.;database=" + txtVeritabani.Text + ";integrated security=SSPI");
+            conn.Open();
+            Response.Write("Bağlantı a&amp;ccedil;ıldı");
+        }
+        catch (Exception excp)
+        {
+            if (TraceYazilsinmi())
+            {
+                Trace.IsEnabled = true;
+                Trace.Warn("Developer İ&amp;ccedil;in Hata Bilgisi", "Bağlantı a&amp;ccedil;ılması sırasında hata oluştu", excp); 
+            } 
+        }
+        finally
+        {
+            if (conn != null
+                &amp;amp;&amp;amp; conn.State == ConnectionState.Open)
+                    conn.Close(); 
+        }
+    } 
+
+&amp;lt;/script&amp;gt;
+
+&amp;lt;html xmlns="http://www.w3.org/1999/xhtml" &amp;gt;
+&amp;lt;head runat="server"&amp;gt;
+&amp;lt;title&amp;gt;Untitled Page&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    &amp;lt;form id="form1" runat="server"&amp;gt;
+        &amp;lt;div&amp;gt;
+            Veritabanı Adı : &amp;lt;asp:TextBox ID="txtVeritabani" runat="server" /&amp;gt;
+            &amp;lt;asp:Button ID="btnBaglantiAc" runat="server" Text="Bağlantı A&amp;ccedil;" OnClick="btnBaglantiAc_Click" /&amp;gt;
+        &amp;lt;/div&amp;gt;
+    &amp;lt;/form&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Uygulamada kullanıcı textbox kontrol&amp;uuml;nden girdiği veritabanı adı i&amp;ccedil;in bir bağlantı a&amp;ccedil;maya &amp;ccedil;alışmaktadır. Eğer bağlantının a&amp;ccedil;ılması sırasında bir hata oluşursa ve kullanıcı host makineden talepte bulunmuşsa Trace &amp;ccedil;ıktısının etkinleştirilmesi ve istisna mesajının buraya yazdırılması sağlanır. Burada istemcinin &lt;strong&gt;Ip&lt;/strong&gt; adresini tedarik edebilmek i&amp;ccedil;in &lt;strong&gt; HttpRequest&lt;/strong&gt; sınıfının &lt;strong&gt;UserHostAddress&lt;/strong&gt; &amp;ouml;zelliği kullanılır. &lt;strong&gt; Local_Addr&lt;/strong&gt; değeri ilede sunucu değişkenlerinden&lt;strong&gt;(Server Variables)&lt;/strong&gt; sunucu ip adresi elde edilmektedir. Nitekim sunucu ip adresi 127.0.0.1' den farklıda olabilir. O halde talep eden istemcinin ip adresi ile yerel ip adresinin eşit olup olmadığına da bakılmalıdır. Uygulamayı test edip, &amp;ouml;rneğin olmayan bir veritabanı adı girdiğimizde sonu&amp;ccedil; sayfası aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk216_16.gif" alt="" width="606" height="765" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edilecek olursa istisna bilgisi detayaları ile birlikte &lt;strong&gt;Trace Information&lt;/strong&gt; kısmında &amp;ouml;zel kategori adı ve mesajı ile birlikte g&amp;ouml;r&amp;uuml;lmektedir. Bu tarz bir &amp;ccedil;alışma zamanı bilgisi elbetteki geliştirici(Developer) a&amp;ccedil;ısından &amp;ouml;nemlidir. Aynı sonu&amp;ccedil;lar &amp;ccedil;ok doğal olarak Trace mekanizması olmadan da tespit edilebilir. Buradaki temel ama&amp;ccedil; Trace mekanizmasını kullanarak, sayfalarda oluşabilecek hataların kesin yerlerini ve konumlarını daha kolay tespit edebilmektir.&lt;/p&gt;
+&lt;p&gt;Gelelim Trace mekanizması ile ilgili diğer bir konuya. &amp;Ccedil;ok doğal olarak web uygulamalarında harici bileşenler&lt;strong&gt;(Components) &lt;/strong&gt;kullanılır. Bileşenden kastımız &amp;ccedil;oğunlukla bir sınıf k&amp;uuml;t&amp;uuml;phanesi&lt;strong&gt;(class library)&lt;/strong&gt; veya ayrı bir sınıf dosyasıdır. &amp;Ccedil;ok doğal olarak bu bileşenler i&amp;ccedil;erisindeki bazı s&amp;uuml;re&amp;ccedil;ler Trace mekanizması i&amp;ccedil;erisinde ele alınmak istenebilir. &amp;Ouml;rneğin ilk uygulamada ger&amp;ccedil;ekleştirdiğimiz string birleştirme işleminin ayrı bir sınıf i&amp;ccedil;erisinde bir metod olarak ele alındığını d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Data;
+using System.Configuration;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+using System.Text;
+using System.Data.SqlClient;
+
+public class VeriBileseni
+{
+    public string GetTransactionIdString()
+    {
+        HttpContext ctx = HttpContext.Current;
+        StringBuilder builder = new StringBuilder();
+        using (SqlConnection conn = new SqlConnection("data source=.;database=AdventureWorks;integrated security=SSPI"))
+        {
+            SqlCommand cmd = new SqlCommand("Select Top 10000 TransactionId From Production.TransactionHistory", conn);
+            conn.Open();
+            ctx.Trace.Warn("TransactionId Cekme", "TransactionId değerleri &amp;ccedil;ekilmeye başlanacak");
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                builder.Append(reader["TransactionId"].ToString());
+                builder.Append("|");
+            }
+            ctx.Trace.Warn("TransactionId Cekme", "TransactionId değerleri &amp;ccedil;ekildi...");
+            reader.Close();
+        }
+        return builder.ToString();
+    }
+    public VeriBileseni()
+    {
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Burada dikkat edilmesi gereken en &amp;ouml;nemli nokta Trace sınıfını kullanmak i&amp;ccedil;in &lt;strong&gt;HttpContext&lt;/strong&gt; nesnesinin nasıl elde edildiğidir. Bileşenlerde &lt;strong&gt;Trace&lt;/strong&gt; bilgisi ele alınıyorsa, bu bileşenin kullanıldığı HTTP i&amp;ccedil;eriğinin kullanılması gerekmektedir. Bu nedenle &lt;strong&gt;HttpContext&lt;/strong&gt; nesne &amp;ouml;rneği i&amp;ccedil;in statik&lt;strong&gt;(static)&lt;/strong&gt; &lt;strong&gt;Current&lt;/strong&gt; &amp;ouml;zelliğinden faydalanılmıştır. B&amp;ouml;ylece bileşeni o anda kullanan sayfa i&amp;ccedil;eriğine ulaşılmış olunur. Bundan sonra ise &lt;strong&gt;Warn&lt;/strong&gt; veya &lt;strong&gt;Write&lt;/strong&gt; gibi metodlar kullanılabilir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Bileşenin ayrı bir &lt;strong&gt;sınıf k&amp;uuml;t&amp;uuml;phanesi(class library)&lt;/strong&gt; olarak tasarlanması durumunda,&lt;strong&gt;System.Web.dll&lt;/strong&gt; assembly' ının referans edilmesi gerekecektir. Bunun ise doğuracağı &amp;ouml;nemli sonu&amp;ccedil;lardan birisi şudur; bilşenen i&amp;ccedil;erisindeki izleme alt yapısı web bağımlı hale gelmektedir. Bu nedenle alternatif bir yaklaşım olarak ayrı bir dinleyici mekanizması &amp;ouml;zel olarak geliştirilebilir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Peki s&amp;ouml;z konusu bileşen sadece web tabanlı kullanılmıyorsa. Bu durumda &lt;strong&gt;HttpContext&lt;/strong&gt; gerekli işlevsellikleri sağlamak i&amp;ccedil;in uygun olmayacaktır. Dolayısıyla farklı bir yol izlemek gerekmektedir. .Net Framework izleme mesajları i&amp;ccedil;in dinleyiciler&lt;strong&gt;(Listener) &lt;/strong&gt;kullanır. İstenirse &lt;strong&gt;web.config&lt;/strong&gt; aracılığıyla yada &lt;strong&gt;programatik&lt;/strong&gt; olarak yeni dinleyiciler eklenebilir. Normal şartlarda &lt;strong&gt;Trace.Write&lt;/strong&gt; gibi bir metod &amp;ccedil;ağrısı yapıldığında &lt;strong&gt;TraceListener&lt;/strong&gt; koleksiyonundaki t&amp;uuml;m dinleyiciler mesajları alıp işlemeye başlarlar. O halde Trace Listener web.config ile a&amp;ccedil;ık bir şekilde belirtilirse, &lt;strong&gt;System.Web.dll&lt;/strong&gt; assembly' ını projeye referans etmeden ve HttpContext tipini kullanmadan Trace &amp;ccedil;ıktıları web uygulamasına doğru g&amp;ouml;nderilebilir.&lt;/p&gt;
+&lt;p&gt;Asp.Net 1.1 ile geliştirme yapıyorsak eğer, bu işlemler i&amp;ccedil;in &amp;ouml;zel bir dinleyici yazmamız gerekecektir. Ne varki &lt;strong&gt;Asp.Net 2.0&lt;/strong&gt; ile sadece bu iş i&amp;ccedil;in tasarlanmış &lt;strong&gt; WebPageTraceListener&lt;/strong&gt; isimli bir sınıf gelmektedir. Bu sınıfın web.config dosyasında belirtilmesi ve bileşen i&amp;ccedil;erisinde &lt;strong&gt; System.Diagnostics&lt;/strong&gt; isim alanı altında yer alan &lt;strong&gt;Trace&lt;/strong&gt; sınıfının kullanılması yeterlidir. B&amp;ouml;ylece bileşenimiz trace &amp;ccedil;ıktısı verirken web' e bağımlı olmaktan kurtulmuş olacaktır. &amp;Ouml;rnek olarak az &amp;ouml;nce geliştirilen VeriBileseni sınıfını ayrı bir sınıf k&amp;uuml;t&amp;uuml;phanesi olarak aşağıdaki gibi tasarladığımızı d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk216_17.gif" alt="" width="291" height="336" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Data;
+using System.Diagnostics;
+using System.Data.SqlClient;
+using System.Text;
+
+public class BagimsizVeriBileseni
+{
+    public string GetTransactionIdString()
+    {
+        StringBuilder builder = new StringBuilder();
+        using (SqlConnection conn = new SqlConnection("data source=.;database=AdventureWorks;integrated security=SSPI"))
+        {
+            SqlCommand cmd = new SqlCommand("Select Top 10000 TransactionId From Production.TransactionHistory", conn);
+            conn.Open();
+            Trace.Write("TransactionId Cekme", "TransactionId değerleri &amp;ccedil;ekilmeye başlanacak");
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                builder.Append(reader["TransactionId"].ToString());
+                builder.Append("|");
+            }
+            Trace.Write("TransactionId Cekme", "TransactionId değerleri &amp;ccedil;ekildi...");
+            reader.Close();
+        }
+        return builder.ToString();
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Burada dikkat edilecek olursa herhangibir şekilde System.Web referansı kullanılmamaktadır. Bunun yerine System.Diagnostics isim alanı ve burada yer alan Trace sınıfı ele alınmaktadır. Bir &amp;ouml;nceki bileşenden farklı olarak Warn metodu &lt;span style="text-decoration: underline;"&gt; kullanılamamaktadır. Bunun nedeni &lt;strong&gt;System.Diagnostics&lt;/strong&gt; isim alanında yer alan Trace sınıfının Warn metodunun olmayışıdır. Diğer &amp;ouml;nemli noktalardan biriside, &lt;strong&gt;System.Diagnostics.Trace&lt;/strong&gt; sınıfındaki Write metodu versiyonlarından belirli bir &lt;strong&gt;Exception&lt;/strong&gt; nesne &amp;ouml;rneğininin fırlatılmasının m&amp;uuml;mk&amp;uuml;n olmayışıdır. Ancak istisna mesajı g&amp;ouml;nderilmesi sağlanabilir. Bu işlemin ardından web uygulamasına ait web.config dosyasında aşağıdaki değişiklikler yapılmalıdır.&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0"?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    .
+    .
+    .
+    &amp;lt;system.diagnostics&amp;gt;
+        &amp;lt;trace&amp;gt;
+            &amp;lt;listeners&amp;gt;
+                &amp;lt;add name="WebPageTraceListener" type="System.Web.WebPageTraceListener,System.Web,Version=2.0.3600.0,Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" /&amp;gt;
+            &amp;lt;/listeners&amp;gt;
+        &amp;lt;/trace&amp;gt;
+    &amp;lt;/system.diagnostics&amp;gt;
+    .
+    .
+    .
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Burada &lt;strong&gt;listeners&lt;/strong&gt; bilgisi eklenirken &lt;strong&gt;system.diagnostics&lt;/strong&gt; isim elementi i&amp;ccedil;erisindeki &lt;strong&gt;trace&lt;/strong&gt; elementi kullanılmaktadır. add elementi i&amp;ccedil;erisinde yer alan type kımsında WebPageTraceListener sınıfının tam adı (Qualified Name) belirtilmektedir. Bildiğiniz &amp;uuml;zere &lt;strong&gt;Qualified Name&lt;/strong&gt;' i oluşturan değerler tip adı, assembly adı, versiyon numarası, k&amp;uuml;lt&amp;uuml;r ve publicKeyToken bilgisidir. Bu durumu test etmek i&amp;ccedil;in az &amp;ouml;nceki &amp;ouml;rnektekine benzer bir web sayfası aşağıdaki gibi geliştirilebilir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;%@ Page Language="C#" Trace="true" %&amp;gt;
+
+&amp;lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&amp;gt;
+
+&amp;lt;script runat="server"&amp;gt;
+
+    protected void btnCek_Click(object sender, EventArgs e)
+    {
+        BagimsizVeriBileseni veriBln = new BagimsizVeriBileseni();
+        Session.Add("TransactionIDler", veriBln.GetTransactionIdString());
+    } 
+
+&amp;lt;/script&amp;gt;
+
+&amp;lt;html xmlns="http://www.w3.org/1999/xhtml" &amp;gt;
+&amp;lt;head runat="server"&amp;gt;
+&amp;lt;title&amp;gt;Untitled Page&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    &amp;lt;form id="form1" runat="server"&amp;gt;
+        &amp;lt;div&amp;gt;
+            &amp;lt;asp:Button ID="btnCek" runat="server" Text="Veriyi &amp;Ccedil;ek" OnClick="btnCek_Click" /&amp;gt;
+        &amp;lt;/div&amp;gt;
+    &amp;lt;/form&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Trace &amp;ccedil;ıktısı ise aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk216_18.gif" alt="" width="608" height="391" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Trace mimarisi ile ilgili olaraktan, ele alınabilecek başka konularda bulunmaktadır. &amp;Ouml;rneğin Trace bilgilerini başka ortamlara aktarmak, mail g&amp;ouml;nderimi ger&amp;ccedil;ekleştirilmesi gibi. Tatile &amp;ccedil;ıktığım şu g&amp;uuml;nlerde bu kadar bilginin yeterli olacağı kanısındayım. D&amp;ouml;n&amp;uuml;şte Trace mimarisinin ikinci makalesi ile devam edeceğiz. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bu makalemizde trace mimarisini tanımaya, gerekliliklerini vurgulamaya &amp;ccedil;alıştık. Sayfa seviyesinde ve uygulama seviyesinde trace işlemlerinin nasıl yapılacağını, sadece istisna oluştuğunda yanlız yerel makineye trace bilgisinin nasıl verileceğini, bileşen bazında trace' lerin kullanılmasını ve bileşenin web ortamından bağımsız olabilecek şekilde ele alınabilmesini incelemeye &amp;ccedil;alıştık. Nihayetinde bu uzun makaleyi buraya kadar sabırla okuduğunuz i&amp;ccedil;in teşekk&amp;uuml;r eder bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/makale/images/EtkiliTraceveDebug.zip"&gt;&amp;Ouml;rnek Uygulama i&amp;ccedil;in Tıklayın&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2007-08-02 12:00:00</pubDate>
+  <slug>Asp-Net-Temelleri-Etkili-Trace-Kullanc4b1mc4b1-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>aspnet</tag>
+    <tag>trace</tag>
+  </tags>
+  <categories>
+    <category>Asp.Net</category>
+  </categories>
+</post>

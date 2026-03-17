@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>StreamReader Sınıfı Yardımıyla Dosya Okumak</title>
+  <description>Bugünkü makalemizde, sistemimizde yer alan text tabanlı dosyaları nasıl okuyabileceğimizi incelemeye çalışacağız. .NET ortamında, dosyaların okunması için streamler(akımlar) kullanılır. Bugün işleyeceğimi StreamReader sınıfıda bunlardanbir tanesidir. StreamReader sınıfı dosyaların okunmasını, dosyalara yazılmasını vb.. sağlar.</description>
+  <content>&lt;p align="left"&gt;Değerli Okurlarım, Merhabalar.&lt;/p&gt;
+&lt;p align="left"&gt;Bug&amp;uuml;nk&amp;uuml; makalemizde, sistemimizde yer alan text tabanlı dosyaları nasıl okuyabileceğimizi incelemeye &amp;ccedil;alışacağız. .NET ortamında, dosyaların okunması i&amp;ccedil;in streamler(akımlar) kullanılır. Bug&amp;uuml;n işleyeceğimi StreamReader sınıfıda bunlardanbir tanesidir. StreamReader sınıfı dosyaların okunmasını, dosyalara yazılmasını vb.. sağlar. StreamReader sınıfını bir FileStream nesnesi ile kullanabileceğimiz gibi, tek başınada kullanabiliriz. Kullanabileceğimiz yapıcı metodlardan birisi;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public StreamReader( Stream stream );&lt;/pre&gt;
+&lt;p align="left"&gt;dir. Bu yapıcı metod Stream tipinden bir nesne alır. Bu stream nesnesi &amp;ccedil;oğunlukla FileStream sınıfından t&amp;uuml;retilmiş bir nesne olur. Bu yapıcı metodumuz dışında direkt olarak okuma amacı ile StreamReader nesnesini ;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public StreamReader( string path );&lt;/pre&gt;
+&lt;p align="left"&gt;yapıcısı ilede oluşturabiliriz. Burada string tipindeki path değişkenimiz, okumak amacıyla a&amp;ccedil;acağımız dosyanın tam adresini temsil etmektedir. StreamReader nesnesi ile dosyamızı a&amp;ccedil;tıktan sonra dosya i&amp;ccedil;indeki verileri ReadLine metodu ile okuyabiliriz. ReadLine metodu, dosyadan her defasında bir satır okur ve bunun string olarak geriye d&amp;ouml;nd&amp;uuml;r&amp;uuml;r. Metodun prototipi aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public override string ReadLine();&lt;/pre&gt;
+&lt;p align="left"&gt;Genellikle bu metod bir while d&amp;ouml;ng&amp;uuml;s&amp;uuml; ile kullanılır. Bu sayade dosyanın t&amp;uuml;m i&amp;ccedil;eriğinin okunması sağlanmış olur. ReadLine metodu geriye null değerini d&amp;ouml;nd&amp;uuml;rd&amp;uuml;ğ&amp;uuml; zaman dosyanın sonuna gelindiği anlaşılır. Bu nedenle While d&amp;ouml;ng&amp;uuml;s&amp;uuml;nde kontrol ifadesi okunan her bir satırın null olup olmadığına bakar.&lt;/p&gt;
+&lt;p align="left"&gt;Şimdi bu kısa a&amp;ccedil;ıklamaların ardırdan dilerseniz uygulamamızı yazalım. Bu k&amp;uuml;&amp;ccedil;&amp;uuml;k uygulamamızda kullanıcının se&amp;ccedil;miş olduğu bir dosyayı bir listBox kontrol&amp;uuml;ne satır bazında a&amp;ccedil;ıcağız.&amp;Ouml;ncelikle aşağıdaki &amp;ouml;rnek formu oluşturalım. OpenFileDialog kontrol&amp;uuml;m&amp;uuml;z&amp;uuml;n Filter &amp;ouml;zelliğinede ekranda g&amp;ouml;r&amp;uuml;len değerleri aktarıyoruz. B&amp;ouml;ylece OpenFileDialog kontrol&amp;uuml;m&amp;uuml;z a&amp;ccedil;ıldığında cs,vb uzantılı dosyaları ve t&amp;uuml;m dosyaları g&amp;ouml;rebileceğiz.&lt;/p&gt;
+&lt;p align="left"&gt;&lt;em&gt; &lt;img src="http://www.buraksenyurt.com/makale/images/mk32_1.gif" alt="" width="579" height="361" border="0" /&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p align="left"&gt;Şekil 1. Form Tasarımımız.&lt;/p&gt;
+&lt;p align="left"&gt;Şimdi dilersenin projemizin kodlarını yazalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void btnDosyaAc_Click(object sender, System.EventArgs e)
+{
+    if (ofdDosya.ShowDialog() == DialogResult.OK)
+    {
+        this.Text = ofdDosya.FileName.ToString();
+        FileStream d = new FileStream(ofdDosya.FileName, FileMode.Open, FileAccess.Read); /* Burada okuma amacı ile OpenFileDialog kontrol&amp;uuml;nden se&amp;ccedil;tiğimiz dosyaya bir akım oluşturyoruz. */
+    }
+    StreamReader sr = new StreamReader(d); /* Şimdi ise StreamReader nesnemizi FileStream nesnesini kullanarak oluşturuyoruz. */
+    String input;
+    /* Bu d&amp;ouml;ng&amp;uuml;, sr isimli StreamReader nesnemizin temsil ettiği akım vasıtasıyla, dosyamızdan bir satır alır ve bunu bellekteki tampon b&amp;ouml;lgeye yerleştirir. 
+     * Daha sonra bunu bir string değişkene atıyoruz. Ardından bunun değerinin null olup olmadığına bakıyoruz. Null olması halinde dosya sonuna geldiğimiz anlaşılmaktadır. 
+     * ReadLine metodu otomatik olarak bir satırı tampona aldıktan sonra, akımdan bir sonraki satırı okur ve belleğe alır. */
+    while ((input = sr.ReadLine()) != null)
+    {
+        lstDosya.Items.Add(input);
+        /* ListBox kontrol&amp;uuml;m&amp;uuml;ze ounan her bir satırı ekliyoruz.*/
+    }
+    sr.Close();
+    /* Son olarak StreamReader nesnemizi ve FileStream nesnemizi kapatıyoruz. */
+    d.Close();
+}&lt;/pre&gt;
+&lt;p align="left"&gt;Şimdi uygulamamızı &amp;ccedil;alıştıralım. G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi OpenFileDilaog kutumuzda Filter &amp;ouml;zelliğinde belirlediğimiz dosyalar g&amp;ouml;r&amp;uuml;n&amp;uuml;yor.&lt;/p&gt;
+&lt;p align="left"&gt;&lt;img src="http://www.buraksenyurt.com/makale/images/mk32_2.jpg" alt="" width="563" height="414" border="0" /&gt;&lt;/p&gt;
+&lt;p align="left"&gt;Şekil 2. OpenFileDialog İletişim Kutumuz.&lt;/p&gt;
+&lt;p align="left"&gt;&lt;img src="http://www.buraksenyurt.com/makale/images/mk32_3.gif" alt="" width="568" height="312" border="0" /&gt;&lt;/p&gt;
+&lt;p align="left"&gt;Şekil 3. Dosyamızın i&amp;ccedil;eriği.&lt;/p&gt;
+&lt;p&gt;Geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;şmek dileğiyle hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2004-01-01 12:00:00</pubDate>
+  <slug>StreamReader-Sınıfı-Yardımıyla-Dosya-Okumak-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>ado-net</tag>
+    <tag>c#</tag>
+    <tag>net</tag>
+    <tag>stream</tag>
+  </tags>
+  <categories>
+    <category>C#</category>
+  </categories>
+</post>

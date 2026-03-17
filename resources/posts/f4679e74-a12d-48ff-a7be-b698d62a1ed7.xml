@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Ado.Net 2.0 ve Data Provider-Independent Mimari</title>
+  <description>Veritabanı uygulamalarında başımızı ağrıtan noktalardan bir tanesi farklı tipte veritabanı sistemleri kullanan uygulamaların geliştirilmesi sırasında ortaya çıkar. Çoğu zaman geliştirdiğimiz bir ürün Sql sunucları üzerinde yüksek performans gösterecek şekilde çalışmak zorunda iken, aynı ürünün Oracle üzerinde çalıştırılması da istenebilir. Bu durumda ortak bir çözüm olarak OleDb isim alanı altındaki sınıfları kullanmak oldukça mantıklıdır. Çünkü OleDb üzerinden her iki veri sunucusu için gerekli olan veri sağlayıcılarını kullanabiliriz.</description>
+  <content>&lt;p&gt;Değerli Okurlarım, Merhabalar.&lt;/p&gt;
+&lt;p&gt;Veritabanı uygulamalarında başımızı ağrıtan noktalardan bir tanesi farklı tipte veritabanı sistemleri kullanan uygulamaların geliştirilmesi sırasında ortaya &amp;ccedil;ıkar. &amp;Ccedil;oğu zaman geliştirdiğimiz bir &amp;uuml;r&amp;uuml;n Sql sunucları &amp;uuml;zerinde y&amp;uuml;ksek performans g&amp;ouml;sterecek şekilde &amp;ccedil;alışmak zorunda iken, aynı &amp;uuml;r&amp;uuml;n&amp;uuml;n Oracle &amp;uuml;zerinde &amp;ccedil;alıştırılması da istenebilir. Bu durumda ortak bir &amp;ccedil;&amp;ouml;z&amp;uuml;m olarak OleDb isim alanı altındaki sınıfları kullanmak olduk&amp;ccedil;a mantıklıdır. &amp;Ccedil;&amp;uuml;nk&amp;uuml; OleDb &amp;uuml;zerinden her iki veri sunucusu i&amp;ccedil;in gerekli olan veri sağlayıcılarını kullanabiliriz.&lt;/p&gt;
+&lt;p&gt;Diğer yandan b&amp;ouml;yle bir yol izlendiğinde direkt olarak OracleClient veya SqlClient isim alanını kullanarak kazanılacak performans avantajı ortadan kaybolacaktır. Peki .Net Framework i&amp;ccedil;in geliştirilen başka bir veri sağlayıcı (data-provider) işin i&amp;ccedil;ine girerse ne olacaktır. Bu durumda uygulama kodunda ilgili veri sağlayıcısına destek verecek şekilde d&amp;uuml;zenlemeler yapmamız gerekecektir. &amp;Ouml;yleki, SqlClient isim alanı i&amp;ccedil;in gerekli Connection nesnesi ile OracleClient isim alanı i&amp;ccedil;in gerekli Connection nesnelerinin isimleri farklıdır. Aynı durum Command nesnelerinden tutun da DataReader nesnelerine kadar ge&amp;ccedil;erlidir. İşte bu durum kodlarımızı her veri sağlayıcı i&amp;ccedil;in ayrı şekilde d&amp;uuml;zenlememizi gerektirebilir.&lt;/p&gt;
+&lt;p&gt;Diğer yandan System.Data.Common isim alanındaki sınıfları kullanarak farklı veri sağlayıcılarına destek verebilecek katmanları geliştirebiliriz. Bu Ado.Net 1.1' de &amp;ccedil;ok esnek olmayan bir mimari &amp;uuml;zerinde ger&amp;ccedil;ekleştirilmektedir. Oysa ki Ado.Net 2.0, System.Data.Common isim alanına bir takım yeni &amp;ouml;zellikler eklemiştir. Bu &amp;ouml;zellikler arasında yeni eklenen iki sınıf b&amp;uuml;y&amp;uuml;k &amp;ouml;neme sahiptir. DbProviderFactories ve DbProviderFactory sınıfları. Ado.Net 2.0' da bu sınıfların System.Data.Common isim alanına eklenmelerinin en b&amp;uuml;y&amp;uuml;k nedeni, ilgili sistemlerde y&amp;uuml;kl&amp;uuml; olan veri sağlayıcılarının &amp;ouml;ğrenilebilmesi ve se&amp;ccedil;ilen herhangi bir veri sağlayıcısına &amp;ouml;zel Command, Connection, DataAdapter gibi veri &amp;uuml;zerinde iş yapmamızı sağlayacak sınıfların tekil isimler altında &amp;ouml;rneklendirilebilmesidir.&lt;/p&gt;
+&lt;p&gt;Yeni eklenen &amp;ouml;zelliklerin sağladığı bu imkanlar sayesinde, geliştirilmiş olan bir &amp;uuml;r&amp;uuml;n&amp;uuml;n farklı veri sağlayıcılar i&amp;ccedil;in destek verebilecek şekilde inşa edilmesi daha da kolaylaştırılmıştır. İşin g&amp;uuml;zel yanı, bu mimarinin performans olarak asıl veri sağlayıcılarına oranla olduk&amp;ccedil;a iyi sonu&amp;ccedil;lar veriyor olmasıdır. İşte bu makalemizde System.Data.Common isim alanına eklenen bu yeni sınıflar ile neler ger&amp;ccedil;ekleştirebileceğimizi incelemeye &amp;ccedil;alışacağız. Yeni eklenen sınıfların &amp;ouml;nemini daha iyi anlayabilmek i&amp;ccedil;in aşağıdaki şekli g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk121_3.gif" alt="" width="373" height="481" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Aslında uygulamamıza katacağımız veri sağlayıcıdan bağımsız mimari i&amp;ccedil;in, yukarıdaki yolu izlememiz yeterli olacaktır. İlk olarak sistemde y&amp;uuml;kl&amp;uuml; olan veri sağlayıcılarını elde edebiliriz. Ya da bunun se&amp;ccedil;imini kullanıcıya bırakabiliriz. Hangisinin kullanılacağına biz, kullanıcı veya sistemin kendisi karar verebilir. Son olarak se&amp;ccedil;ilen veri sağlayıcı &amp;uuml;zerinden ger&amp;ccedil;ekleştireceğimiz veritabanı işlemleri i&amp;ccedil;in (&amp;ouml;rneğin kaynağa bağlantı a&amp;ccedil;mak, komut y&amp;uuml;r&amp;uuml;tmek gibi) gerekli olan &amp;uuml;reticiyi ( ki bu DbProviderFactory sınıfıdır )hazırlarız. Daha sonra bu yeni sınıf yardımıyla gerekli olan nesneleri &amp;uuml;retip kullanırız. Dilerseniz System.Data.Common isim alanına eklenen bu yeni iki sınıfı incelemekle işe başlayalım.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;ncelikle &lt;strong&gt;DbProviderFactories&lt;/strong&gt; sınıfnı ele alalım. Bu sınıf sistemde y&amp;uuml;kl&amp;uuml; olan veri sağlayıcılarını elde etmemizi sağlayan &lt;strong&gt;GetFactoryClasses&lt;/strong&gt; isimli static bir metoda sahiptir. Bu sınıfın diğer bir static metodu ise &lt;strong&gt;GetFactory&lt;/strong&gt;' dir. GetFactory metodu geriye &lt;strong&gt;DbProviderFactory&lt;/strong&gt; tipinden bir nesne &amp;ouml;rneğini d&amp;ouml;nd&amp;uuml;r&amp;uuml;r. DbProviderFactory tipinden nesne &amp;ouml;rnekleri yoluyla, &lt;strong&gt;DbConnection&lt;/strong&gt;, &lt;strong&gt;DbCommand&lt;/strong&gt; gibi nesneleri elde edebiliriz. Dolayısıyla DbProviderFactories sınıfı yardımıyla bir sistemdeki veri sağlayıcılarını elde edebilir ve se&amp;ccedil;ilen bir veri sağlayacısı i&amp;ccedil;in gerekli nesneleri &amp;uuml;retmemizi sağlayacak DbProviderFactory sınıfını &amp;ouml;rnekleyebiliriz. İlk olarak aşağıdaki kod par&amp;ccedil;asını ele alalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Data;
+using System.Data.Common;
+
+#endregion
+
+namespace UsingDbProviderFactories
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            DataTable dtProviders = new DataTable();
+            dtProviders = DbProviderFactories.GetFactoryClasses();
+            foreach (DataRow drProvider in dtProviders.Rows)
+            {
+                for (int i = 0; i &amp;lt; dtProviders.Columns.Count; i++)
+                {
+                    Console.WriteLine(drProvider[i].ToString());
+                }
+            Console.WriteLine("----------");
+            }
+            Console.ReadLine();
+        }    
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk121_1.gif" alt="" width="588" height="475" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu kod ile, sistemimizde y&amp;uuml;kl&amp;uuml; olan veri sağlayıcılarını elde etmiş olduk. Dikkat ederseniz GetFactoryClasses metodundan d&amp;ouml;nen değer &lt;strong&gt;DataTable&lt;/strong&gt; tipinden bir nesne &amp;ouml;rneğidir. Aynı &amp;ouml;rneği bir windows uygulamasında ele aldığımızda bu geri d&amp;ouml;n&amp;uuml;ş tipinden yararlanarak sonu&amp;ccedil;ları veri bağlı kontroller &amp;uuml;zerinde (datagridview gibi) g&amp;ouml;sterebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;DataTable dtProviders = new DataTable();
+dtProviders = DbProviderFactories.GetFactoryClasses();
+grdProviders.DataSource=dtProviders;&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk121_2.gif" alt="" width="617" height="352" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Peki sistemdeki veri sağlayıcılarının elde edilmesinin bize sağlayacağı avantajlar neler olabilir? Herşeyden &amp;ouml;nce &amp;uuml;r&amp;uuml;n&amp;uuml;m&amp;uuml;z&amp;uuml;n y&amp;uuml;klendiği sistemlerdeki veri sağlayıcılarını g&amp;ouml;rmek ve bunlardan se&amp;ccedil;işi olan ile uygulamayı &amp;ccedil;alıştırmak steyebiliriz. B&amp;ouml;yle bir durumda GetFactoryClasses metodu işimizi olduk&amp;ccedil;a kolaylaştıracaktır. Diğer yandan, &amp;uuml;r&amp;uuml;n&amp;uuml;m&amp;uuml;z&amp;uuml; sisteme y&amp;uuml;klerken kurulan herhangi bir konfigurasyon ayarı ile de bir veri sağlayıcıyı se&amp;ccedil;ebiliriz. &amp;Ccedil;oğunlukla bunu xml i&amp;ccedil;erikli konfig&amp;uuml;rasyon dosyalarında belirtiriz. (&amp;Ouml;rneğin app.config dosyası i&amp;ccedil;inde). Uygulamanın hangi veri sağlayıcısını baz alarak devam edeceğine bu dosyadaki ilgili konfig&amp;uuml;rasyon ayarından karar verebiliriz.&lt;/p&gt;
+&lt;p&gt;Elbette b&amp;ouml;yle bir durumda uygulamanın y&amp;uuml;klendiği sistemde se&amp;ccedil;ilen veri sağlayıcısının olup olmadığına bakmak i&amp;ccedil;in yine yukarıdaki teknik ile elde edilen DataTable nesnesinden faydalanabiliriz. Bu sayede sistemde y&amp;uuml;kl&amp;uuml; olmayan bir veri sağlayıcısı ile devam edilmesini de hen&amp;uuml;z kurulum aşamasında engellemiş oluruz. Bunun sonrasında kullanıcıya kullanabileceği veri sağlayıcıları alternatif olarak sunabiliriz ve uygun olanı ile devam etmesini sağlayabiliriz. Gelelim, DbProviderFactory sınıfına. Bu sınıf, veritabanına bağlantı a&amp;ccedil;ma, sql komutu &amp;ccedil;alıştırmak gibi işlemleri y&amp;uuml;r&amp;uuml;tmemizi sağlayacak DbConnection, DbCommand gibi sınıfların &amp;uuml;retilmesini sağlar. Bu sınıfın prototipi aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public abstract class DbProviderFactory&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi DbProviderFactory abstract (soyut) bir sınıftır. Dolayısıyla bu sınıfa ait bir nesne &amp;ouml;rneğini &amp;uuml;retemeyiz. Ancak DbProviderFactories sınıfımıza ait olan &lt;strong&gt;GetFactory&lt;/strong&gt; static metodu bizim kullanabileceğimiz bir DbProviderFactory nesnesini sağlayacaktır. GetFactory metodunun aşırı y&amp;uuml;klenmiş(overload) iki versiyonu vardır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public static DbProviderFactory GetFactory(DataRow data-provider i&amp;ccedil;in dataRow);
+public static DbProviderFactory GetFactory(string data-provider i&amp;ccedil;in invariant name);&lt;/pre&gt;
+&lt;p&gt;Bu metodlardan ilki DataRow tipinden bir nesne &amp;ouml;rneğini alır. Bu DataRow nesnesinin temsil ettiği satır aslında DbProviderFactories sınıfının GetFactoryClasses metodundan d&amp;ouml;nen DataTable &amp;uuml;zerindeki satırlardan herhangi biridir. Diğer yandan ikinci versiyonda string tipinden parametrenin alacağı değer, ilgili veri sağlayıcısının sistemdeki sabit adıdır (invariant-name).&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;DbProviderFactory fakto = DbProviderFactories.GetFactory("System.Data.SqlClient");&lt;/pre&gt;
+&lt;p&gt;Elde ettiğimiz DbProviderFactory nesnesi vasıtasıyla artık veritabanı uygulamamız i&amp;ccedil;in gerekli nesneleri &amp;ouml;rnekleyebiliriz. &amp;Ouml;rneğin aşağıdaki kod par&amp;ccedil;ası ile bir DbConnection nesnesi elde edilmektedir. DbConnection nesnesi tahmin edeceğiniz gibi ilgili veri kaynağına doğru bağlantı hattı tesis etmemizi sağlar.&lt;/p&gt;
+&lt;table id="table12" style="width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#ffffff"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;DbConnection, DbCommand, DbDataAdapter vb. abstract sınıflardır. Yani aslında bu sınıflara ait nesne &amp;ouml;rneklerini new operat&amp;ouml;r&amp;uuml; yardımıyla oluşturamayız. Bu sınıflardan faydalanabilmek i&amp;ccedil;in DbProviderFactories sınıfının ilgili Create metodlarını kullanırız.&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Kod par&amp;ccedil;amız;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;DbProviderFactory fakto = DbProviderFactories.GetFactory("System.Data.SqlClient");
+DbConnection con = fakto.CreateConnection();
+con.ConnectionString="data source=localhost;database=AdventureWorks;integrated security=SSPI";
+con.Open();
+con.Close();
+Console.Read();
+...&lt;/pre&gt;
+&lt;p&gt;Bu kod par&amp;ccedil;asında SqlClient veri sağlayıcısını kullanacak şekilde bir DbConnection nesnesi elde edilmektedir. DbConnection nesnesini elde edebilmek i&amp;ccedil;in DbProviderFactory sınıfına ait CreateConnection metodu kullanılmaktadır. Ne yazık ki veri sağlayıcı bağımsız mimarinin de i&amp;ccedil;inden şu an i&amp;ccedil;in &amp;ccedil;ıkamayacağı sorunlar var. Bunlardan birisi ConnectionString' in bir veri sağlayıcıdan &amp;ouml;tekine farklılık g&amp;ouml;stermesidir.&lt;/p&gt;
+&lt;p&gt;Yani Sql sunucularına SqlConnection nesnesi ile bağlantı kurarken kullandığımız Connection String ifadesi, OleDbConnection i&amp;ccedil;in olandan farklıdır. Bu sorunu &amp;ccedil;&amp;ouml;zmek i&amp;ccedil;in DbConnectionStringBuilder sınıfı kullanılmaktadır. Bu sınıf bir connection string i&amp;ccedil;ine yazılan &amp;ouml;zellikleri anahtar-değer (key-value) &amp;ccedil;iftleri şeklinde temsil eder. B&amp;ouml;ylece uygun Connection String elde edilebilir. Ancak tabiki &amp;ouml;ncesinde se&amp;ccedil;ilen veri sağlayıcısının her durumda kontrol edilmesi gerekecektir. Aşağıdaki kod par&amp;ccedil;ası hem SqlClient hem de OleDb i&amp;ccedil;in gerekli DbConnection nesnesinin doğru bir şekilde elde edilebilmesini sağlamaktadır. &lt;em&gt;(Burada veri sağlayıcısının se&amp;ccedil;imi i&amp;ccedil;in app.config dosyasını kullandığımıza dikkat edin.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk121_4.gif" alt="" width="591" height="170" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;#region Using directives
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Data.Common;
+using System.Configuration;
+
+#endregion
+
+namespace UsingDbProviderFactory
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {    
+            DbProviderFactory fakto;
+            DbConnection con;
+            DbConnectionStringBuilder conStr = new DbConnectionStringBuilder();
+            string secilenProvider = ConfigurationSettings.AppSettings["ProviderTipi"];
+            fakto = DbProviderFactories.GetFactory(secilenProvider);
+            con = fakto.CreateConnection();
+            if (secilenProvider == "System.Data.SqlClient")
+            { 
+                conStr.Add("data source", "localhost");
+                    conStr.Add("database", "AdventureWorks");
+                    conStr.Add("integrated security", "SSPI"); 
+            }
+            else if (secilenProvider == "System.Data.OleDb")
+            {
+                conStr.Add("Provider", "SqlOleDb");
+                conStr.Add("data source", "localhost");
+                conStr.Add("database", "AdventureWorks");
+                conStr.Add("integrated security", "SSPI");
+            }
+            else
+            {
+                Console.WriteLine("Doğru provider se&amp;ccedil;ilmedi...");
+            }
+            con.ConnectionString = conStr.ConnectionString;
+            try
+            {
+                con.Open();
+                Console.WriteLine("Bağlantı a&amp;ccedil;ıldı...");
+                Console.ReadLine();
+            }
+            catch(Exception hata)
+            {
+                Console.WriteLine(hata.Message.ToString());
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Uygulamamızda başlangı&amp;ccedil; olarak veri sağlayıcısını Sql sunucusuna direkt erişim sağlayan SqlClient olarak belirledik. If koşullarında app.config dosyasına eklediğimiz ProviderTipi anahtarının değerine bakarak uygun Connection String ifadesinin oluşturulmasını sağlıyoruz. Eğer OleDb kaynağını kullanarak erişim sağlamak istersek tek yapmamız gereken app.config dosyasında ProviderTipi anahtarının değerini System.Data.OleDb olarak değiştirmek olacaktır.&lt;/p&gt;
+&lt;table id="table13" style="width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#ffffff"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;Se&amp;ccedil;ilen veri sağlayıcısının (Data-Provider) ismi sistem de y&amp;uuml;kl&amp;uuml; olan sabit ismidir. (Invariant Name)&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Buradaki anahtarların değerlerinin sistemde tanımlı olan invariant-name değerleri olduğunu hatırlatalım. Aslında sistemde y&amp;uuml;kl&amp;uuml; olan veri sağlayıcılarının &amp;ouml;zellikleri elde edilirken machine.config dosyasındaki ayarlara bakılır. Eğer D:\WINDOWS\Microsoft.NET\Framework\v2.0.40607\CONFIG (Windows 2003 i&amp;ccedil;in) adresinden &lt;strong&gt;machine.config&lt;/strong&gt; dosyasına bakılırsa sistemde y&amp;uuml;kl&amp;uuml; olan veri sağlayıcılarının listesinin &lt;strong&gt;DbProviderFactories&lt;/strong&gt; takısında yer aldığını g&amp;ouml;rebiliriz. İşte veri sağlayıcılarının sabit isimleri buradan alınmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk121_5.gif" alt="" width="626" height="558" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;DbConnection nesnesi gibi &lt;strong&gt;DbCommand&lt;/strong&gt; nesneside veri sağlayıcıdan bağımsız komut setlerinin y&amp;uuml;r&amp;uuml;t&amp;uuml;lmesine imkan sağlamaktadır. Bir DbCommand nesnesinin oluşturuluş bi&amp;ccedil;imi DbConnection nesnesinde olduğu gibidir. Yani bu nesneyi elde edebilmek i&amp;ccedil;in DbProviderFactory sınıfının ilgili Create metodunu aşağıdaki gibi kullanırız.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;DbProviderFactory fakto;
+DbConnection con;
+DbCommand cmd;
+DbConnectionStringBuilder conStr = new DbConnectionStringBuilder();
+string secilenProvider = ConfigurationSettings.AppSettings["ProviderTipi"];
+fakto = DbProviderFactories.GetFactory(secilenProvider);
+con = fakto.CreateConnection();
+cmd = fakto.CreateCommand();
+if (secilenProvider == "System.Data.SqlClient")
+{ 
+    conStr.Add("data source", "localhost");
+    conStr.Add("database", "AdventureWorks");
+    conStr.Add("integrated security", "SSPI"); 
+}
+else if (secilenProvider == "System.Data.OleDb")
+{
+    conStr.Add("Provider", "SqlOleDb");
+    conStr.Add("data source", "localhost");
+    conStr.Add("database", "AdventureWorks");
+    conStr.Add("integrated security", "SSPI");
+}
+else
+{
+    Console.WriteLine("Doğru provider se&amp;ccedil;ilmedi...");
+}
+con.ConnectionString = conStr.ConnectionString;
+try
+{
+    con.Open();
+    cmd.Connection = con;
+    cmd.CommandText = "INSERT INTO Personel (AD,SOYAD,MAIL) VALUES ('Burak Selim','Şenyurt','selim(at)buraksenyurt.com')";
+    int eklenen=cmd.ExecuteNonQuery();
+    Console.WriteLine("Bağlantı a&amp;ccedil;ıldı...");
+    Console.WriteLine(eklenen + " SATIR EKLENDI");
+    Console.ReadLine();
+}
+catch(Exception hata)
+{
+    Console.WriteLine(hata.Message.ToString());
+}
+finally
+{
+    con.Close();
+}&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi tek yapmamız gereken DbProviderFactory sınıfının &lt;strong&gt;CreateCommand&lt;/strong&gt; metodunu kullanarak bir DbCommand nesnesini elde etmektir. Daha sonra bu komut nesnesinin kullanacağı sorgu ve bağlantı her zamanki y&amp;ouml;ntemlerimiz ile belirlenmiştir. Elbetteki, DbConnection nesnesi oluşturulurken yaşanan problemin benzeri burada da s&amp;ouml;z konusudur. Bu kez Command nesnelerinin parametre isimlendirmeleri bir veri sağlayıcıdan &amp;ouml;tekine farklılık g&amp;ouml;stermektedir.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğin SqlCommand nesnesinde kullanılan parametreler @ ile başlarken, OleDbCommand nesnelerinde sorgu c&amp;uuml;mleciğindeki parametreler ? ile tanımlanmak zorundadır. Bu sorunu yine yukarıdaki if yapısı ile halledebiliriz. S&amp;ouml;z konusu olan parametreleri DbParameter sınıfı ile tanımlayabiliriz. Dolayısıyla yukarıdaki &amp;ouml;rneği aşağıdaki gibi yazarsak parametre farklılığını bu &amp;ouml;rnekte ge&amp;ccedil;erli olan veri sağlayıcıları i&amp;ccedil;in &amp;ccedil;&amp;ouml;zm&amp;uuml;ş oluruz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;static void Main(string[] args)
+{
+    DbProviderFactory fakto;
+    DbConnection con;
+    DbCommand cmd;
+    DbParameter prmAd;
+     DbParameter prmSoyad;
+     DbParameter prmMail;
+    DbConnectionStringBuilder conStr = new DbConnectionStringBuilder();
+    string secilenProvider = ConfigurationSettings.AppSettings["ProviderTipi"];
+    string cmdQuery;
+    fakto = DbProviderFactories.GetFactory(secilenProvider);
+    con = fakto.CreateConnection();
+    cmd = fakto.CreateCommand();
+     prmAd = fakto.CreateParameter();
+     prmSoyad = fakto.CreateParameter();
+     prmMail = fakto.CreateParameter();
+    if (secilenProvider == "System.Data.SqlClient")
+    { 
+        conStr.Add("data source", "localhost");
+        conStr.Add("database", "AdventureWorks");
+        conStr.Add("integrated security", "SSPI");
+        cmdQuery = "INSERT INTO Personel (AD,SOYAD,MAIL) VALUES (@AD,@SOYAD,@MAIL)";
+        prmAd.ParameterName = "@AD";
+          prmAd.DbType = DbType.String;
+          prmAd.Size = 50;
+        cmd.Parameters.Add(prmAd);
+        prmSoyad.ParameterName = "@SOYAD";
+        prmSoyad.DbType = DbType.String;
+        prmSoyad.Size = 50;
+        cmd.Parameters.Add(prmSoyad);
+        prmMail.ParameterName = "@MAIL";
+        prmMail.DbType = DbType.String;
+        prmMail.Size = 50;
+        cmd.Parameters.Add(prmMail);
+        cmd.Connection = con;
+        cmd.CommandText = cmdQuery;
+    }
+    else if (secilenProvider == "System.Data.OleDb")
+    {
+        conStr.Add("Provider", "SqlOleDb");
+        conStr.Add("data source", "localhost");
+        conStr.Add("database", "AdventureWorks");
+        conStr.Add("integrated security", "SSPI");
+        cmdQuery = "INSERT INTO Personel (AD,SOYAD,MAIL) VALUES (?,?,?)";
+        prmAd.DbType = DbType.String;
+          prmAd.Size = 50;
+        cmd.Parameters.Add(prmAd);
+        prmSoyad.DbType = DbType.String;
+        prmSoyad.Size = 50;
+        cmd.Parameters.Add(prmSoyad);
+        prmMail.DbType = DbType.String;
+        prmMail.Size = 50;
+        cmd.Parameters.Add(prmMail);
+        cmd.Connection = con;
+        cmd.CommandText = cmdQuery;
+    }
+    else
+    {
+        Console.WriteLine("Doğru provider se&amp;ccedil;ilmedi...");
+    }
+    con.ConnectionString = conStr.ConnectionString;
+    try
+    {
+        con.Open();
+        prmAd.Value = "Burak Selim";
+        prmSoyad.Value = "Şenyurt";
+          prmMail.Value = "selim(at)buraksenyurt.com";
+        int eklenen=cmd.ExecuteNonQuery();
+        Console.WriteLine("Bağlantı a&amp;ccedil;ıldı...");
+        Console.WriteLine(eklenen + " SATIR EKLENDI");
+        Console.ReadLine();
+    }
+    catch(Exception hata)
+    {
+        Console.WriteLine(hata.Message.ToString());
+    }
+    finally
+    {
+        con.Close();
+    }
+}&lt;/pre&gt;
+&lt;p&gt;DbProviderFactory sınıfı ayrıca DbDataAdapter nesnelerini elde edebilmemizi sağlayan &lt;strong&gt;CreatedDataAdapter&lt;/strong&gt; isimli bir metoda sahiptir. Bu sayede bağlantısız katman nesneleri ile veri kaynağı arasındaki veri taşıma işlemlerini ger&amp;ccedil;ekleştirebileceğimiz DataAdapter nesne &amp;ouml;rneklerini veri sağlaycısından bağımsız olacak şekilde elde edebiliriz. Aşağıdaki kod par&amp;ccedil;ası ile bu işlemin nasıl ger&amp;ccedil;ekleştirilebileceğini g&amp;ouml;rmektesiniz. Bu &amp;ouml;rnekte kullanıcının se&amp;ccedil;tiği veri sağlayıcısının sistemde y&amp;uuml;kl&amp;uuml; olup olmadığınıda kontrol ediyoruz. &amp;Ouml;rneğimizde veri sağlayıcılarını OleDb ve SqlClient ile sınırladık.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;#region Using directives
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Data.Common;
+using System.Drawing;
+using System.Windows.Forms;
+
+#endregion
+
+namespace UsingDbDataAdapter
+{
+    partial class Form1 : Form
+    {
+        private DbProviderFactory fakto;
+        private DbConnection con;
+        private DbConnectionStringBuilder conStr;
+        private DbCommand cmd;
+        private DbDataAdapter da;
+        private DataTable dt;
+
+        public Form1()
+        {
+            InitializeComponent();
+        }
+        private bool VeriSaglayiciKontrol(string invariantName)
+        {
+            int varmi = DbProviderFactories.GetFactoryClasses().Select("InvariantName='" + invariantName + "'").Length;
+            if (varmi == 0)
+                return false;
+            else
+                return true;
+        }
+        private void DbConnectionOlustur(DbConnectionStringBuilder connectionString)
+        {
+            con = fakto.CreateConnection();
+            con.ConnectionString = connectionString.ConnectionString;
+        }
+        private void DbCommandOlustur(string sqlQuery)
+        {
+            cmd = fakto.CreateCommand();
+            cmd.Connection = con;
+            cmd.CommandText = sqlQuery;
+        }
+        private void FactoryOlustur(string veritabaniAdi)
+        {
+            if (radOleDb.Checked == true)
+            {
+                if (VeriSaglayiciKontrol("System.Data.OleDb"))
+                {
+                    fakto = DbProviderFactories.GetFactory("System.Data.OleDb");
+                    conStr = new DbConnectionStringBuilder();
+                    conStr.Add("provider", "SqlOleDb");
+                    conStr.Add("data source", "localhost");
+                    conStr.Add("database", veritabaniAdi);
+                    conStr.Add("integrated security", "SSPI");
+                    DbConnectionOlustur(conStr);
+                }
+            }
+            if (radSql.Checked == true)
+            {
+                if (VeriSaglayiciKontrol("System.Data.SqlClient"))
+                {
+                    fakto = DbProviderFactories.GetFactory("System.Data.SqlClient");
+                    conStr = new DbConnectionStringBuilder();
+                    conStr.Add("data source", "localhost");
+                    conStr.Add("database", veritabaniAdi);
+                    conStr.Add("integrated security", "SSPI");
+                    DbConnectionOlustur(conStr);
+                }
+            }
+        }
+        private void DbDataAdapterOlustur()
+        {
+            da = fakto.CreateDataAdapter();
+            da.SelectCommand = cmd;
+        }
+        private void btnVeriCek_Click(object sender, EventArgs e)
+        {
+            FactoryOlustur("AdventureWorks");
+            DbCommandOlustur("SELECT TOP 5 FirstName,MiddleName,LastName FROM Person.Contact");
+            DbDataAdapterOlustur();
+            dt = new DataTable();
+            da.Fill(dt);
+            grdVeriler.DataSource = dt;
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk121_6.gif" alt="" width="495" height="294" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Uygulamamızı &amp;ccedil;alıştırdığımızda ister Sql veri sağlayıcısını ister OleDb veri sağlayıcısını se&amp;ccedil;elim aynı DbConnection, DbCommand ve DbDataAdapter nesneleri &amp;uuml;zerinden işlem yapıyor olacağız. İşte bu yeni mimarinin bize sağladığı en b&amp;uuml;y&amp;uuml;k avantajdır.&lt;/p&gt;
+&lt;p&gt;Son olarak bir DataReader nesnesini veri sağlayıcıdan bağımsız mimaride nasıl kullanabileceğimizi inceleyeceğiz. Aslında şu an i&amp;ccedil;in bu mimaride geliştirilmiş bir DbDataReader sınıfı yok. Bunun yerine IDataReader aray&amp;uuml;z&amp;uuml;n&amp;uuml; kullanacağız. Dolayısıyla aray&amp;uuml;z&amp;uuml; kullanacağımız yere kadar yaptığımız işlemler yukarıdaki &amp;ouml;rnektekinden farksız olacak.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void btnIDataReaderIleCek_Click(object sender, EventArgs e)
+{
+    FactoryOlustur("AdventureWorks");
+    DbCommandOlustur("SELECT TOP 5 FirstName,MiddleName,LastName FROM Person.Contact");
+    using (con)
+    {
+        con.Open();
+        using (IDataReader dr = cmd.ExecuteReader())
+        {
+            while (dr.Read())
+            {
+                //bir takım okuma işlemleri.
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Ado.Net 2.0 i&amp;ccedil;in veri sağlayıcıdan bağımsız mimariyi kullanmak olduk&amp;ccedil;a kolay ve yararlı g&amp;ouml;r&amp;uuml;n&amp;uuml;yor. &amp;Ouml;zellikle yeni eklenen sınıflar bu tarz yapıları oluşturmamızı son derece kolaylaştırmış. Burada kafamızı kurcalayan tek konu performans farklılıkları. Microsoft kaynaklarına ve otoritelerine g&amp;ouml;re &amp;ccedil;ok b&amp;uuml;y&amp;uuml;k performans kayıpları olmadığı(olmayacağı) s&amp;ouml;yleniyor. A&amp;ccedil;ık&amp;ccedil;ası bu konunun ilerleyen zamanlarda daha da netleşeceği g&amp;ouml;r&amp;uuml;ş&amp;uuml;ndeyim. Yine de yeni kolaylıkların &amp;ouml;zellikle farklı veri sunucularına bağlanmamızı gerektiren durumlarda &amp;ccedil;ok başarılı olacağını s&amp;ouml;yleyebilirim.&lt;/p&gt;
+&lt;p&gt;Herşeyden &amp;ouml;nemlisi, hangi veri sağlayıcısı olursa olsun aynı DbConnection, DbCommand veya DbDataAdapater nesnelerini kullanmak son derece b&amp;uuml;y&amp;uuml;k bir avantajdır. Mimarinin şu an i&amp;ccedil;in sadece başında olduğumuzu d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum. System.Data.Common isim alanına katılacak daha bir &amp;ccedil;ok &amp;ouml;zellik olabilir. &amp;Ouml;rneğin buraya &amp;ouml;zel bir DbDataReader sınıfının oluşturulması gibi. Şunu da hatırlatmakta fayda var. Buradaki kod &amp;ouml;rnekleri ve kullanılan sınıflar, beta s&amp;uuml;r&amp;uuml;m&amp;uuml;ne aittir. &amp;Uuml;r&amp;uuml;n piyasaya &amp;ccedil;ıktığında bu sınıfların isimlerinde veya kullanılış şekillerinde değişiklikler olabilir. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2005-04-24 12:00:00</pubDate>
+  <slug>Ado-Net-2-0-ve-Data-Provider-Independent-Mimari-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>adonet-20</tag>
+    <tag>data-providers</tag>
+    <tag>dbconnection</tag>
+    <tag>dbcommand</tag>
+    <tag>dbdataadapter</tag>
+    <tag>dbproviderfactory</tag>
+  </tags>
+  <categories>
+    <category>Ado.net 2.0</category>
+  </categories>
+</post>

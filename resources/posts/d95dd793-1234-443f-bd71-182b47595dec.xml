@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Workflow Foundation, Oracle, WCF ve TransactionScope</title>
+  <description>Geçtiğimiz günlerde Workflow Foundation tabanlı bir uygulama içerisinde Transaction Scope kullanımına ihtiyacım oldu. Transaction' a dahil olan işlemler Oracle tabloları üzerinde gerçekleştirilecekti. Senaryoyu zorlaştıran noktalardan birisi ise, akış içerisinde harici bir WCF servis çağrısının yapılacak olmasıydı. Nitekim söz konusu WCF servisi içerisindeki operasyonda da, yine Oracle veritabanı üzerinde yapılması planlanan Transactional bir işlem söz konusuydu.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/Proof-of-Concept-Prototypes-Dont-Have-to-Be-as-Complicated-as-This.jpg"&gt;&lt;img style="margin: 4px 0px; display: inline; float: right;" title="Proof-of-Concept-Prototypes-Dont-Have-to-Be-as-Complicated-as-This" src="/pics/Proof-of-Concept-Prototypes-Dont-Have-to-Be-as-Complicated-as-This_thumb.jpg" alt="Proof-of-Concept-Prototypes-Dont-Have-to-Be-as-Complicated-as-This" width="250" height="288" align="right" /&gt;&lt;/a&gt;&lt;span style="color: #ff0000;"&gt;[&amp;Ouml;rnek Visual Studio 2010, .Net Framework 4.0 tabanlıdır]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Yandaki fotoğrafta g&amp;ouml;r&amp;uuml;len buluşa baktığınızda aslında ger&amp;ccedil;ekten bu pilotun o koca pervaneler ile u&amp;ccedil;up u&amp;ccedil;amayacağına pek kanaat getiremiyoruz &amp;ouml;yle değil mi?&lt;/p&gt;
+&lt;p&gt;Sonu&amp;ccedil;ta en azından kağıt &amp;uuml;st&amp;uuml;nde ve teorik olarak da bu tip bir u&amp;ccedil;uş aracının &amp;ccedil;alışacağının ispat edilmesi ve sonrasında pratikteki kullanımı i&amp;ccedil;in teste &amp;ccedil;ıkılması beklenir&lt;em&gt;(Tabi buna cesaret edecek de bir pilotun olması gerekir)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Bir dostumuzun s&amp;ouml;ylediği &amp;uuml;zere &lt;strong&gt;"tasarlanan her u&amp;ccedil;ak u&amp;ccedil;muş ama her yazılım &amp;ccedil;alışmamıştır"&lt;/strong&gt; &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_109.png" alt="Winking smile" /&gt;&lt;/p&gt;
+&lt;p&gt;Bir başka deyişle yazılım tarafında bir şeylerin ispatını yaparken bir u&amp;ccedil;ağı u&amp;ccedil;uracakmış gibi d&amp;uuml;ş&amp;uuml;nerek hareket etmeyiz genelde. İstesek de edemiyoruz sanırım. Yine de elimizden geldiğince titiz &amp;ccedil;alışmamız da yarar var. &amp;Ouml;yleyse gelelim bu g&amp;uuml;n&amp;uuml;n konusuna.&lt;/p&gt;
+&lt;p&gt;Ge&amp;ccedil;tiğimiz g&amp;uuml;nlerde &lt;strong&gt;Workflow Foundation&lt;/strong&gt; tabanlı bir uygulama i&amp;ccedil;erisinde &lt;strong&gt;Transaction&lt;/strong&gt; &lt;strong&gt;Scope&lt;/strong&gt; kullanımına ihtiyacım oldu. &lt;strong&gt;Transaction'&lt;/strong&gt; a dahil olan işlemler &lt;strong&gt;Oracle&lt;/strong&gt; tabloları &amp;uuml;zerinde ger&amp;ccedil;ekleştirilecekti. Senaryoyu zorlaştıran noktalardan birisi ise, akış i&amp;ccedil;erisinde harici bir &lt;strong&gt;WCF&lt;/strong&gt; servis &amp;ccedil;ağrısının yapılacak olmasıydı. Nitekim s&amp;ouml;z konusu &lt;strong&gt;WCF&lt;/strong&gt; servisi i&amp;ccedil;erisindeki operasyonda da, yine &lt;strong&gt;Oracle&lt;/strong&gt; veritabanı &amp;uuml;zerinde yapılması planlanan &lt;strong&gt;Transactional&lt;/strong&gt; bir işlem s&amp;ouml;z konusuydu.&lt;/p&gt;
+&lt;p&gt;Dolayısıyla &lt;strong&gt;Oracle'&lt;/strong&gt; ın ve &lt;strong&gt;WCF&lt;/strong&gt; servisinin işin i&amp;ccedil;erisinde yer aldığı bir &lt;strong&gt;Workflow&lt;/strong&gt; senaryosunda, &lt;strong&gt;TransactionScope&lt;/strong&gt; bileşeninin işe yarayıp yaramadığının araştırılması ve gerekli ispatların yapılması gerekmekteydi. Bir başka deyişle bir &lt;strong&gt;POC(Proof Of Concept)&lt;/strong&gt; &amp;ccedil;alışması ile karşı karşıyaydık. Ben de &lt;strong&gt;Visual Studio 2010&lt;/strong&gt; un başına oturdum ve yola koyuldum.&lt;/p&gt;
+&lt;p&gt;Senaryoda kendi oluşturduğum iki &lt;strong&gt;Oracle&lt;/strong&gt; tablosu s&amp;ouml;z konusu idi. Bu tabloların i&amp;ccedil;erdiği alanların &amp;ccedil;ok fazla &amp;ouml;nemi yoktu aslında. &lt;strong&gt;Account&lt;/strong&gt; ve &lt;strong&gt;Branch&lt;/strong&gt; olarak adlandırdığım tablolar &amp;uuml;zerinde iki basit &lt;strong&gt;Insert&lt;/strong&gt; işlemi ger&amp;ccedil;ekleştirecektim. Buna ek olarak bir de &lt;strong&gt;WCF&lt;/strong&gt; servisi s&amp;ouml;z konusu olmalıydı. İlgili &lt;strong&gt;WCF&lt;/strong&gt; servisi de yine benzer bir &lt;strong&gt;Insert&lt;/strong&gt; işlemi ger&amp;ccedil;ekleştirilmek &amp;uuml;zere tasarlanmalıydı.&lt;/p&gt;
+&lt;p&gt;Teorik olarak &lt;strong&gt;Workflow&lt;/strong&gt; &lt;strong&gt;Activity'&lt;/strong&gt; si i&amp;ccedil;erisinde kullanılacak &lt;strong&gt;TransactionScope&lt;/strong&gt; &lt;strong&gt;Component'&lt;/strong&gt; i servis tarafına &lt;strong&gt;Transaction'&lt;/strong&gt; ı aktarabilmeliydi. Tam bu noktada &lt;strong&gt;Distributed&lt;/strong&gt; &lt;strong&gt;Transaction&lt;/strong&gt; &lt;strong&gt;Coordinator&lt;/strong&gt; servisinin de işlevselliği s&amp;ouml;z konusuydu. Elbette servis tarafının da, &lt;strong&gt;Transaction&lt;/strong&gt; akışına izin verecek şekilde tesis edilmesi şarttı.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Bu noktada &amp;ouml;zellikle Binding tipinin Transaction Flow' a destek veriyor olması &amp;ouml;nemlidir. Nitekim varsayılan bağlayıcı tip olan BasicHttpBinding, istemciden gelen Transaction akışına izin vermez. Ama &amp;ouml;rneğin wsHttpBinding buna olanak tanır.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Dilerseniz işe ilk olarak bu &lt;strong&gt;WCF&lt;/strong&gt; servisini geliştirerek başlayalım. Servisimize ait basit kod i&amp;ccedil;eriği aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.ServiceModel;
+
+namespace CRUDer 
+{ 
+    [ServiceContract] 
+    public interface IAccountService 
+    { 
+        [OperationContract] 
+        [TransactionFlow(TransactionFlowOption.Mandatory)] 
+        int DoWork(int AccountId,string Name,string Surname); 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;S&amp;ouml;zleşme tipi i&amp;ccedil;erisindeki en &amp;ouml;nemli nokta &lt;strong&gt;TransactionFlow&lt;/strong&gt; niteliğinin kullanılması ve &lt;strong&gt;Mandatory&lt;/strong&gt; değerinin verilmesidir. Bu nitelik &lt;strong&gt;Allowed&lt;/strong&gt;, &lt;strong&gt;NotAllowed&lt;/strong&gt; şeklinde iki farklı değer daha alabilir. &lt;strong&gt;Mandatory&lt;/strong&gt;, istemci tarafında bir &lt;strong&gt;Transaction&lt;/strong&gt; &lt;strong&gt;Scope&lt;/strong&gt; başlatılma zorunluluğunu ifade etmektedir. Nitekim operasyon i&amp;ccedil;erisindeki işlemin bir &lt;strong&gt;Transaction&lt;/strong&gt; &lt;strong&gt;Scope'&lt;/strong&gt; a dahil olması şarttır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Configuration; 
+using System.ServiceModel; 
+using System.Transactions; 
+using Oracle.DataAccess.Client;
+
+namespace CRUDer 
+{ 
+    //[ServiceBehavior(TransactionIsolationLevel=IsolationLevel.Serializable)] 
+    public class AccountService 
+        : IAccountService 
+    { 
+       [OperationBehavior(TransactionScopeRequired=true, TransactionAutoComplete=true)] 
+        public int DoWork(int AccountId, string Name, string Surname) 
+        { 
+            int result = -1;
+
+            var currentTransaction=Transaction.Current; 
+            using (OracleConnection conn = new OracleConnection(ConfigurationManager.ConnectionStrings["ConStr"].ConnectionString)) 
+            { 
+                using (OracleCommand command = new OracleCommand("INSERT INTO ACCOUNT (ACCOUNTID,NAME,SURNAME) VALUES (:pACCOUNTID,:pNAME,:pSURNAME)", conn)) 
+                { 
+                    command.Parameters.Add(":pACCOUNTID",AccountId); 
+                    command.Parameters.Add(":pNAME", Name); 
+                    command.Parameters.Add(":pSURNAME", Surname);
+
+                    conn.Open(); 
+                    result = command.ExecuteNonQuery(); 
+                } 
+            }
+
+            return result; 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Servisin asıl iş yapan kodlarında yine dikkat &amp;ccedil;ekici ve &amp;ouml;nemli olan nokta &lt;strong&gt;OperationBehavior&lt;/strong&gt; niteliği ile atanan &lt;strong&gt;&amp;ouml;zellik(Property)&lt;/strong&gt; değerleridir. Operasyonun bir &lt;strong&gt;TransactionScope&lt;/strong&gt; gerektirdiği ve ayrıca &lt;strong&gt;unhandled&lt;/strong&gt; &lt;strong&gt;exception&lt;/strong&gt; oluşması halinde operasyona ait &lt;strong&gt;transaction &lt;/strong&gt;&amp;ouml;rneğinin otomatik olarak tamamlanıp tamamlanmayacağı belirtilmektedir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Servis tarafında System.Transactions assembly' ının referans edilmesi &lt;span style="text-decoration: underline;"&gt;unutulmamalıdır&lt;/span&gt;. Ayrıca hem servis hem de istemci tarafı Oracle fonksiyonellikleri i&amp;ccedil;in &lt;a href="http://www.oracle.com/technetwork/topics/dotnet/index-085163.html" target="_blank"&gt;ODP.Net' e(Oracle DataProvider for .Net)&lt;/a&gt; ait assembly' ları kullanmaktadır. Dolayısıyla Oracle.DataAccess assembly&amp;rsquo; ının uygun olan versiyonunun referans edilmelidir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Servis tarafındaki &lt;strong&gt;config&lt;/strong&gt; dosyasının i&amp;ccedil;eriği de olduk&amp;ccedil;a &amp;ouml;nemlidir. Daha &amp;ouml;nceden de belirttiğimiz &amp;uuml;zere &lt;strong&gt;Binding&lt;/strong&gt; tipi, &lt;strong&gt;Transaction&lt;/strong&gt; akışına izin verir nitelikte olmalıdır. Ancak buna ek olarak &lt;strong&gt;Transaction&lt;/strong&gt; akışına izin verileceğinin de konfigurasyon dosyası i&amp;ccedil;erisinde belirtilmesi şarttır. &amp;Ccedil;&amp;uuml;nk&amp;uuml; varsayılan olarak &lt;strong&gt;Transaction&lt;/strong&gt; akışı etkin değildir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0"?&amp;gt; 
+&amp;lt;configuration&amp;gt; 
+    &amp;lt;connectionStrings&amp;gt; 
+        &amp;lt;add name="ConStr" connectionString="User Id=bir kullanıcı adı;Password=bir şifre;Data Source=oracle veri kaynağı" providerName="Oracle.DataAccess.Client"/&amp;gt; 
+    &amp;lt;/connectionStrings&amp;gt; 
+  &amp;lt;system.serviceModel&amp;gt; 
+    &amp;lt;services&amp;gt; 
+      &amp;lt;service name="CRUDer.AccountService"&amp;gt; 
+        &amp;lt;endpoint address="http://localhost:35662/AccountService.svc" 
+          binding="wsHttpBinding" bindingConfiguration="wsB" contract="CRUDer.IAccountService" /&amp;gt; 
+      &amp;lt;/service&amp;gt; 
+    &amp;lt;/services&amp;gt; 
+      &amp;lt;bindings&amp;gt; 
+          &amp;lt;wsHttpBinding&amp;gt; 
+              &amp;lt;binding transactionFlow="true" name="wsB"/&amp;gt; 
+          &amp;lt;/wsHttpBinding&amp;gt; 
+      &amp;lt;/bindings&amp;gt; 
+    &amp;lt;behaviors&amp;gt; 
+      &amp;lt;serviceBehaviors&amp;gt; 
+        &amp;lt;behavior name=""&amp;gt; 
+          &amp;lt;serviceMetadata httpGetEnabled="true"/&amp;gt; 
+          &amp;lt;serviceDebug includeExceptionDetailInFaults="true"/&amp;gt; 
+        &amp;lt;/behavior&amp;gt; 
+      &amp;lt;/serviceBehaviors&amp;gt; 
+    &amp;lt;/behaviors&amp;gt; 
+    &amp;lt;serviceHostingEnvironment multipleSiteBindingsEnabled="false"/&amp;gt; 
+  &amp;lt;/system.serviceModel&amp;gt; 
+  &amp;lt;system.web&amp;gt; 
+    &amp;lt;compilation debug="true"/&amp;gt; 
+  &amp;lt;/system.web&amp;gt; 
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;wsHttpBinding&lt;/strong&gt; elementi i&amp;ccedil;erisinde yer alan &lt;strong&gt;binding&lt;/strong&gt; alt elementinin &lt;strong&gt;transactionFlow&lt;/strong&gt; niteliğinin değeri &lt;strong&gt;true&lt;/strong&gt; olarak set edilmiştir. Servis tarafında yapılması gerekenler aslında bu kadardır. &amp;Ouml;yleyse &lt;strong&gt;Workflow&lt;/strong&gt; tasarımına başlayabiliriz. &lt;strong&gt;Workflow&lt;/strong&gt; &lt;strong&gt;Console&lt;/strong&gt; &lt;strong&gt;Application&lt;/strong&gt; olarak tasarlanan uygulamamızda &amp;ccedil;alışma zamanını izleyebilmek i&amp;ccedil;in basit de bir &lt;strong&gt;Tracker&lt;/strong&gt; tipine yer verilmektedir. Bu tipin i&amp;ccedil;eriği aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Activities.Tracking; 
+using System.Collections.Generic; 
+using System.Text;
+
+namespace HowToTransaction 
+{ 
+    public class CustomTracker 
+        : TrackingParticipant 
+    { 
+        protected override void Track(TrackingRecord record, TimeSpan timeout) 
+        { 
+            WorkflowInstanceRecord instanceRecord = record as WorkflowInstanceRecord; 
+            if (instanceRecord != null) 
+                Console.WriteLine(instanceRecord.ToString());
+
+            ActivityStateRecord activity = record as ActivityStateRecord; 
+            if (activity != null) 
+            {                
+                var variables = activity.Variables; 
+                StringBuilder builder = new StringBuilder(); 
+                if (variables.Count &amp;gt; 0) 
+                { 
+                    builder.AppendLine(" Variables:"); 
+                    foreach (KeyValuePair&amp;lt;string, object&amp;gt; variable in variables) 
+                    { 
+                        builder.AppendLine(String.Format(" {0} Value: [{1}]", variable.Key, variable.Value)); 
+                    } 
+                } 
+                Console.WriteLine( 
+                    String.Format(" Activity: {0} State: {1} {2}", 
+                    activity.Activity.Name 
+                    , activity.State                    
+                    , builder.ToString()) 
+                    ); 
+            } 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Tracker&lt;/strong&gt; sınıfı i&amp;ccedil;erisinde hem &lt;strong&gt;Workflow Actvitiy'&lt;/strong&gt; si hem de i&amp;ccedil;eride y&amp;uuml;r&amp;uuml;mekte olan &lt;strong&gt;Activity&lt;/strong&gt; &amp;ouml;rneklerinin &amp;ccedil;alışmalarının izlenmesi işlemi ger&amp;ccedil;ekleştirilmektedir. Bu, &lt;strong&gt;TrackingRecord&lt;/strong&gt; tipinden olan parametrenin &lt;strong&gt;WorkflowInstanceRecord&lt;/strong&gt; ve &lt;strong&gt;ActivityStateRecord&lt;/strong&gt; nesne &amp;ouml;rneklerine d&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;lmesi ile ger&amp;ccedil;ekleştirilmektedir. &lt;strong&gt;Tracker&lt;/strong&gt; tipi dışında &lt;strong&gt;Account&lt;/strong&gt; ve &lt;strong&gt;Branch&lt;/strong&gt; tablolarına &lt;strong&gt;insert&lt;/strong&gt; işlemi yapan iki &lt;strong&gt;Code Activiy&lt;/strong&gt; bileşeni de bulunmaktadır. S&amp;ouml;z konusu Activity bileşenlerinin kodları aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;Account insert işlemini &amp;uuml;stlenen Activity,&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace HowToTransaction 
+{ 
+    using System.Activities; 
+    using System.Configuration; 
+    using Oracle.DataAccess.Client;
+
+    public class InsertAccountActivity 
+        :CodeActivity 
+    { 
+        public InArgument&amp;lt;int&amp;gt; AccountId { get; set; } 
+        public InArgument&amp;lt;string&amp;gt; Name { get; set; } 
+        public InArgument&amp;lt;string&amp;gt; Surname { get; set; } 
+        public OutArgument&amp;lt;int&amp;gt; ExecuteNonQueryResult { get; set; }
+
+        protected override void Execute(CodeActivityContext context) 
+        { 
+            using (OracleConnection conn = new OracleConnection(ConfigurationManager.ConnectionStrings["ConStr"].ConnectionString)) 
+            { 
+                using (OracleCommand command = new OracleCommand("INSERT INTO ACCOUNT (ACCOUNTID,NAME,SURNAME) VALUES (:pACCOUNTID,:pNAME,:pSURNAME)", conn)) 
+                { 
+                    command.Parameters.Add(":pACCOUNTID",context.GetValue(AccountId)); 
+                    command.Parameters.Add(":pNAME",context.GetValue(Name)); 
+                    command.Parameters.Add(":pSURNAME",context.GetValue(Surname));
+
+                    conn.Open(); 
+                    int result=command.ExecuteNonQuery(); 
+                    context.SetValue(ExecuteNonQueryResult, result); 
+                } 
+            } 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;ve Branch insert işlemini &amp;uuml;stlenen Code Activity&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace HowToTransaction 
+{ 
+    using System.Activities; 
+    using System.Configuration; 
+    using Oracle.DataAccess.Client; 
+    using System;
+
+    public class InsertBranchActivity 
+        :CodeActivity 
+    { 
+        public InArgument&amp;lt;int&amp;gt; BranchId { get; set; } 
+        public InArgument&amp;lt;string&amp;gt; Title { get; set; } 
+        public InArgument&amp;lt;int&amp;gt; Code { get; set; } 
+        public OutArgument&amp;lt;int&amp;gt; ExecuteNonQueryResult { get; set; }
+
+        protected override void Execute(CodeActivityContext context) 
+        { 
+            using (OracleConnection conn = new OracleConnection(ConfigurationManager.ConnectionStrings["ConStr"].ConnectionString)) 
+            { 
+                using (OracleCommand command = new OracleCommand("INSERT INTO BRANCH (BRANCHID,TITLE,CODE) VALUES (:pBRANCHD,:pTITLE,:pCODE)", conn)) 
+                { 
+                    command.Parameters.Add(":pBRANCHID",context.GetValue(BranchId)); 
+                    command.Parameters.Add(":pTITLE",context.GetValue(Title)); 
+                    command.Parameters.Add(":pCODE",context.GetValue(Code));
+
+                    conn.Open(); 
+                    int result = command.ExecuteNonQuery(); 
+                    context.SetValue(ExecuteNonQueryResult, result); 
+                   //throw new Exception("Some error"); 
+                } 
+            } 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Burada yorum satırı olarak bırakılmış kısım daha sonradan yapılacak testler sırasında a&amp;ccedil;ılacak ve &lt;strong&gt;Transaction Scope'&lt;/strong&gt; un &amp;ccedil;alışması izlenecektir.&lt;/p&gt;
+&lt;p&gt;Gelelim test ama&amp;ccedil;lı kullanacağımız &lt;strong&gt;Workflow Activity &lt;/strong&gt;i&amp;ccedil;eriğine.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wfts_1.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wfts_1" src="/pics/wfts_1_thumb.png" alt="wfts_1" width="460" height="432" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;FlowChart&lt;/strong&gt; şeklinde tasarladığımız akışın i&amp;ccedil;erisindeki en kritik yer &lt;strong&gt;TryCatch&lt;/strong&gt; bileşenin i&amp;ccedil;erisidir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wfts_2.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wfts_2" src="/pics/wfts_2_thumb.png" alt="wfts_2" width="431" height="546" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Try&lt;/strong&gt; bloğundan &lt;strong&gt;TransactionScope&lt;/strong&gt; bileşeni altında sırasıyla &lt;strong&gt;Account&lt;/strong&gt; &lt;strong&gt;Insert&lt;/strong&gt; işlemi, &lt;strong&gt;DoWork&lt;/strong&gt; ile WCF servis &amp;ccedil;ağrısı ve tekrar &lt;strong&gt;Branch&lt;/strong&gt; &lt;strong&gt;Insert&lt;/strong&gt; işlemi ger&amp;ccedil;ekleştirilmektedir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;WCF servisinin Workflow uygulamasına Add Service Reference ile eklenmesi sonrası Component sekmesine &amp;ccedil;ıkan aktivite bileşeni kullanılmaktadır&lt;em&gt;(DoWork bileşeni)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wfts_3.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wfts_3" src="/pics/wfts_3_thumb.png" alt="wfts_3" width="272" height="164" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Workflow&lt;/strong&gt; un &lt;strong&gt;XAML(eXtensibleApplicationMarkupLanguage)&lt;/strong&gt; i&amp;ccedil;eriği aşağıdaki gibidir. Burada, kullanılan &lt;strong&gt;variable&amp;rsquo;&lt;/strong&gt; lar daha net bir şekilde g&amp;ouml;r&amp;uuml;lebilmektedir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;Activity mc:Ignorable="sads sap" x:Class="HowToTransaction.Workflow1" sap:VirtualizedContainerService.HintSize="654,676" mva:VisualBasic.Settings="Assembly references and imported namespaces for internal implementation" 
+xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" 
+xmlns:av="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+xmlns:hc="clr-namespace:HowToTransaction.CRUDerReference" 
+xmlns:local="clr-namespace:HowToTransaction" 
+xmlns:local1="clr-namespace:HowToTransaction.CRUDerReference.Activities" 
+xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+xmlns:mv="clr-namespace:Microsoft.VisualBasic;assembly=System" 
+xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" 
+xmlns:p="http://schemas.microsoft.com/netfx/2009/xaml/servicemodel" 
+xmlns:s="clr-namespace:System;assembly=mscorlib" 
+xmlns:s1="clr-namespace:System;assembly=System" 
+xmlns:s2="clr-namespace:System;assembly=System.Xml" 
+xmlns:s3="clr-namespace:System;assembly=System.Core" 
+xmlns:s4="clr-namespace:System;assembly=System.ServiceModel" 
+xmlns:sa="clr-namespace:System.Activities;assembly=System.Activities" 
+xmlns:sad="clr-namespace:System.Activities.Debugger;assembly=System.Activities" 
+xmlns:sads="http://schemas.microsoft.com/netfx/2010/xaml/activities/debugger" 
+xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" 
+xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System" 
+xmlns:scg1="clr-namespace:System.Collections.Generic;assembly=System.ServiceModel" 
+xmlns:scg2="clr-namespace:System.Collections.Generic;assembly=System.Core" 
+xmlns:scg3="clr-namespace:System.Collections.Generic;assembly=mscorlib" 
+xmlns:sd="clr-namespace:System.Data;assembly=System.Data" 
+xmlns:sl="clr-namespace:System.Linq;assembly=System.Core" 
+xmlns:st="clr-namespace:System.Text;assembly=mscorlib" 
+xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"&amp;gt; 
+  &amp;lt;Flowchart sad:XamlDebuggerXmlReader.FileName="d:\users\bsenyurt\documents\visual studio 2010\Projects\Windows Phone\HowToTransaction\HowToTransaction\Workflow1.xaml" sap:VirtualizedContainerService.HintSize="614,636"&amp;gt; 
+    &amp;lt;sap:WorkflowViewStateService.ViewState&amp;gt; 
+      &amp;lt;scg3:Dictionary x:TypeArguments="x:String, x:Object"&amp;gt; 
+        &amp;lt;x:Boolean x:Key="IsExpanded"&amp;gt;False&amp;lt;/x:Boolean&amp;gt; 
+        &amp;lt;av:Point x:Key="ShapeLocation"&amp;gt;270,2.5&amp;lt;/av:Point&amp;gt; 
+        &amp;lt;av:Size x:Key="ShapeSize"&amp;gt;60,75&amp;lt;/av:Size&amp;gt; 
+        &amp;lt;av:PointCollection x:Key="ConnectorLocation"&amp;gt;300,77.5 300,139.5&amp;lt;/av:PointCollection&amp;gt; 
+      &amp;lt;/scg3:Dictionary&amp;gt; 
+    &amp;lt;/sap:WorkflowViewStateService.ViewState&amp;gt; 
+    &amp;lt;Flowchart.StartNode&amp;gt; 
+      &amp;lt;FlowStep x:Name="__ReferenceID0"&amp;gt; 
+        &amp;lt;sap:WorkflowViewStateService.ViewState&amp;gt; 
+          &amp;lt;scg3:Dictionary x:TypeArguments="x:String, x:Object"&amp;gt; 
+            &amp;lt;av:Point x:Key="ShapeLocation"&amp;gt;194.5,139.5&amp;lt;/av:Point&amp;gt; 
+            &amp;lt;av:Size x:Key="ShapeSize"&amp;gt;211,59&amp;lt;/av:Size&amp;gt; 
+            &amp;lt;av:PointCollection x:Key="ConnectorLocation"&amp;gt;300,198.5 300,228.5 160,228.5 160,245.5&amp;lt;/av:PointCollection&amp;gt; 
+          &amp;lt;/scg3:Dictionary&amp;gt; 
+        &amp;lt;/sap:WorkflowViewStateService.ViewState&amp;gt; 
+        &amp;lt;WriteLine sap:VirtualizedContainerService.HintSize="211,59" Text="Account ve Branch tabloları i&amp;ccedil;in Insert işlemleri başlıyor"&amp;gt; 
+          &amp;lt;sap:WorkflowViewStateService.ViewState&amp;gt; 
+            &amp;lt;scg3:Dictionary x:TypeArguments="x:String, x:Object"&amp;gt; 
+              &amp;lt;x:Boolean x:Key="IsExpanded"&amp;gt;True&amp;lt;/x:Boolean&amp;gt; 
+            &amp;lt;/scg3:Dictionary&amp;gt; 
+          &amp;lt;/sap:WorkflowViewStateService.ViewState&amp;gt; 
+        &amp;lt;/WriteLine&amp;gt; 
+        &amp;lt;FlowStep.Next&amp;gt; 
+          &amp;lt;FlowStep x:Name="__ReferenceID2"&amp;gt; 
+            &amp;lt;sap:WorkflowViewStateService.ViewState&amp;gt; 
+              &amp;lt;scg3:Dictionary x:TypeArguments="x:String, x:Object"&amp;gt; 
+                &amp;lt;av:Point x:Key="ShapeLocation"&amp;gt;60,245.5&amp;lt;/av:Point&amp;gt; 
+                &amp;lt;av:Size x:Key="ShapeSize"&amp;gt;200,49&amp;lt;/av:Size&amp;gt; 
+                &amp;lt;av:PointCollection x:Key="ConnectorLocation"&amp;gt;160,294.5 160,324.5 290,324.5 290,340.5&amp;lt;/av:PointCollection&amp;gt; 
+              &amp;lt;/scg3:Dictionary&amp;gt; 
+            &amp;lt;/sap:WorkflowViewStateService.ViewState&amp;gt; 
+            &amp;lt;TryCatch sap:VirtualizedContainerService.HintSize="418,529"&amp;gt; 
+              &amp;lt;TryCatch.Variables&amp;gt; 
+                &amp;lt;Variable x:TypeArguments="x:Int32" Name="ServiceCallResult" /&amp;gt; 
+              &amp;lt;/TryCatch.Variables&amp;gt; 
+              &amp;lt;sap:WorkflowViewStateService.ViewState&amp;gt; 
+                &amp;lt;scg3:Dictionary x:TypeArguments="x:String, x:Object"&amp;gt; 
+                  &amp;lt;x:Boolean x:Key="IsExpanded"&amp;gt;True&amp;lt;/x:Boolean&amp;gt; 
+                &amp;lt;/scg3:Dictionary&amp;gt; 
+              &amp;lt;/sap:WorkflowViewStateService.ViewState&amp;gt; 
+              &amp;lt;TryCatch.Try&amp;gt; 
+                &amp;lt;TransactionScope AbortInstanceOnTransactionFailure="False" sap:VirtualizedContainerService.HintSize="258,351"&amp;gt; 
+                  &amp;lt;sap:WorkflowViewStateService.ViewState&amp;gt; 
+                    &amp;lt;scg3:Dictionary x:TypeArguments="x:String, x:Object"&amp;gt; 
+                      &amp;lt;x:Boolean x:Key="IsExpanded"&amp;gt;True&amp;lt;/x:Boolean&amp;gt; 
+                    &amp;lt;/scg3:Dictionary&amp;gt; 
+                  &amp;lt;/sap:WorkflowViewStateService.ViewState&amp;gt; 
+                  &amp;lt;Sequence sap:VirtualizedContainerService.HintSize="222,270"&amp;gt; 
+                    &amp;lt;sap:WorkflowViewStateService.ViewState&amp;gt; 
+                      &amp;lt;scg3:Dictionary x:TypeArguments="x:String, x:Object"&amp;gt; 
+                        &amp;lt;x:Boolean x:Key="IsExpanded"&amp;gt;True&amp;lt;/x:Boolean&amp;gt; 
+                      &amp;lt;/scg3:Dictionary&amp;gt; 
+                    &amp;lt;/sap:WorkflowViewStateService.ViewState&amp;gt; 
+                    &amp;lt;local:InsertAccountActivity ExecuteNonQueryResult="{x:Null}" AccountId="2" sap:VirtualizedContainerService.HintSize="200,22" Name="Delinin" Surname="Biri"&amp;gt; 
+                      &amp;lt;sap:WorkflowViewStateService.ViewState&amp;gt; 
+                        &amp;lt;scg3:Dictionary x:TypeArguments="x:String, x:Object"&amp;gt; 
+                          &amp;lt;x:Boolean x:Key="IsExpanded"&amp;gt;True&amp;lt;/x:Boolean&amp;gt; 
+                        &amp;lt;/scg3:Dictionary&amp;gt; 
+                      &amp;lt;/sap:WorkflowViewStateService.ViewState&amp;gt; 
+                    &amp;lt;/local:InsertAccountActivity&amp;gt; 
+                    &amp;lt;local1:DoWork AccountId="99" DoWorkResult="[ServiceCallResult]" EndpointConfigurationName="WSHttpBinding_IAccountService" sap:VirtualizedContainerService.HintSize="200,22" Name="Maykıl" mva:VisualBasic.Settings="Assembly references and imported namespaces serialized as XML namespaces" Surname="Cordın" /&amp;gt; 
+                    &amp;lt;local:InsertBranchActivity ExecuteNonQueryResult="{x:Null}" BranchId="34" Code="4" sap:VirtualizedContainerService.HintSize="200,22" Title="germany"&amp;gt; 
+                      &amp;lt;sap:WorkflowViewStateService.ViewState&amp;gt; 
+                        &amp;lt;scg3:Dictionary x:TypeArguments="x:String, x:Object"&amp;gt; 
+                          &amp;lt;x:Boolean x:Key="IsExpanded"&amp;gt;True&amp;lt;/x:Boolean&amp;gt; 
+                        &amp;lt;/scg3:Dictionary&amp;gt; 
+                      &amp;lt;/sap:WorkflowViewStateService.ViewState&amp;gt; 
+                    &amp;lt;/local:InsertBranchActivity&amp;gt; 
+                  &amp;lt;/Sequence&amp;gt; 
+                &amp;lt;/TransactionScope&amp;gt; 
+              &amp;lt;/TryCatch.Try&amp;gt; 
+              &amp;lt;TryCatch.Catches&amp;gt; 
+                &amp;lt;Catch x:TypeArguments="s:Exception" sap:VirtualizedContainerService.HintSize="404,20"&amp;gt; 
+                  &amp;lt;sap:WorkflowViewStateService.ViewState&amp;gt; 
+                    &amp;lt;scg3:Dictionary x:TypeArguments="x:String, x:Object"&amp;gt; 
+                      &amp;lt;x:Boolean x:Key="IsExpanded"&amp;gt;False&amp;lt;/x:Boolean&amp;gt; 
+                      &amp;lt;x:Boolean x:Key="IsPinned"&amp;gt;False&amp;lt;/x:Boolean&amp;gt; 
+                    &amp;lt;/scg3:Dictionary&amp;gt; 
+                  &amp;lt;/sap:WorkflowViewStateService.ViewState&amp;gt; 
+                  &amp;lt;ActivityAction x:TypeArguments="s:Exception"&amp;gt; 
+                    &amp;lt;ActivityAction.Argument&amp;gt; 
+                      &amp;lt;DelegateInArgument x:TypeArguments="s:Exception" Name="exception" /&amp;gt; 
+                    &amp;lt;/ActivityAction.Argument&amp;gt; 
+                    &amp;lt;WriteLine sap:VirtualizedContainerService.HintSize="211,59" Text="[exception.Message]" /&amp;gt; 
+                  &amp;lt;/ActivityAction&amp;gt; 
+                &amp;lt;/Catch&amp;gt; 
+              &amp;lt;/TryCatch.Catches&amp;gt; 
+            &amp;lt;/TryCatch&amp;gt; 
+            &amp;lt;FlowStep.Next&amp;gt; 
+              &amp;lt;FlowStep x:Name="__ReferenceID1"&amp;gt; 
+                &amp;lt;sap:WorkflowViewStateService.ViewState&amp;gt; 
+                  &amp;lt;scg3:Dictionary x:TypeArguments="x:String, x:Object"&amp;gt; 
+                    &amp;lt;av:Point x:Key="ShapeLocation"&amp;gt;184.5,340.5&amp;lt;/av:Point&amp;gt; 
+                    &amp;lt;av:Size x:Key="ShapeSize"&amp;gt;211,59&amp;lt;/av:Size&amp;gt; 
+                    &amp;lt;av:PointCollection x:Key="ConnectorLocation"&amp;gt;310,210.5 310,309.5&amp;lt;/av:PointCollection&amp;gt; 
+                  &amp;lt;/scg3:Dictionary&amp;gt; 
+                &amp;lt;/sap:WorkflowViewStateService.ViewState&amp;gt; 
+                &amp;lt;WriteLine sap:VirtualizedContainerService.HintSize="211,59" Text="İşlemler tamamlandı"&amp;gt; 
+                  &amp;lt;sap:WorkflowViewStateService.ViewState&amp;gt; 
+                    &amp;lt;scg3:Dictionary x:TypeArguments="x:String, x:Object"&amp;gt; 
+                      &amp;lt;x:Boolean x:Key="IsExpanded"&amp;gt;True&amp;lt;/x:Boolean&amp;gt; 
+                    &amp;lt;/scg3:Dictionary&amp;gt; 
+                  &amp;lt;/sap:WorkflowViewStateService.ViewState&amp;gt; 
+                &amp;lt;/WriteLine&amp;gt; 
+              &amp;lt;/FlowStep&amp;gt; 
+            &amp;lt;/FlowStep.Next&amp;gt; 
+          &amp;lt;/FlowStep&amp;gt; 
+        &amp;lt;/FlowStep.Next&amp;gt; 
+      &amp;lt;/FlowStep&amp;gt; 
+    &amp;lt;/Flowchart.StartNode&amp;gt; 
+    &amp;lt;x:Reference&amp;gt;__ReferenceID0&amp;lt;/x:Reference&amp;gt; 
+    &amp;lt;x:Reference&amp;gt;__ReferenceID1&amp;lt;/x:Reference&amp;gt; 
+    &amp;lt;x:Reference&amp;gt;__ReferenceID2&amp;lt;/x:Reference&amp;gt; 
+  &amp;lt;/Flowchart&amp;gt; 
+&amp;lt;/Activity&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Workflow Application&lt;/strong&gt; tarafındaki en &amp;ouml;nemli ayarlardan birisi de &lt;strong&gt;config&lt;/strong&gt; dosyasında yer almaktadır.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0"?&amp;gt; 
+&amp;lt;configuration&amp;gt; 
+    &amp;lt;startup&amp;gt;          
+       &amp;lt;supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.0"/&amp;gt;                
+    &amp;lt;/startup&amp;gt; 
+    &amp;lt;connectionStrings&amp;gt; 
+        &amp;lt;add name="ConStr" connectionString="User Id=bir kullanıcı adı;Password=bir şifre;Data Source=bir veri kaynağı" providerName="Oracle.DataAccess.Client"/&amp;gt; 
+    &amp;lt;/connectionStrings&amp;gt; 
+    &amp;lt;system.serviceModel&amp;gt; 
+        &amp;lt;bindings&amp;gt; 
+            &amp;lt;wsHttpBinding&amp;gt; 
+                &amp;lt;binding name="WSHttpBinding_IAccountService" transactionFlow="true" /&amp;gt; 
+            &amp;lt;/wsHttpBinding&amp;gt; 
+        &amp;lt;/bindings&amp;gt; 
+        &amp;lt;client&amp;gt; 
+            &amp;lt;endpoint address="http://localhost:35662/AccountService.svc" 
+                binding="wsHttpBinding" bindingConfiguration="WSHttpBinding_IAccountService" 
+                contract="IAccountService" name="WSHttpBinding_IAccountService"&amp;gt; 
+                &amp;lt;identity&amp;gt; 
+                    &amp;lt;userPrincipalName value="XXXXXXXXX" /&amp;gt; 
+                &amp;lt;/identity&amp;gt; 
+            &amp;lt;/endpoint&amp;gt; 
+        &amp;lt;/client&amp;gt; 
+    &amp;lt;/system.serviceModel&amp;gt; 
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;İstemci tarafındaki &lt;strong&gt;Binding&lt;/strong&gt; ayarlarında da &lt;strong&gt;transactionFlow&lt;/strong&gt; niteliğinin mutlak suretle &lt;strong&gt;true&lt;/strong&gt; olması gerekmektedir. Gelelim &lt;strong&gt;Main&lt;/strong&gt; metodu i&amp;ccedil;erisindeki kodlarımıza.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Activities; 
+using System.Threading;
+
+namespace HowToTransaction 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            var activity = new Workflow1();
+
+            AutoResetEvent arEvent = new AutoResetEvent(false); 
+            WorkflowApplication wfApp = new WorkflowApplication(activity); 
+            wfApp.Extensions.Add(new CustomTracker());
+
+            wfApp.Completed = (o) =&amp;gt; 
+            { 
+                arEvent.Set(); 
+           };
+
+            wfApp.Run(); 
+           arEvent.WaitOne(); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;WorkflowApplication&lt;/strong&gt; tipinden yararlanılarak &lt;strong&gt;Workflow1&lt;/strong&gt; &amp;ouml;rneğinin başlatılması işlemi ger&amp;ccedil;ekleştirilmektedir. &lt;strong&gt;Tracking&lt;/strong&gt; işlemi i&amp;ccedil;in yazılmış olan &lt;strong&gt;CustomTracker&lt;/strong&gt; sınıfının da, bir &lt;strong&gt;Extension&lt;/strong&gt; olarak &lt;strong&gt;WorkflowApplication&lt;/strong&gt; &amp;ouml;rneğine bildirilmesi gerekir.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneği bu hali ile &amp;ccedil;alıştırdığımda aşağıdaki sonu&amp;ccedil;ları elde ettiğimi g&amp;ouml;rd&amp;uuml;m.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wfts_4.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wfts_4" src="/pics/wfts_4_thumb.png" alt="wfts_4" width="400" height="585" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wfts_5.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wfts_5" src="/pics/wfts_5_thumb.png" alt="wfts_5" width="400" height="585" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wfts_6.png"&gt;&lt;img style="display: inline;" title="wfts_6" src="/pics/wfts_6_thumb.png" alt="wfts_6" width="400" height="585" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wfts_7.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wfts_7" src="/pics/wfts_7_thumb.png" alt="wfts_7" width="400" height="202" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Ekran &amp;ccedil;ıktısını okumak biraz zahmetli olabilir&lt;em&gt;(&amp;Ouml;zellikle WCF servis &amp;ccedil;ağrısının yapıldığı aktivite mesajlaşma i&amp;ccedil;eriğini de bastığından&amp;hellip;)&lt;/em&gt; ama işlemlerin başarılı bir şekilde yapıldığı g&amp;ouml;r&amp;uuml;lmektedir ve doğal olarak veritabanı tarafındaki &lt;strong&gt;insert&lt;/strong&gt; işlemleri de başarılı olmuştur. &amp;Ouml;zellikle &lt;strong&gt;activity&lt;/strong&gt; tipleri i&amp;ccedil;in yapılan &lt;strong&gt;State&lt;/strong&gt; bildirimlerine dikkatinizi &amp;ccedil;ekerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wfts_8.png"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border-width: 0px;" title="wfts_8" src="/pics/wfts_8_thumb.png" alt="wfts_8" width="244" height="238" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Hatta &lt;strong&gt;Debug&lt;/strong&gt; işlemi yapıldığında servis tarafındaki operasyon i&amp;ccedil;erisinde, istemci tarafından gelen &lt;strong&gt;Transaction&lt;/strong&gt; bilgileri de a&amp;ccedil;ık bir şekilde g&amp;ouml;r&amp;uuml;lebilmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/wfts_9.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="wfts_9" src="/pics/wfts_9_thumb.png" alt="wfts_9" width="590" height="243" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;DistributedIdentifier&lt;/strong&gt; &amp;ouml;zelliğinin &lt;strong&gt;GUID&lt;/strong&gt; tipinden bir değeri mevcuttur. Bir başka deyişle &lt;strong&gt;DTC&lt;/strong&gt; devreye girmiş ve şu andaki servis operasyonu i&amp;ccedil;erisinde yapılacak işlemler, &lt;strong&gt;Workflow&lt;/strong&gt; &lt;strong&gt;Application&lt;/strong&gt; tarafında a&amp;ccedil;ılan &lt;strong&gt;TransactionScope&amp;rsquo;&lt;/strong&gt; a dahil edilmiştir.&lt;/p&gt;
+&lt;p&gt;Eğer &lt;strong&gt;InsertBranch&lt;/strong&gt; &lt;strong&gt;Code Activity&lt;/strong&gt; bileşeni i&amp;ccedil;erisindeki &lt;strong&gt;Exception&lt;/strong&gt; fırlatılan satır etkinleştirilirse,&amp;nbsp; &lt;strong&gt;Transaction&lt;/strong&gt; işlemlerinin &lt;strong&gt;Commit&lt;/strong&gt; edilmediği g&amp;ouml;r&amp;uuml;lecektir. Bu kısım olduk&amp;ccedil;a &amp;ouml;nemlidir. &amp;Ccedil;&amp;uuml;nk&amp;uuml; &lt;strong&gt;Workflow1&lt;/strong&gt; akışında &amp;ouml;nce akış i&amp;ccedil;i bir &lt;strong&gt;Transaction&lt;/strong&gt; işlemi, sonrasında servis tarafında bir &lt;strong&gt;Transaction&lt;/strong&gt; işlemi ve son olarak da yine akış i&amp;ccedil;erisinde bir &lt;strong&gt;Transaction&lt;/strong&gt; işlemi s&amp;ouml;z konusudur.&lt;/p&gt;
+&lt;p&gt;Son işlemde oluşan &lt;strong&gt;Exception&lt;/strong&gt; nedeni ile bir adım &amp;ouml;nceki servis &lt;strong&gt;Transaction&lt;/strong&gt; işleminin iptal edilmesi ve edildiğinin g&amp;ouml;r&amp;uuml;lmesi&lt;em&gt;(tabi o ana kadarki t&amp;uuml;m Insert&amp;rsquo; lerin de iptal edildiğinin g&amp;ouml;r&amp;uuml;lmesi)&lt;/em&gt; son derece &amp;ouml;nemlidir. Bu, &lt;strong&gt;TransactionScope&amp;rsquo;&lt;/strong&gt; un başarılı &amp;ccedil;alıştığının bir ispatı olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere bir &lt;strong&gt;Workflow&lt;/strong&gt; i&amp;ccedil;erisinden başlatılan &lt;strong&gt;Transaction&amp;rsquo;&lt;/strong&gt; ın, bir &lt;strong&gt;WCF&lt;/strong&gt; servis operasyonuna aktarılabilmesi ve s&amp;ouml;z konusu operasyonun ilgili &lt;strong&gt;Transaction&lt;/strong&gt; &lt;strong&gt;Scope&amp;rsquo;&lt;/strong&gt; a dahil hale gelerek &lt;strong&gt;Two Phase Commit&lt;/strong&gt; metodolojisine uygun bi&amp;ccedil;imde sisteme dahil edilmesi m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Bu, tipik anlamda bir &lt;strong&gt;Atomic Transaction&lt;/strong&gt; senaryosudur. Sadece bir ka&amp;ccedil; k&amp;uuml;&amp;ccedil;&amp;uuml;k detaya ve ayarlamaya dikkat etmek gerekmektedir. B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrarda g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_109.png" alt="Winking smile" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2012%2f8%2fHowToTransaction.zip"&gt;HowToTransaction.zip (457,18 kb)&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="color: #ff0000;"&gt;[&amp;Ouml;rnek Visual Studio 2010, .Net Framework 4.0 tabanlıdır]&lt;/span&gt;&lt;/p&gt;</content>
+  <pubDate>2013-01-31 22:36:00</pubDate>
+  <slug>Workflow-Foundation-Oracle-WCF-ve-TransactionScope</slug>
+  <tags>
+    <tag>workflow-foundation</tag>
+    <tag>workflow-foundation-40</tag>
+    <tag>workflow-foundation-öğreniyorum</tag>
+    <tag>wcf</tag>
+    <tag>wcf-40</tag>
+    <tag>wcf-service</tag>
+    <tag>transaction-management</tag>
+    <tag>transaction-scope</tag>
+    <tag>oracle</tag>
+    <tag>odpnet</tag>
+    <tag>oracle-data-provider-for-net</tag>
+  </tags>
+  <categories>
+    <category>WF 4.0</category>
+  </categories>
+</post>

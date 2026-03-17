@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Sql Tablolarına Resim Eklemek</title>
+  <description>Bugünkü makalemizde, örnek bir sql tablomuzda yer alan image veri tipinden bir alana, seçtiğimiz resim dosyalarını nasıl kaydedebileceğimizi incelemeye çalışacağız. Öncelikle, sql tablolarında kullanabildiğimiz image tipinden biraz bahsedelim. Bu tip, ikili (binary) formatta verileri tutmak için geliştirilmiştir. Image veri tipi, 0 byte' dan 2,147,483,647 byte'a kadar veri alanını taşıyabilmektedir. Bu alan, verileri bir byte dizisi şeklinde tutmaktadır. Dolayısıyla resim dosyalarını tutmak için ideal bir yapı sergiler. Elbette üst sınırı aşmamaya çalışmak gerekir. Çoğu zaman uygulamalarımızda, resim dosyalarını ikili bir dizi şeklinde sql tablolarımızda, image tipindeki alanlarda tutmak isteyeceğimiz durumlar oluşabilir. (Örneğin şirket çalışanları ile ilgili personel bilgilerini tuttuğumuz tablolarda, personelin vesikalık fotoğraflarını bu alanlarda taşıdığımızı düşünelim.)</description>
+  <content>&lt;p align="left"&gt;Değerli Okurlarım, Merhabalar.&lt;/p&gt;
+&lt;p&gt;Bug&amp;uuml;nk&amp;uuml; makalemizde, &amp;ouml;rnek bir sql tablomuzda yer alan image veri tipinden bir alana, se&amp;ccedil;tiğimiz resim dosyalarını nasıl kaydedebileceğimizi incelemeye &amp;ccedil;alışacağız. &amp;Ouml;ncelikle, sql tablolarında kullanabildiğimiz image tipinden biraz bahsedelim. Bu tip, ikili (binary) formatta verileri tutmak i&amp;ccedil;in geliştirilmiştir. Image veri tipi, 0 byte' dan 2,147,483,647 byte'a kadar veri alanını taşıyabilmektedir. Bu alan, verileri bir byte dizisi şeklinde tutmaktadır. Dolayısıyla resim dosyalarını tutmak i&amp;ccedil;in ideal bir yapı sergiler. Elbette &amp;uuml;st sınırı aşmamaya &amp;ccedil;alışmak gerekir. &amp;Ccedil;oğu zaman uygulamalarımızda, resim dosyalarını ikili bir dizi şeklinde sql tablolarımızda, image tipindeki alanlarda tutmak isteyeceğimiz durumlar oluşabilir. (&amp;Ouml;rneğin şirket &amp;ccedil;alışanları ile ilgili personel bilgilerini tuttuğumuz tablolarda, personelin vesikalık fotoğraflarını bu alanlarda taşıdığımızı d&amp;uuml;ş&amp;uuml;nelim.)&lt;/p&gt;
+&lt;p&gt;İşte şimdi, bu tarz resim dosyalarını, sql tablolarımızdaki ilgili alanlara nasıl yazabileceğimizi inceleyeceğiz. Yapmamız gereken işlem aslında son derece kolay. Resim dosyasını ikili formatta okumak, dosyanın okunan byte'larını bir byte dizisine aktarmak ve oluşan bu diziyi, image tipindeki alanımıza aktarmak. Bu anafikir ışığında işlemlerimizi ger&amp;ccedil;ekleştirebilmek i&amp;ccedil;in, &amp;ouml;ncelikle dosyamızı bir FileStream nesnesine a&amp;ccedil;acağız. Daha sonra, bir BinaryRead nesnesi kullanarak, FileStream nesnesinin işaret ettiği dosyadan t&amp;uuml;m byte'ları okuyacak ve bunları bir byte dizisinee aktaracağız. Sonrada oluşturduğumuz bu diziyi, sql tablomuzda yer alan image veri tipindeki alana koyacağız.&lt;/p&gt;
+&lt;p&gt;Uygulamamızı ger&amp;ccedil;ekleştirmeden &amp;ouml;nce, FileStream ve BinaryReader sınıfları hakkında da kısaca bilgi verelim. FileStream nesnelerini, sistemimizde yer alan dosyaları okumak veya bu dosyalara yazmak amacıyla kullanırız. BinaryReader nesnesi, FileStream nesnesinden byte t&amp;uuml;r&amp;uuml;nden bir akış oluşturmamızı sağlar. BinaryReader, FileStream nesnesinin temsil ettiği dosyadan, okumanın y&amp;ouml;nlendirileceği kaynağa doğru bir akım oluşturur. Bu akış sayesinde, FileStream nesnesinin temsil ettiği dosyadan verileri byte byte okuyabilir ve bir byte dizisine aktarabiliriz. Bunun nasıl yapıldığını &amp;ouml;rneğimizi geliştirdiğimizde daha iyi anlayacağız.&lt;/p&gt;
+&lt;p&gt;Şimdi dilerseniz, uygulamamızı geliştirmeye başlayalım. &amp;Ouml;ncelikle, veri tablomuzu yapalım. &amp;Ouml;rneğin, internetten indirip bilgisayarımızda bir klas&amp;ouml;rde topladığımız g&amp;uuml;zel duvar kağıtlarını tablomuzada kaydetmek istediğimizi varsayalım. Bununla ilgili olarak aşağıdaki &amp;ouml;rnek tabloyu oluşturdum.&lt;/p&gt;
+&lt;p align="left"&gt;&lt;em&gt;&lt;img src="/makale/images/mk45_1.gif" alt="" width="354" height="93" border="0" /&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p align="left"&gt;&lt;em&gt;Şekil 1. Wallpapers tablomuz&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Sıra geldi uygulamamızın ekranını tasarlamaya. Uygulamamızda kullanıcı, istediği resim dosyasını se&amp;ccedil;ecek, bunu aynı zamanda ekranda yer alan bir PictureBox kontrol&amp;uuml;nde g&amp;ouml;rebilecek ve bunu isterse Wallpapers isimli sql tablomuza yazabilecek. İşte ekran tasarımımız.&lt;/p&gt;
+&lt;p align="left"&gt;&lt;img src="/makale/images/mk45_2.gif" alt="" width="456" height="374" border="0" /&gt;&lt;/p&gt;
+&lt;p align="left"&gt;&lt;em&gt;Şekil 2. Form Tasarımımız.&lt;/em&gt;&lt;/p&gt;
+&lt;p align="left"&gt;Şimdi uygulama kodlarımızı yazmaya başlayabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;string resimAdresi; /* OpenFileDialog kontrol&amp;uuml;nden se&amp;ccedil;tigimiz dosyanin tam adresini tutacak genel bir degisken. */
+
+/* Bu metodumuzda OpenFileDialog kontrol&amp;uuml;m&amp;uuml;z&amp;uuml;n temel ayarlarini yapiyoruz. */
+
+public void DialogHazirla()
+{
+     ofdResim.Title="Duvar Kagidini Se&amp;ccedil;"; /* Dosya a&amp;ccedil;ma iletisim kutumuzun basligini belirliyoruz. */
+
+     ofdResim.Filter="Jpeg Dosyalari(*.jpg)|*.jpg|Gif dosyalari(*.gif)|*.gif"; /* Iletisim kutumuzun, sadece jpg ve gif dosyalarini g&amp;ouml;stermesini, Filter &amp;ouml;zelligi ile ayarliyoruz.*/
+}
+
+private void Form1_Load(object sender, System.EventArgs e)
+{
+     DialogHazirla();
+}
+
+private void btnResimSec_Click(object sender, System.EventArgs e)
+{
+     /* Kullanici bu butona tikladiginda, OpenFileDialog kontrol&amp;uuml;m&amp;uuml;z, dosya a&amp;ccedil;ma iletisim kutusunu a&amp;ccedil;ar. Kullanici bir dosya se&amp;ccedil;ip OK tusunda bastiginda, Picture Box kontrol&amp;uuml;m&amp;uuml;ze se&amp;ccedil;ilen resim dosyasi alinarak g&amp;ouml;sterilmesi sağlanır. Daha sonra se&amp;ccedil;ilen dosyanin tam adresi label kontrol&amp;uuml;m&amp;uuml;ze alınır ve resimAdresi degiskenimize atanır. */
+
+     if(ofdResim.ShowDialog()==DialogResult.OK)
+     {
+         pbResim.Image=System.Drawing.Image.FromFile(ofdResim.FileName); /* Drawing isim uzayinda yer alan Image sinifinin FromFile metodunu kullanarak belirtilen adresteki dosya PictureBox kontrol&amp;uuml; i&amp;ccedil;ine &amp;ccedil;izilir. */
+
+          lblDosyaAdi.Text=ofdResim.FileName.ToString();
+          resimAdresi=ofdResim.FileName.ToString();
+     }
+}
+
+private void btnKaydet_Click(object sender, System.EventArgs e)
+{
+     /* Simdi en &amp;ouml;nemli kodlarimizi yazmaya basliyoruz. &amp;Ouml;ncelikle dosyamizi a&amp;ccedil;mamiz gerekli. &amp;Ccedil;&amp;uuml;nk&amp;uuml; resim dosyasinin i&amp;ccedil;erigini byte olarak okumak istiyoruz. Bu ama&amp;ccedil;la FileStream nesnemizi olusturuyor ve gerekli parametrelerini ayarliyoruz. Ilk parametre, dosyanin tam yolunu belirtir. Ikinci parametre ise dosyamizi a&amp;ccedil;mak i&amp;ccedil;in kullanacagimizi belirtir. Son parametre ise dosyanin okuma amaci ile a&amp;ccedil;ildigini belirtir. */
+
+     FileStream fsResim=new FileStream(resimAdresi,FileMode.Open,FileAccess.Read);
+
+     /* BinaryReader nesnemiz, byte dizimiz ile, parametre olarak aldigi FileStream nesnesi arasinda , veri akisini saglamak i&amp;ccedil;in olusturuluyor. Akim, FileStream nesnesinin belirttigi dosyadan, dosyadaki byte'larin aktarilacagi diziye dogru olucaktir.*/
+
+        BinaryReader brResim=new BinaryReader(fsResim);
+
+     /* Simdi resim adinda bir byte dizisi olusturuyoruz. brResim isimli BinaryReader nesnemizin, ReadBytes metodunu kullanarak, bu nesnenin veri akisi i&amp;ccedil;in baglanti kurdugu FileStream nesnesinin belirttigi dosyadaki t&amp;uuml;m byte'lari, byte dizimize akitiyoruz. B&amp;ouml;ylece resim dosyamizin t&amp;uuml;m byte'lari yani dosyamizin kendisi, byte dizimize aktarilmis oluyor.*/
+
+         byte[] resim=brResim.ReadBytes((int)fsResim.Length);
+     /* Son olarak, BinaryReader ve FileStream nesnelerini kapatiyoruz. */
+     brResim.Close();
+     fsResim.Close();
+     /* Artik Sql baglantimizi olusturabilir ve sql komutumuzu &amp;ccedil;alistirabiliriz. &amp;Ouml;nce SqlConnection nesnemizi olusturuyoruz. */
+
+     SqlConnection conResim=new SqlConnection("data source=localhost;initial catalog=Northwind;integrated security=sspi");
+
+     /* Simdi sql komutumuzu &amp;ccedil;alistiracak olan SqlCommand nesnemizi olusturuyoruz. Burada alanlarin degerlerini parametreler &amp;uuml;zerinden aktardigimiza dikkat edelim. */
+
+     SqlCommand cmdResimKaydet=new SqlCommand("insert into Wallpapers (Yorum,Resim) values (@yorum,@res)",conResim);
+   cmdResimKaydet.Parameters.Add("@Yorum",SqlDbType.Char,250).Value=txtYorum.Text; /* Bu parametremiz @Yorum isminde ve Char tipinde. 250 karakter uzunlugunda. Hemen ayni satirda Value &amp;ouml;zelligini kullanarak parametrenin degerinide belirliyoruz. */
+     cmdResimKaydet.Parameters.Add("@res",SqlDbType.Image,resim.Length).Value=resim; /* Se&amp;ccedil;tigimiz resim dosyasinin byte'larini, tablodaki ilgili alana tasiyacak parametremizi belirtiyoruz. Deger olarak, resim isimli byte dizimizi aktariyoruz. Parametre tipinin, image olduguna dikkat edelim. */
+
+ 
+     /* G&amp;uuml;nveli blogumuzda, Sql baglantimizi a&amp;ccedil;iyoruz. Ardindan, sql komutumuzu ExecuteNonQuery metodu ile &amp;ccedil;alistiriyoruz. Son olarakta herhangibir hata olsada, olmasada, finally blogunda sql baglantimizi kapatiyoruz.*/
+
+     try
+     {
+          conResim.Open();
+          cmdResimKaydet.ExecuteNonQuery();
+          MessageBox.Show(lblDosyaAdi.Text+" Tabloya Basarili Bir Sekilde Kaydedildi.");
+     }
+     catch(Exception ex)
+     {
+          MessageBox.Show(ex.Message.ToString());
+     }
+     finally
+     {
+          conResim.Close();
+     }
+}&lt;/pre&gt;
+&lt;p align="left"&gt;Şimdi uygulamamızı &amp;ccedil;alıştıralım ve tablomuzdaki Resim alanına yazmak i&amp;ccedil;in bir resim se&amp;ccedil;elim.&lt;/p&gt;
+&lt;p align="left"&gt;&lt;em&gt; &lt;img src="/makale/images/mk45_3.gif" alt="" width="440" height="288" border="0" /&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p align="left"&gt;&lt;em&gt;Şekil 3. Resim Se&amp;ccedil;ilir.&lt;/em&gt;&lt;/p&gt;
+&lt;p align="left"&gt;Şimdi Kaydet butonuna tıklayalım. Bu durumda aşağıdaki mesajı alırız.&lt;/p&gt;
+&lt;p align="left"&gt;&lt;em&gt; &lt;img src="/makale/images/mk45_4.gif" alt="" width="450" height="107" border="0" /&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p align="left"&gt;&lt;em&gt;Şekil 4. Resim image tipindeki alana kaydedildi.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Son olarak sql tablomuzda bu alanların nasıl g&amp;ouml;r&amp;uuml;nd&amp;uuml;ğ&amp;uuml;ne bir bakalım.&lt;/p&gt;
+&lt;p align="left"&gt;&lt;img src="/makale/images/mk45_5.gif" alt="" width="359" height="32" border="0" /&gt;&lt;/p&gt;
+&lt;p align="left"&gt;&lt;span style="font-style: italic; font-family: Verdana;"&gt;Şekil 5. Tablonun g&amp;ouml;r&amp;uuml;n&amp;uuml;m&amp;uuml;.&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi, tablomuzda Resim adlı image tipindeki alanımızda &amp;lt;Binary&amp;gt; yazmaktadır. Acaba ger&amp;ccedil;ekten resmimiz bu alana d&amp;uuml;zg&amp;uuml;n bir şekilde kaydedildi mi? Bir sonraki makalemizde, bu kez var olan image alanlarını, tablodan nasıl okuyacağımızı ve bir dosyaya nasıl kaydedebileceğimizi incelemeye &amp;ccedil;alışacağız. Umuyorumki hepiniz i&amp;ccedil;in yararlı bir makale olmuştur. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;şmek dileğiyle mutlu g&amp;uuml;nler, iyi &amp;ccedil;alışmalar dilerim.&lt;/p&gt;</content>
+  <pubDate>2004-01-23 02:00:00</pubDate>
+  <slug>Sql-Tablolarc4b1na-Resim-Eklemek-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>adonet</tag>
+    <tag>sql</tag>
+    <tag>streaming</tag>
+    <tag>file-stream</tag>
+    <tag>binarywriter</tag>
+    <tag>binaryreader</tag>
+  </tags>
+  <categories>
+    <category>Ado.Net</category>
+  </categories>
+</post>

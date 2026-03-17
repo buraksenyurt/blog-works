@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Asp.Net Core Routing Mekanizmasını Kavramak</title>
+  <description>Bu yazımızda Asp.Net Core routing mekanizmasını yakından incelemeye çalışacağız. .Net tarafında MVC zamanlarından beri kritik bir yere sahip olan talep yönlendirme mekanizması .Net Core tarafında da etkili bir biçimde kullanılmakta. Bir kaç farklı örnek yaparak mekanizmanın nasıl çalıştığını anlamaya çalışalım.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2017/12/corerouting_11.gif" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;G&amp;uuml;zel otomobilleri hepimiz severiz. &amp;Ouml;zellikle spor olanlarını. Benim favori ara&amp;ccedil;larımdan birisi ise Audi RS8. 2017 model T&amp;uuml;rkiye satış fiyatı 430 bin Avro civarındaydı. Ger&amp;ccedil;ekten &amp;ccedil;ok y&amp;uuml;ksek bir rakam. Ne oldu da birden onunla yollarımız kesişti diye d&amp;uuml;ş&amp;uuml;nebilirsiniz. Bir deneme s&amp;uuml;r&amp;uuml;ş&amp;uuml;ne &amp;ccedil;ıktım demek isterdim ama...&amp;nbsp;Aslında olay West-World &amp;uuml;zerinde Asp.Net Core routing mekanizmasını incelerken meydana geldi. Bir şekilde dile benden ne dilersen tadındaki URL path'in &amp;ccedil;alışma zamanına Audi RS8 yazmış bulundum. Web sunucusunun bana verdiği cevapsa olduk&amp;ccedil;a hoştu. "Oldu bil!" Onunla aramızda nasıl b&amp;ouml;yle bir muhabbet ger&amp;ccedil;ekleşti merak ediyor olmalısınız. Gelin Asp.Net Core routing mekanizmasını yakından incelemeye &amp;ccedil;alışalım.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Asp.Net&amp;nbsp;d&amp;uuml;nyasında&amp;nbsp;MVC zamanlarından beri kritik bir yere sahip olan talep y&amp;ouml;nlendirme mekanizması .Net Core&amp;nbsp;i&amp;ccedil;in&amp;nbsp;de etkili bir bi&amp;ccedil;imde kullanılmakta.&amp;nbsp;Farklı y&amp;ouml;ntemlerle web sunucusuna gelen taleplerin değerlendirilmesi m&amp;uuml;mk&amp;uuml;n. Bu senaryoların hali hazırdaki versiyonlarını zaten Web API ve MVC şablonlarında ele alıyoruz. Ancak mekanizmayı tanımak adında bir Console projesinden ayağa kaldırılacak Host &amp;ouml;rneğinde ne gibi operasyonları kullanabilirize bakmakta yarar var. Dilerseniz hi&amp;ccedil; vakit kaybetdemen bu varyasyonlardan bir kısmını basit &amp;ouml;rneklerle ele alalım.&lt;/p&gt;
+&lt;p&gt;İlk olarak bir Console uygulaması oluşturacağız. Ortamımız her zaman ki gibi Ubuntu ve kodlama i&amp;ccedil;in Visual Studio Code kullanıyoruz. Ancak aynı &amp;ouml;rnekleri MacOS'da ya da Windows'ta da yazıp &amp;ccedil;alıştırabilirsiniz. Denedim, oluyor. B&amp;uuml;y&amp;uuml;ks&amp;uuml;n .Net Core!&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet new console -o RouterSamples&lt;/pre&gt;
+&lt;p&gt;Y&amp;ouml;nlendirme, Kestrel sunucusunu ayağa kaldırma, HTML&amp;nbsp;&amp;ccedil;ıktıları &amp;uuml;retme gibi operasyonlar i&amp;ccedil;in Asp.Net Core'un temel k&amp;uuml;t&amp;uuml;phanelerini projeye eklememiz lazım. Tek tek uğraşabiliriz de ama ben Microsoft.AspNetCore.All paketini ekleyerek ilerlemeyi tercih ettim.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet add package Microsoft.AspNetCore.All
+dotnet restore&lt;/pre&gt;
+&lt;h1&gt;MapGet &amp;Ouml;rnekleri&lt;/h1&gt;
+&lt;p&gt;İlk kod par&amp;ccedil;asında path bilgisine &amp;ouml;zel olarak gelen HTTP Get taleplerini nasıl ele alabileceğimize bakacağız. Programımıza aşağıdaki kod par&amp;ccedil;alarını ekleyerek devam edelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace RouterSamples
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var host = new WebHostBuilder()
+            .UseKestrel()
+            .UseUrls("http://localhost:4001")
+            .UseStartup&amp;lt;Booster&amp;gt;()
+            .Build();
+
+            host.Run();
+        }
+    }
+
+    class Booster
+    {
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddRouting();
+        }
+
+        public void Configure(IApplicationBuilder app)
+        {
+            var rootBuilder = new RouteBuilder(app);
+
+            rootBuilder.MapGet("", (context) =&amp;gt;
+            {
+                context.Response.Headers.Add("Content-Type", "text/html; charset=utf-8");
+                return context.Response.WriteAsync($"&amp;lt;h1&amp;gt;&amp;lt;p style='color:orange'&amp;gt;Hoşgeldin Sahip&amp;lt;/p&amp;gt;&amp;lt;/h1&amp;gt;&amp;lt;i&amp;gt;Bug&amp;uuml;n nasılsın?&amp;lt;/i&amp;gt;");
+            }
+            );
+
+            rootBuilder.MapGet("green/mile", (context) =&amp;gt;
+            {
+                var routeData = context.GetRouteData();
+                context.Response.Headers.Add("Content-Type", "text/html; charset=utf-8");
+                return context.Response.WriteAsync($"Vayyy &amp;lt;b&amp;gt;Gizli yolu&amp;lt;/b&amp;gt; buldun!&amp;lt;br/&amp;gt;Tebrikler.");
+            }
+            );
+
+            rootBuilder.MapGet("{*urlPath}", (context) =&amp;gt;
+            {
+                var routeData = context.GetRouteData();
+                return context.Response.WriteAsync($"Path bilgisi : {string.Join(",", routeData.Values)}");
+            }
+            );
+
+            app.UseRouter(rootBuilder.Build());
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Aslında web, web api veya mvc projesi a&amp;ccedil;sak da benzer kurgu ile karşılaşacağız. Sonu&amp;ccedil;ta belli bir adrese gelen HTTP taleplerini dinleyip bunlara karşılık cevap verecek olan bir web sunucusu yazıyoruz. Dolayısıyla işin başlangı&amp;ccedil; noktası WebHostBuilder sınıfı. Fluent yapısı sayesinde bir metod zinciri ile belirli &amp;ouml;zelliklerini etkinleştiriyoruz. Kestrel web motorunun kullanılacağını, localhost:4001 adresinden dinlemede kalınacağını, başlangı&amp;ccedil; ayarları i&amp;ccedil;in Booster sınıfına bakılacağını vs...En nihayetinde de Build ve Run &amp;ccedil;ağrıları ile sunucunun ayağa kaldırılması. Gayet sade, yalın, anlaşılır. &amp;Ccedil;ok sevdiğim bir yapı.&lt;/p&gt;
+&lt;p&gt;Tabii bizim odak noktamız daha &amp;ccedil;ok Booster sınıfının i&amp;ccedil;eriği. ConfigureServices metodunda&amp;nbsp; route tanımlamaları ile ilgilenecek servisi devreye alıyoruz. Configure fonkisyonunda ise yazımıza konu olan route mekanizmalarının ilk &amp;uuml;&amp;ccedil; &amp;ouml;rneği bulunuyor. MapGet operasyonunun ilk kullanımında doğrudan http://localhost:4001&amp;nbsp;talebine karşılık vermekteyiz. İ&amp;ccedil;erik tipinin&amp;nbsp;HTML olacağını Header bilgisine eklerken takip eden WriteAsync &amp;ccedil;ağrısında da &amp;ouml;rnek bir i&amp;ccedil;erik basıyoruz.&amp;nbsp;Bir sonraki MapGet kullanımında ise http://localhost:4001/green/mile&amp;nbsp;adresine gelen&amp;nbsp;talebi ele almaktayız. Bu sefer bir &amp;ouml;ncekinden farklı olarak ilk parametrede path bilgisi verildiğine dikkat edelim. Yine bir&amp;nbsp;HTML&amp;nbsp;i&amp;ccedil;eriği basıyoruz. Son &amp;ccedil;ağrıda ise * karakterinin kullanıldığı g&amp;ouml;r&amp;uuml;lmekte. Yani ilk iki path bilgisinden farklı bir adresle talep gelirse ne yapılacağı ele alınıyor. &amp;Ouml;rneğin http://localhost:4001/nowhere adresine ait talep bu fonksiyonla karşılanacak.&lt;/p&gt;
+&lt;p&gt;MapGet fonksiyonunun ilk parametresi path bilgisini kullanırken ikinci parametre RequestDelegate tipinden bir temsilci. Bu temsilcinin aldığı parametreden yararlanarak Request ve Response nesnelerine m&amp;uuml;dahale etmemiz m&amp;uuml;mk&amp;uuml;n. Header bilgisine ilaveler yapmak/okumak, url parametrelerini değerlendirmek, i&amp;ccedil;eriği değiştirmek bunlara &amp;ouml;rnek olarak verilebilir. Temel olarak Request, Response bloklarını HTTP Path bazında&amp;nbsp;değerlendirdiğimizi&amp;nbsp;ifade edebiliriz.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Gelelim &amp;ccedil;alışma zamanı sonu&amp;ccedil;larına. Eğer 4001 nolu porta doğrudan gidersek aşağıdaki sonucu elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/12/corerouting_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Eğer green/mile path bilgisini kullanırsak da aşağıdaki sonu&amp;ccedil;la karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/12/CoreRouting_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu iki path dışında farklı bir path ile gelinirse, {*urlPath} bildirimi nedeniyle aşağıdakine benzer i&amp;ccedil;eriklerle karşılaşırız. Sadece gelen path bilgisini ekrana bastırdığımıza dikkat edelim. Pekala ana sayfaya y&amp;ouml;nlendirme de yapabilir ya da HTTP 404 NotFound mesajı d&amp;ouml;nd&amp;uuml;rebilirdik. Bu ikisini deneyin derim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/12/CoreRouting_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;MapGet&amp;nbsp;&amp;ccedil;ağrılarında varsayılan değerleri ele almakta m&amp;uuml;mk&amp;uuml;n. Aynı kodun {*urlPath} operasyonunu yorum satırı haline getirip aşağıdaki ilaveyi yaptığımızı d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;rootBuilder.MapGet("whatyouwant/{wanted=1 Bitcoin please}", (context) =&amp;gt;
+{
+	var values = context.GetRouteData().Values;
+	context.Response.Headers.Add("Content-Type", "text/html; charset=utf-8");
+	return context.Response.WriteAsync($"İstediğin şey bu.&amp;lt;h2&amp;gt;{values["wanted"]}&amp;lt;/h2&amp;gt;OLDU BİL :)");
+});&lt;/pre&gt;
+&lt;p&gt;Bu kez http://localhost:4001/whatyouwant/something benzeri talepleri karşılıyoruz. Dikkat edilmesi gereken husus {} i&amp;ccedil;eriği. Burada wanted isimli bir değişken tanımladık. Aslında bu değişken i&amp;ccedil;eriği GetRouteData().Values ile elde edilen listede yer alıyor. Bu nedenle HTML &amp;ccedil;ıktısını &amp;uuml;retirken ["wanted"] şeklinde erişerek kullanıcının path'e yazdığı değişken bilgisini yakalayabiliyoruz. = sonrası&amp;nbsp;yapılan&amp;nbsp;1 Bitcoin please&amp;nbsp;ataması&amp;nbsp;ise varsayılan değer oluyor. Buna g&amp;ouml;re aşağıdaki iki farklı kullanım da ge&amp;ccedil;erli. İlkinde kullanıcının path i&amp;ccedil;erisine koyduğu &amp;ouml;rnek bir wanted değişkeni var.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/12/coreRouting_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Eğer parametre girmessek de aşağıdaki sonu&amp;ccedil;la karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/12/corerouting_5.gif" alt="" /&gt;&lt;/p&gt;
+&lt;h1&gt;Varsayılan Handler'ı Kurcalamak&lt;/h1&gt;
+&lt;p&gt;Şimdi ikinci &amp;ouml;rneğimize ge&amp;ccedil;elim. Bu kez varsayılan HTTP Handler davranışına m&amp;uuml;dahale edeceğiz. &amp;Ouml;rnek olarak /products/books path'ine gelen taleplere karşılık&amp;nbsp;&amp;ccedil;eşitli kitap bilgileri i&amp;ccedil;eren bir JSON i&amp;ccedil;eriği basacağız&lt;em&gt;(Alın size REST bazlı Data Service yolu)&lt;/em&gt; Bunun dışındaki talepler i&amp;ccedil;inde sıradan bir HTML sayfası g&amp;ouml;stereceğiz. İlk senaryo bir nevi Web API sim&amp;uuml;lasyonu gibi olacak. Gelin vakit kaybetmeden kodlarımızı yazalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
+using System.IO;
+using System;
+
+namespace RouterSamples
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var host = new WebHostBuilder()
+            .UseKestrel()
+            .UseUrls("http://localhost:4001")
+            .UseStartup&amp;lt;BoosterV2&amp;gt;()
+            .Build();
+
+            host.Run();
+        }
+    }
+
+    class BoosterV2
+    {
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddRouting();
+        }
+
+        public void Configure(IApplicationBuilder app)
+        {
+            var handler = new RouteHandler(context =&amp;gt;
+            {
+                var routeValues = context.GetRouteData().Values;
+                var path = context.Request.Path;
+                if (path == "/products/books")
+                {
+                    context.Response.Headers.Add("Content-Type", "application/json");
+                    var books = File.ReadAllText("books.json");
+                    return context.Response.WriteAsync(books);
+                }
+
+                context.Response.Headers.Add("Content-Type", "text/html;charset=utf-8");
+                return context.Response.WriteAsync(
+                    $@" 
+                    &amp;lt;html&amp;gt;
+					&amp;lt;body&amp;gt;
+                    &amp;lt;h2&amp;gt;Selam Patron! Bug&amp;uuml;n nasılsın?&amp;lt;/h2&amp;gt;
+					{DateTime.Now.ToString()}
+                    &amp;lt;ul&amp;gt;
+                        &amp;lt;li&amp;gt;&amp;lt;a href='/products/books'&amp;gt;Senin i&amp;ccedil;in bir ka&amp;ccedil; kitabım var. Haydi tıkla.&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
+						&amp;lt;li&amp;gt;&amp;lt;a href='https://github.com/buraksenyurt'&amp;gt;Bu ve diğer .Net Core &amp;ouml;rneklerine bakmak istersen Git!&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
+                    &amp;lt;/ul&amp;gt;                     
+                    &amp;lt;/body&amp;gt;
+					&amp;lt;/html&amp;gt;
+                    ");
+            });
+            app.UseRouter(handler);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;BoosterV2 sınıfına ait Configure metoduna odaklanalım. Talep edilen path bilgisini ve değerleri aldıktan sonra bir kıyaslama yapılıyor. Eğer talep /products/books şeklinde gelmişse &lt;a href="https://gist.github.com/nanotaboada/6396437" target="_blank"&gt;şuradaki github adresinden temin ettiğim&lt;/a&gt; &amp;ouml;rnek kitapları i&amp;ccedil;eren books.json&amp;nbsp;dosyasını istemciye g&amp;ouml;nderiyoruz. Tabii Content-Type değerini de application/json şeklinde set etmeyi ihmal etmiyoruz. Eğer farklı herhangibir talep gelirse de bir HTML şablonu yolluyoruz. Burada iki link yer almakta. T&amp;uuml;m bu y&amp;ouml;netim operasyonu RouteHandler temsilcisi ile ger&amp;ccedil;ekleştirilmekte. Onu devreye almak i&amp;ccedil;inse, UseRouter&amp;nbsp;metoduna&amp;nbsp;parametre olarak ge&amp;ccedil;memiz gerekiyor. İşte &amp;ccedil;alışma zamanı &amp;ccedil;ıktıları.&lt;/p&gt;
+&lt;p&gt;Varsayılan sayfamız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/12/CoreRouting_6.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;ve kitaplarımız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/12/CoreRouting_7.gif" alt="" /&gt;&lt;/p&gt;
+&lt;h1&gt;URL Dizilimini Kodla&amp;nbsp;İnşa Etmek&lt;/h1&gt;
+&lt;p&gt;Gelelim bu yazımızda ele alacağımız son &amp;ouml;rneğe. Bu kez URL dizilimini kod tarafında oluşturmaya &amp;ccedil;alışacağız. BoosterV3 sınıfının kodlarını programa aşağıdaki gibi entegre edebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
+using System.IO;
+using System.Linq;
+using System;
+using Microsoft.AspNetCore.Routing.Template;
+
+namespace RouterSamples
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var host = new WebHostBuilder()
+            .UseKestrel()
+            .UseUrls("http://localhost:4001")
+            .UseStartup&amp;lt;BoosterV3&amp;gt;()
+            .Build();
+
+            host.Run();
+        }
+    }
+
+    class BoosterV3
+    {
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddRouting();
+        }
+
+        public void Configure(IApplicationBuilder app)
+        {
+            var apiSegment = new TemplateSegment();
+            apiSegment.Parts.Add(TemplatePart.CreateLiteral("api"));
+
+            var serviceNameSegment = new TemplateSegment();
+            serviceNameSegment.Parts.Add(
+                TemplatePart.CreateParameter("serviceName",
+                    isCatchAll: false,
+                    isOptional: true,
+                    defaultValue: null,
+                    inlineConstraints: new InlineConstraint[] { })
+            );
+
+            var segments = new TemplateSegment[] {
+                apiSegment,
+                serviceNameSegment
+            };
+
+            var routeTemplate = new RouteTemplate("default", segments.ToList());
+            var templateMatcher = new TemplateMatcher(routeTemplate, new RouteValueDictionary());
+
+            app.Use(async (context, next) =&amp;gt;
+            {
+                context.Response.Headers.Add("Content-type", "text/html");
+                var requestPath = context.Request.Path;
+                var routeData = new RouteValueDictionary();
+                var isMatch = templateMatcher.TryMatch(requestPath, routeData);
+                await context.Response.WriteAsync($"Request Path is &amp;lt;i&amp;gt;{requestPath}&amp;lt;/i&amp;gt;&amp;lt;br/&amp;gt;Match state is &amp;lt;b&amp;gt;{isMatch}&amp;lt;/b&amp;gt;&amp;lt;br/&amp;gt;Requested service name is {routeData["serviceName"]}");
+                await next.Invoke();
+            });
+
+            app.Run(async context =&amp;gt;
+            {
+                await context.Response.WriteAsync("");
+            });
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Configure metodu i&amp;ccedil;erisinde bu kez farklı şeyler s&amp;ouml;z konusu. İlk olarak apiSegment ve serviceNameSegment isimli&amp;nbsp;iki TemplateSegment &amp;ouml;rneği oluşturuluyor. İlki Literal tipindeyken ikincisi parametre t&amp;uuml;r&amp;uuml;nden. Yani http://localhost:4001/api/collateral&amp;nbsp;gibi bir&amp;nbsp;path i&amp;ccedil;in api&amp;nbsp;ifadesinin Literal&amp;nbsp;olduğunu, collateral par&amp;ccedil;asının ise değişken t&amp;uuml;rde parametre olduğunu ifade edebiliriz. serviceName isimli bu parametre'den sonra başka bir path i&amp;ccedil;eriğinin ge&amp;ccedil;erli olmayacağını isCatchAll'a atanan false değeri ile belirtiyoruz&lt;em&gt;(true atayarak takip edecek path bildirimlerini uzatabilirsiniz)&lt;/em&gt; Ayrıca api ifadesinden sonra b&amp;ouml;yle bir değişken gelmek zorunda değil&lt;em&gt;(isOptional=true nedeniyle)&lt;/em&gt; Varsayılan bir değeri de bulunmuyor.&lt;/p&gt;
+&lt;p&gt;Tanımlanan bu iki segmentin ardışıl olarak işe yaraması i&amp;ccedil;in bir dizide konuşlandırılması da gerekiyor. segments değişkeni burada devreye girmekte. Talebin karşılandığı yer Use fonksiyonu. Aslında UseMvc metodundan tanıdık gelmiş olabilir. Generic Func temisilcilerini ve Task tipini kullanan bu fonksiyon awaitable operasyonlar i&amp;ccedil;erebilir. Bu nedenle istemciye cevaplar g&amp;ouml;nderilirken&amp;nbsp; ve Middleware'deki bir sonraki bloğa ge&amp;ccedil;ilirken await anahtar kelimesi kullanılmakta. İ&amp;ccedil;eride TemplateMatcher nesne &amp;ouml;rneği kullanılarak talep olarak gelen adresin ge&amp;ccedil;erli bir segment bileşimi olup olmadığına bakılıyor. Dolayısıyla burada gelen bilginin istenen şablona uygunluğuna g&amp;ouml;re bir i&amp;ccedil;erik &amp;uuml;retimi sağlanabilir. Biz &amp;ouml;rneğimizde sadece talebin şablona uygun olup olmadığına bakıyoruz. &amp;Ccedil;alışma zamanı sonu&amp;ccedil;ları aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;http://localhost:4001/api&amp;nbsp;adresine yapılan &amp;ccedil;ağrı sonrası&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/12/coreRouting_8.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere&amp;nbsp;karşılaştırma true d&amp;ouml;nm&amp;uuml;şt&amp;uuml;r. http://localhost:4001/api/wather&amp;nbsp;gibi bir &amp;ccedil;ağrı da ge&amp;ccedil;erlidir. Nitekim belirtilen şablona uygundur. Ki bu sefer serviceName değişkeni de yakalanabilmiştir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/12/CoreRouting_9.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Ama tabii şablona uymayan bir path bilgisi i&amp;ccedil;in eşleşme false değer d&amp;ouml;necektir. S&amp;ouml;z gelimi http://localhost:4001/api/weather/v2/soap11&amp;nbsp;veya http://localhost:4001/rest/collateral&amp;nbsp;i&amp;ccedil;in...&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/12/CoreRouting_10.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu yazımızda Asp.Net Core tarafındaki Routing mekanizmasının farklı kullanımlarını incelemeye &amp;ccedil;alıştık. Elbette daha fazlası vardır diye d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum. Şimdilik &amp;ouml;ğrenebildiklerim bunlar. Siz &amp;ouml;rnekleri geliştirmeye &amp;ccedil;alışarak ilerleyebilirsiniz. &amp;Ouml;zellikle ikinci &amp;ouml;rnek koddaki belli kategorideki &amp;uuml;r&amp;uuml;nler mantığını ele alarak bir rest servisinin yazılmasında MapGet operasyonlarını ele alabilirsiniz. Gelen talebe g&amp;ouml;re &amp;ccedil;alışma zamanında dinamik web sayfası i&amp;ccedil;eriklerini &amp;uuml;retecek bir varsayılan handler da geliştirebilirsiniz. Hatta bir fotoğraf web sunucusu geliştirmeyi&amp;nbsp;deneyebilirsiniz. Basılacak Content-Type bilgisini değiştirebildiğimize g&amp;ouml;re bu da m&amp;uuml;mk&amp;uuml;n. Elinizin altında t&amp;uuml;m imkanlar mevcut. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2018-02-02 04:24:00</pubDate>
+  <slug>AspNet-Core-Routing-Mekanizmasını-Kavramak</slug>
+  <tags>
+    <tag>aspnet-core</tag>
+    <tag>routing</tag>
+    <tag>net-core</tag>
+    <tag>c#</tag>
+    <tag>template</tag>
+    <tag>http</tag>
+    <tag>html</tag>
+    <tag>json</tag>
+    <tag>web-api</tag>
+    <tag>rest</tag>
+    <tag>webhostbuilder</tag>
+    <tag>route-handler</tag>
+  </tags>
+  <categories>
+    <category>Asp.Net Core</category>
+  </categories>
+</post>

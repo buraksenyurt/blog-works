@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>for mu, foreach mi? Yoksa Parallel.For mu, Parallel.ForEach mi? [Beta 1]</title>
+  <description>Gecenin bu saatinde uyuyamayıp blog' uma bir şeyler yazmak isteyişimin sebebi, bu gün bir okurumdan gelen şu sorudur; "Madem Parallel.For veya Parallel.ForEach ile herşey daha hızlı oluyor, niye normal for ve foreach döngülerini bu formasyona sokmuyorlarda ek bir şeyler ilave ediyorlar". Dolayısıyla klavyemi elime aldım ve hemen bir test programı yazmaya koyuldum.</description>
+  <content>&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Gecenin bu saatinde uyuyamayıp blog' uma bir şeyler yazmak isteyişimin sebebi, bu g&amp;uuml;n bir okurumdan gelen şu sorudur; &lt;strong&gt;"Madem Parallel.For veya Parallel.ForEach ile herşey daha hızlı oluyor, niye normal for ve foreach d&amp;ouml;ng&amp;uuml;lerini bu formasyona sokmuyorlarda ek bir şeyler ilave ediyorlar".&lt;/strong&gt; Dolayısıyla klavyemi elime aldım ve hemen bir test programı yazmaya koyuldum. Bu kez ama&amp;ccedil; vaat edilenin tersini g&amp;ouml;stermekti. Yani performansa ve hıza ulaşmaya &amp;ccedil;alışmayacak, tam aksi y&amp;ouml;ne gitmeye gayret edecektim. Aslında bu işlemler i&amp;ccedil;in gayet profesyonel test ara&amp;ccedil;ları mevcuttur. Ancak bir araca gerek duymadanda analizimizi yapabiliriz. İşe &lt;strong&gt;Visual Studio 2010 Beta 1&lt;/strong&gt; &amp;uuml;zerinde, basit bir &lt;strong&gt;Console&lt;/strong&gt; &amp;ouml;rneği geliştirerek başladım. İşte kodlarımız;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Diagnostics;
+using System.Threading;
+
+namespace ForForEachPerformance
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int arraySize = 1000;
+            double[] array1 = new double[arraySize];
+            
+            Random rnd=new Random();
+            Stopwatch watch1 = Stopwatch.StartNew();
+
+            for (int i = 0; i &amp;lt; array1.Length; i++)
+            {
+                array1[i] = (rnd.NextDouble()/Math.Cos(rnd.NextDouble()))*Math.Sqrt(rnd.NextDouble());
+            }
+
+            Console.WriteLine("For d&amp;ouml;ng&amp;uuml;s&amp;uuml; eleman ekleme s&amp;uuml;resi {0} milisaniyedir.",watch1.Elapsed.TotalMilliseconds.ToString());
+
+            double[] array2 = new double[arraySize];
+
+            Stopwatch watch2 = Stopwatch.StartNew();
+            Parallel.For(0, array2.Length, i =&amp;gt;
+                {
+                    array1[i] = (rnd.NextDouble() / Math.Cos(rnd.NextDouble())) * Math.Sqrt(rnd.NextDouble());
+                }
+            );
+
+            Console.WriteLine("Parallel.For d&amp;ouml;ng&amp;uuml;s&amp;uuml; eleman ekleme s&amp;uuml;resi {0} milisaniyedir.", watch2.Elapsed.TotalMilliseconds.ToString());
+
+            Stopwatch watch3 = Stopwatch.StartNew();
+
+            for (int i = 0; i &amp;lt; array1.Length; i++)
+            {
+                double d = array1[i];
+            }
+
+            Console.WriteLine("For d&amp;ouml;ng&amp;uuml;s&amp;uuml; eleman okuma s&amp;uuml;resi {0} milisaniyedir.", watch3.Elapsed.TotalMilliseconds.ToString());
+
+            Stopwatch watch4 = Stopwatch.StartNew();
+
+            Parallel.For(0, array1.Length, i =&amp;gt;
+                {
+                    double d = array1[i];
+                }
+            );
+
+            Console.WriteLine("Parallel.For d&amp;ouml;ng&amp;uuml;s&amp;uuml; eleman okuma s&amp;uuml;resi {0} milisaniyedir.", watch4.Elapsed.TotalMilliseconds.ToString());
+
+            Stopwatch watch5 = Stopwatch.StartNew();
+
+            Parallel.ForEach(array1, i =&amp;gt;
+                {
+                    double d = i;
+                }
+            );
+
+            Console.WriteLine("Parallel.ForEach d&amp;ouml;ng&amp;uuml;s&amp;uuml; eleman okuma s&amp;uuml;resi {0} milisaniyedir.", watch5.Elapsed.TotalMilliseconds.ToString());
+
+            Stopwatch watch6 = Stopwatch.StartNew();
+
+            foreach (double i in array1)
+            {
+                double d = i;
+            }
+
+            Console.WriteLine("ForEach d&amp;ouml;ng&amp;uuml;s&amp;uuml; eleman okuma s&amp;uuml;resi {0} milisaniyedir.", watch6.Elapsed.TotalMilliseconds.ToString());
+            Console.ReadLine();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Aslında kodumuz son derece basit. Eleman sayısını &lt;strong&gt;1000&lt;/strong&gt; olarak set ettiğimiz &lt;strong&gt;double&lt;/strong&gt; tipinden dizilere eleman eklemek&lt;em&gt;(ki eklerken işin uzun s&amp;uuml;rmesini sağlamak adına tamamen anlamsız bir matematik form&amp;uuml;l&amp;uuml; i&amp;ccedil;ermektedir)&lt;/em&gt; ve okumak i&amp;ccedil;in&lt;strong&gt; for, foreach, Parallel.For&lt;/strong&gt; ile &lt;strong&gt;Parallel.ForEach&lt;/strong&gt; metodlarını kullanmaktayız. Burada eleman sayısının bilhakis d&amp;uuml;ş&amp;uuml;k tutulması son derece &amp;ouml;nemlidir aslında. Program &amp;ccedil;alıştırıldığında, for ve Parallel.For ile yapılan ekleme işlemleri ile,&amp;nbsp; yine for, foreach ve Parallel.ForEach ile yapılan okuma işlemlerine ait toplam s&amp;uuml;re değerlerini bildirmektedir. Ben arka arkaya 10 deneme yaptıktan sonra ekleme işlemleri i&amp;ccedil;in aşağıdaki sonu&amp;ccedil;ları elde ettim.&lt;/p&gt;
+&lt;table style="width: 189px; border-collapse: collapse;" border="0" cellspacing="0" cellpadding="0"&gt;&lt;colgroup span="1"&gt;&lt;col style="width: 44pt; mso-width-source: userset; mso-width-alt: 2121;" span="1" width="58" /&gt;&lt;col style="width: 32pt; mso-width-source: userset; mso-width-alt: 1572;" span="1" width="43" /&gt;&lt;col style="width: 66pt; mso-width-source: userset; mso-width-alt: 3218;" span="1" width="88" /&gt;&lt;/colgroup&gt;
+&lt;tbody&gt;
+&lt;tr style="height: 12pt;"&gt;
+&lt;td class="xl64" style="background-color: transparent; width: 142pt; height: 12pt; border: #f0f0f0;" colspan="3" width="189" height="16"&gt;&lt;strong&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;Eleman Ekleme&lt;/span&gt;&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style="height: 12pt;"&gt;
+&lt;td class="xl65" style="border-bottom: windowtext 0.5pt solid; border-left: #f0f0f0; background-color: transparent; height: 12pt; border-top: #f0f0f0; border-right: #f0f0f0;" height="16"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;Deneme&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl66" style="border-bottom: windowtext 0.5pt solid; border-left: #f0f0f0; background-color: transparent; border-top: #f0f0f0; border-right: #f0f0f0;"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;For ile&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl66" style="border-bottom: windowtext 0.5pt solid; border-left: #f0f0f0; background-color: transparent; border-top: #f0f0f0; border-right: #f0f0f0;"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;Parallel.For ile&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style="height: 12pt;"&gt;
+&lt;td class="xl63" style="background-color: transparent; height: 12pt; border: #f0f0f0;" align="right" height="16"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;1&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl63" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,2592&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl63" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;4,6796&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style="height: 12pt;"&gt;
+&lt;td class="xl63" style="background-color: transparent; height: 12pt; border: #f0f0f0;" align="right" height="16"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;2&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl63" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,2718&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl63" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;3,8415&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style="height: 12pt;"&gt;
+&lt;td class="xl63" style="background-color: transparent; height: 12pt; border: #f0f0f0;" align="right" height="16"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;3&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl63" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,2799&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl63" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;3,913&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style="height: 12pt;"&gt;
+&lt;td class="xl63" style="background-color: transparent; height: 12pt; border: #f0f0f0;" align="right" height="16"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;4&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl63" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,2732&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl63" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;5,7423&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style="height: 12pt;"&gt;
+&lt;td class="xl63" style="background-color: transparent; height: 12pt; border: #f0f0f0;" align="right" height="16"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;5&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl63" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,2584&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl63" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;4,3159&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style="height: 12pt;"&gt;
+&lt;td class="xl63" style="background-color: transparent; height: 12pt; border: #f0f0f0;" align="right" height="16"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;6&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl63" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,291&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl63" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;3,8208&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style="height: 12pt;"&gt;
+&lt;td class="xl63" style="background-color: transparent; height: 12pt; border: #f0f0f0;" align="right" height="16"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;7&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl63" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,2782&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl63" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;3,9725&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style="height: 12pt;"&gt;
+&lt;td class="xl63" style="background-color: transparent; height: 12pt; border: #f0f0f0;" align="right" height="16"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;8&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl63" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,2612&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl63" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;4,041&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style="height: 12pt;"&gt;
+&lt;td class="xl63" style="background-color: transparent; height: 12pt; border: #f0f0f0;" align="right" height="16"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;9&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl63" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,2626&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl63" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;3,9412&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style="height: 12pt;"&gt;
+&lt;td class="xl63" style="background-color: transparent; height: 12pt; border: #f0f0f0;" align="right" height="16"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;10&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl63" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,2598&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl63" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;8,0166&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Grafiksel olarak bakarsak &amp;ccedil;ok daha acı bir ger&amp;ccedil;ekle karşılabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f6%2fblg30_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere for ile ger&amp;ccedil;ekleştirilen ekleme işlemi, eş zamanlı ve dolayısıyla paralel &amp;ccedil;alışabilen Parallel.For kullanımına&amp;nbsp;g&amp;ouml;re &amp;ccedil;ok daha hızlı yapılmıştır. Peki diziden veri okuma işlemi sırasındaki durum nedir? İşte sonu&amp;ccedil;lar;&lt;/p&gt;
+&lt;table style="width: 337px; border-collapse: collapse;" border="0" cellspacing="0" cellpadding="0"&gt;&lt;colgroup span="1"&gt;&lt;col style="width: 44pt; mso-width-source: userset; mso-width-alt: 2121;" span="1" width="58" /&gt;&lt;col style="width: 32pt; mso-width-source: userset; mso-width-alt: 1572;" span="1" width="43" /&gt;&lt;col style="width: 66pt; mso-width-source: userset; mso-width-alt: 3218;" span="1" width="88" /&gt;&lt;col style="width: 39pt; mso-width-source: userset; mso-width-alt: 1901;" span="1" width="52" /&gt;&lt;col style="width: 72pt; mso-width-source: userset; mso-width-alt: 3510;" span="1" width="96" /&gt;&lt;/colgroup&gt;
+&lt;tbody&gt;
+&lt;tr style="height: 15pt; mso-height-source: userset;"&gt;
+&lt;td class="xl66" style="background-color: transparent; width: 253pt; height: 15pt; border: #f0f0f0;" colspan="5" width="337" height="20"&gt;&lt;strong&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;Eleman Okuma&lt;/span&gt;&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style="height: 12pt;"&gt;
+&lt;td class="xl67" style="border-bottom: windowtext 0.5pt solid; border-left: #f0f0f0; background-color: transparent; height: 12pt; border-top: #f0f0f0; border-right: #f0f0f0;" height="16"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;Deneme&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl68" style="border-bottom: windowtext 0.5pt solid; border-left: #f0f0f0; background-color: transparent; border-top: #f0f0f0; border-right: #f0f0f0;"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;For ile&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl68" style="border-bottom: windowtext 0.5pt solid; border-left: #f0f0f0; background-color: transparent; border-top: #f0f0f0; border-right: #f0f0f0;"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;Parallel.For&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl68" style="border-bottom: windowtext 0.5pt solid; border-left: #f0f0f0; background-color: transparent; border-top: #f0f0f0; border-right: #f0f0f0;"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;For Each&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl68" style="border-bottom: windowtext 0.5pt solid; border-left: #f0f0f0; background-color: transparent; border-top: #f0f0f0; border-right: #f0f0f0;"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;Parallel.ForEach&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style="height: 12pt;"&gt;
+&lt;td class="xl65" style="background-color: transparent; height: 12pt; border: #f0f0f0;" align="right" height="16"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;1&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,0128&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,6894&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,0145&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;23,1096&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style="height: 12pt;"&gt;
+&lt;td class="xl65" style="background-color: transparent; height: 12pt; border: #f0f0f0;" align="right" height="16"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;2&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,0125&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,8129&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,0134&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;26,3994&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style="height: 12pt;"&gt;
+&lt;td class="xl65" style="background-color: transparent; height: 12pt; border: #f0f0f0;" align="right" height="16"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;3&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,0128&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,7707&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,0139&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;25,152&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style="height: 12pt;"&gt;
+&lt;td class="xl65" style="background-color: transparent; height: 12pt; border: #f0f0f0;" align="right" height="16"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;4&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,0131&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,6062&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,0136&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;25,661&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style="height: 12pt;"&gt;
+&lt;td class="xl65" style="background-color: transparent; height: 12pt; border: #f0f0f0;" align="right" height="16"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;5&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,0128&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,8048&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,0139&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;25,6406&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style="height: 12pt;"&gt;
+&lt;td class="xl65" style="background-color: transparent; height: 12pt; border: #f0f0f0;" align="right" height="16"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;6&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,0131&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,842&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,0153&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;35,9978&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style="height: 12pt;"&gt;
+&lt;td class="xl65" style="background-color: transparent; height: 12pt; border: #f0f0f0;" align="right" height="16"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;7&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,0125&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,5439&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,0131&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;24,9442&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style="height: 12pt;"&gt;
+&lt;td class="xl65" style="background-color: transparent; height: 12pt; border: #f0f0f0;" align="right" height="16"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;8&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,0134&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;1,3035&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,0134&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;23,9636&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style="height: 12pt;"&gt;
+&lt;td class="xl65" style="background-color: transparent; height: 12pt; border: #f0f0f0;" align="right" height="16"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;9&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,0125&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,7635&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,0136&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;24,2947&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr style="height: 12pt;"&gt;
+&lt;td class="xl65" style="background-color: transparent; height: 12pt; border: #f0f0f0;" align="right" height="16"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;10&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,0128&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;14,211&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;0,0142&lt;/span&gt;&lt;/td&gt;
+&lt;td class="xl65" style="background-color: transparent; border: #f0f0f0;" align="right"&gt;&lt;span style="font-family: Calibri; font-size: x-small;"&gt;37,5547&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Okuma işlemlerinin grafiksel sonucu ise aşağıdaki şekilde g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f6%2fblg30_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Her ne kadar for s&amp;uuml;releri&amp;nbsp;grafik &amp;uuml;zerinde g&amp;ouml;r&amp;uuml;nmesede&lt;em&gt;(sıfıra &amp;ccedil;ok yakın olduğu i&amp;ccedil;in)&lt;/em&gt; en hızlı okuma s&amp;uuml;resi rekoru kendisine aittir. Sonrasında &lt;strong&gt;foreach&lt;/strong&gt; gelmektedir. &lt;strong&gt;Parallel.For&lt;/strong&gt; nispeten belirli s&amp;uuml;re foreach' e yakın değerlerde seyretmesine rağmen, 10ncu denemede a&amp;ccedil;ılan paralel task' lerin canından bezmesi nedeni ile &amp;ccedil;ok k&amp;ouml;t&amp;uuml; bir s&amp;uuml;re &amp;uuml;retmiştir. Ancak &lt;strong&gt;Parallel.ForEach&lt;/strong&gt; bu teste g&amp;ouml;re sondan birinci olmuştur.&lt;/p&gt;
+&lt;p&gt;Bu testleri &lt;strong&gt;Dual Core&lt;/strong&gt; işlemcili e &lt;strong&gt;4 Gb Ram'&lt;/strong&gt; i olan, &lt;strong&gt;Vista&lt;/strong&gt; y&amp;uuml;kl&amp;uuml; bir sistem &amp;uuml;zerinde denediğimde elde ettim. Elbetteki paralel tekniklerin burada k&amp;ouml;t&amp;uuml; sonu&amp;ccedil;lar vermesinin en b&amp;uuml;y&amp;uuml;k nedeni işlemlerin zaten normal for veya foreach ' ler ile &amp;ccedil;ok kısa s&amp;uuml;rede tamamlanabilmesidir. &amp;Ouml;yleki, bu s&amp;uuml;reler i&amp;ccedil;erisinde işleyişi paralel iş par&amp;ccedil;alarına ayırmak i&amp;ccedil;in yapılacak t&amp;uuml;m hazırlıklar, s&amp;uuml;renin dahada uzamasına neden olmaktadır. Sonu&amp;ccedil; olarak şu noktayı vurgulamak gerekiyor,&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Parallel.For&lt;/strong&gt; ve &lt;strong&gt;Parallel.ForEach&lt;/strong&gt; metodları, d&amp;ouml;ng&amp;uuml; i&amp;ccedil;erisindeki işlemlerin ger&amp;ccedil;ekten uzun s&amp;uuml;relerde yapılabilldiği durumlarda kullanılmalıdır. Bu noktada kodun &amp;ccedil;alışacağı sistemin kapasitesi veya d&amp;ouml;ng&amp;uuml;ler i&amp;ccedil;erisinde yer alan işlemlerin maliyeti&amp;nbsp;gibi pek &amp;ccedil;ok etken, tamamlanma s&amp;uuml;relerinde&amp;nbsp;belirleyici rol oynamaktadır. S&amp;ouml;z gelimi &lt;span style="text-decoration: underline;"&gt;grafik tabanlı matematiksel&amp;nbsp;hesaplamaların &amp;ccedil;ok sayıda nesne &amp;ouml;rneği i&amp;ccedil;in yapılması gereken durumlarda&lt;/span&gt;&lt;em&gt;(&lt;strong&gt;DirectX&lt;/strong&gt;, &lt;strong&gt;OpenGL &lt;/strong&gt;kullanan grafik uygulamaları veya oyunlar)&lt;/em&gt;&amp;nbsp;paralel tekniklerden yararlanılması d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;Bir diğer &amp;ouml;nemli noktada aslında, &lt;strong&gt;Parallel.For, Parallel.ForEach, Task, Parallel.Invoke&lt;/strong&gt;&amp;nbsp;gibi kavramların paralel programlama genişletmesi&lt;em&gt;(Parallel Extensions)&lt;/em&gt;&amp;nbsp;olaraktan hen&amp;uuml;z beta aşamasında yer alan bir &amp;uuml;r&amp;uuml;ne dahil edilmiş olmalarıdır ki &lt;strong&gt;.Net Framework 3.5 &lt;/strong&gt;ilede ek bir paket y&amp;uuml;klenerek ele alınabilmektedir. Bu a&amp;ccedil;ıdan bakıldığında &lt;strong&gt;Relase&lt;/strong&gt; s&amp;uuml;r&amp;uuml;mde farklılıklar olması veya arzu edilen iyileştirmelerin yapılmasıda muhtemeldir.&lt;/p&gt;
+&lt;p&gt;Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2009%2f6%2fForForEachPerformance.rar"&gt;ForForEachPerformance.rar (21,64 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2009-06-09 16:51:00</pubDate>
+  <slug>for-mu-foreach-mi-Yoksa-ParallelFor-mu-ParallelForEach-mi</slug>
+  <tags>
+    <tag>task-parallel-library</tag>
+  </tags>
+  <categories>
+    <category>TPL</category>
+  </categories>
+</post>

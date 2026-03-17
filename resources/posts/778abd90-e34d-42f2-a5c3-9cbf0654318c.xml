@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Tip Güvenli (Type Safety ) Koleksiyonlar Oluşturmak - 1</title>
+  <description>Tip güvenliğini sağlamak her zaman için önemli unsurlardan birisidir. Koleksiyon tabanlı nesneleri kullanırken çoğu zaman istediğimiz tip güvenliğini sağlayamayabiliriz. Buradaki en büyük etken, koleksiyon tabanlı nesnelerin object tipinden referanslar taşıyor olmasıdır. Bazen kendi belirlediğimiz tip dışında, başka her hangi bir tip barındırmasına izin vermek istemediğimiz yapıda koleksiyon nesnelerine ihtiyacımız olur. Böyle bir koleksiyon nesnesinin en büyük avantajı az önce bahsettiğimiz tip güvenliğini sağlamasıdır.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Tip g&amp;uuml;venliğini sağlamak her zaman i&amp;ccedil;in &amp;ouml;nemli unsurlardan birisidir. Koleksiyon tabanlı nesneleri kullanırken &amp;ccedil;oğu zaman istediğimiz tip g&amp;uuml;venliğini sağlayamayabiliriz. Buradaki en b&amp;uuml;y&amp;uuml;k etken, koleksiyon tabanlı nesnelerin object tipinden referanslar taşıyor olmasıdır. Bazen kendi belirlediğimiz tip dışında, başka her hangi bir tip barındırmasına izin vermek istemediğimiz yapıda koleksiyon nesnelerine ihtiyacımız olur. B&amp;ouml;yle bir koleksiyon nesnesinin en b&amp;uuml;y&amp;uuml;k avantajı az &amp;ouml;nce bahsettiğimiz tip g&amp;uuml;venliğini sağlamasıdır.&lt;/p&gt;
+&lt;p&gt;C# 2.0 versiyonunda koleksiyon nesnelerine ilişkin olarak tip g&amp;uuml;venliği generic yapıları ile kazandırılmıştır. Peki 1.1 versiyonunda bu işleri nasıl ger&amp;ccedil;ekleştirebiliriz? İki alternatif yolumuz vardır. Bunlardan birisi var olan bir koleksiyon nesnesini t&amp;uuml;retmektir. Diğer yol ise CollectionBase veya DictionaryBase tipinden t&amp;uuml;retme yaparak bir koleksiyon nesnesi tanımlamaktır. Biz bu makalemizde CollectionBase sınıfı yardımıyla tip g&amp;uuml;venli koleksiyon sınıflarını nasıl oluşturabileceğimizi inceleyeceğiz. Bu sınıflar aynı zamanda strongly-typed collections (kuvvetle t&amp;uuml;rlendirimiş koleksiyonlar) olarakta adlandırılmaktadır.&lt;/p&gt;
+&lt;p&gt;İlk olarak CollectionBase sınıfını kısacada olsa tanımakta fayda var. CollectionBase sınıfı abstract bir sınıftır. Bu kendisine ait bir nesne &amp;ouml;rneğinin oluşturulamayacağı anlamına gelmektedir. Ancak CollectionBase sınıfı IList, ICollection ve IEnumerable aray&amp;uuml;zlerini implemente etmektedir. Buda tipik olarak bir koleksiyon nesnesi i&amp;ccedil;in gerekli &amp;uuml;yeleri sağladığını g&amp;ouml;sterir. Aşağıdaki şekilde g&amp;ouml;r&amp;uuml;len YeniKoleksiyon strongly-typed koleksiyon sınıfımızdır. YeniKoleksiyın, CollectionBase sınıfından t&amp;uuml;retilmiştir. CollectionBase sınıfımız ise bir koleksiyonun taşıması gereken &amp;ouml;zellikleri sunan &amp;uuml;yelerin bildirimini i&amp;ccedil;eren &amp;uuml;&amp;ccedil; temel aray&amp;uuml;zden t&amp;uuml;remektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk130_1.gif" alt="" width="398" height="346" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;CollectionBase sınıfı kendi i&amp;ccedil;erisinde IList tipinden bir tip d&amp;ouml;nd&amp;uuml;ren protected yapıda List isimli bir &amp;ouml;zelliğe de sahiptir; ki bu &amp;ouml;zellik sayesinde CollectionBase sınıfından t&amp;uuml;reteceğimiz sınıflar i&amp;ccedil;erisinden IList tipindeki koleksiyona erişebilir ve doğal olarak ekleme, &amp;ccedil;ıkarma gibi temel koleksiyon işlevselliklerini sağlayabiliriz. List &amp;ouml;zelliğinin yanı sıra InnerList isimli &amp;ouml;zellik doğrudan bir ArrayList nesne referansına erişilmesini sağlar. Her iki &amp;ouml;zellikten de faydalanabilirsiniz. Biz bu makalemizde List &amp;ouml;zelliği yardımıyla koleksiyon aktivitelerini sağlayacağız. Şimdi gelin kendi strongly-typed koleksiyon sınıfımızı yazalım. &amp;Ouml;rneğimizde bir Dvd' ye ait bilgileri barındıran nesneler dizisini tutacak şekilde bir koleksiyon tasarlayacağız. İlk olarak bu koleksiyon i&amp;ccedil;erisinde tutmak istediğinmiz Dvd nesnelerini temsil edecek sınıfımızı geliştirelim. Dvd sınıfının prototipi aşağıdaki şekilde olduğu gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk130_8.gif" alt="" width="210" height="133" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Dvd sınıfımız&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace StrongCollections
+{
+    public class Dvd
+    {
+        private string m_Baslik;
+        private int m_Fiyat;
+        private DateTime m_YapimYili;
+
+        public string Baslik
+        {
+            get{return m_Baslik;}
+            set{m_Baslik=value;}
+        }
+        public int Fiyat
+        {
+            get{return m_Fiyat;}
+            set{m_Fiyat=value;}
+        }
+        public DateTime YapimYili
+        {
+            get{return m_YapimYili;}
+            set{m_YapimYili=value;}
+        }
+        public Dvd(string baslik,int fiyat,DateTime yapimYili)
+        {
+            Baslik=baslik;
+            Fiyat=fiyat;
+            YapimYili=yapimYili;
+        }
+        public Dvd()
+        {
+        }
+        public override string ToString()
+        {
+            return this.Baslik+" "+this.Fiyat+" "+this.YapimYili.ToShortDateString();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;DvdKoleksiyon sınıfımızı ise yapısı i&amp;ccedil;erisinde bir koleksiyon i&amp;ccedil;in ihtiya&amp;ccedil; duyulabilecek bir iki metod i&amp;ccedil;erecek şekilde tasarlayacağız. Temel olarak bir Dvd nesnesini koleksiyona ekleme ve &amp;ccedil;ıkarma gibi işlemleri &amp;uuml;stlenen metodlara sahip olacak. Ancak &amp;ouml;nemli bir &amp;ouml;zellik olarak koleksiyon i&amp;ccedil;erisindeki elemanlara indeksler &amp;uuml;zerinden erişebilmemizi sağlayacak bir indeksleyicide yer alacak. Koleksiyon sınıfımızın yapısını aşağıdaki şekilden daha net olarak g&amp;ouml;rebilirsiniz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk130_9.gif" alt="" width="210" height="278" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;DvdKoleksiyon sınıfı&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections;
+
+namespace StrongCollections
+{
+    public class DvdKoleksiyon:CollectionBase
+    {
+        public void Ekle(Dvd dvd)
+        {
+            this.List.Add(dvd);
+        }
+        public void Cikart(Dvd dvd)
+        {
+            this.List.Remove(dvd);
+        }
+        public Dvd this[int indeks]
+        {
+            get{return (Dvd)this.List[indeks];}
+            set{this.List[indeks]=value;}
+        }
+        public void Cikart(int indeks)
+        {
+            this.List.RemoveAt(indeks);
+        }
+        public void Ekle(int indeks,Dvd dvd)
+        {
+            this.List.Insert(indeks,dvd);
+        }
+        public DvdKoleksiyon()
+        {
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Ekle isimli metodumuzun iki versiyonu vardır. Bunlardan birisi koleksiyonun sonuna bir Dvd nesnesini eklerken diğeri, parametre olarak belirtilen indekse ekleme işlemini ger&amp;ccedil;ekleştirir. Cikart isimli metodumuzda iki versiyona sahiptir. Bunlardan birisi koleksiyondan parametre olarak aldığı Dvd nesnesini &amp;ccedil;ıkartırken, ikincisi belirtilen indeks &amp;uuml;zerindeki Dvd nesnesini koleksiyondan &amp;ccedil;ıkartmaktadır. Indeksleyicimiz ise, DvdKoleksiyonu i&amp;ccedil;erisindeki Dvd tipinden nesnelere indeks değerleri &amp;uuml;zerinden erişmemizi sağlar.&lt;/p&gt;
+&lt;p&gt;Dikkat ederseniz t&amp;uuml;m bu &amp;uuml;yeler sadece ve sadece Dvd tipinden nesneler &amp;uuml;zerinden iş yapmaktadır. &amp;Ouml;rneğin koleksiyona nesne ekleme ve koleksiyondan nesne &amp;ccedil;ıkartmak i&amp;ccedil;in kullandığımız metodlar parametre olarak mutlaka bir Dvd nesne &amp;ouml;rneğini referans ederler. Benzer şekilde indeksleyicimizde&amp;nbsp;sadece Dvd tipinden nesneler &amp;uuml;zerinden &amp;ccedil;alışır. Şimdi yazdığımız koleksiyon sınıfımızı deneyeceğimiz bir uygulama geliştirelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections;
+
+namespace StrongCollections
+{
+    class Uygulama
+    {
+        static DvdKoleksiyon dvdCol;
+
+        static void Listele()
+        { 
+            foreach(Dvd dvd in dvdCol)
+            {
+                Console.WriteLine(dvd.ToString());
+            }
+            Console.WriteLine("------------------------");
+        }
+
+        static void KoleksiyonOlustur()
+        {
+            dvdCol.Ekle(new Dvd("Gladiator",10,new DateTime(2000,1,1)));
+            dvdCol.Ekle(new Dvd("Star Wars 3",20,new DateTime(2005,1,4)));
+            dvdCol.Ekle(new Dvd("Crow",15,new DateTime(1997,3,9)));
+        } 
+
+        static void Main(string[] args)
+        {
+            dvdCol=new DvdKoleksiyon();
+            KoleksiyonOlustur();
+
+            for(int i=0;i&amp;lt;dvdCol.Count;i++)
+            {
+                Console.WriteLine(dvdCol[i].ToString());
+            }
+            Console.WriteLine("--------------------");
+            dvdCol.Cikart(1);
+
+            Console.WriteLine("1 nolu eleman &amp;ccedil;ıkartıldı...");
+            Listele();
+
+            // dvdCol.Ekle(123); // type - safety sağlanır.
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Uygulamayı &amp;ccedil;alıştırdığımızda aşağıdaki sonucu elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk130_10.gif" alt="" width="300" height="179" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Aslında sanki normal bir koleksiyondan, &amp;ouml;rneğin bir ArrayList ile yaptığımız işlemlerden pek bir farkı yokmuş gibi g&amp;ouml;r&amp;uuml;n&amp;uuml;yor. Farkı anlayabilmek i&amp;ccedil;in yorum satırımızı koda katarak uygulamayı yeniden derleyelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk130_3.gif" alt="" width="469" height="366" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Burada problem Ekle metoduna sayısal bir değerin parametre olarak girilmeye &amp;ccedil;alışılmasıdır. DvdKoleksiyon sınıfımızın Ekle metodlarını kısaca bir hatırlarsak;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public void Ekle(Dvd dvd)
+{
+     this.List.Add(dvd);
+}
+public void Ekle(int indeks,Dvd dvd)
+{
+     this.List.Insert(indeks,dvd);
+}&lt;/pre&gt;
+&lt;p&gt;parametre olarak sadece Dvd tipinden nesneleri aldıklarını g&amp;ouml;rebiliriz. Bu nedenle kod derleme zamanında hata vererek geliştiricinin &amp;ccedil;alışma zamanında bir hataya d&amp;uuml;şmesini engellemiştir. İşte bu tip g&amp;uuml;venliğini sağlar. Benzer şekilde koleksiyondan okuduğumuz bir Dvd nesnesini farklı bir nesne tipine de atayamayız. &amp;Ouml;rneğin aşağıdaki kod par&amp;ccedil;asını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;Kitap ktp=new Kitap();
+ktp=(Kitap)dvdCol[0];
+
+double dbl=(double)dvdCol[0];&lt;/pre&gt;
+&lt;p&gt;Bu durumda derleme zamanında aşağıdaki hata mesajlarını alırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk130_4.gif" alt="" width="467" height="403" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Burada var olan bir tipe ve bizim yazdığımız tipe atamalar yapılmaya &amp;ccedil;alışılmıştır. Ancak koleksiyonumuz sadece Dvd tipinden nesne &amp;ouml;rneklerini geriye d&amp;ouml;nd&amp;uuml;ren bir indeksleyiciye sahiptir. Bunu indeksleyiciyi kullanırken de g&amp;ouml;rebilirsiniz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk130_5.gif" alt="" width="391" height="46" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Oysaki, bir ArrayList g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında geriye d&amp;ouml;nen değer her zaman object tipinden olacaktır.&lt;/p&gt;
+&lt;table id="table6" border="1" width="100%" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;CollectionBase tipinden t&amp;uuml;rettiğimiz nesnelerde, koleksiyonda işlenecek olan nesne tipi ne ise onu kullanmalıyız. Bu tip g&amp;uuml;venliğini (type - safety ) sağlayabilmemizi olanaklı kılar. &lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;CollectionBase' den t&amp;uuml;rettiğimiz sınıfların sağladığı tip g&amp;uuml;venliği daha iyi anlayabilmek i&amp;ccedil;in Dvd nesnelerini taşıyacak bir ArrayList koleksiyonunun kullanıldığı aşağıdaki &amp;ouml;rneği g&amp;ouml;z &amp;ouml;n&amp;uuml;ne almakta fayda var.&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;ArrayList alDvd=new ArrayList();
+
+alDvd.Add(new Dvd("Gıladyat&amp;ouml;r",10,new DateTime(2000,1,1)));
+alDvd.Add(new Dvd("Sıtar vars 3",20,new DateTime(2005,1,4)));
+alDvd.Add(new Dvd("kırouv",15,new DateTime(1997,3,9)));
+alDvd.Add(12); 
+
+foreach(Dvd dvd in alDvd)
+{
+    Console.WriteLine(dvd.ToString());
+}&lt;/pre&gt;
+&lt;p&gt;Yazılan kod son derece masumane g&amp;ouml;r&amp;uuml;nmektedir. &amp;Uuml;stelik derleme zamanında hi&amp;ccedil; bir hata mesajı vermez. Yani &amp;ccedil;alışır bir koddur. Ancak uygulamayı bu haliyle &amp;ccedil;alıştırdığımızda aşağıdaki hata mesajını alırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk130_6.gif" alt="" width="638" height="128" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Sorun foreach d&amp;ouml;ng&amp;uuml;s&amp;uuml;nde a&amp;ccedil;ık&amp;ccedil;a g&amp;ouml;r&amp;uuml;lmektedir. foreach d&amp;ouml;ng&amp;uuml;s&amp;uuml; sadece Dvd tipinden elemanlar &amp;uuml;zerinde bir &amp;ouml;teleme ger&amp;ccedil;ekleştirmek isterken koleksiyonun sonuna eklenen sayısal değer bu durumu bozmaktadır. Eğer foreach d&amp;ouml;ng&amp;uuml;s&amp;uuml;n&amp;uuml; terk edip aşağıdaki gibi bir for d&amp;ouml;ng&amp;uuml;s&amp;uuml;n&amp;uuml; tercih ederseniz durum biraz daha ilgin&amp;ccedil; bir hal alacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;for(int i=0;i&amp;lt;alDvd.Count;i++)
+{
+    Console.WriteLine(alDvd[i].ToString());
+}&lt;/pre&gt;
+&lt;p&gt;Kodda herhangibir derleme zamanı hatası alınmaz. &amp;Ccedil;alışma zamanında da bir hata alınmaz. Uygulama başarılı bir şekilde &amp;ccedil;alışır. Ancak bu kez de programın mantıksal b&amp;uuml;t&amp;uuml;nl&amp;uuml;ğ&amp;uuml; bozulmuştur.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk130_7.gif" alt="" width="420" height="107" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;İşte bu tip bir durumla karşılaştığımızda geliştirici olarak tip g&amp;uuml;venliğini ve uygulamanın mantıksal b&amp;uuml;t&amp;uuml;nl&amp;uuml;ğ&amp;uuml;n&amp;uuml; korumak amacıyla kendi koleksiyon sınıflarımızı kullanmayı tercih ederiz. Yazımızın başında hatırlarsanız kendi yazacağımız koleksiyon sınıflarını CollectionBase yoluyla veya DictionaryBase yoluyla geliştirebildiğimizi s&amp;ouml;ylemiştik. Bu makalemizde CollectionBase sınıfı ile bu işi nasıl yapacağımızı g&amp;ouml;rd&amp;uuml;k. Bir sonraki makalemizde ise DictionaryBase sınıfını inceleyemeye &amp;ccedil;alışacağız. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2005-07-23 12:00:00</pubDate>
+  <slug>Tip-Güvenli-(Type-Safety-)-Koleksiyonlar-Oluşturmak-1-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>c#</tag>
+    <tag>type-safety</tag>
+    <tag>type-safed-collections</tag>
+    <tag>collections</tag>
+  </tags>
+  <categories>
+    <category>C#</category>
+  </categories>
+</post>

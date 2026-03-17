@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Ruby Kod Parçacıkları 20 - REST Servis Geliştirmek ve .Net Tarafından Tüketmek</title>
+  <description>Artık belli bir platforma bağlı kalmadan farklı uygulamaları bir araya getirip konuşturabiliyor, büyük ölçekli sistemleri uçtan uca bağlayarak süreçler işletebiliyoruz. Burada programlama dillerinin üzerine oturduğu çatıların(Frameworks) büyük avantajlar sağladığı ve işleri belirli ölçüde kolaylaştırdığı aşikar.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2016/02/logo.png" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Artık belli bir platforma bağlı kalmadan farklı uygulamaları&amp;nbsp;bir araya getirip konuşturabiliyor, b&amp;uuml;y&amp;uuml;k &amp;ouml;l&amp;ccedil;ekli&amp;nbsp;sistemleri u&amp;ccedil;tan uca bağlayarak s&amp;uuml;re&amp;ccedil;ler&amp;nbsp;işletebiliyoruz. Burada programlama dillerinin &amp;uuml;zerine oturduğu &lt;strong&gt;&amp;ccedil;atıların&lt;em&gt;(Frameworks)&lt;/em&gt;&lt;/strong&gt; b&amp;uuml;y&amp;uuml;k avantajlar sağladığı ve işleri belirli &amp;ouml;l&amp;ccedil;&amp;uuml;de kolaylaştırdığı aşikar.&lt;/p&gt;
+&lt;p&gt;Elbette işin en &amp;ouml;nemli kısmı yine de servislere d&amp;uuml;ş&amp;uuml;yor. &amp;Ccedil;&amp;ouml;z&amp;uuml;mler i&amp;ccedil;in d&amp;uuml;ş&amp;uuml;n&amp;uuml;len mimariler mutlak suretle servisleri ele alıyor. Hali hazırda &lt;strong&gt;SOA&lt;em&gt;(Service Oriented Architecture)&lt;/em&gt;&lt;/strong&gt; &amp;uuml;zerine kurulu sayısız &amp;ccedil;&amp;ouml;z&amp;uuml;m mevcut. Yeni geliştirilen kurumsal &amp;ccedil;&amp;ouml;z&amp;uuml;mler i&amp;ccedil;in de&amp;nbsp;&lt;strong&gt;SOA&lt;/strong&gt; mutlaka g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınıyor. Son yıllarda &lt;strong&gt;Micro Service&lt;/strong&gt; yaklaşımı ile hafif siklet servislerin s&amp;uuml;re&amp;ccedil;lere dahil edilmesi de olduk&amp;ccedil;a pop&amp;uuml;ler. Herhangi bir programlama dili ile &lt;strong&gt;Lightweight&lt;/strong&gt; servisler geliştirmek, bunları ucuz sunucular &amp;uuml;zerinde organize ederek kolayca dağıtılabilir ve &amp;ouml;l&amp;ccedil;eklenebilir şekilde sunmak olduk&amp;ccedil;a pratik.&lt;/p&gt;
+&lt;p&gt;İşte bu d&amp;uuml;ş&amp;uuml;nceler ışığında camdan dışarı bakarken&amp;nbsp;g&amp;ouml;nl&amp;uuml;mden&amp;nbsp;&lt;strong&gt;Ruby&lt;/strong&gt; tarafında bir servis geliştirmek ve bunu bir &lt;strong&gt;.Net&lt;/strong&gt; uygulamasında kullanmak ge&amp;ccedil;iyordu. &lt;strong&gt;Ruby&lt;/strong&gt; tarafında hafif siklet ve &lt;strong&gt;REST-Representational State Transfer&lt;/strong&gt; modelinde bir servis geliştirmek işin benim i&amp;ccedil;in en &amp;ouml;nemli kısmıydı. &lt;strong&gt;.Net Client&lt;/strong&gt;' ı yazmak nispeten daha kolaydı. Ve sonu&amp;ccedil; olarak g&amp;ouml;nl&amp;uuml;mdeki d&amp;uuml;ş&amp;uuml;nceleri işte bu yazı ile kaleme almaya karar verdim.&lt;/p&gt;
+&lt;h2&gt;Senaryo&lt;/h2&gt;
+&lt;p&gt;&amp;Ouml;ncelikli olarak senaryomuza bir bakalım. Kabaca aşağıdaki şekilde g&amp;ouml;r&amp;uuml;len enstr&amp;uuml;manları kullanarak bir &amp;ccedil;&amp;ouml;z&amp;uuml;m geliştirmeye &amp;ccedil;alışcağız.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/02/rest_6_n.gif" alt="" /&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Senaryo : Ruby programlama dilini kullanarak basit bir REST servis geliştireceğiz. Bu servis SQLite &amp;uuml;zerinde duran AdventureWorks isimli veritabanındaki Product tablosunu sorgulayabilmemiz i&amp;ccedil;in iki operasyon sunacak. HTTP Get ile &amp;ccedil;alıştıracağımız taleplere ait sonu&amp;ccedil;ları istemci tarafına JSON formatında d&amp;ouml;nd&amp;uuml;rmeyi planlıyoruz. İstemci tarafı basit bir tarayıcı olabileceği gibi, .Net veya herhangi platformda yazılmış bir uygulama da olabilir. İstemci tarafında REST taleplerini kolaylaştırmak i&amp;ccedil;inse RestSharp paketinden yararlanacağız.&amp;nbsp;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;Bize Gerekenler&lt;/h2&gt;
+&lt;p&gt;Veriyi tutmak i&amp;ccedil;in &lt;strong&gt;SQLite&lt;/strong&gt; veritabanından yararlanacağız. Bu veritabanının basit kullanımı i&amp;ccedil;in &lt;a title="Ruby ile SQLite Kullanımı" href="/post/ruby-kod-parcaciklari-19-sqlite-ile-basit-veritabani-islemleri.aspx"&gt;bir &amp;ouml;nceki yazımıza&lt;/a&gt; bakabilirsiniz. &lt;strong&gt;Ruby&lt;/strong&gt; tarafında &lt;strong&gt;REST&lt;/strong&gt; servislerini kolayca geliştirmek i&amp;ccedil;in&amp;nbsp;&lt;strong&gt;Sinatra&lt;/strong&gt; &amp;ccedil;atısından yararlanacağız. Kullanımı son derece kolay olan &lt;strong&gt;Sinatra&lt;/strong&gt; i&amp;ccedil;in&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;gem install sinatra&amp;nbsp;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;ifadesini &lt;strong&gt;Ruby&lt;/strong&gt; komut satırından &amp;ccedil;alıştırmamız yeterli. &lt;strong&gt;.Net&lt;/strong&gt; tarafındaki istemcide &lt;strong&gt;REST&lt;/strong&gt; taleplerini oluşturabilmek ve gelen i&amp;ccedil;eriği &lt;strong&gt;JSON&lt;/strong&gt;'dan nesnelleştirmek i&amp;ccedil;in &lt;strong&gt;RestSharp&lt;/strong&gt; paketinden faydalanacağız.&lt;/p&gt;
+&lt;h2&gt;Servis Tarafı&amp;nbsp;Kodu&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;SQLite&lt;/strong&gt; ve &lt;strong&gt;Sinatra&lt;/strong&gt; ile ilgili hazırlıklarımız tamamsa, aşağıdaki kod dosyasını yazarak servis tarafını ayağa kaldırmaya başlayabiliriz.&lt;/p&gt;
+&lt;pre class="brush:ruby;auto-links:false;toolbar:false" contenteditable="false"&gt;# Simple REST service
+require 'sinatra'
+require 'json'
+require 'sqlite3'
+
+#list all products
+get '/products' do
+	begin
+		products=Array.new
+		db=SQLite3::Database.open "AdventureWorks.db"
+		db.results_as_hash=true;	 
+		rows=db.execute "Select product_id,title,list_price from Product"
+		rows.each do |row|
+			products &amp;lt;&amp;lt; Product.new(row['product_id'],row['title'],row['list_price'])
+		end
+		products.to_json
+	rescue SQLite3::Exception =&amp;gt; excp
+		excp
+	ensure
+		db.close if db
+	end
+end
+
+#get specific product
+get '/products/:id' do
+	begin
+		product=nil
+		db=SQLite3::Database.open "AdventureWorks.db"
+		db.results_as_hash=true;	 
+		row=db.get_first_row("Select product_id,title,list_price from Product where product_id=?",params[:id])
+		if row!=nil
+			product=Product.new(row['product_id'],row['title'],row['list_price'])	
+			product.to_json
+		else
+			"Not Found"
+		end
+	rescue SQLite3::Exception =&amp;gt; excp
+		excp
+	ensure
+		db.close if db
+	end
+end
+	
+class Product
+	attr_accessor:id
+	attr_accessor:name
+	attr_accessor:list_price
+	
+	def initialize(id,name,list_price)
+		@id=id
+		@name=name
+		@list_price=list_price
+	end	
+	def to_json(*a)
+		{
+			"json_class" =&amp;gt; self.class.name,
+			"data"       =&amp;gt; {"id" =&amp;gt; @id, "name" =&amp;gt; @name, "list_price" =&amp;gt; @list_price}
+		}.to_json(*a)
+	end 
+	def self.json_create(object) 
+		new(object["data"]["id"], object["data"]["name"],object["data"]["list_price"])
+ 	end
+	
+	def to_s
+		"#{@id}-#{@name}-#{@list_price}"
+	end
+end
+&lt;/pre&gt;
+&lt;p&gt;Geliştirdiğimiz servis &lt;strong&gt;REST&lt;/strong&gt; tabanlıdır. Dolayısıyla &lt;strong&gt;HTTP Get&lt;/strong&gt;, &lt;strong&gt;Post&lt;/strong&gt;, &lt;strong&gt;Put&lt;/strong&gt;, &lt;strong&gt;Delete&lt;/strong&gt; gibi taleplere cevap verecek şekilde &amp;ccedil;alışır. &lt;strong&gt;Sinatra&lt;/strong&gt;&amp;nbsp;altyapısı sayesinde bu tip istekleri fonksiyonelleştirmek olduk&amp;ccedil;a kolaydır.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;get 'products' do&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;end&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;ve&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;get '/products/:id' do&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;end&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;metodları&amp;nbsp;ile &lt;strong&gt;http://adres/products&lt;/strong&gt;&amp;nbsp;ve &lt;strong&gt;http://adres/products/id&amp;nbsp;&lt;/strong&gt;adreslerine gelen talepleri karşılayabiliriz. İlk metod ile &lt;strong&gt;Product&lt;/strong&gt; tablosundaki t&amp;uuml;m &amp;uuml;r&amp;uuml;n listesinin&amp;nbsp;&lt;strong&gt;JSON&lt;/strong&gt; formatında sunulması s&amp;ouml;z konusudur. Diğer metod&amp;nbsp;&lt;strong&gt;:id&lt;/strong&gt; ile gelen değere g&amp;ouml;re &lt;em&gt;(ki Product tablosundaki product_id alanının i&amp;ccedil;eriği oluyor)&lt;/em&gt; yapılan arama sonucunu yine &lt;strong&gt;JSON&lt;/strong&gt; formatında d&amp;ouml;nd&amp;uuml;rmektedir.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;SQLite&lt;/strong&gt; &amp;uuml;zerinden ger&amp;ccedil;ekleştirilen &lt;strong&gt;select&lt;/strong&gt; sorguları sonucu elde edilen i&amp;ccedil;erikleri &lt;strong&gt;Product&lt;/strong&gt; sınıfına ait nesne &amp;ouml;rneklerine aldığımıza dikkat edelim. Product sınıfında &lt;strong&gt;JSON&lt;/strong&gt; serileştirme işlerini ger&amp;ccedil;ekleştirmek adına bazı d&amp;uuml;zenlemeler olduğu da g&amp;ouml;zden ka&amp;ccedil;mamalıdır&lt;em&gt;(JSON serileştirme ile ilgili olarak &lt;a href="/post/ruby-kod-parcaciklari-16-json-serilestirme.aspx"&gt;buradaki yazıyı&lt;/a&gt; referans alabilirsiniz)&lt;/em&gt;&lt;/p&gt;
+&lt;h2&gt;&amp;Ccedil;alıştırma ve İlk Testler&lt;/h2&gt;
+&lt;p&gt;Yazdığımız &lt;strong&gt;Ruby&lt;/strong&gt; kod dosyasını &amp;ccedil;alıştırdığımızda otomatik olarak &lt;strong&gt;localhost:4567&lt;/strong&gt; adresi &amp;uuml;zerinden servisimizin yayına başladığını g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/02/rest_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;4567 Sinatra' nın varsayılan olarak kullandığı Port bilgisidir. İsterseniz değiştirebilirsiniz ancak nasıl yapıldığını s&amp;ouml;ylemek istemiyorum :) L&amp;uuml;tfen araştırın.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Bu işlemin ardından basit bir tarayıcı yardımıyla &lt;strong&gt;Get&lt;/strong&gt; operasyonlarını deneyebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;http://localhost:4567/products&lt;/strong&gt;&amp;nbsp;sonucu&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/02/rest_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi bir &amp;ouml;nceki yazımızda &lt;strong&gt;Product&lt;/strong&gt; tablosuna eklediğimiz&amp;nbsp;satırların tamamına ulaşabildik.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;http://localhost:4567/products/1&lt;/strong&gt; sonucu&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/02/rest_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu kez &lt;strong&gt;product_id değeri 1 olan&lt;/strong&gt; &amp;uuml;r&amp;uuml;n&amp;uuml; elde etmeyi başardık. Pek tabii var olmayan bir &amp;uuml;r&amp;uuml;n&amp;uuml; girersek&lt;strong&gt; Not Found&lt;/strong&gt; &amp;ccedil;ıktısını almamız gerekiyor.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;http://localhost:4567/products/10&lt;/strong&gt; sonucu&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/02/rest_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Doğal olarak bulunamayan i&amp;ccedil;erikler i&amp;ccedil;in &amp;ccedil;ok daha şık bir sayfayı istemciye sunabiliriz.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Ger&amp;ccedil;ekleştirilen bu &amp;ccedil;ağrılar aynı zamanda komut satırına da yansır. Aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde dikkat edileceği &amp;uuml;zere servise gelen t&amp;uuml;m &amp;ccedil;ağrılar loglanmıştır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/02/rest_5.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;h2&gt;.Net Client&lt;/h2&gt;
+&lt;p&gt;Servis hazır olduğuna g&amp;ouml;re bunu t&amp;uuml;ketecek bir istemci uygulama yazmayı da deneyebiliriz. Ben daha &amp;ccedil;ok aşina olduğum &lt;strong&gt;.Net&lt;/strong&gt; platformunu tercih ediyorum. Basit bir &lt;strong&gt;Console&lt;/strong&gt; uygulaması işimizi g&amp;ouml;r&amp;uuml;r. &lt;strong&gt;Host&lt;/strong&gt; ettiğimiz servis&amp;nbsp;&lt;strong&gt;REST&lt;/strong&gt; tabanlı olduğu i&amp;ccedil;in &lt;strong&gt;talepleri&lt;em&gt;(Request)&lt;/em&gt;&lt;/strong&gt; g&amp;ouml;nderme ve gelen &lt;strong&gt;JSON&lt;/strong&gt; i&amp;ccedil;eriğini ters serileştirme(Deserialization) işlemlerinde &lt;strong&gt;RestSharp&lt;/strong&gt; paketini kullanabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/02/rest_7.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Paketi &lt;strong&gt;Console&lt;/strong&gt; uygulamasına entegre ettikten sonra aşağıdaki kod i&amp;ccedil;eriğini yazarak ilerleyebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using RestSharp;
+using RestSharp.Deserializers;
+using System;
+
+namespace AW.Client
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            JsonDeserializer serializer = new JsonDeserializer();
+            var client = new RestClient("http://localhost:4567");
+            var request = new RestRequest("products", Method.GET);
+            RestResponse response = (RestResponse)client.Execute(request);
+            Console.WriteLine(response.Content);
+
+            var request2 = new RestRequest("products/1", Method.GET);
+            var response2=client.Execute(request2);
+
+            var result=serializer.Deserialize&amp;lt;SingleRoot&amp;gt;(response2);
+            Console.WriteLine(result.Product.ToString());
+        }
+    }
+    
+    [DeserializeAs(Name="json_clas")]
+    class SingleRoot
+    {
+        [DeserializeAs(Name="data")]
+        public Product Product { get; set; }
+    }
+    class Product
+    {
+        public int id { get; set; }
+        public string name {get; set; }
+        public int list_price { get; set; }
+        public override string ToString()
+        {
+            return string.Format("{0}-{1} {2}", id, name, list_price);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;RestSharp&lt;/strong&gt; k&amp;uuml;t&amp;uuml;phanesinin&amp;nbsp;kullanımı olduk&amp;ccedil;a basittir. &amp;Ouml;ncelikle &lt;strong&gt;RestClient&lt;/strong&gt; tipinden bir nesne &amp;ouml;rneği oluşturulur ve&lt;strong&gt; HTTP &lt;/strong&gt;talep&lt;strong&gt;&amp;nbsp;&lt;/strong&gt;adresleri&amp;nbsp;i&amp;ccedil;in kullanılacak k&amp;ouml;k adres belirtilir. &amp;Ouml;rneğimizde &lt;strong&gt;host&lt;/strong&gt; ettiğimiz k&amp;ouml;k adres &lt;strong&gt;http://localhost:4567&lt;/strong&gt;&amp;nbsp;şeklindedir. &lt;strong&gt;products&lt;/strong&gt; ve &lt;strong&gt;products/:id&lt;/strong&gt; talepleri i&amp;ccedil;in &lt;strong&gt;RestRequest&lt;/strong&gt; tipinden yararlanılır. Bu sınıfın &lt;strong&gt;yapıcı metoduna&lt;em&gt;(Constructor)&lt;/em&gt;&lt;/strong&gt; gelen ilk parametre ile &lt;strong&gt;HTTP&lt;/strong&gt; adresi, ikinci parametre ile de &lt;strong&gt;HTTP&lt;/strong&gt; metodunun tipi belirtilir. &amp;Ouml;rneklerimizde &lt;strong&gt;Get&lt;/strong&gt; metodunu kullandığımız i&amp;ccedil;in &lt;strong&gt;Method.GET&lt;/strong&gt; değeri verilmiştir. &lt;strong&gt;RestResponse&lt;/strong&gt; nesne &amp;ouml;rneğine dolacak olan &lt;strong&gt;JSON&lt;/strong&gt; i&amp;ccedil;eriklerine &lt;strong&gt;Content&lt;/strong&gt; &amp;ouml;zelliği &amp;uuml;zerinden doğrudan erişilebileceği gibi &lt;strong&gt;JsonDeserializer&lt;/strong&gt; sınıfının generic &lt;strong&gt;Deserialize&lt;/strong&gt; metodu kullanılarak, i&amp;ccedil;eriğin ters serileştirilmesi ve nesnel olarak ele alınması da sağlanabilir.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Ruby&lt;/strong&gt; tarafındaki servisin verdiği &lt;strong&gt;JSON&lt;/strong&gt; i&amp;ccedil;eriğinde &lt;strong&gt;json_class&lt;/strong&gt; ve &lt;strong&gt;data&lt;/strong&gt; isimli iki &amp;ouml;zellik yer almaktadır. Bu nedenle .Net tarafındaki sınıflar&amp;nbsp;s&amp;ouml;z konusu&amp;nbsp;şema yapısına g&amp;ouml;re tasarlanmış ve isimlendirme uyumluluğu sorununu &amp;ccedil;&amp;ouml;zmek i&amp;ccedil;in &lt;strong&gt;DeserializeAs&lt;/strong&gt; &lt;strong&gt;niteliğinden&lt;em&gt;(Attribute)&lt;/em&gt;&lt;/strong&gt; yararlanılmıştır. Nitekim istemci tarafındaki sistem i&amp;ccedil;erisinde sorgu sonu&amp;ccedil;larını json_class ve data isimli olacak şekilde dolaştırmak &amp;ccedil;ok doğru değildir.&lt;/p&gt;
+&lt;p&gt;İlk talep ile t&amp;uuml;m &amp;uuml;r&amp;uuml;nlerin listesi elde edilir. Bu kısımda size d&amp;uuml;şen g&amp;ouml;rev &lt;strong&gt;JSON&lt;/strong&gt; i&amp;ccedil;eriğini &lt;strong&gt;Product&lt;/strong&gt; tipinden bir koleksiyon ile&lt;em&gt;(&lt;strong&gt;List&amp;lt;Product&amp;gt;&lt;/strong&gt; t&amp;uuml;revli bir nesne &amp;ouml;rneğinde)&lt;/em&gt; nasıl karşılayabileceğimizdir. Servis &amp;ccedil;alıştığı s&amp;uuml;rece &lt;strong&gt;.Net&lt;/strong&gt; istemcisi bize aşağıdaki sonu&amp;ccedil;ları d&amp;ouml;nd&amp;uuml;r&amp;uuml;r.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/02/rest_8.gif" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;Sizin Yapabilecekleriniz&lt;/h2&gt;
+&lt;p&gt;Servis şu anda ayakta. Ancak bazı eksiklikleri var. &amp;Ouml;rneğin &lt;strong&gt;Post&lt;/strong&gt; ve &amp;nbsp;&lt;strong&gt;Delete&lt;/strong&gt; gibi metodları uygulamadık. A&amp;ccedil;ık&amp;ccedil;ası servisten yararlanarak &lt;strong&gt;Product&lt;/strong&gt; tablosuna veri ekleyebilsek veya silebilsek hi&amp;ccedil; fena olmaz. Hatta istemci tarafını bir Web uygulaması olarak tasarlayıp g&amp;ouml;rsel a&amp;ccedil;ıdan da zenginleştirerek veri odaklı bir &amp;ccedil;&amp;ouml;z&amp;uuml;m &amp;uuml;retebilir&amp;nbsp;ve &lt;strong&gt;CRUD&lt;/strong&gt; operasyonlarını bu şekilde sunabiliriz. Bu kutsal g&amp;ouml;revi&amp;nbsp;siz değerli okurlarıma bırakıyorum.&lt;/p&gt;
+&lt;h2&gt;Değerlendirme&lt;/h2&gt;
+&lt;p&gt;Geliştirmek istediğimiz senaryoyu biraz daha geniş &amp;ccedil;aplı d&amp;uuml;ş&amp;uuml;nelim. Bulunduğumuz kurumda &lt;strong&gt;Ruby&lt;/strong&gt; ve &lt;strong&gt;Ruby on Rails&lt;/strong&gt; ile geliştirme yapan bir takım olduğunu d&amp;uuml;ş&amp;uuml;nelim. Bu takımın şirket i&amp;ccedil;erisinde geliştirilen bir başka &amp;uuml;r&amp;uuml;ne sağlaması gereken hizmetler olduğunu varsayalım. Bu durumda ilgili ekipten bu fonksiyonellikleri sunacak servisleri hakim oldukları ortamda geliştirmek &amp;uuml;zere bir talepte bulunabiliriz. Geliştirilen servis bir sunucuya dağıtıldıktan sonra kurum i&amp;ccedil;in herhangi bir u&amp;ccedil; nokta tarafından kolayca erişilip kullanılabilir. Servis tarafında&amp;nbsp;&lt;strong&gt;Authentication/Authorization&lt;/strong&gt; işlemleri veya g&amp;uuml;venlik ile ilgili tedbirler alınarak kurum prosed&amp;uuml;rlerine uygun hale getirilmesi de sağlanabilir.&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2016-02-09 01:44:00</pubDate>
+  <slug>ruby-kod-parcaciklari-20-rest-servis-gelistirmek</slug>
+  <tags>
+    <tag>ruby</tag>
+    <tag>rest-services</tag>
+    <tag>sinatra</tag>
+    <tag>sqlite</tag>
+    <tag>service</tag>
+    <tag>http</tag>
+    <tag>json</tag>
+    <tag>json-serialization</tag>
+    <tag>restsharp</tag>
+    <tag>nuget</tag>
+    <tag>net</tag>
+    <tag>c#</tag>
+  </tags>
+  <categories>
+    <category>REST</category>
+    <category>Ruby</category>
+  </categories>
+</post>

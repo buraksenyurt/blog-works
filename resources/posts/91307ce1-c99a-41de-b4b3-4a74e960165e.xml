@@ -1,0 +1,692 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WPF - Temel Animasyon İşlemleri - 2</title>
+  <description>Bir önceki makalemizde Windows Prensetation Foundation(WPF) uygulamalarında animasyon işlemlerinin temel animasyon tipleri(Basic Animation Types) yardımıyla nasıl gerçekleştirilebileceğini incelemeye başlamıştık. Bu makalemizde animasyon işlemleri üzerindeki yönetimin biraz daha fazla olmasını sağlamak için farklı teknikleri göz önüne alıyor olacağız...</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Bir &amp;ouml;nceki makalemizde &lt;strong&gt;Windows Prensetation Foundation(WPF)&lt;/strong&gt; uygulamalarında animasyon işlemlerinin temel animasyon tipleri&lt;strong&gt;(Basic Animation Types)&lt;/strong&gt; yardımıyla nasıl ger&amp;ccedil;ekleştirilebileceğini incelemeye başlamıştık. Bu makalemizde animasyon işlemleri &amp;uuml;zerindeki y&amp;ouml;netimin biraz daha fazla olmasını sağlamak i&amp;ccedil;in farklı teknikleri g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alıyor olacağız. Her zaman olduğu gibi konuyu daha iyi kavrayabilmek adına &amp;ouml;rnekler &amp;uuml;zerinden ilerlemekte fayda olduğu kanısındayım. Dilerseniz hi&amp;ccedil; vakit kaybetmeden ilk &amp;ouml;rneğimiz ile başalayım. Hatırlanacağı &amp;uuml;zere, WPF uygulamalarında bileşenlerin rotasyon işlemleri i&amp;ccedil;in &lt;strong&gt;RotateTransform&lt;/strong&gt;, &lt;strong&gt; ScaleTransform&lt;/strong&gt; ve benzeri tiplerin kullanıldığını g&amp;ouml;rm&amp;uuml;şt&amp;uuml;k.&lt;/p&gt;
+&lt;p&gt;Bu tip transformasyon işlemlerini animasyon tipleri ile birlikte kullanmak isteyebiliriz. S&amp;ouml;z gelimi bir Button kontrol&amp;uuml;n&amp;uuml;n 3 saniye i&amp;ccedil;erisinde kendi ekseninde 360 derece d&amp;ouml;nmesini ve bu sırada boyutlarınında 2 katına &amp;ccedil;ıkarak tekrardan eski haline d&amp;ouml;nmesini istediğimizi d&amp;uuml;ş&amp;uuml;nelim. Bu tip bir animasyon işleminin Buttton kontrol&amp;uuml;n&amp;uuml;n &amp;uuml;zerine mouse ile gelindiğinde başlatılmasını ve 3 saniyelik zaman dilimi i&amp;ccedil;erisinde mouse ile kontrol&amp;uuml;n terk edilmesi halinde de durmasınıda sağlayabiliriz. Burada temel animasyon tiplerinden olan &lt;strong&gt;DoubleAnimation&lt;/strong&gt; olduk&amp;ccedil;a işe yarayacaktır. Herşeyden &amp;ouml;nce animasyon tipinin RotateTransform ve ScaleTransform tiplerindeki uygun &amp;ouml;zellikleri kontrol edecek şekilde ayarlanması gerekir. Bu senaryoyu ger&amp;ccedil;ekleştirmek i&amp;ccedil;in &lt;strong&gt;XAML&lt;/strong&gt; i&amp;ccedil;eriği aşağıda verilen bir pencere(Window) oluşturulması yeterli olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk225_1.gif" alt="" width="296" height="230" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;XAML i&amp;ccedil;eriği;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;Window x:Class="AnimasyonIslemleri.RotateAnimasyon" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Rotate ve Sacle Animasyon" Height="220" Width="289"&amp;gt;
+    &amp;lt;Grid&amp;gt;
+        &amp;lt;Button Name="btnMerhaba" Width="75" Height="40" Content="Merhaba" Background="Gold" Foreground="Black" FontSize="14" FontWeight="Bold"&amp;gt;
+            &amp;lt;Button.LayoutTransform&amp;gt;
+                &amp;lt;TransformGroup&amp;gt;
+                    &amp;lt;RotateTransform x:Name="RTrans" Angle="0"/&amp;gt;
+                    &amp;lt;ScaleTransform x:Name="STrans" CenterX="0" CenterY="0" ScaleX="1" ScaleY="1"/&amp;gt;
+                &amp;lt;/TransformGroup&amp;gt;
+            &amp;lt;/Button.LayoutTransform&amp;gt; 
+            &amp;lt;Button.Triggers&amp;gt;
+                &amp;lt;EventTrigger RoutedEvent="Button.MouseEnter"&amp;gt;
+                    &amp;lt;EventTrigger.Actions&amp;gt;
+                        &amp;lt;BeginStoryboard Name="strBrd"&amp;gt;
+                            &amp;lt;Storyboard&amp;gt;
+                                &amp;lt;DoubleAnimation Storyboard.TargetName="RTrans" Storyboard.TargetProperty="Angle" To="360" Duration="0:0:3"/&amp;gt;
+                                &amp;lt;DoubleAnimation Storyboard.TargetName="STrans" Storyboard.TargetProperty="ScaleX" To="2.5" Duration="0:0:1.5"/&amp;gt;
+                                &amp;lt;DoubleAnimation Storyboard.TargetName="STrans" Storyboard.TargetProperty="ScaleY" To="2.5" Duration="0:0:1.5"/&amp;gt;
+                                &amp;lt;DoubleAnimation Storyboard.TargetName="STrans" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:3"/&amp;gt;
+                                &amp;lt;DoubleAnimation Storyboard.TargetName="STrans" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:3"/&amp;gt;
+                            &amp;lt;/Storyboard&amp;gt;
+                        &amp;lt;/BeginStoryboard&amp;gt;
+                    &amp;lt;/EventTrigger.Actions&amp;gt;
+                &amp;lt;/EventTrigger&amp;gt;
+                &amp;lt;EventTrigger RoutedEvent="Button.MouseLeave"&amp;gt;
+                    &amp;lt;EventTrigger.Actions&amp;gt;
+                        &amp;lt;StopStoryboard BeginStoryboardName="strBrd"/&amp;gt;
+                    &amp;lt;/EventTrigger.Actions&amp;gt;
+                &amp;lt;/EventTrigger&amp;gt;
+            &amp;lt;/Button.Triggers&amp;gt;
+        &amp;lt;/Button&amp;gt;
+    &amp;lt;/Grid&amp;gt;
+&amp;lt;/Window&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Burada dikkat edilmesi gereken noktalardan birisi, &lt;strong&gt;RotateTransform&lt;/strong&gt; ve &lt;strong&gt;ScaleTransform&lt;/strong&gt; elementlerinin &lt;strong&gt;DoubleAnimation&lt;/strong&gt; tiplerinde kullanılabilmesi i&amp;ccedil;in &lt;strong&gt;x:Name&lt;/strong&gt; nitelikleri ile isimlendirilmiş olmalarıdır. Diğer taraftan &lt;strong&gt;RotateTransform&lt;/strong&gt;, Button bileşenin verilen a&amp;ccedil;ı kadar d&amp;ouml;nd&amp;uuml;r&amp;uuml;lmesini sağlamaktadır. Buna g&amp;ouml;re ilk &lt;strong&gt;DoubleAnimation&lt;/strong&gt; elementi 3 saniyelik zaman &amp;ccedil;izgisi(&lt;strong&gt;TimeLine&lt;/strong&gt;) i&amp;ccedil;erisinde a&amp;ccedil;ının değerinin 360 derece olmasını sağlamaktadır. Sonrasında gelen d&amp;ouml;rt DoubleAnimation tipi ise ilk 1.5 saniyelik zaman dilimi i&amp;ccedil;erisinde &lt;strong&gt; ScaleTransform&lt;/strong&gt; elementinin &lt;strong&gt;ScaleX&lt;/strong&gt; ve &lt;strong&gt;ScaleY&lt;/strong&gt; değerlerini &amp;ouml;nce iki bu&amp;ccedil;uk katına &amp;ccedil;ıkarmakta sonrasında ise tekrar eski haline d&amp;ouml;nd&amp;uuml;rmektedir.&lt;/p&gt;
+&lt;p&gt;S&amp;ouml;z konusu animasyon işlemleri &lt;strong&gt;MouseEnter&lt;/strong&gt; olayı tetiklendiğinde başlatılmaktadır. Diğer taraftan &lt;strong&gt;MouseLeave&lt;/strong&gt; olayı tetiklendiğinde, bir başka deyişle mouse ile Button kontrol&amp;uuml; &amp;uuml;zerinden &amp;ccedil;ıkıldığında animasyon işlemi durdurulmaktadır. Durdurma işlemi i&amp;ccedil;in &lt;strong&gt;StopStroyboard&lt;/strong&gt; elementi kullanılır. Bu elementin hangi animasyon işlemini durduracağını belirtmek i&amp;ccedil;in &lt;strong&gt; BeginStroyboardName&lt;/strong&gt; niteliğine(attribute) ilgili değerin atanması gerekir. &amp;Ouml;rneğimizde bu değer, &lt;strong&gt;BeginStroyboard&lt;/strong&gt; elementindeki &lt;strong&gt; Name&lt;/strong&gt; niteliğinin değeri olan strBrd' dir. Buna g&amp;ouml;re istersek birden fazla Storyboard' un olduğu bir senaryoda Name niteliğinden yararlanarak hangisinin durdurulacağını, duraksatılacağını(&lt;strong&gt;Pause&lt;/strong&gt;) yada &amp;ccedil;ıkartılacağını(&lt;strong&gt;Remove&lt;/strong&gt;) belirleyebiliriz.&lt;/p&gt;
+&lt;p&gt;WPF(Windows Presentation Foundation) mimarisinde farklı Storyboard tipleri vardır.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;BeginStoryboard&lt;/strong&gt; : Storyboard' un başlatılmasını sağlar.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;PauseStoryboard&lt;/strong&gt; : Storyboard duraksatılır.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ResumeStoryboard&lt;/strong&gt; : Duraksatılan storyboard kaldığı yerden devam eder.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;RemoveStoryboard&lt;/strong&gt; : Storyboard kaldırılır.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt; SetStoryboardSpeedRatio&lt;/strong&gt; : Storyboard i&amp;ccedil;erisinde animasyonların hız oranı değiştirilebilir.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SkipStoryboardToFill&lt;/strong&gt; : Eğer Stroyboard i&amp;ccedil;erisinde tanımlanmış bir Fill periyodu varsa animasyonun otomatik olarak buraya atlaması sağlanır.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&amp;Ouml;rneği y&amp;uuml;r&amp;uuml;tt&amp;uuml;ğ&amp;uuml;m&amp;uuml;zde &amp;ccedil;alışma zamanında&lt;strong&gt;(Run-time)&lt;/strong&gt; aşağıdaki Flash g&amp;ouml;rselinde yer alan etkileri izleyebiliriz. &lt;em&gt;(&lt;strong&gt;&lt;span style="color: #ff0000;"&gt;Flash dosyasının boyutu 264 Kb olduğundan y&amp;uuml;klenmesi zaman alabilir&lt;/span&gt;&lt;/strong&gt;. Dosyanın boyutunun k&amp;uuml;&amp;ccedil;&amp;uuml;k olması i&amp;ccedil;in kalitesi d&amp;uuml;ş&amp;uuml;r&amp;uuml;lm&amp;uuml;şt&amp;uuml;r. Bu nedenle kitap animasyon hareketi sırasında iz bırakmaktadır. Ger&amp;ccedil;ek uygulamada elbetteki b&amp;ouml;yle bir iz yoktur.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;object id="obj1" width="288" height="220" classid="clsid:D27CDB6E-AE6D-11CF-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0" border="0"&gt;
+&lt;param name="movie" value="http://www.buraksenyurt.com/makale/images/mk225Video1.swf" /&gt;
+&lt;param name="quality" value="High" /&gt; &lt;embed type="application/x-shockwave-flash" width="288" height="220" src="http://www.buraksenyurt.com/makale/images/mk225Video1.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" name="obj1" /&gt;&lt;/object&gt;&lt;/p&gt;
+&lt;p&gt;Benzer işlemleri kod tarafında yapmakta olduk&amp;ccedil;a kolaydır. Bunun i&amp;ccedil;in aşağıdaki kodlara ve XAML i&amp;ccedil;eriğine sahip pencereyi ele alabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;XAML i&amp;ccedil;eriği;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;Window x:Class="AnimasyonIslemleri.KodlaRotateAnimasyon" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Kodla Rotate Animasyon" Height="250" Width="325"&amp;gt;
+    &amp;lt;Grid&amp;gt;
+        &amp;lt;Button Name="btnMerhaba" Width="75" Height="40" Content="Merhaba" Background="Black" Foreground="Gold" FontSize="14" FontWeight="Bold"&amp;gt;
+            &amp;lt;Button.LayoutTransform&amp;gt;
+                &amp;lt;TransformGroup&amp;gt;
+                    &amp;lt;RotateTransform x:Name="RTrans" Angle="0"/&amp;gt;
+                    &amp;lt;ScaleTransform x:Name="STrans" CenterX="0" CenterY="0" ScaleX="1" ScaleY="1"/&amp;gt;
+                &amp;lt;/TransformGroup&amp;gt;
+            &amp;lt;/Button.LayoutTransform&amp;gt;
+        &amp;lt;/Button&amp;gt;
+    &amp;lt;/Grid&amp;gt;
+&amp;lt;/Window&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Kod i&amp;ccedil;eriği;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using System.Windows.Media.Animation; // Animasyon tiplerinin yer aldığı isim alanıdır(Namespace)
+
+namespace AnimasyonIslemleri
+{
+    public partial class KodlaRotateAnimasyon : Window
+    {
+        private void AnimasyonuOlustur()
+        {
+            // Storyboard oluşturulur
+            Storyboard strBrd = new Storyboard();
+
+            // Birinci DoubleAnimation tipi oluşturulur.
+            // İlk parametre To değeridir ve burada 360 dereceyi işaret etmektedir. İkinci parametre ise Duration değeridir.
+            DoubleAnimation dblAni1 = new DoubleAnimation(360, new Duration(TimeSpan.FromSeconds(3))); 
+            // Animasyon tipinin RTrans adına sahip elementin AngleProperty &amp;ouml;zelliğine uygulanacağı belirtilir.
+            Storyboard.SetTargetName(dblAni1, "RTrans");
+            Storyboard.SetTargetProperty(dblAni1, new PropertyPath(RotateTransform.AngleProperty));
+            // Animasyon tipi Storyboard' a eklenir.
+            strBrd.Children.Add(dblAni1);
+
+            // İkinci DoubleAnimation tipi oluşturulur.
+            // İlk parametre To değeridir ve burada 2.5 katını işaret etmektedir. İkinci parametre ise Duration değeridir. Buna g&amp;ouml;re zaman &amp;ccedil;izgisinin ilk 1.5 saniyesi i&amp;ccedil;erisinde Button bileşeninin ScaleX değeri 2.5 kat artmaktadır.
+            DoubleAnimation dblAni2 = new DoubleAnimation(2.5, new Duration(TimeSpan.FromSeconds(1.5)));
+            // Animayonun STrans isimli ScaleTransform elementi i&amp;ccedil;erisindeki ScaleX &amp;ouml;zelliğine uygulanacağı belirtilir.
+            Storyboard.SetTargetName(dblAni2, "STrans");
+            Storyboard.SetTargetProperty(dblAni2, new PropertyPath(ScaleTransform.ScaleXProperty));
+            // Animasyon tipi Storyboard' a eklenir.
+            strBrd.Children.Add(dblAni2);
+
+            // &amp;Uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; DoubleAnimation tipi oluşturulur.
+            // İlk parametre To değeridir ve burada 2.5 katını işaret etmektedir. İkinci parametre ise Duration değeridir. Buna g&amp;ouml;re zaman &amp;ccedil;izgisinin ilk 1.5 saniyesi i&amp;ccedil;erisinde Button bileşeninin ScaleY değeri 2.5 kat artmaktadır.
+            DoubleAnimation dblAni3 = new DoubleAnimation(2.5, new Duration(TimeSpan.FromSeconds(1.5)));
+            // Animayonun STrans isimli ScaleTransform elementi i&amp;ccedil;erisindeki ScaleY &amp;ouml;zelliğine uygulanacağı belirtilir.
+            Storyboard.SetTargetName(dblAni3, "STrans");
+            Storyboard.SetTargetProperty(dblAni3, new PropertyPath(ScaleTransform.ScaleYProperty));
+            // Animasyon tipi Storyboard' a eklenir.
+            strBrd.Children.Add(dblAni3);
+
+            // Zaman &amp;ccedil;izgisinin 3nc&amp;uuml; saniyesine gelindiğinde Button kontrol&amp;uuml;n&amp;uuml;n ScaleX değeri ilk haline d&amp;ouml;ner.
+            DoubleAnimation dblAni4 = new DoubleAnimation(1, new Duration(TimeSpan.FromSeconds(3)));
+            Storyboard.SetTargetName(dblAni4, "STrans");
+            Storyboard.SetTargetProperty(dblAni4, new PropertyPath(ScaleTransform.ScaleXProperty));
+            // Animasyon tipi Storyboard' a eklenir.
+            strBrd.Children.Add(dblAni4);
+
+            // Zaman &amp;ccedil;izgisinin 3nc&amp;uuml; saniyesine gelindiğinde Button kontrol&amp;uuml;n&amp;uuml;n ScaleY değeri ilk haline d&amp;ouml;ner.
+            DoubleAnimation dblAni5 = new DoubleAnimation(1, new Duration(TimeSpan.FromSeconds(3)));
+            Storyboard.SetTargetName(dblAni5, "STrans");
+            Storyboard.SetTargetProperty(dblAni5, new PropertyPath(ScaleTransform.ScaleYProperty));
+            // Animasyon tipi Storyboard' a eklenir.
+            strBrd.Children.Add(dblAni5);
+    
+            // Mouse ile Button alanı &amp;uuml;zerinde gelindiğinde animasyon başlatılır. 
+            btnMerhaba.MouseEnter += delegate(object sender, MouseEventArgs e)
+                                                    {
+                                                        /* İkinci parametre Storyboard' un kontrol edilebileceğini g&amp;ouml;sterir. Bir başka deyişle programatik olarak animasyonun durdurulması, duraksatılması ve benzeri işlemlerin yapılabilmesi sağlanır. */
+                                                        strBrd.Begin(this,true);
+                                                    };
+
+            btnMerhaba.MouseLeave += delegate(object sender, MouseEventArgs e)
+                                                    {    
+                                                        // Storyboard' un başlattığı animasyon &amp;ccedil;ıkartılır. Dolayısıyla Button a&amp;ccedil;ısal konum ve b&amp;uuml;y&amp;uuml;kl&amp;uuml;k olarak ilk değerlerine d&amp;ouml;ner.
+                                                        strBrd.Stop(this); 
+                                                    };
+        }
+
+        public KodlaRotateAnimasyon()
+        {
+            InitializeComponent();
+            AnimasyonuOlustur();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Kod yapısında dikkat edilmesi gereken &amp;ouml;nemli noktalardan birisi, &lt;strong&gt;MouseLeave&lt;/strong&gt; olayının ger&amp;ccedil;ekleşmesi halinde var olan amimasyonun durdurulması&lt;strong&gt;(Stop)&lt;/strong&gt; işleminin &lt;strong&gt; Storyboard&lt;/strong&gt; nesne &amp;ouml;rneğine ait Stop metodu ile ger&amp;ccedil;ekleştirimiş olmasıdır. Lakin burada Stop metodunun işe yarayabilmesi i&amp;ccedil;in animasyon Begin metodu ile başlatılırken ikinci parametrenin &lt;strong&gt;true&lt;/strong&gt; olarak verilmesi şarttır. Bu parametrenin true olarak verilmesi halinde yanlızca &lt;strong&gt;Stop&lt;/strong&gt; metodu değil, &lt;strong&gt;Pause&lt;/strong&gt;, &lt;strong&gt;Resume&lt;/strong&gt;, &lt;strong&gt; Remove&lt;/strong&gt; gibi y&amp;ouml;netsel fonksiyonelliklerinde kullanılabilir hale gelmesi sağlanmaktadır.&lt;/p&gt;
+&lt;p&gt;Animasyon işlemlerinde zaman &amp;ccedil;izgileri (&lt;strong&gt;Timeline&lt;/strong&gt;) i&amp;ccedil;erisinde yer alan &lt;strong&gt;KeyFrame&lt;/strong&gt;' lerin y&amp;ouml;netilmesi ve bu sayede daha g&amp;uuml;&amp;ccedil;l&amp;uuml; hareketlerin sağlanabilmeside m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Bu ama&amp;ccedil;la WPF yapısı i&amp;ccedil;erisine 3 temel &lt;strong&gt;KeyFrame&lt;/strong&gt; tipi konulmuştur. Bunlar &lt;strong&gt;LinearDoubleKeyFrame&lt;/strong&gt;, &lt;strong&gt;DiscreteDoubleKeyFrame&lt;/strong&gt;, &lt;strong&gt; SplineDoubleKeyFrame&lt;/strong&gt; tipleridir. S&amp;ouml;z konusu tiplerin ne şekilde kullanıldıklarını &amp;ouml;rnekler ile incelediğimizde konuyu daha rahat kavrayabiliriz. Sıradaki &amp;ouml;rneğimizde LinearDoubleKeyFrame tipini kullanıyor olacağız. Bu ama&amp;ccedil;la ilk olarak aşağıdaki &lt;strong&gt;XAML&lt;/strong&gt; &amp;ccedil;ıktısını i&amp;ccedil;eren bir pencere (Window) hazırladığımızı d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;XAML i&amp;ccedil;eriği;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk225_2.gif" alt="" width="206" height="280" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;Window x:Class="AnimasyonIslemleri.MerhabaKeyFrameAnimasyon" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Merhaba Key Frame Animasyon" Height="300" Width="300"&amp;gt;
+    &amp;lt;Canvas&amp;gt;
+        &amp;lt;Rectangle Name="Dortgen" Canvas.Top="0" Canvas.Left ="100" Height="125" Width="93"&amp;gt;
+            &amp;lt;Rectangle.Fill&amp;gt;
+                &amp;lt;ImageBrush ImageSource="Kitap.jpg"/&amp;gt;
+            &amp;lt;/Rectangle.Fill&amp;gt;
+            &amp;lt;Rectangle.Triggers&amp;gt;
+                &amp;lt;EventTrigger RoutedEvent="Rectangle.MouseEnter"&amp;gt;
+                    &amp;lt;EventTrigger.Actions&amp;gt;
+                        &amp;lt;BeginStoryboard&amp;gt;
+                            &amp;lt;Storyboard RepeatBehavior="Forever" AutoReverse="True"&amp;gt;
+                                &amp;lt;DoubleAnimationUsingKeyFrames Storyboard.TargetName="Dortgen" Storyboard.TargetProperty="(Canvas.Top)"&amp;gt;
+                                    &amp;lt;LinearDoubleKeyFrame Value="160" KeyTime="0:0:2"/&amp;gt;
+                                    &amp;lt;LinearDoubleKeyFrame Value="0" KeyTime="0:0:4"/&amp;gt;
+                                    &amp;lt;LinearDoubleKeyFrame Value="100" KeyTime="0:0:6"/&amp;gt;
+                                    &amp;lt;LinearDoubleKeyFrame Value="40" KeyTime="0:0:8"/&amp;gt;
+                                    &amp;lt;LinearDoubleKeyFrame Value="80" KeyTime="0:0:10"/&amp;gt;
+                                &amp;lt;/DoubleAnimationUsingKeyFrames&amp;gt;
+                            &amp;lt;/Storyboard&amp;gt;
+                        &amp;lt;/BeginStoryboard&amp;gt;
+                    &amp;lt;/EventTrigger.Actions&amp;gt;
+                &amp;lt;/EventTrigger&amp;gt;
+            &amp;lt;/Rectangle.Triggers&amp;gt;
+        &amp;lt;/Rectangle&amp;gt;
+    &amp;lt;/Canvas&amp;gt;
+&amp;lt;/Window&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &amp;ouml;rnekte kullanılan &lt;strong&gt;LienarDoubleKeyFrame&lt;/strong&gt; elementleri &lt;strong&gt; DoubleAnimationUsingKeyFrames&lt;/strong&gt; elementi i&amp;ccedil;erisinde yer almaktadır. Buna g&amp;ouml;re &lt;strong&gt;KeyFrame&lt;/strong&gt; tiplerinin &lt;strong&gt;TipAdıUsingKeyFrames&lt;/strong&gt; notasyonu ile tanımlanmış tipler i&amp;ccedil;erisinde olması gerektiği ortadadır. Peki burada yer alan LinearDoubleKeyFrame elementleri ne işe yaramaktadır?&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Value&lt;/strong&gt; &amp;ouml;zelliği ile tahmin edileceği gibi &lt;strong&gt;DoubleAnimationUsingKeyFrames&lt;/strong&gt; elementinde belirtilen kontrol ve ilgili &amp;ouml;zelliğin yeni değeri belirlenir. &lt;strong&gt; KeyTime&lt;/strong&gt; niteliği ilede, &amp;ouml;zelliğin zaman &amp;ccedil;izelgesi i&amp;ccedil;erisinde belirtilen anda değerini alması sağlanır. Bir başka deyişle &amp;ouml;rnekte kullanılan Dortgen isimli &lt;strong&gt;Rectangle&lt;/strong&gt; elementinin pencerenin(&lt;strong&gt;Window&lt;/strong&gt;) &amp;uuml;st kısmından olan uzaklığı, zaman &amp;ccedil;izelgesi&lt;strong&gt;(timeline)&lt;/strong&gt; i&amp;ccedil;erisinde Frame noktalarında farklı değerlere set edilmektedir. Aslında durumu daha iyi kavramak i&amp;ccedil;in pencerenin &amp;ccedil;alışma zamanındaki &amp;ccedil;ıktısına bakmakta fayda vardır. Aşağıdaki Flash animasyonunda bu durum işaret edilmektedir.&lt;em&gt;(&lt;strong&gt;&lt;span style="color: #ff0000;"&gt;Flash dosyasının boyutu 322 Kb olduğundan y&amp;uuml;klenmesi zaman alabilir.&lt;/span&gt;&lt;/strong&gt; Dosyanın boyutunun k&amp;uuml;&amp;ccedil;&amp;uuml;k olması i&amp;ccedil;in kalitesi d&amp;uuml;ş&amp;uuml;r&amp;uuml;lm&amp;uuml;şt&amp;uuml;r. Bu nedenle kitap animasyon hareketi sırasında iz bırakmaktadır. Ger&amp;ccedil;ek uygulamada elbetteki b&amp;ouml;yle bir iz yoktur.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;object id="obj2" width="192" height="260" classid="clsid:D27CDB6E-AE6D-11CF-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0" border="0"&gt;
+&lt;param name="movie" value="http://www.buraksenyurt.com/makale/images/mk225Video2.swf" /&gt;
+&lt;param name="quality" value="High" /&gt; &lt;embed type="application/x-shockwave-flash" width="192" height="260" src="http://www.buraksenyurt.com/makale/images/mk225Video2.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" name="obj2" /&gt;&lt;/object&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi d&amp;ouml;rtgenimiz zaman &amp;ccedil;izelgesinin 2nci saniyesinde pencerenin &amp;uuml;st kenarının 160 piksel, 4nc&amp;uuml; saniyesinde tekrardan 0 piksel, 6ncı saniyesinde 100 piksel, 8nci saniyesinde 40 piksel, 10ncu saniyesinde ise 80 piksel uzağına gelmektedir. Sonrasında ise bu animasyon hareketini tersine doğru yapmaktadır. Bunun i&amp;ccedil;in &lt;strong&gt;Storyboard&lt;/strong&gt; elementinin &lt;strong&gt;AutoReverse&lt;/strong&gt; &amp;ouml;zelliğine &lt;strong&gt;true&lt;/strong&gt; değerinin atanması yeterli olmaktadır. Durumu aşağıdaki şekil ile daha net bir şekilde anlayabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk225_3.gif" alt="" width="589" height="465" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Aynı &amp;ouml;rneği kod yardımıylada ger&amp;ccedil;ekleştirebiliriz. Bunun i&amp;ccedil;in aşağıdaki XAML i&amp;ccedil;eriğine ve kodlarına sahip bir pencere(Window) geliştirmemiz yeterli olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;XAML i&amp;ccedil;eriği;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;Window x:Class="AnimasyonIslemleri.KodlaMerhabaKeyFrameAnimasyon" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Kodla Merhaba KeyFrame Animasyon" Height="241" Width="218"&amp;gt;
+    &amp;lt;Canvas x:Name="Bolge"&amp;gt;
+        &amp;lt;Rectangle Name="Dortgen" Canvas.Top="0" Canvas.Left="65" Height="65" Width="55"&amp;gt;
+            &amp;lt;Rectangle.Fill&amp;gt;
+                &amp;lt;ImageBrush ImageSource="Kitap.jpg"/&amp;gt;
+            &amp;lt;/Rectangle.Fill&amp;gt;
+        &amp;lt;/Rectangle&amp;gt;
+    &amp;lt;/Canvas&amp;gt;
+&amp;lt;/Window&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Kod i&amp;ccedil;eriği;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using System.Windows.Media.Animation;
+
+namespace AnimasyonIslemleri
+{
+    public partial class KodlaMerhabaKeyFrameAnimasyon : Window
+    {
+        private void AnimasyonuHazirla()
+        {
+            // DoubleAnimationKeyFrames nesnesi &amp;ouml;rneklenir.
+            DoubleAnimationUsingKeyFrames dblKeyFrames = new DoubleAnimationUsingKeyFrames();
+            // Animasyon tipi, kontrol ve &amp;ouml;zelliğini ilişkilendirecek olan StoryBoard oluşturulur.
+            Storyboard strBrd = new Storyboard();
+            // Animasyon sona erdiğinde aynı rotadan geriye doğru d&amp;ouml;nmesi i&amp;ccedil;in AutoReverse &amp;ouml;zelliğine true değeri atanır
+            strBrd.AutoReverse = true;
+            // Animasyonun s&amp;uuml;rekli olması i&amp;ccedil;in RepeatBehavior &amp;ouml;zelliğine Forever değeri atanır.
+            strBrd.RepeatBehavior = RepeatBehavior.Forever;
+            // Hedef kontrol olarak Rectangle tipinden olan Dortgen se&amp;ccedil;ilir
+            Storyboard.SetTargetName(dblKeyFrames, "Dortgen");
+            // Animasyon değerlerinin uygulanacağı &amp;ouml;zellikl olarak Canvas' ın Top &amp;ouml;zelliği se&amp;ccedil;ilir.
+            Storyboard.SetTargetProperty(dblKeyFrames, new PropertyPath(Canvas.TopProperty));
+            // KeyFrame değerleri belirlenir.
+            // İlk 1 saniyede Canvas dikeylemesine 120 pikselinci uzaklığa gelecektir
+            dblKeyFrames.KeyFrames.Add(new LinearDoubleKeyFrame(120, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 1))));
+            // 2nci saniyede Canvas dikeylemesine 0 pikselinci uzaklığa gelecektir
+            dblKeyFrames.KeyFrames.Add(new LinearDoubleKeyFrame(0, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 2))));
+            // 3nc&amp;uuml; saniyede Canvas dikeylemesine 100 pikselinci uzaklığa gelecektir
+            dblKeyFrames.KeyFrames.Add(new LinearDoubleKeyFrame(100, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 3))));
+            // 4nc&amp;uuml; saniyede Canvas dikeylemesine 50 pikselinci uzaklığa gelecektir
+            dblKeyFrames.KeyFrames.Add(new LinearDoubleKeyFrame(50, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 4))));
+            // 5nci saniyede Canvas dikeylemesine 75 pikselinci uzaklığa gelecektir.
+            dblKeyFrames.KeyFrames.Add(new LinearDoubleKeyFrame(75, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 5))));
+            // 6nci saniyede Canvas dikeylemesine 25 pikselinci uzaklığa gelecektir.
+            dblKeyFrames.KeyFrames.Add(new LinearDoubleKeyFrame(25, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 6))));
+            // Animasyon tipi StoryBoard nesnesine eklenir
+            strBrd.Children.Add(dblKeyFrames);
+            // Animasyonun, Mouse ile Dortgen in &amp;uuml;zerine gelindiğinde başlaması sağlanır.
+            Dortgen.MouseEnter += delegate(object sender, MouseEventArgs e)
+                                                {
+                                                    strBrd.Begin(this);
+                                                };
+        }
+        public KodlaMerhabaKeyFrameAnimasyon()
+        {
+            InitializeComponent();
+            AnimasyonuHazirla();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Kod tarafında dikkat edilmesi gereken noktalardan birisi &lt;strong&gt;LinearDoubleKeyFrame&lt;/strong&gt; nesne &amp;ouml;rneklerinin &lt;strong&gt; DoubleAnimationUsingKeyFrames&lt;/strong&gt; tipinin KeyFrames koleksiyonunda tutuluyor olmasıdır. &lt;strong&gt;KeyFrames&lt;/strong&gt; &amp;ouml;zelliği &amp;uuml;zerinden &amp;ccedil;ağırılan &lt;strong&gt; Add&lt;/strong&gt; metodu ile ilgili nesnelerin koleksiyona eklenmesi sağlanır. Olduk&amp;ccedil;a eğlenceli değil mi? Gelin LinearDoubleKeyKeyFrame nesnelerinin kullanıldığı başka bir &amp;ouml;rnek ile devam edelim. Bu yeni &amp;ouml;rnekte bir &amp;ouml;ncekinden farklı olarak Canvas' ın &lt;strong&gt;Top&lt;/strong&gt; ve &lt;strong&gt;Left&lt;/strong&gt; &amp;ouml;zelliklerini rastegele oranlarda değiştiriyor olacağız. İşte &amp;ouml;rnek XAML i&amp;ccedil;eriği ve kodlarımız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk225_4.gif" alt="" width="420" height="220" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;XAML i&amp;ccedil;eriği;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;Window x:Class="AnimasyonIslemleri.KodlaKeyFrameAnimasyon2" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="KodlaKeyFrameAnimasyon2" Height="400" Width="400" Background="LightBlue"&amp;gt;
+    &amp;lt;Canvas x:Name="alan"&amp;gt;
+        &amp;lt;Rectangle Name="dortgenim" Canvas.Top="0" Canvas.Left="0" Height="65" Width="55"&amp;gt;
+            &amp;lt;Rectangle.Fill&amp;gt;
+                &amp;lt;ImageBrush ImageSource="Kitap.jpg"/&amp;gt;
+            &amp;lt;/Rectangle.Fill&amp;gt;
+        &amp;lt;/Rectangle&amp;gt;
+    &amp;lt;/Canvas&amp;gt;
+&amp;lt;/Window&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Kod i&amp;ccedil;eriği;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using System.Windows.Media.Animation;
+
+namespace AnimasyonIslemleri
+{
+    public partial class KodlaKeyFrameAnimasyon2 : Window
+    {
+        Random rnd = new Random();
+        Storyboard strBrd = new Storyboard();
+
+        public void AnimasyonuYurut()
+        {
+            double randomT = rnd.Next(1, 250);
+            double randomL = rnd.Next(1, 250);
+            Title=String.Format("İlk nokta {0}:{1} İkinci Nokta {2}:{3}",randomT.ToString(),randomL.ToString(),(randomT - 25).ToString(),(randomL - 25).ToString());
+
+            strBrd.AutoReverse = false;
+            strBrd.RepeatBehavior = new RepeatBehavior(1);
+
+            DoubleAnimationUsingKeyFrames keyFrm1 = new DoubleAnimationUsingKeyFrames();
+            keyFrm1.KeyFrames.Add(new LinearDoubleKeyFrame(randomT, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 3))));
+            keyFrm1.KeyFrames.Add(new LinearDoubleKeyFrame(randomT-25, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 5))));
+
+            Storyboard.SetTargetName(keyFrm1, "dortgenim");
+            Storyboard.SetTargetProperty(keyFrm1, new PropertyPath(Canvas.TopProperty));
+            strBrd.Children.Add(keyFrm1);
+    
+            DoubleAnimationUsingKeyFrames keyFrm2 = new DoubleAnimationUsingKeyFrames();
+            keyFrm2.KeyFrames.Add(new LinearDoubleKeyFrame(randomL, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 3))));
+            keyFrm2.KeyFrames.Add(new LinearDoubleKeyFrame(randomL-25, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 5))));
+        
+            Storyboard.SetTargetName(keyFrm2, "dortgenim");
+            Storyboard.SetTargetProperty(keyFrm2, new PropertyPath(Canvas.LeftProperty));
+            strBrd.Children.Add(keyFrm2);
+        
+            strBrd.Begin(this);
+        }
+    
+        void dortgenim_MouseEnter(object sender, MouseEventArgs e)
+        {
+            AnimasyonuYurut();
+        }
+
+        public KodlaKeyFrameAnimasyon2()
+        {
+            InitializeComponent();
+            dortgenim.MouseEnter += new MouseEventHandler(dortgenim_MouseEnter);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Tahmin edileceği &amp;uuml;zere dortgenin &lt;strong&gt;Top&lt;/strong&gt; ve &lt;strong&gt;Left&lt;/strong&gt; &amp;ouml;zelliklerini animayon i&amp;ccedil;erisinde kullanmak istediğimizden iki farklı &lt;strong&gt;DoubleAnimationUsingKeyFrames&lt;/strong&gt; nesne &amp;ouml;rneği kullanılması gerekmektedir. Bu nesne &amp;ouml;rnekleride kendi i&amp;ccedil;lerinde farklı &lt;strong&gt;LinearDoubleKeyFrame&lt;/strong&gt; nesnelerine sahiptir. &amp;Ouml;rneğin &amp;ccedil;alışma zamanındaki(run-time) &amp;ccedil;ıktısı aşağıdaki Flash g&amp;ouml;rselindeki gibi olacaktır. &lt;em&gt;(&lt;strong&gt;&lt;span style="color: #ff0000;"&gt;Flash dosyasının boyutu 454 Kb olduğundan y&amp;uuml;klenmesi zaman alabilir.&lt;/span&gt;&lt;/strong&gt; Dosyanın boyutunun k&amp;uuml;&amp;ccedil;&amp;uuml;k olması i&amp;ccedil;in kalitesi d&amp;uuml;ş&amp;uuml;r&amp;uuml;lm&amp;uuml;şt&amp;uuml;r. Bu nedenle kitap animasyon hareketi sırasında iz bırakmaktadır. Ger&amp;ccedil;ek uygulamada elbetteki b&amp;ouml;yle bir iz yoktur.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;object id="obj3" width="400" height="400" classid="clsid:D27CDB6E-AE6D-11CF-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0" border="0"&gt;
+&lt;param name="movie" value="http://www.buraksenyurt.com/makale/images/mk225Video3.swf" /&gt;
+&lt;param name="quality" value="High" /&gt; &lt;embed type="application/x-shockwave-flash" width="400" height="400" src="http://www.buraksenyurt.com/makale/images/mk225Video3.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" name="obj3" /&gt;&lt;/object&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;LinearDoubleKeyFrame&lt;/strong&gt; tipi s&amp;ouml;z konusu değerlere ulaşılırken akıcı bir g&amp;ouml;rselliğin olmasını sağlar. Bunun dışında &lt;strong&gt;DiscreteDoubleKeyFrame&lt;/strong&gt; tipi kullanılaraktan nesnenin belirtilen animasyonda bir sonraki değerine sı&amp;ccedil;rayarak ge&amp;ccedil;mesi sağlanabilir. Aslında bu durumu anlamanın en iyi yolu &amp;ouml;rnek bir senaryo &amp;uuml;zerinde ilerlemektir. Bu ama&amp;ccedil;la aşağıdaki &lt;strong&gt;XAML&lt;/strong&gt; &amp;ccedil;ıktısına sahip bir &lt;strong&gt;pencere(Window)&lt;/strong&gt; tasarladığımızı d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk225_5.gif" alt="" width="307" height="173" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;XAML i&amp;ccedil;eriği;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;Window x:Class="AnimasyonIslemleri.DiscreteKullanimi" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="DiscreteDoubleKeyFrame ile Animasyon" Height="400" Width="400"&amp;gt;
+    &amp;lt;Canvas&amp;gt;
+        &amp;lt;Rectangle Name="Dortgen" Canvas.Top="0" Canvas.Left="0" Height="75" Width="55"&amp;gt;
+            &amp;lt;Rectangle.Fill&amp;gt;
+                &amp;lt;ImageBrush ImageSource="Kitap.jpg"/&amp;gt;
+            &amp;lt;/Rectangle.Fill&amp;gt;
+            &amp;lt;Rectangle.Triggers&amp;gt;
+                &amp;lt;EventTrigger RoutedEvent="Window.Loaded"&amp;gt;
+                    &amp;lt;EventTrigger.Actions&amp;gt;
+                        &amp;lt;BeginStoryboard&amp;gt;
+                            &amp;lt;Storyboard AutoReverse="True" RepeatBehavior="Forever"&amp;gt;
+                                &amp;lt;DoubleAnimationUsingKeyFrames Storyboard.TargetName="Dortgen" Storyboard.TargetProperty="(Canvas.Top)"&amp;gt;
+                                    &amp;lt;DiscreteDoubleKeyFrame KeyTime="0:0:1" Value="150"/&amp;gt; 
+                                    &amp;lt;DiscreteDoubleKeyFrame KeyTime="0:0:2" Value="30"/&amp;gt;
+                                    &amp;lt;DiscreteDoubleKeyFrame KeyTime="0:0:3" Value="120"/&amp;gt;
+                                    &amp;lt;DiscreteDoubleKeyFrame KeyTime="0:0:4" Value="60"/&amp;gt;
+                                    &amp;lt;DiscreteDoubleKeyFrame KeyTime="0:0:5" Value="90"/&amp;gt;
+                                    &amp;lt;DiscreteDoubleKeyFrame KeyTime="0:0:6" Value="75"/&amp;gt;
+                                &amp;lt;/DoubleAnimationUsingKeyFrames&amp;gt;
+                                &amp;lt;DoubleAnimationUsingKeyFrames Storyboard.TargetName="Dortgen" Storyboard.TargetProperty="(Canvas.Left)"&amp;gt;
+                                    &amp;lt;DiscreteDoubleKeyFrame KeyTime="0:0:1.5" Value="150"/&amp;gt;
+                                    &amp;lt;DiscreteDoubleKeyFrame KeyTime="0:0:2.5" Value="30"/&amp;gt;
+                                    &amp;lt;DiscreteDoubleKeyFrame KeyTime="0:0:3.5" Value="120"/&amp;gt;
+                                    &amp;lt;DiscreteDoubleKeyFrame KeyTime="0:0:4.5" Value="60"/&amp;gt;
+                                    &amp;lt;DiscreteDoubleKeyFrame KeyTime="0:0:5.5" Value="90"/&amp;gt;
+                                    &amp;lt;DiscreteDoubleKeyFrame KeyTime="0:0:6.5" Value="75"/&amp;gt;
+                                &amp;lt;/DoubleAnimationUsingKeyFrames&amp;gt;
+                            &amp;lt;/Storyboard&amp;gt;
+                        &amp;lt;/BeginStoryboard&amp;gt;
+                    &amp;lt;/EventTrigger.Actions&amp;gt;
+                &amp;lt;/EventTrigger&amp;gt;
+            &amp;lt;/Rectangle.Triggers&amp;gt;
+        &amp;lt;/Rectangle&amp;gt;
+    &amp;lt;/Canvas&amp;gt;
+&amp;lt;/Window&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rnekte iki adet &lt;strong&gt; DoubleAnimationUsingKeyFrames&lt;/strong&gt; elementi kullanılmıştır. Bunlardan birisi &lt;strong&gt;Canvas&lt;/strong&gt; tipinin &lt;strong&gt;Top&lt;/strong&gt; &amp;ouml;zelliği &amp;uuml;zerinde diğeri ise &lt;strong&gt; Left&lt;/strong&gt; &amp;ouml;zelliği &amp;uuml;zerinden animasyon işlemlerinin y&amp;uuml;r&amp;uuml;t&amp;uuml;lmesini olanaklı kılmaktadır. Her biri kendi i&amp;ccedil;erisinde birden fazla &lt;strong&gt; DiscreteDoubleKeyFrame&lt;/strong&gt; tipi i&amp;ccedil;ermektedir. DiscreteDoubleKeyFrame elementleri &lt;strong&gt;KeyTime&lt;/strong&gt; niteliğinde belirtilen anda, animasyon uygulanan kontrol&amp;uuml;n ilgili &amp;ouml;zelliğinin &lt;strong&gt;value&lt;/strong&gt; niteliği ile belirtilen değerde olmasını sağlamaktadır.&lt;/p&gt;
+&lt;p&gt;S&amp;ouml;z gelimi animasyondaki zaman &amp;ccedil;izelgesinin 2nci saniyesinde &lt;strong&gt;Top&lt;/strong&gt; değeri 30 piksel, 1.5nci saniyesinde &lt;strong&gt;Left&lt;/strong&gt; değeri 150 piksel olacak şekilde belirlenmektedir. Daha &amp;ouml;ncede belirtildiği gibi kontrol&amp;uuml;n s&amp;ouml;z konusu koordinat noktalarına ulaşması sırasında akıcı bir efekt yerine sı&amp;ccedil;rama(Jump) efekti uygulanmaktadır. Her halde bir yerden bir yere ışınlanmanın WPF' cesinin bu olduğunu s&amp;ouml;yleyebiliriz. Bu durumu aşağıdaki Flash g&amp;ouml;rselinden daha net bir şekilde analiz edebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;object id="obj4" width="276" height="296" classid="clsid:D27CDB6E-AE6D-11CF-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0" border="0"&gt;
+&lt;param name="movie" value="http://www.buraksenyurt.com/makale/images/mk225Video4.swf" /&gt;
+&lt;param name="quality" value="High" /&gt; &lt;embed type="application/x-shockwave-flash" width="276" height="296" src="http://www.buraksenyurt.com/makale/images/mk225Video4.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" name="obj4" /&gt;&lt;/object&gt;&lt;/p&gt;
+&lt;p&gt;Elbetteki aynı &amp;ouml;rneği kod yardımıylada ger&amp;ccedil;ekleştirebiliriz. Bunun i&amp;ccedil;in aşağıdaki XAML i&amp;ccedil;eriğine ve kodlara sahip bir pencere hazırlamamız yeterli olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;XAML i&amp;ccedil;eriği;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;Window x:Class="AnimasyonIslemleri.KodlaDiscreteKullanimi" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Kod ile Discrete Kullanimi" Height="300" Width="300"&amp;gt;
+    &amp;lt;Canvas&amp;gt;
+        &amp;lt;Rectangle Name="Dortgen" Canvas.Top="0" Canvas.Left="0" Height="75" Width="55"&amp;gt;
+            &amp;lt;Rectangle.Fill&amp;gt;
+                &amp;lt;ImageBrush ImageSource="Kitap.jpg"/&amp;gt;
+            &amp;lt;/Rectangle.Fill&amp;gt;
+        &amp;lt;/Rectangle&amp;gt;
+    &amp;lt;/Canvas&amp;gt;
+&amp;lt;/Window&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Kod i&amp;ccedil;eriği;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using System.Windows.Media.Animation; // Animasyon tiplerini i&amp;ccedil;eren isim alanıdır
+
+namespace AnimasyonIslemleri
+{
+    public partial class KodlaDiscreteKullanimi : Window
+    {
+        private void AnimasyonuHazirla()
+        {
+            // Storyboard nesnesi &amp;ouml;rneklenir
+            Storyboard strBrd = new Storyboard();
+            // Animasyonun s&amp;uuml;rekli tekrar edeceği belirtilir
+            strBrd.RepeatBehavior = RepeatBehavior.Forever;
+            // Animasyonun zaman &amp;ccedil;izgisini tamamladığında aynı yoldan geriye d&amp;ouml;nmesi sağlanır
+            strBrd.AutoReverse = true;
+
+            // Dortgen nesnesinde Canvas' ın Top &amp;ouml;zelliği &amp;uuml;zerinde Frame bazlı animasyon yapılmasını sağlayacak şekilde DoubleAnimationUsingKeyFrames nesnesi &amp;ouml;rneklenir
+            DoubleAnimationUsingKeyFrames dblA1 = new DoubleAnimationUsingKeyFrames();
+            Storyboard.SetTargetName(dblA1, "Dortgen");
+            Storyboard.SetTargetProperty(dblA1, new PropertyPath(Canvas.TopProperty));
+    
+            // Frame' lerdeki Top &amp;ouml;zelliğinin değerleri belirtilir. Bunun i&amp;ccedil;in DiscreteDoubleKeyFrame nesneleri &amp;ouml;rneklenerek KeyFrames koleksiyonuna eklenir.
+            dblA1.KeyFrames.Add(new DiscreteDoubleKeyFrame(150, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 1))));
+            dblA1.KeyFrames.Add(new DiscreteDoubleKeyFrame(30, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 2))));
+            dblA1.KeyFrames.Add(new DiscreteDoubleKeyFrame(120, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 3))));
+            dblA1.KeyFrames.Add(new DiscreteDoubleKeyFrame(60, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 4))));
+            dblA1.KeyFrames.Add(new DiscreteDoubleKeyFrame(90, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 5))));
+            dblA1.KeyFrames.Add(new DiscreteDoubleKeyFrame(75, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 6))));
+            // DoubleAnimationUsingKeyFrames nesne &amp;ouml;rneği Storyboard' a alt element olarak eklenir.
+            strBrd.Children.Add(dblA1);
+    
+            DoubleAnimationUsingKeyFrames dblA2 = new DoubleAnimationUsingKeyFrames();
+            Storyboard.SetTargetName(dblA2, "Dortgen");
+            Storyboard.SetTargetProperty(dblA2, new PropertyPath(Canvas.LeftProperty));
+            
+            dblA2.KeyFrames.Add(new DiscreteDoubleKeyFrame(150, KeyTime.FromTimeSpan(new TimeSpan(0,0, 0, 1,500))));
+            dblA2.KeyFrames.Add(new DiscreteDoubleKeyFrame(30, KeyTime.FromTimeSpan(new TimeSpan(0, 0,0, 2,500))));
+            dblA2.KeyFrames.Add(new DiscreteDoubleKeyFrame(120, KeyTime.FromTimeSpan(new TimeSpan(0, 0,0, 3,500))));
+            dblA2.KeyFrames.Add(new DiscreteDoubleKeyFrame(60, KeyTime.FromTimeSpan(new TimeSpan(0, 0,0, 4,500))));
+            dblA2.KeyFrames.Add(new DiscreteDoubleKeyFrame(90, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 0,5,500))));
+            dblA2.KeyFrames.Add(new DiscreteDoubleKeyFrame(75, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 0,6,500))));
+            strBrd.Children.Add(dblA2);
+    
+            // Pencere y&amp;uuml;klendikten sonra
+            Loaded += delegate(object sender, RoutedEventArgs e)
+                            {
+                                // Animasyon başlatılır
+                                strBrd.Begin(this);
+                            };
+        
+        }
+        public KodlaDiscreteKullanimi()
+        {
+            InitializeComponent();
+            AnimasyonuHazirla();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Frame tabanlı animasyon işlemlerinde &lt;strong&gt; LinearDoubleKeyFrame&lt;/strong&gt; ve &lt;strong&gt;DiscreteDoubleKeyFrame&lt;/strong&gt; tipleri dışında kullanılabilen bir diğer sınıfta &lt;strong&gt;SplineDoubleKeyFrame&lt;/strong&gt;' dir. Bu tip sayesinde, animasyon işlemi sırasındaki ileri ve geri y&amp;ouml;nl&amp;uuml; hareketlerde, hızlanma ve yavaşlama oranları daha net bir şekilde belirlenebilir. S&amp;ouml;z konusu hızlanma verilerini belirlemek i&amp;ccedil;in, sadece &lt;strong&gt;0.0&lt;/strong&gt; ile &lt;strong&gt;1.0&lt;/strong&gt; arasında değerler alabilen &lt;strong&gt;KeySpline&lt;/strong&gt; &amp;ouml;zelliğinden yararlanılır. Aşağıdaki &lt;strong&gt;XAML&lt;/strong&gt; i&amp;ccedil;eriğine sahip &amp;ouml;rnekte SplienDoubleKeyFrame tipi kullanılmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk225_6.gif" alt="" width="203" height="220" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;XAML i&amp;ccedil;eriği;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;Window x:Class="AnimasyonIslemleri.SplineKullanimi" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Spline Kullanimi" Height="422" Width="181"&amp;gt;
+    &amp;lt;Canvas&amp;gt;
+        &amp;lt;Rectangle Name="Dortgen" Canvas.Top="0" Canvas.Left="0" Height="75" Width="55"&amp;gt;
+            &amp;lt;Rectangle.Fill&amp;gt;
+                &amp;lt;ImageBrush ImageSource="Kitap.jpg"/&amp;gt;
+            &amp;lt;/Rectangle.Fill&amp;gt;
+            &amp;lt;Rectangle.Triggers&amp;gt;
+                &amp;lt;EventTrigger RoutedEvent="Window.Loaded"&amp;gt;
+                    &amp;lt;EventTrigger.Actions&amp;gt;
+                        &amp;lt;BeginStoryboard&amp;gt;
+                            &amp;lt;Storyboard AutoReverse="True" RepeatBehavior="Forever"&amp;gt;
+                                &amp;lt;DoubleAnimationUsingKeyFrames Storyboard.TargetName="Dortgen" Storyboard.TargetProperty="(Canvas.Top)"&amp;gt;
+                                    &amp;lt;SplineDoubleKeyFrame KeyTime="0:0:3" Value="200" KeySpline="0.3,0.0 0.9,0.3"/&amp;gt;
+                                &amp;lt;/DoubleAnimationUsingKeyFrames&amp;gt;
+                            &amp;lt;/Storyboard&amp;gt;
+                        &amp;lt;/BeginStoryboard&amp;gt;
+                    &amp;lt;/EventTrigger.Actions&amp;gt;
+                &amp;lt;/EventTrigger&amp;gt;
+            &amp;lt;/Rectangle.Triggers&amp;gt;
+        &amp;lt;/Rectangle&amp;gt;
+    &amp;lt;/Canvas&amp;gt;
+&amp;lt;/Window&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Bu &amp;ouml;rneğin &amp;ccedil;alışma zamanındaki &amp;ccedil;ıktısı aşağıdaki Flash animasyonunda olduğu gibidir.&lt;em&gt;(&lt;strong&gt;&lt;span style="color: #ff0000;"&gt;Flash dosyasının boyutu 298 Kb olduğundan y&amp;uuml;klenmesi zaman alabilir.&lt;/span&gt;&lt;/strong&gt;)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;object id="obj5" width="124" height="320" classid="clsid:D27CDB6E-AE6D-11CF-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0" border="0"&gt;
+&lt;param name="movie" value="http://www.buraksenyurt.com/makale/images/mk225Video5.swf" /&gt;
+&lt;param name="quality" value="High" /&gt; &lt;embed type="application/x-shockwave-flash" width="124" height="320" src="http://www.buraksenyurt.com/makale/images/mk225Video5.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" name="obj5" /&gt;&lt;/object&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edilecek olursa d&amp;uuml;şey d&amp;uuml;zlemde hareket eden resim 3 saniyelik zaman dilimi i&amp;ccedil;erisinde pencerenin &amp;uuml;st noktasından 200 piksel aşağıya gelmektedir. Ancak bu hareketi sırasında &lt;strong&gt;KeySpline&lt;/strong&gt; niteliğinde belirtilen değerler nedeni ile d&amp;uuml;şey olarak hızlanarak ve ters y&amp;ouml;nde de yavaşlayarak ilerlemektedir. KeySpline niteliğindeki değerler ile oynayarak daha farklı etkiler de elde edilebilir. Hatta bu değerler ile oynayarak farklı etkilerin nasıl oluşturulabileceğini incelemenizi şiddetle tavsiye ederim. Aynı &amp;ouml;rnek kod yardımıylada aşağıdaki gibi geliştirilebilir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;XAML i&amp;ccedil;eriği;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;Window x:Class="AnimasyonIslemleri.KodlaSplineKullanimi" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Kod ile Spline Kullanimi" Height="397" Width="181"&amp;gt;
+    &amp;lt;Canvas&amp;gt;
+        &amp;lt;Rectangle Name="Dortgen" Canvas.Top="0" Canvas.Left="0" Height="75" Width="55"&amp;gt;
+            &amp;lt;Rectangle.Fill&amp;gt;
+                &amp;lt;ImageBrush ImageSource="Kitap.jpg"/&amp;gt;
+            &amp;lt;/Rectangle.Fill&amp;gt;
+        &amp;lt;/Rectangle&amp;gt;
+    &amp;lt;/Canvas&amp;gt;
+&amp;lt;/Window&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Kod i&amp;ccedil;eriği;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using System.Windows.Media.Animation; // Animasyon tiplerini i&amp;ccedil;eren isim alanıdır
+
+namespace AnimasyonIslemleri
+{
+    public partial class KodlaSplineKullanimi : Window
+    {
+        private void AnimasyonuHazirla()
+        {
+            // Storyboard nesnesi &amp;ouml;rneklenir, animasyonun tekrarlı ve geriye d&amp;ouml;n&amp;uuml;şl&amp;uuml; olacak şekilde &amp;ccedil;alışacağı belirlenir
+            Storyboard strBrd = new Storyboard();
+            strBrd.RepeatBehavior = RepeatBehavior.Forever;
+            strBrd.AutoReverse = true;
+
+            DoubleAnimationUsingKeyFrames dblA = new DoubleAnimationUsingKeyFrames();
+    
+            // SplineDoubleKeyFrame nesnesi eklenir. &amp;Uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; parametre ile hızlanma ve yavaşlama değerleri belirlenir.
+            dblA.KeyFrames.Add(new SplineDoubleKeyFrame(200, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 3)), new KeySpline(0.3, 0, 0.9, 0.3)));
+            // Animasyonun Dortgen isimli nesneye ve i&amp;ccedil;inde bulunduğu Canvas' ın Top &amp;ouml;zelliğine uygulanacağı belirlenir
+            Storyboard.SetTargetName(dblA, "Dortgen");
+            Storyboard.SetTargetProperty(dblA, new PropertyPath(Canvas.TopProperty));
+    
+            // Animasyon nesnesi Storyboard' a alt element olarak eklenir
+            strBrd.Children.Add(dblA);
+        
+            // Pencerenin y&amp;uuml;klenmesi tamamlandıktan sonra
+            Loaded += delegate(object sender, RoutedEventArgs e)
+                            {
+                                // Animasyon başlatılır
+                                strBrd.Begin(this);
+                            };
+        }
+        public KodlaSplineKullanimi()
+        {    
+            InitializeComponent();
+            AnimasyonuHazirla();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu &amp;ouml;rneklerdende anlaşılacağı &amp;uuml;zere farklı veri tipleri i&amp;ccedil;in yazılmış olan Frame bazlı animasyon tipleri olduğunu s&amp;ouml;yleyebiliriz. Geliştirilen &amp;ouml;rnekler double tipi ile &amp;ccedil;alışan &amp;ouml;zellikler &amp;uuml;zerinde Frame bazlı animasyonlar geliştirilebilmesi i&amp;ccedil;in &lt;strong&gt; DoubleAnimationUsingKeyFrames&lt;/strong&gt; tipini kullanmaktadır. Ancak bu tip dışında &lt;strong&gt;ColorAnimationUsingKeyFrames&lt;/strong&gt;, &lt;strong&gt; PointAnimationUsingKeyFrames&lt;/strong&gt;, &lt;strong&gt;ByteAnimationUsingKeyFrames&lt;/strong&gt; vb... sınıflarda yer almaktadır.&lt;/p&gt;
+&lt;p&gt;T&amp;uuml;m bu Frame bazlı animasyon tipleri &lt;strong&gt; LinearTipAdıKeyFrame, DiscreteTipAdıKeyFrame &lt;/strong&gt;ve &lt;strong&gt; SplineTipAdıKeyFrame&lt;/strong&gt; sınıflarına ait nesne &amp;ouml;rnekleri ile &amp;ccedil;alışabilmektedir. Tabiki bu durum her veri t&amp;uuml;r&amp;uuml; i&amp;ccedil;in ge&amp;ccedil;erli değildir. S&amp;ouml;z gelimi &lt;strong&gt;StringAnimationKeyFrames&lt;/strong&gt; tipi sadece &lt;strong&gt; DiscreteStringKeyFrame&lt;/strong&gt; sınıfına ait nesne &amp;ouml;rneklerini taşıyabilir. Dolayısıyla enterpoasyon&lt;strong&gt;(Interpolation)&lt;/strong&gt; efektleri ger&amp;ccedil;ekleştirilemez.&lt;/p&gt;
+&lt;p&gt;Sıradaki &amp;ouml;rnekte bir Button kontrol&amp;uuml;n&amp;uuml;n Text &amp;ouml;zelliğinin i&amp;ccedil;eriğini Frame bazlı animasyon işleminde nasıl ele alabileceğimizi inceleyeceğiz. Bu ama&amp;ccedil;la XAML i&amp;ccedil;eriği aşağıdaki gibi olan bir pencere tasarladığımızı d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk225_7.gif" alt="" width="308" height="171" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;XAML i&amp;ccedil;eriği;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;Window x:Class="AnimasyonIslemleri.StringKeyFrameAnimasyon" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="StringKeyFrameAnimasyon" Height="149" Width="278"&amp;gt;
+    &amp;lt;Grid&amp;gt;
+        &amp;lt;Button Name="btnMerhaba" Width="140" Height="40" FontSize="12" FontWeight="Bold"&amp;gt;
+            &amp;lt;Button.Triggers&amp;gt;
+                &amp;lt;EventTrigger RoutedEvent="Button.MouseEnter"&amp;gt;
+                    &amp;lt;EventTrigger.Actions&amp;gt;
+                        &amp;lt;BeginStoryboard&amp;gt;
+                            &amp;lt;Storyboard RepeatBehavior="Forever"&amp;gt;
+                                &amp;lt;StringAnimationUsingKeyFrames Storyboard.TargetName="btnMerhaba" Storyboard.TargetProperty="Content" Duration="0:0:6"&amp;gt;
+                                &amp;lt;!-- Eğer Duration s&amp;uuml;resi belirtilmesse DiscreteStringKeyFrame elementlerinden sonuncusu g&amp;ouml;sterilmiyor. Sonuncusununda g&amp;ouml;sterilmesi i&amp;ccedil;in Duration s&amp;uuml;resi son DiscreteStringKeyFrame' inkinden fazla verilmelidir.--&amp;gt;
+                                    &amp;lt;DiscreteStringKeyFrame Value="WPF" KeyTime="0:0:1"/&amp;gt;
+                                    &amp;lt;DiscreteStringKeyFrame Value="ile" KeyTime="0:0:2"/&amp;gt;
+                                    &amp;lt;DiscreteStringKeyFrame Value="Temel" KeyTime="0:0:3"/&amp;gt;
+                                    &amp;lt;DiscreteStringKeyFrame Value="Animasyon" KeyTime="0:0:4"/&amp;gt;
+                                    &amp;lt;DiscreteStringKeyFrame Value="İşlemleri" KeyTime="0:0:5"/&amp;gt;
+                                &amp;lt;/StringAnimationUsingKeyFrames&amp;gt;
+                            &amp;lt;/Storyboard&amp;gt;
+                        &amp;lt;/BeginStoryboard&amp;gt;
+                    &amp;lt;/EventTrigger.Actions&amp;gt;
+                &amp;lt;/EventTrigger&amp;gt;
+            &amp;lt;/Button.Triggers&amp;gt;
+        &amp;lt;/Button&amp;gt;
+    &amp;lt;/Grid&amp;gt;
+&amp;lt;/Window&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Bu &amp;ouml;rneğin &amp;ccedil;alışma zamanındaki işleyişi aşağıdaki Flash g&amp;ouml;rselinde olduğu gibidir. &lt;strong&gt;DiscreteStringKeyFrame&lt;/strong&gt; elementlerine ait &lt;strong&gt;Value&lt;/strong&gt; nitelikleri tahmin edileceği &amp;uuml;zere, animasyonun bağlandığı kontrol&amp;uuml;n ilgili &amp;ouml;zelliğindeki string bilginin t anında ne olacağını belirtmekte kullanılmaktadır. &lt;strong&gt;KeyTime&lt;/strong&gt; niteliğine verilen değerler ile s&amp;ouml;z konusu t anları belirtilir.&lt;/p&gt;
+&lt;p&gt;&lt;object id="obj6" width="276" height="148" classid="clsid:D27CDB6E-AE6D-11CF-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0" border="0"&gt;
+&lt;param name="movie" value="http://www.buraksenyurt.com/makale/images/mk225Video6.swf" /&gt;
+&lt;param name="quality" value="High" /&gt; &lt;embed type="application/x-shockwave-flash" width="276" height="148" src="http://www.buraksenyurt.com/makale/images/mk225Video6.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" name="obj6" /&gt;&lt;/object&gt;&lt;/p&gt;
+&lt;p&gt;Elbetteki bu &amp;ouml;rnekteki animasyon etkisi kod yardımıylada geliştirilebilir. Aşağıdaki kod par&amp;ccedil;alarında bu duruma bir &amp;ouml;rnek verilmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;XAML i&amp;ccedil;eriği;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;Window x:Class="AnimasyonIslemleri.KodlaStringKeyFrameAnimasyon" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="KodlaStringKeyFrameAnimasyon" Height="144" Width="300"&amp;gt;
+    &amp;lt;Grid&amp;gt;
+        &amp;lt;Button Name="btnMerhaba" Width="140" Height="40" FontSize="12" FontWeight="Bold"/&amp;gt;
+    &amp;lt;/Grid&amp;gt;
+&amp;lt;/Window&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Kod i&amp;ccedil;eriği;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using System.Windows.Media.Animation;
+
+namespace AnimasyonIslemleri
+{
+    public partial class KodlaStringKeyFrameAnimasyon : Window
+    {
+        string slogan = "CSharp az keyword ile &amp;ccedil;ok iş yapmamızı sağlayan bir dildir";
+
+        private void AnimasyonuHazirla()
+        {
+            Storyboard strBrd = new Storyboard();
+            strBrd.RepeatBehavior = RepeatBehavior.Forever;
+    
+            StringAnimationUsingKeyFrames strA = new StringAnimationUsingKeyFrames();
+            string[] kelimeler = slogan.Split(' ');
+            strBrd.Duration = TimeSpan.FromSeconds(kelimeler.Length + 1);
+            for(int i=1;i&amp;lt;=kelimeler.Length;i++)
+            {
+                strA.KeyFrames.Add(new DiscreteStringKeyFrame(kelimeler[i-1],KeyTime.FromTimeSpan(TimeSpan.FromSeconds(i))));
+            }
+            Storyboard.SetTargetName(strA, "btnMerhaba");
+            Storyboard.SetTargetProperty(strA, new PropertyPath(Button.ContentProperty));
+            strBrd.Children.Add(strA);
+            btnMerhaba.MouseEnter += delegate(object sender, MouseEventArgs e)
+                                                    {
+                                                        strBrd.Begin(this);
+                                                    };
+        }
+        public KodlaStringKeyFrameAnimasyon()
+        {
+            InitializeComponent();
+            AnimasyonuHazirla();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu kez, bir slogan c&amp;uuml;mle i&amp;ccedil;erisindeki kelimeler boşluk karakterine g&amp;ouml;re &lt;strong&gt;Split&lt;/strong&gt; metodu ile ayrıştırılmakta ve elde edilen string dizisindeki her bir kelime i&amp;ccedil;in &lt;strong&gt; DiscreteStringKeyFrame&lt;/strong&gt; temelli, saniyede bir artan animasyon uygulanmaktadır. Bu &amp;ouml;rnek kod par&amp;ccedil;asının &amp;ccedil;alışma zamanındaki &amp;ccedil;ıktısı ise aşağıdaki Flash g&amp;ouml;rselindeki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;object id="obj7" width="300" height="144" classid="clsid:D27CDB6E-AE6D-11CF-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0" border="0"&gt;
+&lt;param name="movie" value="http://www.buraksenyurt.com/makale/images/mk225Video7.swf" /&gt;
+&lt;param name="quality" value="High" /&gt; &lt;embed type="application/x-shockwave-flash" width="300" height="144" src="http://www.buraksenyurt.com/makale/images/mk225Video7.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" name="obj7" /&gt;&lt;/object&gt;&lt;/p&gt;
+&lt;p&gt;Makalemizde son olarak bir bileşenin belirli bir rota &amp;uuml;zerinde hareket etmesinin animasyon teknikleri ile nasıl ger&amp;ccedil;ekleştirilebileceğini incelemeye &amp;ccedil;alışacağız. &amp;Ouml;nceki makalelerimizden hatırlayacağınız gibi, &lt;strong&gt;Path&lt;/strong&gt; ve &lt;strong&gt;PathGeometry&lt;/strong&gt; tiplerini kullanarak birbirlerine bağlı yayların &amp;ccedil;izilmesi m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Bu tip bir elementin oluşturacağı rotayı takip eden bir bileşen s&amp;ouml;z konusu olduğunda, animasyon tiplerinden &lt;strong&gt;TipAdıAnimationUsingPath&lt;/strong&gt; isimlendirmesi ile tanımlananlardan yararlanbiliriz. &amp;Ouml;rneğin bir &lt;strong&gt; PathGeometry&lt;/strong&gt; ile tanımlanan rotada hareket edecek bir nesnenin i&amp;ccedil;inde bulunduğu &lt;strong&gt;Canvas&lt;/strong&gt;' ın &lt;strong&gt;Top&lt;/strong&gt; ve &lt;strong&gt;Left&lt;/strong&gt; &amp;ouml;zellikleri s&amp;ouml;z konusu ise &lt;strong&gt;DoubleAnimationUsingPath&lt;/strong&gt; tipini kullanabiliriz. Aşağıdaki &lt;strong&gt;XAML&lt;/strong&gt; &amp;ccedil;ıktısında bu durum &amp;ouml;rneklenmeye &amp;ccedil;alışılmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;XAML i&amp;ccedil;eriği;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;Window x:Class="AnimasyonIslemleri.PathFrameKullanimi" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="PathFrameKullanimi" Height="300" Width="300"&amp;gt;
+    &amp;lt;Window.Resources&amp;gt;
+        &amp;lt;PathGeometry x:Key="YolGeometrisi"&amp;gt;
+            &amp;lt;PathFigure&amp;gt;
+                &amp;lt;BezierSegment Point1="0,0" Point2="10,120" Point3="70,40"/&amp;gt;
+                &amp;lt;ArcSegment Point="150,125" SweepDirection="Clockwise" Size="50,50" IsLargeArc="True" RotationAngle="60"/&amp;gt;
+                &amp;lt;ArcSegment Point="200,200" SweepDirection="Counterclockwise" Size="50,50" IsLargeArc="True" RotationAngle="60"/&amp;gt;
+            &amp;lt;/PathFigure&amp;gt;
+        &amp;lt;/PathGeometry&amp;gt;
+    &amp;lt;/Window.Resources&amp;gt;
+    &amp;lt;Canvas&amp;gt;
+        &amp;lt;Path Data="{StaticResource YolGeometrisi}" Stroke="LightGray" StrokeThickness="2"/&amp;gt;
+            &amp;lt;Rectangle Height="65" Name="Dortgen" Width="55"&amp;gt;
+                &amp;lt;Rectangle.Fill&amp;gt;
+                    &amp;lt;ImageBrush ImageSource="Kitap.jpg" /&amp;gt;
+                &amp;lt;/Rectangle.Fill&amp;gt;
+                &amp;lt;Rectangle.Triggers&amp;gt;
+                    &amp;lt;EventTrigger RoutedEvent="Rectangle.MouseEnter"&amp;gt;
+                        &amp;lt;BeginStoryboard&amp;gt;
+                            &amp;lt;Storyboard AutoReverse="True" RepeatBehavior="Forever"&amp;gt;
+                                &amp;lt;DoubleAnimationUsingPath Storyboard.TargetName="Dortgen" Storyboard.TargetProperty="(Canvas.Top)" PathGeometry="{StaticResource YolGeometrisi}" Source="Y" Duration="0:0:6" /&amp;gt;
+                                &amp;lt;DoubleAnimationUsingPath Storyboard.TargetName="Dortgen" Storyboard.TargetProperty="(Canvas.Left)" PathGeometry="{StaticResource YolGeometrisi}" Source="X" Duration="0:0:6" /&amp;gt;
+                            &amp;lt;/Storyboard&amp;gt;
+                        &amp;lt;/BeginStoryboard&amp;gt;
+                    &amp;lt;/EventTrigger&amp;gt;
+                &amp;lt;/Rectangle.Triggers&amp;gt;
+            &amp;lt;/Rectangle&amp;gt;
+        &amp;lt;/Canvas&amp;gt;
+&amp;lt;/Window&amp;gt;&lt;/pre&gt;
+&lt;p&gt;S&amp;ouml;z konusu &amp;ouml;rnekte, &lt;strong&gt;Storyboard&lt;/strong&gt; elementi i&amp;ccedil;erisinde &lt;strong&gt;DoubleAnimationUsingPath&lt;/strong&gt; alt elementi kullanılmaktadır. Bu elementlerden iki adet tanımlanmasının sebebi, Dortgen isimli nesnenin Top ve Left &amp;ouml;zelliklerinin ayrı ayrı değiştirilmesi gerekliliğidir. DoubleAnimationUsingPath tipinde yer alan niteliklerden &lt;strong&gt;Storyboard.TargetName&lt;/strong&gt; ile animasyonun hangi kontrole uygulanacağı belirtilir ki bu &amp;ouml;rnekte s&amp;ouml;z konusu kontrol Dortgen isimli &lt;strong&gt;Rectangle&lt;/strong&gt; dır. &lt;strong&gt;Storyboard&lt;/strong&gt;.&lt;strong&gt;TargetProperty&lt;/strong&gt; nitelikleri ise &lt;strong&gt;Rectangle&lt;/strong&gt;' ın i&amp;ccedil;erisinde bulunduğu &lt;strong&gt;Canvas&lt;/strong&gt;' ın &lt;strong&gt;Top&lt;/strong&gt; ve &lt;strong&gt;Left&lt;/strong&gt; &amp;ouml;zelliklerinin değerleri &amp;uuml;zerinde hareketlendirmeler yapılacağını belirtir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;PathGeometry&lt;/strong&gt; nitelikleri tahmin edileceği &amp;uuml;zere rota bilgisini i&amp;ccedil;eren pencere kaynağını &lt;strong&gt;(Windows Resource) &lt;/strong&gt;işaret etmektedir. MSDN kaynakları &lt;strong&gt;Resource&lt;/strong&gt; olarak yapılan bu tip tanımlamaların animasyon işlemlerinde performans y&amp;ouml;n&amp;uuml;nden olumlu katkı yapacağını belirtmektedir. Static kaynak olarak tanımlanan YolGeometrisi isimli veri k&amp;uuml;mesi yardımıyla Path elementinin rota bilgiside verilmektedir. Bunun i&amp;ccedil;inde &lt;strong&gt;Path&lt;/strong&gt; elementinin &lt;strong&gt;Data&lt;/strong&gt; niteliğine değer ataması yapılmıştır. Bu &amp;ouml;rneğin &amp;ccedil;alışma zamanındaki &amp;ccedil;ıktısı aşağıdaki Flash animasyonunda olduğu gibidir. &lt;em&gt;(&lt;strong&gt;&lt;span style="color: #ff0000;"&gt;Flash dosyasının boyutu 352 kb olduğundan y&amp;uuml;klenmesi zaman alabilir.&lt;/span&gt;&lt;/strong&gt;)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;object id="obj8" width="300" height="300" classid="clsid:D27CDB6E-AE6D-11CF-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0" border="0"&gt;
+&lt;param name="movie" value="http://www.buraksenyurt.com/makale/images/mk225Video8.swf" /&gt;
+&lt;param name="quality" value="High" /&gt; &lt;embed type="application/x-shockwave-flash" width="300" height="300" src="http://www.buraksenyurt.com/makale/images/mk225Video8.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" name="obj8" /&gt;&lt;/object&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi WPF mimarisinde gerek XAML tarafında gerekse kod tarafında animasyon işlemleri i&amp;ccedil;in son derece etkili yollar kullanılabilmektedir. Bence burada &amp;ouml;nemli olan noktalardan biriside işaretleme dili i&amp;ccedil;erisinde bu tip gelişmiş fonksiyonelliklerin geliştirilebilmesidir. İlerleyen makalelerimizde WPF ile ilgili farklı konularada değinmeye &amp;ccedil;alışacağız. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/makale/images/AnimasyonIslemleri.rar"&gt;&amp;Ouml;rnek Uygulama i&amp;ccedil;in Tıklayın&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2007-10-01 12:00:00</pubDate>
+  <slug>WPF-Temel-Animasyon-Islemleri-2-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>wpf</tag>
+    <tag>animation</tag>
+  </tags>
+  <categories>
+    <category>WPF</category>
+  </categories>
+</post>

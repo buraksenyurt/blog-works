@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Ruby Kod Parçacıkları 27 - Hello Multithreading</title>
+  <description>Multithreading, programlamanın zor konularından birisidir. Aslında amaç işlemciye aynı andan birden fazla iş yaptırabilmek ya da bir işi parçalara bölerek eş zamanlı olarak yürütebilmektir. İşlemcinin bu farklı iş parçacıkları(Thread) arasında kısa sürelerde geçişler yapması sonucu istenen sonuçlara daha çabuk ulaşılması sağlanır. Bu, performans gerektiren bazı vakalarda oldukça önemlidir. Büyük veri kümelerinde arama yapan algoritmalar, yüksek boyutlu video görüntülerinin render eden programla, çeşitli matematik problemleri, oyun programlama ve daha pek çok alanda çoklu iş parçacığı tekniklerine başvurulur.</description>
+  <content>&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Multithreading, programlamanın zor konularından birisidir. Aslında ama&amp;ccedil; işlemciye aynı andan birden fazla iş yaptırabilmek ya da bir işi par&amp;ccedil;alara b&amp;ouml;lerek eş zamanlı olarak y&amp;uuml;r&amp;uuml;tebilmektir. İşlemcinin bu farklı iş par&amp;ccedil;acıkları&lt;em&gt;(Thread)&lt;/em&gt; arasında kısa s&amp;uuml;relerde ge&amp;ccedil;işler yapması sonucu istenen sonu&amp;ccedil;lara daha &amp;ccedil;abuk ulaşılması sağlanır. Bu, performans gerektiren bazı vakalarda olduk&amp;ccedil;a&amp;nbsp;&amp;ouml;nemlidir. B&amp;uuml;y&amp;uuml;k veri k&amp;uuml;melerinde arama yapan algoritmalar, y&amp;uuml;ksek boyutlu&amp;nbsp;video g&amp;ouml;r&amp;uuml;nt&amp;uuml;lerinin render eden programla, &amp;ccedil;eşitli matematik problemleri,&amp;nbsp;oyun programlama ve daha pek &amp;ccedil;ok alanda &amp;ccedil;oklu iş par&amp;ccedil;acığı tekniklerine başvurulur.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/11/rubythread_7.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Elbette &amp;ccedil;oklu&amp;nbsp;iş par&amp;ccedil;acıkları ile uğraşırken dikkat edilmesi gereken hususlar da vardır. Ortak veri k&amp;uuml;meleri&amp;nbsp;&amp;uuml;zerinde farklı iş par&amp;ccedil;acıklarının &amp;ccedil;alışması sırasında&amp;nbsp;veri b&amp;uuml;t&amp;uuml;nl&amp;uuml;ğ&amp;uuml;n&amp;uuml;n bozulması, iş par&amp;ccedil;acıklarının kilitlenmesi&lt;em&gt;(deadlock)&lt;/em&gt;, k&amp;ouml;t&amp;uuml; tasarım&amp;nbsp;sonucu işlemlerin &amp;ccedil;abuk bitmesi gerekirken daha uzun s&amp;uuml;rmesi, CPU&amp;nbsp;peek-time değerlerinin tavan yapması ve soğutma y&amp;uuml;k&amp;uuml; sonucu elektrik maliyetlerinin artması&lt;em&gt;(eğer sunucularda yaptırdığımız &amp;ccedil;ok par&amp;ccedil;acıklı işlemler&amp;nbsp;s&amp;ouml;z konusu ise bu ciddi bir sorun olabilir)&lt;/em&gt;, iş par&amp;ccedil;acıkları i&amp;ccedil;erisinden ele alınmamış hatalar fırlaması sonucu yorumlayıcının kesimlesi ve benzeri sıkıntılar oluşabilir. Dolayısıyla iş par&amp;ccedil;acıklarını kodlarken dikkatli olunması gerekir. Lakin bir yerden de işe başlamamız gerekiyor. &amp;Ouml;yleyse gelin Ruby dilinde Multithreading programlamaya bir merhaba diyelim.&lt;/p&gt;
+&lt;h2&gt;Thread Yaşam D&amp;ouml;ng&amp;uuml;s&amp;uuml;&lt;/h2&gt;
+&lt;p&gt;Pek &amp;ccedil;ok programlama dilinde olduğu gibi Ruby'de de bir ana iş par&amp;ccedil;acığı vardır&lt;em&gt;(Main Thread)&lt;/em&gt; Bu iş par&amp;ccedil;acığı&amp;nbsp;ile birlikte &amp;ccedil;alışacak farklı iş par&amp;ccedil;aları oluşturmak i&amp;ccedil;in Thread sınıfının new metodundan yararlanılır. Bu metod bir kod bloğu alır ve ilgili blok i&amp;ccedil;erisindeki işlerin ana iş par&amp;ccedil;acığı&amp;nbsp;haricinde farklı bir iş par&amp;ccedil;acığı olarak &amp;ccedil;alıştırılmasını sağlar. Aşağıdaki kod par&amp;ccedil;asında temel anlamda Thread yapısının yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml; incelenmeye &amp;ccedil;alışılmıştır.&lt;/p&gt;
+&lt;pre class="brush:ruby;auto-links:false;toolbar:false" contenteditable="false"&gt;puts "Main Thread #{Thread.current}\t#{Time.now}"
+
+t1=Thread.new{
+	puts "t1 #{Thread.current}\t#{Time.now}"
+	sleep 2
+	puts "t1 #{Thread.current}\t#{Time.now}"
+}
+
+t2=Thread.new do
+	puts "t2 #{Thread.current}\t#{Time.now}"
+	sleep 4
+	puts "t1 #{Thread.current}\t#{Time.now}"
+end
+
+t1.join
+t2.join
+puts "Main thread #{Thread.current}\t#{Time.now}"&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/11/rubythread_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Uygulamada dikkat edilmesi gereken &amp;ouml;nemli noktalar var. Ana iş par&amp;ccedil;acığı&lt;em&gt;(Main Thread)&lt;/em&gt; dışında iki iş par&amp;ccedil;acığı daha &amp;ccedil;alışmaktadır. Bunlardan t1 i&amp;ccedil;erisinde sembolik olarak 2 saniyelik gecikme uygulanmıştır. t2 i&amp;ccedil;in bu s&amp;uuml;re 4 saniyedir. Kod akışı hemen Thread.new satırları sonrasında devam edeceğinden join metodunun kullanılmaması halinde uygulama anında&amp;nbsp;sonlanır. Bu nedenle ana iş par&amp;ccedil;acığına diğerlerini beklemesi s&amp;ouml;ylenmektedir. O an &amp;ccedil;alışmakta olan Thread'in Ruby tarafından &amp;uuml;retilen benzersiz nesne numarasına erişmek i&amp;ccedil;in current isimli sınıf metodundan yararlanılmıştır. Normalde bu sınıf metodu, oluşturulan Thread nesne &amp;ouml;rneğinin&amp;nbsp;kendisini d&amp;ouml;nd&amp;uuml;rmektedir. Dolayısıyla ekrana basılması halinde nesne numarası elde edilir.&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere kodun ilk ve son satırlarında elde edilen nesne &amp;ouml;rnekleri Main Thread'e aittir ve aynıdır. t1 ve t2 i&amp;ccedil;erisinden ulaşılan Thread &amp;ouml;rnekleri ise tamamen farklıdır. new metodundan sonraki kod bloğunu s&amp;uuml;sl&amp;uuml; parantezlerle verebileceğimiz gibi do end ifadesi ile de g&amp;ouml;nderebiliriz&lt;em&gt;(new dışında start ve fork metoduları ile de thread başlatılabilir)&lt;/em&gt;&lt;/p&gt;
+&lt;h2&gt;Değişken Kullanımı&lt;/h2&gt;
+&lt;p&gt;Thread'ler de değişken kullanımları da olduk&amp;ccedil;a kolaydır. Bazı hallerde farklı iş par&amp;ccedil;acıklarının&amp;nbsp;aynı değişken değerleri ile &amp;ccedil;alışması gerekebilir. Ruby dilinde bunu sağlamak &amp;ccedil;okta zor değildir. Aşağıdaki basit kod par&amp;ccedil;asını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;total=0
+threads=[]
+
+5.times{
+	threads&amp;lt;&amp;lt;Thread.new{
+		sleep(rand(0.1)/10.0)		
+		total+=rand(10)
+		Thread.current["forThis"]=total
+	}
+}
+threads.each{|t|
+		t.join
+		puts t["forThis"]
+}
+puts "Total = #{total}"&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/11/rubythread_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rnek kod par&amp;ccedil;asında 5 farklı iş par&amp;ccedil;acığı oluşturulmaktadır. Oluşturulan iş par&amp;ccedil;acıkları &amp;lt;&amp;lt; operat&amp;ouml;r&amp;uuml; ile threads isimli diziye eklenmektedir. Her bir Thread bloğu i&amp;ccedil;erisinde rastgele bir s&amp;uuml;re &amp;uuml;retilmekte ve Thread'in o s&amp;uuml;re boyunca bekledikten sonra işine devam etmesi sağlanmaktadır. Ama&amp;ccedil;, uzun s&amp;uuml;ren bir işi canlandırmaktır. Nitekim asıl &amp;ouml;nemli olan nokta blok i&amp;ccedil;erisinde [] operat&amp;ouml;rleri ile ulaşılan forThis anahtarıdır&lt;em&gt;(Aslında bir hash veri yapısına ulaştığımızı d&amp;uuml;ş&amp;uuml;nebiliriz)&lt;/em&gt;&amp;nbsp;Thread.current &amp;uuml;zerinden yapılan bu işlem ile sadece o Thread nesnesi i&amp;ccedil;in ge&amp;ccedil;erli olan bir anahtar&amp;nbsp;tanımı ve değer ataması s&amp;ouml;z konusu olur&lt;em&gt;(forThis anahtarı ThreadLocal olarak adlandırılan değere ulaşılmasını sağlamaktadır)&lt;/em&gt;&amp;nbsp;Yani forThis her Thread nesnesinin kendisine &amp;ouml;zel değer taşır.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;span style="line-height: 1.8;"&gt;&amp;Ouml;rnek kod par&amp;ccedil;asında her bir iş par&amp;ccedil;acığı total değişkeninin rastgele arttırılmış bir değerini barındırır. Bu değer threadlocal değeri olarak atanır. Tabi iş par&amp;ccedil;acıklarının&amp;nbsp;bu şekilde başlatılmasını takiben ana iş par&amp;ccedil;acığının da ilgili işlemlerin bitmesini beklemesi gerekir. Bunun i&amp;ccedil;in dikkat edileceği &amp;uuml;zere threads dizisinde each bloğu kullanılmış ve&amp;nbsp;t nesne &amp;ouml;rnekleri &amp;uuml;zerinden join metoduna &amp;ccedil;ağrılar ger&amp;ccedil;ekleştirilmiştir.&amp;nbsp;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="line-height: 1.8;"&gt;t["forThis"] kullanımı ile o anki iş par&amp;ccedil;acığının&amp;nbsp;sahip olduğu total değeri ekrana basılır. Tahmin edileceği &amp;uuml;zere son satırda ekrana basılan toplam değeri,&amp;nbsp;iş par&amp;ccedil;acıkları&amp;nbsp;i&amp;ccedil;erisinde en son tamamlanan iş par&amp;ccedil;acığında&amp;nbsp;atanan değer olacaktır. Burada &amp;ouml;nemli olan bir diğer nokta da, t&amp;uuml;m iş par&amp;ccedil;acıklarının&amp;nbsp;total isimli değişkene erişebilmeleridir. Nitekim bu değişken Thread blokları dışında tanımlıdır.&amp;nbsp;&lt;/span&gt;&lt;/p&gt;
+&lt;h2&gt;&lt;span style="line-height: 1.8;"&gt;&amp;Ouml;ncelikler(Priority)&lt;/span&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;span style="line-height: 1.8;"&gt;Bir başka kod par&amp;ccedil;ası ile yolumuza devam edelim. Bu kez iş par&amp;ccedil;acıklarının&amp;nbsp;&amp;ouml;nceliklerini anlamaya &amp;ccedil;alışacağız. Normalde Main Thread varsayılan olarak 0 priority değeri ile başlatılır.&amp;nbsp;İstersek diğer iş par&amp;ccedil;acıklarının&amp;nbsp;&amp;ouml;nceliklerini değiştirebiliriz. Y&amp;uuml;ksek &amp;ouml;nceliğe sahip&amp;nbsp;iş par&amp;ccedil;acıkları&amp;nbsp;diğer d&amp;uuml;ş&amp;uuml;k &amp;ouml;ncelikli iş par&amp;ccedil;acıklarına nazaran daha &amp;ccedil;ok &amp;ccedil;alıştırılırlar. Bu durumu aşağıdaki kod par&amp;ccedil;ası ile daha iyi anlayabiliriz.&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:ruby;auto-links:false;toolbar:false" contenteditable="false"&gt;for tryCount in 1..5
+	total1=total2=0
+	thread1=Thread.new{
+		while true
+			total1+=1
+		end
+	}
+	thread1.priority=5
+	thread2=Thread.new{
+		while true
+			total2+=1
+		end
+	}
+	thread2.priority=-5
+	sleep 1
+	puts "Total1=#{total1}\nTotal2=#{total2}"
+	puts "#{format("%.5f", (total1.to_f/total2.to_f))}\n\n"
+end&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rnekte&amp;nbsp;iki Thread nesne &amp;ouml;rneği oluşturulmuştur. Thread bloklarında total1 ve total2 isimli değişkenler 1er 1er arttırılmaktadır. Kritik olan nokta priority değerleridir. İlk thread i&amp;ccedil;in 5 ikinci thread i&amp;ccedil;inse -5 değeri verilmiştir. Buna g&amp;ouml;re ilk thread işlemci i&amp;ccedil;in daha &amp;ouml;nceliklidir. Yani işlemci, thread1 i&amp;ccedil;erisindeki bloğu thread2'ye g&amp;ouml;re daha sık &amp;ccedil;alıştıracaktır. Sonu&amp;ccedil; olarak hesaplanan toplam değerler arasında katsayı farkı oluşmuştur&lt;em&gt;(Bu bir ispattır aslında)&lt;/em&gt; Aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; kodu yazdığım makinenin &amp;uuml;rettiği sonu&amp;ccedil;lardır. Dikkat edileceği &amp;uuml;zere thread1 tarafından &amp;uuml;retilen toplam değerleri thread2 tarafından &amp;uuml;retilenlere g&amp;ouml;re belirgin olarak daha farklıdır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/11/rubythread_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;ncelikleri yakınlaştırdık&amp;ccedil;a sonu&amp;ccedil;ların değiştiği g&amp;ouml;r&amp;uuml;l&amp;uuml;r.&amp;nbsp;&amp;Ouml;rneğin ilk thread i&amp;ccedil;in &amp;ouml;nceliği 1 ikinci thread i&amp;ccedil;inse -1 şeklinde&amp;nbsp;belirlersek sayılar birbirlerine daha yakın &amp;ccedil;ıkacaktır. Kendi sistemimde elde ettiğim sonu&amp;ccedil;lar aşağıdaki gibidir&lt;em&gt;(intel core i7-4600U 2.10 Ghz)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/11/rubythread_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;Exception Y&amp;ouml;netimi&lt;/h2&gt;
+&lt;p&gt;Multithreading ile ilgili bir diğer kritik konuda bloklar i&amp;ccedil;erisinde oluşacak hatalarda sistemin nasıl davranış sergilediğidir. Yani bir iş par&amp;ccedil;acığı i&amp;ccedil;erisinden ortama fırlayacak bir hata s&amp;ouml;z konusu olursa ne olur? Normal şartlarda bir iş par&amp;ccedil;acığında istisna&amp;nbsp;oluşursa sadece bu iş par&amp;ccedil;acığı sonlanır&amp;nbsp;ve&amp;nbsp;kalanlar yaşamaya devam eder. &amp;Ouml;ncelikle bu vakayı ele alalım. İşte kod par&amp;ccedil;amız.&lt;/p&gt;
+&lt;pre class="brush:ruby;auto-links:false;toolbar:false" contenteditable="false"&gt;threads=[]
+threads&amp;lt;&amp;lt;Thread.new{
+	puts "thread 1 is running"
+	sleep 10
+	puts "end of thread 1"
+}
+threads&amp;lt;&amp;lt;Thread.new{
+	puts "thread 2 is running"
+	sleep 3
+	puts "end of thread 2"
+	}
+threads&amp;lt;&amp;lt;Thread.new{
+	puts "thread 3 is running"
+	sleep 1
+	raise ArgumentError,"Some argument error"
+	puts "end of thread 3"
+}
+puts "This is main thread"
+threads.each{|t|t.join}
+puts "end of main thread"&lt;/pre&gt;
+&lt;p&gt;Kodu yorumlamadan &amp;ouml;nce neler yaptığımıza bir bakalım. &amp;Uuml;&amp;ccedil; iş par&amp;ccedil;acığımız var. İş par&amp;ccedil;acıkları i&amp;ccedil;erisinde sleep metodu ile belirli s&amp;uuml;reler boyunca duraksama yapıyoruz. Bu şekilde uzun s&amp;uuml;ren işleri temsil ettiğimizi d&amp;uuml;ş&amp;uuml;nebiliriz. thread1 ve thread2 sorunsuz &amp;ccedil;alışacak iş par&amp;ccedil;acıkları. Ne var ki 3nc&amp;uuml; thread daha ilk saniyede ArgumentError fırlatıyor&lt;em&gt;(Oyunbozan Thread)&lt;/em&gt;T&amp;uuml;m iş par&amp;ccedil;acıklarını join ile ana iş par&amp;ccedil;acığımıza eklemeyi de ihmal etmiyoruz. İşler &amp;ccedil;alışma zamanında ilgin&amp;ccedil;leşiyor. İşte ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;m&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/11/rubythread_5.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere thread 1 ve thread 2 başarılı bir şekilde işlemlerini tamamlamıştır. Bu iş par&amp;ccedil;acıkları 1nci saniyede ortama ArgumentError fırlatan thread 3'ten daha uzun s&amp;uuml;rmelerine rağmen işlemlerini tamamlamışlardır. Lakin ilgili hata mesajı Main Thread &amp;uuml;zerinde ele alınmadığından onun işleyişi t&amp;uuml;m diğer iş par&amp;ccedil;acıkları&amp;nbsp;tamamlandıktan sonra kesilmiştir.&lt;/p&gt;
+&lt;p&gt;Tabii bazı durumlarda bir iş par&amp;ccedil;acığı&amp;nbsp;i&amp;ccedil;erisinde oluşacak hatanın diğer bağımsız &amp;ccedil;alışan iş par&amp;ccedil;acıklarının işleyişini de&amp;nbsp;kesmesi istenebilir. Bu durumda abort_on_exception değerine true atanması&amp;nbsp;yeterlidir. Yukarıdaki kod par&amp;ccedil;asını aşağıdaki gibi d&amp;uuml;zenleyerek devam edelim.&lt;/p&gt;
+&lt;pre class="brush:ruby;auto-links:false;toolbar:false" contenteditable="false"&gt;threads=[]
+threads&amp;lt;&amp;lt;Thread.new{
+	puts "thread 1 is running"
+	sleep 10
+	puts "end of thread 1"
+}
+threads&amp;lt;&amp;lt;Thread.new{
+	puts "thread 2 is running"
+	sleep 3
+	puts "end of thread 2"
+	}
+threads&amp;lt;&amp;lt;Thread.new{
+	puts "thread 3 is running"
+	sleep 1
+	raise ArgumentError,"Some argument error"
+	puts "end of thread 3"
+}
+threads.last.abort_on_exception=true
+puts "This is main thread"
+threads.each{|t|t.join}
+puts "end of main thread"&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;nce &amp;ccedil;alışma zamanı &amp;ccedil;ıktısına bir bakalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2016/11/rubythread_6.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;nceki &amp;ouml;rnek ile arada &amp;ouml;nemli bir fark var. Daha ilk saniyede fire veren iş par&amp;ccedil;acığımız&amp;nbsp;diğerlerinin de işlerini kesmesine&amp;nbsp;ve ana iş par&amp;ccedil;acığına&amp;nbsp;d&amp;uuml;ş&amp;uuml;lmesine sebep olmuştur. Bu durum abort_on_exception niteliğine true değeri verilmesi nedeniyle ger&amp;ccedil;ekleşmiştir. Pek tabii&amp;nbsp;ana iş par&amp;ccedil;acığında&amp;nbsp;ilgili hata ele alınmadığından o da son satırını işletemeden sonlanmıştır&lt;em&gt;(Garibim Main Thread bir t&amp;uuml;rl&amp;uuml; son satırı yazdıramadı)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Yazımızı sonlandırmadan &amp;ouml;nce Thread sınıfına ait pek &amp;ccedil;ok fonksiyonlik s&amp;ouml;z konusu olduğunu da ifade etmeliyim. &lt;a href="https://ruby-doc.org/core-2.2.0/Thread.html" target="_blank"&gt;Detaylı bilgi i&amp;ccedil;in şu adrese&amp;nbsp;bakabilirsiniz&lt;/a&gt;&lt;em&gt;(Hatta bakın. Nitekim Thread'lerin durumlarını/state nasıl &amp;ouml;ğrenebileceğimizi, istediğimizde onları nasıl durdurabileceğimizi &amp;ouml;ğreten bilgiler yer alıyor)&lt;/em&gt;&amp;nbsp;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere Ruby dilinde &amp;ccedil;oklu iş par&amp;ccedil;acıkları oluşturmak ve onları y&amp;ouml;netmek olduk&amp;ccedil;a basittir. Elbette &amp;ccedil;ok daha ileri seviye konular da var. &amp;Ouml;rneğin Mutex ve&amp;nbsp;DeadLock gibi vakaları yeni yeni &amp;ouml;ğreniyorum. &amp;Ouml;ğrendik&amp;ccedil;e sizlere paylaşmaya devam edeceğim. Şimdilik benden bu kadar. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2016-12-01 21:15:00</pubDate>
+  <slug>ruby-kod-parcaciklari-27-hello-multithreading</slug>
+  <tags>
+    <tag>ruby</tag>
+    <tag>thread</tag>
+    <tag>multithreading</tag>
+    <tag>thread-priority</tag>
+  </tags>
+  <categories>
+    <category>Ruby</category>
+  </categories>
+</post>

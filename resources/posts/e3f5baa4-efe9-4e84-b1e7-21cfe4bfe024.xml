@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>DataGrid Denetimi Üzerinde Sıralama(Sorting) İşlemi</title>
+  <description>Bugünkü makalemizde,  bir Web Sayfası üzerinde yer  alan DataGrid kontrolü üzerinde tıklanan kolon başlığına gore sıralama  işleminin manuel olarak nasıl yapılacağını işleyeceğiz.   Konu  teknik ağırlığa  sahip olduğu için hemen  kodlara geçmek istiyorum.</description>
+  <content>&lt;p&gt;Değerli Okurlarım, Merhabalar.&lt;/p&gt;
+&lt;p class="MsoNormal" style="mso-layout-grid-align: none; text-autospace: none;" align="justify"&gt;Bug&amp;uuml;nk&amp;uuml; makalemizde,&amp;nbsp; bir Web Sayfası &amp;uuml;zerinde yer&amp;nbsp; alan DataGrid kontrol&amp;uuml; &amp;uuml;zerinde tıklanan kolon başlığına gore sıralama&amp;nbsp; işleminin manuel olarak nasıl yapılacağını işleyeceğiz.&amp;nbsp;&amp;nbsp; Konu&amp;nbsp; teknik ağırlığa&amp;nbsp; sahip olduğu i&amp;ccedil;in hemen&amp;nbsp; kodlara ge&amp;ccedil;mek istiyorum.&lt;/p&gt;
+&lt;p class="MsoNormal" style="mso-layout-grid-align: none; text-autospace: none;" align="justify"&gt;Uygulamamız&amp;nbsp; , C# ile yazılmış bir Web Application. Bir&amp;nbsp; adet herhangibir&amp;nbsp; &amp;ouml;zelliği belirlenmemiş&amp;nbsp; DataGrid kontrol&amp;uuml; i&amp;ccedil;ermekte. Aspx sayfamızın kodlarına&amp;nbsp; g&amp;ouml;z atıcak olursak, DataBound tagları i&amp;ccedil;erisinde yer&amp;nbsp; alan&amp;nbsp; SortExpression ifadeleri ve DataGrid&amp;nbsp; tagında yer alan, OnSortCommand ifadesi bizim anahtar&amp;nbsp; terimlerimizdir. SortExpression&amp;nbsp; ifadesi, kolon başlığına&amp;nbsp; tıklandığında ilgili veri&amp;nbsp; k&amp;uuml;mesinin hangi&amp;nbsp; alan&amp;nbsp; adını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alacağını belirlemek i&amp;ccedil;in kullanılır. OnSortCommand&amp;nbsp; değeri ise, SortExpression ifadesinin işlenerek sıralamanın&amp;nbsp; yapılacağı kodları i&amp;ccedil;eren procedure&amp;nbsp; adına işaret etmektedir. Bu bilgiler ışığında izleyeceğimiz&amp;nbsp; yol şudur;&lt;/p&gt;
+&lt;table id="AutoNumber2" style="width: 52%;" border="1" cellspacing="1" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="100%"&gt;1- DataBound tagları i&amp;ccedil;inde&amp;nbsp; SortExpression değerlerini&amp;nbsp; belirlemek.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="100%"&gt;2- DataGrid&amp;nbsp; tagı i&amp;ccedil;inde,&amp;nbsp; OnSortCommand olayı i&amp;ccedil;in metodu&amp;nbsp; belirlemek.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="100%"&gt;3- OnSortCommand olayı i&amp;ccedil;in&amp;nbsp; ilgili metodu geliştirmek.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p class="MsoNormal" style="mso-layout-grid-align: none; text-autospace: none;"&gt;Şimdi&amp;nbsp; &amp;ouml;ncelikle default.aspx sayfamızın i&amp;ccedil;eriğine&amp;nbsp; bir bakalım.&amp;nbsp;&lt;/p&gt;
+&lt;p class="MsoNormal" style="mso-layout-grid-align: none; text-autospace: none;"&gt;&lt;img src="/makale/images/mk21_4.gif" alt="" width="640" height="253" border="0" /&gt;&lt;/p&gt;
+&lt;p class="MsoNormal" style="mso-layout-grid-align: none; text-autospace: none; mso-border-alt: solid windowtext .5pt; padding: 0cm; mso-padding-alt: 1.0pt 4.0pt 1.0pt 4.0pt; margin-top: 3; margin-bottom: 3;"&gt;Şimdi ise code-behind kısmında yer&amp;nbsp;&amp;nbsp; alan default.aspx.cs&amp;nbsp; dosyamızın i&amp;ccedil;eriğine&amp;nbsp; bir bakalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;SqlConnection conFriends;
+SqlDataAdapter da;
+DataTable dtKitaplar;
+DataView dvKitaplar;
+/* Sql sunucumuzda yer alan Friends isimli veritabanına bağlanıyoruz. Buradan Kitaplar isimli tablodaki verileri SqlDataAdapter nesnemiz ile alıp dataTable nesnemizin bellekte işaret ettiği yere aktarıyoruz. Daha sonra ise dataTable nesnemizin defaultView metodunu kullanarak, dataView nesnemizi varsayılan tablo g&amp;ouml;r&amp;uuml;n&amp;uuml;m&amp;uuml; ile dolduruyoruz. Eğer sayfalarımızda sadece g&amp;ouml;rsel ama&amp;ccedil;lı dataGrid'ler kullanacaksak yada başka bir deyişle bilgilendirme ama&amp;ccedil;lı veri k&amp;uuml;melerini sunacaksak DataView nesnelerini kullanmak performans a&amp;ccedil;ısından fayda sağlıyacaktır.*/
+
+public void Baglan()
+{
+     conFriends =new SqlConnection("Data source=localhost;integrated security=sspi;initial catalog=Friends");
+     da=new SqlDataAdapter("Select ID,Adi,Yazar,BasimEvi,Fiyat From Kitaplar",conFriends);
+     dtKitaplar=new DataTable("Kitap Listesi");
+     da.Fill(dtKitaplar);
+     dvKitaplar=dtKitaplar.DefaultView;
+     DataGrid1.AutoGenerateColumns=false; /* DataGrid nesnemizin i&amp;ccedil;ereceği kolonları kendimiz belirlemek istediğimizden AutoGenerateColumns &amp;ouml;zelliğine false değerini atadık.*/
+     DataGrid1.AllowSorting=true; /* AllowSorting &amp;ouml;zelliğine true değerini aktardığımızda, DataGrid'in başlık kısmında yer alan kolon isimlerine tıkladığımızda bu alanlara g&amp;ouml;re sıralama yapabilmesini sağlamış oluyoruz. */
+}
+/* Sirala isimli metodumuz, DataGrid tagında OnSortCommand i&amp;ccedil;in belirttiğimiz metoddur. Bu metod ile , bir kolon başlığına tıklandığında yapılacak sıralama işlemlerini belirtiyoruz. Bu metod, DataGridSortCommandEventArgs tipinde bir parametre almaktadır. Bu parametremizin SortExpression değeri, tıklanan kolon başlığının dataGrid tagında,bu alan ile ilgili olan DataBound sekmesinde yer alan SortExpression ifadesine atanan değerdir. Biz bu değeri alarak DataView nesnemizin Sort metoduna g&amp;ouml;nderiyoruz. B&amp;ouml;ylece DataView nesnesinin bellekte işaret ettiği veri k&amp;uuml;mesini e.SortExpression &amp;ouml;zelliğinin değerine g&amp;ouml;re yani se&amp;ccedil;ilen alana g&amp;ouml;re sıralatmış oluyoruz. Daha sonra ise yaptığımız işlem DataGrid kontrol&amp;uuml;m&amp;uuml;z&amp;uuml; tekrar bu veri k&amp;uuml;mesine bağlamak oluyor.*/
+
+public void Sirala(object sender,DataGridSortCommandEventArgs e)
+{
+     lblSiralamaKriteri.Text="Sıralama Kriteri : "+e.SortExpression.ToString();
+     dvKitaplar.Sort=e.SortExpression;
+     DataGrid1.DataSource=dvKitaplar;
+     DataGrid1.DataBind(); 
+}
+private void Page_Load(object sender, System.EventArgs e)
+{
+     Baglan();
+     DataGrid1.DataSource=dvKitaplar;
+     DataGrid1.DataBind();
+}&lt;/pre&gt;
+&lt;p class="MsoNormal" style="mso-layout-grid-align: none; text-autospace: none; mso-border-alt: solid windowtext .5pt; padding: 0cm; mso-padding-alt: 1.0pt 4.0pt 1.0pt 4.0pt; margin-top: 3; margin-bottom: 3;"&gt;Şimdi uygulamamızı &amp;ccedil;alıştıralım ve kolon başlıklarına tıklayarak sonu&amp;ccedil;ları izleyelim. İşte &amp;ouml;rnek ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;leri.&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left;" align="center"&gt;&lt;img src="/makale/images/mk21_1.gif" alt="" width="581" height="397" border="0" /&gt;&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left; mso-layout-grid-align: none; text-autospace: none;" align="center"&gt;&lt;em&gt;Şekil&lt;/em&gt; &lt;em&gt;&amp;nbsp;1.&lt;/em&gt;&lt;em style="mso-bidi-font-style: normal;"&gt; Kitap Adına gore sıralanmış hali.&lt;/em&gt;&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left; mso-layout-grid-align: none; text-autospace: none;" align="center"&gt;&lt;img src="/makale/images/mk21_2.gif" alt="" width="570" height="315" border="0" /&gt;&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left; mso-layout-grid-align: none; text-autospace: none;" align="center"&gt;&lt;em&gt;Şekil&amp;nbsp; 2.&lt;/em&gt;&lt;em style="mso-bidi-font-style: normal;"&gt; ID alanına gore sıralanmış hali. &lt;/em&gt;&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left; mso-layout-grid-align: none; text-autospace: none;" align="center"&gt;&lt;img src="/makale/images/mk21_3.gif" alt="" width="587" height="183" border="0" /&gt;&lt;/p&gt;
+&lt;p class="MsoNormal" style="text-align: left;" align="center"&gt;&lt;em style="mso-bidi-font-style: normal;"&gt; Şekil&lt;/em&gt; &lt;em&gt;&amp;nbsp; 3.&lt;/em&gt;&lt;em style="mso-bidi-font-style: normal;"&gt; Yazar&amp;nbsp; adına gore sıralanmış hali.&lt;/em&gt;&lt;/p&gt;
+&lt;p class="MsoNormal" style="mso-layout-grid-align: none; text-autospace: none;"&gt;Geldik bir makalemizin daha sonuna, bir sonraki makalemizde g&amp;ouml;r&amp;uuml;şmek dileğiyle hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2003-12-17 10:00:00</pubDate>
+  <slug>DataGrid-Denetimi-Uzerinde-Sc4b1ralama(Sorting)-Islemi-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>adonet</tag>
+    <tag>datagrid</tag>
+  </tags>
+  <categories>
+    <category>Ado.Net</category>
+  </categories>
+</post>

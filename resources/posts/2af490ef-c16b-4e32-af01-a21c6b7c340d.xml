@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Task Parallel Library(TPL) - Detached Tasks [Beta 2]</title>
+  <description>Bir önceki yazımızda Task Parallel Library tarafında .Net Framework 4.0 Beta 2 tabanlı olarak iptal işlemleri(Task Cancellation) için yapılan değişikliklere değinmeye çalışmıştık. TPL tarafında yapılan değişikliklerden birisi de iç içe çalışan Task' ler arasındaki Parent - Child ilişkiye yönelik olarak yapılmıştır. Aslında basit bir davranış değişikliği olduğunu söyleyebiliriz. Konuyu daha net kavramak amacıyla aşağıdaki örnek kod parçasını göz önüne alalım.</description>
+  <content>&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Bir &amp;ouml;nceki yazımızda &lt;strong&gt;Task Parallel Library&lt;/strong&gt; tarafında &lt;strong&gt;.Net Framework 4.0 Beta 2&lt;/strong&gt; tabanlı olarak &lt;strong&gt;iptal işlemleri(Task Cancellation)&lt;/strong&gt;&amp;nbsp;i&amp;ccedil;in yapılan değişikliklere değinmeye &amp;ccedil;alışmıştık. &lt;strong&gt;TPL&lt;/strong&gt; tarafında yapılan değişikliklerden birisi de i&amp;ccedil; i&amp;ccedil;e &amp;ccedil;alışan&lt;strong&gt; Task'&lt;/strong&gt; ler arasındaki &lt;strong&gt;Parent&amp;nbsp;- Child &lt;/strong&gt;ilişkiye y&amp;ouml;nelik olarak yapılmıştır. Aslında basit bir davranış değişikliği olduğunu s&amp;ouml;yleyebiliriz. Konuyu daha net kavramak amacıyla aşağıdaki &amp;ouml;rnek kod par&amp;ccedil;asını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace DetachedTasks
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Task task1 = Task.Factory.StartNew(() =&amp;gt;
+            {
+                Console.WriteLine("Task 1 başlangı&amp;ccedil; zamanı {0}",DateTime.Now.ToLongTimeString());
+                Task task2 = Task.Factory.StartNew(() =&amp;gt;
+                    {
+                        Console.WriteLine("Task 2 başlangı&amp;ccedil; zamanı {0}", DateTime.Now.ToLongTimeString());
+                        Thread.Sleep(6000);
+                    }
+                );
+                Thread.Sleep(3000);
+            }
+            );
+
+            task1.Wait();
+            Console.WriteLine("Program sonu :  {0}",DateTime.Now.ToLongTimeString());
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;ncelikli olarak kodumuzda neler yaptığımıza bir bakalım. &amp;Ouml;rnekte iki ayrı &lt;strong&gt;Task&lt;/strong&gt; nesnesinin kullanıldığı g&amp;ouml;r&amp;uuml;lmektedir. &lt;strong&gt;task2&lt;/strong&gt; isimli nesne &amp;ouml;rneği, &lt;strong&gt;task1&lt;/strong&gt; i&amp;ccedil;erisinde &amp;uuml;retilmekte ve kullanılmaktadır. Buna g&amp;ouml;re &lt;strong&gt;task1'&lt;/strong&gt; in, &lt;strong&gt;task2' &lt;/strong&gt;nin &lt;strong&gt;parent' &lt;/strong&gt;ı olması gerektiğini d&amp;uuml;ş&amp;uuml;nebiliriz.&amp;nbsp;Aslında &amp;ouml;nemli olan nokta &lt;strong&gt;task1&lt;/strong&gt; &amp;uuml;zerinden yapılan &lt;strong&gt;Wait &lt;/strong&gt;&amp;ccedil;ağrısı sonucu programın nasıl davranacağıdır.&amp;nbsp;Bu noktada &lt;strong&gt;task1.Wait()&lt;/strong&gt; &amp;ccedil;ağrısının &lt;strong&gt;Beta 1&lt;/strong&gt; s&amp;uuml;r&amp;uuml;m&amp;uuml;nde farklı değerlendirildiğini belirtmemiz gerekiyor. Ş&amp;ouml;yle ki;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Beta 1 &lt;/strong&gt;s&amp;uuml;r&amp;uuml;m&amp;uuml;ne g&amp;ouml;re &lt;strong&gt;task2&lt;/strong&gt; otomatik olarak &lt;strong&gt;task1'&lt;/strong&gt; e bağımlı hale getirilmekteydi&lt;strong&gt;(Attached Task)&lt;/strong&gt;. Yani &lt;strong&gt;task1&lt;/strong&gt; &amp;uuml;zerinden yapılan &lt;strong&gt;Wait&lt;/strong&gt; &amp;ccedil;ağrısı sonucu &lt;strong&gt;task1'&lt;/strong&gt; in tamamlanması beklenirken, i&amp;ccedil;eride &amp;ccedil;alışmakta olan &lt;strong&gt;task2'&lt;/strong&gt; ninde &amp;ccedil;alışmasını tamamlanması gerekmekteydi. Bu varsayılan davranış bi&amp;ccedil;imiydi. Ancak bazı durumlarda &lt;strong&gt;task1&lt;/strong&gt; beklenirken, i&amp;ccedil;erisinde yer alan &lt;strong&gt;task2'&lt;/strong&gt; nin beklemesi istenmeyebilir. Bir başka deyişle &lt;strong&gt;Wait&lt;/strong&gt; &amp;ccedil;ağrısı sonrasına ge&amp;ccedil;ilmesi i&amp;ccedil;in &lt;strong&gt;task1'&lt;/strong&gt; i&amp;ccedil;erisinde alt &lt;strong&gt;Task'&lt;/strong&gt; ler tarafından yapılan işlemler dışında kalanların bitirilmesinin yeterli olması istenebilir. Beta 1' de bu durumu ger&amp;ccedil;eklemek i&amp;ccedil;in &lt;strong&gt;TaskCreationOptions.DetachedFromParent&lt;/strong&gt; &lt;strong&gt;enum &lt;/strong&gt;sabiti değerinde yararlanılmaktaydı(ki Beta 2' de&amp;nbsp;kaldırıldı).&amp;nbsp;Ancak Beta 2 s&amp;uuml;r&amp;uuml;m&amp;uuml;nde durum değiştirildi.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Beta 2&lt;/strong&gt; s&amp;uuml;r&amp;uuml;m&amp;uuml;ne g&amp;ouml;re varsayılan olarak alt &lt;strong&gt;Task&lt;/strong&gt; nesne &amp;ouml;rnekleri i&amp;ccedil;erisinde yer aldıkları &amp;uuml;st &lt;strong&gt;Task'&lt;/strong&gt; lere bağlı değildir&lt;em&gt;(Varsayılan olarak &lt;strong&gt;Detached&lt;/strong&gt;)&lt;/em&gt;. A&amp;ccedil;ık&amp;ccedil;ası, varsayılan olarak &lt;strong&gt;Task'&lt;/strong&gt; lerin &lt;strong&gt;Detached &lt;/strong&gt;olarak tesis edildiklerini ifade edebiliriz. Buna g&amp;ouml;re yukarıdaki kodun &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı Beta 2 s&amp;uuml;r&amp;uuml;m&amp;uuml; i&amp;ccedil;in aşağıda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg99_FirstRunLast.gif" alt="" /&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere&amp;nbsp;&lt;strong&gt;task1&lt;/strong&gt; ile aynı zaman dilimi i&amp;ccedil;erisinde &lt;strong&gt;task2&lt;/strong&gt; başlatılmış ancak &lt;strong&gt;task2&lt;/strong&gt; nin tamamlanması beklenmeden &lt;strong&gt;task1'&lt;/strong&gt; deki işlemler bittiği i&amp;ccedil;in program sonuna gelinmiştir. Nitekim &lt;strong&gt;task2&lt;/strong&gt; varsayılan olarak &lt;strong&gt;task1'&lt;/strong&gt; e bağlanmadığından&lt;strong&gt;(Detached)&lt;/strong&gt; &lt;strong&gt;task1.Wait&lt;/strong&gt; &amp;ccedil;ağrısı ger&amp;ccedil;ekten sadece &lt;strong&gt;task1'&lt;/strong&gt; in işleyişinin tamamlanması ile ilgilenmiştir. Peki &lt;strong&gt;task2'&lt;/strong&gt; nin &lt;strong&gt;task1'&lt;/strong&gt; e bağlanması i&amp;ccedil;in ne yapılmalıdır? Bu ama&amp;ccedil;la &lt;strong&gt;task2&lt;/strong&gt; nesne &amp;ouml;rneğinin &amp;uuml;retildiği yerde &lt;strong&gt;TaskCreationOptions.AttachedToParent enum &lt;/strong&gt;sabiti değerinin kullanılması gerekmektedir. Dolayısıyla kodu aşağıdaki gibi g&amp;uuml;ncellememiz yeterli olacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;Task task1 = Task.Factory.StartNew(() =&amp;gt;
+            {
+                Console.WriteLine("Task 1 başlangı&amp;ccedil; zamanı {0}",DateTime.Now.ToLongTimeString());
+                Task task2 = Task.Factory.StartNew(() =&amp;gt;
+                    {
+                        Console.WriteLine("Task 2 başlangı&amp;ccedil; zamanı {0}", DateTime.Now.ToLongTimeString());
+                        Thread.Sleep(6000);
+                    },TaskCreationOptions.AttachedToParent
+                );
+                Thread.Sleep(3000);
+            }
+            );&lt;/pre&gt;
+&lt;p&gt;Kodun bu şekilde &amp;ccedil;alıştırılması sonucu aşağıdaki ekran &amp;ccedil;ıktısı ile karşılaşılacaktır.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg99_SecondRun.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;AttachedToParent&lt;/strong&gt; değeri nedeni ile &lt;strong&gt;task2&lt;/strong&gt;, &lt;strong&gt;task1'&lt;/strong&gt; e bağlı hale getirilmiştir. Yani &lt;strong&gt;task1&lt;/strong&gt;, &lt;strong&gt;task2' &lt;/strong&gt;nin &lt;strong&gt;parent Task' &lt;/strong&gt;i olarak belirlenmiştir. Bu durumda &lt;strong&gt;task1.Wait&lt;/strong&gt; &amp;ccedil;ağrısının yapıldığı noktada &lt;strong&gt;Attach&lt;/strong&gt; edilmiş t&amp;uuml;m &lt;strong&gt;Task&lt;/strong&gt; referansları değerlendirileceğinden &lt;strong&gt;task1&lt;/strong&gt;' inde tamamlanması beklenilmiştir. Bu durum her iki &amp;ccedil;alışmadaki &lt;strong&gt;Program Sonu&lt;/strong&gt; s&amp;uuml;relerinden anlaşılabilmektedir. Nitekim ilk &amp;ccedil;alışmada &lt;strong&gt;task2&lt;/strong&gt; i&amp;ccedil;erisindeki &lt;strong&gt;6 saniyelik Sleep&lt;/strong&gt; &amp;ccedil;ağrısı hesaba katılmazken, ikinci &amp;ouml;rnekte katılmıştır. &lt;strong&gt;Task Parallel Library &lt;/strong&gt;ile ilişkili olarak &lt;strong&gt;Beta 2' &lt;/strong&gt;de gelen diğer değişiklikleri ele aldığımız başka bir yazımızda g&amp;ouml;r&amp;uuml;şmek dileğiyle, hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2009-11-12 06:00:00</pubDate>
+  <slug>Task-Parallel-Library(TPL)-Detached-Tasks-Beta-2</slug>
+  <tags>
+    <tag>task-parallel-library</tag>
+  </tags>
+  <categories>
+    <category>TPL</category>
+  </categories>
+</post>

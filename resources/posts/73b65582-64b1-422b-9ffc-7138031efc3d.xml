@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>GoLang - Bir Go Paketini Ruby'den Çağırmak</title>
+  <description>Pek çok kaynak GO dilinin ileride C'nin yerini alabileceği yönünde görüşler belirtmekte. Özellikle IoT alanında bu dilin daha fazla ön plana çıkacağı vurgulanıyor. Bu düşüncenin haklı olabileceği yönünde bazı tespitlerim var. Söz gelimi GO ile yazılmış bir paketi başka bir dilden çağırmamız mümkün. C, Python, Java ve Ruby bunlardan sadece bir kaçı.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2017/03/gofromruby_1.gif" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Pek &amp;ccedil;ok kaynak GO dilinin ileride C'nin yerini alabileceği y&amp;ouml;n&amp;uuml;nde g&amp;ouml;r&amp;uuml;şler belirtmekte. &amp;Ouml;zellikle IoT alanında bu dilin daha fazla &amp;ouml;n plana &amp;ccedil;ıkacağı vurgulanıyor. Bu d&amp;uuml;ş&amp;uuml;ncenin haklı olabileceği y&amp;ouml;n&amp;uuml;nde bazı tespitlerim var.&lt;/p&gt;
+&lt;p&gt;S&amp;ouml;z gelimi GO ile yazılmış paketleri başka dillere ait ortamlarda kullanabilmemiz m&amp;uuml;mk&amp;uuml;n. Bir başka deyişle bir GO paketini C, Python, Java ve Ruby gibi dillerde kullanabiliriz. Sonu&amp;ccedil;ta yazılan GO kodları C-Style API şeklinde ifade edebileceğimiz derlenmiş k&amp;uuml;t&amp;uuml;phanelere d&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;lebilmekte.&lt;/p&gt;
+&lt;p&gt;Yapılması gereken tek şey, yazılan GO kodlarının C Shared Library t&amp;uuml;r&amp;uuml;nde derlenmesi. Bu modda yapılan derleme sonucu GO fonksiyonlarını dışarıya a&amp;ccedil;abileceğimiz Shared Object Binary File i&amp;ccedil;erikleri &amp;uuml;retiliyor. İşte bu yazımızda basit bir GO k&amp;uuml;t&amp;uuml;phanesini bahsettiğimiz formatta derleyip &amp;ouml;rnek olarak Ruby ile yazılmış bir kod &amp;uuml;zerinden kullanmaya &amp;ccedil;alışacağız. Dilerseniz vakit kaybetmeden işe koyulalım.&lt;/p&gt;
+&lt;h1&gt;Sistem&lt;/h1&gt;
+&lt;p&gt;&amp;Ouml;rneği Ubuntu platformu &amp;uuml;zerinde denedim. Aslında ilk olarak Windows 7 y&amp;uuml;kl&amp;uuml; makinemde denedim lakin Shared Library oluşturulmasında 64bitlik ortamım sorun &amp;ccedil;ıkarttı. Hemen emektar Ubuntu'ya d&amp;ouml;nd&amp;uuml;m ve &amp;ouml;rneği orada yazmaya karar verdim. Ubuntu tarafında&amp;nbsp;Ruby(2.1.5 i386) ve Go(1.8.3 i386) versiyonları y&amp;uuml;kl&amp;uuml;. Yazıyı yazdığım tarihler itibariyle en son s&amp;uuml;r&amp;uuml;mler bunlardı. Ruby tarafı i&amp;ccedil;in ihtiya&amp;ccedil; duyacağımız FFI isimli bir gem paketi var. Bu paket ile GO tarafında &amp;uuml;retilecek olan derlenmiş kod dosyalarını ruby ortamına y&amp;uuml;kleyip, aray&amp;uuml;zden sunulan fonksiyonları kullanabileceğiz. Sonu&amp;ccedil;ta kodlar GO ile yazılmış C k&amp;uuml;t&amp;uuml;phaneleri de olsa bir şekilde diğer &amp;ccedil;alışma zamanı ortamlarına y&amp;uuml;klenerek değerlendirilebilirler. FFI isimli paketi y&amp;uuml;klemek i&amp;ccedil;in terminalden gem install komutunu kullanabiliriz&lt;em&gt;(Kullanıcım root haklarına sahip olmadığından sudo komutu ile y&amp;uuml;kleme işlemini ger&amp;ccedil;ekleştirdim)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo gem install ffi&lt;/pre&gt;
+&lt;h1&gt;GO Paketinin Yazılması&lt;/h1&gt;
+&lt;p&gt;İşe aşağıdaki GO paketini yazarak başlayabiliriz.&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;package main
+
+import "C"
+
+import (
+	"math"
+)
+
+//export CircleSpace
+func CircleSpace(r float64) float64 {
+	return math.Pi * math.Pow(r, 2)
+}
+
+func main() {}&lt;/pre&gt;
+&lt;p&gt;SomeMath.go ismiyle kaydedeceğimiz kod dosyasında daire alanı hesaplaması yapan tek bir fonksiyon bulunuyor. Siz &amp;ouml;rneğinizi geliştirirken farklı tipler ile &amp;ccedil;alışan fonksiyonları da işin i&amp;ccedil;erisine katabilirsiniz. İ&amp;ccedil;erikte dikkat edilmesi gereken bir ka&amp;ccedil; nokta var. Her şeyden &amp;ouml;nce C isimli bir GO paketini kullanmaktayız. Bunun haricinde yine bir main fonksiyonu&lt;em&gt;(entry point)&lt;/em&gt; bildirimi s&amp;ouml;z konusu ancak i&amp;ccedil;erisinde iş yapan hi&amp;ccedil;bir kod par&amp;ccedil;ası bulunmuyor. //export şeklinde belirtilen yorum satırı ise &amp;ouml;nemli. Nitekim sadece export ile işaretlenmiş fonksiyonlar dış d&amp;uuml;nyaya a&amp;ccedil;ılabiliyorlar. Diğer yandan paylaşımlı olarak kullanılacak k&amp;uuml;t&amp;uuml;phanenin mutlaka main paketi şeklinde d&amp;uuml;zenlenmesi gerekiyor.&lt;/p&gt;
+&lt;h1&gt;Derleme İşlemi&lt;/h1&gt;
+&lt;p&gt;GO uzantılı kaynak kod dosyası hazır. Bunu direkt go derleyicisi ile derlersek bildiğiniz &amp;uuml;zere &amp;ccedil;alıştırılabilir bir exe &amp;uuml;retilir. Oysaki ihtiyacımız olan diğer dillerin ele alabileceği paylaşılabilir bir nesne olmalı&lt;em&gt;(Shared Object)&lt;/em&gt;&amp;nbsp;Bu nedenle yazılan paketin komut satırından aşağıdaki gibi derlenmesi gerekiyor.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;go build -o SomeMath.so -buildmode=c-shared SomeMath.go&lt;/pre&gt;
+&lt;p&gt;Derleme işlemi sonrasında SomeMath.h isimli C Header ve SomeMath.so isimli bir Shared Object dosyası oluşur. Shared Object i&amp;ccedil;eriği itibariyle daha b&amp;uuml;y&amp;uuml;kt&amp;uuml;r nitekim GO runtime ve gerekli paketler barındırmaktadır. Header dosyasına baktığımızda fonksiyon ve tip bazından bir eşleştirme bilgisi bulundurduğunu g&amp;ouml;rebiliriz. Yaptığımız derleme işlemi sonrası oluşan header i&amp;ccedil;eriği aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;/* Created by "go tool cgo" - DO NOT EDIT. */
+
+/* package command-line-arguments */
+/* Start of preamble from import "C" comments.  */
+/* End of preamble from import "C" comments.  */
+/* Start of boilerplate cgo prologue.  */
+#line 1 "cgo-gcc-export-header-prolog"
+
+#ifndef GO_CGO_PROLOGUE_H
+#define GO_CGO_PROLOGUE_H
+
+typedef signed char GoInt8;
+typedef unsigned char GoUint8;
+typedef short GoInt16;
+typedef unsigned short GoUint16;
+typedef int GoInt32;
+typedef unsigned int GoUint32;
+typedef long long GoInt64;
+typedef unsigned long long GoUint64;
+typedef GoInt32 GoInt;
+typedef GoUint32 GoUint;
+typedef __SIZE_TYPE__ GoUintptr;
+typedef float GoFloat32;
+typedef double GoFloat64;
+typedef float _Complex GoComplex64;
+typedef double _Complex GoComplex128;
+
+/*
+  static assertion to make sure the file is being used on architecture
+  at least with matching size of GoInt.
+*/
+typedef char _check_for_32_bit_pointer_matching_GoInt[sizeof(void*)==32/8 ? 1:-1];
+
+typedef struct { const char *p; GoInt n; } GoString;
+typedef void *GoMap;
+typedef void *GoChan;
+typedef struct { void *t; void *v; } GoInterface;
+typedef struct { void *data; GoInt len; GoInt cap; } GoSlice;
+
+#endif
+
+/* End of boilerplate cgo prologue.  */
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
+extern GoFloat64 CircleSpace(GoFloat64 p0);
+
+#ifdef __cplusplus
+}
+#endif
+&lt;/pre&gt;
+&lt;p&gt;Bu dosya en baştaki yorum satırında da belirtildiği &amp;uuml;zere değiştirilmememlidir. Kodun son kısmında CircleSpace fonksiyonuna ait bir bildirim olduğu da g&amp;ouml;zden ka&amp;ccedil;mamalıdır. typedef tanımlamalarına bakıldığında ilgili GoFloat64 tipi i&amp;ccedil;in double eşleştirilmesi yapıldığını da g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;h1&gt;Ruby Tarafından &amp;Ccedil;ağırım&lt;/h1&gt;
+&lt;p&gt;Yazılan GO paketini Ruby tarafından &amp;ccedil;ağırmak i&amp;ccedil;in aşağıdaki basit kod par&amp;ccedil;asını kullanabiliriz.&lt;/p&gt;
+&lt;pre class="brush:ruby;auto-links:false;toolbar:false" contenteditable="false"&gt;require 'ffi'
+
+module ShapeMath
+	extend FFI::Library
+	ffi_lib './SomeMath.so'
+	attach_function :CircleSpace, [:double], :double
+end
+
+puts ShapeMath.CircleSpace(10)&lt;/pre&gt;
+&lt;p&gt;magic.rb isimli dosya ffi gem paketini kullanıyor. ShapeMath isimli bir module tanımı i&amp;ccedil;ermekte. Bu mod&amp;uuml;l, ffi_lib metoduna g&amp;ouml;nderilen SomeMath.so dosyasını y&amp;uuml;kleyip i&amp;ccedil;erisindeki CircleSpace isimli fonksiyonu &amp;ccedil;alışma zamanına ekleme işlemini ger&amp;ccedil;ekleştirmekte. Son kod satırında ise CircleSpace isimli metodun &amp;ccedil;ıktısının ekrana basıldığı bir komut yer alıyor. attach_function bildiriminde Ruby d&amp;uuml;nyası i&amp;ccedil;in ge&amp;ccedil;erli olan veri tipleri s&amp;ouml;z konusu. Go tarafında float64 olarak ifade ettiğimiz tipleri burada double olarak ele almaktayız. İşte &amp;ccedil;alışma zamanı sonu&amp;ccedil;ları.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/06/gowithruby_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Elbette işler her zaman bu kadar basit olmayabilir. GO'da var olan bir takım t&amp;uuml;rlerin &amp;ccedil;ağırılmak istenen programlama dilinde karşılığı olmayabilir. &amp;Ouml;rneğin bir Slice ya da map kulladığımız fonksiyonlar ya da bizim tarafımızdan tanımlanmış yapılar(struct) nasıl eşleştirilmelidir. Ruby'de, Pyhton'da, C# tarafında bu tipler nasıl ele alınmalıdır. Doğru d&amp;ouml;n&amp;uuml;ş&amp;uuml;mleri yapabilmek bu a&amp;ccedil;ıdan &amp;ouml;nemli. Bu "Hello World" tadındaki &amp;ouml;rnek sadece bu işin yapılabildiğini g&amp;ouml;sterir niteliktedir. Daha fazlası i&amp;ccedil;in Google :) B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2017-06-09 12:33:00</pubDate>
+  <slug>golang-bir-go-paketini-ruby-den-cagirmak</slug>
+  <tags>
+    <tag>golang</tag>
+    <tag>go-programming-language</tag>
+    <tag>c</tag>
+    <tag>c-programming-language</tag>
+    <tag>shared-c-library</tag>
+    <tag>ruby</tag>
+    <tag>ubuntu</tag>
+    <tag>ffi</tag>
+    <tag>gem</tag>
+    <tag>c-header</tag>
+  </tags>
+  <categories>
+    <category>GoLang</category>
+  </categories>
+</post>

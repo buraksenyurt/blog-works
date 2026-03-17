@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Ruby Kod Parçacıkları 34 - Fiber ve Eş Zamanlı Programlama</title>
+  <description>Eş zamanlı programlanın farklı dillerde veya çatılarda farklı uygulanma şekilleri olabiliyor. Esas itibariyle genel amaç eş zamanlı olarak birden fazla işin gerçekleştirilmesini sağlayabilmek. Bu noktada en zorlayıcı noktalardan birisi işlemcinin ve işletim sisteminin bu çalışma taleplerine olan anlık tepkilerinin yönetilmesi. Neredeyse pek çok programlama ortamında Thread'ler ile karşılaşıyoruz. Ruby tarafında da böyle bir yapı mevcut ama bunun dışında Fiber adı verilen farklı bir tip daha var.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2017/05/rubyfiber_1.gif" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Eş zamanlı programlamanın&lt;em&gt;(Concurrent Programming)&lt;/em&gt;&amp;nbsp;dile veya &amp;ccedil;atıya g&amp;ouml;re farklı uygulanma şekilleri olabiliyor. Esas itibariyle genel ama&amp;ccedil; eş zamanlı olarak birden fazla işin ger&amp;ccedil;ekleştirilmesini sağlayabilmek. Bu noktada en zorlayıcı noktalardan birisi işlemcinin ve işletim sisteminin bu &amp;ccedil;alışma taleplerine olan anlık tepkilerinin y&amp;ouml;netilmesi. Neredeyse pek &amp;ccedil;ok programlama ortamında Thread'ler ile karşılaşıyoruz&lt;em&gt;(Bu arada yandaki fotoğrafın Ruby Fiber ile bir alakası yok. Fiber konulu imaj ararkan doğal olarak lifli yiyecekler ve sevimsiz diyet konusunu karşıma &amp;ccedil;ıkmıştı)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Ruby tarafında da b&amp;ouml;yle bir yapı mevcut ama bunun dışında Fiber adı verilen farklı bir kontrol yapısı&amp;nbsp;daha var. Bu nesneler daha hafif iş par&amp;ccedil;acıkları i&amp;ccedil;in kullanılıyor ve &amp;ccedil;oğunlukla otomatik hesaplamalar yapan yardımcı rutinler i&amp;ccedil;in tercih ediliyor. Tercih edilmelerindeki &amp;ouml;nemli etkenlerden birisi planlamanın&amp;nbsp;geliştirici tarafından yapılması gerekliliği. Yani sanal makinenin veya &amp;ouml;nceden tanımlı bir Thread y&amp;ouml;netim mekanizmasının kontrol&amp;uuml;nde değiller. Bu kontrol yapısı resume ve yield isimli fonksiyonları&amp;nbsp;kullanıyor. resume ile bir Fiber kod bloğunun &amp;ccedil;alıştırılması sağlanıyor ve ilgili iş par&amp;ccedil;acığına abone olan diğer iş par&amp;ccedil;acığına d&amp;ouml;nebilmek i&amp;ccedil;in yield işlevinden&amp;nbsp;yararlanılıyor.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;oğunlukla par&amp;ccedil;alı hesaplamaların yapıldığı, yapılan hesaplama sonu&amp;ccedil;larının &amp;ccedil;ağıran ortama geri d&amp;ouml;nd&amp;uuml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml;&amp;nbsp;ve tekrardan hesaplamayı yapan kod bloğuna yollanarak yeni sonu&amp;ccedil;ların elde edildiği senaryolarda tercih ediliyorlar. Aslında Fiber kavramı benim yeni karşılaştığım bir konu. .Net d&amp;uuml;nyasında &amp;ccedil;oğunlukla Task Parallel Library gibi işleri olduk&amp;ccedil;a kolaylaştıran yapılarla &amp;ccedil;alışıyorum. Bakalım Fiber mevzusunu kıvırabilecek miyim?&amp;nbsp;Dilerseniz vakit kaybetmeden Fiber kullanımına ait basit bir kod par&amp;ccedil;ası ile yola devam edelim.&lt;/p&gt;
+&lt;h1&gt;Merhaba Fiber&lt;/h1&gt;
+&lt;pre class="brush:ruby;auto-links:false;toolbar:false" contenteditable="false"&gt;=begin
+Fiber konusuna bir bakalım
+=end
+
+myFiber=Fiber.new do
+  puts "Fiber metoduna girdik"
+  Fiber.yield
+  puts "Fiber metodunun sonuna geldik"
+end
+
+puts "Burası &amp;ccedil;ağıran kod kısmı"
+myFiber.resume
+puts "Tekrar &amp;ccedil;ağıran koddayım"
+myFiber.resume&lt;/pre&gt;
+&lt;p&gt;Kodu &amp;ccedil;alıştırdığımızda aşağıdaki sonu&amp;ccedil;lar elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/05/rubyfiber_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Peki ne oldu burada? Aşağıdaki grafik konuyu daha g&amp;uuml;zel &amp;ouml;zetleyebilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/05/rubyfiber_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Aslında ana uygulama kodu ve&amp;nbsp;Fiber nesnesi ile a&amp;ccedil;ılan kod bloğu&amp;nbsp;arasında resume ve yield fonksiyonlarından&amp;nbsp;yararlanarak ge&amp;ccedil;işler yapıldığını&amp;nbsp;g&amp;ouml;r&amp;uuml;yoruz. Yardımcı rutin olarak&amp;nbsp;&amp;ccedil;alışmasını istediğimiz kod bloğuna ge&amp;ccedil;iş yapmak veya o blokta kaldığımız yerden işlemlere devam etmek i&amp;ccedil;in resume, bu kod bloğunu &amp;ccedil;ağıran uygulama par&amp;ccedil;acığına geri d&amp;ouml;nmek i&amp;ccedil;inse yield fonksiyonundan&amp;nbsp;yararlanıyoruz. Bu bir &amp;ccedil;eşit rutinler arası ge&amp;ccedil;isin planlanmasıdır&lt;em&gt;(Scheduling)&lt;/em&gt;&lt;/p&gt;
+&lt;h1&gt;&amp;Ccedil;ağıran ve Blok Arası Veri Alışverişi&lt;/h1&gt;
+&lt;p&gt;Pek tabi Fiber blokları ve&amp;nbsp;&amp;ccedil;ağıran uygulama arasında veri alışverişi yapılması da gerekebilir. Yani Fiber i&amp;ccedil;erisine arg&amp;uuml;man g&amp;ouml;nderilmesi ve bir takım işlemler sonucu elde edilen değerlerin d&amp;ouml;nd&amp;uuml;r&amp;uuml;lmesi&amp;nbsp;istenebilir. Aşağıdaki kod par&amp;ccedil;asında bu veri alışverişinin nasıl yapılabileceği basit&amp;ccedil;e &amp;ouml;rneklenmeye &amp;ccedil;alışılmıştır.&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:ruby;auto-links:false;toolbar:false" contenteditable="false"&gt;fiberX=Fiber.new do |input|
+  puts "#{input} bilgisi geldi.Şimdi bunla bir şeyler yapayım"
+  Fiber.yield(rand)
+  puts "{input} şeklinde yeni bir bilgi geldi. Bunu da hesaplayayım."
+  Fiber.yield(rand)
+  "Her şey tamamlandı"
+end
+
+puts "&amp;Ccedil;ağıran kod"
+output1=fiberX.resume(198)
+puts "Fiber i&amp;ccedil;inden #{output1} cevabı d&amp;ouml;nd&amp;uuml;"
+output2=fiberX.resume(200)
+puts "Fiber i&amp;ccedil;inden bu kez #{output2} cevabı d&amp;ouml;nd&amp;uuml;"
+puts(fiberX.resume)&lt;/pre&gt;
+&lt;p&gt;Bu kez Fiber bloğuna input isimli tek bir değişken taşınıyor. Bu değişkene g&amp;ouml;re &amp;uuml;retilen rastgele sonu&amp;ccedil;lar da &amp;ccedil;ağıran tarafa iletiliyor. Kullanım olduk&amp;ccedil;a basit. yield ile Fiber bloğu i&amp;ccedil;inden &amp;ccedil;ağıran tarafa sonu&amp;ccedil;lar d&amp;ouml;n&amp;uuml;lebiliyorken, resume ile de Fiber i&amp;ccedil;erisine parametre aktarılabiliyor. Tabii planlama sırasına g&amp;ouml;re &amp;ccedil;ağıran kod par&amp;ccedil;ası ile Fiber kod bloğu i&amp;ccedil;erisinde karşılıklı ge&amp;ccedil;işler sağlanmakta. &amp;Ccedil;alışma zamanı sonu&amp;ccedil;ları aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/05/rubyfiber_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;h1&gt;Fiber Blokları Arası Veri Transferi&lt;/h1&gt;
+&lt;p&gt;Şu ana kadar ki &amp;ouml;rneklerimizde Fiber ile &amp;ccedil;ağıran ana uygulama arasında ge&amp;ccedil;işler yaptık. &amp;Ccedil;ok doğal olarak n sayıdaki&amp;nbsp;Fiber bloğu arasında da veri transferi ger&amp;ccedil;ekleştirmek isteyebiliriz. Nitekim bir Fiber kod bloğu tarafında yapılan hesaplamalar sırasında farklı bir Fiber kod bloğunun bu sonu&amp;ccedil;lar ile başka işlemler yapıp diğer bloğa cevap vermesi gerekebilir. Tamamen senaryoya bağlı bir durum. Biz şimdilik bu ge&amp;ccedil;işlerin nasıl yapılabileceğine basit bir &amp;ouml;rnekle bakalım. İşte kod par&amp;ccedil;amız.&lt;/p&gt;
+&lt;pre class="brush:ruby;auto-links:false;toolbar:false" contenteditable="false"&gt;require 'fiber'
+
+fiber1=fiber2=nil
+
+fiber1=Fiber.new do |input|
+  puts "Fiber 1 Başlangı&amp;ccedil; Input : #{input}"
+  newInput=fiber2.transfer(input*rand)
+  puts "Fiber 1e gelen yeni Input : #{newInput}"
+  fiber2.transfer("işlemleri bitir")
+end
+
+fiber2=Fiber.new do |input|
+  puts "Fiber 2ye gelen Input : #{input}"
+  newInput=fiber1.transfer(input*rand)
+  puts "Fiber1 diyor ki '#{newInput}'"
+end
+
+puts "işlemler başlıyor"
+fiber1.transfer(100)
+puts "işlemler bitti"&lt;/pre&gt;
+&lt;p&gt;İşlemler biraz karışık gelebilir ancak ilk iki &amp;ouml;rnekteki mantığı d&amp;uuml;ş&amp;uuml;nmemiz &amp;ouml;rneği anlamamız i&amp;ccedil;in yeterli. Fiber blokları arasındaki ge&amp;ccedil;işler i&amp;ccedil;in yield fonksiyonu yerine fiber mod&amp;uuml;l&amp;uuml;nde&amp;nbsp;yer alan transfer operasyonundan yararlanıyoruz. Hatta ana kod par&amp;ccedil;asından fiber1 isimli ilk kod bloğunu başlatırken de transfer fonksiyonunu kullanmaktayız. Kodun &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı biraz daha iyi fikir verecektir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/05/rubyfiber_5.gif" alt="" /&gt;&lt;/p&gt;
+&lt;h1&gt;Yaygın &amp;Ouml;rnek&lt;/h1&gt;
+&lt;p&gt;Ruby, Fiber blokları g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere eş zamanlı programlamada adına basit ve hafif bir kullanım sunmakta. Eş zamanlı &amp;ccedil;alışma planlamasının programcıya bırakıldığı bu hafif yapı yardımcı rutinlerin ele alındığı senaryolarda olduk&amp;ccedil;a işe yarar g&amp;ouml;r&amp;uuml;n&amp;uuml;yor. En &amp;ccedil;ok verilen başlangı&amp;ccedil; &amp;ouml;rneği ise&amp;nbsp;Fibonacci sayılarının hesaplanması i&amp;ccedil;in&amp;nbsp;Fiber bloğundan yararlanılması&lt;em&gt;(Hep Recursive metodları kullanırdık ama yardımcı rutin olarak bu sayıları &amp;uuml;retecek bir iş par&amp;ccedil;acığını geliştirmeyi pek d&amp;uuml;ş&amp;uuml;nmemiştik)&lt;/em&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Fibonacci sayı dizisi 0,1 ile başlayıp her sayının kendisinden &amp;ouml;nce gelen iki sayının toplamı olarak hesaplandığı bir seridir. 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144...&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Buna ait kod par&amp;ccedil;asını geliştirmeye &amp;ccedil;alışmanız, bir s&amp;uuml;re uğraşıp yapamadığınız takdirde Internetten bakmanız kişisel gelişiminiz a&amp;ccedil;ısından yararlı olacaktır. Aşağıdaki kod par&amp;ccedil;asına da l&amp;uuml;tfen uğraştıktan sonra bakınız.&lt;/p&gt;
+&lt;pre class="brush:ruby;auto-links:false;toolbar:false" contenteditable="false"&gt;def fibogen
+  Fiber.new do
+    x,y=0,1
+    loop do 
+      Fiber.yield(y)
+      x,y=y,x+y
+    end
+  end
+end
+
+generator=fibogen
+20.times do 
+  print generator.resume,","
+end&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/05/rubyfiber_6.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;fibogen isimli fonksiyon i&amp;ccedil;erisinde yeni bir Fiber bloğu oluşturulmakta. Bu blok i&amp;ccedil;erisinde de sonsuz bir d&amp;ouml;ng&amp;uuml;m&amp;uuml;z var. Başlangı&amp;ccedil;ta Fibonacci sayı dizisinin ilk iki değeri varsayılan olarak verilmekte&lt;em&gt;(ki sayı &amp;uuml;reticisinin bu başlangı&amp;ccedil; değerlerini parametre olarak alması daha g&amp;uuml;zel olabilir. Nitekim bu sayede istediğimiz iki sayıdan sonrasını elde etme şansını da bulabiliriz)&lt;/em&gt;&amp;nbsp;D&amp;ouml;ng&amp;uuml; i&amp;ccedil;erisinde yield operasyonu ile &amp;ccedil;ağıran koda geri d&amp;ouml;n&amp;uuml;l&amp;uuml;yor ve o anki y değeri yollanıyor.&amp;nbsp;Bu arada generator şeklinde bir değişken tanımlamassak hep 1 sayısını elde edebiliriz. Bunu bir deneyin.&amp;nbsp;Ayrıca ilk 20 fibonacci sayısını bastıktan&amp;nbsp;sonra &amp;ouml;rneğin ilk 5 fibonacci sayısını yakalamak&amp;nbsp;istersek yeni bir fibogen değişkenine ihtiyacımız olacak&lt;em&gt;(Başlangı&amp;ccedil; değerlerini parametre olarak alınnnnn)&lt;/em&gt; Nitekim bunu yapmassak sonraki 5 fibonacci elemanı ilk 20 elemanın arkasındakiler olarak hesaplanır.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneği &amp;ccedil;ok daha iyi hale getirmek gerekiyor. Sınıflaştırılabilir, her yeni sayı dizisi hesaplaması i&amp;ccedil;in yeni bir generator &amp;uuml;retilmemesi sağlanabilir.&amp;nbsp;Bu kutsal g&amp;ouml;revleri siz değerli okurlarıma bırakıyorum.&amp;nbsp;B&amp;ouml;ylece geldik bir&amp;nbsp;Ruby kod par&amp;ccedil;acığımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;</content>
+  <pubDate>2017-05-05 12:17:00</pubDate>
+  <slug>ruby-kod-parcaciklari-34-fiber-ve-concurrent-programming</slug>
+  <tags>
+    <tag>concurrency</tag>
+    <tag>concurrent-programming</tag>
+    <tag>multi-thread</tag>
+    <tag>thread</tag>
+    <tag>fiber</tag>
+    <tag>ruby</tag>
+    <tag>ruby-kod-parçacıkları</tag>
+  </tags>
+  <categories>
+    <category>Ruby</category>
+  </categories>
+</post>

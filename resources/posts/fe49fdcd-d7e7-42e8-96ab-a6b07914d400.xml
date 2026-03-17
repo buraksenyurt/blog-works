@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Custom Activity Designer Geliştirmek</title>
+  <description>Geçtiğimiz günlerde Workflow Foundation tarafında bir Component Set' in geliştirilmesi üzerine açılan POC(Proof of Concept) projesinde görev aldım. Bu anlamda yoğun bir şekilde Custom Activity Designer konusu ile yakın ilişki içerisinde yer almam gerekti. Workflow Foundation' ın bileşen seti her ne kadar geniş bir yelpazeye sahip olsa da, özellikle uygulama geliştiricilerin hızlı bir şekilde Workflow(Flow Chart, Sequential vb) tasarlaması gerektiği durumlarda, işleri kolaylaştıracak Component setlerinin üretilmesi son derece önemlidir. Ne varki XAML tabanlı çalışan Activity Designer örnekleri, Visual Studio IDE' si ile pek kardeşçe yaşamamaktadır(Bu durumun Visual Studio 2012' de devam etmediğini umuyorum). Dikkat edilmesi gereken pek çok nokta ve ip ucu bulunmakta. Dilerseniz ne demek istediğimi örnek bir senaryo üzerinden görmeye çalışalım.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/pics/2012%2f6%2fChallenge.jpg" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;İnsanın kendisini en &amp;ccedil;ok geliştireceği yer ger&amp;ccedil;ek &amp;ccedil;alışma sahaları/ortamlarıdır. Ortaya konan ihtiya&amp;ccedil;lar ne zaman ki sizin kullanmakta olduğunuz ara&amp;ccedil;ların(Tools) sınırlarını zorlamaya başlar, bu noktadan itibaren i&amp;ccedil;erisine gireceğiniz her &amp;ccedil;eşit m&amp;uuml;cadele size inanılmaz derece tecr&amp;uuml;be ve bilgi katacaktır. Tabi bu know-how bilgisini saklayabilir, kendiniz i&amp;ccedil;in d&amp;ouml;k&amp;uuml;mante edebilir veya kuralları &amp;ccedil;er&amp;ccedil;evesinde paylaşabilirsiniz &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Ge&amp;ccedil;tiğimiz g&amp;uuml;nlerde &lt;strong&gt;Workflow Foundation&lt;/strong&gt; tarafında bir &lt;strong&gt;Component Set'&lt;/strong&gt; in geliştirilmesi &amp;uuml;zerine a&amp;ccedil;ılan &lt;strong&gt;POC(Proof of Concept)&lt;/strong&gt;&amp;nbsp;projesinde g&amp;ouml;rev aldım. Bu anlamda yoğun bir şekilde&lt;strong&gt; Custom Activity Designer&lt;/strong&gt; konusu ile yakın ilişki i&amp;ccedil;erisinde yer almam gerekti. &lt;strong&gt;Workflow Foundation'&lt;/strong&gt; ın bileşen seti her ne kadar geniş bir yelpazeye sahip olsa da, &amp;ouml;zellikle uygulama geliştiricilerin hızlı bir şekilde Workflow&lt;em&gt;(Flow Chart, Sequential vb)&lt;/em&gt;&amp;nbsp;tasarlaması gerektiği durumlarda, işleri kolaylaştıracak &lt;strong&gt;Component&lt;/strong&gt; setlerinin &amp;uuml;retilmesi son derece &amp;ouml;nemlidir. Ne varki &lt;strong&gt;XAML&lt;/strong&gt; tabanlı &amp;ccedil;alışan &lt;strong&gt;Activity&amp;nbsp;Designer&lt;/strong&gt; &amp;ouml;rnekleri, &lt;strong&gt;Visual Studio IDE'&lt;/strong&gt; si ile&amp;nbsp;pek kardeş&amp;ccedil;e yaşamamaktadır&lt;em&gt;(Bu durumun Visual Studio 2012' de devam etmediğini umuyorum)&lt;/em&gt;.&amp;nbsp;Dikkat edilmesi gereken pek &amp;ccedil;ok nokta ve ip ucu bulunmakta. Dilerseniz ne demek istediğimi&amp;nbsp;&amp;ouml;rnek bir senaryo &amp;uuml;zerinden g&amp;ouml;rmeye &amp;ccedil;alışalım.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Senaryomuzda metod adlarını ve bu fonksiyonlara bağlı parametre listelerini g&amp;ouml;steren basit bir &lt;strong&gt;Workflow Activity&lt;/strong&gt; bileşenini tasarlamaya &amp;ccedil;alışıyor olacağız. Bileşenimiz standart bir&lt;strong&gt; Code/Native Activity&amp;rsquo;&lt;/strong&gt; den farklı olarak g&amp;ouml;rsel aray&amp;uuml;ze sahip olacak ve &lt;strong&gt;Visual Studio IDE&amp;rsquo;&lt;/strong&gt; si i&amp;ccedil;erisinden de kullanılabilecek. Bir başka deyişle &lt;strong&gt;ToolBox&lt;/strong&gt; sekmesinden&amp;nbsp;&lt;strong&gt;designer&lt;/strong&gt; ortamına s&amp;uuml;r&amp;uuml;kleyip bıraktığımızda, &lt;strong&gt;IDE&lt;/strong&gt; kullanıcısı ile etkileşim i&amp;ccedil;erisinde olacak.&amp;nbsp;Dolayısıyla &lt;strong&gt;Activity&lt;/strong&gt; &lt;strong&gt;Designer&lt;/strong&gt; tipini ele alacağımız bir &amp;ouml;rnek &amp;uuml;zerinde &amp;ccedil;alışıyor olacağız. İlk olarak projelerimizi oluşturarak işe başlayalım. Bu anlamda &lt;strong&gt;Solution&lt;/strong&gt; i&amp;ccedil;eriğini aşağıdaki şekilde g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi tasarlayabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2012%2f6%2fwda_1.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Solution&lt;/strong&gt; yapısı olduk&amp;ccedil;a &amp;ouml;nemlidir. &lt;strong&gt;Activity&lt;/strong&gt; projesi &lt;strong&gt;NativeActivity&lt;/strong&gt; t&amp;uuml;revli tipleri barındırıyor iken, &lt;strong&gt;Design&lt;/strong&gt; k&amp;uuml;t&amp;uuml;phanesinde sadece g&amp;ouml;rsel tasarımlar yer alacaktır. &lt;strong&gt;Azon.Workflow.Activity&lt;/strong&gt; projesi &lt;strong&gt;Activity Library&lt;/strong&gt; tipinden iken &lt;strong&gt;Azon.Workflow.Activity.Design&lt;/strong&gt;, &lt;strong&gt;Activity Designer Library&lt;/strong&gt; tipindendir. Burada &lt;strong&gt;Visual Studio 2010&lt;/strong&gt; &lt;strong&gt;IDE&amp;rsquo;&lt;/strong&gt; sinin beklediği bir isimlendirme standartı bulunmaktadır. Buna g&amp;ouml;re, &lt;strong&gt;Component&amp;rsquo;&lt;/strong&gt; in g&amp;ouml;rsel aray&amp;uuml;z&amp;uuml;n&amp;uuml;n tasarlanacağı k&amp;uuml;t&amp;uuml;phane adının mutlaka &lt;strong&gt;Design&lt;/strong&gt; kelimesi ile bitmesi gerekmektedir&lt;em&gt;(Bu bilgiyi bulmak olduk&amp;ccedil;a fazla vakit kaybına neden oldu. Ben en başından s&amp;ouml;ylemek istiyorum&amp;nbsp;&lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Yolumuza &lt;strong&gt;Native&lt;/strong&gt; &lt;strong&gt;Activity&lt;/strong&gt; bileşenimizi geliştirerek devam edelim. &lt;strong&gt;Azon.Workflow.Activity&lt;/strong&gt; k&amp;uuml;t&amp;uuml;phanesi i&amp;ccedil;erisinde aşağıdaki sınıf diagramında g&amp;ouml;r&amp;uuml;len tipleri &amp;uuml;retiyor olacağız. Senaryomuza g&amp;ouml;re bileşenimiz, kaynak bir listede yer alan metod adlarını ve bunlara ait parametreleri g&amp;ouml;steriyor olacak. İlk hedefimiz bu.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2012%2f6%2fwda_2.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi tiplerimiz i&amp;ccedil;eriklerini biraz değerlendirelim.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;InstanceMethodActivity.cs&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Activities;
+
+namespace Azon.Workflow.Activity
+{
+    public sealed class InstanceMethodActivity
+        :NativeActivity&amp;lt;object&amp;gt;
+    {
+        public InArgument&amp;lt;string&amp;gt; Description { get; set; }
+        public string MethodName { get; set; }
+
+        protected override void Execute(NativeActivityContext context)
+        {
+            //TODO@Burak burada bir takım kodlar işletilir
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;InstanceMethodActivity&lt;/strong&gt;, &lt;strong&gt;t&amp;uuml;retilemeyen(Sealed)&lt;/strong&gt; ve &lt;strong&gt;NativeActivity&amp;lt;object&amp;gt;&lt;/strong&gt; t&amp;uuml;revli bir tiptir. &lt;strong&gt;CodeActivity&lt;/strong&gt; t&amp;uuml;revli tiplere benzer olarak, &amp;ccedil;alışma zamanındaki işlerini &lt;strong&gt;Execute&lt;/strong&gt; metodu i&amp;ccedil;erisinde icra etmektedir. &amp;Ouml;rneğimizde s&amp;ouml;z konusu &lt;strong&gt;Activity&lt;/strong&gt; bileşeni i&amp;ccedil;in herhangibir &lt;strong&gt;Runtime&lt;/strong&gt; işlemi uygulatmıyor olacağız. Asıl hedefimiz &lt;strong&gt;Visual Studio 2010 IDE'&lt;/strong&gt; sinde &lt;strong&gt;Design&lt;/strong&gt; &lt;strong&gt;Time&lt;/strong&gt; &lt;strong&gt;Support'&lt;/strong&gt; unu sağlayabilmektir. Tipimizin i&amp;ccedil;erisinde &lt;strong&gt;InArgument&amp;lt;string&amp;gt;&lt;/strong&gt; tipinden &lt;strong&gt;Description&lt;/strong&gt; ve &lt;strong&gt;string &lt;/strong&gt;t&amp;uuml;r&amp;uuml;nden&amp;nbsp;&lt;strong&gt;MethodName&lt;/strong&gt; isimli iki &lt;strong&gt;&amp;ouml;zellik(Property)&lt;/strong&gt; yer almaktadır. &lt;strong&gt;Designer&lt;/strong&gt; tarafında işimize yarayacak olan sınıflar ise &lt;strong&gt;InstanceMethod, InstanceMethodParameter, ParameterType(Enum sabiti)&lt;/strong&gt;&amp;nbsp;ve &lt;strong&gt;InstanceMethodList'&lt;/strong&gt; tir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace Azon.Workflow.Activity
+{
+    using System.Collections.Generic;
+
+    public class InstanceMethod
+    {
+        public string Name { get; set; }
+        public List&amp;lt;InstanceMethodParameter&amp;gt; Parameters{ get; set; }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;InstanceMethod&lt;/strong&gt;, aslında bir metodun adını ve parametrik yapısını taşımak &amp;uuml;zere tasarlanmış bir &lt;strong&gt;POCO(Plain Old Clr Object)&lt;/strong&gt; tipidir. &lt;strong&gt;Parameters&lt;/strong&gt; &amp;ouml;zelliği &lt;strong&gt;InstanceMethodParameter&lt;/strong&gt; tipinden &lt;strong&gt;generic&lt;/strong&gt; bir &lt;strong&gt;List&lt;/strong&gt; koleksiyonudur ve ilgili sınıfın i&amp;ccedil;eriği de aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace Azon.Workflow.Activity
+{
+    public class InstanceMethodParameter
+    {
+        public string Name { get; set; }
+        public string DotNetType { get; set; }
+        public ParameterType ParameterType{ get; set; }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu tip i&amp;ccedil;erisinde ise sembolik olarak metod parametrelerine ait &amp;ccedil;eşitli bilgiler yer almaktadır. &amp;Ouml;rneğin parametrenin adı, &lt;strong&gt;.Net Framework Common Type System&lt;/strong&gt;&amp;nbsp;deki karşılığı gibi. &lt;strong&gt;ParameterType&lt;/strong&gt; &lt;strong&gt;enum&lt;/strong&gt; sabiti ile de ilgili parametrenin ne &amp;ccedil;eşitte olduğu belirtilmektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace Azon.Workflow.Activity
+{
+&amp;nbsp;&amp;nbsp;&amp;nbsp; public enum ParameterType
+&amp;nbsp;&amp;nbsp;&amp;nbsp; {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Ref,
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Out,
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Standart,
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Return,
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Params
+&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+}&lt;/pre&gt;
+&lt;p&gt;Bu k&amp;uuml;t&amp;uuml;phane i&amp;ccedil;erisindeki en &amp;ouml;nemli tip ise &lt;strong&gt;ObservableCollection&amp;lt;InstanceMethod&amp;gt;&lt;/strong&gt; t&amp;uuml;revli olan &lt;strong&gt;InstanceMethodList'&lt;/strong&gt; dir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace Azon.Workflow.Activity
+{
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+
+    public class InstanceMethodList
+        :ObservableCollection&amp;lt;InstanceMethod&amp;gt;
+    {
+        public InstanceMethodList()
+        {
+            Add(new InstanceMethod
+            {
+                Name = "Sum",
+                Parameters = new List&amp;lt;InstanceMethodParameter&amp;gt;{
+                    new InstanceMethodParameter{ Name="X", DotNetType="System.Int32", ParameterType= ParameterType.Standart},
+                    new InstanceMethodParameter{ Name="Y", DotNetType="System.Int32", ParameterType= ParameterType.Standart},
+                    new InstanceMethodParameter{ Name="Result", DotNetType="System.Int32", ParameterType= ParameterType.Return}
+                }
+            });
+            Add(new InstanceMethod
+            {
+                Name = "TotalSum",
+                Parameters = new List&amp;lt;InstanceMethodParameter&amp;gt;{
+                    new InstanceMethodParameter{ Name="Values", DotNetType="System.Int32[]", ParameterType= ParameterType.Params},
+                    new InstanceMethodParameter{ Name="Result", DotNetType="System.Int32", ParameterType= ParameterType.Return}
+                }
+            });
+            Add(new InstanceMethod
+            {
+                Name = "CallSp",
+                Parameters = new List&amp;lt;InstanceMethodParameter&amp;gt;{
+                    new InstanceMethodParameter{ Name="SpName", DotNetType="System.String", ParameterType= ParameterType.Standart},
+                    new InstanceMethodParameter{ Name="ResultSet", DotNetType="System.Data.DataTable", ParameterType= ParameterType.Ref}
+                }
+            });
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu tip aslında &lt;strong&gt;Activity Designer'&lt;/strong&gt; ın &lt;strong&gt;XAML&lt;/strong&gt; tabanlı i&amp;ccedil;eriğinde ele alacağımız &lt;strong&gt;Data Binding&lt;/strong&gt; işlemleri i&amp;ccedil;in kullanılmaktadır. &lt;strong&gt;ObservableCollection&lt;/strong&gt; t&amp;uuml;revli olmasının sebebi de budur. Amacımız tipin kendisini &lt;strong&gt;ComboBox&lt;/strong&gt; ve &lt;strong&gt;DataGrid&lt;/strong&gt; kontrollerine bağlamaktır. &lt;strong&gt;Yapıcı(Constructor)&lt;/strong&gt; metod i&amp;ccedil;erisinde, &amp;ouml;rnek metod bilgilerinin eklendiği g&amp;ouml;r&amp;uuml;lmektedir. Elbetteki bir ger&amp;ccedil;ek hayat senaryosunda ilgili i&amp;ccedil;eriklerin farklı veri ortamlarından tedarik edilmesi de d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. &amp;Ouml;rneğin bu bilgileri bir servis &amp;uuml;zerinden veya doğrudan erişilebilen ve &lt;strong&gt;InProc&lt;/strong&gt; modda kullanabildiğimiz bir &lt;strong&gt;Assembly&lt;/strong&gt; i&amp;ccedil;erisinden de getirtebiliriz.&lt;/p&gt;
+&lt;p&gt;Gelelim bileşenimizin aray&amp;uuml;z&amp;uuml;n&amp;uuml; tasarlayacağımız &lt;strong&gt;Activity Designer&lt;/strong&gt; &amp;ouml;ğesine.&lt;strong&gt; Azon.Workflow.Activity.Design&lt;/strong&gt; k&amp;uuml;t&amp;uuml;phanesinde oluşturacağımız &lt;strong&gt;InstanceMethodActivityDesigner.xaml&lt;/strong&gt; tipinin i&amp;ccedil;eriğini aşağıdaki gibi tasarlayabiliriz.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;sap:ActivityDesigner x:Class="Azon.Workflow.Activity.Design.InstanceMethodActivityDesigner"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" 
+    xmlns:sap="clr-namespace:System.Activities.Presentation;assembly=System.Activities.Presentation"
+    xmlns:sapv="clr-namespace:System.Activities.Presentation.View;assembly=System.Activities.Presentation"
+    xmlns:Model="clr-namespace:System.Activities.Presentation.Model;assembly=System.Activities.Presentation"
+    xmlns:sapc="clr-namespace:System.Activities.Presentation.Converters;assembly=System.Activities.Presentation"
+    xmlns:activity="clr-namespace:Azon.Workflow.Activity;assembly=Azon.Workflow.Activity"
+    mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"&amp;gt;
+    &amp;lt;sap:ActivityDesigner.Resources&amp;gt;
+        &amp;lt;ResourceDictionary x:Uid="ResourceDictionary_0"&amp;gt;
+            &amp;lt;sapc:ModelToObjectValueConverter x:Key="ModelToObjectValueConverter" /&amp;gt;
+            &amp;lt;ObjectDataProvider x:Key="dsInstanceMethods" ObjectType="{x:Type activity:InstanceMethodList}"&amp;gt;
+            &amp;lt;/ObjectDataProvider&amp;gt;
+
+            &amp;lt;DataTemplate x:Key="Collapsed"&amp;gt;
+                &amp;lt;StackPanel Orientation="Horizontal"&amp;gt;
+                    &amp;lt;TextBlock VerticalAlignment="Center" Margin="5" Text="Method Caller" /&amp;gt;
+                &amp;lt;/StackPanel&amp;gt;
+            &amp;lt;/DataTemplate&amp;gt;
+
+            &amp;lt;DataTemplate x:Key="Expanded"&amp;gt;
+                &amp;lt;Grid&amp;gt;
+                    &amp;lt;Grid.RowDefinitions&amp;gt;
+                        &amp;lt;RowDefinition/&amp;gt;
+                        &amp;lt;RowDefinition/&amp;gt;
+                        &amp;lt;RowDefinition/&amp;gt;
+                        &amp;lt;RowDefinition/&amp;gt;
+                    &amp;lt;/Grid.RowDefinitions&amp;gt;
+                    &amp;lt;Grid.ColumnDefinitions&amp;gt;
+                        &amp;lt;ColumnDefinition/&amp;gt;
+                    &amp;lt;/Grid.ColumnDefinitions&amp;gt;
+                    &amp;lt;TextBlock Text="Metodlar" Grid.Row="0"/&amp;gt;
+                    &amp;lt;ComboBox x:Name="cmbInstanceMethods" Grid.Row="1" ItemsSource="{Binding Source={StaticResource dsInstanceMethods}}" DisplayMemberPath="Name" IsSynchronizedWithCurrentItem="True" /&amp;gt;
+                    &amp;lt;TextBlock Text="Metod Parametreleri" Grid.Row="2"/&amp;gt;
+                    &amp;lt;DataGrid x:Name="grdMethodParameters" Grid.Row="3" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding Source={StaticResource dsInstanceMethods}, Path=Parameters}"/&amp;gt;
+                &amp;lt;/Grid&amp;gt;
+            &amp;lt;/DataTemplate&amp;gt;
+            &amp;lt;Style x:Key="ExpandOrCollapsedStyle" TargetType="{x:Type ContentPresenter}"&amp;gt;
+                &amp;lt;Setter Property="ContentTemplate" Value="{DynamicResource Expanded}" /&amp;gt;
+                &amp;lt;Style.Triggers&amp;gt;
+                    &amp;lt;DataTrigger Binding="{Binding Path=ShowExpanded}" Value="true"&amp;gt;
+                        &amp;lt;Setter Property="ContentTemplate" Value="{DynamicResource Collapsed}" /&amp;gt;
+                    &amp;lt;/DataTrigger&amp;gt;
+                &amp;lt;/Style.Triggers&amp;gt;
+            &amp;lt;/Style&amp;gt;
+
+        &amp;lt;/ResourceDictionary&amp;gt;
+    &amp;lt;/sap:ActivityDesigner.Resources&amp;gt;
+    &amp;lt;Grid&amp;gt;
+        &amp;lt;ContentPresenter Style="{DynamicResource ExpandOrCollapsedStyle}" Content="{Binding}" /&amp;gt;
+    &amp;lt;/Grid&amp;gt;
+&amp;lt;/sap:ActivityDesigner&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Vuuuuu!!! &lt;img title="Sealed" src="/editors/tiny_mce3/plugins/emotions/img/smiley-sealed.gif" alt="Sealed" border="0" /&gt;&amp;nbsp;Biraz korkutucu bir i&amp;ccedil;erik gibi g&amp;ouml;r&amp;uuml;nebilir. Ama korkmayın. Tek tek a&amp;ccedil;ıklamaya &amp;ccedil;alışalım.&lt;/p&gt;
+&lt;p&gt;Herşeyden &amp;ouml;nce bileşenimiz i&amp;ccedil;erisinde bazı &lt;strong&gt;Static Resource'&lt;/strong&gt; lar tanımlandığı g&amp;ouml;r&amp;uuml;lmektedir. &lt;strong&gt;dsInstanceMethods&lt;/strong&gt; isimli &lt;strong&gt;ObjectDataProvider&lt;/strong&gt;, &lt;strong&gt;InstanceMethodList&lt;/strong&gt; isimli sınıfa bağlanmaktadır. Dolayısıyla &lt;strong&gt;XAML&lt;/strong&gt; i&amp;ccedil;erisinde yer alan bileşenler bu veri kaynağına bağlanıp &lt;strong&gt;InstanceMethod&lt;/strong&gt; nesne &amp;ouml;rnekleri ile etkileşimde bulunabilirler. &amp;Ouml;rneğin &lt;strong&gt;cmbInstanceMethods&lt;/strong&gt; isimli &lt;strong&gt;ComboBox&lt;/strong&gt; kontrol&amp;uuml;, &lt;strong&gt;ItemsSource&lt;/strong&gt; &amp;ouml;zelliğine &lt;strong&gt;static&lt;/strong&gt; bir veri kaynağı olarak bu &lt;strong&gt;ObjectDataProvider&lt;/strong&gt; &amp;ouml;rneğini bağlamıştır. &lt;strong&gt;DisplayMemberPath&lt;/strong&gt; &amp;ouml;zelliğine atanan &lt;strong&gt;Name&lt;/strong&gt; değeri ise, &lt;strong&gt;InstanceMethod&amp;nbsp;&lt;/strong&gt;&amp;nbsp;&amp;ouml;rnekleri i&amp;ccedil;erisindeki &lt;strong&gt;Name&lt;/strong&gt; &amp;ouml;zelliğini işaret etmekte olup &lt;strong&gt;ComboBox'&lt;/strong&gt; un &amp;uuml;zerinde nelerin g&amp;ouml;sterileceğini belirtmektedir. &lt;strong&gt;ComboBox&lt;/strong&gt; &amp;uuml;zerinde hareket edildik&amp;ccedil;e alt tarafta yer alan &lt;strong&gt;grdMethodParameters&lt;/strong&gt; isimli &lt;strong&gt;DataGrid&lt;/strong&gt; i&amp;ccedil;eriğininde, ilgili metoda ait parametre listesi ile doldurulması beklenmektedir. Bu nedenle her iki bileşenin &lt;strong&gt;IsSychnronizedWithCurrentItem&lt;/strong&gt; &amp;ouml;zelliği &lt;strong&gt;true&lt;/strong&gt; değerine sahiptir. &lt;strong&gt;DataGrid&lt;/strong&gt; bileşeninin &lt;strong&gt;ItemsSource&lt;/strong&gt; &amp;ouml;zelliği de &lt;strong&gt;static&lt;/strong&gt; veri kaynağı olan &lt;strong&gt;dsInstanceMethods'&lt;/strong&gt; a bağlanmıştır. Ama!&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Path&lt;/strong&gt; &amp;ouml;zelliğinin değerine dikkat edelim. &lt;strong&gt;Parameters&lt;/strong&gt; değeri aslında &lt;strong&gt;InstanceMethodList&lt;/strong&gt; sınıfındaki &amp;ouml;zelliğin adıdır. Dolayısıyla &lt;strong&gt;ComboBox&lt;/strong&gt; kontrol&amp;uuml;nde bir &amp;ouml;ğe se&amp;ccedil;ildiğinde, buna bağlı &lt;strong&gt;Parameters&lt;/strong&gt; &amp;ouml;zelliğinin karşılığı olan liste, &lt;strong&gt;DataGrid&lt;/strong&gt; i&amp;ccedil;erisine basılıyor olacaktır. G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere tipik olarak bir &lt;strong&gt;WPF Data Binding&lt;/strong&gt; işlevselliği s&amp;ouml;z konusudur. Bunun dışında kalan kısımlarda bileşenin &lt;strong&gt;Collapse&lt;/strong&gt; veya &lt;strong&gt;Expand&lt;/strong&gt; edilmesi hallerinde nasıl g&amp;ouml;r&amp;uuml;neceği ifade edilmiştir. Dikkat edilecek olursa iki adet &lt;strong&gt;DataTemplate&lt;/strong&gt; elementi vardır. Bunlardan birisi &lt;strong&gt;Collapsed&lt;/strong&gt; diğer ise &lt;strong&gt;Expanded&lt;/strong&gt; olarak isimlendirilmiştir. Son satırlarda yer alan &lt;strong&gt;Grid&lt;/strong&gt; elementi i&amp;ccedil;erisindeki &lt;strong&gt;ContentPresenter'&lt;/strong&gt; da buna uygun olacak şekilde bileşenin &lt;strong&gt;Collapsed&lt;/strong&gt; veya &lt;strong&gt;Expanded&lt;/strong&gt; olarak &lt;strong&gt;designer&lt;/strong&gt; &amp;uuml;zerinde g&amp;ouml;sterilebilmesini sağlamaktadır&lt;em&gt;(Ne varki ben Collapsed hale bir t&amp;uuml;rl&amp;uuml; getirmeyi başaramadım. Yani &amp;ouml;rneğimizde şimdiden bir Bug' ımız olduğunu ifade etmek isterim &lt;img title="Undecided" src="/editors/tiny_mce3/plugins/emotions/img/smiley-undecided.gif" alt="Undecided" border="0" /&gt;&amp;nbsp;)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Bileşenimizin &lt;strong&gt;XAML&lt;/strong&gt; i&amp;ccedil;eriğini bu şekilde oluşturmak yeterli değildir. Ayrıca&lt;strong&gt; Visual Studio Designer'&lt;/strong&gt; ına s&amp;ouml;z konusu bileşeni bildirmemiz gerekmektedir. Bunun i&amp;ccedil;in ilk olarak &lt;strong&gt;Activity Designer&lt;/strong&gt; sınıfının koda tarafını aşağıdaki hale getirmeliyiz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Activities.Presentation.Metadata;
+using System.ComponentModel;
+
+namespace Azon.Workflow.Activity.Design
+{
+    public partial class InstanceMethodActivityDesigner
+    {
+        #region Constructors and Destructors
+
+        public InstanceMethodActivityDesigner()
+        {
+            this.InitializeComponent();
+        }
+
+        #endregion
+
+        #region Public Methods
+
+        public static void RegisterMetadata(AttributeTableBuilder builder)
+        {
+            builder.AddCustomAttributes(
+                typeof(InstanceMethodActivity),
+                new DesignerAttribute(typeof(InstanceMethodActivityDesigner)),
+                new DescriptionAttribute("Instance Method Activity"));
+        }
+
+        #endregion
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Sınıf i&amp;ccedil;erisindeki en &amp;ouml;nemli metod &lt;strong&gt;RegisterMetadata&lt;/strong&gt; isimli &lt;strong&gt;static&lt;/strong&gt; fonksiyondur. Bu metod i&amp;ccedil;erisinde parametre olarak gelen &lt;strong&gt;Attribute&lt;/strong&gt; tablosuna bazı bildirimlerde bulunularak yeni &lt;strong&gt;niteliklerin(Attribute)&lt;/strong&gt; ilave edilmesi sağlanmaktadır. Hatta dilerseniz burada &lt;strong&gt;Component&lt;/strong&gt; i&amp;ccedil;in bir &lt;strong&gt;Icon(16X16 boyutlarında bir PNG olabilir)&lt;/strong&gt; dahi belirtebilirsiniz. Biz şimdilik bu detayı atlıyor olacağız.&lt;/p&gt;
+&lt;p&gt;Peki s&amp;ouml;z konusu &lt;strong&gt;static&lt;/strong&gt; metod nerede &amp;ccedil;ağırılacaktır? &lt;img title="Undecided" src="/editors/tiny_mce3/plugins/emotions/img/smiley-undecided.gif" alt="Undecided" border="0" /&gt;&amp;nbsp;Bunun i&amp;ccedil;in &lt;strong&gt;Azon.Workflow.Activity.Design&lt;/strong&gt; k&amp;uuml;t&amp;uuml;phanesine &lt;strong&gt;IRegisterMetadata&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml; implemente eden bir sınıfın eklenmesi gerekmektedir. &lt;strong&gt;IRegisterMetadata&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;nden gelen &lt;strong&gt;Register&lt;/strong&gt; metodu i&amp;ccedil;erisinde ise, &lt;strong&gt;InstanceMethodActivityDesigner&lt;/strong&gt; sınıfına dahil edilmiş olan &lt;strong&gt;RegisterMetadata&lt;/strong&gt; isimli &lt;strong&gt;static&lt;/strong&gt; metod &amp;ccedil;ağrısı ger&amp;ccedil;ekleştirilmektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Activities.Presentation.Metadata;
+namespace Azon.Workflow.Activity.Design
+{
+    public sealed class ActivityLibraryMetadata
+        : IRegisterMetadata
+    {
+        public void Register()
+        {
+            RegisterAll();
+        }
+
+        public static void RegisterAll()
+        {
+            var builder = new AttributeTableBuilder();
+            InstanceMethodActivityDesigner.RegisterMetadata(builder);
+            MetadataStore.AddAttributeTable(builder.CreateTable());
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Burada kullanılan sınıfın adının &amp;ccedil;ok &amp;ouml;nemi yoktur. Nitekim &lt;strong&gt;Visual Studio IDE'&lt;/strong&gt; si, kendi &amp;ccedil;alışma zamanı ortamında, ilgili &lt;strong&gt;Activity Designer&lt;/strong&gt; k&amp;uuml;t&amp;uuml;phanesinde &lt;strong&gt;IRegisterMetadata&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml; uygulamış olan bir tipe bakmaktadır. Tipik bir &lt;strong&gt;Plug-In&lt;/strong&gt; tasarım mantığı olduğunu rahatlıkla ifade edebiliriz.&lt;/p&gt;
+&lt;p&gt;Artık bileşenimizi deneyebiliriz demek isterdim ama son olarak yapmamız gereken ufak bir işlem daha var. Adı&amp;nbsp;&lt;strong&gt;Design&lt;/strong&gt; kelimesi ile biten k&amp;uuml;t&amp;uuml;phanenin &lt;strong&gt;dll&lt;/strong&gt; &amp;ccedil;ıktısının, &lt;strong&gt;NativeActivity&lt;/strong&gt; bileşenlerini i&amp;ccedil;eren k&amp;uuml;t&amp;uuml;phanenin olduğu yere doğru yapılması gerekmektedir. Aşağıdaki şekilde g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2012%2f6%2fwda_3.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Artık basit bir &lt;strong&gt;Workflow&lt;/strong&gt; &amp;uuml;zerinden bileşenimizi deneyebiliriz. Bileşenimiz otomatik olarak &lt;strong&gt;Toolbox&lt;/strong&gt; sekmesinde g&amp;ouml;r&amp;uuml;necektir. İşte &lt;strong&gt;Visual Studio 2010&lt;/strong&gt; &amp;ccedil;alışma ortamına ait bir ka&amp;ccedil; &amp;ouml;rnek g&amp;ouml;r&amp;uuml;nt&amp;uuml;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Sum metodu se&amp;ccedil;ildiğinde&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2012%2f6%2fwda_4.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;CallSp metodu se&amp;ccedil;ildiğinde&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2012%2f6%2fwda_5.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere bileşenimiz i&amp;ccedil;erisinde &lt;strong&gt;Data Binding&lt;/strong&gt; tekniklerini de kullanarak bir etkileşim ger&amp;ccedil;ekleştirmeyi başardık. Şimdi bileşenimizi biraz daha geliştirmeyi deniyor olacağız. Buna g&amp;ouml;re &lt;strong&gt;ComboBox&lt;/strong&gt; kontrol&amp;uuml;nde bir &amp;ouml;ğe se&amp;ccedil;ildiğinde, &lt;strong&gt;Name&lt;/strong&gt; alanının değerinin, o anki &lt;strong&gt;InstanceMethodActivity'&lt;/strong&gt; ye ait &lt;strong&gt;Property'&lt;/strong&gt; lerden &lt;strong&gt;MethodName&lt;/strong&gt; alanında g&amp;ouml;sterilmesini sağlamaya &amp;ccedil;alışacağız. Bu bonus senaryoda işi zorlaştıran kısım şu;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ComboBox &lt;/strong&gt;bileşeni i&amp;ccedil;erisinde &lt;strong&gt;Binding&lt;/strong&gt; sebebi ile &lt;strong&gt;InstanceMethodList&lt;/strong&gt; sınıfına ait değerler taşınmaktadır. Bu değerler &lt;strong&gt;InstanceMethod&lt;/strong&gt; t&amp;uuml;r&amp;uuml;nden nesne &amp;ouml;rnekleridir aslında. &lt;strong&gt;InstanceMethodActivity&lt;/strong&gt; bileşeninin, &lt;strong&gt;MethodName&lt;/strong&gt; &amp;ouml;zelliği ise &lt;strong&gt;string&lt;/strong&gt; tipindendir. Dolayısıyla &lt;strong&gt;ComboBox&lt;/strong&gt; kontrol&amp;uuml;n&amp;uuml;n &lt;strong&gt;SelectedValue&lt;/strong&gt; &amp;ouml;zelliği i&amp;ccedil;erisinde &lt;strong&gt;XAML&lt;/strong&gt; tarafında bildirilecek şekilde &amp;ouml;zel bir &lt;strong&gt;Convert&lt;/strong&gt; işleminin uygulanması gerekmektedir. Bu ama&amp;ccedil;la &amp;ouml;ncelikli olarak bir &lt;strong&gt;Converter&lt;/strong&gt; tipini &lt;strong&gt;Azon.Workflow.Activity&lt;/strong&gt; k&amp;uuml;t&amp;uuml;phanesine aşağıdaki gibi ilave edelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2012%2f6%2fwda_6.png" alt="" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace Azon.Workflow.Activity
+{
+    using System;
+    using System.Globalization;
+    using System.Windows.Data;
+
+
+    public class InstanceMethodToMethodNameConverter
+        :IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null; //BURASI SİZE &amp;Ouml;DEV OLSUN
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            InstanceMethod instanceMethod = (InstanceMethod)value;
+            return instanceMethod.Name;
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;InstanceMethodToMethodNameConverter&lt;/strong&gt; tipi, &lt;strong&gt;System.Windows.Data&lt;/strong&gt; isim alanında&lt;em&gt;(ki PresentationFramework.dll assembly' ının projede referans edilmesi gerekmektedir)&lt;/em&gt;&amp;nbsp;yer alan &lt;strong&gt;IValueConverter&lt;/strong&gt; &lt;strong&gt;aray&amp;uuml;z&amp;uuml;n&amp;uuml;(Inteface)&lt;/strong&gt; uygulamaktadır. Buna g&amp;ouml;re &lt;strong&gt;TwoWay&lt;/strong&gt; &lt;strong&gt;Binding'&lt;/strong&gt; i destekleyecek şekilde &lt;strong&gt;Convert&lt;/strong&gt; ve &lt;strong&gt;ConvertBack&lt;/strong&gt; metodlarının implemantasyonunu istemektedir. &lt;strong&gt;Convert&lt;/strong&gt; metodu, &lt;strong&gt;Properties&lt;/strong&gt; penceresinden girilen değere g&amp;ouml;re &lt;strong&gt;ComboBox&lt;/strong&gt; i&amp;ccedil;erisinde ilgili &amp;ouml;ğeye gidilmesini sağlamaktadır. &lt;strong&gt;ConvertBack&lt;/strong&gt; metodu ise tam tersi işlevi &amp;uuml;stlenmekte olup, &lt;strong&gt;ComboBox'&lt;/strong&gt; ta se&amp;ccedil;ilen &lt;strong&gt;InstanceMethod&lt;/strong&gt; nesne &amp;ouml;rneğinin &lt;strong&gt;Name&lt;/strong&gt; &amp;ouml;zelliğinin değerini &lt;strong&gt;Properties&lt;/strong&gt; penceresindeki &lt;strong&gt;MethodName&lt;/strong&gt; alanına basmaktadır. Tabi s&amp;ouml;z konusu tipin yazılması yeterli değildir. Bu &lt;strong&gt;Converter&lt;/strong&gt; tipinin &lt;strong&gt;XAML&lt;/strong&gt; tarafında da dekleratif olarak bildirilmesi ve &lt;strong&gt;ComboBox&lt;/strong&gt; bileşeni ile ilişkilendirilmesi gerekmektedir. Bunun i&amp;ccedil;in &lt;strong&gt;InstanceMethodActivityDesigner.xaml&lt;/strong&gt; i&amp;ccedil;eriğini aşağıdaki gibi g&amp;uuml;ncellememiz yeterli olacaktır.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;sap:ActivityDesigner x:Class="Azon.Workflow.Activity.Design.InstanceMethodActivityDesigner"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" 
+    xmlns:sap="clr-namespace:System.Activities.Presentation;assembly=System.Activities.Presentation"
+    xmlns:sapv="clr-namespace:System.Activities.Presentation.View;assembly=System.Activities.Presentation"
+    xmlns:Model="clr-namespace:System.Activities.Presentation.Model;assembly=System.Activities.Presentation"
+    xmlns:sapc="clr-namespace:System.Activities.Presentation.Converters;assembly=System.Activities.Presentation"
+    xmlns:activity="clr-namespace:Azon.Workflow.Activity;assembly=Azon.Workflow.Activity"
+    mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"&amp;gt;
+    &amp;lt;sap:ActivityDesigner.Resources&amp;gt;
+        &amp;lt;ResourceDictionary x:Uid="ResourceDictionary_0"&amp;gt;
+            &amp;lt;sapc:ModelToObjectValueConverter x:Key="ModelToObjectValueConverter" /&amp;gt;
+            &amp;lt;activity:InstanceMethodToMethodNameConverter x:Key="MethodToMethodNameConverter"/&amp;gt;
+            &amp;lt;ObjectDataProvider x:Key="dsInstanceMethods" ObjectType="{x:Type activity:InstanceMethodList}"&amp;gt;
+            &amp;lt;/ObjectDataProvider&amp;gt;
+
+            &amp;lt;DataTemplate x:Key="Collapsed"&amp;gt;
+                &amp;lt;StackPanel Orientation="Horizontal"&amp;gt;
+                    &amp;lt;TextBlock VerticalAlignment="Center" Margin="5" Text="Method Caller" /&amp;gt;
+                &amp;lt;/StackPanel&amp;gt;
+            &amp;lt;/DataTemplate&amp;gt;
+
+            &amp;lt;DataTemplate x:Key="Expanded"&amp;gt;
+                &amp;lt;Grid&amp;gt;
+                    &amp;lt;Grid.RowDefinitions&amp;gt;
+                        &amp;lt;RowDefinition/&amp;gt;
+                        &amp;lt;RowDefinition/&amp;gt;
+                        &amp;lt;RowDefinition/&amp;gt;
+                        &amp;lt;RowDefinition/&amp;gt;
+                    &amp;lt;/Grid.RowDefinitions&amp;gt;
+                    &amp;lt;Grid.ColumnDefinitions&amp;gt;
+                        &amp;lt;ColumnDefinition/&amp;gt;
+                    &amp;lt;/Grid.ColumnDefinitions&amp;gt;
+                    &amp;lt;TextBlock Text="Metodlar" Grid.Row="0"/&amp;gt;
+                    &amp;lt;ComboBox x:Name="cmbInstanceMethods" Grid.Row="1" ItemsSource="{Binding Source={StaticResource dsInstanceMethods}}" DisplayMemberPath="Name" IsSynchronizedWithCurrentItem="True" SelectedValue="{Binding Path=ModelItem.MethodName, Mode=TwoWay, Converter={StaticResource MethodToMethodNameConverter}}" /&amp;gt;
+                    &amp;lt;TextBlock Text="Metod Parametreleri" Grid.Row="2"/&amp;gt;
+                    &amp;lt;DataGrid x:Name="grdMethodParameters" Grid.Row="3" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding Source={StaticResource dsInstanceMethods}, Path=Parameters}"/&amp;gt;
+                &amp;lt;/Grid&amp;gt;
+            &amp;lt;/DataTemplate&amp;gt;
+            &amp;lt;Style x:Key="ExpandOrCollapsedStyle" TargetType="{x:Type ContentPresenter}"&amp;gt;
+                &amp;lt;Setter Property="ContentTemplate" Value="{DynamicResource Expanded}" /&amp;gt;
+                &amp;lt;Style.Triggers&amp;gt;
+                    &amp;lt;DataTrigger Binding="{Binding Path=ShowExpanded}" Value="true"&amp;gt;
+                        &amp;lt;Setter Property="ContentTemplate" Value="{DynamicResource Collapsed}" /&amp;gt;
+                    &amp;lt;/DataTrigger&amp;gt;
+                &amp;lt;/Style.Triggers&amp;gt;
+            &amp;lt;/Style&amp;gt;
+
+        &amp;lt;/ResourceDictionary&amp;gt;
+    &amp;lt;/sap:ActivityDesigner.Resources&amp;gt;
+    &amp;lt;Grid&amp;gt;
+        &amp;lt;ContentPresenter Style="{DynamicResource ExpandOrCollapsedStyle}" Content="{Binding}" /&amp;gt;
+    &amp;lt;/Grid&amp;gt;
+&amp;lt;/sap:ActivityDesigner&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Buna g&amp;ouml;re &lt;strong&gt;ComboBox&lt;/strong&gt; kontrol&amp;uuml;nde bir &lt;strong&gt;Metod&lt;/strong&gt; adı se&amp;ccedil;ilirse bu &lt;strong&gt;Properties&lt;/strong&gt; penceresine de bu isim&amp;nbsp;yansıyacaktır. B&amp;ouml;ylece &lt;strong&gt;developer'&lt;/strong&gt; ın işi biraz daha kolaylaştırılmış olmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2012%2f6%2fwda_7.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi olayı biraz daha renklendireceğiz. &amp;Ouml;rneğin &lt;strong&gt;Visual Studio Designer'&lt;/strong&gt; ı &amp;uuml;zerinde &amp;ccedil;alışırken, &lt;strong&gt;Activity&lt;/strong&gt; bileşenlerine ait &lt;strong&gt;event&lt;/strong&gt; methodları kullanmak istediğinizi ve hatta bu &lt;strong&gt;event&lt;/strong&gt; metodlar i&amp;ccedil;erisinde, diğer kontrollerin i&amp;ccedil;eriklerine ulaşmak istediğimizi d&amp;uuml;ş&amp;uuml;nelim. Bu senaryoyu irdelemek i&amp;ccedil;in &lt;strong&gt;InstanceMethodActivityDesigner.xaml&lt;/strong&gt; i&amp;ccedil;eriğine bir &lt;strong&gt;Button&lt;/strong&gt; kontrol&amp;uuml; ekleyerek ilerleyebiliriz.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;DataTemplate x:Key="Expanded"&amp;gt;
+	&amp;lt;Grid&amp;gt;
+		&amp;lt;Grid.RowDefinitions&amp;gt;
+			&amp;lt;RowDefinition/&amp;gt;
+			&amp;lt;RowDefinition/&amp;gt;
+			&amp;lt;RowDefinition/&amp;gt;
+			&amp;lt;RowDefinition/&amp;gt;
+			&amp;lt;RowDefinition/&amp;gt;
+		&amp;lt;/Grid.RowDefinitions&amp;gt;
+		&amp;lt;Grid.ColumnDefinitions&amp;gt;
+			&amp;lt;ColumnDefinition/&amp;gt;
+		&amp;lt;/Grid.ColumnDefinitions&amp;gt;
+		&amp;lt;TextBlock Text="Metodlar" Grid.Row="0"/&amp;gt;
+		&amp;lt;ComboBox x:Name="cmbInstanceMethods" Grid.Row="1" ItemsSource="{Binding Source={StaticResource dsInstanceMethods}}" DisplayMemberPath="Name" IsSynchronizedWithCurrentItem="True" SelectedValue="{Binding Path=ModelItem.MethodName, Mode=TwoWay, Converter={StaticResource MethodToMethodNameConverter}}" /&amp;gt;
+		&amp;lt;TextBlock Text="Metod Parametreleri" Grid.Row="2"/&amp;gt;
+		&amp;lt;DataGrid x:Name="grdMethodParameters" Grid.Row="3" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding Source={StaticResource dsInstanceMethods}, Path=Parameters}"/&amp;gt;
+		&amp;lt;Button x:Name="btnCatchParameters" Click="btnCatchParameters_Click" Content="Parametreleri &amp;Ccedil;ek" Grid.Row="4"&amp;gt;
+		&amp;lt;/Button&amp;gt;
+	&amp;lt;/Grid&amp;gt;
+&amp;lt;/DataTemplate&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;btnCatchParameters&lt;/strong&gt; isimli &lt;strong&gt;Button&lt;/strong&gt; kontrol&amp;uuml;n&amp;uuml;n &lt;strong&gt;Click&lt;/strong&gt; olay metodunun y&amp;uuml;klendiği g&amp;ouml;r&amp;uuml;lmektedir. Bu olay metodu &amp;ccedil;ok doğal olarak &lt;strong&gt;InstanceMethodActivityDesigner.cs&lt;/strong&gt; i&amp;ccedil;erisine a&amp;ccedil;ılıyor olacaktır. Olay metodu i&amp;ccedil;eriğini aşağıdaki kod par&amp;ccedil;asında g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi geliştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void btnCatchParameters_Click(object sender, System.Windows.RoutedEventArgs e)
+{
+    Grid parent=((Grid)((Button)e.Source).Parent);
+    foreach (UIElement control in parent.Children)
+    {
+        DataGrid grid=control as DataGrid;
+        if(grid!=null)
+        {
+            StringBuilder builder = new StringBuilder();
+            foreach (var item in grid.ItemsSource)
+            {
+                builder.AppendLine(item.ToString());
+            }
+            MessageBox.Show(builder.ToString(),"Parametreler");
+        }
+    }                          
+}&lt;/pre&gt;
+&lt;p&gt;Olay metodu i&amp;ccedil;erisindeki felsefe olduk&amp;ccedil;a basittir. &lt;strong&gt;Button&lt;/strong&gt; kontrol&amp;uuml; aslında bir &lt;strong&gt;Grid&lt;/strong&gt; i&amp;ccedil;erisinde yer almaktadır ve &lt;strong&gt;DataGrid&lt;/strong&gt; bileşeni de aynı &lt;strong&gt;seviyede(Level)&lt;/strong&gt; durmakta olan bir elementtir. Dolayısıyla &lt;strong&gt;Button&lt;/strong&gt; bileşeninin &lt;strong&gt;Parent &lt;/strong&gt;elementine(&lt;strong&gt;Container &lt;/strong&gt;da diyebiliriz)&amp;nbsp;&amp;ccedil;ıkıp, t&amp;uuml;m alt kontrolleri dolaşabilir ve &lt;strong&gt;Grid &lt;/strong&gt;tipinde olana vardığımızda da &lt;strong&gt;ItemsSource &lt;/strong&gt;&amp;ouml;zelliğine ait koleksiyon i&amp;ccedil;eriğini ele alabiliriz. Kulağımızı farklı bir şekilde tuttuğumuzu ifade edebiliriz aslında ama şu anda elimizden en iyi &amp;ccedil;&amp;ouml;z&amp;uuml;m bu. B&amp;ouml;ylece&amp;nbsp;&lt;strong&gt;Visual Studio Designer&lt;/strong&gt;' ı i&amp;ccedil;erisindeyken, &lt;strong&gt;DataGrid&lt;/strong&gt; elementlerine ve se&amp;ccedil;ili olan metodun parametre listesine ulaşmamız m&amp;uuml;mk&amp;uuml;n olacaktır. Aynen aşağıdaki şekilde g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2012%2f6%2fwda_8.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;Custom Activity&lt;/strong&gt; geliştirmek kolay olsa da, bu bileşeni &lt;strong&gt;Designer&lt;/strong&gt; desteğine sahip olacak şekilde genişletmek bir ka&amp;ccedil; ipucu i&amp;ccedil;eren ve dikkat edilmesi gereken bir s&amp;uuml;reci gerektirmektedir. Geliştirmiş olduğumuz &amp;ouml;rnekte bazı eksik kısımlar da bulunmaktadır. &amp;Ouml;rneğin &lt;strong&gt;XAML&lt;/strong&gt; tarafında dekleratif olarak &lt;strong&gt;Event&lt;/strong&gt; bazlı etkileşimler &amp;ccedil;ok fazla ele alınmamıştır.&lt;em&gt;(Bir veritabanı bağlantısını se&amp;ccedil;tiren ve hatta &lt;strong&gt;design&lt;/strong&gt; tarafında bir &lt;strong&gt;SQL&lt;/strong&gt; sorgusunu &amp;ccedil;alıştırtıp sonu&amp;ccedil;ları bir &lt;strong&gt;DataGrid&lt;/strong&gt; kontrol&amp;uuml;ne basan bir &lt;strong&gt;Activity&lt;/strong&gt; &lt;strong&gt;Designer&lt;/strong&gt; yazmaya &amp;ccedil;alıştığınızı hayal edin. &amp;Uuml;stelik Connection' ı tanımladığınızda Test' de edebilmelisiniz vs&amp;nbsp;&lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;) &lt;/em&gt;Bu konuda detaylı ve derinlemesine&amp;nbsp;araştırmalarıma devam ediyorum. Yeni bilgiler edindik&amp;ccedil;e sizinle paylaşmaya gayret ediyor olacağım. B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2012%2f6%2fWritingDesignerActivityV2.zip"&gt;WritingDesignerActivityV2.zip (155,91 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2012-06-12 07:00:00</pubDate>
+  <slug>Custom-Activity-Designer-Gelistirmek</slug>
+  <tags>
+    <tag>workflow-foundation</tag>
+    <tag>activity-designer</tag>
+    <tag>native-activity</tag>
+    <tag>custom-workflow-component</tag>
+    <tag>xaml</tag>
+    <tag>xaml-data-binding</tag>
+    <tag>ivalueconverter</tag>
+    <tag>observablecollection</tag>
+    <tag>visual-studio-2010-workflow-designer</tag>
+  </tags>
+  <categories>
+    <category>WF</category>
+    <category>WF 4.0</category>
+  </categories>
+</post>

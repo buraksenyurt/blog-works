@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Ado.Net Entity Framework 4.0 - Stored Procedures ve Complex Types</title>
+  <description>Ado.Net Entity Framework 4.0 ile birlikte gelecek/gelmekte olan yeniliklerden birisi de, Stored Procedure' lerin dönüş tipi ile alakalıdır. Henüz tam olarak bitirilememiş olan bu özellik şu anki haliyle bir Stored Procedure' den geriye karmaşık bir tipinin(Complex Type) döndürülebilmesine izin vermektedir...</description>
+  <content>&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Ado.Net Entity Framework 4.0&lt;/strong&gt; ile birlikte gelecek/gelmekte olan yeniliklerden birisi de, &lt;strong&gt;Stored Procedure'&lt;/strong&gt; lerin d&amp;ouml;n&amp;uuml;ş tipi ile alakalıdır. Hen&amp;uuml;z tam olarak bitirilememiş olan bu &amp;ouml;zellik şu anki haliyle bir &lt;strong&gt;Stored Procedure' &lt;/strong&gt;den geriye &lt;strong&gt;karmaşık bir tipinin(Complex Type)&lt;/strong&gt;&amp;nbsp;d&amp;ouml;nd&amp;uuml;r&amp;uuml;lebilmesine izin vermektedir. Bunun i&amp;ccedil;in Designer tarafında destek sunulmaktadır. Aslında &amp;ouml;nceki &lt;strong&gt;Ado.Net Entity Framework&lt;/strong&gt; s&amp;uuml;r&amp;uuml;m&amp;uuml;nde bir&lt;strong&gt; Stored Procedure'&lt;/strong&gt; &amp;uuml;n &lt;strong&gt;Entity&lt;/strong&gt; modeli i&amp;ccedil;erisine eklenmesi sonrasında d&amp;ouml;n&amp;uuml;ş k&amp;uuml;mesinin &lt;strong&gt;Scalars &lt;/strong&gt;veya &lt;strong&gt;Entities &lt;/strong&gt;olarak kullanılması sağlanabilmekteydi.&amp;nbsp;Ancak bir &lt;strong&gt;Stored Procedure&lt;/strong&gt; &amp;ccedil;ıktısının Complex Type bazlı olaraktan kod tarafında ele alınamayışı da de &amp;ouml;nemli bir eksiklikti. Bakalım&lt;strong&gt; 4.0&lt;/strong&gt; versiyonunda bu eksikliği gidermek adına neler yapılmış. Yazımızın ilerleyen kısımlarında bu &amp;ouml;zeliği anlamaya &amp;ccedil;alışıyor olacağız.&lt;/p&gt;
+&lt;p&gt;İlk olarak kendimize kobay bir &lt;strong&gt;Stored Procedure&lt;/strong&gt; se&amp;ccedil;elim &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;Bu ama&amp;ccedil;la &lt;strong&gt;Adventure Works&lt;/strong&gt; veritabanında yer alan &lt;strong&gt;uspGetManagerEmployees&lt;/strong&gt; &lt;strong&gt;Stored Procedure'&lt;/strong&gt; &amp;uuml;n&amp;uuml; kullanabiliriz. Bu procedure parametre olarak &lt;strong&gt;ManagerID&lt;/strong&gt; isimli int tipinden bir dğer almakta ve aşağıdaki &amp;ouml;rnek &amp;ccedil;ıktıyı &amp;uuml;retmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg101_SpExec.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Pekala &lt;strong&gt;Stored Procedure'&lt;/strong&gt;&amp;nbsp;&amp;uuml;m&amp;uuml;z&amp;uuml;n &amp;ccedil;ıktısı,&amp;nbsp;&lt;strong&gt;RecursionLevel,ManagerID,ManagerFirstName,&amp;nbsp;ManagerLastName, EmployeeID, FirstName&lt;/strong&gt; ve &lt;strong&gt;LastName&lt;/strong&gt; alanlarının karşılıklarını &lt;strong&gt;&amp;ouml;zellik(Property)&lt;/strong&gt; olarak i&amp;ccedil;eren sınıfa ait nesne &amp;ouml;rneklerinden oluşan bir nesne k&amp;uuml;mesi ile ifade edilebilir. Bunu ger&amp;ccedil;ekleştirmek i&amp;ccedil;in &lt;strong&gt;Visual Studio 2010 Ultimate Beta 2&lt;/strong&gt; s&amp;uuml;r&amp;uuml;m&amp;uuml;nde oluşturacağımız &lt;strong&gt;Console&lt;/strong&gt; uygulamamıza &lt;strong&gt;Adventure Works&lt;/strong&gt; veritabanı i&amp;ccedil;in yeni bir &lt;strong&gt;Ado.Net Entity Data Model &lt;/strong&gt;&amp;ouml;ğesi ekleyip sadece &lt;strong&gt;uspGetManagerEmployees&lt;/strong&gt; SP' sini se&amp;ccedil;tiğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg101_AddSp.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi adım adım ilerleyerek &lt;strong&gt;Complex Type&lt;/strong&gt; &amp;uuml;retimini ger&amp;ccedil;ekleştireceğiz.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;İlk olarak Model &lt;strong&gt;Browser &lt;/strong&gt;ve &lt;strong&gt;AdventureWorksModel.Store&lt;/strong&gt; kısmından ilgili &lt;strong&gt;Stored Procedure &lt;/strong&gt;adına sağ tıklanıp&lt;strong&gt; Add Function Import&lt;/strong&gt; se&amp;ccedil;imi yapılmalıdır.&lt;/li&gt;
+&lt;li&gt;Se&amp;ccedil;imin ardından gelen ekranda &lt;strong&gt;Get Column Information&lt;/strong&gt; d&amp;uuml;ğmesine basıldığı takdirde ilgili&amp;nbsp;Stored Procedure'&amp;nbsp;den d&amp;ouml;nen sonu&amp;ccedil; k&amp;uuml;mesi i&amp;ccedil;in uygun olan kolon bilgilerinin getirildiği g&amp;ouml;r&amp;uuml;l&amp;uuml;r. Burada hem &lt;strong&gt;EDM&lt;/strong&gt; &lt;strong&gt;Type&lt;/strong&gt; hemde &lt;strong&gt;SQL Type&lt;/strong&gt; bilgileri yer almaktadır.&lt;/li&gt;
+&lt;li&gt;Sonraki adımda ise &lt;strong&gt;Create New Complex Type&lt;/strong&gt; d&amp;uuml;ğmesine tıklanarak &lt;strong&gt;Stored Procedure'&lt;/strong&gt; &amp;uuml;n sonu&amp;ccedil; k&amp;uuml;mesi i&amp;ccedil;in gerekli sınıfın &amp;uuml;retilmesi sağlanır.&lt;/li&gt;
+&lt;li&gt;İstenirse &amp;uuml;retilen tip adı Complex kutucuğundan değiştirilir&lt;em&gt;(Biz &amp;ouml;rneğimizde tip adını ManagerEmployees olarak yeniledik)&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;Ok tuşuna basılarak işlem tamamlanır.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Aşağıdaki şekilde bahsetmiş olduğumuz adımlar g&amp;ouml;rsel olarak &amp;ouml;zetlenmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg101_AddFunctionImport.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi arka planda neler olduğuna bir bakalım. İlk olarak &lt;strong&gt;Entity Data Model &lt;/strong&gt;tarafında s&amp;ouml;z konusu &lt;strong&gt;Stored Procedure &lt;/strong&gt;i&amp;ccedil;in bir &lt;strong&gt;Return Type&lt;/strong&gt; ve &lt;strong&gt;Mapping Details&lt;/strong&gt; kısmında gerekli kolon-&amp;ouml;zellik eşleştirmelerinin yapıldığı g&amp;ouml;r&amp;uuml;l&amp;uuml;r.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg101_FirstTrace.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg101_MappingDetails.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Buna ek olarak &lt;strong&gt;Return Type&lt;/strong&gt; i&amp;ccedil;in kod tarafında &lt;strong&gt;ManagerEmployees &lt;/strong&gt;isimli &lt;strong&gt;ComplexObject&lt;/strong&gt; t&amp;uuml;revli bir sınıfın &amp;uuml;retildiği g&amp;ouml;zlemlenir. &lt;strong&gt;Class Diagram&lt;/strong&gt; g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde bu durum a&amp;ccedil;ık bir şekilde izlenebilmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg101_ClassDiagram.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;ok doğal olarak s&amp;ouml;z konusu &lt;strong&gt;Stored Procedure'&amp;nbsp;&lt;/strong&gt;&amp;uuml;n&amp;nbsp;kod i&amp;ccedil;erisinde kullanılabilmesi i&amp;ccedil;in gerekli &amp;ouml;zelliğin de &lt;strong&gt;AdventureWorksEntities&lt;/strong&gt; &lt;strong&gt;Context &lt;/strong&gt;tipi i&amp;ccedil;erisine eklendiği g&amp;ouml;r&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg101_Property.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;uspGetManagerEmployees&lt;/strong&gt; isimli &lt;strong&gt;&amp;ouml;zelliğin(Property)&lt;/strong&gt; d&amp;ouml;n&amp;uuml;ş&amp;uuml; &lt;strong&gt;ObjectResult&amp;lt;ManagerEmployees&amp;gt;&lt;/strong&gt; tipindendir. Bu tip &lt;strong&gt;IEnumerable&amp;lt;T&amp;gt; ve IEnumerable&lt;/strong&gt; &lt;strong&gt;aray&amp;uuml;zlerini(Interface)&lt;/strong&gt; implemente ettiğinden &lt;strong&gt;LINQ&lt;/strong&gt; sorgularında kaynak veri olarak kullanılabilir.&lt;/p&gt;
+&lt;p&gt;Dilerseniz birde s&amp;ouml;z konusu &lt;strong&gt;Stored Procedure'&lt;/strong&gt; e ait &amp;ccedil;ıktıyı &amp;ouml;rnek kod par&amp;ccedil;asında değerlendirmeye &amp;ccedil;alışalım. Bunun i&amp;ccedil;in aşağıdaki gibi basit bir kodlama yapmamız yeterli olacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Data.Objects;
+using System.Linq;
+
+namespace SPAndComplexType
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            using (AdventureWorksEntities context = new AdventureWorksEntities())
+            {
+                ObjectResult&amp;lt;ManagerEmployees&amp;gt; resultSet=context.uspGetManagerEmployees(16);
+
+                var subResult = from me in resultSet
+                                where me.FirstName[0] == 'M'
+                                select me;
+
+                foreach (var managerEmployee in subResult)
+                {
+                    Console.WriteLine("{0} {1} {2} {3} {4} {5} {6}",
+                        managerEmployee.EmployeeID.ToString(),
+                        managerEmployee.FirstName,
+                        managerEmployee.LastName,
+                        managerEmployee.ManagerFirstName,
+                        managerEmployee.ManagerID,
+                        managerEmployee.ManagerLastName,
+                        managerEmployee.RecursionLevel
+                        );
+                }
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rnek kod par&amp;ccedil;asında &lt;strong&gt;uspGetManagerEmployess&lt;/strong&gt; &amp;ouml;zelliği &amp;ccedil;ağırılmış ve &lt;strong&gt;ManagerID&lt;/strong&gt; değeri &lt;strong&gt;16&lt;/strong&gt; olan &lt;strong&gt;Employee&lt;/strong&gt; listesinin getirilmesi sağlanmıştır. Bu işlemin arkasından da elde edilen sonu&amp;ccedil; k&amp;uuml;mesi &amp;uuml;zerinden basit bir &lt;strong&gt;LINQ&lt;/strong&gt; sorgusu &amp;ccedil;alıştırılmış ve &lt;strong&gt;FirstName &lt;/strong&gt;alanının ilk harfi &lt;strong&gt;M &lt;/strong&gt;olanların listelenmesi sağlanmıştır. Hemen bir hatırlatma yapalım; &lt;strong&gt;SQL &lt;/strong&gt;tarafındaki uspGetManagerEmployees Stored Procedure' &amp;uuml;n&amp;uuml;n &amp;ccedil;alıştırılması &lt;strong&gt;context &lt;/strong&gt;nesne &amp;ouml;rneği &amp;uuml;zerinden &lt;strong&gt;uspGetManagerEmployess&lt;/strong&gt; &amp;ouml;zelliğinin &amp;ccedil;ağırılması ile birlikte ger&amp;ccedil;ekleşmektedir. Son olarak uygulamayı &amp;ccedil;alıştırdığımızda aşağıdaki &amp;ccedil;ıktıyı elde ettiğimizi g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f11%2fblg101_Runtime.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Ado.Net Entity Framework 4.0 ile ilişkili yenilikleri &amp;ouml;ğrendik&amp;ccedil;e sizlerede aktarmaya &amp;ccedil;alışıyor olacağım. Bu konuda ilk elden bilgi almak isteyen arkadaşlarımızın&lt;a title="Ado.Net Team Blog" href="http://blogs.msdn.com/adonet/default.aspx" target="_blank"&gt; &lt;strong&gt;Ado.Net Team Blog'&lt;/strong&gt; &lt;/a&gt;unu mutlaka takip etmesini &amp;ouml;neririm. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2009%2f11%2fSPAndComplexType.rar"&gt;SPAndComplexType.rar (36,40 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2009-11-15 23:55:00</pubDate>
+  <slug>AdoNet-Entity-Framework-40-Stored-Procedures-ve-Complex-Types</slug>
+  <tags>
+    <tag>adonet-entity-framework</tag>
+  </tags>
+  <categories>
+    <category>Entity Framework</category>
+  </categories>
+</post>

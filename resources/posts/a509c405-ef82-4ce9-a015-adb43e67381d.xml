@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>C# 3.0 - İlk Bakışta XLINQ</title>
+  <description>XLINQ (Xml Language Integrated Query) temel olarak LINQ modelinin Xml üzerine uyarlanabilmesini hedeflemektedir. Bildiğiniz gibi LINQ projesi ile, IEnumerable&lt;T&gt; arayüzünü uygulamış .Net nesneleri üzerinde dil ile tümleştirilmiş sorgulamalar gerçekleştirilebilmektedir...</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;XLINQ (Xml Language Integrated Query) temel olarak LINQ modelinin Xml &amp;uuml;zerine uyarlanabilmesini hedeflemektedir. Bildiğiniz gibi LINQ projesi ile, &lt;strong&gt;IEnumerable&amp;lt;T&amp;gt;&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml; uygulamış .Net nesneleri &amp;uuml;zerinde dil ile t&amp;uuml;mleştirilmiş sorgulamalar ger&amp;ccedil;ekleştirilebilmektedir. Microsoft aynı sorgu yapısını, veritabanı objelerinin programlama ortamında nesnel olarak ifade edilebildiği varlıklar(entities) &amp;uuml;zerinde kullanılabilmesini de DLINQ (Database Language Integrated Query) ile sağlamaktadır. &lt;em&gt;(DLINQ ile ilgili &amp;ouml;zet bilgileri bu &lt;a href="http://www.bsenyurt.com/MakaleGoster.aspx?ID=174"&gt;makalemden&lt;/a&gt; bulabilirsiniz.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;XLINQ ise, yine dil tabanlı sorgulama &amp;ouml;zelliklerini alıp bunların XML verileri &amp;uuml;zerinden ger&amp;ccedil;keştirilebilmesini sağlmayayı ama&amp;ccedil;lamaktadır. Xml verilerinde dil tabanlı sorgular yapılabilmesinin dışında, var olan d&amp;ouml;k&amp;uuml;man nesne modeline (Document Object Model -DOM), XPath ve Xslt kavramlarına ek olacak şekilde yeni fonksiyonelliklerde gelmektedir. &amp;Ouml;rneğin bir Xml verisini bellek &amp;uuml;zerinde oluşturmak i&amp;ccedil;in &lt;strong&gt;XDocument&lt;/strong&gt; isimli yeni bir tipin yapıcı metodlarından faydalanabiliriz. Dahada ileri gidersek, XLINQ ' yu DLINQ ile t&amp;uuml;mleşik olacak şekilde kullanabiliriz. Bunun anlamı, veritabanı objelerinin nesnel olarak ifade edildiği varlıkları LINQ ile sorgulayıp, Xml formatında sonu&amp;ccedil; k&amp;uuml;melerini &amp;ccedil;alışma zamanında (runtime) elde edebileceğimizdir. DLINQ' da olduğu gibi, XLINQ' da kendi i&amp;ccedil;erisinde C# 3.0' ın yeniliklerini barındırmakta ve kullanmaktadır.&lt;/p&gt;
+&lt;table id="table117" border="1" width="100%" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;XLINQ ile ilgili denemeleri &lt;a href="http://msdn.microsoft.com/data/ref/linq/"&gt;LINQ Preview&lt;/a&gt; ekini kullanarak Vs.Net 2005 &amp;uuml;zerinden deneyebilirsiniz.&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;XLINQ i&amp;ccedil;in gerekli tipler, &lt;strong&gt;System.Xml.XLinq&lt;/strong&gt; isim alanı altında yer almaktadır. Bir Xml d&amp;ouml;k&amp;uuml;manı ve i&amp;ccedil;erisinde yer alabilecek elemanlar g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında bunların karşılıklarının y&amp;ouml;netimli kod (managed code) tarafında X harfi ile başlayan tiplerle ifade edildiğini g&amp;ouml;rebiliriz. &amp;Ouml;rneğin Xml elementlerini &lt;strong&gt;XElement&lt;/strong&gt; tipi, nitelikleri (Attribute) &lt;strong&gt;XAttribute&lt;/strong&gt; tipi karşılamaktadır. System.Xml.XLinq isim alanında (namespace) bu iki tipin dışında aşağıdaki tabloda bir kısmı verilen diğer y&amp;ouml;netimli tiplerde yer almaktadır.&lt;/p&gt;
+&lt;table id="table118" style="border-collapse: collapse;" border="1" width="100%" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt; Tip Adı&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt; Xml Karşılığı&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;XDocument&lt;/td&gt;
+&lt;td&gt;Bir Xml d&amp;ouml;k&amp;uuml;manı i&amp;ccedil;ermekle sorumludur. XDocument sayesinde sıfırdan Xml i&amp;ccedil;erikleri bellek &amp;uuml;zerinde oluşturulabilir, kaydedilebilir yada var olan bir Xml i&amp;ccedil;eriği belleğe y&amp;uuml;klenebilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;XElement&lt;/td&gt;
+&lt;td&gt;Xml d&amp;ouml;k&amp;uuml;manlarında yer alan element' lerin y&amp;ouml;netimli kod tarafındaki karşılığıdır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;XAttribute&lt;/td&gt;
+&lt;td&gt;Xml d&amp;ouml;k&amp;uuml;manlarında yer alan niteliklerin (attribute) y&amp;ouml;netimli kod tarafındaki karşılığıdır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;XComment&lt;/td&gt;
+&lt;td&gt;Xml d&amp;ouml;k&amp;uuml;manlarında kullandığımız yorum satırlarını y&amp;ouml;netim kod tarafında kullanımamızı sağlar.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;XNode&lt;/td&gt;
+&lt;td&gt;Xml d&amp;ouml;k&amp;uuml;manı i&amp;ccedil;erisinde, node (boğum) olarak ifade edilebilecek her t&amp;uuml;rden elemanı y&amp;ouml;netimli kod tarafında ele alabilmek amacıyla kullanılır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;XProcessingInstruction&lt;/td&gt;
+&lt;td&gt;Xml d&amp;ouml;k&amp;uuml;manlarının başında yer alan &lt;strong&gt;processing instruction&lt;/strong&gt;' ların managed tarafta ele alınabilmesini sağlar. Bu iş i&amp;ccedil;in XDecleration sınıfındanda yararlanılmaktadır. &amp;Ouml;rneğin Xml d&amp;ouml;k&amp;uuml;manları başına standard olarak gelen versiyon numarası , encoding gibi bilgileri bu XDecleration yardımıyla kod tarafında tanımlayabiliriz.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;XText&lt;/td&gt;
+&lt;td&gt;&amp;Ccedil;oğunlukla CData (Character Data) b&amp;ouml;l&amp;uuml;mlerinin yada birleştirimiş metinlerin y&amp;ouml;netimli kod tarafında ele alınabilmesi i&amp;ccedil;in kullanılır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;XNamespace&lt;/td&gt;
+&lt;td&gt;Xml i&amp;ccedil;erisinde yer alan isim alanlarının y&amp;ouml;netimli kod tarafında ele alınabilmesini sağlar.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;XContainer&lt;/td&gt;
+&lt;td&gt;XDocument ve XElement sınıflarının t&amp;uuml;retildikleri &lt;strong&gt;abstract&lt;/strong&gt; sınıftır. &amp;Ouml;zellikle Xml d&amp;ouml;k&amp;uuml;manı &amp;uuml;zerinde sorgulamalar yapabilmek i&amp;ccedil;in gerekli fonksiyonelikleride sağlar.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;XDocumentType&lt;/td&gt;
+&lt;td&gt;DTD (Document Type Definitions) yapısının y&amp;ouml;netimli kod tarafındaki karşılığıdır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;XElementSequence&lt;/td&gt;
+&lt;td&gt;LINQ i&amp;ccedil;in geliştirilmiş, genişletişmiş metodları &lt;strong&gt;(extension methods)&lt;/strong&gt; barındıran static sınıftır. Extension Methods kavramı C# 3.0 ile birlikte gelmiştir ve var olan framework tiplerine ek metodlar yazılabilmesini sağlamaktadır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Dilerseniz XLINQ ile geliştiricilerin hayatına girecek bir ka&amp;ccedil; yeniliği &amp;ouml;rnekler ile uygulayarak makalemize devam edelim. İlk olarak bir Xml verisinin bellek &amp;uuml;zerinde oluşturulması sırasında &lt;strong&gt;XDocument&lt;/strong&gt; tipinden nasıl yararlanabileceğimizi g&amp;ouml;receğiz. Bu ama&amp;ccedil;la yeni bir &lt;strong&gt;LINQ Console Application&lt;/strong&gt; projesi oluşturalım ve aşağıdaki kod satırlarını yazalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Query;
+using System.Xml.XLinq;
+using System.Data.DLinq;
+
+namespace UsingXLINQ
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            #region Basit XLINQ Kullanımı
+
+            XDocument xmlBook = new XDocument(
+                new XDeclaration("1.0", "utf-8", "yes")
+                , new XElement("Books"
+                    , new XElement("Book",
+                        new XAttribute("ID", 1000)
+                        , new XElement("Name", new XText("Her Y&amp;ouml;n&amp;uuml;yle C#"))
+                        , new XElement("ListPrice", new XText("50"))
+                                            )
+                    , new XElement("Book",
+                        new XAttribute("ID", 1001)
+                        , new XElement("Name", new XText("C# CookBook"))
+                            , new XElement("ListPrice", new XText("45"))
+                                            )
+                                    )
+                            ); 
+
+            xmlBook.Save("BookWithXLinq.xml");
+
+            XElement element = XElement.Load("BookWithXLinq.xml");
+            Console.WriteLine(element.ToString()); 
+
+            #endregion
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;İlk dikkatimizi &amp;ccedil;eken sanıyorumki XDocument nesnesinin oluşturuluş şekli olsa gerek. XDocument nesnesine ait yapıcı metod bir Xml verisinin sıfırdan oluşturulabilmesini sağlayacak şekilde tasarlanmıştır. Dolayısıyla yapıcı metodumuz i&amp;ccedil;erisinde Xml verimiz i&amp;ccedil;in gerekli elemanları teker teker oluşturabiliriz. &amp;Ouml;rneğimizdeki XDocument nesne &amp;ouml;rneğinin yapıcı metodu (constructor) i&amp;ccedil;erisinde ilk olarak her Xml i&amp;ccedil;eriğinin sahip olması gereken processing instruction kısmını oluşturuyoruz. Bunu ger&amp;ccedil;ekleştirmek i&amp;ccedil;in &lt;strong&gt;XDeclaration&lt;/strong&gt; sınıfını kullanmaktayız.&lt;/p&gt;
+&lt;p&gt;Her Xml verisinin bir root elementi olması gerektiğinden &lt;strong&gt;XElement&lt;/strong&gt; sınıfı ile ilk olarak Books isimli boğumu tanımlıyoruz. Burada dikkat etmemiz gereken bir nokta var. XElement sınıfına ait yapıcı metod (constructor) i&amp;ccedil;erisinden yeni XElement yada XAttribute nesne &amp;ouml;rneklerini oluşturabiliyoruz. Dolayısıyla hiyerarşik olarak bir Xml veri ağacını yapıcı metod i&amp;ccedil;erisinde tek seferde oluşturabilmekteyiz. &amp;Ccedil;&amp;uuml;nk&amp;uuml; her elementin i&amp;ccedil;ereceği diğer elementleri yapıcıları i&amp;ccedil;erisinde tanımlıyoruz.&lt;/p&gt;
+&lt;p&gt;Oluşturulan bu Xml i&amp;ccedil;eriği bellek &amp;uuml;zerinde yer alacaktır. Ancak dilersek bu i&amp;ccedil;eriği fiziki bir kaynağada kaydedebiliriz. Bu ama&amp;ccedil;lada XDocument sınıfının &lt;strong&gt;Save&lt;/strong&gt; metodu kullanılır. Tam tersine, fiziki bir Xml dosyasından bir XElement tipi i&amp;ccedil;erisine y&amp;uuml;kleme işlemide ger&amp;ccedil;ekleştirebiliri. &amp;Ouml;rneğimizde i&amp;ccedil;eriği bir XElement tipine y&amp;uuml;klemek amacıyla yine XElement tipinin static &lt;strong&gt;Load&lt;/strong&gt; metodunu kullanıyoruz. Aslında bir xml i&amp;ccedil;eriğini fiziki bir dosyadan okumak veya yazmak gibi işlemler zaten .Net i&amp;ccedil;erisindeki bilinen Xml tiplerininde yapabileceği fonksiyonelliklerdir. Ancak bir Xml i&amp;ccedil;eriğini yapıcı metod yardımıyla tek seferde oluşturabilme yeteneği XLINQ' nun vadettiği yeniliklerden birisidir. Sonu&amp;ccedil; itibariyle uygulamamızı &amp;ccedil;alıştırdığımızda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;n&amp;uuml; elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk178_1.gif" alt="" width="279" height="172" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bununla birlikte BookWithXLinq.xml isimli dosyanında aşağıdaki gibi oluşturulduğunu g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk178_2.gif" alt="" width="466" height="313" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bellek &amp;uuml;zerinde XDocument ile oluşturulan yada bir XElement tipi i&amp;ccedil;erisine y&amp;uuml;klenen Xml verilerine sonradan eleman eklemek var olan elemanları değiştirmek hatta silmek gibi işlemleride ger&amp;ccedil;ekleştirebiliriz. &amp;Ouml;rneğin aşağıdaki kod par&amp;ccedil;asında belleğe aldığımız Xml i&amp;ccedil;eriğine yeni bir Book elemanı, alt elamanları ile niteliği eklenmektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;XElement newBook = new XElement("Book",
+                                    new XAttribute("ID", 1005)
+                                        , new XElement("Name", new XText("Developing XLINQ"))
+                                            , new XElement("ListPrice", new XText("80"))
+                                    );
+xmlBook.Element("Books").Add(newBook);
+
+Console.WriteLine(xmlBook.ToString());&lt;/pre&gt;
+&lt;p&gt;Books Xml i&amp;ccedil;eriğine yeni bir kitap eklemek i&amp;ccedil;in XElement tipinden ve yapıcı metodundan faydalanmaktayız. Dikkat ederseniz Book boğumunu oluştururken i&amp;ccedil;erisine ID attribute' unu, Name ve ListPrice elemanları ile bunların i&amp;ccedil;eriklerini eklemekteyiz. Text tabanlı i&amp;ccedil;eriğin eklenebilmesi i&amp;ccedil;inde &lt;strong&gt;XText&lt;/strong&gt; tipinden yararlanıyoruz. Bu tarz bir kullanım g&amp;ouml;rsel arabirime sahip windows veya web tabanlı uygulamalarda hatta mobil uygulamalarda olduk&amp;ccedil;a işe yarayacaktır. &amp;Ouml;yleki Xml verisinin değerleri kullanıcı tarafından ele alınan bileşenlerden se&amp;ccedil;ilerek elde edilebilir.&lt;/p&gt;
+&lt;p&gt;XElement tipi ile oluşturulan Xml elemanını var olan XDocument nesnesinin işaret ettiği Xml i&amp;ccedil;eriğine eklemek i&amp;ccedil;in ise &amp;ouml;nce Books elemanına gidilmektedir. Bu ama&amp;ccedil;la &lt;strong&gt; Element&lt;/strong&gt; metodu kullanılmış ve parametre olarak gidilecek elemanın adı verilmiştir ki buda root' tur. Element metodu geriye bir XElement d&amp;ouml;nd&amp;uuml;rmektedir. Yani &amp;ccedil;alışma zamanında Books root elemanını işaret etmektedir. Bunun arkasından gelen &lt;strong&gt;Add&lt;/strong&gt; metodu yardımıyla, bir &amp;uuml;st satırda oluşturulan yeni Book elemanı root elamının i&amp;ccedil;eriğine dahil edilmektedir. Programı bu haliyle &amp;ccedil;alıştırdığımızda aşağıdaki sonucu elde ederiz. G&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi yeni oluşturduğumuz eleman var olan Xml i&amp;ccedil;eriğinin sonuna eklenmiştir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk178_3.gif" alt="" width="281" height="220" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Gelelim dil tabanlı sorgulama &amp;ouml;zelliklerinin XLINQ i&amp;ccedil;erisindeki yerine. LINQ getirdiği imkanlar sayesinde veriler &amp;uuml;zerinde sorgulamalar yapmamızı kolaylaştıracak yenilikler getirmektedir. Buna g&amp;ouml;re &amp;ouml;zellikle Sql' den aşina olduğumuz select, where, orderby, from, sum gibi pek &amp;ccedil;ok kavramı, IEnumerable&amp;lt;T&amp;gt; dan t&amp;uuml;remiş .Net tiplerinin sunduğu veriler &amp;uuml;zerinde, veritabanı kaynaklarının nesnel karşılıklarının sunulduğu varlıklar (entities) &amp;uuml;zerinde kullanabilmemiz m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Bu yenilikler kendisini Xml verilerinin sorgulanmasında da g&amp;ouml;stermektedir. &amp;Ouml;rneğin, aşağıdaki gibi &amp;ouml;rnek bir Xml i&amp;ccedil;eriğimiz olduğunu d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;Personelimiz&amp;gt;
+    &amp;lt;Personel ID="1"&amp;gt;
+        &amp;lt;SicilNo&amp;gt;190002&amp;lt;/SicilNo&amp;gt;
+        &amp;lt;Ad&amp;gt;Burak Selim&amp;lt;/Ad&amp;gt;
+        &amp;lt;Soyad&amp;gt;Şenyurt&amp;lt;/Soyad&amp;gt;
+        &amp;lt;Maas&amp;gt;1000&amp;lt;/Maas&amp;gt;
+    &amp;lt;/Personel&amp;gt;
+    &amp;lt;Personel ID="2"&amp;gt;
+        &amp;lt;SicilNo&amp;gt;1903402&amp;lt;/SicilNo&amp;gt;
+        &amp;lt;Ad&amp;gt;Elma&amp;lt;/Ad&amp;gt;
+        &amp;lt;Soyad&amp;gt;Soz&amp;lt;/Soyad&amp;gt;
+        &amp;lt;Maas&amp;gt;5000&amp;lt;/Maas&amp;gt;
+    &amp;lt;/Personel&amp;gt;
+    &amp;lt;Personel ID="3"&amp;gt;
+        &amp;lt;SicilNo&amp;gt;1401202&amp;lt;/SicilNo&amp;gt;
+        &amp;lt;Ad&amp;gt;Kevın&amp;lt;/Ad&amp;gt;
+        &amp;lt;Soyad&amp;gt;Dankin&amp;lt;/Soyad&amp;gt;
+        &amp;lt;Maas&amp;gt;4500&amp;lt;/Maas&amp;gt;
+     &amp;lt;/Personel&amp;gt;
+    &amp;lt;Personel ID="4"&amp;gt;
+        &amp;lt;SicilNo&amp;gt;230002&amp;lt;/SicilNo&amp;gt;
+        &amp;lt;Ad&amp;gt;Carim Abdul&amp;lt;/Ad&amp;gt;
+        &amp;lt;Soyad&amp;gt;Cabbar&amp;lt;/Soyad&amp;gt;
+        &amp;lt;Maas&amp;gt;500&amp;lt;/Maas&amp;gt;
+    &amp;lt;/Personel&amp;gt;
+    &amp;lt;Personel ID="5"&amp;gt;
+        &amp;lt;SicilNo&amp;gt;121302&amp;lt;/SicilNo&amp;gt;
+        &amp;lt;Ad&amp;gt;Mayk&amp;lt;/Ad&amp;gt;
+        &amp;lt;Soyad&amp;gt;Cordın&amp;lt;/Soyad&amp;gt;
+        &amp;lt;Maas&amp;gt;2000&amp;lt;/Maas&amp;gt;
+    &amp;lt;/Personel&amp;gt;
+&amp;lt;/Personelimiz&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Personel.xml isimli dosyada tutulan bu i&amp;ccedil;erikte bir Personelin ID, Sicil Numarası, Ad, Soyad, Maas bilgileri tutulmaktadır. Bu Xml i&amp;ccedil;eriğini belleğe alan bir uygulamada &amp;ccedil;ok doğal olarak bazı sorgulamalar yapmak isteyebiliriz. &amp;Ouml;rneğin maaşı belirli bir değerin &amp;uuml;zerinde olanları bu Xml d&amp;ouml;k&amp;uuml;manı i&amp;ccedil;erisinden &amp;ccedil;ekmek istediğimizi d&amp;uuml;ş&amp;uuml;nelim. Aşağıdaki kod par&amp;ccedil;ası bu işlemin nasıl ger&amp;ccedil;ekleştirilebileceğini g&amp;ouml;stermektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;Console.WriteLine("Maaş değeri ");
+double maas=Convert.ToDouble(Console.ReadLine());
+
+XDocument docPersonel=XDocument.Load("..\\..\\Personel.xml");
+
+XElement elements=new XElement("PersonelListe", 
+    from pers in docPersonel.Elements("Personelimiz").Elements("Personel") 
+        where (double)pers.Element("Maas")&amp;gt;=maas select pers
+                            );
+
+Console.WriteLine(elements.ToString());&lt;/pre&gt;
+&lt;p&gt;Kod i&amp;ccedil;erisinde LINQ ifadesinin nasıl kullanıldığına dikkat edelim. Uygulamamız kullanıcından maaş bilgisini aldıktan sonra ilk olarak Personel.xml isimli dosya i&amp;ccedil;eriğini belleğe bir &lt;strong&gt;XDocument&lt;/strong&gt; nesnesi yardımıyla alıyor. Sonrasında ise docPersonel nesnesi &amp;uuml;zerinden bir LINQ sorgusu ger&amp;ccedil;ekleştiriliyor ve sonu&amp;ccedil;lar bir XElement nesne &amp;ouml;rneğinde tutulacak şekilde alınıyor. Uygulama &amp;ccedil;alıştırıldığında ve maaş değeri olarak 2000 değeri girildiğinde aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; ile karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk178_4.gif" alt="" width="284" height="314" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;LINQ sorgusu, XElement tipine ait nesne &amp;ouml;rneği oluşturulurken ikinci parametre i&amp;ccedil;erisinde kullanılmıştır. Sql kullanıcıları i&amp;ccedil;in from, where ve select gibi anahtar kelimelerinin yeri biraz tuhaf gelebilir. Aslında yukarıdaki işlemi Sql dilinde d&amp;uuml;ş&amp;uuml;nd&amp;uuml;ğ&amp;uuml;m&amp;uuml;zde, &lt;strong&gt;&lt;em&gt;"Select * From Personel Where Maas&amp;gt;=2000"&lt;/em&gt;&lt;/strong&gt; gibi bir ifadeyi g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alabiliriz. LINQ da ise durum biraz daha farklı olmakla birlikte olduk&amp;ccedil;a anlaşılır sorgular oluşturulabilmektedir. Dolayısıyla Xml verilerini LINQ' nun sağladığı b&amp;uuml;t&amp;uuml;n imkanlar ile sorgulama şansına sahibiz. Ş&amp;uuml;phesizki bu imkanlar, &amp;ouml;zellikle &lt;strong&gt;XPath&lt;/strong&gt; ve XQuery gibi sorgulama teknolojilerin &amp;uuml;zerine gelen olduk&amp;ccedil;a esnek ve g&amp;uuml;&amp;ccedil;l&amp;uuml; bir yapı olarak karşımıza &amp;ccedil;ıkmaktadır. İşin g&amp;uuml;zel yanı burada ele aldığımız LINQ sorgularının anahtar kelimelerinin ve kullanım standardlarının , LINQ, XLINQ, DLINQ i&amp;ccedil;in aynı olmasıdır.&lt;/p&gt;
+&lt;p&gt;Şimdi XLINQ' nun DLINQ ile olan yakın ilişkisine bir g&amp;ouml;z atalım. Bildiğiniz gibi DLINQ mimarisinde, veritabanı nesnelerini uygulama tarafında temsil ettiğimiz objeler &amp;uuml;zerinde LINQ sorguları &amp;ccedil;alıştırabilmekteyiz. Yani bir veritabanı tablosunu uygulama ortamında nesnel olarak ifade eden bir veri &amp;uuml;zerinde dil tabanlı sorgular &amp;ccedil;alıştırabilmekteyiz. XLINQ ilede, DLINQ nun sunduğu varlıklar (entity) &amp;uuml;zerinde yapacağımız LINQ sorguları sonucu elde edilen sonu&amp;ccedil; k&amp;uuml;melerini &amp;ccedil;alışma zamanında Xml i&amp;ccedil;eriği haline getirebilme şansına sahibiz. Yani DLINQ ve XLINQ &amp;ouml;zelliklerini bir arada ele alabiliriz. Bu konuyu daha net anlayabilmek i&amp;ccedil;in Northwind veritabanının entity karşılıklarını ele alacağımız bir &amp;ouml;rnek ile devam edeceğiz. LINQ Preview ile birlikte, DLINQ i&amp;ccedil;erisinde kullanılan varlıkları(entities) yazmak yerine kolayca hazırlayabileceğimiz bir ara&amp;ccedil; (tool) gelmektedir. &lt;strong&gt; SqlMetal&lt;/strong&gt; isimli bu aracı aşağıdaki gibi komut satırından &amp;ccedil;alıştırabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;D:\Program Files\LINQ Preview\Bin&amp;gt;sqlmetal /server:localhost /database:Northwind /code:NorthwindBase.cs&lt;/pre&gt;
+&lt;p&gt;Bu durumda NorthwindBase.cs isimli bir sınıf oluşturulacak ve bizim i&amp;ccedil;in gerekli t&amp;uuml;m sınıflar bu kaynak kod i&amp;ccedil;erisine dahil edilecektir. SqlMetal aracı yardımıyla oluşturulan bu sınıfın i&amp;ccedil;eriğine &lt;strong&gt;Class Diagram&lt;/strong&gt; yardımıyla baktığımızda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ne benzer bir i&amp;ccedil;erik ile karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk178_5.gif" alt="" width="632" height="530" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Hatırlayacağınız gibi DLINQ konusunu incelediğimiz makalemizde yukarıdakine benzer bir yapıyı kendimiz yazarak geliştirmeye &amp;ccedil;alışmıştık. SqlMetal aracı yardımıyla oluşturulan NorthwindBase.cs dosyasını uygulamamıza ekledikten sonra aşağıdaki kodları yazalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;Console.WriteLine("&amp;Uuml;r&amp;uuml;n Fiyatı ");
+decimal fiyat=Convert.ToDecimal(Console.ReadLine());
+
+Northwind nrth = new Northwind("data source=localhost;database=Northwind;integrated security=SSPI");
+
+XElement urunler =new XElement("Urunler",
+        from urn in nrth.Products where urn.UnitPrice&amp;gt; fiyat orderby urn.ProductName select
+            new XElement("Urun",
+                new XAttribute("ID",urn.ProductID),
+                new XAttribute("Ad", urn.ProductName),
+                new XAttribute("BirimFiyat", urn.UnitPrice)
+            )
+        );
+
+urunler.Save("Urunler.xml"); 
+Console.WriteLine(urunler.ToString());&lt;/pre&gt;
+&lt;p&gt;Uygulamamızda kullanıcından bir fiyat bilgisi alıyoruz. Sonrasında ise Northwind sınıfımızı bağlantı i&amp;ccedil;in gerekli bilgi ile oluşturuyoruz. Bu işlemin arkasında Urunler isimli bir root eleman i&amp;ccedil;erecek bir XElement nesnesi &amp;ouml;rnekliyoruz ve ikinci parametre i&amp;ccedil;erisinde yine dil tabanlı bir sorgus c&amp;uuml;mleciği kullanıyoruz. Bu sefer Products tablosundan gelen &lt;em&gt;(ki bu tablo Northwind sınıfı i&amp;ccedil;erisinde Products isimli bir sınıfa karşılık geliyor)&lt;/em&gt; verilerden, UnitPrice alanı belli bir değerin &amp;uuml;zerinde olan satırları ProductName alanına g&amp;ouml;re sıralayıp &amp;ccedil;ekiyoruz. &amp;Ccedil;ekilen verileri Urun isimli bir &lt;strong&gt; XElement&lt;/strong&gt; i&amp;ccedil;erisinde &lt;strong&gt;XAttribute&lt;/strong&gt; sınıfı yardımıyla nitelik olarak oluşturuyoruz. Sonrasında ise deneme olması amacıyla elde edilen XElement' i fiziki bir dosyaya kaydediyor ve uygulama ekranına basıyoruz. Buna g&amp;ouml;re uygulama &amp;ccedil;alıştığında aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;lerini elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk178_6.gif" alt="" width="581" height="378" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Uuml;retilen Xml dosyası i&amp;ccedil;eriği ise aşağıdaki gibi olacaktır. Dikkat ederseniz, XElement sınıfı ile tanımladığımız nesne &amp;ouml;rneğinin sunduğu Xml i&amp;ccedil;eriğinde ID, Ad, BirimFiyat isimli nitelikler (attributes) değerlerini Products sınıfına ait ProductID, ProductName, UnitPrice &amp;ouml;zelliklerinden alacak şekilde oluşturulmuş ve Urun isimli eleman (element) i&amp;ccedil;erisinde toplanmışlardır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk178_7.gif" alt="" width="564" height="588" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi Xml dosyası ve ekran &amp;ccedil;ıktısında UnitPrice alanının değeri 90 birimin &amp;uuml;zerinde olanları elde ettik. Burada &amp;ouml;nemli olan nokta, dil tabanlı sorgulamayı kullanarak, varlıklar (entities) &amp;uuml;zerinden bir sorgulama yapmamız ve sonu&amp;ccedil;ları &amp;ccedil;ekerken bunları XElement, XAttribute gibi tipler yardımıyla bir Xml i&amp;ccedil;eriğine d&amp;ouml;n&amp;uuml;şt&amp;uuml;rmemizdir. Elde edilen bu Xml i&amp;ccedil;eriği platformlar arasında hareket edebilecek, fiziki kaynaklar &amp;uuml;zerine yazılabilecek, hatta uygulamaların g&amp;ouml;rsel bileşenlerine bağlanabilecek &lt;em&gt;(&amp;ouml;rneğin XmlDataSource yardımıyla bir TreeView kontrol&amp;uuml;ne yada bir GridView kontrol&amp;uuml;ne)&lt;/em&gt; hale getirilmektedir. XLINQ yukarıdaki &amp;ouml;rneklerde &amp;uuml;zerinde durmaya &amp;ccedil;alıştığımız yenilikler dışında pek &amp;ccedil;ok &amp;ouml;zellik daha i&amp;ccedil;ermektedir. Bunlar LINQ Preview yardımıyla gelen d&amp;ouml;k&amp;uuml;mantasyondan da bulabilirsiniz. &amp;Ouml;zetle XLINQ, dil tabanlı sorguları ve Xml ile ilgili yeni fonksiyonellikleri biz geliştiricilerin kullanımına sunmayı hedeflemektedir. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/makale/images/UsingXLINQ.rar"&gt; &amp;Ouml;rnek kod i&amp;ccedil;in tıklayın.&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2006-10-22 12:00:00</pubDate>
+  <slug>C#-3-0-İlk-Bakışta-XLINQ-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>c#-30</tag>
+    <tag>linq</tag>
+    <tag>xlinq</tag>
+    <tag>language-integrated-query</tag>
+  </tags>
+  <categories>
+    <category>C#</category>
+  </categories>
+</post>

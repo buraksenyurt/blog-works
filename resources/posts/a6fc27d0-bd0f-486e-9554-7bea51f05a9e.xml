@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Bunu Bir Dene 00 - Metot Argümanlarında Değişiklik (C#, Rust ve Zig)</title>
+  <description>C# programlama dilinde sınıf nesne örnekleri(Class Object Instance) metotlara varsayılan olarak referans türü(reference type) olarak iletilir. Bu, metot içinde yapılan değişikliklerin çağıran tarafı etkileyebileceği anlamına gelir. Bu çalışmada söz konusu senaryonun Rust ve Zig gibi programlama dillerinde nasıl ele alındığını incelemeye çalışıyorum. Sırf meraktan...Başlamadan şu notu düşmek isterim; Çalışmamdaki amaç üç dili birbiriyle kıyaslamak değil, her bir dilin bu tip senaryolardaki yaklaşımını incelemek. Normal koşullarda bir stok takip programını Rust veya Zig ile geliştirmeyi tercih etmem.</description>
+  <content>&lt;p&gt;C# programlama dilinde sınıf nesne &amp;ouml;rnekleri&lt;em&gt;(Class Object Instance)&lt;/em&gt; metotlara &lt;strong&gt;varsayılan&lt;/strong&gt; olarak referans t&amp;uuml;r&amp;uuml;&lt;em&gt;(reference type)&lt;/em&gt; olarak iletilir. Bu, metot i&amp;ccedil;inde yapılan değişikliklerin &amp;ccedil;ağıran tarafı etkileyebileceği anlamına gelir. Bu &amp;ccedil;alışmada s&amp;ouml;z konusu senaryonun &lt;strong&gt;Rust&lt;/strong&gt; ve &lt;strong&gt;Zig&lt;/strong&gt; gibi programlama dillerinde nasıl ele alındığını incelemeye &amp;ccedil;alışıyorum. Sırf meraktan...Başlamadan şu notu d&amp;uuml;şmek isterim; &amp;Ccedil;alışmamdaki ama&amp;ccedil; &amp;uuml;&amp;ccedil; dili birbiriyle kıyaslamak değil, her bir dilin bu tip senaryolardaki yaklaşımını incelemek. Normal koşullarda bir stok takip programını Rust veya Zig ile geliştirmeyi tercih etmem.&lt;/p&gt;
+&lt;h2&gt;C# Kod &amp;Ouml;rneği&lt;/h2&gt;
+&lt;p&gt;İlk olarak C# tarafında bir kurgu hazırlayalım. Bu ama&amp;ccedil;la basit bir Console uygulaması a&amp;ccedil;ıp i&amp;ccedil;erisine aşağıdaki kodları ekleyelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace CSharpSample;
+public class Program
+{
+    static void Main(string[] args)
+    {
+        Part part = new()
+        {
+            Id = 1,
+            Name = "Widget",
+            StockLevel = 100
+        };
+
+        Console.WriteLine($"Before update: Part ID: {part.Id}, Name: {part.Name}, Stock Level: {part.StockLevel}");
+        UpdateStockLevel(part, 150);
+        Console.WriteLine($"After update: Part ID: {part.Id}, Name: {part.Name}, Stock Level: {part.StockLevel}");
+    }
+
+    static void UpdateStockLevel(Part part, int newStockLevel)
+    {
+        part.StockLevel = newStockLevel;
+    }
+}
+
+public class Part
+{
+    public uint Id { get; set; }
+    public string? Name { get; set; }
+    public int StockLevel { get; set; }
+}&lt;/pre&gt;
+&lt;p&gt;Yukarıdaki gibi bir kodlamayı kuvvetle muhtemel yapmayız. En azından Part isimli veri yapısının&lt;strong&gt; state&lt;/strong&gt;'ini dışarıdan bir fonksiyon ile değiştirmeyi pek tercih etmeyiz. Ancak buradaki ama&amp;ccedil; i&amp;ccedil;in okunabilir bir senaryo olduğunu d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum zira bana bir metoda taşınan sınıf nesne &amp;ouml;rneği &amp;uuml;zerinde değişiklik gerekli. Programın &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2026/Ocak/TryThis00_0.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dilerseniz senaryoyu kısaca ele alalım. &lt;strong&gt;Main&lt;/strong&gt; metodu i&amp;ccedil;erisinde tanımladığımız &lt;strong&gt;Part&lt;/strong&gt; isimli nesne &amp;ouml;rneğini, &lt;strong&gt;UpdateStockLevel&lt;/strong&gt; metoduna parametre olarak g&amp;ouml;nderiyoruz. Bu bir sınıf olduğundan varsayılan olarak referans t&amp;uuml;r&amp;uuml; şeklinde iletiliyor. Dolayısıyla &lt;strong&gt;UpdateStockLevel&lt;/strong&gt; metodu i&amp;ccedil;erisinde yapılan değişiklikler, &lt;strong&gt;Main&lt;/strong&gt; metodundaki orijinal nesneyi de doğrudan etkiliyor. &amp;Ouml;nceden de belirttiğim &amp;uuml;zere bu şekilde &lt;strong&gt;state&lt;/strong&gt; değiştirmeyi pek tercih etmem. En azından nesne &amp;ouml;rneğinin kendi &amp;uuml;zerinden yapılmasının ya da değişiklik sonrası yeni bir &lt;strong&gt;Part&lt;/strong&gt; nesnesinin geriye d&amp;ouml;nd&amp;uuml;r&amp;uuml;lmesinden yanayım diyebilirim. Neyse neyse. Bunu bir kenara bıraklım. Şimdi aynı senaryoyu &lt;strong&gt;Rust&lt;/strong&gt; dilinde ele almak istediğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Sevdiğim bir Rust programcısının ş&amp;ouml;yle bir s&amp;ouml;z&amp;uuml; var; &lt;strong&gt;"Bir projede dotNet&amp;ccedil;i gibi d&amp;uuml;ş&amp;uuml;n&amp;uuml;p Rust kodlaması yapmak istemem"&lt;/strong&gt; :D Bence haklı...&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;Rust Kod &amp;Ouml;rneği&lt;/h2&gt;
+&lt;p&gt;Malum &lt;strong&gt;Rust&lt;/strong&gt; ve &lt;strong&gt;Zig&lt;/strong&gt; gibi dillerde &lt;strong&gt;class&lt;/strong&gt;, &lt;strong&gt;struct&lt;/strong&gt;, &lt;strong&gt;record&lt;/strong&gt; gibi ayrımlar yok. Bu programlama dillerinde veri yapısı genel bir kavramdır ancak bunun taşınma ve kullanılma şekli farkılılklar g&amp;ouml;sterir ve buna g&amp;ouml;re belleğin farklı konumlarında tutulmaları s&amp;ouml;z konusudur. Şunu da unutmayalım ki her iki dilde &lt;strong&gt;Managed&lt;/strong&gt; ortamlar i&amp;ccedil;ermez. &lt;strong&gt;Rust&lt;/strong&gt; bellek g&amp;uuml;venliğini &amp;ouml;n planda tutan tedbirleri derleme zamamında ele alırken &lt;strong&gt;Zig&lt;/strong&gt; daha &amp;ccedil;ok &lt;strong&gt;C'ye yakın&lt;/strong&gt;&amp;nbsp;konumlanan modern bir dildir ama &amp;ouml;rneğin &lt;strong&gt;heap&lt;/strong&gt; &amp;uuml;zerinde &amp;ccedil;alışmak istediğinizde &lt;strong&gt;allocator&lt;/strong&gt;'lar ile sizi &lt;strong&gt;alloc/malloc&lt;/strong&gt; eksenine &amp;ccedil;ekerek k&amp;ouml;şeye sıkıştırabilir. Şimdilik bu derin detayları bir kenara bırakmak istiyorum zira G&amp;uuml;ney Koreli bir Go ustası gibi Rust ve Zig'i kavramamın t&amp;uuml;m &amp;ouml;mr&amp;uuml;m&amp;uuml; alacağını hissediyorum :D&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;yleyse laf kalabalığını bir kenara bırakıp rust tarafındaki kodları geliştirerek devam edelim. İlk olarak aynı yaklaşımı benimseyelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;fn main() {
+    let mut part = Part {
+        id: 1,
+        name: String::from("Widget"),
+        stock_level: 10,
+    };
+
+    println!("Initial stock level of {}: {}", part.name, part.stock_level);
+    change_stock_level(part, 5);
+    println!("Stock level after adding 5: {}", part.stock_level);
+}
+
+fn change_stock_level(part: Part, change: i32) {
+    part.stock_level += change;
+}
+
+struct Part {
+    id: u32,
+    name: String,
+    stock_level: i32,
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Rust&lt;/strong&gt; dilinde değişkenler varsayılan olarak &lt;strong&gt;immutable&lt;/strong&gt;&lt;em&gt;(yani değeri değiştirilemez)&lt;/em&gt; olarak kabul edilir. Bende main metodunun kapsama alanındaki &lt;strong&gt;Part&lt;/strong&gt; nesnesini değiştirmek istediğimden onu &lt;strong&gt;mut&lt;/strong&gt; anahtar kelimesi ile birlikte tanımladım. DotNet&amp;ccedil;i gibi &lt;span style="text-decoration: underline;"&gt;d&amp;uuml;ş&amp;uuml;nmememiz&lt;/span&gt; gerekse de velev ki d&amp;uuml;ş&amp;uuml;nd&amp;uuml;k ve programının beklediğimiz şekilde &amp;ccedil;alışacağını hayal ettik. Ne mi olur? Neredeyse toplam kod satırından fazla sayıda satırdan oluşan bir hatalar ve uyarılar listesi ile karşılaşırız. Aynen aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2026/Ocak/TryThis_00_1.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Olay, main metodu i&amp;ccedil;erisindeki değişkenin sadece &lt;strong&gt;mutable&lt;/strong&gt; olarak tanımlanması ile her şeyin p&amp;uuml;r&amp;uuml;zs&amp;uuml;z bir şekilde &amp;ccedil;alışacağını zannetmemizdir. &lt;strong&gt;Rust&lt;/strong&gt; dilinde bir değişkeni &lt;strong&gt;muta&lt;/strong&gt;ble olarak tanımlamak, o değişkenin sahip olduğu değerin başka bir metoda aktarılması durumunda orada da &lt;strong&gt;mutable&lt;/strong&gt; olarak kabul edileceği anlamına gelmez. Rust dilindeki &lt;strong&gt;sahiplik&lt;/strong&gt;&lt;em&gt;(ownership)&lt;/em&gt; kavramı, bir değişkenin değerinin başka bir fonksiyona aktarılması durumunda orada yeni bir sahiplik oluşturulmasını gerektirir. Bu durumda, orijinal değişkenin sahipliği kaybolur ve artık orijinal değişkene de erişilemez hale gelir. Yani programcı olarak metoda aktardığım değişkenin referans &amp;uuml;zerinden aktarılacağını ve &lt;strong&gt;a&amp;ccedil;ık bir şekilde&lt;/strong&gt; bu referansın işaret ettiği değerin değiştirileceğini belirtmem gerektiği s&amp;ouml;yleniyor. O halde kodları aşağıdaki gibi revize edelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;fn main() {
+    let mut part = Part {
+        id: 1,
+        name: String::from("Widget"),
+        stock_level: 10,
+    };
+
+    println!("Initial stock level of {}: {}", part.name, part.stock_level);
+    change_stock_level(&amp;amp;mut part, 5);
+    println!("Stock level after adding 5: {}", part.stock_level);
+}
+
+fn change_stock_level(part: &amp;amp;mut Part, change: i32) {
+    part.stock_level += change;
+}
+
+struct Part {
+    id: u32,
+    name: String,
+    stock_level: i32,
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;id&lt;/strong&gt; alanını hi&amp;ccedil; kullanmadığım i&amp;ccedil;in aldığım bir uyarı mesajı var ama onu şimdilik g&amp;ouml;rmezden geliyorum. Programı tekrar &amp;ccedil;alıştırdığımızda beklediğimiz davranışın ger&amp;ccedil;ekleştiğini g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2026/Ocak/TryThis00_2.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Buraya daha sonradan ele almak &amp;uuml;zere bir soru da bırakayım; &lt;em&gt;Ya birden fazla Thread bu par&amp;ccedil;anın stok seviyesini değiştirmek isterse? C# ne yapar, Rust ne kadar zorluk &amp;ccedil;ıkartır, Zig'den ne haber?&lt;/em&gt;&lt;/p&gt;
+&lt;h2&gt;Zig Kod &amp;Ouml;rneği&lt;/h2&gt;
+&lt;p&gt;Gelelim yeni yeni &amp;ouml;ğrenmeye &amp;ccedil;alıştığım &lt;strong&gt;Zig&lt;/strong&gt; diline. Zig dilinde de &lt;strong&gt;Rust&lt;/strong&gt;'ta olduğu gibi&lt;strong&gt; immutable/mutable&lt;/strong&gt; ayrımları s&amp;ouml;z konusu ancak ifade edilme şekilleri biraz daha farklı. &amp;Ouml;zellikle değerlerinde değişiklik yapılmasını istediğimiz değişkenler &lt;strong&gt;var&lt;/strong&gt; anahtar kelimesi ile birlikte tanımlanmak zorundalar&lt;em&gt;(Hatta var ile tanımlayıp &amp;uuml;zerinde değişiklik yapmadığımız değişkenler i&amp;ccedil;in derleyici hata mesajı veriyor)&lt;/em&gt; Bunların dışındakiler ise &lt;strong&gt;const&lt;/strong&gt; anahtar kelimesi ile tanımlanıyorlar. &amp;Uuml;stelik &lt;strong&gt;Zig&lt;/strong&gt; dilinde fonksiyon parametreleri ger&amp;ccedil;ekten de &lt;strong&gt;değiştirilemez&lt;/strong&gt;&lt;em&gt;(immutable)&lt;/em&gt; olarak kabul edilmekte. Yine bir dotNet&amp;ccedil;i gibi d&amp;uuml;ş&amp;uuml;nerek zig tarafı kodlarını da aşağıdaki gibi geliştirerek ilerleyelim.&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;const std = @import("std");
+
+const Part = struct {
+    id: u32,
+    name: []const u8,
+    stock_level: i32,
+};
+
+pub fn main() void {
+    const part = Part{
+        .id = 1,
+        .name = "Widget",
+        .stock_level = 10,
+    };
+
+    std.debug.print("Initial stock level of {s}: {d}\n", .{ part.name, part.stock_level });
+    change_stock_level(part, 5);
+    std.debug.print("Stock level after adding 5: {d}\n", .{part.stock_level});
+}
+
+fn change_stock_level(part: Part, change: i32) void {
+    part.stock_level += change;
+}&lt;/pre&gt;
+&lt;p&gt;Yine aynı mantıkta part isimli değişkeni bodoslama &lt;strong&gt;change_stock_level&lt;/strong&gt; fonksiyonuna aktarıyoruz. Programı derleyip &amp;ccedil;alıştırdığımızda az &amp;ouml;nce s&amp;ouml;ylediğim &lt;strong&gt;immutable/mutable&lt;/strong&gt; ayrımına dair bir hata mesajı ile karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2026/Ocak/TryThis00_3.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Yani demem o ki ille değerini değiştireceğimiz bir değişken s&amp;ouml;z konusu ise, onu &lt;strong&gt;var&lt;/strong&gt; ile bir &lt;strong&gt;variable&lt;/strong&gt; olarak tanımamamız gerekir. Pekala, kodu bu hata mesajı doğrultusunda aşağıdaki gibi değiştirerek ilerleyelim.&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;const std = @import("std");
+
+const Part = struct {
+    id: u32,
+    name: []const u8,
+    stock_level: i32,
+};
+
+pub fn main() void {
+    var part = Part{
+        .id = 1,
+        .name = "Widget",
+        .stock_level = 10,
+    };
+
+    std.debug.print("Initial stock level of {s}: {d}\n", .{ part.name, part.stock_level });
+    change_stock_level(part, 5);
+    std.debug.print("Stock level after adding 5: {d}\n", .{part.stock_level});
+}
+
+fn change_stock_level(part: Part, change: i32) void {
+    part.stock_level += change;
+}&lt;/pre&gt;
+&lt;p&gt;Her şeyin sorunsuz şekilde ilerleyeceğini d&amp;uuml;ş&amp;uuml;nebilirsiniz ama bu sefer de şu kuralı hatırlamamız gerekir; &lt;em&gt;Zig dilinde fonksiyon parametreleri varsayılan olarak immutable(değiştirilemez) kabul edilirler.&lt;/em&gt; &lt;strong&gt;main&lt;/strong&gt; fonksiyonunun kapsama alanında yer alan &lt;strong&gt;part&lt;/strong&gt; değişkenini &lt;strong&gt;var&lt;/strong&gt; ile işaretlemiş olsak bile, metoda bu şekilde aktaramıyoruz. Sonu&amp;ccedil; olarak aşağıdaki gibi bir hata mesajı ile karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2026/Ocak/TryThis00_4.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;İşte bu noktada başka bir &amp;ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml;m&amp;uuml;z var; &lt;span style="text-decoration: underline;"&gt;değişkeni fonksiyona referans olarak aktarmak&lt;/span&gt;. Aslında referans olarak aktarmaktan kastımız değişkenin bellekteki adresini fonksiyona iletmek. Yani &lt;strong&gt;pointer&lt;/strong&gt; kullanarak adresi fonksiyona almak, fonksiyon i&amp;ccedil;erisinde de &lt;strong&gt;pointer&lt;/strong&gt; &amp;uuml;zerinden değere erişip değiştirmek. Buna g&amp;ouml;re &lt;strong&gt;zig&lt;/strong&gt; tarafındaki kodları aşağıdaki gibi değiştirerek ilereyelim.&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;const std = @import("std");
+
+const Part = struct {
+    id: u32,
+    name: []const u8,
+    stock_level: i32,
+};
+
+pub fn main() void {
+    var part = Part{
+        .id = 1,
+        .name = "Widget",
+        .stock_level = 10,
+    };
+
+    std.debug.print("Initial stock level of {s}: {d}\n", .{ part.name, part.stock_level });
+    change_stock_level(&amp;amp;part, 5);
+    std.debug.print("Stock level after adding 5: {d}\n", .{part.stock_level});
+}
+
+fn change_stock_level(part: *Part, change: i32) void {
+    // part.*.stock_level += change; // Aşağıdaki kullanım ile aynı
+    part.stock_level += change;
+}&lt;/pre&gt;
+&lt;p&gt;Bu sefer beklediğimiz gibi fonksiyon i&amp;ccedil;erisinde stok seviyesinde yapılan değişikliğin main fonksiyonundaki orijinal değişkeni de etkilediğini g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2026/Ocak/TryThis00_5.png" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;Peki Ya İdeal Yol Hangisi?&lt;/h2&gt;
+&lt;p&gt;Programcıdan programcıya veya senaryodan senaryoya değişmekle birlikte benim tercihim, eğer bir veri yapısına ait nesne &amp;ouml;rneğinin state'ini değiştirmek istiyorsak bunu o veri yapısına ait metotlar &amp;uuml;zerinden yapmak y&amp;ouml;n&amp;uuml;nde. Tabii s&amp;ouml;z konusu değişiklikler bir takım kurallar barındıran dış bağımlılıklar i&amp;ccedil;erisindeki fonksiyonlarda yapılacaksa o nesne &amp;ouml;rneğinden yararlanarak yeni bir nesne &amp;ouml;rneği oluşturmak, yeni nesne &amp;ouml;rneği verisinde gerekli değişiklikleri yapıp geriye d&amp;ouml;nd&amp;uuml;rmek de d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Her ikisinde de veri yapısının muhteviyatı &amp;ouml;nemli olabilir. B&amp;uuml;y&amp;uuml;k bir nesne yapısında sadece ufak bir state değişikliği i&amp;ccedil;in yeni &amp;ouml;rnekleme ile geriye d&amp;ouml;nmek de &amp;ccedil;ok mantıklı olmayabilir ve b&amp;ouml;yle bir halde referans yoluyla y&amp;uuml;r&amp;uuml;mek daha karlıdır. Ama en azından senaryomuzdaki veri yapısını &lt;strong&gt;Rust&lt;/strong&gt; ve &lt;strong&gt;Zig&lt;/strong&gt; taraflarında belki yeni &amp;ouml;rnekler &amp;uuml;retme yoluyla nasıl kullanabileceğimizi g&amp;ouml;sterebilirim.&lt;/p&gt;
+&lt;p&gt;Yani, &lt;strong&gt;change_stock_level&lt;/strong&gt; metodumuz yeni bir &lt;strong&gt;Part&lt;/strong&gt; değişkeni oluşturup geriye d&amp;ouml;nd&amp;uuml;recek ve bunu &lt;strong&gt;main&lt;/strong&gt; kapsamındaki var olan part değişkenine atayacağız. Hımm, olduk&amp;ccedil;a makul g&amp;ouml;r&amp;uuml;n&amp;uuml;yor. Buna g&amp;ouml;re &lt;strong&gt;zig&lt;/strong&gt; tarafındaki kodları aşağıdaki gibi değiştirsem sanırım kimsenin itirazı olmaz.&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;const std = @import("std");
+
+const Part = struct {
+    id: u32,
+    name: []const u8,
+    stock_level: i32,
+};
+
+pub fn main() void {
+    var part = Part{
+        .id = 1,
+        .name = "Widget",
+        .stock_level = 10,
+    };
+
+    std.debug.print("Initial stock level of {s}: {d}\n", .{ part.name, part.stock_level });
+    part = change_stock_level(part, 5);
+    std.debug.print("Stock level after adding 5: {d}\n", .{part.stock_level});
+}
+
+fn change_stock_level(part: Part, change: i32) Part {
+    const new_part = Part{
+        .id = part.id,
+        .name = part.name,
+        .stock_level = part.stock_level + change,
+    };
+    return new_part;
+}&lt;/pre&gt;
+&lt;p&gt;Program sorunsuz şekilde &amp;ccedil;alışır ve beklediğimiz &amp;ccedil;ıktıyı &amp;uuml;retir. Dilerseniz birde &lt;strong&gt;Rust&lt;/strong&gt; tarafında aynı yaklaşımı deneyelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;struct Part {
+    id: u32,
+    name: String,
+    stock_level: i32,
+}
+
+fn main() {
+    let mut part = Part {
+        id: 1,
+        name: String::from("Widget"),
+        stock_level: 10,
+    };
+
+    println!("Initial stock level of {}: {}", part.name, part.stock_level);
+    part = change_stock_level(part, 5);
+    println!("Stock level after adding 5: {}", part.stock_level);
+}
+
+fn change_stock_level(part: Part, change: i32) -&amp;gt; Part {
+    Part {
+        stock_level: part.stock_level + change,
+        ..part
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Mutable&lt;/strong&gt; olarak tanımladığımız part değişkeninin sahipliği &amp;ouml;nce &lt;strong&gt;change_stock_level&lt;/strong&gt; metoduna aktarılır, orada yeni bir &lt;strong&gt;Part&lt;/strong&gt; nesnesi oluşturulur ve geriye d&amp;ouml;nd&amp;uuml;r&amp;uuml;l&amp;uuml;r. &lt;strong&gt;main&lt;/strong&gt; metodunun kapsamındaki &lt;strong&gt;part&lt;/strong&gt; değişkeni de bu yeni nesne &amp;ouml;rneğini sahiplenir. Program bu haliyle sorunsuz şekilde &amp;ccedil;alışacaktır.&lt;br /&gt;&lt;br /&gt;Bunlar fena kodlar değil ama ideal yaklaşımlar da değil. Bir tilki misali k&amp;uuml;rk&amp;ccedil;&amp;uuml; d&amp;uuml;kkanına mı d&amp;ouml;neceğiz yoksa. Aslında &amp;uuml;&amp;ccedil; dilde de bu tip bir &lt;strong&gt;state&lt;/strong&gt; değişikliğini nesne yapısının kendi i&amp;ccedil;erisine sarmalanmış metotlar &amp;uuml;zerinden yapmak en ideal olanı. Bu &amp;ccedil;alışma kapsamında amacımın bu olmadığını tekrar belirtmek isterim ama yine de ideal yaklaşımda kodları nasıl inşa ederizi g&amp;ouml;stermek istiyorum.&lt;br /&gt;&lt;br /&gt;&lt;strong&gt;En şık kullanımlardan birisi C# tarafında&lt;/strong&gt; aşağıdaki gibi olabilir. İdeal yaklaşıma g&amp;ouml;re bir nesnenin durumunu eğer dışarıdan bir bileşen bağımlılığı &amp;uuml;zerinden değiştirmek gerekmiyorsa&lt;em&gt; (yani stok seviyesinin değiştirilme ilkeleri Part sınıfına dışarıdan &amp;ouml;ğretilecekse ki bu durumda Part sınıfı yerine StockLevelService gibi başka bir sınıf kullanılabilir veya DDD'deki gibi bu işe ValueObject seviyesinde bakılabilir)&amp;nbsp;&lt;/em&gt;nesnenin durumunu değiştiren metotları o nesnenin kendi i&amp;ccedil;inde tanımlamaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace CSharpSample;
+
+public class Program
+{
+    static void Main(string[] args)
+    {
+        Part part = new()
+        {
+            Id = 1,
+            Name = "Widget",
+        };
+
+        Console.WriteLine($"Before update: Part ID: {part.Id}, Name: {part.Name}, Stock Level: {part.StockLevel}");
+        part.UpdateStockLevel(150);
+        Console.WriteLine($"After update: Part ID: {part.Id}, Name: {part.Name}, Stock Level: {part.StockLevel}");
+    }
+}
+
+public class Part
+{
+    public uint Id { get; set; }
+    public string? Name { get; set; }
+    public int StockLevel { get; private set; }
+    public void UpdateStockLevel(int newStockLevel)
+    {
+        StockLevel = newStockLevel;
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Orada istediğimiz iş kuralını işletmek de m&amp;uuml;mk&amp;uuml;n. Tabii bunu Rust ve Zig tarafında da benzer yaklaşımlarla ela alabiliriz. Her iki dilinde struct enstr&amp;uuml;manları olduk&amp;ccedil;a g&amp;uuml;&amp;ccedil;l&amp;uuml;d&amp;uuml;r ve onları se&amp;ccedil;imlerimize g&amp;ouml;re class gibi, struct gibi, record gibi yorumlatabiliriz. Sanırım bu dillerin g&amp;uuml;&amp;ccedil;l&amp;uuml; yanlarından birisi de bu. Az enstr&amp;uuml;manla bir&amp;ccedil;ok &amp;ouml;zelliğe zemin hazırlayabilmemiz. Tekrar Rust tarafına d&amp;ouml;necek olursak C#'taki yaklaşımın benzerini aşağıdaki kodlarda g&amp;ouml;r&amp;uuml;d&amp;uuml;ğ&amp;uuml; gibi yazabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;struct Part {
+    id: u32,
+    name: String,
+    stock_level: i32,
+}
+
+impl Part {
+    fn change_stock_level(&amp;amp;mut self, change: i32) -&amp;gt; () {
+        self.stock_level += change;
+    }
+}
+
+fn main() {
+    let mut part = Part {
+        id: 1,
+        name: String::from("Widget"),
+        stock_level: 10,
+    };
+
+    println!("Initial stock level of {}: {}", part.name, part.stock_level);
+    part.change_stock_level(5);
+    println!("Stock level after adding 5: {}", part.stock_level);
+}&lt;/pre&gt;
+&lt;p&gt;Zig programlama tarafı i&amp;ccedil;in de aşağıdaki gibi bir kodlama d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir.&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;const std = @import("std");
+
+const Part = struct {
+    id: u32,
+    name: []const u8,
+    stock_level: i32,
+    pub fn change_stock_level(self: *Part, change: i32) void {
+        self.stock_level += change;
+    }
+};
+
+pub fn main() void {
+    var part = Part{
+        .id = 1,
+        .name = "Widget",
+        .stock_level = 10,
+    };
+
+    std.debug.print("Initial stock level of {s}: {d}\n", .{ part.name, part.stock_level });
+    part.change_stock_level(5);
+    std.debug.print("Stock level after adding 5: {d}\n", .{part.stock_level});
+}&lt;/pre&gt;
+&lt;h2&gt;Ne &amp;Ouml;ğrendim?&lt;/h2&gt;
+&lt;p&gt;Peki ya t&amp;uuml;m bunlar bana neler &amp;ouml;ğretti&lt;em&gt;(neleri hatırlattı?)&lt;/em&gt; Ş&amp;ouml;yle &amp;ouml;zetleyebilirim;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;C#&lt;/strong&gt; dilinde sınıf nesne &amp;ouml;rnekleri metotlara varsayılan olarak referans t&amp;uuml;r&amp;uuml; olarak taşınır. Bu nedenle metot i&amp;ccedil;inde yapılan değişiklikler &amp;ccedil;ağıran taraftaki orjinal nesneyi de doğrudan etkiler. Derleyici bu konuda herhangi bir uyarı vermez ya da alınmaz. Atıl kalan referanslar olsa bile bu sorun değildir zira &lt;strong&gt;Garbage Collector&lt;/strong&gt; devrededir.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Rust&lt;/strong&gt; tarafında değişkenler varsayılan olarak &lt;strong&gt;immutable&lt;/strong&gt;&lt;em&gt;(değiştirilemez)&lt;/em&gt; olarak kabul edilir. Bir değişkenin değerini değiştirmek istiyorsak onu &lt;strong&gt;mutable&lt;/strong&gt; olarak tanımlamamız gerekir. Ancak bunu yapsak dahi o değişkenin sahip olduğu değerin başka bir metoda aktarılması durumunda taşındığı yerde de değiştirilebilir olarak kabul edileceği anlamına gelmez. &lt;strong&gt;Sahiplik&lt;/strong&gt;&lt;em&gt;(ownership)&lt;/em&gt; kavramı, bir değişkenin değerinin başka bir fonksiyona aktarılması durumunda orada yeni bir sahiplik oluşturulmasını gerektirir. Bu durumda, orijinal değişkenin sahipliği kaybolur ve artık orijinal değişkene de erişilemez hale gelir. Eğer bir değişkenin değerini başka bir fonksiyonda değiştirmek istiyorsak, o değişkeni referans olarak &lt;em&gt;(&amp;amp; operat&amp;ouml;r&amp;uuml; ile ve hatta mut &amp;amp; şeklinde)&lt;/em&gt; aktarması beklenir.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Zig&lt;/strong&gt; dilinde fonksiyon parametreleri &lt;strong&gt;immutable&lt;/strong&gt;&lt;em&gt;(değiştirilemez)&lt;/em&gt; kabul edilirler. Eğer bir fonksiyonun parametresine gelen değişken değerini/i&amp;ccedil;eriğini değiştirmek istiyorsak, o parametreyi &lt;strong&gt;pointer&lt;/strong&gt;&lt;em&gt;(işaret&amp;ccedil;i)&lt;/em&gt; olarak tanımlamamız gerekir. B&amp;ouml;ylece fonksiyon, parametrenin bellekteki adresine erişebilir ve bu adres &amp;uuml;zerinden gerekli değişikliği yapabilir.&lt;/li&gt;
+&lt;li&gt;Dil bağımsız d&amp;uuml;ş&amp;uuml;n&amp;uuml;rsek bir veri yapısına ait nesne &amp;ouml;rneğinin muhteviyatını değiştirmek i&amp;ccedil;in s&amp;ouml;z konusu veri yapısına ait metotları kullanmak daha doğru bir yaklaşımdır&lt;em&gt;(Tartışmaya a&amp;ccedil;ık)&lt;/em&gt;. Eğer değişiklikler bir takım kurallar barındıran dış bağımlılıklar i&amp;ccedil;erisindeki metotlarda yapılacaksa o nesne &amp;ouml;rneğinden yararlanarak yeni bir nesne &amp;ouml;rneği oluşturmak, yeni nesne &amp;ouml;rneği verisinde gerekli değişiklikleri yapıp geriye d&amp;ouml;nd&amp;uuml;rmek de d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir&lt;em&gt;(ki bu da tartışmaya a&amp;ccedil;ıktır)&lt;/em&gt;. Ancak ideal olan y&amp;ouml;ntem kullanılan dilin ama&amp;ccedil;larına g&amp;ouml;re değişir. Sevgili meslektaşımın dediği gibi Rust veya Zig i&amp;ccedil;inde DotNet&amp;ccedil;i gibi d&amp;uuml;ş&amp;uuml;nmemek gerekir ve tam tersi de ge&amp;ccedil;erlidir.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;B&amp;ouml;ylece k&amp;uuml;&amp;ccedil;&amp;uuml;k bir merakla başlayan deneysel &amp;ccedil;alışmamın bir b&amp;ouml;l&amp;uuml;m&amp;uuml;n&amp;uuml; tamamlamış oldum. Umarım faydalı olmuştur. Diğer yandan buradaki uygulama pratiklerinde &lt;strong&gt;single-thread&lt;/strong&gt; &amp;ccedil;alışan bir ortamda &amp;ccedil;ok sorun yaşamadan ilerledik. Ancak birden fazla iş par&amp;ccedil;acığının&lt;em&gt;(multi-thread)&lt;/em&gt; aynı veri yapısına ait nesne &amp;ouml;rneğinde değişiklik yapmaya &amp;ccedil;alıştığı durumlarda işin rengi değişecektir. Bu tip senaryoları da ilerleyen zamanlarda ele almak istiyorum. Sonraki yazımızda g&amp;ouml;r&amp;uuml;şmek dileğiyle, hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;Kaynak kodlara &lt;a href="https://github.com/buraksenyurt/friday-night-programmer/tree/main/src/try-this-00" target="_blank"&gt;github reposundan&lt;/a&gt; ulaşabilirsiniz.&lt;/p&gt;</content>
+  <pubDate>2026-01-15 20:27:00</pubDate>
+  <slug>bunu-bir-dene-00-metot-argumanlarinda-degisiklik-c-rust-ve-zig</slug>
+  <tags>
+    <tag>zig</tag>
+    <tag>zig-lang</tag>
+    <tag>c-sharp</tag>
+    <tag>rust</tag>
+  </tags>
+  <categories>
+    <category>C#</category>
+    <category>Rust</category>
+    <category>Zig</category>
+  </categories>
+</post>

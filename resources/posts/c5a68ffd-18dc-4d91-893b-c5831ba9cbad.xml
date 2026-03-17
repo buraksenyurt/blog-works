@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Eski Dost ve Entity Framework 4.0</title>
+  <description>Bildiğiniz üzere .Net Framework 4.0 ve Visual Studio 2010 sürümlerinin çıkmasına az bir zaman kaldı(Hatta yarın RC sürümü herkese açık olacak). Blog yazısını hazırladığım zaman itibariyle Microsoft' taki güvenilir kaynaklar ve MSDN yazarlarından edinilen bilgilere göre, sürümün Nisan 2010 içerisinde çıkması bekleniyor. Tabi yeni bir sürüm denilince eski sürüm ile aradaki farklılıkları bilmek, nereden nereye gelindiği ve nelerin düzeltildiğini öğrenmek, beklentilerin karşılanıp karşılanmadığına bakmak oldukça önemli. Bende buna istinaden yazımızın ilerleyen kısımlarında, Ado.Net Entity Framework 4.0 ile bir önceki versiyonu arasında, sorgu teknikleri açısından oluşan farkları aktarmaya çalışıyor olacağım.</description>
+  <content>&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Bildiğiniz &amp;uuml;zere &lt;strong&gt;.Net Framework 4.0&lt;/strong&gt; ve &lt;strong&gt;Visual Studio 2010 &lt;/strong&gt;s&amp;uuml;r&amp;uuml;mlerinin &amp;ccedil;ıkmasına az bir zaman kaldı(Hatta yarın RC s&amp;uuml;r&amp;uuml;m&amp;uuml; herkese a&amp;ccedil;ık olacak). Blog yazısını hazırladığım zaman itibariyle &lt;strong&gt;Microsoft'&lt;/strong&gt; taki g&amp;uuml;venilir kaynaklar ve &lt;strong&gt;MSDN&lt;/strong&gt; yazarlarından edinilen bilgilere g&amp;ouml;re, s&amp;uuml;r&amp;uuml;m&amp;uuml;n &lt;strong&gt;Nisan 2010&lt;/strong&gt; i&amp;ccedil;erisinde &amp;ccedil;ıkması bekleniyor. Tabi yeni bir s&amp;uuml;r&amp;uuml;m denilince eski s&amp;uuml;r&amp;uuml;m ile aradaki farklılıkları bilmek, nereden nereye gelindiği ve nelerin d&amp;uuml;zeltildiğini &amp;ouml;ğrenmek, beklentilerin karşılanıp karşılanmadığına bakmak olduk&amp;ccedil;a &amp;ouml;nemli. Bende buna istinaden yazımızın ilerleyen kısımlarında, &lt;strong&gt;Ado.Net Entity Framework 4.0&lt;/strong&gt; ile bir &amp;ouml;nceki versiyonu arasında, sorgu teknikleri a&amp;ccedil;ısından oluşan farkları aktarmaya &amp;ccedil;alışıyor olacağım.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Ado.Net&lt;/strong&gt; takımının &lt;strong&gt;4.0 &lt;/strong&gt;s&amp;uuml;r&amp;uuml;m&amp;uuml;ndeki hedeflerinden biriside&amp;nbsp;SQL sorgularının daha anlaşılır olmasını sağlamak. Buna ek olarak gereksiz&amp;nbsp;&lt;strong&gt;SQL&lt;/strong&gt; ifadelerinin kullanılmasından uzaklaşılmaya &amp;ccedil;alışılmış ve hatta &amp;ouml;nceki &lt;strong&gt;Entity Framework&lt;/strong&gt; s&amp;uuml;r&amp;uuml;m&amp;uuml;nde &lt;strong&gt;SQL&lt;/strong&gt; sorgusuna d&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;lemeyen &lt;strong&gt;LINQ&lt;/strong&gt; ifadeleri kullanılabilir hale getirilmiş. Tabi daha da fazla fark bulunabilir. Ancak &lt;strong&gt;MSDN&lt;/strong&gt; ve &lt;strong&gt;Ado.Net &lt;/strong&gt;takımının gerek blog yazılarından gerek Webcast' lerinden takip ettiğim kadarı ile aşağıda yer alan&amp;nbsp;4 &amp;ouml;nemli farklılık g&amp;ouml;ze &amp;ccedil;arpmaktadır.&amp;nbsp;&amp;Ccedil;ok doğal olarak&amp;nbsp;s&amp;ouml;z konusu iyileştirmeler &lt;strong&gt;LINQ&lt;/strong&gt; ifadelerinin &lt;strong&gt;SQL &lt;/strong&gt;sorgularına d&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;lmesinde devreye giren&amp;nbsp;motor &amp;uuml;zerinde yer almaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;Not :&lt;/strong&gt; &amp;Ouml;rneklerimizde yer alan LINQ sorguları .Net Framework 3.5 odaklı olan &lt;strong&gt;Visual Studio 2008 &lt;/strong&gt;ve .Net Framework 4.0 odaklı olan &lt;strong&gt;Visual Studio 2010 Ultimate Beta 2&amp;nbsp;&lt;/strong&gt;&amp;uuml;r&amp;uuml;nleri &amp;uuml;zerinde yazılmıştır. &amp;Ouml;zellikle Ado.Net Entity Framework 4.0&amp;nbsp;&amp;uuml;zerinden&amp;nbsp;daha nihai bir s&amp;uuml;r&amp;uuml;me ulaşılmadığı i&amp;ccedil;in ilereyen zamanlarda değişiklikler g&amp;ouml;zlemlenebilir. &lt;strong&gt;LINQ &lt;/strong&gt;sorgularının icrası sırasında, &lt;strong&gt;SQL Server Profiler &lt;/strong&gt;aracı kullanılarak arka planda y&amp;uuml;r&amp;uuml;t&amp;uuml;len &lt;strong&gt;SQL &lt;/strong&gt;sorgularının elde edilmesi sağlanmıştır. Ayrıca &amp;ouml;rnekte &lt;/em&gt;&lt;a title="Chinook Database" href="https://github.com/lerocha/chinook-database" target="_blank"&gt;&lt;em&gt;Codeplex &amp;uuml;zerinden sunulan Chinook veritabanı (Giihub'a taşındı)&amp;nbsp;&lt;/em&gt;&lt;/a&gt;&lt;em&gt;kullanılmıştır.&lt;/em&gt;&lt;/p&gt;
+&lt;h2&gt;Vaka 1 : Sorgularda In Desteği A&amp;ccedil;ıklama&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Ado.Net Entity Framework 4.0&lt;/strong&gt; &amp;ouml;ncesindeki s&amp;uuml;r&amp;uuml;mde &lt;strong&gt;SQL&lt;/strong&gt; tarafında &lt;strong&gt;In &lt;/strong&gt;anahtar kelimesine d&amp;ouml;n&amp;uuml;şebilecek sorgu desteği bulunmamaktadır. &lt;strong&gt;4.0&lt;/strong&gt; versiyonunda &lt;strong&gt;In' &lt;/strong&gt;e d&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;lebilme desteği belirli &amp;ouml;l&amp;ccedil;&amp;uuml;de bulunmaktadır. Aşağıdaki &lt;strong&gt;LINQ&lt;/strong&gt; sorgusuna g&amp;ouml;re,&amp;nbsp;Berlin ve Paris şehirlerinde yer alan m&amp;uuml;şteriler elde edilmeye &amp;ccedil;alışılmaktadır. &lt;strong&gt;4.0&lt;/strong&gt; &amp;ouml;ncesi s&amp;uuml;r&amp;uuml;mde bu tip bir &lt;strong&gt;LINQ&lt;/strong&gt; sorgusunda yer alan&amp;nbsp;&lt;strong&gt;Contains&lt;/strong&gt; metodunun &lt;strong&gt;SQL&lt;/strong&gt; tarafına d&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;lemediği g&amp;ouml;r&amp;uuml;l&amp;uuml;r. Ancak &lt;strong&gt;4.0&lt;/strong&gt; versiyonunda &lt;strong&gt;SQL &lt;/strong&gt;tarafına &lt;strong&gt;In &lt;/strong&gt;olarak aktarılması sağlanmaktadır.&lt;/p&gt;
+&lt;h3&gt;&amp;Ouml;nceki Versiyon - LINQ Sorgusu&lt;/h3&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;string[] cityNames = { "Berlin", "Paris" };
+                var result = from customer in entites.Customer
+                             where cityNames.Contains(customer.City)
+                             select customer;
+
+                foreach (var r in result)
+                {
+                    Console.WriteLine("{0} {1} {2}", r.Email, r.FirstName, r.LastName);
+                }&lt;/pre&gt;
+&lt;h3&gt;&amp;Ouml;nceki Versiyon - SQL Sorgusu&lt;/h3&gt;
+&lt;p&gt;Bir &lt;strong&gt;SQL&lt;/strong&gt; sorgusu &lt;span style="text-decoration: underline;"&gt;y&amp;uuml;r&amp;uuml;t&amp;uuml;lememektedir&lt;/span&gt; nitekim &amp;ccedil;alışma zamanında aşağıdaki &lt;strong&gt;Exception&lt;/strong&gt; mesajı alınacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f1%2fblg130_Exception.gif" alt="" /&gt;&lt;/p&gt;
+&lt;h3&gt;4.0 - LINQ Sorgusu&lt;/h3&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;string[] cityNames = { "Berlin", "Paris" };
+                var result = from customer in entites.Customers
+                             where cityNames.Contains(customer.City)
+                             select customer;
+
+                foreach (var r in result)
+                {
+                    Console.WriteLine("{0} {1} {2}", r.Email, r.FirstName, r.LastName);
+                }&lt;/pre&gt;
+&lt;h3&gt;4.0 - SQL Sorgusu&lt;/h3&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;SELECT 
+[Extent1].[CustomerId] AS [CustomerId], 
+[Extent1].[FirstName] AS [FirstName], 
+[Extent1].[LastName] AS [LastName], 
+[Extent1].[Company] AS [Company], 
+[Extent1].[Address] AS [Address], 
+[Extent1].[City] AS [City], 
+[Extent1].[State] AS [State], 
+[Extent1].[Country] AS [Country], 
+[Extent1].[PostalCode] AS [PostalCode], 
+[Extent1].[Phone] AS [Phone], 
+[Extent1].[Fax] AS [Fax], 
+[Extent1].[Email] AS [Email], 
+[Extent1].[SupportRepId] AS [SupportRepId]
+FROM [dbo].[Customer] AS [Extent1]
+WHERE [Extent1].[City] IN (N'Berlin',N'Paris')&lt;/pre&gt;
+&lt;h2&gt;Vaka 2 - Gruplamada Cast Sorunu A&amp;ccedil;ıklama&lt;/h2&gt;
+&lt;p&gt;Gruplama uygulanmış olan bir &lt;strong&gt;LINQ&lt;/strong&gt; sorgusunda &lt;strong&gt;Count&lt;/strong&gt; &lt;strong&gt;genişletme metodunun(Extension Method)&lt;/strong&gt;&amp;nbsp;kullanılması halinde bir &amp;ouml;nceki versiyonda &lt;strong&gt;Cast&lt;/strong&gt; operat&amp;ouml;r&amp;uuml;n&amp;uuml;n &lt;strong&gt;SQL&lt;/strong&gt; sorgusuna dahil edildiği g&amp;ouml;r&amp;uuml;l&amp;uuml;r. Ancak &lt;strong&gt;4.0&lt;/strong&gt; versiyonunda bu gereksiz durum d&amp;uuml;zeltilmiştir.&lt;/p&gt;
+&lt;h3&gt;&amp;Ouml;nceki Versiyon - LINQ Sorgusu&lt;/h3&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var result = from track in entites.Track
+                             group track by track.Composer into trackGrp
+                             select new
+                             {
+                                 trackGrp.Key,
+                                 Count = trackGrp.Count(),
+                                 Sum = trackGrp.Sum&amp;lt;Track&amp;gt;(t =&amp;gt; t.UnitPrice),
+                                 Max = trackGrp.Max&amp;lt;Track&amp;gt;(t =&amp;gt; t.UnitPrice),
+                                 Min = trackGrp.Min&amp;lt;Track&amp;gt;(t =&amp;gt; t.UnitPrice)
+                             };
+
+                foreach (var r in result)
+                {
+                    Console.WriteLine(r.ToString());
+                }&lt;/pre&gt;
+&lt;h3&gt;&amp;Ouml;nceki Versiyon - SQL Sorgusu&lt;/h3&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;SELECT 
+1 AS [C1], 
+[GroupBy1].[K1] AS [Composer], 
+[GroupBy1].[A1] AS [C2], 
+[GroupBy1].[A2] AS [C3], 
+[GroupBy1].[A3] AS [C4], 
+[GroupBy1].[A4] AS [C5]
+FROM ( SELECT 
+&amp;nbsp;[Extent1].[Composer] AS [K1], 
+&amp;nbsp;COUNT( CAST( 1 AS bit)) AS [A1], 
+&amp;nbsp;SUM([Extent1].[UnitPrice]) AS [A2], 
+&amp;nbsp;MAX([Extent1].[UnitPrice]) AS [A3], 
+&amp;nbsp;MIN([Extent1].[UnitPrice]) AS [A4]
+&amp;nbsp;FROM [dbo].[Track] AS [Extent1]
+&amp;nbsp;GROUP BY [Extent1].[Composer]
+)&amp;nbsp; AS [GroupBy1]&lt;/pre&gt;
+&lt;h3&gt;4.0 - LINQ Sorgusu&lt;/h3&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var result = from track in entites.Tracks
+                             group track by track.Composer into trackGrp
+                             select new
+                             {
+                                 trackGrp.Key,
+                                 Count = trackGrp.Count(),
+                                 Sum = trackGrp.Sum&amp;lt;Track&amp;gt;(t =&amp;gt; t.UnitPrice),
+                                 Max = trackGrp.Max&amp;lt;Track&amp;gt;(t =&amp;gt; t.UnitPrice),
+                                 Min = trackGrp.Min&amp;lt;Track&amp;gt;(t =&amp;gt; t.UnitPrice)
+                             };
+
+                foreach (var r in result)
+                {
+                    Console.WriteLine(r.ToString());
+                }&lt;/pre&gt;
+&lt;h3&gt;&lt;strong&gt;4.0 - SQL Sorgusu&lt;/strong&gt;&lt;/h3&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;SELECT 
+1 AS [C1], 
+[GroupBy1].[K1] AS [Composer], 
+[GroupBy1].[A1] AS [C2], 
+[GroupBy1].[A2] AS [C3], 
+[GroupBy1].[A3] AS [C4], 
+[GroupBy1].[A4] AS [C5]
+FROM ( SELECT 
+ [Extent1].[Composer] AS [K1], 
+ COUNT(1) AS [A1], 
+ SUM([Extent1].[UnitPrice]) AS [A2], 
+ MAX([Extent1].[UnitPrice]) AS [A3], 
+ MIN([Extent1].[UnitPrice]) AS [A4]
+ FROM [dbo].[Track] AS [Extent1]
+ GROUP BY [Extent1].[Composer]
+)  AS [GroupBy1]&lt;/pre&gt;
+&lt;h2&gt;&lt;strong&gt;Vaka 3 - Join sorgularında Is Null Kontrol&amp;uuml;&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;LINQ&lt;/strong&gt; tarafında icra edilen aşağıdaki gibi bir &lt;strong&gt;Join&lt;/strong&gt; sorgusunda, bir &amp;ouml;nceki versiyonda &amp;uuml;retilen &lt;strong&gt;SQL&lt;/strong&gt; ifadesinde anahtar alan i&amp;ccedil;in &lt;strong&gt;IS NULL&lt;/strong&gt; kontrol&amp;uuml; yapıldığı g&amp;ouml;r&amp;uuml;lmektedir. &lt;strong&gt;4.0&lt;/strong&gt; s&amp;uuml;r&amp;uuml;m&amp;uuml;nde ise gereksiz olan bu kontrol &lt;strong&gt;SQL&lt;/strong&gt; tarafına &lt;span style="text-decoration: underline;"&gt;aktarılmamaktadır&lt;/span&gt;.&lt;/p&gt;
+&lt;h3&gt;&lt;strong&gt;&amp;Ouml;nceki Versiyon - LINQ Sorgusu&lt;/strong&gt;&lt;/h3&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var result = from artist in entites.Artist
+                             join album in entites.Album
+                             on artist.ArtistId equals album.Artist.ArtistId
+                             select new
+                             {
+                                 ArtistName = artist.Name,
+                                 AlbumTitle = album.Title
+                             };
+                foreach (var r in result)
+                {
+                    Console.WriteLine(r.ToString());
+                }&lt;/pre&gt;
+&lt;h3&gt;&lt;strong&gt;&amp;Ouml;nceki Versiyon - SQL Sorgusu&lt;/strong&gt;&lt;/h3&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;SELECT 
+1 AS [C1], 
+[Extent1].[Name] AS [Name], 
+[Extent2].[Title] AS [Title]
+FROM&amp;nbsp; [dbo].[Artist] AS [Extent1]
+INNER JOIN [dbo].[Album] AS [Extent2] ON ([Extent1].[ArtistId] = [Extent2].[ArtistId]) OR (([Extent1].[ArtistId] IS NULL) AND ([Extent2].[ArtistId] IS NULL))&lt;/pre&gt;
+&lt;h3&gt;&lt;strong&gt;4.0 - LINQ Sorgusu&lt;/strong&gt;&lt;/h3&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var result = from artist in entites.Artists
+                             join album in entites.Albums
+                             //on artist.ArtistId equals album.Artist.ArtistId
+                             on artist.ArtistId equals album.ArtistId //(Zaten yeni s&amp;uuml;r&amp;uuml;mde yandaki gibi yazabiliyoruz artık)
+                             select new
+                             {
+                                 ArtistName = artist.Name,
+                                 AlbumTitle = album.Title
+                             };
+
+                foreach (var r in result)
+                {
+                    Console.WriteLine(r.ToString());
+                }&lt;/pre&gt;
+&lt;h3&gt;&lt;strong&gt;4.0 - SQL Sorgusu&lt;/strong&gt;&lt;/h3&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;SELECT 
+[Extent1].[ArtistId] AS [ArtistId], 
+[Extent1].[Name] AS [Name], 
+[Extent2].[Title] AS [Title]
+FROM  [dbo].[Artist] AS [Extent1]
+INNER JOIN [dbo].[Album] AS [Extent2] ON [Extent1].[ArtistId] = [Extent2].[ArtistId]&lt;/pre&gt;
+&lt;h2 style="text-align: left;"&gt;&lt;strong&gt;Vaka 4 - Skip, Take gibi Metod Kullanımlarında T&amp;uuml;m Alanların Sorguya Dahil Edilmesi&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;Aşağıdaki &lt;strong&gt;LINQ&lt;/strong&gt; sorgusuna g&amp;ouml;re artistlerin tersten sıralanan adlar listesi ilk 10 satır atlanarak elde edilmektedir. &lt;strong&gt;4.0&lt;/strong&gt; &amp;ouml;ncesi versiyonda bu tip bir &lt;strong&gt;LINQ&lt;/strong&gt; sorgusunun &amp;ccedil;alıştırılması halinde &lt;strong&gt;SQL&lt;/strong&gt; tarafında oluşturulan&amp;nbsp;Sub &lt;strong&gt;SELECT&lt;/strong&gt; sorgusunda aslında &lt;strong&gt;LINQ&lt;/strong&gt; sorgusuna dahil edilmeyen&amp;nbsp;alanlarında hesaba katıldığı g&amp;ouml;zlemlenir. &lt;strong&gt;4.0&lt;/strong&gt; versiyonunda ise gereksiz alanların &lt;strong&gt;SELECT&lt;/strong&gt; sorgusuna alınmasının &amp;ouml;n&amp;uuml;ne ge&amp;ccedil;ilmiştir.&lt;/p&gt;
+&lt;h3&gt;&lt;strong&gt;&amp;Ouml;nceki Versiyon - LINQ Sorgusu&lt;/strong&gt;&lt;/h3&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var result = (from artist in entites.Artist
+                              orderby artist.Name descending
+                              select artist.Name).Skip(10);
+                foreach (var r in result)
+                {
+                    Console.WriteLine(r);
+                }&lt;/pre&gt;
+&lt;h3&gt;&lt;strong&gt;&amp;Ouml;nceki Versiyon - SQL Sorgusu&lt;/strong&gt;&lt;/h3&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;SELECT 
+[Extent1].[Name] AS [Name]
+FROM ( SELECT [Extent1].[ArtistId] AS [ArtistId], [Extent1].[Name] AS [Name], row_number() OVER (ORDER BY [Extent1].[Name] DESC) AS [row_number]
+ FROM [dbo].[Artist] AS [Extent1]
+)  AS [Extent1]
+WHERE [Extent1].[row_number] &amp;gt; 10
+ORDER BY [Extent1].[Name] DESC&lt;/pre&gt;
+&lt;h3&gt;&lt;strong&gt;4.0 - LINQ Sorgusu&lt;/strong&gt;&lt;/h3&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var result = (from artist in entites.Artists
+                              orderby artist.Name descending
+                              select artist.Name).Skip(10);
+
+                foreach (var r in result)
+                {
+                    Console.WriteLine(r);
+                }&lt;/pre&gt;
+&lt;h3&gt;&lt;strong&gt;4.0 - SQL Sorgusu&lt;/strong&gt;&lt;/h3&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;SELECT 
+[Extent1].[Name] AS [Name]
+FROM ( SELECT [Extent1].[Name] AS [Name], row_number() OVER (ORDER BY [Extent1].[Name] DESC) AS [row_number]
+&amp;nbsp;FROM [dbo].[Artist] AS [Extent1]
+)&amp;nbsp; AS [Extent1]
+WHERE [Extent1].[row_number] &amp;gt; 10
+ORDER BY [Extent1].[Name] DESC&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;Ado.Net Entity Framework 4.0&lt;/strong&gt; s&amp;uuml;r&amp;uuml;m&amp;uuml;nde &amp;ouml;zellikle &lt;strong&gt;SQL&lt;/strong&gt; sorgularına d&amp;ouml;n&amp;uuml;şt&amp;uuml;rme işlemlerinde,&amp;nbsp;motor &amp;uuml;zerinde bazı&amp;nbsp;yenilemelerin yapıldığı ve gereksiz işlemlerin &amp;ouml;n&amp;uuml;ne ge&amp;ccedil;ilmeye &amp;ccedil;alışıldığı g&amp;ouml;zlemlenebilmektedir. A&amp;ccedil;ık&amp;ccedil;ası bu konu ile ilişkili olaraktan &amp;ccedil;ıkacak kitapları merakla bekliyorum. &amp;Ouml;zellikle&amp;nbsp;&lt;strong&gt;Julia Lerman'&lt;/strong&gt; ın daha &amp;ouml;nceki &lt;a title="Programming Entity Framework" href="http://www.amazon.co.uk/Programming-Entity-Framework-Julia-Lerman/dp/059652028X/ref=sr_1_2?ie=UTF8&amp;amp;s=books&amp;amp;qid=1263557453&amp;amp;sr=8-2" target="_blank"&gt;&lt;strong&gt;Programming Entity Framework&lt;/strong&gt; &lt;/a&gt;kitabını okuyanlar eminim &lt;strong&gt;4.0&lt;/strong&gt; i&amp;ccedil;in olan versiyonuda sabırsızlıkla ve merakla bekliyordur. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2010%2f1%2fDifferences.rar"&gt;Differences.rar (183,69 kb)&lt;/a&gt;&amp;nbsp;&lt;strong&gt;[&amp;Ouml;rnek Visual Studio 2010 Ultimate Beta 2 &amp;uuml;zerinde geliştirilmiştir. Yarın public olarak yayınlanacak RC s&amp;uuml;r&amp;uuml;m&amp;uuml; i&amp;ccedil;in test edilmemiştir]&lt;/strong&gt;&lt;/p&gt;</content>
+  <pubDate>2010-02-09 07:28:00</pubDate>
+  <slug>Eski-Dost-ve-Entity-Framework-40</slug>
+  <tags>
+    <tag>adonet-entity-framework</tag>
+  </tags>
+  <categories>
+    <category>Entity Framework</category>
+  </categories>
+</post>

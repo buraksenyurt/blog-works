@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WorldBank, OData ve ASP.Net Web API HttpClient Kullanımı</title>
+  <description>Microsoft önce servis odaklı yaklaşımını değiştirerek Windows Communication Foundation altyapısını duyurdu. Hemen ardından WCF hızla gelişti ve pek çok Microsoft ürününün servis uç noktalarında yerini almaya başladı. Derken WCF’ e Web programlama modeli(Web Programming Model) için destekler eklendi. Artık REST(Representational State Transefer) odaklı servisleri yayınlamak ve hatta kullanmak mümkün hale gelmeye başladı. Çok basit anlamda HTTP protokolünün GET,POST,PUT,DELETE gibi metodlarına göre hizmet verebilen ve bu nedenle bir proxy ihtiyacını ortadan kaldırıp platform bağımsızlığı getiren servis yayınlama modeline destek söz konusu idi. Söz konusu model daha da geliştirildi. Özellikle Code Plex tarafında WCF Rest Service API’ si duyuruldu ve programlama modeli Astoria kod adlı WCF Data Service’ lerinde çekirdek yapı taşı haline geldi.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/World_Bank.jpg"&gt;&lt;img style="display: inline; margin-left: 0px; margin-right: 0px;" title="World_Bank" src="/pics/World_Bank_thumb.jpg" alt="World_Bank" width="320" height="243" align="right" /&gt;&lt;/a&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;1999 yılında girdiğim y&amp;uuml;ksek lisans&lt;strong&gt;(MBA-Master of Business Administrator) &lt;/strong&gt;programını tamamlarken, bitirme projemde &lt;strong&gt;&amp;ldquo;T&amp;uuml;rkiye&amp;rsquo; nin D&amp;uuml;nya Bankası bor&amp;ccedil;lanmalarını&amp;rdquo; &lt;/strong&gt;ele almaya &amp;ccedil;alışmıştım. Haliyle o d&amp;ouml;nemlerde ve ge&amp;ccedil;mişte, &amp;uuml;lkemizin Worldbank &amp;uuml;zerinden yaptığı bor&amp;ccedil;lanmalara ait istatistiki bilgilere olduk&amp;ccedil;a fazla ihtiyacım vardı. O k&amp;uuml;t&amp;uuml;phane bu k&amp;uuml;t&amp;uuml;phane gezmek dışında, d&amp;uuml;nya bankası internet sitesinden yayınlanan istatistik bazlı raporları da değerlendirmeye alıyordum. Yaklaşık olarak 60 sayfalık bir d&amp;ouml;k&amp;uuml;man oluşturmayı başarmıştım. Sunumumu yaptım, vardığım sonu&amp;ccedil;ları değerli hocalarım ile paylaştım&lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Zaman hızla ge&amp;ccedil;ti tabi ki. Bir baktım &lt;strong&gt;Microsoft .Net&lt;/strong&gt; teknolojileri ile uğraşıyor ve yazılım geliştirici olarak kariyerimi devam ettiriyorum. Zaman hızla ge&amp;ccedil;iyordu ge&amp;ccedil;mesine ancak ondan daha hızlı hareket etmek isteyen de bir teknoloji vardı ortada. &lt;strong&gt;.Net Framework&lt;/strong&gt; platformunun gelişmesine ayak uydurabilmek ger&amp;ccedil;ekten zorlaşıyordu. Ama tabi hepimiz i&amp;ccedil;in ortaya kullanışlı ve vizyonumuzu geliştiren &amp;uuml;r&amp;uuml;nler &amp;ccedil;ıkarttıkları da bir ger&amp;ccedil;ekti.&lt;/p&gt;
+&lt;p&gt;Bug&amp;uuml;ne baktığımızda pek &amp;ccedil;ok d&amp;uuml;nya firmasının dışarıya a&amp;ccedil;ık kaynaklı veri sunarken&lt;em&gt;(&amp;ouml;zellike OData-Open Data Protocol formatında)&lt;/em&gt;, &lt;strong&gt;Microsoft&amp;rsquo;&lt;/strong&gt; un da bu veri sunumlarını etkin bir şekilde ele almamız i&amp;ccedil;in getirdiği yeniliklerini g&amp;ouml;rmekteyiz. Ş&amp;ouml;yle bir ka&amp;ccedil; sene geriye gidelim dilerseniz&amp;nbsp;&lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Microsoft &amp;ouml;nce servis odaklı yaklaşımını değiştirerek &lt;strong&gt;Windows Communication Foundation&lt;/strong&gt; altyapısını duyurdu. Hemen ardından &lt;strong&gt;WCF&lt;/strong&gt; hızla gelişti ve pek &amp;ccedil;ok &lt;strong&gt;Microsoft&lt;/strong&gt; &amp;uuml;r&amp;uuml;n&amp;uuml;n&amp;uuml;n servis u&amp;ccedil; noktalarında yerini almaya başladı. Derken &lt;strong&gt;WCF&amp;rsquo;&lt;/strong&gt; e &lt;strong&gt;Web programlama modeli(Web Programming Model)&lt;/strong&gt; i&amp;ccedil;in destekler eklendi. Artık&lt;strong&gt; REST(Representational State Transefer)&lt;/strong&gt; odaklı servisleri yayınlamak ve hatta kullanmak m&amp;uuml;mk&amp;uuml;n hale gelmeye başladı. &amp;Ccedil;ok basit anlamda &lt;strong&gt;HTTP&lt;/strong&gt; protokol&amp;uuml;n&amp;uuml;n &lt;strong&gt;GET,POST,PUT,DELETE &lt;/strong&gt;gibi metodlarına g&amp;ouml;re hizmet verebilen ve bu nedenle bir proxy ihtiyacını ortadan kaldırıp platform bağımsızlığı getiren servis yayınlama modeline destek s&amp;ouml;z konusu idi. S&amp;ouml;z konusu model daha da geliştirildi. &amp;Ouml;zellikle &lt;strong&gt;Code Plex &lt;/strong&gt;tarafında &lt;strong&gt;WCF Rest Service API&amp;rsquo;&lt;/strong&gt; si duyuruldu ve programlama modeli &lt;strong&gt;Astoria &lt;/strong&gt;kod adlı &lt;strong&gt;WCF Data Service&amp;rsquo;&lt;/strong&gt; lerinde &amp;ccedil;ekirdek yapı taşı haline geldi.&lt;/p&gt;
+&lt;p&gt;S&amp;ouml;z konusu web programlama modeli odaklı WCF servisleri o kadar pop&amp;uuml;ler olmaya başladı ki, onu &lt;strong&gt;Asp.Net MVC &lt;/strong&gt;gibi &lt;strong&gt;data-centric&lt;/strong&gt; uygulamalarda daha sık g&amp;ouml;rmeye başladık. Hal b&amp;ouml;yle olunca &lt;strong&gt;WCF&lt;/strong&gt; takımı, &lt;strong&gt;WCF Web API&lt;/strong&gt; isimli bir k&amp;uuml;t&amp;uuml;phaneyi kullanıma sundu. Şu an geldiğimiz noktada ise bu yapı isim değiştirerek&lt;em&gt;(ASP.NET Web API) &lt;/em&gt;doğrudan &lt;strong&gt;ASP.NET MVC 4.0 Beta&lt;/strong&gt; s&amp;uuml;r&amp;uuml;m&amp;uuml;ne entegre edildi. Artık &lt;strong&gt;.Net Framework 4.5&lt;/strong&gt; s&amp;uuml;r&amp;uuml;m&amp;uuml;nde &lt;strong&gt;ASP.NET Web API&lt;/strong&gt; g&amp;ouml;m&amp;uuml;l&amp;uuml; olarak gelecek ve &lt;strong&gt;2012 &lt;/strong&gt;sonundan itibaren &lt;strong&gt;WCF Web API&lt;/strong&gt;&amp;rsquo; ye olan destek kalkacak.&lt;/p&gt;
+&lt;p&gt;İster &lt;strong&gt;WCF Web API&lt;/strong&gt; olsun, ister g&amp;uuml;ndemimize yeni yeni giren &lt;strong&gt;ASP.NET Web API&lt;/strong&gt; olsun, birbirlerinden ayrıldıkarı y&amp;ouml;nler olduğu kadar, ortak noktalarıda bulunmakta. &amp;Ouml;rneğin, &lt;strong&gt;OData, XML, JSON&lt;/strong&gt; gibi &amp;ccedil;ıktı &amp;uuml;retimleri sunan &lt;strong&gt;REST&lt;/strong&gt; servislerinin daha kolay kullanımı i&amp;ccedil;in geliştirilmiş olan &lt;strong&gt;HttpClient&lt;/strong&gt; tipi&amp;nbsp;&lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi buraya kadar yazdıklarımızı bir toparlayalım. D&amp;uuml;nya bankası artık verilerini &lt;strong&gt;OData&lt;/strong&gt; formatında olacak şekilde dış d&amp;uuml;nyaya sunmakta. Bu anlamda &lt;strong&gt;Developer&amp;rsquo;&lt;/strong&gt; lar i&amp;ccedil;in bir web sayfaları bile bulunuyor&lt;em&gt;(Developer&amp;rsquo; lar i&amp;ccedil;in kaynak &lt;/em&gt;&lt;a title="http://data.worldbank.org/node/209" href="http://data.worldbank.org/node/209"&gt;&lt;em&gt;http://data.worldbank.org/node/209&lt;/em&gt;&lt;/a&gt;&lt;em&gt;) &lt;/em&gt;Bu sayfada s&amp;ouml;z konusu &lt;strong&gt;Worldbank Data API&amp;rsquo;&lt;/strong&gt; sinin nasıl kullanılacağı ve hatta &lt;strong&gt;URL&lt;/strong&gt; bazlı sorguların nasıl g&amp;ouml;nderileceği anlatılmakta. Eee, elimizde bu servisin verisini kullanabilmek i&amp;ccedil;in &lt;strong&gt;ASP.NET Web API&lt;/strong&gt; ile de gelen &lt;strong&gt;HttpClient&lt;/strong&gt; tipi var. Daha ne bekliyoruz &amp;ouml;yleyse &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;Gelin bir ka&amp;ccedil; d&amp;uuml;nya bankası verisini &lt;strong&gt;.Net&lt;/strong&gt; kodlarımız ile sorgulayalım.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;nce &lt;strong&gt;&amp;ouml;rnek bir ka&amp;ccedil; sorguyu tarayıcı uygulama &amp;uuml;zerinden g&amp;ouml;ndermeye &amp;ccedil;alışalım. &amp;Ouml;rneğin&lt;/strong&gt; ilk 50 &amp;uuml;lkenin bilgilerini &amp;ccedil;ekelim. Bunun i&amp;ccedil;in aşağıdaki sorguyu kullanmamız yeterli olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://api.worldbank.org/countries"&gt;http://api.worldbank.org/countries&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;işte sonu&amp;ccedil;,&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/worldb_8.png"&gt;&lt;img style="display: inline;" title="worldb_8" src="/pics/worldb_8_thumb.png" alt="worldb_8" width="587" height="681" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;XML&lt;/strong&gt; tabanlı olarak ilk 50 &amp;uuml;lkenin bilgilerine ulaşmış durumdayız. &lt;strong&gt;page&lt;/strong&gt;, &lt;strong&gt;per_page&lt;/strong&gt; gibi nitelikleri de sorgulara parametre olarak katarak sayfalar arasında gezinebiliriz de &lt;em&gt;(&amp;Ouml;rneğin 2nci sayfaya gitmeyi ve her sayfada 25 &amp;uuml;lke g&amp;ouml;stermeyi bir deneyin &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Tabi istersek bu sorguyu &lt;strong&gt;JSON(JavaScript Object Notation)&lt;/strong&gt; formatında da ele alabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;a title="http://api.worldbank.org/countries?format=json" href="http://api.worldbank.org/countries?format=json"&gt;http://api.worldbank.org/countries?format=json&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Bu durumda daha k&amp;uuml;&amp;ccedil;&amp;uuml;k boyutlu bir i&amp;ccedil;eriğe ulaşmış oluruz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/worldb_7.png"&gt;&lt;img style="display: inline;" title="worldb_7" src="/pics/worldb_7_thumb.png" alt="worldb_7" width="625" height="308" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Teori g&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi olduk&amp;ccedil;a basit. &lt;strong&gt;HTTP&lt;/strong&gt; &lt;strong&gt;Get&lt;/strong&gt; metoduna g&amp;ouml;re g&amp;ouml;nderdiğimiz sorgular sonucunda &lt;strong&gt;XML&lt;/strong&gt; veya &lt;strong&gt;JSON&lt;/strong&gt; formatında i&amp;ccedil;eriklere ulaşabiliyoruz. Peki bunu kod tarafında nasıl kullanabiliriz?&lt;/p&gt;
+&lt;p&gt;Bu ama&amp;ccedil;la &amp;ouml;rnek bir &lt;strong&gt;Solution&lt;/strong&gt; &amp;uuml;zerinden hareket edeceğiz. &lt;strong&gt;Solution&lt;/strong&gt; i&amp;ccedil;erisinde temel sorgu fonksiyonellikleri ile &lt;strong&gt;POCO(Plain Old CLR Object)&lt;/strong&gt; tiplerini barındıran bir k&amp;uuml;t&amp;uuml;phane ile bunu kullanan bir &lt;strong&gt;Windows Forms&lt;/strong&gt; uygulaması olması yeterli olacaktır. Sınıf k&amp;uuml;t&amp;uuml;phanesine &lt;strong&gt;NuGet&lt;/strong&gt; aracı ile veya dışarıdan harici olarak ilgili referansları da eklememiz gerekmektedir. Bu referanslar aşağıdaki şekilde g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/worldb_9.png"&gt;&lt;img style="display: inline;" title="worldb_9" src="/pics/worldb_9_thumb.png" alt="worldb_9" width="241" height="307" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;WorldbankLib&lt;/strong&gt; isimli sınıf k&amp;uuml;t&amp;uuml;phanemizin i&amp;ccedil;eriğini aşağıdaki &lt;strong&gt;sınıf diagramı(Class Diagram)&lt;/strong&gt; ve kod par&amp;ccedil;alarında olduğu gibi geliştirebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/worldb_1.png"&gt;&lt;img style="display: inline;" title="worldb_1" src="/pics/worldb_1_thumb.png" alt="worldb_1" width="469" height="546" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Country sınıf;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace WorldBankLib 
+{ 
+    /// &amp;lt;summary&amp;gt; 
+    /// &amp;Uuml;lke bilgilerini taşır 
+    /// &amp;lt;/summary&amp;gt; 
+    public class Country 
+    { 
+        /// &amp;lt;summary&amp;gt; 
+        /// &amp;uuml;lkenin adı 
+        /// &amp;lt;/summary&amp;gt; 
+        public string Name { get; set; } 
+        /// &amp;lt;summary&amp;gt; 
+        /// &amp;uuml;lkenin başkenti 
+        /// &amp;lt;/summary&amp;gt; 
+        public string CapitalCity { get; set; } 
+        /// &amp;lt;summary&amp;gt; 
+        /// Enlem 
+        /// &amp;lt;/summary&amp;gt; 
+        public string Latitude { get; set; } 
+        /// &amp;lt;summary&amp;gt; 
+        /// Boylam 
+        /// &amp;lt;/summary&amp;gt; 
+        public string Longtitude { get; set; }
+
+        public override string ToString() 
+        { 
+            return string.Format("{0}\t\t{1}\t\t({2};{3})" 
+                , Name 
+                , CapitalCity 
+                , Latitude 
+                , Longtitude 
+                ); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;CountryIncome sınıfı;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace WorldBankLib 
+{ 
+    /// &amp;lt;summary&amp;gt; 
+    /// Gelir d&amp;uuml;zeyi bilgilerini i&amp;ccedil;erir 
+    /// &amp;lt;/summary&amp;gt; 
+    public class CountryIncome 
+    { 
+        /// &amp;lt;summary&amp;gt; 
+        /// &amp;Uuml;lkenin adı 
+        /// &amp;lt;/summary&amp;gt; 
+        public string Name { get; set; } 
+        /// &amp;lt;summary&amp;gt; 
+        /// Gelir d&amp;uuml;zeyi seviyesi 
+        /// &amp;lt;/summary&amp;gt; 
+        public string IncomeLevel { get; set; } 
+        /// &amp;lt;summary&amp;gt; 
+        /// Bağlı bulunulan b&amp;ouml;lge 
+        /// &amp;lt;/summary&amp;gt; 
+        public string Region { get; set; } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Topic sınıfı;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace WorldBankLib 
+{ 
+    /// &amp;lt;summary&amp;gt; 
+    /// Topic bilgilerini verir 
+    /// &amp;lt;/summary&amp;gt; 
+    public class Topic 
+    { 
+        /// &amp;lt;summary&amp;gt; 
+        /// Topiğin adı 
+        /// &amp;lt;/summary&amp;gt; 
+        public string Name { get; set; } 
+        /// &amp;lt;summary&amp;gt; 
+        /// Kaynak bilgisi(Education gibi) 
+        /// &amp;lt;/summary&amp;gt; 
+        public string Source { get; set; } 
+        /// &amp;lt;summary&amp;gt; 
+        /// Kaynağa ait bir a&amp;ccedil;ıklama bilgisi 
+        /// &amp;lt;/summary&amp;gt; 
+        public string SourceNote { get; set; } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;ve asıl fonksiyonellikleri &amp;uuml;stlenen &lt;strong&gt;CommonQueries&lt;/strong&gt; sınıfı;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Collections.Generic; 
+using System.Json; 
+using System.Net.Http;
+
+namespace WorldBankLib 
+{ 
+    /// &amp;lt;summary&amp;gt; 
+    /// Worldbank OData servisi i&amp;ccedil;in genel sorguları i&amp;ccedil;erir 
+    /// &amp;lt;/summary&amp;gt; 
+    public static class CommonQueries 
+    { 
+        #region Temel sorgularımız
+
+        // İlk 50 &amp;uuml;lkenin bilgilerini JSON formatında verir 
+        private static string _first50Countries = "http://api.worldbank.org/countries?format=json"; 
+        //{0} yerine gelen &amp;uuml;lkenin bilgisini JSON formatında verir. Bu bilgi BR gibi &amp;uuml;lke kodu şeklindedir 
+        private static string _specificCountry = "http://api.worldbank.org/countries/{0}?format=json"; 
+        //ilk 50 &amp;uuml;lkenin gelir d&amp;uuml;zeyi durumları JSON formatında verilir 
+        private static string _incomeLevels = "http://api.worldbank.org/countries?incomeLevels&amp;amp;format=json"; 
+        // {0} yerine(&amp;Ouml;rneğin Education i&amp;ccedil;in 4) gelen konuya ait olacak şekilde bazı topic bilgileri json formatında &amp;ccedil;ekilir. 
+        private static string _Topic = "http://api.worldbank.org/topics/{0}/indicators?format=json";
+
+        #endregion
+
+        /// &amp;lt;summary&amp;gt; 
+        /// Http Get taleplerini g&amp;ouml;ndermemizde devreye giren yardımcı tipimiz 
+        /// &amp;lt;/summary&amp;gt; 
+        private static HttpClient _client = new HttpClient();
+
+        /// &amp;lt;summary&amp;gt; 
+        /// İlk 50 &amp;uuml;lkenin ad, başkent, enlem ve boylam bilgilerini bulur 
+        /// &amp;lt;/summary&amp;gt; 
+        /// &amp;lt;returns&amp;gt;&amp;uuml;lke listesi d&amp;ouml;ner&amp;lt;/returns&amp;gt; 
+        public static List&amp;lt;Country&amp;gt; GetFirst50Countries() 
+        { 
+            List&amp;lt;Country&amp;gt; countries = new List&amp;lt;Country&amp;gt;();
+
+            _client.GetAsync(_first50Countries) 
+                .ContinueWith((r) =&amp;gt; 
+                { 
+                    HttpResponseMessage responseMessage = r.Result; 
+                    responseMessage.EnsureSuccessStatusCode();
+
+                    responseMessage.Content.ReadAsAsync&amp;lt;JsonArray&amp;gt;(). 
+                        ContinueWith((rt) =&amp;gt; 
+                                        { 
+                                            foreach (var country in rt.Result[1]) 
+                                            { 
+                                                countries.Add( 
+                                                    new Country() 
+                                                        { 
+                                                            Name = country.Value["name"].ToString(), 
+                                                            CapitalCity =country.Value["capitalCity"].ToString(), 
+                                                            Latitude =country.Value["latitude"].ToString(), 
+                                                            Longtitude =country.Value["longitude"].ToString() 
+                                                        } 
+                                                    ); 
+                                            } 
+                                        }); 
+                }).Wait(); 
+            return countries; 
+        }
+
+        /// &amp;lt;summary&amp;gt; 
+        /// Belirli bir &amp;uuml;lkeye ait isim, başkent, enlem ve boylam bilgilerini verir 
+        /// &amp;lt;/summary&amp;gt; 
+        /// &amp;lt;param name="countryCode"&amp;gt;&amp;Uuml;lke kodu(brazilya i&amp;ccedil;in BR gibi)&amp;lt;/param&amp;gt; 
+        /// &amp;lt;returns&amp;gt;&amp;uuml;lke bilgisi&amp;lt;/returns&amp;gt; 
+        public static Country GetCountry(string countryCode) 
+        { 
+            Country resultCountry=null;
+
+            _client.GetAsync(string.Format(_specificCountry,countryCode)) 
+                .ContinueWith((r) =&amp;gt; 
+                { 
+                    HttpResponseMessage responseMessage = r.Result; 
+                    responseMessage.EnsureSuccessStatusCode();
+
+                    responseMessage.Content.ReadAsAsync&amp;lt;JsonArray&amp;gt;(). 
+                        ContinueWith((rt) =&amp;gt; 
+                                         { 
+                                             var cntry = rt.Result[1]; 
+                                             resultCountry = new Country() 
+                                                           { 
+                                                               Name = cntry[0]["name"].ToString(), 
+                                                               CapitalCity = cntry[0]["capitalCity"].ToString(), 
+                                                               Latitude = cntry[0]["latitude"].ToString(), 
+                                                               Longtitude = cntry[0]["longitude"].ToString() 
+                                                           }; 
+                                         }); 
+                }).Wait(); 
+            return resultCountry; 
+        }
+
+        /// &amp;lt;summary&amp;gt; 
+        /// İlk 50 &amp;uuml;lkenin Gelir d&amp;uuml;zeyi bilgilerini d&amp;ouml;nd&amp;uuml;r&amp;uuml;r 
+        /// &amp;lt;/summary&amp;gt; 
+        /// &amp;lt;returns&amp;gt;Gelir d&amp;uuml;zeyi bilgileri&amp;lt;/returns&amp;gt; 
+        public static List&amp;lt;CountryIncome&amp;gt; GetCountryIncomeLevels() 
+        { 
+            List&amp;lt;CountryIncome&amp;gt; countries = new List&amp;lt;CountryIncome&amp;gt;();
+
+            _client.GetAsync(_incomeLevels) 
+                .ContinueWith((r) =&amp;gt; 
+                { 
+                    HttpResponseMessage responseMessage = r.Result; 
+                    responseMessage.EnsureSuccessStatusCode();
+
+                    responseMessage.Content.ReadAsAsync&amp;lt;JsonArray&amp;gt;(). 
+                        ContinueWith((rt) =&amp;gt; 
+                        { 
+                            foreach (var country in rt.Result[1]) 
+                            { 
+                                countries.Add( 
+                                    new CountryIncome() 
+                                    { 
+                                        Name = country.Value["name"].ToString(), 
+                                        IncomeLevel = country.Value["incomeLevel"]["value"].ToString(), 
+                                        Region = country.Value["region"]["value"].ToString() 
+                                    } 
+                                    ); 
+                            } 
+                        }); 
+                }).Wait(); 
+            return countries; 
+        }
+
+        /// &amp;lt;summary&amp;gt; 
+        /// Topic(Education) bazlı rapor bilgilerini d&amp;ouml;nd&amp;uuml;r&amp;uuml;r 
+        /// &amp;lt;/summary&amp;gt; 
+        /// &amp;lt;param name="topicCode"&amp;gt;Topic kodu(Education=4 gibi)&amp;lt;/param&amp;gt; 
+        /// &amp;lt;returns&amp;gt;Topic i&amp;ccedil;eriği&amp;lt;/returns&amp;gt; 
+        public static List&amp;lt;Topic&amp;gt; GetTopics(string topicCode) 
+        { 
+            List&amp;lt;Topic&amp;gt; topics = new List&amp;lt;Topic&amp;gt;();
+
+            _client.GetAsync(string.Format(_Topic,topicCode)) 
+                .ContinueWith((r) =&amp;gt; 
+                { 
+                    HttpResponseMessage responseMessage = r.Result; 
+                    responseMessage.EnsureSuccessStatusCode();
+
+                    responseMessage.Content.ReadAsAsync&amp;lt;JsonArray&amp;gt;(). 
+                        ContinueWith((rt) =&amp;gt; 
+                        { 
+                            foreach (var topic in rt.Result[1]) 
+                            {
+
+                                topics.Add( 
+                                    new Topic() 
+                                    { 
+                                        Name = topic.Value["name"].ToString(), 
+                                        Source = topic.Value["source"]["value"].ToString(), 
+                                        SourceNote = topic.Value["sourceNote"].ToString() 
+                                    } 
+                                    ); 
+                            } 
+                        }); 
+                }).Wait(); 
+            return topics; 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;CommonQueries&lt;/strong&gt; sınıfı i&amp;ccedil;erisinde &lt;strong&gt;HttpClient&lt;/strong&gt; tipinin kullanıldığı &amp;ccedil;eşitli metodlar s&amp;ouml;z konusudur. Her metod &lt;strong&gt;Worldbank&lt;/strong&gt; &lt;strong&gt;OData&lt;/strong&gt; servisine doğru bir sorgu g&amp;ouml;ndermekte, gelen i&amp;ccedil;eriği &lt;strong&gt;JSON&lt;/strong&gt; formatında olacak şekilde ele almaktadır.&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;ok doğal olarak veri &amp;ccedil;ekme işlemi uzun s&amp;uuml;rebilir. Bu nedenle &lt;strong&gt;HttpClient&lt;/strong&gt; tipinin &lt;strong&gt;GetAsync&lt;/strong&gt; metodundan yararlanılmaktadır. Bu metoda olan &amp;ccedil;ağrı asenkron olarak verinin &amp;ccedil;ekilmesi noktasında devreye girmektedir. Yanlız dikkat edilmesi gereken hususlardan birisi, bu metodları kullanan uygulamaların s&amp;ouml;z konusu asenkron &amp;ccedil;alışmaların sonucunu beklemeden sonlanmasını engellemeye &amp;ccedil;alışmaktır.&lt;/p&gt;
+&lt;p&gt;Bir &lt;strong&gt;Windows Forms&lt;/strong&gt; uygulaması s&amp;ouml;z konusu olacağından, &lt;strong&gt;client&amp;rsquo;&lt;/strong&gt; ı uyarmak adına &lt;strong&gt;Wait&lt;/strong&gt; metodundan yararlanılmış ve buradaki metodlardan ancak sonu&amp;ccedil;lar alındığında &amp;ccedil;ıkılması garanti edilmiştir. Tabi &lt;strong&gt;Windows Forms&lt;/strong&gt; tarafında bu duraksatmaların ekranı dondurması da engellenmeli ve kullanıcının eş zamanlı başka işlemler yapabilmesine de izin verilmelidir. Bunun i&amp;ccedil;in &lt;strong&gt;Forms&lt;/strong&gt; tarafında &lt;strong&gt;BackgroundWorker&lt;/strong&gt; kontrol&amp;uuml;nden yararlanıyor olacağız. &amp;Ouml;rnek &lt;strong&gt;Windows Forms&lt;/strong&gt; tasarımımızı ve kod i&amp;ccedil;eriğini aşağıdaki gibi geliştirebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/worldb_2.png"&gt;&lt;img style="display: inline;" title="worldb_2" src="/pics/worldb_2_thumb.png" alt="worldb_2" width="640" height="597" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;ve kod i&amp;ccedil;eriğimiz&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Collections.Generic; 
+using System.ComponentModel; 
+using System.Windows.Forms; 
+using WorldBankLib;
+
+namespace WinClientApp 
+{ 
+    public partial class Form1 : Form 
+    { 
+        private List&amp;lt;Country&amp;gt; countries = null; 
+        private Country brazil = null;
+
+        public Form1() 
+        { 
+            InitializeComponent(); 
+        }
+
+        private void btnGetFirst50Countries_Click(object sender, EventArgs e) 
+        { 
+            bgwGetFirst50Countries.RunWorkerAsync(); 
+        }
+
+        private void bgwGetFirst50Countries_DoWork(object sender, DoWorkEventArgs e) 
+        { 
+            e.Result = CommonQueries.GetFirst50Countries(); 
+        }
+
+        private void bgwGetFirst50Countries_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) 
+        { 
+            if(!e.Cancelled || e.Error==null) 
+                dgvResult.DataSource = (List&amp;lt;Country&amp;gt;)e.Result; 
+        }
+
+        private void bgwGetBrazil_DoWork(object sender, DoWorkEventArgs e) 
+        { 
+            e.Result = CommonQueries.GetCountry("br"); 
+        }
+
+        private void bgwGetBrazil_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) 
+        { 
+            if (!e.Cancelled || e.Error == null) 
+            { 
+                var country=e.Result as Country; 
+                if(country!=null) 
+                    MessageBox.Show(country.ToString()); 
+            } 
+        }
+
+        private void btnGetBrazil_Click(object sender, EventArgs e) 
+        { 
+            bgwGetBrazil.RunWorkerAsync(); 
+        }
+
+        private void btnGetIncomeLevels_Click(object sender, EventArgs e) 
+        { 
+            bgwGetIncomeLevels.RunWorkerAsync(); 
+        }
+
+        private void bgwGetIncomeLevels_DoWork(object sender, DoWorkEventArgs e) 
+        { 
+            e.Result = CommonQueries.GetCountryIncomeLevels(); 
+        }
+
+        private void bgwGetIncomeLevels_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) 
+        { 
+            if (!e.Cancelled || e.Error == null) 
+            { 
+                dgvResult.DataSource=(List&amp;lt;CountryIncome&amp;gt;)e.Result; 
+            } 
+        }
+
+        private void btnGetEducationTopics_Click(object sender, EventArgs e) 
+        { 
+            bgwGetEducationTopics.RunWorkerAsync(); 
+        }
+
+        private void bgwGetEducationTopics_DoWork(object sender, DoWorkEventArgs e) 
+        { 
+            e.Result = CommonQueries.GetTopics("4"); 
+        }
+
+        private void bgwGetEducationTopics_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) 
+        { 
+            if (!e.Cancelled || e.Error == null) 
+            { 
+                dgvResult.DataSource = (List&amp;lt;Topic&amp;gt;)e.Result; 
+            } 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere test d&amp;uuml;ğmelerine basıldık&amp;ccedil;a ilgli &lt;strong&gt;BackgroundWorker&lt;/strong&gt; nesne &amp;ouml;rneği &amp;ccedil;alıştırılmaktadır. Bu &lt;strong&gt;BackgroundWorker&lt;/strong&gt; tiplerine ait &lt;strong&gt;DoWork&lt;/strong&gt; ve &lt;strong&gt;RunWorkerCompleted&lt;/strong&gt; olay metodlarında ise, &amp;ccedil;alıştırma ve işlem sonu&amp;ccedil;larının ele alınması işlemleri sağlanmaktadır. &amp;Ouml;rneğimizi test ettiğimizde aşağıdakilere benzer sonu&amp;ccedil;lar elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;İlk 50 &amp;uuml;lke bilgisinin &amp;ccedil;ekilmesi;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/worldb_3.png"&gt;&lt;img style="display: inline;" title="worldb_3" src="/pics/worldb_3_thumb.png" alt="worldb_3" width="586" height="510" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Brezilyaya ait bilginin &amp;ccedil;ekilmesi sonucu;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/worldb_6.png"&gt;&lt;img style="display: inline;" title="worldb_6" src="/pics/worldb_6_thumb.png" alt="worldb_6" width="336" height="100" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Gelir d&amp;uuml;zeyi bilgilerinin elde edilmesi;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/worldb_4.png"&gt;&lt;img style="display: inline;" title="worldb_4" src="/pics/worldb_4_thumb.png" alt="worldb_4" width="586" height="510" /&gt;&lt;/a&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Eğitim odaklı verilerin elde edilmesi;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/worldb_5.png"&gt;&lt;img style="display: inline;" title="worldb_5" src="/pics/worldb_5_thumb.png" alt="worldb_5" width="586" height="510" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi gayet kolay &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;Tabi &amp;ouml;rneğimizin pek &amp;ccedil;ok noktasında hata bulunmaktadır. &lt;em&gt;(Biraz acele ile yazdığımdan dolayı)&lt;/em&gt; &amp;Ouml;rneğin &lt;strong&gt;Exception Handling&lt;/strong&gt; mekanizması eksiktir ve hatta &lt;strong&gt;DataGridView&lt;/strong&gt; kontrol&amp;uuml; bazı noktalarda &lt;strong&gt;index&lt;/strong&gt; &lt;strong&gt;hatası&lt;/strong&gt; vermektedir. Diğer yandan daha fazla sorgu da işin i&amp;ccedil;erisine katılabilir. Ben kapıyı g&amp;ouml;steren kişi olarak yazımı burada sonlandırıyorum &lt;img title="Smile" src="/editors/tiny_mce3/plugins/emotions/img/smiley-smile.gif" alt="Smile" border="0" /&gt;&amp;nbsp;Artık &lt;strong&gt;Worldbank&lt;/strong&gt; verilerinin&lt;strong&gt; ASP.NET Web API(ve tabi WCF Web API)&lt;/strong&gt; ile gelen &lt;strong&gt;HttpClient&lt;/strong&gt; tipi yardımıyla ve &amp;ouml;zellikle &lt;strong&gt;JSON&lt;/strong&gt; formatında nasıl ele alabileceğinizi &amp;ouml;ğrendiniz. Bunun geliştirmek tamamen sizlerin elinde. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2012%2f2%2fWorldBank.zip"&gt;WorldBank.zip (88,93 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2012-05-14 06:30:00</pubDate>
+  <slug>WorldBank-OData-ve-ASPNet-Web-API-HttpClient</slug>
+  <tags>
+    <tag>aspnet-web-api</tag>
+    <tag>wcf-web-api</tag>
+    <tag>httpclient</tag>
+    <tag>wcf</tag>
+    <tag>odata</tag>
+    <tag>worldbank</tag>
+    <tag>xml</tag>
+    <tag>json</tag>
+  </tags>
+  <categories>
+    <category>Asp.Net Web API</category>
+  </categories>
+</post>

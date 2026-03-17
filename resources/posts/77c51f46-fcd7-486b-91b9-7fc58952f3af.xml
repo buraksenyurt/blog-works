@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>C# Temelleri : Nitelikleri(Attributes) Kavramak</title>
+  <description>Nitelik(Attribute) eninde sonunda her dotNet programcısının kullandığı ve karşılaştığı bir kavramdır. Özellikle yansıma (Reflection) konusu ile birlikte anıldığından, .Net Framework içerisinde önemli bir yere sahiptir.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Nitelik(Attribute) eninde sonunda her dotNet programcısının kullandığı ve karşılaştığı bir kavramdır. &amp;Ouml;zellikle yansıma (Reflection) konusu ile birlikte anıldığından, .Net Framework i&amp;ccedil;erisinde &amp;ouml;nemli bir yere sahiptir. .Net Framework i&amp;ccedil;erisinde pek &amp;ccedil;ok modelde niteliklerden aktif olarak faydalanılmaktadır. Web servislerinden windows kontrollerini geliştirmeye, kendi web part bileşenlerimizi yazmaktan serileştirmeye kadar pek &amp;ccedil;ok alanda işe yaramaktadır. Hatta &amp;ccedil;ok pop&amp;uuml;ler olarak, katmanlı mimarilerde ve nitelik bazlı (attribute based) programlama modellerinde de ele alınmaktadır. İşte bu makalemizde nitelikleri incelemeye &amp;ccedil;alışacak ve &amp;ouml;zellikle kendi niteliklerimizi nasıl geliştirebileceğimize değineceğiz.&lt;/p&gt;
+&lt;p&gt;Herşeyden &amp;ouml;nce, niteliği (Attribute) tanımlamakta fayda vardır. Nitelikler, uygulandıkları tiplerin (types) yada &amp;uuml;yelerin (members) &amp;ccedil;alışma zamanındaki davranışlarının değiştirilmesine olanak sağlayan sınıflardır. Niteliklerin sınıf(class) olduğu rahatlıkla s&amp;ouml;ylenebilir. Nitekim var olan veya bizim tarafımızdan geliştirilen nitelikler daima &lt;strong&gt;Attribute&lt;/strong&gt; sınıfından t&amp;uuml;remek zorundadırlar. Attribute, &lt;strong&gt;abstract&lt;/strong&gt; bir sınıftır. Dolayısıyla &amp;ouml;rneklenemez ancak bir nitelik sınıfının i&amp;ccedil;ermesi gereken temel &amp;uuml;yeleri b&amp;uuml;nyesinde barındırır.&lt;/p&gt;
+&lt;p&gt;Aslında niteliklerin belkide en &amp;ouml;nemli &amp;ouml;zelliği, &amp;uuml;retilen assembly i&amp;ccedil;erisinde yer alan tip ve &amp;uuml;yelere ekstra bilgiler katabilmeleridir. Bir başka deyişle &lt;strong&gt;metadata&lt;/strong&gt; i&amp;ccedil;erisine ilave bilgiler eklenebilmesini sağlamaktadır. Bu noktada ortaya &amp;ouml;nemli bir soru &amp;ccedil;ıkar. S&amp;ouml;z konusu ekstra veriler kim tarafından ve nasıl değerlendirilecektir? İşte bu noktada yansıma(Reflection) konusu &amp;ccedil;ok b&amp;uuml;y&amp;uuml;k &amp;ouml;nem taşımaktadır. &amp;Ouml;yleki, &amp;ccedil;alışma zamanında(run-time) herhangibir tipin ve &amp;uuml;yelerinin hakkında bilgi sahibi olabilme imkanı aynı zamanda metadata i&amp;ccedil;eriğinide elde edebilme anlamına gelmektedir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Nitelikler(Attributes), .Net Framework' de var olan veya geliştiriciler tarafından yazılan tip(type) veya &amp;uuml;yelere(members) &amp;ccedil;alışma zamanında davranışlarının farklı şekillerde ele alınabilmelerini sağlayan ekstra metadata (veri hakkında veri) bilgileri ekler. Bu metadata bilgileri &amp;uuml;retilen assembly' lar i&amp;ccedil;erisinde yer alır ve yansıma(Reflection) teknikleri ile &amp;ccedil;alışma zamanında değerlendirilebilir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Niteliklerin faydasını ve ne işe yaradıklarını daha net bir şekilde anlayabilmek i&amp;ccedil;in aşağıdaki &amp;ouml;rnek senaryolar g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Asp.Net Web Uygulamalarında Kendi Kontrollerimizi Geliştirirken&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Daha &amp;ouml;nceki makalelerimizde kendi web server kontrollerimizi nasıl yazacağımıza kısaca değinmiştik. Şimdi ş&amp;ouml;yle d&amp;uuml;ş&amp;uuml;nelim. Yazdığımız bu kontrollerin ele alındığı bir geliştirme ortamı var mı? Cevabın Visual Studio IDE ortamı olduğunu gayet iyi biliyoruz. Peki nasıl oluyorda, bir kontrol&amp;uuml; ToolBar &amp;uuml;zerinden alıp sayfaya bıraktığımızda, &amp;ouml;zellikler (Properties) pencersinde, o kontrol sınıfına ait bazı &amp;uuml;yeler (&amp;ouml;zellikler, olaylar) getiriliyor? Demekki, IDE bir &amp;ccedil;alışma zamanı ortamı olarak s&amp;uuml;r&amp;uuml;klenip bırakılan kontrol&amp;uuml;n hangi &amp;uuml;yelerinin &lt;strong&gt;Properties&lt;/strong&gt; penceresinde g&amp;ouml;r&amp;uuml;nmesi gerektiğini anlayabiliyor. Hatırlayacağınız gibi &amp;ouml;zelliklerin başına, hatta kontrol sınıfının başına atılan bazı nitelikler(attributes) vardı.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[Browsable(true)]
+[Description("Hangi G&amp;uuml;n?")]
+[Bindable(true)]
+[Themeable(true)]
+[Category("Tarih Degerleri")]
+[DefaultValue("1")]
+[Localizable(true)]
+public string SeciliGun
+{&lt;/pre&gt;
+&lt;p&gt;&amp;Ccedil;ok basit olarak SeciliGun isimli &amp;ouml;zelliğin &amp;uuml;zerine yazılmış olan nitelikler,&lt;strong&gt; Visual Studio IDE&lt;/strong&gt;' si i&amp;ccedil;in anlamlıdır. Nitekim Visual Studio &amp;ccedil;alışan bir uygulama olaraktan, &amp;ccedil;alışma zamanında (run-time) ilgili niteliklerin değerlerine bakarak bazı hamlelerde bulunur. &amp;Ouml;rneğin &lt;strong&gt;Browsable&lt;/strong&gt; niteliğinin true değerine sahip olması, SeciliGun &amp;ouml;zelliğinin Visual Studio IDE' sinde &lt;strong&gt;Properties&lt;/strong&gt; penceresine eklenmesi gerektiği anlamına gelir. &lt;strong&gt;Description&lt;/strong&gt; niteliği i&amp;ccedil;erisindeki metinsel bilgiler, IDE tarafından değerlendirilip yine Properties penceresinde g&amp;ouml;sterilir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Kendi Web Part Bileşenlerimizi Geliştirdiğimizde&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Bundan bir &amp;ouml;nceki makalemizde kendi Web Part bileşenlerimizi nasıl geliştirebileceğimiz incelemiştik. Geliştirdiğimiz Web Part bileşenlerinin bazı &amp;ouml;zelliklerinin kişiselleştirilebilmesi(&lt;strong&gt;personalizable&lt;/strong&gt;) ve &amp;ccedil;alışma zamanında istemcinin bilgisayarında yer alan tarayıcı pencersindeki bir &lt;strong&gt;PropertyGridEditorPart&lt;/strong&gt; i&amp;ccedil;erisinde a&amp;ccedil;ılıp değiştirilebilmesi i&amp;ccedil;in aşağıdaki niteliklerden faydalandık.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[WebBrowsable(true)] 
+[WebDescription("Verilen Url adresine g&amp;ouml;re Rss bilgisini okur")]
+[Personalizable(PersonalizationScope.User)]
+[WebDisplayName("Rss Bilgisi Alınacak Url")]
+public string Url
+{
+    get { return _Url; }
+    set { _Url = value; }
+}&lt;/pre&gt;
+&lt;p&gt;İşte buradaki nitelikleri değerlendiren kişi, &lt;strong&gt;Asp.Net Runtime Host&lt;/strong&gt;' un ta kendisidir. Yine &amp;ccedil;alışma zamanındaki bir ortamın karar mekanizmalarında ihtiya&amp;ccedil; duyacağı bazı bilgiler metadata i&amp;ccedil;erisine nitelikler yardımıyla eklenmektedir. Buna g&amp;ouml;re &amp;ouml;rneğin, Asp.Net Runtime Host, &lt;strong&gt;Personalizable&lt;/strong&gt; niteliğinde &lt;strong&gt;PersonalizationScope&lt;/strong&gt; isim enum sabitinin değerini &lt;strong&gt;User&lt;/strong&gt; olarak g&amp;ouml;rd&amp;uuml;ğ&amp;uuml;nde takip eden &amp;ouml;zelliğin kişiselleştirme ama&amp;ccedil;lı olarak her kullanıcı i&amp;ccedil;in ayrı olacak şekilde veritabanına yazılması gerektiğini anlayacaktır. Yine &lt;strong&gt;WebBrowsable&lt;/strong&gt; niteliğine true değeri verilmesi sayesinde, ilgili &amp;ouml;zelliğinde istemcilerin tarayıcı penceresinde g&amp;ouml;r&amp;uuml;lecek olan &lt;strong&gt;PropertyGridEditorPart&lt;/strong&gt; i&amp;ccedil;erisinde ele alınabileceğinide anlayacak ve sayfanın sunucundan istemciye olan hareketinde, render işlemini bu kritere g&amp;ouml;re değiştirecektir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Nesneleri Binary Formatta Serileştirmekte&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Bildiğiniz gibi bir nesneyi ikili (binary) formatta serileştirmek i&amp;ccedil;in BinaryFormatter sınıfının &lt;strong&gt;Serialize&lt;/strong&gt; metodundan yararlanırız. Benzer şekilde ters serileştirme işlemi i&amp;ccedil;inde &lt;strong&gt;Deserialize&lt;/strong&gt; metodunu kullanırız. Ancak hepimizin yakından tanıdığı bir kural vardır. Bir tipin ikili formatta(binary) serileştirilebilmesi i&amp;ccedil;in &lt;strong&gt;Serializable&lt;/strong&gt; niteliği ile işaretlenmiş olması gerekir. Binary formatta serileştirmenin olduğu yerler g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında s&amp;ouml;z konusu niteliğin &amp;ouml;nemi ortaya &amp;ccedil;ıkmaktadır. &amp;Ouml;rneğin web uygulamalarında &lt;strong&gt;session&lt;/strong&gt; bilgilerinin veritabanından tutulmasına karar verildiğinde veya &lt;strong&gt;Profile&lt;/strong&gt; bilgilerinde kendi tiplerimizi yada var olan tipleri tablodaki binary alanda tutmak istediğimizde...&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Windows Communication Foundation' da Kontratları(Contrats) Hazırlarken&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Yakın zamanda, .&lt;strong&gt;Net Framework 3.0&lt;/strong&gt; ile gelen ve Microsoft tabanlı dağıtık mimari (distributed architectures) modellerini tek bir &amp;ccedil;atı altında toplayan &lt;strong&gt;Windows Communication Foundation&lt;/strong&gt;' da, bir sınıfın servis olarak yayınlanması i&amp;ccedil;in ve sınıf i&amp;ccedil;inden dış d&amp;uuml;nyaya a&amp;ccedil;ılabilecek fonksiyonellikler i&amp;ccedil;in yine nitelikleri kullanmaktadır. Aşağıdaki &amp;ouml;rnek kod par&amp;ccedil;asında &lt;strong&gt;ServiceContract&lt;/strong&gt; ve &lt;strong&gt;OperationContract&lt;/strong&gt; isimleriye geliştirilen niteliklerin &amp;ouml;rnek uygulanış şeklini g&amp;ouml;rmektesiniz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[ServiceContract]
+    public interface IMatematikServis
+    {
+        [OperationContract]
+        double Toplam(double x, double y);
+
+        void DahiliMetod();
+    }&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Web Servislerinde&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Bir web servisinin istemci tarafından t&amp;uuml;ketilebilmesi i&amp;ccedil;in &amp;ccedil;oğunlukla &lt;strong&gt;proxy&lt;/strong&gt; sınıflarını kullanıyoruz. Elbette istisnai olarak doğrudan HTTP veya SOAP &amp;uuml;zerinden talepte de bulunabilmekteyiz. Nitekim proxy sınıflarının &amp;uuml;retilebilmesi i&amp;ccedil;inde, web servisine ait bir &lt;strong&gt;WSDL&lt;/strong&gt; d&amp;ouml;k&amp;uuml;manının ele alınması gerekiyor. WSDL (Web Service Description Language) d&amp;ouml;k&amp;uuml;manı bildiğiniz gibi bir web servisinin tanımlamalarının ve fonksiyonelliklerin bir XML i&amp;ccedil;eriği olarak &amp;uuml;retilmesini sağlıyor. Peki biz bu belgeyi herhangibir şekilde talep ettiğimizde, bu talebe karşılık XML d&amp;ouml;k&amp;uuml;manı i&amp;ccedil;erisine hangi sınıfların ve hangi metodların koyulacağını sistem nereden biliyor? İşte bu noktada devreye &lt;strong&gt;WebService&lt;/strong&gt; ve &lt;strong&gt;WebMethod&lt;/strong&gt; gibi nitelikler(attributes) girmektedir. B&amp;ouml;ylece WSDL d&amp;ouml;k&amp;uuml;manını hazırlayacak olan &lt;strong&gt;HttpHandler&lt;/strong&gt; hangi sınıfı ve hangi metodu xml i&amp;ccedil;erisine alacağını bilecektir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Katmanlı Mimaride Entity Tiplerinde&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;zellikle katmanlı mimaride nitelikler &amp;ccedil;ok faydalı olabilmektedir. &amp;Ouml;rneğin, veritabanında yer alan tabloların karşılıklarının tutulduğu sınıflar i&amp;ccedil;in otomatik olarak select, insert,update ve delete gibi sorguların hazırlanması istendiği durumlarda &amp;ccedil;alışma zamanı i&amp;ccedil;in ekstra bilgilere (additional metadata) ihtiya&amp;ccedil; vardır. İşte &amp;ccedil;alışma zamanındaki bu ihtiy&amp;ccedil;aları nitelikler yardımıyla karşılayabiliriz. S&amp;ouml;z gelimi entity tipi i&amp;ccedil;erisindeki alan adlarının tablolardaki karşılıklarını, identity olup olmadıklarını yada farklı entity tipleri arasında, tablolar arasındaki ilişkilerin nasıl ger&amp;ccedil;ekleştirilebileceğini belirlemek vb konularda ele alınabilir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;DLINQ (Database Language Integrated Query) de Yer Alan Entity Tiplerinde&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Şu anda C# 3.0 ile birlikte adı en &amp;ccedil;ok anılan modellerden biriside &lt;strong&gt;DLINQ(Database Language Integrated Query)&lt;/strong&gt; dir. DLINQ temel olarak veritabanından nesnelere indirgenen k&amp;uuml;meler &amp;uuml;zerinde LINQ sorgularının &amp;ccedil;alıştırılmasına izin veren bir modeldir.&amp;nbsp;Aslında model tipik olarak entity katmanlarına dayanan bir yapıya sahiptir. Tablo, alan ve ilişki (relation) eşleştirmeleri vb... i&amp;ccedil;in niteliklerden (attributes) faydalanılmaktadır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[Table(Name="Calisanlar")]
+class Calisan
+{
+    [Column(Name="Id",Id=true)]
+    public int Id;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Bir Assembly Hakkında Bilgi Vermek i&amp;ccedil;in AssemblyInfo.cs İ&amp;ccedil;eriğinin Değişitirlmesi&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Geliştirdiğimiz uygulamaların &amp;uuml;rettiği assembly' lara ait genel bilgileri AssemblyInfo.cs dosyası i&amp;ccedil;erisindeki assembly seviyesinde kullanılabilen nitelikler sayesinde metadata i&amp;ccedil;erisine alabiliriz. Bu sayede geliştirdiğimiz Assembly' ın hangi k&amp;uuml;lt&amp;uuml;re destek verdiğini(&lt;strong&gt;Culture&lt;/strong&gt;), versiyonunu(&lt;strong&gt;Version&lt;/strong&gt;), varsa &lt;strong&gt;strong key&lt;/strong&gt; bilgisini, başlığını (&lt;strong&gt;Title&lt;/strong&gt;), a&amp;ccedil;ıklamasını (&lt;strong&gt;Description&lt;/strong&gt;) belirtebiliriz. Bu tip bilgiler metadata i&amp;ccedil;erisine alındıktan sonra &amp;ouml;rneğin &lt;strong&gt;ClickOnce&lt;/strong&gt; gibi mimariler tarafından kullanılıp &lt;strong&gt;setup&lt;/strong&gt; sayfalarının oluşturulması sırasında kullanılabilir.&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi, nitelikler &amp;ccedil;alışma zamanında bir takım uygulama par&amp;ccedil;aları tarafından değerlendirilmekte ve buna g&amp;ouml;re sonu&amp;ccedil;lar &amp;uuml;retilmektedir.&lt;/p&gt;
+&lt;p&gt;Bu kısa bilgilerden sonra gelin kendi niteliklerimizi &lt;strong&gt;(Custom Attributes)&lt;/strong&gt; nasıl yazabileceğimize bakalım. Kendi niteliklerimizin kıymetlenebilmesi i&amp;ccedil;in onları ele alacak bir modelede ihtiyacımız olacaktır. Burada devreye &lt;strong&gt;yansıma(Reflection)&lt;/strong&gt; girecek. &amp;Ouml;rneğin Sql Server 2005 ile birlikte gelen AdventureWorks veritabanındaki Production şemasında (Schema) yer alan Product tablosunun programımız i&amp;ccedil;erisinde bir tip ile ifade edildiğini d&amp;uuml;ş&amp;uuml;nebiliriz. Bu tip i&amp;ccedil;in gerekli insert, update, delete ve select işlemlerinin bu tip i&amp;ccedil;erisindeki metodlar ile yapılmak istendiğini d&amp;uuml;ş&amp;uuml;nelim. Bu durumda yansımadan faydalanarak &amp;ouml;zelliklerin adlarından ve o anki değerlerinden yararlanıp bizim i&amp;ccedil;in gereken sorguları otomatik olarak hazırlatabiliriz.&lt;/p&gt;
+&lt;p&gt;Ancak dikkat edilmesi gereken noktalar vardır. &amp;Ouml;rneğin ProductId alanı identity tipindendir ve bu nedenlede otomatik olarak artmaktadır. Dolayısıyla otomatik oluşturulacak insert sorgusuna dahil &lt;u&gt;edilmemesi&lt;/u&gt; gerekir. Peki &amp;ccedil;alışma zamanında bu alanı işaret eden sınıf &amp;ouml;zelliğinin, insert sorgusuna dahil edilmemesi gerektiğini nereden bilebiliriz? İşte bu &amp;ouml;zellikler i&amp;ccedil;in yazacağımız bir nitelik yardımıyla &amp;ccedil;alışma zamanında davranış değiştirilmesini sağlayabiliriz. Gelin ne demek istediğimiz &amp;ouml;rnek &amp;uuml;zerinden incelemeye &amp;ccedil;alışalım. Bu ama&amp;ccedil;la &amp;ouml;ncelikli olarak bir Product nesnesini temsil edecek bir sınıf tasarlayacağız. Amacımız insert, update, delete ve select sorgularının &amp;ccedil;alışıp &amp;ccedil;alışmadığını kontrol etmekten ziyade, bunların oluşturulması sırasında niteliklerin değerini anlamak olduğundan sadece bir ka&amp;ccedil; temel &amp;ouml;zelliğin sınıfa dahil edildiğini hatırlatalım. UrunEntity isimli sınıfımızın genel tasarımı şu şekilde olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk199_2.gif" alt="" width="306" height="359" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Sınıfımız i&amp;ccedil;erisindeki niteliklerin uygulanmasını ve metodlarımızı ilerleyen kısımlarda geliştireceğiz. Gelelim niteliklerimize. Makalemizin başındada belirttiğimiz gibi bir nitelik mutlaka &lt;strong&gt;Attribute&lt;/strong&gt; sınıfından t&amp;uuml;remelidir ki metadata i&amp;ccedil;erisine eklenebilsin. Bu nedenle sınıfımızın eşleştiği tablo ve kolonları i&amp;ccedil;in kullanılacak &lt;strong&gt;TabloAttribute&lt;/strong&gt; ve &lt;strong&gt;AlanAttribute&lt;/strong&gt; sınıflarını Attribute sınıfından t&amp;uuml;reterek geliştireceğiz.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;İsimlendirme standartları olduk&amp;ccedil;a &amp;ouml;nemlidir. Bu t&amp;uuml;m geliştiricilerin aynı tarzda kodlama yapmasını ve kooridanasyon kolaylığını sağlar. &amp;Ouml;rneğin t&amp;uuml;m Exception sınıflarının adları &lt;strong&gt;Exception&lt;/strong&gt; kelimesi ile biter veya t&amp;uuml;m aray&amp;uuml;zlerin (&lt;strong&gt;interfaces&lt;/strong&gt;) adları &lt;strong&gt;I&lt;/strong&gt; harfi ile başlar. Benzer durum nitelikler i&amp;ccedil;inde ge&amp;ccedil;erlidir. &amp;Ouml;yleki nitelik sınıflarının adlarıda &lt;strong&gt;Attribute&lt;/strong&gt; kelimesi ile bitmektedir. Bu nedenle kendi niteliklerimizi isimlendirirken adlarının Attribute kelimesi ile bitmelerine &amp;ouml;zen g&amp;ouml;sterilmelidir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Niteliklerimize ait sınıf diagramı ve kodlarımız ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk199_1.gif" alt="" width="578" height="578" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;TabloAttribute.cs;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;// TabloAttribute isimli niteliğimiz sadece sınıf veya yapılara uygulanabilecektir.
+[AttributeUsage(AttributeTargets.Class|AttributeTargets.Struct)]
+class TabloAttribute:Attribute
+{
+    private string _tabloAdi;
+    private string _schemaAdi; 
+  
+    public string TabloAdi
+    {
+        get { return _tabloAdi; }
+        set { _tabloAdi = value; }
+    }
+    public string SchemaAdi
+    {
+        get { return _schemaAdi; }
+        set { _schemaAdi = value; }
+    } 
+  
+    public TabloAttribute(string tablonunAdi, string schemaninAdi)
+    {
+        TabloAdi = tablonunAdi;
+        SchemaAdi = schemaninAdi;
+    }
+    public TabloAttribute(string tablonunAdi)
+        : this(tablonunAdi, "dbo")
+    {
+    }
+    public TabloAttribute()
+    {    
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;AlanAttribute;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[AttributeUsage(AttributeTargets.Property)]
+class AlanAttribute:Attribute
+{
+    private string _alanAdi;
+    private bool _identity;
+    private bool _nullIcerebilir; 
+
+    public bool NullIcerebilir
+    {
+        get { return _nullIcerebilir; }
+        set { _nullIcerebilir = value; }
+    }
+
+    public string AlanAdi
+    {
+        get { return _alanAdi; }
+        set { _alanAdi = value; }
+    }
+    public bool Identity
+    {
+        get { return _identity; }
+        set { _identity = value; }
+    } 
+
+    public AlanAttribute(string alaninAdi, bool identityMi, bool nullIcerirmi)
+    {
+        AlanAdi = alaninAdi;
+        Identity = identityMi;
+        NullIcerebilir = nullIcerirmi;
+    }
+    public AlanAttribute(string alaninAdi, bool identityMi)
+        : this(alaninAdi, identityMi, true)
+    {
+    }
+    public AlanAttribute(string alaninAdi)
+        : this(alaninAdi, false)
+    {
+    }
+    public AlanAttribute()
+    {    
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Şu andaki amacımız kendi niteliklerimizi nasıl yazacağımızı g&amp;ouml;rmek olduğundan tam anlamıyla bir entity tipi oluşturmayı hedeflemiyoruz. Bu nedenle TabloAttribute isimli sınıfımız temel olarak eşleştirme amacıyla tablo adı ve bulunduğu şema adını taşıyacak &amp;ouml;zelliklere sahip. Benzer şekilde AlanAttribute isimli sınıfımızda alan adını, null değer taşınabilip taşınamıyacağını, alanın identity tipinde olup olmadığını belirten &amp;ouml;zellikler i&amp;ccedil;ermektedir. G&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi Attribute' tan t&amp;uuml;rettiğimiz sınıfların normal sınıflardan farklı bir yazım tarzı bulunmamaktadır.&lt;/p&gt;
+&lt;p&gt;Ancak dikkat ederseniz yazmış olduğumuz nitelik sınıflarımıza &lt;strong&gt;AttributeUsage&lt;/strong&gt; isimli başka bir nitelik daha uygulanmaktadır. Bu niteliğin amacı, ilgili niteliğin hangi seviyelere uygulanabileceğini belirlemektir. Bu seviylerin belirtilmesi i&amp;ccedil;inse &lt;strong&gt;AttributeTargets&lt;/strong&gt; isimli bir enum sabitini ele almaktadır. &amp;Ouml;rneğin TabloAttribute niteliğimizi sadece sınıf(class) ve yapılara(struct) uygulayabilirken, AlanAttribute isimli niteliğimizi sadece &amp;ouml;zelliklere(Property) uygulanabilir. B&amp;ouml;ylece ilgili niteliğin sadece belirtilen tip veya &amp;uuml;yelere uygulanabilmesi adına bir zorlama getirilmiş olunur. AttributeTargets isimli enum sabitinin alabileceği t&amp;uuml;m değerler ve kısa a&amp;ccedil;ıklamaları aşağıdaki tabloda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibidir.&lt;/p&gt;
+&lt;table id="table68" style="border-collapse: collapse;" border="1" width="100%" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr valign="top"&gt;
+&lt;td style="background-color: #ffffff;" bgcolor="#336699"&gt;&lt;strong&gt; Değer&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="background-color: #ffffff;" bgcolor="#336699" width="888"&gt;&lt;strong&gt; A&amp;ccedil;ıklama&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td&gt;&lt;strong&gt;All&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="888"&gt;Nitelik istenilen tipe veya &amp;uuml;yeye uygulanabilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td&gt;&lt;strong&gt;Assembly&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="888"&gt;Nitelik sadece assembly seviyesinde uygulanabilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td&gt;&lt;strong&gt;Class&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="888"&gt;Nitelik sadece sınıflara uygulanabilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td&gt;&lt;strong&gt;Constructor&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="888"&gt;Nitelik sadece yapıcı metoda uygulanabilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td&gt;&lt;strong&gt;Delegate&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="888"&gt;Nitelik sadece temsilci tipine uygulanabilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td&gt;&lt;strong&gt;Enum&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="888"&gt;Nitelik sadece enum sabitine uygulanabilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td&gt;&lt;strong&gt;Event&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="888"&gt;Nitelik sadece olaya uygulanabilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td&gt;&lt;strong&gt;Field&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="888"&gt;Nitelik sadece alana uygulanabilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td&gt;&lt;strong&gt;GenericParameter&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="888"&gt;Nitelik sadece generic bir parametreye(T) uygulanabilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td&gt;&lt;strong&gt;Interface&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="888"&gt;Nitelik sadece aray&amp;uuml;ze uygulanabilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td&gt;&lt;strong&gt;Method&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="888"&gt;Nitelik sadece metoda uygulanabilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td&gt;&lt;strong&gt;Module&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="888"&gt;Nitelik sadece mod&amp;uuml;l' e uygulanabilir. Burada dikkat edilmesi gereken nokta module' &amp;uuml;n bir Visual Basic module' &amp;uuml; olmayışıdır. Yani kastedilen .dll veya .exe uzantılı module' lerdir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td&gt;&lt;strong&gt;Parameter&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="888"&gt;Nitelik sadece parametreye uygulanabilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td&gt;&lt;strong&gt;Property&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="888"&gt;Nitelik sadece &amp;ouml;zelliğe uygulanabilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td&gt;&lt;strong&gt;ReturnValue&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="888"&gt;Nitelik sadece d&amp;ouml;n&amp;uuml;ş tipine uygulanabilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td&gt;&lt;strong&gt;Struct&lt;/strong&gt;&lt;/td&gt;
+&lt;td width="888"&gt;Nitelik sadece bir değer t&amp;uuml;r&amp;uuml;ne bir başka deyişle yapıya uygulanabilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Şimdi bu nitelikleri UrunEntitiy sınıfı i&amp;ccedil;erisinde kullanmaya &amp;ccedil;alışalım. İlk olarak sınıfımızı aşağıdaki gibi geliştirelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[Tablo(SchemaAdi="Production",TabloAdi="Product")]
+class UrunEntity
+{
+    private int _urunId;
+    private decimal _fiyat;
+    private string _urunAdi;
+    private DateTime _sonSatisTarihi; 
+
+    [Alan(AlanAdi = "ProductID", Identity = true, NullIcerebilir = false)]
+    public int UrunId
+    {
+        get { return _urunId; }
+        set { _urunId = value; }
+    }
+
+    [Alan("Name", false, false)]
+    public string UrunAdi
+    {
+        get { return _urunAdi; }
+        set { _urunAdi = value; }
+    }
+    [Alan("ListPrice", Identity = false, NullIcerebilir = false)]
+    public decimal Fiyat
+    {
+        get { return _fiyat; }
+        set { _fiyat = value; }
+    }
+
+    [Alan("SellStartDate", false, true)]
+    public DateTime SonSatisTarihi
+    {
+        get { return _sonSatisTarihi; }
+        set { _sonSatisTarihi = value; }
+    } 
+
+    public UrunEntity(int idsi, string adi, decimal fiyati)
+    {
+        UrunId = idsi;
+        UrunAdi = adi;
+        Fiyat = fiyati;
+    } 
+    public UrunEntity()
+    {
+    }
+}&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi UrunEntity sınıfına ve UrunId,UrunAdi, Fiyat ve SonSatisTarihi isimli &amp;ouml;zelliklerimize TabloAttribute ve Alan Attribute niteliklerimiz uygulanmıştır. Buna g&amp;ouml;re UrunEntity sınıfının aslında Production şemasındaki Product tablosuna işaret ettiğini anlayabiliriz. Ya da, UrunId isimli &amp;ouml;zelliğin ProductId isimli alana işaret ettiğini, null değer i&amp;ccedil;eremeyeceğini ve en &amp;ouml;nemliside Identity bir alan olduğunu anlayabiliriz. B&amp;ouml;ylece reflection tekniklerini kullanan kodlarımız insert sorgusunu oluştururken ProductId alanını hesabe katmayacağını anlayabilecektir.&lt;/p&gt;
+&lt;p&gt;Elbette bunun geliştirici tarafından kodlanması gerektiğinide unutmayalım. Diğer &amp;ouml;zellikler i&amp;ccedil;inde benzer uygulamalar yapılmıştır. AlanAttribute ve TabloAttribute isimli sınıflarımız i&amp;ccedil;ersinde birden fazla aşırı y&amp;uuml;klenmiş yapıcı metod (constructor) kullandığımızdan, niteliklerimizi s&amp;ouml;z konusu &amp;uuml;yelere farklı bi&amp;ccedil;imlerde uygulayabiliriz. Bunlardan birisi &lt;strong&gt;Name=Value&lt;/strong&gt; ataması şeklinde olan versiyondur. Bu versiyon doğrudan &lt;strong&gt;public&lt;/strong&gt; olan &amp;ouml;zelliklere(Property) değer atanabilmesini sağlar. Yani &amp;ouml;zel olarak aşırı y&amp;uuml;klenmiş yapıcı metodlar olmasada ilgili niteliğin &amp;ouml;zellikleri değiştirilebilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk199_3.gif" alt="" width="362" height="119" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Artık bundan sonra niteliklerimizi ele alacağımız kodlarımızı yazmamız gerekmektedir. Bu basit kod par&amp;ccedil;ası ile, &amp;ccedil;alışma zamanında var olan nitelikleride nasıl okuyabileceğimizi ve buna g&amp;ouml;re nasıl davranış değiştirebileceğimizi g&amp;ouml;rm&amp;uuml;ş olacağız. Bu ama&amp;ccedil;la UrunEntity isimli sınıfımızın Insert metodunu aşağıdaki gibi geliştirelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public int Insert()
+{
+    Type tip = this.GetType();
+    TabloAttribute tblAtr = ((TabloAttribute[])tip.GetCustomAttributes(typeof(TabloAttribute), false))[0];
+    string tabloAdi=tblAtr.TabloAdi;
+    string schemaAdi =tblAtr.SchemaAdi;
+    StringBuilder insertBuilder = new StringBuilder();
+    insertBuilder.Append("Insert into ");
+    insertBuilder.Append(schemaAdi);
+    insertBuilder.Append(".");
+    insertBuilder.Append(tabloAdi);
+    insertBuilder.Append(" (");
+
+    // Insert sorgusundaki alan adları &amp;ccedil;ekiliyor.
+    foreach (PropertyInfo prp in tip.GetProperties())
+    {
+        AlanAttribute atr=((AlanAttribute[])prp.GetCustomAttributes(typeof(AlanAttribute), false))[0];
+        if (!atr.Identity)
+        {
+            string alanAdi = atr.AlanAdi;
+            insertBuilder.Append(alanAdi);
+            insertBuilder.Append(",");
+        }
+    }
+    // Son eklenen virg&amp;uuml;l&amp;uuml; kaldırmak i&amp;ccedil;in.
+    insertBuilder.Remove(insertBuilder.Length-1, 1);
+    insertBuilder.Append(") Values (");
+        
+    // insert sorgusundaki değerleri &amp;ccedil;ekiliyor.
+    foreach (PropertyInfo prp in tip.GetProperties())
+    {
+        AlanAttribute atr=((AlanAttribute[])prp.GetCustomAttributes(typeof(AlanAttribute), false))[0];
+        if (!atr.Identity)
+        {
+            object alanDegeri = prp.GetValue(this, null);
+            if ((prp.PropertyType.Name == "String")
+                || (prp.PropertyType.Name == "DateTime"))
+                    insertBuilder.Append("'" + prp.GetValue(this, null).ToString() + "',");
+            else
+                insertBuilder.Append(prp.GetValue(this, null).ToString() + ",");
+        }
+    }
+    insertBuilder.Remove(insertBuilder.Length - 1, 1);
+    insertBuilder.Append(")");
+
+    //Insert işlemi i&amp;ccedil;in gerekli sorgula &amp;ccedil;alıştırılır.
+
+    return 0;
+}&lt;/pre&gt;
+&lt;p&gt;Kod par&amp;ccedil;ası biraz arap sa&amp;ccedil;ına d&amp;ouml;nm&amp;uuml;ş olabilir. Gelin ne yaptığımıza ve nitelikleri &amp;ccedil;alışma zamanında nasıl ele alabildiğimize yakından bakalım. Insert metodunun amacı, UrunEntity sınıfı i&amp;ccedil;in gerekli olan insert sql sorgu c&amp;uuml;mlesini otomatik olarak oluşturmaktır. Bu işlemin &amp;ccedil;alışma zamanında yapılmasını hedeflediğimizden yoğun olarak reflection işlemleri kullanılmaktadır. Bununla birlikte otomatik olarak artan, bir başka deyişle identity tipinde olan bir alanın insert sorgusuna dahil edilmemesi gerekmektedir.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;yleyse bu bilgiyi i&amp;ccedil;eren nitelik (attribute) ele alınmalıdır. Benzer şekilde &amp;ouml;zelliklerin hangi tablo alanlarına denk geldiği veya sınıfın hangi şemadaki hangi tabloya denk geldiği bilgileride niteliklerimizden alınmalıdır. Bu ihtiya&amp;ccedil;lar doğrultusunda geliştirilen kodlar g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında herhangibir tipin &amp;ccedil;alışma zamanında uygulanan niteliğini elde etmek amacıyla &lt;strong&gt;GetCustomAttributes&lt;/strong&gt; isimli metod kullanılmaktadır. Bu metod ilk parametre olarak elde edilmek istenen niteliğin tipini alır. Metodun belkide en &amp;ouml;nemli &amp;ouml;zelliği geriye &lt;strong&gt; object&lt;/strong&gt; tipinden bir dizi d&amp;ouml;nd&amp;uuml;r&amp;uuml;yor oluşudur. D&amp;ouml;nen bu dizi i&amp;ccedil;erisinden niteliğe ait &amp;ouml;zellikleri &amp;ccedil;ekebilmek i&amp;ccedil;in bir d&amp;ouml;n&amp;uuml;şt&amp;uuml;rme (cast) işlemi yapılmalıdır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;GetCustomAttributes&lt;/strong&gt; metodunun geriye dizi d&amp;ouml;nd&amp;uuml;rmesinin sebebi, bir tipe veya &amp;uuml;yeye birden fazla niteliğin uygulanabilecek olmasıdır. Elde edilen dizi tekrardan uygun nitelik(Attribute) tipine d&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde indisleme operat&amp;ouml;r&amp;uuml; sayesinde okunmak istenen &amp;ouml;zelliklere erişilebilir. Ki &amp;ouml;rneğimizde 0 indisli referanslar &amp;ccedil;ekilmiştir. Insert metodunda kullandığımız aşağıdaki kod par&amp;ccedil;asında UrunEntity sınıfına uygulanan &lt;strong&gt;TabloAttribute&lt;/strong&gt;' tipinin referansı yakalanmaktadır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;TabloAttribute tblAtr = ((TabloAttribute[])tip.GetCustomAttributes(typeof(TabloAttribute), false))[0];&lt;/pre&gt;
+&lt;p&gt;Burada kullanılan &lt;strong&gt; GetCustomAttributes&lt;/strong&gt; metodu tipe aittir. Sınıf i&amp;ccedil;erisindeki &amp;uuml;yelere uygulanan nitelikleri elde etmek i&amp;ccedil;inde aynı yol kullanılır. Nitekim, nitelik(attribute) uygulanabilen t&amp;uuml;m &amp;uuml;yelerin GetCustomAttributes metodu bulunmaktadır. S&amp;ouml;z gelimi, UrunEntity sınıfındaki &amp;ouml;zelliklere(properties) uygulanan nitelikleri &amp;ccedil;alışma zamanında elde edebilmek i&amp;ccedil;in &lt;strong&gt;GetProperties&lt;/strong&gt; metodu ile gezilen &lt;strong&gt;PropertyInfo&lt;/strong&gt; referanslarına &lt;strong&gt;GetCustomAttributes&lt;/strong&gt; metodu aşağıdaki gibi uygulanmıştır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;AlanAttribute atr=((AlanAttribute[])prp.GetCustomAttributes(typeof(AlanAttribute), false))[0];&lt;/pre&gt;
+&lt;p&gt;Bu şekilde nitelik referansları elde edildikten sonra s&amp;ouml;z konusu niteliğin &amp;uuml;yelerinin değerlerine bakılabilir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Her ne kadar makalemizin konusu nitelikleri yazmak olsada &lt;strong&gt;reflection&lt;/strong&gt; ile ilgili bazı noktalara da değinmek gerekir. &amp;Ouml;rneğin Insert metodu i&amp;ccedil;erisinde &amp;ccedil;alışma zamanında o anki UrunEntity nesne &amp;ouml;rneğinin &amp;ouml;zelliklerinin değerlerinin elde edilmesi i&amp;ccedil;in, &lt;strong&gt;GetValue&lt;/strong&gt; isimli metod kullanılmıştır. Bu metodun ilk parametresi, değerleri taşıyan nesne &amp;ouml;rneğinin referansıdır.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&amp;Ouml;rneğimizi herhangibir program i&amp;ccedil;erisinde test etmek i&amp;ccedil;in aşağıdaki gibi bir kod par&amp;ccedil;asından faydalanabiliriz. Bu ama&amp;ccedil;la &amp;ouml;rnek bir Console uygulamasını test programı amacıyla kullanabiliriz. Tek yapmamız gereken bir UrunEntity nesne &amp;ouml;rneği oluşturmak sonrasında ilgili &amp;ouml;zelliklerinde bazı değerler atamak ve Insert metodunu &amp;ccedil;ağırmaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;UrunEntity urn = new UrunEntity();
+urn.UrunAdi = "Pentium CPU";
+urn.Fiyat = 90;
+urn.SonSatisTarihi = DateTime.Now.AddDays(30);
+urn.Insert();&lt;/pre&gt;
+&lt;p&gt;Amacımız nitelikleri kavramak olduğu i&amp;ccedil;in, Insert metodunun i&amp;ccedil;erisinde insert sorgusunu &amp;ccedil;alıştırmak i&amp;ccedil;in gereken Data Access Layer &amp;ccedil;ağrıları yazılmamıştır. Ancak sonu&amp;ccedil;ları g&amp;ouml;rmek adına &amp;ccedil;alışma zamanında Insert metodunun &amp;ccedil;ağırıldığı satıra bir &lt;strong&gt;breakpoint&lt;/strong&gt; koyarak adım adım &lt;strong&gt;(step into) &lt;/strong&gt;ilerlemekte fayda vardır. Bunun sonucunda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi Insert sorgusunun doğru bir şekilde oluşturulduğunu g&amp;ouml;rebiliriz. Dikkat ederseniz UrunId &amp;ouml;zelliği hi&amp;ccedil; bir şekilde hesaba katılmamıştır. Ayrıca &amp;ouml;zelliklerin tabloda karşılık olan adlarına bakılarak bu sorgu c&amp;uuml;mlesi oluşturulmuştur.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk199_4.gif" alt="" width="600" height="199" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Program kodumuzdan &amp;uuml;retilen &lt;strong&gt;assembly&lt;/strong&gt; i&amp;ccedil;erisine &lt;strong&gt;ildasm.exe&lt;/strong&gt; aracı yardımıyla bakmakta fayda vardır. Bunu yaptığımızda yazdığımız niteliklerin o anki bilgileri ile birlikte assembly' ın metadata' sına eklendiğini g&amp;ouml;rebiliriz. &lt;em&gt;(Ildasm aracında metadata' yı g&amp;ouml;rebilmek i&amp;ccedil;in &lt;strong&gt;Ctrl+M&lt;/strong&gt; tuş kombinasyonunu kullanırız.) &lt;/em&gt;&amp;Ouml;rnek olark UrunId isimli &amp;ouml;zelliğimiz i&amp;ccedil;in eklenen nitelik metadata i&amp;ccedil;erisinde aşağıdaki şekilde g&amp;ouml;r&amp;uuml;necektir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;AlanAttribute' unun Metadata izi;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;Property #1 (17000006)
+-------------------------------------------------------
+Prop.Name : UrunId (17000006)
+Flags : [none] (00000000)
+CallCnvntn: [PROPERTY]
+hasThis 
+ReturnType: I4
+No arguments.
+DefltValue: 
+Setter : (06000015) set_UrunId
+Getter : (06000014) get_UrunId
+0 Others
+CustomAttribute #1 (0c000011)
+    -------------------------------------------------------
+    CustomAttribute Type: 06000013
+    CustomAttributeName: AttributeTemelleri.AlanAttribute :: instance void .ctor()
+    Length: 54
+    Value : 01 00 03 00 54 0e 07 41 6c 61 6e 41 64 69 09 50 &amp;gt; T AlanAdi P&amp;lt;
+                : 72 6f 64 75 63 74 49 44 54 02 08 49 64 65 6e 74 &amp;gt;roductIDT Ident&amp;lt;
+                : 69 74 79 01 54 02 0e 4e 75 6c 6c 49 63 65 72 65 &amp;gt;ity T NullIcere&amp;lt;
+                : 62 69 6c 69 72 00 &amp;gt;bilir &amp;lt;
+    ctor args: ()&lt;/pre&gt;
+&lt;p&gt;Burada a&amp;ccedil;ık bir şekilde niteliğin(attribute) &amp;ouml;zelliklerine atanan değerler de g&amp;ouml;r&amp;uuml;lebilmektedir. Benzer şekilde UrunEntity isimli sınıfımıza uygulanan TabloAttribute niteliğinin metadata i&amp;ccedil;erisine yaptığı katkıyıda g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;TabloAttribute' unun Metadata izi;&lt;br /&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;CustomAttribute #1 (0c000010)
+-------------------------------------------------------
+CustomAttribute Type: 06000009
+CustomAttributeName: AttributeTemelleri.TabloAttribute :: instance void .ctor()
+Length: 46
+Value : 01 00 02 00 54 0e 09 53 63 68 65 6d 61 41 64 69 &amp;gt; T SchemaAdi&amp;lt;
+            : 0a 50 72 6f 64 75 63 74 69 6f 6e 54 0e 08 54 61 &amp;gt; ProductionT Ta&amp;lt;
+            : 62 6c 6f 41 64 69 07 50 72 6f 64 75 63 74 &amp;gt;bloAdi Product &amp;lt;
+    ctor args: ()&lt;/pre&gt;
+&lt;p&gt;Yine g&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi SchemaAdi &amp;ouml;zelliğine atanan Production değeri ile TabloAdi' na atanan Product değerleri buraya &lt;strong&gt;Value&lt;/strong&gt; olarak alınmıştır.&lt;/p&gt;
+&lt;p&gt;Program kodlarımızı daha da geliştirmek siz değerli okurlarımızın elindedir. &amp;Ouml;rneğin, Insert, Update, Delete ve Load metodların geliştirebilir bunları gerekirse bir base sınıf i&amp;ccedil;erisinde toplanabilir. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bu makalemizde, nitelikleri(attribute) daha yakından tanımaya &amp;ccedil;alıştık ve kendi niteliklerimizimi (Custom Attributes) nasıl yazabileceğimizi incelemeye &amp;ccedil;alıştık. G&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi niteliklerde birer sınıf olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;klerinde geliştirilmeleri son derece kolay tiplerdir. Ne varki niteliklerin asıl g&amp;uuml;c&amp;uuml; &amp;ccedil;alışma zamanında reflection kullanıldığında ortaya &amp;ccedil;ıkmaktadır. Tekrardan hatırlatmak gerekirse, ama&amp;ccedil; &amp;ccedil;alışma zamanında tiplere ve &amp;uuml;yelere nasıl davranılacağına dair kararların verilmesinde assembly i&amp;ccedil;erisindeki ekstra metadata bilgilerinde faydalanılmasıdır. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;şmek dileğiyle hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/makale/images/AttributeKullanimi.rar"&gt;&amp;Ouml;rnek Uygulama İ&amp;ccedil;in Tıklayınız.&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2007-04-11 03:00:00</pubDate>
+  <slug>C#-Temelleri-:-Nitelikleri(Attributes)-Kavramak-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>c#</tag>
+    <tag>attribute</tag>
+    <tag>object-oriented-programming</tag>
+    <tag>reflection</tag>
+    <tag>metadata-programming</tag>
+  </tags>
+  <categories>
+    <category>C#</category>
+  </categories>
+</post>

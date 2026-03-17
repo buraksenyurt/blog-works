@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>React Üzerinde Socket.IO Kullanımı</title>
+  <description>Bir süre önce eski bir meslektaşım OBD2 portlarından nasıl bilgi okuyabileceğimizi sormuştu. Bu konuyu araştırırken kendimi çok farklı bir yerde buldum. OBD2 portu ile bir arabadan veri almak mümkün. Peki bir yarış sırasındaki tüm araçların hız, motor sıcaklığı, anlık devir vb bilgilerini aktarabildiğimizi düşünsek. Bir şekilde veriyi bir yerlere bastığımızı varsayarsak (anten, radyo sinyali vb düzenekler ile), onun yarışı mobil cihazlarındaki uygulamadan takip edenlere anında gönderimi için nasıl bir yol izleyebiliriz? İşte araştırma sırasında geldiğim nokta buydu. Donanımsal gereksinimleri bir kenara bırakırsak bunun minik bir POC çalışmasını denemek istedim.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2019/08/40/senna.png" alt="" /&gt;Bir zamanlar sıkı bir Formula 1 izleyicisiydim. O d&amp;ouml;nemde d&amp;uuml;nyanın bir numaralı pilotu &amp;uuml;&amp;ccedil; kez F1 d&amp;uuml;nya şampiyonu olan&amp;nbsp;&lt;a href="https://youtu.be/-pItzcHBHt0" target="_blank"&gt;Ayrton Senna&lt;/a&gt;'ydı. Yağmurlu havalardaki ustalığı nedeniyle Rainman lakabını almış bir yarış&amp;ccedil;ı olmakla birlikte virajları hız kesmeden d&amp;ouml;nmeyi becerirdi. Monaco yarışından bir g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; geldi şimdi g&amp;ouml;z&amp;uuml;m&amp;uuml;n &amp;ouml;n&amp;uuml;ne. Sağ eliyle kokpitin sağındaki vitesi sol eliylede direksiyonu tutuyordu.&lt;/p&gt;
+&lt;p&gt;Kullandığı McLaren Honda MP4/4 marka aracın 1987'de 950 beygir g&amp;uuml;&amp;ccedil; &amp;uuml;reten bir canavar olduğunu d&amp;uuml;ş&amp;uuml;n&amp;uuml;nce o hızlarda o yağmurlu havalardaki s&amp;uuml;r&amp;uuml;ş tekniği ile gelmiş ge&amp;ccedil;miş en iyi yarış&amp;ccedil;ı olduğunu adeta ispat ediyordu. İlk başarılarını Lotus ile eden Senna'nın en b&amp;uuml;y&amp;uuml;k rakiplerinden birisi Williams takımından Alain Prost'tu&lt;em&gt;(ki bir d&amp;ouml;nem McLaren'de takım arkadaşı da oldular)&lt;/em&gt; Lise yıllarıma denk gelen bu iki kahramanın &amp;ouml;zellikle&amp;nbsp;kullandıkları&amp;nbsp;canavarların dev posterleri oda duvarlarımı s&amp;uuml;slerdi. Yarış&amp;ccedil;ı olmak gibi bir hayalim yoktu ama onların meydan okuyuşları, takımlarının otomobil d&amp;uuml;nyasındaki &amp;ouml;nc&amp;uuml;l&amp;uuml;kleri ilgimi &amp;ccedil;ekiyordu.&amp;nbsp;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;I'll be honest with you; I was never a Senna fan. I always thought Gilles Villeneuve was the greatest racing driver of them all. But, to make this film, I've watched hours and hours and hours of footage. And the thing is, Villeneuve was spectacular on a number of occasions. Senna...He was spectacular every single time he got in a car.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Size karşı d&amp;uuml;r&amp;uuml;st olacağım; Asla bir Senna hayranı olmadım. Her zaman Gilles Villeneuve'un hepsinin en iyi yarış pilotu olduğunu d&amp;uuml;ş&amp;uuml;nd&amp;uuml;m. Ancak, bu filmi yapmak i&amp;ccedil;in saatlerce, saatlerce ve saatlerce &amp;ccedil;ekimleri izledim. Mesele&amp;nbsp;şu ki, Villeneuve birka&amp;ccedil; kez muhteşemdi. Senna...Arabasında ge&amp;ccedil;erdiği her anda&amp;nbsp;muhteşemdi.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Jeremy Clarkson, 2010, Top Gear, Series 15, Episode 5&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Senna, ne yazık ki 1 mayıs 1994 g&amp;uuml;n&amp;uuml; hen&amp;uuml;z 34 yaşındayken San Marino grand prixinde İmola pistinde ge&amp;ccedil;irdiği kaza sonucu hayatını kaybetmişti. Sonraki yıllarda Formula 1 yarışlarına olan ilgim epeyce azaldı. Şimdilerde televizyondaki canlı yayınlarını bile izlemiyorum desem yeridir. Ama arada bir baktığımda en &amp;ccedil;ok dikkatimi &amp;ccedil;eken şey bilgisayar oyunlarındakine benzer ekranlar oluyor. Aracın i&amp;ccedil; kamerasından gelen&amp;nbsp;s&amp;uuml;r&amp;uuml;ş g&amp;ouml;r&amp;uuml;nt&amp;uuml;leri &amp;uuml;zerine eklenen anlık hız, ivme, vites vb bilgilerin sunulduğu grafikler ger&amp;ccedil;ekten m&amp;uuml;thiş. &amp;Uuml;stelik bu verilerin neredeyse hi&amp;ccedil; gecikme yaşanmadan ekrana ulaşması da bende hayranlık uyandıran başka bir konu. Bu grafikler tekrar nasıl mı g&amp;uuml;ndeme geldi? İzin verin anlatayım.&lt;/p&gt;
+&lt;p&gt;Bir s&amp;uuml;re &amp;ouml;nce eski bir meslektaşım OBD2 portlarından nasıl bilgi okunabileceğini sormuştu. Bu konuyu araştırırken kendimi &amp;ccedil;ok farklı bir yerde buldum. OBD2 portu ile bir arabadan veri almak m&amp;uuml;mk&amp;uuml;n. Peki bir yarış sırasında t&amp;uuml;m ara&amp;ccedil;ların hız, motor sıcaklığı, anlık devir vb bilgilerini bu şekilde bir yerlere aktarabildiğimizi d&amp;uuml;ş&amp;uuml;nsek&lt;em&gt;.&lt;/em&gt;&amp;nbsp;Bu verileri yarışı mobil uygulamalarından takip edenlere anlık g&amp;ouml;nderimi i&amp;ccedil;in nasıl bir yol izleyebiliriz? İşte araştırma sırasında geldiğim nokta buydu. Donanımsal gereksinimleri bir kenara bırakırsak bunun minik bir POC&lt;em&gt;(Proof of Concept)&lt;/em&gt; &amp;ccedil;alışmasını yapmak istedim.&lt;/p&gt;
+&lt;p&gt;En ideal senaryolardan birisi Web Socket kullanmaktı. Socket.IO k&amp;uuml;t&amp;uuml;phanesi bu ama&amp;ccedil;la değerlendirilebilirdi. Bir yarış aracının WebSocket haberleşmesi ile veri yayınlayacağını d&amp;uuml;ş&amp;uuml;nelim. Haberleşme ağı &amp;uuml;zerinde olan başka bir sunucu uygulama ile&amp;nbsp;ara&amp;ccedil; verileri abone olan istemcilere g&amp;ouml;nderilecek. Veri yayıncısı ve broadcast y&amp;ouml;netimini &amp;uuml;stlenecek sunucu i&amp;ccedil;in Node.js, g&amp;ouml;rsel aray&amp;uuml;zle yarış ara&amp;ccedil;larının g&amp;ouml;nderilen bilgilerine bakacak istemci tarafı i&amp;ccedil;inse bir React uygulaması geliştirmeye karar verdim. E ne duruyoruz &amp;ouml;yleyse. Kodlamaya başlayalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/08/40/credit_1.jpg" alt="" /&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Bizim senaryomuzda tek bir yarış aracının bilgi yayınladığını varsayıyoruz. Şekildeki gibi n sayıda aracın ve dinleyicinin olduğu bir senaryoda, yayın yapan ara&amp;ccedil;ların verilerini diğerleri ile karışamayacak şekilde konsolide ederek g&amp;ouml;ndermemiz gerekir ki istemciler n sayıda aracın verisini ya da istedikleri belli bir aracın verisini kullanabilsin.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;&amp;Ouml;n Hazırlıklar&lt;/h2&gt;
+&lt;p&gt;&amp;Ouml;rneği her zaman olduğu gibi WestWorld&lt;em&gt;(Ubuntu 18.04, 64bit)&lt;/em&gt; &amp;uuml;zerinde geliştirmekteyim. Sistemde node.js, npm ve react projesi oluşturmak i&amp;ccedil;in gerekli ekipmanlarım mevcut. Dolayısıyla hızlı bir şekilde proje iskeletini aşağıdaki terminal komutlarını kullanarak oluşturabilirim/oluşturabiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;mkdir Zion
+mkdir VehicleDataPublisher
+cd Zion
+npm init
+npm i --save express socket.io
+touch server.js
+cd ..
+cd VehicleDataPublisher
+npm init
+npm i --save socket.io-client
+touch index.js
+cd ..
+sudo npx create-react-app dashboard
+sudo npm i --save react-d3-speedometer save socket.io-client&lt;/pre&gt;
+&lt;p&gt;Klas&amp;ouml;r yapısından ve i&amp;ccedil;indeki uygulamalardan bahsetmek yarar var. Zion isimli klas&amp;ouml;rde sunucu uygulama kodlarımız olacak&lt;em&gt;(Aslında yayıncı ve aboneler arasında bir veri aktarım organı)&lt;/em&gt; Veri yayını yapan uygulamamız burayı kullanacak. Sunucu, kendisini dinleyenlere ilgili verileri yayınlayacak. Web Sockets tabanlı bir iletişim s&amp;ouml;z konusu. Bu nedenle express ve socket.io paketleri kullanılıyor. VehicleDataPublisher uygulaması sembolik olarak veri yayını yapan program kodlarını i&amp;ccedil;eriyor&lt;em&gt;(Yani yarış aracımızdan veri g&amp;ouml;nderen par&amp;ccedil;ayı taklit ediyor)&lt;/em&gt; Socket sunucusu ile haberleşmesi gerektiğinden socket.io-client paketini kullanıyor. Son olarak dashboard isimli bir react uygulamamız var. Bunu yarış aracından yayınlanan veriyi grafik formatında g&amp;ouml;stermek i&amp;ccedil;in kullanacağız. Bu nedenle &lt;a href="https://www.npmjs.com/package/react-d3-speedometer" target="_blank"&gt;react-d3-speedometer&lt;/a&gt;&lt;em&gt;(gerekirse benzerleri)&lt;/em&gt; paketini i&amp;ccedil;eriyor. Pek tabii bu uygulama soket dinleyicisi olarak sunucu ile konuşmak durumunda. Bu nedenle socket.io-client paketini de referans ediyor. Son olarak react uygulamasını oluşturmak i&amp;ccedil;in &lt;a href="https://www.npmjs.com/package/npx" target="_blank"&gt;npx paket &amp;ccedil;alıştırıcısı&lt;/a&gt;ndan yararlandığımızı da belirteyim.&lt;/p&gt;
+&lt;h2&gt;Gelelim Kodlarımıza&lt;/h2&gt;
+&lt;p&gt;İskeletimiz hazır. Artık gerekli kodlamaları yapabiliriz. İşe Zion projesindeki server.js dosyasını yazarak başlayalım. Daha &amp;ouml;nceki derlemelerde olduğu gibi kodları aralardaki yorum satırları ile m&amp;uuml;mk&amp;uuml;n mertebe anlatmaya &amp;ccedil;alıştım.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;/*
+&amp;Ouml;nce sunucu i&amp;ccedil;in gerekli mod&amp;uuml;lleri ekleyelim.
+Socket.Io kullanımı i&amp;ccedil;in socketIo mod&amp;uuml;l&amp;uuml; kullanılıyor.
+Web server ve http &amp;ouml;zellikleri i&amp;ccedil;inse epxress ve http mod&amp;uuml;lleri.
+*/
+
+const http = require("http");
+const express = require("express");
+const socketIo = require("socket.io");
+
+const app = express(); // express nesnesini &amp;ouml;rnekle
+const appServer = http.createServer(app); // express'i kullanan http server oluşturuluyor
+const channel = socketIo(appServer); // Socket.io middleware'e ekleniyor.
+
+// ya &amp;ccedil;evre değişkenlerinden gelen port bilgisini ya da 5555 portunu kullanıyoruz
+const port = process.env.PORT || 5555;
+
+// Yeni soketler i&amp;ccedil;in connection isimli bir olay dinleyici a&amp;ccedil;ılıyor.
+// İstemci connection namespace'ini kullanarak bağlanıyor
+channel.on("connection", socket =&amp;gt; {
+    console.log(`${Date(Date.now()).toLocaleString()}: yeni bir istemci bağlandı`);
+    // TODO: İstemci hakkında daha fazla bilgiyi nasıl alabilirim? IP adresi gibi.
+
+    // gelen veriyi dinleyeceğimiz bir olay metodu olarak d&amp;uuml;ş&amp;uuml;nebiliriz.
+    // bir publisher sokete veri yolladığında devreye giriyor
+    // Yayıncı, "input road" isimli namespace'den yararlanarak veri g&amp;ouml;nderebiliyor
+    socket.on("input road", (data) =&amp;gt; {
+
+        console.log(`${Date(Date.now()).toLocaleString()}:Gelen veriler\n\tHız:${data.speed}\n\tDevir:${data.rpm}\n\tMotor sıcaklığı:${data.heat}`);
+        // gelen veriyi, g&amp;ouml;ndericiyi hari&amp;ccedil; tutaraktan bağlı olan ne kadar dinleyici varsa onlara yolluyoruz.
+        // aslında bir broadcast yayın yapıyoruz diyebiliriz.
+        // istemcilere yayın "output road" isimli namespace &amp;uuml;zerinden yapılıyor.
+        // emit metodunun ikinci parametresinde, yayıncının yolladığı verinin serileştirilerek kullanıldığını g&amp;ouml;rebilirsiniz.
+        socket.broadcast.emit("output road", { engineData: data });  // burası callback metodumuz olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir
+    });
+
+    // istemcilerin bağlantı kesmelerini ele aldığımız olay
+    // Bu kez "disconnect" isimli bir namespace s&amp;ouml;z konusu
+    // disconnect, socket.io i&amp;ccedil;in rezerve edilmiş anahtar kelimelerden.
+    socket.on("disconnect", () =&amp;gt; {
+        /* 
+        Burada &amp;ccedil;eşitli temizleme operasyonları yapılabilir.
+        Mesela istemcinin geliş gidiş hareketlerini takip ediyorsak,
+        burada state değişikliği yaptırtabiliriz.
+        */
+        console.log(`${Date(Date.now()).toLocaleString()}istemci bağlantıyı kapattı`);
+    });
+});
+
+// Sunucuyu ayağa kaldırıyor ve dinlemeye başlıyoruz
+appServer.listen(port, () =&amp;gt; {
+    console.log(`${Date(Date.now()).toLocaleString()}: Sunucu ${port} nolu port &amp;uuml;zerinden aktif konumda.`);
+});&lt;/pre&gt;
+&lt;p&gt;Ara&amp;ccedil;la ilgili veri yayını yapan VehicleDataPublisher projesindeki index.js i&amp;ccedil;eriğini de aşağıdaki gibi yazalım.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;/*
+Bu kodun aslında bir ara&amp;ccedil; &amp;uuml;zerinde olduğunu varsayalım.
+*/
+
+// soket sunucusuna bağlantı oluşturuyoruz
+// socket.io-client mod&amp;uuml;l&amp;uuml;n&amp;uuml; kullanıyoruz
+let socket = require('socket.io-client')('http://localhost:5555');
+
+// &amp;ouml;rnek sim&amp;uuml;lasyon verimiz. Hız, devir ve motor sıcaklığı gibi
+let engineData = {
+    "speed": 0,
+    "rpm": 0,
+    "heat": 0
+};
+
+// Her 5 saniyede bir &amp;ccedil;alışacak bir fonksiyon.
+setInterval(function () {
+    // Rastgele veriler &amp;uuml;retiyoruz.
+    engineData.speed = getRandomValue(70, 180);
+    engineData.rpm = getRandomValue(1000, 10000);
+    engineData.heat = getRandomValue(100, 500);
+
+    console.log(`&amp;Uuml;retilen veri\nHız:${engineData.speed}\nDevir:${engineData.rpm}\nMotor sıcaklığı:${engineData.heat}`);
+    /* 
+        Veriyi emit metodu ile "input road" namespace'ini kullanarak sunucuya yolluyoruz
+        oradaki callback'de devreye girip bu veriyi bağlı olan diğer istemcilere 
+        (output road, namespace'ini kullanan) yayınlayacak.
+    */
+    socket.emit("input road", engineData);
+}, 5000);
+
+/* 
+    Rastgele veri &amp;uuml;ertmek i&amp;ccedil;in kullandığımız basit fonksiyon.
+    İki değer aralığında veri &amp;uuml;retiyor.
+*/
+function getRandomValue(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}&lt;/pre&gt;
+&lt;p&gt;Verileri grafiksel ortamda g&amp;ouml;sterecek olan dashboard isimli react uygulamasının app.js&amp;nbsp;dosyası da şu şekilde tasarlanabilir.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;import React, { Component } from 'react';
+import socketIOClient from "socket.io-client";
+import ReactSpeedometer from "react-d3-speedometer";
+/*
+React uygulaması broadcast dinleyicisi rol&amp;uuml;nde.
+Socket.io-client mod&amp;uuml;l&amp;uuml;n&amp;uuml; bu nedenle referans ediyor.
+Ayrıca g&amp;ouml;rsel metrikler i&amp;ccedil;in react-d3-speedometer paketini kullanıyor.
+*/
+
+class App extends Component {
+  constructor() {
+    super();
+
+    // state değişkenlerimizde hızı, sıcaklığı, devri ve endpoint adresini tutuyoruz
+    this.state = {
+      speed: 0,
+      rpm: 0,
+      heat: 0,
+      endpoint: "http://localhost:5555"
+    };
+  }
+
+  /*
+  componentDidMount yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml; d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde
+  component Document Object Model'e eklendiğinde devreye giren metodumuz.
+  soket bağlantısını ger&amp;ccedil;ekleştirip, "output data" yayınına abone oluyoruz.
+  */
+  componentDidMount() {
+    const { endpoint } = this.state;
+    const socket = socketIOClient(endpoint);
+    //console.log(`${endpoint} adresine bağlantı yapılıyor...`);
+    // output road'dan veri geldik&amp;ccedil;e bunları state değişkenlerine atıyoruz
+    socket.on("output road", data =&amp;gt; {
+      this.setState({
+        speed: data.engineData.speed,
+        heat: data.engineData.heat,
+        rpm: data.engineData.rpm
+      });
+
+      //console.log(`Gelen bilgi : ${data.engineData.speed}`);
+    });
+  }
+
+  /*
+  Bileşenin render edildiği metod.
+  state değişkenlerini alıp, div elementindeki ReactSpeedometer kontrollerinde g&amp;ouml;steriyoruz.
+  */
+  render() {
+    const { heat } = this.state;
+    const { rpm } = this.state;
+    const { speed } = this.state;
+
+    return (
+      &amp;lt;div style={{ textAlign: "center" }}&amp;gt;
+        &amp;lt;h2&amp;gt;Hız&amp;lt;/h2&amp;gt;
+        &amp;lt;ReactSpeedometer
+          maxValue={200}
+          minValue={70}
+          value={speed}
+          needleColor="gray"
+          startColor="orange"
+          segments={10}
+          endColor="red"
+          needleTransition={"easeElastic"}
+          ringWidth={20}
+          textColor={"black"}
+        /&amp;gt;
+
+        &amp;lt;h2&amp;gt;RPM&amp;lt;/h2&amp;gt;
+        &amp;lt;ReactSpeedometer
+          maxValue={10000}
+          minValue={1000}
+          value={rpm}
+          needleColor="gray"
+          startColor="orange"
+          segments={100}
+          maxSegmentLabels={10}
+          endColor="red"
+          needleTransition={"easeElastic"}
+          ringWidth={20}
+          textColor={"black"}
+        /&amp;gt;
+
+        &amp;lt;h2&amp;gt;Motor Isısı&amp;lt;/h2&amp;gt;
+        &amp;lt;ReactSpeedometer
+          maxValue={500}
+          minValue={100}
+          value={heat}
+          needleColor="gray"
+          startColor="orange"
+          segments={5}
+          endColor="red"
+          needleTransition={"easeElastic"}
+          ringWidth={20}
+          textColor={"black"}
+        /&amp;gt;
+      &amp;lt;/div&amp;gt;
+    )
+  }
+}
+
+export default App;&lt;/pre&gt;
+&lt;h2&gt;&amp;Ccedil;alışma Zamanı&lt;/h2&gt;
+&lt;p&gt;Program kodlarımız hazır. Artık uygulamaları &amp;ccedil;alıştırıp sonu&amp;ccedil;larına bakabiliriz. En az 3 terminal penceresi ile ilerlemek lazım. Birisinde sunucu, diğerinde publisher ve sonuncusunda da react tabanlı dinleyici &amp;ccedil;alıştırılmalı. Aşağıdaki terminal komutu ile sunucu ve veri yayıncılarını başlatabiliriz&lt;em&gt;(Ayrı terminal pencrelerinde tabii ki)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;npm run serve&lt;/pre&gt;
+&lt;p&gt;React uygulaması i&amp;ccedil;inse şu komutu kullanabiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;npm run start&lt;/pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;React uygulaması başlatıldığında http://localhost:3000 adresi tarayıcıda a&amp;ccedil;ılır ve app.js'den render edilen html i&amp;ccedil;eriği buraya basılır.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;WestWorld &amp;uuml;zerinde yakaladığım &amp;ccedil;alışma zamanına ait iki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; aşağıda bulabilirsiniz. Aslında g&amp;ouml;stergeler canlı ortamda hareket ettiklerinden &amp;ccedil;ok daha hoş ve etkileyici bir sonu&amp;ccedil; ortaya &amp;ccedil;ıkıyor.&amp;nbsp;Veri&amp;nbsp;her 5 saniyede bir yenilenmekte.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/08/40/credit_2.jpg" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bir başka t anında;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/08/40/credit_3.jpg" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Hepsi bu kadar :) Tabii &amp;ouml;rneği zenginleştirmek lazım. Benim ki epey aceleye geldi. Mesela senaryonun n sayıda ara&amp;ccedil;&lt;em&gt;(yayıncı)&lt;/em&gt; i&amp;ccedil;in n sayıda istemcide tekil veya toplu halde&amp;nbsp;&amp;ccedil;alışabileceği farklı bir versiyonunu yazılabilir. Bu size g&amp;uuml;zel bir ev &amp;ouml;devi olsun.&lt;/p&gt;
+&lt;h2&gt;Ben Neler &amp;Ouml;ğrendim?&lt;/h2&gt;
+&lt;p&gt;Bu yoğun &amp;ccedil;alışmada deneyimlediğim bir &amp;ccedil;ok yeni şey oldu. WebSocket kavramına aşina olsam da onu bu&amp;nbsp;&amp;ouml;rnekteki gibi daha g&amp;ouml;r&amp;uuml;n&amp;uuml;r bir şekilde uygulamak değerliydi. &amp;Ouml;ğrendiklerimi şu şekilde &amp;ouml;zetleyebilirim.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;socket.io ile websocket bazlı iletişim trafiğinin node.js'de nasıl tesis edilebileceğini&lt;/li&gt;
+&lt;li&gt;socket.on olay dinleyicilerinin ne ama&amp;ccedil;la ele alındığını&lt;/li&gt;
+&lt;li&gt;broadcasting'in nasıl yapıldığını&lt;/li&gt;
+&lt;li&gt;disconnect ve connection namespace'lerinin ayrılmış kelimelerden&lt;em&gt;(reserved words)&lt;/em&gt; olduğunu&lt;em&gt;(bunları doğru yazmassak istemciler bağlanamaz veya &amp;ccedil;evrim dışı olamazlar)&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;node.js tarafında rastgele sayı &amp;uuml;retimini&lt;/li&gt;
+&lt;li&gt;belirli periyotlarda s&amp;uuml;rekli olarak &amp;ccedil;alışan bir fonksiyonun nasıl yazılacağını&lt;/li&gt;
+&lt;li&gt;yayıncıların abonelere olan mesajları g&amp;ouml;nderdiğimiz fonksiyonun bir callback metodu olduğunu&lt;/li&gt;
+&lt;li&gt;React bileşeninde state nesne kullanımını&lt;/li&gt;
+&lt;li&gt;React &amp;uuml;zerinden web socket haberleşmesinin nasıl yapılabileceğini&lt;/li&gt;
+&lt;li&gt;component DOM'a bağlandığında hangi olay metodunun tetiklendiğini&lt;/li&gt;
+&lt;li&gt;ReactSpeedometer'ın temel kullanımını&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik &lt;a href="https://github.com/buraksenyurt/saturday-night-works/tree/master/No%2040%20-%20SocketIO%20with%20React" target="_blank"&gt;40 numaralı cumartesi gecesi derlemesi&lt;/a&gt;nin sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2019-08-30 13:00:00</pubDate>
+  <slug>react-uzerinde-socket-io-kullanimi</slug>
+  <tags>
+    <tag>socket</tag>
+    <tag>socketio</tag>
+    <tag>websockets</tag>
+    <tag>nodejs</tag>
+    <tag>javascript</tag>
+    <tag>react</tag>
+    <tag>express</tag>
+    <tag>react-d3-speedometer</tag>
+  </tags>
+  <categories>
+    <category>Node.js</category>
+  </categories>
+</post>

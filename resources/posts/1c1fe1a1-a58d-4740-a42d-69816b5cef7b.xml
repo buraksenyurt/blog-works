@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>TPL - İptal İşlemi [Beta 1]</title>
+  <description>Bir önceki blog yazımda, TPL kullanılarak WinForms uygulamalarında paralel işlemlerin nasıl yapılabileceğini ele almaya çalışmıştım. Örnekte son geldiğimiz noktaya bakıldığında aşağıdaki kazanımları elde ettiğimizi düşünebiliriz.</description>
+  <content>&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Bir &amp;ouml;nceki blog yazımda, TPL kullanılarak WinForms uygulamalarında paralel işlemlerin nasıl yapılabileceğini ele almaya &amp;ccedil;alışmıştım. &amp;Ouml;rnekte son geldiğimiz noktaya bakıldığında aşağıdaki kazanımları elde ettiğimizi d&amp;uuml;ş&amp;uuml;nebiliriz.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Parallel.ForEach&lt;/strong&gt; sayesinde resim dosyalarının iterasyonun daha hızlı ger&amp;ccedil;ekleştirilebilmektedir.&lt;/li&gt;
+&lt;li&gt;WinForms tarafındaki &lt;strong&gt;Cross-Thread&lt;/strong&gt; ihlalinin &amp;ouml;n&amp;uuml;ne ge&amp;ccedil;ilmiştir.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Task&lt;/strong&gt; sınıfı &amp;uuml;zerinden kullanılan &lt;strong&gt;StartNew&lt;/strong&gt; metodu yardımıyla resim i&amp;ccedil;eren &lt;strong&gt;Button&lt;/strong&gt; kontrollerin &amp;uuml;retildiği anda ekranda g&amp;ouml;sterilebilmesi sağlanmıştır.&lt;/li&gt;
+&lt;li&gt;Yine &lt;strong&gt;StartNew&lt;/strong&gt; metodunun kullanımı sayesinde kullanıcının paralel işlemler devam ederken, Form &amp;uuml;zerindeki diğer kontroller ile etkileşimi sağlanmıştır.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Ancak biraz durup d&amp;uuml;ş&amp;uuml;nd&amp;uuml;ğ&amp;uuml;mde unuttuğum &amp;ouml;nemli bir nokta olduğunu farkettim. İşlemler her ne kadar kısa gibi g&amp;ouml;r&amp;uuml;nsede, kullanıcı bir yerde iptal etmek isterse ne olacak. &lt;img title="Undecided" src="/editors/tiny_mce3/plugins/emotions/img/smiley-undecided.gif" alt="Undecided" border="0" /&gt;&amp;nbsp;Dolayısıyla uygulamaya bir iptal s&amp;uuml;recininde ekleniyor olması gerekmekte. Aslında bu işlem son derece basit. Nitekim &lt;strong&gt;Task&lt;/strong&gt; sınıfının bu işlemler i&amp;ccedil;in tasarlanmış olan &lt;strong&gt;Cancel&lt;/strong&gt; isimli bir metodu bulunmaktadır. Lakin &amp;ouml;rnek dikkatlice g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında, resim dosyları &amp;uuml;zerindeki iterasyonun &lt;strong&gt;Parallel.ForEach&lt;/strong&gt; yardımıyla ger&amp;ccedil;ekleştirildiği g&amp;ouml;r&amp;uuml;l&amp;uuml;r. Dolayısıyla &lt;strong&gt;Parallel.ForEach&lt;/strong&gt; i&amp;ccedil;erisinde hareket edilirken, iptal talebi gelip gelmediğinin kontrol edilmesi gerekmektedir. Ki buda tek başına yeterli değildir. Nitekim, &lt;strong&gt;Parallel.ForEach&lt;/strong&gt; metoduda kendi i&amp;ccedil;erisindeki işlemler i&amp;ccedil;in arka planda a&amp;ccedil;tığı Task' leri kullanmaktadır. Dolayısıyla ForEach i&amp;ccedil;eriğindeki task' lerinde iptal edilmesi gerekmektedir. Bu nedenle kod i&amp;ccedil;eriğini aşağıdaki gibi değiştirmeliyiz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private Task task1 = null;
+
+        private void btnStart4_Click(object sender, EventArgs e)
+        {
+            flowLayoutPanel1.Controls.Clear();
+            Stopwatch watch = Stopwatch.StartNew();
+
+            task1=Task.Factory.StartNew(() =&amp;gt; FillImages(null));
+
+            watch.Stop();
+            lblElapsedTime.Text = String.Format("İşlemler {0} saniyede bitmiştir.", watch.Elapsed.TotalSeconds.ToString());
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            if (task1 != null)
+                task1.Cancel();
+        }
+
+        private void FillImages(object state)
+        {
+            Task currentTask = Task.Current;
+
+            Parallel.ForEach(Directory.GetFiles(imagesPath), (f, ls) =&amp;gt;
+            {
+                if (currentTask.IsCancellationRequested)
+                {
+                    ls.Stop();
+                    return;
+                }
+                FileInfo fInfo = new FileInfo(f);
+                if (fInfo.Length &amp;lt;= 1024 * 100
+                    &amp;amp;&amp;amp; fInfo.Extension == ".jpg")
+                {
+                    Thread.Sleep(100); // Bunu koymadığımızda UI istediğimiz gibi reaksiyon vermiyor.
+                    Button btn = new Button();
+                    btn.Width = 64;
+                    btn.Height = 48;
+                    btn.BackgroundImageLayout = ImageLayout.Stretch;
+                    btn.BackgroundImage = Image.FromFile(f);
+                    AddToPanel(btn);
+                }
+            }
+            );
+        }&lt;/pre&gt;
+&lt;p&gt;Herşeyden &amp;ouml;nce iptal edilmek istenen &lt;strong&gt;Task&lt;/strong&gt; sınıfına ait nesne &amp;ouml;rneğinin(task1 isimli değişken) sınıf seviyesinde bir değişken olarak ele alındığı g&amp;ouml;r&amp;uuml;lmektedir. Kullanıcı iptal işlemi i&amp;ccedil;in &lt;strong&gt;Button&lt;/strong&gt; kontrol&amp;uuml;ne tıkladığında, &lt;strong&gt;task1&lt;/strong&gt; değişkeni &amp;uuml;zerinden &lt;strong&gt;Cancel&lt;/strong&gt; metodu &amp;ccedil;ağırılmaktadır. Bu durumda &amp;ccedil;alışma zamanında &lt;strong&gt;ForEach&lt;/strong&gt; d&amp;ouml;ng&amp;uuml;s&amp;uuml; i&amp;ccedil;erisinde yer alan &lt;strong&gt;IsCancellationRequested&lt;/strong&gt; &amp;ouml;zelliği &lt;strong&gt;true&lt;/strong&gt; değeri d&amp;ouml;nd&amp;uuml;recektir. Bu &amp;ouml;zelliğe ulaşmak i&amp;ccedil;in &lt;strong&gt;Task&lt;/strong&gt; sınıfının &lt;strong&gt;Current&lt;/strong&gt; &amp;ouml;zelliğinden yararlandığımıza dikkat edilmelidir. Bu sayede &lt;strong&gt;ForEach&lt;/strong&gt; i&amp;ccedil;erisinde &lt;strong&gt;Parent&lt;/strong&gt; T&lt;strong&gt;ask&lt;/strong&gt; &amp;ouml;rneğine ulaşılabilmektedir. Ardında ilgin&amp;ccedil; bir kod par&amp;ccedil;ası gelmektedir. &lt;strong&gt;ls&lt;/strong&gt; isimli bir değişken &amp;uuml;zerinden &lt;strong&gt;Stop&lt;/strong&gt; metodu &amp;ccedil;ağırılmıştır. İşte bu metod &lt;strong&gt;ForEach&lt;/strong&gt; tarafından a&amp;ccedil;ılan &lt;strong&gt;task'&lt;/strong&gt; lerin iptal edilmesini sağlamaktadır. Aslında &lt;strong&gt;Parallel&lt;/strong&gt; sınıfı i&amp;ccedil;erisinde &lt;strong&gt;ForEach&lt;/strong&gt; veya &lt;strong&gt;For&lt;/strong&gt; metodları i&amp;ccedil;erisinde kullanılan temsilcilere bakıldığında &lt;strong&gt;ParallelLoopState&lt;/strong&gt; isimli bir sınıf kullanıldığı g&amp;ouml;r&amp;uuml;l&amp;uuml;r. &amp;Ouml;rneğin,&lt;/p&gt;
+&lt;p&gt;public static ParallelLoopResult ForEach&amp;lt;TSource&amp;gt;(IEnumerable&amp;lt;TSource&amp;gt; source, Action&amp;lt;TSource, &lt;strong&gt;ParallelLoopState&lt;/strong&gt;&amp;gt; body);&lt;/p&gt;
+&lt;p&gt;Bu sınıf i&amp;ccedil;erisinde &lt;strong&gt;Stop&lt;/strong&gt;, &lt;strong&gt;Break&lt;/strong&gt; gibi paralel d&amp;ouml;ng&amp;uuml;n&amp;uuml;n durdurulması veya dışına &amp;ccedil;ıkılması i&amp;ccedil;in gerekli metodlar yer almaktadır. &amp;Ouml;rneğimizde &lt;strong&gt;Action&lt;/strong&gt; temsilcisinin kullanıdığı ikinci generic parametre, &amp;ccedil;alışma zamanındaki &lt;strong&gt;ParallelLoopState&lt;/strong&gt; nesne &amp;ouml;rneğine denk gelmektedir. Ve sonu&amp;ccedil;...&lt;/p&gt;
+&lt;p&gt;&lt;object data="/pics/2009%2f6%2fblg29_1.swf" type="application/x-shockwave-flash" width="524" height="527"&gt;&lt;/object&gt;&lt;/p&gt;
+&lt;p&gt;Tekrardan g&amp;ouml;r&amp;uuml;şmek dileğiyle hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2009-06-08 13:19:00</pubDate>
+  <slug>TPL-Iptal-Islemi</slug>
+  <tags>
+    <tag>task-parallel-library</tag>
+  </tags>
+  <categories>
+    <category>TPL</category>
+  </categories>
+</post>

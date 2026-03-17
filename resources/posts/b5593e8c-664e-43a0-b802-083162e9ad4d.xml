@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>TPL Senkronizasyonu Sağlamak – 2 (Interlocked)</title>
+  <description>Hatırlayacağınız üzere TPL Senkronizasyonu Sağlamak – 1 başlıklı yazımız ile Task Parallel Library(TPL) tarafında senkronizasyon kullanımını incelemeye başlamıştık. Aslında başımıza iş mi açtık bilemiyorum ama sonuç itibariyle kritik bir konu olduğunda sanıyorum ki hepimiz hem fikiriz. Önceki yazımızda değerlendirdiğimiz senaryoda, lock keyword kullanımı ile izole edilmiş bir veri alanının, farklı iş parçaları tarafından nasıl güvenli bir şekilde kullanılabileceğini analiz etmiştik. Üstelik bu keyword’ ün aslında arka planda Monitor tipini kullandığını da Intermediate Language(IL) kodunda görmüştük. Elbette iş parçalarının senkronizasyonu için kullanılabilecek farklı tipler de söz konusudur. Interlocked sınıfı gibi.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/blg213_Giris_1.jpg"&gt;&lt;img style="display: inline; margin-left: 0px; margin-right: 0px; border: 0px;" title="blg213_Giris" src="/pics/blg213_Giris_thumb_1.jpg" alt="blg213_Giris" width="362" height="156" align="right" border="0" /&gt;&lt;/a&gt; Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Se&amp;ccedil;imi zaten yaptın. Şimdi onu anlaman gerekli.&amp;rdquo;&lt;/strong&gt; Sanırım &lt;strong&gt;Matrix&lt;/strong&gt; filminde &lt;strong&gt;Neo&lt;/strong&gt; ile &lt;strong&gt;Oracle&amp;rsquo;&lt;/strong&gt; ın felsefe i&amp;ccedil;eren ve uzun uzun d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde akla son derece anlaşılır gelen bir ka&amp;ccedil; sohbetinde ge&amp;ccedil;en repliklerden birisi de buydu. Aslında ben bunu kendi hayatımda zaman zaman&lt;strong&gt; &amp;ldquo;&amp;Ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml; uyguladın. Şimdi onun her par&amp;ccedil;asının ne anlama geldiğini &amp;ouml;ğrenmen gerekli&amp;rdquo;&lt;/strong&gt; diye &amp;ccedil;eviriyorum.&lt;/p&gt;
+&lt;p&gt;Yazımızın giriş kısmını oluşturan bu paragrafın &amp;uuml;retiliş amacı ise en sonda geliştireceğimiz &amp;ouml;rnek olacak aslında. Ger&amp;ccedil;ekten de bazen &amp;ccedil;eşitli vakaların &amp;ccedil;&amp;ouml;z&amp;uuml;me ulaşmasında, gerekli teknikleri uyguladıktan sonra onları anlamaya &amp;ccedil;alışmak daha &amp;ouml;ğretici olabilmekte. Merak ediyor musunuz?&lt;/p&gt;
+&lt;p&gt;Hatırlayacağınız &amp;uuml;zere &lt;a href="/post/TPL-Senkronizasyonu-Saglamak"&gt;TPL Senkronizasyonu Sağlamak &amp;ndash; 1&lt;/a&gt; başlıklı yazımız ile &lt;strong&gt;Task Parallel Library(TPL)&lt;/strong&gt; tarafında senkronizasyon kullanımını incelemeye başlamıştık. Aslında başımıza iş mi a&amp;ccedil;tık bilemiyorum ama sonu&amp;ccedil; itibariyle kritik bir konu olduğunda sanıyorum ki hepimiz hem fikiriz. &amp;Ouml;nceki yazımızda değerlendirdiğimiz senaryoda, &lt;strong&gt;lock&lt;/strong&gt; &lt;strong&gt;keyword&lt;/strong&gt; kullanımı ile izole edilmiş bir veri alanının, farklı iş par&amp;ccedil;aları tarafından nasıl g&amp;uuml;venli bir şekilde kullanılabileceğini analiz etmiştik. &amp;Uuml;stelik bu &lt;strong&gt;keyword&amp;rsquo;&lt;/strong&gt; &amp;uuml;n aslında arka planda &lt;strong&gt;Monitor&lt;/strong&gt; tipini kullandığını da &lt;strong&gt;Intermediate Language(IL)&lt;/strong&gt; kodunda g&amp;ouml;rm&amp;uuml;şt&amp;uuml;k. Elbette iş par&amp;ccedil;alarının senkronizasyonu i&amp;ccedil;in kullanılabilecek farklı tipler de s&amp;ouml;z konusudur. &lt;strong&gt;Interlocked &lt;/strong&gt;sınıfı gibi.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Interlocked Kullanımı&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;System.Threading&lt;/strong&gt; isim alanı altında yer alan &lt;strong&gt;Interlocked&lt;/strong&gt; tipine ait atomic metodlar işletim sisteminin ve donanımın &amp;ouml;zelliklerini kullanarak senkronizasyonu daha y&amp;uuml;ksek performans ile kullanmayı vaat ederler. Aşağıdaki sınıf diagramında Interlocked tipinin &amp;uuml;yleri g&amp;ouml;r&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg213_Interlocked.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg213_Interlocked" src="/pics/blg213_Interlocked_thumb.gif" alt="blg213_Interlocked" width="525" height="493" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Interlocked&lt;/strong&gt; tipi şekilden de g&amp;ouml;r&amp;uuml;leceği &amp;uuml;zere &lt;strong&gt;static&lt;/strong&gt; bir sınıftır&lt;em&gt;(Dolayısıyla sadece static &amp;uuml;yeler i&amp;ccedil;erebilir ve &amp;ouml;rneklenemez) &lt;/em&gt;Temel olarak &lt;strong&gt;Add,CompareExchange, Decrement,Exchange,Increment&lt;/strong&gt; ve &lt;strong&gt;Read&lt;/strong&gt; metodları ile bunların &lt;strong&gt;aşırı y&amp;uuml;klenmiş(Overloaded)&lt;/strong&gt; versiyonlarını i&amp;ccedil;ermektedir. Metodların genel yapısı incelendiğinde atomic fonksiyonların &lt;strong&gt;int, long,double, float, object&lt;/strong&gt; gibi tipler ile &amp;ccedil;alıştığı g&amp;ouml;r&amp;uuml;lmektedir. Dilerseniz metodların işlevsellikleri hakkında kısa bilgiler vererek ilerlemeye &amp;ccedil;alışalım.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Exchange&lt;/strong&gt; metodu ile bir değer ataması yapılabilmektedir. &lt;strong&gt;Exchange&lt;/strong&gt; metodu dikkat edileceği &amp;uuml;zere &lt;strong&gt;double, float, IntPtr, int, long &lt;/strong&gt;ve &lt;strong&gt;object&lt;/strong&gt; tipleri ile &amp;ccedil;alışmaktadır. Ayrıca generic bir versiyonu da bulunmaktadır. Bunun dışında&lt;strong&gt; 1er&lt;/strong&gt; &lt;strong&gt;arttırma&lt;/strong&gt; ve &lt;strong&gt;azaltma&lt;/strong&gt; işlemleri i&amp;ccedil;in kullanılabilecek basit &lt;strong&gt;Increment&lt;/strong&gt; ve &lt;strong&gt;Decrement&lt;/strong&gt; metodları mevcuttur. Ayrıca &lt;strong&gt;Int32&lt;/strong&gt; veya &lt;strong&gt;Int64&lt;/strong&gt; tipinden sayısal değerleri toplayan &lt;strong&gt;Add&lt;/strong&gt; metoduna da sahiptir. &lt;strong&gt;Interlocked&lt;/strong&gt; tipinin kullanışlı olan metodlarından birisi de &lt;strong&gt;CompareExchange&lt;/strong&gt; fonksiyonudur. Bu fonksiyon, parametre olarak gelen sayısal değerlerin eşitliğini kontrol etmekte ve aynı iseler &lt;strong&gt;Exchange&lt;/strong&gt; işlemini ger&amp;ccedil;ekleştirmektedir. Aşağıdaki kod par&amp;ccedil;asında &lt;strong&gt;Interlocked&lt;/strong&gt; i&amp;ccedil;in &amp;ouml;rnek bir kullanım s&amp;ouml;z konusudur.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Threading; 
+using System.Threading.Tasks;
+
+namespace TPLSynchronization 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            for (int i = 0; i &amp;lt; 10; i++) 
+            { 
+                TestMethod(); 
+            }   
+        }
+
+        static void TestMethod() 
+        { 
+            Task[] tasks = new Task[5]; 
+            Plane f14Tomcat = new Plane();          
+
+            for (int i = 0; i &amp;lt; 5; i++) 
+            { 
+                tasks[i] = new Task(() =&amp;gt; 
+                    { 
+                        for (int j = 0; j &amp;lt; 12500; j++) 
+                        { 
+                            Interlocked.Exchange(ref f14Tomcat.Altitude, (j+1)* 10); 
+                        }                        
+                    } 
+                ); 
+            }
+
+            foreach (Task task in tasks) 
+            { 
+                task.Start(); 
+            }
+
+            Task.WaitAll(tasks);
+
+            Console.WriteLine("{0}",f14Tomcat.Altitude); 
+        }
+
+        class Plane 
+        { 
+            public int Altitude; 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Plane&lt;/strong&gt; sınıfı i&amp;ccedil;erisinde &lt;strong&gt;Altitude&lt;/strong&gt; isimli &lt;strong&gt;int&lt;/strong&gt; tipinden bir &lt;strong&gt;Alan(Field)&lt;/strong&gt; yer almaktadır. Bu değer ilgili &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rnekleri tarafından izole edilen yerel değişken olarak ele alınmaktadır. Dikkat edileceği &amp;uuml;zere &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneklerinin oluşturulduğu ifade i&amp;ccedil;erisinde yer alan kod bloğundan &lt;strong&gt;Exchange&lt;/strong&gt; metodu kullanılarak &lt;strong&gt;Altitude&lt;/strong&gt; değerinin &lt;strong&gt;(j+1)*10&lt;/strong&gt; birim kadar arttırılması sağlanmaktadır. Bu işlem &lt;strong&gt;5&lt;/strong&gt; ayrı &lt;strong&gt;Task&lt;/strong&gt; tarafından ger&amp;ccedil;ekleştirilmektedir ve bildiğiniz &amp;uuml;zere senkronizasyon i&amp;ccedil;in bir tedbir alınmadığı takdirde, her bir deneme de sonu&amp;ccedil;lar farklı olacaktır. &amp;Ouml;rnek uygulamanın &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg213_Test1.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg213_Test1" src="/pics/blg213_Test1_thumb.gif" alt="blg213_Test1" width="264" height="170" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;TestMethod&lt;/strong&gt; i&amp;ccedil;in yapılan &lt;strong&gt;10 ayrı denemenin sonucuda aynıdır&lt;/strong&gt;. Bu &amp;ouml;rnekte &lt;strong&gt;Exchange&lt;/strong&gt; metodu kullanılmıştır. Ancak bazen &amp;ccedil;ok daha basit işlemler s&amp;ouml;z konusu olabilir. S&amp;ouml;z gelimi &lt;strong&gt;1er arttırma&lt;/strong&gt; veya &lt;strong&gt;azaltma&lt;/strong&gt; gibi. Bu durumda &lt;strong&gt;Interlocked&lt;/strong&gt; tipinin &lt;strong&gt;static Increment&lt;/strong&gt; veya &lt;strong&gt;Decrement&lt;/strong&gt; metodlarını kullanaraktan da gerekli senkronizasyonu sağlayabiliriz. &amp;Ouml;rneğimizde &lt;strong&gt;Altitude&lt;/strong&gt; değerini &lt;strong&gt;10000&lt;/strong&gt; kez &lt;strong&gt;1er birim arttırmak&lt;/strong&gt; i&amp;ccedil;in yapmamız gereken tek şey kodda aşağıdaki değişikliği yapmaktan ibarettir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg213_Test2.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg213_Test2" src="/pics/blg213_Test2_thumb.gif" alt="blg213_Test2" width="545" height="408" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Bu kodun &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı ise aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg213_Test2Runtime.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg213_Test2Runtime" src="/pics/blg213_Test2Runtime_thumb.gif" alt="blg213_Test2Runtime" width="280" height="169" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Yanlız &lt;strong&gt;Interlocked&lt;/strong&gt; tipinin atomic fonksiyonları g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında &amp;uuml;zerinde işlem yapılan asıl değişkenlerin &lt;strong&gt;ref&lt;/strong&gt; tipinden aktarıldığı g&amp;ouml;r&amp;uuml;lmektedir. Bu durumda &lt;strong&gt;Plane&lt;/strong&gt; tipinin &lt;strong&gt;Altitude&lt;/strong&gt; isimli &lt;strong&gt;alanının(Field)&lt;/strong&gt;, &lt;strong&gt;&amp;ouml;zellik(Property) &lt;/strong&gt;olarak tasarlanması bir sorun teşkil etmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg213_Error.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg213_Error" src="/pics/blg213_Error_thumb.gif" alt="blg213_Error" width="528" height="214" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Bu durumda &lt;strong&gt;Altitude&lt;/strong&gt; &amp;ouml;zelliğini &lt;strong&gt;local&lt;/strong&gt; bir değişken olarak ele almak ve sonrasında &lt;strong&gt;Interlocked&lt;/strong&gt; tipinin ilgili fonksiyonlarında kullanmak gerekmektedir. Bu ama&amp;ccedil;la kod par&amp;ccedil;asını aşağıdaki gibi değiştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;static void TestMethod() 
+{ 
+	Task[] tasks = new Task[5]; 
+	Plane f14Tomcat = new Plane(); 
+	int altitude = f14Tomcat.Altitude;
+
+	for (int i = 0; i &amp;lt; 5; i++) 
+	{ 
+		tasks[i] = new Task(() =&amp;gt; 
+			{ 
+			   int result = 0; 
+				for (int j = 0; j &amp;lt; 12500; j++) 
+				{ 
+					result=Interlocked.Increment(ref altitude); 
+					//Interlocked.Exchange(ref f14Tomcat.Altitude, (j+1)* 10); 
+				} 
+				f14Tomcat.Altitude = result; 
+			} 
+		); 
+	}
+
+	foreach (Task task in tasks) 
+	{ 
+		task.Start(); 
+	}
+
+	Task.WaitAll(tasks);
+
+	Console.WriteLine("{0}",f14Tomcat.Altitude); 
+}&lt;/pre&gt;
+&lt;p&gt;Burada dikkat edilmesi gereken noktalardan birisi de, &lt;strong&gt;Increment&lt;/strong&gt; metodunun geriye bir sonu&amp;ccedil; d&amp;ouml;nd&amp;uuml;r&amp;uuml;yor olmasıdır. Bu aslında yapılan arttırma işleminin bir sonucudur. Dolayısıyla &lt;strong&gt;result&lt;/strong&gt; değerini tekrardan &lt;strong&gt;Altitude&lt;/strong&gt; &amp;ouml;zelliğine atamak yeterlidir. İşte &amp;ccedil;alışma zamanı sonu&amp;ccedil;ları.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg213_Test3.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg213_Test3" src="/pics/blg213_Test3_thumb.gif" alt="blg213_Test3" width="291" height="168" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi yine aynı sonu&amp;ccedil;lar &amp;uuml;retilmiştir. &lt;strong&gt;Ancak!!!!&lt;/strong&gt; Dikkatli olmamız da yarar vardır. Son &amp;ouml;rneğimizdeki yerel değişken taktiği ger&amp;ccedil;ekten doğru mudur? Bu kullanımı &lt;strong&gt;Increment &lt;/strong&gt;yerine &lt;strong&gt;Exchange&lt;/strong&gt; metodu i&amp;ccedil;inde yaptığımızı d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;static void TestMethod() 
+{ 
+	Task[] tasks = new Task[5]; 
+	Plane f14Tomcat = new Plane(); 
+	int altitude = f14Tomcat.Altitude;
+
+	for (int i = 0; i &amp;lt; 5; i++) 
+	{ 
+		tasks[i] = new Task(() =&amp;gt; 
+			{ 
+				int result = 0; 
+				for (int j = 0; j &amp;lt; 12500; j++) 
+				{ 
+					result=Interlocked.Exchange(ref altitude, (j+1)* 10); 
+				}                        
+				f14Tomcat.Altitude = result; 
+			} 
+		); 
+	}&lt;/pre&gt;
+&lt;p&gt;Ve &amp;ccedil;alışma zamanı sonu&amp;ccedil;ları.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg213_Test4_1.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg213_Test4_1" src="/pics/blg213_Test4_1_thumb.gif" alt="blg213_Test4_1" width="290" height="173" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;T&amp;uuml;m denemelerin aynı sonucu &amp;uuml;retmesi gayet g&amp;uuml;zel. Ancak aynı senaryonun &lt;strong&gt;Field&lt;/strong&gt; i&amp;ccedil;eren kullanımında elde ettiğimiz sonu&amp;ccedil;lar &lt;strong&gt;125000&lt;/strong&gt; dir. Oysaki aynı sonu&amp;ccedil;ları &amp;uuml;retmeleri beklenmektedir. &amp;Ouml;ncelikle aynı sonu&amp;ccedil;ları &amp;uuml;retecek kod par&amp;ccedil;asını geliştirelim. Bu ama&amp;ccedil;la kodumuzu aşağıdaki gibi g&amp;uuml;ncelleştirmemiz gerekmektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;static void TestMethod() 
+{ 
+	Task[] tasks = new Task[5]; 
+	Plane f14Tomcat = new Plane(); 
+	int altitude = f14Tomcat.Altitude;
+
+	for (int i = 0; i &amp;lt; 5; i++) 
+	{ 
+		tasks[i] = new Task(() =&amp;gt; 
+			{ 
+				int firstAltitude = f14Tomcat.Altitude; 
+				int localAltitude = firstAltitude;
+
+				for (int j = 0; j &amp;lt; 12500; j++) 
+				{ 
+					localAltitude = (j + 1) * 10;                         
+				} 
+			   int sharedAltitude=Interlocked.CompareExchange(ref altitude, localAltitude, firstAltitude); 
+		  f14Tomcat.Altitude=sharedAltitude;                      
+			} 
+		); 
+	}
+
+	foreach (Task task in tasks) 
+	{ 
+		task.Start(); 
+	}
+
+	Task.WaitAll(tasks);
+
+	Console.WriteLine("{0}",f14Tomcat.Altitude); 
+}&lt;/pre&gt;
+&lt;p&gt;Kodu bu şekilde &amp;ccedil;alıştırdığımızda istediğimiz sonu&amp;ccedil;ları elde ettiğimizi g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg213_Test4_2.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg213_Test4_2" src="/pics/blg213_Test4_2_thumb.gif" alt="blg213_Test4_2" width="267" height="171" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Koda baktığımızda &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneklenmesi sırasında &lt;strong&gt;firstAltitude&lt;/strong&gt; ve &lt;strong&gt;localAltitude&lt;/strong&gt; isimli iki değişken &amp;uuml;retildiği g&amp;ouml;r&amp;uuml;lmektedir. Bu değişkenlerden &lt;strong&gt;localAltitude&lt;/strong&gt; aslında yerel değişken olarak kullanılmaktadır. Bir başka deyişle sadece tanımlandığı &lt;strong&gt;Task&lt;/strong&gt; &amp;ouml;rneğine ait bir değişkendir. Ancak bir de &lt;strong&gt;5 Task&lt;/strong&gt; &amp;ouml;rneğinin ortaklaşa kullandıkları ve asıl amacımız olan &lt;strong&gt;Altitude&lt;/strong&gt; &amp;ouml;zelliğinin değeri s&amp;ouml;z konusudur. Bu nedenle her bir &lt;strong&gt;Task&amp;rsquo;&lt;/strong&gt; in paylaşılan değişkenin son değerini alabilmesi i&amp;ccedil;inde &lt;strong&gt;sharedAltitude&lt;/strong&gt; isimli değişken kullanılmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Task&lt;/strong&gt; g&amp;ouml;vdesi i&amp;ccedil;erisinde yer alan &lt;strong&gt;for&lt;/strong&gt; d&amp;ouml;ng&amp;uuml;s&amp;uuml; dikkat edileceği &amp;uuml;zere yerel değişkeni arttırmaktadır. &lt;strong&gt;for&lt;/strong&gt; d&amp;ouml;ng&amp;uuml;s&amp;uuml;n&amp;uuml; takip eden satırda ise &lt;strong&gt;CompareExchange&lt;/strong&gt; metoduna bir &amp;ccedil;ağrıda bulunulduğu g&amp;ouml;r&amp;uuml;lmektedir. Bu metod, paylaşımlı verinin g&amp;uuml;ncellenmesi amacıyla kullanılmaktadır. Burada paylaşımlı veri ile başlangı&amp;ccedil;taki değer arasında bir kıyaslama yapılır. &amp;Ouml;rneğimize g&amp;ouml;re eğer &lt;strong&gt;localAltitude&lt;/strong&gt; ve &lt;strong&gt;altitude &lt;/strong&gt;değerleri birbirlerine eşitse, &lt;strong&gt;localAltitude&lt;/strong&gt;&amp;rsquo; un anlık g&amp;uuml;ncel değeri &lt;strong&gt;altitude&lt;/strong&gt; i&amp;ccedil;erisinde saklanır. Aksi durumda herhangibir operasyon ger&amp;ccedil;ekleştirilmez.&lt;/p&gt;
+&lt;p&gt;Burada karşılaştırma ve veri değiş tokuşu fonksiyonellikleri s&amp;ouml;z konusudur ve her ikisi de aslında tek bir atomic operasyon olarak ele alınmaktadır. &lt;strong&gt;CompareExchange&lt;/strong&gt; metodunun d&amp;ouml;n&amp;uuml;ş&amp;uuml; aslında metoda gelen ilk parametrenin orjinal değeridir. Aslında &lt;strong&gt;Interlocked&lt;/strong&gt; tipinin bu efsane kullanımını daha net kavramak adına &lt;a href="http://msdn.microsoft.com/en-us/library/801kt583.aspx" target="_blank"&gt;MSDN&lt;/a&gt; &amp;lsquo; de ilgili i&amp;ccedil;eriğe bakmakta yarar vardır. Ben sadece kapıyı g&amp;ouml;sterebiliyorum. Oradan ge&amp;ccedil;mesi gereken kişi sizsiniz.&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2010%2f6%2fTPLSynchronization_Interlocked.rar"&gt;TPLSynchronization_Interlocked.rar (23,07 kb)&lt;/a&gt;&lt;strong&gt; [&amp;Ouml;rnek Visual Studio 2010 Ultimate S&amp;uuml;r&amp;uuml;m&amp;uuml;nde geliştirilmiş ve test edilmiştir]&lt;/strong&gt;&lt;/p&gt;</content>
+  <pubDate>2011-01-31 13:45:00</pubDate>
+  <slug>TPL-Senkronizasyonu-Saglamak-2-(Interlocked)</slug>
+  <tags>
+    <tag>tpl</tag>
+    <tag>task-parallel-library</tag>
+    <tag>synchronization-primitives</tag>
+    <tag>parallel-programming</tag>
+    <tag>net-framework-40</tag>
+    <tag>c#-40</tag>
+    <tag>interlocked</tag>
+  </tags>
+  <categories>
+    <category>Parallel Programming</category>
+  </categories>
+</post>

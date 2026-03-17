@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>C# 4.0 - Metod Overloading ve Dynamic Tipler</title>
+  <description>Bu gün kü yazımızda Dynamic tiplerin, metodların aşırı yüklenmesi(overload) durumunda nasıl bir duruma neden olduklarını incelemeye çalışıyor olacağız. Bildiğiniz üzere bir metodun aynı isme ait birden fazla versiyonu yazılabilmektedir. Bu durum kısaca metodların aşırı yüklenmesi(Overloading) olarak adlandırılmaktadır. Metodların aşırı yüklenmesindeki en büyük gayelerden birisi de, aynı amaca hizmet eden ama bunu farklı sayıda veya tipte parametre ile yerine getirebilen fonksiyonların farklı isimler ile yazılmasını engellemek ve böylece anlamsal bütünlüğü korumaktır. .Net Framework, ilk versiyonundan itibaren bu özelliği içermektedir. Çok eskiden eğitmenlik yaptığım dönemlerde, metodların aşırı yüklenmesi konusu ile ilişkili olarak verdiğim ilk örnek her zaman için Console sınıfının static WriteLine metodu olmuştur.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/pics/2010%2f2%2fblg150_Giris.jpg" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Eminim hepimiz &amp;ccedil;ocukluğumuzda en az bir kere olmak &amp;uuml;zere yediklerimizi, elimize y&amp;uuml;z&amp;uuml;m&amp;uuml;ze bulaştırmış ve kirlenmişizdir. Her ne kadar bazı şirketler reklam kapmanyalarında kirlenmek g&amp;uuml;zeldir diyerek annelerin y&amp;uuml;reğine su serpseler de, bu aslında pek ger&amp;ccedil;eği yansıtmamaktadır. Nitekim anneler,&amp;nbsp;&amp;ccedil;ocuklarının ellerini y&amp;uuml;zlerini yediklerine bulayıp etraftaki eşyalara dokunmalarını pek hoş karşılamayabilirler.&lt;/p&gt;
+&lt;p&gt;Ben şahsen bunu &amp;ccedil;ocukken bir ka&amp;ccedil; kez tecr&amp;uuml;be etmiş bir insanımdır. Yine de, yaşım hayatın yarısına merdiven dayamış olsa da, bazı zamanlarda o &amp;ccedil;ok sevdiğim kayısı marmelatlı ve &amp;uuml;st&amp;uuml; pudralı olan Berliner tatlısını elime y&amp;uuml;z&amp;uuml;me(hatta burnuma) bulaştırarak yemeyi severim&lt;em&gt;(Tabi evde ve en fazla&amp;nbsp;eşimin yanında)&lt;/em&gt;&amp;nbsp;Şimdi diyeceksiniz ki Burak Hoca gene başladı bir yiyecek ile... &lt;img title="Embarassed" src="/editors/tiny_mce3/plugins/emotions/img/smiley-embarassed.gif" alt="Embarassed" border="0" /&gt;&amp;nbsp;Yok. Aslında odaklanacağımız nokta herşeyi ele y&amp;uuml;ze bulaştırmak. Şimdi &amp;ouml;yle bir konuya dalacağız ki herşeyi karıştırıp allak bullak edip y&amp;uuml;z&amp;uuml;m&amp;uuml;ze g&amp;ouml;z&amp;uuml;m&amp;uuml;ze bulaştıracağız. &amp;Ouml;yleyse gelin hi&amp;ccedil; vakit kaybetmeden &amp;uuml;st&amp;uuml;m&amp;uuml;z&amp;uuml; biraz kirletelim &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu g&amp;uuml;nk&amp;uuml; yazımızda &lt;strong&gt;Dynamic&lt;/strong&gt; tiplerin, metodların &lt;strong&gt;aşırı y&amp;uuml;klenmesi(overload)&lt;/strong&gt; durumunda nasıl bir&amp;nbsp;duruma neden olduklarını&amp;nbsp;incelemeye &amp;ccedil;alışıyor olacağız. Bildiğiniz &amp;uuml;zere bir metodun aynı isme ait birden fazla versiyonu yazılabilmektedir. Bu durum&amp;nbsp;kısaca metodların &lt;strong&gt;aşırı y&amp;uuml;klenmesi(Overloading)&lt;/strong&gt; olarak adlandırılmaktadır. Metodların aşırı y&amp;uuml;klenmesindeki en b&amp;uuml;y&amp;uuml;k gayelerden birisi de, aynı amaca hizmet eden ama bunu farklı sayıda veya tipte parametre ile yerine getirebilen fonksiyonların farklı isimler ile yazılmasını engellemek ve b&amp;ouml;ylece anlamsal b&amp;uuml;t&amp;uuml;nl&amp;uuml;ğ&amp;uuml; korumaktır. &lt;strong&gt;.Net Framework,&lt;/strong&gt; ilk versiyonundan itibaren bu &amp;ouml;zelliği i&amp;ccedil;ermektedir. &amp;Ccedil;ok eskiden eğitmenlik yaptığım d&amp;ouml;nemlerde, metodların aşırı y&amp;uuml;klenmesi konusu ile ilişkili olarak verdiğim ilk &amp;ouml;rnek her zaman i&amp;ccedil;in &lt;strong&gt;Console&lt;/strong&gt; sınıfının &lt;strong&gt;static WriteLine&lt;/strong&gt; metodu olmuştur.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f2%2fblg150_Cw.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Şekilden de g&amp;ouml;r&amp;uuml;leceği &amp;uuml;zere,&amp;nbsp;&lt;strong&gt;WriteLine&lt;/strong&gt; metodunun farklı tipte veya sayıda parametre ile &amp;ccedil;alışabilen &lt;strong&gt;19 farklı versiyonu&lt;/strong&gt; bulunmaktadır. Burada derleme zamanı a&amp;ccedil;ısından &amp;ouml;nem arz eden konulardan birisi de, metodların hangisinin &amp;ccedil;ağırıldığının ayırt edilmesidir. İşte bu noktada&lt;strong&gt; metodun imzası(Signature)&lt;/strong&gt; adı verilen kavram devreye girmektedir. Metod imzası,&amp;nbsp;parametre sayısı veya tiplerini kapsamaktadır. Buna g&amp;ouml;re aynı tipten ama farklı sayıda parametre veya farklı tipten ama aynı sayıda parametre, &amp;ccedil;oğunlukla ge&amp;ccedil;erlidir. Upsss...&amp;Ccedil;oğunlukla mı? &lt;img title="Surprised" src="/editors/tiny_mce3/plugins/emotions/img/smiley-surprised.gif" alt="Surprised" border="0" /&gt;&amp;nbsp;Neden b&amp;ouml;yle s&amp;ouml;ylediğimi ispat etmek i&amp;ccedil;in &lt;strong&gt;C# 4&lt;/strong&gt; ile birlikte gelen &lt;strong&gt;dynamic&lt;/strong&gt; tiplerin, metodların aşırı y&amp;uuml;klenmesi sırasındaki kullanımlarına g&amp;ouml;z atmamız yeterlidir. &amp;Ouml;ncelikli olarak aşağıdaki kod par&amp;ccedil;asını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace DynamicAndOverloading
+{
+    class Program
+    {
+        static void Topla(int x) { }
+        static void Topla(int x, dynamic y) { }
+        static void Topla(dynamic x, int y) { }   
+
+        static void Main(string[] args)
+        {
+            Topla(4);
+            Topla(2,3);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Topla metodunun 3 farklı versiyonunun yazıldığı g&amp;ouml;r&amp;uuml;lmektedir. Teorimize g&amp;ouml;re, t&amp;uuml;m metodlar birbirlerinde farklıdır. Nitekim metod imzası kriterleri sağlanmaktadır. İlk Topla metodu tek parametre aldığı i&amp;ccedil;in iki parametre alan diğer versiyonları ile otomatik olarak ayrışmaktadır. Diğer yandan iki parametre alan versiyonlarda da,&amp;nbsp;parametrelerin tipleri farklıdır. Farklıdır, nitekim sıraları aynı değildir. Dolayısıyla herhangibir sorun g&amp;ouml;r&amp;uuml;nmemektedir. Oysaki daha Toplam metodunun iki parametreli versiyonunu yazarken, aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan hata mesajı ile karşılaşılır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f2%2fblg150_CompileTimeError.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Mesaja g&amp;ouml;re derleyici, &lt;strong&gt;Topla(int,dynamic) &lt;/strong&gt;ile &lt;strong&gt;Topla(dynamic,int) &lt;/strong&gt;&amp;ccedil;ağrıları arasında kararsız kalmıştır. A&amp;ccedil;ık&amp;ccedil;ası ortada tam bir belirsizlik s&amp;ouml;z konusudur. Peki bu durum size tanıdık geldi mi? Aslında &lt;strong&gt;dynamic &lt;/strong&gt;tip yerine &lt;strong&gt;object&lt;/strong&gt; tipini kullandığımızda da benzer bir sorunla karşılaşırız. Aynı &amp;ouml;rnek kod par&amp;ccedil;asında bu sefer &lt;strong&gt;dynamic&lt;/strong&gt; yerine &lt;strong&gt;object &lt;/strong&gt;tipini kullandığımızı d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f2%2fblg150_ObjectError.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Durum değişmemiştir. Derleyici yine hangi metodu &amp;ccedil;ağıracağı konusunda kararsız kalmış ve hata mesajı &amp;uuml;retilmesine sebebiyet vermiştir. Dolayısıyla program &amp;ccedil;alışmamaktadır.&lt;/p&gt;
+&lt;p&gt;Bu noktada metodların aşırı y&amp;uuml;klenmesinde &lt;strong&gt;object&lt;/strong&gt; tipi ile &lt;strong&gt;dynamic&lt;/strong&gt; tiplerin benzer bir davranışa neden olduklarını d&amp;uuml;ş&amp;uuml;nebiliriz. Ancak bunun ispatını da yaparsak ballı kaymaklı tap taze beyaz ekmek yemiş kadar oluruz. &lt;img title="Laughing" src="/editors/tiny_mce3/plugins/emotions/img/smiley-laughing.gif" alt="Laughing" border="0" /&gt;&amp;nbsp;Şimdi durumu net bir şekilde ispatlamak adına kodu aşağıdaki gibi değiştirelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace DynamicAndOverloading
+{
+    class Program
+    {
+        static void Topla(int x) { }
+        static void Topla(int x, dynamic y) { }
+        //static void Topla(dynamic x, int y) { }  // Yorum satırı yaptık 
+
+        static void Main(string[] args)
+        {
+            Topla(4);
+            Topla(2,3);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu durumda program kodu başarılı bir şekilde derlenecektir. Şimdi belki de uzun zamandır yanına uğramadığımız &lt;a title="Red Gates .Net Reflector" href="http://www.red-gate.com/products/reflector/" target="_blank"&gt;Red Gates .Net Reflector&lt;/a&gt; aracını a&amp;ccedil;alım ve program kodumuzun i&amp;ccedil;eriğine bir bakalım. Aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan sonu&amp;ccedil;lar ile karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f2%2fblg150_Reflector1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkatinizi &amp;ccedil;eken bir şey oldu mu? &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Topla&lt;/strong&gt; metodunun iki parametre alan versiyonunun &lt;strong&gt;IL(Intermediate Language)&lt;/strong&gt; tarafına olan aktarımına g&amp;ouml;re &lt;strong&gt;dynamic&lt;/strong&gt; tip olarak tanımladığımız&lt;strong&gt; y&lt;/strong&gt; değişkeni, aslında &lt;strong&gt;Object&lt;/strong&gt; tipi olarak değerlendirilmektedir. Bir dakika... Peki &amp;ccedil;alışma zamanı bunun aslında &lt;strong&gt;dynamic&lt;/strong&gt; bir tip olduğunu nasıl anlayacaktır? Bunu&lt;strong&gt;&amp;nbsp;Topla(Int32,Object): Void&lt;/strong&gt; metodunun &lt;strong&gt;C#&lt;/strong&gt; kodu &amp;ccedil;ıktısına bakarak g&amp;ouml;rebiliriz. İşte&lt;strong&gt; .Net Reflector&lt;/strong&gt; &amp;ccedil;ıktısı.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f2%2fblg150_Reflector2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere&lt;strong&gt; object y&lt;/strong&gt; değişkeni &lt;strong&gt;[Dynamic]&lt;/strong&gt; niteliği ile imzalanmıştır. Dolayısıyla &amp;ccedil;alışma zamanı tarafından aslında &lt;strong&gt;dynamic&lt;/strong&gt; tip olarak yorumlanacaktır.&lt;/p&gt;
+&lt;p&gt;Buraya kadar her şey netleşmiş gibi d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir ve hatta yazımızın artık bitmemesi i&amp;ccedil;in bir neden olmadığı da d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Ancak yazımızı sonlandırmadan &amp;ouml;nce, &lt;strong&gt;object&lt;/strong&gt; tipinin metodların aşırı y&amp;uuml;klenmesinde yol a&amp;ccedil;tığı sorunun, diğer tipler i&amp;ccedil;inde ge&amp;ccedil;erli &lt;span style="text-decoration: underline;"&gt;olabileceğini&lt;/span&gt; g&amp;ouml;sterek ilerlememizde yarar vardır.&amp;nbsp;S&amp;ouml;z gelimi aşağıdaki şekilde yer alan kod par&amp;ccedil;asında da benzer durumun oluştuğu g&amp;ouml;r&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f2%2fblg150_DoubleError.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edilecek olursa derleyici, &lt;strong&gt;double&lt;/strong&gt; tipinin kullanıldığı &lt;strong&gt;Topla&lt;/strong&gt; metodlarından hangisinin kullanılacağı konusunda kararsız kalmaktadır. Yoksa metod imzası kavramı &amp;ccedil;atlamakta mı?&amp;nbsp;Aslında bir &amp;ccedil;&amp;ouml;z&amp;uuml;m s&amp;ouml;z konusudur. O da, doğru değerler ile ilgili metodların &amp;ccedil;ağırılmasıdır. Yani ger&amp;ccedil;ekten &lt;strong&gt;double&lt;/strong&gt; tip ile &amp;ccedil;ağrı yapılmasıdır. Bu durumda aşağıdaki kod par&amp;ccedil;ası derleme zamanı hatasına yol a&amp;ccedil;mayacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace DynamicAndOverloading
+{
+    class Program
+    {
+        static void Topla(int x) { }
+        static void Topla(int x, double y) { }
+        static void Topla(double x, int y) { }   
+
+        static void Main(string[] args)
+        {
+            Topla(4);
+            Topla(Math.PI,3);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Derleme hatası olmaması son derece doğaldır. Nitekim&lt;strong&gt; Math.PI&lt;/strong&gt; değişkeninin kullanılması,&lt;strong&gt; Topla(double x,int y)&lt;/strong&gt; metodunun tespit edilmesini sağlamaktadır. Şimdi olay biraz daha ilgin&amp;ccedil; bir hal almaya başlayacaktır. Bunun i&amp;ccedil;in program kodunu aşağıdaki şekilde g&amp;uuml;ncelleyip devam ettiğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace DynamicAndOverloading
+{
+    class Program
+    {
+        static void Topla(int x) { }
+        static void Topla(int x, dynamic y) { }
+        static void Topla(dynamic x, int y) { }   
+
+        static void Main(string[] args)
+        {
+            Topla(4);
+            Topla(Math.PI,3);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Uygulamayı derlediğimizde her hangibir hata mesajı ile karşılaşmadığımızı g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f2%2fblg150_Succeeded.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Oysa ki az &amp;ouml;nce &lt;strong&gt;dynamic&lt;/strong&gt; tipin kullanıldığı senaryoda kararsızlık yaşandığına g&amp;ouml;z&amp;uuml;m&amp;uuml;zle şahit olmuştuk. Peki ya şimdi ne oldu da sorun &amp;ccedil;&amp;ouml;z&amp;uuml;ld&amp;uuml;? Aslında sorun değerlerin farklılaştırılması ile &amp;ccedil;&amp;ouml;z&amp;uuml;m bulmuştur. Dikkat edilecek olursa&lt;strong&gt; Topla(2,3)&lt;/strong&gt; &amp;ccedil;ağrısı derleyicinin kafasının karışmasına neden olurken,&lt;strong&gt; Topla(Math.PI,3)&lt;/strong&gt; &amp;ccedil;ağrısında bu sorun oluşmamıştır. Tahmin edeceğiniz &amp;uuml;zere &lt;strong&gt;object&lt;/strong&gt; tipi i&amp;ccedil;in yaşanan sorunda farklı tipteki değerlerin kullanılması halinde &amp;ccedil;&amp;ouml;z&amp;uuml;lecektir. Ve &amp;ccedil;ok doğal &lt;strong&gt;double&lt;/strong&gt; tipini kullandığımız vaka i&amp;ccedil;in de &amp;ccedil;&amp;ouml;z&amp;uuml;m olacaktır. &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Tabi bu noktada şunu da belirtmekte yarar vardır. S&amp;ouml;z konusu metodların ayrı bir k&amp;uuml;t&amp;uuml;phane i&amp;ccedil;erisinde tanımlanması halinde, bu&amp;nbsp;k&amp;uuml;t&amp;uuml;phaneyi kullanan tiplerin yazıda ele aldığımız hatalara d&amp;uuml;şme olasılıkları bulunabilir ki bu da istenen bir durum değildir. Dolayısıyla &lt;strong&gt;C#&lt;/strong&gt;' ın temel kavramlarından birisi olarak ele alınana &lt;strong&gt;metodların aşırı y&amp;uuml;klenmesi(Overload)&lt;/strong&gt; aslında derinlerine inildiğinde dikkatli olunmayı gerektirecek vakaları i&amp;ccedil;ermektedir. Aynen yazımızda ele aldığımız &amp;uuml;zere. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;[&amp;Ouml;rnek kodlar Visual Studio 2010 Ultimate RTM s&amp;uuml;r&amp;uuml;m&amp;uuml; &amp;uuml;zerinde geliştirilmiş ve test edilmiştir]&lt;/strong&gt;&lt;/p&gt;</content>
+  <pubDate>2010-04-13 04:40:00</pubDate>
+  <slug>C-40-Metod-Overloading-ve-Dynamic-Tipler</slug>
+  <tags>
+    <tag>c#-40</tag>
+    <tag>dynamic</tag>
+    <tag>object</tag>
+    <tag>method-overloading</tag>
+  </tags>
+  <categories>
+    <category>C# 4.0</category>
+  </categories>
+</post>

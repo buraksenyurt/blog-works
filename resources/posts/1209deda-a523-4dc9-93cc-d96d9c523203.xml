@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Entity Framework 6 –Yeni Esintiler</title>
+  <description>Entity Framework geliştirilmeye ve bünyesine yeni özellikler dahil edilmeye devam etmekte. Ancak son gelişmelerden bir tanesi oldukça önemli sanırım. O da artık Entity Framework’ ün tamamen harici bir NuGet paketi olarak kullanılacağı. Bir başka deyişle .Net Framework’ ün bir parçası olmaktan çıkartılmış ve Codeplex üzerinden yürür duruma gelmiş. Son bilgileri göre EF 6x verisyonları .Net 4.0 ve üstü için kullanılabiliyor. Ayrıca Visual Studio 2010 ve sonrası IDE’ ler de ele alındığını da belirtelim.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/ef61_6.png"&gt;&lt;img style="background-image: none; float: right; padding-top: 0px; padding-left: 0px; margin: 4px 0px; display: inline; padding-right: 0px; border: 0px;" title="ef61_6" src="/pics/ef61_6_thumb.png" alt="ef61_6" width="280" height="168" align="right" border="0" /&gt;&lt;/a&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Tam da bu g&amp;uuml;n İstanbul&amp;rsquo; da hafif r&amp;uuml;zgarlı, g&amp;uuml;neşli bir bahar havası var. Binaların kapalı mekanlarında &amp;ccedil;alışan bizler i&amp;ccedil;in iki dakikalığına da olsa dışarıya &amp;ccedil;ıkmanın, r&amp;uuml;zgarın hafif esintisini ve g&amp;uuml;neşin ılık sıcaklığını hissetmenin değeri paha bi&amp;ccedil;ilemez.&lt;/p&gt;
+&lt;p&gt;Bahara olan &amp;ouml;zlemimizin tavan yaptığı bu g&amp;uuml;nlerde, başka diyarlarda da değişik esintiler s&amp;ouml;z konusu elbette. &lt;a href="/post/C-60e28093Yeni-Esintiler" target="_blank"&gt;&amp;Ouml;rneğin C# 6.0 da&lt;/a&gt;, &amp;ouml;rneğin&lt;strong&gt; Entity Framework&lt;/strong&gt;&amp;rsquo; de. Bakalım bu g&amp;uuml;nk&amp;uuml; esintiler bizi nerelere g&amp;ouml;t&amp;uuml;recek?&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Entity Framework&lt;/strong&gt; geliştirilmeye ve b&amp;uuml;nyesine yeni &amp;ouml;zellikler dahil edilmeye devam etmekte. Ancak son gelişmelerden bir tanesi olduk&amp;ccedil;a &amp;ouml;nemli sanırım. O da artık &lt;strong&gt;Entity Framework&lt;/strong&gt;&amp;rsquo; &amp;uuml;n tamamen harici bir &lt;strong&gt;NuGet&lt;/strong&gt; paketi olarak kullanılacağı. Bir başka deyişle &lt;strong&gt;.Net Framework&lt;/strong&gt;&amp;rsquo; &amp;uuml;n bir par&amp;ccedil;ası olmaktan &amp;ccedil;ıkartılmış ve &lt;strong&gt;Codeplex&lt;/strong&gt; &amp;uuml;zerinden y&amp;uuml;r&amp;uuml;r duruma gelmiş. Son bilgileri g&amp;ouml;re &lt;strong&gt;EF 6x &lt;/strong&gt;verisyonları &lt;strong&gt;.Net 4.0 &lt;/strong&gt;ve &amp;uuml;st&amp;uuml; i&amp;ccedil;in kullanılabiliyor. Ayrıca Visual Studio 2010 ve sonrası IDE&amp;rsquo; ler de ele alındığını da belirtelim. &lt;em&gt;(Standalone bir k&amp;uuml;t&amp;uuml;phane olarak değerlendirebileceğimiz Entity Framework ile ilişkili son gelişmeleri &lt;a href="http://entityframework.codeplex.com/" target="_blank"&gt;Codeplex &amp;uuml;zerindeki adreslerinden&lt;/a&gt; takip etmekte yarar var. Hatta yanılmıyorsam projeye Contributor olarak katılmanız bile m&amp;uuml;mk&amp;uuml;n olabilir)&lt;/em&gt;&lt;/p&gt;
+&lt;h1&gt;CUD Operasyonlarında Stored Procedure Kullanımı ve Interceptors&lt;/h1&gt;
+&lt;p&gt;Tabi bu &amp;ouml;nemli değişiklik dışında dikkatimiz &amp;ccedil;eken başka yenilikler de var. &amp;Ouml;rneğin artık &lt;strong&gt;context&lt;/strong&gt; &amp;uuml;zerinden &amp;ccedil;alıştırılan sorgu komutlarının yakalanması m&amp;uuml;mk&amp;uuml;n. Aslında basit bir kesme/araya girme mekanizmasından bahsediyoruz. Ya da veri ekleme, g&amp;uuml;ncelleme ve silme gibi &lt;strong&gt;CUD&lt;em&gt;(CreateUpdateDelete)&lt;/em&gt; &lt;/strong&gt;operasyonlarına ait komutlar &amp;ccedil;alıştırılırken&lt;em&gt;&lt;strong&gt;(Executing)&lt;/strong&gt;&lt;/em&gt; ve &amp;ccedil;alıştırıldıktan sonra&lt;em&gt;&lt;strong&gt;(Executed)&lt;/strong&gt;&lt;/em&gt; araya girebilme yeteneğinden. Bu noktada &amp;ccedil;ok doğal olarak devreye bir &lt;strong&gt;aray&amp;uuml;z&lt;em&gt;(Interface)&lt;/em&gt;&lt;/strong&gt; tipinin girdiğini ve &amp;ccedil;alışma zamanı &lt;strong&gt;Context&lt;/strong&gt;&amp;rsquo; ine bu aray&amp;uuml;z sayesinde yeni bir davranış bi&amp;ccedil;imi kazandırılabildiğini ifade edebiliriz.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Yine de &amp;ldquo;Bu sistem sıfırdan tasarlansaydı, geliştiricilerin belirli kurallar &amp;ccedil;er&amp;ccedil;evesinde genişletmeler yapabilmeleri nasıl sağlanırdı?&amp;rdquo; sorusuna cevap bulmaya &amp;ccedil;alışarak kendinizi geliştirebilirsiniz.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Interceptor&amp;rsquo;&lt;/strong&gt; lar dışında kayda değer bir diğer &amp;ouml;zellikle de &lt;strong&gt;CUD&lt;/strong&gt; operasyonlarının veritabanı şemasının oluşturulması noktasında &lt;strong&gt;Stored&lt;/strong&gt; &lt;strong&gt;Procedure&lt;/strong&gt; olarak da belirlenebilmesi. Buna g&amp;ouml;re bir &lt;strong&gt;Entity&lt;/strong&gt; i&amp;ccedil;in s&amp;ouml;z konusu olan tipik &lt;strong&gt;Insert&lt;/strong&gt;, &lt;strong&gt;Update&lt;/strong&gt; ve &lt;strong&gt;Delete&lt;/strong&gt; operasyonlarının bire Stored Procedure şeklinde ele alınabilmesi de m&amp;uuml;mk&amp;uuml;n hale gelmekte. &lt;em&gt;(Burada iki yaklaşım olduğunu ifade edebiliriz. CUD operasyonunu var olan bir &lt;strong&gt;Stored&lt;/strong&gt; &lt;strong&gt;Procedure&lt;/strong&gt; ile eşleştirme veya sıfırdan &amp;uuml;retilmesini sağlama)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Biz bu yazımızda s&amp;ouml;z konusu iki &amp;ouml;nemli &amp;ouml;zelliği basit bir &lt;strong&gt;Console&lt;/strong&gt; uygulaması &amp;uuml;zerinden y&amp;uuml;zeysel olarak incelemeye &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;h1&gt;Senaryo&lt;/h1&gt;
+&lt;p&gt;Elbette basit bir senaryo &amp;uuml;zerinden ilerlenmesinde yarar var. İ&amp;ccedil;inde sadece &lt;strong&gt;Product&lt;/strong&gt; isimli bir tip barındıran &lt;strong&gt;DbContext&lt;/strong&gt; t&amp;uuml;revinde, &lt;strong&gt;CUD&lt;/strong&gt; işlemlerinin &lt;strong&gt;Stored&lt;/strong&gt; &lt;strong&gt;Procedure&lt;/strong&gt; olarak ele alınmasını sağlayacağız. Bunun haricinde &amp;ccedil;alışma zamanında her hangibir &lt;strong&gt;Stored&lt;/strong&gt; &lt;strong&gt;Procedure&lt;/strong&gt; &amp;ccedil;ağrımı s&amp;ouml;z konusu olursa, &lt;strong&gt;NLog&lt;/strong&gt; aracından faydalanarak, yordama ait o anki parametre değerlerinin &lt;strong&gt;Console&lt;/strong&gt; ekranına yazdırılmasını sağlayacağız.&lt;/p&gt;
+&lt;h1&gt;&amp;Ouml;n Hazırlıklar &lt;em&gt;(Entity Framework ve NLog)&lt;/em&gt;&lt;/h1&gt;
+&lt;p&gt;Senaryomuzda iki &amp;ouml;nemli &lt;strong&gt;NuGet&lt;/strong&gt; paketine yer veriyor olacağız. &lt;strong&gt;Entity&lt;/strong&gt; &lt;strong&gt;Framework&lt;/strong&gt; ve &lt;strong&gt;NLog&lt;/strong&gt;. Makalenin yazıldığı tarih itibariyle &amp;ouml;rnekte &lt;strong&gt;EF&lt;/strong&gt;&amp;rsquo; in &lt;strong&gt;Stable&lt;/strong&gt; s&amp;uuml;r&amp;uuml;mlerinden &lt;strong&gt;6.1 &lt;/strong&gt;kullanılmıştır. &lt;strong&gt;NLog&lt;/strong&gt; paketini ise Log yazma mekanizması i&amp;ccedil;in kullanacağız.&lt;/p&gt;
+&lt;p&gt;EF 6.1 Paketinin eklenmesi;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/ef61_1_1.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="ef61_1" src="/pics/ef61_1_thumb_1.png" alt="ef61_1" width="420" height="278" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;NLog Paketlerinin eklenmesi;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/ef61_2_1.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="ef61_2" src="/pics/ef61_2_thumb_1.png" alt="ef61_2" width="420" height="278" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;NLog&lt;/strong&gt; paketlerinden &lt;strong&gt;NLog&lt;/strong&gt; &lt;strong&gt;Configuration&amp;rsquo;&lt;/strong&gt; ı eklemeyi unutmayalım. Bu sayede &lt;strong&gt;NLog.config&lt;/strong&gt; dosyası i&amp;ccedil;erisinde &lt;strong&gt;intellisense&lt;/strong&gt; &amp;ouml;zelliğinden yararlanabileceğiz.&lt;/p&gt;
+&lt;h1&gt;Konfigurasyon İ&amp;ccedil;erikleri&lt;/h1&gt;
+&lt;p&gt;Normal şartlarda &lt;strong&gt;Entity&lt;/strong&gt; &lt;strong&gt;Framework&lt;/strong&gt; varsayılan olaral local veritabanını, &lt;strong&gt;Context&lt;/strong&gt; adını baz alarak oluşturmakta ve kullanmaktadır. Ancak bilindiği &amp;uuml;zere &lt;strong&gt;connectionStrings&lt;/strong&gt; kımsında belirtilen bağlantı c&amp;uuml;mleciğinden yararlanılması da sağlanabilir. &amp;Ouml;rnekte makinede yer alan yerel &lt;strong&gt;SQL&lt;/strong&gt; sunucusu kullanılmıştır. Buna g&amp;ouml;re &lt;strong&gt;ShopContext&lt;/strong&gt; isimli &lt;strong&gt;DbContext&lt;/strong&gt; t&amp;uuml;revi i&amp;ccedil;in, &lt;strong&gt;.&lt;/strong&gt; ile belirtilen &lt;strong&gt;SQL&lt;/strong&gt; sunucusu &amp;uuml;zerinde &lt;strong&gt;YourShop&lt;/strong&gt; isimli bir veritabanı &amp;uuml;retilecektir. İşte &lt;strong&gt;App.config&lt;/strong&gt; i&amp;ccedil;eriği;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8"?&amp;gt; 
+&amp;lt;configuration&amp;gt; 
+  &amp;lt;configSections&amp;gt; 
+    &amp;lt;section name="entityFramework" type="System.Data.Entity.Internal.ConfigFile.EntityFrameworkSection, EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" requirePermission="false" /&amp;gt; 
+  &amp;lt;/configSections&amp;gt; 
+  &amp;lt;connectionStrings&amp;gt; 
+    &amp;lt;add 
+      name="ShopContext" 
+      connectionString="Data Source=.;Initial Catalog=YourShop;Integrated Security=True;MultipleActiveResultSets=True" 
+      providerName="System.Data.SqlClient" 
+      /&amp;gt; 
+  &amp;lt;/connectionStrings&amp;gt; 
+  &amp;lt;startup&amp;gt; 
+    &amp;lt;supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.5.1" /&amp;gt; 
+  &amp;lt;/startup&amp;gt; 
+  &amp;lt;entityFramework&amp;gt; 
+    &amp;lt;defaultConnectionFactory type="System.Data.Entity.Infrastructure.LocalDbConnectionFactory, EntityFramework"&amp;gt; 
+      &amp;lt;parameters&amp;gt; 
+        &amp;lt;parameter value="v11.0" /&amp;gt; 
+      &amp;lt;/parameters&amp;gt; 
+    &amp;lt;/defaultConnectionFactory&amp;gt; 
+    &amp;lt;providers&amp;gt; 
+      &amp;lt;provider invariantName="System.Data.SqlClient" type="System.Data.Entity.SqlServer.SqlProviderServices, EntityFramework.SqlServer" /&amp;gt; 
+    &amp;lt;/providers&amp;gt; 
+  &amp;lt;/entityFramework&amp;gt; 
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;NLog.config&lt;/strong&gt; dosya i&amp;ccedil;eriği ise aşağıdaki gibi oluşturulabilir. Burada &lt;strong&gt;target&lt;/strong&gt; elementinde belirtilen nitelik değerlerine g&amp;ouml;re, &lt;strong&gt;log&lt;/strong&gt;&amp;rsquo; ların renkli formatta &lt;strong&gt;Console&lt;/strong&gt; ekranına yazdırılması sağlanmaktadır. Diğer yandan &lt;strong&gt;layout&lt;/strong&gt; niteliğinde belirtilen değere g&amp;ouml;re &lt;strong&gt;log&lt;/strong&gt; mesajının başına uzun formatta bir tarih bilgisi eklenecektir&lt;em&gt;($ ile başlayan kelimelerin NLog &amp;ccedil;alışma zamanı i&amp;ccedil;in anlamlaştırılabilen birer komut olduğunu ifade edebiliriz)&lt;/em&gt; &lt;strong&gt;rules&lt;/strong&gt; elementi i&amp;ccedil;erisinde ise minimum &lt;strong&gt;Trace&lt;/strong&gt; seviyesinde olmak &amp;uuml;zere her t&amp;uuml;r bilginin log olarak yazılacağı belirtilmektedir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt; 
+&amp;lt;nlog xmlns="http://www.nlog-project.org/schemas/NLog.xsd" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&amp;gt; 
+  &amp;lt;targets&amp;gt; 
+      &amp;lt;target xsi:type="ColoredConsole" name="c" 
+            layout="${longdate} : ${message}" /&amp;gt; 
+  &amp;lt;/targets&amp;gt; 
+  &amp;lt;rules&amp;gt; 
+    &amp;lt;logger name="*" minlevel="Trace" writeTo="c" /&amp;gt; 
+  &amp;lt;/rules&amp;gt; 
+&amp;lt;/nlog&amp;gt;&lt;/pre&gt;
+&lt;h1&gt;Kod&lt;/h1&gt;
+&lt;p&gt;Artık kod tarafının inşasına başlanabilir. Temel olarak aşağıdaki &lt;strong&gt;sınıf &amp;ccedil;izelgesinde&lt;em&gt;(Class Diagram)&lt;/em&gt;&lt;/strong&gt; yer alan şema kodlanmıştır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/ef61_5.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="ef61_5" src="/pics/ef61_5_thumb.png" alt="ef61_5" width="617" height="664" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Tipik olark &lt;strong&gt;Code-First&lt;/strong&gt; yaklaşımına uygun olacak şekilde bir &lt;strong&gt;POCO&lt;/strong&gt; tipi&lt;em&gt;(Product)&lt;/em&gt; ve buna ait &lt;strong&gt;DbSet&lt;/strong&gt; i&amp;ccedil;eriğinin konuşlandırıldığı&lt;em&gt;(Products &amp;ouml;zelliği)&lt;/em&gt; bir &lt;strong&gt;DbContext&lt;/strong&gt; t&amp;uuml;revi s&amp;ouml;z konusudur. Dikkate değer kısımlar ise, &lt;strong&gt;EF&lt;/strong&gt; i&amp;ccedil;in konfigurasyon ayarlarının kod tarafında da ele alınmasını sağlayan, &lt;strong&gt;DbConfiguration&lt;/strong&gt; t&amp;uuml;revli &lt;strong&gt;ShopContextConfig&lt;/strong&gt; ve &lt;strong&gt;IDbCommandInterceptor&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml; uygulamış olan &lt;strong&gt;StoredProcedureInterceptor&lt;/strong&gt; sınıflarıdır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;StoredProcedureInterceptor&lt;/strong&gt; sınıfı, &lt;strong&gt;IDbInterceptor&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;nden gelen &lt;strong&gt;NonQueryExecuted&lt;/strong&gt;, &lt;strong&gt;NonQueryExecuting&lt;/strong&gt;, &lt;strong&gt;ReaderExecuted&lt;/strong&gt;, &lt;strong&gt;ReaderExecuting&lt;/strong&gt;, &lt;strong&gt;ScalarExecuted&lt;/strong&gt;, &lt;strong&gt;ScalarExecuting&lt;/strong&gt; metodlarını uygulamak durumundadır. Bu metodların tamamı o anki işleyişe kaynak olan &lt;strong&gt;DbCommand&lt;/strong&gt; nesne &amp;ouml;rneği ile g&amp;uuml;ncel &lt;strong&gt;Context&lt;/strong&gt; i&amp;ccedil;eriğini parametre olarak alır. Dolayısıyla, &lt;strong&gt;CUD&lt;/strong&gt; operasyonlarının &amp;ccedil;alıştırıldığı veya tamamlandığı noktalarda ilgili nesne &amp;ouml;rneklerinin durumları ele alınabilir. &amp;Ouml;zetle s&amp;ouml;z konusu operasyonlar sırasında bu metodları kullanarak araya girilebileceğini ifade edebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;DbConfiguration&lt;/strong&gt; t&amp;uuml;revli olan &lt;strong&gt;ShopConfig&lt;/strong&gt; sınıfının bu senaryodaki temel g&amp;ouml;revi, &lt;strong&gt;Interceptor&lt;/strong&gt; tiplerinin &amp;ccedil;alışma zamanına bildirimini yapmaktır. &amp;Ccedil;ok doğal olarak &lt;strong&gt;IDbInterceptor&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml; uygulayan tiplerin bir şekilde &amp;ccedil;alışma zamanına bildirilmesi gerekmektedir.&lt;/p&gt;
+&lt;p&gt;Gelelim kodun detaylarına.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Data; 
+using System.Data.Common; 
+using System.Data.Entity; 
+using System.Data.Entity.Infrastructure.Interception; 
+using System.Linq; 
+using NLog;
+
+namespace EF6_NewFeatures 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            using (ShopContext bilbosShop = new ShopContext()) 
+            { 
+                bilbosShop.Products.Add(new Product { Title = "Platsik Tabak", Quantity = 10, UnitPrice = 1.05M }); 
+                bilbosShop.Products.Add(new Product { Title = "Metal Kaşık", Quantity = 5, UnitPrice = 12 }); 
+                bilbosShop.Products.Add(new Product { Title = "Tahta Bı&amp;ccedil;ak", Quantity = 15, UnitPrice = 13.49M });
+
+                bilbosShop.SaveChanges();
+
+                var products = from p in bilbosShop.Products 
+                                      where p.UnitPrice &amp;lt; 2 
+                                      select p;
+
+                foreach (var p in products) 
+                { 
+                    p.UnitPrice+= 0.5M; 
+                }
+
+                bilbosShop.SaveChanges();                
+            }            
+        } 
+    }
+
+    class Product 
+    { 
+        public int ProductID { get; set; } 
+        public string Title { get; set; } 
+        public decimal UnitPrice { get; set; } 
+        public int Quantity { get; set; } 
+    }
+
+    class ShopContext 
+       :DbContext 
+    { 
+        public DbSet&amp;lt;Product&amp;gt; Products { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder) 
+        { 
+            modelBuilder.Entity&amp;lt;Product&amp;gt;().MapToStoredProcedures(p =&amp;gt; 
+           { 
+               p.Insert(s =&amp;gt; s.HasName("sp_InsertProduct")); 
+                p.Update(s =&amp;gt; s.HasName("sp_UpdateProduct")); 
+            });
+
+            base.OnModelCreating(modelBuilder); 
+        } 
+    }
+
+    class StoredProcedureInterceptor 
+        : IDbCommandInterceptor 
+    { 
+        Logger logger = LogManager.GetCurrentClassLogger(); 
+        public void NonQueryExecuted(DbCommand command, DbCommandInterceptionContext&amp;lt;int&amp;gt; interceptionContext) 
+        { 
+            LogCurrentProcedureState(command, "Non Query Executed"); 
+        }
+
+        public void NonQueryExecuting(DbCommand command, DbCommandInterceptionContext&amp;lt;int&amp;gt; interceptionContext) 
+        { 
+            LogCurrentProcedureState(command, "Non Query Executing"); 
+        }
+
+        public void ReaderExecuted(DbCommand command, DbCommandInterceptionContext&amp;lt;DbDataReader&amp;gt; interceptionContext) 
+        { 
+            LogCurrentProcedureState(command, "Reader Executed"); 
+        }
+
+        public void ReaderExecuting(DbCommand command, DbCommandInterceptionContext&amp;lt;DbDataReader&amp;gt; interceptionContext) 
+        { 
+            LogCurrentProcedureState(command,"Reader Executing"); 
+        }
+
+        public void ScalarExecuted(DbCommand command, DbCommandInterceptionContext&amp;lt;object&amp;gt; interceptionContext) 
+        { 
+        }
+
+        public void ScalarExecuting(DbCommand command, DbCommandInterceptionContext&amp;lt;object&amp;gt; interceptionContext) 
+        { 
+        } 
+        private void LogCurrentProcedureState(DbCommand command, string Location) 
+        { 
+            if (command.CommandType == CommandType.StoredProcedure) 
+            { 
+                logger.Trace(string.Format("{0}-&amp;gt;{1}", command.CommandText, Location)); 
+                foreach (DbParameter parameter in command.Parameters) 
+                { 
+                    logger.Info(string.Format("{0}{1}", parameter.ParameterName.PadLeft(20), parameter.Value.ToString().PadLeft(30))); 
+               } 
+            } 
+        } 
+    }
+
+    class ShopContextConfig 
+        :DbConfiguration 
+    { 
+        public ShopContextConfig() 
+        { 
+            AddInterceptor(new StoredProcedureInterceptor()); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;h1&gt;Detaylar&lt;/h1&gt;
+&lt;p&gt;&lt;strong&gt;ShopContext&lt;/strong&gt; sınıfı i&amp;ccedil;erisinde ezilen &lt;strong&gt;OnModelCreating&lt;/strong&gt; metodunda &lt;strong&gt;MapToStoredProcedures&lt;/strong&gt; isimli fonksiyonun kullanıldığı g&amp;ouml;r&amp;uuml;lmektedir. &lt;strong&gt;Product&lt;/strong&gt; isimli &lt;strong&gt;Entity&lt;/strong&gt; tipi i&amp;ccedil;in &amp;ccedil;alıştırılan metodun &lt;strong&gt;lambda&lt;/strong&gt; operat&amp;ouml;r&amp;uuml;n&amp;uuml;n kullanıldığı i&amp;ccedil;eriğinde ise &lt;strong&gt;Insert&lt;/strong&gt; ve &lt;strong&gt;Update&lt;/strong&gt; fonksiyonları i&amp;ccedil;in bire &lt;strong&gt;Stored&lt;/strong&gt; &lt;strong&gt;Procedure&lt;/strong&gt; adı verildiği g&amp;ouml;r&amp;uuml;lebilir. Buna g&amp;ouml;re &lt;strong&gt;Product&lt;/strong&gt; tipinin &lt;strong&gt;insert&lt;/strong&gt; operasyonu i&amp;ccedil;in &lt;strong&gt;sp_InsertProduct&lt;/strong&gt;, &lt;strong&gt;Update&lt;/strong&gt; operasyonu i&amp;ccedil;in &lt;strong&gt;sp_UpdateProduct&lt;/strong&gt; isimli yordamlar oluşturulacak ve kullanılacaktır. Dikkat edileceği &amp;uuml;zere &lt;strong&gt;Delete&lt;/strong&gt; operasyonu i&amp;ccedil;in bir bildirim de &lt;span style="text-decoration: underline;"&gt;bulunulmamıştır&lt;/span&gt;. Ancak &lt;strong&gt;MapToStroredProcedures&lt;/strong&gt; metodu otomatik olarak &lt;strong&gt;delete&lt;/strong&gt; operasyonu i&amp;ccedil;in &lt;strong&gt;Product_Delete&lt;/strong&gt; şeklinde bir yordam &amp;uuml;retecektir.&lt;/p&gt;
+&lt;p&gt;Senaryoya g&amp;ouml;re, &lt;strong&gt;StoredProcedureInterceptor&lt;/strong&gt; sınıfının &lt;strong&gt;NonQueryExecuting&lt;/strong&gt;, &lt;strong&gt;NonQueryExecuted&lt;/strong&gt;, &lt;strong&gt;ReaderExecuting&lt;/strong&gt; ve &lt;strong&gt;ReaderExecuted&lt;/strong&gt; isimli metodları değerlendirilmiştir. Metodlar &lt;strong&gt;LogCurrentProcedureState&lt;/strong&gt; isimli bir i&amp;ccedil; fonksiyondan yararlanmaktadır. S&amp;ouml;z konusu metod &lt;strong&gt;DbCommand&lt;/strong&gt; &amp;ouml;rneğinin tipine g&amp;ouml;re hareket etmektedir. Eğer s&amp;ouml;z konusu komut bir &lt;strong&gt;Stored&lt;/strong&gt; &lt;strong&gt;Procedure&lt;/strong&gt; ise o anki parametre değerleri ekrana yazdırılacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ShopContextConfig&lt;/strong&gt; sınıfı, &lt;strong&gt;DbConfiguration&lt;/strong&gt; sınıfından t&amp;uuml;retilmiştir. Bu t&amp;uuml;retme otomatik olarak &amp;ccedil;alışma zamanınca algınır ve yapıcı metod i&amp;ccedil;erisinde belirtilen bazı ayarların y&amp;uuml;r&amp;uuml;t&amp;uuml;lmesi sağlanır. Burada &lt;strong&gt;AddInterceptor&lt;/strong&gt; isimli metoddan yararlanılmaktadır. İlgili fonksiyon tahmin edileceği &amp;uuml;zere parametre olarak yeni bir &lt;strong&gt;StoredProcedureInterceptor&lt;/strong&gt; &amp;ouml;rneğini alır. Yapıcı metod i&amp;ccedil;erisinde ele alınabilecek farklı konfigurasyon ayarlamaları da s&amp;ouml;z konusudur. &lt;em&gt;(Bunların neler olduğunu keşfetmek i&amp;ccedil;in this anahtar kelimesini yazıp noktaya basmanızı &amp;ouml;nerebilirim)&lt;/em&gt;&amp;nbsp;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;DbConfiguration t&amp;uuml;revli tipler sayesinde, DbContext &amp;ouml;rneklerinin konfigurasyon bazındaki ayarları kod &amp;uuml;zerinden yapılabilir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1&gt;&amp;Ccedil;alışma Zamanı Sonu&amp;ccedil;ları&lt;/h1&gt;
+&lt;p&gt;Uygulama &amp;ccedil;alıştırıldığında aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan sonu&amp;ccedil;ların elde edildiği g&amp;ouml;r&amp;uuml;lebilir. Aslında 3 adet Product &amp;ouml;rneği eklenmekte ve birim fiyatı 2 birimin altında olanlar i&amp;ccedil;in bir g&amp;uuml;ncelleme yapılmaktadır. Tabi &amp;ouml;rnekteki ama&amp;ccedil; bu &lt;strong&gt;CUD&lt;/strong&gt; işlemlerinin oluştuğu anlarda parametre değerlerinin yakalanmasıdır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/ef61_3.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="ef61_3" src="/pics/ef61_3_thumb.png" alt="ef61_3" width="588" height="451" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;Main&lt;/strong&gt; metodu i&amp;ccedil;erisinde ger&amp;ccedil;ekleştirilen yeni &amp;uuml;r&amp;uuml;n ekleme ve g&amp;uuml;ncelleme işlemlerine karşılık y&amp;uuml;r&amp;uuml;t&amp;uuml;len &lt;strong&gt;Stored&lt;/strong&gt; &lt;strong&gt;Procedure&lt;/strong&gt; &amp;ccedil;ağrıları yakalanmış ve o andaki parametre değerleri &lt;strong&gt;Console&lt;/strong&gt; ekranına yazdırılmıştır.&lt;/p&gt;
+&lt;h1&gt;Peki ya Veritabanı Durumu?&lt;/h1&gt;
+&lt;p&gt;Veritabanına bakılırsa &lt;strong&gt;Products &lt;/strong&gt;isimli bir tablonun ve &lt;strong&gt;CUD&lt;/strong&gt; operasyonlarına karşılık ilgili &lt;strong&gt;stored procedure&lt;/strong&gt;&amp;rsquo; lerin oluşturulduğu g&amp;ouml;zlemlenir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/ef61_4.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="ef61_4" src="/pics/ef61_4_thumb.png" alt="ef61_4" width="562" height="398" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Yordamlara ait Script&amp;rsquo; ler ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;Product_Delete isimli yordam i&amp;ccedil;in;&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;USE [YourShop] 
+GO 
+/****** Object:  StoredProcedure [dbo].[Product_Delete]    Script Date: 04/09/2014 11:09:01 ******/ 
+SET ANSI_NULLS ON 
+GO 
+SET QUOTED_IDENTIFIER ON 
+GO 
+ALTER PROCEDURE [dbo].[Product_Delete] 
+    @ProductID [int] 
+AS 
+BEGIN 
+    DELETE [dbo].[Products] 
+    WHERE ([ProductID] = @ProductID) 
+END&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Delete&lt;/strong&gt; yordamında beklendiği gibi &lt;strong&gt;ProductID&amp;rsquo;&lt;/strong&gt; nin parametre olarak değerlendirildiği bir script s&amp;ouml;z konusudur. Nitekim &lt;strong&gt;Product&lt;/strong&gt; tipinin &lt;strong&gt;ProductID&lt;/strong&gt; &amp;ouml;zelliği tablo tarafında &lt;strong&gt;Primary&lt;/strong&gt; &lt;strong&gt;Key&lt;/strong&gt; alandır.&lt;/p&gt;
+&lt;p&gt;sp_InsertProduct isimli yordam i&amp;ccedil;in;&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;USE [YourShop] 
+GO 
+/****** Object:  StoredProcedure [dbo].[sp_InsertProduct]    Script Date: 04/09/2014 11:08:43 ******/ 
+SET ANSI_NULLS ON 
+GO 
+SET QUOTED_IDENTIFIER ON 
+GO 
+ALTER PROCEDURE [dbo].[sp_InsertProduct] 
+    @Title [nvarchar](max), 
+    @UnitPrice [decimal](18, 2), 
+    @Quantity [int] 
+AS 
+BEGIN 
+    INSERT [dbo].[Products]([Title], [UnitPrice], [Quantity]) 
+    VALUES (@Title, @UnitPrice, @Quantity) 
+    
+    DECLARE @ProductID int 
+   SELECT @ProductID = [ProductID] 
+    FROM [dbo].[Products] 
+    WHERE @@ROWCOUNT &amp;gt; 0 AND [ProductID] = scope_identity() 
+    
+    SELECT t0.[ProductID] 
+    FROM [dbo].[Products] AS t0 
+    WHERE @@ROWCOUNT &amp;gt; 0 AND t0.[ProductID] = @ProductID 
+END&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Insert&lt;/strong&gt; operasyonunda yeni &amp;uuml;r&amp;uuml;n&amp;uuml;n eklenmesini takiben, &lt;strong&gt;ProductID&lt;/strong&gt; i&amp;ccedil;in oluşturulan otomatik &lt;strong&gt;Identity &lt;/strong&gt;değerinin geri d&amp;ouml;nd&amp;uuml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; g&amp;ouml;zlemlenmektedir.&lt;/p&gt;
+&lt;p&gt;sp_UpdateProduct i&amp;ccedil;in;&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;USE [YourShop] 
+GO 
+/****** Object:  StoredProcedure [dbo].[sp_UpdateProduct]    Script Date: 04/09/2014 11:08:23 ******/ 
+SET ANSI_NULLS ON 
+GO 
+SET QUOTED_IDENTIFIER ON 
+GO 
+ALTER PROCEDURE [dbo].[sp_UpdateProduct] 
+   @ProductID [int], 
+    @Title [nvarchar](max), 
+   @UnitPrice [decimal](18, 2), 
+    @Quantity [int] 
+AS 
+BEGIN 
+    UPDATE [dbo].[Products] 
+    SET [Title] = @Title, [UnitPrice] = @UnitPrice, [Quantity] = @Quantity 
+    WHERE ([ProductID] = @ProductID) 
+END&lt;/pre&gt;
+&lt;p&gt;Update ifadesinde aynen Delete ifadesinde olduğu gibi ProductID isimli Primary Key alandan yararlanılmaktadır.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Title isimli alanın kullanıldığı parametrelerin nvarchar(max) tipinden tanımlandığı g&amp;ouml;zden ka&amp;ccedil;mamalıdır. Bu normaldir nitekim Title alanı Products tablosu i&amp;ccedil;inde bu şekilde oluşturulmuştur. Halbuki bu alanın &amp;ouml;rneğin 50 karakter uzunluğunda olması daha uygun olabilir. Code-First yaklaşımını kullandığımız bu &amp;ouml;rnek senaryoda bu kriteri nasıl sağlarsınız? İşte size g&amp;uuml;zel bir antrenman sorusu.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1&gt;Sonu&amp;ccedil;&lt;/h1&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;CUD&lt;/strong&gt; operasyonlarının icrası noktasında araya girerek bir takım iş kurallarının işletilmesi m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Hatta &amp;ouml;rnek senaryoda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &lt;strong&gt;Log&amp;rsquo;&lt;/strong&gt; lamanın daha kural bazlı işlenmesi i&amp;ccedil;in bu kesmeler ideal olabilir. Diğer yandan &lt;strong&gt;CUD&lt;/strong&gt; operasyonlarının &lt;strong&gt;Stored&lt;/strong&gt; &lt;strong&gt;Procedure&lt;/strong&gt; olarak inşa edilebilmesi, ilgili fonksiyonelliklerin veritabanı tarafında birer yordam nesnesi olarak değerlendirilebilmesi anlamına gelmektedir. Ayrıca parametre yapıları doğru ise &lt;strong&gt;DB&lt;/strong&gt; tarafında var olan &lt;strong&gt;SP&amp;rsquo;&lt;/strong&gt; lerin &lt;strong&gt;map&lt;/strong&gt; edilmesi de m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Bu durumda &lt;strong&gt;Db&lt;/strong&gt; tarafındaki &lt;strong&gt;SP&amp;rsquo;&lt;/strong&gt; ler i&amp;ccedil;erisinde yer alan ve DB&amp;rsquo; ye &amp;ouml;zg&amp;uuml; bir takım ifadelerin bu basit &lt;strong&gt;CUD&lt;/strong&gt; operasyonları sırasında değerlendirilebilmesi de s&amp;ouml;z konusudur.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Entity&lt;/strong&gt; &lt;strong&gt;Framework&lt;/strong&gt; tarafında geliştirmeler devam etmektedir. Codeplex &amp;uuml;zerinden izlemeye devam ediyor olacağız. Bakalım baharın geldiği şu g&amp;uuml;nlerde daha ne gibi esintilerle karşılacaşacağız. B&amp;ouml;ylece geldik bir makalemizin daha sonunda. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2014-04-08 11:09:00</pubDate>
+  <slug>Entity-Framework-6-e28093Yeni-Esintiler</slug>
+  <tags>
+    <tag>entity-framework</tag>
+    <tag>new-features</tag>
+    <tag>net</tag>
+    <tag>ef-60</tag>
+  </tags>
+  <categories>
+    <category>Entity Framework</category>
+  </categories>
+</post>

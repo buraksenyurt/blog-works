@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Excel ve Entity Framework Konuşuyor</title>
+  <description>Özellikle Sheet’ ler veya Workbook’ lar kodlanabilir birer C#(Vb.Net) dosyası olduğu için, uygulama bazında istediğimiz taklayı atma şansına sahibiz. İşte bu düşünceler ışığında yola çıktığımız ve okumakta olduğunuz yazımızda, Excel’ i, Entity Framework’ ü, C#’ ı  işin içerisine katacak ve birbirleri ile konuşmalarını sağlamaya çalışacağız. Haydi hiç vakit kaybetmeden yola koyulalım. Ama önce örnek senaryomuz...</description>
+  <content>&lt;p&gt;&lt;a href="/pics/handshake.jpg"&gt;&lt;img style="float: right; margin: 4px 0px; display: inline;" title="handshake" src="/pics/handshake_thumb.jpg" alt="handshake" width="280" height="198" align="right" /&gt;&lt;/a&gt;&lt;span style="color: #ff0000;"&gt;[Orjinal Yazım Tarihi 03-05-2013]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Artık uygulamaların birbirleri ile konuşmaları &amp;ccedil;ok ama &amp;ccedil;ok kolay. Bu ger&amp;ccedil;ekten &amp;ouml;nemli bir mesele. &amp;Ouml;zellikle farklı segmentlerden insanların bir araya geldiği bilişim toplumlarında. Kimi kullanıcı i&amp;ccedil;in &lt;strong&gt;Office Excel, Word&lt;/strong&gt; veya &lt;strong&gt;Powerpoint&lt;/strong&gt; &amp;ccedil;ok şey ifade ederken, kimi kullanıcı i&amp;ccedil;inde&lt;strong&gt; SQL Management Studio&lt;/strong&gt; ortamında hazırlanan karmaşık bir sorguya bakmak daha anlamlı olabiliyor. Ya da bir &lt;strong&gt;Web&lt;/strong&gt; sayfası &amp;uuml;zerinden alınan raporlar şirketin &lt;strong&gt;Muhasebe Şefi&lt;/strong&gt; i&amp;ccedil;in değerli iken, kimisi &lt;strong&gt;SSRS &lt;/strong&gt;ile elde edilen raporları mobil cihazında g&amp;ouml;rmeyi tercih edebiliyor.&lt;/p&gt;
+&lt;p&gt;Ancak &lt;strong&gt;Developer&lt;/strong&gt; g&amp;ouml;z&amp;uuml;yle olaya bakıldığında, her segmenti memnun edecek şekilde geliştirme yapması beklendiği olduk&amp;ccedil;a aşikar. Bu sebepten, farklı uygulamaların birbirleriyle rahat&amp;ccedil;a konuşabilmeleri &amp;ouml;nemli bir mesele olarak karşımıza &amp;ccedil;ıkıyor. &lt;strong&gt;Visual Studio 2012&lt;/strong&gt; tarafında olaya baktığımızda bir &lt;strong&gt;Office&lt;/strong&gt; uygulamasının, &amp;ouml;nceki s&amp;uuml;r&amp;uuml;mlere g&amp;ouml;re &lt;strong&gt;.Net Framework&lt;/strong&gt; ile daha y&amp;uuml;ksek seviyede etkileşime girerek tasarlanabilmesi/geliştirilebilmesi de pekala m&amp;uuml;mk&amp;uuml;n.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;zellikle &lt;strong&gt;Sheet&lt;/strong&gt;&amp;rsquo; ler veya &lt;strong&gt;Workbook&lt;/strong&gt;&amp;rsquo; lar kodlanabilir birer &lt;strong&gt;C#(&lt;/strong&gt;&lt;strong&gt;Vb.Net)&lt;/strong&gt; dosyası olduğu i&amp;ccedil;in, uygulama bazında istediğimiz taklayı atma şansına sahibiz. İşte bu d&amp;uuml;ş&amp;uuml;nceler ışığında yola &amp;ccedil;ıktığımız ve okumakta olduğunuz yazımızda, &lt;strong&gt;Excel&lt;/strong&gt;&amp;rsquo; i, &lt;strong&gt;Entity Framework&amp;rsquo;&lt;/strong&gt; &amp;uuml;, &lt;strong&gt;C#&lt;/strong&gt;&amp;rsquo; ı&amp;nbsp; işin i&amp;ccedil;erisine katacak ve birbirleri ile konuşmalarını sağlamaya &amp;ccedil;alışacağız. Haydi hi&amp;ccedil; vakit kaybetmeden yola koyulalım. Ama &amp;ouml;nce &amp;ouml;rnek senaryomuz &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_193.png" alt="Winking smile" /&gt;&lt;/p&gt;
+&lt;h1&gt;Senaryo&lt;/h1&gt;
+&lt;p&gt;Amacımız, &lt;strong&gt;Northwind&lt;/strong&gt; veritabanında bulunan 3 adet &lt;strong&gt;View&lt;/strong&gt; nesne &amp;ouml;rneğinin &lt;strong&gt;Excel&lt;/strong&gt; dok&amp;uuml;manı i&amp;ccedil;erisindeki &lt;strong&gt;Sheet&amp;rsquo;&lt;/strong&gt; ler de g&amp;ouml;sterilmesini sağlamak. Bu ama&amp;ccedil;la &lt;strong&gt;Category Sales for 1997&lt;/strong&gt;, &lt;strong&gt;Product Sales for 1997&lt;/strong&gt; ve &lt;strong&gt;Invoices&lt;/strong&gt; isimli &lt;strong&gt;View&lt;/strong&gt; nesnelerini kullanıyor olacağız. &lt;strong&gt;Sheet1&lt;/strong&gt; i&amp;ccedil;eriğini kendi kod dosyası i&amp;ccedil;erisinde &amp;uuml;retmek istiyoruz. &lt;strong&gt;Sheet2&lt;/strong&gt; ve &lt;strong&gt;Sheet3&lt;/strong&gt; i&amp;ccedil;eriklerini ise, &lt;strong&gt;Workbook&lt;/strong&gt;&amp;rsquo; a ait kod dosyasından besliyor olacağız. Bu noktada ağırlıklı olarak &lt;strong&gt;Workbook&lt;/strong&gt; ve &lt;strong&gt;Sheet&lt;/strong&gt; sınıflarının ilgili başlangı&amp;ccedil; noktalarını değerlendireceğiz. Kabaca senaryomuzu işaret eden aşağıdaki g&amp;ouml;rseli g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/ewef_8.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="ewef_8" src="/pics/ewef_8_thumb.png" alt="ewef_8" width="577" height="453" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h1&gt;Konuşan &amp;Ccedil;&amp;ouml;z&amp;uuml;m&lt;/h1&gt;
+&lt;p&gt;Dilerseniz senaryo i&amp;ccedil;erisinde tarafların g&amp;ouml;z&amp;uuml;nden olaya bakalım.&lt;/p&gt;
+&lt;h2&gt;Sheet Konuşuyor&lt;/h2&gt;
+&lt;p&gt;"Merhaba, benim adım &lt;strong&gt;Sheet1&lt;/strong&gt;. &amp;Ccedil;alıştırıldığımda &lt;strong&gt;Sheet1_Startup&lt;/strong&gt; olay metoduna bir &amp;ccedil;ağrıda bulunurum.&amp;nbsp; Ey Startup metodu, haydi işini yap derim. O da kendi i&amp;ccedil;inde&lt;strong&gt; Entity Framework&lt;/strong&gt; tabanlı &lt;strong&gt;Context&lt;/strong&gt; nesnesini kullanır ve &lt;strong&gt;1997&lt;/strong&gt; yılına ait kategori bazlı satışların verilerini, sahip olduğum h&amp;uuml;crelere teker teker aktarır&lt;img class="wlEmoticon wlEmoticon-smile" style="border-style: none;" src="/pics/wlEmoticon-smile_93.png" alt="Smile" /&gt; Onunla &amp;ccedil;ok iyi anlaşırız.&lt;/p&gt;
+&lt;h2&gt;Workbook Konuşuyor&lt;/h2&gt;
+&lt;p&gt;Merhaba, ben &lt;strong&gt;ThisWorkbook&lt;/strong&gt;. Ben sahip olduğum t&amp;uuml;m &lt;strong&gt;Sheet&lt;/strong&gt;&amp;rsquo; leri y&amp;ouml;netebilirim. &amp;Ouml;rneğin kendi &lt;strong&gt;Startup&lt;/strong&gt; metoduma, t&amp;uuml;m &lt;strong&gt;Sheet&lt;/strong&gt;&amp;rsquo; leri &amp;ccedil;eşitli yerlerden topladığı veriler ile doldurmasını s&amp;ouml;yleyebilirim. &lt;strong&gt;He-Man&lt;/strong&gt; ile aramdaki tek fark onun kılıcının olmasıdır.&lt;/p&gt;
+&lt;h1&gt;Hazırlıklar&lt;/h1&gt;
+&lt;p&gt;Dilerseniz senaryomuzu nihai sonuca ulaştırmak i&amp;ccedil;in adım adım ilerlemeye başlayalım. İlk olarak &lt;strong&gt;Visual Studio 2012&lt;/strong&gt; ortamında bir &lt;strong&gt;Excel 2010 Workbook&lt;/strong&gt; projesi oluşturmalıyız. Bu nedenle &lt;strong&gt;New Project&lt;/strong&gt; kısmında ilgili proje tipini işaretliyoruz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/ewef_7.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="ewef_7" src="/pics/ewef_7_thumb.png" alt="ewef_7" width="473" height="307" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Bu işlemin ardından &lt;strong&gt;Northwind&lt;/strong&gt; veritabanına ait &lt;strong&gt;Entity&lt;/strong&gt; i&amp;ccedil;eriğini barındıracak bir &lt;strong&gt;Class&lt;/strong&gt; &lt;strong&gt;Library&lt;/strong&gt; projesini aynı &lt;strong&gt;Solution&lt;/strong&gt; i&amp;ccedil;erisine ekleyebilir ve aşağıdaki gibi mevzuya konu olan &lt;strong&gt;View&lt;/strong&gt; nesnelerini i&amp;ccedil;eren &lt;strong&gt;Entity Data Model &lt;/strong&gt;&amp;ouml;ğesini &amp;uuml;retebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/ewef_1.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="ewef_1" src="/pics/ewef_1_thumb.png" alt="ewef_1" width="543" height="516" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;ok doğal olarak &lt;strong&gt;Excel&lt;/strong&gt; uygulamasının, s&amp;ouml;z konusu &lt;strong&gt;Class Library&lt;/strong&gt;&amp;rsquo; yi ve ayrıca &lt;strong&gt;EntityFramework&lt;/strong&gt; &lt;strong&gt;Assembly&lt;/strong&gt;&amp;rsquo; ını referans etmesi gerekmektedir. &lt;strong&gt;Solution &lt;/strong&gt;i&amp;ccedil;eriği şu an itibariyle aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/ewef_2.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="ewef_2" src="/pics/ewef_2_thumb.png" alt="ewef_2" width="284" height="312" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;HowTo_ExcelWithEF&lt;/strong&gt; uygulaması i&amp;ccedil;erisinde &lt;strong&gt;Workbook&lt;/strong&gt; ve s&amp;ouml;z konusu &lt;strong&gt;Workbook&amp;rsquo;&lt;/strong&gt; a ait &lt;strong&gt;Sheet&lt;/strong&gt;&amp;rsquo; ler i&amp;ccedil;in birer kod dosyası bulunmaktadır. Bu kod dosyaları i&amp;ccedil;erisindeki pek &amp;ccedil;ok olay metoduna m&amp;uuml;dahale edebilir ve &amp;ccedil;alışma zamanını kontrol altına alabiliriz ki &amp;ouml;rneğimizde de benzer bir işi ger&amp;ccedil;ekleştiriyor olacağız.&lt;/p&gt;
+&lt;p&gt;Kritik noktalardan birisi de, &lt;strong&gt;Entity&lt;/strong&gt; k&amp;uuml;t&amp;uuml;phanesini kullanacak &amp;ccedil;alıştırılabilir uygulamanın, &lt;strong&gt;Connection&lt;/strong&gt; &lt;strong&gt;String&lt;/strong&gt; bilgisine sahip olması zorunluluğudur. Bu nedenle &lt;strong&gt;NorthwindLibrary&lt;/strong&gt; i&amp;ccedil;erisindeki &lt;strong&gt;App.Config&lt;/strong&gt; dosyasına ait &lt;strong&gt;Connection&lt;/strong&gt; &lt;strong&gt;String&lt;/strong&gt; bilgisini, &lt;strong&gt;HowTo_ExcelWithEF&lt;/strong&gt; uygulamasında da kullanmalıyız.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt; 
+&amp;lt;configuration&amp;gt; 
+  &amp;lt;connectionStrings&amp;gt; 
+    &amp;lt;add name="NorthwindEntities" connectionString="metadata=res://*/NorthwindModel.csdl|res://*/NorthwindModel.ssdl| res://*/NorthwindModel.msl;provider=System.Data.SqlClient;provider connection string="data source=.;initial catalog=Northwind;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework"" providerName="System.Data.EntityClient" /&amp;gt; 
+  &amp;lt;/connectionStrings&amp;gt; 
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Artık kodlama tarafını tamamlayabiliriz. İlk olarak &lt;strong&gt;Sheet1.cs&lt;/strong&gt; i&amp;ccedil;eriğini aşağıdaki gibi geliştirdiğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using NorthwindLibrary; 
+using System.Linq;
+
+namespace HowTo_ExcelWithEF 
+{ 
+    public partial class Sheet1 
+    { 
+        private void Sheet1_Startup(object sender, System.EventArgs e) 
+        { 
+            using(NorthwindEntities context=new NorthwindEntities()) 
+            { 
+                var categoryBasedSales = from s in context.Category_Sales_for_1997 
+                            orderby s.CategorySales descending 
+                            select new { 
+                                s.CategoryName, s.CategorySales 
+                            };
+
+                int rowIndex = 1; 
+                
+                Cells[rowIndex, 1] = "Kategori"; 
+                Cells[rowIndex, 2]= "Satışlar";
+
+                Cells[rowIndex, 1].Font.Bold = true; 
+                Cells[rowIndex, 2].Font.Bold = true;
+
+                foreach (var sale in categoryBasedSales) 
+                { 
+                    rowIndex++; 
+                    Cells[rowIndex, 1]= sale.CategoryName; 
+                    Cells[rowIndex, 2]= sale.CategorySales; 
+                } 
+            } 
+        }
+
+        private void Sheet1_Shutdown(object sender, System.EventArgs e) 
+        { 
+        }
+
+        #region VSTO Designer generated code
+
+        /// &amp;lt;summary&amp;gt; 
+        /// Required method for Designer support - do not modify 
+        /// the contents of this method with the code editor. 
+        /// &amp;lt;/summary&amp;gt; 
+        private void InternalStartup() 
+        { 
+            this.Startup += new System.EventHandler(Sheet1_Startup); 
+            this.Shutdown += new System.EventHandler(Sheet1_Shutdown); 
+        }
+
+        #endregion
+
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Startup&lt;/strong&gt; metodunda &lt;strong&gt;context&lt;/strong&gt; nesne &amp;ouml;rneği kullanılarak ilgili &lt;strong&gt;View&lt;/strong&gt;&amp;rsquo; dan &lt;strong&gt;Anonymous &lt;/strong&gt;tipte bir nesne listesi oluşturulmaktadır. S&amp;ouml;z konusu liste &lt;strong&gt;Sheet1&lt;/strong&gt; i&amp;ccedil;erisindeki h&amp;uuml;crelere yerleştirilir. Bunun i&amp;ccedil;in &lt;strong&gt;Cells[rowIndex,columnIndex]&lt;/strong&gt; ifadesi ele alınmaktadır. Kodu yazarken dikkat edilecek olursa &lt;strong&gt;dynamic&lt;/strong&gt; &amp;ouml;zelliğinin kullanılmakta olduğu g&amp;ouml;r&amp;uuml;lebilir. Yani noktadan sonrasındaki atamalar ve bunlara ait tipler &amp;ccedil;alışma zamanında &amp;ccedil;&amp;ouml;z&amp;uuml;mlenecektir. Bu biraz performans kaybına yol a&amp;ccedil;acak olsa da şu anki senaryodaki gibi k&amp;uuml;&amp;ccedil;&amp;uuml;k veri k&amp;uuml;melerinde &amp;ouml;nemsizdir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/ewef_9.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="ewef_9" src="/pics/ewef_9_thumb.png" alt="ewef_9" width="630" height="76" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1,1&lt;/strong&gt; ve &lt;strong&gt;1,2&lt;/strong&gt; h&amp;uuml;crelerini başlıklar ile doldurduktan sonra&lt;em&gt;(Excel tarafında ilk h&amp;uuml;cre satır s&amp;uuml;tun değeri 0,0 değil 1,1 dir)&lt;/em&gt; bunların &lt;strong&gt;Bold&lt;/strong&gt; olması sağlanmıştır. Diğer yandan sonu&amp;ccedil; listesi &amp;uuml;zerinde d&amp;ouml;n&amp;uuml;lmekte ve diğer h&amp;uuml;creler, &lt;strong&gt;View&lt;/strong&gt; dan gelen veriler ile beslenmektedir. Bu kodlamaya g&amp;ouml;re veri &lt;strong&gt;Sheet1&lt;/strong&gt;&amp;rsquo; in kod dosyası da doldurulmaktadır. Pek tabi &lt;strong&gt;Sheet&lt;/strong&gt;&amp;rsquo; lerin &lt;strong&gt;Workbook&lt;/strong&gt;&amp;rsquo; a ait olay metodlarında şekillendirilmesi de s&amp;ouml;z konusudur. &lt;strong&gt;Sheet2&lt;/strong&gt; ve &lt;strong&gt;Sheet3&lt;/strong&gt; bu ama&amp;ccedil;la &lt;strong&gt;Workbook.cs&lt;/strong&gt; i&amp;ccedil;erisinde ele alınmıştır. Aynen aşağıdaki kod par&amp;ccedil;asında g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using NorthwindLibrary; 
+using System.Drawing; 
+using System.Linq;
+
+namespace HowTo_ExcelWithEF 
+{ 
+    public partial class ThisWorkbook 
+    { 
+        private void ThisWorkbook_Startup(object sender, System.EventArgs e) 
+        { 
+            using(NorthwindEntities context=new NorthwindEntities()) 
+            { 
+                #region Entity View i&amp;ccedil;eriklerinin &amp;ccedil;ekilmesi
+
+                var invoices = from i in context.Invoices 
+                               orderby i.CustomerName 
+                               select new 
+                              { 
+                                   From = i.Country + "," + i.City, 
+                                   i.CustomerID, 
+                                   i.CustomerName, 
+                                   i.OrderDate, 
+                                   ShipTo = i.ShipCountry + "," + i.ShipCity 
+                               };
+
+                var prdoductSalesFor1997 = from s in context.Product_Sales_for_1997 
+                                           orderby s.ProductSales descending 
+                                           ,s.CategoryName ascending 
+                                           ,s.ProductName ascending 
+                                           select new 
+                                           { 
+                                               Product=s.CategoryName+"-"+s.ProductName, 
+                                               s.ProductSales 
+                                           };
+
+                #endregion
+
+                #region Sheet2 nin Invoices i&amp;ccedil;eriği ile doldurulması
+
+                int rowIndex = 1;
+
+                Sheets["sheet2"].Cells[rowIndex, 1] = "From"; 
+                Sheets["sheet2"].Cells[rowIndex, 1].Font.Bold = true; 
+                Sheets["sheet2"].Cells[rowIndex, 2] = "Customer ID"; 
+                Sheets["sheet2"].Cells[rowIndex, 2].Font.Bold = true; 
+                Sheets["sheet2"].Cells[rowIndex, 3] = "Customer"; 
+                Sheets["sheet2"].Cells[rowIndex, 3].Font.Bold = true; 
+                Sheets["sheet2"].Cells[rowIndex, 4] = "Order Date"; 
+                Sheets["sheet2"].Cells[rowIndex, 4].Font.Bold = true; 
+                Sheets["sheet2"].Cells[rowIndex, 5] = "Ship To"; 
+                Sheets["sheet2"].Cells[rowIndex, 5].Font.Bold = true;
+
+                foreach (var invoice in invoices) 
+                { 
+                    rowIndex++; 
+                    Sheets["sheet2"].Cells[rowIndex, 1] = invoice.From; 
+                    Sheets["sheet2"].Cells[rowIndex, 2] = invoice.CustomerID; 
+                    Sheets["sheet2"].Cells[rowIndex, 3] = invoice.CustomerName; 
+                    Sheets["sheet2"].Cells[rowIndex, 4] = invoice.OrderDate; 
+                    Sheets["sheet2"].Cells[rowIndex, 5] = invoice.ShipTo; 
+                }
+
+                #endregion Sheet2 nin Invoices i&amp;ccedil;eriği ile doldurulması
+
+                #region Sheet3 &amp;uuml;n 1997 yılına ait satış verileri ile doldurulması
+
+                rowIndex = 1;
+
+                Sheets["sheet3"].Cells[rowIndex, 1] = "Product"; 
+                Sheets["sheet3"].Cells[rowIndex, 1].Font.Bold = true; 
+                Sheets["sheet3"].Cells[rowIndex, 2] = "Sales"; 
+                Sheets["sheet3"].Cells[rowIndex, 2].Font.Bold = true;
+
+                foreach (var sales in prdoductSalesFor1997) 
+                { 
+                    rowIndex++; 
+                    Sheets["sheet3"].Cells[rowIndex, 1] = sales.Product; 
+                    if (sales.ProductSales &amp;gt; 30000) 
+                    { 
+                        Sheets["sheet3"].Cells[rowIndex, 2].Interior.Color = Color.Black; 
+                        Sheets["sheet3"].Cells[rowIndex, 1].Interior.Color = Color.Black; 
+                        Sheets["sheet3"].Cells[rowIndex, 2].Font.Color = Color.Gold; 
+                        Sheets["sheet3"].Cells[rowIndex, 1].Font.Color = Color.Gold; 
+                    }
+
+                    Sheets["sheet3"].Cells[rowIndex, 2] = sales.ProductSales; 
+                }
+
+                #endregion Sheet3 &amp;uuml;n 1997 yılına ait satış verileri ile doldurulması 
+            }         
+        }
+
+        private void ThisWorkbook_Shutdown(object sender, System.EventArgs e) 
+        { 
+        }
+
+        #region VSTO Designer generated code
+
+        /// &amp;lt;summary&amp;gt; 
+        /// Required method for Designer support - do not modify 
+        /// the contents of this method with the code editor. 
+        /// &amp;lt;/summary&amp;gt; 
+        private void InternalStartup() 
+        { 
+            this.Startup += new System.EventHandler(ThisWorkbook_Startup); 
+            this.Shutdown += new System.EventHandler(ThisWorkbook_Shutdown); 
+        }
+
+        #endregion
+
+    } 
+}&lt;/pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Office uygulamalarını geliştirirken C# 4.0 ile birlikte gelen dynamic, Optional and Named Parameters gibi yeniliklerin işlerimizi nasıl kolaylaştırdığına bir kere daha şahit oluyoruz.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Kodlarda bizi zorlayacak bir karmaşa yoktur. İki &lt;strong&gt;View&lt;/strong&gt; sırasıyla sorgulanmakta ve elde edilen listeler ilgili &lt;strong&gt;Sheet&lt;/strong&gt;&amp;rsquo; ler deki h&amp;uuml;crelere satır satır doldurulmaktadır. &amp;Ouml;zellikle &lt;strong&gt;1997 yılına ait satış rakamları&lt;/strong&gt; alınırken &lt;strong&gt;30000 &lt;/strong&gt;birimden b&amp;uuml;y&amp;uuml;k olunması halinde, o satırın arka plan ve font renkleri değiştirilerek g&amp;ouml;ze batmaları sağlanmaktadır &lt;img class="wlEmoticon wlEmoticon-smile" style="border-style: none;" src="/pics/wlEmoticon-smile_93.png" alt="Smile" /&gt; Dikkate değer noktalar, ilgili h&amp;uuml;crelerin nasıl formatlandığı veya belirli bir &lt;strong&gt;Sheet&lt;/strong&gt;&amp;rsquo; e nasıl ulaşıldığı ile alakalıdır.&lt;/p&gt;
+&lt;h1&gt;Sonu&amp;ccedil;lar&lt;/h1&gt;
+&lt;p&gt;Uygulamayı &amp;ccedil;alıştırdığımızda &amp;ccedil;alışma zamanında bir &lt;strong&gt;Excel Workbook&lt;/strong&gt;&amp;rsquo; un a&amp;ccedil;ıldığını ve &lt;strong&gt;Sheet1, Sheet2, Sheet3&lt;/strong&gt; sayfalarının ilgili &lt;strong&gt;View&lt;/strong&gt; i&amp;ccedil;erikleri ile doldurulduğunu g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Sheet1 i&amp;ccedil;eriği kategori bazlı satış verilerl ile&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/ewef_3.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="ewef_3" src="/pics/ewef_3_thumb.png" alt="ewef_3" width="373" height="442" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Sheet 2 i&amp;ccedil;eriği M&amp;uuml;şteri faturalarıyla,&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/ewef_4.png"&gt;&lt;img style="display: inline;" title="ewef_4" src="/pics/ewef_4_thumb.png" alt="ewef_4" width="537" height="442" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;son olarak Sheet3 i&amp;ccedil;eriği de &amp;uuml;r&amp;uuml;n bazlı satış rakamlarıyla doldurulacaktır.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/ewef_5.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="ewef_5" src="/pics/ewef_5_thumb.png" alt="ewef_5" width="392" height="442" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere bir &lt;strong&gt;Excel&lt;/strong&gt; i&amp;ccedil;eriğini &lt;strong&gt;Entity Framework&lt;/strong&gt; &amp;uuml;zerinden ge&amp;ccedil;erek veri ile doldurmak son derece kolaydır. Elbette ger&amp;ccedil;ek hayat senaryoları d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde, ilgili veri i&amp;ccedil;eriğinin asenkron olarak ve hatta servisler yardımıyla doldurulması daha doğru bir yaklaşım olacaktır. Zaten &lt;strong&gt;Excel&lt;/strong&gt;&amp;rsquo; in konuşabildiği pek &amp;ccedil;ok dış d&amp;uuml;nya aracı servis bazlı veri sunmaktadır&lt;em&gt;(OData servislerinden veri &amp;ccedil;ekilmesi ve Excel i&amp;ccedil;erisinde Pivot table olarak g&amp;ouml;sterilebilmesi konusunu araştırabilirsiniz)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Tamamlanan uygulamanın herhangibir bilgisayarda veya ortamda &amp;ccedil;alıştırılabilmesi i&amp;ccedil;in aşağıdaki g&amp;ouml;rselde yer alan i&amp;ccedil;eriğin taşınması yeterli olacaktır. Elbette veritabanı bağlantısının olduğunu ve ilgili &lt;strong&gt;Northwind&lt;/strong&gt; i&amp;ccedil;eriklerine ulaşılabildiğini varsayıyoruz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/ewef_6.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="ewef_6" src="/pics/ewef_6_thumb.png" alt="ewef_6" width="263" height="228" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Size d&amp;uuml;şen &amp;ouml;rneği daha da zengilenştirmektir. &amp;Ouml;rneğin,&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;n sayıda Sheet&amp;rsquo; in doldurulması noktasında &lt;strong&gt;asenkron&lt;/strong&gt; bir işleyişin ele alınmasını sağlayabilirsiniz.&lt;/li&gt;
+&lt;li&gt;Aynı uygulamayı &lt;strong&gt;Office 2013&lt;/strong&gt; standartlarında ele alıp, &lt;strong&gt;.Net Framework 4.5&lt;/strong&gt; hedefli d&amp;uuml;ş&amp;uuml;n&amp;uuml;p, &lt;strong&gt;async&lt;/strong&gt; ve &lt;strong&gt;await&lt;/strong&gt; anahtar kelimelerini devreye sokabilirsiniz.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Excel&lt;/strong&gt;&amp;rsquo; de yapılacak olan değişikliklerin, &lt;strong&gt;Save&lt;/strong&gt; işlemleri sonrasında veri kaynağına doğru yansıtılmasını d&amp;uuml;ş&amp;uuml;nebilirsiniz.&lt;/li&gt;
+&lt;li&gt;Bazı &lt;strong&gt;View&lt;/strong&gt;&amp;rsquo; lardan yararlanarak &lt;strong&gt;Sheet&lt;/strong&gt; i&amp;ccedil;erisine &amp;ccedil;ok basit anlamda &lt;strong&gt;Chart&lt;/strong&gt;&lt;em&gt;(&amp;ouml;rneğin bir Pie Chart &amp;ccedil;ok şık durabilir)&lt;/em&gt; &amp;ccedil;izdirmeyi deneyebilirsiniz&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;vb &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_193.png" alt="Winking smile" /&gt; Burada hayal g&amp;uuml;c&amp;uuml;n&amp;uuml;z&amp;uuml; kullanmadan &amp;ouml;nce, bir &lt;strong&gt;Excel&lt;/strong&gt; uygulamasının aslında bir &lt;strong&gt;Windows&lt;/strong&gt; uygulaması olduğunu ve &lt;strong&gt;Visual Studio 2012&lt;/strong&gt; tarafında istenildiği gibi &amp;ouml;zelleştirilebildiğini d&amp;uuml;ş&amp;uuml;nmenizde yarar olacaktır. Nitekim g&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z &amp;uuml;zere aynen bir&lt;strong&gt; Windows Forms&lt;/strong&gt; uygulamasında olduğu gibi olay metodlarına girebiliyor ve &lt;strong&gt;C#&lt;/strong&gt; kodlarımızı konuşturabiliyoruz. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2013%2f3%2fHowTo_ExcelWithEF.zip"&gt;HowTo_ExcelWithEF.zip (1,20 mb)&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="color: #ff0000;"&gt;[Orjinal Yazım Tarihi 03-05-2013]&lt;/span&gt;&lt;/p&gt;</content>
+  <pubDate>2013-06-30 17:57:00</pubDate>
+  <slug>Excel-ve-Entity-Framework-Konusuyor</slug>
+  <tags>
+    <tag>entity-framework</tag>
+    <tag>excel</tag>
+    <tag>office-interop</tag>
+    <tag>office-development</tag>
+    <tag>visual-studio-2012</tag>
+    <tag>cells</tag>
+  </tags>
+  <categories>
+    <category>Office Development</category>
+  </categories>
+</post>

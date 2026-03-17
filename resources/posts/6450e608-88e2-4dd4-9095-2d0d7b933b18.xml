@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Daha Verimli Konfigürasyon Yönetimi (.Net Core)</title>
+  <description>.Net core'da konfigurasyon bilgileri varsayılan olarak json formatlı olarak tutulur(appsettings.json) Burada çalışma zamanına özgü varsayılan parametreler dışında özel konfigurasyon içeriklerini tutmak da mümkündür. Hatta istersek birden fazla konfigurasyon dosyasını da bir arada kullanabiliriz. Her ikisini uygulamak da oldukça kolay aslında. Nasıl mı? Gelin birlikte bakalım.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2018/09/easy_config_0.jpg" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Epey zamandır&amp;nbsp;onbeş yaşından b&amp;uuml;y&amp;uuml;k bir proje ile ilgili geliştirmeler yapmaktayız. Uygulamayı ilk kez kullanmaya başladığımda en &amp;ccedil;ok zorlandığım şeylerden birisi, k&amp;uuml;&amp;ccedil;&amp;uuml;k birimlerin testini yazmak olmuştu. Sıkılaşmış ve hatta kemikleşmiş bağımlılıklar nedeniyle basit bir fonksiyon testi i&amp;ccedil;in gerekli gereksiz bir &amp;ccedil;ok k&amp;uuml;t&amp;uuml;phanenin kullanılması gerekebiliyordu. Sahte nesneleri araya almak bir yere kadar &amp;ccedil;&amp;ouml;z&amp;uuml;m olabilirdi. Lakin entegrasyon testlerini deneyimlerken karşılaştığım bir başka sorun daha vardı. Karmaşıklık değeri y&amp;uuml;ksek konfigurasyon dosyaları. &amp;Ccedil;ok fazla konfigurasyon ayarı, &amp;ouml;zelleştirilmiş sekt&amp;ouml;r, şifrelenmiş bağlantı c&amp;uuml;mleleri ve diğer parametrik ayarlarla ilgili&amp;nbsp;bilgiler tutan web.config zaman i&amp;ccedil;erisinde&amp;nbsp;epeyce şişmanlamıştı. God Object değil ama God Configuration&lt;em&gt;(B&amp;ouml;yle bir terim yok tabii ben uydurdum)&lt;/em&gt; gibi bir anti-pattern oluşmuştu. İlk başlarda sadece gereken ayarları alarak test projesini ayağa kaldırmaya &amp;ccedil;alışmıştım. İşin sonunda ise t&amp;uuml;m web.config'i kopyalamıştım.&lt;/p&gt;
+&lt;p&gt;Oysa ki konfigurasyon y&amp;ouml;netimi de en az temiz kod yazmaya &amp;ccedil;alışmak kadar titizlikle &amp;uuml;zerinde durulması gereken bir mevzu. Bazen bir konfigurasyon dosyasını par&amp;ccedil;alamak ve bu şekilde y&amp;ouml;netmeye &amp;ccedil;alışmak &amp;ccedil;ok daha anlamlı olabilir. Hele ki ortamların test, pre-prod ve prod olarak ayrıldığı ve Continuous Integration/Deployment/Delivery hattı &amp;uuml;zerinde değer bulduğu bir d&amp;uuml;nyada olduk&amp;ccedil;a &amp;ouml;nemli. Microsoft .Net d&amp;uuml;nyasında &amp;ccedil;ok uzun zamandır konfigurasyon i&amp;ccedil;eriklerini efektif bir şekilde y&amp;ouml;netebiliyoruz. Pratik bir ka&amp;ccedil; bilgi ile bu y&amp;ouml;netim g&amp;uuml;c&amp;uuml;n&amp;uuml; daha da verimli hale getirebiliriz.&lt;/p&gt;
+&lt;p&gt;Bildiğiniz &amp;uuml;zere .Net core tarafında konfigurasyon bilgileri varsayılan olarak JSON formatlı olarak tutulur&lt;em&gt;(appSettings.json)&lt;/em&gt; Burada &amp;ouml;n tanımlı parametreler dışında &amp;ouml;zel konfigurasyon i&amp;ccedil;eriklerini&amp;nbsp;kullanmak da m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Hatta istersek birden fazla ve farklı formatta konfigurasyon dosyasını kullanabiliriz. Her ikisini uygulamak da olduk&amp;ccedil;a kolay aslında. Nasıl mı? Gelin birlikte bakalım. İlk olarak basit bir Web API oluşturarak işe başlayabiliriz. Amacımız kendi eklediğimiz bir sekme ve i&amp;ccedil;indeki parametreleri &amp;ccedil;alışma zamanında kullanabilmek.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet new webapi -o ConfigSample&lt;/pre&gt;
+&lt;p&gt;Varsayılan olarak appSettings.json i&amp;ccedil;eriği aşağıdaki gibi oluşur&lt;em&gt;(Tabii kullanılan .net core s&amp;uuml;r&amp;uuml;m&amp;uuml;ne g&amp;ouml;re ufak tefek farklılıklar olabilir)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Warning"
+    }
+  },
+  "AllowedHosts": "*"
+}&lt;/pre&gt;
+&lt;p&gt;Logging ve AllowedHosts isimli iki&amp;nbsp;ana sekme bulunuyor. Şimdi bu i&amp;ccedil;eriği aşağıdaki gibi değiştirelim.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;{
+  "Logging": {
+    "IncludeScopes": true,
+    "LogLevel": {
+      "Default": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "DefaultSettings": {
+    "Owner": "B&amp;amp;B Organization",
+    "Address": "One way road, Dublin, 10",
+    "Contact": "contact@BandB.com"
+  }
+}&lt;/pre&gt;
+&lt;p&gt;DefaultSettings isimli yeni bir parametre seti&amp;nbsp;ekledik. İ&amp;ccedil;erisinde Owner, Address ve Contact isimli &amp;uuml;&amp;ccedil; anahtar:değer &amp;ccedil;ifti var. Bu i&amp;ccedil;eriği kod&amp;nbsp;tarafında kullanmak i&amp;ccedil;in IConfiguration aray&amp;uuml;z&amp;uuml;nden yararlanabiliriz. &amp;Ouml;rneğin şablon ile birlikte hazır olarak gelen ValuesController&amp;nbsp;sınıfında DefaultSettings i&amp;ccedil;eriğini kullanmak istediğimizi d&amp;uuml;ş&amp;uuml;nelim. Kodları aşağıdaki gibi d&amp;uuml;zenleyerek ilerleyelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+
+namespace ConfigSample.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ValuesController
+    : ControllerBase
+    {
+        private readonly IConfiguration _config = null;
+        private readonly ILogger&amp;lt;ValuesController&amp;gt; _logger = null;
+        public ValuesController(IConfiguration config, ILogger&amp;lt;ValuesController&amp;gt; logger)
+        {
+            _config = config;
+            _logger = logger;
+        }
+        // GET api/values
+        [HttpGet]
+        public ActionResult&amp;lt;IEnumerable&amp;lt;string&amp;gt;&amp;gt; Get()
+        {
+            var contact = _config.GetValue&amp;lt;string&amp;gt;("DefaultSettings:Contact");
+            var owner = _config.GetValue&amp;lt;string&amp;gt;("DefaultSettings:Owner");
+            _logger.LogInformation($"Contact Email : {contact}\n");
+            _logger.LogInformation($"Owner : {owner}\n");
+            return new string[] { "value1", "value2" };
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;ValuesController sınıfının yapıcı metoduna&lt;em&gt;(Constructor)&lt;/em&gt; m&amp;uuml;dahale ettik. IConfiguration ve ILogger&amp;lt;ValuesController&amp;gt; aray&amp;uuml;zleri parametre olarak geliyor. Aslında &amp;ccedil;alışma zamanına enjekte edilen nesnelerin i&amp;ccedil;eriye alındığını ifade edebiliriz. Sonrasında _config ve _logger değişkenlerini diğer metodlarda kullanmamız m&amp;uuml;mk&amp;uuml;n. _logger nesnesini log bilgisi vermek i&amp;ccedil;in kullanıyoruz. DefaultSettings i&amp;ccedil;erisindeki değerleri okumak i&amp;ccedil;in {SectionName}:{KeyName} notasyonundan yararlandağımıza dikkat edelim. Değerleri GetValue metodu ile almaktayız. Eğer uygulamayı&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet run&lt;/pre&gt;
+&lt;p&gt;terminal komutu ile &amp;ccedil;alıştırıp&amp;nbsp;http://localhost:5000/api/values&amp;nbsp;adresine&amp;nbsp;HTTP Get&amp;nbsp;talebinde bulunursak appSettings i&amp;ccedil;erisindeki ilgili değerlere erişebildiğimizi g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/09/easy_config_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;div&gt;Tabii geliştireceğimiz uygulamaların &amp;ccedil;eşitli ve &amp;ccedil;ok sayıda konfigurasyon bağımlılığı olabilir ve bu bağımlılıkları mantıksal d&amp;uuml;zende ayrı dosyalar halinde tutmak isteyebiliriz. Bu durumu deneyimlemek i&amp;ccedil;in DefaultSettings i&amp;ccedil;eriğini &amp;ouml;rneğin copyrightSettings.json isimli ayrı bir dosyaya aldığımızı d&amp;uuml;ş&amp;uuml;nelim&lt;em&gt;(appSettings.json ile aynı yerde olmalarında yarar var)&lt;/em&gt;&lt;/div&gt;
+&lt;div&gt;&lt;img src="/image.axd?picture=/2018/09/easy_config_2.gif" alt="" /&gt;&lt;/div&gt;
+&lt;div&gt;copyrightSettings.json;&lt;/div&gt;
+&lt;div&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;{
+    "DefaultSettings": {
+        "Owner": "B&amp;amp;B Organization",
+        "Address": "One way road, Dublin, 10",
+        "Contact": "contact@BandB.com"
+    }
+}&lt;/pre&gt;
+Artık appSettings.json dışında yeni bir konfigurasyon dosyamız daha olduğunu&amp;nbsp;uygulama &amp;ccedil;alışma zamanına bildirmemiz gerekiyor. Bunu ger&amp;ccedil;ekleştirmenin yollarından birisi Startup.cs i&amp;ccedil;eriğini değiştirmekle m&amp;uuml;mk&amp;uuml;n. Kodu aşağıdaki gibi d&amp;uuml;zenleyelerek &amp;ouml;rneğimize devam edelim.&lt;/div&gt;
+&lt;div&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace ConfigSample
+{
+    public class Startup
+    {
+        public Startup(IHostingEnvironment env)
+        {
+            var cfgBuilder = new ConfigurationBuilder();
+            cfgBuilder.SetBasePath(env.ContentRootPath);
+            cfgBuilder.AddJsonFile("appsettings.json", false, true);
+            cfgBuilder.AddJsonFile("copyrightSettings.json", false, true);
+            //cfgBuilder.AddXmlFile
+
+            Configuration = cfgBuilder.Build();
+        }
+
+        public IConfiguration Configuration { get; }
+
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddSingleton&amp;lt;IConfiguration&amp;gt;(Configuration);
+        }
+
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseHsts();
+            }
+
+            app.UseHttpsRedirection();
+            app.UseMvc();
+        }
+    }
+}&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;Startup sınıfının yapıcı metodunda ConfigurationBuilder nesnesini kullanıyoruz. Root Path bilgisine g&amp;ouml;re AddJsonFile metodundan yararlanarak kullanmak istediğimiz konfigurasyon dosyalarını orta katmana bildiriyoruz. Son olarak ConfigurationBuilder'dan &amp;uuml;retilen IConfiguration referansını AddSingleton ile &amp;ccedil;alışma zamanı servislerine ekliyoruz.&amp;nbsp;Dikkat ederseniz yorumlanmış bir kod satırı da var. Tahmin edeceğiniz &amp;uuml;zere JSON formatlı dosyalara bağımlı değiliz. İstersek eski dostumuz XML tabanlı konfigurasyon dosyalarını da işin i&amp;ccedil;erisine katabiliriz. Bunu denemenizi &amp;ouml;neririm. Uygulamayı tekrar &amp;ccedil;alıştırıp doğru &amp;ccedil;alıştığından emin olmakta yarar var.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/09/easy_config_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Konfigurasyon y&amp;ouml;netimi her zaman i&amp;ccedil;in &amp;ouml;nemli konulardan birisi. Veritabanı bağlantı bilgileri, loglama kriterleri, &amp;ccedil;eşitli ortam parametrelerinin varsayılan değerleri, şifrelenmiş token bilgileri &amp;ccedil;oğunlukla bu dosyalar i&amp;ccedil;erisine konuluyor. Bu nedenle kod tarafında nasıl y&amp;ouml;netebileceğimizi bilmekte yarar var. Bu kısa yazımızda konfigurasyon i&amp;ccedil;erisine alacağımız &amp;ouml;zel sekmeleri nasıl kullanabileceğimizi ve i&amp;ccedil;erikleri ayrı dosyalar halinde nasıl ele alabileceğimizi incelemeye &amp;ccedil;alıştık. Umarım faydalı olmuştur. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2018-12-10 06:36:00</pubDate>
+  <slug>Net-Core-Daha-Verimli-Konfigurasyon-Yonetimi</slug>
+  <tags>
+    <tag>configuration-management</tag>
+    <tag>net-core</tag>
+    <tag>c#</tag>
+    <tag>json</tag>
+    <tag>xml</tag>
+    <tag>web-api</tag>
+    <tag>dependency-injection</tag>
+    <tag>i-configuration</tag>
+    <tag>i-logger</tag>
+    <tag>configuration-builder</tag>
+    <tag>dotnet</tag>
+  </tags>
+  <categories>
+    <category>.Net Core</category>
+  </categories>
+</post>

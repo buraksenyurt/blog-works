@@ -1,0 +1,588 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>C# 3.0 : Derinlemesine Lambda İfadeleri</title>
+  <description>C# programlama dilinin 3ncü versiyonu ile birlikte gelen önemli yeniliklerden biriside lambda(=&gt;) operatörüdür. Bu operatörün kullanıldığı ifadeler yardımıyla temsilci(delegate) oluşturulması, kod bloğunun yazılması, sonuçların alınması ve tip tahmini(Type Inference) gibi işlemlerin tek seferde gerçekleştirilmesi mümkündür.</description>
+  <content>&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Değerli Okurlarım Merhabalar,&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;C# programlama dilinin 3nc&amp;uuml; versiyonu ile birlikte gelen &amp;ouml;nemli yeniliklerden biriside &lt;strong&gt;lambda(=&amp;gt;) &lt;/strong&gt; operat&amp;ouml;r&amp;uuml;d&amp;uuml;r. Bu operat&amp;ouml;r&amp;uuml;n kullanıldığı ifadeler yardımıyla &lt;strong&gt; temsilci(delegate)&lt;/strong&gt; oluşturulması, kod bloğunun yazılması, sonu&amp;ccedil;ların alınması ve &lt;strong&gt;tip tahmini(Type Inference)&lt;/strong&gt; gibi işlemlerin tek seferde ger&amp;ccedil;ekleştirilmesi m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Bu sebepten dolayı &lt;strong&gt; LINQ(Language INtegrated Query)&lt;/strong&gt; sorgularında yer alan &lt;strong&gt;genişletme metodlarında(Extension Methods)&lt;/strong&gt; b&amp;uuml;y&amp;uuml;k &amp;ouml;neme sahiptir. Ne varki lambda operat&amp;ouml;r&amp;uuml;n&amp;uuml; kavramak i&amp;ccedil;in ona olan ihtiyacın nereden doğdunu bilmek ve nasıl bu operat&amp;ouml;re ulaşıldığını anlamak gerekmektedir. En iyi başlangı&amp;ccedil; noktası elbetteki C# dilinin ilk versiyonudur. Bu yazımızda lambda operat&amp;ouml;r&amp;uuml;n&amp;uuml;n getirdiği avantajları g&amp;ouml;rmeye &amp;ccedil;alışırken derinlemesinede inceliyor olacağız. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Herşeyden &amp;ouml;nce &lt;strong&gt;C# 1.0&lt;/strong&gt; versiyonunda kullanıcı tanımlı bir tipe ait koleksiyonlar &amp;uuml;zerinde bazı sorgulamalar yapmak istediğimizi d&amp;uuml;ş&amp;uuml;nelim. C# 1.0 versiyonunda &lt;strong&gt; generic&lt;/strong&gt; mimari kavramı yoktur. Bu sebepten generic olarak t&amp;uuml;rden bağımsız ve &lt;strong&gt;.Net Framework &lt;/strong&gt;i&amp;ccedil;erisinde &amp;ouml;nceden tanımlanmış olan koleksiyonlar bulunmamaktadır. Bunun yerine elemanları her zaman &lt;strong&gt; object&lt;/strong&gt; t&amp;uuml;r&amp;uuml;nden olan &lt;strong&gt;ArrayList&lt;/strong&gt;, &lt;strong&gt;Stack&lt;/strong&gt;, &lt;strong&gt;Queue&lt;/strong&gt; gibi &lt;strong&gt;Collection&lt;/strong&gt; bazlı koleksiyonlar ile &lt;strong&gt;Hashtable&lt;/strong&gt; ve &lt;strong&gt; SortedList&lt;/strong&gt; gibi &lt;strong&gt;Dictionary&lt;/strong&gt; bazlı koleksiyonlar mevcuttur. Eğer sadece bizim istediğimiz tip ile &amp;ccedil;alışacak &lt;strong&gt;kuvvetle t&amp;uuml;rlendirilmiş bir koleksiyon(Strongly Typed Collection) &lt;/strong&gt;kullanmak istersek &lt;strong&gt;CollectionBase&lt;/strong&gt; veya &lt;strong&gt;DictionaryBase&lt;/strong&gt; &lt;strong&gt;abstract&lt;/strong&gt; sınıflarından t&amp;uuml;retme yolunu tercih edebiliriz. B&amp;ouml;ylece sadece istenilen tipler ile &amp;ccedil;alışacak bir koleksiyonumuz olur.&lt;em&gt;(Lakin bu koleksiyon &lt;strong&gt; tip g&amp;uuml;venli-type safety&lt;/strong&gt; olmasına rağmen gereksiz&lt;strong&gt; boxing ve unboxing&lt;/strong&gt; işlemlerini engellemez.) &lt;/em&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Şu an i&amp;ccedil;in asıl ama&amp;ccedil; bu koleksiyon i&amp;ccedil;erisinde yer alan tipler &amp;uuml;zerinde farklı sorgular &amp;ccedil;alıştırabilmektir. S&amp;ouml;z gelimi bir personelin bilgirini tanımlayan sınıfa ait bir koleksiyon i&amp;ccedil;erisinden, &amp;ccedil;alışanın maaşına, adına, giriş tarihine g&amp;ouml;re sorgular yaparak alt koleksiyonların &amp;ccedil;ekilmesini sağlayacak fonksiyonelliklerin olması istenebilir. Hatta bu metodarın sayısının arttırılmasınada olanak verecek şekilde esnek bir yapının geliştirilmesi istenebilir. Dolayısıyla alt koleksiyonları elde edebilmek i&amp;ccedil;in geliştirilen ortak bir metodun kullanacağı koşulsal fonksiyonelliklerin işaret edilebilmesi son derece yararlı olur. İşte bu noktada &lt;strong&gt;temsilciler(Delegates)&lt;/strong&gt; devreye girmektedir. Bu c&amp;uuml;mleler ile tam olarak neye sebebiyet verdiğimizi g&amp;ouml;rmek &amp;uuml;zere &lt;strong&gt;C# 1.0&lt;/strong&gt; dilinin yeteneklerinin kullanıldığı aşağıdaki program kodu g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk247_1.gif" alt="" width="541" height="528" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Kod i&amp;ccedil;eriği;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections;
+
+namespace DotNet1Deyken
+{
+    enum Departman
+    {
+        BilgiIslem
+        ,Yazilim
+        ,Muhasebe
+        ,InsanKaynaklari
+        ,GenelMudurluk
+    }
+
+    class Personel
+    {
+        int _id;
+        string _ad;
+        string _soyad;
+        Departman _bolumu;
+        double _maas;
+        DateTime _girisTarihi;
+
+        public DateTime GirisTarihi
+        {
+            get { return _girisTarihi; }
+            set { _girisTarihi = value; }
+        }
+
+        public string Soyad
+        {
+            get { return _soyad; }
+            set { _soyad = value; }
+        }
+
+        public double Maas
+        {
+            get { return _maas; }
+            set { _maas = value; }
+        }
+
+        internal Departman Bolumu
+        {
+            get { return _bolumu; }
+            set { _bolumu = value; }
+        }
+
+        public string Ad
+        {
+            get { return _ad; }
+            set { _ad = value; }
+        }
+
+        public int Id
+        {
+            get { return _id; }
+            set { _id = value; }
+        }
+
+        public Personel(int id, string ad, string soyad, Departman bolumu, double maas,DateTime girisTarihi)
+        {
+            Id = id;
+            Ad = ad;
+            Soyad = soyad;
+            Bolumu = bolumu;
+            Maas = maas;
+            GirisTarihi = girisTarihi;
+        }
+        public override string ToString()
+        {    
+            return String.Format("{0} {1} {2} {3} {4} {5}", Id.ToString(), Ad, Soyad.ToUpper(), Bolumu.ToString(), Maas.ToString("C2"), GirisTarihi.ToShortDateString());
+        }
+    }
+
+    class PersonelList
+        : CollectionBase
+    {
+        public void Ekle(Personel prs)
+        {
+            List.Add(prs);
+        }
+        public void Cikart(Personel prs)
+        {
+            List.Remove(prs);
+        }
+    }
+
+    delegate bool KontrolHandler(Personel p);
+
+    class Program
+    {
+        static bool DepartmaniIKmi(Personel p)
+        {
+            return p.Bolumu == Departman.GenelMudurluk;
+        }
+        static bool AdininBasHarfiBmi(Personel prs)
+        {
+            return prs.Ad[0] == 'B';
+        }
+        static bool Maas1000Uzerindemi(Personel prs)
+        {
+            return prs.Maas &amp;gt; 1000;
+        } 
+
+        static PersonelList Bul(PersonelList liste,KontrolHandler handler)
+        {
+            PersonelList sonucListesi = new PersonelList();
+            foreach (Personel prs in liste)
+            {
+                if (handler(prs))
+                    sonucListesi.Ekle(prs);
+            }
+            return sonucListesi;
+        }
+
+        static void Listele(PersonelList liste)
+        {
+            foreach (Personel prs in liste)
+                Console.WriteLine(prs.ToString());
+            Console.WriteLine("");
+        }
+
+        static void Main(string[] args)
+        {
+            PersonelList calisanlar = new PersonelList();
+    
+            calisanlar.Ekle(new Personel(1000,"Mayk","Hemır", Departman.BilgiIslem,1050,new DateTime(1979,10,1)));
+            calisanlar.Ekle(new Personel(1001,"B&amp;uuml;y&amp;uuml;k","Başkan", Departman.GenelMudurluk,53000,new DateTime(1989,2,3)));
+            calisanlar.Ekle(new Personel(1002,"EmSi","Hemmır", Departman.GenelMudurluk,13500,new DateTime(1990,2,4)));
+            calisanlar.Ekle(new Personel(1003,"Tombul","Raydır", Departman.InsanKaynaklari,2250,new DateTime(1994,8,5)));
+            calisanlar.Ekle(new Personel(1008,"Şirine","Şirin", Departman.BilgiIslem,900,new DateTime(1991,3,6)));
+            calisanlar.Ekle(new Personel(1006,"Burak","Selim", Departman.InsanKaynaklari,2250,new DateTime(1976,7,3)));
+            calisanlar.Ekle(new Personel(1004,"Osvaldo","Nartayyo", Departman.Muhasebe,3500,new DateTime(1975,6,3)));
+            calisanlar.Ekle(new Personel(1005,"Higuin","Kim", Departman.Yazilim,1250,new DateTime(1974,4,2)));
+            calisanlar.Ekle(new Personel(1007,"Karim","Cabbar", Departman.Yazilim,750,new DateTime(1975,2,7)));
+            calisanlar.Ekle(new Personel(1011, "Billl", "Geytis", Departman.Yazilim, 650, new DateTime(1976, 3, 8)));
+
+            // Departmanı Insan Kaynakları olanların bulunması
+            PersonelList sonuclar1=Bul(calisanlar, new KontrolHandler(DepartmaniIKmi));
+        
+            // İsminin baş harfi B olanların bulunması
+            PersonelList sonuclar2 = Bul(calisanlar, new KontrolHandler(AdininBasHarfiBmi));
+        
+            // Maaşı 1000 YTL &amp;uuml;zerinde olanların bulunması
+            PersonelList sonuclar3 = Bul(calisanlar, new KontrolHandler(Maas1000Uzerindemi));
+
+            Listele(sonuclar1);
+            Listele(sonuclar2);
+            Listele(sonuclar3);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;ncelikli olarak bu uzun &lt;strong&gt;Console&lt;/strong&gt; uygulaması kodlarında neler olduğuna bir bakalım. &lt;strong&gt;Personel&lt;/strong&gt; isimli sınıf bir &amp;ccedil;alışanın Id' sini, adını, soyadını, işe giriş tarihini, maaşını, departmanını ve maaşını tutacak şekilde tanımlanmıştır. Bu sınıfa ait &amp;ouml;rneklerin i&amp;ccedil;eriklerinin kolay bir şekilde &lt;strong&gt;string&lt;/strong&gt; olarak alınabilmesi i&amp;ccedil;inde &lt;strong&gt;ToString&lt;/strong&gt; metodu Personel tipi i&amp;ccedil;erisinde &lt;strong&gt;ezilmiştir(override)&lt;/strong&gt;. Personelin b&amp;ouml;l&amp;uuml;m&amp;uuml;, &lt;strong&gt;Departman&lt;/strong&gt; isimli bir &lt;strong&gt;enum&lt;/strong&gt; sabiti ile belirtilmektedir. &lt;strong&gt;PersonelList&lt;/strong&gt; isimli sınıf &lt;strong&gt;CollectionBase&lt;/strong&gt; &lt;strong&gt;abstract&lt;/strong&gt; sınıfından t&amp;uuml;retilmektedir. Bu nedenle &lt;strong&gt;Collection&lt;/strong&gt; tabanlı bir koleksiyondur. Konunun kolay anlaşılabilmesi i&amp;ccedil;in sadece &lt;strong&gt;Ekle&lt;/strong&gt; ve &lt;strong&gt;Cikart&lt;/strong&gt; isimli iki fonksiyonelliğe sahiptir. Bu metodlar sadece &lt;strong&gt;Personel&lt;/strong&gt; tipinden parametreler almaktadır. Buda zaten &lt;strong&gt;PersonelList&lt;/strong&gt; isimli koleksiyonun &lt;strong&gt;tip g&amp;uuml;venli(Type Safety)&lt;/strong&gt; olmasını sağlamaktadır. Dikkatimiz &amp;ccedil;eken tiplerden biriside &lt;strong&gt;KontrolHandler&lt;/strong&gt; isimli &lt;strong&gt; temsilcidir(delegate)&lt;/strong&gt;.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;span style="font-family: Verdana;"&gt;Temsilcileri(delegates) metodları işaret edebilecek şekilde kullanılabilen .Net tipidir. Bir temsilci işaret edebileceği metodun parametrik yapısı ile d&amp;ouml;n&amp;uuml;ş tipinide belirtmektedir.&lt;/span&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;S&amp;ouml;z konusu temsilci, &lt;strong&gt;Personel&lt;/strong&gt; tipinden bir parametre alan ve geriye bool değer d&amp;ouml;nd&amp;uuml;ren metodları işaret edecek şekilde tanımlanmıştır. Bu temsilcinin tek bir tasarım amacı vardır. Buna g&amp;ouml;re, bir Personel nesne &amp;ouml;rneğinin herhangibir şartı sağlayıp sağlamadığına dair &lt;strong&gt;true&lt;/strong&gt; veya &lt;strong&gt;false&lt;/strong&gt; değer d&amp;ouml;nd&amp;uuml;recek bir metodun işaret edilmesini sağlamaktadır. &lt;strong&gt;Peki neden b&amp;ouml;yle bir temsilciye ihtiyacımız vardır?&lt;/strong&gt; Bu sorunun cevabını &lt;strong&gt;Bul&lt;/strong&gt; isimli fonksiyon vermektedir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;static PersonelList Bul(PersonelList liste,KontrolHandler handler)
+{
+    PersonelList sonucListesi = new PersonelList();
+    foreach (Personel prs in liste)
+    {
+        if (handler(prs))
+            sonucListesi.Ekle(prs);
+    }
+    return sonucListesi;
+}&lt;/pre&gt;
+&lt;p&gt;Dikkat edilecek olursa &lt;strong&gt;Bul&lt;/strong&gt; metodu geriye &lt;strong&gt;PersonelList&lt;/strong&gt; tipinden bir nesne &amp;ouml;rneği d&amp;ouml;nd&amp;uuml;rmektedir. Bu nesne &amp;ouml;rneği metod i&amp;ccedil;erisinde oluşturulmaktadır. Oluşturulma işlemi sırasında ise belirli bir şarta bakılmaktadır. Nitekim bu şartın ne olduğu belli değildir. Ancak şartın sonucunun alınmasını sağlayan metodu işaret edebilecek &lt;strong&gt;KontrolHandler&lt;/strong&gt; tipinden bir &lt;strong&gt;temsilci, &lt;/strong&gt;fonksiyona parametre olarak gelmektedir. Temsilci nesne &amp;ouml;rneği &lt;strong&gt;&amp;ccedil;alışma zamanında(runtime)&lt;/strong&gt; ilgili fonksiyonu işaret edeceğinden, &lt;strong&gt;if&lt;/strong&gt; ifadesi i&amp;ccedil;erisindeki &amp;ccedil;ağrı aslında o andaki &lt;strong&gt;Personel&lt;/strong&gt; nesne &amp;ouml;rneği i&amp;ccedil;in koşul metoduna doğru yapılan bir y&amp;uuml;r&amp;uuml;tmeden başka bir şey değildir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Artık tek yapılması gereken şartları sağlayacak metodların yazılması ve sonrasında ise Bul fonksiyonelliğinin kullanılarak ilgili sonu&amp;ccedil; k&amp;uuml;mesinin alınmasıdır. &amp;Ouml;rneğin &lt;strong&gt;IK departmanında &amp;ccedil;alışan personelin &lt;/strong&gt;bulunabilmesi i&amp;ccedil;in &lt;strong&gt;DepartmanIKmi&lt;/strong&gt; isimli bir metod geliştirilmiştir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;static bool DepartmaniIKmi(Personel p)
+{
+    return p.Bolumu == Departman.GenelMudurluk;
+}&lt;/pre&gt;
+&lt;p&gt;Bu metod basit&amp;ccedil;e gelen &lt;strong&gt;Personel&lt;/strong&gt; nesne &amp;ouml;rneğinin &lt;strong&gt;Bolumu&lt;/strong&gt; &amp;ouml;zelliğine bakmakta ve geriye &lt;strong&gt;true&lt;/strong&gt; yada &lt;strong&gt;false&lt;/strong&gt; değerini d&amp;ouml;nd&amp;uuml;rmektedir. Başka bir &amp;ouml;rnek olarak &lt;strong&gt; maaşı 1000 YTL &amp;uuml;zerinde olanların&lt;/strong&gt; elde edilmesi istenebilir. Bunun i&amp;ccedil;inde &lt;strong&gt;Maas1000Uzerindemi&lt;/strong&gt; isimli bir metod geliştirilmiştir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;static bool Maas1000Uzerindemi(Personel prs)
+{
+    return prs.Maas &amp;gt; 1000;
+}&lt;/pre&gt;
+&lt;p&gt;Tahmin edileceği &amp;uuml;zere bu fonksiyonda, &lt;strong&gt;KontrolHandler&lt;/strong&gt; temsilcisinin belirttiği yapıya uygun bir şekilde tasarlanmıştır. Bu yaklaşımlar g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında koleksiyon i&amp;ccedil;erisinde istenildiği gibi filtreleme yapılabileceği g&amp;ouml;r&amp;uuml;lmektedir. Tek şart temsilciye uygun tipte bir karşılaştırma fonksiyonelliğinin var olmasını sağlamaktır. Uygulamanın &amp;ccedil;alışma zamanındaki &amp;ccedil;ıktısı aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk247_2.gif" alt="" width="474" height="229" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi maaşı 1000 YTL &amp;uuml;zerinde olanlar, IK departmanında &amp;ccedil;alışanlar ve isminin baş harfi B olanlar kolay bir şekilde elde edilmektedir. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bu yaklaşım her ne kadar kolay ve anlaşılır olsada bazı sıkıntılar olduğu ortadadır. Herşeyden &amp;ouml;nce &lt;strong&gt;Bul&lt;/strong&gt; fonksiyonunun parametresi olan temsilci tipinin işaret edeceği metod bloklarının ayrı ayrı yazılıyor olma şartı vardır. Diğer taraftan s&amp;ouml;z konusu mimari şuanda sadece &lt;strong&gt;PersonelList&lt;/strong&gt; isimli koleksiyona uygulanabilecek şekilde tasarlanmıştır. Hatta &lt;strong&gt;KontrolHandler&lt;/strong&gt; isimli temsilci dahi sadece &lt;strong&gt;Personel&lt;/strong&gt; tipleri ile &amp;ccedil;alışabilecek şekilde ele alınabilmektedir. Oysaki bu yapının herhangibir koleksiyon tipi i&amp;ccedil;erisinde ele alınabilmesi sağlanabilmelidir. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bu, ilgili yapının sadece uygulama bazlı değil Framework bazlı olacak şekilde genişletilebilmesini sağlayacaktır ki bu olduk&amp;ccedil;a &amp;ouml;nemlidir. Elbette bu iş sanıldığı kadar kolay değildir. Nitekim t&amp;uuml;rden bağımsız olacak şekilde fonksiyonel yapıların olması şarttır. Peki &amp;ouml;yleyse olaya &lt;strong&gt;C# 2.0 &lt;/strong&gt;a&amp;ccedil;ısından bakmaya &amp;ccedil;alışalım. Bu sefer elimizde&lt;strong&gt; isimsiz metodlar(Anonymous Methods)&lt;/strong&gt; ve &lt;strong&gt;generic mimari &lt;/strong&gt;gibi&amp;nbsp; olduk&amp;ccedil;a g&amp;uuml;&amp;ccedil;l&amp;uuml; kozlar yer almaktadır. Dolayısıyla yukarıdaki &amp;ouml;rnek mimari modeli &lt;strong&gt;C# 2.0&lt;/strong&gt; i&amp;ccedil;erisinde aşağıdaki şekilde ele alınabilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+
+namespace DotNet2Deyken
+{
+    enum Departman
+    {
+        BilgiIslem
+        ,Yazilim
+        ,Muhasebe
+        ,InsanKaynaklari
+        ,GenelMudurluk
+    }
+
+    class Personel
+    {
+        int _id;
+        string _ad;
+        string _soyad;
+        Departman _bolumu;
+        double _maas;
+        DateTime _girisTarihi;
+
+        public DateTime GirisTarihi
+        {
+            get { return _girisTarihi; }
+            set { _girisTarihi = value; }
+        }
+
+        public string Soyad
+        {
+            get { return _soyad; }
+            set { _soyad = value; }
+        }
+
+        public double Maas
+        {
+            get { return _maas; }
+            set { _maas = value; }
+        }
+
+        internal Departman Bolumu
+        {
+            get { return _bolumu; }
+            set { _bolumu = value; }
+        }
+
+        public string Ad
+        {
+            get { return _ad; }
+            set { _ad = value; }
+        }
+
+        public int Id
+        {
+            get { return _id; }
+            set { _id = value; }
+        }
+
+        public Personel(int id, string ad, string soyad, Departman bolumu, double maas, DateTime girisTarihi)
+        {
+            Id = id;
+            Ad = ad;
+            Soyad = soyad;
+            Bolumu = bolumu;
+            Maas = maas;
+            GirisTarihi = girisTarihi;
+        }
+        public override string ToString()
+        {
+            return String.Format("{0} {1} {2} {3} {4} {5}", Id.ToString(), Ad, Soyad.ToUpper(), Bolumu.ToString(), Maas.ToString("C2"), GirisTarihi.ToShortDateString());
+        }
+    }
+
+    // Koşul kontrol&amp;uuml;n&amp;uuml; yapabilecek metodları i&amp;ccedil;eren t&amp;uuml;r bağımsız temsilci(Generic Delegate) tanımı
+    delegate bool KontrolHandler&amp;lt;T&amp;gt;(T parametre);
+
+    class Program
+    {
+        // generic tipten oluşan koleksiyon &amp;uuml;zerinden alt k&amp;uuml;me &amp;ccedil;ekme işlemini &amp;uuml;stlenen metod
+        static List&amp;lt;T&amp;gt; Bul&amp;lt;T&amp;gt;(List&amp;lt;T&amp;gt; liste,KontrolHandler&amp;lt;T&amp;gt; handler)
+        {
+            List&amp;lt;T&amp;gt; sonuclar = new List&amp;lt;T&amp;gt;();
+            foreach (T eleman in liste)
+                if (handler(eleman)) // Generic temsilcinin işaret edeceği karşılaştırma metodu &amp;ccedil;ağırılır.
+                    sonuclar.Add(eleman);
+            return sonuclar;
+        }    
+
+        // Generic Listeleme fonksiyonu
+        static void Listele&amp;lt;T&amp;gt;(List&amp;lt;T&amp;gt; liste)
+        {
+            foreach (T t in liste)
+                Console.WriteLine(t.ToString());
+            Console.WriteLine("");
+        }
+
+        static void Main(string[] args)
+        {    
+            List&amp;lt;Personel&amp;gt; calisanlar = new List&amp;lt;Personel&amp;gt;();
+    
+            calisanlar.Add(new Personel(1000, "Mayk", "Hemır", Departman.BilgiIslem, 1050, new DateTime(1979, 10, 1)));
+            calisanlar.Add(new Personel(1001, "B&amp;uuml;y&amp;uuml;k", "Başkan", Departman.GenelMudurluk, 53000, new DateTime(1989, 2, 3)));
+            calisanlar.Add(new Personel(1002, "EmSi", "Hemmır", Departman.GenelMudurluk, 13500, new DateTime(1990, 2, 4)));
+            calisanlar.Add(new Personel(1003, "Tombul", "Raydır", Departman.InsanKaynaklari, 2250, new DateTime(1994, 8, 5)));
+            calisanlar.Add(new Personel(1008, "Şirine", "Şirin", Departman.BilgiIslem, 900, new DateTime(1991, 3, 6)));
+            calisanlar.Add(new Personel(1006, "Burak", "Selim", Departman.InsanKaynaklari, 2250, new DateTime(1976, 7, 3)));
+            calisanlar.Add(new Personel(1004, "Osvaldo", "Nartayyo", Departman.Muhasebe, 3500, new DateTime(1975, 6, 3)));
+            calisanlar.Add(new Personel(1005, "Higuin", "Kim", Departman.Yazilim, 1250, new DateTime(1974, 4, 2)));
+            calisanlar.Add(new Personel(1007, "Karim", "Cabbar", Departman.Yazilim, 750, new DateTime(1975, 2, 7)));
+            calisanlar.Add(new Personel(1011, "Billl", "Geytis", Departman.Yazilim, 650, new DateTime(1976, 3, 8)));
+
+            // Anonymous Method yardımıyla arama işlemleri yapılır
+            // Bul metodunun ikinci parametrelerinin nasıl verildiğine dikkat edelim
+
+            // Insan Kaynakları departmanında &amp;ccedil;alışanların bulunması
+            List&amp;lt;Personel&amp;gt; IKCalisanlari=Bul&amp;lt;Personel&amp;gt;(calisanlar,delegate(Personel p)
+                                                                                    {
+                                                                                        return p.Bolumu == Departman.Yazilim;
+                                                                                    }
+                                                                                );
+
+            // Şubat ayında işe girenlerin bulunması
+            List&amp;lt;Personel&amp;gt; SubatAyindaBaslayanlar = Bul&amp;lt;Personel&amp;gt;(calisanlar, delegate(Personel p)
+                                                                                    {
+                                                                                        return p.GirisTarihi.Month == 2;
+                                                                                    }
+                                                                                );
+
+            //Departmanı Yazilim olanlardan Maaşı 1000 YTL &amp;uuml;zerinde olanların bulunması
+            List&amp;lt;Personel&amp;gt; MaasiVeDepartmaninaGore = Bul&amp;lt;Personel&amp;gt;(calisanlar, delegate(Personel p)
+                                                                                    {
+                                                                                        return (p.Maas &amp;gt;= 1000 &amp;amp;&amp;amp; p.Bolumu == Departman.Yazilim);
+                                                                                    }
+                                                                                );
+            Listele&amp;lt;Personel&amp;gt;(IKCalisanlari);
+            Listele&amp;lt;Personel&amp;gt;(SubatAyindaBaslayanlar);
+            Listele&amp;lt;Personel&amp;gt;(MaasiVeDepartmaninaGore);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu uzun kod par&amp;ccedil;asında bir &amp;ouml;nceki versiyona g&amp;ouml;re en b&amp;uuml;y&amp;uuml;k farklılıklar &lt;strong&gt;generic&lt;/strong&gt; koleksiyon ile &lt;strong&gt; generic&lt;/strong&gt; ve &lt;strong&gt;isimsiz metod(Anonymous Method)&lt;/strong&gt; kullanımlarıdır. Dikkat edilecek olursa herhangibir tipteki &lt;strong&gt;List&lt;/strong&gt; koleksiyonu &amp;uuml;zerinde arama işlemi yapılabilmesini sağlayacak şekilde &lt;strong&gt;generic&lt;/strong&gt; bir &lt;strong&gt;Bul&lt;/strong&gt; metodu yer almaktadır. Dahada &amp;ouml;nemlisi, koleksiyon i&amp;ccedil;erisindeki elemanların kıyaslama işlemlerinin yapılacağı metodları işaret edebilecek olan temsilcide &lt;strong&gt;generic&lt;/strong&gt; olarak tanımlanmıştır.&amp;nbsp; Bu sayede &lt;strong&gt;T&lt;/strong&gt; tipindeki bir &lt;strong&gt;List&lt;/strong&gt; koleksiyonu i&amp;ccedil;erisinde &lt;strong&gt; Bul&lt;/strong&gt; metodunun kullanılabilmesi ve o tip i&amp;ccedil;in bir koşullandırma yapılabilmesi sağlanmaktadır.&lt;/p&gt;
+&lt;p&gt;Fakat b&amp;uuml;t&amp;uuml;n bunlara rağmen en &amp;ccedil;ok dikkate değer kısımlardan biriside, &lt;strong&gt;isimsiz metodların&lt;/strong&gt; kullanımıdır. Bu sebepten dolayı bir &amp;ouml;nceki &amp;ouml;rnekte olduğu gibi, ayrı ayrı karşılaştırma metodlarının yazılmasına gerek kalmamaktadır. Tam aksine &lt;strong&gt;Bul&lt;/strong&gt; metodunun kullanıldığı yerlerde ikinci parametrelerde &lt;strong&gt;isimsiz metod&lt;/strong&gt; kullanılarak koşul deyimlerinin aynı ifade i&amp;ccedil;erisinde tanımlanabilmeside sağlanmıştır. &amp;Ouml;rneğin Şubat ayında işe giren personelin bulunabilme s&amp;uuml;recini g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım. Burada &lt;strong&gt;Bul&lt;/strong&gt; metodu, &lt;strong&gt;calisanlar&lt;/strong&gt; isimli &lt;strong&gt;generic&lt;/strong&gt; koleksiyondaki &lt;strong&gt;Personel&lt;/strong&gt; nesne &amp;ouml;rneklerini&lt;strong&gt; tek tek dolaşmalı&lt;/strong&gt;, &lt;strong&gt;GirisTarihi&lt;/strong&gt; &amp;ouml;zellikleri &amp;uuml;zerinden &lt;strong&gt;Month&lt;/strong&gt; değerlerinin &lt;strong&gt;2&lt;/strong&gt; olup olmadığına bakmalı ve eğer &amp;ouml;yleyse bunları yeni bir koleksiyonda birleştirerek geriye d&amp;ouml;nd&amp;uuml;rmelidir. &lt;strong&gt;İsimsiz metodlar&lt;/strong&gt; yardımıyla bu iş aşağıda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi tek bir ifadede sağlanabilir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;List&amp;lt;Personel&amp;gt; SubatAyindaBaslayanlar = Bul&amp;lt;Personel&amp;gt;(calisanlar, delegate(Personel p)
+{
+   return p.GirisTarihi.Month == 2;
+}
+);&lt;/pre&gt;
+&lt;p&gt;Dikkat edilecek olursa &lt;strong&gt;delegate&lt;/strong&gt; anahtar kelimesi burada &lt;strong&gt;KontrolHandler&lt;/strong&gt; tipini işaret etmektedir. Dahası kod yazılırken generic mimarinin, &lt;strong&gt;Visual Studio IDE&lt;/strong&gt;' si i&amp;ccedil;erisinde aşağıdaki şekilde ele alındığı g&amp;ouml;r&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk247_4.gif" alt="" width="522" height="73" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &lt;strong&gt;Bul&lt;/strong&gt; metoduna generic parametre olarak &lt;strong&gt;Personel&lt;/strong&gt; tipi verildiğinde, &lt;strong&gt;liste&lt;/strong&gt; isimli &lt;strong&gt;List&amp;lt;T&amp;gt; &lt;/strong&gt;koleksiyonu ve &lt;strong&gt;handler &lt;/strong&gt;isimli&lt;strong&gt; KontrolHandler&lt;/strong&gt; temsilcisi otomatik olarak bu tiple &amp;ccedil;alışacak hale gelmektedir. Buda Bul metodunun generic yapısından kaynaklanmaktadır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Sonu&amp;ccedil; olarak program &amp;ccedil;ıktısı aşağıdaki gibi olacaktır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk247_3.gif" alt="" width="454" height="171" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Elbette &lt;strong&gt;Bul&lt;/strong&gt; fonksiyonu geliştirici tarafından yazılmış bir metoddur. Oysaki&lt;strong&gt; .Net Framework 2.0&lt;/strong&gt; &amp;ouml;zellikle &lt;strong&gt;List&amp;lt;T&amp;gt;&lt;/strong&gt; koleksiyonları &amp;uuml;zerinde bu tip filtreleme ve arama işlemlerinin ger&amp;ccedil;ekleştirilmesi amacıyla hazır &lt;strong&gt; Predicate&lt;/strong&gt; temsilcisini kullanan &lt;strong&gt;Find&lt;/strong&gt;, &lt;strong&gt;FindAll, Exists, FindIndex, FindLast, FindLastIndex, RemoveAll&lt;/strong&gt; gibi metodlar i&amp;ccedil;ermektedir. &lt;em&gt;(Burada hazır bir temsilcinin olması geliştiricinin uygulamadan bağımsız olacak şekilde, Framework' &amp;uuml;n kullanıldığı her yerde s&amp;ouml;z konusu koşullandırma metodlarını işaret ederek, başka hazır &lt;strong&gt; CLR tipi &lt;/strong&gt;metodlarına parametre olarak verebileceği anlamına da gelmektedir.)&lt;/em&gt; Dolayısıyla yukarıda geliştirilen &amp;ouml;rnek, &lt;strong&gt;.Net Framework 2.0&lt;/strong&gt;' ın tipleri sayesinde aşağıdaki hale getirilebilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;class Program
+{
+    static void Listele&amp;lt;T&amp;gt;(List&amp;lt;T&amp;gt; liste)
+    {
+        foreach (T t in liste)
+            Console.WriteLine(t.ToString());
+        Console.WriteLine("");
+    }
+
+    static void Main(string[] args)
+    {
+        List&amp;lt;Personel&amp;gt; calisanlar = new List&amp;lt;Personel&amp;gt;();
+        
+        #region Test Verileri
+
+        // Test verilerinin girildiği kodlar
+
+        #endregion
+        
+        List&amp;lt;Personel&amp;gt; BHarfliler = 
+                                calisanlar.FindAll(delegate(Personel p)
+                                                            {
+                                                                return p.Ad[0] == 'B';
+                                                            }
+                                                        );
+        List&amp;lt;Personel&amp;gt; SubattaBaslayanlar=
+                                calisanlar.FindAll(delegate(Personel p)
+                                                            {
+                                                                return p.GirisTarihi.Month == 2;
+                                                            }
+                                                        );
+        List&amp;lt;Personel&amp;gt; GenelMudurlukCalisanlari = 
+                                calisanlar.FindAll(delegate(Personel p)
+                                                            {
+                                                                return p.Bolumu == Departman.GenelMudurluk;
+                                                            }
+                                                        );
+    
+        Listele&amp;lt;Personel&amp;gt;(BHarfliler);
+        Listele&amp;lt;Personel&amp;gt;(SubattaBaslayanlar);
+        Listele&amp;lt;Personel&amp;gt;(GenelMudurlukCalisanlari);
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu kez &lt;strong&gt;delegate&lt;/strong&gt; anahtar kelimesi &lt;strong&gt;FindAll&lt;/strong&gt; metodunun istediği &lt;strong&gt;Predicate&amp;lt;T&amp;gt; &lt;/strong&gt;temsilcisini işaret etmektedir. Kod yazımı sırasında &lt;strong&gt;intellisense&lt;/strong&gt; ile bu a&amp;ccedil;ık bir şekilde g&amp;ouml;r&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk247_5.gif" alt="" width="409" height="63" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Mimaride halen daha eksiklikler vardır. &amp;Ouml;zellikle veri tabanı uygulamalarında yer alan sorgulama tekniklerinin, programatik tarafta ifade edilme zorlukları bilinmektedir. &amp;Ccedil;ok basit olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde, bir &lt;strong&gt;veritabanı&lt;/strong&gt; &lt;strong&gt;tablosunun&lt;/strong&gt; program tarafında &lt;strong&gt;Entity&lt;/strong&gt; olarak &lt;strong&gt;sınıf&lt;/strong&gt; &lt;strong&gt;bazlı&lt;/strong&gt; ifade edilmesi sonrasında geliştiricilerin beklentisi, veri sorgulama dili esnekliğinin nesnel olarakta sağlanabilmesidir. Bir başka deyişle bilinen &lt;strong&gt;select&lt;/strong&gt;, &lt;strong&gt;where&lt;/strong&gt;, &lt;strong&gt;group by&lt;/strong&gt;, &lt;strong&gt;distinct&lt;/strong&gt;, &lt;strong&gt;sum&lt;/strong&gt; vb... sorgulama kelimelerinin, program tarafındaki nesnel varlıklar &amp;uuml;zerinde de uygulanamabilmesi istenmektedir. İşte bu &lt;strong&gt;LINQ&lt;/strong&gt; mimarisinin geliştirilmesinin en b&amp;uuml;y&amp;uuml;k nedenlerinden de birisidir. Peki elde bulunan imkanlar ile bu nasıl sağlanabilir? Yoksa dile yeni bir takım kolaylaştırıcı &amp;ouml;zelliklerin entegre edilmesimi gerekmektedir?&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Herşeyden &amp;ouml;nce son &amp;ouml;rnekte yer alan &lt;strong&gt; FindAll&lt;/strong&gt; metodu ile, bir koleksiyon &amp;uuml;zerinde filtreleme yapılabildiği g&amp;ouml;r&amp;uuml;lmektedir. Bu bir anlamda &lt;strong&gt;Where&lt;/strong&gt; ve &lt;strong&gt;Select&lt;/strong&gt; gibi ifadelerin bir karşılığı olarak g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir. Ancak bu yeterli değildir. Yeni tipler geliştirmeden, var olan &lt;strong&gt;.Net Framework&lt;/strong&gt; tiplerine &lt;strong&gt;FindAll&lt;/strong&gt; metoduna benzer fonksiyonel yenilikleri ilave edebilmek gerekmektedir. İşte bu noktada &lt;strong&gt;Extension&lt;/strong&gt; metodlar devreye girerek &amp;ouml;zellikle&lt;strong&gt; IEnumerable&amp;lt;T&amp;gt;&lt;/strong&gt; uyarlamalı tiplerin genişletme metodları ile &lt;strong&gt;LINQ&lt;/strong&gt; mimarisine destek verebilmesi sağlanmaktadır. İşin i&amp;ccedil;erisinde yine temsilci(delegate) tipleri rol almaktadır. &lt;strong&gt;LINQ&lt;/strong&gt; mimarisine destek verebilmek i&amp;ccedil;in pek &amp;ccedil;ok &lt;strong&gt; temsilci&lt;/strong&gt; tipi geliştirilmiş ve &lt;strong&gt;Framework&lt;/strong&gt; i&amp;ccedil;erisine dahil edilmiştir. Bu kadar ilerlemeden &amp;ouml;nce, yazıya konu olan &amp;ouml;rneğin &lt;strong&gt;C# 3.0 &lt;/strong&gt;i&amp;ccedil;erisindeki geliştirilme şekline bakmakta yarar vardır. Nitekim ilk hedef Lambda ifadelerinin rol&amp;uuml;n&amp;uuml; kavramaktır. &lt;em&gt;(Bu seferki &amp;ouml;rnek Visual Studio 2008 &amp;uuml;zerinde .Net Framework 3.5 se&amp;ccedil;ilerek yapılmıştır.)&lt;/em&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk247_8.gif" alt="" width="424" height="226" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace DotNet3Nokta5Deyken
+{
+    enum Departman
+    {
+        BilgiIslem
+        ,Yazilim
+        ,Muhasebe
+        ,InsanKaynaklari
+        ,GenelMudurluk
+    }
+    class Personel // Bu sınıfta otomatik &amp;ouml;zellikler(Automatic Property) kullanılmıştır.
+    {
+        public int Id { get; set; }
+        public string Ad { get; set; }
+        public string Soyad { get; set; }
+        public Departman Bolumu { get; set; }
+        public double Maas { get; set; }
+        public DateTime GirisTarihi { get; set; }
+
+        public override string ToString()
+        {
+            return String.Format("{0} {1} {2} {3} {4} {5}", Id.ToString(), Ad, Soyad.ToUpper(), Bolumu.ToString(), Maas.ToString("C2"), GirisTarihi.ToShortDateString());
+        }
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // Object Initializers' dan faydalanılmıştır.
+            List&amp;lt;Personel&amp;gt; calisanlar = new List&amp;lt;Personel&amp;gt;()
+            {
+                new Personel(){Id=1000, Ad="Mayk", Soyad="Hemır", Bolumu=Departman.BilgiIslem, Maas=1050, GirisTarihi=new DateTime(1979, 10, 1)},
+                new Personel(){Id=1001, Ad="B&amp;uuml;y&amp;uuml;k", Soyad="Başkan",Bolumu= Departman.GenelMudurluk,Maas= 53000,GirisTarihi= new DateTime(1989, 2, 3)},
+                new Personel(){Id=1002, Ad="EmSi", Soyad="Hemmır", Bolumu=Departman.GenelMudurluk, Maas=13500, GirisTarihi=new DateTime(1990, 2, 4)},
+                new Personel(){Id=1003, Ad="Tombul", Soyad="Raydır", Bolumu=Departman.InsanKaynaklari, Maas=2250, GirisTarihi=new DateTime(1994, 8, 5)},
+                new Personel(){Id=1008, Ad="Şirine", Soyad="Şirin",Bolumu= Departman.BilgiIslem, Maas=900, GirisTarihi=new DateTime(1991, 3, 6)},
+                new Personel(){Id=1006, Ad="Burak", Soyad="Selim", Bolumu=Departman.InsanKaynaklari,Maas= 2250, GirisTarihi=new DateTime(1976, 7, 3)},
+                new Personel(){Id=1004, Ad="Osvaldo", Soyad="Nartayyo", Bolumu=Departman.Muhasebe, Maas=3500,GirisTarihi= new DateTime(1975, 6, 3)},
+                new Personel(){Id=1005, Ad="Higuin", Soyad="Kim",Bolumu= Departman.Yazilim, Maas=1250,GirisTarihi= new DateTime(1974, 4, 2)},
+                new Personel(){Id=1007, Ad="Karim", Soyad="Cabbar", Bolumu=Departman.Yazilim, Maas=750, GirisTarihi=new DateTime(1975, 2, 7)},
+                new Personel(){Id=1011, Ad="Billl", Soyad="Geytis", Bolumu=Departman.Yazilim, Maas=650,GirisTarihi= new DateTime(1976, 3, 8)}
+            };
+
+            // B ile başlayanlar
+            var AdiBIleBaslayanlar = calisanlar.FindAll((Personel p) =&amp;gt; (p.Ad[0] == 'B'));
+
+            // Departmanı Yazilim olanlar (Burada type inference s&amp;ouml;z konusu)
+            var YazilimDepartmaniCalisanlari = calisanlar.FindAll(p =&amp;gt; p.Bolumu == Departman.Yazilim);
+
+            //Giris yılı 1976 &amp;ouml;ncesi olanlar &amp;ccedil;ekilirken başka bir metod &amp;ccedil;ağırılıyor.
+            var GirisYili1976OncesiOlanlar = calisanlar.FindAll(
+                                                                            p =&amp;gt;{
+                                                                                if (p.GirisTarihi.Year &amp;lt; 1976)
+                                                                                {
+                                                                                    PrimArttir(p);
+                                                                                    return true;
+                                                                                }
+                                                                                else
+                                                                                    return false;
+                                                                            }
+                                                                    );
+
+            Listele&amp;lt;Personel&amp;gt;(AdiBIleBaslayanlar);        
+            Listele&amp;lt;Personel&amp;gt;(YazilimDepartmaniCalisanlari);
+            Listele&amp;lt;Personel&amp;gt;(GirisYili1976OncesiOlanlar);
+        }
+
+        private static void PrimArttir(Personel p)
+        {
+            Console.WriteLine("\t"+p.Ad+" "+p.Soyad.ToUpper()+" i&amp;ccedil;in prim arttırım talebi");
+        }
+    
+        static void Listele&amp;lt;T&amp;gt;(IEnumerable&amp;lt;T&amp;gt; liste)
+        {
+            foreach (T t in liste)
+                Console.WriteLine(t.ToString());
+            Console.WriteLine("");
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rnekte &lt;strong&gt;C# 3.0&lt;/strong&gt; ile birlikte gelen pek &amp;ccedil;ok yenilik kullanılmaya &amp;ccedil;alışılmıştır. &lt;strong&gt;var&lt;/strong&gt; anahtar kelimesi, koleksiyon ve Personel nesnelerininin başlatılması&lt;strong&gt;(object initialization)&lt;/strong&gt;, otomatik &amp;ouml;zellikler&lt;strong&gt;(automatic properties)&lt;/strong&gt; gibi. Ancak yazımızda odaklanacağımız nokta &lt;strong&gt;=&amp;gt;&lt;/strong&gt; operat&amp;ouml;r&amp;uuml; ve i&amp;ccedil;erisinde yer aldığı ifadelerdir. Dikkat edilecek olursa &lt;strong&gt;FindAll&lt;/strong&gt; metodlarının i&amp;ccedil;erisinde kullanılan parametrelerde &lt;strong&gt;=&amp;gt;&lt;/strong&gt; operat&amp;ouml;rleri yer almaktadır. İlk metod &amp;ccedil;ağrısı aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var AdiBIleBaslayanlar = calisanlar.FindAll((Personel p) =&amp;gt; (p.Ad[0] == 'B'));&lt;/pre&gt;
+&lt;p&gt;Burada &lt;strong&gt;=&amp;gt;&lt;/strong&gt; operat&amp;ouml;r&amp;uuml;n&amp;uuml;n sol tarafında &lt;strong&gt;Personel&lt;/strong&gt; tipinden bir değişken tanmı yer almaktadır. Operat&amp;ouml;r&amp;uuml;n sağ tarafında ise yine parantezler i&amp;ccedil;erisinde p değişkeninin Ad &amp;ouml;zelliğinin ilk karakterine bakılmaktadır. Daha &amp;ouml;nceki &amp;ouml;rneklerden hatırlanacağı gibi &lt;strong&gt;FindAll&lt;/strong&gt; metodu &lt;strong&gt;Predicate&lt;/strong&gt; temsilcisini parametre olarak almaktadır. Bu temsilci geriye &lt;strong&gt;bool&lt;/strong&gt; değer d&amp;ouml;nd&amp;uuml;ren ve &lt;strong&gt;generic&lt;/strong&gt; tipte parametre alan metodları taşıyabilemektedir. Bu sebepten &lt;strong&gt;Lambda&lt;/strong&gt; operat&amp;ouml;r&amp;uuml;n&amp;uuml;n sağ tarafında yer alan kod par&amp;ccedil;asının &lt;strong&gt;bool&lt;/strong&gt; tipinden bir değer d&amp;ouml;nd&amp;uuml;r&amp;uuml;yor olması şarttır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Predicate&lt;/strong&gt; temsilcisinin işaret edeceği metodun alacağı parametre ise operat&amp;ouml;r&amp;uuml;n sol tarafında belirtilmektedir. Peki burada Lambda operat&amp;ouml;r&amp;uuml; neyi sağlamaktadır? Nitekim aynı ama&amp;ccedil; i&amp;ccedil;in &lt;strong&gt;isimsiz metod(anonymous method)&lt;/strong&gt; kullanımıda m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Hatta isimsiz metod kullanmadanda yapılabildiği g&amp;ouml;r&amp;uuml;lmektedir. Ne farki fonksiyonel programlama ortamlarına bakıldığında bu tip ifadelerin yaygın bir şekilde ele alındığı g&amp;ouml;r&amp;uuml;lm&amp;uuml;şt&amp;uuml;r. Bununla beraber &lt;strong&gt;=&amp;gt;&lt;/strong&gt; operat&amp;ouml;r&amp;uuml; burada, temsilcinin &amp;ouml;rneklenmesi, işaret edeceği metoda parametre aktarılması, uygun tipte sonu&amp;ccedil; &amp;uuml;reten bir kod bloğunun yazılması operasyonlarının tek bir ifade i&amp;ccedil;erisinde ger&amp;ccedil;ekleştirilmesini sağlamaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;İkinci kullanım şekli ilkinden biraz daha farklıdır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var YazilimDepartmaniCalisanlari = calisanlar.FindAll(p =&amp;gt; p.Bolumu == Departman.Yazilim);&lt;/pre&gt;
+&lt;p&gt;Bu sefer dikkat &amp;ccedil;ekici nokta &lt;strong&gt;=&amp;gt; &lt;/strong&gt; operat&amp;ouml;r&amp;uuml;n&amp;uuml;n sol ve sağ tarafındaki deyimlerde &lt;strong&gt;parantez&lt;/strong&gt; kullanılmayışı değildir. Dikkat edilmesi gereken nokta operat&amp;ouml;r&amp;uuml;n sol tarafında &lt;strong&gt;sadece&lt;/strong&gt; &lt;strong&gt;p &lt;/strong&gt;yazılmasıdır. Oysaki bir &amp;ouml;nceki kullanım şeklinde temsilcinin işaret ettiği metoda aktarılacak olan parametrenin tipi a&amp;ccedil;ık bir şekilde belirtilmiştir. Burada &lt;strong&gt;tip tahmini(type inference)&lt;/strong&gt; kavramı devreye girmektedir. &amp;Ouml;yleki &lt;strong&gt; FindAll&lt;/strong&gt; metodunun, List koleksiyonunun &lt;strong&gt;generic&lt;/strong&gt; yapısına g&amp;ouml;re kullanacağı tipin &lt;strong&gt;Personel&lt;/strong&gt; olma olasılığı muhtemeldir. Bu son derece doğaldır nitekim &lt;strong&gt;calisanlar&lt;/strong&gt; değişkeni &lt;strong&gt;List&amp;lt;Personel&amp;gt;&lt;/strong&gt; tipinden bir koleksiyonu taşımaktadır. Buna g&amp;ouml;re &lt;strong&gt;compiler&lt;/strong&gt;, &lt;strong&gt;p&lt;/strong&gt; değişkeninin &lt;strong&gt;Personel&lt;/strong&gt; tipinden olacağını tahmin eder. Bu tahminin ne kadar tutarlı olduğu &lt;strong&gt;Visual Studio IDE&lt;/strong&gt;' si i&amp;ccedil;erisinde &lt;strong&gt; intellisense&lt;/strong&gt; &amp;ouml;zelliği ile a&amp;ccedil;ık bir şekilde g&amp;ouml;r&amp;uuml;lebilmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk247_6.gif" alt="" width="305" height="205" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi lambda operat&amp;ouml;r&amp;uuml;n&amp;uuml;n sağ tarafında p değişkeni kullanılmak istendikten sonra, tahmin edilen tipin &amp;uuml;yeleri ekrana gelmektedir. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&amp;Uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; kullanım şekli ise aşağıdaki gibidir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var GirisYili1976OncesiOlanlar = calisanlar.FindAll(
+p =&amp;gt;{
+	if (p.GirisTarihi.Year &amp;lt; 1976)
+	{
+		PrimArttir(p);
+		return true;
+	}
+	else
+		return false;
+	}
+);&lt;/pre&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Burada ise tek fark lambda operat&amp;ouml;r&amp;uuml;n&amp;uuml;n sağ tarafında yer alan deyimlerde normal kod bloklarınında geliştirilebiliyor olmasıdır. Bir başka deyişle &lt;strong&gt;Predicate&lt;/strong&gt; temsilcisinin istediği şekilde &lt;strong&gt;bool&lt;/strong&gt; değer d&amp;ouml;nd&amp;uuml;rmek dışında, metod &amp;ccedil;ağrısı gibi farklı deyimlerde yapılabilmektedir. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Geliştirilen son &amp;ouml;rnek &amp;ccedil;alıştırıldığında aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan sonu&amp;ccedil;ların alındığı g&amp;ouml;r&amp;uuml;lmektedir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt; &lt;img src="/makale/images/mk247_7.gif" alt="" width="450" height="225" border="0" /&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;Lambda&lt;/strong&gt; operat&amp;ouml;rleri &amp;ouml;zellikle &lt;strong&gt; LINQ&lt;/strong&gt; i&amp;ccedil;erisinde yer alan genişletme metodlarında sıklıkla kullanılmaktadır. Bilindiği &amp;uuml;zere &lt;strong&gt;LINQ&lt;/strong&gt; sorgularının desteklenmesi i&amp;ccedil;in &lt;strong&gt;Enumerable&lt;/strong&gt;&lt;em&gt;(&lt;strong&gt;System.Core.dll&lt;/strong&gt; assembly' ı i&amp;ccedil;erisinde yer alan &lt;strong&gt;System.Linq&lt;/strong&gt; isim alanında yer almaktadır)&lt;/em&gt; isimli &lt;strong&gt; static&lt;/strong&gt; sınıf i&amp;ccedil;erisine &amp;ccedil;ok sayıda &lt;strong&gt;genişletme metodu(Extension Methods)&lt;/strong&gt; dahil edilmiştir. Bu sınıfın en b&amp;uuml;y&amp;uuml;k &amp;ouml;zelliklerinden biriside i&amp;ccedil;erisinde yer alan metodlarının &lt;strong&gt;IEnumerable&amp;lt;T&amp;gt;&lt;/strong&gt; t&amp;uuml;revli tipleri genişletmesidir. Diğer taraftan s&amp;ouml;z konusu sınıf i&amp;ccedil;erisinde &amp;ccedil;oğunlukla &lt;strong&gt;Func&lt;/strong&gt; isimli &lt;strong&gt;generic&lt;/strong&gt; &lt;strong&gt;temsilci&lt;/strong&gt; kullanılmaktadır. Bu temsilcisinin farklı versiyonları aşağıdaki gibidir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;delegate TResult Func&amp;lt;TResult&amp;gt;(T arg)
+delegate TResult Func&amp;lt;T, TResult&amp;gt;(T arg)
+delegate TResult Func&amp;lt;T1,T2, TResult&amp;gt;(T1 arg1, T2 arg2)
+delegate TResult Func&amp;lt;T1,T2,T3 TResult&amp;gt;(T1 arg1, T2 arg2, T3 arg3)
+delegate TResult Func&amp;lt;T1,T2,T3,T4, TResult&amp;gt;(T1 arg1, T2 arg2, T3 arg3, T4 arg4)&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Func&lt;/strong&gt; bir temsilci olduğu i&amp;ccedil;in, kullanılacağı her yerde lambda operat&amp;ouml;rleri ele alınabilir. Buna &amp;ccedil;ok basit olarak aşağıdaki kod par&amp;ccedil;asını &amp;ouml;rnek g&amp;ouml;sterebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;double sonuc = calisanlar
+                            .Where&amp;lt;Personel&amp;gt;(p =&amp;gt; p.Bolumu == Departman.Yazilim)
+                                .Sum&amp;lt;Personel&amp;gt;(p =&amp;gt; p.Maas);
+Console.WriteLine(sonuc.ToString("C2"));
+
+int sonuc2 = calisanlar.Aggregate(0,(toplam,p) =&amp;gt; p.Maas&amp;gt;2000?toplam+=1:toplam);
+Console.WriteLine(sonuc2.ToString());&lt;/pre&gt;
+&lt;p&gt;İlk kullanımda &lt;strong&gt;departmanı yazılım olan personelin maaşlarının toplamı&lt;/strong&gt; bulunmuştur. İkinci kullanımda ise lambda operat&amp;ouml;r&amp;uuml;n&amp;uuml;n iki parametreyi birden temsilciye g&amp;ouml;nderdiği g&amp;ouml;r&amp;uuml;lmektedir. Dikkat edilecek olursa operat&amp;ouml;r&amp;uuml;n sol tarafında &lt;strong&gt;toplam&lt;/strong&gt; ve &lt;strong&gt;p&lt;/strong&gt; isimli değişkenler tanımlanmaktadır.&lt;em&gt;(Bu iki parametre bildirimi eğer parantezler i&amp;ccedil;ersinde yazılmassa derleme zamanı hatası alınır. Dolayısıyla lambda operat&amp;ouml;r&amp;uuml;n&amp;uuml;n sol tarafında birden fazla parametre olacaksa bunların parantezler i&amp;ccedil;erisine alınması gerekmektedir.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Buradaki toplam değişkeni yine tahmin edilerek &lt;strong&gt; int&lt;/strong&gt; tipinden belirlenmiştir. Bu tarz bir kullanım normaldir nitekim &lt;strong&gt;Func&lt;/strong&gt; temsilcisinin bu şekilde iki parametre ile &amp;ccedil;alışan versiyonu mevcuttur. Buna g&amp;ouml;re &lt;strong&gt;Aggregate&lt;/strong&gt; metodu, &lt;strong&gt;personelin maaşı 2000 YTL &amp;uuml;zerinde olanlar&lt;/strong&gt; var ise, toplam değişkeninin değerini &lt;strong&gt;1 arttırarak&lt;/strong&gt; geriye d&amp;ouml;nd&amp;uuml;rmektedir. &lt;em&gt;(Bu işlem i&amp;ccedil;in &lt;strong&gt;Sum&lt;/strong&gt; metoduda kullanılabilir. Aggregate genişletme metodunun yazılmasının amacı &lt;strong&gt;Sum&lt;/strong&gt;, &lt;strong&gt;Count&lt;/strong&gt;, &lt;strong&gt;Max&lt;/strong&gt;, &lt;strong&gt;Min, Avg&lt;/strong&gt; gibi standart gruplama fonksiyonları dışındaki gereksinimlerin karşılanmasıdır.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Artık &lt;strong&gt;Lambda&lt;/strong&gt; operat&amp;ouml;r&amp;uuml;n&amp;uuml;n kullanımı hakkında fikir sahibi olduğumuzu sanıyorum. Şimdi diğer noktalara değinmeye &amp;ccedil;alışalım. S&amp;ouml;z gelimi &lt;strong&gt;lambda&lt;/strong&gt; operat&amp;ouml;r&amp;uuml;n&amp;uuml;n yer aldığı ifadeler &lt;strong&gt;IL(Intermediate Language)&lt;/strong&gt; tarafında nasıl yorumlanmaktadır? Bu noktada lambda operat&amp;ouml;r&amp;uuml;n&amp;uuml;n, isimsiz metod kullanımı ile aynı IL &amp;ccedil;ıktısını verdiğini s&amp;ouml;yleyebiliriz. &amp;Ouml;rnek olarak aşağıdaki kod par&amp;ccedil;asını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace LambdaVeCIL
+{
+    delegate T IslemHandler&amp;lt;T&amp;gt;(T T1,T T2);
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            IslemHandler&amp;lt;double&amp;gt; hnd = (x, y) =&amp;gt; x + y;
+
+            IslemHandler&amp;lt;int&amp;gt; hnd2=
+                delegate(int a,int b){
+                    return a + b; 
+                };
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Yukarıdaki kod par&amp;ccedil;asında yer alan &lt;strong&gt; IslemHandler&lt;/strong&gt; isimli &lt;strong&gt;generic temsilci &lt;/strong&gt;tipi, &lt;strong&gt;T&lt;/strong&gt; t&amp;uuml;r&amp;uuml;nden iki &lt;strong&gt;parametre&lt;/strong&gt; alan ve yine &lt;strong&gt;T&lt;/strong&gt; t&amp;uuml;r&amp;uuml;nden &lt;strong&gt;sonu&amp;ccedil;&lt;/strong&gt; &amp;uuml;reten metodları işaret edebilecek şekilde tasarlanmıştır. &lt;strong&gt;hnd&lt;/strong&gt; değişkeni oluşturulurken &lt;strong&gt;lambda&lt;/strong&gt; ifadesinden, &lt;strong&gt;hnd2&lt;/strong&gt; oluşturulurkende &lt;strong&gt;isimsiz metoddan(anonymous method)&lt;/strong&gt; yararlanılmıştır. Bu kodun &lt;strong&gt; IL&lt;/strong&gt; &amp;ccedil;ıktısına &lt;strong&gt;ildasm&lt;/strong&gt; aracı ile bakıldığında ağa&amp;ccedil; yapısının aşağıdaki gibi olduğu g&amp;ouml;r&amp;uuml;l&amp;uuml;r.&lt;em&gt;(Ağa&amp;ccedil; yapısının kolay bir şekilde elde edilmesi i&amp;ccedil;in Dump TreeView se&amp;ccedil;eneğinden yararlanılmıştır.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk247_9.gif" alt="" width="620" height="287" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Program i&amp;ccedil;erisinde &lt;strong&gt;b__0&lt;/strong&gt; ve &lt;strong&gt; b__1&lt;/strong&gt; adları ile tanımlanmış iki adet metod olduğu g&amp;ouml;r&amp;uuml;lmektedir. Tahmin edileceği &amp;uuml;zere bu iki &amp;uuml;ye, &lt;strong&gt;lambda&lt;/strong&gt; ifadesi ve isimsiz metod kullanımı sonrası oluşturulmuş metodlardır. Bir başka deyişle lambda operat&amp;ouml;r&amp;uuml; kullanıldığında aynen isimsiz metodlarda olduğu gibi &lt;strong&gt; IL&lt;/strong&gt; tarafında iş yapan metod oluşturulmaktadır. Bu metodlar derleyici tarafından oluşturulan gizli metodlardır. &lt;strong&gt;Compiler&lt;/strong&gt; tarafından oluşturuldukları i&amp;ccedil;in &lt;strong&gt;CompilerGenerated&lt;/strong&gt; &lt;strong&gt;niteliği(Attribute)&lt;/strong&gt; ile imzalanmışlardır. Eğer &lt;strong&gt;Main&lt;/strong&gt; metodunun &lt;strong&gt;IL&lt;/strong&gt; &amp;ccedil;ıktısına bakılırsa aşağıdaki kod par&amp;ccedil;alarının &amp;uuml;retildiği g&amp;ouml;r&amp;uuml;l&amp;uuml;r.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;.method private hidebysig static void Main(string[] args) cil managed
+{
+    .entrypoint
+    // Code size 66 (0x42)
+    .maxstack 3
+    .locals init ([0] class LambdaVeCIL.IslemHandler`1&amp;lt;float64&amp;gt; hnd,[1] class LambdaVeCIL.IslemHandler`1&amp;lt;int32&amp;gt; hnd2)
+    IL_0000: nop
+    IL_0001: ldsfld class LambdaVeCIL.IslemHandler`1&amp;lt;float64&amp;gt; LambdaVeCIL.Program::'CS$&amp;lt;&amp;gt;9__CachedAnonymousMethodDelegate2'
+    IL_0006: brtrue.s IL_001b
+    IL_0008: ldnull
+    IL_0009: ldftn float64 LambdaVeCIL.Program::'&amp;lt;Main&amp;gt;b__0'(float64,float64)
+    IL_000f: newobj instance void class LambdaVeCIL.IslemHandler`1&amp;lt;float64&amp;gt;::.ctor(object, native int)
+    IL_0014: stsfld class LambdaVeCIL.IslemHandler`1&amp;lt;float64&amp;gt; LambdaVeCIL.Program::'CS$&amp;lt;&amp;gt;9__CachedAnonymousMethodDelegate2'
+    IL_0019: br.s IL_001b
+    IL_001b: ldsfld class LambdaVeCIL.IslemHandler`1&amp;lt;float64&amp;gt; LambdaVeCIL.Program::'CS$&amp;lt;&amp;gt;9__CachedAnonymousMethodDelegate2'
+    IL_0020: stloc.0
+    IL_0021: ldsfld class LambdaVeCIL.IslemHandler`1&amp;lt;int32&amp;gt; LambdaVeCIL.Program::'CS$&amp;lt;&amp;gt;9__CachedAnonymousMethodDelegate3'
+    IL_0026: brtrue.s IL_003b
+    IL_0028: ldnull
+    IL_0029: ldftn int32 LambdaVeCIL.Program::'&amp;lt;Main&amp;gt;b__1'(int32,int32)
+    IL_002f: newobj instance void class LambdaVeCIL.IslemHandler`1&amp;lt;int32&amp;gt;::.ctor(object,native int)
+    IL_0034: stsfld class LambdaVeCIL.IslemHandler`1&amp;lt;int32&amp;gt; LambdaVeCIL.Program::'CS$&amp;lt;&amp;gt;9__CachedAnonymousMethodDelegate3'
+    IL_0039: br.s IL_003b
+    IL_003b: ldsfld class LambdaVeCIL.IslemHandler`1&amp;lt;int32&amp;gt; LambdaVeCIL.Program::'CS$&amp;lt;&amp;gt;9__CachedAnonymousMethodDelegate3'
+    IL_0040: stloc.1
+    IL_0041: ret
+} // end of method Program::Main&lt;/pre&gt;
+&lt;p&gt;Her ne kadar &lt;strong&gt;IL(Intermediate Language)&lt;/strong&gt; tarafı karışık g&amp;ouml;r&amp;uuml;nsede dikkat edilmesi gereken noktalar &lt;strong&gt;IL_0001&lt;/strong&gt; - &lt;strong&gt;IL_0020&lt;/strong&gt; aralığındaki yapının &lt;strong&gt;IL_0020&lt;/strong&gt; - &lt;strong&gt; IL_0040&lt;/strong&gt; arasındaki ile aynı olmasıdır. S&amp;ouml;z edilen ilk aralıkta &lt;strong&gt; lambda&lt;/strong&gt; ifadesinin kullanıldığı satıra ait &amp;uuml;retimler yer almaktadır. İkinci par&amp;ccedil;ada ise &lt;strong&gt;isimsiz metod&lt;/strong&gt; kullanımına ait &amp;uuml;retimler bulunmaktadır. Yazımızın asıl amacı &lt;strong&gt;IL&lt;/strong&gt; tarafındaki &amp;uuml;retimleri kavramak değildir ancak sonu&amp;ccedil; itibariyle lambda ifadeleri, isimsiz metodlar ile &lt;strong&gt;aynı&lt;/strong&gt; &lt;strong&gt;IL&lt;/strong&gt; &lt;strong&gt;&amp;ccedil;ıktılarının&lt;/strong&gt; &amp;uuml;retilmesini sağlamaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Son olarak lambda ifadeleri kullanılırken dikkat edilmesi gereken bazı durumları g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;1 - &lt;/strong&gt;Lambda ifadelerinde tanımlanan değişkenler diğer metodlar tarafından &lt;strong&gt;kullanılamazlar&lt;/strong&gt;. Başka bir deyişle, değişkenlerin kapsamı lambda ifadesinin sınırlarıdır. Aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde bu durum ifade edilmektedir. G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi ifade i&amp;ccedil;erisinde tanımlanan &lt;strong&gt;d&lt;/strong&gt; değişkenine kapsam dışından erişilememekte ve &lt;strong&gt;derleme zamanı hatası(Compile-Time Error)&lt;/strong&gt; alınmaktadır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk247_10.gif" alt="" width="265" height="140" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;2 - &lt;/strong&gt;Elbette lambda ifadesi dışında tanımlanmış olan bir değişkene, ifade i&amp;ccedil;erisinden erişilebilmektedir. S&amp;ouml;z gelimi aşağıdaki ekran &amp;ccedil;ıktısındanda g&amp;ouml;r&amp;uuml;leceği gibi, &lt;strong&gt;d&lt;/strong&gt; değişkeni lambda ifadesi dışında 10 olarak tanımlanmış ve metod &amp;ccedil;ağrısından sonra 11 olarak değiştirilmiştir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk247_11.gif" alt="" width="321" height="140" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;3 -&lt;/strong&gt; Lambda ifadelerinin sol tarafında yer alan parametrelerde &lt;strong&gt;ref&lt;/strong&gt; ve &lt;strong&gt;out&lt;/strong&gt; anahtar kelimeleri kullanılamaz.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bu yazımızda lambda ifadelerinin genel kullanımı &amp;uuml;zerinde durulmaya &amp;ccedil;alışmıştır. Lambda ifadelerinin getirdiği kolaylığı g&amp;ouml;rmek amacıyla C# 1.0 tarafından C# 3.0 tarafına doğru ilerlenmeye &amp;ccedil;alışılmıştır. Lambda ifadeleri ile ilişkili bir diğer &amp;ouml;nemli konuda &lt;strong&gt;ifade ağa&amp;ccedil;larıdır(Expression Trees)&lt;/strong&gt;. Bu konuyu ilerleyen yazılarımızda incelemeye &amp;ccedil;alışacağız. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt; &lt;a href="/makale/images/LambdayiAnlamak.rar"&gt;&amp;Ouml;rnek Uygulama i&amp;ccedil;in Tıklayın&lt;/a&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;</content>
+  <pubDate>2008-03-31 06:00:00</pubDate>
+  <slug>C-3-0-Derinlemesine-Lambda-Ifadeleri-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>c#-30</tag>
+    <tag>lambda-operator</tag>
+  </tags>
+  <categories>
+    <category>C# 3.0</category>
+  </categories>
+</post>

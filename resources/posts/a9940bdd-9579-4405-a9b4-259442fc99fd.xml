@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Transaction' larda SavePoint Kullanımı</title>
+  <description>Bu makalemizde, Ado.Net ile gerçekleştirilen transaction işlemlerinde, sql' de yer alan SavePoint' lerin nasıl uygulandığını incelemeye çalışacağız. Sql' de transaction işlemlerinde, her bir iş parçasından sonra gelinen noktanın birer SavePoint olarak kaydedilmesi sık rastlanan bir tekniktir. Bir transaction birden fazla iş parçasına sahiptir.</description>
+  <content>&lt;p&gt;Değerli Okurlarım, Merhabalar.&lt;/p&gt;
+&lt;p&gt;Bu makalemizde, Ado.Net ile ger&amp;ccedil;ekleştirilen transaction işlemlerinde, sql' de yer alan SavePoint' lerin nasıl uygulandığını incelemeye &amp;ccedil;alışacağız. Sql' de transaction işlemlerinde, her bir iş par&amp;ccedil;asından sonra gelinen noktanın birer SavePoint olarak kaydedilmesi sık rastlanan bir tekniktir. Bir transaction birden fazla iş par&amp;ccedil;asına sahiptir. Her bir iş par&amp;ccedil;asının başarılı olması halinde, t&amp;uuml;m bu işlemler onaylanarak (commit) kesin olarak veritabanına yansıtılır. Diğer yandan, iş par&amp;ccedil;alarının herhangibirisinde meydana gelebilecek bir aksaklık sonucu transaction RollBack işlemini uygular ve t&amp;uuml;m işlemler yapılmamış sayılarak veritabanı, transaction başlamadan hemen &amp;ouml;nceki haline getirilir.&lt;/p&gt;
+&lt;p&gt;Ancak &amp;ccedil;oğu zaman transaction blokları i&amp;ccedil;erisine aldığımız iş par&amp;ccedil;aları, &amp;ccedil;ok fazla sayıda olup, herhangibir noktada meydana gelebilecek RollBack işlemi sonucu o ana kadar yapılan t&amp;uuml;m işlemlerin ge&amp;ccedil;ersiz sayılması istenen bir durum olmayabilir. İşte b&amp;ouml;yle bir durumda, başarılı bir şekilde ger&amp;ccedil;ekleşen işlerden sonraki kod satırlarına d&amp;ouml;nmek daha mantıklı bir yaklaşımdır. Elbette bu durum havale, eft gibi bankacılık işlerini kapsayan transaction' larda tercih edilmemelidir.&lt;/p&gt;
+&lt;p&gt;SavePoint' lerin &amp;ccedil;alışma mantığında, transaction i&amp;ccedil;indeki belirli noktaların işaretlenmesi yatmaktadır. Bu durumda, RollBack işlemi s&amp;ouml;z konusu olduğunda, bu işaretlenmiş noktalardan birisine d&amp;ouml;n&amp;uuml;lebilme imkanına sahip olunur. İşte Sql transaction' larındaki bu tekniği, .net ile geliştirdiğimiz uygulamalarda da simule edebilmek i&amp;ccedil;in, Transaction sınıflarının aşağıda SqlTransaction sınıfı i&amp;ccedil;in prototipi verilen Save metodu kullanılır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public void Save(string savePointName);&lt;/pre&gt;
+&lt;p&gt;Bu metod parametre olarak, SavePoint' in ismini belirten string t&amp;uuml;rde bir değer alır. SavePoint olarak kaydedilmiş bir noktaya RollBack işlemi ile geri d&amp;ouml;nebilmek i&amp;ccedil;in, RollBack metodunun aşağıdaki prototipi kullanılır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public void Rollback(string transactionName);&lt;/pre&gt;
+&lt;p&gt;Burada, RollBack metoduna, parametre olarak string t&amp;uuml;rden SavePoint' in adı verilir. Burada &amp;ouml;nemli olan, RollBack ile herhangibir SavePoint' e d&amp;ouml;n&amp;uuml;lmesinden sonra eğer Commit işlemi uygulanırsa, SavePoint' e kadar yapılan iş par&amp;ccedil;alarının kesin olarak veritabanına yansıtılacağıdır. Şimdi SavePoint kullanımına ilişkin olarak basit bir &amp;ouml;rnek geliştirelim. &amp;Ouml;rnek windows uygulmasında, 3 iş par&amp;ccedil;ası i&amp;ccedil;eren bir transaction kullanacağız. Bu transaction işleminde, SavePoint' lere yer verecek ve bu noktaların veritabanına olan etkisini basit&amp;ccedil;e incelemeye &amp;ccedil;alışacağız. Bu ama&amp;ccedil;la aşağıdaki form g&amp;ouml;r&amp;uuml;n&amp;uuml;m&amp;uuml;ne benzer bir windows uygulması tasarlayarak işe başlayalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk73_1.gif" alt="" width="312" height="456" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 1. Form Tasarımımız.&lt;/p&gt;
+&lt;p&gt;Şimdi uygulama kodlarımızı geliştirelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;/* SqlConnection ve SqlTransaction nesnelerimizi tanımlıyoruz.*/
+SqlConnection con; 
+SqlTransaction trans;
+
+private void frmMain_Load(object sender, System.EventArgs e)
+{
+    /* Uygulamamız y&amp;uuml;klenirken, SqlConnection nesnemizi oluşturuyoruz. Yerel sql sunucusunda yer alan, Northwind veritabanına bağlantı sağlayacağız.*/
+    con = new SqlConnection("data source=localhost;initial catalog=Northwind;integrated security=SSPI");
+}
+
+private void btnBegin_Click(object sender, System.EventArgs e)
+{
+    /* Kullanıcı transaction'ı başlatıyor. &amp;Ouml;nce bağlantımız a&amp;ccedil;ılır daha sonra SqlConnection nesnemizin BeginTransaction metod ile, transaction' ımız bu bağlantı i&amp;ccedil;in başlatılır. Ardından a&amp;ccedil;ılış işlemi listBox kontrol&amp;uuml;ne yazılır.*/
+    con.Open();
+    trans=con.BeginTransaction();
+    listBox1.Items.Add("Transaction basladi...");
+} 
+
+private void btnEkle1_Click(object sender, System.EventArgs e)
+{
+    /*Burada transaction' ımız i&amp;ccedil;inde &amp;ccedil;alıştırılacak bir iş par&amp;ccedil;ası uygulanıyor. Bu iş par&amp;ccedil;asında, Personel isimli tabloya veri girişi yapılmakta.*/
+    SqlCommand cmd=new SqlCommand("INSERT INTO Personel (ISIM,SOYISIM) VALUES ('BURAK','SENYURT')",con);
+    cmd.Transaction=trans; /* SqlCommand i&amp;ccedil;in transaction nesnesi belirtilir.*/
+    try
+    {
+        int sonuc=cmd.ExecuteNonQuery(); /* Komutumuz &amp;ccedil;alıştırılır.*/
+        trans.Save("Insert_1"); /*Transaction' ımız i&amp;ccedil;inde bu noktada bir SavePoint oluşturulur.*/
+        listBox1.Items.Add(sonuc+" Kayit eklendi. SavePoint=Insert_1"); /* Durum listBox'a yazılır.*/
+    }
+    catch
+    {
+        listBox1.Items.Add("HATA...");
+        trans.Rollback(); /* Bir hata oluşursa ilk hale d&amp;ouml;n&amp;uuml;l&amp;uuml;r.*/
+    }
+}
+
+private void btnEkle2_Click(object sender, System.EventArgs e)
+{
+    /*Burada transaction' ımız i&amp;ccedil;inde &amp;ccedil;alıştırılacak bir iş par&amp;ccedil;ası uygulanıyor. Bu iş par&amp;ccedil;asında, Per isimli tabloya veri girişi yapılmakta. Ancak tablomuzun ismi Personel olmalı ve Per isimli bir tablomuzda yok. Bu nedenle burada bir hata oluşacaktır. İşte bu hata sonucu transaction'ımız RollBack işlemi ile Insert_1 isimli SavePoint noktasına d&amp;ouml;ner.*/
+    SqlCommand cmd=new SqlCommand("INSERT INTO Per (ISIM,SOYISIM) VALUES ('SEFER','ALGAN')",con);
+    cmd.Transaction=trans;
+    try
+    {
+        int sonuc=cmd.ExecuteNonQuery();
+        trans.Save("Insert_2");/* Insert_2 isminde bir SavePoint oluşturulur.*/
+        listBox1.Items.Add(sonuc+" Kayit eklendi. SavePoint=Insert_2");
+    }
+    catch
+    {
+        listBox1.Items.Add("HATA...DONUS--&amp;gt;Insert_1");
+        trans.Rollback("Insert_1"); /* Insert_1 isimli SavePoint noktasına d&amp;ouml;n&amp;uuml;l&amp;uuml;r.*/ 
+    }
+}
+
+private void btnSil_Click(object sender, System.EventArgs e)
+{
+    /*Personel tablosundan ID alanının değeri 1 olan satırı silecek komutu i&amp;ccedil;eren bir iş par&amp;ccedil;ası uygulanıyor. Ancak ID=1 olan bir satır yok ise bir istisna oluşacaktır. Bu durumda RollBack işlemi ile, Insert_2 isimli SavePoint noktasına d&amp;ouml;n&amp;uuml;l&amp;uuml;r. */
+    SqlCommand cmd=new SqlCommand("DELETE FROM Personel WHERE ID=1",con);
+    cmd.Transaction=trans;
+    try
+    {
+        int sonuc=cmd.ExecuteNonQuery();
+        listBox1.Items.Add(sonuc+" Kayit silindi.");
+    }
+    catch
+    {
+        listBox1.Items.Add("HATA...DONUS--&amp;gt;Insert_2");
+        trans.Rollback("Insert_2"); /* Insert_2 SavePoint noktasına d&amp;ouml;n&amp;uuml;l&amp;uuml;r.*/ 
+    }
+}
+
+private void btnCommit_Click_1(object sender, System.EventArgs e)
+{
+    /* Transaction onaylanır. Eğer transaction herhangibir SavePoint' te ise, o noktaya kadar olan t&amp;uuml;m işlemler onaylanır. */
+    trans.Commit();
+    listBox1.Items.Add("Islemler Onaylandi...");
+    if(con.State==ConnectionState.Open)
+    {
+        con.Close();
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Burada dikkat edilecek olursa, ikinci Insert işleminde yanlış bir tablo ismi verilmiştir. Ayrıca silme işlemi i&amp;ccedil;in kullandığımız sql c&amp;uuml;mleciğinde, ID alanının değerinin 1 olması garanti değildir. İşte buralarda, istisnalar fırlayacaktır. Ancak catch bloklarında bu istisnalar yakandıktan sonra RollBack işlemi ile daha &amp;ouml;nceden kaydedilen belirli bir SavePoint' e d&amp;ouml;n&amp;uuml;lmektedir. İşte bu noktalardan sonra Commit işlemini uygularsak, bu SavePoint' lere kadar olan t&amp;uuml;m iş par&amp;ccedil;aları onaynalacak ve veritabanına yansıtılacaktır. Bu durumu aşağıdaki şekil ile daha kolay anlayabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk73_6.gif" alt="" width="482" height="342" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 2. SavePoint Kullanımı&lt;/p&gt;
+&lt;p&gt;Şimdi bu durumu analiz etmek i&amp;ccedil;in uygulamamızı &amp;ccedil;alıştıralım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk73_2.gif" alt="" width="312" height="456" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 3. Ekle 2 işleminde hata.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;nce Ekle 1 başlıklı butona basarak ilk Insert işlemimizi &amp;ccedil;alıştıralım. Daha sonra Ekle 2 başlıklı butona tıklayarak ikinci insert işlemini &amp;ccedil;alıştıralım. Burada Per isimli tablo olmadığı i&amp;ccedil;in bir istisna oluşacaktır. Bu durumda Catch bloğundaki RollBack metodu ile transaction Insert_1 isimli SavePoint'e d&amp;ouml;ner. Eğer bu anda Onayla başlıklı butona tıklar ve transaction'ı onaylarsak (Commit) tablomuzun g&amp;ouml;r&amp;uuml;n&amp;uuml;m&amp;uuml;n&amp;uuml;n aşağıdaki gibi olduğunu farkederiz. (Tablonun ilk hali hi&amp;ccedil; bir kayıt i&amp;ccedil;ermemektedir.)&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk73_3.gif" alt="" width="310" height="47" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 4. Insert_1 SavePoint'inden Sonra Commit Sonucu Tablonun Durumu.&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi, Insert_1 SavePoint' ine kadar olan işlemler (ki burada sadece ilk Insert komutu oluyor) veritabanına yansıtılmıştır. Şimdi kodumuzdaki ikinci insert ifadesinde yer alan Per isimli tablo adını d&amp;uuml;zeltelim ve bunu Personel yapalım. Bu durumda ikinci Insert işlemimizde ge&amp;ccedil;erli olacaktır. Ancak halen Delete işleminde problem &amp;ccedil;ıkması olasıdır. Nitekim, tablomuzda yeni girdiğimiz ilk satırın ID değeri 51' dir. Identity olarak tanımlanan bu alanın 1 değerine sahip olması şu anki şartlarda imkansızdır. Dolayısıyla Delete işleminde yine bir istisna fırlayacak ve bu kez, Insert_2 isimli SavePoint' e d&amp;ouml;n&amp;uuml;lecektir. Şimdi bu son durumu analiz etmek i&amp;ccedil;in uygulamızı d&amp;uuml;zenleyelim ve tekrar &amp;ccedil;alıştıralım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk73_4.gif" alt="" width="312" height="456" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 5. Delete işleminde meydana gelen istisna sonrası Commit işlemi uygulanırsa.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;nce, Baslat başlıklı butona tıklayarak Transaction' ımızı başlatalım. Ardından sırasıyla Ekle 1, Ekle 2 ve Sil başlıklı butonlara tıklayalım. Bu işlemler sonucunda Delete işleminde ID'si 1 olan satır olmadığından bir istisna oluşacak ve transaction'ımız RollBack metodu ile, Insert_2 olarak isimlendirdiğimiz SavePoint' e d&amp;ouml;necektir. Bu noktada Onayla başlıklı butona tıklarsak, Commit işlemi sonucu Insert_2 noktasına kadar olan iki Insert işlemimizde onaylanacak ve veri tablosuna yansıtılacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk73_5.gif" alt="" width="312" height="66" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 6. Delete işlemindeki istisna sonrası Commit uygulandığında, tablonun son hali.&lt;/p&gt;
+&lt;p&gt;Bu makalemizde, Sql SavePoint' lerinin Ado.Net i&amp;ccedil;indeki transaction' larda nasıl kullanıldığını incelemeye &amp;ccedil;alıştık. Geliştirdiğimiz &amp;ouml;rnek, sadece SavePoint' lerin kullanımını inceleme amacında olduğundan, farklı t&amp;uuml;rden hatalara a&amp;ccedil;ıktır. Ancak &amp;ouml;nemli olan, SavePoint'lerin bir transaction nesnesi i&amp;ccedil;in nasıl kayıt edildikleri ve RollBack işlemleri sonucu bu noktalara nasıl d&amp;ouml;n&amp;uuml;lebildiğidir. Ayrıca, bu tip RollBack işlmeleri sonrasında verilen Commit emirlerinin verileri ger&amp;ccedil;ek anlamda nasıl etkilediğinede dikkat etmek gerekir. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;şmek dileğiyle hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2004-06-15 12:00:00</pubDate>
+  <slug>Transaction-larda-SavePoint-Kullanc4b1mc4b1-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>adonet</tag>
+    <tag>transactions</tag>
+    <tag>isolation-levels</tag>
+    <tag>save-point</tag>
+  </tags>
+  <categories>
+    <category>Ado.Net</category>
+  </categories>
+</post>

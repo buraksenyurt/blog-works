@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>TFS Web Services ve Kullanımları</title>
+  <description>TFS mimari alt yapısı ve çevre etkileşimini incelediğimiz şu yazımızda Client Object Model’ i kısaca anlamaya çalışmıştık. O makalede yer alan mimari çizime dikkatlice bakarsak eğer, Client Object Model’ in aslında TFS Web Service’ ler ile haberleştiğini görebiliriz. Aslına bakarsanız Team Foundation Server tarafında epeyce fazla sayıda XML Web Service yer almaktadır. Bu servisleri ana hatları ile değerlendirdiğimizde ise sunucu ve koleksiyon seviyesinde olmak üzere iki ana dala bölündüklerini görürüz.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/cartoon-soldier-010.jpg"&gt;&lt;img style="margin: 4px 0px; display: inline; float: right;" title="cartoon-soldier-010" src="/pics/cartoon-soldier-010_thumb.jpg" alt="cartoon-soldier-010" width="240" height="375" align="right" /&gt;&lt;/a&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Yedek Subay olarak askerlik hizmetimi yerine getirdiğim yıllarda&lt;em&gt;(O zamanlar 16 ay idi)&lt;/em&gt; Jandarma Genel Komutanlığı Personel Şube&amp;rsquo; de g&amp;ouml;rev almıştım. Aslında temel işim &lt;strong&gt;Powerpoint&lt;/strong&gt; ile sunum hazırlamaktı ama verilen emir her ne ise onu da yerine getirmek mesuliyetini taşımaktaydım.&lt;/p&gt;
+&lt;p&gt;Bir g&amp;uuml;n komutanım ile birlikte yine sivil hayat i&amp;ccedil;in anlamsız olan ama Askeri disiplin kuralları &amp;ccedil;er&amp;ccedil;evesinde gayet de makul g&amp;ouml;r&amp;uuml;nen bir işe adanmıştık. Neredeyse t&amp;uuml;m komutanlık personelinin iğneli Printer&amp;rsquo; dan &amp;ccedil;ıkartılmış karınca yazısı ebatlarındaki bilgilerini, bir diğer koca liste ile karşılaştıracak ve bir filtreleme işlemi ger&amp;ccedil;ekleştirecektik. &lt;em&gt;(İşin yaklaşık olarak kesintisiz &amp;ccedil;alışma ile 48 saate varabileceğini biliyorduk) &lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Takdir edersiniz ki o yıllarda bilgisayar kullanılıyor olmasına rağmen, komutanlığın ihtiya&amp;ccedil; duyduğu ve hayatı kolaylaştıracak işlevsellikler i&amp;ccedil;in genellikle &lt;strong&gt;Microsoft Office&lt;/strong&gt; &amp;uuml;r&amp;uuml;nleri ele alınmaktaydı ama elimizde ş&amp;ouml;yle zırt diye filtreleme yapabileceğimiz bir &lt;strong&gt;SQL/Oracle&lt;/strong&gt; ortamı da yoktu. &lt;em&gt;(Yıl 2001-2003 arası diyeyim)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Hal b&amp;ouml;yle olunca elimize aldık &amp;ccedil;ıktıları başladık tek tek karşılaştırmaya. Bir ara ben durup bunu daha kolay nasıl yapabiliriz diye d&amp;uuml;ş&amp;uuml;nmeye başladığımı hatırlıyorum. Hatta o anlarda arkamda beliren Yarbay&amp;rsquo; ımın da sert bir ses tonu ile beni r&amp;uuml;yamdan uyandırdığını&amp;hellip;&amp;rdquo;Asteğmenimmmm!!!&amp;hellip;&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;Doğruyu s&amp;ouml;ylemek gerekirse ne ben ne de komutanım t&amp;uuml;m listeyi dolaşmak istemiyorduk. Kafa kafaya vererek g&amp;uuml;zel bir yol bulduk elbette &lt;img class="wlEmoticon wlEmoticon-smile" style="border-style: none;" src="/pics/wlEmoticon-smile_88.png" alt="Smile" /&gt; Yol derken elimizde cetvel, kalem vesaire vardı. Ne bilgisayar ne de başka bir akıllı cihaz. O zaman anladım ki bazı işlerde kişiye b&amp;uuml;y&amp;uuml;k sabır gerekebiliyor. &amp;Ouml;rneğin &lt;strong&gt;TFS&lt;em&gt;(Team Foundation Server)&lt;/em&gt;&lt;/strong&gt; &amp;uuml;zerinde kullanılan &lt;strong&gt;XML Web Service&lt;/strong&gt; &amp;ouml;rneklerinin teker teker bulunup &amp;ccedil;ıkartılması gibi &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_185.png" alt="Winking smile" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;TFS&lt;/strong&gt; mimari alt yapısı ve &amp;ccedil;evre etkileşimini incelediğimiz &lt;a href="/post/TFS-2012-Client-Object-Model-icin-Hello-World" target="_blank"&gt;şu yazımızda&lt;/a&gt; &lt;strong&gt;Client Object Model&lt;/strong&gt;&amp;rsquo; i kısaca anlamaya &amp;ccedil;alışmıştık. O makalede yer alan mimari &amp;ccedil;izime dikkatlice bakarsak eğer, &lt;strong&gt;Client Object Model&lt;/strong&gt;&amp;rsquo; in aslında&lt;strong&gt; TFS Web Service&lt;/strong&gt;&amp;rsquo; ler ile haberleştiğini g&amp;ouml;rebiliriz. Aslına bakarsanız &lt;strong&gt;Team Foundation Server&lt;/strong&gt; tarafında epeyce fazla sayıda &lt;strong&gt;XML Web Service&lt;/strong&gt; yer almaktadır. Bu servisleri ana hatları ile değerlendirdiğimizde ise sunucu ve koleksiyon seviyesinde olmak &amp;uuml;zere iki ana dala b&amp;ouml;l&amp;uuml;nd&amp;uuml;klerini g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;Aşağıdaki şekilde bu servisler genel isimlendirmeler halinde ifade edilmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/tfsservices_1.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="tfsservices_1" src="/pics/tfsservices_1_thumb.png" alt="tfsservices_1" width="579" height="520" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edilmesi gereken notkalardan birisi de bazı servislerin her iki seviyede de yer alıyor olmasıdır. Ne varki bu servislerin alanları farklıdır. Sadece bir koleksiyon ve i&amp;ccedil;eriği i&amp;ccedil;in kullanılabilecek olan hizmetler &lt;strong&gt;Collection Level&lt;/strong&gt; grubunda yer almaktadır. Diğer taraftan t&amp;uuml;m &lt;strong&gt;TFS&lt;/strong&gt; sunucusunu ilgilendiren servisler de &lt;strong&gt;Server Level&lt;/strong&gt; grubuna dahildir.&lt;/p&gt;
+&lt;p&gt;Yine dikkat edileceği &amp;uuml;zere koleksiyon seviyesinde farklılaşan&lt;em&gt;(Team Project Collection &amp;ouml;rneklerine &amp;ouml;zel olan)&lt;/em&gt; hizmetler bulunmaktadır. &amp;Ouml;rneğin &lt;strong&gt;Version Control&lt;/strong&gt; veya &lt;strong&gt;Lab Management&lt;/strong&gt; gibi. Normal şartlarda bu servislere, kurulu olan &lt;strong&gt;TFS&lt;/strong&gt; ortamına erişim yetkisi olan istemcilerden ulaşılabilinmektedir. &amp;Ouml;rneğin koleksiyon seviyesinde kullanılabilen ve proje listesinin &amp;ccedil;ekilmesi, proje oluşturması, silinmesi, branch silinmesi vb operasyonları ele alabildiğimiz &lt;strong&gt;Common Structure Service&lt;/strong&gt; hizmetinin 4nc&amp;uuml; versiyonuna aşağıdaki şekilde g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi ulaşabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/tfsservices_3.png"&gt;&lt;img style="display: inline;" title="tfsservices_3" src="/pics/tfsservices_3_thumb.png" alt="tfsservices_3" width="615" height="860" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;ok doğal olarak diğer servislere de ulaşmamız, hatta &lt;strong&gt;WSDL&lt;em&gt;(Web Service Description Language)&lt;/em&gt;&lt;/strong&gt; &amp;ccedil;ıktılarına bakmamız m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Ben &amp;ccedil;alışmakta olduğum &lt;strong&gt;Team Foundation Server 2012&lt;/strong&gt; i&amp;ccedil;in, uygulama sunucusunun y&amp;uuml;kl&amp;uuml; olduğu &lt;strong&gt;IIS&lt;em&gt;(Internet Information Services)&lt;/em&gt;&lt;/strong&gt; altında yaptığım araştırmalarda, aşağıdaki uzun listeye ulaştığımı rahatlıkla ifade edebilirim.&lt;/p&gt;
+&lt;table style="width: 640px;" border="1" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="640"&gt;&lt;strong&gt;Administration&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="640"&gt;http://tfsserver:8080/tfs/TeamFoundation/Administration/v4.0/AccessControlService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/TeamFoundation/Administration/v4.0/FileHandlerService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/TeamFoundation/Administration/v4.0/IdentityManagementService2.asmx &lt;br /&gt;http://tfsserver:8080/tfs/TeamFoundation/Administration/v3.0/AdministrationService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/TeamFoundation/Administration/v3.0/CatalogService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/TeamFoundation/Administration/v3.0/EventService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/TeamFoundation/Administration/v3.0/IdentityManagementService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/TeamFoundation/Administration/v3.0/JobService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/TeamFoundation/Administration/v3.0/LocationService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/TeamFoundation/Administration/v3.0/PropertyService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/TeamFoundation/Administration/v3.0/RegistryService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/TeamFoundation/Administration/v3.0/SecurityServices.asmx &lt;br /&gt;http://tfsserver:8080/tfs/TeamFoundation/Administration/v3.0/TeamProjectCollectionService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/TeamFoundation/Administration/v3.0/WarehouseControlService.asmx&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="640"&gt;&lt;strong&gt;Lab&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="640"&gt;http://tfsserver:8080/tfs/TeamFoundation/Lab/v3.0/LabFrameworkService.asmx&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="640"&gt;&lt;strong&gt;TFS Resources &amp;ndash; Services&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="640"&gt;http://tfsserver:8080/tfs/_tfs_resources/services/v1.0/AuthorizationService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/services/v1.0/CommonStructureService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/services/v1.0/ConnectedServicesService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/services/v1.0/EventService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/services/v1.0/GroupSecurityService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/services/v1.0/ProcessConfigurationService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/services/v1.0/ProcessTemplate.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/services/v1.0/ProjectMaintenance.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/services/v1.0/registration.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/services/v1.0/ServerStatus.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/services/v1.0/StrongBoxService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/services/v1.0/TeamConfigurationService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/services/v2.0/GroupSecurityService2.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/services/v2.0/ProcessConfigurationService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/services/v2.0/ProcessConfigurationService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/services/v3.0/AuthorizationService3.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/services/v3.0/CommonStructureService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/services/v3.0/IdentityManagementService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/services/v3.0/JobService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/services/v3.0/LocationService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/services/v3.0/PropertyService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/services/v3.0/RegistryService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/services/v3.0/SecurityService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/services/v3.0/SyncService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/services/v4.0/AccessControlService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/services/v4.0/AuthorizationService4.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/services/v4.0/CommonStructureService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/services/v4.0/FileHandlerService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/services/v4.0/IdentityManagementService2.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/services/v4.0/SyncService4.asmx&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="640"&gt;&lt;strong&gt;TFS Resources - Work Item Tracking&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="640"&gt;http://tfsserver:8080/tfs/_tfs_resources/workitemtracking/v5.0/clientservice.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/workitemtracking/v4.0/ClientService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/workitemtracking/v3.0/ClientService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/workitemtracking/v1.0/ClientService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/workitemtracking/v1.0/ConfigurationSettingsService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/workitemtracking/v1.0/ExternalServices.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/workitemtracking/v1.0/Integration.asmx&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="640"&gt;&lt;strong&gt;TFS Resources - Verison Control&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="640"&gt;http://tfsserver:8080/tfs/_tfs_resources/VersionControl/v4.0/Repository.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/VersionControl/v3.0/Repository.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/VersionControl/v1.0/Repository.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/VersionControl/v1.0/Administration.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/VersionControl/v1.0/Integration.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/VersionControl/v1.0/ProxyStatistics.asmx&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="640"&gt;&lt;strong&gt;TFS Resources - Test Management&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="640"&gt;http://tfsserver:8080/tfs/_tfs_resources/TestManagement/v2.0/TestManagementWebService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/TestManagement/v1.0/TestImpactService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/TestManagement/v1.0/TestResults.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/TestManagement/v1.0/TestResultsEx.asmx&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="640"&gt;&lt;strong&gt;TFS Resources - Sync&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="640"&gt;http://tfsserver:8080/tfs/_tfs_resources/sync/v4.0/AdministrationService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/sync/v3.0/AdministrationService.asmx&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="640"&gt;&lt;strong&gt;TFS Resources - Lab&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="640"&gt;http://tfsserver:8080/tfs/_tfs_resources/lab/v4.0/LabService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/lab/v3.0/Integration.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/lab/v3.0/LabAdminService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/lab/v3.0/LabService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/lab/v3.0/TestIntegrationService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/lab/v3.0/WorkflowIntegrationService.asmx&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="640"&gt;&lt;strong&gt;TFS Resources - Discussion&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="640"&gt;http://tfsserver:8080/tfs/_tfs_resources/discussion/v1.0/discussionwebservice.asmx&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="640"&gt;&lt;strong&gt;TFS Resources - Build&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="640"&gt;http://tfsserver:8080/tfs/_tfs_resources/build/v4.0/AdministrationService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/build/v4.0/AgentReservationService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/build/v4.0/BuildDeploymentService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/build/v4.0/BuildQueueService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/build/v4.0/BuildService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/build/v4.0/SharedResourceService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/build/v3.0/AdministrationService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/build/v3.0/AgentReservationService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/build/v3.0/BuildQueueService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/build/v3.0/BuildService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/build/v3.0/Integration.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/build/v3.0/SharedResourceService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/build/v2.0/BuildService.asmx &lt;br /&gt;http://tfsserver:8080/tfs/_tfs_resources/build/v2.0/Integration.asmx&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="640"&gt;&lt;strong&gt;Metadata Publishing' i kapalı olan WCF servisleri&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="640"&gt;http://tfsserver:8080/tfs/queue/_tfs_resources/services/v4.0/MessageQueueService.svc &lt;br /&gt;http://tfsserver:8080/tfs/queue/_tfs_resources/services/v4.0/MessageQueueService2.svc&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere olduk&amp;ccedil;a uzun bir servis listesi s&amp;ouml;z konusu.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Aslına bakarsanız bu servislerin detaylı olarak ne iş yaptıklarına dair MSDN &amp;uuml;zerinde &amp;ccedil;ok fazla bilgi bulunmamaktadır. Standart bir teknik Help dok&amp;uuml;manından &amp;ouml;tesi değildir. Bu nedenle TFS&amp;rsquo; in &amp;ccedil;alışma yapısını bilip, biraz tahminler y&amp;uuml;r&amp;uuml;terek ilerlemeye &amp;ccedil;alışmak, işinizi epeyce kolaylaştıracaktır.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1&gt;#Region Off Topic&lt;/h1&gt;
+&lt;p&gt;Bu arada dilerseniz bu servislerin tamamı izlemek i&amp;ccedil;in basit bir Web uygulaması geliştirebilir ve &amp;ouml;rneğin listedeki adresleri bir &lt;strong&gt;Web User Control&lt;/strong&gt; i&amp;ccedil;erisine g&amp;ouml;merek, tıklama usul&amp;uuml;yle ilgili &lt;strong&gt;XML Web Service&lt;/strong&gt; adreslerine gidebilirsiniz. &amp;Ouml;rneğin aşağıdaki gibi bir &lt;strong&gt;Web User Control&lt;/strong&gt; ve yardımcı sınıf işinizi g&amp;ouml;recektir.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;Text&lt;/strong&gt; dosyasında durmakta olan servis adreslerini okuyan yardımcı tip ve metod;&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Collections.Generic; 
+using System.IO; 
+using System.Web.UI.WebControls;
+
+namespace AllServices 
+{ 
+    public static class Utility 
+    { 
+        public static List&amp;lt;HyperLink&amp;gt; GetServiceLinks(string textFilePath) 
+        { 
+            List&amp;lt;HyperLink&amp;gt; links = new List&amp;lt;HyperLink&amp;gt;();
+
+            string[] lines = File.ReadAllLines(textFilePath); 
+            foreach (string line in lines) 
+            { 
+                if (line.StartsWith("http://")) 
+                { 
+                    HyperLink link = new HyperLink 
+                    { 
+                        Text = line.Substring(line.LastIndexOf("tfs")), 
+                        NavigateUrl = line 
+                    }; 
+                    links.Add(link); 
+                }                
+            }
+
+            return links; 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Web User Control kodu;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Web.UI.WebControls;
+
+namespace AllServices 
+{ 
+    public partial class TfsServicesControl : System.Web.UI.UserControl 
+    { 
+        protected void Page_Load(object sender, EventArgs e) 
+        { 
+            var serviceLinks=Utility.GetServiceLinks(Server.MapPath("~/Services.txt")); 
+            foreach (var serviceLink in serviceLinks) 
+            { 
+                divLinks.Controls.Add(serviceLink); 
+                divLinks.Controls.Add(new Literal { Text = "&amp;lt;br/&amp;gt;&amp;lt;br/&amp;gt;" }); 
+            } 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;ve işte &amp;ccedil;alışma zamanına ait &amp;ouml;rnek ekran &amp;ccedil;ıktısı &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_185.png" alt="Winking smile" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/tfsservices_4.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="tfsservices_4" src="/pics/tfsservices_4_thumb.png" alt="tfsservices_4" width="409" height="457" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Bir servis adına tıklayın ve i&amp;ccedil;eriğine ulaşın &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_185.png" alt="Winking smile" /&gt;&lt;/p&gt;
+&lt;h1&gt;#endregion Off Topic&lt;/h1&gt;
+&lt;h1&gt;Referans Etmek&lt;/h1&gt;
+&lt;p&gt;&lt;strong&gt;Team Foundation Server&lt;/strong&gt; &amp;uuml;zerinden sunulan &lt;strong&gt;XML Web Service&lt;/strong&gt; &amp;ouml;rneklerini herhangibir &lt;strong&gt;.Net&lt;/strong&gt; istemcisi tarafından t&amp;uuml;ketmek istediğimizde, &lt;strong&gt;Client Object Model&lt;/strong&gt; &amp;uuml;zerinden erişimde bulunmamız gerekmektedir. Normal şartlarda ilgili &lt;strong&gt;Web Service&amp;rsquo;&lt;/strong&gt; leri, &lt;strong&gt;Add Service Reference&lt;/strong&gt; sekmesinden hareket edilerek projeye ilave edilebilir ve &amp;uuml;retilen &lt;strong&gt;Proxy&lt;/strong&gt; tipinin metodlarına ulaşılabilir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/tfsservices_6.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="tfsservices_6" src="/pics/tfsservices_6_thumb.png" alt="tfsservices_6" width="610" height="480" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Ancak &amp;ccedil;alışma zamanında servis tarafında kuvvetle muhtemel aşağıdaki şekilde g&amp;ouml;r&amp;uuml;len &lt;strong&gt;504&lt;/strong&gt; &lt;strong&gt;Unknown&lt;/strong&gt; &lt;strong&gt;Host&lt;/strong&gt; hatası alınacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/TfsError2.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="TfsError2" src="/pics/TfsError2_thumb.png" alt="TfsError2" width="452" height="314" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Bunun nedeni aslında ilgili servislerin,&lt;strong&gt; Client Object Model&lt;/strong&gt;&lt;em&gt;&lt;strong&gt;(veya Server Object Model)&lt;/strong&gt; &lt;/em&gt;tafaından ele alınış ve &amp;uuml;retiliş şekilleridir. Ancak unutulmaması gereken bir nokta da şudur. Bu servislerin &amp;ccedil;oğu, TFS'in kurulu makine &amp;uuml;zerinden erişilmeye &amp;ccedil;alışıldığında(en azından bir tarayıcı ile) bildiğimiz&lt;strong&gt; XML Web Service&lt;/strong&gt;' leri gibi t&amp;uuml;ketilebilirler. &amp;Ouml;rneğin &lt;strong&gt;TFS&lt;/strong&gt;' in kurulu olduğu makinede &lt;strong&gt;http://tfsserver:8080/tfs/TeamFoundation/Administration/ v3.0/WarehouseControlService.asmx&lt;/strong&gt;' e ulaşmayı deneyin. &lt;em&gt;(Yani ilgili servislere kurulu olduğu makineden yerel olarak ulaşmayı) &lt;/em&gt;Bu durumda aşağıdaki gibi bir operasyonu deneyebileceğinizi g&amp;ouml;rebilirsiniz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2013%2f3%2fgpstatus.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dilerseniz TFS' e uzaktan bağlanacak bir istemci a&amp;ccedil;ısından olaya bakmaya devam edelim ve basit bir kullanım şeklini değerlendirerek ilerlemeye &amp;ccedil;alışalım.&lt;/p&gt;
+&lt;h1&gt;Hello World&lt;/h1&gt;
+&lt;p&gt;Aşağıdaki kod par&amp;ccedil;asında &lt;strong&gt;Collection Level&lt;/strong&gt; grubundan iki &amp;ouml;rnek servisin kullanımına yer verilmiştir. Bu servislerden birisi &lt;strong&gt;ICommonStructureSerice4&lt;/strong&gt;, diğeri ise &lt;strong&gt;IProcessTemplates&lt;/strong&gt; &lt;strong&gt;aray&amp;uuml;zleri&lt;em&gt;(Interface&lt;/em&gt;&lt;/strong&gt;&lt;em&gt;)&lt;/em&gt; tarafından taşınmaktadır. Dikkat edileceği &amp;uuml;zere anahtar nokta &lt;strong&gt;TfsTeamProjectCollection&lt;/strong&gt; tipinin &amp;ouml;rnekleniş şeklidir. Burada &lt;strong&gt;TfsTeamProjectCollectionFactory&lt;/strong&gt; sınıfının static &lt;strong&gt;GetTeamProjectCollection&lt;/strong&gt; metodundan yararlanılmakta olup, fonksiyona parametre olarak &lt;strong&gt;TFS&lt;/strong&gt; sunucusundaki &lt;strong&gt;Team Project Collection&lt;/strong&gt;&amp;rsquo; ın &lt;strong&gt;HTTP&lt;/strong&gt; tabanlı adresi ge&amp;ccedil;ilmektedir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Bildiğiniz &amp;uuml;zere TFS kurulumunda aksi belirtilmedik&amp;ccedil;e mutlaka Default Collection isimli bir Team Project Collection oluşturulmaktadır.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Tabi ki &lt;strong&gt;Server Level&lt;/strong&gt; servis gruplarını kullanmak da isteyebiliriz. Bu durumda &lt;strong&gt;TfsConfigurationServer&lt;/strong&gt; ve &lt;strong&gt;TfsConfigurationServerFactory&lt;/strong&gt; tiplerinden yararlanmamız gerekmetedir.&lt;/p&gt;
+&lt;p&gt;Gelelim &amp;ouml;rnek uygulama kodlarımıza. Bunun i&amp;ccedil;in herzaman olduğu gibi basit bir &lt;strong&gt;Console&lt;/strong&gt; uygulamasından yararlanıyor olacağız. Eğer makinemizde&lt;strong&gt; TFS Client Object Model&lt;/strong&gt; veya ilgili &lt;strong&gt;SDK&lt;/strong&gt; y&amp;uuml;kl&amp;uuml;yse en azından &lt;strong&gt;Microsoft.TeamFoundation.Client &lt;/strong&gt;ve &lt;strong&gt;Microsoft.TeamFoundation.Common&lt;/strong&gt; &lt;strong&gt;assembly&lt;/strong&gt;&amp;rsquo; larının referans edilmesi gerekmektedir. Ancak bazı servisler farklı &lt;strong&gt;Assembly&lt;/strong&gt;&amp;rsquo; ların referans edilmesini gerektirebilir. S&amp;ouml;z gelimi &lt;strong&gt;WorkItemStore&lt;/strong&gt; i&amp;ccedil;in, &lt;strong&gt;Microsoft.TeamFoundation.WorkItemTracking.Client.dll &lt;/strong&gt;isimli &lt;strong&gt;assembly&lt;/strong&gt; referans edilir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Microsoft.TeamFoundation.Client; 
+using Microsoft.TeamFoundation.Server; 
+using System;
+
+namespace ClientApp 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+           TfsTeamProjectCollection collection = TfsTeamProjectCollectionFactory 
+               .GetTeamProjectCollection(new Uri("http://tfsserver:8080/tfs/defaultcollection"));
+
+            #region Bazı servislerin &amp;ccedil;ekilmesi
+
+           ICommonStructureService4 commonStructureService = (ICommonStructureService4)collection 
+                .GetService(typeof(ICommonStructureService4));
+
+            IProcessTemplates processTemplateService = (IProcessTemplates)collection.GetService&amp;lt;IProcessTemplates&amp;gt;();
+
+            #endregion Bazı servislerin &amp;ccedil;ekilmesi
+
+            #region Bir Team Project adı &amp;uuml;zerinden temel proje bilgisinin &amp;ccedil;ekilmesi
+
+            ProjectInfo argeInfo = commonStructureService.GetProjectFromName("ARGE"); 
+            Console.WriteLine("Proje\t\t\t{0}\nDurumu\t\t\t{1}\nTemplate Id\t\t{2}" 
+                , argeInfo.Name 
+                , argeInfo.Status 
+                , argeInfo.Uri.ToString() 
+                );
+
+            string name; 
+            string state; 
+            int templateId; 
+            ProjectProperty[] projectProperties;
+
+            // T&amp;uuml;m Proje &amp;ouml;zelliklerinin &amp;ccedil;ekilmesi 
+           commonStructureService.GetProjectProperties( 
+                argeInfo.Uri.ToString() 
+                , out name 
+                , out state 
+                , out templateId 
+                , out projectProperties); 
+            Console.WriteLine("\nProje &amp;Ouml;zellikleri\n"); 
+            foreach (var projectProperty in projectProperties) 
+                Console.WriteLine("Proje &amp;Ouml;zelliği\t\t{0}\nDeğeri\t\t\t{1}", projectProperty.Name, projectProperty.Value);
+
+            #endregion Bir Team Project adı &amp;uuml;zerinden temel proje bilgisinin &amp;ccedil;ekilmesi
+
+            #region Sunucuda y&amp;uuml;kl&amp;uuml; Process Template' lerin bilgilerinin elde edilmesi
+
+            Console.WriteLine("\nProcess Templates\n"); 
+            TemplateHeader[] templateHeaders = processTemplateService.TemplateHeaders(); 
+            foreach (TemplateHeader templateHeader in templateHeaders) 
+            { 
+                Console.WriteLine("Template Id\t{0}\nAdı\t\t{1}\nRank\t\t{2}\nDurumu\t\t{3}\nMetadata\t{4}\nA&amp;ccedil;ıklama\t{5}\n", 
+                    templateHeader.TemplateId, 
+                    templateHeader.Name, 
+                    templateHeader.Rank, 
+                    templateHeader.State, 
+                    templateHeader.Metadata, 
+                    templateHeader.Description 
+                    ); 
+            }
+
+            #endregion Sunucuda y&amp;uuml;kl&amp;uuml; Process Template' lerin bilgilerinin elde edilmesi           
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;TfsTeamProjectCollection&lt;/strong&gt; referansı elde edildikten sonra, alınmak istenen hizmete ait nesne &amp;ouml;rneğinin &amp;uuml;retilmesi i&amp;ccedil;in &lt;strong&gt;GetService&lt;/strong&gt; metodundan yararlanılmaktadır. Bu metodun &lt;strong&gt;Type&lt;/strong&gt; parametresi ile &amp;ccedil;alışan versiyonu dışında &lt;strong&gt;generic&lt;/strong&gt; olan bir versiyonu daha bulunmaktadır. &amp;Ouml;rneğin,&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;ICommonStructureService4 commonStructureService = (ICommonStructureService4)collection 
+                .GetService(typeof(ICommonStructureService4));&lt;/pre&gt;
+&lt;p&gt;kod satırı ile &lt;strong&gt;Common&lt;/strong&gt; &lt;strong&gt;Structure&lt;/strong&gt; &lt;strong&gt;Service&lt;/strong&gt; &amp;ouml;rneği &amp;uuml;retilmektedir. Bu adımdan sonra s&amp;ouml;z konusu servise ait referansın fonksiyonları kullanılabilir. S&amp;ouml;z gelimi bir proje adı verilerek &amp;ouml;zelliklerinin elde edilmesi sağlanabilir. Bu &amp;ouml;zellikler arasında bir &lt;strong&gt;Team Project&lt;/strong&gt;&amp;rsquo; in uyguladığı&lt;strong&gt; Process Template&lt;/strong&gt; bilgisi ve hatta &lt;strong&gt;XML&lt;/strong&gt; tabanlı şablon i&amp;ccedil;eriği de yer almaktadır. Aşağıdaki &amp;ouml;rnek ekran &amp;ccedil;ıktısında &lt;strong&gt;ARGE&lt;/strong&gt; isimli projenin ulaşılan bilgileri g&amp;ouml;sterilmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/tfsservices_7.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="tfsservices_7" src="/pics/tfsservices_7_thumb.png" alt="tfsservices_7" width="587" height="548" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Diğer yandan &lt;strong&gt;IProcessTemplate&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;ne atanan servis referansının elde edilmesi i&amp;ccedil;in, &lt;strong&gt;GetService&lt;/strong&gt; metodunun generic s&amp;uuml;r&amp;uuml;m&amp;uuml;nden yararlanılmıştır. Sonrasında ise &lt;strong&gt;TFS&lt;/strong&gt; sunucusunda y&amp;uuml;kl&amp;uuml; olan &lt;strong&gt;Process&lt;/strong&gt; &lt;strong&gt;Template&lt;/strong&gt; listesine gidilerek &lt;strong&gt;Name&lt;/strong&gt;, &lt;strong&gt;State&lt;/strong&gt;, &lt;strong&gt;Metadata&lt;/strong&gt;, &lt;strong&gt;Id&lt;/strong&gt;, &lt;strong&gt;Description&lt;/strong&gt; gibi bilgileri elde edilmiştir. Aşağıdaki ekran &amp;ccedil;ıktısına bakıldığında &lt;strong&gt;Scrum 2.0, CMMI&lt;/strong&gt; ve &lt;strong&gt;MSF&lt;/strong&gt; şablonlarının y&amp;uuml;klenmiş olduğu bilgisine ulaşılabilinir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/tfsservices_8.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="tfsservices_8" src="/pics/tfsservices_8_thumb.png" alt="tfsservices_8" width="584" height="835" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Tabi burada akla takılan en &amp;ouml;nemli sorunlardan birisi kullanabileceğimiz &lt;strong&gt;TFS Web Service&lt;/strong&gt;&amp;rsquo; lerinin kod tarafındaki &lt;strong&gt;GetService&lt;/strong&gt; metodu tarafından kullanılabilecek karşılıklarının neler olduğudur? &lt;img class="wlEmoticon wlEmoticon-whome" style="border-style: none;" src="/pics/wlEmoticon-whome_9.png" alt="Who me?" /&gt; Bu konuda aşağıdaki listenin yardımcı olabileceğini d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum.&lt;/p&gt;
+&lt;table style="width: 639px;" border="1" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="177"&gt;&lt;strong&gt;Servisin Adı&lt;/strong&gt;&lt;/td&gt;
+&lt;td valign="top" width="152"&gt;&lt;strong&gt;Collection Level&lt;/strong&gt;&lt;/td&gt;
+&lt;td valign="top" width="137"&gt;&lt;strong&gt;Server Level&lt;/strong&gt;&lt;/td&gt;
+&lt;td valign="top" width="113"&gt;&lt;strong&gt;Assembly&lt;/strong&gt;&lt;/td&gt;
+&lt;td valign="top" width="58"&gt;&lt;strong&gt;Namespace&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="177"&gt;&lt;strong&gt;ITeamFoundationRegistry&lt;/strong&gt;&lt;/td&gt;
+&lt;td valign="top" width="151"&gt;Var&lt;/td&gt;
+&lt;td valign="top" width="136"&gt;Var&lt;/td&gt;
+&lt;td valign="top" width="114"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Client&lt;/td&gt;
+&lt;td valign="top" width="58"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Framework &lt;br /&gt;.Client&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="177"&gt;&lt;strong&gt;IIdentityManagementService&lt;/strong&gt;&lt;/td&gt;
+&lt;td valign="top" width="151"&gt;Var&lt;/td&gt;
+&lt;td valign="top" width="136"&gt;Var&lt;/td&gt;
+&lt;td valign="top" width="115"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Client&lt;/td&gt;
+&lt;td valign="top" width="58"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Framework &lt;br /&gt;.Client&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="177"&gt;&lt;strong&gt;ITeamFoundationJobService&lt;/strong&gt;&lt;/td&gt;
+&lt;td valign="top" width="151"&gt;Var&lt;/td&gt;
+&lt;td valign="top" width="136"&gt;Var&lt;/td&gt;
+&lt;td valign="top" width="115"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Client&lt;/td&gt;
+&lt;td valign="top" width="58"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Framework &lt;br /&gt;.Client&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="177"&gt;&lt;strong&gt;IPropertyService&lt;/strong&gt;&lt;/td&gt;
+&lt;td valign="top" width="151"&gt;Var&lt;/td&gt;
+&lt;td valign="top" width="136"&gt;Var&lt;/td&gt;
+&lt;td valign="top" width="115"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Client&lt;/td&gt;
+&lt;td valign="top" width="58"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Framework &lt;br /&gt;.Client&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="177"&gt;&lt;strong&gt;IEventService&lt;/strong&gt;&lt;/td&gt;
+&lt;td valign="top" width="151"&gt;Var&lt;/td&gt;
+&lt;td valign="top" width="136"&gt;Var&lt;/td&gt;
+&lt;td valign="top" width="115"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Client&lt;/td&gt;
+&lt;td valign="top" width="58"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Framework &lt;br /&gt;.Client&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="177"&gt;&lt;strong&gt;ISecurityService&lt;/strong&gt;&lt;/td&gt;
+&lt;td valign="top" width="151"&gt;Var&lt;/td&gt;
+&lt;td valign="top" width="136"&gt;Var&lt;/td&gt;
+&lt;td valign="top" width="115"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Client&lt;/td&gt;
+&lt;td valign="top" width="58"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Framework &lt;br /&gt;.Client&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="177"&gt;&lt;strong&gt;ILocationService&lt;/strong&gt;&lt;/td&gt;
+&lt;td valign="top" width="151"&gt;Var&lt;/td&gt;
+&lt;td valign="top" width="136"&gt;Var&lt;/td&gt;
+&lt;td valign="top" width="115"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Client&lt;/td&gt;
+&lt;td valign="top" width="58"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Framework &lt;br /&gt;.Client&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="177"&gt;&lt;strong&gt;TswaClientHyperlinkService&lt;/strong&gt;&lt;/td&gt;
+&lt;td valign="top" width="151"&gt;Var&lt;/td&gt;
+&lt;td valign="top" width="136"&gt;Var&lt;/td&gt;
+&lt;td valign="top" width="115"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Client&lt;/td&gt;
+&lt;td valign="top" width="58"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Framework &lt;br /&gt;.Client&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="177"&gt;&lt;strong&gt;ITeamProjectCollectionService&lt;/strong&gt;&lt;/td&gt;
+&lt;td valign="top" width="152"&gt;&lt;em&gt;Yok&lt;/em&gt;&lt;/td&gt;
+&lt;td valign="top" width="148"&gt;Var&lt;/td&gt;
+&lt;td valign="top" width="116"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Client&lt;/td&gt;
+&lt;td valign="top" width="73"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Framework &lt;br /&gt;.Client&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="177"&gt;&lt;strong&gt;IAdministrationService&lt;/strong&gt;&lt;/td&gt;
+&lt;td valign="top" width="152"&gt;Var&lt;/td&gt;
+&lt;td valign="top" width="148"&gt;Var&lt;/td&gt;
+&lt;td valign="top" width="116"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Client&lt;/td&gt;
+&lt;td valign="top" width="73"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Framework &lt;br /&gt;.Client&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="177"&gt;&lt;strong&gt;ICatalogService&lt;/strong&gt;&lt;/td&gt;
+&lt;td valign="top" width="152"&gt;Yok&lt;/td&gt;
+&lt;td valign="top" width="148"&gt;Var&lt;/td&gt;
+&lt;td valign="top" width="116"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Client&lt;/td&gt;
+&lt;td valign="top" width="73"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Framework &lt;br /&gt;.Client&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="177"&gt;&lt;strong&gt;VersionControlServer&lt;/strong&gt;&lt;/td&gt;
+&lt;td valign="top" width="152"&gt;Var&lt;/td&gt;
+&lt;td valign="top" width="148"&gt;&lt;em&gt;Yok&lt;/em&gt;&lt;/td&gt;
+&lt;td valign="top" width="116"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.VersionControl &lt;br /&gt;.Client&lt;/td&gt;
+&lt;td valign="top" width="73"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.VersionControl &lt;br /&gt;.Client&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="177"&gt;&lt;strong&gt;WorkItemStore&lt;/strong&gt;&lt;/td&gt;
+&lt;td valign="top" width="152"&gt;Var&lt;/td&gt;
+&lt;td valign="top" width="148"&gt;&lt;em&gt;Yok&lt;/em&gt;&lt;/td&gt;
+&lt;td valign="top" width="116"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.WorkItemTracking &lt;br /&gt;.Client&lt;/td&gt;
+&lt;td valign="top" width="73"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.WorkItemTracking &lt;br /&gt;.Client&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="177"&gt;&lt;strong&gt;IBuildServer&lt;/strong&gt;&lt;/td&gt;
+&lt;td valign="top" width="152"&gt;Var&lt;/td&gt;
+&lt;td valign="top" width="148"&gt;&lt;em&gt;Yok&lt;/em&gt;&lt;/td&gt;
+&lt;td valign="top" width="116"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Build &lt;br /&gt;.Client&lt;/td&gt;
+&lt;td valign="top" width="73"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Build &lt;br /&gt;.Client&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="177"&gt;&lt;strong&gt;ITestManagementService&lt;/strong&gt;&lt;/td&gt;
+&lt;td valign="top" width="152"&gt;Var&lt;/td&gt;
+&lt;td valign="top" width="148"&gt;&lt;em&gt;Yok&lt;/em&gt;&lt;/td&gt;
+&lt;td valign="top" width="116"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.TestManagement &lt;br /&gt;.Client&lt;/td&gt;
+&lt;td valign="top" width="73"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.TestManagement &lt;br /&gt;.Client&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="177"&gt;&lt;strong&gt;ILinking&lt;/strong&gt;&lt;/td&gt;
+&lt;td valign="top" width="152"&gt;Var&lt;/td&gt;
+&lt;td valign="top" width="148"&gt;&lt;em&gt;Yok&lt;/em&gt;&lt;/td&gt;
+&lt;td valign="top" width="116"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Common&lt;/td&gt;
+&lt;td valign="top" width="73"&gt;Microsoft &lt;br /&gt;.TeamFoundation&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="177"&gt;&lt;strong&gt;ICommonStructureService3&lt;/strong&gt;&lt;/td&gt;
+&lt;td valign="top" width="152"&gt;Var&lt;/td&gt;
+&lt;td valign="top" width="148"&gt;&lt;em&gt;Yok&lt;/em&gt;&lt;/td&gt;
+&lt;td valign="top" width="116"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Client&lt;/td&gt;
+&lt;td valign="top" width="73"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Server&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="177"&gt;&lt;strong&gt;IServerStatusService&lt;/strong&gt;&lt;/td&gt;
+&lt;td valign="top" width="152"&gt;Var&lt;/td&gt;
+&lt;td valign="top" width="148"&gt;&lt;em&gt;Yok&lt;/em&gt;&lt;/td&gt;
+&lt;td valign="top" width="116"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Client&lt;/td&gt;
+&lt;td valign="top" width="73"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Server&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="177"&gt;&lt;strong&gt;IProcessTemplates&lt;/strong&gt;&lt;/td&gt;
+&lt;td valign="top" width="152"&gt;Var&lt;/td&gt;
+&lt;td valign="top" width="148"&gt;&lt;em&gt;Yok&lt;/em&gt;&lt;/td&gt;
+&lt;td valign="top" width="116"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Client&lt;/td&gt;
+&lt;td valign="top" width="73"&gt;Microsoft &lt;br /&gt;.TeamFoundation &lt;br /&gt;.Server&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;&lt;em&gt;Yukarıdaki listede eksikliker olabilir. Gelen Update&amp;rsquo; ler, Service Pack&amp;rsquo; ler ve yeni s&amp;uuml;r&amp;uuml;mler sonrasın g&amp;uuml;ncellenebilir. L&amp;uuml;tfen MSDN &amp;uuml;zerinden kontrol ediniz.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Demek ki, istemci tarafında &amp;ccedil;alışarak hayatımızı kolaylaştırmakta olan pek &amp;ccedil;ok &lt;strong&gt;.Net&lt;/strong&gt; tabanlı uygulama&lt;em&gt;(&amp;Ouml;rneğin &lt;strong&gt;Power Tools&lt;/strong&gt; veya &lt;strong&gt;Team Explorer&lt;/strong&gt; gibi)&lt;/em&gt; s&amp;ouml;z konusu nesne modellerini ve ilgili &lt;strong&gt;XML Web Service&lt;/strong&gt;&amp;rsquo; lerini kullanmaktadır. Elbette &lt;strong&gt;Team Foundation Server&lt;/strong&gt; tarafında &amp;ccedil;ok fazla sayıda &lt;strong&gt;XML Web Service&lt;/strong&gt; metodu ve hatta versiyonu bulunmaktadır. &lt;strong&gt;TFS&lt;/strong&gt; &amp;uuml;zerindeki tecr&amp;uuml;belerinizden yararlanarak bu servislerin efektif olarak kullanımlarını irdeleyebilirsiniz. B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2013%2f2%2fHowTo_TFSServices.zip"&gt;HowTo_TFSServices.zip (213,36 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2013-03-17 12:30:00</pubDate>
+  <slug>TFS-Web-Services-ve-Kullanimi</slug>
+  <tags>
+    <tag>tfs</tag>
+    <tag>tfs-2012</tag>
+    <tag>team-foundation-server</tag>
+    <tag>client-object-model</tag>
+    <tag>tfs-web-services</tag>
+  </tags>
+  <categories>
+    <category>Team Foundation Server</category>
+  </categories>
+</post>

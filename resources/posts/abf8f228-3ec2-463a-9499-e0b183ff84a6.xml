@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>NoSQL Maceraları - MemCached ile Hello World</title>
+  <description>Web uygulamalarında ele alınan performans arttırma kriterlerinden birisi de Caching tekniklerinden yararlanılmasıdır. Özellike veri odaklı çalışan web uygulamaları göz önüne alındığında, nesnelerin bellekte tutulması/getirilmesi, sık görülen geliştirme tekniklerinden birisidir. Pek tabi bu senaryo biraz daha geniş çaplı düşünüldüğünde, bir web sunucusunda yer alan n sayıda uygulamanın tamamı için kullanılabilecek bellek tabanlı bir depolama alanı da söz konusu olacaktır/olmuştur.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/memcached_hero_thumb4.jpg"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; float: right; padding-top: 0px; border: 0px;" title="memcached_hero_thumb4" src="/pics/memcached_hero_thumb4_thumb.jpg" alt="memcached_hero_thumb4" width="200" height="193" align="right" border="0" /&gt;&lt;/a&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Belki de a&amp;ccedil;ık kaynak olarak geliştirilen projelerin bu kadar pop&amp;uuml;ler olma nedenlerinden bir tanesi de, logolarındaki orjinalliktir. K&amp;uuml;&amp;ccedil;&amp;uuml;k bir ihtimal olsa da b&amp;ouml;yle bir algı olduğuna inanıyorum. S&amp;ouml;z gelimi&amp;nbsp;&lt;strong&gt;Linux&lt;/strong&gt;&amp;rsquo; un pengueni,&amp;nbsp;&lt;strong&gt;Mono&amp;nbsp;&lt;/strong&gt;projesinin maymunu&lt;em&gt;(Biliyorsunuz&amp;nbsp;&lt;strong&gt;Mono&lt;/strong&gt;&amp;nbsp;İspanyolca&amp;rsquo; da maymun demek)&lt;/em&gt;,&amp;nbsp;&lt;strong&gt;Android&lt;/strong&gt;&amp;rsquo; in yeşil robotu,&amp;nbsp;&lt;strong&gt;Joomla&lt;/strong&gt;&amp;rsquo; nın birbirlerine kenetlenmiş insanları vb.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Bu g&amp;uuml;n inceleyeceğimiz a&amp;ccedil;ık kaynak&amp;nbsp;&lt;strong&gt;NoSQL&lt;/strong&gt;&amp;nbsp;&amp;uuml;r&amp;uuml;nlerinden birisi olan&amp;nbsp;&lt;strong&gt;MemCached&lt;/strong&gt;&amp;nbsp;i&amp;ccedil;in de benzer bir durum s&amp;ouml;z konusu bana kalırsa.&amp;nbsp;&lt;strong&gt;Logo&lt;/strong&gt;&amp;rsquo; da yer alan bu sevimli yaratıklar&lt;em&gt;(belki de soğuk bir kış g&amp;uuml;n&amp;uuml; y&amp;uuml;r&amp;uuml;y&amp;uuml;ş yapan atkı takmış kediler)&lt;/em&gt;&amp;nbsp;ilk dikkatimi &amp;ccedil;eken yanı olmuştur.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Peki&amp;nbsp;&lt;strong&gt;Memory&lt;/strong&gt;&amp;nbsp;ve&amp;nbsp;&lt;strong&gt;Cached&lt;/strong&gt;&amp;nbsp;kelimelerinin kombinasyonundan oluşturulan&amp;nbsp;&lt;strong&gt;MemCached,&lt;/strong&gt;&amp;nbsp;hangi ama&amp;ccedil;larla ve nasıl kullanılabilir? Bir&lt;strong&gt;Hello World&lt;/strong&gt;&amp;nbsp;demeye var mısınız?&lt;/p&gt;
+&lt;h1&gt;Genel &amp;Ouml;zellikleri&lt;/h1&gt;
+&lt;p&gt;&lt;strong&gt;Web&lt;/strong&gt;&amp;nbsp;uygulamalarında ele alınan performans arttırma kriterlerinden birisi de&amp;nbsp;&lt;strong&gt;Caching&lt;/strong&gt;&amp;nbsp;tekniklerinden yararlanılmasıdır. &amp;Ouml;zellike veri odaklı &amp;ccedil;alışan&amp;nbsp;web uygulamaları g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında, nesnelerin bellekte tutulması/getirilmesi, sık g&amp;ouml;r&amp;uuml;len geliştirme tekniklerinden birisidir. Pek tabi bu senaryo biraz daha geniş &amp;ccedil;aplı d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde, bir web sunucusunda yer alan n sayıda uygulamanın tamamı i&amp;ccedil;in kullanılabilecek bellek tabanlı bir depolama alanı da s&amp;ouml;z konusu olacaktır/olmuştur.&lt;/p&gt;
+&lt;p&gt;Aslında bu tip bellek tabanlı &amp;ccedil;alışan nesne tutma sistemleri, &amp;ccedil;ok uzun zamandır hayatımızdadır. Avantajlarından birisi veri sorgulama gibi ihtiya&amp;ccedil;larda, asıl fiziki veri kaynağı yerine&amp;nbsp;&lt;strong&gt;RAM&lt;/strong&gt;&amp;nbsp;&amp;uuml;zerinde duran canlı nesnelere gidilmesidir. &amp;Uuml;stelik bu tip bir &amp;ccedil;alışmanın&amp;nbsp;&lt;strong&gt;dağıtık sunucularda&lt;em&gt;(Distributed Servers)&lt;/em&gt;&lt;/strong&gt;&amp;nbsp;m&amp;uuml;mk&amp;uuml;n olması da ayrı bir avantaj sunmaktadır.&amp;nbsp;&lt;em&gt;(Burada biraz durup&lt;strong&gt;&amp;nbsp;Microsoft'&lt;/strong&gt;&amp;nbsp;un&amp;nbsp;&lt;strong&gt;Velocity&lt;/strong&gt;&amp;nbsp;kod adlı&amp;nbsp;&lt;strong&gt;Distributed Caching&lt;/strong&gt;&amp;nbsp;sistemini g&amp;ouml;z &amp;ouml;n&amp;uuml;ne getirebilirsiniz)&lt;/em&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Bilgisayar sistemlerinde her zaman i&amp;ccedil;in RAM &amp;uuml;zerinde &amp;ccedil;alışmak, Fiziki Disk &amp;uuml;zerinde &amp;ccedil;alışmaktan hızlı ve performanslıdır. Hatta bir ağ ortamında farklı bir sunucunun RAM&amp;rsquo; ini kullanmak, yerel diski kullanmaktan daha performanslıdır.&lt;/p&gt;
+&lt;p&gt;Ancak; RAM&amp;rsquo; ın ge&amp;ccedil;ici bir alan olması ve makinenin bir şekilde restart olması sonrasında boşaltılması, fiziki depolama alanlarının kalıcılığı istenen veriler i&amp;ccedil;in bi&amp;ccedil;ilmiş kaftan olmasına neden olmaktadır.&lt;/p&gt;
+&lt;p&gt;Yine de uygulamalar fiziki olarak tuttukları ve sık kullandıkları verileri zaman zaman &amp;ouml;n belleğe alarak kullanmayı tercih ederler. Bu bağlamda melez depolama &amp;ccedil;&amp;ouml;z&amp;uuml;mleri dahi mevcuttur. Yani; RAM tabanlı &amp;ouml;nbellekleme&lt;em&gt;(Caching)&lt;/em&gt;&amp;nbsp;ile fiziki olarak kalıcı ortamların bir arada kullanılması.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Veriyi bellek &amp;uuml;zerinde tutma konusunda&amp;nbsp;&lt;strong&gt;NoSQL&lt;em&gt;(Not-only SQL)&lt;/em&gt;&lt;/strong&gt;&amp;nbsp;tabanlı sistemlerin bulunduğunu da ifade etmemiz gerekir. Bunlardan birisi de,&amp;nbsp;&lt;strong&gt;2003&lt;/strong&gt;&amp;nbsp;yılında&amp;nbsp;&lt;strong&gt;C&lt;/strong&gt;programlama dili&lt;strong&gt;&amp;nbsp;&lt;/strong&gt;ile geliştirilmiş olan&amp;nbsp;&lt;strong&gt;MemCached&amp;nbsp;&lt;/strong&gt;isimli &amp;uuml;r&amp;uuml;nd&amp;uuml;r.&amp;nbsp;&lt;strong&gt;MemCached&lt;/strong&gt;&amp;nbsp;aslında&amp;nbsp;&lt;strong&gt;Key-Value Object Store&lt;/strong&gt;&amp;nbsp;tipinden olan ama bu nesne &amp;ccedil;iftlerini bellek &amp;uuml;zerinde tutan bir&amp;nbsp;&lt;strong&gt;NoSQL&lt;/strong&gt;&amp;nbsp;&amp;uuml;r&amp;uuml;n&amp;uuml;d&amp;uuml;r. Dağıtık yapıda &amp;ccedil;alışabilmektedir. Yani n sayıda sunucu &amp;uuml;zerinde n sayıda servis formasyonunda bir ortam&lt;em&gt;(Environment)&lt;/em&gt;&amp;nbsp;hazırlanması m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Bu a&amp;ccedil;ıdan bakıldığında,&amp;nbsp;&lt;strong&gt;Client/Server&lt;/strong&gt;&amp;nbsp;mimari &amp;uuml;zerinde oturduğunu ifade edebiliriz. Aşağıda bu durumu izah eden basit bir vaka &amp;ccedil;izimi vardır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/memcached_0_thumb4.jpg"&gt;&lt;img style="background-image: none; margin: 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="memcached_0_thumb4" src="/pics/memcached_0_thumb4_thumb.jpg" alt="memcached_0_thumb4" width="640" height="480" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Bu &amp;ccedil;izimde&amp;nbsp;&lt;strong&gt;MemCached&lt;/strong&gt;&amp;nbsp;i&amp;ccedil;in s&amp;ouml;z konusu olan tipik senaryo ifade edilmektedir.&amp;nbsp;&lt;strong&gt;n&lt;/strong&gt;&amp;nbsp;&lt;strong&gt;sayıda,&lt;/strong&gt;&amp;nbsp;&lt;strong&gt;MemCached&lt;/strong&gt;&amp;nbsp;&lt;strong&gt;servisi barındıran sunucu ve n sayıda istemci&lt;/strong&gt;. İstemciler,&amp;nbsp;&lt;strong&gt;TCP&lt;/strong&gt;gibi bir protokol &amp;uuml;zerinden bir porta mesaj g&amp;ouml;ndermek suretiyle&amp;nbsp;&lt;strong&gt;MemCached&lt;/strong&gt;&amp;nbsp;servislerine bağlı kalır ve bellek &amp;uuml;zerine nesne bırakıp, okuyabilirler.&lt;/p&gt;
+&lt;p&gt;Dikkat edilmesi gereken notkalardan birisi de,&amp;nbsp;&lt;strong&gt;client-server&lt;/strong&gt;&amp;nbsp;arası iletişimin g&amp;uuml;venliğidir. Normal şartlarda bir istemcinin, zaten kullanmak istediği sunucu ile aynı kapalı ağ i&amp;ccedil;erisinde olduğu ve &amp;ccedil;eşitli&amp;nbsp;&lt;strong&gt;Firewall&lt;/strong&gt;&amp;nbsp;kurallarının uygulandığı hallerde &amp;ouml;nemli bir g&amp;uuml;venlik riski doğmamaktadır. Yine de &amp;uuml;r&amp;uuml;n&amp;nbsp;&lt;strong&gt;Simple Authentication and Security Layer&lt;em&gt;(SASL)&lt;/em&gt;&lt;/strong&gt;&amp;nbsp;desteği sunmaktadır&lt;em&gt;(&lt;strong&gt;Binary&lt;/strong&gt;&amp;nbsp;iletişim olmasını gerektiren bu framework ile ilişkili olarak&amp;nbsp;&lt;/em&gt;&lt;a href="http://en.wikipedia.org/wiki/Simple_Authentication_and_Security_Layer" target="_blank"&gt;&lt;em&gt;şu adresten bilgi alabilirsiniz&lt;/em&gt;&lt;/a&gt;&lt;em&gt;)&lt;/em&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;İncelediğimiz &amp;uuml;r&amp;uuml;n basit Client-Server temellerine dayanan bir servis uygulaması ve istemcilerin bu servisi kullanmasına yardımcı olabilecek API&amp;rsquo; ler b&amp;uuml;t&amp;uuml;n&amp;uuml;nden oluşmaktadır. Teorik olarak istemciler servis tarafına erişip, bulundukları programlama dilinin &amp;ccedil;eşitli kriterlerine g&amp;ouml;re genellikle object tipinden &amp;ouml;rnekler g&amp;ouml;ndermekte ve &amp;ccedil;ekmektedir.&lt;/p&gt;
+&lt;p&gt;Buraya kadar ki kısım tahmin edileceği &amp;uuml;zere orta d&amp;uuml;zey bir .Net geliştiricisinin tasarlayıp, yazabileceği bir senaryodur. Ne varki işin zorlayıcı kısmı servisin işletim sisteminden tamamen bağımsız olması ve API&amp;rsquo; lerin pek &amp;ccedil;ok dile destek verecek şekilde yazılmış bulunmasıdır.&lt;/p&gt;
+&lt;p&gt;Peki .Net geliştiricisi b&amp;ouml;yle bir &amp;uuml;r&amp;uuml;n yazmak isterse ne yapar? Nasıl bir yol izler? WCF servislerinden yararlanır mı? Web API kullanır mı yoksa eskilere gidip .Net Remoting&amp;rsquo; e başvurur mu? Bu konuyu bir d&amp;uuml;ş&amp;uuml;n&amp;uuml;n. Vardığınız sonu&amp;ccedil;ta, &amp;uuml;r&amp;uuml;n&amp;uuml; geliştirenin programlama dilinden bağımsız d&amp;uuml;ş&amp;uuml;nmesi gerektiğini fark edecek ve belki de C&amp;rsquo; ye kadar gideceksiniz.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;MemCached&lt;/strong&gt;&amp;nbsp;sadece bellekteki nesneleri&amp;nbsp;&lt;strong&gt;key-value&lt;/strong&gt;&amp;nbsp;yapısına g&amp;ouml;re devasa&amp;nbsp;&lt;strong&gt;Hashtable&lt;/strong&gt;' lar da tutan bir &amp;ccedil;alışma modeline sahiptir. Bu a&amp;ccedil;ıdan bakıldığında&amp;nbsp;&lt;strong&gt;MemcacheDB, Couchbase Server&lt;/strong&gt;&amp;nbsp;ve&amp;nbsp;&lt;strong&gt;Tarantool&lt;/strong&gt;&amp;nbsp;gibi benzeri &amp;uuml;r&amp;uuml;nlerden farklılaşır. Nitekim bu &amp;uuml;r&amp;uuml;nler bellek tabanlı nesne hizmeti haricinde, kalıcı bir depolama&lt;em&gt;(Persistence Store)&lt;/em&gt;&amp;nbsp;alanı da sunabilmektedir.&lt;/p&gt;
+&lt;p&gt;Bunun avantajı &amp;ouml;zellikle bellekteki tablolar dolduğunda kendini g&amp;ouml;stermektedir. &amp;Ccedil;&amp;uuml;nk&amp;uuml; bir sebepten belleğin boşalması ve kaybolan&amp;nbsp;&lt;strong&gt;key-value&lt;/strong&gt;&amp;nbsp;&amp;ccedil;iflerinin talep edilmeleri halinde kalıcı bir depolama alanı olduk&amp;ccedil;a işe yarayacaktır. &amp;Ouml;rneğin&amp;nbsp;&lt;strong&gt;MemCached&lt;/strong&gt;, belleğin aşırı dolması veya&amp;nbsp;&lt;strong&gt;Hashtable&lt;/strong&gt;&amp;rsquo; ın şişmesi durumunda, listenin alt sıralarında kalan eski&amp;nbsp;&lt;strong&gt;key-value&lt;/strong&gt;&amp;nbsp;&amp;ccedil;iflerini temizlemek gibi bir davranış sergilemektedir. Bu durumda silinen&amp;nbsp;&lt;strong&gt;key-value&lt;/strong&gt;&amp;nbsp;&amp;ccedil;iftleri bellekte yer almadığından istemci tarafından erişilebilir olmayacaktır. İstemcinin bunu kontrol etmesi gerekir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Yani bir nesne bellekten okunmak istendiğinde var olup olmadığına bakılmalı, var ise kullanılmalı, yok ise ve belleğe atılması gerekiyorsa da atılmalıdır. Hatta yok ise ve &amp;uuml;retilmesi gereken bir nesne ise tekrardan &amp;uuml;retilmeli sonrasında belleğe atılmalıdır.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Dolayısıyla&amp;nbsp;&lt;strong&gt;MemCached&lt;/strong&gt;&amp;nbsp;servisini kullanırken istemcilerin, ilgili belleğin ge&amp;ccedil;ici olduğunu kabul ederek hareket etmeleri gerekmektedir.&lt;/p&gt;
+&lt;p&gt;Gelelim&amp;nbsp;&lt;strong&gt;MemCached&lt;/strong&gt;' in diğer belirgin &amp;ouml;zelliklerine;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Platform bağımsızdır.&amp;nbsp;&lt;strong&gt;Linux, Unix, MacOS X&lt;/strong&gt;&amp;nbsp;ve&amp;nbsp;&lt;strong&gt;Windows Server&lt;/strong&gt;&amp;nbsp;gibi sistemlere y&amp;uuml;klenebilir.&lt;/li&gt;
+&lt;li&gt;A&amp;ccedil;ık kaynaktır&lt;em&gt;(Open Source)&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;İstemciler i&amp;ccedil;in&amp;nbsp;&lt;strong&gt;geniş bir API desteği&lt;/strong&gt;&amp;nbsp;de bulunmaktadır.&amp;nbsp;&lt;a href="http://code.google.com/p/memcached/wiki/Clients" target="_blank"&gt;Bu adresten de&lt;/a&gt;&amp;nbsp;g&amp;ouml;r&amp;uuml;lebileceği gibi&amp;nbsp;&lt;strong&gt;C,C++,PHP,Java,Python,Ruby,Perl,.Net&lt;/strong&gt;&amp;nbsp;vb istemcilere a&amp;ccedil;ıktır.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Y&amp;uuml;ksek performans&lt;/strong&gt;&amp;nbsp;sunmaktadır.&lt;/li&gt;
+&lt;li&gt;&amp;Ouml;zellikle veritabanı kullanan dinamik web uygulamalarında performans arttırıcı olarak değerlendirilir&lt;em&gt;(Daha &amp;ccedil;ok web uygulamalarında tercih edildiğini ifade edebiliriz ama bu tabiki kanun h&amp;uuml;km&amp;uuml;nde kararname değildir)&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Key&lt;/strong&gt;&amp;nbsp;i&amp;ccedil;erikleri&amp;nbsp;&lt;strong&gt;250byte&lt;/strong&gt;,&amp;nbsp;&lt;strong&gt;Value&lt;/strong&gt;&amp;nbsp;i&amp;ccedil;erikleri ise&amp;nbsp;&lt;strong&gt;1 Megabyte&lt;/strong&gt;&amp;nbsp;civarında olabilir ki bu değerler olduk&amp;ccedil;a makuldur.&lt;/li&gt;
+&lt;li&gt;İstemciler, servis ile iletişim kurarken bir hash değerini kullanırlar&lt;em&gt;(Ne varki istemcilerin aynı hash değerlerini kullanmaları gibi bir durum s&amp;ouml;z konusu olursa, birbirlerinin cache' lenmiş verilerine de erişebilirler. Bu durumun&amp;nbsp;&lt;span style="text-decoration: underline;"&gt;oluşmamasını&lt;/span&gt;&amp;nbsp;sağlamak gerekir)&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Kayda değer noktalardan birisi de&amp;nbsp;&lt;strong&gt;MemCached&lt;/strong&gt;&amp;nbsp;&amp;uuml;r&amp;uuml;n&amp;uuml;n&amp;uuml; kullananlardır. İşte liste de yer alan d&amp;uuml;nya &amp;ccedil;apındaki &amp;ouml;rneklerden bir ka&amp;ccedil;ı,&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Wikipedia&lt;/li&gt;
+&lt;li&gt;Flickr&lt;/li&gt;
+&lt;li&gt;Twitter&lt;/li&gt;
+&lt;li&gt;Youtube&lt;/li&gt;
+&lt;li&gt;Digg&lt;/li&gt;
+&lt;li&gt;WordPress.com&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Dolayısıyla end&amp;uuml;st&amp;uuml;riyel anlamda ge&amp;ccedil;erliliğini kabul ettirmiş bir &amp;uuml;r&amp;uuml;n &amp;uuml;zerinde konuştuğumuzu ifade edebiliriz.&lt;/p&gt;
+&lt;h1&gt;Install&lt;/h1&gt;
+&lt;p&gt;Bu kadar hikayeden sonra dilerseniz basit bir &amp;ouml;rnek geliştirerek ilerlemeye &amp;ccedil;alışalım. İlk olarak&amp;nbsp;&lt;strong&gt;MemCached&lt;/strong&gt;' in&amp;nbsp;&lt;strong&gt;install&lt;/strong&gt;&amp;nbsp;edilmesi gerekmektedir.&amp;nbsp;&lt;strong&gt;Windows&lt;/strong&gt;&amp;nbsp;i&amp;ccedil;in gerekli versiyonlarını&amp;nbsp;&lt;a href="http://blog.elijaa.org/index.php?post/2010/10/15/Memcached-for-Windows&amp;amp;similar" target="_blank"&gt;bu adresten tedarik edebiliriz&lt;/a&gt;. Ben &amp;ouml;rnek uygulamada&amp;nbsp;&lt;strong&gt;32&lt;/strong&gt;&amp;nbsp;bitlik&amp;nbsp;&lt;strong&gt;1.4.5&lt;/strong&gt;&amp;nbsp;s&amp;uuml;r&amp;uuml;m&amp;uuml;n&amp;uuml; kullanmayı tercih ettim.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;MemCached&lt;/strong&gt;&amp;nbsp;hizmetini &amp;ccedil;alıştırmak i&amp;ccedil;in&amp;nbsp;&lt;strong&gt;exe&amp;nbsp;&lt;/strong&gt;uzantılı dosyanın y&amp;uuml;r&amp;uuml;t&amp;uuml;lmesi yeterlidir. Sunucudaki komut satırından bile bu işlem yapılabilir. Tabi tercih edilmesi gereken yol&amp;nbsp;&lt;strong&gt;Windows&lt;/strong&gt;&amp;nbsp;&lt;strong&gt;Server&lt;/strong&gt;&amp;nbsp;tarafı i&amp;ccedil;in&amp;nbsp;&lt;strong&gt;Windows Service'&lt;/strong&gt;&amp;nbsp;lerinden yararlanmak olmalıdır.&amp;nbsp;&lt;strong&gt;Windows Service&lt;/strong&gt;&amp;nbsp;otomatik başlatılabilir moda ayarlanırsa, makine her ayağa kalktığında&lt;em&gt;(ki sunucular genelde &amp;ccedil;ok nadir resetlense de bu tedbirler alınmalıdır ve yazılımcının sorumluluğundadır)&lt;/em&gt;&amp;nbsp;ilgili servis &amp;ccedil;alıştırılıp hizmet vermeye başlayacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/memcached_1_thumb2.png"&gt;&lt;img style="background-image: none; margin: 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="memcached_1_thumb2" src="/pics/memcached_1_thumb2_thumb.png" alt="memcached_1_thumb2" width="243" height="163" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Uygulamayı&amp;nbsp;&lt;strong&gt;-help&lt;/strong&gt;&amp;nbsp;komutu ile &amp;ccedil;alıştırdığımızda pek &amp;ccedil;ok ek parametresi daha olduğunu g&amp;ouml;rebiliriz. Aşağıdaki komut satırı ekranında bu durum &amp;ouml;zetlenmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/memcached_2_thumb2.png"&gt;&lt;img style="background-image: none; margin: 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="memcached_2_thumb2" src="/pics/memcached_2_thumb2_thumb.png" alt="memcached_2_thumb2" width="607" height="631" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;ok doğal olarak bu bir servis uygulaması olduğundan, istemcilerin kullanabilmesi i&amp;ccedil;in &amp;ccedil;alışır durumda olması şarttır. Peki ya istemci tarafı?&lt;/p&gt;
+&lt;h1&gt;İstemci Tarafı i&amp;ccedil;in NuGet Paketinin İndirilmesi&lt;/h1&gt;
+&lt;p&gt;Yazımızın başlarında da belirttiğimiz gibi bunun i&amp;ccedil;in kullanılabilecek, ortama g&amp;ouml;re değişen pek &amp;ccedil;ok&amp;nbsp;&lt;strong&gt;API&lt;/strong&gt;&amp;nbsp;mevcuttur. Ancak&amp;nbsp;&lt;strong&gt;NuGet&lt;/strong&gt;&amp;nbsp;&amp;uuml;zerine y&amp;uuml;klenmiş olanlar da var.&amp;nbsp;Dolayısıyla&amp;nbsp;&lt;strong&gt;NuGet&lt;/strong&gt;&amp;nbsp;&lt;strong&gt;Package&lt;/strong&gt;&amp;nbsp;&lt;strong&gt;Manager&lt;/strong&gt;&amp;nbsp;aracını kullanarak, istemci i&amp;ccedil;in gerekli&amp;nbsp;&lt;strong&gt;Library'&lt;/strong&gt;&amp;nbsp;nin indirilmesini kolayca sağlayabiliriz. Ben &amp;ouml;rnek proje de&amp;nbsp;&lt;strong&gt;Emyim&lt;/strong&gt;&amp;rsquo; in bir &amp;uuml;r&amp;uuml;n&amp;uuml;n&amp;uuml; kullanmayı tercih ettim. Yazının hazırlandığı tarih itibariyle 2012 yılından g&amp;uuml;ncel bir s&amp;uuml;r&amp;uuml;m&amp;uuml; de mevcuttu.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/memcached_3_thumb4.png"&gt;&lt;img style="background-image: none; margin: 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="memcached_3_thumb4" src="/pics/memcached_3_thumb4_thumb.png" alt="memcached_3_thumb4" width="640" height="395" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Install&lt;/strong&gt;&amp;nbsp;işlemi sonrası&amp;nbsp;&lt;strong&gt;Enyim.Caching.dll&lt;/strong&gt;&amp;nbsp;&lt;strong&gt;assembly&lt;/strong&gt;' ının projeye referans edildiği g&amp;ouml;r&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/memcached_4_thumb2.png"&gt;&lt;img style="background-image: none; margin: 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="memcached_4_thumb2" src="/pics/memcached_4_thumb2_thumb.png" alt="memcached_4_thumb2" width="255" height="348" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h1&gt;&amp;Ouml;rnek Uygulama&lt;/h1&gt;
+&lt;p&gt;Gelelim &amp;ouml;rnek kodlarımıza&lt;em&gt;(Bu aslında işin en basit kısmı olacak)&lt;/em&gt;&amp;nbsp;Normal şartlarda bir web uygulamasının kullanılmasını tercih ederiz ancak burada amacımız sadece&amp;nbsp;&lt;strong&gt;Hello World&lt;/strong&gt;&amp;nbsp;demek olduğundan test ama&amp;ccedil;lı basit bir&amp;nbsp;&lt;strong&gt;Console&lt;/strong&gt;&amp;nbsp;uygulamasını tercih edebiliriz&lt;em&gt;(Her zamanki gibi)&lt;/em&gt;&amp;nbsp;İstemci tarafının &lt;strong&gt;MemCached &lt;/strong&gt;servisini kullanması i&amp;ccedil;in ya kod tarafında ya da konfigurasyon dosyasında bir takım bildirimlerin yapılması gerekmektedir. Bunun i&amp;ccedil;in&amp;nbsp;&lt;strong&gt;app.config&lt;/strong&gt;&amp;nbsp;dosyasını aşağıdaki gibi şekillendirmemiz yeterli olacaktır.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt; 
+&amp;lt;configuration&amp;gt; 
+  &amp;lt;configSections&amp;gt; 
+    &amp;lt;sectionGroup name="enyim.com"&amp;gt; 
+      &amp;lt;section name="memcached" 
+               type="Enyim.Caching.Configuration.MemcachedClientSection, Enyim.Caching" /&amp;gt; 
+    &amp;lt;/sectionGroup&amp;gt; 
+  &amp;lt;/configSections&amp;gt; 
+  &amp;lt;enyim.com&amp;gt; 
+    &amp;lt;memcached protocol="Binary"&amp;gt; &amp;lt;!--Binary yerine Text' de kullanılabilir--&amp;gt; 
+      &amp;lt;servers&amp;gt; 
+        &amp;lt;add address="127.0.0.1" port="11211"/&amp;gt; 
+      &amp;lt;/servers&amp;gt; 
+   &amp;lt;/memcached&amp;gt; 
+  &amp;lt;/enyim.com&amp;gt; 
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Burada kullanılan&amp;nbsp;&lt;strong&gt;section&lt;/strong&gt;&amp;nbsp;adları varsayılan değerlerdir. Kodlarımızı ise aşağıda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi yazabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Enyim.Caching; 
+using Enyim.Caching.Memcached; 
+using System;
+
+namespace HowTo_Memcached 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            Player burki = new Player 
+            { 
+                 PlayerId=1, 
+                 Nickname="burki", 
+                 TotalScore=10 
+            };
+
+            using(MemcachedClient client=new MemcachedClient()) // Default Constructor varsayılan olarak config dosyasında enyim.com/memcached sekmesini arar. 
+           { 
+                client.Store(StoreMode.Set, "burki", burki); // ikinci parametre key değeri iken son parametre value' dur(object tipindendir)
+
+                object value=null; 
+                if(client.TryGet("burki", out value)) 
+                { 
+                    Player cachedPlayer = value as Player; 
+                   if(cachedPlayer!=null) 
+                    { 
+                        Console.WriteLine(cachedPlayer.ToString()); 
+                    } 
+                } 
+            } 
+        } 
+    }
+
+    [Serializable] // Veriyi binary modda transfer edeceğimizi belirttiğimiziden POCO' nun Binary formatta serileştirilebilir olması gerekmektedir. 
+    public class Player 
+    { 
+        public int PlayerId { get; set; } 
+        public string Nickname { get; set; } 
+        public int TotalScore { get; set; }
+
+        public override string ToString() 
+        { 
+            return string.Format("[{0}]-{1} {2}" 
+                , PlayerId.ToString() 
+                , Nickname 
+                , TotalScore.ToString()); 
+        } 
+   } 
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rnekte&amp;nbsp;&lt;strong&gt;Player&lt;/strong&gt;&amp;nbsp;tipinden bir nesne &amp;ouml;rneğinin belleğe&amp;nbsp;&lt;strong&gt;burki&lt;/strong&gt;&amp;nbsp;isimli&amp;nbsp;&lt;strong&gt;key&lt;/strong&gt;&amp;nbsp;değeri ile atılması ve sonrasında ise okunması senaryosu icra edilmektedir. &amp;Ouml;nemli nesnelerden birisi&amp;nbsp;&lt;strong&gt;MemcachedClient&lt;/strong&gt;&amp;nbsp;tipi &amp;ouml;rneğidir. Varsayılan olarak&amp;nbsp;&lt;strong&gt;app.config/web.config&lt;/strong&gt;&amp;nbsp;dosyasındaki&amp;nbsp;&lt;strong&gt;emyim.com/memcached&lt;/strong&gt;&amp;nbsp;sekt&amp;ouml;r&amp;uuml;n&amp;uuml; baz alarak, belirtilen&amp;nbsp;&lt;strong&gt;IP&lt;/strong&gt;&amp;nbsp;adresli makinenin&amp;nbsp;&lt;strong&gt;11211&lt;/strong&gt;&amp;nbsp;portuna erişmeye &amp;ccedil;alışır. Tabi ilgili tipin yapıcılarına&lt;em&gt;(Constructor)&lt;/em&gt;&amp;nbsp;ait versiyonlarından da g&amp;ouml;r&amp;uuml;leceği &amp;uuml;zere&amp;nbsp;&lt;strong&gt;IMemcachedClientConfiguration&lt;/strong&gt;&amp;nbsp;aray&amp;uuml;z&amp;uuml;&lt;em&gt;(interface)&lt;/em&gt;&amp;nbsp;implemantasyonu yapan bir tip &amp;uuml;zerinden de bu bilgiler alınabilir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;Ouml;rnekte yerel makine &amp;uuml;zerinde &amp;ccedil;alıştırılan Memcached.exe servisi s&amp;ouml;z konusu olduğundan, 127.0.0.1 adresine gidilmektedir. &amp;Ccedil;ok doğal olarak ger&amp;ccedil;ek hayat senaryolarında bu IP adresi farklı olabilir.&lt;/p&gt;
+&lt;p&gt;Tabi yine ger&amp;ccedil;ek hayat senaryolarına bakıldığında, istemci olarak d&amp;uuml;ş&amp;uuml;nebileceğimiz web sunucusu ile MemCached servisini host eden sunucu arasındaki bağlantının Firewall engellerine takılmadan tesis edilmesi gerekebilir. Nitekim sunucularda hemen hemen pek &amp;ccedil;ok port g&amp;uuml;venlik nedeniyle bilin&amp;ccedil;li olarak kapatılır. Bu anlamda 11211 numaralı portun a&amp;ccedil;ık olması &amp;ouml;nemlidir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Store&lt;/strong&gt;&amp;nbsp;fonksiyonu ile belleğe nesne atabilir veya g&amp;uuml;ncelleyebiliriz.&amp;nbsp;&lt;strong&gt;Get, Get&amp;lt;T&amp;gt;, TryGet&lt;/strong&gt;&amp;nbsp;gibi metodlar yardımıyla da bir&amp;nbsp;&lt;strong&gt;Key&lt;/strong&gt;&amp;nbsp;değerini okuyabiliriz. &amp;Ouml;rnekte&amp;nbsp;&lt;strong&gt;TryGet&lt;/strong&gt;&amp;nbsp;ile nesneyi varsa almaya &amp;ccedil;alıştık. Tabi başka yararlı fonksiyonlarda vardır. &amp;Ouml;rneğin bellekteki t&amp;uuml;m nesneleri&amp;nbsp;&lt;strong&gt;FlushAll&lt;/strong&gt;&amp;nbsp;metodu ile atabilirsiniz veya n sayıda nesneyi elde etmek i&amp;ccedil;in&amp;nbsp;&lt;strong&gt;ExecuteGet&lt;/strong&gt;&amp;nbsp;metodundan yararlanabilirsiniz. Dikkat edilmesi gereken &amp;ouml;nemli noktalardan birisi ise, kullandığımız&amp;nbsp;&lt;strong&gt;Player&lt;/strong&gt;&amp;nbsp;sınıfının&amp;nbsp;&lt;strong&gt;Binary&lt;/strong&gt;&amp;nbsp;formatta serileştirilebilir&lt;em&gt;(Binary Serialization)&lt;/em&gt;&amp;nbsp;olmasıdır. Bu, protokol&amp;uuml;&amp;nbsp;&lt;strong&gt;Binary&lt;/strong&gt;&amp;nbsp;olarak se&amp;ccedil;tiğimiz i&amp;ccedil;in şarttır. &amp;Ouml;rneği &amp;ccedil;alıştırdığımızda aşağıdaki ekran &amp;ccedil;ıktısını elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/memcached_5_thumb2.png"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="memcached_5_thumb2" src="/pics/memcached_5_thumb2_thumb.png" alt="memcached_5_thumb2" width="588" height="103" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Eğer M&lt;strong&gt;emCached&lt;/strong&gt;&amp;nbsp;servisi &amp;ccedil;alışmıyorsa, istemci tarafına bir&amp;nbsp;&lt;strong&gt;Exception&lt;/strong&gt;&amp;nbsp;mesajı&amp;nbsp;&lt;span style="text-decoration: underline;"&gt;d&amp;uuml;şmemektedir&lt;/span&gt;. Doğal olarak belleğe atılmış nesneler varsa da erişilemez. Bu durumu istemci tarafının kontrol altına alması gerekir. Nitekim servis tarafı, kendisine bağlı olan istemcilere bir Notification&amp;rsquo; da&amp;nbsp;&lt;span style="text-decoration: underline;"&gt;bulunmamaktadır&lt;/span&gt;.&lt;em&gt;(G&amp;uuml;ncel s&amp;uuml;r&amp;uuml;mde ki durumu kontrol ediniz)&lt;/em&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Bu yazımızda&amp;nbsp;&lt;strong&gt;MemCached&lt;/strong&gt;&amp;nbsp;&amp;uuml;r&amp;uuml;n&amp;uuml;ne,&amp;nbsp;&lt;strong&gt;.Net&lt;/strong&gt;&amp;nbsp;d&amp;uuml;nyasından&amp;nbsp;&lt;strong&gt;Hello World&lt;/strong&gt;&amp;nbsp;demeye &amp;ccedil;alıştık.&lt;strong&gt;&amp;nbsp;In-Memory&lt;/strong&gt;&amp;nbsp;modelinde performansı y&amp;uuml;ksek bir&amp;nbsp;&lt;strong&gt;Distributed-Caching&amp;nbsp;&lt;/strong&gt;mekanizmasına ihtiyacımız olduğunda değerlendirebileceğimiz&amp;nbsp;&lt;strong&gt;NoSQL&lt;/strong&gt;&amp;nbsp;&amp;uuml;r&amp;uuml;nlerinden birisini inceleme fırsatı bulduk. Size tavsiyem s&amp;ouml;z konusu &amp;ouml;rneği web tabanlı bir veya daha fazla projede denemeniz y&amp;ouml;n&amp;uuml;nde olacaktır. Eğer lab ortamınız varsa, birden fazla MemCached servisinin bir arada &amp;ccedil;alışmasını da&lt;em&gt;(farklı sunucularda olacak şekilde)&amp;nbsp;&lt;/em&gt;test edebilirsiniz. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2013%2f1%2fHowTo_Memcached.zip"&gt;HowTo_Memcached.zip (573,00 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2013-12-18 23:45:00</pubDate>
+  <slug>MemCached-ile-Hello-World</slug>
+  <tags>
+    <tag>memcached</tag>
+    <tag>memorycache</tag>
+    <tag>not-only-sql</tag>
+    <tag>distributed-caching</tag>
+    <tag>velocity</tag>
+    <tag>open-source</tag>
+  </tags>
+  <categories>
+    <category>NoSQL</category>
+  </categories>
+</post>

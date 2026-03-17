@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Rust Pratikleri - Serde, Json ve Biraz Eğlence</title>
+  <description>Sanıyorum ki JSON veriler ile çalışmaya programlama dili, ortam yoktur. Sonuç itibariyle bir takım verileri düzenli, standart ve insan gözüyle okunabilir bir formatta tutmanın en iyi yollarından birisi JSON. Öncesinden gelen XML formatına göre daha az yer tutması da cazibesini artırmaktadır. Tabii günümüzde BSON gibi sıkıştırılabilir ve çok daha hızlı yol alabilen seçenekler de mevcut ama rust dilini öğrenirken bunun pratiğini yapmadan olmaz. Bu noktada işimizi epey kolaylaştıran bir kütüphane olduğunu ifade edebilirim. Serde isimli çatı(ki framework olarak işaret ediliyor) JSON ile çalışma konusunda epey popüler.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2022/Mart/tipstricks.png" alt="" /&gt;Sanıyorum JSON veriler ile &amp;ccedil;alışmayan programlama dili veya ortam yoktur. Sonu&amp;ccedil; itibariyle bir takım verileri d&amp;uuml;zenli, standart ve insan g&amp;ouml;z&amp;uuml;yle okunabilir bir formatta tutmanın en iyi yollarından birisi ş&amp;uuml;phesiz ki JSON. &amp;Ouml;ncesinden gelen XML formatına g&amp;ouml;re daha az yer tutması da cazibesini artırmaktadır. Tabii g&amp;uuml;n&amp;uuml;m&amp;uuml;zde BSON gibi sıkıştırılabilir ve &amp;ccedil;ok daha hızlı yol alabilen se&amp;ccedil;enekler de mevcut ama rust dilini &amp;ouml;ğrenirken bunun pratiğini yapmadan olmaz. Bu noktada işimizi epey kolaylaştıran bir k&amp;uuml;t&amp;uuml;phane olduğunu ifade edebilirim. &lt;a title="Rust Serde Framework" href="https://docs.serde.rs/serde/index.html" target="_blank"&gt;Serde&lt;/a&gt; isimli &amp;ccedil;atı&lt;em&gt;(ki framework olduğu vurgulanıyor&lt;/em&gt; JSON ile &amp;ccedil;alışma konusunda epey pop&amp;uuml;ler. Hi&amp;ccedil; vakit kaybetmeden &amp;ouml;rnek bir uygulama &amp;uuml;st&amp;uuml;nden ilerleyelim.&lt;/p&gt;
+&lt;p&gt;Senaryomuzda basit olması nedeniyle sıklıkla tercih ettiğim bir terminal uygulaması kullanacağız. Programı komut satırından arg&amp;uuml;man vererek &amp;ccedil;alıştırabileceğiz. Dolayısıyla y&amp;uuml;r&amp;uuml;t&amp;uuml;lebilir bir rust programına komut satırından arg&amp;uuml;man nasıl yollanır &amp;ouml;ğreneceğiz. JSON dosya i&amp;ccedil;eriğinde t&amp;uuml;rl&amp;uuml; t&amp;uuml;rl&amp;uuml; ipu&amp;ccedil;ları olacak. Uygulamamızdan rustgele veya belli bir konu başlığında ipucu isteyebileceğiz. İpu&amp;ccedil;larını tutan JSON dosyasında ise &amp;ouml;rnek olarak aşağıdaki gibi bilgiler saklayacağız.&lt;/p&gt;
+&lt;pre class="brush:java;auto-links:false;toolbar:false" contenteditable="false"&gt;[
+  {
+  "id": 1,
+  "category": "Rust",
+  "description": "Veri t&amp;uuml;rleri varsayılan olarak immutable'dır."
+  },
+  {
+    "id": 2,
+    "category": "Rust",
+    "description": "Kullanıcı tanımlı veri t&amp;uuml;r&amp;uuml; oluşturmanın bir yolu struct kullanmaktır."
+  },
+...&lt;/pre&gt;
+&lt;p&gt;Dosyanın tamamı ve &amp;ouml;rneğe ait kodlar i&amp;ccedil;in &lt;a href="https://github.com/buraksenyurt/rust-farm/tree/main/Practices/gettip" target="_blank"&gt;github reposu&lt;/a&gt;na uğrayabilirsiniz. İlk olarak aşağıdaki terminal komutu ile projemizi oluşturalım.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;cargo new gettip&lt;/pre&gt;
+&lt;p&gt;serde paketini kullanacağız ancak rastgele bir ipucu getirilmesi de elbette g&amp;uuml;zel olur. Bu ama&amp;ccedil;la rand k&amp;uuml;t&amp;uuml;phanesini kullanabiliriz. Dolayısıyla toml dosyasındaki dependencies kısmında ilgili k&amp;uuml;t&amp;uuml;phane bildirimlerini eklemek gerekiyor. Aynen aşağıda olduğu gibi.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;[package]
+name = "gettip"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+serde = { version = "1.0.133", features = ["derive"] }
+serde_json="1.0.74"
+rand="0.8.4"&lt;/pre&gt;
+&lt;p&gt;serde paketi i&amp;ccedil;in birde derive &amp;ouml;zelliğini kullanmak istediğimizi belirttik. Kod tarafında JSON dosyasındaki bir ipucunu işaret edebilecek bir struct tanımlayacağız. Bu veri modelinin JSON serileştirme davranışlarını otomatik olarak kazanması i&amp;ccedil;in deserialize trait'ini derive niteliği &amp;uuml;st&amp;uuml;nden kullandıracağız. Nitekim dosya i&amp;ccedil;eriğini bizim tanımladığımız bir veri yapısına ters serileştirme ile almamız gerekiyor. features i&amp;ccedil;erisinde&amp;nbsp; tanımlanan derive bildirimi bu fonksiyonelliği uygulamamıza kazandıracak.&lt;/p&gt;
+&lt;p&gt;Gelelim kod tarafına. main.rs dosya i&amp;ccedil;eriğini aşağıdaki gibi yazarak&amp;nbsp;devam edelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;use rand::{thread_rng, Rng};
+use serde::{Deserialize};
+use std::env;
+use std::fmt::{Display, Formatter};
+use std::fs::File;
+use std::io::BufReader;
+
+fn main() {
+    let args: Vec&amp;lt;String&amp;gt; = env::args().collect();
+    let tips = load_tips();
+
+    match args.len() {
+        2 =&amp;gt; {
+            let command = &amp;amp;args[1];
+            if command == "r" {
+                println!("{}", get_random_tip(&amp;amp;tips));
+            } else {
+                println!("r girerek deneyin.");
+            }
+        }
+        3 =&amp;gt; {
+            let category = &amp;amp;args[2];
+            let sub_tips: Vec&amp;lt;Tip&amp;gt; = tips
+                .into_iter()
+                .filter(|t| t.category == *category)
+                .collect();
+            if !sub_tips.is_empty() {
+                let tip = get_random_tip(&amp;amp;sub_tips);
+                println!("{}", tip);
+            } else {
+                println!("{} i&amp;ccedil;in hi&amp;ccedil;bir ipucu yok.", category);
+            }
+        }
+        _ =&amp;gt; {
+            println!("Rustgele bir ipucu i&amp;ccedil;in `r` ile\nBelli bir kategoride rustgele ipucu i&amp;ccedil;in `r rust` ile \ndeneyin l&amp;uuml;tfen;)");
+        }
+    };
+}
+
+fn load_tips() -&amp;gt; Vec&amp;lt;Tip&amp;gt; {
+    let f = File::open("tips.json").expect("Dosya a&amp;ccedil;ılırken hata");
+    let reader = BufReader::new(f);
+    let tips: Vec&amp;lt;Tip&amp;gt; = serde_json::from_reader(reader).expect("json okumada hata");
+    tips
+}
+
+fn get_random_tip(tips: &amp;amp;[Tip]) -&amp;gt; String {
+    let mut rng = thread_rng();
+    let number = rng.gen_range(0..tips.len());
+    tips[number].to_string()
+}
+
+#[derive(Deserialize)]
+pub struct Tip {
+    pub id: i32,
+    pub category: String,
+    pub description: String,
+}
+
+impl Display for Tip {
+    fn fmt(&amp;amp;self, f: &amp;amp;mut Formatter&amp;lt;'_&amp;gt;) -&amp;gt; std::fmt::Result {
+        write!(f, "{} -&amp;gt; {}", self.category, self.description)
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bir ipucu Tip isimli struct ile temsil edilmekte. Bu veri modeli json i&amp;ccedil;erisindeki nitelikleri karşılayan alanlar i&amp;ccedil;ermekte. id, category ve description. Bir ipucunu yazılabilir formatta servis etmek i&amp;ccedil;inse Display trait'ini uyguluyoruz. B&amp;ouml;ylece to_string fonksiyonuna karşılık vermekteyiz. load_tips isimli fonksiyon adından da anlaşılacağı &amp;uuml;zere tips.json dosya i&amp;ccedil;eriğini okuyup, Tip nesnelerinden oluşan bir vector olarak geriye d&amp;ouml;nd&amp;uuml;rmekte. get_random_tip fonksiyonu ise Tip t&amp;uuml;r&amp;uuml;nden diziyi referans alıp rastgele &amp;uuml;retilen bir değeri kullanarak metinsel formatta bilgi d&amp;ouml;nd&amp;uuml;rmekte.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Program başında&amp;nbsp;env mod&amp;uuml;l&amp;uuml;nden hareketle terminalden girilen arg&amp;uuml;manları yakalamaktayız. İki veya &amp;uuml;&amp;ccedil; arg&amp;uuml;manla &amp;ccedil;alışacağımız i&amp;ccedil;in bu durumu kontrol altına alan bir match ifadesi s&amp;ouml;z konusu. Daha az veya daha &amp;ccedil;ok arg&amp;uuml;man gelmesi halinde bir bilgi mesajı vererek kullanıcıyı uyarıyoruz. İki parametre gelmesi halinde ilgili anahtarın r olup olmadığına g&amp;ouml;re kod akışı değişiyor. Eğer &amp;uuml;&amp;ccedil; arg&amp;uuml;man girilmişse son arg&amp;uuml;manın kategori olduğunu d&amp;uuml;ş&amp;uuml;nerek hareket ediyoruz. Burada da Higher Order Function'lardan yararlanarak basit bir filtreleme yaptığımızı g&amp;ouml;rebilirsiniz.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rnekte hata y&amp;ouml;netimi konusunda &amp;ccedil;ok radikal işler yapmadığımızı ifade edebilirim. Result&amp;lt;T,Err&amp;gt; d&amp;ouml;nd&amp;uuml;ren birka&amp;ccedil; operasyonda expect fonksiyonunu kullanarak olası panik durumunda ek bilgi verip uygulamanın&amp;nbsp;sonlanmasına m&amp;uuml;saade ettik.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Artık uygulamayı deneyebilir&amp;nbsp;ve sonu&amp;ccedil;lara bakabiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;cargo run r
+cargo run r C#
+cargo run r Rust
+cargo run r Arch
+cargo run r none&lt;/pre&gt;
+&lt;p&gt;Kendi sistemimdeki &amp;ccedil;alışma zamanına ait &amp;ccedil;ıktıyı aşağıda g&amp;ouml;rebilirsiniz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mart/gettip_1.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Tabii &amp;ouml;rneğimizi y&amp;uuml;r&amp;uuml;t&amp;uuml;lebilir bir binary olarak hazırlamakta yarar var. Bunun i&amp;ccedil;in build işlemini aşağıdaki gibi icra edip yine gerekli denemelerimizi yapabiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;cargo build --release
+cd target/release
+./gettip r rust
+./gettip r&lt;/pre&gt;
+&lt;p&gt;Ancak ş&amp;ouml;yle bir hatırlatma yapalım. Program, tips.json dosyası ile &amp;ccedil;alıştığından onu da binary'nin olduğu klas&amp;ouml;rle birlikte dağıtmalıyız. En azından siz daha iyi bir &amp;ccedil;&amp;ouml;z&amp;uuml;m bulana kadar b&amp;ouml;yle. Şimdi cargo paketine gereksinim duymadan binary'yi y&amp;uuml;r&amp;uuml;tebiliriz. İşte birka&amp;ccedil; &amp;ouml;rnek.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mart/gettip_2.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Rust programlama dilinde başlangı&amp;ccedil; seviyesini tamamlamış herkesin yapabileceği t&amp;uuml;rden bir &amp;ouml;rnek. Bizim i&amp;ccedil;in işleri kolaylaştıran serde ve rand k&amp;uuml;t&amp;uuml;phanelerini kullandık. Biraz pattern matching, biraz dosya okuma, komut satırından arg&amp;uuml;man alma, fonksiyon tanımlama, vector, struct ve trait uyarlaması gibi konuları değerlendirmiş olduk. Elbette &amp;ouml;rnek daha da geliştirilebilir ve eksik y&amp;ouml;nleri de yok değil. &amp;Ouml;rneğin JSON dosya i&amp;ccedil;eriği &amp;ccedil;ok b&amp;uuml;y&amp;uuml;k olursa uygulama performansı bundan nasıl etkilenir? Ya da ipu&amp;ccedil;larını bir JSON dosyasından değil de herhangi bir servisten alsak g&amp;uuml;zel olmaz mı?&amp;nbsp;Kendinizi g&amp;uuml;&amp;ccedil;l&amp;uuml; g&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z bir programlama dili ile pekala REST tabanlı bir servis yazıp bu terminal uygulamasından &amp;ccedil;ağırmayı deneyebilirsiniz. JSON dosyasını binary ile birlikte taşımanın daha kolay bir yolu var mıdır? &amp;Ouml;rnekte sadece dosyadan json veri okuyup ters serileştirme ile bir vektor dizisine nasıl alınacağına baktık. Peki komut satırından bu dosyaya yeni bir ipucu eklemek istersek nasıl bir yol izleriz? İşte bana ve size pek g&amp;uuml;zel sorular :)&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir rust pratiğimizin daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2022-03-13 09:00:00</pubDate>
+  <slug>rust-pratikleri-serde-json-ve-biraz-eglence</slug>
+  <tags>
+    <tag>rust</tag>
+    <tag>rust-pratikleri</tag>
+    <tag>rust-programming-language</tag>
+    <tag>json</tag>
+    <tag>serde</tag>
+    <tag>ubuntu</tag>
+    <tag>rand</tag>
+  </tags>
+  <categories>
+    <category>Rust</category>
+  </categories>
+</post>

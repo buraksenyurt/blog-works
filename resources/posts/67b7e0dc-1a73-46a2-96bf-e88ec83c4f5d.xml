@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Eğlenceli SignalR</title>
+  <description>Bu yazımızda, Chart.js kütüphanesini kullanarak, tarayıcı üzerindeki bir grafiğin SignalR üzerinden nasıl beslenebileceğini incelemeye çalışıyoruz. Bunu yaparken Chart.js'in nefis özelliklerini kullacağız ama daha da önemlisi verilerin belirli periyotlarla istemci tarafına akmasını ve grafik üzerinden anlık(SignalR kullanmamızın bir sebebidir) olarak izlenebilmesini sağlayacağız.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2018/10/funnys_0.jpg" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;nce &amp;uuml;&amp;ccedil; yumurtayı derin kabın i&amp;ccedil;erisine kırıp el mikseri ile g&amp;uuml;zelce karıştırdım. Bir su bardağının 4te 3&amp;uuml; kadar şeker ilave edip karıştırmaya devam ettim. Şeker iyice eriyene kadar. Sonra bir su bardağı kadar zeytinyağı, iki su bardağı kadar esmer un katıp&lt;em&gt;(unu &amp;ouml;nce el eleğine aldım oradan kaba boşalttım. Unu havalandırarak eklemek daha iyi sonu&amp;ccedil; veriyor &amp;ccedil;&amp;uuml;nk&amp;uuml;)&lt;/em&gt; kulak memesi kıvamına gelinceye kadar &amp;ccedil;ırpmaya devam ettim. Kıvamı ayarlamak i&amp;ccedil;in yer yer g&amp;ouml;z kararı bir miktar daha un&amp;nbsp;eklemem de gerekti. Acemilik tabii...&lt;/p&gt;
+&lt;p&gt;Bir s&amp;uuml;re sonra doktor &amp;ouml;tker'in kabartma ve vanilya tozlarından birer paketi kaba boşalttım. Kıvam istediğim hale geldikten sonra rendeledeğim limon kabuklarını ve suyunu d&amp;ouml;k&amp;uuml;p &amp;ccedil;ok az daha karıştırdım. Karışımı d&amp;ouml;kt&amp;uuml;ğ&amp;uuml;m kabı y&amp;uuml;ksek ısıya dayanıklı eldivenlerimle tuttum ve 180 derece sıcaklığa ayarladığım fırının &amp;uuml;st katına yerleştirdim. Yarım saat kadar bekledim ve soununda &amp;uuml;st&amp;uuml; kahverengileşmiş, hafift&amp;ccedil;e de kabarmış limonlu kekim hazırdı. Onu b&amp;uuml;y&amp;uuml;k bir keyifle yapmıştım. Tarif &amp;ouml;n&amp;uuml;mde hazırdı ve bu nedenle yapması olduk&amp;ccedil;a kolaydı. Ancak mutluluğumun asıl sebebi keki hazırlamaya başlamadan &amp;ouml;nce bitirdiğim &amp;ouml;rnek uygulamaydı.&lt;/p&gt;
+&lt;p&gt;Bu yazımızda, Chart.js k&amp;uuml;t&amp;uuml;phanesini kullanarak tarayıcı &amp;uuml;zerindeki bir grafiğin SignalR &amp;uuml;zerinden nasıl beslenebileceğini incelemeye &amp;ccedil;alışacağız. Bunu yaparken Chart.js isimli Javascript k&amp;uuml;t&amp;uuml;phanesinin nefis &amp;ouml;zelliklerini kullanacağız ama daha da &amp;ouml;nemlisi verilerin belirli periyotlarla istemci tarafına akmasını ve grafik &amp;uuml;zerinden anlık&lt;em&gt;(SignalR kullanmamızın bir sebebidir)&lt;/em&gt; olarak izlenebilmesini sağlayacağız. Tarifimiz pratik ve uygulaması kolay.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;ncelikle senaryomuzdan bahsedelim. Kurum i&amp;ccedil;in kullanılan servislerin anlık olarak karşıladıkları talep bilgilerini ger&amp;ccedil;ek zamanlı olarak raporlamak istiyoruz. Raporlama aracımız basit bir HTML sayfası &amp;uuml;zerindeki &amp;ccedil;izgi grafiği&lt;em&gt;(Line chart)&lt;/em&gt;&amp;nbsp;Bu grafiğin anlık olarak&lt;em&gt;(saniyede bir &amp;ouml;rneğin)&lt;/em&gt; değişmesini istiyoruz. &amp;Ouml;nemli noktalardan birisi grafiğin ihtiya&amp;ccedil; duyacağı veriyi dinlemede olan istemcilere sunmak. Burada SignalR'dan yararlanabiliriz.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Buna g&amp;ouml;re &amp;ouml;rneğimiz &amp;uuml;&amp;ccedil; uygulamadan oluşacak. Birisi Hub rol&amp;uuml;n&amp;uuml; &amp;uuml;stlenecek ve veri akışına aracılık edecek. Bu tahmin edeceğiniz &amp;uuml;zere bir Web uygulaması olacak ve grafik fonksiyonelliğini i&amp;ccedil;eren HTML i&amp;ccedil;eriğini de barındıracak&lt;em&gt;(ama istemci aynı uygulama &amp;uuml;zerinde olmak zorunda değil tabii)&lt;/em&gt; Bir diğer uygulama ise veri beslemesi i&amp;ccedil;in kullanılacak. Yani Hub'ı dinleyen istemcilere rastgele veriler sunacak. Onu Console olarak tasarlayabiliriz. Her iki uygulamanın ihtiya&amp;ccedil; duyduğu verileri tanımlayan ortak bir sınıf k&amp;uuml;t&amp;uuml;phanesi de &amp;uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; projemiz olarak karşımıza &amp;ccedil;ıkacak. Dilerseniz hi&amp;ccedil; vakit kaybetmeden başlayalım.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;nce veri modelini i&amp;ccedil;eren projemizi oluşturalım.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet new classlib -o ServiceSensor.Common
+dotnet add package Newtonsoft.json&lt;/pre&gt;
+&lt;p&gt;ServiceSensor.Common k&amp;uuml;t&amp;uuml;phanesi HealthInformation isimli bir sınıf i&amp;ccedil;ermekte ve JSON serileşmesinde alan adlarının nasıl olacağı ifade edilmekte. Bunu belirtmezsek istemci tarafında name ve level&lt;em&gt;(k&amp;uuml;&amp;ccedil;&amp;uuml;k harf ile başlıyorlar)&lt;/em&gt; isimlerini kullanmamız gerekir. Zorunluluk değil ama standartlara uyum a&amp;ccedil;ısından JsonProperty kullanmak iyi olur.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using Newtonsoft.Json;
+
+namespace ServiceSensor.Common
+{
+    public class HealthInformation
+    {
+        [JsonProperty("serviceName")]
+        public string Name { get; set; }
+        [JsonProperty("healthLevel")]
+        public int Level { get; set; }
+        public override string ToString() =&amp;gt; $"{Name} [{Level}]";
+    }
+}&lt;/pre&gt;
+&lt;p&gt;HealthInformation nesne &amp;ouml;rnekleri servis adı ve o anki seviyesini&lt;em&gt;(anlık durumunu işaret eden bir g&amp;ouml;sterge gibi d&amp;uuml;ş&amp;uuml;nelim)&lt;/em&gt; tutmak i&amp;ccedil;in planlandılar.&amp;nbsp;Şimdi sunucu tarafını geliştirelim.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet new web -o ServiceSensor.House
+dotnet add package Microsoft.AspNetCore.All
+dotnet add reference ..\ServiceSensor.Common\
+dotnet build&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;ncelikle ServiceSensor.House isimli boş bir Web projesi oluşturuyoruz. Sonrasında SignalR yeteneklerinden faydalanmak i&amp;ccedil;in bir paket ekliyoruz&lt;em&gt;(.Net Core'un son s&amp;uuml;r&amp;uuml;m&amp;uuml;nde buna gerek olmayabilir l&amp;uuml;tfen kontrol edin)&lt;/em&gt; Pek tabii HealthInformation sınıfını kullanabilmek i&amp;ccedil;in de ServiceSensor.Common k&amp;uuml;t&amp;uuml;phanesinin referans edilmiş olması lazım. İlk olarak Hub sınıfını tasarlayalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
+using ServiceSensor.Common;
+
+namespace ServiceSensor.House
+{
+    public class HealthSensorHub
+        : Hub
+    {
+        public Task Broadcast(string sender, HealthInformation information)
+        {
+            return Clients.AllExcept(new[] { Context.ConnectionId })
+                .SendAsync("Broadcast", sender, information);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;HealthSensorHub sınıfının temel g&amp;ouml;revi bağlı olan t&amp;uuml;m istemcilere parametre olarak gelen information i&amp;ccedil;eriğini asenkron olarak g&amp;ouml;ndermek. Hub t&amp;uuml;revli olduğu i&amp;ccedil;in bu yeteneğe haiz. &amp;Uuml;st sınıftan Clients &amp;ouml;zelliğini kullanıyoruz. AllExcept nedeniyle gelen t&amp;uuml;m istemci talepleri kabul edilmekte ve bağlananların her birine Broadcast takma adı &amp;uuml;zerinden iki bilgi g&amp;ouml;nderilmekte. Sender ve Information. Gelelim program sınıfının kodlarına.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.IO;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
+
+namespace ServiceSensor.House
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            CreateWebHostBuilder(args).Build().Run();
+        }
+
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =&amp;gt;
+            WebHost.CreateDefaultBuilder(args)
+                .UseContentRoot(Directory.GetCurrentDirectory())
+                .UseStartup&amp;lt;Startup&amp;gt;()
+                .UseUrls("http://localhost:7001");
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Aslında root klas&amp;ouml;r&amp;uuml;n kullanılacağını&lt;em&gt;(sonradan index.html ekleyeceğiz)&lt;/em&gt; ekledik ve web uygulamamızın http://localhost:7001&amp;nbsp;adresinden yayın yapacağını ifade ettik. Startup.cs i&amp;ccedil;eriğini de aşağıdaki gibi tasarlamamız gerekiyor.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace ServiceSensor.House
+{
+    public class Startup
+    {
+       public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddSignalR();
+
+            services.AddCors(o =&amp;gt;
+            {
+                o.AddPolicy("All", p =&amp;gt;
+                {
+                    p.AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowAnyOrigin();
+                });
+            });
+        }
+
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            app.UseFileServer();
+            app.UseCors("All");
+
+            app.UseSignalR(routes =&amp;gt;
+            {
+                routes.MapHub&amp;lt;HealthSensorHub&amp;gt;("/healthSensor");
+            });
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;İlk olarak SignalR servisini &amp;ccedil;alışma zamanına ekliyoruz. Cross-Origin Resource Sharing&lt;em&gt;(CORS)&lt;/em&gt; ihlallerine takılmamamk i&amp;ccedil;in eklediğimiz birka&amp;ccedil; kod par&amp;ccedil;ası daha var. SignalR i&amp;ccedil;in gerekli route işaretlemesini yaparken HealthSensorHub sınıfının kullanılacağını belirtiyor ve healthSensor&lt;em&gt;(istemci tarafı SignalR bağlantısını kurabilmek i&amp;ccedil;in bu path bilgisini kullanacak)&lt;/em&gt; isimli adres bilgisini veriyoruz.&lt;/p&gt;
+&lt;p&gt;Web uygulamamıza chart.js k&amp;uuml;t&amp;uuml;phanesini ve HTML dosyasını eklemek i&amp;ccedil;in yeniden d&amp;ouml;neceğiz. Ancak &amp;ouml;ncesinde bağlı olan istemcilere veri sağlayacak uygulamamızı geliştirerek devam edelim. Bunu bir Console uygulaması olarak geliştirebiliriz. Tek yapacağı belirli periyotlarla servislere ait g&amp;uuml;ncel sağlık bilgilerini g&amp;ouml;ndermek olacak ki işimizi kolaylaştırmak i&amp;ccedil;in rastgele değerler &amp;uuml;rettireceğiz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet new console -o ServiceSensor.Publisher
+dotnet add package Microsoft.AspNetCore.SignalR.Client
+dotnet add reference ..\ServiceSensor.Common\
+dotnet build&lt;/pre&gt;
+&lt;p&gt;SignalR ile konuşacağımız i&amp;ccedil;in Microsoft.AspNetCore.SignalR.Client paketini eklememiz gerekiyor. Artık program sınıfının kodlarını yazabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR.Client;
+using ServiceSensor.Common;
+
+namespace ServiceSensor.Publisher
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var cToken = new CancellationTokenSource();
+            Task.Run(() =&amp;gt; SendInformationAsync(cToken.Token)
+                            .GetAwaiter()
+                            .GetResult(), cToken.Token);
+
+            Console.WriteLine("Sonlandırmak i&amp;ccedil;in bir tuşa basın...");
+            Console.ReadLine();
+            cToken.Cancel();
+        }
+
+        static async Task SendInformationAsync(CancellationToken cToken)
+        {
+            var connBuilder = new HubConnectionBuilder()
+                .WithUrl("http://localhost:7001/healthSensor")
+                .Build();
+
+            await connBuilder.StartAsync();
+            Random rnd = new Random();
+            int randomHealthPoint = 0;
+
+            while (!cToken.IsCancellationRequested)
+            {
+                await Task.Delay(1000, cToken);
+                randomHealthPoint = rnd.Next(1, 25);
+                var information = new HealthInformation() 
+                    {
+                         Name = $"service_{randomHealthPoint}", 
+                         Level = randomHealthPoint
+                     };
+                Console.WriteLine(information.ToString());
+                await connBuilder.InvokeAsync("Broadcast", "HealthSensor", information, cToken);
+            }
+
+            await connBuilder.DisposeAsync();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Programın temel g&amp;ouml;revi kullanıcı kesene kadar asenkron bir işin y&amp;uuml;r&amp;uuml;t&amp;uuml;lmesini sağlamak. SendInformationAsync i&amp;ccedil;erisinde ise &amp;ouml;nemli işler icra ediliyor. &amp;Ouml;ncelikle http://localhost:7001/healthSensor&amp;nbsp;adresini kullanan bir HubConnecton nesnesi &amp;ouml;rnekleniyor. StartAsync metodu ile iletişim başlatılıyor. Kurulan sonsuz d&amp;ouml;ng&amp;uuml; i&amp;ccedil;erisinde 1 saniyelik aralıklarla rastgele HealthInformation nesneleri &amp;ouml;rneklenmekte. Bu nesneler InvokeAsync metodundan yararlanılarak Hub'a bağlı olan istemcilere dağıtılıyor. Kullanıcı SendInformationAsync fonksiyonunu kesene kadar bu g&amp;ouml;nderim işlemi devam edecek.&lt;/p&gt;
+&lt;p&gt;Artık ServiceSensor.House isimli Web uygulamamıza yeniden d&amp;ouml;nebiliriz. &amp;Ouml;ncelikle grafik i&amp;ccedil;in chart.js ve SignalR tarafı ile konuşmak i&amp;ccedil;in de aspnet/signalr paketlerini y&amp;uuml;klememiz lazım. Bu y&amp;uuml;klemeler i&amp;ccedil;n npm aracından yararlanabiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;npm install chart.js --save
+npm install @aspnet/signalr --save&lt;/pre&gt;
+&lt;p&gt;Paketler varsayılan olarak t&amp;uuml;m i&amp;ccedil;erikleri ile birlikte inerler. Ancak ihtiyacımız olan dosyalar sadece chart.js ve signalr.js. Bu dosyaları alıp wwwroot altında a&amp;ccedil;acağımız scripts klas&amp;ouml;r&amp;uuml; i&amp;ccedil;erisine kopyalayabiliriz. Gelelim eğlenceyi oluşturacak kısıma. wwwroot altındaki index.html dosyasını aşağıdaki gibi kodlayarak devam edelim.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;html&amp;gt;
+
+&amp;lt;head&amp;gt;
+    &amp;lt;meta charset="utf-8" /&amp;gt;
+    &amp;lt;title&amp;gt;Service Health Sensor Sample&amp;lt;/title&amp;gt;
+    &amp;lt;script src="scripts/chart.js"&amp;gt;&amp;lt;/script&amp;gt;
+    &amp;lt;script src="scripts/signalr.js"&amp;gt;&amp;lt;/script&amp;gt;
+    &amp;lt;script type="text/javascript"&amp;gt;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var samples = 100;
+            var speed = 300;
+            var values = [];
+            var labels = [];
+            var charts = [];
+            var value = 0;
+            values.length = samples;
+            labels.length = samples;
+            values.fill(0);
+            labels.fill(0);
+
+            var chart = new Chart(document.getElementById("serviceChart"),
+                {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                data: values,
+                                backgroundColor: 'rgb(102, 178, 255)',
+                                borderColor: 'rgb(0, 102, 0)',
+                                borderSize: 3
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: false,
+                        animation: {
+                            duration: speed * 1,
+                            easing: 'easeInQuad'
+                        },
+                        legend: false,
+                        scales: {
+                            xAxes: [
+                                {
+                                    display: false,
+                                }
+                            ],
+                            yAxes: [
+                                {
+                                    ticks: {
+                                        max: 30,
+                                        min: 0
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                });
+
+            var hubConn = new signalR.HubConnectionBuilder()
+                .withUrl("healthSensor")
+                .build();
+            hubConn.on('Broadcast',
+                function (sender, info) {
+                    values.push(info.healthLevel);
+                    values.shift();
+                    labels.push(info.serviceName);
+                    labels.shift();
+                    chart.update();
+                });
+            hubConn.start();
+        });
+    &amp;lt;/script&amp;gt;
+&amp;lt;/head&amp;gt;
+
+&amp;lt;body&amp;gt;
+    &amp;lt;canvas id="serviceChart" style="width: 600px; height: 440px"&amp;gt;&amp;lt;/canvas&amp;gt;
+&amp;lt;/body&amp;gt;
+
+&amp;lt;/html&amp;gt;&lt;/pre&gt;
+&lt;p&gt;A&amp;ccedil;k&amp;ccedil;ası chart kullanımını bulduğum &amp;ouml;rnekler &amp;uuml;zerinden yapmaya &amp;ccedil;alıştım&lt;em&gt;(chart.js &amp;ccedil;ok kapsamlı ve geniş bir k&amp;uuml;t&amp;uuml;phane. Değişik &amp;ouml;rneklerine ulaşmak i&amp;ccedil;in &lt;a href="http://www.chartjs.org/samples/latest/" target="_blank"&gt;şu adrese&lt;/a&gt;&amp;nbsp;uğranabilir)&lt;/em&gt; Ancak grafiğin veri i&amp;ccedil;in kullandığı values ve labels değişkenlerini nasıl beslediğimizi anlatabilirim. hubConn değişkenine dikkat edelim. &amp;Ouml;nce ServiceSensor.Publisher uygulamasındakine benzer bir şekilde nesne &amp;ouml;rneklemesi yapılmakta. withUrl parametresinin değeri &amp;ouml;nemli. on fonksiyonu start sonrası bağlantı bsaşarılı bir şekilde sağlanırsa devreye girecek. Yani istemci dinleme moduna ge&amp;ccedil;ecek. Broadcast anahtar kelimemiz&lt;em&gt;(&amp;Ouml;nceki kodlarda nerede kullanıldığını hatırlayın)&lt;/em&gt; İsimsiz fonksiyona gelen parametreler tahmin edeceğiniz &amp;uuml;zere Publisher tarafından JSON'a d&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;lerek g&amp;ouml;nderilen HealthInformation değerlerini i&amp;ccedil;eriyor. JsonProperty'lerde belirttiğimiz isimlerle anlık verilere ulaşmamız m&amp;uuml;mk&amp;uuml;n. push ile veriyi grafiğe basıyor, shift ile o anki barı yana kaydırıyor ve update ile kaynak veri setinin g&amp;uuml;ncellenmesini sağlıyoruz. Hepsi bu kadar. Artık testimize başlayabiliriz. İlk olarak ServiceSensor.House uygulamasını, ardından da veri basan ServiceSensor.Publisher uygulamasını&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet run&lt;/pre&gt;
+&lt;p&gt;komutları ile başlatmalıyız. Publisher belirli aralıklarla rastgele bilgi basacak. Sunucu uygulamanın &amp;ccedil;alışmasına ait &amp;ouml;rnek ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; aşağıdaki gibi.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/10/funnyS_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Publisher uygulamasına ait bir ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; de şu. G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere Console'a d&amp;uuml;şen bilgilerden rastgele &amp;uuml;retilen verileri izleyebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/10/funnys_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Artık&amp;nbsp;tarayıcıdan http://localhost:7001/index.html adresine gidebiliriz. Grafik sağdan sola doğru gelen değerlere g&amp;ouml;re akmaya başlayacaktır. Bunu canlı canlı izlemek &amp;ccedil;ok zevkliydi benim i&amp;ccedil;in. Hatta video kaydını alıp paylaşmak da istedim ama onu g&amp;ouml;rmek i&amp;ccedil;in &amp;ouml;rneği tamamlamaya gayret etmenizin daha faydalı olabileceğini d&amp;uuml;ş&amp;uuml;nd&amp;uuml;m. Sizde g&amp;ouml;rmek istiyorsanız &amp;ouml;rneği tamamlamalısınız :D Şimdilik iki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; paylaşarak az biraz heyecan yaratayım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/10/funnyS_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;ve&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/10/funnyS_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rnek daha da zenginleştirilebilir. Grafiği değiştrerek işe başlayabilirsiniz. Servislere ait anlık verilerin ger&amp;ccedil;ekten de takip edilmek istenen servislerden beslenmesine &amp;ccedil;alışabilirsiniz. T&amp;uuml;m istemcilerin değil de sadece yetki bazlı olanların bu grafiğe ulaşmasını sağlayacak g&amp;uuml;venlik tedbirlerini deneyebilirsiniz. Servis durumları yerine IoT cihazınıza bağladığınız bir takım sens&amp;ouml;r verilerinin bu grafiğe yansımasını da sağlayabilirsiniz ;) Neler yapabileceğiniz tamamen sizin hayal g&amp;uuml;c&amp;uuml;n&amp;uuml;ze bağlı.&lt;/p&gt;
+&lt;p&gt;Bu yazımızda SignalR'ı kullanarak ger&amp;ccedil;ek zamanlı basılan verilerin, dinlemede olan istemcilerde grafiksel g&amp;ouml;steriminin nasıl yapılabileceğini incelemeye &amp;ccedil;alıştık. Ve b&amp;ouml;ylece adım adım yaparken bir kek kadar lezzetli olmasa da &amp;ccedil;ok keyif alacağınızı d&amp;uuml;ş&amp;uuml;nd&amp;uuml;ğ&amp;uuml;m bir makalemizin daha sonuna geldik. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğe &lt;a href="https://github.com/buraksenyurt/dotnetcore/tree/master/FunnySignalR" target="_blank"&gt;github &amp;uuml;zerinden&lt;/a&gt; de ulaşabilirsiniz.&amp;nbsp;&lt;/p&gt;</content>
+  <pubDate>2018-10-31 21:30:00</pubDate>
+  <slug>Eglenceli-SignalR</slug>
+  <tags>
+    <tag>signalr</tag>
+    <tag>chartjs</tag>
+    <tag>javascript</tag>
+    <tag>c#</tag>
+    <tag>chart</tag>
+    <tag>npm</tag>
+    <tag>signalrclient</tag>
+    <tag>hub-connection-builder</tag>
+    <tag>hub</tag>
+    <tag>task</tag>
+    <tag>asynchronous-programming</tag>
+  </tags>
+  <categories>
+    <category>.Net Core</category>
+  </categories>
+</post>

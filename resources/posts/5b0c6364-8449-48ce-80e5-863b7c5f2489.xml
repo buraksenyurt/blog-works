@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Workflow Foundation 4.0 - Declarative Validation [Beta 2]</title>
+  <description>Sakin bir Cuma gününde bilgisayarın başında kahvemi yudumlarken ve M&amp;M drajelerinden avuç avuç yerken araştırmalarıma devam ediyordum. Bir süredir Workflow Foundation 4.0 ile birlikte gelen yenilikleri incelediğimden takip ettiğim bloglar ve MSDN üzerinde bu konu ile ilişkili yazıları okumaktaydım. Özelliklede son iki yazımda üzerinde durmaya çalıştığım özel aktivite bileşenlerinin doğrulanması konusunu irdelemekteydim. Bu yazımızda doğrulama(Validation) ile ilişkili araştırmalarımı sizlerle paylaşmaya devam ediyor olacağım.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/pics/2009%2f12%2fblg111_Giris.gif" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Sakin bir Cuma g&amp;uuml;n&amp;uuml;nde bilgisayarın başında kahvemi yudumlarken ve M&amp;amp;M drajelerinden avu&amp;ccedil; avu&amp;ccedil; yerken araştırmalarıma devam ediyordum. Bir s&amp;uuml;redir &lt;strong&gt;Workflow Foundation 4.0&lt;/strong&gt; ile birlikte gelen yenilikleri incelediğimden takip ettiğim bloglar ve MSDN &amp;uuml;zerinde bu konu ile ilişkili yazıları okumaktaydım. &amp;Ouml;zelliklede son iki yazımda &amp;uuml;zerinde durmaya &amp;ccedil;alıştığım &amp;ouml;zel aktivite bileşenlerinin doğrulanması konusunu irdelemekteydim. Bu yazımızda &lt;strong&gt;doğrulama(Validation)&lt;/strong&gt; ile ilişkili araştırmalarımı sizlerle paylaşmaya devam ediyor olacağım.&lt;/p&gt;
+&lt;p&gt;Doğrulama işlemlerinin &amp;ccedil;eşitlerine baktığımızda&lt;strong&gt; Declarative Constraint&lt;/strong&gt; isimli bir yaklaşımın daha olduğu g&amp;ouml;r&amp;uuml;lmektedir. Bu yaklaşıma g&amp;ouml;re bir aktivite ile ilişkili doğrulama mantığının &lt;strong&gt;kısıt olaraktan(Constraint)&lt;/strong&gt;&amp;nbsp;ayrı bir tip ve metod i&amp;ccedil;erisinde konuşlandırılması m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. &lt;em&gt;(Hatta kod dışında&amp;nbsp;XAML bazlı olaraktan kısıtların konulmasıda s&amp;ouml;z konusudur)&amp;nbsp;&lt;/em&gt;&lt;strong&gt;Workflow Foundation&lt;/strong&gt; alt yapısında bu tip dekleratif doğrulamalar i&amp;ccedil;in &lt;strong&gt;Constraint&lt;/strong&gt;&amp;nbsp;sınıfından yararlanılmaktadır. &lt;strong&gt;Constraint&lt;/strong&gt;&amp;nbsp; tipi aslında &lt;strong&gt;NativeActivity &lt;/strong&gt;t&amp;uuml;revidir. Bir başka deyişle bir aktivitedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f12%2fblg111_Constraint.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Yukarıdaki şekildende g&amp;ouml;r&amp;uuml;lebileceği gibi &lt;strong&gt;Constraint&lt;/strong&gt; &lt;strong&gt;abstract &lt;/strong&gt;bir sınıftır&lt;em&gt;(dolayısıyla kendisinden t&amp;uuml;reyen tiplerin mutlaka uyması gereken&amp;nbsp;kuralları bildiren, &amp;ouml;rneklenemeyen ama kendisinden t&amp;uuml;reyen&amp;nbsp;tip &amp;ouml;rneklerini taşıyabilen bir sınıftır)&lt;/em&gt;&amp;nbsp;ve &lt;strong&gt;NaticeActivity&lt;/strong&gt; tipinden t&amp;uuml;remektedir. Bu t&amp;uuml;retme nedeniyle aslında &lt;strong&gt;Workflow&lt;/strong&gt; &amp;ccedil;alışma zamanının &amp;ccedil;eşitli materyallerine erişebildiğini(Scheduling, Bookmarks vb...) s&amp;ouml;yleyebiliriz. Peki pratikte kendi geliştireceğimiz aktivite bileşenleri i&amp;ccedil;in gerekli kısıtları nasıl koyabiliriz? &lt;strong&gt;MSDN&lt;/strong&gt; &amp;uuml;zerinde bu konu ile ilişkili olarak geliştirilen basit &amp;ouml;rnekte bir aktivite bileşeninin &lt;strong&gt;DisplayName&lt;/strong&gt; &amp;ouml;zelliğinin 2 karakterden fazla olması gerekliliğinin &amp;ouml;rneklendiği g&amp;ouml;r&amp;uuml;lmektedir. Bizde buna benzer bir kısıtlama geliştiriyor olacağız. Ancak &amp;ouml;rneğin farklı olması a&amp;ccedil;ısından, hayali yazılım şirketinin kod standartlarına g&amp;ouml;re DisplayName &amp;ouml;zelliğinin&amp;nbsp;&lt;strong&gt;Chinook&lt;/strong&gt; &amp;ouml;n eki ile başlaması i&amp;ccedil;in bir kısıt getireceğiz. İşte Activity Library i&amp;ccedil;erisinde tuttuğumuz &amp;ouml;rnek sınıf kodlarımız.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Activities;
+using System.Activities.Validation;
+
+namespace CustomActivities
+{
+    public static class ActivityConstraints
+    {
+        // Constraint oluşturup geriye d&amp;ouml;nd&amp;uuml;recek basit bir static metod
+        public static Constraint ValidateActivityDisplayNameForCompanyCodeStandards()
+        {
+            DelegateInArgument&amp;lt;Activity&amp;gt; element = new DelegateInArgument&amp;lt;Activity&amp;gt;();
+
+            // Herhangibir Activity(T generic tipi olarak Activity kullanıldığından) bileşeninin doğrulanmasında kullanılacak olan Constraint tipi &amp;ouml;rneklenir. 
+            // Constraint tipi aslında NativeActivity t&amp;uuml;revli bir Activity bileşenidir.
+            Constraint&amp;lt;Activity&amp;gt; constraint = new Constraint&amp;lt;Activity&amp;gt;
+            {
+                // Body kısmı doğrulama mantığını i&amp;ccedil;ermektedir ve ActivityAction tipindendir                
+                Body = new ActivityAction&amp;lt;Activity, ValidationContext&amp;gt;
+                {
+                    Argument1 = element,                    
+                    Handler = new AssertValidation
+                    {
+                        // Warning bilgisi g&amp;ouml;sterilmeyecektir. Yani Error mesajı verilecektir. IsWarning &amp;ouml;zelliğinin varsayılan değeri false' dur.
+                        IsWarning=false,
+                        // e, ActivityContext tipinden bir referanstır. Dolayısıyla Constraint' in uygulanacağı aktivite bileşeninin g&amp;uuml;ncel i&amp;ccedil;eriğine erişilebilmesi m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r.
+                        // &amp;Ouml;rnek doğrulamaya g&amp;ouml;re Actitiy &amp;ouml;rneğinin DisplayName &amp;ouml;zelliğinin Chinnok kelimesi ile başlaması beklenmektedir.
+                        Assertion=new InArgument&amp;lt;bool&amp;gt;(
+                            e=&amp;gt;                                
+                                element.Get(e).DisplayName.StartsWith("Chinook")
+                            ),
+                            // Eğer Chinook ismi ile başlanılmıyorsa bir hata mesajı verilir.
+                        Message=new InArgument&amp;lt;string&amp;gt;("Şirketin kod standartları gereği, &amp;ouml;zel Activity adlarının Chinook ile başlaması gerekmektedir."),
+                        DisplayName="DisplayNameValidationActivity"                         
+                    }
+                }
+            };
+            return constraint;
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;ActivityConstraints&lt;/strong&gt; isimli &lt;strong&gt;static&lt;/strong&gt; sınıf i&amp;ccedil;erisinde yer alan &lt;strong&gt;ValidateActivityDisplayNameForCompanyCodeStandards&lt;/strong&gt; isimli metod geriye &lt;strong&gt;Constraint&lt;/strong&gt; tipinden bir referans d&amp;ouml;nd&amp;uuml;rmektedir. &lt;strong&gt;Constraint&lt;/strong&gt; tipinin &amp;uuml;retimi sırasında dikkat edileceği &amp;uuml;zere &lt;strong&gt;Handler&lt;/strong&gt; &amp;ouml;zelliğine &lt;strong&gt;AssertValidation&lt;/strong&gt; tipinden bir referans atanmaktadır. İşte bu sınıfın &amp;ouml;rneklenmesi sırasında kullanılan &lt;strong&gt;Assertion&lt;/strong&gt; &amp;ouml;zelliği ilede bir &lt;strong&gt;Expression&lt;/strong&gt; tanımlaması yapılmakta ve bu kısıtın uygulandığı &lt;strong&gt;Activity&lt;/strong&gt; bileşeninin &lt;strong&gt;DisplayName&lt;/strong&gt; &amp;ouml;zelliğinin &lt;strong&gt;Chinook&lt;/strong&gt; ile başlayıp başlamadığı kontrol edilmektedir.&amp;nbsp;Bu ifadeden&amp;nbsp;d&amp;ouml;necek değer g&amp;ouml;re &lt;strong&gt;Message &lt;/strong&gt;&amp;ouml;zelliğine atanan bilginin derleme zamanında g&amp;ouml;sterilmesi sağlanmaktadir. &lt;strong&gt;IsWarning&lt;/strong&gt; &amp;ouml;zelliği varsayılan olarak &lt;strong&gt;false&lt;/strong&gt; değere sahiptir ve buna g&amp;ouml;re mesajın bir &lt;strong&gt;Error&lt;/strong&gt; olarak g&amp;ouml;sterilmesi sağlanmaktadır. Ancak bu &amp;ouml;zelliğe &lt;strong&gt;true&lt;/strong&gt; değerini atayaraktan &lt;strong&gt;Warning&lt;/strong&gt; olarak g&amp;ouml;sterilmesi de sağlanabilir.&amp;nbsp; Peki bu kısıt bir aktivite bileşenine nasıl uygulanabilir? Aslında bunun i&amp;ccedil;in geliştiriken aktiviteye bir bildirimde bulunulması yeterlidir. Aşağıdaki kod par&amp;ccedil;asında yer alan aktivite bileşeninde bu durum ele alınmaktadır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Activities;
+using System.Activities.Validation;
+
+namespace CustomActivities
+{
+    public enum LogSource
+    {
+        File,
+        Database,
+        WebService,
+        System
+    }
+
+    // Loglama yapan &amp;ouml;rnek bir aktivitedir.
+    public sealed class LogActivity 
+        : CodeActivity&amp;lt;bool&amp;gt;
+    {
+        public InArgument&amp;lt;LogSource&amp;gt; LogSourceType { get; set; }
+
+        public LogActivity()
+        {
+            // Constraint' lerin bir aktivite ile ilişkilendirilebilmesi i&amp;ccedil;in base referans &amp;uuml;zerinden ilgili koleksiyona eklenmesi gerekmektedir. 
+            // Constraints &amp;ouml;zelliği bir koleksiyonu referans ettiği i&amp;ccedil;in bir aktiviteye birden fazla Constraint y&amp;uuml;klenmesi m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r.
+            base.Constraints.Add(ActivityConstraints.ValidateActivityDisplayNameForCompanyCodeStandards());
+        }
+
+        protected override bool Execute(CodeActivityContext context)
+        {
+            //TODO@Burak: Ger&amp;ccedil;ektende loglama işlemi yapılması i&amp;ccedil;in gerekli kodlar yazılmalı
+            switch (LogSourceType.Get(context))
+            {
+                case LogSource.File:
+                    break;
+                case LogSource.Database:
+                    break;
+                case LogSource.WebService:
+                    break;
+                case LogSource.System:
+                    break;
+                default:
+                    break;
+            }
+
+            return true;
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Burada odaklanılması gereken tek bir yer vardır...&lt;strong&gt;Yapıcı metodun(Constructor)&lt;/strong&gt; i&amp;ccedil;erisinde yer alan kod satırı. Dikkat edileceği &amp;uuml;zere &lt;strong&gt;Constraints&lt;/strong&gt; &amp;ouml;zelliği &amp;uuml;zerinden &lt;strong&gt;ValidateActivityDisplayNameForCompanyCodeStandards&lt;/strong&gt;&amp;nbsp; metodunun d&amp;ouml;n&amp;uuml;ş referansının ilgili koleksiyona eklenmesi sağlanmaktadır. Buna g&amp;ouml;re, &lt;strong&gt;LogActivity&lt;/strong&gt; bileşeninin &lt;strong&gt;Visual Studio&lt;/strong&gt; ortamında kullanıldığı durumlarda &lt;strong&gt;DisplayName&lt;/strong&gt; &amp;ouml;zelliğinin ilgili kısıta g&amp;ouml;re kontrol edileceği bildirilmiş olmaktadır. Dilerseniz birde bileşeni test edelim. İşte bileşeni &amp;ouml;rnek bir Workflow &amp;uuml;zerine ilk kez s&amp;uuml;r&amp;uuml;kleyip bıraktığımızdaki durum;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f12%2fblg111_Error.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;DisplayName&lt;/strong&gt; &amp;ouml;zelliği i&amp;ccedil;in bir hata mesajı alınmıştır. Buna g&amp;ouml;re Chinook &amp;ouml;n ekin kullandığımızda sorunun ortadan kalktığı g&amp;ouml;r&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f12%2fblg111_NoError.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Constraint&lt;/strong&gt; kullanımı dikkat edileceği &amp;uuml;zere herhangibir aktivite bileşeni i&amp;ccedil;in kısıt koyabilmeyi olanaklı hale getirmektedir. &lt;strong&gt;Constraint&lt;/strong&gt; kullanımında farklı durumlarda s&amp;ouml;z konusudur. &amp;Ouml;rneğin bir aktivitenin i&amp;ccedil;erisinde yer alan t&amp;uuml;m alt aktiviteler i&amp;ccedil;in ge&amp;ccedil;erli olacak kısıtların konulmasıda m&amp;uuml;mk&amp;uuml;n olabilir. Bu son derece doğaldır nitekim &lt;strong&gt;Constraint&lt;/strong&gt; sınıfı &amp;ouml;rneklenirken, ilişkilendirildiği aktivite i&amp;ccedil;eriğine erişebilmektedir. Burada &lt;strong&gt;DelegateInArgument&amp;lt;Activity&amp;gt;&lt;/strong&gt; temsilci tipinin b&amp;uuml;y&amp;uuml;k rol&amp;uuml; vardır. &amp;Ouml;yleki Expression tanımlamasının yapıldığı ve doğrulama mantığının ger&amp;ccedil;ekleştirildiği yerde, g&amp;uuml;ncel aktivite referansına ulaşmak i&amp;ccedil;in&lt;strong&gt; element.Get(e)&lt;/strong&gt; s&amp;ouml;z dizimi kullanılmaktadır. Tabiki bu yazımızda&lt;strong&gt; Declarative Constraint&lt;/strong&gt; kullanımını &amp;ccedil;ok basit seviyede ele almaya &amp;ccedil;alıştık. En g&amp;uuml;ncel ve detaylı bilgiyi elbetteki &lt;a title="Declarative Constraints" href="http://msdn.microsoft.com/en-us/library/ee358736(VS.100).aspx"&gt;MSDN &lt;/a&gt;&amp;uuml;zerinde bulabilirsiniz. B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2009%2f12%2fDeclerativeConstraints.rar"&gt;DeclerativeConstraints.rar (50,29 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2010-01-19 06:00:00</pubDate>
+  <slug>Workflow-Foundation-40-Declarative-Validation-Beta-2</slug>
+  <tags>
+    <tag>wf-40</tag>
+  </tags>
+  <categories>
+    <category>WF 4.0 Beta 2</category>
+  </categories>
+</post>

@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Regex ve Performans İpuçları – Interpreted ve Compiled Farkı, Bir de Sürpriz</title>
+  <description>İnce ayarlar çekilmiş bir yazılım, zaman zaman çok hızlı sonuçlar verebilir. Hatırlayacağınız üzere Regex ve Performans İpuçları – Otomatik Cache başlıklı bir önceki yazımızda son derece sıcak bir gecede, Regex tipinin performanslı kullanımına ilişkin ilk ip ucunu aktarmış ve sonuçlarını incelemeye çalışmıştık. Regex kullanımında dikkat çeken noktalardan bir diğeri de(bir başka deyişle yapılabilecek ince ayarlardan bir diğeri de) yorumlanarak(Interpret) veya önceden derlenerek(Compiled) çalıştırılabilen ifadeler ile ilişkilidir.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/blg222_Giris.jpg"&gt;&lt;img style="display: inline; margin-left: 0px; margin-right: 0px; border-width: 0px;" title="blg222_Giris" src="/pics/blg222_Giris_thumb.jpg" alt="blg222_Giris" width="302" height="225" align="right" border="0" /&gt;&lt;/a&gt; Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Formula 1&lt;/strong&gt; merakı olanlar, yarışan ara&amp;ccedil;ların m&amp;uuml;hendislik olarak birbirlerine &amp;ccedil;ok yakın teknolojiler ile &amp;uuml;retildikleri ve benzer olduklarını bilirler. Ger&amp;ccedil;i bazı zamanlarda &amp;ouml;n plana &amp;ccedil;ıkan ara&amp;ccedil;lar da s&amp;ouml;z konusudur. Frenaj veya hızlanma sistemlerine getirilen iyileştirmeler sonucu, diğer yarış ara&amp;ccedil;larının pilotları kim olursa olsun belirgin bir şekilde &amp;ouml;ne fırlarlar.&lt;/p&gt;
+&lt;p&gt;Ancak bazen de ara&amp;ccedil;lar bir birlerine o kadar denktir ki, yarışın kaderini ve sonu&amp;ccedil;larını s&amp;uuml;r&amp;uuml;c&amp;uuml;ler ile &lt;strong&gt;Pit-Stop&amp;rsquo;&lt;/strong&gt; lar sırasında yapılan kritik değişiklikler belirler. &amp;Ouml;rneğin lastik se&amp;ccedil;imlerİ, &amp;ouml;n veya arka kanatların a&amp;ccedil;ısal değerleri, r&amp;uuml;zgarın hızına g&amp;ouml;re yapılan ayarlamalar, yakıt tankının ne kadar doldurulacağı vb&amp;hellip;&lt;/p&gt;
+&lt;p&gt;E tabi en iyi sonu&amp;ccedil;ları elde edebilmek i&amp;ccedil;in takımlar yıl boyu sayısız test s&amp;uuml;r&amp;uuml;ş&amp;uuml; ger&amp;ccedil;ekleştirir ve s&amp;uuml;rekli olarak istatistikler tutarak raporlamalarda bulunur ve stratejik kararları veren y&amp;ouml;neticilerin &amp;ouml;nlerini daha iyi g&amp;ouml;rmelerini sağlamaya &amp;ccedil;alışırlar. &amp;Ccedil;ok doğal olarak yazılım s&amp;uuml;re&amp;ccedil;lerinde de benzer durumlar s&amp;ouml;z konusu değil midir? &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;İnce ayarlar &amp;ccedil;ekilmiş bir yazılım, zaman zaman &amp;ccedil;ok hızlı sonu&amp;ccedil;lar verebilir. Hatırlayacağınız &amp;uuml;zere &lt;a href="/post/Regex-ve-Performans-Ipuclari-Otomatik-Cache"&gt;Regex ve Performans İpu&amp;ccedil;ları &amp;ndash; Otomatik Cache&lt;/a&gt; başlıklı bir &amp;ouml;nceki yazımızda son derece sıcak bir gecede, &lt;strong&gt;Regex&lt;/strong&gt; tipinin performanslı kullanımına ilişkin ilk ip ucunu aktarmış ve sonu&amp;ccedil;larını incelemeye &amp;ccedil;alışmıştık. &lt;strong&gt;Regex&lt;/strong&gt; kullanımında dikkat &amp;ccedil;eken noktalardan bir diğeri de&lt;em&gt;(bir başka deyişle yapılabilecek ince ayarlardan bir diğeri de)&lt;/em&gt;&amp;nbsp;&lt;strong&gt;yorumlanarak(Interpret)&lt;/strong&gt; veya &amp;ouml;nceden &lt;strong&gt;derlenerek(Compiled)&lt;/strong&gt; &amp;ccedil;alıştırılabilen ifadeler ile ilişkilidir.&lt;/p&gt;
+&lt;p&gt;Bu notkada &lt;strong&gt;Regex&lt;/strong&gt; tipine ait nesne &amp;ouml;rneklerinin oluşturulması sırasında devreye giren &lt;strong&gt;RegexOptions&lt;/strong&gt; enum sabitinin &lt;strong&gt;Compiled &lt;/strong&gt;değerinin kullanılması halinde ilgili &lt;strong&gt;regex&lt;/strong&gt; deseninin derlenmiş halinin kullanılması s&amp;ouml;z konusudur. Normal şartlar altında &lt;strong&gt;Compiled&lt;/strong&gt; değeri belirtilmediği takdirde, &lt;strong&gt;Interpret&lt;/strong&gt; moda g&amp;ouml;re kontroller yapılmaktadır. Yani &amp;ccedil;alışma zamanı desen ile ilgili satıra geldiğinde bir takım işlemleri ger&amp;ccedil;ekleştirir. Aslında konuyu teknik hatları ile irdelemek dışında &amp;ouml;rnek bir kod par&amp;ccedil;ası &amp;uuml;zerinde ilerleyerek &amp;ccedil;alışma zamanı sonu&amp;ccedil;larına bakmamız da yarar vardır.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rnek senaryomuzda bu kez &lt;strong&gt;150&lt;/strong&gt; paragraflık &lt;a href="http://tr.lipsum.com/" target="_blank"&gt;Lorem Ipsum&lt;/a&gt; i&amp;ccedil;eriğinin defalarca arttırılmış ve aşağıdaki şekilden de g&amp;ouml;r&amp;uuml;leceği &amp;uuml;zere aralara bir ka&amp;ccedil; &lt;strong&gt;URL&lt;/strong&gt; adresi serpiştirilmiş bir versiyonu kullanılmaktadır. S&amp;ouml;z konusu i&amp;ccedil;erik &lt;strong&gt;LoremIpsum.txt&lt;/strong&gt; isimli &lt;strong&gt;Text&lt;/strong&gt; tabanlı bir dosyada toplanmış olup &lt;strong&gt;9567&lt;/strong&gt; satırlık bir test i&amp;ccedil;eriği &amp;uuml;retilmiştir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg222_LoremIpsumText.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg222_LoremIpsumText" src="/pics/blg222_LoremIpsumText_thumb.gif" alt="blg222_LoremIpsumText" width="546" height="584" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Gelelim test i&amp;ccedil;in ele alacağımız &amp;ouml;rnek kodlarımıza.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.Diagnostics; 
+using System.IO; 
+using System.Text.RegularExpressions;
+
+namespace RegexTips2 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            string urlPattern = @"http(s)?://([\w-]+\.)+[\w-]+(/[\w- ./?%&amp;amp;=]*)?"; 
+            string fileContent=File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "LoremIpsum.txt"));
+
+            #region Matches Metodu Kullanımı(Yorumlamalı)
+
+            Console.WriteLine("***Matches (Interpreted)***"); 
+            for (int i = 0; i &amp;lt; 10; i++) 
+            { 
+                MatchesTest(urlPattern, fileContent,false); 
+            }
+
+            #endregion
+
+            #region Match ve NextMatch Kullanımı(Yorumlamalı)
+
+            Console.WriteLine("***Match ve NextMatch (Interpreted)***"); 
+            for (int i = 0; i &amp;lt; 10; i++) 
+            { 
+                NextMatchTest(urlPattern, fileContent,false); 
+            }
+
+            #endregion
+
+            #region Matches Metodu Kullanımı(Derlemeli)
+
+            Console.WriteLine("***Matches (Compiled)***"); 
+            for (int i = 0; i &amp;lt; 10; i++) 
+            { 
+                MatchesTest(urlPattern, fileContent, true); 
+            }
+
+            #endregion
+
+            #region Match ve NextMatch Kullanımı(Derlemeli)
+
+            Console.WriteLine("***Match ve NextMatch (Compiled)***"); 
+            for (int i = 0; i &amp;lt; 10; i++) 
+            { 
+                NextMatchTest(urlPattern, fileContent, true); 
+            }
+
+            #endregion 
+        }
+
+        private static void NextMatchTest(string urlPattern, string fileContent,bool isCompiled) 
+        { 
+            Stopwatch watcher = new Stopwatch(); 
+            watcher.Start(); 
+            Regex regex=null; 
+            if (isCompiled) 
+                regex = new Regex(urlPattern, RegexOptions.Multiline | RegexOptions.Compiled); 
+            else 
+                regex = new Regex(urlPattern, RegexOptions.Multiline); 
+            Match match = regex.Match(fileContent); 
+            int foundedMatch = 0; 
+           if (match.Success) 
+            { 
+                do 
+                { 
+                    foundedMatch++; 
+                    match = match.NextMatch(); 
+                } while (match.Success); 
+            } 
+            watcher.Stop(); 
+            Console.WriteLine("Bulunan eşleşme sayısı {0}.Toplam s&amp;uuml;re {1}", foundedMatch, watcher.ElapsedMilliseconds); 
+        }
+
+        private static void MatchesTest(string urlPattern, string fileContent,bool isCompiled) 
+        { 
+            Stopwatch watcher = new Stopwatch(); 
+            watcher.Start(); 
+            Regex regex = null; 
+           if (isCompiled) 
+                regex = new Regex(urlPattern, RegexOptions.Singleline | RegexOptions.Compiled); 
+            else 
+                regex = new Regex(urlPattern, RegexOptions.Singleline); 
+            MatchCollection matches = regex.Matches(fileContent); 
+            Console.Write("Bulunan eşleşme sayısı {0}.", matches.Count); 
+            watcher.Stop(); 
+            Console.WriteLine("Toplam s&amp;uuml;re {0}", watcher.ElapsedMilliseconds); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Bu &amp;ouml;rnek &lt;strong&gt;Console&lt;/strong&gt; uygulamasının &lt;strong&gt;Main&lt;/strong&gt; metoduna ait kodlarda iki test metodu olduğu g&amp;ouml;r&amp;uuml;lmektedir. &lt;strong&gt;MatchesTest&lt;/strong&gt; isimli metod &lt;strong&gt;Regex&lt;/strong&gt; nesne &amp;ouml;rneğinin &lt;strong&gt;Matches&lt;/strong&gt; isimli fonksiyonunu değerlendirmektedir. &lt;strong&gt;Matches&lt;/strong&gt; metodu ilk parametre olarak &lt;strong&gt;regex&lt;/strong&gt; desenini almaktadır.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğimizde bir &amp;ouml;nceki yazımızda olduğu gibi bir &lt;strong&gt;URL&lt;/strong&gt; deseni ele alınmaktadır. Bir başka deyişle &lt;strong&gt;LoremIpsum.txt&lt;/strong&gt; i&amp;ccedil;erisinde &lt;strong&gt;URL&lt;/strong&gt; formatına uygun olan c&amp;uuml;mlelerin bulunması hedeflenmektedir. &lt;strong&gt;Matches&lt;/strong&gt; metodu, &lt;strong&gt;MatchCollection&lt;/strong&gt; tipinden bir koleksiyon d&amp;ouml;nd&amp;uuml;rmektedir ve bu koleksiyon i&amp;ccedil;erisinde, &lt;strong&gt;URL&lt;/strong&gt; desenine uygun olan c&amp;uuml;mleler Match tipinden nesne &amp;ouml;rnekleri halinde yer almaktadır. Aşağıdaki &lt;strong&gt;Debug&lt;/strong&gt; zamanı resminde URL desenin uygun olan c&amp;uuml;mlelere ait bir g&amp;ouml;r&amp;uuml;nt&amp;uuml; yer almaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg222_DebugTime.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg222_DebugTime" src="/pics/blg222_DebugTime_thumb.gif" alt="blg222_DebugTime" width="598" height="306" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Tabi &lt;strong&gt;Debug&lt;/strong&gt; g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nden de anlaşılacağı &amp;uuml;zere i&amp;ccedil;eriğe ulaşmak i&amp;ccedil;in kod tarafında &lt;strong&gt;foreach&lt;/strong&gt; gibi bir d&amp;ouml;ng&amp;uuml;den yararlanılması gerekmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;NextMatchTest&lt;/strong&gt; metodu ise daha farklı bir yaklaşım kullanmaktadır. Bu metodda &amp;ouml;ncelikli olarak &lt;strong&gt;Match&lt;/strong&gt; metodu ile desene uygun bir c&amp;uuml;mle olup olmadığı kontrol edilmekte ve eğer varsa&lt;em&gt;(ki bu durumda Match nesne &amp;ouml;rneği Success değerini verecektir)&lt;/em&gt; arkasından &lt;strong&gt;do&amp;hellip;while&lt;/strong&gt; d&amp;ouml;ng&amp;uuml;s&amp;uuml; yardımıyla bir sonraki desen kontrol&amp;uuml; operasyonu ile &amp;ccedil;alışmaya devam edilmektedir.&lt;/p&gt;
+&lt;p&gt;Her iki test metodu i&amp;ccedil;erisinde &lt;strong&gt;Regex&lt;/strong&gt; nesne &amp;ouml;rneği oluşturulurken &lt;strong&gt;RegexOptions&lt;/strong&gt; &lt;strong&gt;enum&lt;/strong&gt; sabitinin ilgili değerleri kullanılmakta ve metodların &lt;strong&gt;Compiled&lt;/strong&gt; modda mı yoksa &lt;strong&gt;Interperted&lt;/strong&gt; modda mı &amp;ccedil;alışacakları belirlenmektedir. Buna g&amp;ouml;re &amp;ccedil;alışma zamanı sonu&amp;ccedil;larına baktığımızda aşağıdaki &amp;ouml;rnek &amp;ccedil;ıktı ile karşılaştığımızı g&amp;ouml;r&amp;uuml;r&amp;uuml;z&lt;em&gt;(Tabi ki bu sonu&amp;ccedil;lar uygulamanın &amp;ccedil;alıştırıldığı sistemin &amp;ccedil;evresel &amp;ouml;zelliklerine g&amp;ouml;re farklılık g&amp;ouml;sterecek ancak kimin daha hızlı olduğu konusu pek fazla değişmeyecektir &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt; )&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg222_LoremIpsumRuntime.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg222_LoremIpsumRuntime" src="/pics/blg222_LoremIpsumRuntime_thumb.gif" alt="blg222_LoremIpsumRuntime" width="340" height="582" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Interpeted&lt;/strong&gt; ve &lt;strong&gt;Compiled&lt;/strong&gt; moda g&amp;ouml;re &lt;strong&gt;Matches&lt;/strong&gt; ve &lt;strong&gt;NextMatch&lt;/strong&gt; metodlarının kullanımının arka arkaya &lt;strong&gt;10&lt;/strong&gt; kere tekrar ediliği bu testin sonu&amp;ccedil;ları aşağıdaki &lt;strong&gt;Excel&lt;/strong&gt; grafiğinden daha net bir şekilde anlaşılabilir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg222_LoremIpsumReport.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg222_LoremIpsumReport" src="/pics/blg222_LoremIpsumReport_thumb.gif" alt="blg222_LoremIpsumReport" width="566" height="444" border="0" /&gt;&lt;/a&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Burada en &amp;ccedil;ok dikkat &amp;ccedil;eken nokta &lt;strong&gt;Interpreted&lt;/strong&gt; mod ile, &lt;strong&gt;Compiled&lt;/strong&gt; moda g&amp;ouml;re &amp;ccedil;ok daha hızlı s&amp;uuml;relerde sonu&amp;ccedil; alınabilmesidir. Bunun en b&amp;uuml;y&amp;uuml;k nedenlerinden birisi, &lt;strong&gt;Compiled&lt;/strong&gt; modda , desenin ilk kullanıldığı sırada oluşan başlatma işlemleri i&amp;ccedil;in yapılan zaman kaybıdır. Ancak durum her zaman bu şekilde de gelişmeyebilir &lt;img title="Sealed" src="/editors/tiny_mce3/plugins/emotions/img/smiley-sealed.gif" alt="Sealed" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Ne demek istiyorum acaba? Gelin daha &amp;ouml;nceki yazımızda ele aldığımız &lt;strong&gt;160bin&lt;/strong&gt; satırdan oluşan ve sadece doğru ve yanlış &lt;strong&gt;URL&lt;/strong&gt; bilgileri i&amp;ccedil;eren &lt;strong&gt;text&lt;/strong&gt; dosyasını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım. Bu kez dosyanın satır sayısını &lt;strong&gt;80bin&lt;/strong&gt; olarak tutacağız. İşte yakaladığım &amp;ccedil;alışma zamanı sonu&amp;ccedil;larından bir tanesi.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg222_UrlsTextRuntime.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg222_UrlsTextRuntime" src="/pics/blg222_UrlsTextRuntime_thumb.gif" alt="blg222_UrlsTextRuntime" width="372" height="579" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Ve bu sonu&amp;ccedil;lara g&amp;ouml;re oluşan &lt;strong&gt;Excel&lt;/strong&gt; grafiğinin yeni hali.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg222_UrlsTextReport.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg222_UrlsTextReport" src="/pics/blg222_UrlsTextReport_thumb.gif" alt="blg222_UrlsTextReport" width="564" height="448" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;Compiled&lt;/strong&gt; &amp;ccedil;alışma zamanı sonu&amp;ccedil;larında yer yer &lt;strong&gt;Interpreted&lt;/strong&gt; moda g&amp;ouml;re daha hızlı s&amp;uuml;reler elde edilebildiği g&amp;ouml;r&amp;uuml;lmektedir. Hatta &lt;strong&gt;NextMatch&lt;/strong&gt; metodunun kullanıldığı senaryo ile en hızlı erişim s&amp;uuml;releri elde edilmiştir(İlk denemedeki hari&amp;ccedil; &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt; )&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/Exclamation_10.gif"&gt;&lt;img style="display: inline; margin-left: 0px; margin-right: 0px; border-width: 0px;" title="Exclamation" src="/pics/Exclamation_thumb_10.gif" alt="Exclamation" width="48" height="48" align="left" border="0" /&gt;&lt;/a&gt; Şu da unutulmamalıdır ki burada &lt;strong&gt;Instance&lt;/strong&gt; &amp;uuml;zerinden &amp;ccedil;ağırdığımız &lt;strong&gt;Matches&lt;/strong&gt; veya &lt;strong&gt;Match&lt;/strong&gt; gibi metodların, &lt;strong&gt;Regex&lt;/strong&gt; tipi &amp;uuml;zerinden &amp;ccedil;ağrılabilen ve otomatik &amp;ouml;n belleklemeyi kullanan &lt;strong&gt;Static&lt;/strong&gt; versiyonları da mevcuttur. Bu versiyonların kullanımının daha hızlı olabileceğini d&amp;uuml;ş&amp;uuml;nebiliriz. Ancak ben &amp;ouml;rneklerimdeki testler sırasında ve &lt;strong&gt;Base Class Library&lt;/strong&gt; takımının konu ile ilgili araştırma yazılarında &lt;strong&gt;Instance&lt;/strong&gt; &amp;uuml;zerinden &amp;ccedil;ağırılan &lt;strong&gt;Interpreted&lt;/strong&gt; metodların, &lt;strong&gt;static&lt;/strong&gt; olan versiyonlarına g&amp;ouml;re daha hızlı olabileceğini de g&amp;ouml;rd&amp;uuml;m. Bu konunun araştırılmasını da siz değerli okurlarıma bırakmak istiyorum &lt;img title="Laughing" src="/editors/tiny_mce3/plugins/emotions/img/smiley-laughing.gif" alt="Laughing" border="0" /&gt;&lt;/p&gt;
+&lt;h2&gt;&lt;strong&gt;Yazının Ana Konusu Dışında Bir Mevzu&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;Hazır &lt;strong&gt;Compiled&lt;/strong&gt; modda &amp;ccedil;alışabilen &lt;strong&gt;Regex&lt;/strong&gt; metodlarına değinmişken bir de bunların ayrı bir &lt;strong&gt;Assembly&lt;/strong&gt; i&amp;ccedil;erisine nasıl derlenip kullanılabileceklerini incelemeye ne dersiniz? &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt; Burada amacımız derlenmiş &lt;strong&gt;Regex&lt;/strong&gt; ifadelerini ayrı bir &lt;strong&gt;assembly&lt;/strong&gt; i&amp;ccedil;erisinde saklamak ve kullanmaktır. Bu ama&amp;ccedil;la &amp;ouml;rnek olarak aşağıdaki gibi bir kod par&amp;ccedil;asını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Reflection; 
+using System.Text.RegularExpressions;
+
+namespace CompiledRegexAssembly 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            // Derlenecek &amp;ouml;rnek Regex deseni 
+            string urlPattern = @"http(s)?://([\w-]+\.)+[\w-]+(/[\w- ./?%&amp;amp;=]*)?"; 
+            // Derleme ile ilişkili &amp;ouml;n bilgiler. Desen, RegexOptions enum sabiti değeri vb... 
+            RegexCompilationInfo compInfo =new RegexCompilationInfo(urlPattern, RegexOptions.Multiline, "UrlPattern", "Azon.Common.Regex", true); 
+            RegexCompilationInfo[] regexes = { compInfo }; 
+            // Kaydedilecek Assembly i&amp;ccedil;in gerekli bilgileri i&amp;ccedil;eren AssemblyName nesne &amp;ouml;rneği oluşturulur 
+            AssemblyName assemName = new AssemblyName("AzonRegexLib, Version=1.0.0.1001, Culture=neutral, PublicKeyToken=null"); 
+            // Regex bilgileri ilgili Assembly i&amp;ccedil;erisine CompileToAssembly metodu ile kaydedilir. 
+            Regex.CompileToAssembly(regexes, assemName); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Kodun &amp;ccedil;alıştırılması sonucu &lt;strong&gt;AzonRegexLib.dll&lt;/strong&gt; isimli bir &lt;strong&gt;Assembly&amp;rsquo;&lt;/strong&gt; ın uygulamaya ait &lt;strong&gt;Exe&lt;/strong&gt; ile aynı yere &amp;ccedil;ıkartıldığı g&amp;ouml;r&amp;uuml;lecektir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg222_CompiledDll.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg222_CompiledDll" src="/pics/blg222_CompiledDll_thumb.gif" alt="blg222_CompiledDll" width="282" height="142" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Eğer s&amp;ouml;z konusu &lt;strong&gt;Assembly&lt;/strong&gt; i&amp;ccedil;eriğine kendimize işkence yaparak &lt;strong&gt;ILDASM(Intermediate Language Disassembler Tool)&lt;/strong&gt; aracı yardımıyla bakarsak, aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan i&amp;ccedil;eriğe ulaşabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg222_Il1.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg222_Il1" src="/pics/blg222_Il1_thumb.gif" alt="blg222_Il1" width="599" height="363" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;UrlPattern&lt;/strong&gt; isimli sınıf &lt;strong&gt;Regex&lt;/strong&gt; tipinden t&amp;uuml;retilmiştir. &lt;strong&gt;Yapıcı metoda(Constructor)&lt;/strong&gt; baktığımızda ise aşağıdaki &lt;strong&gt;IL&lt;/strong&gt; i&amp;ccedil;eriğinin &amp;uuml;retildiğini g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;.method public specialname rtspecialname 
+        instance void  .ctor() cil managed 
+{ 
+  // Code size       51 (0x33) 
+  .maxstack  4 
+  IL_0000:  ldarg.0 
+  IL_0001:  call       instance void [System]System.Text.RegularExpressions.Regex::.ctor() 
+  IL_0006:  ldarg.0 
+  IL_0007:  ldstr      "http(s)\?://([\\w-]+\\.)+[\\w-]+(/[\\w- ./\?%&amp;amp;=]*)\?" 
+  IL_000c:  stfld      string [System]System.Text.RegularExpressions.Regex::pattern 
+  IL_0011:  ldarg.0 
+  IL_0012:  ldc.i4.s   2 
+  IL_0014:  stfld      valuetype [System]System.Text.RegularExpressions.RegexOptions [System]System.Text.RegularExpressions.Regex::roptions 
+  IL_0019:  ldarg.0 
+  IL_001a:  newobj     instance void Azon.Common.Regex.UrlPatternFactory1::.ctor() 
+  IL_001f:  stfld      class [System]System.Text.RegularExpressions.RegexRunnerFactory [System]System.Text.RegularExpressions.Regex::factory 
+  IL_0024:  ldarg.0 
+  IL_0025:  ldc.i4.s   4 
+  IL_0027:  stfld      int32 [System]System.Text.RegularExpressions.Regex::capsize 
+  IL_002c:  ldarg.0 
+  IL_002d:  call       instance void [System]System.Text.RegularExpressions.Regex::InitializeReferences() 
+  IL_0032:  ret 
+} // end of method UrlPattern::.ctor&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;0001&lt;/strong&gt; numaralı &lt;strong&gt;IL&lt;/strong&gt; koduna baktığımızda &lt;strong&gt;Regex&lt;/strong&gt; tipinden bir nesne &amp;ouml;rneğinin oluşturulması i&amp;ccedil;in gerekli yapıcı metodun &amp;ccedil;ağırıldığını g&amp;ouml;rebiliriz. Sonrasında &lt;strong&gt;0007&lt;/strong&gt; numaralı satırda &lt;strong&gt;URL&lt;/strong&gt; deseni i&amp;ccedil;in &lt;strong&gt;string&lt;/strong&gt; tipinden yerel bir değişkenin tanımlandığı g&amp;ouml;zlemlenir. İlerleyen kısımlarda dikkat &amp;ccedil;eken noktalardan birisi de &lt;strong&gt;UlrPatternFactory1&lt;/strong&gt; isimli bir tip i&amp;ccedil;in nesne &amp;ouml;rneklenmesidir. &lt;strong&gt;UrlPatternFactory1 &lt;/strong&gt;sınıfı&lt;strong&gt; System.Text.RegularExpressions&lt;/strong&gt; &lt;strong&gt;isim alanında(Namespace)&lt;/strong&gt; yer alan &lt;strong&gt;RegexRunnerFactory&lt;/strong&gt; tipinden t&amp;uuml;reyen bir fabrikadır. &amp;Ouml;zellikle &lt;strong&gt;CreateInstance&lt;/strong&gt; metodunun i&amp;ccedil;eriği dikkate değerdir.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;.method public virtual instance class [System]System.Text.RegularExpressions.RegexRunner 
+        CreateInstance() cil managed 
+{ 
+  // Code size       6 (0x6) 
+  .maxstack  1 
+  IL_0000:  newobj     instance void Azon.Common.Regex.UrlPatternRunner1::.ctor() 
+  IL_0005:  ret 
+} // end of method UrlPatternFactory1::CreateInstance&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;UrlPatternRunner1&lt;/strong&gt; tipine ait bir nesne &amp;ouml;rneğinin &amp;uuml;retildiği g&amp;ouml;r&amp;uuml;lmektedir. &lt;strong&gt;UrlPatternRunner1&lt;/strong&gt; tipi ise &lt;strong&gt;System.Text.RegularExpressions &lt;/strong&gt;isim alanında yer alan &lt;strong&gt;RegexRunner&lt;/strong&gt; sınıfından t&amp;uuml;retilmiştir. &lt;strong&gt;UrlPatternRunner1&lt;/strong&gt; tipinin i&amp;ccedil;eriğinde yer alan operasyonlar tahmin edileceği &amp;uuml;zere desen araştırma işlemlerinin yapılması i&amp;ccedil;in gerekli fonksiyonellikleri de i&amp;ccedil;ermektedir. A&amp;ccedil;ık&amp;ccedil;ası bu tipin operasyonlarının i&amp;ccedil;eriklerini tam olarak incelemeye &amp;ccedil;alıştığımızda &amp;ccedil;ok fazla yere gittiğimiz i&amp;ccedil;in takibin zorlaştığını itiraf edebilirim &lt;img title="Undecided" src="/editors/tiny_mce3/plugins/emotions/img/smiley-undecided.gif" alt="Undecided" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Aslında bu noktada s&amp;ouml;z konusu &lt;strong&gt;assembly&amp;rsquo;&lt;/strong&gt; ı &amp;ouml;rnek bir projede kullanmamızda yarar olacağı kanısındayım. Gelin &amp;ouml;rnek bir &lt;strong&gt;Console&lt;/strong&gt; uygulamasından s&amp;ouml;z konusu &lt;strong&gt;Assembly&amp;rsquo;&lt;/strong&gt; ı referans ederek &lt;strong&gt;LoremIpsum.txt&lt;/strong&gt; dosyası i&amp;ccedil;eriği &amp;uuml;zerinden test edelim. İşte &amp;ouml;rnek uygulama kodlarımız.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.IO; 
+using System.Text.RegularExpressions; 
+using Azon.Common.Regex;
+
+namespace UsingCompiledRegexAssembly 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            string fileContent=File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "LoremIpsum.txt")); 
+            UrlPattern pattern = new UrlPattern(); 
+            MatchCollection matches=pattern.Matches(fileContent); 
+            foreach (Match mtch in matches) 
+            { 
+                Console.WriteLine(mtch.Value); 
+            } 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Diğer &amp;ouml;rnekleri d&amp;uuml;ş&amp;uuml;nd&amp;uuml;ğ&amp;uuml;m&amp;uuml;zde herhangibir yerde kontrol edilecek bilgiye ait &lt;strong&gt;desen(Regex Pattern)&lt;/strong&gt; tanımının yapılmadığını g&amp;ouml;rebiliriz. Sadece desene uygun olan verilerin yer aldığı dosya i&amp;ccedil;eriği parametre olarak verilmiştir. Nitekim s&amp;ouml;z konusu desen tanımı ve bununla ilişkili başlangı&amp;ccedil; işlemleri zaten derlenmiş olan &lt;strong&gt;assembly&lt;/strong&gt; i&amp;ccedil;erisinde yer almaktadır. &amp;Ccedil;ok doğal olarak derlenmiş bir &lt;strong&gt;assembly&lt;/strong&gt; &amp;uuml;zerinden yapılan &amp;ccedil;ağrılar, &lt;strong&gt;instance&lt;/strong&gt; ile yapılan &amp;ccedil;ağrılara nazaran daha performanslı olacaktır.&lt;/p&gt;
+&lt;p&gt;Ama esneklik y&amp;ouml;n&amp;uuml;nden de derlenmiş assembly kullanımının bazı dez avantajları vardır. &amp;Ouml;rneğin dinamik olarak bir desen bildirilemez. Desen zaten &amp;ouml;nceden belirlenmiş ve assembly i&amp;ccedil;erisine g&amp;ouml;m&amp;uuml;lm&amp;uuml;şt&amp;uuml;r.&amp;nbsp;Hatta&amp;nbsp;kodun ilerleyen kısımlarında &lt;strong&gt;Case Sensitive'&lt;/strong&gt; liğin dikkate alınmaması&amp;nbsp;veya alınması gereken bir durumda&amp;nbsp;&lt;strong&gt;RegexCompilationInfo&lt;/strong&gt; tipi ile ilgili se&amp;ccedil;eneklerinin yeniden d&amp;uuml;zenlenmesi gerekmektedir ki bu m&amp;uuml;mk&amp;uuml;n değildir.&lt;/p&gt;
+&lt;p&gt;&lt;img style="display: inline; margin-left: 0px; margin-right: 0px; border-width: 0px;" title="Exclamation" src="/pics/Exclamation_thumb_10.gif" alt="Exclamation" width="48" height="48" align="left" border="0" /&gt;Aslında m&amp;uuml;mk&amp;uuml;n değildir derken biraz kolay ka&amp;ccedil;tığımızı ifade edebiliriz. Nitekim&amp;nbsp;&lt;strong&gt;Reflection&lt;/strong&gt; yardımıyla&amp;nbsp;başlangı&amp;ccedil; ayarlarının parametrik olarak verilmesi, yeniden derlenmesi ve dinamik olarak y&amp;uuml;klenerek kullanılması m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Hatta bu noktada dynamic keyword' &amp;uuml;n&amp;uuml;n de bir &amp;ccedil;ok noktada işi kolaylaştıracağını ifade edebiliriz. Yine de işin i&amp;ccedil;erisinde dinamik olarak &amp;ccedil;alışma zamanına y&amp;uuml;k getirecek ve performansı olumsuz y&amp;ouml;nde etkileyecek bir &amp;ccedil;alışma mekanizması s&amp;ouml;z konusudur.&lt;/p&gt;
+&lt;p&gt;Yani &lt;strong&gt;Assembly&lt;/strong&gt;' ın yeniden &amp;uuml;retilmesi ve referans edilmesi gerekmektedir.&amp;nbsp;A&amp;ccedil;ık&amp;ccedil;ası tek bir desen değil ama n sayıda desenin kullanıldığı ve başlangı&amp;ccedil;taki konfigurasyon se&amp;ccedil;eneklerinin belli olduğu senaryolarda kullanılması daha doğru olabilir. &lt;strong&gt;foreach&lt;/strong&gt; d&amp;ouml;ng&amp;uuml;s&amp;uuml;n&amp;uuml;n &amp;ccedil;alışmasına g&amp;ouml;re &lt;strong&gt;LoremIpsum&lt;/strong&gt; dosyasında ge&amp;ccedil;erli &lt;strong&gt;URL&lt;/strong&gt; formatında olan t&amp;uuml;m c&amp;uuml;mleler elde edilebilecektir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/blg222_RuntimeLast.gif"&gt;&lt;img style="display: inline; border-width: 0px;" title="blg222_RuntimeLast" src="/pics/blg222_RuntimeLast_thumb.gif" alt="blg222_RuntimeLast" width="246" height="86" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Tabi buraya kadar bahsettiklerimizi g&amp;ouml;z &amp;ouml;n&amp;uuml;ne aldığımızda &lt;strong&gt;Regular Expression&lt;/strong&gt; kontrollerinde hangi tekniği kullanacağımız y&amp;ouml;n&amp;uuml;nde kafamızda bir s&amp;uuml;r&amp;uuml; soru oluşmuş olabilir. Aslında aynı &lt;strong&gt;Regular Expression&lt;/strong&gt; nesnesinin defalarca kullanıldığı senaryolarda &lt;strong&gt;static&lt;/strong&gt; &amp;uuml;yelerin kullanılması daha cazip g&amp;ouml;r&amp;uuml;nmektedir. Diğer yandan desenlerin başlangı&amp;ccedil;taki opsiyonel se&amp;ccedil;eneklerinin belli olduğu durumlarda ise,&amp;nbsp;derlenmiş versiyonlarını kullanmak daha mantıklı olabilir. İşin ger&amp;ccedil;eği son s&amp;ouml;z&amp;uuml; s&amp;ouml;ylemek i&amp;ccedil;in test sonu&amp;ccedil;larına bakmak bence en doğrusudur &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2010%2f8%2fRegExPerformanceTipsV2.rar"&gt;RegExPerformanceTipsV2.rar (246,51 kb)&lt;/a&gt;&amp;nbsp;&lt;strong&gt;[&amp;Ouml;rnek Visual Studio 2010 Ultimate S&amp;uuml;r&amp;uuml;m&amp;uuml; &amp;Uuml;zerinde Geliştirilmiş ve Test Edilmiştir]&lt;/strong&gt;&lt;/p&gt;</content>
+  <pubDate>2011-03-03 17:00:00</pubDate>
+  <slug>Regex-ve-Performans-Ipuclari-Interpreted-ve-Compiled-Farki-Bir-de-Surpriz</slug>
+  <tags>
+    <tag>c#</tag>
+    <tag>c#-temelleri</tag>
+    <tag>regex</tag>
+    <tag>regular-expression</tag>
+  </tags>
+  <categories>
+    <category>C#</category>
+  </categories>
+</post>

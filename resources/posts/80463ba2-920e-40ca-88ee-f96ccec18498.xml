@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Paralel Sorgularda İstisna Yönetimi(Exception Handling) [Beta 1]</title>
+  <description>Yönetimli kod(Managed Code) tarafında istisna yönetimi oldukça önemli konulardan birisidir. Uygulamaların veya kod süreçlerinin istem dışı sonlanmasının önüne geçilmek istendiği durumlarda, basit try...catch...finally bloklarından yararlanabilir yada Enterprise Library gibi kütüphanelerin sunduğu bloklardan faydalanarak istisna yönetimini üst seviyede sağlayabiliriz.</description>
+  <content>&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Y&amp;ouml;netimli kod(Managed Code)&lt;/strong&gt; tarafında istisna y&amp;ouml;netimi olduk&amp;ccedil;a &amp;ouml;nemli konulardan birisidir. Uygulamaların veya kod s&amp;uuml;re&amp;ccedil;lerinin istem dışı sonlanmasının &amp;ouml;n&amp;uuml;ne ge&amp;ccedil;ilmek istendiği durumlarda, basit &lt;strong&gt;try...catch...finally &lt;/strong&gt;bloklarından yararlanabilir yada &lt;strong&gt;Enterprise Library &lt;/strong&gt;gibi k&amp;uuml;t&amp;uuml;phanelerin sunduğu bloklardan faydalanarak istisna y&amp;ouml;netimini &amp;uuml;st seviyede sağlayabiliriz.&lt;/p&gt;
+&lt;p&gt;Bu yazımda &amp;ccedil;ok geniş kapsamda d&amp;uuml;ş&amp;uuml;nmeyip, &lt;strong&gt;PLINQ(Parallel Language INtegrated Query)&lt;/strong&gt;&amp;nbsp;ifadelerinde oluşabilecek istisnai durumların nasıl ele alınması gerektiği &amp;uuml;zerinde durmaya &amp;ccedil;alışacağız. Olaya hızlı bir giriş yapıp aşağıdaki &amp;ouml;rnek kod par&amp;ccedil;asına sahip olduğumuzu d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+
+namespace SequentialPLINQ
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            List&amp;lt;Product&amp;gt; productList = GetProductList();            
+            productList[497].SafetyStockLevel = 0;
+            productList[503].SafetyStockLevel = 0;
+
+            var result1 = from product in productList.AsParallel()                          
+                          orderby product.ProductId
+                          where product.ListPrice&amp;gt;=500
+                          select new
+                          {
+                              product.ProductId,
+                              product.Name,
+                              product.ListPrice,
+                              product.Color,
+                              SellPrice=FindSellPrice(product.ListPrice,product.SafetyStockLevel)    // İlk durum                          
+                          };
+
+
+            try
+            {
+                foreach (var r in result1)
+                {
+                    Console.WriteLine(r.ProductId + " " + r.Name + " (" + r.SellPrice.ToString("C2") + ")");
+                }
+            }
+            catch (AggregateException excp) // Hata oluştuğunda PLINQ i&amp;ccedil;erisinde başlatılan t&amp;uuml;m alt işlemler(Threads) iptal edilir
+            {
+                // PLINQ ifadeleri &amp;ccedil;alıştırıldığı sırada oluşan istisnalar AggreateException nesne &amp;ouml;rneği i&amp;ccedil;erisindeki InnerExceptions &amp;ouml;zelliğinin refere ettiği koleksiyonda toplanırlar.
+                foreach (Exception error in excp.InnerExceptions)
+                {
+                    Console.WriteLine(error.Message);
+                }
+            }
+        }
+           static decimal FindSellPrice(decimal listPrice,int stockLevel)
+        {
+            decimal result=-1;
+                if (DateTime.Now.Day &amp;gt;= 25
+                    &amp;amp;&amp;amp; DateTime.Now.Day &amp;lt;= 28)
+                    result=listPrice - (listPrice * (1 / stockLevel)); // SafetyStockLevel' ın 0 gelmesi halinde exception oluşacak olan yer.
+                else
+                    result= listPrice * 1.18M;
+            return result;
+        }
+
+        static List&amp;lt;Product&amp;gt; GetProductList()
+        {
+            List&amp;lt;Product&amp;gt; productList = new List&amp;lt;Product&amp;gt;();
+
+            SqlConnection conn = new SqlConnection("data source=Manchester;database=AdventureWorks2008;integrated security=true");
+            SqlCommand cmd = new SqlCommand("Select ProductId,Name,ListPrice,ProductNumber,Color,SafetyStockLevel From Production.Product", conn);
+            conn.Open();
+            SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+            while (reader.Read())
+            {
+                productList.Add(new Product
+                {
+                    ProductId = Convert.ToInt32(reader[0]),
+                    Name = reader[1].ToString(),
+                    ListPrice = Convert.ToDecimal(reader[2]),
+                    ProductNumber = reader[3].ToString(),
+                    Color = reader[4].ToString(),
+                    SafetyStockLevel = Convert.ToInt32(reader[5])
+                }
+                );
+            }
+            reader.Close();
+            return productList;
+        }
+    }
+
+    class Product
+    {
+        public int ProductId { get; set; }
+        public string Name { get; set; }
+        public decimal ListPrice { get; set; }
+        public string ProductNumber { get; set; }
+        public string Color { get; set; }
+        public int SafetyStockLevel { get; set; }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Visual Studio 2010 Professional Beta 1 &lt;/strong&gt;ile geliştirilen bu kod par&amp;ccedil;asında, &lt;strong&gt;Product&lt;/strong&gt; isimli bir sınıftan&amp;nbsp;yararlanılmaktadır. Product tipine ait veriler, SQL sunucusu &amp;uuml;zerindeki Product tablosundan alındıktan sonra, generic &lt;strong&gt;List&amp;lt;Product&amp;gt;&lt;/strong&gt; koleksiyonu i&amp;ccedil;erisinde tutulmakta ve sonrasında ise paralel sorgulamaya tabi tutulmaktadır. Burada ayrıca dikkat edilmesi gereken bir noktada, sorgulama sırasında &lt;strong&gt;FindSellPrice&lt;/strong&gt; isimli metodun &amp;ccedil;ağırılması ve parametre olarak, sorgunun&amp;nbsp;t anındaki &lt;strong&gt;Product&lt;/strong&gt; nesnesine ait&amp;nbsp;&lt;strong&gt;ListPrice&lt;/strong&gt; ile &lt;strong&gt;StockLevel&lt;/strong&gt; değerlerinin g&amp;ouml;nderilmesidir. Dikkat edileceği &amp;uuml;zere &lt;strong&gt;FindSellPrice&lt;/strong&gt; metodu i&amp;ccedil;erisinde g&amp;uuml;ne g&amp;ouml;re &amp;uuml;r&amp;uuml;nlerde indirim uygulanmasını hedef alan bir form&amp;uuml;l yer almaktadır. Form&amp;uuml;l&amp;uuml; tamamen kafadan uydurduğumu ifirat etmek isterim. Zaten sizde bunu anlamışsınızdır. &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;Asıl varmak istediğim nokta, StockLevel değerlerinin 497 ve 503 nolu &amp;uuml;r&amp;uuml;nler i&amp;ccedil;in bilin&amp;ccedil;li olarak sıfıra set edilmiş olmasıdır. Bu nedenle b&amp;ouml;lme işlemi sırasında bir istisna oluşması ka&amp;ccedil;ınılmazdır.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;(Yani kendi kendimize kaşınıp kod i&amp;ccedil;erisine bir bubi tuzağı koymuş durumdayız.&amp;nbsp; &lt;img src="/pics/2009%2f5%2fblg22_3.jpg" alt="" width="31" height="36" /&gt;)&amp;nbsp;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;nemli olan nokta, paralel sorgu motorunun bu tip bir durum ile karşılaştığında ne yapacağıdır. Nitekim s&amp;ouml;z konusu sorgulama tekniğine g&amp;ouml;re, operasyon bir ka&amp;ccedil; par&amp;ccedil;a &lt;strong&gt;Thread'&lt;/strong&gt; e b&amp;ouml;l&amp;uuml;nmete ve&amp;nbsp;bu nedenle oluşacak bir istisnada(veya istisnalarda) &amp;ccedil;alışan iş par&amp;ccedil;alarına ne olacağı sorusu akla gelmektedir. İşte kodun yukarıdaki halinin &amp;ccedil;alışması sonrası ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;m&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg22_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi hi&amp;ccedil; bir Product bilgisi ekrana &amp;ccedil;ıktı olarak gelmemiştir. Bu son derece doğaldır. Nitekim paralel sorgulama motoru herhangibir istisna ile karşılaştığında, &amp;ccedil;alışmakta olan t&amp;uuml;m &lt;strong&gt;Thread'&lt;/strong&gt; lerin iptal edilmesini sağlamaktadır. Diğer&amp;nbsp;yandan istisna nesnesinin tipine dikkat edilmelidir. &lt;strong&gt;PLINQ&lt;/strong&gt; ifadeleri i&amp;ccedil;erisinde meydana gelebilecek istisnalar, &lt;strong&gt;AggregateException&lt;/strong&gt;&amp;nbsp;istisna sınıfı tarafından sarmalanmaktadır. Birden fazla istisna olabileceğinden, AggregateException sınıfı &lt;strong&gt;InnerExceptions&lt;/strong&gt; isimli birde &amp;ouml;zelliğe sahiptir. Dolayısıyla &lt;strong&gt;catch&lt;/strong&gt; bloğu i&amp;ccedil;erisinde, sıfıra b&amp;ouml;lem hatasının yakalanması i&amp;ccedil;in, &lt;strong&gt;InnerExceptions&lt;/strong&gt; koleksiyonunda dolaşılması gerekemtekdir. &lt;em&gt;(InnerExceptions &amp;ouml;zelliği ReadOnlyCollection&amp;lt;Exception&amp;gt; tipinden bir koleksiyon d&amp;ouml;nd&amp;uuml;rmektedir.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Peki ya, istisna olan par&amp;ccedil;aların atlanması(bu &amp;ouml;rneğe g&amp;ouml;re) istenirse. Bir başka deyişle istisna almayan par&amp;ccedil;aların yinede paralel&amp;nbsp;sorgulama sonucu ele alınması istenirse ne yapabiliriz?&lt;/p&gt;
+&lt;p&gt;Bu sorunun cevabı son derece basittir aslında. Exception y&amp;ouml;netimi, &lt;strong&gt;FindSellPrice&lt;/strong&gt; isimli metod i&amp;ccedil;erisinde&amp;nbsp;ger&amp;ccedil;ekleştirilir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;static decimal FindSellPrice(decimal listPrice,int stockLevel)
+{
+    decimal result=-1;
+    try 
+    {
+    if (DateTime.Now.Day &amp;gt;= 25 &amp;amp;&amp;amp; DateTime.Now.Day &amp;lt;= 28)
+       result=listPrice - (listPrice * (1 / stockLevel)); // SafetyStockLevel' ın 0 gelmesi halinde exception oluşacak olan yer.
+    else
+       result= listPrice * 1.18M;
+    }
+    catch(DivideByZeroException excp)
+    {
+      Console.WriteLine("\tStok miktarı 0 olduğundan satış fiyatı hesaplanamadı");
+    }
+    return result;
+}&lt;/pre&gt;
+&lt;p&gt;Bu durumda uygulama başarılı bir şekilde &amp;ccedil;alışacak ve aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ne benzer sonu&amp;ccedil;lar alınacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg22_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi istisnaya neden olan &amp;uuml;r&amp;uuml;nler kontroll&amp;uuml; bir şekilde elenmiş ve sorgunun paralel olarak y&amp;uuml;r&amp;uuml;t&amp;uuml;lmesine devam edilebilmiştir. B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Bu yazımızda PLINQ sorgularında, istisna y&amp;ouml;netiminde nelere dikkat etmemiz gerektiğine değinmeye &amp;ccedil;alıştık. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2009%2f5%2fExceptionHandling.rar"&gt;ExceptionHandling.rar (27,33 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2009-05-26 05:30:00</pubDate>
+  <slug>Paralel-Sorgularda-Istisna-Yonetimi(Exception-Handling)</slug>
+  <tags>
+    <tag>plinq</tag>
+    <tag>linq</tag>
+  </tags>
+  <categories>
+    <category>LINQ</category>
+    <category>PLINQ</category>
+  </categories>
+</post>

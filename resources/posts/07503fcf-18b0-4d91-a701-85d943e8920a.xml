@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WCF - Windows Tabanlı Doğrulama ve Yetkilendirme</title>
+  <description>Servis yönelimli mimaride(Service Oriented Architecture), dağıtık uygulamaların bir kısmı intranet tabanlı olaraktan Windows işletim sistemleri üzerinde konuşlandırılmış olarak tasarlanmaktadır. Bu sebepten ağ üzerinde tüm kullanıcıların daha kolay bir şekilde yönetildiği var olan ve bilinen doğrulama ve yetkilendirme materyallerinden yararlanmak sık olarak başvurulan tekniklerdendir...</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Servis y&amp;ouml;nelimli mimaride&lt;strong&gt;(Service Oriented Architecture)&lt;/strong&gt;, dağıtık uygulamaların bir kısmı &lt;strong&gt;intranet&lt;/strong&gt; tabanlı olaraktan Windows işletim sistemleri &amp;uuml;zerinde konuşlandırılmış olarak tasarlanmaktadır. Bu sebepten ağ &amp;uuml;zerinde t&amp;uuml;m kullanıcıların daha kolay bir şekilde y&amp;ouml;netildiği var olan ve bilinen doğrulama ve yetkilendirme materyallerinden yararlanmak sık olarak başvurulan tekniklerdendir. Bir başka deyişle kullanıcı hesaplarının&lt;strong&gt;(Member accounts)&lt;/strong&gt; y&amp;ouml;netimi hazır olan Windows işletim sistemi unsurları tarafından kolayca ele alınabilmektedir. Buda doğal olarak istemcilerin servis tarafında doğrulanması&lt;strong&gt;(Authentication)&lt;/strong&gt; ve yetkilendirilmesi&lt;strong&gt;(Authorization)&lt;/strong&gt; i&amp;ccedil;in hazır olan kaynakların kullanılabilmesi anlamına gelir.&lt;/p&gt;
+&lt;p&gt;Sonu&amp;ccedil; itibariyle servis ve istemci tarafı a&amp;ccedil;ısıdan geliştiricinin y&amp;uuml;k&amp;uuml; biraz daha hafiflemektedir. &lt;strong&gt;Windows Communication Foundation&lt;/strong&gt; uygulamalarındada intranet tabanlı sistemler i&amp;ccedil;in Windows tabanlı doğrulama ve yetkilendirme&lt;strong&gt;(Windows Based Authentication and Authorization)&lt;/strong&gt; işlemlerini, bağlayıcı tip (binding type) bazında kolayca ger&amp;ccedil;ekleştirebiliriz. Bu b&amp;ouml;l&amp;uuml;mde &amp;ouml;zellikle &lt;strong&gt;basicHttpBinding&lt;/strong&gt; tipi yardımıyla bu işlemlerin nasıl geliştirilebileceğini adım adım incelemeye &amp;ccedil;alışacağız. Her zamanki gibi servis tarafından hizmete sunulacak olan &lt;strong&gt;WCF Service Library'&lt;/strong&gt; sini geliştirmekle işe başlanabilir. Bu k&amp;uuml;t&amp;uuml;phane i&amp;ccedil;erisindeki s&amp;ouml;z konusu tipler(types) aşağıdaki gibi tasarlanmıştır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk213_1.gif" alt="" width="195" height="247" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;IAritmetik aray&amp;uuml;z&amp;uuml;(interface);&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+
+namespace CebirLib
+{
+    [ServiceContract(Name="AritmetikServisi",Namespace="http://www.bsenyurt.com/AritmetikServisi")]
+    public interface IAritmetik
+    {
+        [OperationContract(Name="ToplamaOperasyonu")]
+        int Topla(int x, int y); 
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Aritmetik sınıfı(class);&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Threading;
+using System.Security.Principal;
+
+namespace CebirLib
+{
+    public class Aritmetik:IAritmetik
+    {
+        #region IAritmetik Members
+
+        public int Topla(int x, int y)
+        { 
+            IPrincipal principal = Thread.CurrentPrincipal;
+            string dogrulamaTipi=principal.Identity.AuthenticationType;
+            string dogrulandi = principal.Identity.IsAuthenticated ? "Dogrulandi" : "Dogrulanmadi";
+            string ad=principal.Identity.Name;
+
+            Console.WriteLine("Kullanıcı : " + ad + "\n" + "Doğrulama Tipi : " + dogrulamaTipi + "\n" + dogrulandi + "\n");
+            return x + y;
+        }
+
+        #endregion
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Aritmetik sınıfı i&amp;ccedil;erisinde yer alan Topla isimli metoda başlangı&amp;ccedil; olarak bazı kod satırlar eklenmiştir. &lt;strong&gt;IPrincipal&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;ne ait principal isimli değişkene, &lt;strong&gt;Thread&lt;/strong&gt; sınıfının static &lt;strong&gt;CurrentPrincipal&lt;/strong&gt; &amp;ouml;zelliği yardımıyla atanan değer aslında &amp;ccedil;alışma zamanında servise talepte bulunan istemci kimliğini işaret etmektedir. Bu &amp;ouml;zelliğin d&amp;ouml;n&amp;uuml;ş değerinden faydalanarak doğrulama tipini&lt;strong&gt;(Authentication Type)&lt;/strong&gt;, kullanıcının adını&lt;strong&gt;(Name)&lt;/strong&gt; ve hatta sonradanda g&amp;ouml;r&amp;uuml;leceği gibi kullanıcının hangi rolde olduğunun tespiti yapılabilmektedir. Daha &amp;ccedil;ok Windows kullanıcıların rollerine&lt;strong&gt;(Role)&lt;/strong&gt; bakılarak kod i&amp;ccedil;erisinden yetkilendirme&lt;strong&gt;(Authorization) &lt;/strong&gt;yapılmak istendiği durumlarda kullanılmaktadır.&lt;/p&gt;
+&lt;p&gt;Sırada servis ve istemci tarafındaki uygulamaların tasarlanması var. Her iki tarafıda olayları daha kolay irdelemek a&amp;ccedil;ısından birer Console uygulaması olarak tasarlamakta fayda vardır. Servis tarafındaki Console uygulaması, geliştirilen WCF Servis k&amp;uuml;t&amp;uuml;phanesini(CebirLib) ve &lt;strong&gt;System.ServiceModel.dll &lt;/strong&gt;assembly' ını referans etmektedir. Servis tarafına ait kodlar başlangı&amp;ccedil; i&amp;ccedil;in aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+using CebirLib;
+
+namespace ServerApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            ServiceHost host = new ServiceHost(typeof(Aritmetik));
+            host.Open();
+            host.Closing += new EventHandler(host_Closing);
+            host.Closed += new EventHandler(host_Closed);
+            Console.WriteLine("Sunucu dinlemede...\n Kapatmak i&amp;ccedil;in bir tuşa basın...");
+            Console.ReadLine();
+            host.Close();
+        }
+
+        static void host_Closed(object sender, EventArgs e)
+        {
+            Console.WriteLine("Servis kapatıldı...Yine bekleriz...");
+        }
+
+        static void host_Closing(object sender, EventArgs e)
+        {
+            Console.WriteLine("Servis kapatılıyor. L&amp;uuml;tfen bekleyiniz...");
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Servis tarafında yer alan konfigurasyon dosyasının başlangı&amp;ccedil; ayarları ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;system.serviceModel&amp;gt; 
+        &amp;lt;bindings&amp;gt;
+            &amp;lt;basicHttpBinding&amp;gt;
+                &amp;lt;binding name="AritmetikBindingHttpCfg"&amp;gt;
+                    &amp;lt;security mode="TransportCredentialOnly"&amp;gt;
+                        &amp;lt;transport clientCredentialType="None" /&amp;gt;
+                    &amp;lt;/security&amp;gt;
+                &amp;lt;/binding&amp;gt;
+            &amp;lt;/basicHttpBinding&amp;gt;
+        &amp;lt;/bindings&amp;gt;
+        &amp;lt;services&amp;gt;
+            &amp;lt;service name="CebirLib.Aritmetik"&amp;gt;
+                &amp;lt;endpoint address="http://localhost:1600/AritmetikServisi" binding="basicHttpBinding" bindingConfiguration="AritmetikBindingHttpCfg" name="AritmetikServiceHttpEndPoint" contract="CebirLib.IAritmetik" /&amp;gt;
+            &amp;lt;/service&amp;gt;
+        &amp;lt;/services&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Servis tarafında &lt;strong&gt;basicHttpBinding&lt;/strong&gt; bağlayıcı tipi kullanılmaktadır. &amp;Uuml;zerinde durulması gereken ilk noktalardan birisi g&amp;uuml;venlik modunun(&lt;strong&gt;security&lt;/strong&gt; elementinin &lt;strong&gt;mode&lt;/strong&gt; niteliği yardımıyla) &lt;strong&gt;TransportCredentialOnly&lt;/strong&gt; olarak belirlenmiş olması ve iletişim seviyesinde istemci yetki belgesi tipi olarak &lt;strong&gt;None&lt;/strong&gt; &lt;em&gt;(&lt;strong&gt;transport&lt;/strong&gt; elementi i&amp;ccedil;erisindeki &lt;strong&gt;clientCredentialType&lt;/strong&gt; niteliği yardımıyla belirlenmiştir)&lt;/em&gt; değerinin kullanılmış olmasıdır. Buna g&amp;ouml;re istemcilerin kimlik bilgileri i&amp;ccedil;in herhangibir doğrulama yapılmaz. Bir başka deyişle herkes bu servisi kullanabilir.&lt;/p&gt;
+&lt;p&gt;İstemci tarafındaki Console uygulamasına ait konfigurasyon dosyasının başlangı&amp;ccedil; i&amp;ccedil;eriği ise aşağıdaki gibi olmalıdır.&lt;em&gt; (İstemci uygulama i&amp;ccedil;in gerekli proxy sınıfı &lt;strong&gt;svcutil.exe &lt;/strong&gt;aracı yardımıyla CebirLib.dll' i &amp;uuml;zerinden elde edilmiştir. Bu konu daha &amp;ouml;nceden işlendiğinden burada tekrarlanmamıştır.)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;system.serviceModel&amp;gt;
+        &amp;lt;bindings&amp;gt;
+            &amp;lt;basicHttpBinding&amp;gt;
+                &amp;lt;binding name="CebirClientBindingHttpCfg"&amp;gt;
+                    &amp;lt;security mode="TransportCredentialOnly"&amp;gt;
+                        &amp;lt;transport clientCredentialType="None" /&amp;gt;
+                    &amp;lt;/security&amp;gt;
+                &amp;lt;/binding&amp;gt;
+            &amp;lt;/basicHttpBinding&amp;gt;
+        &amp;lt;/bindings&amp;gt;
+        &amp;lt;client&amp;gt;
+            &amp;lt;endpoint address="http://localhost:1600/AritmetikServisi" binding="basicHttpBinding" bindingConfiguration="CebirClientBindingHttpCfg" contract="AritmetikServisi" name="CebirClientHttpEndPoint" /&amp;gt;
+        &amp;lt;/client&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;İstemci tarafındaki console uygulamasına ait kodlar ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+
+namespace ClientApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            AritmetikServisiClient client = new AritmetikServisiClient("CebirClientHttpEndPoint");
+
+            int sonuc = client.ToplamaOperasyonu(3, 4);
+            Console.WriteLine(sonuc.ToString());
+            Console.ReadLine();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Uygulama bu haliyle &amp;ccedil;alıştırıldığında aşağıdakine benzer bir ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; ile karşılaşılır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk213_2.gif" alt="" width="269" height="152" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi kullanıcı adı, doğrulama tipi veya kullanıcı bilgisinin herhangibir mekanizma ile doğrulanıp doğrulanmadığı bilgisi bulunmamaktadır. Bunun sebebi g&amp;uuml;venlik ayarlarında &lt;strong&gt;mode&lt;/strong&gt; niteliğinin değerinin &lt;strong&gt;None&lt;/strong&gt; olarak belirlenmiş olmasıdır. Durum Aritmetik sınıfı i&amp;ccedil;erisindeki Topla metodu debug modda incelendiğinde a&amp;ccedil;ık bir şekilde izlenebilir. Aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde bu durum yer almaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk213_3.gif" alt="" width="626" height="164" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Buradan şu sonuca varılabilir. &lt;strong&gt;None&lt;/strong&gt; g&amp;uuml;venlik modunda hi&amp;ccedil; bir şekilde istemciden yetki bilgileri g&amp;ouml;nderilmez. Her istemci isimsiz kullanıcı&lt;strong&gt;(anonymous user)&lt;/strong&gt; gibi ele alınır.&lt;/p&gt;
+&lt;p&gt;Şimdi olayı biraz daha farklı bir hale getirelim. &lt;strong&gt;mode&lt;/strong&gt; niteliğinin değerini hem istemci hemde servis tarafında &lt;strong&gt;Basic&lt;/strong&gt; olarak değiştirelim. Ardından servis ve istemci uygulamaları tekrar &amp;ccedil;alıştıralım. Bu durumda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; ile karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk213_4.gif" alt="" width="639" height="190" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Basic&lt;/strong&gt; modda iken istemcinin servis tarafına kendisini tanıtması gerekmektedir. Bu nedenle aynen hata mesajında olduğu gibi proxy sınıfı &amp;uuml;zerinden &lt;strong&gt;ClientCredentials&lt;/strong&gt; &amp;ouml;zelliği kullanılmalıdır. S&amp;ouml;z konusu operasyonda &amp;ouml;rnek olarak iki test kullanıcısı oluşturulmuştur. Garfield ve Rolfield isimli bu kullanıcılar, daha sonradan iki farklı &lt;strong&gt; Windows Group&lt;/strong&gt; altında birleştirilecek ve rol bazlı yetkilendirmelerin&lt;strong&gt;(Role Based Authorization)&lt;/strong&gt; nasıl yapılacağı ele alınacaktır. S&amp;ouml;z konusu kullanıcılara ait Username ve Password bilgileri aşağıdaki gibidir. Bu kullanıcılar tamamen hayalidir :)&lt;/p&gt;
+&lt;table id="table121" style="border-collapse: collapse; width: 27%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#336699"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="width: 15%; background-color: #ffffff;" width="15%"&gt;&lt;strong&gt; Kullanıcı Adı&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="width: 15%; background-color: #ffffff;" width="11%"&gt;&lt;strong&gt; Şifre&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="15%"&gt;Garfield&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="11%"&gt;Garfi1234.?&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="15%"&gt;Rolfield&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="11%"&gt;Garfi1234.?&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Bu işlemin ardından istemci tarafındaki kodlar aşağıdaki gibi d&amp;uuml;zenlenebilir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+
+namespace ClientApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            AritmetikServisiClient client = new AritmetikServisiClient("CebirClientHttpEndPoint");
+
+            client.ClientCredentials.UserName.UserName = "Garfield";
+            client.ClientCredentials.UserName.Password = "Garfi1234.?";
+
+            int sonuc = client.ToplamaOperasyonu(3, 4);
+            Console.WriteLine(sonuc.ToString());
+            Console.ReadLine();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Dikkat edilecek olursa client nesne &amp;ouml;rneği &amp;uuml;zerinden &lt;strong&gt;ClientCredentials&lt;/strong&gt; &amp;ouml;zelliğine ge&amp;ccedil;ilmiş ve buradan &lt;strong&gt;UserName&lt;/strong&gt; &amp;ouml;zelliği yardımıylada kullanıcı adı&lt;strong&gt;(UserName)&lt;/strong&gt; ve şifre&lt;strong&gt;(Password)&lt;/strong&gt; bilgileri belirtilmiştir. Servis ve istemci tarafı tekrar test edilirse aşağıdakine benzer bir ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; ile karşılaşılır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk213_5.gif" alt="" width="453" height="137" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Yine &amp;ccedil;alışma zamanında Topla metodu i&amp;ccedil;erisinde &lt;strong&gt;debug&lt;/strong&gt; işlemi ger&amp;ccedil;ekleştirilirse, aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer aldığı gibi &lt;strong&gt;WindowsPrincipal&lt;/strong&gt; tipinin &amp;ouml;rneklendiği ve kullanıcı bilgilerinin &lt;strong&gt;WindowsIdentity&lt;/strong&gt; tipi &amp;uuml;zerinden elde edildiği g&amp;ouml;r&amp;uuml;l&amp;uuml;r. Bu tipik olarak kullanıcının servis uygulamasının &amp;ccedil;alıştığı Windows işletim sistemindeki kullanıcılardan arandığınında bir g&amp;ouml;stergesidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk213_7.gif" alt="" width="610" height="128" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Eğer hatalı kullanıcı bilgisi veya yanlış şifre girilirse aşağıdakine benzer bir ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; ile karşılaşılır. &lt;em&gt;(&amp;Ouml;rneğin kullanıcı adı Garfieldd olarak &amp;ccedil;ift d ile bitecek şekilde girilirse.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk213_6.gif" alt="" width="638" height="181" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edilecek olursa &amp;ccedil;alışma zamanında &lt;strong&gt;MessageSecurityException&lt;/strong&gt; istisnası alınmış ve &lt;strong&gt;403 Forbidden&lt;/strong&gt; mesajı ile karşılaşılmıştır. Şimdi s&amp;ouml;z konusu kullanıcıların yetkilendirilmesinin nasıl ele alınabileceğini incelemeye &amp;ccedil;alışalım. Bu ama&amp;ccedil;la s&amp;ouml;z konusu Garfield ve Lorfield isimli kullanıcılar Yonetici ve Calisan isimli iki farklı Windows grubunda toplanmıştır.&lt;/p&gt;
+&lt;table id="table123" style="border-collapse: collapse; width: 33%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#336699"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="width: 38%; background-color: #ffffff;" width="38%"&gt;&lt;strong&gt; Kullanıcı Adı&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="width: 38%; background-color: #ffffff;" width="53%"&gt;&lt;strong&gt; Windows Grubu&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="38%"&gt;Garfield&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="53%"&gt;Yonetici, Calisan&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="38%"&gt;Rolfield&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="53%"&gt;Calisan&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Topla metodunu sadece Yonetici grubundaki kullanıcıların &amp;ccedil;alıştırması istenirse dekleratif&lt;strong&gt;(declarative) &lt;/strong&gt;olarak &lt;strong&gt;PrincipalPermission&lt;/strong&gt; niteliği ele alınmalıdır. PrincipalPermission niteliği&lt;strong&gt;(attribute)&lt;/strong&gt;, &lt;strong&gt; System.Security.Permissions&lt;/strong&gt; isim alanı altında yer almaktadır. Bu sebeple ilgili isim alanının Aritmetik sınıfına eklenmesinde fayda vardır. PrincipalPermission niteliğinin temel kullanımı aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[PrincipalPermission(SecurityAction.Demand,Role="Yonetici")]
+public int Topla(int x, int y)
+{&lt;/pre&gt;
+&lt;p&gt;PrincipalPermission niteliği metodlar gibi sınıflarada uygulanabilir. Ancak tavsiye edilen metod seviyesinde uygulanmasıdır. Bununla birlikte kendisinden t&amp;uuml;retilme yapılmasına izin vermeyen&lt;strong&gt;(sealed class)&lt;/strong&gt; bir sınıftır. Bu sınıfın .Net i&amp;ccedil;erisindeki i&amp;ccedil;eriği aşağıdaki gibidir. &lt;em&gt;(Sınıf i&amp;ccedil;eriğinin elde edilmesi i&amp;ccedil;in &amp;Ouml;zcan Değirmenci tarafından geliştirilen Fox Decompiler aracı kullanılmıştır.)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[ComVisible(true), AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple=true, Inherited=false), Serializable]
+public sealed class PrincipalPermissionAttribute : CodeAccessSecurityAttribute
+{
+    // Constructors
+    public PrincipalPermissionAttribute (SecurityAction action);
+
+    // Methods
+    public override IPermission CreatePermission ();
+
+    // Properties
+    public string Name { get; set; }
+    public string Role { get; set; }
+    public bool Authenticated { get; set; }
+
+    // Instance Fields
+    private string m_name;
+    private string m_role;
+    private bool m_authenticated;
+}&lt;/pre&gt;
+&lt;p&gt;B&amp;ouml;ylece Topla metodunu sadece Yonetici rol&amp;uuml;ndeki kullanıcıların &amp;ccedil;ağırabileceği belirtilmiş olur. Eğer istemci tarafından Lorfield isimli kullanıcı ile Topla metodu &amp;ccedil;ağırılırsa aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; ile karşılaşılır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk213_8.gif" alt="" width="638" height="131" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi kullanıcı doğrulanmış&lt;strong&gt;(Authenticate)&lt;/strong&gt; ancak Yonetici rol&amp;uuml;nde olmadığı i&amp;ccedil;in yetkisi ge&amp;ccedil;ersiz kılınmıştır&lt;strong&gt;(Unauthorized)&lt;/strong&gt;. Bu sebepten dolayı &lt;strong&gt;"Access is denied"&lt;/strong&gt; hata mesajı ve &lt;strong&gt; SecurityAccessDeniedException&lt;/strong&gt; tipinden bir &amp;ccedil;alışma zamanı istisnası&lt;strong&gt;(runtime exception)&lt;/strong&gt; alınmıştır. Oysaki Garfield isimli kullanıcı ile erişilmek istendiğinde bir problem olmadan metod &amp;ccedil;ağrısı ger&amp;ccedil;ekleştirilebilir.&lt;/p&gt;
+&lt;p&gt;PrincipalPermission niteliği istenirse bir metod i&amp;ccedil;in birden fazla kez kullanılabilir. Sadece bu &amp;ouml;rnekte olduğu gibi rollere yetki vermek amacıyla değil belirli kullanıcıları yetkilendirmek yada birden fazla role izin vermek amacıyla kullanılabilir. Aşağıdaki &amp;ouml;rnekte bu durum analiz edilmektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[PrincipalPermission(SecurityAction.Demand,Role="Yonetici")]
+[PrincipalPermission(SecurityAction.Demand,Name="BURAKSENYURT\\Burak Selim Senyurt")]
+public int Topla(int x, int y)
+{&lt;/pre&gt;
+&lt;p&gt;Buradaki tanımlamalara g&amp;ouml;re BURAKSENYURT alanı i&amp;ccedil;erisinde yer alan Burak Selim Senyurt isimli kullanıcıda Topla metodu i&amp;ccedil;in yetkilendirilmiş sayılmaktadır.&lt;/p&gt;
+&lt;p&gt;Elbette tek bir istemci yerine birden fazla istemci &amp;ccedil;alıştırıldığında &lt;strong&gt;Thread&lt;/strong&gt; sınıfının &lt;strong&gt; CurrentPrincipal&lt;/strong&gt; &amp;ouml;zelliği bağlanan kişiye ait bilgileri i&amp;ccedil;eririr. S&amp;ouml;z gelimi yukarıdaki &amp;ouml;rnek kodlara g&amp;ouml;re birden fazla istemci &amp;ccedil;alıştırıldığında aşağıdakine benzer bir ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; elde edilebilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk213_13.gif" alt="" width="452" height="371" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Kullanıcılara ait yetki kontrol&amp;uuml; istenirse kod i&amp;ccedil;erisindende zorunlu bir şekilde&lt;strong&gt;(imperatively)&lt;/strong&gt; ger&amp;ccedil;ekleştirilebilir. Bunun i&amp;ccedil;in Aritmetik sınıfı i&amp;ccedil;erisindeki Topla metodu aşağıdaki gibi d&amp;uuml;zenlemelidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public int Topla(int x, int y)
+{ 
+    IPrincipal principal = Thread.CurrentPrincipal;
+    string dogrulamaTipi=principal.Identity.AuthenticationType;
+    string dogrulandi = principal.Identity.IsAuthenticated ? "Dogrulandi" : "Dogrulanmadi";
+    string ad=principal.Identity.Name;
+
+    #region Kod i&amp;ccedil;erisinden yetki kontrol&amp;uuml;
+
+    WindowsPrincipal wp = (WindowsPrincipal)principal;
+    if (wp.IsInRole("Yonetici"))
+    {
+        Console.WriteLine("Kullanıcı : " + ad + "\n" + "Doğrulama Tipi : " + dogrulamaTipi + "\n" + dogrulandi + "\n");
+        return x + y;
+    }
+    else
+        throw new FaultException("Ge&amp;ccedil;ersiz yetki");
+
+    #endregion
+}&lt;/pre&gt;
+&lt;p&gt;İlk olarak &lt;strong&gt;WindowsPrincipal&lt;/strong&gt; tipi yakalanır. Bunun i&amp;ccedil;in yine &lt;strong&gt;Thread&lt;/strong&gt; sınıfından ve static &amp;uuml;yelerinden &lt;strong&gt;CurrentPrincipal&lt;/strong&gt; ile elde edilen referanstan faydalanılır. Elde edilen &lt;strong&gt;WindowsPrincipal&lt;/strong&gt; nesne &amp;ouml;rneği &amp;uuml;zerinden &lt;strong&gt;IsInRole&lt;/strong&gt; metodu yardımıyla talepte bulunan istemci tarafından gelen kullanıcının Yonetici rol&amp;uuml;nde olup olmadığı kontrol edilebilir. &amp;Ouml;rnekte kullanıcının Yonetici rol&amp;uuml; i&amp;ccedil;erisinde olmaması halinde bir &lt;strong&gt;FaultException&lt;/strong&gt;&lt;em&gt;(FaultException kullanımı i&amp;ccedil;in &lt;strong&gt;System.ServiceModel&lt;/strong&gt; isim alanının ilave edilmesi gerekir)&lt;/em&gt; istisnası fırlatılmaktadır.&lt;/p&gt;
+&lt;p&gt;Bu tarz bir kod par&amp;ccedil;asını kullanmak &amp;ouml;zellikle rol tabanlı &amp;uuml;yelik kontrol&amp;uuml; s&amp;ouml;z konusu olduğunda şart değildir. Nitekim &lt;strong&gt;IsInRole&lt;/strong&gt; metodu zaten o anki &lt;strong&gt;Principal&lt;/strong&gt; &amp;uuml;zerinden kolaylıkla elde edilebilir. Bir başka deyişle aşağıdaki gibi bir kod par&amp;ccedil;asıda aynı işlemi g&amp;ouml;recektir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;if (principal.IsInRole("Yonetici"))
+{&lt;/pre&gt;
+&lt;p&gt;Yine Garfield isimli kullanıcı ile deneme yapılırsa herhangibir sorun ile karşılaşılmadan Topla metodunun &amp;ccedil;ağırılabildiği g&amp;ouml;r&amp;uuml;l&amp;uuml;r. Ancak Lorfield isimli kullanıcı ile Topla metodu &amp;ccedil;ağırılırsa aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;leri ile karşılaşılır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk213_9.gif" alt="" width="575" height="115" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Basic&lt;/strong&gt; g&amp;uuml;venlik modu genellikle istemcilerin servis ile aynı g&amp;uuml;venlik alanına&lt;strong&gt;(security domain)&lt;/strong&gt; girmediği durumlarda ele alınır. Bu sebepten eğer kullanıcılar zaten g&amp;uuml;venlik alanına varsayılan olarak dahil oluyorlarsa Windows Authentication Mode kullanılarak istemcilerin var olan ehliyet bilgilerini belirtmeden servise ulaşmaları sağlanabilir. Tek yapılması gereken istemci ve servis tarafındaki &lt;strong&gt;security&lt;/strong&gt; elementlerinde &lt;strong&gt; mode&lt;/strong&gt; niteliğini &lt;strong&gt;Windows&lt;/strong&gt; olarak ayarlamaktır.&lt;/p&gt;
+&lt;p&gt;Servis tarafı;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk213_11.gif" alt="" width="396" height="220" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;İstemci tarafı;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk213_10.gif" alt="" width="416" height="215" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Eğer servis tarafında &lt;strong&gt;Active Directory&lt;/strong&gt; kullanılıyorsa bu durumda rol y&amp;ouml;netimi i&amp;ccedil;in &lt;strong&gt;Windows Token Role Provider&lt;/strong&gt; se&amp;ccedil;ilmelidir. Bu ayarlama&lt;span style="text-decoration: underline;"&gt; sadece servis tarafındaki konfigurasyon dosyasında aşağıdaki gibi yapılmalıdır.&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;system.serviceModel&amp;gt;
+        &amp;lt;behaviors&amp;gt;
+            &amp;lt;serviceBehaviors&amp;gt;
+                &amp;lt;behavior name="AritmetikServiceBehavior"&amp;gt;
+                    &amp;lt;serviceAuthorization principalPermissionMode="UseWindowsGroups" /&amp;gt;
+                &amp;lt;/behavior&amp;gt;
+            &amp;lt;/serviceBehaviors&amp;gt;
+        &amp;lt;/behaviors&amp;gt;
+        &amp;lt;bindings&amp;gt;
+            &amp;lt;basicHttpBinding&amp;gt;
+                &amp;lt;binding name="AritmetikBindingHttpCfg"&amp;gt;
+                    &amp;lt;security mode="TransportCredentialOnly"&amp;gt;
+                        &amp;lt;transport clientCredentialType="None" /&amp;gt;
+                    &amp;lt;/security&amp;gt;
+                &amp;lt;/binding&amp;gt;
+            &amp;lt;/basicHttpBinding&amp;gt;
+        &amp;lt;/bindings&amp;gt;
+        &amp;lt;services&amp;gt;
+            &amp;lt;service behaviorConfiguration="AritmetikServiceBehavior" name="CebirLib.Aritmetik"&amp;gt;
+                &amp;lt;endpoint address="http://localhost:1600/AritmetikServisi" binding="basicHttpBinding" bindingConfiguration="AritmetikBindingHttpCfg" name="AritmetikServiceHttpEndPoint" contract="CebirLib.IAritmetik" /&amp;gt;
+            &amp;lt;/service&amp;gt;
+        &amp;lt;/services&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &lt;strong&gt;serviceBehaviors&lt;/strong&gt; elementi i&amp;ccedil;erisine &lt;strong&gt;serviceAuthorization&lt;/strong&gt; elementi eklenmiştir. Bu element i&amp;ccedil;erisinde yer &lt;strong&gt;principalPermissionMode&lt;/strong&gt; niteliğinin değeri ise &lt;strong&gt;UseWindowsGroups&lt;/strong&gt; olarak belirlenmiştir. Her iki durumdada istemci tarafından servise kullanıcı bilgileri otomatik olarak g&amp;ouml;nderilecektir. Elbette domain' e dahil olmuşlarsa. Yanlız &lt;strong&gt;Windows&lt;/strong&gt; modu kullanıldığında ve rol tabanlı bir yetkilendirme s&amp;ouml;z konusu olduğunda istenirse yine istemci tarafında belirli bir kullanıcı i&amp;ccedil;in bağlantı ger&amp;ccedil;ekleştirilmesi sağlanabilir. Lakin b&amp;ouml;yle bir durumda istemci tarafındaki kodların aşağıdaki gibi ele alınması gerekir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;AritmetikServisiClient client = new AritmetikServisiClient("CebirClientHttpEndPoint");
+client.ClientCredentials.Windows.ClientCredential.UserName = "Garfield";
+client.ClientCredentials.Windows.ClientCredential.Password = "Garfi1234.?";
+client.ClientCredentials.Windows.ClientCredential.Domain = "BURAKSENYURT"; // Domain varsayılan ise yazılmak zorunda değildir.
+
+int sonuc = client.ToplamaOperasyonu(3, 4);
+Console.WriteLine(sonuc.ToString());
+Console.ReadLine();&lt;/pre&gt;
+&lt;p&gt;Bu durumda servis ve istemci &amp;ccedil;alıştırıldığında aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; elde edilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk213_12.gif" alt="" width="315" height="144" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu makalemizde basit olarak intranet tabanlı sistemlerde &lt;strong&gt; basicHttpBinding&lt;/strong&gt; bağlayıcı tipini kullanarak Windows tabanlı doğrulama ve yetkilendirmelerin&lt;strong&gt;(Windows Based Authentication and Authorization)&lt;/strong&gt; nasıl ele alınabileceğini incelemeye &amp;ccedil;alıştık. &lt;strong&gt; netTcpBinding&lt;/strong&gt; veya &lt;strong&gt;wsHttpBinding&lt;/strong&gt; bağlayıcı tipleri i&amp;ccedil;in iletişim seviyesinde g&amp;uuml;venlik modunun varsayılan değeri Windows' dur. Dolayısıyla bu tipleri kullanırken config dosyası i&amp;ccedil;erisinde ekstra bir işlem yapılmasına gerek yoktur. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/makale/images/WindowsDogrulama.zip"&gt;&amp;Ouml;rnek Uygulama i&amp;ccedil;in Tıklayın&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2007-07-12 12:00:00</pubDate>
+  <slug>WCF-Windows-Tabanlc4b1-Dogrulama-ve-Yetkilendirme-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>wcf</tag>
+  </tags>
+  <categories>
+    <category>WCF</category>
+  </categories>
+</post>

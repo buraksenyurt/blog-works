@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Entity Framework - Generic Repository ve Unit of Work Uyarlaması</title>
+  <description>DDD denilince aklımıza daha çok veri odaklı uygulamalar gelir ve bu tip ürünlerde RDBMS(Relational Database Management System) lerin yeri hatırı sayılır ölçüde fazladır(Her ne kadar son yıllarda NoSQL cephesinde önemli gelişmeler ve kullanımda ciddi artışlar olsa da…) Hal böyle olunca O/RM(Object Relational Mapping) araçlarının kullanımı da önem kazanmaktadır. Yıllardır hayatımızda olan bu araçlar modellerin nesnel olarak inşasında da önemli bir yere sahiptirler. Lakin Object Oriented dünyasının kuralları içerisinde yaşarlar ve bu yüzden bazı kurumsal prensipleri uygulamaları gerekmektedir.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/thinking.jpg"&gt;&lt;img style="background-image: none; float: right; padding-top: 0px; padding-left: 0px; margin: 4px 0px; display: inline; padding-right: 0px; border: 0px;" title="thinking" src="/pics/thinking_thumb.jpg" alt="thinking" width="240" height="232" align="right" border="0" /&gt;&lt;/a&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Yazılım d&amp;uuml;nyasında var olan mimari prensipler veya tasarım kalıpları tek başlarına belirli sorunları &amp;ccedil;&amp;ouml;zseler de, bazı kurumsal projelerde mutlak suretle bir arada d&amp;uuml;ş&amp;uuml;n&amp;uuml;lmeleri gerekir. S&amp;ouml;z gelimi &lt;strong&gt;Repository&lt;/strong&gt; ve &lt;strong&gt;Unit of Work&lt;/strong&gt; kalıpları, &amp;ouml;zellikle &lt;strong&gt;Domain Driven Design&lt;/strong&gt; odaklı yapılarda bir arada değerlendirilmesi gerekenlerdendir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;DDD &lt;/strong&gt;denilince aklımıza daha &amp;ccedil;ok veri odaklı uygulamalar gelir ve bu tip &amp;uuml;r&amp;uuml;nlerde &lt;strong&gt;RDBMS&lt;em&gt;(Relational Database Management System) &lt;/em&gt;&lt;/strong&gt;lerin yeri hatırı sayılır &amp;ouml;l&amp;ccedil;&amp;uuml;de fazladır&lt;em&gt;(Her ne kadar son yıllarda NoSQL cephesinde &amp;ouml;nemli gelişmeler ve kullanımda ciddi artışlar olsa da&amp;hellip;) &lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Hal b&amp;ouml;yle olunca &lt;strong&gt;O/RM&lt;em&gt;(Object Relational Mapping)&lt;/em&gt;&lt;/strong&gt; ara&amp;ccedil;larının kullanımı da &amp;ouml;nem kazanmaktadır. Yıllardır hayatımızda olan bu ara&amp;ccedil;lar modellerin nesnel olarak inşasında da &amp;ouml;nemli bir yere sahiptirler. Lakin &lt;strong&gt;Object Oriented &lt;/strong&gt;d&amp;uuml;nyasının kuralları i&amp;ccedil;erisinde yaşarlar ve bu y&amp;uuml;zden bazı kurumsal prensipleri uygulamaları gerekmektedir.&lt;/p&gt;
+&lt;p&gt;Benim gibi &lt;strong&gt;.Net&lt;/strong&gt; &amp;uuml;zerinde geliştirme yapanlar i&amp;ccedil;in O/RM ara&amp;ccedil;ları da az &amp;ccedil;ok bellidir. &lt;strong&gt;Entity Framework&lt;/strong&gt; bunlardan birisidir. Ancak &lt;strong&gt;Entity Framework&lt;/strong&gt;&amp;rsquo; &amp;uuml;n uygulamalardaki kullanımında genellikle hatalar yapılır. &lt;strong&gt;Enterprise&lt;/strong&gt; bir &amp;ccedil;&amp;ouml;z&amp;uuml;m s&amp;ouml;z konusu olduğunda varsayılan olarak &lt;strong&gt;Data Access&lt;/strong&gt; ve &lt;strong&gt;Business Logic&lt;/strong&gt; katmanlarının olması izolasyon a&amp;ccedil;ısından &amp;ouml;nemlidir. İşte bu noktada &lt;strong&gt;DAL&lt;/strong&gt; ve &lt;strong&gt;BLL&lt;/strong&gt; arasındaki kullanımlarda &lt;strong&gt;EF&lt;/strong&gt;&amp;rsquo;in &amp;ccedil;oğu zaman bir O/RM aracı olarak soyutlanamadığı g&amp;ouml;r&amp;uuml;l&amp;uuml;r. Hal b&amp;ouml;yle olunca sistemin farklı bir kaynağı kullanarak yaşamaya devam etmesi de zorlaşır.&amp;nbsp; &lt;a href="http://martinfowler.com/eaaCatalog/repository.html" target="_blank"&gt;Repository&lt;/a&gt; ve &lt;a href="http://martinfowler.com/eaaCatalog/unitOfWork.html" target="_blank"&gt;Unit of Work&lt;/a&gt; &amp;ouml;zellikle bu vakalara &amp;ccedil;&amp;ouml;z&amp;uuml;m niteliğindeki iki değerli desendir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Hi&amp;ccedil; kimse bu deseneleri Martin Fowler kadar iyi a&amp;ccedil;ıklayamaz. Bu y&amp;uuml;zden makalenin amacı ilgili desenelerin Entity Framework i&amp;ccedil;in &amp;ouml;rnek bir kullanımının anlatımından ibarettir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1&gt;İşin Ger&amp;ccedil;eği&lt;/h1&gt;
+&lt;p&gt;Ger&amp;ccedil;ek hayatta &lt;strong&gt;Entity Framework&lt;/strong&gt; veya başka bir &lt;strong&gt;O/RM&lt;/strong&gt; aracının kullanıldığı hallerde aşağıdaki grafikteki iki durumdan birisi s&amp;ouml;z konusu olur&lt;em&gt;(Genellikle de en soldaki)&lt;/em&gt;. Klasik olarak &lt;strong&gt;DbContext&lt;/strong&gt; doğrudan iş katmanında değerlendirilir. Ancak &lt;strong&gt;Test Driven Development &lt;/strong&gt;veya &lt;strong&gt;Domain Driven Design&lt;/strong&gt; gibi yaklaşımların kullanıldığı geliştirme s&amp;uuml;re&amp;ccedil;lerinde,&amp;nbsp;&lt;strong&gt;Repository&lt;/strong&gt; ve &lt;strong&gt;Unit of Work&lt;/strong&gt; desenelerinin icra edilmesi &amp;ouml;nemlidir. Nitekim bu sayede uygulamanın iş mantığının tutulduğu katman ile veri erişim katmanının izole edilmesi kolaylaşır. t anında farklı bir &lt;strong&gt;Repository&lt;/strong&gt; ile &amp;ccedil;alışılabilmesi veya yenilerinin yazılarak sisteme dahil edilmesinin yolu a&amp;ccedil;ılır. Aynı kolaylık &lt;strong&gt;Unit of Work&lt;/strong&gt; yapıları i&amp;ccedil;in de ge&amp;ccedil;erlidir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/ruof_1.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="ruof_1" src="/pics/ruof_1_thumb.png" alt="ruof_1" width="600" height="368" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;İlk senaryoya g&amp;ouml;re iş mantığı, veri erişimi ve EF arasında kuvvetli bağlar oluşur. Bu sebepten, &amp;uuml;r&amp;uuml;nde kullanılan veri tabanını değiştirmek&lt;em&gt;(farklı bir Repository&amp;rsquo; yi tercih etmek)&lt;/em&gt; ve &amp;ouml;zellikle &lt;strong&gt;Unit Test &lt;/strong&gt;gibi yapılarda &lt;strong&gt;Mock&lt;/strong&gt; nesneleri değerledirmek zorlaşır. Bir &lt;strong&gt;Unit Test &lt;/strong&gt;metodu i&amp;ccedil;erisindeki işlemler b&amp;uuml;t&amp;uuml;n&amp;uuml;nde her zaman &lt;strong&gt;CRUD&lt;em&gt;(CreateReadUpdateDelete)&lt;/em&gt;&lt;/strong&gt; operasyonları icra edilmek istenmeyebilir. Nitekim iş b&amp;uuml;t&amp;uuml;n&amp;uuml;n&amp;uuml;n &lt;strong&gt;Repository&lt;/strong&gt; odaklı olmayan kısımlarının test edilmesi de s&amp;ouml;z konusudur.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Unit Test&amp;rsquo;&lt;/strong&gt; lerin &amp;ccedil;alıştığı geliştirme ortamının hi&amp;ccedil; bir şekilde bir veri kaynağına gidemediği hallerde geri kalan kısmın test edilme ihtiyacı bu tip bir gereksinimdir. Ayrıca aynı veri kaynağı ile &amp;ccedil;alışılacak diye bir kural yoktur. &lt;strong&gt;Domain&lt;/strong&gt; i&amp;ccedil;erisindeki &lt;strong&gt;Entity&lt;/strong&gt; modelleri sabit kalabilir ve iş kuralları &amp;ccedil;ok az değişiklik g&amp;ouml;sterebilir. Ama verilerin yazıldığı ortamlar duruma g&amp;ouml;re farklılık g&amp;ouml;sterebilir, a&amp;ccedil;ılıp kapatılmak istenebilir. Bu sebeple soyutlama(abstraction) yapmak ve uygun s&amp;ouml;zleşme tanımlamalarını&lt;em&gt;(Interface bildirimleri diyebiliriz) &lt;/em&gt;işin i&amp;ccedil;erisine katmak &amp;ouml;nemlidir.&lt;/p&gt;
+&lt;p&gt;Gelin konuyu basit ve pek de işe yaramayacak &amp;ouml;rnek bir senaryo &amp;uuml;zerinden ele alalım. Amacımız i&amp;ccedil;inde iki &lt;strong&gt;Entity&lt;/strong&gt; barındıran bir &lt;strong&gt;DbContext&lt;/strong&gt; t&amp;uuml;revini, &lt;strong&gt;Repository&lt;/strong&gt; ve &lt;strong&gt;Unit of Work&lt;/strong&gt; desenleri &amp;ccedil;er&amp;ccedil;evesinde nasıl ele alabileceğimizi incelemektir.&lt;/p&gt;
+&lt;h1&gt;Code First ile Entity Modelin İnşası&lt;/h1&gt;
+&lt;p&gt;&amp;Ouml;rnek uygulama her zaman ki gibi g&amp;ouml;sterişsiz bir &lt;strong&gt;Console&lt;/strong&gt; projesidir. Ama&amp;ccedil; ilgili desenlerin sade bir uyarlamasını g&amp;ouml;rebilmektir. Ama &amp;ouml;ncesinde &lt;strong&gt;NuGet&lt;/strong&gt; &amp;uuml;zerinden g&amp;uuml;ncel &lt;strong&gt;Entity&lt;/strong&gt; &lt;strong&gt;Framework&amp;rsquo;&lt;/strong&gt; &amp;uuml;n son s&amp;uuml;r&amp;uuml;m&amp;uuml; projeye indirilerek işe başlanabilir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/rpuow_1.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="rpuow_1" src="/pics/rpuow_1_thumb.png" alt="rpuow_1" width="640" height="360" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Ardından kobay olarak aşağıdaki &lt;strong&gt;Entity&lt;/strong&gt; sınıfları ve &lt;strong&gt;DbContext&lt;/strong&gt; t&amp;uuml;revini yazabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/ruof_2.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="ruof_2" src="/pics/ruof_2_thumb.png" alt="ruof_2" width="306" height="482" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Collections.Generic; 
+using System.Data.Entity;
+
+namespace RPandUOW.EntityModel 
+{ 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; public class ShopContext 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; : DbContext 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public DbSet&amp;lt;Category&amp;gt; Categories { get; set; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public DbSet&amp;lt;Product&amp;gt; Products { get; set; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; public class Category 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public int CategoryID { get; set; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public string Title { get; set; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public virtual ICollection&amp;lt;Product&amp;gt; Products { get; set; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; public class Product 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public int ProductID { get; set; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public string Title { get; set; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public decimal UnitPrice { get; set; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public int Quantity { get; set; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public int CategoryID { get; set; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public virtual Category Category { get; set; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+}&lt;/pre&gt;
+&lt;p&gt;Tipik olarak &lt;strong&gt;one-to-many&lt;/strong&gt; ilişki i&amp;ccedil;erisinde sayabileceğimiz iki &lt;strong&gt;POCO&lt;/strong&gt; tipi bulunmaktadır. Bir kategori ve bu kategoriye bağlı olan &amp;uuml;r&amp;uuml;nler. Gelelim Repository deseninin uygulanış bi&amp;ccedil;imine.&lt;/p&gt;
+&lt;h1&gt;Repository Yapısının İnşası&lt;/h1&gt;
+&lt;p&gt;&amp;Ouml;yle bir yapı kurgulamalıyız ki, hem bir &lt;strong&gt;Repository&lt;/strong&gt; i&amp;ccedil;in gerekli minimum fonksiyonelliklerin bir s&amp;ouml;zleşmesi hem de &lt;strong&gt;Context&lt;/strong&gt; i&amp;ccedil;erisinde yer alan her &lt;strong&gt;T&lt;/strong&gt; tipi i&amp;ccedil;in &amp;ccedil;alışabilecek generic bir sınıf olsun. Ve pek tabi varsayılan kuralları istediği gibi işleyecek yeni &lt;strong&gt;Repository&amp;rsquo;&lt;/strong&gt; leri yazmanın da yolu a&amp;ccedil;ılabilsin. İlk olarak aşağıdaki sınıf diagramında g&amp;ouml;r&amp;uuml;len tiplerin tasarlanmasıyla işe başlanabilir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/rpuow_2.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="rpuow_2" src="/pics/rpuow_2_thumb.png" alt="rpuow_2" width="437" height="492" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;ve kodlar;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using RPandUOW.EntityModel; 
+using System; 
+using System.Collections.Generic; 
+using System.Data.Entity; 
+using System.Linq; 
+using System.Linq.Expressions;
+
+namespace RPandUOW.Repositories 
+{ 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; public interface IGenericRepository&amp;lt;T&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; where T:class 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; T FindById(object EntityId); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; IEnumerable&amp;lt;T&amp;gt; Select(Expression&amp;lt;Func&amp;lt;T, bool&amp;gt;&amp;gt; Filter = null); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; void Insert(T Entity); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; void Update(T Entity); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; void Delete(object EntityId); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; void Delete(T Entity); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; public class ShopRepository&amp;lt;T&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; :IGenericRepository&amp;lt;T&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; where T:class 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; private ShopContext _context; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; private DbSet&amp;lt;T&amp;gt; _dbSet; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public ShopRepository(ShopContext Context) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; _context = Context; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; _dbSet = _context.Set&amp;lt;T&amp;gt;(); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public virtual T FindById(object EntityId) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; return _dbSet.Find(EntityId); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public virtual IEnumerable&amp;lt;T&amp;gt; Select(Expression&amp;lt;Func&amp;lt;T, bool&amp;gt;&amp;gt; Filter = null) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; if (Filter != null) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; return _dbSet.Where(Filter); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; return _dbSet; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public virtual void Insert(T entity) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; _dbSet.Add(entity); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public virtual void Update(T entityToUpdate) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; _dbSet.Attach(entityToUpdate); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; _context.Entry(entityToUpdate).State = EntityState.Modified; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public virtual void Delete(object EntityId) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; T entityToDelete = _dbSet.Find(EntityId); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Delete(entityToDelete); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public virtual void Delete(T Entity) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; if (_context.Entry(Entity).State == EntityState.Detached) //Concurrency i&amp;ccedil;in 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; _dbSet.Attach(Entity); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; _dbSet.Remove(Entity); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+}&lt;/pre&gt;
+&lt;p&gt;Burada neler yaptık, ortalığı nasıl karıştırdık incelemeye &amp;ccedil;alışalım. &lt;strong&gt;IRepository&amp;lt;T&amp;gt;&lt;/strong&gt; aray&amp;uuml;z&amp;uuml; i&amp;ccedil;erisinde bir &lt;strong&gt;Repository&lt;/strong&gt; i&amp;ccedil;in s&amp;ouml;z konusu olabilecek temel fonksiyonların tanımlandığını g&amp;ouml;rmekteyiz. &lt;strong&gt;CRUD(CreateReadUpdateDelete)&lt;/strong&gt; operasyonları olarak adlandırabileceğimiz metodlar ile bir &lt;strong&gt;Repository&amp;rsquo;&lt;/strong&gt; nin minimumda sahip olması gereken s&amp;ouml;zleşmeyi de tanımlamış oluyoruz.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ShopRepository&amp;lt;T&amp;gt;&lt;/strong&gt; sınıfı dikkat edileceği &amp;uuml;zere &lt;strong&gt;IRepository&amp;lt;T&amp;gt;&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml; uygulamakta ve kendi i&amp;ccedil;erisinde &lt;strong&gt;DbContext&lt;/strong&gt; sınıfından t&amp;uuml;retilmiş bir &lt;strong&gt;ShopContext&lt;/strong&gt; &amp;ouml;rneğini kullanmaktadır. Yani &lt;strong&gt;ShopRepository&lt;/strong&gt; generic sınıfı, &lt;strong&gt;ShopContext&lt;/strong&gt; i&amp;ccedil;inde tanımlı herhangi bir &lt;strong&gt;T &lt;/strong&gt;tipini kullanarak &lt;strong&gt;CRUD&lt;/strong&gt; operasyonlarını ger&amp;ccedil;ekleştirebilir. Bunun bir diğer anlamıda, farklı kaynakları kullanan veya Mock nesne olabilen &lt;strong&gt;Repository&lt;/strong&gt; tiplerinin istenildiği zaman sisteme dahil edilebilmesidir. Tek yapılması gereken ilgili &lt;strong&gt;IRepository&amp;lt;T&amp;gt;&lt;/strong&gt; s&amp;ouml;zleşmesinin yeni Repository i&amp;ccedil;in uygulanmasından başka bir şey değildir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Repository&lt;/strong&gt;&amp;rsquo; nin kullandığı &lt;strong&gt;Context&lt;/strong&gt; nesnesinin oluşturulması aslında yapıcı metod i&amp;ccedil;erisinde icra edilmektedir. Burada da generic bir kullanım yolu d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Dikkat &amp;ccedil;ekici noktalardan bir tanese bir &lt;strong&gt;Context&lt;/strong&gt; i&amp;ccedil;in s&amp;ouml;z konusu olan &lt;strong&gt;Save&lt;/strong&gt; işleminin bu tiplerde her angi bir bi&amp;ccedil;imde ele alınmamış olmasıdır. Aslında bu, &lt;strong&gt;Unit of Work&lt;/strong&gt; yapısının inşasında ele alınması gereken bir fonksiyonelliktir. &amp;Ouml;yleyse Unit of Work yapısını tesis etmeye başlayabiliriz.&lt;/p&gt;
+&lt;h1&gt;Unit of Work Yapısının İnşası&lt;/h1&gt;
+&lt;p&gt;&lt;strong&gt;Entity Framework&lt;/strong&gt; a&amp;ccedil;ısından bir birimlik işi; i&amp;ccedil;erisinde konuya dahil olması gereken &lt;strong&gt;Repository&lt;/strong&gt; &amp;ouml;rneklerinin oluşturulması ve &lt;strong&gt;Save&lt;/strong&gt; işleminin icra edilmesi olarak d&amp;uuml;ş&amp;uuml;nebiliriz&lt;em&gt;(Hatta bu yapı i&amp;ccedil;erisine &lt;strong&gt;Transaction&lt;/strong&gt; a&amp;ccedil;ılıp kapatılması da dahil edilebilir)&lt;/em&gt; Pek tabi Unit of Work yapısınında bir s&amp;ouml;zleşme &amp;uuml;zerinden değerlendirilmesi, farklı Unit of Work&amp;rsquo; lerin de değerlendirilebilmesi a&amp;ccedil;ısından &amp;ouml;nemlidir. Bu d&amp;uuml;ş&amp;uuml;nceler ışığında aşağıdaki yapıyı kurgulayabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/rpuow_3.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="rpuow_3" src="/pics/rpuow_3_thumb.png" alt="rpuow_3" width="358" height="432" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;ve kodlar;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using RPandUOW.EntityModel; 
+using RPandUOW.Repositories; 
+using System; 
+using System.Transactions;
+
+namespace RPandUOW.UnitOfWorks 
+{ 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; public interface IUnitOfWork 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; :IDisposable 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; {&amp;nbsp;&amp;nbsp; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; void Save(); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; // Başka operasyonlar da tanımlanabilir. 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; // void OpenTransaction(); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; // void CloseTransaction(); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; // gibi 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; public class ShopUnitOfWork 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; :IUnitOfWork 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; private ShopContext _context = new ShopContext(); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; private ShopRepository&amp;lt;Category&amp;gt; _categoryRepository; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; private ShopRepository&amp;lt;Product&amp;gt; _productRepository; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; private bool _disposed = false; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public ShopRepository&amp;lt;Category&amp;gt; CategoryRepository 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; get 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; if (_categoryRepository == null) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; _categoryRepository = new ShopRepository&amp;lt;Category&amp;gt;(_context); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; return _categoryRepository; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public ShopRepository&amp;lt;Product&amp;gt; ProductRepository 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; get 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; if (_productRepository == null) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; _productRepository = new ShopRepository&amp;lt;Product&amp;gt;(_context); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; return _productRepository; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public void Save() 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; using (TransactionScope tScope = new TransactionScope()) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; _context.SaveChanges(); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; tScope.Complete(); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; protected virtual void Dispose(bool disposing) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; if (!this._disposed) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; if (disposing) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; _context.Dispose(); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; this._disposed = true; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public void Dispose() 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Dispose(true); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; GC.SuppressFinalize(this); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+}&lt;/pre&gt;
+&lt;p&gt;Pek tabi soyutlama amacıyla &lt;strong&gt;IUnitOfWork&lt;/strong&gt; isimli bir aray&amp;uuml;z tanımlanarak işe başlanmıştır. Aray&amp;uuml;z şu an i&amp;ccedil;in Save metodunun uygulanması gerektiğini belirtir. Tabi bir de &lt;strong&gt;IDisposable&lt;/strong&gt; aray&amp;uuml;z&amp;uuml; nedeniyle &lt;span style="font-weight: bold;"&gt;Dispose&lt;/span&gt; metodunun ezilmesi zorunlıdır. Bir birimlik iş i&amp;ccedil;in ihtiyaca g&amp;ouml;re başka genel fonksiyonellikler de s&amp;ouml;zleşme i&amp;ccedil;erisine dahil edilebilir. &amp;Ouml;rneğin bir &lt;strong&gt;Transaction&lt;/strong&gt; a&amp;ccedil;ılması ve kapatılması i&amp;ccedil;in gerekli metodlar s&amp;ouml;zleşme ile zorunlu tutulabilir. Tabi bunu &amp;ccedil;ok da spesifik d&amp;uuml;ş&amp;uuml;nmemek gerekir. Nitekim kimi &lt;strong&gt;Repository&lt;/strong&gt;&amp;rsquo; lerin, kullandığı veri kaynakları bir &lt;strong&gt;Transaction&lt;/strong&gt; ile &amp;ccedil;alışmak zorunda olmayabilir. Hatta ortada bir veri kaynağı da bulunmayabilir&lt;em&gt;(Burada Mock nesnelere atıfta bulunmaktayım)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ShopContext&lt;/strong&gt; i&amp;ccedil;in kullanılacak &lt;strong&gt;Unif of Work&lt;/strong&gt; kurgusunda ise, işe dahil olacak &lt;strong&gt;Repository&amp;rsquo;&lt;/strong&gt; ler birer &lt;strong&gt;Property&lt;/strong&gt; olarak tanımlanmış ve sadece okunabilir şekilde son kullanıcıya sunulmuşlardır. &amp;Uuml;retim işlemleri sırasında yapılan &lt;strong&gt;null&lt;/strong&gt; kontrol&amp;uuml;, &lt;strong&gt;Unit of Work&lt;/strong&gt; nesnesinin yaşamı boyunca, t&amp;uuml;m &lt;strong&gt;Repository&amp;rsquo;&lt;/strong&gt; lerin aynı &lt;strong&gt;Context&lt;/strong&gt; tipini&lt;em&gt;(ki &amp;ouml;rnekte _context isimli ShopContext &amp;ouml;rneğidir) &lt;/em&gt;kullanması a&amp;ccedil;ısında &amp;ouml;nemlidir. &lt;em&gt;(Bu durumu daha iyi anlamak i&amp;ccedil;in debug modda &amp;ccedil;alışmanızı &amp;ouml;neririm)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Bir başka deyişle &amp;ouml;rneğin &lt;strong&gt;Save&lt;/strong&gt; işlemi sırasında t&amp;uuml;m &lt;strong&gt;Repository&lt;/strong&gt; nesnelerinin aynı &lt;strong&gt;DbContext&lt;/strong&gt; &amp;ouml;rneği &amp;uuml;zerinden işlemlerini ger&amp;ccedil;ekleştirmesi ve tek bir &lt;strong&gt;Transaction &lt;/strong&gt;b&amp;uuml;t&amp;uuml;nl&amp;uuml;ğ&amp;uuml; i&amp;ccedil;erisinde &amp;ccedil;alışması sağlanmış olmaktadır. Zaten &lt;strong&gt;Unit of Work&lt;/strong&gt; desenin temel ama&amp;ccedil;larından birisi de bu işlem b&amp;uuml;t&amp;uuml;nl&amp;uuml;ğ&amp;uuml;n&amp;uuml; kurgulamaktr.&lt;/p&gt;
+&lt;h1&gt;Basit Bir Kullanım&lt;/h1&gt;
+&lt;p&gt;Yazılan &lt;strong&gt;Unit of Work&lt;/strong&gt; uyarlamasının uygulanış bi&amp;ccedil;imi olduk&amp;ccedil;a kolaydır. Normal şartlarda bir &lt;strong&gt;BLL&lt;/strong&gt; fonksiyonelliği i&amp;ccedil;erisinde de değerlendirilebilir. Konunun basit&amp;ccedil;e ele alınması a&amp;ccedil;ısından &lt;strong&gt;Main &lt;/strong&gt;metodu aşağıdaki kodları i&amp;ccedil;erecek şekilde geliştirilmiştir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using RPandUOW.EntityModel; 
+using RPandUOW.UnitOfWorks; 
+using System; 
+using System.Collections.Generic;
+
+namespace RPandUOW 
+{ 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; class Program 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; static void Main(string[] args) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; using (ShopUnitOfWork worker = new ShopUnitOfWork()) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Category computerBook = new Category { Title = "Computer Books" }; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; worker.CategoryRepository.Insert(computerBook); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; computerBook.Products = new List&amp;lt;Product&amp;gt; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; new Product { Title = "Advanced NoSQL", Quantity = 1, UnitPrice = 34.59M }, 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; new Product { Title = "NHibernate in Action", Quantity = 5, UnitPrice = 29.99M }, 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; new Product { Title = "Unleashed Delphi 2.0", Quantity = 3, UnitPrice = 9.99M } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Category cookBook = new Category { Title = "Cook Books" }; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; worker.CategoryRepository.Insert(cookBook); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; cookBook.Products = new List&amp;lt;Product&amp;gt; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; new Product() 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Title = "Italian Kitchen", Quantity = 20, UnitPrice = 12 } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; worker.CategoryRepository.Insert(cookBook); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; worker.Save(); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; var books = worker.ProductRepository.Select(p =&amp;gt; p.CategoryID == computerBook.CategoryID); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; foreach (var book in books) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Console.WriteLine("{0} {1} {2}", book.Title, book.UnitPrice, book.Quantity); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;a href="/pics/rpuow_4.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="rpuow_4" src="/pics/rpuow_4_thumb.png" alt="rpuow_4" width="324" height="131" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;IDisposable&lt;/strong&gt; aray&amp;uuml;z&amp;uuml; implementasyonu nedeniyle &lt;strong&gt;ShopUnitOfWork&lt;/strong&gt; sınıfı &lt;strong&gt;using&lt;/strong&gt; bloğun i&amp;ccedil;erisinde kullanılabilir. Zaten &lt;strong&gt;dipose&lt;/strong&gt; işlemi sınıfın i&amp;ccedil;erisinde &lt;strong&gt;override&lt;/strong&gt; edilmiştir. Blok i&amp;ccedil;erisinde bir dizi &amp;ouml;rnek işlem icra edilmektedir. Buna g&amp;ouml;re bir ka&amp;ccedil; kategorinin ve bu kategorilere bağlı &amp;uuml;r&amp;uuml;nlerin eklenmesi işlemi ele alınmaktadır. &lt;strong&gt;Save&lt;/strong&gt; işlemi, &lt;strong&gt;Unit of Work&lt;/strong&gt; uyarlamasının bir fonksiyonu olduğundan, dahil edilen t&amp;uuml;m &lt;strong&gt;Repository&lt;/strong&gt; &amp;ouml;rnekleri i&amp;ccedil;in ortak bir kullanım noktasıdır. &amp;Ouml;yle ki, &amp;ouml;rnekte asıl &lt;strong&gt;Context&lt;/strong&gt; nesnesi &amp;uuml;zerinden yapılan kaydetme işleminin bir &lt;strong&gt;TransactionScope&lt;/strong&gt; i&amp;ccedil;erisinde ger&amp;ccedil;ekleştirilmesi sağlanmaktadır.&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;Repository&lt;/strong&gt; ve&lt;strong&gt; Unit of Work&lt;/strong&gt; desenelerini &lt;strong&gt;Entity Framework&lt;/strong&gt; tarafında uygulamak olduk&amp;ccedil;a kolaydır. Kaynaklarda bu desenlerin daha etkili uygulanış bi&amp;ccedil;imlerini de g&amp;ouml;rebilirsiniz. &amp;Ouml;rneğin &lt;a href="http://genericunitofworkandrepositories.codeplex.com/" target="_blank"&gt;Codeplex&amp;rsquo; in şu adresindeki&lt;/a&gt; uygulanış tarzı beni etkileyenler arasındadır. Hatta &lt;strong&gt;Unit of Work&lt;/strong&gt; uyarlamasının daha &lt;strong&gt;generic&lt;/strong&gt; ve &lt;strong&gt;Context&amp;rsquo;&lt;/strong&gt; lere gevşek bağlı&lt;em&gt;(Loosely Coupled)&lt;/em&gt; olan bir versiyonu da yazılabilir&lt;em&gt;(İşin i&amp;ccedil;ine Dependency Injection da katılıp olay daha bir renkli hale getirilebilir)&lt;/em&gt; Bunlara biraz kafa yormakta fayda vardır.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2014-12-14 03:00:00</pubDate>
+  <slug>Entity-Framework-Generic-Repository-ve-Unit-of-Work-Uyarlamasi</slug>
+  <tags>
+    <tag>entity-framework</tag>
+    <tag>generic-repository</tag>
+    <tag>generics</tag>
+    <tag>unit-of-work</tag>
+    <tag>design-patterns</tag>
+    <tag>software-design-principles</tag>
+  </tags>
+  <categories>
+    <category>Entity Framework</category>
+    <category>Tasarım Prensipleri(Design Principles)</category>
+  </categories>
+</post>

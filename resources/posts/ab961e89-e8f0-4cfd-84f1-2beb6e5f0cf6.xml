@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>HTTPHandler ve HttpModule Kavramları</title>
+  <description>Çoğumuz herhangibir tarayıcı penceresinden bir AspNet sayfasını çağırdığımızda resmin hep ön yüzünden bakarız. Oysaki resmin arka yüzünde dikkate değer bir mimari bulunmaktadır. Bu mimari içerisinde yer alan önemli yapılardan ikisi, Http Pipeline' ın bir parçası olan Http Handler ve Http Module kavramlarıdır...</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;oğumuz herhangibir tarayıcı penceresinden bir AspNet sayfasını &amp;ccedil;ağırdığımızda resmin hep &amp;ouml;n y&amp;uuml;z&amp;uuml;nden bakarız. Oysaki resmin arka y&amp;uuml;z&amp;uuml;nde dikkate değer bir mimari bulunmaktadır. Bu mimari i&amp;ccedil;erisinde yer alan &amp;ouml;nemli yapılardan ikisi, Http Pipeline' ın bir par&amp;ccedil;ası olan &lt;strong&gt;Http Handler&lt;/strong&gt; ve &lt;strong&gt;Http Module&lt;/strong&gt; kavramlarıdır. Bu makalemizde Http Handler ve Http Module kavramlarını kısaca incelemeye ve tanımaya &amp;ccedil;alışacağız.&amp;nbsp; HttpHandler ve HttpModule kavramlarını derinlemesine incelemeden &amp;ouml;nce işe, bir web sayfasını talep ettiğimizde web sunucusunun bu talebi nasıl değerlendirdiğini ele almaya &amp;ccedil;alışarak başlayalım. &amp;Ccedil;alışma modelindeki başrol oyuncularımız &lt;strong&gt;ISS&lt;/strong&gt; (Microsoft Internet Information Services), &lt;strong&gt;ASPNET_ISAPI&lt;/strong&gt;,&lt;strong&gt; Asp.Net Work Processor&lt;/strong&gt; ve &lt;strong&gt;HTTPPipeLine&lt;/strong&gt; dır.&lt;/p&gt;
+&lt;p&gt;Temel olarak IIS, web sunucusuna gelen html, aspx, asp, jsp vb talepleri karşılayıp cevaplamakla y&amp;uuml;k&amp;uuml;ml&amp;uuml; bir programıdır. Talep edilen sayfalar farklı tipte olduğundan yada farklı programalama sistemlerince işletildiklerinden IIS, gelen talebi asıl işletecek olan sisteme devretmek i&amp;ccedil;in bazı durumlarda arada bir program aray&amp;uuml;z&amp;uuml;ne ihtiya&amp;ccedil; duyacaktır. Bazı durumlarda diyoruz &amp;ccedil;&amp;uuml;nk&amp;uuml; bir HTML sayfası i&amp;ccedil;in (yada bir resim dosyası vb...) .Net Framework ve benzeri ortamlara ihtiya&amp;ccedil; yoktur. Bunlar zaten doğrudan karşılanabilirler.&lt;/p&gt;
+&lt;p&gt;Ancak &amp;ouml;rneğin bir asp sayfasına gelen talep i&amp;ccedil;in &lt;strong&gt;asp.dll&lt;/strong&gt; Isapi extension kullanılır. Bir Asp.Net sayfası s&amp;ouml;z konusu olduğunda ise bu extension &lt;strong&gt;AspNet_Isapi.dll&lt;/strong&gt; k&amp;uuml;t&amp;uuml;phanesidir. AspNet_Isapi unmanaged (y&amp;ouml;netimsiz) bir k&amp;uuml;t&amp;uuml;phanedir. Dolayısıyla i&amp;ccedil;erisinde .Net Framework kodları &amp;ccedil;alıştırılmaz. Bunun yerine AspNet_Isapi.dll gelen talepleri, Asp.Net Work Processor' a iletir. Asp.Net Work Processor ise, bu talepleri işetilmek &amp;uuml;zere Http Module ve Http Handler' lara devreder. &amp;Ccedil;ok basit olarak d&amp;uuml;ş&amp;uuml;nd&amp;uuml;ğ&amp;uuml;m&amp;uuml;zde &amp;ccedil;alışma şeklini aşağıdaki gibi d&amp;uuml;ş&amp;uuml;nebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk183_1.gif" alt="" width="633" height="413" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Burada Http Modules ve Http Handler kısmını biraz daha a&amp;ccedil;ıklamakta fayda var. Asp.Net Runtime gelen talepleri Http Module' ler &amp;uuml;zerinden ge&amp;ccedil;irerek ilgili HttpHandler' a devreder. İlgili HttpHandler diyoruz &amp;ccedil;&amp;uuml;nk&amp;uuml; Asp.Net &amp;ccedil;alışma ortamına d&amp;uuml;şen her talep i&amp;ccedil;in ele alınabilecek ayrı ayrı HttpHandler tipleri mevcuttur. S&amp;ouml;z gelimi web servisleri i&amp;ccedil;in &amp;ccedil;alışan ayrı bir HttpHandler varken web sayfaları i&amp;ccedil;in &amp;ccedil;alışan başka bir HttpHandler' vardır. Biz bir aspx sayfası i&amp;ccedil;in gelen talebi g&amp;ouml;z &amp;ouml;n&amp;uuml;ne aldığımızda ilgili HttpHandler' ın yaptığı bazı işlemler vardır.&lt;/p&gt;
+&lt;p&gt;Bu işlemler sırasında sayfanın bir &amp;ouml;rneği (nesne olarak) &amp;uuml;zerindeki kontroller ile birlikte oluşturulur. Bir başka deyişle sayfanın yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml; &amp;ccedil;alışır. (PreInit -&amp;gt; Init -&amp;gt; Load -&amp;gt; Change/ Click -&amp;gt; PreRender -&amp;gt; UnLoad -&amp;gt; Dispose) Nihayetinde bir HTML &amp;ccedil;ıktısı &amp;uuml;retilir. Bu HTML &amp;ccedil;ıktısı Http Module' ler &amp;uuml;zerinden geriye doğru Asp.Net Work Processor' a oradanda AspNet_Isapi' ye iletilir ve son olarak IIS &amp;uuml;zerinden talepte bulunan istemciye g&amp;ouml;nderilir.&lt;/p&gt;
+&lt;p&gt;Aslında sistemimizde y&amp;uuml;kl&amp;uuml; olan pek &amp;ccedil;ok HttpHandler ve HttpModule tipi vardır. Bunları root klas&amp;ouml;rdeki web.config dosyası i&amp;ccedil;erisinde bulabiliriz. &amp;Ouml;rneğin makaleyi yazdığım sistemde ki root web.config dosyası&amp;nbsp;D:\WINDOWS\Microsoft.NET\ Framework\v2.0.50727\CONFIG klas&amp;ouml;r&amp;uuml; altında yer almaktadır. Root klas&amp;ouml;rde yer alan web.config, bu makinedeki web uygulamlarının konfigurasyon dosyalarının kalıtımsal olarak t&amp;uuml;rediği dosyadır. Bu dosya i&amp;ccedil;erisinde yer alan HttpHandlers ve HttpModules sekmelerine baktığımızda aşağıdakine benzer &amp;ccedil;ıktılar elde ederiz.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rnek httpHandlers elementi ve alt elementleri; &lt;em&gt; (Burada &amp;ccedil;ok daha fazla Handler tanımı vardır. &amp;Ouml;rnek olması a&amp;ccedil;ısından bir ka&amp;ccedil; Handler g&amp;ouml;sterilmektedir.)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;httpHandlers&amp;gt;
+    &amp;lt;add path="trace.axd" verb="*" type="System.Web.Handlers.TraceHandler" validate="true" /&amp;gt;
+    &amp;lt;add path="*.aspx" verb="*" type="System.Web.UI.PageHandlerFactory" validate="true" /&amp;gt;
+    &amp;lt;add path="*.ashx" verb="*" type="System.Web.UI.SimpleHandlerFactory" validate="true" /&amp;gt;
+    &amp;lt;add path="*.asmx" verb="*" type="System.Web.Services. Protocols.WebServiceHandlerFactory, System.Web.Services, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" validate="false" /&amp;gt;
+    &amp;lt;add path="*.rem" verb="*" type="System.Runtime.Remoting.Channels. Http.HttpRemotingHandlerFactory, System.Runtime.Remoting, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" validate="false" /&amp;gt;
+    &amp;lt;add path="*.soap" verb="*" type="System.Runtime.Remoting.Channels. Http.HttpRemotingHandlerFactory, System.Runtime.Remoting, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" validate="false" /&amp;gt;
+    &amp;lt;add path="*.asax" verb="*" type="System.Web.HttpForbiddenHandler" validate="true" /&amp;gt;
+    &amp;lt;add path="*.ascx" verb="*" type="System.Web.HttpForbiddenHandler" validate="true" /&amp;gt;
+    &amp;lt;add path="*.master" verb="*" type="System.Web.HttpForbiddenHandler" validate="true" /&amp;gt;
+    &amp;lt;add path="*.skin" verb="*" type="System.Web.HttpForbiddenHandler" validate="true" /&amp;gt;
+    &amp;lt;add path="*.sitemap" verb="*" type="System.Web.HttpForbiddenHandler" validate="true" /&amp;gt;
+    &amp;lt;add path="*.dll.config" verb="GET,HEAD" type="System.Web.StaticFileHandler" validate="true" /&amp;gt;
+    &amp;lt;add path="*.exe.config" verb="GET,HEAD" type="System.Web.StaticFileHandler" validate="true" /&amp;gt;
+    &amp;lt;add path="*.config" verb="*" type="System.Web.HttpForbiddenHandler" validate="true" /&amp;gt;
+    &amp;lt;add path="*.cs" verb="*" type="System.Web.HttpForbiddenHandler" validate="true" /&amp;gt;
+    &amp;lt;add path="*.csproj" verb="*" type="System.Web.HttpForbiddenHandler" validate="true" /&amp;gt;
+    &amp;lt;add path="*.resx" verb="*" type="System.Web.HttpForbiddenHandler" validate="true" /&amp;gt;
+    &amp;lt;add path="*.mdb" verb="*" type="System.Web.HttpForbiddenHandler" validate="true" /&amp;gt;
+     ...diğeleri
+&amp;lt;/httpHandlers&amp;gt;&lt;/pre&gt;
+&lt;p&gt;HttpModules elementi ve alt elementlerinin i&amp;ccedil;eriği;&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;httpModules&amp;gt;
+    &amp;lt;add name="OutputCache" type="System.Web.Caching.OutputCacheModule" /&amp;gt;
+    &amp;lt;add name="Session" type="System.Web.SessionState.SessionStateModule" /&amp;gt;
+    &amp;lt;add name="WindowsAuthentication" type="System.Web.Security.WindowsAuthenticationModule" /&amp;gt;
+    &amp;lt;add name="FormsAuthentication" type="System.Web.Security.FormsAuthenticationModule" /&amp;gt;
+    &amp;lt;add name="PassportAuthentication" type="System.Web.Security.PassportAuthenticationModule" /&amp;gt;
+    &amp;lt;add name="RoleManager" type="System.Web.Security.RoleManagerModule" /&amp;gt;
+    &amp;lt;add name="UrlAuthorization" type="System.Web.Security.UrlAuthorizationModule" /&amp;gt;
+    &amp;lt;add name="FileAuthorization" type="System.Web.Security.FileAuthorizationModule" /&amp;gt;
+    &amp;lt;add name="AnonymousIdentification" type="System.Web.Security.AnonymousIdentificationModule" /&amp;gt;
+    &amp;lt;add name="Profile" type="System.Web.Profile.ProfileModule" /&amp;gt;
+    &amp;lt;add name="ErrorHandlerModule" type="System.Web.Mobile.ErrorHandlerModule, System.Web.Mobile, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" /&amp;gt;
+    &amp;lt;add name="ServiceModel" type="System.ServiceModel.Activation.HttpModule, System.ServiceModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" /&amp;gt;
+&amp;lt;/httpModules&amp;gt;&lt;/pre&gt;
+&lt;p&gt;HttpHandler sekmesine baktığımızda path kısmında bazı dosya uzantıları olduğu g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Bunların &amp;ccedil;oğu web uygulamalarını tasarlayanlara tanıdık gelecektir.&lt;/p&gt;
+&lt;table id="table165" style="border-collapse: collapse; width: 395px;" border="1" cellspacing="0" cellpadding="5" bgcolor="#ffffff"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td align="center" bgcolor="#336699" width="64"&gt;&lt;strong&gt; Uzantı&lt;/strong&gt;&lt;/td&gt;
+&lt;td align="center" bgcolor="#336699" width="307"&gt;&lt;strong&gt; Tipi&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="64"&gt;trace.axd&lt;/td&gt;
+&lt;td width="307"&gt;sayfalara ait Trace bilgilerinin tutulduğu dosya&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="64"&gt;aspx&lt;/td&gt;
+&lt;td width="307"&gt;Asp.Net web sayfalarımız (Web pages)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="64"&gt;ascx&lt;/td&gt;
+&lt;td width="307"&gt;Kullanıcı web kontrolleri (Web User Controls)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="64"&gt;cs&lt;/td&gt;
+&lt;td width="307"&gt;C# kaynak kod dosyaları (Source Files)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="64"&gt;config&lt;/td&gt;
+&lt;td width="307"&gt;Konfigurasyon dosyaları (Configuration Files)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="64"&gt;asmx&lt;/td&gt;
+&lt;td width="307"&gt;Web servisi dosyaları (Web Service Files)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="64"&gt;csproj&lt;/td&gt;
+&lt;td width="307"&gt;C# proje dosyaları (C# Projects Files)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="64"&gt;skin&lt;/td&gt;
+&lt;td width="307"&gt;Temalarda kullanılan skin dosyaları (Skin Files)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="64"&gt;master&lt;/td&gt;
+&lt;td width="307"&gt;Master Page dosyaları (Master Pages)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Bu elementlerin her biri i&amp;ccedil;in birde &lt;strong&gt;verb&lt;/strong&gt; niteliği (attribute) tanımlanmıştır. Verb niteliği Http protokol&amp;uuml;ne g&amp;ouml;re bu elementler i&amp;ccedil;erisinde belirtilen uzanıtıya sahip kaynaklara gelebilecek olan talep &amp;ccedil;eşitlerini sınırlamak i&amp;ccedil;in kullanılır. &amp;Ouml;rneğin bu niteliğe &lt;strong&gt;Get, Head, Post&lt;/strong&gt; gibi değerler bir arada yada ayrı ayrı verilebilir. * olması halinde t&amp;uuml;m Http isteklerinin ge&amp;ccedil;erli olacağı belirtilmektedir. HttpHandler i&amp;ccedil;erisindeki elementler i&amp;ccedil;inde belkide en &amp;ouml;nemli kısım &lt;strong&gt;type&lt;/strong&gt; niteliğinin işaret ettiği .Net tipidir. Şimdi şu senaryoyu d&amp;uuml;ş&amp;uuml;nelim. Normal şartlar altında url &amp;uuml;zerinden bir cs dosyasını talep ettiğimizde aşağıdakine benzer bir hata alırız. &lt;em&gt;(Testi IIS &amp;uuml;zerinden yapabilmek i&amp;ccedil;in bilerek cs uzantılı dosya ilgili virtual directory altına atılmıştır. Aspx dosyası ile cs dosyalarının IIS altına atılması, Vs.Net 2005 Copy Web Site dağıtım modelinin varsayılan &amp;ccedil;alışma şeklidir.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk183_2.gif" alt="" width="577" height="390" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;yle bir mesaj almamızın nedeni, cs uzantılı dosyalara gelecek olan &amp;ccedil;ağrıların &lt;strong&gt;HttpForbiddenHandler&lt;/strong&gt; tipi tarafından ele alınıyor olmasıdır. Bu handler hata mesajından g&amp;ouml;rebileceğimiz gibi ilgili dosyaya erişilmesini engellemektedir. Bu nedenle HttpForbiddenHandler tarafından ele alınabilen t&amp;uuml;m dosya tipleri i&amp;ccedil;in yukarıdaki hata mesajını alırız. Tam aksine aspx uzantılı sayfalar &lt;strong&gt;PageHandlerFactory&lt;/strong&gt; tipi tarafından ele alınır.&lt;/p&gt;
+&lt;p&gt;Ancak PageHandlerFactory aslında bir Http Handler değildir. Bunun yerine &amp;ccedil;alışma zamanında gerekli olan HttpHandler' ın &amp;uuml;retilmesini ve bunu bir aray&amp;uuml;z olarak (&lt;strong&gt;IHttpHandlerFactory&lt;/strong&gt;) d&amp;ouml;nd&amp;uuml;r&amp;uuml;lmesini sağlayan fonksiyonelliği i&amp;ccedil;erir. Dolayısıyla aspx uzantılı sayfalar i&amp;ccedil;in bu fabrika tipinin &amp;uuml;rettiği handler sunucu taraflı derleme ve sayfa nesne &amp;ouml;rneği &amp;uuml;retme işlemlerini &amp;uuml;stlenecektir. PageHandlerFactory aslında .Net 2.0 ile gelen ve Asp.Net 2.0 &amp;ccedil;alışma modelini destekleyen bir tiptir. Aşağıda bu sınıfın t&amp;uuml;rediği IHttpHandlerFactory aray&amp;uuml;z&amp;uuml; &amp;uuml;yeleri ile birlikte g&amp;ouml;r&amp;uuml;lmektedir. Dikkat ederseniz &lt;strong&gt;GetHandler&lt;/strong&gt; isimli &amp;uuml;ye metod, geriye IHttpHandlerFactory tipinden bir aray&amp;uuml;z referansı d&amp;ouml;nd&amp;uuml;rmektedir ki bu referans &amp;ccedil;alışma zamanında gereki olan HttpHandler tipini taşıyacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk183_3.gif" alt="" width="634" height="349" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Benzer şekilde &amp;ouml;rneğin web servislerine gelicek olan talepleride (asmx sayfalarına gelicek olan talepleri) &lt;strong&gt;WebServiceHandlerFactory&lt;/strong&gt; tipi &amp;uuml;stlenecektir. Bu Handlerın sahip olduğu fonksiyonellikler arasında gelen taleplerdeki Soap mesajlarını deserialize etmek, cevap (response) olarakta tekrar serileştirilmiş Soap paketkerini hazırlayıp karşı tarafa g&amp;ouml;ndermek gibi g&amp;ouml;revler sayılabilir.&lt;/p&gt;
+&lt;p&gt;HttpModules kısmına baktığımızda ise yine web uygulamalarımızda sık&amp;ccedil;a kullandığımız bazı kavramların var olduğunu g&amp;ouml;rebiliriz. &amp;Ouml;rneğin Cache (ara belleğe alma), Session, Authentication, Role y&amp;ouml;netimi vb. Buradan şu sonu&amp;ccedil; &amp;ccedil;ıkartılabilir. HttpModules i&amp;ccedil;erisinde tanımlanan elementlerde belirtilen tipler bir web uygulaması i&amp;ccedil;in ele alabileceğimiz framework &amp;ouml;zelliklerini kullanabilmemizi sağlar. &amp;Ouml;rneğin caching sistemini &lt;strong&gt;OutputCacheModule&lt;/strong&gt;, Session sistemini &lt;strong&gt;SessionStateModule&lt;/strong&gt;, Windows tabanlı doğrulama sistemini &lt;strong&gt;WindowsAuthenticationModule&lt;/strong&gt;, Form tabanlı doğrulama sistemini &lt;strong&gt;FormsAuthenticationModule&lt;/strong&gt; vb... tipleri ele almaktadır.&lt;/p&gt;
+&lt;p&gt;O halde bu noktada HttpHandler ve HttpModule sekmesindeki elementler arasındaki ilişkiyi daha kolay a&amp;ccedil;ıklayabiliriz. Bir sayfa talebi HttpHandler' a ulaşmadan &amp;ouml;nce HttpModule' lerden ge&amp;ccedil;er. HttpHandler gerekli Html &amp;ccedil;ıktısını &amp;uuml;rettiğinde ise sonu&amp;ccedil;lar yine HttpModule' ler &amp;uuml;zerinden Asp.Net &amp;ccedil;alışma zamanı motoruna iletilir. B&amp;ouml;ylece bir sayfa i&amp;ccedil;in gerekli olan ara belleğe alma, bellekten Html &amp;ccedil;ıktısına dahil etme, session bilgisini oluşturma veya okuma, g&amp;uuml;venlik doğrulamalarını yapma gibi işlevsellikler ilgili HttpModule' ler tarafından hem taleplerde (request) hemde cevaplarda (response), ele alınabilirler.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk183_4.gif" alt="" width="330" height="398" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;ok d&amp;uuml;ş&amp;uuml;k bir ihtimallde olsa bazen kendi HttpHandler yada HttpModule' lerimizi yazmak isteyebiliriz. &amp;Ouml;rneğin istemciden &amp;ouml;zel bir dosya uzantısı ve parametre ile gelecek olan bir resim isteğini, veritabanından okuyup istemcilere html &amp;ccedil;ıktısı olarak g&amp;ouml;nderecek bir handler, yada bir cs dosyasına gelecek talep sonrası bu talebi istemciye metin formatında d&amp;ouml;nd&amp;uuml;recek olan bir handler g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir. Makalemizin bundan sonraki kısımlarında kendi HttpHandler' larımızı ve hatta HttpModule' lerimizi nasıl yazabileceğimizi incelemeye &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;p&gt;Her ne kadar kendi HttpHandler veya HttpModule tiplerimizi oluşturmak i&amp;ccedil;in d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilecek senaryo sayısı az olsada amacımız temel olarak bunları nasıl yazabileceğimizi ve Asp.Net &amp;ccedil;alışma ortamı tarafından nasıl ele alınabileceğini incelemektir. Kendi HttpHandler tiplerimizi oluşturabilmek i&amp;ccedil;in ilk olarak &lt;strong&gt;IHttpHandler&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml; (interface) implemente edecek olan bir sınıf yazmamız gerekmektedir. İlk olarak bu ve benzeri HttpHandler yada HttpModule' leri i&amp;ccedil;erisinde barındıracak bir &lt;strong&gt;Class Library&lt;/strong&gt; projesi oluşturalım. B&amp;ouml;ylece bu HttpHandler veya HttpModule tiplerimizi başka web uygulamaları i&amp;ccedil;inde kullanabiliriz. &lt;em&gt;( Hatta bunu GAC (Global Assembly Cache) i&amp;ccedil;erisine atarsak her web uygulamasının ortaklaşa erişebileceği bir dll halinede getirmiş oluruz.)&lt;/em&gt; Class Library projesinde kullanacağımız HttpHandler veya HttpModule tiplerimiz i&amp;ccedil;erisinden g&amp;uuml;ncel web i&amp;ccedil;eriklerine &lt;strong&gt;(Http Context)&lt;/strong&gt; erişebilmek i&amp;ccedil;in &lt;strong&gt;System.Web&lt;/strong&gt; referansını a&amp;ccedil;ık&amp;ccedil;a eklememiz gerekmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk183_5.gif" alt="" width="179" height="135" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi bu sınıf k&amp;uuml;t&amp;uuml;phanesi i&amp;ccedil;erisine IHttpHandler aray&amp;uuml;z&amp;uuml;n&amp;uuml; uygulayan bir sınıf dahil edelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk183_6.gif" alt="" width="563" height="432" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;IHttpHandler aray&amp;uuml;z&amp;uuml;, MyCustomHandler isimli sınıfımız i&amp;ccedil;erisine iki &amp;uuml;ye dahil eder. Bunlardan &lt;strong&gt;ProcessRequest&lt;/strong&gt; isimli metod, gelen talepleri değerlendirebileceğimiz &amp;uuml;yedir. Yani talebe g&amp;ouml;re Html i&amp;ccedil;eriğini oluşturabileceğimiz bir başka deyişle http isteğini kendi istediğimiz şekilde ele alabileceğimi yerdir. Dikkat ederseniz bu metod parametre olarak &lt;strong&gt;HttpContext&lt;/strong&gt; tipinden bir değişken almaktadır. Bu değişken sayesinde, &lt;strong&gt;Response, Request ve Server&lt;/strong&gt; nesnelerine erişebiliriz. Bu da gelen talepler HttpHandler i&amp;ccedil;erisinde değerlendirebileceğimiz anlamına gelir. &lt;strong&gt;IsReusable&lt;/strong&gt; &amp;ouml;zelliği ise sadece okunabilir bir &amp;ouml;zelliktir ve ilgili HttpHandler nesne &amp;ouml;rneğine ait referansın başka talepler i&amp;ccedil;inde kullanılıp kullanılmayacağını belirler. Şimdi kodumuzu aşağıda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi biraz daha geliştirelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Web;
+
+namespace MyHandlers
+{
+    public class MyCustomHandler:IHttpHandler
+    {
+        #region IHttpHandler Members
+        public bool IsReusable
+        {
+            get { return true; }
+        }
+
+        public void ProcessRequest(HttpContext context)
+        {
+            string isim = context.Request["Ad"];
+            context.Response.Write("&amp;lt;html&amp;gt;&amp;lt;body&amp;gt;");
+            context.Response.Write("&amp;lt;b&amp;gt; Adım : " + isim + "&amp;lt;/b&amp;gt;&amp;lt;br/&amp;gt;");
+            context.Response.Write("&amp;lt;/body&amp;gt;&amp;lt;/html&amp;gt;");
+        }
+        #endregion
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Dikkat ederseniz ProcessRequest metodu i&amp;ccedil;erisinde Request &amp;uuml;zerinden gelecek olan Ad isimli bir parametreyi alıyoruz ve basit olarak bir Html &amp;ccedil;ıktısı &amp;uuml;retiyoruz. &amp;Uuml;retilen Html &amp;ccedil;ıktısı i&amp;ccedil;in Response nesnesini kullanmaktayız. Yazmış olduğumuz bu HttpHandler t&amp;uuml;r&amp;uuml;n&amp;uuml;n bir web uygulamasında, &amp;ouml;rneğin mypx uzantılı dosyaları ele almasını istediğimizi d&amp;uuml;ş&amp;uuml;nelim. &amp;Ouml;ncelikle geliştirdiğimiz sınıf k&amp;uuml;t&amp;uuml;phanesini web projemize ekleyelim. İlk aşamada dosya tabanlı (file based) bir web sitesi geliştireceğiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk183_7.gif" alt="" width="281" height="295" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu nedenle ilk olarak web.config dosyası i&amp;ccedil;erisinde mypx uzantılı dosyaların az &amp;ouml;nce yazdığımız sınıf k&amp;uuml;t&amp;uuml;phanesi (class library) i&amp;ccedil;erisindeki MyCustomerHandler tipi tarafından ele alınacağını belirtmemiz gerekiyor. Dolayısıyla web.config i&amp;ccedil;erisinde var olan HttpHandler sekmesindeki elementler arasına yeni bir tanesini eklememiz gerekmektedir.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;system.web&amp;gt;
+    &amp;lt;httpHandlers&amp;gt;
+        &amp;lt;add path="*.mypx" verb="*" type="MyHandlers.MyCustomHandler,MyHandlers" validate="true"/&amp;gt;
+    &amp;lt;/httpHandlers&amp;gt;&lt;/pre&gt;
+&lt;p&gt;B&amp;ouml;ylece mypx uzantılı herhangibir isteği MyCustomHandler isimli sınıfa ait nesne &amp;ouml;rneği karşılayacaktır. Burada path kısmına *.mypx yazdık. B&amp;ouml;ylece mypx uzantılı herhangibir dosyaya gelecek olan talebi, type parametresi ile belirtilen sınıfa devretmiş oluyoruz. Durumu aşağıdaki g&amp;ouml;r&amp;uuml;nt&amp;uuml;de g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi test edebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk183_8.gif" alt="" width="553" height="217" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat ederseniz web sitemizde sayfam.mypx isimli bir dosya bulunmamktadır. Ancak bu dosyaya Ad isimli parametreyide i&amp;ccedil;eren bir talep geldiğinde, MyCustomHandler tarafından karşılanmaktadır. Sonu&amp;ccedil; olarak MyCustomHandler' a ait ProcessRequest metodu &amp;ccedil;ağırılmış ve buna g&amp;ouml;re bir Html &amp;ccedil;ıktısı &amp;uuml;retilmiştir. &amp;Ouml;rneğimizi doğrudan visual studio.net 2005 i&amp;ccedil;erisinde F5 ile &amp;ccedil;alıştıramayacağımızı farketmişsinizdir. Nitekim elimizde sayfam.mypx dosyası zaten yok. Dolayısıyla testimizi yaparken tarayıcı &amp;uuml;zerinden manuel olarak Url girmemiz gerekmektedir.&lt;/p&gt;
+&lt;p&gt;Dikkat edilmesi gereken bir nokta geliştirilen bu web sitesi IIS altına dağıtıldığında ne olacağıdır. Nitekim IIS' e bir şekilde mypx uzantılı dosyalara gelecek olan taleplerin Asp.Net &amp;Ccedil;alışma ortamına devredilmesi gerektiğini s&amp;ouml;ylememiz gerekmektedir. IIS' e mypx uzantılı dosyaları tanıtmadan &amp;ouml;nce, bunu bildirmediğimizde ne olacağına bakmamızda fayda var. Bunun i&amp;ccedil;in web sitemizi IIS altında yayımladığımızı d&amp;uuml;ş&amp;uuml;nelim. &amp;Ouml;rneğin MySite ismiyle yayınladığımızı farz edelim. Bu durumda sayfam.mypx?Ad=burak isimli bir talepte bulunduğumuzda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan sonucu elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk183_9.gif" alt="" width="433" height="243" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu hatanın sebebi IIS' in mypx isimli uzantılı dosyaları ne yapacağını bilememesidir. Bunun i&amp;ccedil;in IIS &amp;uuml;zerinde mypx isimli dosyayı tanıtmamız gerekmektedir. Bir başka deyişle, mypx uzantılı dosyalar i&amp;ccedil;in gelecek olan taleplerin AspNet_Isapi.dll' e devredilmesini s&amp;ouml;ylemeliyiz. Bu ama&amp;ccedil;la, IIS &amp;uuml;zerinden MySite isimli virtual directory' nin &amp;ouml;zelliklerine gidelim ve Directory kısmından Configuration sekmesini a&amp;ccedil;alım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk183_10.gif" alt="" width="597" height="571" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat ederseniz burada siteye gelebilecek talepler ve bunları değerlendirecek olan programlar ile ilgili eşleştirmeler yapılmaktadır. (Mappings) Bizim tek yapmamız gereken aşağıdaki gibi yeni bir eşleştirme eklemektir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk183_11.gif" alt="" width="429" height="243" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat ederseniz executable kısmında aspnet_isapi.dll' ini belirtiyoruz. B&amp;ouml;ylece extension kısmında belirtilen mypx isimli dosyalar i&amp;ccedil;in gelicek olan talepler, aspnet_isapi.dll tarafından ele alınabilecek. Buradan da tahmin edeceğiniz &amp;uuml;zere kendi yazdığımız HttpHandler' a kadar gelicek. Check that file exists (dosyanın var olup olamadığını kontrol et) se&amp;ccedil;eneğini kaldırmamızın nedeni ise olmayan bir mypx sayfasına gelecek olan taleperi IIS' in geri &amp;ccedil;evirmesini engellemektir. &lt;em&gt;(Bu ayarlamalar IIS 5.1 &amp;uuml;zerinde yapılmış olup IIS 6.0 i&amp;ccedil;in bazı farklılıklar olabilir.)&lt;/em&gt; Artık talebimiz &amp;ccedil;alışacaktır. &amp;Ouml;rneğin bu kez &lt;strong&gt;mypage.mypx?Ad=Selim&lt;/strong&gt; talebinde bulunduğumuzu d&amp;uuml;ş&amp;uuml;nelim. Aşağıdaki sonucu elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk183_12.gif" alt="" width="472" height="241" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Gelelim kendi HttpModule' lerimizi nasıl yazabileceğimize. Yazımızın başında bahsettiğimiz gibi HttpModule' ler ile Http Handler' lar arasında yakın bir ilişki vardır. IIS tarafından gelen her istek ilgili HttpHandler' a iletilmeden &amp;ouml;nce bazı HttpModule' ler &amp;uuml;zerinden ge&amp;ccedil;er. HttpHandler tarafından &amp;uuml;retilen Html &amp;ccedil;ıktıları ise aynı module' ler &amp;uuml;zerinden IIS' e doğru g&amp;ouml;nderilirler. HttpModule' ler &amp;ccedil;oğunlukla olay tabanlı fonksiyonellikler i&amp;ccedil;erir.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğin bir kullanıcının doğrulanması sırasında veya sonrasında &amp;ccedil;alışacak olaylar WindowsAuthenticationModule tarafından kontrol altına alınır. Biz kendi HttpModule' lerimizi oluşturduğumuzda gelen taleplerde veya giden cevaplarda ele alınabilecek module olaylarını &amp;ouml;zelliştirme şansına sahip olabiliriz. Kendi HttpModule nesnelerimizi yazabilmek i&amp;ccedil;in &lt;strong&gt;IHttpModule&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;nden t&amp;uuml;retilmiş bir sınıf yazmamız gerekmektedir. Dilerseniz makalemizde kullandığımız MyHandlers isimli sınıf k&amp;uuml;t&amp;uuml;phanesi i&amp;ccedil;erisine MyCustomHandler isimli bir tipi aşağıdaki gibi ekleyelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Web;
+
+namespace MyHandlers
+{
+    class MyCustomModule:IHttpModule
+    {
+        #region IHttpModule Members
+        public void Dispose()
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        public void Init(HttpApplication context)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+        #endregion
+    }
+}&lt;/pre&gt;
+&lt;p&gt;IHttpHandler, uygulandığı tipe iki metod dahil eder. Init ve Dispose. Init metodu &lt;strong&gt;HttpApplication&lt;/strong&gt; tipinden bir parametre almaktadır ki bu parametre sayesinde var olan HttpModule olaylarına m&amp;uuml;dahale etme, aktif Http i&amp;ccedil;eriğine ulaşma gibi imkanlara sahip olabiliriz. Dispose metodunu ise, bu sınıfa ait nesne &amp;ouml;rneği yok edilmeden &amp;ouml;nce yapmak istediğimiz kaynak temizleme işlemleri i&amp;ccedil;in kullanabiliriz. &amp;Ouml;rneğin Module i&amp;ccedil;erisinden kullanılan unmanaged(managed) kaynakların serbest bırakılması i&amp;ccedil;in ele alabiliriz. Şimdi modul&amp;uuml;m&amp;uuml;z i&amp;ccedil;erisine biraz kod yazalım ve sonu&amp;ccedil;larını incelemeye &amp;ccedil;alışalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Web;
+
+namespace MyHandlers
+{
+    class MyCustomModule:IHttpModule
+    {
+        HttpContext m_Ctx=null;
+
+        public void Init(HttpApplication context)
+        {
+            m_Ctx = context.Context; 
+            context.PreSendRequestContent+= new EventHandler(context_PreSendRequestContent);
+        }
+
+        void context_PreSendRequestContent(object sender, EventArgs e)
+        {
+            m_Ctx.Response.Write("&amp;lt;!--Bu sayfa Z şirketi tarafından &amp;uuml;retilmiştir...--&amp;gt;");
+        }
+
+        public void Dispose()
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bakın burada uygulama i&amp;ccedil;in PreSendRequestContent isimli bir olay y&amp;uuml;klenmiştir. Bu olay, HttpHandler tarafından &amp;uuml;retilen HTML i&amp;ccedil;eriği g&amp;ouml;nderilmeden &amp;ouml;nce &amp;ccedil;alışır. B&amp;ouml;ylece bu mod&amp;uuml;l&amp;uuml; kullanan bir uygulama i&amp;ccedil;erisindeki her hangibir sayfa talebinde g&amp;ouml;nderilen Http i&amp;ccedil;eriğine "Bu sayfa Z şirketi tarafından &amp;uuml;retilmiştir..." c&amp;uuml;mlesi bir yorum takısı (comment tag) olarak eklenecektir. Yazdığımız HttpModullerin ilgili web uygulaması i&amp;ccedil;erisinde ge&amp;ccedil;erli olmasını sağlamak i&amp;ccedil;in yine web.config dosyasında d&amp;uuml;zenleme yapmamız gerekmektedir. Bu ama&amp;ccedil;la, web.config dosyasına aşağıdaki gibi httpModules sekmesini dahil etmemiz ve yeni HttpModule' &amp;uuml;m&amp;uuml;z&amp;uuml; bildirmemiz yeterli olacaktır.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;httpModules&amp;gt;
+    &amp;lt;add name="MyModule" type="MyHandlers.MyCustomModule,MyHandlers"/&amp;gt;
+&amp;lt;/httpModules&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Artık bu konfigurasyon ayarlarına sahip bir web uygulamasına gelecek her talep sonrasında, &amp;uuml;retilecek olan Html i&amp;ccedil;erikleri i&amp;ccedil;in yazmış olduğumuz mod&amp;uuml;l devreye girecek ve ilgili olay metodu &amp;ccedil;alışacaktır. Bunu test etmek amacıyla herhangibir aspx sayfasını web uygulamamıza dahil edelim ve &amp;ccedil;alıştıralım. Elde edilen sayfanın i&amp;ccedil;eriğine tarayıcı penceresinden baktığımızda aşağıdakine benzer bir &amp;ccedil;ıktı elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk183_13.gif" alt="" width="505" height="541" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat ederseniz, i&amp;ccedil;eriğe bir yorum satırı eklenmiştir. Bu bilgi mesajı aslında web uygulamamıza gelecek her sayfa talebinde ge&amp;ccedil;erli olacaktır. Init metodu i&amp;ccedil;erisinde yer alan &lt;strong&gt; HttpApplication&lt;/strong&gt; nesne &amp;ouml;rneği &amp;uuml;zerinden yazabileceğimiz pek &amp;ccedil;ok olay metodu vardır. Bunlardan bir ka&amp;ccedil;ı ve ne işe yaradıkları aşağıdaki tabloda listelenmiştir.&lt;/p&gt;
+&lt;table id="table170" style="border-collapse: collapse; width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#ffffff"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td align="center" bgcolor="#336699" width="106"&gt;&lt;strong&gt; Olay (Event)&lt;/strong&gt;&lt;/td&gt;
+&lt;td align="center" bgcolor="#336699" width="592"&gt;&lt;strong&gt; İşlevi&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="106"&gt;BeginRequest&lt;/td&gt;
+&lt;td width="592"&gt;Bir talep geldiğinde tetiklenir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="106"&gt;EndRequest&lt;/td&gt;
+&lt;td width="592"&gt;Cevap istemciye g&amp;ouml;nderilmeden hemen &amp;ouml;nce tetiklenir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="106"&gt;PreSendRequestHeaders&lt;/td&gt;
+&lt;td width="592"&gt;İstemciye HTTP Header g&amp;ouml;nderilmeden hemen &amp;ouml;nce tetiklenir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="106"&gt;PreSendRequestContent&lt;/td&gt;
+&lt;td width="592"&gt;İstemciye i&amp;ccedil;erik g&amp;ouml;nderilmeden hemen &amp;ouml;nce tetiklenir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="106"&gt;AcquireRequestState&lt;span id="nsrTitle"&gt; &lt;/span&gt;&lt;/td&gt;
+&lt;td width="592"&gt;Session gibi durum nesneleri (state objects) elde edilmeye hazır hale geldiğinde tetiklenir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="106"&gt;AuthenticateRequest&lt;/td&gt;
+&lt;td width="592"&gt;Kullanıcı doğrulanmaya hazır hale geldiğinde tetiklenir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="106"&gt;AuthorizeRequest&lt;/td&gt;
+&lt;td width="592"&gt;Kullanıcının yetkileri kontrol edilmeye hazır hale geldiğinde tetiklenir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Bu olaylar dışında ele alabileceğimiz başka olaylarda vardır. &amp;Ouml;rneğin var olan diğer HttpModule' lerin i&amp;ccedil;eriklerine erişmek ve kullanmak isteyebiliriz. S&amp;ouml;z gelimi, WindowsAuthenticationModule' &amp;uuml; ele almak istersek aşağıdaki gibi bir kod par&amp;ccedil;ası geliştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Web;
+using System.Web.Security;
+
+namespace MyHandlers
+{
+    class MyCustomModule:IHttpModule
+    {
+        HttpContext m_Ctx=null;
+        WindowsAuthenticationModule authMod = null;
+
+        public void Init(HttpApplication context)
+        {
+            m_Ctx = context.Context;
+
+            authMod = (WindowsAuthenticationModule)context.Modules["WindowsAuthentication"];
+            authMod.Authenticate += new WindowsAuthenticationEventHandler(authMod_Authenticate);
+        }
+
+        void authMod_Authenticate(object sender, WindowsAuthenticationEventArgs e)
+        {
+            m_Ctx.Response.Write("&amp;lt;!--" + e.User.Identity.Name + "--&amp;gt;");
+        }
+
+        public void Dispose()
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Dikkat ederseniz, context nesnesi &amp;uuml;zerinden Modules isimli bir koleksiyona erişebilmekteyiz. Bu koleksiyon i&amp;ccedil;erisinde var olan t&amp;uuml;m HttpModule' ler yer almaktadır. Bunu debug mode' da iken g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk183_14.gif" alt="" width="599" height="345" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat ederseniz kendi geliştirdiğimiz MyCustomModule isimli nesnemiz, web.config dosyasındaki ismiyle (name niteliğinde yazdığımız MyModule) bu koleksiyon i&amp;ccedil;erisinde g&amp;ouml;r&amp;uuml;lmektedir. Kendi HttpModule' lerimizi yazmak i&amp;ccedil;in gerekli senaryoları d&amp;uuml;ş&amp;uuml;nd&amp;uuml;ğ&amp;uuml;m&amp;uuml;zde aklıma &amp;ccedil;ok fazla vakka gelmeyebilir. Ama şu &amp;ouml;rnekler fikir vermesi a&amp;ccedil;ısından ve denenmesi a&amp;ccedil;ısından yararlı olabilir. Bir web uygulamasına gelen her hangibir talepte authenticate olan kullanıcıların log dosyalarına kaydedilmesi ele alacak kendi HttpModule sınıfımızı yazabiliriz. Talep edilen url bilgisi &amp;ccedil;ok uzun olduğunda bunu ayrıştırıp (parse) başka ve daha kısa bir url olacak şekilde kullanıcıya g&amp;ouml;sterebilecek bir olay metodunu barındıracak bir HttpModule yazabiliriz vb...&lt;/p&gt;
+&lt;p&gt;Bu makalemizde kısaca HttpHandler ve HttpModule kavramlarına değinmeye &amp;ccedil;alıştık. Her ne kadar kendi Handler yada Module' lerimizi yazmayı pek tercih etmesekte, bazı durumlarda Asp.Net &amp;ccedil;alışma ortamını alt seviyede &amp;ouml;zelleştirmek isteyebiliriz. Bu gibi durumlarda &lt;strong&gt;IHttpHandler&lt;/strong&gt; ve &lt;strong&gt;IHttpModule&lt;/strong&gt; aray&amp;uuml;zlerinden t&amp;uuml;reteceğimiz tiplerden yararlanmamız gerekmektedir. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2006-12-08 04:00:00</pubDate>
+  <slug>HTTPHandler-ve-HttpModule-Kavramlarc4b1-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>aspnet</tag>
+    <tag>http-handler</tag>
+    <tag>http-module</tag>
+  </tags>
+  <categories>
+    <category>Asp.Net</category>
+  </categories>
+</post>

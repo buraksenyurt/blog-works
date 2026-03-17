@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Node.js, MongoDB, Fastify ve Swagger Kullanılan Web API Servisi Geliştirmek</title>
+  <description>Bu sefer eski örneklerden birisini masaya yatırmaya karar verdim. 07 numaralı örnekteki amacım MongoDB kullanan Node.Js tabanlı Web API servisi geliştirmekti. Ancak bunu yaparken web framework olarak sıklıkla kullandığım express yerine Fastify'ı denemiştim. Ayrcıa web api tarafından sunulan operayonların kullanıcı dostu bir şekilde sunulabilmesi için Swagger'dan yararlandım. Örneği geliştirdiğim WestWorld'de (Ubuntu 18.04 64bit) Node.js, npm ve MongoDB yüklü durumdaydı. Bu örneğe ait notların üstünden bir kez daha geçerken javascript, node.js, mongodb ve REST API bilgilerimi yeniden hatırlama fırsatı bulmuş oldum.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2019/04/07/minions2.png" alt="" /&gt;Yazılım tarafında yeni bir şeyler &amp;ouml;ğrenmeye &amp;ccedil;alışmak hayatımın standart rit&amp;uuml;elleri arasında. Bu d&amp;ouml;ng&amp;uuml; i&amp;ccedil;erisinde yaşamak en b&amp;uuml;y&amp;uuml;k keyiflerimden birisi. Tabii bu d&amp;ouml;ng&amp;uuml;n&amp;uuml;n en &amp;ouml;nemli par&amp;ccedil;alarından birisi masabaşında yapılan kodlama &amp;ccedil;alışmaları. WestWorld ve son zamanlardaki g&amp;ouml;zdem Ahch-To başlıca yardımcılarım. &amp;Ccedil;alışmalar değişik diyarlardan geliyor.&amp;nbsp;Bazen&amp;nbsp;konular arasında keskin ge&amp;ccedil;işler yapıyorum. Bir g&amp;uuml;n Node.js d&amp;uuml;nyasında debelenirken bir başka g&amp;uuml;n daha aşina olduğum .Net Core kıyılarında y&amp;uuml;r&amp;uuml;y&amp;uuml;şe &amp;ccedil;ıkıyorum.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Ancak konular ne kadar değişirse değişsin bazı şeyler hep aynı kalıyor. Bu sebepten kullandığım &amp;ouml;rneklerdeki veri odaklı varlıklar zamanla tekrar &amp;ouml;n&amp;uuml;me geliyor. Star Wars gezegenleri, &amp;uuml;nl&amp;uuml; d&amp;uuml;ş&amp;uuml;n&amp;uuml;rlerin &amp;ouml;zl&amp;uuml; s&amp;ouml;zleri, yapılacaklar listesindeki maddeler, emektar Northwind ve AdventureWorks veri tabanları, m&amp;uuml;zik gruplarının sevilen alb&amp;uuml;mleri, Marvel karakterleri, basketbol yıldızları ve Minion'lar :) İşte yine onlarla karşı karşıyayım. Bu sefer eski &amp;ouml;rneklerden birisini masaya yatırmaya karar verdiğimde rastladım onlara.&lt;/p&gt;
+&lt;p&gt;Cumartesi geceleri &amp;ccedil;alışmaları kapsamında ele aldığım&amp;nbsp;&lt;a href="https://github.com/buraksenyurt/saturday-night-works/tree/master/No%2007%20-%20NoMoFaS" target="_blank"&gt;07 numaralı &amp;ouml;rnekteki amacım&lt;/a&gt; MongoDB kullanan Node.Js tabanlı basit bir Web API servisi geliştirmekti. Ancak bunu yaparken web framework olarak sıklıkla kullandığım express yerine fastify paketini tercih etmiştim. Ayrcıa web api tarafından sunulan operayonların geliştirici dostu bir aray&amp;uuml;zle sunulması&amp;nbsp;i&amp;ccedil;in Swagger'dan yararlandım &lt;em&gt;(Web API geliştiricilerinin artık olmazsa olmazlarından diyebiliriz)&lt;/em&gt; &amp;Ouml;rneği Visual Studio Code yardımıyla geliştirdiğim WestWorld'de &lt;em&gt;(Ubuntu 18.04 64bit)&lt;/em&gt; Node.js, npm&lt;em&gt;(Node paket y&amp;ouml;netimi aracı)&lt;/em&gt; ve MongoDB&lt;em&gt;(NoSQL veri tabanımız)&lt;/em&gt; y&amp;uuml;kl&amp;uuml;yd&amp;uuml;. Bu &amp;ouml;rneğe ait notların &amp;uuml;st&amp;uuml;nden bir kez daha&amp;nbsp;ge&amp;ccedil;erek bilgilerimi yeniden hatırlama fırsatı bulmuş oldum.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;MongoDB'yi Ubuntu sistemine kurmak i&amp;ccedil;in &lt;a href="https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/" target="_blank"&gt;şu adresteki&lt;/a&gt;&amp;nbsp;bilgilerden yararlanabiliriz. Ama isterseniz MongoDB'nin konu ile ilgili &lt;a href="https://hub.docker.com/_/mongo" target="_blank"&gt;docker imajını da&lt;/a&gt;&amp;nbsp;ele alabilirsiniz.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;Klas&amp;ouml;r Ağacı ve Paketler&lt;/h2&gt;
+&lt;p&gt;Uygulamanın klas&amp;ouml;r yapısını ilk etapta aşağıdaki gibi kurguladım. &amp;Ccedil;ok basit anlamda bir MVC&lt;em&gt;(Model View Controller)&lt;/em&gt;&amp;nbsp;deseni olduğunu varsayabiliriz. Her ne kadar ortada view isimli bir klas&amp;ouml;r olmasa da, y&amp;ouml;nlendirme işlemlerinin ele alındığı routes bu anlamda d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Son satırda yer alan npm init komutu ile node operasyonu başlatılmış oluyor.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;mkdir Minion-API
+cd Minion-API
+mkdir src
+cd src
+mkdir models
+mkdir controllers
+mkdir routes
+mkdir config
+touch index.js
+npm init&lt;/pre&gt;
+&lt;p&gt;Uygulamanın pek tabii ihtiya&amp;ccedil; duyduğu belli başlı paketler var. Bunları npm aracı ile aşağıdaki terminal komutu yardımıyla y&amp;uuml;kleyebiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;npm i nodemon mongoose fastify fastify-swagger boom&lt;/pre&gt;
+&lt;p&gt;nodemon'u&amp;nbsp;kod dosyalarından birisinde değişiklik olduğunda node sunucusunu otomatik olarak yeniden başlatmak i&amp;ccedil;in kullanıyoruz. &amp;Ouml;zellikle geliştirme safhasında &amp;ccedil;ok işe yarayan bir monitoring fonksiyonelliği olduğunu ifade edebilirim. S&amp;uuml;rekli uygulamayı sonlandırıp yeniden başlatmaya gerek bırakmayan bir &amp;ouml;zellik. Bu arada kullanımı i&amp;ccedil;in package.json dosyasındaki start komutunu aşağıdaki gibi değiştirmemiz gerekiyor.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;"start": "./node_modules/nodemon/bin/nodemon.js ./src/index.js"&lt;/pre&gt;
+&lt;p&gt;mongoose, mongodb ile konuşabilmek i&amp;ccedil;in gereken paketimiz. Fastify, Hapi ve Express'ten ilham alınarak yazılmış olduk&amp;ccedil;a hızlı bir web framework olarak ifade edilmekte. İlk kez bu &amp;ouml;rnek &amp;ccedil;alışma kapsamında tanıştığımı itiraf edeyim. API dok&amp;uuml;mantasyonu i&amp;ccedil;in Fastify'a Swagger desteği veren Fastify-swagger mod&amp;uuml;l&amp;uuml; kullanılıyor. Fastify route tanımlamaları Swagger ile otomatik olarak ilişkilendirilecekler&lt;em&gt;(Koddaki izleri takip edin)&lt;/em&gt; HTTP hata mesajlarını g&amp;ouml;stermek i&amp;ccedil;in boom isimli utility paketinden yararlanılıyor&lt;em&gt;(Bu arada &lt;a href="https://www.npmjs.com/package/boom" target="_blank"&gt;ilgili paket&lt;/a&gt;&amp;nbsp;bir s&amp;uuml;re &amp;ouml;nce devre dışı bırakılmış. &lt;a href="https://github.com/hapijs/boom" target="_blank"&gt;Şu adresten g&amp;uuml;ncel s&amp;uuml;r&amp;uuml;m&amp;uuml;ne&lt;/a&gt; ulaşabiliriz)&lt;/em&gt;&lt;/p&gt;
+&lt;h2&gt;Kod Tarafı&lt;/h2&gt;
+&lt;p&gt;Uygulama veri odaklı bir REST servis olarak &amp;ouml;zetlenebilir. Verinin tutulduğu taraf MongoDB. Pop&amp;uuml;ler bir dok&amp;uuml;man bazlı NoSQL sistemi olduğunu biliyoruz. Verinin kod tarafında şemalar yardımıyla modellenmesi m&amp;uuml;mk&amp;uuml;n. &amp;Ouml;rneğe g&amp;ouml;re mongodb dok&amp;uuml;manlarına ait şemaları models klas&amp;ouml;r&amp;uuml;nde tutuyoruz &lt;em&gt;(minion.js) &lt;/em&gt;Veri ile ilgili ekleme, g&amp;uuml;ncelleme, silme veya okuma gibi CRUD operasyonlarını controllers i&amp;ccedil;erisinde karşılıyoruz.&amp;nbsp;minioncontroller.js&amp;nbsp;minion modeli ile ilgili Controller tipimiz.&lt;em&gt;&amp;nbsp;&lt;/em&gt;HTTP taleplerini ele aldığımız yer ise routes klas&amp;ouml;r&amp;uuml;ndeki index.js dosyası. Bu dosya, HTTP taleplerini aldığında &lt;em&gt;(&amp;ouml;rneğin yeni bir satır eklenmesi veya t&amp;uuml;m listenin &amp;ccedil;ekilmesi gibi)&lt;/em&gt; bunları Controller sınıfına iletmekte. Controller sınıfı da esasen MongoDb ve model sınıfı ile işbirliği i&amp;ccedil;erisinde ilgili talepleri karşılamakta.&lt;/p&gt;
+&lt;p&gt;minion.js;&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;const mongoose = require('mongoose')
+
+// mini isimli şemayı tanımladık. 
+// Minion filmindeki bir karakteri temsil ediyor
+const minionSchema = new mongoose.Schema({
+    nickname: String,
+    age: Number,
+    gender: String
+})
+
+module.exports = mongoose.model('Minion', minionSchema)&lt;/pre&gt;
+&lt;p&gt;minioncontroller.js;&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;const boom = require('boom') //bomba gibi bir hata mesajı y&amp;ouml;neticisi
+const Minion = require('../models/minion')
+
+// yeni bir Minion karakteri eklemek i&amp;ccedil;in
+exports.add = async (req, res) =&amp;gt; {
+    try {
+        // Minion bilgilerini request'in body'sinden aldık
+        const mini = new Minion(req.body)
+        return mini.save() //kaydedip sonucu geriye d&amp;ouml;nd&amp;uuml;rd&amp;uuml;k
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+
+// bir Minion karakterini g&amp;uuml;ncellemek i&amp;ccedil;in
+exports.update = async (req, res) =&amp;gt; {
+    try {
+        // g&amp;uuml;ncelleme işlemini ger&amp;ccedil;ekleştir
+        const result = await Minion.findByIdAndUpdate(req.params.id, req.body, { new: true })
+        return result
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+
+// bir Minion karakterini silmek i&amp;ccedil;in
+exports.delete = async (req, res) =&amp;gt; {
+    try {
+        // query parametresi olarak gelen id'den ilgili Minion bul ve kaldır
+        const result = await Minion.findByIdAndRemove(req.params.id)
+        return result
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+
+// id bilgisinden Minion bul
+exports.getSingle = async (req, res) =&amp;gt; {
+    try {
+        const result = await Minion.findById(req.params.id)
+        return result
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}
+
+// ne kadar Minion varsa geriye d&amp;ouml;nd&amp;uuml;r
+exports.getAll = async (req, res) =&amp;gt; {
+    try {
+        const result = await Minion.find()
+        console.log(result)
+        return result
+    } catch (err) {
+        throw boom.boomify(err)
+    }
+}&lt;/pre&gt;
+&lt;p&gt;routes/index.js;&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;// controller tipini i&amp;ccedil;eriye tanımladık
+const minionController = require('../controllers/minionController')
+const help = require('./swagger-help/minionApi') // swagger yardım dok&amp;uuml;manının yeri s&amp;ouml;ylendi
+
+// HTTP Get, Post, Put, Delete tanımlamalarını yapıyoruz
+const handlers = [
+    {
+        method: 'GET', // alt satırdaki adrese HTTP Get talebi gelirse
+        url: '/api/minions',
+        handler: minionController.getAll, //controller'daki getAll metoduna y&amp;ouml;nlendir
+        schema: help.getAllMinionSchema
+    },
+    {
+        method: 'GET', //alt satırdaki adrese HTTP Get talebi gelirse
+        url: '/api/minions/:id',
+        handler: minionController.getSingle //controller'daki getSingle metoduna y&amp;ouml;nlendir
+    },
+    {
+        method: 'POST', //alttaki adres i&amp;ccedil;in POST talebi gelirse
+        url: '/api/minions',
+        handler: minionController.add, // yeni bir mini ekleme isteği nedeniyle controller'daki add metoduna y&amp;ouml;nlendir
+        schema: help.addMinionSchema
+    },
+    {
+        method: 'PUT', //aşağıdaki adres i&amp;ccedil;in PUT talebi gelirse
+        url: '/api/minions/:id',
+        handler: minionController.update //g&amp;uuml;ncelleme sebebiyle update metoduna y&amp;ouml;nlendir
+    },
+    {
+        method: 'DELETE', //aşağıdaki adres i&amp;ccedil;in HTTP Delete talebi gelirse
+        url: '/api/minions/:id',
+        handler: minionController.delete //miniyi silmek i&amp;ccedil;in controller'daki delete metodunu &amp;ccedil;ağır
+    }
+]
+
+module.exports = handlers // handlers isimli array'deki metodları mod&amp;uuml;l dışına a&amp;ccedil;&lt;/pre&gt;
+&lt;p&gt;Web API fonksiyonelliklerini hoş bir şekilde g&amp;ouml;stermek ve daha kullanışlı testler yaptırabilmek i&amp;ccedil;in Swagger ile ilgili ayarlamalar yapmak yerinde olur. Bunun i&amp;ccedil;in config klas&amp;ouml;r&amp;uuml;ndeki swagger.js dosyasını kullanabiliriz.&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;exports.options = {
+    routePrefix: '/help',
+    exposeRoute: true,
+    swagger: {
+      info: {
+        title: 'Minions API',
+        description: 'Minion ailesi ile ilgili y&amp;ouml;netsel işlemler...',
+        version: '1.0.0'
+      },
+      externalDocs: {
+        url: 'https://swagger.io',
+        description: 'Daha fazla bilgi i&amp;ccedil;in buraya gidin'
+      },
+      host: 'localhost',
+      schemes: ['http'],
+      consumes: ['application/json'],
+      produces: ['application/json']
+    }
+  }&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere help bir adres &amp;ouml;neki olarak belirtilmiş durumda &lt;em&gt;(ama değiştirebilirsiniz)&lt;/em&gt; Yardım sayfasına ait başlık, a&amp;ccedil;ıklama ve servisin versiyon bilgileri info elementinde belirtiliyor. İstenirse servisle ilgili harici dok&amp;uuml;mantasyonlara y&amp;ouml;nlendirmelerde de bulunulabilinir. Bu, externalDocs isimli kısımda tanımlanmakta. Takip eden b&amp;ouml;l&amp;uuml;mlerde host, schema ve content type bilgileri belirtilmekte.&amp;nbsp;Servisin ilgili operayonlarına yapılacak GET ve POST gibi &amp;ccedil;ağrılara ait yardımcı bilgilerse routes/swagger-help klas&amp;ouml;r&amp;uuml;ndeki js dosyası i&amp;ccedil;erisinde yazıyor. Aşağıdaki &amp;ouml;rnek kod par&amp;ccedil;asına g&amp;ouml;re POST ve GET kullanımları i&amp;ccedil;in bazı tanımlamalar yapılmış durumda. Bu tanımlamalar yardım sayfasının &amp;ouml;ny&amp;uuml;z&amp;uuml;ne yansıtılmakta.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;exports.addMinionSchema = {
+    description: 'Yeni minionlar ekle',
+    tags: ['minions'],
+    summary: 'Minionlar ailesine yeni bir mini eklemek i&amp;ccedil;in',
+    body: {
+        type: 'object',
+        properties: {
+            nickname: { type: 'string' },
+            age: { type: 'number' },
+            gender: { type: 'string' }
+        }
+    },
+    response: {
+        200: {
+            description: 'Eklendi',
+            type: 'object',
+            properties: {
+                _id: { type: 'string' },
+                nickname: { type: 'string' },
+                age: { type: 'number' },
+                gender: { type: 'string' },
+                __v: { type: 'number' }
+            }
+        }
+    }
+}
+
+exports.getAllMinionSchema = {
+    description: 'T&amp;uuml;m minionlar',
+    tags: ['minions'],
+    summary: 'T&amp;uuml;m minionları getirmek i&amp;ccedil;in kullanılır',
+    response: {
+        200: {
+            description: 'Liste başarılı bir şekilde &amp;ccedil;ekilir',
+            type: 'object',
+            properties: {
+                _id: { type: 'string' },
+                nickname: { type: 'string' },
+                age: { type: 'number' },
+                gender: { type: 'string' },
+                __v: { type: 'number' }
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Dosya bilgilerine g&amp;ouml;re localhost:4005/help adresine talepte bulunduğumuzda&amp;nbsp;ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan yardım sayfası ile karşılaşırız. Tam bir geliştirici dostu &amp;ouml;yle değil mi?&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/07/credit_2.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Pek tabii node.js uygulamasını ayağa kaldıran ana mod&amp;uuml;le ait kodlarımız da olduk&amp;ccedil;a &amp;ouml;nemli. Proje iskeletine g&amp;ouml;re routes klas&amp;ouml;r&amp;uuml; altındaki mod&amp;uuml;lleri Fastify ile ilişkilendirmek gerekiyor. Bunun i&amp;ccedil;in bir forEach d&amp;ouml;ng&amp;uuml;s&amp;uuml; kullanılmakta &lt;em&gt;(Fastify'ın Swagger ile ilişkilendirildiği yeri g&amp;ouml;rebildiniz mi?)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;//gerekli mod&amp;uuml;ller y&amp;uuml;klenir
+const fastify = require('fastify')({ logger: true })
+const routes = require('./routes') //route mod&amp;uuml;llerinin yeri s&amp;ouml;ylendi
+const swagger = require('./config/swagger') //swager konfigurasyonunun yeri s&amp;ouml;ylendi
+fastify.register(require('fastify-swagger'), swagger.options) // swagger, fastify i&amp;ccedil;in kayıt edildi
+const mongoose = require('mongoose')
+
+// routes klas&amp;ouml;r&amp;uuml;ndeki t&amp;uuml;m mod&amp;uuml;lleri fastify ile ilişkilendiriyoruz
+routes.forEach((route, index) =&amp;gt; {
+    fastify.route(route)
+})
+
+// mongodb'ye bağlanılıyor. minions isimli veritabanı yoksa oluşturulacaktır
+mongoose.connect('mongodb://localhost/animation', { useNewUrlParser: true })
+    .then(() =&amp;gt; console.log('MongoDB ile iletişim kuruldu'))
+    .catch(err =&amp;gt; console.log(err))
+
+// sunucu 4005 nolu porttan yayın yapacak.
+// asenkron &amp;ccedil;alışır
+const online = async () =&amp;gt; {
+    try {
+        await fastify.listen(4005)
+        fastify.swagger()
+        fastify.log.info(`Sunucu ${fastify.server.address().port} adresi &amp;uuml;zerinden dinlemede`)
+    } catch (err) {
+        fastify.log.error(err)
+        process.exit(1)
+    }
+}
+online()&lt;/pre&gt;
+&lt;p&gt;Kodun devam eden kısmında mongodb ile bağlantı sağlanıyor. Sonrasındaysa online isimli bir fonksiyonun asenkron olarak &amp;ccedil;ağırıldığını g&amp;ouml;r&amp;uuml;yoruz. listen metoduna yapılan isteğe g&amp;ouml;re uygulamamız sonlandırılıncaya kadar 4005 numaralı port &amp;uuml;zerinden dinlemede kalacak. Herhangibir hata olması ihtimaline karşın bir try...catch bloğu kullanılıyor. Gelelim &amp;ccedil;alışma zamanına.&lt;/p&gt;
+&lt;h2&gt;&amp;Ccedil;alışma Zamanı Testleri&lt;/h2&gt;
+&lt;p&gt;Elbette ilk olarak mongodb servisini &amp;ccedil;alıştırmak lazım. Ardından node uygulaması ayağa kaldırılabilir. İki ayrı terminal penceresi a&amp;ccedil;ılarak ilerlenebilir ki ben &amp;ouml;rneği bu şekilde denemiştim.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;mongod
+npm start&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/07/credit_1.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere ekrana gayet hoş log'lar da d&amp;uuml;ş&amp;uuml;yor. Testler i&amp;ccedil;in curl veya pop&amp;uuml;ler ara&amp;ccedil;lardan olan Postman kullanılabilir. Ben bu tip &amp;ccedil;alışmalarda servis &amp;ccedil;alışabilirliğini hızlı ve kolay bir şekilde test etmek i&amp;ccedil;in Postman veya SoapUI gibi ara&amp;ccedil;lardan yararlanıyorum.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğimize yeniden odaklanırsak;&lt;/p&gt;
+&lt;p&gt;Yeni bir minion eklemek i&amp;ccedil;in http://localhost:4005/api/minions adresine g&amp;ouml;vdesinde JSON formatında i&amp;ccedil;eriğe sahip bir talep g&amp;ouml;ndermek yeterli.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;{
+"nickname":"Agnes Gru",
+"age":5,
+"gender":"Female"
+}&lt;/pre&gt;
+&lt;p&gt;Eklenen kayıtlara ait benzersiz ID değerleri tahmin edileceği &amp;uuml;zere MongoDB tarafından otomatik olarak &amp;uuml;retilmekte. ID değerleri veri silme ve g&amp;uuml;ncelleme operasyonları i&amp;ccedil;in &amp;ouml;nemli&amp;nbsp;arama kriterlerinden. Aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde &amp;uuml;stteki &amp;ccedil;ağrı sonu&amp;ccedil;larını g&amp;ouml;rebiliriz. Agnes başarılı bir şekilde eklenmiş durumda.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/07/credit_3.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bir ka&amp;ccedil; minion daha ekledikten sonra bunların g&amp;uuml;ncel listesini elde etmek i&amp;ccedil;in http://localhost:4005/api/minions adresine HTTP Get talebini yollamak yeterli.&amp;nbsp;Belli bir minion'u elde etmek i&amp;ccedil;inse MongoDb'nin verdiği ID bilgisini kullanabiliriz. &amp;Ouml;rneğin, http://localhost:4005/api/minions/5c1581e579140d6969b5951f talebi i&amp;ccedil;in ş&amp;ouml;yle bir sonu&amp;ccedil; d&amp;ouml;nebilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/04/07/credit_4.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Benzer şekilde aynı adresi PUT metodu ile kullanıp BODY kısmında yeni minion bilgilerini JSON formatında g&amp;ouml;ndererek g&amp;uuml;ncelleme işlemini de ger&amp;ccedil;ekleştirebiliriz. Bu ve silme operasyonlarını &amp;ouml;rneği tamamlayıp denemenizi &amp;ouml;neririm.&lt;/p&gt;
+&lt;h2&gt;Ben Neler &amp;Ouml;ğrendim?&lt;/h2&gt;
+&lt;p&gt;Bu &amp;ccedil;alışmaya tekrardan d&amp;ouml;nmek benim i&amp;ccedil;in faydalı oldu. Sonu&amp;ccedil;ta s&amp;uuml;rekli gelişen yazılım d&amp;uuml;nyasında bir şeylerin ucundan tutabilmek i&amp;ccedil;in geriye d&amp;ouml;n&amp;uuml;k &amp;ccedil;alışmaları arada bir hatırlamak gerekiyor. Ben bu yazı i&amp;ccedil;in aşağıdaki kazanımları elde ettiğimi not almışım.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Web &amp;ccedil;atısı i&amp;ccedil;in express yerine Fastify'ı nasıl kullanabileceğimi&lt;/li&gt;
+&lt;li&gt;nodemon'un &amp;ccedil;alışma zamanına getirdiği rahatlığı&lt;/li&gt;
+&lt;li&gt;mongodb'de temel veri işlemlerinin node.js tarafında mongoose ile nasıl kodlanacağını&lt;/li&gt;
+&lt;li&gt;Swagger ile API aray&amp;uuml;z&amp;uuml;n&amp;uuml;n geliştirici dostu hale&amp;nbsp;getirilmesini&lt;/li&gt;
+&lt;li&gt;Postman ile basit REST testlerinin yapılmasını&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir &lt;a href="https://github.com/buraksenyurt/saturday-night-works" target="_blank"&gt;Saturday Night Works&lt;/a&gt; macerasının daha sonuna. Bu sefer &lt;a href="https://github.com/buraksenyurt/saturday-night-works/tree/master/No%2007%20-%20NoMoFaS" target="_blank"&gt;eski maceralardan birisini&lt;/a&gt; bloguma not olarak d&amp;uuml;şmeye &amp;ccedil;alıştım. Birka&amp;ccedil; ay &amp;ouml;ncesinden kalma bir &amp;ccedil;alışma olsa da &amp;ouml;rneğin &amp;uuml;st&amp;uuml;nden bir kere daha ge&amp;ccedil;mek, kodları yeniden &amp;ccedil;alıştırmayı denemek ve yazılanları incelemek unuttuklarımı hatırlamama yardımcı oldu. Sonu&amp;ccedil; olarak bu &amp;ccedil;alışma kapsamında node.js ile MongoDB bazlı bir CRUD API servisi geliştirmeye &amp;ccedil;alıştığımızı &amp;ouml;zetleyebiliriz. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2019-05-12 21:45:00</pubDate>
+  <slug>node-js-mongodb-fastify-ve-swagger-kullanilan-web-api-servisi-gelistirmek</slug>
+  <tags>
+    <tag>nodejs</tag>
+    <tag>mongodb</tag>
+    <tag>mongoose</tag>
+    <tag>fastify</tag>
+    <tag>swagger</tag>
+    <tag>web-api</tag>
+    <tag>rest</tag>
+    <tag>web-service</tag>
+    <tag>postman</tag>
+    <tag>nodemon</tag>
+    <tag>async</tag>
+    <tag>routers</tag>
+  </tags>
+  <categories>
+    <category>Node.js</category>
+  </categories>
+</post>

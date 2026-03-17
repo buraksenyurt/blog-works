@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Switch Case Kullanmadan Kod Yazılabilir mi?</title>
+  <description>Bu yazıda switch case kullanmadan nasıl kod yazabileceğimizi anlamaya çalışacağız. İşin içerisine SOLID(Single Responsibility, Open Closed, Liskov Substituion, Interface Segregation, Dependency Inversion) ilkelerinden open-closed principle ve tasarım kalıplarından Strateji girecek. Eğlenceli olduğu kadar Sonarqube bulgularını memnun edecek bir kod parçasını nasıl geliştirebileceğimizi göreceğiz.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2019/12/strategy_cover.jpg" alt="" /&gt;İnsanoğlu yağmurlu bir pazar g&amp;uuml;n&amp;uuml; evden &amp;ccedil;ıkıp ne yapacağını bilemezken ne hakla &amp;ouml;l&amp;uuml;ms&amp;uuml;zl&amp;uuml;kten bahseder.&amp;nbsp;Bir yazara ait olan bu c&amp;uuml;mleyi sevgili Serdar Kuzuloğlu'nun yakın zamanda izlediğim s&amp;ouml;yleşisinden not almışım. İnsanlığın &amp;ouml;mr&amp;uuml;n&amp;uuml; uzatmaya &amp;ccedil;alışması ile ilgili bir konuya atıfta bulunurken ifade etmişti. Oysa karşımızda duran ekolojik denge ve iklim problemleri, yakın gelecekte&lt;em&gt;(2025 deniyor)&lt;/em&gt; d&amp;uuml;nya n&amp;uuml;fusunun 1 milyar 250 milyon kadarının i&amp;ccedil;ilebilir su kaynaklarına erişemeyeceğini işaret etmekte. Lakin bundan etkilenmeyecek olan ve asıl &amp;ouml;mr&amp;uuml;n&amp;uuml; uzatmak isteyen d&amp;uuml;nya n&amp;uuml;fusunun en zengin %1i, s&amp;ouml;z konusu kıtlığın yaratacağı sorunlardan ve başka felaketlerden korunmak i&amp;ccedil;in kendisine dev sığınaklar inşa ediyor, adalar satın alıyormuş. Ger&amp;ccedil;ekten anlaşılması &amp;ccedil;ok zor ve bir o kadar da karmaşık bir durum değil mi? Bu distopik senaryo bir kenara dursun biz geleceğin iyi şeyler getireceğini &amp;uuml;mit ederek gelişmeye devam edelim.&lt;/p&gt;
+&lt;p&gt;Bazen &amp;uuml;zerinde &amp;ccedil;alıştığımız Legacy sistemlerin biriktirdiği teknik bor&amp;ccedil;lar da aynen bu distopik senaryoda olduğu gibi bizi kara kara d&amp;uuml;ş&amp;uuml;nd&amp;uuml;r&amp;uuml;r. Bunun&amp;nbsp;&amp;ouml;nemli sebeplerinden birisi teknik bor&amp;ccedil;lanma konusundaki bilin&amp;ccedil;sizliğimizdir. Ancak benim farklı bir teorim var. İtiraf etmeliyim ki programlama dillerini bazen &amp;ccedil;ok yanlış bir bi&amp;ccedil;imde&amp;nbsp;&amp;ouml;ğreniyoruz. &amp;Ouml;zellikle nesne y&amp;ouml;nelimli dillerde bu daha&amp;nbsp;fazla &amp;ouml;ne &amp;ccedil;ıkıyor.&lt;/p&gt;
+&lt;p&gt;İlk &amp;ouml;ğrendiğiniz nesne y&amp;ouml;nelimli programlama dilini d&amp;uuml;ş&amp;uuml;n&amp;uuml;n. &amp;Ccedil;oğunlukla değişken tanımlamaları ile başlayan, karar yapıları ve d&amp;ouml;ng&amp;uuml;lerle devam eden bir&amp;nbsp;&amp;ouml;ğretiyi takip ederiz.&amp;nbsp;Bende&amp;nbsp;genellikle bir programlama dilini tanırken bu yolu tercih ediyorum. Lakin tecr&amp;uuml;bemiz artıp&amp;nbsp;nesne y&amp;ouml;nelimli dil bilgimizin yanına tasarım kalıpları ile SOLID&lt;em&gt;(Single Responsibility, Open Closed, Liskov Substitution, Interface Segregation, Dependency Inversion)&amp;nbsp;&lt;/em&gt;gibi ilkeleri de ekleyince&amp;nbsp;başka bir dili &amp;ouml;ğrenirken karar yapılarının &amp;uuml;zerinde durmalı mıyız&amp;nbsp;tartışabiliriz.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;yle ki temiz kodlama ilkeleri bir &amp;ccedil;ok halde switch-case/if-else gibi karar yapılarını kullanmadan kod yazmamız gerektiğini &amp;ouml;ğ&amp;uuml;tl&amp;uuml;yor. Şimdi kısa bir s&amp;uuml;re i&amp;ccedil;in ilgilendiğiniz koda veya projeye bakın. Bir switch-case/if-else bloğu arayın. Ş&amp;ouml;yle kallavi olanlardan bulursanız harika. Mesela case bloklarının i&amp;ccedil;erisinde bol miktarda if-else ifadeleri de olsun. Tam bir kararsızlıklar abidesinin ekranın &amp;uuml;st kısmından aşağıya doğru ilerlediğini ama t&amp;uuml;m bu hengameyi i&amp;ccedil;inde barındıran metodun ger&amp;ccedil;ekten işe yarar bir şeyler yaptığını farz edin. Şimdi derin bir nefes alın ve o kod par&amp;ccedil;asını switch-case olmadan nasıl yazabileceğinizi bulmaya &amp;ccedil;alışın.&lt;/p&gt;
+&lt;p&gt;Bu noktaya nasıl mı geldim? Pek tabii bir s&amp;uuml;redir hayatımızda &amp;ouml;nemli bir yere sahip olan statik kod analiz aracı Sonarqube sayesinde. Son g&amp;uuml;nlerde Cognitive Complexity&amp;nbsp;&lt;em&gt;(Kavramsal Karmaşıklık desek yeridir)&lt;/em&gt; değeri ne yazık ki tavan yapmış sınıflar ve &amp;uuml;yeleri arasında gezinmekteyiz. Kullandığımız Sonarqube metriklerine g&amp;ouml;re bir metodun Cognitive Complexity değerinin 15 puanı aşmaması bekleniyor ancak 200l&amp;uuml; değerleri ge&amp;ccedil;en&amp;nbsp;fonksiyonlar var.&amp;nbsp;Complexity değerinin y&amp;uuml;ksek olması kodun okunurluğu, anlaşılması, y&amp;ouml;netimi, bakımı ve test edilebilirliği noktasında &amp;ccedil;ok zayıf olduğu olduğu anlamına gelir. Bu değeri arttıran bir &amp;ccedil;ok bulgu var. Meşhur olanlarından bir tanesi de fazla sayıda switch-case ifadesinin kullanılması.&amp;nbsp;Aslında Sonarqube'a ait aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; konu hakkında biraz daha fazla fikir verebilir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Kavramsal karmaşıklık değeri, temel programlama yapılarının kod i&amp;ccedil;erisindeki kullanımları i&amp;ccedil;in belirlenmiş ağırlık değerleri baz&amp;nbsp;alınarak hesaplanmaktadır. S&amp;ouml;z gelimi if-then-else i&amp;ccedil;in 2, for d&amp;ouml;ng&amp;uuml;s&amp;uuml; i&amp;ccedil;in 3, eş zamanlı &amp;ccedil;alışan paralel kod par&amp;ccedil;aları i&amp;ccedil;in 4 ağırlık puanı ele alınır. Bu değerlere metodlara aktarılan ve &amp;ccedil;ıkan parametre sayıları gibi kriterler de eklenerek fonksiyonun karmaşıklığı hakkında sayısal bir bilgi elde edilir.&amp;nbsp;Cognitive Complexity puanlamasına etki eden kriterler i&amp;ccedil;in Sonarqube'un &lt;a href="/admin/app/editor/Complexity değerinin y&amp;uuml;ksek olması kodun y&amp;ouml;netimi, bakımı ve test edilebilirliğinin zor olduğu anlamına gelmektedir." target="_blank"&gt;şu adresinden&lt;/a&gt; yararlanabilirsiniz ancak olay sanıldığı kadar basit değil. İşin i&amp;ccedil;erisinde Matematik form&amp;uuml;ller de var ;)&amp;nbsp;&lt;a href="https://ieeexplore.ieee.org/document/8253447" target="_blank"&gt;IEEE'nin 2018 basımı şu dok&amp;uuml;manında&lt;/a&gt; &amp;ccedil;ok daha fazlasını bulabilirsiniz.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/12/strategy_pattern_1.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Buradaki en &amp;ouml;nemli sorun metodun bulunduğu sınıfın SOLID ilkelerindeki Open-Closed prensibini ihlal etmesi. Bu ilkeye g&amp;ouml;re bir nesnenin genişletilmeye&amp;nbsp;a&amp;ccedil;ık değiştirilmeye&amp;nbsp;kapalı olması istenir. "Bunu bir &amp;ouml;rnekle anlamaya &amp;ccedil;alışsak nasıl olur?" diyorum i&amp;ccedil;imden :) &amp;Ouml;yleyse gelin aşağıdaki kod par&amp;ccedil;asını mercek altına alalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+
+namespace Sonarqube.Tests
+{
+    public enum ProviderDirection
+    {
+        Kafka,
+        Rabbit,
+        Redis
+    }
+
+    class Program
+    {
+        static void Main()
+        {
+            #region Klasik kullanım
+
+            RoleProvider.Ping(ProviderDirection.Kafka,"Birr bilmecem var &amp;ccedil;ocuklar...");
+
+            #endregion
+        }
+    }
+
+    #region Birinci Durum (Complexity değerini y&amp;uuml;kselten switch-case kullanımı -Temsili)
+	
+    public static class RoleProvider
+    {
+        public static void Ping(ProviderDirection target,string message)
+        {
+            switch (target)
+            {
+                case ProviderDirection.Kafka:
+                    Console.WriteLine("Kafka-&amp;gt;{0}",message);
+                    break;
+                case ProviderDirection.Rabbit:
+                    Console.WriteLine("Rabbit MQ-&amp;gt;{0}",message);
+                    break;
+                case ProviderDirection.Redis:
+                    Console.WriteLine("Redis-&amp;gt;{0}",message);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    #endregion
+}&lt;/pre&gt;
+&lt;p&gt;Olayı basit bir şekilde&amp;nbsp;analiz etmek i&amp;ccedil;in az sayıda case ifadesi kurguladık. Aslında tertemiz bir kod par&amp;ccedil;amız var. RoleProvider sınıfı i&amp;ccedil;erisindeki Ping metodu bir enum sabitini kullanarak farklı sistemler &amp;uuml;zerinden mesaj g&amp;ouml;nderme işlemini temsil ediyor. Main metodu i&amp;ccedil;erisinde yaptığımız &amp;ccedil;ağrıda nasıl davranması gerektiğini belirliyoruz. Sorun RoleProvider sınıfı i&amp;ccedil;erisine yeni bir provider durumu eklemek istediğimizde ortaya &amp;ccedil;ıkıyor. Bunun i&amp;ccedil;in RoleProvider sınıfının kodunu değiştirmek zorundayız. Yani yeni durumu da eklememiz gerekmekte. Eğer RoleProvider sınıfını devasa bir uygulamanın ortak k&amp;uuml;t&amp;uuml;phanelerince kullanılan bir tipi olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;rsek işimiz daha da zorlaşıyor.&amp;nbsp;İşte hem bu ilkenin ihlalini engellemek hem de Sonarqube aracını memnun etmek i&amp;ccedil;in başvurabileceğimiz g&amp;uuml;zel bir yol var. O da strateji tasarım kalıbının bir uyarlaması. Şimdi yukarıdaki kod par&amp;ccedil;asını aşağıdaki hale getirelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/12/strategy_pattern_2.png" alt="" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+
+namespace Sonarqube.Tests
+{
+    public enum ProviderDirection
+    {
+        Kafka,
+        Rabbit,
+        Redis
+    }
+
+    class Program
+    {
+        static void Main()
+        {
+            #region Strategy Pattern uygulanan &amp;ccedil;&amp;ouml;z&amp;uuml;m
+
+            ProviderContext strategyContext = new ProviderContext();
+            string message = "Acaba nedir nedir? Bisk&amp;uuml;vi denince akla...";
+            strategyContext.Ping(ProviderDirection.Kafka,message);
+
+            #endregion
+        }
+    }
+
+    #region Strateji kalıbının uygulandığı &amp;ccedil;&amp;ouml;z&amp;uuml;m
+    interface IProviderStrategy
+    {
+        void Send(string message);
+    }
+
+    class KafkaProvider
+        : IProviderStrategy
+    {
+        public void Send(string message)
+        {
+            Console.WriteLine("Mesaj Kafka'ya g&amp;ouml;nderilir. {0}", message);
+        }
+    }
+
+    class RabbitMqProvider
+        : IProviderStrategy
+    {
+        public void Send(string message)
+        {
+            Console.WriteLine("Mesaj RabbitMQ'ya g&amp;ouml;nderilir. {0}", message);
+        }
+    }
+
+    class RedisProvider
+        : IProviderStrategy
+    {
+        public void Send(string message)
+        {
+            Console.WriteLine("Mesaj Redis'e g&amp;ouml;nderilir. {0}",message);
+        }
+    }
+
+    class ProviderContext
+    {
+        private static Dictionary&amp;lt;ProviderDirection, IProviderStrategy&amp;gt; _providers = new Dictionary&amp;lt;ProviderDirection, IProviderStrategy&amp;gt;();
+
+        //// Belki basit bir Injection kurgusu ile provider'lar i&amp;ccedil;eri alınabilir
+        //public void AddProvider(ProviderDirection direction, IProviderStrategy provider)
+        //{
+        //    _providers.Add(direction, provider);
+        //}
+        static ProviderContext()
+        {
+            _providers.Add(ProviderDirection.Kafka, new KafkaProvider());
+            _providers.Add(ProviderDirection.Rabbit, new RabbitMqProvider());
+            _providers.Add(ProviderDirection.Redis, new RedisProvider());
+        }
+        public void Ping(ProviderDirection direction,string message)
+        {
+            _providers[direction].Send(message);
+        }
+    }
+
+    #endregion
+}&lt;/pre&gt;
+&lt;p&gt;Evet evet biliyorum. &amp;Uuml;&amp;ccedil; tanecik case bloğu i&amp;ccedil;in tonlarca kod yazdık ama duruma b&amp;ouml;yle bakmamak gerekiyor değil mi? ;)&amp;nbsp;Strateji kalıbının bu kullanımı sayesinde kodun daha okunabilir hale geldiğini s&amp;ouml;yleyebiliriz. &amp;Ouml;zellikle aşağıya doğru uzayıp giden&amp;nbsp;case bazlı kod bloklarını &amp;ccedil;evirdiğinizde farkı &amp;ccedil;ok daha net anlayacaksınız. Şimdi kod tarafında neler yaptığımızı kısaca inceleyelim. İstemci&lt;em&gt;(Client)&lt;/em&gt; olarak niteleyebileceğimiz program sınıfı belli bir Provider tipine g&amp;ouml;re mesaj g&amp;ouml;ndermek istiyor. Bunu yaparken enum sabitinden yararlanıyor. Enum sabitinin her elemanı farklı bir davranış bi&amp;ccedil;iminin sergilenmesi anlamına da gelmekte. Eğer Kafka se&amp;ccedil;iliyse mesaj g&amp;ouml;nderme ona g&amp;ouml;re yapılmalı. RabbitMQ se&amp;ccedil;ildiyse de ona g&amp;ouml;re. İşte bu hal değişikliğinin uyarlanması bizi ister istemez davranışsal tasarım kalıplarına&lt;em&gt;(Behavioral Design Patterns)&lt;/em&gt; g&amp;ouml;t&amp;uuml;r&amp;uuml;yor. Bu tip switch-case kullanımlarının &amp;ouml;n&amp;uuml;ne ge&amp;ccedil;ilmesinde yukarıdaki kod par&amp;ccedil;asında yer verilen strateji tasarım kalıbının uyarlanması yeterli.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Uyarlamada dikkat edileceği &amp;uuml;zere case durumuna giren asıl&amp;nbsp;tipler&lt;em&gt;(KafkaProvider, RabbitMqProvider, RedisProvider)&lt;/em&gt;&amp;nbsp;ile uyguladıkları bir interface&lt;em&gt;(IProviderStrategy)&lt;/em&gt; s&amp;ouml;z konusu. Context tipi olarak ProviderContext sınıfı kullanılıyor. Bu sınıf dikkat edileceği &amp;uuml;zere enum sabiti ile karşılığı olan provider tiplerinin eşleştirildiği bir koleksiyon barındırmakta. Dolayısıyla sisteme yeni bir case bloğu eklemek demek aslında yeni bir&amp;nbsp;IProviderStrategy t&amp;uuml;revini tasarlayıp buraya koymak demek. Tabii burada kafa karıştıracak bir durum var. switch-case yapısından kurtulduk ancak Context tipi halen open-closed ilkesini ihlal ediyor gibi. Bir başka deyişle generic Dictionary koleksiyonuna eklenecek bağımlılıkları i&amp;ccedil;eriye enjekte etmeyi de d&amp;uuml;ş&amp;uuml;nebiliriz. Yorum satırı haline getirilen AddProvider metodunda bunu bir nebze olsun ifade etmeye &amp;ccedil;alıştım ancak &amp;ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml; &amp;ccedil;ok daha şık hale getirebiliriz. Bunu bir d&amp;uuml;ş&amp;uuml;n&amp;uuml;n ve nasıl yapacağınıza karar verin.&lt;/p&gt;
+&lt;p&gt;Ah sonlandırmadan &amp;ccedil;alışma zamanına ait bir ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; de paylaşırsam &amp;ccedil;ok iyi olacak.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/12/strategy_pattern_3.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Tahminlerime g&amp;ouml;re aklınıza gelen bir başka soru daha var. "Peki ya if-else kullandığımız senaryolar varsa...Hah haaa" Elbette Cognitive Complexity değerini y&amp;uuml;kselten durumlardan birisi de if bloklarının &amp;ccedil;okluğu. Hatta ternary operat&amp;ouml;r&amp;uuml; kullansak bile Sonarqube bunu yutmayabilir:) Strateji kalıbını if-else yapıları i&amp;ccedil;in de kurgulayabiliriz elbette ama farklı yaklaşımlar da s&amp;ouml;z konusu. Bunlardan birisi Chain of Responsbility kalıbının uygulanmasıdır. Buna benzer&amp;nbsp;bir kalıp olup normalde GOF&lt;em&gt;(Gangs of Four)&lt;/em&gt; listesinde yer almayan ancak &lt;a href="https://app.pluralsight.com/library/courses/patterns-library/table-of-contents" target="_blank"&gt;Steve Smith'in bir Pluralsight eğitimi&lt;/a&gt;nde anlattığı ve tesaf&amp;uuml;den de olsa &amp;ccedil;ok ge&amp;ccedil; bulduğum Rules tasarım kalıbı da var.&amp;nbsp;Bir başka yazıda farklı ilkeler ile bu kez if-else karar yapısını daha doğru kurgulayarak nasıl ilerleyebileceğimizi incelemeye &amp;ccedil;alışacağım.&amp;nbsp;Şimdilik bana m&amp;uuml;sade. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Bakınız : switch-case/if-else gibi yapıları kullanmadan geliştirme yaparken tek se&amp;ccedil;eneğimiz Strategy veya Rules deseni midir? &amp;Ouml;rneğin Command Pattern kullanılabilir mi? ;)&lt;/em&gt;&lt;/p&gt;</content>
+  <pubDate>2019-12-25 10:00:00</pubDate>
+  <slug>switch-case-kullanmadan-kod-yazabilmek</slug>
+  <tags>
+    <tag>sonarqube</tag>
+    <tag>strategy-design-pattern</tag>
+    <tag>design-pattern</tag>
+    <tag>tasarım-kalıpları</tag>
+    <tag>c#</tag>
+    <tag>solid</tag>
+    <tag>open-closed-principle</tag>
+    <tag>software-design-principles</tag>
+    <tag>behavioral-design-patterns</tag>
+  </tags>
+  <categories>
+    <category>C#</category>
+  </categories>
+</post>

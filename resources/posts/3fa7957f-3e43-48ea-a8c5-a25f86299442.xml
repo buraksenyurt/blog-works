@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Compact Framework Üzerinde RDA ile Senkronizasyon</title>
+  <description>Mobil uygulamalarda veri senkronizasyonu son derece önemlidir. Örneğin bir kurye firmasının dağıtım elemanını göz önüne alalım. Mobil cihaz ile donatılmış olan bu personelin görevi, kendisine verilen teslimat bilgilerine göre, sipariş sahiplerine ürünlerini teslim etmektir. Her çalışma gününün başında, teslimat yapacağı kişilerin bilgilerini ana sunuculardan mobil cihazına yükleyerek teslimat için hareket geçen personel, tamamlanan teslimatları anında veya belirli bir süre sonunda topluca asıl sunuculara göndererek gerekli güncelleştirme işlemlerini yapar. Bu senaryo gereği personelin teslimat bilgilerini düzenli olarak alması, tamamlanaları işaretlemesi ve son olarak bu bilgileri asıl sunucuya göndermesi gerekir.Bu noktada senaryonun iki ucunda yer alan sunucu ve mobil tarafındaki veriler arasındaki güncelliği çeşitli senkranizasyon mimarileri ile sağlayabiliriz.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Mobil uygulamalarda veri senkronizasyonu son derece &amp;ouml;nemlidir. &amp;Ouml;rneğin bir kurye firmasının dağıtım elemanını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım. Mobil cihaz ile donatılmış olan bu personelin g&amp;ouml;revi, kendisine verilen teslimat bilgilerine g&amp;ouml;re, sipariş sahiplerine &amp;uuml;r&amp;uuml;nlerini teslim etmektir. Her &amp;ccedil;alışma g&amp;uuml;n&amp;uuml;n&amp;uuml;n başında, teslimat yapacağı kişilerin bilgilerini ana sunuculardan mobil cihazına y&amp;uuml;kleyerek teslimat i&amp;ccedil;in hareket ge&amp;ccedil;en personel, tamamlanan teslimatları anında veya belirli bir s&amp;uuml;re sonunda topluca asıl sunuculara g&amp;ouml;ndererek gerekli g&amp;uuml;ncelleştirme işlemlerini yapar. Bu senaryo gereği personelin teslimat bilgilerini d&amp;uuml;zenli olarak alması, tamamlanaları işaretlemesi ve son olarak bu bilgileri asıl sunucuya g&amp;ouml;ndermesi gerekir.Bu noktada senaryonun iki ucunda yer alan sunucu ve mobil tarafındaki veriler arasındaki g&amp;uuml;ncelliği &amp;ccedil;eşitli senkranizasyon mimarileri ile sağlayabiliriz.&lt;/p&gt;
+&lt;p&gt;Mobile uygulamalarda uzak sunucular (Server) &amp;uuml;zerindeki veriler ile yerel (Client/Mobil) veriler arasındaki senkronizasyon işlemini iki farklı mimaride ger&amp;ccedil;ekleştirebiliriz. Bunlardan birisi &lt;strong&gt;RDA (Remote Data Access)&lt;/strong&gt; diğeri ise &lt;strong&gt;Merge Replication&lt;/strong&gt;' dır. RDA kullanımı Merge Replication' a g&amp;ouml;re daha kolay olan bir mimaridir. Biz bu makalemizde RDA' yı her y&amp;ouml;n&amp;uuml;yle incelemeye &amp;ccedil;alışacağız. RDA mimarisi Sql Server 6.5 s&amp;uuml;r&amp;uuml;m&amp;uuml; ve &amp;uuml;st&amp;uuml;n&amp;uuml; hedef almıştır. RDA mimarisinde, mobil platform ile uzak sunucu &amp;uuml;zerindeki veritabanı arasında senkronizasyon 3 teknikle sağlamaktır. Bu teknikler &lt;strong&gt;Push&lt;/strong&gt;, &lt;strong&gt;Pull&lt;/strong&gt; ve &lt;strong&gt;SubmitSql&lt;/strong&gt; teknikleridir. Bu tekniklere ge&amp;ccedil;meden &amp;ouml;nce, RDA ' nın &amp;ccedil;alışma şekli hakkında kısa bir bilgi vermekte fayda olacağı d&amp;uuml;ş&amp;uuml;ncesindeyim.&lt;/p&gt;
+&lt;p align="left"&gt;&lt;img src="/makale/images/mk145_1.gif" alt="" width="552" height="445" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;RDA mimarisinde istemci tarafında yer alan Sql CE veritabanı, Client Agent' ı kullanarak, sunucu tarafındaki Sql Server CE Server Agent &amp;uuml;zerinden uzak Sql Server veritabanına erişebilir. Bu erişim &amp;ccedil;ift y&amp;ouml;nld&amp;uuml;r. İstemci, sunucudan veri &amp;ccedil;ekebileceği gibi, sunucuya veri g&amp;ouml;nderebilir. Hatta RDA mimarisine &amp;ouml;zel olaraktan, sunucu &amp;uuml;zerinde doğrudan sql ifadelerini &amp;ccedil;alıştırabilir. Bu aslında veri g&amp;ouml;ndermeye benzer bir işlemdir. Diğer taraftan Push metodu ile, yerel veritabanında sadece değişiklik yapılmış satırların sunucuya g&amp;ouml;nderilmesi sağlanabilir. SubmitSql ile ise, doğrudan sunucu &amp;uuml;zerindeki verilerde değişiklik yapılmaktadır.&lt;/p&gt;
+&lt;p&gt;RDA mimarisinde işlemleri başlatan her zaman mobil tarafındaki uygulamadır. Diğer taraftan RDA, HTTP &amp;uuml;zerinden IIS' i kullanarak Sql Server sunucularına gerekli yetkiler dahilinde erişebilir. RDA mimarisini kullanabilmek i&amp;ccedil;in sunucu tarafında &lt;strong&gt;Sql Server CE Server Agent &lt;/strong&gt;servisinin kurulu olması ve gerekli yapılandırma ayarlarının oluşturulması gerekmektedir. Bu servis aslında IIS &amp;uuml;zerinde bulunan ve &lt;strong&gt;sscesa20.dll (Sql Server Compact Edition Server Agent 2.0) &lt;/strong&gt;isimli IIS API dll' ini kullanır. Sunucu &amp;uuml;zerinde &amp;ccedil;alışan bu servis, mobil tarafında &amp;ccedil;alışan &lt;strong&gt;Sql Server Client Agent &lt;/strong&gt;ile karşılıklı iletişimin sağlanmasında &amp;ouml;nemli bir g&amp;ouml;rev &amp;uuml;stlenmektedir. Dolayısılay gerekli senkronizasyonun sağlanmasında &amp;ouml;nemli bir rol &amp;uuml;stlenir. Sql Server CE Server Agent' ın sisteme kurulması bir takım basit ayarlamalar gerektirir. Bu ayarlamaların nasıl yapıldığına ilişkin olarak sevgili Tolga G&amp;uuml;ler' in daha &amp;ouml;nceki&amp;nbsp;&lt;a href="http://www.csharpnedir.com/makalegoster.asp?MId=216"&gt;makalesinden&lt;/a&gt; yararlanabilirsiniz. Gerekli sistem entegrasyonu sağlandıktan sonra RDA işlemleri ger&amp;ccedil;ekleştirilebilir.&lt;/p&gt;
+&lt;p&gt;RDA işlemleri i&amp;ccedil;in y&amp;ouml;netimli kod(Managed Code) tarafında &lt;strong&gt;System.Data.SqlServerCe&lt;/strong&gt; isim alanında yer alan &lt;strong&gt;SqlCeRemoteDataAccess&lt;/strong&gt; sınıfı kullanılmaktadır. Bu sınıfa ait metodları kullanarak veri alma, veri &amp;ccedil;ekme gibi işlemler ger&amp;ccedil;ekleştirilebilir. Bu işlemler sırasında elbetteki s&amp;uuml;rekli bir bağlantı gerekmektedir. Ancak bu s&amp;uuml;reklilik RDA mimarisinin s&amp;uuml;rekli bir bağlantı gerektirdiğini g&amp;ouml;stermez. Nitekim senkronizasyonun asıl ama&amp;ccedil;larından biriside, aralında belirli aralıklarla bağlantı sağlanan yapılarda, istemci ve sunucu arasındaki veri b&amp;uuml;t&amp;uuml;nl&amp;uuml;ğ&amp;uuml;n&amp;uuml; sağlamaktır. Teorik olarak RDA mimarisine g&amp;ouml;re, veri aktarımı sırasında bağlantının kesildiği durumlarda sistem, bağlantı tekrardan sağlayıncaya kadar veri paketinin son g&amp;ouml;nderildiği yeri aklında tutar. Bağlantı tekrardan sağlanır sağlanmaz veriler kaldığı yerden g&amp;ouml;nderilmeye devam eder.&lt;/p&gt;
+&lt;p&gt;RDA mimarisinde istemci tarafına veri &amp;ccedil;ekmek i&amp;ccedil;in &lt;strong&gt;Pull&lt;/strong&gt; metodu, sunucu tarafına veri g&amp;ouml;ndermek i&amp;ccedil;in &lt;strong&gt; Push&lt;/strong&gt; metodu, sunucu &amp;uuml;zerinde doğrudan sql c&amp;uuml;mlesi &amp;ccedil;alıştırmak i&amp;ccedil;in ise &lt;strong&gt;SubmitSql&lt;/strong&gt; metodu kullanılır. SqlCeRemoteDataAccess sınıfına ait olan bu metodlara ilişkin temel &amp;ouml;zellikleri ve dikkat edilmesi gereken noktaları ş&amp;ouml;yle sıralayabiliriz.&lt;/p&gt;
+&lt;table id="table23" style="border-collapse: collapse;" border="1" width="100%" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="width: 34%;" align="center" width="34%"&gt;&lt;strong&gt; Pull&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="width: 34%;" align="center" width="33%"&gt;&lt;strong&gt; Push&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="width: 34%;" align="center" width="33%"&gt;&lt;strong&gt; SubmitSql&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="34%"&gt;LookUp tabloların mobil tarafa aktarılmasında kullanılır.&lt;em&gt;(Sadece LookUp tablolar kullanılacağı zaman Pull metodu ile g&amp;uuml;ncelleme işlemi gerekmez.)&lt;/em&gt;&lt;/td&gt;
+&lt;td width="33%"&gt;Mobil tarafından sunucuya veri g&amp;ouml;nderilmesinde bir başka deyişle var olan mobil bilgilerin sunucuda g&amp;uuml;ncellenmesinde kullanılır.&lt;/td&gt;
+&lt;td width="33%"&gt;Doğrudan sunucu &amp;uuml;zerinde sql c&amp;uuml;mlesi &amp;ccedil;alıştırabilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="34%"&gt;Pull işleminden &amp;ouml;nce mobil tarafta yer alan ilgili tablo silinmelidir. Aksi durumda istisna(Exception) alınır.&lt;/td&gt;
+&lt;td width="33%"&gt;Pull metodu ile &amp;ccedil;ekilen veriller i&amp;ccedil;in Tracking &amp;ouml;zelliği aktif ise sadece değişiklikleri g&amp;ouml;ndererek kaynak kullanımını azaltır.&lt;/td&gt;
+&lt;td width="33%"&gt;Insert, Update, Delete işlemleri dışında geriye sonu&amp;ccedil; k&amp;uuml;mesi d&amp;ouml;nd&amp;uuml;rmeyen sp' leride &amp;ccedil;alıştırabilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="34%"&gt;Eğer Pull ile alınan tabloda g&amp;uuml;ncelleme yapılacak ve Push ile geri g&amp;ouml;nderiecek ise Tracking &amp;ouml;zelliği aktif hale getirilmelidir.&lt;/td&gt;
+&lt;td width="33%"&gt;Sunucu tarafında tracking işlemi yapılmayacağından, g&amp;uuml;ncelleme işleminden sonra verilerin son hali i&amp;ccedil;in tekrardan Pull metodunu uygulamak gerekebilir&lt;/td&gt;
+&lt;td width="33%"&gt;Veri değişiklikleri doğrudan sunucu tarafında yapılır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="34%"&gt;Mobil tarafa alınacak her bir tablo i&amp;ccedil;in ayrı ayrı Pull metodları &amp;ccedil;ağırılmalıdır.&lt;/td&gt;
+&lt;td colspan="2" width="66%"&gt;&amp;nbsp;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Şimdi RDA işlemlerini basit &amp;ouml;rnekler ile incelemeye &amp;ccedil;alışalım. &amp;Ouml;ncelikle t&amp;uuml;m işlemlerimiz i&amp;ccedil;in SqlCERemoteDataAccess sınıfına ait nesne &amp;ouml;rneğinin oluşturulması gerekmektedir. Bu nesne &amp;ouml;rneğinin &lt;strong&gt;InternetURL&lt;/strong&gt; &amp;ouml;zelliği ile, uzak sunucu &amp;uuml;zerinde &lt;strong&gt;sscesa20.dll &lt;/strong&gt;dosyasını hizmete sunan http adresi belirtilir. Bir başka deyişle Sql Server CE Server Agent' a hangi adres ile erişileceği belirtilmektedir. Bu mutlaka yapılmalıdır.&lt;/p&gt;
+&lt;table id="table25" style="border-collapse: collapse;" border="1" width="100%" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;RDA mimarisinde g&amp;uuml;venlik IIS tarafında ve Sql Server tarafında &amp;ouml;nem kazanır. Eğer Sql Server CE Server Agent servisine erişme y&amp;ouml;netim olarak Anonymous Users g&amp;uuml;venliği se&amp;ccedil;ilmemiş ise, belirli bir kullanıcı adı ve şifre ile bağlanabilmek i&amp;ccedil;in &lt;strong&gt;InternetLogin&lt;/strong&gt; ve &lt;strong&gt; InternetPassword&lt;/strong&gt; &amp;ouml;zellikleride set edilmelidir.&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;&lt;br /&gt;LocalConnectionString&lt;/strong&gt; &amp;ouml;zelliği ilede, mobil tarafında kullanılacak olan bağlantı bilgisi tanımlanır. Bu bağlantı bilgisi tipik olarak mobil cihaz &amp;uuml;zerindek Sql Server CE veritabanına bağlanmak i&amp;ccedil;in gereken bağlantı bilgisidir. Buna g&amp;ouml;re SqlCERemoteDataAccess sınıfına ait bir nesne &amp;ouml;rneğini aşağıdaki gibi oluşturabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private SqlCeRemoteDataAccess rda;
+
+private void CreateRDAObject()
+{
+    rda=new SqlCeRemoteDataAccess();
+    rda.InternetUrl="http://192.168.7.3/SQLCeRemote/sscesa20.dll";
+    rda.LocalConnectionString="Data Source=Ambar.sdf";
+}&lt;/pre&gt;
+&lt;p&gt;Bu &amp;ouml;rnek kod par&amp;ccedil;asında InternetURL bilgisinin ve LocalConnectionString bilgisinin nasıl verildiğine dikkat edin. &lt;em&gt;( Buradaki &lt;strong&gt;sscesa20.dll'&lt;/strong&gt; e ait url bilgisi ile yerele veritabanı adı ver yolu kendi sistemlerinizde daha farklı olabilir. )&lt;/em&gt;SqlCeRemoteDataAccess nesnesinin oluşturulmasından sonra, Pull, Push ve SubmitSql metodlarını kullanabiliriz. Bu metodları kullanmak i&amp;ccedil;in, mutlaka uzak sunucudaki veritabanına erişilecek bağlantı bilgisi verilmelidir. Bu metodların &amp;ouml;rnek kullanımlarını aşağıdaki kod par&amp;ccedil;asında g&amp;ouml;rebilirsiniz.&lt;/p&gt;
+&lt;p&gt;Pull;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void Pull()
+{
+    // Mobile taraftaki veritabanı yok ise oluşturulur. var ise silinip oluşturulur.
+    
+    rda.Pull("Musteriler","SELECT * From Customers","Provider=SqlOleDb;data source=192.168.7.3;database=Northwind;uid=sa;password=1234",RdaTrackOption.TrackingOn);
+    rda.Dispose();
+}&lt;/pre&gt;
+&lt;p&gt;Pull metodunun uygulanışını g&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z yukarıdaki kod par&amp;ccedil;asında, ilk parametre ile mobile tarafta yer alan veritabanındaki tablo adı belirtilir. İkinci parametre uzak sunucudaki tablodan veri &amp;ccedil;ekmek i&amp;ccedil;in &amp;ccedil;alıştırılacak olan sql c&amp;uuml;mlesidir. &amp;Uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; parametrede ise, bu sorguyu &amp;ccedil;alıştırabilmek i&amp;ccedil;in gerekli uzak sunucu bağlantı bilgisi verilmektedir. &lt;em&gt;( Bağlantı bilgisinin tanımlarken SqlOleDb provider' ının se&amp;ccedil;tiğimize dikkat edin.) &lt;/em&gt;Son olarak pull işleminden sonra eğer g&amp;uuml;ncelleme amacıyla Push işlemi uygulanacak ise, mobil tabloda olan değişikliklerin g&amp;ouml;nderilebilmesi amacıyla izleme &amp;ouml;zelliği aktif hale getirilmiştir.&lt;/p&gt;
+&lt;p&gt;Push;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void Push()
+{
+    // Mobile taraftaki veritabanı &amp;uuml;zerinde &amp;ccedil;eşitli g&amp;uuml;ncelleme işlemleri yapılır.
+
+    rda.Push("Musteriler","Provider=SqlOleDb;data source=192.168.7.3;database=Northwind;uid=sa;password=1234",RdaBatchOption.BatchingOn);
+    rda.Dispose();
+}&lt;/pre&gt;
+&lt;p&gt;Push metodunun uygulanışını g&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z yukarıdaki kod par&amp;ccedil;asında, ilk parametre ile yerel tablo belirtilir. Bu tablo, mobil cihaz &amp;uuml;zerinde yer alan veritabanı uzarındaki tablo işaret edilir. İkinci parametre uzak sunucu &amp;uuml;zerindeki veritabanına erişebilmek i&amp;ccedil;in gerekli bağlantı bilgisini i&amp;ccedil;erir. Son parametre ise, tracking işlemi ile izlenen yerel tablo değişikliklerinin, sunucuya toplu olarak tek bir transaction i&amp;ccedil;erisinde g&amp;ouml;nderilip g&amp;ouml;nderilemiyeceğini belirtmektedir.&lt;/p&gt;
+&lt;p&gt;SubmitSql;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void SubmitSql()
+{
+    rda.SubmitSql("Insert Into Personel (Ad,Maas) Values ('Burak',1000)","Provider=SqlOleDb;data source=192.168.7.3;database=Northwind;uid=sa;password=1234");
+    rda.Dispose();
+}&lt;/pre&gt;
+&lt;p&gt;SubmitSql metodunun kullanılışını g&amp;ouml;steren yukarıdaki &amp;ouml;rnek, bağlantı bilgisi ile belirilenen uzak veritabanı &amp;uuml;zerinde basit bir insert işlemi ger&amp;ccedil;ekleştirmektedir. Aşağıdaki kod par&amp;ccedil;ası RDA kullanımına ilişkin genel bir &amp;ouml;rneği sunmaktadır. Bu &amp;ouml;rnekte, Northwind veritabanında yer alan Region isimli tablodan Pull tekniği ile veri &amp;ccedil;ekilmesi, &amp;ccedil;ekilen verinin Mobil form &amp;uuml;zerindeki bir ListBox' a bağlanması, belli bir satır &amp;uuml;zerinde g&amp;uuml;ncelleme işleminin yapılarak Push metodu ile sunucuya g&amp;ouml;nderilmesi ve doğrudan sunucu &amp;uuml;zerinde &amp;ouml;rnek bir insert işleminin ger&amp;ccedil;ekleştirilmesine ilişkin kodlamalar yapılmıştır. Uygulamamız Pocket PC 2002(2003) Emulatorleri &amp;uuml;zerinde test edilmiş olan bir &lt;strong&gt;Smart Device Windows Application&lt;/strong&gt; dır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk145_2.gif" alt="" width="247" height="301" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Uygulama Kodlarımız;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Drawing;
+using System.Collections;
+using System.Windows.Forms;
+using System.Data;
+using System.Data.SqlServerCe;
+using System.Data.Common;
+
+namespace UsingRDA
+{
+    public class Form1 : System.Windows.Forms.Form
+    {
+        private SqlCeRemoteDataAccess rda;
+        private System.Windows.Forms.ListBox lstRegions;
+        private System.Windows.Forms.Button btnPush;
+        private System.Windows.Forms.Button btnSubmitSql;
+        private SqlCeEngine cEngine;
+
+        private void CreateLocalDatabase()
+        {
+            // RDA Mimarisine &amp;ouml;zel olarak Pull işlemlerinden &amp;ouml;nce yerel veri tabanı dosyasının silinmesi gerekmektedir. Bu silme işlemi i&amp;ccedil;in standart System.IO isim alanının File sınıfını kullanabiliriz.
+            if(System.IO.File.Exists("Ambar.sdf"))
+            {
+                System.IO.File.Delete("Ambar.sdf");
+            }
+            // Mobil taraftaki Sql Server Ce veritabanını oluşturmak i&amp;ccedil;in System.Data.SqlServerCe isim alanında yer alan SqlCeEngine sınıfını kullanıyoruz. Bu sınıf ile var sayılan olarak mobil cihazın root klas&amp;ouml;r&amp;uuml;nde Ambar.sdf isimli veritabanı dosyamızı oluşturmaktayız.
+            cEngine=new SqlCeEngine("data source=Ambar.sdf");
+            cEngine.CreateDatabase();
+        }
+
+        private void CreateRDAObject()
+        {
+            // SqlCeRemoteDataAccess nesnemizi oluşturuyoruz. InternetURL &amp;ouml;zelliğine Server Agen t' ın adresini, LocalConnectionString &amp;ouml;zelliğine ise mobil veritabanının bağlantı     bilgisini veriyoruz.
+            rda=new SqlCeRemoteDataAccess();
+            rda.InternetUrl="http://192.168.7.3/CESrvAgent/sscesa20.dll";
+            rda.LocalConnectionString="Data Source=Ambar.sdf";
+        }
+
+        private void Pull()
+        {
+            CreateRDAObject();
+            // Pull işleminden &amp;ouml;nce mobil taraftaki veritabanımızı silip(var ise) oluşturuyoruz.
+            CreateLocalDatabase();
+            // Pull metodumuzu &amp;ccedil;alıştırıyoruz.
+            rda.Pull("Bolgeler","SELECT RegionID,RegionDescription From Region","Provider=SqlOleDb;data         source=192.168.7.3;database=Northwind;uid=sa;password=1234",RdaTrackOption.TrackingOn);
+            // SqlCeRemoteDataAccess sınıfımıza ait nesne &amp;ouml;rneğimize ait bellek kaynağını serbest bırakıyoruz.
+            rda.Dispose();
+        }
+
+        private DataTable LoadToDataTable()
+        {
+            // Yerel veritabanına y&amp;uuml;klenen Regions tablosuna ait satırları bir DataTable nesnesine aktarıyoruz. Burada amacımız gelen verileri Form &amp;uuml;zerindeki ListBox kontro&amp;uuml;nde     g&amp;ouml;stermek. Bunun i&amp;ccedil;in basit olarak SqlCeDataAdapter sınıfını kullanılıyor.
+            DataTable dtRegion=new DataTable();
+            SqlCeDataAdapter daRegion=new SqlCeDataAdapter("Select RegionID,RegionDescription From Bolgeler","data source=Ambar.sdf");
+            daRegion.Fill(dtRegion); // NOT : Fill ve diğer SqlCeDataAdapter &amp;uuml;yelerini kullanabilmemiz i&amp;ccedil;in uygulamanıza System.Data.Common isim alanını a&amp;ccedil;ık&amp;ccedil;a referans etmemiz     gerektiğini unutmayınız. 
+            return dtRegion;
+        }
+
+        private void LocalChange()
+        {
+            // Ambar.sdf isimli yerel veritabanı &amp;uuml;zerinden Bolgeler isimli tablodaki 2 numaralı satırın i&amp;ccedil;eriğini değiştirecek bir update sorgusu &amp;ccedil;alıştırıyoruz. Bu sorgu ile yaptığımız yerel g&amp;uuml;ncelleme işlemini daha sonradan Push metodu ile sunucuyada g&amp;ouml;ndereceğiz.
+            SqlCeConnection conn=new SqlCeConnection("data source=Ambar.sdf");
+            SqlCeCommand cmdUpdate=new SqlCeCommand("UPDATE Bolgeler SET RegionDescription='Western (Batı)' WHERE RegionID=2",conn);
+            try
+            {
+                conn.Open();
+                cmdUpdate.ExecuteNonQuery();
+            }
+            catch(SqlCeException excp)
+            {
+                MessageBox.Show(excp.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+        } 
+
+        private void Push()
+        {
+            CreateRDAObject();
+            // Simulasynon amacıyla Yerel değişikliklerimizi yapıyoruz.
+            LocalChange();
+            // Yerel olarak yapılan değişiklikleri uzak sunucu &amp;uuml;zerindeki veri kaynağına aktarıyoruz. Bolgeler isimli yerel tablodan, yapılan değişiklikleri ki (sadece 2 numaralı satıra ait update işlemi var), 192.168.7.3 ip adresindeki Northwind veritabanına aktarıyoruz.
+            rda.Push("Bolgeler","Provider=SqlOleDb;data source=192.168.7.3;database=Northwind;uid=sa;password=1234",RdaBatchOption.BatchingOn);
+            // SqlCeRemoteDataAccess sınıfımıza ait nesne &amp;ouml;rneğimize ait bellek kaynağını serbest bırakıyoruz.
+            rda.Dispose();
+        }
+
+        private void SubmitSql()
+        {
+            CreateRDAObject();
+            // Doğrudan uzak sunucuya erişip, Region isimli tabloya yeni bir satır ekleyecek şekilde bir sql sorgusunu uzak sunucu &amp;uuml;zerinde &amp;ccedil;alıştırıyoruz.
+            rda.SubmitSql("Insert Into Region (RegionID,RegionDescription) Values (5,'Marmara')","Provider=SqlOleDb;data source=192.168.7.3;database=Northwind;uid=sa;password=1234");
+            // SqlCeRemoteDataAccess sınıfımıza ait nesne &amp;ouml;rneğimize ait bellek kaynağını serbest bırakıyoruz.
+            rda.Dispose();
+        }
+
+        private void BindToListBox()
+        {
+            lstRegions.DataSource=LoadToDataTable();
+            lstRegions.DisplayMember="RegionDescription";
+            lstRegions.ValueMember="RegionID";
+        }
+
+        private void Form1_Load(object sender, System.EventArgs e)
+        {
+            Pull();
+    
+            // Pull metodu ile &amp;ccedil;ektiğimiz verileri yerel Sql Server Ce database' inden okuyup bir DataTable' a aktardığımız metodu kullanarak, listBox kontrol&amp;uuml;ne bağlıyoruz.
+            BindToListBox();
+        }
+
+        private void btnPush_Click(object sender, System.EventArgs e)
+        {
+            // &amp;Ouml;nce yerel değişiklikleri sunucuya g&amp;ouml;nderiyoruz. Daha sonra sunucuda olan son hali tekrardan mobil tarafa alıyoruz.
+            Push();
+            Pull();
+            BindToListBox();
+        }
+
+        private void btnSubmitSql_Click(object sender, System.EventArgs e)
+        {
+            //&amp;Ouml;nce doğrudan uzak sunucu &amp;uuml;zerinde veri değişikliği yapıyoruz. Sonra uzak sunucudan son hali mobil tarafa alıyoruz.
+            SubmitSql();
+            Pull();
+            BindToListBox();
+        }
+
+        // Form ile ilişkili işlemler. Main, InitializeComponent vs...
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rnek, RDA mimarisinin kolay anlaşılabilmesi amacıyla &amp;ccedil;ok fazla detay girmemiştir. &amp;Ouml;rneğin, try...catch ile exception y&amp;ouml;netim mekanizması daha da genişletilebilir, Region tablosuna girilecek verilere ait bilgiler form &amp;uuml;zerindeki kontrollerden alınabilir...vb...&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;img src="/makale/images/download.gif" alt="" width="53" height="53" border="0" /&gt;RDA mimarisinin uygulanışına ilişkin geniş bir &amp;ouml;rneğe ait Smart Device Application Solution' ı buradan &lt;a href="/makale/images/UsingRDA.rar"&gt;indirebilirsiniz&lt;/a&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Buraya kadar anlatıklarımızdan yola &amp;ccedil;ıkaraktan RDA mimarisinin belirli avantajlarını ve dezavantajlarını şu şekilde sıralayabiliriz.&lt;/p&gt;
+&lt;table id="table24" style="border-collapse: collapse;" border="1" width="100%" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="width: 50%;" align="center" width="50%"&gt;&lt;strong&gt; Avantajlar&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="width: 50%;" align="center" width="50%"&gt;&lt;strong&gt; DezAvantajlar&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="50%"&gt;Sunucu tarafındaki veri kaynları daha az kullanılır. (Bu fark &amp;ouml;zellikle Merge Replication mimarisine g&amp;ouml;re belirgin derecede azdır.&lt;/td&gt;
+&lt;td width="50%"&gt;Sunucu &amp;uuml;zerindeki değişiklikler izlenmemektedir. Bunun yerine sadece istemci tarafındaki değişikler izlenir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="50%"&gt;Sql Server 6.5 ve &amp;uuml;zeri sql sistemlerini destekler.&lt;/td&gt;
+&lt;td width="50%"&gt;&amp;Ouml;zellikle Pull işleminden &amp;ouml;nce istemci tarafındaki (Sql CE &amp;uuml;zerindeki) tablolar silinmek zorundadır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="50%"&gt;RDA i&amp;ccedil;in gerekli sistem entegrasyonunun yapılması kolaydır.&lt;/td&gt;
+&lt;td width="50%"&gt;İstemci tarafına alınacak her bir tablo i&amp;ccedil;in ayrı ayrı Pulling işlemi gerektirir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;B&amp;ouml;ylece geldik bir makalemizin daha sonuna. İzleyen makalelerimizde, &lt;strong&gt;Merge Replication&lt;/strong&gt; mimarisini incelemeye &amp;ccedil;alışacağız. Uygulanması ve hazırlığı RDA mimarisine g&amp;ouml;re biraz daha zor olan Merge Replication mimarisinin avantajlarını ve dezavantjlarını g&amp;ouml;receğiz. Bu makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2006-01-24 12:00:00</pubDate>
+  <slug>Compact-Framework-Üzerinde-RDA-ile-Senkronizasyon-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>mobile</tag>
+  </tags>
+  <categories>
+    <category>C#</category>
+  </categories>
+</post>

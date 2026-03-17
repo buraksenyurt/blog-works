@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>EF Core : Testlerde InMemory Context Kullanımı</title>
+  <description>Entity Framework ile çalışırken test süreçlerini zorlaştırabilecek bağımlılıklardan birisi de uzak veritabanı bağlantısıdır. Genellikle bir SQL sunucusu ile çalışıldığından connectionString bilgisinde belirtilen adrese test ortamında da gidilebiliyor olması beklenir. Ancak bu şu anki durumda şart değil. EF context'ini bellekte çalışacak şekilde o anki process içerisinde de kullanabiliriz. Bunun için...</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2018/11/ttplayer_n.jpg" alt="" /&gt;Ablamla rahmetli babamız bir &amp;ouml;nceki sabah olduğu gibi o g&amp;uuml;nde terastaki ahşap yemek masasının &amp;uuml;zerine kurdukları fileyi karşılıklı sabitlemekle meşgullerdi. Normal ebatlarına g&amp;ouml;re &amp;ccedil;ok daha dar ve kısa olan yemek masası, benim gibi orta okul &amp;ccedil;ağlarındaki birisi i&amp;ccedil;in&amp;nbsp;ideal bir ping pong&amp;nbsp;sahasıydı&amp;nbsp;esasında. Son bir ka&amp;ccedil; yazdır en b&amp;uuml;y&amp;uuml;k eğlencelerimizden birisi haline gelmişti. Kuzenlerle dolup taşan kalabalık yaz akşamlarında bir &amp;ccedil;ok&amp;nbsp;aile ferdini&amp;nbsp;&amp;ccedil;evresine sığdıran Alman ahşapından yapılma o sağlam masa, pr&amp;uuml;zs&amp;uuml;z y&amp;uuml;zeyiyle sabahları &amp;ccedil;ekişmeli ping pong&amp;nbsp;ma&amp;ccedil;larına ev sahipliği yapıyordu.&amp;nbsp;G&amp;uuml;zel anıları ile birlikte rahmetli babamı zaman zaman kızdıran vakitlere de&amp;nbsp;tanıklık etmişti. Bir keresinde raketi tutan kolumu tavana doğru &amp;ouml;yle bir a&amp;ccedil;mıştım ki florasan lambayı tuzla buz etmiştim. O g&amp;uuml;nden sonra tavandan sarkan değil zeminine sabit bir lamba tercih etmiştik. Lakin bir diğer sefer daha b&amp;uuml;y&amp;uuml;k bir sorun yaşamıştık.&lt;/p&gt;
+&lt;p&gt;Evin zemin katındaki terasta hemen bah&amp;ccedil;e giriş kapısının &amp;ouml;n&amp;uuml;nde topraktan elli santimetre kadar y&amp;uuml;ksekte olan taş zemin &amp;uuml;zerinde duran yemek masası, sokağa bakan tarafı boydan boya cam olan mutfağın da yanı başındaydı. Her ne kadar masa ile mutfak camı arasında bir metrelik mesafe olsa da b&amp;uuml;y&amp;uuml;yen ben yıllar i&amp;ccedil;erisinde aradaki kol mesafesini de azaltmıştım. Ve bir g&amp;uuml;n lise &amp;ccedil;ağına geldiğimde olan olmuştu. Kolumu sağa doğru koşarken &amp;ouml;yle geniş ve sert a&amp;ccedil;mıştım ki, kırmızı y&amp;uuml;zeyi ile g&amp;ouml;z g&amp;ouml;ze geldiğim raket elimden fırlayıvermişti. Bah&amp;ccedil;e yerine mutfak camına doğru. Koca cam ortadan b&amp;uuml;y&amp;uuml;k bir yarıkla kırıldı. Eh tabii o zamanlar bug&amp;uuml;nk&amp;uuml; gibi minicik par&amp;ccedil;alara ayrılıp kimseye zarar vermeyen camlara sahip değildik. Annemin "Aman oğlum iyi ki size bir şey olmadı" deyişinin yanında rahmetlinin o en meşhur bakışı saplanmıştı g&amp;ouml;zlerimden i&amp;ccedil;eriye. Telepatik olarak mesaj alınmıştı. Sonraki g&amp;uuml;n ve yaz tatillerinin ilerleyen yıllarında, panayır&amp;nbsp;yerindeki ping pong masasını kiralamanın &amp;ccedil;ok daha ucuz olacağını anlamıştık.&lt;/p&gt;
+&lt;p&gt;Ortaokul &amp;ccedil;ağlarında başlayan masa tenisi sevdam &amp;uuml;niversite yıllarında da devam etti. Pek tabii bir alanda &amp;ccedil;ok iyi olmak i&amp;ccedil;in ger&amp;ccedil;ekten de &amp;ccedil;ok &amp;ccedil;alışmak gerekiyor. İyi masa tenisi oynamak, m&amp;uuml;sabakalara katılıp derece yapabilmek her g&amp;uuml;n saatlerce masa tenisi oynamayı gerektiriyor. Ben hep amat&amp;ouml;r altı seviyede kalsam da d&amp;ouml;nem d&amp;ouml;nem derece almış ya da bu oyunu &amp;ccedil;ok sevmiş arkadaşlara da sahip oldum. Yazlıktaki Sinan, &amp;uuml;niversitedeki Emre, ellibeş yaşında &amp;uuml;st kattaki teraslarına hakiki masa tenisi&amp;nbsp;kurup&amp;nbsp;benden ders alan hevesli Erdal Amca ve diğerleri. Gel zaman git zaman kırklı yaşlarıma geldim. Derken son girdiğim iş yerinde yemekhaneye &amp;ccedil;ıktığım o ilk g&amp;uuml;n...Uzaktaki bir dinlenme alanında masa tenisi oynayan insanlar...Ve tekrar oynamaya başladım. Ah bu arada masa tenisi demişken, d&amp;uuml;nyanın en iyi oyuncularının listesini &lt;a href="https://www.ittf.com/rankings/" target="_blank"&gt;uluslararası masa tenisi federasyonunun şu sayfasında&lt;/a&gt; bulabilirsiniz. Ben onlardan birisinin ismini bir Entity nesnesini &amp;ouml;rnekleyip InMemory &amp;ccedil;alışan veritabanına yazmak i&amp;ccedil;in kullanacağım.&lt;/p&gt;
+&lt;p&gt;Entity Framework ile &amp;ccedil;alışırken test s&amp;uuml;re&amp;ccedil;lerini zorlaştırabilecek bağımlılıklardan birisi de uzak veritabanı bağlantısıdır. Genellikle bir SQL sunucusu ile &amp;ccedil;alışıldığından connectionString bilgisinde belirtilen adrese birim testlerin &amp;ccedil;alıştırılması sırasında da gidiliyor olması beklenir. Ancak bu şu anki durumda şart değil. EF context'ini bellekte &amp;ccedil;alışacak şekilde o anki process i&amp;ccedil;erisinde de kullanabiliriz. Bunun i&amp;ccedil;in &lt;a href="/admin/app/editor/Entity Framework ile &amp;ccedil;alışırken test s&amp;uuml;re&amp;ccedil;lerini zorlaştırabilecek bağımlılıklardan birisi de uzak veritabanı bağlantısıdır. Genellikle bir SQL sunucusu ile &amp;ccedil;alışıldığından connectionString bilgisinde belirtilen adrese test ortamında da gidilebiliyor olması beklenir. Ancak bu şu anki durumda şart değil. EF context'ini bellekte &amp;ccedil;alışacak şekilde o anki process i&amp;ccedil;erisinde de kullanabiliriz. Bunun i&amp;ccedil;in..." target="_blank"&gt;şu adreste yayınlanan Nuget paketinden&lt;/a&gt;&amp;nbsp;yararlanıyoruz. Ancak bellekte &amp;ccedil;alışan bu veritabanı modelini ilişkisel olan versiyonları ile karıştırmamak lazım. Nitekim InMemory veritabanı bir SQL Server veritabanını taklit edemiyor&lt;em&gt;(O ama&amp;ccedil;la geliştirilmemiş)&lt;/em&gt; Bu sebepten genel ama&amp;ccedil;lı veritabanı operasyonları i&amp;ccedil;in kullanılması daha doğru diyebiliriz. MSDN dok&amp;uuml;manlarına g&amp;ouml;re ilişkisel veritabanı modelinin yerine kullanılacak test ama&amp;ccedil;lı bir ara&amp;ccedil; gerekiyorsa, SQLite'ın InMemory &amp;ccedil;alışan verisyonunu&amp;nbsp;g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alabiliriz. Şimdilik amacımız basit veritabanı operasyonları sunan bir servise ait birim testlerde hakiki SQL sunucusuna gitmeden fonksiyonellikleri deneyimleyebilmek.&lt;/p&gt;
+&lt;p&gt;Gelin adım adım ilerleyerek s&amp;ouml;z konusu testleri nasıl&amp;nbsp;yazabileceğimize bir bakalım. &amp;Ouml;ncelikle &amp;uuml;zerinde &amp;ccedil;alışacağımız Solution'ı hazırlayalım. Bunun i&amp;ccedil;in terminalden aşağıdaki komutlarla ilerleyebilir ve bir proje ağacı oluşturabiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;mkdir Testing
+cd Testing
+dotnet new sln
+mkdir CustomerService
+cd CustomerService
+dotnet new classlib
+cd ..
+dotnet sln add CustomerService/CustomerService.csproj
+mkdir CustomerService.Tests
+cd CustomerService.Tests
+dotnet new mstest
+dotnet add reference ../CustomerService/CustomerService.csproj
+cd ..
+dotnet sln add CustomerService.Tests/CustomerService.Tests.csproj
+cd CustomerService.Tests&lt;/pre&gt;
+&lt;p&gt;Testing isimli solution'ımız i&amp;ccedil;erisinde iki tip proje yer alıyor. CustomerService isimli sınıf k&amp;uuml;t&amp;uuml;phanesinde&lt;em&gt;(class library)&lt;/em&gt;&amp;nbsp;Entity Framework tabanlı &amp;ccedil;alışan i&amp;ccedil;eriklere&amp;nbsp;yer vereceğiz. Test fonksiyonlarını ise CustomerService.Tests isimli mstest şablonundaki projede yazacağız. Kabaca aşağıdaki şekilde g&amp;ouml;r&amp;uuml;len ağacı oluşturmamız başlangı&amp;ccedil; i&amp;ccedil;in yeterli.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/11/efinm_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Pek tabii ihtiyacımız olan paketleri de kurmamız lazım.&amp;nbsp;EntityFrameworkCore, SqlServer ve InMemory&amp;nbsp;paketlerini CustomerService projesine eklemek i&amp;ccedil;in aşağıdaki terminal komutları ile &amp;ccedil;alışmamıza devam edelim.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet add package Microsoft.EntityFrameworkCore
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+dotnet add package Microsoft.EntityFrameworkCore.InMemory&lt;/pre&gt;
+&lt;p&gt;Artık DbContext t&amp;uuml;revli CustomerContext sınıfını ve diğerlerini kodlayabiliriz. &amp;Ouml;rneği basit bir şekilde almak i&amp;ccedil;in Customer isimli tek bir Entity sınıfı kullanacağız.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace CustomerService
+{
+    public class Customer
+    {
+        public int CustomerID { get; set; }
+        public string Firstname { get; set; }
+        public string Lastname { get; set; }
+        public string Title { get; set; }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Sadece isim, soyisim ve &amp;uuml;nvana yer verdiğimiz Customer tipinden sonra CustomerContext sınıfını yazarak devam edelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Microsoft.EntityFrameworkCore;
+
+namespace CustomerService
+{
+    public class CustomerContext
+    : DbContext
+    {
+        public DbSet&amp;lt;Customer&amp;gt; Customers { get; set; }
+
+        public CustomerContext()
+        { }
+
+        public CustomerContext(DbContextOptions&amp;lt;CustomerContext&amp;gt; options)
+            : base(options)
+        { }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer(@"Server=PDOSVIST01;Database=ATPMasters.InMemory;Trusted_Connection=True;ConnectRetryCount=0");
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;CustomerContext, Customer tipinden bir DbSet ile &amp;ccedil;alışıyor. DbContext t&amp;uuml;revli olan bu sınıfın i&amp;ccedil;erisinde iki yapıcı metoda&lt;em&gt;(Constructor)&lt;/em&gt; yer veriyoruz. Varsayılan yapıcı değil ama DbContextOptions&amp;lt;T&amp;gt; t&amp;uuml;r&amp;uuml;nden parametre alan ikinci verisyon &amp;ouml;nemli. Nitekim bu parametreye vereceğimiz bilgilerle test projesinde CustomerContext nesnesini oluştururken InMemory veritabanı kullanılacağını belirteceğiz. Override edilen OnConfiguring metodunda kullandığımız hakiki bir SQL Server bağlantı bilgisi olduğu dikkatinizden ka&amp;ccedil;mamış olsa gerek. Yani testler sırasında InMemory&amp;nbsp;ilerlenirken,&amp;nbsp;Context'in orjinal kullanımında aksi belirtilmediği s&amp;uuml;rece ilişkisel veritabanı ile konuşulacağını garanti etmiş oluyoruz.&lt;/p&gt;
+&lt;p&gt;Temel işlemleri i&amp;ccedil;eren AddingService sınıfını da aşağıdaki gibi geliştirebiliriz.&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Collections.Generic;
+using System.Linq;
+
+namespace CustomerService
+{
+    public class AddingService
+    {
+        private CustomerContext _context;
+
+        public AddingService(CustomerContext context)
+        {
+            _context = context;
+        }
+        public Customer CreateCustomer(Customer customer)
+        {
+            var newCustomer=_context.Customers.Add(customer);
+            _context.SaveChanges();
+            return newCustomer.Entity;
+        }
+        public void UpdateCustomer(Customer customer)
+        {
+            var cust = _context.Customers.FirstOrDefault(c =&amp;gt; c.CustomerID == customer.CustomerID);
+            if (cust != null)
+            {
+                cust.Firstname = customer.Firstname;
+                cust.Lastname = customer.Lastname;
+                cust.Title = customer.Title;
+                _context.SaveChanges();
+            }
+        }
+        public IEnumerable&amp;lt;Customer&amp;gt; FindByLastname(string lastName)
+        {
+            return _context.Customers
+                .Where(c =&amp;gt; c.Lastname.Contains(lastName))
+                .ToList();
+        }
+
+        public Customer FindById(int customerID)
+        {
+            return _context.Customers.FirstOrDefault(c=&amp;gt;c.CustomerID==customerID);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;CreateCustomer ile yeni bir m&amp;uuml;şteri oluşturma, UpdateCustomer ile bilgilerini g&amp;uuml;ncelleme, FindById ile belli bir CustomerID'ye g&amp;ouml;re kişi bulma ve FindByLastName ile de soyadına g&amp;ouml;re listeleme operasyonlarını &amp;uuml;stlenen fonksiyonlarımız var. Tipik LINQ işlemlerine yer&amp;nbsp;verdiğimizi d&amp;uuml;ş&amp;uuml;nebiliriz. T&amp;uuml;m metodlarda CustomerContext &amp;ouml;rneğini kullanıyoruz. Bu nesneyi servis sınıfımıza yine yapıcı metod &amp;uuml;zerinden ge&amp;ccedil;irmekteyiz. Dolayısıyla hangi veri sağlayıcısını kullanacaksak buradaki fonksiyonlar ona g&amp;ouml;re işlem yapacaklar.&lt;/p&gt;
+&lt;p&gt;Servis tarafındaki ihtiya&amp;ccedil;larımızı tamamladığımıza g&amp;ouml;re artık test metodlarını geliştirmeye başlayabiliriz. Bunun i&amp;ccedil;in Unit Test projesine ge&amp;ccedil;elim ve AddingTests sınıfını aşağıdaki gibi geliştirelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace CustomerService.Tests
+{
+    [TestClass]
+    public class AddingTests
+    {
+        [TestMethod]
+        public void Create_Single_Customer_In_Memory()
+        {
+            var options = new DbContextOptionsBuilder&amp;lt;CustomerContext&amp;gt;()
+                .UseInMemoryDatabase(databaseName: "TT100")
+                .Options;
+
+            using (var context = new CustomerContext(options))
+            {
+                var service = new AddingService(context);
+                var nadal = new Customer
+                {
+                    Firstname = "Dimitrij",
+                    Lastname = "OVTCHAROV",
+                    Title = "Mr"
+                };
+                service.CreateCustomer(nadal);
+            }
+
+            using (var context = new CustomerContext(options))
+            {
+                Assert.AreEqual(1, context.Customers.Count());
+                var added = context.Customers.Single();
+                Assert.AreEqual("Dimitrij", added.Firstname);
+                Assert.AreEqual("OVTCHAROV", added.Lastname);
+                Assert.AreEqual("Mr", added.Title);
+            }
+        }
+
+        [TestMethod]
+        public void Find_Customers_By_Lastname()
+        {
+            var options = new DbContextOptionsBuilder&amp;lt;CustomerContext&amp;gt;()
+                .UseInMemoryDatabase(databaseName: "TT50")
+                .Options;
+
+            using (var context = new CustomerContext(options))
+            {
+                context.Customers.Add(new Customer { Firstname = "Kim Hing", Lastname = "Yong", Title = "Mr" });
+                context.Customers.Add(new Customer { Firstname = "Burak Selim", Lastname = "Yong", Title = "Mr" });
+                context.Customers.Add(new Customer { Firstname = "Su Han", Lastname = "Yong", Title = "Ms" });
+                context.Customers.Add(new Customer { Firstname = "Kim Hing", Lastname = "Yang", Title = "Mr" });
+                context.Customers.Add(new Customer { Firstname = "Koki", Lastname = "Niwa", Title = "Ms" });
+                context.Customers.Add(new Customer { Firstname = "Fun Sun", Lastname = "Kim", Title = "Ms" });
+                context.SaveChanges();
+            }
+
+            using (var context = new CustomerContext(options))
+            {
+                var service = new AddingService(context);
+                var result = service.FindByLastname("Yong");
+                Assert.AreEqual(3, result.Count());
+            }
+        }
+
+        [TestMethod]
+        public void Update_Single_Customer()
+        {
+            var options = new DbContextOptionsBuilder&amp;lt;CustomerContext&amp;gt;()
+                .UseInMemoryDatabase(databaseName: "TT50")
+                .Options;
+            var id = 0;
+            using (var context = new CustomerContext(options))
+            {
+                var service = new AddingService(context);
+
+                var kimHing = service.CreateCustomer(new Customer { Firstname = "Kim Hing", Lastname = "Yong", Title = "Mr" });
+                context.SaveChanges();
+                id = kimHing.CustomerID;
+
+                service.UpdateCustomer(new Customer
+                {
+                    CustomerID = id,
+                    Firstname = "Kim Kim",
+                    Lastname = "Yong",
+                    Title = "Mr"
+                });
+            }
+
+            using (var context = new CustomerContext(options))
+            {
+                var service = new AddingService(context);
+                var founded = service.FindById(id);
+                Assert.AreEqual("Kim Kim", founded.Firstname);
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Uuml;&amp;ccedil; test metodumuz var. Tek bir m&amp;uuml;şterinin oluşturulması, n sayıda m&amp;uuml;şteriden aynı soyada sahip olanlarının &amp;ccedil;ekilmesi ve belli bir m&amp;uuml;şterinin verisinin değiştirilmesi işlerini deneyimliyoruz. Buna uygun olacak bir ka&amp;ccedil; Assert kullanımımız var. T&amp;uuml;m test metodlarının yazımız a&amp;ccedil;ısından en &amp;ouml;nemli ortak noktası ise DbContextOptionsBuilder&amp;lt;T&amp;gt; nesnesi &amp;ouml;rneklenirken UseInMemoryDatabase fonksiyonunun kullanılmış olması. Bu sayede sonraki satırlarda oluşturulan CustomerContext &amp;ouml;rneklerinin hangi t&amp;uuml;r veritabanı ile &amp;ccedil;alışacağını belirtmiş oluyoruz.&lt;/p&gt;
+&lt;p&gt;Test metodlarına ait &amp;ccedil;alışma zamanı sonu&amp;ccedil;larını g&amp;ouml;rmek i&amp;ccedil;in&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet test&lt;/pre&gt;
+&lt;p&gt;terminal komutunu vermemiz&amp;nbsp;yeterli olacaktır.&amp;nbsp;Ben denemelerimde aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan sonu&amp;ccedil;lara ulaştım. T&amp;uuml;m testler başarılı bir şekilde ilerletildi. Dolayısıyla operasyonun InMemory veritabanı kullanılarak icra edildiğini s&amp;ouml;yleyebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/11/efimd_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;InMemory veritabanı kullanımı g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi olduk&amp;ccedil;a basit ancak başlarda da belirttiğimiz&amp;nbsp;&amp;uuml;zere her veritabanı &amp;ouml;zelliği desteklenmiyor. &amp;Ouml;rneğin transaction desteği yok ve bu veritabanı &amp;uuml;zerinden SQL&amp;nbsp;sorgularını&amp;nbsp;&amp;ccedil;alıştıramıyoruz. Bu tip bir durumda SQLite veritabanının bellekte &amp;ccedil;alışacak şekilde&amp;nbsp;kullanılması &amp;ouml;neriliyor. Ama&amp;ccedil; yine SQL Server'a ihtiya&amp;ccedil; duymadan genel Entity Framework işlevlerini test edebilmek. Ufak bir ka&amp;ccedil; kod değişikliği ile testlerimizi SQLite'ın InMemory modda &amp;ccedil;alışan versiyonuna &amp;ccedil;ekebiliriz. İlk etapta&amp;nbsp;SQLite paketinin projeye dahil edilmesi gerekiyor.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet add package Microsoft.EntityFrameworkCore.Sqlite&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rnek olması a&amp;ccedil;ısından bir test metodunda aşağıdaki değişiklikleri yaparak ilerleyebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[TestMethod]
+public void Create_Single_Customer_In_Memory()
+{
+    SqliteConnection connection = new SqliteConnection("DataSource=:memory:");
+    connection.Open();
+    var options = new DbContextOptionsBuilder&amp;lt;CustomerContext&amp;gt;()
+        //.UseInMemoryDatabase(databaseName: "TT100")
+        .UseSqlite(connection)
+        .Options;
+
+    using (var context = new CustomerContext(options))
+    {
+        context.Database.EnsureCreated();
+        var service = new AddingService(context);
+	// Diğer kod satırları aynen devam ediyor&lt;/pre&gt;
+&lt;p&gt;SqliteConnection tipinden bir nesne oluşturuyor ve parametre olarak verdiğimiz değerle bellekte &amp;ccedil;alışacağını belirtmiş oluyoruz. UseSqlite fonksiyonuna yapılan &amp;ccedil;ağrıya bu connection bilgisini verdiğimiz i&amp;ccedil;in CustomerContext değişkeni artık Sqlite tipinden bir veritabanını kullanacak&lt;em&gt;(Hemde bellekte &amp;ccedil;alışan s&amp;uuml;r&amp;uuml;m&amp;uuml;n&amp;uuml;)&lt;/em&gt; Bir ihtimal ilgili veritabanının oluşmaması ihtimaline karşılık context &amp;uuml;zerinden EnsureCreated metodunu &amp;ccedil;ağırmamız da gerekebilir. Testleri bu şekilde &amp;ccedil;alıştırdığımızda bir &amp;ouml;ncekiler ile aynı sonu&amp;ccedil;ları elde edeceğimizi g&amp;ouml;rebilirsiniz.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Kuvvetle muhtemel ilerleyen d&amp;ouml;nemlerde &amp;ouml;zellikle kolay test yapabilmek i&amp;ccedil;in farklı opsiyonlarda karşımıza &amp;ccedil;ıkabilir. Şu an i&amp;ccedil;in genel ama&amp;ccedil;lı kullanılan ve belli başlı CRUD operasyonlarını i&amp;ccedil;eren Entity Framework tabanlı servislere ait test&amp;nbsp;senaryolarında değerlendirebileceğimiz&amp;nbsp;iki &amp;ouml;nemli se&amp;ccedil;enek var. InMemory veya ilişkisel modele biraz daha&amp;nbsp;yakın durabilen&amp;nbsp;SQLite'ın InMemory versiyonu. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/buraksenyurt/dotnetcore/tree/master/EF/Testing" target="_blank"&gt;&amp;Ouml;rnek kodlara github &amp;uuml;zerinden erişebilirsiniz&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2019-02-12 09:00:00</pubDate>
+  <slug>EF-Core-Testlerde-InMemory-Context-Kullanımı</slug>
+  <tags>
+    <tag>entity-framework-core</tag>
+    <tag>c#</tag>
+    <tag>net-core</tag>
+    <tag>inmemory-database</tag>
+    <tag>nuget</tag>
+    <tag>dbcontext</tag>
+    <tag>test</tag>
+    <tag>unit-test</tag>
+    <tag>testing</tag>
+    <tag>sql-server</tag>
+    <tag>ef</tag>
+    <tag>db-context-options-builder</tag>
+  </tags>
+  <categories>
+    <category>.Net Core</category>
+  </categories>
+</post>

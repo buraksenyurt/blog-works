@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Bir Web API Servisini Github Hesabıyla Yetkilendirmek</title>
+  <description>Senaryomuzda basit bir Web API Servisi bulunuyor. .Net Core ile geliştirilen servisin bir Controller'ı için yetkilendirme(Authorization) sürecini uygulatmak istiyoruz. Burada OAuth 2 standardını ele almak, kullanıcı yetkilendirme yöneticisi ve bilet(Token) tedarikçisi olarak Github'dan yararlanmak istiyoruz. Temel olarak Web API servisimiz Consumer, Github'ın kendisi ise Service Provider olarak düşünülebilir. Tabii bu senaryonun gerçekleşmesi için bizim Github'a bir proje kaydettirmemiz ve özellike Redirect URI bilgisini Consumer rolündeki uygulamamız için bildirmemiz gerekiyor(Az sonra yapacağız)</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2018/01/githuboauth_8.gif" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Teknik konularda yazı yazmaya &amp;ccedil;alışmanın en zor yanlarından birisi de anlatımı basitleştirmek. Ş&amp;uuml;phesiz ki uğraştığımız konular bazen anlamakta g&amp;uuml;&amp;ccedil;l&amp;uuml;k &amp;ccedil;ektiğimiz karmaşıklıkta olabiliyor. B&amp;ouml;yle konuların bırakın anlatılması &amp;ouml;ğrenilmesi de g&amp;uuml;&amp;ccedil;leşebiliyor. Şahsen kendi adıma bazı konuları anlamak i&amp;ccedil;in epey &amp;ccedil;aba sarf ettiğimi s&amp;ouml;ylesem yeridir. &amp;Uuml;stelik bu konuları zaman i&amp;ccedil;erisinde ger&amp;ccedil;ek hayat senaryolarında kullanmaz veya &amp;uuml;zerinde saatler ge&amp;ccedil;irmessek unutuyoruz da. Oysaki bir konuyu basit&amp;ccedil;e anlatabiliyorsak hem iyi anlamışız demektir hem de verimli bir &amp;ccedil;alışma safhası ge&amp;ccedil;irmişizdir. Ne demiş Austion Freeman;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;"Simplicity is the soul of efficiency" - Austin Freeman&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Bug&amp;uuml;n de benzer bir durumla karşı karşıyayım. Ne gecenin bu sessiz vaktinde o g&amp;uuml;zel kokusu ile odamı dolduran filtre kahvem ne de arka planda &amp;ccedil;alan piyano resitali aslında işimi kolaylaştırmıyor. Yine de West-World, odaklanmam i&amp;ccedil;in yeterli şartları sağlamış durumda. Bu yazımızda en azından benim i&amp;ccedil;in hep karmaşık olan OAuth tabanlı bir yetkilendirme s&amp;uuml;recinin nasıl yapılabileceğini incelemeye &amp;ccedil;alışacağız. İlk &amp;ouml;nce ne yapacağımızı &amp;ouml;zetlemeye &amp;ccedil;alışalım.&lt;/p&gt;
+&lt;p&gt;Senaryomuzda basit bir Web API Servisi bulunuyor. .Net Core ile geliştirilen servisin bir Controller'ı i&amp;ccedil;in yetkilendirme&lt;em&gt;(Authorization)&lt;/em&gt; s&amp;uuml;recini uygulatmak istiyoruz. Burada OAuth 2 standardını ele almak, kullanıcı yetkilendirme y&amp;ouml;neticisi ve bilet&lt;em&gt;(Token)&lt;/em&gt; tedarik&amp;ccedil;isi olarak Github'dan yararlanmak istiyoruz. Tabii bu senaryonun ger&amp;ccedil;ekleşmesi i&amp;ccedil;in bizim Github'a bir proje kaydettirmemiz&lt;em&gt;(Pek &amp;ccedil;ok platform i&amp;ccedil;in s&amp;ouml;z konusu olan Application Registration işlemi diyelim)&lt;/em&gt; ve &amp;ouml;zellike Redirect URI bilgisini Consumer rol&amp;uuml;ndeki uygulamamıza bildirmemiz gerekiyor&lt;em&gt;(Az sonra yapacağız)&lt;/em&gt;&lt;/p&gt;
+&lt;h1&gt;Yaşam D&amp;ouml;ng&amp;uuml;s&amp;uuml;&lt;/h1&gt;
+&lt;p&gt;OAuth 2 temelli sistemin &amp;ccedil;alışma prensibi basit&lt;em&gt;(Aslında karmaşık ama iyice didikleyince gayet anlaşılır, mantıklı ve basit)&lt;/em&gt;&amp;nbsp;Ortada &amp;uuml;&amp;ccedil; akt&amp;ouml;r yer var. Senaryomuzu g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alırsak bu akt&amp;ouml;rlerimiz Web API&lt;em&gt;(Consumer)&lt;/em&gt;, Github&lt;em&gt;(Idendity and Token Service Provider)&lt;/em&gt; ve Web API servisini t&amp;uuml;ketmek isteyen kullanıcı&lt;em&gt;(User) &lt;/em&gt;şeklinde ifade edilebilirler.&lt;em&gt;&amp;nbsp;&lt;/em&gt;Bu &amp;uuml;&amp;ccedil; akt&amp;ouml;r&amp;uuml;n yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml; i&amp;ccedil;erisindeki iletişimi ise sırasyıla ş&amp;ouml;yle &amp;ouml;zetlenebilir.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Kullanıcı yerel makinesindeki servise bir talepte bulunur&lt;em&gt;(HTTP Get gibi)&lt;/em&gt; O anda elinde ge&amp;ccedil;erli bir bilet olmadığını d&amp;uuml;ş&amp;uuml;nelim.&lt;/li&gt;
+&lt;li&gt;Bunun &amp;uuml;zerine Web API uygulaması Github'dan bir kullanıcı doğrulaması ister.&lt;/li&gt;
+&lt;li&gt;Github kullanıcıyı doğrulamak i&amp;ccedil;in Login sayfasına y&amp;ouml;nlendirme yapar.&lt;/li&gt;
+&lt;li&gt;Kullanıcı doğrulanırsa, Github'ın bir sorusu ile karşılaşılır. Github'daki "bla bla" uygulamasının bilgilerinize erişmesine izin veriyor musunuz? gibi.&lt;/li&gt;
+&lt;li&gt;Eğer kullanıcı bunu kabul ederse, Github tarafından Redirect URI ile belirtilen adrese y&amp;ouml;nlendirilir. Bu y&amp;ouml;nlendirmede ge&amp;ccedil;ici bir erişim kodu bulunur.&lt;/li&gt;
+&lt;li&gt;Web API servisi aldığı kod ile Github'ın bilet sağlayan adresine&lt;em&gt;(Token Endpoint)&lt;/em&gt; gider.&lt;/li&gt;
+&lt;li&gt;Github bu talep &amp;uuml;zerine daha kalıcı olan onaylanmış bir bilet hazırlayıp bunu Web API servisine verir.&lt;/li&gt;
+&lt;li&gt;Web API servisi bu bilgiyi saklar&lt;em&gt;(genelde bir son kullanma tarihi olur ama Github OAuth biletlerinde durum farklı)&lt;/em&gt;&amp;nbsp;ve sonraki taleplerde bu bilet kullanılır.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Karışık değil mi? Hofff...Siz birde bana sorun. Eğer basit bir şekilde anlatamadıysam bu konuyu anlamamışım demektir. Diğer yandan adım adım &amp;ouml;rneği işlettiğimizde konuyu biraz daha pekiştirebileceğimizi d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum. Haydi başlayalım.&lt;/p&gt;
+&lt;h1&gt;OAuth Uygulaması i&amp;ccedil;in Kayıt İşlemi&lt;/h1&gt;
+&lt;p&gt;İlk olarak &lt;a href="https://github.com/settings/developers" target="_blank"&gt;şu adrese&lt;/a&gt; giderek OAuth uygulamamızı Github'a kayıt etmemiz gerekiyor. "Register a new application" başlıklı d&amp;uuml;ğmeye basarak işleme başlayabiliriz. Burada uygulamaya ait bazı bilgileri doldurmamız lazım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/01/githuboaut_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;vb&amp;nbsp;bilgiler olabilir. Authorization Callback URL bilgisi dikkatiniz &amp;ccedil;ekmiş olmalı. Senaryoya g&amp;ouml;re Service Provider rol&amp;uuml; &amp;uuml;stlenen Github, Consumer rol&amp;uuml;ndeki yerel Web API servisi &amp;uuml;zerinden gelen kullanıcıyı yetkilendirirse bu URL adresine doğru bir y&amp;ouml;nlendirme ger&amp;ccedil;ekleştirilecek ki, bu y&amp;ouml;nlendirme sırasında Consumer'a birde ge&amp;ccedil;ici erişim kodu verilecek. Sonrasında Consumer&lt;em&gt;(yani Web API hizmetimiz)&lt;/em&gt; bu ge&amp;ccedil;ici kod ile Github'ın Token Endpoint'ine gelerek daha kalıcı olan erişim biletini&lt;em&gt;(Access Token)&lt;/em&gt; alacak.&lt;/p&gt;
+&lt;p&gt;"Register Application" başlıklı d&amp;uuml;ğmeye basıldıktan sonra uygulamanın oluşturulduğu ve Web API servisimizde kullanılmak &amp;uuml;zere Credential bilgisinin &amp;uuml;retildiği g&amp;ouml;r&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/01/githuboauth_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Buradaki Client ID ve Client Secret değerleri Web API servisimizin Github uygulamasını kullanabilmesi i&amp;ccedil;in gereklidir.&lt;/p&gt;
+&lt;h1&gt;Web API Servisinin Geliştirilmesi&lt;/h1&gt;
+&lt;p&gt;Sırada Web API servisinin oluşturulması adımı var. Bunun i&amp;ccedil;in aşağıdaki terminal komutunu kullanabiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet new webapi -o MyQuoteService&lt;/pre&gt;
+&lt;p&gt;İlk olarak Kestrel sunucusunu 5005 numaralı porta ayarlayalım&lt;em&gt;(Bildiğiniz &amp;uuml;zere varsayılan port 5000)&lt;/em&gt; Bunu Program.cs i&amp;ccedil;erisinde yapabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public static IWebHost BuildWebHost(string[] args) =&amp;gt;
+    WebHost.CreateDefaultBuilder(args)
+        .UseStartup&amp;lt;Startup&amp;gt;()
+        .UseUrls("http://localhost:5005")
+        .Build();&lt;/pre&gt;
+&lt;p&gt;Uygulamanın en &amp;ouml;nemli değişiklikleri Startup sınıfında ger&amp;ccedil;ekleştirilecek. Bu dosyanın i&amp;ccedil;eriğini aşağıdaki hale getirelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OAuth;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Linq;
+
+namespace MyQuoteService
+{
+    public class Startup
+    {
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+        public IConfiguration Configuration { get; }
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddMvc();
+
+            services.AddAuthentication(options =&amp;gt;
+            {
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = "GitHub";
+            })
+            .AddCookie()
+            .AddOAuth("GitHub", options =&amp;gt;
+            {
+                options.ClientId = "sizinki";
+                options.ClientSecret = "sizinki";
+                options.CallbackPath = new PathString("/signin-github");
+
+                options.AuthorizationEndpoint = "https://github.com/login/oauth/authorize";
+                options.TokenEndpoint = "https://github.com/login/oauth/access_token";
+                options.UserInformationEndpoint = "https://api.github.com/user";
+
+                options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "id");
+                options.ClaimActions.MapJsonKey(ClaimTypes.Name, "name");
+                options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
+                options.ClaimActions.MapJsonKey("urn:github:blog", "blog");
+
+                options.Events = new OAuthEvents
+                {
+                    OnCreatingTicket = async ctx =&amp;gt;
+                    {
+                        Console.WriteLine("OnCreatingTicket Event");
+
+                        var request = new HttpRequestMessage(HttpMethod.Get, ctx.Options.UserInformationEndpoint);
+                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", ctx.AccessToken);
+
+                        var response = await ctx.Backchannel.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, ctx.HttpContext.RequestAborted);
+                        response.EnsureSuccessStatusCode();
+
+                        var userInfo = JObject.Parse(await response.Content.ReadAsStringAsync());
+                        ctx.RunClaimActions(userInfo);
+                        Console.WriteLine($"User Info:\n{userInfo.ToString()}");
+                    }
+                };
+            });
+        }
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+
+            app.UseAuthentication();
+            app.UseMvc();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Sonu&amp;ccedil; itibariyle Middleware tarafına bir doğrulama katmanının eklenmesi s&amp;ouml;z konusu. Bunun hazırlığı i&amp;ccedil;in de Authentication, Cookie ve OAuth gibi servislerin devreye alınması gerekiyor. AddAuthentication metodu ile doğrulama servisini devreye alıyoruz. Buradaki ayarlar se&amp;ccedil;ilen doğrulama servisine g&amp;ouml;re farklılık g&amp;ouml;sterebilir. &amp;Ouml;rnekte Cookie'lerden yaralanacağımızı belirtiyoruz. Buna g&amp;ouml;re &amp;ccedil;alışma zamanı kullanıcı doğrulamasını kontrol&amp;nbsp;etmek i&amp;ccedil;in Cookie Authentication Handler'dan yararlanacak. Kullanıcı doğrulandığında da ise kullanıcı bilgisi Cookie i&amp;ccedil;erisinde saklanacak&lt;em&gt;(DefaultSignInScheme atamasına g&amp;ouml;re)&lt;/em&gt; Cookie Authentication Handler'ın devreye alınması işini AddCookie fonksiyon &amp;ccedil;ağrısı ile bildiriyoruz. OAuth Handler'ını kayıt ederken Github tarafında oluşturduğumuz uygulama i&amp;ccedil;in &amp;uuml;retilen Client ID, Client Secret değerleri ile bizim belirlediğimiz Callback adresini atıyoruz. Bu değerleri konfigurasyon dosyasından ya da daha g&amp;uuml;venli bir ortamdan(Cyberark gibi) alabilirsiniz. Sonu&amp;ccedil;ta hassas bilgiler.&lt;/p&gt;
+&lt;p&gt;Yetkilendirme,&amp;nbsp;bilet alma ve kullanıcı bilgilerini &amp;ccedil;ekme gibi operasyonlar, Github tarafında belirli adreslerden sunulan servisler tarafından karşılanmakta. Bu nedenle options parametresi &amp;uuml;zerinden ilgili Endpoint adresleri belirtiliyor. Bu adreslerden sunulan servisler birer REST servis. Yani Postman, SOAPUI gibi ara&amp;ccedil;ları kullanarak da deneyebiliriz. ClaimsAction &amp;uuml;zerinden &amp;ccedil;ağırılan MapJsonKey metodu iki parametre ile &amp;ccedil;alışıyor. İlk parametre ile kullanıcı i&amp;ccedil;in Github tarafından gelen i&amp;ccedil;erikteki&amp;nbsp;Claim tipi, ikinci parametre ile de key bilgisi belirleniyor. Buradaki atamalara Controller tarafındaki User&amp;nbsp;nesnesi &amp;uuml;zerinden erişebileceğiz.&lt;/p&gt;
+&lt;p&gt;Kodun ilerleyen kısmında bir olay metodu da yer alıyor. OnCreatingTicket kullanıcı doğrulamasını takip eden s&amp;uuml;re&amp;ccedil;te bilet &amp;uuml;retildikten sonra devreye giren bir olay olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Bu olay metodu i&amp;ccedil;erisinde Github'ın UserInformationEndpoint ile bildirilen adresine HTTP Get talebinde bulunuyoruz. Dikkat ederseniz bir Authentication Header bilgisi de veriyoruz ki bu bize Github tarafından verilen bilet&lt;em&gt;(Bearer Token)&lt;/em&gt; SendAsync ile ilgili talep ger&amp;ccedil;ekleştirildikten sonra kullanıcı bilgilerini&amp;nbsp;elde etmiş oluyoruz. Bunları sadece &amp;ouml;rnekte g&amp;ouml;rmek amacıyla ekrana bastırdık.&amp;nbsp;Artık servisler devrede. Bu durumu Middleware tarafında etkinleştirmek i&amp;ccedil;inse Configure&amp;nbsp;fonksiyonunda&amp;nbsp;UseAuthentication &amp;ccedil;ağrısını yapmamız gerekli. Gelelim yetkilendirme s&amp;uuml;recine dahil edeceğimiz Controller tipine. &amp;Ouml;rneğimizde WebApi şablonu ile gelen ValuesController yerine aşağıdaki i&amp;ccedil;eriğe sahip QuotesController sınıfını kullanacağız.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace MyQuoteService.Controllers
+{
+    [Authorize]
+    [Route("api/[controller]")]
+    public class QuotesController : Controller
+    {
+        [HttpGet]
+        public IActionResult Get()
+        {
+            var id = User.FindFirst(c =&amp;gt; c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var userName = User.FindFirst(c =&amp;gt; c.Type == ClaimTypes.Name)?.Value;
+            var email = User.FindFirst(c =&amp;gt; c.Type == ClaimTypes.Email)?.Value;
+            var blog = User.FindFirst(c =&amp;gt; c.Type == "urn:github:blog")?.Value;
+            Console.WriteLine($"{DateTime.Now}\nCurrent user:{userName}({id})\n{email}\n{blog}");
+            return new ObjectResult(_quotes);
+        }
+
+        List&amp;lt;Quote&amp;gt; _quotes = new List&amp;lt;Quote&amp;gt;{
+                new Quote{Id=122548,Owner="Michael Jordan",Text="I have missed more than 9000 shots in my career. I have lost almost 300 games. 26 times, I have been trusted to take the game winning shot and missed. I have failed over and over and over again in my life. And that is why I succeed."},
+                new Quote{Id=325440,Owner="Vince Lombardi",Text="We didn't lose the game; we just ran out of time"},
+                new Quote{Id=150094,Owner="Randy Pausch",Text="We cannot change the cards we are dealt, just how we play the game"},
+                new Quote{Id=167008,Owner="Johan Cruyff",Text="Football is a game of mistakes. Whoever makes the fewest mistakes wins."},
+                new Quote{Id=650922,Owner="Gary Lineker",Text="Football is a simple game. Twenty-two men chase a ball for 90 minutes and at the end, the Germans always win."},
+                new Quote{Id=682356,Owner="Paul Pierce",Text="The game isn't over till the clock says zero."},
+                new Quote{Id=156480,Owner="Jose Mourinho",Text="Football is a game about feelings and intelligence."},
+                new Quote{Id=777592,Owner="LeBron James",Text="You know, when I have a bad game, it continues to humble me and know that, you know, you still have work to do and you still have a lot of people to impress."},
+                new Quote{Id=283941,Owner="Roman Abramovich",Text="I'm getting excited before every single game. The trophy at the end is less important than the process itself."},
+                new Quote{Id=185674,Owner="Shaquille O'Neal",Text="I'm tired of hearing about money, money, money, money, money. I just want to play the game, drink Pepsi, wear Reebok."}
+            };
+    }
+
+    class Quote
+    {
+        public int Id { get; set; }
+        public string Owner { get; set; }
+        public string Text { get; set; }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Sadece &amp;ouml;zl&amp;uuml; s&amp;ouml;zler listesini HTTP Get&amp;nbsp;talebi karşılığında geriye d&amp;ouml;nd&amp;uuml;ren bir operasyonumuz&amp;nbsp;var. Get operasyonu i&amp;ccedil;erisinde Github kullanıcısının doğrulanması sonrası &amp;ccedil;ekilen ClaimSet i&amp;ccedil;erisindeki bazı değerlere ulaşılmakta. Bu &amp;ouml;rnekte login olan Github kullanıcısına ait username,id,email ve blog bilgilerini Console ekranına bastırmaktayız. Bu bilgiler loglama amacıyla kullanılabilir. QuotesController sınıfının bir diğer &amp;ouml;nemli &amp;ouml;zelliği de Authorize niteliği ile işaretlenmiş olması. Buna g&amp;ouml;re t&amp;uuml;m operasyonları i&amp;ccedil;in yetkilendirme s&amp;uuml;recine dahil olacağız.&lt;/p&gt;
+&lt;h1&gt;Testler&lt;/h1&gt;
+&lt;p&gt;Geliştirme safhasını sonlandırdığımıza g&amp;ouml;re test s&amp;uuml;r&amp;uuml;ş&amp;uuml;ne &amp;ccedil;ıkabiliriz. Uygulamayı&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet run&lt;/pre&gt;
+&lt;p&gt;terminal komutu ile &amp;ccedil;alıştırdıktan ve tarayıcı &amp;uuml;zerinden http://localhost:5005/api/quotes adresine gittikten sonra aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; ile karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/01/githuboauth_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere Github login sayfasına y&amp;ouml;nlendirildik. Eğer Network hareketliliklerini izlersek aşağıdaki ge&amp;ccedil;işlerin olduğunu fark edebiliriz.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;localhost:5005/api/quotes HTTP Get talebi HTTP 302 koduna &amp;ccedil;evrilerek Location header bilgisindeki github adresine y&amp;ouml;nlendirilir.&lt;/li&gt;
+&lt;li&gt;Y&amp;ouml;nlendirildiğimiz https://github.com/login/oauth/authorize? client_id={client id bilgisi}&amp;amp;scope=&amp;amp;response_type=code&amp;amp;redirect_uri= http://localhost:5005/signin-github&amp;amp;state= {uzuuunnn bir state bilgisi var} adresinde Authorize kontrol&amp;uuml;nden ge&amp;ccedil;eriz ki &amp;ouml;nceden login olmamışsak yeni bir adrese y&amp;ouml;nleniriz.&lt;/li&gt;
+&lt;li&gt;HTTP Get ile https://github.com/login?client_id= {client id bilgisi}&amp;amp;return_to=/login/oauth/authorize?client_id= {client id bilgisi}&amp;amp;redirect_uri= http%3A%2F%2Flocalhost%3A5005%2Fsignin-github&amp;amp;response_type=code&amp;amp;scope=&amp;amp;state= {uzuuuuun state bilgisi} geldiğimiz bu adreste ise Login olmamız yeterli olacaktır.&lt;/li&gt;
+&lt;li&gt;Sonrasında Github kullanıcısının s&amp;ouml;z konusu uygulama i&amp;ccedil;in yetki vermesini bekleyen bir onayı penceresi ile karşılaşabiliriz.&amp;nbsp;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/01/githuboauth_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu bir kereliğine sorulacaktır ancak Github &amp;uuml;zerindeki uygulama ayarlarından Revoke All Users Tokens işlemini&amp;nbsp;yaparsak tekrardan karşılaşabiliriz. Artık&amp;nbsp;DailyQuoteService isimli uygulama i&amp;ccedil;in buraksenyurt kullanıcısı yetkilendirilmiş durumda. Dolayısıyla bir &amp;ouml;nceki taleple gelen Location header bilgisindeki URL adresine&amp;nbsp;y&amp;ouml;nlendiriliriz&amp;nbsp;ki bu da g&amp;ouml;rmek istediğimiz &amp;ouml;zl&amp;uuml; s&amp;ouml;zler operasyonudur.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/01/githuboauth_6.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Tabii Visual Studio Code arabirimine bakarsak Login olan kullanıcıya ait Github tarafından sunulan t&amp;uuml;m ClaimSet değerlerinin JSON&amp;nbsp;formatında&amp;nbsp;geldiğini de g&amp;ouml;rebiliriz. Ayrıca Get metodu i&amp;ccedil;erisinden de&amp;nbsp;oturum a&amp;ccedil;an&amp;nbsp;kullanıcının &amp;ccedil;eşitli bilgilerine erişebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/01/githuboauth_7.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Servisimiz i&amp;ccedil;in Github tarafından sağlanan Token bilgisinin bir son kullanma tarihi bildiğim kadarı ile yok. Kullanıcının Token bilgisi sistemden d&amp;uuml;şmediği s&amp;uuml;rece servis yetkilendirme kontrol&amp;uuml; yapma ihtiyacı duymadan &amp;ccedil;alışıyor olacak. Github'un ilgili servis adreslerine HTTP DELETE metoduyla ID bilgisiyle talepte bulunup d&amp;uuml;ş&amp;uuml;rme işleminin bilin&amp;ccedil;li olarak uygulanabilineceği de ifade ediliyor. Bunu neden s&amp;ouml;yl&amp;uuml;yorum dersiniz? Uygulamayı denerken &amp;ouml;zl&amp;uuml; s&amp;ouml;zler servisinin Authorization adımlarına takılmadan s&amp;uuml;rekli olarak &amp;ccedil;alıştığını g&amp;ouml;rd&amp;uuml;m. Bir yerlerde d&amp;uuml;şse de tekrar Login olmamı istese diye beklerken aslında kullanım amacının ne olduğunu hatırladım. Ama&amp;ccedil; bir uygulamanın Github &amp;uuml;zerinden doğrulanmış kullanıcılar i&amp;ccedil;in OAuth protokol&amp;uuml; &amp;uuml;zerinden Bearer Token ile &amp;ccedil;alışmasıydı. Servisin &amp;ccedil;alıştığı sistem Github tarafından bir kere doğrulanıp ehliyet bilgisini aldıktan sonra hizmet verebilir konumda kalması yeterliydi. Bu arada pratik bir yol olarak tarayıcı &amp;ccedil;erezlerini temizlemeniz halinde tekrardan Login işlemine tabii tutulacağınızı s&amp;ouml;ylemek isterim ;)&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bu yazımızda bir Web API servisinin yetkilendirme s&amp;uuml;recinde Github'ın OAuth hizmetinden nasıl yararlanabileceğimizi incelemeye &amp;ccedil;alıştık. Umarım faydalı olur. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğe &lt;a href="https://github.com/buraksenyurt/dotnetcore/tree/master/MyQuoteService" target="_blank"&gt;github adresi &amp;uuml;zerinden&lt;/a&gt; erişebilirsiniz.&lt;/p&gt;</content>
+  <pubDate>2018-04-03 22:49:00</pubDate>
+  <slug>bir-web-api-servisini-github-hesabiyla-yetkilendirmek</slug>
+  <tags>
+    <tag>aspnet-core-web-api</tag>
+    <tag>web-api</tag>
+    <tag>oauth-2</tag>
+    <tag>oauth</tag>
+    <tag>c#</tag>
+    <tag>github</tag>
+    <tag>authentication</tag>
+    <tag>authorization</tag>
+    <tag>security</tag>
+    <tag>middleware</tag>
+    <tag>bearer</tag>
+    <tag>bearer-token</tag>
+    <tag>token</tag>
+  </tags>
+  <categories>
+    <category>.Net Core</category>
+  </categories>
+</post>

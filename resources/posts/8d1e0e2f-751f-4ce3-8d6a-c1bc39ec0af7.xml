@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>C# 4.0 - Seçilebilen, İsimlendirilebilen Parametreler(Named and Optional Parameters), ref' i Görmezden Gelmek(Ommit Ref) ve PIA için Yenilikler</title>
+  <description>Bir önceki blog yazımızda C# 4.0 ile birlikte gelen önemli yeniliklerden birisi olan dynamic kavramına değinmeye çalışmıştık. Elbetteki C# 4.0 ile birlikte gelen başka yeniliklerde var. Bu yeniliklerde, diğerleri gibi belirli ihtiyaçlardan ortaya çıkmıştır. Öncelikli olarak bu ihtiyaçları ortaya koymaya çalışıyor olacağız. Bu nedenle PDC 2008'de dağıtılan Visual Studio 2010(PreBeta) sürümü ile yazdığım aşağıdaki kod parçasını bir süreliğine göz önüne alalım.</description>
+  <content>&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Bir &amp;ouml;nceki &lt;a title="C# 4.0 - Dynamic Olmak" href="/post/C-40-Dynamic-Olmak" target="_blank"&gt;blog &lt;/a&gt;yazımızda &lt;strong&gt;C# 4.0&lt;/strong&gt; ile birlikte gelen &amp;ouml;nemli yeniliklerden birisi olan &lt;strong&gt;dynamic&lt;/strong&gt; kavramına değinmeye &amp;ccedil;alışmıştık. Elbetteki C# 4.0 ile birlikte gelen başka yeniliklerde var. Bu yeniliklerde, diğerleri gibi belirli ihtiya&amp;ccedil;lardan ortaya &amp;ccedil;ıkmıştır. &amp;Ouml;ncelikli olarak bu ihtiya&amp;ccedil;ları ortaya koymaya &amp;ccedil;alışıyor olacağız. Bu nedenle &lt;strong&gt;PDC 2008'de&lt;/strong&gt; dağıtılan &lt;strong&gt;Visual Studio 2010(PreBeta)&lt;/strong&gt; s&amp;uuml;r&amp;uuml;m&amp;uuml; ile yazdığım aşağıdaki kod par&amp;ccedil;asını bir s&amp;uuml;reliğine g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Reflection;
+using Word=Microsoft.Office.Interop.Word;
+
+namespace NewFeatures2
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Word.Application wrdApp = new Microsoft.Office.Interop.Word.Application();            
+            wrdApp.Visible = true;
+            object fileNamePath = @"C:\Yeni Ozellikler.docx";
+            object missingValue = Missing.Value;
+
+            wrdApp
+                .Documents
+                .Open(ref fileNamePath, ref missingValue, ref missingValue, ref missingValue, ref missingValue, ref missingValue, ref missingValue, ref missingValue, ref missingValue, ref missingValue, ref missingValue, ref missingValue, ref missingValue, ref missingValue, ref missingValue, ref missingValue);
+            Console.WriteLine("Kapatmak i&amp;ccedil;in bir tuşa basınız");
+            Console.ReadLine();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;İlk olarak şunu belirtmek isterim; bu basit Console uygulamasında&lt;strong&gt; Microsoft.Office.Interop.Word&lt;/strong&gt; assembly' ına ait bir referans yer almaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg12_6.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Program, sistemde y&amp;uuml;kl&amp;uuml; olan &lt;strong&gt;Yeni Ozellikler.docx&lt;/strong&gt; isimli bir &lt;strong&gt;Word&lt;/strong&gt; dosyasını a&amp;ccedil;mak i&amp;ccedil;in gerekli kodları i&amp;ccedil;ermektedir. Bu Word dosyasının a&amp;ccedil;ılması i&amp;ccedil;inse, &lt;strong&gt;Microsoft.Office.Interop.Word&lt;/strong&gt; assembly' ından yaralanılmaktadır. Bu assembly aslında Word ile konuşabilmemizi sağlayan COM API'sini sarmalayan(Wrap) bir &lt;strong&gt;y&amp;ouml;netimli(Managed)&lt;/strong&gt; k&amp;uuml;t&amp;uuml;panedir. Kod i&amp;ccedil;erisinden, Word d&amp;ouml;k&amp;uuml;manına erişebilmek i&amp;ccedil;in &lt;strong&gt;Application&lt;/strong&gt; tipinden bir nesne oluşturulmaktadır. Uygulamanın&amp;nbsp;g&amp;ouml;r&amp;uuml;n&amp;uuml;rl&amp;uuml;ğ&amp;uuml; Visible &amp;ouml;zelliği ile set edildikten sonra ise, &lt;strong&gt;Open&lt;/strong&gt; metodundan yararlanarak ilgili Word belgesinin a&amp;ccedil;ılması sağlanmaktadır. Ancak bu kod par&amp;ccedil;asında geliştirici a&amp;ccedil;ısından bazı zorluklar olduğu rahatlıkla g&amp;ouml;zlemlenebilir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1-&lt;/strong&gt; Open metoduna ait &lt;strong&gt;16&lt;/strong&gt; adet parametrenin tamamının girilmesi zorunludur. Aşağıdaki şekilde durumun sıkıcılığı g&amp;ouml;zler &amp;ouml;n&amp;uuml;ndedir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2009%2f5%2fblg12_1Big.gif" target="_blank"&gt;&lt;img src="/pics/2009%2f5%2fblg12_1Mini.gif" alt="" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;NOT : &lt;/strong&gt;Burada &lt;strong&gt;Juval Lowy'&lt;/strong&gt; nin &lt;/em&gt;&lt;a title="IDesign" href="http://www.idesign.net/idesign/DesktopDefault.aspx" target="_blank"&gt;&lt;em&gt;&lt;strong&gt;IDesign&lt;/strong&gt; &lt;/em&gt;&lt;/a&gt;&lt;em&gt;şirketinde kullandığı ve pek &amp;ccedil;ok şirket tarafından benimsenen &lt;/em&gt;&lt;a href="http://www.idesign.net/idesign/download/IDesign%20CSharp%20Coding%20Standard.zip"&gt;&lt;em&gt;C# kodlama standartları &lt;/em&gt;&lt;/a&gt;&lt;em&gt;aklıma geliyor. Buradaki belirttiği bir maddeyi hatırlıyorum. &lt;strong&gt;"Metodların arg&amp;uuml;man sayılarının 5 i ge&amp;ccedil;mesinden ka&amp;ccedil;ının. Eğer &amp;ouml;yleyse struct tipini kullanın".&lt;/strong&gt;&amp;nbsp;&lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt; Burada bir &lt;strong&gt;COM API'&lt;/strong&gt; sinin &lt;strong&gt;Wrap&lt;/strong&gt; edilmiş k&amp;uuml;t&amp;uuml;phanesi i&amp;ccedil;erisindeki bir fonksiyonun parametre yapısının değiştirilemeyeceği fikri belleğimizi tamamıyla kaplayabilir. Tabi &lt;strong&gt;C# 3.0&lt;/strong&gt; sonrasında bir fırsat olabileceği de akıllara gelebilir. &lt;strong&gt;"Bir Extension metod yardımıyla Open metodu yerine bir alternatif geliştirebilir miyim? En azından parametre sayısını d&amp;uuml;ş&amp;uuml;rmemizi kolaylaştıracak..."&lt;/strong&gt; Bunu denemenizi &amp;ouml;neririm.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2-&lt;/strong&gt; Parametreler &lt;strong&gt;COM&lt;/strong&gt; nesnesine iletildiğinden, dışarıdan yapılacak olan atamalarda &lt;strong&gt;object&lt;/strong&gt; tipinin kullanılması gerekmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;3- ref&lt;/strong&gt; anahtar kelimesinin kullanılması zorunludur.&lt;/p&gt;
+&lt;p&gt;Ger&amp;ccedil;ekte, &lt;strong&gt;Open&lt;/strong&gt; metodu i&amp;ccedil;erisinde işimize yarayan ve bizim i&amp;ccedil;in anlam ifade eden tek bir parametre yer almaktadır. O da a&amp;ccedil;ılmak istenen dosyanın adıdır. Diğer parametrelerinin hi&amp;ccedil;birini kullanmadığımız halde yazmak zorunda olduğumuzu g&amp;ouml;r&amp;uuml;yoruz. Keşke sadece gerekli olanları yazsabilseydik;&amp;nbsp;o zaman&amp;nbsp;bu iş daha kolay olmazmıydı? &lt;img title="Frown" src="/editors/tiny_mce3/plugins/emotions/img/smiley-frown.gif" alt="Frown" border="0" /&gt;&amp;nbsp;Nitekim buradaki Open metodu haricinde, &amp;ccedil;ok daha fazla sayıda arg&amp;uuml;man ile &amp;ccedil;alışabilen COM fonksiyonellikleri s&amp;ouml;z konusu olabilir. B&amp;ouml;yle bir durumda tam olarak t&amp;uuml;m parametreleri yazma zorunluluğu bir kenara dursun, bunların b&amp;uuml;t&amp;uuml;n&amp;uuml;n ne işe yaradığınında bilinmesi gerekir.&lt;/p&gt;
+&lt;p&gt;Sanırım bu c&amp;uuml;mlelerden zaten nereye varmak istediğimi anlatabilmişimdir. .Net in gelecek nesillerinin en b&amp;uuml;y&amp;uuml;k hedeflerinden birisi dinamik dillere ait nesneler ile konuşabilmek ve bunu m&amp;uuml;mk&amp;uuml;n olduğunca kolaylaştırmaktır. Bu noktada COM API' leri gibi nesnelerinde kullanımı s&amp;ouml;z konusudur. Aynen yukarıda geliştirdiğimiz &amp;ouml;rnekte olduğu gibi. Bu nedenle &lt;strong&gt;C# 4.0&lt;/strong&gt; i&amp;ccedil;erisinde se&amp;ccedil;imlik parametre kullanımına izin veren geliştirmeler yapılmıştır&lt;strong&gt;(Optional Parameters)&lt;/strong&gt; Buna g&amp;ouml;re yukarıdaki kod par&amp;ccedil;asını C# 4.0 stilinde aşağıdaki gibi geliştirebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Optional Parameters ile&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Reflection;
+using Word=Microsoft.Office.Interop.Word;
+
+namespace NewFeatures2
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Word.Application wrdApp = new Microsoft.Office.Interop.Word.Application();            
+            wrdApp.Visible = true;            
+            wrdApp.Documents.Open(@"C:\Yeni Ozellikler.docx");
+            Console.WriteLine("Kapatmak i&amp;ccedil;in bir tuşa basınız");
+            Console.ReadLine();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu kod par&amp;ccedil;ası &amp;ccedil;alıştığında da aynı sonucu alırız. Yine Word belgesi a&amp;ccedil;ılacak ve i&amp;ccedil;eriği g&amp;ouml;r&amp;uuml;nt&amp;uuml;lenecektir. Hem kodun okunurluğu kolaylaşmıştır, hem de kısalmıştır. Diğer taraftan parametre değerini aktarırken &lt;strong&gt;ref&lt;/strong&gt; kullanılmadığına dikkat etmemiz gerekiyor&lt;strong&gt;.(Ommit ref&amp;nbsp;&amp;ouml;zelliği)&lt;/strong&gt;&amp;nbsp;&amp;Uuml;stelik &lt;strong&gt;object&lt;/strong&gt; tipinden değişken ataması yerine doğrudan dosya adresininin i&amp;ccedil;eriğini g&amp;ouml;nderebildiğimizede dikkat edelim.&lt;/p&gt;
+&lt;p&gt;Tabi ihtiya&amp;ccedil;lar bitmek bilmiyor. Burada g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi gereksiz olan parametrelerin hi&amp;ccedil; biri bildirilmemiştir. Ayrıca &lt;strong&gt;ref&lt;/strong&gt; anahtar kelimeside herhangibir şekilde kullanılmamıştır. Ancak arada başka bir parametrenin daha kullanılması gerekirse... &lt;img title="Undecided" src="/editors/tiny_mce3/plugins/emotions/img/smiley-undecided.gif" alt="Undecided" border="0" /&gt;&amp;nbsp;S&amp;ouml;z gelimi 3nc&amp;uuml; parametre dosyanın yanlız okunabilir&lt;strong&gt;(ReadOnly)&lt;/strong&gt; modda a&amp;ccedil;ılıp a&amp;ccedil;ılmayacağını belirtir. &lt;strong&gt;Optional Parameter&lt;/strong&gt; tekniğini kullanırsak ikinci parametreyi atlamamız m&amp;uuml;mk&amp;uuml;n olmayacaktır. Acaba b&amp;ouml;yle bir vakada kodu yine istemediğimiz şekliyle aşağıdaki gibi geliştirmemiz mi gerekir?&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Reflection;
+using Word=Microsoft.Office.Interop.Word;
+
+namespace NewFeatures2
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Word.Application wrdApp = new Microsoft.Office.Interop.Word.Application();            
+            wrdApp.Visible = true;            
+            object fileNamePath = @"C:\Yeni Ozellikler.docx";
+            object missingValue = Missing.Value;
+            object onlyRead = true;
+
+            wrdApp
+                .Documents
+                .Open(ref fileNamePath, ref missingValue, ref onlyRead, ref missingValue, ref missingValue, ref missingValue, ref missingValue, ref missingValue, ref missingValue, ref missingValue, ref missingValue, ref missingValue, ref missingValue, ref missingValue, ref missingValue, ref missingValue);           
+
+            Console.WriteLine("Kapatmak i&amp;ccedil;in bir tuşa basınız");
+            Console.ReadLine();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Oysaki C# 4.0 bu gibi durumlar i&amp;ccedil;in &lt;strong&gt;isimlendirilmiş parametre(Named Parameters)&lt;/strong&gt;&amp;nbsp;kullanımını olanaklı kılmaktadır. Aşağıdaki şekilde g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi, &lt;strong&gt;intellisense'&lt;/strong&gt; de bize yardımcı olmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg12_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dolayısıyla yukarıdaki kod par&amp;ccedil;asını aşağıdaki gibi geliştirebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Named Parameters kullanımı ile&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Reflection;
+using Word=Microsoft.Office.Interop.Word;
+
+namespace NewFeatures2
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Word.Application wrdApp = new Microsoft.Office.Interop.Word.Application();            
+            wrdApp.Visible = true;
+            
+            wrdApp.Documents.Open(@"c:\Yeni Ozellikler.docx", ReadOnly: true);
+
+            Console.WriteLine("Kapatmak i&amp;ccedil;in bir tuşa basınız");
+            Console.ReadLine();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Son olarak &lt;strong&gt;Platform Interop Assembly(PIA)&lt;/strong&gt; ile ilgili gelen yeniliklerden birisine değinmek istiyorum. Normal şartlarda &lt;strong&gt;Visual Studio 2010&lt;/strong&gt; &amp;ouml;ncesinde bir COM API' sini uygulamaya referans ettiğimizde, sarmalanan k&amp;uuml;t&amp;uuml;phanenin &amp;ouml;zelliklerinde aşağıdaki şekilde g&amp;ouml;r&amp;uuml;len &lt;strong&gt;Embed Interop Types&lt;/strong&gt; isimli bir kriter olmadığı bilinmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg12_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Oysaki Visual Studio 2010 ile birlikte bu &amp;ouml;zellikte gelmektedir. Bu tabiki sadece &lt;strong&gt;C# 4.0&lt;/strong&gt; diline bağlanacak bir yetenek olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lmemelidir.&lt;/p&gt;
+&lt;p&gt;Peki ne işe yarar? Eğer yukarıda geliştirdiğimiz &lt;strong&gt;C# 4.0&lt;/strong&gt; &amp;ouml;rneğinin &lt;strong&gt;ildasm(Intermediate Language DisAsseMbler)&lt;/strong&gt; &amp;ccedil;ıktısına bakacak olursak aşağıdaki durum ile karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg12_4.gif" alt="" /&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;ze &amp;ccedil;arpan &amp;ouml;zel bir nokta yer almamaktadır. Ancak &lt;strong&gt;Microsoft.Office.Interop.Word&lt;/strong&gt; assembly' ının &amp;ouml;zelliklerinde yer alan &lt;strong&gt;Embed Interop Types&lt;/strong&gt;&amp;nbsp;se&amp;ccedil;eneğini true olarak değiştirir ve s&amp;ouml;z konusu uygulamanın &lt;strong&gt;IL&lt;/strong&gt; &amp;ccedil;ıktısına tekrardan bakarsak aşağıdak sonu&amp;ccedil;larla karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg12_5.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi API i&amp;ccedil;erisinde yer alan tipler, &lt;strong&gt;.Net&lt;/strong&gt; programı i&amp;ccedil;erisine birer tip olarak g&amp;ouml;m&amp;uuml;lm&amp;uuml;şt&amp;uuml;r. Aslında bu yenilik, &lt;strong&gt;PIA&lt;/strong&gt;' ların, geliştirilen asıl uygulama i&amp;ccedil;erisine tip bazında g&amp;ouml;m&amp;uuml;lerekten taşınabilmelerini kolaylaştırıcı bir &amp;ouml;zellik olarak g&amp;ouml;r&amp;uuml;lebilir. Bu konudaki araştırmalarıma devam ediyorum. Yeni bilgiler kazandık&amp;ccedil;a sizlerle paylaşmaya devam ediyor olacağım.&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Bu yazımızda sizlere C# 4.0 ile birlikte gelen bir ka&amp;ccedil; yeniliği aktarmaya &amp;ccedil;alıştım. Sonu&amp;ccedil; olarak bu yeniliklerin &amp;ouml;zellikle dynamic tiplerin kullanımı kolaylaştırmak &amp;uuml;zere getirildiğini s&amp;ouml;yleyebiliriz.&lt;/p&gt;
+&lt;p&gt;Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2009-05-04 13:46:00</pubDate>
+  <slug>C-40-Secilebilen-Isimlendirilebilen-Parametreler(Named-and-Optional-Parameters)-ref-i-Gormezden-Gelmek(Ommit-Ref)-ve-PIA-icin-Yenilikler</slug>
+  <tags>
+    <tag>c#-40</tag>
+  </tags>
+  <categories>
+    <category>C# 4.0</category>
+  </categories>
+</post>

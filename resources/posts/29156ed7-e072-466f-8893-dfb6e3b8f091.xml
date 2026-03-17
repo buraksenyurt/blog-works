@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>.Net RIA Servisleri - CRUD İşlemleri</title>
+  <description>Bildiğiniz gibi bir süredir .Net RIA Servisleri ile ilişkili araştırmalarıma devam etmekteyim. Bu yazımızda, .Net RIA Servislerinde Insert, Update ve Delete işlemlerini nasıl yapabileceğimizi basit bir örnek üzerinden adım adım aktarmaya çalışacağım.</description>
+  <content>&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Bildiğiniz gibi bir s&amp;uuml;redir .Net RIA Servisleri ile ilişkili araştırmalarıma devam etmekteyim. Bu yazımızda, .Net RIA Servislerinde &lt;strong&gt;Insert, Update &lt;/strong&gt;ve &lt;strong&gt;Delete &lt;/strong&gt;işlemlerini nasıl yapabileceğimizi basit bir &amp;ouml;rnek &amp;uuml;zerinden adım adım aktarmaya &amp;ccedil;alışacağım. Daha &amp;ouml;nceki Hello World &amp;ouml;rneğimizden farklı olarak, DAL(Data Access Layer) i&amp;ccedil;erisinde &lt;strong&gt;LINQ to SQL &lt;/strong&gt;modelini kullanıyor olacağız. İlk adımımız elbetteki bir&lt;strong&gt; Silverlight Application&lt;/strong&gt; projesi oluşturmak olmalıdır. .Net RIA Servisini kullanacağımız i&amp;ccedil;in, projenin oluşturulması sırasında &lt;strong&gt;Link to ASP.NET Server Project&lt;/strong&gt; se&amp;ccedil;eneğinin işaretli olmasına dikkat edelim.&lt;/p&gt;
+&lt;p&gt;Sonrasında Web projesine bir adet&lt;strong&gt; LINQ to SQL&lt;/strong&gt; &amp;ouml;ğesi eklemeli ve bağlanmak istediğimiz veri kaynağı &amp;uuml;zerinden, kullanmak istediğimiz tablo veya stored procedure' leri diagram &amp;uuml;zerine s&amp;uuml;r&amp;uuml;klemeliyiz. Ben Insert, Update ve Delete işlemlerini &amp;ccedil;ok basit bir şekilde ele almak istediğimdeN kullanabileceğim en kolay kobay tabloyu se&amp;ccedil;tim :) Northwind veritabanında yer alan Categories tablosu. Nitekim sadece CategoryName ve Description alanlarına veri eklemek bizim i&amp;ccedil;in yeterli olacaktır.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Ancak &amp;ouml;rneği biraz daha ileri seviyede geliştirmeye &amp;ccedil;alışmanızıda şiddetle tavsiye ederim. S&amp;ouml;z gelimi, Categories tablosunda&amp;nbsp;Image tipinden Picture isimli bir&amp;nbsp;alan bulunmaktadır. Bu resim alanı binary tiptedir. Bir başka deyişle Silverlight istemcisinin, kategori resmini se&amp;ccedil;ip sunucu tarafına binary formatta aktarmaya &amp;ccedil;alışmasıda iyi bir m&amp;uuml;cadele antrenmanı olarak g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir. Hatta resmin istemci tarafında bir kontrol i&amp;ccedil;erisinde g&amp;ouml;sterilmeside s&amp;ouml;z konusu olabilir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;LINQ to SQL diagramımızın i&amp;ccedil;eriği aşağıdaki şekilde g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg16_0.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bundan sonra yapmamız gereken, DomainService tipinin eklenmesidir. Bu seferki &amp;ouml;rneğimizde, t&amp;uuml;m CRUD operasyonuna ihtiyacımız olacağından, Categories Entity' si i&amp;ccedil;in, &lt;strong&gt;Enable Editing &lt;/strong&gt;&amp;ouml;zelliğinin etkinleştirilmiş olması şarttır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg16_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu işlemlerin arkasından CategoryService isimli DomainService sınıfı i&amp;ccedil;erisinde aşağıdaki fonksiyonelliklerin oluşturulduğu g&amp;ouml;r&amp;uuml;l&amp;uuml;r.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace Editing.Web
+{
+    using System.Linq;
+    using System.Web.DomainServices.LinqToSql;
+    using System.Web.Ria;
+
+    [EnableClientAccess()]
+    public class CategoryService : LinqToSqlDomainService&amp;lt;NorthwindDataContext&amp;gt;
+    {
+        public IQueryable&amp;lt;Category&amp;gt; GetCategories()
+        {
+            return this.Context.Categories;
+        }
+
+        public void InsertCategory(Category category)
+        {
+            this.Context.Categories.InsertOnSubmit(category);
+        }
+
+        public void UpdateCategory(Category currentCategory, Category originalCategory)
+        {
+            this.Context.Categories.Attach(currentCategory, originalCategory);
+        }
+
+        public void DeleteCategory(Category category)
+        {
+            this.Context.Categories.Attach(category, category);
+            this.Context.Categories.DeleteOnSubmit(category);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;GetCategories metodu ile LINQ to SQL sağlayıcısı &amp;uuml;zerinden kategorilerin &amp;ccedil;ekilmesi sağlanmaktadır. Bir kategorinin eklenmesi sırasında &lt;strong&gt;InsertOnSubmit&lt;/strong&gt;, silinmesi işleminde &lt;strong&gt;DeleteOnSubmit&lt;/strong&gt; ve son olarak g&amp;uuml;ncellenmesinde ise &lt;strong&gt;Attach&lt;/strong&gt; isimli LINQ to SQL tarafından hazır olarak gelen fonksiyonların kullanıldığı g&amp;ouml;r&amp;uuml;lmektedir. Tabiki projenin Build edilmesi sonrasında, istemci tarafındada uygun metodları i&amp;ccedil;eren &lt;strong&gt;CategoryContext&lt;/strong&gt; isimli &lt;strong&gt;DomainContext&lt;/strong&gt; tipi ile sunucu tarafındaki Category entity sınıfının karşılığı hazırlanmış olacaktır. Artık tek yapmamız gereken istemci tarafını tasarlamak ve kodlamaktır. Ben tasarım konusunda &amp;ouml;z&amp;uuml;rl&amp;uuml; olduğumdan, ancak aşağıdaki &lt;strong&gt;Silverlight&lt;/strong&gt; &lt;strong&gt;UserControl&lt;/strong&gt; bileşenini oluşturabilmiş bulunuyorum. &lt;img title="Embarassed" src="/editors/tiny_mce3/plugins/emotions/img/smiley-embarassed.gif" alt="Embarassed" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;MainPage.xaml&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg16_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;UserControl x:Class="Editing.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    Width="400" Height="300"&amp;gt;
+    &amp;lt;StackPanel x:Name="LayoutRoot" Background="White" Orientation="Vertical"&amp;gt;
+        &amp;lt;TextBlock Text="Categories" FontSize="12" FontStyle="Italic"/&amp;gt;
+        &amp;lt;ComboBox x:Name="cmbCategories" Height="24" SelectionChanged="cmbCategories_SelectionChanged"&amp;gt;
+            &amp;lt;ComboBox.ItemTemplate&amp;gt;
+                &amp;lt;DataTemplate&amp;gt;
+                    &amp;lt;StackPanel Orientation="Vertical"&amp;gt;
+                        &amp;lt;TextBlock x:Name="id" Text="{Binding CategoryID}" Foreground="RoyalBlue"/&amp;gt;
+                        &amp;lt;TextBlock x:Name="name" Text="{Binding CategoryName}" Foreground="SeaGreen"/&amp;gt;
+                        &amp;lt;TextBlock x:Name="description" Text="{Binding Description}" Foreground="Salmon" FontSize="9" FontStyle="Italic"/&amp;gt;
+                    &amp;lt;/StackPanel&amp;gt;
+                &amp;lt;/DataTemplate&amp;gt;
+            &amp;lt;/ComboBox.ItemTemplate&amp;gt;
+        &amp;lt;/ComboBox&amp;gt;
+        &amp;lt;TextBlock Text="ID"  Foreground="BlueViolet"/&amp;gt;
+        &amp;lt;TextBlock x:Name="txtCategoryID"/&amp;gt;
+        &amp;lt;TextBlock Text="Name" Foreground="BlueViolet"/&amp;gt;
+        &amp;lt;TextBox x:Name="txtCategoryName"/&amp;gt;
+        &amp;lt;TextBlock Text="Description" Foreground="BlueViolet"/&amp;gt;
+        &amp;lt;TextBox x:Name="txtCategoryDescription"/&amp;gt;
+        &amp;lt;StackPanel Orientation="Horizontal" Margin="5"&amp;gt;
+            &amp;lt;Button x:Name="btnUpdate" Click="btnUpdate_Click" Content="Update" Width="100" Margin="2"/&amp;gt;
+            &amp;lt;Button x:Name="btnDelete" Click="btnDelete_Click" Content="Delete" Width="100" Margin="2"/&amp;gt;
+            &amp;lt;Button x:Name="btnInsert" Click="btnInsert_Click" Content="Insert" Width="100" Margin="2"/&amp;gt;
+        &amp;lt;/StackPanel&amp;gt;
+    &amp;lt;/StackPanel&amp;gt;
+&amp;lt;/UserControl&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Hemen bu sayfadanın tasarlanma amacını a&amp;ccedil;ıklıyayım. ComboBox kontrol&amp;uuml;m&amp;uuml;z i&amp;ccedil;erisinde, sayfanın oluşturulması sırasında y&amp;uuml;klenen Category nesne &amp;ouml;rnekleri yer alacaktır. Bu nesne &amp;ouml;rneklerine ait CategoryID,CategoryName ve Description alanları &lt;strong&gt;DataTemplate&lt;/strong&gt; şablonun i&amp;ccedil;erisindeki TextBlock kontrollerinin &lt;strong&gt;Text&lt;/strong&gt; &amp;ouml;zelliklerine &lt;strong&gt;bağlanmıştır(Binding)&lt;/strong&gt;. Kullanıcı isterse, sayfanın alt kısmında yer alan TextBox kontrollerini kullanarak yeni bir Category ekleyebilir. Tek yapması gereken, Insert başlıklı Button kontrol&amp;uuml;ne basmaktır. Diğer taraftan ComboBox kontrol&amp;uuml;nde bir Category se&amp;ccedil;ildiğinde, buna ait CategoryName ve Description bilgileri ile CategoryID değeri, alt tarafta yer alan kontrollere, istemci tarafındaki &lt;strong&gt;DomainContext&lt;/strong&gt; tipinin ilgili &lt;strong&gt;Categories&lt;/strong&gt; &amp;ouml;zelliği &amp;uuml;zerinden getirilmektedir. Kullanıcı bu işleyişi g&amp;uuml;ncelleme sırasında değerlendirebilir. Bilgiler &amp;uuml;zerinde gerekli değişiklikleri yaptıktan sonra &lt;strong&gt;Update&lt;/strong&gt; d&amp;uuml;ğmesini kullanması yeterlidir. Benzer şekilde silme işlemi i&amp;ccedil;inde sadece ve sadece Delete d&amp;uuml;ğmesini ele alabilir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Tabi bu &amp;ouml;rnekte, silinmek istenen Category bilgisinin, sunucu tarafında başka birisi tarafından silinmiş olma durumu s&amp;ouml;z konusu olabilir. Yada var olan bir kaydı g&amp;uuml;ncellemek isteyen kullanıcıdan &amp;ouml;nce başka birisi g&amp;uuml;ncelleştirmiş olabilir ve o anki kullanıcı eski veriye bakıyor olabilir. Sanıyorumki nereye varmak istediğimi biraz anladınız. Eş zamanlı olarak birbirlerinden habersiz bir şekilde veriyi ektiliyen istemcilerin olduğu vaka. Bu tip bir vaka .Net RIA Servislerinin kullanıldığı bir ortamda son derece olasıdır. &amp;Ouml;nemli olan noktalardan birisi, SQL tarafında &amp;ccedil;alıştırılan sorgulardaki Where kriteridir. Where kriterinde varsayılan olarak nasıl bir yaklaşım sergilenmektedir? Bunu ilerleyen kısımlarda g&amp;ouml;rmeye &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Gelelim kod tarafına...&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Shapes;
+using Editing.Web;
+
+namespace Editing
+{
+    public partial class MainPage : UserControl
+    {
+        CategoryContext context = new CategoryContext();
+
+        public MainPage()
+        {
+            InitializeComponent();
+
+            cmbCategories.ItemsSource = context.Categories;
+            context.LoadCategories();
+        }
+
+        private void cmbCategories_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count&amp;gt;0
+                &amp;amp;&amp;amp; e.AddedItems[0]!=null)
+            {
+                Category selectedCategory = (Category)e.AddedItems[0];
+
+                txtCategoryID.Text = selectedCategory.CategoryID.ToString();
+                txtCategoryName.Text = selectedCategory.CategoryName;
+                txtCategoryDescription.Text = selectedCategory.Description;
+            }
+        }
+
+
+        private void btnUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            // G&amp;uuml;ncellenmek istenen category nesne &amp;ouml;rneği, DataContext referansının Categories koleksiyonu &amp;uuml;zerinden &amp;ccedil;ekilir.
+            if (!String.IsNullOrEmpty(txtCategoryID.Text))
+            {
+                Category category = context.Categories.Single&amp;lt;Category&amp;gt;(c =&amp;gt; c.CategoryID == Convert.ToInt32(txtCategoryID.Text));
+
+                // G&amp;uuml;ncellenmek istenen Category nesne &amp;ouml;rneğinin CategoryName ve Description alanlarına ilgili değerler aktarılır
+                category.CategoryName = txtCategoryName.Text;
+                category.Description = txtCategoryDescription.Text;
+            }
+
+            // Değişiklikler sunucu tarafına g&amp;ouml;nderilir.
+            context.SubmitChanges();
+        }
+
+        private void btnDelete_Click(object sender, RoutedEventArgs e)
+        {
+            // Silinmek istenen Category tipi ComboBox i&amp;ccedil;erisinden se&amp;ccedil;ildikten sonra
+            // ilk olarak DataContext tipi i&amp;ccedil;erisindeki koleksiyondan &amp;ccedil;ıkartılır.
+            context.Categories.Remove((Category)cmbCategories.SelectedItem);
+
+            // Değişiklikler sunucu tarafına g&amp;ouml;nderilir
+            context.SubmitChanges();
+
+            // Silme işleminden sonra sunucu tarafından Categories tablosunun son i&amp;ccedil;eriği alınır
+            context.LoadCategories();
+
+            // Kontrollerin i&amp;ccedil;eriği temizlenir
+            txtCategoryDescription.Text = "";
+            txtCategoryName.Text = "";
+            txtCategoryID.Text = "";
+        }
+
+        private void btnInsert_Click(object sender, RoutedEventArgs e)
+        {
+            // Yeni Category tipi &amp;ouml;rneklenir
+            Category newCategory = new Category { 
+                CategoryName = txtCategoryName.Text
+                , Description = txtCategoryDescription.Text };
+
+            // &amp;Ouml;rneklenen Category tipi, DataContext &amp;uuml;zerindeki Categories koleksiyonuna eklenir.
+            context.Categories.Add(newCategory);
+
+            // Değişiklikler onaylanır ve sunucu tarafına aktarılır
+            context.SubmitChanges();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Artık testlerimize başlayabiliriz. Burada &lt;strong&gt;Insert, Update &lt;/strong&gt;ve &lt;strong&gt;Delete &lt;/strong&gt;gibi işlemler s&amp;ouml;z konusu olduğundan ve sunucu tarafında SQL kullanıldığından, arka planda &amp;ccedil;alıştırılan sorgu c&amp;uuml;mlelerini eminimki sizde en az benim ettiğim kadar merak ediyorsunuzdur. Bu nedenle &lt;strong&gt;SQL Server Profiler &lt;/strong&gt;aracımızda bir yandan a&amp;ccedil;ık duruyor olacak. &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;İlk karşılaşacağımız ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; aşağıdakine benzer olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg16_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi ComboBox i&amp;ccedil;erisinde, kategorilerin tamamı yer almaktadır. Eğer kullanıcı herhangibir &amp;ouml;ğeyi se&amp;ccedil;erse aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi, o kategoriye ait bilgiler gelecektir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg16_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu sırada ekrana gelen veri i&amp;ccedil;eriğini değiştirdiğimizi ve sonrasında Update tuşuna bastığımızı d&amp;uuml;ş&amp;uuml;nelim. &amp;Ouml;rnek olarak kategori adı ve a&amp;ccedil;ıklamalarının sonuna &amp;uuml;&amp;ccedil; nokta koyduğumuzu varsayalım. Bu durumda SQL tarafında aşağıdaki sorgunun &amp;ccedil;alıştırıldığını g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;exec sp_executesql N'UPDATE [dbo].[Categories]
+SET [CategoryName] = @p2, [Description] = @p3
+WHERE ([CategoryID] = @p0) AND ([CategoryName] = @p1)',N'@p0 int,@p1 nvarchar(10),@p2 nvarchar(13),@p3 ntext',@p0=2,@p1=N'Condiments',@p2=N'Condiments...',@p3=N'Sweet and savory sauces, relishes, spreads, and seasonings...'&lt;/pre&gt;
+&lt;p&gt;Hemen dikkatimi &amp;ccedil;eken bir noktayı vurgulamak istiyorum. Sadece CategoryName ve Description alanlarını g&amp;uuml;ncelleştirdik. Bu nedenle SQL tarafında y&amp;uuml;r&amp;uuml;t&amp;uuml;len Update sorgusunda yanlızca bu alanlar yer almaktadır. Picture alanı i&amp;ccedil;in herhangibir ifade bulunmamaktadır. Bu neden &amp;ouml;nemlidir? n tane alandan oluşan bir tablonun kullanıldığı d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde, sadece bir alan i&amp;ccedil;in g&amp;uuml;ncelleştirme yapılıyorsa, t&amp;uuml;m alanların sorguya dahil edilmesi yerine sadece ilgili olanın eklenmesi s&amp;ouml;z konusudur...Mu acaba? Bunu test etmek son derece kolaydır aslında. Sadece CategoryName alanın değerini g&amp;uuml;ncelleştirdiğinizi d&amp;uuml;ş&amp;uuml;nelim. Bu durumda SQL profiler ile yaklanan sorguya bakarsak eğer, Description &amp;ouml;zelliğine, txtCategoryDescription kontrol&amp;uuml;n&amp;uuml;n değişmeyen i&amp;ccedil;eriğini aktarmış olsak bile, sadece CategoryName alanının sorguya dahil edildiğini g&amp;ouml;rebiliriz. Bu bizim i&amp;ccedil;in olduk&amp;ccedil;a iyi bir haber aslında.&lt;/p&gt;
+&lt;p&gt;Yeni bir kategori eklenmek istendiğindeyse,&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg16_5.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;sunucu tarafında aşağıdaki SQL sorgusu &amp;ccedil;alıştırılacaktr.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;exec sp_executesql N'INSERT INTO [dbo].[Categories]([CategoryName], [Description], [Picture])
+VALUES (@p0, @p1, @p2)
+
+SELECT CONVERT(Int,SCOPE_IDENTITY()) AS [value]',N'@p0 nvarchar(5),@p1 ntext,@p2 image',@p0=N'Kitap',@p1=N'Bisiklet nasıl s&amp;uuml;r&amp;uuml;l&amp;uuml;r, nasıl monte edilir :)',@p2=NULL&lt;/pre&gt;
+&lt;p&gt;Sorgu c&amp;uuml;mlesinde standart bir Insert ifadesi olmasının dışında, eklenen kayıt i&amp;ccedil;in &amp;uuml;retilen Identity değerinin, &lt;strong&gt;SCOPE_IDENTITY()&lt;/strong&gt; fonksiyonundan yararlanılarak geriye d&amp;ouml;nd&amp;uuml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; g&amp;ouml;zden ka&amp;ccedil;ırılmamalıdır. &amp;Ouml;yleki, yeni eklenen satıra ait bilgiler ComboBox kontrol&amp;uuml;ne otomatik olarak bağlanırken, CategoryID değerininde sunucudan alındığı rahatlıkla g&amp;ouml;zlemlenebilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f5%2fblg16_6.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Silme işlemi i&amp;ccedil;in bir kategorinin se&amp;ccedil;ilmesi gerekmektedir. Se&amp;ccedil;ilen kategoriye ait Category nesne &amp;ouml;rneği bulunduktan sonra ise &lt;strong&gt;Remove&lt;/strong&gt; metodu ile &lt;strong&gt;DomainContext&lt;/strong&gt; i&amp;ccedil;erisindeki koleksiyondan &amp;ccedil;ıkartılır. Sonrasında ise değişikleri sunucu g&amp;ouml;ndermek i&amp;ccedil;in yine &lt;strong&gt;SubmitChanges&lt;/strong&gt; metodundan yararlanılır. Sonu&amp;ccedil; itibariyle SQL sunucusuna giden sorgu c&amp;uuml;mlesi&amp;nbsp;aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;exec sp_executesql N'DELETE FROM [dbo].[Categories] WHERE ([CategoryID] = @p0) AND ([CategoryName] = @p1)',N'@p0 int,@p1 nvarchar(5)',@p0=12,@p1=N'Kitap'&lt;/pre&gt;
+&lt;p&gt;Sorguda dikkat &amp;ccedil;eken en &amp;ouml;nemli nokta Where kriterine, &lt;strong&gt;Image&lt;/strong&gt; tipinden olan &lt;strong&gt;Picture&lt;/strong&gt; ile &lt;strong&gt;ntext&lt;/strong&gt; tipinden olan &lt;strong&gt;Description&lt;/strong&gt; dışındaki t&amp;uuml;m alanların dahil edilmesidir. Bu bir anlamda eş zamanlı &amp;ccedil;akışmaların &amp;ouml;n&amp;uuml;ne ge&amp;ccedil;ilmesini sağlamaktadır ki aynı durum Update i&amp;ccedil;in &amp;ccedil;alıştırılan SQL sorgusunda da ge&amp;ccedil;erlidir. Bilmem farketmiş miydiniz? &lt;img title="Laughing" src="/editors/tiny_mce3/plugins/emotions/img/smiley-laughing.gif" alt="Laughing" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Bu kısa yazıda, .&lt;strong&gt;Net RIA Servislerinde Insert,Update&lt;/strong&gt; ve &lt;strong&gt;Delete &lt;/strong&gt;işlemlerini basit bir bi&amp;ccedil;imde ele almaya&amp;nbsp;ve arka planda hareket eden SQL c&amp;uuml;mleciklerine bakıldığında g&amp;ouml;z&amp;uuml;m&amp;uuml;ze &amp;ccedil;arpan &amp;ouml;nemli noktaları vurgulamaya &amp;ccedil;alıştım. .Net RIA Servisleri ile ilişkiki araştırmalarıma devam ettik&amp;ccedil;e sizlerle paylaşıyor olacağım. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2009%2f5%2fEditing.rar"&gt;Editing.rar (1,14 mb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2009-05-13 22:50:00</pubDate>
+  <slug>Net-RIA-Servisleri-CRUD-Islemleri</slug>
+  <tags>
+    <tag>net-ria-services</tag>
+    <tag>silverlight</tag>
+  </tags>
+  <categories>
+    <category>.Net RIA Services</category>
+  </categories>
+</post>

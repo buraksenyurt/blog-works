@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WCF 4.5–ChannelFactory Tipi için Caching Kullanımı</title>
+  <description>Bir WCF(Windows Communication Foundation) servisi ile onun tüketicisi olan istemci arasındaki iletişimde önem arz eden konulardan birisi de kanaldır(Channel). Bu kanalın oluşturulması görevini ChannelFactory tipi üstlenmektedir.  İstemci açısından bakıldığında bir kanalın oluşturulması aslında servisin bir Proxy tipinin üretilmesi ve uzak metod çağrıları için gerekli iletişim ortamının sağlanması anlamına gelmektedir. Bir kanal esas itibariyle EndPoint odaklı üretilir. Dolayısıyla WCF' in ABC'si olarak nitelendirilen Address Binding Contract üçlemesi üzerine inşa olunur(ki bu da WCF Service EndPoint tanımıdır)</description>
+  <content>&lt;p&gt;&lt;a href="/pics/PerfectCircle.jpg"&gt;&lt;img style="background-image: none; float: right; padding-top: 0px; padding-left: 0px; margin: 4px 0px; display: inline; padding-right: 0px; border-width: 0px;" title="PerfectCircle" src="/pics/PerfectCircle_thumb.jpg" alt="PerfectCircle" width="240" height="240" align="right" border="0" /&gt;&lt;/a&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Vaktiyle &amp;uuml;niversitedeki diferansiyel denklemler dersi hocamızın anlattığı bir efsane vardı&lt;em&gt;(Sene 94 bu arada)&lt;/em&gt;. Ne kadar ger&amp;ccedil;ektir bilinmez ama beni olduk&amp;ccedil;a etkilemişti. Hikayeye g&amp;ouml;re &amp;uuml;niversite hocaları arasında belirli aralıklarla d&amp;uuml;zenlenen bir yarışma varmış. Bu yarışmada hocaların tahtaya kalkıp se&amp;ccedil;tikleri teoremlere ait geometrik şekilleri &amp;ccedil;izmeleri istenirmiş. En g&amp;uuml;zel &amp;ccedil;izim ise m&amp;uuml;kafatlandırılırmış.&lt;/p&gt;
+&lt;p&gt;Bir g&amp;uuml;n hocalar ardı ardına kalkıp tahtada h&amp;uuml;nerlerini g&amp;ouml;stermeye başlamışlar. Hemen hepsi rengarenk tebeşirler kullanıyormuş. Sarmallar, hiperboller, spiraller, &amp;uuml;&amp;ccedil; boyutlu grafikler vb&amp;hellip;&lt;/p&gt;
+&lt;p&gt;Derken sıra son yarışmacıya gelmiş. Hoca ayağa kalkmış yavaş adımlarla boş olan tahtalardan birine doğru y&amp;uuml;r&amp;uuml;meye başlamış. Kısa bir s&amp;uuml;re durmuş ve diğer &amp;ccedil;izimlere imrenerek bakmış. Sonra &amp;ouml;n&amp;uuml;ndeki boş tahtaya bir &amp;ccedil;ember &amp;ccedil;izmiş ve ortasına da bir nokta yerleştirmiş.&lt;/p&gt;
+&lt;p&gt;J&amp;uuml;ri diğer tahtaları dolaşıp puanladıktan sonra bu &amp;ccedil;emberin başında toplanmış. &amp;Ccedil;emberi ve ortadaki noktayı &amp;ouml;l&amp;ccedil;&amp;uuml;p bi&amp;ccedil;mişler. Nokta, &amp;ccedil;emberin tam merkezindeymiş ve &amp;ccedil;ember m&amp;uuml;kemmelmiş &lt;img class="wlEmoticon wlEmoticon-smile" style="border-style: none;" src="/pics/wlEmoticon-smile_101.png" alt="Smile" /&gt; Bu hikayenin yazımızın konusu ile doğrudan bir alakası yok tabi. Ş&amp;ouml;yle şehir efsanesi tadında bir giriş yapayım istedim. Gelelim asıl sıkıcı olan mevzumuza.&lt;/p&gt;
+&lt;p&gt;Bir &lt;strong&gt;WCF&lt;/strong&gt;&lt;em&gt;(Windows Communication Foundation)&lt;/em&gt; servisi ile onun t&amp;uuml;keticisi olan istemci arasındaki iletişimde &amp;ouml;nem arz eden konulardan birisi de kanaldır&lt;em&gt;(Channel)&lt;/em&gt;. Bu kanalın oluşturulması g&amp;ouml;revini &lt;strong&gt;ChannelFactory&lt;/strong&gt; tipi &amp;uuml;stlenmektedir.&amp;nbsp; İstemci a&amp;ccedil;ısından bakıldığında bir kanalın oluşturulması aslında servisin bir &lt;strong&gt;Proxy&lt;/strong&gt; tipinin &amp;uuml;retilmesi ve uzak metod &amp;ccedil;ağrıları i&amp;ccedil;in gerekli iletişim ortamının sağlanması anlamına gelmektedir. Bir kanal esas itibariyle &lt;strong&gt;EndPoint&lt;/strong&gt; odaklı &amp;uuml;retilir. Dolayısıyla &lt;strong&gt;WCF&lt;/strong&gt;' in &lt;strong&gt;ABC&lt;/strong&gt;'si olarak nitelendirilen &lt;strong&gt;Address Binding Contract&lt;/strong&gt; &amp;uuml;&amp;ccedil;lemesi &amp;uuml;zerine inşa olunur&lt;em&gt;(ki bu da &lt;strong&gt;WCF Service EndPoint&lt;/strong&gt; tanımıdır)&lt;/em&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Tabi kanal &amp;uuml;retimi sırasında devreye giren bir s&amp;uuml;re&amp;ccedil; de s&amp;ouml;z konusudur. Buna g&amp;ouml;re &lt;strong&gt;S&amp;ouml;zleşme Tanımlama&lt;em&gt;(Contract Description)&lt;/em&gt;&lt;/strong&gt; ağacının &amp;uuml;retilmesi, gerekli &lt;strong&gt;CLR&lt;em&gt;(Common Language Runtime)&lt;/em&gt;&amp;nbsp;&lt;/strong&gt;tiplerinin &lt;strong&gt;reflecting&lt;/strong&gt; ile a&amp;ccedil;ılması, kanal yığınının&lt;em&gt;&lt;strong&gt;(Channel Stack)&lt;/strong&gt;&lt;/em&gt; inşa edilmesi ve &amp;uuml;retilen kaynaklardan sonlanması gerekenlerin sonlandırılması&lt;em&gt;(Dispose işlemleri olarak d&amp;uuml;ş&amp;uuml;nebiliriz)&lt;/em&gt;. İşte bu s&amp;uuml;re&amp;ccedil; &amp;ouml;zellikle &amp;ccedil;alışma zamanına bir maliyet getirmektedir. Bu maliyeti aza indirgemek i&amp;ccedil;inse genellikle &amp;ouml;zelleştirilmiş ChannelFactory tiplerinin yazılması yolu tercih edilir. Oysaki &lt;strong&gt;WCF 4.5 &lt;/strong&gt;bu hazırlıkların kayıt altına alınıp yeniden ihtiya&amp;ccedil; duyulduklarında hazır olarak sunulması i&amp;ccedil;in &lt;strong&gt;caching &lt;/strong&gt;desteğini &lt;strong&gt;ClientBase&amp;lt;T&amp;gt; &lt;/strong&gt;tipi yardımıyla kullanıma a&amp;ccedil;mıştır. İşte bu yazımızdaki amacımız &lt;strong&gt;ChannelFactory&lt;/strong&gt; tipi i&amp;ccedil;in &amp;ouml;n bellekleme işleminin nasıl yapılabileceğini incelemektir.&lt;/p&gt;
+&lt;h1&gt;&amp;Ouml;n Hazırlıklar&lt;/h1&gt;
+&lt;p&gt;Elbette konuyu incelemek i&amp;ccedil;in basit bir &lt;strong&gt;WCF&lt;/strong&gt; servisine ihtiyacımız olacak. Konumuz &lt;strong&gt;ChannelFactory&lt;/strong&gt; ve bazı &amp;ouml;n hazırlıkların &amp;ouml;n belleklenmesi olduğundan servis tarafı olduk&amp;ccedil;a sade ve basit şekilde inşa edilmiştir. Aşağıda servis s&amp;ouml;zleşmesi&lt;em&gt;(Service Contract)&lt;/em&gt; ve uygulayıcı tipini i&amp;ccedil;eren bir &lt;strong&gt;WCF Service Application &lt;/strong&gt;kod i&amp;ccedil;eriği bulunmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/cfcache_1.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="cfcache_1" src="/pics/cfcache_1_thumb.png" alt="cfcache_1" width="215" height="276" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Servis s&amp;ouml;zleşmesi;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.ServiceModel;
+
+namespace Calculus 
+{&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; [ServiceContract] 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; public interface IMathService 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; [OperationContract] 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; double Sum(int x,int y); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+}
+
+Uygulayıcı tip;
+
+using System;
+
+namespace Calculus 
+{ 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; public class MathService 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; : IMathService 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; public double Sum(int x, int y) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; return x + y; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;web.config&lt;/strong&gt; dosyası i&amp;ccedil;eriğini ise standart ayarları ile bırakabiliriz. İstemci tarafını basit bir &lt;strong&gt;Console&lt;/strong&gt; uygulaması şeklinde tasarlayabilir ve ilgili servisi &lt;strong&gt;Add Service Reference&lt;/strong&gt; ile ekleyebiliriz. İstemci tarafındaki &lt;strong&gt;app.config&lt;/strong&gt; dosyası otomatik olarak aşağıdakine benzer bi&amp;ccedil;imde oluşturulacaktır.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt; 
+&amp;lt;configuration&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;startup&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.5.1" /&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/startup&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;system.serviceModel&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;bindings&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;basicHttpBinding&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;binding name="BasicHttpBinding_IMathService" /&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/basicHttpBinding&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/bindings&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;client&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;endpoint address="http://localhost:54837/MathService.svc" binding="basicHttpBinding" 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; bindingConfiguration="BasicHttpBinding_IMathService" contract="clcls.IMathService" 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; name="BasicHttpBinding_IMathService" /&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/client&amp;gt; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;/system.serviceModel&amp;gt; 
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;h1&gt;Standart Proxy Kullanımı&lt;/h1&gt;
+&lt;p&gt;Bu &amp;ouml;n hazırlıkların ardından standart bir &lt;strong&gt;proxy&lt;/strong&gt; kullanımı ile ilgili servisi kullanarak konumuza devam edelim. &lt;strong&gt;WCF&lt;/strong&gt; servislerini &amp;ccedil;ağırırken genellikle &lt;strong&gt;proxy&lt;/strong&gt; tipinin doğrudan &amp;uuml;retilmesi yolunu tercih ederiz. S&amp;ouml;z gelimi aşağıdaki kod par&amp;ccedil;asında basit bir &lt;strong&gt;WCF&lt;/strong&gt; servis &amp;ccedil;ağrısı g&amp;ouml;r&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Student.clcls; 
+using System;
+
+namespace Student 
+{ 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; class Program 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; static void Main(string[] args) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; MathServiceClient proxy = new MathServiceClient("BasicHttpBinding_IMathService"); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; double result=proxy.Sum(3, 4); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Console.WriteLine(result.ToString()); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; proxy.Close(); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+}&lt;/pre&gt;
+&lt;p&gt;Hepimizin aşina olduğu bir kullanım şekli.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Client&lt;/strong&gt; son eki ile biten sınıfa ait bir nesne &amp;ouml;rneği oluştur.&lt;/li&gt;
+&lt;li&gt;Parametre olarak konfigurasyon dosyası i&amp;ccedil;erisindeki &lt;strong&gt;endPoint&lt;/strong&gt; adını ver.&lt;/li&gt;
+&lt;li&gt;&amp;Ouml;rneklenen nesne &amp;uuml;zerinden gerekli servis metodunu &amp;ccedil;ağır.&lt;/li&gt;
+&lt;li&gt;T&amp;uuml;m işlemler bittikten sonra ise proxy nesnesinin &amp;ouml;mr&amp;uuml;n&amp;uuml; sonlandır.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1&gt;ChannelFactory Kullanımı&lt;/h1&gt;
+&lt;p&gt;Aynı &amp;ouml;rneğin &lt;strong&gt;ChannelFactory&lt;/strong&gt; tipi ile olan kullanımı ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Student.clcls; 
+using System; 
+using System.ServiceModel;
+
+namespace Student 
+{ 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; class Program 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; static void Main(string[] args) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; #region Channel Factory kullanımı
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; ChannelFactory&amp;lt;IMathService&amp;gt; factory= new ChannelFactory&amp;lt;IMathService&amp;gt;("BasicHttpBinding_IMathService"); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; IMathService channel = factory.CreateChannel(); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; double result = channel.Sum(3, 4); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Console.WriteLine(result.ToString()); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; ((IClientChannel)channel).Close();
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; #endregion 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+}&lt;/pre&gt;
+&lt;p&gt;İlk olarak &lt;strong&gt;generic&lt;/strong&gt; &lt;strong&gt;ChannelFactory&lt;/strong&gt; tipinden bir nesne &amp;ouml;rneklendiğini g&amp;ouml;r&amp;uuml;yoruz. Bu nesnenin generic parametresi ise servis s&amp;ouml;zleşmesini ifade eden &lt;strong&gt;IMathService&lt;/strong&gt; &lt;strong&gt;aray&amp;uuml;z&amp;uuml;d&amp;uuml;r&lt;em&gt;(Interface)&lt;/em&gt;&lt;/strong&gt;. Nesnenin &amp;ouml;rneklenmesi sırasında &lt;strong&gt;yapıcı metoda&lt;em&gt;(constructor)&lt;/em&gt;&lt;/strong&gt; parametre olarak &lt;strong&gt;app.config&lt;/strong&gt; i&amp;ccedil;erisindeki ilgili &lt;strong&gt;EndPoint&lt;/strong&gt; adı verilmektedir. Bu sayede servis i&amp;ccedil;in gerekli &lt;strong&gt;AddressBindingContract&lt;/strong&gt; bilgileri alınmış olur.&lt;/p&gt;
+&lt;p&gt;İkinci satırda bir kanal nesnesi &amp;ouml;rneklendiğini g&amp;ouml;rmekteyiz. Bunun i&amp;ccedil;in fabrika tipinin &lt;strong&gt;CreateChannel&lt;/strong&gt; metodu kullanılmış durumdadır. &lt;strong&gt;CreateChannel&lt;/strong&gt; metodu aslında &lt;strong&gt;generic&lt;/strong&gt; olarak &lt;strong&gt;ChannelFactory&lt;/strong&gt; &amp;ouml;rneklenmesi sırasında verilen aray&amp;uuml;z&amp;uuml;n taşıyabileceği bir sınıfın &amp;uuml;retiminde kullanılmaktadır.&lt;/p&gt;
+&lt;p&gt;Bundan sonraki kısım ise olduk&amp;ccedil;a basittir. &amp;Uuml;retilen &lt;strong&gt;proxy&lt;/strong&gt; tipi &amp;uuml;zerinden servis metoduna bir &amp;ccedil;ağrı yapılır. Son olarak da oluşturulan kanalın kapatılması işlemi uygulanır.&lt;/p&gt;
+&lt;h1&gt;Caching&lt;/h1&gt;
+&lt;p&gt;&amp;Ccedil;ok doğal olarak istemci tarafında kanal nesnesinin &amp;uuml;retilmesinin ve iletişimin a&amp;ccedil;ılmasının &amp;ccedil;alışma zamanını ilgilendiren bir maliyeti s&amp;ouml;z konusudur. Yazımızın başında belirttiğimiz s&amp;uuml;re&amp;ccedil; nedeniyle oluşmaktadır. İşte bu sebepten geliştiriciler &lt;strong&gt;ChannelFactory&lt;/strong&gt; tipinin &amp;ouml;zelleştirilmiş hallerini yazmak durumundadır. Lakin bu &lt;strong&gt;WCF 4.5&lt;/strong&gt;&amp;rsquo;e kadar b&amp;ouml;yleydi. Artık &lt;strong&gt;WCF 4.5&lt;/strong&gt; ile birlikte bir kanalın inşa edilmesi işlemi i&amp;ccedil;in &amp;ouml;n tanımlamaların &amp;ouml;n belleklenerek kullanılması s&amp;ouml;z konusu. Peki ama nasıl?Aşağıdaki &amp;ouml;rnek kod par&amp;ccedil;asını inceleyerek devam edelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Student.clcls; 
+using System; 
+using System.ServiceModel;
+
+namespace Student 
+{ 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; class Program 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; static void Main(string[] args) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; #region Caching Kullanımı
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; ClientBase&amp;lt;IMathServiceChannel&amp;gt;.CacheSetting = CacheSetting.AlwaysOn; 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; for (int i = 0; i &amp;lt; 5; i++) 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; { 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; MathServiceClient client = new MathServiceClient( 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; new BasicHttpBinding() 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; , new EndpointAddress("http://localhost:54837/MathService.svc") 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; ); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; double result = client.Sum(i, 5); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; // İlk kullanımda kanal bilgisi cache' lenmiş durumda. Dolayısıyla sonraki &amp;ccedil;ağrıda maliyet minimuma indirgenmiş olacak. 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Console.WriteLine("{0}", result.ToString()); 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; #endregion 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+&amp;nbsp;&amp;nbsp;&amp;nbsp; } 
+}&lt;/pre&gt;
+&lt;p&gt;Caching ile ilişkili ayarlamaları yapmak i&amp;ccedil;in &lt;strong&gt;ClientBase&amp;lt;T&amp;gt;&lt;/strong&gt; tipine ait &lt;strong&gt;CacheSettings&lt;/strong&gt; &amp;ouml;zelliğinden yararlanılmaktadır. Dikkat edileceği &amp;uuml;zere s&amp;ouml;z konusu tipin kullanımı sırasında &lt;strong&gt;IMathServiceChannel&lt;/strong&gt; parametre olarak verilmiştir.&lt;em&gt;(I&lt;strong&gt;MathServiceChannel &lt;/strong&gt;i&amp;ccedil;eriğine bakıldığında bir &lt;strong&gt;IClientChannel&lt;/strong&gt; t&amp;uuml;revi olduğu g&amp;ouml;r&amp;uuml;lebilir&lt;/em&gt;&lt;em&gt;)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Kodun bundan sonraki kısımlarında ise &lt;strong&gt;MathServiceClient&lt;/strong&gt; sınıfının &amp;ouml;rneklendiğini g&amp;ouml;r&amp;uuml;yoruz. &lt;strong&gt;Binding&lt;/strong&gt; ve &lt;strong&gt;Endpoint&lt;/strong&gt; bilgileri ile oluşturulan nesne &amp;uuml;zerinden de servis metoduna &amp;ccedil;ağrıda bulunulmaktadır. &lt;strong&gt;for&lt;/strong&gt; d&amp;ouml;ng&amp;uuml;s&amp;uuml; nedeniyle aynı &lt;strong&gt;proxy&lt;/strong&gt; tipinin bir ka&amp;ccedil; kez &amp;uuml;retimi s&amp;ouml;z konusudur. İşte bu &amp;uuml;retimlerin ilkinde &lt;strong&gt;ClientBase&amp;lt;T&amp;gt;&lt;/strong&gt; ile belirtilen ayar nedeniyle bir &amp;ouml;n bellekleme işlemi s&amp;ouml;z konusudur.&lt;/p&gt;
+&lt;p&gt;Aslında &lt;strong&gt;proxy&lt;/strong&gt; tipi olarak &amp;uuml;retilen &lt;strong&gt;MathServiceClient&lt;/strong&gt; sınıfı, generic &lt;strong&gt;ClientBase&amp;lt;TChannel&amp;gt; abstract &lt;/strong&gt;sınıfından t&amp;uuml;remektedir. &lt;strong&gt;svcutil&lt;/strong&gt; aracı &lt;strong&gt;proxy&lt;/strong&gt; tipini bu şekilde &amp;uuml;retmektedir&lt;em&gt;(Doğal olarak &lt;strong&gt;Add Service Reference&lt;/strong&gt; i&amp;ccedil;in de aynı durum s&amp;ouml;z konusudur)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/cfcache_2.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="cfcache_2" src="/pics/cfcache_2_thumb.png" alt="cfcache_2" width="618" height="542" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Bu sınıf a&amp;ccedil;ılımı nedeniyle &lt;strong&gt;CacheSetting&lt;/strong&gt; &amp;ouml;zelliği &lt;strong&gt;proxy&lt;/strong&gt; tipi &amp;uuml;zerinden de doğrudan uygulanabilir.&lt;/p&gt;
+&lt;h1&gt;CacheSetting Modları&lt;/h1&gt;
+&lt;p&gt;&lt;strong&gt;CacheSetting&lt;/strong&gt; &amp;ouml;zelliğine atanabilecek &amp;uuml;&amp;ccedil; değer bulunmaktadır. &lt;strong&gt;AlwaysOn&lt;/strong&gt;, &lt;strong&gt;Default&lt;/strong&gt; ve &lt;strong&gt;AlwaysOff&lt;/strong&gt;. Bu değerler ve aralarındaki farklılıklar aşağıdaki tabloda &amp;ouml;zetlenmeye &amp;ccedil;alışılmıştır.&lt;/p&gt;
+&lt;table style="width: 640px;" border="1" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="162"&gt;&lt;strong&gt;CacheSetting Değeri&lt;/strong&gt;&lt;/td&gt;
+&lt;td valign="top" width="478"&gt;&lt;strong&gt;Anlamı&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="162"&gt;&lt;strong&gt;Default&lt;/strong&gt;&lt;/td&gt;
+&lt;td valign="top" width="478"&gt;Aynı Application Domain i&amp;ccedil;erisinde olmak kaydıyla, konfigurasyon dosyasında tanımlanmış olan EndPoint bilgilerinden &amp;uuml;retilmiş ClientBase &amp;ouml;rnekleri i&amp;ccedil;in Caching &amp;ouml;zelliği etkinleştirilir. &lt;br /&gt; &lt;br /&gt;Bu Application Domain i&amp;ccedil;erisinde oldukları halde programatik olarak &amp;uuml;retilen ClientBase t&amp;uuml;revli tipler ise Caching&amp;rsquo; e dahil edilmezler. &lt;br /&gt; &lt;br /&gt;&lt;em&gt;Ayrıca Credential bilgisi gibi Security &amp;ouml;zellikleri s&amp;ouml;z konusu olan ClientBase t&amp;uuml;revli &amp;ouml;rnekler de Caching dışında tutulurlar. Nitekim security bilgileri s&amp;uuml;rekli olarak değişebilir ve Cache tutulması bu anlamda doğru değildir.&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="162"&gt;&lt;strong&gt;AlwaysOn&lt;/strong&gt;&lt;/td&gt;
+&lt;td valign="top" width="478"&gt;Aynı Application Domain i&amp;ccedil;erisinde yer alan t&amp;uuml;m ClientBase t&amp;uuml;revli tipler i&amp;ccedil;in Caching &amp;ouml;zelliği etkinleştirilir. &lt;br /&gt; &lt;br /&gt;&lt;em&gt;Burada dikkat edilmesi gereken nokta security-sensitive bilgiler olması halinde Caching&amp;rsquo; in pasifleştirilmeyeceğidir. Default moddakine aykırı bir durum s&amp;ouml;z konusudur.&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="162"&gt;&lt;strong&gt;AlwaysOff&lt;/strong&gt;&lt;/td&gt;
+&lt;td valign="top" width="478"&gt;Application Domain i&amp;ccedil;erisindeki ClientBase t&amp;uuml;revli tipler i&amp;ccedil;in Caching &amp;ouml;zelliği kapatılır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Bu yeni kabiliyet k&amp;uuml;&amp;ccedil;&amp;uuml;k &amp;ccedil;aplı servis &amp;ouml;rnekleri g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında pek fark edilmese de, enterprise &amp;ccedil;&amp;ouml;z&amp;uuml;mlerde kullanılan ve &amp;uuml;retim maliyetleri de y&amp;uuml;ksek olan versiyonlar d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde ciddi olarak dikkate alınması gerekmektedir. Tabi burada s&amp;ouml;z konusu olan modlar arasındaki farklılıklara da bakılmalıdır. &amp;Ouml;zellikle &lt;strong&gt;security-sensitive&lt;/strong&gt; tanımlamalarda &lt;strong&gt;Default&lt;/strong&gt; ve &lt;strong&gt;AlwaysOn&lt;/strong&gt; modların farklı davranışlar g&amp;ouml;sterdiği unutulmamalıdır. Konu ile ilişkili daha detaylı bilgiyi &lt;a href="http://msdn.microsoft.com/tr-tr/library/hh314046.aspx" target="_blank"&gt;MSDN sayfasından&lt;/a&gt; alabilirsiniz. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2013%2f7%2fChannelFactoryCaching.zip"&gt;ChannelFactoryCaching.zip (66,14 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2014-12-22 19:00:00</pubDate>
+  <slug>WCF-ChannelFactory-Tipi-icin-Caching-Kullanimi</slug>
+  <tags>
+    <tag>windows-communication-foundation</tag>
+    <tag>channel</tag>
+    <tag>channel-factory</tag>
+    <tag>caching</tag>
+    <tag>wcf-45</tag>
+    <tag>service-contract</tag>
+    <tag>iclientchannel</tag>
+    <tag>clientbase</tag>
+    <tag>generic</tag>
+  </tags>
+  <categories>
+    <category>WCF</category>
+    <category>WCF 4.5</category>
+  </categories>
+</post>

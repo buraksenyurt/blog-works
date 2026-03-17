@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Kod Tarafından Yönetmek</title>
+  <description>Windows Communication Foundation ile geliştirilen Servis Yönelimli Uygulama(SOA-Service Oriented Architecture) çözümlerinde konfigurasyon bazlı(Configuration Based) geliştirme süreci oldukça yaygındır.</description>
+  <content>&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Değerli Okurlarım Merhabalar,&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;Windows Communication Foundation&lt;/strong&gt; ile geliştirilen &lt;strong&gt;Servis Y&amp;ouml;nelimli Uygulama(SOA-Service Oriented Architecture)&lt;/strong&gt; &amp;ccedil;&amp;ouml;z&amp;uuml;mlerinde &lt;strong&gt;konfigurasyon bazlı(Configuration Based) &lt;/strong&gt;geliştirme s&amp;uuml;reci olduk&amp;ccedil;a yaygındır. Konfigurasyon dosyaları i&amp;ccedil;erisinde yer alan bilgiler yardımıyla WCF &amp;ccedil;alışma zamanı(WCF Runtime) ortamı otomatik olarak bazı işlemler ger&amp;ccedil;ekleştirir. S&amp;ouml;z gelimi &lt;strong&gt;istemci(Client)&lt;/strong&gt; ve &lt;strong&gt;servis(Service)&lt;/strong&gt; arasında taşınacak olan mesajların &amp;ccedil;&amp;ouml;z&amp;uuml;mlenmesi&lt;strong&gt;(Encoding)&lt;/strong&gt;, bunların se&amp;ccedil;ilen &lt;strong&gt;bağlayıcı tipin(Binding Type)&lt;/strong&gt; belirlediği protokole g&amp;ouml;re aktarılması gibi &lt;strong&gt;alt yapı(Infrastructure)&lt;/strong&gt; hazırlıkları otomatik olarak ger&amp;ccedil;ekleştirilir. Hatta istemcinin servis &amp;uuml;zerinden talep ettiği bir operasyon(Service Operation), servis tarafındaki konfigurasyon bilgilerinden yola &amp;ccedil;ıkılarak hazırlanan &amp;ccedil;alışma zamanı sayesinde, anlamlı bir metod &amp;ccedil;ağrısı haline d&amp;ouml;n&amp;uuml;ş&amp;uuml;r.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Ne varki bazı vakalarda, &lt;strong&gt;WCF&lt;/strong&gt; altyapı hazırlıklarının konfigursayon bazlı olması tercih edilmez. Bunun en b&amp;uuml;y&amp;uuml;k nedenlerinden bir taneside, konfigurasyon bilgilerinin &lt;strong&gt; XML(eXtensible Markup Lanuage) &lt;/strong&gt;bazlı a&amp;ccedil;ık &lt;strong&gt;text&lt;/strong&gt; dosyalarında duruyor olmasıdır. Buda ilgili dosyanın dışarıdan değiştirilebileceği anlamına gelmektedir. Her ne kadar servis tarafının &lt;strong&gt;Host&lt;/strong&gt; edileceği uygulama &lt;strong&gt;administrator(veya bu gruba dahil kullanıcıların)&lt;/strong&gt; yetkisindede olsa, s&amp;ouml;z gelimi &lt;strong&gt;HTML Metadata Publishing&lt;/strong&gt; &amp;ouml;zelliğinin konfigurasyon i&amp;ccedil;erisinde, program koduna girmeye gerek kalmadan, yanlışlıklada olsa değiştirilmesi istenmeyebilir. &amp;Ccedil;&amp;uuml;nk&amp;uuml; bunun etkisi sonrasında istemcilerin servise ait metadata bilgisini &amp;ccedil;ekememesi gibi durumlar ortaya &amp;ccedil;ıkmaktadır. Bu gibi bazı sebeplerden dolayı, &lt;strong&gt;WCF&lt;/strong&gt; alt yapı hazırlıklarının &amp;ouml;zellikle servis tarafında iken, &lt;strong&gt;kod bazında(Code Based)&lt;/strong&gt; ger&amp;ccedil;ekleştirilmesi tercih edilebilir. Bu yazıda ağırılıklı olarak kod tarafında gerekli hazırlıkların nasıl yapılabileceği gibi konulara değinilmektedir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;WCF&lt;/strong&gt; mimarisi i&amp;ccedil;erisinde &amp;ccedil;ok sayıda &lt;strong&gt;CLR tipi(Common Language Runtime-Type)&lt;/strong&gt; yer almaktadır. Bu tiplerin bazıları genişletilebilir ve &lt;strong&gt;&amp;ccedil;alışma zamanında(Runtime) &lt;/strong&gt; kullanılabilir. Hatta var olan tiplerden yararlanarak &amp;ouml;zel durumlar i&amp;ccedil;in birleşik tipler tasarlanabilir. S&amp;ouml;z gelimi var olan &lt;strong&gt;bağlayıcı tiplerden(Binding Types) &lt;/strong&gt;bir ka&amp;ccedil;ının bir arada kullanılacağı &amp;ouml;zelleştirilmiş bir bağlayıcı tip tasarlamak m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Burada &lt;strong&gt;CustomBinding&lt;/strong&gt; isimli CLR tipi &amp;ouml;nemli rol oynamaktadır. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bu b&amp;ouml;l&amp;uuml;mde &amp;ccedil;ok g&amp;ouml;ze batan WCF tipleri ele alınmaya &amp;ccedil;alışılmaktadır. Ancak herşeyden &amp;ouml;nce &lt;strong&gt;WCF&lt;/strong&gt; &amp;ccedil;alışma zamanını kavramakta yarar vardır. Bu nedenle &lt;strong&gt;Host&lt;/strong&gt; uygulamanın(servis tipinin yayınlayan programın) &amp;ccedil;alışmaya başladığı andan itibaren ilerlemek daha doğrudur. Host uygulama &amp;ccedil;alıştığında, servis i&amp;ccedil;in tanımlanan &lt;strong&gt;EndPoint&lt;/strong&gt; bilgilerinden yararlanılarak birer &lt;strong&gt; ChannelListener&lt;/strong&gt; nesnesi ve bir &lt;strong&gt;kanal yığını(Channel Stack)&lt;/strong&gt; oluşturulur.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bilindiği gibi EndPoint i&amp;ccedil;erisinde servisin Address, Binding ve Contract bilgileri yer almaktadır. Bu bilgiler &amp;ccedil;alışma zamanı ortamının hazırlanmasında &amp;ouml;nemli değer sahiptir. Bu sebepten dolayı kanal yığını(Channel Stack) hazırlanırken EndPoint i&amp;ccedil;erisindeki bilgilerden yararlanılır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;ChannelListener&lt;/strong&gt; nesneleri aslında &lt;strong&gt;EndPoint&lt;/strong&gt; noktalarını ilgili kanallara bağlamakla g&amp;ouml;revlidir. &amp;Ouml;yleki, &lt;strong&gt;URI(Uniform Resource Identifier)&lt;/strong&gt; &amp;uuml;zerinden bir mesaj geldiğinde, &lt;strong&gt; ChannelListener&lt;/strong&gt; nesne &amp;ouml;rneği ilgili mesajı kanal yığınının(Channel Stack) en altında yer alan&lt;strong&gt; iletişim kanalına(Transport Channel)&lt;/strong&gt; aktarır. Gelen mesaj i&amp;ccedil;eriğinin iletişim kanalı a&amp;ccedil;ısından bir &amp;ouml;nemi yoktur. Nihayetinde bu bilgi &lt;strong&gt;byte&lt;/strong&gt; tipinden bir &lt;strong&gt;akımdır(Stream)&lt;/strong&gt;. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bununla birlikte iletişim kanalı gelen mesajı aldıktan sonra, &lt;strong&gt;&amp;ccedil;&amp;ouml;z&amp;uuml;mleme kanalına(Encoding Channel)&lt;/strong&gt; iletir. &amp;Ccedil;&amp;ouml;z&amp;uuml;mleme kanalının, gelen mesajlar i&amp;ccedil;erisindeki operasyonel talepleri alıp nesne-metod ilişkisine d&amp;ouml;n&amp;uuml;şt&amp;uuml;rmek gibi &amp;ouml;nemli bir g&amp;ouml;revi vardır. &amp;Ccedil;&amp;ouml;z&amp;uuml;mleme kanalı &lt;strong&gt; SOAP(Simple Object Access Protocol), plain text, binary &lt;/strong&gt;data veya &lt;strong&gt; MTOM(Message Transmision Optimization Mechanism) &lt;/strong&gt;gibi formatları kullanmaktadır. &lt;em&gt;(Hatta .Net Framework 3.5 ile gelen yenilikler ile birlikte JSON-JavaScript Object Notation formatının kullanılabilmeside olanaklı hale gelmiştir.)&lt;/em&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;İletişim(Transport)&lt;/strong&gt; ve &lt;strong&gt; &amp;ccedil;&amp;ouml;z&amp;uuml;mleme(Encoding) kanalları bağlayıcıların(Bindings)&lt;/strong&gt; olmassa olmaz par&amp;ccedil;alarıdır. Bir başka deyişle &lt;strong&gt;kanal yığını(Channel Stack) &lt;/strong&gt; i&amp;ccedil;erisinde mutlaka ve mutlaka var olmaları gerekmektedir. Ancak duruma g&amp;ouml;re bu kanalların arkasına &lt;strong&gt;g&amp;uuml;venilir oturumların(Reliable Sessions)&lt;/strong&gt; sağlanması ve &lt;strong&gt;Replay&lt;/strong&gt; saldırılarının engellenmesi, g&amp;uuml;nveliğin sağlanması, transaction y&amp;ouml;netiminin ger&amp;ccedil;ekleştirilmesi gibi işlemler i&amp;ccedil;in ek kanallarda ilave edilebilir. Bu durumda zaten birden fazla kanalın bir arada ele alındığı &amp;ouml;zel bir kanal yığının oluşumu s&amp;ouml;z konusudur.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;İkili &amp;Ccedil;&amp;ouml;z&amp;uuml;mleme Kanalı(Binary Encoding Channel) WCF' e &amp;ouml;zeldir. Bu nedenle interoperability desteği olmayan senaryolarda daha &amp;ccedil;ok ele alınır. MTOM(Messsage Transmision Optimization Mechanism) &amp;ccedil;&amp;ouml;z&amp;uuml;mleme kanalı, b&amp;uuml;y&amp;uuml;k boyutlu verilerin binary formatta ve interoperability' nin &amp;ouml;nemli olduğu vakalarda ele alınır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bu a&amp;ccedil;ıdan bakıldığında, t&amp;uuml;m iletişim kanalları varsayılan olarak bazı &amp;ccedil;&amp;ouml;z&amp;uuml;mleyicileri kullanırlar. S&amp;ouml;z gelimi HTTP/HTTPS tabanlı kanallar varsayılan olarak text formatlı &amp;ccedil;&amp;ouml;z&amp;uuml;mleme kanallarını ele alırken, TCP binary formatlı &amp;ccedil;&amp;ouml;z&amp;uuml;mleme kanallarını kullanır. Elbette bu noktada geliştiriciler kanal ve &amp;ccedil;&amp;ouml;z&amp;uuml;mleme kanallarını istedikleri gibi &amp;ouml;zelleştirebilir ve farklı kombinasyonları ister konfigurasyon bazlı, ister kod bazlı olacak şekilde geliştirebilirler.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Şu ana kadar anlatılanlar g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında kanal yığının i&amp;ccedil;erisinde yer alan tiplerden ge&amp;ccedil;ilerek tepeye ulaşıldığı g&amp;ouml;r&amp;uuml;l&amp;uuml;r. Kanal yığınının en tepe noktasına ulaşılmasının ardından ilgili mesaj bir &lt;strong&gt;ChannelDispatcher&lt;/strong&gt; nesnesi tarafından karşılanır. &lt;strong&gt; ChannelDispatcher&lt;/strong&gt; nesnesi ilgili mesajı alır ve bir &lt;strong&gt; EndPointDispatcher&lt;/strong&gt; nesnesine aktarır.&lt;em&gt;(ChannelDispatcher arkasında mesajın iletilebileceği birden fazla EndPointDispatcher nesnesi olabilir)&lt;/em&gt; &lt;strong&gt;EndPointDispatcher&lt;/strong&gt; nesnesinin g&amp;ouml;revi, gelen mesajın i&amp;ccedil;eriğine g&amp;ouml;re uygun olan servis metodunun &amp;ccedil;alıştırılmasıdır. Bununla birlikte &lt;strong&gt;EndPointDispatcher&lt;/strong&gt; nesnesi gelen mesaj i&amp;ccedil;erisinden servis tarafındaki metod i&amp;ccedil;in gerekli parametreleride almaktadır. &lt;strong&gt;ChannelDispatcher&lt;/strong&gt; ve &lt;strong&gt;EndPointDispatcher&lt;/strong&gt; nesneleri, &lt;strong&gt;ServiceHost&lt;/strong&gt; nesnesi &amp;ouml;rneklendiğinde otomatik olarak &amp;uuml;retilirler.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;İstemcinin servis tarafından talep ettiği operasyon &amp;ccedil;ağrısı kanal yığınından ge&amp;ccedil;erek metod &amp;ccedil;ağrısı haline geldikten sonra , metod &amp;uuml;zerinden alınan sonu&amp;ccedil;lar aynı yolla geriye d&amp;ouml;necektir. İstemci, servisten gelen mesajı ele alırken, &lt;strong&gt;WCF&lt;/strong&gt; &amp;ccedil;alışma zamanının &amp;uuml;rettiği &lt;strong&gt;ChannelFactory&lt;/strong&gt; nesnesinden yararlanır. Bununla birlikte istemci tarafında &amp;ouml;nem arz eden nesnelerden biriside &lt;strong&gt; Proxy&lt;/strong&gt; bileşenidir. &lt;strong&gt;Proxy&lt;/strong&gt; nesnesi ilgili metod &amp;ccedil;ağrılarının &lt;strong&gt; request&lt;/strong&gt; mesajlarına &amp;ccedil;evrilmesinden ve gelen cevaplarında(Responses) istemci programın anlayacağı kodlara d&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;lmesinden sorumludur.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;WCF&lt;/strong&gt; &amp;ccedil;alışma ortamı ile ilişkili &amp;ouml;nemli noktalardan biriside &lt;strong&gt;davranış(Behavior) &lt;/strong&gt;tanımlamalarıdır. Davranış tipleri sayesinde &lt;strong&gt;WCF&lt;/strong&gt; altyapısı i&amp;ccedil;erisindeki par&amp;ccedil;aların nasıl y&amp;uuml;r&amp;uuml;yeceği belirlenebilir. &lt;strong&gt;.Net Framework 3.0 &lt;/strong&gt;ve &lt;strong&gt;3.5&lt;/strong&gt; i&amp;ccedil;erisinde tanımlanmış olan sayısız &lt;strong&gt;davranış tipi(Behavior Type) &lt;/strong&gt;vardır. Bu tipler sayesinde &amp;ouml;rneğin, &lt;strong&gt;transaction&lt;/strong&gt; i&amp;ccedil;erisindeki operasyonların toplu olarak nasıl ger&amp;ccedil;ekleştirileceği, verinin nasıl ve ne şekilde serileştirileceği, mesajların g&amp;ouml;nderilmesi yada alınması sırasında kullanılacak olan &lt;strong&gt;ehliyetlerin(credentials)&lt;/strong&gt; ların tayini, servis &amp;uuml;zerinde &lt;strong&gt;debug&lt;/strong&gt; yapılıp yapılamayacağı, &lt;strong&gt;HTTP&lt;/strong&gt; &amp;uuml;zerinden &lt;strong&gt;metadata publishing&lt;/strong&gt; aktarımına izin verilip verilmeyeceği, exception detaylarının istemci tarafınada fırlatılıp fırlatılmayacağı ve daha pek &amp;ccedil;ok &amp;ccedil;alışma zamanı davranışı belirlenebilir. Davranışlar, WCF alt yapısı i&amp;ccedil;erisinde yer alan tiplere veya &amp;uuml;yelere(Members) uygulanabilirler. S&amp;ouml;z gelimi kimi davranışlar sadece metodlara, kimileri bir servisin tamamına, kimileride &lt;strong&gt; s&amp;ouml;zleşmelere(Contracts)&lt;/strong&gt; uygulanabilirler. Tabi istenirse &amp;ouml;zelleştirilmiş &lt;strong&gt;davranış tipleri(Behavior Type)&lt;/strong&gt; tasarlanabilir. Davranışlar kod bazında &lt;strong&gt;imperative&lt;/strong&gt; yada konfigurasyon dosyaları i&amp;ccedil;erisinden &lt;strong&gt; declerative&lt;/strong&gt; tarzda kullanılabilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Davranışlar(Behaviors) geliştiriciler tarafından yazılan bir servisin, daha sonra y&amp;ouml;neticiler tarafından farklı şekillerde davranabilmesini sağlamak amacıyla geliştirilmiş yapılardır. Hazır olan davranış tipleri sayesinde, alt yapıya(Infrastructure) m&amp;uuml;dahale etmeye, ek kod yazmaya veya hazırlık yapmaya gerek kalmadan istenen değişimler ger&amp;ccedil;ekleştirilebilmektedir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Buraya kadar anlatılanlar g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında &lt;strong&gt;WCF(Windows Communication Foundation)&lt;/strong&gt; mimarisinin, servis ve istemci taraflarınıda i&amp;ccedil;eren alt yapısı kabaca aşağıdaki şekilde g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi ele alınabilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk244_1.gif" alt="" width="589" height="418" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Şekildende g&amp;ouml;r&amp;uuml;leceği &amp;uuml;zere &lt;strong&gt;kanal yığının(Channel Stack)&lt;/strong&gt; en alt noktasında bulunan &lt;strong&gt;Transport Channel &lt;/strong&gt;ve &lt;strong&gt; Encoding Channel&lt;/strong&gt; kanalarının ardından farklı tipte kanallar gelebilmektedir. Daha &amp;ouml;ncedende bahsedildiği gibi bu kanallar &lt;strong&gt; Transaction&lt;/strong&gt;, &lt;strong&gt;Security&lt;/strong&gt;, &lt;strong&gt;Relaibility&lt;/strong&gt; gibi konularla ilgili olabilir. Burada s&amp;ouml;z konusu olan &lt;strong&gt;kanal&lt;/strong&gt; &lt;strong&gt;yığını(Channel Stack)&lt;/strong&gt; kombinasyonu kod tarafında &lt;strong&gt;CustomBinding&lt;/strong&gt; tipi yardımıyla yada konfigurasyon bazında customBinding elementi ile karşılanabilmektedir. Ebeltte eklenecek olan kanalların mantıklı ve d&amp;uuml;zg&amp;uuml;n bir sırada olmaları şarttır. Burada s&amp;ouml;z konusu olan sıra i&amp;ccedil;in aşağıdaki şekil g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınmalıdır.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk244_2.gif" alt="" width="361" height="412" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bu kadar teorik bilgiden sonra adım adım basit bir &amp;ouml;rnek &amp;uuml;zerinde ilerleyerek kod bazında &lt;strong&gt;WCF&lt;/strong&gt; alt yapı hazırlıklarını nasıl yapılabileceği incelenmeye başlanabilir. &amp;Ouml;ncelikli olarak bir &lt;strong&gt;WCF servis k&amp;uuml;t&amp;uuml;phanesi(WCF Service Library)&lt;/strong&gt; geliştirilmelidir. S&amp;ouml;z konusu servis k&amp;uuml;t&amp;uuml;phanesi i&amp;ccedil;erisinde yer alacak olan tipler(s&amp;ouml;zleşme-Service Contract ve uygulayıcı sınıf) basit olarak aşağıda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibidir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk244_3.gif" alt="" width="245" height="265" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;IHesaplamalar&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml;n ve &lt;strong&gt; Hesaplayici&lt;/strong&gt; sınıfının i&amp;ccedil;erikleri aşağıdaki gibidir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+
+namespace ServisIslemleri
+{
+    [ServiceContract]
+    public interface IHesaplamalar
+    {
+        [OperationContract]
+        double DaireAlan(double r);
+    }
+
+    public class Hesaplayici
+        : IHesaplamalar
+    {
+        #region IHesaplamalar Members
+
+        public double DaireAlan(double r)
+        {
+            return Math.PI * r * r;
+        }
+
+        #endregion
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Konunun basit olarak ele alınması amacıyla s&amp;ouml;zleşme ve uygulayıcı tipler yalın bir şekilde tasarlanmışlardır. &amp;Ouml;nemli olan kısım servis uygulaması i&amp;ccedil;erisinde programatik olarak yapılacak ayarlamalardır. Bu ama&amp;ccedil;la &lt;strong&gt;Visual Studio 2008 &lt;/strong&gt;ortamında geliştirilen &lt;strong&gt;Console&lt;/strong&gt; uygulamasında &lt;strong&gt; System.ServiceModel.dll &lt;/strong&gt;ve&lt;strong&gt; servis k&amp;uuml;t&amp;uuml;phanesi(WCF Service Library) assembly&lt;/strong&gt;' larının referanslarının mutlaka var olması gerekmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk244_4.gif" alt="" width="255" height="241" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Servis uygulamasının kodları basit olarak aşağıdaki gibi tasarlanabilir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel.Channels; // Kanal tipleri i&amp;ccedil;in eklenen isim alanıdır.
+using System.ServiceModel;
+using ServisIslemleri; 
+
+namespace Sunucu
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            CustomBinding binding = new CustomBinding(); // &amp;Ouml;zel bir bağlayıcı tip sınıfı &amp;ouml;rneklenir. Dikkat edileceği &amp;uuml;zere bilinen bir Binding tipi oluşturmaktan bir farkı yoktur.
+
+            // İlk &amp;ouml;rnek olarak Reliable Session i&amp;ccedil;in bir Binding tipi oluşturulur ve eklenir.
+            ReliableSessionBindingElement rBinding = new ReliableSessionBindingElement(true); // Mesajların g&amp;ouml;nderildiği sırada iletilmesini sağlamak i&amp;ccedil;in yapıcı metoda true değeri verilmiştir. İtenirse Ordered &amp;ouml;zelliğine true değeri atanaraktanda bu işlem sağlanabilir.
+            rBinding.FlowControlEnabled = true;
+            rBinding.MaxRetryCount = 3; // Mesajların başarılı şekilde iletimi i&amp;ccedil;in maksimum tekrar sayısı belirlenir.
+            binding.Elements.Add(rBinding); // Oluşturulan Bindin elementi eklenir.
+
+            SecurityBindingElement sBinding=SecurityBindingElement.CreateSecureConversationBindingElement( SecurityBindingElement.CreateSspiNegotiationBindingElement());
+            sBinding.LocalServiceSettings.DetectReplays = true; // Replay ataklarını kontrol et.
+            binding.Elements.Add(sBinding); // Oluşturulan SecureBindingElement, CustomBinding nesnesinin ELements koleksiyonuna eklenir. 
+
+            // &amp;Ccedil;&amp;ouml;z&amp;uuml;mleme kanalı i&amp;ccedil;in gerekli binding elementi oluşturulur
+            TextMessageEncodingBindingElement tBinding = new TextMessageEncodingBindingElement();
+            binding.Elements.Add(tBinding); // CustomBinding nesne &amp;ouml;rneğinin elements koleksiyonuna eklenir.
+
+            // İletişim kanalı i&amp;ccedil;in gerekli element oluşturulur
+            TcpTransportBindingElement tcpBinding = new TcpTransportBindingElement();
+            tcpBinding.TransferMode = System.ServiceModel.TransferMode.Buffered; // Mesajların transfer modu belirlenir
+            binding.Elements.Add(tcpBinding); // Elements koleksiyonuna eklenir.
+
+            /* ServiceHost nesnesi oluşturulur. Parametre olarak servis s&amp;ouml;zleşmesini uygulayan tipin adı verilir. ServiceHost nesnesi &amp;ouml;rneklendiğinde, kanalların oluşturulmasınıda sağlar. Aynı zamanda talep edilen servis &amp;ouml;rneklerinin yaşam s&amp;uuml;relerini y&amp;ouml;netir. Bunları ger&amp;ccedil;ekleştirirken ChannelListener, ChannelDispatcher, EndPointDispatcher tiplerinin otomatik olarak &amp;ouml;rneklenmesinide sağlar.*/
+            ServiceHost host = new ServiceHost(typeof(Hesaplayici));
+
+            // EndPoint eklenir. İlk parametre s&amp;ouml;zleşme tipi(Contract), ikinci parametre bağlayıcı(Binding Type), son parametre ise adres(Address) bilgisidir.
+            host.AddServiceEndpoint("ServisIslemleri.IHesaplamalar", binding, "net.tcp://localhost:45000/HesaplamaServisi");
+            host.Open(); // host a&amp;ccedil;ılır. Open metodundan sonra ChannelListener gelen talepleri dinlemeye başlar. Gelen mesajları kanal yığınına devreder. ChannelDispatcher nesnesi ise bu mesajları kanal yığınının en &amp;uuml;st&amp;uuml;nden alır ve uygun olan EndPointDispatcher nesnesine devreder.
+            Console.WriteLine("Servis dinlemede...\nKapatmak i&amp;ccedil;in bir tuşa basınız...");
+            Console.ReadLine();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Burada sadece &amp;ouml;rnek olması a&amp;ccedil;ısından bazı kanallar i&amp;ccedil;in gerekli elementler oluşturulmakta ve &lt;strong&gt;CustomBinding&lt;/strong&gt; nesne &amp;ouml;rneğinin &lt;strong&gt;Elements&lt;/strong&gt; koleksiyonu i&amp;ccedil;erisinde toplanmaktadır. S&amp;ouml;z konusu element nesne &amp;ouml;rneklerinin pek &amp;ccedil;ok &amp;ouml;zelliği ve metodu burada g&amp;ouml;z ardı edilmektedir. Ama&amp;ccedil; programatik olarak &amp;ouml;zel bir bağlayıcı tipin oluşturulması ve &lt;strong&gt;ServiceHost&lt;/strong&gt; nesne &amp;ouml;rneği &amp;uuml;zerinden kullanılabilmesidir. S&amp;ouml;z konusu uygulama &amp;ccedil;alıştırıldığında aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; ile karşılaşılır.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk244_5.gif" alt="" width="389" height="74" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;&lt;strong&gt;WCF&lt;/strong&gt; alt yapısını programalamakla ilişkili olarak &lt;strong&gt;Microsoft&lt;/strong&gt; kaynaklarının g&amp;ouml;sterdiği &amp;ouml;rneklerde yapılan &amp;ccedil;alışmalardan biriside istemci ve servis arasındaki mesajların yakalanmasıdır. &lt;em&gt;(Yakalama işlemini takiben mesaj i&amp;ccedil;eriklerinin &amp;ouml;rneğin herhangibir algoritmaya g&amp;ouml;re sıkıştırılması, bazı doğrulama s&amp;uuml;re&amp;ccedil;lerinden ge&amp;ccedil;irilmesi gibi ek fonksiyonellikler yapılabilmektedir.)&lt;/em&gt; Bu işlem i&amp;ccedil;in &lt;strong&gt;IDispatchMessageInspector&lt;/strong&gt; &lt;strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml;(Interface)&lt;/strong&gt; uygulayan bir sınıfı yazmak yeterlidir. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Daha sonra s&amp;ouml;z konusu sınıf &amp;ouml;rneği servis tarafında &lt;strong&gt;davranış(Behavior) &lt;/strong&gt; olarak ele alınmaktadır. S&amp;ouml;z konusu davranışın yazılması i&amp;ccedil;inse &lt;strong&gt; IServiceBehavior&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml; uygulayan bir sınıfın geliştirilmesi ve i&amp;ccedil;erisindeki uygun metodlarda mesaj yakalamak &amp;uuml;zere tasarlanan tipin ele alınması gerekmektedir. Davranışın servis seviyesinde uygulanması halinde, gelen t&amp;uuml;m mesajların yakalanması s&amp;ouml;z konusudur. Mesaj yakalama s&amp;uuml;reci ile ilişkili tipler istemci tarafınada uygulanabilir. &lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Yazının bu b&amp;ouml;l&amp;uuml;m&amp;uuml;nde mesaj yakalamak i&amp;ccedil;in gerekli işlemlerin programatik olarak nasıl ger&amp;ccedil;ekleştirileceği ele alınmaktadır. Bu ama&amp;ccedil;la servis uygulamasına aşağıdaki sınıf diagramında(Class Diagram) g&amp;ouml;r&amp;uuml;len tiplerin eklenmesi yeterlidir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk244_6.gif" alt="" width="253" height="399" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;MesajYakalayici isimli sınıf &lt;strong&gt; IDispacthMessageInspector&lt;/strong&gt; &lt;strong&gt;aray&amp;uuml;z&amp;uuml;n&amp;uuml;(Interface)&lt;/strong&gt; uygulamaktadır. S&amp;ouml;z konusu aray&amp;uuml;z &lt;strong&gt;AfterReceiveRequest&lt;/strong&gt; ve &lt;strong&gt; BeforeSendReply&lt;/strong&gt; isimli iki metodun uygulanmasını beklemektedir. Tahmin edileceği &amp;uuml;zere &lt;strong&gt;AfterReceiveRequest&lt;/strong&gt; metodu ile, istemcinin talep ettiği operasyonun servis tarafında &amp;ccedil;alıştırılmasından hemen &amp;ouml;nce mesajın yakalanması m&amp;uuml;mk&amp;uuml;n olmaktadır. Hatta istenirse mesaj i&amp;ccedil;eriği burada değiştirilebilir ki bu &amp;ccedil;ok dikkatli bir şekilde ele alınması gereken bir durumdur. &lt;strong&gt;BeforeSendReply&lt;/strong&gt; isimli metod ise, servis tarafından talep edilen metod tamamlandıktan sonra devreye girmektedir. &amp;Ouml;rnekteki sınıfta sadece ve sadece gelen ve giden mesajlara ait bilgiler ele alınmaya &amp;ccedil;alışılmaktadır. MesajYakalayici sınıfına ait kod i&amp;ccedil;erisi aşağıdaki gibidir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+// IDispatchMessageInspector aray&amp;uuml;n&amp;uuml;z&amp;uuml;n yer aldığı isim alanıdır.
+using System.ServiceModel.Dispatcher;
+using System.ServiceModel.Channels;
+using System.Xml;
+using System.ServiceModel.Description;
+
+namespace Sunucu
+{
+    class MesajYakalayici
+        :IDispatchMessageInspector
+    {    
+        #region IDispatchMessageInspector Members
+
+        // Servis &amp;uuml;zerinden talep edilen metod &amp;ccedil;alıştırılmadan hemen &amp;ouml;nce devreye giren metoddur.
+        // ilk parametrenin ref olarak tanımlandığına dikkat edelim. Yani gelen mesajda yapılacak olan değişiklikler &amp;ccedil;alışma ortamını doğrudan etkileyecektir.
+        public object AfterReceiveRequest(ref System.ServiceModel.Channels.Message request, System.ServiceModel.IClientChannel channel, System.ServiceModel.InstanceContext instanceContext)
+        {
+            // System.Runtime.Serialization referansı eklenmediği takdirde MessageId &amp;ouml;zelliği i&amp;ccedil;in derleme zamanı hatası alınmaktadır.
+            Console.WriteLine("\n\n");
+            Console.WriteLine("*******Request Bilgisi********");
+            Console.WriteLine("Message Id : " + request.Headers.MessageId.ToString());
+            Console.WriteLine("MessageVersion Addressing : " + request.Headers.MessageVersion.Addressing);
+            Console.WriteLine("To : " + request.Headers.To.AbsolutePath);
+            Console.WriteLine("Action : " + request.Headers.Action);
+            Console.WriteLine("Encoder : "+request.Properties.Encoder);
+
+            MessageBuffer buffer = request.CreateBufferedCopy(Int32.MaxValue);
+            request = buffer.CreateMessage();
+            Console.WriteLine("Mesaj Body :"+buffer.CreateMessage().GetBody&amp;lt;XmlElement&amp;gt;().InnerXml); 
+    
+            return null;
+        } 
+    
+        // Servis metodu tamamlandığında devreye giren metoddur.
+        public void BeforeSendReply(ref System.ServiceModel.Channels.Message reply, object correlationState)
+        {
+            Console.WriteLine("\n\n");
+            Console.WriteLine("*******Reply Bilgisi********"); 
+            Console.WriteLine("Action : " + reply.Headers.Action);
+            Console.WriteLine(reply.ToString());
+        }
+        #endregion
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Yazılan bu mesaj yakalama sınıfının &lt;strong&gt; EndPointDispatcher&lt;/strong&gt; nesnelerinin her birinde uygulanabilmesi i&amp;ccedil;in servis tarafında bir davranış belirtilmesi gereklidir. &lt;strong&gt; MesajYakalayiciBehavior&lt;/strong&gt; sınıfının yazılmasının ama&amp;ccedil;larından biriside budur. &lt;strong&gt;EndPointDispatcher&lt;/strong&gt; noktlarına mesaj yakalama işlemini &amp;uuml;stlenen sınıfların eklenmesi i&amp;ccedil;in &lt;strong&gt;ApplyDispatcherBehavior&lt;/strong&gt; metodundan yaralanılmaktadır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+// IDispatchMessageInspector aray&amp;uuml;n&amp;uuml;z&amp;uuml;n yer aldığı isim alanıdır.
+using System.ServiceModel.Dispatcher;
+using System.ServiceModel.Channels;
+using System.Xml;
+using System.ServiceModel.Description;
+
+namespace Sunucu
+{
+    // Mesaj yakalama sınıfının uygulanması i&amp;ccedil;in bir davranış tipi (Behavior Type) geliştirilir
+    public class MesajYakalayiciBehavior
+        : IServiceBehavior // Davranış tipleri IServiceBehavior aray&amp;uuml;z&amp;uuml;nden t&amp;uuml;rerler.
+    {
+        #region IServiceBehavior Members
+
+        /* Ek bağlayıcı parametrelerin ilave edilebilmesini sağlayan metoddur. S&amp;ouml;z konusu dış ortam parametreleri metoda BindingParameterCollection tipinden aktarılır. WCF &amp;ccedil;alışma zamanı tarafından servisin dinlediği her bir URI i&amp;ccedil;in bir kere &amp;ccedil;ağrılır.*/
+        public void AddBindingParameters(ServiceDescription serviceDescription, System.ServiceModel.ServiceHostBase serviceHostBase, System.Collections.ObjectModel.Collection&amp;lt;ServiceEndpoint&amp;gt; endpoints, BindingParameterCollection bindingParameters)
+        {    
+        }
+
+        /* ServisHost nesnesine behavior nesnesinin uygulandığı metoddur. &amp;Ouml;rnekteki mesaj yakalayıcının uygulanacağı yerdir. Servis tarafından kullanılan her bir EndPointDispatcher nesnesi i&amp;ccedil;in birer mesaj yakalayıcı bu metod i&amp;ccedil;erisinden eklenebilir. */
+        public void ApplyDispatchBehavior(ServiceDescription serviceDescription, System.ServiceModel.ServiceHostBase serviceHostBase)
+        {
+            /* Aşağıdaki kod par&amp;ccedil;ası sayesinde, EndPointDispatcher' lara ulaşan her mesaj yada işletilen servis metodundan EndPointDispatcher' a d&amp;ouml;nen her mesaj MesajYakalayici nesne &amp;ouml;rneği &amp;uuml;zerinden     ge&amp;ccedil;mek durumundadır. */
+            // ChannelDispatchers i&amp;ccedil;erisindeki her bir ChannelDispatcher nesnesini ele al
+            foreach (ChannelDispatcher cd in serviceHostBase.ChannelDispatchers)
+            {
+                // O anki ChannelDispatcher i&amp;ccedil;erisindeki her bir EndPointDispatcher nesnesini ele al
+                foreach (EndpointDispatcher ed in cd.Endpoints)
+                {
+                    // MesajYakalayici nesne &amp;ouml;rneğini MessageInspectors koleksiyonuna ekle
+                    ed.DispatchRuntime.MessageInspectors.Add(new MesajYakalayici());
+                }
+            }
+        }
+
+        /* Servisin &amp;ccedil;alışma zamanında gerekli &amp;ouml;zellikleri sağlayıp sağlamadığının denetlenebileceği yerdir.Şartlara uymayan durumlarda s&amp;ouml;zleşmenin geri &amp;ccedil;evrilmesi amacıyla metod i&amp;ccedil;erisinde exception fırlatılması gibi işlemler yapılabilir */
+        public void Validate(ServiceDescription serviceDescription, System.ServiceModel.ServiceHostBase serviceHostBase)
+        {        
+        }
+
+        #endregion
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Artık servis tarafında &lt;strong&gt; MesajYakalayıcıBehavior&lt;/strong&gt; isimli davranışın uygulanma işlemi ger&amp;ccedil;ekleştirilebilir. Bunun i&amp;ccedil;in host isimli nesne &amp;ouml;rneği &amp;uuml;zerinden &lt;strong&gt; Open&lt;/strong&gt; metodu &amp;ccedil;ağırılmadan hemen &amp;ouml;nce aşağıdaki kod par&amp;ccedil;asının yazılması yeterlidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;host.Description.Behaviors.Add(new MesajYakalayiciBehavior());&lt;/pre&gt;
+&lt;p&gt;S&amp;ouml;z konusu davranışın eklenmesi i&amp;ccedil;in &lt;strong&gt; ServiceHost&lt;/strong&gt; nesne &amp;ouml;rneğinin &lt;strong&gt;Description&lt;/strong&gt; &amp;ouml;zelliği &amp;uuml;zerinden ulaşılan &lt;strong&gt;Behaviors&lt;/strong&gt; &amp;ouml;zelliğinin &lt;strong&gt;Add&lt;/strong&gt; metodu kullanılmaktadır. Elbette sonu&amp;ccedil;ları g&amp;ouml;rebilmek i&amp;ccedil;in istemci tarafından &lt;strong&gt;talep(Request)&lt;/strong&gt; gelmesi gerekmektedir. İstemci uygulama olayın kolay bir şekilde analiz edilebilmesi ve &amp;ouml;zellikle mesaj yakalayıcının etkilerinin g&amp;ouml;r&amp;uuml;lebilmesi i&amp;ccedil;in basit bir &lt;strong&gt;Console&lt;/strong&gt; projesi olarak geliştirilmektedir. Yazıdakine benzer senaryolarda &amp;ccedil;oğunlukla &lt;strong&gt;svcutil&lt;/strong&gt; aracından yararlanılarak &lt;strong&gt;istemci(Client)&lt;/strong&gt; i&amp;ccedil;in gerekli olan &lt;strong&gt; proxy&lt;/strong&gt; &lt;strong&gt;sınıfı(Class)&lt;/strong&gt; ve &lt;strong&gt;config&lt;/strong&gt; dosyasının &amp;uuml;retilmesi yolu tercih edilir. Yada &lt;strong&gt;metadata&lt;/strong&gt; &lt;strong&gt;publishing&lt;/strong&gt; se&amp;ccedil;eneği aktif bırakılarak istemcilerin servis referanslarını eklemeleri sağlanabilir. Bazen g&amp;uuml;venlik nedeniyle metadata publishing se&amp;ccedil;eneğinin kapatıldığı durumlar s&amp;ouml;z konusudur. &amp;Ouml;rnek senaryoda istemci tarafı i&amp;ccedil;in gerekli olan &lt;strong&gt;proxy&lt;/strong&gt; sınıfı &lt;strong&gt;svcutil&lt;/strong&gt; aracı yardımıyla &amp;ouml;rneklenmekte ve otomatik &amp;uuml;retilen config dosyası kullanılmaktadır. Bu ama&amp;ccedil;la svcutil aracından aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi yararlanılması yeterlidir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk244_7.gif" alt="" width="640" height="372" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Bu işlemin arkasından &amp;uuml;retilen &lt;strong&gt; Proxy.cs&lt;/strong&gt; ve &lt;strong&gt;App.config&lt;/strong&gt; dosyası &amp;ouml;rnek bir &lt;strong&gt;Client&lt;/strong&gt; uygulamasında ele alınabilir. &amp;Uuml;retilen config dosyası otomatik olarak &lt;strong&gt; basicHttpBinding&lt;/strong&gt; bazlı bir &lt;strong&gt;bağlayıcı tipi(Binding Type)&lt;/strong&gt; kullanmaktadır. Oysaki &amp;ouml;rnekte yer alan servis tarafı &lt;strong&gt;CustomBinding&lt;/strong&gt; tipini ele almaktadır. Bu sebepten istemci tarafındaki config dosyasının i&amp;ccedil;eriği aşağıdaki gibi değiştirilemelidir.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;system.serviceModel&amp;gt;
+        &amp;lt;bindings&amp;gt;
+            &amp;lt;customBinding&amp;gt;
+                &amp;lt;binding name="HesaplamaServisiBindingConfig"&amp;gt;
+                    &amp;lt;reliableSession /&amp;gt;
+                    &amp;lt;security authenticationMode="SecureConversation" requireSignatureConfirmation="false"&amp;gt;
+                        &amp;lt;localClientSettings/&amp;gt;
+                        &amp;lt;secureConversationBootstrap /&amp;gt;
+                    &amp;lt;/security&amp;gt;
+                    &amp;lt;textMessageEncoding /&amp;gt;
+                    &amp;lt;tcpTransport /&amp;gt;
+                &amp;lt;/binding&amp;gt;
+            &amp;lt;/customBinding&amp;gt;
+        &amp;lt;/bindings&amp;gt;
+        &amp;lt;client&amp;gt;
+            &amp;lt;endpoint address="net.tcp://localhost:45000/HesaplamaServisi" binding="customBinding" bindingConfiguration="HesaplamaServisiBindingConfig" contract="IHesaplamalar" name="HesaplamalarClientEndPoint" /&amp;gt;
+        &amp;lt;/client&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;zel bağlayıcı tiplerin konfigurasyon dosyası i&amp;ccedil;erisinde tanımlanması i&amp;ccedil;in &lt;strong&gt;bindings&lt;/strong&gt; elementi altında yer alan &lt;strong&gt;customBinding&lt;/strong&gt; alt elementinden yararlanılır. Config dosyası i&amp;ccedil;erisinde dikkat edileceği &amp;uuml;zere servis tarafındaki &lt;strong&gt; CustomBinding&lt;/strong&gt; bildirimlerine uygun olacak şekilde bazı tanımlamalar yapılmaktadır. Buna g&amp;ouml;re g&amp;uuml;venilir oturumlar i&amp;ccedil;in &lt;strong&gt;relaibleSession&lt;/strong&gt; elementi, g&amp;uuml;venlik i&amp;ccedil;in &lt;strong&gt;security&lt;/strong&gt; elementi, text bazlı mesaj &amp;ccedil;&amp;ouml;z&amp;uuml;mlemesi i&amp;ccedil;in &lt;strong&gt;textMessageEncoding&lt;/strong&gt; elementi ve son olarak &lt;strong&gt; TCP&lt;/strong&gt; bazlı iletişimi işaret edecek şekilde &lt;strong&gt;tcpTransport&lt;/strong&gt; elementi kullanılmaktadır. Elbetteki bu elementlerin doğru sırada yazılmalarıda olduk&amp;ccedil;a &amp;ouml;nemlidir. &lt;strong&gt;Console&lt;/strong&gt; uygulamasının kodları ise aşağıdaki gibi geliştirilebilir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace Istemci
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            HesaplamalarClient proxy =new HesaplamalarClient("HesaplamalarClientEndPoint");
+
+            Console.WriteLine("Devam etmek i&amp;ccedil;in bir tuşa basınız...");
+            Console.ReadLine();
+            Console.WriteLine(proxy.DaireAlan(10).ToString());
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Uygulama test edildiğinde servis ve istemci ekranlarında aşağıdaki sonu&amp;ccedil;ların alındığı g&amp;ouml;r&amp;uuml;lecektir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;img src="/makale/images/mk244_8.gif" alt="" width="640" height="494" border="0" /&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;Dikkat edileceği &amp;uuml;zere servis tarafındaki mesaj dinleyici sınıf i&amp;ccedil;erisindeki metodlar devreye girerekten, istemciden gelen ve istemciye g&amp;ouml;nderilen paket i&amp;ccedil;eriklerinin yakalanması ve bunlar hakkında bilgi alınması işlemleri başarılı bir şekilde ger&amp;ccedil;ekleştirilmiştir. Peki istemci a&amp;ccedil;ısından bakıldığında aynı işlemler kod tarafından nasıl yapılabilir. Bunun i&amp;ccedil;in &amp;ouml;ncelikli olarak istemci tarafında, servis operasyonlarının bildirimlerini i&amp;ccedil;eren bir aray&amp;uuml;z(Interface) tipinin tasarlanmış olması gerekmektedir. Bu tipin aşağıdaki gibi tasarlandığı d&amp;uuml;ş&amp;uuml;n&amp;uuml;ls&amp;uuml;n.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+
+namespace Istemci
+{
+    [ServiceContract]
+    public interface IHesaplamalarV2
+    {
+        [OperationContract(Action = "http://tempuri.org/IHesaplamalar/DaireAlan", ReplyAction = "http://tempuri.org/IHesaplamalar/DaireAlanResponse")]
+        double DaireAlan(double r);
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu aray&amp;uuml;z tipinin g&amp;ouml;revi &amp;ccedil;alışma zamanı i&amp;ccedil;in gerekli &lt;strong&gt;proxy&lt;/strong&gt; nesnesi &amp;uuml;retildiğinde, ilgili nesne referansını taşıyabilmektir. Ayrıca, &lt;strong&gt;DaireAlan&lt;/strong&gt; metoduna ait operasyonel bilgilerin, &lt;strong&gt;OperationContract&lt;/strong&gt; niteliği i&amp;ccedil;erisinde &lt;strong&gt; Action&lt;/strong&gt; ve &lt;strong&gt;ReplyAction&lt;/strong&gt; &amp;ouml;zellikleri ile nasıl tanımlandığına dikkat edilmelidir. Servis tarafındaki s&amp;ouml;zleşme i&amp;ccedil;erisinde herhangibir &lt;strong&gt;namespace&lt;/strong&gt; tanımlanmamış olduğundan, varsayılan olarak &lt;strong&gt; http://tempuri.org&lt;/strong&gt; &amp;ouml;n ifadesi t&amp;uuml;m operasyon bilgilerinin başında yer almaktadır. İstemci tarafındaki kodlarda dikkat edilmesi gereken en &amp;ouml;nemli nokta &lt;strong&gt;CustomBinding&lt;/strong&gt; tipinin servis tarafındakine uygun olacak şekilde tasarlanmasıdır. Bu ama&amp;ccedil;lar istemci tarafındaki kodların aşağıdaki gibi revize edilmesi yeterlidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+using System.ServiceModel.Channels;
+
+namespace Istemci
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            CustomBinding binding = new CustomBinding();
+
+            ReliableSessionBindingElement rBinding = new ReliableSessionBindingElement();
+            binding.Elements.Add(rBinding);
+
+            SecurityBindingElement sBinding = SecurityBindingElement.CreateSecureConversationBindingElement( SecurityBindingElement.CreateSspiNegotiationBindingElement());
+            binding.Elements.Add(sBinding);
+
+            TextMessageEncodingBindingElement eBinding = new TextMessageEncodingBindingElement();
+            binding.Elements.Add(eBinding);
+
+            TcpTransportBindingElement tcpBinding = new TcpTransportBindingElement(); 
+            binding.Elements.Add(tcpBinding);
+
+            IHesaplamalarV2 proxy = ChannelFactory&amp;lt;IHesaplamalarV2&amp;gt;.CreateChannel(binding, new EndpointAddress("net.tcp://localhost:45000/HesaplamaServisi"));
+
+            Console.WriteLine("Devam etmek i&amp;ccedil;in bir tuşa basınız...");
+            Console.ReadLine();
+            Console.WriteLine(proxy.DaireAlan(10).ToString());
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;İstemcinin ilgili operasyonel &amp;ccedil;ağrıları yapabilmesi i&amp;ccedil;in bir &lt;strong&gt;proxy&lt;/strong&gt; nesne &amp;ouml;rneğine ihitya&amp;ccedil; vardır. Bu nesne &amp;ouml;rneğinin &amp;uuml;retilmesi i&amp;ccedil;in &lt;strong&gt;ChannelFactory&lt;/strong&gt; sınıfının &lt;strong&gt; CreateChannel&lt;/strong&gt; metodundan yararlanılmaktadır. Dikkat edileceği &amp;uuml;zere, bu metodun ilk parametresi bağlayıcı tipi ifade etmektedir. &amp;Ouml;rnekteki bağlayıcı tipi &lt;strong&gt;CustomBinding&lt;/strong&gt; t&amp;uuml;r&amp;uuml;nden olup servis tarafındaki bildirime uygun olacak kanal bilgilerini i&amp;ccedil;ermektedir. Diğer taraftan ikinci parametre ile servisin adres bilgisi işaret edilir. Uygulama bu haliyle &amp;ccedil;alıştırıldığındada aynı sonu&amp;ccedil;ların elde ediliği g&amp;ouml;r&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt;WCF mimarisinde istenirse istemci tarafından servise g&amp;ouml;nderilecek olan mesajların manuel olarak hazırlanmasıda m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Bu Web servislerinde SOAP bazlı mesajların i&amp;ccedil;eriklerinin hazırlanıp g&amp;ouml;nderilmesi ile benzer bir durumdur. &amp;Ouml;zellikle WCF istemcilerinin, WCF harici servisler ile haberleşmesi gerektiği durumlarda mesajların manuel olarak hazırlanması s&amp;ouml;z konusu olabilir. B&amp;ouml;yle bir durumda istemci tarafında herhangibir proxy nesnesi olmadan operasyon &amp;ccedil;ağrıları yapılabilmektedir. Bu konuya ilerleyen yazılarda değinmeye &amp;ccedil;alışacağım. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-size: small;"&gt;&lt;span style="font-family: Verdana;"&gt; &lt;a href="/makale/images/ProgramatikYaklasim.rar"&gt;&amp;Ouml;rnek Uygulama i&amp;ccedil;in Tıklayın&lt;/a&gt;&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;</content>
+  <pubDate>2008-03-07 12:00:00</pubDate>
+  <slug>Kod-Tarafc4b1ndan-Yonetmek-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>wcf</tag>
+    <tag>windows-communication-foundation</tag>
+  </tags>
+  <categories>
+    <category>WCF</category>
+  </categories>
+</post>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>NET Remoting' i Kavramak - 2</title>
+  <description>Bu makalemizde, daha önceden değinmiş olduğumuz .net remoting ile ilgili olarak çok basit bir örnek geliştirmeye çalışacağız. Remoting' de amaç, istemcilerin uzak nesnelere ait üyelere erişebilmelerini ve kullanabilmelerini sağlamaktır. Dolayısıyla, remoting sistemi söz konusu olduğunda, remote object, server channels ve client channels kavramları önem kazanır. Olaya bu açıdan baktığımızda ilk olarak bir remote object (uzak nesne) geliştirmemiz gerektiği ortadadır. Daha sonra, bu nesneyi kullanmak isteyecek istemcileri dinleyecek bir server programını yazmamız gerekir. Bu server programı aslında, remote object' i barındıran (host) bir hizmet programı olacaktır. İstemcilerin tek yapması gereken uzak nesneye ait bir örneği, çalıştıkları sistemde kullanarak bir proxy nesnesi oluşturmak ve bu nesne üzerinden server programa istekte bulunarak ilgili uzak nesneye ait metodları çalıştırmaktır. İşte bu noktada server ve client uygulamalardaki channel nesneleri önem kazanır.</description>
+  <content>&lt;p&gt;Değerli Okurlarım, Merhabalar.&lt;/p&gt;
+&lt;p&gt;Bu makalemizde, daha &amp;ouml;nceden değinmiş olduğumuz .net remoting ile ilgili olarak &amp;ccedil;ok basit bir &amp;ouml;rnek geliştirmeye &amp;ccedil;alışacağız. Remoting' de ama&amp;ccedil;, istemcilerin uzak nesnelere ait &amp;uuml;yelere erişebilmelerini ve kullanabilmelerini sağlamaktır. Dolayısıyla, remoting sistemi s&amp;ouml;z konusu olduğunda, remote object, server channels ve client channels kavramları &amp;ouml;nem kazanır. Olaya bu a&amp;ccedil;ıdan baktığımızda ilk olarak bir remote object (uzak nesne) geliştirmemiz gerektiği ortadadır. Daha sonra, bu nesneyi kullanmak isteyecek istemcileri dinleyecek bir server programını yazmamız gerekir. Bu server programı aslında, remote object' i barındıran (host) bir hizmet programı olacaktır. İstemcilerin tek yapması gereken uzak nesneye ait bir &amp;ouml;rneği, &amp;ccedil;alıştıkları sistemde kullanarak bir proxy nesnesi oluşturmak ve bu nesne &amp;uuml;zerinden server programa istekte bulunarak ilgili uzak nesneye ait metodları &amp;ccedil;alıştırmaktır. İşte bu noktada server ve client uygulamalardaki channel nesneleri &amp;ouml;nem kazanır.&lt;/p&gt;
+&lt;p&gt;Biz bug&amp;uuml;nk&amp;uuml; &amp;ouml;rneğimizde, TCP protokol&amp;uuml; &amp;uuml;zerinden haberleşen bir remoting uygulaması geliştirmeye &amp;ccedil;alışacağız. &amp;ouml;ncelikle işe, remote object (uzak nesne) sınıfını tasarlayarak başlayalım. Konuyu daha net anlayabilmek i&amp;ccedil;in, uygulamalarımızı editor&amp;uuml;nde geliştireceğiz. Şimdi aşağıdaki kodlardan oluşan, UzakNesne.cs kod dosyasını oluşturalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Data;
+using System.Data.SqlClient;
+
+namespace UzakNesne
+{
+    public class Musteriler:System.MarshalByRefObject
+    {
+        public string MusteriBul(string CustID)
+        {
+SqlConnection con=new SqlConnection("data source=localhost;initial 
+catalog=Northwind;integrated security=SSPI");
+SqlCommand cmd=new SqlCommand("SELECT * FROM Customers WHERE 
+CustomerID='"+CustID+"'",con);
+con.Open();
+SqlDataReader dr=cmd.ExecuteReader();
+dr.Read();
+string Bulunan=dr["CompanyName"]+" "+dr["ContactName"]+" "+dr["Phone"];
+con.Close();
+return Bulunan;
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Burada g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi remote object (uzak nesne) sınıfı i&amp;ccedil;in en &amp;ouml;nemli unsur, bu sınıfın System.MarshalByRefObject sınıfından t&amp;uuml;retilmiş olmasıdır. Normal şartlarda geliştirdiğimiz bu nesneye, bulunduğu sistemin application domain' i i&amp;ccedil;erisinden direkt olarak erişebiliri. Ancak, bu nesnenin application domain' in dışındaki bir domainden kullanılabilmesini sağlamak yani remoting desteğini vermek i&amp;ccedil;in MarshalByRefObject sınıfından t&amp;uuml;retmemiz gerekmektedir. Bu sayede istemci uygulama, bu nesneye ait proxy nesnesi &amp;uuml;zerinden mesaj g&amp;ouml;nderebilecek ve alabilecektir. Şimdi geliştirdiğimiz bu assembly' ı bir dll olarak aşağıdaki gibi derleyeylim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk76_1.gif" alt="" width="545" height="146" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Artık uzak nesnemizede sahip olduğumuza g&amp;ouml;re, bu nesneyi kullanacak istemcileri takip edecek, bir başka deyişle dinleyecek (listening) bir server (sunucu) uygulaması yazabiliriz. Bir sunucu uygulaması i&amp;ccedil;in en &amp;ouml;nemli unsurlar, dinleme işlemi i&amp;ccedil;in hangi kanalın, hangi ayarlar ile kullanılacağı ve remote object (uzak nesne) sınıfına ait bilgilerin ne olduğundan oluşmaktadır. Server (sunucu) i&amp;ccedil;in gerekli bu bilgileri uygulama i&amp;ccedil;erisinden programatik olarak belirleyeceğimiz gibi, xml tabanlı bir konfigurasyon dosyası yardımıylada tanımlayabiliriz. XML tabanlı konfigurasyon dosyasının, programatik olan tekniğe g&amp;ouml;re en b&amp;uuml;y&amp;uuml;k avantajı, kanal ve remote object (uzak nesne) ile ilgili d&amp;uuml;zenlemelerde, kodun yeniden derlenmesine gerek kalınmamasıdır. Bir konfigurasyon dosyası, config uzantılıdır. Bu makalemizde kullancağımız Server (sunucu) uygulamaya ait konfigurasyon dosyası Sunucu.config isminde olup, aşağıdaki satırlardan oluşmaktadır.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;configuration&amp;gt;
+    &amp;lt;system.runtime.remoting&amp;gt;
+        &amp;lt;application name="MusteriUygulama"&amp;gt;
+            &amp;lt;service&amp;gt;
+                &amp;lt;wellknown mode="SingleCall" type="UzakNesne.Musteriler,UzakNesne" objectUri="UzakNesne"/&amp;gt;
+            &amp;lt;/service&amp;gt;
+            &amp;lt;channels&amp;gt;
+                &amp;lt;channel ref="tcp server" port="1000"/&amp;gt;
+            &amp;lt;/channels&amp;gt;
+        &amp;lt;/application&amp;gt;
+    &amp;lt;/system.runtime.remoting&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Şimdi bu xml dosyasının i&amp;ccedil;eriğini kısaca incelemeye &amp;ccedil;alışalım. &amp;ouml;ncelikle ana eleman &amp;lt;configuration&amp;gt; dır. Burada server (sunucu) uygulamasına ait remote object (uzak nesne) ve channel (kanal) ayarlamaları mutlaka, &amp;lt;system.runtime.remoting&amp;gt; elemanı i&amp;ccedil;inde yapılmalıdır. &amp;lt;application&amp;gt; elemanı i&amp;ccedil;inde name &amp;ouml;zelliği ile server (sunucu) uygulamamızın adını belirtiyoruz.&lt;/p&gt;
+&lt;p&gt;Asıl &amp;ouml;nemli olan iki eleman &amp;lt;application&amp;gt; elemanı altında yer alan &amp;lt;service&amp;gt; ve &amp;lt;channels&amp;gt; elemanlarıdır. &amp;lt;service&amp;gt; elemanı altında &amp;lt;wellknown elemanı ile, remote object' e ait bilgiler belirtilir. mode niteliğinde, SingleCall ile, sunucu taraflı etkinleştirme tekniği belirtilmektedir. Bu anlamda SingleCall ile, istemci tarafından yapılan her metod &amp;ccedil;ağırısına karşılık birer sunucu nesnesi &amp;ouml;rneği oluşturulması sağlanmaktadır. Diğer alternatif ise, Singleton tekniğidir ki bu tekniğe g&amp;ouml;re sunucu nesneyi kullanan ka&amp;ccedil; istemci olursa olsun, her bir istemcinin metod &amp;ccedil;ağırımları sunucu tarafındaki tek bir nesne &amp;ouml;rneği tarafından y&amp;ouml;netilmektedir.&lt;/p&gt;
+&lt;p&gt;type niteliğinde remote object (uzak nesne) i&amp;ccedil;in, bu tipin hangi isim alanı ve sınıfa ait olduğu belirtilir. type niteliğindeki ikinci parametre ise, uzak nesnenin bulunduğu assembly' ın adıdır. objectUri ile, istemcilerin uzak nesne i&amp;ccedil;in kullanacakları endpoint (son nokta) ismi belirtilmektedir. &amp;lt;channel elemanında, hangi protokol &amp;uuml;zerinden ve hangi port' tan dinleme yapılacağı belirtilir. Burada sistemdeki machine.config dosyasında daha &amp;ouml;nceden tanımlanmış olan tcp server protokol&amp;uuml;n&amp;uuml;n, 1000 numaralı portu kullanacağı belirtilmiştir. Machine.config dosyasını&amp;nbsp; D:\WINDOWS\Microsoft.NET\Framework\vx.x.xxxx\CONFIG klas&amp;ouml;r&amp;uuml;nde bulabilirsiniz. Bu dosyada &amp;lt;channels&amp;gt; elemanı altında &amp;ouml;nceden tanımlanmış remoting protokolleri yer almaktadır.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;channels&amp;gt;
+    &amp;lt;channel id="http" type="System.Runtime.Remoting.Channels.Http.HttpChannel, System.Runtime.Remoting, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" /&amp;gt;
+    &amp;lt;channel id="http client" type="System.Runtime.Remoting.Channels.Http.HttpClientChannel, System.Runtime.Remoting, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" /&amp;gt;
+    &amp;lt;channel id="http server" type="System.Runtime.Remoting.Channels.Http.HttpServerChannel,  System.Runtime.Remoting, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" /&amp;gt;
+    &amp;lt;channel id="tcp" type="System.Runtime.Remoting.Channels.Tcp.TcpChannel, System.Runtime.Remoting, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" /&amp;gt;
+    &amp;lt;channel id="tcp client" type="System.Runtime.Remoting.Channels.Tcp.TcpClientChannel, System.Runtime.Remoting, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" /&amp;gt;
+    &amp;lt;channel id="tcp server" type="System.Runtime.Remoting.Channels.Tcp.TcpServerChannel, System.Runtime.Remoting, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" /&amp;gt;
+&amp;lt;/channels&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Burada Machine.config i&amp;ccedil;indeki tcp server protokol&amp;uuml;ne ait tanımlamada, System.Runtime.Remoting.Channels.Tcp. TcpServerChannel tipininde belirtildiğine dikkat edelim. Konfigurasyon dosyasının hazırlanması ile birlikte, artık sunucu uygulamamızı yazabiliriz. Sunucu uygulama, bu konfigurasyon dosyasını kullanarak, belirtilen protokol ve port &amp;uuml;zerinden istemci taleplerini (mesajlarını) dinlemeye alacak ve gelen bu talepleri, yine konfigurasyon dosyasında belirtilen uzak nesneye ait &amp;ouml;rneğe y&amp;ouml;nlendirecektir. Nesneden d&amp;ouml;nen cevaplarda, yine bu konfigurasyon dosyasında belirtilen protokol ve port ile istemcilere g&amp;ouml;nderilecektir. Gelelim server(sunucu) uygulamamızın kodlarına.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Runtime.Remoting;
+
+namespace Sunucu
+{
+    public class SunucuDinler
+    {
+        public static void Main(string[] args)
+        {
+            RemotingConfiguration.Configure("Sunucu.config");
+            Console.WriteLine("Dinlemeye baslandi...&amp;ccedil;ikmak i&amp;ccedil;in bir tusa basin");
+            Console.ReadLine(); 
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Burada g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi, sunucu uygulamamız konfigurasyon dosyasındaki bilgilere RemotingConfiguration sınıfının Configure metodu ile ulaşmaktadır. İzleyen satırlardaki WriteLine ve ReadLine metodları ile, uygulamanın biz son verene kadar 1000 nolu Tcp Server portunu dinlemesi sağlanmıştır. Şimdi yazdığımız bu uygulamayı exe olarak derleyelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk76_2.gif" alt="" width="548" height="146" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu işlemlerin ardından, sunucu nesnemizin, sunucu uygulamamızın ve konfigurasyon dosyamızın aynı klas&amp;ouml;rde olmalarına dikkat edelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk76_3.gif" alt="" width="350" height="167" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Artık sunucu tarafındaki işlemlerimizi bitirmiş olduk. Şimdi sunucu tarafındaki nesneyi kullanacak istemci uygulamayı tasarlayalım. Elbetteki, istemci uygulamada, mesajlarını Tcp protokol&amp;uuml;n&amp;uuml; baz alarak bir kanal &amp;uuml;zerinden g&amp;ouml;ndermek zorundadır. &amp;ccedil;&amp;uuml;nk&amp;uuml; sunucu uygulama Tcp protokol&amp;uuml;n&amp;uuml; baz alarak dinleme ger&amp;ccedil;ekleştirecektir. Bunu sağlamak i&amp;ccedil;in &amp;ouml;ncelikle, istemci tarafında, client channel (istemci kanal) nesnesine ihtiyacımız vardır. İlave olarak, kullanacağımız uzak nesneninde bir koypasını, istemci uygulamanın assembly'ının bulunduğu klas&amp;ouml;re koymamız gerekiyor. Bir istemci uygulama i&amp;ccedil;in &amp;ouml;nemli olan unsurlar, kanal nesnesi ayarları ve uzak nesneye ait ayarlardır. Bu ayarlamaları programatik olarak yapabileceğimiz gibi bir konfigurasyon dosyasında da yapabiliriz. Bu ama&amp;ccedil;la &amp;ouml;ncelikle aşağıdaki istemci.config dosyasını oluşturalım.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;configuration&amp;gt;
+    &amp;lt;system.runtime.remoting&amp;gt;
+        &amp;lt;application name="Istemci"&amp;gt;
+            &amp;lt;client&amp;gt;
+                &amp;lt;wellknown type="UzakNesne.Musteriler,UzakNesne" url="tcp://localhost:1000/UzakNesne"/&amp;gt;
+            &amp;lt;/client&amp;gt;
+            &amp;lt;channels&amp;gt;
+                &amp;lt;channel ref="tcp client"/&amp;gt;
+            &amp;lt;/channels&amp;gt;
+        &amp;lt;/application&amp;gt;
+    &amp;lt;/system.runtime.remoting&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&amp;lt;wellknown elemanında proxy nesnesi ile iletişim kuracak uzak nesneye ait bilgiler yer almaktadır. &amp;ouml;zel olarak, uzak nesnenin tam olarak adresi url bilgisinde belirtilmiştir. Bu url bilgisi, istemci uygulamadaki proxy nesnesinin mesajlaşmak amacıyla kullanacağı karşı nesne adresini tam olarak belirtmektedir. &amp;lt;channels&amp;gt; elemanında ise, client channel nesnesi belirtilmiştir. Bu nesne yine ref niteliği ile, sistemde machine.config dosyasında daha &amp;ouml;nceden tanımlanmış tcp client niteliğini referans etmektedir. Artık istemci uygulamamızıda yazabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Runtime.Remoting;
+
+namespace istemciUygulama
+{
+    public class istemci
+    {
+        public static void Main(string[] args)
+        {
+            RemotingConfiguration.Configure("istemci.config");
+            UzakNesne.Musteriler m=new UzakNesne.Musteriler();
+            string sonuc=m.MusteriBul("ALFKI");
+            Console.WriteLine(sonuc);
+            Console.ReadLine();
+        } 
+    }
+}&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi istemci uygulamada, konfigurasyon ayarlarını almak i&amp;ccedil;in RemotingConfiguration sınıfının Configure metodunu kullanır. Bundan sonra tek yapılan uzak nesne &amp;ouml;rneğini oluşturmak ve ilgili metodu &amp;ccedil;ağırmaktır. Yazdığımız bu istemci.cs dosyasını aşağıdaki şekilde derleyeylim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk76_4.gif" alt="" width="544" height="158" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Burada dikkat edilecek olursa, uzaknesne.dll dosyası assembly'a referans olarak bildirilmiştir. Dolayısıyla, uzaknesne.dll' inin bir kopyasının istemci uygulamanın bulunduğu klas&amp;ouml;rde olması gerektiğine dikkat etmeliyiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk76_5.gif" alt="" width="368" height="123" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi remoting sistemimizi bir test edelim. &amp;ouml;ncelikle sunucu uygulamamızı, istemcilerden gelecek talepleri dinlemek amacıyla başlatmamız gerekiyor.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk76_6.gif" alt="" width="533" height="139" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu işlemin ardından istemci uygulamamızıda &amp;ccedil;alıştıralım. Sonu&amp;ccedil;lar aşağıdaki gibi olacak ve sql sunucusunda yer alan Northwind veritabanındaki Customers tablosundaki CustomerID değeri ALFKI alan satır bilgileri elde edilecektir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk76_7.gif" alt="" width="603" height="244" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;şmek dileğiyle hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2004-07-03 09:00:00</pubDate>
+  <slug>NET-Remoting-i-Kavramak-2-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>net-remoting</tag>
+    <tag>tcp</tag>
+    <tag>rpc</tag>
+    <tag>distributed-programming</tag>
+  </tags>
+  <categories>
+    <category>.Net Remoting</category>
+  </categories>
+</post>

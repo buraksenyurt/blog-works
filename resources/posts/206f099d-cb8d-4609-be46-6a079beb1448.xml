@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>T-SQL ile Eğlenmeye Devam(İkinci Devre)</title>
+  <description>Hatırlayacağınız üzere geçtiğimiz günlerde kafayı T-SQL ile bozmuş ve can sıkıntısından eğlenceli ifadeler yazmaya çalışmıştım. Sanırım söz konusu bu eğlence sonraki günlere de sirayet etti ve yine bir kaç eğlenceli T-SQL sorgusu ile karşınızdayım...</description>
+  <content>&lt;p&gt;&lt;a href="/pics/fun2.jpg"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; float: right; padding-top: 0px; border: 0px;" title="fun2" src="/pics/fun2_thumb.jpg" alt="fun2" width="261" height="304" align="right" border="0" /&gt;&lt;/a&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Hatırlayacağınız &amp;uuml;zere ge&amp;ccedil;tiğimiz g&amp;uuml;nlerde kafayı &lt;strong&gt;T-SQL&lt;/strong&gt; ile bozmuş ve can sıkıntısından eğlenceli ifadeler yazmaya &amp;ccedil;alışmıştım. Sanırım s&amp;ouml;z konusu bu eğlence sonraki g&amp;uuml;nlere de sirayet etti ve yine bir ka&amp;ccedil; eğlenceli &lt;strong&gt;T-SQL&lt;/strong&gt; sorgusu ile karşınızdayım &lt;em&gt;(İnsan ne oldum dememeli ne olacağım demeli belki de&amp;hellip;Ben ki SQL&amp;rsquo; den nefret eden bir birey olarak bu hale geldiysem&amp;hellip; &lt;img class="wlEmoticon wlEmoticon-smile" style="border-style: none;" src="/pics/wlEmoticon-smile_26.png" alt="Smile" /&gt; )&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Aslında hi&amp;ccedil; vakit kaybetmeden sorgularımızı incelemeye başlayalım dilerseniz. Elbetteki yine merak ettiğim ve aklıma gelen bazı ihtiya&amp;ccedil;lar dahilinde bu sorgular ortaya &amp;ccedil;ıkmakta. &amp;Ouml;rneğin sakin sakin otururken ilk aklıma gelen &lt;strong&gt;T-SQL&lt;/strong&gt; tarafında bizim s&amp;ouml;yleyeceğimiz bazı kriterlere g&amp;ouml;re rastgele şifre &amp;uuml;retecek bir fonksiyon yazmak oldu &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_77.png" alt="Winking smile" /&gt;&lt;/p&gt;
+&lt;p&gt;Bunun i&amp;ccedil;in aşağıdaki&lt;strong&gt; T-SQL&lt;/strong&gt; betiğini yazdım.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;Use AdventureWorks 
+Go 
+-- Function i&amp;ccedil;erisinde Rand() fonksiyonunu kullanamayız(Invalid use of side-effecting or time-dependent operator in 'rand' within a function.) hatası alırız. Bu y&amp;uuml;zden bir hile yapacağız ve rastgele sayıyı bir view i&amp;ccedil;erisinden alacağız ;) Steve Kass' ın g&amp;uuml;zide &amp;ccedil;&amp;ouml;z&amp;uuml;mlerinden birisidir. 
+
+create view ViewRandomNumbers 
+as 
+   select rand( ) as Number 
+go 
+
+create Function ufnGeneratePassword( 
+   @PasswordLength int -- Ka&amp;ccedil; karakterlik password oluşturacağız 
+   ,@StartChar tinyint -- başlangı&amp;ccedil; karakterinin ascii karşılığı sayısal değeri 
+   ,@CharRange tinyint -- Son karakterin ascii karşılığı sayısal değeri 
+   ,@ExcludedChars varchar(50) -- şifre i&amp;ccedil;erisinde bulunmaması istenen karakterler 
+   ) 
+returns varchar(50) 
+as 
+begin 
+   Declare @Password varchar(50)='' 
+   Declare @char char -- Belirtilen aralıkta &amp;uuml;retilen karakteri tutan değişken
+
+   while @PasswordLength&amp;gt; 0 begin 
+       -- &amp;Ouml;nce @StartChar' dan itibaren @CharRange mesafesine kadarlık bir alan i&amp;ccedil;erisinde rastgele bir char &amp;uuml;retilir 
+      select @char = char(round((Select Number from dbo.ViewRandomNumbers) * @StartChar + @CharRange, 0)) 
+      -- şifrede bulunması istenmeyen karakter olup olmama durumuna g&amp;ouml;re şifre &amp;uuml;retilir ve sayac 1 azaltılır 
+      if charindex(@char, @ExcludedChars) = 0 begin 
+          set @Password =@Password+ @char 
+          set @PasswordLength = @PasswordLength - 1 
+     end 
+   end
+
+   return(@Password)
+
+end 
+Go&lt;/pre&gt;
+&lt;p&gt;Burada tanımlamış olduğumuz &lt;strong&gt;ufnGeneratePassword&lt;/strong&gt; isimli fonksiyon parametre olarak &amp;uuml;retilecek şifre uzunluğunu, bu şifrenin &lt;strong&gt;ASCII&lt;/strong&gt; tablosundaki hangi değer aralığında olacağını ve şifre i&amp;ccedil;erisinde olmasını istemediğimiz karakterleri almaktadır. Fonksiyon kendi i&amp;ccedil;erisinde s&amp;ouml;z konusu &lt;strong&gt;ASCII&lt;/strong&gt; değer aralığında bir &amp;uuml;retim ger&amp;ccedil;ekleştirmek i&amp;ccedil;in de, rastgele sayı &amp;uuml;retme işini &amp;uuml;stlenen bir &lt;strong&gt;View&amp;rsquo;&lt;/strong&gt; dan yararlanmaktadır. Fonksiyonu aşağıdaki &lt;strong&gt;T-SQL&lt;/strong&gt; ifadesinde olduğu gibi kullanıp bir ka&amp;ccedil; kez test ettiğimizde başarılı sonu&amp;ccedil;lar elde ettiğimizi g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;Declare @Password1 nvarchar(10) 
+Set @Password1= dbo.ufnGeneratePassword(10,65,29,'abcdefg') 
+Select @Password1 [Password]
+
+Declare @Password2 nvarchar(10) 
+Set @Password2= dbo.ufnGeneratePassword(10,30,50,'/.+-|@') 
+Select @Password2 [Password]
+
+Declare @Password3 nvarchar(10) 
+Set @Password3= dbo.ufnGeneratePassword(10,30,150,'0?*/&amp;amp;^#&amp;gt;&amp;eacute;!') 
+Select @Password3 [Password]&lt;/pre&gt;
+&lt;p&gt;&lt;a href="/pics/artcl_4_1.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="artcl_4_1" src="/pics/artcl_4_1_thumb.gif" alt="artcl_4_1" width="195" height="230" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Bu ilgin&amp;ccedil; ama bana g&amp;ouml;re olduk&amp;ccedil;a işe yarayacak&lt;strong&gt; T-SQL&lt;/strong&gt; ifadesinden sonra bir başkası ile devam edelim. S&amp;ouml;z gelimi veritabanınızda yer alan belirli bir &lt;strong&gt;Şemaya(schema)&lt;/strong&gt; ait tablolarınızı yeni bir schema adına taşımak istiyorsunuz&lt;em&gt;(İstemem demeyin &lt;img class="wlEmoticon wlEmoticon-smile" style="border-style: none;" src="/pics/wlEmoticon-smile_26.png" alt="Smile" /&gt; )&lt;/em&gt; Bu durumda ne yaparsınız? &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_77.png" alt="Winking smile" /&gt; Aslında ge&amp;ccedil;tiğimiz yazımızdaki &amp;ouml;rneklerimizde kullandığımız&lt;strong&gt; system view&lt;/strong&gt; nesnelerini g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alırsak; &amp;ouml;ncelikli olarak ilgili şemadaki tabloları bulmamız ve her biri i&amp;ccedil;in dinamik bir&lt;strong&gt; T-SQL&lt;/strong&gt; ifadesini y&amp;uuml;r&amp;uuml;tmemiz gerektiği ortadadır. Temel olarak şema transferi i&amp;ccedil;in aşağıdaki gibi bir &lt;strong&gt;T-SQL&lt;/strong&gt; ifadesi kullanılabilir.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;alter schema YeniSchemaAdi transfer [HumanResources].[Employee]&lt;/pre&gt;
+&lt;p&gt;S&amp;ouml;z gelimi bu ifade ile &lt;strong&gt;Employee&lt;/strong&gt; tablosunun &lt;strong&gt;HumanResources&lt;/strong&gt; şemasından &lt;strong&gt;YeniSchameAdi&lt;/strong&gt; şemasına transfer edilmesi sağlanmaktadır. Ancak işi zorlaştıran kısım bu&lt;strong&gt; T-SQL&lt;/strong&gt; ifadesinin dinamik olarak oluşturulması ve y&amp;uuml;r&amp;uuml;t&amp;uuml;lmesi sırasında ortaya &amp;ccedil;ıkmaktadır. Dolayısıyla bir &lt;strong&gt;cursor&lt;/strong&gt; kullanımı ve s&amp;ouml;z konusu şemaya ait tablolar &amp;uuml;zerinden dolaşılması, diğer yandan her bir tablo i&amp;ccedil;in ilgili şema transfer işini &amp;uuml;stlenen &lt;strong&gt;T-SQL&lt;/strong&gt; ifadesinin dinamik olarak oluşturulması ve bu ifadeninde dinamik olarak &amp;ccedil;alıştırılması gerekmektedir. Aynen aşağıdaki T-SQL betik bloğunda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_77.png" alt="Winking smile" /&gt;&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;-- &amp;Ouml;nce yeni bir schema &amp;uuml;retelim 
+create schema HumanResourcesNew 
+go
+
+declare @NewSchemaName sysname 
+declare @CursorObject sysname 
+declare @SqlExpression nvarchar(1000) 
+set @NewSchemaName = quotename('HumanResourcesNew')
+
+-- sys.objects i&amp;ccedil;erisinde dolaşıp HumanResources şemasına ait t&amp;uuml;m kullanıcı tanımlı tabloları dolaşacak bir Cursor a&amp;ccedil;ıyoruz 
+declare crsr cursor for select quotename([name])from sys.objects where schema_id = schema_id('HumanResources') and type in ('U') 
+open crsr 
+fetch from crsr into @CursorObject
+
+    while @@fetch_status=0 begin 
+        --her bir tablo i&amp;ccedil;in gerekli şema transfer etme T-SQL ifadesini &amp;uuml;retiyoruz 
+        set @SqlExpression = 'alter schema '+@NewSchemaName+' transfer [HumanResources].'+@CursorObject 
+        print @SqlExpression 
+        -- &amp;uuml;retilen T-SQL ifadesini sp_executeSQL Stored Procedure' &amp;uuml; yardımıyla &amp;ccedil;alıştırıyoruz 
+        exec sp_executeSQL @SqlExpression 
+    fetch next from crsr into @CursorObject 
+end
+
+close crsr 
+deallocate crsr&lt;/pre&gt;
+&lt;p&gt;bu T-SQL ifadesini y&amp;uuml;r&amp;uuml;tt&amp;uuml;ğ&amp;uuml;m&amp;uuml;zde HumanResources şemasındaki kullanıcı tanımlı tabloların, HumanResourcesNew şemasına taşındığını g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/artcl_4_2.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="artcl_4_2" src="/pics/artcl_4_2_thumb.gif" alt="artcl_4_2" width="333" height="271" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Sizi bilmem ama ben &amp;ccedil;ok eğleniyorum. Hız kesmeden farklı bir &lt;strong&gt;T-SQL&lt;/strong&gt; ifadesi ve ihtiyacı ile devam edelim. Bu kez merak ettiğim şuydu. Acaba sistemimde ki veritabanlarında yer alan toplam kullanıcı tanımlı tablo sayıları ne kadardı?&lt;/p&gt;
+&lt;p&gt;T&amp;uuml;m veritabanlarını gezmek i&amp;ccedil;in yine sistem &lt;strong&gt;SP&lt;/strong&gt;&amp;rsquo; lerinden birisi olan sp_&lt;strong&gt;MSforeachdb&amp;rsquo;&lt;/strong&gt; den yararlanabilirdim. Hatta daha &amp;ouml;nceden yaptığımız gibi bir &lt;strong&gt;temp&lt;/strong&gt; tablo kullanıp t&amp;uuml;m sonu&amp;ccedil;ları buraya da aktarabilirdim. Hımm&amp;hellip;Beni biraz uğraştıran bir sorgu oldu aslında. Nitekim toplam tablo sayısını bulmak i&amp;ccedil;in &amp;ouml;ncelikli olarak her bir veritabanı bağlantısı altında &amp;ccedil;alıştırılacak &lt;strong&gt;T-SQL&lt;/strong&gt; ifadeleri gerekiyordu. Bir başka deyişle yine dinamik olarak &amp;uuml;retilecek ve her bir veritabanı i&amp;ccedil;in &amp;ccedil;alıştırılacak bir &lt;strong&gt;T-SQL&lt;/strong&gt; ifadesi s&amp;ouml;z konusuydu &lt;img class="wlEmoticon wlEmoticon-confusedsmile" style="border-style: none;" src="/pics/wlEmoticon-confusedsmile_15.png" alt="Confused smile" /&gt; Ancak biraz uğraştıktan ve epey bir hata aldıktan sonra aşağıdaki &lt;strong&gt;T-SQL&lt;/strong&gt; sorgusunu yazmayı başarabilmiştim.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;-- &amp;Ouml;nce veritabanı adı ve buradaki toplam tablo sayısını tutacak olan Temp tabloyu &amp;uuml;retelim 
+Create Table #AllTables 
+( 
+   DbName varchar(50) 
+   ,TableCount int 
+)
+
+--sp_Msforeachdb SP' sinden yararlanarak t&amp;uuml;m veritabanlarını dolaşalım 
+EXEC sp_MSforeachdb ' 
+USE 
+?
+
+Declare @TableCount int 
+Set @TableCount=(Select Count(name) from sys.objects where type=''U'')
+
+Insert into #AllTables Values (''?'',@TableCount) 
+' -- Her bir veritabanı i&amp;ccedil;in USE ile o veritabanı alanına ge&amp;ccedil;iyor ve sys.objects' den yararlanarak toplam tablo sayılarını bulup @TableCount isimli değişkende tuttuğumuz bu sayıları ve g&amp;uuml;ncel veritabanı adını insert sorgusu ile temp tabloya alıyoruz
+
+Select * from #AllTables order by TableCount desc
+
+Drop Table #AllTables&lt;/pre&gt;
+&lt;p&gt;ve işte sonu&amp;ccedil;lar &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_77.png" alt="Winking smile" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/artcl_4_3.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="artcl_4_3" src="/pics/artcl_4_3_thumb.gif" alt="artcl_4_3" width="277" height="338" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Merak ettiğim bir diğer konu ise &lt;strong&gt;Insert&lt;/strong&gt; işlemlerine ilişkindi. Bazı hallerde bir &lt;strong&gt;Insert&lt;/strong&gt; işlemi ger&amp;ccedil;ekleştirildiğinde, insert edilen verilerin başka bir tabloya da aktarılması istenebilir. S&amp;ouml;z gelimi bir tablo i&amp;ccedil;in ger&amp;ccedil;ekleştirilen &lt;strong&gt;Insert&lt;/strong&gt; işlemi sırasında, &lt;strong&gt;History&lt;/strong&gt; bilgisini tutan başka bir tabloya da veri aktarımı yapılması sırasında... Burada aslında &lt;strong&gt;output&lt;/strong&gt; anahtar kelimesi ve &lt;strong&gt;Inserted&lt;/strong&gt; elemanının kullanıldığı bir ifade dizimi s&amp;ouml;z konusudur. &amp;Ccedil;oğumuz Insert işlemini bu tip bir şekilde &amp;ccedil;ok fazla kullanmamışızdır eminim ki &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_77.png" alt="Winking smile" /&gt; Senaryo gereği &lt;strong&gt;OziRestoran&lt;/strong&gt; isimli bir veritabanı oluşturup &amp;uuml;zerine &lt;strong&gt;Siparis&lt;/strong&gt; ve &lt;strong&gt;SiparisTarihce&lt;/strong&gt; isimli iki tablo ekledim.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;Create database OziRestoran 
+go
+
+Create table Siparis 
+( 
+    SiparisId int identity(1,1) primary key 
+    ,Aciklama nvarchar(250) 
+    ,Tarih date 
+) 
+Create table SiparisTarihce 
+( 
+    SiparisTarihceId int identity(1,1) primary key 
+    ,SiparisId int 
+    ,Aciklama nvarchar(250) 
+    ,Tarih date 
+    ,Onaylayan nvarchar(20) 
+) 
+Go&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Insert&lt;/strong&gt; işlemimizde şunu yapmak istediğimizi d&amp;uuml;ş&amp;uuml;nelim ; &lt;strong&gt;Siparis&lt;/strong&gt; tablosuna bir satır eklenirken, &amp;uuml;retilen otomatik &lt;strong&gt;SiparisId&lt;/strong&gt;, &lt;strong&gt;Aciklama&lt;/strong&gt; ve &lt;strong&gt;Tarih&lt;/strong&gt; alanları değerlerinin, siparisi onaylayan kişi bilgisi ile birlikte tarih&amp;ccedil;e tablosuna yazdırılmasını istiyoruz &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_77.png" alt="Winking smile" /&gt; İşte &lt;strong&gt;Insert&lt;/strong&gt; sorgumuz.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;Use OziRestoran 
+Go 
+insert into Siparis( Aciklama, Tarih ) 
+output inserted.SiparisId, inserted.Aciklama,inserted.Tarih,'bsenyurt' 
+    into SiparisTarihce 
+   ( 
+        SiparisId, 
+        Aciklama, 
+        Tarih, 
+        Onaylayan 
+    ) 
+values ( 'Bir adet LG marka laptop sipariş edildi',GETDATE()) 
+Go
+
+Select * from Siparis 
+Select * from SiparisTarihce&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;Insert&lt;/strong&gt; ifadesi yazılırken &lt;strong&gt;output&lt;/strong&gt; anahtar kelimesinden itibaren &lt;strong&gt;SiparisTarihce&lt;/strong&gt; i&amp;ccedil;erisine de veri aktarımının yapılacağı belirtilmektedir. Sonrasında &lt;strong&gt;values&lt;/strong&gt; anahtar kelimesini takip eden kısımda, asıl &lt;strong&gt;Siparis&lt;/strong&gt; tablosu i&amp;ccedil;in eklenecek i&amp;ccedil;erik set edilmektedir. Sonu&amp;ccedil;lar aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/artcl_4_4.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="artcl_4_4" src="/pics/artcl_4_4_thumb.gif" alt="artcl_4_4" width="540" height="159" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Hazır &lt;strong&gt;Insert&lt;/strong&gt; işlemlerinden konu a&amp;ccedil;ılmışken acaba i&amp;ccedil;eriğini rastgele test verisi ile dolduracağımız devasa boyutlu tabloları nasıl oluşturabiliriz sorusu aklıma geldi &lt;img class="wlEmoticon wlEmoticon-smile" style="border-style: none;" src="/pics/wlEmoticon-smile_26.png" alt="Smile" /&gt; Aslında bu konuda bir &amp;ouml;nceki &amp;ccedil;alıştığım firmada &lt;strong&gt;Database Developer&lt;/strong&gt; arkadaşlarımın yaptığı &amp;ouml;nemli &amp;ccedil;alışmalar vardı. Milyonlarca anlamlı veri yığını oluşturuyorlardı. Onların eline su d&amp;ouml;kemem belki ama en azından kendi &amp;ccedil;apımda bir şeyler yapabilirim diye d&amp;uuml;ş&amp;uuml;nd&amp;uuml;m. İşe basit bir senaryo ile başladım. &amp;Ouml;rneğin rastgele &lt;strong&gt;Ad,Sodad,Şehir,Maaş&lt;/strong&gt; ve &lt;strong&gt;Seviye&lt;/strong&gt; bilgilerinden oluşacak bir veri tablosunu &amp;uuml;retmeye &amp;ccedil;alıştım. Bu ama&amp;ccedil;la aşağıdaki gibi bir sorgu oluşturdum.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;Create Table Adlar 
+( 
+    Ad nvarchar(50) 
+) 
+Create Table Soyadlar 
+( 
+    Soyad nvarchar(50) 
+) 
+Create Table Sehirler 
+( 
+    Sehir nvarchar(50) 
+)
+
+Go 
+Insert into Adlar values ('Burak') 
+Insert into Adlar values ('Kamil') 
+Insert into Adlar values ('Burcu') 
+Insert into Adlar values ('Elif') 
+Insert into Adlar values ('Sinem') 
+Insert into Adlar values ('Hakan') 
+Insert into Adlar values ('Bill') 
+Insert into Adlar values ('Murat') 
+Insert into Adlar values ('Nazım') 
+Insert into Adlar values ('Cansu')
+
+Insert into Soyadlar values ('Şenyurt') 
+Insert into Soyadlar values ('Kırmızı') 
+Insert into Soyadlar values ('Sucu') 
+Insert into Soyadlar values ('Salimoğlu') 
+Insert into Soyadlar values ('Arabacı') 
+Insert into Soyadlar values ('Kısakol') 
+Insert into Soyadlar values ('Odabaşı') 
+Insert into Soyadlar values ('Şamil') 
+Insert into Soyadlar values ('Limoncu') 
+Insert into Soyadlar values ('Kurtaran')
+
+Insert into Sehirler values ('İstanbul') 
+Insert into Sehirler values ('İzmir') 
+Insert into Sehirler values ('Ankara') 
+Insert into Sehirler values ('Eskişehir') 
+Insert into Sehirler values ('Trabzon') 
+Insert into Sehirler values ('Antalya') 
+Insert into Sehirler values ('Gaziantep') 
+Insert into Sehirler values ('Manchester') 
+Insert into Sehirler values ('New York') 
+Insert into Sehirler values ('Samsun') 
+Insert into Sehirler values ('Aydın') 
+Insert into Sehirler values ('Moskova')
+
+select 
+    Ad 
+    ,Soyad 
+    ,Sehir 
+    ,Maas=ROUND(ABS(CHECKSUM(NEWID()))/10000,0) 
+    ,Level=ABS(CHECKSUM(NewId())) % 14 
+    into PersonelTestTable FROM Adlar  
+        cross join Soyadlar  
+        cross join Sehirler 
+    
+Select * From PersonelTestTable&lt;/pre&gt;
+&lt;p&gt;Şimdi burada işin p&amp;uuml;f noktası &lt;strong&gt;Adlar, Soyadlar&lt;/strong&gt; ve &lt;strong&gt;Sehirler&lt;/strong&gt; tablolarının &lt;strong&gt;CROSS JOIN&lt;/strong&gt; ile birleştirilmesi ve &lt;strong&gt;PersonelTestTable&lt;/strong&gt; i&amp;ccedil;erisine atılması işlemidir. &amp;Ccedil;ok doğal olarak ortaya &lt;strong&gt;1200&lt;/strong&gt; satırlık &lt;strong&gt;(10 Ad X 10 Soyad X 12 Şehir)&lt;/strong&gt; veri k&amp;uuml;mesi &amp;ccedil;ıkacaktır &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_77.png" alt="Winking smile" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/artcl_4_5.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="artcl_4_5" src="/pics/artcl_4_5_thumb.gif" alt="artcl_4_5" width="421" height="265" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Eğer kombinasyon sayısını arttırırsanız kısa s&amp;uuml;rede milyonlarca satırdan oluşabilecek devasa test verileri &amp;uuml;retebilirsiniz. &amp;Ouml;rneği geliştirmek sizin elinizde &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_77.png" alt="Winking smile" /&gt;&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Bu yazımızda sadece &lt;strong&gt;5&lt;/strong&gt; &amp;ccedil;eşit &lt;strong&gt;T-SQL&lt;/strong&gt; ifadesine değindik ancak inanıyorum ki ilerleyen zamanlarda bunlara yenilerini ekliyor olacağım. &amp;Ccedil;&amp;uuml;nk&amp;uuml; bu iş &amp;ccedil;ok eğlenceli olmaya başladı. Merak işte &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_77.png" alt="Winking smile" /&gt; Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2011%2f11%2fEglencelikSQL_2.sql"&gt;EglencelikSQL_2.sql (11,65 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2012-01-01 14:06:00</pubDate>
+  <slug>T-SQL-ile-Eglenmeye-Devam(Ikinci-Devre)</slug>
+  <tags>
+    <tag>t-sql</tag>
+    <tag>transact-sql</tag>
+    <tag>sql-server</tag>
+    <tag>schema</tag>
+    <tag>function</tag>
+    <tag>temp-table</tag>
+    <tag>output</tag>
+    <tag>inserted</tag>
+    <tag>sp_msforeachdb</tag>
+    <tag>sp_executesql</tag>
+    <tag>sql-functions</tag>
+  </tags>
+  <categories>
+    <category>T SQL</category>
+  </categories>
+</post>

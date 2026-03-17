@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Transaction' larda DeadLock Kavramı</title>
+  <description>Bu makalemizde, eş zamanlı olarak çalışan Transaction' larda meydana gelebilecek DeadLock durumunu incelemeye çalışacağız. Öncelikle DeadLock teriminin ne olduğunu anlamaya çalışalım. DeadLock, aynı zamanlı çalışan Transaction' ların, belirlir satır(ları) kilitlemeleri sonucunda ortaya çıkabilecek bir durumdur.</description>
+  <content>&lt;p&gt;Değerli Okurlarım, Merhabalar.&lt;/p&gt;
+&lt;p&gt;Bu makalemizde, eş zamanlı olarak &amp;ccedil;alışan Transaction' larda meydana gelebilecek DeadLock durumunu incelemeye &amp;ccedil;alışacağız. &amp;Ouml;ncelikle DeadLock teriminin ne olduğunu anlamaya &amp;ccedil;alışalım. DeadLock, aynı zamanlı &amp;ccedil;alışan Transaction' ların, belirlir satır(ları) kilitlemeleri sonucunda ortaya &amp;ccedil;ıkabilecek bir durumdur. DeadLock terimini kavrayabilmenin en iyi yolu aşağıdaki gibi gelişebilecek bir senaryoyu zihnimizde canlandırmakla m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Bu senaryoda s&amp;ouml;z konusu olan iki tablomuz mevcuttur. Bu tablolar Sql sunucusunda Northwind veritabanı altında oluşturulmuş olup Field(alan) yapıları aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk77_1.gif" alt="" width="306" height="92" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 1. Musteriler Tablosu.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk77_2.gif" alt="" width="303" height="111" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 2. Personel Tablosu.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi senaryomuzu tasarlayalarak DeadLock kavramını anlamaya &amp;ccedil;alışalım. Her iki tabloyu ayrı ayrı kullanan ve eş zamanlı olarak &amp;ccedil;alışan iki Transaction' ımız olduğunu d&amp;uuml;ş&amp;uuml;nelim. Burada &amp;ouml;nemli olan bu iki Transaction' ın aynı anda &amp;ccedil;alışıyor olmalarıdır.&lt;/p&gt;
+&lt;table id="table1" style="width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#cccccc"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td colspan="2"&gt;&lt;strong&gt;DeadLock Senaryosu&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="12%"&gt;&lt;strong&gt;1nci Adım&lt;/strong&gt;&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="85%"&gt;Transaction 1 başlatılır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="12%"&gt;&lt;strong&gt;2nci Adım&lt;/strong&gt;&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="85%"&gt;Transaction 2 başlatılır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="12%"&gt;&lt;strong&gt; 3&amp;uuml;nc&amp;uuml; Adım&lt;/strong&gt;&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="85%"&gt;Transaction 1 Personel tablosunda PersonelID değeri 78 olan satırı kitler ve g&amp;uuml;nceller.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="12%"&gt;&lt;strong&gt; 4&amp;uuml;nc&amp;uuml; Adım&lt;/strong&gt;&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="85%"&gt;Transaction 2 Musterilre tablosunda MusteriID değeri 1000 olan satırı kitler ve g&amp;uuml;nceller.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="12%"&gt;&lt;strong&gt; 5inci Adım&lt;/strong&gt;&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="85%"&gt;Transaction 1 Musteriler tablosundaki MusteriID değeri 1000 olan satırı g&amp;uuml;ncellemek ister. Ancak, Transaction 2 bu satırı kitlediğinden, varsayılan Lock TimeOut s&amp;uuml;resi kadar bu kilidin a&amp;ccedil;ılmasını bekler. Bu s&amp;uuml;re sonuna kadar Transaction 2' nin işlemlerini onaylaması veya geri alması beklenir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#ffffff" width="12%"&gt;&lt;strong&gt;6ncı Adım&lt;/strong&gt;&lt;/td&gt;
+&lt;td bgcolor="#ffffff" width="85%"&gt;Transaction 2 Personel tablosundaki PersonelID değeri 78 olan satırı g&amp;uuml;ncellemek ister. Ancak bu durumda, Transaction 1 bu satırı kitlediğinden yine varsayılan Lock TimeOut s&amp;uuml;resi kadar bu kilidin a&amp;ccedil;ılmasını bekler. Bu s&amp;uuml;re sonuna kadar Transaction 1' in işlemlerini onaylaması veya geri alması beklenir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Bizim i&amp;ccedil;in &amp;ouml;nemli olan adımlar, 5inci ve 6ncı adımlardır. Nitekim bu adımlar eş zamanlı olarak ger&amp;ccedil;ekleştirildiklerinden, iki Transaction da birbirinin kilitlerinin a&amp;ccedil;ılmasını beklemek durumundadır. İşte bu noktada DeadLock oluşur. Nitekim s&amp;uuml;reler sona erinceye kadar herhangibir Transaciton sahip olduğu işlemleri ne onaylamış (Commit) nede geri almıştır (RollBack).Dolayısıyla Transaction' lardan birisi, varsayılan olarakta Sql sunucusuna g&amp;ouml;re en maliyetli olanı otomatik olarak RollBack edilecektir. Bu durumda bu Transaction' a ait kilitler ortadan kalktığından kalan Transaction' a ait g&amp;uuml;ncelleme işlemi tamamlanır. Ancak .net ile yazılan uygulamalarda DeadLock oluştuğunda, Transaction' lardan birisi geri alınmakla kalmaz aynı zamanda ortama bir istisna fırlatılır. Dolayısıyla DeadLock durumunda bu istisnanında ele alınması gerekirki, DeadLock sonucu &amp;ccedil;alışmaya devam eden Transaction işlemleri onaylanabilsin.&lt;/p&gt;
+&lt;p&gt;DeadLock oluşması durumunda, birbirlerini bekleyen Transaction' larda, bekleme s&amp;uuml;relerini ayarlayabilir ve hangi Transaction' ın daha &amp;ouml;nce RollBack edilmesi gerektiğine karar verebiliriz. Bunun i&amp;ccedil;in, T-Sql' in LOCK_TIMEOUT ve DEADLOCK_PRIORITY anahtar s&amp;ouml;zc&amp;uuml;kleri kullanılır. Bir Transaction' ın başka bir Transaction' da oluşan kilidi ne kadar s&amp;uuml;re ile beklemesi gerektiğini belirtmek i&amp;ccedil;in aşağıdaki gibi bir sql c&amp;uuml;mleciği kullanılır.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;SET LOCK_TIMEOUT 3000&lt;/pre&gt;
+&lt;p&gt;Burada LOCK_TIMEOUT değeri 3 saniye (3000 milisaniye) olarak belirtilmiştir. Diğer yandan, bir Transaction i&amp;ccedil;in DeadLock &amp;ouml;nceliğini aşağıdaki gibi bir sql c&amp;uuml;mleciği ile belirtebiliriz.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;SET DEADLOCK_PRIORITY LOW&lt;/pre&gt;
+&lt;p&gt;Bu sql c&amp;uuml;mleciğini kullanan komutun &amp;ccedil;alıştığı Transaction, DeadLock oluşması durumunda, ilk olarak RollBack edilecek Transaction olacaktır. DEADLOCK_PRIORITY anahtar s&amp;ouml;zc&amp;uuml;ğ&amp;uuml;n&amp;uuml;n alabileceği diğer değerde NORMAL dir. Bu durumda, Transaction' lardan en maliyetli olanı RollBack edilir. DEADLOCK_PRIORITY i&amp;ccedil;in varsayılan değer NORMAL olarak belirlenmiştir. Şimdi dilerseniz DeadLock oluşmasını daha iyi izleyebileceğimiz bir &amp;ouml;rnek geliştirmeye &amp;ccedil;alışalım. Bu durumu simule edebilmek i&amp;ccedil;in, aynı anda &amp;ccedil;alışan Transaction iş par&amp;ccedil;alarına ihtiyacımız olacak. Yani DeadLock senaryosunda belirtmiş olduğumuz g&amp;uuml;ncelleme işlemlerinin aynı zamanda &amp;ccedil;alışıyor olması gerekli. Bunu sağlayabilmek i&amp;ccedil;in bu g&amp;uuml;ncelleme işlemlerini birer Thread i&amp;ccedil;inde &amp;ccedil;alıştıracağız. Uygulamamız basit bir Console Application olacak. Şimdi aşağıdaki uygulama kodlarını oluşturalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Data;
+using System.Data.SqlClient;
+using System.Threading;
+
+namespace DeadLockTest
+{
+    class Deadlock
+    {
+        /* Iki ayri Transaction i&amp;ccedil;in iki ayri SqlConnection nesnesi olusturuyoruz. Bununla birlikte, iki Transaction i&amp;ccedil;indeki komutlari icra edecek iki adet SqlCommand nesnesi ve Transactionlar i&amp;ccedil;inde iki adet SqlTransaction nesnesi tanimliyoruz.*/
+        public static SqlConnection conT1 =new SqlConnection("server=localhost;database=Northwind;integrated security=SSPI");
+        public static SqlConnection conT2 =new SqlConnection("server=localhost;database=Northwind;uid=sa;integrated security=SSPI");
+        public static SqlCommand cmdT1;
+        public static SqlCommand cmdT2;
+        public static SqlTransaction T1;
+        public static SqlTransaction T2;
+
+        /* Bu metod, Personel tablosunda g&amp;uuml;ncelleme islemini yapiyor. Komut, conT1 SqlConnection' i &amp;uuml;zerinden, T1 isimli SqlTransaction' da &amp;ccedil;alisacak sekilde olusturuluyor. Sonra bu komut y&amp;uuml;r&amp;uuml;t&amp;uuml;l&amp;uuml;yor. Metod deadlock senaryomuzun 3nc&amp;uuml; adimini ger&amp;ccedil;eklestiriyor.*/
+        public static void GuncellePersonelT1()
+        {
+            Console.WriteLine("PersonelID=78 olan satirdaki PersonelAd alaninin degeri DENEME yapiliyor...");
+            cmdT1=new SqlCommand("UPDATE Personel SET PersonelAd = 'DENEME' WHERE PersonelID = 78", conT1,T1);
+            int sonuc = cmdT1.ExecuteNonQuery();
+            Console.WriteLine(sonuc+" guncellendi. PersonelAd = DENEME yapildi.");
+        }
+
+        /* Bu metod ile DeadLock senaryomuzun 4nc&amp;uuml; adimi ger&amp;ccedil;eklestiriliyor.*/
+        public static void GuncelleMusterilerT2()
+        {
+            Console.WriteLine("MusteriID=1000 olan satirdaki MusteriMail alaninin degeri DENEME@DENEME.COM yapiliyor...");
+            cmdT2=new SqlCommand("UPDATE Musteriler SET MusteriMail = 'DENEME@DENEME.COM' WHERE MusteriID = 1000",conT2,T2);
+            int sonuc = cmdT2.ExecuteNonQuery();
+            Console.WriteLine(sonuc+" guncellendi. MusteriMail = DENEME@DENEME.COM yapildi.");
+        }
+
+        /* Bu metod ile DeadLock senaryomuzun 5nci adimi ger&amp;ccedil;eklestiriliyor.*/
+        public static void GuncelleMusterilerT1()
+        {
+            Console.WriteLine("MusteriID=1000 olan satirdaki MusteriMail alaninin degeri MAIL@MAIL.COM yapiliyor...");
+            cmdT1 =new SqlCommand("UPDATE Musteriler SET MusteriMail = 'MAIL@MAIL.COM' WHERE MusteriID = 1000",conT1,T1);
+            int sonuc = cmdT1.ExecuteNonQuery();
+            Console.WriteLine(sonuc+" guncellendi. MusteriMail = MAIL@MAIL.COM yapildi.");
+        }
+
+        /* Bu metod ilede DeadLock senaryomuzun 6nci adimi ger&amp;ccedil;eklestiriliyor.*/
+        public static void GuncellePersonelT2()
+        {
+            Console.WriteLine("PersonelID=78 olan satirdaki PersonelAd alaninin degeri ISIM yapiliyor...");
+            cmdT2=new SqlCommand("UPDATE Personel SET PersonelAd = 'ISIM' WHERE PersonelID = 78", conT2,T2);
+            int sonuc = cmdT2.ExecuteNonQuery();
+            Console.WriteLine(sonuc+" guncellendi. PersonelAd = ISIM yapildi.");
+        }
+
+        public static void Main()
+        {
+            /* Baglantimiz a&amp;ccedil;iliyor ve ilk transaction baslatiliyor. Ardinan bu Transaction i&amp;ccedil;in LOCK_TIMEOUT degeri belirlenerek, kilitlerin ne kadar s&amp;uuml;re ile beklenecegini belirten sql komutu &amp;ccedil;alistiriliyor. S&amp;uuml;re olarak 3 saniye veriliyor.*/
+            conT1.Open();
+            T1 = conT1.BeginTransaction();
+            cmdT1 = conT1.CreateCommand();
+            cmdT1.Transaction = T1;
+            cmdT1.CommandText = "SET LOCK_TIMEOUT 3000";
+            cmdT1.ExecuteNonQuery();
+
+            /* Ikinci transaction i&amp;ccedil;in gerekli baglanti a&amp;ccedil;iliyor, transaction baslatiliyor ve LOCK_TIMEOUT s&amp;uuml;resi 3 saniye olarak belirleniyor.*/
+            conT2.Open();
+            T2 = conT2.BeginTransaction();
+            cmdT2 = conT2.CreateCommand();
+            cmdT2.Transaction = T2;
+            cmdT2.CommandText = "SET LOCK_TIMEOUT 3000";
+            cmdT2.ExecuteNonQuery();
+
+            /* Izleyen sql c&amp;uuml;mlecigi ile, DeadLock_Priority degeri LOW olarak belirleniyor. Yani, bir deadLock olusmasi durumunda, cmdT2 nin i&amp;ccedil;inde &amp;ccedil;alistigi Transaction RollBack edilecektir.*/
+            cmdT2.CommandText = "SET DEADLOCK_PRIORITY LOW";
+            cmdT2.ExecuteNonQuery();
+
+            /*DeadLock senaryomuzdaki update işlemelerini ger&amp;ccedil;ekleştirecek olan metodlarımız i&amp;ccedil;in Thread nesneleri oluşturuluyor ve daha sonra bu Thread'ler başlatılıyor.*/
+            Thread Thread1 = new Thread(new ThreadStart(GuncellePersonelT1));
+            Thread Thread2 = new Thread(new ThreadStart(GuncelleMusterilerT2));
+            Thread Thread3 = new Thread(new ThreadStart(GuncelleMusterilerT1));
+            Thread Thread4 = new Thread(new ThreadStart(GuncellePersonelT2));
+
+            Thread1.Start();
+            Thread2.Start();
+            Thread3.Start();
+            Thread4.Start();
+
+            Console.ReadLine();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk77_3.gif" alt="" width="639" height="278" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Şekil 3. Programın &amp;Ccedil;alışmasının Sonucu.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Uygulamayı &amp;ccedil;alıştırdığımızda, ilk Thread ve ikinci Thread' ler i&amp;ccedil;inde y&amp;uuml;r&amp;uuml;t&amp;uuml;len update işlemlerinin ger&amp;ccedil;ekleştirildiğini g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Daha sonra &amp;uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; Thread i&amp;ccedil;in g&amp;uuml;ncelleme işlemi yapılırken, bu Thread' in &amp;ccedil;alıştığı Transaction 3 saniye s&amp;uuml;reyle diğer Transaction' daki kilidin a&amp;ccedil;ılmasını bekleyecektir. S&amp;uuml;re sonunda kilit halen daha a&amp;ccedil;ılmamış olacağından (ki kilidin a&amp;ccedil;ılması Commit veya RollBack işlemini gerektirir. ) DEADLOCK_PRIORITY değeri LOW olarak belirlenen ikinci Transaction RollBack edilecektir. Bununla birlikte SqlException t&amp;uuml;r&amp;uuml;nden bir istisna da ortama fırlatılır. Bu istisnada bir DeadLock oluştuğu ve prosesler i&amp;ccedil;inde &amp;ccedil;alışan Transaction' lardan birisininde kurban edileceği belirtilir. Elbette burada istisnayı kontrol etmediğimiz i&amp;ccedil;in her iki Transaction i&amp;ccedil;indeki işlemler RollBack edilecektir. Ana amacımız, DeadLock senaryosunun ne zaman ger&amp;ccedil;ekleşeceği ve neler olacağıdır. B&amp;ouml;ylece DeadLock durumunun nasıl oluştuğunu ve nelere yol a&amp;ccedil;tığını &amp;ccedil;ok kısa ve basit olarak incelemeye &amp;ccedil;alıştık. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;şmek dileğiyle hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2004-07-07 12:00:00</pubDate>
+  <slug>Transaction-larda-DeadLock-Kavramc4b1-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>adonet</tag>
+    <tag>transactions</tag>
+    <tag>deadlock</tag>
+  </tags>
+  <categories>
+    <category>Ado.Net</category>
+  </categories>
+</post>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>AWS Lambda Üzerinde .Net Core Koşturmak</title>
+  <description>Bu yazımızda Amazon Web Service'lerinden Lambda ürününü kullanmaya çalışıyoruz. Geliştireceğimiz basit bir Asp.Net Core Web API hizmetini Lambda üzerine fonksiyon olarak yerleştiriyoruz.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2017/12/awscore_11.gif" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;ok yeni bir d&amp;uuml;nyanın i&amp;ccedil;erisindeyiz uzun zamandır. Cloud Computing ile başladı. C#'ın Linux, MacOSX &amp;uuml;zerinde &amp;ccedil;alıştığına şahit olurken, React Native'ın d&amp;uuml;nyayı sarsan y&amp;uuml;kselişine tanık olduk. Oysa ki daha bir s&amp;uuml;re &amp;ouml;ncesine kadar Scrum metodolojilerine alışmaya &amp;ccedil;alışıyor, TFS'e nasıl plug-in yazarıza bakıyorduk. &amp;Uuml;niversite yıllarımızda internet bağlantısı bile olmayan&amp;nbsp;bilgisayarlarda&amp;nbsp;yazdığımız fakt&amp;ouml;ryel hesaplama fonksiyonlarını, doğrudan sahibi olmadığımız Quantum bilgisayarlara yaptırmak i&amp;ccedil;in Serverless sistemlerden yararlanabileceğimiz bir d&amp;uuml;nya s&amp;ouml;z konusu artık. Şirketin hantallaşan iş alanlarını birer microservice haline getirip docker &amp;uuml;zerinden host ettiğimiz gezegenler&amp;nbsp;var artık. &amp;Ccedil;ok hızlı dediğimiz Apache&amp;nbsp;sunucularının yerini alan NGinx'e bakarken IIS'i unutup gidiyoruz belki de. Gelişiyoruz, değişiyoruz...Ve bu ikisini s&amp;uuml;rekli yapıyoruz. Adapte olmak zorundayız.&lt;/p&gt;
+&lt;p&gt;Konumuz Serverless, AWS Lambda ve .Net Core.&lt;/p&gt;
+&lt;p&gt;G&amp;uuml;n&amp;uuml;m&amp;uuml;z bulut sistemleri g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında Microsoft Azure, Amazon Web Services ve Google Cloud Platform&amp;nbsp;ilk aklımıza gelen&amp;nbsp;&amp;uuml;r&amp;uuml;nler oluyorlar sanıyorum ki. Neredeyse tamamının serverless olarak&amp;nbsp;bildiğimiz yetenekleri de bulunuyor ki son yılın belki de en moda kavramlarından birisi bu. Kısaca Backend As A Services(BaaS) ya da Function As A Services(FaaS) şeklinde anılan Serverless teknolojisini halen daha anlamaya &amp;ccedil;alışıyorum. İşin aslı bu yeni yaklaşımdaki ama&amp;ccedil;, elimizdeki&amp;nbsp;iş fonksiyonelliklerini sunucuların bakım, &amp;ouml;l&amp;ccedil;ekleme gibi ihtiya&amp;ccedil;larını d&amp;uuml;ş&amp;uuml;nmeden s&amp;uuml;rekli dağıtım &amp;ccedil;arkının i&amp;ccedil;erisine kolayca dahil edebilmek, hizmette oldukları s&amp;uuml;re boyunca parasını &amp;ouml;demek, b&amp;ouml;ylece maliyetlerimizi m&amp;uuml;mk&amp;uuml;n olduğunca azaltmak.&lt;/p&gt;
+&lt;p&gt;Araştırmalarım şiddetini arttırınca gecenin bu saatlerinde internetten okuduğum bir yazıdaki şekli de aşağıdaki gibi renklendirmeye &amp;ccedil;alıştım. Şekil bir Web API uygulamasını AWS &amp;uuml;zerine aldığımızda&amp;nbsp;bilinen kullanımıyla yeni yaklaşım arasında&amp;nbsp;nasıl bir fark oluştuğunu betimlemekte.&amp;nbsp;Kullanıcı talepleri &amp;ouml;nce Amazon Web Service &amp;uuml;zerindeki API Gateway'e geliyor. Talepler, Lambda &amp;uuml;zerinden ge&amp;ccedil;erek .Net Core'un &amp;ccedil;alışma zamanına inip oradan ilgili fonksiyonun işletilmesi, &amp;uuml;retilen cevabın da geriye d&amp;ouml;nd&amp;uuml;r&amp;uuml;lmesi işlemleri ger&amp;ccedil;ekleşiyor. &amp;Ouml;zetle tanıdık olduğum senaryolardaki IIS ve NGinX gibi talebi karşılayan uygulamaların yerini AWS alıyor diyebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/12/awscore_9.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;AWS Lambda uzun zamandır ilgimi &amp;ccedil;eken bir &amp;uuml;r&amp;uuml;nd&amp;uuml;. Nitekim &amp;ccedil;ok geniş bir uygulama desteği bulunuyor. Node Js, Python, Go, Ruby ve tabii .Net Core&lt;em&gt;(Tek &amp;uuml;z&amp;uuml;c&amp;uuml; olan şey konuya hazırlandığım 2017 Aralık ayı itibariyle AWS'nin .Net Core 1.0.4 SDK'sını desteklemesiydi)&lt;/em&gt;&amp;nbsp;&amp;Ouml;n&amp;uuml;m&amp;uuml;zdeki aylar i&amp;ccedil;in yapılacaklar listeme eklediğim &amp;ouml;devlerden birisi de&amp;nbsp;.Net Core ile yazdığım bir uygulamayı Lambda &amp;uuml;zerinden yayınlamaktı.&lt;/p&gt;
+&lt;p&gt;Temelde AWS &amp;uuml;zerinde 3&amp;nbsp;modelde uygulama geliştirebiliriz. Plain Lambda Function, Serverless Application ve Asp.Net Core App as Serverless Application&lt;em&gt;(&amp;Ccedil;izim buna ait)&lt;/em&gt;&amp;nbsp;Plain Lambda Function modeli ile bir C# sınıfının fonksiyonlarını AWS &amp;uuml;zerinden tetiklenebilir hale getiriyoruz. İkinci modelde, yazılan uygulamanın API Gateway arkasında &amp;ccedil;alışacak şekilde CloudFormation&lt;em&gt;(YAML veya JSON formatında belli bir şablon kuralına g&amp;ouml;re taşımaya ait bilgileri yazdığımız dil olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir)&lt;/em&gt; kullanılarak taşınması s&amp;ouml;z konusu. Son modelde ise Asp.Net Core uygulamasının tek bir Lambda fonksiyonu haline getirilerek AWS &amp;uuml;zerine taşınması s&amp;ouml;z konusu. Bu durumda API Gateway bir Proxy g&amp;ouml;revini &amp;uuml;stleniyor diyebiliriz.&amp;nbsp;Benim bu yazıdaki amacım ise bir Handler sınıfı ve i&amp;ccedil;erisindeki fonksiyonları Lambda &amp;uuml;zerine taşımak.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Serverless yaklaşımı ile ilgili olarak iki yakın arkadaşımın harika birer yazısı var. Deniz İrgin'in "Sunucusuz Bir D&amp;uuml;nya M&amp;uuml;mk&amp;uuml;n m&amp;uuml;?" yazısına &lt;a href="https://medium.com/codefiction/serverless-architecture-sunucusuz-bir-d%C3%BCnya-m%C3%BCmk%C3%BCn-m%C3%BC-f7abab6ea0c8" target="_blank"&gt;bu adresten&lt;/a&gt;, Arda &amp;Ccedil;etinkaya'nın da "Nedir bu Serverless?" isimli makalesine &lt;a href="http://www.minepla.net/2016/09/nedir-bu-serverless/" target="_blank"&gt;şu adresten&lt;/a&gt; ulaşabilirsiniz.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Pek tabii her şeyin başında AWS'de bir hesap&amp;nbsp;a&amp;ccedil;mak gerekiyor. Bu hesap a&amp;ccedil;ma işlemi sırasında sizden bir de kredi kartı istenecek&lt;em&gt;(Ne yazık ki)&lt;/em&gt; Free Plan'ı se&amp;ccedil;meniz benimki gibi demo uygulamalarınız i&amp;ccedil;in yeterli olacaktır. Kritik noktalardan birisi AWS hesabını a&amp;ccedil;tıktan sonra Identity and Access Management kısmından bir kullanıcı&amp;nbsp;oluşturmamızın gerekliliği. Bu kullanıcıyı &amp;ccedil;eşitli yetkiler&amp;nbsp;ile donattıktan sonra&lt;em&gt;(Genelde Administrator olarak)&lt;/em&gt; bir Application ID ve Secret Key değeri &amp;uuml;retilecek. Bu değeleri serverless&lt;em&gt;(biraz sonra değineceğim)&amp;nbsp;&lt;/em&gt;&amp;ccedil;atısına aşağıdaki komutlar ile bildirmek gerekiyor ki taşıma&lt;em&gt;(Deployment)&lt;/em&gt;&amp;nbsp;işlemleri sırasında AWS tarafındaki authenticate adımları başarılı sonu&amp;ccedil;lansın.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;serverless config credentials --provider aws --key Key_Değeri_Gelecek --secret Secret_Key_Değeri_Gelecek&lt;/pre&gt;
+&lt;p&gt;&lt;a href="https://serverless.com/framework/" target="_blank"&gt;Serverless&lt;/a&gt;, Node.js ile yazılmış olan bir CLI&lt;em&gt;(Command Language Interface)&lt;/em&gt; aracı. Bu aracı kullanarak AWS Lambda tarafında uygulama geliştirme ve taşıma gibi &amp;ccedil;eşitli operasyonları ger&amp;ccedil;ekleştirebiliriz. Bu benim i&amp;ccedil;in olduk&amp;ccedil;a ideal bir yaklaşım. Nitekim West-World &amp;uuml;zerinde Visual Studio bulunmuyor&lt;em&gt;(Bu sene sadece Visual Studio Code kullanacağım)&lt;/em&gt; Dolayısıyla AWS Lambda uygulamaları i&amp;ccedil;in gerekli hazır proje şablonlarını y&amp;uuml;kleyebileceğim bir ortam yok. Ama CLI &amp;uuml;zerinden serverless &amp;ccedil;atısını kullanarak gerekli geliştirmeleri pekala yapabilirim.&amp;nbsp;İlk etapta&amp;nbsp;Nodejs'in son s&amp;uuml;r&amp;uuml;m&amp;uuml;n&amp;uuml;n y&amp;uuml;kl&amp;uuml; olması gerektiğini s&amp;ouml;ylemeliyim. Bu y&amp;uuml;zden aşağıdaki komutlar ile Nodejs'i sisteme y&amp;uuml;klemek gerekiyor.&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+sudo apt-get install -y nodejs&lt;/pre&gt;
+&lt;p&gt;Y&amp;uuml;klemenin ardından aşağıdaki komut ile serverless &amp;ccedil;atısını sisteme kurabiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo npm install serverless -g&lt;/pre&gt;
+&lt;p&gt;Eğer her şey yolunda giderse aşağıdaki komutların sonucu olarak versiyon numarasını ve create komutu ile kullanabileceğimiz şablonları g&amp;ouml;rebilmemiz gerekir.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;serverless --version
+serverless create --help&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/12/awscore_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Serverless &amp;ccedil;atısının başarılı bir şekilde y&amp;uuml;klenmesinin ardından ben, hellolambda isimli bir klas&amp;ouml;r oluşturdum ve sonrasında i&amp;ccedil;erisinde aşağıdaki&amp;nbsp;komutu &amp;ccedil;alıştırarak Lambda d&amp;uuml;nyasına "Hello World" dedim.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;serverless create --template aws-csharp --name bssdemo&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/12/awscore_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Ekran g&amp;ouml;r&amp;uuml;t&amp;uuml;s&amp;uuml;nden de g&amp;ouml;r&amp;uuml;leceği &amp;uuml;zere C# i&amp;ccedil;in bir şablon otomatik olarak oluşturuldu. Buradaki Handler.cs, serverless.yml gibi i&amp;ccedil;erikler hi&amp;ccedil; bozulmadan AWS'deki hesabımız ile ilişkilendirilip kullanılabilirler. Handler sınıfı i&amp;ccedil;erisinde Hello isimli bir metod yer almakta. Bu metod Lambda tarafındaki fonksiyon olarak da d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir.&amp;nbsp;Kabaca&amp;nbsp;API Gateway'e gelecek olan talep sonrası işletilecek fonksiyon olduğunu s&amp;ouml;yleyebiliriz. Peki "Hello" isimli fonksiyonu sistem nereden bilecek? İşte serverless.yml i&amp;ccedil;erisindeki aşağıdaki kısım burada devreye giriyor.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;functions:
+  hello:
+    handler: CsharpHandlers::AwsDotnetCsharp.Handler::Hello&lt;/pre&gt;
+&lt;p&gt;Tahmin edeceğiniz &amp;uuml;zere Handler sınıfının kendisinin de i&amp;ccedil;erisindeki fonksiyonun da adını değiştirebilir hatta n sayıda fonksiyonu sisteme dahil edebiliriz. Birden fazla handler'da burada s&amp;ouml;z konusu olabilir. İşin sırrı YAML i&amp;ccedil;eriğinde gizli&lt;em&gt;(Biraz sonra değiştireceğiz)&lt;/em&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Tam build işlemlerine başlamıştım ki bir hatayla karşılaştım. global.json dosyasındaki SDK versiyonu 1.0.4&amp;uuml; g&amp;ouml;steriyordu. West-World ise .Net Core'un 2.0 versiyonunu kullanıyordu. Dolayısıyla AWS'nin şu an desteklediği .Net Core 1.0.4 SDK'sı makinede y&amp;uuml;kl&amp;uuml; değildi. Hemen bu versiyonu y&amp;uuml;klemeye karar verdim. Ama endişelerim de vardı. Ya 2.0.0 ortamı bozulursa?!&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo apt-get install dotnet-dev-1.0.4&lt;/pre&gt;
+&lt;p&gt;Bu komutla sisteme .Net Core 1.0.4 ortamını da y&amp;uuml;klemiş oldum. Sonrasında paketi y&amp;uuml;klemeyi tekrar denedim. Bulunduğum klas&amp;ouml;r itibariyle dotnet aracı .Net Core 1.0.4'ı dikkate almaya başlamıştı&lt;em&gt;(Bu arada build ve restore işlemlerinde .Net 1.0'ın 2.0'a g&amp;ouml;re acayip yavaş olduğunu belirtmek isterim)&lt;/em&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Derken ilk deploy işlemi sırasında "ServerlessError: The security token included in the request is invalid." şeklinde bir hata aldım. Sorun AWS hesabıma ait Credential bilgilerinin makinem i&amp;ccedil;in ayarlanmamasından kaynaklanıyormuş&lt;em&gt;(Thanks a lot Stackoverflow)&lt;/em&gt;&amp;nbsp;Bunun &amp;uuml;zerine &amp;ouml;nce aşağıdaki komutlarla gerekli kayıt işlemlerini ger&amp;ccedil;ekleştirdim&lt;em&gt;(Siyah ile boyalı kısımları s&amp;ouml;ylemicim)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;export AWS_ACCESS_KEY_ID=application_id gelecek
+export AWS_SECRET_ACCESS_KEY=Secret_key gelcek
+serverless deploy&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/12/awscore_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Sonrasında tekrardan build ve deploy işlemlerini ger&amp;ccedil;ekleştirdim.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sh build.sh
+serverless deploy -v&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/12/awscore_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bir yerlere varıyor gibiydim. K&amp;uuml;&amp;ccedil;&amp;uuml;k bir deneme yaptım. serverless &amp;ccedil;atısının invoke fonksiyonunu kullanarak şablon ile birlikte gelen hello operasyonunu &amp;ccedil;ağırmayı denedim. Aşağıdaki gibi.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;serverless invoke -f hello -l&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/12/awscore_5.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Sanki uygulama Lambda &amp;uuml;zerinden &amp;ccedil;alıştırılmış gibiydi. Bu tabii standart şablon uygulaması. Değiştirmekte yarar var. &amp;Ouml;ncelikle HTTP taleplerine cevap vermesi i&amp;ccedil;in Amazon.Lambda. APIGatewayeEvents paketinin&amp;nbsp;&amp;ccedil;&amp;ouml;z&amp;uuml;me dahil edilmesi gerekiyor. Aşağıdaki komut ile bu işlemi yapabiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet add package Amazon.Lambda.APIGatewayEvents -v:"1.1.0"&lt;/pre&gt;
+&lt;p&gt;Sonrasında Handler.cs&amp;nbsp;dosyasının hem adını hem de i&amp;ccedil;eriğini aşağıdaki gibi değiştirdim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using Amazon.Lambda.Core;
+using Amazon.Lambda.APIGatewayEvents;
+using System;
+using System.Net;
+using System.Collections.Generic;
+
+[assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]
+namespace AwsDotnetCsharp
+{
+    public class SampleHandler
+    {
+        public APIGatewayProxyResponse GetGreetingsMessage(APIGatewayProxyRequest request, ILambdaContext context)
+        {
+            var response = new APIGatewayProxyResponse
+            {
+                StatusCode = (int)HttpStatusCode.OK,
+                Body = "{ \"Motto \": \"Merhaba ahbap. Nasıl gidiyor bakalım? :)\" }",
+                Headers = new Dictionary&amp;lt;string, string&amp;gt; { { "Content-Type", "application/json" } }
+            };
+
+            return response;
+        }
+
+        public APIGatewayProxyResponse GetLocalWeatherCondition(APIGatewayProxyRequest request, ILambdaContext context)
+        {
+            var response = new APIGatewayProxyResponse
+            {
+                StatusCode = (int)HttpStatusCode.OK,
+                Body = "{ \"Weather \": \"Sıcaklık 29 Derece. Hava g&amp;uuml;neşli\" }",
+                Headers = new Dictionary&amp;lt;string, string&amp;gt; { { "Content-Type", "application/json" } }
+            };
+
+            return response;
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;SampleHandler sınıfı i&amp;ccedil;erisinde iki fonksiyon yer almakta. Yaptıkları &amp;ccedil;ok &amp;ouml;nemsiz. Ancak parametreleri ve d&amp;ouml;n&amp;uuml;ş tiplerine dikkat etmek lazım. Her ikisi de HTTP Get taleplerine cevap verip JSON formatında i&amp;ccedil;erik d&amp;ouml;nd&amp;uuml;rmekteler. Tabii eklenen bu iki fonksiyon i&amp;ccedil;in dağıtım&amp;nbsp;kanalına da bilgi vermemiz gerekiyor. Bunun i&amp;ccedil;in de yml i&amp;ccedil;eriğini aşağıdaki gibi d&amp;uuml;zenledim &lt;em&gt;(service: bssdemo aslında benim AWS &amp;uuml;zerinden oluşturduğum&amp;nbsp;bucket'a verdiğim ad. Geliştireceğimiz .Net uygulamasını bu hizmetin olduğu yerde konuşlandıracağız)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;service: bssdemo
+
+provider:
+  name: aws
+  runtime: dotnetcore1.0
+
+package:
+  artifact: bin/release/netcoreapp1.0/deploy-package.zip
+
+functions:
+  greetings:
+    handler: CsharpHandlers::AwsDotnetCsharp.SampleHandler::GetGreetingsMessage
+
+    events:
+      - http:
+          path: greetings/hi
+          method: get
+
+  utility:
+    handler: CsharpHandlers::AwsDotnetCsharp.SampleHandler::GetLocalWeatherCondition
+
+    events:
+      - http:
+          path: utility/weather
+          method: get&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;(yml i&amp;ccedil;eriğindeki girintiler olduk&amp;ccedil;a &amp;ouml;nemlidir. Ben weather i&amp;ccedil;in yazdığım path ifadesini http ile aynı hizaya koyduğumda, serverless aracı ilgili path sekmesini bulamadığını s&amp;ouml;yledi)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;sevice, provider, package ve functions. AWS &amp;ouml;zellikle bu kısımlara bakacak. provider tarafında aws ve .Net Core 1.0 kullanılacağı belirtiliyor. package tarafında build işlemi sonrası oluşan artifact işaret edilmekte. functions kısmında hangi operasyonları sunacaksak onlara ait bilgiler bulunuyor. handler'lar tip ve metod adlarını ifade ederken http sonrası gelen bilgiler de URL'in şekillenmesi i&amp;ccedil;in. get bildirimi tahmin edeceğiniz &amp;uuml;zere talebin HTTP Get olacağını belirtmekte.&lt;/p&gt;
+&lt;p&gt;Kodun d&amp;uuml;zenlenmesini tamamladıktan sonra tekrardan build ve deploy işlemlerini ger&amp;ccedil;ekleştirmek lazım. Aslında n tane fonksiyona yeni bir fonksiyon eklediysek sadece bu fonksiyonu deploy edebiliriz de&lt;em&gt;(Nasıl olabilir bir araştırın bakalım)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/12/awscore_6.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Artık API Gateway'in tetikleyeceği iki Lambda fonksiyonu s&amp;ouml;z konusu. Doğruyu s&amp;ouml;ylemek gerekirse Postman aracı ile denemeleri yaptığımda g&amp;ouml;rd&amp;uuml;ğ&amp;uuml;m sonu&amp;ccedil;lar beni mutlu etti.&lt;/p&gt;
+&lt;p&gt;İlk &amp;ouml;nce greetings/hi adresine HTTP Get talebi g&amp;ouml;nderdim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/12/awscore_7.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Ardından utility/weather i&amp;ccedil;in bir talep daha.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/12/awscore_8.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Sonu&amp;ccedil;lar tatmin ediciydi. Daha &amp;ouml;nceden yazdığımız bir &amp;ccedil;ok Web API'yi buraya entegre edebiliriz diye d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum. Pek tabii fonksiyonlar tamamen deneme ama&amp;ccedil;lı geliştirilmiş durumdalar. Siz i&amp;ccedil;eriklerini istediğiniz gibi genişletebilirsiniz. AWS d&amp;uuml;nyası olduk&amp;ccedil;a kapsamlı. Hen&amp;uuml;z MSDN rahatlığını bulabilmiş değilim d&amp;ouml;k&amp;uuml;mantasyonlarında. Bazen kayboluyorum ama ilgi &amp;ccedil;ekici olduğunu da ifade edebilirim. Kavramlar yeni yeni oturmaya başladılar. &lt;a href="http://www.codefiction.tech/" target="_blank"&gt;Codefiction&lt;/a&gt; gibi web sitenizi AWS &amp;uuml;zerine alabilirisiniz ya da şirketinizin elektronik ticaret alt yapısına ait fonksiyonellikleri burada barındırabilirsiniz. Bunları bir d&amp;uuml;ş&amp;uuml;n&amp;uuml;n :) B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2018-01-11 21:30:00</pubDate>
+  <slug>AWS-Lambda-Uzerinde-Net-Core-Kosturmak</slug>
+  <tags>
+    <tag>aws</tag>
+    <tag>amazon-web-services</tag>
+    <tag>serverless</tag>
+    <tag>net-core</tag>
+    <tag>aspnet-core</tag>
+    <tag>aspnet-core-web-api</tag>
+    <tag>web-api</tag>
+  </tags>
+  <categories>
+    <category>.Net Core</category>
+    <category>AWS</category>
+  </categories>
+</post>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Bilmiyordum, Öğrendim : SQL Merge</title>
+  <description>Gün geçmiyor ki çevremdeki insanlardan yeni bir şey daha öğrenmeyeyim. İş yerindeki sıkıcı sayılabilecek SQL sorguları arasında gezinirken takım arkadaşım Mustafa'nın bir önerisi üzerine SQL Merge komutunu araştırmaya başladım. 2008den beri var olan benim bihaber olduğum bu komutu öğrenirken keyifli anlar yaşadım. Normalde çok kötü bir SQLciyimdir ama Merge komutunu uygulamalı olarak denedikten sonra şirketteki o kallavi sorgunun hem daha da hızlandığını hem de daha okunur hale geldiğini gördüm. Sonunda konuyu kaleme alıp paylaşmanın iyi olacağını fark ettim. Haydi gelin başlayalım.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2018/11/sqlmerge_0.jpg" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;G&amp;uuml;n ge&amp;ccedil;miyor ki &amp;ccedil;evremdeki insanlardan yeni bir şeyler daha &amp;ouml;ğrenmeyeyim. Bug&amp;uuml;n o g&amp;uuml;nlerden biriydi...&lt;/p&gt;
+&lt;p&gt;İş yerinde elimizin her an &amp;uuml;zerinde olabileceği binlerce SQL nesnemiz var. Tablolar, fonksiyonlar, sp'ler... Bazen iş biriminden gelen istekler doğrultusunda onlara m&amp;uuml;dahale etmemiz veya yenilerini yazmamız gerekiyor. Sorun şu ki 2000li yılların başından kalan ve yorum satırlarına bakıldığında &amp;uuml;zerinden bir &amp;ccedil;ok geliştiricinin ge&amp;ccedil;tiği spl'lerimiz var. Bazen&amp;nbsp;buradaki kalabalık sorgular arasında samanlıkta iğne ararcasına sorun &amp;ccedil;&amp;ouml;zmeye &amp;ccedil;alıştığımız oluyor. &amp;Ccedil;ok motive edici bir durum değil takdir ederseniz ki. Ş&amp;uuml;k&amp;uuml;r ki alanlarında yetkin ekip arkadaşlarımız var ve yeri geldiği zaman s&amp;ouml;yledikleri ufak bir ipucu ile hayatımızı kolaylaştırıyorlar &lt;em&gt;(ki bu etkili yardımlaşmada agile metodolojide koşan bir takım olmamızın da b&amp;uuml;y&amp;uuml;k etkisi var)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;İşte ge&amp;ccedil;enlerde &amp;ccedil;ok uzun s&amp;uuml;rd&amp;uuml;ğ&amp;uuml; i&amp;ccedil;in sorun yaratan bir sp&lt;em&gt;(Stored Procedure)&lt;/em&gt; ile cebelleşirken değerli&amp;nbsp;bir yardım geldi.&amp;nbsp;Ekip arkadaşımın&amp;nbsp;bir &amp;ouml;nerisi &amp;uuml;zerine kendimi SQL Merge komutunu araştırırken/&amp;ouml;ğrenirken buldum. 2008den beri var olan benim bihaber olduğum bu komutu &amp;ouml;ğrenirken keyifli anlar da yaşadım. Normalde &amp;ccedil;ok k&amp;ouml;t&amp;uuml; bir SQLciyimdir ama Merge komutunu uygulamalı olarak denedikten sonra şirketteki o kallavi sorgunun hem daha da hızlandığını hem de daha okunur hale geldiğini g&amp;ouml;rd&amp;uuml;m. Sonunda konuyu kalem alıp paylaşmanın iyi olacağını fark ettim. Hem kendim i&amp;ccedil;in kayıt altına almış hem de yazıp &amp;ccedil;izerek konuyu daha iyi &amp;ouml;ğrenmiş olmam da &amp;ouml;d&amp;uuml;l&amp;uuml;m olacak tabii. Dilerseniz vakit kaybetmeden konumuza ge&amp;ccedil;elim. Başlangı&amp;ccedil; i&amp;ccedil;in aşağıdaki veri i&amp;ccedil;eriklerine sahip iki tablomuz olduğunu d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;p&gt;&lt;span style="text-decoration: underline;"&gt;Kaynak tablo i&amp;ccedil;eriği(Book)&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;BookID      Title                                              ListPrice             StockLevel
+----------- -------------------------------------------------- --------------------- ----------
+1           Clean Architecture                                 34,55                 5
+2           Clean Code                                         20,00                 5
+3           Anti-patterns explained                            15,99                 10
+4           Programming C#                                     50,40                 20&lt;/pre&gt;
+&lt;p&gt;&lt;span style="text-decoration: underline;"&gt;Hedef tablo i&amp;ccedil;eriği(Store)&lt;/span&gt;&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;BookID      Title                                              ListPrice             StockLevel
+----------- -------------------------------------------------- --------------------- ----------
+1           Clean Architecture                                 34,55                 5
+2           Clean Code                                         10,00                 5
+3           Anti-patterns explained                            15,99                 8
+6           Cloud for dummies                                  44,44                 3&lt;/pre&gt;
+&lt;p&gt;Veritabanı ile &amp;ccedil;alışan pek &amp;ccedil;ok uygulamada bu tip&amp;nbsp;birleştirme odaklı tablolara rastlayabiliriz. Genellikle dışarıdan belirli periyotlarla beslenen bir tablo ve bu tablodaki veri i&amp;ccedil;eriğine g&amp;ouml;re kendini s&amp;uuml;rekli olarak g&amp;uuml;ncel tutan bir başka tablo olur. Aynen yukarıdaki senaryoda g&amp;ouml;r&amp;uuml;len Kaynak ve Hedef tablolar gibi.&amp;nbsp;&amp;Ouml;zetle hedef tabloyu kaynak tablodaki değişikliklere g&amp;ouml;re g&amp;uuml;ncel tutmak istediğimizi d&amp;uuml;ş&amp;uuml;nebiliriz.&amp;nbsp;Kaynaktan silinenlerin hedeften de silinmesi, g&amp;uuml;ncellenenlerin aynı şekilde hedefte de g&amp;uuml;ncellenmesi veya kaynağa yeni gelenlerin hedef tabloya da aktarılması gibi işlemlerden bahsediyoruz.&lt;/p&gt;
+&lt;p&gt;Book ve Store tablolarını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne aldığımızda Store tablosundan silinen&lt;em&gt;(4 nolu kayıt)&lt;/em&gt;, eklenen&lt;em&gt;(6 nolu kayıt&lt;/em&gt;), g&amp;uuml;ncellenen&lt;em&gt;(2 ve 3 nolu kayıtlar)&lt;/em&gt; ve hi&amp;ccedil; bir değişikliğe uğramayan&lt;em&gt;(1 nolu kayıt)&lt;/em&gt; kitap bilgileri olduğunu g&amp;ouml;r&amp;uuml;yoruz. Şimdi Book tablosunu Store tablosuna g&amp;ouml;re g&amp;uuml;ncellememiz gerekiyor. Elbette bunun bir &amp;ccedil;ok yolu var. &amp;Ouml;rneğin Cursor&amp;nbsp;a&amp;ccedil;ıp kaynak tabloyu baştan sona tarayarak&amp;nbsp;bu işlemi ger&amp;ccedil;ekleştirebiliriz. Ya da Select into ifadesi ile birlikte insert, update, delete sorgularını kullanabiliriz. Belki başka &amp;ccedil;&amp;ouml;z&amp;uuml;mler de s&amp;ouml;z konusu olabilir. Buradaki gibi az sayıda satır i&amp;ccedil;eren veri k&amp;uuml;meleri i&amp;ccedil;in se&amp;ccedil;ilen tekniğin bir &amp;ouml;nemi yok aslında. Ancak tablo kayıt sayısı aynen şirketimizdeki senaryodaki gibi milyonlar seviyesine &amp;ccedil;ıkınca performans sorunları yaşayabiliriz. Bir alternatif olarak &amp;uuml;zerinde insert, update ve delete işlemlerini uygulamak i&amp;ccedil;in tek bir birleştirme maliyeti &amp;uuml;zerinden hareket etmek &amp;ccedil;ok daha verimli olabilir. Merge bu noktada devreye giriyor.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Normal şartlarda yukarıdaki i&amp;ccedil;erikleri eşleştirmek adına pekala aşağıdaki gibi sorgular yazılabilir &lt;em&gt;(Bildiğim kadarı ile yazdım. Bu konuda alternatifler i&amp;ccedil;in&amp;nbsp;aydınlatılmaya ihtiyacım var)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;Update Book 
+Set 
+	Title=S.Title,
+	ListPrice=S.ListPrice,
+	StockLevel=S.StockLevel
+from Store S
+	inner join Book B
+	on B.BookID=S.BookID
+where 
+	B.ListPrice&amp;lt;&amp;gt;S.ListPrice or B.Title&amp;lt;&amp;gt;S.Title or B.StockLevel &amp;lt;&amp;gt; S.StockLevel;
+
+Delete from Book Where BookID not in 
+	(Select S.BookID from Store S where S.BookID in (Select BookID from Book));&lt;/pre&gt;
+&lt;p&gt;İlk olarak farklılıkları bulup ger&amp;ccedil;ekleştirdiğimiz bir&amp;nbsp;Insert işlemi var. Burada&amp;nbsp;alt sorgu kullandığımızı g&amp;ouml;rebilirsiniz. G&amp;uuml;ncelleme işleminde ise bir inner join kullanımına gittik. En beter sorgu da silme operasyonu i&amp;ccedil;in yazdığım olmalı sanıyorum ki. Bu sorguları işlettiğimizde Book ve Store tabloları eşlenecektir. Lakin bir taşla &amp;uuml;&amp;ccedil; kuş vurabiliriz de. Şimdi konuyu merge ifadesini baz alarak ele alalım. Aşağıdaki u&amp;ccedil;tan uca sorgu işimizi g&amp;ouml;r&amp;uuml;r&lt;em&gt;(Ben diğer veritabanlarını kirletmemek adına LearningDb isimli ayrı bir veritabanında &amp;ccedil;alıştım)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;Create database LearningDb;
+Use LearningDb;
+
+Create Table Book
+(
+	BookID int primary key,
+	Title varchar(50),
+	ListPrice money,
+	StockLevel smallint
+)
+Go
+insert into Book
+Values
+(1,'Clean Architecture',34.55,5),
+(2,'Clean Code',20.00,5),
+(3,'Anti-patterns explained',15.99,10),
+(4,'Programming C#',50.40,20)
+Go
+
+Create Table Store
+(
+	BookID int primary key,
+	Title varchar(50),
+	ListPrice money,
+	StockLevel smallint
+)
+Go
+insert into Store
+Values
+(1,'Clean Architecture',34.55,5), --Değişiklik yok
+(2,'Clean Code',10.00,5), -- Fiyat değişti
+(3,'Anti-patterns explained',15.99,8), --Stok seviyesi değişti
+(6,'Cloud for dummies',44.44,3) -- Yeni geldi
+--(4,'Programming C#',50.40,20) -- Silindi
+Go
+
+Select * from Book;
+Select * from Store;
+
+Merge Book AS T
+Using Store As S
+on (T.BookID=S.BookID)
+When Matched and T.Title &amp;lt;&amp;gt; S.Title Or T.ListPrice&amp;lt;&amp;gt;S.ListPrice Or T.StockLevel&amp;lt;&amp;gt;S.StockLevel Then --Herhangibir g&amp;uuml;ncelleme varsa
+Update Set T.Title=S.Title,T.ListPrice=S.ListPrice,T.StockLevel=S.StockLevel
+When Not Matched By Target Then -- Yeni eklenmiş kitaplar varsa
+Insert (BookID,Title,ListPrice,StockLevel)
+Values (S.BookID,S.Title,S.ListPrice,S.StockLevel)
+When Not Matched By Source Then -- Silinmiş kitaplar varsa
+DELETE
+OUTPUT $action [Event], DELETED.BookID as [Target BookID],DELETED.Title as [Target Title],DELETED.ListPrice as [Target ListPrice],DELETED.StockLevel as [Target StockLevel],
+INSERTED.BookID as [Source BookID],INSERTED.Title as [Source Title],INSERTED.ListPrice as [Source ListPrice],INSERTED.StockLevel as [Source StockLevel];
+
+Select * from Book;
+Select * from Store;&lt;/pre&gt;
+&lt;p&gt;Merge kısmına kadar yapılan hazırlıklarda &amp;ouml;rnek bir veritabanı oluşturup i&amp;ccedil;erisine Book ve Store isimli tablolarımızı a&amp;ccedil;ıyoruz&lt;em&gt;(Buralarda if exist kullanımına gitmekte yarar olabilir ya da başlarda drop table kullanılabilir)&lt;/em&gt; Sonrasında ise Merge ifademiz başlıyor. Book ve Store tablolarını BookID alanı &amp;uuml;zerinden birleştirdikten sonra When kelimesi ile başlayan &amp;uuml;&amp;ccedil; ayrı kısım yer alıyor.&lt;/p&gt;
+&lt;p&gt;Eğer bir eşleşme&amp;nbsp;var ve tabloların Title, ListPrice, StockLevel alanlarının en azn birisinde veya t&amp;uuml;m&amp;uuml;nde farklılıklar s&amp;ouml;z konusuysa Then kelimesinden sonra gelen Update ifadesi &amp;ccedil;alıştırılıyor. Update ifadesinde T ile belirtilen hedef tablo alanlarının S ile belirtilen kaynak tablo alanları ile beslendiğine dikkat edelim.&amp;nbsp;Eğer hedef tabloda kaynaktaki satırlar ile BookID &amp;uuml;zerinden bir eşleşme yoksa 'When not matched by Target Then' sonrasında gelen Insert sorgusu &amp;ccedil;alışıyor. Burada da kaynak tablodaki alan değerlerinin eklendiğine dikkat edelim. Son olarak hedefte olduğu halde kaynakta olmayan satırlar varsa 'When not matched by source then' sonrasındaki Delete ifadesi &amp;ccedil;alışıyor ve hedef tablodaki ilgili kayıtlar siliniyor.&lt;/p&gt;
+&lt;p&gt;Merge sorgusunun tamamlanması i&amp;ccedil;in mutlaka ; işareti ile ifadeyi bitirmemiz gerekiyor. Bunu yapmadan &amp;ouml;nce meydana gelen değişiklikleri takip edebilmek adına output ifadesini &amp;ccedil;alıştırıyoruz. Burada $action değişkeni ile meydana gelen olay yakalanıyor&lt;em&gt;(o satır i&amp;ccedil;in insert, update, delete olaylarından hangisi olduysa)&lt;/em&gt; DELETED ve INSERTED isimli hazır tabloları kullanaraktan da hangi tabloda ne gibi bir alan değişikliği olduğunu rahatlıkla g&amp;ouml;rebiliyoruz.&amp;nbsp;Sonu&amp;ccedil;lar aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;Event      Target BookID Target Title                                       Target ListPrice      Target StockLevel Source BookID Source Title                                       Source ListPrice      Source StockLevel
+---------- ------------- -------------------------------------------------- --------------------- ----------------- ------------- -------------------------------------------------- --------------------- -----------------
+UPDATE     2             Clean Code                                         20,00                 5                 2             Clean Code                                         10,00                 5
+UPDATE     3             Anti-patterns explained                            15,99                 10                3             Anti-patterns explained                            15,99                 8
+DELETE     4             Programming C#                                     50,40                 20                NULL          NULL                                               NULL                  NULL
+INSERT     NULL          NULL                                               NULL                  NULL              6             Cloud for dummies                                  44,44                 3
+
+(4 row(s) affected)
+
+BookID      Title                                              ListPrice             StockLevel
+----------- -------------------------------------------------- --------------------- ----------
+1           Clean Architecture                                 34,55                 5
+2           Clean Code                                         10,00                 5
+3           Anti-patterns explained                            15,99                 8
+6           Cloud for dummies                                  44,44                 3
+
+(4 row(s) affected)
+
+BookID      Title                                              ListPrice             StockLevel
+----------- -------------------------------------------------- --------------------- ----------
+1           Clean Architecture                                 34,55                 5
+2           Clean Code                                         10,00                 5
+3           Anti-patterns explained                            15,99                 8
+6           Cloud for dummies                                  44,44                 3
+
+(4 row(s) affected)&lt;/pre&gt;
+&lt;p&gt;Artık&amp;nbsp;her iki tablonun verileri de eş.&lt;/p&gt;
+&lt;p&gt;Gece&amp;nbsp;yayınevlerinden&amp;nbsp;son listeleri alan servis &amp;ccedil;alıştığında Store tablosunda yapılan&amp;nbsp;değişiklikler, yukarıdaki sorgu sayesinde Book tablosuna da yansıtılacak ve o g&amp;uuml;n&amp;uuml;n bayilerinin bakacağı asıl i&amp;ccedil;erik eşleştirilmiş olacak. Bu senaryoyu bir d&amp;uuml;ş&amp;uuml;n&amp;uuml;p kurgulamaya &amp;ccedil;alışın derim. G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere merge esasında olduk&amp;ccedil;a pratik bir kullanıma sahip ve birleştirme senaryoları i&amp;ccedil;in ideal. Pek tabii kurumun iş kuralları gereği bir merge işlemi her zaman i&amp;ccedil;in buradaki using ifadesi kadar sade olmayabilir. &amp;Ouml;rneğimizde doğrudan primary key alanlar &amp;uuml;zerinden bir eşleşme yaptık ancak farklı senaryolar olduğu takdirde using ifadesine parantez&amp;nbsp;a&amp;ccedil;ılıp&amp;nbsp;daha karmaşık select ifadelerine ait sonu&amp;ccedil;ların kaynak olarak g&amp;ouml;sterilmesi de sağlanabilir. Lakin maliyeti y&amp;uuml;ksek olduğu i&amp;ccedil;in ka&amp;ccedil;ınmaya &amp;ccedil;alıştığımız &amp;ccedil;eşitli sorguları&lt;em&gt;(sub query'ler, &amp;ccedil;ok sayıda tablolu join'ler vb)&lt;/em&gt; buraya almanın &amp;ccedil;ok &amp;ouml;nemli bir pozitif katkısı olmayabilir. Sonu&amp;ccedil; itibariyle b&amp;uuml;y&amp;uuml;k veri k&amp;uuml;melerini kullanarak performans testlerini yapmakta ve execution planlara bakıp gerekli m&amp;uuml;dahaleleri yapmakta yarar var. Bizim senaryomuz i&amp;ccedil;in &amp;ccedil;alışma zamanı planlarına baktığımızda en azından &amp;uuml;&amp;ccedil; iş yerine tek seferlik bir maliyetin altına girdiğimizi g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;İlk uygulama bi&amp;ccedil;imimiz i&amp;ccedil;in aşağıdaki gibi bir plan oluşur.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/11/sqlmerge_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Table Spool maliyetleri biraz y&amp;uuml;ksek g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere. Merge &amp;ccedil;alışma planında ise durum aşağıdaki gibidir. Şekilde g&amp;ouml;r&amp;uuml;lmese de %25lik bir Full Outer Join maliyeti var.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/11/sqlmerge_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;İşin aslı konuyu&amp;nbsp;SQL performans y&amp;ouml;netimi konusunda uzman birisinin incelemesi daha doğru olabilir. Genellikle şirketlerin veritabanı operasyon ekipleri perfomans arttırımı gerektiren sorgular i&amp;ccedil;in destek oluyorlar. Yine de iş oraya gelmeden &amp;ouml;nce gerekli &amp;ouml;n tedbirleri alıp performans iyileştirmelerini yapmak da biz geliştiricilere d&amp;uuml;şen &amp;ouml;nemli bir g&amp;ouml;revdir. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2019-01-13 13:03:00</pubDate>
+  <slug>bilmiyordum-ogrendim-sql-merge</slug>
+  <tags>
+    <tag>sql</tag>
+    <tag>merge</tag>
+    <tag>t-sql</tag>
+    <tag>docker</tag>
+    <tag>query</tag>
+    <tag>linux</tag>
+    <tag>ubuntu</tag>
+    <tag>sub-query</tag>
+    <tag>select</tag>
+    <tag>join</tag>
+    <tag>data-merging</tag>
+    <tag>migration</tag>
+    <tag>sql-server</tag>
+    <tag>stored-procedures</tag>
+  </tags>
+  <categories>
+    <category>T SQL</category>
+  </categories>
+</post>

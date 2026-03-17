@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>SqlCommandBuilder için 4 Tavsiye</title>
+  <description>SqlCommandBuilder sınıfı özellikle bağlantısız katman (disconnected layer) modelinde sıkça kullanılmaktadır. Çoğunlukla, SqlDataAdapter tipine ait nesneler için gerekli olan UpdateCommand, InsertCommand ve DeleteCommand özelliklerine bağlı SqlCommand nesnelerini sıfırdan oluşturmamak için tercih edilebilir...</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;SqlCommandBuilder sınıfı &amp;ouml;zellikle bağlantısız katman (disconnected layer) modelinde sık&amp;ccedil;a kullanılmaktadır. &amp;Ccedil;oğunlukla, SqlDataAdapter tipine ait nesneler i&amp;ccedil;in gerekli olan UpdateCommand, InsertCommand ve DeleteCommand &amp;ouml;zelliklerine bağlı SqlCommand nesnelerini sıfırdan oluşturmamak i&amp;ccedil;in tercih edilebilir. Framework 1.1' de &amp;ouml;zellikle bağlantısız katman modeline ait bir vakka olan Concurency Violation durumlarındaki yaklaşımı nedeniyle (t&amp;uuml;m kolonları where' e dahil etmek) bazen tercih edilmemektedir.&lt;/p&gt;
+&lt;p&gt;Ancak SqlCommandBuilder, Framework 2.0 ile birlikte kendisine eklenen yeni &amp;uuml;yeler sayesinde daha da fonksiyonel hale gelmiştir. Bununla birlikte SqlCommandBuilder tipinin sadece bağlantısız katman (disconnected layer) modeli i&amp;ccedil;in yazılmış olduğunu d&amp;uuml;ş&amp;uuml;nmek haksızlık olacaktır. Nitekim katmanlı mimaride veri erişim katmanı (data access layer) i&amp;ccedil;erisinde son derece kullanışlı olabilecek bir metodada sahiptir. İşte bu makalemizde SqlCommandBuilder tipinin, .Net Framework 2.0 versiyonu ile birlikte g&amp;uuml;&amp;ccedil;lendirilmiş olan y&amp;ouml;nlendiren bahsetmeye &amp;ccedil;alışacağız. Temel olarak işleyeceğimiz maddeler aşağıdaki gibidir.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Stored Procedure' lerin parametrik yapısını &amp;ccedil;alışma zamanında bir SqlCommand nesnesine aktarabilme&lt;/li&gt;
+&lt;li&gt;&amp;Ccedil;akışma durumları i&amp;ccedil;in uygun olan y&amp;ouml;ntemi &lt;strong&gt;ConflictOption&lt;/strong&gt; &amp;ouml;zelliği ile belirleyebilme&lt;/li&gt;
+&lt;li&gt;Update işlemleri sırasında sadece g&amp;uuml;ncellenen parametreleri sql sunucusuna g&amp;ouml;nderebilme&lt;/li&gt;
+&lt;li&gt;SqlDataAdapter i&amp;ccedil;in &amp;uuml;retilen sql komutlarında kolon adı kullanılmasını tercih edebilme&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Şimdi burada bahsettiğimiz &amp;ouml;zellikleri incelemeye &amp;ccedil;alışalım. Ancak maddelerimizi incelemeden &amp;ouml;nce senaryo olarak kullanacağımız tablomuzu aşağıdaki sql script yardımıyla oluşturalım. Personel isimli tablomuz Sql Server 2005 &amp;uuml;zerinde AdventureWorks veritabanı altında yer alacaktır. Ancak &amp;ouml;rneklerimiz i&amp;ccedil;in dilerseniz siz kendi tablolarınızıda kullanabilirsiniz.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;USE [AdventureWorks]
+GO
+
+CREATE TABLE [dbo].[Personel](
+    [PersonelId] [int] IDENTITY(1,1) NOT NULL,
+    [Adi] [nvarchar](50) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+    [Soyadi] [nvarchar](50) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+    [Maasi] [money] NOT NULL,
+    [IseGirisTarihi] [datetime] NOT NULL,
+    [Departmani] [nvarchar](50) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+    [Durum] [timestamp] NOT NULL,
+    CONSTRAINT [PK_Personel] PRIMARY KEY CLUSTERED 
+    (
+        [PersonelId] ASC
+    )WITH (PAD_INDEX = OFF, IGNORE_DUP_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;1. Stored Procedure' lerin parametrik yapısını &amp;ccedil;alışma zamanında bir SqlCommand nesnesine aktarabilme&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;yle bir metod d&amp;uuml;ş&amp;uuml;nelim ki, sadece &amp;ccedil;alıştıracağı saklı yordamın (stored procedure) adını, ve sayısını bilmemesine rağmen parametrelerinin değerlerini alsın. Sonrada işaret ettiği bu saklı yordamı y&amp;uuml;r&amp;uuml;ts&amp;uuml;n. Bu tam anlamıyla veri erişim katmanlarında kullanılabilecek bir metod tipidir. Bir saklı yordamı &amp;ccedil;alıştırırken eğer aldığı giriş parametreleri (input parameter) varsa bunları mutlaka ilgili SqlCommand nesnesinin Parameters koleksiyonuna aynı adlarda olmak şartıyla eklememiz gerekmektedir. Şimdi ilk olarak varsayılan haliyle b&amp;ouml;yle bir işi nasıl yapacağımızı d&amp;uuml;ş&amp;uuml;nmeye &amp;ccedil;alışalım. Bu ama&amp;ccedil;la Personel tablomuza satır ekleyen aşağıdaki gibi bir saklı yordamımız olduğunu varsayalım.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;CREATE PROCEDURE dbo.PersonelEkle 
+(
+    @Adi nvarchar(50)
+    ,@Soyadi nvarchar(50)
+    ,@Maasi money
+    ,@IseGirisTarihi datetime
+    ,@Departmani nvarchar(50)
+)
+AS
+    Insert into Personel (Adi,Soyadi,Maasi,IseGirisTarihi,Departmani)
+    Values (@Adi,@Soyadi,@Maasi,@IseGirisTarihi,@Departmani)
+RETURN&lt;/pre&gt;
+&lt;p&gt;Saklı yordamımız beş adet input parametresi almaktadır. Bu sp' yi &amp;ccedil;alıştıracak olan bir SqlCommand nesnesi temel olarak aşağıdaki kodda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi kullanılacaktır. Dikkat ederseniz saklı yordamımız i&amp;ccedil;erisindeki t&amp;uuml;m parametreler cmd isimli SqlCommand nesne &amp;ouml;rneğinin Parameters koleksiyonuna eklenmekte, eklenirkende metoda gelen değerlerini almaktadırlar.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;class Komutlar
+{
+private string m_ConStr;
+
+    public Komutlar(string conStr)
+    {
+        m_ConStr = conStr;
+    }
+    public void PersonelEkle(string ad,string soyad,decimal maas,DateTime iseGiris,string departman)
+    {
+        using (SqlConnection con = new SqlConnection(m_ConStr))
+        {
+            SqlCommand cmd = new SqlCommand("PersonelEkle", con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@Adi",ad);
+            cmd.Parameters.AddWithValue("@Soyadi",soyad);
+            cmd.Parameters.AddWithValue("@Maasi",maas);
+            cmd.Parameters.AddWithValue("@IseGirisTarihi",iseGiris);
+            cmd.Parameters.AddWithValue("@Departmani",departman);
+            con.Open();
+            cmd.ExecuteNonQuery();
+        }
+    }
+}
+class Program
+{
+    static void Main(string[] args)
+    {
+        Komutlar kmt = new Komutlar("data source=localhost;database=AdventureWorks;integrated security=SSPI");
+        kmt.PersonelEkle("Hey", "Mayk", 1000, new DateTime(2001, 1, 1), "Spor Arabalar");
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu kod başarılı bir şekilde &amp;ccedil;alışacaktır. Ancak dikkat ederseniz PersonelEkle metodu sadece PersonelEkle saklı yordamını &amp;ccedil;alıştırabilir. Dahası, metodun i&amp;ccedil;erisindeki SqlCommand nesne &amp;ouml;rneğine ait parametre değerleri, aslında metoda gelen parametrelerin değerleridir. Dolayısıla parametrelerin adları hatta tipleri değişebilir. Bu tarz durumlarda s&amp;uuml;rekli olarak kod &amp;uuml;zerinde d&amp;uuml;zenlemeler yapmamız ve yeniden derlememiz yada başka bir yol d&amp;uuml;ş&amp;uuml;nmemiz gerekecektir. Oysaki aşağıdaki metod tam anlamıyla her hangibir Sql saklı yordamının her hangi sayıda parametresine hizmet edebilecek niteliktedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public void Execute(string spAdi, params object[] degerler)
+{
+    using (SqlConnection conn = new SqlConnection(m_ConStr))
+    {
+        using (SqlCommand cmd = new SqlCommand(spAdi, conn))
+        {
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            conn.Open();
+            // DeriveParameters sadece Sp' lerde işe yarayan bir tekniktir.
+            SqlCommandBuilder.DeriveParameters(cmd);
+            for (int i = 1; i &amp;lt;= degerler.Length; i++)
+                cmd.Parameters[i].Value = degerler[i-1];
+            cmd.ExecuteNonQuery();
+        }
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Metodumuz ilk parametre olarak &amp;ccedil;alıştıracağı saklı yordamın adını alır. Daha sonra ise &lt;strong&gt;params&lt;/strong&gt; anahtar s&amp;ouml;zc&amp;uuml;ğ&amp;uuml;nden faydalanarak n sayıda, object tipinden elemanlar taşıyan bir diziyi parametre almaktadır. Metodumuz i&amp;ccedil;erisinde yer alan SqlCommandBuilder sınıfının static &lt;strong&gt;DeriveParameters&lt;/strong&gt; metodu ise, parametre olarak aldığı SqlCommand nesnesinin işaret ettiği saklı yordama gider, bu yordamın parametrelerini (ilk parametresi @RETURN_VALUE olacak şekilde) alır ve ilgili komut nesnesinin Parameters koleksiyonuna ekler. Eğer uygulamayı debug ederseniz aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi saklı yordam parametrelerinin cmd nesnesine eklendiğini g&amp;ouml;rebilirsiniz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk180_1.gif" alt="" width="416" height="516" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Execute metodumuzun bu versiyonunu aşağıdaki gibi test edebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;Komutlar kmt = new Komutlar("data source=localhost;database=AdventureWorks;integrated security=SSPI");
+kmt.Execute("PersonelEkle","Hey", "Mayk", 1000, new DateTime(2001, 1, 1), "Spor Arabalar");&lt;/pre&gt;
+&lt;p&gt;Peki DeriveParameters metodu aslında ne yapmaktadır. &lt;strong&gt;Sql Server Profiler &lt;/strong&gt;yardımıyla bu uygulmanın arka planda &amp;ccedil;alıştırdığı sql kodlarını incelersek aşağıdaki gibi bir &amp;ccedil;ağrı ile karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk180_11.gif" alt="" width="519" height="184" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat ederseniz &lt;strong&gt; sp_procedure_params_managed&lt;/strong&gt; isimli bir saklı yordam, parametrelerini elde etmek istediğimi saklı yordamın adını parametre alarak &amp;ccedil;alıştırılmaktadır. Bu ifadeyi Sql Server 2005 Management Studio &amp;uuml;zerinde &amp;ccedil;alıştırırsak, aşağıdaki gibi bir &amp;ccedil;ıktı elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk180_12.gif" alt="" width="626" height="299" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Sistem sp' lerinden olan &lt;strong&gt; sp_procedure_params_managed&lt;/strong&gt; aslında PersonelEkle isimli saklı yordam i&amp;ccedil;erisindeki t&amp;uuml;m parametreleri ve bu parametrelere ait detaylı bilgileri bir tablo olarak geriye d&amp;ouml;nd&amp;uuml;rmektedir. Bu tabloda parametrelerin adlarından tutunda veri tiplerine kadar, null değer i&amp;ccedil;erip i&amp;ccedil;ermekyeceklerinden taşıyacakları veri uzunluğuna kadar t&amp;uuml;m bilgiler yer almaktadır. Bu tabloyu değerlendiren elbette SqlCommandBuilder nesnesinin kendisidir. Tablo i&amp;ccedil;erisindeki bilgilere g&amp;ouml;re ilgili SqlCommand nesnesinin parameters koleksiyonuna gerekli eklemeler yapılır.&lt;/p&gt;
+&lt;table id="table147" style="width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#ffffff"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;&lt;strong&gt;OleDbCommandBuilder&lt;/strong&gt;, &lt;strong&gt;OracleCommandBuilder&lt;/strong&gt;, &lt;strong&gt;ODBCCommandBuilder&lt;/strong&gt; sınıflarıda DeriveParameters metodunu destekler. Tek şart, ilgili veri tabanı sisteminin saklı yordama ait parametre yapısını getirebiliyor olmasıdır. Unutmayalım; DeriveParameters sadece saklı yordamlar i&amp;ccedil;in ge&amp;ccedil;erlidir. D&amp;uuml;z Sql sorgu c&amp;uuml;mlelerini ele alan komutlar i&amp;ccedil;in (parametrik bile olsalar) &lt;strong&gt; InvalidOperationException&lt;/strong&gt; istisnası d&amp;ouml;nd&amp;uuml;rmektedir.&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;2. &amp;Ccedil;akışma durumları i&amp;ccedil;in uygun olan y&amp;ouml;ntemi ConflictOption &amp;ouml;zelliği ile belirleyebilme&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Bağlantısız katman nesneleri ile &amp;ccedil;alışırken, başımızı en &amp;ccedil;ok ağrıtan konulardan biriside, birbirlerinden habersiz olarak bir den fazla kullanıcının aynı veri &amp;uuml;zerinde değişiklik yapmasıdır. B&amp;ouml;yle bir durumda son g&amp;uuml;ncelleme kazansın (Last Wins) tekniğini tercih edebilir yada DbConcurrencyViolation istisnasını ele alabiliriz. &lt;em&gt;(Konu hakkında detaylı bilgi i&amp;ccedil;in &lt;a href="http://www.bsenyurt.com/MakaleGoster.aspx?ID=112"&gt;tıklayın&lt;/a&gt;.)&lt;/em&gt; Hangi tekniği se&amp;ccedil;ersek, Update ve Delete sorgularının where koşullarında değişiklik olacaktır.&lt;/p&gt;
+&lt;p&gt;SqlCommandBuilder sınıfına yeni katılan &lt;strong&gt;ConflictOptions&lt;/strong&gt; &amp;ouml;zelliği ile &amp;uuml;retilen komutların bizim se&amp;ccedil;eceğimiz &amp;ccedil;akışma kuralına g&amp;ouml;re oluşturulması sağlanabilir. Last Wins tekniği i&amp;ccedil;in Where koşuluna, o tabloda yer alan Primary Key alanın orjinal değeri, &lt;strong&gt;DBConcurrencyViolation&lt;/strong&gt; durumda ise t&amp;uuml;m alanların orjinal değerleri yada Id alanı ile birlikte varsa TimeStamp gibi alanların orjinal değeleri hesaba katılacaktır. Şimdi bu durumu analiz edeceğimiz &amp;ouml;rnek bir Windows uygulamasını aşağıdaki gibi geliştirelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public partial class Form1 : Form
+{
+    private SqlConnection conn;
+    private SqlDataAdapter daPersonel;
+    private DataTable dtPersonel;
+
+    public Form1()
+    {
+        InitializeComponent();
+    }
+    // DataAdapter hazırlanır.
+    private void PrepareDataAdapter()
+    {
+        conn = new SqlConnection("data source=localhost;database=AdventureWorks;integrated security=SSPI");
+        daPersonel = new SqlDataAdapter("Select PersonelId,Adi,Soyadi,Maasi,IseGirisTarihi,Departmani,Durum From Personel", conn);         
+    }
+    /* SqlCommandBuilder hazırlanır ve Update, Delete, Insert komutlarını hazırlaması sağlanır. Oluşan komutlar bilgi amacıyla StringBuilder kullanılarak bir RichTextBox kontrol&amp;uuml;ne yazılır. */
+    private void PrepareCommands()
+    {
+        SqlCommandBuilder cmb = new SqlCommandBuilder(daPersonel);
+        ConflictOption selectedOption = (ConflictOption)Enum.Parse(typeof(ConflictOption), cmbConflictOptions.SelectedItem.ToString()); 
+        cmb.ConflictOption = selectedOption; // &amp;Ccedil;akışma se&amp;ccedil;eneği belirlenir.
+        daPersonel.InsertCommand = cmb.GetInsertCommand();
+        daPersonel.UpdateCommand = cmb.GetUpdateCommand();
+        daPersonel.DeleteCommand = cmb.GetDeleteCommand();
+
+        StringBuilder builder = new StringBuilder();
+        builder.Append("Insert Command : \n");
+        builder.Append(daPersonel.InsertCommand.CommandText + "\n");
+        builder.Append("Update Command : \n");
+        builder.Append(daPersonel.UpdateCommand.CommandText + "\n");
+        builder.Append("Delete Command : \n");
+        builder.Append(daPersonel.DeleteCommand.CommandText + "\n");
+        txtCommands.Text = "";
+        txtCommands.Text = builder.ToString(); 
+    }
+    /* Select d&amp;uuml;ğmesine basıldığında dataTable oluşturulur, SqlDataAdapter tarafından doldurulur ve DataGridView kontrol&amp;uuml;ne veri kaynağı olarak bağlanır. */
+    private void btnSelect_Click(object sender, EventArgs e)
+    {
+        dtPersonel = new DataTable();
+        daPersonel.Fill(dtPersonel);
+        grdPersonel.DataSource = dtPersonel;
+        grdPersonel.Columns.Remove("Durum"); // TimeStamp tipi alanlar DataGridView' da problem &amp;ccedil;ıkarttığı i&amp;ccedil;in &amp;ccedil;ıkartıldı.
+    }
+    /* Form y&amp;uuml;klenirken DataAdapter hazırlanır, ConflictOption i&amp;ccedil;in enum sabiti &amp;uuml;zerinden alınan değerleri ComboBox' a dolduran PrepareConflictOption metodu &amp;ccedil;ağırılır.*/
+    private void Form1_Load(object sender, EventArgs e)
+    {
+        PrepareDataAdapter();
+        PrepareConflictOptions();
+        cmbConflictOptions.SelectedIndex = 0;
+    }
+    // ConflictOption enum sabiti i&amp;ccedil;erisindeki değerleri ComboBox kontrol&amp;uuml;ne doldurur.
+    private void PrepareConflictOptions()
+    {
+        string[] conflictOptions = Enum.GetNames(typeof(ConflictOption));
+        foreach (string option in conflictOptions)
+            cmbConflictOptions.Items.Add(option);
+    }
+    /* DataTable &amp;uuml;zerindeki değişiklikeri asıl veri kaynağına yazmadan &amp;ouml;nce SqlCommandBuilder oluşturulduğu ve Delete, Update, Insert komutlarının hazırlandığı PrepareCommands metodunu &amp;ccedil;ağırır. */
+    private void btnUpdate_Click(object sender, EventArgs e)
+    {
+        PrepareCommands();
+        daPersonel.Update(dtPersonel);
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Kod tarafında bizim i&amp;ccedil;in &amp;ouml;nemli olan kısım PrepareCommand metodu i&amp;ccedil;erisinde yaptıklarımızdır. Bu metod i&amp;ccedil;erisinde SqlDataAdapter nesnesi i&amp;ccedil;in gerekli Update,Delete ve Insert komutlarını oluşturmaktayız. &amp;Ccedil;akışma se&amp;ccedil;eneğini dikkat ederseniz &lt;strong&gt;ConflictOption&lt;/strong&gt; enum sabiti &amp;uuml;zerinden almaktayız. Uygulamada SqlDataAdapter i&amp;ccedil;in gerekli komutları oluşturduktan sonra, Update metodunu belirlediğimiz &amp;ccedil;akışma se&amp;ccedil;eneğine g&amp;ouml;re hazırlanan komutlara g&amp;ouml;re y&amp;uuml;r&amp;uuml;tmekteyiz. ConflictOption enum sabiti &lt;strong&gt;CompareAllSearchableValues&lt;/strong&gt;, &lt;strong&gt;CompareRowVersion&lt;/strong&gt; ve &lt;strong&gt;OverwriteChanges&lt;/strong&gt; olmak &amp;uuml;zere &amp;uuml;&amp;ccedil; değer alabilmektedir. Buna g&amp;ouml;re SqlCommandBuilder nesnesinin bu 3 se&amp;ccedil;enek i&amp;ccedil;in &amp;uuml;rettiği &amp;ccedil;ıktılar aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;CompareAllSearchableValues i&amp;ccedil;in;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk180_2.gif" alt="" width="518" height="377" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat ederseniz Update ve Delete sorgularında Where c&amp;uuml;mleciğine TimeStamp tipindeki Durum alanı hari&amp;ccedil; t&amp;uuml;m alanlar katılmıştır.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;CompareRowVersion i&amp;ccedil;in;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk180_3.gif" alt="" width="518" height="352" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat ederseniz Update ve Delete sorgularında Where koşuluna sadece Primary Key olan PersonelId alanı ve TimeStamp tipinden olan Durum alanı katılmıştır. Bu &amp;ccedil;eşit bir sorgu &amp;ouml;zellikle DBConcurrency Violation durum i&amp;ccedil;in idealdir.&lt;/p&gt;
+&lt;table id="table148" style="width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#ffffff"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;CompareRowVersion &amp;ouml;zellikle DBConcurrencyViolation durumu i&amp;ccedil;in bi&amp;ccedil;ilmiş kaftan gibi g&amp;ouml;z&amp;uuml;ksede, diğer veri sağlayıcıları i&amp;ccedil;in geliştirilmiş CommandBuilder nesnelerinde aynı ge&amp;ccedil;erlilik olmayabilir. Nitekim, &lt;strong&gt;Timestamp veri t&amp;uuml;r&amp;uuml; her veritabanı sisteminde var olan bir t&amp;uuml;r değildir&lt;/strong&gt;. Bu tip veri t&amp;uuml;rlerine sahip olmayan sistemlerde mecburen DBConcurrencyViolation durumlarının ele alınmasında, where c&amp;uuml;mleciğinden sonra m&amp;uuml;mk&amp;uuml;n olan t&amp;uuml;m alanların hesaba katılması gerekecektir. Bir başka deyişle &lt;strong&gt; CompareAllSearchableValues&lt;/strong&gt; se&amp;ccedil;eneği se&amp;ccedil;ilecektir.&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;em&gt;OverwriteChanges i&amp;ccedil;in;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk180_4.gif" alt="" width="518" height="354" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat ederseniz Update ve Delete sorgularına ait Where koşullarına sadece Primary Key olan PersonelId alanı katılmıştır. Dolayısıyla Last Wins modeli ge&amp;ccedil;erlidir.&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi, SqlCommandBuilder sınıfına Framework 2.0 ile gelen ConflictOption &amp;ouml;zelliği, &amp;ccedil;akışma senaryolarına bağlı olarak uygun Delete ve Update komutlarının hazırlanmasını sağlamaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;3. Update işlemleri sırasında sadece g&amp;uuml;ncellenen parametreleri sql sunucusuna g&amp;ouml;nderebilme&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;SqlDataAdapter bağlantısız katman nesnelerinde yapılan değişilikleri asıl veri kaynağına yazmak &amp;uuml;zere &lt;strong&gt;Update&lt;/strong&gt; metodunu kullanmaktadır. Bağlantısız katmandaki verilerde sadece değişikliğe uğramış alanları update sorgularına dahil etmek istersek SqlCommandBuilder' ın &lt;strong&gt;SetAllValues&lt;/strong&gt; isimli &amp;ouml;zelliğine false değerini atamamız yeterli olacaktır. SetAllValues &amp;ouml;zelliği varsayılan olarak true değerine sahiptir. Yani bir satırdaki alanların bazılarında değişiklik olmasada update sorgusuna g&amp;ouml;nderilmektedir. Bu durumu Sql Server Profiler yardımıyla kolayca analiz edebiliriz. Ama &amp;ouml;ncesinde kodumuzda aşağıdaki değişikliği yapalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void PrepareCommands()
+{
+    SqlCommandBuilder cmb = new SqlCommandBuilder(daPersonel);
+    ConflictOption selectedOption = (ConflictOption)Enum.Parse(typeof(ConflictOption), cmbConflictOptions.SelectedItem.ToString()); 
+    cmb.ConflictOption = selectedOption;
+    cmb.SetAllValues = false; 
+    daPersonel.InsertCommand = cmb.GetInsertCommand();
+    daPersonel.UpdateCommand = cmb.GetUpdateCommand();
+    daPersonel.DeleteCommand = cmb.GetDeleteCommand();
+    // diğer kod satırları
+}&lt;/pre&gt;
+&lt;p&gt;Şimdi Windows uygulamamızı &amp;ccedil;alıştırılalım ve satırlar &amp;uuml;zerinde, bazı alanlarda (&amp;ouml;rneğin sadece ad alanında) değişiklik yapıp Update metodunu &amp;ccedil;alıştıralım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk180_5.gif" alt="" width="518" height="109" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Update işlemini başlattıktan sonra &lt;strong&gt;Sql Server Profiler&lt;/strong&gt; ile sql tarafına g&amp;ouml;nderilen update sorgularına bakarsak aşağıdaki sonu&amp;ccedil;ları elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk180_6.gif" alt="" width="598" height="225" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rnek olarak sadece PersonelId değeri 1 olan satırın Adi alanını değiştirdiğimizden ve SqlCommandBuilder nesne &amp;ouml;rneğinde &lt;strong&gt;SetAllValues&lt;/strong&gt; isimli &amp;ouml;zelliğe &lt;strong&gt;false&lt;/strong&gt; değerini atadığımızdan, Update sorgusunda sadece Adi alanı kullanılmıştır. Ancak SetAllValues &amp;ouml;zelliğini hi&amp;ccedil; değiştirmessek yada bilin&amp;ccedil;li olarak true değerini atarsak aşağıdaki sonu&amp;ccedil;ları elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk180_7.gif" alt="" width="627" height="248" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi bu kez Update sorgusunda b&amp;uuml;t&amp;uuml;n alanlar kullanılmıştır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;4. SqlDataAdapter i&amp;ccedil;in &amp;uuml;retilen command' lerde kolon adı kullanılmasını tercih edebilme&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Şu ana kadar incelediğimiz maddelerde SqlCommandBuilder nesnesi, Update, Insert ve Delete komutlarını hazırlarken parametre adları olarak &lt;strong&gt;@P[Rakam]&lt;/strong&gt; notasyonunu kullanmıştır. Yine Framework 2.0 ile gelen bir &amp;ouml;zellik sayesinde &lt;strong&gt;@P[KolonAdı]&lt;/strong&gt; notasyonunu kullanma şansınada sahibiz. Bunun i&amp;ccedil;in &lt;strong&gt;GetInsertCommand, GetUpdateCommand&lt;/strong&gt; ve &lt;strong&gt;GetDeleteCommand&lt;/strong&gt; isimli metodların aşırı y&amp;uuml;klenmiş versiyonunlarını kullanmamız gerekiyor.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;// Insert versiyonu
+public SqlCommand GetInsertCommand (bool useColumnsForParameterNames)
+
+// Delete versiyonu
+public SqlCommand GetDeleteCommand (bool useColumnsForParameterNames)
+
+// Update versiyonu
+public SqlCommand GetUpdateCommand (bool useColumnsForParameterNames)&lt;/pre&gt;
+&lt;p&gt;Bu versiyon bool tipinden bir değer almakta olup, parametre adlarında kolon isimlerinin g&amp;ouml;sterilip g&amp;ouml;sterilmeyeceğini belirtmektedir. &amp;Ouml;rnek uygulamamızda basit olarak bu bool değişkeni tutacak bir CheckBox kontrol&amp;uuml; ele alıyoruz. Metodumuzu ise aşağıdaki gibi değiştirmemiz yeterli olacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void PrepareCommands()
+{
+    SqlCommandBuilder cmb = new SqlCommandBuilder(daPersonel);
+    ConflictOption selectedOption = (ConflictOption)Enum.Parse(typeof(ConflictOption), cmbConflictOptions.SelectedItem.ToString()); 
+    cmb.ConflictOption = selectedOption;
+    cmb.SetAllValues = false; 
+    bool useParameterNames = chkUseParameter.Checked; 
+
+    daPersonel.InsertCommand = cmb.GetInsertCommand(useParameterNames);
+    daPersonel.UpdateCommand = cmb.GetUpdateCommand(useParameterNames);
+    daPersonel.DeleteCommand = cmb.GetDeleteCommand(useParameterNames);
+     // diğer kod satırları
+}&lt;/pre&gt;
+&lt;p&gt;Şimdi uygulamamızı yeniden &amp;ccedil;alıştırıp farklı &amp;ccedil;akışma tipleri i&amp;ccedil;in oluşan sorgulara bakarsak aşağıdaki sonu&amp;ccedil;ları elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;CompareAllSearchableValues i&amp;ccedil;in;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk180_8.gif" alt="" width="497" height="242" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;CompareRowVersion i&amp;ccedil;in;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk180_9.gif" alt="" width="517" height="210" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;OverwriteChanges i&amp;ccedil;in;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk180_10.gif" alt="" width="472" height="181" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi parametre adları artık kolon adlarından oluşturulmaktadır.&lt;/p&gt;
+&lt;p&gt;SqlCommandBuilder nesnesi Framework 2.0 daki ek fonksiyonellikleri ve &amp;ouml;zellikleri sayesinde artık daha kullanışlı hale gelmiştir. Diğer CommandBuilder nesneleride benzer işlevsellikleri sağlamakla birlikte, kullanılan veritabanı sisteminin sahip olduğu imkanlarda &amp;ouml;nemlidir. &amp;Ouml;rneğin OleDbCommandBuilder sınıfınında DeriveParameters metodu vardır ve bir OleDb kaynaklarından sp desteği olmayan veritabanlarına bağlanabilmemiz de m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Sp desteği olmadığı i&amp;ccedil;in b&amp;ouml;yle bir durumda OleDbCommandBuilder' ın DeriveParameters fonksiyonu bir işe yaramayacaktır. Diğer yandan &amp;ouml;zellikle bağlantısız katman nesneleri ile &amp;ccedil;alışırken &amp;ccedil;eşitli &amp;ccedil;akışma kritlerlerine g&amp;ouml;re otomatik olarak sorguların oluşturulabilmesi &amp;ouml;nemli bir &amp;ouml;zellik olarak karşımıza &amp;ccedil;ıkmaktadır. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/makale/images/CommandBuilder.rar"&gt;&amp;Ouml;rnek kod i&amp;ccedil;in tıklayın.&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2006-11-13 12:00:00</pubDate>
+  <slug>SqlCommandBuilder-icin-4-Tavsiye-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>adonet</tag>
+    <tag>sqlcommandbuilder</tag>
+  </tags>
+  <categories>
+    <category>Ado.Net</category>
+  </categories>
+</post>

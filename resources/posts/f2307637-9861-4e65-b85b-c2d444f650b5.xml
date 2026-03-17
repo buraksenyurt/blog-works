@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Eclipse Üzerinden Java ile TFS Client Object Model Konuşuyor</title>
+  <description>Bildiğiniz üzere bir süredir Team Foundation Server’ ın çevre dünya ile olan etkileşimini incelemeye çalışıyorum. Açıkçası TFS’ in gerek servis yapısı gerek Client Object Model gibi kütüphaneleri sayesinde, dış dünya ile olan entegrasyonu son derece kolay. Bu gün buna bir kere daha inandım. Çünkü bir Java uygulaması içerisinde TFS Client Object Model’ i kullanarak, bir Team Project’ in Work Item listesini sorguladım Winking smile Nasıl yaptığımı merak ediyorsanız okumaya devam edin. Tabi bu işte de çok önemli bir yardımcım vardı. O da Microsoft tarafından geliştirilen ve ücretsiz olarak sunulan Client Object Model SDK’sı. Ama Java için olan sürümü.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/developers.jpg"&gt;&lt;img style="margin: 4px 0px; display: inline; float: right;" title="developers" src="/pics/developers_thumb.jpg" alt="developers" width="200" height="298" align="right" /&gt;&lt;/a&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;&amp;Ccedil;ok değil daha bir ka&amp;ccedil; sene &amp;ouml;ncesine kadar&lt;em&gt;(&amp;Ouml;zellikle .Net&amp;rsquo; in duyurulduğu yıllarda ve izleyen bir ka&amp;ccedil; senede) &lt;/em&gt;yazılım d&amp;uuml;nyasında neredeyse yandaki resimdekine benzer bir kavga vardı&lt;em&gt;(Benzetmeyi biraz abartmış olabilirim)&lt;/em&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Java&lt;/strong&gt;&amp;rsquo; cılar, &lt;strong&gt;C#&lt;/strong&gt;&amp;rsquo; &amp;ccedil;ıları pek sevmez iken tam tersi durum da pekala ge&amp;ccedil;erliydi. Ben hi&amp;ccedil; bir zaman birisinin fanatiği olmadım. Hatta Java ile ufak &amp;ccedil;aplı bir ka&amp;ccedil; deneyimim bile oldu.&lt;/p&gt;
+&lt;p&gt;Peki ger&amp;ccedil;ek d&amp;uuml;nya b&amp;ouml;yle mi? &amp;Ouml;zellikle kalabalık yazılım ekiplerinin olduğu, &amp;ccedil;ok fazla sayıda &amp;uuml;r&amp;uuml;n&amp;uuml;n koştuğu d&amp;uuml;nyalarda, sadece &lt;strong&gt;Java&lt;/strong&gt;&amp;rsquo; cıları, &lt;strong&gt;C#&lt;/strong&gt;&amp;rsquo; &amp;ccedil;ıları değil, daha pek &amp;ccedil;ok programlama dili geliştiricilerini bir arada g&amp;ouml;rmekteyiz. &amp;Ouml;neğin ben bulunduğum konum itibariyle &lt;strong&gt;C&lt;/strong&gt;&amp;rsquo; cilerin, &lt;strong&gt;Assembler&lt;/strong&gt;&amp;rsquo; cıların, &lt;strong&gt;PowerBuilder&lt;/strong&gt;&amp;rsquo; cıların, &lt;strong&gt;.Net&lt;/strong&gt;&amp;rsquo; &amp;ccedil;ilerin, &lt;strong&gt;Java&lt;/strong&gt;&amp;rsquo; cıların ve hatta &lt;strong&gt;Cobol&lt;/strong&gt;&amp;rsquo; cuların arasında yaşamaktayım.&lt;/p&gt;
+&lt;p&gt;Hepsi kendi d&amp;uuml;nyalarını kullanarak &amp;uuml;r&amp;uuml;nler geliştiriyor olsalar da, zaman i&amp;ccedil;erisinde birbirleriyle konuşması gereken uygulamalar b&amp;uuml;t&amp;uuml;n&amp;uuml;n&amp;uuml;n de bir par&amp;ccedil;ası olmaktan ka&amp;ccedil;amıyorlar. &amp;Ouml;zellikle işin i&amp;ccedil;erisine bir &lt;strong&gt;ALM&lt;em&gt;(Application LifeCycle Management)&lt;/em&gt;&lt;/strong&gt; aracı girdiğinde. İşte bu g&amp;uuml;nk&amp;uuml; konumuzda buna itaf edilecek &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_194.png" alt="Winking smile" /&gt; Haydi gelin başlayalım.&lt;/p&gt;
+&lt;p&gt;Bildiğiniz &amp;uuml;zere bir s&amp;uuml;redir &lt;strong&gt;Team Foundation Server&amp;rsquo;&lt;/strong&gt; ın &amp;ccedil;evre d&amp;uuml;nya ile olan etkileşimini incelemeye &amp;ccedil;alışıyorum. A&amp;ccedil;ık&amp;ccedil;ası &lt;strong&gt;TFS&amp;rsquo;&lt;/strong&gt; in gerek servis yapısı gerek&lt;strong&gt; Client Object Model&lt;/strong&gt; gibi k&amp;uuml;t&amp;uuml;phaneleri sayesinde, dış d&amp;uuml;nya ile olan entegrasyonu son derece kolay. Bu g&amp;uuml;n buna bir kere daha inandım. &amp;Ccedil;&amp;uuml;nk&amp;uuml; bir &lt;strong&gt;Java&lt;/strong&gt; uygulaması i&amp;ccedil;erisinde &lt;strong&gt;TFS Client Object Model&lt;/strong&gt;&amp;rsquo; i kullanarak, bir &lt;strong&gt;Team Project&lt;/strong&gt;&amp;rsquo; in &lt;strong&gt;Work&lt;/strong&gt; &lt;strong&gt;Item&lt;/strong&gt; listesini sorguladım &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_194.png" alt="Winking smile" /&gt; Nasıl yaptığımı merak ediyorsanız okumaya devam edin. Tabi bu işte de &amp;ccedil;ok &amp;ouml;nemli bir yardımcım vardı. O da &lt;strong&gt;Microsoft &lt;/strong&gt;tarafından geliştirilen ve &amp;uuml;cretsiz olarak sunulan &lt;strong&gt;Client Object Model SDK&lt;/strong&gt;&amp;rsquo;sı. Ama &lt;strong&gt;Java&lt;/strong&gt; i&amp;ccedil;in olan s&amp;uuml;r&amp;uuml;m&amp;uuml;.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Microsoft Team Foundation Server 2012 Software Development Kit for Java&lt;/strong&gt; i&amp;ccedil;eriğini &lt;a href="http://www.microsoft.com/en-us/download/details.aspx?id=22616" target="_blank"&gt;bu adresten&lt;/a&gt; indirebilirsiniz&lt;em&gt;(Makaleyi hazırladığım tarih itibariyle 15 Şubat 2013&amp;rsquo; te yayınlanmış g&amp;uuml;ncel bir s&amp;uuml;r&amp;uuml;m&amp;uuml; bulunmaktaydı)&lt;/em&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1&gt;Senaryo&lt;/h1&gt;
+&lt;p&gt;Senaryomuz esas itibariyle yine bir &lt;strong&gt;Hello World&lt;/strong&gt; uygulaması olacak. &lt;img class="wlEmoticon wlEmoticon-embarrassedsmile" style="border-style: none;" src="/pics/wlEmoticon-embarrassedsmile_5.png" alt="Embarrassed smile" /&gt;&amp;nbsp;&lt;strong&gt;Console&lt;/strong&gt; ekranına belirli bir &lt;strong&gt;Team Project&lt;/strong&gt; i&amp;ccedil;erisinde yer alan &lt;strong&gt;Work&lt;/strong&gt; &lt;strong&gt;Item&lt;/strong&gt; bilgilerini&lt;em&gt;(Product Backlog Item, Bug, Task gibi)&lt;/em&gt; yazdırmaya &amp;ccedil;alışacağız. &amp;Ouml;rneğin &lt;strong&gt;Work Item&lt;/strong&gt;&amp;rsquo; ın başlığını&lt;em&gt;(Title)&lt;/em&gt;, tipini&lt;em&gt;(WorkItem Type)&lt;/em&gt;, numarasını&lt;em&gt;(ID)&lt;/em&gt; d&amp;uuml;zg&amp;uuml;n bir sırada &amp;ccedil;ekmeyi deneyebiliriz. Java kodlaması yapacağımız i&amp;ccedil;in &lt;strong&gt;Eclipse&lt;/strong&gt; gibi bir &lt;strong&gt;IDE&lt;/strong&gt; tercih edilebilir ki ben &amp;ouml;yle yaptım &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_194.png" alt="Winking smile" /&gt;&lt;/p&gt;
+&lt;h1&gt;Bebek Adımları&lt;/h1&gt;
+&lt;h2&gt;Adım 0&lt;/h2&gt;
+&lt;p&gt;İlk olarak &lt;strong&gt;Eclipse&lt;/strong&gt; &amp;uuml;zerinde yeni bir &lt;strong&gt;Java&lt;/strong&gt; &lt;strong&gt;Projesi&lt;/strong&gt; oluşturarak işe başlayalım&lt;em&gt;(File-&amp;gt;New-&amp;gt;Java Project)&lt;/em&gt;. Ben &lt;strong&gt;UsingClientObjectModel&lt;/strong&gt; olarak adlandırdığım projeyi, sistemimde kurulu olan &lt;strong&gt;Workspace&lt;/strong&gt; i&amp;ccedil;erisinde oluşturdum. &lt;strong&gt;Runtime&lt;/strong&gt; olarak &lt;strong&gt;1.6&lt;/strong&gt; s&amp;uuml;r&amp;uuml;m&amp;uuml;n&amp;uuml; kullanmayı tercih ediyorum. Bu nedenle daha &amp;ouml;nceki projelerden varsayılan olarak kalan &lt;strong&gt;Use an execution environment JRE&lt;/strong&gt; değerini olduğu gibi bıraktım.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/jtfs_1.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="jtfs_1" src="/pics/jtfs_1_thumb.png" alt="jtfs_1" width="500" height="658" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Bu &amp;uuml;retim işlemi sonrasında &lt;strong&gt;Eclipse IDE&lt;/strong&gt;&amp;rsquo; sinde aşağıdakine benzer bir i&amp;ccedil;erik oluştuğunu g&amp;ouml;rmeliyiz. &lt;em&gt;(Elbette sisteminizde &lt;strong&gt;Java Runtime Environement&amp;rsquo;&lt;/strong&gt; in y&amp;uuml;kl&amp;uuml; olduğu fiziki adresler daha farklı olabilir.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/jtfs_2.png"&gt;&lt;img style="display: inline;" title="jtfs_2" src="/pics/jtfs_2_thumb.png" alt="jtfs_2" width="376" height="329" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;Adım 1&lt;/h2&gt;
+&lt;p&gt;İkinci adım ise main metodunu i&amp;ccedil;erecek olan ve asıl kodlarımızı yazacağımız sınıfı eklemek olacaktır. &lt;strong&gt;Visual Studio&lt;/strong&gt; tarafından kalma bir alışkanlık nedeniyle &lt;strong&gt;Program&lt;/strong&gt; olarak isimlendirdiğim sınıf, &lt;strong&gt;tfs.clientobjectmodel.application&lt;/strong&gt; isimli paket i&amp;ccedil;erisinde konuşlandırılacak&lt;em&gt;(Siz kendi istediğiniz paket tanımlamasını yapabilirsiniz)&lt;/em&gt; Krtik noktalardan birisi de, &lt;strong&gt;public static void main(String[] args)&lt;/strong&gt; se&amp;ccedil;eneğinin işaretli olmasıdır. Bu, tahmin edeceğiniz &amp;uuml;zere programın giriş noktası olan &lt;strong&gt;main&lt;/strong&gt; metodudur.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;C# tarafından da bildiğiniz &amp;uuml;zere static Main metodu, exe tipindeki uygulamaların giriş noktasıdır. Aynı durum Java uygulamaları i&amp;ccedil;in de ge&amp;ccedil;erlidir. Tek fark Java tarafında isimlendirme standartı gereği k&amp;uuml;&amp;ccedil;&amp;uuml;k m harfi ile başlanmasıdır. Dikkat edileceği &amp;uuml;zere her iki dilde metoda parametre olarak string tipinden bir dizi alır. Programa dış ortamdan parametre aktarabilmek amacıyla &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_194.png" alt="Winking smile" /&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;a href="/pics/jtfs_3.png"&gt;&lt;img style="display: inline;" title="jtfs_3" src="/pics/jtfs_3_thumb.png" alt="jtfs_3" width="500" height="598" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Bu işlemin sonucunda &lt;strong&gt;Eclipse IDE&lt;/strong&gt;&amp;rsquo; si bizim i&amp;ccedil;in aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan i&amp;ccedil;eriği &amp;uuml;retmelidir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/jtfs_4.png"&gt;&lt;img style="display: inline;" title="jtfs_4" src="/pics/jtfs_4_thumb.png" alt="jtfs_4" width="624" height="228" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;Adım 2&lt;/h2&gt;
+&lt;p&gt;&amp;Uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; adımda, bilgisayarımıza indirip a&amp;ccedil;tığımız &lt;strong&gt;TFS SDK&lt;/strong&gt;&amp;rsquo; sını referans ediyor olacağız. Bunun i&amp;ccedil;in ilgili &lt;strong&gt;JAR&lt;/strong&gt; dosyasının uygulamaya bildirilmesi&lt;em&gt;(bir başka deyişle referans edilmesi)&lt;/em&gt; gerekmektedir. S&amp;ouml;z konusu bildirim i&amp;ccedil;in proje &amp;ouml;zelliklerinden &lt;strong&gt;Java Build Path &lt;/strong&gt;kısmına gelmeli ve &lt;strong&gt;Add External JARs&lt;/strong&gt; d&amp;uuml;ğmesini kullanarak &lt;strong&gt;com.microsoft.tfs.sdk-11.0.0&lt;/strong&gt; isimli &lt;strong&gt;JAR&lt;/strong&gt; dosyasını se&amp;ccedil;meliyiz.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/jtfs_5.png"&gt;&lt;img style="display: inline;" title="jtfs_5" src="/pics/jtfs_5_thumb.png" alt="jtfs_5" width="603" height="537" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/jtfs_6.png"&gt;&lt;img style="display: inline;" title="jtfs_6" src="/pics/jtfs_6_thumb.png" alt="jtfs_6" width="406" height="149" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Konu ile ilişkili olarak yaptığım araştırmalarda ş&amp;ouml;yle bir kullanıma da rastladım. Hazırlanan Java uygulamasının dağıtılabileceği de d&amp;uuml;ş&amp;uuml;n&amp;uuml;l&amp;uuml;rse SDK&amp;rsquo; nın Redistributable olan par&amp;ccedil;alarının proje klas&amp;ouml;r&amp;uuml; altına kopyalanması ve ilgili path bildirimlerinin bu fiziki adresleri g&amp;ouml;sterecek şekilde yapılması yolu da tercih edilebilir. B&amp;ouml;yle bir durumda Add JARs d&amp;uuml;ğmesinden hareket edilir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Sonu&amp;ccedil; olarak &lt;strong&gt;Java Build Path&lt;/strong&gt; kısmının aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ndeki gibi oluşması gerekmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/jtfs_7.png"&gt;&lt;img style="display: inline;" title="jtfs_7" src="/pics/jtfs_7_thumb.png" alt="jtfs_7" width="603" height="186" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Ne varki bu yeterli değildir. Bir de eklenen &lt;strong&gt;JAR &lt;/strong&gt;dosyası i&amp;ccedil;in &lt;strong&gt;Native Libary Location &lt;/strong&gt;değerinin &lt;strong&gt;set &lt;/strong&gt;edilmesi gerekmektedir. Bunun i&amp;ccedil;in aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere, &lt;strong&gt;SDK&lt;/strong&gt;&amp;rsquo; nın a&amp;ccedil;ılması sonucu oluşan&lt;strong&gt; redist\native&lt;/strong&gt; klas&amp;ouml;r&amp;uuml;ne kadar inilmeli ve platforma uygun olan klas&amp;ouml;r se&amp;ccedil;ilmelidir. Ben &lt;strong&gt;x86&lt;/strong&gt; işlemcili &lt;strong&gt;win32&lt;/strong&gt; tabanlı bir sistem de &amp;ccedil;alıştığımdan buna uygun olan klas&amp;ouml;r&amp;uuml; se&amp;ccedil;tim&lt;em&gt;(Native klas&amp;ouml;r&amp;uuml; altında &lt;strong&gt;Linux&lt;/strong&gt;, &lt;strong&gt;MacOSX&lt;/strong&gt;, &lt;strong&gt;Solaris&lt;/strong&gt; gibi pek &amp;ccedil;ok sistem i&amp;ccedil;in gerekli k&amp;uuml;t&amp;uuml;phaneler bulunmaktadır)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/jtfs_8.png"&gt;&lt;img style="display: inline;" title="jtfs_8" src="/pics/jtfs_8_thumb.png" alt="jtfs_8" width="611" height="361" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Buraya kadar ki işlemlerimiz sonrasında &lt;strong&gt;Eclipse IDE&lt;/strong&gt;&amp;rsquo; sinde projemize ait olan son g&amp;ouml;r&amp;uuml;n&amp;uuml;m de aşağıdaki gibi olacaktır. Dikkat edileceği &amp;uuml;zere &lt;strong&gt;TFS SDK&lt;/strong&gt;&amp;rsquo; sı, &lt;strong&gt;Referenced Libraries&lt;/strong&gt; kısmında g&amp;ouml;r&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/jtfs_9.png"&gt;&lt;img style="display: inline;" title="jtfs_9" src="/pics/jtfs_9_thumb.png" alt="jtfs_9" width="375" height="274" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h1&gt;&amp;Ouml;rnek kodlar&lt;/h1&gt;
+&lt;p&gt;Şimdi kod tarafını geliştirmeye başlayabiliriz. Aslında &lt;strong&gt;.Net&lt;/strong&gt; tarafında &lt;strong&gt;Client Object Model&amp;rsquo;&lt;/strong&gt; in kullanımından &amp;ccedil;ok da farklı bir işlem yapmamıza gerek yoktur. &lt;strong&gt;TFS Client Object Model&lt;/strong&gt;&amp;rsquo; in nesne yapısının hemen hemen aynısı burada da inşa edilmiştir. Şimdi Program sınıfına ait kodlarımızı aşağıdaki gibi geliştirelim.&lt;/p&gt;
+&lt;p&gt;package tfs.clientobjectmodel.application;&lt;/p&gt;
+&lt;pre class="brush:java;auto-links:false;toolbar:false" contenteditable="false"&gt;import java.net.URI; 
+import java.net.URISyntaxException;
+
+import com.microsoft.tfs.core.TFSTeamProjectCollection; 
+import com.microsoft.tfs.core.clients.workitem.WorkItem; 
+import com.microsoft.tfs.core.clients.workitem.WorkItemClient; 
+import com.microsoft.tfs.core.clients.workitem.query.WorkItemCollection; 
+import com.microsoft.tfs.core.httpclient.Credentials; 
+import com.microsoft.tfs.core.httpclient.HttpException;
+
+public class Program {
+
+    public static void main(String[] args) 
+            throws HttpException, URISyntaxException { 
+        
+        System.setProperty("com.microsoft.tfs.jni.native.base-directory" 
+               , "C:\\Program Files\\TFS-SDK-11.0.0.1302\\TFS-SDK-11.0.0\\redist\\native"); 
+        
+        URI uri=new URI("http://tfsserver:8080/tfs/defaultcollection"); 
+        Credentials user=new com.microsoft.tfs.core.httpclient.DefaultNTCredentials(); 
+        
+        TFSTeamProjectCollection collection=new TFSTeamProjectCollection(uri,user); 
+            
+        WorkItemClient wiClient=collection.getWorkItemClient(); 
+                
+        WorkItemCollection workItems=wiClient 
+                .query("Select ID,Title from WorkItems " + 
+                        "where ([Team Project]='ARGE') order by [Work Item Type]"); 
+        System.out.println("Active statusunde olan toplam "+ 
+                workItems.size()+" work item bulunmustur");        
+        
+        for(int i=0;i&amp;lt;workItems.size();i++) 
+        { 
+            WorkItem workItem=workItems.getWorkItem(i); 
+            System.out.println(workItem.getTitle() 
+                    +" "+workItem.getType().getName() 
+                    +" "+workItem.getID() 
+                    +" "+workItem.getProject().getName() 
+                    ); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;İlk dikkat edilmesi gereken nokta &lt;strong&gt;System&lt;/strong&gt; &amp;ouml;zelliklerine bir &lt;strong&gt;key-value&lt;/strong&gt; eklenmiş olmasıdır. &lt;strong&gt;com.microsoft.tfs.jni.native.base-directory&lt;/strong&gt; isimli &lt;strong&gt;key&lt;/strong&gt; i&amp;ccedil;in &lt;strong&gt;C:\\Program Files\\TFS-SDK-11.0.0.1302\\TFS-SDK-11.0.0\\redist\\native&lt;/strong&gt; adresi &lt;strong&gt;value&lt;/strong&gt; olarak verilmiştir. Normal şartlarda bu bildirim komut satırından &lt;strong&gt;java.exe&lt;/strong&gt; uygulaması kullanılarak da yapılabilir. S&amp;ouml;z konusu sistem &amp;ouml;zelliğinin &lt;span style="text-decoration: underline;"&gt;bir kere set edilmesi&lt;/span&gt; yeterlidir. Bu bildirim ile aslında &lt;strong&gt;native loader&lt;/strong&gt;&amp;rsquo; ın sisteme tanıtılması işlemi ger&amp;ccedil;ekleştirilir. Eğer ilgili bildirim yapılmazsa, &amp;ccedil;alışma zamanında aşağıdaki hata mesajı ile karşılaşılması muhtemeldir.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;Exception in thread "main" java.lang.UnsatisfiedLinkError: com.microsoft.tfs.jni.internal.platformmisc.NativePlatformMisc.nativeGetEnvironmentVariable (Ljava/lang/String;)Ljava/lang/String; 
+    at com.microsoft.tfs.jni.internal.platformmisc.NativePlatformMisc.nativeGetEnvironmentVariable (Native Method) 
+    at com.microsoft.tfs.jni.internal.platformmisc.NativePlatformMisc.getEnvironmentVariable (NativePlatformMisc.java:134) 
+    at com.microsoft.tfs.jni.PlatformMiscUtils.getEnvironmentVariable (PlatformMiscUtils.java:52) 
+    at com.microsoft.tfs.core.config.httpclient.DefaultHTTPClientFactory.shouldAcceptUntrustedCertificates (DefaultHTTPClientFactory.java:288) 
+    at com.microsoft.tfs.core.config.httpclient.DefaultHTTPClientFactory.configureClientParams (DefaultHTTPClientFactory.java:324) 
+    at com.microsoft.tfs.core.config.httpclient.DefaultHTTPClientFactory.newHTTPClient (DefaultHTTPClientFactory.java:137) 
+    at com.microsoft.tfs.core.TFSConnection.getHTTPClient (TFSConnection.java:1041) 
+    at com.microsoft.tfs.core.TFSConnection.getWebService (TFSConnection.java:874) 
+    at com.microsoft.tfs.core.config.client.DefaultClientFactory$9.newClient (DefaultClientFactory.java:265) 
+    at com.microsoft.tfs.core.config.client.DefaultClientFactory.newClient (DefaultClientFactory.java:90) 
+    at com.microsoft.tfs.core.TFSConnection.getClient (TFSConnection.java:1470) 
+    at com.microsoft.tfs.core.TFSTeamProjectCollection.getWorkItemClient (TFSTeamProjectCollection.java:370) 
+    at tfs.clientobjectmodel.application.Program.main (Program.java:26)&lt;/pre&gt;
+&lt;p&gt;Bundan sonraki kısımda ilk olarak &lt;strong&gt;TFSTeamProjectCollection&lt;/strong&gt; tipinden bir nesne &amp;ouml;rneklendiği g&amp;ouml;r&amp;uuml;lmektedir. &amp;Ouml;rnekleme sırasında ilk parametre olarak &lt;strong&gt;DefaultCollection&amp;rsquo;&lt;/strong&gt; a ait &lt;strong&gt;url&lt;/strong&gt; adresi verilmiştir&lt;em&gt;(Programda TFS sunucusunun kurulu olduğu makinedeki varsayılan &lt;strong&gt;Team Project Collection &lt;/strong&gt;kullanılmaktadır)&lt;/em&gt;. &lt;strong&gt;URI&lt;/strong&gt; sınıfından yapılan bu bildirimi &lt;strong&gt;Credentials&lt;/strong&gt; tipinden bir parametre takip etmektedir. Makineyi a&amp;ccedil;an kullanıcının &lt;strong&gt;Credential&lt;/strong&gt; bilgisi ile &lt;strong&gt;TFS&lt;/strong&gt;&amp;rsquo; e bağlanılmak istendiğinden &lt;strong&gt;DefaultNTCredentials&lt;/strong&gt; tipinden bir nesne &amp;ouml;rneği ele alınmıştır. Ancak bir kullanıcı adı ve şifre ile gidilmek istenirse, &lt;strong&gt;UsernamePasswordCredentials&lt;/strong&gt; sınıfından da yararlanılabilir&lt;em&gt;(Elbette ilgili kullanıcıların s&amp;ouml;z konusu TFS sunucusuna ve koleksiyona erişebildiğini, bir başka deyişle gerekli yetkilere sahip olduğunu var sayıyoruz)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Kod par&amp;ccedil;asında &lt;strong&gt;ARGE&lt;/strong&gt; isimli projeye ait &lt;strong&gt;Work Item&lt;/strong&gt;&amp;rsquo; lar &amp;ccedil;ekilmeye &amp;ccedil;alışılmaktadır. Bu sebepten &lt;strong&gt;WorkItemStore&lt;/strong&gt; servisine erişilmesi gerekmektedir. İlgili servisi kullanabilmek i&amp;ccedil;in &lt;strong&gt;getWorkItemClient&lt;/strong&gt; fonksiyonu &amp;ccedil;ağırılmaktadır. Bu metod geriye &lt;strong&gt;WorkItemClient&lt;/strong&gt; tipinden bir referans d&amp;ouml;nd&amp;uuml;rmektedir. Bu referans &amp;uuml;zerinden &amp;ccedil;ağırılan &lt;strong&gt;query&lt;/strong&gt; fonksiyonuna girilen &lt;strong&gt;WIQL&lt;em&gt;(WorkItem Query Language)&lt;/em&gt;&lt;/strong&gt; sorgusu ile de &lt;strong&gt;WorkItemCollection&lt;/strong&gt; elde edilir. Bu koleksiyon sorguya uygun bir &lt;strong&gt;Work&lt;/strong&gt; &lt;strong&gt;Item&lt;/strong&gt; i&amp;ccedil;eriğini taşıyacaktır.&lt;/p&gt;
+&lt;p&gt;Pek tabi &lt;strong&gt;Java&lt;/strong&gt; tarafında, &lt;strong&gt;.Net&lt;/strong&gt;&amp;rsquo; te olduğu gibi &lt;strong&gt;Property &lt;/strong&gt;isimli bir tip &amp;uuml;yesi&lt;em&gt;(Type Member)&lt;/em&gt; bulunmamaktadır. Ancak &lt;strong&gt;.Net&lt;/strong&gt;&amp;rsquo; ten aşina olduğumuz &lt;strong&gt;WorkItem&lt;/strong&gt; &amp;ouml;zelliklerine &lt;strong&gt;get&lt;/strong&gt; &amp;ouml;n ekli metodlar yardımıyla ulaşabiliriz. &amp;Ouml;rnekte &lt;strong&gt;Work Item&lt;/strong&gt;&amp;rsquo; ın &lt;strong&gt;Title&lt;/strong&gt; değeri i&amp;ccedil;in &lt;strong&gt;getTitle()&lt;/strong&gt;, Work Item tipinin adı i&amp;ccedil;in &lt;strong&gt;getType().getName()&lt;/strong&gt;, sistem de kayıtlı olan &lt;strong&gt;ID &lt;/strong&gt;bilgisi i&amp;ccedil;in de &lt;strong&gt;getID() &lt;/strong&gt;metodu kullanılmıştır.&lt;/p&gt;
+&lt;p&gt;Sonu&amp;ccedil; olarak &lt;strong&gt;ARGE&lt;/strong&gt; isimli projedeki &lt;strong&gt;Work Item&lt;/strong&gt;&amp;rsquo; ların &lt;strong&gt;ID,Title &lt;/strong&gt;değerlerinin, &lt;strong&gt;Work Item &lt;/strong&gt;tipine g&amp;ouml;re sıralanarak elde edilmesi işlemi icra edilmektedir. Uygulamanın &amp;ccedil;alışma zamanı sonu&amp;ccedil;ları aşağıda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibidir&lt;em&gt;(Farklı WIQL sorguları ile &amp;ouml;rneği zenginleştirmeyi denemenizi &amp;ouml;neririm &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_194.png" alt="Winking smile" /&gt; )&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/jtfs_10.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="jtfs_10" src="/pics/jtfs_10_thumb.png" alt="jtfs_10" width="637" height="686" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Senaryoyu işlettiğim sistemde test ama&amp;ccedil;lı olarak kullandığım &lt;strong&gt;ARGE&lt;/strong&gt; isimli &lt;strong&gt;Team Project&lt;/strong&gt;, &lt;strong&gt;Scrum 2.0&lt;/strong&gt; şablonunu kullanmaktaydı. Bu nedenle &lt;strong&gt;Product Backlog Item, Task &lt;/strong&gt;ve &lt;strong&gt;Bug &lt;/strong&gt;gibi &lt;strong&gt;Work Item &lt;/strong&gt;&amp;ouml;ğelerini barındırmaktadır.&lt;/p&gt;
+&lt;h1&gt;Biraz Daha&lt;/h1&gt;
+&lt;p&gt;Dilerseniz &amp;ouml;rnek kod par&amp;ccedil;asını biraz daha geliştirmeye &amp;ccedil;alışalım. &amp;Ouml;rneğin yeni bir &lt;strong&gt;Work&lt;/strong&gt; &lt;strong&gt;Item&lt;/strong&gt; nasıl eklenir ona bakalım. &lt;strong&gt;.Net&lt;/strong&gt; tarafından biraz farklı olarak yeni bir &lt;strong&gt;WorkItem&lt;/strong&gt; nesnesinin &amp;ouml;rneklenmesi i&amp;ccedil;in &lt;strong&gt;Project&lt;/strong&gt; sınıfı &amp;uuml;zerinden &lt;strong&gt;WorkItemClient&lt;/strong&gt; referansına ulaşışması ve &lt;strong&gt;newWorkItem&lt;/strong&gt; metodunun &amp;ccedil;ağırılması gerekmektedir&lt;em&gt;(Yani &lt;strong&gt;WorkItem&lt;/strong&gt; sınıfını doğrudan bir &lt;strong&gt;yapıcı metod-Constructor&lt;/strong&gt; ile &amp;ouml;rnekleyemiyoruz) &lt;/em&gt;Aynen aşağıdaki kod par&amp;ccedil;asında olduğu gibi.&lt;/p&gt;
+&lt;pre class="brush:java;auto-links:false;toolbar:false" contenteditable="false"&gt;package tfs.clientobjectmodel.application;
+
+import java.net.URI; 
+import java.net.URISyntaxException;
+
+import com.microsoft.tfs.core.TFSTeamProjectCollection; 
+import com.microsoft.tfs.core.clients.workitem.WorkItem; 
+import com.microsoft.tfs.core.clients.workitem.WorkItemClient; 
+import com.microsoft.tfs.core.clients.workitem.project.Project; 
+import com.microsoft.tfs.core.clients.workitem.wittype.WorkItemType; 
+import com.microsoft.tfs.core.httpclient.Credentials; 
+import com.microsoft.tfs.core.httpclient.HttpException;
+
+public class Program {
+
+    public static void main(String[] args) 
+            throws HttpException, URISyntaxException { 
+         
+        URI uri=new URI("http://tfsserver:8080/tfs/defaultcollection"); 
+        Credentials user=new com.microsoft.tfs.core.httpclient.DefaultNTCredentials(); 
+        
+        TFSTeamProjectCollection collection=new TFSTeamProjectCollection(uri,user); 
+            
+        WorkItemClient wiClient=collection.getWorkItemClient(); 
+         
+        Project argeProject=wiClient.getProjects().get("ARGE"); 
+        WorkItemType pbi=argeProject.getWorkItemTypes().get("Product Backlog Item"); 
+        
+        WorkItem newWorkItem=argeProject.getWorkItemClient().newWorkItem(pbi); 
+        newWorkItem.setTitle("Backoffice ekranlarin icin wire frame tasarim calismalari"); 
+        newWorkItem.save(); 
+        System.out.println(newWorkItem.getID()+" numarasi ile bir Product Backlog Item olusturuldu"); 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Dikkat edilmesi gereken noktalardan birisi de &lt;strong&gt;newWorkItem&lt;/strong&gt; metoduna parametre olarak &amp;uuml;retilmek istenen &lt;strong&gt;work&lt;/strong&gt; &lt;strong&gt;item&lt;/strong&gt; tipinin verilmesidir. Bu bildirim i&amp;ccedil;in &lt;strong&gt;WorkItemType&lt;/strong&gt; sınıfına ait bir nesne &amp;ouml;rneği kullanılmaktadır. &lt;strong&gt;WorkItemType&lt;/strong&gt; &amp;uuml;retimi i&amp;ccedil;in projeye ait nesne &amp;ouml;rneği &amp;uuml;zerinden &amp;ouml;nce var olan &lt;strong&gt;WorkItem&lt;/strong&gt; tiplerinin elde edilmesi işlemi ger&amp;ccedil;ekleştirilmiş, ardından ise &lt;strong&gt;Product&lt;/strong&gt; &lt;strong&gt;Backlog&lt;/strong&gt; &lt;strong&gt;Item&lt;/strong&gt; tipi &amp;ccedil;ekilmiştir. Bu son derece mantıklıdır, nitekim ilgili projenin şablonu&lt;em&gt;(ki &amp;ouml;rneğimizde Scrum 2.0 s&amp;ouml;z konusudur)&lt;/em&gt; tarafından kullanılan &lt;strong&gt;Work&lt;/strong&gt; &lt;strong&gt;Item&lt;/strong&gt; tipleri ne ise, onlara ait &lt;strong&gt;Work&lt;/strong&gt; &lt;strong&gt;Item&lt;/strong&gt; nesneleri &amp;ouml;rneklenebilir. &amp;Uuml;retilen &lt;strong&gt;Product&lt;/strong&gt; &lt;strong&gt;Backclog&lt;/strong&gt; &lt;strong&gt;Item&lt;/strong&gt; i&amp;ccedil;in bir &lt;strong&gt;Title&lt;/strong&gt; değeri verilmiş ve sonrasında &lt;strong&gt;Save&lt;/strong&gt; metodu kullanılarak kayıt işlemi ger&amp;ccedil;ekleştirilmiştir. Uygulama &amp;ccedil;alıştırıldığında hem &lt;strong&gt;Console&lt;/strong&gt; penceresinden hem de ilgili projeye ait &lt;strong&gt;Backlog&lt;/strong&gt;&amp;rsquo; da bir &amp;ouml;ğenin oluşturulduğu g&amp;ouml;zlemlenecektir.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/jtfs_11.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="jtfs_11" src="/pics/jtfs_11_thumb.png" alt="jtfs_11" width="593" height="605" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;Team Foundation Server Client Object Model&lt;/strong&gt;&amp;rsquo; in, &lt;strong&gt;Java &lt;/strong&gt;tarafında kullanılması da son derece kolaydır. &amp;Ouml;rnek, tahmin edeceğiniz &amp;uuml;zere&lt;strong&gt; Hello World&lt;/strong&gt; formatındadır. Ancak daha &amp;ouml;nceki yazılarımızı baz alarak, .&lt;strong&gt;Net&lt;/strong&gt; tarafındaki &lt;strong&gt;Client Object Model &lt;/strong&gt;kodlarını, &lt;strong&gt;Java &lt;/strong&gt;tarafına taşımayı deneyebilirsiniz. &lt;strong&gt;Kim demiş Java, Microsoft&amp;rsquo; u, Microsoft&amp;rsquo; ta Java&amp;rsquo; yı umursamıyor diye&lt;/strong&gt; &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_194.png" alt="Winking smile" /&gt; B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2013-05-12 10:10:00</pubDate>
+  <slug>Java-ile-TFS-Client-Object-Model-Konusuyor</slug>
+  <tags>
+    <tag>java</tag>
+    <tag>eclipse</tag>
+    <tag>team-foundation-server</tag>
+    <tag>tfs</tag>
+    <tag>tfs-2012</tag>
+    <tag>entegrasyon</tag>
+    <tag>tfs-client-object-model</tag>
+    <tag>client-object-model</tag>
+    <tag>work-item</tag>
+    <tag>workitemstore</tag>
+    <tag>tfs-services</tag>
+  </tags>
+  <categories>
+    <category>Team Foundation Server</category>
+  </categories>
+</post>

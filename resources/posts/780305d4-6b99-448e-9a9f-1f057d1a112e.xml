@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Bağlantısız Katmanda LINQ</title>
+  <description>Language Integrated Query (Dil ile tümleştirilmiş sorgu) yardımıyla yapabileceklerimiz saymakla bitmiyor. Aslında LINQ projesinin en önemli çıkış nedeni, Anders Hejslberg' ın anlatımıyla veri ve nesne eşitsizliğidir. (data!=objects)</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Language Integrated Query (Dil ile t&amp;uuml;mleştirilmiş sorgu) yardımıyla yapabileceklerimiz saymakla bitmiyor. Aslında LINQ projesinin en &amp;ouml;nemli &amp;ccedil;ıkış nedeni, &lt;strong&gt;Anders Hejslberg'&lt;/strong&gt; ın anlatımıyla veri ve nesne eşitsizliğidir. &lt;strong&gt;(data!=objects) &lt;/strong&gt;Bu ifadeyi, TechEd 2006 sunumlarında kullanan Anders Hejslberg, &amp;ouml;zellikle veri yapılarının programlama ortamına alınması sonrasında, var olan basit sorgu tekniklerinin uygulanamayışından yakınmaktadır.&lt;/p&gt;
+&lt;p&gt;LINQ projesinin aslında en temel amacı, uygulamaların &amp;ccedil;alışma alanlarında (.Net perspektifinden baktığımızda Application Domain' ler i&amp;ccedil;erisinde), bellek &amp;uuml;zerinde konuşlanan nesneler &amp;uuml;zerinden bildiğimiz veri sorgulama kurallarını uygulayabilmektir. Bir başka deyişle, nesne(object) &amp;uuml;zerinde, var olan veritabanı nesnelerini taşıyabilen &lt;strong&gt;Entity&lt;/strong&gt; bileşenleri &amp;uuml;zerinde, belleğe alınan &lt;strong&gt;Xml&lt;/strong&gt; veri setleri &amp;uuml;zerinde, sorgulamaları bilinen alışılagelmiş s&amp;ouml;z dizimleri ile tek bir standart altında yapabilmektir. T&amp;uuml;m bu farklı nesnel yapıların ortak bir sorgulama dilini kullanabiliyor olması da LINQ projesinin ana fikirlerinden birisidir aslında.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk198_1.gif" alt="" width="517" height="256" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Yukarıdaki grafikte, LINQ projesinin odaklandığı temel modeller ifade edilmeye &amp;ccedil;alışılmıştır. LINQ sorguları bildiğiniz gibi bellek &amp;uuml;zerinde herhangibir şekilde &lt;strong&gt;IEnumerable&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml; uyarlamış olan her t&amp;uuml;r nesne topluluğuna uygulanabilmektedir. Bu nedenle bellek i&amp;ccedil;i nesnelerden &lt;strong&gt;(in memory objects)&lt;/strong&gt;, veritabanı(database) bağlantılı Entity nesnelerine kadar pek &amp;ccedil;ok yerde kullanılabilmektedir.&lt;/p&gt;
+&lt;p&gt;C# 3.0 ve geleceği ile ilgili olarak &amp;ouml;nceki makalelerimizde, DLINQ, XLINQ modellerini incelemeye &amp;ccedil;alışmıştık. Bunların yanında LINQ ile yapabileceklerimizi daha derinlemesine kavrayabilmek maksadıyla bol bol sorgu geliştirdik. Bug&amp;uuml;nk&amp;uuml; makalemizde ise, &amp;ouml;zellikle &lt;strong&gt;bağlantısız katman (disconnected layer)&lt;/strong&gt; nesneleri &amp;uuml;zerinde, yani bildiğimiz &lt;strong&gt;DataSet&lt;/strong&gt; ve &lt;strong&gt;DataTable&lt;/strong&gt; nesne &amp;ouml;rnekleri &amp;uuml;zerinde LINQ sorgularını nasıl yazabileceğimizi basit bir şekilde incelemeye &amp;ccedil;alışacağız. DataSet ve DataTable gibi bileşenler bildiğiniz gibi herhangibir veri kaynağından y&amp;uuml;klenen sonu&amp;ccedil; k&amp;uuml;melerini uygulama belleğinde tutmak amacıyla kullanılmaktadır. Ne varki &amp;ccedil;alışma zamanında, bağlantısız katman nesneleri &amp;uuml;zerindeki verilerde sorgulama yapabilmek i&amp;ccedil;in &amp;ccedil;eşitli yollara başvurmamız gerekir. &amp;Ouml;rneğin bunlardan birisi &lt;strong&gt;Select&lt;/strong&gt; metodudur.&lt;/p&gt;
+&lt;p&gt;Bir başka teknikte veri k&amp;uuml;melerini &lt;strong&gt;DataView&lt;/strong&gt; bileşenlerine alıp filtreleme amacıyla yardımcı fonksiyonellerden faydalanmaktır. LINQ, felsefe olarak yukarıda bahsettiğimiz t&amp;uuml;m veri k&amp;uuml;meleri i&amp;ccedil;in ortak bir sorgulama ortamı sunmaktadır. &amp;Ouml;yleyse bağlantısız katman nesneleri i&amp;ccedil;inde bu tekilleştirilmiş sorgulama modelini nasıl ele alabiliriz?Dilerseniz hi&amp;ccedil; vakit kaybetmeden &amp;ouml;rneğimize başlayalım. Bu seferki &amp;ouml;rneğimizi &lt;strong&gt;LINQ Windows Application&lt;/strong&gt; projesi olarak geliştireceğiz. Nitekim, DataTable i&amp;ccedil;eriğini ekranda g&amp;ouml;rsel olarak ele alabileceğimiz bir ortam olayları daha net algılayabilmemizi sağlayacaktır. Elbetteki bu makalede bahsedilen işlemleri ger&amp;ccedil;ekleştirebilmek i&amp;ccedil;in sistemimizde L&lt;strong&gt;INQ Preview&lt;/strong&gt; s&amp;uuml;r&amp;uuml;m&amp;uuml;n&amp;uuml;n y&amp;uuml;kl&amp;uuml; olması gerektiğini unutmayalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk198_2.gif" alt="" width="380" height="263" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Herhangibir DataTable &amp;uuml;zerinden LINQ sorguları &amp;ccedil;alıştırabilmemiz i&amp;ccedil;in &lt;strong&gt;System.Data.Extensions&lt;/strong&gt; isimli k&amp;uuml;t&amp;uuml;phanenin program i&amp;ccedil;erisinde referans edilmiş olması yeterlidir. &amp;Ccedil;alışmakta olduğumuz LINQ Windows uygulaması bu referansı varsayılan olarak i&amp;ccedil;ermektedir.&lt;/p&gt;
+&lt;p&gt;Herşeyden &amp;ouml;nce uygulamamızın bellek &amp;uuml;zerinde DataSet ve DataTable nesnelerine sahip olması gerekiyor. Bu ama&amp;ccedil;la makalemizde &lt;strong&gt;AdventureWorks&lt;/strong&gt; ve &lt;strong&gt;Northwind&lt;/strong&gt; veritabanlarından yararlanacağız. DataTable nesnelerimizi doldurmak i&amp;ccedil;in başvurabileceğimiz iki yol var. Bunlardan birisi, standart Ado.Net tiplerinden ve fonksiyonelliklerinden yararlanmak. Bir başka deyişle, &lt;strong&gt; DataAdapter&lt;/strong&gt; tipi ve &lt;strong&gt;Fill&lt;/strong&gt; metodundan bahsediyoruz.&lt;/p&gt;
+&lt;p&gt;Ancak bu kez biraz daha farklı olarak entity nesnelerinden faydalanacağız. Hatırlarsanız &lt;strong&gt;DLINQ&lt;/strong&gt; konusunu incelediğimiz makalemizde,&amp;nbsp; bir database ve i&amp;ccedil;erisindeki tablolar i&amp;ccedil;in otomatik olarak entity hazırlayabilmemizi sağlayan &lt;strong&gt;SqlMetal&lt;/strong&gt; isimli bir aracın LINQ Preview projesi ile birlikte geldiğinden bahsetmiştik. Bizim i&amp;ccedil;in gereken Entity sınıflarını oluşturması i&amp;ccedil;in SqlMetal aracını aşağıdaki gibi kullanıp &amp;uuml;retilen .cs dosyalarını projemize eklememiz yeterli olacaktır. &lt;em&gt;(SqlMetal aracına, LINQ Preview' u kurduktan sonra, varsayılan olarak D:\Program Files\LINQ Preview\Bin adresinden ulaşabilirsiniz.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk198_3.gif" alt="" width="639" height="142" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dolayısıyla artık entity nesneleri &amp;uuml;zerinden DataTable nesne &amp;ouml;rnekleri i&amp;ccedil;erisine veri doldurma işlemini ger&amp;ccedil;ekleştirebiliriz. Yazacağımız ilk kod par&amp;ccedil;ası, AdventureWorks veritabanı i&amp;ccedil;erisinde yer alan Production şemasındaki Product tablosundan bazı satırların bir DataTable i&amp;ccedil;erisine LINQ sorguları yardımıyla alınması işlemini ger&amp;ccedil;ekleştirecektir. Bu ama&amp;ccedil;la aşağıdaki kod par&amp;ccedil;asında olduğu gibi AdventureWorks isimli sınıfımıza ait bir nesne &amp;ouml;rneği oluşturmamız gerekmektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;AdventureWorks adWorks = new AdventureWorks("data source=localhost;database=AdventureWorks;integrated security=SSPI");&lt;/pre&gt;
+&lt;p&gt;Artık entity sınıflarımıza ait nesne &amp;ouml;rneklerini, adWorks &amp;uuml;zerinden kullanabiliriz. Aşağıdaki metod ile, global olarak tanımladığımız adWorks nesnesini kullanarak, yine global olarak tanımladığımız dtUrunler isimli DataTable isimli nesne &amp;ouml;rneğine veri doldurma işlemi yapılmaktadır. Biz LINQ sorgumuz i&amp;ccedil;erisinden belirli alanları alıp yeni bir isimsiz tip &lt;strong&gt;(anonymous type) &lt;/strong&gt; olarak &amp;ccedil;ekmekteyiz. Elbetteki bu sorgu i&amp;ccedil;erisinde bildiğimiz t&amp;uuml;m LINQ imkanlarını kullanabiliriz. Where, order by gibi ifadeler bunlara &amp;ouml;rnek olarak verilebilir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private DataTable LoadProductsTable()
+{
+    var urunler =from prd in adWorks.Production.Product
+                        select new {
+                                            prd.ProductID
+                                            ,prd.Name
+                                            ,prd.ListPrice
+                                            ,prd.Class
+                                            ,prd.SellStartDate
+                                            ,prd.SafetyStockLevel
+                                            ,prd.StandardCost
+                                        };
+
+    DataTable dtUrunler=new DataTable("Urunler");
+    dtUrunler=urunler.ToDataTable();
+    return dtUrunler;
+}&lt;/pre&gt;
+&lt;p&gt;Burada ilk olarak &lt;strong&gt; adWorks.Production.Product&lt;/strong&gt; entity nesnesi &amp;uuml;zerinden bir LINQ sorgusu &amp;ccedil;alıştırılmaktadır. Bunun sonucunda elde edilen veri k&amp;uuml;mesini bir DataTable i&amp;ccedil;erisine aktarmak i&amp;ccedil;in ise tek yapılması gereken &lt;strong&gt; ToDataTable&lt;/strong&gt; isimli metodun &amp;ccedil;ağırılmasıdır.&lt;em&gt; (System.Data.Extensions isim alanı, DataTable ve DataRow' lar i&amp;ccedil;in LINQ sorguları hazırlanmasını sağlayan pek &amp;ccedil;ok genişletme metodu i&amp;ccedil;ermektedir.)&lt;/em&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Kendi &amp;ouml;rneklerimizi denerken dikkat etmemiz gereken bir nokta vardır. &amp;Ouml;zellikle null değer alabilen sayısal ve tarihsel formatlı alanlar i&amp;ccedil;in LINQ sorguları aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan &amp;ccedil;alışma zamanı istisnasına neden olabilmektedir. &amp;Ouml;rneğin Product tablosunda sayısal ve null değer alabilen bir alan olarak tanımlanmış olan ProductSubCategoryID i&amp;ccedil;in bu istisna mesajı elde edilmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk198_4.gif" alt="" width="326" height="164" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Aynı durum null değerler alabilen varchar, nvarchar tipli alanlar i&amp;ccedil;in ge&amp;ccedil;erli değildir. Bunların program ortamı i&amp;ccedil;erisinde yer alan entity sınıfları i&amp;ccedil;erisinde string olarak kullanıldığına ve string' in &amp;ouml;zellikle referans tipi olduğu i&amp;ccedil;in null değer taşıyabildiğine dikkat edelim.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Artık elde ettiğimiz DataTable nesne &amp;ouml;rneğini herhangibir g&amp;ouml;rsel taşıyıcıya (container) bağlayabiliriz. Bu ama&amp;ccedil;la .Net 2.0 ile gelen &lt;strong&gt;DataGirdView&lt;/strong&gt; kontrol&amp;uuml; bi&amp;ccedil;ilmiş kaftandır. Uygulamada bu durumu test etmek i&amp;ccedil;in ana formumuzun &lt;strong&gt;Load&lt;/strong&gt; olay metodu i&amp;ccedil;erisinde aşağıdaki &amp;ouml;rnek kod par&amp;ccedil;aları yazılmıştır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;adWorks = new AdventureWorks("data source=localhost;database=AdventureWorks;integrated security=SSPI");
+
+dtUrunler = LoadProductsTable();
+dgUrunler.DataSource=dtUrunler;
+
+label1.Text = "&amp;Uuml;r&amp;uuml;n Sayısı " + (dgUrunler.Rows.Count-1).ToString();&lt;/pre&gt;
+&lt;p&gt;Programın &amp;ccedil;alışması sonucu aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;n&amp;uuml; elde ederiz. Dikkat ederseniz Product tablosundan 504 adet &amp;uuml;r&amp;uuml;n bilgisi y&amp;uuml;klenmiştir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk198_5.gif" alt="" width="639" height="299" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Asıl amacımız elbetteki DataTable nesne &amp;ouml;rneğini doldurmak değildir. &amp;Ouml;zellikle şunu tekrar belirtmekte fayda vardır. &amp;Ouml;rneğimizde Entity tipleri &amp;uuml;zerinden veri &amp;ccedil;ekme işlemi yapılmıştır. Pekala bunu DataAdapter yardımıyla da ger&amp;ccedil;ekleştirebiliriz. Ancak asıl yapmak istediğimiz veriyi bağlantısız katmana nasıl aldığımız değil, bellekte veri taşıyan DataTable &amp;uuml;zerinden LINQ sorgularını nasıl &amp;ccedil;alıştırabileceğimizdir. Nitekim LINQ, DataTable veya DataSet i&amp;ccedil;erisine verinin nasıl &amp;ccedil;ekildiği ile ilgilenmez. Bu ama&amp;ccedil;la &amp;ouml;rneğin yukarıdaki sonu&amp;ccedil;ları d&amp;ouml;nd&amp;uuml;ren DataTable bileşenimizin i&amp;ccedil;erisinde &amp;uuml;retim tarihi (SellStartDate alanının değeri) bellirli bir zamandan sonra olanları bulmak istediğimizi d&amp;uuml;ş&amp;uuml;nelim. S&amp;ouml;z konusu sorgu i&amp;ccedil;in aşağıdaki gibi bir kod par&amp;ccedil;asını kullanabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var sorgulanabilirUrunler = dtUrunler.ToQueryable();
+
+var sonuclar=from prd in sorgulanabilirUrunler
+                        where prd.Field&amp;lt;DateTime&amp;gt;("SellStartDate")&amp;gt;=dateTimePicker1.Value
+                            select new {
+                                                ProductID=prd.Field&amp;lt;int&amp;gt;("ProductID")
+                                                ,Name=prd.Field&amp;lt;string&amp;gt;("Name")
+                                                ,ListPrice=prd.Field&amp;lt;decimal&amp;gt;("ListPrice")
+                                                ,Class=prd.Field&amp;lt;string&amp;gt;("Class")
+                                                ,SellStartDate=prd.Field&amp;lt;DateTime&amp;gt;("SellStartDate")
+                                                ,SafetyStockLevel=prd.Field&amp;lt;short&amp;gt;("SafetyStockLevel")
+                                                ,StandartCost=prd.Field&amp;lt;decimal&amp;gt;("StandardCost")
+                                            };
+
+dgUrunler.DataSource=sonuclar.ToDataTable();
+
+label1.Text="&amp;Uuml;r&amp;uuml;n Sayısı "+(dgUrunler.Rows.Count-1).ToString();&lt;/pre&gt;
+&lt;p&gt;Dikkat edeceğimiz ilk nokta &lt;strong&gt; ToQueryable&lt;/strong&gt; metodunun kullanılmasıdır. Bu metodun tek amacı DataTable &amp;uuml;zerinde LINQ sorgularının &amp;ccedil;alıştırılabilmesini sağlamaktır. Aslında &lt;strong&gt;ToQueryable&lt;/strong&gt;, &lt;strong&gt;ToDataTable&lt;/strong&gt;,&lt;strong&gt; Field&amp;lt;T&amp;gt;&lt;/strong&gt; gibi metodlar, &lt;strong&gt;System.Data.Extensions.dll&lt;/strong&gt; i&amp;ccedil;erisinde gelen genişletme metodlarıdır. Bunları g&amp;ouml;rmek i&amp;ccedil;in her hangibir decompiler aracını kullanabiliriz. &amp;Ouml;rneğiz &lt;strong&gt;XenoCode Fox 2007 Community Edition&lt;/strong&gt; aracı yardımıyla System.Data.Extensions.dll i&amp;ccedil;eriğine bakacak olursak aşağıdaki sonu&amp;ccedil;ları alırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk198_6.gif" alt="" width="601" height="452" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi DataTable i&amp;ccedil;in &lt;strong&gt; ToQueryable&lt;/strong&gt; ve &lt;strong&gt;ToDataTable&lt;/strong&gt; metodları, DataRow tipi i&amp;ccedil;in &lt;strong&gt; Field&amp;lt;T&amp;gt;&lt;/strong&gt; metodu vb... yer almaktadır. Field&amp;lt;T&amp;gt; metodu, sorgulanabilir hale getirlmiş olan DataTable i&amp;ccedil;erisindeki DataRow dizileri &amp;uuml;zerinden istenen alanın elde edilebilmesi amacıyla kullanılmaktadır. Dikkat ederseniz generic bir metoddur ve tip olarakta, &amp;ccedil;ekilen alanın veri tipini almaktadır. Bu tipin elbetteki doğru girilmesi şarttır. Aksi takdirde derleme zamanı hataları alırız.&lt;/p&gt;
+&lt;p&gt;Peki, sorgumuz tam olarak ne yapmaktadır? Tahmin edeceğiniz gibi &lt;strong&gt;where&lt;/strong&gt; anahtar kelimesi sayesinde SellStartDate alanının değeri DateTimePicker kontrol&amp;uuml;nde se&amp;ccedil;ilen tarihten sonra gelen satırlar &amp;ccedil;ekilmektedir. Buradaki where c&amp;uuml;mlesinde yer alan &lt;strong&gt; prd.Field&amp;lt;DateTime&amp;gt;("SellStartDate")&amp;gt;=dateTimePicker1.Value&lt;/strong&gt; ifadesinin s&amp;ouml;z konusu DataTable i&amp;ccedil;erisindeki her bir &lt;strong&gt;DataRow&lt;/strong&gt; i&amp;ccedil;in &amp;ccedil;alıştığını unutmayalım. Bunu daha kolay idrak edebilmek i&amp;ccedil;in bu tip bir gereksinimi LINQ olmadan eski usuller ile yazmak istediğinizi d&amp;uuml;ş&amp;uuml;n&amp;uuml;n. T&amp;uuml;m satrıları gezeceğimiz bir d&amp;ouml;ng&amp;uuml; yazmamız gerektiğini tahmin edebiliriz. Sonu&amp;ccedil; itibariyle kodumuzu &amp;ccedil;alıştırdığımızda aşağıdaki veri k&amp;uuml;mesini elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk198_7.gif" alt="" width="639" height="348" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Sorgularımızı &amp;ccedil;eşitlendirebiliriz. &amp;Ouml;yleki artık elimizdeki nesne, DataTable &amp;uuml;zerinden elde edilmiş sorgulanabilir bir DataRow k&amp;uuml;mesinden başka bir şey değildir ve LINQ ifadelerine doğrudan destek vermektedir. Şimdi işlemlerimizi biraz daha ilerletelim. &amp;Ouml;rneğin birbiriyle ilişkili olabilen iki DataTable &amp;uuml;zerinde LINQ yardımıyla bir &lt;strong&gt;Join&lt;/strong&gt; işlemi ger&amp;ccedil;ekleştirmeye &amp;ccedil;alışalım. Bu ama&amp;ccedil;la Northwind veritabanında yer alan Order ve OrderDetails tablolarından faydalalanbiliriz. &amp;Ouml;ncelikle bu tabloları entity nesnelerimize alacağız ve sonrasında ise DataTable nesne &amp;ouml;rneklerine y&amp;uuml;kleyeceğiz. Son olarakta bu iki DataTable &amp;ouml;rneğine ait sorgulanabilir bir nesne &amp;uuml;zerinden LINQ yardımıyla bir Join işlemi ger&amp;ccedil;ekleştireceğiz. Bu ama&amp;ccedil;la programımıza aşağıdaki metodları ekleyelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private DataTable LoadOrdersTable()
+{
+    var siparisler=from s in north.Orders 
+                            select new {
+                                                s.OrderID
+                                                ,s.ShipAddress
+                                                ,s.ShipCity
+                                                ,s.ShipRegion
+                                                ,s.ShipPostalCode
+                                                ,s.ShipCountry
+                                            };
+
+    return siparisler.ToDataTable();
+}
+
+private DataTable LoadOrderDetailsTable()
+{
+    var siparisDetaylari=from d in north.OrderDetails 
+                                    select new {
+                                                        d.OrderID
+                                                        ,d.UnitPrice
+                                                        ,d.Quantity
+                                                    };
+        
+    return siparisDetaylari.ToDataTable();
+}&lt;/pre&gt;
+&lt;p&gt;Metodlarımız sırasıyla north isimli global olarak tanımlanmış entity nesnesi &amp;uuml;zerinden hareket ederek Orders ve OrderDetails tablolarından belleğe bazı alanlar i&amp;ccedil;in veri &amp;ccedil;ekmektedir. Son olarak elde edilen sonu&amp;ccedil; k&amp;uuml;meleri &lt;strong&gt;ToDataTable&lt;/strong&gt; metodu yardımıyla geri d&amp;ouml;nd&amp;uuml;r&amp;uuml;l&amp;uuml;yor. Şimdi bu iki veri k&amp;uuml;mesininde OrderID alanları &amp;uuml;zerinden birbirlerine bağlı olduğunu biliyoruz. Dolayısıyla birleştirme işlemini ger&amp;ccedil;ekleştireceğimiz sorgu c&amp;uuml;mesinde bu durumu g&amp;ouml;z &amp;ouml;n&amp;uuml;ne almamız gerekiyor. Bu ama&amp;ccedil;la aşağıdaki gibi bir kod par&amp;ccedil;asından faydalanabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;AdventureWorks adWorks;
+Northwind north;
+DataTable dtUrunler, dtSiparisler, dtSiparisDetaylari;
+
+private void Form1_Load(object sender, EventArgs e)
+{
+    adWorks = new AdventureWorks("data source=localhost;database=AdventureWorks;integrated security=SSPI");
+    north = new Northwind("data source=localhost;database=Northwind;integrated security=SSPI");
+
+    dtUrunler = LoadProductsTable();
+    dgUrunler.DataSource = dtUrunler;
+
+    label1.Text = "&amp;Uuml;r&amp;uuml;n Sayısı " + (dgUrunler.Rows.Count - 1).ToString();
+
+    dtSiparisler = LoadOrdersTable();
+    dtSiparisDetaylari = LoadOrderDetailsTable();
+    
+    dgSiparisler.DataSource = dtSiparisler;
+    dgSiparisDetaylari.DataSource = dtSiparisDetaylari;
+}
+
+private void btnJoin_Click(object sender, EventArgs e)
+{
+    var sorgulanabilirOrders = dtSiparisler.ToQueryable();
+    var sorgulanabilirOrderDetails = dtSiparisDetaylari.ToQueryable();
+
+    var sonuclar=from o in sorgulanabilirOrders
+                            join od in sorgulanabilirOrderDetails
+                                on o.Field&amp;lt;int&amp;gt;("OrderID") equals od.Field&amp;lt;int&amp;gt;("OrderID")
+                                    select new {
+                                                        SiparisID=o.Field&amp;lt;int&amp;gt;("OrderID")
+                                                        ,BirimFiyat=od.Field&amp;lt;decimal&amp;gt;("UnitPrice")
+                                                        ,Miktar=od.Field&amp;lt;short&amp;gt;("Quantity")
+                                                        ,Sehir=o.Field&amp;lt;string&amp;gt;("ShipCity")
+                                                        ,Ulke=o.Field&amp;lt;string&amp;gt;("ShipCountry")
+                                                    };
+
+    dgJoin.DataSource=sonuclar.ToDataTable();
+}&lt;/pre&gt;
+&lt;p&gt;LINQ mimarisinde kullandığımız &lt;strong&gt;Join&lt;/strong&gt; kalıbını burada da aynen kullanmaktayız. Tek dikkat etmemiz gereken, generic Field&amp;lt;T&amp;gt; metodunu nasıl ele aldığımızdır. &lt;strong&gt;o&lt;/strong&gt; takma adı ile siparişleri tutan sorgulanabilir DataRow nesne dizisini (sorgulanabilirOrders), &lt;strong&gt;od&lt;/strong&gt; takma adı ilede sipariş detaylarını tutan sorgulanabilir DataRow nesne dizisini (sorgulanabilirOrderDetails) ifade etmekteyiz. Buna g&amp;ouml;re join işlemini OrderID alanları &amp;uuml;zerinden ger&amp;ccedil;ekleştiren ifademiz aşağıdaki gibidir. Burada her iki DataRow dizisindeki ilgili alanların eşitliğine g&amp;ouml;re bir kıstas getirilmektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;on o.Field&amp;lt;int&amp;gt;("OrderID") equals od.Field&amp;lt;int&amp;gt;("OrderID")&lt;/pre&gt;
+&lt;p&gt;Programımızı &amp;ccedil;alıştırdığımızda aşağıdakine benzer bir ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; ile karşılaşırız. &lt;em&gt;(TabPage' in &amp;uuml;st tarafında yer alan iki DataGridView bileşeni, sırasıyla Orders ve OrderDetails bilgilerini g&amp;ouml;stermektedir.)&amp;nbsp;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk198_8.gif" alt="" width="639" height="587" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dilersek join ile yazmış olduğumuz sorgumuza &lt;strong&gt;where&lt;/strong&gt; ile başka kısıtlamalarda katabiliriz. &amp;Ouml;rneğin, elde edilen sonu&amp;ccedil; k&amp;uuml;mesinde &lt;strong&gt;Quantity&lt;/strong&gt; &lt;strong&gt;alanının değeri 10' un &amp;uuml;zerinde&lt;/strong&gt; olanları elde etmek i&amp;ccedil;in tek yapmamız gereken sorgumuzu aşağıdaki gibi genişletmek olacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var sonuclar=from o in sorgulanabilirOrders
+                            join od in sorgulanabilirOrderDetails
+                                on o.Field&amp;lt;int&amp;gt;("OrderID") equals od.Field&amp;lt;int&amp;gt;("OrderID")
+                                              where od.Field&amp;lt;short&amp;gt;("Quantity")&amp;gt;10
+                                    select new {
+                                                        SiparisID=o.Field&amp;lt;int&amp;gt;("OrderID")
+                                                        ,BirimFiyat=od.Field&amp;lt;decimal&amp;gt;("UnitPrice")
+                                                        ,Miktar=od.Field&amp;lt;short&amp;gt;("Quantity")
+                                                        ,Sehir=o.Field&amp;lt;string&amp;gt;("ShipCity")
+                                                        ,Ulke=o.Field&amp;lt;string&amp;gt;("ShipCountry")
+                                                    };&lt;/pre&gt;
+&lt;p&gt;Where ifadesinde ilgili alanın değerinin karşılaştırma işlemine tabi tutmak i&amp;ccedil;in yine Field&amp;lt;T&amp;gt; generic metodundan faydalandığımızda dikkat edelim.&lt;/p&gt;
+&lt;p&gt;İstersek join ile yaptığımız birleştirme işlemini, i&amp;ccedil;erisinde &lt;strong&gt;DataRelation&lt;/strong&gt; nesnesi barındıran bir DataSet &amp;uuml;zerinden de ger&amp;ccedil;ekleştirebiliriz. Bu sefer devreye &amp;uuml;st tablodaki herhangibir satıra bağlı alt satırların getirilmesini sağlayacak GetChildRows isimli bir fonksiyonellik gelecektir. Durumu daha iyi anlayabilmek i&amp;ccedil;in aşağıdaki kod par&amp;ccedil;asını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;DataSet ds = new DataSet();
+ds.Tables.Add(dtSiparisler);
+ds.Tables.Add(dtSiparisDetaylari);
+
+DataRelation drOrdToDtl = new DataRelation("OrdToDetails", dtSiparisler.Columns["OrderID"],dtSiparisDetaylari.Columns["OrderID"]);
+ds.Relations.Add(drOrdToDtl);
+
+var sorgulanabilirOrders=dtSiparisler.ToQueryable();
+
+var sonuclar=from o in sorgulanabilirOrders
+                        from od in o.GetChildRows("OrdToDetails")
+                            select new {
+                                                SiparisID=o.Field&amp;lt;int&amp;gt;("OrderID")
+                                                ,BirimFiyat=od.Field&amp;lt;decimal&amp;gt;("UnitPrice")
+                                                ,Miktar=od.Field&amp;lt;short&amp;gt;("Quantity")
+                                                ,Sehir=o.Field&amp;lt;string&amp;gt;("ShipCity")
+                                                ,Ulke=o.Field&amp;lt;string&amp;gt;("ShipCountry")
+                                            };
+
+dgJoin.DataSource=sonuclar.ToDataTable();&lt;/pre&gt;
+&lt;p&gt;DataSet i&amp;ccedil;erisinde yer alan, dtSiparisler ve dtSiparisDetaylari isimli DataTable nesnelerinin işaret ettiği veri k&amp;uuml;meleri arasındaki ilişkimiz OrderID alanları &amp;uuml;zerinden Orders' dan OrderDetails' e doğrudur. Bunu DataSet i&amp;ccedil;erisinde tanımlayan ise Ado.Net' in ilk &amp;ccedil;ıkışından beri bildiğimiz &lt;strong&gt;DataRelation&lt;/strong&gt; nesnesidir. LINQ sorgumuz, bu nesneyi &lt;strong&gt;GetChildRows&lt;/strong&gt; isimli metod i&amp;ccedil;erisinde parametre olarak kullanmaktadır.&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece &lt;strong&gt;o&lt;/strong&gt; takma adı ile temsil edilen sorgulanabilirOrders i&amp;ccedil;erisindeki her bir DataRow i&amp;ccedil;in bu ilişki kullanılabilmektedir. Bu da doğal olarak, ilişkinin diğer ucunda yer alan siparişe ait detay bilgisinin elde edilebilmesi anlamına gelmektedir. LINQ sorgumuz iki adet &lt;strong&gt;from&lt;/strong&gt; anahtar kelimesi i&amp;ccedil;erdiğinden sonu&amp;ccedil; doğal olarak bir Join sorgusunun &amp;ccedil;ıktısı ile aynı olacaktır. Uygulamamızı bu haliyle &amp;ccedil;alıştırdığımızda ilk yazdığımız join sorgusundakine benzer sonu&amp;ccedil;ları elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk198_9.gif" alt="" width="639" height="203" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;DataTable ve DataSet' ler &amp;uuml;zerinde &lt;strong&gt; ToQueryable, ToDataTable, Field&amp;lt;T&amp;gt;&lt;/strong&gt; metodları dışında, &lt;strong&gt; LoadSequence, DistinctRows, EqualAllRows, UnionRows, IntersectRows, ExceptRows, SetField&amp;lt;T&amp;gt; &lt;/strong&gt;isimli metodlarda kullanılabilmektedir. Bu metodların temel amacı, DataTable ve DataRow gibi nesneler &amp;uuml;zerinde LINQ tekniklerinin daha da genişletilmesini sağlamaktır. &amp;Ouml;rneğin &lt;strong&gt; LoadSequence&lt;/strong&gt; metodu sayesinde herhangibir sorgu sonucu elde edilen k&amp;uuml;meyi bir var olan bir DataTable i&amp;ccedil;erisine ilave edebiliriz. Bu metod ve diğerleri hakkında daha fazla bilgi almak i&amp;ccedil;in LINQ d&amp;ouml;k&amp;uuml;mantasyonundan faydalanabilirsiniz.&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bu makalemizde, LINQ' yu DataTable gibi bağlantısız katman nesneleri &amp;uuml;zerinde nasıl kullanabileceğimizi incelemeye &amp;ccedil;alıştık. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;şmek dileğiyle hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/makale/images/LINQonDataSets.rar"&gt;&amp;Ouml;rnek Uygulama İ&amp;ccedil;in Tıklayınız.&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2007-04-02 12:00:00</pubDate>
+  <slug>Bağlantısız-Katmanda-LINQ-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>c#-30</tag>
+    <tag>linq</tag>
+    <tag>language-integrated-query</tag>
+    <tag>dlinq</tag>
+    <tag>disconnected-layer</tag>
+    <tag>adonet</tag>
+  </tags>
+  <categories>
+    <category>C#</category>
+  </categories>
+</post>

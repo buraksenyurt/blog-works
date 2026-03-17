@@ -1,0 +1,612 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Rust Pratikleri - OOP</title>
+  <description>Yılların .Net geliştiricisi olunca insan, ister istemez Rust, Go gibi dillerde nesne yönelimli dünyanın karşılıklarını arıyor. Encapsulation, Inheritance, Polymorphsym gibi. Bu konuda araştırmalar yaparken birkaç şey öğrendi tabii ve C# ile yazdığım bazı şeyleri Rust tarafında karşılamak istedim. Sonuçta ortaya şu an okumakta olduğunuz pratik çıktı. Ben daha çok kalıtım ve çok biçimli nesne davranışı konularına eğilmeye çalıştım. Dilerseniz hiç vakit kaybetmeden örneklerimize geçelim.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2022/Nisan/oop_cover.png" alt="" /&gt;Yılların .Net geliştiricisi olunca insan ki sanıyorum Java tarafından gelse de durum değişmeyecektir, ister istemez Rust, Go gibi dillerde nesne y&amp;ouml;nelimli d&amp;uuml;nyanın karşılıklarını arıyor.&amp;nbsp;Ortak &amp;ouml;zellikleri toplayacağım &amp;uuml;st tipler yok mu, peki ya bağımlılıkları soyutlamak i&amp;ccedil;in başvuracağım interface t&amp;uuml;revleri, bukalemun varlıklara ne demeli. Kısacası bir nesne y&amp;ouml;nelimli dilin &amp;ouml;ne &amp;ccedil;ıkan en belirgin &amp;ouml;zellikleri encapsulation, Inheritance, Polymorphism gibi detaylara bakıyoruz.&lt;/p&gt;
+&lt;p&gt;Nesne y&amp;ouml;nelimli dil yaklaşımlarının bu &amp;ccedil;ekirdek &amp;ouml;zelliklerinin Rust tarafındaki olası karşılıklarını araştırırken birka&amp;ccedil; şey &amp;ouml;ğrendim tabii ki ve C# ile yazdığım bazı şeyleri Rust tarafında nasıl yapabilirim &amp;ouml;ğrenmek&amp;nbsp;istedim. Sonu&amp;ccedil;ta ortaya şu an okumakta olduğunuz pratik &amp;ccedil;ıktı. Ben daha &amp;ccedil;ok kalıtım ve &amp;ccedil;ok bi&amp;ccedil;imli nesne davranışı konularına eğilmeye &amp;ccedil;alıştım. Dilerseniz hi&amp;ccedil; vakit kaybetmeden &amp;ouml;rneklerimize ge&amp;ccedil;elim. İşe basit bir C# kurgusu ile başlamakta yarar var. Detayları sade bir şekilde g&amp;ouml;rmek i&amp;ccedil;in Console uygulaması bi&amp;ccedil;ilmiş kaftan.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet new console -n sharpy&lt;/pre&gt;
+&lt;p&gt;Program kodlarımızı aşağıdaki gibi yazarak devam edelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var tars = new Robot("TARS", 80);
+Console.WriteLine(tars.ToString());
+tars.LoadFuel(10);
+Console.WriteLine(tars.ToString());
+tars.Walk();
+Console.WriteLine(tars.ToString());
+
+public enum State
+{
+    Online,
+    OutOfService,
+    OnTheMove,
+    Destroyed
+}
+class Robot
+{
+    public string Name { get; set; }
+    public float FuelLevel { get; set; }
+    private State State { get; set; }
+
+    public Robot(string name, float fuel)
+    {
+        Name = name;
+        FuelLevel = fuel;
+        State = State.Online;
+    }
+
+    public void LoadFuel(float amount)
+    {
+        Console.WriteLine($"{amount} litre yakıt y&amp;uuml;kleniyor...");
+        this.FuelLevel += amount;
+    }
+
+    public void Walk()
+    {
+        Console.WriteLine("Hareket halinde");
+        this.State = State.OnTheMove;
+    }
+
+    public override string ToString()
+    {
+        return $"{this.Name}. Yakıt {this.FuelLevel}. Durum {this.State}";
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğimizde bir oyun sahasındaki robotu modellemeye &amp;ccedil;alışıyoruz. Bu sınıfının iki public ve bir de private &amp;ouml;zelliği var. Auto-Property şeklinde tanımlandıklarından get ve set blokları dotnet tarafından ara kodda otomatik olarak tamamlanıyor. Parametreler ile overload edilmiş bir yapıcı metot da var&lt;em&gt;(constructor)&lt;/em&gt;. Ayrıca Walk ve LoadFuel isimli deneysel fonksiyonlara sahip. Object sınıfından gelen ToString metotu bu sınıf i&amp;ccedil;in yeniden yazılmış durumda&lt;em&gt;(override)&lt;/em&gt;&amp;nbsp;Bilindiği &amp;uuml;zere Object tipi dotnet camiasındaki ata sınıf. Virtual olarak sahip olduğu ToString fonksiyonunun varsayılan bir davranış zaten mevcıt ancak istersek kendi tiplerimiz i&amp;ccedil;in bunu değiştirebiliriz. Robotun &amp;ccedil;alışma zamanındaki anlık durumunu tutmak i&amp;ccedil;in State isimli bir Enum sabiti kullanmaktayız.&amp;nbsp;Bu&amp;nbsp;&amp;ouml;rneğin &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Nisan/oop_1.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Peki ya benzer bir modeli Rust tarafında kurgulamak istersek. Sınıf, override, private erişimler, nesne fonksiyonları gibi temel modelleme konularını bakalım nasıl karşılayacağiz. Bu &amp;ouml;rnek &amp;ouml;zelinde de bir terminal uygulaması işimizi g&amp;ouml;recektir.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;cargo new rusty&lt;/pre&gt;
+&lt;p&gt;Kodlarımızı da ş&amp;ouml;yle yazabiliriz.&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;use std::fmt::{Display, Formatter};
+
+fn main() {
+    // Robot nesnesi &amp;uuml;st&amp;uuml;nde değişikliker yapacağımız i&amp;ccedil;in mutable olması gerekir
+    // Sonrası C# tarafı ile olduk&amp;ccedil;a benzerdir.
+    let mut tars = Robot::new(String::from("TARS"), 80.0);
+    println!("{}", tars);
+    tars.load_fuel(10.0);
+    println!("{}", tars);
+    tars.walk(24.0, -50.9);
+    println!("{}", tars);
+}
+
+// C# &amp;Ouml;rneğindeki gibi robotun anlık durumu i&amp;ccedil;in burada da bir enum kullanıyoruz.
+// Tabii rust i&amp;ccedil;in enum bir veri yapısıdır. Zenginleştirilebilir. OnTheMove alanında olduğu gibi.
+#[allow(dead_code)]
+enum State {
+    Online,
+    OutOfService,
+    OnTheMove(Location), // Bonus :) Rust enum veri yapısının zenginliğini kullandık. OnTheMove state'indeyken &amp;ouml;rneğin lokasyonunu da tutalım dedik.
+    Destroyed,
+}
+
+struct Location {
+    pub x: f32,
+    pub y: f32,
+}
+
+// C# tarafındaki Robot sınıfı burada bir struct olarak tanımlanır.
+// Malum Rust tarafında class diye bir kavram yok.
+struct Robot {
+    pub name: String,
+    pub fuel_level: f32,
+    state: State,
+}
+
+// C# tarafında Robot nesnesinin metotları(yapıcı metot dahil) sınıf tanım blokları i&amp;ccedil;erisindedir.
+// Rust fonksiyonel paradigmayı benimser ve aşağıdaki us&amp;uuml;lde ilerlenir.
+impl Robot {
+    // yapıcı metot karşılğı. Self ile &amp;ccedil;alışma zamanındaki Robot nesnesini ifade ederiz.
+    pub fn new(name: String, fuel_level: f32) -&amp;gt; Self {
+        Self {
+            name,
+            fuel_level,
+            state: State::Online,
+        }
+    }
+    // yakıt seviyesini artıran fonksiyon.
+    // Tabii rust tarafında her değişken aksi belirtilmediği s&amp;uuml;rece immutable olduğundan,
+    // self i&amp;ccedil;in &amp;amp;mut kullanılır.
+    pub fn load_fuel(&amp;amp;mut self, amount: f32) {
+        println!("{} litre yakıt y&amp;uuml;kleniyor.", amount);
+        self.fuel_level += amount
+    }
+
+    // Rust &amp;ouml;rneğinde bonus olarak enum veri yapısını zenginleştirebileceğimizi g&amp;ouml;stermek istedim.
+    pub fn walk(&amp;amp;mut self, x: f32, y: f32) {
+        println!("Hareket halinde");
+        self.state = State::OnTheMove(Location { x, y });
+    }
+}
+
+// C# &amp;ouml;rneğinde ToString metodunu override edip Robot nesneleri i&amp;ccedil;in bu davranışı değiştirmiştik.
+// Rust tarafında bunun i&amp;ccedil;in Display trait'ini Robot nesnesi i&amp;ccedil;in implemente edebiliriz.
+impl Display for Robot {
+    fn fmt(&amp;amp;self, f: &amp;amp;mut Formatter&amp;lt;'_&amp;gt;) -&amp;gt; std::fmt::Result {
+        write!(
+            f,
+            "{}. Yakıt {}. Durum {}",
+            self.name, self.fuel_level, self.state
+        )
+    }
+}
+
+// Tabii Rust tarafında ş&amp;ouml;yle bir sorun olacaktır. Robot veri yapısının kullandığı
+// State enum t&amp;uuml;r&amp;uuml; i&amp;ccedil;in de Display trait'ini uygulamamız gerekir.
+impl Display for State {
+    fn fmt(&amp;amp;self, f: &amp;amp;mut Formatter&amp;lt;'_&amp;gt;) -&amp;gt; std::fmt::Result {
+        let state = match self {
+            State::Online =&amp;gt; "&amp;Ccedil;alışıyor.".to_string(),
+            State::Destroyed =&amp;gt; "Yok edildi".to_string(),
+            State::OutOfService =&amp;gt; "Servis dışı".to_string(),
+            State::OnTheMove(l) =&amp;gt; format!("{},{} noktasında hareket halinde.", l.x, l.y),
+        };
+        write!(f, "{}", state)
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Rust bellek y&amp;ouml;netimi ve g&amp;uuml;venliği adına derleyici odaklı&lt;em&gt;(Compiler Oriented)&lt;/em&gt; &amp;ccedil;alışan bir dildir. Ownership ve Borrow Checker mekanizmaları bunu garanti etmek &amp;uuml;zerine kurgulanmıştır. Geniş bir enstr&amp;uuml;man desteği olsa da &amp;ouml;zellikle Heap alanını doyasıya kullanan sınıf gibi kavramları yoktur. &amp;Uuml;stelik fonksiyonel dil paradigmalarını biraz daha &amp;ouml;ne &amp;ccedil;ıkarır ve &amp;ouml;rneğin her değişkenin varsayılan halde değiştirilemez&lt;em&gt;(immutable)&lt;/em&gt; olduğunu kabul eder. Zaten bu y&amp;uuml;zden koddaki tars, mut anahtar kelimesi ile a&amp;ccedil;ık bir şekilde değiştirilebilir olarak tanımlanmıştır. &amp;Ouml;nceki &amp;ouml;rneğin karşılığı olarak burada Robot isimli bir struct kullanılmaktadır. ToString muadili olarak sistemde Display trait'i tanımlı olan davranış Robot nesnesi i&amp;ccedil;in yeniden uyarlanmıştır. Struct i&amp;ccedil;indeki alanlar varsayılan olarak private erişim belirleyicisine sahiptir. Yani herkesin erişebilmesi adına bilin&amp;ccedil;li olarak public'e &amp;ccedil;ekilmelidir. Aynen C# &amp;ouml;rneğindeki gibi burada da Struct modeline fonksiyonlar bağlanabilir. Diğer yandan Rust'ın enum t&amp;uuml;r&amp;uuml; olduk&amp;ccedil;a zengindir. &amp;Ouml;rnekte bonus olarak bir enum değerinin farklı bir veri t&amp;uuml;r&amp;uuml;n&amp;uuml; kullanması da ele alınmıştır.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğin &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı da aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Nisan/oop_2.png" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;Kalıtım&lt;em&gt;(Inheritance)&lt;/em&gt; Durumu&lt;/h2&gt;
+&lt;p&gt;Gelelim nesne y&amp;ouml;nelimli programlamanın &amp;ouml;nemli kavramlarından birisi olan t&amp;uuml;retmeye. Bunu i&amp;ccedil;in dotnet tarafındaki uygulamamızı değiştirerek ilereyelim. &amp;Ouml;rneğin Robot haricinde Submarine isimli bir başka sınıf daha kullanalım. Her ikisinin ortak &amp;ouml;zellik ve fonksiyonlarını da bir &amp;uuml;st sınıfta toplayalım. &amp;Uuml;st t&amp;uuml;r olarak tasarlanan Vehicle tipik bir abstract sınıf rol&amp;uuml;n&amp;uuml; &amp;uuml;stlenmekte. Robot ve Submarine sınıfları, sahip oldukları ortak &amp;ouml;zellikler ve yapıcı metot i&amp;ccedil;in bu nesneye gelecekler.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;Robot tars = new Robot("TARS", 80);
+Console.WriteLine(tars.ToString());
+tars.LoadFuel(10);
+Console.WriteLine(tars.ToString());
+tars.Walk(23, -51);
+Console.WriteLine(tars.ToString());
+
+Submarine u12 = new Submarine("u12", 1200);
+Console.WriteLine(u12.ToString());
+u12.LoadFuel(10);
+Console.WriteLine(u12.ToString());
+u12.Dive(800);
+Console.WriteLine(u12.ToString());
+
+enum State
+{
+    Online,
+    OutOfService,
+    OnTheMove,
+    Dive,
+    Destroyed
+}
+class Vehicle
+{
+    public string Name { get; set; }
+    public float FuelLevel { get; set; }
+    protected State State { get; set; }
+
+    public Vehicle(string name, float fuelLevel)
+    {
+        Name = name;
+        FuelLevel = fuelLevel;
+        State = State.Online;
+    }
+    public override string ToString()
+    {
+        return $"{this.Name}. Yakıt {this.FuelLevel}. Durum {this.State}";
+    }
+    public void LoadFuel(float amount)
+    {
+        Console.WriteLine($"{amount} litre yakıt y&amp;uuml;kleniyor...");
+        this.FuelLevel += amount;
+    }
+}
+
+class Robot
+    : Vehicle
+{
+    public Robot(string name, float fuel)
+        : base(name, fuel)
+    {
+    }
+
+    public void Walk(float x, float y)
+    {
+        Console.WriteLine($"{x},{y} noktasında hareket halinde");
+        this.State = State.OnTheMove;
+    }
+}
+
+class Submarine
+    : Vehicle
+{
+    public Submarine(string name, float fuel)
+        : base(name, fuel)
+    {
+    }
+    public void Dive(int depth)
+    {
+        Console.WriteLine($"{depth} metreye dalıyor");
+        this.State = State.Dive;
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Aslında Java ve C# tarafından gelenler i&amp;ccedil;in gayet sade ve anlaşılır bir d&amp;uuml;zenek olduğunu belirtebiliriz. Alt tiplerin yapıcı metotlarından &amp;uuml;st tiplere base anahtar kelimesi yardımıyla veri g&amp;ouml;nderilebilmektedir. ToString fonksiyonu ortak &amp;ouml;zellikleri tuttuğu i&amp;ccedil;in Vehicle sınıfında yeniden yazılmıştır. Ayrıca LoadFuel operasyonu bu ortak tipe taşınmıştır. Bu &amp;ouml;rneği &amp;ccedil;alıştırdığımızda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ndekine benzer sonu&amp;ccedil;lar alırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Nisan/oop_3.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Kalıtımı kullanmanın sebepleri arasında tekrarlı kod bloklarını engellemeyi, t&amp;uuml;rler i&amp;ccedil;in ortak olan &amp;ouml;zellik ve fonksiyonellikleri bir noktada toplamayı vs sayabiliriz. Ger&amp;ccedil;i ben sınıf bazlı kalıtım yerine Interface kullanmaktan ve yine&amp;nbsp;de gerekliyse ortak veri ve fonksiyonları tutan sınıfların alt sınıflarda birer &amp;ouml;zellik gibi kullanılmasından yanayım&lt;em&gt;(Bir nevi Composition diyebilir miyiz?)&lt;/em&gt;&amp;nbsp;Elbette bu tartışmaya a&amp;ccedil;ık bir konu. Biz şimdi rust cephesinden duruma bakalım.&lt;/p&gt;
+&lt;p&gt;Rust tarafında bu tip bir kalıtım formasyonu mevcut değil ama ortak fonksiyonellikleri birer davranış gibi d&amp;uuml;ş&amp;uuml;n&amp;uuml;rsek trait&amp;nbsp;enstr&amp;uuml;manını kullanabiliriz. Buna g&amp;ouml;re Submarine ve Robot veri yapılarının ortak &amp;ouml;zellikleri i&amp;ccedil;in farklı bir yaklaşıma gitmeliyiz. Bunun i&amp;ccedil;in Composition g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir. Aynen aşağıdaki kod par&amp;ccedil;asında olduğu gibi.&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;use std::fmt::{Display, Formatter};
+
+fn main() {
+    let mut tars = Robot::new(String::from("TARS"), 80.0);
+    // Tabii ortak &amp;ouml;zellikleri vehicle alanında tutuyoruz ve onun Display &amp;ouml;zelliğini kullanmalıyız.
+    // Bu nedenle tars.vehicle şeklinde bir kullanım s&amp;ouml;z konusu.
+    println!("{}", tars.vehicle);
+    tars.vehicle.load_fuel(10.0);
+    println!("{}", tars.vehicle);
+    tars.walk(24.0, -50.9);
+    println!("{}", tars.vehicle);
+
+    let mut u12 = Submarine::new(String::from("u12"), 1400.10);
+    println!("{}", u12.vehicle);
+    u12.vehicle.load_fuel(100.90);
+    println!("{}", u12.vehicle);
+    u12.dive(800);
+    println!("{}", u12.vehicle);
+}
+
+// C# &amp;Ouml;rneğindeki gibi robotun anlık durumu i&amp;ccedil;in burada da bir enum kullanıyoruz.
+// Tabii rust i&amp;ccedil;in enum bir veri yapısıdır. Zenginleştirilebilir. OnTheMove ve Dive alanlarında olduğu gibi.
+#[allow(dead_code)]
+enum State {
+    Online,
+    OutOfService,
+    OnTheMove(Location), // Bonus :) Rust enum veri yapısının zenginliğini kullandık. OnTheMove state'indeyken &amp;ouml;rneğin lokasyonunu da tutalım dedik.
+    Dive(i32),           // Bonus
+    Destroyed,
+}
+
+struct Location {
+    pub x: f32,
+    pub y: f32,
+}
+struct Vehicle {
+    pub name: String,
+    pub fuel_level: f32,
+    state: State,
+}
+impl Vehicle {
+    pub fn new(name: String, fuel_level: f32) -&amp;gt; Self {
+        Self {
+            name,
+            fuel_level,
+            state: State::Online,
+        }
+    }
+}
+
+// Hem Robot hem de Submarine i&amp;ccedil;in ortak olan load_fuel fonksiyonelliğini bir trait olarak tanımladık
+trait Fuel {
+    fn load_fuel(&amp;amp;mut self, amount: f32);
+}
+
+// Tanımladığımız trait'i Vehicle tipi i&amp;ccedil;in uyguladık.
+impl Fuel for Vehicle {
+    fn load_fuel(&amp;amp;mut self, amount: f32) {
+        println!("{} litre yakıt y&amp;uuml;kleniyor.", amount);
+        self.fuel_level += amount
+    }
+}
+
+impl Display for Vehicle {
+    fn fmt(&amp;amp;self, f: &amp;amp;mut Formatter&amp;lt;'_&amp;gt;) -&amp;gt; std::fmt::Result {
+        write!(
+            f,
+            "{}. Yakıt {}. Durum {}",
+            self.name, self.fuel_level, self.state
+        )
+    }
+}
+
+// Robot veri yapısı Vehicle t&amp;uuml;r&amp;uuml;nden bir &amp;ouml;zellik barındırıyor.
+// Bu Submarine i&amp;ccedil;in de uygulanıyor. Composition yaptığımızı d&amp;uuml;ş&amp;uuml;nebiliriz.
+struct Robot {
+    pub vehicle: Vehicle,
+}
+
+impl Robot {
+    // C# tarafındaki base constructor'ı &amp;ccedil;ağırma işlevselliğini uygulamaya &amp;ccedil;alıştık diyebiliriz.
+    // Aslında Robot'un i&amp;ccedil;erdiği Vehicle nesnesini &amp;ouml;rnekleyip onu taşıyan bir Robot değişkeni d&amp;ouml;n&amp;uuml;yoruz.
+    pub fn new(name: String, fuel_level: f32) -&amp;gt; Self {
+        Self {
+            vehicle: Vehicle::new(name, fuel_level),
+        }
+    }
+
+    // Bu robota has bir fonksiyon.
+    pub fn walk(&amp;amp;mut self, x: f32, y: f32) {
+        println!("Hareket halinde");
+        self.vehicle.state = State::OnTheMove(Location { x, y });
+    }
+}
+
+struct Submarine {
+    pub vehicle: Vehicle,
+}
+
+impl Submarine {
+    pub fn new(name: String, fuel_level: f32) -&amp;gt; Self {
+        Self {
+            vehicle: Vehicle::new(name, fuel_level),
+        }
+    }
+
+    // Submarine'e &amp;ouml;zg&amp;uuml;n fonksiyon
+    pub fn dive(&amp;amp;mut self, depth: i32) {
+        println!("{} metreye dalıyor", depth);
+        self.vehicle.state = State::Dive(depth);
+    }
+}
+
+impl Display for State {
+    fn fmt(&amp;amp;self, f: &amp;amp;mut Formatter&amp;lt;'_&amp;gt;) -&amp;gt; std::fmt::Result {
+        let state = match self {
+            State::Online =&amp;gt; "&amp;Ccedil;alışıyor.".to_string(),
+            State::Destroyed =&amp;gt; "Yok edildi".to_string(),
+            State::OutOfService =&amp;gt; "Servis dışı".to_string(),
+            State::OnTheMove(l) =&amp;gt; format!("{},{} noktasında hareket halinde.", l.x, l.y),
+            State::Dive(m) =&amp;gt; format!("{} metreye iniyor.", m),
+        };
+        write!(f, "{}", state)
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Submarine ve Robot veri yapılarının ortak &amp;ouml;zellikleri Vehicle veri yapısına alındı. Bu nedenle hem Robot hem Submarine, bu t&amp;uuml;rden vehicle isimli birer alana sahip. Bir nevi Composition gibi d&amp;uuml;ş&amp;uuml;nebiliriz. Tabii C# &amp;ouml;rneğinde ortak fonksiyon olarak kullanılan load_fuel metodunu &amp;uuml;st t&amp;uuml;rde konuşlandırmıştık. Rust ile yazdığımız kod par&amp;ccedil;asında bu iş i&amp;ccedil;in bir trait kullanmaktayız. İlgili trait'i Vehicle i&amp;ccedil;in yazdığımızda Submarine ve Robot i&amp;ccedil;in de kullanabilir hale gelmekte. Nitekim her ikisi de Vehicle'a sahip ve dolayısıyla Fuel trait'i istenen yakıt y&amp;uuml;kleme davranışını pekala uygulayabilir. Ancak şunu hatırlatmakta yarar var; Rust tam anlamıyla nesne y&amp;ouml;nelimli paradigmayı hedeflemiş bir dil değildir. Yine de basit bir has-a ilişkisi ve trait'leri kullanarak benzer işlevsellikleri sağladık diyebiliriz. İşte son koduyla birlikte &amp;ouml;rneğin &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Nisan/oop_4.png" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;Polymorphism Konusu&lt;/h2&gt;
+&lt;p&gt;&amp;Ccedil;ok bi&amp;ccedil;imlilikte &amp;uuml;st sınıfa ait nesne &amp;ouml;rneklerinin yeri gelince kendisinden t&amp;uuml;reyen alt sınıf &amp;ouml;rnekleri gibi hareket edebilmesi s&amp;ouml;z konusudur. &amp;Ouml;zellikle Interface tipi kullanıldığında, bağımlılıkların soyutlanması olduk&amp;ccedil;a kolaylaşır ve bu bizi Dependency Injection Container'larının kullanıldığı b&amp;uuml;y&amp;uuml;k &amp;ouml;l&amp;ccedil;ekli &amp;ccedil;&amp;ouml;z&amp;uuml;mlere de g&amp;ouml;t&amp;uuml;r&amp;uuml;r. &amp;Ccedil;alışma zamanında &amp;ccedil;&amp;ouml;z&amp;uuml;mlenen nesne &amp;ouml;rnekleri s&amp;ouml;z konusu olduğunda bu&amp;nbsp;kabiliyet epey işe yaramaktadır. İlk olarak C# tarafından olaya bakalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;Robot tars = new Robot("TARS", 80);
+Submarine u12 = new Submarine("u12", 1200);
+Submarine alpha = new Submarine("Alpha", 5000);
+
+var vehicles = new List&amp;lt;IAbility&amp;gt; { tars, u12, alpha };
+foreach (var v in vehicles)
+{
+    v.SetTools();
+}
+
+enum State
+{
+    Online,
+    OutOfService,
+    OnTheMove,
+    Dive,
+    Destroyed
+}
+
+interface IAbility
+{
+    void SetTools();
+}
+
+abstract class Vehicle
+{
+    public string Name { get; set; }
+    public float FuelLevel { get; set; }
+    protected State State { get; set; }
+
+    public Vehicle(string name, float fuelLevel)
+    {
+        Name = name;
+        FuelLevel = fuelLevel;
+        State = State.Online;
+    }
+    public override string ToString()
+    {
+        return $"{this.Name}. Yakıt {this.FuelLevel}. Durum {this.State}";
+    }
+    public void LoadFuel(float amount)
+    {
+        Console.WriteLine($"{amount} litre yakıt y&amp;uuml;kleniyor...");
+        this.FuelLevel += amount;
+    }
+}
+
+class Robot
+    : Vehicle, IAbility
+{
+    public Robot(string name, float fuel)
+        : base(name, fuel)
+    {
+    }
+
+    public void SetTools()
+    {
+        Console.WriteLine($"{base.Name} i&amp;ccedil;in termal g&amp;ouml;r&amp;uuml;ş sistemi, oksijen seviyesi &amp;ouml;l&amp;ccedil;er y&amp;uuml;kleniyor.");
+    }
+
+    public void Walk(float x, float y)
+    {
+        Console.WriteLine($"{x},{y} noktasında hareket halinde");
+        this.State = State.OnTheMove;
+    }
+}
+
+class Submarine
+    : Vehicle, IAbility
+{
+    public Submarine(string name, float fuel)
+        : base(name, fuel)
+    {
+    }
+    public void Dive(int depth)
+    {
+        Console.WriteLine($"{depth} metreye dalıyor");
+        this.State = State.Dive;
+    }
+
+    public void SetTools()
+    {
+        Console.WriteLine($"{base.Name} i&amp;ccedil;in sonar, derinlik &amp;ouml;l&amp;ccedil;er, ek batarya y&amp;uuml;kleniyor.");
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Yeni s&amp;uuml;r&amp;uuml;mde IAbility isimli bir aray&amp;uuml;z&lt;em&gt;(interface)&lt;/em&gt;&amp;nbsp;bulunuyor. İ&amp;ccedil;erisinde sadece SetTools isimli bir fonksiyon yer alıyor ve uygulandığı ara&amp;ccedil; i&amp;ccedil;in bir takım alet edavatları y&amp;uuml;kleme işini &amp;uuml;stlenecek davranışı tanımlıyor. Bu arada davranış&lt;em&gt;(Behavior)&lt;/em&gt; Rust tarafı i&amp;ccedil;in anahtar kelime de olabilir. Robot ve Submarine t&amp;uuml;rleri bu aray&amp;uuml;z&amp;uuml; uyguladığından CallTools isimli bir metot yazmamız pekala m&amp;uuml;mk&amp;uuml;n. Parametre olarak IAbility aray&amp;uuml;z&amp;uuml;n&amp;uuml; uygulayan her nesne bu fonksiyona girebilir ve kendisi i&amp;ccedil;in yazılmış SetTools metodunu icra edebilir. İşte &amp;ccedil;alışma zamanı &amp;ccedil;ıktımız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Nisan/oop_5.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi olayı Rust tarafında aşağıdaki kod par&amp;ccedil;aları ile değerlendirmeye &amp;ccedil;alışalım.&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;use std::fmt::{Display, Formatter};
+
+fn main() {
+    let tars = Robot::new(String::from("TARS"), 80.0);
+    let u12 = Submarine::new(String::from("u12"), 1400.10);
+    let alpha = Submarine::new(String::from("alpha"), 2000.0);
+    call_tools(tars);
+    call_tools(u12);
+    call_tools(alpha);
+}
+
+// Burada trait'in generic s&amp;uuml;r&amp;uuml;m&amp;uuml;ne başvurulur.
+// Ability trait'ini uygulamış t&amp;uuml;rler bu fonksiyona girebilir.
+// Lakin Rust derleyicisi yukarıdaki call_tools &amp;ccedil;ağrılarına g&amp;ouml;re her tip i&amp;ccedil;in aşağıdaki fonksiyonu yeniden yazıp derlenmiş koda g&amp;ouml;mer.
+// Bunun tabii bir maliyeti olacaktır.
+fn call_tools&amp;lt;T: Ability&amp;gt;(mut a: T) {
+    a.set_tools();
+}
+
+#[allow(dead_code)]
+enum State {
+    Online,
+    OutOfService,
+    OnTheMove(Location),
+    Dive(i32),
+    Destroyed,
+}
+
+struct Location {
+    pub x: f32,
+    pub y: f32,
+}
+struct Vehicle {
+    pub name: String,
+    pub fuel_level: f32,
+    state: State,
+}
+impl Vehicle {
+    pub fn new(name: String, fuel_level: f32) -&amp;gt; Self {
+        Self {
+            name,
+            fuel_level,
+            state: State::Online,
+        }
+    }
+}
+
+// Ara&amp;ccedil;ların &amp;ccedil;eşitli alet ve edavatları y&amp;uuml;klemesi i&amp;ccedil;in kodlayabilecekleri bir fonksiyon tanımladık.
+trait Ability {
+    fn set_tools(&amp;amp;mut self);
+}
+
+struct Robot {
+    pub vehicle: Vehicle,
+}
+
+impl Robot {
+    pub fn new(name: String, fuel_level: f32) -&amp;gt; Self {
+        Self {
+            vehicle: Vehicle::new(name, fuel_level),
+        }
+    }
+}
+
+// Ability trait'ini Robot t&amp;uuml;r&amp;uuml; i&amp;ccedil;in uyarladık
+impl Ability for Robot {
+    fn set_tools(&amp;amp;mut self) {
+        println!(
+            "{} i&amp;ccedil;in termal g&amp;ouml;r&amp;uuml;ş sistemi, oksijen seviyesi &amp;ouml;l&amp;ccedil;er y&amp;uuml;kleniyor.",
+            self.vehicle.name
+        );
+    }
+}
+
+struct Submarine {
+    pub vehicle: Vehicle,
+}
+
+impl Submarine {
+    pub fn new(name: String, fuel_level: f32) -&amp;gt; Self {
+        Self {
+            vehicle: Vehicle::new(name, fuel_level),
+        }
+    }
+}
+
+// Ability trait'ini Submarine t&amp;uuml;r&amp;uuml; i&amp;ccedil;in uyarladık
+impl Ability for Submarine {
+    fn set_tools(&amp;amp;mut self) {
+        println!(
+            "{} i&amp;ccedil;in sonar, derinlik &amp;ouml;l&amp;ccedil;er, ek batarya y&amp;uuml;kleniyor.",
+            self.vehicle.name
+        );
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Interface yok ama benzer kabiliyetleri sergileyecek trait'imiz var. Dolayısıyla Ability isimli bir enstr&amp;uuml;man tanımladık. Bu davranışı Robot ve Submarine veri yapıları i&amp;ccedil;in de uyarladık. call_tools fonksiyon dikkat edileceği &amp;uuml;zere generic parametre almakta. Rust tarafında generic kavramı yok zannediyorsanız yanılıyorsunuz :) &amp;Ouml;rnekteki generic tipin en &amp;ouml;nemli &amp;ouml;zelliği ise Ability trait'ini uygulama zorunluluğu getirmesi. Esasında bu ilk &amp;ouml;rnekte static dispatch adı verilen g&amp;ouml;r&amp;uuml;nmez bir kullanım şekli s&amp;ouml;z konusu. Bu tekniğe g&amp;ouml;re call_tools fonksiyonu i&amp;ccedil;in derleyici Ability'nin uygulandığı her nesne adına birer call_tools fonksiyonu hazırlar ve i&amp;ccedil;inde&amp;nbsp;uygun olan nesnenin set_tools fonksiyonunu &amp;ccedil;ağırır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Nisan/oop_6.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Static Dispatch dışında ikinci bir kullanım şekli de dynamic dispatch y&amp;ouml;ntemidir. Bu y&amp;ouml;ntem &amp;ouml;zellikle k&amp;uuml;t&amp;uuml;phanelerin kullanıldığı senaryolar i&amp;ccedil;in daha uygundur. Nitekim &amp;ccedil;ok bi&amp;ccedil;imli olması muhtemel trait'lerin uygulandığı tipler derleme zamanında belli olamayacağından bu bağlamları &amp;ccedil;alışma zamanında icra etmek gerekecektir. Bunun i&amp;ccedil;in kodu aşağıdaki gibi değiştirerek ilerleyelim.&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;fn main() {
+    let mut tars = Robot::new(String::from("TARS"), 80.0);
+    let mut u12 = Submarine::new(String::from("u12"), 1400.10);
+    let mut alpha = Submarine::new(String::from("alpha"), 2000.0);
+    // static dispatch
+    // call_tools(tars);
+    // call_tools(u12);
+    // call_tools(alpha);
+
+    // dynamic dispatch
+    call_tools_dynamic(&amp;amp;mut tars);
+    call_tools_dynamic(&amp;amp;mut u12);
+    call_tools_dynamic(&amp;amp;mut alpha);
+}
+
+// Static Dispatch
+// Burada trait'in generic s&amp;uuml;r&amp;uuml;m&amp;uuml;ne başvurulur.
+// Ability trait'ini uygulamış t&amp;uuml;rler bu fonksiyona girebilir.
+// Lakin Rust derleyicisi yukarıdaki call_tools &amp;ccedil;ağrılarına g&amp;ouml;re her tip i&amp;ccedil;in aşağıdaki fonksiyonu yeniden yazıp derlenmiş koda g&amp;ouml;mer.
+// fn call_tools&amp;lt;T: Ability&amp;gt;(mut a: T) {
+//     a.set_tools();
+// }
+
+// Bir diğer alternatif yolda Dynamic Dispatch kullanımıdır.
+// &amp;Ouml;zellikle library geliştiriyorsak Ability trait'ini asıl uygulayan tipi bilemeyebiliriz. Bunu runtime'da &amp;ccedil;&amp;ouml;z&amp;uuml;mlemek adına
+// dyn anahtar kelimesinden yararlanırız.
+fn call_tools_dynamic(a: &amp;amp;mut dyn Ability) {
+    a.set_tools();
+}&lt;/pre&gt;
+&lt;p&gt;Hem static hem dynamic dispatch kullanımları aynı sonu&amp;ccedil;ları verecektir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Nisan/oop_7.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Esasında &amp;uuml;st t&amp;uuml;rden nesne kullanan koleksiyonlar nesne y&amp;ouml;nelimli d&amp;uuml;nyada sıklıkla kullanılırlar. &amp;Ouml;rneğin C# tarafında aşağıdaki gibi bir kullanım pekala m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r ve yazımı olduk&amp;ccedil;a kolaydır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;List&amp;lt;IAbility&amp;gt; abilities=new List&amp;lt;IAbility&amp;gt;{tars,u12,alpha};
+foreach (var a in abilities)
+{
+    a.SetTools();
+}&lt;/pre&gt;
+&lt;p&gt;abilities isimli generic liste koleksiyonu IAbility aray&amp;uuml;z&amp;uuml;n&amp;uuml; uyarlayan nesneleri taşıyabilir. Aray&amp;uuml;z kendisini uygulayan nesneyi taşıyabildiği i&amp;ccedil;in onun uyguladığı ger&amp;ccedil;ek fonksiyonu da pekala kullanabilir. Bu nedenle foreach d&amp;ouml;ng&amp;uuml;s&amp;uuml;ndeki gibi bir &amp;ccedil;alışma m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. D&amp;ouml;ng&amp;uuml;n&amp;uuml;n her bir iterasyonunda o anki nesne &amp;ouml;rneği kimse, ona ait set_tools fonksiyonu y&amp;uuml;r&amp;uuml;t&amp;uuml;l&amp;uuml;r. Aynı işlevselliği dynamic dispatch'in kullanıldığı rust senaryosunda aşağıdaki gibi yapabiliriz. Peki sizce bunu static dispatch uygulandığı durumda da yapabilir miyiz? İşte size g&amp;uuml;zel bir &amp;ouml;dev ;)&lt;/p&gt;
+&lt;pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false"&gt;fn main() {
+    let mut tars = Robot::new(String::from("TARS"), 80.0);
+    let mut u12 = Submarine::new(String::from("u12"), 1400.10);
+    let mut alpha = Submarine::new(String::from("alpha"), 2000.0);
+
+    let mut abilities: Vec&amp;lt;&amp;amp;mut dyn Ability&amp;gt; = vec![];
+    abilities.push(&amp;amp;mut tars);
+    abilities.push(&amp;amp;mut u12);
+    abilities.push(&amp;amp;mut alpha);
+
+    for a in abilities {
+        a.set_tools();
+    }
+}&lt;/pre&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir Rust pratiğinin daha sonuna. Bu pratikte nesne y&amp;ouml;nelimli dillerin &amp;ouml;nemli kabiliyetleri arasında yer alan kalıtım ve &amp;ccedil;ok bi&amp;ccedil;imli olma hallerine hem C# hem de Rust cephesinden bakmaya &amp;ccedil;alıştık. &amp;Ouml;rnek kodlara&amp;nbsp;her zaman olduğu gibi&amp;nbsp;&lt;a title="OOP Rust" href="https://github.com/buraksenyurt/rust-farm/tree/main/Practices/oop" target="_blank"&gt;github reposu &amp;uuml;zerinden erişebilirsiniz&lt;/a&gt;. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2022-04-24 09:00:00</pubDate>
+  <slug>Rust-Pratikleri-Object-Oriented-Programming</slug>
+  <tags>
+    <tag>rust</tag>
+    <tag>rust-pratikleri</tag>
+    <tag>rust-programming-language</tag>
+    <tag>oop</tag>
+    <tag>class</tag>
+    <tag>struct</tag>
+    <tag>trait</tag>
+    <tag>inheritance</tag>
+    <tag>polymorphism</tag>
+  </tags>
+  <categories>
+    <category>Rust</category>
+  </categories>
+</post>

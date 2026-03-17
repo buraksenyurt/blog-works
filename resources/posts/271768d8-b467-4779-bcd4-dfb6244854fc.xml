@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Ado.Net Data Services Ders Notları - 7 (Security)</title>
+  <description>Yazılım dünyasının en önemli zorluklarından biriside uygulamanın kapsamına göre güvenliğin etkili bir şekilde nasıl sağlanacağı ile ilişkilidir. Burada hassas bilgilerin korunması, kullanıcıların tanınması ve yetkilendirilmesi, kodun erişim ilkelerinin belirlenmesi, verinin şifrelenmesi gibi pek çok faktör söz konusudur. Genel anlamda günvelik farklı şekillerde göz önüne alınabilir.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Yazılım d&amp;uuml;nyasının en &amp;ouml;nemli zorluklarından biriside uygulamanın kapsamına g&amp;ouml;re g&amp;uuml;venliğin etkili bir şekilde nasıl sağlanacağı ile ilişkilidir. Burada hassas bilgilerin korunması, kullanıcıların tanınması ve yetkilendirilmesi, kodun erişim ilkelerinin belirlenmesi, verinin şifrelenmesi gibi pek &amp;ccedil;ok fakt&amp;ouml;r s&amp;ouml;z konusudur. Genel anlamda g&amp;uuml;nvelik farklı şekillerde g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;Kimi zaman uygulama i&amp;ccedil;erisinde kullanılan parametrik dış ortam değişkenlerini korumak gerekir. &amp;Ouml;rneğin uygulamanın kullandığı değişkenlerin konfigurasyon(&lt;strong&gt;app.config, web.config&lt;/strong&gt; gibi) dosyasında şifrelenerek saklanması &amp;ouml;nemlidir ki bu pek &amp;ccedil;ok uygulama standardınında ilkeleri arasında yer almaktadır.&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Kimi zaman uygulamanın i&amp;ccedil;erisindeki kodların ne t&amp;uuml;r işlemler yapabileceğinin belirlenmesi&lt;strong&gt;(Kode Erişim G&amp;uuml;venliği-Code Access Security) &lt;/strong&gt;&amp;ouml;nemlidir. &amp;Ouml;rneğin uygulamanın, kurulduğu sistem &amp;uuml;zerinde dosya yazma yetkisi olmamasının sağlanması, yada sadece dosya okuma yapmasına izin verilmesi veya uygulama i&amp;ccedil;erisinden ağ ortamına bağlantıya izin verilmemesi gibi.&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Kimi zaman uygulamayı a&amp;ccedil;an kişilerin doğrulanması ve yapabileceklerinin sınırlandırılması gerekir&lt;strong&gt;(Authentication/Authorization)&lt;/strong&gt;. &amp;Ouml;rneğin uygulamayı a&amp;ccedil;ma yetkisi olan bir kullanıcının sahip olduğu role g&amp;ouml;re her men&amp;uuml; se&amp;ccedil;eneğini kullanamaması gibi. &lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Vakalar ve gereklilikler &amp;ccedil;oğaltılabilir. Tek bir makine &amp;uuml;zerinde kendi başına &amp;ccedil;alışan uygulamalar i&amp;ccedil;in g&amp;uuml;venliğin sağlanması nispeten daha kolaydır. Ancak &lt;strong&gt;istemci/sunucu(Client/Server) &lt;/strong&gt;bazlı mimariye ge&amp;ccedil;ildiğinde g&amp;uuml;venliği sağlamak her zamankinden dahada zor bir hal almaktadır. Bunun en b&amp;uuml;y&amp;uuml;k nedenlerinden birisi farklı ortamlar arasında verinin, &amp;ccedil;eşitli protokollere g&amp;ouml;re mesajlar &amp;uuml;zerinden transfer edilmesi gerekliliği ve bu nedenle iletişiminde g&amp;uuml;venli hale getirilmesinin zorluğudur. &amp;Ouml;yleki, mesajların şifrelenmesi, iletişim kanalının g&amp;uuml;venli hale getirilmesi, aradaki mesajların yakalanması ve değiştirilmesi ihtimaline karşılık gerekli tedbirlerin alınması gibi kıstaslar s&amp;ouml;z konusudur. Yine durum istemci ve sunucu tarafındaki uygulamaların belirli olmaları halinde biraz daha kolay bir şekilde ele alınabilir. Oysaki sunucu tarafında bir servis uygulamasının bulunması ve buna herhangibir istemcinin bağlanabilecek olması gibi durumlarda ulusal bir takım g&amp;uuml;venlik ilkelerine uygun olacak şekilde iletişimi sağlamak ve mesajlaşmak gerekmektedir.&lt;/p&gt;
+&lt;p&gt;Web servisleri g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında bu tip g&amp;uuml;venlik konularını kolay bir şekilde tesis etmek adına &lt;strong&gt;WSE(Web Service Enhancements)&lt;/strong&gt; alt yapısından yararlanılmaktadır. &lt;strong&gt;.Net Remoting &lt;/strong&gt;tabanlı dağıtık &amp;ccedil;&amp;ouml;z&amp;uuml;mlerde sorumluluk neredeyse geliştiricinin kendisine aittir. Ancak &lt;strong&gt;Windows Communication Foundation &lt;/strong&gt;uygulamaları g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında g&amp;uuml;venlik, daha kolay ve etkili bir şekilde &lt;strong&gt;iletişim(Transport) &lt;/strong&gt;veya &lt;strong&gt;mesaj(Message) &lt;/strong&gt;seviyesinde ele alınabilmektedir ki bu kriterler şu anda konumuz dışındadır :)&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Ado.Net Data Service&lt;/strong&gt;' lerde temel olarak birer &lt;strong&gt;WCF&lt;/strong&gt; servisidir. Bununla birlikte s&amp;ouml;z konusu servisler bilindiği &amp;uuml;zere istemcilere &lt;strong&gt;RESTful&lt;/strong&gt; modele g&amp;ouml;re hizmet vermektedir. Yani &lt;strong&gt;HTTP&lt;/strong&gt; protokol&amp;uuml;n&amp;uuml;n &lt;strong&gt;GET,HEAD,DELETE,PUT &lt;/strong&gt;gibi metodlarını ele alıp &lt;strong&gt;ATOM,XML,JSON&lt;/strong&gt; gibi standartları kullanmaktadır. Basit bir servis olarak g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında g&amp;uuml;venlik konusunda hen&amp;uuml;z yeteri kadar gelişmiş olmadığı d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir; mi acaba? İşte bu makalemizde daha &amp;ccedil;ok bu soruya cevap bulmaya &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;p&gt;Her şeyden &amp;ouml;nce en &amp;ouml;nemli nokta &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt;' lerin veri kaynaklarını istemciye &lt;strong&gt;RESTful&lt;/strong&gt; modeline g&amp;ouml;re sunmasıdır. Bu a&amp;ccedil;ıdan bakıldığında geliştiricilerin daha &amp;ccedil;ok &amp;uuml;zerinde duracağı nokta verinin erişilebilirliğinin g&amp;uuml;venli hale getirilmesidir. Dolayısıyla&lt;strong&gt; Ado.Net Data Service&lt;/strong&gt;' leri kullanan istemcilerin, servis tarafında bir şekilde &lt;strong&gt;doğrulanması(Authenticate)&lt;/strong&gt; ve sonrasında durumlarına bakılarak &lt;strong&gt;yetkilendirilmeleri(Authorization) &lt;/strong&gt;g&amp;uuml;venliğin sağlanması adına &amp;ouml;nemlidir. Oysaki &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt; &amp;ouml;rnekleri, aslında herhangibir uygulama &amp;uuml;zerinde host edilebilecek şekilde kullanılabilir. &lt;strong&gt;WCF&lt;/strong&gt; kadar geniş bir konsepti yoktur. Bu nedenle kural basittir; doğrulama işlemlerinin sorumluluğu aslında &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt; &amp;ouml;rneğini host eden uygulamaya aittir. Bu anlamda, servisin bir &lt;strong&gt;WCF&lt;/strong&gt; projesinde veya bir &lt;strong&gt;ASP.NET&lt;/strong&gt; uygulamasında barındırılması doğrulama ve yetkilendirme işlemlerinin daha kolay ele alınabilmesi a&amp;ccedil;ısından &amp;ouml;nemlidir. &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt;' lerinde g&amp;uuml;venlik 4 farklı alanda değerlendirilmektedir.&lt;/p&gt;
+&lt;table style="border-collapse: collapse; width: 100%;" border="1" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="width: 158px; background-color: #ffccaa;" align="center" bgcolor="#336699" width="158"&gt;&lt;strong&gt; Kriter&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="width: 158px; background-color: #ffccaa;" align="center" bgcolor="#336699" width="103"&gt;&lt;strong&gt; G&amp;uuml;venlik Alanı&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="width: 158px; background-color: #ffccaa;" align="center" bgcolor="#336699"&gt;&lt;strong&gt; A&amp;ccedil;ıklama&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="158"&gt;Host uygulamaya ait doğrulama modeli&lt;/td&gt;
+&lt;td width="103"&gt;Authentication&lt;br /&gt; (Doğrulama)&lt;/td&gt;
+&lt;td&gt;Servisi kullanacak olan istemcilerin doğrulanması i&amp;ccedil;in &lt;strong&gt;Host&lt;/strong&gt; uygulama ortamı ele alınır. S&amp;ouml;z gelimiz &lt;strong&gt;ASP.NET&lt;/strong&gt; uygulaması &amp;uuml;zerinde yapılan bir hosting işleminde &lt;strong&gt;built-in&lt;/strong&gt; &lt;strong&gt;Membership&lt;/strong&gt; &lt;strong&gt;API&lt;/strong&gt;' si kullanılarak svc dosyalarına olan erişim kısıtlandırılabilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="158"&gt;Servis Operasyonları&lt;br /&gt; &lt;strong&gt;(Service Operations)&lt;/strong&gt;&lt;/td&gt;
+&lt;td rowspan="3" width="103"&gt;Authorization&lt;br /&gt; (Yetkilendirme)&lt;/td&gt;
+&lt;td&gt;Metod bazlı operasyonlar yazılarak veriye olan erişim kısıtlandırılabilir. &amp;Ouml;rneğin &lt;strong&gt;HTTP Get &lt;/strong&gt;metoduna g&amp;ouml;re sadece tek bir sonu&amp;ccedil;un elde edilmesine izin verilmesi&lt;strong&gt;(Single Result) &lt;/strong&gt; sağlanabilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="158"&gt;Veri Kesmeleri&lt;br /&gt; &lt;strong&gt;(Data Interceptors)&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;İstemcinin talep ettiği verinin elde edilmesinden&lt;strong&gt;(Read)&lt;/strong&gt; veya değiştirilmesinden&lt;strong&gt;(Update,Insert,Delete)&lt;/strong&gt; &amp;ouml;nce işlemin kesilerek kısıtlamaların yapılması sağlanabilir. &amp;Ouml;rneğin kullanıcının yetkisine g&amp;ouml;re sadece g&amp;ouml;rebileceği &amp;uuml;r&amp;uuml;n listesinin verilmesi gibi.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="158"&gt;Entity G&amp;ouml;r&amp;uuml;n&amp;uuml;rl&amp;uuml;ğ&amp;uuml;&lt;br /&gt; &lt;strong&gt;(Entity Visibility)&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Servisin dış ortama sunduğu &lt;strong&gt;Entity&lt;/strong&gt; &amp;ouml;rneklerinin işlenme şekillerinin sınırlandırılmasıdır. &amp;Ouml;rneğin &lt;strong&gt;Product&lt;/strong&gt; isimli &lt;strong&gt;Entity&lt;/strong&gt; &amp;uuml;zerinde sadece yazma işlemlerine izin verilmesi gibi.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Buradaki kriterlerin uygulanması ile bir &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt; ve i&amp;ccedil;eriğine olan erişim yetkilendirilebilir. Aslında teknik detayları, geliştireceğimiz &amp;ouml;rneğin aralarına serpiştirerek devam edebiliriz. İlk olarak bize bir test servisi gerekmektedir. Konuyu kolay işlemek adına&lt;strong&gt; Ado.Net Entity Framework &lt;/strong&gt;&amp;ouml;ğesini kullanaraktan &lt;strong&gt;Northwind&lt;/strong&gt; veritabanındaki t&amp;uuml;m tabloları ele aldığımızı d&amp;uuml;ş&amp;uuml;nelim. Sonrasında ise basit bir &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt; &amp;ouml;ğesi geliştireceğiz. Peki ama bu &amp;ouml;ğeyi nerede barındıracağız? İşte burada &lt;strong&gt;kullanıcı doğrulamasını(Authentication)&lt;/strong&gt; kolayca tesis edebileceğimiz bir &lt;strong&gt;Asp.Net&lt;/strong&gt; uygulamasını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alabiliriz. Elbetteki &lt;strong&gt;Asp.Net Web Site Administration Tool'&lt;/strong&gt; unu kullanaraktan bir ka&amp;ccedil; test kullanıcısı ve rol&amp;uuml; oluşturmaktada yarar olacaktır. &amp;Ouml;rneklerimizde kullanacağımız kullanıcı bilgileri aşağıdaki gibidir.&lt;em&gt;(&amp;Ouml;rnekte &lt;strong&gt;SQL Express Edition&lt;/strong&gt; kullanılmış ve bu nedenle &lt;strong&gt;ASPNETDB.MDF&lt;/strong&gt; dosyası web sitesinin olduğu &lt;strong&gt;App_Data&lt;/strong&gt; klas&amp;ouml;r&amp;uuml; altında oluşturulmuştur.)&lt;/em&gt;&lt;/p&gt;
+&lt;table style="border-collapse: collapse; width: 194px;" border="1" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="width: 61px; background-color: #ffccaa;" align="center" bgcolor="#336699" width="61"&gt;&lt;strong&gt; Kullanıcı&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="width: 61px; background-color: #ffccaa;" align="center" bgcolor="#336699" width="54"&gt;&lt;strong&gt; Şifre&lt;/strong&gt;&lt;/td&gt;
+&lt;td style="width: 61px; background-color: #ffccaa;" align="center" bgcolor="#336699" width="45"&gt;&lt;strong&gt; Rol&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="61"&gt;dealer1&lt;/td&gt;
+&lt;td width="54"&gt;dealer1.&lt;/td&gt;
+&lt;td rowspan="3" width="45"&gt;Dealer&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="61"&gt;dealer2&lt;/td&gt;
+&lt;td width="54"&gt;dealer2.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="61"&gt;dealer3&lt;/td&gt;
+&lt;td width="54"&gt;dealer3.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="61"&gt;region1&lt;/td&gt;
+&lt;td width="54"&gt;region1.&lt;/td&gt;
+&lt;td rowspan="2" width="45"&gt;Region&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="61"&gt;region2&lt;/td&gt;
+&lt;td width="54"&gt;region2.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&amp;Ouml;nemli unsurlardan biriside siteye olan ve amacımız gereği &amp;ouml;zellikle &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt; &amp;ouml;ğelerine olan erişimi kısıtlamaktır. Yani siteye &lt;strong&gt;isimsiz kullanıcı(Anonymous User)&lt;/strong&gt; girişi kesin olarak engellenmelidir. Aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;de, web.config dosyasında s&amp;ouml;z konusu engelleme i&amp;ccedil;in yapılmış olan değişikliler a&amp;ccedil;ık bir şekilde g&amp;ouml;r&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk268_1.gif" alt="" width="564" height="157" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;Form&lt;/strong&gt; tabanlı doğrulama kullanılmaktadır ve isimsiz kullanıcıların sisteme girmeleri yasaklanmıştır.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Elbetteki Form Tabanlı Doğrulama(Form Based Authentication) şart değildir. &amp;Ouml;zellikle Intranet sistemlerde Windows tabanlı doğrulama(Windows Based Authentication)' da ele alınabilir. Hatta istenirse Passport Tabanlı Doğrulama da etkinleştirilebilir. Hangisi kullanılırsa kullanılsın, servisi host eden web sisteminin doğrulama yetenekleri, Ado.Net Data Service &amp;ccedil;alışma zamanı tarafından ele alınabilmektedir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Form tabanlı doğrulama s&amp;ouml;z konusu olduğundan varsayılan olarak aksi belirtilmedik&amp;ccedil;e&lt;em&gt;(Asp.Net G&amp;uuml;venlik konularını hatırlayalım)&lt;/em&gt; &lt;strong&gt;Login.aspx&lt;/strong&gt; isimli bir giriş sayfasına ihtiyacımız olacaktır. Bu sayfa &amp;uuml;zerinde yine &lt;strong&gt;Asp.Net &lt;/strong&gt;bileşenlerinden olan &lt;strong&gt;Login&lt;/strong&gt; kontrol&amp;uuml; kullanılabilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk268_2.gif" alt="" width="331" height="313" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Sonu&amp;ccedil; olarak servis tarafındaki projenin durumu aşağıdaki şekilde olduğu gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk268_3.gif" alt="" width="444" height="219" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere servisi kullanacak olan kişilerin doğrulanması işlemini host uygulamanın kendisine vermiş bulunmaktayız. Buna g&amp;ouml;re kullanıcılar herhangibir şekilde servis dosyasını talep ettiklerinde, eğer bir bilete sahip değillerse, otomatik olarak &lt;strong&gt;Login.aspx &lt;/strong&gt;sayfasına y&amp;ouml;nlendirileceklerdir. &lt;strong&gt;ASPNETDB.MDF &lt;/strong&gt;veritabanı dosyasında yer alan ve etkin olan bir kullanıcı ile sisteme girildiğnde ise, kodlama tarafında karar vereceğimiz yetkilendirmeler devreye girecektir. Yani veriye olan erişim istenirse kullanıcıya g&amp;ouml;re kısıtlandırılabilecektir.&amp;nbsp;Şimdi bu durumları analiz etmeye &amp;ccedil;alışalım. Konuyu son derece basit bir şekilde ele alacağımızdan &lt;strong&gt;NorthwindDataService.cs&lt;/strong&gt; kod i&amp;ccedil;eriğini aşağıdaki gibi yazmamız şimdilik yeterli olacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Data.Services;
+using System.Linq;
+using System.Linq.Expressions;
+using System.ServiceModel.Web;
+using System.Web;
+using NorthwindModel;
+using System.Collections.Generic;
+
+public class NorthwindDataService 
+    : DataService&amp;lt;NorthwindEntities&amp;gt;
+{ 
+    public static void InitializeService(IDataServiceConfiguration config)
+    {
+        // Rol tabanlı veri &amp;ccedil;ekişi işlemleri &amp;ouml;rnek olarak g&amp;ouml;sterilebilir; HttpContext.Current.User.IsInRole();
+
+        config.SetEntitySetAccessRule("*", EntitySetRights.All);
+        config.SetEntitySetAccessRule("Employees", EntitySetRights.ReadMultiple);
+        config.SetEntitySetAccessRule("Orders", EntitySetRights.WriteAppend);
+        config.SetEntitySetAccessRule("Customers", EntitySetRights.None);
+
+        config.SetServiceOperationAccessRule("CustomerCities", ServiceOperationRights.All);
+        config.SetServiceOperationAccessRule("MySuppliers", ServiceOperationRights.All);
+
+        // Eğer alttaki satır a&amp;ccedil;ılırsa FilterForProducts metodu devre dışı sayılır ve Products entity' sine hi&amp;ccedil; bir şekilde erişilemez.
+        //config.SetEntitySetAccessRule("Products", EntitySetRights.None);
+
+    }
+
+    [QueryInterceptor("Products")]
+    public Expression&amp;lt;Func&amp;lt;Products, bool&amp;gt;&amp;gt; FilterForProducts()
+    { 
+        string name = HttpContext.Current.User.Identity.Name;
+    
+        if (name == "dealer1")
+            return p =&amp;gt; p.Suppliers.SupplierID == 1 || p.Suppliers.SupplierID == 2;
+        else if (name == "dealer2")
+            return p =&amp;gt; p.Suppliers.SupplierID == 3;
+        else if (name == "dealer3")
+            return p =&amp;gt; p.Suppliers.SupplierID == 1 || p.Suppliers.SupplierID == 2 || p.Suppliers.SupplierID == 7;
+        else
+            return p =&amp;gt; p.Suppliers.SupplierID != null;
+    }
+
+    [ChangeInterceptor("Products")]
+    public void ProductChange(Products p, UpdateOperations operation)
+    {
+        switch (operation)
+        {
+            case UpdateOperations.Add:
+                break;
+            case UpdateOperations.Change:
+                if(!HttpContext.Current.User.IsInRole("Region")) 
+                    throw new DataServiceException(405,"UnitPrice i&amp;ccedil;in bu değişikliğe izin verilmedi");
+                break;
+            case UpdateOperations.Delete:
+                break;
+            case UpdateOperations.None:
+                break;
+            default:
+                break;
+        }
+    }
+
+    #region Service Operations
+    
+    [WebGet] 
+    public IQueryable&amp;lt;string&amp;gt; CustomerCities()
+    {
+        return (from c in this.CurrentDataSource.Customers
+            select c.City).Distinct();
+    }
+
+    // filter, orderby gibi operat&amp;ouml;rler ve key bazlı erişim gibi sorgulara izin verilmez. Sadece entity bazlı erişim s&amp;ouml;z konusudur
+    [WebGet]
+    public IEnumerable&amp;lt;Suppliers&amp;gt; MySuppliers()
+    {
+        return from c in this.CurrentDataSource.Suppliers
+                orderby c.CompanyName
+                select c;
+    }
+
+    #endregion
+}&lt;/pre&gt;
+&lt;p&gt;İlk olarak uygulamamızı test etmeye &amp;ccedil;alıştığımızda &lt;strong&gt;Login.aspx &lt;/strong&gt;sayfasına y&amp;ouml;nlendirildiğimizi g&amp;ouml;receğiz. Bir başka deyişle herhangibir isimiz kullanıcı,&amp;nbsp; servise doğrudan erişilmek istendiğinde &lt;strong&gt;http://localhost:1000/SecuritySolutions/login.aspx?ReturnUrl=%2fSecuritySolutions%2fNorthwindDataService.svc&lt;/strong&gt; adresine g&amp;ouml;nderilecektir ve dolayısıyla doğrulama s&amp;uuml;recine girilmiş olacaktır. Eğer ge&amp;ccedil;erli bir kullanıcı bilgisi ile giriş yapabilirsek bu durumda standart olarak servise erişebildiğimizi ve izin verilen sorgulamaları yapabildiğimizi g&amp;ouml;receğiz. Şimdi kodu biraz analiz etmeye &amp;ccedil;alışalım. &lt;strong&gt;InitializeService&lt;/strong&gt; metodu i&amp;ccedil;erisine bakıldığında &lt;strong&gt;Entity&lt;/strong&gt; seviyesinde bazı yetkilendirmeler yapıldığı g&amp;ouml;r&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;config.SetEntitySetAccessRule("*", EntitySetRights.All);
+config.SetEntitySetAccessRule("Employees", EntitySetRights.ReadMultiple);
+config.SetEntitySetAccessRule("Orders", EntitySetRights.WriteAppend);
+config.SetEntitySetAccessRule("Customers", EntitySetRights.None);
+config.SetServiceOperationAccessRule("CustomerCities", ServiceOperationRights.All);
+config.SetServiceOperationAccessRule("MySuppliers", ServiceOperationRights.All);&lt;/pre&gt;
+&lt;p&gt;Buna g&amp;ouml;re t&amp;uuml;m Entity k&amp;uuml;melerine erişim hakkı izni, ilk satırdaki kod ile verilmiştir. Bu yetkilendirme, ilk satırdaki &lt;strong&gt;*&lt;/strong&gt; ve &lt;strong&gt;EntitySetRights.All&lt;/strong&gt; ile sağlanmaktadır. Ne varki ikinci satırda &lt;strong&gt;Employees&lt;/strong&gt; Entity i&amp;ccedil;eriği i&amp;ccedil;in, &lt;strong&gt;ReadMultiple&lt;/strong&gt; kısıtlaması yapılmıştır. Buna g&amp;ouml;re &lt;strong&gt;Employees&lt;/strong&gt; k&amp;uuml;mesi &amp;uuml;zerinde &amp;ouml;rneğin anahtar bazlı sorgulara izin verilmeyecektir. Yani &lt;strong&gt;Employees(2)&lt;/strong&gt; gibi bir talepte bulunulursa &lt;strong&gt;HTTP 403 Forbidden&lt;/strong&gt; hatası alınır. Ger&amp;ccedil;ektende durum &lt;strong&gt;Fiddler&lt;/strong&gt; aracı yardımıyla izlendiğinde aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan sonu&amp;ccedil;lar ile karşılaşılır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk268_4.gif" alt="" width="621" height="683" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere istemci taraına d&amp;ouml;nd&amp;uuml;r&amp;uuml;len &lt;strong&gt;XML&lt;/strong&gt; i&amp;ccedil;eriğinde &lt;strong&gt;Forbidden&lt;/strong&gt; mesajı yazılmaktadır. Aynı zamanda hata kodu &lt;strong&gt;403&lt;/strong&gt;' t&amp;uuml;r. Bu durum istemci uygulama tarafından değerlendirilmelidir. Şu anda ilk yetkilendirmemizi Entity seviyesinde yapmış bulunuyoruz. G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere, t&amp;uuml;m Entity' lere erişim hakkı verilmiş olmasına rağmen &lt;strong&gt;Employees&lt;/strong&gt; &amp;uuml;zerinde bir kısıtlama uygulanmıştır. &amp;Uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; satırdaki kısıtlamaya g&amp;ouml;re &lt;strong&gt;Orders&lt;/strong&gt; k&amp;uuml;mesi i&amp;ccedil;in sadece yeni &amp;ouml;ğe eklenmesine izin verilmektedir. Bu nedenle &lt;strong&gt;Orders&lt;/strong&gt; &lt;strong&gt;entity&lt;/strong&gt; i&amp;ccedil;eriği yine tarayıcı &amp;uuml;zerinden sorgulanmak istendiğinde &lt;strong&gt;HTTP 403 Forbidden&lt;/strong&gt; hatası alınacaktır. Ancak istemci bir uygulama tarafından, Orders isimli veri k&amp;uuml;mesine yeni &amp;ouml;ğelerin eklenmesi işlemine izin verilecektir. Son olarak &lt;strong&gt;Customers&lt;/strong&gt; &lt;strong&gt;Entity&lt;/strong&gt;' sine herhangibir şekilde erişim izni kesinlikle verilmemektedir. Nitekim &lt;strong&gt;EntitySeyRights&lt;/strong&gt; enum sabiti i&amp;ccedil;in &lt;strong&gt;None&lt;/strong&gt; değeri verilmiştir.&lt;/p&gt;
+&lt;p&gt;Lakin burada &lt;strong&gt;CustomerCities&lt;/strong&gt; isimli bir operasyon i&amp;ccedil;in izin verildiği g&amp;ouml;zlemlenmektedir. &lt;strong&gt;CustomerCities&lt;/strong&gt; isimli operasyon &lt;strong&gt;string&lt;/strong&gt; tabanlı &lt;strong&gt;IQueryable&lt;/strong&gt; tipinden bir referans d&amp;ouml;nd&amp;uuml;rmektedir. İ&amp;ccedil;erideki sorgu c&amp;uuml;mlesine bakıldığında &lt;strong&gt;Customers&lt;/strong&gt; &lt;strong&gt;Entity&lt;/strong&gt;' si i&amp;ccedil;erisindeki &lt;strong&gt;City&lt;/strong&gt; adlarının &lt;strong&gt;Distinct&lt;/strong&gt; fonksiyonu ile benzersiz olacak şekilde d&amp;ouml;nd&amp;uuml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; g&amp;ouml;r&amp;uuml;lmektedir. Dolayısıyla &lt;strong&gt;Customers&lt;/strong&gt; veri k&amp;uuml;mesini dış ortama tamamen kapatıp, kendisine ait şehir adlarını istemciye sunan bir operasyon tanımlaması s&amp;ouml;z konusudur ki buda bir g&amp;uuml;venlik tedbiri olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;Yine devam eden satırda &lt;strong&gt;MySuppliers&lt;/strong&gt; isimli bir servis operasyonuna t&amp;uuml;m haklar ile erişim izni verilmiştir. Bu servis operasyonuna bakıldığında ise &lt;strong&gt;IEnumerable&amp;lt;Suppliers&amp;gt;&lt;/strong&gt; tipinden bir referans d&amp;ouml;nd&amp;uuml;rd&amp;uuml;ğ&amp;uuml; g&amp;ouml;r&amp;uuml;lmektedir. Operasyon i&amp;ccedil;erisindeki &lt;strong&gt;LINQ&lt;/strong&gt; sorgusunda &amp;ouml;zel bir ifade yoktur. Ancak metodun d&amp;ouml;n&amp;uuml;ş tipinin &lt;strong&gt;IEnumerable&lt;/strong&gt; olmasının bir anlamı vardır. Buna g&amp;ouml;re &lt;strong&gt;Suppliers&lt;/strong&gt; tablosu sorgulanırken &lt;strong&gt;filter&lt;/strong&gt;, &lt;strong&gt;orderby&lt;/strong&gt; gibi operat&amp;ouml;rler kullanılamaz. Ayrıca anahtar bazlı erişimlere de (&amp;ouml;rneğin &lt;strong&gt;Suppliers(2)&lt;/strong&gt; gibi) izin verilmez. Sadece sonu&amp;ccedil; k&amp;uuml;mesinin ham hali istemciye sunulur. Buda sonu&amp;ccedil; itibariyle bir kısıtlamadır. Nitekim &amp;ccedil;alışma zamaında &amp;ouml;rneğin, &lt;strong&gt;SupplierId&lt;/strong&gt; değeri &lt;strong&gt;3&lt;/strong&gt; olan &lt;strong&gt;Supplier&lt;/strong&gt; bilgisini almak istediğimizde &lt;strong&gt;HTTP 400 Bad Request&lt;/strong&gt; hatasını aldığımız g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk268_5.gif" alt="" width="634" height="683" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu &lt;strong&gt;IQueryable&lt;/strong&gt; ve &lt;strong&gt;IEnumerable&lt;/strong&gt; arasındaki farkı biraz daha net bir şekilde g&amp;ouml;rm&amp;uuml;ş bulunuyoruz. Yanlız dikkat edilmesi gereken bir nokta vardır. Servis operasyonunun d&amp;ouml;nd&amp;uuml;rd&amp;uuml;ğ&amp;uuml; bir &lt;strong&gt;Entity&lt;/strong&gt; i&amp;ccedil;eriği var iken&lt;strong&gt;(&amp;ouml;rneğin IEnumerable&amp;lt;Suppliers&amp;gt;)&lt;/strong&gt; &lt;strong&gt;InitializeService&lt;/strong&gt; metodu i&amp;ccedil;erisinde s&amp;ouml;z konusu tip i&amp;ccedil;in &lt;strong&gt;EnititySetRights.None&lt;/strong&gt; değerinin kullanılması sonrasında servis &amp;ccedil;alışmayacaktır. &amp;Ouml;rneğimizde &lt;strong&gt;Customers&lt;/strong&gt; i&amp;ccedil;in yapılan kısıtlamaya dikkat edildiğinde &lt;strong&gt;MyCustomers&lt;/strong&gt; isimli operasyonun geriye &lt;strong&gt;string&lt;/strong&gt; bazlı bir sonu&amp;ccedil; k&amp;uuml;mesi d&amp;ouml;nd&amp;uuml;rd&amp;uuml;ğ&amp;uuml; g&amp;ouml;r&amp;uuml;lmektedir. Bu servisin &amp;ccedil;alışmasına engel olmamaktadır.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;zellikle &lt;strong&gt;Entity&lt;/strong&gt; tipleri ve servis operasyonları i&amp;ccedil;in yapılan erişim kısıtlamalarında devreye giren &lt;strong&gt;EntitySetRights&lt;/strong&gt; enum sabitinin alabileceği değerler aşağıdaki tabloda belirtildiği gibidir.&lt;/p&gt;
+&lt;table style="border-collapse: collapse; width: 630px; height: 403px;" border="1" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="background-color: #ffccaa;" colspan="2" align="center" bgcolor="#336699"&gt;&lt;strong&gt; EntitySetRights Değerleri&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="61"&gt;&lt;strong&gt;None&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;Entity&lt;/strong&gt; k&amp;uuml;mesine erişilmesi yasaklanmıştır. &lt;strong&gt;Metadata&lt;/strong&gt; i&amp;ccedil;erisinde g&amp;ouml;r&amp;uuml;nmez ve &amp;uuml;zerine okuma yazma işlemleri yapılamaz.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="61"&gt;&lt;strong&gt;ReadSingle&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;Entity&lt;/strong&gt; &amp;uuml;zerinde &lt;strong&gt;anahtar bazlı(Key Based)&lt;/strong&gt; aramalara izin verilir. (&lt;strong&gt;Customers('ALFKI')&lt;/strong&gt; gibi )&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="61"&gt;&lt;strong&gt;ReadMultiple&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;Entity&lt;/strong&gt; i&amp;ccedil;eriğinin sorgulanmasına izin verilir, ancak anahtar bazlı erişimlere izin verilmez. &amp;Ouml;rneğin &lt;strong&gt;Employees(2)&lt;/strong&gt; i&amp;ccedil;in sonu&amp;ccedil; k&amp;uuml;mesi elde edilemez.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="61"&gt;&lt;strong&gt;WriteAppend&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Yeni &lt;strong&gt;Entity&lt;/strong&gt; &amp;ouml;rnekleri eklenebilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="61"&gt;&lt;strong&gt;WriteMerge&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Var olan &lt;strong&gt;Entity&lt;/strong&gt; i&amp;ccedil;eriği g&amp;uuml;ncellenirken birleştirilme işlemi uygulanır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="61"&gt;&lt;strong&gt;WriteReplace&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Var olan &lt;strong&gt;Entity&lt;/strong&gt; i&amp;ccedil;eriği yenisi ile değiştirilerek g&amp;uuml;ncellenir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="61"&gt;&lt;strong&gt;WriteDelete&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;Silme&lt;/strong&gt; işlemine izin verilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="61"&gt;&lt;strong&gt;AllRead&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;ReadSingle&lt;/strong&gt; ve &lt;strong&gt;ReadMultiple&lt;/strong&gt; değerlerinin birleşimidir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="61"&gt;&lt;strong&gt;AllWrite&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;WriteInsert&lt;/strong&gt;, &lt;strong&gt;WriteUpdate&lt;/strong&gt; ve &lt;strong&gt;WriteDelete&lt;/strong&gt; değerlerinin birleşimidir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="61"&gt;&lt;strong&gt;All&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;Tam&lt;/strong&gt; &lt;strong&gt;okuma&lt;/strong&gt; ve &lt;strong&gt;yazma&lt;/strong&gt; erişimine izin verilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Servis operasyonlarında erişim kısıtlamalarını belirleyen &lt;strong&gt;ServiceOperationRights&lt;/strong&gt; enum sabitinin alabileceği değerler ise aşağıdaki tabloda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibidir.&lt;/p&gt;
+&lt;table style="border-collapse: collapse; width: 630px; height: 203px;" border="1" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="background-color: #ffccaa;" colspan="2" align="center" bgcolor="#336699"&gt;&lt;strong&gt; ServiceOperationRights Değerleri&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="61"&gt;&lt;strong&gt;None&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Servis operasyonuna erişim izni yoktur.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="61"&gt;&lt;strong&gt;ReadSingle&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Tek bir veri &amp;ouml;ğesinin okunmasına izin verilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="61"&gt;&lt;strong&gt;ReadMultiple&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Servis operasyonu kullanılarak birden fazla veri &amp;ouml;ğesinin okunmasına izin verilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="61"&gt;&lt;strong&gt;AllRead&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Tekil veya &amp;ccedil;oğul veri &amp;ouml;ğelerinin okunmasına izin verilir.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="61"&gt;&lt;strong&gt;All&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Servis operasyonu i&amp;ccedil;in t&amp;uuml;m haklar sağlanır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Kodumuzda ilerlediğimizde, &lt;strong&gt;FilterForProducts&lt;/strong&gt; ve &lt;strong&gt;ProductChange&lt;/strong&gt; isimli iki metod ile karşılaşmaktayız. Bu metodlar &lt;strong&gt;veri&lt;/strong&gt; &lt;strong&gt;kesme(Data Interceptor)&lt;/strong&gt; fonksiyonellikleridir. Dikkat edileceği &amp;uuml;zere &lt;strong&gt;FilterByProducts&lt;/strong&gt; metodu i&amp;ccedil;erisinde o anki kullanıcının adına bakılaraktan &amp;ouml;rnek bir i&amp;ccedil;eriğin d&amp;ouml;nd&amp;uuml;r&amp;uuml;lmesi sağlanmaktadır. S&amp;ouml;z gelimi &lt;strong&gt;dealer2&lt;/strong&gt; isimli kullanıcı ile sisteme girildiğinde ve &lt;strong&gt;Products&lt;/strong&gt; i&amp;ccedil;eriği talep edildiğinde koddaki kesme metodunun i&amp;ccedil;eriğine g&amp;ouml;re &lt;strong&gt;SupplierID&lt;/strong&gt; değeri &lt;strong&gt;3&lt;/strong&gt; olan listenin elde edildiği g&amp;ouml;r&amp;uuml;l&amp;uuml;r. &amp;Ouml;zellikle durumu&lt;strong&gt; SQL Server Profiler &lt;/strong&gt;aracı yardımıyla incelendiğinde ger&amp;ccedil;ektende kesme metodunun devreye girdiği aşikardır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk268_6.gif" alt="" width="483" height="326" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Burada belkide en &amp;ouml;nemli nokta kesme işlemi sırasında, kullanıcı bilgisinin &lt;strong&gt;HttpContext.Current.User.Identity.Name&lt;/strong&gt; ifadesi ile alınmasıdır. Bu tahmin edileceği &amp;uuml;zere servisi kullanmak i&amp;ccedil;in &lt;strong&gt;Login&lt;/strong&gt; olan kullanıcının adıdır.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğimizde senaryoyu &amp;ccedil;ok basit bir şekilde ele almak istediğimizden kullanıcı adlarının &lt;strong&gt;dealer1, dealer2, dealer3&lt;/strong&gt; olması halleri ele alınmıştır. Oysaki ger&amp;ccedil;ek hayat senaryolarında daha faydalı bir kesme işlemi yapılabilir. Bununla ilişkili olaraktan sizlere bir alıştırma senaryosu &amp;ouml;rneği vermek isterim. S&amp;ouml;z gelimi, kullanıcının hangi &amp;uuml;r&amp;uuml;nlere bakacağı bilgisi, kullanıcının dahil olduğu b&amp;ouml;lgeye bağlı olabilir. Bu durumda &lt;strong&gt;ASPNETDB.MDF&lt;/strong&gt; veritabanında yer alan kullanıcı bilgisi ile, kullanıcıların dahil olduğu b&amp;ouml;lgeleri tutan başka bir eşleştirme tablosu bu senaryo i&amp;ccedil;in &amp;ccedil;ok yararlı olabilir. B&amp;ouml;ylece kesme metodu i&amp;ccedil;erisinde, eşleştirme tablosundan yararlanılarak, &lt;strong&gt;giren kullanıcının sadece dahil olduğu b&amp;ouml;lgeye ait &amp;uuml;r&amp;uuml;nleri g&amp;ouml;rmesi&lt;/strong&gt; sağlanabilir. Bunu kendi başınıza denemenizi ve yapmaya &amp;ccedil;alışmanızı &amp;ouml;neririm.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;Ouml;rneğimizdeki veri kesme metodları(Data Interceptors) i&amp;ccedil;erisinde servisin host edildiği uygulama ortamının i&amp;ccedil;eriğinin kullanıldığı g&amp;ouml;r&amp;uuml;lmektedir. Burada Web ortamında olunmasının b&amp;uuml;y&amp;uuml;k bir avantaj sağladığı &amp;ccedil;ok a&amp;ccedil;ıktır. Nitekim, o anki HTTP i&amp;ccedil;eriğine HttpContext &amp;ouml;zelliği &amp;uuml;zerinden ulaşılabilmektedir. Bu sebepten sisteme giriş yapmış olan kullanıcıyı tespit etmek son derece kolaydır. Ayrıca Ado.Net Data Service' lerin host edildiği web ortamlarında, Application, Session, Caching gibi yapılarında ele alınması m&amp;uuml;mk&amp;uuml;n hale gelmektedir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Gelelim &lt;strong&gt;ProductChange&lt;/strong&gt; metoduna. Bu metod i&amp;ccedil;erisinde giriş yapan kullanıcın &lt;strong&gt;Region&lt;/strong&gt; rol&amp;uuml;nde olması halinde değişiklik yapabilmesine m&amp;uuml;sade edilmektedir. Eğer giren kullanıcı &lt;strong&gt;Region&lt;/strong&gt; rol&amp;uuml;nde değilse istemci tarafına &lt;strong&gt;HTTP Statu Code 405&lt;/strong&gt; mesajı g&amp;ouml;nderilmektedir. Aslında kesme operasyonlarını daha net bir şekilde ele alabilmek i&amp;ccedil;in bir istemci uygulama yazılmasında yarar vardır. Veri değiştirme işlemleri sırasında devreye giren bu metodda &amp;ouml;nemli olan noktalardan biriside &lt;strong&gt;UpdateOperations&lt;/strong&gt; &lt;strong&gt;enum&lt;/strong&gt; sabitinin kullanılmasıdır.&lt;/p&gt;
+&lt;p&gt;Bu sabitin değerine g&amp;ouml;re kullanıcının nasıl bir operasyon ger&amp;ccedil;ekleştirmek istediği kolayca tespit edilebilir. Metodun ilk parametresi kesme operasyonunun kime uygulanacağını işaret etmektedir. Buna g&amp;ouml;re s&amp;ouml;z konusu kesme operasyonları &lt;strong&gt;Products&lt;/strong&gt; tipine uygulanabilir. Diğer &amp;ouml;nemli bir noktada istemci tarafına&lt;strong&gt; HTTP 405&lt;/strong&gt; mesajının &lt;strong&gt;DataServiceException&lt;/strong&gt; tipinden bir nesne &amp;ouml;rneği fırlatılarak g&amp;ouml;nderiliyor olmasıdır. &amp;Ccedil;ok doğal olarak bu istisna tipinin istemci uygulama tarafından ele alınıyor olması gerekmektedir. &lt;em&gt;(Yani istemci tarafında try...catch...finally blokları kullanılarak istisna y&amp;ouml;netimi yapılmalıdır.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;S&amp;ouml;z konusu sistemde istemci uygulamanın, servisten talepte bulunurken belirli bir kullanıcı bilgisini g&amp;ouml;ndermesi de şarttır. Aslında bu noktada &lt;strong&gt;Client Application Services&lt;/strong&gt;' lerden faydalanılabilinir.&lt;em&gt;(Bu konu ile ilişkili olarak daha &amp;ouml;nceki &lt;a href="http://www.bsenyurt.com/makalegoster.aspx?ID=267"&gt; makalemi&lt;/a&gt; takip etmenizi &amp;ouml;neririm)&lt;/em&gt; &amp;Ouml;zellikle &lt;strong&gt;.Net&lt;/strong&gt; tabanlı istemcilerde İstemci Uygulama Servisinin kullanılmasını &amp;ouml;neririm. Tabi bunun i&amp;ccedil;in servis tarafındaki konfigurasyon dosyasında bir takım değişikliklerin yapılması gerekmektedir. Bu sebeple host uygulamanın &lt;strong&gt;web.config&lt;/strong&gt; dosyasında aşağıda yer alan eklemeleri yapabiliriz.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;...
+&amp;lt;appSettings/&amp;gt;
+
+&amp;lt;system.web.extensions&amp;gt;
+    &amp;lt;scripting&amp;gt;
+        &amp;lt;webServices&amp;gt;
+            &amp;lt;authenticationService enabled="true"/&amp;gt;
+            &amp;lt;roleService enabled="true"/&amp;gt;
+        &amp;lt;/webServices&amp;gt;
+    &amp;lt;/scripting&amp;gt;
+&amp;lt;/system.web.extensions&amp;gt;
+
+&amp;lt;connectionStrings&amp;gt;
+...&lt;/pre&gt;
+&lt;p&gt;İstemci uygulama tarafında ise &lt;strong&gt;proje &amp;ouml;zelliklerinden(Properties)&lt;/strong&gt;, &lt;strong&gt;Services&lt;/strong&gt; kısmına ge&amp;ccedil;memiz ve geliştirdiğimiz web uygulamasının adresini işaret etmemiz yeterlidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk268_8.gif" alt="" width="485" height="411" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;lyece istemci uygulamanın &lt;strong&gt;doğrulama(authentication)&lt;/strong&gt; ve &lt;strong&gt;rol(role)&lt;/strong&gt; y&amp;ouml;netimi i&amp;ccedil;in geliştirilen web uygulamasının &amp;uuml;yelik sistemini(&lt;strong&gt;Membership API) &lt;/strong&gt;kullanılacağı belirtilmiş olur. &amp;Ouml;rnek i&amp;ccedil;erisinde &lt;strong&gt;Membership&lt;/strong&gt; sınıfını kullanarak doğrulama yapacağımızdan &lt;strong&gt;System.Web.dll&lt;/strong&gt; &lt;strong&gt;assembly&lt;/strong&gt;' ının servis referansı ile birlikte istemci uygulamaya ekleniyor olmasıda gerekmektedir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Servis tarafında isimsiz kullanıcıların(Anonymous Users) sisteme girişini kapattığımız i&amp;ccedil;in Add Service Reference kısmından servise ait WSDL i&amp;ccedil;eriğini elde edemediğimizi g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Nitekim Visual Studio ortamında s&amp;ouml;z konusu servis talep edildiğinde otomatikman web uygulamasının authentication kuralı devreye girmekte ve bizi Login.aspx sayfasına y&amp;ouml;nlendirmeye &amp;ccedil;alışmaktadır. Hal b&amp;ouml;yle oluncada servise ulaşılamamakta ve referansı elde edilememektedir.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rnekte servisin host edildiği web uygulamasındaki deny user="?" kısmı, istemci uygulamayla aynı solution i&amp;ccedil;erisindeki servis referansı eklendikten sonra etkin hale getirilmiştir. Bu elbetteki istenen &amp;ccedil;&amp;ouml;z&amp;uuml;m değildir ve ayrıca daha sonrada servisin g&amp;uuml;ncelleştirilmesi sırasında problemlere neden olmaktadır.&lt;/p&gt;
+&lt;p&gt;Diğer taraftan datasvcutil aracı yardımıylada istemci tarafı i&amp;ccedil;in gerekli tipler &amp;uuml;retilmek istendiğinde benzer sonu&amp;ccedil;lar ile karşılaşılacaktır. Aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde ilk denemede anonymous kullanıcıların geri &amp;ccedil;evrildiği senaryo sonrası alınan uyarı mesajı g&amp;ouml;r&amp;uuml;lmektedir. İkinci deneme yapılmadan &amp;ouml;nce ise web.config dosyasındaki deny users="?" kısmı allow users="?" olarak değiştirilmiş ve gerekli tiplerin &amp;uuml;retildiği g&amp;ouml;r&amp;uuml;lm&amp;uuml;şt&amp;uuml;r. Elbetteki buda istenen bir aktarım şekli değildir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk268_10.gif" alt="" width="602" height="243" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu noktada belkide servisin kullanılabilmesi i&amp;ccedil;in, istemci tarafınca gerek duyulan proxy tiplerinin &amp;ouml;nceden &amp;uuml;retilip, kullanacak olan uygulamalara dağıtılması y&amp;ouml;ntemi tercih edilebilir. A&amp;ccedil;ık&amp;ccedil;ası bu, servisi kullanacak olan istemcilerin belli olduğu durumlarda d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilecek bir senaryodur ki pek &amp;ccedil;ok b&amp;uuml;y&amp;uuml;k &amp;ccedil;aplı şirket i&amp;ccedil;i projede g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Bu arada istemci tarafındaki Console uygulamasının i&amp;ccedil;eriğini aşağıdaki gibi &amp;ouml;rnekleyebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Data.Services.Client;
+using System.Linq;
+using System.Net;
+using ClientApplication.NorthwindServiceReference;
+using System.Web.ClientServices;
+using System.Threading;
+using System.Web.Security;
+
+namespace ClientApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            NorthwindEntities entities = new NorthwindEntities(
+                new Uri("http://buraksenyurt:1000/SecuritySolutions/NorthwindDataService.svc")
+                );
+
+            entities.SendingRequest+=delegate(object sender,SendingRequestEventArgs e)
+            {
+                ClientFormsIdentity identity = Thread.CurrentPrincipal.Identity as ClientFormsIdentity;
+                HttpWebRequest webRequest = e.Request as HttpWebRequest;
+                if (identity != null)
+                    webRequest.CookieContainer = identity.AuthenticationCookies;
+            };
+
+            try
+            {
+                if (Membership.ValidateUser("dealer1", "dealer1."))
+                {
+                    // QueryInterceptor i&amp;ccedil;in istemci kodu
+                    var tumUrunler = from urun in entities.Products
+                                                select urun;
+    
+                    foreach (var urun in tumUrunler)
+                    {
+                        Console.WriteLine(urun.ProductName);
+                    }
+
+                    // Http durum kodları(Http Status Code) i&amp;ccedil;in link-&amp;gt; http://en.wikipedia.org/wiki/List_of_HTTP_status_codes 
+        
+                    // ChangeInterceptor i&amp;ccedil;in istemci kodu
+                    var u = (from urun in entities.Products
+                        where urun.ProductID == 1
+                            select urun).First&amp;lt;Products&amp;gt;();
+                    u.UnitPrice +=1;
+
+                    entities.UpdateObject(u);
+                    entities.SaveChanges();
+                }
+            }
+            catch (DataServiceRequestException excp)
+            {
+                string excpMessage = String.Format("Status Code : {0}\n Inner Exception Message : {1} ",
+                        ((DataServiceClientException)excp.InnerException).StatusCode.ToString(), excp.InnerException.Message
+                    );
+                Console.WriteLine(excpMessage);
+            }            
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Burada belkide en can alıcı nokta doğrulama i&amp;ccedil;in istemci tarafından kullanıcı ve şifre bilgilerinin nasıl g&amp;ouml;nderildiğidir. Dikkat edilecek olursa servise talep g&amp;ouml;nderilmeden &amp;ouml;nce ilgili doğrulama bilgileri yollanmaktadır. &lt;strong&gt;Membership&lt;/strong&gt; sınıfının &lt;strong&gt;ValidateUser&lt;/strong&gt; metodu yardımıyla kullanıcı doğrulandıktan sonra ise &lt;strong&gt;entity&lt;/strong&gt; talebinde bulunulmakta ve bir g&amp;uuml;ncelleştirme işlemi ger&amp;ccedil;ekleştirilmektedir. Uygulamayı &amp;ccedil;alıştırdığımızda aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; ile karşılaşırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk268_9.gif" alt="" width="588" height="229" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Uuml;r&amp;uuml;n bilgileri alınırken servis tarafındaki &lt;strong&gt;FilterForProducts&lt;/strong&gt; isimli veri kesme metodu devreye girmiş ve &lt;strong&gt;delaer1&lt;/strong&gt; i&amp;ccedil;in &lt;strong&gt;SupplierID&lt;/strong&gt; değerleri &lt;strong&gt;1&lt;/strong&gt; veya &lt;strong&gt;2&lt;/strong&gt; olanlar getirilmiştir. Yine dikkat edilecek olursa &lt;strong&gt;SaveChanges&lt;/strong&gt; metodundan sonra servis tarafındaki &lt;strong&gt;ProductChange&lt;/strong&gt; kesme metodunun devreye girmesi sonucu istemciye hata mesajı d&amp;ouml;nd&amp;uuml;r&amp;uuml;lm&amp;uuml;ş ve bir &lt;strong&gt;istisna(exception)&lt;/strong&gt; oluşmuştur. Bu son derece doğaldır nitekim &lt;strong&gt;dealer1&lt;/strong&gt; kullanıcısı &lt;strong&gt;Region&lt;/strong&gt; rol&amp;uuml;nde değildir. Ancak &amp;ouml;rneğin &lt;strong&gt;region1&lt;/strong&gt; kullanıcısı ile giriş yaparsak bu durumda &lt;strong&gt;SupplierID&lt;/strong&gt; değeri &lt;strong&gt;null&lt;/strong&gt; olmayan &amp;uuml;r&amp;uuml;nleri &amp;ccedil;ekebildiğimizi ve aynı zamanda bunlardan ilkinin &lt;strong&gt;UnitPrice&lt;/strong&gt; değerlerinide değiştirebildiğimizi g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Hatta &lt;strong&gt;SQL&lt;/strong&gt; &lt;strong&gt;Server&lt;/strong&gt; &lt;strong&gt;Profiler&lt;/strong&gt; aracı ile arka plandaki sorgu durumunu izlersek aşağıdakine benzer bir sorgunun işletildiğini kolayca izleyebiliriz.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;exec sp_executesql N'update [dbo].[Products]
+set [ProductName] = @0, [QuantityPerUnit] = @1, [UnitPrice] = @2, [UnitsInStock] = @3, [UnitsOnOrder] = @4, [ReorderLevel] = @5, [Discontinued] = @6
+where ([ProductID] = @7)
+',N'@0 nvarchar(4),@1 nvarchar(18),@2 decimal(19,4),@3 smallint,@4 smallint,@5 smallint,@6 bit,@7 int',@0=N'Chai',@1=N'10 boxes x 20 bags',@2=22.0000,@3=39,@4=0,@5=10,@6=0,@7=1&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rneklerdende g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt;' lerde g&amp;uuml;venliği sağlarken &lt;strong&gt;doğrulama(Authentication)&lt;/strong&gt; ve &lt;strong&gt;yetkilendirme(Authorization) &lt;/strong&gt;adına yapılabilecek belirli işlemler s&amp;ouml;z konusudur. Bu işlemler i&amp;ccedil;in bazı kuralların uygulanması gerekmektedir. S&amp;ouml;z gelimi servis operasyonları g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında, yazılacak olan metodlarda dikkat edilmesi gereken kurallar şunlardır.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;Metodun &lt;strong&gt;public&lt;/strong&gt; erişim belirleyicisine sahip olması gerekmektedir.&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Metodun d&amp;ouml;n&amp;uuml;ş tipi &lt;strong&gt; IQueryable&amp;lt;T&amp;gt;&lt;/strong&gt; veya &lt;strong&gt;IEnumerable&amp;lt;T&amp;gt; &lt;/strong&gt;olabilir. Buradaki &lt;strong&gt;T&lt;/strong&gt;, &lt;strong&gt;Entity&lt;/strong&gt; tipidir. Eğer operasyonun d&amp;ouml;nd&amp;uuml;rd&amp;uuml;ğ&amp;uuml; sonu&amp;ccedil; k&amp;uuml;mesi &amp;uuml;zerinde &lt;strong&gt;sıralama&lt;/strong&gt;, &lt;strong&gt;sayfalama&lt;/strong&gt;, &lt;strong&gt;filtreleme&lt;/strong&gt; gibi işlemler yapılacaksa &lt;strong&gt;IQueryable&amp;lt;T&amp;gt;&lt;/strong&gt; tipinin d&amp;ouml;nd&amp;uuml;r&amp;uuml;lmesi gerekir.&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;&lt;strong&gt;HTTP&lt;/strong&gt; &lt;strong&gt;Get&lt;/strong&gt; metoduna uygun &amp;ccedil;ağrılar i&amp;ccedil;in &lt;strong&gt;WebGet,&lt;/strong&gt; &lt;strong&gt;HTTP&lt;/strong&gt; &lt;strong&gt;Post,Delete,Put&lt;/strong&gt; gibi talepler i&amp;ccedil;inse &lt;strong&gt;WebInvoke&lt;/strong&gt; niteliği&lt;strong&gt;(Attribute) &lt;/strong&gt; kullanılmalıdır.&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Benzer şekilde okuma işlemleri sırasındaki kesme fonksiyonelliklerininde uygulaması gereken bazı kurallar vardır. Buna g&amp;ouml;re;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;Metodun &lt;strong&gt;public&lt;/strong&gt; erişim belirleyicisine sahip olması gerekir.&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Metoda &lt;strong&gt; [QueryInterceptor("EntityName")]&lt;/strong&gt; niteliğinin uygulanması gerekir. &lt;strong&gt;EntityName&lt;/strong&gt; yerine kesme işleminin uygulanacağı &lt;strong&gt; Entity&lt;/strong&gt; tipinin adı verilir.&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Metodun d&amp;ouml;n&amp;uuml;ş tipi &lt;strong&gt; Expression&amp;lt;Func&amp;lt;T,bool&amp;gt;&amp;gt;&lt;/strong&gt; olmalıdır. &lt;strong&gt;Func&lt;/strong&gt; temsilcisinde yer alan &lt;strong&gt;T&lt;/strong&gt; &lt;strong&gt;entity&lt;/strong&gt; tipidir.&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Metod parametre almaz.&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Metodun işleyişi sırasında bir &lt;strong&gt;istisna(Excpetion) &lt;/strong&gt;oluşsa bile istemci talebi tamamlanır ve kendisine hata mesajı uygun &lt;strong&gt;HTTP Statu Code&lt;/strong&gt; değeri ile d&amp;ouml;nd&amp;uuml;r&amp;uuml;l&amp;uuml;r.&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Eğer kesme operasyonu veri g&amp;uuml;ncellenmesi,eklenmesi veya silinmesi işlemleri sırasında yapılacaksa, izlenilmesi gereken kurallar aşağıdaki gibidir.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;Metodun &lt;strong&gt;public&lt;/strong&gt; erişim belirleyicisi olmalıdır.&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Metoda &lt;strong&gt; [ChangeInterceptor("EntityName")] &lt;/strong&gt;niteliği uygulanmalıdır. Buradaki &lt;strong&gt;EntityName&lt;/strong&gt;, &lt;strong&gt;entity&lt;/strong&gt; tipinin adıdır.&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Metodun d&amp;ouml;n&amp;uuml;ş tipi yoktur. Bu nedenle &lt;strong&gt;void&lt;/strong&gt; olarak tanımlanır.&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Metodun iki parametresi vardır. İlki &lt;strong&gt;entity&lt;/strong&gt; &lt;strong&gt;tipi&lt;/strong&gt; ikincisi ise &lt;strong&gt;UpdateOperations&lt;/strong&gt; &lt;strong&gt;enum&lt;/strong&gt; sabitidir. Bu enum sabiti ile metodu i&amp;ccedil;erisinde &lt;strong&gt; değiştirme, silme, ekleme&lt;/strong&gt; operasyonları ele alınabilir.&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Metodun işleyişi sırasında bir &lt;strong&gt;istisna&lt;/strong&gt; oluşursa, istemciden gelen talep tamamlanır ve kendisine uygun olan &lt;strong&gt;Http&lt;/strong&gt; &lt;strong&gt;Statu&lt;/strong&gt; &lt;strong&gt;Code&lt;/strong&gt; değerine sahip hata g&amp;ouml;nderilir. Bu istisna sonrasında sunucu tarafındaki asıl veri kaynağında herhangibir değişiklik kesinlikle olmaz.&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Makalemizi sonlandırmadan &amp;ouml;nce &amp;ouml;nemli bir noktayı daha vurgulamakta yarar vardır. Servisin doğrulanması i&amp;ccedil;in istemci tarafından g&amp;ouml;nderilen kullanıcı adı ve şifre bilgileri a&amp;ccedil;ık metinler olarak gitmektedir. Eğer &amp;ouml;rnekler test edilirken &lt;strong&gt;Fiddler&lt;/strong&gt; aracı yardımıyla arka plandaki paketler izlenirse aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan durum ile karışalışır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk268_11.gif" alt="" width="645" height="683" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu nedenle en uygun &amp;ccedil;&amp;ouml;z&amp;uuml;m servisin &lt;strong&gt; HTTPS&lt;/strong&gt; tabanlı bir iletişim &amp;uuml;zerinden hizmet vermesinin sağlanması olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;Bu yazımızda &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt;' lerde &lt;strong&gt;doğrulama&lt;/strong&gt; ve &lt;strong&gt;yetkilendirme&lt;/strong&gt; işlemlerinin nasıl ele alınabileceğini, bir başka deyişle g&amp;uuml;venliğin nasıl sağlanabileceğini en temel hatlarıyla incelmeye &amp;ccedil;alıştık. &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt; konusunda geliştirmeler devam etmektedir. G&amp;uuml;venlik ile ilişkili olaraktan farklı yaklaşımların getirilmeside bu nedenle s&amp;ouml;z konusu olabilir. Ancak en azından, host uygulamanın bu işte &amp;ouml;nemli bir rol &amp;uuml;stlendiği g&amp;ouml;zden ka&amp;ccedil;ırılmamalıdır. Bu yazıda kullanılan tekniğe g&amp;ouml;re, doğrulama işlemini &lt;strong&gt;Asp.Net Web&lt;/strong&gt; uygulaması devralmıştır. Size tavsiyem bunu bir &lt;strong&gt;WCF&lt;/strong&gt; sitesinden host ederkende ger&amp;ccedil;ekleştiriyor olmanızdır. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/makale/images/guvenlik.rar"&gt;&amp;Ouml;rneği İndirmek İ&amp;ccedil;in Tıklayın&lt;/a&gt; &lt;em&gt;(Boyutun k&amp;uuml;&amp;ccedil;&amp;uuml;k olması i&amp;ccedil;in ASPNETDB.MDF ve log dosyası &amp;ccedil;ıkartılmıştır. Bu nedenle &amp;ouml;rneği deneyebilmek i&amp;ccedil;in s&amp;ouml;z konusu veritabanını Asp.Net Web Site Administration Tool ile oluşturmanız gerekmektedir.)&lt;/em&gt;&lt;/p&gt;</content>
+  <pubDate>2009-02-02 12:00:00</pubDate>
+  <slug>Ado-Net-Data-Services-Ders-Notlarc4b1-7-(Security)-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>adonet-data-services</tag>
+    <tag>wcf-data-services</tag>
+    <tag>wcf</tag>
+    <tag>windows-communication-foundation</tag>
+  </tags>
+  <categories>
+    <category>Ado.Net Data Services</category>
+  </categories>
+</post>

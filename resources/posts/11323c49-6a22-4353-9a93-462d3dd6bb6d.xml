@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Bir Ruby Uygulamasını Google Cloud Platform Üzerine Taşımak</title>
+  <description>Ben bu Cloud platformlarını çok tuttum. Gerek Azure, gerek AWS, gerek Google Cloud Platform...Hepsi çok çekici duruyor. Benim ilgimi çeken şey onları araştırırken özellikle west-world dünyasında yazılmış bir programın ilgili platform üzerinde konuşlandırılması ve yürütülebilmesi. Ağırlıklı olarak REST tipinden servis uygulamalarını taşımaya çalışıyorum. Bu seferki hedefimse rastgele bir sözü sunan ruby ile yazılmış bir REST servisinin Google Cloud Platform'a taşınması ve oradan kullanılabilmesi. İşlemlerime başlamadan önce Google Cloud Platform üzerinden geçerli bir ödeme seçeneğinimizin olması gerekiyor. Yani bir kredi kartı bilgimizi tanımlamış olmalıyız. Bir ablam olduğu için çok şanslıyım :) Sağolsun bu proje için sanal kredi kartını kullanmama izin verdi. Gelin adım adım ilerleyelim.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2018/01/rubyongcp_10.gif" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;"Futbol basit bir oyundur. 22 kişi 90 dakika boyunca bir topun peşinde koşar ve sonunda her zaman Almanlar kazanır." demiş bizim de ne yazık ki yakından tanıdığımız Gary Lineker. Konumuzla ne alakası var derseniz. Az sonra onun bu s&amp;ouml;z&amp;uuml;n&amp;uuml; buluta alacağız.&lt;/p&gt;
+&lt;p&gt;Ben bu&amp;nbsp;bulut platformlarını &amp;ccedil;ok tuttum. Gerek Microsoft Azure, gerek Amazon Web Services, gerek Google Cloud Platform...Hepsi &amp;ccedil;ok &amp;ccedil;ekici duruyor. Kurcaladığım ve &amp;uuml;zerinde &amp;ccedil;alıştığım &amp;ouml;rneklerle, &amp;ouml;zellikle West-World d&amp;uuml;nyasında yazılmış bir programın ilgili platform &amp;uuml;zerinde konuşlandırılması ve y&amp;uuml;r&amp;uuml;t&amp;uuml;lmesini &amp;ouml;ğrenmeye gayret ediyorum. Ağırlıklı olarak REST&lt;em&gt;(Representational State Transfer)&lt;/em&gt; tipinden servis uygulamalarını taşımaya &amp;ccedil;alışıyorum ki bu sayede bir mikroservis bulut alanında nasıl&amp;nbsp;kullanılıyor&amp;nbsp;&amp;ouml;ğreneyim.&lt;/p&gt;
+&lt;p&gt;Bu seferki hedefimse rastgele&amp;nbsp;&amp;ouml;zl&amp;uuml;&amp;nbsp;s&amp;ouml;z&amp;nbsp;veren Ruby programlama dili ile yazılmış bir REST servisinin Google Cloud Platform'a&amp;nbsp;taşınarak App Engine Flexible ortamında ayağa kaldırılması. İşlemlerime başlamadan &amp;ouml;nce Google Cloud Platform &amp;uuml;zerinde ge&amp;ccedil;erli bir &amp;ouml;deme&amp;nbsp;se&amp;ccedil;eneğinin&amp;nbsp;olması gerekiyor&lt;em&gt;(AWS'de de benzer şekilde servislerden yararlanabilmek i&amp;ccedil;in ge&amp;ccedil;erli bir kredi kartı bilgisi isteniyordu)&lt;/em&gt;&amp;nbsp;Bir ablam olduğu i&amp;ccedil;in &amp;ccedil;ok şanslıyım. Sağolsun bu proje i&amp;ccedil;in sanal kredi kartını kullanmama izin verdi. Gelin adım adım ilerleyerek ruby servisimizi App Engine Flexible ortamından &amp;ccedil;alıştıralım.&lt;/p&gt;
+&lt;h1&gt;Google Cloud Tools Olmazsa Olmaz&lt;/h1&gt;
+&lt;p&gt;West-World bildiğiniz &amp;uuml;zere Ubuntu 16-04 64bit s&amp;uuml;r&amp;uuml;m&amp;uuml;n&amp;uuml; kullanıyor. Bu nedenle sıradaki Google Cloud Tools kurulum işlemi Debian/Ubuntu sistemleri i&amp;ccedil;in ge&amp;ccedil;erli. Elbette Windows, MacOSX, RedHat/Centos gibi sistemler i&amp;ccedil;in de bu ara&amp;ccedil;tan yararlanabiliriz&lt;em&gt;(&lt;a href="https://cloud.google.com/sdk/docs/" target="_blank"&gt;Şu adresten&lt;/a&gt; kendi sisteminiz i&amp;ccedil;in uygun olan s&amp;uuml;r&amp;uuml;m&amp;uuml; indirebilirsiniz)&lt;/em&gt; Google Cloud Tools taşıma işlemi sırasında kullanacağımız ara&amp;ccedil; olduğu i&amp;ccedil;in y&amp;uuml;klememiz gerekiyor. Aşağıdaki&amp;nbsp;terminal komutlarını&amp;nbsp;kullanarak kurulumu yapıyorum.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
+echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+sudo apt-get update &amp;amp;&amp;amp; sudo apt-get install google-cloud-sdk
+sudo apt-get install google-cloud-sdk-app-engine-java
+gcloud init&lt;/pre&gt;
+&lt;p&gt;Son adımda Google login sayfasına y&amp;ouml;nlendirildim ve hangi projeyi hangi Google Compute Engine b&amp;ouml;lgesinde kullanmak istediğime dair iki soruyla karşılaştım. Ben YourFunnyQuote isimli projemi ve uğurlu rakamım 13 ile australia-southeast1-b b&amp;ouml;lgesini tercih ettim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/01/rubyongcp_1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;ve login sonrasında da aşağıdaki ekranla karşılaştım.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/01/rubyongcp_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bir başka deyişle West-World &amp;uuml;zerinden gcloud'u kullanabilmek i&amp;ccedil;in kimliğim doğrulanmıştı.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;nbsp;Diğer b&amp;ouml;lgeler hakkında g&amp;ouml;rsel bilgiye ihtiya&amp;ccedil; duyarsanız &lt;a href="https://cloud.google.com/about/locations/#regions-tab" target="_blank"&gt;şu adrese&lt;/a&gt; uğramanızı tavsiye ederim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/01/rubyongcp_9.gif" alt="" width="500" /&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Kurulumun sorunsuz tamamlanıp tamamlanmadığından emin olmak i&amp;ccedil;in de şu komutu &amp;ccedil;alıştırdım.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;gcloud --help&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/01/rubyongcp_6.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu işlemler sırasında se&amp;ccedil;tiğimiz proje &amp;ouml;nemli. Nitekim taşıma işlemi sonrasında kodlarımız bu proje ile ilişkiliendirimiş Instance'a taşınacak.&lt;/p&gt;
+&lt;h1&gt;Ruby Uygulamasının Geliştirilmesi&lt;/h1&gt;
+&lt;p&gt;gcloud aracını y&amp;uuml;kledikten sonra basit bir Ruby projesi geliştirmeye karar verdim. Ne var ki bu ana kadar West-World &amp;uuml;zerinde hi&amp;ccedil;bir ruby projesi geliştirmemiştim. West-World bu değerli Ruby m&amp;uuml;cehverinin ne olduğunu bilmiyordu. O y&amp;uuml;zden ona kurulması lazımdı.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo apt-get install ruby-full&lt;/pre&gt;
+&lt;p&gt;ile tam s&amp;uuml;r&amp;uuml;m&amp;uuml; y&amp;uuml;kledim. Kurulum sonrası&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;ruby -v&lt;/pre&gt;
+&lt;p&gt;terminal komutu ile de y&amp;uuml;klenen versiyondan emin oldum.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/01/rubyongcp_5.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rnek olarak REST tipinden bir servis geliştirmeyi planlıyordum. İşimi kolaylaştıracak paket ise Sinatra'ydı&lt;em&gt;(Ruby on Rails &amp;ccedil;atısı da tercih edilebilir tabii ki)&lt;/em&gt; Ancak Ruby ile yeni tanışmış olan West-World b&amp;uuml;y&amp;uuml;k &amp;uuml;stad Sinatra'dan da bihaberdi. Ona "I did it my way" s&amp;ouml;zlerini fısıldayarak usta sanat&amp;ccedil;ıyı anımsatmaya &amp;ccedil;alıştım dersem deli olduğumu d&amp;uuml;ş&amp;uuml;neceksiniz. Bende bu nedenle&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo gem install sinatra&lt;/pre&gt;
+&lt;p&gt;ile sisteme Sinatra'yı y&amp;uuml;klemeyi uygun g&amp;ouml;rd&amp;uuml;m.&lt;/p&gt;
+&lt;p&gt;Ayrıca ser&amp;uuml;venim sırasında Ruby bağımlılıklarının y&amp;uuml;klenmesini sağlamak i&amp;ccedil;in ruby-bundle aracına da ihtiyacım vardı. Nitekim taşıma işlemi sırasında Google Cloud Platform, Gemfile.lock dosyasının i&amp;ccedil;eriğine bakarak ilgili bağımlılıkların ortama kurulumunu ger&amp;ccedil;ekleştirecekti. Onun standartları buydu.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo apt-get install ruby-bundler&lt;/pre&gt;
+&lt;p&gt;Nihayet ruby kodlarını yazmaya başlayabilirdim. Paslanmış olan ruby bilgime aldırmadan Visual Studio Code'u a&amp;ccedil;tım ve uygun bir klas&amp;ouml;r i&amp;ccedil;erisinde &amp;ouml;nce app.rb dosyasını ardından &amp;ouml;zellikle Google i&amp;ccedil;in &amp;ouml;nemli olan app.yaml ve Gemfile i&amp;ccedil;eriklerini oluşturdum.&lt;/p&gt;
+&lt;pre class="brush:ruby;auto-links:false;toolbar:false" contenteditable="false"&gt;require "sinatra"
+require "json"
+
+set :port, 8080
+
+get "/quotes/random" do
+    quotes=Array.new
+    quotes&amp;lt;&amp;lt;Quote.new(122548,"Michael Jordan","I have missed more than 9000 shots in my career. I have lost almost 300 games. 26 times, I have been trusted to take the game winning shot and missed. I have failed over and over and over again in my life. And that is why I succeed.")
+    quotes&amp;lt;&amp;lt;Quote.new(325440,"Vince Lombardi","We didn't lose the game; we just ran out of time")
+    quotes&amp;lt;&amp;lt;Quote.new(150094,"Randy Pausch","We cannot change the cards we are dealt, just how we play the game")
+    quotes&amp;lt;&amp;lt;Quote.new(167008,"Johan Cruyff","Football is a game of mistakes. Whoever makes the fewest mistakes wins.")
+    quotes&amp;lt;&amp;lt;Quote.new(650922,"Gary Lineker","Football is a simple game. Twenty-two men chase a ball for 90 minutes and at the end, the Germans always win.")
+    quotes&amp;lt;&amp;lt;Quote.new(682356,"Paul Pierce","The game isn't over till the clock says zero.")
+    quotes&amp;lt;&amp;lt;Quote.new(156480,"Jose Mourinho","Football is a game about feelings and intelligence.")
+    quotes&amp;lt;&amp;lt;Quote.new(777592,"LeBron James","You know, when I have a bad game, it continues to humble me and know that, you know, you still have work to do and you still have a lot of people to impress.")
+    quotes&amp;lt;&amp;lt;Quote.new(283941,"Roman Abramovich","I'm getting excited before every single game. The trophy at the end is less important than the process itself.")
+    quotes&amp;lt;&amp;lt;Quote.new(185674,"Shaquille O'Neal","I'm tired of hearing about money, money, money, money, money. I just want to play the game, drink Pepsi, wear Reebok.")
+
+    content_type 'application/json'
+    index=rand(quotes.length-1)
+    quote=quotes[index]
+    quote.to_json
+end
+
+class Quote
+    attr_accessor:id
+    attr_accessor:owner
+    attr_accessor:text
+     
+    def initialize(id,owner,text)
+        @id=id
+        @owner=owner
+        @text=text
+    end
+    def to_json(*a)
+        {
+            "json_class" =&amp;gt; self.class.name,
+            "data"       =&amp;gt; {"id" =&amp;gt; @id, "owner" =&amp;gt; @owner, "text" =&amp;gt; @text}
+        }.to_json(*a)
+    end
+    def self.json_create(object) 
+        new(object["data"]["id"], object["data"]["owner"],object["data"]["text"])
+    end
+end&lt;/pre&gt;
+&lt;p&gt;Kod olduk&amp;ccedil;a basit. Quote sınıfına ait nesne &amp;ouml;rneklerinden oluşan bir dizi var. Quote sınıfı JSON serileştirme i&amp;ccedil;in gerekli fonkisyonellikleri de barındırıyor. sinatra &amp;ccedil;atısını kullanan uygulamanın HTTP Get ile erişilebilen bir metodu var. Buna g&amp;ouml;re localhost:8080 adresine gelip quotes/random&amp;nbsp;yoluna gittiğimizde, &amp;uuml;retilen rastgele sayıya g&amp;ouml;re diziden bir &amp;ouml;zl&amp;uuml; s&amp;ouml;z&amp;uuml;n d&amp;ouml;nd&amp;uuml;r&amp;uuml;lmesi s&amp;ouml;z konusu. Bildiğiniz &amp;uuml;zere sinatra şarkılarını varsayılan olarak 4567 numaralı porttan s&amp;ouml;ylemekte. Bu senaryoda 8080 portunu kullanmak i&amp;ccedil;in k&amp;uuml;&amp;ccedil;&amp;uuml;k bir atama s&amp;ouml;z konusu. Talep sonrası i&amp;ccedil;erik tipinin application/json formatında olacağı da content_type ataması ile belirleniyor. Gelelim &amp;ouml;zellikle Google Cloud Platform tarafındaki sistem i&amp;ccedil;in &amp;ouml;nem arz eden diğer iki i&amp;ccedil;eriğe.&lt;/p&gt;
+&lt;p&gt;app.yaml isimli bir dosya oluşturup i&amp;ccedil;eriğini aşağıdaki gibi doldurmam gerekti &lt;em&gt;(Google dok&amp;uuml;mantasyonu sağolsun)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:ruby;auto-links:false;toolbar:false" contenteditable="false"&gt;runtime: ruby
+env: flex
+entrypoint: bundle exec ruby app.rb
+
+manual_scaling:
+  instances: 1
+resources:
+  cpu: 1
+  memory_gb: 0.5
+  disk_size_gb: 10&lt;/pre&gt;
+&lt;p&gt;Burada Google Cloud tarafındaki &amp;ccedil;alışma ortamı i&amp;ccedil;in gerekli bir takım ayarların bildirimi yapılıyor. &amp;Ccedil;alışma zamanının ruby motoruna g&amp;ouml;re tasarlanması gerektiği, uygulamanın&amp;nbsp;başlatılacağı giriş noktası, &amp;ouml;l&amp;ccedil;ekleme&amp;nbsp;se&amp;ccedil;enekleri ve donanımsal kaynak gereksinimler&lt;em&gt;i(işlemci adedi, bellek, disk boyutu)&lt;/em&gt; gibi bilgilere yer veriliyor. Gemfile isimli uzantısız bir dosya daha eklemek lazım. Bu dosyada projenin ihtiya&amp;ccedil; duyduğu gem'ler varsa isimleri bildiriliyor. source ataması ile de, ilgili gem i&amp;ccedil;eriklerinin hangi kaynaktan &amp;ccedil;eklileceği s&amp;ouml;ylenmekte. Paketler i&amp;ccedil;in depo bildirimi yapıldığını d&amp;uuml;ş&amp;uuml;nebiliriz. Benim &amp;ouml;rneğimde sadece sinatra gerektiğinden i&amp;ccedil;eriği aşağıdaki gibi yazmam yeterliydi.&lt;/p&gt;
+&lt;pre class="brush:ruby;auto-links:false;toolbar:false" contenteditable="false"&gt;source "https://rubygems.org"
+
+gem "sinatra"&lt;/pre&gt;
+&lt;p&gt;Bu işlemlerin arındandan ilk olarak kodun kendi sistemimde &amp;ccedil;alıştığından emin olmalıydım. Terminalden&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;ruby app.rb&lt;/pre&gt;
+&lt;p&gt;ifadesi ile programı &amp;ccedil;alıştırdım ve tarayıcıyı her g&amp;uuml;ncelleyişimde rastgele bir s&amp;ouml;z ile karşılaştığımı g&amp;ouml;rd&amp;uuml;m. Dikkat edeceğiniz &amp;uuml;zere localhost:8080/quotes/random adresine talepte bulunuluyor. Şu an i&amp;ccedil;in yeterli gibi g&amp;ouml;r&amp;uuml;nse de ama&amp;ccedil; bunu Google Cloud &amp;uuml;zerinden sunabilmekti.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/01/rubyongcp_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;h1&gt;gcloud ile Taşıma&lt;/h1&gt;
+&lt;p&gt;Sırada taşıma &amp;ouml;ncesi yapmam gereken bir hazırlık daha var&lt;em&gt;(mış)&lt;/em&gt;.&amp;nbsp;Ruby kodunu tamamladıktan sonra &amp;ouml;zellikle&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;bundler install&lt;/pre&gt;
+&lt;p&gt;terminal komutu ile proje&amp;nbsp;bağımlılıkların y&amp;uuml;kleneceği Gemfile.lock'un oluşması gerekiyor. Ancak bu işlem sonrası taşıma adımlarına ge&amp;ccedil;ilebilir. Aksi halde taşıma işlemi sırasında hata alınmakta&lt;em&gt;(Ne olduğunu s&amp;ouml;ylesem mi? Yok, s&amp;ouml;ylemeyeceğim...bundler install yapmadan gcloud deploy&amp;nbsp;komutunu &amp;ccedil;alıştırıp&amp;nbsp;kendiniz g&amp;ouml;r&amp;uuml;n)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;İ&amp;ccedil;erik proje i&amp;ccedil;in aşağıdaki gibi oluştu.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;GEM
+  remote: https://rubygems.org/
+  specs:
+    mustermann (1.0.1)
+    rack (2.0.3)
+    rack-protection (2.0.0)
+      rack
+    sinatra (2.0.0)
+      mustermann (~&amp;gt; 1.0)
+      rack (~&amp;gt; 2.0)
+      rack-protection (= 2.0.0)
+      tilt (~&amp;gt; 2.0)
+    tilt (2.0.8)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  sinatra
+
+BUNDLED WITH
+   1.11.2&lt;/pre&gt;
+&lt;p&gt;Artık taşıma işlemini deneyebilirdim.&amp;nbsp;&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;gcloud deploy&lt;/pre&gt;
+&lt;p&gt;terminal komutunu &amp;ccedil;alıştırarak s&amp;uuml;reci başlattım. Bir ka&amp;ccedil; dakika sonrasında taşıma işleminin başarılı bir şekilde yapıldığını g&amp;ouml;rd&amp;uuml;m&lt;em&gt;(Belki de Avusturalya'yı se&amp;ccedil;memeliydim. Uzak diye mi taşıma b&amp;ouml;yle uzun s&amp;uuml;rd&amp;uuml; dersiniz? :P)&lt;/em&gt; Bundan sonra tek yapmam gereken https://yourfunnyquote.appspot.com/quotes/random&amp;nbsp;adresine gitmek oldu.&amp;nbsp;Tabii dilerseniz komut satırından&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;gcloud app browse&lt;/pre&gt;
+&lt;p&gt;diyerekten de tarayıcının a&amp;ccedil;ılmasını ve ilgili projeye gidilmesini sağlayabilirsiniz. Benim elde ettiğim sonu&amp;ccedil; ş&amp;ouml;yleydi.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/01/rubyongcp_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Adres &amp;ccedil;ubuğundaki adrese dikkat edin l&amp;uuml;tfen. Bu arada yazıyı tamamladıktan sonra servisi kapattım :)) Yani &amp;ccedil;alıştığının tek ispatı bu ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;. Nitekim Google Cloud Platform bana 364 g&amp;uuml;nl&amp;uuml;k bedava kullanma s&amp;uuml;resi ve 300 dolarlık kredi bahşetmişti ama neme lazım. Her an her şey olabilirdi. Bu nedenle ilgili adrese ulaşamazsanız l&amp;uuml;tfen beni affedin. Kendi projeniz ile denediğinizde ekstra bir durum oluşmazsa taşımanızı sorunsuz ger&amp;ccedil;ekleştiriyor olmalısınız.&lt;/p&gt;
+&lt;h1&gt;Kapatırken&lt;/h1&gt;
+&lt;p&gt;Pek tabii Google Cloud Platform bu kadar basit değil. Computation, Big Data, Storage, StackDriver, Networking vb pek &amp;ccedil;ok ana başlık altında yer alan&amp;nbsp;hizmetler i&amp;ccedil;eriyor. S&amp;ouml;z gelimi API Endpoint dikkatimi &amp;ccedil;ekelerinden birisi. &amp;Ouml;zellikle &amp;ouml;l&amp;ccedil;ekleme ve y&amp;uuml;ksek performans&amp;nbsp;gerektiren APIlerimiz i&amp;ccedil;in bi&amp;ccedil;ilmiş kaftan gibi duruyor. Bunun en b&amp;uuml;y&amp;uuml;k sebeplerinden birisi Proxy Container tarafında NGinx sunucularını kullanması. Aşağıdaki &amp;ccedil;izimde s&amp;ouml;z konusu yapının kabataslak hali var&lt;em&gt;(&amp;Ccedil;&amp;ouml;z&amp;uuml;n&amp;uuml;rl&amp;uuml;k i&amp;ccedil;in l&amp;uuml;tfen kusura bakmayın. Telefon kamerasından ancak bu kadar oluyor)&lt;/em&gt; İstemci talepleri &amp;ouml;ndeki Load Balancer'dan sonra Nginx tabanlı Proxy servisine geliyor ve buradan API'nin&lt;em&gt;(s&amp;ouml;z gelimi&amp;nbsp;Python veya bir Java uygulamasının)&lt;/em&gt; konuşlandırıldığı Container Instance'ına ge&amp;ccedil;iyor. gcloud alt taraftan da g&amp;ouml;r&amp;uuml;leceği &amp;uuml;zere dağıtım adımından sorumlu. Servis y&amp;ouml;netimi&lt;em&gt;(Service Management)&lt;/em&gt; gcloud ile konuşarak&amp;nbsp;taşıma operayonlarını ve&amp;nbsp;konfigurasyon i&amp;ccedil;eriğini y&amp;ouml;netiyor. &amp;Ccedil;alışma zamanı kontrolleri ve raporlamalarda servis kontrol&amp;uuml;n&lt;em&gt;(Service Control)&lt;/em&gt; işi. &amp;Ccedil;alışma zamanını web tabanlı Cloud Console &amp;uuml;zerinden de izleme şansımız var.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2018/01/rubyongcp_8.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu mimarileri anlamaya &amp;ccedil;alışmamız &amp;ouml;nemli. Ama biraz dinlendikten sonra. &amp;Ccedil;&amp;uuml;nk&amp;uuml;,&amp;nbsp;West-World'de g&amp;uuml;neş&amp;nbsp;&amp;ccedil;oktan battı. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2018-01-27 17:00:00</pubDate>
+  <slug>bir-ruby-uygulamasini-google-cloud-platform-uzerine-tasimak</slug>
+  <tags>
+    <tag>ruby</tag>
+    <tag>google-cloud-platform</tag>
+    <tag>sinatra</tag>
+    <tag>rest-services</tag>
+    <tag>cloud-computing</tag>
+    <tag>google-app-engine</tag>
+  </tags>
+  <categories>
+    <category>Ruby</category>
+  </categories>
+</post>

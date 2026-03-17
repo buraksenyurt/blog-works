@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WCF 4.0 Yenilikleri - Managed WS-Discovery [Beta 1]</title>
+  <description>Proxy servisi aslında hem announcement mesajları hemde istemcilerden gelecek olan Probe taleplerini dinlemektedir. Announcement mesajların dinlenmesi, online veya offline olan servislerin, Proxy servisi üzerinde bir saklama alanında tutulmasınıda gerektirir. Nitekim proxy servisi, ağa bağlı olan veya ayrılan tüm servislere ait ortak bir listeyi barındırıp istemci taleplerini bu listedeki durumlara göre karşılamalıdır. Diğer taraftan kendiside, istemciler tarafından keşfedilebilir olmalıdır. Bu nedenle tüm istemciler için ortak bir Discovery Endpoint noktasına sahip olmalıdır. Proxy servisini bu nedenlerden dolayı sürekli online halde kalan bir hizmet olarak düşünebiliriz. Online kalması önemlidir; çünkü online olduğu sürece, ağı dinleyerek katılan servisleri listesine alabilir ve istemcilerden gelen Probe veya Resolve gibi çağrılara cevap verebilir. Peki işi zorlayan nokta nedir?</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/pics/2009%2f8%2fblg70_Giris1.jpg" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Yandaki resimdeki gibi &amp;ccedil;ok &amp;ccedil;ok uzun bir yolun başında ve ulaşmanız gereken yere y&amp;uuml;zlerce kilometre mesafede olduğunuzu hayal edin. Sabırlı bir şekilde bu yolu gidebilmek i&amp;ccedil;in &amp;ccedil;ok iyi bir disipline sahip olmanız gerekir. Yazılım geliştirme denilen b&amp;uuml;y&amp;uuml;k okyanusun i&amp;ccedil;erisinde de bu tip yollar ile karşılaşmaz mıyız? Hemde sıklıkla karşılaşırız. Yılmadan yola devam edenler, nihayetinde mutlu sona ulaşırlar.&amp;nbsp;Ama belkide ulaşmazlar. Bu tamamen zamanın o andaki &amp;ccedil;evresel koşullarına bağlı olarak değişir. İşte bu yazımızda hakikaten sadece geliştirme aşaması dahi insanı &amp;ccedil;ileden &amp;ccedil;ıkarabilen zahmetli bir yola baş koyuyor olacağız. Hedefimiz, &lt;strong&gt;WS-Discovery &lt;/strong&gt;tabanlı WCF sistemlerinde&amp;nbsp;&lt;strong&gt;Managed Discovery &lt;/strong&gt;modelini uygulayabilmek.&lt;/p&gt;
+&lt;p&gt;Konuyu &lt;strong&gt;MSDN&lt;/strong&gt; ve diğer internet kaynaklarından araştırırken &lt;strong&gt;Ad Hoc&lt;/strong&gt; modeli ile ilişkili tonlarca yazı olduğunu ama &lt;strong&gt;Managed&lt;/strong&gt; tarafa pek kimsenin bulaşmak istemdiğini farkettim. Nedenini anlamam yaklaşık olarak 2,5 Litre kahve i&amp;ccedil;meme ve uykusuz bir Cumartesi gecesi ge&amp;ccedil;irmeme neden oldu. Ama sonunda deydi. Aslında teorik olarak Managed modelin a&amp;ccedil;ıklaması son derece basit. İstemcilerin kullanmak isteyipte, farklı zamanlarda farklı lokasyonlardan ağa/ağlara dahil olan veya ayrılan servislerin keşfedilmesi g&amp;ouml;revi, istemci uygulamalardan alınıp istemci ile s&amp;ouml;z konusu servisler arasındaki başka bir Proxy servisine verilmektedir.&lt;/p&gt;
+&lt;p&gt;Proxy servisi aslında hem &lt;strong&gt;announcement&lt;/strong&gt; mesajları hemde istemcilerden gelecek olan &lt;strong&gt;Probe&lt;/strong&gt; taleplerini dinlemektedir. &lt;strong&gt;Announcement&lt;/strong&gt; mesajların dinlenmesi, online veya offline olan servislerin, Proxy servisi &amp;uuml;zerinde bir saklama alanında tutulmasınıda gerektirir. Nitekim proxy servisi, ağa bağlı olan veya ayrılan t&amp;uuml;m servislere ait ortak bir listeyi barındırıp istemci taleplerini bu listedeki durumlara g&amp;ouml;re karşılamalıdır. Diğer taraftan kendiside, istemciler tarafından keşfedilebilir olmalıdır. Bu nedenle&amp;nbsp;t&amp;uuml;m istemciler i&amp;ccedil;in ortak bir &lt;strong&gt;Discovery Endpoint&lt;/strong&gt; noktasına sahip olmalıdır. Proxy servisini bu nedenlerden dolayı s&amp;uuml;rekli online halde&amp;nbsp;kalan bir hizmet olarak d&amp;uuml;ş&amp;uuml;nebiliriz. Online kalması &amp;ouml;nemlidir; &amp;ccedil;&amp;uuml;nk&amp;uuml; online olduğu s&amp;uuml;rece, ağı dinleyerek katılan servisleri listesine alabilir ve istemcilerden gelen Probe veya Resolve gibi &amp;ccedil;ağrılara cevap verebilir. Peki işi zorlayan nokta&amp;nbsp;nedir?&lt;/p&gt;
+&lt;p&gt;Herşeyden &amp;ouml;nce&amp;nbsp;Proxy servisinin, &amp;ccedil;alışma zamanındaki hareketliliği normal bir servis gibi değildir. Yani standart &lt;strong&gt;ServiceHost&lt;/strong&gt;&amp;nbsp;tipi tek başına yeterli değildir. Bu nedenle, &lt;strong&gt;DiscoveryProxyBase&lt;/strong&gt;&amp;nbsp;isimli &lt;strong&gt;abstract&lt;/strong&gt; sınıftan bir t&amp;uuml;retme işlemi yapılarak &amp;uuml;retilen bir servis tipi kullanılmalıdır. &amp;Ccedil;ok doğal olarak bu base i&amp;ccedil;erisinden &lt;strong&gt;override&lt;/strong&gt; edilmesi gereken bir takım &amp;uuml;yelerde gelmektedir. Ayrıca,&amp;nbsp;Proxy servisi tek bir &amp;ouml;rnek olarak&lt;strong&gt;(Single Instance)&lt;/strong&gt;&amp;nbsp;oluşturulmalı fakat eş zamanlı olarak gelecek istemci ve announcement taleplerine de&amp;nbsp;cevap verebilmelidir.&lt;/p&gt;
+&lt;p&gt;Bu noktada &lt;strong&gt;IAsyncResult&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml;de i&amp;ccedil;eren asenkron modeli uygulayıp Thread y&amp;ouml;netimini &amp;uuml;stlenen yardımcı bir takım tipler kullanması gerekmektedir. Zaten işin zorlaştığı nokta burasıdır. Neyseki &lt;a title="Managed Proxy Service" href="http://msdn.microsoft.com/en-us/library/dd456787(VS.100).aspx" target="_blank"&gt;MSDN' &lt;/a&gt;de bu konu ile ilişkili olan &amp;ouml;rnekte, Asenkron desenin uygulanması i&amp;ccedil;in standart olarak sunulan sınıflar hazırdır. Dolayısıyla bu yapının aynısı kullanılarak gerekli geliştirmeler biraz daha kolayca yapılabilir. Biz &amp;ouml;rneğimizde sadece asenkron iletişimi ele alan tipleri alırken, DiscoveryProxyBase tabanlı t&amp;uuml;retmeyi kendimize g&amp;ouml;re d&amp;uuml;zenleyeceğiz.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;yleyse başlamaya ne dersiniz. Herkes sıcak kahvesini veya &amp;ccedil;ayını yada&amp;nbsp;yazın şu sıcak g&amp;uuml;nlerinde gidecek serin bir i&amp;ccedil;eceğini&amp;nbsp;alsın ve benimle birlikte adım adım ilerlemeye gayret etsin. Başlamadan &amp;ouml;nce hedef modelimizin ne olduğunu kabaca aktarmak isterim. Aşağıdaki şekilde g&amp;ouml;r&amp;uuml;len senaryoyu ele almaya &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f8%2fblg70_Architect.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şeklimizden anlaşılacağı &amp;uuml;zere &lt;strong&gt;Discovery Proxy&lt;/strong&gt; Servisimiz, &lt;strong&gt;Service X&lt;/strong&gt; ve&lt;strong&gt; Service Y'&lt;/strong&gt; nin &lt;strong&gt;online/offline&lt;/strong&gt; olma durumlarını izlemektedir. Ayrıca istemci uygulama/uygulamalar aramak istediği servise ait talebi doğrudan &lt;strong&gt;Discovery Proxy&lt;/strong&gt; servisine g&amp;ouml;ndermektedir. İşte tam olarak ger&amp;ccedil;ekleştirmek istediğimiz test senaryosu budur. İşe ilk olarak Discovery Proxy Servisinin yazımı ile başlayabiliriz. Dana &amp;ouml;ncedende belirttiğimiz gibi, bu servis i&amp;ccedil;erisinde asenkron bir yapı kullanılması s&amp;ouml;z konusu olduğundan işimiz pek kolay değil. Ben sadece &lt;strong&gt;Proxy&lt;/strong&gt; isimli &lt;strong&gt;DiscoveryProxyBase&lt;/strong&gt; abstract sınıfından t&amp;uuml;reyen tipin uygulanışını burada g&amp;ouml;stermek istiyorum. &amp;Ouml;rnek uygulama kodlarını indirdiğinizde &lt;strong&gt;OnResolveAsyncResult&lt;/strong&gt; ve &lt;strong&gt;OnFindAsyncResult&lt;/strong&gt; gibi tiplerin detaylarınıda bulabilirsiniz ki bunlarda standart olarak kullanılan tiplerdir ve MSDN tarafından yayınlanmıştır. Discovery Proxy servisinin i&amp;ccedil;erisindeki sınıf modeli en basit haliyle aşağıdaki şekilde olduğu gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f8%2fblg70_ClassDiagram.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Burada bizi daha &amp;ccedil;ok ilgilendiren kısım DiscoveryProxyBase t&amp;uuml;revli olan Proxy sınıfının kodlamasıdır. İşte kodlarımız;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.ServiceModel;
+using System.ServiceModel.Discovery;
+
+namespace DiscoveryProxyService
+{
+    // T anından sadece tek bir Proxy servis nesne &amp;ouml;rneğinin olabileceğini ve aynı andan birden fazla &amp;ccedil;ağrıyı karşılayabilecek şekilde kullanılabileceğini belirtiyoruz
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
+    class Proxy
+        : DiscoveryProxyBase
+    {
+        // Endpoint ve metadata bilgilerini tutacağımız bir koleksiyon tanımlanır
+        Dictionary&amp;lt;EndpointAddress, EndpointDiscoveryMetadata&amp;gt; _serviceList = null;
+        // _serviceList' in tutarlığını(Consistency) sağlamak i&amp;ccedil;in tanımlanan yardımcı değişkendir
+        object _syncLock = null;
+
+        public Proxy()
+        {
+            _serviceList = new Dictionary&amp;lt;EndpointAddress, EndpointDiscoveryMetadata&amp;gt;();
+            _syncLock = new object();
+        }
+
+        #region Yardımcı Metodlar
+
+        // Online olan bir servis bilgisini listeye eklemek i&amp;ccedil;in kullanılır
+        // Proxy her bir announce mesajı aldığını &amp;ccedil;alıştırılacaktır.
+        void AddService(EndpointDiscoveryMetadata metadata)
+        {
+            // eş zamanlı thread senkronizasyonunu sağlamak i&amp;ccedil;in lock kullanılmıştır
+            lock (_syncLock)
+            {
+                // Address key değerine sahip bir value var ise g&amp;uuml;ncelleme yoksa ekleme yapar.
+                _serviceList[metadata.Address] = metadata;
+                Console.WriteLine("{0} adresli endpoint eklendi",metadata.Address.ToString());
+            }
+        }
+        // Offline olan bir servisi listeden &amp;ccedil;ıkartmak i&amp;ccedil;in kullanılır
+        void RemoveService(EndpointDiscoveryMetadata metadata)
+        {
+            // eş zamanlı thread senkronizasyonunu sağlamak i&amp;ccedil;in lock kullanılmıştır
+            lock (_syncLock)
+            {
+                _serviceList.Remove(metadata.Address);
+                Console.WriteLine("{0} adresli endpoint &amp;ccedil;ıktı", metadata.Address.ToString());
+            }
+        }
+
+        // Bu metod ve aşırı y&amp;uuml;klenmiş(overload) versiyonu Resolve ve Probe mesajlarında kullanılır
+        // FindCriteria tipinden olan parametre ile gelen kriterler uyan servisleri, listeden &amp;ccedil;ekmektedir
+        List&amp;lt;EndpointDiscoveryMetadata&amp;gt; MatchFromServiceList(FindCriteria findCriteria)
+        {
+            List&amp;lt;EndpointDiscoveryMetadata&amp;gt; result = null;
+
+            lock (_syncLock)
+            {
+                result = (from epMetadata in _serviceList.Values
+                          where findCriteria.IsMatch(epMetadata)
+                          select epMetadata).ToList&amp;lt;EndpointDiscoveryMetadata&amp;gt;();
+            }
+
+            return result;
+        }
+
+        // ResolveCriteria tipinden gelen parametrenin Address bilgisine eş d&amp;uuml;şen servisi listeden bulup Discovery Metadata bilgisini d&amp;ouml;nd&amp;uuml;r&amp;uuml;r
+        EndpointDiscoveryMetadata MatchFromServiceList(ResolveCriteria rCriteria)
+        {
+            EndpointDiscoveryMetadata result = null;
+
+            lock (_syncLock)
+            {
+                result = (from epMetadata in _serviceList.Values
+                          where epMetadata.Address == rCriteria.Address
+                          select epMetadata).Single();
+            }
+
+            return result;
+        }
+
+        #endregion
+
+        #region Override edilen metodlar
+
+        // Online Announcement mesajı alındığından devreye giren metoddur
+        protected override IAsyncResult OnBeginOnlineAnnouncement(AnnouncementMessage announcementMessage, AsyncCallback callback, object state)
+        {
+            AddService(announcementMessage.EndpointDiscoveryMetadata);
+            return base.OnBeginOnlineAnnouncement(announcementMessage, callback, state);
+        }
+
+        // Online announcement mesajının işlenmesi bittiğinde devreye girer
+        protected override void OnEndOnlineAnnouncement(IAsyncResult result)
+        {
+            base.OnEndOnlineAnnouncement(result);
+        }
+
+        // Offline announcement mesajı geldiğinde devreye giren metoddur
+        protected override IAsyncResult OnBeginOfflineAnnouncement(AnnouncementMessage announcementMessage, AsyncCallback callback, object state)
+        {
+            RemoveService(announcementMessage.EndpointDiscoveryMetadata);
+            return base.OnBeginOfflineAnnouncement(announcementMessage, callback, state);
+        }
+
+        // Offline announcement mesajının işlenmesi bittiğinde devreye giren metoddur
+        protected override void OnEndOfflineAnnouncement(IAsyncResult result)
+        {
+            base.OnEndOfflineAnnouncement(result);
+        }
+
+        // Bir Find talebi geldiğinde devreye giren metoddur
+        protected override IAsyncResult OnBeginFind(FindRequest findRequest, AsyncCallback callback, object state)
+        {
+            return new OnFindAsyncResult(
+                MatchFromServiceList(findRequest.Criteria)
+                , callback
+                , state);
+        }
+
+        // Find talebinin işlenmesi sona erdiğinde devreye giren metoddur
+        protected override Collection&amp;lt;EndpointDiscoveryMetadata&amp;gt; OnEndFind(IAsyncResult result)
+        {
+            return new Collection&amp;lt;EndpointDiscoveryMetadata&amp;gt;(OnFindAsyncResult.End(result));
+        }
+
+        // Resolve mesajı geldiğinde devreye giren metoddur
+        protected override IAsyncResult OnBeginResolve(ResolveRequest resolveRequest, AsyncCallback callback, object state)
+        {
+            return new OnResolveAsyncResult(MatchFromServiceList(resolveRequest.Criteria)
+                , callback
+                , state);
+        }
+
+        // Resolve mesajının işlenmesi bittiğinde devreye giren metoddur
+        protected override EndpointDiscoveryMetadata OnEndResolve(IAsyncResult result)
+        {
+            return OnResolveAsyncResult.End(result);
+        }
+
+        #endregion
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Sizi bu kod par&amp;ccedil;ası ile bir s&amp;uuml;re yanlız bırakmak isterim &lt;img title="Sealed" src="/editors/tiny_mce3/plugins/emotions/img/smiley-sealed.gif" alt="Sealed" border="0" /&gt;&amp;nbsp;Aslında sınıfımızın g&amp;ouml;revi basittir. &amp;Ccedil;evre ağlar &amp;uuml;zerinde &lt;strong&gt;announcement&lt;/strong&gt; mesajı yayınlayarak &lt;strong&gt;online&lt;/strong&gt; veya &lt;strong&gt;offline&lt;/strong&gt; olduğunu bildiren servisleri tutmakta ve buna ek olarak, istemciden gelen arama kriterlerine uygun olanlarını yine istemci tarafına y&amp;ouml;nlendirmektedir. Sınıfımız, yardımcı metodların yanı sıra &lt;strong&gt;DiscoveryProxyBase &lt;/strong&gt;tipinden&amp;nbsp;gelen bazı &lt;strong&gt;sanal metodlarıda(Virtual Method)&lt;/strong&gt; ezmektedir. &amp;Ouml;zellikle eş zamanlı isteklerde oluşabilecek senkronizasyon sorunlarını aşmak i&amp;ccedil;in basit &lt;strong&gt;lock&lt;/strong&gt; tekniğinden yararlanılmaktadır. Proxy servisini geliştirmek tek başına yeterli değildir. Bu servisin bir uygulama tarafından host edilmesi gerekmektedir. Bu anlamda basit bir Console uygulaması aşağıdaki kodlar ile tasarlanabilir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+using System.ServiceModel.Discovery;
+
+namespace DiscoveryProxyService
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // ServiceHost nesnesi DiscoveryProxyBase t&amp;uuml;revli Proxy tipi ile oluşturulur.
+            ServiceHost host = new ServiceHost(new Proxy());
+
+            // İstemcilerin Probe mesajları i&amp;ccedil;in bir DiscoveryEndpoint noktası tanımlanır
+            DiscoveryEndpoint discoEndpoint = new DiscoveryEndpoint(
+                new NetTcpBinding()
+                , new EndpointAddress("net.tcp://localhost:4034/Probe"));
+            discoEndpoint.IsSystemEndpoint = false;
+            // DiscoveryEndpoint host' a eklenir
+            host.AddServiceEndpoint(discoEndpoint);
+
+            // Online veya Offline olan servislerin kendilerini Proxy servisine bildirebilmeleri amacıyla bir AnnouncementEndpoint noktası oluşturulur ve servise ilave edilir
+            AnnouncementEndpoint announceEndpoint = new AnnouncementEndpoint(
+                new NetTcpBinding()
+                , new EndpointAddress("net.tcp://localhost:4044/Announcement"));
+            host.AddServiceEndpoint(announceEndpoint);
+
+            host.Open();
+            Console.WriteLine("Managed Discovery Servis Durumu : ");
+            Console.ReadLine();
+            host.Close();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Proxy servisini bu şekilde host ettikten sonra, kendisine bildirimde bulunabilecek bir servisin nasıl tasarlanabileceğine de bakmamız yerinde olacaktır. Bu anlamda &amp;ouml;rneğimizde &lt;strong&gt;ServiceX&lt;/strong&gt; ve &lt;strong&gt;ServiceY&lt;/strong&gt; isimli iki farklı servis uygulaması bulunmaktadır. Bu servislerin en &amp;ouml;nemli g&amp;ouml;revlerinden biriside, ağa dahil olmaları veya ayrılmaları halinde bu durumlarını &lt;strong&gt;Proxy&lt;/strong&gt; servisine bildirmeleridir. Her iki servis arasındaki fark ise tabiki sundukları hizmettir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ServiceX i&amp;ccedil;eriği;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+using System.ServiceModel.Description;
+using System.ServiceModel.Discovery;
+
+namespace ServiceX
+{
+    [ServiceContract]
+    interface ICalculus
+    {
+        [OperationContract]
+        double Sum(double x, double y);
+    }
+
+    class CalculusService
+        : ICalculus
+    {
+        public double Sum(double x, double y)
+        {
+            return x + y;
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {            
+            ServiceHost host = new ServiceHost(
+                typeof(CalculusService)
+                , new Uri("net.tcp://localhost:9002/CalculusService/" + Guid.NewGuid().ToString()));
+            host.AddServiceEndpoint(
+                typeof(ICalculus), new NetTcpBinding(), string.Empty);
+            // Bir announcement endpoint noktası oluşturulur ve proxy servisine bu sayede bildirim yapılması sağlanır
+            AnnouncementEndpoint announcementEndpoint = new AnnouncementEndpoint(
+                new NetTcpBinding()
+                , new EndpointAddress("net.tcp://localhost:4044/Announcement"));
+            // Servisin keşfedilebilir olması sağlanır
+            ServiceDiscoveryBehavior serviceDiscoveryBehavior = new ServiceDiscoveryBehavior();
+            serviceDiscoveryBehavior.AnnouncementEndpoints.Add(announcementEndpoint);
+            host.Description.Behaviors.Add(serviceDiscoveryBehavior);
+            
+            host.Open();
+            Console.WriteLine("Service X a&amp;ccedil;ıldı");
+            Console.ReadLine();
+            host.Close();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;ServiceY i&amp;ccedil;eriği;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+using System.ServiceModel.Description;
+using System.ServiceModel.Discovery;
+
+namespace ServiceY
+{
+    [ServiceContract]
+    interface IAdventure
+    {
+        [OperationContract]
+        double FindExpensiveProduct(int categoryId);
+    }
+
+    class AdventureService
+        : IAdventure
+    {
+        public double FindExpensiveProduct(int categoryId)
+        {
+            return 1000;
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            ServiceHost host = new ServiceHost(
+                typeof(AdventureService)
+                , new Uri("http://localhost:10005/Adventure/ProductService/" + Guid.NewGuid().ToString()));
+            host.AddServiceEndpoint(
+                typeof(IAdventure), new WSHttpBinding(), string.Empty);
+            // Bir announcement endpoint noktası oluşturulur ve proxy servisine bu sayede bildirim yapılması sağlanır
+            AnnouncementEndpoint announcementEndpoint = new AnnouncementEndpoint(
+                new NetTcpBinding()
+                , new EndpointAddress("net.tcp://localhost:4044/Announcement"));
+            ServiceDiscoveryBehavior serviceDiscoveryBehavior = new ServiceDiscoveryBehavior();
+            // Servisin keşfedilebilir olması sağlanır
+            serviceDiscoveryBehavior.AnnouncementEndpoints.Add(announcementEndpoint);
+            host.Description.Behaviors.Add(serviceDiscoveryBehavior);
+            host.Open();
+            Console.WriteLine("Service Y a&amp;ccedil;ıldı");
+            Console.ReadLine();
+            host.Close();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Piuuuuuvvvvv!!!&amp;nbsp;&lt;img title="Laughing" src="/editors/tiny_mce3/plugins/emotions/img/smiley-laughing.gif" alt="Laughing" border="0" /&gt;&amp;nbsp;İşimiz bitti diye d&amp;uuml;ş&amp;uuml;nebilirsiniz. Ama hayır... Birde istemcilerin nasıl yazılabileceğine bakmamız gerekiyor. İstemci tarafında tabiki olmassa olmazlardan biriside, kullanmak istediği servislere ait proxy referanslarına sahip olmaları gerekliliğidir. Bunu g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alarak ilerlediğimizi d&amp;uuml;ş&amp;uuml;n&amp;uuml;rsek istemci tarafında da aşağıdaki gibi bir kodlama yapmamız yeterlidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.ServiceModel;
+using System.ServiceModel.Discovery;
+
+namespace ClientApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Teste başlamak i&amp;ccedil;in bir tuşa basınız");
+            Console.ReadLine();
+
+            // Proxy servisini keşfedebilmek i&amp;ccedil;in bir DiscoveryEndpoint oluşturulur
+            DiscoveryEndpoint disEndpoint = new DiscoveryEndpoint(
+                new NetTcpBinding()
+                , new EndpointAddress("net.tcp://localhost:4034/Probe")
+                );
+            // İstemci tarafının kullanılabilir servisleri keşfetmesini kolaylaştıran DiscovertClient tipine ait nesne &amp;ouml;rneği DiscoveryEndpoint ile oluşturulur
+            DiscoveryClient disClient = new DiscoveryClient(disEndpoint);
+            disClient.Open();
+            // Bir arama kriteri uygulanır ve d&amp;ouml;nen cevaptan kullanılabilir servis adresi tedarik edilir
+            FindResponse response = disClient.Find(new FindCriteria(typeof(ICalculus)));
+            EndpointAddress epAddress=response.Endpoints[0].Address;
+
+            // Eğer arama kriterine uygun servisler bulunmuşsa
+            if (response.Endpoints.Count &amp;gt; 0)
+            {
+                // İlkinin adres bilgisini al
+                EndpointAddress epAddress = response.Endpoints[0].Address;
+
+                Console.WriteLine("{0} adresi bulundu", epAddress.ToString());
+
+                // İstemci i&amp;ccedil;in gerekli proxy referansı &amp;ouml;rneklenir ve Probe mesajı ile bulunan Endpoint adresi kullanılır.
+                CalculusClient client = new CalculusClient(new NetTcpBinding(), epAddress);
+
+                // Servis operasyonu &amp;ccedil;ağrılır
+                Console.WriteLine("{0}+{1}={2}", 3, 4, client.Sum(3, 4).ToString());
+                Console.ReadLine();
+            }
+
+            disClient.Close();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Nihayet test yapabilmek i&amp;ccedil;in gerekli ortamı hazırladığımızı ifade edebilirim.&lt;img title="Cool" src="/editors/tiny_mce3/plugins/emotions/img/smiley-cool.gif" alt="Cool" border="0" /&gt;&amp;nbsp;İlk olarak &lt;strong&gt;Discovery Proxy&lt;/strong&gt; servisinin, sonrasında istemcinin kullanmak istediği servislerin ayağa kaldırılması gerekir. Son olarak istemci uygulamanın &amp;ccedil;alıştırılması ve test edilmesi yeterlidir. Yapılan ilk testler sonucunda aşağıdaki sonu&amp;ccedil;lar elde edilmiştir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f8%2fblg70_Runtime.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi, &lt;strong&gt;ServiceX&lt;/strong&gt; ve &lt;strong&gt;ServiceY&lt;/strong&gt; isimli servislerin a&amp;ccedil;ılmaları ve kapatılmaları, &lt;strong&gt;Managed Discovery Proxy&lt;/strong&gt; servisi tarafından tespit edilebilmiştir. &lt;strong&gt;ServiceX'&lt;/strong&gt; in online olduğu zaman dilimi i&amp;ccedil;erisinde, istemciden gelen talep başarılı bir şekilde karşılanabilmiştir. Farklı bir testide şu şekilde yapmak gerekir. İstemci uygulama,&amp;nbsp;&lt;strong&gt;ServiceX&lt;/strong&gt; i&amp;ccedil;in talepte bulunmadan &amp;ouml;nce, ServiceX kapatılır. &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;Bu durumda istemcinin aradığı kritere uyan bir servis ayakta olmadığı i&amp;ccedil;in, istemcinin bir işlem yapamıyor olması gerekir. Olayı istisna ile sonlandırmayı engellemenin yolu ise &lt;strong&gt;if&lt;/strong&gt; ile yapılan &lt;strong&gt;Count&lt;/strong&gt; kontrol&amp;uuml;d&amp;uuml;r. Bu tip bir testin sonucunda &amp;ccedil;alışma zamanı g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f8%2fblg70_Runtime2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Her ne kadar sadece iki &amp;ccedil;alışma zamanı testi yapılmış olsada, &amp;ouml;rneğin iyi bir şekilde değerlendirilmesi ve olası t&amp;uuml;m hataların &amp;ouml;n&amp;uuml;ne ge&amp;ccedil;ilmesi gerekmektedir. S&amp;ouml;z gelimi, &lt;strong&gt;Proxy&lt;/strong&gt; servisinin kapatılmasından sonra, kendisine bağlı olan başka servislerin kapatılmaya &amp;ccedil;alışılması esnasında, s&amp;ouml;z konusu servislere ait ortamlarda&amp;nbsp;&lt;strong&gt;&amp;ccedil;alışma zamanı istisnaları(Runtime Exception)&lt;/strong&gt; oluşması ka&amp;ccedil;ınılmazdır. Bu gibi noktaları dikkat almanızı ve geliştirmenizi buna g&amp;ouml;re yapmanızı &amp;ouml;neririm.&lt;/p&gt;
+&lt;p&gt;&lt;img style="float: right;" src="/pics/2009%2f8%2fblg70_Son.jpg" alt="" /&gt;Nihayet, uzun saatlerin, gidilen kilometrelerce yolun sonunda gece bastırmış ve şehrin ışıkları g&amp;ouml;r&amp;uuml;nm&amp;uuml;şt&amp;uuml;r. Hepimiz zaman zaman yazılım alanında bir konuyu &amp;ouml;ğrenirken bu tip zorlu yollardan ge&amp;ccedil;mek zorunda kalabiliriz. Ancak sabırlı olanlarımız, yolun sonuna kadar gitmekten &amp;ccedil;ekinmeyecek ve &amp;ouml;d&amp;uuml;l olarak şehrin parlak ışıkları ile karşılanacaktır. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2009-08-21 23:13:00</pubDate>
+  <slug>WCF-40-Yenilikleri-Managed-WS-Discovery</slug>
+  <tags>
+    <tag>wcf</tag>
+    <tag>wcf-40</tag>
+  </tags>
+  <categories>
+    <category>WCF 4.0 Beta 1</category>
+  </categories>
+</post>

@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WCF WebHttp Services - Client Tarafını Geliştirmek</title>
+  <description>Sanırım pek çoğumuz piyangodan veya diğer şans oyunlarından kendilerine tonlarca para çıksa ne yapacağını düşünmüş veya hayal etmiştir. Açıkası kendi adıma hayat etmediğimi dile getirsem yalan söylemiş olurum. Ancak ben pek çoğumuz gibi yan yana bir kaç Ferrari' yi dizmektense bir kaç yere yatırım yapmayı hayal etmişimdir hep. Örneğin dünyanın sayılı bir kaç futbol kulübünün(Barcelona, Manchester United vb...) ve yazılım şirketinin(Microsoft, IBM vb...) hisselerinden satın alır ve şöyle güzel bir fon sepeti oluştururum. Neyse...Sözü niye piyangodan açtığımıza gelince...</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/pics/2010%2f1%2fblg128_Giris.jpg" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Sanırım pek &amp;ccedil;oğumuz piyangodan veya diğer şans oyunlarından kendilerine tonlarca para &amp;ccedil;ıksa ne yapacağını d&amp;uuml;ş&amp;uuml;nm&amp;uuml;ş veya hayal etmiştir. A&amp;ccedil;ıkası kendi adıma hayat etmediğimi dile getirsem yalan s&amp;ouml;ylemiş olurum. Ancak ben pek &amp;ccedil;oğumuz gibi yan yana bir ka&amp;ccedil; Ferrari' yi dizmektense bir ka&amp;ccedil; yere yatırım yapmayı hayal etmişimdir hep. &amp;Ouml;rneğin d&amp;uuml;nyanın sayılı bir ka&amp;ccedil; futbol kul&amp;uuml;b&amp;uuml;n&amp;uuml;n&lt;em&gt;(Barcelona,&amp;nbsp;Manchester United vb...)&lt;/em&gt;&amp;nbsp;ve yazılım şirketinin&lt;em&gt;(Microsoft, IBM vb...)&amp;nbsp;&lt;/em&gt;hisselerinden satın alır ve ş&amp;ouml;yle g&amp;uuml;zel bir fon sepeti oluştururum. Neyse...S&amp;ouml;z&amp;uuml; niye piyangodan a&amp;ccedil;tığımıza gelince...&lt;/p&gt;
+&lt;p&gt;Hatırlayacağınız &amp;uuml;zere bir &amp;ouml;nceki yazımızda &lt;strong&gt;WCF WebHttp Service'&lt;/strong&gt; leri ile tanımaya &amp;ccedil;alışmış ve konuyu pekiştirmek amacıyla basit bir Merhaba D&amp;uuml;nya uygulaması geliştirmiştik. Tabi bu &amp;ouml;rneğimizde&amp;nbsp;&lt;strong&gt;HTTP&lt;/strong&gt; protokol&amp;uuml;n&amp;uuml;n yanlızca &lt;strong&gt;Get&lt;/strong&gt; metodunu kullanmıştık.&amp;nbsp;Dolayısıyla operasyonlarımızda sadece &lt;strong&gt;WebGet&lt;/strong&gt; niteliklerinin uygulandığına şahit olduk. Ancak &lt;strong&gt;HTTP&lt;/strong&gt; protokol&amp;uuml;ne g&amp;ouml;re &lt;strong&gt;Get&lt;/strong&gt; dışında &lt;strong&gt;Post, Put&lt;/strong&gt; ve &lt;strong&gt;Delete&lt;/strong&gt; metodlarını da kullanabileceğimizi biliyoruz.&amp;nbsp;Dikkat &amp;ccedil;ekici bir diğer noktada&amp;nbsp;&amp;ouml;rneğimizde &lt;strong&gt;Get&lt;/strong&gt; metoduna g&amp;ouml;re talepte bulunurken basit bir tarayıcı uygulamadan faydalanmış olmamızdı. Oysaki kendi istemci uygulamamızı yazmak isteyebiliriz. Bu durumda istemci tarafından &lt;strong&gt;HTTP&lt;/strong&gt; protokol&amp;uuml;n&amp;uuml;n &lt;strong&gt;Get, Post, Put&lt;/strong&gt; ve &lt;strong&gt;Delete&lt;/strong&gt; metodlarına uygun talepleri&amp;nbsp;nasıl ger&amp;ccedil;ekleştirebiliriz? Aslında olay servis tarafının istediği mesaj paketlerini istemci tarafında oluşturup g&amp;ouml;ndermekten başka bir şey değildir. Yani &lt;strong&gt;talebin(Request)&lt;/strong&gt; i&amp;ccedil;eriğini hazırlamak ve &lt;strong&gt;d&amp;ouml;nen&amp;nbsp;cevabı(Response)&lt;/strong&gt; değerlendirmek.&lt;/p&gt;
+&lt;p&gt;İşte bu yazımızda s&amp;ouml;z konusu durumları ele alaraktan hem &lt;strong&gt;Post, Put, Delete&lt;/strong&gt; metodlarının kullanımına bir &amp;ouml;rnek verecek hemde istemci tarafını geliştirmeye &amp;ccedil;alışacağız. Tabi &amp;ouml;ncesinde servis tarafını hazırlamamız gerekiyor. Bu &amp;ouml;rneğimizde herhangibir işe yaramasada konuyu anlamamızı kolaylaştıracak bir senaryomuz da olacak. Senaryomuza g&amp;ouml;re bir &lt;strong&gt;Piyango&lt;/strong&gt; servisi tasarlayacağız.&amp;nbsp;&lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt; Bu servis, istemcilerin yeni bir piyango bileti &amp;uuml;retebilmesine, var olan piyango biletlerini &amp;ccedil;ekebilmelerine, isterlerse biletlerini silmelerine veya g&amp;uuml;ncellemelerine izin veren operasyonlar i&amp;ccedil;erecek. Tabiki bu operasyonlarda &lt;strong&gt;HTTP&lt;/strong&gt; protokol&amp;uuml;n&amp;uuml;n &lt;strong&gt;Get, Post, Put&lt;/strong&gt; ve &lt;strong&gt;Delete&lt;/strong&gt; metodları g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınıyor olacak. Dilerseniz hi&amp;ccedil; vakit kaybetmeden &lt;strong&gt;WCF REST Service Application&lt;/strong&gt; uygulamasını oluşturarak işe başlayalım. Uygulamamızda bilet bilgilerinin saklanması ve depolanması amacıyla basit text dosyasından yararlandığımızı belirtmek isterim. Diğer taraftan bilet bilgileri i&amp;ccedil;in &lt;strong&gt;Ticket&lt;/strong&gt; isimli yardımcı bir sınıfımızda yer almaktadır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+
+namespace Lesson2
+{
+    public class Ticket
+    {
+        public string Number { get; set; }
+        public string Owner { get; set; }
+        public DateTime TicketDate { get; set; }
+        public bool NewOrUpdated { get; set; }
+
+        public override string ToString()
+        {
+            return String.Format("{0}|{1}|{2}|Is New? {3}", Number, Owner, TicketDate.ToString(),NewOrUpdated.ToString());
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;LotteryService isimli &lt;strong&gt;WCF WebHttp Service &lt;/strong&gt;i&amp;ccedil;eriği ise aşağıda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.ServiceModel;
+using System.ServiceModel.Activation;
+using System.ServiceModel.Web;
+using System.Web;
+
+namespace Lesson2
+{
+    [ServiceContract]
+    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall)]
+    public class LotteryService
+    {
+        string filePath = HttpContext.Current.Server.MapPath("~\\Tickets.txt");
+
+        [WebGet(UriTemplate = "Lottery/{Name}/{LastName}")]
+        public List&amp;lt;string&amp;gt; GetMyTickets(string Name,string LastName)
+        {
+            return (from line in File.ReadAllLines(filePath)
+                    where line.Contains(Name + LastName)
+                    select line).ToList();
+        }
+
+        [WebInvoke(UriTemplate = "Lottery/Create/{Name}/{Surname}", Method = "POST")]
+        public Ticket CreateTicket(string Name,string Surname)
+        {
+            Ticket createdTicket=new Ticket
+            {
+                Number = Guid.NewGuid().ToString(),
+                Owner = String.Format("{0}{1}",Name,Surname),
+                TicketDate = DateTime.Now
+            };
+
+            File.AppendAllLines(filePath,new String[]{createdTicket.ToString()});
+            return createdTicket;
+        }
+
+        [WebInvoke(UriTemplate = "Lottery/Update/{TicketNumber}", Method = "PUT")]
+        public string UpdateMyTicketNumber(string TicketNumber)
+        {
+            string ticket = (from line in File.ReadAllLines(filePath)
+                         where line.Contains(TicketNumber)
+                         select line).First();
+            string[] infos=ticket.Split('|');
+
+            string updatedTicket=string.Join("|",Guid.NewGuid().ToString(),infos[1],infos[2],"Is New? ",true.ToString());
+
+            File.AppendAllLines(filePath, new string[]{updatedTicket});
+
+            return updatedTicket;
+        }
+
+        [WebInvoke(UriTemplate = "Lottery/Delete/{TicketNumber}", Method = "DELETE")]
+        public void DeleteMyTicket(string TicketNumber)
+        {
+            string[] newLines = (from line in File.ReadAllLines(filePath)
+                           where !line.Contains(TicketNumber)
+                           select line).ToArray();
+
+            File.WriteAllLines(filePath, newLines);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Kod par&amp;ccedil;amızda&amp;nbsp;&lt;strong&gt;HTTP Get,Post,Put&lt;/strong&gt; ve &lt;strong&gt;Delete &lt;/strong&gt;metodlarının kullanımlarına &amp;ouml;rnek olması a&amp;ccedil;ısından &amp;ccedil;eşitli servis operasyonlarının yer aldığı g&amp;ouml;r&amp;uuml;lmektedir. Kritik olan noktalar &lt;strong&gt;WebGet&lt;/strong&gt; ve &lt;strong&gt;WebInvoke&lt;/strong&gt; niteliklerinin nasıl kullanıldığıdır. Servisimizin yardım sayfasına bakıldığında, istemci tarafında oluşturulması gereken &lt;strong&gt;Request&lt;/strong&gt; paketlerinin nasıl olacağıda kolaylıkla g&amp;ouml;r&amp;uuml;lebilir. Tabi &lt;strong&gt;Post&lt;/strong&gt; ve &lt;strong&gt;Put&lt;/strong&gt; metodlarında bir &lt;strong&gt;Request Body&lt;/strong&gt; kullanılmamıştır. Bir başka deyişle &lt;strong&gt;Put&lt;/strong&gt; ve &lt;strong&gt;Post&lt;/strong&gt; işlemleri i&amp;ccedil;in gerekli bilgiler servis tarafına &lt;strong&gt;URL&lt;/strong&gt; satırından g&amp;ouml;nderilmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f1%2fblg128_HelpPage2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Gelelim istemci tarafına.&lt;/p&gt;
+&lt;p&gt;İstemciyi basit bir &lt;strong&gt;WinForms&lt;/strong&gt; uygulaması olarak tasarlayacağız. &amp;Ouml;nemli olan nokta ise, az &amp;ouml;nce tasarlanan &lt;strong&gt;WCF WebHttp Service'&lt;/strong&gt; ini nasıl kullanabileceğimiz. Sonu&amp;ccedil;ta &lt;strong&gt;HTTP Get, Post, Put&lt;/strong&gt; ve &lt;strong&gt;Delete&lt;/strong&gt; metodlarının istemci tarafından hazırlanması ve g&amp;ouml;nderilmesi gerekmekte. &amp;Uuml;stelik&amp;nbsp;servise ait bir &lt;strong&gt;WSDL&lt;/strong&gt; i&amp;ccedil;eriği ve dolayısıyla &lt;strong&gt;Proxy&lt;/strong&gt; &amp;uuml;retimi de s&amp;ouml;z konusu değil.&amp;nbsp;Bu noktada &lt;strong&gt;WebChannelFactory, HttpWebRequest&lt;/strong&gt; ve &lt;strong&gt;WebClient&lt;/strong&gt; tiplerinden yararlanabileceğimizi biliyoruz. Ne varki &lt;a title="WCF Rest Starter Kit Preview 2" href="http://aspnet.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=24644" target="_blank"&gt;WCF Rest Starter Kit Preview 2&lt;/a&gt; ile birlikte gelen &lt;strong&gt;HttpClient&lt;/strong&gt; sınıfı tamda bu tip servislerin t&amp;uuml;ketilmesi i&amp;ccedil;in geliştirilmiş durumda. Elbette bu kit i&amp;ccedil;eriğinin,&lt;strong&gt; .Net Framework 4.0&lt;/strong&gt;' ın final s&amp;uuml;r&amp;uuml;m&amp;uuml; ile birlikte i&amp;ccedil;eriye doğrudan dahil edileceğini tahmin etmekteyiz. Şimdilik &lt;strong&gt;Starter Kit&lt;/strong&gt; ile gelen tipi kullanacağız. Bu sebepten &lt;strong&gt;Windows&lt;/strong&gt; uygulamamıza gerekli referansları aşağıdaki şekildende g&amp;ouml;r&amp;uuml;leceği &amp;uuml;zere eklememiz gerekiyor.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f1%2fblg128_References2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edilmesi gereken noktalardan biriside istemci uygulamanın hedeflediği &lt;strong&gt;Framework&lt;/strong&gt; profilidir. S&amp;ouml;z konusu&lt;strong&gt; Starter Kit&lt;/strong&gt; referansları ile &amp;ccedil;alışabilmek i&amp;ccedil;in&amp;nbsp;istemci tarafının hedef profilinin &lt;strong&gt;.Net Framework 4.0 Client Profile &lt;/strong&gt;değil&lt;em&gt;(ki varsayılanı budur)&lt;/em&gt;&amp;nbsp;&lt;strong&gt;.Net Framework 4.0 &lt;/strong&gt;olması gerekmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f1%2fblg128_TargetFramework.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Artık istemci i&amp;ccedil;in gerekli t&amp;uuml;m &amp;ouml;n hazırlıklar yapılmıştır. Şimdi dilerseniz servis fonksiyonelliklerini icra edebilmek amacıyla &lt;strong&gt;Form&lt;/strong&gt; i&amp;ccedil;eriğini aşağıdaki gibi d&amp;uuml;zenleyelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f1%2fblg128_Form.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Form&lt;/strong&gt; &amp;uuml;zerindeki kontrolleri kullanarak bilet &amp;uuml;retebilecek, bir bileti silip g&amp;uuml;ncelleyebilecek yada var olan biletlerimizi g&amp;ouml;rebileceğiz. Tabiki t&amp;uuml;m bu fonksiyonellikler &lt;strong&gt;LotteryService&lt;/strong&gt; isimli &lt;strong&gt;WCF HttpWeb Service &lt;/strong&gt;&amp;uuml;zerinden ger&amp;ccedil;ekleştiriliyor olacak. İlk olarak bir kişinin sahip olduğu t&amp;uuml;m biletleri listlemeye &amp;ccedil;alışalım. Bu noktada servis tarafındaki &lt;strong&gt;GetMyTickets&lt;/strong&gt; operasyonu i&amp;ccedil;in bir &amp;ccedil;ağrı yapılması gerekiyor. S&amp;ouml;z konusu &amp;ccedil;ağrı &amp;ouml;rneğin &lt;strong&gt;http://localhost:16088/LotteryService/Lottery/Coni/Vayt&lt;/strong&gt; şeklinde olabilir. Nitekim &lt;strong&gt;WebGet&lt;/strong&gt; niteliğinde belirtilen &lt;strong&gt;URI&lt;/strong&gt; bilgisi bu şekildedir. Bu durumda istemci tarafında aşağıdaki kodlamayı yapabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
+using System.Xml.Linq;
+using Microsoft.Http;
+
+namespace ClientApp
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void btnGetMyTickets_Click(object sender, EventArgs e)
+        {
+            // REST Starter Kit Preview 2' den gelen HttpClient tipi oluşturulur.
+            // Parametre olarak WCF WebHttp Service' in base address bilgisi verilir.
+            using (HttpClient client = new HttpClient("http://localhost:16088/LotteryService/"))
+            {
+                // Get talebi i&amp;ccedil;in gerekli URI bilgisi oluşturulur
+                string requestUri = String.Format("Lottery/{0}/{1}", txtName.Text, txtSurname.Text);
+                // Get metodu ile ilgili talep oluşturulur.
+                HttpResponseMessage responseMessage=client.Get(requestUri);
+                // Operasyonun başarılı olmaması halinde bir exception fırlatılması isteniyorsa EnsureStatusIsSuccessful metodu kullanılmalıdır.
+                responseMessage.EnsureStatusIsSuccessful();
+                // İ&amp;ccedil;erik XML tipinden geldiği i&amp;ccedil;in bunu kod tarafında kolayca ele almak adına ReadAsXElement genişletme metodu(Extension Method) kullanılabilir. Lakin bu metod i&amp;ccedil;in System.Xml.Linq isim alanının referans edilmesi gerekir.
+                XElement response = responseMessage.Content.ReadAsXElement();
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Servisin &amp;ccedil;alıştığını varsaydığımızda yukarıdaki metodun icra edilmesi sonucu &lt;strong&gt;debug&lt;/strong&gt; zamanında aşağıdaki sonu&amp;ccedil;lara ulaştığımızı g&amp;ouml;rebiliriz. &lt;em&gt;(Tickets.txt dosyasında bazı ticket bilgileri olduğunu&amp;nbsp; ve Name i&amp;ccedil;in Coni, Surname i&amp;ccedil;in Vayt bilgilerinin girildiğini varsayıyoruz)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f1%2fblg128_DebugTime2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere servis tarafındaki operasyonda &lt;strong&gt;List&amp;lt;string&amp;gt;&lt;/strong&gt; tipinden olan operasyon d&amp;ouml;n&amp;uuml;ş tipi istemci tarafına, &lt;strong&gt;ArrayOfstring&lt;/strong&gt; ve &lt;strong&gt;string&lt;/strong&gt; isimli alt elementlerden oluşan bir &lt;strong&gt;XML&lt;/strong&gt; i&amp;ccedil;eriği olarak aktarılmıştır. Elbette &lt;strong&gt;XElement&lt;/strong&gt; i&amp;ccedil;eriğinin bu şekilde elde edilebiliyor olması yeterli değildir. Bu i&amp;ccedil;eriğin &lt;strong&gt;ListBox&lt;/strong&gt; kontrol&amp;uuml; i&amp;ccedil;erisine serpiştirilmesini de bekliyoruz. Dolayısıyla aşağıdaki kod ilavesini de yapmamız gerekiyor.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;XElement response = responseMessage.Content.ReadAsXElement();
+
+lstMyTickets.Items.Clear();
+var tickets = from node in response.Elements()
+                  select node.Value;
+
+foreach (var ticket in tickets)
+{
+    lstMyTickets.Items.Add(ticket);
+}&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere basit bir &lt;strong&gt;XLINQ&lt;/strong&gt; sorgusu ile t&amp;uuml;m elementlerin &lt;strong&gt;Value&lt;/strong&gt; değerleri &amp;ccedil;ekilmiştir. Elbette bu &lt;strong&gt;XLINQ&lt;/strong&gt; sorgu ifadesini belirleyen kriter, servis tarafından d&amp;ouml;nen &lt;strong&gt;XML&lt;/strong&gt; i&amp;ccedil;eriğinin şemasıdır. &amp;Ccedil;alışma zamanında &amp;ouml;rnek bir kullanıcı i&amp;ccedil;in &lt;strong&gt;Get&lt;/strong&gt; sorgusunu ger&amp;ccedil;ekleştirdiğimizde aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ndekine benzer sonu&amp;ccedil;ları elde ettiğimizi g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f1%2fblg128_Runtime1Last.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi yeni bir biletin oluşturulması i&amp;ccedil;in gerekli kodları yazalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void btnCreateTicket_Click(object sender, EventArgs e)
+{
+	using (HttpClient client = new HttpClient("http://localhost:16088/LotteryService/"))
+	{
+		string requestUri = String.Format("Lottery/Create/{0}/{1}", txtName.Text, txtSurname.Text);
+
+		// Yeni bir Ticket oluşturmak i&amp;ccedil;in gerekli istek HTTP Post metoduna g&amp;ouml;re yapılmaktadır. Bu sebepten HttpClient tipinin Post metodu kullanılmıştır.
+		// G&amp;ouml;nderilen talepte herhangibir Request Body i&amp;ccedil;eriği olmadığından HttpContent tipinin CreateEmpty metodu kullanılmıştır.
+		HttpResponseMessage responseMessage = client.Post(requestUri, HttpContent.CreateEmpty());
+		responseMessage.EnsureStatusIsSuccessful();
+		// Oluşturulan yeni Ticket bilgisi istemci tarafına yine bir XML i&amp;ccedil;eriği olarak d&amp;ouml;nmektedir. &amp;Uuml;retilen i&amp;ccedil;erik bilgi ama&amp;ccedil;lı olarak kullanıcıya g&amp;ouml;sterilir.
+		XElement createdTicket = responseMessage.Content.ReadAsXElement();
+		MessageBox.Show(createdTicket.ToString());
+	}
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Get&lt;/strong&gt; kullanımına benzer olmakla birlikte bu kez &lt;strong&gt;HttpClient&lt;/strong&gt; tipinin &lt;strong&gt;Post&lt;/strong&gt; metodundan yararlanılmaktadır. &lt;strong&gt;Post&lt;/strong&gt; ve &lt;strong&gt;Put&lt;/strong&gt; gibi metodlarda&lt;strong&gt; Request Body'&lt;/strong&gt; sinin olması gerekebilir. Ancak bizim servis operasyonlarımız &lt;strong&gt;Request Body &lt;/strong&gt;&lt;span style="text-decoration: underline;"&gt;kullanmamaktadır&lt;/span&gt;. Bu nedenle ilgili parametreler &lt;strong&gt;HttpContent.CreateEmpty()&lt;/strong&gt; metodu ile ge&amp;ccedil;ilmektedir. Bu kod par&amp;ccedil;asına&amp;nbsp;g&amp;ouml;re &amp;ccedil;alışma zamanında bir bilet &amp;uuml;retmek istediğimizde geriye aşağıdakine benzer sonu&amp;ccedil;ların aktarıldığını g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f1%2fblg128_Runtime2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Peki ya silme ve g&amp;uuml;ncelleme işlemlerinden ne haber? Bu operasyonlar i&amp;ccedil;in istemci tarafında aşağıdaki kodları yazmamız yeterli olacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void btnDeleteTicket_Click(object sender, EventArgs e)
+{
+	// &amp;Ouml;ncelikle ListBox' ta se&amp;ccedil;ili bir &amp;ouml;ğe olup olmadığına bakılır
+	if (lstMyTickets.SelectedItem != null)
+	{
+		// Biletin numarası yani GUID bilgisi alınır.
+		string ticketNumber = lstMyTickets.SelectedItem.ToString().Substring(0, 36);
+		using (HttpClient client = new HttpClient("http://localhost:16088/LotteryService/"))
+		{
+			// HTTP Delete metoduna g&amp;ouml;re bir talepte bulunulur.
+			string requestUri = String.Format("Lottery/Delete/{0}", ticketNumber);
+			// Delete talebi i&amp;ccedil;in HttpClient tipinin Delete metodundan yararlanılır. Bu metodun kullanımına g&amp;ouml;re herhangibir HTTP Request Body i&amp;ccedil;eriği bildirilmesi gerekli değildir.
+			HttpResponseMessage responseMessage = client.Delete(requestUri);
+			responseMessage.EnsureStatusIsSuccessful();
+			
+		}
+	}
+}
+
+private void btnUpdateTicket_Click(object sender, EventArgs e)
+{
+	if (lstMyTickets.SelectedItem != null)
+	{
+		string ticketNumber = lstMyTickets.SelectedItem.ToString().Substring(0, 36);
+		using (HttpClient client = new HttpClient("http://localhost:16088/LotteryService/"))
+		{
+			// Update talebi hazırlanır
+			string requestUri = String.Format("Lottery/Update/{0}", ticketNumber);
+			// G&amp;uuml;ncelleme isteği aslında HTTP Put metoduna karşılık gelmektedir. Bunun i&amp;ccedil;in HttpClient tipinin Put metodundan yararlanılır.
+			HttpResponseMessage responseMessage = client.Put(requestUri, HttpContent.CreateEmpty());
+			responseMessage.EnsureStatusIsSuccessful();
+			// Put metodunun &amp;ccedil;alıştırılması sonucu &amp;uuml;retilen &amp;ccedil;ıktı bu kez string bazlı olacak şekilde bir MessageBox aracılığıyla g&amp;ouml;sterilir.
+			MessageBox.Show(responseMessage.Content.ReadAsString());
+		}
+	}
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rneğin var olan bir biletimizi g&amp;uuml;ncellemek istediğimizi d&amp;uuml;ş&amp;uuml;nelim. &amp;Ouml;rnek &amp;ccedil;alışma zamanı g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; aşağıdakine benzer olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f1%2fblg128_Runtime3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Tabi uygulamamızın pek &amp;ccedil;ok yerinde &lt;strong&gt;bug&lt;/strong&gt; ve &lt;strong&gt;iş mantığı hatası&lt;/strong&gt; vardır. &amp;Uuml;stelik tam&amp;nbsp;anlamıyla bir &lt;strong&gt;istisna y&amp;ouml;netimide(Exception Handling)&lt;/strong&gt;&amp;nbsp;yapılmamaktadır.&amp;nbsp;Ancak odaklanmamız gereken yada dikkat etmemiz gereken noktalar &lt;strong&gt;WCF WebHttp Service&lt;/strong&gt; &amp;uuml;zerinden &lt;strong&gt;Post, Put, Delete &lt;/strong&gt;operasyonlarının nasıl sunulduğu ve istemci tarafında bunların nasıl ele alındığıdır. &amp;Ouml;zellikle istemci tarafında kullandığımız tekniklere baktığımızda şu sonu&amp;ccedil;lara varabiliriz;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Herhangibir proxy tipi kullanılmamıştır. Bilindiği &amp;uuml;zere servisleri t&amp;uuml;ketmenin yollarından birisi istemci tarafında gerekli proxy tipinin &amp;uuml;retilmesidir. &lt;strong&gt;HTTP Get,Post,Put&lt;/strong&gt; ve &lt;strong&gt;Delete &lt;/strong&gt;metodlarının kullanıldığı teknikte ise sadece paketlerin oluşturulup g&amp;ouml;nderilmesi ve cevapların değerlendirilmesi gerekmektedir.&lt;/li&gt;
+&lt;li&gt;Sonu&amp;ccedil;ların ilgili formata g&amp;ouml;re istemci tarafına g&amp;ouml;nderilmesi s&amp;ouml;z konusudur. Varsayılan olarak &lt;strong&gt;XML&lt;/strong&gt; tipinden i&amp;ccedil;erik d&amp;ouml;nd&amp;uuml;r&amp;uuml;lmektedir. Ancak &lt;strong&gt;JSON&lt;/strong&gt; formatında da d&amp;ouml;n&amp;uuml;şler olabilir.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Get&lt;/strong&gt; metodundan elde edilen &lt;strong&gt;XML&lt;/strong&gt; formatlı i&amp;ccedil;erikler istemci tarafında &lt;strong&gt;XElement&lt;/strong&gt; tipi ile ele alınabilir ve &lt;strong&gt;XLINQ&lt;/strong&gt; kullanılarak ayrıştırılabilir.&lt;/li&gt;
+&lt;li&gt;İstemci tarafından yapılan g&amp;uuml;ncelleştirme &amp;ccedil;ağrıları i&amp;ccedil;in &lt;strong&gt;Put&lt;/strong&gt;, ekleme işlemlerine ait talepler i&amp;ccedil;in &lt;strong&gt;Post&lt;/strong&gt;,&amp;nbsp;silme işlemlerine ait talepler i&amp;ccedil;in&amp;nbsp;&lt;strong&gt;Delete&lt;/strong&gt; metodları kullanılır.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Post&lt;/strong&gt; ve &lt;strong&gt;Put&lt;/strong&gt; metodları parametre olarak eğer gerekliyse bir &lt;strong&gt;Body&lt;/strong&gt; i&amp;ccedil;eriği sunmak zorunda olabilirler. Eğer sunmuyorlarsa &lt;strong&gt;HttpContent.CreateEmpty()&lt;/strong&gt; metodu ile boş i&amp;ccedil;erik g&amp;ouml;nderileceğinin belirtilmesi gerekir.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2010%2f1%2fLesson2.rar"&gt;Lesson2.rar (196,61 kb)&lt;/a&gt;&lt;strong&gt; [&amp;Ouml;rnek Visual Studio 2010 &lt;/strong&gt;&lt;strong&gt;Ultimate &lt;/strong&gt;&lt;strong&gt;Beta 2 S&amp;uuml;r&amp;uuml;m&amp;uuml;nde geliştirilmiş ancak RC s&amp;uuml;r&amp;uuml;m&amp;uuml; &amp;uuml;zerinde de test edilmiştir]&lt;/strong&gt;&lt;/p&gt;</content>
+  <pubDate>2010-02-05 00:45:00</pubDate>
+  <slug>WCF-WebHttp-Services-Client-Tarafi</slug>
+  <tags>
+    <tag>wcf</tag>
+    <tag>wcf-40</tag>
+    <tag>webhttp-services</tag>
+    <tag>restful</tag>
+    <tag>non-soap</tag>
+    <tag>wcf-webhttp-services</tag>
+  </tags>
+  <categories>
+    <category>WCF Eco System</category>
+    <category>WCF WebHttp Services</category>
+  </categories>
+</post>

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Nasıl Yapılır : Özelleştirilmiş SiteMapProvider Yazmak</title>
+  <description>Asp.Net 2.0 ile web uygulamalarını geliştirmek artık çok daha kolaylaştı. Bunun en büyük nedenlerinden biriside kontrol paneline gelen çok sayıda bileşen olmasıdır. Her ne kadar bir yazılımcının hayatını kolaylaştıran yenilikler olsada zaman zaman var olan bu yapıları özelleştirme yoluna gitmek isteyebiliriz.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Asp.Net 2.0 ile web uygulamalarını geliştirmek artık &amp;ccedil;ok daha kolaylaştı. Bunun en b&amp;uuml;y&amp;uuml;k nedenlerinden biriside kontrol paneline gelen &amp;ccedil;ok sayıda bileşen olmasıdır. Her ne kadar bir yazılımcının hayatını kolaylaştıran yenilikler olsada zaman zaman var olan bu yapıları &amp;ouml;zelleştirme yoluna gitmek isteyebiliriz. Bugunk&amp;uuml; makalemizin konusunu oluşturan SiteMapProvider bu durumda ele alınabilecek yeniliklerden birisidir. Asp.Net 2.0 ile geliştirilen web uygulamalarında site haritası &amp;ccedil;ıkartmak ve bunu ele alacak kontrollerle &amp;ccedil;alışmak son derece kolaydır.&lt;/p&gt;
+&lt;p&gt;Yeni gelen &lt;strong&gt;SiteMapPath, Menu&lt;/strong&gt; ve &lt;strong&gt; TreeView&lt;/strong&gt; kontrolleri site haritasının etkin bir şekilde kullanılmasını sağlayan bileşenlerdir. Bu kontroller sayesinde kullanıcıların site i&amp;ccedil;erisinde hareket etmesi, nerede olduklarını g&amp;ouml;rmesi son derece kolaylaşmıştır. Aslında olayın &amp;ouml;z&amp;uuml;nde web uygulamasına dahil edilen &lt;strong&gt;web.sitemap &lt;/strong&gt;isimli dosya ve i&amp;ccedil;eriği yer almaktadır. Xml tabanlı olan bu dosya siteMapNode isimli elementlerden oluşmaktadır. Aşağıda &amp;ouml;rnek bir web.sitemap dosya i&amp;ccedil;eriği yer almaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk186_1.gif" alt="" width="612" height="289" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;S&amp;ouml;z konusu olan bu xml kaynağını SiteMapPath kontrol&amp;uuml; doğrudan kullanırken, Menu ve TreeView kontrolleri &lt;strong&gt;SiteMapDataSource&lt;/strong&gt; bileşeni &amp;uuml;zerinden ele alırlar. Dikkat ederseniz siteMapNode elementleri i&amp;ccedil;-i&amp;ccedil;e (nested) bir yapıya sahiptir. Bu hiyerarşik yapı, doğal olarak site i&amp;ccedil;erisindeki sayfaları ve aralarındaki bağlantıları tanımlar. Aynı zamanda ilgili sayfanın yol(url), a&amp;ccedil;ıklama (description), başlık (title) gibi bilgileride ilgili kontrollere siteMapNode elementleri ile sunulmaktadır. Ne varki burada &amp;ccedil;alışan sistem tamamen Xml tabanlı a&amp;ccedil;ık bir dosyaya bağımlıdır.&lt;/p&gt;
+&lt;p&gt;Oysaki site haritasını, gelen kullanıcıların rollerine g&amp;ouml;re değiştireceğimiz, buna bağlı olaraktanda men&amp;uuml;lerde hangi linklerin g&amp;ouml;sterileceğine karar vermek isteyeceğimiz senaryolar s&amp;ouml;z konusu olabilir. En basit anlamda site haritasını Xml kaynağı yerine &amp;ouml;rneğin bir veritabanı tablosundan getirmek isteyebiliriz. İşte bu ve benzeri ihtiya&amp;ccedil;lar bizim SiteMapProvider tipini &amp;ouml;zelleştirmemize neden olmaktadır. SiteMapProvider &amp;ouml;zelleştirmesi i&amp;ccedil;in &lt;strong&gt;StaticSiteMapProvider&lt;/strong&gt; isimli abstract sınıfından t&amp;uuml;retme yapacağımız bir tipi ele almamız gerekmektedir. Bu &amp;ouml;zelleştirme işlemine başlamadan &amp;ouml;nce bizim i&amp;ccedil;in gerekli &amp;ouml;n hazırlıkları yapalım. Senaryomuz gereği site haritasını Sql Server &amp;uuml;zerinden SiteMaps isimli bir tabloda tutacağız. Tablomuzu oluşturmak i&amp;ccedil;in gerekli sql kodu aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;USE [AdventureWorks]
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[SiteMaps](
+    [Id] [int] IDENTITY(1,1) NOT NULL,
+    [Baslik] [nvarchar](50) NOT NULL,
+    [Aciklama] [nvarchar](50) NOT NULL,
+    [Url] [nvarchar](50) NOT NULL,
+    [Ust] [int] NULL,
+    CONSTRAINT [PK_SiteMaps] PRIMARY KEY CLUSTERED 
+    (
+        [Id] ASC
+    )WITH (PAD_INDEX = OFF, IGNORE_DUP_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]&lt;/pre&gt;
+&lt;p&gt;Tablomuzun kolonları temel olarak site haritası i&amp;ccedil;erisinde yer alacak her bir &amp;ouml;ğenin sunması gereken nitelikleri i&amp;ccedil;ermektedir. Baslik bilgisi ile bir sayfanın navigasyon kontrollerinde g&amp;ouml;sterilecek olan ismini, Aciklama alanı ile istemci tarayıcı penceresinde &amp;ccedil;ıkacak olan tip kutucuklarında g&amp;ouml;sterilecek i&amp;ccedil;eriği, Url ile ilgili &amp;ouml;ğeye tıklandığına gidilmesi gereken sayfanın adresini belirtiyoruz. Ama belkide en &amp;ouml;nemli kısım tablo i&amp;ccedil;erisindeki satırların kime bağlı olduğunu belirten Ust isimli alandır.&lt;/p&gt;
+&lt;p&gt;Bu alan sayesinde bu tablo &amp;uuml;zerinde &lt;strong&gt;self-referencing&lt;/strong&gt; tipinden bir ilişki tanımlanmaktadır. Bu ilişki sayesinde site i&amp;ccedil;erisinde hangi sayfanın(sayfaların) kimlere bağlı olduğu(bir başka deyişle hangi sayfanın alt dalı olduğu) bilgisini elde edebiliriz. Kısacası bu tablonun tasarımındaki ama&amp;ccedil;, web.sitemap i&amp;ccedil;erisinde Xml tabanlı olarak oluşturulan hiyerarşinin ger&amp;ccedil;ekleştirilmesidir. Tablomuzu oluşturduktan sonra &amp;ouml;rnek olması a&amp;ccedil;ısından aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan veriler ile doldurabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk186_2.gif" alt="" width="479" height="252" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Site haritasına ait bilgileri taşıyan bu tablonun bilgilerine &amp;ccedil;alışma zamanında ihtiyacımız olacaktır. Bu ama&amp;ccedil;la kod i&amp;ccedil;erisinde SiteMaps tablosundan veri &amp;ccedil;ekmek i&amp;ccedil;in gerekli sorgu c&amp;uuml;mlesini tutabileceğimiz gibi bir saklı yordamdan da (stored procedure) faydalanabiliriz. Aşağıdaki saklı yordam bu ama&amp;ccedil;la tasarlanmıştır ve &amp;ccedil;alışma zamanında site haritasının belleğe y&amp;uuml;klenmesi amacıyla kullanılacaktır.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;USE AdventureWorks
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE SiteHaritasiCek
+AS
+BEGIN
+SET NOCOUNT ON;
+    SELECT Id,Baslik,Aciklama,Url,Ust From SiteMaps
+END
+GO&lt;/pre&gt;
+&lt;p&gt;Artık kod tarafında neler yapacağımıza bakabiliriz. Her şeyden &amp;ouml;nce var olan &lt;strong&gt;SiteMapPath&lt;/strong&gt;, &lt;strong&gt;Menu&lt;/strong&gt; ve &lt;strong&gt;TreeView&lt;/strong&gt; kontrollerinin bakacağı SiteMapProvider nesnesini değiştirmek istiyoruz. Dolayısıyla bu değişiklik i&amp;ccedil;in uygulamanın web.config dosyası i&amp;ccedil;erisinde varsayılan sağlayıcısını aşağıdaki gibi değiştirmemiz gerekecektir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;system.web&amp;gt;
+    &amp;lt;siteMap defaultProvider="SiteHaritaSaglayicisi"&amp;gt;
+        &amp;lt;providers&amp;gt;
+            &amp;lt;clear/&amp;gt;
+            &amp;lt;add name="SiteHaritaSaglayicisi" type="SiteHaritaYoneticisi" baglantiBilgisi="Data Source=localhost;Initial Catalog=AdventureWorks;Integrated Security=SSPI" spAdi="SiteHaritasiCek"/&amp;gt;
+        &amp;lt;/providers&amp;gt;
+    &amp;lt;/siteMap&amp;gt;
+...&lt;/pre&gt;
+&lt;p&gt;providers isimli elementin niteliklerinden &lt;strong&gt;name&lt;/strong&gt; ve &lt;strong&gt;type&lt;/strong&gt; mutlaka yazılmak zorundadır. Type niteliğinde (attribute) &amp;ouml;zelleştireceğimiz SiteMapProvider tipini belirtmekteyiz. Name niteliğinde belirtilen değer ise &amp;ouml;zellikle, kullanılması i&amp;ccedil;in her hangibir &lt;strong&gt;SiteMapDatasource&lt;/strong&gt; istemeyen &lt;strong&gt; SiteMapPath&lt;/strong&gt; kontrol&amp;uuml; i&amp;ccedil;in &amp;ouml;nemlidir. Nitekim bu kontrol varsayılan olarak sitede web.sitemap isimli bir dosyayı aramaktadır. Ancak senaryomuzda kendi SiteMapProvider tipimizi yazıyoruz. Dolayısıyla SiteMapPath kontrol&amp;uuml;ne bunu bir şekilde s&amp;ouml;ylememiz gerekecektir. İşte bu noktada name niteliğinin i&amp;ccedil;eriği &amp;ouml;nem kazanmaktadır. baglantiBilgisi ve spAdi isimli nitelikler ise SiteHaritaYoneticisi isimli sınıfımız i&amp;ccedil;erisinde yer alan &lt;strong&gt;Initialize&lt;/strong&gt; metodundan yakalayabileceğimiz niteliklerdir. Burada ama&amp;ccedil;, yazmış olduğumuz sağlayıcı sınıfın, bağlantı bilgisi ve saklı yordam adından bağımsız olacak şekilde kullanılabilmesini sağlamaktır. Artık web uygulamamızda kullanacağımız SiteMapPath, Menu ve TreeView kontrolleri hangi Site Map sağlayıcısına bakacağını bilmektedir. Gelin şimdi &amp;ouml;zelleştirilmiş site haritası sınıfımızı yazalım. Sınıfımızı herhangibir web site uygulamasına dahil edebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Data;
+using System.Data.SqlClient;
+using System.Configuration;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+
+public class SiteHaritaYoneticisi:StaticSiteMapProvider
+{
+    private string _spAdi;
+    private string _baglantiBilgisi;
+    private bool _olusturuldu;
+    private SiteMapNode _rootNode;
+
+    public bool Olusturuldu
+    {
+        set { 
+            _olusturuldu = value; 
+        }
+        get { 
+            return _olusturuldu; 
+        }
+    }
+
+    /* eğer _spAdi ve baglantiBilgisi değerleri siteMap providers boğumundan alınmamışlarsa bunların sınıf i&amp;ccedil;erisindeki değişkenlere atanması işlemlerini ger&amp;ccedil;ekleştirir.*/
+    public override void Initialize(string name, System.Collections.Specialized.NameValueCollection attributes)
+    {
+        if (!Olusturuldu)
+        {
+            base.Initialize(name, attributes);
+    
+            // NameValueCollection tipinden metoda gelen attributes isimli parametre &amp;uuml;zerinden, spAdi ve baglantiBilgisi niteliklerinin değerleri alınır.
+            _spAdi = attributes["spAdi"];
+            _baglantiBilgisi = attributes["baglantiBilgisi"];
+    
+            Olusturuldu = true;
+        }
+    }
+
+    protected override void Clear()
+    {
+        lock (this)
+        {
+            _rootNode = null;
+            base.Clear();
+        }
+    }
+
+    /* Site haritasını taşıyan _rootNode isimli SiteMapNode nesnesinin oluşturulmasını sağlar. */
+    public override SiteMapNode BuildSiteMap()
+    {
+        lock (this)
+        {
+            // Eğer _rootNode oluşturulmamışsa,
+            if (_rootNode == null)
+            {
+                // &amp;Ouml;ncelikli olarak eskiden kalan elementler varsa bunları koleksiyondan &amp;ccedil;ıkart
+                Clear();
+                using (SqlConnection conn = new SqlConnection(_baglantiBilgisi))
+                {
+                    SqlCommand cmd = new SqlCommand(_spAdi, conn);
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataTable dtNodes = new DataTable();
+                    // Tablo bilgisi DataTable i&amp;ccedil;erisine alınır.
+                    da.Fill(dtNodes);
+                    // Ust alanının değeri Null olan alan yani site haritasında en &amp;uuml;stte duran satır bilgisi alınır.
+                    DataRow drRoot = dtNodes.Select("Ust is null")[0];
+                    // _rootNode oluşturulur. 
+                    _rootNode = new SiteMapNode(this, drRoot["Url"].ToString(), drRoot["Url"].ToString(), drRoot["Baslik"].ToString(), drRoot["Aciklama"].ToString());
+        
+                    // o anki node(boğum)' un ID alanın değeri alınır ve recursive (yinelemeli) &amp;ccedil;alışan AltNodeEkle metodu tetiklenir.
+                    string rootID = drRoot["ID"].ToString();
+                    AltNodEkle(_rootNode, rootID, dtNodes);
+                }
+            }
+            return _rootNode;
+        }
+    }
+
+    /* Recursive (yinelemeli) olarak &amp;ccedil;alışan bu metod, site hiyerarşisinin root node(boğum)' undan en alt node(boğum)' una kadar dolaşmakla ve ilgili boğumları birbirlerinin     altına eklemekle g&amp;ouml;revlidir. */
+    private void AltNodEkle(SiteMapNode ustNod, string rootID, DataTable dt)
+    {
+        // Gelen satırın altındaki satırları tespit etmek i&amp;ccedil;in dataTable i&amp;ccedil;erisinde select atılır.
+        DataRow[] altNodlar = dt.Select("Ust = " + rootID);
+        // Her bir alt satır dolaşılır
+        foreach (DataRow row in altNodlar)
+        {
+            // O anki node(boğum) oluşturulur ve yine o anki satırın ID değeri alınır.
+            SiteMapNode cocukNod = new SiteMapNode(this,row["Url"].ToString(), row["Url"].ToString(),row["Baslik"].ToString(), row["Aciklama"].ToString());
+            string rowID = row["ID"].ToString();
+    
+            // node(boğum) &amp;uuml;st node(boğum)' a eklenir.
+            AddNode(cocukNod, ustNod);
+            // Recursive metodumuz tekrardan o anki satır ve node(boğum) i&amp;ccedil;in &amp;ccedil;alıştırlır.
+            AltNodEkle(cocukNod, rowID, dt);
+        }
+    }
+
+    // SiteMapNode' un elde edilmesini, bellekte oluşturulmasını sağlar bir SiteMapNode referansı olarak geriye d&amp;ouml;nd&amp;uuml;r&amp;uuml;lmesini sağlar.
+    protected override SiteMapNode GetRootNodeCore()
+    {
+        return BuildSiteMap();
+    }
+
+    // Bellekte oluşturulan siteMapNode' un elde edilmesini sağlayan &amp;ouml;zellik. (Readonly)
+    public override SiteMapNode RootNode
+    {
+        get { 
+            return BuildSiteMap(); 
+        }
+    }    
+}&lt;/pre&gt;
+&lt;p&gt;SiteHaritaYoneticisi isimli sınıfımız &lt;strong&gt;StaticSiteMapProvider&lt;/strong&gt; &lt;strong&gt;abstract&lt;/strong&gt; sınıfından t&amp;uuml;remiştir. Aslında StaticSiteMapProvider sınıfıda &lt;strong&gt;SiteMapProvider&lt;/strong&gt; sınıfından t&amp;uuml;remiştir. StaticSiteMapProvider sınıfı, t&amp;uuml;rediği SiteMapProvider sınıfının biraz daha ufaltılmış bir s&amp;uuml;r&amp;uuml;m&amp;uuml;d&amp;uuml;r. Bu nedenle kendi SiteMapProvider tiplerimizi geliştirirken &amp;ccedil;ok fazla kod d&amp;uuml;ş&amp;uuml;nmemizi engelleyici nitelikte olduğundan tercih edilmektedir. &amp;Ouml;yleki sınıfımızdan g&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi bir ka&amp;ccedil; temel &amp;uuml;ye ile&amp;nbsp; istediğimiz &amp;ouml;zelleştirilmiş sağlayıcı sınıfı yazabiliyoruz. Aşağıdaki şekil s&amp;ouml;z konusu tipler arasındaki ilişkisel durumu daha net a&amp;ccedil;ıklamaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk186_3.gif" alt="" width="592" height="539" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Biz &amp;ouml;rnek sınıfımız i&amp;ccedil;erisinde, &amp;uuml;st sınıflarda abstract olarak tanımlanmış &lt;strong&gt;BuildSiteMap&lt;/strong&gt; ve &lt;strong&gt; GetRootNodeCore&lt;/strong&gt; isimli metodları eziyoruz. Bu metodlar sınıfın can alıcı noktalarıdır. G&amp;ouml;revleri ilgili kaynaktan belleğe &amp;ccedil;ekilen veriye g&amp;ouml;re oluşturulan Root Node' un (ki bu boğumda hiyerarşik olarak alt boğumları ile birlikte gelecektir) ilgili kontrollere verilmesini sağlamaktır. Burada s&amp;ouml;z konusu olan kontrollerimiz ise SiteMapPath, Menu ve TreeView kontrolleridir. &lt;strong&gt;Initialize&lt;/strong&gt; metodu, &amp;ccedil;alışma zamanında BuildSiteMap ve GetRoodNodeCore &amp;uuml;yelerden &amp;ouml;nce &amp;ccedil;alıştığı i&amp;ccedil;in, bağlantı bilgisinin ve sp adının &lt;strong&gt;web.config&lt;/strong&gt; dosyasındaki yerlerinden alınmaları i&amp;ccedil;in en ideal yerdir. Sınıfımızı kullanacak olan web sitemizde aşağıdaki sayfalarımızın yer aldığını d&amp;uuml;ş&amp;uuml;nebiliriz. Sayfalarımızı tablomuzdaki bilgilere g&amp;ouml;re tasarlamamız &amp;ouml;nemlidir. Aksi takdirde kırık linkler ile karşılabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk186_4.gif" alt="" width="279" height="316" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;T&amp;uuml;m sayfalarda navigasyon kontrollerimizi kolayca ele alabilmek i&amp;ccedil;in bir web user control (kullanıcı web kontrol&amp;uuml;) bileşenini aşağıdaki gibi geliştireceğiz. Kullanıcı web kontrol&amp;uuml;m&amp;uuml;z i&amp;ccedil;erisinde SiteMapPath, Menu ve TreeView kontrollerimizi kullanacağız. Ancak dikkat etmemiz gereken bazı noktalar var. Bunlardan birisi SiteMapPath kontrol&amp;uuml;n&amp;uuml; s&amp;uuml;r&amp;uuml;kleyip bıraktığımızda yazmış olduğumuz SiteHaritaYoneticisi tipine bağlanmadığıdır. Bunu sağlamak i&amp;ccedil;in SiteMapPath bileşenimizin &lt;strong&gt;SiteMapProvider&lt;/strong&gt; &amp;ouml;zelliğine SiteHaritaSaglayicisi provider değerini vermemiz gerekmektedir. Bu provider web.config dosyasında kullanılacak olan SiteHaritaYoneticisi tipini işaret ettiği i&amp;ccedil;in &lt;strong&gt;SiteMapPath&lt;/strong&gt; kontrol&amp;uuml;m&amp;uuml;z&amp;uuml;n veriyi nereden alacağı belirlenmektedir.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;asp:SiteMapPath ID="SiteMapPath1" runat="server" Font-Names="Verdana" Font-Size="0.8em" PathSeparator=" : " SiteMapProvider="SiteHaritaSaglayicisi"&amp;gt;
+    &amp;lt;PathSeparatorStyle Font-Bold="True" ForeColor="#990000" /&amp;gt;
+    &amp;lt;CurrentNodeStyle ForeColor="#333333" /&amp;gt;
+    &amp;lt;NodeStyle Font-Bold="True" ForeColor="#990000" /&amp;gt;
+    &amp;lt;RootNodeStyle Font-Bold="True" ForeColor="#FF8000" /&amp;gt;
+&amp;lt;/asp:SiteMapPath&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Benzer problem &lt;strong&gt;TreeView&lt;/strong&gt; kontrol&amp;uuml; i&amp;ccedil;inde ge&amp;ccedil;erli olacaktır. Normal şartlarda TreeView kontrol&amp;uuml; ve Menu kontrollerini kullanırken bir &lt;strong&gt;SiteMapDataSource&lt;/strong&gt; bileşenine bağlamamız yeterlidir. SiteMapDataSource bileşeni otomatik olarak web.config dosyasındaki ayarlara bakacağından, ilgili kontrollere site haritasını bağlamak i&amp;ccedil;in hangi tipin ele alınması gerektiğini bilmektedir. Lakin TreeView kontrol&amp;uuml; bu ayarlamalara rağmen site haritası i&amp;ccedil;erisindeki &amp;uuml;yeleri g&amp;ouml;steremeyecektir. Bu sorunu &amp;ccedil;&amp;ouml;zmek i&amp;ccedil;in veri bağlama işlemini &lt;strong&gt;(TreeNode DataBindings)&lt;/strong&gt; tasarım tarafından yada kaynak kod tarafından doğru şekilde ayarlamak gerekmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk186_5.gif" alt="" width="534" height="581" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;asp:TreeView ID="TreeView1" runat="server" DataSourceID="SiteMapDataSource1" ImageSet="Arrows" ShowLines="True"&amp;gt;
+    &amp;lt;ParentNodeStyle Font-Bold="False" /&amp;gt;
+    &amp;lt;HoverNodeStyle Font-Underline="True" ForeColor="#5555DD" /&amp;gt;
+    &amp;lt;SelectedNodeStyle Font-Underline="True" ForeColor="#5555DD" HorizontalPadding="0px" VerticalPadding="0px" /&amp;gt;
+    &amp;lt;NodeStyle Font-Names="Verdana" Font-Size="8pt" ForeColor="Black" HorizontalPadding="5px" NodeSpacing="0px" VerticalPadding="0px" /&amp;gt;
+    &amp;lt;DataBindings&amp;gt;
+        &amp;lt;asp:TreeNodeBinding DataMember="SiteMapNode" NavigateUrlField="Url" SelectAction="Expand" TextField="Title" ToolTipField="Description" /&amp;gt;
+    &amp;lt;/DataBindings&amp;gt;
+&amp;lt;/asp:TreeView&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Burada dikkati &amp;ccedil;eken noktalardan birisi &lt;strong&gt;TreeNodeBinding&lt;/strong&gt; elementi i&amp;ccedil;erisinde &lt;strong&gt;NavigateUrlField&lt;/strong&gt;, &lt;strong&gt; TextField&lt;/strong&gt;, &lt;strong&gt;ToolTipField&lt;/strong&gt; niteliklerinin baktıkları alan adlarıdır. Bizim tablomuzdaki alan adları hatırlayacağınız gibi, Baslik, Aciklama ve Url olarak isimlendirilmişti. Peki nasıl oluyorda bunlar birbirleriyle eşleşiyorlar? Bunu sağlayan elbetteki &lt;strong&gt;SiteMapNode&lt;/strong&gt; sınıfının yapıcı metodudur. SiteHaritaYoneticisi sınıfı i&amp;ccedil;erisinde boğumları oluştururken bu sınıfın yapıcı metoduna o anki tablo satırından ilgili değerler aktarılmaktadır. İşte eşleşmenin ger&amp;ccedil;ekleştiği yer burasıdır. Aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yapıcı metodun alacağı parametreler a&amp;ccedil;ık bir şekilde g&amp;ouml;r&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk186_6.gif" alt="" width="607" height="64" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Artık yapmamız gereken t&amp;uuml;m hazırlığı tamamlamış durumdayız. Uygulamamızı test edersek eğer, kontrollerimizin başarılı bir şekilde ilgili tabloya bağlandığını g&amp;ouml;rebiliriz. &amp;Ouml;rneğin aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde Bayan Giyim sayfasına gidilmiştir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk186_7.gif" alt="" width="409" height="478" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi, Site haritasını Xml bağımlılığından kurtarma şansına sahibiz. Elbette yazılan bu tip uygulamalarda performasıda d&amp;uuml;ş&amp;uuml;necek nitelikte tedbirler almak gerekebilir. &amp;Ouml;rneğin site haritasını tutan SiteMapNode' un arabelleğe alınması d&amp;uuml;ş&amp;uuml;n&amp;uuml;lerek daha hızlı &amp;ccedil;alışan bir men&amp;uuml; sistemi tasarlanabilir. Nitekim uygulamamızda sayfanın istemciden sunucuya her postalanışında, sunucu tarafından ilgili saklı yordam sayfanın yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml; i&amp;ccedil;erisinde &amp;ccedil;alıştırılacaktır. İşte buradaki performans kayıplarının &amp;ouml;n&amp;uuml;ne ge&amp;ccedil;mek i&amp;ccedil;in ara bellek sistemi &lt;strong&gt;(caching) &lt;/strong&gt;d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Benzer şekilde ilgili sınıf i&amp;ccedil;erisinde siteye dahil olan kullanıcının yetkilerinin kontrol edilmesi ve datanın buna g&amp;ouml;re &amp;ccedil;ekilerek ilgili boğumların d&amp;uuml;zenlenmesi d&amp;uuml;ş&amp;uuml;nelebilir. Ancak &amp;ccedil;ıkış noktamız yukarıda bahsettiğimiz gibidir. Bu makalemizde kısaca site haritamızı nasıl &amp;ouml;zelleştirebileceğimizi g&amp;ouml;rd&amp;uuml;k. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/makale/images/CustomSiteMap.rar"&gt;&amp;Ouml;rnek uygulama i&amp;ccedil;in tıklayın.&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2006-12-29 12:00:00</pubDate>
+  <slug>Nasc4b1l-Yapc4b1lc4b1r-Ozellestirilmis-SiteMapProvider-Yazmak-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>aspnet</tag>
+    <tag>aspnet-20</tag>
+    <tag>sitemapprovider</tag>
+    <tag>site-map</tag>
+    <tag>provider</tag>
+  </tags>
+  <categories>
+    <category>Asp.Net 2.0</category>
+  </categories>
+</post>

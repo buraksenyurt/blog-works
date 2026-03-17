@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WCF 4.5 WebSockets Kullanımı [Taslak]</title>
+  <description>Bilindiği üzere HTTP protokolü üzerinden gerçekleştirilmekte olan Request-Response tabanlı çalışma modelinde, istemcilerin göndereceği taleplere karşılık olarak sunucunun vereceği cevaplar söz konusudur. Dolayısıyla istemciler, örneğin borsa hareketliliği gibi anlık değişim gösteren içerikleri elde etmek istediklerinde, çeşitli teknikleri işin içerisine katmak zorundadırlar. Bunun için Polling adı verilen teknik sıklıkla kullanılmaktadır. İstemci belirli periyot aralıklarında sunucudan gerekli veriyi talep eder ve içeriği okur. Polling dışında bir de Streaming tekniği ile verinin çekilmesi sağlanabilir, ancak hangisi olursa olsun istemci ve sunucu arasındaki haberleşme şekli, tek talebe(Request) karşın, tek bir cevap(Response) gelecek şekilde tesis edilir.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/yoresel1.jpg"&gt;&lt;img style="margin: 4px 0px; display: inline; float: right;" title="yoresel1" src="/pics/yoresel1_thumb.jpg" alt="yoresel1" width="240" height="240" align="right" /&gt;&lt;/a&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Bazen yemek yemek i&amp;ccedil;in dışarı &amp;ccedil;ıkar ve daha &amp;ouml;nceden gitmediğimiz bir yere oturup hi&amp;ccedil; bakmadığımız tadlara yelken a&amp;ccedil;arız. Bu, bazen &amp;ccedil;ok başarılı sonu&amp;ccedil;lanır ve bize b&amp;uuml;y&amp;uuml;k bir keyif verir. Bazen de yapmış olduğumuz tercihlerimiz i&amp;ccedil;in pişmanlık duyarız. Hatta bazı zamanlarda yerken iyi gelen o tadlar, &amp;ccedil;ıkışta b&amp;uuml;y&amp;uuml;k sıkıntılara yol a&amp;ccedil;abilir &lt;img class="wlEmoticon wlEmoticon-smile" style="border-style: none;" src="/pics/wlEmoticon-smile_53.png" alt="Smile" /&gt;&lt;/p&gt;
+&lt;p&gt;İşin garip olan ve belki de heyecan verici yanı, sonu&amp;ccedil;ları tam olarak kestiremediğimiz bir deneyimi yaşayacak olmamızdandır. Hatta biz ilk kez denerken, aynı tadları denemiş başkaları var ise onların tavsiyelerine de kulak verir, kimine inanır, kimine inanmayız. İşte bu g&amp;uuml;nk&amp;uuml; makalemizin konusu da, hi&amp;ccedil; tadmadığımız bir yemeğin bilemediğimiz sonu&amp;ccedil;larına benzer nitelikte.&lt;/p&gt;
+&lt;p&gt;Nitekim kodlamayı yapacak bir ortamımız var ama test yapacak bir &amp;ccedil;evre yok. Nitekim senaryomuz gereği şu anda sadece &lt;strong&gt;Windows 8&lt;/strong&gt; platformu ve &amp;uuml;zerinde y&amp;uuml;kl&amp;uuml; &lt;em&gt;IIS(Internet Information Services)&lt;/em&gt; tarafından desteklenen ama &lt;strong&gt;.Net Framework 4.5&lt;/strong&gt; i&amp;ccedil;erisinde yer aldığı i&amp;ccedil;in &lt;strong&gt;Windows 7&lt;/strong&gt; gibi bir platform &amp;uuml;zerinde de geliştirilebilen bir konu s&amp;ouml;z konusu. Bu noktaya nasıl geldik bir bakalım &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_121.png" alt="Winking smile" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;span style="color: #ff0000;"&gt;[İzleyen makalede yazılmış olan kodlar test edilememiştir. &amp;Ccedil;alışma zamanında kuvvetle muhtemel olası hatalar olduğu aşikardır. Yazıyıyı bunu d&amp;uuml;ş&amp;uuml;nerek yargılamanızı &amp;ouml;neririm.]&lt;/span&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Web teknolojileri hızla gelişmeye devam etmekte. Bir yıldan fazla bir s&amp;uuml;redir g&amp;uuml;ndemde olan yeni maceramız ise, &lt;strong&gt;WebSockets&lt;/strong&gt; &amp;uuml;zerinden haberleşebilme imkanı. &amp;Ouml;zellikle &lt;strong&gt;HTML&lt;/strong&gt; &lt;strong&gt;5&lt;/strong&gt; standartları arasında da yer alan bu yeni oluşum&lt;em&gt;(ki Google' un Doodle &amp;uuml;r&amp;uuml;nlerinde yer alan pek &amp;ccedil;ok oyunda bu tekniğin kullanımı s&amp;ouml;z konusudur)&lt;/em&gt;, &lt;strong&gt;HTTP&lt;/strong&gt; protokol&amp;uuml;n&amp;uuml;n &amp;ouml;zellikle &lt;strong&gt;Real-Time&lt;/strong&gt; veri akışlarındaki kısıtlamalarını, g&amp;uuml;&amp;ccedil;l&amp;uuml;klerini ortadan kaldırır nitelikte.&lt;/p&gt;
+&lt;p&gt;Bilindiği &amp;uuml;zere &lt;strong&gt;HTTP&lt;/strong&gt; protokol&amp;uuml; &amp;uuml;zerinden ger&amp;ccedil;ekleştirilmekte olan &lt;strong&gt;Request-Response&lt;/strong&gt; tabanlı &amp;ccedil;alışma modelinde, istemcilerin g&amp;ouml;ndereceği taleplere karşılık olarak sunucunun vereceği cevaplar s&amp;ouml;z konusudur. Dolayısıyla istemciler, &amp;ouml;rneğin borsa hareketliliği gibi anlık değişim g&amp;ouml;steren i&amp;ccedil;erikleri elde etmek istediklerinde, &amp;ccedil;eşitli teknikleri işin i&amp;ccedil;erisine katmak zorundadırlar. Bunun i&amp;ccedil;in Polling adı verilen teknik sıklıkla kullanılmaktadır. İstemci belirli periyot aralıklarında sunucudan gerekli veriyi talep eder ve i&amp;ccedil;eriği okur. Polling dışında bir de Streaming tekniği ile verinin &amp;ccedil;ekilmesi sağlanabilir, ancak hangisi olursa olsun istemci ve sunucu arasındaki haberleşme şekli, tek&lt;strong&gt; talebe(Request)&lt;/strong&gt; karşın, tek bir &lt;strong&gt;cevap(Response)&lt;/strong&gt; gelecek şekilde tesis edilir.&lt;/p&gt;
+&lt;p&gt;Aslında duyulan ihtiya&amp;ccedil; &amp;ouml;zellikle anlık veriler i&amp;ccedil;in aynı kanal &amp;uuml;zerinden &amp;ccedil;ift y&amp;ouml;nl&amp;uuml; iletişimi sağlayabilmektir. &lt;strong&gt;Duplex&lt;/strong&gt; &lt;strong&gt;Channel&lt;/strong&gt; iletişim olarak da adlandırabileceğimiz bu yapı, &lt;strong&gt;WebSockets'&lt;/strong&gt; ler sayesinde &lt;strong&gt;HTTP&lt;/strong&gt; &amp;uuml;zerinden kolayca sağlanabilmektedir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;WebSockets' i yeni bir protokolden ziyade HTTP protokol&amp;uuml; &amp;uuml;zerinden kullanılabilen ve Real-Time veri transferleri i&amp;ccedil;in aynı kanal &amp;uuml;zerinden &amp;ccedil;ift y&amp;ouml;nl&amp;uuml; iletişimi kolaylaştıran bir teknik olarak d&amp;uuml;ş&amp;uuml;nmeyi daha doğru buluyorum.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;WebSockets'&lt;/strong&gt; in &lt;strong&gt;HTTP'&lt;/strong&gt; nin standart &amp;ccedil;alışma modeline g&amp;ouml;re daha &amp;ouml;nemli avantajları bulunmaktadır. &lt;strong&gt;HTTP&lt;/strong&gt; protokol&amp;uuml;ne baktığımızda aşağıdaki handikaplara sahip olduğunu g&amp;ouml;rmekteyiz.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Hızlı bir iletişim olması i&amp;ccedil;in tasarlanmamıştır.&lt;/li&gt;
+&lt;li&gt;Her bir request' de mesaj başlığı(Message Header) gibi kısımlar veri ile dolduklarından paket hareket eden paket boyutları artmaktadır.&lt;/li&gt;
+&lt;li&gt;&amp;Ouml;zellikle istemci tarafındaki uygulamaya ait verileri g&amp;uuml;ncel tutabilmek i&amp;ccedil;in tarayıcı &amp;uuml;zerinden s&amp;uuml;rekli olarak bir talep g&amp;ouml;nderilmesi gerekir.&lt;/li&gt;
+&lt;li&gt;Daha kısıtlı bir Cross Domain desteği bulunmaktadır.&lt;/li&gt;
+&lt;li&gt;Bazı vakalarda ve &amp;ouml;zellike Long Polling ve Streaming tekniklerinin uygulandığı hallerde, Proxy veya Firewall gibi ara katmanlar cevap s&amp;uuml;relerinde gecikmelere neden olabilir.&lt;/li&gt;
+&lt;li&gt;Diğer yandan Long Polling ve Streaming teknikleri &amp;ouml;l&amp;ccedil;eklenebilir(Scalable) değildir.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;WebSockets'&lt;/strong&gt; in ise bu dezavantajlar karşısında sunduğu &amp;ouml;nemli avantajlar mevcuttur. Bunları şu şekilde sıralayabiliriz;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Gerektiği kadar verinin g&amp;ouml;nderilmesi s&amp;ouml;z konusudur.&lt;/li&gt;
+&lt;li&gt;Bandwith daha efektif olarak kullanılır.&lt;/li&gt;
+&lt;li&gt;Cross Domain desteği sağlamaktadır.&lt;/li&gt;
+&lt;li&gt;Firewall ve Proxy' ler &amp;uuml;zerinden de iletişim sunabilir.&lt;/li&gt;
+&lt;li&gt;Şu an i&amp;ccedil;in bazı Javascript implementasyonları haricinde Binary veri akışı desteği de sunar.&lt;/li&gt;
+&lt;li&gt;TCP tabanlı y&amp;uuml;k dengeleyicileri(Load Balancer) i&amp;ccedil;erir.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Peki bu g&amp;uuml;&amp;ccedil;l&amp;uuml; &amp;ouml;zellikleri hangi hallerde ele almalıyız? Başlarda da belirttiğimiz &amp;uuml;zere Real-Time veri transferi gerektiren pek &amp;ccedil;ok senaryoda, &lt;strong&gt;WebSockets&lt;/strong&gt; bi&amp;ccedil;ilmiş kaftan olarak g&amp;ouml;r&amp;uuml;lebilir. Online Oyunlar, finansal uygulamalar, sohbet(Chat) programları, haber akışları vb...Zaten bu, &lt;strong&gt;HTML 5&lt;/strong&gt; i&amp;ccedil;in de ne kadar pop&amp;uuml;ler olduğunun bir g&amp;ouml;stergesidir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Yine de ortada bazı sorunlar mevcut. Yazıyı hazırladığım tarih itibariyle &amp;ouml;rneğin Asp.Net 4.5 ile olan kullanımında ciddi kısıtlamalar var. Sadece IIS 8 &amp;uuml;zerinde host edilen Asp.Net uygulamalarında &amp;ccedil;alışabilmekte ve bunun i&amp;ccedil;in, IIS tarafında WebSockets &amp;ouml;zelliğinin de etkinleştirilmiş olması gerekmektedir.&lt;/p&gt;
+&lt;p&gt;Diğer yandan, tarayıcı uygulamaların bazı versiyonlarının da bu tekniğe tam olarak destek vermediği g&amp;ouml;r&amp;uuml;lmektedir. IE10, Chrome 13+, Firefox 7, Safari 5+, Opera 11+ şu an i&amp;ccedil;in desteklenen tarayıcı versiyonları olarak g&amp;ouml;r&amp;uuml;n&amp;uuml;yor. Ancak bu hen&amp;uuml;z tam olarak oturmamış HTML 5 protokol&amp;uuml;n&amp;uuml;n meyvelerinden birisi. Dolayısıya zaman i&amp;ccedil;erisinde iyice yerleşecek ve bence vazge&amp;ccedil;ilmez teknolojilerden birisi olacaktır.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Dilerseniz &lt;strong&gt;HTTP&lt;/strong&gt; ve &lt;strong&gt;WebSockets&lt;/strong&gt; &amp;uuml;zerinden yapılan iletişimler arasındaki farkı şekilsel olarak da ifade edelim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/ws_1.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="ws_1" src="/pics/ws_1_thumb.png" alt="ws_1" width="621" height="369" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Sanırım şimdi biraz daha netleşmiştir. En azından benim kafamda ş&amp;ouml;yle bir imajı var. Bir &lt;strong&gt;Request&lt;/strong&gt; ile kanalı a&amp;ccedil;arım ve ben tekrardan bir talepte bulunana kadar, sunucu bana mesaj yollamaya ve beni bilgilendirmeye devam eder &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_121.png" alt="Winking smile" /&gt;&lt;/p&gt;
+&lt;p&gt;Tabi bizim bu makalemizdeki amacımız &lt;strong&gt;WebSockets&lt;/strong&gt; tekonolojisini derinlemesine incelemekten ziyade bunu &lt;strong&gt;.Net Framework 4.5&lt;/strong&gt; tarafında nasıl değerlendirebileceğimizi incelemeye &amp;ccedil;alışmak. Ben &lt;strong&gt;Asp.Net 4.5&lt;/strong&gt; yerine&lt;strong&gt; WCF 4.5&lt;/strong&gt; tarafında konuyu irdelemeye &amp;ccedil;alışmak niyetindeyim. Bu ama&amp;ccedil;la da basit bir &lt;strong&gt;How To&lt;/strong&gt; &amp;ccedil;alışması yapmaya gayret ediyor olacağız.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;WCF 4.5&lt;/strong&gt; ile gelen &lt;strong&gt;Binding&lt;/strong&gt; &lt;strong&gt;Type'&lt;/strong&gt; larından birisi de, &lt;strong&gt;NetHttpBinding&lt;/strong&gt; sınıfıdır. &amp;Ouml;zellikle, &lt;strong&gt;HTTP&lt;/strong&gt; &lt;strong&gt;Request/Response&lt;/strong&gt; modeli dışında, &lt;strong&gt;Duplex&lt;/strong&gt; &lt;strong&gt;Channel&lt;/strong&gt; iletişimine izin veren &lt;strong&gt;WebSockets&lt;/strong&gt; desteği nedeni ile de &amp;ouml;n plana &amp;ccedil;ıkmaktadır. Varsayılan olarak da &lt;strong&gt;Binary&lt;/strong&gt; mesajlaşmaya da izin vermektedir. Dolayısıyla bir &lt;strong&gt;WCF&lt;/strong&gt; servisi ile istemciler arasında &lt;strong&gt;Real-Time&lt;/strong&gt; veri akışını sağlayacak senaryoların ger&amp;ccedil;ekleştirilmesi m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Dilerseniz konuyu basit bir &amp;ouml;rnek ile ilerletelim&lt;em&gt;.(Ger&amp;ccedil;i bu biraz k&amp;ouml;r u&amp;ccedil;uşa benziyor ama en azından teoriyi anlamamıza yardımcı olacaktır kanaatindeyim)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;İlk olarak bir &lt;strong&gt;WCF Service Library&lt;/strong&gt; projesi oluşturup i&amp;ccedil;erisine aşağıdaki kod par&amp;ccedil;alarını ekleyerek işe başlayabiliriz.&lt;/p&gt;
+&lt;p&gt;Sınıf diagramı;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/ws_3.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="ws_3" src="/pics/ws_3_thumb.png" alt="ws_3" width="353" height="550" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.ServiceModel; 
+using System.Threading.Tasks;
+
+namespace StockServiceLibrary 
+{ 
+    [ServiceContract(CallbackContract = typeof(IStockTransactionCallback))] 
+    public interface IStockTransactionService 
+    { 
+        [OperationContract(IsOneWay = true)] 
+        Task StartSendingTransactions(); 
+    }
+
+    [ServiceContract()] 
+    public interface IStockTransactionCallback 
+    { 
+        [OperationContract(IsOneWay = true)] 
+        Task SendTransaction(StockTransaction transaction); 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Burada g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi bir &lt;strong&gt;Callback&lt;/strong&gt; tekniği s&amp;ouml;z konusudur. Malum &lt;strong&gt;Duplex&lt;/strong&gt; kanal iletişimde bu tip bir geri bildirim s&amp;ouml;zleşmesinin de, servisin istemci tarafında tetikleme yapabilmesi i&amp;ccedil;in uygulanması gerektiğini biliyoruz. Asıl servis s&amp;ouml;zleşmesi olan &lt;strong&gt;IStockTransactionService&lt;/strong&gt; geri bildirim s&amp;ouml;zleşmesi olarak &lt;strong&gt;IStockTransactionCallback&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml; kullanmaktadır.&lt;/p&gt;
+&lt;p&gt;Her iki s&amp;ouml;zleşme de kendi i&amp;ccedil;erisinde tanımladıkları operasyonların asenkron olarak &amp;ccedil;alıştırılabilmesine olanak tanımaktadır&lt;em&gt;(async anahtar kelimeleri ile imzalandıklarına dikkat edelim)&lt;/em&gt; Tabi bu asenkron işleyiş sadece servisin kendi i&amp;ccedil; &amp;ccedil;alışmasında s&amp;ouml;z konusu değildir. Geri bildirim s&amp;ouml;zleşmelerinin uygulanma kurallarından birisi olarak &lt;strong&gt;StartSendingTransaction&lt;/strong&gt; ve &lt;strong&gt;SendTransaction&lt;/strong&gt; isimli operasyonlar &lt;strong&gt;tek y&amp;ouml;nl&amp;uuml;(One Way)&lt;/strong&gt; &amp;ccedil;alışacak şekilde işaretlenmiştir.&lt;/p&gt;
+&lt;p&gt;Servisi implemente ettiğimiz &lt;strong&gt;StockTransactionService&lt;/strong&gt; sınıfının i&amp;ccedil;eriği de aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.ServiceModel; 
+using System.ServiceModel.Channels; 
+using System.Threading.Tasks;
+
+namespace StockServiceLibrary 
+{ 
+    public class StockTransactionService 
+       : IStockTransactionService 
+    { 
+        static string[] productCodes = { 
+                                "PRD1001", "PRD45", "PRD2451", 
+                                "PRD2501", "PRD2301", "PRD2001", 
+                                "PRD1190", "PRD1007", "PRD1006", 
+                                "PRD1004", "PRD1023" };
+
+        public async Task StartSendingTransactions() 
+        { 
+            var callback = OperationContext.Current.GetCallbackChannel&amp;lt;IStockTransactionCallback&amp;gt;(); 
+            var random = new Random(); 
+            double price = 29.00;
+
+            while (((IChannel)callback).State == CommunicationState.Opened) 
+            { 
+               await callback.SendTransaction( 
+                    new StockTransaction{ 
+                        ProductCode=productCodes[random.Next(0,productCodes.Length)], 
+                        TransactionQuantity=random.Next(50,5000) 
+                    }); 
+                price += random.NextDouble(); 
+                await Task.Delay(1000); 
+            } 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;StartSendingTransactions&lt;/strong&gt; metodu i&amp;ccedil;erisinde geri bildirim s&amp;ouml;zleşmesinden yararlanılarak g&amp;uuml;ncel &lt;strong&gt;Context&lt;/strong&gt; elde edilmekte ve istemci ile olan bağlantı a&amp;ccedil;ık kaldığı s&amp;uuml;rece &lt;strong&gt;SendTransaction&lt;/strong&gt; metodundan yararlanılarak rastgele &lt;strong&gt;StockTransaction&lt;/strong&gt; &amp;ouml;rnekleri hazırlanıp &lt;strong&gt;Client&lt;/strong&gt; uygulamaya g&amp;ouml;nderilmektedir. İstemci tarafındaki &amp;ccedil;alışma şeklini daha iyi g&amp;ouml;rebilmek adına buradaki operasyon i&amp;ccedil;erisinde 1 saniyelik bir gecikme işlemi de uygulanmaktadır. Ayrıca, &lt;strong&gt;SendTransaction&lt;/strong&gt; ile &lt;strong&gt;Task&lt;/strong&gt; tipinin &lt;strong&gt;static&lt;/strong&gt; &lt;strong&gt;Delay&lt;/strong&gt; metodlarına yapılan &amp;ccedil;ağrıların &lt;strong&gt;await&lt;/strong&gt; anahtar kelimesi eşliğinde ger&amp;ccedil;ekleştirildiklerine dikkat edilmelidir.&lt;/p&gt;
+&lt;p&gt;Servis tarafında kullandığımız ve mesajlar i&amp;ccedil;erisinde dolaştırdığımız &lt;strong&gt;veri s&amp;ouml;zleşmesine(Data Contract)&lt;/strong&gt; ait &lt;strong&gt;POCO(Plain Old CLR Object)&lt;/strong&gt; tipi tasarımı da şu şekildedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Runtime.Serialization;
+
+namespace StockServiceLibrary 
+{ 
+    [DataContract] 
+    public class StockTransaction 
+    { 
+        [DataMember] 
+        public string ProductCode { get; set; } 
+        [DataMember] 
+        public int TransactionQuantity { get; set; } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Sadece &amp;ouml;rnek olması a&amp;ccedil;ısından i&amp;ccedil;erisinde &amp;uuml;r&amp;uuml;n kodu ve işleme alınan mitar bilgisi değerlendirilmektedir. Servisin rastgele &amp;uuml;reteceği işlemlere ait bilgileri bağlı olan stemciye/istemciler g&amp;ouml;ndereceği beklenmektedir.&lt;/p&gt;
+&lt;p&gt;Artık servis host uygulamasını yazmaya başlayabiliriz. &amp;Ouml;rnekte &lt;strong&gt;IIS&lt;/strong&gt; yerine, &lt;strong&gt;self-host &lt;/strong&gt;tekniğini ele almaktayız. Bu nedenle servis k&amp;uuml;t&amp;uuml;phanesini referans eden bir &lt;strong&gt;Console&lt;/strong&gt; uygulamasını aşağıdaki şekilde geliştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using StockServiceLibrary; 
+using System; 
+using System.ServiceModel;
+
+namespace ServerHostApp 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            ServiceHost host = new ServiceHost(typeof(StockTransactionService)); 
+            host.AddServiceEndpoint( 
+                typeof(IStockTransactionService) 
+               , new NetHttpBinding() 
+                , "ws://localhost/StockTransactionService" 
+                ); 
+            host.Open(); 
+            Console.WriteLine("Host durumu {0}. Kapatmak i&amp;ccedil;in bir tuşa basınız.",host.State); 
+            Console.ReadLine(); 
+            host.Close(); 
+            Console.WriteLine("Host durumu {0}.", host.State); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;ServiceHost&lt;/strong&gt; nesne &amp;ouml;rneğine eklenen &lt;strong&gt;ServiceEndpoint&lt;/strong&gt; tipi, &lt;strong&gt;NetHttpBinding&lt;/strong&gt; bağlayıcısını kullanmaktadır. Bu nedenle &lt;strong&gt;WebSockets&lt;/strong&gt; desteğini i&amp;ccedil;ermektedir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Eğer uygulamayı Windows 7 tabanlı bir sistemde &amp;ccedil;alıştırırsanız host uygulamanın &amp;ccedil;alışması sırasında aşağıdaki hata mesajını alacağını g&amp;ouml;rebilirsiniz &lt;img class="wlEmoticon wlEmoticon-sadsmile" style="border-style: none;" src="/pics/wlEmoticon-sadsmile_15.png" alt="Sad smile" /&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;a href="/pics/ws_2.png"&gt;&lt;img style="margin: 4px 0px; display: inline;" title="ws_2" src="/pics/ws_2_thumb.png" alt="ws_2" width="511" height="357" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;İstemci tarafını geliştirmek i&amp;ccedil;in &amp;ouml;ncelikli olarak &lt;strong&gt;proxy&lt;/strong&gt; sınıfının &amp;uuml;retilmiş olması da gerekmektedir. &amp;Ouml;rneğimizde &lt;strong&gt;Metadata&lt;/strong&gt; &lt;strong&gt;Publishing&lt;/strong&gt; &amp;ouml;zelliğini bilin&amp;ccedil;li olarak etkinleştirmedik. Bu nedenle komut satırından &lt;strong&gt;svcutil&lt;/strong&gt; aracını kullanarak gerekli &amp;uuml;retimi ger&amp;ccedil;ekleştirebiliriz. &lt;strong&gt;Visual&lt;/strong&gt; &lt;strong&gt;Studio&lt;/strong&gt; &lt;strong&gt;Command&lt;/strong&gt; &lt;strong&gt;Prompt&lt;/strong&gt; &amp;uuml;zerinden bunu aşağıdaki ifadeler ile sağlayabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;/&amp;gt;svcutil StockServiceLibrary.dll&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;ve ardından&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;/&amp;gt;svcutil *.wsdl *.xsd /out:proxy.cs&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Uuml;retilen &lt;strong&gt;Proxy.cs&lt;/strong&gt; dosyasını istemci uygulamaya ekledikten sonra &lt;strong&gt;Program&lt;/strong&gt; sınıfının i&amp;ccedil;eriğini de aşağıdaki şekilde kodladığımızı d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using StockServiceLibrary; 
+using System; 
+using System.ServiceModel;
+
+namespace ClientApp 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            Console.WriteLine("İşlemlere başlamak i&amp;ccedil;in bir tuşa basınız."); 
+            Console.ReadLine();
+
+            var context = new InstanceContext(new CallbackHandler()); 
+            var client = new StockTransactionServiceClient(context); 
+           client.StartSendingTransactions();
+
+            Console.WriteLine("&amp;Ccedil;ıkmak i&amp;ccedil;in bir tuşa basınız."); 
+            Console.ReadLine(); 
+        } 
+    }
+
+    class CallbackHandler 
+        : IStockTransactionServiceCallback 
+    { 
+        public void SendTransaction(StockTransaction transaction) 
+        { 
+            Console.WriteLine("{0} {1}",transaction.ProductCode,transaction.TransactionQuantity.ToString()); 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Tabi istemci tarafında bir de &lt;strong&gt;WCF&lt;/strong&gt; &amp;ccedil;alışma zamanı i&amp;ccedil;in gerekli konfigurasyon i&amp;ccedil;eriğine ihtiyacımız olacaktır. Yine k&amp;ouml;r u&amp;ccedil;uş yaparak bu i&amp;ccedil;eriği belirleyelim &lt;img class="wlEmoticon wlEmoticon-confusedsmile" style="border-style: none;" src="/pics/wlEmoticon-confusedsmile_24.png" alt="Confused smile" /&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt; 
+&amp;lt;configuration&amp;gt; 
+  &amp;lt;startup&amp;gt; 
+    &amp;lt;supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.5" /&amp;gt; 
+  &amp;lt;/startup&amp;gt; 
+  &amp;lt;system.serviceModel&amp;gt; 
+    &amp;lt;bindings&amp;gt; 
+      &amp;lt;netHttpBinding&amp;gt; 
+        &amp;lt;binding name="BindingConfig"&amp;gt; 
+          &amp;lt;webSocketSettings transportUsage="Always" /&amp;gt; 
+       &amp;lt;/binding&amp;gt; 
+      &amp;lt;/netHttpBinding&amp;gt; 
+   &amp;lt;/bindings&amp;gt; 
+    &amp;lt;client&amp;gt; 
+      &amp;lt;endpoint address="ws://localhost/StockTransactionService" 
+                binding="netHttpBinding" 
+                bindingConfiguration="BindingConfig"          
+                contract="IStockTransactionService" 
+                name="NetHttpBinding_IStockTransactionService" /&amp;gt; 
+    &amp;lt;/client&amp;gt; 
+  &amp;lt;/system.serviceModel&amp;gt; 
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Mutlaka servisin host edildiği ve istemcinin talepte bulunduğu adres dikkatinizi &amp;ccedil;ekmiştir. &lt;strong&gt;ws&lt;/strong&gt; ile başlayan bir adresleme s&amp;ouml;z konusudur. İstemci tarafı da &amp;ccedil;ok doğal olarak &lt;strong&gt;NetHttpBinding&lt;/strong&gt; bağlayıcı tipini kullanacaktır. İnce bir ayar olarak da &lt;strong&gt;transportUsage&lt;/strong&gt; niteliği &lt;strong&gt;Always&lt;/strong&gt; olarak set edilmiştir.&lt;/p&gt;
+&lt;p&gt;Bakalım &amp;ccedil;alışma zamanında nasıl sonu&amp;ccedil;lar elde edeceğiz? Aslında nasıl sonu&amp;ccedil;lar elde edeceksiniz demem gerekiyordu. Nitekim kodu &lt;strong&gt;Windows 7&lt;/strong&gt; platformunda yazmak zorunda kaldığım i&amp;ccedil;in zaten platform desteği olmadığından deneyemedim &lt;img class="wlEmoticon wlEmoticon-sadsmile" style="border-style: none;" src="/pics/wlEmoticon-sadsmile_15.png" alt="Sad smile" /&gt; Bunu deneme şansını ilerleyen zamanlarda umarım bulurum ki o vakit sonu&amp;ccedil;ları ve koddaki hataları da d&amp;uuml;zelterek size sunarım &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_121.png" alt="Winking smile" /&gt; Şimdilik bu haliyle bırakmak zorundayım. B&amp;ouml;ylece geldik bir makalemizin&lt;em&gt;(Makale adayımızın)&lt;/em&gt; daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;span style="color: #ff0000;"&gt;&lt;strong&gt;Not : &lt;/strong&gt;Bu arada .Net 4.5 deki WebSockets ler i&amp;ccedil;in Windows 8 dışında bir platform desteği olmayacağı s&amp;ouml;ylenmekte. &lt;/span&gt;&lt;/em&gt;&lt;a href="http://forums.asp.net/t/1732788.aspx/1"&gt;&lt;em&gt;&lt;span style="color: #ff0000;"&gt;http://forums.asp.net/t/1732788.aspx/1&lt;/span&gt;&lt;/em&gt;&lt;/a&gt;&lt;em&gt;&lt;span style="color: #ff0000;"&gt; adresindeki tartışma olduk&amp;ccedil;a taze ve bu konu &amp;uuml;zerine yapılmış. Tabi burada dikkat edilecek olursa Kaazing WebSockets Gateway aracından yararlanılabileceği s&amp;ouml;ylenmekte. Ben şu an i&amp;ccedil;in bunu denemedim ama siz deneyebilirsiniz &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_121.png" alt="Winking smile" /&gt;&lt;/span&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2012%2f9%2fHowTo_WCFandWebSockets_.zip"&gt;HowTo_WCFandWebSockets_.zip (107,55 kb)&lt;/a&gt;&amp;nbsp;&amp;nbsp;[Her ihtimale karşın oynayabilmeniz i&amp;ccedil;in &amp;ouml;rneği ilave ettim]&lt;/p&gt;</content>
+  <pubDate>2012-09-12 15:04:00</pubDate>
+  <slug>WCF-45-WebSockets-Kullanc4b1mc4b1-Taslak</slug>
+  <tags>
+    <tag>wcf-45</tag>
+    <tag>aspnet-45</tag>
+    <tag>windows-8</tag>
+    <tag>websockets</tag>
+    <tag>windows-communication-foundation</tag>
+    <tag>html-5</tag>
+    <tag>http</tag>
+    <tag>polling</tag>
+    <tag>streaming</tag>
+  </tags>
+  <categories>
+    <category>WCF 4.5</category>
+  </categories>
+</post>

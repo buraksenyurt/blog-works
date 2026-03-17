@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>OleDbDataAdapter Sınıfı - 2</title>
+  <description>Önceki makalemizde, OleDbDataAdapter sınıfının ne işe yaradığından bahsetmiş ve kısa bir giriş yapmıştık. Bu makalemizde, OleDbDataAdapter sınıfının diğer önemli unsurlarını incelemeye devam edeceğiz. İncelemek istediğim ilk konu, OleDbDataAdapter nesnesi yardımıyla, ilişkisel veritabanı modellerinden bağlantısız katmana aktarılan tabloların, sahip olduğu birincil anahtar (Primary Key) ve kısıtlamaların (Constraints) ne şekilde irdelendiği olucak. Konuyu iyice kavrayabilmek amacıyla aşağıdaki basit örnek ile incelememize başlayalım. Bu örneğimizde, sql sunucumuzda yer alan bir tabloya ait verileri DataSet üzerine alıyor ve alınan alanların bir takım bilgilerini okuyoruz. Örneğin, alanların veri tipi, boyutu, null değerler içerip içermediği ve alan adları bilgilerini ekrana yazdırıyoruz.</description>
+  <content>&lt;p&gt;Değerli&amp;nbsp; Okurlarım, Merhabalar. &amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;nceki makalemizde, OleDbDataAdapter sınıfının ne işe yaradığından bahsetmiş ve kısa bir giriş yapmıştık. Bu makalemizde, OleDbDataAdapter sınıfının diğer &amp;ouml;nemli unsurlarını incelemeye devam edeceğiz. İncelemek istediğim ilk konu, OleDbDataAdapter nesnesi yardımıyla, ilişkisel veritabanı modellerinden bağlantısız katmana aktarılan tabloların, sahip olduğu birincil anahtar (Primary Key) ve kısıtlamaların (Constraints) ne şekilde irdelendiği olucak. Konuyu iyice kavrayabilmek amacıyla aşağıdaki basit &amp;ouml;rnek ile incelememize başlayalım. Bu &amp;ouml;rneğimizde, sql sunucumuzda yer alan bir tabloya ait verileri DataSet &amp;uuml;zerine alıyor ve alınan alanların bir takım bilgilerini okuyoruz. &amp;Ouml;rneğin, alanların veri tipi, boyutu, null değerler i&amp;ccedil;erip i&amp;ccedil;ermediği ve alan adları bilgilerini ekrana yazdırıyoruz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Data;
+using System.Data.OleDb;
+
+namespace OleDbDA2
+{
+    class Class1
+    {
+        static void Main(string[] args)
+        {
+            OleDbConnection con=new OleDbConnection("Provider=SQLOLEDB;data source=localhost;initial catalog=Friends;integrated security=sspi"); // Bağlantı nesnemiz tanımlanıyor.
+            string sqltext="Select * From Deneme"; // Tablodaki t&amp;uuml;m verileri &amp;ccedil;ekicek sql ifademiz.
+            OleDbDataAdapter da=new OleDbDataAdapter(sqltext,con); // OleDbDataAdapter nesnemiz oluşturuluyor.
+            DataSet ds=new DataSet(); // DataSet bağlantısız katman nesnemiz oluşturuluyor.
+            da.Fill(ds,"Makale"); // DataSet nesnemiz, tablomuza ait veriler ile dolduruluyor. 
+            /* Tablodaki alanlara ait temel bilgileri edinmek i&amp;ccedil;in foreach d&amp;ouml;ng&amp;uuml;s&amp;uuml;n&amp;uuml; kullanıyoruz. 0 indisli tablomuz yani deneme tablomuza ait t&amp;uuml;m alanlar tek tek DataColumn tipindeki c nesnemiz ile dolaşıyoruz. */
+            foreach(DataColumn c in ds.Tables[0].Columns)
+            {
+                Console.WriteLine("_"+c.ColumnName.ToString()+"_"); // Alanın adı.
+                Console.WriteLine("Alan genisligi _"+c.MaxLength.ToString()); /* Alan text değer i&amp;ccedil;eriyorsa maksimum uzunluk. */
+                Console.WriteLine("Veri t&amp;uuml;r&amp;uuml; _"+c.DataType.ToString()); // Alanın veri t&amp;uuml;r&amp;uuml;.
+                Console.WriteLine("Null durumu _"+c.AllowDBNull.ToString()); // Alanın null değer i&amp;ccedil;erebilip i&amp;ccedil;eremeyeceği.
+                Console.WriteLine("");
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu kodlarda ne yaptığımızı kısaca anlatalım. &amp;Ouml;ncelikle, Sql sunucumuzda yer alan Friends isimli veritabanına OleDb veri sağlayıcısı &amp;uuml;zerinden bir bağlantı hattı a&amp;ccedil;ıyoruz. Daha sonra, bu veritabanındaki Deneme isimli tabloya ait t&amp;uuml;m satırları elde edebileceğimiz sql s&amp;ouml;z dizimi ile bir OleDbDataAdapter nesnesi oluşturuyoruz. Bu nesnenin Fill metodunu kullanarak, DataSet nesnemizi ilgili tabloya ait veriler ile dolduruyoruz. Aynı zamanda sql sunucusundaki deneme isimli tabloya ait alan bilgilerinide elde etmiş oluyoruz. Her bir alanın ismini, bu alan text veri i&amp;ccedil;eriyorsa maksimum karakter uzunluğunu, veri tipini ve null değer i&amp;ccedil;erip i&amp;ccedil;ermediğini &amp;ouml;ğrenmek i&amp;ccedil;in, bir d&amp;ouml;ng&amp;uuml; kuruyor ve bu d&amp;ouml;ng&amp;uuml; i&amp;ccedil;erisinden bu alan bilgilerine, DataColumn sınıfından bir nesne &amp;ouml;rneğini kullanarak erişiyoruz. Uygulamamızı &amp;ccedil;alıştırdığımızda aşağıdaki sonucu elde ettiğimizi g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk58_1.gif" alt="" width="261" height="451" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 1. Uygulamanın &amp;ccedil;alışmasının sonucu.&lt;/p&gt;
+&lt;p&gt;Oysa sql sunucumuzda yer alan tablomuzu incelediğimizde bilgilerin daha farklı olduğunu g&amp;ouml;r&amp;uuml;r&amp;uuml;z. İlk g&amp;ouml;ze &amp;ccedil;arpan, alanların null değer i&amp;ccedil;erebilip i&amp;ccedil;eremeyeceğini g&amp;ouml;steren AllowDBNull &amp;ouml;zelliklerinin doğru bir şekilde elde edilememiş olmalarıdır. Tablomuzun sql sunucusundaki asıl g&amp;ouml;r&amp;uuml;n&amp;uuml;m&amp;uuml; aşağıdaki gibidir. Kodumuz sonucu t&amp;uuml;m alanların null değer i&amp;ccedil;erebileceği belirtilmektedir. Ama durum ger&amp;ccedil;ekte b&amp;ouml;yle değildir. Diğer yandan string tipteki Deger1 alanının maksimum uzunluk değeri 50 olmasına rağmen uygulamamızın ekran &amp;ccedil;ıktısında -1 olarak g&amp;ouml;r&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk58_2.gif" alt="" width="404" height="455" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 2. Deneme tablomuzun yapısı.&lt;/p&gt;
+&lt;p&gt;Burada alanlara ait asıl bilgilerin elde edilebilmesi i&amp;ccedil;in tabloya ait şema bilgilerinide DataSet nesnemize y&amp;uuml;klememiz gerekiyor. İşte bu ama&amp;ccedil;la, OleDbDataAdapter sınıfına ait FillSchema metodunu kullanırız. FillSchema metodu ilgili tabloya ait alan bilgilerini &amp;ouml;rneğin Primary Key verisini, bağlantısız katman nesnesine eklememizi sağlar. Bunun i&amp;ccedil;in aşağıdaki kodlamayı kullanırız.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Data;
+using System.Data.OleDb;
+
+namespace OleDbDA2
+{
+    class Class1
+    {
+        static void Main(string[] args)
+        {
+            OleDbConnection con=new OleDbConnection("Provider=SQLOLEDB;data source=localhost;initial catalog=Friends;integrated security=sspi");
+            string sqltext="Select * From Deneme";
+            OleDbDataAdapter da=new OleDbDataAdapter(sqltext,con);
+            DataSet ds=new DataSet();
+            da.FillSchema(ds,SchemaType.Source); // Şema bilgileri ekleniyor.
+            da.Fill(ds,"Makale");
+            foreach(DataColumn c in ds.Tables[0].Columns)
+            {
+                Console.WriteLine("_"+c.ColumnName.ToString()+"_");
+                Console.WriteLine("Alan genisligi _"+c.MaxLength.ToString());
+                Console.WriteLine("Veri t&amp;uuml;r&amp;uuml; _"+c.DataType.ToString());
+                Console.WriteLine("Null durumu _"+c.AllowDBNull.ToString());
+                Console.WriteLine("");
+            }
+            Console.WriteLine("Birincil anahtar alanımız:"+ds.Tables[0].PrimaryKey[0].ColumnName.ToString());
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Şimdi uygulamamızı &amp;ccedil;alıştırırsak aşağıdaki sonucu elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk58_3.gif" alt="" width="285" height="439" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 3. Uygulamanın &amp;ccedil;alışmasının sonucu.&lt;/p&gt;
+&lt;p&gt;Artık alanların null değer i&amp;ccedil;erip i&amp;ccedil;ermeyeceklerine ait kıstaslar doğru bir şekilde g&amp;ouml;r&amp;uuml;nmektedir. Aynı zamanda, text bazındaki alanların maksimum uzunluklarıda elde edilebilmektedir. (Bu noktada, sayısal alanların genişlik değerlerinin -1 &amp;ccedil;ıkması normaldir. Nitekim DataColumn sınıfının MaxLength &amp;ouml;zelliği yanlızca text bazlı alanlar i&amp;ccedil;in ge&amp;ccedil;erlidir.) Diğer yandan, tablonun birincil anahtar s&amp;uuml;tununun varlığı elde edilebilmiştir. Primary Key alanının &amp;ouml;nemini aşağıdaki &amp;ouml;rnek ile incelemeye &amp;ccedil;alışalım. Bu &amp;ouml;rnekte, windows uygulamamızda, bir DataSet nesnesini deneme tablosunun verileri ile dolduruyor ve sonu&amp;ccedil;ları DataGrid kontrol&amp;uuml;nde g&amp;ouml;steriyoruz. İlk etapta FillSchema metodunu kullanmayalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void Form1_Load(object sender, System.EventArgs e)
+{
+    OleDbConnection con=new OleDbConnection("Provider=SQLOLEDB;data source=localhost;initial catalog=Friends;integrated security=sspi");
+    string sqltext="Select * From Deneme";
+    OleDbDataAdapter da=new OleDbDataAdapter(sqltext,con);
+    DataSet ds=new DataSet();
+    da.Fill(ds,"Makale");
+    dataGrid1.DataSource=ds.Tables["Makale"];
+}&lt;/pre&gt;
+&lt;p&gt;Uygulamayı &amp;ccedil;alıştırıp yeni bir satır girelim. ID alanının değerini istediğimiz bir sayı ile değiştirebildiğimizi g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk58_4.gif" alt="" width="518" height="147" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 4. ID alanının değerini değiştirebiliyoruz.&lt;/p&gt;
+&lt;p&gt;Oysaki ID alanımız veri kaynağımızda birincil anahtar olarak tanımlanmıştır ve otomatik olarak artmaktadır. Şimdi uygulamamızda FillSchema metodunu kullanalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void Form1_Load(object sender, System.EventArgs e)
+{
+    OleDbConnection con=new OleDbConnection("Provider=SQLOLEDB;data source=localhost;initial catalog=Friends;integrated security=sspi");
+    string sqltext="Select * From Deneme";
+    OleDbDataAdapter da=new OleDbDataAdapter(sqltext,con);
+    DataSet ds=new DataSet();
+    da.FillSchema(ds,SchemaType.Source,"Makale");
+    da.Fill(ds,"Makale");
+    dataGrid1.DataSource=ds.Tables["Makale"]; 
+}&lt;/pre&gt;
+&lt;p&gt;Uygulamamızı tekrar &amp;ccedil;alıştırıp yeni bir satır eklediğimizde ID alanının değerini değiştiremediğimizi ve bu değerin yeni bir satırın eklenmesi ile otomatik olarak 1 arttığını g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk58_5.gif" alt="" width="520" height="143" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 5. ID alanına ait kısıtlamanın eklenmesi sonucu.&lt;/p&gt;
+&lt;p&gt;Bu FillSchema metodunun, veri kaynağındaki tabloya ait ID alanının birincil anahtar kısıtlamasını bağlantısız katmana aktarması sonucu ger&amp;ccedil;ekleşmiştir. Aynı işlemi FillSchema metodunu kullanmadanda ger&amp;ccedil;ekleştirebiliriz. Bunun i&amp;ccedil;in, birncil anahtar olucak alana ait temel &amp;ouml;zelliklerin, ilgili DataTable nesnesinin PrimaryKey &amp;ouml;zelliğince belirlenmesi gerekir. Yukarıdaki &amp;ouml;rneğimizi aşağıdaki şekildede geliştirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void Form1_Load(object sender, System.EventArgs e)
+{
+    OleDbConnection con=new OleDbConnection("Provider=SQLOLEDB;data source=localhost;initial         catalog=Friends;integrated security=sspi");
+    string sqltext="Select * From Deneme";
+    OleDbDataAdapter da=new OleDbDataAdapter(sqltext,con);
+    DataSet ds=new DataSet();
+    da.Fill(ds,"Makale"); 
+    /* Birincil anahtarımız olan ID alanının otomatik artan, null değer i&amp;ccedil;ermeyen, 1'den başlayıp 1'er artan ve benzersiz değerler alan bir alan olduğunu belirtiyoruz. */
+    ds.Tables["Makale"].Columns["ID"].AutoIncrement=true; // Alanın değerleri otomatik artıcak.
+    ds.Tables["Makale"].Columns["ID"].AutoIncrementSeed=1; // Başlama değeri 1 olucak.
+    ds.Tables["Makale"].Columns["ID"].AutoIncrementStep=1; // Artış değeri 1 olucak.
+    ds.Tables["Makale"].Columns["ID"].AllowDBNull=false; // Alan null değer i&amp;ccedil;eremiyecek.
+    ds.Tables["Makale"].Columns["ID"].Unique=true; // Alan benzersiz değerler almak zorunda olucak.
+    /* Bu tanımlamaların ardından yapmamız gereken, Makale isimli DataTable nesnemiz i&amp;ccedil;in PrimaryKey alanının ID alanı olduğunu belirtmektir. */
+    ds.Tables["Makale"].PrimaryKey=new DataColumn[]{ds.Tables["Makale"].Columns["ID"]}; /* ID alanının tanımladığımız &amp;ouml;zellikleri ile birlikte, Makale tablosunun birincil anahtarı olacağını belirtiyoruz. */
+    dataGrid1.DataSource=ds.Tables["Makale"]; 
+}&lt;/pre&gt;
+&lt;p&gt;Bu durumda da aynı sonucu elde ederiz. Diğer yandan birbirleri ile ilişkili olan tabloların bu ilişkilerini belirten ForeingKeyConstraint kısıtlamalarınıda DataSet nesnelerine aktarmamız gerekir. Bu konuyu ilerleyen makalelerimizde DataSet kavramını işlerken incelemeye &amp;ccedil;alışacağız. Şimdi OleDbDataAdapter ile ilgili diğer konularımıza devam edelim.&lt;/p&gt;
+&lt;p&gt;OleDbDataAdapter sınıfıları ile ilgili incelemek istediğim ikinci konu bu nesnelerin, Visual Studio.Net ortamında nasıl oluşturulduğudur. Visual Studio.Net ortamında bu işlem olduk&amp;ccedil;a kolaydır. Bunun i&amp;ccedil;in pek &amp;ccedil;ok y&amp;ouml;ntemimiz var. Bunlardan birisi Server Explorer alanından tabloyu, Form &amp;uuml;zerine s&amp;uuml;r&amp;uuml;klemektir. Bu işlem sonucunda, bu tablo i&amp;ccedil;in gerekli Connection nesnesi ve DataAdapter nesnesi otomatik olarak oluşturulacaktır. Bir diğer yol ise, OleDbDataAdapter Componentini kullanmaktır. Ben makalemde, bu ikinci yolu incelemeye &amp;ccedil;alışacağım. Visual Studio.Net ortamında yeni bir windows uygulaması a&amp;ccedil;ın ve Formun &amp;uuml;zerine, OleDbDataAdapter componentini s&amp;uuml;r&amp;uuml;kleyin.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk58_6.gif" alt="" width="175" height="167" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 6. OleDbDataAdapter aracı diğer Ado.Net ara&amp;ccedil;ları gibi ToolBox'ın Data kısmında yer alır.&lt;/p&gt;
+&lt;p&gt;Bu durumda karşımıza DataAdapter Configuration Wizard penceresi &amp;ccedil;ıkacaktır. Bu pencereyi next butonuna basarak ge&amp;ccedil;elim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk58_7.gif" alt="" width="495" height="450" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 7. Başlangı&amp;ccedil; noktamız.&lt;/p&gt;
+&lt;p&gt;Bu adımdan sonra, OleDbDataAdapter nesnemizin kullanacağı bağlantı hattı i&amp;ccedil;in gerekli bağlantı bilgilerini ayarlarız. Burada halen var olan bir bağlantıyı kullanabileceğimiz gibi New Connection se&amp;ccedil;eneği ile yeni bir bağlantı bilgisede oluşturabiliriz. Bu adımda oluşturacağımız bağlantı bilgisi, uygulamamız i&amp;ccedil;in gerekli olan OleDbConnection nesnesinin oluşturulmasındada kullanılacaktır. Ben burada New Connection diyerek yeni bir bağlantı bilgisi oluşturdum. Artık OleDbDataAdapter nesnemiz bu bağlantı katarını kullanıcak.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk58_8.gif" alt="" width="500" height="453" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 8. Bağlantı bilgimizi tanımlıyoruz.&lt;/p&gt;
+&lt;p&gt;Next ile bu adımıda ge&amp;ccedil;tikten sonra, sorgu tipini se&amp;ccedil;eceğimiz b&amp;ouml;l&amp;uuml;me geliriz. Burada &amp;uuml;&amp;ccedil; se&amp;ccedil;eneğimiz vardır. Use Sql Statements ile, OleDbDataAdapter nesnesi yardımıyla bilgilerini alacağımız tablo(lar) i&amp;ccedil;in gerekli sql ifadelerinin sihirbaz yardımıyla oluşturulmasını sağlarız. Bu işlem sonucunda bizim i&amp;ccedil;in gerekli olan SelectCommand, InsertCommand, UpdateCommand ve DeleteCommand &amp;ouml;zelliklerine ait sql ifadeleri otomatik olarak oluşturulacaktır. Diğer yandan ikinci se&amp;ccedil;enek ile, bu sql ifadeleri i&amp;ccedil;in saklı yordamların oluşturulmasını sağlayabiliriz. Son se&amp;ccedil;eneğimiz ise, sistemde var olan saklı yordamların kullanılmasını sağlar. Biz şu an i&amp;ccedil;in ilk se&amp;ccedil;eneği se&amp;ccedil;iyoruz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk58_9.gif" alt="" width="500" height="453" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 9. Sorgu tipinin se&amp;ccedil;ilmesi.&lt;/p&gt;
+&lt;p&gt;Bu adımdan sonra Select sorgusunu oluşturacağımız b&amp;ouml;l&amp;uuml;m ile karşılaşırız. Burada SelectCommand i&amp;ccedil;in kullanılacak sql sorgusunu kendimiz elle yazabileceğimiz gibi Query Builder yardımıylada bu işlemi daha kolay bir şekilde yapabiliriz. Biz Query Builder se&amp;ccedil;eneği ile işlemlerimize devam edelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk58_10.gif" alt="" width="500" height="453" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 10. Sql ifadesinin oluşturulması.&lt;/p&gt;
+&lt;p&gt;Query Builder kısmında, işlemlerimizin başında belirttiğimiz bağlantı bilgisi kullanılır ve bağlanılan veri kaynağına ilişkin kullanılabiliecek tablolar veya g&amp;ouml;r&amp;uuml;n&amp;uuml;mler ekrana otomatik olarak gelir. Tek yapmamız gereken kullanmak istediğimiz tabloyu(tabloları) se&amp;ccedil;mek ve eklemektir. Daha sonra se&amp;ccedil;tiğimiz tablo veya tablolardaki hangi alanların select sorgusu ile elde edileceğini ve bağlantısız katmana aktarılacağını belirleriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk58_11.gif" alt="" width="573" height="458" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 11. Tabloların eklenmesi.&lt;/p&gt;
+&lt;p&gt;Ben burada Makale isimli tablomuzu se&amp;ccedil;tim ve sorguya ekledim. Daha sonra sadece g&amp;ouml;r&amp;uuml;nmesini istediğim alanları belirttim. Burada istersek alanların bağlantısız katman nesnesine hangi isimler ile aktarılacağını Alias s&amp;uuml;tununa yazdığımız değerler ile belirleyebiliriz. Diğer yandan, Sort Type s&amp;uuml;tununu kullanarak hangi alanlara g&amp;ouml;re sırlama yapılmasını istediğimizi belirtebiliriz.&amp;nbsp; Ayrıca alanlara ait &amp;ccedil;eşitli kriterler girebileceğimiz Criteria s&amp;uuml;tunuda yer almaktadır. Bu s&amp;uuml;tunu kullanmamız Where anahtar kelimesi i&amp;ccedil;in bir koşul bildirmek anlamına gelmektedir. Bu işlemler boyunca, sorgu ifademizin otomatik olarak oluşturulduğunu ve geliştirildiğini g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Oluşturulan sorgunun sonucunu g&amp;ouml;rmek i&amp;ccedil;in bu alan &amp;uuml;zerinde sağ tuşla girdiğimiz menuden Run komutunu verebiliriz. B&amp;ouml;ylece sorgu sonucu elde edilcek tablo verileri i&amp;ccedil;inde bir &amp;ouml;ng&amp;ouml;r&amp;uuml;n&amp;uuml;m elde etmiş oluruz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk58_12.gif" alt="" width="586" height="524" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 12. Query Builder sorgularımızın kolayca oluşturulmasını sağlar.&lt;/p&gt;
+&lt;p&gt;Bu pencereyi kapttığımızda OleDbDataAdapter nesnemizin, SelectCommand &amp;ouml;zelliği i&amp;ccedil;in gerekli Command nesnesi oluşturulmuş olur. Tekrar Next d&amp;uuml;ğmesine bastığımızda aşağıdaki ekranı elde ederiz. Burada g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi Insert, Update ve Delete sorgularıda otomatik olarak oluşturulmuştur. Ayrıca tablo alanlarımız i&amp;ccedil;in kullandığımız eşleştirme işlemleride ger&amp;ccedil;ekleştirilmiş ve TableMappings koleksiyonuda başarılı bir şekilde oluşturulmuştur.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk58_13.gif" alt="" width="500" height="453" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 13. İşlem Tamam.&lt;/p&gt;
+&lt;p&gt;Finish'e bastığımızda Formumuzda bir OleDbConnection nesnesinin ve birde OleDbDataAdapter nesnesinin oluşturulmuş olduğunu g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk58_14.gif" alt="" width="277" height="36" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 14. Nesnelerimiz oluşturuldu.&lt;/p&gt;
+&lt;p&gt;Şimdi bize, bu OleDbDataAdapter nesnemizin &amp;ccedil;alışması sonucu elde edilecek verilerin aktarılacağı bir bağlantısız katman nesnesi lazım. Yani bir DataSet nesnesi. Bunun i&amp;ccedil;in, OleDbDataAdapter nesnesine ait, Generate DataSet se&amp;ccedil;eneğini kullanabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk58_15.gif" alt="" width="202" height="39" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 15. Generate DataSet se&amp;ccedil;eneği, OleDbDataAdapter nesnesinin &amp;ouml;zelliklerinin altında yer alır.&lt;/p&gt;
+&lt;p&gt;Bu durumda karşımıza &amp;ccedil;ıkan pencerede var olan bir DataSet'i se&amp;ccedil;ebilir yada otomatik olarak yeni bir tane oluşturulmasını sağlayabiliriz. Bu işlemin ardından DataSet nesnemizinde oluşturulduğunu g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk58_16.gif" alt="" width="374" height="421" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 16. Generate DataSet penceresi.&lt;/p&gt;
+&lt;p&gt;Artık yapmamız gerekenler, formumuza bir DataGrid koymak, OleDbDataAdapter nesnemize Fill metodunu uygulamak ve DataSet'imizi doldurmak, son olarakta DataGrid kontrol&amp;uuml;m&amp;uuml;ze bu veri k&amp;uuml;mesine bağlamaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void Form1_Load(object sender, System.EventArgs e)
+{
+    oleDbDataAdapter1.Fill(dataSet11.Tables["Makale"]);
+    dataGrid1.DataSource=dataSet11.Tables["Makale"];
+}&lt;/pre&gt;
+&lt;p&gt;Uygulamamızı &amp;ccedil;alıştırdığımızda aşağıdaki sonucu elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk58_17.gif" alt="" width="362" height="216" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 17. Uygulamanın &amp;ccedil;alışmasının sonucu.&lt;/p&gt;
+&lt;p&gt;Burada yaptığımız işlem ile, OleDbDataAdapter nesnesi ile bağlantısız katmandaki veriler &amp;uuml;zerindeki değişiklikleri, veri kaynağına g&amp;ouml;nderirken Update metodunun kullanacağı UpdateCommand, DeleteCommand, InsertCommand gibi &amp;ouml;zelliklerin sql ifadelerini otomatik olarak oluşturulmasını sağlamış olduk. Diğer yandan aynı işlevselliği kazanmak i&amp;ccedil;in CommandBuilder nesnesinide kullanabiliriz. Bu nesnenin kullanılmasını ve OleDbDataAdapter sınıfına ait Update metodunu bir sonraki makalemizde incelemeye &amp;ccedil;alışacağız. Hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2004-03-02 10:00:00</pubDate>
+  <slug>OleDbDataAdapter-Sc4b1nc4b1fc4b1-2-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>adonet</tag>
+    <tag>oledb</tag>
+    <tag>rdbms</tag>
+    <tag>sql</tag>
+    <tag>c#</tag>
+    <tag>data-adapter</tag>
+    <tag>data</tag>
+    <tag>constraints</tag>
+    <tag>primary-key</tag>
+  </tags>
+  <categories>
+    <category>Ado.Net</category>
+  </categories>
+</post>

@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Linq To Sql : Arka Planda Neler Oluyor?</title>
+  <description>Veritabanı(Database) nesnelerinin programatik ortamda sınıf gibi tipler(Type) ve metod benzeri üyeler(Members) ile ifade ediliyor olması, bu tiplere ait nesne örnekleri üzerinden sorgulalamalar yapılabilmesi ihtiyacınıda ortaya çıkartmıştır. Bir veritabanı nesnesinin programatik taraftaki karşılığının nesne yönelimli(Object Oriented) bir dilde geliştirilmesi son derece kolaydır. Örneğin bir tablo(Table) göz önüne alındığında, bu tablonun kendisi bir sınıf(Class) olarak tasarlanabilir. Benzer şekilde, tablo içerisindeki alanlar(Fields) sınıf içinde yer alan birer özellik(Property) olarak düşünülebilir.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Veritabanı(Database) nesnelerinin programatik ortamda sınıf gibi tipler(Type) ve metod benzeri &amp;uuml;yeler(Members) ile ifade ediliyor olması, bu tiplere ait nesne &amp;ouml;rnekleri &amp;uuml;zerinden sorgulalamalar yapılabilmesi ihtiyacınıda ortaya &amp;ccedil;ıkartmıştır. Bir veritabanı nesnesinin programatik taraftaki karşılığının nesne y&amp;ouml;nelimli(Object Oriented) bir dilde geliştirilmesi son derece kolaydır. &amp;Ouml;rneğin bir &lt;strong&gt;tablo(Table)&lt;/strong&gt; g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında, bu tablonun kendisi bir &lt;strong&gt;sınıf(Class)&lt;/strong&gt; olarak tasarlanabilir. Benzer şekilde, tablo i&amp;ccedil;erisindeki &lt;strong&gt;alanlar(Fields)&lt;/strong&gt; sınıf i&amp;ccedil;inde yer alan birer &lt;strong&gt;&amp;ouml;zellik(Property) &lt;/strong&gt;olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;Basit &lt;strong&gt; CRUD(CreateRetrieveUpdateDelete)&lt;/strong&gt; işlemleri, &lt;strong&gt;varlık sınıfı(Entity Class)&lt;/strong&gt; diyebileceğimiz tipin birer &amp;uuml;ye metodu olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Tabloda yer alan kolonların bazı niceleyicileri(&amp;ouml;rneğin Null değer i&amp;ccedil;erip i&amp;ccedil;ermedikleri, primary key olup olmadıkları vb...) sınıfın kendisi ve &amp;uuml;yeleri i&amp;ccedil;in birer &lt;strong&gt;nitelik(Attribute)&lt;/strong&gt; olarak tasarlanabilir. Ne varki bu eşleştirme kolaylığı dışında, programatik tarafta yer alan nesnel yapılar &amp;uuml;zerinde, SQL c&amp;uuml;mlelerine benzer ifadeler ile sorgulamalar yapmak kolay değildir. Nitekim, programatik tarafın SQL benzeri c&amp;uuml;melere karşılık gelen fonksiyonellikleri ele alıyor olması gerekmektedir. &lt;strong&gt;LINQ(Language Integrated Query)&lt;/strong&gt; mimariside, temel anlamda programatik tarafta yazılan ifadeleri arka planda metodlar, &lt;strong&gt;temsilciler(Delegates)&lt;/strong&gt; yardımıyla kurduğu bir modele d&amp;ouml;n&amp;uuml;şt&amp;uuml;rmektedir. &lt;strong&gt;LINQ&lt;/strong&gt;' in kullanıldığı alanlar g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında en pop&amp;uuml;ler se&amp;ccedil;eneklerden biriside&lt;strong&gt; LINQ to SQL&lt;/strong&gt; mimarisidir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Language INtegrated Query to SQL&lt;/strong&gt; mimarisi ile, &lt;strong&gt;varlık tipleri(Entity Types)&lt;/strong&gt; &amp;uuml;zerinden sorgular &amp;ccedil;alıştırılabilir. Basit anlamda, &lt;strong&gt;nesneler(Objects)&lt;/strong&gt; &amp;uuml;zerinde uygulanabilen LINQ sorguları, SQL tarafına ulaştıklarında ise bildiğimiz &lt;strong&gt;sorgu ifadelerine(Query Expressions) &lt;/strong&gt;d&amp;ouml;n&amp;uuml;şmektedir. Bilinen LINQ operat&amp;ouml;rlerinin veya metodlarının tamamının SQL tarafına uygulanamadığı veya hen&amp;uuml;z uygulanamadığı bir ger&amp;ccedil;ektir. Nitekim programatik ortamın esnekliği nedeni ile, &amp;ouml;rneğin bir dizinin ters &amp;ccedil;evrilerek elemanları &amp;uuml;zerinde d&amp;ouml;ng&amp;uuml;sel anlamda ilerlenebilmesinin, &lt;strong&gt;SQL&lt;/strong&gt; tarafında karşılığının bulunması zordur(ki buda &lt;strong&gt;LINQ&lt;/strong&gt; metodlarından olan &lt;strong&gt;Reverse&lt;/strong&gt; fonksiyonelliğinin neden&lt;strong&gt; LINQ to SQL &lt;/strong&gt;&amp;uuml;zerinde kullanılamadığınıda a&amp;ccedil;ıklamaktadır).&lt;/p&gt;
+&lt;p&gt;Bu ana fikirlerden yola &amp;ccedil;ıkarak makalemizdeki ana temamızın, SQL ifadelerine &amp;ccedil;evrilebilen &lt;strong&gt;LINQ&lt;/strong&gt; operat&amp;ouml;rlerinin veya fonksiyonelliklerinin, arka planda ne şekilde tasarlandıklarını inceleyebilmektir. Bir başka deyişle basit ve karmaşık LINQ c&amp;uuml;mlelerinin, SQL tarafında ele alınabilen karşılıklarının ne olduklarını tespit edebilmektir. Bu araştırmadaki en b&amp;uuml;y&amp;uuml;k yardımcılarımız ise&lt;strong&gt; SQL Server Profiler&lt;/strong&gt; ve&lt;strong&gt; Estimated Execution Plan ara&amp;ccedil;ları(Tools) &lt;/strong&gt;olacaktır. &lt;strong&gt;SQL Server Profiler&lt;/strong&gt; aracı kullanılarak, &lt;strong&gt;varlık(Entity)&lt;/strong&gt; nesneleri &amp;uuml;zerinde &amp;ccedil;alıştırılan &lt;strong&gt; LINQ&lt;/strong&gt; ifadelerinin karşılığı olan SQL sorgu c&amp;uuml;mlelerini g&amp;ouml;rmek m&amp;uuml;mk&amp;uuml;n olabilmektedir. Diğer taraftan &lt;strong&gt;Estimated Execution Plan&lt;/strong&gt; aracı sayesinde, LINQ i&amp;ccedil;in arka tarafta &amp;ccedil;alıştırılan bir sorgu c&amp;uuml;mlesinin icra planının g&amp;ouml;r&amp;uuml;lmesi ve alternatif ifadeler ile aralarındaki farklar tespit edilerek daha optimal yolların g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınması sağlanabilir.&lt;/p&gt;
+&lt;p&gt;Dilerseniz hi&amp;ccedil; vakit kaybetmeden &amp;ouml;rneklerimize ge&amp;ccedil;erek devam edelim. Her zamanki gibi &lt;strong&gt;Visual Studio 2008 RTM &lt;/strong&gt; &amp;uuml;zerinden &amp;ouml;rnek kod par&amp;ccedil;alarımızı &amp;ccedil;alıştırıyor olacağız. Basit bir &lt;strong&gt; Console&lt;/strong&gt; uygulaması &amp;uuml;zerinden ilerlerken &lt;strong&gt;AdventureWorks&lt;/strong&gt; ve &lt;strong&gt; Northwind veritabanlarındaki(Database) &lt;/strong&gt;bazı tabloları kullanıyor olacağız. Bu anlamda&lt;strong&gt; AdventureWorks.dmbl&lt;/strong&gt; ve &lt;strong&gt;Northwind.dmbl&lt;/strong&gt; isimli &lt;strong&gt;DataBase Markup Language&lt;/strong&gt; i&amp;ccedil;eriklerimiz aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;lerinde yer aldığı gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;AdventureWorks.dbml;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk236_1.gif" alt="" width="462" height="325" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;AdventureWorks&lt;/strong&gt; veritabanından &amp;ouml;rnek sorgulamalar i&amp;ccedil;in &lt;strong&gt;ProductCategory&lt;/strong&gt;, &lt;strong&gt;ProductSubCategory&lt;/strong&gt;, &lt;strong&gt;Product&lt;/strong&gt;, &lt;strong&gt;SalesPerson&lt;/strong&gt; ve &lt;strong&gt;SalesOrderHeader&lt;/strong&gt; tabloları ele alınmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Northwind.dmbl;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk236_2.gif" alt="" width="465" height="142" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Northwind&lt;/strong&gt; veritabanından ise &lt;strong&gt; Customer&lt;/strong&gt; ve &lt;strong&gt;Supplier&lt;/strong&gt; tabloları ele alınmaktadır.&lt;/p&gt;
+&lt;p&gt;İlk olarak aşağıdaki gibi basit bir &lt;strong&gt; LINQ&lt;/strong&gt; ifadesi ile başlayalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;AdventureWorksDataContext adw = new AdventureWorksDataContext();
+
+var mClassProducts = from prd in adw.Products
+                                    where prd.Class == "M"
+                                        select prd; 
+
+int mCount = mClassProducts.Count();
+double mSumListPrice = mClassProducts.Sum&amp;lt;Product&amp;gt;(prd =&amp;gt; (double)prd.ListPrice); 
+
+Console.WriteLine(mCount.ToString());
+Console.WriteLine(mSumListPrice.ToString("C2"));&lt;/pre&gt;
+&lt;p&gt;İlk olarak AdventureWorksDataContext nesnesi &amp;ouml;rneklenmektedir. Sonrasında &lt;strong&gt;mClassProducts&lt;/strong&gt; isimli alana atanan ifadede &lt;strong&gt;AdventureWorksDataContext&lt;/strong&gt; i&amp;ccedil;erisinde yer alan &lt;strong&gt; Products&lt;/strong&gt; &amp;ouml;zelliğinin karşılığı olan generic &lt;strong&gt;Table&amp;lt;Product&amp;gt;&lt;/strong&gt; tipi ele alınmaktadır. Buna g&amp;ouml;re &lt;strong&gt;Product&lt;/strong&gt; nesne &amp;ouml;rneklerinden, &lt;strong&gt; Class&lt;/strong&gt; &amp;ouml;zelliklerinin(Properties) değerleri &lt;strong&gt;M&lt;/strong&gt; olanlar se&amp;ccedil;ilmektedir. Daha &amp;ouml;nceki makalalerdede belirttiğimiz gibi &lt;strong&gt;var&lt;/strong&gt; anahtar kelimesi ile tanımlanmış olan değişkene atanan bu ifade &amp;ccedil;alışma zamanında hemen y&amp;uuml;r&amp;uuml;t&amp;uuml;lmemektedir. İcra işlemi i&amp;ccedil;in bir &lt;strong&gt;for&lt;/strong&gt; iterasyonu olması yada ifade &amp;uuml;zerinden &amp;ouml;rnekteki gibi &lt;strong&gt;Aggregate&lt;/strong&gt; benzeri fonksiyonelliklerin &amp;ccedil;alıştırılması gerekmektedir. &lt;strong&gt;mCount&lt;/strong&gt; alanının değeri, hazırlanan &lt;strong&gt;LINQ&lt;/strong&gt; ifadesinde &lt;strong&gt;Count&lt;/strong&gt; metodu uygulanarak elde edilmektedir. Bir başka ifadeyle, sınıfı &lt;strong&gt;M&lt;/strong&gt; olan &amp;uuml;r&amp;uuml;nlerin toplam sayısı bulunmaktadır. &lt;strong&gt; mSumListPrice&lt;/strong&gt; alanına atanan değer ilede, sınıfı M olan &amp;uuml;r&amp;uuml;nlerin &lt;strong&gt; liste fiyatlarının(ListPrice)&lt;/strong&gt; toplamı elde edilir. Sonrasında ise bu sonu&amp;ccedil;lar ekrana yazdırılır. &lt;strong&gt;&amp;Ccedil;alışma zamanında(run time) &lt;/strong&gt; uygulamanın &amp;ccedil;ıktısı aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk236_3.gif" alt="" width="298" height="89" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Gelelim arka tarafta &amp;ccedil;alıştırılan SQL sorgu c&amp;uuml;mlelerine.&lt;strong&gt; SQL Server Profiler &lt;/strong&gt;aracı kullanılarak yapılan &amp;ccedil;alışmada &lt;strong&gt;Count&lt;/strong&gt; ve &lt;strong&gt;Sum&lt;/strong&gt; &lt;strong&gt;aggregate&lt;/strong&gt; metodlarının aşağıdaki gibi icra edildiği g&amp;ouml;r&amp;uuml;lmektedir. Count fonksiyonunun &amp;ccedil;ağırılması sonucu &amp;ccedil;alışan sorgu şu şekildedir;&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;exec sp_executesql N'SELECT COUNT(*) AS [value]
+                                    FROM [Production].[Product] AS [t0]
+                                        WHERE [t0].[Class] = @p0',N'@p0 nvarchar(1)',@p0=N'M'&lt;/pre&gt;
+&lt;p&gt;Burada dikkat edilmesi gereken noktalardan birisi &lt;strong&gt;Count(*)&lt;/strong&gt; ifadesidir. Normal şartlar altında tavsiye edilen y&amp;ouml;ntemlerden birisi &lt;strong&gt;Count(ProductID) &lt;/strong&gt;tarzında bir kullanım yapılması y&amp;ouml;n&amp;uuml;ndedir. Bu tarz bir kullanımın performans y&amp;ouml;n&amp;uuml;nde avantaj sağladığı bilinmektedir. Nitekim LINQ tarafından gelen ifadeye g&amp;ouml;re Count(*) şeklinde bir &lt;strong&gt;SQL&lt;/strong&gt; fonksiyonu kullanılmıştır. Diğer tarafan &lt;strong&gt;LINQ&lt;/strong&gt; sorgusunun aşağıdaki gibi değiştirilmesi d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var mClassProducts = from prd in adw.Products
+                                    where prd.Class == "M"
+                                        select prd.ProductID;&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere burada sadece &lt;strong&gt; ProductID&lt;/strong&gt; alanları se&amp;ccedil;ilmektedir. Bu ifade &amp;uuml;zerinden &lt;strong&gt;Count&lt;/strong&gt; metodu kullanılırsa &lt;strong&gt;SQL&lt;/strong&gt; tarafında icra edilen operasyonun değişmediği, bir başka deyişle &lt;strong&gt;Count(*) &lt;/strong&gt;&amp;ccedil;ağrısı yapıldığı g&amp;ouml;r&amp;uuml;l&amp;uuml;r.&lt;strong&gt; Sum&lt;/strong&gt; fonksiyonunun &amp;ccedil;ağırılması sonucu &amp;ccedil;alışan sorgu ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;exec sp_executesql N'SELECT SUM([t1].[value]) AS [value]
+FROM (
+    SELECT CONVERT(Float,[t0].[ListPrice]) AS [value], [t0].[Class]
+        FROM [Production].[Product] AS [t0]
+    ) AS [t1]
+WHERE [t1].[Class] = @p0',N'@p0 nvarchar(1)',@p0=N'M'&lt;/pre&gt;
+&lt;p&gt;Dikkat edilecek olursa burada &lt;strong&gt;Sum&lt;/strong&gt; işlemi i&amp;ccedil;in bir i&amp;ccedil; Select sorgusu daha y&amp;uuml;r&amp;uuml;t&amp;uuml;lmektedir. Aynı amaca y&amp;ouml;nelik olaraktan aşağıdaki gibi bir sorguda g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;SELECT SUM(ListPrice) AS [Value] 
+FROM Production.Product
+GROUP BY Class
+HAVING Class='M'&lt;/pre&gt;
+&lt;p&gt;Burada &lt;strong&gt;Group By&lt;/strong&gt; kullanımı ger&amp;ccedil;ekleştirilmektedir. &lt;strong&gt;LINQ&lt;/strong&gt;' in &lt;strong&gt;Sum&lt;/strong&gt; metodunu neden farklı bir şekilde yorumladığı tartışılabilir. Sonu&amp;ccedil; itibariyle her iki sorgu c&amp;uuml;mlesininde &lt;strong&gt;beklenen icra planlarına(Esitamted Execution Plan) &lt;/strong&gt;bakıldığında &lt;strong&gt;Products&lt;/strong&gt; gibi sadece 504 satıra sahip olan k&amp;uuml;&amp;ccedil;&amp;uuml;k bir tabloda &amp;ccedil;ok fazla bir fark olmadığı g&amp;ouml;r&amp;uuml;lmektedir. Ancak tablo boyutunun artması halinde bu durumun belirgin performans farklılıklarına yol a&amp;ccedil;ıp a&amp;ccedil;mayacağına bakılmalıdır. Aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;lerinde her iki sorgunun icra planlarına ait icra maliyetleri daha net bir şekilde g&amp;ouml;r&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk236_4.gif" alt="" width="638" height="557" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Diğer &lt;strong&gt;LINQ to SQL&lt;/strong&gt; operat&amp;ouml;rlerini inceleyerek devam edelim. Sıradaki &lt;strong&gt;LINQ&lt;/strong&gt; ifadesinde, &lt;strong&gt;Contains&lt;/strong&gt; metodu ele alınmaktadır. Contains metodu &lt;strong&gt;String&lt;/strong&gt; sınıfına ait bir fonksiyondur. Aşağıdaki kod par&amp;ccedil;asında yer alan ifadeye g&amp;ouml;re &lt;strong&gt;Contains&lt;/strong&gt; metodunun g&amp;ouml;revi, &lt;strong&gt; ProductNumber&lt;/strong&gt; alanında &lt;strong&gt;PA&lt;/strong&gt; hecesi olan &lt;strong&gt;Product&lt;/strong&gt; nesne &amp;ouml;rneklerinin tespit edilmesinin sağlanmasıdır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var allProducts = from prd in adw.Products
+                            where prd.Class == null &amp;amp;&amp;amp; prd.ProductNumber.Contains("PA")
+                                select prd;
+
+foreach (Product p in allProducts)
+{
+    Console.WriteLine(p.ProductNumber + " " + p.Name);
+}&lt;/pre&gt;
+&lt;p&gt;Sorgu ifadesi &lt;strong&gt;null&lt;/strong&gt; değere sahip olan sınıflara ait &amp;uuml;r&amp;uuml;nlerden, &amp;uuml;r&amp;uuml;n numarasında &lt;strong&gt;PA&lt;/strong&gt; hecesi ge&amp;ccedil;enleri elde etmektedir. Yukarıdaki kod par&amp;ccedil;asını i&amp;ccedil;eren &lt;strong&gt; Console&lt;/strong&gt; uygulaması &amp;ccedil;alıştırıldığında aşağıdaki sonu&amp;ccedil;lar alınacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk236_5.gif" alt="" width="274" height="128" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bizim i&amp;ccedil;in asıl &amp;ouml;nem arz eden konu &lt;strong&gt; LINQ to SQL&lt;/strong&gt; ifadesinin &lt;strong&gt;SQL&lt;/strong&gt; sunucusuna nasıl g&amp;ouml;nderildiğidir. Hemen &lt;strong&gt;SQL Server Profiler&lt;/strong&gt; aracına bakılırsa aşağıdaki sorgu c&amp;uuml;mlesinin &amp;ccedil;alıştırıldığı g&amp;ouml;r&amp;uuml;lebilir.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;exec sp_executesql N'SELECT 
+    [t0].[ProductID], [t0].[Name]
+    , [t0].[ProductNumber], [t0].[MakeFlag]
+    , [t0].[FinishedGoodsFlag], [t0].[Color]
+    , [t0].[SafetyStockLevel], [t0].[ReorderPoint]
+    , [t0].[StandardCost], [t0].[ListPrice]
+    , [t0].[Size], [t0].[SizeUnitMeasureCode]
+    , [t0].[WeightUnitMeasureCode], [t0].[Weight]
+    , [t0].[DaysToManufacture], [t0].[ProductLine]
+    , [t0].[Class], [t0].[Style], [t0].[ProductSubcategoryID]
+    , [t0].[ProductModelID], [t0].[SellStartDate]
+    , [t0].[SellEndDate], [t0].[DiscontinuedDate]
+    , [t0].[rowguid], [t0].[ModifiedDate]
+FROM [Production].[Product] AS [t0]
+WHERE 
+    ([t0].[Class] IS NULL) AND ([t0].[ProductNumber] LIKE @p0)'
+,N'@p0 nvarchar(4)',@p0=N'%PA%'&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere programatik tarafta yapılan &lt;strong&gt;==null&lt;/strong&gt; kontrol&amp;uuml; &lt;strong&gt;SQL&lt;/strong&gt; tarafında&lt;strong&gt; Is Null &lt;/strong&gt;olarak, &lt;strong&gt;Contains&lt;/strong&gt; metodu ise &lt;strong&gt;Like&lt;/strong&gt; olarak &amp;ccedil;evrilmiştir. Buradaki Like ifadesine g&amp;ouml;nderilen &lt;strong&gt;%PA%&lt;/strong&gt; değeri, i&amp;ccedil;erisinde PA hecesi ge&amp;ccedil;enleri ifade etmektedir. &amp;Ouml;yleyse &lt;strong&gt;Contains&lt;/strong&gt; metodu yerine &amp;ouml;rneğin &lt;strong&gt;StartsWith&lt;/strong&gt; fonksiyonu kullanılırsa ne olacağına bakılmalıdır. Bu ama&amp;ccedil;la &lt;strong&gt; LINQ to SQL&lt;/strong&gt; ifadesini aşağıdaki gibi değiştirdiğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var allProducts = from prd in adw.Products
+                            where prd.Class == null &amp;amp;&amp;amp; prd.ProductNumber.StartsWith("PA")
+                                select prd;&lt;/pre&gt;
+&lt;p&gt;Bu durumda SQL tarafına g&amp;ouml;nderilen sorgu c&amp;uuml;mlesinin i&amp;ccedil;eriğine bakıldığında &lt;strong&gt;LIKE&lt;/strong&gt; anahtar kelimesine atanan parametrenin &lt;strong&gt;PA%&lt;/strong&gt; şeklinde olduğu g&amp;ouml;r&amp;uuml;lmektedir. Dolayısıyla beklenildiği gibi &lt;strong&gt;PA&lt;/strong&gt; hecesi ile başlayanların tedarik edilmesi i&amp;ccedil;in sorguda gerekli d&amp;uuml;zenleme yapılmıştır.&lt;/p&gt;
+&lt;p&gt;Bir &amp;ouml;nceki &lt;strong&gt;LINQ to SQL&lt;/strong&gt; ifadesinde, SQL sunucusu &amp;uuml;zerinde &amp;ccedil;alışan sorguya bakıldığında &lt;strong&gt; Product&lt;/strong&gt; tablosundaki t&amp;uuml;m alanların &amp;ccedil;ekildiği g&amp;ouml;r&amp;uuml;lmektedir. Oysaki &amp;ccedil;oğu durumda elde edilip veri k&amp;uuml;mesi &lt;strong&gt;Entity&lt;/strong&gt; &amp;uuml;zerine alındığında yanlızca bir ka&amp;ccedil; alan &amp;uuml;zerinde işlem yapılmaktadır. S&amp;ouml;z gelimi elde edilen listenin bir &lt;strong&gt;GridView&lt;/strong&gt; &amp;uuml;zerinde g&amp;ouml;sterilmesi istendiğinde t&amp;uuml;m alanlar yerine gerekli olanların g&amp;ouml;sterilmesi tercih edilir. İşte bu noktada &lt;strong&gt;isimsiz tiplerin(Anonymous Types)&lt;/strong&gt; faydası ortaya &amp;ccedil;ıkmaktadır. Buna g&amp;ouml;re aşağıdaki LINQ to SQL ifadesini ele alalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var allProducts = from prd in adw.Products
+                            where prd.Class == null &amp;amp;&amp;amp; prd.ProductNumber.Contains("PA")
+                                select new 
+                                    { 
+                                        prd.Name
+                                        , prd.ProductNumber 
+                                    };
+
+foreach (var p in allProducts)
+{
+    Console.WriteLine(p.ToString());
+}&lt;/pre&gt;
+&lt;p&gt;Bu &amp;ouml;rnek kod par&amp;ccedil;asında &lt;strong&gt;PA&lt;/strong&gt; hecesini i&amp;ccedil;eren ve &lt;strong&gt;Class&lt;/strong&gt; alanının değeri &lt;strong&gt;null &lt;/strong&gt;olan &lt;strong&gt; Product&lt;/strong&gt; tiplerindeki &lt;strong&gt;Name&lt;/strong&gt; ve &lt;strong&gt;ProductNumber&lt;/strong&gt; &amp;ouml;zellikleri kullanılarak yeni bir tip elde edilmektedir. Burada ihtiya&amp;ccedil;lar dahilinde &lt;strong&gt;isimsiz tipin(Anonymous Type)&lt;/strong&gt; hangi &amp;ouml;zellikleri(Properties) i&amp;ccedil;ereceği belirlenebilir. Bu &amp;ouml;rnek kod par&amp;ccedil;asının &amp;ccedil;alışma zamanında &amp;uuml;reteceği &amp;ccedil;ıktı aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ndekine benzer olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk236_6.gif" alt="" width="494" height="131" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;SQL sunucusu tarafına g&amp;ouml;nderilen sorgu c&amp;uuml;mlesinin i&amp;ccedil;eriği ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;exec sp_executesql N'SELECT [t0].[Name], [t0].[ProductNumber]
+FROM [Production].[Product] AS [t0]
+WHERE 
+    ([t0].[Class] IS NULL) AND ([t0].[ProductNumber] LIKE @p0)'
+,N'@p0 nvarchar(4)',@p0=N'%PA%'&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi sadece istenen alanların &amp;ccedil;ekilmesi sağlanmaktadır. Buda isimsiz tiplerin &lt;strong&gt;LINQ to SQL&lt;/strong&gt; tarafında olduk&amp;ccedil;a &amp;ouml;nemli bir rol oynadığını g&amp;ouml;stermektedir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;LINQ to SQL&lt;/strong&gt; tarafında kullanılan ilgin&amp;ccedil; fonksiyonelliklerden ikiside &lt;strong&gt;Skip&lt;/strong&gt; ve &lt;strong&gt;Take&lt;/strong&gt; metodlarıdır. Skip metodu parametre olarak verilen değer kadar atlanılmasını, Take metodu ise atlanılan satırdan itibaren ka&amp;ccedil; satır alınacağını belirtmektedir. Buda basit olarak bir sayfalamanın(Paging) yapılabilmesine olanak sağlamaktadır. &amp;Ccedil;ok doğal olarak metodlar yardımıyla programatik ortamda kolayca uygulanabilen bu tekniğin SQL tarafına aktarılmasında &lt;strong&gt;SQL 2005&lt;/strong&gt; ile birlikte gelen &lt;strong&gt;Row_Number&lt;/strong&gt; fonksiyonunun &amp;ouml;nemli bir rol&amp;uuml; vardır. Bu metodları daha iyi analiz etmek i&amp;ccedil;in aşağıdaki kod par&amp;ccedil;asını ele aldığımızı d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var tenCtg = (from cat in adw.ProductSubcategories select cat)
+                        .Skip&amp;lt;ProductSubcategory&amp;gt;(5)
+                            .Take&amp;lt;ProductSubcategory&amp;gt;(10);
+
+foreach (ProductSubcategory c in tenCtg)
+{
+    Console.WriteLine("{0} -&amp;gt; {1} ", c.ProductSubcategoryID.ToString(), c.Name);
+}&lt;/pre&gt;
+&lt;p&gt;Yukarıdaki kod par&amp;ccedil;asında yer alan &lt;strong&gt; LINQ to SQL&lt;/strong&gt; ifadesine g&amp;ouml;re, &lt;strong&gt;ProductSubCategories&lt;/strong&gt; koleksiyonu &amp;uuml;zerinden ilk satır atlanarak 6ncı satırdan itibaren 10 satırlık bir &lt;strong&gt; ProductSubCategory&lt;/strong&gt; nesne topluluğunun &amp;ccedil;ekilmesi ama&amp;ccedil;lanmaktadır. S&amp;ouml;z konusu kod par&amp;ccedil;asının &amp;ccedil;alıştırılmasının sonucu oluşan program &amp;ccedil;ıktısına ait ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk236_7.gif" alt="" width="290" height="170" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rnek kod par&amp;ccedil;asında kullanılan &lt;strong&gt;LINQ to SQL&lt;/strong&gt; ifadesi i&amp;ccedil;in &lt;strong&gt;SQL&lt;/strong&gt; sunucusu &amp;uuml;zerine g&amp;ouml;nderilen sorgu c&amp;uuml;mlesi ise aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;exec sp_executesql N'SELECT [t1].[ProductSubcategoryID], [t1].[ProductCategoryID], [t1].[Name], [t1].[rowguid], [t1].[ModifiedDate]
+FROM (
+    SELECT ROW_NUMBER() OVER 
+        (ORDER BY 
+            [t0].[ProductSubcategoryID], [t0].[ProductCategoryID],
+             [t0].[Name], [t0].[rowguid]
+            , [t0].[ModifiedDate]) 
+        AS [ROW_NUMBER], [t0].[ProductSubcategoryID], [t0].[ProductCategoryID], [t0].[Name], [t0].[rowguid], [t0].[ModifiedDate]
+    FROM [Production].[ProductSubcategory] AS [t0]
+) AS [t1]
+WHERE [t1].[ROW_NUMBER] BETWEEN @p0 + 1 AND @p0 + @p1
+ORDER BY [t1].[ROW_NUMBER]',N'@p0 int,@p1 int',@p0=5,@p1=10&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;Row_Number&lt;/strong&gt; fonksiyonu burada &amp;ouml;nemli bir rol&amp;uuml; &amp;uuml;stlenmektedir. Şimdi son kod par&amp;ccedil;asında aşağıdaki gibi bir ekleme daha yaptığımızı d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var tenCtg = (from cat in adw.ProductSubcategories select cat)
+                        .Skip&amp;lt;ProductSubcategory&amp;gt;(5)
+                            .Take&amp;lt;ProductSubcategory&amp;gt;(10);
+
+foreach (ProductSubcategory c in tenCtg)
+{
+    Console.WriteLine("{0} -&amp;gt; {1}({2}) ",c.ProductSubcategoryID.ToString(),c.Name,c.Products.Count().ToString()); 
+}&lt;/pre&gt;
+&lt;p&gt;Yapılan değişikliğe g&amp;ouml;re, 5nci satırdan itibaren alınan 10 &lt;strong&gt;ProductSubCategory&lt;/strong&gt; nesnesinin her biri i&amp;ccedil;in &lt;strong&gt; Products&lt;/strong&gt; &amp;ouml;zelliğinden yola &amp;ccedil;ıkılarak &lt;strong&gt;Count&lt;/strong&gt; değerleride hesaplanmaktadır. Bir başka deyişle her bir alt kategorideki &amp;uuml;r&amp;uuml;nlerin toplam sayılarıda elde edilmektedir. Bu kod par&amp;ccedil;asının &lt;strong&gt;&amp;ccedil;alışma zamanı(run time)&lt;/strong&gt; g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk236_8.gif" alt="" width="289" height="169" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ProductSubCategory&lt;/strong&gt; ve &lt;strong&gt;Product&lt;/strong&gt; sınıfları arasında &lt;strong&gt;bire &amp;ccedil;ok(one to many)&lt;/strong&gt; bir ilişki mevcuttur. Bu ilişki programatik taraftada ilgili &lt;strong&gt;varlık sınıflarına(Entity Class) &lt;/strong&gt; yansıtılmaktadır. Bu nedenle bir ProductSubCategory nesne &amp;ouml;rneği &amp;uuml;zerinden Products &amp;ouml;zelliği ile bağlı olunan Product nesne topluluğuna ge&amp;ccedil;iş yapmak son derece kolaydır. Bu da g&amp;ouml;n&amp;uuml;l rahatlığı ile &lt;strong&gt;Count&lt;/strong&gt; gibi metodları kullanıp istediğimiz tarzda sonu&amp;ccedil;ları alabilmemizi olanaklı kılmaktadır. Ne varki &lt;strong&gt;Count&lt;/strong&gt; &amp;ccedil;ağrısı &lt;strong&gt;for&lt;/strong&gt; d&amp;ouml;ng&amp;uuml;s&amp;uuml; i&amp;ccedil;erisinde, bir &amp;ouml;nceki sorgudan elde edilen her bir ProductSubCategory nesne &amp;ouml;rneği i&amp;ccedil;in ayrı ayrı yapılmaktadır. Bunun &lt;strong&gt;SQL&lt;/strong&gt; sunucusu &amp;uuml;zerinde oluşturacağı sonu&amp;ccedil; ise şudur; elde edilen her bir ProductSubCategory i&amp;ccedil;in, buna bağlı toplam &amp;uuml;r&amp;uuml;n sayısını d&amp;ouml;nd&amp;uuml;ren bir sorgu c&amp;uuml;mlesi &amp;ccedil;alışmaktadır. Aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde bu durumun bir kısmı ifade edilmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk236_9.gif" alt="" width="566" height="674" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Sorgu ifadelerine dikkat edilecek olursa &lt;strong&gt;Count&lt;/strong&gt; metodu &amp;ccedil;ağırıldığında aslında SQL tarafında bir &lt;strong&gt; Count&lt;/strong&gt; hesabı &lt;span style="text-decoration: underline;"&gt;yapılmamaktadır. &lt;strong&gt;Products&lt;/strong&gt; &amp;ouml;zelliğine ge&amp;ccedil;ildiğinden, o anki &lt;strong&gt;ProductSubCategoryID&lt;/strong&gt; değerine bağlı Product satırları, programatik taraftaki nesne topluluğuna y&amp;uuml;klenmektedir. Bu nesneler y&amp;uuml;klendikten sonra bildiğimiz koleksiyonlara ait olan &lt;strong&gt;Count&lt;/strong&gt; metodu &amp;ccedil;alışmakta ve toplam &amp;uuml;r&amp;uuml;n sayıları bu şekilde elde edilmektedir. Hi&amp;ccedil; bir durumda bu tarz bir yol ile toplam sayıların elde edilmesi tercih edilmemelidir. G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi gayet masumane olan ama &amp;ccedil;ok işe yaradığı d&amp;uuml;ş&amp;uuml;n&amp;uuml;len basit bir kod par&amp;ccedil;ası arka tarafta son derece fazla sayıda ve yoğun sorgu c&amp;uuml;mlelerinin &amp;ccedil;alışmasına neden olmuştur.&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;SQL tarafında birden fazla tablo &amp;uuml;zerinde bir arada işlem yapılması gerektiği durumlarda &amp;ccedil;oğunlukla &lt;strong&gt; join&lt;/strong&gt; yapılarından yararlanılmaktadır. Aynı yapı bildiğiniz gibi &lt;strong&gt; LINQ&lt;/strong&gt; ile nesneler &amp;uuml;zerindede ger&amp;ccedil;ekleştirilebilmektedir. Sıradaki &amp;ouml;rnekte LINQ to SQL i&amp;ccedil;in &lt;strong&gt;join&lt;/strong&gt; kullanımına bakılmaktadır. Bu ama&amp;ccedil;la aşağıdaki gibi bir kod par&amp;ccedil;ası geliştirdiğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var allList = from pc in adw.ProductCategories
+                    join psc in adw.ProductSubcategories
+                        on pc.ProductCategoryID equals psc.ProductCategoryID
+                            join p in adw.Products
+                                on psc.ProductSubcategoryID equals p.ProductSubcategoryID
+                                    where p.Class == null &amp;amp;&amp;amp; p.ListPrice &amp;gt; 100
+                                        select new 
+                                        { 
+                                            CategoryName = pc.Name
+                                            , SubCategoryName = psc.Name
+                                            , ProductNumber = p.ProductNumber
+                                            , ProductName = p.Name 
+                                        };
+
+foreach (var prd in allList)
+{
+    Console.WriteLine(prd.ToString());
+}&lt;/pre&gt;
+&lt;p&gt;Buradaki kod par&amp;ccedil;asına g&amp;ouml;re &lt;strong&gt; ProductCategories&lt;/strong&gt;, &lt;strong&gt;ProductSubCategories&lt;/strong&gt; ve &lt;strong&gt;Products&lt;/strong&gt; &amp;ouml;zelliklerine bağlı generic &lt;strong&gt;Table&amp;lt;T&amp;gt;&lt;/strong&gt; koleksiyonları join anahtar kelimesi yardımıyla anahtar &amp;ouml;zellikler &amp;uuml;zerinden birleştirilmekte ve yeni bir &lt;strong&gt;isimsiz tipe(Anonymous Type)&lt;/strong&gt; ait nesne topluluğu elde edilmektedir. Bu nesne topluluğu elde edilirken &lt;strong&gt;Class&lt;/strong&gt; değeri &lt;strong&gt; null&lt;/strong&gt; olan ve &amp;uuml;r&amp;uuml;nlerin &lt;strong&gt;ListPrice&lt;/strong&gt; değeri 100' den b&amp;uuml;y&amp;uuml;k olanların elde edilmesi sağlanmaktadır. Buna g&amp;ouml;re uygulamanın ekran &amp;ccedil;ıktısı aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk236_10.gif" alt="" width="638" height="245" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;S&amp;ouml;z konusu LINQ to SQL ifadesinin SQL tarafındaki karşılığı ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;exec sp_executesql N'SELECT [t0].[Name] AS [CategoryName], [t1].[Name] AS [SubCategoryName], [t2].[ProductNumber], [t2].[Name] AS [ProductName]
+FROM [Production].[ProductCategory] AS [t0]
+    INNER JOIN [Production].[ProductSubcategory] AS [t1] ON [t0].[ProductCategoryID] = [t1].[ProductCategoryID]
+        INNER JOIN [Production].[Product] AS [t2] ON ([t1].[ProductSubcategoryID]) = [t2].[ProductSubcategoryID]
+WHERE ([t2].[Class] IS NULL) AND ([t2].[ListPrice] &amp;gt; @p0)',N'@p0 decimal(33,4)',@p0=100.0000&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi join kelimeleri SQL tarafında standart &lt;strong&gt;inner join&lt;/strong&gt; muamelesi g&amp;ouml;rmektedir.&lt;/p&gt;
+&lt;p&gt;Sıradaki &lt;strong&gt;LINQ to SQL&lt;/strong&gt; ifadesinde &lt;strong&gt; DateTime&lt;/strong&gt; &lt;strong&gt;yapısının(struct) &lt;/strong&gt;par&amp;ccedil;alarından yararlanılmakta olup, bu ayrıştırmanın SQL tarafına nasıl yansıtıldığı incelenmeye &amp;ccedil;alışılmaktadır. Bu ama&amp;ccedil;la uygulamaya aşağıdaki kod par&amp;ccedil;asını eklediğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt; var result = from p in adw.Products
+                    where p.SellStartDate.Month &amp;gt;= 6 &amp;amp;&amp;amp; p.SellStartDate.Month &amp;lt;= 12
+                        select new 
+                                    { 
+                                        p.ProductNumber
+                                        , p.Name
+                                        , p.ListPrice
+                                        , p.SellStartDate
+                                        , p.SellEndDate 
+                                    };
+
+foreach (var p in result)
+{
+    Console.WriteLine(p.ProductNumber + " " + p.SellStartDate.Month.ToString() + " ");
+}&lt;/pre&gt;
+&lt;p&gt;Yukarıdaki kod par&amp;ccedil;asında yer alan &lt;strong&gt; LINQ&lt;/strong&gt; ifadesinde, her bir &lt;strong&gt;Product&lt;/strong&gt; nesne &amp;ouml;rneğinin &lt;strong&gt; SellStartDate&lt;/strong&gt; &amp;ouml;zellikleri &amp;uuml;zerinden hareket edilerek &lt;strong&gt;Month&lt;/strong&gt; değerlerine bakılmakta ve 6ncı ila 12nci ay arasında olanlar değerlendirilerek yeni bir isimsiz tip(Anonymous Type) i&amp;ccedil;erisinde toplanmaktadır. &amp;Ouml;rneğe ait &amp;ccedil;alışma zamanı ekran &amp;ccedil;ıktısı aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk236_11.gif" alt="" width="236" height="340" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Burada merak edilen konu, &lt;strong&gt;Month&lt;/strong&gt; değerlerinin &lt;strong&gt;SQL&lt;/strong&gt; tarafında nasıl ele alınacağıdır. Bu ama&amp;ccedil;la &amp;ouml;rnek &amp;ccedil;alıştırıldıktan sonra &lt;strong&gt;SQL Server Profiler &lt;/strong&gt;aracına bakılırsa, &lt;strong&gt;DatePart&lt;/strong&gt; &lt;strong&gt;SQL&lt;/strong&gt; fonksiyonunun kullanıldığı a&amp;ccedil;ık bir şekilde g&amp;ouml;r&amp;uuml;lebilir.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;exec sp_executesql N'SELECT [t0].[ProductNumber], [t0].[Name], [t0].[ListPrice], [t0].[SellStartDate], [t0].[SellEndDate]
+FROM [Production].[Product] AS [t0]
+WHERE 
+    (DATEPART(Month, [t0].[SellStartDate]) &amp;gt;= @p0) 
+        AND (DATEPART(Month, [t0].[SellStartDate]) &amp;lt;= @p1)'
+,N'@p0 int,@p1 int',@p0=6,@p1=12&lt;/pre&gt;
+&lt;p&gt;B&amp;ouml;ylece &lt;strong&gt;SellStartDate&lt;/strong&gt; alanlarının i&amp;ccedil;eriği &lt;strong&gt;DatePart&lt;/strong&gt; fonksiyonu kullanılaraktan ayrıştırılmakta ve elde edilen &lt;strong&gt;Month&lt;/strong&gt; kısmına g&amp;ouml;rede değer aralığı kontrol&amp;uuml; yapılmaktadır.&lt;/p&gt;
+&lt;p&gt;Bazı durumlarda sorgulanan verinin &lt;strong&gt;string&lt;/strong&gt; bazlı olması halinde karakter tabanlı kontroller yapılmak istenebilir. S&amp;ouml;z gelimi B harfi ile başlayan &amp;uuml;r&amp;uuml;nlerin elde edilmesi gibi. Bu gibi durumlarda &lt;strong&gt;string&lt;/strong&gt; bazlı verilerin karakter katarı olduğu programatik tarafta ele alınması gereken bir durumdur. Aşağıdaki kod par&amp;ccedil;asında hem bu durum ele alınmakta hemde &lt;strong&gt;First&lt;/strong&gt; metodunun kullanımı incelenmektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;Product result = (from p in adw.Products select p)
+                            .First&amp;lt;Product&amp;gt;(prd =&amp;gt; prd.Name[0] == 'C');
+
+Console.WriteLine(result.Name + " " + result.ListPrice);&lt;/pre&gt;
+&lt;p&gt;Buradaki ifadeye g&amp;ouml;re, her bir &lt;strong&gt; Product&lt;/strong&gt; nesne &amp;ouml;rneğinin &lt;strong&gt;Name&lt;/strong&gt; &amp;ouml;zelliklerinin ilk harflerine bakılmaktadır. İlk harfi C olan &amp;uuml;r&amp;uuml;nlerden ise sadece ilki First metodu yardımıyla elde edilmektedir. Bu işlevselliği ger&amp;ccedil;ekleştirmek i&amp;ccedil;in &lt;strong&gt; First&lt;/strong&gt; metodu i&amp;ccedil;erisinde &lt;strong&gt;lambda(=&amp;gt;) &lt;/strong&gt;operat&amp;ouml;r&amp;uuml; kullanılmaktadır. Lambda operat&amp;ouml;r&amp;uuml; sayesinde eşitliğin sol tarafından sağ tarafına o anki Product nesne &amp;ouml;rneği ge&amp;ccedil;irilmektedir. Eşitliğin sağ tarafında ise o anki Product nesne &amp;ouml;rneğinin &lt;strong&gt;Name&lt;/strong&gt; &amp;ouml;zelliğinin ilk harfine bakılmaktadır. Eğer ilk harf &lt;strong&gt;C&lt;/strong&gt; ise o anda &amp;uuml;zerinde durulan &lt;strong&gt;Product&lt;/strong&gt; nesne &amp;ouml;rneği eşitliğin sağından soluna doğru geri d&amp;ouml;nd&amp;uuml;r&amp;uuml;lmektedir. &amp;Ouml;rneğin &amp;ccedil;alışma zamanındaki ekran &amp;ccedil;ıktısı aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk236_13.gif" alt="" width="297" height="64" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;S&amp;ouml;z konusu &lt;strong&gt;LINQ to SQL&lt;/strong&gt; ifadesinin SQL tarafına aktarılan sorgu c&amp;uuml;mlesi ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;exec sp_executesql N'SELECT TOP (1) 
+        [t0].[ProductID], [t0].[Name], [t0].[ProductNumber]
+        , [t0].[MakeFlag], [t0].[FinishedGoodsFlag], [t0].[Color]
+        , [t0].[SafetyStockLevel], [t0].[ReorderPoint], [t0].[StandardCost]
+        , [t0].[ListPrice], [t0].[Size], [t0].[SizeUnitMeasureCode]
+        , [t0].[WeightUnitMeasureCode], [t0].[Weight], [t0].[DaysToManufacture]
+        , [t0].[ProductLine], [t0].[Class], [t0].[Style], [t0].[ProductSubcategoryID]
+        , [t0].[ProductModelID], [t0].[SellStartDate], [t0].[SellEndDate]
+    , [t0].[DiscontinuedDate], [t0].[rowguid], [t0].[ModifiedDate]
+FROM [Production].[Product] AS [t0]
+WHERE 
+    UNICODE(CONVERT(NChar(1),SUBSTRING([t0].[Name], @p0 + 1, 1))) = @p1',N'@p0 int,@p1 int',@p0=0,@p1=67&lt;/pre&gt;
+&lt;p&gt;Herşeyden &amp;ouml;nce &lt;strong&gt;First&lt;/strong&gt; metodunun tam karşılığı olarak &lt;strong&gt;TOP (1) &lt;/strong&gt;s&amp;ouml;z dizimi kullanılmaktadır. Diğer taraftan programatik ortamda &lt;strong&gt;[] indeksleyici&lt;/strong&gt; operat&amp;ouml;r&amp;uuml;n&amp;uuml; kullanarak &lt;strong&gt;string&lt;/strong&gt; veri tipinin ilk karakterine ge&amp;ccedil;memiz ve C harfini kontrol etmemizin karşılığı &lt;strong&gt;Unicode&lt;/strong&gt;, &lt;strong&gt;Convert&lt;/strong&gt;, &lt;strong&gt;SubString SQL&lt;/strong&gt; fonksiyonları olmuştur. Burada 67 değerinin C harfine karşılık geldiğini hatırlayalım. Elbette &amp;ccedil;ekilen veri bir &lt;strong&gt;Product&lt;/strong&gt; tipi olduğundan, &lt;strong&gt;Product&lt;/strong&gt; tablsoundaki t&amp;uuml;m alanların &lt;strong&gt;Select&lt;/strong&gt; ifadesine alındığı g&amp;ouml;r&amp;uuml;lmektedir. Daha &amp;ouml;ncedende belirtildiği gibi, sadece gerekli alanların &amp;ccedil;ekilmesi adına kod tarafında &lt;strong&gt;isimsiz metod(Anonymous Method) &lt;/strong&gt;kullanımına gidilebilir.&lt;/p&gt;
+&lt;p&gt;LINQ tarafında &lt;strong&gt;&amp;ccedil;oklu se&amp;ccedil;imlerde(Select Many) &lt;/strong&gt;yapılabilmektedir. Bu tarz bir kullanıma &amp;ouml;rnek olarak aşağıdaki kod par&amp;ccedil;ası ele alınabilir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var result = from p in adw.SalesPersons
+                    where p.Bonus &amp;gt;= 1000
+                        from h in p.SalesOrderHeaders
+                            where h.TerritoryID == 1
+                                select new 
+                                            {
+                                                 p.SalesPersonID
+                                                , p.Bonus
+                                                , h.SubTotal
+                                                , h.AccountNumber 
+                                            };
+
+foreach (var r in result)
+{
+    Console.WriteLine(r.ToString());
+}&lt;/pre&gt;
+&lt;p&gt;Buradaki sorgu ifadesine g&amp;ouml;re, &lt;strong&gt; SalesPersons&lt;/strong&gt; koleksiyonunda tutulan &lt;strong&gt;SalesPerson&lt;/strong&gt; nesne &amp;ouml;rneklerinden &lt;strong&gt;Bonus&lt;/strong&gt; &amp;ouml;zelliklerinin değeri 1000' in &amp;uuml;zerinde olanlar alınmaktadır. Sonrasında ise elde edilen k&amp;uuml;medeki her bir &lt;strong&gt; SalesOrder&lt;/strong&gt; &amp;uuml;zerinden &lt;strong&gt;SalesOrderHeaders&lt;/strong&gt; koleksiyonuna gidilmekte ve b&amp;ouml;lge değeri 1 olanlar &amp;ccedil;ekilmektedir. Bir başka deyişle Bonus' u 1000' in &amp;uuml;zerinde ve sipariş kalemleri 1 numaralı b&amp;ouml;lgeye doğru yapılmış olan satış personelinin elde edilmesi s&amp;ouml;z konusudur. Elde edilen veri k&amp;uuml;mesi değerlendirilerek yeni bir &lt;strong&gt;isimsiz tip(Anonymous Type)&lt;/strong&gt; i&amp;ccedil;erisinde birleştirilmeleri sağlanmaktadır. &amp;Ouml;rnek kodun &amp;ccedil;alışma zamanındaki &amp;ccedil;ıktısı aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk236_14.gif" alt="" width="637" height="224" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şu aşamada bizim ilgilendiğimiz kısım &lt;strong&gt;SQL&lt;/strong&gt; tarafına g&amp;ouml;nderilen sorgu c&amp;uuml;mlesidir. Bu c&amp;uuml;mlede aşağıdaki şekildedir.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;exec sp_executesql N'SELECT [t0].[SalesPersonID], [t0].[Bonus], [t1].[SubTotal], [t1].[AccountNumber]
+    FROM [Sales].[SalesPerson] AS [t0], [Sales].[SalesOrderHeader] AS [t1]
+        WHERE ([t1].[TerritoryID] = @p0) AND ([t0].[Bonus] &amp;gt;= @p1) 
+                        AND ([t1].[SalesPersonID] = [t0].[SalesPersonID])'
+,N'@p0 int,@p1 decimal(33,4)',@p0=1,@p1=1000.0000&lt;/pre&gt;
+&lt;p&gt;Burada &lt;strong&gt;From&lt;/strong&gt; kelimesinden sonraki kısma bakıldığında &lt;strong&gt;SalesPerson&lt;/strong&gt; ve &lt;strong&gt;SalesOrderHeader&lt;/strong&gt; tablolarının birlikte ele alındıkları g&amp;ouml;r&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;p&gt;Gelelim gruplama fonksiyonelliklerinin &lt;strong&gt;SQL&lt;/strong&gt; tarafına nasıl yansıtıldığında. Bu ama&amp;ccedil;la aşağıdaki &amp;ouml;rnek kod par&amp;ccedil;asını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alıyor olacağız.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var result = from p in adw.Products
+                    where p.Class != null
+                        group p by p.Class into g 
+                            select new
+                                            {
+                                                ClassName = g.Key
+                                                ,TotalListPrice = g.Sum&amp;lt;Product&amp;gt;(p =&amp;gt; p.ListPrice)
+                                            };
+
+foreach (var r in result)
+{
+    Console.WriteLine("{0} : {1}", r.ClassName, r.TotalListPrice);
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rnekteki ifadede, &lt;strong&gt;Products&lt;/strong&gt; koleksiyonundaki her bir &lt;strong&gt;Product&lt;/strong&gt; nesnesinin &lt;strong&gt;Class&lt;/strong&gt; &amp;ouml;zelliklerine g&amp;ouml;re gruplara ayrılması ve her bir gruba ait &lt;strong&gt;ListPrice&lt;/strong&gt; &amp;ouml;zelliklerinin toplam değerlerinin bulunması sağlanmaktadır. Bir başka deyişle sınıfları olan &amp;uuml;r&amp;uuml;nlerin sınıflara g&amp;ouml;re gruplandıklarında, toplam liste fiyatı değerlerinin ne olduğu elde edilmektedir. Bu kod par&amp;ccedil;asının icra edilmesi halinde, &amp;ccedil;alışma zamanında aşağıdakine benzer sonu&amp;ccedil; ortaya &amp;ccedil;ıkmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk236_15.gif" alt="" width="289" height="84" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi &amp;uuml;r&amp;uuml;nler sınıflara g&amp;ouml;re gruplanmış ve toplam &amp;uuml;r&amp;uuml;n fiyatlarının değerleri elde edilmiştir. Burada &amp;ccedil;alışan &lt;strong&gt;LINQ&lt;/strong&gt; &lt;strong&gt;to SQL&lt;/strong&gt; ifadesinin &lt;strong&gt;SQL&lt;/strong&gt; tarafına g&amp;ouml;nderilen karşılığı ise aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;SELECT SUM([t0].[ListPrice]) AS [TotalListPrice], [t0].[Class] AS [ClassName]
+FROM [Production].[Product] AS [t0]
+WHERE [t0].[Class] IS NOT NULL
+GROUP BY [t0].[Class]&lt;/pre&gt;
+&lt;p&gt;Aslında &amp;uuml;retilen &lt;strong&gt;SQL&lt;/strong&gt; c&amp;uuml;mlesi tam olarak d&amp;uuml;ş&amp;uuml;nd&amp;uuml;ğ&amp;uuml;m&amp;uuml;z şekildedir. Bununla birlikte dikkat edilmesi gereken bir husus vardır. Buda &lt;strong&gt;LINQ&lt;/strong&gt; sorgusundaki &lt;strong&gt;where&lt;/strong&gt; kelimesinin kullanıldığı yerdir. &amp;Ouml;rnekte, &lt;strong&gt;where&lt;/strong&gt; ifadesi ile se&amp;ccedil;ilen k&amp;uuml;me &amp;uuml;zerinde gruplama yapılmaktadır. Bu nedenle &lt;strong&gt;group by&lt;/strong&gt; kelimesinden &amp;ouml;nce where kullanılmaktadır. Ancak aynı ifade aşağıdaki haliylede geliştirilebilir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var result = from p in adw.Products
+                    group p by p.Class into g
+                        where g.Key!=null
+                            select new
+                                        {
+                                            ClassName = g.Key
+                                            ,TotalListPrice = g.Sum&amp;lt;Product&amp;gt;(p =&amp;gt; p.ListPrice)
+                                        };
+
+foreach (var r in result)
+{
+    Console.WriteLine("{0} : {1}", r.ClassName, r.TotalListPrice);
+}&lt;/pre&gt;
+&lt;p&gt;Bu sefer gruplanan nesneye ait &lt;strong&gt;Key&lt;/strong&gt; &amp;ouml;zelliğinin &lt;strong&gt;null&lt;/strong&gt; olup olmadığına bakılmaktadır. Kod bu haliyle &amp;ccedil;alıştırıldığında da bir &amp;ouml;nceki ile aynı sonu&amp;ccedil;ların elde edildiği g&amp;ouml;r&amp;uuml;lebilir. Ne varki &lt;strong&gt;SQL&lt;/strong&gt; tarafına g&amp;ouml;nderilen ifadeye bakıldığında aşağıdaki sonu&amp;ccedil;lar ortaya &amp;ccedil;ıkmaktadır.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;SELECT [t1].[Class] AS [ClassName], [t1].[value] AS [TotalListPrice]
+FROM (
+            SELECT SUM([t0].[ListPrice]) AS [value], [t0].[Class]
+            FROM [Production].[Product] AS [t0]
+            GROUP BY [t0].[Class]
+) AS [t1]
+WHERE [t1].[Class] IS NOT NULL&lt;/pre&gt;
+&lt;p&gt;Sonu&amp;ccedil; bir &amp;ouml;ncekinden olduk&amp;ccedil;a farklıdır. Bu kez devreye ek bir alt sorgu c&amp;uuml;mlesi daha girmektedir. &amp;Ouml;nce sınıflara g&amp;ouml;re gruplanmış &amp;uuml;r&amp;uuml;nlerin &lt;strong&gt;ListPrice&lt;/strong&gt; değelerinin toplamları ve sınıf adlarının olduğu k&amp;uuml;me elde edilmektedir. Sonrasında ise bu k&amp;uuml;me &amp;uuml;zerinden &lt;strong&gt;Class&lt;/strong&gt; değerleri &lt;strong&gt;null&lt;/strong&gt; olmayanlar &amp;ccedil;ekilmektedir. Bu noktada &lt;strong&gt;where&lt;/strong&gt; kelimesinin kod tarafından yerinin değiştirilmesinin &amp;ouml;nemli olup olmadığına karar vermek gerekebilir. Ancak geliştirilen &amp;ouml;rneğe ait oluşturulan sorguların &lt;strong&gt; icra planlarına(Execution Plan)&lt;/strong&gt; bakıldığında bir fark olmadığı a&amp;ccedil;ık&amp;ccedil;a g&amp;ouml;r&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk236_16.gif" alt="" width="638" height="593" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;LINQ&lt;/strong&gt; tarafında yer alan enteresan metodlardan biriside &lt;strong&gt;Except&lt;/strong&gt; metodudur. Bu metoddan yararlanılarak belirli bir şartın dışında kalan nesnel k&amp;uuml;melerin elde edilmesi sağlanabilir. &amp;Ouml;rnek olarak aşağıdaki gibi bir kod par&amp;ccedil;ası geliştirdiğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var result = (from c in north.Customers select c.City)
+                    .Except(from s in north.Suppliers select s.City);
+
+foreach (var r in result)
+{
+    Console.WriteLine(r);
+}&lt;/pre&gt;
+&lt;p&gt;Bu &amp;ouml;rnekte &lt;strong&gt;NorthwindDataContext&lt;/strong&gt; kullanılmaktadır. Buna g&amp;ouml;re &lt;strong&gt;LINQ&lt;/strong&gt; ifadesinde ilk parantez i&amp;ccedil;erisinde kalan kısımda &lt;strong&gt;Customers&lt;/strong&gt; koleksiyonunda duran &lt;strong&gt; Customer&lt;/strong&gt; nesne &amp;ouml;rneklerinden &lt;strong&gt;City&lt;/strong&gt; &amp;ouml;zellikleri &amp;ccedil;ekilmektedir. &lt;strong&gt;Except&lt;/strong&gt; metodunda yazılan ifadede &lt;strong&gt;Suppliers&lt;/strong&gt; tablosunda yer alan &lt;strong&gt;Supplier&lt;/strong&gt; nesne &amp;ouml;rneklerinden &lt;strong&gt;City&lt;/strong&gt; &amp;ouml;zelliklerini &amp;ccedil;ekmektedir. Her iki k&amp;uuml;me bir arada d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde ortaya &amp;ccedil;ıkan sonu&amp;ccedil; şudur; Customer nesne &amp;ouml;rneklerinde olup, Supplier nesne &amp;ouml;rneklerinde bulunmayan &lt;strong&gt;City&lt;/strong&gt; &amp;ouml;zellikleri elde edilmektedir. Daha d&amp;uuml;zg&amp;uuml;n bir ifadeyle, bir başka deyişle &lt;strong&gt;SQL&lt;/strong&gt;' ce d&amp;uuml;ş&amp;uuml;n&amp;uuml;şd&amp;uuml;ğ&amp;uuml;nde, m&amp;uuml;şterilerin yaşayıpta tedarik&amp;ccedil;ilerinin bulunmadığı şehir adlarının elde edildiğini s&amp;ouml;yleyebiliriz. Programın &amp;ccedil;alışma zamanındaki &amp;ccedil;ıktısı aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk236_17.gif" alt="" width="208" height="279" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu tarz bir ihtiyacı SQL tarafında karşılamak i&amp;ccedil;in &lt;strong&gt;Not In&lt;/strong&gt; kullanımı tercih edilebilir. &lt;strong&gt;LINQ&lt;/strong&gt; tarafında metod bazlı yazılan bu &amp;ouml;rnek ise, &lt;strong&gt;SQL&lt;/strong&gt; tarafına aşağıdaki şekilde aktarılmaktadır.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;SELECT DISTINCT [t0].[City]
+FROM [dbo].[Customers] AS [t0]
+WHERE 
+    NOT (EXISTS
+            (
+        SELECT NULL AS [EMPTY]
+            FROM [dbo].[Suppliers] AS [t1]
+                WHERE (([t0].[City] IS NULL) 
+                    AND ([t1].[City] IS NULL)) 
+                        OR (([t0].[City] IS NOT NULL) 
+                            AND ([t1].[City] IS NOT NULL) 
+                                AND ([t0].[City] = [t1].[City]))
+            )
+        )&lt;/pre&gt;
+&lt;p&gt;Burada &amp;ouml;nemli olan &lt;strong&gt;Exists&lt;/strong&gt; &lt;strong&gt;SQL&lt;/strong&gt; fonksiyonu ile gereken işlevselliğin sağlanmış olmasıdır. &lt;strong&gt;Not&lt;/strong&gt; konulmasının sebebi, &lt;strong&gt;Exists&lt;/strong&gt; ile belirtilen alt sorgudaki koşula uyanların dışarıda bırakılmasını sağlamaktır. Nitekim t0 ve t1 tablolarındaki City değerlerine bakılarak eşit olanların elde edilmesi sağlanırken &lt;strong&gt;Except&lt;/strong&gt; metodu kullanılması nedeniyle bunların dışarıda tutulmasını ancak &lt;strong&gt;Not&lt;/strong&gt; anahtar kelimesi sağlayabilmektedir. Ayrıca hem &lt;strong&gt;Suppliers&lt;/strong&gt; hemde &lt;strong&gt;Customers&lt;/strong&gt; tablosundaki &lt;strong&gt;City&lt;/strong&gt; alanları i&amp;ccedil;in detaylı bir&lt;strong&gt; Null&lt;/strong&gt; kontrol&amp;uuml; yapılmaktadır.&lt;/p&gt;
+&lt;p&gt;Makalemize yine enteresan &lt;strong&gt;LINQ&lt;/strong&gt; fonksiyonları ile devam edelim. Bu kez &lt;strong&gt;Any&lt;/strong&gt; ve &lt;strong&gt;All&lt;/strong&gt; isimli metodları incelemeye &amp;ccedil;alışıyor olacağız. Bu ama&amp;ccedil;la ilk olarak Any metodunun kullanımına kısaca bakılım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var result = from p in adw.SalesPersons
+                        where p.SalesOrderHeaders.Any(soh =&amp;gt; soh.SubTotal &amp;gt;= 224356) 
+                            select p;
+
+foreach (SalesPerson person in result)
+{
+    Console.WriteLine("Person Id: " + person.SalesPersonID + " Bonus: " + person.Bonus + " Sales Last Year : " + person.SalesLastYear);
+    foreach (SalesOrderHeader header in person.SalesOrderHeaders)
+        Console.WriteLine("\t" + header.AccountNumber + " Sub Total: " + header.SubTotal);
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;LINQ to SQL&lt;/strong&gt; ifadesinde &lt;strong&gt;SalesPersons&lt;/strong&gt; koleksiyonundaki her bir &lt;strong&gt;SalesPerson&lt;/strong&gt; &amp;ccedil;ekilmektedir. Bunlara bağlı olan &lt;strong&gt;SalesOrderHeaders&lt;/strong&gt; koleksiyonundaki &lt;strong&gt;SalesOrderHeader&lt;/strong&gt; nesne &amp;ouml;rneklerinin ise &lt;strong&gt;SubTotal&lt;/strong&gt; değerlerine bakılarak se&amp;ccedil;im işlemi koşullandırılmaktadır. Any metodunun buradaki g&amp;ouml;revi ise şudur; &lt;strong&gt;SubTotal&lt;/strong&gt; değerlerinden herhangibiri 224356' nın &amp;uuml;zerinde olan satırlar elde edilebilmektedir. Yani, satış personelinin siparişlerine ait SubTotal değerlerinden herhangibiri &lt;strong&gt;224356&lt;/strong&gt;' nın &amp;uuml;zerinde olanların elde edilmesi sağlanmaktadır. &amp;Ouml;rnek kod par&amp;ccedil;asının &amp;ccedil;alışma zamanındaki &amp;ccedil;ıktısı aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk236_18.gif" alt="" width="508" height="340" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu tarz bir işleyiş i&amp;ccedil;in &lt;strong&gt;SQL&lt;/strong&gt; tarafı g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında ortaya karmaşık bir sorgu &amp;ccedil;ıkacağı d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Nitekim &lt;strong&gt;LINQ&lt;/strong&gt; to SQL ifadesinin SQL tarafındaki karşılığı aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;exec sp_executesql N'
+SELECT 
+    [t0].[SalesPersonID], [t0].[TerritoryID], [t0].[SalesQuota]
+    , [t0].[Bonus], [t0].[CommissionPct], [t0].[SalesYTD]
+    , [t0].[SalesLastYear], [t0].[rowguid], [t0].[ModifiedDate]
+FROM [Sales].[SalesPerson] AS [t0]
+    WHERE EXISTS(
+                                SELECT NULL AS [EMPTY]
+                                FROM [Sales].[SalesOrderHeader] AS [t1]
+                                WHERE ([t1].[SubTotal] &amp;gt;= @p0) AND ([t1].[SalesPersonID] = [t0].[SalesPersonID])
+    )'
+,N'@p0 decimal(33,4)',@p0=224356.0000&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere &lt;strong&gt;Exists&lt;/strong&gt; anahtar kelimesi kullanılarak &lt;strong&gt;SubTotal&lt;/strong&gt; değeri ele alınmakta ve buna uyanların &lt;strong&gt;SalesPerson&lt;/strong&gt; tablosundan &amp;ccedil;ekilmesi sağlanmaktadır. Gelelim &lt;strong&gt;All&lt;/strong&gt; metoduna. Bu sefer &lt;strong&gt;Any&lt;/strong&gt;' den farklı olarak bağlı olunan k&amp;uuml;medeki her bir eleman i&amp;ccedil;in belirtilen koşulun sağlanmış olma şartı aranmaktadır. Bunu daha net kavrayabilmek i&amp;ccedil;in &amp;ouml;rneğimizi aşağıdaki gibi değiştirelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var result = from p in adw.SalesPersons
+                    where p.SalesOrderHeaders.All(soh =&amp;gt; soh.SubTotal &amp;gt;= 80) 
+                        select p;
+
+foreach (SalesPerson person in result)
+{
+    Console.WriteLine("Person Id: " + person.SalesPersonID + " Bonus: " + person.Bonus + " Sales Last Year : " + person.SalesLastYear);
+    foreach (SalesOrderHeader header in person.SalesOrderHeaders)
+        Console.WriteLine("\t" + header.AccountNumber + " Sub Total: " + header.SubTotal);
+}&lt;/pre&gt;
+&lt;p&gt;Bu kodun &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı ise aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk236_19.gif" alt="" width="508" height="340" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu sefer bir &lt;strong&gt;SalesOrder&lt;/strong&gt;' ın bağlı olduğu &lt;strong&gt;SalesOrderHeaders&lt;/strong&gt; koleksiyonundaki her bir &lt;strong&gt; SalesOrderHeader&lt;/strong&gt; nesne &amp;ouml;rneğinin &lt;strong&gt;SubTotal&lt;/strong&gt; değerlerinin her biri 80' in &amp;uuml;zerinde olanların elde edilmesi sağlanmaktadır. Bir başka deyişle bir &lt;strong&gt;SalesOrder&lt;/strong&gt; &amp;uuml;zerinden ulaşılan nesne topluluğunda n tane &lt;strong&gt;SalesOrderHeader&lt;/strong&gt; olduğu d&amp;uuml;ş&amp;uuml;n&amp;uuml;lecek olursa, bunların her birine ait &lt;strong&gt;SubTotal&lt;/strong&gt; &amp;ouml;zelliklerinin değerlerinin 80 ve &amp;uuml;zerinde olma şartı konulmaktadır. S&amp;ouml;z konusu &lt;strong&gt;All&lt;/strong&gt; metodu i&amp;ccedil;in SQL tarafında &amp;uuml;retilen &amp;ccedil;ıktı ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;exec sp_executesql N'
+SELECT 
+    [t0].[SalesPersonID], [t0].[TerritoryID], [t0].[SalesQuota]
+    , [t0].[Bonus], [t0].[CommissionPct], [t0].[SalesYTD]
+    , [t0].[SalesLastYear], [t0].[rowguid], [t0].[ModifiedDate]
+FROM [Sales].[SalesPerson] AS [t0]
+WHERE NOT (
+                        EXISTS(
+                                        SELECT NULL AS [EMPTY]
+                                        FROM [Sales].[SalesOrderHeader] AS [t1]
+                                        WHERE ((
+                                                            (CASE 
+                                                                WHEN [t1].[SubTotal] &amp;gt;= @p0 THEN 1 ELSE 0
+                                                            END)) = 0) 
+                                                            AND ([t1].[SalesPersonID] = [t0].[SalesPersonID])
+))'
+,N'@p0 decimal(33,4)',@p0=80.0000&lt;/pre&gt;
+&lt;p&gt;Bu kez koşulun kontrol&amp;uuml; i&amp;ccedil;in &lt;strong&gt;Case&lt;/strong&gt; ifadesinden yararlanılmakta ve &lt;strong&gt;SubTotal&lt;/strong&gt; 80' &amp;uuml;zerinde ise 1, değilse 0 değeri &lt;strong&gt;Where&lt;/strong&gt; ifadesine katılarak 0 olanların &amp;ccedil;ekilmesi sağlanmaktadır. Yanlız burada yine Not Exist kullanıldığında dikkat etmekte yarar vardır. Buna g&amp;ouml;rede bir &lt;strong&gt;Where&lt;/strong&gt; ifadesinin &lt;strong&gt;SalesPerson&lt;/strong&gt; tablosu i&amp;ccedil;in &amp;uuml;retilmesi sağlanmaktadır.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneklerimize &lt;strong&gt;Concat&lt;/strong&gt; metodu ile devam edelim. Concat metodunu daha &amp;ccedil;ok iki farklı sonu&amp;ccedil; k&amp;uuml;mesindeki belirli &amp;ouml;zelliklerin bir arada ele alınmasını istediğimiz durumlarda g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alabiliriz. Bu bir anlamda iki &lt;strong&gt;string&lt;/strong&gt;' in birleştirilemesine benzer bir durumdur. Tabi şu anda s&amp;ouml;z konusu olan string değil &lt;strong&gt;IEnumerable&lt;/strong&gt; gibi referanslardır. &lt;strong&gt;Concat&lt;/strong&gt; metodunun SQL tarafında &amp;uuml;rettiği &amp;ccedil;ıktıya bakmak i&amp;ccedil;in aşağıdaki &amp;ouml;rnek kod par&amp;ccedil;asını geliştirdiğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var result = (from cust in north.Customers select new { cust.Country, cust.City })
+                    .Concat(from supl in north.Suppliers select new { supl.Country, supl.City });
+foreach (var r in result)
+{
+    Console.WriteLine(r.Country + ":" + r.City);
+}&lt;/pre&gt;
+&lt;p&gt;Bu &amp;ouml;rnekte &lt;strong&gt;NorthwindDataContext&lt;/strong&gt; tipi kullanılmakta olup &lt;strong&gt;Customers&lt;/strong&gt; ve &lt;strong&gt;Suppliers&lt;/strong&gt; koleksiyonlarındaki nesnelerde &lt;strong&gt;Country&lt;/strong&gt; ve &lt;strong&gt;City&lt;/strong&gt; değerleri birleştirilip &amp;ccedil;ekilmektedir. Sonu&amp;ccedil;ta kodun &amp;ccedil;alışma zamanı &amp;ccedil;ıktısı aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt; &lt;img src="/makale/images/mk236_20.gif" alt="" width="213" height="340" border="0" /&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Elbetteki SQL tarafına bakıldığında &lt;strong&gt; Concat&lt;/strong&gt; metodunun aşağıdakine benzer bir d&amp;ouml;n&amp;uuml;ş&amp;uuml;me uğradığı g&amp;ouml;r&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;SELECT [t2].[Country], [t2].[City]
+FROM (
+            SELECT [t0].[Country], [t0].[City]
+            FROM [dbo].[Customers] AS [t0]
+                UNION ALL
+            SELECT [t1].[Country], [t1].[City]
+            FROM [dbo].[Suppliers] AS [t1]
+) AS [t2]&lt;/pre&gt;
+&lt;p&gt;A&amp;ccedil;ık&amp;ccedil;a&lt;strong&gt; Union All &lt;/strong&gt;kullanılaraktan iki &lt;strong&gt;Select&lt;/strong&gt; ifadesinin birleştirildiği ve elde edilen k&amp;uuml;me &amp;uuml;zerinden &lt;strong&gt;Country&lt;/strong&gt; ile &lt;strong&gt;City&lt;/strong&gt; alanlarına ait değerlerin &amp;ccedil;ekildiği s&amp;ouml;ylenebilir. &amp;Ouml;rnekte dikkati &amp;ccedil;eken noktalardan biriside tekrarlı alanların olmasıdır. &amp;Ouml;rneğin ekran &amp;ccedil;ıktısının &amp;uuml;st taraflarına bakıldığında iki adet Mexico kentinin olduğu London' un iki kere ge&amp;ccedil;tiği rahat bir şekilde g&amp;ouml;r&amp;uuml;lebilir. &amp;Ccedil;ok doğal olarak tekrarsız bir listenin elde edilmesi istendiğinde kod tarafında &lt;strong&gt;Distinct&lt;/strong&gt; metodunun kullanılıyor olması yeterli olacaktır. Yani kod par&amp;ccedil;asında aşağıdaki değişikliğin yapılması yeterlidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var result = (from cust in north.Customers select new { cust.Country, cust.City }).Concat(from supl in north.Suppliers select new { supl.Country, supl.City }).Distinct();&lt;/pre&gt;
+&lt;p&gt;Bu durumda programın &amp;ccedil;ıktısı aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt; &lt;img src="/makale/images/mk236_21.gif" alt="" width="235" height="208" border="0" /&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Diğer taraftan &lt;strong&gt;Distinct&lt;/strong&gt; metodunun kullanılması sonrasında &lt;strong&gt;SQL&lt;/strong&gt; tarafına g&amp;ouml;nderilen sorgu c&amp;uuml;mlesinde ise &lt;strong&gt;Distinct&lt;/strong&gt; anahtar kelimesinin kullanıldığıda aşikardır.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;SELECT DISTINCT [t3].[Country], [t3].[City]
+FROM (
+            SELECT [t2].[Country], [t2].[City]
+            FROM (
+                        SELECT [t0].[Country], [t0].[City]
+                        FROM [dbo].[Customers] AS [t0]
+                            UNION ALL
+                        SELECT [t1].[Country], [t1].[City]
+                        FROM [dbo].[Suppliers] AS [t1]
+            ) AS [t2]
+) AS [t3]&lt;/pre&gt;
+&lt;p&gt;Ancak burada bir &amp;ouml;ncekinden farklı bir sorgunun oluştuğuda g&amp;ouml;zlerden ka&amp;ccedil;mamalıdır. Bu kez i&amp;ccedil; i&amp;ccedil;e alınmış &lt;strong&gt; Select&lt;/strong&gt; sorgusu s&amp;ouml;z konusudur. Oysaki en dışta yer alan &lt;strong&gt;Select&lt;/strong&gt; kullanımına gerek yoktur. &amp;Ccedil;&amp;uuml;nk&amp;uuml; &lt;strong&gt;Distinct&lt;/strong&gt; anahtar kelimesi i&amp;ccedil;erideki sorgu c&amp;uuml;mlesine eklenerekte aynı sonu&amp;ccedil;ların alınması sağlanabilir. Ne varki sorgu c&amp;uuml;mlesini bu şekilde oluşturup SQL tarafına g&amp;ouml;nderen &lt;strong&gt;LINQ to SQL&lt;/strong&gt; mimarisidir.&lt;/p&gt;
+&lt;p&gt;Yine ilgin&amp;ccedil; bir LINQ metodu ve SQL karşılığı ile devam edelim. Bu kez iki farklı veri k&amp;uuml;mesinin kesişimlerinin elde edilmesinde kullanılabilen &lt;strong&gt;Intersect&lt;/strong&gt; metodu &amp;uuml;zerinde duracağız. Bu metodun analizi i&amp;ccedil;in aşağıdaki gibi bir kod par&amp;ccedil;ası geliştirdiğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var result = (from c in north.Customers select c.City)
+                    .Intersect(from s in north.Suppliers select s.City);
+
+foreach (var r in result)
+{
+    Console.WriteLine(r);
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;ncelikli olarak ilk parantezler arasında &lt;strong&gt;Customers&lt;/strong&gt; koleksiyonundaki her bir &lt;strong&gt;Customer&lt;/strong&gt; nesnesinin &lt;strong&gt;City&lt;/strong&gt; değerleri &amp;ccedil;ekilmektedir. İkinci parantez i&amp;ccedil;erisinde yapılanda benzerdir. Tek farkı &lt;strong&gt;Suppliers&lt;/strong&gt; koleksiyonu i&amp;ccedil;in &amp;ccedil;alışmakta olmasıdır. &lt;strong&gt;Intersect&lt;/strong&gt; metodunun burada getridiği kolaylık ise şudur. &lt;strong&gt;Customers&lt;/strong&gt; ve &lt;strong&gt;Suppliers&lt;/strong&gt; koleksiyonlarında bulundan ortak &lt;strong&gt;City&lt;/strong&gt; &amp;ouml;zelliklerinin elde edilmesini sağlamaktadır. Bir başka deyişle yine SQL' ciler gibi konuşacak olursak, m&amp;uuml;şterilerin ve tedarik&amp;ccedil;ilerin bir arada bulunduğu şehirlerin elde edilmesi sağlanmaktadır . Buna g&amp;ouml;re &amp;ouml;rneğin &amp;ccedil;alışma zamanındaki ekran &amp;ccedil;ıktısı aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk236_22.gif" alt="" width="277" height="112" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu sonucun elde edilmesi i&amp;ccedil;in arka planda &amp;ccedil;alıştırılan SQL c&amp;uuml;mlesi ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;SELECT DISTINCT [t0].[City]
+FROM [dbo].[Customers] AS [t0]
+WHERE EXISTS(
+                            SELECT NULL AS [EMPTY]
+                            FROM [dbo].[Suppliers] AS [t1]
+                            WHERE 
+                                (([t0].[City] IS NULL) 
+                                    AND ([t1].[City] IS NULL)) 
+                                        OR (([t0].[City] IS NOT NULL) 
+                                            AND ([t1].[City] IS NOT NULL) 
+                                                AND ([t0].[City] = [t1].[City]))
+)&lt;/pre&gt;
+&lt;p&gt;&amp;Ccedil;alıştırılan SQL sorgusu, LINQ tarafında &lt;strong&gt;Except&lt;/strong&gt; metodu kullanıldığı zamankine benzerdir. Tek fark burada kesişim k&amp;uuml;mesinin bulunması gerektiğinden &lt;strong&gt;Not Exists&lt;/strong&gt; kullanılmamış olmasıdır.&lt;/p&gt;
+&lt;p&gt;Makalemizde son olarak &lt;strong&gt;?:&lt;/strong&gt; operat&amp;ouml;r&amp;uuml;n&amp;uuml;n kullanıldığı bir durumu ele almaya &amp;ccedil;alışıyor olacağız. Bu operat&amp;ouml;r şu aşamada LINQ' e bağımlı olmayan &lt;strong&gt;C#&lt;/strong&gt; programlama dilinin ilk versiyonundan beri var olan bir ara&amp;ccedil;tır. Bu tip bir operat&amp;ouml;r&amp;uuml;n &lt;strong&gt;LINQ&lt;/strong&gt; ifadesi i&amp;ccedil;erisinde kullanılması haline &lt;strong&gt;SQL&lt;/strong&gt; tarafında oluşacak olan c&amp;uuml;mlelere bakmaya &amp;ccedil;alışıyor olacağız. Bu ama&amp;ccedil;la aşağıdaki kod par&amp;ccedil;asını geliştirdiğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var result = from prd in adw.Products
+                    select new
+                                    {
+                                        prd.Name
+                                        ,prd.SafetyStockLevel
+                                        ,LevelOk = prd.SafetyStockLevel &amp;gt;= 50 ? "Seviye İyi" : "Seviye D&amp;uuml;ş&amp;uuml;k"
+                                    };
+
+foreach (var p in result)
+{
+    Console.WriteLine(p.Name + " | " + p.SafetyStockLevel + " | " + p.LevelOk);
+}&lt;/pre&gt;
+&lt;p&gt;Bu kod par&amp;ccedil;asında kullanılan LINQ ifadesine bakıldığında, &lt;strong&gt;LevelOk&lt;/strong&gt; isimli isimsiz tip &amp;ouml;zelliğinin değerinin &lt;strong&gt;SafetyStockLevel&lt;/strong&gt; &amp;ouml;zelliğinin değerine g&amp;ouml;re belirlendiği g&amp;ouml;r&amp;uuml;lmektedir. &lt;strong&gt;SafetyStockLevel&lt;/strong&gt; &amp;ouml;zelliğinin değerinin 50 ve &amp;uuml;zerinde olması halinde LevelOk &amp;ouml;zelliğine Seviye İyi değeri atanmaktadır. Aksi durumda ise Seviye D&amp;uuml;ş&amp;uuml;k değeri atanmaktadır. Kodun &amp;ccedil;alışma zamanındaki &amp;ccedil;ıktısı aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk236_23.gif" alt="" width="382" height="340" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;SQL tarafına baktığımızda ise aşağıdaki sorgu c&amp;uuml;mlesinin &amp;ccedil;alıştırıldığı g&amp;ouml;r&amp;uuml;lmektedir.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;exec sp_executesql N'SELECT [t0].[Name], [t0].[SafetyStockLevel], 
+    (CASE 
+        WHEN [t0].[SafetyStockLevel] &amp;gt;= @p0 THEN CONVERT(NVarChar(12),@p1) ELSE @p2 END
+    ) 
+    AS [LevelOk]
+FROM [Production].[Product] AS [t0]'
+    ,N'@p0 int,@p1 nvarchar(10),@p2 nvarchar(12)',@p0=50,@p1=N'Seviye İyi',@p2=N'Seviye D&amp;uuml;ş&amp;uuml;k'&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere, &lt;strong&gt;LevelOk&lt;/strong&gt; alanının elde edilmesi sırasında&lt;strong&gt; Case When SQL&lt;/strong&gt; ifadesi kullanılmaktadır.&lt;/p&gt;
+&lt;p&gt;Buraya kadar anlatılan &amp;ouml;rneklerde LINQ operat&amp;ouml;rlerinden veya metodlarından bir kısmının SQL tarafına nasıl aktarıldıkları incelenmeye &amp;ccedil;alışılmıştır. Diğer taraftan makalemizin başındada belirtildiği &amp;uuml;zere programatik tarafta kullanılan her t&amp;uuml;r LINQ operat&amp;ouml;r&amp;uuml; veya fonksiyonunun SQL tarafına aktarılmasıda m&amp;uuml;mk&amp;uuml;n değildir. S&amp;ouml;z gelimi aşağıdaki kod par&amp;ccedil;asını ele aldığımızı d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;var result = (from ctg in adw.ProductSubcategories select ctg)
+                   .TakeWhile&amp;lt;ProductSubcategory&amp;gt;(sCtg =&amp;gt; sCtg.Name[0] == 'A');
+
+foreach (ProductSubcategory sc in result)
+{
+    Console.WriteLine(sc.Name + " " + sc.ProductSubcategoryID.ToString());
+}&lt;/pre&gt;
+&lt;p&gt;Bu kod par&amp;ccedil;ası y&amp;uuml;r&amp;uuml;t&amp;uuml;lmek istendiğinde &amp;ccedil;alışma zamanında(run time), aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ndende izlenebileceği gibi &lt;strong&gt;NotSupportedException&lt;/strong&gt; tipinden bir &lt;strong&gt;istisna(Exception) &lt;/strong&gt; alınmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk236_12.gif" alt="" width="482" height="155" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Nitekim TakeWhile metodunun SQL tarafında bir karşılığı yoktur. &lt;strong&gt;TakeWhile&lt;/strong&gt; gibi &lt;strong&gt;SkipWhile&lt;/strong&gt;, &lt;strong&gt;Last&lt;/strong&gt;, &lt;strong&gt;ElementAt&lt;/strong&gt;, &lt;strong&gt;Reverse&lt;/strong&gt; gibi pek &amp;ccedil;ok metodunda SQL tarafında karşılığı bulunmadığından desteklenmemektedirler.&lt;/p&gt;
+&lt;p&gt;Sonu&amp;ccedil; olarak programatik tarafta &lt;strong&gt; varlık katmanı(Entity Layer)&lt;/strong&gt; &amp;uuml;zerinde işlemlerimizi olduk&amp;ccedil;a kolaylaştıran ve nesneler &amp;uuml;zerinde sorgular &amp;ccedil;alıştırabilmemizi sağlayan &lt;strong&gt;LINQ to SQL&lt;/strong&gt;' in g&amp;uuml;c&amp;uuml; ortadadır. Ne varki performansın &amp;ouml;ne ge&amp;ccedil;mesi gereken durumlarda, yazılan LINQ ifadelerinin arka planda oluşturduğu SQL &amp;ccedil;ıktıları değerlendirilmeli ve en doğru şekilde kullanılmalarına gayret edilmelidir. Zaten zaman i&amp;ccedil;erisinde benzer vakalar i&amp;ccedil;in en uygun LINQ s&amp;ouml;z dizimlerinin ne olacağı daha net bir şekilde ortaya &amp;ccedil;ıkacaktır. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/makale/images/DahaFazlaLINQSorgusu2.rar"&gt;&amp;Ouml;rnek Uygulama i&amp;ccedil;in Tıklayın&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2007-12-19 10:00:00</pubDate>
+  <slug>Linq-To-Sql-Arka-Planda-Neler-Oluyor-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>linq-to-sql</tag>
+    <tag>linq</tag>
+  </tags>
+  <categories>
+    <category>LINQ to SQL</category>
+  </categories>
+</post>

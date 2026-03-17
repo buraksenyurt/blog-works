@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Asp.Net 2.0 Temelleri : Bir Web Sayfasının Anatomisi</title>
+  <description>Bu makalemizde, bir web sayfasının (.aspx uzantılı dosyalar) anatomosini incelemeye çalışacak, kaynak koddaki özel noktaları, in-line coding, code-behind modelini, yaşam döngüsünü ve çalışma zamanında olay bağlanması gibi temel kavramlara değineceğiz...</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Bu makalemizde, bir web sayfasının (.aspx uzantılı dosyalar) anatomosini incelemeye &amp;ccedil;alışacak, kaynak koddaki &amp;ouml;zel noktaları, in-line coding, code-behind modelini, yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml;n&amp;uuml; ve &amp;ccedil;alışma zamanında olay bağlanması gibi temel kavramlara değineceğiz. B&amp;ouml;ylece basit olarak bir web sayfasının anatomisini &amp;ouml;ğrenmek i&amp;ccedil;in gerekli ip u&amp;ccedil;larını değerlendirme fırsatını bulmuş olacağız. İlk olarak basit bir web sayfasını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alarak başlayalım.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;%@ Page Language="C#" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="_Default" %&amp;gt;
+
+&amp;lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&amp;gt;
+
+&amp;lt;html xmlns="http://www.w3.org/1999/xhtml" &amp;gt;
+    &amp;lt;head runat="server"&amp;gt;
+        &amp;lt;title&amp;gt;Untitled Page&amp;lt;/title&amp;gt;
+            &amp;lt;/head&amp;gt;
+                &amp;lt;body&amp;gt;
+                    &amp;lt;form id="form1" runat="server"&amp;gt;
+                        &amp;lt;div&amp;gt;
+        
+                        &amp;lt;/div&amp;gt;
+                    &amp;lt;/form&amp;gt;
+                &amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Bu sayfa &amp;uuml;zerinden konuşulabileceğimiz olduk&amp;ccedil;a fazla &amp;ouml;zellik bulunmaktadır. Yukarıdaki kod par&amp;ccedil;ası Visual Studio.Net 2005 tarafından &amp;uuml;retilen defualt.aspx isimli bir web sayfasının i&amp;ccedil;eriğini g&amp;ouml;stermektedir. Her web sayfası mutlaka &lt;strong&gt;Page&lt;/strong&gt; direktifi ile başlar. Page direktifinin sahip olduğu nitelikler sayfa i&amp;ccedil;in gerekli olan &amp;ccedil;alışma zamanı ve geliştirme zamanı davranışlarını belirleyen değerler i&amp;ccedil;erir. &amp;Ouml;rneğin &lt;strong&gt;CodeFile&lt;/strong&gt; niteliği, bu sayfa i&amp;ccedil;in &amp;ccedil;alışma zamanında değerlendirilecek ve &amp;ouml;zellikle arka kodların (code-behind) tutulacağı dosyanın adını belirtir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Inherits&lt;/strong&gt; isimli nitelik ile, &amp;uuml;retilecek olan &amp;ccedil;alışma zamanı sayfasının hangi tipten t&amp;uuml;retileceği s&amp;ouml;ylenmektedir. &lt;strong&gt;Language&lt;/strong&gt; niteliği bu sayfada C# dili ile geliştirme yapılacağını vurgular. Dikkatimizi &amp;ccedil;eken bir diğer nitelik olan AutoEventWireup' a ise makalemizin sonunda değineceğiz. Ama &amp;ouml;ncesinde sayfamıza bir Button kontrol&amp;uuml; alıp buna ait bir Click olay metodu yazalım. Web sayfasına tasarım zamanında bir Button kontrol&amp;uuml; s&amp;uuml;r&amp;uuml;klersek, ilgili kontrol&amp;uuml;n &lt;strong&gt;form&lt;/strong&gt; takısı i&amp;ccedil;erisine alındığını g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Eğer Button kontrol&amp;uuml;m&amp;uuml;ze &amp;ccedil;ift tıklarsak (yada, event' lerinden Click olayına &amp;ccedil;ift tıklarsak), default.aspx.cs isimli code-behind dosyasında, Button bileşenine ait ilgili olay metodunun otomatik olarak oluşturulduğunu g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;default.aspx i&amp;ccedil;erisindeki değişiklik&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;form id="form1" runat="server"&amp;gt;
+    &amp;lt;div&amp;gt;
+        &amp;lt;asp:Button ID="Button1" runat="server" Text="Button" OnClick="Button1_Click"/&amp;gt;
+    &amp;lt;/div&amp;gt;
+&amp;lt;/form&amp;gt;&lt;/pre&gt;
+&lt;p&gt;defaulf.aspx.cs&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public partial class _Default : System.Web.UI.Page 
+{
+    protected void Button1_Click(object sender, EventArgs e)
+    {
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Burada en &amp;ccedil;ok dikkat etmemiz gereken nokta, _Default sınıfının Page' den t&amp;uuml;remesi ve partial bir tip olmasıdır. Bunun &amp;ouml;nemini ve oluşturduğu farkı g&amp;ouml;rmek i&amp;ccedil;in aynı uygulamanın Asp.Net 1.1 versiyonuna bakmamız gerekecektir. Aşağıdaki kod par&amp;ccedil;aları Visual Studio.Net 2003 ile tasarlanmıştır ve aynı senaryoyu ele almaktadır.&lt;/p&gt;
+&lt;p&gt;WebForm1.aspx&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;%@ Page language="c#" Codebehind="WebForm1.aspx.cs" AutoEventWireup="false" Inherits="HelloAspNet1.WebForm1" %&amp;gt;
+&amp;lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" &amp;gt;
+&amp;lt;HTML&amp;gt;
+&amp;lt;HEAD&amp;gt;
+&amp;lt;title&amp;gt;WebForm1&amp;lt;/title&amp;gt;
+
+&amp;lt;meta name="GENERATOR" Content="Microsoft Visual Studio .NET 7.1"&amp;gt;
+&amp;lt;meta name="CODE_LANGUAGE" Content="C#"&amp;gt;
+&amp;lt;meta name="vs_defaultClientScript" content="JavaScript"&amp;gt;
+&amp;lt;meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5"&amp;gt;
+&amp;lt;/HEAD&amp;gt;
+&amp;lt;body MS_POSITIONING="GridLayout"&amp;gt;
+    &amp;lt;form id="Form1" method="post" runat="server"&amp;gt;
+        &amp;lt;asp:Button id="Button1" runat="server" Text="Button"&amp;gt;&amp;lt;/asp:Button&amp;gt;
+    &amp;lt;/form&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/HTML&amp;gt;&lt;/pre&gt;
+&lt;p&gt;WebForm1.aspx.cs code behind dosyası&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public class WebForm1 : System.Web.UI.Page
+{
+    protected System.Web.UI.WebControls.Button Button1;
+
+    private void Page_Load(object sender, System.EventArgs e)
+    {
+    }
+
+    #region Web Form Designer generated code
+    override protected void OnInit(EventArgs e)
+    {
+        InitializeComponent();
+        base.OnInit(e);
+    }
+
+    private void InitializeComponent()
+    { 
+        this.Button1.Click += new System.EventHandler(this.Button1_Click); 
+    }
+    #endregion
+
+    private void Button1_Click(object sender, System.EventArgs e)
+    {
+    }
+}&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi Asp.Net 1.1' de sayfaya bir kontrol eklendiğinde, code-behind dosyası i&amp;ccedil;erisinde Asp.Net 2.0' dakine g&amp;ouml;re daha farklı işlemler yapılmaktadır. Herşeyden &amp;ouml;nce Code-Behind sayfamızda, Button1 adında bir Button nesnesi tanımlanmıştır. Oysaki Asp.Net 2.0 ile geliştirdiğimiz sayfa i&amp;ccedil;erisinde bu tarz bir tanımlama s&amp;ouml;z konusu değildir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;protected System.Web.UI.WebControls.Button Button1;&lt;/pre&gt;
+&lt;p&gt;Diğer taraftan Button1 isimli nesne i&amp;ccedil;in bir Click event' i &lt;strong&gt;Initialize Component&lt;/strong&gt; metodu i&amp;ccedil;erisinde y&amp;uuml;klenmiş ve Button1_Click isimli olay metoduna bağlanmıştır. Initialize Component metodu aslında windows formlarında da benzer bir g&amp;ouml;rev &amp;uuml;stlenir. Yani form &amp;uuml;zerindeki kontrollerin oluşturulması gerekli olaylarının bağlanması ve formun controls koleksiyonuna dahil edilmesi gibi. Elbette web de durum biraz daha farklı olmasına rağmen yinede kontrollerin oluşturulması gibi bir durum s&amp;ouml;z konusudur. Asp.Net 1.1 bu işi ger&amp;ccedil;ekleştirmek i&amp;ccedil;in sayfanın OnInit isimli olay metodunu g&amp;ouml;z &amp;ouml;n&amp;uuml;ne almaktadır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;this.Button1.Click += new System.EventHandler(this.Button1_Click);&lt;/pre&gt;
+&lt;p&gt;Oysaki Asp.Net 2.0 mimarisinde her sayfanın &amp;ccedil;alışma zamanında (run-time) derlenmesi (compile) s&amp;ouml;z konusudur. Bu işlem nedeni ile, bir nesne ve olaylarına ait metodlar &amp;ccedil;alışma zamanında dll &amp;uuml;retimi sırasında otomatik olarak birbirlerine bağlanırlar. Bu Asp.Net 2.0 ile web sayfalarına gelen en &amp;ouml;nemli yeniliklerden birisidir. Dolayısıyla, sayfa &amp;uuml;zerine yerleştireceğimiz bileşenleri ayrıca tanımlamamıza, bunalara ait olayları y&amp;uuml;klemek i&amp;ccedil;in temsilcilere kadar gitmemize gerek kalmamaktadır. &amp;Ouml;zellikle .Net 2.0 ile gelen tiplerin par&amp;ccedil;alara ayrılabilmesinin (Partial Types Modeli) bu yeni &amp;ccedil;alışma modelinde &amp;ouml;nemli bir yeri vardır. Bu &amp;ccedil;alışma sistemini daha net anlayabilmek amacıyla aşağıdaki şekli g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk182_1.gif" alt="" width="532" height="574" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Asp.Net 2.0 i&amp;ccedil;in &amp;ccedil;alışma zamanında &amp;uuml;retilen par&amp;ccedil;alı bir sınıf s&amp;ouml;z konusudur. Bu sınıf var olan aspx sayfasından &amp;uuml;retilir ve code-behind dosyasında yer alan sınıf ile birleştirilir. Her iki sınıf partial olarak tanımlanmış olduğundan aslında ortada tek bir sınıf vardır. Sonu&amp;ccedil; olarak &amp;uuml;retilen asıl sınıf, bileşenlerinin tanımlamalarını, ilgili olayları ile olan bağlantılarını vb... i&amp;ccedil;eren bir yapıya sahiptir. Bu sınıfa ait nesne &amp;ouml;rnekleri istemciden gelen talepler sonrası &amp;uuml;retilir, yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml;n&amp;uuml; ge&amp;ccedil;er ve istemciye g&amp;ouml;nderilemek &amp;uuml;zere bir html &amp;ccedil;ıktısının &amp;uuml;retilmesinde kullanılır.&lt;/p&gt;
+&lt;table id="table169" style="width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#ffffff"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;Asp.Net 2.0' da sayfa &amp;uuml;zerindeki kontroller ve bu kontrollere ait olayların bağlanması gibi işlemler &amp;ccedil;alışma zamanında ger&amp;ccedil;ekleştirilir. B&amp;ouml;ylece kod tarafında olay y&amp;uuml;kleme ve kontrol tanımlama gibi kodu kalabalıklaştıran işlemlerden uzaklaşılabilinmektedir. &lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Gelelim web sayfalarının anatomisindeki bir diğer konuya. Kodlamayı nerelerde yapabiliriz? Asp.Net iki t&amp;uuml;r kodlama şekli sunmaktadır. Bunlardan birisi &lt;strong&gt;Inline-Coding&lt;/strong&gt; diğeri ise&lt;strong&gt; Code-Behind&lt;/strong&gt; modelidir. Inline-Coding modelinde, aspx sayfasının kaynak i&amp;ccedil;eriği ile kod kısmı aynı fiziki dosya i&amp;ccedil;erisinde yer alırlar. &amp;Ouml;rneğin aşağıdaki kod par&amp;ccedil;asında Inline-Coding modeli kullanılmaktadır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;%@ Page Language="C#" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="_Default" %&amp;gt;
+
+&amp;lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&amp;gt;
+
+&amp;lt;script runat="server"&amp;gt;
+    protected void Button1_Click(object sender, EventArgs e)
+    {
+    } 
+&amp;lt;/script&amp;gt;
+&amp;lt;html xmlns="http://www.w3.org/1999/xhtml" &amp;gt;
+&amp;lt;head runat="server"&amp;gt;
+&amp;lt;title&amp;gt;Untitled Page&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    &amp;lt;form id="form1" runat="server"&amp;gt;
+        &amp;lt;div&amp;gt;
+            &amp;lt;asp:Button ID="Button1" runat="server" Text="Button" OnClick="Button1_Click"/&amp;gt;
+        &amp;lt;/div&amp;gt;
+    &amp;lt;/form&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Inline coding modelinde dikkat ederseniz, sayfanın kodlarını aspx sayfası i&amp;ccedil;erisinde yer alan script blokları i&amp;ccedil;erisinde yapmaktayız. Script bloğu i&amp;ccedil;erisinde &lt;strong&gt; runat="server" &lt;/strong&gt;niteliğinin kullanılmasının en b&amp;uuml;y&amp;uuml;k nedeni ise bu blok i&amp;ccedil;erisinde &amp;ccedil;alıştırılacak olan kodların sunucu tarafında ele alınacak olmasıdır. Visual Studio.Net 2005 bir &amp;ouml;nceki s&amp;uuml;r&amp;uuml;m&amp;uuml;ne g&amp;ouml;re, Inline-Coding sırasında intelli-sense i&amp;ccedil;in tam destek vermektedir. Aşağıdaki ekran &amp;ccedil;ıktısına dikkat ederseniz script bloğu i&amp;ccedil;erisinde .net tipleri i&amp;ccedil;in intelli-sense &amp;ouml;zelliğinin tam olarak &amp;ccedil;alıştığını g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk182_2.gif" alt="" width="542" height="309" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Inline-Coding' in en &amp;ouml;nemli avantajlarından birisi kaynak html i&amp;ccedil;eriği ile kodların tek ve aynı fiziki dosya i&amp;ccedil;erisinde yer almasıdır. Bu sayfanın dağıtılmasını (deployement) son derece kolaylaştırır. Ayrıca sayfanın yeninden isimlendirilmesi başka bir kod sayfasına bağımlılık olmadığından daha kolaydır.&lt;/p&gt;
+&lt;table id="table170" style="width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#ffffff"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;Microsoft, kodlama işlemlerinde Code-Behind modelinin kullanılmasını &amp;ouml;nermektedir.&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Gelelim Code-Behind modeline. Bu modelde, kodlarımızı i&amp;ccedil;erisinde barındırıdan ayrı bir fiziki dosya s&amp;ouml;z konusdur. Aşağıdaki kod par&amp;ccedil;asında bu model g&amp;ouml;sterilmektedir.&lt;/p&gt;
+&lt;p&gt;Aspx tarafında&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;form id="form1" runat="server"&amp;gt;
+        &amp;lt;div&amp;gt;
+            &amp;lt;asp:Button ID="Button1" runat="server" Text="Button" OnClick="Button1_Click"/&amp;gt;
+        &amp;lt;/div&amp;gt;
+    &amp;lt;/form&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Code Behind tarafında&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public partial class _Default : System.Web.UI.Page 
+{
+    protected void Button1_Click(object sender, EventArgs e)
+    {
+        Response.Write("Deneme");
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Code-Behind programlamanın en &amp;ouml;nemli artısı, kod tarafı ile sunum tarafının kesin olarak birbirlerinden ayrılıyor olmasıdır. Bu nedenle grafik departmanı ile kodlamacıların aynı sayfa &amp;uuml;zerinde &amp;ccedil;alışmaları &amp;ccedil;ok daha kolay olabilmektedir.&lt;/p&gt;
+&lt;p&gt;Web sayfalarının anatomisinde inceleyeceğimiz bir diğer konuda &lt;strong&gt;form&lt;/strong&gt; takısının g&amp;ouml;revidir. Bildiğiniz gibi bir istemci web sunucusu &amp;uuml;zerinden herhangibir sayfayı ilk talep ettiğinde, sunucu tarafında bir dizi işlem ger&amp;ccedil;ekleştirilir.&lt;/p&gt;
+&lt;table id="table175" style="width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#ffffff"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;
+&lt;p&gt;&lt;em&gt;Aslında ilk talep Http protokol&amp;uuml;n&amp;uuml;n Get metoduna g&amp;ouml;re ger&amp;ccedil;ekleşir. Talep edilen sayfa sunucuda &amp;ouml;nce IIS tarafından karşılanır ve Asp.Net sayfası olup olmadığına bakılır. Eğer Asp.Net sayfası ise talep ASPNET_ISAPI.dll' ine devredilir. Bu dll, Asp.Net web uygulamalarını &amp;ccedil;alıştıran ve y&amp;ouml;neten Asp.Net work processor ile IIS arasındaki iletişimi sağlamakla g&amp;ouml;revlidir. AspNet Work Processor, talep edilen sayfanın bulunduğu web uygulamasının bir application domain i&amp;ccedil;erisine y&amp;uuml;klenmesinden, CLR' a a&amp;ccedil;ılmasından sorumludur. Eğer talep edilen sayfaya ait web uygulaması i&amp;ccedil;in bir Application Domain a&amp;ccedil;ılmamışsa, Asp.Net Work Processor bu işlemide &amp;uuml;stlenir. Bu şu anlamada gelir; eğer Application Domain y&amp;uuml;kl&amp;uuml; ise bu adım otomatikman atlanır.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Gelen talebe ait sayfanın &amp;ccedil;alıştırılması, belleğe alınması, html &amp;ccedil;ıktısının &amp;uuml;retilmesi gibi işlemler HTTPPIPE adı verilen bir .Net sınıflar koleksiyonun sorumluluğu altındadır. Tabi talep edilen sayfaya ait bir dll daha &amp;ouml;nceden işletim sisteminin ilgili temp klas&amp;ouml;rlerine atılmışsa buradaki dll &amp;uuml;retme gibi işlemler otomatikman atlanır ve sayfanın doğrudan &amp;ccedil;alıştırılmasına ge&amp;ccedil;ilir. Yani HTTPPIPE talep edilen i&amp;ccedil;erik i&amp;ccedil;in dll oluşturma işleminide kontrol altına alır. &amp;Uuml;retilen &amp;ccedil;ıktı istemcinin g&amp;ouml;rmesi gereken i&amp;ccedil;eriktir ve aynı yollar ile IIS' e d&amp;ouml;nerek buradan istemciye g&amp;ouml;nderilir. &lt;/em&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Talep sonrası ger&amp;ccedil;ekleşen arka plan işlemlerinin sonucunda ilgili sayfanın HTML &amp;ccedil;ıktısının istemciye g&amp;ouml;nderildiğini d&amp;uuml;ş&amp;uuml;nebiliriz. İstemci bu sayfa &amp;uuml;zerinden gelen kontrollerde veri girişleri yapabilir. Bu veri girişlerinden sonra sayfayı tekrardan sunucuya g&amp;ouml;nderebilir-ki biz buna post-back işlemi diyoruz. İşte sayfanın i&amp;ccedil;erisindeki veriler ile birlikte sunucuya g&amp;ouml;nderilmesi aşamasında standard olarak &lt;strong&gt;HTTP&lt;/strong&gt; protokol&amp;uuml;n&amp;uuml;n &lt;strong&gt;Post&lt;/strong&gt; metodu kullanılır.&lt;/p&gt;
+&lt;p&gt;Bu işlemde HTTP paketi i&amp;ccedil;erisinde sunucuya doğru hareket edecek olan i&amp;ccedil;erik, sayfadaki form takısı i&amp;ccedil;erisinde kullanılan elemanlar i&amp;ccedil;in ge&amp;ccedil;erli olacaktır. Kısacası, HTTP Post tekniğine g&amp;ouml;re sayfa i&amp;ccedil;erisindeki veriler istemciden sunucuya doğru HTTP paketi i&amp;ccedil;erisinde g&amp;ouml;nderilirler. Oysaki &lt;strong&gt;HTTP&lt;/strong&gt; protkol&amp;uuml;n&amp;uuml;n &lt;strong&gt;Get&lt;/strong&gt; isimli bir başka metodu daha vardır. Bu metoda g&amp;ouml;re form takısı i&amp;ccedil;erisindeki elemanlara ait i&amp;ccedil;erik Url &amp;uuml;zerinden bir başka deyişle tarayıcı pencersinin adres satırı &amp;uuml;zerinden sunucuya g&amp;ouml;nderilecektir. Şimdi bu durumu analiz etmek i&amp;ccedil;in default.aspx sayfamızı aşağıdaki gibi değiştirelim.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;%@ Page Language="C#" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="_Default" %&amp;gt;
+
+&amp;lt;script runat="server"&amp;gt;
+
+    protected void Button1_Click(object sender, EventArgs e)
+    {
+        Response.Write(txtAd.Text);
+    } 
+
+&amp;lt;/script&amp;gt;
+
+&amp;lt;html xmlns="http://www.w3.org/1999/xhtml" &amp;gt;
+&amp;lt;head runat="server"&amp;gt;
+&amp;lt;title&amp;gt;Untitled Page&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+    &amp;lt;form id="form1" runat="server" method="get"&amp;gt;
+        &amp;lt;div&amp;gt;
+            &amp;lt;asp:Button ID="Button1" runat="server" Text="Button" OnClick="Button1_Click"/&amp;gt;
+            &amp;lt;asp:TextBox ID="txtAd" runat="server" Text="Adınız" /&amp;gt;
+        &amp;lt;/div&amp;gt;
+    &amp;lt;/form&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;&lt;/pre&gt;
+&lt;p&gt;İstemci bu sayfayı talep ettikten sonra TextBox kontrol&amp;uuml;ne veri girişi yapıp, sayfayı tekrar sunucuya g&amp;ouml;nderdiğinde ViewState, TextBox ve Button nesnelerine ait i&amp;ccedil;erikler url &amp;uuml;zerinden sunucuya g&amp;ouml;nderilmektedir. Bunu aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nden ve Url satırındaki kod kısmından daha net g&amp;ouml;rebilirsiniz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk182_3.gif" alt="" width="590" height="131" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;http://localhost:1503/Anatomi/Default.aspx?__VIEWSTATE=%2FwEPDwUKMTM0MDE0NzQwOGRkccXHiCjUXf6SyoYO18eFOly9GKU%3D&amp;amp;Button1=Button&amp;amp;txtAd=Burak&amp;amp;__EVENTVALIDATION=%2FwEWAwKYvOnjDAKM54rGBgKM%2B%2FaQCjAN0uAoGcNSpMV1ikOzE6pJ9Fnd&lt;/pre&gt;
+&lt;p&gt;Dikkat ederseniz, TextBox kontrol&amp;uuml;n&amp;uuml;n i&amp;ccedil;eriğini Url i&amp;ccedil;erisinde net olarak g&amp;ouml;rebilmekteyiz. Http Get modeline g&amp;ouml;re sayfa i&amp;ccedil;eriklerini sunucuya g&amp;ouml;ndermek ,&amp;ouml;zellikle bilgilerin a&amp;ccedil;ık olarak Url &amp;uuml;zerinden gidiyor olması ve tarayıcıların Url &amp;uuml;zerinden g&amp;ouml;nderebilecekleri karakter sayısının bir sınırının olması gibi nedenlerden dolayı &amp;ccedil;ok tercih edilen bir yol değildir. Lakin, parametrik değerlerin Url satırından değiştirilerek farklı sonu&amp;ccedil;ların elde edilebilmesi gibi bir imkanda s&amp;ouml;z konusudur ki g&amp;uuml;venlik g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında bununda bir avantaj olmadığı d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;Web sayfamıza ait anatomide inceleyeceğimiz bir diğer &amp;ouml;nemli unsurda yaşam d&amp;ouml;ng&amp;uuml;leridir. Aslında her web sayfası sunucu tarafında bir .Net sınıfıdır. &amp;Ccedil;&amp;uuml;nk&amp;uuml; i&amp;ccedil;eriklerinde başka sınıflara ait &amp;ouml;rnekler, &amp;uuml;ye metodlar, olaylar, &amp;ouml;zellikler vb... vardır. Dahası her web sayfası sunucu tarafında &amp;uuml;retilmekte ve işlenmektedir. Yani istemciler bir web sayfasını talep ettiklerinde sunucunun yapacağı iş, talep edilen sayfanın &amp;ouml;rneğini oluşturmak ve y&amp;uuml;r&amp;uuml;tmek olacaktır. Dolayısıyla bu s&amp;uuml;re&amp;ccedil; sırasında her web sayfasının ele alınabilecek bir yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml; olduğu sonucuna varabiliriz. Standard olarak bir web sayfasının &amp;uuml;retilmesi aşamasındaki yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml;n&amp;uuml; t&amp;uuml;m ayrıntılarıyla izlemek istersek Trace mekanizmasını kullanabiliriz. Trace konusuna detaya girmeyecek olsakta, yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml; i&amp;ccedil;erisindeki adımları g&amp;ouml;rmemiz a&amp;ccedil;ısından bir &amp;ouml;rnek yapmamız gerektiğini d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum. Trace' i aktif hale getirmek i&amp;ccedil;in Web.config dosyasına aşağıdaki elemanı eklememiz yeterli olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk182_4.gif" alt="" width="435" height="99" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Buna g&amp;ouml;re Trace bilgileri ilgili web uygulamasındaki her sayfanın sonunda&lt;strong&gt; (pageOutput=true)&lt;/strong&gt; ve yanlızca sunucu bilgisayar &amp;uuml;zerindeki isteklerde &lt;strong&gt;(localOnly="true")&lt;/strong&gt; g&amp;ouml;r&amp;uuml;necek şekilde aktif hale getirilmektedir. Şimdi default.aspx sayfamızı tarayıcı pencersinden talep edersek aşağıdaki &amp;ccedil;ıktıyı elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk182_5.gif" alt="" width="630" height="647" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu &amp;ccedil;ıktyı sayfamızı ilk talep ettiğimizde elde ederiz. Peki Button kontrol&amp;uuml;m&amp;uuml;ze basıp sayfayı istemciden sunucuya g&amp;ouml;nderdiğimizde (post-back) yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml; nasıl işleyecektir? Herşeyden &amp;ouml;nce sayfa &amp;uuml;zerindeki verilerin istemciden gelmesiyle birlikte post edilen dataların ve viewstate verilerinin işlendiği başka olaylarda tetiklenecek ve işletilecektir. Bu durumda trace bilgilerimiz aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk182_6.gif" alt="" width="610" height="660" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Temel olarak buradaki olaylardan bazılarını sayfamız i&amp;ccedil;erisinde ele alabilir ve sayfanın yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml; i&amp;ccedil;erisinde kendi isteklerimizi kodlayarak y&amp;uuml;r&amp;uuml;tebiliriz. Bir web sayfasının yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml;nde ele alınabilecek olayları daha basit olarak d&amp;uuml;ş&amp;uuml;nd&amp;uuml;ğ&amp;uuml;m&amp;uuml;zde aşağıdaki sıralamayı ele alabiliriz.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;Page_PreInit
+Page_Init
+Page_Load
+   Button i&amp;ccedil;in Click / Change Olay Metodları (Eğer tetiklenmişler ise)
+Page_PreRender
+Page_UnLoad
+Dispose (Eğer override edilmişse)&lt;/pre&gt;
+&lt;p&gt;Burada dikkat ederseniz &lt;strong&gt;Page_Load&lt;/strong&gt; ve &lt;strong&gt;Page_PreRender&lt;/strong&gt; olayları arasında sayfa &amp;uuml;zerindeki bileşenlere ait Click ve Change olaylarının yer aldığını g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Yukarıdaki Trace &amp;ccedil;ıktısında bunları tam olarak g&amp;ouml;remesekte Button_Click olay metodu i&amp;ccedil;erisine aşağıdaki kodu yazarak izleme şansına sahip olabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;Trace.Warn("Button Click olay metodu &amp;ccedil;alışıyor..."); // Trace' e kırmızı renkte bilgi yazdırıyoruz.&lt;/pre&gt;
+&lt;p&gt;Bu kodu &amp;ccedil;alıştırdığımızda Trace &amp;ccedil;ıktısında aşağıdaki g&amp;ouml;r&amp;uuml;nt&amp;uuml;y&amp;uuml; elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk182_7.gif" alt="" width="348" height="441" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Buradaki &amp;ccedil;ıktının Button kontrol&amp;uuml;ne basıp sayfayı sunucuya g&amp;ouml;nderdikten sonra oluştuğuna dikkat edelim.&lt;/p&gt;
+&lt;table id="table176" style="width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#ffffff"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;Sonu&amp;ccedil; olarak talep edilen her web sayfası, sunucu tarafında bir nesne olarak &amp;uuml;retilir, &amp;ccedil;alıştırılır, HTML &amp;ccedil;ıktısı alınır ve yok edilir (Dispose).&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Bu olaylar i&amp;ccedil;erisinde &amp;ouml;zellikle dikkate değer olan iki tanesi vardır. Page_UnLoad ve Dispose. Page_UnLoad sayfaya ait Html &amp;ccedil;ıktısı &amp;uuml;retildikten sonra &amp;ccedil;alışır. Bu nedenle burada HTML &amp;ccedil;ıktısına m&amp;uuml;dahale etme şansımız artık kalamamaktadır. Dolayısıyla, sayfa i&amp;ccedil;erisinde kullanılan başka managed kaynakların kapatılması ve sisteme iade edilmesi i&amp;ccedil;in ideal bir olay metodudur. Diğer taraftan Dispose metodu Page sınıfı i&amp;ccedil;erisinde override edildiği takdirde, &lt;strong&gt;Unmanaged&lt;/strong&gt; kaynakların sisteme iade edilmesi i&amp;ccedil;in bi&amp;ccedil;ilmiş kaftandır.&lt;/p&gt;
+&lt;p&gt;Yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml;nde yer alan bazı olayları kod tarafında ele alabileceğimizden bahsetmiştik. Web sayfasına ait olay metodları ile (ki bunların yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml; i&amp;ccedil;erisinde &amp;ouml;nemli bir rol&amp;uuml; vardır), sayfanın &lt;strong&gt;Page&lt;/strong&gt; direktifinde yer alan &lt;strong&gt;AutoEventWireup&lt;/strong&gt; niteliğinin değeri arasında &amp;ouml;nemli bir ilişki vardır. &amp;Ouml;rneğin aşağıdaki kod par&amp;ccedil;asını ele alalım.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;%@ Page Language="C#" AutoEventWireup="false" CodeFile="Default.aspx.cs" Inherits="_Default" %&amp;gt;
+
+&amp;lt;script runat="server"&amp;gt;
+
+    protected void Page_PreInit(object sender,EventArgs e)
+    {
+        Response.Write("PreInit olay metodu &amp;ccedil;alıştı...");
+    } 
+
+&amp;lt;/script&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Default.aspx sayfasını &amp;ccedil;alıştırdığımızda PreInit isimli olay metodunun işlemediğini g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Bunun sebebi varsayılan olarak true değerine sahip olan AutoEventWireup &amp;ouml;zelliğine false değerini atamamış olmamızdır. Buradan şu sonuca varabiliriz. Sayfaya ait olay metodlarının otomatik olarak bağlanmasını sağlamak i&amp;ccedil;in AutoEventWireup &amp;ouml;zelliğinin değerinin true olması gerekmektedir. Nitekim bu değeri true yaptığımızda PreInit olay metodunun &amp;ccedil;alıştığını g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk182_8.gif" alt="" width="295" height="121" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Peki AutoEventWireup niteliğine false değerinin atanabilmesinin nasıl bir katma değeri olabilir. Bunun i&amp;ccedil;in aşağıdaki kod par&amp;ccedil;asını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk182_9.gif" alt="" width="634" height="365" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu kod par&amp;ccedil;asına g&amp;ouml;re InitOncesi isimli olay metodumuz sayfanın PreInit olayı ger&amp;ccedil;ekleştiği zaman &amp;ccedil;alıştırılacak metod olacaktır.&amp;nbsp; AutoEventWireup niteliği Asp.Net 1.1 versiyonunda varsayılan olaran false değerine sahip olan bir niteliktir. Sayfa olaylarını kendi isimlendirdiğimiz metodlar ile ilişkilendirmekten başka bir avantaj sağladığını d&amp;uuml;ş&amp;uuml;nmemiz ne yazıkki pek m&amp;uuml;mk&amp;uuml;n değildir.&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi herhangibir tasarımı olmayan hatta &amp;ouml;nemli bir iş yapmayan bir web sayfası &amp;uuml;zerinde konuşulabilecek olduk&amp;ccedil;a fazla konu vardır. Bu makalemizde bir web sayfasının anatomisini ve g&amp;ouml;ze &amp;ccedil;arpan noktalarını incelemeye &amp;ccedil;alıştık. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2006-11-30 10:00:00</pubDate>
+  <slug>Asp-Net-2-0-Temelleri-Bir-Web-Sayfasc4b1nc4b1n-Anatomisi-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>aspnet</tag>
+  </tags>
+  <categories>
+    <category>Asp.Net</category>
+  </categories>
+</post>

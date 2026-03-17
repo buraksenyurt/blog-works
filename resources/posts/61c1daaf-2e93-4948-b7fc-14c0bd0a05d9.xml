@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>RijndaelManaged Vasıtasıyla Encryption(Şifreleme) ve Decryption(Deşifre)</title>
+  <description>Bu makalemizde, Rijndael Algoritmasını kullanan Managed tiplerden RijndaelManaged sınıfı ile şifreleme (encryption) ve deşifre etme (decryption) işlemelerinin nasıl gerçekleştirilebileceğini incelemeye çalışacağız. Konu ile ilgili örneklerimize geçmeden önce .Net Framework içerisinde yer alan Cryptography mimarisinde kısaca bahsetmekte yarar olduğunu düşünüyorum. Aşağıdaki şekil, .Net Framework’ te System.Securtiy.Cryptograhpy isim alanında yer alan şifreleme hiyerarşisini göstermektedir. Framework mimarisinde şifreleme sistemi ilk olarak üç ana katmandan oluşur. İlk katmanda taban sınıflar (base classes) yer alır. Bunlar SymmetricAlgorithm, AsymmetricAlgorithm ve HashAlgorithm sınıflarıdır. Bu sınıflar kendisinden türeyen ikinci katman sınıfları için temel ve ortak şifreleme özelliklerini içerirler.</description>
+  <content>&lt;p&gt;Değerli Okurlarım, Merhabalar&lt;/p&gt;
+&lt;p&gt;Bu makalemizde, Rijndael Algoritmasını kullanan Managed tiplerden &lt;strong&gt;RijndaelManaged&lt;/strong&gt; sınıfı ile şifreleme (encryption) ve deşifre etme (decryption) işlemelerinin nasıl ger&amp;ccedil;ekleştirilebileceğini incelemeye &amp;ccedil;alışacağız. Konu ile ilgili &amp;ouml;rneklerimize ge&amp;ccedil;meden &amp;ouml;nce .Net Framework i&amp;ccedil;erisinde yer alan Cryptography mimarisinde kısaca bahsetmekte yarar olduğunu d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum. Aşağıdaki şekil, .Net Framework&amp;rsquo; te &lt;strong&gt;System.Securtiy.Cryptograhpy&lt;/strong&gt; isim alanında yer alan şifreleme hiyerarşisini g&amp;ouml;stermektedir. Framework mimarisinde şifreleme sistemi ilk olarak &amp;uuml;&amp;ccedil; ana katmandan oluşur. İlk katmanda taban sınıflar (base classes) yer alır. Bunlar SymmetricAlgorithm, AsymmetricAlgorithm ve HashAlgorithm sınıflarıdır. Bu sınıflar kendisinden t&amp;uuml;reyen ikinci katman sınıfları i&amp;ccedil;in temel ve ortak şifreleme &amp;ouml;zelliklerini i&amp;ccedil;erirler.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk115_1.gif" alt="" width="638" height="679" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;SymmetricAlgorithm sınıfını kullanan şifreleme mekanizmalarında herhangi bir anahtar ile şifrelenen veriler, deşifre edilmek istendiklerinde yine aynı anahtarı kullanırlar. Bu &amp;ouml;zellikle internet gibi herkesin kullanımına a&amp;ccedil;ık olan ortamlarda g&amp;uuml;venlik a&amp;ccedil;ısından tehlike yaratabilir. Nitekim anahtarın herhangi bir şekilde ele ge&amp;ccedil;irilmesi, şifrelenen verinin &amp;ccedil;&amp;ouml;z&amp;uuml;lmesi i&amp;ccedil;in yeterli olacaktır. Diğer yandan bu tekniğe g&amp;ouml;re geliştirilen algoritmalar hızlı ve performanslı &amp;ccedil;alışırlar.&lt;/p&gt;
+&lt;table id="table3" border="1" width="100%" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;SymmetricAlgorithm katmanından t&amp;uuml;reyen Encryption sınıfları ile uygulanan şifreleme algoritmalarında veriyi şifrelerken kullandığımız key(anahtar) ve IV(vekt&amp;ouml;r) değerleri, aynı veriyi deşifre ederken de gereklidir.&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;SymmetricAlgorithm yapısını kullanan şifreleme mimarilerinin neden olduğu g&amp;uuml;venlik sorununun &amp;ccedil;&amp;ouml;z&amp;uuml;m&amp;uuml; i&amp;ccedil;in AsymmetrciAlgorithm taban sınıfı (base class) geliştirilmiştir. Bu mekanizmada veri şifreleneceği zaman public bir anahtar kullanılır. Bu anahtarın herhangi bir şekilde ele ge&amp;ccedil;irilmesi, verinin deşifre edilebilmesi i&amp;ccedil;in yeterli değildir. Nitekim verinin deşifre (decryption) edilebilmesi i&amp;ccedil;in karşı tarafın private bir anahtara gereksinimi vardır. Bu avantajının yanında AsymmetricAlgroithm mekanizması SymmetricAlgorithm mekanizmasına g&amp;ouml;re daha yavaş &amp;ccedil;alışmaktadır.&lt;/p&gt;
+&lt;table id="table4" border="1" width="100%" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;AsymmetricAlgorithm katmanından t&amp;uuml;reyen Encryption sınıfları ile uygulanan şifreleme (encryption) algoritmalarında veriyi şifrelerken public bir key kullanırken, deşifre (decryption) işlemi sırasında farklı olan private key kullanılır.&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Birinci katmanda yer alan taban sınıflar, abstract niteliktedir. Dolayısıyla kendisinden t&amp;uuml;reyen şifreleme sınıflarının i&amp;ccedil;ermesi ve uygulaması zorunlu olan &amp;uuml;yeler i&amp;ccedil;erirler. Bildiğiniz gibi abstract sınıflardan nesne &amp;ouml;rnekleri &amp;uuml;retilemez. Ancak taban sınıfların static Create metotları yardımıyla bu sınıfları da şifreleme mekanizmalarında kullanabiliriz. İkinci katmanda yer alan sınıflar ise, &amp;ouml;zellikle belirli şifrelme algoritmalarını işaret ederler. &amp;Ouml;rneğin bu g&amp;uuml;n işleyeceğimiz Rijndael algoritması 256 bitlik bir anahtar (key) ile şifreleme (deşifre etme) sağlar. Buradaki sınıflar, taban sınıflardan&amp;nbsp; (base classes) t&amp;uuml;remiştir ve abstract sınıflardır.&lt;/p&gt;
+&lt;p&gt;Asıl şifreleme metotlarını ve &amp;uuml;yelerini bizim i&amp;ccedil;in kullanışlı hale getiren sınıflar &amp;uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; katmanda yer alırlar. Burada dikkat edecek olursanız bazı sınıflar&amp;nbsp; ServiceProvider kelimesi ile biterler. Bu sınıflar Windows&amp;rsquo; un CryptoApi k&amp;uuml;t&amp;uuml;phanesini kullanan sınıflardır. Diğer yandan Managed kelimesi i&amp;ccedil;eren sınıflar (&amp;ouml;rneğin RijndaelManaged) &amp;ouml;zellikle .net i&amp;ccedil;in geliştirilmiş y&amp;ouml;netimsel uyarlamalardır (Managed Implementations). Buradaki sınıflar sealed olarak tanımlanmıştır. Yani kendilerinden t&amp;uuml;retme yapılamaz. Buna rağmen eğer istersek ikinci veya birinci katman sınıflarını kullanarak kendi şifreleme algoritma sınıflarımızı veya uyarlamalarımızı geliştirebiliriz.&lt;/p&gt;
+&lt;p&gt;Peki bir veri k&amp;uuml;mesini şifrelemek i&amp;ccedil;in yukarıdaki katmanları ve i&amp;ccedil;eriklerini nasıl kullanabiliriz. Bu makalemizde biz &amp;ouml;rnek olarak Rijndael algoritmasını kullanan iki &amp;ouml;rnek geliştireceğiz. .Net i&amp;ccedil;erisinde verileri şifrelemek i&amp;ccedil;in izleyeceğimiz yolda anahtar nokta CryptoStream sınıfıdır. Bu sınıfa ait nesne &amp;ouml;rnekleri yardımıyla verileri stream bazlı olarak, istenen algoritmaya g&amp;ouml;re şifreleyebilir ya da deşifre edebiliriz. CryptoStream sınıfından bir nesne &amp;ouml;rneğini aşağıdaki yapıcı metot (constructor) yardımıyla oluşturabiliriz.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;public CryptoStream(Stream stream, ICryptoTransform transform, CryptoStreamMode mode);&lt;/pre&gt;
+&lt;p&gt;Bu metodun ilk parametresine dikkat edecek olursanız bir Stream nesnesidir. CryptoStream sınıfı şifrelenecek veya deşifre edilecek verilerin işlenmesi sırasında Stream nesnelerini kullanılır. Dolayısıyla bellek &amp;uuml;zerinde tutulan verileri, fiziki dosyalarda tutulan verileri veya network &amp;uuml;zerinden akan verileri ilgili stream nesneleri yardımıyla (MemoryStream, FileStream, NetworkStream vb...) CrpytoStream sınıfına ait bir nesne &amp;ouml;rneğine aktarabiliriz. İkinci parametre ise Stream &amp;uuml;zerindeki verinin hangi algoritma ile şifreleneceğini (deşifre edileceğini) belirlemek &amp;uuml;zere kullanılır. Bu parametre ICryptoTransform ara y&amp;uuml;z&amp;uuml; tipinden bir nesne &amp;ouml;rneğidir. &amp;Uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; parametre ise Stream&amp;rsquo; e yazma veya stream&amp;rsquo; den okuma yapılacağını belirtir.&lt;/p&gt;
+&lt;p&gt;Stream &amp;uuml;zerindeki veriyi şifreleyeceğimiz zaman &amp;uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; parametre Write değerini alırken, deşifre işlemlerinde Read değerini alır. Karışık gibi g&amp;ouml;r&amp;uuml;nmesine rağmen &amp;ouml;rneklerimizden de g&amp;ouml;receğiniz gibi, şifreleme(deşifre etme) işlemleri sanıldığı kadar zor değildir. Dilerseniz vakit kaybetmeden &amp;ouml;rneklerimize ge&amp;ccedil;elim. İlk &amp;ouml;rneğimizde metin tabanlı bir dosya i&amp;ccedil;eriğini FileStream nesnesinden faydalanarak okuyor ve CyrptoStream sınıfına ait nesne &amp;ouml;rneği yardımıyla şifreleyerek bir dosyaya yazıyoruz. Daha sona ise şifrelenen bu dosyayı tekrardan &amp;ccedil;&amp;ouml;z&amp;uuml;yoruz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.IO;
+using System.Security.Cryptography;
+
+namespace CryptoStreamS1
+{
+    class Class1
+    {
+        [STAThread]
+        static void Main(string[] args)
+        {
+            #region Dosya Şifrelemesi (Rijndael algoritması ile)
+
+            // İlk olarak şifrelemek istediğimiz dosya i&amp;ccedil;in bir stream oluşturuyoruz.
+            FileStream fs=new FileStream(@"SifreliDosya.txt",FileMode.OpenOrCreate,FileAccess.Write);
+
+            /* Kullanacağımız şifreleme algoritmasını uygulatabileceğimiz managed Rijndael sınıfına ait nesne &amp;ouml;rneğimizi tanımlıyoruz. Şifreleme algoritması olarak Rijndael tekniğini kullanıyoruz. */
+            RijndaelManaged rm=new RijndaelManaged();
+            rm.GenerateKey(); // Aalgoritma i&amp;ccedil;in gerekli Key &amp;uuml;retiliyor.
+
+            /* Şimdi algoritma i&amp;ccedil;in gerekli key ve vekt&amp;ouml;r değerlerini &amp;uuml;retiyoruz. Burada kullanılan şifreleme algoritması simetrik yapıda olduğundan şifrelenen verinin a&amp;ccedil;ılabilmesi i&amp;ccedil;in (decrypting) aynı key ve vekt&amp;ouml;r değerine ihtiyacımız var. Bu nedenle bunları bir byte dizisinde tutuyoruz.*/ 
+
+            // Elde ettiğimiz key değerini bir byte dizisine aktarıyoruz.
+            byte[] k=new byte[rm.Key.Length];
+            for(int i=0;i&amp;lt;rm.Key.Length;i++)
+            {
+                Console.Write(rm.Key[i]);
+                k[i]=rm.Key[i];
+            } 
+
+            Console.WriteLine();
+
+            rm.GenerateIV(); // Algoritma i&amp;ccedil;in gerekli IV vekt&amp;ouml;r değeri &amp;uuml;retiliyor.
+            byte[] v=new byte[rm.IV.Length];
+
+            // Elde ettiğimiz Vekt&amp;ouml;r değerini bir byte dizisine aktarıyoruz.
+            for(int i=0;i&amp;lt;rm.IV.Length;i++)
+            {
+                Console.Write(rm.IV[i]);
+                v[i]=rm.IV[i];
+            }
+    
+            Console.WriteLine();
+
+            /* Belirlediğimiz şifreleme algoritmasını kullanarak, stream &amp;uuml;zerinde şifrelemeyi yapacak CryptoStream nesnemizi oluşturuyoruz. Şifrelemeyi oluşturmak i&amp;ccedil;in RijndaelManaged sınıfından &amp;ouml;rneklendirdiğimiz nesnemizin CreateEncyrptor metodunu kullanıyoruz. Oluşturulan şifreli d&amp;ouml;k&amp;uuml;manı ilgili stream&amp;rsquo; e yazmak istediğimizdenCryptoStreamMode olarak Write değerini se&amp;ccedil;iyoruz.*/
+            CryptoStream cs=new CryptoStream(fs,rm.CreateEncryptor(),CryptoStreamMode.Write);
+
+            /*Şimdi şifrelenecek olan byte dizisini almak &amp;uuml;zere dosyamız i&amp;ccedil;in bir akım oluşturuyoruz. Nitekim CryptoStream&amp;rsquo; in aşağıda kullanılan aşırı y&amp;uuml;klenmiş versiyonu ilk parametre olarak şifrelenecek veri yapısını bir byte dizisi halinde alıyor.*/ 
+            FileStream fs2=new FileStream(@"Dosya.txt",FileMode.Open);
+            // dosyanın i&amp;ccedil;eriğini byte dizisine aktarıyoruz.
+            byte[] veriler=new byte[fs2.Length];
+            fs2.Read(veriler,0,(int)fs2.Length);
+
+            // CryptoStream sınıfının write metodu ile dosya.txt&amp;rsquo; yi okuduğumuz byte dizisinin i&amp;ccedil;eriğini fs2 ile belirttiğimiz stream&amp;rsquo; e yazıyoruz.
+            cs.Write(veriler,0,veriler.Length);
+            fs2.Close();
+            cs.Close();
+            #endregion
+
+            #region Şifrelenmiş dosyanın &amp;ouml;rnek olarak ilk satırının decrypt edilerek okunması.
+
+            /* Bu kez işlemleri tersten yapıyoruz. İlk olarak şifrelenmiş ve decrypt edilmek istenen stream nesnesinin oluşturuyoruz. Ardından bu stream&amp;rsquo;     deki veriye Rijndael alogirtmasını uygulayarak Decrypting yapıyoruz. */
+            FileStream fsSifreliDosya=new FileStream(@"SifreliDosya.txt",FileMode.Open,FileAccess.Read);
+            RijndaelManaged rm2=new RijndaelManaged();
+            //simetrik algoritma kullandığımız i&amp;ccedil;in decrypting i&amp;ccedil;inde aynı key ve vekt&amp;ouml;r değerlerini kullanmamız gerekiyor.
+            rm2.Key=k;
+            rm2.IV=v;
+            CryptoStream cs2=new CryptoStream(fsSifreliDosya,rm2.CreateDecryptor(),CryptoStreamMode.Read); 
+            StreamReader sr=new StreamReader(cs2);
+            string satir=sr.ReadLine();
+            Console.WriteLine(satir);
+            #endregion
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Uygulamayı &amp;ccedil;alıştırdığımızda orijinal i&amp;ccedil;erikli dosyanın aşağıdaki gibi şifrelendiğini g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk115_5.gif" alt="" width="469" height="384" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;İkinci &amp;ouml;rneğimizde ise, MemoryStream nesnesinden yararlanacağız. Bu kez, bir veri tablosundan &amp;ccedil;ektiğimiz belli bir alanı bellek &amp;uuml;zerinden şifreliyor ve daha sonra şifrelenen verinin orijinal i&amp;ccedil;eriğini elde edecek şekilde deşifre işlemini uyguluyoruz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.IO;
+using System.Data;
+using System.Data.SqlClient;
+using System.Security.Cryptography;
+
+namespace CryptoStreamS2
+{
+    class Kriptografi2
+    {
+        [STAThread]
+        static void Main(string[] args)
+        {     
+            #region verinin şifrelenmesi
+            /* &amp;Ouml;ncelikle şifrelemek istediğimiz veriyi elde ediyoruz. &amp;Ouml;rnek olarak SQL Sunucusundaki Ogrenciler tablosundan belirli bir alanı aldık. */
+            SqlConnection con=new SqlConnection("data source=BURKI;database=Work;integrated security=SSPI");
+            SqlCommand cmd=new SqlCommand("SELECT AD FROM Ogrenciler WHERE OGRENCINO=1",con); 
+            con.Open();
+            string sifrelenecekVeri=cmd.ExecuteScalar().ToString(); 
+            con.Close();
+
+            /* Şifrelenecek verinin herşeyden &amp;ouml;nce bir byte dizisi olarak ele alınması gerekiyor.*/
+            byte[] sv=new byte[sifrelenecekVeri.Length];
+            for(int i=0;i&amp;lt;sv.Length;i++)
+            {
+                sv[i]=(byte)sifrelenecekVeri[i];
+            }
+
+            /* Şifrelenecek veriyi belleğe yazacağız. Bu nedenle MemoryStream sınıfı tipinden bir nesne &amp;ouml;rneği oluşturduk*/
+            MemoryStream ms=new MemoryStream();
+            /* Şifreleme algoritması olarak Rijnadel tekniğini sağlayan Managed nesne &amp;ouml;rneğimizi oluşturuyoruz.*/
+            System.Security.Cryptography.RijndaelManaged rm=new RijndaelManaged();
+
+            /* Şifreleme i&amp;ccedil;in gerekli anahtar ve vekt&amp;ouml;r değerlerini elde ediyoruz.*/
+            rm.GenerateKey();
+            rm.GenerateIV();
+
+            /* RijndaelManaged nesnesi tarafından &amp;uuml;retilen anahtar ve vekt&amp;ouml;r değerlerini byte dizilerine alıyoruz. Nitekim karşı tarafın şifrelenen veriyi &amp;ccedil;&amp;ouml;zebilmesi i&amp;ccedil;in bu anahtar ve vekt&amp;ouml;r değerlerinin aynılarına ihtiya&amp;ccedil;ları olacaktır.*/
+            byte[] anahtar=rm.Key;
+            byte[] vektor=rm.IV;
+
+            /* Veriyi belirttiğimiz algoritmaya g&amp;ouml;re şifreleyerek parametre olarak verilen stream&amp;rsquo; e ki burada MemoryStream&amp;rsquo; e yazmak i&amp;ccedil;in CryptoStream sınıfımızdan nesne &amp;ouml;rneğimizi oluşturuyoruz.*/
+            CryptoStream cs=new CryptoStream(ms,rm.CreateEncryptor(anahtar,vektor),CryptoStreamMode.Write);
+            /* Veriyi şifreleyerek belleğe yazıyoruz. Başından sonuna kadar.*/
+            cs.Write(sv,0,sv.Length); 
+            cs.FlushFinalBlock();
+
+            Console.Write("Verinin şifrelenen hali ");
+            byte[] icerik=ms.ToArray(); /* Belleğe yazdığımız şifrelenmiş veriyi bir byte dizisine alarak okuyor ve ekrana yazdırıyoruz.*/
+            for(int i=0;i&amp;lt;icerik.Length;i++)
+            {
+                Console.Write((char)icerik[i]);
+            }
+            Console.WriteLine();
+            #endregion
+
+            #region şifrelenen verinin &amp;ccedil;&amp;ouml;z&amp;uuml;mlenmesi
+            /* Bellekte tutulan icerik değerini yani şifrelenmiş olan veriyi parametre alan stream nesnemizi oluşuturuyoruz.*/
+            MemoryStream msCoz=new MemoryStream(icerik);
+            RijndaelManaged rmCoz=new RijndaelManaged(); // Rijndael algoritmasını kullanarak şifrelenen veriyi &amp;ccedil;&amp;ouml;zecek olan provider nesnemizi     tanımlıyoruz.*/
+            /* SymmetricAlgorithm s&amp;ouml;z konusu olduğundan RijndaelManaged sınıfına ait nesne &amp;ouml;rneğinin decryption işlemi i&amp;ccedil;in encrypt&amp;rsquo; te kullanılan key ve IV değerlerine ihtiyacımı var.*/
+            rmCoz.Key=anahtar;
+            rmCoz.IV=vektor;
+            /* Bu kez CryptoStream nesnemiz stream&amp;rsquo; den okuduğu veri &amp;uuml;zerinde Decypting işlemini ger&amp;ccedil;ekleştirecek. Bu nedenle Rijndael nesne     &amp;ouml;rneğimizin CreateDecryptor metodunu &amp;ccedil;ağırıyoruz.*/
+            CryptoStream csCoz=new CryptoStream(msCoz,rmCoz.CreateDecryptor(anahtar,vektor),CryptoStreamMode.Read);
+            byte[] cozulen=new byte[ms.Length]; // &amp;Ccedil;&amp;ouml;z&amp;uuml;len veriyi tutacak bir byte dizisi oluşturuyoruz.
+            csCoz.Read(cozulen,0,icerik.Length); // Şifrelenen veriyi &amp;ccedil;&amp;ouml;z&amp;uuml;mleyerek okuyoruz.
+            Console.Write("Şifrelenen verinin &amp;ccedil;&amp;ouml;z&amp;uuml;lm&amp;uuml;ş hali "); 
+            /* &amp;Ccedil;&amp;ouml;z&amp;uuml;mlenmiş veriyi son olarak ekrana yazdırıyoruz.*/
+            for(int i=0;i&amp;lt;cozulen.Length;i++)
+            {
+                Console.Write((char)cozulen[i]);
+            }
+            Console.ReadLine();
+            #endregion
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Uygulamamızı arka arkaya &amp;ccedil;alıştırdığımızda aşağıdakine benzer sonu&amp;ccedil;lar alırız. Dikkat ederseniz deşifre edilen veri her seferinde aynı olmasına rağmen, şifrelenen veri i&amp;ccedil;eriği bir birlerinden farklıdır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk115_2.gif" alt="" width="524" height="107" border="0" /&gt;&lt;br /&gt; &lt;br /&gt; &lt;img src="/makale/images/mk115_3.gif" alt="" width="524" height="107" border="0" /&gt;&lt;br /&gt; &lt;br /&gt; &lt;img src="/makale/images/mk115_4.gif" alt="" width="524" height="107" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu makalemizde kısaca Rijndael algoritmasını kullanan RijndaelManaged sınıfı ile şifreleme ve deşifre işlemlerini incelemeye &amp;ccedil;alıştık. İlerleyen makalelerimizde, AsymmetricAlgorithm tekniğininin nasıl uygulanabileceğini incelemeye &amp;ccedil;alışacağız. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/makale/images/Cryptography.rar"&gt;&amp;Ouml;rnek kodlar i&amp;ccedil;in tıklayın.&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2005-02-23 12:00:00</pubDate>
+  <slug>RijndaelManaged-Vasıtasıyla-Encryption(Şifreleme)-ve-Decryption(Deşifre)-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>framework</tag>
+    <tag>cryptography</tag>
+    <tag>encryption</tag>
+    <tag>rijndael</tag>
+  </tags>
+  <categories>
+    <category>C#</category>
+  </categories>
+</post>

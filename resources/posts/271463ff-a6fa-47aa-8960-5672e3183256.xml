@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Apache Kafka ile Konuşmaya Çalışmak</title>
+  <description>Bu yazıda West-World'e Apache Kafka'yı kuruyoruz. Basit adımlardan sonra bir .Net Core uygulamasından yararlanarak Kafka ile haberleşmeye çalışıyoruz.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2017/11/kafka_core_giris.gif" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Bilgisayarla yeni tanıştığım d&amp;ouml;nemlerde aynı zamane &amp;ccedil;ocuklarımızın tabletlerde&amp;nbsp;yaptığı gibi oyun oynamaya bayılırdım. Dersler,&amp;nbsp;sınavlar bir yana oyunlar bir yana.&amp;nbsp;Kasetlerin olduğu Commodore 64 zamanlarından, disketler ile 486DX işlemcili makinelerdekilere, CD ile y&amp;uuml;klenenlerden, internetten indirilip oynananlara kadar... Pek &amp;ccedil;ok efsane vardı tabii oynananlar arasında. Bazen onların başında saatlerce nasıl vakit&amp;nbsp;ge&amp;ccedil;iriyormuşum diye&amp;nbsp;d&amp;uuml;ş&amp;uuml;n&amp;uuml;nce hayret ediyorum kendime. Hoşuma giden oyunların en &amp;ouml;nemli &amp;ouml;zellikleri&amp;nbsp;arasında ses efektleri ve karakter konuşmaları gelirdi.&lt;/p&gt;
+&lt;p&gt;Duke Nukem'da onlardan birisidir. Ge&amp;ccedil;enlerde internetten s&amp;ouml;zlerini araştırırken&amp;nbsp;3D isimli s&amp;uuml;r&amp;uuml;m&amp;uuml;n&amp;uuml;n listesini bulup text dosya&amp;nbsp;i&amp;ccedil;ine&amp;nbsp;attım. Neme lazım belki bir kod par&amp;ccedil;asında rastgele s&amp;ouml;z &amp;ccedil;ıkartmak i&amp;ccedil;in kullanırız&lt;em&gt;(Hatta Docker'ın bir tutorial'ında kullanılmıştı diye biliyorum)&lt;/em&gt; Peki bug&amp;uuml;nk&amp;uuml; konumuzda nerede ele alacağız? &amp;Ouml;nce West-World'de neler oluyor bir bakalım.&lt;/p&gt;
+&lt;p&gt;West-World olduk&amp;ccedil;a hareketli g&amp;uuml;nler ge&amp;ccedil;iriyor. En son Docker ile ilgili denemelerim olmuştu. Doğruyu s&amp;ouml;ylemek gerekirse Ubuntu işletim sisteminden ve &amp;uuml;zerinde &amp;ccedil;alışmaktan olduk&amp;ccedil;a memnunum. Visual Studio Code inanılmaz esnek bir ortam sağlıyor. Dosyaları uzantısından tanıyıp &amp;ouml;nerilerde bulunabiliyor. Geniş bir extension deposu var. Diğer yandan .Net Core'u keşfetmeye de devam ediyorum. Docker tarafına da zaman zaman d&amp;ouml;n&amp;uuml;p bakmaktayım. Resmi sitesindeki &amp;ouml;ğretiler ger&amp;ccedil;ekten keyifli ve ne işe yaradığını anlıyorsunuz. Dipnot olarak terminal &amp;uuml;zerinde &amp;ccedil;alışmak da keyif veriyor. Konuyu &amp;ouml;z&amp;uuml;msemek adına adımları daha net g&amp;ouml;rebiliyorum. Ancak yapmam gereken &amp;ccedil;ok şey var. Şimdilik merak ettiğim konuları denemeye gayret ediyorum. Bunlardan birisi de bir ka&amp;ccedil; aydır&amp;nbsp;&amp;ccedil;alışmakta olduğum&amp;nbsp;ekipte s&amp;ouml;z&amp;uuml; ge&amp;ccedil;en ve &amp;uuml;zerinde denemeler yapılan Apache Kafka. Onu elasticsearch ile entegre edip b&amp;uuml;y&amp;uuml;yen loglarımızı dizginlemek amacıyla kullanmayı planlıyorlar.&lt;/p&gt;
+&lt;p&gt;Aktif olarak kullanıldığından nasıl bir şeydir &amp;ouml;ğrenmem gerekiyordu. &amp;Ouml;nce bankanım tahsis ettiği Ubuntu diz&amp;uuml;st&amp;uuml; &amp;uuml;zerinde denemeler yaptım. Sonrasında West-World ile konuyu pekiştirmeye &amp;ccedil;alıştım. Tabii her şeyden &amp;ouml;nce Kafka'nın felsefesini kavramam lazımdı. Internette konu ile ilgili derya deniz kaynak var. Benim i&amp;ccedil;in en akılda kalıcı ve anlamlı şeyse temize &amp;ccedil;ektiğim aşağıdaki not&amp;nbsp;oldu.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/11/kafka_core_2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekildeki adımlar kısaca ş&amp;ouml;yle; Yayımcı/yayımcılar(Producer) belli bir konu başlığına(topic) ait mesaj/mesajlar yayınlar. Broker &amp;uuml;zerinden akan mesaj başka bir t&amp;uuml;ketici/t&amp;uuml;keticiler(Consumer) tarafından okunabilir. Karşımızda bir mesaj dağıtım sistemi var g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi. Kafka'nın yaptığı ise hasara uğramadan ger&amp;ccedil;ek zamana olduk&amp;ccedil;a yakın s&amp;uuml;relerde veri akışkanlığını sağlamak. Sistem biraz daha netleşecek. &amp;Ouml;nemli sorulardan birisi neden b&amp;ouml;yle bir &amp;uuml;r&amp;uuml;ne ihtiya&amp;ccedil; duyulduğu? Verinin inanılmaz derecede b&amp;uuml;y&amp;uuml;d&amp;uuml;ğ&amp;uuml;nde hem fikiriz. &amp;Uuml;stelik yıllardır var olan bir mevzu bu. Big Data kavramının ortaya koyduğu pek &amp;ccedil;ok sorunsal da var. Verinin bu denli b&amp;uuml;y&amp;uuml;yor olması bilgi akışlarının ger&amp;ccedil;ek zamanlı olmasını negatif etkileyen bir durum. Kolayca &amp;ouml;l&amp;ccedil;eklenebilir ve dağıtık modelde &amp;ccedil;alışabilecek sistemler gerekli.&lt;/p&gt;
+&lt;p&gt;İşte Kafka, vakti zamanında Linkedin'e &amp;ccedil;are olmuş bu sorunsalda. Sonrasında a&amp;ccedil;ık kaynak olarak sunulmuş&lt;em&gt;(Tabii Linkedin ile sınırlı kalmamış. Paypal'den Twitter'a, Spotify'dan Netflix'e kadar pek &amp;ccedil;ok tanıdık oyuncu var kullanıcıları arasında)&lt;/em&gt; Onun i&amp;ccedil;in başarılı bir dağıtık mesajlaşma servisi olduğunu ifade edebiliriz. Publisher/Subscriber&lt;em&gt;(mesaj n sayıda t&amp;uuml;keticiye gidebilir)&lt;/em&gt; ve Message Queue&lt;em&gt;(Point to Point olarak da ifade ediliyor sanırım-mesaj sadece bir alıcı tarafından alınabilir)&lt;/em&gt; gibi iki modeli destekleyen, TCP/IP tabanlı, platform bağımsız, kolay &amp;ouml;l&amp;ccedil;eklenebilir ve mesajları log kayıtlarına benzer&amp;nbsp;yapıda tutan tam asenkron bir sistem var &amp;ouml;n&amp;uuml;m&amp;uuml;zde.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Kafka &amp;ouml;zellikle b&amp;uuml;y&amp;uuml;k boyutta loglama yapılan sistemlerde &amp;ccedil;ok değerli. Log hareketlilikleri ve mesaj i&amp;ccedil;erikleri nedeniyle başa bela olabilen bankacılık sistemlerinde ilk kabul g&amp;ouml;ren &amp;ccedil;&amp;ouml;z&amp;uuml;mler arasında yer alıyor. Bunların dışında Streaming, Event Sourcing, Message Queing, Web Activity Tracing gibi konu başlıklarında da değerlendirilmekte.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Burada dikkat edilmesi gereken &amp;ouml;nemli noktalardan birisi de Kafka'nın kullanım amacı. B&amp;uuml;y&amp;uuml;k veriyi tutmak i&amp;ccedil;in değil bunları toplayıp ilgili sistemelere hatasız ve hızlı bi&amp;ccedil;imde aktarmak i&amp;ccedil;in kullanılan bir mesajlaşma hizmeti olarak değerlendirmek daha doğru gibi. Bu sebeple &amp;ccedil;oğunlukla tek başına ele &lt;span style="text-decoration: underline;"&gt;alınmamakta&lt;/span&gt;. Kafka'yı kullanarak verinin ElasticSearch, Hadoop, Spark gibi sistemlere akıtılması s&amp;ouml;z konusu. Bunun belli başlı motivasyon kaynakları var. Her şeyden &amp;ouml;nce ilgili verinin aktarılacağı sistemler kapalı olsa bile bir s&amp;uuml;re Kafka'da tutma imkanı bulunmakta. Bu yetenek u&amp;ccedil; sistemlerden birinin &amp;ccedil;&amp;ouml;kmesi durumunda mesaj kaybını da engellemekte. Diğer bir motivasyon sebebi de verinin b&amp;uuml;y&amp;uuml;kl&amp;uuml;ğ&amp;uuml;. B&amp;uuml;y&amp;uuml;k veriyi diğer sistemlere taşırken paralel &amp;ccedil;alışabilen &amp;ouml;l&amp;ccedil;eklenebilir bir dağıtık sistemin arada olması &amp;ouml;nemlidir.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;"Aslında Kafka'yı anlamak i&amp;ccedil;in Arthur Schopenhauer'i anlamak lazım" demek isterdim ama esasında diğer Message Oriented Middleware'lere bakmamız gerekmekte. Microsoft Message Queue, IBM MQ, Apache Qpid, RabbitMQ ve varsa diğerleri. Bunlar Publisher/Subscriber modelini başarılı şekilde uygulayan MOM &amp;uuml;r&amp;uuml;nleridir ancak akan veri b&amp;uuml;y&amp;uuml;d&amp;uuml;ğ&amp;uuml;nde ve Publisher sayısı onbinler seviyesine &amp;ccedil;ıktığında&amp;nbsp;otoriterlerin de belirttiği &amp;uuml;zere &amp;ccedil;uvallarlar.&lt;/p&gt;
+&lt;p&gt;Kafka'yı onlardan ayıran unsulardan birisi Subscriber'ların mesajları nasıl aldığı ile ilgili. Kafka'da Consumer'ın mesajı alabilmesi i&amp;ccedil;in belli bir konu başlığına abone olması gerekir. Diğer yandan Kafka d&amp;uuml;ş&amp;uuml;k veri kaybını garanti etmektedir. Hem real-time veri akışını sağlayabilir hem de offline &amp;ccedil;alışma yeteneği sayesinde veriyi saklayabilir.&lt;/p&gt;
+&lt;p&gt;Tabii işin&amp;nbsp;&amp;ouml;z&amp;uuml;nde O da diğer MOM &amp;uuml;r&amp;uuml;nlerinde olduğu gibi mesajları farklı bileşenler arasında taşımayı esas ama&amp;ccedil; edinmiştir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Kafka ile konuşmaya başlarken bazı temel anahtar kelimelerine aşina olmak gerekiyor. Yukarıdaki şekilde de bahsettiğimiz gibi temel terimlerimiz Producer, Topic, Consumer ve Broker. Makaleye hazırlanırken işin mimari boyutlarına az da olsa girmeye &amp;ccedil;alıştım ancak kısa s&amp;uuml;rede odak noktamı kaybettim. West-World'teki amacım Kafka'yı kurup .Net Core kullanarak kendisiyle haberleşebilmekti en nihayetinde. Belli bir Topic i&amp;ccedil;in mesaj g&amp;ouml;nderip okuyabilirsem benim i&amp;ccedil;in yeterli olacaktı.&lt;/p&gt;
+&lt;h1&gt;&amp;Ouml;nce Kurulum&lt;/h1&gt;
+&lt;p&gt;Tabii işe ilk olarak Kafka'yı kurmakla başlamak lazım. Ben Kafka'yu doğrudan West-World &amp;uuml;zerinde kuracağım ama dilersek Docker &amp;uuml;zerinde de konuşlandırabiliriz&lt;em&gt;(Bu aklımın bir k&amp;ouml;şesinde dursun)&lt;/em&gt; Sırasıyla aşağıdaki adımları takip ederek kurulum işlemini ger&amp;ccedil;ekleştirebiliriz.&lt;/p&gt;
+&lt;p&gt;Alışılageldiği &amp;uuml;zere adettendir bir update işlemi yapmakta yarar var.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo apt-get update&lt;/pre&gt;
+&lt;p&gt;Java ortamına ihtiyacımız bulunuyor. O nedenle onu da kuruyoruz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo add-apt-repository -y ppa:webupd8team/java
+sudo apt-get update
+sudo apt-get install oracle-java8-installer&lt;/pre&gt;
+&lt;p&gt;Ardından ZooKeeper'ı y&amp;uuml;klememiz gerekiyor. Kendisi Cluster'ları y&amp;ouml;netecek olan koordinat&amp;ouml;r servisi oluyor. Kafka hizmete başlamadan &amp;ouml;nce onun başlatılması gerekiyor.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo apt-get install zookeeperd&lt;/pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;ZooKeeper aslında dağıtık sistem koordinat&amp;ouml;r&amp;uuml; olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. S&amp;ouml;z gelimi Cluster'a bir Broker eklendiğinde ya da Broker &amp;ccedil;&amp;ouml;kt&amp;uuml;ğ&amp;uuml;nde bağlı olan Producer ve Consumer nesnelerini bilgilendirmek gibi kritik g&amp;ouml;revleri &amp;uuml;stlenir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Artık Kafka kurulumuna başlanabilir. Kafka'nın sıkıştırılmış paketini sistemde a&amp;ccedil;acağımız bir klas&amp;ouml;re indirebiliriz. Ben Home dizininde Kafka isimli bir klas&amp;ouml;r i&amp;ccedil;erisine indirdim. S&amp;uuml;r&amp;uuml;m farklılık g&amp;ouml;sterebilir. En g&amp;uuml;ncel versiyonu &amp;ouml;ğrenmek i&amp;ccedil;in &lt;a href="https://www.apache.org/dyn/closer.cgi?path=/kafka/1.0.0/kafka_2.11-1.0.0.tgz" target="_blank"&gt;şu adrese&lt;/a&gt; bakmakta yarar var.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;mkdir Kafka
+cd Kafka
+wget http://ftp.jaist.ac.jp/pub/apache/kafka/0.10.0.0/kafka_2.11-0.10.0.0.tgz
+tar -xvf kafka_2.11-0.10.0.0.tgz -C .&lt;/pre&gt;
+&lt;p&gt;Kafka'yı hemen deneyebiliriz. İlk olarak ZooKeeper hizmeti başlatılmalı.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo bin/zookeeper-server-start.sh config/zookeeper.properties&lt;/pre&gt;
+&lt;p&gt;Bu arada başlatma sırasında bazı hatalar alınabilir. &amp;Ouml;rneğin ben Java Runtime'dan 2181 nolu portun kullanıldığına dair "Address already in use" hatası aldım ki bu port ZooKeeper tarafından kullanılmaktadır. O nedenle bir kill operasyonu ger&amp;ccedil;ekleştirmem gerekti. 2181 nolu portun boşta olup olmadığını anlamak i&amp;ccedil;in&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo netstat -lnap | grep 2181&lt;/pre&gt;
+&lt;p&gt;komutunu kullanabilirsiniz. Eğer sorun &amp;ccedil;ıkmazsa ZooKeeper &amp;ccedil;alışmaya başlayacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/11/kafka_core_3.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Yaptığımız işlem bin klas&amp;ouml;r&amp;uuml; altındaki zookeper-sever-start.sh&amp;nbsp;betiğini config klas&amp;ouml;r&amp;uuml;ndeki zookeper.properties&amp;nbsp;dosyasında belirtilen&amp;nbsp;varsayılan ayarlarla başlatmak.&amp;nbsp;Şimdi kafka servisi etkinleştirilebilir. Bunun i&amp;ccedil;in yeni bir terminal penceresi a&amp;ccedil;ıp kafka paketini a&amp;ccedil;tığımız konuma giderek aşağıdaki komutu &amp;ccedil;alıştırabiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo bin/kafka-server-start.sh config/server.properties&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/11/kafka_core_4.gif" alt="" /&gt;&lt;/p&gt;
+&lt;h1&gt;Terminal Penceresinde Eğlence Zamanı&lt;/h1&gt;
+&lt;p&gt;Ne durumdayız? Koordinat&amp;ouml;r servisimiz etkin ve bir tane Kafka Broker &amp;ouml;rneği de &amp;ccedil;alışır vaziyette. Kafka sunucusu &amp;ccedil;alıştırırken config altındaki server.properites dosyasından yararlanılmakta. İstersek bunları &amp;ccedil;oğaltabilir i&amp;ccedil;eriklerindeki port numaralarını farklılaştırarak aynı anda birden fazla Broker'ın &amp;ccedil;alışmasını da sağlayabiliriz. Bu tam anlamıyla bir ger&amp;ccedil;ek hayat senaryosu olur. Benim amacım bu kadar uzun boylu değil. Tek broker nesnesi &amp;uuml;zerinden birer&amp;nbsp;Producer&lt;em&gt;(Publisher oluyor)&lt;/em&gt;&amp;nbsp;ve&amp;nbsp;Consumer&lt;em&gt;(Subscriber oluyor)&lt;/em&gt;&amp;nbsp;arasında mesaj dolaştırsam yeterli. Bunu yapmak i&amp;ccedil;inse &amp;ouml;ncelikle bir konu başlığı&lt;em&gt;(topic)&lt;/em&gt; a&amp;ccedil;mamız gerekiyor. Yeni bir terminal penceresi a&amp;ccedil;alım ve&amp;nbsp;Producer rol&amp;uuml;nde bir topic a&amp;ccedil;ıp i&amp;ccedil;erisine bir ka&amp;ccedil; bilgi atalım.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic ToDoList
+
+sudo bin/kafka-topics.sh --list --zookeeper localhost:2181&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/11/kafka_core_5.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;kafka-topics.sh betiğinden&amp;nbsp;yararlanarak ilk komutla ToDoList isimli bir topic oluşturuyor, sonraki komutla da var olanları listeliyoruz. create ve list komutlarını kullanırken zookeeper adresini belirttiğimize dikkat edelim. Sanırım birden fazla Cluster olduğu senaryolarda birden fazla ZooKeeper hizmetinden yararlanabiliriz. Bu &amp;ouml;rnekte tek Broker kullanıldığı i&amp;ccedil;in replication&amp;nbsp;fakt&amp;ouml;r&amp;uuml; 1 olarak belirlendi. Şimdi bir Producer oluşturup ToDoList isimli Topic altına birka&amp;ccedil; veri ekleyelim.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo bin/kafka-console-producer.sh --broker-list localhost:9092 --topic ToDoList&lt;/pre&gt;
+&lt;p&gt;Bu komutu &amp;ccedil;alıştırdığımızda terminal penceresinde satır bazlı veri girebilir hale geliriz. Aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde birka&amp;ccedil; ToDo maddesi eklendiğini g&amp;ouml;rebilirsiniz. Test i&amp;ccedil;in iki Consumer penceresi var. Consumer'ların bir Topic i&amp;ccedil;eriğini g&amp;ouml;rmesi i&amp;ccedil;in kafka-console-consumer.sh&amp;nbsp;betiğinden&amp;nbsp;yararlanmamız yeterli.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic ToDoList --from-beginning&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/11/kafka_core_6.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rnekleri denerken ilgimi &amp;ccedil;eken noktalardan birisi de Producer penceresi a&amp;ccedil;ıkken girilen bilgilerin bir alt satıra ge&amp;ccedil;ildiğinde otomatik olarak abone olan t&amp;uuml;m Consumer pencerelerine yansımasıydı. Bunu canlı izlemek &amp;ccedil;ok keyifli bir deneyim. Mutlaka deneyin derim :)&lt;/p&gt;
+&lt;p&gt;Denemeler yaparken d&amp;uuml;şt&amp;uuml;ğ&amp;uuml;m bir hata da vardı. Producer betiğini &amp;ccedil;alıştırdıktan sonra terminalde bir şeyler olmasını beklerken rastgele tuşlara basmış, boş satırlar eklemiştim. Bunlar mesaj olarak g&amp;ouml;nderilmiyor diye d&amp;uuml;ş&amp;uuml;n&amp;uuml;yordum, &amp;ccedil;&amp;uuml;nk&amp;uuml; ekranda bir tepki oluşmamıştı. Ancak sonradan Consumer &amp;uuml;zerinden ne eklediysem g&amp;ouml;rd&amp;uuml;m. Kirli bir ToDoList konusu ile &amp;ccedil;alışmak istemiyordum. Bu nedenle ilgili Topic nesnesini aşağıdaki komutla silmek istedim.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo bin/kafka-topics.sh --delete --zookeeper localhost:2181 --topic ToDoList&lt;/pre&gt;
+&lt;p&gt;ToDoList isimli topic nesnesinin silinmek &amp;uuml;zere işaretlendiğine dair bir mesaj aldım. Ancak topic listesini &amp;ccedil;ektiğimde olduğu yerde duruyordu. Aynı mesajda silme operasyonunun etkili olması i&amp;ccedil;in konfigurasyonda delete.topic.enable &amp;ouml;zelliğinin değerinin true olması gerektiği de belirtilmişti. Yapılması gereken şey config klas&amp;ouml;r&amp;uuml;ndeki server.properties dosyasının sonuna&amp;nbsp;bu bildirimi eklemek ve Kafka sunucusunu tekrardan &amp;ccedil;alıştırmaktan ibaretti. Bunu yaptıktan sonra&amp;nbsp;delete betiğini tekrar &amp;ccedil;alıştırdım ve ToDoList'in kaldırıldığını g&amp;ouml;rd&amp;uuml;m. Pek tabii o sırada bu konu başlığına bağlı olan aboneler varsa onlara ilgili Topic nesnesinin olmadığına dair bir hata mesajı g&amp;ouml;nderildi.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/11/kafka_core_7.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Kafka'yı terminalden az &amp;ccedil;ok nasıl kullanacağımı &amp;ouml;ğrendim. Ancak terminalden uzun uzun o betikleri yazmaya &amp;ccedil;alışmak zevkli olsa da zorlayıcıydı. Her şeyden &amp;ouml;te B12siz bir insanım. &amp;Ccedil;abuk unutuyorum. Ş&amp;ouml;yle işleri kolaylaştıracak kendi bildiğim dillerle kullanabileceğim bir API olsa hi&amp;ccedil; fena olmazdı. Hazır .Net Core d&amp;uuml;nyasında bir şeyler yapmaya &amp;ccedil;alışıyorken onunla ilerleyeyim dedim.&lt;/p&gt;
+&lt;h1&gt;.Net Core Uygulamalarının Yazılması&lt;/h1&gt;
+&lt;p&gt;Senaryomuzda iki Console uygulaması olacak. Birisinden Producer yardımıyla Broker'a mesaj bırakacağız. Diğer Console uygulamasını ise Consumer olarak tasarlayacağız. Consumer uygulaması, Producer tarafından belli konu başlıklarında bırakılan mesajları okumak i&amp;ccedil;in kullanılacak. İlk olarak FabrikamProducer'ı tasarlayalım.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet new console -o FabrikamProducer&lt;/pre&gt;
+&lt;p&gt;Bu işlemin ardından Confulent.Kafka paketini projemize eklememiz gerekiyor. Bu paket aracılığıyla Kafka ile konuşabileceğiz. Restore işlemini yapmayı ihmal etmessek iyi olur. Nitekim indirilen paket .Net Core 2.0 i&amp;ccedil;in yeniden ayarlanacaktır.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet add package Confluent.Kafka
+dotnet restore&lt;/pre&gt;
+&lt;p&gt;Şimdi Program.cs i&amp;ccedil;eriğini aşağıdaki gibi g&amp;uuml;ncelleyelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.IO;
+using System.Text;
+using System.Collections.Generic;
+using Confluent.Kafka;
+using Confluent.Kafka.Serialization;
+
+namespace FabrikamProducer
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Producer Tarafı\n");
+            string brokerEndpoint="localhost:9092";
+            var quotes=File.ReadAllLines("Quotes.txt");
+            Random random=new Random();
+            Console.WriteLine("Bir topic adı girer misin?");
+            string topicName=Console.ReadLine();
+
+            var config=new Dictionary&amp;lt;string,object&amp;gt;{
+                {"bootstrap.servers",brokerEndpoint}
+            };
+
+            using(var producer= new Producer&amp;lt;Null,string&amp;gt;(config,null,new StringSerializer(Encoding.UTF8)))
+            {
+                for(;;)
+                {                       
+                    string message=quotes[random.Next(1,quotes.Length)-1];
+                    var result=producer.ProduceAsync(topicName,null,message).GetAwaiter().GetResult();
+                    Console.WriteLine($"Partition : {result.Partition} Offset : {result.Offset}\n{message}");                        
+                    System.Threading.Thread.Sleep(10000);
+                }
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Teori değişmiyor.&amp;nbsp;Producer nesnesinin işini yapabilmesi i&amp;ccedil;in localhost:9092 adresindeki Broker ile konuşabilmesi gerekiyor. Bunun i&amp;ccedil;in config isimli değişkende bootstrap bilgisini ve endPoint adresini veriyoruz. Broker'a mesaj g&amp;ouml;nderme işini Producer tipinden bir nesne &amp;ouml;rneği ger&amp;ccedil;ekleştirmekte. Mesaj string tipte ve UTF8 kodlamasına g&amp;ouml;re g&amp;ouml;nderilecek. G&amp;ouml;nderme işini ProduceAsync isimli fonksiyon ger&amp;ccedil;ekleştiriyor. İlk parametre ile kullanıcıdan aldığımı Topic adını belirtiyoruz. Son parametresinde ise Quotes.txt dosyasından &amp;ccedil;ektiğimiz rastgele bir Duke Nukem s&amp;ouml;z&amp;uuml; :) Eğer mesaj g&amp;ouml;nderimi başarılı ise bu mesajın Broker &amp;uuml;zerindeki Partition ve Offset bilgilerini de ekrana basıyoruz. FabrikamProducer, 10 saniyede bir Duke Nukem mesajı yayınlayacak şekilde tasarlanmış durumda.&lt;/p&gt;
+&lt;p&gt;Abone olacak Console uygulamamızı ise FabrikamConsumer ismiyle oluşturabiliriz. Yukarıdakine benzer şekilde dotnet komutlarını kullanarak terminalden gerekli oluşturma işlemlerini yapıp, Confluent.Kafka paketini projeye dahil etmemiz gerekiyor.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;dotnet new console -o FabrikamConsumer
+
+dotnet add package Confluent.Kafka
+dotnet restore&lt;/pre&gt;
+&lt;p&gt;Sonrasında Program.cs i&amp;ccedil;eriğini aşağıdaki gibi g&amp;uuml;ncelleyebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Text;
+using System.Collections.Generic;
+using Confluent.Kafka;
+using Confluent.Kafka.Serialization;
+
+namespace FabrikamConsumer
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Consumer Tarafı\n");
+            string brokerEndpoint="localhost:9092";
+            Console.WriteLine("Hangi konu başlığına abone olacaksın?");
+            string topicName=Console.ReadLine();
+
+            var config=new Dictionary&amp;lt;string,object&amp;gt;{
+                {"group.id","FabrikamConsumer"},
+                {"bootstrap.servers",brokerEndpoint},
+            };
+
+            using(var consumer=new Consumer&amp;lt;Null,string&amp;gt;(config,null,new StringDeserializer(Encoding.UTF8)))
+            {
+                consumer.OnMessage+=(o,m)=&amp;gt;{
+                    Console.WriteLine($"Duke Nukem diyor ki: {m.Value}");
+                };
+
+                consumer.Subscribe(new List&amp;lt;string&amp;gt;(){topicName});
+                var isCancelled=false;
+                Console.CancelKeyPress+=(_,e)=&amp;gt;{
+                    e.Cancel=true;
+                    isCancelled=true;
+                };
+                Console.WriteLine("Ctrl-C ile &amp;ccedil;ıkabilirsin");
+                while(!isCancelled)
+                {
+                    consumer.Poll(100);
+                }
+            }
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Consumer nesnesi &amp;ouml;rneklenirken diğer &amp;ouml;rnekte olduğu gibi konuşacağımız Kafka Broker'ını belirtmemiz lazım. Bunun i&amp;ccedil;in yine localhost:9092 adresine bootstrap.servers ayarları ile gitmeye &amp;ccedil;alışıyoruz. Consumer nesne &amp;ouml;rneğinin OnMessage isimli olay metodu, abone olunan konu başlığına bir mesaj geldiğinde otomatik olarak tetiklenmekte. Bu nedenle ilgili olay metodu &amp;uuml;zerinden m.Value ile ilgili Topic altına gelen metinsel bilgiyi&lt;em&gt;(yani Duke Nukem s&amp;ouml;z&amp;uuml;n&amp;uuml;)&lt;/em&gt; yakalıyoruz. Aboneyi ayakta tutmak i&amp;ccedil;in kullanıcı Ctrl+C tuşuna basana kadar uygulamayı bekletiyoruz. Poll operasyonunda yeni mesaj almaya hazır olduğumuzu belirtiyoruz. Normalde burada bir timeout s&amp;uuml;resi veriliyor ancak -1&amp;nbsp;ile bunu sonsuz olarak belirlemiş bulunmaktayız.&lt;/p&gt;
+&lt;p&gt;Uygulamaları test etmek i&amp;ccedil;in Visual Studio Code&amp;nbsp;ortamındaki Integrated Terminal penceresini kullanarak dotnet run dememiz yeterli. Elbette Kafka sunucusunun ve onun &amp;ouml;ncesinde de ZooKeeper kontrol servisinin &amp;ccedil;alışır olduğundan emin olmalıyız. Sonu&amp;ccedil;lar benim i&amp;ccedil;in &amp;ccedil;ok heyecan verici oldu. A&amp;ccedil;ık&amp;ccedil;ası denemeniz ve&amp;nbsp;kendi g&amp;ouml;z&amp;uuml;n&amp;uuml;zle&amp;nbsp;g&amp;ouml;rmeniz lazım. 10 saniyede bir DukeNukem&amp;nbsp;konu başlığına atılan mesajları, ka&amp;ccedil; tane abone varsa anında alabildi. İlgin&amp;ccedil;, değişik, g&amp;uuml;zel, hoş.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Producer &amp;ccedil;alışmasından bir g&amp;ouml;r&amp;uuml;nt&amp;uuml;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/11/kafka_core_8.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;ve Consumer &amp;ccedil;alışmasından bir g&amp;ouml;r&amp;uuml;nt&amp;uuml;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2017/11/kafka_core_9.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;ylece amacıma ulaşmış oluyorum. West-World artık Kafka'nın felsefesine biraz daha aşina gibi. Tabii merak edilesi bir konu daha var. Acaba buraya elasticsearch nasıl bağlanıyor. Bakalım buna vakit ayırabilecek miyim. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2017-12-01 06:01:00</pubDate>
+  <slug>apache-kafka-ile-konusmaya-calismak</slug>
+  <tags>
+    <tag>apache-kafka</tag>
+    <tag>net-core</tag>
+    <tag>net-core-20</tag>
+    <tag>message-queue</tag>
+    <tag>message-broker</tag>
+    <tag>distributed-messaging-system</tag>
+    <tag>apache</tag>
+    <tag>consumer</tag>
+    <tag>producer</tag>
+    <tag>broker</tag>
+    <tag>zookeeper</tag>
+    <tag>publisher-subscriber-model</tag>
+    <tag>message-queue-middleware</tag>
+  </tags>
+  <categories>
+    <category>.Net Core</category>
+  </categories>
+</post>

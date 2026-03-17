@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WCF - Istemci Taraflı Asenkron Çağırma (Client Side Asynchronous Invoking)</title>
+  <description>Windows Communication Foundation ile ilgili bir önceki makalemizde One Way tekniğini uygulayarak istemcilerin asenkron olarak uzak metodları nasıl çağırabileceklerini incelemiştik. One Way tekniğinin elbetteki en büyük dezavantajı geriye değer döndüren metodların ele alınamayışıdır.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Windows Communication Foundation ile ilgili bir &amp;ouml;nceki makalemizde One Way tekniğini uygulayarak istemcilerin asenkron olarak uzak metodları nasıl &amp;ccedil;ağırabileceklerini incelemiştik. One Way tekniğinin elbetteki en b&amp;uuml;y&amp;uuml;k dezavantajı geriye değer d&amp;ouml;nd&amp;uuml;ren metodların ele alınamayışıdır. Oysaki &amp;ccedil;oğu zaman, işlem s&amp;uuml;resi uzun zaman alabilecek metodların geriye değer d&amp;ouml;nd&amp;uuml;rd&amp;uuml;ğ&amp;uuml; vakkalarda asenkron erişim tekniklerini kullanmak gerekir. Ancak Windows Communication Foundation g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında asenkron &amp;ccedil;alıştırma iki farklı şekilde ele alınabilmektedir. Bunlarda birisi istemci taraflı asenkron &amp;ccedil;ağırma &lt;strong&gt;(Client Side Asynchronous Invoking)&lt;/strong&gt; modelidir. Diğeri ise servis taraflı asenkron uyarlama modelidir &lt;strong&gt;(Service Side Asynchronous Implementation)&lt;/strong&gt;. Bu makalemizde istemci taraflı asenkron &amp;ccedil;ağırma modelini incelemeye &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;p&gt;İstemci taraflı asenkron &amp;ccedil;ağırma modelinde, proxy sınıfının asenkron desene &lt;strong&gt;(Asynchronous Pattern)&lt;/strong&gt; uygun olacak şekilde &lt;strong&gt;Begin&lt;/strong&gt; ve &lt;strong&gt;End&lt;/strong&gt; ile başlayan standart metodları vardır. Bu metodlar temelinde &lt;strong&gt;IAsyncResult&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml; ele almaktadır. İstemci taraflı olarak &amp;ccedil;alışan bu modelin, doğal olarak farklı uygulanabilme &amp;ccedil;eşitleri vardır. .Net tarafında asenkron mimarinin ele alınabilen t&amp;uuml;m teknikleri Windows Communication Foundation i&amp;ccedil;inde ge&amp;ccedil;erlidir. Burada bahsedilen teknikler &lt;strong&gt;Polling&lt;/strong&gt;, &lt;strong&gt;Callback&lt;/strong&gt; ve &lt;strong&gt;WaitHandle&lt;/strong&gt; modellerini i&amp;ccedil;ermektedir. WaitHandle modelininde kendi i&amp;ccedil;erisinde &lt;strong&gt;WaitOne&lt;/strong&gt;, &lt;strong&gt;WaitAny&lt;/strong&gt;, &lt;strong&gt;WaitAll&lt;/strong&gt; gibi farklı kullanım şekilleri vardır.&lt;/p&gt;
+&lt;p&gt;Bu modellerin temel etkilerini ve farklılıklarını yazacağımız &amp;ouml;rnek kod par&amp;ccedil;aları &amp;uuml;zerinde Windows Communication Foundation a&amp;ccedil;ısından incelemeye &amp;ccedil;alışacağız. Ancak başlamadan &amp;ouml;nce servis taraflı asenkron uyarlama modelinide a&amp;ccedil;ıklamakta fayda olacağı kanısındayım. Servis tarafında ger&amp;ccedil;ekleştirilen asenkron uyarlama tekniği istemcinin metodları asenkron olarak işletmesi anlamına &lt;strong&gt;gelmemektedir&lt;/strong&gt;. Bir başka deyişle istemci yine &amp;ccedil;ağırdığı metodu senkronmuş gibi ele alır yani ilerleyebilmek i&amp;ccedil;in metodun sonucunun gelmesini bekler. Metodun asenkron olarak &amp;ccedil;alıştığı yer servis tarafıdır. Aslında servis tarafındaki ilgili s&amp;uuml;recin başka bir thread &amp;uuml;zerine yıkıldığı d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Ne varki bu model kodlanması zor bir teknik i&amp;ccedil;ermektedir. Nitekim servis tarafında asenkron olarak ele alınmak istenen metodların asenkron tasarım desenine g&amp;ouml;re yazılması gerekmektedir. Az &amp;ouml;ncede belirttiğimiz &amp;uuml;zere s&amp;ouml;z konusu modeli bir sonraki makalemizde incelemeye &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;p&gt;Dilerseniz &amp;ouml;rneğimize ge&amp;ccedil;erek işlemlerimize başlayalım. Her zamanki gibi servis tarafında yayınlacak olan fonksiyonellikleri i&amp;ccedil;eren tip ve s&amp;ouml;zleşme (contract) tanımlamalarını i&amp;ccedil;eren bir &lt;strong&gt;WCF Class Library &lt;/strong&gt;projesi geliştirerek işe başlanabilir. S&amp;ouml;z konusu k&amp;uuml;t&amp;uuml;phane i&amp;ccedil;erisindeki s&amp;ouml;zleşme aray&amp;uuml;z&amp;uuml; (Interface) ve fonksiyonellikleri i&amp;ccedil;eren sınıf(Class) aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk208_8.gif" alt="" width="282" height="314" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;IAdventureManager isimli aray&amp;uuml;z i&amp;ccedil;eriği aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[ServiceContract(Name="AdventureContract",Namespace= "http://www.bsenyurt.com/2007/6/6/AdventureService")]
+public interface IAdventureManager
+{
+    [OperationContract(Name="AverageListPriceByCategory")]
+    double AverageListPrice(int subCatId);
+
+    [OperationContract(Name="TotalListPriceByCategory")]
+    double TotalListPrice(int subCatId);
+
+    [OperationContract(Name = "GetProductsCountByCategory")]
+    int ProductCount(int subCatId);
+}&lt;/pre&gt;
+&lt;p&gt;AdventureManager isimli sınıfın i&amp;ccedil;eriği aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public class AdventureManager:IAdventureManager
+{
+    #region IAdventureManager Members
+
+    public double AverageListPrice(int subCatId)
+    {
+        Thread.Sleep(5000);
+        return 1000;
+    }    
+    public double TotalListPrice(int subCatId)
+    {
+        Thread.Sleep(3000);
+        return 4500;
+    }
+    public int ProductCount(int subCatId)
+    {
+        Thread.Sleep(7000);
+        return 504;
+    }
+
+    #endregion
+}&lt;/pre&gt;
+&lt;p&gt;AdventureManager isimli sınıf i&amp;ccedil;erisinde yer alan metodlarda bilin&amp;ccedil;li olarak &lt;strong&gt;Thread&lt;/strong&gt; sınıfının static &lt;strong&gt;Sleep&lt;/strong&gt; fonksiyonundan faydalanılarak farklı s&amp;uuml;relerde duraksatmalar yapılmaktadır. S&amp;ouml;z konusu metodlardan sembolik olarak double ve int gibi tiplerden değerler d&amp;ouml;nd&amp;uuml;r&amp;uuml;lmektedir. Geliştirilen WCF sınıf k&amp;uuml;t&amp;uuml;phanesini kullanacak olan servis tarafını yine bir Windows uygulaması olarak tasarlayabiliriz.&lt;em&gt; (Windows uygulamasının &lt;strong&gt; System.ServiceModel.dll &lt;/strong&gt;ve &lt;strong&gt;AdventureLib&lt;/strong&gt; isimli WCF Sınıf k&amp;uuml;t&amp;uuml;phanelerini referans etmesi gerektiğini unutmayalım.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Windows uygulamasının form tasarımı basit olarak aşağıdaki gibidir;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk208_9.gif" alt="" width="363" height="200" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Windows uygulamasına ait kodlar aşağıdaki gibidir;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;ServiceHost host;
+
+private void btnStartService_Click(object sender, EventArgs e)
+{
+    host = new ServiceHost(typeof(AdventureManager)); 
+    host.Open();
+    lblStatus.Text = host.State.ToString();
+}
+
+private void btnStopService_Click(object sender, EventArgs e)
+{
+    host.Close();
+    lblStatus.Text = host.State.ToString();
+}&lt;/pre&gt;
+&lt;p&gt;Windows uygulamasına ait app.config dosyasının i&amp;ccedil;eriği aşağıdaki gibidir;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;system.serviceModel&amp;gt;
+        &amp;lt;services&amp;gt;
+            &amp;lt;service name="AdventureLib.AdventureManager"&amp;gt;
+                &amp;lt;endpoint address= "net.tcp://localhost:9001/AdventureServices.svc" binding="netTcpBinding" bindingConfiguration="" name="AdventureEndPoint" contract="AdventureLib.IAdventureManager" /&amp;gt;
+            &amp;lt;/service&amp;gt;
+        &amp;lt;/services&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Servis TcpBinding tipine g&amp;ouml;re geliştirilmiştir. Bu nedenle &lt;strong&gt; net.tcp://localhost:9001/AdventureServices.svc&lt;/strong&gt; isimli &amp;ouml;rnek adres &amp;uuml;zerinden sunulmaktadır. S&amp;ouml;z konusu konfigurasyon dosyası her zamanki gibi &lt;strong&gt;Microsoft Service Configuration Editor&lt;/strong&gt; yardımıyla Visual&amp;nbsp; Studio 2005 ortamında daha kolay bir şekilde yazılabilir.&lt;/p&gt;
+&lt;p&gt;Gelelim istemci tarafına. &amp;Ouml;ncelikli olarak &lt;strong&gt;svcutil.exe&lt;/strong&gt; aracını kullanarak AdventureLib isimli sınıf k&amp;uuml;t&amp;uuml;phanesinden, istemci i&amp;ccedil;in gerekli proxy sınıfı ve konfigurasyon dosyasının &amp;uuml;retilmesi gerekmektedir. Burada daha &amp;ouml;nceki &amp;ouml;rneklerden farklı olarak asenkron desene uygun olacak şekilde metod &amp;uuml;retimlerinin yapılması gerekmektedir. Svcutil aracının &lt;strong&gt;/async&lt;/strong&gt; (veya kısaltmalı olarak &lt;strong&gt;/a&lt;/strong&gt;) isimli parametresi bu işi otomatik olarak yapmaktadır. Bu nedenle svcutil aracının aşağıdaki şekilde kullanıması gerekmektedir.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;ncelikli olarak proxy &amp;uuml;retimi i&amp;ccedil;in gerekli olan &lt;strong&gt;wsdl&lt;/strong&gt; ve &lt;strong&gt;schema&lt;/strong&gt; dosyalarının &amp;uuml;retilmesi sağlamak adına aşağıdaki komut kullanılmalıdır.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;svcutil AdventureLib.dll&lt;/pre&gt;
+&lt;p&gt;Sonrasında ise svcutil aracı aşağıdaki haliyle &amp;ccedil;alıştırılmalıdır.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;svcutil www.bsenyurt.com.2007.6.6.AdventureService.wsdl *.xsd /out:AdventureProxy.cs /async&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk208_1.gif" alt="" width="639" height="380" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Sonu&amp;ccedil; olarak &amp;uuml;retilen AdventureProxy.cs isimli sınıfın i&amp;ccedil;eriğine aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi, &lt;strong&gt; Begin&lt;/strong&gt; ve &lt;strong&gt;End&lt;/strong&gt; ile başlayan standart asenkron metodlar ilave edilmiş olur. Dikkat edilecek olursa AdventureManager sınıfı i&amp;ccedil;erisindeki t&amp;uuml;m metodların hem normal hemde Begin ve End ile başlayan versiyonları ilave edilmiştir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk208_2.gif" alt="" width="582" height="338" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Oluşan bu sınıf i&amp;ccedil;erisinden &amp;ouml;rnek olarak AverageListPriceByCategory isimli fonksiyon i&amp;ccedil;in yazılmış asenkron metodlar g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınabilir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public System.IAsyncResult BeginAverageListPriceByCategory(int subCatId, System.AsyncCallback callback, object asyncState)
+{
+    return base.Channel.BeginAverageListPriceByCategory(subCatId, callback, asyncState);
+}
+
+public double EndAverageListPriceByCategory(System.IAsyncResult result)
+{
+    return base.Channel.EndAverageListPriceByCategory(result);
+}&lt;/pre&gt;
+&lt;p&gt;Burada tipik olarak asenkron tasarım desenine uygun metodlar yer almaktadır. &lt;strong&gt; BeginAverageListPriceByCategory&lt;/strong&gt; metodu &lt;strong&gt;Polling&lt;/strong&gt;, &lt;strong&gt;Callback&lt;/strong&gt; ve &lt;strong&gt;WaitHandle&lt;/strong&gt; modellerine destek verecek şekilde &lt;strong&gt;IAsyncResult&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml;n(Interface) taşıyabileceği bir referansı d&amp;ouml;nd&amp;uuml;r&amp;uuml;r. Kullanılan modele g&amp;ouml;re, asenkron &amp;ccedil;alışan fonksiyonun sonu&amp;ccedil;larını almak i&amp;ccedil;in &lt;strong&gt; EndAverageListPriceByCategory&lt;/strong&gt; metodu kullanılır. Dikkat edilecek olursa bu metod parametre olarak IAsyncResult aray&amp;uuml;z&amp;uuml;nden bir referans kabul eder ve geriye uygun olan metod &amp;ccedil;ıktısını d&amp;ouml;nd&amp;uuml;r&amp;uuml;r. Metod i&amp;ccedil;erikleri asenkron deseni otomatik olarak uygulamaktadır. Bir başka deyişe nesne kullanıcısı &lt;strong&gt;(object user) &lt;/strong&gt;s&amp;ouml;z konusu modelin i&amp;ccedil;erisindeki detaylar ile ilgilenmez. Sadece uygun olan veya istediği asenkron modeli istemci programa uyarlar.&lt;/p&gt;
+&lt;p&gt;Şimdi tek tek istemci tarafından asenkron &amp;ccedil;ağırma modellerini uygulamaya &amp;ccedil;alışalım. İstemci basit bir Console uygulaması olarak ele alınmıştır. S&amp;ouml;z konusu uygulamanın konfigurasyon dosyasının i&amp;ccedil;eriği aşağıdaki gibi geliştirilebilir. &lt;em&gt; (İstemci uygulamanında &lt;strong&gt;System.ServiceModel.dll&lt;/strong&gt; assembly' ını referans etmesi gerektiğini unutmayalım.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;İstemci uygulama tarafında ele alınacak app.config i&amp;ccedil;eriği aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8"?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;system.serviceModel&amp;gt;
+        &amp;lt;bindings/&amp;gt;
+        &amp;lt;client&amp;gt;
+            &amp;lt;endpoint address= "net.tcp://localhost:9001/AdventureServices.svc" binding="netTcpBinding" bindingConfiguration="" contract="AdventureContract" name="AdventureClientEndPoint" /&amp;gt;
+        &amp;lt;/client&amp;gt;
+    &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Başlamadan &amp;ouml;nce senkron &amp;ccedil;alışmanın nasıl bir etkisi olacağını g&amp;ouml;rmekte fayda vardır. Bu ama&amp;ccedil;la ilk kodlar aşağıdaki gibi geliştirilebilir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Senkron &amp;ccedil;alışma durumu;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;Console.WriteLine("Teste başlamak i&amp;ccedil;in bir tuşa basınız");
+Console.ReadLine();
+AdventureContractClient srv = new AdventureContractClient("AdventureClientEndPoint");
+
+#region Senkron &amp;Ccedil;alışma
+
+DateTime baslangic = DateTime.Now;
+
+double ortalamaFiyat=srv.AverageListPriceByCategory(1);
+
+DateTime bitis = DateTime.Now;
+
+Console.WriteLine(ortalamaFiyat.ToString("C2"));
+TimeSpan fark = bitis - baslangic;
+Console.WriteLine("Ge&amp;ccedil;en s&amp;uuml;re yaklaşık olarak {0} saniyedir.",fark.TotalSeconds.ToString());
+Console.ReadLine();
+
+#endregion&lt;/pre&gt;
+&lt;p&gt;Burada dikkat edilecek olursa AverageListPriceByCategory metodu &amp;ccedil;ağırıldıktan sonra istemci uygulama bir s&amp;uuml;reliğine beklemede kalacaktır. Bu &lt;strong&gt;TimeSpan&lt;/strong&gt; ile elde edilen s&amp;uuml;re farkından da a&amp;ccedil;ık&amp;ccedil;a g&amp;ouml;r&amp;uuml;lmektedir. Bir başka deyişle istemci uygulamadaki kod akışı ortalamaFiyat değerinin elde edilmesini bekleyecek ve sonu&amp;ccedil; alındıktan sonra devam edecektir. Program kodu bu haliyle &amp;ccedil;alıştırıldığında aşağıdakine benzer bir ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; elde edilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk208_3.gif" alt="" width="374" height="236" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu tipik olarak senkron &amp;ccedil;alışma şeklidir. Gelelim diğer tekniklere. İlk olarak &lt;strong&gt;WaitHandle&lt;/strong&gt; modelini ele alalım. Bu model temel olarak asenkron olarak &amp;ccedil;alıştırılan metodların, uygulamanın belirli bir noktasında sonu&amp;ccedil;ları alınıncaya kadar farklı şekillerde beklenilmesini sağlamaktadır. Dikkat ederseniz metodlar yine asenkron olarak başlatılır ama programın herhangibir noktasında sonu&amp;ccedil;larının ortama d&amp;ouml;nmesi i&amp;ccedil;in beklenir. Bu model daha &amp;ccedil;ok asenkron &amp;ccedil;alışan metodların sonu&amp;ccedil;larının uygulamanın belirli bir noktasında girdi olarak kullanılması gerektiği durumlarda işe yaramaktadır. S&amp;ouml;z konusu modelin&amp;nbsp; &lt;strong&gt;WaitOne&lt;/strong&gt;, &lt;strong&gt;WaitAll&lt;/strong&gt; ve &lt;strong&gt;WaitAny&lt;/strong&gt; gibi &amp;uuml;&amp;ccedil; farklı uygulanış bi&amp;ccedil;imi vardır. &lt;strong&gt;WaitOne&lt;/strong&gt; tekniği adındanda anlaşılacağı &amp;uuml;zere sadece tek bir asenkron metodun sonucunun alınması i&amp;ccedil;in bir duraksatma ger&amp;ccedil;ekleştirir. Aşağıdaki &amp;ouml;rnek kod par&amp;ccedil;asında WaitOne tekniğinin uygulanış bi&amp;ccedil;imi yer almaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;WaitOne tekniği;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;IAsyncResult iar=srv.BeginAverageListPriceByCategory(1, null, null);
+Console.WriteLine("Bazı işlemler yapılıyor...");
+
+iar.AsyncWaitHandle.WaitOne();
+
+double sonuc=srv.EndAverageListPriceByCategory(iar);
+Console.WriteLine(sonuc.ToString("C2"));
+
+Console.ReadLine();&lt;/pre&gt;
+&lt;p&gt;Uygulama bu haliyle &amp;ccedil;alıştırıldığında aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; elde edilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk208_4.gif" alt="" width="392" height="273" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi BeginAverageListPriceByCategory &amp;ccedil;ağrısından sonra uygulama hemen alttaki satırdan &amp;ccedil;alışmaya devam etmiştir. Burası tamamen sembolik bir kod par&amp;ccedil;ası i&amp;ccedil;erir. &amp;Ccedil;ok doğal olarak burada farklı işlemler ger&amp;ccedil;ekleştirilmesi veya istemci tarafında yer alacak başka fonksiyonelliklerin ele alınması muhtemeldir. Sonrasında ise iar isimli &lt;strong&gt;IAsyncResult&lt;/strong&gt; referansının &lt;strong&gt;AsyncWaitHandle&lt;/strong&gt; &amp;ouml;zelliği ile yakalanan &lt;strong&gt;WaitHandle&lt;/strong&gt; nesne &amp;ouml;rneğinin &lt;strong&gt;WaitOne&lt;/strong&gt; metodu &amp;ccedil;ağırılır. Bu metod, &amp;ccedil;alıştırılan asenkron fonksiyonun sonucu alınana kadar uygulamanın duraksatılmasını sağlar. WaitOne satırı aşılır aşılmaz artık ilgili metodun sonu&amp;ccedil;ları uygulama ortamına derhal alınabilir. Bu nedenle EndAverageListPriceByCategory metodunun &amp;ccedil;ağırılması ve parametre olarak iar isimli &lt;strong&gt;IAsyncResult&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml;n verilmesi yeterlidir.&lt;/p&gt;
+&lt;p&gt;Her zaman i&amp;ccedil;in istemci tarafından &amp;ccedil;ağırılacak tek bir asenkron metod olması s&amp;ouml;z konusu değildir. Bazı durumlarda birden fazla metod &amp;ccedil;ağrısı asenkron olarak y&amp;uuml;r&amp;uuml;t&amp;uuml;lmek istenebilir. &amp;Ccedil;ok doğal olarak bu metodlarının tamamının, yine uygulamanın belirli bir noktasında girdi olarak kullanılacak d&amp;ouml;n&amp;uuml;ş değerleri olabilir. &amp;Ouml;yleyse programın bu ilgili noktasında asenkron olarak &amp;ccedil;alışan t&amp;uuml;m metodların tamamının duraksatılması istenebilir. Bunun i&amp;ccedil;in &lt;strong&gt;WaitAll&lt;/strong&gt; tekniği aşağıdaki gibi kullanılır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;WaitAll tekniği;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;IAsyncResult iar1 = srv.BeginAverageListPriceByCategory(1, null, null);
+IAsyncResult iar2 = srv.BeginGetProductsCountByCategory(2, null, null);
+IAsyncResult iar3 = srv.BeginTotalListPriceByCategory(5, null, null);
+
+WaitHandle[] handles = new WaitHandle[] { iar1.AsyncWaitHandle, iar2.AsyncWaitHandle,iar3.AsyncWaitHandle };
+
+Console.WriteLine("Bazı işlemler yapılıyor...");
+
+WaitHandle.WaitAll(handles);
+
+double sonuc1 = srv.EndAverageListPriceByCategory(iar1);
+int sonuc2 = srv.EndGetProductsCountByCategory(iar2);
+double sonuc3 = srv.EndTotalListPriceByCategory(iar3);
+
+Console.WriteLine(sonuc1.ToString("C2"));
+Console.WriteLine(sonuc2.ToString());
+Console.WriteLine(sonuc3.ToString("C2"));
+
+Console.ReadLine();&lt;/pre&gt;
+&lt;p&gt;WaitAll tekniğinde asenkron olarak &amp;ccedil;alıştırılan metodlardan sorumlu &lt;strong&gt;IAsyncResult&lt;/strong&gt; referanslarından elde edilen her bir &lt;strong&gt;WaitHandle&lt;/strong&gt; &amp;ouml;rneği bir dizi i&amp;ccedil;erisinde toplanır. S&amp;ouml;z konusu dizi WaitHandle sınıfının &lt;strong&gt;static&lt;/strong&gt; &lt;strong&gt;WaitAll&lt;/strong&gt; metoduna devredildiği satırda uygulama t&amp;uuml;m asenkron metodların sonu&amp;ccedil;larının gelmesi i&amp;ccedil;in beklemede kalacaktır. &amp;Ccedil;ok doğal olarak bu &amp;ccedil;ağrıya kadar yapılan t&amp;uuml;m işlemler, asenkron metodlarınki ile paralel olarak y&amp;uuml;r&amp;uuml;t&amp;uuml;lmektedir. Bu program kodlarının &amp;ccedil;alışma zamanında &amp;uuml;reteceği &amp;ccedil;ıktı aşağıdaki gibi olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk208_5.gif" alt="" width="404" height="242" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;WaitAny&lt;/strong&gt; modeli asenkron olarak &amp;ccedil;alışan metodlardan tamamlanını ortama iade edebilme ilkesine dayalı olarak &amp;ccedil;alışmaktadır. S&amp;ouml;z gelimi &amp;ouml;rnek servisimizdeki metodlar g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında teorik olarak en kısa s&amp;uuml;rede biten metodun sonucunun ortama alınabilmesi ve sonrasında diğerleri i&amp;ccedil;in beklennmesi gerekir. Metod sonu&amp;ccedil;ları ortama d&amp;ouml;nd&amp;uuml;k&amp;ccedil;e asenkron işleyişler tamamlanmış olacaktır.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;WaitAny modelini WCF i&amp;ccedil;erisinde uyguladığımızda &amp;ccedil;alışma zamanında&lt;strong&gt;ObjectDisposedException&lt;/strong&gt; istisnası (Exception) alınmaktadır. Bu istisnanın sebebi araştırıldığında, makalenin yazıldığı tarih itibariyle &amp;ccedil;ok kıstılı bilgiye ulaşılmaktadır. Bir &amp;ccedil;&amp;ouml;z&amp;uuml;m &lt;a href="http://bloggingabout.net/blogs/erwyn/archive/2006/12/09/WCF-Service-Proxy-Helper.aspx"&gt;Erwyn van der Meer&lt;/a&gt; tarafından geliştirilmiştir ve değerlendirilebilir. Buna g&amp;ouml;re Dispose edilemeyen servis nesnesi i&amp;ccedil;in ekstradan bir sınıf geliştirilmiş ve bu sınıfın proxy sınıfı yerine kullanılması &amp;ouml;nerilmiştir.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;İstemci tarafı i&amp;ccedil;in asenkron &amp;ccedil;ağırma tekniklerinden biriside &lt;strong&gt;Polling&lt;/strong&gt; ' dir. Bu modelde temel olarak asenkron olarak başlatılan işlemin tamamlanıp tamamlanmadığı kontrol edilir ve bu aralıktaki t&amp;uuml;m işlemler paralel olarak işletilir. Polling modelinde, asenkron işleyişin tamamlanmadığını kontrol etmek adına &lt;strong&gt; IAsyncResult&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml;n &lt;strong&gt;IsCompleted&lt;/strong&gt; isimli &amp;ouml;zelliğinden yararlanılır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Polling tekniği;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;IAsyncResult iar=srv.BeginTotalListPriceByCategory(4, null, null);
+
+while (!iar.IsCompleted)
+{
+    Console.WriteLine("İşlemler devam ediyor");
+    Thread.Sleep(1000);
+}
+
+double sonuc = srv.EndTotalListPriceByCategory(iar);
+
+Console.WriteLine(sonuc.ToString());
+Console.ReadLine();&lt;/pre&gt;
+&lt;p&gt;Kodlar bu haliyle &amp;ccedil;alıştırıldığında aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; elde edilir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk208_6.gif" alt="" width="430" height="286" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Buna g&amp;ouml;re while d&amp;ouml;ng&amp;uuml;s&amp;uuml; i&amp;ccedil;erisinde kodlar asenkron olarak y&amp;uuml;r&amp;uuml;t&amp;uuml;len metoddan sonu&amp;ccedil; alınıncaya kadar devam edecektir.&lt;/p&gt;
+&lt;p&gt;Asenkron erişim teknikleri arasında en pop&amp;uuml;ler olanlarından birisi &lt;strong&gt;Callback&lt;/strong&gt;' tir. Bu teknikte asenkron &amp;ccedil;alışan metodun işleyişi tamamlandığında otomatik olarak bir geri bildirim fonksiyonu devreye girer ve sonu&amp;ccedil;ların uygulama ortamına kolay bir şekilde alınabilmesi sağlanmış olur. Aşağıdaki kod par&amp;ccedil;asında Callback modelinin uygulanış bi&amp;ccedil;imi g&amp;ouml;sterilmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt; Callback Modeli;&lt;br /&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;class Program
+{
+    static void Main(string[] args)
+    {
+        Console.WriteLine("Teste başlamak i&amp;ccedil;in bir tuşa basınız");
+        Console.ReadLine();
+        AdventureContractClient srv = new AdventureContractClient("AdventureClientEndPoint");
+
+        #region Callback Ornek
+    
+        IAsyncResult iar = srv.BeginAverageListPriceByCategory(3, new AsyncCallback(CallbackMetod), srv);
+
+        for (int i = 0; i &amp;lt; 10; i++)
+        {
+            Console.WriteLine("İşlemler devam ediyor");
+            Thread.Sleep(1000);
+        }
+
+        Console.ReadLine();
+    
+        #endregion
+    }
+
+    static void CallbackMetod(IAsyncResult iar)
+    {
+        AdventureContractClient srv = (AdventureContractClient)iar.AsyncState;
+        double sonuc=srv.EndAverageListPriceByCategory(iar);
+        Console.WriteLine(sonuc.ToString());
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Callback&lt;/strong&gt; modelinde kritik olan nokta Begin... metodunun aldığı &lt;strong&gt;AsyncCallback&lt;/strong&gt; tipindeki parametredir. AsyncCallback .Net i&amp;ccedil;erisinde yer alan bir temsilcidir (&lt;strong&gt;delegate&lt;/strong&gt;). Bu temsilcinin temel g&amp;ouml;revi ise &amp;ccedil;alışma zamanında otomatik olarak &amp;ccedil;ağırılacak geri bildirim metodunu işaret etmektir. Bir başka deyişle asenkron olarak &amp;ccedil;ağırılan metod işleyişini tamamlandığında bu temsilcinin bildirdiği metod devreye girecektir. Sonu&amp;ccedil; itibariyle &lt;strong&gt; AsyncCallback&lt;/strong&gt; bir temsilci olduğundan tanımında işaret edeceği metodun yapısıda belirtilmektedir. Buna g&amp;ouml;re geriye değer d&amp;ouml;nd&amp;uuml;rmeyen ve &lt;strong&gt;IAsyncResult&lt;/strong&gt; aray&amp;uuml;z&amp;uuml; tipinden referanslar alan metodlar işaret edilebilir.&lt;/p&gt;
+&lt;p&gt;Begin metdunun son parametresi object tipinden bir değer alır. Bu parametre &amp;ccedil;oğunlukla geri bildirim metoduna referans taşımak amacıyla kullanılır. S&amp;ouml;z gelimi yukarıdaki &amp;ouml;rnek kod par&amp;ccedil;asında, End... metodunun &amp;ccedil;ağırılabilmesi i&amp;ccedil;in iar &amp;uuml;zerinden &lt;strong&gt; AsyncState&lt;/strong&gt; ile elde edilen referans &lt;strong&gt;AdventureContractClient&lt;/strong&gt; sınıfına &lt;strong&gt;cast&lt;/strong&gt; edilmektedir. Burada AsyncState &amp;ouml;zelliğinin Begin... &amp;ccedil;ağrısında kullanılan srv isimli referans olmasını sağlamak amacıyla son parametreye srv &amp;ouml;rneği verilmiştir. Uygulama &amp;ccedil;alıştığında paralel olarak y&amp;uuml;r&amp;uuml;yen istemci kodları devam ederken aynen aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi arada bir yerde, tamamlanan asenkron metodun sonucu otomatik olarak ortama alınabilmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk208_7.gif" alt="" width="522" height="246" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Callback modelinde istenirse C# 2.0 ile birlikte gelen &lt;strong&gt;isimsiz metodlardan (Anonymous Methods) &lt;/strong&gt;da yararlanılabilir. Bu sayede ekstradan Callback metodu yazılmasına gerek kalmamakta ve temsilcinin bağlandığı yerde geri bildirim kodları ele alınabilmektedir. &amp;Ouml;rneğin aşağıdaki kod par&amp;ccedil;asında bu işlemin nasıl yapılacağı g&amp;ouml;sterilmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt; Callback modelinde isimsiz metod kullanımı;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;AsyncCallback async = delegate(IAsyncResult ar)
+                                {
+                                    double sonuc = srv.EndAverageListPriceByCategory(ar);
+                                    Console.WriteLine(sonuc.ToString());
+                                };
+IAsyncResult iar = srv.BeginAverageListPriceByCategory(3, async, null);
+
+for (int i = 0; i &amp;lt; 10; i++)
+{
+    Console.WriteLine("İşlemler devam ediyor");
+    Thread.Sleep(1000);
+}
+
+Console.ReadLine();&lt;/pre&gt;
+&lt;p&gt;Bu seferki modelde ekstradan &lt;strong&gt;static&lt;/strong&gt;&lt;em&gt;(Console uygulamasındaki static Main metodundan &amp;ccedil;ağırmamız nedeni ile b&amp;ouml;yle tanımlanmak zorundadır)&lt;/em&gt; olacak şekilde bir geri bildirim metodu yazılmasına gerek kalmamıştır. Bununla birlikte, Begin metodunun son paramertresi ile bir object referansı taşınmasına gerekte yoktur. Bu kod par&amp;ccedil;ası &amp;ccedil;alıştırıldığında da benzer sonu&amp;ccedil;lar alınacaktır.&lt;/p&gt;
+&lt;p&gt;Bu makalemizde WCF i&amp;ccedil;in istemci taraflı asenkron &amp;ccedil;ağırma modelini incelemeye &amp;ccedil;alıştık. Temel olarak kullanabileceğimiz &amp;uuml;&amp;ccedil; modelden bahsettik. Bu modeller ile ilgili olarak kısaca aşağıdaki &amp;ouml;zet bilgileri s&amp;ouml;yleyebiliriz.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Polling&lt;/strong&gt; modelinde asenkron &amp;ccedil;ağırılar sonucu &amp;ccedil;alışan metodların tamamlanıp tamamlanmadığı s&amp;uuml;rekli olarak kontrol edilir. Bu ama&amp;ccedil;la &lt;strong&gt;IsCompleted&lt;/strong&gt; &amp;ouml;zelliği ele alınabilir. Bu kontrol aralığındaki t&amp;uuml;m işlemler ilgili asenkron &amp;ccedil;ağrılar ile paralel olarak y&amp;uuml;r&amp;uuml;mektedir.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Callback&lt;/strong&gt; modelinde asenkron olarak yapılan &amp;ccedil;ağrılar ile &amp;ccedil;alışan metodların sonu&amp;ccedil;ları elde edildiğinde, otomatik olarak bir geri bildirim metodu &amp;ccedil;alışır. Dolayısıyla asenkron y&amp;uuml;r&amp;uuml;yen metodların tamamlanıp tamamlanmadıklarının s&amp;uuml;rekli olarak kontrol edilmesine gerek yoktur.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;WaitHandle&lt;/strong&gt; modeli 3 farklı şekilde uygulanabilmekte olup asenkron olarak &amp;ccedil;alışan metodların uygulamanın belirli bir noktasında girdi olarak kullanılabilecek değerlerinin alınması i&amp;ccedil;in bekleme yapılmasını sağlamaktadır. Bu bekleme tek bir metod i&amp;ccedil;in &lt;strong&gt;WaitOne&lt;/strong&gt;, t&amp;uuml;m metodlar i&amp;ccedil;in &lt;strong&gt; WaitAll&lt;/strong&gt; ve sırayla bitenleri ortama alma ilkesine dayanaraktan &lt;strong&gt;WaitAny&lt;/strong&gt; fonksiyonları ile yapılmaktadır.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Yazımızın başındada belirttiğimiz gibi bir sonraki Windows Communication Foundation makalemizde servis tarafında asenkron uyarlamanın (Service Side Asynchronous Implementation) nasıl yapılabileceğini incelemeye &amp;ccedil;alışacağız. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/makale/images/AsenkronErisimler.zip"&gt;&amp;Ouml;rnek Uygulama İ&amp;ccedil;in Tıklayınız.&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2007-06-13 12:00:00</pubDate>
+  <slug>WCF-Istemci-Taraflc4b1-Asenkron-Cagc4b1rma-(Client-Side-Asynchronous-Invoking)-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>wcf</tag>
+    <tag>asynchronous-programming</tag>
+    <tag>async</tag>
+    <tag>client-side-invoke</tag>
+  </tags>
+  <categories>
+    <category>WCF</category>
+  </categories>
+</post>

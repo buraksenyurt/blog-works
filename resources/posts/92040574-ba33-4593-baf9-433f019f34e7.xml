@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>WCF 4.0 Yenilikleri - Default Protocol Mapping [Beta 1]</title>
+  <description>Bir önceki blog yazımızda, WCF 4.0 ile birlikte gelebilecek özelliklerden birisi olan Default EndPoints kavramına değinmeye çalışmıştık. Durumu kısaca özetleyip, bu konu ile bağlantılı olan başka bir yenileğe bakarak devam edelim. Default EndPoints özelliği sayesinde, WCF çalışma zamanına(Runtime) açık bir şekilde EndPoint bildirimi yapma zorunluluğumuz ortadan kalkmaktaydı...</description>
+  <content>&lt;p&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Bir &amp;ouml;nceki blog yazımızda, &lt;strong&gt;WCF 4.0&lt;/strong&gt; ile birlikte gelebilecek &amp;ouml;zelliklerden birisi olan &lt;strong&gt;Default EndPoints&lt;/strong&gt; kavramına değinmeye &amp;ccedil;alışmıştık. Durumu kısaca &amp;ouml;zetleyip, bu konu ile bağlantılı olan başka bir yenileğe bakarak devam edelim.&lt;strong&gt; Default EndPoints&lt;/strong&gt; &amp;ouml;zelliği sayesinde, &lt;strong&gt;WCF &amp;ccedil;alışma zamanına(Runtime) &lt;/strong&gt;a&amp;ccedil;ık bir şekilde &lt;strong&gt;EndPoint&lt;/strong&gt; bildirimi yapma zorunluluğumuz ortadan kalkmaktaydı. Bir başka deyişle &lt;strong&gt;config&lt;/strong&gt; dosyalarında veya kod bazında herhangibir &lt;strong&gt;EndPoint&lt;/strong&gt; bildirimi yapmasak dahi, &lt;strong&gt;WCF &amp;ccedil;alışma zamanı&lt;/strong&gt;, &lt;strong&gt;ServiceHost&lt;/strong&gt; nesnesinde bildirilen &lt;strong&gt;Uri&lt;/strong&gt; bilgilerine g&amp;ouml;re varsayılan iletişim noktalarını &amp;uuml;retmekteydi. Ancak bir geliştirici g&amp;ouml;z&amp;uuml; ile olaya yaklaştığımızda, &lt;strong&gt;Uri&lt;/strong&gt; i&amp;ccedil;erisinde yer alan &lt;strong&gt;string&lt;/strong&gt; bilgiden nasıl yararlanılabildiği, yararlanıldıysada neye g&amp;ouml;re varsayılan &lt;strong&gt;bağlayıcı tiplerin(Binding Type)&lt;/strong&gt; se&amp;ccedil;ildiği bir soru işareti oluşturmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;.Net &lt;/strong&gt;gibi gelişmiş &lt;strong&gt;Framework&lt;/strong&gt; altyapılarında, sistemin geneline y&amp;ouml;nelik olarak kullanılan pek &amp;ccedil;ok ayarlama bilindiği &amp;uuml;zere basit konfigurasyon dosyalarında saklanmaktadır. &lt;strong&gt;.Net Framework&lt;/strong&gt; tarafında &lt;strong&gt;machine.config&lt;/strong&gt; dosyası ile makinedeki t&amp;uuml;m &lt;strong&gt;.Net&lt;/strong&gt; uygulamaları i&amp;ccedil;in ge&amp;ccedil;erli olan konfigurasyon ayarları saklanır. Diğer taraftan uygulamalarımızda kullanabileceğimiz &lt;strong&gt;config&lt;/strong&gt; dosyaları ile&lt;em&gt;(app.config, web.config gibi)&lt;/em&gt;,&lt;strong&gt; machine.config&lt;/strong&gt; &amp;uuml;zerinden gelen bilgilerin bazıları ezilebilir. Hatta bildiğiniz &amp;uuml;zere Web uygulamalarında hiyerarşik olarak yerleştirilebilen&lt;strong&gt; web.config&lt;/strong&gt; dosyalarından yararlanılarak en alttan &amp;uuml;ste doğru ezme(Override) işlemleri ger&amp;ccedil;ekleştirilebilmektedir&lt;em&gt;(Bir klas&amp;ouml;re ayrı authorization uygulanması i&amp;ccedil;in web.config dosyasını nasıl kullandığımızı hatırlayalım)&lt;/em&gt;. Peki buradan nasıl bir sonuca varmamız gerekiyor...&lt;/p&gt;
+&lt;p&gt;Tahmin edeceğiniz &amp;uuml;zere &lt;strong&gt;Default EndPoints&lt;/strong&gt; &amp;ouml;zelliğinin kullanılabilmesi i&amp;ccedil;in gerekli olan t&amp;uuml;m tanımlamalar ve ayarlamalar aslında&lt;strong&gt; .Net Framework 4.0'&lt;/strong&gt; a ait olan &lt;strong&gt;maching.config&lt;/strong&gt; dosyası i&amp;ccedil;erisinde tutulmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f8%2fblg60_ProtocolMapping.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekildende g&amp;ouml;r&amp;uuml;leceği &amp;uuml;zere &lt;strong&gt;scheme&lt;/strong&gt; niteliğinde &amp;ccedil;eşitli iletişim protokollerine g&amp;ouml;re bazı anahtar kelimelere yer verilmiştir. Buna karşılık olarak &amp;ccedil;alışma zamanında varsayılan olarak hangi bağlayıcı tipin kullanılacağı ise &lt;strong&gt;binding&lt;/strong&gt; niteliğinde belirlenmektedir. Dolayısıyla &lt;strong&gt;WCF &amp;ccedil;alışma zamanı&lt;/strong&gt;, &lt;strong&gt;config&lt;/strong&gt; i&amp;ccedil;erisinde veya kod tarafında bilin&amp;ccedil;li olarak tanımlanmış &lt;strong&gt;EndPoint&lt;/strong&gt; verileri ile karşılaşmassa, &lt;strong&gt;maching.config&lt;/strong&gt; i&amp;ccedil;erisindeki &lt;strong&gt;protocolMapping&lt;/strong&gt; eşleşme tablosunu baz alarak varsayılan &lt;strong&gt;EndPoint&lt;/strong&gt; bildirimlerini, s&amp;ouml;z konusu servis i&amp;ccedil;in oluşturacaktır. Tam bu noktada akıllara gelen soru şu olacaktır; Acaba &lt;strong&gt;maching.config&lt;/strong&gt; dosyasındaki bu i&amp;ccedil;eriği değiştirebilir yada uygulamalarda ezebilir miyiz?&lt;/p&gt;
+&lt;p&gt;Bir geliştirici olarak bunun olmasını bekleriz. Ger&amp;ccedil;ektende her iki durumda m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. &lt;strong&gt;Machine.config&lt;/strong&gt; i&amp;ccedil;erisinde yer alan&amp;nbsp;&lt;strong&gt;protocolMapping&lt;/strong&gt;&amp;nbsp;elementine ait alt boğumları(Child Nodes)&amp;nbsp;değiştirebilir yenilerini ekleyebiliriz. &amp;Ouml;rneğin t&amp;uuml;m &lt;strong&gt;http&lt;/strong&gt; tabanlı adreslerin aslında &lt;strong&gt;WebHttpBinding&lt;/strong&gt; tarafından ele alınmasını sağlayabiliriz&lt;em&gt;(O makinede sadece WCF RESTful servislerin barındırıldığını d&amp;uuml;ş&amp;uuml;n&amp;uuml;n).&lt;/em&gt; Tabiki &lt;strong&gt;machine.config&lt;/strong&gt; i&amp;ccedil;erisinde yapılan t&amp;uuml;m ayarlamalar, bu dosyayı kullanan makinedeki t&amp;uuml;m &lt;strong&gt;WCF&lt;/strong&gt; servis uygulamaları i&amp;ccedil;in ge&amp;ccedil;erli olacaktır. Bir diğer se&amp;ccedil;enek olarakta kendi uygulamalarımız i&amp;ccedil;erisinde, machinbe.config &amp;uuml;zerinde tanımlı makine bazlı protokol eşleştirmelerini ezebiliriz. Şimdi bu durumu anlamak i&amp;ccedil;in aşağıdaki &lt;strong&gt;Console&lt;/strong&gt; uygulamasını geliştirdiğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Not : Uygulamamızı .Net Framework 4.0 Beta 1 y&amp;uuml;kl&amp;uuml; bir sistemde Visual Studio 2010 Beta 1 ile geliştirdiğimizi ve son s&amp;uuml;r&amp;uuml;mlerde farklılıkar olabileceğini hatırlatalım.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.ServiceModel;
+using System;
+
+namespace DefaultBindings
+{
+    // Servis s&amp;ouml;zleşmesi
+    [ServiceContract]
+    interface ICalculus
+    {
+        [OperationContract]
+        double Sum(double x, double y);
+    }
+
+    // Servis
+    class Aynstayn
+        :ICalculus
+    {
+        public double Sum(double x, double y)
+        {
+            return x + y;
+        }
+    }
+
+    // Client
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // Http ve Tcp bazlı iki adres bildirilir.
+            ServiceHost host = new ServiceHost(typeof(Aynstayn),
+                new Uri("net.tcp://localhost:5000/Calculus"),
+                new Uri("http://localhost:5001/Calculus")
+                );
+            // Servis a&amp;ccedil;ılır
+            host.Open();
+
+            Console.WriteLine("Host {0}", host.State);
+
+            // Varsayılan olarak eklenen EndPoint tipleri listelenir
+            foreach (var endPoint in host.Description.Endpoints)
+            {
+                Console.WriteLine("Name {0}\n\tAddress : {1}\n\tBinding : {2}\n\tContract : {3}",endPoint.Name,endPoint.Address,endPoint.Binding.Name,endPoint.Contract.Name);
+            }
+
+            Console.WriteLine("&amp;Ccedil;ıkış i&amp;ccedil;in bir tuşa basınız.");
+            Console.ReadLine();
+
+            // Servis kapatılır
+            host.Close();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu haliyle uygulamamızı &amp;ccedil;alıştırdığımızda bir &amp;ouml;nceki blog yazımızda olduğu gibi varsayılan &lt;strong&gt;EndPoint'&lt;/strong&gt; lerin eklendiği g&amp;ouml;zlemlenecektir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f8%2fblg60_DefaultRun.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi uygulamamıza bir&lt;strong&gt; app.config&lt;/strong&gt; dosyası eklediğimizi ve i&amp;ccedil;eriğini aşağıdaki gibi geliştirdiğimizi varsayalım.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+  &amp;lt;system.serviceModel&amp;gt;
+    &amp;lt;protocolMapping&amp;gt;
+      &amp;lt;!-- Eğer http protokol&amp;uuml; ile karşılaşılırsa wsHttpBinding bağlayıcı tipini varsayılan olarak kullan. Machine.config i&amp;ccedil;erisindeki http tanımlaması ezilmiştir.--&amp;gt;
+      &amp;lt;!--&amp;lt;clear/&amp;gt;--&amp;gt; &amp;lt;!-- Clear kullanıdığımız takdirde, machine.config i&amp;ccedil;erisindeki t&amp;uuml;m protocolMapping eşleştirmeleri ge&amp;ccedil;ersiz kılınır. Dolayısıyla bu &amp;ouml;rnekte yer alan net.tcp bazlı Uri i&amp;ccedil;in, bu config ayarlarına g&amp;ouml;re otomatik bir EndPoint noktası &amp;uuml;retilmez --&amp;gt;
+      &amp;lt;add scheme="http" binding="wsHttpBinding"/&amp;gt;      
+    &amp;lt;/protocolMapping&amp;gt;
+  &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Bu tanımlamaya g&amp;ouml;re, &lt;strong&gt;Uri&lt;/strong&gt; bilgisinde &lt;strong&gt;http&lt;/strong&gt; protokol&amp;uuml; ile karşılaşıldığında varsayılan olarak &lt;strong&gt;WsHttpBinding &lt;/strong&gt;bağlayıcı tipinin kullanılması s&amp;ouml;ylenmektedir. Aynı &amp;ouml;rneği, bu config ayarına g&amp;ouml;re &amp;ccedil;alıştırdığımızda aşağıdaki sonucu alırız.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Not : binding niteliğinin(attribute) değeri case-sensitive' dir. Yani wsHttpBinding yerine &amp;ouml;rneğin WsHttpBinding yazıldığı takdirde &amp;ccedil;alışma zamanında System.ServiceModel.CommunicationObjectFaultedException tipinden bir istisna(Exception) alınır.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f8%2fblg60_AfterMapping.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi, &lt;strong&gt;http&lt;/strong&gt; protokol&amp;uuml; i&amp;ccedil;in varsayılan olarak &lt;strong&gt;WsHttpBinding&lt;/strong&gt; bağlayıcı tipini kullanan bir &lt;strong&gt;EndPoint&lt;/strong&gt; &amp;uuml;retilmiştir. Tabiki bu ayarlamalar sırasında dikkat edilmesi gereken bazı noktalarda vardır. S&amp;ouml;z gelimi &lt;strong&gt;WsHttpBinding&lt;/strong&gt; ile &lt;strong&gt;BasicHttpBinding&lt;/strong&gt; arasındaki farklar g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alındığında, servis tarafınında buna g&amp;ouml;re geliştiriliyor olması gerekir. Bunu en g&amp;uuml;zel a&amp;ccedil;ıklayan durumlardan birisi &lt;strong&gt;RESTful&lt;/strong&gt; i&amp;ccedil;in &lt;strong&gt;WebHttpBinding&lt;/strong&gt; kullanılması olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. Nitekim varsayılan bağlayıcı tipi olarak &lt;strong&gt;WebHttpBinding&lt;/strong&gt; se&amp;ccedil;ildiğinde, servis operasyonlarında &lt;strong&gt;WebGet&lt;/strong&gt; veya &lt;strong&gt;WebInvoke&lt;/strong&gt; gibi niteliklerin kullanılması &amp;ouml;nemlidir. B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2009%2f8%2fDefaultBindings.rar"&gt;DefaultBindings.rar (24,20 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2009-08-10 23:09:00</pubDate>
+  <slug>WCF-40-Yenilikleri-Default-Protocol-Mapping</slug>
+  <tags>
+    <tag>wcf</tag>
+    <tag>wcf-40</tag>
+  </tags>
+  <categories>
+    <category>WCF 4.0 Beta 1</category>
+  </categories>
+</post>

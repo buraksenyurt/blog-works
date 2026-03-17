@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Ado.Net Data Services 1.5 CTP2 - Data Binding Bölüm 2</title>
+  <description>Hatırlayacağınız gibi bir önceki yazımızda, Ado.Net Data Service için istemci taraflı veri bağlama işlemlerinde DataServiceCollection&lt;T&gt; kolekisyonunu değerlendirmeye çalışmış ve istemci tarafında bu konuyu ele almak için basit bir WPF uygulaması geliştirmiştik. Bir önceki örneğimiz aslında tek yönlü veri bağlama işlemine örnek olmasında rağmen, iki yönlü modeli de desteklemektedir.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/pics/2009%2f9%2fblg83_Giris.jpg" alt="" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Orta uzunlukta bir yazı i&amp;ccedil;in hazır mısınız? Analizi dikkat gerektiren bir &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt; &amp;ouml;rneği geliştiriyor olacağız. Genellikle bu tarz yazılara ait kodları geliştirirken sıkılmamak ve zihnimi a&amp;ccedil;ık tutmak i&amp;ccedil;in ya kahve i&amp;ccedil;erim yada mutluluktan havalara u&amp;ccedil;armış gibi yazabilmek ve kan şekerimi &amp;uuml;st seviyede tutabilmek i&amp;ccedil;in bazen&amp;nbsp;değişik şekerlemelerden yerim. Aynen yandaki resimde olduğu gibi.&lt;img title="Cool" src="/editors/tiny_mce3/plugins/emotions/img/smiley-cool.gif" alt="Cool" border="0" /&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Hatırlayacağınız gibi bir &amp;ouml;nceki yazımızda, &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt;&amp;nbsp;i&amp;ccedil;in istemci taraflı&amp;nbsp;veri bağlama işlemlerinde&amp;nbsp;&lt;strong&gt;DataServiceCollection&amp;lt;T&amp;gt;&lt;/strong&gt; kolekisyonunu değerlendirmeye &amp;ccedil;alışmış ve istemci tarafında bu konuyu ele almak i&amp;ccedil;in basit bir &lt;strong&gt;WPF&lt;/strong&gt; uygulaması geliştirmiştik. Bir &amp;ouml;nceki &amp;ouml;rneğimiz aslında tek y&amp;ouml;nl&amp;uuml; veri bağlama işlemine &amp;ouml;rnek olmasında rağmen, iki y&amp;ouml;nl&amp;uuml; modeli de desteklemektedir. Bu yazımızda geliştireceğimiz &amp;ouml;rneğimizdeki hedefimiz ise, istemci tarafındaki koleksiyonlar &amp;uuml;zerinden yapmış olduğumuz g&amp;uuml;ncelleştirme, ekleme ve silme işlemlerini servis tarafına yansıtmaktır.&lt;/p&gt;
+&lt;p&gt;Aslında s&amp;uuml;re&amp;ccedil; son derece basittir. Veri bağlı kontroller &amp;uuml;zerinde yapılan g&amp;uuml;ncelleştirme hareketleri, &lt;strong&gt;DataServiceCollection&lt;/strong&gt; koleksiyonu &amp;uuml;zerinde de ger&amp;ccedil;eklenecektir. Sonrasında ise &lt;strong&gt;DataServiceContext&lt;/strong&gt; t&amp;uuml;revli nesne &amp;ouml;rneği &amp;uuml;zerinden &lt;strong&gt;SaveChanges&lt;/strong&gt; metodunun &amp;ccedil;ağırılması&amp;nbsp;yeterli olacaktır. Bu sayede&amp;nbsp;koleksiyon &amp;uuml;zerinden yapılan t&amp;uuml;m g&amp;uuml;ncelleştirme, ekleme ve silme işlemlerinin, servis tarafına bir talep olarak g&amp;ouml;nderilmesi ve sunucu &amp;uuml;zerinde de kullanılan veri kaynağına g&amp;ouml;re&lt;em&gt;(Entity Framework veya Custom LINQ Provider)&lt;/em&gt; uygun bir veri işleminin yapılması sağlanır. Biz &amp;ouml;rneğimizde kendi geliştireceğimiz bir veritabanı i&amp;ccedil;eriğini ve &lt;strong&gt;Ado.Net Entity Framework&lt;/strong&gt; modelini kullanacağımızdan, sunucu &amp;uuml;zerinde &lt;strong&gt;SQL&lt;/strong&gt; sorgularının &amp;ccedil;alıştırıldığını g&amp;ouml;receğiz. Dilerseniz vakit kaybetmeden &amp;ouml;rneğimizi geliştirmeye başlayalım ve işleyişini analiz edelim.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğimizde kendi geliştirdiğimiz &lt;strong&gt;BookShop&lt;/strong&gt; isimli bir veritabanını kullanıyor olacağız. Hayali olarak bir kitap&amp;ccedil;ının veri ambarı olarak tasarladığımızı farz edebiliriz. &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;S&amp;ouml;z konusu veritabanını oluşturmak i&amp;ccedil;in &lt;a href="/pics/2009%2f9%2fBookShopDbScripts.sql"&gt;BookShopDbScripts.sql (13,83 kb)&lt;/a&gt;&amp;nbsp;dosyasından yararlanabilirsiniz. Bu dosya i&amp;ccedil;erisinde veritabanı, tabloların oluşturulması ve &amp;ouml;rnek veri girişleri i&amp;ccedil;in gerekli &lt;strong&gt;SQL Script'&lt;/strong&gt; leri bulunmaktadır. Bu noktadan yola &amp;ccedil;ıkarak geliştireceğimiz &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt; &amp;ouml;rneğinde kullanacağımız &lt;strong&gt;Entity DataModel&lt;/strong&gt; diagramını aşağıdaki gibi tasarlayabiliriz.&amp;nbsp;&amp;Ouml;rneğimizdeki amacımız kitap g&amp;uuml;ncellemek, kitap eklemek ve silmek gibi işlemler olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f9%2fblg83_Edmx.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Gelelim &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt; &amp;ouml;rneğimize. &lt;strong&gt;Version 1.5 CTP2&lt;/strong&gt; versiyonuna g&amp;ouml;re eklediğimiz servisin kod i&amp;ccedil;eriğini aşağıdaki gibi tasarlayabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System.Data.Services;
+
+namespace BookShop
+{
+    public class BookService 
+        : DataService&amp;lt;BookShopEntities&amp;gt;
+    {
+        public static void InitializeService(DataServiceConfiguration config)
+        {
+            config.SetEntitySetAccessRule("*", EntitySetRights.All);        
+            config.DataServiceBehavior.MaxProtocolVersion = System.Data.Services.Common.DataServiceProtocolVersion.V2;
+     }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;İstemci tarafını yine bir &lt;strong&gt;WPF&lt;/strong&gt; uygulaması olarak tasarlayıp, iki y&amp;ouml;nl&amp;uuml; veri bağlama kabiliyetlerini etkin bir şekilde kullanmayı planlıyoruz. Yazıyı hazırladığım sıralarda, &lt;strong&gt;Visual Studio 2008&lt;/strong&gt; &amp;uuml;zerinde garip ve gizemli bir sorunla karşılaştım. &amp;Ouml;yleki, istemci uygulamada &lt;strong&gt;Add Service Reference&lt;/strong&gt; ile &lt;strong&gt;proxy &lt;/strong&gt;&amp;uuml;retimi yapılmasına rağmen, indirilen &lt;strong&gt;Entity&lt;/strong&gt; tiplerinin &lt;strong&gt;INotifyPropertyChanged&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml; uygulamadıklarını g&amp;ouml;rd&amp;uuml;m. Ama tabiki &amp;ccedil;aresiz değildim. &lt;strong&gt;DataSvcUtil&lt;/strong&gt; aracının &lt;strong&gt;version 1.5 CTP 2&lt;/strong&gt; s&amp;uuml;r&amp;uuml;m&amp;uuml;n&amp;uuml; aşağıda g&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi kullanarak, istemci i&amp;ccedil;in gerekli olan ve &lt;strong&gt;INotifyPropertyChanged&lt;/strong&gt; aray&amp;uuml;z&amp;uuml;n&amp;uuml; implemente etmiş tipleri &amp;uuml;retebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f9%2fblog83_CommandPrompt.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu noktadan sonra &amp;uuml;retilen sınıfı istemci tarafında kullanmamız yeterli olacaktır. İşte istemci tarafı i&amp;ccedil;in &amp;uuml;retilen &lt;strong&gt;Entity&lt;/strong&gt; tipleri.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f9%2fblg83_ClassDiagram.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Yanlız komut satırından yapılan &lt;strong&gt;proxy&lt;/strong&gt; sınıfını istemcide kullanabilmek i&amp;ccedil;in, &lt;strong&gt;Ado.Net Data Services Version 1.5 CTP2&lt;/strong&gt; ile gelen &lt;strong&gt;Microsoft.Data.Services.Client assembly' &lt;/strong&gt;ının projeye referans edilmesi gerekmektedir. Aynen aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f9%2fblg83_ClientSolution.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu &amp;ouml;n hazırlıklardan sonra istemci tarafındaki &lt;strong&gt;Window1&lt;/strong&gt; i&amp;ccedil;eriğini başlangı&amp;ccedil;ta aşağıdaki gibi tasarladığımızı d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f9%2fblg83_Window1First.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Burada &amp;uuml;st tarafta yer alan &lt;strong&gt;ComboBox&lt;/strong&gt; i&amp;ccedil;erisinde kitap kategorileri,&amp;nbsp;alt tarafta yer alan &lt;strong&gt;ListBox &lt;/strong&gt;kontrol&amp;uuml;nde ise se&amp;ccedil;ilen kategoriye bağlı kitaplar g&amp;ouml;r&amp;uuml;nt&amp;uuml;lenecektir. Yanlız &lt;strong&gt;XAML&lt;/strong&gt; tarafına baktığınızda &lt;strong&gt;WPF&lt;/strong&gt; a&amp;ccedil;ısından etkili bazı tekniklerin kullanıldığını g&amp;ouml;rebilirsiniz.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;XAML İ&amp;ccedil;eriği;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;Window x:Class="BookSeller.Window1"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Book Seller" Height="330" Width="384"&amp;gt;
+    &amp;lt;Grid Name="grdBook" Height="298"&amp;gt;
+        &amp;lt;ComboBox Height="42" Margin="2,12,0,0" Name="cmbCategories" VerticalAlignment="Top"  IsSynchronizedWithCurrentItem="true" ItemsSource="{Binding}"&amp;gt;
+            &amp;lt;ComboBox.ItemTemplate&amp;gt;
+                &amp;lt;DataTemplate&amp;gt;
+                    &amp;lt;StackPanel Orientation="Horizontal"&amp;gt;
+                        &amp;lt;TextBlock Name="txtCategoryId" Text="{Binding Path=CategoryId}" FontSize="22" Foreground="RosyBrown"/&amp;gt;
+                        &amp;lt;TextBlock Name="txtCategoryName" Text="{Binding Path=Name}"/&amp;gt;
+                    &amp;lt;/StackPanel&amp;gt;
+                &amp;lt;/DataTemplate&amp;gt;
+            &amp;lt;/ComboBox.ItemTemplate&amp;gt;
+        &amp;lt;/ComboBox&amp;gt;
+        &amp;lt;ListBox IsSynchronizedWithCurrentItem="True" Name="lstProducts" Margin="0,60,0,53" ItemsSource="{Binding Book}"&amp;gt;
+            &amp;lt;ListBox.ItemTemplate&amp;gt;
+                &amp;lt;DataTemplate&amp;gt;
+                    &amp;lt;StackPanel Orientation="Vertical"&amp;gt;
+                        &amp;lt;TextBox Name="txtProductName" Text="{Binding Name}" Width="250"/&amp;gt;
+                        &amp;lt;TextBox Name="txtListPrice" Text="{Binding ListPrice}" Width="100" Foreground="Gold" Background="Black" HorizontalAlignment="Right"/&amp;gt;
+                    &amp;lt;/StackPanel&amp;gt;                    
+                &amp;lt;/DataTemplate&amp;gt;
+            &amp;lt;/ListBox.ItemTemplate&amp;gt;
+        &amp;lt;/ListBox&amp;gt;
+        &amp;lt;Button Height="23" HorizontalAlignment="Left" Margin="2,0,0,24" Name="btnSaveChanges" VerticalAlignment="Bottom" Width="93" Click="btnSaveChanges_Click"&amp;gt;Save Changes&amp;lt;/Button&amp;gt;
+    &amp;lt;/Grid&amp;gt;
+&amp;lt;/Window&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Her şeyden &amp;ouml;nce, &lt;strong&gt;ComboBox&lt;/strong&gt; i&amp;ccedil;eriğinin her bir &amp;ouml;ğesinin birer &lt;strong&gt;StackPanel&lt;/strong&gt; olduğunu ve &lt;strong&gt;CategoryId&lt;/strong&gt; ile &lt;strong&gt;Name &lt;/strong&gt;alanlarının i&amp;ccedil;eriklerinin &lt;strong&gt;TextBlock' &lt;/strong&gt;ların &lt;strong&gt;Text&lt;/strong&gt; &amp;ouml;zelliklerine bağlandıklarını g&amp;ouml;rebiliriz. Benzer durum &lt;strong&gt;ListBox&lt;/strong&gt; kontrol&amp;uuml; i&amp;ccedil;inde ge&amp;ccedil;erlidir. Ne varki &lt;strong&gt;ListBox&lt;/strong&gt; kontrol&amp;uuml;n&amp;uuml;n i&amp;ccedil;erisinde yer alan ve &lt;strong&gt;Text&lt;/strong&gt; &amp;ouml;zellikleri&amp;nbsp;&lt;strong&gt;Book Entity'&lt;/strong&gt; sinin &lt;strong&gt;Name&lt;/strong&gt; ile &lt;strong&gt;ListPrice &lt;/strong&gt;alanlarına bağlanmış olan &lt;strong&gt;TextBox&lt;/strong&gt; kontrolleri, aslında kullanıcı tarafından d&amp;uuml;zenlenebilirde. &lt;img title="Laughing" src="/editors/tiny_mce3/plugins/emotions/img/smiley-laughing.gif" alt="Laughing" border="0" /&gt;&amp;nbsp;Volaaaa!!! &amp;Ouml;yleyse akla şu gelebilir.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;"Eğer bu kontrollerin Text &amp;ouml;zellikleri, kod tarafındaki Entity &amp;ouml;rneklerine bağlanmışlarsa ve &amp;ccedil;alışma zamanında i&amp;ccedil;erikleri değiştirilirse bu d&amp;uuml;zenlemeler Entity i&amp;ccedil;eriklerine de yansır mı? Peki diyelim ki yansıdı. SaveChanges metodunu &amp;ccedil;ağırdığımızda bu değişikliler servis tarafına da yansır mı?" &lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Aslında&amp;nbsp;bu sorularının tamamının cevabı &lt;strong&gt;Evet'&lt;/strong&gt; tir. Ama tabiki bizim bu durumu analiz etmemiz ve g&amp;ouml;z&amp;uuml;m&amp;uuml;zle g&amp;ouml;rmemiz şart. &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;Buna g&amp;ouml;re&amp;nbsp;kod i&amp;ccedil;eriğimizi aşağıdaki gibi geliştirmemiz yeterlidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Data.Services.Client;
+using System.Windows;
+using BookShopModel;
+
+namespace BookSeller
+{
+    public partial class Window1 
+           : Window
+    {
+        BookShopEntities bs = null;
+        DataServiceCollection&amp;lt;Category&amp;gt; _bookShopCollection = null;
+
+        public Window1()
+        {   
+            InitializeComponent();
+
+            bs = new BookShopEntities(new Uri("http://localhost:7995/BookService.svc/"));
+            _bookShopCollection = DataServiceCollection.CreateTracked&amp;lt;Category&amp;gt;(bs, bs.Category.Expand("Book"));
+            grdBook.DataContext = _bookShopCollection;
+        }
+
+        private void btnSaveChanges_Click(object sender, RoutedEventArgs e)
+        {
+            bs.SaveChanges();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Programı ilk &amp;ccedil;alıştırdığımızda aşağıdaki bilgilerin geldiğini g&amp;ouml;rebiliriz. Her ne kadar tasarım konusunda zayıf bir &amp;ouml;rnek olsada, &lt;strong&gt;ListBox&lt;/strong&gt; i&amp;ccedil;erisinde her bir satırda d&amp;uuml;zenlenebilir, veriye bağlanmış kontrollerin yer alması dahi benim i&amp;ccedil;in &amp;ouml;nemli bir adımdır. &lt;img title="Smile" src="/editors/tiny_mce3/plugins/emotions/img/smiley-smile.gif" alt="Smile" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f9%2fblg83_FirstRun.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi &lt;strong&gt;ListBox&lt;/strong&gt; i&amp;ccedil;erisindeki verilerde değişiklik yapıldığını varsayalım. &amp;Ouml;rnek olarak &lt;strong&gt;Pro WCF 3.5 &lt;/strong&gt;isimli kitabın adına&lt;strong&gt; Second Edition&lt;/strong&gt; kelimelerini ilave ettiğimizi ve &lt;strong&gt;ListPrice&lt;/strong&gt; değerini &lt;strong&gt;39&lt;/strong&gt; birim olarak değiştirdiğimizi d&amp;uuml;ş&amp;uuml;nebiliriz. Aynen aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f9%2fblg83_Change.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi &lt;strong&gt;Save Changes&lt;/strong&gt; başlıklı d&amp;uuml;ğmeye basalım ve&amp;nbsp;&lt;strong&gt;BookShopEntities&lt;/strong&gt; nesne &amp;ouml;rneği &amp;uuml;zerinden &lt;strong&gt;SaveChanges&lt;/strong&gt; metodunun &amp;ccedil;ağırıldığı yerde koyduğumuz &lt;strong&gt;break point&lt;/strong&gt; &amp;uuml;zerinde duralım. Yapamamız gereken, &lt;strong&gt;BookShopEntities&lt;/strong&gt; ve &lt;strong&gt;DataServiceCollection&lt;/strong&gt; i&amp;ccedil;eriklerini &lt;strong&gt;Watch&lt;/strong&gt; ile incelemek olacaktır. İlk olarak &lt;strong&gt;_bookShopCollection &lt;/strong&gt;i&amp;ccedil;eriğine bir bakalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f9%2fblg83_Breakpoint1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Hımmmmm... &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere &lt;strong&gt;Category&lt;/strong&gt; &amp;uuml;zerinden gittiğimiz &lt;strong&gt;Book&lt;/strong&gt; &amp;ouml;zelliğine bağlı koleksiyonda az &amp;ouml;nce yapılan &lt;strong&gt;Name&lt;/strong&gt; ve &lt;strong&gt;ListPrice&lt;/strong&gt; değişikliklerin ger&amp;ccedil;ekleştirildiği g&amp;ouml;zlemlenmektedir. Benzer şekilde &lt;strong&gt;BookShopEntities&lt;/strong&gt; nesne &amp;ouml;rneğinin i&amp;ccedil;eriğine baktığımızda, ilgili &lt;strong&gt;Book&lt;/strong&gt; &amp;ouml;rneği i&amp;ccedil;in aynı değişikliklerin yansıtıldığını g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f9%2fblg83_Breakpoint2.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Dolayısıyla &lt;strong&gt;iki y&amp;ouml;nl&amp;uuml; veri bağlama(Two Way DataBinding)&lt;/strong&gt; nedeniyle kontroller &amp;uuml;zerine yansıyan verilerde yapılan değişiklikler, istemci tarafındaki ilgili koleksiyonlara da yansıtılmaktadır. Buna g&amp;ouml;re &lt;strong&gt;SaveChanges&lt;/strong&gt; metoduna yapılan &amp;ccedil;ağrı ge&amp;ccedil;ildiğinde, servis tarafına&amp;nbsp;gerekli g&amp;uuml;ncelleştirme talebinin gittiği ve aşağıdaki &lt;strong&gt;SQL&lt;/strong&gt; sorgusunun &amp;ccedil;alıştırıldığı g&amp;ouml;zlemlenir.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;exec sp_executesql N'update [dbo].[Book]
+set [Name] = @0, [ListPrice] = @1, [PageSize] = @2
+where ([BookId] = @3)
+',N'@0 nvarchar(26),@1 decimal(19,4),@2 smallint,@3 int',@0=N'Pro WCF 3.5 Second Edition',@1=39.0000,@2=500,@3=2&lt;/pre&gt;
+&lt;p&gt;Eğer birden fazla &lt;strong&gt;Book&lt;/strong&gt; &amp;ouml;rneğinin &amp;ouml;zelliği değiştirilirse, &lt;strong&gt;SaveChanges&lt;/strong&gt; metodu &amp;ccedil;ağrısı sonrasında her bir g&amp;uuml;ncelleştirme i&amp;ccedil;in ayrı bir &lt;strong&gt;SQL Update&lt;/strong&gt; sorgusunun &amp;ccedil;alıştırıldığı da g&amp;ouml;zlemlenecektir. Şimdi &amp;ouml;rnek bir veri ekleme işlemi yapalım. Bu ama&amp;ccedil;la &lt;strong&gt;Window1&lt;/strong&gt; i&amp;ccedil;eriğini aşağıdaki gibi değiştirdiğimizi d&amp;uuml;ş&amp;uuml;nebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f9%2fblg83_SecondDesign.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Yapılan bu değişikliklerden sonra ise &lt;strong&gt;XAML&lt;/strong&gt; i&amp;ccedil;eriğinin aşağıdaki gibi oluştuğu g&amp;ouml;zlemlenebilir.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;Window x:Class="BookSeller.Window1"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Book Seller" Height="362" Width="384"&amp;gt;
+    &amp;lt;Grid Name="grdBook" Height="317"&amp;gt;
+        &amp;lt;ComboBox Height="42" Margin="2,12,0,0" Name="cmbCategories" VerticalAlignment="Top"  IsSynchronizedWithCurrentItem="true" ItemsSource="{Binding}"&amp;gt;
+            &amp;lt;ComboBox.ItemTemplate&amp;gt;
+                &amp;lt;DataTemplate&amp;gt;
+                    &amp;lt;StackPanel Orientation="Horizontal"&amp;gt;
+                        &amp;lt;TextBlock Name="txtCategoryId" Text="{Binding Path=CategoryId}" FontSize="22" Foreground="RosyBrown"/&amp;gt;
+                        &amp;lt;TextBlock Name="txtCategoryName" Text="{Binding Path=Name}"/&amp;gt;
+                    &amp;lt;/StackPanel&amp;gt;
+                &amp;lt;/DataTemplate&amp;gt;
+            &amp;lt;/ComboBox.ItemTemplate&amp;gt;
+        &amp;lt;/ComboBox&amp;gt;
+        &amp;lt;ListBox IsSynchronizedWithCurrentItem="True" Name="lstProducts" Margin="0,60,0,141" ItemsSource="{Binding Book}"&amp;gt;
+            &amp;lt;ListBox.ItemTemplate&amp;gt;
+                &amp;lt;DataTemplate&amp;gt;
+                    &amp;lt;StackPanel Orientation="Vertical"&amp;gt;
+                        &amp;lt;TextBox Name="txtProductName" Text="{Binding Name}" Width="250"/&amp;gt;
+                        &amp;lt;TextBox Name="txtListPrice" Text="{Binding ListPrice}" Width="100" Foreground="Gold" Background="Black" HorizontalAlignment="Right"/&amp;gt;
+                    &amp;lt;/StackPanel&amp;gt;                    
+                &amp;lt;/DataTemplate&amp;gt;
+            &amp;lt;/ListBox.ItemTemplate&amp;gt;
+        &amp;lt;/ListBox&amp;gt;
+        &amp;lt;Button Height="23" HorizontalAlignment="Right" Margin="0,0,12,12" Name="btnSaveChanges" VerticalAlignment="Bottom" Width="93" Click="btnSaveChanges_Click"&amp;gt;Save Changes&amp;lt;/Button&amp;gt;
+        &amp;lt;Label Height="28" HorizontalAlignment="Left" Margin="7,0,0,106" Name="label1" VerticalAlignment="Bottom" Width="54"&amp;gt;Name&amp;lt;/Label&amp;gt;
+        &amp;lt;Label Height="28" HorizontalAlignment="Left" Margin="7,0,0,77" Name="label2" VerticalAlignment="Bottom" Width="54"&amp;gt;ListPrice&amp;lt;/Label&amp;gt;
+        &amp;lt;Label Height="28" HorizontalAlignment="Right" Margin="0,0,104,78" Name="label3" VerticalAlignment="Bottom" Width="65"&amp;gt;Page Size&amp;lt;/Label&amp;gt;
+        &amp;lt;TextBox Height="23" Margin="67,0,12,112" Name="txtName" VerticalAlignment="Bottom" /&amp;gt;
+        &amp;lt;TextBox Height="23" Margin="67,0,0,83" Name="txtListPrice" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="97" /&amp;gt;
+        &amp;lt;TextBox Height="23" Margin="0,0,12,83" Name="txtPageSize" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="97" /&amp;gt;
+        &amp;lt;Button Height="23" HorizontalAlignment="Left" Margin="12,0,0,48" Name="btnAddBook" VerticalAlignment="Bottom" Width="93" Click="btnAddBook_Click"&amp;gt;Add&amp;lt;/Button&amp;gt;
+    &amp;lt;/Grid&amp;gt;
+&amp;lt;/Window&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Kullanıcı bu forma g&amp;ouml;re yeni bir kitap ekleyebilmelidir. Bir kitabın bir kategori altında olması gerektiğinden, oluşturulacak kitabın hangi kategoriye ekleneceğinin belirlenmesi sırasında ComboBox' ta se&amp;ccedil;ili olan &lt;strong&gt;Category&lt;/strong&gt; nesne &amp;ouml;rneğinden yararlanabiliriz. Kitabın tabiki &amp;ouml;ncelikle nesnel olarak oluşturulması gerekmektedir. Sonrasında ise &lt;strong&gt;ComboBox'&lt;/strong&gt; ta se&amp;ccedil;ili olan &lt;strong&gt;Category&lt;/strong&gt; &amp;ouml;ğesinin &lt;strong&gt;Book&lt;/strong&gt; &amp;ouml;zelliği yardımıyla ilgili koleksiyona eklenmelidir. Bu ekleme işleminin ardından yapılacak olan &lt;strong&gt;SaveChanges&lt;/strong&gt; &amp;ccedil;ağrısı, ekleme işlemi i&amp;ccedil;in &lt;strong&gt;Ado.Net Data Service&lt;/strong&gt; tarafına uygun talebin g&amp;ouml;nderilmesini sağlayacaktır. Bunun doğal sonucu olarakta sunucu tarafında uygun olan &lt;strong&gt;SQL Insert &lt;/strong&gt;sorgusu &amp;ccedil;alıştırılacaktır. Bakalım ger&amp;ccedil;ekten b&amp;ouml;yle mi? &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;Bu ama&amp;ccedil;la &lt;strong&gt;Add&lt;/strong&gt; başlıklı &lt;strong&gt;Button &lt;/strong&gt;kontrol&amp;uuml;m&amp;uuml;z&amp;uuml;n &lt;strong&gt;Click &lt;/strong&gt;olay metodunu aşağıdaki gibi kodladığımızı d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void btnAddBook_Click(object sender, RoutedEventArgs e)
+        {
+            Category currentCategory = cmbCategories.SelectedItem as Category;
+
+            Book newBook = new Book
+            {
+                ListPrice = Convert.ToDecimal(txtListPrice.Text),
+                Name = txtName.Text,
+                PageSize = Convert.ToInt16(txtPageSize.Text) ,
+                Category=currentCategory
+            };
+
+            currentCategory.Book.Add(newBook);
+        }&lt;/pre&gt;
+&lt;p&gt;İlk olarak kitabın ekleneceği kategori bulunmaktadır. Burada &lt;strong&gt;SelectedItem&lt;/strong&gt; &amp;ouml;zelliğinin &lt;strong&gt;Category &lt;/strong&gt;tipine d&amp;ouml;n&amp;uuml;şt&amp;uuml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml;ne dikkat edilmelidir. Sonrasında yeni bir &lt;strong&gt;Book&lt;/strong&gt; nesnesi &amp;ouml;rneklenir ve ilgili &amp;ouml;zellikleri kontrollerden alınır.&lt;em&gt;(Burada herhangibir hatalı giriş kontrol&amp;uuml; yapmadığımızı belirtelim. Aslında yapmamız gerekiyor ancak şu an i&amp;ccedil;in odaklanmamız gereken kısım bu değil. Yinede siz &amp;ouml;rneği denerken mutlaka olası hataların &amp;ouml;n&amp;uuml;ne ge&amp;ccedil;menizi sağlayacak eklemeleri yapmayı unutmayın &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;) &lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat edilmesi gereken noktalardan birisi de, &lt;strong&gt;Book&lt;/strong&gt; nesnesi &amp;ouml;rneklenirken &lt;strong&gt;Category&lt;/strong&gt; &amp;ouml;zelliğine &lt;strong&gt;currentCategory&lt;/strong&gt; değişkeninin referansını atamamızdır. Bundan sonraki kısım ise son derece basittir. &amp;Ouml;rneklenen &lt;strong&gt;Book&lt;/strong&gt; nesne &amp;ouml;rneği, o an se&amp;ccedil;ili olan &lt;strong&gt;Category&lt;/strong&gt; nesnesinin &lt;strong&gt;Book&lt;/strong&gt; &amp;ouml;zelliğinin temsil ettiği koleksiyona atanır. Birde &amp;ccedil;alışma zamanına bakalım. Aşağıdaki &amp;ouml;rnekte bir veri girişi yapılmak istendiğini g&amp;ouml;r&amp;uuml;yoruz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f9%2fblg83_BeforeAdd.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi &lt;strong&gt;Add&lt;/strong&gt; d&amp;uuml;ğmesine basarsak ve kodu &lt;strong&gt;debug&lt;/strong&gt; edersek &lt;strong&gt;currentCategory&lt;/strong&gt; değişkeninin i&amp;ccedil;eriğinin aşağıdaki gibi g&amp;uuml;ncellendiğini g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f9%2fblg83_AddDebug.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi yeni &lt;strong&gt;Book&lt;/strong&gt; nesne &amp;ouml;rneği ilgili kategori altına eklenmiştir. &amp;Ouml;yleyse&amp;nbsp;birde &lt;strong&gt;DataServiceCollection&lt;/strong&gt; i&amp;ccedil;eriğimize bakalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f9%2fblg83_AddWatch.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Yeni eklenen &lt;strong&gt;Book&lt;/strong&gt; nesne &amp;ouml;rneğinin &lt;strong&gt;DataServiceCollection&lt;/strong&gt; nesne &amp;ouml;rneği i&amp;ccedil;erisinde de yer aldığı g&amp;ouml;zlemlenmektedir. &amp;Uuml;stelik &amp;ccedil;alışma zamanının yeni g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;de aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2009%2f9%2fblg83_AfterAdd.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bağlılık buna denir desek yeridir &lt;img title="Cool" src="/editors/tiny_mce3/plugins/emotions/img/smiley-cool.gif" alt="Cool" border="0" /&gt;&amp;nbsp;Nitekim yapmış olduğumuz nesne eklemesinden &lt;strong&gt;ListBox&lt;/strong&gt; kontrol&amp;uuml;de otomatik olarak etkilenmiş ve i&amp;ccedil;eriğini yenilemiştir. Artık &lt;strong&gt;Save Changes&lt;/strong&gt; başlıklı d&amp;uuml;ğmeye basarak değişiklikleri servis tarafına g&amp;ouml;nderebiliriz. Bu işlem yapıldığı takdirde &lt;strong&gt;SQL&lt;/strong&gt; tarafında aşağıdaki sorgunun &amp;ccedil;alıştırıldığı g&amp;ouml;zlemlenir.&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;exec sp_executesql N'insert [dbo].[Book]([Name], [ListPrice], [CategoryId], [PageSize])
+values (@0, @1, @2, @3)
+select [BookId]
+from [dbo].[Book]
+where @@ROWCOUNT &amp;gt; 0 and [BookId] = scope_identity()',N'@0 nvarchar(28),@1 decimal(19,4),@2 int,@3 smallint',@0=N'Yazılımcılar i&amp;ccedil;in SQL Server',@1=45.0000,@2=1,@3=800&lt;/pre&gt;
+&lt;p&gt;İşte bu kadar...Sırada silme işlemi var ama uzun olan bir yazının verdiği yorgunluğu yaşayan ben bu kutsal g&amp;ouml;revi siz değerli okurlarıma bırakıyorum &lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt;&amp;nbsp;Silme operasyonunu uygularken &lt;strong&gt;debug &lt;/strong&gt;işlemlerini yapmayı ve &amp;ccedil;alışma zamanını analiz edip &lt;strong&gt;SQL&lt;/strong&gt; tarafında neler olup bittiğini incelemeyi unutmayın. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2009%2f9%2fBindingV2.rar"&gt;BindingV2.rar (93,31 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2009-11-15 23:09:00</pubDate>
+  <slug>AdoNet-Data-Services-15-CTP2-Data-Binding-Bolum-2</slug>
+  <tags>
+    <tag>adonet-data-services</tag>
+  </tags>
+  <categories>
+    <category>Ado.Net Data Services</category>
+  </categories>
+</post>

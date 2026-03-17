@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Sequelize Kullanılan Bir NodeJs Rest Servisi Geliştirmek</title>
+  <description>Epey zamandır Nodejs ile kod yazmamıştım. Bu öğretideki amacım Postgresql veritabanını kullanan bir REST servisini NodeJs ile geliştirmekti. Kod tarafındaki Entity nesneleri ile Postgresql arasındaki ORM(Object Relational Mapping) katmanında Sequelize paketini kullanmayı öğrenmeye çalışıyordum. Postgresql tarafı içinse sistemi kirletmemek adına Docker imajından yararlandım. Önce onun ayağa kaldırarak işe başlayabiliriz.</description>
+  <content>&lt;p&gt;&lt;img src="/image.axd?picture=/2020/skynet/12/hearthstone_2.jpg" alt="" align="right" /&gt;Bilgisayar ile ilk tanıştığım g&amp;uuml;nden beri oyun oynamayı seven birisiyim. Tabii ilerleyen yıllarda buna vakit ayırmak benim i&amp;ccedil;in &amp;ccedil;ok zorlaştı. Bu nedenle hep kendi devrimin efsane sayabileceğim oyunlarında takılı kaldım. S&amp;ouml;z gelimi paraya kıyarak aldığım oyun bilgisayarıma&lt;em&gt;(Hani şu acayip ekran kartları olan, bir s&amp;uuml;r&amp;uuml; fan barındıran, renkli ışıklarıyla gece disko topuna d&amp;ouml;n&amp;uuml;şen masa&amp;uuml;st&amp;uuml; canavarından bahsediyorum)&lt;/em&gt; taaa ikibinlerin başında ve &amp;ouml;ncesinde oynadığım Red Alert II ve Command &amp;amp; Conquer Generals oyunlarını y&amp;uuml;kleyip vakit ge&amp;ccedil;irdim. Hani en en en yeni oynadığım oyun sanıyorum ki Hearthstone ve onda da herkes beni ezip duruyor diyebilirim :D Bende onu nerede kullanabilirim diye d&amp;uuml;ş&amp;uuml;n&amp;uuml;rken bari kart ve kahramanlarını bir NodeJs servisine malzeme yapayım dedim.&lt;/p&gt;
+&lt;p&gt;Lakin epey zamandır Nodejs ile kod yazmamıştım. İşte bu &amp;ouml;ğretideki amacım Postgresql veritabanını kullanan bir REST servisini NodeJs ile geliştirmek. Kod tarafındaki Entity nesneleri ile Postgresql arasındaki ORM&lt;em&gt;(Object Relational Mapping)&lt;/em&gt; katmanında Sequelize paketini kullanmayı &amp;ouml;ğrenmeye &amp;ccedil;alışıyorum.&lt;/p&gt;
+&lt;p&gt;Postgresql tarafı i&amp;ccedil;in sistemi kirletmemek adına Docker imajından yararlanabiliriz. &amp;Ouml;nce onun ayağa kaldırarak işe başlayalım derim. Aşağıdaki terminal komutlarında hem Postgresql docker container ayağa kalkıyor hem de gamedb isimli veritabanı oluşturuluyor.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;sudo docker run --name London -e POSTGRES_PASSWORD=P@ssw0rd -p 5433:5432 -d postgres
+docker exec -it London bash
+psql -U postgres
+Create Database gamedb;&lt;/pre&gt;
+&lt;h2&gt;Şablonun Oluşturulması&lt;/h2&gt;
+&lt;p&gt;&amp;Ouml;rneği Heimdall&lt;em&gt;(Ubuntu 20.04)&lt;/em&gt;&amp;nbsp;&amp;uuml;zerinde geliştiriyorum.&amp;nbsp;Senaryomuzda oyun kartı ve kahramanlarına ait bilgileri ekleyip listelememize izin veren bir servis geliştirmeye &amp;ccedil;alışacağız. İlk olarak aşağıdaki terminal komutlarını kullanıp nodejs ortamını hazırlayalım ve gerekli mod&amp;uuml;lleri y&amp;uuml;kletelim.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;mkdir hartstone
+cd hartstone
+npm init
+touch index.js
+npm install express body-parser sequelize sequelize-cli pg pg-hstore&lt;/pre&gt;
+&lt;p&gt;Express mod&amp;uuml;l&amp;uuml; REST servis alt yapısını yazmak, body-parser HTTP taleplerini kolayca parse etmek, pg postgresql iletişimini kurmak, pg-hstore JSON verilerini hstore formatında serileştirebilmek&lt;em&gt;(hstore Postgresql'e &amp;ouml;zg&amp;uuml; olan key-value t&amp;uuml;r&amp;uuml;nden bir kolon tipidir)&lt;/em&gt; i&amp;ccedil;in kullanılıyor. Dahil edilen sequelize aracı ise standart bir proje şablonu oluşturmak i&amp;ccedil;in ele alınmakta. Diğer yandan migration işlemlerinde de bu aracı kullanabiliyoruz. İşimizi kolaylaştıracak şablon i&amp;ccedil;in aşağıdaki init komutunu kullanmamız yeterli.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;node_modules/.bin/sequelize init&lt;/pre&gt;
+&lt;p&gt;Bu işlemle &amp;uuml;&amp;ccedil; klas&amp;ouml;r oluşacaktır. Veritabanı ayarları config klas&amp;ouml;r&amp;uuml;ndeki config.json dosyasında tanımlanır. Migration işlemlerinin bulunduğu kod dosyaları i&amp;ccedil;inse migrations klas&amp;ouml;r&amp;uuml; kullanılır. Entity t&amp;uuml;rleri ise models klas&amp;ouml;r&amp;uuml;nde tutulmaktadır. Biz tabii ki&amp;nbsp;kendi geliştirmelerimizi yapacağız.&lt;/p&gt;
+&lt;h2&gt;Peki Biz Bu Şablonda Neler&amp;nbsp;Yapacağız?&lt;/h2&gt;
+&lt;p&gt;İlk olarak config/config.json i&amp;ccedil;eriğini postgresql kullanılacak şekilde ortam bazlı olarak&lt;em&gt;(dev,test,prod i&amp;ccedil;in ayrı ayrı)&lt;/em&gt;&amp;nbsp;d&amp;uuml;zenleyelim.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;{
+  "development": {
+    "username": "postgres",
+    "password": "P@ssw0rd",
+    "database": "gamedb",
+    "host": "localhost",
+    "port": 5433,
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "root",
+    "password": null,
+    "database": "database_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "operatorsAliases": false
+  },
+  "production": {
+    "username": "root",
+    "password": null,
+    "database": "database_production",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "operatorsAliases": false
+  }
+}&lt;/pre&gt;
+&lt;p&gt;Oyuna ait kahraman ve kart bilgilerini barındıracağımız tipleri models klas&amp;ouml;r&amp;uuml; i&amp;ccedil;erisinde inşa edebiliriz. Burada sequelize nesnesini nasıl kullandığımıza dikkat edin. Aslında Postgresql tarafındaki veri modeli ve ilişkileri tanımlıyoruz.&lt;/p&gt;
+&lt;p&gt;card.js&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;module.exports = (sequelize, DataTypes) =&amp;gt; {
+
+    let Card = sequelize.define('Card', {
+        name: DataTypes.STRING,
+        description: DataTypes.STRING,
+        attack: DataTypes.INTEGER,
+        health: DataTypes.INTEGER,
+        spell: DataTypes.INTEGER
+    });
+
+    Card.associate = function (models) {
+        Card.belongsTo(models.Hero, {
+            onDelete: "CASCADE",
+            foreignKey: 'heroId'
+        });
+    };
+
+    return Card;
+}&lt;/pre&gt;
+&lt;p&gt;hero.js&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;module.exports = (sequelize, DataTypes) =&amp;gt; {
+
+    let Hero = sequelize.define('Hero', {
+        name: DataTypes.STRING,
+        info: DataTypes.STRING
+    });
+
+    Hero.associate = function (models) {
+        Hero.hasMany(models.Card, {
+            foreignKey: 'id',
+            as: 'cards'
+        });
+    };
+
+    return Hero;
+}&lt;/pre&gt;
+&lt;p&gt;Migrations klas&amp;ouml;r&amp;uuml;nde ahero-migration ve card-migration isimli javascript&amp;nbsp;dosyalarını oluşturarak devam edelim. Burası tipik olarak migration işlemleri sırasında Up ve Down operasyonlarında &amp;ccedil;alışacak kodları i&amp;ccedil;eriyor. Her iki model i&amp;ccedil;in ayrı up ve down operasyonları s&amp;ouml;z konusu olabilir. Bu nedenle ayrı dosyalarda konuşlandırılıyorlar.&lt;/p&gt;
+&lt;p&gt;ahero-migration.js&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;module.exports = {
+
+    up: (queryInterface, Sequelize) =&amp;gt;
+
+        queryInterface.createTable('Heros', {
+            id: {
+                allowNull: false,
+                autoIncrement: true,
+                primaryKey: true,
+                type: Sequelize.INTEGER,
+            },
+            name: {
+                type: Sequelize.STRING,
+                allowNull: false,
+            },
+            info: {
+                type: Sequelize.STRING,
+                allowNull: false,
+            },
+            createdAt: {
+                allowNull: false,
+                type: Sequelize.DATE,
+            },
+            updatedAt: {
+                allowNull: false,
+                type: Sequelize.DATE,
+            },
+        }),
+
+    down: (queryInterface) =&amp;gt;
+        queryInterface.dropTable('Heros'),
+};&lt;/pre&gt;
+&lt;p&gt;card-migration.js&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;module.exports = {
+
+    up: (queryInterface, Sequelize) =&amp;gt;
+
+        queryInterface.createTable('Cards', {
+            id: {
+                allowNull: false,
+                autoIncrement: true,
+                primaryKey: true,
+                type: Sequelize.INTEGER,
+            },
+            name: {
+                type: Sequelize.STRING,
+                allowNull: false,
+            },
+            description: {
+                type: Sequelize.STRING,
+                allowNull: false,
+            },
+            attack: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                defaultValue: 1,
+            },
+            health: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                defaultValue: 3,
+            },
+            spell: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                defaultValue: 1,
+            },
+            heroId: {
+                type: Sequelize.INTEGER,
+                onDelete: 'CASCADE',
+                references: {
+                    model: 'Heros',
+                    key: 'id',
+                    as: 'heroId'
+                },
+            },
+            createdAt: {
+                allowNull: false,
+                type: Sequelize.DATE,
+            },
+            updatedAt: {
+                allowNull: false,
+                type: Sequelize.DATE,
+            },
+        }),
+
+    down: (queryInterface) =&amp;gt;
+        queryInterface.dropTable('Cards'),
+};&lt;/pre&gt;
+&lt;p&gt;Şimdi Controller isimli bir klas&amp;ouml;r oluşturup&amp;nbsp;i&amp;ccedil;erisine hero, card ve index dosyalarını ekleyelim. Burada ana klas&amp;ouml;rdeki main.js i&amp;ccedil;erisinde express vasıtasıyla yakalanan y&amp;ouml;nlendirmelerin karşılığı olan fonksiyonlara yer vermekteyiz. Her modelimiz i&amp;ccedil;in ayrı bir controller s&amp;ouml;z konusu.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;hero.js&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;const Hero = require('../models').Hero;
+
+module.exports = {
+    async getAll(req, res) {
+        try {
+            const heros = await Hero.findAll({});
+            res.status(201).send(heros);
+        }
+        catch (e) {
+            console.log(e);
+            res.status(500).send(e);
+        }
+    },
+
+    async create(req, res) {
+        try {
+            const hero = await Hero.create({
+                name: req.body.name,
+                info: req.body.info
+            });
+            res.status(201).send(hero);
+        }
+        catch (e) {
+            console.log(e);
+            res.status(400).send(e);
+        }
+    }
+
+    // Update ve delete işlevleri eklenmeli
+}&lt;/pre&gt;
+&lt;p&gt;card.js&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;const Hero = require('../models').Hero;
+const Card = require('../models').Card;
+
+module.exports = {
+    async getAllByHero(req, res) {
+        try {
+            const hero = await Hero.findOne({
+                where: {
+                    id: req.params.heroId
+                }
+            });
+            console.log(hero.name);
+
+            if (hero) {
+                const cards = await Card.findAll({
+                    where: {
+                        heroId: req.params.heroId
+                    }
+                })
+
+                res.status(201).send(cards);
+            }
+            else {
+
+                res.send(404).send("Hero and it's cards not found")
+            }
+        }
+        catch (e) {
+            console.log(e);
+            res.status(500).send(e);
+        }
+    },
+
+    async create(req, res) {
+        try {
+            const card = await Card.create({
+                name: req.body.name,
+                description: req.body.description,
+                attack: req.body.attack,
+                health: req.body.health,
+                spell: req.body.spell,
+                heroId: req.body.heroId
+            });
+            res.status(201).send(card);
+        }
+        catch (e) {
+            console.log(e);
+            res.status(400).send(e);
+        }
+    }
+
+    // Update ve delete işlevleri eklenmeli
+}&lt;/pre&gt;
+&lt;p&gt;index.js&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;const hero = require('./hero');
+const card = require('./card');
+
+module.exports = {
+    hero,
+    card
+}&lt;/pre&gt;
+&lt;p&gt;Şimdi minik bir kahve arası verebiliriz. Kahvemizi i&amp;ccedil;ip geldikten sonra ise routes isimli klas&amp;ouml;r&amp;uuml; oluşturup i&amp;ccedil;erisindeki index.js&amp;nbsp;dosyasını aşağıdaki gibi kodlayabiliriz.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;const heroController = require('../controller').hero;
+const cardController = require('../controller').card;
+
+module.exports = (app) =&amp;gt; {
+
+    app.get('/game/api', (req, res) =&amp;gt; {
+        res.status(200).send({
+            data: "Hartstone Oyun API servisi s&amp;uuml;r&amp;uuml;m 1.0"
+        })
+    })
+
+    app.get('/game/api/hero', heroController.getAll);
+    app.post('/game/api/hero', heroController.create);
+
+    app.get('/game/api/hero/:heroId/cards', cardController.getAllByHero);
+    app.post('/game/api/card', cardController.create);
+}&lt;/pre&gt;
+&lt;p&gt;Ardından belki bir de &amp;ccedil;ay molası verip d&amp;ouml;n&amp;uuml;şte ana klas&amp;ouml;re ge&amp;ccedil;er ve index.js&amp;nbsp;i&amp;ccedil;eriğini aşağıdaki gibi değiştiririz. Main i&amp;ccedil;erisine express paketi devreye giriyor. Express, y&amp;ouml;nlendirmeler i&amp;ccedil;in Routes klas&amp;ouml;r&amp;uuml;ndeki index.js'i kullanmakta. O da doğru controller tiplerini...Dikkat edileceği &amp;uuml;zere main i&amp;ccedil;eriği olduk&amp;ccedil;a sade ve anlaşılır. Kodun tamamını okurken Main'den aşağıya doğru inmeye &amp;ccedil;alışırsanız &amp;ccedil;ok daha anlaşılır olur ve t&amp;uuml;m taşlar yerine oturur.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+require('./routes')(app);
+
+const PORT = 5555;
+app.listen(PORT, () =&amp;gt; {
+    console.log(`Hartstone Game API servisi ${PORT} &amp;uuml;st&amp;uuml;nden hizmettedir ;)`);
+})&lt;/pre&gt;
+&lt;p&gt;Bu biraz da uzun s&amp;uuml;recek kodlamaların ardından db migration s&amp;uuml;recini başlatılabilir ve tabloların oluşup oluşmadığı kontrol edebiliriz. Tek yapmamız gereken aşağıdaki terminal komutunu kullanmak.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;node_modules/.bin/sequelize db:migrate&lt;/pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Hero ve Card arasında one-to-many ilişki var. Yani bir kahramana ait birden fazla kart olabilir. Bu nedenle migration sırasında &amp;ouml;nce Hero planının &amp;ccedil;alıştırılması lazım ki postgresql tarafında iki tablo arasındaki bire &amp;ccedil;ok ilişki başarılı şekilde kurgulanabilsin. Bu nedenle hero-migration.js dosyasının başında bir a harfi bulunuyor. &amp;Ccedil;&amp;uuml;nk&amp;uuml; db:migrate komutu klas&amp;ouml;rdeki javascript i&amp;ccedil;eriklerini alfabetik sırada &amp;ccedil;alıştırıyor. En azından ben denerken b&amp;ouml;yle bir şey fark ettim. Fark edene kadar da epey bir debelendim :)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2020/skynet/12/Screenshot_1.png" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;&amp;Ccedil;alışma Zamanı&lt;/h2&gt;
+&lt;p&gt;Sonu&amp;ccedil;ları g&amp;ouml;rmek i&amp;ccedil;in sabırsızlandığınızı tahmin edebiliyorum. &amp;Ouml;yleyse ana klas&amp;ouml;rdeki index.js dosyasını &amp;ccedil;alıştıralım ve&amp;nbsp;sonrasında Postman ile 5555 portundan hizmet veren servise HTTP Get, Post talepleri g&amp;ouml;nderelim.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;node index.js&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rnek bir kahramanın oluşturulması i&amp;ccedil;in aşağıdaki Response i&amp;ccedil;eriğini kullanabiliriz.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;HTTP Post
+http://localhost:5555/game/api/hero
+
+JSON
+
+{
+"name": "Paladin",
+"info": "The. Paladin is one of the ten classes in Hearthstone, represented by Uther Lightbringer, Lightforged Uther, Lady Liadrin, Prince Arthas, and Sir Annoy-O."
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2020/skynet/12/Screenshot_2.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;T&amp;uuml;m kahramanların listesinin &amp;ccedil;ekilmesi i&amp;ccedil;inde şu komut işe yarar.&lt;em&gt; (http://localhost:5555/game/api/heros daha iyi durabilir)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;HTTP Get
+http://localhost:5555/game/api/hero&lt;/pre&gt;
+&lt;p&gt;&amp;nbsp;&lt;img src="/image.axd?picture=/2020/skynet/12/Screenshot_3.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Yeni bir Card oluşturmak i&amp;ccedil;inse malum bir HTTP Post talebi g&amp;ouml;ndermek icap eder. Body, bir JSON i&amp;ccedil;eriği olmalıdır.&lt;/p&gt;
+&lt;pre class="brush:plain;auto-links:false;toolbar:false" contenteditable="false"&gt;HTTP Post
+http://localhost:5555/game/api/cad
+
+JSON
+
+{
+"name": "Aviana",
+"description": "Aviana is a Druid-only minion. This card was introduced with The Grand Tournament and can now only be obtained through crafting. Below the card images, you will find explanations to help you use the card optimally in every game mode of Hearthstone.",
+"attack": 5,
+"health": 5,
+"spell": 10,
+"heroId": 2
+}&lt;/pre&gt;
+&lt;p&gt;Belli bir kahramana ait kartları &amp;ccedil;ekmek i&amp;ccedil;inse ş&amp;ouml;yle bir talep yeterli olur.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;HTTP Get
+http://localhost:5555/game/api/hero/2/cards&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2020/skynet/12/Screenshot_4.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Yazması biraz zahmetli ama sonu&amp;ccedil;ları a&amp;ccedil;ısından anlaşılır bir &amp;ouml;ğreti olduğunu d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum. Umarım sizler i&amp;ccedil;in de faydalı olur. Kodların tamamına &lt;a href="https://github.com/buraksenyurt/skynet/tree/master/No%2012%20-%20REST%20with%20Sequelize" target="_blank"&gt;skynet github reposu&lt;/a&gt;ndan ulaşabilirsiniz. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2020-05-27 20:23:00</pubDate>
+  <slug>sequelize-kullanilan-bir-nodejs-rest-servisi-gelistirmek</slug>
+  <tags>
+    <tag>nodejs</tag>
+    <tag>docker</tag>
+    <tag>javascript</tag>
+    <tag>rest</tag>
+    <tag>sequelize</tag>
+    <tag>epxress</tag>
+  </tags>
+  <categories>
+    <category>Node.js</category>
+  </categories>
+</post>

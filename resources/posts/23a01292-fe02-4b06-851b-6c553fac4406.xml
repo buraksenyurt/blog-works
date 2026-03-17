@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Ado.Net 2.0(Beta 2) - Connection String Security (Bağlantı Katarı için Güvenlik)</title>
+  <description>Güvenlik günümüz uygulamalarında çok önemli bir yere sahiptir. Özellikle veritabanı kullanımını içeren uygulamalarda güvenliğin ayrı bir önemi vardır. Veritabanına gönderilen sorguların korunması, özellikle web servislerinden dönen veri kümelerinin etkin olarak şifrelenmesi gibi durumlar söz konusudur. Güvenlik prosedürü içerisinde yer alan unsurlardan biriside bağlantı bilgilerinin saklanmasıdır. Biz bu makalemizde, .Net 2.0 ile birlikte gelen yeni tekniklerden birisine değinerek, bağlantı bilgisinin (çoğunlukla connection string olarakda ifade edebiliriz) kolay bir şekilde nasıl korunabileceğini incelemeye çalışacağız.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;G&amp;uuml;venlik g&amp;uuml;n&amp;uuml;m&amp;uuml;z uygulamalarında &amp;ccedil;ok &amp;ouml;nemli bir yere sahiptir. &amp;Ouml;zellikle veritabanı kullanımını i&amp;ccedil;eren uygulamalarda g&amp;uuml;venliğin ayrı bir &amp;ouml;nemi vardır. Veritabanına g&amp;ouml;nderilen sorguların korunması, &amp;ouml;zellikle web servislerinden d&amp;ouml;nen veri k&amp;uuml;melerinin etkin olarak şifrelenmesi gibi durumlar s&amp;ouml;z konusudur. G&amp;uuml;venlik prosed&amp;uuml;r&amp;uuml; i&amp;ccedil;erisinde yer alan unsurlardan biriside bağlantı bilgilerinin saklanmasıdır. Biz bu makalemizde, .Net 2.0 ile birlikte gelen yeni tekniklerden birisine değinerek, bağlantı bilgisinin (&amp;ccedil;oğunlukla connection string olarakda ifade edebiliriz) kolay bir şekilde nasıl korunabileceğini incelemeye &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;p&gt;Bildiğiniz gibi, .Net tabanlı uygulamalar &amp;ouml;zellikle XML tabanlı konfigurasyon dosyalarını yoğun olarak kullanır. Varsayılan olarak windows uygulamalarında app.config veya web uygulamalarında yer alan web.config dosyaları, genel bilgilerin yer aldığı kaynaklardır. &amp;Ccedil;oğunlukla proje genelinde kullanılan bağlantı bilgilerini bu dosyalarda key-value (anahtar-değer) &amp;ccedil;iftleri şeklinde tutmayı tercih ederiz. Aslında bağlantı katarı(connection string) bilgilerini kod i&amp;ccedil;erisinde de global seviyede tanımlayıp kullanabiliriz. Ancak bunun bir takım dezavantajları vardır.&lt;/p&gt;
+&lt;table id="table16" style="width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#ffffff"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;Bağlantı katarı gibi sonradan (&amp;ouml;zellikle &amp;uuml;r&amp;uuml;n canlı yayına başladıktan sonra) sık&amp;ccedil;a değişebilecek bilgileri kod i&amp;ccedil;erisinde (hard-coded) tutmak g&amp;uuml;venlik ve y&amp;ouml;netilebilirlik a&amp;ccedil;ısından dezavantajlara sahiptir.&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Birincisi, yazılan kodlar sonu&amp;ccedil; olarak IL dilini kullandığından ters &amp;ccedil;evrilerek a&amp;ccedil;ığa &amp;ccedil;ıkartılabilir. (Disassembly ara&amp;ccedil;ları) Bu nedenle bağlantı katarı bilgiside &amp;ouml;ğrenilebilinir. Diğer yandan, uygulamalar canlı hayata ge&amp;ccedil;tikten sonra, kullandıkları veri tabanı sunucularının ip bilgilerinin, kullanıcı tanımlamalarının sık&amp;ccedil;a değişmesi nedeni ile bağlantı katarı bilgilerinin sık&amp;ccedil;a g&amp;uuml;ncellenmesi gerekebilir. İşte bu iki nedenden &amp;ouml;t&amp;uuml;r&amp;uuml; bu tip bilgiler xml tabanlı konfigurasyon dosyalarında, &amp;ouml;zel şifreleme teknikleri ile tutulur.&lt;/p&gt;
+&lt;p&gt;Aşağıdaki kod par&amp;ccedil;alarında bir web uygulaması ve bir console uygulaması i&amp;ccedil;in kullandığımız standart konfigurasyon dosyalarında yer alan bağlantı katarı tanımlamalarını ve bu bağlantı katarları i&amp;ccedil;erisindeki bilgilerin kullanımını g&amp;ouml;steren iki &amp;ouml;rnek yer almaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Sıradan bir console uygulaması i&amp;ccedil;in app.config i&amp;ccedil;eriği;&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+    &amp;lt;configuration&amp;gt;
+        &amp;lt;appSettings&amp;gt;
+            &amp;lt;add key="conStr" value="data source=localhost;database=AdventureWorks2000;user id=sa;password="&amp;gt;&amp;lt;/add&amp;gt;
+        &amp;lt;/appSettings&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;conStr isimli anahtarın uygulama i&amp;ccedil;erisinden kullanımı;&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Data.SqlClient;
+
+namespace UsingConnectionString
+{
+    class Class1
+    {
+        [STAThread]
+        static void Main(string[] args)
+        {
+            string conStr=System.Configuration.ConfigurationSettings.AppSettings["conStr"].ToString();
+            using(SqlConnection con=new SqlConnection(conStr))
+            {
+                con.Open();
+            } 
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;Bir web uygulamasında web.config i&amp;ccedil;erisinde bağlantı katarı (connection string) i&amp;ccedil;in anahatar-değer (key-value) kullanımı.&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;appSettings&amp;gt;
+        &amp;lt;add key="conStr" value="data source=localhost;database=AdventureWorks2000;user id=sa;password="&amp;gt;&amp;lt;/add&amp;gt;
+    &amp;lt;/appSettings&amp;gt;
+    &amp;lt;system.web&amp;gt;
+        &amp;lt;!-- Diğer ayarlar--&amp;gt;
+    &amp;lt;/system.web&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;Web.Config i&amp;ccedil;erisindeki bağlantı katarı bilgisinin default.aspx i&amp;ccedil;erisinde kullanımı;&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void Page_Load(object sender, System.EventArgs e)
+{
+    string conStr=System.Configuration.ConfigurationSettings.AppSettings["conStr"].ToString();
+    using(SqlConnection con=new SqlConnection(conStr))
+    {
+        con.Open();
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Gelelim .Net 2.0' a. Yeni versiyonda &amp;ouml;zellikle bağlantı katarlarına y&amp;ouml;nelik olarak geliştirilmiş &amp;ouml;zel bir g&amp;uuml;venlik tekniği mevcuttur. Bu tekniğin kilit noktaları olarak, konfigurasyon ayarlarına eklenen iki yeni nitelik s&amp;ouml;z konusudur.Bu nitelikler onfigurasyon &lt;strong&gt;protectedData&lt;/strong&gt; ve &lt;strong&gt;protectedDataSections&lt;/strong&gt;' dır. ProtectedDataSections niteliği altında sonradan şifrelenmesi d&amp;uuml;ş&amp;uuml;n&amp;uuml;len anahatar bilgileri tutulmaktadır. Bağlantı katarı i&amp;ccedil;in kullanacağımız anahtar bilgisini burada tutabiliriz. ProtectedData kısmında ise, ProtectedDataSections i&amp;ccedil;erisinde yer alan anahtar bilgisini şifreleyecek (encryption) ve deşifre edecek (decryption) provider nesnesine ait bilgileri yer alır. Şu an i&amp;ccedil;in &lt;strong&gt;RSAProtectedConfigurationProvider&lt;/strong&gt; ve &lt;strong&gt;DPAPIProtectedConfigurationProvider&lt;/strong&gt; adında iki adet şifreleme provider' ı mevcuttur. Bu providerlar, ilgili verinin şifrelenmesinden ve &amp;ouml;zellikle &amp;ccedil;alışma zamanında kullanılırken deşifre edilmesinden sorumludur. İlk olarak configurasyon dosyası i&amp;ccedil;erisinde bu yapıları kullanarak gerekli d&amp;uuml;zenlemeleri yapmamız gerekmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;.Net 2.0 i&amp;ccedil;in bir console uygulamasına ait app.config konfigurasyon dosyasının &amp;ouml;rnek i&amp;ccedil;eriği.&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+    &amp;lt;configuration&amp;gt;
+        &amp;lt;connectionStrings&amp;gt;
+            &amp;lt;EncryptedData/&amp;gt;
+        &amp;lt;/connectionStrings&amp;gt;
+
+        &amp;lt;protectedData&amp;gt;
+            &amp;lt;providers&amp;gt;
+                &amp;lt;add name="prvCon" type="System.Configuration.RsaProtectedConfigurationProvider" keyContainerName="AnahtarDeger" useMachineContainer="true"/&amp;gt;
+            &amp;lt;/providers&amp;gt;
+
+            &amp;lt;protectedDataSections&amp;gt;
+                &amp;lt;add name="connectionStrings" provider="prvCon" inheritedByChildren="false"/&amp;gt;
+            &amp;lt;/protectedDataSections&amp;gt;
+
+        &amp;lt;/protectedData&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Dikkat ederseniz protectedDataSections sekmesi, protectedData altında yer alan bir b&amp;ouml;l&amp;uuml;md&amp;uuml;r. Providers kısmında, şifreleme işlemini yapacak olan tipe ait bilgiler yer almaktadır. Bu tipin takma adı name &amp;ouml;zelliği ile, tipin kendisi type &amp;ouml;zelliği ile, kullanılacak şifreleme anahtarının adı ise keyContaionerName &amp;ouml;zellikleri ile tutulur. ProtectedDataSections kısmında, şifrelenecek olan anahtar bilgisi yer alır. Ancak dikkat ederseniz burada bağlantı katarına ilişkin herhangibir bilgi yoktur. Sadece şifrelemeyi yapacak provider' ın takma adını alan name &amp;ouml;zelliği vardır. Bu &amp;ouml;zellik ile, provider sekmesinde yer alan tipi işaret ederiz. Peki bağlantı katarımız nerede yer almaktadır?&lt;/p&gt;
+&lt;p&gt;Dikkat ederseniz dosyanın başında &lt;strong&gt; connectionStrings&lt;/strong&gt; isimli takılar arasında yer alan &lt;strong&gt;EncryptedData&lt;/strong&gt; isimli bir sekme yer almaktadır. ConnectionStrings konfigurasyon dosyalarına eklenen yeni niteliklerden birisidir ve sadece bağlantı katarı bilgisi ile ilgilidir. Biz biraz sonra yazacağımız kodları &amp;ccedil;alıştırdığımızda, bağlantı katarımıza ait bilgiler şifrelenerek bu kısım i&amp;ccedil;erisine eklenecektir. Bir başka deyişle EncryptedData kısmı şifrelenen verinin taşıyıcısıdır. Burada dikkat edilmesi gereken noktalardan birisi isim uyumluluğudur. &amp;Ouml;yleki connectionStrings takısının ismi, protectedDataSections kısmındaki anahtarın ismi ile aynı olmak zorundadır.&lt;/p&gt;
+&lt;p&gt;Bağlantı katarının connectionStrings isimli anahtara eklenmesi i&amp;ccedil;in ekstra kod yazmamız gerekmektedir. .Net 2.0' da System.Configuration isim alanına bir takım yeni sınıflar eklenmiştir. Biz bu sınıflar yardımıyla, konfigurasyon dosyamıza m&amp;uuml;dahale ederek, connectionStrings isimli anahtara hem değer ataması yapabilir hemde şifreleme işlemini başlatabiliriz. Bu ama&amp;ccedil;la aşağıdaki gibi bir kod yazmamız gerekmektedir. &amp;Ouml;rnek olarak bir console uygulaması g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınmıştır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Configuration;
+using System.Collections.Generic;
+using System.Text;
+
+namespace UsingAppSettings
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Configuration cnfg = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None, "");
+            cnfg.ConnectionStrings.ConnectionStrings.Add(new ConnectionStringSettings("conStr","data source=localhost;database=AdventureWorks;integrated security=SSPI"));
+            cnfg.Save();
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&amp;Ccedil;ok fazla detaya girmeden yukarıdaki kodlar ile ne yaptığımızdan kısaca bahsetmek istiyorum. İlk olarak bir configuration nesnesine atama yapıyoruz. Bu atamada &lt;strong&gt; ConfigurationManager&lt;/strong&gt; sınıfının statik &lt;strong&gt;OpenExeConfiguration&lt;/strong&gt; metodunu kullanmaktayız. Bu metod aslında belirtilen configurasyon dosyasını bir Configuration nesnesi olarak atamak i&amp;ccedil;in kullanılmaktadır. İkinci parametre konfigurasyon dosyasının yolunu belirtir. Biz aynı uygulama i&amp;ccedil;erisinde olduğumuzdan burayı boş bıraktık. Daha sonra bu nesne &amp;uuml;zernde hareket ederek ConnectionStrings sınıfının Add metodunu &amp;ccedil;ağırıyor ve bağlantı katarımızı conStr ismi ile ilgili dosyaya ekliyoruz. Tabiki bu ekleme işlemi sırasında provider' ımız devreye giriyor ve bilgiyi şifreleyerek uygulamaya ait konfigurasyon dosyasına yazıyor. Son olarak Save metodu ile konfigurasyon dosyamızı kaydediyoruz.&lt;/p&gt;
+&lt;p&gt;Normalde bu tip işlemleri 1.1 versiyonunda yapmak i&amp;ccedil;in, yani xml tabanlı konfigurasyon dosyasına kod bazında m&amp;uuml;dahale etmek i&amp;ccedil;in XmlDocument sınıfını kullanarak ayrıştırma işlemlerini (parsing) yapmamız gerekirdi. Yeni versiyonda g&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi bu tarz işlemleri nesne bazında kolayca yapabilmekteyiz.&lt;/p&gt;
+&lt;table id="table22" style="width: 100%;" border="1" cellspacing="0" cellpadding="5" bgcolor="#ffffff"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;Uygulamayı denediğim .Net 2.0 Beta versiyonunda, Configuration sınıfına erişebilmek i&amp;ccedil;in, System.Configuration isim alanını projenin referanslarına Add Reference tekniği ile a&amp;ccedil;ık&amp;ccedil;a eklemem gerekti. Aksi takdirde, System.Configuration &amp;uuml;zerinden Configuration ve ConfigurationManager gibi sınıflara direkt olarak erişilemiyor.&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Yazdığımız Console uygulamasını ilk &amp;ccedil;alıştırdığımızda konfigurasyon dosyalarında her hangibir değişiklik olmadığını g&amp;ouml;r&amp;uuml;r&amp;uuml;z. &amp;Ouml;zellikle uygulamanın debug klas&amp;ouml;r&amp;uuml;nde yer alan ve exe dosyamız ile aynı isme sahip konfigurasyon dosyalarında bir değişiklik olmayacaktır. Bunun sebebi, providerın şifreleme i&amp;ccedil;in kullanacağı bir anahtar değerin bulunmayışıdır. Hatırlarsanız provider tanımında &lt;strong&gt;keyContaionerName&lt;/strong&gt; isimli bir &amp;ouml;zellik belirlemiştik. KeyContainerName &amp;ouml;zelliğine atadığımız AnahtarDeger , RS şifrelemesi i&amp;ccedil;in gerekli anahtar kodu taşımak i&amp;ccedil;in kullanılacaktır. Peki b&amp;ouml;yle bir anahtar değerini nasıl elde edebiliriz? Bunun i&amp;ccedil;in aspnet_regiis aracını kullabiliriz. Aşağıdaki komut satırı yardımıyla bu işlemi ger&amp;ccedil;ekleştirmekteyiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk139_1.gif" alt="" width="589" height="91" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Bu işlemi yaptığımız takdirde uygulamamızın exe kodunun bulunduğu klas&amp;ouml;rde yer alan aynı isimli konfigurasyon dosyası(UsingAppSettings.EXE.xml) i&amp;ccedil;eriğinin aşağıdaki gibi yazıldığını g&amp;ouml;r&amp;uuml;r&amp;uuml;z. &amp;Ouml;zellikle EncryptedData ve EncryptedKey kısımlarına dikkat ediniz.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+    &amp;lt;configuration&amp;gt;
+        &amp;lt;connectionStrings&amp;gt;
+            &amp;lt;EncryptedData Type="http://www.w3.org/2001/04/xmlenc#Element" xmlns="http://www.w3.org/2001/04/xmlenc#"&amp;gt;
+                &amp;lt;EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#tripledes-cbc" /&amp;gt;
+                &amp;lt;KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#"&amp;gt;
+                &amp;lt;EncryptedKey Recipient="" xmlns="http://www.w3.org/2001/04/xmlenc#"&amp;gt;
+                &amp;lt;EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#rsa-1_5" /&amp;gt;
+                &amp;lt;KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#"&amp;gt;
+                &amp;lt;KeyName&amp;gt;Rsa Key&amp;lt;/KeyName&amp;gt;
+                &amp;lt;/KeyInfo&amp;gt;
+                &amp;lt;CipherData&amp;gt;                            &amp;lt;CipherValue&amp;gt;EIskDt2vsIN6xk5qC1S6slkWX97Ua28KGGJTkHx500UsfMbed1TnZpQLYJaJW5XJXQPe
+Y3IWm7iKdEZ+idx7THKlAx8eLf/HHDSi/HWp7sSJe6/4vcS6uQ+OyigdLpO6X3LEqoGYhwCNPoZq7e/e
+B/P+w9pzLwivdczR1sOYMlQ=&amp;lt;/CipherValue&amp;gt;
+                &amp;lt;/CipherData&amp;gt;
+            &amp;lt;/EncryptedKey&amp;gt;
+            &amp;lt;/KeyInfo&amp;gt;
+            &amp;lt;CipherData&amp;gt;   &amp;lt;CipherValue&amp;gt;fKJrwr1tdHNyVH9OYKlFeK7B7C1tzxp2ikrgu+KbCNBHM9fffFGt
+EIRc9n0edC8poSskU7+APE18O6SRFqXD3OG0NX+9b65OIIHAXhEHdMYAbejU
+VvqGoNw4xkisDfk/CgANrO9kST5f15g/0bH+5Cv83ptAV8mzIvzbvAzd+kpWdk
+Q0T99jmiymcwqICBExmvUhT1wSUemYMC2Rzz3
+JbJISvyqOZH9AYIxCesaeWwcyOvQfzLyHEw==&amp;lt;/CipherValue&amp;gt;
+            &amp;lt;/CipherData&amp;gt;
+        &amp;lt;/EncryptedData&amp;gt;
+    &amp;lt;/connectionStrings&amp;gt;
+    &amp;lt;protectedData&amp;gt;
+        &amp;lt;providers&amp;gt;
+            &amp;lt;add name="prvCon" type="System.Configuration.RsaProtectedConfigurationProvider" keyContainerName="AnahtarDeger" useMachineContainer="true"/&amp;gt;
+        &amp;lt;/providers&amp;gt;
+        &amp;lt;protectedDataSections&amp;gt;
+            &amp;lt;add name="connectionStrings" provider="prvCon" inheritedByChildren="false"/&amp;gt;
+        &amp;lt;/protectedDataSections&amp;gt;
+    &amp;lt;/protectedData&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&lt;br /&gt;G&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z &amp;uuml;zere, i&amp;ccedil;eride şifrelenmiş bir takım veriler bulunmaktadır. Bu veriler aslında, programatik olarak atadığımız bağlantı katarına ilişkin bilgilerdir. Peki bu bilgiyi uygulamamızda nasıl kullanabiliriz? ConfigurationManager sınıfı yardımıyla bu bağlantı bilgisini kod i&amp;ccedil;erisinden okuyabilir ve ilgili bağlantı nesneleri i&amp;ccedil;in atayabiliriz. Aşağıdaki &amp;ouml;rnek kod par&amp;ccedil;ası bu işlemin &amp;ouml;rnek olarak nasıl yapılabileceğini g&amp;ouml;stermektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;string conStr=ConfigurationManager.ConnectionStrings["conStr"].ConnectionString.ToString();
+using (SqlConnection con = new SqlConnection(conStr))
+{
+    // Bir takım kodlar
+}&lt;/pre&gt;
+&lt;p&gt;&lt;br /&gt;Yapmış olduklarımızı &amp;ouml;zetlersek; .Net 2.0, Configuration isim alanı altında yeni &amp;ouml;zelliklere sahip pek &amp;ccedil;ok tip sunmaktadır. Buradaki sınıfları ve konfigurasyon dosyaları i&amp;ccedil;in geliştirilen yeni nitelikleri kullanarak, config dosyalarında tutulan bağlantı katarı bilgilerini yabancı g&amp;ouml;zlerden saklayabiliriz. Elbetteki, kod i&amp;ccedil;erisinde ConfigurationManager &amp;uuml;zerinde ilgili bağlantı katarı bilgisini okuyabilirsiniz. Ancak herkesin g&amp;ouml;rebildiği config dosyalarından bağlantı katarı bilgisini okuyamassınız. Tabi ne yaparsanız yapın yinede g&amp;uuml;venliği tam olarak sağlamak s&amp;ouml;z konusu olamaz. Her zaman i&amp;ccedil;in en azından %1 ihtimal ile t&amp;uuml;m sistemler g&amp;uuml;vensidir. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2005-10-17 09:00:00</pubDate>
+  <slug>Ado-Net-2-0(Beta-2)-Connection-String-Security-(Baglantc4b1-Katarc4b1-icin-Guvenlik)-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>adonet-20-beta</tag>
+    <tag>connection-string-security</tag>
+  </tags>
+  <categories>
+    <category>Ado.net 2.0</category>
+  </categories>
+</post>

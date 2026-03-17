@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Kod Bazlı Workflow Service Geliştirmek ve Yayınlamak</title>
+  <description>Bildiğiniz üzere bir süredir NedirTv?com desteğinde "Workflow Foundation 4.0 Öğreniyorum" isimli bir seri üzerinde çalışmaktayız. Bu seride başlangıç seviyesinden orta seviyeye kadar, bir kaç ayrı derste Workflow Foundation kavramını öğrenmeye gayret ettik. Bu seriye dahil etmek istediğim bir konu da, Workflow Service örneklerinin tamamen kod bazında yazılması ve IIS(Internet Information Services) dışındaki bir uygulama tarafından host edilmesiydi.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/pics/2010%2f5%2fblg193_Giris.jpg" alt="" width="250" height="264" /&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Bildiğiniz &amp;uuml;zere bir s&amp;uuml;redir &lt;strong&gt;&lt;a title="NedirTv?com" href="http://www.nedirtv.com" target="_blank"&gt;NedirTv?com&lt;/a&gt;&lt;/strong&gt; desteğinde &lt;a title="Workflow Foundation &amp;Ouml;ğreniyorum" href="http://www.nedirtv.com/kategori/Workflow-Foundation-Ogreniyorum.aspx" target="_blank"&gt;&lt;strong&gt;"Workflow Foundation 4.0 &amp;Ouml;ğreniyorum"&lt;/strong&gt;&lt;/a&gt; isimli bir seri &amp;uuml;zerinde &amp;ccedil;alışmaktayız. Bu seride başlangı&amp;ccedil; seviyesinden orta seviyeye kadar, bir ka&amp;ccedil; ayrı derste &lt;strong&gt;Workflow Foundation &lt;/strong&gt;kavramını &amp;ouml;ğrenmeye gayret ettik. Bu seriye dahil etmek istediğim bir konu da, &lt;strong&gt;Workflow Service&lt;/strong&gt; &amp;ouml;rneklerinin tamamen kod bazında yazılması ve &lt;strong&gt;IIS(Internet Information Services)&lt;/strong&gt; dışındaki bir uygulama tarafından host edilmesiydi. Ancak konu biraz karmaşık olduğundan ve tabiri yerinde ise yandaki resimde g&amp;ouml;r&amp;uuml;len &lt;strong&gt;Puzzle&lt;/strong&gt;' a &lt;span style="text-decoration: underline;"&gt;benzemediğinden&lt;/span&gt;, yazı haline getirilmesinin daha iyi olacağına karar verdim. Hem b&amp;ouml;ylece ben de unuttuğum zamanlarda bu yazıma bakarak hatırlayabilirim. &amp;Ouml;yleyse derin bir nefes alalım ve yola koyulalım.&lt;/p&gt;
+&lt;p&gt;İlk olarak ne yapmak istediğimizi a&amp;ccedil;ık ve net bir şekilde ortaya koymaya &amp;ccedil;alışalım. &lt;strong&gt;WCF Eco System&lt;/strong&gt; yapısının da &amp;ouml;nemli bir par&amp;ccedil;ası olan&lt;strong&gt; Workflow Service&lt;/strong&gt;' ler yardımıyla iş akışlarının servis bazlı olarak dış ortama sunulması m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Bu noktada &amp;ouml;zellikle&lt;strong&gt; Visual Studio 2010 &lt;/strong&gt;tarafında yer alan &lt;strong&gt;WCF Workflow Service Application&lt;/strong&gt; şablonu ve &lt;strong&gt;Workflow Designer&lt;/strong&gt; işlerimizi inanılmaz &amp;ouml;l&amp;ccedil;&amp;uuml;de kolaylaştırmaktadır. Ancak elimizin altında sadece &lt;strong&gt;.Net Framework 4.0&lt;/strong&gt; olduğunu d&amp;uuml;ş&amp;uuml;nelim. Hımmm...&lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt; Bu durumda&lt;strong&gt; Visual Studio 2010&lt;/strong&gt; gibi bir &lt;strong&gt;IDE&lt;/strong&gt;' mizin olmadığını da varsayarsak bir &lt;strong&gt;Workflow Service &lt;/strong&gt;&amp;ouml;rneğinin &lt;strong&gt;XAML &lt;/strong&gt;i&amp;ccedil;eriğini yazmak istemeyebiliriz. Dolayısıyla kod tarafında &lt;strong&gt;.Net&lt;/strong&gt; tiplerinden yararlanarak ilerlemek daha kolay olabilir&lt;em&gt;(Ger&amp;ccedil;i biz &amp;ouml;rneğimizdeki kod par&amp;ccedil;asını Visual Studio 2010 ile yazıyoruz ama olsun. Kimseye &amp;ccedil;aktırmayın)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Ne yapmak istediğimizi sanıyorum ki biraz daha net anlayabildik. En basit haliyle bir &lt;strong&gt;Workflow Service &lt;/strong&gt;&amp;ouml;rneğini kod tarafında oluşturmak istiyoruz. Ancak bu yeterli değil. Nitekim tasarlanan bu &lt;strong&gt;Workflow Service&lt;/strong&gt; &amp;ouml;rneğinin aynı zamanda &lt;strong&gt;host &lt;/strong&gt;edilerek kullanıma sunulması da gerekmektedir. İşte bu noktada&lt;strong&gt; IIS(Internet Information Services) &lt;/strong&gt;dışında bir uygulamayı geliştirmek istediğimizi d&amp;uuml;ş&amp;uuml;nebiliriz. İlk etapta basit bir Console uygulaması işimizi g&amp;ouml;rebilir. &lt;em&gt;(Ancak tabiki WPF, Windows Forms hatta bir Asp.Net uygulamas dahi Workflow Service &amp;ouml;rneklerini host edip &amp;ccedil;alıştıracak şekilde tesis edilebilir) &lt;/em&gt;Bu Console uygulaması, &lt;strong&gt;WorkflowServiceHost &lt;/strong&gt;tipinden de yararlanarak gerekli &amp;ccedil;alışma zamanını tesis edecek ve bildirilen &lt;strong&gt;Workflow Service&lt;/strong&gt; &amp;ouml;rneğini dış ortama sunuyor olacaktır.&lt;/p&gt;
+&lt;p&gt;İşe başlamadan &amp;ouml;nce eğer imkanınız var ise bir &lt;strong&gt;Workflow Service&lt;/strong&gt; &amp;ouml;rneğinin&lt;strong&gt; Visual Studio 2010&lt;/strong&gt; ortamında WPF tabanlı Designer yardımıyla geliştirilmesini incelemenizi &amp;ouml;neririm. Geliştireceğimiz &lt;strong&gt;Workflow Service &lt;/strong&gt;bir servis olduğundan istemciden gelecek olan &amp;ccedil;ağrıları kabul etmeli ve bir iş akışı başlatarak sonu&amp;ccedil;ları istemci tarafına y&amp;ouml;nlendirmelidir. &lt;strong&gt;WCF &lt;/strong&gt;tabanlı bir servis s&amp;ouml;z konusu olduğuna g&amp;ouml;re istemcinin &amp;ccedil;ağrıda bulunabileceği operasyonların ve dolayısıyla &lt;strong&gt;servis s&amp;ouml;zleşmesinin(Service Contract)&lt;/strong&gt; &amp;ouml;nceden tanımlanmış olması gerekmektedir. Ki bu sayede istemcilerin s&amp;ouml;z konusu adresten yayınlanan servis &amp;uuml;zerinden hangi operasyonları &amp;ccedil;ağırabileceği belirlenmiş olacaktır. İşte &amp;ouml;rneğimizde kullanacağımız servis s&amp;ouml;zleşmesi.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;[ServiceContract]
+public interface IHelloService
+{
+	[OperationContract]
+	double Sum(double x, double y);
+}&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;IHelloService interface &lt;/strong&gt;tipi dikkat edileceği &amp;uuml;zere &lt;strong&gt;ServiceContract &lt;/strong&gt;niteliği ile imzalanmıştır. Diğer taraftan &amp;ccedil;ok basit olarak &lt;strong&gt;Sum &lt;/strong&gt;isimli bir operasyon i&amp;ccedil;ermektedir. S&amp;ouml;z konusu operasyon istemci tarafına a&amp;ccedil;ılacak olan bir fonksiyonelliği belirtmektedir. &lt;strong&gt;Sum &lt;/strong&gt;isimli operayonun aldığı &lt;strong&gt;double &lt;/strong&gt;tipinden olan iki parametrede, istemci tarafından g&amp;ouml;nderilecek değişkenler olduğunu g&amp;ouml;stermektedir.&lt;/p&gt;
+&lt;p&gt;Peki &lt;strong&gt;Workflow Service&lt;/strong&gt; &amp;ouml;rnekleri dış d&amp;uuml;nyadan gelen istemci taleplerini nasıl almaktadır? Diyelim ki aldılar ve işettiler. İş akışı sonucu istemci tarafına bir değer g&amp;ouml;ndermek isterlerse bunu nasıl ger&amp;ccedil;ekleştirebilirler? Bu noktada &lt;strong&gt;Receive &lt;/strong&gt;ve &lt;strong&gt;SendReply &lt;/strong&gt;isimli aktivite bileşenlerinden yararlanıldığını s&amp;ouml;yleyebiliriz. Dolayısıyla kod tarafında bu aktivite bileşenlerini ele almamız gerekmektedir. Lakin bu aktivite bileşenleri başka bir &lt;strong&gt;Container&lt;/strong&gt; i&amp;ccedil;erisinde yer almalıdır. &amp;Ouml;rneğin bir &lt;strong&gt;Sequence &lt;/strong&gt;aktivite bileşeni Container olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir. &amp;Ccedil;ok doğal olarak istemcilerin g&amp;ouml;nderdiği parametrelerin &lt;strong&gt;Sequence &lt;/strong&gt;i&amp;ccedil;erisindeki diğer aktivite bileşenleri tarafından da kullanılması gerekebilir. Bu durumda &lt;strong&gt;Sequence &lt;/strong&gt;seviyesinde &lt;strong&gt;Variable &lt;/strong&gt;tanımlamalarının yapılması uygundur. İhtiyacımız olan &lt;strong&gt;Variable &lt;/strong&gt;tanımlamaları ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;Variable&amp;lt;CorrelationHandle&amp;gt; __handle=new Variable&amp;lt;CorrelationHandle&amp;gt;("Request_Handle");
+Variable&amp;lt;double&amp;gt; x=new Variable&amp;lt;double&amp;gt;("X");
+Variable&amp;lt;double&amp;gt; y=new Variable&amp;lt;double&amp;gt;("Y");
+Variable&amp;lt;double&amp;gt; result=new Variable&amp;lt;double&amp;gt;("Result");&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;x, y&lt;/strong&gt; ve &lt;strong&gt;result &lt;/strong&gt;isimli &lt;strong&gt;Variable &lt;/strong&gt;tanımlamaları tahmin edeceğiniz &amp;uuml;zere toplama işlemi i&amp;ccedil;in gereklidir. Ancak burada birde &lt;strong&gt;__handle &lt;/strong&gt;isimli &lt;strong&gt;CorrelationHandle &lt;/strong&gt;tipinden &lt;strong&gt;Variable &lt;/strong&gt;tanımlaması yer almaktadır.&lt;strong&gt; Workflow Service&lt;/strong&gt; &amp;ouml;rnekleri oluşturulduğunda bildiğiniz &amp;uuml;zere istemci ile arada bir &lt;strong&gt;oturum(Session)&lt;/strong&gt; oluşmaktadır. Bu noktada &amp;ouml;zellikle istemciden gelen mesajın sunucu tarafındaki hangi servis &amp;ouml;rneğine ait olduğunun anlaşılması noktasında &lt;strong&gt;Correlation &lt;/strong&gt;&amp;ccedil;eşitlerinden yararlanılmaktadır. Burada tanımlanan &lt;strong&gt;Variable, Receive&lt;/strong&gt; aktivite bileşeni tarafından kullanılacaktır (Detaylar i&amp;ccedil;in &lt;a href="/admin/post/Correlation-Nedir-Beta-2.aspx"&gt;Correlation Nedir? Yenir mi? İ&amp;ccedil;ilir mi?&lt;/a&gt; )&lt;/p&gt;
+&lt;p&gt;Aslında tam bu noktada &lt;strong&gt;Receive &lt;/strong&gt;aktivitesini de tanımlayabiliriz. Aşağıdaki gibi.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;Receive receive=new Receive{
+                             CanCreateInstance=true,
+                               OperationName="Sum",
+                                ServiceContractName="IHelloService",
+                                CorrelatesWith=__handle,
+                                Content=ReceiveContent.Create(new Dictionary&amp;lt;string,OutArgument&amp;gt;{
+                                    {"xValue",new OutArgument&amp;lt;double&amp;gt;(x)},
+                                    {"yValue",new OutArgument&amp;lt;double&amp;gt;(y)},
+                                }
+                                )
+                        };&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Receive &lt;/strong&gt;aktivite bileşeni i&amp;ccedil;erisinde &lt;strong&gt;set &lt;/strong&gt;edilmiş &amp;ouml;zellikler &amp;ouml;nemlidir. &lt;strong&gt;OperationName &lt;/strong&gt;ile dikkat edileceği &amp;uuml;zere istemciler i&amp;ccedil;in kullanılabilecek bir operasyon adı bildirimi yapılmaktadır. Diğer yandan &lt;strong&gt;Content &lt;/strong&gt;&amp;ouml;zelliğine atanan &lt;strong&gt;OutArgument &lt;/strong&gt;tipli iki parametre, az &amp;ouml;nce tanımladığımız &lt;strong&gt;x&lt;/strong&gt; ve&lt;strong&gt; y Variable&lt;/strong&gt;' larını kullanmaktadır. Bir başka deyişle istemciler i&amp;ccedil;in &lt;strong&gt;xValue &lt;/strong&gt;ve &lt;strong&gt;yValue &lt;/strong&gt;isimli değişkenler tanımlanmıştır. &lt;strong&gt;ServiceContractName &lt;/strong&gt;&amp;ouml;zelliği ile servis s&amp;ouml;zleşmesi bildirimi yapılmaktadır. &lt;strong&gt;Receive &lt;/strong&gt;aktivite bileşeni i&amp;ccedil;in gerekli &lt;strong&gt;Correlation &lt;/strong&gt;ayarı ise &lt;strong&gt;CorrelatesWith &lt;/strong&gt;&amp;ouml;zelliği ile belirtilmektedir. Aslında &lt;strong&gt;Receive &lt;/strong&gt;aktivite bileşeni biraz sonra kodlayacağımız &lt;strong&gt;WorkflowService &lt;/strong&gt;&amp;ouml;rneğinin &lt;strong&gt;Body &lt;/strong&gt;&amp;ouml;zelliği i&amp;ccedil;erisinde kullanılmak istenebilir. Ancak b&amp;ouml;yle bir durumda &lt;strong&gt;SendReply &lt;/strong&gt;aktivite bileşeninin ihtiyacı olan &lt;strong&gt;Request &lt;/strong&gt;&amp;ouml;zelliğinin atanacağı &lt;strong&gt;Receive &lt;/strong&gt;referansı tanımlanamayacaktır. &lt;strong&gt;Receive &lt;/strong&gt;aktivite bileşeninin dışarıda tanımlanmasının sebebi budur. Artık &lt;strong&gt;WorkflowService &lt;/strong&gt;nesne &amp;ouml;rneğini tanımlayarak yolumuza devam edebiliriz. İşte kod i&amp;ccedil;eriğimiz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;WorkflowService wfService = new WorkflowService
+{
+	Name = "HelloService",
+	Endpoints = {
+		new Endpoint
+	{
+		 ServiceContractName="IHelloService",
+		  Binding=new BasicHttpBinding(),
+		   AddressUri=new Uri("http://localhost:5001/HelloService")
+		   , Name="HelloServiceEndpoint"                       
+	}
+	},
+	ConfigurationName="HelloServiceConfig",
+	Body = new Sequence
+	{
+		Variables={x,y,__handle,result},
+		Activities =
+		{
+			receive,
+			new SumActivity{
+				 X=x,
+				 Y=y,
+				Result=result
+			},
+			new SendReply{
+				 Request=receive,
+				  Content=SendContent.Create(new InArgument&amp;lt;double&amp;gt;(result))
+			}
+		}
+	&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;WorkflowService &lt;/strong&gt;&amp;ouml;rneği i&amp;ccedil;erisinde yer alan en &amp;ouml;nemli &amp;ouml;zelliklerden birisi &lt;strong&gt;Endpoints&lt;/strong&gt;' dir. Bu &amp;ouml;zelliğe g&amp;ouml;re birden fazla &lt;strong&gt;Endpoint &lt;/strong&gt;bildirimi yapılabilmektedir. &amp;Ouml;rneğimizde &lt;strong&gt;BasicHttpBinding &lt;/strong&gt;tabanlı, &lt;strong&gt;IHelloService &lt;/strong&gt;isimli servis s&amp;ouml;zleşmesini kullanan ve &lt;strong&gt;http://localhost:5001/HelloService&lt;/strong&gt; adresi &amp;uuml;zerinden yayın yapan bir &lt;strong&gt;Endpoint &lt;/strong&gt;bildirimi s&amp;ouml;z konusudur. &lt;strong&gt;WorkflowService &lt;/strong&gt;&amp;ouml;rneği oluşturulurken kullanılan &lt;strong&gt;ConfigurationName &lt;/strong&gt;&amp;ouml;zelliği, konfigurasyon dosyası&lt;em&gt;(&amp;Ouml;rneğimizde app.config)&lt;/em&gt; i&amp;ccedil;erisindeki bir servis bloğunu işaret etmektedir. Aslında bu blokta servisin dış d&amp;uuml;nyaya &lt;strong&gt;Metadata &lt;/strong&gt;paylaşımını yapacağını bildirebiliriz. Bildiğiniz &amp;uuml;zere &lt;strong&gt;Metadata Publishing &lt;/strong&gt;sayesinde istemcilerin &lt;strong&gt;WSDL &lt;/strong&gt;i&amp;ccedil;eriğine ulaşması m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r ve bu sayede gerekli &lt;strong&gt;Proxy &lt;/strong&gt;tiplerini kolayca &amp;uuml;retebilirler. &lt;em&gt;(Ancak tabiki bazı hallerde &amp;ouml;zellikle g&amp;uuml;venlik sebebi ile Metadata bilgisini istemci tarafına indirilebiliyor olması arzu edilmeyebilir)&lt;/em&gt; İşte&lt;strong&gt; app.config &lt;/strong&gt;dosyasının i&amp;ccedil;eriği.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8" ?&amp;gt;
+&amp;lt;configuration&amp;gt;
+    &amp;lt;startup&amp;gt; 
+       &amp;lt;supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.0,Profile=Client" /&amp;gt;       &amp;lt;/startup&amp;gt;
+  &amp;lt;system.serviceModel&amp;gt;
+    &amp;lt;behaviors&amp;gt;
+      &amp;lt;serviceBehaviors&amp;gt;
+        &amp;lt;behavior name="HelloServiceBehavior"&amp;gt;
+          &amp;lt;serviceMetadata httpGetEnabled="true" httpGetUrl ="http://localhost:5001/HelloService"/&amp;gt;
+        &amp;lt;/behavior&amp;gt;
+      &amp;lt;/serviceBehaviors&amp;gt;
+    &amp;lt;/behaviors&amp;gt;
+    &amp;lt;services&amp;gt;
+      &amp;lt;service name="HelloServiceConfig" behaviorConfiguration="HelloServiceBehavior"/&amp;gt;
+    &amp;lt;/services&amp;gt;
+  &amp;lt;/system.serviceModel&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;WorkflowService &lt;/strong&gt;&amp;ouml;rneğinin &lt;strong&gt;Body &lt;/strong&gt;&amp;ouml;zelliği i&amp;ccedil;erisinde ise sırasıyla &lt;strong&gt;Receive, SumActivity&lt;/strong&gt; ve &lt;strong&gt;SendReply &lt;/strong&gt;aktivite bileşenlerini i&amp;ccedil;eren bir &lt;strong&gt;Sequence &lt;/strong&gt;aktivite bileşeni tanımlandığı g&amp;ouml;r&amp;uuml;lmektedir. Bu bileşenin &lt;strong&gt;Variables &lt;/strong&gt;&amp;ouml;zelliğinde ise, t&amp;uuml;m alt aktiviteler tarafından kullanılacak olan&amp;nbsp; &lt;strong&gt;x,y, result&lt;/strong&gt;ve &lt;strong&gt;__handle&lt;/strong&gt; isimli değişken bildirimleri yer almaktadır. &lt;strong&gt;Sequence &lt;/strong&gt;aktivite bileşeninin &lt;strong&gt;Activities &lt;/strong&gt;&amp;ouml;zelliğine bakıldığında ise sırasıyla&lt;strong&gt; Receive, SumActivity&lt;/strong&gt; ve &lt;strong&gt;SendReply &lt;/strong&gt;aktivite bileşenlerinin tanımlandığı g&amp;ouml;zlemlenmektedir. Durun bir dakika &lt;strong&gt;SumActivity&lt;/strong&gt;' mi? Bu bizim tarafımızdan tanımlanmış &lt;strong&gt;CodeActivity&amp;lt;double&amp;gt; &lt;/strong&gt;t&amp;uuml;revli bir aktivite sınıfıdır ve i&amp;ccedil;eriği aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public class SumActivity
+        : CodeActivity&amp;lt;double&amp;gt;
+    {
+        public InArgument&amp;lt;double&amp;gt; X { get; set; }
+        public InArgument&amp;lt;double&amp;gt; Y { get; set; }
+
+        protected override double Execute(CodeActivityContext context)
+        {
+            return X.Get(context) + Y.Get(context);
+        }
+    }&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;SumActivity &lt;/strong&gt;tahmin edeceğiniz &amp;uuml;zere istemciden gelen&lt;strong&gt; x&lt;/strong&gt; ve &lt;strong&gt;y &lt;/strong&gt;değişkenlerini kullanmak &amp;uuml;zere tasarlanmıştır. Elbette bu nokada k&amp;uuml;&amp;ccedil;&amp;uuml;k bir soru vardır. &lt;strong&gt;Receive &lt;/strong&gt;aktivite bileşenine istemci tarafından gelen &lt;strong&gt;xValue &lt;/strong&gt;ve &lt;strong&gt;yValue&lt;/strong&gt; değeleri, &lt;strong&gt;SumActivity &lt;/strong&gt;&amp;ouml;rneğine nasıl aktarılacaktır?&lt;img title="Wink" src="/editors/tiny_mce3/plugins/emotions/img/smiley-wink.gif" alt="Wink" border="0" /&gt; Dikkat edileceği &amp;uuml;zere &lt;strong&gt;SumActivity &lt;/strong&gt;&amp;ouml;rneklenirken&lt;strong&gt; X, Y &lt;/strong&gt;ve &lt;strong&gt;Result &lt;/strong&gt;&amp;ouml;zelliklerine sırasıyla &lt;strong&gt;x,y&lt;/strong&gt; ve &lt;strong&gt;result &lt;/strong&gt;değerleri atanmıştır&lt;em&gt;(B&amp;uuml;y&amp;uuml;k k&amp;uuml;&amp;ccedil;&amp;uuml;k harf ayrımına dikkat edelim)&lt;/em&gt;. Bu değişkenler &lt;strong&gt;Sequence &lt;/strong&gt;seviyesindeki &lt;strong&gt;Variable&lt;/strong&gt;' lardır ve &lt;strong&gt;Receive &lt;/strong&gt;aktivite bileşeni i&amp;ccedil;erisinde &lt;strong&gt;Content &lt;/strong&gt;&amp;ouml;zelliği i&amp;ccedil;erisindeki bildirim yardımıyla set edilmektedir. &amp;Ccedil;ok doğal olarak &lt;strong&gt;Result &lt;/strong&gt;&amp;ouml;zelliğine gelen değer,&lt;strong&gt; result Variable&lt;/strong&gt;' ına aktarılmakta ve bu da &lt;strong&gt;SendReply &lt;/strong&gt;aktivite bileşeni tarafından kullanılarak istemciye cevap olarak d&amp;ouml;nd&amp;uuml;r&amp;uuml;lmektedir&lt;em&gt;(SendReply bileşeninin Content &amp;ouml;zelliğine dikkat edelim)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Artık &lt;strong&gt;WorkflowService &lt;/strong&gt;&amp;ouml;rneğini host etmek &amp;uuml;zere gerekli kodları aşağıdaki gibi yazabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;WorkflowServiceHost serviceHost = new WorkflowServiceHost(wfService);
+serviceHost.Open();
+Console.WriteLine("Servis a&amp;ccedil;ık. Kapatmak i&amp;ccedil;in bir tuşa basın");
+Console.ReadLine();
+serviceHost.Close();&lt;/pre&gt;
+&lt;p&gt;WorkflowServiceHost nesnesi &amp;ouml;rneklenirken parametre olarak &lt;strong&gt;wfService &lt;/strong&gt;nesne &amp;ouml;rneği verilmektedir. &lt;strong&gt;WorkflowServiceHost &lt;/strong&gt;tipi &lt;strong&gt;Workflow Service&lt;/strong&gt;' lerin ayağa kaldırılması, servis olarak sunulması, gerekli &amp;ccedil;alışma zamanı ortamının kurgulanması gibi işlemleri &amp;uuml;stelenen bir tip olarak d&amp;uuml;ş&amp;uuml;n&amp;uuml;lmelidir. Buna g&amp;ouml;re istemci uygulama &amp;ccedil;alıştırıldığında aşağıdaki sonu&amp;ccedil;lar ile karşılaşmamız gerekmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f5%2fblg193_Runtime1.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Peki ya istemci tarafı? &amp;Ccedil;alışan bu servisin sunduğu &lt;strong&gt;Workflow Service &lt;/strong&gt;&amp;ouml;rneğinin işe yaradığını nasıl g&amp;ouml;receğiz? &lt;strong&gt;WcfTestClient &lt;/strong&gt;uygulaması bu noktada işimizi g&amp;ouml;r&amp;uuml;yor olacaktır. S&amp;ouml;z konusu uygulamayı &lt;strong&gt;Visual Studio Command Prompt &lt;/strong&gt;&amp;uuml;zerinden &amp;ccedil;alıştırdıktan sonra&lt;strong&gt; http://localhost:5001/HelloService&lt;/strong&gt; i&amp;ccedil;in bir talepte bulunmamız yeterlidir. Eğer herşey yolunda giderse &lt;strong&gt;Sum &lt;/strong&gt;operasyonunu test edebilir ve aşağıdakine benzer sonu&amp;ccedil;ları alabiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/pics/2010%2f5%2fblg193_ClientRuntime.gif" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;İşte bu kadar. &lt;img title="Laughing" src="/editors/tiny_mce3/plugins/emotions/img/smiley-laughing.gif" alt="Laughing" border="0" /&gt; G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi&lt;strong&gt; Workflow Service&lt;/strong&gt; &amp;ouml;rneğimizi başarılı bir şekilde &amp;ccedil;ağırdık. Peki ya bundan sonrası? &amp;Ouml;rneğimizi &lt;strong&gt;HTTP&lt;/strong&gt; tabanlı olarak tasaladığımızı fark etmişsiniz. Ancak sizde s&amp;ouml;z konusu &amp;ouml;rneği &lt;strong&gt;TCP &lt;/strong&gt;bazlı &amp;ccedil;alışacak şekilde geliştirmeyi deneyebilirsiniz. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2010%2f5%2fWorkflowConsoleApplication1.rar"&gt;WorkflowConsoleApplication1.rar (28,99 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2010-10-04 16:20:00</pubDate>
+  <slug>Kod-Bazli-Workflow-Service-Gelistirmek-Yayinlamak</slug>
+  <tags>
+    <tag>workflow-foundation</tag>
+    <tag>workflow-foundation-40</tag>
+    <tag>visual-studio-2010</tag>
+    <tag>workflow-service</tag>
+  </tags>
+  <categories>
+    <category>WF</category>
+    <category>WF 4.0</category>
+  </categories>
+</post>

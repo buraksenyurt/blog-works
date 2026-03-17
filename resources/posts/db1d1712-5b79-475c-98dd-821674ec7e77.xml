@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>.Net Tarafında Xml ile Oynamak-1</title>
+  <description>Bu makalemiz ile birlikte Xml mimarisini yönetimli kod(managed code) tarafından ele almaya çalışacak ve konuları örnek senaryolar üzerinden geliştireceğiz. Bildiğiniz gibi Xml(eXtensible Markup Language) çok yaygın olarak kullanılan, platformlar arası veri taşıma standartlarından birisidir.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Bu makalemiz ile birlikte Xml mimarisini &lt;strong&gt;y&amp;ouml;netimli kod(managed code)&lt;/strong&gt; tarafından ele almaya &amp;ccedil;alışacak ve konuları &amp;ouml;rnek senaryolar &amp;uuml;zerinden geliştireceğiz. Bildiğiniz gibi &lt;strong&gt;Xml(eXtensible Markup Language) &lt;/strong&gt;&amp;ccedil;ok yaygın olarak kullanılan, platformlar arası veri taşıma standartlarından birisidir. .Net Framework i&amp;ccedil;erisinde Xml standartları ile doğrudan iş yapmamızı sağlayan y&amp;ouml;netimli tipler bulunmaktadır. Bu tipler sayesinde sadece Xml değil, Xml ile ilişkili diğer standartlarıda etkili bir şekilde kullanabilmekteyiz. &lt;strong&gt;Xml Schema, Xslt &lt;/strong&gt;ve &lt;strong&gt;XPath&lt;/strong&gt; mimarileri bunlar arasında sayılabilir. Biz bu g&amp;uuml;nk&amp;uuml; makalemizde &amp;ccedil;alışma zamanında dinamik olarak bir Xml belgesini nasıl oluşturabileceğimizi, bu belgenin kaydedilmesini ve hatta yeniden okunmasını ele alacağımız bir senaryo &amp;uuml;zerinde duracağız. Dilerseniz işe &amp;ouml;rnek senaryomuzdan bahsederek başlayalım.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğimiz bir windows uygulaması olacak ve &lt;strong&gt;MDI (Multiple Document Interface)&lt;/strong&gt; tarzında tasarlanacak. Ana formun altın yer alabilecek olan alt formlarımız(Child Forms) &amp;uuml;zerinde mouse yardımıyla d&amp;uuml;z &amp;ccedil;izgiler &amp;ccedil;iziyor olacağız. &amp;Ccedil;izim işlemleri i&amp;ccedil;in GDI+ API' sinden yararlanıyor olacağız. Amacamız ise bu &amp;ccedil;izgilerin ilgili form i&amp;ccedil;in bir Xml dosyasında kendi belirleyeceğimiz bir desende saklanmasını sağlamak. Xml tarafında ge&amp;ccedil;meden &amp;ouml;nce Windows uygulamamızı tasarlamakta fayda var. Alt formlarımızda &amp;ccedil;izilen &amp;ccedil;izgilerin hatırlanması ve generic bir koleksiyon i&amp;ccedil;erisinde saklanması programatik olarak işimizi olduk&amp;ccedil;a kolaylaştıracaktır. Temel olarak bir &amp;ccedil;izginin, başlangı&amp;ccedil; ve bitiş koordinatlarına ait bilgilerin &amp;ouml;nemli olduğunu d&amp;uuml;ş&amp;uuml;necek olursak aşağıdaki gibi bir sınıf bizim i&amp;ccedil;in yeterli olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk193_1.gif" alt="" width="157" height="279" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace DynamicXmlDocument
+{
+    public class Cizgim
+    {
+        private int _X1;
+        private int _Y1;
+        private int _X2;
+        private int _Y2;
+
+        public int X2
+        {
+            get { return _X2; }
+            set { _X2 = value; }
+        }
+        public int Y2
+        {
+            get { return _Y2; }
+            set { _Y2 = value; }
+        }
+        public int X1
+        {
+            get { return _X1; }
+            set { _X1 = value; }
+        }
+        public int Y1
+        {
+            get { return _Y1; }
+            set { _Y1 = value; }
+        }
+        public Cizgim(int x1, int y1,int x2,int y2)
+        {
+            X1 = x1;
+            Y1 = y1;
+            X2 = x2;
+            Y2 = y2;
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Alt formlarımız kendi i&amp;ccedil;lerinde, ekrana &amp;ccedil;izilen &amp;ccedil;izgilerin bilgilerini hatırlamak durumundadır. Nitekim bunu yapmadığımız takdirde formun mimimize edilmesi yada &amp;uuml;st&amp;uuml;ne başka bir g&amp;ouml;r&amp;uuml;nt&amp;uuml;n&amp;uuml;n gelmesi sonucu, &amp;uuml;zerlerinde taşıdıkları &amp;ccedil;izgiler kaybolmaktadır.&amp;nbsp; Bunun &amp;ouml;n&amp;uuml;ne ge&amp;ccedil;mek i&amp;ccedil;in form &amp;uuml;zerindeki &amp;ccedil;izgilerin hatırlanması şarttır. Bu sebepten alt formlarımızı şağıdaki gibi tasarlayabiliriz. Elbette hatırlanacak olan &amp;ccedil;izgilerin s&amp;uuml;rekli &amp;ccedil;izdirilmesi gerekir. Bu nedenle formlarımızın MouseUp ve Paint olayları i&amp;ccedil;erisinde gerekli &amp;ccedil;izdirme operasyonları tetiklenmelidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk193_2.gif" alt="" width="212" height="367" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Text;
+using System.Windows.Forms;
+using System.Drawing.Drawing2D;
+
+namespace DynamicXmlDocument
+{
+    public partial class Sahne : Form
+    {
+        private int _X, _Y;
+        private bool _MouseDownOk = false;
+        private List&amp;lt;Cizgim&amp;gt; _Cizgiler;
+
+        public List&amp;lt;Cizgim&amp;gt; Cizgiler
+        {
+            get
+            {
+                return _Cizgiler;
+            }
+        }
+
+        public Sahne()
+        {
+            InitializeComponent();
+            _Cizgiler = new List&amp;lt;Cizgim&amp;gt;();
+        }
+
+        private void Sahne_MouseDown(object sender, MouseEventArgs e)
+        {
+            _X = e.X;
+            _Y = e.Y;
+            _MouseDownOk = true;
+        }
+
+        private void Sahne_MouseUp(object sender, MouseEventArgs e)
+        { 
+            _Cizgiler.Add(new Cizgim(_X,_Y,e.X,e.Y));
+            _MouseDownOk = false;
+        }
+
+        private void Sahne_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (_MouseDownOk)
+            {
+                Graphics grp = this.CreateGraphics();
+                grp.Clear(this.BackColor);
+                Pen pn = new Pen(Brushes.Blue); 
+                pn.Width = 3;
+                grp.DrawLine(pn, _X, _Y, e.X, e.Y);
+                CizgileriCiz();
+            }
+        }
+
+        private void Sahne_Paint(object sender, PaintEventArgs e)
+        {
+            CizgileriCiz();
+        }
+
+        private void CizgileriCiz()
+        {
+            Graphics grp = this.CreateGraphics();
+            Pen pn = new Pen(Brushes.Blue);
+            pn.Width = 3;
+            foreach (Cizgim czg in _Cizgiler)
+                grp.DrawLine(pn, czg.X1, czg.Y1, czg.X2, czg.Y2);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu kısımlarda &amp;ccedil;ok fazla durmayacağız. Nitekim makalemizin konusu dışında kalmaktalar. Ancak &amp;ouml;zetle amacımızın GDI+ kullandığımızda, sahneler &amp;uuml;zerindeki &amp;ccedil;izgilerin kaybolmasını engellemek olduğunu s&amp;ouml;yleyebiliriz. Bu formlarımızı taşıyacak olan MDI formumuza ise bir men&amp;uuml; koyup, yeni sahneler a&amp;ccedil;ılabilmesini, var olan sahnelerin kaydedilebilmesini, yada bir Xml i&amp;ccedil;erisinden var olan bir sahnenin okunabilmesini sağlayacağız. Bu d&amp;uuml;zenlemeler ile birlikte uygulamamız temel olarak aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde olduğu gibi &amp;ccedil;alışacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk193_3.gif" alt="" width="620" height="376" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi ilk amacımız ile işe başlayalım. Alt formlar &amp;uuml;zerindeki &amp;ccedil;izgilerin saklandığı generic List koleksiyonu i&amp;ccedil;eriğini, veri formatı tarafımızca tasarlanacak olan bir Xml dok&amp;uuml;manında tutmak ve fiziki olarak kaydetmek. Bu ama&amp;ccedil;la &amp;ouml;ncelikli olarak Xml verimiz i&amp;ccedil;in bir şablon d&amp;uuml;ş&amp;uuml;nelim. Bu formatı herkes kendi istediği şekilde tasarlayabilir. &amp;Ouml;rneğin ben herhangibir Sahnenin &amp;uuml;zerindeki &amp;ccedil;izgileri aşağıdaki formatta tutmayı planladım.&lt;/p&gt;
+&lt;pre class="brush:xml;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;?xml version="1.0" encoding="utf-8"?&amp;gt;
+    &amp;lt;Sahne&amp;gt;
+        &amp;lt;Cizgim ID="0"&amp;gt;
+            &amp;lt;Koordinatlar&amp;gt;
+                &amp;lt;Baslangic X="40" Y="40" /&amp;gt;
+                &amp;lt;Bitis X="187" Y="143" /&amp;gt;
+            &amp;lt;/Koordinatlar&amp;gt;
+        &amp;lt;/Cizgim&amp;gt;
+        &amp;lt;Cizgim ID="1"&amp;gt;
+            &amp;lt;Koordinatlar&amp;gt;
+                &amp;lt;Baslangic X="241" Y="61" /&amp;gt;
+                &amp;lt;Bitis X="273" Y="259" /&amp;gt;
+            &amp;lt;/Koordinatlar&amp;gt;
+        &amp;lt;/Cizgim&amp;gt;
+&amp;lt;/Sahne&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Xml verisi, bir Sahne i&amp;ccedil;erisindeki her bir d&amp;uuml;z &amp;ccedil;izgi i&amp;ccedil;in &lt;strong&gt;Cizgim&lt;/strong&gt; isimli bir element tutmaktadır. Bir &amp;ccedil;izginin başlangı&amp;ccedil; ve bitiş noktalarına ati koordinatlarını ise, Baslangic ve Bitis isimli &lt;strong&gt;elementler(elements)&lt;/strong&gt; i&amp;ccedil;erisinde X ve Y nitelikleri ile tutuluyor. Bir sahne i&amp;ccedil;erisinde birden fazla &amp;ccedil;izgi olacağından bunları daha kolay bir şekilde ayırd edebilmek i&amp;ccedil;in Cizgim elementlerine birde ID isimli &lt;strong&gt;nitelikler(attributes)&lt;/strong&gt; ekledik. Bu tip bir Xml i&amp;ccedil;eriğini &amp;ccedil;alışma zamanında dinamik olarak oluşturabilmek i&amp;ccedil;in &amp;ouml;ncelikle Xml i&amp;ccedil;erisindeki ağa&amp;ccedil; yapısını kavramak ve buna g&amp;ouml;re uygun y&amp;ouml;netimli tipleri kullanmak gerekir. Aşağıdaki şekilde, Xml verimiz i&amp;ccedil;erisinde yer alan &amp;uuml;yelere dair fikirler verilmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk193_4.gif" alt="" width="539" height="314" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Buna g&amp;ouml;re şunları s&amp;ouml;yleyebiliriz;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Dinamik olarak oluşturulacak Xml verisi &lt;strong&gt;processing instructions&lt;/strong&gt; komutu ile başlamalıdır. Bu zaten ge&amp;ccedil;erli bir Xml dok&amp;uuml;manı i&amp;ccedil;in bir kuraldır.&lt;/li&gt;
+&lt;li&gt;Xml d&amp;ouml;k&amp;uuml;manımızın &lt;strong&gt;root&lt;/strong&gt; elementinin adı Sahne' dir. Xml belgeleri sadece bir tane root element i&amp;ccedil;erebilir. Ama mutlaka bir root element i&amp;ccedil;ermek zorundadır.&lt;/li&gt;
+&lt;li&gt;Sahne elementi i&amp;ccedil;erisinde &lt;strong&gt;birden fazla&lt;/strong&gt; Cizgim elementi olabilir.&lt;/li&gt;
+&lt;li&gt;Cizgim elementleri, formun &amp;uuml;zerindeki &amp;ccedil;izgilerin koordinat bilgilerini taşımak &amp;uuml;zere Koordinatlar isimli bir alt element&lt;strong&gt;(Child Element)&lt;/strong&gt; i&amp;ccedil;ermektedir.&lt;/li&gt;
+&lt;li&gt;Koordinatlar elementi i&amp;ccedil;erisinde &amp;ccedil;izginin başlangı&amp;ccedil; ve bitiş noktalarının tutulduğu elementler &lt;strong&gt;aynı seviyedir&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;Başlangı&amp;ccedil; ve bitiş noktalarına ait X ve Y değerleri sırasıyla Baslangic ve Bitis elementleri i&amp;ccedil;erisinde &lt;strong&gt;nitelikler(attributes)&lt;/strong&gt; yardımıyla tutulmaktadır.&lt;/li&gt;
+&lt;li&gt;Her bir &amp;ccedil;izgi i&amp;ccedil;in otomatik artan bir &lt;strong&gt;ID&lt;/strong&gt; değeri programatik olarak ayarlanmakla birlikte, Cizgim elementleri i&amp;ccedil;erisinde ID isimli niteliklerde saklanmaktadır.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Artık Xml tarafı i&amp;ccedil;in gerekli kodlamalarımızı yazabiliriz. &amp;Ouml;ncelikli olarak Xml işlemlerini tek bir &amp;ccedil;atı altında toplamak adına bir sınıftan yararlanmakta fayda vardır. Sınıfımız i&amp;ccedil;erisinde herhangibir alt formun &amp;uuml;zerindeki &amp;ccedil;izgileri kaydedecek olan static bir metodu aşağıdaki gibi d&amp;uuml;ş&amp;uuml;nebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk193_5.gif" alt="" width="181" height="108" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Xml;
+using System.IO;
+using System.Collections.Generic;
+
+namespace DynamicXmlDocument
+{
+    class XmlDonusturucu
+    {
+        public static void ProjeKaydet(string dosya, List&amp;lt;Cizgim&amp;gt; cizgiler)
+        {
+            XmlDocument doc = new XmlDocument();
+            // &amp;Ouml;nce Xml d&amp;ouml;k&amp;uuml;manımızın başındaki processing instruction komutu oluşturulur.
+            XmlProcessingInstruction instructor=doc.CreateProcessingInstruction("xml", "version=\"1.0\" encoding=\"utf-8\"");
+            // Oluşturulan processing instruction XmlDocument nesne &amp;ouml;rneğine eklenir.
+            doc.AppendChild((XmlNode)instructor);
+            // root element oluşturulur
+            XmlNode rootNode = doc.CreateNode(XmlNodeType.Element, "Sahne", "");
+            // root element XmlDocument nesne &amp;ouml;rneğine eklenir.
+            doc.AppendChild(rootNode);
+            // cizgiler koleksiyonundaki eleman sayısı kadar Cizgim elementi oluşturulur, alt elementleri doldurulur ve bunla Sahne node' una (bir başka deyişe rootNode' a eklenir.
+            int cizgiNumarasi=0;
+            foreach (Cizgim czg in cizgiler)
+            {
+                XmlNode cizgimNode = doc.CreateNode(XmlNodeType.Element, "Cizgim", "");
+
+                XmlNode idAttribute = doc.CreateNode(XmlNodeType.Attribute, "ID", "");
+                idAttribute.Value = cizgiNumarasi.ToString();
+                cizgimNode.Attributes.Append((XmlAttribute)idAttribute);
+    
+                XmlNode koordinatlarNode = doc.CreateNode(XmlNodeType.Element, "Koordinatlar", "");
+                XmlNode baslangicNode = doc.CreateNode(XmlNodeType.Element, "Baslangic", "");
+    
+                XmlAttribute xAttribute = doc.CreateAttribute("X");
+                xAttribute.Value = czg.X1.ToString();
+                baslangicNode.Attributes.Append(xAttribute);
+    
+                XmlAttribute yAttribute = doc.CreateAttribute("Y");
+                yAttribute.Value = czg.Y1.ToString();
+                baslangicNode.Attributes.Append(yAttribute);
+    
+                koordinatlarNode.AppendChild(baslangicNode);
+    
+                XmlNode bitisNode = doc.CreateNode(XmlNodeType.Element, "Bitis", "");
+    
+                xAttribute = doc.CreateAttribute("X");
+                xAttribute.Value = czg.X2.ToString();
+                bitisNode.Attributes.Append(xAttribute);
+
+                yAttribute = doc.CreateAttribute("Y");
+                yAttribute.Value = czg.Y2.ToString();
+                bitisNode.Attributes.Append(yAttribute);
+    
+                koordinatlarNode.AppendChild(bitisNode);
+        
+                cizgimNode.AppendChild(koordinatlarNode);
+    
+                rootNode.AppendChild(cizgimNode);
+    
+                cizgiNumarasi++;
+            }
+            doc.Save(dosya);
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;ProjeKaydet isimli metodumuz ilk parametre olarak form &amp;uuml;zerindeki &amp;ccedil;izgileri saklayan koleksiyon tipini almaktadır.(List&amp;lt;Cizgim&amp;gt;). İkinci parametre olaraksa Xml bilgisinin kaydedileceği dosya adı verilmektedir. Bir windows uygulaması tasarladığımız i&amp;ccedil;in dosya adını &lt;strong&gt;saveFileDialog&lt;/strong&gt; kontrol&amp;uuml; yardımıyla g&amp;ouml;nderebiliriz. Peki metodumuzun i&amp;ccedil;erisinde neler yapıyoruz? İlk olarak &lt;strong&gt;XmlDocument&lt;/strong&gt; sınıfının &lt;strong&gt;AppendChild&lt;/strong&gt; metodunun &lt;strong&gt;XmlNode&lt;/strong&gt; tipinden parametreler aldığını belirtelim. Bunun dışında XmlDocument nesnesi belleğa a&amp;ccedil;ılan veri alanına &lt;strong&gt;Element&lt;/strong&gt;, &lt;strong&gt;Attribute&lt;/strong&gt;, &lt;strong&gt;Comment&lt;/strong&gt; gibi Xml &amp;uuml;yelerini eklemek i&amp;ccedil;in gerekli &lt;strong&gt;Create&lt;/strong&gt; metodlarına sahiptir. Dolayısıyla bir &lt;strong&gt;Processing Instruction&lt;/strong&gt; komutuna ihtiyacımız var ise bu durumda aşağıdaki kod satırından faydalanabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;XmlProcessingInstruction instructor=doc.CreateProcessingInstruction("xml",  "version=\"1.0\" encoding=\"utf-8\"");&lt;/pre&gt;
+&lt;p&gt;Bu kod satırı ile bir Processing Instruction oluşturulur. Sonrasında ise bunu &lt;strong&gt;XmlDocument&lt;/strong&gt; nesne &amp;ouml;rneğine ilave etmemiz gerekir. B&amp;ouml;ylece bellekteki Xml alanı i&amp;ccedil;erisine ilgili &amp;uuml;yeyi dahil etmiş oluruz. Bu ama&amp;ccedil;lada aşağıdaki kod satırı kullanılabilir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;doc.AppendChild((XmlNode)instructor);&lt;/pre&gt;
+&lt;p&gt;Dikkat ederseniz &lt;strong&gt;AppendChild&lt;/strong&gt; metodu i&amp;ccedil;erisinde bir d&amp;ouml;n&amp;uuml;şt&amp;uuml;rme işlemi yapılmaktadır. Bunun sebebi metodun parametre olarak &lt;strong&gt;XmlNode&lt;/strong&gt; tipinden bir değişken beklemesidir. Aslında &lt;strong&gt;XmlElement&lt;/strong&gt;, &lt;strong&gt;XmlAttribute&lt;/strong&gt;, &lt;strong&gt;XmlProcessingInstruction&lt;/strong&gt; gibi tipleri d&amp;uuml;ş&amp;uuml;nd&amp;uuml;ğ&amp;uuml;m&amp;uuml;zde bunların dolaylıda olsa XmlNode tipinden t&amp;uuml;rediklerini s&amp;ouml;yleyebiliriz. Buradaki mantık kodun kalan kısmınada uyarlanmıştır. &amp;Ouml;zellikle elementleri oluştururken XmlDocument sınıfının &lt;strong&gt;CreateNode&lt;/strong&gt; metodu g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınmıştır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;XmlNode cizgimNode = doc.CreateNode(XmlNodeType.Element, "Cizgim", "");
+
+XmlNode idAttribute = doc.CreateNode(XmlNodeType.Attribute, "ID", "");&lt;/pre&gt;
+&lt;p&gt;&amp;Ouml;rneğin yukarıdaki kod par&amp;ccedil;asında CreateNode metodlarında ilk parametre olarak &amp;uuml;retilmek istenilen node tipi belirtilmiştir. Sonrasında ikinci parametre olarak node' un adı ve eğer varsa &amp;uuml;&amp;ccedil;&amp;uuml;n&amp;uuml; parametre ilede Xml isim alanı(namespace) belirtilmektedir.&amp;nbsp; &amp;nbsp;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;CreateNode metodunun aşırı y&amp;uuml;klenmiş &amp;uuml;&amp;ccedil; versiyonu vardır. &amp;Ouml;zellikle bir Xml isim alanı s&amp;ouml;z konusu olduğunda,&amp;nbsp;şekilde versiyondan faydalanılabilinir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk193_6.gif" alt="" width="612" height="69" border="0" /&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Artık sınıfımızı bu haliyle kullanıp alt formlarımızın &amp;ccedil;izgilerini Xml formatında saklamak i&amp;ccedil;in gerekli kodları yazabiliriz. Bu ama&amp;ccedil;la MDI formumuz i&amp;ccedil;erisindeki Proje Kaydet başlıklı men&amp;uuml; &amp;ouml;ğesi i&amp;ccedil;in aşağıdaki kodları yazmamız yeterli olacaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void projeYeniToolStripMenuItem_Click(object sender, EventArgs e)
+{
+    // Yeni Sahne nesnesi oluşturmak.
+    Sahne shn = new Sahne();
+    shn.MdiParent = this;
+    shn.Show();
+}
+
+private void projeKaydetToolStripMenuItem_Click(object sender, EventArgs e)
+{
+    // Eğer ekranda sahneler var ise bunlardan aktif olanın &amp;ccedil;izgilerini Xml dosyasına kaydet.
+    if (this.MdiChildren.Length &amp;gt; 0)
+    {
+        Sahne shn = (Sahne)ActiveMdiChild;
+        if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            XmlDonusturucu.ProjeKaydet(saveFileDialog1.FileName, shn.Cizgiler);
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Dikkat ederseniz yazmış olduğumuz sınıf sayesinde, sayfa programcısı i&amp;ccedil;in karmaşık olacak olan Xml ayrıştırma kodlarını kaps&amp;uuml;llemiş olduk. (&lt;strong&gt;Encapsulate&lt;/strong&gt;)&lt;/p&gt;
+&lt;p&gt;Şimdide Xml' e yazmış olduğumuz dosyayı okuyup, tekrardan ilgili şekillerini nasıl &amp;ccedil;izdireceğimizi g&amp;ouml;relim. Bu ama&amp;ccedil;la XmlDonusturucu sınıfımıza yeni bir &lt;strong&gt;static&lt;/strong&gt; metod ekleyebiliriz. Metodumuzun yapması gereken, a&amp;ccedil;ılmak istenen Xml dosyasını parametre olarak almak ve geriye Cizgim tipinden elemanlar taşıyan generic bir List koleksiyonu d&amp;ouml;nd&amp;uuml;rmektir. Ancak Sahne isimli Windows forumumuzun i&amp;ccedil;erisinde yer alan Cizgiler isimli &amp;ouml;zelliğimiz yanlız okunabilir (read-only) olarak tasarlanmıştır. Dolayısıyla ilk &amp;ouml;nce, bu &amp;ouml;zelliğe bir set bloğu ekleyerek veri atanabilir hale getirmekle işe başlayabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public List&amp;lt;Cizgim&amp;gt; Cizgiler
+{
+    get
+    {
+        return _Cizgiler;
+    }
+    set
+    {
+        _Cizgiler = value;
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Ardından XmlDonusturucu sınıfımıza aşağıdaki ProjeAc isimli metodumuzu dahil edelim.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk193_7.gif" alt="" width="212" height="131" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public static List&amp;lt;Cizgim&amp;gt; ProjeAc(string dosya)
+{
+    List&amp;lt;Cizgim&amp;gt; cizgiler = new List&amp;lt;Cizgim&amp;gt;();
+    XmlDocument doc = new XmlDocument();
+    doc.Load(dosya);
+    XmlNodeList koordinatlar = doc.SelectNodes("/Sahne/Cizgim/Koordinatlar");
+    foreach (XmlNode koordinat in koordinatlar)
+    {
+        int x1 = Int32.Parse(koordinat["Baslangic"].Attributes["X"].Value);
+        int y1 = Int32.Parse(koordinat["Baslangic"].Attributes["Y"].Value);
+        int x2 = Int32.Parse(koordinat["Bitis"].Attributes["X"].Value);
+        int y2 = Int32.Parse(koordinat["Bitis"].Attributes["Y"].Value);
+        Cizgim czg = new Cizgim(x1, y1, x2, y2);
+        cizgiler.Add(czg);
+    }
+    return cizgiler;
+}&lt;/pre&gt;
+&lt;p&gt;Metodumuzun belkide en can alıcı noktası XmlDocument nesne &amp;ouml;rneği &amp;uuml;zerinden &lt;strong&gt;SelectNodes&lt;/strong&gt; metodunun &amp;ccedil;ağırılmasıdır. SelectNodes metodu parametre olarak aldığı &lt;strong&gt;XPath&lt;/strong&gt; sorgusuna uygun olacak şekilde bir node listesi d&amp;ouml;nd&amp;uuml;rmektedir. Dolayısıyla bu proje tarafından oluşturulmuş bir Xml dosyasını a&amp;ccedil;tığımızda, Sahne root elementi i&amp;ccedil;erisindeki Cizgim elementi i&amp;ccedil;erisindeki t&amp;uuml;m Koordinatlar elementleri elde edilebilecektir.(Tabi varsalar)&amp;nbsp;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;nbsp;XPath ile ilişkili olaraktan daha detaylı bilgi i&amp;ccedil;in daha &amp;ouml;nceki bir &lt;a href="http://www.bsenyurt.com/MakaleGoster.aspx?ID=147"&gt;makaleden&lt;/a&gt; faydalanabilirsiniz.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Bundan sonra, elde edilen node listesi &amp;uuml;zerinde bir iterasyon ger&amp;ccedil;ekleştirilmektedir. Bu iterasyon i&amp;ccedil;erisinde, her bir &lt;strong&gt;XmlNode&lt;/strong&gt; nesne &amp;ouml;rneği ele alınır. Dikkat ederseniz Baslangic ve Bitis alt elementlerindeki X ve Y niteliklerinin değerlerine erişmek i&amp;ccedil;in aşağıdaki notasyon kullanılmıştır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;koordinat[Alt Elementin Adı].Attributes[Niteliğin Adı].Value&lt;/pre&gt;
+&lt;p&gt;B&amp;ouml;ylece bir cizgi i&amp;ccedil;in tutulan başlangı&amp;ccedil; ve bitiş noktası değerlerini kolayca elde edebiliriz. Metodumuz elde edilen bu değerlere g&amp;ouml;re Cizgim tipinden nesne &amp;ouml;rnekleri &amp;uuml;retmektedir ve bunları cizgiler isimli koleksiyonda toplayarak geri d&amp;ouml;nd&amp;uuml;rmektedir. Artık g&amp;ouml;rsel tarafta tek yapmamız gereken, MDI pencerimizin men&amp;uuml;s&amp;uuml;ndeki proje a&amp;ccedil; başlıklı se&amp;ccedil;enek i&amp;ccedil;in aşağıdaki kodları yazmaktır. &lt;em&gt;(Buradada Xml dosyasını a&amp;ccedil;abilmek i&amp;ccedil;in openFileDialog kontrol&amp;uuml;nden yararlanılmıştır. Sadece Xml uzantılı dosyaları a&amp;ccedil;mak veya yazmak i&amp;ccedil;in saveFileDialog ve openFileDialog kontrollerinin Filter &amp;ouml;zelliklerinden faydalanılmaktadır.)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void projeAToolStripMenuItem_Click(object sender, EventArgs e)
+{ 
+    if (openFileDialog1.ShowDialog() == DialogResult.OK)
+    {
+        Sahne shn = new Sahne();
+        shn.Cizgiler = XmlDonusturucu.ProjeAc(openFileDialog1.FileName);
+        shn.MdiParent = this;
+        shn.Show();
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Eğer uygulamamızı &amp;ccedil;alıştıracak olursak aşağıdaki flash animasyonundakine benzer bir sonu&amp;ccedil; ile karşılaşırız. &lt;em&gt; (Flash dosyasının boyutu 192 kb olduğundan y&amp;uuml;klenmesi zaman alabilir.)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;object id="obj1" width="617" height="369" classid="clsid:D27CDB6E-AE6D-11CF-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0" border="0"&gt;
+			&lt;param name="movie" value="http://www.buraksenyurt.com/makale/images/mk193_video.swf" /&gt;
+			&lt;param name="quality" value="High" /&gt;
+			&lt;embed src="http://www.buraksenyurt.com/makale/images/mk193_video.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" name="obj1" width="617" height="369" /&gt;&lt;/object&gt;&lt;/p&gt;
+&lt;p&gt;Elbette bu proje i&amp;ccedil;inde s&amp;ouml;z konusu olan bir s&amp;uuml;r&amp;uuml; &lt;strong&gt;bug&lt;/strong&gt; vardır. &amp;Ouml;rneğin, kullanıcılar herhangibir veri i&amp;ccedil;eriğini taşıyan Xml dosyalarınıda a&amp;ccedil;abilmektedir. B&amp;ouml;yle bir durumda Sahne isimli windows formu oluşturulmakta ama i&amp;ccedil;erisine hi&amp;ccedil; bir &amp;ccedil;izgi doğal olarak gelmemektedir. Pekala okuma sırasında SelectNodes metodunun d&amp;ouml;n&amp;uuml;ş değerine g&amp;ouml;re bir takım kontrol mekanizmaları geliştirilebilir. Nitekim elde edilen XmlNodeList tipinin eleman sayısı 0 ise bu durumda kalan işlemleri yapmaya gerek yoktur. Ancak daha g&amp;uuml;venli bir yol tercih edilebilir. Bir başka deyişle kullanıcıyı daha detaylı bir şekilde bilgilendirmek amacıyla a&amp;ccedil;ılacak olan Xml d&amp;ouml;k&amp;uuml;manının bizim standart veri şablonumuza uygun olup olmadığı bir &lt;strong&gt;Xml Schema&lt;/strong&gt; dosyası yardımıyla kontrol edilebilir. &lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Xml Schema' larını y&amp;ouml;netimli kod tarafında nasıl ele alabileceğimize dair daha &amp;ouml;nceki bir &lt;a href="http://www.bsenyurt.com/MakaleGoster.aspx?ID=172"&gt;makalemizden&lt;/a&gt; yararlanabilirsiniz.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bu makalemizde &lt;strong&gt;XmlDocument&lt;/strong&gt; tipini farklı bir şekilde kullanmaya &amp;ccedil;alıştık. Umarım sizler i&amp;ccedil;in yararlı bir deneyim olmuştur. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;şmek dileğiyle hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2007-02-28 12:00:00</pubDate>
+  <slug>-Net-Tarafında-Xml-ile-Oynamak-1-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>xml</tag>
+  </tags>
+  <categories>
+    <category>C#</category>
+  </categories>
+</post>

@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Numaralandırıcıları Kullanmak İçin Bir Sebep</title>
+  <description>Bildiğiniz gibi numaralandırıcılar (enum sabitleride diyebiliriz) yardımıyla sayısal değerleri kod içerisinde daha anlamlı isimlendirmelerle ifade edebiliriz. Uygulama geliştirirken çoğunlukla framework' ün parçası olan pek çok enum sabitini kullanmaktayız. Örneğin veritabanı uygulamalarında sıkça kullandığımız CommandBehavior, DataRowState, DataRowVersion sabitleri gibi. Bu sistemin temel amacı, bu tiplerin sahip oldukları değerlerin sayısal karşılıklarına ihtiyacımızın olmasıdır.</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Bildiğiniz gibi numaralandırıcılar (enum sabitleride diyebiliriz) yardımıyla sayısal değerleri kod i&amp;ccedil;erisinde daha anlamlı isimlendirmelerle ifade edebiliriz. Uygulama geliştirirken &amp;ccedil;oğunlukla framework' &amp;uuml;n par&amp;ccedil;ası olan pek &amp;ccedil;ok enum sabitini kullanmaktayız. &amp;Ouml;rneğin veritabanı uygulamalarında sık&amp;ccedil;a kullandığımız CommandBehavior, DataRowState, DataRowVersion sabitleri gibi. Bu sistemin temel amacı, bu tiplerin sahip oldukları değerlerin sayısal karşılıklarına ihtiyacımızın olmasıdır.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;yle ki, uygulama i&amp;ccedil;erisinde yer alan her hangi bir fonksiyonun davranışı i&amp;ccedil;in sayısal bir karşılaştırma yapmamız gereken yerlerde, bu sayısal değerin karşılığı olan bir ismi kullanmak &amp;ccedil;ok daha mantıklıdır. Bu geliştirme a&amp;ccedil;ısından zaman kazandırıcı bir teknikten de &amp;ouml;tedir. &amp;Ccedil;oğu zaman projelerimizde kendi numaralandırıcı tiplerimizi tanımlama ihtiyacı duyarız. İşte bu g&amp;uuml;nk&amp;uuml; makalemizde bizi numaralandırıcı kullanmaya itecek bir nedeni incelemeye &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;table id="table6" border="1" width="100%" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;Numaralandırıcılar sayısal değerleri anlamlı isimler ile ifade etmemize yardımcı olurken, gerek kodlama zamanında gerekse geliştirme aşamasında programcıya b&amp;uuml;y&amp;uuml;k kolaylık ve esneklik sağlarlar.&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;İlk olarak numaralandırıcıları kullanmamız i&amp;ccedil;in gerekli senaryomuzdan kısaca bahsedelim. &amp;Ouml;rneğimizi bir web uygulaması olarak geliştireceğiz. Bu web uygulmasında AdventureWorks2000 (Sql Server 2000 Reporting Service ile birlikte gelen) isimli veritabanında yer alan Products ve ProductSubCategory tablolarından faydalanacağız. Temel olarak bir dataGrid kontrol&amp;uuml; &amp;uuml;zerinde veri g&amp;ouml;sterme ve g&amp;uuml;ncelleme işlemlerini ele alacağız. Uygulamamızı en başından itibaren tasarlayacağız. İlerleyen kısımlarında ise numaralandırıcı ihtiyacımızı keşfedecek ve uygun &amp;ccedil;&amp;ouml;z&amp;uuml;m yollarını geliştirmeye &amp;ccedil;alışacağız. İlk olarak uygulamamızın tablolar ile ilgili temel işlemlerini yapacak yonetici sınıfını yazalım. DBYonetici sınıfımız şu an i&amp;ccedil;in sadece veri &amp;ccedil;ekme işlemlerini &amp;uuml;stlenecek. İlerleyen kısımlarda diğer bazı işlevsellikleri de ekleyeceğiz.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;DBYonetici.cs&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System;
+using System.Data;
+using System.Data.SqlClient;
+
+namespace UsingEnumerators
+{
+    public class DBYoneticisi
+    {
+        private SqlConnection con;
+        private SqlDataAdapter da;
+
+        public DBYoneticisi()
+        {
+            con=new SqlConnection("data source=localhost;database=AdventureWorks2000;integrated security=SSPI");
+        }
+
+        public DataSet SelectCategories()
+        {
+            DataSet resultSet=new DataSet();
+            string sql=@"SELECT ProductSubCategoryID, Name FROM ProductSubCategory Order By ProductSubCategoryID";
+            da=new SqlDataAdapter(sql,con);
+            da.Fill(resultSet);
+            return resultSet; 
+        } 
+
+        public DataSet SelectProducts()
+        {
+            DataSet resultSet=new DataSet();
+            string sql=@"SELECT TOP 100 ProductID, Name, ProductNumber, StandardCost, ListPrice, StandardCost / ListPrice * 100 AS IncRate, Class, DealerPrice, SellStartDate, Size, Weight,ProductSubCategoryID, (SELECT Name FROM ProductSubCategory WHERE ProductSubCategoryID = P.ProductSubCategoryID) AS ProductSubCategory FROM Product P WHERE (StandardCost IS NOT NULL) AND (ListPrice IS NOT NULL) ORDER BY ProductID";
+            da=new SqlDataAdapter(sql,con);
+            da.Fill(resultSet);
+            return resultSet; 
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;DBYonetici isimli sınıfımızdaki metodlardan kısaca bahsetmekte yarar var. Uygulamamızda AdventureWorks2000 veritabanında yer alan Products isimli tabloyu kullanıyoruz. Bu tablodaki bir ka&amp;ccedil; alanı ele alacağız. Products tablosuna ilişkin sorgumuza dikkat ederseniz, standart maliyet ile liste fiyatı arasındaki oranı ifade eden ek bir alan olduğunu farkedebilirsiniz. Biz bu alandaki değere bakarak dataGrid' imiz &amp;uuml;zerinde renklendirme işlmelerini yapmaya &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;p&gt;SelectCategories isimli metodumuz ise &amp;uuml;r&amp;uuml;nlerimizin ait olabileceği kategorileri elde etmemizi sağlıyor. Aslında bu metodu, dataGrid &amp;uuml;zerinde her hangibir satır i&amp;ccedil;in g&amp;uuml;ncelleme işlemi yapacağımız zaman, bir ListBox kontrol&amp;uuml;n&amp;uuml; dinamik olarak doldurmak amacıyla kullanacağız. Şimdi DBYonetici sınıfımızı web uygulamamızda kullanalım. İlk olarak WebForm' umuz &amp;uuml;zerinde yer alacak dataGrid kontrol&amp;uuml;m&amp;uuml;z&amp;uuml;n i&amp;ccedil;eriğini oluşturacağız.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;asp:datagrid id="dgProducts" runat="server" Font-Size="Smaller" Font-Names="Verdana" AutoGenerateColumns="False" DataKeyField="ProductID" AllowPaging="True"&amp;gt;
+    &amp;lt;AlternatingItemStyle BackColor="LightSteelBlue"&amp;gt;&amp;lt;/AlternatingItemStyle&amp;gt;
+    &amp;lt;ItemStyle BackColor="White"&amp;gt;&amp;lt;/ItemStyle&amp;gt;
+    &amp;lt;HeaderStyle Font-Bold="True" ForeColor="Brown" BackColor="Gold"&amp;gt;&amp;lt;/HeaderStyle&amp;gt;
+    &amp;lt;Columns&amp;gt;
+        &amp;lt;asp:BoundColumn Visible="False" DataField="ProductID"&amp;gt;&amp;lt;/asp:BoundColumn&amp;gt;
+        &amp;lt;asp:TemplateColumn HeaderText="Urun Adı"&amp;gt;
+            &amp;lt;ItemTemplate&amp;gt;
+                &amp;lt;%#DataBinder.Eval(Container.DataItem,"Name")%&amp;gt;
+            &amp;lt;/ItemTemplate&amp;gt;
+            &amp;lt;EditItemTemplate&amp;gt;
+                &amp;lt;asp:TextBox ID="txtName" Runat="server" Width="100" Text='&amp;lt;%#DataBinder.Eval(Container.DataItem,"Name")%&amp;gt;'&amp;gt;&amp;lt;/asp:TextBox&amp;gt;
+            &amp;lt;/EditItemTemplate&amp;gt;
+        &amp;lt;/asp:TemplateColumn&amp;gt;
+        &amp;lt;asp:TemplateColumn HeaderText="Urun Numarası"&amp;gt;
+            &amp;lt;ItemTemplate&amp;gt;
+                &amp;lt;%#DataBinder.Eval(Container.DataItem,"ProductNumber")%&amp;gt;
+            &amp;lt;/ItemTemplate&amp;gt;
+            &amp;lt;EditItemTemplate&amp;gt;
+                &amp;lt;%#DataBinder.Eval(Container.DataItem,"ProductNumber")%&amp;gt;
+            &amp;lt;/EditItemTemplate&amp;gt;
+        &amp;lt;/asp:TemplateColumn&amp;gt;
+        &amp;lt;asp:TemplateColumn HeaderText="Maliyet"&amp;gt;
+            &amp;lt;ItemTemplate&amp;gt;
+                &amp;lt;%#DataBinder.Eval(Container.DataItem,"StandardCost","{0:C}")%&amp;gt;
+            &amp;lt;/ItemTemplate&amp;gt;
+            &amp;lt;EditItemTemplate&amp;gt;
+                &amp;lt;asp:TextBox ID="txtStandardCost" Runat="server" Width="100" Text='&amp;lt;%#DataBinder.Eval(Container.DataItem,"StandardCost")%&amp;gt;'&amp;gt;&amp;lt;/asp:TextBox&amp;gt;
+            &amp;lt;/EditItemTemplate&amp;gt;
+        &amp;lt;/asp:TemplateColumn&amp;gt;
+        &amp;lt;asp:TemplateColumn HeaderText="Liste Fiyati"&amp;gt;
+            &amp;lt;ItemTemplate&amp;gt;
+                &amp;lt;%#DataBinder.Eval(Container.DataItem,"ListPrice","{0:C}")%&amp;gt;
+            &amp;lt;/ItemTemplate&amp;gt;
+            &amp;lt;EditItemTemplate&amp;gt; 
+                &amp;lt;asp:TextBox ID="txtListPrice" Runat="server" Width="100" Text='&amp;lt;%#DataBinder.Eval(Container.DataItem,"ListPrice")%&amp;gt;'&amp;gt;&amp;lt;/asp:TextBox&amp;gt; 
+            &amp;lt;/EditItemTemplate&amp;gt;
+        &amp;lt;/asp:TemplateColumn&amp;gt;
+        &amp;lt;asp:TemplateColumn HeaderText="Artis Orani"&amp;gt;
+            &amp;lt;ItemTemplate&amp;gt;
+                &amp;lt;asp:Label ID="lblIncRate" Runat="Server" Text='&amp;lt;%#DataBinder.Eval(Container.DataItem,"IncRate","{0:F}")%&amp;gt;'&amp;gt;&amp;lt;/asp:Label&amp;gt;
+            &amp;lt;/ItemTemplate&amp;gt;
+            &amp;lt;EditItemTemplate&amp;gt;
+                &amp;lt;%#DataBinder.Eval(Container.DataItem,"IncRate","{0:F}")%&amp;gt;
+            &amp;lt;/EditItemTemplate&amp;gt;
+        &amp;lt;/asp:TemplateColumn&amp;gt; 
+        &amp;lt;asp:TemplateColumn HeaderText="Alt Kategori ID" Visible="False"&amp;gt;
+            &amp;lt;ItemTemplate&amp;gt;
+                &amp;lt;%#DataBinder.Eval(Container.DataItem,"ProductSubCategoryID")%&amp;gt;
+            &amp;lt;/ItemTemplate&amp;gt;
+            &amp;lt;EditItemTemplate&amp;gt;
+                 &amp;lt;asp:Label ID="lblProductSubCategoryID" Text='&amp;lt;%#DataBinder.Eval(Container.DataItem,"ProductSubCategoryID")%&amp;gt;' runat="server"&amp;gt;&amp;lt;/asp:Label&amp;gt;
+            &amp;lt;/EditItemTemplate&amp;gt;
+        &amp;lt;/asp:TemplateColumn&amp;gt;
+        &amp;lt;asp:TemplateColumn HeaderText="Alt Kategori"&amp;gt;
+            &amp;lt;ItemTemplate&amp;gt;
+                &amp;lt;%#DataBinder.Eval(Container.DataItem,"ProductSubCategory")%&amp;gt;
+            &amp;lt;/ItemTemplate&amp;gt;
+            &amp;lt;EditItemTemplate&amp;gt;
+                &amp;lt;asp:DropDownList ID="lstProductSubCategory" runat="server" DataSource = "&amp;lt;%# AltKategorileriAl() %&amp;gt;" DataTextField="Name" DataValueField="ProductSubCategoryID" /&amp;gt;
+            &amp;lt;/EditItemTemplate&amp;gt;
+        &amp;lt;/asp:TemplateColumn&amp;gt;
+        &amp;lt;asp:TemplateColumn HeaderText="Boyutu"&amp;gt;
+            &amp;lt;ItemTemplate&amp;gt;
+                &amp;lt;%#DataBinder.Eval(Container.DataItem,"Size","{0:F}")%&amp;gt;
+            &amp;lt;/ItemTemplate&amp;gt;
+            &amp;lt;EditItemTemplate&amp;gt;
+                &amp;lt;%#DataBinder.Eval(Container.DataItem,"Size","{0:F}")%&amp;gt;
+            &amp;lt;/EditItemTemplate&amp;gt;
+        &amp;lt;/asp:TemplateColumn&amp;gt;
+        &amp;lt;asp:TemplateColumn HeaderText="Agirlik"&amp;gt;
+            &amp;lt;ItemTemplate&amp;gt;
+                &amp;lt;%#DataBinder.Eval(Container.DataItem,"Weight","{0:F}")%&amp;gt;
+            &amp;lt;/ItemTemplate&amp;gt;
+            &amp;lt;EditItemTemplate&amp;gt;
+                &amp;lt;asp:TextBox ID="txtWeight" Runat="server" Width="100" Text='&amp;lt;%#DataBinder.Eval(Container.DataItem,"Weight")%&amp;gt;'&amp;gt;&amp;lt;/asp:TextBox&amp;gt;
+            &amp;lt;/EditItemTemplate&amp;gt;
+        &amp;lt;/asp:TemplateColumn&amp;gt;
+        &amp;lt;asp:TemplateColumn&amp;gt;
+            &amp;lt;ItemTemplate&amp;gt;
+                &amp;lt;asp:Button id="btnDuzenle" CommandName="Duzenle" runat="server" Text="D&amp;uuml;zenle"&amp;gt;&amp;lt;/asp:Button&amp;gt;
+            &amp;lt;/ItemTemplate&amp;gt;
+            &amp;lt;EditItemTemplate&amp;gt;
+                &amp;lt;asp:Button id="btnGuncelle" CommandName="Guncelle" runat="server" Text="G&amp;uuml;ncelle"&amp;gt;&amp;lt;/asp:Button&amp;gt;
+                &amp;lt;asp:Button id="btnVazgec" CommandName="Vazgec" runat="server" Text="Vazge&amp;ccedil;"&amp;gt;&amp;lt;/asp:Button&amp;gt;
+            &amp;lt;/EditItemTemplate&amp;gt;
+        &amp;lt;/asp:TemplateColumn&amp;gt;
+        &amp;lt;asp:TemplateColumn&amp;gt;
+            &amp;lt;ItemTemplate&amp;gt;
+                &amp;lt;asp:Button id="btnDelete" CommandName="Sil" runat="server" Text="Sil"&amp;gt;&amp;lt;/asp:Button&amp;gt;
+            &amp;lt;/ItemTemplate&amp;gt;
+            &amp;lt;/asp:TemplateColumn&amp;gt;
+    &amp;lt;/Columns&amp;gt;
+    &amp;lt;PagerStyle Mode="NumericPages"&amp;gt;&amp;lt;/PagerStyle&amp;gt;
+&amp;lt;/asp:datagrid&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Şu anda aklınızdan ge&amp;ccedil;enleri duyar gibiyim. Bu kadar uzun kodlardan sonra numarlandırıcıları nerede kullanacağımızı merak ediyorsunuz. Ama biraz daha sabredelim. İlk olarak yukarıdaki dataGrid kontrol&amp;uuml;m&amp;uuml;z hakkında kısaca bilgi vermekte fayda var. DataGrid kontrol&amp;uuml;m&amp;uuml;z ekranda Products tablosuna ait verileri g&amp;ouml;sterdiği gibi, satırlar &amp;uuml;zerinde veri g&amp;uuml;ncelleme ve silme işlemlerine de izin verecek şekilde oluşturuldu. Bu sebepten &amp;uuml;zerinde g&amp;uuml;ncelleme yapılmasını istediğimiz alanlara ait EditItemTemplate kısımlarında TextBox veya DropDownList gibi kontrollere yer verdik. Konumuz dataGrid kontrol&amp;uuml;n&amp;uuml;n &amp;ouml;zelliklerini incelemek olmadığı i&amp;ccedil;in &amp;ccedil;ok fazla detaya girmiyorum. Şimdi sayfamızın kodlarını yazalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private static DBYoneticisi yonetici;
+
+private void Page_Load(object sender, System.EventArgs e)
+{
+    yonetici=new DBYoneticisi();
+}
+
+private void btnYukle_Click(object sender, System.EventArgs e)
+{ 
+    dgProducts.DataSource=yonetici.SelectProducts();
+    dgProducts.DataBind();
+}
+
+private void dgProducts_ItemDataBound(object sender, DataGridItemEventArgs e)
+{
+    if((e.Item.ItemType==ListItemType.Item) || (e.Item.ItemType==ListItemType.AlternatingItem))
+    {
+        double incRate;
+        Label lbl=(Label)e.Item.Cells[5].Controls[1];
+        incRate=Convert.ToDouble(lbl.Text);
+        if(incRate&amp;gt;=100)
+        {
+            e.Item.Cells[5].BackColor=Color.Red;
+            e.Item.Cells[5].ForeColor=Color.White;
+        }
+    }
+}
+
+private void dgProducts_PageIndexChanged(object source, DataGridPageChangedEventArgs e)
+{
+    dgProducts.CurrentPageIndex=e.NewPageIndex;
+    dgProducts.DataSource=yonetici.SelectProducts();
+    dgProducts.DataBind();
+}
+
+public DataSet AltKategorileriAl()
+{
+    return yonetici.SelectCategories(); 
+} 
+
+private void dgProducts_ItemCommand(object source, DataGridCommandEventArgs e)
+{
+    switch (e.CommandName)
+    {
+        case "Duzenle":
+            dgProducts.EditItemIndex=e.Item.ItemIndex;
+            dgProducts.DataSource=yonetici.SelectProducts();
+            dgProducts.DataBind();
+            break;
+    
+        case "Sil":
+            break;
+    
+        case "Vazgec":
+            dgProducts.EditItemIndex=-1;
+            dgProducts.DataSource=yonetici.SelectProducts();
+            dgProducts.DataBind();
+            break;
+
+        default :
+            break; 
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Dilerseniz kodlarımızda neler yaptığımıza kısaca değinelim. Sayfamız y&amp;uuml;klenirken dataGrid kontrol&amp;uuml;, Products tablosu i&amp;ccedil;in &amp;ccedil;alıştırdığımız sorgudan d&amp;ouml;nen sonu&amp;ccedil; k&amp;uuml;mesi ile dolduruluyor. Bu sırada dataGrid kontrol&amp;uuml;n&amp;uuml;n ItemDataBound olayında her bir satır i&amp;ccedil;in IncRate isimli alanın değerini kontrol ediyoruz. Bunun sonucuna g&amp;ouml;re eğer artış oranı 100' den b&amp;uuml;y&amp;uuml;k ise o h&amp;uuml;creinin arka plan rengini ve font rengini değiştirerek kullanıcıyı uyarıyoruz.&lt;/p&gt;
+&lt;p&gt;Kullanıcı dataGrid kontrol&amp;uuml;nde sayfalama işlemi yapabilir. Sayfalama işlemini sağlamak i&amp;ccedil;in her zamanki gibi PageIndexChanged isimli olay metodumuzu kullanıyoruz. Her hangibir satır i&amp;ccedil;in g&amp;uuml;ncelleme işlemi ve silme işlemi de yapabilir. G&amp;uuml;ncelleme ve Silme işlmeleri i&amp;ccedil;in yine DataGrid kontrol&amp;uuml;m&amp;uuml;z&amp;uuml;n ItemCommand metodunu kullanıyoruz. Eğer d&amp;uuml;zenleme modu se&amp;ccedil;ilirse bu durumda &amp;uuml;r&amp;uuml;nlerin dahil olduğu kategorileri listelemek i&amp;ccedil;in DropDownList kontrol&amp;uuml;m&amp;uuml;z&amp;uuml; dolduran SelectProducts metodumuzu &amp;ccedil;ağırıyoruz. B&amp;ouml;ylece sistemde kayıtlı olan &amp;uuml;r&amp;uuml;nlerin kullanıcı tarafından bir combo kontrol&amp;uuml; i&amp;ccedil;erisinden se&amp;ccedil;ilebilmesini sağlamış oluyoruz. Bu hızlı a&amp;ccedil;ıklamalardan sonra geldiğimiz noktayı aşağıdaki şekilden g&amp;ouml;rebilirisiniz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk133_1.gif" alt="" width="636" height="483" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi bu uygulamada odaklanmamız gereken bir nokta var. O da, IncRate' in rengini belirlediğimiz ItemDataBound metodu. Gelin bu metodu mercek altına alalım.&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void dgProducts_ItemDataBound(object sender, DataGridItemEventArgs e)
+{
+    if((e.Item.ItemType==ListItemType.Item) || (e.Item.ItemType==ListItemType.AlternatingItem))
+    {
+        double incRate;
+        Label lbl=(Label)e.Item.Cells[5].Controls[1];
+        incRate=Convert.ToDouble(lbl.Text);
+        if(incRate&amp;gt;=100)
+        {
+            e.Item.Cells[5].BackColor=Color.Red;
+            e.Item.Cells[5].ForeColor=Color.White;
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Bu metodda dikkat ederseniz if d&amp;ouml;ng&amp;uuml;m&amp;uuml;z i&amp;ccedil;erisinde 5 numaralı h&amp;uuml;crenin i&amp;ccedil;erisinde ki 1 numaralı kontrol&amp;uuml; ele alıyoruz. Peki bu 5 numaralı h&amp;uuml;credeki 1 numaralı kontrol' de neyin nesi oluyor. Aslında dataGrid nesnemizin aspx sayfasındaki kodlarını g&amp;ouml;z &amp;ouml;n&amp;uuml;ne aldığınızda 5 numaralı h&amp;uuml;crenin, IncRate alanına ait h&amp;uuml;cre olduğunu ve 1 numaralı kontrol&amp;uuml;nde bu h&amp;uuml;credeki Label kontrol&amp;uuml; olduğunu kolayca g&amp;ouml;rebilirisiniz.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;asp:TemplateColumn HeaderText="Artis Orani"&amp;gt;
+            &amp;lt;ItemTemplate&amp;gt;
+                &amp;lt;asp:Label ID="lblIncRate" Runat="Server" Text='&amp;lt;%#DataBinder.Eval(Container.DataItem,"IncRate","{0:F}")%&amp;gt;'&amp;gt;&amp;lt;/asp:Label&amp;gt;
+            &amp;lt;/ItemTemplate&amp;gt;
+            &amp;lt;EditItemTemplate&amp;gt;
+                &amp;lt;%#DataBinder.Eval(Container.DataItem,"IncRate","{0:F}")%&amp;gt;
+            &amp;lt;/EditItemTemplate&amp;gt;
+        &amp;lt;/asp:TemplateColumn&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Herşey buraya kadar gayet g&amp;uuml;zel. Şimdi default.aspx sayfamızda IncRate alanını dataGrid i&amp;ccedil;erisinde kullanıdığımız ItemTemplate takısının hemen &amp;ouml;n&amp;uuml;ne yeni bir tane daha ekleyelim. Bu sefer query' den &amp;ccedil;ektiğimiz Class alanını buraya ekliyoruz. Aynen aşağıdaki kod par&amp;ccedil;asında olduğu gibi.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;&amp;lt;asp:TemplateColumn HeaderText="Sınıf"&amp;gt;
+    &amp;lt;ItemTemplate&amp;gt;
+        &amp;lt;%#DataBinder.Eval(Container.DataItem,"Class","{0:F}")%&amp;gt;
+    &amp;lt;/ItemTemplate&amp;gt;
+    &amp;lt;EditItemTemplate&amp;gt;
+        &amp;lt;%#DataBinder.Eval(Container.DataItem,"Class","{0:F}")%&amp;gt;
+    &amp;lt;/EditItemTemplate&amp;gt;
+&amp;lt;/asp:TemplateColumn&amp;gt;&lt;/pre&gt;
+&lt;p&gt;Şimdi uygulamamızı tekrardan &amp;ccedil;alıştıralım. Bu sefer sizinde benim de beklediğimiz gibi bir şeylerin yolunda gitmemesi gerekiyor. Aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml; korktuğumuzun başımıza geldiği andır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk133_2.gif" alt="" width="603" height="362" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Hata gayet a&amp;ccedil;ık ve net. Artık 5 numaralı h&amp;uuml;cremiz IncRate alanına ait h&amp;uuml;cre değil. Burada şimdi Class isimli alanımız yer almakta. Ayrıca 5 numaralı alandaki 1 numaralı kontrol&amp;uuml;m&amp;uuml;zde bir Label kontrol&amp;uuml; değil. Hatanın nedenide doğru h&amp;uuml;cre &amp;uuml;zerinde olmayışımız. Daha da k&amp;ouml;t&amp;uuml;s&amp;uuml; olabilir elbette. Burada &amp;ccedil;alışma zamanında aldığımız hata ile sorununun ne olduğunu anlayabildik. Oysaki, yeni eklediğimiz h&amp;uuml;cre pekala sayısal bir değer i&amp;ccedil;eren bir Label kontrol&amp;uuml; taşıyabilirdi. Bu durumda uygulama &amp;ccedil;alışacaktı ama hatalı sonu&amp;ccedil;lar verecekti.&lt;/p&gt;
+&lt;p&gt;Peki ya &amp;ccedil;&amp;ouml;z&amp;uuml;m? &amp;Ccedil;&amp;ouml;z&amp;uuml;m sonunda bu makalenin başından beridir bahsetmeye &amp;ccedil;alıştığımız numaralandırıcılardan ge&amp;ccedil;iyor. Sorgudan d&amp;ouml;nen alanların dataGrid' de denk geldiği indeks numaralarını temsil edecek bir numarlandırıcımız olsaydı daha iyi olmaz mıydı? En azından yeni bir h&amp;uuml;cre eklediğimizde tek yapmamız gereken enum sabitimizde araya bir eleman daha eklemek olacaktı. &amp;Ccedil;&amp;uuml;nk&amp;uuml; kodun ka&amp;ccedil; yerinde aynı numaralı indeksi kullandığımızı bilemeyebilirdik. Her ne kadar arama-bulma y&amp;ouml;ntemi ile 5' lerin ge&amp;ccedil;tiği yerleri 6 yapabilecek olsakta bu hi&amp;ccedil;de profesyonelce bir &amp;ccedil;&amp;ouml;z&amp;uuml;m olmazdı. İşte basit bir enum sabitini kullanarak &amp;ccedil;ok daha profesyonel bir &amp;ccedil;&amp;ouml;z&amp;uuml;m &amp;uuml;retebilirdik.&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi enum sabitlerini kullanmak i&amp;ccedil;in son derece g&amp;uuml;zel bir sebebimiz oldu. Şimdi bu d&amp;uuml;ş&amp;uuml;ncemizi uygulamamız ile b&amp;uuml;t&amp;uuml;nleştirmemiz gerekiyor. İlk olarak yapmamız gereken enum sabitimizi oluşturmak. Eğer bir solution i&amp;ccedil;erisinde pek &amp;ccedil;ok proje ile birlikte &amp;ccedil;alışıyorsanız bu durumda grid başlıkları gibi indekslere ait enum sabitlerini saklayabileceğiniz genel bir katman dahi oluşturmayı d&amp;uuml;ş&amp;uuml;nebilirsiniz. Bizim uygulamamız son derece k&amp;uuml;&amp;ccedil;&amp;uuml;k olduğundan ge&amp;ccedil;erli isim alanımız altında bir enum sabiti yapmamız yeterli olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;enum sabitimiz ProductsGridHeaders&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;namespace UsingEnumerators
+{
+    enum ProductsGridHeaders
+    {
+        PRODUCTID,
+        NAME,
+        PRODUCTNUMBER,
+        STANDARDCOST,
+        LISTPRICE,
+        CLASS,
+        INCRATE,
+        PRODUCTSUBCATEGORYID,
+        PRODUCTSUBCATEGORY,
+        SIZE,
+        WEIGHT
+    }
+}&lt;/pre&gt;
+&lt;p&gt;İşte altın yumruğu vurduğumuz an. Artık tek yapmamız gereken, enum sabitimizi DataGrid nesnemizin ItemDataBound olay metodunda aşağıdaki gibi kullanmak. &amp;nbsp;&lt;/p&gt;
+&lt;table id="table16" border="1" width="100%" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;Numaralandırıc i&amp;ccedil;indeki elemanları isimlendirirken ger&amp;ccedil;ekten anlamlı, bir şeyleri kulağımıza &amp;ccedil;ağrıştıran isimler vermeye &amp;ouml;zen g&amp;ouml;stermeliyiz.&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;&lt;img src="/makale/images/mk133_3.gif" alt="" width="564" height="270" border="0" /&gt;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void dgProducts_ItemDataBound(object sender, DataGridItemEventArgs e)
+{
+    if((e.Item.ItemType==ListItemType.Item) || (e.Item.ItemType==ListItemType.AlternatingItem))
+    {
+        double incRate;
+        Label lbl=(Label)e.Item.Cells[(int)ProductsGridHeaders.INCRATE].Controls[1];
+        incRate=Convert.ToDouble(lbl.Text);
+        if(incRate&amp;gt;=100)
+        {
+            e.Item.Cells[(int)ProductsGridHeaders.INCRATE].BackColor=Color.Red;
+            e.Item.Cells[(int)ProductsGridHeaders.INCRATE].ForeColor=Color.White;
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Artık uygulamamız sorunsuz şekilde &amp;ccedil;alışacaktır ve istediğimiz yeni satırı dataGrid kontrol&amp;uuml;m&amp;uuml;ze ekleyebiliriz. Unutmamamız gereken tek şek, yeni bir satır eklendiğinde bunu ilgili enum sabitinede yansıtmaktır. &amp;Uuml;stelik kodun okunurluğuda inanılmaz derecede kolaylaşmıştır. Ancak elbette ki&amp;nbsp; kodumuzda enum sabitlerini kullanacağımız tek yer burası değil.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğin DropDownList kontrol&amp;uuml;m&amp;uuml;z doldurulduğunda o an aktif olan satıra ait &amp;uuml;r&amp;uuml;n kategori adınında se&amp;ccedil;ili olarak gelmesi gerekmektedir. Şu anki kodlarımıza g&amp;ouml;re DropDownList kontrol&amp;uuml;m&amp;uuml;z herhangibir satır edit modunda a&amp;ccedil;ıldığında &amp;uuml;r&amp;uuml;nleri başarılı bir şekilde listeliyor ama her zaman i&amp;ccedil;in ilk elemana konumlanıyor. Bu problemi aşmak i&amp;ccedil;in d&amp;uuml;zenleme moduna ge&amp;ccedil;ildiğinde DropDownList kontrol&amp;uuml;n&amp;uuml;n&amp;uuml;n SelectedValue &amp;ouml;zelliğini uygun değere (ki bu değer ProductSubCategoryId olacaktır) atamamız yeterli olacaktır. Dolayısıla dataGrid kontrol&amp;uuml;m&amp;uuml;z&amp;uuml;n ItemDataBound olay metodunda aşağıdaki d&amp;uuml;zenlemeyi yapmamız bu ihtiyacımızı karşılayacaktır. Artık kodu yazarken, hangi indisli h&amp;uuml;creyi d&amp;uuml;ş&amp;uuml;nmemize gerekte yoktur. &amp;Ccedil;&amp;uuml;nk&amp;uuml; numaralandırıcımız anlamlı isimleri ile bunu bize s&amp;ouml;ylemektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;if(e.Item.ItemType==ListItemType.EditItem)
+{
+    Label lblKatId=(Label)e.Item.Cells[(int)ProductsGridHeaders.PRODUCTSUBCATEGORYID].Controls[1];
+    DropDownList lstKategoriler=(DropDownList)e.Item.Cells[(int)ProductsGridHeaders.PRODUCTSUBCATEGORY].Controls[1];    
+    lstKategoriler.SelectedIndex=Convert.ToInt16(lblKatId.Text)-1;
+}&lt;/pre&gt;
+&lt;p&gt;Oluşturduğumuz enum sabiti &amp;ouml;zellikle g&amp;uuml;ncellenecek satır i&amp;ccedil;in yazacağımız kod satırlarında da &amp;ccedil;ok işe yarayacaktır. Son olarak g&amp;uuml;ncelleme işlemimizi numaralandırıcımızı kullanarak nasıl ger&amp;ccedil;ekleştirdiğimizi g&amp;ouml;relim. Uygulamamıza bu fonksiyonelliği kazandırmak i&amp;ccedil;in yine ItemDataBound olay metodunu kullanacağız. Bu sefer CommandName &amp;ouml;zelliğinin Guncelle değerini alması halinde ger&amp;ccedil;ekleştireceğimiz işlemler var.&lt;/p&gt;
+&lt;p&gt;Biz numaralandırıcımızı Kaydetme işleminin ger&amp;ccedil;ekleştirileceği metodu &amp;ccedil;ağırmadan &amp;ouml;nce, gridde se&amp;ccedil;ili olan satırdaki kontroller &amp;uuml;zerindeki değerleri okuduğumuz satırlarda kullanıyoruz. &amp;Ouml;rneğin dataGrid kontrol&amp;uuml;nde Name alanının g&amp;ouml;sterildiği h&amp;uuml;crede yer alan TextBox kontrol&amp;uuml;ne girilen değeri almak i&amp;ccedil;in, ProductsGridHeaders numaralandırıcısının Name elemanının işaret ettiği integer değere sahip olan h&amp;uuml;credeki 1 numaralı kontrol&amp;uuml; ele alıyoruz. Daha sonra bu kontrol&amp;uuml; bir TextBox nesnesine d&amp;ouml;n&amp;uuml;şt&amp;uuml;rerek g&amp;uuml;ncel değerini ilgili kaydetme işlemini ger&amp;ccedil;ekleştirecek metodumuza taşıyoruz. Bu değer alma işlemini diğer kontrollerimiz i&amp;ccedil;inde yapıyoruz. Ancak &amp;ouml;nemli olan e parametresi &amp;uuml;zerinden dataGrid kontrol&amp;uuml;ndeki ilgili alanlara nasıl eriştiğimiz. Yani numaralandırıcımızı nasıl kullandığımız.&amp;nbsp;&amp;nbsp;&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void Kaydet(DataGridCommandEventArgs e)
+{ 
+    int productID=Convert.ToInt32(dgProducts.DataKeys[e.Item.ItemIndex]);
+    TextBox txtName=(TextBox)e.Item.Cells[(int)ProductsGridHeaders.NAME].Controls[1];
+    TextBox txtStandardCost=(TextBox)e.Item.Cells[(int)ProductsGridHeaders.STANDARDCOST].Controls[1];
+    TextBox txtListPrice=(TextBox)e.Item.Cells[(int)ProductsGridHeaders.LISTPRICE].Controls[1];
+    TextBox txtWeight=(TextBox)e.Item.Cells[(int)ProductsGridHeaders.WEIGHT].Controls[1];
+    DropDownList lstSubCategories=(DropDownList)e.Item.Cells[(int)ProductsGridHeaders.PRODUCTSUBCATEGORY].Controls[1];
+
+    string Name=txtName.Text;
+    double StandardCost=Convert.ToDouble(txtStandardCost.Text);
+    double ListPrice=Convert.ToDouble(txtListPrice.Text);
+    double Weight=Convert.ToDouble(txtWeight.Text);
+    int SCategoryID=Convert.ToInt16(lstSubCategories.SelectedValue);
+
+    yonetici.UpdateProducts(productID,Name,StandardCost,ListPrice,Weight,SCategoryID);
+}
+
+private void dgProducts_ItemCommand(object source, DataGridCommandEventArgs e)
+{
+    switch (e.CommandName)
+    {
+        case "Duzenle":
+            dgProducts.EditItemIndex=e.Item.ItemIndex;
+            dgProducts.DataSource=yonetici.SelectProducts();
+            dgProducts.DataBind();
+            break;
+
+        case "Guncelle":
+            Kaydet(e);
+            dgProducts.EditItemIndex=-1;
+            dgProducts.DataSource=yonetici.SelectProducts();
+            dgProducts.DataBind();
+            break;
+
+        case "Sil":
+            break;
+
+        case "Vazgec":
+            dgProducts.EditItemIndex=-1;
+            dgProducts.DataSource=yonetici.SelectProducts();
+            dgProducts.DataBind();
+            break;
+
+        default :
+            break; 
+    }
+}&lt;/pre&gt;
+&lt;p&gt;DbYoneticisi sınıfımızda g&amp;uuml;ncelleme işlemini ger&amp;ccedil;ekleştiren metodumuz ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public int UpdateProducts(int productID, string name, double standardCost, double listPrice, double weight, int subCategoryID)
+{
+    string sql=@"UPDATE Product SET Name=@Name,StandardCost=@StandardCost, ListPrice=@ListPrice,Weight=@Weight, ProductSubCategoryID=@SubCategoryID WHERE ProductID=@ProductID";
+    SqlCommand cmd=new SqlCommand(sql,con);
+    cmd.Parameters.Add("@Name",name);
+    cmd.Parameters.Add("@StandardCost",standardCost);
+    cmd.Parameters.Add("@ListPrice",listPrice);
+    cmd.Parameters.Add("@Weight",weight);
+    cmd.Parameters.Add("@SubCategoryID",subCategoryID);
+    cmd.Parameters.Add("@ProductID",productID);
+    con.Open();
+    int result=cmd.ExecuteNonQuery();
+    con.Close();
+    return result;
+}&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi enum sabitlerini kullanarak kod geliştirmek daha da kolaylaşmaktadır. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/makale/images/UsingEnumerators.rar"&gt;&amp;Ouml;rnek Kodlar İ&amp;ccedil;in Tıklayınız.&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2005-08-28 12:00:00</pubDate>
+  <slug>Numaralandırıcıları-Kullanmak-İçin-Bir-Sebep-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>c#</tag>
+    <tag>enum</tag>
+    <tag>enumerations</tag>
+    <tag>datarow</tag>
+  </tags>
+  <categories>
+    <category>C#</category>
+  </categories>
+</post>

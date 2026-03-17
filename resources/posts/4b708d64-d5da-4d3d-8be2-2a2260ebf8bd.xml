@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>DataAdapter Kavramı ve OleDbDataAdapter Sınıfına Giriş</title>
+  <description>Bu makalemizde, Ado.Net'in en çok kullanılan kavramlarından birisi olan DataAdapter kavramını incelemeye çalışacak ve OleDbDataAdapter sınıfına kısa bir giriş yapacağız. Pek çok programcı, veritabanı uygulamaları geliştirirken, kontrol ve performansa büyük önem verir. Ancak aynı zamanda bu kazanımlara kolay yollar ile ulaşmak isterler. Ado.Net modelinde, bağlantısız katman ile bağlantılı katman arasındaki iletişim ve veri alışverişinin, kontrol edilebilir, performanslı ve aynı zamanda kolay geliştirilir olmasında DataAdapter kavramının yeri yadırganamıyacak kadar fazladır. Temel tanım olarak, DataAdapter sınıfları, sahip oldukları veri sağlayıcılarının izin verdiği veri kaynakları ile, sistem belleği üzerinde yer alan bağlantısız katman nesneleri arasındaki veri alışverişinin kolay, güçlü ve verimli bir şekilde sağlanmasından sorumludurlar. Bu tanımdan yola çıkarak, DataAdapter sınıflarının, veri kaynağından verilerin alınıp, bağlantısız katman nesneleri olan DataSet ve DataTable nesnelerine doldurulmasından sorumlu olduğunu; ayrıca, bağlantısız katman nesnelerinin taşıdığı verilerdeki değişikliklerinde veri kaynağına yansıtılmasından sorumlu olduğunu söyleyebiliriz. İşte bu, DataAdapter sınıfının rolünü tam olarak açıklayan bir tanımlamadır.</description>
+  <content>&lt;p&gt;Değerli Okurlarım, Merhabalar.&lt;/p&gt;
+&lt;p&gt;Bu makalemizde, Ado.Net'in en &amp;ccedil;ok kullanılan kavramlarından birisi olan DataAdapter kavramını incelemeye &amp;ccedil;alışacak ve OleDbDataAdapter sınıfına kısa bir giriş yapacağız. Pek &amp;ccedil;ok programcı, veritabanı uygulamaları geliştirirken, kontrol ve performansa b&amp;uuml;y&amp;uuml;k &amp;ouml;nem verir. Ancak aynı zamanda bu kazanımlara kolay yollar ile ulaşmak isterler. Ado.Net modelinde, bağlantısız katman ile bağlantılı katman arasındaki iletişim ve veri alışverişinin, kontrol edilebilir, performanslı ve aynı zamanda kolay geliştirilir olmasında DataAdapter kavramının yeri yadırganamıyacak kadar fazladır. Temel tanım olarak, DataAdapter sınıfları, sahip oldukları veri sağlayıcılarının izin verdiği veri kaynakları ile, sistem belleği &amp;uuml;zerinde yer alan bağlantısız katman nesneleri arasındaki veri alışverişinin kolay, g&amp;uuml;&amp;ccedil;l&amp;uuml; ve verimli bir şekilde sağlanmasından sorumludurlar. Bu tanımdan yola &amp;ccedil;ıkarak, DataAdapter sınıflarının, veri kaynağından verilerin alınıp, bağlantısız katman nesneleri olan DataSet ve DataTable nesnelerine doldurulmasından sorumlu olduğunu; ayrıca, bağlantısız katman nesnelerinin taşıdığı verilerdeki değişikliklerinde veri kaynağına yansıtılmasından sorumlu olduğunu s&amp;ouml;yleyebiliriz. İşte bu, DataAdapter sınıfının rol&amp;uuml;n&amp;uuml; tam olarak a&amp;ccedil;ıklayan bir tanımlamadır.&lt;/p&gt;
+&lt;p&gt;Veritabanı uygulamalarında en &amp;ouml;nemli unsurların, verinin taşınması, izlenebilmesi, &amp;uuml;zerinde değişikliklerin yapılması ve tekrar veri kaynağına yansıtılması olduğunu s&amp;ouml;yleyebiliriz. DataAdapter sınıflarının bu unsurların ger&amp;ccedil;ekleştirilmesinde &amp;ccedil;ok &amp;ouml;nemli rol oynadıkları bir ger&amp;ccedil;ektir. Aşağıdaki şekil DataAdapter sınıflarının işleyişini daha iyi anlamamıza yardımcı olucaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk57_1.gif" alt="" width="451" height="326" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 1. DataAdapter Sınıfının Rol&amp;uuml;.&lt;/p&gt;
+&lt;p&gt;Ado.net modeli, .net Framework'&amp;uuml;n en son s&amp;uuml;r&amp;uuml;m&amp;uuml;nde, OleDb veri kaynakları i&amp;ccedil;in OleDbDataAdapter, Sql veri kaynakları i&amp;ccedil;in SqlDataAdapter, Oracle veri kaynakları i&amp;ccedil;in OracleDataAdapter ve Odbc veri kaynakları i&amp;ccedil;inde OdbcDataAdapter sınıflarına sahiptir. DataAdapter sınıflarının yapısı aşağıdaki gibidir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk57_2.gif" alt="" width="401" height="651" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 2. DataAdapter sınıflarının genel yapısı.&lt;/p&gt;
+&lt;p&gt;Şimdi dilerseniz bu &amp;uuml;yelerin hangi ama&amp;ccedil;lar i&amp;ccedil;in kullanıldığına kısaca değinelim. Her DataAdapter sınıfı mutlaka bir SelectCommand sorgusu i&amp;ccedil;ermek zorundadır. Nitekim, bir DataAdapter nesnesinin yaratılış amacı, veri kaynağından &amp;ccedil;ekilen verileri bağlantısız katmandaki ilgili nesnelere aktarmaktır. İşte bunun i&amp;ccedil;in, SelectCommand &amp;ouml;zelliği ge&amp;ccedil;erli bir sorguya sahip olmalıdır. Veri almak i&amp;ccedil;in kullanılan sorgu bir Command nesnesine işaret etmektedir. &amp;Ccedil;oğu zaman bir DataAdapter oluştururken bu sınıfın kurucusu i&amp;ccedil;inde, select sorgularını string olarak gireriz. Bu string aslında sonradan bir Command nesnesi haline gelerek, DataAdapter sınıfının SelectCommand &amp;ouml;zelliğine atanır.&lt;/p&gt;
+&lt;p&gt;Diğer yandan, verileri y&amp;uuml;kl&amp;uuml; olan bir DataSet i&amp;ccedil;erisinde yapılan değişikliklerin veri kaynağına tekrardan aktarılması i&amp;ccedil;in, yapılan değişikliğin &amp;ccedil;eşidine uygun komutların DataAdapter tarafından oluşturulması gerekmektedir. &amp;Ouml;rneğin, DataSet &amp;uuml;zerinde yeni satırlar girilmiş ise, bunlar InsertCommand &amp;ouml;zelliğinin sahip olduğu sql metni ile veri kaynağına aktarılır. Aynı şekilde, satır silme işlemleri i&amp;ccedil;in DeleteCommand &amp;ouml;zelliğindeki sql s&amp;ouml;z dizimi, g&amp;uuml;ncelleme işlemleri i&amp;ccedil;in ise UpdateCommand &amp;ouml;zelliğindeki sql ifadeleri kullanılır. Bu &amp;ouml;zelliklerin t&amp;uuml;m&amp;uuml;n&amp;uuml; elle oluşturabilieceğiniz gibi, Visual Studio.Net ortamında yada CommandBuilder sınıfını vasıtasıyla otomatik olarak oluşturulmasını sağlayabilirsiniz. Bu &amp;ouml;zellikleri sonraki makelelerimizde incelemeye &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;p&gt;TableMappings DataTableMappingCollection t&amp;uuml;r&amp;uuml;nden bir koleksiyondur. G&amp;ouml;revi ise olduk&amp;ccedil;a ilgin&amp;ccedil;tir. Bir DataAdapter nesnesi ile veri kaynağındaki bir tabloyu, DataSet' aktardığımızda, aktarma ve g&amp;uuml;ncelleme işlemleri sırasında alan isimlerinin her iki katmandada eşleştirilebilmesi i&amp;ccedil;in kullanılır. Nitekim, DataAdapter ile bir tabloyu elde ettiğimizde bu tablo, Table ismi ile işleme sokulur. &amp;Ccedil;&amp;uuml;nk&amp;uuml; OleDbDataAdapter tablonun ismi ile ilgilenmez. Fakat biz dilersek TableMappings koleksiyonuna bir DataTableMapping nesnesi ekleyerek tablo adının daha uygun bir isme işaret etmesini sağlayabiliriz. Aynı konu, s&amp;uuml;tun adları i&amp;ccedil;inde ge&amp;ccedil;erlidir. Bazen tablodaki s&amp;uuml;tun adları istediğimiz isimlerde olmayabilir. İşte bu durumda, DataTableMapping nesnesinin ColumnMappings koleksiyonu kullanılır. DataSet i&amp;ccedil;indeki her tablo DataColumnMapping t&amp;uuml;r&amp;uuml;nden nesneler i&amp;ccedil;eren bir ColumnMappings koleksiyonuna sahiptir. Bu nesnelerin her biri veri kaynağındaki tabloda yer alan s&amp;uuml;tun adlarının, DataSet i&amp;ccedil;indeki tabloda hangi isimlere karşılık geldiğinin belirlenmesinde kullanılır. Bu konu şu an i&amp;ccedil;in karşışık g&amp;ouml;r&amp;uuml;nm&amp;uuml;ş olabilir ancak ilerleyen &amp;ouml;rneklerimizde bu konuya tekrar değinecek, daha anlaşılır olması i&amp;ccedil;in &amp;ccedil;alışacağız.&lt;/p&gt;
+&lt;p&gt;DataAdapter sınıflarının genel &amp;ouml;zelliklerine değindikten sonra dilerseniz OleDbDataAdapter sınıfımızı incelemeye başlayalım. OleDbDataAdapter sınıfı System.Data.OleDb isim uzayı i&amp;ccedil;inde yer almaktadır. Bir OleDbDataAdapter nesnesi yaratmak i&amp;ccedil;in kullanabileceğimiz 4 adet aşırı y&amp;uuml;klenmiş yapıcı metod bulunmaktadır. Bunlar aşağıdaki tabloda belirtilmiştir.&lt;/p&gt;
+&lt;table id="AutoNumber6" style="border-collapse: collapse; width: 88%; height: 226px;" border="1" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td bgcolor="#cccccc" width="53%" height="36"&gt;&lt;strong&gt; Yapıcı Metod Prototipi&lt;/strong&gt;&lt;/td&gt;
+&lt;td bgcolor="#cccccc" width="47%" height="36"&gt;&lt;strong&gt; A&amp;ccedil;ıklaması&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="53%" height="32"&gt;public OleDbDataAdapter(string, string);&lt;/td&gt;
+&lt;td width="47%" height="32"&gt;Select sorgusunu ve bağlantı i&amp;ccedil;in gerekli s&amp;ouml;z dizimini metin şeklinde parametre olarak alır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="53%" height="48"&gt;public OleDbDataAdapter(string, OleDbConnection);&lt;/td&gt;
+&lt;td width="47%" height="48"&gt;Sorguyu metin bazında alırken, bağlantı i&amp;ccedil;in &amp;ouml;nceden oluşturulmuş bir OleDbConnection nesnesini parametre olarak alır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="53%" height="48"&gt;public OleDbDataAdapter(OleDbCommand);&lt;/td&gt;
+&lt;td width="47%" height="48"&gt;Select sorgusunu ve ge&amp;ccedil;erli bir bağlantıyı işaret eden bir OleDbCommand nesnesini parametre olarak alır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td width="53%" height="48"&gt;public OleDbDataAdapter();&lt;/td&gt;
+&lt;td width="47%" height="48"&gt;B&amp;ouml;yle oluşturulan bir OleDbDataAdapter'ı kullanabilmek i&amp;ccedil;in, ilgili &amp;ouml;zellikler ( SelectCommand gibi.) sonradan ayarlanır.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Tablo 1. OleDbDataAdapter sınıfının yapıcı metodları.&lt;/p&gt;
+&lt;p&gt;Şimdi burada &amp;ouml;nemli olan bir iki noktayı vurgulamamız gerekiyor. Herşeyden &amp;ouml;nce bir OleDbDataAdapter nesnesinin kullanılma amacı, bağlantısız katman nesnesini veri kaynağındaki veriler ile doldurmaktır. Bu her DataAdapter sınıfı i&amp;ccedil;inde &amp;ouml;ncelikli hedeftir. Bu nedenle her DataAdapter nesnesinin mutlaka sahip olması gereken bir select sorgu ifadesi dolayısıyla var olan bir SelectCommand &amp;ouml;zelliğine ihtiyacı vardır. Ayrıca diğer &amp;ouml;nemli gereklilik, ge&amp;ccedil;erli bir bağlantının yani bir Connection nesnesinin olmasıdır. Şimdi dilerseniz, &amp;ouml;rnekler ile OleDbDataAdapter nesnelerinin nasıl oluşturulduğunu ve verilerin, veri kaynağından bağlantısız katman nesnelerine nasıl &amp;ccedil;ekildiğini g&amp;ouml;relim.&lt;/p&gt;
+&lt;p&gt;İlk &amp;ouml;rneğimizde, bir windows uygulamasındaki DataGrid nesnemizi, bağlantısız katmanda &amp;ccedil;alışacak DataSet nesnemize bağlıyacağız. DataSet nesnemizi veriler ile doldurmak i&amp;ccedil;in, OleDbDataAdapter nesnemizi kullanacağız. İşte uygulamamızın kısa kodları.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void btnDoldur_Click(object sender, System.EventArgs e)
+{
+    OleDbConnection conFriends=new OleDbConnection("Provider=SQLOLEDB;Data Source=localhost;initial catalog=Friends;integrated security=SSPI");
+    string sqlIfadesi="Select * From Makale";
+    OleDbDataAdapter daFriends=new OleDbDataAdapter(sqlIfadesi,conFriends);
+    DataSet ds=new DataSet();
+    daFriends.Fill(ds);
+    dgMakale.DataSource=ds;
+}&lt;/pre&gt;
+&lt;p&gt;Kodlarımızı inceleyecek olursak; &amp;ouml;ncelikle OleDbDataAdapter nesnemiz i&amp;ccedil;in gerekli ve olmassa olmaz &amp;uuml;yeleri tanımladık. &amp;Ouml;ncelikle ge&amp;ccedil;erli bir bağlantı hattımızın olması gerekiyor. Bu ama&amp;ccedil;la bir OleDbConnection nesnesi kullanıyoruz. Diğer yandan, OleDbDataAdapter nesnesinin oluşturduğumuz DataSet nesnesini doldurabilmesi i&amp;ccedil;in, veri kaynağından veri &amp;ccedil;ekebileceği bir sql ifadesine ihtiyacımız var. Bu ama&amp;ccedil;lada bir sql c&amp;uuml;mleciğini string olarak oluşturuyoruz. Sonraki adımda ise OleDbDataAdapter nesnemizi yaratıyoruz. Burada kullanılan yapıcı metod, sql ifadesini string olarak alıyor ve birde bağlantı hattını temsil edicek olan OleDbConnection nesnesini parametre olarak alıyor. Daha sonra, veri kaynağından bu sql ifadesi ile &amp;ccedil;ekilecek verilerin bellekte tutulduğu b&amp;ouml;lgeyi referans edicek DataSet nesnemiz oluşturuluyor. Burada Fill metodu, sql ifadesini, ge&amp;ccedil;erli bağlantı hattı &amp;uuml;zerinde &amp;ccedil;alıştırıyor ve elde edilen veri k&amp;uuml;mesini, metod parametresi olarak aldığı DataSet nesnesinin bellekte g&amp;ouml;sterdiği adrese yerleştiriyor. Uyglamamızı &amp;ccedil;alıştırdığımızda aşağıdaki sonucu elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk57_3.gif" alt="" width="416" height="296" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 3. Fill Metodu ile DataSet'in doldurulması.&lt;/p&gt;
+&lt;p&gt;OleDbDataAdapter nesnesinin Fill metodunu &amp;ccedil;ağırdığımızda, nesne, parametre olarak aldığı bağlantıyı otomatik olarak a&amp;ccedil;maktadır. Yani Fill metodunu &amp;ccedil;ağırmadan &amp;ouml;nce bağlantı nesnemizi Open metodu ile a&amp;ccedil;mamıza gerek yoktur. Fill metodu ile DataSet nesnesi doldurulduktan sonra ise, OleDbDataAdapter, a&amp;ccedil;ık olan bağlantıyı otomatik olarak kapatacaktır. Bu kolaylık birden fazla tabloyu bir DataSet i&amp;ccedil;erisine farklı OleDbDataAdapter nesneleri ile alacağımız zaman dezavantajdır. Nitekim her bir OleDbDataAdapter nesnesi eğer aynı bağlantıyı kullanıyorlarsa, her defasında veri kaynağına olan bağlantıyı a&amp;ccedil;ıcak ve kapatıcaklardır. S&amp;ouml;z gelimi aşağıdaki kodları g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void btnDoldur_Click(object sender, System.EventArgs e)
+{
+    OleDbConnection conFriends=new OleDbConnection("Provider=SQLOLEDB;Data Source=localhost;initial catalog=Friends;integrated security=SSPI");
+
+    string sqlIfadesi1="Select * From Makale";
+    string sqlIfadesi2="Select * From Kitap";
+
+    OleDbDataAdapter daMakale=new OleDbDataAdapter(sqlIfadesi1,conFriends);
+    OleDbDataAdapter daKitap=new OleDbDataAdapter(sqlIfadesi2,conFriends);
+
+    DataSet ds=new DataSet();
+    daMakale.Fill(ds);
+    daKitap.Fill(ds);
+    dgMakale.DataSource=ds;
+}&lt;/pre&gt;
+&lt;p&gt;Bu uygulamada iki OleDbDataAdapter nesnesi aynı bağlantıyı kullanarak farklı veri tablolarını aynı DataSet i&amp;ccedil;erisine y&amp;uuml;klemiştir. Her bir Fill metodu &amp;ccedil;ağırıldığında bağlantı a&amp;ccedil;ılır, tablodan veriler, sql ifadeleri gereği alınır, DataSet nesnesinin referans ettiği bellek b&amp;ouml;lgesine y&amp;uuml;klenir ve a&amp;ccedil;ık olan bağlantı kapatılır. Bu durumda, uygulamamızdaki kodlarda bağlantının iki kere a&amp;ccedil;ılıp kapatıldığını s&amp;ouml;yleyebiliriz. Bu g&amp;ouml;zle g&amp;ouml;r&amp;uuml;l&amp;uuml;r bir performans kaybına yol a&amp;ccedil;mıyabilir ancak programlama tekniği a&amp;ccedil;ısından bağlantının bu kadar kısa s&amp;uuml;reler i&amp;ccedil;in tekrardan a&amp;ccedil;ılıp kapatılması sistem kaynaklarını boş yere kullanmak manasınada gelmektedir. Peki ne yapılabilir? OleDbDataAdapter sınıfının bir &amp;ouml;zelliği, eğer kullanılan bağlantı a&amp;ccedil;ık ise, OleDbDataAdapter bu bağlantıyı biz kapatana kadar kapatmayacak olmasıdır. Yani yukarıdaki kodu şu şekilde d&amp;uuml;zenlersek istediğimiz sonuca ulaşabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void btnDoldur_Click(object sender, System.EventArgs e)
+{
+    OleDbConnection conFriends=new OleDbConnection("Provider=SQLOLEDB;Data Source=localhost;initial catalog=Friends;integrated security=SSPI");
+
+    string sqlIfadesi1="Select * From Makale";
+    string sqlIfadesi2="Select * From Kitap";
+
+    OleDbDataAdapter daMakale=new OleDbDataAdapter(sqlIfadesi1,conFriends);
+    OleDbDataAdapter daKitap=new OleDbDataAdapter(sqlIfadesi2,conFriends);
+
+    DataSet ds=new DataSet();
+
+    conFriends.Open();
+
+    daMakale.Fill(ds);
+    daKitap.Fill(ds);
+
+    dgMakale.DataSource=ds;
+
+    conFriends.Close();
+}&lt;/pre&gt;
+&lt;p&gt;Bu durumda, Fill metodları bağlantı durumunu g&amp;ouml;zleyecek ve eğer bağlantı a&amp;ccedil;ık ise herhangibir m&amp;uuml;dahalede bulunmadan bu a&amp;ccedil;ık bağlantı &amp;uuml;zerinden işlemleri ger&amp;ccedil;ekleştirecektir. Fill metodu işi bittiğinde, kullandığı bu a&amp;ccedil;ık bağlantıyı kapatmayacaktır. Bu sayede ardından gelen ve aynı bağlantıyı kullanan OleDbDataAdapter nesnesi, yeni bir bağlantı a&amp;ccedil;maya gerek duymayacak, halen a&amp;ccedil;ık olan bağlantıyı kullanacaktır. Burada unutulmaması gereken nokta, bağlantı nesnemiz ile işimiz bittiğinde bu nesneyi Close metodu ile kapatmaktır. Şimdi gelelim Fill metodundaki başka bir noktaya. Yukarıdaki son &amp;ouml;rneğimizi &amp;ccedil;alıştırıcak olursak aşağıdaki g&amp;ouml;r&amp;uuml;nt&amp;uuml;y&amp;uuml; elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk57_4.gif" alt="" width="153" height="144" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 4. İki tabloda aynı isim altında y&amp;uuml;klenir.&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi iki tablomuzda DataSet'e tek bir tablo ismi altında y&amp;uuml;klenmiştir. Bu isme tıkladığımızda, ilk &amp;ouml;nce Makale verilerinin g&amp;ouml;r&amp;uuml;nd&amp;uuml;ğ&amp;uuml;n&amp;uuml; ardından Kitap tablosuna ait verilerin g&amp;ouml;r&amp;uuml;nd&amp;uuml;ğ&amp;uuml;n&amp;uuml; anlarız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk57_5.gif" alt="" width="608" height="299" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 5. Her iki tabloya ait verilerin g&amp;ouml;r&amp;uuml;n&amp;uuml;m&amp;uuml;.&lt;/p&gt;
+&lt;p&gt;Bu elbette istemediğimiz bir durumdur. Bunu d&amp;uuml;zeltmek i&amp;ccedil;in, Fill metodunun aşağıdaki prototipi verilen aşırı y&amp;uuml;klenmiş halini kullanırız.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public int Fill(DataSet dataSet,string srcTable);&lt;/pre&gt;
+&lt;p&gt;Burada ikinci parametre aktarılan tablo i&amp;ccedil;in bir ismi string olarak almaktadır. B&amp;ouml;ylece, DataSet i&amp;ccedil;erisine aktarılan tabloları isimlendirebiliriz. Nitekim OleDbDataAdapter sınıfı, Fill metodu ile tablolardaki verileri DataSet i&amp;ccedil;ine alırken, sadece alan adlarını eşleştirmek i&amp;ccedil;in alır. Tablo adları ile ilgilenmez. Bu nedenle bir tablo ismi belirtmessek, bu DataSet i&amp;ccedil;erisine Table ismi ile alınacaktır. Biz Fill metoduna bir tablo ismini parametre olarak verdiğimizde, DataAdapter sınıfının TableMappings koleksiyonu, DataSet i&amp;ccedil;inde bizim verdiğimiz tablo ismini, veri kaynağındaki ile eşleştirir. Dolayısıyla yukarıdaki kodları aşağıdaki gibi d&amp;uuml;zenlersek sonu&amp;ccedil; istediğimiz gibi olucaktır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void btnDoldur_Click(object sender, System.EventArgs e)
+{
+    OleDbConnection conFriends=new OleDbConnection("Provider=SQLOLEDB;Data Source=localhost;initial catalog=Friends;integrated security=SSPI");
+
+    string sqlIfadesi1="Select * From Makale";
+    string sqlIfadesi2="Select * From Kitap";
+
+    OleDbDataAdapter daMakale=new OleDbDataAdapter(sqlIfadesi1,conFriends);
+    OleDbDataAdapter daKitap=new OleDbDataAdapter(sqlIfadesi2,conFriends);
+
+    DataSet ds=new DataSet();
+
+    conFriends.Open();
+
+    daMakale.Fill(ds,"Makaleler");
+    daKitap.Fill(ds,"Kitaplar");
+
+    dgMakale.DataSource=ds;
+
+    conFriends.Close();
+}&lt;/pre&gt;
+&lt;p&gt;Uygulamamızı &amp;ccedil;alıştırdığımızda aşağıdaki sonucu alırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk57_6.gif" alt="" width="172" height="167" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 6. Fill metodunda Tablo isimlerinin verilmesi.&lt;/p&gt;
+&lt;p&gt;Bazı durumlarda, toplu sorgular (batch queries) &amp;ccedil;alıştırmak isteyebiliriz. &amp;Ouml;rneğin aşağıdaki kodları ele alalım. Burada,&amp;nbsp; 3 sorgunun yer aldığı bir toplu sorgu c&amp;uuml;mleciği yer almaktadır. OleDbDataAdapter nesnemiz i&amp;ccedil;in, bu sql c&amp;uuml;mleciğini kullanıdığımızda sonu&amp;ccedil; k&amp;uuml;melerinin Table, Table1 ve Table2 isimleri ile DataSet i&amp;ccedil;erisine alındığını g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void btnDoldur_Click(object sender, System.EventArgs e)
+{
+    OleDbConnection conFriends=new OleDbConnection("Provider=SQLOLEDB;Data Source=localhost;initial             catalog=Friends;integrated security=SSPI");
+    string sqlIfadesi="Select * From Makale;Select * From Kitap;Select * From Kisiler"; 
+    OleDbDataAdapter daMakale=new OleDbDataAdapter(sqlIfadesi,conFriends); 
+    DataSet ds=new DataSet();
+    daMakale.Fill(ds);
+    dgMakale.DataSource=ds;
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk57_7.gif" alt="" width="152" height="161" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 7. Toplu Sorguların &amp;Ccedil;alıştırılmasının Sonucu.&lt;/p&gt;
+&lt;p&gt;Bu elbette uygulamamızın g&amp;ouml;rselliği a&amp;ccedil;ısından &amp;ccedil;ok hoş bir durum değildir. Yapabileceğimiz işlem ise, OleDbDataAdapter nesnemizin TableMappings koleksiyonuna, tabloların g&amp;ouml;rmek istediğimiz asıl isimlerini eklemek olucaktır. Bu ama&amp;ccedil;la yazmış olduğumuz kodları aşağıdaki gibi değiştirmeliyiz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void btnDoldur_Click(object sender, System.EventArgs e)
+{
+    OleDbConnection conFriends=new OleDbConnection("Provider=SQLOLEDB;Data Source=localhost;initial catalog=Friends;integrated security=SSPI");
+    string sqlIfadesi="Select * From Makale;Select * From Kitap;Select * From Kisiler"; 
+    OleDbDataAdapter da=new OleDbDataAdapter(sqlIfadesi,conFriends); 
+
+    da.TableMappings.Add("Table","Makaleler");
+    da.TableMappings.Add("Table1","Kitaplar");
+    da.TableMappings.Add("Table2","Arkadaslarim");
+
+    DataSet ds=new DataSet();
+    da.Fill(ds);
+    dgMakale.DataSource=ds;
+}&lt;/pre&gt;
+&lt;p&gt;Burada yapılan işlemi a&amp;ccedil;ıklayalım. OleDbDataAdapter nesnemizin, TableMappings koleksiyonu, veri kaynağındaki tablo isimlerinin, uygulama i&amp;ccedil;erisindeki bağlantısız katman nesnesi i&amp;ccedil;erisinden nasıl isimlendirileceğini belirtmektedir. Dolayısıyla Fill metodunu &amp;ccedil;ağırdığımızda ilk sorgu sonucu elde edilen Table isimli tablo, Makaleler olarak, ikinci sorgu sonucu elde edilen sonu&amp;ccedil; k&amp;uuml;mesini temsil edilen Table1 tablosu, Kitaplar olarak ve sonundada Table2 ismiyle gelen son tablo Arkadaslarim olarak DataSet i&amp;ccedil;erisine alınacaktır. TableMappings burada, sadece isimlerin eşleştirilmesinde rol oynar. Aynı şekilde, OleDbDataAdapter nesnemize ait Update metodunu kullandığımızda, TableMappings koleksiyonunda bu tablo isimlerini birbirleri ile eşleştirilerek, doğru tabloların doğru kaynaklara y&amp;ouml;nlendirilmesi sağlanmış olur.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk57_8.gif" alt="" width="160" height="162" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 8. TableMappings Koleksiyonunun &amp;Ouml;nemi.&lt;/p&gt;
+&lt;p&gt;Şu ana kadarki &amp;ouml;rneklerimizde, bağlantısız katman nesnesi olarak DataSet'i kullandık. DataSet birden fazla veri tablosunu DataTable nesneleri olarak b&amp;uuml;nyesinde barındıran kuvvetli bir sınıftır. Ancak &amp;ccedil;oğu zaman uygulamalarımızda sadece tek tabloyu bağlantısız katmanda kullanmak isteyebiliriz. B&amp;ouml;yle bir durumda bu tek tablo verisi i&amp;ccedil;in, DataSet nesnesi kullanmak sistem kaynaklarını daha &amp;ccedil;ok harcamak anlamına gelir. Bunu &amp;ccedil;&amp;ouml;zmek i&amp;ccedil;in, veri kaynağından okunan verileri bir DataTable nesnesine aktarırız. İşte OleDbDataAdapter nesnesinin Fill metodu ile DataTable nesnelerinide doldurabiliriz. Bunun i&amp;ccedil;in aşağıdaki kodlarda belirtilen tekniği uygularız.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void btnDoldur_Click(object sender, System.EventArgs e)
+{
+    OleDbConnection conFriends=new OleDbConnection("Provider=SQLOLEDB;Data Source=localhost;initial catalog=Friends;integrated security=SSPI");
+    string sqlIfadesi="Select * From Makale"; 
+    OleDbDataAdapter da=new OleDbDataAdapter(sqlIfadesi,conFriends);
+    DataTable dt=new DataTable("Makalelerim");
+    da.Fill(dt);
+    dgMakale.DataSource=dt;
+    dgMakale.CaptionText=dt.TableName.ToString();
+}&lt;/pre&gt;
+&lt;p&gt;Burada DataTable nesnemizi oluştururken parametre olarak String bir değer girdiğimize dikkat edelim. Bu değer, verilerin alındığı k&amp;uuml;menin, hangi isimde bir tabloya işaret edeceğini belirtmektedir. Fill metodunun kullanım şeklinde ise parametre olarak DataTable nesnesini alan aşağıdaki prototip kullanılmıştır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public int Fill (DataTable dataTable);&lt;/pre&gt;
+&lt;p&gt;Son kodlarımızı &amp;ccedil;alıştırdığımızda aşağıdaki sonucu elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk57_9.gif" alt="" width="416" height="296" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 9. Fill metodu ile verilerin DataTable'a aktarılması.&lt;/p&gt;
+&lt;p&gt;Fill metodunda dikkati &amp;ccedil;eken bir diğer nokta, d&amp;ouml;nd&amp;uuml;rd&amp;uuml;ğ&amp;uuml; integer tipteki değerdir. Bu d&amp;ouml;n&amp;uuml;ş değeri, OleDbDataAdapter nesnesinin &amp;ccedil;alıştırdığı sorgu sonucu d&amp;ouml;nen satır sayısına işaret etmektedir. S&amp;ouml;z gelimi yukarıdaki &amp;ouml;rneğimizi ele alalım. OleDbDataAdapter nesnemizin d&amp;ouml;n&amp;uuml;ş değerini kontrol ettiğimizde, tablomuzdan okunan satır sayısının d&amp;ouml;nd&amp;uuml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml;n&amp;uuml; g&amp;ouml;rm&amp;uuml;ş oluruz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void btnDoldur_Click(object sender, System.EventArgs e)
+{
+    OleDbConnection conFriends=new OleDbConnection("Provider=SQLOLEDB;Data Source=localhost;initial catalog=Friends;integrated security=SSPI");
+    string sqlIfadesi="Select * From Makale"; 
+    OleDbDataAdapter da=new OleDbDataAdapter(sqlIfadesi,conFriends);
+    DataTable dt=new DataTable("Makalelerim");
+    int SatirSayisi=da.Fill(dt);
+    dgMakale.DataSource=dt;
+    dgMakale.CaptionText=dt.TableName.ToString();
+    MessageBox.Show("Makale Sayısı "+SatirSayisi.ToString());
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk57_10.gif" alt="" width="417" height="296" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 10. Fill metodundan d&amp;ouml;nen değer ile kayıt sayısının &amp;ouml;ğrenilmesi.&lt;/p&gt;
+&lt;p&gt;Fill metodunun aşağıda prototipi verilen aşırı y&amp;uuml;klenmiş halini kullanarak, belli bir satırdan itibaren belirli bir sayıda kaydın elde edilmesini sağlayabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public int Fill(DataSet, int, int, string);&lt;/pre&gt;
+&lt;p&gt;Burada Fill metodu d&amp;ouml;rt parametre almaktadır. İlk parametremiz verilerin ekleneceği DataSet nesnesi ve son parametrede eklenecek verilerin temsil edileceği tablo adıdır. İkinci ve &amp;uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; parametreler integer tipte değerler alırlar. İkinci parametre sorgu sonucu elde edilen kayıt k&amp;uuml;mesinin hangi satırından itibaren okuma yapılacağını, &amp;uuml;&amp;ccedil;&amp;uuml;nc&amp;uuml; parametre ise ka&amp;ccedil; satır alınacağını belirtmektedir. &amp;Ouml;rneğin Makale isimli tablomuzdaki verileri, tarih sırasına g&amp;ouml;re tersten &amp;ccedil;eken bir sql sorgumuz olduğunu d&amp;uuml;ş&amp;uuml;nelim. İlk 3 satırı elde edip DataSet i&amp;ccedil;indeki ayrı bir tabloya almak istediğimizi varsayalım. B&amp;ouml;ylece tabloya eklenen son 3 Makaleye ait bilgilere erişmiş olucağız. Bunun i&amp;ccedil;in aşağıdaki tekniği kullanacağız.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void btnDoldur_Click(object sender, System.EventArgs e)
+{
+    OleDbConnection conFriends=new OleDbConnection("Provider=SQLOLEDB;Data Source=localhost;initial catalog=Friends;integrated security=SSPI");
+    string sqlIfadesi="Select * From Makale Order By Tarih Desc"; 
+    OleDbDataAdapter da=new OleDbDataAdapter(sqlIfadesi,conFriends);
+    DataSet ds=new DataSet("Makaleler");
+    int SatirSayisi=da.Fill(ds,0,3,"Son3Makale");
+    dgMakale.DataSource=ds;
+}&lt;/pre&gt;
+&lt;p&gt;Burada Fill metodunda select sorgusu sonucu elde edilen k&amp;uuml;mede 0 indisli satırdan (yani ilk satır) itibaren 3 satır verinin okunmasını ve Son3Makale isimli tabloya aktarılmasını sağlıyoruz. İşte sonu&amp;ccedil;.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk57_11.gif" alt="" width="416" height="296" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 11. Fill metodu ile belli bir satırdan itibaren belli sayıda satır almak.&lt;/p&gt;
+&lt;p&gt;Fill metodu ile, veri kaynağındaki verileri bağlantısız katmana &amp;ccedil;ekerken saklı yordamları kullanmak isteyebiliriz. Bu ama&amp;ccedil;la, OleDbDataAdapter sınıfının SelectCommand &amp;ouml;zelliğine, bu saklı yordamı &amp;ccedil;alıştırmak i&amp;ccedil;in kullanılacak bir OleDbCommand nesnesini atamak kullanabileceğimiz tekniklerden birisidir.&amp;nbsp; OleDbCommand nesnesini yaratırken kullandığımız new yapılandırıcısına ait aşırı y&amp;uuml;klenmiş hallerden birisi aşağıdaki gibiydi.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public OleDbDataAdapter(OleDbCommand);&lt;/pre&gt;
+&lt;p&gt;Burada OleDbCommand nesnesini, saklı yordamımızı &amp;ccedil;alıştıracak şekilde oluştururuz. Aşağıdaki &amp;ouml;rnek saklı yordamımızı g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;CREATE PROCEDURE Makaleler
+AS
+Select * From Makale 
+RETURN&lt;/pre&gt;
+&lt;p&gt;Şimdi bu saklı yordamımızı &amp;ccedil;alıştıracak OleDbDataAdapter nesnemiz i&amp;ccedil;in gerekli kodlamaları yapalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void btnDoldur_Click(object sender, System.EventArgs e)
+{
+    OleDbConnection conFriends=new OleDbConnection("Provider=SQLOLEDB;Data Source=localhost;initial catalog=Friends;integrated security=SSPI");
+    OleDbCommand cmd=new OleDbCommand("Makaleler",conFriends);
+    cmd.CommandType=CommandType.StoredProcedure;
+    OleDbDataAdapter da=new OleDbDataAdapter(cmd);
+    DataSet ds=new DataSet();
+    da.Fill(ds,"TumMakaleler");
+    dgMakale.DataSource=ds;
+}&lt;/pre&gt;
+&lt;p&gt;Burada OleDbDataAdapter nesnemizi, OleDbCommand nesnemizi kullanacak şekilde oluşturduk. Dolayısıyla, OleDbDataAdapter, OleDbCommand nesnesinin belirttiği sql ifadesini, yine OleDbCommand nesnesinin kullandığı bağlantı &amp;uuml;zerinden &amp;ccedil;alıştırmaktadır. OleDbCommand nesnemiz bir saklı yordama işaret ettiği i&amp;ccedil;in, OleDbDataAdapter sonu&amp;ccedil; olarak bu saklı yordamı &amp;ccedil;alıştırmış olur. B&amp;ouml;ylece DataSet nesnemizin bellekte işaret ettiği b&amp;ouml;lge, saklı yordamın &amp;ccedil;alışması sonucu d&amp;ouml;nen veriler ile doldurulmuş olucaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk57_12.gif" alt="" width="416" height="296" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şekil 12. OleDbDataAdapter ile Saklı yordamın &amp;ccedil;alıştırılması.&lt;/p&gt;
+&lt;p&gt;Tabi bu ama&amp;ccedil;la illede bir OleDbCommand nesnemiz kullanmak şart değildir. Aynı işlem i&amp;ccedil;in aşağıdaki s&amp;ouml;z dizimini sql ifadesi olarak SelectCommand &amp;ouml;zelliği i&amp;ccedil;in belirleyebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;{Call Makaleler}&lt;/pre&gt;
+&lt;p&gt;Bu durumda kodlarımızı aşağıdaki gibi değiştirmemiz gerekmektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private void btnDoldur_Click(object sender, System.EventArgs e)
+{
+    OleDbConnection conFriends=new OleDbConnection("Provider=SQLOLEDB;Data Source=localhost;initial catalog=Friends;integrated security=SSPI");
+    OleDbDataAdapter da=new OleDbDataAdapter("{CALL Makaleler}",conFriends);
+    DataSet ds=new DataSet();
+    da.Fill(ds,"TumMakaleler");
+    dgMakale.DataSource=ds;
+}&lt;/pre&gt;
+&lt;p&gt;Burada dikkat edilmesi gereken bir nokta vardır. SqlDataAdapter nesneleri i&amp;ccedil;in bu &amp;ccedil;ağırım {EXEC Makaleler} şeklindedir. Buraya kadar anlattıklarımızla OleDbDataAdapter sınıfı ile ilgili olarak bayağı bir yol katettiğimizi d&amp;uuml;ş&amp;uuml;n&amp;uuml;yorum. Bir sonraki makalemizde, OleDbDataAdapter sınıfını incelemeye devam edeceğiz. &amp;Ouml;ncelikle OleDbDataAdapter nesnelerinin Visual Studio.Net ortamında kolayca nasıl oluşturulduklarını inceleyeceğiz. B&amp;ouml;ylece OleDbDataAdapter sınıfı i&amp;ccedil;in gereken SelectCommand, InsertCommand, DeleteCommand, UpdateCommand &amp;ouml;zelliklerinin nasıl otomatik olarak oluşturulduğunu anlayacağız. Daha sonra aynı iş i&amp;ccedil;in CommandBuilder sınıfının nasıl kullanıldığını inceleyeceğiz. Bir sonraki makelemizde g&amp;ouml;r&amp;uuml;şmek dileğiyle hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2004-02-27 08:00:00</pubDate>
+  <slug>DataAdapter-Kavramc4b1-ve-OleDbDataAdapter-Sc4b1nc4b1fc4b1na-Giris-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>adonet</tag>
+    <tag>oledb</tag>
+  </tags>
+  <categories>
+    <category>Ado.Net</category>
+  </categories>
+</post>

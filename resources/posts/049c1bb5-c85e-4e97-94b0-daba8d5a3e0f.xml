@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>C# Temelleri: 1!=1 Eşitsizliğinden GetHashCode' a Uzun İnce Bir Yol</title>
+  <description>Eminimki makale başlığı size oldukça ilginç gelmiştir. Matematiksel olarak mümkün olmayan bu durum .Net programlama ortamında acaba gerçekleştirilebilir mi? Elbetteki matematiksel olarak imkansız olan bu durumun programlama ortamımız içerisinde gerçekleşebilir olmasıda pek mantıklı değil. O halde makalemizin asıl konusundan bahsedelim ve durumu açıklığa kavuşturalım...</description>
+  <content>&lt;p&gt;Değerli Okurlarım Merhabalar,&lt;/p&gt;
+&lt;p&gt;Eminimki makale başlığı size olduk&amp;ccedil;a ilgin&amp;ccedil; gelmiştir. Matematiksel olarak m&amp;uuml;mk&amp;uuml;n olmayan bu durum .Net programlama ortamında acaba ger&amp;ccedil;ekleştirilebilir mi? Elbetteki matematiksel olarak imkansız olan bu durumun programlama ortamımız i&amp;ccedil;erisinde ger&amp;ccedil;ekleşebilir olmasıda pek mantıklı değil. O halde makalemizin asıl konusundan bahsedelim ve durumu a&amp;ccedil;ıklığa kavuşturalım.&lt;/p&gt;
+&lt;p&gt;Bu makalemizde .Net i&amp;ccedil;erisinde yer alan veri tiplerinin(data types) nasıl ve ne şekilde karşılaştırılabileceklerini incelemeye &amp;ccedil;alışacağız. Bir başka deyişle nesnelerin birbirleri arasındaki eşitliklerini mercek altına alacağız. .Net i&amp;ccedil;erisinde nesnelerin i&amp;ccedil;eriklerini karşılaştırmak adına pek &amp;ccedil;ok y&amp;ouml;ntem bulunmaktadır. Bu anlamda makalemizin &amp;ccedil;ekirdeğini Object sınıfının static &lt;strong&gt;ReferneceEquals, Equals &lt;/strong&gt;metodları ile sanal(virtual- yani ezilebilir) &lt;strong&gt;Equals&lt;/strong&gt; metodu oluşturmaktadır. Sonrasında bu metodlara Object sınıfının &lt;strong&gt;GetHashCode&lt;/strong&gt; metodunun ezilmesini de ekleyeceğiz. Nitekim bazı koşullar bizi GetHashCode' a doğru g&amp;ouml;t&amp;uuml;recektir.&lt;/p&gt;
+&lt;p&gt;Bildiğiniz gibi .Net i&amp;ccedil;erisinde iki temel veri t&amp;uuml;r&amp;uuml; yer almaktadır. Bunlar Referans t&amp;uuml;rleri (Reference Types) ve Değer t&amp;uuml;rleridir (Value Types). Referans ve Değer t&amp;uuml;rlerinin bellek &amp;uuml;zerindeki farklı tutuluş şekilleri, bunlara ait nesne &amp;ouml;rneklerininde farklı şekillerde karşılaştırılabileceği sonucunu doğurmaktadır. Dolayısıyla iki referans tipinin eşitliği veya iki değer tipinin eşitliği s&amp;ouml;z konusu olduğunda g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alınması gereken modeller vardır. .Net i&amp;ccedil;erisinde iki &amp;ccedil;eşit eşitlik teorisi vardır. Referans tabanlı ve değer tabanlı.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk177_1.gif" alt="" width="368" height="151" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Referans tabanlı eşitlik modelinde, nesnelerin birbirlerine eşit olması i&amp;ccedil;in, adreslerinin eşit olması yeterlidir. Bu &amp;ccedil;oğunlukla nesne kimliğinin (object identity) eşit olması olarakta belirtilir. Değer tabanlı eşitlik modelinde ise nesnelerin sadece kimlikleri değil, i&amp;ccedil;erikleride (contents) ele alınmaktadır. .Net i&amp;ccedil;erisinde yer alan tipler bu iki eşitlik modelinden birisini tercih etmektedir.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;rneğin string sınıfı referans tipi olmasına rağmen değer tabanlı eşitlik modelini (value semantics equality) tercih ederken, DataRowView sınıfı referans tabanlı eşitlik modelini (reference semantics equality) tercih etmektedir. Dolayısıyla iki string değişken birbiriyle karşılaştırılırken sadece nesne kimlikleri (object identity) değil, nesne i&amp;ccedil;erikleride (contents) değerlendirilmektedir. DataRowView sınıfına ait iki nesne &amp;ouml;rneğinde ise s&amp;ouml;z konusu olan bu nesnelerin bellekte g&amp;ouml;sterdikleri adreslerin eşit olup olmadığıdır. Bu iki farklı eşitlik modeli, kendi yazdığımız tipler i&amp;ccedil;inde bir takım &amp;ouml;n hazırlıkları gerektirebilir. &amp;Ouml;rneğin bazı durumlarda yazdığımız referans tipleri i&amp;ccedil;in değer tabanlı eşitlik modelini kullanmak isteyebiliriz. Yada bunun tam tersi bir durum s&amp;ouml;z konusu olabilir.&lt;/p&gt;
+&lt;table id="table109" border="1" width="100%" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;Yaygın Kurallar:&lt;/strong&gt;
+&lt;p&gt;1 - İki referans tipi değişken aynı veriyi işaret ediyorlarsa eşittirler.&lt;br /&gt; 2 - İki değer t&amp;uuml;r&amp;uuml; değişken aynı tipteyseler ve i&amp;ccedil;erikleri aynı ise eşittirler.&lt;br /&gt; &lt;br /&gt; &lt;em&gt;Bu yaygın kurallar elbetteki geliştirici tarafından bozulabilir.&lt;/em&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Object sınıfının bazı &amp;uuml;ye metodları ile yukarıda bahsettiğimiz eşitlik teorileri arasında sıkı bir ilişki vardır. Object sınıfı nesnelerin eşit olup olmadıklarını yukarıda bahsedilen modellere g&amp;ouml;re kontrol etmemizi sağlayan bir takım &amp;uuml;yeler i&amp;ccedil;erir. Bu &amp;uuml;yelerden static olan ReferenceEquals ve Equals metodlarının davranışları değiştirilemez. Ancak kendi tiplerimizin eşitlik modellerini değiştirebilmemiz i&amp;ccedil;in Object sınıfı sanal (virtual) Equals metodunu i&amp;ccedil;ermektedir. Şimdi kod yazarak eşitlik modellerini biraz daha detaylandırmaya &amp;ccedil;alışalım. Aşağıdaki &amp;ouml;rnek kod par&amp;ccedil;ası makale başlığımızı birazda aldatmaca ile ger&amp;ccedil;eklemektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;double deger_1 = 1;
+double deger_2 = 1;
+if (Object.ReferenceEquals(deger_1, deger_2))
+    Console.WriteLine("Eşitler");
+else
+    Console.WriteLine("Eşit değiller");&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk177_2.gif" alt="" width="436" height="95" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat ederseniz deger_1 ve deger_2 double tipinden iki farklı değişken olmalarına rağmen i&amp;ccedil;erikleri aynıdır. Bu işin şaka tarafı olmakla birlikte b&amp;ouml;yle bir sonu&amp;ccedil; alınması son derece doğaldır. Nitekim referans tabanlı eşitlik modelini kullanan ReferenceEquals metodunu kullanıyoruz. Ancak aynı kodu Equals metodu yardımıyla &amp;ccedil;alıştırırsak Eşitler sonucunu alacağımız kesindir ki buda i&amp;ccedil;imize su serpip 1==1 matematik sonucunu doğrulamaktadır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;double deger_1 = 1;
+double deger_2 = 1;
+if (Object.Equals(deger_1, deger_2))
+    Console.WriteLine("Eşitler");
+else
+    Console.WriteLine("Eşit değiller");&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk177_3.gif" alt="" width="448" height="95" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Equals metodunun bu sonucu vermesinin en b&amp;uuml;y&amp;uuml;k nedeni i&amp;ccedil;eride yaptığı karşılaştırma işlemleridir. Equals metodu ilk olarak parametre olarak aldığı nesne &amp;ouml;rneklerinden herhangibirinin null olup olmadığına bakar. B&amp;ouml;yle bir durum varsa zaten eşitlikten s&amp;ouml;z edilemez.&amp;nbsp; &lt;em&gt;(Tabiki her iki &amp;ouml;rnekte null i&amp;ccedil;eriğine sahipse bu durumda nesne &amp;ouml;rneklerinin eşit olduğu kabul edilir.)&lt;/em&gt; Sonrasında ise == operat&amp;ouml;r&amp;uuml; ile bu nesne &amp;ouml;rneklerinin kimliklerinin bir başka deyişle bellekte işaret ettikleri veri adreslerinin aynı olup olmadığına bakar. Buda ge&amp;ccedil;erli değilse son olarak gelen nesne &amp;ouml;rneklerinden ilkinin ezilmiş olan Equals metodunu kullanarak i&amp;ccedil;erik(content) kontrol&amp;uuml; yapar. İ&amp;ccedil;erik aynı ise gelen nesne &amp;ouml;rnekleri eşittir.&lt;/p&gt;
+&lt;table id="table114" border="1" width="100%" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;Object sınıfının static ReferenceEquals metodu &lt;strong&gt;aynı i&amp;ccedil;eriğe sahip&lt;/strong&gt; farklı değer t&amp;uuml;r&amp;uuml; değişkenleri i&amp;ccedil;in her zaman false d&amp;ouml;nd&amp;uuml;recektir. &lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Bu teoriyi yukarıdaki double tipi kısmen karşılamaktadır. Peki kendi değer t&amp;uuml;rlerimiz s&amp;ouml;z konusu olduğunda da ReferenceEquals aynı davranışımı sergileyecektir? Hatta, Object sınıfının static Equals metodu nasıl bir davranış sergileyecektir? Aşağıdaki kod par&amp;ccedil;asında bu durum irdelenmeye &amp;ccedil;alışılmaktadır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public struct Personel
+{
+    private double m_Maas;
+    private int m_TcNo;
+    private string m_Ad;
+
+    public Personel(int tcNo, string ad, double maas)
+    {
+        m_TcNo = tcNo;
+        m_Ad = ad;
+        m_Maas = maas;
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Personel prs1 = new Personel(1900, "Burak", 20);
+        Personel prs2 = new Personel(1900, "Burak", 20);
+        
+        Console.Write("Reference Equals ile ");
+        if (Object.ReferenceEquals(prs1, prs2))
+            Console.WriteLine(" Eşitler");
+        else
+            Console.WriteLine(" Eşit değiller");
+
+        Console.Write("Equals ile ");
+        if (Object.Equals(prs1, prs2))
+            Console.WriteLine(" Eşitler");
+        else
+            Console.WriteLine(" Eşit değiller");
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk177_4.gif" alt="" width="460" height="95" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; gibi ReferenceEquals metodu kendi değer tiplerimiz i&amp;ccedil;inde aynı davranışı sergilemektedir. &amp;Ouml;rneğimizde geliştirdiğimiz Personel yapısına ait nesne &amp;ouml;rnekleri aynı i&amp;ccedil;eriğe sahip olmalarına rağmen bellek &amp;uuml;zerinde farklı adreslerde yer almaktadırlar ve bu nedenle nesne kimlikleri aynı değildir. Dolayısıyla ReferenceEquals metodunun tam olarak referans tabanlı eşitlik modelini benimsediğini ve ezilebilir bir versiyonu olmadığı i&amp;ccedil;in bu davranışının değiştirilemeyeceğini d&amp;uuml;ş&amp;uuml;nebiliriz. Tam tersine Equals metodu, ilgili yapı değişkenlerinin i&amp;ccedil;eriklerini kıyaslamış ve aynı olduklarına kanaat getirerek geriye true değer d&amp;ouml;nd&amp;uuml;rm&amp;uuml;şt&amp;uuml;r.&lt;/p&gt;
+&lt;p&gt;Peki referans t&amp;uuml;rlerinde durum nedir? &amp;Ouml;rneğin aynı i&amp;ccedil;eriğe sahip iki string' i yada kendi yazdığımız iki sınıfa ait nesne &amp;ouml;rneklerinden aynı i&amp;ccedil;eriğe sahip olanların eşitliklerini ReferenceEquals ile ve Equals metodu ile test ettiğimizde sonu&amp;ccedil;lar ne olacaktır? Aşağıdaki kod par&amp;ccedil;aları bu durumu analiz etmektedir. İlk olarak kendi yazdığımız Urun isimli bir sınıf i&amp;ccedil;in ReferenceEquals ve Equals davranışlarına bakalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public class Urun
+{
+    private int m_Id;
+    private string m_Ad;
+    private double m_Fiyat;
+
+    public Urun(int id, string ad, double fiyat)
+    {
+        m_Id = id;
+        m_Ad = ad;
+        m_Fiyat = fiyat;
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Urun urn1 = new Urun(1000, "Balata", 10);
+        Urun urn2 = new Urun(1000, "Balata", 10);
+
+        Console.Write("Reference Equals ile");
+        if (Object.ReferenceEquals(urn1, urn2))
+            Console.WriteLine(" Eşitler");
+        else
+            Console.WriteLine(" Eşit değiller");
+
+        Console.Write("Equals ile ");
+        if (Object.Equals(urn1, urn2))
+            Console.WriteLine(" Eşitler");
+        else
+            Console.WriteLine(" Eşit değiller");
+    }
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk177_5.gif" alt="" width="472" height="111" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Yukarıdaki kod par&amp;ccedil;asında kendi yazdığımız Urun isimli referans tipine ait iki ayrı &amp;ouml;rnek yer almaktadır. Lakin bu iki &amp;ouml;rneğin i&amp;ccedil;erikleri aynıdır. Ancak adresler farklı olduğu i&amp;ccedil;in ReferenceEquals metodu karşılaştırmasının sonucu false olarak d&amp;ouml;nmektedir ki b&amp;ouml;yle olması doğaldır. Diğer taraftan Object sınıfının static Equals metodu nesne i&amp;ccedil;erikleri aynı olmasına rağmen yine false cevabını vermektedir. Oysaki Personel yapısını kullandığımız &amp;ouml;rnekte sonu&amp;ccedil; eşit oldukları y&amp;ouml;n&amp;uuml;ndedir.&lt;/p&gt;
+&lt;p&gt;B&amp;ouml;yle bir sonu&amp;ccedil; almamızın en b&amp;uuml;y&amp;uuml;k nedeni kendi yazdığımız Urun sınıfı i&amp;ccedil;in Equals metodu yazmamış oluşumuzdur. Bir başka deyişle static Equals metodunun kendi i&amp;ccedil;erisindeki son kontrol sırasında yaptığı işi &amp;uuml;stlenecek ezilmiş (override) bir Equals metodu,&amp;nbsp; Urun sınıfı i&amp;ccedil;erisinde yer almamaktadır. &amp;Ouml;yleyse sonucun bu şekilde olması son derece doğaldır. Dolayısıyla kendi sınıflarımız i&amp;ccedil;in Object sınıfının sanal Equals metodunu ezmezsek, Object sınıfının Static olan Equals metodu s&amp;ouml;z konusu tip i&amp;ccedil;in i&amp;ccedil;erik kontrol&amp;uuml;de ger&amp;ccedil;ekleştiremeyecektir.&amp;nbsp; Bir başka deyişle Object sınıfının static Equals metodu referans tipli eşitlik modelini ger&amp;ccedil;eklemiştir. Bunu test etmek i&amp;ccedil;in makalemizin ilerleyen kısımlarında Urun sınıfı i&amp;ccedil;erisinde Equals metodunu ezeceğiz.&lt;/p&gt;
+&lt;p&gt;Elbette g&amp;ouml;zden ka&amp;ccedil;ırılmaması gereken bir durum vardır. Urun sınıfına ait nesne &amp;ouml;rneklerinden urn1 ve urn2' yi birbirlerine atadıktan sonra Equals ve ReferenceEquals metodlarını test edersek aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ndeki sonucu alırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk177_7.gif" alt="" width="412" height="95" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat ederseniz her iki metodda true değerini d&amp;ouml;nd&amp;uuml;rmektedir. Bu son derece doğaldır nitekim atama sonrası referans tiplerinin aynı adresi işaret etmeleri sağlanmıştır. Aynı adresler işaret edildiği i&amp;ccedil;in, i&amp;ccedil;eriklerde aynı kabul edilecektir. Buda metodların true değer d&amp;ouml;nd&amp;uuml;rmesini a&amp;ccedil;ıklamaktadır. &lt;em&gt;( Atama sonrası oluşan durumu değer t&amp;uuml;rleri i&amp;ccedil;in d&amp;uuml;ş&amp;uuml;nd&amp;uuml;ğ&amp;uuml;m&amp;uuml;zde ise; Personel yapımızı kullandığımız &amp;ouml;rnekte, prs1 nesne &amp;ouml;rneğini prs2 nesne &amp;ouml;rneğine atadığımız takdirde ReferenceEquals metodu false değer, Equals metodu ise true değer d&amp;ouml;nd&amp;uuml;recektir. )&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Gelelim .Net i&amp;ccedil;erisinde yer alan &amp;ouml;nceden tanımlı referans tiplerinden birisi olan string sınıfına. Aşağıdaki kod par&amp;ccedil;ası string sınıfı i&amp;ccedil;in ge&amp;ccedil;erli durumu analiz etmektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;string str1 = "Burak Selim Şenyurt";
+string str2 = "Burak Selim Şenyurt";
+
+Console.Write("Reference Equals ile");
+if (Object.ReferenceEquals(str1, str2))
+    Console.WriteLine(" Eşitler");
+else
+    Console.WriteLine(" Eşit değiller");
+
+Console.Write("Equals ile");
+if (Object.Equals(str1, str2))
+    Console.WriteLine(" Eşitler");
+else
+    Console.WriteLine(" Eşit değiller");&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk177_6.gif" alt="" width="436" height="111" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Dikkat ederseniz string tipinden değişkenler s&amp;ouml;z konusu olduğunda ReferenceEquals metoduda, Equals metoduda true değerini d&amp;ouml;nd&amp;uuml;rmektedir. Hatta ilgin&amp;ccedil; olan nokta str1 ve str2 değişkenlerinin birbirlerine atanmamış dolayısıyla referansları eşitlenmemiş olmalarına rağmen static ReferenceEquals metodu true değeri d&amp;ouml;nd&amp;uuml;rm&amp;uuml;şt&amp;uuml;r. Oysaki bizim yazdığımız Urun referans tipi i&amp;ccedil;in her ikiside false olarak d&amp;ouml;nmektedir. String değişkenlerimiz i&amp;ccedil;in Equals metodunun true değer d&amp;ouml;nd&amp;uuml;rmesinin en b&amp;uuml;y&amp;uuml;k nedenlerinden birisi String sınıfının kendi i&amp;ccedil;erisinde Equals metodunu yazmış olması ve kullanmasıdır. Bu &amp;ouml;rneklerden şu sonuca varabiliriz.&lt;/p&gt;
+&lt;table id="table115" border="1" width="100%" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;Kendi sınıflarımızı yazdığımız takdirde i&amp;ccedil;eriklere g&amp;ouml;re eşitlikleri kontrol etmek istiyorsak (yani değer tabanlı eşitlik modelini uygulamak istiyorsak) Object sınıfının sanal olan Equals metodunu ezmemiz (override) gerekecektir.&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Gelin, kendi yazdığımız Urun sınıfı i&amp;ccedil;erisinde Equals metodunu ezelim ve Object sınıfının static Equals metodunun nasıl bir davranış sergileyeceğine bakalım. Bu ama&amp;ccedil;la, Urun sınıfımız i&amp;ccedil;erisinde Equals metodunu aşağıdaki gibi ezelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public override bool Equals(object obj)
+{
+    Urun urn = (Urun)obj;
+    if ((urn.m_Id == this.m_Id) &amp;amp;&amp;amp; (urn.m_Ad == this.m_Ad) &amp;amp;&amp;amp; (urn.m_Fiyat == this.m_Fiyat))
+        return true;
+    else
+        return false;
+}&lt;/pre&gt;
+&lt;p&gt;Equals metodu dikkat ederseniz object tipinden bir parametre almaktadır. Bu parametreyi metod i&amp;ccedil;erisinde Urun tipine &amp;ccedil;eviriyoruz. Sınıf i&amp;ccedil;erisindeki alan değerleri ile gelen referansın değerlerini karşılaştırıyoruz. Eğet t&amp;uuml;m değerleri birbirlerine eşitlerse geriye true değerini d&amp;ouml;nd&amp;uuml;rerek referansların eşit olduğuna karar veriyoruz. Ezmiş olduğumuz Equals metodu sonrasında kodu yeniden &amp;ccedil;alıştırırsak artık Object sınıfının Equals metodunun true değer d&amp;ouml;nd&amp;uuml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml; g&amp;ouml;r&amp;uuml;r&amp;uuml;z.&lt;/p&gt;
+&lt;p&gt;Object sınıfı i&amp;ccedil;erisinde yer alan sanal(virtual) Equals metodunun ezilmesiyle artık Urun sınıfına ait nesne &amp;ouml;rneği &amp;uuml;zerindende de Equals metodunu &amp;ccedil;ağırabiliriz. .Net i&amp;ccedil;erisinde yer alan pek &amp;ccedil;ok tip kendi i&amp;ccedil;erisinde Object sınıfından gelen Equals metodunu ezmiş ve kendine g&amp;ouml;re d&amp;uuml;zenlemiştir. Var olan t&amp;uuml;m framework nesnelerinin Object sınıfından t&amp;uuml;rediği d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml; takdirde, kendi tiplerimiz &amp;uuml;zerinden yada var olan tipler &amp;uuml;zerinden Equals metodu &amp;ccedil;ağırılabilir. &amp;Ouml;rneğin bir double tipi &amp;uuml;zerinden Equals metodunu &amp;ccedil;ağırılabileceğimiz gibi kendi yazdığımız bir sınıf &amp;uuml;zerinden de (eğer Equals metodunu ezdiysek) &amp;ccedil;ağırabiliriz. Bu durumu analiz etmek i&amp;ccedil;in console uygulamamızda aşağıdaki kod par&amp;ccedil;asını deneyebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;if (urn1.Equals(urn2))
+    Console.WriteLine(" Eşitler");
+else
+    Console.WriteLine(" Eşit değiller");&lt;/pre&gt;
+&lt;p&gt;Urun sınıfımız i&amp;ccedil;erisinde Equals metodunu override ettiğimiz i&amp;ccedil;in true değeri d&amp;ouml;necektir ve ekrana Eşitler yazacaktır. Ancak Equals metodunu kendi sınıfımız i&amp;ccedil;erisinde ezmemiş olsaydık, metod &amp;ccedil;ağrısı sonucu false değer d&amp;ouml;necek ve ekrana eşit değiller yazacaktı. Tam bu nokta Equals metodunu kendi tipimiz i&amp;ccedil;in ezdiğimizde derleme zamanında bir uyarı aldığımızı g&amp;ouml;r&amp;uuml;r&amp;uuml;r&amp;uuml;z. Uyarıda, sınıfımızın Object' ten gelen GetHashCode metodunu ezmesi(override) &amp;ouml;nerilmektedir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk177_9.gif" alt="" width="589" height="401" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Peki bu uyarı ni&amp;ccedil;in verilmektedir? Neden Object sınıfının GetHashCode metodunun ezilmediğine dair bir uyarı alıyoruz? Bunu anlayabilmek i&amp;ccedil;in &amp;ouml;ncelikli olarak Object sınıfının GetHashCode metodunun g&amp;ouml;revinden bahsetmemiz gerekmektedir. GetHashCode metodu geriye hash algoritmasına g&amp;ouml;re &amp;uuml;retilmiş sayısal bir değer d&amp;ouml;nd&amp;uuml;r&amp;uuml;r. Bu sayısal değer aslında Hashtable ve Dictionary&amp;lt;&amp;gt; gibi koleksiyonlarda &amp;ouml;nemli bir yere sahiptir.&lt;/p&gt;
+&lt;table id="table122" border="1" width="100%" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;em&gt;Hashtable ve Dictionary&amp;lt;&amp;gt; gibi koleksiyonlar kendi i&amp;ccedil;lerinde tuttukları satırları hash değerlerine g&amp;ouml;re sıralamaktadırlar. Hash algoritmasının g&amp;uuml;c&amp;uuml; sayesinde bu koleksiyonlar diğerlerine g&amp;ouml;re daha hızlı &amp;ccedil;alışabilmektedir.&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Dilerseniz ilk olarak GetHashCode metodu tarafından &amp;uuml;retilen hash değerlerini mercek altına almaya &amp;ccedil;alışalım. Aşağıdaki kod par&amp;ccedil;asında i&amp;ccedil;erikleri aynı olan tipler i&amp;ccedil;in hash değerleri &amp;ccedil;ekilmektedir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;string str1 = "Burak Selim Şenyurt";
+string str2 = "Burak Selim Şenyurt";
+Console.WriteLine("...String tipi i&amp;ccedil;in Hashcode...\n");
+Console.WriteLine("str1 i&amp;ccedil;in Hash Değeri : {0} ",str1.GetHashCode().ToString());
+Console.WriteLine("str2 i&amp;ccedil;in Hash Değeri : {0} \n", str2.GetHashCode().ToString());
+
+Urun urn1 = new Urun(1000, "Balata", 10);
+Urun urn2 = new Urun(1000, "Balata", 10);
+Console.WriteLine("...Urun Sınıfı(Class) i&amp;ccedil;in Hashcode...\n"); 
+Console.WriteLine("urn1 i&amp;ccedil;in Hash Değeri : {0} ", urn1.GetHashCode().ToString());
+Console.WriteLine("urn2 i&amp;ccedil;in Hash Değeri : {0} \n", urn2.GetHashCode().ToString());
+
+Personel prs1 = new Personel(1900, "Burak", 20);
+Personel prs2 = new Personel(1900, "Burak", 20);
+Console.WriteLine("...Personel Yapısı(Struct) i&amp;ccedil;in Hashcode...\n");
+Console.WriteLine("prs1 i&amp;ccedil;in Hash Değeri : {0} ", prs1.GetHashCode().ToString());
+Console.WriteLine("prs2 i&amp;ccedil;in Hash Değeri : {0} \n", prs2.GetHashCode().ToString());&lt;/pre&gt;
+&lt;p&gt;Kodu &amp;ccedil;alıştırdığımızda aşağıdaki sonucu alırız.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk177_10.gif" alt="" width="544" height="319" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ndende dikkat edeceğiniz &amp;uuml;zere, string, ve Personel Yapısı nesne &amp;ouml;rnekleri i&amp;ccedil;in &amp;uuml;retilen hash değerleri aynıdır. İlgin&amp;ccedil; olan Urun sınıfına ait nesne &amp;ouml;rneklerinin i&amp;ccedil;erikleri aynı olmasına rağmen &amp;uuml;retilen hash değerlerinin farklı oluşudur. Oysaki iki nesne &amp;ouml;rneği eğer değer tipi modeline g&amp;ouml;re eşit iseler aynı hash değerlerinden bahsediyor olmamız gerekmektedir.&lt;/p&gt;
+&lt;table id="table126" border="1" width="100%" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;
+&lt;p align="left"&gt;&lt;em&gt;İki nesnenin i&amp;ccedil;eriği değer tipi modeli gereğince eşitse, aynı hash değerlerinin &amp;uuml;retiliyor olması gerekmektedir. Buda &amp;ouml;zellikle değer tipinden eşitlik modelini uygulayan tipler i&amp;ccedil;in GetHashCode metodunun ezilmesini gerektirir.&lt;/em&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;Nitekim String referans t&amp;uuml;r&amp;uuml; bu teoriyi doğrulamaktadır. &amp;Ouml;yleki string tipi kendi i&amp;ccedil;eriğinde değer tipli eşitlik modelini kullanmaktadır. Dolayısıyla yukarıdaki &amp;ouml;rnekte yer alan str1 ve str2 değişkenlerinin aynı hash kodlarını &amp;uuml;retmesi beklediğimiz bir durumdur. Şimdilik, kendi yazmış olduğumuz sınıflardaki bu durumu incelemeden &amp;ouml;nce yapılarda(structs) farklı i&amp;ccedil;erikler olması halinde farklı hash değerleri alıp alamayacağımızı kontrol etmemizde fayda var.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;string str1 = "Burak Selim Şenyurt";
+string str2 = "Burak S. Şenyurt";
+// Diğer kodlar
+
+Personel prs1 = new Personel(1900, "Burak", 20);
+Personel prs2 = new Personel(2000, "Burak", 20);
+// Diğer kodlar&lt;/pre&gt;
+&lt;p&gt;Yukarıdaki kod par&amp;ccedil;asını console uygulamamızda &amp;ccedil;alıştırırsak aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan sonu&amp;ccedil;ları elde ederiz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk177_11.gif" alt="" width="556" height="223" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Eminimki değişiklik dikkatinizi &amp;ccedil;ekmiştir. String değişkenlerde yapılan değişiklik sonucu &amp;uuml;retilen hash değerleri farklıdır. Ancak yazmış olduğumuz Personel Yapısı i&amp;ccedil;in i&amp;ccedil;erikte değişiklik (m_TcNo alanı değiştirilmiştir) yapmış olsakta durum değişmemiştir. Hash değerleri aynı olarak &amp;uuml;retilmiştir. Oysaki normal şartlarda bir Personelin TC Kimlik Numarasının benzersiz olacağı kesindir. Buna g&amp;ouml;re hash algoritmasının uygun şekilde davranış g&amp;ouml;stermesi gerekmez mi? Aslında bizi yanıltan nokta Personel yapısı i&amp;ccedil;erisinde yer alan alanların sıralamasıdır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;private double m_Maas;
+private int m_TcNo;
+private string m_Ad;&lt;/pre&gt;
+&lt;p&gt;Dikkat ederseniz ilk alan m_Maas alanıdır. Oysaki &amp;ouml;rnek kodumuzda sadece m_TcNo alanının değerini değiştirdik. Peki diğer alanların aynı kalması şartıyla m_Maas alanını değiştirirsek ne olur? &amp;Ouml;rneğin prs2 nesnesi i&amp;ccedil;in bu değeri 21 yapalım, prs1 i&amp;ccedil;in ise 20 olarak bırakalım.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;Personel prs1 = new Personel(1900, "Burak", 20);
+Personel prs2 = new Personel(1900, "Burak", 21);&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk177_12.gif" alt="" width="499" height="112" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi farklı bir hash değeri elde ettik. Buna g&amp;ouml;re &amp;ouml;zellikle kendi değer t&amp;uuml;rlerimiz i&amp;ccedil;in şu sonuca varabiliriz.&lt;/p&gt;
+&lt;table id="table123" border="1" width="100%" cellspacing="0" cellpadding="5"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td valign="top" width="53"&gt;&lt;img src="/makale/images/dikkat.gif" alt="" width="53" height="53" border="0" /&gt;&lt;/td&gt;
+&lt;td&gt;
+&lt;p align="left"&gt;&lt;em&gt;GetHashCode metodu kendi değer t&amp;uuml;rlerimiz i&amp;ccedil;in bir hash değeri &amp;uuml;retirken varsayılan olarak sadece yapı i&amp;ccedil;erisindeki ilk alanın değerini g&amp;ouml;z &amp;ouml;n&amp;uuml;ne alır.&lt;/em&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;br /&gt;İlk alanın değil ama yapı i&amp;ccedil;erisindeki benzersiz alanlardan birisinin kesin olarak Hash &amp;uuml;retiminde kullanılmasını sağlamak i&amp;ccedil;in GetHashCode metodu ezilebilir. &amp;Ouml;rneğimizde Tc Kimlik Numarasının benzersiz olduğu d&amp;uuml;ş&amp;uuml;nelecek olursa GetHashCode metodu ezilip i&amp;ccedil;eride m_TcNo alanı &amp;uuml;zerinden bir Hash değeri &amp;uuml;rettirilebilir. Bu durumda yapımız i&amp;ccedil;erisinde GetHashCode metodunu aşağıdaki şekilde ezme yoluna gidebiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public override int GetHashCode()
+{
+    return m_TcNo.GetHashCode();
+}&lt;/pre&gt;
+&lt;p&gt;Uygulamayı bu haliyle &amp;ccedil;alıştıracak olursak eğer prs1 ve prs2 yapı &amp;ouml;rnekleri i&amp;ccedil;in geriye d&amp;ouml;nen hash değerlerinin 1900 olacağını g&amp;ouml;r&amp;uuml;r&amp;uuml;z. Oysaki prs1 nesnesinin maaş alanlarının değerleri halen daha farklıdır. Yani bu iki nesne &amp;ouml;rneği şu an i&amp;ccedil;in eşit değiller. Başka bir deyişle aynı i&amp;ccedil;eriğe sahip değiller. Kurala g&amp;ouml;reyse, iki nesne &amp;ouml;rneği aynı i&amp;ccedil;eriğe sahip iseler aynı hash değerlerinin &amp;uuml;retilmesi gerekmektedir. Bu nedenle daha etkili bir yol olması a&amp;ccedil;ısından bu yapı i&amp;ccedil;erisindeki t&amp;uuml;m &amp;uuml;yelerin string i&amp;ccedil;eriklerini d&amp;ouml;nd&amp;uuml;recek bir i&amp;ccedil;eriğin &amp;uuml;zerinden Hash kod &amp;uuml;retimine gidebiliriz. Aşağıdaki kod par&amp;ccedil;asında bu işlem ele alınmaya &amp;ccedil;alışılmıştır.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public override string ToString()
+{ 
+    return m_TcNo.ToString() + " " + m_Ad.ToString() + " " + m_Maas.ToString();
+}
+public override int GetHashCode()
+{
+    return this.ToString().GetHashCode();
+}&lt;/pre&gt;
+&lt;p&gt;String metodu i&amp;ccedil;erisinde yer alan kod ile, Personel yapısındaki t&amp;uuml;m alanlar işin i&amp;ccedil;erisine katılmış ve bir GetHashCode değeri elde edilmiştir.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk177_13.gif" alt="" width="525" height="99" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi tekrar Urun sınıfımıza d&amp;ouml;nelim. Hatırlayacağınız gibi aynı i&amp;ccedil;eriğe sahip olan urn1 ve urn2 nesneleri i&amp;ccedil;in farklı hash değerleri &amp;uuml;retilmişti. Oysaki aynı hash değerlerinin &amp;uuml;retilmesi gerektiğini s&amp;ouml;ylemiştik. Buna g&amp;ouml;re, Personel yapısı i&amp;ccedil;erisinde kullandığımız taktiği Urun sınıfımız i&amp;ccedil;inde ele alabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;public override int GetHashCode()
+{
+    return this.ToString().GetHashCode();
+}
+public override string ToString()
+{
+    return m_Id.ToString() + " " + m_Ad + " " + m_Fiyat.ToString();
+}&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/makale/images/mk177_14.gif" alt="" width="469" height="90" border="0" /&gt;&lt;/p&gt;
+&lt;p&gt;G&amp;ouml;rd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z gibi artık aynı i&amp;ccedil;eriğe sahip olan Urun nesne &amp;ouml;rneklerimiz aynı hash değerlerini &amp;uuml;retmektedirler. Object sınıfına ait sanal Equals metodunun ezilmesi ile GetHashCode metodunun ezilmesi arasında yakın bir ilişki yer almaktadır. Makalemizde &amp;uuml;zerinde durmaya &amp;ccedil;alıştığımız konular bir takım kuralların doğmasına neden olmuştur. Buna g&amp;ouml;re;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Equals metodu ezildiği takdirde GetHashCode metoduda ezilmelidir.&lt;/li&gt;
+&lt;li&gt;== operat&amp;ouml;r&amp;uuml; aşırı y&amp;uuml;klendiği takdirde Equals metoduda ezilmelidir ve her ikiside aynı karşılaştırma algoritmasını i&amp;ccedil;ermelidir.&lt;/li&gt;
+&lt;li&gt;Eğer karşılaştırma işlemleri i&amp;ccedil;in IComperable aray&amp;uuml;z&amp;uuml; uygulandıysa, Equals ezilmelidir ve her ikisi i&amp;ccedil;inde aynı eşitlik algoritmaları kullanılmalıdır.&lt;/li&gt;
+&lt;li&gt;Son olarak Equals, GetHashCode ve == operat&amp;ouml;rleri exception d&amp;ouml;nd&amp;uuml;rmemelidir.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Bu kurallara dikkat edildiği takdirde eşitlik ilkelerinin sağlanması daha kolay olacak ve Hashtable yada Dictionary&amp;lt;&amp;gt; gibi hash kod tabanlı &amp;ccedil;alışan algoritmaların d&amp;uuml;zeni bozulmamış olacaktır. Bir başka deyişle eşitlikler &amp;uuml;zerinde tutarlılığı sağlamış oluruz. B&amp;ouml;ylece geldik bir makalemizin daha sonuna. Bir sonraki makalemizde g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2006-10-11 03:00:00</pubDate>
+  <slug>C#-Temelleri:-1!=1-Eşitsizliğinden-GetHashCode'-a-Uzun-İnce-Bir-Yol-bsenyurt-com-dan</slug>
+  <tags>
+    <tag>c#</tag>
+    <tag>gethashcode</tag>
+    <tag>value-types</tag>
+  </tags>
+  <categories>
+    <category>C#</category>
+  </categories>
+</post>

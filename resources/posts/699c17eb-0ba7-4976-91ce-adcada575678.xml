@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>SSIS - Programatik Olarak Variable Değeri Set Etmek</title>
+  <description>Ne varki bu ham veri içeriklerinin operasyonel düzeyde ele alınabilmeleri için ilişkisel hale getirilmeleri, bir başka deyişle SQL Server gibi ilişkisel veritabanı ortamlarına aktarılmarı gerekmektedir. Pek tabi tersi bir durumda çoğu zaman söz konusu olmaktadır. Bu gibi ihtiyaçlar dahilinde SSIS(Sql Server Integration Services) paketleri oldukça kullanışlıdır. Özellikle bir tasarım aracının söz konusu olması, zengin kontrol seti ve akış bazlı çalışma modeli önemli avantajlar olarak karşımıza çıkmaktadır.</description>
+  <content>&lt;p&gt;&lt;a href="/pics/SQL-Server-2008-Grid-v-r_2-300x187.png"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; float: right; padding-top: 0px; border: 0px;" title="SQL-Server-2008-Grid-v-r_2-300x187" src="/pics/SQL-Server-2008-Grid-v-r_2-300x187_thumb.png" alt="SQL-Server-2008-Grid-v-r_2-300x187" width="304" height="191" align="right" border="0" /&gt;&lt;/a&gt;Merhaba Arkadaşlar,&lt;/p&gt;
+&lt;p&gt;Beni tanıyanlar &lt;strong&gt;SQL&lt;/strong&gt; ailesini pek sevmediğimi ve biraz uzak durmaya &amp;ccedil;alışmak istediğimi bilirler. Ne varki bazen iş hayatının ger&amp;ccedil;ekleri ile karşı karşıya kalırız ve mecburen &lt;strong&gt;SQL&lt;/strong&gt; ailesinin bazı fertleri ile yakın ilişkiler i&amp;ccedil;erisine gireriz &lt;img class="wlEmoticon wlEmoticon-confusedsmile" style="border-style: none;" src="/pics/wlEmoticon-confusedsmile_13.png" alt="Confused smile" /&gt; &amp;Ouml;rneğin ben &amp;ccedil;alışmakta olduğum bankanın &amp;ouml;nemli bazı operasyonlarında &lt;strong&gt;SSIS(Sql Server Integration Services)&lt;/strong&gt; paketleri ile &amp;ccedil;alışmak durumundayım. &amp;Ouml;zellikle bankaların metin tabanlı dosya formatlarını sıklıkla tercih ettiklerini biliyoruz.&lt;/p&gt;
+&lt;p&gt;Ne varki bu ham veri i&amp;ccedil;eriklerinin operasyonel d&amp;uuml;zeyde ele alınabilmeleri i&amp;ccedil;in ilişkisel hale getirilmeleri, bir başka deyişle &lt;strong&gt;SQL Server&lt;/strong&gt; gibi ilişkisel veritabanı ortamlarına aktarılmarı gerekmektedir. Pek tabi tersi bir durumda &amp;ccedil;oğu zaman s&amp;ouml;z konusu olmaktadır. Bu gibi ihtiya&amp;ccedil;lar dahilinde &lt;strong&gt;SSIS(Sql Server Integration Services)&lt;/strong&gt; paketleri olduk&amp;ccedil;a kullanışlıdır. &amp;Ouml;zellikle bir tasarım aracının s&amp;ouml;z konusu olması, zengin kontrol seti ve akış bazlı &amp;ccedil;alışma modeli &amp;ouml;nemli avantajlar olarak karşımıza &amp;ccedil;ıkmaktadır. Tabi b&amp;ouml;yle bir senaryo ve işin i&amp;ccedil;erisinde benim gibi bir .Net geliştiricisi olunca, ister istemez bir &lt;strong&gt;SSIS&lt;/strong&gt; paketini programatik olarak değerlendirmek s&amp;ouml;z konusu olabilmektedir &lt;img class="wlEmoticon wlEmoticon-smile" style="border-style: none;" src="/pics/wlEmoticon-smile_22.png" alt="Smile" /&gt; Ben de bu d&amp;uuml;ş&amp;uuml;nceden yola &amp;ccedil;ıkarak programatik anlamda bir &lt;strong&gt;SSIS&lt;/strong&gt; paketinin &lt;strong&gt;değişkenlerine(Variables)&lt;/strong&gt; dış ortamdan nasıl erişebileceğimizi ve değiştirebileceğimizi incelemeye &amp;ccedil;alıştım.&lt;/p&gt;
+&lt;p&gt;Normal şartlarda bir &lt;strong&gt;SSIS&lt;/strong&gt; paketinin &amp;ccedil;alıştırılması i&amp;ccedil;in kullanılabilecek pek &amp;ccedil;ok yol bulunmaktadır. Doğrudan designer aracı ile, komut satırından &lt;strong&gt;Dtcexec.exe&lt;/strong&gt; programı ile, bir &lt;strong&gt;SQL Server Job&lt;/strong&gt; şeklinde vb...Ancak hangi &amp;ccedil;alıştırma modeli se&amp;ccedil;ilirse se&amp;ccedil;ilsin bazen s&amp;ouml;z konusu paketin dış ortamdan parametrik değerler alması ve bunları i&amp;ccedil;erisinde kullanması gerekmektedir. Bunun i&amp;ccedil;in de bir ka&amp;ccedil; yol mevcuttur aslında.&lt;/p&gt;
+&lt;p&gt;S&amp;ouml;z gelimi paket seviyesindeki değişkenleri, pakete ait &lt;strong&gt;XML&lt;/strong&gt; bazlı bir konfigurasyon dosyası i&amp;ccedil;erisinde tutabiliriz. Bu sayede basit bir metin edit&amp;ouml;r&amp;uuml; yardımıyla s&amp;ouml;z konusu &lt;strong&gt;XML&lt;/strong&gt; dosyası i&amp;ccedil;eriğini değiştirebilir ve paketin yeni paremetre değerleri ile y&amp;uuml;r&amp;uuml;t&amp;uuml;lmesini sağlayabiliriz. Hatta bu &lt;strong&gt;XML&lt;/strong&gt; dosyasını &lt;strong&gt;y&amp;ouml;netimli kod(Managed Code)&lt;/strong&gt; tarafında geliştireceğimiz bir kod par&amp;ccedil;asıda &lt;strong&gt;XML API'&lt;/strong&gt; sini kullanaraktan da ele alabiliriz. Ancak ben bu yazımızda &lt;strong&gt;SSIS&lt;/strong&gt; paketinin y&amp;ouml;netimli kod tarafında nesnel olarak ele alınması ve bu tekniğe g&amp;ouml;re ilgili &lt;strong&gt;Variable&lt;/strong&gt; değerlerinin değiştirilmesi &amp;uuml;zerinde durmaya &amp;ccedil;alışacağım. Bu ama&amp;ccedil;la basit bir senaryo &amp;uuml;zerinden ilerliyor olacağız.&lt;/p&gt;
+&lt;p&gt;Senaryomuza g&amp;ouml;re, &amp;ccedil;ok basit ve sembolik bir &lt;strong&gt;SSIS&lt;/strong&gt; paketinin kendi i&amp;ccedil;erisinde kullandığı variable&amp;rsquo; lara başka bir Console uygulaması &amp;uuml;zerinden m&amp;uuml;dahale etmeyi ve paketin yeni ortam değerlerine g&amp;ouml;re y&amp;uuml;r&amp;uuml;t&amp;uuml;lmesini sağlamayı bekliyor olacağız. İlk olarak senaryomuz gereği aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;nde yer alan &lt;strong&gt;SSIS&lt;/strong&gt; paketini geliştirdiğimizi d&amp;uuml;ş&amp;uuml;nelim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/artcl_2_2.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="artcl_2_2" src="/pics/artcl_2_2_thumb.gif" alt="artcl_2_2" width="413" height="189" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Paket i&amp;ccedil;erisinde kullanılan &lt;strong&gt;değişkenlerimiz(Variables)&lt;/strong&gt; ise şunlardır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/artcl_2_1.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="artcl_2_1" src="/pics/artcl_2_1_thumb.gif" alt="artcl_2_1" width="375" height="125" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;DatabaseName&lt;/strong&gt; ve &lt;strong&gt;TableName&lt;/strong&gt; isimli değişkenler &lt;strong&gt;string&lt;/strong&gt; tipindendir ve paket seviyesinde tanımlanmışlardır. Paket i&amp;ccedil;erisinde yer alan &lt;strong&gt;Script Task&lt;/strong&gt; tipinden olan &lt;strong&gt;Task&lt;/strong&gt; bileşeni ise kendi i&amp;ccedil;erisinde s&amp;ouml;z konusu değişkenleri &lt;strong&gt;ReadOnly&lt;/strong&gt; seviyede kullanmaktadır.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/artcl_2_3.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="artcl_2_3" src="/pics/artcl_2_3_thumb.gif" alt="artcl_2_3" width="364" height="100" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Script kodu ise aşağıdaki gibidir.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using System.IO;
+
+namespace ST_7bc89561acee425798facb4212b1828a.csproj 
+{ 
+    [System.AddIn.AddIn("ScriptMain", Version = "1.0", Publisher = "", Description = "")] 
+    public partial class ScriptMain : Microsoft.SqlServer.Dts.Tasks.ScriptTask.VSTARTScriptObjectModelBase 
+    { 
+        #region VSTA generated code
+
+        enum ScriptResults 
+        { 
+            Success = Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Success, 
+            Failure = Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Failure 
+        };
+
+        #endregion
+
+        public void Main() 
+        { 
+            string dbName = Dts.Variables["DatabaseName"].Value.ToString(); 
+            string tbName = Dts.Variables["TableName"].Value.ToString(); 
+            File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "Results.txt"), String.Format("{0}.{1} i&amp;ccedil;in işlemler yapılacak.", dbName, tbName)); 
+            Dts.TaskResult = (int)ScriptResults.Success; 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;Bu tabi kobay bir &lt;strong&gt;SSIS&lt;/strong&gt; paketi olduğundan ne yaptığının &amp;ccedil;ok fazla &amp;ouml;nemi yoktur. Ancak senaryomuz gereği &lt;strong&gt;Script&lt;/strong&gt; olarak &amp;ccedil;alıştırılan kod bloğu i&amp;ccedil;erisindeki kullanım şekli &amp;ouml;nemlidir. &lt;strong&gt;Main&lt;/strong&gt; metodunda paket seviyesindeki &lt;strong&gt;DatabaseName&lt;/strong&gt; ve &lt;strong&gt;TableName&lt;/strong&gt; değişkenleri kullanılmakta olup değerleri bir &lt;strong&gt;Text&lt;/strong&gt; dosyaya yazdırılmaktadır. Aslına bakarsanız senaryomuzu test etmek i&amp;ccedil;in yeterli bir kod par&amp;ccedil;asıdır &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_73.png" alt="Winking smile" /&gt; Bildiğiniz &amp;uuml;zere amacımız başka bir .Net uygulamasını kullanarak s&amp;ouml;z konusu değişkenlerin dış ortamdan set edilmesini sağlamaktı. Şimdi dilerseniz basit bir &lt;strong&gt;Console&lt;/strong&gt; uygulaması oluşturarak akışımıza devam edelim.&lt;/p&gt;
+&lt;p&gt;İlk olarak &lt;strong&gt;SSIS&lt;/strong&gt; paketleri &amp;uuml;zerinde y&amp;ouml;netimli kod tarafını kullanabilmek i&amp;ccedil;in ilgili &lt;strong&gt;Assembly'&lt;/strong&gt; ın projeye referans edilmesi gerekmektedir. Bu y&amp;uuml;zden &lt;strong&gt;C:\Program Files\Microsoft SQL Server\100\SDK\Assemblies&lt;/strong&gt; klas&amp;ouml;r&amp;uuml; i&amp;ccedil;erisinde yer alan &lt;strong&gt;Microsoft.SQLServer.ManagedDTS.dll&lt;/strong&gt;' ini projeye referans etmemiz yeterlidir. &lt;em&gt;(SSIS aslında eskiden DTS olarak anılan bir alt yapıdır. Bu y&amp;uuml;zden assembly adlarına şaşırmayın)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/artcl_2_4.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="artcl_2_4" src="/pics/artcl_2_4_thumb.gif" alt="artcl_2_4" width="280" height="295" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Bundan sonrası ise olduk&amp;ccedil;a basit. Hatta zevkli bir oyun gibi diyebilirim &lt;img class="wlEmoticon wlEmoticon-smile" style="border-style: none;" src="/pics/wlEmoticon-smile_22.png" alt="Smile" /&gt;&lt;/p&gt;
+&lt;p&gt;İşte &amp;ouml;rnek kod par&amp;ccedil;amız.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;using System; 
+using Microsoft.SqlServer.Dts.Runtime;
+
+namespace SSISExecuter 
+{ 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            string packagePath = @"C:\Users\buraksenyurt\Documents\Visual Studio 2008\Projects\SIISProjects\SampleSSIS\SampleSSIS\bin\Package.dtsx";
+
+            // &amp;Ouml;ncelikli olarak paketi y&amp;uuml;klemek i&amp;ccedil;in kullanılacak uygulama nesnesi oluşturulur 
+            Application app = new Application(); 
+            // SSIS paketi y&amp;uuml;klenir 
+            Package package = app.LoadPackage(packagePath, null); 
+            // Paket i&amp;ccedil;erisinde tanımlanmış olan değişkenlere erişilir ve Value &amp;ouml;zelliklerinden yararlanılarak ilgili değerleri set edilir 
+            package.Variables["DatabaseName"].Value = "AdventureWorks"; 
+            package.Variables["TableName"].Value = "Production.Product"; 
+            // Paket &amp;ccedil;alıştırılı ve sonucu alınarak değerlendirilir 
+            DTSExecResult result = package.Execute(); 
+            switch (result) 
+            { 
+                case DTSExecResult.Canceled: 
+                    Console.WriteLine("Canceled"); 
+                    break; 
+                case DTSExecResult.Completion: 
+                    Console.WriteLine("Completion"); 
+                    break; 
+                case DTSExecResult.Failure: 
+                    Console.WriteLine("Failure"); 
+                    break; 
+                case DTSExecResult.Success: 
+                    Console.WriteLine("Success"); 
+                    break; 
+                default: 
+                    break; 
+            } 
+        } 
+    } 
+}&lt;/pre&gt;
+&lt;p&gt;G&amp;ouml;r&amp;uuml;ld&amp;uuml;ğ&amp;uuml; &amp;uuml;zere ilk olarak paketin ilgili adresten y&amp;uuml;klenmesi sağlanmış ve arından &lt;strong&gt;Variables&lt;/strong&gt; &amp;ouml;zelliği &amp;uuml;zerinden &lt;strong&gt;DatabaseName&lt;/strong&gt; ve &lt;strong&gt;TableName&lt;/strong&gt; parametrelerine yeni değerleri aktarılmıştır. Son olarakta ilgili paket &amp;ccedil;alıştırılmıştır. Paketin &amp;ccedil;alıştırıcısı bu &lt;strong&gt;Console&lt;/strong&gt; uygulaması olduğu i&amp;ccedil;in text dosyasının &amp;ccedil;ıktısı da &lt;strong&gt;exe&lt;/strong&gt;' nin bulunduğu dosya adresi olacaktır. İ&amp;ccedil;eriği ise tam istediğimiz gibidir &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_73.png" alt="Winking smile" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/artcl_2_5.gif"&gt;&lt;img style="background-image: none; margin: 4px 0px; padding-left: 0px; padding-right: 0px; display: inline; padding-top: 0px; border: 0px;" title="artcl_2_5" src="/pics/artcl_2_5_thumb.gif" alt="artcl_2_5" width="571" height="471" border="0" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Sonu&amp;ccedil; olarak bir &lt;strong&gt;SSIS&lt;/strong&gt; paketinin i&amp;ccedil; değişkenlerine dış ortamdan değer atamanın farklı bir yolunu g&amp;ouml;rm&amp;uuml;ş olduk. &lt;strong&gt;Managed&lt;/strong&gt; tarafta SSIS paketlerini daha da etkin y&amp;ouml;netebilmemiz de m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Hatta bu k&amp;uuml;t&amp;uuml;phaneyi kullanarak &amp;ouml;zellikle g&amp;ouml;rsel SSIS y&amp;uuml;r&amp;uuml;t&amp;uuml;c&amp;uuml;leri geliştirebilirsiniz. Bir d&amp;uuml;ş&amp;uuml;n&amp;uuml;n &lt;img class="wlEmoticon wlEmoticon-winkingsmile" style="border-style: none;" src="/pics/wlEmoticon-winkingsmile_73.png" alt="Winking smile" /&gt; B&amp;ouml;ylece geldik bir yazımızın daha sonuna. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2011%2f11%2fSampleSSIS.rar"&gt;SampleSSIS.rar (25,47 kb)&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/pics/2011%2f11%2fSSISExecuter.rar"&gt;SSISExecuter.rar (25,64 kb)&lt;/a&gt;&lt;/p&gt;</content>
+  <pubDate>2011-11-11 14:59:00</pubDate>
+  <slug>SSIS-Programatik-Olarak-Variable-Degeri-Set-Etmek</slug>
+  <tags>
+    <tag>c#</tag>
+    <tag>sql-server-integration-services</tag>
+    <tag>ssis</tag>
+    <tag>dts</tag>
+    <tag>dts-package</tag>
+    <tag>ssis-variables</tag>
+    <tag>manageddts</tag>
+  </tags>
+  <categories>
+    <category>C#</category>
+  </categories>
+</post>

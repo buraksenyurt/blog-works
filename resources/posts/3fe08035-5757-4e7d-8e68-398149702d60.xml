@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Rust Pratikleri - Lifetimes Mevzusu</title>
+  <description>Rust'ın özellikle Garbage Collector kullanılan dillerden çok farklı olduğunu bellek yönetimi için getirdiği kurallardan dolayı biliyoruz. Ownership, borowwing gibi hususlar sayesinde güvenli bir bellek ortamını garanti etmek üzerine ihtisas yapmış bir dil. Bunlar pek çok dilde otomatik yönetildiği için Rust'ı öğrenmek zaman alabiliyor. Zor konulardan birisi de Lifetimes mevzusu. Bu konuyu esasında sevgili Bora Kaşmer ile başladığımız 45 Byte sohbetlerinde dile getirmek istiyorum. Lakin çok basit bir örnek gerekiyor ve String türü ile literal string  arasındaki fark bu işi anlatmak için biçilmiş kaftan. Hiç vakit kaybetmeden proje iskeletini oluşturarak devam edelim.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2022/Mart/vivalasvegas.jpg" alt="" /&gt;Rust'ın &amp;ouml;zellikle Garbage Collector kullanan dillerden &amp;ccedil;ok farklı olduğunu bellek y&amp;ouml;netimi i&amp;ccedil;in getirdiği kurallardan dolayı biliyoruz. Ownership, borrowing gibi hususlar sayesinde g&amp;uuml;venli bir bellek ortamını garanti etmek &amp;uuml;zerine ihtisas yapmış bir dil olduğunu s&amp;ouml;ylesek yeridir. Bunlar pek &amp;ccedil;ok dilde otomatik y&amp;ouml;netildiği i&amp;ccedil;in Rust'ı &amp;ouml;ğrenmek biraz zaman alabiliyor ve bu yolda karşımıza &amp;ccedil;ıkacak zor konulardan birisi de Lifetimes mevzusu. Kısaca nesnelere yaşam s&amp;uuml;resini bilin&amp;ccedil;li olarak vermek diye ifade edebileceğimiz bu konuyu esasında sevgili &lt;a title="Bora Kaşmer" href="https://www.borakasmer.com/" target="_blank"&gt;Bora Kaşmer&lt;/a&gt; ile başladığımız &lt;a href="https://youtube.com/playlist?list=PLY-17mI_rla7WSQoRx_8a_1k79x3LDX4W" target="_blank"&gt;45 Byte sohbetleri&lt;/a&gt;nde dile getirmek istiyorum. Lakin &amp;ccedil;ok basit bir &amp;ouml;rnek ile konuyu olabildiğince sade bir şekilde anlatmam gerekiyor ve String ile &amp;amp;str arasındaki fark bunun i&amp;ccedil;in ideal olabilir.&lt;/p&gt;
+&lt;p&gt;String gibi veri t&amp;uuml;rleri, bulundukları t&amp;uuml;m dillerde Heap ovasını dilediğince kullandığı i&amp;ccedil;in hem pratik hem de tehlikeli olabiliyor. &amp;Ouml;zellikle performans odaklı diller Heap konusunda &amp;ccedil;ok hassas ve gereksiz kaynak t&amp;uuml;ketimlerini sevmiyorlar. Olayıların daha &amp;ccedil;ok stack &amp;uuml;st&amp;uuml;nde kalmasını tercih ediyorlar ve ger&amp;ccedil;ekten gereken hallerde Heap'e &amp;ccedil;ıkılmasını bekliyorlar. Bunu basit bir &amp;ouml;rnekle pekiştirelim. Diyelim&amp;nbsp;ki TCP protokol&amp;uuml; &amp;uuml;st&amp;uuml;nden belli bir sokete gelen paketleri işliyoruz. Bu paketler uygulama tarafına buffer nesnesi olarak alınırlar. Bir buffer belleğe alındığında, onun i&amp;ccedil;inden işe yarar bilgileri alıp &amp;ouml;rneğin bir struct'ın String t&amp;uuml;r&amp;uuml;nden değerlerinde saklamak m&amp;uuml;mk&amp;uuml;nd&amp;uuml;r. Hatta ilk aklımıza gelen yol budur. B&amp;ouml;ylece değiştirilebilir&lt;em&gt;(mutable)&lt;/em&gt; bir veri modelini de tesis etmiş oluruz. Lakin s&amp;ouml;z konusu buffer i&amp;ccedil;indeki verileri &amp;ccedil;ektikten sonra değiştirmek gibi bir niyetimiz yoksa&lt;em&gt;(bir başka deyişle onları sadece okunabilir olarak kullanacaksak)&lt;/em&gt; heap &amp;uuml;st&amp;uuml;nde String veri t&amp;uuml;rleri i&amp;ccedil;in ekstra alanlar a&amp;ccedil;mak yerine&amp;nbsp;buffer i&amp;ccedil;indeki ilgili dilimleri işaret eden &amp;amp;str t&amp;uuml;rlerini kullanabiliriz. Dolayısıyla ağ paketi olarak gelen veriyi alıp&amp;nbsp;doğrudan kullanmak hem bellek &amp;uuml;zerindeki operasyonu azaltır hem de performansı artırır.&lt;/p&gt;
+&lt;p&gt;Peki pratiğimize konu olan lifetimes mevzusu bunun neresinde? Sorun şu ki yukarıda anlattığımız senaryo i&amp;ccedil;in ikinci kullanımı tercih edersek&lt;em&gt;(yani String yerine &amp;amp;str kullanırsak)&lt;/em&gt; buffer olarak tutulan veri k&amp;uuml;mesinin bellekten atılması&lt;em&gt;(deallocate)&lt;/em&gt; sonrasında Struct nesnemizin &amp;amp;str tipindeki alanları tarafından referans edilen b&amp;ouml;lgeler ge&amp;ccedil;ersiz hale gelecektir. Bu Rust'ın istemediği bir durumdur nitekim Danling Pointer probleminin oluşmasına sebeptir.&lt;/p&gt;
+&lt;p&gt;Olay biraz karıştı farkındayım. Dilerseniz hi&amp;ccedil; vakit kaybetmeden proje iskeletini oluşturarak konumuza devam edelim.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;cargo new viva_las_vegas&lt;/pre&gt;
+&lt;p&gt;Program kodlarımızı ilk etapta aşağıdaki gibi yazabiliriz.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;#[allow(dead_code)]
+
+#[derive(Debug)]
+struct Player {
+    id: u32,
+    nick: String,
+    country: String,
+    level: u16,
+}
+
+impl Player {
+    fn new(id: u32, nick: String, country: String, level: u16) -&amp;gt; Self {
+        Self {
+            id,
+            nick,
+            country,
+            level,
+        }
+    }
+}
+
+fn main() {
+    let gonzi = Player::new(1, "Gonsalez".to_string(), "Brasil".to_string(), 88);
+    println!("{:#?}", gonzi);
+}&lt;/pre&gt;
+&lt;p&gt;Senaryomuz bir oyuncuyu temsil eden veri modelinin tasarlanması ile başlıyor. Player isimli struct işaretsiz 32 bit tamsayı ve String veri t&amp;uuml;rlerinden oluşan alanlara sahip. Kolayca oluşturmak i&amp;ccedil;in new isimli bir yapıcı metodumuz da var&lt;em&gt;(constructor)&lt;/em&gt;. Kod bu haliyle aşağıdaki ekran g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;ndekine benzer şekilde sorunsuz &amp;ccedil;alışmakta.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mart/viva_las_vegas_1.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Şimdi senaryomuza oyuncunun nickname bilgisini değiştirecek yeni bir fonksiyon daha dahil edelim. &amp;Ccedil;ok gerekli değil ama tuzağı hazırlamamız i&amp;ccedil;in şart.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;fn change_nickname(p: &amp;amp;mut Player, new_nickname: String) -&amp;gt; &amp;amp;Player {
+    p.nick = new_nickname;
+    p
+}&lt;/pre&gt;
+&lt;p&gt;Player yapısının nick değerini parametre olarak gelen new_nickname ile değiştirmek istiyoruz. Tabii nick değerini doğrudan da değiştirebiliriz lakin bu fonksiyon Player nesnesi i&amp;ccedil;in ayrı bir scope a&amp;ccedil;acağından ve bu stack bellek b&amp;ouml;lgesinde yeni bir alan anlamına geldiğinden parametre olarak gelen nesne davranışlarını &amp;ouml;ğrenmek a&amp;ccedil;ısından gerekli. Fonksiyon dikkat edileceği &amp;uuml;zere mutable bir Player referansı alıyor, kapsamında nick bilgisini değiştiriyor ve ilgili Player referansını tekrar geri d&amp;ouml;nd&amp;uuml;r&amp;uuml;yor. Tam anlamıyla Player değişkenini referans olarak &amp;ouml;d&amp;uuml;n&amp;ccedil; alan ve geri veren bir fonksiyon olduğunu s&amp;ouml;yleyebiliriz. Yeni fonksiyonu kullanacak şekilde main i&amp;ccedil;eriğini değiştirerek devam edelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;fn main() {
+    let mut gonzi = Player::new(1, "Gonsalez".to_string(), "Brasil".to_string(), 88);
+    println!("{:#?}", gonzi);
+    let ceremiya = change_nickname(&amp;amp;mut gonzi, "Ceremiya".to_string());
+    println!("{:#?}", ceremiya);
+}&lt;/pre&gt;
+&lt;p&gt;Programı bu haliyle &amp;ccedil;alıştırdığımızda gonzi değişkeni ile temsil edilen Player nesnesine ait nick alanının başarılı şekilde değiştirildiğini g&amp;ouml;rebiliriz.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mart/viva_las_vegas_2.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Her şey yolunda ve aslında hen&amp;uuml;z kafamızdan duman &amp;ccedil;ıkaracak bir şey olmadı. Aslında Player değişkenindeki String i&amp;ccedil;erikler literal t&amp;uuml;rden de tanımlanabilirler. String veri t&amp;uuml;r&amp;uuml; heap alanını kullanan ve genişleyebilen bir yapıdır. Stack &amp;uuml;zerinde Heap'teki metinsel alanı işaret eden, pointer ve referans adresi gibi bilgileri tutar. Ayrıca işaret edilen alanın byte cinsinden uzunluğunu ve ayrılan kapasiteyi de saklar. Ancak en nihayetinde onun i&amp;ccedil;in bir allocation s&amp;ouml;z konusudur. str literal ise String veri t&amp;uuml;r&amp;uuml;n&amp;uuml;n olduğu bellek b&amp;ouml;lgesinin bir par&amp;ccedil;asını&lt;em&gt;(metnin bir kısmını ki slice olarak ifade edilir)&lt;/em&gt; referans eder ve sabit uzunluktadır. Yani bir String &amp;uuml;st&amp;uuml;nden literal &amp;ccedil;ekildikten sonra i&amp;ccedil;eriği değiştirilemez. Metinsel bilginin değişmeyeceği durumlarda literal kullanmak olduk&amp;ccedil;a mantıklıdır&lt;em&gt;(Aynen yazının girişindeki senaryoda bahsettiğimiz gibi)&lt;/em&gt;. O halde gelin Player veri yapısında yer alan nick ve country alanlarını literal string t&amp;uuml;r&amp;uuml;ne &amp;ccedil;evirip devam edelim. Tabii bunu yaptığımız zaman new fonksiyonundaki parametreleri de String t&amp;uuml;r&amp;uuml;nden &amp;amp;str t&amp;uuml;r&amp;uuml;ne d&amp;ouml;n&amp;uuml;şt&amp;uuml;rmemiz gerekiyor.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;#[derive(Debug)]
+struct Player {
+    id: u32,
+    nick: &amp;amp;str,
+    country: &amp;amp;str,
+    level: u16,
+}
+
+impl Player {
+    fn new(id: u32, nick: &amp;amp;str, country: &amp;amp;str, level: u16) -&amp;gt; Self {
+        Self {
+            id,
+            nick,
+            country,
+            level,
+        }
+    }
+}&lt;/pre&gt;
+&lt;p&gt;Ardından programı clippy ile bir kontrol edelim.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;cargo clippy&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mart/viva_las_vegas_3.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Upss!!! Bir s&amp;uuml;r&amp;uuml; hata aldık :( nick ve country alanlarını literal string t&amp;uuml;r&amp;uuml;nden değiştirdik. Ancak bu referanslar Player'ın kullanıldığı scope'lar d&amp;uuml;ş&amp;uuml;n&amp;uuml;ld&amp;uuml;ğ&amp;uuml;nde deallocate işlemi sonrası, var olmayan bellek alanlarını referans eder hale gelebilirler. Bu durumun oluşmaması i&amp;ccedil;in Rust s&amp;ouml;z konusu alanların ne kadar s&amp;uuml;re yaşayacağını bilmek istiyor. B&amp;ouml;ylece &lt;strong&gt;&lt;em&gt;Dangling Pointer&lt;/em&gt;&lt;/strong&gt; oluşmasının &amp;ouml;n&amp;uuml;ne ge&amp;ccedil;miş oluyoruz. Bunun &amp;uuml;st&amp;uuml;ne ilk olarak derleyicinin de &amp;ouml;nerdiği &amp;uuml;zere Player i&amp;ccedil;in gerekli lifetime parametrelerini ekleyerek evam edelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;#[derive(Debug)]
+struct Player&amp;lt;'a&amp;gt; {
+    id: u32,
+    nick: &amp;amp;'a str,
+    country: &amp;amp;'a str,
+    level: u16,
+}&lt;/pre&gt;
+&lt;p&gt;Lifetime parametrelerinde genel olarak a,b gibi harfler kullanılmakta ancak ideal olanı nesnelerin gireceği scope'ları d&amp;uuml;ş&amp;uuml;nerek isimlendirmek. &amp;Ouml;rneğin buradaki değişkenler bir stream okuma s&amp;uuml;recinde yer alsalardı buffer veya buf gibi bir isimlendirme daha doğru olabilirdi. Yazımına alışmak biraz zaman alsa da Rust derleyicisine yaşam &amp;ouml;mr&amp;uuml; ile ilgili bir ipucu vermiş oluyoruz. Bu değişiklikerden sonra programımıza clippy ile tekrar bakalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mart/viva_las_vegas_4.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Hobaaa!!! İşler daha da k&amp;ouml;t&amp;uuml;ye gitti sanki :D Hata mesajlarını ve uyarıları okursak işimizin daha kolay olduğunu g&amp;ouml;rebiliriz. Player nesnesindeki literal string alanları i&amp;ccedil;in lifetime belirttiğimiz anda, Player'ın kullanıldığı ne kadar scope varsa onlar i&amp;ccedil;in de kullanım s&amp;uuml;relerini belirtmemiz gerekiyor. Bu &amp;ouml;rneğe g&amp;ouml;re new ve change_nickname fonksiyonları Player t&amp;uuml;r&amp;uuml; ile &amp;ccedil;alışıyor. Dolayısıyla bu fonksiyonların stack bellek b&amp;ouml;lgesinde kaldığı s&amp;uuml;re doğal olarak new ve change_nickname metotlarına ait parametreler i&amp;ccedil;in de ge&amp;ccedil;erli olmalı. &amp;Ouml;yle ki dışarıdaki bir Player nesnesi parametrelerle aynı s&amp;uuml;re boyunca hayatta kalsın. Bu bilgiler ışığında kodları aşağıdaki gibi değiştirerek devam edelim.&lt;/p&gt;
+&lt;pre class="brush:csharp;auto-links:false;toolbar:false" contenteditable="false"&gt;#[derive(Debug)]
+struct Player&amp;lt;'a&amp;gt; {
+    id: u32,
+    nick: &amp;amp;'a str,
+    country: &amp;amp;'a str,
+    level: u16,
+}
+
+impl&amp;lt;'a&amp;gt; Player&amp;lt;'a&amp;gt; {
+    fn new(id: u32, nick: &amp;amp;'a str, country: &amp;amp;'a str, level: u16) -&amp;gt; Self {
+        Self {
+            id,
+            nick,
+            country,
+            level,
+        }
+    }
+}
+
+fn change_nickname&amp;lt;'a&amp;gt;(p: &amp;amp;'a mut Player&amp;lt;'a&amp;gt;, new_nickname: &amp;amp;'a str) -&amp;gt; &amp;amp;'a Player&amp;lt;'a&amp;gt; {
+    p.nick = new_nickname;
+    p
+}&lt;/pre&gt;
+&lt;p&gt;Dikkat edileceği &amp;uuml;zere new ve change_nickname fonksiyonlarında lifetime bildirimleri kullanmakta. Buna g&amp;ouml;re new ile bir Player nesnesi &amp;ouml;rneklendiğinde derleyici onun i&amp;ccedil;in bir yaşam s&amp;uuml;resi bi&amp;ccedil;iyor. change_nickname'e parametre olarak gelen Player değişkeni de bir lifetime bilgisi bekliyor. Hatta aynı lifetime bilgisi ikinci parametre olan new_nickname i&amp;ccedil;in de ge&amp;ccedil;erli. Rust'ta kodlama yaparken &amp;ccedil;oğu zaman bu tip lifetime bildirimleri ile karşılaşmıyoruz. Nitekim gerek olmadığı hallerde biz a&amp;ccedil;ık bir şekilde belirtmesek bile Rust derleyicisi ilgili lifetime bildirimlerini eklemekte&lt;strong&gt;&lt;em&gt;(Implicit Lifetimes)&lt;/em&gt;&lt;/strong&gt; Şimdi kodumuzu tekrar clippy ile g&amp;ouml;zden ge&amp;ccedil;irip &amp;ccedil;alışma sonu&amp;ccedil;larına bir bakalım.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2022/Mart/viva_las_vegas_5.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;İstediğimiz sonu&amp;ccedil;ları elde ettiğimizi ifade edebiliriz. Tekrar hatıralayım. String heap'de duran, UTF8 formatındaki bir veri tipidir ve bulunduğu yere erişebiliriz. Onun i&amp;ccedil;in heap'te bir yer ayrılır&lt;em&gt;(allocation)&lt;/em&gt; &amp;amp;str ise bir par&amp;ccedil;a dilimdir&lt;em&gt;(slice type)&lt;/em&gt; Yani zaten var olan bir String'in bir par&amp;ccedil;asını işaret eder, &amp;ccedil;alışma zamanında herhangi bir allocation gerektirmez ve sabit uzunlukta olan &amp;amp;str yeniden boyutlandırılamaz. Performans a&amp;ccedil;ısından yeni String sahaları oluşturmak yerine dilimlerle &amp;ccedil;alışmak pek tabii daha iyidir lakin bunu yaptığımızda lifetime gibi konular da karşımıza &amp;ccedil;ıkabilir. &amp;Ouml;zellikle stream şeklinde akan ağ paketlerinde i&amp;ccedil;erikten &amp;uuml;retilen metinsel alanlarda değişiklikler yapılması d&amp;uuml;ş&amp;uuml;n&amp;uuml;lm&amp;uuml;yorsa String kullanım maliyeti &amp;ccedil;ok y&amp;uuml;ksek olacaktır. B&amp;ouml;ylece geldik bir Rust Pratiğinin daha sonuna. Her zaman olduğu gibi &lt;a href="https://github.com/buraksenyurt/rust-farm/tree/main/Practices/viva_las_vegas" target="_blank"&gt;&amp;ouml;rnek kodlara github reposu &amp;uuml;zerinden erişebilirsiniz&lt;/a&gt;. Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2022-03-06 09:00:00</pubDate>
+  <slug>rust-pratikleri-lifetimes-mevzusu</slug>
+  <tags>
+    <tag>rust</tag>
+    <tag>rust-pratikleri</tag>
+    <tag>rust-programming-language</tag>
+    <tag>lifetimes</tag>
+    <tag>literal-string</tag>
+    <tag>&amp;str</tag>
+    <tag>string</tag>
+    <tag>dangling-pointers</tag>
+    <tag>memory-management</tag>
+  </tags>
+  <categories>
+    <category>Rust</category>
+  </categories>
+</post>

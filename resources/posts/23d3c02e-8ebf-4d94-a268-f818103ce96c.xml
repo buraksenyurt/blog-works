@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<post>
+  <title>Bir React Uygulamasında En Ala SQL Veritabanını Kullanmak</title>
+  <description>Öğrenecek bir şeyler araştırırken AlaSQL isimli bir çalışma ile karşılaştım. Tarayıcı üzerinde çalışabilen istemci taraflı bir In-Memory veritabanı olarak geçiyor. Tamamen saf Javascript ile yazılmış. Geleneksel ilişkisel veritabanı özelliklerinin çoğunu barındırıyor. Group, join, union gibi fonksiyonellikleri karşılıyor. In-Memory tutulan veriyi kalıcı olarak saklamakta mümkün. Hatta bu noktada localStorage olarak ifade edilen yerel depolama'dan veri okunup tekrar yazılabiliyor. IndexedDB veya Excel'ide fiziki repository olarak kullanabiliyor. Ayrıca JSON nesnelerle çalışabiliyoruz ki bu da NoSQL desteği anlamına gelmekte. Benim amacım onu yalın bir React uygulamasında deneyimlemeye çalışmak.</description>
+  <content>&lt;p&gt;&lt;img style="float: right;" src="/image.axd?picture=/2019/09/25/wcraft.jpg" alt="" /&gt;İngilizcede bazen gemi kaptanlarına Captain yerine Skipper dendiğini biliyor muydunuz? Aslında Hollandalıların schipper, schip en nihayetinde de ship kelimelerinden t&amp;uuml;reyerek gelmiş bir ifade.&amp;nbsp;Her ikisi de kaptanı ifade etmekte ama Skipper daha &amp;ccedil;ok bir hitap şekli. Hatta yer yer takım kaptanları veya u&amp;ccedil;ak pilotları i&amp;ccedil;in de kullanılıyor. Skipper kelimesinin kullanıldığı yerleri d&amp;uuml;ş&amp;uuml;n&amp;uuml;nce aklıma The Hunt For Red October filminde&amp;nbsp;USS Dallas&amp;nbsp;kaptanı Mancuso'nun CIA'den Jack Ryan'a "That's right? Skipper's Ramius?"&amp;nbsp;demesi geliyor.&lt;/p&gt;
+&lt;p&gt;Esasında bu&amp;nbsp;hitap şeklinin&amp;nbsp;bana anımsattığı daha g&amp;uuml;zel şeyler var. Blizzard geliştiricilerinin Warcraft II'sini oynadığım zamanlarda insan kuvvetlerindeki gemilere Skipper diye sesleniliyordu. Karakterlerin o m&amp;uuml;thiş ses efektleri hala aklımda. "Ay ay s&amp;ouml;r", "Ayy keptın", "Set seyıl", "Sıkipp?", "Andır veyy!" :D Yazılı olarak seslendirmeye &amp;ccedil;alıştım ama dinleseniz &amp;ccedil;ok daha iyi olabilir. Diğer pek &amp;ccedil;ok karakterin sesi de harikaydı. Mesela k&amp;ouml;yl&amp;uuml;lerin "Yeş mi lord" diyişindeki şirinlik ya da ok&amp;ccedil;uların tonlamasındaki keskinlik. Youtube'dan silinene kadar &lt;a href="https://www.youtube.com/watch?v=6wkc4uCaLpw" target="_blank"&gt;şu adresten dinleyebilir&lt;/a&gt; veya aratabilirsiniz. Bug&amp;uuml;nk&amp;uuml; konumuza g&amp;uuml;ndem olmasının sebebi ise skipper isimli bir nesne dizisini kullanacak olmamız. &amp;Ouml;yleyse başlayalım.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;ğrenecek bir&amp;nbsp;&amp;ccedil;ok şeyler&amp;nbsp;araştırırken&lt;em&gt;(ki samimi olmak gerekirse 24 saat uykusuz kalıp bir şeyleri &amp;ouml;ğrensek bile zamanın yetmeyeceği ve g&amp;uuml;neşe daha uzak bir gezegende yaşamamız gerektiği ortaya &amp;ccedil;ıkıyor)&lt;/em&gt;&amp;nbsp;&lt;a href="http://alasql.org/" target="_blank"&gt;AlaSQL&lt;/a&gt; isimli bir &amp;ccedil;alışma ile karşılaştım. Tarayıcı &amp;uuml;zerinde &amp;ccedil;alışabilen istemci taraflı bir In-Memory veritabanı olarak ge&amp;ccedil;iyor. Tamamen saf Javascript ile yazılmış. Geleneksel ilişkisel veritabanı &amp;ouml;zelliklerinin &amp;ccedil;oğunu barındırıyor. Group, join, union gibi fonksiyonellikleri karşılıyor. In-Memory tutulan veriyi kalıcı olarak saklamakta m&amp;uuml;mk&amp;uuml;n. Hatta bu noktada localStorage olarak ifade edilen yerel depolama alanlarından veri okunup tekrar yazılabiliyor. IndexedDB veya Excel gibi &amp;uuml;r&amp;uuml;nleri fiziki repository olarak kullanabiliyor. Ayrıca JSON nesnelerle &amp;ccedil;alışabiliyoruz ki bu da NoSQL desteği anlamına gelmekte. Bu nedenle SQL ve NoSQL rahatlığını bir arada sunan hafif bir veritabanı gibi d&amp;uuml;ş&amp;uuml;n&amp;uuml;lebilir.&lt;/p&gt;
+&lt;p&gt;A&amp;ccedil;ık&amp;nbsp;kaynak kodlu, dok&amp;uuml;mantasyonu olduk&amp;ccedil;a zengin bir proje. Yine de end&amp;uuml;striyel anlamda olgunlaştığına dair emareler g&amp;ouml;r&amp;uuml;lmeden canlı ortamlarda kullanmak riskli olabilir&amp;nbsp;diye d&amp;uuml;ş&amp;uuml;n&amp;uuml;rken github projesinden &amp;ccedil;ıkıp org alan adına ge&amp;ccedil;erek biraz daha ciddiye alınmaya başladığını fark ettim. Yine de deneysel &amp;ccedil;alışmalarda ele almakta yarar var. Benim &lt;a href="https://github.com/buraksenyurt/saturday-night-works/tree/master/No%2025%20-%20AlaSQL%20on%20React" target="_blank"&gt;25nci cumartesi gecesi&amp;nbsp;&amp;ccedil;alışması&lt;/a&gt;ndaki amacım onu yalın bir React uygulamasında deneyimlemeye &amp;ccedil;alışmaktı. &amp;Ouml;yleyse gelin&amp;nbsp;notlarımızı toparlamaya başlayalım.&lt;/p&gt;
+&lt;h2&gt;Kurulum ve Hazırlıklar&lt;/h2&gt;
+&lt;p&gt;Ben&amp;nbsp;her zaman olduğu gibi &amp;ouml;rneğimi WestWorld&lt;em&gt;(Ubuntu 18.04, 64bit)&lt;/em&gt; &amp;uuml;zerinde deneyimledim. Ancak komutlar plaform bağımsız olarak ele alınabilir.&amp;nbsp;Ah bu arada sisteminizde&amp;nbsp;node'un y&amp;uuml;kl&amp;uuml; olduğunu varsayıyorum. React uygulamasını kolayca oluşturabilmek i&amp;ccedil;in aşağıdaki terminal komutunu kullanabiliriz.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;npx create-react-app submarine&lt;/pre&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/25/credit_1.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;AlaSQL'i kullanabilmek i&amp;ccedil;inse uygulama klas&amp;ouml;r&amp;uuml;nde gerekli npm paketinin y&amp;uuml;klenmesi yeterli olacaktır.&amp;nbsp;Ayrıca g&amp;ouml;rselliği zenginleştirmek i&amp;ccedil;in ben Bootstrap'i kullanmayı tercih ettim.&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;cd submarine
+npm install --save-dev alasql bootstrap&lt;/pre&gt;
+&lt;p&gt;React şablonu aslında senaryomuzdan bağımsız bir &amp;ccedil;ok gereksiz dosya i&amp;ccedil;erebilir. Bunları silip manifest.json&amp;nbsp;i&amp;ccedil;eriğini bir par&amp;ccedil;a değiştirebiliriz. &amp;Ouml;rneğin uygulamanın tanımlayıcısı olan short_name ve name değerlerini aşağıdaki hale getirebiliriz.&lt;/p&gt;
+&lt;pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"&gt;{
+  "short_name": "Tac-War-Mag",
+  "name": "Tactical World Magazine",
+// diğer kısımlar&lt;/pre&gt;
+&lt;p&gt;Pek tabii en &amp;ouml;nemli kısım App.js&amp;nbsp;dosyasında yapılanlar. Burası uygulamanın ayağa kalktıktan sonra oluşturulan ana bileşeni&lt;em&gt;(component)&lt;/em&gt;&amp;nbsp;Ana sayfanın HTML i&amp;ccedil;eriği ile birlikte SQL ilişkili kodlarını barındırmakta. Ben m&amp;uuml;mk&amp;uuml;n mertebe&amp;nbsp;i&amp;ccedil;eriği&amp;nbsp;yorum satırları ile zenginleştirerek a&amp;ccedil;ıklamaya &amp;ccedil;alıştım.&lt;/p&gt;
+&lt;pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false"&gt;import React, { Component } from 'react';
+import 'bootstrap/dist/css/bootstrap.css'; // az biraz bootstrap ile g&amp;ouml;rselliği d&amp;uuml;zeltelim
+import * as alasql from 'alasql'; // alasql ile konuşmamızı sağlayacak mod&amp;uuml;l bildirimimiz
+
+class App extends Component {
+
+  /* yapıcı metod gibi d&amp;uuml;ş&amp;uuml;nebiliriz sanırım
+  genellikle local state değişkenlerini başlatmak ve onlara değer atamak
+  i&amp;ccedil;in kullanılır
+  */
+  constructor(props) {
+    super(props);
+
+    /* 
+    state'i değişebilir veriler i&amp;ccedil;in kullanırız. state değişikliğinde
+    bileşenin otomatik olarak yeniden render edilmesi s&amp;ouml;z konusu olur
+    */
+    this.state = { skippers: [] };
+  }
+
+  /*
+  componentWillMount metodu, ilgili bileşen Document Object Model'e bağlanmadan
+  &amp;ouml;nce &amp;ccedil;alışır.
+  Bizim &amp;ouml;rneğimizde veritabanını ve tablo kontrol&amp;uuml;n&amp;uuml;n yapılması ve
+  yoklarsa yaratılmaları i&amp;ccedil;in ideal bir yerdir
+  */
+  componentWillMount() {
+    /*
+    Klasik SQL ifadeleri ile TacticalWorldDb isimli bir veritabanı olup
+    olmadığını kontrol ediyor ve eğer yoksa oluşturup onu kullanacağımızı belirtiyoruz.
+    SQL ifadelerini &amp;ccedil;alıştırmak i&amp;ccedil;in alasql metodunu &amp;ccedil;ağırmak yeterli.
+    */
+    alasql(`
+            CREATE LOCALSTORAGE DATABASE IF NOT EXISTS TacticalWorldDb;
+            ATTACH LOCALSTORAGE DATABASE TacticalWorldDb;
+            USE TacticalWorldDb;            
+            `);
+
+    /*  
+      Şimdi tablomuzu ele alalım. Submarine isimli tablomuzda
+      id, name, displacement ve country alanları yer alıyor. 
+      Id alanı i&amp;ccedil;in otomatik artan bir primary key'de kullandık.
+      &amp;Ouml;rneği abartmamak adına alan dozajını belli bir seviyede tuttuk.
+    */
+    alasql(`
+            CREATE TABLE IF NOT EXISTS Submarine (
+              id INT AUTOINCREMENT PRIMARY KEY,
+              name VARCHAR(25) NOT NULL,
+              displacement NUMBER NOT NULL,
+              country VARCHAR(25) NOT NULL
+            );
+          `);
+  }
+  /*
+  İlk satırda yer alan alasql komutu ile Submarine tablosundaki verileri displacement değerine
+  g&amp;ouml;re b&amp;uuml;y&amp;uuml;kten k&amp;uuml;&amp;ccedil;&amp;uuml;ğe sıralı olacak şekilde &amp;ccedil;ekiyoruz.
+  Ardından state i&amp;ccedil;eriğini bu tablo verisiyle ilişkilendiriyoruz.
+  */
+  getAll() {
+    const submarineTable = alasql('SELECT * FROM Submarine ORDER BY displacement DESC');
+    this.setState({ skippers: submarineTable });
+    // console.log(submarineTable); // Kontrol ama&amp;ccedil;lı a&amp;ccedil;ıp F12 ile ge&amp;ccedil;ilecek kısımda Console sekmesinden takip edebiliriz. Bir JSON array olmasını bekliyoruz
+  }
+
+  /*
+  Bileşen DOM nesnesine bağlandıktan sonra &amp;ccedil;alışan metodumuzdur.
+  Burası &amp;ouml;rneğin tablo i&amp;ccedil;eriğini &amp;ccedil;ekip state nesnesine almak i&amp;ccedil;in
+  son derece ideal bir yerdir.
+  */
+  componentDidMount() {
+    this.getAll();
+  }
+
+  /*
+  Yeni bir satır eklemek i&amp;ccedil;in aşağıdaki metodu kullanacağız.
+  denizaltının adı, tonajı ve menşei gibi bilgileri
+  this.refs &amp;ouml;zelliği &amp;uuml;zerinden yakalyabiliriz. this.refs DOM
+  elemanlarına erişmek i&amp;ccedil;in kullanılmakta. Bu şekilde 
+  formdaki input kontrollerini yakalayıp value niteliklerini
+  okuyarak gerekli veriyi &amp;ccedil;ekebiliriz
+
+  Insert sorgusu i&amp;ccedil;in yine alasaql nesnesinden yararlanıyoruz.
+  Bu sefer parametre i&amp;ccedil;eriğini tek ? i&amp;ccedil;erisinde yollamaktayız.
+  Parametre değerleri aslında bir json nesnesi i&amp;ccedil;inden yollanıyor.
+  key olarak kolon adını, value olarak da refs &amp;uuml;zerinden gelen bileşene ait value &amp;ouml;zelliğini veriyoruz.
+  Id alanının otomatik arttırmak i&amp;ccedil;inse autoval fonksiyonu devreye girmekte.
+
+  Pek tabii yeni eklenen kayıt nedeniyle bileşeni g&amp;uuml;ncellemek lazım.
+  getAll metodu burada devreye girmekte
+  */
+  addSkipper() {
+    const { name, displacement, country } = this.refs;
+    if (!name.value) return;
+    // console.log(dicplacement.value); // Kontrol ama&amp;ccedil;lı. Browser'dan F12 ile değerlere bakılabilir
+    alasql('INSERT INTO Submarine VALUES ?',
+      [{
+        id: alasql.autoval('Submarine', 'id', true),
+        name: name.value,
+        displacement: displacement.value,
+        country: country.value
+      }]
+    );
+    this.getAll();
+  }
+
+  /*
+  Silme operasyonunu yapan metodumuz.
+  Parametre olarak gelen id değerine g&amp;ouml;re bir DELETE ifadesi &amp;ccedil;ağırılı
+  ve t&amp;uuml;m liste tekrardan &amp;ccedil;ekilir.
+  */
+  deleteSkipper(id) {
+    alasql('DELETE FROM Submarine WHERE id = ?', id);
+    this.getAll();
+  }
+
+  /* 
+    State değişikliği gibi durumlarda bileşen g&amp;uuml;ncellenmiş demektir. 
+    Bu durumda render fonkisyonu devreye girer.
+
+    render metodu bir HTML i&amp;ccedil;eriği d&amp;ouml;nd&amp;uuml;rmektedir.
+    form sınıfındaki input kontrollerinin ref niteliklerine dikkat edelim.
+    Bunları addSkipper metodunda this.refs ile alıyoruz.
+
+    iki button bileşenimiz var ve her ikisinin onClick metodları ilgili fonksiyonları
+    işaret ediyor.
+
+    HTML sayfası iki kısımdan oluşuyor. Yeni bir veri girişi yaptığımız form ve tablo verisini
+    g&amp;ouml;steren b&amp;ouml;l&amp;uuml;m. Tablo i&amp;ccedil;eriğini birer satır olarak ekrana basmak i&amp;ccedil;in map fonksiyonundan
+    yararlanıyoruz. map fonksiyonu lambda g&amp;ouml;r&amp;uuml;n&amp;uuml;ml&amp;uuml; blok i&amp;ccedil;erisine sırası gelen satır bilgisini
+    atıyor. &amp;Ouml;rnekte ship isimli değişken bu taşıyıcı rol&amp;uuml;n&amp;uuml; &amp;uuml;stlenmekte. ship değişkeni &amp;uuml;zerinden
+    tablo kolon adlarını kullanarak asıl verilere ulaşıyoruz.
+  */
+  render() {
+
+    const { skippers } = this.state;
+
+    return (
+      &amp;lt;main className="container"&amp;gt;
+        &amp;lt;h2 className="mt-4"&amp;gt;En B&amp;uuml;y&amp;uuml;k Denizlatılar&amp;lt;/h2&amp;gt;
+        &amp;lt;div className="row mt-4"&amp;gt;
+          &amp;lt;form&amp;gt;
+            &amp;lt;div className="form-group mx-sm-3 mb-2"&amp;gt;
+              &amp;lt;input type="text" ref="name" className="form-control" id="inputName" placeholder="Sınıfı" /&amp;gt;
+            &amp;lt;/div&amp;gt;
+            &amp;lt;div className="form-group mx-sm-3 mb-2"&amp;gt;
+              &amp;lt;input type="text" ref="displacement" className="form-control" id="inputDisplacement" placeholder="Tonajı" /&amp;gt;
+            &amp;lt;/div&amp;gt;
+            &amp;lt;div className="form-group mx-sm-3 mb-2"&amp;gt;
+              &amp;lt;input type="text" ref="country" className="form-control" id="inputCountry" placeholder="Sahibi..." /&amp;gt;
+            &amp;lt;/div&amp;gt;
+            &amp;lt;div className="form-group mx-sm-3 mb-2"&amp;gt;
+              &amp;lt;button type="button" className="bnt btn-primary mb-2" onClick={e =&amp;gt; this.addSkipper()}&amp;gt;Ekle&amp;lt;/button&amp;gt;
+            &amp;lt;/div&amp;gt;
+          &amp;lt;/form&amp;gt;
+        &amp;lt;/div&amp;gt;
+
+        &amp;lt;div&amp;gt;
+          &amp;lt;table className="table table-primary table-striped"&amp;gt;
+            &amp;lt;thead&amp;gt;
+              &amp;lt;tr&amp;gt;
+                &amp;lt;th scope="col"&amp;gt;Sınıfı&amp;lt;/th&amp;gt;
+                &amp;lt;th scope="col"&amp;gt;Tonajı&amp;lt;/th&amp;gt;
+                &amp;lt;th scope="col"&amp;gt;&amp;Uuml;lkesi&amp;lt;/th&amp;gt;
+                &amp;lt;th&amp;gt;&amp;lt;/th&amp;gt;
+              &amp;lt;/tr&amp;gt;
+            &amp;lt;/thead&amp;gt;
+            &amp;lt;tbody&amp;gt;
+              {
+                skippers.length === 0 &amp;amp;&amp;amp; &amp;lt;tr&amp;gt;
+                  &amp;lt;td colSpan="5"&amp;gt;Hen&amp;uuml;z veri yok&amp;lt;/td&amp;gt;
+                &amp;lt;/tr&amp;gt;
+              }
+              {
+                skippers.length &amp;gt; 0 &amp;amp;&amp;amp; skippers.map(ship =&amp;gt; (
+                  &amp;lt;tr&amp;gt;
+                    &amp;lt;td&amp;gt;{ship.name}&amp;lt;/td&amp;gt;
+                    &amp;lt;td&amp;gt;{ship.displacement}&amp;lt;/td&amp;gt;
+                    &amp;lt;td&amp;gt;{ship.country}&amp;lt;/td&amp;gt;
+                    &amp;lt;td&amp;gt;
+                      &amp;lt;button className="btn btn-danger" onClick={e =&amp;gt; this.deleteSkipper(ship.id)}&amp;gt;Sil&amp;lt;/button&amp;gt;
+                    &amp;lt;/td&amp;gt;
+                  &amp;lt;/tr&amp;gt;
+                ))
+              }
+            &amp;lt;/tbody&amp;gt;
+          &amp;lt;/table&amp;gt;
+        &amp;lt;/div&amp;gt;
+      &amp;lt;/main &amp;gt;
+    );
+  }
+}
+
+export default App;&lt;/pre&gt;
+&lt;p&gt;Aslında CRUD&lt;em&gt;(Create Read &lt;span style="text-decoration: line-through;"&gt;Update&lt;/span&gt; Delete)&lt;/em&gt; operasyonlarını sunmaya &amp;ccedil;alıştığımız bir aray&amp;uuml;z var. Senaryomuzda d&amp;uuml;nyanın en b&amp;uuml;y&amp;uuml;k denizaltılarını listelediğimiz, ekleyip &amp;ccedil;ıkarttığımız bir web&amp;nbsp;bileşeni s&amp;ouml;z konusu. Tahmin edeceğiniz &amp;uuml;zere benim hep&amp;nbsp;atladığım bir şey daha var...G&amp;uuml;ncelleme eksik :| Artık o kısmını da siz değerli okurlarıma bırakıyorum.&lt;/p&gt;
+&lt;p&gt;&amp;Ouml;yleyse aşağıdaki terminal komutunu vererek uygulamamızı &amp;ccedil;alıştıralım &lt;em&gt;(Bu arada&amp;nbsp;react uygulamasını şablondan oluşturduğumuz i&amp;ccedil;in package.json i&amp;ccedil;erisindeki scripts kısmı otomatik olarak ayarlanmıştır. start anahtar kelimesini kullanmamızın sebebi bu)&lt;/em&gt;&lt;/p&gt;
+&lt;pre class="brush:bash;auto-links:false;toolbar:false" contenteditable="false"&gt;npm run start&lt;/pre&gt;
+&lt;p&gt;İşte &amp;ccedil;alışma zamanına ait bir ka&amp;ccedil; g&amp;ouml;r&amp;uuml;nt&amp;uuml;s&amp;uuml;.&lt;/p&gt;
+&lt;p&gt;Her şey yeni başlarken ve hi&amp;ccedil; veri yokken ana sayfa aşağıdaki gibi a&amp;ccedil;ılmalıdır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/25/credit_2.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Bir ka&amp;ccedil; satır ekledikten sonraki durum ise ş&amp;ouml;yle olacaktır.&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/25/credit_3.png" alt="" /&gt;&lt;/p&gt;
+&lt;h2&gt;Local Storage Nerede?&lt;/h2&gt;
+&lt;p&gt;Peki veriyi tarayıcımız nerede tutuyor? Sonu&amp;ccedil;ta In-Memory bir veritabanı olduğundan bahsediyoruz. Lakin i&amp;ccedil;erik tarayıcı tarafında bir alanda konumlanıyor. Varsayılan senaryoda veri Local Storage b&amp;ouml;l&amp;uuml;m&amp;uuml;nde depolanmakta. Uygulamayı &amp;ccedil;alıştırdıktan sonra Chrome DevTools'a ge&amp;ccedil;ip Application sekmesine giderek i&amp;ccedil;eriğini g&amp;ouml;rebiliriz. Dikkat edileceği &amp;uuml;zere TacticalWorldDb.Submarine isimli bir tablo bulunuyor ve verilerimiz i&amp;ccedil;erisinde JSON nesneler olarak tutuluyor&amp;nbsp;&lt;em&gt;(Diğer yandan depolama alanı olarak componentWillAmount metodu i&amp;ccedil;erisindeki SQL komutumuzda LocalStorage'ı ifade ettiğimizi hatırlayalım)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/image.axd?picture=/2019/09/25/credit_5.png" alt="" /&gt;&lt;/p&gt;
+&lt;p&gt;Storage sekmesine bakarsak Local Storage dışında IndexedDB se&amp;ccedil;eneği de bulunmaktadır. Eğer bu alanı kullanmak&amp;nbsp;istersek&lt;/p&gt;
+&lt;pre class="brush:sql;auto-links:false;toolbar:false" contenteditable="false"&gt;ATTACH INDEXEDDB DATABASE TacticalWorldDB&lt;/pre&gt;
+&lt;p&gt;gibi bir SQL ifadesinden yararlanmamız gerekiyor. Tabii bu arada &amp;ouml;nemli bir soru da g&amp;uuml;ndeme geliyor. Uygulamayı kapattığımızda veriye ne olacak? Bunu cevaplayabilmeniz i&amp;ccedil;in kodu buraya kadar geliştirmiş olmanız gerekiyor :)&lt;/p&gt;
+&lt;h2&gt;Ben Neler &amp;Ouml;ğrendim?&lt;/h2&gt;
+&lt;p&gt;Bazen sıfırdan başlanacak bir &amp;uuml;r&amp;uuml;n i&amp;ccedil;in ya da lisans maliyetleri ve diğer sebepler nedeniyle modernize edilecek bir proje i&amp;ccedil;in verinin nerede neyle tutulacağını araştırmak isteyebiliriz. B&amp;ouml;yle durumlarda alternatifleri POC&lt;em&gt;(Proof of Concept)&lt;/em&gt; tadındaki deneysel programlarda denemek faydalıdır. Bende buna istinaden AlaSQL'i incelemiştim. Yanıma kar olarak kalanlarsa ş&amp;ouml;yle.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Hazır bir react uygulama iskeletinin nasıl oluşturulduğunu&lt;/li&gt;
+&lt;li&gt;React sayfası i&amp;ccedil;erisindeki yaşam d&amp;ouml;ng&amp;uuml;s&amp;uuml;ne dahil olan componentWillMount, componentDidMount ve render metodlarının hangi aşamalarda devreye girdiğini&lt;/li&gt;
+&lt;li&gt;Alasql paketinin react uygulamasına nasıl dahil edildiğini ve temel SQL ifadelerini&lt;em&gt;(veritabanı nesnelerini oluşturmak, insert ve delete sorgularını &amp;ccedil;alıştırmak vb)&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;state &amp;ouml;zelliğini ne ama&amp;ccedil;la kullanabileceğimi&lt;/li&gt;
+&lt;li&gt;Veritabanından &amp;ccedil;ekilen JSON dizisinin map fonksiyonu ile nasıl etkileştiğini&lt;/li&gt;
+&lt;li&gt;refs &amp;ouml;zelliği ile kontrollerin metotlarda nasıl ele alınabildiğini&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;B&amp;ouml;ylece geldik bir &lt;a href="https://github.com/buraksenyurt/saturday-night-works" target="_blank"&gt;saturday-night-works&lt;/a&gt; notu derlemesinin daha sonuna. Yolun a&amp;ccedil;ık olsun Skipper :) Tekrardan g&amp;ouml;r&amp;uuml;ş&amp;uuml;nceye dek hepinize mutlu g&amp;uuml;nler dilerim.&lt;/p&gt;</content>
+  <pubDate>2019-11-11 10:30:00</pubDate>
+  <slug>bir-react-uygulamasinda-en-ala-sql-veritabanini-kullanmak</slug>
+  <tags>
+    <tag>react</tag>
+    <tag>alasql</tag>
+    <tag>javascript</tag>
+    <tag>sql</tag>
+    <tag>database</tag>
+    <tag>node</tag>
+    <tag>nodejs</tag>
+    <tag>javascript-database</tag>
+    <tag>json</tag>
+    <tag>nosql</tag>
+    <tag>indexed-db</tag>
+    <tag>crud</tag>
+    <tag>npm</tag>
+    <tag>npx</tag>
+    <tag>create-react-app</tag>
+  </tags>
+  <categories>
+    <category>React</category>
+  </categories>
+</post>
