@@ -37,3 +37,7 @@ Makale içeriklerine ait XML dosyalarının şema yapısı şöyle;
 - İçinde tüm blog yazılarını ve yazılarda kullanılan görselleri barındıran offline bir **knowledge base** oluşturmak.
 
 ve daha fazlası...
+
+## Çalışma Günlüğü
+
+[Updates](Updates.md) dosyasında yer alır.
