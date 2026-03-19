@@ -7,6 +7,8 @@ using Microsoft.SemanticKernel.Text;
 using OpenAI;
 using Qdrant.Client;
 using System.ClientModel;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 
 using var loggerFactory = LoggerFactory.Create(b => b
@@ -21,6 +23,9 @@ using var loggerFactory = LoggerFactory.Create(b => b
 var logger = loggerFactory.CreateLogger("Chunker");
 
 logger.LogInformation("Initializing embedding model and vector store");
+
+const string collectionName = "blog_chunks";
+const string articlesRoot = @"C:\Users\burak\Development\blog-works\resources\articles";
 
 var openAIClientOptions = new OpenAIClientOptions { Endpoint = new Uri("http://localhost:1234/v1") };
 var openAIClient = new OpenAIClient(new ApiKeyCredential("lm-studio"), openAIClientOptions);
@@ -37,13 +42,15 @@ logger.LogInformation("Embedding generator ready");
 
 var qdrantClient = new QdrantClient("localhost", 6344);
 var vectorStore = new QdrantVectorStore(qdrantClient, ownsClient: true);
-var collection = vectorStore.GetCollection<Guid, BlogPostChunk>("blog_chunks");
+logger.LogInformation("Resetting Qdrant collection {CollectionName}", collectionName);
+await vectorStore.EnsureCollectionDeletedAsync(collectionName);
+var collection = vectorStore.GetCollection<Guid, BlogPostChunk>(collectionName);
 
 await collection.EnsureCollectionExistsAsync();
 logger.LogInformation("Qdrant collection ready");
 
 string[] mdFiles = Directory.GetFiles(
-    @"C:\Users\burak\Development\blog-works\resources\articles",
+    articlesRoot,
     "*.md",
     SearchOption.AllDirectories);
 logger.LogInformation("Processing {PostCount} posts", mdFiles.Length);
@@ -88,6 +95,8 @@ foreach (var file in mdFiles)
     string slug = Path.GetFileNameWithoutExtension(file)
         .ToLowerInvariant()
         .Replace(' ', '-');
+    string sourcePath = Path.Combine("resources", "articles", Path.GetRelativePath(articlesRoot, file))
+        .Replace('\\', '/');
 
     if (string.IsNullOrWhiteSpace(body)) continue;
 
@@ -116,7 +125,7 @@ foreach (var file in mdFiles)
     // Strip markdown syntax to obtain plain prose text
     proseMarkdown = Regex.Replace(proseMarkdown, @"^#{1,6}\s+", string.Empty, RegexOptions.Multiline); // headings
     proseMarkdown = Regex.Replace(proseMarkdown, @"!\[.*?\]\(.*?\)", string.Empty);                    // images
-    proseMarkdown = Regex.Replace(proseMarkdown, @"\[([^\]]*)\]\([^\)]*\)", "$1");                     // links → text
+    proseMarkdown = Regex.Replace(proseMarkdown, @"\[([^\]]*)\]\(([^\)]*)\)", "$1 ($2)");             // preserve link targets
     proseMarkdown = Regex.Replace(proseMarkdown, @"\*{1,2}([^*\r\n]+)\*{1,2}", "$1");                 // bold / italic *
     proseMarkdown = Regex.Replace(proseMarkdown, @"_{1,2}([^_\r\n]+)_{1,2}", "$1");                   // bold / italic _
     proseMarkdown = Regex.Replace(proseMarkdown, @"`([^`]+)`", "$1");                                  // inline code
@@ -140,12 +149,14 @@ foreach (var file in mdFiles)
             var embedding = await embeddingGenerator.GenerateAsync(chunkText);
             await collection.UpsertAsync(new BlogPostChunk
             {
+                Id         = CreateDeterministicGuid($"{sourcePath}|prose|{proseChunkIndex}"),
                 Title      = title,
                 Slug       = slug,
                 PubDate    = pubDate,
                 Year       = year,
                 Categories = categories,
                 Tags       = tags,
+                SourcePath = sourcePath,
                 ChunkType  = "prose",
                 Language   = string.Empty,
                 Text       = chunkText,
@@ -176,12 +187,14 @@ foreach (var file in mdFiles)
             var embedding = await embeddingGenerator.GenerateAsync(chunkText);
             await collection.UpsertAsync(new BlogPostChunk
             {
+                Id         = CreateDeterministicGuid($"{sourcePath}|code|{langLabel}|{codeFragIndex}"),
                 Title      = title,
                 Slug       = slug,
                 PubDate    = pubDate,
                 Year       = year,
                 Categories = categories,
                 Tags       = tags,
+                SourcePath = sourcePath,
                 ChunkType  = "code",
                 Language   = langLabel,
                 Text       = chunkText,
@@ -235,9 +248,8 @@ static string ParseYamlList(string fm, string key)
     return string.Join(", ", items.Cast<Match>().Select(m => m.Groups["v"].Value.Trim()));
 }
 
-logger.LogInformation("──────────────────────────────────────────────────────────");
-logger.LogInformation("Total posts processed : {Posts}", postIndex);
-logger.LogInformation("Total prose chunks    : {Prose}", totalProseChunks);
-logger.LogInformation("Total code chunks     : {Code}", totalCodeChunks);
-logger.LogInformation("Grand total chunks    : {Total}", totalProseChunks + totalCodeChunks);
-logger.LogInformation("All documents have been embedded and stored in Qdrant!");
+static Guid CreateDeterministicGuid(string value)
+{
+    var hash = MD5.HashData(Encoding.UTF8.GetBytes(value));
+    return new Guid(hash);
+}

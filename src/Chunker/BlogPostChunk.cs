@@ -22,6 +22,9 @@ public class BlogPostChunk
     /// <summary>Comma-separated list from frontmatter tags block.</summary>
     [VectorStoreData]
     public string Tags { get; set; } = string.Empty;
+    /// <summary>Workspace-relative path to the source markdown file.</summary>
+    [VectorStoreData]
+    public string SourcePath { get; set; } = string.Empty;
 
     // ── Chunk ─────────────────────────────────────────────────
     [VectorStoreData]

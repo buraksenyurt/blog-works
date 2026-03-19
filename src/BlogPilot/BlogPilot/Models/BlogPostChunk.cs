@@ -27,6 +27,9 @@ namespace BlogPilot.Models
         public string Tags { get; set; } = string.Empty;
 
         [VectorStoreData]
+        public string SourcePath { get; set; } = string.Empty;
+
+        [VectorStoreData]
         public string ChunkType { get; set; } = "prose";
         
         [VectorStoreData]
