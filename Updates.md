@@ -2,7 +2,9 @@
 
 Yapılan çalışmalarla ilgili güncellemelerin yer aldığı belgedir.
 
-## Day 01 - Chunker Embedding Tool
+## Day 01 - Chunker Embedding Tool (Obsolete)
+
+> XML içerikleri markdown formatına dönüştürüldü. İnsan gözüyle taranıp iyileştirildikten sonra yeni kaynak olarak kullanılacak.
 
 Post içeriklerini yerel text embedding modelinden geçirerek vektör veritabanına atmak için kullanılan .Net tabanlı C# uygulaması.
 
