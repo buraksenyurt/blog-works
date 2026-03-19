@@ -1,4 +1,4 @@
----
+﻿---
 title: "Bunu Bir Dene 01 - Çoklu Thread Ortamlarında Ortak Veriyi Değiştirmek (C#, Rust ve Zig)"
 pubDate: 2026-02-15 19:31:00
 categories:
@@ -73,7 +73,7 @@ public class Program
 
 Bu programda CalculationResult isimli bir değişkene iki farklı thread tarafından yazma işlemi yapılıyor. Thread'ler tarafından işletilen metotlar kendi içlerinde açtıkları döngülerde hesaplama maliyeti yüksek sayılabilecek bir takım işlemler icra ediyor. Karekök alma ve logaritma hesaplamaları sırasında olayı daha da dramatize etmek içinse Sleep çağrıları ile gecikmeler oluşturuyoruz. Kendi sistemimde bu örneğin çalışma zamanı çıktıları aşağıdaki gibi oldu.
 
-![image.axd](images/image.axd)
+![TryThis02_00.png](images/TryThis02_00.png)
 
 Aslında her seferinde aynı değerin oluşmasını bekliyordunuz değil mi? Ortada herhangi bir hata mesajı yok ama sonuçlar her seferinde farklı çıkıyor. Burada bir tahmin yürütüp bir thread söz konusu değişkene yazma işlemi yaparken diğer thread'in onu beklemesi böyle bir farka neden oluyor diyebiliriz. Yani içgüdüsel olarak thread'lerin aynı anda veriyi değiştirmesini engellemeyi tercih edebiliriz. Buna göre kodu aşağıdaki şekilde değiştirerek ilerleyelim.
 
@@ -128,7 +128,7 @@ public class Program
 
 Bu sefer sonuçlar tam da beklediğimiz gibi. Her seferinde aynı toplam değerini yakalıyoruz.
 
-![image.axd](images/image.axd)
+![TryThis02_01.png](images/TryThis02_01.png)
 
 Yeni örneğimizde en basit kilit mekanizması olarak gördüğüm Lock nesnesini kullanıyorum. Her iki thread'in de ortak veriye erişmeden önce bu kilidi alması gerekiyor. Bir thread kilidi aldıktan sonra diğer thread'in söz konusu kilit serbest bırakılana kadar da beklemesi gerekiyor. Bu sayede aynı anda sadece tek bir thread ortak veriye erişip üzerinde değişiklik yapabiliyor. Bu da veri tutarlılığını sağlıyor. Bu zaten Mutual Exclusion (Karşılıklı Dışlama) prensibinin temel çalışma mantığı olarak düşünülebilir.
 
@@ -219,7 +219,7 @@ fn main() {
 
 Yazım stili farklılaşsa da benzer bir işleyiş olduğunu söyleyebilirim. handle1 ve handle2 isimliye yumurtlanan thread'ler ortak değişken olan calculationresult üzerinde yazma işlemi yapıyor. Ne varki bu kodu çalıştıramayacağız zira derleyici bizi aşağıdaki ekran görüntüsünde olduğu gibi üzecek.
 
-![image.axd](images/image.axd)
+![TryThis02_02.png](images/TryThis02_02.png)
 
 Bu son derece doğal, zira oluşturulan thread'ler kendi kapsamlarında bir üst thread olan main'deki bir değişkeni kullanma niyetindeler. Bunu açıkça ifade etmemiz bekleniyor ve bunun yolu da move operatörünün kullanılmasından geçiyor. Dolayısıyla söz konusu kodları aşağıdaki gibi değiştirerek ilerlememiz lazım.
 
@@ -252,7 +252,7 @@ fn main() {
 
 Bu sefer program sorunsuz şekilde çalışacaktır ancak sonuçlar hiç de beklediğimiz gibi olmayacaktır. Programı kaç kez çalıştırırsak çalıştıralım her seferinde 0 (yazıyla sıfır) sonucunu elde ederiz:D Üstelik Rust derleyicisi calculationresult değişkeninin hiç kullanılmadığını bile iddia eder.
 
-![image.axd](images/image.axd)
+![TryThis02_03.png](images/TryThis02_03.png)
 
 Bu durum kısa bir açıklamayı gerektiriyor. move operatörü ile main thread içerisindeki calculationresult değişkeni açılan thread scope'larına kopyalanarak taşınır. Yani her thread kendi calculationresult kopyasına sahip olarak çalışır. Dolayısıyla += operatörünü main thread içerisindeki calculationresult değişkenine uyguluyor gibi görsek de bu aslında o scope içerisine alınmış kopya üzerinde yapılan bir işlem. Gelin bu teoriyi ispat etmeye çalışalım. Bu amaçla kodu aşağıdaki gibi değiştirelim.
 
@@ -285,7 +285,7 @@ fn main() {
 }
 ```
 
-![image.axd](images/image.axd)
+![TryThis02_04.png](images/TryThis02_04.png)
 
 Tabii bu benim bakış açımdan bir ispat. Açılan her handle scope'u kopyalayarak aldığı calculationresult değişkeni üzerinde işlemler yapıyor ve kendi ara sonuçlarını yazdırıyor. Ama aynı şey main thread içindeki calculationresult değeri için geçerli değil. Burada calculationresult değişkeninin f64 türünden olduğunu ve Copy trait'ini implemente ettiğini hatırlatayım. O halde bu işi Rust tarafında istediğimiz şekilde ele almak için de birşeyler yapmamız gerekiyor. Her şeyden önce ortak verinin iki thread içerisinde de kullanılabiliyor olması lazım. Bunun için genellikle Atomic Reference Counting (Arc) isimli akıllı işaretçi (smart pointer) kullanılmakta.
 
@@ -325,7 +325,7 @@ fn main(){
 
 Programı bu şekilde çalıştırdığımızda derleyicinin kırıcı mesajları ile başbaşa kalırız.
 
-![image.axd](images/image.axd)
+![TryThis02_06.png](images/TryThis02_06.png)
 
 Bu mesajlar ilk etapta anlamsız gibi görünse de tam olarak konuyla ilgilidir. cannot assign to data in an Arc ifadesini takiben söylenen trait DerefMut is required to modify through a dereference, but it is not implemented for Arc mesajı Arc ile sarmalanmış bir veriyi değiştirmek için gerekli olan DerefMut trait'inin implemente edilmediğini söyler. Yani Arc tek başına ortak veriyi değiştirmek için yeterli değildir, zira o sadece Deref trait'ini implemente etmektedir. Bize gerekli olan şeyse DerefMut implementasyonu. Bunu da Mutex kullanarak sağlayabiliriz.
 
@@ -363,7 +363,7 @@ fn main(){
 
 Tabii kilitleri açık bir şekilde serbest bırakmak için bir kod kullanmadık ancak scope sonları zaten bu işin otomatik yapılmasını sağlayacaktır. İşte çalışma zamanı çıktısı.
 
-![image.axd](images/image.axd)
+![TryThis02_05.png](images/TryThis02_05.png)
 
 Ay now, ay now... Tuhaf bir durum söz konusu. Yüksek hassasiyetli 64 bit floating point değer her deneme için %100 tutarlı değil gibi görünüyor. Örneğin ikinci denemede son küsürat bir üst değere yuvarlanmış. Alt alta yazınca fark daha net görülebilir.
 
@@ -419,7 +419,7 @@ fn calcLn(value: *f64) void {
 
 Aslında Thread başlatırken Rust kodunda olduğu gibi fonksiyonu bloğunu bir closure mantığında spawn metodunda kullanmak istememe rağmen başaramadım. Zira spawn metodu ikinci parametre olarak fonksiyon referansı bekliyor. Bu nedenle karekök ve logaritma hesaplamalarını yapan fonksiyonları ayrı ayrı tanımladım (ki bu belkide kodun okunabilirliği ya da sorumlulukların doğru dağıtılması adına iyi bir yaklaşımdır) Her iki fonksiyon da kendilerine aktarılan f64 türünden nesne işaretçisi üzerinden aynı değişken verisini değiştiriyor. Program kodu herhangi bir hata vermeden çalıştı ve kendi sistemimde aşağıdaki ekran görüntüsündekine benzer çıktılar elde ettim.
 
-![image.axd](images/image.axd)
+![TryThis02_07.png](images/TryThis02_07.png)
 
 Diğer örneklerdeki değerlere yakın sonuçlar elde etsem de kendi özelinde değerlendirdiğimizde her seferinde farklı sonuçlar elde etmemiz son derece normal. Zira her thread işletim sisteminin de desteğiyle farklı zamanlarda çalışarak aynı ortak veri üzerinde değişiklik yapmakta. Zig dilinde de bu tip senaryolarda verinin tutarlığını sağlamak ve her seferinde aynı sonuçlara ulaşmak için yine bir senkronizasyonu mekanizmasına başvurmamız gerekiyor ve burada da tahmin edeceğiniz üzere Mutex devreye giriyor (Birde RwLock var) Aynı kod parçasında bu sefer Mutex tabanlı kilit fonksiyonlarını kullanarak ilerleyelim.
 
@@ -470,7 +470,7 @@ fn calcLn(value: *f64, guard: *std.Thread.Mutex) void {
 
 Senaryo burada biraz daha kolay kurgulandı sanki. Bir Mutex değişkeni tanımladık ve söz konusu değişkeni spawn metodu üzerinden ilgili fonksiyonlara referans olarak aktardık. Her iki fonksiyonda da değişken değerini değiştirmeden hemen önce ve sonra sırasıyla kilit koyma ve serbest bırakma işlemlerini icra ettik. Aslında sembolik duraksatma sürelerini unlock çağrılarının hemen arkasına da alabilirdik ama Rust tarafındaki kod parçasında döngü kapsamı bittiği noktada unlock çalışacak şekilde kodlama yaptığımdan burada da benzer şekilde ilerlemek istedim. Dikkat etmişsinizdir calcLn fonksiyonu içerisinde unlock işlemi için defer ifadesi kullanılıyor. Yani iterasyonda devam ederken kilit otomatik olarak unlock çağrısı yapılmadan serbest kalıyor. Bunu sadece bir örnek olsun diye ekledim. Bazen aynı thread içerisindeki kod bloklarında satır sayısı çok fazla olabilir. En başta defer ile unlock bildiriminde bulunmak kodun okunabilirliği açısından faydalı olur. Gelelim çalışma zamanı çıktısına. Kendi sistemimde elde ettiğim sonuçlar aşağıdaki ekran görüntüsünde olduğu gibi.
 
-![image.axd](images/image.axd)
+![TryThis02_08.png](images/TryThis02_08.png)
 
 Hatırlarsanız Rust tarafındaki kilitleme örneğinde de benzer bir durum söz konusuydu. Küsüratlarda ara sıra sapmalar yaşanmakta. Ancak genel olarak Zig tarafındaki sonuçların Rust tarafındaki sonuçlara daha yakın olduğunu söyleyebilirim. Yine de her iki dilde de thread'lerin çalışma zamanlarındaki farklılıklardan ötürü tam olarak aynı sonuçları elde etmek mümkün olmayabilir.
 

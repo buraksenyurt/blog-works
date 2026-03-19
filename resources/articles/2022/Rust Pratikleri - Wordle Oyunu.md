@@ -1,4 +1,4 @@
----
+﻿---
 title: "Rust Pratikleri - Wordle Oyunu"
 pubDate: 2022-04-10 09:00:00
 categories:
@@ -14,7 +14,7 @@ Doğruyu söylemek gerekirse mobil oyunlarla çok fazla aram yok. Ancak platform
 
 Öncelikle Wordle oyunu nasıl bir şey anlamak lazım. Google Play veya App Store'dan indirebileceğimiz oyunun Huawei App Gallery'de bir karşılığını bulamadım ama benzerleri vardı. Önce oynamalıydım ki nasıl bir şey olduğunu anlayayım. Düşündüren bir kelime oyunu olduğunu ifade edebilirim. Hatta isterseniz [Newyork Times'ın şu adresinden](https://www.nytimes.com/games/wordle/index.html) hemen çevrimiçi bir sürümünü de deneyebilirsiniz. Kendi denememden bir örneği de aşağıdaki ekran görüntüsü ile paylaşmak isterim.
 
-![image.axd](images/image.axd)
+![wordle_1.png](images/wordle_1.png)
 
 Program 5 harfli bir kelime tutuyor ve oyun sahası 5 sütün, 6 satırdan oluşuyor. İlk satıra (en üst satır) 5 harfli ve anlamlı bir kelime yazarak başlıyorsunuz. Program yazdığınız kelimeye bakıp harflerin doğru yerleşimde olup olmadığını kontrol ediyor. Eğer harf tam da yerindeyse arka planı yeşil renge boyuyor. Harf doğru ama yanlış yerdeyse bu sefer arka planı sarı renge boyuyor. Eğer harf programın tuttuğu kelimede yoksa gri rengi kullanıyor. Kullanılan harfleri de aşağıdaki klavyede farklı renklere boyayarak işaretliyor. Bu ipuçlarından yararlanan oyuncu doğru kelimeyi bulmaya çalışıyor ve hakkı olduğu sürece sonraki satıra geçip yeni bir tahminde bulunuyor. Ben ilk satırda S ve E harflerini tutturdum ama yerleri yanlıştı. İkinci denemede ise büyük bir şans eseri birinci harfi tam da olması gerektiği yerde buldum. Ancak E ve T harfleri halen yanlış yerdeydi. Sonuç olarak 6ncı seferde SWEER kelimesini bulmayı başardım. Şimdi Herbert'e kulak verelim. Bakalım neler neler yapacağız?:)
 
@@ -309,7 +309,7 @@ cargo run
 
 Kendi ortamımda elde ettiğim sonuçları aşağıdaki ekran görüntüsü ile paylaşmak isterim. Her ne kadar buradaki kelimeyi bilemesemde sonraki denemelerde tutturduklarım olduğunu da ifade edebilirim. İç eğitimlerde buzları kırmak adına gayet güzel bir atıştırmalık oldu:)
 
-![image.axd](images/image.axd)
+![wordle_2.png](images/wordle_2.png)
 
 ## Öğrendiğim Yeni Şeyler
 

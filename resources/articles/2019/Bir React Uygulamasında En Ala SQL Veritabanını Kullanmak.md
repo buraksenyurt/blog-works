@@ -1,4 +1,4 @@
----
+﻿---
 title: "Bir React Uygulamasında En Ala SQL Veritabanını Kullanmak"
 pubDate: 2019-11-11 10:30:00
 categories:
@@ -14,7 +14,7 @@ tags:
 ---
 
 # Bir React Uygulamasında En Ala SQL Veritabanını Kullanmak
-![image.axd](images/image.axd)
+![wcraft.jpg](images/wcraft.jpg)
 
 İngilizcede bazen gemi kaptanlarına Captain yerine Skipper dendiğini biliyor muydunuz? Aslında Hollandalıların schipper, schip en nihayetinde de ship kelimelerinden türeyerek gelmiş bir ifade. Her ikisi de kaptanı ifade etmekte ama Skipper daha çok bir hitap şekli. Hatta yer yer takım kaptanları veya uçak pilotları için de kullanılıyor. Skipper kelimesinin kullanıldığı yerleri düşününce aklıma The Hunt For Red October filminde USS Dallas kaptanı Mancuso'nun CIA'den Jack Ryan'a "That's right? Skipper's Ramius?" demesi geliyor.
 
@@ -32,7 +32,7 @@ Ben her zaman olduğu gibi örneğimi WestWorld (Ubuntu 18.04, 64bit) üzerinde 
 npx create-react-app submarine
 ```
 
-![image.axd](images/image.axd)
+![09_25_credit_1.png](images/09_25_credit_1.png)
 
 AlaSQL'i kullanabilmek içinse uygulama klasöründe gerekli npm paketinin yüklenmesi yeterli olacaktır. Ayrıca görselliği zenginleştirmek için ben Bootstrap'i kullanmayı tercih ettim.
 
@@ -260,17 +260,17 @@ npm run start
 
 Her şey yeni başlarken ve hiç veri yokken ana sayfa aşağıdaki gibi açılmalıdır.
 
-![image.axd](images/image.axd)
+![09_25_credit_2.png](images/09_25_credit_2.png)
 
 Bir kaç satır ekledikten sonraki durum ise şöyle olacaktır.
 
-![image.axd](images/image.axd)
+![09_25_credit_3.png](images/09_25_credit_3.png)
 
 ## Local Storage Nerede?
 
 Peki veriyi tarayıcımız nerede tutuyor? Sonuçta In-Memory bir veritabanı olduğundan bahsediyoruz. Lakin içerik tarayıcı tarafında bir alanda konumlanıyor. Varsayılan senaryoda veri Local Storage bölümünde depolanmakta. Uygulamayı çalıştırdıktan sonra Chrome DevTools'a geçip Application sekmesine giderek içeriğini görebiliriz. Dikkat edileceği üzere TacticalWorldDb.Submarine isimli bir tablo bulunuyor ve verilerimiz içerisinde JSON nesneler olarak tutuluyor (Diğer yandan depolama alanı olarak componentWillAmount metodu içerisindeki SQL komutumuzda LocalStorage'ı ifade ettiğimizi hatırlayalım)
 
-![image.axd](images/image.axd)
+![09_25_credit_5.png](images/09_25_credit_5.png)
 
 Storage sekmesine bakarsak Local Storage dışında IndexedDB seçeneği de bulunmaktadır. Eğer bu alanı kullanmak istersek
 

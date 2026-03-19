@@ -1,4 +1,4 @@
----
+﻿---
 title: "Bir SOAP Web Servisini Proxy Olmadan WebClient ile Çağırmak"
 pubDate: 2017-05-22 13:13:00
 categories:
@@ -45,7 +45,7 @@ namespace CalculateService
 
 Önemli olan nokta bu servis operasyonunu çağırmak için göndereceğimiz SOAP Header ve Body içerikleri. Yazılan servisin ilgili operasyonunu herhangibir tarayıcıdan çağırırsak bu içerikleri görebiliriz.
 
-![image.axd](images/image.axd)
+![wslook.gif](images/wslook.gif)
 
 > Olur da kurumun web servisilerinin yardımcı bir ekran sayfası yoktur (JAVA servisleri gibi) ve sadece WSDL içeriğini görebiliyorsunuzdur, bu durumda SOAP UI gibi bir araçtan yararlaranak ilgili servisi çağırmak için kullanılacak SOAP Body ve Header içeriklerinin otomatik olarak üretilmesini sağlayabilir ve oradan destek alabilirsiniz. Dikkat edilmesi gereken nokta SOAPAction değeridir.
 
@@ -99,6 +99,6 @@ namespace CallWSWithWebClient
 
 WebClient sınıfını oluşturduktan sonra Content-Type ve SOAPAction bilgilerini Headers isimli WebHeaderCollection nesnesine eklemekteyiz. UploadData metodu ile Common.asmx servisine POST tekniğini kullanarak son parametre ile geçilen byte[] içeriğini yolluyoruz. Bu içerik aslında content ile belirtilen XML bilgisi. Bu noktada WebClient metodu hangi EndPoint'e hangi HTTP metodu ve içerik tipi ile veri göndereceğini biliyor. Eğer WebException üretilmesine neden olacak bir sorun yoksa gelen byte[] dizisi şeklindeki cevap ekrana basılıyor. Burada string olarak bir veri alımı söz konusu olsada gelen içerik aslında XML tabanlı. Yani XDocument (XmlDocument) gibi tipler yardımıyla daha kolay kullanılabilir. Nitekim daha fazla değer döndürecek sonuç kümelerinde string ile çağırmak çok da mantıklı değil (Tabii içerik JSON dönüyorsa çok daha güzel olur) Kodun çalışma zamanı çıktısı aşağıdaki gibidir.
 
-![image.axd](images/image.axd)
+![wsresult.gif](images/wsresult.gif)
 
 Gördülüğü gibi başarılı bir sonuç aldık. WebClient sınıfını ağırlıklı olarak REST tabanlı servisleri çağırmak için kullansak da örnekte görüldüğü gibi SOAP tabanlı servisler için de ele alabiliriz. Tekrar hatırlatmakta fayda var ki referans eklemeden bunu yapmamız mümkün. Eğer servis JSON içerik dönüyorsa sonuçları NewtonSoft'un JsonConvert sınıfından yararlanarak JObject olarak deserialize edebilir, servisin ihtiyaçlarına göre ekstra Header bilgilerini (OAuth Token vb) kolaylıkla gönderebiliriz. Böylece geldik ihtiyaç sonrası ortaya çıkan bir yazının daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

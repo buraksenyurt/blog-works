@@ -1,4 +1,4 @@
----
+﻿---
 title: ".Net Core Tarafında SignalR Kullanımı"
 pubDate: 2017-12-31 21:02:00
 categories:
@@ -18,7 +18,7 @@ tags:
 ---
 
 # .Net Core Tarafında SignalR Kullanımı
-![image.axd](images/image.axd)
+![signalr_4.gif](images/signalr_4.gif)
 
 Merhaba Arkadaşlar,
 
@@ -26,7 +26,7 @@ Bir süre önce araştırmaya başladığım ama araya giren diğer konular (Web
 
 Alınan sayısız çalışma zamanı hatası ve uykusuz bırakan birkaç saatin ardından sonunda konuyu bir şekilde toparlamayı başardım. Bu hataları gidermeye çalışırken farkına vardığım bir çok şey de oldu. SignalR'ın çalışma yapısı haricinde sunucu ve istemci taraflarının birbirleri üzerinden fonkisyon tetiklemesi noktasında nasıl bir yol izlediklerini.Net Core cephesinden görmüş oldum. Tüm bu didinmenin ardından güzel bir uyku çektim ve ertesi gün gelecekteki kendime not bırakmak için geçtim bilgisayarımın başına. Öncelikle çalıştığım kaynaklardan yararlanarak aşağıdaki özet şekli oluşturdum.
 
-![image.axd](images/image.axd)
+![signalr_2.gif](images/signalr_2.gif)
 
 Şekilden de görüldüğü üzere olayın ana noktasında bir HUB yer alıyor. Bunu host eden bir uygulama kendisine bağlı olan diğer uygulamaların aynı anda etkileşimde olmasına olanak tanıyor. Genellikle meydana gelen bir olay sonrası (stok hareketlerindeki değişim, oyun ağına bağlı oyunculardan birisinin yaptığı bir hamle, kanala atılan ortak bir mesaj-hey gidi MIRC vb) hub üzerine bırakılan mesaj, bağlı olan tüm istemcilere iletilmekte. İstemciler basit web tarayıcıları üzerindeki uygulamalar olabileceği gibi, mobil çözümler, terminal programları vb de olabilir. Kritik olan nokta HUB sunucusunun kendisine bağlı istemciler üzerinde fonksiyon çağırabilmesi. Tam tersi iletişim zaten hepimizin aşina olduğu bir durum. SignalR'ın bu oluşum içerisindeki veri alışverişini kolaylaştıracak nimetler sunduğunu ifade edebiliriz. Neredeyse her tipten istemci için yazılımış kütüphaneler mevcut.
 
@@ -238,6 +238,6 @@ Bir önceki uygulamadan pek bir farkı yok neredeyse. Yine bir HubConnection nes
 
 Artık bir kaç test yapabiliriz. İlk olarak HUB sunucusunu sonra yayın yapan istemciyi ve son olarak da dinleyici rolündeki programı çalıştıralım. Dinleyici rolündeki programdan bir kaç tane çalıştıraraktan da sonuçları irdeleyebiliriz.
 
-![image.axd](images/image.axd)
+![signalr_3.gif](images/signalr_3.gif)
 
 Ekran görüntüsünden de görüldüğü üzere ben iki istemci (FabrikamSomeClient) çalıştırarak sonuçları değerlendirdim. FabrikamPostman üzerinden yayınlanan sözler, bağlı olan tüm istemcilere ulaştırıldı. Ayrıca FabrikamServer üzerindeki log izlerine bakıldığında bağlanan herbir uygulama için benzersiz Guid üretildiği de gözlemlendi. SignalR'ın WebSocket modelini baz alan eş zamanlı haberleşebilme yeteneklerini kolaylaştıran yanlarını az çok bu örnekle anlamış bulundum. Umarım sizler için de anlaşılır olmuştur. Böylece geldik bir makalemizin daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

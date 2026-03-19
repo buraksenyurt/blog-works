@@ -1,4 +1,4 @@
----
+﻿---
 title: "Apache Kafka ile Konuşmaya Çalışmak"
 pubDate: 2017-12-01 06:01:00
 categories:
@@ -20,7 +20,7 @@ tags:
 ---
 
 # Apache Kafka ile Konuşmaya Çalışmak
-![image.axd](images/image.axd)
+![kafka_core_giris.gif](images/kafka_core_giris.gif)
 
 Merhaba Arkadaşlar,
 
@@ -32,7 +32,7 @@ West-World oldukça hareketli günler geçiriyor. En son Docker ile ilgili denem
 
 Aktif olarak kullanıldığından nasıl bir şeydir öğrenmem gerekiyordu. Önce bankanım tahsis ettiği Ubuntu dizüstü üzerinde denemeler yaptım. Sonrasında West-World ile konuyu pekiştirmeye çalıştım. Tabii her şeyden önce Kafka'nın felsefesini kavramam lazımdı. Internette konu ile ilgili derya deniz kaynak var. Benim için en akılda kalıcı ve anlamlı şeyse temize çektiğim aşağıdaki not oldu.
 
-![image.axd](images/image.axd)
+![kafka_core_2.gif](images/kafka_core_2.gif)
 
 Şekildeki adımlar kısaca şöyle; Yayımcı/yayımcılar (Producer) belli bir konu başlığına (topic) ait mesaj/mesajlar yayınlar. Broker üzerinden akan mesaj başka bir tüketici/tüketiciler (Consumer) tarafından okunabilir. Karşımızda bir mesaj dağıtım sistemi var görüldüğü gibi. Kafka'nın yaptığı ise hasara uğramadan gerçek zamana oldukça yakın sürelerde veri akışkanlığını sağlamak. Sistem biraz daha netleşecek. Önemli sorulardan birisi neden böyle bir ürüne ihtiyaç duyulduğu? Verinin inanılmaz derecede büyüdüğünde hem fikiriz. Üstelik yıllardır var olan bir mevzu bu. Big Data kavramının ortaya koyduğu pek çok sorunsal da var. Verinin bu denli büyüyor olması bilgi akışlarının gerçek zamanlı olmasını negatif etkileyen bir durum. Kolayca ölçeklenebilir ve dağıtık modelde çalışabilecek sistemler gerekli.
 
@@ -97,7 +97,7 @@ sudo netstat -lnap | grep 2181
 
 komutunu kullanabilirsiniz. Eğer sorun çıkmazsa ZooKeeper çalışmaya başlayacaktır.
 
-![image.axd](images/image.axd)
+![kafka_core_3.gif](images/kafka_core_3.gif)
 
 Yaptığımız işlem bin klasörü altındaki zookeper-sever-start.sh betiğini config klasöründeki zookeper.properties dosyasında belirtilen varsayılan ayarlarla başlatmak. Şimdi kafka servisi etkinleştirilebilir. Bunun için yeni bir terminal penceresi açıp kafka paketini açtığımız konuma giderek aşağıdaki komutu çalıştırabiliriz.
 
@@ -105,7 +105,7 @@ Yaptığımız işlem bin klasörü altındaki zookeper-sever-start.sh betiğini
 sudo bin/kafka-server-start.sh config/server.properties
 ```
 
-![image.axd](images/image.axd)
+![kafka_core_4.gif](images/kafka_core_4.gif)
 
 Terminal Penceresinde Eğlence Zamanı
 
@@ -117,7 +117,7 @@ sudo bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-facto
 sudo bin/kafka-topics.sh --list --zookeeper localhost:2181
 ```
 
-![image.axd](images/image.axd)
+![kafka_core_5.gif](images/kafka_core_5.gif)
 
 kafka-topics.sh betiğinden yararlanarak ilk komutla ToDoList isimli bir topic oluşturuyor, sonraki komutla da var olanları listeliyoruz. create ve list komutlarını kullanırken zookeeper adresini belirttiğimize dikkat edelim. Sanırım birden fazla Cluster olduğu senaryolarda birden fazla ZooKeeper hizmetinden yararlanabiliriz. Bu örnekte tek Broker kullanıldığı için replication faktörü 1 olarak belirlendi. Şimdi bir Producer oluşturup ToDoList isimli Topic altına birkaç veri ekleyelim.
 
@@ -131,7 +131,7 @@ Bu komutu çalıştırdığımızda terminal penceresinde satır bazlı veri gir
 sudo bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic ToDoList --from-beginning
 ```
 
-![image.axd](images/image.axd)
+![kafka_core_6.gif](images/kafka_core_6.gif)
 
 Örnekleri denerken ilgimi çeken noktalardan birisi de Producer penceresi açıkken girilen bilgilerin bir alt satıra geçildiğinde otomatik olarak abone olan tüm Consumer pencerelerine yansımasıydı. Bunu canlı izlemek çok keyifli bir deneyim. Mutlaka deneyin derim:)
 
@@ -143,7 +143,7 @@ sudo bin/kafka-topics.sh --delete --zookeeper localhost:2181 --topic ToDoList
 
 ToDoList isimli topic nesnesinin silinmek üzere işaretlendiğine dair bir mesaj aldım. Ancak topic listesini çektiğimde olduğu yerde duruyordu. Aynı mesajda silme operasyonunun etkili olması için konfigurasyonda delete.topic.enable özelliğinin değerinin true olması gerektiği de belirtilmişti. Yapılması gereken şey config klasöründeki server.properties dosyasının sonuna bu bildirimi eklemek ve Kafka sunucusunu tekrardan çalıştırmaktan ibaretti. Bunu yaptıktan sonra delete betiğini tekrar çalıştırdım ve ToDoList'in kaldırıldığını gördüm. Pek tabii o sırada bu konu başlığına bağlı olan aboneler varsa onlara ilgili Topic nesnesinin olmadığına dair bir hata mesajı gönderildi.
 
-![image.axd](images/image.axd)
+![kafka_core_7.gif](images/kafka_core_7.gif)
 
 Kafka'yı terminalden az çok nasıl kullanacağımı öğrendim. Ancak terminalden uzun uzun o betikleri yazmaya çalışmak zevkli olsa da zorlayıcıydı. Her şeyden öte B12siz bir insanım. Çabuk unutuyorum. Şöyle işleri kolaylaştıracak kendi bildiğim dillerle kullanabileceğim bir API olsa hiç fena olmazdı. Hazır.Net Core dünyasında bir şeyler yapmaya çalışıyorken onunla ilerleyeyim dedim.
 
@@ -269,10 +269,10 @@ Uygulamaları test etmek için Visual Studio Code ortamındaki Integrated Termin
 
 Producer çalışmasından bir görüntü
 
-![image.axd](images/image.axd)
+![kafka_core_8.gif](images/kafka_core_8.gif)
 
 ve Consumer çalışmasından bir görüntü
 
-![image.axd](images/image.axd)
+![kafka_core_9.gif](images/kafka_core_9.gif)
 
 Böylece amacıma ulaşmış oluyorum. West-World artık Kafka'nın felsefesine biraz daha aşina gibi. Tabii merak edilesi bir konu daha var. Acaba buraya elasticsearch nasıl bağlanıyor. Bakalım buna vakit ayırabilecek miyim. Böylece geldik bir makalemizin daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

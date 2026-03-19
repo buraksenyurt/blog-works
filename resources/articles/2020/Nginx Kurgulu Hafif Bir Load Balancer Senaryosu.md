@@ -1,4 +1,4 @@
----
+﻿---
 title: "Nginx Kurgulu Hafif Bir Load Balancer Senaryosu"
 pubDate: 2020-06-17 09:20:00
 categories:
@@ -100,9 +100,9 @@ pm2 delete 0 1 2 3
 
 pm2 kullanımına ait çalışma zamanı çıktılarını şöyle resmedebiliriz.
 
-![image.axd](images/image.axd)
+![skynet_16_Screenshot_1.png](images/skynet_16_Screenshot_1.png)
 
-![image.axd](images/image.axd)
+![skynet_16_Screenshot_2.png](images/skynet_16_Screenshot_2.png)
 
 ## Nginx Tarafı
 
@@ -169,7 +169,7 @@ Ben yukarıdaki terminal komutu ile çalışan container'a log açıp http://loc
 sudo docker exec -it judge-dredd /bin/bash
 ```
 
-![image.axd](images/image.axd)
+![skynet_16_Screenshot_3.png](images/skynet_16_Screenshot_3.png)
 
 Şu anki kurgumuzda varsayılan olarak kabul edilen [Round-Robin](https://www.nginx.com/resources/glossary/round-robin-load-balancing/) isimli Load Balancer algoritması kullanılmakta. Ancak bu algoritma dışında hash, ip_hash, least_conn gibi farklı modeller de mevcut. Benim pek araştırma fırsatım olmadı ama siz kendi çalışma sahanızda bu modeller arasındaki farklılıkları analiz etmeyi deneyebilirsiniz.
 
@@ -184,11 +184,11 @@ curl http://localhost:8080/quotes
 
 Buna göre aşağıdaki ekran görüntülerinde yer alan sonuçların benzerlerini elde edebilmeniz gerekiyor.
 
-![image.axd](images/image.axd)
+![skynet_16_Screenshot_5.png](images/skynet_16_Screenshot_5.png)
 
 Özellikle alttaki görüntüde 80 için gelen taleplerin 450* portlarında dağıldığını görüyoruz.
 
-![image.axd](images/image.axd)
+![skynet_16_Screenshot_4.png](images/skynet_16_Screenshot_4.png)
 
 Görüldüğü üzere bir şekilde Docker Container ayağa kalktı, reverse proxy olan Nginx görevini yerine getirdi ve gelen talepleri ilgili servisin çalışma zamanı örneklerine iletti. Senaryomuza göre aynı servisin makine üstünde farklı portlardan çalıştırılan dört örneği bulunduğunu fark etmiş olmalısınız. Nginx sunucusundaki upstream ayarlarına göre 8080 üstünden gelen taleplerin bu process'lere dağıtılıyor olması lazım. Soru şu; Gerçekten dağıldıklarını nasıl ispatlarsınız?:) PM2 bizim için 4 farklı process açıp servisin birer örneğini buraya atıyor ama gerçekten taleplerin ayrık işlemci süreçlerine gittiğini nasıl anlarız?
 

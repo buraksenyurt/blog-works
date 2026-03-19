@@ -1,4 +1,4 @@
----
+﻿---
 title: "Rust Pratikleri - Multithreading"
 pubDate: 2022-02-06 09:00:00
 categories:
@@ -13,7 +13,7 @@ tags:
 ---
 
 # Rust Pratikleri - Multithreading
-![image.axd](images/image.axd)
+![housecleaning.gif](images/housecleaning.gif)
 
 Uygulamalar işletim sistemlerince Process olarak ayağa kaldırılırlar. Bir process içerisindeki işleri birbirlerinden bağımsız olarak yapan thread'ler de söz konusu olabilir. Çoğu zaman çalıştırılabilir programın main fonksiyonu ile akan akış tek bir thread ile işleyişini sürdürür ama ihtiyaç dahillinde yeni thread'ler açmak gerekir. Rust için process içerisinde bir thread açmak oldukça kolaydır ve bellek tüketimi açısından maliyeti düşüktür. Ownership ve borrowing kuralları sayesinde bellek sahası güvende kalır ve özellikle data-race sorunları oluşmaz.
 
@@ -158,6 +158,6 @@ RUST_LOG=info cargo run
 
 Gelelim çalışma zamanı çıktılarına.
 
-![image.axd](images/image.axd)
+![fellowship_1.png](images/fellowship_1.png)
 
 Örnekte move, channels gibi kullanmadığımız önemli kavramlar da var elbette ancak Rust öğrenmeye çalışanlar için eğlenceli bir pratik olduğunu düşünüyorum. Örneği genişletmek elbette sizin elinizde. Bir başka rust pratiğinde görüşünceye dek hepinize mutlu günler dilerim.

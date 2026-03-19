@@ -1,4 +1,4 @@
----
+﻿---
 title: "GoLang - REST Servisimizi SQLite'a Bağlayalım"
 pubDate: 2017-07-10 09:05:00
 categories:
@@ -17,7 +17,7 @@ tags:
 ---
 
 # GoLang - REST Servisimizi SQLite'a Bağlayalım
-![image.axd](images/image.axd)
+![gosqlite_7.gif](images/gosqlite_7.gif)
 
 Merhaba Arkadaşlar,
 
@@ -63,7 +63,7 @@ select * from Model where CategoryId=1;
 
 Eğer SQLite kurulumunuzda bir sorun yoksa yukarıdaki komutların hatasız çalışması gerekir. Aynen aşağıdaki ekran görüntüsündekine benzer olacak şekilde.
 
-![image.axd](images/image.axd)
+![gosqlite_1.gif](images/gosqlite_1.gif)
 
 Servis Tarafı
 
@@ -193,11 +193,11 @@ Aslında önceki yazılarımızdan farklı olarak bir tane HTTP Post metodumuz b
 
 Gelen bilgileri logladıktan sonra SQLite operasyonumuza başlıyoruz. Open fonksiyonu ile sqlite3 veritabanı sürücüsünü kullanarak, sunucu ile aynı adreste yer alan starwars.sdb isimli veritabanını belleğe açıyoruz. Exec fonksiyonu basit bir Insert sorgusu içeriyor. Bu sorgunun parametrik olduğuna ve parametre bildirimleri için soru işareti kullanıldığına dikkat edelim. Eğer Exec fonksiyonunu bir hata döndürmediyse insert işleminin başarılı olduğunu düşünerek gelen JSON içeriğine göre oluşturulan category değişkenini bu kez render fonksiyonu üzerinden istemciye basıyoruz. Bu render işlemlerini diğer fonksiyonlarda da kullanacağımız için kod tekrarını biraz olsun önlemek amacıyla geliştirdik. Yanlız fonksiyonun ikinci parametresine bilhassa dikkat edelim. data isimli bir interface tipi almakta. Aslında bu sayede render fonksiyonuna JSON olarak serileşebilecek herhangibir tipi aktarabiliriz. Bu tip tek bir Category örneği olabileceği gibi Model örnekleri içeren bir slice'da olabilir. Fonksiyon Header bilgisini JSON formatında işaretleyip HTTP 200 kodunu da ekleyerek bir çıktı oluşturuyor. Bu çıktı ilk parametre ile gelen ResponseWriter üzerinden istemciye gönderiliyor. Çalışma zamanında [Postman](https://www.getpostman.com/) veya muadili bir uygulamayı kullanarak yeni bir kategori oluşturmayı deneyebiliriz. Aşağıdaki örnek bir POST çağrısı görüyorsunuz.
 
-![image.axd](images/image.axd)
+![gosqlite_3.gif](images/gosqlite_3.gif)
 
 Buna göre kategorileri getiren talebi yaptığımızda aşağıdaki gibi Destroyer sınıfının da eklendiğini görebiliriz.
 
-![image.axd](images/image.axd)
+![gosqlite_4.gif](images/gosqlite_4.gif)
 
 ## Kategori Listesi Nasıl Geliyor?
 
@@ -207,13 +207,13 @@ Tüm kategorilerin istendiği talebe karşılık gelen fonksiyonumuz getCategori
 
 4571/categories/1 şeklinde gelecek bir talebe karşılık CategoryID alanının değeri 1 olan modelleri listelemek niyetindeyiz. Tüm kategorileri getirmekten farklı olarak params ile yakaladığımız categoryId değerinin SQL'e ait where ifadesinde parametrik kullanılması söz konusu diyebiliriz. Küçük bir de problemimiz var. Nesne modeli ilişkisinde modelleri kategorileri ile bağlarken tip kullandık. Yani bir Model aslında CategoryId değil Category nesne örneğini içeriyor. Veritabanında ki modelimizde ise bir modeli kategori numarası üzerinden ilişkilendirdik. Bu sebepten fonksiyon öncelikle ilgili kategori numarasına bağlı Category satırını buluyor. Eğer böyle bir kategori varsa nesne olarak örnekleyip bulunan modeller ile ilişkilendiriyor. Sonrasında üretilen models içeriğinin render fonksiyonuna gönderilerek JSON formatında istemciye gönderilmesi söz konusu. Aşağıda çalışma zamanına ait örnek bir görüntü yer alıyor. Aslında çekilen Model nesne topluluğu için Category nesnelerini doldurmak zorunda değiliz. İşin aslı bize güzel bir ORM (Object Relational Mapping) sistemi lazım. İlerleyen yazılarımızda bu konuyu da ele almaya çalışacağım.
 
-![image.axd](images/image.axd)
+![gosqlite_5.gif](images/gosqlite_5.gif)
 
 ## Baş Harfi "A" Olan Modelleri Bulalım
 
 getModelsByFirstLetter fonksiyonunun görevi bu. Baş harfine göre modellerin listesini JSON formatında döndürmek için çalışıyor. Aslında model depomuz oldukça fakir diyebilirim. Aynı harf ile başlayan modeller yok gibi. Ancak siz model üretmek için yazacağınız POST temelli yeni operasyonunuz ile bu test içeriklerini kolaylıkla üretebilirsiniz. Hatta belki bir.Net arabiriminden bu servisi çağırarak modelleri oluşturmayı daha kolay hale de getirebilirsiniz..Net olmak zorunda değil, basit bir HTML sayfası bile olabilir. Sanırım size çaktırmadan bir görev verdim:) Fonksiyonumuza geri dönelim. Buradaki SQL sorgusu içerisinde Like kullanımı söz konusu. Nitekim baş harfi 'şununla'başlayanları çek gibi bir şey demek istiyoruz. Bu nedenle gelen parametreyi 'A%' gibi bir formata dönüştürmek gerekiyor. Bunun için fmt paketinin Sprintf fonksiyonundan yararlanıyoruz. Kodun kalan kısmı öncekilere benziyor. Next fonksiyonu ile dolaştığımız veri içeriğini ekrana basıyoruz. Tabii kategori ile ilgili sorunumuz var. İçeriği varsayılan değerleri ile geliyor ki bu son derece normal. Çünkü CategoryId ye karşılık gelen Category içeriğini bulup yüklemedik. Ah Burak ah:[] Demek ki bir Id'ye bağlı kategoriyi bulup geriye Category örneği olarak döndürecek bir fonksiyonellik burada işimize yarayabilir. Nitekim iki yerde ihtiyacımız oldu. Bu eklemeyi benim için yaparsınız değil mi?
 
-![image.axd](images/image.axd)
+![gosqlite_6.gif](images/gosqlite_6.gif)
 
 Sonuç
 

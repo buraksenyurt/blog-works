@@ -1,4 +1,4 @@
----
+﻿---
 title: "GoLang - Slice ve Map Kavramları"
 pubDate: 2017-03-02 21:23:00
 categories:
@@ -10,7 +10,7 @@ tags:
 ---
 
 # GoLang - Slice ve Map Kavramları
-![image.axd](images/image.axd)
+![gobanana.gif](images/gobanana.gif)
 
 Merhaba Arkadaşlar,
 
@@ -22,13 +22,13 @@ Efendim gelelim sadede. Go dilinde kullanılan türlerden olan Array tipini kıs
 
 Diziler (Arrays) pek çok programlama dilinde olduğu gibi Go için de vazgeçilmez veri türlerinden birisi. Lakin esnek olmadığı noktalar da vardır. Örneğin diziler sabit uzunluktadır ve boyutları yeni ilaveler ile dinamik olarak genişletilemez. İşin aslı dizi dediğimiz kavram sabit uzunlukta, belirli türde, indisle erişilen ve sıralanmış bir veri yapısını işaret eder. Diğer yandan slice veri türü daha esnek bir kullanım alanı sunar. Hatta dizilerin belli aralıktaki parçalarını birer slice haline getirip kullanabiliriz. Go dilinde ustalaşanlar dizi değişkenleri yerine slice türü ile çalışmayı tercih etmektedirler. Tanımlanan bir slice eleman sayısı ve kapasite ile birlikte oluşturulabilir. append fonksiyonu yardımıyla yeni elemanlar eklenebilir, copy fonksiyonu ile bir slice içeriğinin bir diğerine kopyalanması sağlanabilir. Esas itibariyle bir slice aşağıdaki basit şekil ile ifade edilebilir.
 
-![image.axd](images/image.axd)
+![slice_1.gif](images/slice_1.gif)
 
 Tanımlanan bir slice değişkeni içerisinde belli türden elemanlar barındıran diziyi işaret eden bir pointer, bu dizinin uzunluğu ve kapasitesi yer alır. Yukarıdaki şekilde 5 adet integer eleman içeren maksimum kapasitesi de 10 olan numbers isimli bir slice tanımının bellekteki farazi gösterimi yer almaktadır.
 
 Bir slice'dan vereceğimiz değer aralığına göre başka bir slice da oluşturabiliriz. Ancak burada dikkat edilmesi gereken önemli bir husus vardır. Oluşan yeni slice alt kümesi olduğu slice içerisindeki dizi elemanlarını işaret eder. Bunun anlamını biliyorsunuz. Yeni oluşan slice elemanlarında yapılacak olan değişiklikler alt kümesi olduğu slice için de geçerli olacaktır. Aşağıdaki şekilde bu durum özetlemektedir.
 
-![image.axd](images/image.axd)
+![slice_2.gif](images/slice_2.gif)
 
 Şimdi basit bir kod parçası ile slice tipini nasıl kullanabileceğimize bakalım.
 
@@ -94,7 +94,7 @@ func main(){
 
 Öncelikle kodun çalışma zamanı çıktısına bir bakalım ve içeriği üzerinden konuşalım.
 
-![image.axd](images/image.axd)
+![slice_3.gif](images/slice_3.gif)
 
 İlk olarak en basit haliyle words isimli bir slice tanımlayarak başlıyoruz. Eleman sayısını belirtmediğimiz bu slice'ın içereceği string değerleri ilk ifadede atamaktayız. Sonrasında tüm ve sadece 1nci indisteki elamanları ekrana yazdırıyoruz. Bir başka deyişle aynı dizilerde olduğu gibi slice elemanlarına da indis operatörü ile erişebiliyoruz.
 
@@ -102,7 +102,7 @@ sumBytes integer değerler taşıyacak bir slice. İlk satırda eleman sayısın
 
 Sonrasında gelen for döngüsü ise dikkate değer. Burada ilk 4 elemana indisin iki katını işaret eden sayılar ekliyoruz. Ancak i elemanı belirtilen uzunluktan fazla ise append fonksiyonuna başvuruyoruz. Neden? sumBytes için belirlediğimiz eleman uzunluğu 4. Kapasite ise 10. Buna göre örneğin 5nci elemana bir değer atamak istersek çalışma zamanında aşağıdaki ekran görüntüsünde olduğu gibi "index out of range" hatasını alırız.
 
-![image.axd](images/image.axd)
+![slice_4.gif](images/slice_4.gif)
 
 Bu yüzden append fonksiyonundan yararlanmaktayız.
 
@@ -171,7 +171,7 @@ func WriteMapToConsole(m map[int]string){
 }
 ```
 
-![image.axd](images/image.axd)
+![gomaps_1.gif](images/gomaps_1.gif)
 
 words isimli map değişkeni string tipinden key ve value değerleri taşıyacak şekilde tanımlanıyor. İlk satırda bir tanımlama yapıyoruz ve sonrasında make metodu ile map değişkenini oluşturuyoruz. Bu şekilde yaptığımız bir map tanımından sonra make komutunu kullanmadan eleman eklemeye kalkarsak çalışma zamanı hatası alırız (Panic:)). words isimli map'e bir kaç key:value çifti ekliyor ve ekrana yazdırıyoruz. Olmayan bir eleman talep edildiğinde (words["empty"] gibi) geriye value'nun tipinin varsayılan değeri dönecektir. Dilersek _,isExist satırında olduğu ilgili key değerinin map içerisinde bulunup bulunmadığını kontrol ederek de ilerleyebiliriz. Bu kontrol sırasında gereksiz yere değişken ataması da yapmamış oluruz. Bir map içerisinde dönmek oldukça basittir. for döngüsünde key,value değerlerine birlikte erişme şansına sahibiz. Anahtar kelimemiz tahmin edileceği üzere range. levels isimli map değişkenini tek bir ifade içerisinde hem tanımlıyor hem de elemanlarını atıyoruz. Bir map serisinden eleman silmek için delete fonksiyonundan yararlanabiliriz.
 
@@ -209,6 +209,6 @@ func main(){
 
 css isimli map'in value değerleri birer map olarak tanımlanmıştır. Buna göre her bir key'e karşılık string tipinden key:value çiftleri taşıyan map'ler söz konusudur. Tüm map içeriğini içiçe for döngüsü ile dolaşmamız da mümkündür. İçteki for döngüsü dıştaki value tipini ele alacak şekilde ileri yönlü bir iterasyonu başlatabilir. Kodun çalışma zamanı çıktısı ise aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![gomaps_2.gif](images/gomaps_2.gif)
 
 Gopher olma çalışmalarımızla ilgili olarak bu yazımızda slice ve map kavramlarına değinmeye çalıştık. Bir başka makalemizde görüşünceye dek hepinize mutlu günler dilerim.

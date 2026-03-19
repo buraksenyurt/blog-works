@@ -1,4 +1,4 @@
----
+﻿---
 title: "Ruby Kod Parçacıkları 27 - Hello Multithreading"
 pubDate: 2016-12-01 21:15:00
 categories:
@@ -17,7 +17,7 @@ Merhaba Arkadaşlar,
 
 Multithreading, programlamanın zor konularından birisidir. Aslında amaç işlemciye aynı andan birden fazla iş yaptırabilmek ya da bir işi parçalara bölerek eş zamanlı olarak yürütebilmektir. İşlemcinin bu farklı iş parçacıkları (Thread) arasında kısa sürelerde geçişler yapması sonucu istenen sonuçlara daha çabuk ulaşılması sağlanır. Bu, performans gerektiren bazı vakalarda oldukça önemlidir. Büyük veri kümelerinde arama yapan algoritmalar, yüksek boyutlu video görüntülerinin render eden programla, çeşitli matematik problemleri, oyun programlama ve daha pek çok alanda çoklu iş parçacığı tekniklerine başvurulur.
 
-![image.axd](images/image.axd)
+![rubythread_7.gif](images/rubythread_7.gif)
 
 Elbette çoklu iş parçacıkları ile uğraşırken dikkat edilmesi gereken hususlar da vardır. Ortak veri kümeleri üzerinde farklı iş parçacıklarının çalışması sırasında veri bütünlüğünün bozulması, iş parçacıklarının kilitlenmesi (deadlock), kötü tasarım sonucu işlemlerin çabuk bitmesi gerekirken daha uzun sürmesi, CPU peek-time değerlerinin tavan yapması ve soğutma yükü sonucu elektrik maliyetlerinin artması (eğer sunucularda yaptırdığımız çok parçacıklı işlemler söz konusu ise bu ciddi bir sorun olabilir), iş parçacıkları içerisinden ele alınmamış hatalar fırlaması sonucu yorumlayıcının kesimlesi ve benzeri sıkıntılar oluşabilir. Dolayısıyla iş parçacıklarını kodlarken dikkatli olunması gerekir. Lakin bir yerden de işe başlamamız gerekiyor. Öyleyse gelin Ruby dilinde Multithreading programlamaya bir merhaba diyelim.
 
@@ -45,7 +45,7 @@ t2.join
 puts "Main thread #{Thread.current}\t#{Time.now}"
 ```
 
-![image.axd](images/image.axd)
+![rubythread_1.gif](images/rubythread_1.gif)
 
 Uygulamada dikkat edilmesi gereken önemli noktalar var. Ana iş parçacığı (Main Thread) dışında iki iş parçacığı daha çalışmaktadır. Bunlardan t1 içerisinde sembolik olarak 2 saniyelik gecikme uygulanmıştır. t2 için bu süre 4 saniyedir. Kod akışı hemen Thread.new satırları sonrasında devam edeceğinden join metodunun kullanılmaması halinde uygulama anında sonlanır. Bu nedenle ana iş parçacığına diğerlerini beklemesi söylenmektedir. O an çalışmakta olan Thread'in Ruby tarafından üretilen benzersiz nesne numarasına erişmek için current isimli sınıf metodundan yararlanılmıştır. Normalde bu sınıf metodu, oluşturulan Thread nesne örneğinin kendisini döndürmektedir. Dolayısıyla ekrana basılması halinde nesne numarası elde edilir.
 
@@ -73,7 +73,7 @@ threads.each{|t|
 puts "Total = #{total}"
 ```
 
-![image.axd](images/image.axd)
+![rubythread_2.gif](images/rubythread_2.gif)
 
 Örnek kod parçasında 5 farklı iş parçacığı oluşturulmaktadır. Oluşturulan iş parçacıkları << operatörü ile threads isimli diziye eklenmektedir. Her bir Thread bloğu içerisinde rastgele bir süre üretilmekte ve Thread'in o süre boyunca bekledikten sonra işine devam etmesi sağlanmaktadır. Amaç, uzun süren bir işi canlandırmaktır. Nitekim asıl önemli olan nokta blok içerisinde [] operatörleri ile ulaşılan forThis anahtarıdır (Aslında bir hash veri yapısına ulaştığımızı düşünebiliriz) Thread.current üzerinden yapılan bu işlem ile sadece o Thread nesnesi için geçerli olan bir anahtar tanımı ve değer ataması söz konusu olur (forThis anahtarı ThreadLocal olarak adlandırılan değere ulaşılmasını sağlamaktadır) Yani forThis her Thread nesnesinin kendisine özel değer taşır.
 
@@ -108,11 +108,11 @@ end
 
 Örnekte iki Thread nesne örneği oluşturulmuştur. Thread bloklarında total1 ve total2 isimli değişkenler 1er 1er arttırılmaktadır. Kritik olan nokta priority değerleridir. İlk thread için 5 ikinci thread içinse -5 değeri verilmiştir. Buna göre ilk thread işlemci için daha önceliklidir. Yani işlemci, thread1 içerisindeki bloğu thread2'ye göre daha sık çalıştıracaktır. Sonuç olarak hesaplanan toplam değerler arasında katsayı farkı oluşmuştur (Bu bir ispattır aslında) Aşağıdaki ekran görüntüsü kodu yazdığım makinenin ürettiği sonuçlardır. Dikkat edileceği üzere thread1 tarafından üretilen toplam değerleri thread2 tarafından üretilenlere göre belirgin olarak daha farklıdır.
 
-![image.axd](images/image.axd)
+![rubythread_3.gif](images/rubythread_3.gif)
 
 Öncelikleri yakınlaştırdıkça sonuçların değiştiği görülür. Örneğin ilk thread için önceliği 1 ikinci thread içinse -1 şeklinde belirlersek sayılar birbirlerine daha yakın çıkacaktır. Kendi sistemimde elde ettiğim sonuçlar aşağıdaki gibidir (intel core i7-4600U 2.10 Ghz)
 
-![image.axd](images/image.axd)
+![rubythread_4.gif](images/rubythread_4.gif)
 
 ## Exception Yönetimi
 
@@ -143,7 +143,7 @@ puts "end of main thread"
 
 Kodu yorumlamadan önce neler yaptığımıza bir bakalım. Üç iş parçacığımız var. İş parçacıkları içerisinde sleep metodu ile belirli süreler boyunca duraksama yapıyoruz. Bu şekilde uzun süren işleri temsil ettiğimizi düşünebiliriz. thread1 ve thread2 sorunsuz çalışacak iş parçacıkları. Ne var ki 3ncü thread daha ilk saniyede ArgumentError fırlatıyor (Oyunbozan Thread) Tüm iş parçacıklarını join ile ana iş parçacığımıza eklemeyi de ihmal etmiyoruz. İşler çalışma zamanında ilginçleşiyor. İşte ekran görüntümüz.
 
-![image.axd](images/image.axd)
+![rubythread_5.gif](images/rubythread_5.gif)
 
 Dikkat edileceği üzere thread 1 ve thread 2 başarılı bir şekilde işlemlerini tamamlamıştır. Bu iş parçacıkları 1nci saniyede ortama ArgumentError fırlatan thread 3'ten daha uzun sürmelerine rağmen işlemlerini tamamlamışlardır. Lakin ilgili hata mesajı Main Thread üzerinde ele alınmadığından onun işleyişi tüm diğer iş parçacıkları tamamlandıktan sonra kesilmiştir.
 
@@ -175,7 +175,7 @@ puts "end of main thread"
 
 Önce çalışma zamanı çıktısına bir bakalım.
 
-![image.axd](images/image.axd)
+![rubythread_6.gif](images/rubythread_6.gif)
 
 Önceki örnek ile arada önemli bir fark var. Daha ilk saniyede fire veren iş parçacığımız diğerlerinin de işlerini kesmesine ve ana iş parçacığına düşülmesine sebep olmuştur. Bu durum abort_on_exception niteliğine true değeri verilmesi nedeniyle gerçekleşmiştir. Pek tabii ana iş parçacığında ilgili hata ele alınmadığından o da son satırını işletemeden sonlanmıştır (Garibim Main Thread bir türlü son satırı yazdıramadı)
 

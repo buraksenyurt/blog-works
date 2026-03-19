@@ -1,4 +1,4 @@
----
+﻿---
 title: "Hasura GraphQL Engine ile geliştirilmiş bir API Servisini Vue.js ile Kullanmak"
 pubDate: 2019-11-06 10:30:00
 categories:
@@ -20,7 +20,7 @@ tags:
 ---
 
 # Hasura GraphQL Engine ile geliştirilmiş bir API Servisini Vue.js ile Kullanmak
-![image.axd](images/image.axd)
+![hasuralogo.png](images/hasuralogo.png)
 
 Yıl 2015. Hindistan'ın Bengaluru şehrinde doğan bir Startup (Sonradan San Fransico'da da bir ofis sahibi olacaklar), [Microsoft'un BizSpark programından destek](https://blogs.technet.microsoft.com/bizspark_featured_startups/2017/09/18/quickly-develop-backend-applications-without-having-to-write-code-with-hasura/) buluyor. Kurucuları Rajoshi Ghosh (Aslen bioinformatik araştırmacısı) ve Tanmai Gopal (Bulut sistemleri, fonksiyonel programlama ve GraphQL konusunda uzman) isimli iki Hintli. Şirketlerine şeytanın sanskritçedeki adını veriyorlar; Hasura! Aslında O, fonksiyonel dillerin kralı Haskell ile yazılmış bir platform ve şimdilerde Heroku ile daha yakın arkadaş.
 
@@ -34,57 +34,57 @@ API'ler için türlendirilmiş (typed) sorgulama dillerinden birisi olarak öne 
 
 Pek tabii Heroku üzerinde bir hesabımızın olması gerekiyor. Sonrasında [şu adrese](https://elements.heroku.com/) gidip elements kısmından Hasura GraphQL Engine'i seçmek yeterli.
 
-![image.axd](images/image.axd)
+![09_37_credit_1.png](images/09_37_credit_1.png)
 
 Gelinen yerden Deploy to Heroku diyerek projeyi oluşturabiliriz.
 
-![image.axd](images/image.axd)
+![09_37_credit_2.png](images/09_37_credit_2.png)
 
 Ben aşağıdaki bilgileri kullanarak bir proje oluşturdum.
 
-![image.axd](images/image.axd)
+![09_37_credit_3.png](images/09_37_credit_3.png)
 
 Deploy başarılı bir şekilde tamamlandıktan sonra,
 
-![image.axd](images/image.axd)
+![09_37_credit_4.png](images/09_37_credit_4.png)
 
 View seçeneği ile yönetim paneline geçebiliriz.
 
-![image.axd](images/image.axd)
+![09_37_credit_5.png](images/09_37_credit_5.png)
 
 Dikkat edileceği üzere GraphQL sorgularını çalıştırabileceğimiz bir arayüz otomatik olarak sunuluyor. Ancak öncesinde örnek veri setleri hazırlamalıyız. Bunun için Data sekmesinden yararlanabiliriz.
 
-![image.axd](images/image.axd)
+![09_37_credit_6.png](images/09_37_credit_6.png)
 
 Arabirimin kullanımı oldukça kolay. Ben aşağıdaki özelliklere sahip tabloları oluşturdum.
 
-![image.axd](images/image.axd)
+![09_37_credit_7.png](images/09_37_credit_7.png)
 
 categories isimli tablomuzda unique tipte, get_random_uuid () fonksiyonu ile eklenen satır için rastgele üretilen categoryId ve text tipinden title isimli alanlar bulunuyor. categoryId, aynı zamanda primary key türünden bir alan.
 
-![image.axd](images/image.axd)
+![09_37_credit_8.png](images/09_37_credit_8.png)
 
 products tablosunda da UUID tipinden productId, text tipinden description, number tipinden listPrice ve yine UUID tipinden categoryId isimli alanlar mevcut. categoryId alanını, ürünleri kategoriye bağlamak için (foreign key relations) kullanıyoruz. Ama bu alanı foreign key yapmak için Modify penceresine geçmeliyiz.
 
-![image.axd](images/image.axd)
+![09_37_credit_9.png](images/09_37_credit_9.png)
 
-![image.axd](images/image.axd)
+![09_37_credit_10.png](images/09_37_credit_10.png)
 
 İlişkinin geçerlilik kazanması içinse, categories tablosunun Relationships penceresine gidip önerilen bağlantıyı eklemek gerekiyor.
 
-![image.axd](images/image.axd)
+![09_37_credit_14.png](images/09_37_credit_14.png)
 
-![image.axd](images/image.axd)
+![credit_15.png](images/credit_15.png)
 
-![image.axd](images/image.axd)
+![credit_16.png](images/credit_16.png)
 
 > Bu durumda categories üzerinden products'a gidebiliriz. Ters ilişkiyi de kurabiliriz ve bir ürünle birlikte bağlı olduğu kategorinin bilgisini de yansıtabiliriz ki ürünleri çektiğimizde hangi kategoride olduğunu da göstermek güzel olur. Bunu nasıl yapabileceğinizi bir deneyin isterim.
 
 Hasura'nın Postgresql tarafındaki örnek tablolarımız hazır. İstersek Insert Row penceresinden tablolara örnek veri girişleri yapabilir ve GraphiQL pencresinden sorgular çalıştırabiliriz. Ben yaptığım denemelerle alakalı bir kaç örnek ekran görüntüsü paylaşayım. Arabirimin sağ tarafında yer alan Docs menüsüne de bakabilirsiniz. Burada query ve mutation örnekleri, hazırladığımız veri setleri için otomatik olarak oluşturuluyorlar.
 
-![image.axd](images/image.axd)
+![09_37_credit_11.png](images/09_37_credit_11.png)
 
-![image.axd](images/image.axd)
+![09_37_credit_12.png](images/09_37_credit_12.png)
 
 ## Örnek Sorgular
 
@@ -100,7 +100,7 @@ query{
 }
 ```
 
-![image.axd](images/image.axd)
+![credit_19.png](images/credit_19.png)
 
 Kategorilere bağlı ürünleri çekmek.
 
@@ -116,7 +116,7 @@ query{
 }
 ```
 
-![image.axd](images/image.axd)
+![credit_18.png](images/credit_18.png)
 
 Ürünlerin tam listesi ve bağlı olduğu kategori adlarını çekmek.
 
@@ -132,7 +132,7 @@ query{
 }
 ```
 
-![image.axd](images/image.axd)
+![credit_17.png](images/credit_17.png)
 
 Listeleme işlemleri dışında veri girişi de yapabiliriz. Bunun için mutation kullanıldığını daha önceden öğrenmiştim. Örneğin yeni bir kategoriyi aşağıdaki gibi ekleyebiliriz.
 
@@ -147,7 +147,7 @@ mutation {
   }
 ```
 
-![image.axd](images/image.axd)
+![credit_20.png](images/credit_20.png)
 
 Hasura, GraphQL API’si arkasında PostgreSQL veri tabanını kullanırken SQLden aşina olduğumuz bir çok sorgulama metodunu da hazır olarak sunar. Örneğin fiyatı 300 birimin üstünde olan ürünleri aşağıdaki sorgu ile çekebiliriz.
 
@@ -163,7 +163,7 @@ Hasura, GraphQL API’si arkasında PostgreSQL veri tabanını kullanırken SQLd
 }
 ```
 
-![image.axd](images/image.axd)
+![credit_21.png](images/credit_21.png)
 
 Where metodu sorgu şemasına otomatik olarak eklenmiştir. _gt tahmin edileceği üzere greater than anlamındadır. Yukarıdaki sorguya fiyata göre tersten sıralama opsiyonunu da koyabiliriz. Sadece where koşulu arkasından order_by çağrısı yapmamız yeterlidir.
 
@@ -179,7 +179,7 @@ Where metodu sorgu şemasına otomatik olarak eklenmiştir. _gt tahmin edileceğ
 }
 ```
 
-![image.axd](images/image.axd)
+![credit_22.png](images/credit_22.png)
 
 Çok büyük veri setleri düşünüldüğünde ön yüzler için sayfalama önemlidir. Bunun için limit ve offset değerlerini kullanabiliriz. Örneğin 5nci üründen itibaren 5 ürünün getirilmesi için aşağıdaki sorgu kullanılabilir.
 
@@ -195,7 +195,7 @@ Where metodu sorgu şemasına otomatik olarak eklenmiştir. _gt tahmin edileceğ
 }
 ```
 
-![image.axd](images/image.axd)
+![credit_23.png](images/credit_23.png)
 
 Hasura Query Engine’in sorgu seçenekleri ile ilgili olarak [buradaki dokümanı](https://docs.hasura.io/1.0/graphql/manual/queries/index.html) takip edebilirsiniz.
 
@@ -502,15 +502,15 @@ npm run serve
 
 terminal komutunu vermemiz yeterli. Sonrasında http://localhost:8080 adresine giderek ana sayfaya ulaşabiliriz. Aynen aşağıdakine benzer bir görüntü elde etmemiz gerekiyor.
 
-![image.axd](images/image.axd)
+![credit_24.png](images/credit_24.png)
 
 Yeni ürün ekleme bileşeni konulduktan sonrasına ait örnek bir ekran görüntüsünü de buraya iliştirelim.
 
-![image.axd](images/image.axd)
+![credit_25.png](images/credit_25.png)
 
 Hatta yeni bir forma eklediğimizde gönderilen Graphql Mutation sorgusundan dönen değer, F12 sonrası Network sekmesinden yakalayabiliriz.
 
-![image.axd](images/image.axd)
+![credit_26.png](images/credit_26.png)
 
 > throw new UnDoneException ("Yeni ürün ekleme sayfasında kategori seçiminde combobox kullanımı yapılmalı");
 

@@ -1,4 +1,4 @@
----
+﻿---
 title: "Razor Dünyasındaki İlk Adımlarım"
 pubDate: 2019-05-17 12:53:00
 categories:
@@ -22,7 +22,7 @@ tags:
 ---
 
 # Razor Dünyasındaki İlk Adımlarım
-![image.axd](images/image.axd)
+![zekimuren.png](images/zekimuren.png)
 
 Bizim servisin dönüş yolculuğu bir başkadır. Her gün yaklaşık git gel neredeyse seksen kilometrelik yol teperiz (Daha ne kadar teperim bilemiyorum tabii) Dönüş yolculuğumuz trafiğin durumuna göre bazen çok uzun sürer. İşte böyle akşamların çok özel bir anı vardır.
 
@@ -540,27 +540,27 @@ Robert C. Martin (Uncle Bob)
 "This is essential reading for every current of aspiring software architect..."
 ```
 
-![image.axd](images/image.axd)
+![05_21_Cover_1.png](images/05_21_Cover_1.png)
 
 Console logundan kitabın eklendiğini izleyebiliriz.
 
-![image.axd](images/image.axd)
+![05_21_Cover_2.png](images/05_21_Cover_2.png)
 
 İşlemler sırasında veri doğrulama kontrolüne takılırsak aşağıdaki gibi bir görüntü ile karşılaşırız (Bu kısmı daha şık bir hale getirmek gerekiyor. Belki popup'lar ile uyarı vermek daha güzel olabilir. Bunu yapmayı bir deneyin)
 
-![image.axd](images/image.axd)
+![05_21_Cover_3.png](images/05_21_Cover_3.png)
 
 Başarılı girişler sonrası gelinen Index sayfasının çıktısı ise aşağıdaki ekran görüntüsündekine benzer olacaktır.
 
-![image.axd](images/image.axd)
+![05_21_Cover_4.png](images/05_21_Cover_4.png)
 
 Bir kitabı düzenlemek için Düzenle başlıklı linke tıkladığımızda EditBook/{Id} şeklindeki bir yönlendirme çalışır. Bu tahmin edeceğiniz üzere EditBook.cshtml sayfasının işletilmesini sağlayacaktır.
 
-![image.axd](images/image.axd)
+![05_21_Cover_5.png](images/05_21_Cover_5.png)
 
 Düzenleme sonrası örnek sonuçlar da şöyle olabilir.
 
-![image.axd](images/image.axd)
+![05_21_Cover_6.png](images/05_21_Cover_6.png)
 
 ## InMemory Veritabanını SQLite ile Değiştirme
 
@@ -595,15 +595,15 @@ dotnet ef database update
 
 Yukarıdaki terminal komutları sayesinde DataContext türevli sınıf baz alınarak migration planları çıkartılır. Planlar hazırlandıktan sonra ikinci komut ile update işlemi icra edilir.
 
-![image.axd](images/image.axd)
+![05_21_Cover_8.png](images/05_21_Cover_8.png)
 
 Eğer veri tabanını baştan hazırlamaz ve update planını çalıştırmazsak aşağıdakine benzer bir hata ile karşılaşabiliriz.
 
-![image.axd](images/image.axd)
+![05_21_Cover_7.png](images/05_21_Cover_7.png)
 
 Artık verilerimiz SQLite ile fiziki olarak da kayıt altında. Hatta Visual Studio Code'a [SQLite Explorer Extension](https://marketplace.visualstudio.com/items?itemName=alexcvzz.vscode-sqlite) isimli aracı eklersek oluşan DB dosyasının içeriğini de görebiliriz.
 
-![image.axd](images/image.axd)
+![Cover_9.png](images/Cover_9.png)
 
 ## Ben Neler Öğrendim?
 

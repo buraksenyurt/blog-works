@@ -1,4 +1,4 @@
----
+﻿---
 title: "Programcıdan Programcıya Rust"
 pubDate: 2021-12-24 10:00:00
 categories:
@@ -20,7 +20,7 @@ tags:
 ---
 
 # Programcıdan Programcıya Rust
-![image.axd](images/image.axd)
+![cover.png](images/cover.png)
 
 İki yıl kadar önce bir merakla başladığım ama sonrasında takıntı haline gelen bir uğraş edindim; Rust programlama dili. Profesyonel iş yaşantımın neredeyse tamamında.Net platformu üstünde geliştirme yaptım ve halen daha maaşımı ondan kazanıyorum. Bazı zamanlar Python, Go, Ruby gibi dillere de baktım ama hep hobi olarak kaldılar. Rust içinse aynı şeyi söylemem zor. Onunla ilgili resmi dokümantasyonu takip edip birkaç satır kod yazmaya başladım ve derken sayısız derleme zamanı hatası ile karşılaştım. Bunların neredeyse büyük çoğunluğu borrowing, ownership, lifetimes gibi konularla ilintiliydi ve her biri Rust’ın temelde bilinmesi gereken demirbaşları.
 
@@ -78,7 +78,7 @@ Program main fonksiyonundan çalışmaya başlar. let anahtar kelimesi ile intro
 cargo run
 ```
 
-![image.axd](images/image.axd)
+![rust45_1.png](images/rust45_1.png)
 
 Şimdi aynı örnek kodu aşağıdaki gibi değiştirelim.
 
@@ -95,11 +95,11 @@ fn print_sysmsg(message: str) {
 
 Dikkat edileceği üzere fonksiyonun parametre tipini değiştirdik. Metinsel veriyi işaret edebileceğimiz bir literal kullandık. Aynen Javascript, Python gibi dinamik programlama yaklaşımı içeren dillerde olduğu gibi. Yılların programcısı olarak bu kullanımda hiç bir sorun olmadığını rahatlıkla söyleyebilirsiniz. Şimdi çalışma zamanı çıktısına bakalım.
 
-![image.axd](images/image.axd)
+![rust45_2.png](images/rust45_2.png)
 
 Birkaç satırlık kod parçası için geniş bir hata mesajları silsilesi:| Odaklanmamız gereken hata mesajı “error[E0277]: the size for values of type `str` cannot be known at compilation time”. Rust derleyicisi parametre olarak gelen str literal’inin çalışma zamanında ne kadarlık bir yer kaplayacağını bilmediği için derlemeyi kabul etmemiştir. Bunun belleğin güvenli bir saha olarak kalması için konulmuş bir kural olduğunu ifade edebiliriz. Ancak sebebin geçerliliğini anlamak için belleğin stack ve heap bölgelerinin çalışmasını da bilmemiz gerekir.
 
-![image.axd](images/image.axd)
+![rust45_22.png](images/rust45_22.png)
 
 Program başlangıcında boyutları bilinen veriler stack bellek bölgesinde tutulurlar ve bu alan hızlı erişilebildiği için performans açısından oldukça verimlidir. Lakin heap bölgesine göre daha küçük bir alandır. Özellikle büyük boyutlu olan, çalışma zamanında içeriği dinamik olarak değişebilen türler göz önüne alındığında veriyi heap üstünden tutmak, stack’ten ise bu verinin olduğu başlangıç konumlarına işaret eden referansları tutmak tercih edilir.
 
@@ -125,7 +125,7 @@ fn print_sysmsg2(message: &str) {
 
 Öncelikle uygulama çıktısına bir göz atalım.
 
-![image.axd](images/image.axd)
+![rust45_3.png](images/rust45_3.png)
 
 Sorun yok. Peki ya neler oldu? İki farklı kullanım görmekteyiz. İlk versiyonda introduction değişkeninin taşıdığı değer metoda gönderilmeden önce to_string () ile String nesnesine dönüşür. String nesnesi verinin tutulduğu heap adresinin referansını, kapasitesini ve uzunluğunu tutar (Hatta henüz değinmedik ama String nesnesinin işaret ettiği veri aslında byte türünden bir vector serisidir) Diğer kullanımda ise motto isimli metin bazlı verinin başına & işareti konularak fonksiyona aktarıldığını görmekteyiz. Benzer şekilde print_sysmsg2 isimli fonksiyonun parametre tanımında da & ile başlayan bir literal değişken bildirimi söz konusudur. Aslında yapılan şey motto değişkeninin referansının print_sysmsg2 fonksiyonuna taşınması ya da o fonksiyon tarafından ödünç alınmasıdır (borrowing)
 
@@ -143,7 +143,7 @@ fn main() {
 
 Şimdilik çok önemli olmasa da n1 değişkeni için mut anahtar kelimesini kullanmamız dikkatinizi çekmiştir. Varsayılan olarak tüm değişkenler immutable olarak doğarlar. Yani mut operatörü ile aksi belirtilmedikçe sahip oldukları veriler değiştirilemez. Diğer yandan bu kod parçası derlenecek ama çalışma zamanında hata oluşmasına sebep olacaktır.
 
-![image.axd](images/image.axd)
+![rust45_4.png](images/rust45_4.png)
 
 Rust tarafında çalışma zamanı hataları aslında birer panik halidir (panic) Şimdi kodu dikkatlice inceleyelim. İlk değişkenimiz n1 işaretsiz 8 bit tamsayıdır. Dolayısıyla 2 üzeri 8 yani 256 adet sayı değerinden birini taşıyabilir. Önemli olan hangi aralıktakileri? Benzer şekilde n2 isimli değişken u8 olarak ifade edilmiştir ve o da pozitif olmak kaydıyla 0 ile 255 dahil değerler alabilir. Dikkat edileceği üzere 0 ile 255 dahil aradaki değerler olarak ifade ettik. Bu son derece doğal çünkü 0’dan itibaren gelen pozitif sayıları vurguluyoruz. Lakin n1 değerini 1 arttırdığımızda 128 rakamına geliriz ve esas itibariyle alınabilecek değerler hata mesajının da belirttiği üzere -127 ile 128 arasındadır. Yani işaretli tamsayılar da 0’ın sağ ve soluna doğru ilerlendiğini dolayısıyla 2 üzeri ifadesinde bulunan değerin yarısı kadarlık bir sayı alanının işaret edildiğini söylesek yeridir. Diğer yandan aşağıdaki gibi değişken tanımlamaları yapmak da mümkündür.
 
@@ -174,7 +174,7 @@ fn main() {
 }
 ```
 
-![image.axd](images/image.axd)
+![rust45_5.png](images/rust45_5.png)
 
 Points isimli i8 türünden 5 elemanlı bir dizi ve string literal türünden herhangi bir sayıda eleman içerebilecek colors isimli bir vector tanımlandığını görüyoruz. Diziyi tanımlarken eleman sayısını belirttiğimize dikkat edelim. Gerek dizi gerek vector elemanlarında ileri yönlü döngüler oluşturmak için iter fonksiyonundan yararlanıldığını görüyoruz. Bu şimdilik daha ileride ele alacağımız bir konu. Peki dizinin elemanlarından birisinin değerini değiştirmek ve hatta colors isimli vector’e pink isimli yeni bir değer eklemek istesek... Muhtemelen aşağıdaki gibi bir kod parçası üzerinden ilerleriz.
 
@@ -196,7 +196,7 @@ fn main() {
 }
 ```
 
-![image.axd](images/image.axd)
+![rust45_6.png](images/rust45_6.png)
 
 Aslında buraya kadar yazılanları dikkatli bir şekilde okuduysanız programı daha çalıştırmadan sorunu söyleyebilirsiniz. Kurala göre tüm değişkenler aksi belirtilmedikçe değiştirilemez (immutable) olarak tanımlanırlar.
 
@@ -218,7 +218,7 @@ fn main() {
 }
 ```
 
-![image.axd](images/image.axd)
+![rust45_7.png](images/rust45_7.png)
 
 Şimdi farklı bir şey deneyelim. Dizi elemanlarını bir döngü ile birer sayı artırmak istediğimizi düşünelim. Bu pek çok dilde hiçbir sorun ile karşılaşmadan rahatlıkla yapabileceğimiz bir şey öyle değil mi? Öyleyse bir bakalım.
 
@@ -232,7 +232,7 @@ fn main() {
 }
 ```
 
-![image.axd](images/image.axd)
+![rust45_8.png](images/rust45_8.png)
 
 Upss!!! Hata mesajına göre &i8 türüne += operatörünü uygulayamayacağımız söyleniyor. Hemen alt tarafta da bir öneri yer alıyor (İşte Rust derleyicisinin güzel yanlarından birisi daha) Konuyu daha net anlamak için iter fonksiyonunun kaynak kodlarına da bakabiliriz ancak şimdilik buna gerek yok. Referans edilen değişkeni * operatörü ile dereference ederek devam edelim.
 
@@ -246,7 +246,7 @@ fn main() {
 }
 ```
 
-![image.axd](images/image.axd)
+![rust45_9.png](images/rust45_9.png)
 
 Hımmm… İstediğimiz tam olarak bu değildi aslında. Görüldüğü üzere bir dizinin elemanlarını, onu dolaştığımız döngü içerisinde değiştirmek istediğimizde iter_mut isimli farklı bir fonksiyon kullanmamız tavsiye ediliyor. Aslında bu metotlar iterator deseninin uygulandığı fonksiyonlardır. Bu desen, dizi ve vector gibi veri türleri için built-in olarak zaten yazılmıştır. iter ve iter_mut fonksiyonları aşağıdaki veri yapılarını (struct) döndürecek şekilde tasarlanmışlardır.
 
@@ -266,7 +266,7 @@ pub struct Iter<'a, T: 'a> {
 
 struct veri türüne daha sonra geleceğiz ve hatta bu kodlarda 'a, T gibi bir takım bilmediğimiz ifadeler de var. Şimdilik bu iki veri yapısında kullanılan _marker alanları arasındaki farkı bilsek yeterli. Dikkat edileceği üzere IterMut yapısında T türünün mutable bir referans olarak ele alınması söz konusu. Diğerinde ise varsayılan kullanım olan immutable söz konusu. Şimdi kodlarımızı aşağıdaki gibi değiştirirsek sorun çözülecektir.
 
-![image.axd](images/image.axd)
+![rust45_10.png](images/rust45_10.png)
 
 Rust görüldüğü üzere değişkenlerin kullanımlarında, değiştirilebilir olup olmamalarında oldukça titiz davranmakta.
 
@@ -288,7 +288,7 @@ fn main() {
 
 Program kodunda HashMap kullanılacağını baştaki crate bildirimi ile yapmaktayız. color_codes bir HashMap ve ilk new fonksiyonu ile örnekleniyor. Ardından bu kümeye string literal ve işaretsiz 8 bit tamsayı çiftlerinden oluşan bazı örnekler ekleniyor. color_codes üstünden get fonksiyonunu kullanaraktan da mavi renk kodunu almak istiyoruz. Aslında farklı bir programlama dilinden gelen birisi gözüyle baktığımızda ortada bir sorun görünmüyor ama…
 
-![image.axd](images/image.axd)
+![rust45_11.png](images/rust45_11.png)
 
 Haydi bakalım… get fonksiyonu için key karşılığı olan value değerinin yerine Option türünün döndüğü belirtilmekte. Aslında get fonksiyonunun Option enum sabiti ile çalışmasının güzel bir nedeni var. Girilen parametre ilgili koleksiyonda olmayan bir key ise normal şartlarda hata oluşması lazım. Bu nedenle get fonksiyonu Rust içinde aşağıdaki gibi tanımlanmış bir enum sabiti döner.
 
@@ -322,7 +322,7 @@ fn main() {
 
 match ifadesinde get çağrısından dönen Option nesnesinin olası tüm durumları ele alınmaktadır. Some, yani bir değer bulunmuşsa kısmında süslü parantezler açılmıştır. Sadece bir match dalının kod bloğu içerdiğini göstermek için. None dalında olduğu gibi tek satırlık bir ifade de kullanılabilir (=> operatörünü matematikteki “ise” olarak düşünebilirsiniz) Option enum sabiti ve pattern matching içerisindeki kullanımını düşününce şunu da söyleyebiliriz; kendi enum sabitlerimizde farklı türden alanlar söz konusu olduğunda pattern matching ile olası tüm sonuçları kontrol etme şansımız vardır.
 
-![image.axd](images/image.axd)
+![rust45_12.png](images/rust45_12.png)
 
 İlginç olan durumlardan birisi aslında unwrap ile veya doğrudan [] operatörü ile ilgili değerlere ulaşabilmemizdir. Yani aşağıdaki gibi.
 
@@ -388,7 +388,7 @@ fn launch_missile(result: Result<Range, &'static str>) {
 
 İlk kez kendi veri yapımızı tanımladık. Range bir struct ve Rust içinde kendi veri modellerimizi tanımlamak istediğimizde kullanabileceğimiz önemli bir enstrüman. check_range isimli fonksiyon parametre olarak gelen Range tipinin değerlerine bakıp bir karar veriyor. Dikkat edilmesi gereken nokta Range dışında olunması halinde bir Err nesnesi kullanılması. Diğer durumlarda Ok ile sorun olmadığını belirtiyoruz. launch_missile fonksiyonu ise parametre olarak gelen Result türünün olası sonuçlarını pattern matching tekniği ile değerlendiriyor. Aptalca bir kod parçası ancak hata yönetimi noktasında Result tipi ile çalışmanın basit bir örneği olarak düşünebiliriz. Rust içerisinde built-in gelen fonksiyonlarda Option veya Result dönüşlerine sıklıkla rastlanıyor. Şunu da unutmayalım ki Rust, yönetimli kod (managed code) denilen bir ortama sahip değil ve bu nedenle exception handling gibi bir mekanizması ve doğal olarak try…catch blokları yok. Bu nedenle hata yönetiminin nasıl yapıldığını iyi anlamak önemli. Yani programcının olası her durumu ele alması kritik.
 
-![image.axd](images/image.axd)
+![rust45_13.png](images/rust45_13.png)
 
 Bu arada fonksiyonlarda dikkatinizi çeken yabancı bir kullanım şekli olmalı. check_range ve launch_missile fonksiyon tanımlarında yer alan &’static str kullanımı. Burada lifetime adı verilen önemli bir kavram söz konusu. Hatta statik olanı. Örnekte kullanmak zorundayız nitekim hata mesajının çalışma zamanı ömrü boyunca yaşaması gerekiyor. Anlayacağınız değişkenlerin yaşam sürelerini kontrol etmemiz gereken durumlar da var. Nitekim bir değişken ömrünü tamamladığında sahiplendiği veri de otomatikman kullanılmaz hale geliyor.
 
@@ -415,7 +415,7 @@ func main() {
 
 Category türünden bir alanı bulunan Product isimli struct’ın kullanımı örnekleniyor. Tavla nesnesini oluşturduktan sonra category alanına inip name değerini ekrana bastırıyoruz. Deneyimli bir geliştirici buradaki sıkıntıyı kolayca görebilir. İşte çalışma zamanı çıktısı.
 
-![image.axd](images/image.axd)
+![rust45_33.png](images/rust45_33.png)
 
 Dikkat edileceği üzere Category nesnesini örneklemediğimizden nil bir pointer referansını kullanmaya çalışıyoruz. Bu da doğal olarak çalışma zamanı hatası anlamına geliyor. Aynı örneği Rust ile yazalım.
 
@@ -456,7 +456,7 @@ struct Category {
 
 Neden? Çünkü derleyici, ataması yapılmamış bir category alanına erişmeye çalıştığımızı anlayacak ve bizi aşağıdaki derleme zamanı hatası ile pişman edecektir.
 
-![image.axd](images/image.axd)
+![rust45_34.png](images/rust45_34.png)
 
 Go ise çalışma zamanında bir hata mesajı verir ki null/nil kullanılan dillerde test edilmeden çıkılan kodlar için bu önemli bir sorundur. Rust derleyicisi bunu önceden bildirir. Tabii yine de bir önceki kod parçasındaki gibi kaçamak yapılabilir. Dolayısıyla her durumda hangi dil olursa olsun test yazmak müthiş önemlidir. Gelelim yukarıdaki kodun nasıl kullanılması gerektiğine. İşte beyle…
 
@@ -483,7 +483,7 @@ struct Category {
 }
 ```
 
-![image.axd](images/image.axd)
+![rust45_35.png](images/rust45_35.png)
 
 Dikkat edileceği üzere Product verisindeki category alanı Option olarak tanımlanmıştır. Pattern Matching kullanarak gerçekten bir değer taşıyıp taşımadığını anlayabiliriz. Some hali bir kategori değeri olduğunda çalışırken, None dalı kategori nesnesi oluşturulmadığında işler. Dolayısıyla olası iki durumu da ele aldığımız bir kod ortaya çıkar.
 
@@ -512,7 +512,7 @@ fn main() {
 }
 ```
 
-![image.axd](images/image.axd)
+![rust45_14.png](images/rust45_14.png)
 
 Aslında sonuçta şaşılacak pek bir şey yok. intro isimli değişken iç blok dışında tanımlanmış olduğundan hem blok içinde hem de dışında kullanılırken, status için aynı şeyi söylememiz mümkün değildir. Nitekim sadece iç blok içerisinde tanımlı olan bir değişkendir. String veri türünün bilhassa seçildiği bir örnek aslında bu. Olayı daha ilginç hale getirmek için bu kez değişkenin bir fonksiyona aktarıldığı aşağıdaki senaryoyu ele alalım.
 
@@ -529,7 +529,7 @@ fn get_count(text: String) -> usize {
 }
 ```
 
-![image.axd](images/image.axd)
+![rust45_15.png](images/rust45_15.png)
 
 Pek anlamı olmayan bir kod parçası ama çalışıyor. Şimdi bir satır daha ekleyip yeniden çalıştıralım.
 
@@ -541,7 +541,7 @@ fn main() {
 }
 ```
 
-![image.axd](images/image.axd)
+![rust45_16.png](images/rust45_16.png)
 
 Upss! Hata mesajına göre String türünün Copy isimli bir trait’i kendisine uyarlamadığı söyleniyor. Bunun sebebi String nesnesinin get_count metoduna taşıma suretiyle aktarılması ve ilk değişkenin geçersiz hale gelmesi. Hatırlanacağı üzere bir değerin sahibi tek bir değişken olabilirdi. Trait’ler ile aslında türlere kazandırabileceğimiz davranışları tanımlarız. Eğer String türü Copy trait’ini uyarlamış olsaydı fonksiyona kopyalanarak aktarılabilir ve dolayısıyla bu ihlal gerçekleşmezdi.
 
@@ -563,7 +563,7 @@ fn get_count(text: &String) -> usize {
 }
 ```
 
-![image.axd](images/image.axd)
+![rust45_17.png](images/rust45_17.png)
 
 Herhangi bir sorun olmadığı görülebilir. Nitekim intro değişkeni get_count fonksiyonuna referans suretiyle ödünç verilir. get_count fonksiyonu değer üstünde bir değişiklik yapmaz. Yapmak istese de yapamaz. Gelin aşağıdaki kod parçası ile bu duruma da bakalım.
 
@@ -584,7 +584,7 @@ fn get_count(text: &String) -> usize {
 
 Uygulamayı çalıştırınca çıktı aşağıdaki gibi olur.
 
-![image.axd](images/image.axd)
+![rust45_18.png](images/rust45_18.png)
 
 Ödünç alınan değer üstünde değişiklik yapmaya çalışıyoruz. Ancak borrow işlemi varsayılan olarak immutable’dır. Değeri alabilir, okuyabilir ama değiştiremezsiniz. Sahiplenme kurallarında da belirttiğimiz üzere Mutable Borrowing burada çözüm olarak kullanılabilir.
 
@@ -603,7 +603,7 @@ fn get_count(text: &mut String) -> usize {
 }
 ```
 
-![image.axd](images/image.axd)
+![rust45_19.png](images/rust45_19.png)
 
 Dikkat edileceği üzere main içerisindeki intro değişkeni mutable olarak değiştirilmiştir. Nitekim değişken get_count fonkisyonu içerisinde değiştirilmek istenmektedir. Ayrıca değer bu fonksiyonun kullanması için ödünç verilirken değiştirilebilir olarak işaretlenmiştir (&mut bildirimi ile) Bir de integer, float gibi stack bellek bölgesinde duran verileri ele alacağımız aşağıdaki aptal kod parçasına bakalım.
 
@@ -619,7 +619,7 @@ fn print_number(point: i8) {
 }
 ```
 
-![image.axd](images/image.axd)
+![rust45_20.png](images/rust45_20.png)
 
 Dikkat edileceği üzere score değişkeni print_number fonksiyonuna aktarılmış ve dönüşte yine main içerisinde kullanılabilmiştir. String türünü kullandığımız örnekte meydana gelen ihlal burada yaşanmamıştır. Bu son derece doğaldır nitekim integer gibi türler Copy trait’ini uyarlarlar. Dolayısıyla fonksiyonlara kopyalanarak alınırlar. Bu türler stack bellek bölgesinde olup ne kadar yer kapladıkları bilindiğinden kopyalanarak alınmalarında sıkıntı yoktur. Referans türü olduğunda ise sahipliğin ödünç verilmesi ve bu sayede pahalı heap maliyetinin düşürülmesi ve güvenli sahanın korunması esastır. Pek tabii integer bile olsa değerleri referans usulüyle fonksiyonlara taşıyabiliriz. Eğer değerleri bu fonksiyonlar içerisinde değiştirmek istiyorsak, mutable borrowing kuralına uymamız gerekir. Aşağıdaki örnek kod parçasında bu durum görülebilir.
 
@@ -642,7 +642,7 @@ fn print_number(point: i8) {
 }
 ```
 
-![image.axd](images/image.axd)
+![rust45_21.png](images/rust45_21.png)
 
 String kullanılan örnekteki gibi &mut operatörü ile referansın mutable olarak alınması ve aktarılması söz konusudur. Doğal olarak increase_one fonksiyonun içinde score değeri değiştirildikçe, main içerisindeki asıl değer de değişir. increase_one fonksiyonunda birde * operatörü kullanıldığı gözünüzde kaçmamış olsa gerek. Bu operatör dereference anlamına gelir.
 
@@ -673,7 +673,7 @@ fn main() {
 
 İlk değeri olmayan outer isimli bir değişkenimiz var ve takip eden scope içerisinde inner isimli başka bir değişken tanımlanıyor. Sonrasında inner’dan outer’a doğru bir atama görülüyor. Burada sahiplik referans usulü ile ödünç veriliyor. main fonksiyonundan çıkmadan önce ise outer değeri ekrana basılıyor. Basacağını ümit ediyoruz. main içinde bir scope açtığımız için kodun çalışmasına dair zihninizde birtakım şüpheler oluşmuştur eminim ki. Çalışma zamanı çıktısı da bu şüphelerinizi doğrulayacaktır.
 
-![image.axd](images/image.axd)
+![rust45_23.png](images/rust45_23.png)
 
 Sorun şu ki inner isimli değişken iç kapsam sona erdiğinde ölür ve hemen bellekten düşürülür. Lakin main fonksiyonu kapsamında yaşayan outer onun değerini ödünç almıştır ve pek tabii println! makrosuna gelindiğinde bu referans artık yoktur. Derleyici haklı olarak inner değişkeninin yeteri kadar uzun yaşamadığını söyleyerek yakınır (Hey programcı ne yaptığına dikkat et!) Görüldüğü üzere son derece basit bir kod parçası ama Rust’ın bir kural ihlaline takılmış durumda. Yani değişkenlerin yaşam ömürleri scope’lara bağlı olarak program çalıştığı müddetçe geçerli olmayabilir. Şimdi aşağıdaki kod parçasını göz önüne alalım.
 
@@ -696,7 +696,7 @@ fn find_greatest(x: &i8, y: &i8) -> &i8 {
 
 Normal şartlarda find_greatest fonksiyonuna değerleri referans olarak değil de & kullanmadan normal olarak taşıyabilirdik. Teorik olarak bir sorun olmamasını bekleyebilirsiniz. Hatta bir önceki paragraftan hiç bahsetmeseydik kodun çalışacağından yüzde yüz emin olabilirdiniz. Ne var ki derleme zamanında aşağıdaki hatayı alırız.
 
-![image.axd](images/image.axd)
+![rust45_24.png](images/rust45_24.png)
 
 Bir lifetime parametresi bekleniyor. Üstelik nasıl uygulanması gerektiğine dair bir öneri de help kısmında yer alıyor. Rust’ın derleyici hatalarına istinaden bulunduğu öneriler yazılımcıya epeyce yardımcı oluyor. Gelelim koddaki soruna. mine ve yours değişkenlerini fonksiyona referans olarak verdiğimizde doğal olarak o scope içerisine ödünç veriliyor ve fonksiyon tamamlandığında ölüyorlar. Sorun şu ki fonksiyon geriye bir referans dönüyor ve aslında if koşulu sebebiyle parametrelerden hangisinin döneceği ve dolayısıyla scope dışına çıkıldığında hangisinin yaşamaya devam etmesi gerektiği belirsiz. Bu kullanıma göre bizim açık bir şekilde değişkenlerin yaşam sürelerini belirtmemiz gerekiyor. Hatta bunu yaparken hepsini aynı lifetime değerine bağlayabiliriz.
 
@@ -717,7 +717,7 @@ fn find_greatest<'a>(x: &'a i8, y: &'a i8) -> &'a i8 {
 }
 ```
 
-![image.axd](images/image.axd)
+![rust45_25.png](images/rust45_25.png)
 
 'a ile lifetime parametresi belirliyoruz. Buna göre x,y ve find_greatest fonksiyonunun dönüş referansı aynı yaşam sürelerine sahip olacak. Lifetime parametrelerinde genellikle a,b,c gibi harfler kullanılmakta ve aslında birden fazla farklı yaşam ömrüne sahip kullanımlar da mümkün. Aynı örnek üzerinden aşağıdaki gibi bir kullanımı ele alalım.
 
@@ -740,7 +740,7 @@ fn find_greatest<'a, 'b>(x: &'a i8, y: &'b i8) -> &'a i8 {
 
 Bir cinlik yapıp, bilerek ve isteyerek mine değerini yours değerinden büyük verdik. Eh ne de olsa find_greatest metodu x ile gelen yaşam ömrü kadar ömrü olan bir sonuç dönecek. Yemezler:P
 
-![image.axd](images/image.axd)
+![rust45_26.png](images/rust45_26.png)
 
 Yaşam süreleri ile ilgili olarak Rust derleyicisi ömrü en kısa olana göre hareket etmek ister. Çünkü derleyici, çalışma zamanının mümkün olduğunca az değişkenle uğraşmasını ve referansların gereksiz yere yaşamamasını tercih eder. Bu, kaynakların etkin kullanımı açısından da önemlidir. Lifetime parametrelerini yazmak değil ama hangi durumda nerede kullanılması gerektiğine karar vermek ilk başlarda hiç kolay değil. Ancak Rust’ın standart kütüphane kodlarına bakaraktan da bu konuda çok şey öğrenilebilir. Mesela vector türünün iteratsyon desenini uyguladığı noktada lifetime parametreleri vardır. [Şuradan kaynak kodlarını inceleyin derim.](https://doc.rust-lang.org/src/alloc/vec/mod.rs.html#400-403)
 
@@ -772,7 +772,7 @@ fn set_price(mut p: Product, price: f32) -> Product {
 
 Product isimli veri yapısı sembolik olarak bir ürünü temsil etmekte. İçinde çok az alan var. String türünden title, 32 bit float türünden price ve 32 bit integer türünden unit_count. set_price isimli metot bir Product değişkenini alıp fiyatını gelen parametreye göre değiştiriyor ve güya kendisini geriye döndürüyor. main fonksiyonu içerisinde keyboard isimli Product türünden bir değişken tanımlıyoruz. Ardından set_price fonksiyonunu kullanarak ürün fiyatını değiştiriyoruz. Değişimden önce ve sonra ise ürünün birtakım bilgilerini ekrana yazdırıyoruz. Aslında sade bir senaryo ve doğal koşullar altında bir problem olmadan çalışmasını bekliyoruz. Şimdi derleme zamanı sonuçlarına bir bakalım.
 
-![image.axd](images/image.axd)
+![rust45_27.png](images/rust45_27.png)
 
 İlk örneklerimizde literal str kullandığımızda da benzer bir hata mesajı almıştık. Tasarladığımız struct Copy trait’ini uygulayarak bu işin üstesinden gelebilir ancak biz temel sorunun ne olduğuna bakalım. Keyboard değişkeni, set_price fonksiyonuna alındıktan sonra scope değiştirmiş olur ve fonksiyon sonlandığında da doğrudan silinir. Bu nedenle set_price çağrısı sonrası artık ortada kullanılabilir bir keyboard değeri kalmayacaktır. Kullanabileceğimiz yolları düşünürsek değeri mutable referans olarak taşıyarak ilerleyebileceğimi anlarız. Yani aşağıdaki kod parçasın olduğu gibi.
 
@@ -802,7 +802,7 @@ fn set_price(p: &mut Product, price: f32) -> &Product {
 
 Dört yerde değişiklik yaptık. set_price fonksiyonunun parametre ve dönüş türünde, keyboard değişkeninin tanımlanmasında ve set_price fonksiyonunun çağırılmasında. Çalışma zamanı çıktısına bir bakalım.
 
-![image.axd](images/image.axd)
+![rust45_28.png](images/rust45_28.png)
 
 Bu arada kullanmadığımız unit_count alanı için bir de uyarı verdiğini görebilirsiniz. Ayrıca bu tip kullanımlarınız var ve uyarılar çıkmasın istiyorsanız (ki dili öğrenirken bazen çıktıyı sadeleştirmek için gerekiyor) dead_code kullanımına izin vererek ilerleyebilirsiniz. Nasıl yapılacağına dair bir ipucunu derleyici note alanında belirtiyor. Aslında struct türünü kullanırken onu gerçekten bir veri yapısı olarak tasarlarız. Onunla ilişkilendirmek istediğimiz fonksiyonları ise yukarıdaki gibi değil aşağıdaki örnek kod parçasında olduğu gibi yazarız.
 
@@ -862,7 +862,7 @@ Bir Struct ile ilişkilendirilecek metotlar impl ile başlayan bloklarda tanıml
 
 Peki ya discount ve to_string fonksiyonlarında neden & operatörünü kullandık? Onları kaldırıp kodu denemeden sebebini düşünmeye çalışın. Tahmin edeceğiniz üzere konu dönüp dolaşıp sahipliklere gelecek. to_string ve discount fonksiyonlarındaki & operatörlerini kaldırınca aşağıdaki derleme zamanı hataları ile karşılaşırız.
 
-![image.axd](images/image.axd)
+![rust45_30.png](images/rust45_30.png)
 
 Dolayısıyla discount ve to_string metotlarında değişkenleri alırken sahipliklerini geçici olarak vermeliyiz ki kodun akışında kullanmaya devam edelim. Aksi durumda fonksiyon kapsamına giren değerler çıkışta öleceğinden main fonksiyonunun devamlılığında kullanılamaz hale geleceklerdir.
 
@@ -908,7 +908,7 @@ fn worker<T: AllowDelete>(object: &T) {
 
 Öncelikle çalışma zamanı çıktısına bir bakalım sonra da kodu yorumlayalım.
 
-![image.axd](images/image.axd)
+![rust45_31.png](images/rust45_31.png)
 
 AllowDelete ve AllowEdit isimli iki trait tanımı var. Bunların içerisinde de varsayılan metotlar söz konusu. Action isimli struct için bu trait’lerin kullanılacağı belirtiliyor. Şimdi main fonksiyonu içerisine bir bakalım. parallelizer isimli Action değişkeni worker fonksiyonuna gönderiliyor. worker fonksiyonunun tanımına dikkat edersek C# tarafındaki generic T tipi gibi bir kullanım söz konusu. Üstelik koşulu da var. Koşula göre T türü AllowDelete davranışını uyarlamış olmalı. Dolayısıyla worker fonksiyonu AllowDelete davranışını taşıyan herhangi bir tür için kullanılabilir. Türe eklenen bir trait’i doğrudan çağırmak da mümkün. Bu yüzden parallelizer değişkeni üstünden edit fonksiyonunu doğrudan kullanabiliriz. İstersek bu varsayılan davranışları değiştirmek de mümkün. Örneğin,
 
@@ -921,7 +921,7 @@ impl AllowDelete for Action {
 impl AllowEdit for Action {}
 ```
 
-![image.axd](images/image.axd)
+![rust45_32.png](images/rust45_32.png)
 
 Pek tabii buraya kadar öğrendiklerimiz oldukça az. Girizgâh olarak yeterli gibi ama her birinin çok daha fazla detayı var. Özellikle Rust’ın built-in tasarım kodlarına bakınca öğrenilmesi gereken çok şey olduğunu daha net görebiliyorsunuz. Benim acelem yok o yüzden mevzuya geniş zamana ayırıp öğrenmeye devam edeceğim. Pek tabii bol bol kod pratiği yapmakta yarar var. Aldığım notları burada sonlandırmadan önce işinize yarayacak birkaç kaynağı da paylaşmak isterim.
 

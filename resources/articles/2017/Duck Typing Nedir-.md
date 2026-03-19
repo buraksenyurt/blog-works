@@ -1,4 +1,4 @@
----
+﻿---
 title: "Duck Typing Nedir?"
 pubDate: 2017-01-19 21:30:00
 categories:
@@ -13,7 +13,7 @@ tags:
 ---
 
 # Duck Typing Nedir?
-![image.axd](images/image.axd)
+![duffy.gif](images/duffy.gif)
 
 Merhaba Arkadaşlar,
 
@@ -95,7 +95,7 @@ namespace ClassicTyping
 
 Kodu dikkatlice inceleyelim. Sizce bu kod derlenir mi? Aslında böyle sorduğuma göre derlenmiyor olması lazım değil mi? Uygulamada bir interface ve üç sınıf bulunmakta. Car ve Plane sınıfları IVehicleOps arayüzünü uyguluyorlar. Bu nedenle Drive isimli bir işlevselliğe sahipler. Ship isimli sınıfın ise bu arayüzü uygulamadığını görüyoruz. Dolayısıyla Drive isimli bir kabiliyete sahip değil. Program sınıfı içerisinde yer alan DriveVehicle metodu parametre olarak IVehicleOps tipinden değişkenler alıyor. Dolayısıyla bu arayüzü uygulayan nesne örneklerini kendisine aktarıp Drive fonksiyonunu çağırabiliriz. Lakin Ship sınıfına ait tasarımda böyle bir yetenek mevcut değil. Nitekim Ship, IVehicleOps tarafından taşınabilecek bir nesne modeli değil. Bu sebepten kod derlenmeyecektir.
 
-![image.axd](images/image.axd)
+![ducktype_1.gif](images/ducktype_1.gif)
 
 Ne zararı var peki? Programcı zaten tipleri önceden tanımlayarak geliştirme yapıyor. Kuralları biliyor. Interface kullanımı sayesinde metoda çok biçimli bir yapı kazandırıp OOP (Object Oriented Programming) ilkelerinden birisini de uyguluyor. Ship nesne örneği üzerinden Drive operasyonunun gerçekleşmemesi normal bir sonuç. Çünkü arayüz tanımına uygun yapıda değil. Burada bir çok tanımlama söz konusu. Kullanıcı tanımlı tipin önceden tasarlanması, uyacağı kuralların bildirilmesi gerekti.
 
@@ -124,12 +124,12 @@ vehicle_array=[frrari,bat]
 drive(vehicle_array)
 ```
 
-![image.axd](images/image.axd)
+![ducktype_2.gif](images/ducktype_2.gif)
 
 Ne olduğuna kısaca bakalım. Car, Plane sınıfları içerisinde yine drive isimli birer metodumuz var. Örnekte vehicles isimli değişken alan drive metodunun işleyişi önemli. Dikkat edileceği üzere vehicles dizisinin içerisindeki her v değişkeni üzerinden drive fonksiyonu çağırılıyor (Aslında vehicles'ın Car, Plane gibi araçlar taşıyacağı da kesin değil. Ne demiştik? Yaklaşımımızı farklılaştırmamız gerekiyor. Derleyici gibi değil yorumlayıcı gözüyle bakıp kodu yazmalıyız) Buna göre vehicles değişkenini Car ve Plane gibi sınıflara ait nesne örnekleri ile doldurup topluca drive operasyonunu uygulatmamız mümkün. Ortada bir arayüz bildirimi veya türetme gibi bir şey yok. Çalışma zamanı felsefesi basit. Ruby yorumlayıcısı vehicles elamanlarını gezerken eğer sürüş yeteneği varsa sürerim diyor. Çok doğal olarak Ship isimli ve drive metodu olmayan bir sınıf örneğini bu dizi içerisine alıp kullanmak istesek çalışma zamanında hata alırız (Dikkat edin derleme zamanı değil çalışma zamanı dedim)
 
 > Eğer drive metoduna gelen değişken içindeki nesne drive metodunu destekliyorsa sıkıntı yok. Çalıştırmayı dene! Ama drive metodu o anki nesne için söz konusu değilse çalışma zamanına hata fırlat.
 
-![image.axd](images/image.axd)
+![ducktype_3.gif](images/ducktype_3.gif)
 
 Sanıyorum siz de benim gibi Duck Typing yaklaşımını biraz daha iyi anladınız. Bakalım Ruby, Python gibi dilleri inceledikçe daha farklı nelerle karşılacağız!? Bir başka yazımızda görüşünceye dek hepinize mutlu günler dilerim.

@@ -1,4 +1,4 @@
----
+﻿---
 title: "Go Dilini Anlamaya Çalışırken"
 pubDate: 2017-01-06 03:56:00
 categories:
@@ -29,7 +29,7 @@ Go oldukça yüksek kombinasyon değerlerine sahip olduğundan bir insanı yeneb
 
 Google'ın GO kelimesi ile olan ilk teması AlphaGo değil. 2007 yılında Go isimli bir programlama dili çıkarttılar. Unix'in yaratıcısı olan Ken Thompson (ki bu yeni dilde onun izlerine rastlıyoruz), yine Unix takımından olan Rob Pike ve Google'dan Robert Griesemer tarafından geliştirilen bu dilin ilk etapta sistem programlama için tasarlandığı ifade edilmekte. 2009 yılında resmen duyurulmuş olan dil zaten Google'ın üretim bandındaki sistemlerinde aktif olarak kullanılmakta. Benim en çok ilgimi çeken hususlardan birisi ise TIOBE endeksindeki son bir yıllık yükselişi. 50nci sıradan 16ya sıçrıyor.
 
-![image.axd](images/image.axd)
+![golang_2.gif](images/golang_2.gif)
 
 O zaman bu GO dili de neymiş? Ben öğrendim ilk iki haftada. İşte okuduğum dökümanlardan derlediğim bazı kısa notlar.
 
@@ -83,7 +83,7 @@ func GetRandomNumber(seedValue int64) int{
 
 Öncelikle çalışma zamanı çıktısına bir bakalım.
 
-![image.axd](images/image.axd)
+![01_GoLang_4.gif](images/01_GoLang_4.gif)
 
 Program temel olarak selamlama yapmakta ve sonrasında rastgele bir sayı üretmektedir (Online çalıştığınız ortam, oturum-session kullanımı sebebiyle sürekli olarak aynı rastgele sayıyı üretebilir. Size tavsiyem kişisel bilgisayarınıza GO yükleyip aynı kodu notepad++ gibi bir editör ile yazdıktan sonra komut satırından go run programadi.go şeklinde çalıştırmanız olacaktır) Program anlamlı bir şeyler yapmasa da üzerinde konuşulması gereken bir çok konuyu içermekte. Şimdi bunlara bir bakalım.
 
@@ -91,7 +91,7 @@ Program temel olarak selamlama yapmakta ve sonrasında rastgele bir sayı üretm
 
 İlk olarak aşağıdaki çizelgeyi ele alalım derim.
 
-![image.axd](images/image.axd)
+![GoLang_3.gif](images/GoLang_3.gif)
 
 Go paket (Package) mantığı üzerine kurulu bir dildir. Uygulama main paketi ile başlamak zorundadır ve programın giriş fonksiyonu main'dir. import ifadesinde bu pakette kullanılacak olan diğer paketlere yer verilmiştir. Eğer programa eklediğimiz pakete ait üyeleri kod içerisinde hiç bir yerde kullanmıyorsak derleme zamanında imported and not used: "os" benzeri bir hata almamız muhtemeldir (os bir Go paketidir. Hata mesajında bunun yerine kullanılmayan hangi paket/paketler varsa onları adı gelecektir) GO dili ile birlikte gelen diğer paketlere [şu adresten](https://golang.org/pkg/) bakabilirsiniz.
 
@@ -137,19 +137,19 @@ Go katı yazım kurallarına sahip bir dil gibi görünüyor. Burada katılıkta
 
 ### { yerleşim durumu
 
-![image.axd](images/image.axd)
+![01_GoLang_4.gif](images/01_GoLang_4.gif)
 
 ### import'taki paket adlarının yerleşimi
 
-![image.axd](images/image.axd)
+![golang_6.gif](images/golang_6.gif)
 
 ### main paketinin olma zorunluluğu
 
-![image.axd](images/image.axd)
+![GoLang_7.gif](images/GoLang_7.gif)
 
 ### Tanımlanmış ama kullanılmayan paket durumu
 
-![image.axd](images/image.axd)
+![golang_8.gif](images/golang_8.gif)
 
 ### main'in ilk fonksiyon olma zorunluluğu
 

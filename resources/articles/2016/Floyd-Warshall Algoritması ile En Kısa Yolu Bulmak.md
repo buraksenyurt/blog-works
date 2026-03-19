@@ -1,4 +1,4 @@
----
+﻿---
 title: "Floyd-Warshall Algoritması ile En Kısa Yolu Bulmak"
 pubDate: 2016-04-23 12:00:00
 categories:
@@ -10,7 +10,7 @@ tags:
 ---
 
 # Floyd-Warshall Algoritması ile En Kısa Yolu Bulmak
-![image.axd](images/image.axd)
+![FWa_6.gif](images/FWa_6.gif)
 
 Merhaba Arkadaşlar,
 
@@ -20,17 +20,17 @@ Gerçek hayat örnekleri düşünüldüğünde Regular Expression, Network Routi
 
 Aslında konuyu eğlenceli olabileceğini düşündüğüm bir senaryo üzerinden ele alırsak çok daha iyi olur. Bu anlamda aşağıdaki grafiği göz önüne alalım. (Grafiğin oluşmasında [Quora](https://www.quora.com/What-is-an-intuitive-explanation-of-the-Floyd-Warshall-algorithm)'nın bana çok güzel fikir verdiğini ifade etmek isterim)
 
-![image.axd](images/image.axd)
+![FWa_1nn.gif](images/FWa_1nn.gif)
 
 Biz evimizde oturuyoruz ve örneğin Haldun Taner sahnesine gideceğiz. Normal şartlarda direkt bir güzergah kullanırsak 5 km yol gitmemiz gerekiyor. Diğer yandan önce Capitol'e, oradan Burhan Felek'e ve oradan'da Haldun Taner'e geçersek toplamda 4 km yol katediyoruz. 1 km kazancımız var bu güzergahı takip edersek. Eğer önce Burhan Felek'e oradan Haldun Taner'e geçersek de 7 km yol kat edeceğiz. Senaryoyu biraz daha geliştirelim. Diyelim ki evden Burger House'a gideceğiz. Karnımız acıkmış. Doğrudan gidersek 4 km yol almamız lazım. Farklı güzergahlar da tercih edebiliriz. Örneğin Haldun Taner üzerinden geçersek 9km, Okul üzerinden geçersek 24km yol. Bunun gibi bir yerden diğer bir yere giderken pek çok güzergah ve mesafe belirlenebilir.
 
 İşte Floyd-Warshall algoritması bir boğumdan diğer bir boğuma gitmek için kullanılabilecek en kısa yolların çıkartılmasında devreye girerek karar vermemizi kolaylaştırır. Şimdi yukarıdaki senaryoyu biraz daha bilimsel hale getirip lokasyonlar arasındaki en kısa mesafeleri bulmaya çalışalım. Öncelikle boğumlarımıza aşağıdaki gibi numaralar verelim ve ilk olarak yakınlık matrisimizi oluşturalım. (Yakınlık matrisinin ilk versiyonu boğumların komşu boğumlar ile arasındaki mesafelerini tanımlamaktadır)
 
-![image.axd](images/image.axd)
+![FWa_2n.gif](images/FWa_2n.gif)
 
 Matrisimizin ilk hali aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![FWa_3.gif](images/FWa_3.gif)
 
 Bu matris bize ne söylüyor acaba?
 
@@ -146,10 +146,10 @@ namespace FloydWarshallCode
 
 Console uygulamasının 3 önemli fonksiyonu vardır. İlk olarak makalemizin başında bahsettiğimiz yakınlık matrisinin birinci versiyonunu hazırlayan basit bir metod bulunur. Pek tabii gerçek hayat senaryolarında ilgili matrisin belli bir Graph kaynağından otomatik olarak hazırlanması söz konusudur. Uygulamayı çalıştırdığımızda aşağıdaki ekran görüntüsünde yer alan sonuç matrisini elde ederiz.
 
-![image.axd](images/image.axd)
+![FWa_4.gif](images/FWa_4.gif)
 
 Buna göre bir noktadan bir noktaya gidilebilecek en kısa mesafeler bulunmuştur. Örneğin n3 noktasından n5 noktasına gitmek istediğimizde en kısa güzergah 5km uzunluğunda olup n3->n4->n5 rotası şeklindedir. Diğer alternatif yollara bakıldığında gerçekten de en kısa mesafenin bu olduğu açıkça görülebilir.
 
-![image.axd](images/image.axd)
+![FWa_5.gif](images/FWa_5.gif)
 
 Görüldüğü üzere Floyd-Warshal, Graph tabanlı veri kümelerinde boğumlar arası en kısa mesafelerin buluması için kullanılabilecek basit ve hızlı algoritmalardan birisidir. Konu hakkında internet üzerinden de ulaşabileceğiniz bir çok kaynak mevcut. Bunları inceleyerek algoritmayı çalışma sistematiğini anlamaya çalışmanızı öneririm. Gerçek hayat vakalarına bakılmasında da yarar olduğu kanısındayım. Böylece geldik bir makalemizin daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

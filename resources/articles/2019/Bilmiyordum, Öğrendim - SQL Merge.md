@@ -1,4 +1,4 @@
----
+﻿---
 title: "Bilmiyordum, Öğrendim : SQL Merge"
 pubDate: 2019-01-13 13:03:00
 categories:
@@ -9,7 +9,7 @@ tags:
 ---
 
 # Bilmiyordum, Öğrendim : SQL Merge
-![image.axd](images/image.axd)
+![sqlmerge_0.jpg](images/sqlmerge_0.jpg)
 
 Merhaba Arkadaşlar,
 
@@ -163,10 +163,10 @@ Gece yayınevlerinden son listeleri alan servis çalıştığında Store tablosu
 
 İlk uygulama biçimimiz için aşağıdaki gibi bir plan oluşur.
 
-![image.axd](images/image.axd)
+![sqlmerge_1.gif](images/sqlmerge_1.gif)
 
 Table Spool maliyetleri biraz yüksek görüldüğü üzere. Merge çalışma planında ise durum aşağıdaki gibidir. Şekilde görülmese de %25lik bir Full Outer Join maliyeti var.
 
-![image.axd](images/image.axd)
+![sqlmerge_2.gif](images/sqlmerge_2.gif)
 
 İşin aslı konuyu SQL performans yönetimi konusunda uzman birisinin incelemesi daha doğru olabilir. Genellikle şirketlerin veritabanı operasyon ekipleri perfomans arttırımı gerektiren sorgular için destek oluyorlar. Yine de iş oraya gelmeden önce gerekli ön tedbirleri alıp performans iyileştirmelerini yapmak da biz geliştiricilere düşen önemli bir görevdir. Böylece geldik bir makalemizin daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

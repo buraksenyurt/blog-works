@@ -1,4 +1,4 @@
----
+﻿---
 title: "Atlas ile Node.js Üzerinden Haberleşmek"
 pubDate: 2018-05-01 21:30:00
 categories:
@@ -20,7 +20,7 @@ tags:
 ---
 
 # Atlas ile Node.js Üzerinden Haberleşmek
-![image.axd](images/image.axd)
+![atlas_node_9.gif](images/atlas_node_9.gif)
 
 Merhaba Arkadaşlar,
 
@@ -28,37 +28,37 @@ Atlas denilince aklımıza gelen çoğunlukla coğrafya dersleridir. Hatta bu is
 
 Atlas'a giriş mevzum yeni iş yerimdeki genç meslektaşlarım sayesinde gerçekleşti. Beni bu tip araştırmalara ittikleri için çok memnunum. Bir kaç gün öncesinde katıldıkları Hackathon'la ilgili izlenimlerini paylaşan arkadaşlarıma ne kadar teşekkür etsem azdır. Hemen nasıl bir şeydir araştırmaya başladım ve sonunda aşağıdaki çizimde yer alan senaryonun gerçekleştirilebileceğini öğrendim. Burada Node.js istemcisinin yerine farklı platformlar da gelebiliyor hemen söyleyeyim. Dilerseniz Ruby, Python gibi dilleri de katabilirsiniz. Ben son günlerin popüler konuşmaları özelinde Node.js tipinde bir istemciyi tercih ettim.
 
-![image.axd](images/image.axd)
+![atlas_node_11.gif](images/atlas_node_11.gif)
 
 MongoDB aşina olduğumuz üzere oldukça başarılı ve popüler olan doküman bazlı NoSQL veritabanı sistemlerinden birisi. Atlas'da onun bulut tabanlı versiyonu olarak düşünülebilir. Bu şu anlama geliyor. Dilersek MongoDB veritabanımızı Cloud üzerinde konuşlandırabiliriz. Bu sayede sunucu ve yönetim maliyetlerini azaltmış, ölçeklenebilirlik gibi işleri de kolaylaştırmış oluruz. Atlas, esas itibariyle AWS, GCP ve Azure sunucu merkezlerini kullanmakta. Normalde bulut bilişim platformları kendi bünyelerinde çeşitli veritabanlarına hizmet sunarlarken Atlas bu işi belirli bir veritabanını ele alarak yapmakta desek sanırım yeridir. MongoDB kullanacağımız belli ancak hangi platform üzerinde konuşlandıracağımızı Atlas üzerinden şekillendirebiliyoruz.
 
 Ne demek istediğimi anlamanızın en güzel yolu [şu adrese](http://cloud.mongodb.com) girip bir hesap açmakla olacak. Sonrasında bizi bekleyen şey proje açılması ve bir Cluster oluşturulması. Bu adımda kullanmak istediğiniz sunucu merkezini seçebiliyorsunuz. Ben 0$ maliyeti olan Free plan'ı seçerek Freelancer altında Project Zero isimli bir proje oluşturmakla işe başladım. Sandbox olarak geçen ürün içerisinde hemen varsayılan bir Cluster bir kaç dakika içerisinde oluşturuldu. Aşağıdaki ekran görüntüsünden görebileceğiniz üzere Frankfurt'ta ki AWS sunucularında 3 node'dan oluşan ve MongoDB'nin 3.4.13 sürümünü kullanan bir Cluster'ım var.
 
-![image.axd](images/image.axd)
+![atlas_node_1.gif](images/atlas_node_1.gif)
 
 Projeyi seçip ilerledikten ve bazı basit operasyonları icra ettiktsen sonra Cluster içerisindeki node'lar da görebildim. İki secondary ve bir primary node söz konusuydu.
 
-![image.axd](images/image.axd)
+![atlas_node_2.gif](images/atlas_node_2.gif)
 
 Benim amacım yazının başında da belirttiğimi üzere Atlas üzerinde oluşturacağım bir MongoDB örneğine, West-World'teki Node.js kodlarını kullanarak erişebilmek. Tabii bu tip bir iş için bazı ön gereklilikleri yerine getirmek lazım. Atlas üzerinde proje oluşturup Cluster yaratmak sadece bir başlangıçtı. Bunun dışında veritabanı ile ilişkili bir kullanıcının oluşturulması da gerekiyor. Ben örnek olarak scothy isimli bir kullanıcı oluşturdum ve bonkörlük edip ona DBAdmin rolünü verdim.
 
-![image.axd](images/image.axd)
+![atlas_node_3.gif](images/atlas_node_3.gif)
 
 Kullanıcı oluşturmakta yeterli değil. Atlas üzerinde konuşlanacak olan MongoDB örneğine nereden erişilecek? Eğer herkesin kullanımına sunulacak bir veritabanı söz konusu ise Public erişim hakkı verebiliriz. Ben örnekten sadece kendi bilgisayarımdan erişim sağlanması için var olan o anki IP adresimi IP Whitelist adı verilen bölüme eklettim. Dolayısıyla veritabanına sadece West-World üzerinden erişilebilecek şekilde bir ayarlama yaptım. Tabii bu senaryo için işin can sıkıcı tarafı statik bir IP olmadığında yaşanıyor. Bu sebepten örnekleri hazırlarken zaman zaman güncel IP bilgisini yeniden eklemek durumunda kaldığım da oldu.
 
-![image.axd](images/image.axd)
+![atlas_node_4.gif](images/atlas_node_4.gif)
 
 Bu adımları tamamladıktan sonra artık elimde Atlas üzerinde konuşlandırılmış bir MongoDB veritabanı olduğunu söyleyebilirim. Ama tabii ki bu da yeterli değil. Bir şekilde söz konusu veritabanına bilgi atabilmeli ve en azından bunu sorgulayabilmeliyim.
 
 Atlas üzerindeki veritabanı ve içeriğine erişmek için bir kaç alternatif yol var. Kod tarafını denemeden önce [MongoDB'nin Compass isimli ürününü](https://www.mongodb.com/products/compass) kullandım. Aslında beni buraya götüren yol Atlas arabirimindeki Connect düğmesi oldu. Seçenekler arasında yer alan Compass'a bakmaya karar verdim (Bunun dışında uygulama ve Shell seçenekleri de bulunuyor) Öncelikle West-World'ün Ubuntu 64bit versiyonu için gerekli deb uzantılı paketi belirtilen adresten indirdim. Kurulum işini gerçekleştirmek işin en basit kısmıydı.
 
-![image.axd](images/image.axd)
+![atlas_node_5.gif](images/atlas_node_5.gif)
 
 Bu arada fotoğrafın altındaki bilgiye de dikkatinizi çekerim.
 
 Tahmin edeceğiniz gibi sonrasında Atlas'a bağlanmak gerekiyor. Atlas şu an için West-World'ün oldukça uzağında taaaa Frankfurt'ta ikamet ediyor. Bu nedenle bağlantı bilgileri de önemli. Yukarıdaki ekran görüntüsünde bir de ConnectionString bilgisi olduğunu fark etmişsinizdir. Bu bilgiyi panoya kopyalamak aslında yeterli. Compass'i açtığımızda otomatik olarak host, port, username, gibi bilgiler doldurulmakta. Ama dolmayabilir de. Ki ben denemelerimi yaparken eksik olarak eklendiler. Temel olarak aşağıdaki ekran görüntüsünde yer alan bilgilerin doldurulması gerekiyor. Buradaki Hostname, Replica Set Name bilgileri önemli. Port aksi belirtilmedikçe 27017 olarak veriliyor. Authentication modunda kullanıcı adı ve şifre kullanacağımızı belirtmemiz lazım. Bu, Atlas üzerinde oluşturduğumuz kullanıcının bilgileri.
 
-![image.axd](images/image.axd)
+![atlas_node_10.gif](images/atlas_node_10.gif)
 
 Ben bu bilgileri doldurduktan sonra Project Zero'da yer alan Cluster0'a bağlanmayı başarabildim. Sonrasında ilk işim remote isimli bir veritabanı oluşturmak ve içerisine gamers isimli bir koleksiyon (collection) koymak oldu. Hatta aşağıdaki JSON içeriğini alıp,
 
@@ -85,7 +85,7 @@ Ben bu bilgileri doldurduktan sonra Project Zero'da yer alan Cluster0'a bağlanm
 
 gamers koleksiyonuna yeni bir doküman olarak da ekledim. Sonuç şöyleydi...
 
-![image.axd](images/image.axd)
+![atlas_node_6.gif](images/atlas_node_6.gif)
 
 Pek tabii hedefim bir kod parçasından faydalanarak Atlas ile haberleşmekti. Hali hazırda basit bir veri içeriği de eklediğime göre en azından Atlas'a bağlanıp bu içeriği çekmeyi deneyebilirdim. Pek çok programlama ortamı için yardımcı paketler mevcut. Ben son ay içerisinde haşırneşir olduğum Node.js tarafında ilerlemek istedim. Bu nedenle West-World'de Visual Studio Code'u kullanarak aşağıdaki kodları içeren basit bir js dosyasyı hazırladım.
 
@@ -142,11 +142,11 @@ Koddan da fark edeceğiniz üzere toArray fonksiyonunun parametresindeki isimsiz
 
 Sonuçta uygulamayı çalıştırdığımda gamers koleksiyonunun içeriğini çekebildiğimi fark ettim.
 
-![image.axd](images/image.axd)
+![atlas_node_7.gif](images/atlas_node_7.gif)
 
 Tüm bu işlemler olurken Atlas üzerinde de veri hareketlilikleri olmakta tabii ki. Onları izlemek mümkün, sonuçlara göre ölçeklendirme ile ilgili bir takım yönetimsel işlemleri yapmak mümkün. Eğer kullanılan cluster'lara bakılırsa aşağıdaki ekran görüntüsünde olduğu gibi gayet güzel grafikler sunuluyor.
 
-![image.axd](images/image.axd)
+![atlas_node_8.gif](images/atlas_node_8.gif)
 
 Bu güzel gelişmelerden sonra kod tarafını biraz daha kurcalamak istedim. İlk olarak yeni bir koleksiyonu nasıl oluşturabilirim buna baktım. Promise konusunu şimdilik işe katmadan (ki kullanımına alışana kadar kafamı karıştırsın istemiyorum) koda aşağıdaki createCollection fonksiyonunu ekledim.
 
@@ -179,7 +179,7 @@ main();
 
 Çalışma zamanı çıktısı tam da istediğim gibiydi. gamers dışında designers isimli yeni bir koleksiyon daha oluşmuştu.
 
-![image.axd](images/image.axd)
+![atlas_node_12.gif](images/atlas_node_12.gif)
 
 E o zaman birde bu yeni koleksiyona doküman eklemeyi denesek mi? İşte bu işi üstlenecek insertDesigner isimli fonksiyonumuz.
 
@@ -211,7 +211,7 @@ main();
 
 Bu sefer collection fonksiyonu ile yakaladığımız koleksiyon için insertOne metodu yardımıyla yeni bir JSON nesnesini göndermekteyiz. Kodun West-World tarafındaki çalışma zamanı sonuçları aşağıdaki gibi.
 
-![image.axd](images/image.axd)
+![atlas_node_13.gif](images/atlas_node_13.gif)
 
 Dikkat edileceği üzere insertOne metodunun ikinci parametresi olarak kullanılan fonksiyondaki res değişkeni üzerinden, henüz eklenen dokümanın MongoDB tarafında üretilen objectId bilgisine ulaşabildik.
 
@@ -248,7 +248,7 @@ main();
 
 Bu sefer bir JSON nesne dizisini parametre olarak kullanmaktayız. Her birisi ayrı birer doküman olarak değerlendirilecek. İşte benim elde ettiğim sonuçlar,
 
-![image.axd](images/image.axd)
+![atlas_node_14.gif](images/atlas_node_14.gif)
 
 Örnekler çoğaltılabilir. Doküman sorgulanması, veritabanı üretilmesi, çeşitli kriterlere göre sorgulamalar yapılması gibi temel pek çok operasyon kolaylıkla gerçekleştirilebilir. Söz konusu kodlar birer WebAPI servisi gibi tasarlanabilir de. Siz görevinizi anladınız değil mi?
 

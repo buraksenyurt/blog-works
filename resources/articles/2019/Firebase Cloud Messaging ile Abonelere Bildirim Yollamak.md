@@ -1,4 +1,4 @@
----
+﻿---
 title: "Firebase Cloud Messaging ile Abonelere Bildirim Yollamak"
 pubDate: 2019-08-02 17:48:00
 categories:
@@ -15,7 +15,7 @@ tags:
 ---
 
 # Firebase Cloud Messaging ile Abonelere Bildirim Yollamak
-![image.axd](images/image.axd)
+![friendship.png](images/friendship.png)
 
 Servis kapısı açıldığında gözlerini herkesten kaçırıp araca binerken heyecanlı ses tonuyla "Günaydın" diyerek en arka koltuğa geçen kadının ruh hali her yönüyle tanıdık geliyordu. Bir buçuk yıl kadar önce yine bu servise bindiğim ilk gün bende benzer kaygıları hissetmiştim. Oysa hayatımda ilk kez servis binmiyordum.
 
@@ -48,7 +48,7 @@ Manifesto dosyası PWA'nın Firebase tarafında etkinleştirilecek Push Notifica
 
 Öncelikle [Firebase](https://app-manifest.firebaseapp.com/) kontrol paneline gidilir ve PWA için metadata bilgilerini tutacak bir Web App Manifest dosyası üretilir. Ben örnekte aşağıdaki bilgileri kullandım.
 
-![image.axd](images/image.axd)
+![07_31_credit_1.png](images/07_31_credit_1.png)
 
 Sonrasında Zip dosyasını bilgisayara indirip proje klasörüne açmamız gerekiyor. Manifest.json dosyası ile birlikte images isimli bir klasör de gelecektir. Images klasöründe kendi eklediğimiz active.png dosyasının farklı cihazlar için standartlaştırılmış boyutları yer alır. Bu bilgiler manifest.json dosyasına da konur.
 
@@ -70,9 +70,9 @@ Kodları tamamladıktan sonra kısa bir test ile push notification hizmetinin ç
 
 komutunu verip uygulamayı ayağa kaldırmamız yeterli. Eğer aşağıdaki ekran görüntülerindekine benzer sonuçlar elde edebiliyorsak REST API uygulamasını yazmaya başlayabiliriz.
 
-![image.axd](images/image.axd)
+![07_31_credit_2.png](images/07_31_credit_2.png)
 
-![image.axd](images/image.axd)
+![07_31_credit_3.png](images/07_31_credit_3.png)
 
 Uygulama, Push Notification hizmeti için abone olunurken benzersiz bir ID değeri alır. Firebase Cloud Messaging sistem bu değeri kullanarak kime bildirim yapılacağını bilebilir.
 
@@ -96,11 +96,11 @@ terminal komutu ile web uygulamasını
 
 ile de REST servisini başlatabiliriz. Aboneliği başlattıktan sonra http://localhost:8080/news/push adresine talepte bulunursak bir bildirim mesajı ile karşılaşırız (sworker daki push olayı tetiklenir) Aynen aşağıdaki ekran görüntüsünde olduğu gibi.
 
-![image.axd](images/image.axd)
+![07_31_credit_4.png](images/07_31_credit_4.png)
 
 Bildirim kutusuna tıklarsak statik olarak belirlediğimiz sayfa açılacaktır (yani notificationclick olayı tetiklenir)
 
-![image.axd](images/image.axd)
+![07_31_credit_5.png](images/07_31_credit_5.png)
 PWA ve Service Uygulamalarının Firebase Hosting'e Alınması
 Her iki uygulamada local geliştirme ortamında gayet güzel çalışıyor. Ancak bunu anlamlı hale getirmek için her iki ürünü de Firebase üzerine alıp genel kullanıma açmamız lazım. Web uygulamasını Firebase Hosting ile REST servisini de Firebase Function ile yayınlamalıyız. Bu işlemler için firebase-tools aracına ihtiyacımız olacak. Terminalden aşağıdaki komutu kullanarak ilgili aracı sisteme yükleyebiliriz.
 
@@ -109,11 +109,11 @@ Yeni bir dağıtım klasörü oluşturmalı, initializion işlemini gerçekleşt
 
 firebase init işleminde bize bazı seçenekler sunulacaktır. Burada aşağıdaki görüntüde yer alan seçimlerle ilerleyebiliriz. En azından ben öyle yaptım.
 
-![image.axd](images/image.axd)
+![07_31_credit_6.png](images/07_31_credit_6.png)
 
 Eğer dağıtım işlemi başarılı olursa aşağıdaki ekran görüntüsündekine benzer sonuçlar elde edilmelidir.
 
-![image.axd](images/image.axd)
+![07_31_credit_7.png](images/07_31_credit_7.png)
 PusherAPI servisinin Dağıtımı
 Hatırlanacağı üzere web uygulaması bir REST Servisi yardımıyla FCM sistemini kullanıyordu. PusherAPI isimli uygulama, Fireabase tarafı için bir Function anlamına gelmektedir (Serverless App olarak düşünelim) Ölçeklenebilirliği, HTTPS güvenliği, otomatik olarak ayağa kalkması gibi bir çok iş Google Cloud ortamı tarafından ele alınır. Şimdi aşağıdaki terminal komutu ile fonksiyon klasörünü oluşturalım (dist klasörü içerisinde çalıştığımıza dikkat edelim)
 
@@ -130,7 +130,7 @@ Yapmamız gereken bir şey daha var. Web uygulamasının kullandığı main dosy
 Çalışma Zamanı (Production Ortamı)
 Uygulama artık https://basketin-cepte-project.firebaseapp.com/ adresinden yayında (En azından bir süre için yayındaydı ki aşağıdaki ekran görüntüsü de bunun kanıtıdır)
 
-![image.axd](images/image.axd)
+![07_31_credit_8.png](images/07_31_credit_8.png)
 Ben Neler Öğrendim?
 Bu çalışmanın da bana kattığı bir çok şey oldu elbette. Özellikle bir uygulamaya uzak sunuculardan bildirim yollanması ve bunun abonelik temelli yapılması merak edip öğrenmek istediğim konulardan birisiydi. İşin içerisine basit bir PWA modeli de ekleyince çalışma ilgi çekici bir hal almıştı. Yapılan hazırlıklar düşünüldüğünde aslında bizi çok fazla yormayacak bir geliştirme süreci olduğunu ifade edebiliriz. Derlemeyi sonlandırmacan önce yanıma kar kalanların neler olduğunu aşağıdaki maddeler ile özetleyebilirim.
 

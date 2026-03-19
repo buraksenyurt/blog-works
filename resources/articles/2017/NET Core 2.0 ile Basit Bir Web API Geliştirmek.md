@@ -1,4 +1,4 @@
----
+﻿---
 title: ".NET Core 2.0 ile Basit Bir Web API Geliştirmek"
 pubDate: 2017-10-04 09:58:00
 categories:
@@ -21,7 +21,7 @@ tags:
 ---
 
 # .NET Core 2.0 ile Basit Bir Web API Geliştirmek
-![image.axd](images/image.axd)
+![bogazmini.gif](images/bogazmini.gif)
 
 Merhaba Arkadaşlar,
 
@@ -41,7 +41,7 @@ ile dotnet komut satırı aracının nasıl kullanılabileceğini incelemeye ça
 dotnet new --help
 ```
 
-![image.axd](images/image.axd)
+![corewebapi_1.gif](images/corewebapi_1.gif)
 
 Sonrasında.Net Core çalışmaları için açtığım klasörde aşağıdaki komutu vererek Fabrika isimli bir Web API projesi oluşturdum.
 
@@ -49,11 +49,11 @@ Sonrasında.Net Core çalışmaları için açtığım klasörde aşağıdaki ko
 dotnet new webapi -o Fabrika
 ```
 
-![image.axd](images/image.axd)
+![corewebapi_2.gif](images/corewebapi_2.gif)
 
 Peki şimdi ne oldu? -o parametresi ile verdiğimiz Fabrika ismi nedeniyle Fabrika adında bir klasör oluştu ve içerisine gerekli tüm proje dosyaları hazır olarak eklendi.
 
-![image.axd](images/image.axd)
+![corewebapi_3.gif](images/corewebapi_3.gif)
 
 Dikkat edileceği üzere Controllers isimli bir klasör de bulunuyor. Temel olarak Model View Controller desenini kullanmaya hazır bir şablon oluşturulduğunu ifade edebiliriz. Bir başka deyişle kullanıcılardan gelecek REST taleplerini kontrol eden (Controllers) geriye dönecek varlıkları (Models) varsayılan olarak JSON tipinde basacak (View) bir desen söz konusu. Varsayılan olarak Models klasörü yoktu. Bunu kendim ekledim.
 
@@ -63,7 +63,7 @@ Oluşturulan proje yapısından sonra ilk yaptığım şey kaynaklarda da belirt
 dotnet run
 ```
 
-![image.axd](images/image.axd)
+![corewebapi_4.gif](images/corewebapi_4.gif)
 
 Dikkat edileceği üzere http://localhost:5000 adresinden ayağa kalkan ve istemci taleplerini dinlemeye hazır bir sunucu söz konusu. Tabii direkt bu adrese gidersek bir sonuç alamayız. Çünkü varsayılan olarak gelen bir yönlendirme (Router) sistemi var. Bu adres Controllers klasöründeki Controller tipinden türeyen sınıfa göre şekilleniyor. Hazır şablonla gelen ValuesControllers sınıfının kodlarına baktığımızda Route niteliğinin (attribute) kullanıldığını görürüz. Bu nitelikte ifade edilen api/[Controller] bildirimi talep edebileceğimiz HTTP adresinin şeklini belirler ki bu durumda aşağıdaki gibi olmalıdır.
 
@@ -71,7 +71,7 @@ http://localhost:5000/api/values
 
 Sonuçta örnek olarak konulmuş string dizi içeriği elde edilir.
 
-![image.axd](images/image.axd)
+![corewebapi_5.gif](images/corewebapi_5.gif)
 
 Elbette varsayılan bir Controller sınıfı söz konusu. ValuesController sınıfının içerisinde yer alan metodlar incelendiğinde HTTP Get, Post, Put ve Delete operasyonları için gerekli hazır fonksiyonların konulduğu görülür. Hangi metodun hangi HTTP talebine cevap vereceğini belirtmek için HttpGet, HttpPost, HttpPut ve HttpDelete niteliklerinden yararlanılmaktadır.
 
@@ -108,7 +108,7 @@ Bu işlemin ardından aşağıdaki komutu kullanarak Microsoft.EntityFrameworkCo
 dotnet restore
 ```
 
-![image.axd](images/image.axd)
+![corewebapi_6.gif](images/corewebapi_6.gif)
 
 Model Sınıflarının Yazılması
 
@@ -247,7 +247,7 @@ http://localhost:5000/Fabrika/restapi/products
 
 Ancak çalışma zamanı hataları ile karşılaştım.
 
-![image.axd](images/image.axd)
+![corewebapi_7.gif](images/corewebapi_7.gif)
 
 FabrikaContext tipi için gerekli servis çözümlemesi bir şekilde yapılamıyordu. Sonrasında DbContext tipini servis olarak eklemeyi unuttuğumu fark ettim. Startup.cs dosyasını açarak ConfigureServices metoduna aşağıdaki satırı ilave etmek sorunun çözümü için yeterliydi (Fabrika.Models ve Microsoft.EntityFrameworkCore namespace bildirimlerini de aldığım hatalar sonrası eklemem gerektiğini itiraf etmek isterim. Biraz daha dikkatli ol Burak!)
 
@@ -263,15 +263,15 @@ Burada bellekte çalışacak şekilde FabrikaDb isimli bir veritabanını, uygul
 
 http://localhost:5000/Fabrika/restApi/products talebi sonrası
 
-![image.axd](images/image.axd)
+![corewebapi_8.gif](images/corewebapi_8.gif)
 
 http://localhost:5000/fabrika/restapi/products/30021 talebi sonrası
 
-![image.axd](images/image.axd)
+![corewebapi_9.gif](images/corewebapi_9.gif)
 
 http://localhost:5000/fabrika/restapi/products/999 talebi sonrası
 
-![image.axd](images/image.axd)
+![corewebapi_10.gif](images/corewebapi_10.gif)
 
 --Derken--
 
@@ -299,7 +299,7 @@ public IActionResult Get(int id)
 
 Name niteliğine atanan değer CreateAtRoute'un kullandığı fonksiyon adı. Böylece istemciye hem işlemin başarılı olduğunu söylüyor hem de yeni oluşan ürün içeriğini gönderiyoruz. Tabii senaryoyu test etmenin en pratik yolu Postman gibi bir araçtan yararlanarak JSON tipinden bir talep göndermek. Aynen aşağıdaki ekran görüntülerinde olduğu gibi.
 
-![image.axd](images/image.axd)
+![corewebapi_13.gif](images/corewebapi_13.gif)
 
 --Derken--
 
@@ -317,7 +317,7 @@ public static IWebHost BuildWebHost(string[] args) =>
 
 Bu arada Fluent bir metod zinciri söz konusu olduğunu ifade edelim (Bilmeyenler Fluent API nasıl yazılır, Fluent Interface nedir gibi sorularla bir araştırma yapsınlar derim. Buradaki pek çok projemizde bu tip Fluent yapılar kullanıyoruz)
 
-![image.axd](images/image.axd)
+![corewebapi_11.gif](images/corewebapi_11.gif)
 
 Statik İçeriklere İzin Verilmesi
 
@@ -348,7 +348,7 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 
 Sonrasında index.html sayfasının geldiğini de gördüm.
 
-![image.axd](images/image.axd)
+![corewebapi_12.gif](images/corewebapi_12.gif)
 
 Bu arada varsayılan olarak wwwroot olarak tanımlanan klasör bilgisini UseWebRoot metodunu kullanarak farklı bir konuma da yönlendirebiliriz (Static sayfaların kullanımı ile ilgili daha fazla detay da var. [Şu adrese](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/static-files) bakmanızı öneririm)
 
@@ -408,7 +408,7 @@ namespace Fabrika
 
 http://localhost:5555/swagger/v1/swagger.json
 
-![image.axd](images/image.axd)
+![corewebapi_14.gif](images/corewebapi_14.gif)
 
 Sonrasında ise takip ettiğim MSDN dokümanının söylediği gibi doğrudan swagger adresine gittim.
 
@@ -416,7 +416,7 @@ http://localhost:5555/swagger/
 
 Sonuç inanılmaz güzeldi benim için (Otursam böyle bir tasarım yapamayacağım için olsa gerek) Kendimi çok fazla yormadan hazır bir swagger paketini kullanarak söz konusu API operasyonlarını görebileceğim, test edebileceğim bir içeriğe ulaştım.
 
-![image.axd](images/image.axd)
+![corewebapi_15.gif](images/corewebapi_15.gif)
 
 Artık Fabrika API'sinin yardım sayfası en temel haliyle hazır diyebiliriz. Pek tabi bunu özelleştirmek de gerekiyor ki gayet güzel bir şekilde özelleştirebiliyoruz. Açıklamaları genişletebiliyor, XML Comment'leri kullanarak operasyonlar hakkında daha detaylı bilgiler verebiliyoruz vs... [Şu adreste](https://docs.microsoft.com/en-us/aspnet/core/tutorials/web-api-help-pages-using-swagger?tabs=netcore-cli) bu konu ile ilgili detaylı bilgiye ulaşabilirsiniz.
 
@@ -437,7 +437,7 @@ Artık Fabrika API'sinin yardım sayfası en temel haliyle hazır diyebiliriz. P
 > 		});
 > });
 > ```
-> ![image.axd](images/image.axd)
+> ![corewebapi_16.gif](images/corewebapi_16.gif)
 
 Son Sözler
 

@@ -1,4 +1,4 @@
----
+﻿---
 title: "GoLang - Kalıtımsız Bir Dünya"
 pubDate: 2017-02-25 21:38:00
 categories:
@@ -12,7 +12,7 @@ tags:
 ---
 
 # GoLang - Kalıtımsız Bir Dünya
-![image.axd](images/image.axd)
+![gocomp_2.gif](images/gocomp_2.gif)
 
 Merhaba Arkadaşlar,
 
@@ -70,11 +70,11 @@ func writeMolag(m *Molag){
 
 Kodun çalışma zamanı çıktısı aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![gocomp_3.gif](images/gocomp_3.gif)
 
 Şuraya da çakma bir Object Composition çizelgesi koyalım. Player tipi esas itibariyle Gorlog ve Molag'ın birer parçasıdır. Nesneleri bu şekilde birleştirdiğimizi düşünebiliriz.
 
-![image.axd](images/image.axd)
+![composition.gif](images/composition.gif)
 
 Kod içerisinde üç structure tanımlandığını görmektesiniz. Player tipinde nick ve level isimli üyeler mevcut. Diğer yandan Gorlog ve Molag olarak adlandırdığımız orta dünya tipleri içerisinde Player isimli bir tanımlama yer alıyor. Bir başka deyişle bu tipler aslında birer Player olarak düşünülebilirler. Nitekim bir Player'ın üyelerini barındıracak şekilde tasarlandılar. Farklılık olması açısından insan ırkından gelen Gorlog'ların renkleri de var (color isimli üye)
 
@@ -156,7 +156,7 @@ func writeMolag(m *Molag){
 }
 ```
 
-![image.axd](images/image.axd)
+![gocomp4.gif](images/gocomp4.gif)
 
 Eski alışkanlık olsa gerek IPlayer şeklinde isimlendirdiğimiz bir interface tipi mevcut. Bu tip içerisinde move ve fire isimli iki fonksiyon yer alıyor. Biz bu fonksiyonellikleri hangi yapılara kazandırmak istersek onlara uygulamalıyız. Uygulama şekli aslında aynı isimli fonksiyonları uygulanacak tip için yazmak. move ve fire fonksiyonlarının tanımlanış şekillerinde ilk parantezler arasında uygulanacağı yapıyı belirtiyoruz. Böylece ilgili nesne örneklerinin Player içerisinde tanımlı üylelerine ve kendi özel niteliklerine erişebiliriz. Fonksiyonlar için önemli olan nokta girdi ve çıktı için kullanılan parametre yapılarının IPlayer arayüzünde belirtildiği şekilde olması.
 

@@ -1,4 +1,4 @@
----
+﻿---
 title: "Docker Üzerinde .Net Core Uygulaması Çalıştırmak"
 pubDate: 2017-11-10 06:01:00
 categories:
@@ -14,7 +14,7 @@ tags:
 ---
 
 # Docker Üzerinde .Net Core Uygulaması Çalıştırmak
-![image.axd](images/image.axd)
+![core_docker_9.gif](images/core_docker_9.gif)
 
 Merhaba Arkadaşlar,
 
@@ -30,19 +30,19 @@ Aslında her şey farklı platformlarda çalışabilecek uygulamaların ölçek 
 
 İlk dünya yukarıdaki gibiydi. Sonrasında ise Hyper-V (Fiziki bir makinede birden fazla sunucu rolünü bağımsız sanal roller içerisinde çalıştırımamızı sağlayan Microsoft ürünü de diyebiliriz) gibi isimler duymaya başladık. Bir başka deyişle sanallaştırma kavramları ile içli dışlı olmaya başladık.
 
-![image.axd](images/image.axd)
+![core_docker_2.gif](images/core_docker_2.gif)
 
 Sanallaştırma sayesinde tek bir fiziki sunucu üzerinde farklı işletim sistemlerini konuşlandırabilmekte. Bu teknikle özellikle dağıtım süreçlerinin hızlandığını ve yeni fiziksel sunucular almak zorudan kalmadığımız için maliyet avantajları sağlandığını ifade edebiliriz. Pek tabii ölçekleme maliyetleri de azalıyor. Ancak her ziyaretçi işletim sistemi (Guest OS) için ayı bir işletim sistemi barındırmak durumunda da kalıyoruz ki bu negatif bir özellik olarak karşımıza çıkıyor. Diğer yandan uygulamalarının taşınabilirliği yeteri kadar esnek olmuyor. Diğer bir dezavantaj.
 
 Derken karşımıza Docker diye bir şey çıktı. Go dili ile geliştirildiği söylenen bu yeni yaklaşımın özeti kabaca aşağıdaki şekilde görüldüğü gibi.
 
-![image.axd](images/image.axd)
+![core_docker_3.gif](images/core_docker_3.gif)
 
 Docker gibi Container araçları sayesinde uygulamalarımızı sadece ihtiyaç duydukları kütüphaneler (paketler) ile birlikte birbirlerinden izole olacak şekilde çalışabilir halde sunabiliyoruz. Dağıtımın kolaylaşması dışında taşınabilirlik de kolaylaşıyor. En önemli artılarından birisi ise uygulamalara has çalışma zamanlarının birbirlerinden tam anlamıyla izole edilebiliyor olması.
 
 Aşağıdaki şekil Docker'ın temel çalışma mimarisi özetlenmeye çalışılmakta.
 
-![image.axd](images/image.axd)
+![core_docker_4.gif](images/core_docker_4.gif)
 
 Docker temel olarak istemci-sunucu mimarisine uygun olarak geliştirilmiştir. GO dili ile yazıldığını sanıyorum belirtmiştik. Kullanıcılar esas itibariyle Docker Client üzerinden Demaon ile iletişim kuruyorlar. Build, Pull ve Run gibi komutlar Docker Client aracılığıyla, Deamon üzerinden işletilmekteler. Docker Demaon devamlı olarak çalışan bir Process (Sanırım Windows Service'e benzetebiliriz) Container’lar aslında birer çalışma zamanı nesnesi ve uygulamaların yürütülmesi için gerekli ne varsa (betikler, paketler vs) barındırıyorlar. Image öğeleri de Container’ların oluşturulması için kullanılan yalnızca okunabilir şablonlar olarak tasarlanmışlar. Şekilde Build, Pull ve Run operasyonlarının temel çalışma prensiplerini görebiliriz (Okların renklerine dikkat edelim)
 
@@ -108,7 +108,7 @@ sudo docker run hello-world
 
 Tabii Docker yeni kurulduğu için hello-world imajı sistemde bulunmuyor. Bu yüzden run komutu sonrası ilgili paketin son sürümü indirilecek ve sonrasında da çalıştırılacaktır. "Hello from Docker!" cümlesini görmek yeterli.
 
-![image.axd](images/image.axd)
+![core_docker_5.gif](images/core_docker_5.gif)
 
 Eğer adımlara dikkat edilecek olursa yukarıdaki çalışma şeklinde bahsedilen işlemlerin yapıldığı da görülebilir. İlk olarak Docker Client, Docker Deamon'a bağlanıyor. Sonrasında Deamon, hello-world imajını Hub'dan çekiyor ([Hub'da sayısız imaj olduğunu belirtelim](https://hub.docker.com/explore/)) İmaj çekildikten sonra bir Container oluşturulup çalıştırılıyor. Sonuçlar da istemciye sunuluyor. Artık West-World'de Docker kurulmuş vaziyette. Terminalde docker kullanımı ile ilgili daha fazla bili almak için --help anahtarını da kullanabiliriz.
 
@@ -149,7 +149,7 @@ namespace LuckyNum
 
 Program çalıştırıldığında bizim için rastgele bir sayı üretiyor. İçeriği aslında çok da önemli değil. Amacım uygulamayı Docker üzerinden yürütmek. İlerlemeden önce programın çalıştığından emin olmakta yarar var tabii.
 
-![image.axd](images/image.axd)
+![core_docker_6.gif](images/core_docker_6.gif)
 
 Sıradaki adımsa uygulamanın publish edilmesi. Terminalden aşağıdaki komutu kullanarak bu işlem gerçekleştirilebilir.
 
@@ -159,7 +159,7 @@ dotnet publish
 
 Sonuçta LuckyNum.dll ve diğer gerekli dosyalar bin/debug/netcoreapp2.0/publish klasörü altına gelmiş olmalı.
 
-![image.axd](images/image.axd)
+![core_docker_7.gif](images/core_docker_7.gif)
 
 Console Uygulamasını Docker'a Almak
 
@@ -192,7 +192,7 @@ Artık elimde lucky isimli bir imaj var. Bu imajı doğrudan çalıştırabilece
 sudo docker run --name luckynumber lucky
 ```
 
-![image.axd](images/image.axd)
+![core_docker_8.gif](images/core_docker_8.gif)
 
 Ben yazıyı hazırlarken bir kaç deneme yaptığım için Docker build işleminin çıktısı sizinkinden farklı olabilir. Nitekim dotnetcore imajının indirilmesi ile ilgili adımlar da yer almaktaydı. Sisteme yüklü olan imajların listesini de görebiliriz. Hatta kaldırmak istediklerimiz olursa rm veya rmi komutlarını da kullanabiliriz. Bunlar örneğe çalışırken işime yarayan komutlardı.
 
@@ -200,6 +200,6 @@ Ben yazıyı hazırlarken bir kaç deneme yaptığım için Docker build işlemi
 
 West-World şimdi biraz daha mutlu. Çünkü.Net Core 2.0 ile yazılmış bir programı dockerize etmenin nasıl bir şey olduğunu öğrendi. Ben de tabii. Elbette docker'ın gücünü anlamak için farklı açılardan da bakmak gerekli. Söz gelimi official imajlardan olan python'un çekip üretilen container üzerinde doğrudan python ile kodlama yapmaya başlayabiliriz. Aşağıdaki ekran görüntüsüne dikkat edin. Sistem python yüklememize gerek yok. pyhton çalışmak için gerekli herşeyin yer aldığı bir imajı çekip başlatılan container üzerinden kodlama yapabiliriz.
 
-![image.axd](images/image.axd)
+![core_docker_11.gif](images/core_docker_11.gif)
 
 Docker,.Net Core gibi konular önümüzdeki yıllarda geliştiricilerin iyi şekilde hakim olması gereken konular arasında yer alıyor. Vakit ayırıp planlı bir şekilde çalışmak lazım. Böylece geldik bir yazımızın daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

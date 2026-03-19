@@ -1,4 +1,4 @@
----
+﻿---
 title: "Rust ile Kodlama İdmanları - Orta Seviye"
 pubDate: 2025-11-03 07:28:00
 categories:
@@ -15,7 +15,7 @@ tags:
 ---
 
 # Rust ile Kodlama İdmanları - Orta Seviye
-![image.axd](images/image.axd)
+![ferris_mini_11.png](images/ferris_mini_11.png)
 
 Şunu fark ettim ki, hangi programlama dili olursa olsun bilgilerimizi taze tutmanın yollarından birisi öğrenilenleri düzenli olarak not haline getirmek ve yazarak kayıt altına almak. Elbette tek yol bu değil. Mutlaka her gün bir parça da olsa kod yazmak, belki bir proje üzerinden ilerlemek (hiçbir yerde kullanılmayacak olsa bile), onunla ilgili bir makale okumak veya bir video izlemek lazım. Ünlü düşünür Johann Wolfgang von Goethe ne demiş "İnsan her gün bir parça müzik dinlemeli, iyi bir şiir okumalı, güzel bir tablo görmeli ve mümkünse birkaç mantıklı cümle söylemelidir." Yapay zekanın bilgisayar ve internet'ten sonra yeni bir devrim olma çabasıyla koştuğu şu dönemde iyi bir programcı olmak için daha çok okuyalım, daha çok pratik yapalım, daha çok araştıralım, daha çok dinleyelim derim. Elbette yapay zeka araçlarına sırtımızı da dönmeyelim. Nimetlerinden, verimliliğimizi artıracak ölçüde yararlanalım.
 
@@ -242,7 +242,7 @@ impl User {
 
 Bu örnekte doğrudan bir kalıtım kullanımı söz konusu değildir ancak User veri yapısının tasarımına dikkat edilmelidir. Personel, iletişim, aktivite ve oyun bilgileri ayrı birer veri yapısı olarak tasarlanmış ve User isimli veri yapısında birer alan olarak kullanılmışlardır. Bad Practice olarak tasarlanan BadUser veri yapısına göre yeniden kullanılabilir bileşenler söz konusudur. Bir başka deyişle farklı veri yapılarında da kullanılabilirler. Örneğe ait çalışma zamanı çıktısı aşağıdaki gibidir.
 
-![image.axd](images/image.axd)
+![rust_exc_10.png](images/rust_exc_10.png)
 
 ## Daha Kapsamlı Test Senaryoları Yazmak
 
@@ -296,7 +296,7 @@ mod tests {
 
 Bu kodun test çıktıları da aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![rust_exc_11.png](images/rust_exc_11.png)
 
 ## Lazy Iterator Kullanımı ile Bellek Verimliliğini Artırmak
 
@@ -385,7 +385,7 @@ fn get_error_logs_eager(log_data: &[String]) -> Vec<String> {
 
 Bu örnek elbette performans farkı ve çalışma zamanı bellek tüketim maliyetlerini göstermez ancak Lazy ve Eager Loading senaryoları için kodu nasıl kullanacağımızı açıklar. Çalışma zamanı çıktısını da buraya bırakalım. Zira siz denediğinizde de benzer sonuçlar almalısınız.
 
-![image.axd](images/image.axd)
+![rust_exc_12.png](images/rust_exc_12.png)
 
 ## Generic Türlerde Kısıtlamaları (Constraint) Kullanmak
 
@@ -484,7 +484,7 @@ impl Ord for Tower {
 
 Örnekte yer alan findminmax fonksiyonu T türünden bir dizi referansı almakta ve yine aynı türden bir Tuple döndürmektedir. Fonksiyonda T türü için Ord ve Copy trait'lerini uygulama zorunluluğu getirilmiştir. Buna göre primitive tipler'den tutun da kendi yazdığımız türler için de aynı fonksiyonu kullanabiliriz. Tek şart kendi türümüzün de bu trait'leri uygulamış olmasıdır. Örnek kodda yer alan Tower veri yapısı açık bir şekilde PartialOrd ve Ord trait'lerini uygulamaktadır. Bu sayede karşılaştırılabilme davranışını kazanmıştır. Ayrıca derive niteliği üzerinden doğal yolla Copy trait'ini implemente etmektedir. Örneğin çalışma zamanı çıktısı aşağıda görüldüğü gibidir.
 
-![image.axd](images/image.axd)
+![rust_exc_13.png](images/rust_exc_13.png)
 
 ## Daha Güçlü Hata Yönetimi için Custom Error Türleri Oluşturmak veya thiserror Kullanmak
 
@@ -566,7 +566,7 @@ thiserror = "2.0.17"
 
 Konu kapsamında thiserror crate'ine odaklanmak gerekir. serde ve serdejson küfeleri sadece JSON bazlı örnekler için eklenmiştir.
 
-![image.axd](images/image.axd)
+![rust_exc_14.png](images/rust_exc_14.png)
 
 ## Tip Dönüşümlerinde From ve Into Trait'lerini Kullanmak
 
@@ -655,7 +655,7 @@ impl From<num::ParseIntError> for AppError {
 
 Dikkat edileceği üzere io kütüphanesinden Error ve num kütüphanesinden ParseIntError türlerinin AppError türüne dönüşmesi için birer uyarlama söz konusu. Buna göre search ve parsenumber fonksiyonlarında meycana gelebilecek ve? operatörü ile otomatik olarak yakalanacak bu hatalar otomatik olarak AppError türüne dönüştürülebilir. Kodun çalışma zamanı çıktısı aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![rust_exc_15.png](images/rust_exc_15.png)
 
 ## Generic Trait'lerde Associated Types Kullanımı
 
@@ -735,7 +735,7 @@ fn main() {
 
 Örneğin çalışma zamanı çıktısı aşağıdaki gibidir.
 
-![image.axd](images/image.axd)
+![rust_exc_16.png](images/rust_exc_16.png)
 
 ## Iterator Adaptörleri ve collect Kullanımı
 
@@ -822,7 +822,7 @@ struct Location {
 
 Kodun çalışma zamanı çıktısı aşağıdaki gibidir.
 
-![image.axd](images/image.axd)
+![rust_exc_17.png](images/rust_exc_17.png)
 
 ## Module Gizleme ve Erişim Kontrolü
 
@@ -902,7 +902,7 @@ mod settings {
 }
 ```
 
-![image.axd](images/image.axd)
+![rust_exc_18.png](images/rust_exc_18.png)
 
 Böylece geldik bir makalemizin daha sonuna.
 

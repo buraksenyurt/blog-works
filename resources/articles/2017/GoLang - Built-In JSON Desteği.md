@@ -1,4 +1,4 @@
----
+﻿---
 title: "GoLang - Built-In JSON Desteği"
 pubDate: 2017-06-16 06:18:00
 categories:
@@ -15,7 +15,7 @@ tags:
 ---
 
 # GoLang - Built-In JSON Desteği
-![image.axd](images/image.axd)
+![gophergo.gif](images/gophergo.gif)
 
 Merhaba Arkadaşlar,
 
@@ -78,7 +78,7 @@ type Game struct{
 
 Kodun çalışma zamanı çıktısı aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![gojson.gif](images/gojson.gif)
 
 Primitive tiplerin JSON formatında serileştirilmesi oldukça kolay zaten. Bu nedenle örnek uygulamamızda Game ve Player isimli iki struct tipi kullanıyoruz. Game tipi içinde Player tipinden bir slice yer alıyor. JSON serileştirme ve ters-serileştirme işlemlerini Marshal ve Unmarshal metodları ile gerçekleştirebiliriz. json tipi encoding/json paketi içerisinde yer almaktadır. Marshal çıktısını aldıktan sonra ekrana basarken string tipine dönüştürme işlemi uyguladık (Bunu yapmadığımız takdirde nasıl bir sonuç elde edeceğinizi inceleyin lütfen) Unmarshal metodu sırasında oluşabilecek bir paniği kontrol altına almaya da çalıştık. Marshal ve Unmarshal çağrıları dışında NewEncoder metodunu kullanarak çıktıların bir Stream'e doğru yönlendirilmesi de sağlanabilir. Bu stream işletim sistemine ait terminali gösterebileceği gibi bir HTTP mesajının body kısmı da olabilir. Son kod satırında bu işlem ele alınmış ve çıktılar doğrudan terminale verilmiştir. İlgili özelliği kullanabilmek için os paketi koda dahil edilmiştir.
 
@@ -86,6 +86,6 @@ Primitive tiplerin JSON formatında serileştirilmesi oldukça kolay zaten. Bu n
 
 Uygulamanın ekrana bastığı JSON içeriğini Chorme gibi bir tarayıcıda göstermek isterseniz aşağıdaki sonuçları görmemiz gerekiyor (Chorme'da JSONView eklentisini kullandığımı belirteyim)
 
-![image.axd](images/image.axd)
+![tfi159_2.gif](images/tfi159_2.gif)
 
 Pek tabii size düşen bir kaç görev var. Örneğin bu çıktıyı fiziki bir dosyaya kaydetmeyi deneyebilirsiniz. Sonrasında ise kaydedilen dosya içeriğinden ilgili içerikleri canlandırmaya çalışabilirsiniz. Bu işi biraz daha ileri götürüp JSON formatında veriler ile çalışan basit bir NoSQL veritabanı sistemi yazabilir hatta fonksiyonelliklerini (ekleme,çıkartma,arama vb) REST API olarak dış dünyaya sunabilirsiniz. Bence bunu bir deneyin. Böylece geldik kısa bir kod parçasının daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

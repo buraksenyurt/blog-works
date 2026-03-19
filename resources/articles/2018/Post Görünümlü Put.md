@@ -1,4 +1,4 @@
----
+﻿---
 title: "Post Görünümlü Put"
 pubDate: 2018-08-02 11:51:00
 categories:
@@ -23,7 +23,7 @@ tags:
 ---
 
 # Post Görünümlü Put
-![image.axd](images/image.axd)
+![tun_giris.gif](images/tun_giris.gif)
 
 Merhaba Arkadaşlar,
 
@@ -272,7 +272,7 @@ HTTP metodu : GET
 Adres: localhost:5555/smarty/api/books
 ```
 
-![image.axd](images/image.axd)
+![tun_ilk_durum.gif](images/tun_ilk_durum.gif)
 
 Tüm kitap listesinin çekildiğini görüyorsunuz. Bir güncelleme işlemi yapmak istersek PUT metoduyla gidilmesi yeterlidir.
 
@@ -283,7 +283,7 @@ Adres: localhost:5555/smarty/api/books/1023
 Body: {Title:"Essential C# 7.0"}
 ```
 
-![image.axd](images/image.axd)
+![tun_normalde.gif](images/tun_normalde.gif)
 
 Senaryoya göreyse PUT gibi bir metodu sunucuya gönderemiyor olmalıyız. Söz gelimi sunucu tarafından desteklenmeyen patch metodunu, POST'un kolunun altına alıp göndermeye çalışırsak bir HTTP 404 Not Found hatası alabiliriz. Burada elbette Middleware'deki kriterler devreye girmektedir. Hatırlayacağınız üzere HttpOverrider sınıfının POST, PUT, DELETE ve GET metodlarına izin veriyoruz. Dolayısıyla aşağıdaki sonuç oldukça doğaldır.
 
@@ -295,7 +295,7 @@ X-HTTP-Method-Override: PATCH
 Body: {Title:""}
 ```
 
-![image.axd](images/image.axd)
+![tun_desteklenmeyen_cagri.gif](images/tun_desteklenmeyen_cagri.gif)
 
 Peki izin verilen PUT metodunu POST olarak göndermeyi denersek ne olur? Öyle ya tüm çabamız bunu görebilmek içindi. İstemci çeşitli sebeplerden ötürü sunucuya PUT talebi yapamıyor. Elinde sadece POST seçeneği var. Bunu analiz etmek için Postman'de aşağıdaki hazırlığı yapabiliriz.
 
@@ -309,7 +309,7 @@ Body: {Title:"X-Men Triology."}
 
 İşte beklenen sonuç.
 
-![image.axd](images/image.axd)
+![tun_desteklenen.gif](images/tun_desteklenen.gif)
 
 Dikkat edileceği üzere Web API'ye HTTP POST çağrısı yapmaktayız. Ancak Header'a eklediğimiz X-HTTP-Method-Override özelliğinin değerine de PUT ifadesini yerleştirdik. Bu, POST talebi gönderdiğimiz halde aslında PUT işlemini gerçekleştirmek istediğimiz anlamına geliyor. HTTP 200 OK sonucunu gördükten sonra hemen tüm kitap listesini tekrar çekerek istenen güncellemenin olup olmadığını kontrol etmekte yarar var. Buna göre 1023 numaralı kitabın başlığının değişmiş olması gerekiyor.
 
@@ -318,7 +318,7 @@ HTTP metodu : GET
 Adres: localhost:5555/smarty/api/books
 ```
 
-![image.axd](images/image.axd)
+![tun_sonuc.gif](images/tun_sonuc.gif)
 
 Volaaa:)
 

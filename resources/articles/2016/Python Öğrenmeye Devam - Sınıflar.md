@@ -1,4 +1,4 @@
----
+﻿---
 title: "Python Öğrenmeye Devam - Sınıflar"
 pubDate: 2016-09-01 01:00:00
 categories:
@@ -12,7 +12,7 @@ tags:
 ---
 
 # Python Öğrenmeye Devam - Sınıflar
-![image.axd](images/image.axd)
+![practice-makes-perfect.jpg](images/practice-makes-perfect.jpg)
 
 Merhaba Arkadaşlar,
 
@@ -51,7 +51,7 @@ meks.price=19
 print(meks.price)
 ```
 
-![image.axd](images/image.axd)
+![pyhtonc_1n.gif](images/pyhtonc_1n.gif)
 
 (Kodu [Repl.it](https://repl.it) üzerinden denediğimi belirteyim. Malum şirketin kısıtlı imkanları ve kuralları nedeniyle direkt bilgisayar üzerinden çalışamıyorum)
 
@@ -83,7 +83,7 @@ print(meks.isActive)
 print(Product.isActive)
 ```
 
-![image.axd](images/image.axd)
+![pyhtonc_2.gif](images/pyhtonc_2.gif)
 
 Kodun çalışma zamanı çıktısına bakıldığında isActive için önce False sonrasında ise True yazıldığı görülmektedir. meks isimli nesne örneğini oluşturduğumuzda çalışma zamanı öncelikle init içerisinde isActive isimli bir nesne örneği niteliği kullanılıp kullanılmadığına bakar. Kullanıldığı için meks.isActive çıktısı False olarak ekrana yansımıştır (Burada nitelik bazında bir isim gizleme-Name Hiding- olduğunu düşünebiliriz sanırım) Ancak bir sonraki satırda çok daha farklı bir durum söz konusudur. isActive isimli sınıf niteliğine (3ncü satır oluyor) erişmek için Product.isActive ifadesi kullanılmıştır. Bu durumda çalışma zamanı Product sınıfına ait bir niteliğe bakması gerektiğini anlamıştır. Tahmin edileceği üzere aslında sınıf nitelikleri aynı kapsam içerisinde yer alan tüm ürünler için ortak bir özellikmiş gibi düşünülebilir.
 
@@ -105,7 +105,7 @@ blue=GameZone("Blue One")
 print("Blue players ",blue.players)
 ```
 
-![image.axd](images/image.axd)
+![pyhtonc_4.gif](images/pyhtonc_4.gif)
 
 GameZone sınıfı içinde players isimli bir nitelik yer almaktadır. Bu niteliğe red ve blue isimli sınıf örnekleri üzerinde erişebiliyoruz. Dikkat edilmesi gereken nokta blue isimli GameZone nesnesi örneklendikten sonra yine bu nesne örneği üzerinden erişilen players niteliğinden burki sonucunun dönmesidir. Yani red nesnesi örneklendikten sonra players niteliğine eklenen değer, yeni örneklenen blue nesnesi için de söz konusudur. İşte nesne örneği niteliklerini kullanmanın bir sebebi de bu durumun ortadan kaldırılmasıdır (Tabii gerekiyorsa) Aynı kodu nesne örneği niteliği ile denersek sonuçlar daha farklı olacaktır.
 
@@ -125,7 +125,7 @@ blue=GameZone("Blue One")
 print("Blue players ",blue.players)
 ```
 
-![image.axd](images/image.axd)
+![pyhtonc_5.gif](images/pyhtonc_5.gif)
 
 Görüldüğü gibi players niteliği nesne örneğine özel hale getirildi.
 
@@ -160,7 +160,7 @@ meks.price=19
 print(meks.price)
 ```
 
-![image.axd](images/image.axd)
+![pyhtonc_3.gif](images/pyhtonc_3.gif)
 
 Dikkat edileceği üzere self anahtar kelimesi yerine this kullanılmıştır. Python'un sıkı kuralları gereği this nesne örneği niteliklerine ulaşılabilmesi için yeterlidir. Ne var ki Python topluluğuna göre self anahtar kelime haline gelmiş bir söcüktür. Yani Python ile kod yazan birisinin self kelimesini kullanması önerilmektedir.
 
@@ -197,7 +197,7 @@ cBook.writeTo()
 
 Örnek kodumuzda Category ve Product isimli iki sınıf yer almaktadır. Tahmin edeceğiniz üzere bir Product nesnesinin bir Category nesnesi ile ilişkilendirilmesi söz konusudur. Bunu yapmak oldukça basittir. Product sınıfına ait init metodunda yer alan self.Category=category ataması bu bağlantının kurulması için yeterli olmuştur. Böylece çalışma zamanındaki pythonBook ve cBook isimli Product nesne örnekleri, books isimli Category nesne örneği ile ilişkilendirilmiştir. Bir nevi nesneler arası bire-çok ilişki tanımladığımızı ifade edebiliriz. Çalışma zamanı çıktısı aşağıdaki gibidir.
 
-![image.axd](images/image.axd)
+![pyhtonc_6.gif](images/pyhtonc_6.gif)
 
 Şimdi bu örnekten hareket ederek aslında Entity Framework içerisindeki Code First yaklaşımını çok basit düzeyde inşa etmeye çalışabiliriz. Bir kaç Entity sınıfı, bunlar arası ilişkilerin kurulması ve bir Context tipi başlangıç için yeterli olabilir. Aynen aşağıdaki kod parçasında olduğu gibi.
 
@@ -241,6 +241,6 @@ for b in context.Products:
 
 Dikkat edileceği üzere AzonContext sınıfına ait init metodu içerisinde Categories ve Products isimli listeler tanımlanmıştır. Listeler nesne örneği niteliği olduğundan context değişkeni üzerinden erişilip kullanılabilir. Bu şekilde kitaplar ve kategoriler ilgili listelere eklenebilir. Son satırda yer alan for döngüsü ile de eklemiş olduğumuz kitaplar ve bu kitaplara ait bilgiler ile dahil oldukları kategori verisi ekrana yazdırılmıştır.
 
-![image.axd](images/image.axd)
+![pyhtonc_7.gif](images/pyhtonc_7.gif)
 
 Bu yazımızda Python dilinde bir sınıfın nasıl tasarlanabileceğini incelemeye çalıştık. Bunu yaparken sınıf ve nesne örneği niteliklerine, init operasyonuna, self kullanımına bakmaya çalıştık. Code First yaklaşımındaki sınıf tanımlamaları ve ilişkileri en basit haliyle inşa ettik. Python için nesne yönelimli kavramlar bu yazıya sığmayacak kadar fazla elbette. Örneğin nasıl ele alındığını incelemem gerekiyor. Hatta çoklu kalıtımın (Multi-Inheritance) uygulamasına da bakmalıyım. Diğer yandan bu yazıda değindiğiniz sınıf ve nesne örneği nitelikleri dışında sınıf ve nesne örneği metodları da (aslında self içeren metodlarımız nesne örneği fonkisyonlarıdır) var. @classmethod gibi bir decorator kavramı var ki bu sayede bir metodun sınıf metodu olması sağlanabiliyor. Yani anlayacağınız bakmam gereken bir çok şey var. Bu ve benzeri diğer konuları ilerleyen yazılarımızda ele almaya çalışacağım. Şimdilik öğrendiklerim bunlarlar sınırlı diyebilirim. Böylece geldik bir makalemizin daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

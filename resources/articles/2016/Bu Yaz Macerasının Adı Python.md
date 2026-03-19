@@ -1,4 +1,4 @@
----
+﻿---
 title: "Bu Yaz Macerasının Adı Python"
 pubDate: 2016-06-17 00:00:00
 categories:
@@ -14,7 +14,7 @@ tags:
 ---
 
 # Bu Yaz Macerasının Adı Python
-![image.axd](images/image.axd)
+![Guido_van_Rossum.gif](images/Guido_van_Rossum.gif)
 
 Merhaba Arkadaşlar,
 
@@ -237,7 +237,7 @@ Kod aslında entersan bir ifade ile başlıyor. Burada [Bora Kaşmer](http://www
 
 Sonrasında ise diğer metodların sırasıyla çağırıldığını görüyoruz. Eğer kodlarda bir hata yapmadıysanız (özellikle girintilerde) aşağıdakine benzer sonuçlar almanız gerekiyor.
 
-![image.axd](images/image.axd)
+![pythonhw_1.gif](images/pythonhw_1.gif)
 
 Tam çıktı ise aşağıdaki gibi.
 

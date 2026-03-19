@@ -1,4 +1,4 @@
----
+﻿---
 title: "Copilot SDK ile İlk Deneyimler"
 pubDate: 2026-03-03 14:40:00
 categories:
@@ -30,7 +30,7 @@ Pek tabii CLI (Command Line Interface) aracı olarak yapay zeka modellerinin nas
 copilot --version
 ```
 
-![image.axd](images/image.axd)
+![HelloCopilotSDK_00.png](images/HelloCopilotSDK_00.png)
 
 Teori oldukça basit. SDK, sanki VS Code AI chat pencersini veya Copilot CLI aracını kullanıyormuşuz gibi dil modelleri ile entegre uygulamalar geliştirebilmemizi sağlayan fonksiyonellikleri barındırıyor. Giriş örneğimizde basit bir Console uygulaması oluşturup gerekli Nuget paketini ekleyerek devam edelim.
 
@@ -95,7 +95,7 @@ Devam eden kısımda ise oturum sırasında gerçekleşen olayları (events) din
 
 Son olarak da SendAndWaitAsync metodu yardımıyla modele sormak istediğimiz soruyu gönderiyoruz. Bu metodun asenkron olduğunu ve oturumun sonlanmasını beklediğini de belirtelim. Bir başka deyişle cevap gelene kadar uygulama sonlanmayacaktır. İşte ilk örneğimizin çalışma zamanına ait bir çıktı.
 
-![image.axd](images/image.axd)
+![HelloCopilotSDK_01.png](images/HelloCopilotSDK_01.png)
 
 Şimdi işi bir seviye daha ileri götürelim. Yapay zeka modelleri ile çalışırken çoğunlukla genel dil modellerinin eğitilmiş olduğu veri kümeleri göz önüne alınır. Oysa ki iş dünyasında üzerinde çalıştığımız sistemler ağırlıklı olarak belli domain çerçevelerine sahiptir. Bu nedenle modele gitmeden önce bazen ön hazırlıklar yapılır. Modelin özellikle bakmasını istediğimiz içerikler, sistem prompt'larının üretilmesinde kullanılır ve buda dil modelinin belirlediğimi çerçevedeki verilere bakarak çıktıları üretmesini kolaylaştırabilir.
 
@@ -159,7 +159,7 @@ internal partial class AppJsonSerializerContext : JsonSerializerContext
 
 Kodda yer alan SeedData.GetDealers () metodu statik bir kod dosyası ve tamamen hayali veriler içermekte. Yazıda yer alan örnekler ile ilgili github referanslarını son kısımda bulabilirsiniz. HTTP Rest modelinde çalışan servisimiz şu an için 5101 nolu porttan çalışıyor ve dealers, dealers/{id} gibi iki endpoint üzerinden hizmet veriyor.
 
-![image.axd](images/image.axd)
+![HelloCopilotSDK_02.png](images/HelloCopilotSDK_02.png)
 
 Şimdi gelelim Copilot SDK kullanan istemci uygulama tarafına. Bu API'yi çağıran başka bir metodu tool olarak oturuma dahil edeceğiz. Program kodlarını aşağıdaki gibi geliştirerek devam edelim.
 
@@ -229,11 +229,11 @@ Kodun akan kısmında sonsuz bir while döngüsü kullandığımız da dikkatler
 
 Pek tabii çalışma zamanında bayi istatitik bilgilerini getiren servisimizin ayakta olması gerektiğini hatırlatalım. Aksi durumda çalışma zamanı hatası alırız demek isterdim ancak işin içerisinde artık bir yapay zeka aracı var. Dolayısıyla sonuç pekala aşağıdaki gibi olabilir:D
 
-![image.axd](images/image.axd)
+![HelloCopilotSDK_04.png](images/HelloCopilotSDK_04.png)
 
 Servisimizi ayağa kaldırdıktan sonra ise aşağıdaki ekran görüntüsündekine benzer bir deneyim yaşamanız olasıdır.
 
-![image.axd](images/image.axd)
+![HelloCopilotSDK_03.png](images/HelloCopilotSDK_03.png)
 
 Aslında herhangibir yapay zeka aracının konuşma penceresindeymişiz gibi değil mi? İşte bunu belki de domain odaklı hale getirip daha işler hale getirmek gerekir. Hemen örnek bir senaryodan bahsedelim. Belli bir domain içerisindeki süreçlerin markdown formatında dokümante edilmiş olduğunu, dokümanlar arasındaki kavramsal ilişkilerin yüksek başarımlı text-embedding araçları ile vektörel bir veritabanına alındığını ve bu veritabanını sorgulayabildiğimiz api noktalarımız olduğunu düşünelim. Pekala bu servis noktaları birer araç haline getirilebilir ve terminal yerine görsel arabirimi olan bir istemci yazılıp analistlere sunulabilir. İşte size şirketinizin dokümanlarını kullanarak merak edilen sorulara cevaplar veren bir chat-bot uygulaması.
 

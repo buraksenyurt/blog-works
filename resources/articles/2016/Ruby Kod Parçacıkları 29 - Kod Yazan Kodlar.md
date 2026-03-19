@@ -1,4 +1,4 @@
----
+﻿---
 title: "Ruby Kod Parçacıkları 29 - Kod Yazan Kodlar"
 pubDate: 2016-12-16 16:51:00
 categories:
@@ -33,7 +33,7 @@ eval someCodes
 
 İlk olarak çalışma zamanı çıktısına bir bakalım dilerseniz.
 
-![image.axd](images/image.axd)
+![ruby29_1.gif](images/ruby29_1.gif)
 
 Sizi bilemem ama ben bu kod parçasına baktığımda epeyce etkileniyorum. İlk olarak kullanıcıdan ekrana bir kod parçası girmesini istiyoruz. Tabii örnekte işletilebilir bir kod parçası eklediğimizi itiraf etmeliyim (Hatalı bir kod parçasının nasıl tepki vereceğini incelemek ise size bir ödev olsun) Sonrasında ise birden fazla satıra yayılan bir kod parçası söz konusu. Önemli olan nokta code ve someCodes değişkenlerinin eval ile birlikte kullanılması. Yani çalışan bir kodun içerisinde başka bir ruby kodunun çalıştırılmasını sağlamış olduk. eval, parametre olarak gelen ifadenin değerlendirilmesini yapıp yorumlanacak şekilde ruby ortamına aktarmakla görevli. Bu arada eval, RubyKernel API'si içerisinde yer alan instance metodlarından birisidir.
 
@@ -52,7 +52,7 @@ eval "yield",bind
 
 ve çalışma zamanı görüntüsü.
 
-![image.axd](images/image.axd)
+![ruby29_2.gif](images/ruby29_2.gif)
 
 doSomething metodu içerisinde binding kullanılmıştır. Buna göre çalışma zamanında doSomething metodu ve parametrik yapısı yaklanarak eval ifadesi üzerinden kendisine kod parçası gönderilebilir. Şimdi konuyu dikkatlice inceleyelim. Çalışma zamanında ekrana ilk olarak "in doSomething" yazar. Sonrasında ise 3 kez "arigatou". Bunu 3.times{puts "arigatou"} ifadesinin gerçekleştirdiği aşikardır. Bu ifadenin doSomething metodu içerisine gönderilmesi içinse eval fonksiyonuna iki parametre geçilmiştir. İlki yield anahtar kelimesi, ikincisi ise metodun bağlandığı değişken olan bind (Açıkçası binding konusu bana biraz karışık geldi. Daha iyi bir şekilde öğrenmek için uğraşıyorum)
 
@@ -73,7 +73,7 @@ puts pir
 
 Bu kod parçasında Math sınıfında yer alan PI ve E değişmezlerinin çalışma zamanında bir string üzerinden yorumlanması örneklenmektedir. eValue ve piValue değişkenleri dikkat edileceği üzere string veri türündedir. Math sınıfı üzerinden const_get metodu kullanılarak bu iki değişmezin değeri yakalanabilir. Dolayısıyla kendi tanımladığımız bir sabitin değerini de bu şekilde çalışma zamanında yakalamamız mümkün. İkinci kod parçasında sabit değerinin eval ile yorumlanması örneklenmiştir. Çalışma zamanına ait çıktımız aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![ruby29_3.gif](images/ruby29_3.gif)
 
 ## Bir Sınıfı Adından Örneklemek
 
@@ -100,7 +100,7 @@ puts o.to_s #ve icindeki bir metodu kullaniyoruz
 
 Game modülü içerisinde örnek olarak ele aldığımız Player isimli bir sınıf bulunuyor. Sınıfa sembolik olarak bir kaç nitelik ve ezilmiş to_s metodunu ekledik. Bizi ilgilendiren kısım ise Object sınıfı üzerinden çağırdığımız const_get fonksiyonu. Bu, parametre olarak "Game::Player" şeklinde bir metin almakta. Player sınıfı bir modül içerisine yer aldığından:: notasyonuna başvuruyoruz. Bu satır ile Player tipinden bir örnek üretiliyor ve obj isimli değişkene aktarılıyor. Player.new gibi bir oluşumdan farklı bir şey yaptığımızı fark ediyorsunuz değil mi? Nitekim obj.new ile Player nesnesi oluşturmaktayız evet ama nesne adı string olarak gelmekte. Hatta yapıcı metoda parametrelerini gönderip to_s metodunu da kullanıyoruz. İşte çalışma zamanı çıktıları.
 
-![image.axd](images/image.axd)
+![ruby29_4.gif](images/ruby29_4.gif)
 
 ## define_method ile Çalışma Zamanında Metod Oluşturmak
 
@@ -159,7 +159,7 @@ puts zone_gold.title,zone_gold.capacity,zone_gold.color
 
 GameZoneV2 içerisinde yine sihirli bir şeyler var. PROPERTIES isimli dizi içerisindeki her bir eleman için getter ve setter metodları define_method yardımıyla çalışma zamanında üretilmekte. each bloğu içerisinde her bir p değişkeni (PROPERTIES elemanı) için iki define_metod çağrısı söz konusu. İlkinde = ile biten setter metod oluşturuluyor ki burada instance_variable_set ile atama bildirimi de yapılmakta. İkinci define_method ile de getter fonksiyonu tanımlamakta. Kodun ilerleyen kısımlarında zone_gold isimli nesne örneği üzerinden title, capacity ve color niteliklerinin kullanılabildiğine şahit oluyoruz. İşte çalışma zamanı sonuçları.
 
-![image.axd](images/image.axd)
+![ruby29_5.gif](images/ruby29_5.gif)
 
 Demek ki çalışma zamanında gelecek bir takım parametrelere göre sınıflara farklı operasyonları eklememiz mümkün. Dikkat edin çalışma zamanında diyorum.
 
@@ -189,7 +189,7 @@ puts "#{logan.name}-(#{logan.salary})"
 
 Person sınıfı içerisinde yer alan createGetterSetter metodu değişken sayıda parametre alabilmektedir. İçinde yer alan each bloğunda her bir argüman için birer getter ve setter metodu tanımlanması sağlanmaktadır. Burada dikkat edilmesi gereken nokta define_method'un kullanım şeklidir. define_method private tanımlanmış bir sınıf fonksiyonudur. Bunu Player örneği üzerinden çağırmak için self.class.send şeklinde bir yol izlenmelidir. Kodun ilerleyen kısımlarında createGetterSetter metoduna örnek iki eleman yollanmış ve kullanılmıştır.
 
-![image.axd](images/image.axd)
+![ruby29_6.gif](images/ruby29_6.gif)
 
 Aynı örnekte işi biraz daha ileriye götürebiliriz. Zaten attr_accessor bir nitelik için gerekli getter ve setter operasyonlarını hazır olarak sunmaktadır. Peki aynı örnekteki nitelikleri attr_accessor ile tanımlayabilir miyiz? Tabii çalışma zamanında. Aşağıdaki kod parçası işimizi görecektir.
 

@@ -1,4 +1,4 @@
----
+﻿---
 title: "Nginx Üzerinde Web API Servisi Çalıştırmak"
 pubDate: 2018-01-05 08:54:00
 categories:
@@ -24,7 +24,7 @@ tags:
 ---
 
 # Nginx Üzerinde Web API Servisi Çalıştırmak
-![image.axd](images/image.axd)
+![nginxcore_1.gif](images/nginxcore_1.gif)
 
 Merhaba Arkadaşlar,
 
@@ -54,7 +54,7 @@ sudo service nginx start
 sudo service nginx status
 ```
 
-![image.axd](images/image.axd)
+![nginxcore_2.gif](images/nginxcore_2.gif)
 
 install komutu ile kurulum yapıldıktan sonra start ile nginx servisini başlatıyoruz. status ile de güncel durumunu görüyoruz. Yeşil renkteki active (running) yazısını görmek güzel.
 
@@ -87,7 +87,7 @@ sudo nginx -t
 sudo nginx -s reload
 ```
 
-![image.axd](images/image.axd)
+![nginxcore_4.gif](images/nginxcore_4.gif)
 
 İlk komut ile konfigurasyon için yapılan değişiklikler test edilip bir sorun olup olmadığına bakılıyor. reload komutu da yeni değişikliklerin çalışma zamanına yeniden yüklenmesi için kullanılmakta.
 
@@ -188,11 +188,11 @@ sudo systemctl start kestrel-baseapi.service
 sudo systemctl status kestrel-baseapi.service
 ```
 
-![image.axd](images/image.axd)
+![nginxcore_6.gif](images/nginxcore_6.gif)
 
 İlk komut ile yazılan service dosyası devreye alınmakta (disable ile devre dışı kalacağını da belirtelim) İkinci komut ile servis başlatılmakta ve son komutla da anlık durum hakkında bilgi alınabilmekte. Aslında hepsi bu kadar. Tarayıcımdan http://localhost:81/api/values şeklinde talepte bulunduğumda aşağıdaki gibi Web API servisinin çalıştırıldığını görüyorum. İşte bir mutluluk anı daha.
 
-![image.axd](images/image.axd)
+![nginxcore_7.gif](images/nginxcore_7.gif)
 
 Hatta kestrel-baseapi.service hizmetini pasif hale getirip aynı talebi yaptığımda Nginx'in bana o güzelim 502 hata sayfasını gösterdiğini de görüyorum. Bu gerçekten de istenildiği gibi proxy'nin çalıştığının ispatı aslında.
 
@@ -202,11 +202,11 @@ systemctl stop kestrel-baseapi.service
 
 sonrası durum
 
-![image.axd](images/image.axd)
+![nginxcore_8.gif](images/nginxcore_8.gif)
 
 Benim için araştırması, öğrenmesi ve yazılması keyifli bir makalenin daha sonuna gelmiş bulunuyoruz. Bu yazıda bir Asp.Net Core Web API uygulamasının Ubuntu'da yüklü Nginx web sunucusu üzerinden nasıl host edilebileceğini incelemeye çalıştım. Microsoft ve.Net ürünlerine aşina olanlar için IIS yerine NGinx'i koyduk diyebiliriz de. Tabii işin çok daha fazla detayı olduğunu biliyoruz. Örneğin Load Balancing mevzusu, SSL tabanlı iletişimin kurulması, Authentication mekanizmaları vb konular var. Bunları da incelemeye çalışacağım. Ancak konuya küçük bir grizgah yaptığımızı da ifade edebilirim sanıyorum ki. Bu arada özellikle Microservice mimarisinin yüksek düzey mimari görünüme sahip basit bir örnek üzerinden incelemek isterseniz Nginx'in [şu adresteki yazısını](https://www.nginx.com/blog/introduction-to-microservices/) şiddetle tavsiye ederim. Renkli kalemlerinizi de hazır edin. Yazıyı okurken mimari çizimleri siz de çizmeye çalışın ve bilginizi pekiştirin derim.
 
-![image.axd](images/image.axd)
+![nginxcore_9.gif](images/nginxcore_9.gif)
 
 Örnekte Uber benzeri bir taksi çağırma ürününün geliştirilmesi konu alınmış. Önce mimari bildiğimiz Monolithic yaklaşım üzerine kurgulanıyor. Her şey güllük gülistanlık giderken iş birimlerinden gelen yeni talepler, devreye alınan parçlar ve kalabalıklaşan kodlar sebebiyle sistem büyüdükçe büyümeye başlıyor. Performans düşüyor, yönetim ve ölçeklenebilirlik zorlaşıyor, bakım maliyetleri artıyor. Sonrasında aynı senaryonun micoservice mimari yaklaşımı ile nasıl ele alınabileceği masaya yatırılıyor. Her iki yaklaşımın artı ve eksilerini görebilmek açısından oldukça güzel ve doyurucu bir yazı olduğunu ifade etmek isterim.
 

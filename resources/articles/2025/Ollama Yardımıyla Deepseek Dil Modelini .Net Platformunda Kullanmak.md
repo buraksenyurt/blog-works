@@ -1,4 +1,4 @@
----
+﻿---
 title: "Ollama Yardımıyla Deepseek Dil Modelini .Net Platformunda Kullanmak"
 pubDate: 2025-02-10 14:00:00
 categories:
@@ -25,7 +25,7 @@ tags:
 ---
 
 # Ollama Yardımıyla Deepseek Dil Modelini .Net Platformunda Kullanmak
-![image.axd](images/image.axd)
+![llama_logo.png](images/llama_logo.png)
 
 Geçtiğimiz günlerde Bursa Bilişim Topluluğu tarafından düzenlenen bir etkinliğe konuşmacı olarak katılma fırsatı buldum. Ben, yüksek kalite kodlama ve teknik borçlanma ile mücadele üzerine bazı tecrübelerimi paylaştım. Benden sonra sevgili dostum Bora Kaşmer (Coderbora) JWT token senaryolarında özellikle çok yüksek kullanıcı ve farklı cihazların kullanıldığı senaryolardaki olası güvenlik açıkları üzerine nasıl tedbirler uygulanabileceğini anlatan dikkat çekici bir sunum icra etti.
 
@@ -50,7 +50,7 @@ ollama -v
 
 İndirme ve kurulum işlemi tamamlandıktan sonra birde dil modeline ihtiyacımız olacak elbette. Ollama'nın [buradaki sayfasından](https://ollama.com/search) yararlanarak çalışmak istediğimiz dil modelini çalışacağı sisteme alabiliriz. Biraz Docker Image'ı indirmeye benziyor diyebilirim. Dil modeli seçimi ile ilgili dikkat edilmesi gereken birkaç nokta var. Belli konulara özel geliştirilmiş dil modelleri mevcut. Örneğin kimisi fotoğrafları yorumlamak gibi görsel öğelere has kabiliyetlere sahipken kimisi genel dil modeli özelliklerini taşımakta. Bazı dil modelleri çalışmak için yüksek konfigürasyon makinelere ihtiyaç duyabilir. Özellikle kaç parametre ile çalışacağımızı seçerken buna dikkat etmek lazım. Örneğimizde ben deepseek-r1 modelinin 7 milyar parametre ile çalışan sürümünü kullanmayı tercih ettim.
 
-![image.axd](images/image.axd)
+![OllamaWithNet_00.png](images/OllamaWithNet_00.png)
 
 ```bash
 # Dil modelini sisteme almak için aşağıdaki komutu kullanmak yeterli
@@ -60,15 +60,15 @@ ollama run deepseek-r1:7b
 
 Paket boyutlarına dikkat etmekte de yarar var. Parametre sayısının artması daha iyi ekran kartları haricinde daha fazla disk alanına da ihtiyaç duymamızı gerektirebilir. Örnekte kullandığım Deepseek-r1:7b (7 milyar parametre alan) versiyon 4.7 Gb'lık download paketine sahip.
 
-![image.axd](images/image.axd)
+![OllamaWithNet_01.png](images/OllamaWithNet_01.png)
 
 Yazıyı yazdığım zaman itibariyle Chat GPT'nin 4o modelinin tahminen 2 trilyona yakın parametre ile çalıştığı ifade ediliyordu. Deepseek'in uzmanlaşmış dil modellerinin bir araya geldiği 671 milyar parametrelik versiyonunun 404 Gb yer tuttuğu düşünülürse gerçekten en iyi kalitede işçilik için yine bol miktarda sıfırı olan finansmana ihtiyaç var gibi:D
 
-![image.axd](images/image.axd)
+![OllamaWithNet_07.png](images/OllamaWithNet_07.png)
 
 Artık local makinede çalışan bir dil modelimiz mevcut. Hatta bunu list parametresi ile terminalden de görebilmemiz lazım.
 
-![image.axd](images/image.axd)
+![OllamaWithNet_02.png](images/OllamaWithNet_02.png)
 
 Denemeler sırasında Ollama ile bir dil modeli hizmeti başlatıldığında makine restart olsa bile servisin çalışmaya devam ettiğini fark ettim. Makinede yüklü olan servisleri görmek için ps komutu kullanılabilir.
 
@@ -165,11 +165,11 @@ while (true)
 
 Bu kod Deepseek ile karşılıklı sobhet edebileceğimiz basit bir chatbot ortamı oluşturuyor. Örneğin dünyanın en yüsek 5 dağının listesini istediğimizi düşünelim. İşte sonuç. Bu arada Deepseek'in espri anlayışı da var gibi:D
 
-![image.axd](images/image.axd)
+![OllamaWithNet_03.png](images/OllamaWithNet_03.png)
 
 Diğer yandan programı çalıştırdıktan ve soruyu sorduktan sonra makaleye dönüp düzenlemeye devam ettim ve üstünden neredeyse beş dakika geçti. Deepseek kararsızlıklar yaşayarak cevaplar vermeye devam etti ve duruma göre ilk beşteki dağlardan bazıları arasında sıralama değişiklikleri yaptı. Bu elbette kullandığımız dil modelinin 7 milyar parametreli versiyonundan ya da sorduğum sorunun kalitesinden de kaynaklanıyor olabilir. Yani iyi bir prompt verememiş de olabilirim.
 
-![image.axd](images/image.axd)
+![OllamaWithNet_04.png](images/OllamaWithNet_04.png)
 
 Pek tabii daha üst modelleri çalıştırmak için daha güçlü bir sisteme ihtiyacımız var. Güçlü sunucularda daha iyi ve yüksek parametreli dil modellerinden çok daha iyi sonuçlar alınabileceği öngörülebilir fakat şu haliyle dahi Deepseek bana kalırsa epey etkili.
 
@@ -262,7 +262,7 @@ public class GameInfo
 
 Programı çalıştırmadan önce bu kod dosyasını yorumlamanızı öneririm. Birkaç özellik barındıran basit bir sınıf tasarımı söz konusu. Object sınıfından gelen ToString metodu override edilmiş halde. Ayrıca set bloğu private olarak belirlenmiş UserPoint özelliğinin verisini değiştirebilmek için ayrı bir metodumuz var. Kimbilir belki içerisine bazı kurallar dahil olacak. String interpolation'da yakalanabilecek diğer özelliklerden birisi. Bakalım DeepSeek-r1:7b dil modeli bunu nasıl yorumluyor. İşte çalışma zamanına ait bir ekran görüntüsü.
 
-![image.axd](images/image.axd)
+![OllamaWithNet_05.png](images/OllamaWithNet_05.png)
 
 Bu basit kod dosyası için ilgili dil modelinin epey isabetli sonuçlara ulaştığını söylemek yanlış olmaz herhalde. Tüm analiz örneği geliştirdiğim bilgisayarda yaklaşık olarak 2.5 dakika kadar sürdü. Çalışmakta olduğum makinenin özellikleri ise şöyle.
 
@@ -333,7 +333,7 @@ You are an expert in analyzing and evaluating C# source code. You will receive a
 
 Kendi sistemimde bu prompt için aşağıdaki çıktıyı elde ettim.
 
-![image.axd](images/image.axd)
+![OllamaWithNet_06.png](images/OllamaWithNet_06.png)
 
 Bu sefer bu basit C# dosyasının analizi neredeyse beş dakikaya yakın sürede tamamlandı ancak biraz daha detaylı bilgi üretildiğini ifade edebilirim. Hatta yorum kısımlarında Deepseek sanki gerçekten Code Review yapan bir programcıymış gibi davranıyor desek yalan olmaz.
 
@@ -450,7 +450,7 @@ Notes: The code as provided seems complete. It's a simple example without any mi
 
 Üretilen JSON içeriği ise şu şekilde.
 
-![image.axd](images/image.axd)
+![OllamaWithNet_08.png](images/OllamaWithNet_08.png)
 
 Bu kadar şeyden sonra artık daha ne desem bilemedim:D Biz programcılara halen daha çok ihtiyaç var ve bu düşüncemin sonuna kadar arkasındayım. Önemli olan noktalardan birisi ise onların bize söylediklerini yorumlamak. Örneğin kod kalitesi ile ilgili yorumları değerlendirip kafamıza yatmayan kısımların veya eksiklerin farkında olacak kadar programlamaya hakim olmamız önemli. Yazıma burada son vermeden önce örnek uygulamaları Internet bağlantısı kapalı iken denemenizi de öneririm. Zira Ollama ile local ortama indirdiğimiz dil modeli offline çalışabilme özelliğine sahip. Bunu bir deneyin derim. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.
 

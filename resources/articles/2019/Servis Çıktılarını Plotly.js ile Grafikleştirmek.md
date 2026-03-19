@@ -1,4 +1,4 @@
----
+﻿---
 title: "Servis Çıktılarını Plotly.js ile Grafikleştirmek"
 pubDate: 2019-03-18 21:51:00
 categories:
@@ -15,7 +15,7 @@ tags:
 ---
 
 # Servis Çıktılarını Plotly.js ile Grafikleştirmek
-![image.axd](images/image.axd)
+![plotly_02.jpg](images/plotly_02.jpg)
 
 West-World'de eğlence tüm hızı ile devam ediyor. Geçen ay gerçekleştirdiğimiz "C64 Retro" partisinden sonra sıra bu geceki "Easy Graphics of new Era" adlı eğlenceye geldi. Onur konuğumuz açık kaynak Javascript dünyasının son zamanlardaki yükselek yıldızı olarak görülen grafik kütüphanesi Plotly. Oldukça renkli bir kişiliğe sahip olan Plotly, GitHub şehrinin de en sevilen karakterlerinden birisi haline gelmiş durumda. Şehrin devasa enerji santrallerinin ürettiği verilerle çalışan çılgın istatistikçileri arasında da çok popüler bir karakter. Kendisini West-World'e getiren en yakın destekçileri D3.js ve WebGL'de partiye renk katanlar arasındalar.
 
@@ -23,7 +23,7 @@ Ona West-World sakinleri adına bir soru yönelttik ve izleyicilerini nasıl bö
 
 Pek hayalimdeki gibi bir West-World partisi olmasa da sonuçta aşağıdaki çıktıya ulaşmak istediğimi ifade edebilirim esasında. Plotly.js kütüphanesi ile çok fazla çalışmışlığım yok. Projemizdeki belirli ihtiyaçlar nedeniyle javascript tabanlı bir grafik kütüphanesi araştırırken onunla karşılaştım. Özellikle basitliği, geniş grafik yelpazesi ve WebGL desteği dikkat çekici geldi. Ayrıca R, Python ve Matlab dilleriyle de kullanılabiliyor. Data Scientest rolündekilerin grafiksel raporlama ihtiyaçlarında bu oldukça kıymetli diye düşünüyorum. Nitekim veriyi tarayıcıda grafikselleştirmek birazdan göreceğiniz üzere gayet kolay.
 
-![image.axd](images/image.axd)
+![plotly_01.gif](images/plotly_01.gif)
 
 Tabii öncesinde onu en yalın haliyle kullanabilmem gerekiyordu. Kafamda basit bir kurgu hazırladım. Node.js ve express'i kullanarak, üç sunucunun son yedi günlük talep karşılama değerlerini JSON formatında döndüren bir servis yazacaktım. HTTP Rest modelinde çalışmasını planladığım bu servisi tamamladıktan sonra ona talepte bulunup gelen çıktıyı plotly sayesinde ekrana çizen bir HTML sayfası geliştirecektim. İşe FunnyGraphics isimli bir klasör açıp gerekli ön hazırlıkları yaparak başladım.
 
@@ -104,7 +104,7 @@ npm start
 
 ile sunucuyu başlattım ve ardından http://localhost:6701/report adresine Postman'den HTTP Get talebi gönderdim. Sonuçlar başarılıydı.
 
-![image.axd](images/image.axd)
+![plotly_03.gif](images/plotly_03.gif)
 
 Sunucuya göre kök adrese gelen talepler doğrudan index.html sayfasının istemciye gönderilmesi ile sonuçlanmakta. Grafiğin çizildiği asıl yer index.html dosyasındaki script bloğu. Onu da aşağıdaki gibi tasarladım.
 

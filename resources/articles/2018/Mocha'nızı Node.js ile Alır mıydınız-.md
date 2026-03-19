@@ -1,4 +1,4 @@
----
+﻿---
 title: "Mocha'nızı Node.js ile Alır mıydınız?"
 pubDate: 2018-06-07 21:03:00
 categories:
@@ -16,7 +16,7 @@ tags:
 ---
 
 # Mocha'nızı Node.js ile Alır mıydınız?
-![image.axd](images/image.axd)
+![mocha_1.gif](images/mocha_1.gif)
 
 Merhaba Arkadaşlar,
 
@@ -249,7 +249,7 @@ describe('Math for kids', function () {
 });
 ```
 
-![image.axd](images/image.axd)
+![mocha_4.gif](images/mocha_4.gif)
 
 İlk olarak should.Assertion.add fonksiyonu ile yeni bir tanımlama ekliyoruz. odd isimli fonksiyonu bir sayının tek olup olmadığını anlamak istediğimiz durumlar için kullanacağız. params ile test çalışma zamanı ortamına bir takım bilgiler bırakabiliyoruz. Açıklama ve beklenen sonuç gibi. Fonksiyon içerisinde this.object kullanarak gerçekleştirdiğimiz bir kontrol söz konusu. Dikkat edeceğiniz üzere burada da should fonksiyonundan yararlanıyor ve savımızın beklediğimiz sonucunu kontrol ediyoruz. 3 durumu test ettik. Tek sayı olma hali, tek sayı beklediğimiz halde tek sayı olmama hali, tek sayı beklemediğimiz bir çift sayı olma hali ve olmak ya da olmamak...Ehm...Pardon:) Sonuçta kendi assertion fonksiyonumuzu should çatısına nasıl ekleyebileceğimiz gördük. Hatta burada odd yerine tekSayi gibi kendi dilimizde ifadeler de ekleyebiliriz diye düşünüyorum (Şimdi Seleniumcuları daha iyi anlamaya başladım)
 
@@ -257,7 +257,7 @@ Sizin için
 
 Yazıyı sonlandırmadan önce aşağıdaki ekran görüntüsüne bir bakalım istiyorum.
 
-![image.axd](images/image.axd)
+![mocha_5.gif](images/mocha_5.gif)
 
 Dikkatinizi çeken bir şeyler mutlaka var değil mi? Her şeynde önce orada küçük bir uçak figürü var. Ayrıca "1 pending" şeklinde bir ifade de bulunuyor. İşin aslı mocha paketi içerisine testi eğlenceli hale getirmek için konulmuş bir düzeneğin sonucu olarak bir uçak figürü var. Hatta uçak figürünün olduğu yer uçak pistimiz:) Peki bu nasıl mümkün oldu? Peki uçağın rengi neden kırmızı. Acaba tüm testler yeşil ışık yakarsa rengi değişecek mi? İşte size güzel biraz araştırma konusu. Uçağın nasıl çıktığna dair bir ipucu fotoğrafta var. Onu nereye yazacağınızı da bulmanız gerekiyor tabii. "1 pending" ise geçici süreliğine atlanan bir test durumu için oluştu. Bunun için de it metodunun arkasından gelebilecek fonksiyonellikleri araştırmakta yarar var. Haydi kolay gelsin.
 

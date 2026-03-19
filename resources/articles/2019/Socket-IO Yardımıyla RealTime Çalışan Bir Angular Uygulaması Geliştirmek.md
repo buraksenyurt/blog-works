@@ -1,4 +1,4 @@
----
+﻿---
 title: "Socket-IO Yardımıyla RealTime Çalışan Bir Angular Uygulaması Geliştirmek"
 pubDate: 2019-08-08 15:17:00
 categories:
@@ -16,7 +16,7 @@ tags:
 ---
 
 # Socket-IO Yardımıyla RealTime Çalışan Bir Angular Uygulaması Geliştirmek
-![image.axd](images/image.axd)
+![someprimes.png](images/someprimes.png)
 
 Dünyanın aslen hukukçu olmasına rağmen en ünlü matematikçilerinden olan Fermat'nın (1601-1665) asal sayıları bulduğunu iddia ettiği denklemini bir diğer matematikçi Euler (1707-1773), n=5 değeri için bozmuştur. Lakin matematikçilerin ve diğer pek çok kişinin asalları bulma tutkusu bitmemiştir. Bilim, felsefe ve müzikle haşırneşir olmayı seven Fransız rahibi Marin Mersenne (1558-1648) 2n-1 şeklindeki formülü ile ünlenmiştir. Formüldeki n değerinin asal sayı olarak kabul edildiği hallerde bulunan sayıların da asal olduğunun belirtildiği bir teorem söz konusudur (Bu formül ile bulunan bir sayının asal olup olmadığı Lucas-Lehmer testi ile kontrol edilebilir)
 
@@ -155,7 +155,7 @@ ng g service article
 
 İlk komutla authorApp isimli bir Angular uygulaması oluşturulur. Socket.IO ile Angular tarafında konuşmamızı sağlayacak ngx-socket-io paketi proje klasörü içindeyken npm yardımıyla yüklenir. Yine aynı klasörde article isimli sınıf, article-list ve article isimli bileşenler ve soket sunucusuyla iletişimde kullanacağımız article isimli servis oluşturulur (g sonrasında gelen component ve service anahtar kelimeleri için c ve skısaltmaları da kullanılabilir)
 
-![image.axd](images/image.axd)
+![09_29_credit_1.png](images/09_29_credit_1.png)
 
 Gelelim istemci tarafındaki kodlarımıza. Öncelikle app.module.ts dosyasında SocketIoModule ile ilgili bir kaç konfigurasyon ayarlaması yapalım. Böylece hangi sunucu ile web socket haberleşmesi yapılacağı tüm modüller için ayarlanmış olur.
 
@@ -461,7 +461,7 @@ gibi.
 
 Örneği daha iyi anlamak için iki veya daha fazla istemci çalıştırmakta yarar var. Bir istemcide yeni bir sayfa açıp üzerinde yazarken diğer istemcide de aynı dosya numarası görünür ve değişiklikler karşılıklı olarak taraflara yansır. Yani Cenifır'ın 399 nolu dokümanda yaptığı değişikliği aynı dokümana bakan Brendon görebilir ve üstüne kendi değişikliklerini yazıp bunları Jenifer'ın görmesini sağlayabilir. Chat uygulaması gibisinden ama değil gibi...
 
-![image.axd](images/image.axd)
+![09_29_credit_2.png](images/09_29_credit_2.png)
 
 Tasarım gerçekten çok kötü ancak amaç Socket.IO'nun Angular tarafında nasıl kullanılabileceğini anlamak olduğu için bir kaç fikir vermiş olmalı. En azından bana verdi ve aşağıda yazdığım maddelerdeki bilgileri öğrendiğimi ifade edebilirim.
 

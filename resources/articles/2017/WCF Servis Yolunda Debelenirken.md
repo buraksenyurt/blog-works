@@ -1,4 +1,4 @@
----
+﻿---
 title: "WCF Servis Yolunda Debelenirken"
 pubDate: 2017-07-17 21:47:00
 categories:
@@ -18,7 +18,7 @@ tags:
 ---
 
 # WCF Servis Yolunda Debelenirken
-![image.axd](images/image.axd)
+![wcf_message_8.gif](images/wcf_message_8.gif)
 
 Merhaba Arkadaşlar,
 
@@ -30,7 +30,7 @@ Epey zamandır WCF ile çalışmadığımdan baya pas tuttuğumu itiraf etmek is
 
 Solution içeriği genel hatları ile aşağıdaki gibi.
 
-![image.axd](images/image.axd)
+![wcf_message_1.gif](images/wcf_message_1.gif)
 
 SDK klasörü içerisinde diğer servis geliştiriciler için temel bir sözleşme sunmayı planladım. Aşağıdaki gibi bir arayüz (Interface) tipim var örneğin.
 
@@ -77,11 +77,11 @@ HOST isimli klasörde yer alan ServiceFabric projesinde bir Assembly içerisinde
 
 WCF'in standart konfigurasyon sistemi config uzantılı dosyaları kullanmakta. Bir Web uygulaması söz konusu ise web.config diğerleri içinse app.config ağırlıklı olarak kullanılıyor. Bu davranışı değiştirmenin bir yolu var mı henüz bilmiyorum ama ServiceHost tipi ile servisleri dinamik olarak çalışma zamanında ayağa kaldırabildiğimizi ve bir takım ayarları kod tarafında yapabildiğimizin farkındayım. Bu nedenle servislere ait çalışma zamanı ayarlarını JSON formatında bir konfigurasyon dosyası olarak tutmaya çalıştım. Aşağıdaki gibi örnek bir JSON içeriğini kullanıyorum.
 
-![image.axd](images/image.axd)
+![wcf_message_3.gif](images/wcf_message_3.gif)
 
 İçeriği [jsoneditoronline.org](https://www.buraksenyurt.com/admin/app/editor/jsoneditoronline.org) üzerinden oluşturmaya çalıştım. Nesne yapısını kurgulamam şimdilik yeterliydi.
 
-![image.axd](images/image.axd)
+![wcf_message_2.gif](images/wcf_message_2.gif)
 
 Tabii projenin ilerleyen günlerinde bu JSON içeriğini oluşturacak ve okuyacak sınıfları sisteme dahil etmeyi de ihmal etmedim.
 
@@ -305,7 +305,7 @@ namespace ING.ServiceFabric.Dispatchers
 IDispatchMessageInspector arayüzünden türeyen MessageInspector sınıfının uyguladığı iki operasyon var. AfterReceiveRequest ve BeforeSendReply. AfterReceiveRequest ile servisin ilgili EndPoint'inden geçen mesajı yakalıyoruz. BeforeSendReply ise istemciye dönen mesaj gitmeden önce devreye girmekte. Ben sonuçları görmek için ilgili bilgileri Console'a basıyorum. Hedef pek tabii etkili bir Log mekanizması ile ilgili mesajları kayıt altına almak. Burada mesaj içeriğine bakılarak daha pek çok aksiyon da alınabilir gibime geliyor.
 
 > Aslında WCF'in çalışma zamanındaki işleyişini gösteren [Microsoft dokümanının](https://opbuildstorageprod.blob.core.windows.net/output-pdf-files/en-us/VS.core-docs/live/articles/framework/wcf/extending.pdf) 19ncu sayfasındaki grafiğe bakınca olay daha kolay anlaşılıyor. Burada EndpointDispatcher'ın yaşamı boyunca enjekte edilebilecek bir çok enstrüman görülmekte.
-> ![image.axd](images/image.axd)
+> ![wcf_message_4.gif](images/wcf_message_4.gif)
 
 Çalışma Zamanı
 
@@ -343,14 +343,14 @@ namespace StandAloneHost
 
 Tabii önce bu uygulamayı çalıştırıp ayağa kalkan bir servise ait WSDL içeriği geliyor mu bir bakmak ve bu içeriği kullanarak istemciye Proxy üretmek gerekiyordu. localhost:5000/daex/FraudCheckService adresinden yayın yapan WSHttpBinding bazlı servisi ayağa kaldırdığımda servise ulaşabildiğimi ve WSDL içeriğini yakalayabildiğimi gözlemledim.
 
-![image.axd](images/image.axd)
+![wcf_message_5.gif](images/wcf_message_5.gif)
 
 ve wsdl içeriği
 
-![image.axd](images/image.axd)
+![wcf_message_6.gif](images/wcf_message_6.gif)
 
 Nihayetinde bir klasörde tutulan dll içerisindeki servisleri ayağa kaldırıp bunlara gelen istemci taleplerini ve dönen cevapları yakalayabilmeyi başardığımı ifade edebilirim.
 
-![image.axd](images/image.axd)
+![wcf_message_7l.gif](images/wcf_message_7l.gif)
 
 POC çalışması üzerinde halen devam etmekteyim. Yapmam gereken çok şey var. WCF'in standart konfigurasyon yapısı düşünüldüğünde çok daha hafif bir çatı kurmaya çalışıyorum. Sıradaki hedefler arasında Authentication ve Authorization gibi Cross Cutting'lerin çalışma zamanındaki servis yoluna nasıl enjekte edilebileceği konusu var. Özetle yazılımcıların geliştireceği her bir servis kütüphanesinin kendi HostPack.json içeriğine sahip olacağı bir dünyanın peşinden koştuğumu ifade edebilirim. Sadece ihtiyaç duyduğumuz çalışma zamanı davranışlarının var olan standart WCF çatısından farklılaştırılarak entegre edildiği hafif bir çatı. İşin aslı burada daha yeni dünyaları denemek isterdim. Söz gelimi bu servis çatısını GO dilini kullanarak geliştirmek ve performansın gerçekten de söylendiği kadarı yüksek olup olmadığını görmek isterdim. Bakalım nelerle karşılaşacağım. POC üzerinde ilerledikçe pek çok sorunla karşılaşıyor ve çözmeye çalışırken yeni yeni şeyler öğreniyorum. Böylece geldik bir yazımızın daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

@@ -1,4 +1,4 @@
----
+﻿---
 title: "Dependency Injection'ın TDD'deki Yeri"
 pubDate: 2018-12-21 10:30:00
 categories:
@@ -17,7 +17,7 @@ tags:
 ---
 
 # Dependency Injection'ın TDD'deki Yeri
-![image.axd](images/image.axd)
+![tdd_di_5.jpg](images/tdd_di_5.jpg)
 
 Merhaba Arkadaşlar,
 
@@ -145,7 +145,7 @@ namespace CodeKata.Tests
 
 Should_Return_Current_Invoice_List_Is_Ok test metodunun içerisinde CalculationService nesnesini örneklerken parametre olarak FakeUserService sınıfını verdiğimize dikkat edelim. FakeUserService, test projesi içerisinde yer alıyor ve asıl servisin bu test için gerekli olan davranışını taklit ediyor. İşte çalışma zamanı sonucu (Örnekleri Visual Studio Code üzerinde ve MSTest türevli bir test projesi ile geliştirmekteyim)
 
-![image.axd](images/image.axd)
+![tdd_di_1.gif](images/tdd_di_1.gif)
 
 Property Setter Kullanımı
 
@@ -198,7 +198,7 @@ public void Should_Return_Current_Invoice_List_Is_Ok()
 
 Test bu durumda da beklediğimiz gibi çalışacak ve asıl servisi hiç kullanmadan ilerleyecektir.
 
-![image.axd](images/image.axd)
+![tdd_di_2.gif](images/tdd_di_2.gif)
 
 Interface Kullanımı
 
@@ -242,7 +242,7 @@ public class CalculationService
 
 Çalıştığımız nesnelerde birden fazla bağımlılığın söz konusu olması halinde ayrı ayrı Injector arayüzleri tasarlayıp uygulamamız mümkün. Son değişikliklere rağmen test metodunda özellik tabanlı örneğimizden farklı bir işleyiş söz konusu olmayacak.
 
-![image.axd](images/image.axd)
+![tdd_di_3.gif](images/tdd_di_3.gif)
 
 Test güdümlü geliştirme kapsamında Dependency Injection tekniğini bağımlılıkların olduğu her yerde ele almak mümkün. Her ne kadar kod okunmasını biraz zorlaştırsa da daha kolay test yazılmasını sağlamakta olduğu aşikar.
 
@@ -285,7 +285,7 @@ namespace CodeKata.Tests
 
 Mock nesne örneğini oluştururken generic bir parametre kullanıyoruz. Burada mock'lamak istediğimiz tip IUserService arayüzü. Sonrasında Setup fonksiyonuna bir çağrı yapılıyor. Setup metodunda CheckRequest metodunu çağırıp ve sonucunda da geriye true döndürülmesini istediğimiz belirtiyoruz. Burada ilgili mock tipinin herhangi bir metodunun ele alabiliriz. Yapılan şey o fonksiyon çağırılmış da dönüşünde Returns içerisinde yazan değer döndürülmüş hissiyatını vermek. CalculationService sınıfına ait nesneyi örneklerken de yapıcı metoda parametre olarak mock nesnesini bir başka deyişle çalışma zamanında IUserService için örneklenen referansını atıyoruz. Sonrasında tek yaptığımız GetInvoices fonksiyonunu çağırmak. Kabul kriterinin kontrolünden sonra birde doğrulama işlemimiz var. Burada ilgili operasyonun sadece bir kere çağırılıp çağırılmadığını kontrol etmekteyiz. Test beklendiği gibi çalışacaktır.
 
-![image.axd](images/image.axd)
+![tdd_di_4.gif](images/tdd_di_4.gif)
 
 Pek tabii TDD tarafında Dependency Injection kullanımı bu örnek kodlarda olduğu kadar kolay olmayabilir. Özellikle legacy olarak anılan eski projleri sonradan Continuous Integration hattına soktuğumuzda test yazmak gerçekten başa bela olabilir. Çok fazla sayıda özellik barındıran Entity sınıfları ile yürüyen ve iş akışı karmaşık fonksiyonar için entegrasyon testleri yazmak istediğinizi düşünün. Mock nesne kullanımı biraz can acıtıcı olabilir ama uzun vadede rahat edileceği kesindir.
 

@@ -1,4 +1,4 @@
----
+﻿---
 title: "GoLang - Bir ORM Denemesi"
 pubDate: 2017-07-16 21:40:00
 categories:
@@ -19,7 +19,7 @@ tags:
 ---
 
 # GoLang - Bir ORM Denemesi
-![image.axd](images/image.axd)
+![gogorm_buffon.jpg](images/gogorm_buffon.jpg)
 
 Merhaba Arkadaşlar,
 
@@ -208,10 +208,10 @@ Success: process exited with code 0.
 
 Şu noktada SQLite üzerinden ilgili veritabanı açılırsa kod tarafındaki işlemlerin oraya da yansıdığını görebiliriz. Ancak dikkat çekici bir kaç nokta olduğunu da vurgulamak isterim.
 
-![image.axd](images/image.axd)
+![gogorm_2.gif](images/gogorm_2.gif)
 
 Mutlaka dikkatinizi çekmiştir ki FirstName first_name, LastName last_name, EmployeeId employee_id, IsActive is_active olarak ifade edilmiş durumdalar. Yani modelde belirttiğimiz alan adlarının büyük küçük harf durumlarına göre kolon adları şekillendirilmiş. Diğer yandan tablo adlarının çoğullandığını görüyoruz. Employee yerine Employees ve Email yerine Emails şeklinde bir isimlendirme söz konusu. Elbette tüm bunlar Gorm tarafında özelleştirilebilmekte. Gelelim veri içeriğine. İşte bir kaç örnek sorgu sonucu SQLite içeriği.
 
-![image.axd](images/image.axd)
+![gogorm_3.gif](images/gogorm_3.gif)
 
 Tabii Gorm aracının dokümantasyonu oldukça geniş ve zengin. Özelleştirilebilecek, ince ayarlar yapılabilecek bir çok konu var. Ben "Hello Gorm" demeye çalıştım ve istediğim bilgileri aldım sayılır. Bundan sonrasında daha önceki web sunucusu ve REST servis örneklerini Gorm paketi ile çalışacak hale getirmeyi planlıyorum. Siz bu yazıyı Gorm dokümanını inceleyerek daha da ileriye götürebilirsiniz. İşe eksik olan Delete operasyonunu ekleyerek başlayabilirsiniz. Böylece geldik bir makalemizin daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

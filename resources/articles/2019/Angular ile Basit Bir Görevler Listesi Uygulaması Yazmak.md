@@ -1,4 +1,4 @@
----
+﻿---
 title: "Angular ile Basit Bir Görevler Listesi Uygulaması Yazmak"
 pubDate: 2019-05-08 06:00:00
 categories:
@@ -17,7 +17,7 @@ tags:
 ---
 
 # Angular ile Basit Bir Görevler Listesi Uygulaması Yazmak
-![image.axd](images/image.axd)
+![albertsword.png](images/albertsword.png)
 
 Bazen ne kadar basit olursa olsun üşenmeden bir örneğin üstüne gitmek gerekiyor. Çünkü çok basit örneklerle çalışıyor olsak bile gözümüzden kaçan önemli detaylar olabilir. Günümüzde kullanmakta olduğumuz pek çok geliştirme çatısı, belli ürünlere yönelik hazır şablonları kolayca üretebileceğimiz komut setleri sunmakta.
 
@@ -165,7 +165,7 @@ ng server
 
 Buna göre http://localhost:4200 adresine talep gönderirsek uygulamamıza ulaşabiliriz (URL bilgisi javascript dosyalarından birisinde de parametrik olarak bulunuyor. Geliştirme ortamı için değiştirmek isteyebilirsiniz diye söylüyorum;)) Uygulamanın çalışma zamanına ait örnek bir görüntüde şöyle.
 
-![image.axd](images/image.axd)
+![04_09_credit_1.png](images/04_09_credit_1.png)
 
 ## Ben Neler Öğrendim?
 

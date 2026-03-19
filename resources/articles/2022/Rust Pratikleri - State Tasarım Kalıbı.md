@@ -1,4 +1,4 @@
----
+﻿---
 title: "Rust Pratikleri - State Tasarım Kalıbı"
 pubDate: 2022-05-15 09:00:00
 categories:
@@ -11,7 +11,7 @@ tags:
 ---
 
 # Rust Pratikleri - State Tasarım Kalıbı
-![image.axd](images/image.axd)
+![state_pattern_2.png](images/state_pattern_2.png)
 
 Belli bir akış içerisinde ele alınan nesneler belli durumlara sahiptirler. Bu durumlar arasındaki geçişler için fonksiyonlardan yararlanılırken bazı kuralların işletilmesi de istenebilir. Örneğin belli bir duruma sahipken diğer bir duruma geçilmesini engelleyen karar mekanizmaları ve koşullar söz konusudur. Hatta programın belli bir t anında içinde bulunabileceği durumlar bellidir. Nesne yönelimli dillerde bu gibi ihtiyaçlar için davranışsal (Behavioral) kalıplardan olan State tasarım deseni sıklıkla kullanılır. Hatta oyun programlamada State Machine türevli motorlarda nesne durumlarının yönetimi için bu desene ait pratikler söz konusudur.
 
@@ -233,6 +233,6 @@ Kod epey uzun ve kalabalık görünüyor ancak bir kere benzerini yazmayı deney
 
 Uygulamanın işe yarayıp yaramadığını anlamak için basit testler koşturabiliriz. İşte kendi sistemimdeki çalışma zamanı sonuçları.
 
-![image.axd](images/image.axd)
+![state_pattern_1.png](images/state_pattern_1.png)
 
 Bence uygulamayı daha da geliştirmek ve başka pratikler yapmak da mümkün. Örneğin bir terminal oyunundaki ana nesnenin durumlarını yönetmek adına bu kalıbı kullanmayı deneyebilirsiniz. Game olarak adlandırabileceğiniz oyun nesnesinin program akışı içerisindeki olası durumları MENU, INIT, PLAYING, END_GAME ve PLAY_AGAIN şeklinde tanımlanabilir. Yukarıdaki örnekte yaptıklarımızı göz önüne alarak bu senaryoyu Rust ile yazmayı deneyebilir, yazılmış bir halini görmek içinse [şuraya](https://github.com/buraksenyurt/rust-farm/tree/main/Practices/re_state_pattern) uğrayabilirsiniz. Bu örnekteki kodlara ise her zaman olduğu gibi [github reposu](https://github.com/buraksenyurt/rust-farm/tree/main/Practices/state_pattern) üzerinden ulaşabilirsiniz. Böylece geldik bir Rust pratiğinin daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

@@ -1,4 +1,4 @@
----
+﻿---
 title: "Rust Pratikleri - HTTP Sunucusu Yazmak/Yazmaya Çalışmak"
 pubDate: 2022-03-20 09:00:00
 categories:
@@ -15,7 +15,7 @@ tags:
 ---
 
 # Rust Pratikleri - HTTP Sunucusu Yazmak/Yazmaya Çalışmak
-![image.axd](images/image.axd)
+![crayz_server.png](images/crayz_server.png)
 
 Bir HTTP sunucusu yazmaya ne gerek var diyebilirsiniz. Öyle düşünmeyin. Bir programlama dilini öğrenmenin en iyi yolu, var olan yapıları o dille yazmaya çalışmaktır. Hangi dil ya da platform olursa olsun ortada dolaşan yüzlerce HTTP server zaten var. Ancak nasıl çalıştıklarını anlamak için de yine yeniden yazmakta yarar var. Bugünkü pratiğimizde bir HTTP server Rust programlama dili ile nasıl yazılabilir incelemeye çalışacağız. Esasında minik bir başlanıç yapacağız. Nitekim bir HTTP sunucusunun görevleri çok geniş olabilir.
 
@@ -363,17 +363,17 @@ curl -X POST http://localhost:5555/movies/ -H 'Content-Type: application/json' -
 
 İçeride bir takım tedbirler almıştık. HTTP Get, Post, Put, Delete harici olanlar ele alınamayacaktı. Dolayısıyla netcat ile localhost:5555 adresine basit bir ping gönderdiğimizde ilgili paketin işlenmemesi ve hatta bir RequestError yayınlanması gerekir. Hatta mızmızlık yapıp sunucuya ping pong oynamak istediğinizi söylesek bile durum değişmez.
 
-![image.axd](images/image.axd)
+![crayz_server_3.png](images/crayz_server_3.png)
 
 Sorun netcat aracındadır diye düşünüp curl ile denesek nasıl olur?
 
-![image.axd](images/image.axd)
+![crayz_server_5.png](images/crayz_server_5.png)
 
 Hımmm... Bir yerlere vardık gibi. Üzerinde çalışmakta olduğum ubuntu sistemi için curl komutu HTTP komutlarını göndermek için biçilmiş kaftandır. Görüldüğü üzere hem root hem de query gibi path'lere yapılan talepleri yakalayabiliyoruz. Bir ödev olarak query string parametresini ve değerini yakalamayı deneyebilirsiniz. Hatta bu noktada programın bir bug'ı da olabilir. Mesela querystring parametre değerlerinde boşluk karakteri varsa...Sonuçta sunucunun yorumlaması gereken bir bilgi.
 
 Yazdığımız örnek için son olarak birde HTTP Post talebi göndermeyi deneyelim. Body kısmında birde JSON içeriği olsun.
 
-![image.axd](images/image.axd)
+![crayz_server_json.png](images/crayz_server_json.png)
 
 Sonuç hiç de fena değil. POST ile gelen mesajın komple içeriğini yakalamış bulunuyoruz. Mesaj içeriğinde doksanlı yılların efsane filmlerinden birisine gönderme de var...Bakalım hangi filmden olduğunu tahmin edebilecek misiniz? Bu arada curl çağrılarına dönen "Empty reply from server" mesajları son derece doğal. Nitekim sunucumuz mesajları yakaladı, bir parça yorumladı ama istemci tarafa hiçbir bilgi göndermedi.
 
@@ -500,6 +500,6 @@ pub fn run(self) {
 
 İlave kodlarımız response nesne örnekleri üzerinden write fonksiyonunu çağırdığımız yerler. Duruma göre geriye anlamlı bir mesaj göndermekteyiz. Örneğin gelen mesaj içeriği başarılı bir şekilde işlendiyse ya da anlaşıldıysa HTTP 200 Ok ile birlikte basit bir HTML çıktısı yolluyoruz. Kim bilir belki istemci "haydi oynayalım" der:D İşte örneğin şimdiki halinin çalışma zamanı çıktısı.
 
-![image.axd](images/image.axd)
+![crayz_server_last.png](images/crayz_server_last.png)
 
 Dönüş bilgisini iyileştirmek, Header bilgisi eklemek ve daha da önemlisi gelen talebe göre bir çıktı üretmek sizlere ev ödevi olsun;) Örneğin GET ile gelen taleplerde yer alan path bilgisini kullanarak sunucunun olduğu fiziki diskte yer alan static HTML sayfalarını çıktı olarak dönmeyi deneyebilirsiniz. HTTP talebinde gelen path bilgisi elimizde olduğundan bu tip bir yönlendirme (routing) nispeten kolay olacaktır. Ancak path bilgisine göre bir veri kaynağından JSON çıktı alıp göndermek farklı bir çözüm gerektirebilir. Bende pil bittiği için buraya kadar getirebildim. Gerisi sizde:) Böylece geldik bir rust pratiğimizin daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

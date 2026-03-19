@@ -1,4 +1,4 @@
----
+﻿---
 title: "Rust ile Kodlama İdmanları - İleri Seviye"
 pubDate: 2025-12-01 19:51:00
 categories:
@@ -22,7 +22,7 @@ tags:
 ---
 
 # Rust ile Kodlama İdmanları - İleri Seviye
-![image.axd](images/image.axd)
+![15_mini.png](images/15_mini.png)
 
 Rust programlama dili ile ilgili maceralarımıza devam ediyoruz. Gerçi geçtiğimiz günlerde sizin de bildiğiniz üzere unwrap metodunun hatalı bir kullanımı sebebiyle internet sitelerinin %20sini koruyan [Cloudfare](https://www.cloudflare.com/) çöktü ve birçok hizmet uzun süre kullanılamaz hale geldi. Konuyla ilgili detaylı bilgilere[şu adreste](https://blog.cloudflare.com/18-november-2025-outage/)ki yazıdan ulaşabilirsiniz. Ferris şaşkın, ferris üzgün!
 
@@ -91,7 +91,7 @@ Burada özellikle fromrawpartsmut metodunun resmi dokümantasyonunda yer alan Sa
 
 Kodun çalışma zamanı çıktısı aşağıdaki gibidir.
 
-![image.axd](images/image.axd)
+![rust_exc_19.png](images/rust_exc_19.png)
 
 ## Eşzamanlı (Concurrency) Veri Paylaşılan Durumlarda Kilitlenme ve Yarış Durumlarından (Data Races) Kaçınmak
 
@@ -142,7 +142,7 @@ fn main() {
 
 Bu kodun çalışma zamanı çıktısı aşağıdakine benzer olacaktır. Dikkat edileceği üzere ay sayıda thread açılmış olmasına rağmen her çalıştırmada genelde farklı sıralamalarda işletimler söz konusudur. Bu son derece doğaldır zira thread'ler herhangi bir sırada başlar. Ancak hangi sırada başlarlarsa başlasınlar sonuçta toplam değeri hep aynı çıkar.
 
-![image.axd](images/image.axd)
+![rust_exc_20.png](images/rust_exc_20.png)
 
 ## Spawn Blocking Tasks ile Asenkron Kodlarda Performans Artışı Sağlamak
 
@@ -236,7 +236,7 @@ fn decrypt(value:&str) -> String {
 
 Uygulama kodunda hem Bad Practice hem de Good Practice şeklinde yorum satırlarımız var. Bunları ayrı ayrı açarak test etmekte yarar var. İdeal ve önerdiğimiz pratikte tokio küfesinden spawnblocking fonksiyonunu kullanarak decrypt işlemini farklı bir thread havuzuna devretmekteyiz. Buna göre sembolik olarak duraksatma yaptığımız ioopt işlemi ile ayrı bir havuz işletiliyor diyebiliriz. İlk versiyonda 1500 mili saniye süren işlem ideal sürümde 1000 mili saniye seviyelerine iniyor. Dolayısıyla bir thread'in ilgisi olmayan diğer thread'leri bekletmesinin önüne geçmiş oluyoruz.
 
-![image.axd](images/image.axd)
+![rust_exc_30_new.png](images/rust_exc_30_new.png)
 
 ## Typestate Pattern ile Daha Güvenli Program Arayüzleri (API) Tasarlamak
 
@@ -322,7 +322,7 @@ Aslında bu kod parçasındaki en kritik konulardan birisi PhantomData türünü
 
 Örnek kod parçasının çalışma zamanı çıktısı aşağıdaki gibidir.
 
-![image.axd](images/image.axd)
+![rust_exc_22.png](images/rust_exc_22.png)
 
 ## Uygulama Düzeyinde Hata Yayılımı (Error Propagation) için anyhow Kullanmak
 
@@ -533,7 +533,7 @@ fn generate_random_number() -> u32 {
 
 Bu kodun çalışma zamanı çıktısı aşağıdaki gibidir.
 
-![image.axd](images/image.axd)
+![rust_exc_23.png](images/rust_exc_23.png)
 
 ## Eşzamanlılık (Concurrency) Garantisi için Send ve Sync Trait'lerini Kullanmak
 
@@ -541,7 +541,7 @@ Eş zamanlı (Concurrent) çalışan işler arasında tiplerin güvenli bir şek
 
 Rust'ın standart kütüphanesinde yer alan pek çok tür varsayılan olarak send ve sync trait'lerini uygularken bazıları uygulamaz. Örneğin smart pointer'lardan birisi olan Rc yapısı Send ve Sync trait'lerini implemente etmez. Dolayısıyla referans sayımı iş parçacıkları arasında güvenli bir şekilde paylaşılamaz. Zaten yapının kullanım amacında bu yoktur. Diğer yandan örneğin Cell ve RefCell türleri de Sync trait'ini implemente etmezler çünkü sadece dahili olarak değiştirilebilirlik (mutability) sağlarlar. Diğer yandan Mutex ve RwLock türleri Sync trait'ini uygularlar, zira değiştirilebilirliği güvenli bir şekilde yönetirler. Özellikle thread-safe olmayan varlıkları kullandığımız veri yapıları olduğunda bu trait'leri kullanmak önemlidir. Aşağıdaki tabloda Send ve Sync trait'lerinin uygulandığı türlerle ilgili bilgiler verilmiştir.
 
-![image.axd](images/image.axd)
+![rust_exc_24.png](images/rust_exc_24.png)
 
 Buna göre örnek olarak aşağıdaki kod parçasını ele alabiliriz. Senaryo ve işleyiş yorum satırlarında yer almaktadır.
 
@@ -602,7 +602,7 @@ unsafe impl Sync for Stats {}
 
 Bu kodun çalışma zamanı çıktısı aşağıdaki gibidir.
 
-![image.axd](images/image.axd)
+![rust_exc_25.png](images/rust_exc_25.png)
 
 ## Eşzamanlı Garantilerde Mutex (Mutual Exclusion) Yerine Atomic Türleri Kullanmak
 
@@ -715,7 +715,7 @@ struct ServiceId<'a> {
 
 Bu kodun çalışma zamanı çıktısı aşağıdaki gibi olur.
 
-![image.axd](images/image.axd)
+![rust_exc_26.png](images/rust_exc_26.png)
 
 Şimdi aynı senaryoyu AtomicI32 türünü kullanarak yazalım.
 
@@ -807,19 +807,19 @@ struct ServiceId<'a> {
 
 Bu kodun çalışma zamanı çıktısı da aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![rust_exc_27.png](images/rust_exc_27.png)
 
 Bu yeni kullanımda görüldüğü üzere herhangi bir kilit açma veya kapatma işlemi kullanılmıyor. Bunun yerine fetchupdate metodu ile atomik bir şekilde sayaç değerini artırıyoruz. Ayrıca sayaç değerini okumak için load metodunu kullanıyoruz. Atomik operasyonlarda işin sırrı Rust'ın doğrudan CPU komutlarını (Instructions) kullanmasıdır. Bu komutlar CPU seviyesinde kesintilerin sorunsuz şekilde garanti edilmesini sağlar. Bir nevi CPU komutlarının garantisini kullandığımızı ifade edebiliriz zira donanım seviyesinde gerçekleştirilen işlemler söz konusudur. Örneğin x86 tabanlı işlemci setlerinde LOCK XADD komutu kullanılarak kesintisiz sayaç artımı yapılabilir. Burada tüm çekirdekler değişikliği anında görür, hiçbir işletim sistemi mekanizması devreye girmez (thread scheduling gibi)
 
 Lakin burada özellikle dikkat edilmesi gereken nokta Ordering parametresine verilen değerle ilgilidir. Bu parametreler, atomik işlemlerin bellek sıralaması üzerindeki etkilerini belirler. Yukarıdaki örnekte Relaxed sıralama kullanılmıştır ki bu en gevşek sıralamadır ve en yüksek performansı sağlar. Ancak bazı senaryolarda daha güçlü sıralama garantilerine ihtiyaç duyulabilir. Bu durumda Acquire, Release veya SeqCst gibi farklı sıralama türleri tercih edilmelidir. Karar vermek zor olabilir bu yüzden aşağıdaki tabloyu incelemek faydalı var.
 
-![image.axd](images/image.axd)
+![rust_exc_28.png](images/rust_exc_28.png)
 
 Diğer sıralama türleri Release ve Acquire için [resmi dokümantasyona](https://doc.rust-lang.org/std/sync/atomic/enum.Ordering.html) bakılabilir.
 
 Bunlardan hangisinin kullanılacağına karar vermek içinse aşağıdaki tablodan yararlanılabilir.
 
-![image.axd](images/image.axd)
+![rust_exc_29.png](images/rust_exc_29.png)
 
 Bu iki yaklaşım arasındaki süre farkı hakkında fikir vermek için aşağıdaki örnek kod parçasını da ele alabiliriz. Senaryoda 10 farklı thread tarafından ortak bir sayaç değerinin artırılması söz konusu. Mutex ve AtomicI32 kullanımı arasındaki süre farkını ölçüyoruz.
 
@@ -892,7 +892,7 @@ fn calculate_with_atomic() {
 
 İşte sonuçlar...
 
-![image.axd](images/image.axd)
+![mutex_vs_atomic.png](images/mutex_vs_atomic.png)
 
 Böylece geldik bir makalemizin daha sonuna.
 

@@ -1,4 +1,4 @@
----
+﻿---
 title: "EF Core ile MariaDb Kullanımı"
 pubDate: 2018-02-19 17:18:00
 categories:
@@ -26,7 +26,7 @@ tags:
 ---
 
 # EF Core ile MariaDb Kullanımı
-![image.axd](images/image.axd)
+![mariacore_5.gif](images/mariacore_5.gif)
 
 Merhaba Arkadaşlar,
 
@@ -50,7 +50,7 @@ Son komut sonrası bazı sorularla karşılaştım. İlk etapta root user şifre
 
 sudo mysql -u root -p
 
-![image.axd](images/image.axd)
+![mariacore_1.gif](images/mariacore_1.gif)
 
 Yukarıdaki ekran görüntüsünde show databases; komutu kullanılarak yüklü olan veritabanlarının listesinin elde edilmesi sağlanmışıtır. Burada basit SQL sorgu ifadeleri kullanarak bir takım işlemler yapabiliriz. Bir deneyin derim.
 
@@ -242,7 +242,7 @@ Main fonksiyonu içerisinde peş peşe iki Ensure operasyonunun çağırıldığ
 
 Artık uygulama çalışabilir. Console penceresine yansıyan çıktı aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![mariacore_2.gif](images/mariacore_2.gif)
 
 Diğer yandan MariaDb üzerindeki duruma da kendi arabiriminden bakılabilir. Ben aşağıdaki komutları denedim.
 
@@ -256,7 +256,7 @@ select * from Category;
 
 İlk komut ile veritabanlarını gösteriyoruz. Kodun çalışması sonrası oluşan BeautyBooks üzerinde işlemler yapmak istediğimiz için use komutunu kullanıyoruz. Veritabanı seçiminin ardından show tables ile tabloları gösteriyoruz ki Book ve Category nesnelerinin oluşturulduğunu görebiliriz. İki standart Select sorgusu ile de tablo içeriklerini göstermekteyiz (Bu arada MariaDb'nin terminal çıktıları çok hoşuma gitti. Bana üniversite yıllarımda DOS ekranında Pascal ile tablo çizip içini verilerle doldurmaya çalıştığım günleri anımsattı. Çok basit bir görünüm ama sade ve anlaşılır)
 
-![image.axd](images/image.axd)
+![mariacore_3.gif](images/mariacore_3.gif)
 
 Log Eklemeyi Unutunca Ben
 
@@ -281,6 +281,6 @@ public partial class BeautyBooksContext : DbContext
 
 Aslında bu kod parçasında çok güzel bir ders var. Bir Log mekanizmasını EF çalışma motoruna enjekte ediyoruz. EFLoggerFactory, LoggerFactory türünden üretilirken ilk parametrede ConsoleLoggerProvider örneği verilmekte. Farklı LoggerProvider'lar da var ve hatta biz de kendi LoggerProvider tipimizi buraya ekleyebiliriz. Yapıcı metodda verilen parametrelerle bir filtreleme yaparak hangi bilgilerin hangi seviyede kayıt altına alınacağını belirtiyoruz. İlgili LoggerFactory'nin kullanılabilmesi içinse UseLoggerFactory operasyonunu devreye alıyoruz. Sonuçta kodu çalıştırdığımızda arka planda hareket eden SQL ifadelerinin Console penceresine basıldığını görebiliriz.
 
-![image.axd](images/image.axd)
+![mariacore_4.gif](images/mariacore_4.gif)
 
 Görüldüğü üzere Entity Framework ile MySQL türevli MariaDb'yi kullanmak oldukça basit. Elbette önemli olan konulardan birisi EF çalışma zamanına MariaDb provider'ının enjekte edilmesi. Yani DbContext türevli sınıfın ezilen OnConfiguring fonksiyonu içerisinde yapılan UseMySql çağrısı. Bu sebepten github'taki kod içeriğini incelemekte de oldukça büyük yarar olduğu kanısındayım. Nitekim kendi veritabanı sistemimizin Entity Framework Core tarafında kullanılmasını istediğimiz durumlarda benzer kod çalışmasını yapmamız gerekecektir. Böylece bir cumartesi gecesini daha eğlenceli şekilde bitiriyorum. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

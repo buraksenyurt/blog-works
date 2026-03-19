@@ -1,4 +1,4 @@
----
+﻿---
 title: "Python - PEP8 Uyumlu Kod Geliştirmek"
 pubDate: 2017-06-27 17:10:00
 categories:
@@ -12,7 +12,7 @@ tags:
 ---
 
 # Python - PEP8 Uyumlu Kod Geliştirmek
-![image.axd](images/image.axd)
+![pythonpep_2.gif](images/pythonpep_2.gif)
 
 Merhaba Arkadaşlar,
 
@@ -30,7 +30,7 @@ py -3 -m pip install pytest
 py -3 -m pip install pytest-pep8
 ```
 
-![image.axd](images/image.axd)
+![pythonpep_1.gif](images/pythonpep_1.gif)
 
 > Windows tarafındaki yükleme sonrası py.test aracının bulunamadığına dair bir hata mesajı ile karşılaşabilirsiniz. Bu, Python'un script klasörüne ait Path bildiriminin olmayışından kaynaklanmaktadır. Script klasörünü Environment Variables-Path tanımına eklediğiniz takdirde sorun çözümlenecektir.
 
@@ -76,7 +76,7 @@ throll.display()
 
 Aslında üç basit fonksiyonumuz ve bir de sınıfımız var. sum isimli fonksiyonun aşırı yüklenmiş iki versiyonu bulunuyor. Birisi iki değerin toplamını almakta iken diğeri Variadic özelliğe sahip. Bir başka deyişle n sayının toplamını hesaplatabiliriz. Son fonksiyonumuz ise math modülündeki pi sabitini kullanarak daire alanının hesaplanmasında kullanılıyor. Her ne kadar kullanmıyor olsak da iki modül bildirimi var. math ve os (Eğer GoLang tarafında olsaydık derleme hatası alırdık biliyorsunuz değil mi? "Kullanmadığın paketi niye koyuyorsun" oraya derdi) player isimli sınıfımız bir oyuncuyu temsilen yazılmış durumda. Kodların IDLE üzerinden F5 ile test edersek çalıştığını görebiliriz.
 
-![image.axd](images/image.axd)
+![pythonpep_4.gif](images/pythonpep_4.gif)
 
 Peki ya PEP8 Kontrolü
 
@@ -86,7 +86,7 @@ Kodlar güzel bir şekilde çalışıyor peki yazım tarzı Guido van Rossum, Ba
 py.test --pep8 algebra.py
 ```
 
-![image.axd](images/image.axd)
+![pythonpep_5.gif](images/pythonpep_5.gif)
 
 Liste aşağıya doğru uzayıp gitmekte. Temel olarak yazım stili ile ilgili kızılan şeyler var. Örneğin math ve os paket bildirimlerinin aynı satırda olmasına kızılıyor. Fonksiyon bildirimlerinden önce iki boş satır bekleniyor. Operatorlerden önce ve sonra birer boşluk isteniyor. Bir satırdaki karakter sayısının çok fazla olduğu ifade ediliyor (72 harfi geçen bir yorum satırımız var) Sınıfın içeriğini diğer bir dosyadan kopyalarken girintilerde kaymalar olduğu için 4 boşluklu tab kuralının bozulduğu dile getiriliyor (Aslında PEP8 dokümanına bakıldığında sınıf adları veya if kullanımları ile ilgili öneriler de var. Lakin test aracından bunları çıkarttıramadım) Şimdi kodun yazım stilini belirtilen uyarı mesajlarına göre yeniden düzenleyelim.
 
@@ -130,6 +130,6 @@ throll.display()
 
 import bildirimlerini iki ayrı satıra koydum. 72 karakteri geçen yorum satırını da iki satıra böldüm. Fonksiyoların öncesinde ikişer satır boşluk bıraktım. Eşitlik, büyüktür gibi operatörlerin önüne ve arkasına birer boşluk dahil ettim. Fonksiyon parametrelerinde ve çağırımlarındaki virgüllerden sonrasına da birer boşluk koydum. Sınıfın içerisindeki bozulan girinti yapısını tekrar elden geçirdim. Sonuç şöyle oldu.
 
-![image.axd](images/image.axd)
+![pythonpep_6.gif](images/pythonpep_6.gif)
 
 Görüldüğü gibi test başarılı. Elbette yapılan test sadece kodun yazım stilini denetleyen ve standart python kütüphanesindeki ile tutarlı hale gelinmesini sağlayan türde. Sonuçta PEP8 ile tutarlılık sağlandı diyebiliriz. Lakin test aracı bir metodun parametre sayısının belli bir değerin üstünde olması haline sınıf kullanın gibisinden bir öneri sunmadı. İnsan Juval Lowy'nin eşsiz C# kodlama standartlarındaki gibi bir şeyler bekliyor ancak konu daha çok göze hoş gelen yazım stili gibi duruyor. Dokümantasyona bakıldığında yine de güzel öneriler var. Şahsen GoLang tarafındaki bir takım stil kurallarının build mekanizmasına dahil edilmesinin çok daha iyi olduğu kanaatindeyim. Nitekim bazı stillere uyulmadığı takdirde (örneğin fonksiyon süslü açma parantezinin alt satırda olması hali) derleme hatası fırlatabilen, pek çoğumuza katı görünen ama standartlığı en baştan sağlayan bir derleme mekanizması mevcut. Bu öz eleştirimi de yaptıktan sonra huzurlarınızdan ayrılıyorum. Python kitabıma devam etmem lazım. Gitmem gereken yaklaşık 700 sayfa daha var. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

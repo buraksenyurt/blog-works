@@ -1,4 +1,4 @@
----
+﻿---
 title: "Visual Studio Code İçinde Unit Test Yazmak"
 pubDate: 2018-11-26 21:15:00
 categories:
@@ -15,7 +15,7 @@ tags:
 ---
 
 # Visual Studio Code İçinde Unit Test Yazmak
-![image.axd](images/image.axd)
+![core_test_7.gif](images/core_test_7.gif)
 
 Merhaba Arkadaşlar,
 
@@ -49,7 +49,7 @@ cd TextService.Tests
 
 Öncelikle sistemimizde UnitTestSample isimli bir klasör oluşturduk ve içerisine girerek yeni bir Solution ürettirdik. Hemen ardından TextService isimli bir alt klasör daha oluşturduk. Bu klasörün içerisine girip bu sefer de bir sınıf kütüphanesi (Class Library) ürettirdik. Testlerini yazacağımız ve asıl işi yapan fonksiyonelliklerimizi burada biriktirebiliriz. Sonrasında solution dosyasına henüz üretilen TextService.csproj dosyasını ve dolayısıyla ilgili projeyi dahil ettik. Dolayısıyla ilgili sınıf kütüphanesinin projesini çözümün bir parçası haline getirdik. Birim testleri barındıracak olan TextService.Tests projesi için de benzer bir klasör yapısı söz konusu. Tek fark test projesini üretmek için "dotnet new mstest" komutlarından yararlanmış olmamız. Buna göre MStest kütüphanesini kullanan standart bir test projesi üretiliyor. Pek tabii test projesi TextService kütüphanesini kullanacağından proje referansını da eklememiz gerekiyor. Son adım olarak da TextService.Tests.csproj dosyasını Solution'a dahil ediyoruz. İşlemler bittiğinde kabaca aşağıdaki ağaç yapısını elde etmiş olmalıyız. TextService ve TextService.Tests aynı seviyede klasörlerdir.
 
-![image.axd](images/image.axd)
+![core_test_1.gif](images/core_test_1.gif)
 
 Hemen şu notu da belirtelim; MSTest kullanmak zorunda değiliz. Pek çok bağımsız test kütüphanesi var. Örneğin Microsoft dokümanlarına baktığımızda NUnit ve xUnit örneklerinin olduğunu da görebiliriz.
 
@@ -106,7 +106,7 @@ TestClass ve TestMethod nitelikleri ile bezenmiş standart bir Unit Test sınıf
 dotnet test
 ```
 
-![image.axd](images/image.axd)
+![core_test_3.gif](images/core_test_3.gif)
 
 Revize
 
@@ -186,7 +186,7 @@ namespace TextService.Tests
 
 Exception beklediğimiz iki test metodu var. Ayrıca bir de içinde s karakteri barındırmasını beklediğimiz kabul kriterimiz. Exception beklediğimiz durumlar için bilinçli olarak ExpectedException niteliğini (attribute) kullandık. Bu iki test başarılı çalışacaktır. Ancak "pilav" kelimesinde "s" karakteri olmadığından 1 test hatalı sonuçlanacaktır. Testi tekrar çalıştırdığımızda aşağıdaki sonuçları elde ederiz.
 
-![image.axd](images/image.axd)
+![core_test_4.gif](images/core_test_4.gif)
 
 Aslında bakmamız gereken başka durumlar da var. Örneğin gerçekten içinde s harfi olan bir metin için gerekli kabul kriterimizi de yazabiliriz. Bu şekilde değişken girdi parametreleri için ayrı ayrı test metodları yazmaktansa DataTestMethod ve DataRow nitelikleri yardımıyla çok sayıda farklı girdiyi kabul kriterlerine dahil edebiliriz. Nasıl mı? Aynen aşağıdaki gibi.
 
@@ -236,7 +236,7 @@ namespace TextService.Tests
 
 Bu sefer dikkat edileceği üzere 3 değişik metin için aynı test metodunu çalıştırdık. Sadece DataRow niteliğinin aldığı değeri Test metodunda parametre olarak ele almamız yeterli. Şimdi testlerimizi tekrar çalıştırırsak aşağıdaki sonuçları elde ettiğimizi görebiliriz.
 
-![image.axd](images/image.axd)
+![core_test_5.gif](images/core_test_5.gif)
 
 Dikkat edileceği üzere Visual Studio Code arabirimi dışına çıkmadan MSTest kütüphanesini kullanarak birim testler içeren çözümler üretmemiz oldukça basit ve kolay. Pek tabii görsel olarak test sonuçlarını görebilmek de güzel olurdu. Visual Studio bu anlamda çok fazla ve güzel imkan sunuyor. Ne var ki Visual Studio Code için de açık kaynak olarak geliştirilmiş bir çok Test Explorer var. Bu arada "dotnet test" komutunun da gizemli parametreleri yok değil. Örneğin aşağıdaki komut ile Test sonuçlarının bir XML dosyası içerisine loglanmasını sağlayabiliriz.
 
@@ -246,7 +246,7 @@ dotnet test --logger trx
 
 (Ben örnek deneme sonrasında TestResults klasörü altında trx uzantılı bir log dosyası elde ettim)
 
-![image.axd](images/image.axd)
+![core_test_6.gif](images/core_test_6.gif)
 
 Ya da
 

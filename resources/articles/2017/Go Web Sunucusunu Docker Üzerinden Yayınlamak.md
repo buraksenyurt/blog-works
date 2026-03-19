@@ -1,4 +1,4 @@
----
+﻿---
 title: "Go Web Sunucusunu Docker Üzerinden Yayınlamak"
 pubDate: 2017-11-15 10:00:00
 categories:
@@ -16,7 +16,7 @@ tags:
 ---
 
 # Go Web Sunucusunu Docker Üzerinden Yayınlamak
-![image.axd](images/image.axd)
+![go_docker5.gif](images/go_docker5.gif)
 
 Merhaba Arkadaşlar,
 
@@ -60,7 +60,7 @@ go run main.go
 
 komutunu vererek bu denemeyi yaşayabiliriz. Aşağıdaki ekran görüntüsünde örnek bir çalışma zamanına yer veriliyor. Ben bu görüntüyü aldığımda yine gülümsedim hafifçe.
 
-![image.axd](images/image.axd)
+![godocker_1.gif](images/godocker_1.gif)
 
 Hedefimiz şu. Bu uygulamayı başlatıldığı zaman ayağa kaldıracak bir Docker imajı oluşturmak. Bunun yolu bildiğiniz gibi ilgili komutları içerecek bir Dockerfile oluşturmaktan geçiyor. main.go ile aynı lokasyona aşağıdaki içeriğe sahip docker dosyasını ekleyerek ilerleyebiliriz.
 
@@ -82,7 +82,7 @@ Dosya hazırlandıktan sonra imajın oluşturulmasına başlayabiliriz. Bu tipik
 sudo docker build -t go_rnd_server .
 ```
 
-![image.axd](images/image.axd)
+![godocker_22.gif](images/godocker_22.gif)
 
 go_rnd_server isimli bir imaj oluşturduk. Eğer indirilmesi gereken içerikler varsa sisteme yüklenmesi için bir süre beklemek gerekebilir. Herhangibir hata alınmadıysa oluşturulan imajı kullanarak yeni bir Container başlatabiliriz. Bunun için docker'ın run komutundan yararlanmak gerekiyor. -p den sonra gelen adres ile yayınlamanın hangi adresten yapılacağını da belirtmiş oluyoruz.
 
@@ -90,7 +90,7 @@ go_rnd_server isimli bir imaj oluşturduk. Eğer indirilmesi gereken içerikler 
 sudo docker run -p 8087:8087 go_rnd_server
 ```
 
-![image.axd](images/image.axd)
+![go_docker33.gif](images/go_docker33.gif)
 
 Ekran görüntüsünden de görüleceği gibi artık docker üzerinde konuşlandırdığımız Web sunucusuna gidebiliyoruz (Biraz daha gülümsüyorum) Örneği genişletmek tabii ki sizin elinizde. Burada Go ile yazılmış bir REST servis de sunulabilir. Hatta veri için Redis gibi bir yapı kullanılarak senaryo daha da heyecanlı hale getirilebilir (En sevdiğiniz filmdeki sözlerin içeren bir veri kümesinden kullanıcıya rastgele sözler yolladığınız bir örnek üzerinde çalışabilirsiniz) Bunlara ek olarak söz konusu Container'lardan bir kaçının farklı port'lardan başlatılması da denenebilir. Bu mümkün olabilir mi şimdilik bilmiyorum ama denemek de istiyorum. Özellikle ortak veri kullanımları veya verinin tüm Container'lar için eşleştirilmesi gibi epik senaryoları kafamda şekillendirmekte henüz zorlanıyorum.
 
@@ -100,7 +100,7 @@ Makaleme son vermeden önce çalışmakta olan Container'ı nasıl durduracağı
 sudo docker ps -a
 ```
 
-![image.axd](images/image.axd)
+![go_docker4.gif](images/go_docker4.gif)
 
 Çalışmakta olan bir Container örneğini durdurmak için de ID değerini kullanabiliriz. Aşağıdaki gibi.
 

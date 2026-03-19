@@ -1,4 +1,4 @@
----
+﻿---
 title: "Asp.Net Core'da Bir WebSocket Macerası"
 pubDate: 2017-10-18 14:29:00
 categories:
@@ -19,7 +19,7 @@ tags:
 ---
 
 # Asp.Net Core'da Bir WebSocket Macerası
-![image.axd](images/image.axd)
+![websockets_5.gif](images/websockets_5.gif)
 
 Merhaba Arkadaşlar,
 
@@ -43,7 +43,7 @@ Projenin Oluşturulması
 dotnet new web -o HelloWebSockets
 ```
 
-![image.axd](images/image.axd)
+![websockets_1.gif](images/websockets_1.gif)
 
 Sıradaki operasyon Microsoft.AspNetCore.WebSockets paketinin aşağıdaki terminal komutu ile projeye eklenmesi. Bu sayede System.Net.WebSockets isim alanı altında yer alan tipleri kullanabileceğiz.
 
@@ -51,7 +51,7 @@ Sıradaki operasyon Microsoft.AspNetCore.WebSockets paketinin aşağıdaki termi
 dotnet add HelloWebSockets.csproj package Microsoft.AspNetCore.WebSockets
 ```
 
-![image.axd](images/image.axd)
+![websockets_2.gif](images/websockets_2.gif)
 
 Kodlar
 
@@ -238,18 +238,18 @@ komutuyla web sunucusunun çalıştırılması gerekiyor. Sonrasında herhangibi
 
 Tarayıcı tarafı;
 
-![image.axd](images/image.axd)
+![websockets_3.gif](images/websockets_3.gif)
 
 Dikkat edileceği üzere aradaki haberleşme console ekranına düşmektedir (Chrome'da debug penceresini açmak için F12 tuşunu kullanabilirsiniz) Ayrıca "Don't remember" nedir yahu...
 
 Sunucu tarafı
 
-![image.axd](images/image.axd)
+![websockets_4.gif](images/websockets_4.gif)
 
 Sunucu tarafında da istemciden gelen mesajların başarılı bir şekilde yakalandığı görülmektedir.
 
 Dilerseniz n sayıda istemciyi bağlayabilir ve herbirinin ayrı bir konuşma içerisinde değerlendirildiğini de test edebilirsiniz. Aşağıdaki ekran görüntüsünde olduğu gibi.
 
-![image.axd](images/image.axd)
+![websockets_6.gif](images/websockets_6.gif)
 
 Asp.Net Core ile Web Sockets haberleşmesi yapmak oldukça kolay. Bu örneği tabii diğer platformalarda da denemek lazım. İstemciyi çeşitlendirebiliriz. Bir mobil uygulama, desktop uygulaması veya farklı bir servis dahi olabilir. Hatta örnek daha da zenginleştirilebilir ve biraz oyunlaştırılabilir. Bir sayı tahmin oyununu bu şekilde yapmaya çalıştığınızı düşünün. Hatta istemcinin ekranına soru seti gönderip, cevaplarına göre hikayeleştirdiğiniz bir senaryoyu işletebilirsiniz. Şu sıralar tabletten oynadığım My Cafe isimli oyunda restorana gelen müşterilerim ile aramda böyle hikayeleştirilmiş soru-cevap olayları söz konusu. Acaba Web Sockets mi kullanılmış merak etmekteyim. Böylece geldik bir makalemizin daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

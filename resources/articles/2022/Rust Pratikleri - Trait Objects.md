@@ -1,4 +1,4 @@
----
+﻿---
 title: "Rust Pratikleri - Trait Objects"
 pubDate: 2022-05-01 09:00:00
 categories:
@@ -16,7 +16,7 @@ tags:
 ---
 
 # Rust Pratikleri - Trait Objects
-![image.axd](images/image.axd)
+![doc_builder_0.png](images/doc_builder_0.png)
 
 Bir windows forms uygulamasını ya da bir web sayfasını düşünelim. Hatta birden fazla bileşenden (component) oluşan bir mobil uygulama arayüzünü...Temelde ana kontrol üstüne eklenen başka tekil ve karma bileşenlerden oluşan bir bütün söz konusudur. Şimdi de ana saha üzerine gelen bu kontrollerin nasıl çizildiğini, hangi sırayla eklendiklerini düşünelim. Bir çalışma zamanı motoru büyük ihtimalle belli ortak davranışlara sahip olan bileşenleri, ortamın istediği kıvamda (örneğin HTML olarak) çizme görevini üstlenir. Hatta bu sistemlerde bileşen ağacı öyle bir tasarlanır ki, geliştiriciler isterlerse kendi bileşenlerini de tasarlayıp çalışma zamanı motorunun kullanımına sunabilir.
 
@@ -188,7 +188,7 @@ fn main() {
 
 Clippy ile ne kadar ideomatic olduğumuza bir baktıktan sonra run komutu ile örneği çalıştırabiliriz. Aşağıdaki ekran görüntüsündekine benzer sonuçlar almamız gerekiyor.
 
-![image.axd](images/image.axd)
+![doc_builder_1.png](images/doc_builder_1.png)
 
 Örnekte smart pointer'lardan olan Box türünü kullanan trait nesnelerini ele aldık. Bu uygulama biçimi ile dynamic dispatch olarak da adlandırılan konuya değinmiş oluyoruz. C# tarafından gelen birisi için generic türlerin Rust tarafında da yer alması, aynı örnekte generic kullanımının işe yarayacağını düşündürebilir. En azından sahip olduğum bilgiye göre böyle olması gerektiğini öne sürebilirim. Anlatmak istediğim durumu için kod tarafında aşağıdaki değişiklikleri yaparak ilerleyelim.
 
@@ -212,11 +212,11 @@ where
 
 Document tipinin Draw trait'ini uyarlayan T tipi ile çalışmasını istediğimiz belirttik. Her ne kadar bir smart pointer'dan yararlanmış olsak da bu kod derlenmeyecek ve aşağıdaki hata mesajını verecektir.
 
-![image.axd](images/image.axd)
+![doc_builder_2.png](images/doc_builder_2.png)
 
 Bu hata durumu IntelliJ Ide'si üstünde de rahatlıkla görülebilir.
 
-![image.axd](images/image.axd)
+![doc_builder_3.png](images/doc_builder_3.png)
 
 Fatura nesnesine ilk olarak title bileşeni eklenmiştir. Bu sebepten sonraki add operasyonlarında rust derleyicisi yine title türünden nesnelerin eklenmesini beklemektedir. Nitekim rust dilinin bir diğer kuralına göre generic bir parametre t anında sadece tek bir gerçek tiple (concrete type) çalışabilir. Dolayısıyla LineItems ve Bottom nesne örneklerinin eklenmeye çalışması bu kuralın ihlali anlamına gelmiştir.
 

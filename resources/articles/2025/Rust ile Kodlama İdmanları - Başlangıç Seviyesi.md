@@ -1,4 +1,4 @@
----
+﻿---
 title: "Rust ile Kodlama İdmanları - Başlangıç Seviyesi"
 pubDate: 2025-10-25 20:04:00
 categories:
@@ -19,7 +19,7 @@ tags:
 ---
 
 # Rust ile Kodlama İdmanları - Başlangıç Seviyesi
-![image.axd](images/image.axd)
+![rust_mini_00.png](images/rust_mini_00.png)
 
 Rust, daha çok öğrenme eğrisinin zorluğu ile tanınan bir sistem programlama dilidir desek sanırım yanlış olmaz. Ownership, borrow-checker, lifetimes, macro'lar, mutex vs derken managed ortamlarda (.Net, Java, Go gibi) geliştirme yapan programcıları epeyce zorlayan konu başlıklarına sahiptir. Şahsen, aynı öğrenme eğrisi zorluğunu yaşamış birisi olarak kodladıkça daha fazla tutulacağınız bir dil olduğunu da belirtmek isterim.
 
@@ -70,7 +70,7 @@ fn main() {
 }
 ```
 
-## ![image.axd](images/image.axd)
+## ![rust_exc_00.png](images/rust_exc_00.png)
 
 ## Gereksiz clone Çağrılarından Kaçınmak
 
@@ -142,11 +142,11 @@ fn main() {
 
 value moved hatası;
 
-![image.axd](images/image.axd)
+![rust_exc_01_1.png](images/rust_exc_01_1.png)
 
 clone yerine referans kullanımı;
 
-![image.axd](images/image.axd)
+![rust_exc_01.png](images/rust_exc_01.png)
 
 ## Mutasyon Kapsamını Sınırlamak
 
@@ -188,7 +188,7 @@ fn main() {
 }
 ```
 
-![image.axd](images/image.axd)
+![rust_exc_02.png](images/rust_exc_02.png)
 
 ## Dangling Referanslardan Kaçınmak
 
@@ -259,11 +259,11 @@ fn main() {
 
 lifetime hatası;
 
-![image.axd](images/image.axd)
+![rust_exc_03.png](images/rust_exc_03.png)
 
 String döndürdüğümüz senaryo;
 
-![image.axd](images/image.axd)
+![rust_exc_03_1.png](images/rust_exc_03_1.png)
 
 ## Public API'lerde Kapsamlı Dokümantasyon Kullanmak
 
@@ -358,15 +358,15 @@ Komut satırından cargo doc komutu sonrası oluşan dokümantasyon içeriğini 
 
 Modül tarafı;
 
-![image.axd](images/image.axd)
+![rust_exc_04_1.png](images/rust_exc_04_1.png)
 
 Örnek fonksiyon tarafı;
 
-![image.axd](images/image.axd)
+![rust_exc_04_2.png](images/rust_exc_04_2.png)
 
 veya örneğin RustRover IDE'sinde kod yazarken ve bu modüle ati bir fonksiyonu kullanırken;
 
-![image.axd](images/image.axd)
+![rust_exc_04_3.png](images/rust_exc_04_3.png)
 
 ## Sahipliği Gözardı Etmek (Ignoring Ownership)
 
@@ -455,11 +455,11 @@ fn main() {
 
 Sahipliği fonksiyona devrettikten sonra halen değişkeni kullanmaya devam etmek istediğimizde;
 
-![image.axd](images/image.axd)
+![rust_exc_05.png](images/rust_exc_05.png)
 
 Referans yoluyla sahipliği aktardığımızda;
 
-![image.axd](images/image.axd)
+![rust_exc_06.png](images/rust_exc_06.png)
 
 ## Makroları Hatalı Kullanmaktan Kaçınmak
 
@@ -497,9 +497,9 @@ fn main() {
 }
 ```
 
-![image.axd](images/image.axd)
+![Ekim_rust_exc_07.png](images/Ekim_rust_exc_07.png)
 
-![image.axd](images/image.axd)
+![Ekim_rust_exc_07.png](images/Ekim_rust_exc_07.png)
 
 ## String Yerine &str ile Çalışmak
 
@@ -552,7 +552,7 @@ fn route_request(path: &str) {
 
 Dikkat edileceği üzere apipaths dizisindeki her bir yol bilgisi için routerequest fonksiyonu çağrılırken bir referans türü olarak &str kullanılmıştır. Yine de ısrarla kopya üzerinden işlem yapmak istersek clone metodu ile kopyalama yapılarak ilerlenebilir ancak bu durumda da performans maliyeti ortaya çıkar. Çünkü her bir kopyalama işlemi için heap üzerinde yeni bir alan tahsis edilir ve bu da gereksiz bellek tüketimi demektir. Referans kullanımı ise bu maliyeti ortadan kaldırır.
 
-![image.axd](images/image.axd)
+![rust_exc_08.png](images/rust_exc_08.png)
 
 ## if let ile Daha Temiz Eşleşmeler
 
@@ -668,7 +668,7 @@ fn main() {
 }
 ```
 
-![image.axd](images/image.axd)
+![rust_exc_09.png](images/rust_exc_09.png)
 
 Şimdilik bu kadar...
 

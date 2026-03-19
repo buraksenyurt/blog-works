@@ -1,4 +1,4 @@
----
+﻿---
 title: "The Internet Computer (Internetin Yeniden Keşfi) ve Motoko'yu Duyunca Ben"
 pubDate: 2020-10-31 22:31:00
 categories:
@@ -16,7 +16,7 @@ tags:
 ---
 
 # The Internet Computer (Internetin Yeniden Keşfi) ve Motoko'yu Duyunca Ben
-![image.axd](images/image.axd)
+![motokon.jpg](images/motokon.jpg)
 
 Herkese açık olan interneti genişletip kendi yazılım sistemlerimizi, kurumsal IT çözümlerimizi, web sitelerimizi, dağıtık bir ortamda firewall'lara ve yedekleme sistemlerine ihtiyacı duymadan güvenli bir şekilde konuşlandırabildiğimizi düşünelim. Hatta bunu sağlayan altyapı ile internete konan bu sistemler arasında fonksiyon çağrımı yapar gibi kolayca haberleşebildiğimizi (ve tabii ki güvenli bir ortamda) hayal edelim. Biraz blockchain benzeri bir dağıtık sistem kurugusu gibi değil mi? Tam olarak olmasa da oradaki teorileri baz almışlar gibi görünüyor. The Internet Computer adlı bu proje ICP (Internet Computer Protocol) adı verilen ve herhangi bir merkezi olmayan bir protokolü baz alarak, küresel ortamdaki bağımsız veri merkezlerinin, web sitelerinin, backend hizmetlerinin vb yazılımların aynı güvenlik garantileriyle çalıştığı kapatılamaz bir alt evren vaat ediyor.
 
@@ -44,7 +44,7 @@ dfx new freedom
 
 Motoko için bir Visual Studio Extension'da mevcut. Üstelik new ile yeni proje oluşturduktan sonraki terminal görüntüsü de çok tatlı.
 
-![image.axd](images/image.axd)
+![skynet_33_Screenshot_01.png](images/skynet_33_Screenshot_01.png)
 
 Gelelim freedom içerisindeki kodlarımıza. Burada iki dosyaya dokunduğumu söyleyebilirim. Birisi index.js.
 
@@ -105,13 +105,13 @@ http://127.0.0.1:8000/?canisterId=cxeji-wacaa-aaaaa-aaaaa-aaaaa-aaaaa-aaaaa-q
 
 Canister register, build ve deploy işlemlerine ait bir görüntüyü paylaşarak devam edelim.
 
-![image.axd](images/image.axd)
+![skynet_33_Screenshot_02.png](images/skynet_33_Screenshot_02.png)
 
 ve çalışma zamanına ait iki görüntüyü de buraya bırakalım.
 
-![image.axd](images/image.axd)
+![skynet_33_Screenshot_03.png](images/skynet_33_Screenshot_03.png)
 
-![image.axd](images/image.axd)
+![skynet_33_Screenshot_04.png](images/skynet_33_Screenshot_04.png)
 
 ## Bazı Tespitler
 
@@ -132,11 +132,11 @@ ls -l .dfx/local/canisters/freedom/
 
 WebAssembly oluşumlarını da (wasm uzantılı dosya) görebiliriz.
 
-![image.axd](images/image.axd)
+![skynet_33_Screenshot_05.png](images/skynet_33_Screenshot_05.png)
 
 Diğer yandan örnekleri çoğaltmaya başlayıp Internet Computer Network ortamına yeni Canister'lar eklendikçe şöyle bir arabirimle de karşılaştım.
 
-![image.axd](images/image.axd)
+![skynet_33_Screenshot_06.png](images/skynet_33_Screenshot_06.png)
 
 ## İkinci Örnek
 
@@ -187,10 +187,10 @@ dfx canister call algebra gauss_sum '(1,100)'
 
 İşte 1 ile 100 arasındaki sayıların toplamının bağımsız internet bilgisayarındaki ağda bulunması:)
 
-![image.axd](images/image.axd)
+![skynet_33_Screenshot_07.png](images/skynet_33_Screenshot_07.png)
 
 CanisterId'yi kullanarak aynı uygulamayı otomatik olarak üretilen web sayfasıyla da test edebiliriz. Benim örneğimde bu adres http://127.0.0.1:8000/candid?canisterId=75hes-oqbaa-aaaaa-aaaaa-aaaaa-aaaaa-aaaaa-q şeklindeydi.
 
-![image.axd](images/image.axd)
+![skynet_33_Screenshot_08.png](images/skynet_33_Screenshot_08.png)
 
 Motoko ve The Internet Computer'un geleceği ne olur bilinmez ama [Umut Özel](http://www.umutozel.com/) ile bir sohbetimiz sırasında ortaya çıkan bu kavramı şöyle bir kurcalama fırsatı bulduğum için kendi adıma memnunum. Önümüzdeki yıl bu alandaki gelişmeleri takip etmek istiyorum. Bu ilginç araştırmaya ait kodları [skynet github reposu](https://github.com/buraksenyurt/skynet/tree/master/No%2033%20-%20Independent%20Internet%20Computer)nda bulabilirsiniz. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

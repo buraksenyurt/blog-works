@@ -1,4 +1,4 @@
----
+﻿---
 title: "Tek Fotoluk İpucu 157 - GO ile Bir Queue Yazalım mı?"
 pubDate: 2017-05-04 10:10:00
 categories:
@@ -16,7 +16,7 @@ Merhaba Arkadaşlar,
 
 Go programlama dilinde C#,Java veya benzer dillerden gelenler için söz konusu olan pek çok kolaylık bulunmayabilir. Söz gelimi Stack veya Queue gibi bir koleksiyon kullanmak istersek baştan tasarlamamız gerekebilir. Nitekim [bu adresteki](https://golang.org/pkg/) standart kütüphanelerde Queue ile ilgili bir şey bulamadığımı ifade edebilirim (aslında github üzerinde açık kaynak ek kütüphaneler var) Olsa da olmasa da bir queue veri yapısı tasarlayabiliriz. Hem basit ve temel bir antrenman yapmış oluruz. Aynen aşağıdaki fotoğrafta olduğu gibi (Sisteminizde benim şirket bilgisayarımda olduğu gibi GO ortamı var olmayabilir. [https://play.golang.org/](https://play.golang.org/) adresindeki online derleyiciyi bu anlamda kullanabilirsiniz)
 
-![image.axd](images/image.axd)
+![tfi157.gif](images/tfi157.gif)
 
 Queue veri yapısı bilindiği üzere FIFO (First In First Out) ilkesine göre çalışır. Yani eklediğimiz ilk eleman ilk olarak elde edilir. Burada standartlaşmış iki fonksiyon söz konusudur. Enqueue ve Dequeue. Enqueue ile eleman eklenmesi, Dequeue ile de ilk eklenen elemanın elde edilmesi ve aynı zamanda veri yapısından çıkartılması işlemleri gerçekleştirilir.
 
@@ -28,7 +28,7 @@ Dequeue fonksiyonunda slice içerisindeki ilk eleman (0 indisli olan) yakalanır
 
 Pek çoğunuzun MyQueue gibi generic bir struct tipi olsa elimizde de kullansak dediğinizi duyar gibiyim. Bunu gerçekleştirmemiz şu anda mümkün değil gibi görünse de interface'leri kullanarak en azından tip güvenli bir veri yapısı oluşturabiliriz. Bunu denemenizi ve hatta Stack şeklinde (LIFO-Last In First Out) bir koleksiyon tipi oluşturmaya çalışmanızı önerebilirim. Kodda bazı tuzaklarda yer alıyor. Örneğin tüm elemanları çektikten sonra index out of range gibi bir hataya düşme olasılığınız yüksek.
 
-![image.axd](images/image.axd)
+![tfi157_2.gif](images/tfi157_2.gif)
 
 Bunu çözmeyi deneyin.
 

@@ -1,4 +1,4 @@
----
+﻿---
 title: "Basit Bir .Net Core Worker Servisi(Linux Daemon Olarak)"
 pubDate: 2020-05-26 20:05:00
 categories:
@@ -211,9 +211,9 @@ sudo rm WeatherCollector.service
 
 İşte uygulamanın en azından Heimdall üzerindeki çalışma zamanına ait iki ekran görüntüsü.
 
-![image.axd](images/image.axd)
+![skynet_11_Screenshot_1.png](images/skynet_11_Screenshot_1.png)
 
-![image.axd](images/image.axd)
+![skynet_11_Screenshot_2.png](images/skynet_11_Screenshot_2.png)
 
 Tabii örneği ben vakti zamanında.Net Core 3.1 ile geliştirmiştim. Bunu.Net 5.0 ile de kurgulamak gerekli. Hatta servisin gerçekten de gerçek bir dış servisten bilgi alıp Redis'e atmasını da sağlarsanız pek bir güzel olur. Ya da biraz daha uç örnekler göz önüne alınabilir. Söz gelimi sistemin durumu hakkında bir takım bilgileri çeşitli periyotlarda toplayıp uzak sunucudaki bir Elasticsearch servisine loglayan bir Dameon kurgulanabilir;)
 

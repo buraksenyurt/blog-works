@@ -1,4 +1,4 @@
----
+﻿---
 title: "JWT(JSON Web Token) Kullanımı"
 pubDate: 2017-12-08 06:00:00
 categories:
@@ -34,7 +34,7 @@ Daha önce söylemiş miydim bilemiyorum ama servis odaklı yaklaşımlarda güv
 
 Evdeki West-World'de ise aynı mevzu Asp.Net Core 2.0 Web API servisleri için gündeme geldi (Birkaç gün önce) Aslında o tarafta nasıl kullanıldığını merak etmek benim işim diyebilirim. Öğrenmekten keyif alacağım bir başka konu diyerekten geç vakitte çalışma odama geçtim. Beyin hücrelerine zarar verdiği söylenen sarı gece lambamı açtım. Spotify'da kısık tonda çalacak şekilde ayarladığım piyano tınıları ağırlıklı konsantrasyon albümünü başlattım. Sıcak kahvemden bir yudum aldım ve tarayıcıda aramalara başladım. İlk olarak JSON Web Token ne demektir bulduğum kaynaklardan anlamaya çalıştım. Sonrasında aşağıdakine benzer bir şeyler karalamayı da başardım.
 
-![image.axd](images/image.axd)
+![core_jwt_1.jpg](images/core_jwt_1.jpg)
 
 Senaryo üzerinden gidildiğinde olay biraz daha basitleşmişti. REST tabanlı servisteki bir veya daha fazla operasyonu kullanmak isteyen bir kullanıcı olduğunu düşünelim. Kullanıcı hizmeti almadan önce username ve password bilgilerini de kullanarak doğrulanmakta (Authentication safhası diyelim) Doğrulama başlı başına büyük bir iş de olabilir. Microsoft Identity Server'dan tutun da Facebook doğrulamasına kadar farklı bir katman söz konusu esasında. Benim senaryomda bu kısım hep true olarak geçilecek ama bir gerçek hayat vakasında şirketin kimlik doğrulama sunucusundan veya Azure AD'den yararlanılabilir. Doğrulama işlemi başarılı olursa servis tarafında bir Token (bilet mi desek) üretilir. Bu Token konumuz gereği JSON Web Token tipinden olabilir.
 
@@ -246,7 +246,7 @@ Get isimli operasyon içerisinde o anki kullanıcıya ait Claim bilgilerinin ekr
 
 Aslına bakarsanız kodlarımız hazır. Şimdi test sürüşüne çıkabiliriz. Ne varki saat epeyce ilerlemiş durumda. Testlere ertesi gün Gondor'da devam etmek zorundayım (Gondor şirketteki Ubuntu)
 
-![image.axd](images/image.axd)
+![core_jwt_8.gif](images/core_jwt_8.gif)
 
 Testler
 
@@ -267,7 +267,7 @@ content:
 }
 ```
 
-![image.axd](images/image.axd)
+![core_jwt_2.gif](images/core_jwt_2.gif)
 
 Artık elimizde bir token bilgisi var. Bu token bilgisini kullanarak promosyon kodu için talepte bulunabiliriz. Burada da önemli olan Authorization isimli Header bilgisine Bearer {tokenbilgisi} şeklinde değer vermemiz. Geçerli ve henüz ölmemiş bir bilet vermemiz gerekiyor.
 
@@ -281,15 +281,15 @@ header için value: Bearer {token içeriği}
 
 İşte çalışma zamanı.
 
-![image.axd](images/image.axd)
+![core_jwt_3.gif](images/core_jwt_3.gif)
 
 Console'a gönderdiğimiz bilgilerin bir kısmına ait görüntüde aşağıdaki gibi.
 
-![image.axd](images/image.axd)
+![core_jwt_4.gif](images/core_jwt_4.gif)
 
 Şimdi verdiğimiz zaman aşımı süresinin dolması sonrasında neler olacağına bakalım. Bu durumda token ömrü sonlandığı için hata almamız gerekiyor. Token bilgisinin geçersiz olması kullanıcıya 401 Unauthorized hatasını döndürür.
 
-![image.axd](images/image.axd)
+![core_jwt_5.gif](images/core_jwt_5.gif)
 
 Halen daha kafamda soru işaretleri bulunmakta. Bunlardan birisi sizin de yapacağınız denelemelerde fark edeceğiniz üzere 3 dakikadan daha uzun sürede 401 almış olmamız. Ben denemelerimde bu süreyi tutturmayı bir türlü başaramadım. Yaptığım araştırmalarda Token doğrulaması için delegate edilen fonksiyonelliği ezebileceğimiz, AddJwtBearer metodundaki seçeneklerde ClockSkew özelliği için TimeSpan.Zero gibi değerler kullanabileceğimize dair ipuçları vardı. Belki de sorun Gondor'dadır. West-World üzerinden henüz kodları test edemedim ama şimdilik tek sorun geç dolan Token Timeout süresi gibi.
 

@@ -1,4 +1,4 @@
----
+﻿---
 title: "Ruby Kod Parçacıkları 33 - Observer Deseninin Uygulanışı"
 pubDate: 2017-02-12 21:47:00
 categories:
@@ -8,7 +8,7 @@ tags:
 ---
 
 # Ruby Kod Parçacıkları 33 - Observer Deseninin Uygulanışı
-![image.axd](images/image.axd)
+![notifyg.gif](images/notifyg.gif)
 
 Merhaba Arkadaşlar,
 
@@ -64,7 +64,7 @@ Player sınıfı ise observable modülünü kullanacağını belirterek başlıy
 
 Uygulamanın çalışma zamanı sonuçları aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![rubyobsrv_1.gif](images/rubyobsrv_1.gif)
 
 Görüldüğü gibi oyuncunun puanları değiştikçe bunu gözlemleyen sınıftaki notify metodu tetiklenmiş ve bir takım aksiyonlar oluşmuştur. Bu örnekte sadece ekrana bildirim yapılmış olsa da gerçek hayat örneklerinde ilgili bildirim operasyonlarında çok daha farklı işlemler gerçekleştirebilir. Söz gelimi oyuncu için puanına göre bir promosyon kodunun üretilip kendisine alternatif kanallar ile bildirilmesi ve benzeri kuyruklanabilecek asenkron operasyonlar düşünülebilir.
 

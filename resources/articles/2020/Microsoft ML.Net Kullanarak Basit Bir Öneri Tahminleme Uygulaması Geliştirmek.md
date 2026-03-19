@@ -1,4 +1,4 @@
----
+﻿---
 title: "Microsoft ML.Net Kullanarak Basit Bir Öneri Tahminleme Uygulaması Geliştirmek"
 pubDate: 2020-08-08 06:13:00
 categories:
@@ -20,7 +20,7 @@ tags:
 ---
 
 # Microsoft ML.Net Kullanarak Basit Bir Öneri Tahminleme Uygulaması Geliştirmek
-![image.axd](images/image.axd)
+![emeldotnet.png](images/emeldotnet.png)
 
 Yaz başından beri Mark J. Price'ın, C# 8.0 and.NET Core 3.0 – Modern Cross-Platform Development: Build applications with C#,.NET Core, Entity Framework Core, ASP.NET Core, and ML.NET using Visual Studio Code, 4th Edition (Evet biraz uzun bir ismi var:D) [kitabıyla](https://www.amazon.com/8-0-NET-Core-3-0-Cross-Platform-dp-1788478126/dp/1788478126/ref=mt_other?_encoding=UTF8&me=&qid=) uğraştım. Hoş ben daha kitabı tamamlayamadan.Net 5.0 son sürümü çıktı ve hatta Mark bu sürüm için de yeni bir kitap yayınladı ya neyse:D Kitabın ilgimi çeken bölümlerinden birisi (19ncu Kısım) makine öğrenmesi ile alakalı olandı. Makine Öğrenmesi benim çok ama gerçekten çok uzak olduğum bir konu.
 
@@ -560,14 +560,14 @@ terminal komutu ile web uygulamasını çalıştırdıktan sonra [https://localh
 
 Ana sayfamız aşağıdaki gibi görünecektir.
 
-![image.axd](images/image.axd)
+![skynet_26_Screenshot_1.png](images/skynet_26_Screenshot_1.png)
 
 Örneğin sepete aşağıdaki gibi birkaç ürün eklediğimizde eğitilen model bize birkaç öneride bulunacaktır.
 
-![image.axd](images/image.axd)
+![skynet_26_Screenshot_4.png](images/skynet_26_Screenshot_4.png)
 
 Tabii elimizde eğitilmiş bir model yoksa aşağıdaki gibi bir hata mesajı ile karşılaşırız.
 
-![image.axd](images/image.axd)
+![skynet_26_Screenshot_2.png](images/skynet_26_Screenshot_2.png)
 
 Ben örnekleri icra ederken dikkatimi çeken unsurlardan birisi sepete ürün ekledikçe bazen aynı ürünün yine öneriler kısmında görünüyor olmasıydı. Bunu engellemek için ne yapılabilir yorumlarda paylaşabilirsiniz. Diğer yandan uygulamada eksik olan birçok kısım da mevcut. Örneğin sepete ürün ekleme ve görüntüleme işini aynı noktada üstlenen Cart action metodunu ayrıştırmaya çalışabilirsiniz ve ürün silme fonksiyonelliğini de sisteme katabilirsiniz. Başta da belirttiğim gibi ML konusu benim çok çok uzağımda kalan bir alan. Yine de ML.Net ile bazı fikirlerin kendi ürünlerimiz için hayata geçirilmesi oldukça kolay görünüyor. Eğer MVP ürünleri üstünde çalışıyorsanız ve bu tip ML fonksiyonelliklerine ihtiyacınız varsa bence göz önüne alınabilir. Bu arada Microsoft'un ML.Net'in uygulanması ile ilgili resmi öğreti dokümanları da oldukça başarılı. Ben iki öğretiyi [Skynet reposunda deneme fırsatı buldum](https://github.com/buraksenyurt/skynet/tree/master/No%2006%20-%20DT-Training/Chapter05). Böylece geldik bir derlemenin daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

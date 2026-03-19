@@ -1,4 +1,4 @@
----
+﻿---
 title: "Yine Yeni Yeniden ELK(Bu sefer E ve K için docker-compose işin içinde)"
 pubDate: 2020-07-22 20:23:00
 categories:
@@ -21,7 +21,7 @@ tags:
 ---
 
 # Yine Yeni Yeniden ELK(Bu sefer E ve K için docker-compose işin içinde)
-![image.axd](images/image.axd)
+![elk_2.png](images/elk_2.png)
 
 Her ne kadar artık.Net 5.0 hayatımızın içinde olsa da bu yıl içinde bir yerlerde.Net Core 3.1 ile ELK kurgusunu yeniden değerlendirme ihtiyacı hissetmişim. Elasticsearch, Logstash ve Kibana kurgusu aslında günümüz uygulamalarında son derece popüler. Genellikle uygulama loglarının devasa şekilde biriktiği durumların çözümünde ideal bir kurgu olarak karşımıza çıkıyor. Bu kurguda uygulama loglarını standart bir formata uygun olacak şekilde Elasticsearch'e atar, Kibana arayüzünü kullanarak izleme yapar ve çeşitli durumların kontrolünü gerçekleştiririz. Ağırlıklı olarak üretim ortamında oluşacak hataların, performans kayıplarının ve dar boğazların yakalanması noktasında işimize yarayan bir düzenek olarak düşünebiliriz.
 
@@ -211,7 +211,7 @@ sudo docker-compose up -d
 
 Bunun arından belki küçük bir kontrol yapmakta yarar olabilir. Nitekim http://localhost:9200 adresinden ElasticSearch, http://localhost:5601 adresinden de Kibana servislerine sorunsuz erişebiliyor olmalıyız.
 
-![image.axd](images/image.axd)
+![skynet_08_Screenshot_3.png](images/skynet_08_Screenshot_3.png)
 
 Sonrasında kobay web api servisimizi ayağa kaldırılabilir ve bazı denemeler yapabiliriz.
 
@@ -222,9 +222,9 @@ dotnet run
 
 Örneğin http://localhost:5000/book adresinden bir HTTP Get talebi yollayabiliriz. Hatırlarsanız Get fonksiyonu içinden Information ve Error türlerinde örnek log mesajları fırlatmıştık (Tabii ki pratikte Error tipinden mesajları exception oluştuğu durumlarda göndermek lazım) Bu arada Kibana'ya erişmek log bilgilerini takip etmek için kafi ama yeterli değil. http://localhost:5601 adresine uğradıktan sonra Readers isimli web api servisi için aşağıdaki görsellerde olduğu gibi bir index eklemek gerekir.
 
-![image.axd](images/image.axd)
+![skynet_08_Screenshot_1.png](images/skynet_08_Screenshot_1.png)
 
-![image.axd](images/image.axd)
+![skynet_08_Screenshot_2.png](images/skynet_08_Screenshot_2.png)
 
 Sonrasında örneğin Kibana ortamında ([KQL - Kibana Query Language](https://www.elastic.co/guide/en/kibana/master/kuery-query.html)) ile Error seviyesinde olan veya mesaj içeriğinde "zamanı" kelimesi geçen logları aratabiliriz.
 
@@ -232,7 +232,7 @@ Sonrasında örneğin Kibana ortamında ([KQL - Kibana Query Language](https://w
 level : "Error" or message : "zamanı"
 ```
 
-![image.axd](images/image.axd)
+![skynet_08_Screenshot_4.png](images/skynet_08_Screenshot_4.png)
 
 Görüldüğü üzere ELK için docker-compose'dan yararlanarak ideal loglama senaryosunu kurgulamak oldukça basit. Gerçek hayat senaryosuna baktığımızda docker-compose pekala ayrık ve dağıtık suncularda hizmet edecek şekilde konuşlandırılabilir. Mikroservisler veya başka türden uygulamalar docker-compose ile ayağa kalkan Elastichsearch servisine erişebildiği sürece Kibana ile logları izlemek ve belki de alarm sistemleri kurarak sistemi kontrol altında tutmak pekala mümkündür.
 

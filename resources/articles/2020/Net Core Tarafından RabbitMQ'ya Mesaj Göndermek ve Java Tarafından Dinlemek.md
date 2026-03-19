@@ -1,4 +1,4 @@
----
+﻿---
 title: ".Net Core Tarafından RabbitMQ'ya Mesaj Göndermek ve Java Tarafından Dinlemek"
 pubDate: 2020-11-23 21:00:00
 categories:
@@ -18,7 +18,7 @@ tags:
 ---
 
 # .Net Core Tarafından RabbitMQ'ya Mesaj Göndermek ve Java Tarafından Dinlemek
-![image.axd](images/image.axd)
+![queue.png](images/queue.png)
 
 Çok sık karşılaştığımız senaryolardan birisidir; Bir uygulama kendi bünyesinde gerçekleşen bir olay sonrası başka bir uygulamayı haberdar etmek ister ya da başka bir uygulamanın yaptıklarından haberdar olmak isteyen bir uygulama vardır:) Bunun bir çok sebebi olabilir. Örneğin uygulamalar farklı teknolojilerde yazılmıştır ancak ortak iş süreçleri üzerinde koşmaktadır. Gerçek bir senaryo üzerinden hareket edersek konu daha anlaşılır olabilir.
 
@@ -126,7 +126,7 @@ namespace CargoBase
 
 Konsolumuz bazı rastgele değerlerden oluşan bir paket bilgisini kuyruğa göndermekte. Alıcı uygulamayı Java tarafında geliştireceğiz ama işimizi kolaylaştırmak adına Spring Boot'tan yararlanacağız. Bu nedenle [Spring Initializer](https://start.spring.io/) adresine gidip gerekli proje bilgilerini doldurup oluşan uygulamayı sisteme indirip kullanabiliriz. Ben ilgili bilgileri aşağıdaki ekran görüntüsünde olduğu gibi doldurdum. Tabii burada kritik nokta Spring for RabbitMQ kütüphanesinin de bağımlı bileşen olarak belirtilmesi.
 
-![image.axd](images/image.axd)
+![skynet_38_Screenshot_01.png](images/skynet_38_Screenshot_01.png)
 
 Java projesi oluştuktan sonra RabbitMQ tarafını dinleyecek ve gelen JSON mesajını nesne olarak karşılayacak sınıfları da yazmamız gerekiyor (JSON serileştirme için com.fasterxml.jackson.core bağımlılığının da eklenmesi gerekir. Ben ilk etapta unutmuşum, siz ihmal etmeyin)
 
@@ -243,6 +243,6 @@ dotnet run
 
 İşte çalışma zamanından bir görüntü.
 
-![image.axd](images/image.axd)
+![skynet_38_Screenshot_03.png](images/skynet_38_Screenshot_03.png)
 
 Dikkat edileceği üzere Console uygulamasından gönderdiğimiz JSON mesaj içeriği, Java uygulamasına ait terminal ekranına da düşmüştür. Bu arada uygulama kodlarına [skynet github reposu](https://github.com/buraksenyurt/skynet/tree/master/No%2038%20-%20Spring%20RabbitMQ%20and%20DotNetCore) üzerinden erişebilirsiniz. Kodlara eriştiğinizde şu soruya cevap aramanızı öneririm; Varsayılan halde Java uygulaması localhost sunucusuna ve standart RabbitMQ portuna gideceğini nereden biliyor? Bu sorulara ek olarak kurguyu biraz daha öteye taşıyabilirsiniz. Örneğin Java uygulamasını birden fazla kuyruğu dinleyecek şekilde organize etmeyi deneyebilir ve hatta kullandığınız kuyruğa başka platformda yazılmış programlardan mesaj gönderip kimden geldiğini anlamaya çalışabilirsiniz. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

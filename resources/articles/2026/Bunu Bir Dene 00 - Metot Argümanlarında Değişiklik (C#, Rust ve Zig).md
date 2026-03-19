@@ -1,4 +1,4 @@
----
+﻿---
 title: "Bunu Bir Dene 00 - Metot Argümanlarında Değişiklik (C#, Rust ve Zig)"
 pubDate: 2026-01-15 20:27:00
 categories:
@@ -56,7 +56,7 @@ public class Part
 
 Yukarıdaki gibi bir kodlamayı kuvvetle muhtemel yapmayız. En azından Part isimli veri yapısının state'ini dışarıdan bir fonksiyon ile değiştirmeyi pek tercih etmeyiz. Ancak buradaki amaç için okunabilir bir senaryo olduğunu düşünüyorum zira bana bir metoda taşınan sınıf nesne örneği üzerinde değişiklik gerekli. Programın çalışma zamanı çıktısı aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![TryThis00_0.png](images/TryThis00_0.png)
 
 Dilerseniz senaryoyu kısaca ele alalım. Main metodu içerisinde tanımladığımız Part isimli nesne örneğini, UpdateStockLevel metoduna parametre olarak gönderiyoruz. Bu bir sınıf olduğundan varsayılan olarak referans türü şeklinde iletiliyor. Dolayısıyla UpdateStockLevel metodu içerisinde yapılan değişiklikler, Main metodundaki orijinal nesneyi de doğrudan etkiliyor. Önceden de belirttiğim üzere bu şekilde state değiştirmeyi pek tercih etmem. En azından nesne örneğinin kendi üzerinden yapılmasının ya da değişiklik sonrası yeni bir Part nesnesinin geriye döndürülmesinden yanayım diyebilirim. Neyse neyse. Bunu bir kenara bıraklım. Şimdi aynı senaryoyu Rust dilinde ele almak istediğimizi düşünelim.
 
@@ -94,7 +94,7 @@ struct Part {
 
 Rust dilinde değişkenler varsayılan olarak immutable (yani değeri değiştirilemez) olarak kabul edilir. Bende main metodunun kapsama alanındaki Part nesnesini değiştirmek istediğimden onu mut anahtar kelimesi ile birlikte tanımladım. DotNetçi gibi düşünmememiz gerekse de velev ki düşündük ve programının beklediğimiz şekilde çalışacağını hayal ettik. Ne mi olur? Neredeyse toplam kod satırından fazla sayıda satırdan oluşan bir hatalar ve uyarılar listesi ile karşılaşırız. Aynen aşağıdaki ekran görüntüsünde olduğu gibi.
 
-![image.axd](images/image.axd)
+![TryThis_00_1.png](images/TryThis_00_1.png)
 
 Olay, main metodu içerisindeki değişkenin sadece mutable olarak tanımlanması ile her şeyin pürüzsüz bir şekilde çalışacağını zannetmemizdir. Rust dilinde bir değişkeni mutable olarak tanımlamak, o değişkenin sahip olduğu değerin başka bir metoda aktarılması durumunda orada da mutable olarak kabul edileceği anlamına gelmez. Rust dilindeki sahiplik (ownership) kavramı, bir değişkenin değerinin başka bir fonksiyona aktarılması durumunda orada yeni bir sahiplik oluşturulmasını gerektirir. Bu durumda, orijinal değişkenin sahipliği kaybolur ve artık orijinal değişkene de erişilemez hale gelir. Yani programcı olarak metoda aktardığım değişkenin referans üzerinden aktarılacağını ve açık bir şekilde bu referansın işaret ettiği değerin değiştirileceğini belirtmem gerektiği söyleniyor. O halde kodları aşağıdaki gibi revize edelim.
 
@@ -124,7 +124,7 @@ struct Part {
 
 id alanını hiç kullanmadığım için aldığım bir uyarı mesajı var ama onu şimdilik görmezden geliyorum. Programı tekrar çalıştırdığımızda beklediğimiz davranışın gerçekleştiğini görürüz.
 
-![image.axd](images/image.axd)
+![TryThis00_2.png](images/TryThis00_2.png)
 
 Buraya daha sonradan ele almak üzere bir soru da bırakayım; Ya birden fazla Thread bu parçanın stok seviyesini değiştirmek isterse? C# ne yapar, Rust ne kadar zorluk çıkartır, Zig'den ne haber?
 
@@ -160,7 +160,7 @@ fn change_stock_level(part: Part, change: i32) void {
 
 Yine aynı mantıkta part isimli değişkeni bodoslama changestocklevel fonksiyonuna aktarıyoruz. Programı derleyip çalıştırdığımızda az önce söylediğim immutable/mutable ayrımına dair bir hata mesajı ile karşılaşırız.
 
-![image.axd](images/image.axd)
+![TryThis00_3.png](images/TryThis00_3.png)
 
 Yani demem o ki ille değerini değiştireceğimiz bir değişken söz konusu ise, onu var ile bir variable olarak tanımamamız gerekir. Pekala, kodu bu hata mesajı doğrultusunda aşağıdaki gibi değiştirerek ilerleyelim.
 
@@ -192,7 +192,7 @@ fn change_stock_level(part: Part, change: i32) void {
 
 Her şeyin sorunsuz şekilde ilerleyeceğini düşünebilirsiniz ama bu sefer de şu kuralı hatırlamamız gerekir; Zig dilinde fonksiyon parametreleri varsayılan olarak immutable (değiştirilemez) kabul edilirler. main fonksiyonunun kapsama alanında yer alan part değişkenini var ile işaretlemiş olsak bile, metoda bu şekilde aktaramıyoruz. Sonuç olarak aşağıdaki gibi bir hata mesajı ile karşılaşırız.
 
-![image.axd](images/image.axd)
+![TryThis00_4.png](images/TryThis00_4.png)
 
 İşte bu noktada başka bir çözümümüz var; değişkeni fonksiyona referans olarak aktarmak. Aslında referans olarak aktarmaktan kastımız değişkenin bellekteki adresini fonksiyona iletmek. Yani pointer kullanarak adresi fonksiyona almak, fonksiyon içerisinde de pointer üzerinden değere erişip değiştirmek. Buna göre zig tarafındaki kodları aşağıdaki gibi değiştirerek ilereyelim.
 
@@ -225,7 +225,7 @@ fn change_stock_level(part: *Part, change: i32) void {
 
 Bu sefer beklediğimiz gibi fonksiyon içerisinde stok seviyesinde yapılan değişikliğin main fonksiyonundaki orijinal değişkeni de etkilediğini görürüz.
 
-![image.axd](images/image.axd)
+![TryThis00_5.png](images/TryThis00_5.png)
 
 ## Peki Ya İdeal Yol Hangisi?
 

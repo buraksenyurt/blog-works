@@ -1,4 +1,4 @@
----
+﻿---
 title: "Docker SQL Server Kullanımı"
 pubDate: 2018-11-09 06:25:00
 categories:
@@ -19,7 +19,7 @@ tags:
 ---
 
 # Docker SQL Server Kullanımı
-![image.axd](images/image.axd)
+![sqldocker_8.jpeg](images/sqldocker_8.jpeg)
 
 Merhaba Arkadaşlar,
 
@@ -35,11 +35,11 @@ sudo docker run -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=P@ssw0rd' -p 1433:1433 -d mic
 
 Şu ana kadar West-World'e böyle bir docker imajı yüklemediğimden hub'dan ilgili dosyaların indirilmesi gerekti. İmaj dosyası büyük olsa da kısa bir beklemeden sonra yükleme işlemleri tamamlanmıştı.
 
-![image.axd](images/image.axd)
+![sqldocker_1.gif](images/sqldocker_1.gif)
 
 İmajın başarılı bir şekilde yüklendiğinden emin olmak için "docker images -all" terminal komutundan yararlandım.
 
-![image.axd](images/image.axd)
+![sqldocker_2.gif](images/sqldocker_2.gif)
 
 Artık bu imajı kullanacak bir Web API uygulaması geliştirmeye başlayabilirdim. Kodları yazmak için Visual Studio Code'un başına geçtim. SQL server tarafıyla konuşmak için Entity Framework'ün.Net Core sürümünü kullanmaya karar verdim. İşte kullandığım terminal komutları. Web Api projesini oluştur, EF paketini ekle, bir kere build et.
 
@@ -182,7 +182,7 @@ SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
 Testlere başlama zamanı gelmişti. Uygulamayı "dotnet run" terminal komutu ile başlattıktan sonra Postman'den bir kaç talep göndererek denemeler yaptım. İlk olarak http://localhost:5001/api/jobs adresine bir HTTP Get talebinde bulundum. Bu ilk çalıştırılma ve AdventureJobsDb veritabanı ortada yok. Terminal satırına düşen log bilgilerine baktığımda veritabanı ve ilgili tabloların oluşturulması için gerekli komutların başarılı bir şekilde işletildiğini gördüm.
 
-![image.axd](images/image.axd)
+![sqldocker_3.gif](images/sqldocker_3.gif)
 
 Hatta HTTP Get talebine uygun olarak bir SELECT sorgusu da gönderilmişti. Tabii şu anda hiçbir iş bilgisi olmadığından boş bir veri seti ile karşılaşmam son derece normaldi.
 
@@ -191,7 +191,7 @@ Talep : HTTP Get
 Adres : http://localhost/api/jobs
 ```
 
-![image.axd](images/image.axd)
+![sqldocker_4.gif](images/sqldocker_4.gif)
 
 Bunun üzerine bir kaç iş ekleyeyim dedim. Yetiştirilmek üzere bir astronot, karayiplerdeki İspanyol kalyonlarına derin dalış yapacak deneyimli bir balık adam ve Top Gear programındaki Stig'in yerini alacak usta bir şoför arayışım vardı. HTTP Post ile ve iş bilgilerini Body kısmında JSON formatında göndermek yeterliydi.
 
@@ -202,11 +202,11 @@ Body Content Type : application/json
 Content : {"id": 1,"title": "Dalgıç","description": "Batıklara dalacak deneyimli dalgıç","salary": 10000,"city": "Karayipler"}
 ```
 
-![image.axd](images/image.axd)
+![sqldocker_5.gif](images/sqldocker_5.gif)
 
 Her POST talebi sonrası terminale düşen loglara bakmayı da ihmal etmedim. Buradan SQL Server'a gönderilen INSERT komutlarını görebiliyordum. Sonunda HTTP Get ile elime bir kaç anlamlı iş ilanı geçmişti.
 
-![image.axd](images/image.axd)
+![sqldocker_6.gif](images/sqldocker_6.gif)
 
 Bunun üzerine Update ve Delete operasyonlarını da denedim. Aşağıda örnek kullanımıları bulabilirsiniz.
 
@@ -240,6 +240,6 @@ go
 
 (-it komutundan sonra SQL Server container ID bilgisi geliyor ancak buraya ismini de yazabiliriz.:setvar ile girilen değerler terminaldeki select çıktılarını daha kolay okumak için kullanılıyor)
 
-![image.axd](images/image.axd)
+![sqldocker_7.gif](images/sqldocker_7.gif)
 
 Bir Cumartesi gecesi çalışmasının daha sonuna gelmiş bulunuyorum. Docker ile zahmetsizce ulaştığım SQL imajında güzel işler yapılabileceğini görmüş oldum. Bundan sonra West-World'e bir şey kurarken iki kere düşüneceğim. İlk olarak Docker imajı var mı ona bakacağım. Böylece geldik kısa bir yazımızın daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

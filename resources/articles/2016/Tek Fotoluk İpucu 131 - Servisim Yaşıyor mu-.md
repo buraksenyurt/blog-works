@@ -1,4 +1,4 @@
----
+﻿---
 title: "Tek Fotoluk İpucu 131 - Servisim Yaşıyor mu?"
 pubDate: 2016-05-08 02:00:00
 categories:
@@ -16,7 +16,7 @@ Merhaba Arkadaşlar,
 
 Böyle yeni bir şeyler öğrenmek için enerji bulamadığım vakitler oluyor zaman zaman. Ya çevremdekilerin ya da işlerin etkisi ile azalır enerjim. Bir şeyler öğrenmeyince de kendimi kötü hissettiğimden en azından genişletme metodu (Extension Method) yazmaya çalışayım da pas tutmayım derim. Tabii önce konu seçmek gerekir. Bu kez aklıma "bir servisin yaşayıp yaşamadığını nasıl anlarım?" sorusu takıldı. Mesela bir Uri için Http durum kodu bilgisinin 200 olmasını kontrol eden bir genişletme metodu yazabilirdim. Örneğin aşağıdaki fotoğrafta görüldüğü gibi.
 
-![image.axd](images/image.axd)
+![tfi_131.gif](images/tfi_131.gif)
 
 Check isimli genişletme metodunu Uri tipine uygulayabiliyoruz. Metod geriye Http durum kodunu, servisin yaşayıp yaşamadığını ve olası bir exception varsa içeriğini döndürüyor. Tek yaptığımız ise söz konusu adrese bir talep göndermek. Sanki bir tarayıcıdan buraya HTTP Get çağrısı yapıyormuşuz gibi. Dönen bilgiyi HttpWebResponse örneği üzerinden değerlendiriyoruz.
 

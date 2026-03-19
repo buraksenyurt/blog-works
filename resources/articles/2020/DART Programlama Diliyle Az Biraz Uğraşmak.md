@@ -1,4 +1,4 @@
----
+﻿---
 title: "DART Programlama Diliyle Az Biraz Uğraşmak"
 pubDate: 2020-06-07 14:14:00
 categories:
@@ -21,7 +21,7 @@ tags:
 ---
 
 # DART Programlama Diliyle Az Biraz Uğraşmak
-![image.axd](images/image.axd)
+![dart.jpg](images/dart.jpg)
 
 Çok duydum, çok bahsedildi. Hep Flutter arkasında kaldı. Aslında yıllardır vardı. Birazcık bakmamın zamanı gelip de geçmişti. Haydi dedim o zaman. Önce onu Heimdall (Ubuntu-20.04) yüklemem gerekiyordu tabii. [Bu adresteki talimatları](https://dart.dev/get-dart) takip ederek kurulumu gerçekleştirdim ve birkaç örnek kod parçasını bol yorum satırlarıyla önce skynet reposuna ardından da bloga bırakmaya karar verdim. Sizde Dart diline şöyle bir bakmak temel özelliklerini öğrenmek istiyorsanız aşağıdaki kronolojiyi takip ederek bana katılabilirsiniz. Eğer Java veya C# kökenliyseniz DART diline alışmanız da çok zor değil. Tabii başlamadan önce adettendir dil ile ilgili sözü geçen genel özellikleri şöyle bir sıralayalım.
 
@@ -114,7 +114,7 @@ void main() {
 }
 ```
 
-![image.axd](images/image.axd)
+![skynet_18_Screenshot_1.png](images/skynet_18_Screenshot_1.png)
 
 intro2.dart isimli ikinci örneğimizde opsiyonel parametre kullanımına bakıyoruz.
 
@@ -158,7 +158,7 @@ void main(List<String> args) {
 }
 ```
 
-![image.axd](images/image.axd)
+![skynet_18_Screenshot_2.png](images/skynet_18_Screenshot_2.png)
 
 Üçüncü örneğimiz data.dart isimli bir kütüphaneyi kullanıyor ve basit bir Abstract Factory desenini uyarlıyor. Dolayısıyla intro3.dart'tan önce data.dart dosyasını kodlamamız lazım.
 
@@ -269,7 +269,7 @@ main(List<String> args) {
 }
 ```
 
-![image.axd](images/image.axd)
+![skynet_18_Screenshot_3.png](images/skynet_18_Screenshot_3.png)
 
 Dördüncü örnekte dahili bir dart kütüphanesinin kullanımına yer veriliyor.
 
@@ -305,7 +305,7 @@ main(List<String> args) {
 }
 ```
 
-![image.axd](images/image.axd)
+![skynet_18_Screenshot_4.png](images/skynet_18_Screenshot_4.png)
 
 İzleyen beşinci örnekte Dart'ın temel fonksiyonel dil özelliklerini incelemeye çalışıyoruz.
 
@@ -353,7 +353,7 @@ main(List<String> args) {
 }
 ```
 
-![image.axd](images/image.axd)
+![skynet_18_Screenshot_5.png](images/skynet_18_Screenshot_5.png)
 
 Gelelim altıncı örneğe. Burada asenkron kullanım denenmektedir.
 
@@ -415,7 +415,7 @@ class Reporter {
 }
 ```
 
-![image.axd](images/image.axd)
+![skynet_18_Screenshot_6.png](images/skynet_18_Screenshot_6.png)
 
 Asenkron çalışma konusuna baktıysak Concurrency'ye bakmadan olmaz:) İşte Dart dilinde Concurrency'nin temel uygulanış biçimi.
 
@@ -466,7 +466,7 @@ class Worker {
 }
 ```
 
-![image.axd](images/image.axd)
+![Screenshot_7.png](images/Screenshot_7.png)
 
 Sekizinci örnekte asenkron çağrımlarda ele alınan stream nesnesine bir bakıyoruz. Bu sayede asenkron çağırımlar sırasında olayların arasına nasıl girebileceğimizi irdeliyoruz.
 
@@ -510,7 +510,7 @@ Future<num> lookInsideStream(Stream<num> stream) async {
 }
 ```
 
-![image.axd](images/image.axd)
+![Screenshot_8.png](images/Screenshot_8.png)
 
 ve geldik bu çalışmadaki son iki örneğimize. İlk olarak çok ilkel bir web sunucusunun nasıl yazıldığına bakıyoruz.
 
@@ -563,9 +563,9 @@ Future main(List<String> args) async {
 }
 ```
 
-![image.axd](images/image.axd)
+![Screenshot_9.png](images/Screenshot_9.png)
 
-![image.axd](images/image.axd)
+![skynet_18_Screenshot_10.png](images/skynet_18_Screenshot_10.png)
 
 Tabii bu ilkel web sunucusu arkasına şöyle JSON içeriği sunan güzel bir REST servis koysak hiç de fena olmaz diyor ve devam ediyoruz.
 
@@ -616,7 +616,7 @@ Future main(List<String> args) async {
 }
 ```
 
-![image.axd](images/image.axd)
+![skynet_18_Screenshot_11.png](images/skynet_18_Screenshot_11.png)
 
 Eğer bu noktaya kadar kodları tatbik edip benzer sonuçlar elde ettiyseniz Dart diline giriş yapmışsınız demektir. Elbette üstüne katarak devam etmek tamamen sizin elinizde. Bu arada örnekleri nasıl çalıştıracağınızı söylemeyi unutmuş olabilirim. Aşağıdaki terminal komutu bunun için yeterli.
 

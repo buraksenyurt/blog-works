@@ -1,4 +1,4 @@
----
+﻿---
 title: "Python ve Flask ile REST Tabanlı Servis Geliştirmek"
 pubDate: 2016-09-22 22:00:00
 categories:
@@ -16,7 +16,7 @@ tags:
 ---
 
 # Python ve Flask ile REST Tabanlı Servis Geliştirmek
-![image.axd](images/image.axd)
+![SeptemberFall-long-goodbye.gif](images/SeptemberFall-long-goodbye.gif)
 
 Merhaba Arkadaşlar,
 
@@ -181,25 +181,25 @@ Method
 
 http://localhost:5000/azon/api/products talebi sonrası durum aşağıdaki ekran görüntüsündeki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![RestPython1.gif](images/RestPython1.gif)
 
 Görüldüğü gibi tüm ürün listesi JSON formatında istemciye döndürülmüştür. Dilersek tek bir ürünü talep etmeyi de deneyebiliriz. Tek yapmamız gereken aşağıdaki URL'de olduğu gibi doğru Id değerini kullanmaktır.
 
 http://localhost:5000/azon/api/products/1002 sonrası durum aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![RestPython3.gif](images/RestPython3.gif)
 
 Eğer hatalı bir URL talebi gönderip HTTP 404 hatası oluşmasına neden olursak karşımıza aşağıdaki gibi bir mesaj çıkacaktır. Nitekim HTTP 404 vakasını not_found metodu ile yakalayıp kendi istediğimiz şekilde ele almaktayız.
 
-![image.axd](images/image.axd)
+![RestPython2.gif](images/RestPython2.gif)
 
 Yeni bir ürün eklemek için tarayıcı yerine curl komut satırı aracını da kullanabiliriz (aslında bu servisi host ettiğiniz makineye erişebilen herhangi bir istemci uygulamayı geliştirmeyi deneyebilirsiniz..Net tarafında kuvvetli iseniz söz konusu HTTP taleplerini C# ile oluşturmaya çalışabilirsiniz. Ben söyledim siz deneyin) JSON içeriğini oluştururken string bazlı türler için çift tırnak kullanımına dikkat etmemiz gerekmekte. Ben yazarken epey hata yaptım ve 7nci denememde HTTP Post paketini ancak gönderebildim. Örnekteki price ve inStock değerleri sayısal ve boolean tipinden olduğuncan çift tırnaklar arasında yazılmamışlardır.
 
-![image.axd](images/image.axd)
+![RestPython4.gif](images/RestPython4.gif)
 
 curl komutunu çalıştırdıktan sonra ilgili ürünün bellekteki listeye eklendiğini görebiliriz. Delete komutu ile silme işlemini yine curl aracını kullanarak denememiz mümkün. Aynen aşağıdaki ekran görüntüsünde olduğu gibi.
 
-![image.axd](images/image.axd)
+![RestPython5.gif](images/RestPython5.gif)
 
 1004 numaralı ürünü HTTP Delete komutu ile listemizden çıkarttık.
 

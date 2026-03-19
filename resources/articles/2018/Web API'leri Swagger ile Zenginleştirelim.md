@@ -1,4 +1,4 @@
----
+﻿---
 title: "Web API'leri Swagger ile Zenginleştirelim"
 pubDate: 2018-09-20 21:22:00
 categories:
@@ -19,7 +19,7 @@ tags:
 ---
 
 # Web API'leri Swagger ile Zenginleştirelim
-![image.axd](images/image.axd)
+![swagger_8.gif](images/swagger_8.gif)
 
 Merhaba Arkadaşlar,
 
@@ -258,7 +258,7 @@ Servisi bu şekilde bildirdikten sonra kullanılması için de UseSwagger ve Use
 
 Bu çalışmalar sonrasında XML comment'lerinin bir dosya olarak Bin klasörü altında oluştuğunu da görebiliriz. İstersek buradan da içeriğe müdahale etmemiz mümkün.
 
-![image.axd](images/image.axd)
+![Swagger_7.gif](images/Swagger_7.gif)
 
 Uygulamayı
 
@@ -268,32 +268,32 @@ dotnet run
 
 komutuyla çalıştırdıktan sonra artık Swagger arayüzüne ulaşabiliriz. Tek yapmamız gereken herhangibir tarayıcıyı kullanarak http://localhost:5554/swagger/ adresine gitmek (5000 nolu Port Apache hegamonyasında olduğundan UseUrls ile değiştirdim) Karşılama sayfası aşağıdaki gibi açılır. Gayet şık ve göz alıcı gördüğünüz üzere:)
 
-![image.axd](images/image.axd)
+![swagger_1.gif](images/swagger_1.gif)
 
 Üst kısımdaki özet bilgileri SwaggerDoc metodu içerisinde belirlemiştik. Sunmuş olduğumuz API operasyonlarına göre bir kaç bölüm açıldığını görebiliriz. Get, Post, Put ve Delete için. Ayrıca Controller tarafında kullanılan Quote sınıfı da Models bölümünde yer alır. Dolayısıyla XML Comment'ler ve Swagger nitelikleri arayüz tarafına da yansımaktadır. Diğer kısımların nasıl göründüğüne de kısaca bakalım dilerseniz.
 
 Sayfalama yapıldığı takdirde 100 quote getiren Get talebine ait parça aşağıdaki gibidir.
 
-![image.axd](images/image.axd)
+![swagger_2.gif](images/swagger_2.gif)
 
 Response Content Type'ın JSON olduğunu, HTTP 200 kodu döndüreceğini ve dönüş çıktısının da Example Value kısmındaki gibi olacağını görebiliyoruz. "Try It out" butonuna basarak hemen test de edebiliriz.
 
 Yeni bir quote eklemek istediğimizde kullanacağımız POST işlemine ait aşağıdaki kısım oluşur.
 
-![image.axd](images/image.axd)
+![swagger_3.gif](images/swagger_3.gif)
 
 Örnek body içeriği, olası HTTP Dönüş kodları, parametrenin JSON tipinden olacağı, fonksiyonun kısaca ne yaptığı gibi bilgileri görebiliyoruz. Diğer metodlar için de benzer yardım sayfaları ve anında test edebilmemizi sağlayacak "Try It Out" düğmeleri olacakatır.
 
 Belli bir ID için Quote döndüren Get operasyonu (id alanının Reuired olduğuna dikkat edelim)
 
-![image.axd](images/image.axd)
+![swagger_4.gif](images/swagger_4.gif)
 
 Update işlemi için kullanılan Put metodu (Bu fonskiyon için de id alanı zorunludur)
 
-![image.axd](images/image.axd)
+![swagger_5.gif](images/swagger_5.gif)
 
 ve son olarak silme işlemleri için kullanılan Delete operasyonu (Kırmızı renk dikkat edilmesi gereken bir işlem olduğuna işaret ediyor olmalı)
 
-![image.axd](images/image.axd)
+![swagger_6.gif](images/swagger_6.gif)
 
 Görüldüğü üzere APIyi kullanacak olan geliştirici ve hatta API hizmetini tarayan robot için gerekli tüm bilgiler burada yer alıyor. Operasyon adları, açıklamaları, dönüş durum kodları, ne tür içeriklerle çalıştıkları, örnek mesaj gövdeleri ve tabii test edilmelerini sağlayan "Try It Out" düğmeleri. Bu standartlaştırılmış yardım sayfalarını basit bir kaç hareket ile uygulamak da oldukça kolay. Bize düşen bu standart yardım dokümanlarını hazırlamak için gerekli XML Comment ve nitelikleri doğru bir şekilde uygulamak. Bundan sonra yazacağımız her Web API için biraz vakit ayırıp bu dokümanları hazırlamakta yarar var. Gelecek sadece insanların değil, belli standartları takip eden robotların kullanacağı servislerle dolu olacak. Böylece geldik bir makalemizin daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

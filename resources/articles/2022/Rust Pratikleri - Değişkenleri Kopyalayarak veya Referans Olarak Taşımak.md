@@ -1,4 +1,4 @@
----
+﻿---
 title: "Rust Pratikleri - Değişkenleri Kopyalayarak veya Referans Olarak Taşımak"
 pubDate: 2022-04-17 09:00:00
 categories:
@@ -20,7 +20,7 @@ tags:
 ---
 
 # Rust Pratikleri - Değişkenleri Kopyalayarak veya Referans Olarak Taşımak
-![image.axd](images/image.axd)
+![ownership.jpg](images/ownership.jpg)
 
 Rust bellek yönetimi konusunda epey hassas olduğundan, fonksiyonlara aktarılan değerlerin nasıl taşınacağı da önemli bir konudur. Bir.net geliştiricisi olarak değişkenlerin fonksiyonların değer türü veya referans türü olarak aktarıldığını biliyorum. Söz gelimi Rust tarafında olmayan class türevli nesneler fonksiyonlara otomatik olarak referans adresleri ile aktarılıyorlar. Üstelik bunu açıkça belirtmemize gerek olmadığını söyleyebilirim. Peki Rust tarafında durum nasıl? Sonuçta ortada bir Garbage Collector yok. Değişkenler varsayılan olarak değiştirilemez (immutable). Class diye bir kavram yok ve kodlarda kullandığımız değişkenler katı bir biçimde ownership, borrowing gibi kural denetimlerine tabiler.
 
@@ -64,7 +64,7 @@ fn prepare_env(b: Binding) {
 
 Örnek olarak bir servisin bağlantı noktasını temsil eden Binding isimli bir enum sabitimiz var. Bu enum sabiti içinde yer alan Http ve Https değerleri de aslında SoapVersion isimli bir başka enum sabiti ile ifade ediliyorlar. Böylece bir servisin bağlantı noktasında kullanılan protokolü farklı şekillerde ifade etme şansına sahip oluyoruz. Rust'taki enum türü bu tip kullanımlar düşünüldüğünde bence epey güçlü bir enstrüman. prepare_env isimli fonksiyonumuz parametre olarak gelen Binding sabitinin değerlerine bakmak için bir match ifadesi kullanıyor. Sadece ekrana bilgi yazdırdığımızı söyleyebiliriz. Programımız bu haliyle çalıştırdığımızda herhangi bir sıkıntı olmayacaktır. Oldukça sade ve anlaşılır zaten.
 
-![image.axd](images/image.axd)
+![by_val_by_ref_1.png](images/by_val_by_ref_1.png)
 
 Şimdi binding değişkeni için prepare_env fonksiyonunu bir kez daha çağıralım. Şeytanlık yapacağız ya...
 
@@ -78,7 +78,7 @@ fn main() {
 
 Bu durumda aşağıdaki ekran görüntüsünde yer alan çalışma zamanı çıktısı ile karşılaşırız.
 
-![image.axd](images/image.axd)
+![by_val_by_ref_2.png](images/by_val_by_ref_2.png)
 
 İşte bahsettiğimiz "value moved here" hatası. Rust'a göre kural şöyle; Bir değeri (Value) bu örnekteki gibi bir scope'a taşıdıktan sonra sahipliğini (Ownership) kaybederiz.
 
@@ -104,11 +104,11 @@ enum Binding {
 
 Bu arada Copy ve Clone trait'lerini birlikte uygulamak gerekiyor. Sadece Copy trait'ini uygulamak en azından bu örnekteki enum sabitlerimiz için yeterli değil. Eğer böyle yaparsak derleyici yeni durumdan yine hoşnut olmayaca ve bizi şık bir şekilde uyaracaktır.
 
-![image.axd](images/image.axd)
+![by_val_by_ref_3.png](images/by_val_by_ref_3.png)
 
 Clone ve Copy trait'lerini uyguladığımız için binding değişkeni ilgili fonksiyona kopylanarak geçirilmiş oldu. Bu durumda çalışma zamanında bir problemle karşılaşmayız.
 
-![image.axd](images/image.axd)
+![by_val_by_ref_4.png](images/by_val_by_ref_4.png)
 
 Değerin kopyalanarak taşınması durumunu daha iyi anlamak için gdb debugger aracını kullanarak çalışma zamanındaki stack oluşumlarına bakmak iyi bir fikir olabilir. Aşağıda gerekli terminal komutlarını görebilirsiniz.
 
@@ -128,7 +128,7 @@ c
 
 İlk olarak programımızı derlememiz gerekiyor. Ardında oluşan binary dosyasının olduğu klasöre geçiyoruz. gdb ile debugger arabirimini açtıktan sonra uygulamayı run komutu ile bir kere çalıştırmakta yarar var. Ardından b komutu ile prepare_env fonksiyonuna bir breakpoint bırakıyoruz. r ile programı işlettiğimizde iki kez bu fonksiyona düşeceğiz. Her seferinde args ile fonksiyona gelen parametrelere bakarsak değişkenin birebir kopyasının aktarıldığını görebiliriz. Yukarıdaki işlemlerin çıktısı kendi ubuntu sistemimde aşağıdaki gibi oldu.
 
-![image.axd](images/image.axd)
+![by_val_by_ref_5.png](images/by_val_by_ref_5.png)
 
 Şimdi ikinci kullanım seçeneğine bakalım. Değeri referans olarak taşımak. Bir başka deyişle pointer adresini aktarmak. İşin püf noktası & sembolü. Bu amaçla uygulama kodumuzu aşağıdaki gibi düzenlememiz yeterli.
 
@@ -152,7 +152,7 @@ fn prepare_env(b: &Binding) {
 
 Fonksiyonumuzun parametresini referans alacak şekilde değiştirdik ve elbette binding değişkenlerini gönderdiğimiz yerde de referans belirterek yolladık. Ayrıca match ifadesi içerisine dikkat edecek olursanız SoapVersion enum tipinin de referans olarak alındığını görebiliriz. Tabii bunu gösteren IDE'nin kendisi. IntelliJ IDE veya Visual Studio Code ile baktığımızda gri tonlamalı alanlardan bunu anlayabiliriz.
 
-![image.axd](images/image.axd)
+![by_val_by_ref_6.png](images/by_val_by_ref_6.png)
 
 Koplayama yöntemiyle taşımada yaptığımız gibi bu kullanımı da GDB Debugger ile analiz edelim derim. Sonuçta kod parçamız oldukça az. Kolayca debug edebiliriz. İşte program kodunun son halini derleyerek başlıyoruz.
 
@@ -174,7 +174,7 @@ c
 
 Özellikle prepare_env fonksiyonundaki breakpoint noktalarında argümanın bir pointer olduğuna ve her iki çağrıda da aynı referans adresinin kullanıldığında dikkat edelim. Pointer içeriklerini görmek için print b komutunu kullanıyoruz.
 
-![image.axd](images/image.axd)
+![by_val_by_ref_7.png](images/by_val_by_ref_7.png)
 
 Sanıyorum ki aktif olarak kullanmakta olduğunuz programlama dilinde değişken verilerini fonksiyonlara atarken bir kere daha düşüneceksiniz:) Çoğu yüksek seviyeli dilde bu tip ayrımlara hiç takılmadan geliştirme yapmaktayız. Bu geliştirme hızımızı elbette yükseltiyor ancak güvenli bellek sahaları ve performans öne çıktığında sistemin daha da yavaşlamasına sebebiyet veriyor. Tabii bu noktada aklımıza bir soru takılıyor olabilir. Rust varsayılan olarak neden bir değişkenin tek bir sahibi olmasını istiyor? İşte hem size hem de bana güzel bir soru:D
 

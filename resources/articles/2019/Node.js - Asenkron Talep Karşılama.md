@@ -1,4 +1,4 @@
----
+﻿---
 title: "Node.js - Asenkron Talep Karşılama"
 pubDate: 2019-01-10 17:00:00
 categories:
@@ -20,7 +20,7 @@ tags:
 ---
 
 # Node.js - Asenkron Talep Karşılama
-![image.axd](images/image.axd)
+![async_viking.jpg](images/async_viking.jpg)
 
 Merhaba Arkadaşlar,
 
@@ -30,7 +30,7 @@ Ehh, yanınızda bu adrenaline doymayan bir arkadaşınız veya çocuğunuz vars
 
 Bu yazımızda Node.js ile geliştirilmiş sunucu uygulamalarında async kullanımını inceleyeceğiz. Amacımız istemci talebi sonrası arka planda paralel servis çağrıları gerçekleştirmek ve ayrıca bu süreç sırasında sunucuya gelecek diğer isteklerinde değerlendirilebileceğini görmek. Bunlara ilaveten ön tarafta konuşlandıracağımız ana servisin bir yönlendirici (router) gibi kullanılabileceğini öğreneceğiz. Haydi gelin hiç vakit kaybetmeden serüvenimize başlayalım. Konuyu basit bir şekilde anlayabilmek adına örnek bir senaryo üzerinden gitmekte yarar var. Başlangıç için aşağıdaki şemayı göz önüne alabiliriz.
 
-![image.axd](images/image.axd)
+![async_node_0.gif](images/async_node_0.gif)
 
 İki farklı MongoDb (farklı türlerden de olabilir) veri depomuz olduğunu düşünelim. Bunların sayısı daha da artabilir. Her iki mongodb ile ayrı ayrı çalışan servislerimiz var. JSON tabanlı basit Rest servisleri olarak ele alabiliriz. Bu iki oluşumun farklı sunucular üzerinde tesis edildiğini varsayalım. Önde duran ve belirli talepler için arka taraftaki ilgili servislere yönlendirme (routing) işini üstlenen bir başka servis var. Bu servise vereceğimiz temel görev, player ve team servislerine paralel talep gönderek çıktıların istemciye yollanması. Yani öndeki servisimiz takım ve oyuncu listelerini veren servis metodlarını paralel olarak işletip tamamı elde edilince istemciye cevap dönecek.
 
@@ -268,7 +268,7 @@ Body : {"fullName":"toni kukoç","size":"2.06cm","position":"power forward"}
 
 Sonuç aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![async_node_1.gif](images/async_node_1.gif)
 
 Eğer eklenen oyuncuların tamamını çekmek istersek aşağıdaki gibi bir talepten yararlanabiliriz.
 
@@ -277,7 +277,7 @@ Request : HTTP Get
 Address : http://localhost:7001/players
 ```
 
-![image.axd](images/image.axd)
+![async_node_2.gif](images/async_node_2.gif)
 
 Tabii içeriye koyduğumuz 7 saniyelik şaşırtmaca sebebiyle sonuçlar anında ekrana yansımayacaktır. Belli bir IDye bağlı oyuncuyu görmek istersek de aşağıdakine benzer bir talep yapmamız yeterli olur.
 
@@ -286,7 +286,7 @@ Request : HTTP Get
 Address : http://localhost:7001/players/5b9e5423c826230460cc0310
 ```
 
-![image.axd](images/image.axd)
+![async_node_3.gif](images/async_node_3.gif)
 
 Benzer çalışmalar TeamServer servisi çalıştırılarak da deneyimlenebilir. İlerlemden önce yazdığını TeamServer hizmetinin operasyonlarını da test etmenizi öneririm.
 
@@ -298,7 +298,7 @@ node TeamServer.js
 node MainServer.js
 ```
 
-![image.axd](images/image.axd)
+![async_node_4.gif](images/async_node_4.gif)
 
 Yine Postman'den yararlanarak aşağıdaki talebi gönderelim.
 
@@ -307,7 +307,7 @@ Request : HTTP Get
 Address : http://localhost:7000/sports/api
 ```
 
-![image.axd](images/image.axd)
+![async_node_5.gif](images/async_node_5.gif)
 
 Hem oyuncu hem de takım listeleri aynı JSON içeriğinde çıktı olarak döndürüldüler. Ancak dikkat edilmesi gereken nokta sadece arka planda yapılan adres yönlendirmesinin başarılı bir şekilde çalışmış olması değil. Her iki servisin get operasyonu 7 saniyelik duraksatma içeriyor ve servisin toplam cevap süresi de 7 saniye civarında. Bu MainServer'a gelen talep sonrası PlayerServer ve TeamServer'a eş zamanlı olarak taleplerin gönderilmiş olduğu anlamına da geliyor. Bu noktada servislerden birisinin duraksatma süresini kaldırıp tekrardan test etmenizi tavsiye ederim. Hatta MainServer'a yapılan talep sonrası oluşan 7 saniyelik bekleme süresince şu talebi göndermenizi öneririm.
 
@@ -316,7 +316,7 @@ Request : HTTP Get
 Address : http://localhost:7000/aloha
 ```
 
-![image.axd](images/image.axd)
+![async_node_6.gif](images/async_node_6.gif)
 
 Yani sorumuz şu; Yedi saniyelik talep cevaplama süresi boyunca yapılacak olan yukarıdaki istek anında cevaplandırılır mı?;) Tahmin edeceğiniz üzere node.js doğal çalışma dinamikleri gereği ilgili talebi duraksatmayacaktır. Dolayısıyla paralel olarak n sayıda talebin servis tarafında ele alınması mümkündür.
 

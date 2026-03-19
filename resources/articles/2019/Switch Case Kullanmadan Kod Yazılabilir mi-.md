@@ -1,4 +1,4 @@
----
+﻿---
 title: "Switch Case Kullanmadan Kod Yazılabilir mi?"
 pubDate: 2019-12-25 10:00:00
 categories:
@@ -13,7 +13,7 @@ tags:
 ---
 
 # Switch Case Kullanmadan Kod Yazılabilir mi?
-![image.axd](images/image.axd)
+![strategy_cover.jpg](images/strategy_cover.jpg)
 
 İnsanoğlu yağmurlu bir pazar günü evden çıkıp ne yapacağını bilemezken ne hakla ölümsüzlükten bahseder. Bir yazara ait olan bu cümleyi sevgili Serdar Kuzuloğlu'nun yakın zamanda izlediğim söyleşisinden not almışım. İnsanlığın ömrünü uzatmaya çalışması ile ilgili bir konuya atıfta bulunurken ifade etmişti. Oysa karşımızda duran ekolojik denge ve iklim problemleri, yakın gelecekte (2025 deniyor) dünya nüfusunun 1 milyar 250 milyon kadarının içilebilir su kaynaklarına erişemeyeceğini işaret etmekte. Lakin bundan etkilenmeyecek olan ve asıl ömrünü uzatmak isteyen dünya nüfusunun en zengin %1i, söz konusu kıtlığın yaratacağı sorunlardan ve başka felaketlerden korunmak için kendisine dev sığınaklar inşa ediyor, adalar satın alıyormuş. Gerçekten anlaşılması çok zor ve bir o kadar da karmaşık bir durum değil mi? Bu distopik senaryo bir kenara dursun biz geleceğin iyi şeyler getireceğini ümit ederek gelişmeye devam edelim.
 
@@ -27,7 +27,7 @@ Bu noktaya nasıl mı geldim? Pek tabii bir süredir hayatımızda önemli bir y
 
 > Kavramsal karmaşıklık değeri, temel programlama yapılarının kod içerisindeki kullanımları için belirlenmiş ağırlık değerleri baz alınarak hesaplanmaktadır. Söz gelimi if-then-else için 2, for döngüsü için 3, eş zamanlı çalışan paralel kod parçaları için 4 ağırlık puanı ele alınır. Bu değerlere metodlara aktarılan ve çıkan parametre sayıları gibi kriterler de eklenerek fonksiyonun karmaşıklığı hakkında sayısal bir bilgi elde edilir. Cognitive Complexity puanlamasına etki eden kriterler için Sonarqube'un [şu adresinden](https://www.buraksenyurt.com/admin/app/editor/Complexity değerinin yüksek olması kodun yönetimi, bakımı ve test edilebilirliğinin zor olduğu anlamına gelmektedir.) yararlanabilirsiniz ancak olay sanıldığı kadar basit değil. İşin içerisinde Matematik formüller de var;) [IEEE'nin 2018 basımı şu dokümanında](https://ieeexplore.ieee.org/document/8253447) çok daha fazlasını bulabilirsiniz.
 
-![image.axd](images/image.axd)
+![strategy_pattern_1.png](images/strategy_pattern_1.png)
 
 Buradaki en önemli sorun metodun bulunduğu sınıfın SOLID ilkelerindeki Open-Closed prensibini ihlal etmesi. Bu ilkeye göre bir nesnenin genişletilmeye açık değiştirilmeye kapalı olması istenir. "Bunu bir örnekle anlamaya çalışsak nasıl olur?" diyorum içimden:) Öyleyse gelin aşağıdaki kod parçasını mercek altına alalım.
 
@@ -85,7 +85,7 @@ namespace Sonarqube.Tests
 
 Olayı basit bir şekilde analiz etmek için az sayıda case ifadesi kurguladık. Aslında tertemiz bir kod parçamız var. RoleProvider sınıfı içerisindeki Ping metodu bir enum sabitini kullanarak farklı sistemler üzerinden mesaj gönderme işlemini temsil ediyor. Main metodu içerisinde yaptığımız çağrıda nasıl davranması gerektiğini belirliyoruz. Sorun RoleProvider sınıfı içerisine yeni bir provider durumu eklemek istediğimizde ortaya çıkıyor. Bunun için RoleProvider sınıfının kodunu değiştirmek zorundayız. Yani yeni durumu da eklememiz gerekmekte. Eğer RoleProvider sınıfını devasa bir uygulamanın ortak kütüphanelerince kullanılan bir tipi olarak düşünürsek işimiz daha da zorlaşıyor. İşte hem bu ilkenin ihlalini engellemek hem de Sonarqube aracını memnun etmek için başvurabileceğimiz güzel bir yol var. O da strateji tasarım kalıbının bir uyarlaması. Şimdi yukarıdaki kod parçasını aşağıdaki hale getirelim.
 
-![image.axd](images/image.axd)
+![strategy_pattern_2.png](images/strategy_pattern_2.png)
 
 ```csharp
 using System;
@@ -178,7 +178,7 @@ Uyarlamada dikkat edileceği üzere case durumuna giren asıl tipler (KafkaProvi
 
 Ah sonlandırmadan çalışma zamanına ait bir ekran görüntüsü de paylaşırsam çok iyi olacak.
 
-![image.axd](images/image.axd)
+![strategy_pattern_3.png](images/strategy_pattern_3.png)
 
 Tahminlerime göre aklınıza gelen bir başka soru daha var. "Peki ya if-else kullandığımız senaryolar varsa...Hah haaa" Elbette Cognitive Complexity değerini yükselten durumlardan birisi de if bloklarının çokluğu. Hatta ternary operatörü kullansak bile Sonarqube bunu yutmayabilir:) Strateji kalıbını if-else yapıları için de kurgulayabiliriz elbette ama farklı yaklaşımlar da söz konusu. Bunlardan birisi Chain of Responsbility kalıbının uygulanmasıdır. Buna benzer bir kalıp olup normalde GOF (Gangs of Four) listesinde yer almayan ancak [Steve Smith'in bir Pluralsight eğitimi](https://app.pluralsight.com/library/courses/patterns-library/table-of-contents)nde anlattığı ve tesafüden de olsa çok geç bulduğum Rules tasarım kalıbı da var. Bir başka yazıda farklı ilkeler ile bu kez if-else karar yapısını daha doğru kurgulayarak nasıl ilerleyebileceğimizi incelemeye çalışacağım. Şimdilik bana müsade. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.
 

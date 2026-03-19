@@ -1,4 +1,4 @@
----
+﻿---
 title: "Ruby Kod Parçacıkları 34 - Fiber ve Eş Zamanlı Programlama"
 pubDate: 2017-05-05 12:17:00
 categories:
@@ -11,7 +11,7 @@ tags:
 ---
 
 # Ruby Kod Parçacıkları 34 - Fiber ve Eş Zamanlı Programlama
-![image.axd](images/image.axd)
+![rubyfiber_1.gif](images/rubyfiber_1.gif)
 
 Merhaba Arkadaşlar,
 
@@ -42,11 +42,11 @@ myFiber.resume
 
 Kodu çalıştırdığımızda aşağıdaki sonuçlar elde ederiz.
 
-![image.axd](images/image.axd)
+![rubyfiber_2.gif](images/rubyfiber_2.gif)
 
 Peki ne oldu burada? Aşağıdaki grafik konuyu daha güzel özetleyebilir.
 
-![image.axd](images/image.axd)
+![rubyfiber_3.gif](images/rubyfiber_3.gif)
 
 Aslında ana uygulama kodu ve Fiber nesnesi ile açılan kod bloğu arasında resume ve yield fonksiyonlarından yararlanarak geçişler yapıldığını görüyoruz. Yardımcı rutin olarak çalışmasını istediğimiz kod bloğuna geçiş yapmak veya o blokta kaldığımız yerden işlemlere devam etmek için resume, bu kod bloğunu çağıran uygulama parçacığına geri dönmek içinse yield fonksiyonundan yararlanıyoruz. Bu bir çeşit rutinler arası geçisin planlanmasıdır (Scheduling)
 
@@ -73,7 +73,7 @@ puts(fiberX.resume)
 
 Bu kez Fiber bloğuna input isimli tek bir değişken taşınıyor. Bu değişkene göre üretilen rastgele sonuçlar da çağıran tarafa iletiliyor. Kullanım oldukça basit. yield ile Fiber bloğu içinden çağıran tarafa sonuçlar dönülebiliyorken, resume ile de Fiber içerisine parametre aktarılabiliyor. Tabii planlama sırasına göre çağıran kod parçası ile Fiber kod bloğu içerisinde karşılıklı geçişler sağlanmakta. Çalışma zamanı sonuçları aşağıdaki gibidir.
 
-![image.axd](images/image.axd)
+![rubyfiber_4.gif](images/rubyfiber_4.gif)
 
 Fiber Blokları Arası Veri Transferi
 
@@ -104,7 +104,7 @@ puts "işlemler bitti"
 
 İşlemler biraz karışık gelebilir ancak ilk iki örnekteki mantığı düşünmemiz örneği anlamamız için yeterli. Fiber blokları arasındaki geçişler için yield fonksiyonu yerine fiber modülünde yer alan transfer operasyonundan yararlanıyoruz. Hatta ana kod parçasından fiber1 isimli ilk kod bloğunu başlatırken de transfer fonksiyonunu kullanmaktayız. Kodun çalışma zamanı çıktısı biraz daha iyi fikir verecektir.
 
-![image.axd](images/image.axd)
+![rubyfiber_5.gif](images/rubyfiber_5.gif)
 
 Yaygın Örnek
 
@@ -131,7 +131,7 @@ generator=fibogen
 end
 ```
 
-![image.axd](images/image.axd)
+![rubyfiber_6.gif](images/rubyfiber_6.gif)
 
 fibogen isimli fonksiyon içerisinde yeni bir Fiber bloğu oluşturulmakta. Bu blok içerisinde de sonsuz bir döngümüz var. Başlangıçta Fibonacci sayı dizisinin ilk iki değeri varsayılan olarak verilmekte (ki sayı üreticisinin bu başlangıç değerlerini parametre olarak alması daha güzel olabilir. Nitekim bu sayede istediğimiz iki sayıdan sonrasını elde etme şansını da bulabiliriz) Döngü içerisinde yield operasyonu ile çağıran koda geri dönülüyor ve o anki y değeri yollanıyor. Bu arada generator şeklinde bir değişken tanımlamassak hep 1 sayısını elde edebiliriz. Bunu bir deneyin. Ayrıca ilk 20 fibonacci sayısını bastıktan sonra örneğin ilk 5 fibonacci sayısını yakalamak istersek yeni bir fibogen değişkenine ihtiyacımız olacak (Başlangıç değerlerini parametre olarak alınnnnn) Nitekim bunu yapmassak sonraki 5 fibonacci elemanı ilk 20 elemanın arkasındakiler olarak hesaplanır.
 

@@ -1,4 +1,4 @@
----
+﻿---
 title: "Node.js, MongoDB, Fastify ve Swagger Kullanılan Web API Servisi Geliştirmek"
 pubDate: 2019-05-12 21:45:00
 categories:
@@ -21,7 +21,7 @@ tags:
 ---
 
 # Node.js, MongoDB, Fastify ve Swagger Kullanılan Web API Servisi Geliştirmek
-![image.axd](images/image.axd)
+![minions2.png](images/minions2.png)
 
 Yazılım tarafında yeni bir şeyler öğrenmeye çalışmak hayatımın standart ritüelleri arasında. Bu döngü içerisinde yaşamak en büyük keyiflerimden birisi. Tabii bu döngünün en önemli parçalarından birisi masabaşında yapılan kodlama çalışmaları. WestWorld ve son zamanlardaki gözdem Ahch-To başlıca yardımcılarım. Çalışmalar değişik diyarlardan geliyor. Bazen konular arasında keskin geçişler yapıyorum. Bir gün Node.js dünyasında debelenirken bir başka gün daha aşina olduğum.Net Core kıyılarında yürüyüşe çıkıyorum.
 
@@ -260,7 +260,7 @@ exports.getAllMinionSchema = {
 
 Dosya bilgilerine göre localhost:4005/help adresine talepte bulunduğumuzda ekran görüntüsünde yer alan yardım sayfası ile karşılaşırız. Tam bir geliştirici dostu öyle değil mi?
 
-![image.axd](images/image.axd)
+![04_07_credit_2.png](images/04_07_credit_2.png)
 
 Pek tabii node.js uygulamasını ayağa kaldıran ana modüle ait kodlarımız da oldukça önemli. Proje iskeletine göre routes klasörü altındaki modülleri Fastify ile ilişkilendirmek gerekiyor. Bunun için bir forEach döngüsü kullanılmakta (Fastify'ın Swagger ile ilişkilendirildiği yeri görebildiniz mi?)
 
@@ -308,7 +308,7 @@ mongod
 npm start
 ```
 
-![image.axd](images/image.axd)
+![04_07_credit_1.png](images/04_07_credit_1.png)
 
 Dikkat edileceği üzere ekrana gayet hoş log'lar da düşüyor. Testler için curl veya popüler araçlardan olan Postman kullanılabilir. Ben bu tip çalışmalarda servis çalışabilirliğini hızlı ve kolay bir şekilde test etmek için Postman veya SoapUI gibi araçlardan yararlanıyorum.
 
@@ -326,11 +326,11 @@ Yeni bir minion eklemek için http://localhost:4005/api/minions adresine gövdes
 
 Eklenen kayıtlara ait benzersiz ID değerleri tahmin edileceği üzere MongoDB tarafından otomatik olarak üretilmekte. ID değerleri veri silme ve güncelleme operasyonları için önemli arama kriterlerinden. Aşağıdaki ekran görüntüsünde üstteki çağrı sonuçlarını görebiliriz. Agnes başarılı bir şekilde eklenmiş durumda.
 
-![image.axd](images/image.axd)
+![04_07_credit_3.png](images/04_07_credit_3.png)
 
 Bir kaç minion daha ekledikten sonra bunların güncel listesini elde etmek için http://localhost:4005/api/minions adresine HTTP Get talebini yollamak yeterli. Belli bir minion'u elde etmek içinse MongoDb'nin verdiği ID bilgisini kullanabiliriz. Örneğin, http://localhost:4005/api/minions/5c1581e579140d6969b5951f talebi için şöyle bir sonuç dönebilir.
 
-![image.axd](images/image.axd)
+![04_07_credit_4.png](images/04_07_credit_4.png)
 
 Benzer şekilde aynı adresi PUT metodu ile kullanıp BODY kısmında yeni minion bilgilerini JSON formatında göndererek güncelleme işlemini de gerçekleştirebiliriz. Bu ve silme operasyonlarını örneği tamamlayıp denemenizi öneririm.
 

@@ -1,4 +1,4 @@
----
+﻿---
 title: "Electron ile Cross-Platform Uygulama Geliştirmek"
 pubDate: 2018-11-30 05:06:00
 categories:
@@ -14,7 +14,7 @@ tags:
 ---
 
 # Electron ile Cross-Platform Uygulama Geliştirmek
-![image.axd](images/image.axd)
+![galvatron.jpg](images/galvatron.jpg)
 
 Merhaba Arkadaşlar,
 
@@ -154,11 +154,11 @@ npm start
 
 ile programı çalıştırdım ve aşağıdaki ekran görüntüsü ile karşılaştım. Bir masaüstü uygulamam olmuştu artık.
 
-![image.axd](images/image.axd)
+![electron_linux_0.gif](images/electron_linux_0.gif)
 
 Hatta developer modu etkinleştirince (win.webContents.openDevTools () satırını açaraktan) çok tanıdık olduğumuz bir ekranla karşılaştım. Chrome üzerinden Debug yapıp bir şeyleri keşfetmeye çalışanlar aşinadır.
 
-![image.axd](images/image.axd)
+![electron_linux_1.gif](images/electron_linux_1.gif)
 
 ## Şirketteki Windows'ta Olanlar
 
@@ -170,7 +170,7 @@ npm start
 
 ile programı çalıştırdım. Volaaaa...
 
-![image.axd](images/image.axd)
+![electron_win.gif](images/electron_win.gif)
 
 Sonuç oldukça tatmin ediciydi benim için. Console loguna göre Windows platformunda olduğum aşikardı. Diğer taraftan metin kutusuna yazdığım bilgi, butona bastıktan sonra da işlenmişti. Önümde tek bir engel kalıyordu. Aynı kod parçasını bir Apple bulup MacOS üzerinde deneyimlemek.
 
@@ -187,11 +187,11 @@ cd Day09
 npm i --save-dev electron
 ```
 
-![image.axd](images/image.axd)
+![electron_apple_0.gif](images/electron_apple_0.gif)
 
 Ve derhal npm start komutunu vererek uygulamanın çalışıp çalışmadığını kontrol ettim.
 
-![image.axd](images/image.axd)
+![electron_apple_1.gif](images/electron_apple_1.gif)
 
 Mutluluk!!!
 

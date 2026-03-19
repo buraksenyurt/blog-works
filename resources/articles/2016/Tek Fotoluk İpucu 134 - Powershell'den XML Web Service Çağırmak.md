@@ -1,4 +1,4 @@
----
+﻿---
 title: "Tek Fotoluk İpucu 134 - Powershell'den XML Web Service Çağırmak"
 pubDate: 2016-10-06 21:10:00
 categories:
@@ -42,7 +42,7 @@ SOAPAction: "http://www.buraksenyurt.com/servicebag/Sum"
 
 PowerShell'de bu tip SOAP tabanlı servisleri Proxy sınıfı tanımlayarak çağırabilir ve operasyonlarını test edebiliriz. Bunun için New-WebServiceProxy komutundan yararlanıyoruz.
 
-![image.axd](images/image.axd)
+![TFI_134.gif](images/TFI_134.gif)
 
 $URI değişkeni çağırmak istediğimiz web servisine ait WSDL (Web Service Description Language) adresini taşıyor. Sonrasında $proxy değişkenine New-WebServiceProxy tipi ile ürettiğimiz proxy nesnesini atıyoruz. Powershell tarafında kullanacağımız namespace ve class adlarını belirtiyoruz. Sonrasında $proxy değişkeni üzerinden web servis operasyonlarını çağırabiliriz. Servise ait diğer operasyonları görmek isterseniz aşağıdaki komutu da kullanabilirsiniz.
 

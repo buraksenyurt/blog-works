@@ -1,4 +1,4 @@
----
+﻿---
 title: "Bir Web Uygulamasında Gantt Chart Kullanımı"
 pubDate: 2019-07-26 13:00:00
 categories:
@@ -25,7 +25,7 @@ tags:
 ---
 
 # Bir Web Uygulamasında Gantt Chart Kullanımı
-![image.axd](images/image.axd)
+![windofchange2.png](images/windofchange2.png)
 
 Beğenerek dinlediğim Scorpions grubunun en güzel şarkılarından birisidir Wind of Change. Değişim rüzgarları uzun zamandır hayatımın bir parçası aslında. Sanıyorum ilk olarak 2012 yılında o zamanlar çalışmakta olduğum turuncu bankada başlamıştı esintiler. Çevik dönüşüm süreci kapsamında uzun zamandır var olan şelale modelinin ağır ve hantal işleyişi yerine daha hızlı reaksiyon verme kabiliyeti kazanmak içindi her şey. Benzer bir dönüşüm süreci geçtiğimiz sene içerisinde şu an çalışmakta olduğum mavi renkli teknoloji şirketinde de başlatıldı.
 
@@ -846,17 +846,17 @@ dotnet ef database update
 
 İlk satır işletildiğinde DataContext türevli sınıf baz alınarak migration planları çıkartılır. Planlar hazırlandıktan sonra ikinci komut ile update işlemi yürütülür ve ilgili tablolar SQLite veri tabanı içerisine ilave edilir.
 
-![image.axd](images/image.axd)
+![07_23_Cover_1.png](images/07_23_Cover_1.png)
 
 ## Çalışma Zamanı
 
 Kod ilk çalıştırıldığında eğer Tasks tablosunda herhangibir kayıt yoksa aşağıdaki gibi bir kaç verinin eklendiği görülecektir.
 
-![image.axd](images/image.axd)
+![07_23_credit_2.png](images/07_23_credit_2.png)
 
 Benzer şekilde Links tablosuna gidilirse görevler arası ilişkilerin eklendiği de görülecektir.
 
-![image.axd](images/image.axd)
+![07_23_credit_3.png](images/07_23_credit_3.png)
 
 > Visual Studio Code tarafında SQLite veri tabanı ile ilgili işleri görsel olarak yapabilmek için [şu eklentiyi](https://marketplace.visualstudio.com/items?itemName=alexcvzz.vscode-sqlite) kullanabilirsiniz.
 
@@ -868,23 +868,23 @@ dotnet run
 
 komutu ile çalıştırdıktan sonra Index sayfasını talep edersek bizi bir proje yönetim ekranının karşıladığını görebiliriz;) Bu sayfanın verisi tahmin edeceğiniz üzere MainController tipine gelen HTTP Get çağrısı ile sağlanmaktadır.
 
-![image.axd](images/image.axd)
+![07_23_credit_4.png](images/07_23_credit_4.png)
 
 Burada dikkat edilmesi gereken bir nokta var. Gantt Chart için yazılmış olan kütüphane standart olarak Task ve Link tipleri ile çalışırken REST API çağrılarını kullanmaktadır. Yeni bir öğe eklerken POST, bir öğeyi güncellerken PUT ve son olarak silme işlemlerinde DELETE operasyonlarına başvurulur. Eğer örnek senaryomuzda TaskController ve LinkController tiplerinin POST, PUT, DELETE ve GET karşılıklarını yazmassak arabirimdeki değişiklikler sunucu tarafına aktarılamayacak ve aşağıdaki ekran görüntüsündekine benzer hatalar alınacaktır.
 
-![image.axd](images/image.axd)
+![07_23_credit_5.png](images/07_23_credit_5.png)
 
 HTTP çağrıları LinkController ve TaskController sınıflarınca ele alındıktan sonra ise grafik üzerindeki CRUD (CreateReadUpdateDelete) operasyonlarının SQLite tarafına da başarılı bir şekilde aktarıldığı görülebilir. Örnekte üçüncü bir ana görev ile alt işi girilmiş, bir takım görevler üzerinde güncellemeler yapılmış ve görevler arası bağlantılar kurgulanmıştır. WestWorld çalışma zamanına yansıyan örnek ekran görüntüsü aşağıdaki gibidir.
 
-![image.axd](images/image.axd)
+![07_23_credit_6.png](images/07_23_credit_6.png)
 
 Bu oluşumun sonuçları SQLite veritabanına da yansır.
 
-![image.axd](images/image.axd)
+![07_23_credit_7.png](images/07_23_credit_7.png)
 
 Tüm CRUD operasyonları aşağıdaki ekran görüntüsüne benzer olacak şekilde HTTP çağrıları üzerinden gerçeklenir. Bunu F12 ile geçeceğiniz bölümdeki Network kısmından izleyebilirsiniz.
 
-![image.axd](images/image.axd)
+![07_23_credit_8.png](images/07_23_credit_8.png)
 
 Çalışma zamanı testlerini de tamamladığımıza göre yavaş yavaş derlememizi noktalayabiliriz.
 

@@ -1,4 +1,4 @@
----
+﻿---
 title: "Asp.Net Web API ile OData Kullanımı"
 pubDate: 2016-04-21 09:00:00
 categories:
@@ -19,7 +19,7 @@ tags:
 ---
 
 # Asp.Net Web API ile OData Kullanımı
-![image.axd](images/image.axd)
+![ODataWebAPI_G.gif](images/ODataWebAPI_G.gif)
 
 Merhaba Arkadaşlar,
 
@@ -33,7 +33,7 @@ Bu standardı dilersek Asp.Net Web API tabanlı servisler ile de ele alabiliriz.
 
 Visual Studio ortamında (ki ben örneği 2013 sürümünde geliştirdim) bir Asp.Net projesi oluşturarak işe başlayalım. Empty şablonunu tercih edip Web API seçeneğini işaretleyerek devam edelim.
 
-![image.axd](images/image.axd)
+![ODataWebAPI_1.gif](images/ODataWebAPI_1.gif)
 
 Proje oluşturulduktan sonra OData kullanımını kolaylaştıracak olan NuGet paketinin yüklenmesi gerekmektedir. NuGet Package Manager Console üzerinden ilgili paket aşağıdaki komut ile projeye yüklenir.
 
@@ -47,7 +47,7 @@ install-package Microsoft.AspNet.OData
 
 Burada önemli olan kısım Contained niteliğinin (Attribute) kullanımıdır. Bu nitelik ile OData sorgularının Entity'ler arası ilişkileri (Relations) çalışma zamanında tanıyabilmesini sağlamaktayız. AzonDataSources sınıfı temel olarak veriyi doldurduğumuz yerdir. Örnek çalışmamızda Entity Framework yerine In-Memory çalışan bir çözüm kullandığımızı bir kere daha hatırlatmak isterim.
 
-![image.axd](images/image.axd)
+![ODataWebAPI_2.gif](images/ODataWebAPI_2.gif)
 
 Data Source Sınıfımız
 
@@ -283,23 +283,23 @@ Herhangibir tarayıcıdan aşağıdaki komutları deneyerek örneğimizi test ed
 
 http://localhost:61708/$metadata çağrısı ile aslında servisin metadata içeriğine ulaşabiliriz. Böylece servisin hangi entity'leri sunduğunu da görebiliriz.
 
-![image.axd](images/image.axd)
+![ODataWebAPI_5.gif](images/ODataWebAPI_5.gif)
 
 http://localhost:61708/Categories ile tüm kategorileri elde ederiz.
 
-![image.axd](images/image.axd)
+![ODataWebAPI_7.gif](images/ODataWebAPI_7.gif)
 
 http://localhost:61708/Categories?$expand=Products ile kategorileri ve bunlara bağlı ürünlerin listesini komple elde ederiz.
 
-![image.axd](images/image.axd)
+![ODataWebAPI_6.gif](images/ODataWebAPI_6.gif)
 
 http://localhost:61708/Products?$select=Title,ListPrice ile tüm ürünlerin sadece Title ve ListPrice değerlerini elde ederiz.
 
-![image.axd](images/image.axd)
+![ODataWebAPI_8.gif](images/ODataWebAPI_8.gif)
 
 http://localhost:61708/Products?$filter=startswith (Title,'A') ile A harfiyle başlayan ürün listesini elde ederiz.
 
-![image.axd](images/image.axd)
+![WebAPI_9.gif](images/WebAPI_9.gif)
 
 Pek tabi OData sorgularında kullanabileceğimiz pek çok anahtar kelime var. Bu kabiliyetlere [http://docs.oasis-open.org/odata/odata/v4.0/odata-v4.0-part2-url-conventions.html](http://docs.oasis-open.org/odata/odata/v4.0/odata-v4.0-part2-url-conventions.html) adresinden detaylı bir şekilde bakabilirsiniz.
 

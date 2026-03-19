@@ -1,4 +1,4 @@
----
+﻿---
 title: "GoLang - Yönlendiriciler (Routers)"
 pubDate: 2017-06-26 10:30:00
 categories:
@@ -16,7 +16,7 @@ tags:
 ---
 
 # GoLang - Yönlendiriciler (Routers)
-![image.axd](images/image.axd)
+![gorouting_1.gif](images/gorouting_1.gif)
 
 Merhaba Arkadaşlar,
 
@@ -141,29 +141,29 @@ Index, GetPlanets ve GetCities fonksiyonlarının parametre yapıları aynı. 3n
 
 Geldik işin eğlenceli kısmına. Önce go uygulamasını build edip çalıştıralım. Sonrasında ilk talebi 4568 nolu porta göndererek ilerleyelim. Aşağıdakine benzer bir sonuçla karşılaşmalıyız.
 
-![image.axd](images/image.axd)
+![gorouting_2.gif](images/gorouting_2.gif)
 
 Görüldüğü gibi Index sayfasının içeriğini başarılı bir şekilde yolladık. Planets bağlantısına basarsak bu kez GetPlanets fonksiyonunun devreye girip aşağıdaki çıktıyı ürettiğini görürüz. Örnek gezegenlerimizin tamamı geldi.
 
-![image.axd](images/image.axd)
+![gorouting3.gif](images/gorouting3.gif)
 
 Bu gezegen linklerine bastığımızda da önemli şehirlerinin listesini getirecek GetCities fonksiyonunun çıktıları ile karşılaşırız. Örnek iki tanesini aşağıda görebilirsiniz.
 
 Naboo
 
-![image.axd](images/image.axd)
+![gorouting4.gif](images/gorouting4.gif)
 
 ve Mustafar
 
-![image.axd](images/image.axd)
+![gorouting5.gif](images/gorouting5.gif)
 
 Elbette olmayan bir gezegen adını bilinçli olarak girersek aşağıdaki çıktıyı
 
-![image.axd](images/image.axd)
+![goroutine6.gif](images/goroutine6.gif)
 
 ya da /Planets yerine hatalı bir giriş yaparsak da "404 page not found" cevabını alırız.
 
-![image.axd](images/image.axd)
+![goroutine7.gif](images/goroutine7.gif)
 
 Neler Eksik?
 

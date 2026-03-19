@@ -1,4 +1,4 @@
----
+﻿---
 title: "Stackoverflow Sevgi Anketinde Yıllardır Bir Numara Çıkan Programlama Dili Rust Kimdir?"
 pubDate: 2020-12-31 20:59:00
 categories:
@@ -31,7 +31,7 @@ tags:
 ---
 
 # Stackoverflow Sevgi Anketinde Yıllardır Bir Numara Çıkan Programlama Dili Rust Kimdir?
-![image.axd](images/image.axd)
+![rustinpeace.png](images/rustinpeace.png)
 
 Hepimiz için berbat geçen bir yılı geride bırakıyoruz. Koca sene boyunca uğraştığımız salgının etkileri daha da sürecek gibi duruyor. 2021 bize neler getirir bilemiyorum ama yazılımcıların bilgisayarları başında daha çok vakit geçirdiği günlerin hayatımızda kalıcı hale geldiğini de ifade edebilirim. Geçen yılın bir bölümünde işlerden arta kalan vakitlerde kendimce yeni şeyler öğrenmeye gayret ettim. Bunlardan birisi de Mozilla Labs'ın gücünü arkasına almış olan Rust programlama diliydi.
 
@@ -150,7 +150,7 @@ cargo run
 
 Bu arada kodu derlemeden kontrol etmek için cargo check, sürüm çıkarmak içinse cargo build --release komutlarını kullanabiliriz.
 
-![image.axd](images/image.axd)
+![skynet_32_Screenshot_01.png](images/skynet_32_Screenshot_01.png)
 
 ## Sayı Tahmin Oyunu
 
@@ -255,11 +255,11 @@ fn main() {
 
 İşte çalışma zamanına ait iki örnek çıktı.
 
-![image.axd](images/image.axd)
+![skynet_32_Screenshot_02.png](images/skynet_32_Screenshot_02.png)
 
 ve
 
-![image.axd](images/image.axd)
+![skynet_32_Screenshot_03.png](images/skynet_32_Screenshot_03.png)
 
 ## Sepeti Doldurmaya Devam
 
@@ -451,7 +451,7 @@ fn find_fibonacci(n: u32) -> u32 {
 
 Bu örnekte immutable olan point değişkenini değiştirmeye çalıştığımızda aşağıdaki ekran görüntüsünde yer alan derleme zamanı hatasını alırız.
 
-![image.axd](images/image.axd)
+![skynet_32_Screenshot_04.png](images/skynet_32_Screenshot_04.png)
 
 ## Sahiplenme (Ownership)
 
@@ -582,7 +582,7 @@ fn find_word_length(word: &String) -> usize {
 
 Örnekteki borrow of moved hatasına ait ekran görüntüsü aşağıdaki gibidir.
 
-![image.axd](images/image.axd)
+![skynet_32_Screenshot_05.png](images/skynet_32_Screenshot_05.png)
 
 ## Kendi Struct Veri Türümüz
 
@@ -1240,11 +1240,11 @@ fn a_little_bit_panic() {
 
 ve çalışma zamanı. Önce bir kuple panic! havası,
 
-![image.axd](images/image.axd)
+![skynet_32_Screenshot_06.png](images/skynet_32_Screenshot_06.png)
 
 ardından Result ile olayı kontrol altında tutma çabası.
 
-![image.axd](images/image.axd)
+![skynet_32_Screenshot_07.png](images/skynet_32_Screenshot_07.png)
 
 ## Generics
 
@@ -1509,7 +1509,7 @@ impl Drop for MongoConnection {
 
 İşte çalışma zamanından bir görüntü.
 
-![image.axd](images/image.axd)
+![skynet_32_Screenshot_08.png](images/skynet_32_Screenshot_08.png)
 
 ## Lifetimes
 
@@ -1545,7 +1545,7 @@ fn main() {
 
 Yukarıdaki örnek derlenmeyecektir ve aşağıdaki görüntüde yer alan hata mesajını verecektir.
 
-![image.axd](images/image.axd)
+![Screenshot_09.png](images/Screenshot_09.png)
 
 Lifetime noktalarını daha iyi anlamak için aşağıdaki düzeni göz önüne alabiliriz.
 
@@ -1809,19 +1809,19 @@ fn div(x: f32, y: f32) -> Result<f32, String> {
 
 Uygulamanın çalışma zamanı görüntülerini aşağıda bulabilirsiniz.
 
-![image.axd](images/image.axd)
+![skynet_32_Screenshot_10.png](images/skynet_32_Screenshot_10.png)
 
 Testlerden biri başarılı diğeri değil durumuna ait bir görüntü.
 
-![image.axd](images/image.axd)
+![skynet_32_Screenshot_11.png](images/skynet_32_Screenshot_11.png)
 
 Belli bir test maddesini çalıştırdığımız durumdaki görüntü.
 
-![image.axd](images/image.axd)
+![skynet_32_Screenshot_12.png](images/skynet_32_Screenshot_12.png)
 
 /// ile kullanım talimatlarını eklediğimizde VS Code'daki yardım kutucuğunun içeriği.
 
-![image.axd](images/image.axd)
+![Screenshot_13.png](images/Screenshot_13.png)
 
 ## Kendi Küfelerimizi Geliştirmek (Crate)
 
@@ -2193,7 +2193,7 @@ impl fmt::Display for Product {
 
 İşte çalışma zamanı çıktımız.
 
-![image.axd](images/image.axd)
+![Screenshot_14.png](images/Screenshot_14.png)
 
 ## Kapamalar (Closures)
 
@@ -2504,7 +2504,7 @@ fn fill_players() -> Vec<Player> {
 
 ve bu örneğe ait çalışma zamanı çıktısı da aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![skynet_32_Screenshot_15.png](images/skynet_32_Screenshot_15.png)
 
 ## Iterators
 
@@ -3048,7 +3048,7 @@ fn main() {}
 
 Test sonuçlarını aşağıda görebilirsiniz.
 
-![image.axd](images/image.axd)
+![skynet_32_Screenshot_16.png](images/skynet_32_Screenshot_16.png)
 
 Tahmin edeceğiniz üzere kendi geliştirdiğimiz türler veya hash map gibi diğer koleksiyonlar için kendi iterator fonksiyonlarımızı da yazabiliriz. Tek yapmamız gereken Iterator trait'ini uygulamaktır. Ancak bunun için uygun senaryolara da ihtiyacımız vardır. Şunu da bir açıklığa kavuşturalım; Iterator demek veri için bir sonraki veriyi döndüren ve nerde durması gerektiğini bilen bir next fonksiyonu demektir.
 
@@ -3144,7 +3144,7 @@ fn main() {
 }
 ```
 
-![image.axd](images/image.axd)
+![skynet_32_Screenshot_17.png](images/skynet_32_Screenshot_17.png)
 
 Bir programlama dili çeşitli türde veri yapıları sağlar. Geliştiriciler bunları kombine ederek bir eco system inşa edebilirler.
 İyi programlama dilleri bu ekosistemin inşasını kolaylaştırır. Iterator deseni GoF'un belirttiği tasarım prensiplerinden birisidir ve Rust dilinde de trait'leri üzerinden kurgulanabilir. Böylece kendi veri yapılarımız içerisinde ileri yönlü hareket edebiliriz.
@@ -3961,7 +3961,7 @@ fn example_one() {
 
 Örneğin çalışma zamanı çıktısı aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![skynet_32_Screenshot_18.png](images/skynet_32_Screenshot_18.png)
 
 ## Join Handle
 
@@ -4022,7 +4022,7 @@ fn main() {
 
 Şimdi örneğin çıktısı aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![Screenshot_20.png](images/Screenshot_20.png)
 
 Join kullanımına ait başka bir örneği de aşağıda bulabilirsiniz. Bu kez iş parçaları bir döngü içerisinde kuyruğa alınmakta. Bu döngüde iş parçasının bitip bitmediğini pattern matching ile kontrol ettiğimize dikkat edelim.
 
@@ -4079,7 +4079,7 @@ fn main() {
 }
 ```
 
-![image.axd](images/image.axd)
+![Screenshot_21.png](images/Screenshot_21.png)
 
 ## Counter Örneği
 
@@ -4135,7 +4135,7 @@ fn main() {
 
 Bu örneğe ait çalışma zamanı çıktısı aşağıdaki gibidir.
 
-![image.axd](images/image.axd)
+![Screenshot_22.png](images/Screenshot_22.png)
 
 ## Message Passing
 
@@ -4143,7 +4143,7 @@ Thread'lerin ortak veriler üzerinde işlem yapması gerektiği durumlarda eşza
 
 ve tabii ki çalışma zamanı çıktısı.
 
-![image.axd](images/image.axd)
+![Screenshot_24.png](images/Screenshot_24.png)
 
 ## Mutexes
 

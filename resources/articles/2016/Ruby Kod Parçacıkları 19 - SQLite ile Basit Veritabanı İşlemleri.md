@@ -1,4 +1,4 @@
----
+﻿---
 title: "Ruby Kod Parçacıkları 19 - SQLite ile Basit Veritabanı İşlemleri"
 pubDate: 2016-02-07 15:00:00
 categories:
@@ -11,7 +11,7 @@ tags:
 ---
 
 # Ruby Kod Parçacıkları 19 - SQLite ile Basit Veritabanı İşlemleri
-![image.axd](images/image.axd)
+![Ultra-Lightweight-Carbon-Fiber-Blackbraid-Bicycle-0.jpg](images/Ultra-Lightweight-Carbon-Fiber-Blackbraid-Bicycle-0.jpg)
 
 Merhaba Arkadaşlar,
 
@@ -27,7 +27,7 @@ gem install SQLite3
 
 Eğer yükleme işlemi başarılı olduysa komut satırından SQLite3 yazarak veritabanı ortamına geçebilir ve aşağıdaki ekran görüntüsünde olduğu gibi bazı temel işlemleri yapabiliriz.
 
-![image.axd](images/image.axd)
+![sqlite1.gif](images/sqlite1.gif)
 
 Öncelikle komut satırında neler yaptığımıza kısaca bakalım.
 
@@ -66,6 +66,6 @@ Kod dosyamızı UsingSQLite.rb ismiyle kayıt edebiliriz.
 
 Kod parçasında bir hata kontrol mekanizmamızda bulunuyor. ensure bloğu içerisinde hata alsak da almasak da çalıştıracağımız kod parçaları mevcut. Çok doğal olarak burada da veritabanı bağlantısını açık bırakmamak gerekiyor. Hepsi bu kadar basit. İşte çalışma zamanı çıktıları.
 
-![image.axd](images/image.axd)
+![sqlite2.gif](images/sqlite2.gif)
 
 Eklediğimiz tüm ürünler Product tablosuna yazılmıştır. Görüldüğü üzere Ruby tarafında SQLite kullanımı oldukça basit. Elbette işleri daha da ileri götürmelisiniz. Söz gelimi Ruby tarafında popüler olan Sinatra isimli Web Framework'ü kullanarak AdventureWorks üzerinde yürütülebilecek temel CRUD (Create Read Update Delete) operasyonlarını basit bir REST servis üzerinden sunmayı deneyebilirsiniz. Antrenman yapmaya devam. Böylece geldik bir yazımızın daha sonuna. Bir başka kod parçasında görüşünceye dek hepinize mutlu günler dilerim.

@@ -1,4 +1,4 @@
----
+﻿---
 title: "GoLang - Web Programlamaya Giriş"
 pubDate: 2017-05-27 19:03:00
 categories:
@@ -15,7 +15,7 @@ tags:
 ---
 
 # GoLang - Web Programlamaya Giriş
-![image.axd](images/image.axd)
+![goweb_3.gif](images/goweb_3.gif)
 
 Merhaba Arkadaşlar,
 
@@ -178,12 +178,12 @@ func loadPlayers() []Player {
 
 Dosyanın genel yapısına baktığımızda Player tipinden bir struct içerdiğini, main dışında loadPlayers ve getPlayers isimli iki fonksiyona daha sahip olduğunu görüyoruz. Bunun dışında html/template, log ve net/http paketlerinin kullanıldığını görüyoruz. localhost üzerinden 8045 nolu adrese gelecek varsayılan talepler doğrudan pages klasörüne yönlendirilmekte. Bu yönlendirmeyi main fonksiyonunun ilk satırındaki HandlFunc ile belirtiyoruz. Genelde tüm web sunucuları varsayılan sayfaları bilirler. Index.html aranan ilk sayfalardan birisidir. Haliyle index.html göreve hazır olacağından bu kök adres çağrısının sonucu aşağıdaki ekran görüntüsündeki gibi bir olacaktır.
 
-![image.axd](images/image.axd)
+![goweb_1.gif](images/goweb_1.gif)
 
 Famous Hearthstone Players başlıklı linke tıklandığında ise main fonksiyonundaki http.HandleFunc bildirimlerinden ikincisi devreye girer. Nitekim bağlantı /players şeklinde bir çağrı yapmaktadır. Bu adrese gelecek olan talepler getPlayers isimli fonksiyona yönlendirilmektedir. Bu fonksiyon iki kritik parametre alır. İstemciye gönderilecek cevabın yazılmasında kullanılacak olan ResponseWriter ve gelen talebe ait bilgiler içeren Request (Örnekte Request nesnesi kullanılmamıştır ancak [şu adresteki yazıdan](https://www.buraksenyurt.com/post/go-ile-basit-http-web-server-yapimi) kendisi hakkında ek bilgi edinebilirsiniz) getPlayers fonksiyonunda önce terminale log basılarak işlemlere başlanır. Arından Player isimli struct tipinden nesne örnekleri barındıran slice içeriğini elde edeceğimiz loadPlayers fonksiyonu tetiklenir. İşte bu slice içerisindeki Player nesne örnekleri, players.html sayfasındaki ilgili konumlara basılacaktır. Ama nasıl?
 
 Önce template tipinin ParseFiles fonksiyonu ile pages klasöründeki players.html şablonu yakalanır. ParseFiles pek çok Go fonksiyonu gibi iki değer döndürür. İlki kullanacağımız Template, ikincisi de Error tipidir. Eğer bir hata yoksa t isimli Template tipi üzerinden Execute fonksiyonu çalıştırılır. Exceute fonksiyonu ResponseWriter örneğini ve players içeriğini alıp players.html üzerinde gerekli işlemleri gerçekleştirir. Aslında players.html sayfası belleğe alınıp, {{ }} konumları players dizisi içeriği ile beslenip gerekli HTML çıktısının üretilmesi ve bu içeriğin ilgili ResponseWriter'ın sahiplendiği stream üzerinden ağa yazdırılması söz konusudur diyebiliriz. Sonuç aşağıdaki ekran görüntüsündeki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![goweb_2.gif](images/goweb_2.gif)
 
 Ta ta ta taaa...Pek çok deneyimli ya da amatör web tasarımcısı için berbat dizaynlar olsa da benim için önemli bir adım diyebilirim. Bu basit örnekte hem statik hem de dinamik web sayfalarını nasıl kullanabileceğimizi incelemeye çalıştık. Statik HTML içeriklerinde iyi bir CSS bilgisi basit bir tasarım çok çok işe yarayabilir. Bunun dışında dinamik olarak bir şeyler sunacak web sayfalarında Template kullanarak sunucu tarafında üretilen verilerin HTML içerisine basılması da mümkündür. Yani arayüz tarafı ile Go kodları etkileşime geçebilir. Go ile Web Programlama oldukça sade ve basit gibi görünüyor. Sevgili Murat Özalp'ın Go Programlama kitabı bu konuda bana büyük vizyon katıyor diyebilirim. Öğrendikçe bilgilerimin pekişmesi için de yazmaya devam edeceğim. Siz de örneği biraz daha geliştirmeye çalışabilirsiniz. Örneğin kullanıcıdan girdi alabileceğiniz bir web sayfası söz konusu olsa girilen içerikleri sunucuya post ettiğinizde bunları Go kodunda yakalayıp nasıl işleyebilirsiniz? Araştırın. Böylece geldik bir makalemizin daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

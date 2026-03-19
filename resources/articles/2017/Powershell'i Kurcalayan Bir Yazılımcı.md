@@ -1,4 +1,4 @@
----
+﻿---
 title: "Powershell'i Kurcalayan Bir Yazılımcı"
 pubDate: 2017-06-14 09:27:00
 categories:
@@ -10,7 +10,7 @@ tags:
 ---
 
 # Powershell'i Kurcalayan Bir Yazılımcı
-![image.axd](images/image.axd)
+![powershell_1.gif](images/powershell_1.gif)
 
 Merhaba Arkadaşlar,
 
@@ -28,7 +28,7 @@ Get-Service
 
 Komutun çıktısı aşağıdaki ekran görüntüsündeki gibi olmuştu.
 
-![image.axd](images/image.axd)
+![Powershell_2.gif](images/Powershell_2.gif)
 
 Makinemde yüklü olan tüm servislerin bilgisini görebiliyordum. Adları (Name), kısa açıklamaları (Display Name) ve o anki durumları (Status). Liste gözüme kalabalık görününce acaba bir sorgu atabilir miyim diye kurcalamaya başladım. Belki de adı C harfi ile başlayan servislerin listesini de çekebilirdim. Araştırınca get-service fonksiyonunu aşağıdaki gibi kullanabileceğimi öğrendim.
 
@@ -36,7 +36,7 @@ Makinemde yüklü olan tüm servislerin bilgisini görebiliyordum. Adları (Name
 Get-Service -name C*
 ```
 
-![image.axd](images/image.axd)
+![Powershell_3.gif](images/Powershell_3.gif)
 
 Artık elimde adının ilk harfi C olan servislerin bir listesi vardı. Asteriks kullanımı söz konusu olduğuna göre farklı benzerlikleri de sorgulayabilirdik. Örneğin içinde.NET geçen servisleri bulmak mümkündü. Ne var ki, durum bilgisine göre servisleri bir türlü sorgulayamıyordum. Aynen name parametresi gibi status parametresi üzerinden de sorgu atabileceğimi düşünmüştüm.
 
@@ -46,7 +46,7 @@ get-service -status "running"
 
 Ancak çalışma sonrası aşağıdaki hata mesajını aldım. status parametresi desteklenmiyordu.
 
-![image.axd](images/image.axd)
+![Powershell_4.gif](images/Powershell_4.gif)
 
 Yardım Lazımdı
 
@@ -110,7 +110,7 @@ Gerçekten de get-service komutunun -status gibi bir parametresi mevcut değildi
 Get-Service * | Where-Object {$_.DisplayName -like "*Service*" -and $_.Status -eq "Stopped"}
 ```
 
-![image.axd](images/image.axd)
+![Powershell_5.gif](images/Powershell_5.gif)
 
 Bu komutu anlamak oldukça kolaydı. * ile Get-Service'in döndüreceği tüm servis listesi üzerinde işlem yapacağımızı belirmiştik. | arkasından bir where koşulu geliyordu. Süslü parantezler belli ki bu komutun alacağı kod bloğunu taşıyacaktı. $_. ile başlayan değişkenler ile DisplayName ve az önce alamadığımız Status alanlarına ulaşabiliyorduk. -like benzer, -and mantıksal ve, -eq ise eşitlik anlamında kullanılan komut parametreleriydi (Bu durumda büyüktür veya küçüktürü hatta veyayı nasıl ifade edebileceğimizi de çözmüş oluyoruz)
 
@@ -122,7 +122,7 @@ Internet kaynaklarını tararken dilin pek çok diğer dilde olan temel özellik
 Get-Process| ForEach-Object{[string]::Format("{0} - {1}",$_.id,$_.name)}
 ```
 
-![image.axd](images/image.axd)
+![Powershell_6.gif](images/Powershell_6.gif)
 
 Burada dikkat çekici noktalardan birisi de.Net kütüphanesinden bir fonksiyona erişilmesiydi. String sınıfının Format metodunu kullandığımız gözünüzden kaçmamış olmalı. [Sınıf Adı]::[Metod Adı] notasyonu ile static tanımlanmış üyelere erişmek mümkün. ForEach-Object komutu ise Get-Process'in ürettiği her bir process nesnesini dolaşmakta. Döngü içerisinde o anki Process'in id ve name bilgilerine nasıl eriştiğimize dikkat edelim.
 
@@ -134,7 +134,7 @@ Yaptığımız denemelerin sonuçları hep komut satırına basıldı. Anlık ol
 Get-Service * | Where-Object {$_.DisplayName -like "*Service*" -and $_.Status -eq "Stopped"} | out-file "ServiceReport.txt"
 ```
 
-![image.axd](images/image.axd)
+![Powershell_7.gif](images/Powershell_7.gif)
 
 Bunları Fonksiyon Haline Getiremez miydim?
 
@@ -155,7 +155,7 @@ Service-Report "C*" "Stopped" "Reports.txt"
 
 Reports.txt dosyasının içinde artık adı C harfi ile başlayan durdurulmuş servislerin bir çıktısı yer alıyor.
 
-![image.axd](images/image.axd)
+![Powershell_8.gif](images/Powershell_8.gif)
 
 ISE Diye Sevimli Bir IDE
 
@@ -176,11 +176,11 @@ function Process-Report($name,$cpuRate,$fileName="Process.txt")
 Artık fonksiyonellikleri bir betik dosyası içerisine konumlandırıp komut satırından bu şekilde çalıştırabilirdim. ISE yetenekli bir editör. Betiği yazabildiğimiz arayüzü dışında yine kendi üstünde yer alan komut satırı ile çalışmaların anında denenmesi mümkün. Üstelik çağırılan komutların geriye doğru log'unun tutulduğu bir penceresi de mevcut.
 
 > Bu arada bir ps1 dosyasının yüklenmesi sırasında "...cannot be loaded because the execution of scripts is disabled on this system" şeklinde bir hata alınıyorsa ExecutionPolicy değerinin RemoteSigned olarak değişitirilmesi çözüm olabilir.
-> ![image.axd](images/image.axd)
+> ![Powershell_9.gif](images/Powershell_9.gif)
 
 ISE editöründe tools.sp1 dosyası içerisindeki fonksiyonların kullanılabilmesi için öncelikde dosyanın sistem çalışma zamanına yüklenmesi gerekiyor. Bir program çalıştırıyor gibi F5 ile veya Debug menüsünden Run/Continue komutları sayesinde bu işlem gerçekleştirilebilir. Dosya başarılı bir şekilde yüklendikten sonra içerisindeki fonksiyonlar kullanılabilir hale gelir. Söz gelimi tools.ps1'i yükledikten sonra sistemde o an açık olan chrome sekmelerinden CPU tüketimi belli bir değerin üstünde olanları bulmak için aşağıdaki ekran görüntüsüne olduğu gibi ilerlememiz yeterlidir.
 
-![image.axd](images/image.axd)
+![Powershell_10.gif](images/Powershell_10.gif)
 
 Kimbilir Powershell betikleri ile daha neler neler yapılabilir? Mesela çok fazla bellek tüketen process'lerin belirli kriterlere uyanlarını öldürebilecek, durmuş bir servisi tekrardan ayağa kaldırabilecek betikler yazabilir, ağ üzerinden ulaşılabilecek uzak sunucular hakkında anlık durum bilgilerine sahibi olabiliriz. Sistem üzerinden gerçekleştirilecek tüm bu operasyonlarda sadece bu alana özel yazılmış bir betik dilin programlama özelliklerine sahip olmak da işin cabası.
 

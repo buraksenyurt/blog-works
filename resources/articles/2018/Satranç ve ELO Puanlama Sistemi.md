@@ -1,4 +1,4 @@
----
+﻿---
 title: "Satranç ve ELO Puanlama Sistemi"
 pubDate: 2018-10-01 09:08:00
 categories:
@@ -8,7 +8,7 @@ tags:
 ---
 
 # Satranç ve ELO Puanlama Sistemi
-![image.axd](images/image.axd)
+![arpardeo.gif](images/arpardeo.gif)
 
 Merhaba Arkadaşlar,
 
@@ -24,7 +24,7 @@ Hemen denklemin nasıl çalıştığını öğrenmeye başladım. Problem birbir
 
 Konuyu bir örnek üzerinden incelemek en güzeli değil mi? Dünya sıralamasının birinci ve ikinci sırasındaki yarışmacıların aralarında yapacakları maçın sonuçlarını irdelemeye çalışalım. Norveçli satranç ustası Magnus Carlsen’in yazıyı yazdığım tarih itibariyle 2839 puanı vardı. Amerikalı Fabiano Caruana’nın puanı ise 2827. Bu iki kişinin güncel puanlarına göre ELO rating değerlerini aşağıdaki gibi hesaplayabiliriz (Bence kalemi kağıdı çıkartın, sizde benimle birlikte hesaplamaya çalışın. Belki uygularken bir yerlerde hata yapmışımdır)
 
-![image.axd](images/image.axd)
+![elorating_0.gif](images/elorating_0.gif)
 
 Magnus’un Fabiano ile yapacağı maçı kazanma olasılığı %52. Fabiano içinse bu oran %48. Çok doğal olarak yüzdesel olarak ifade edilen kazanma olasılıklarının toplamının 1e tamamlanması gerekiyor. Formülde her iki oyuncunun güncel puanlarına başvuruluyor. Bunlar formülün değişken parçaları. Ancak formülün kalan kısmındaki tüm sayılar sabit değerler. Bu hesaplama ile kazanma ihtimallerini çıkartmış ve ilk aşamayı tamamlamış olduk.
 
@@ -34,16 +34,16 @@ Sizce müsabakayı Magnus kazanırsa Dünya sıralamasındaki güncel puanı ne 
 
 Satranç federasyonunun bu 4 haneli puan hesabı için bir katsayı belirlediğini düşünelim. Bu sayı 24 olsun. Buna göre müsabakayı Magnus kazanırsa aşağıdaki gibi bir durum oluşur.
 
-![image.axd](images/image.axd)
+![elorating_2.gif](images/elorating_2.gif)
 
 İki satranç ustası arasındaki fark biraz daha açılıyor görüldüğü gibi. Aksine maçı Fabiano kazanırsa, birinci ve ikinci sıradakiler yer değiştirecek gibi görünüyor. Aşağıdaki gibi hesaplamayı devam ettirebiliriz.
 
-![image.axd](images/image.axd)
+![elorating_5.gif](images/elorating_5.gif)
 
 Formülasyondaki 24 değeri satranç federasyonu tarafından belirlenmiş bir katsayı. İyi bir hesaplama için bu katsayının 10 ile 32 aralığında olması öneriliyor. Maçı kazanma durumunda 1, kaybetme durumunda da 0 sayıları kullanılmakta (Beraberlik şu an için hesaba kattığımız bir kriter değil) Ayrıca yarışmacıların güncel puanları ve buna göre hesaplanmış kazanma olasılıkları da eşitliğin içerisinde yer alıyor.
 
 > İtiraf ediyorum işlemleri kolayca yapabilmek için hesap makinesi yerine node.js komut satırından yararlandım:)
-> ![image.axd](images/image.axd)
+> ![elorating_1.gif](images/elorating_1.gif)
 
 Magnus ve Fabiano ilk iki sırada yer alan oyuncular ve ELO rating değerleri birbirlerine oldukça yakın. Lakin puan farkının daha fazla olduğu bir durum söz konusu olursa maç sonucundan oyuncuların çok daha farklı etkileneceklerini söyleyebiliriz. Kazanma oranı çok yüksek olan bir oyuncunun puanında önemli bir artış olmayacak ama kazanma ihtimali düşük olan oyuncunun galip gelmesi halinde kendi puanındaki artış yüksek olacaktır.
 
@@ -53,11 +53,11 @@ Peki ya maçı Igors kazanırsa? Bu durumda Igors’un puanı 18 puan artarak 26
 
 Kullanılan eşitlikleri formülüze etmek istersek aşağıdaki denklemler ortaya çıkacaktır.
 
-![image.axd](images/image.axd)
+![elorating_4.gif](images/elorating_4.gif)
 
 Aslında ELO rating değerini hesaplarken yararlanılabileceğimiz bir eğri de bulunmaktadır. Kazanma olasılığı ve oyuncular arasındaki ELO puan farkını hesaba katan bu eğri aşağıdaki gibidir.
 
-![image.axd](images/image.axd)
+![elorating_3.gif](images/elorating_3.gif)
 
 Söz gelimi iki yarışmacının güncel ELO puanları arasındaki fark 300 olsun. Pozitif taraftan bakarsak puanı yüksek olan yarışmacının %85 kazanma olasılığına sahip olduğunu söyleyebiliriz. Buna göre rakibinin kazanma olasılığı da eksi değerin olduğu eğrideki kesişim noktasıdır. Yani %15.
 

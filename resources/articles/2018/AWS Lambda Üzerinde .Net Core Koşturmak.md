@@ -1,4 +1,4 @@
----
+﻿---
 title: "AWS Lambda Üzerinde .Net Core Koşturmak"
 pubDate: 2018-01-11 21:30:00
 categories:
@@ -30,7 +30,7 @@ tags:
 ---
 
 # AWS Lambda Üzerinde .Net Core Koşturmak
-![image.axd](images/image.axd)
+![awscore_11.gif](images/awscore_11.gif)
 
 Merhaba Arkadaşlar,
 
@@ -42,7 +42,7 @@ Günümüz bulut sistemleri göz önüne alındığında Microsoft Azure, Amazon
 
 Araştırmalarım şiddetini arttırınca gecenin bu saatlerinde internetten okuduğum bir yazıdaki şekli de aşağıdaki gibi renklendirmeye çalıştım. Şekil bir Web API uygulamasını AWS üzerine aldığımızda bilinen kullanımıyla yeni yaklaşım arasında nasıl bir fark oluştuğunu betimlemekte. Kullanıcı talepleri önce Amazon Web Service üzerindeki API Gateway'e geliyor. Talepler, Lambda üzerinden geçerek.Net Core'un çalışma zamanına inip oradan ilgili fonksiyonun işletilmesi, üretilen cevabın da geriye döndürülmesi işlemleri gerçekleşiyor. Özetle tanıdık olduğum senaryolardaki IIS ve NGinX gibi talebi karşılayan uygulamaların yerini AWS alıyor diyebiliriz.
 
-![image.axd](images/image.axd)
+![awscore_9.gif](images/awscore_9.gif)
 
 AWS Lambda uzun zamandır ilgimi çeken bir üründü. Nitekim çok geniş bir uygulama desteği bulunuyor. Node Js, Python, Go, Ruby ve tabii.Net Core (Tek üzücü olan şey konuya hazırlandığım 2017 Aralık ayı itibariyle AWS'nin.Net Core 1.0.4 SDK'sını desteklemesiydi) Önümüzdeki aylar için yapılacaklar listeme eklediğim ödevlerden birisi de.Net Core ile yazdığım bir uygulamayı Lambda üzerinden yayınlamaktı.
 
@@ -76,7 +76,7 @@ serverless --version
 serverless create --help
 ```
 
-![image.axd](images/image.axd)
+![awscore_1.gif](images/awscore_1.gif)
 
 Serverless çatısının başarılı bir şekilde yüklenmesinin ardından ben, hellolambda isimli bir klasör oluşturdum ve sonrasında içerisinde aşağıdaki komutu çalıştırarak Lambda dünyasına "Hello World" dedim.
 
@@ -84,7 +84,7 @@ Serverless çatısının başarılı bir şekilde yüklenmesinin ardından ben, 
 serverless create --template aws-csharp --name bssdemo
 ```
 
-![image.axd](images/image.axd)
+![awscore_2.gif](images/awscore_2.gif)
 
 Ekran görütüsünden de görüleceği üzere C# için bir şablon otomatik olarak oluşturuldu. Buradaki Handler.cs, serverless.yml gibi içerikler hiç bozulmadan AWS'deki hesabımız ile ilişkilendirilip kullanılabilirler. Handler sınıfı içerisinde Hello isimli bir metod yer almakta. Bu metod Lambda tarafındaki fonksiyon olarak da düşünülebilir. Kabaca API Gateway'e gelecek olan talep sonrası işletilecek fonksiyon olduğunu söyleyebiliriz. Peki "Hello" isimli fonksiyonu sistem nereden bilecek? İşte serverless.yml içerisindeki aşağıdaki kısım burada devreye giriyor.
 
@@ -112,7 +112,7 @@ export AWS_SECRET_ACCESS_KEY=Secret_key gelcek
 serverless deploy
 ```
 
-![image.axd](images/image.axd)
+![awscore_3.gif](images/awscore_3.gif)
 
 Sonrasında tekrardan build ve deploy işlemlerini gerçekleştirdim.
 
@@ -121,7 +121,7 @@ sh build.sh
 serverless deploy -v
 ```
 
-![image.axd](images/image.axd)
+![awscore_4.gif](images/awscore_4.gif)
 
 Bir yerlere varıyor gibiydim. Küçük bir deneme yaptım. serverless çatısının invoke fonksiyonunu kullanarak şablon ile birlikte gelen hello operasyonunu çağırmayı denedim. Aşağıdaki gibi.
 
@@ -129,7 +129,7 @@ Bir yerlere varıyor gibiydim. Küçük bir deneme yaptım. serverless çatısı
 serverless invoke -f hello -l
 ```
 
-![image.axd](images/image.axd)
+![awscore_5.gif](images/awscore_5.gif)
 
 Sanki uygulama Lambda üzerinden çalıştırılmış gibiydi. Bu tabii standart şablon uygulaması. Değiştirmekte yarar var. Öncelikle HTTP taleplerine cevap vermesi için Amazon.Lambda. APIGatewayeEvents paketinin çözüme dahil edilmesi gerekiyor. Aşağıdaki komut ile bu işlemi yapabiliriz.
 
@@ -214,16 +214,16 @@ sevice, provider, package ve functions. AWS özellikle bu kısımlara bakacak. p
 
 Kodun düzenlenmesini tamamladıktan sonra tekrardan build ve deploy işlemlerini gerçekleştirmek lazım. Aslında n tane fonksiyona yeni bir fonksiyon eklediysek sadece bu fonksiyonu deploy edebiliriz de (Nasıl olabilir bir araştırın bakalım)
 
-![image.axd](images/image.axd)
+![awscore_6.gif](images/awscore_6.gif)
 
 Artık API Gateway'in tetikleyeceği iki Lambda fonksiyonu söz konusu. Doğruyu söylemek gerekirse Postman aracı ile denemeleri yaptığımda gördüğüm sonuçlar beni mutlu etti.
 
 İlk önce greetings/hi adresine HTTP Get talebi gönderdim.
 
-![image.axd](images/image.axd)
+![awscore_7.gif](images/awscore_7.gif)
 
 Ardından utility/weather için bir talep daha.
 
-![image.axd](images/image.axd)
+![awscore_8.gif](images/awscore_8.gif)
 
 Sonuçlar tatmin ediciydi. Daha önceden yazdığımız bir çok Web API'yi buraya entegre edebiliriz diye düşünüyorum. Pek tabii fonksiyonlar tamamen deneme amaçlı geliştirilmiş durumdalar. Siz içeriklerini istediğiniz gibi genişletebilirsiniz. AWS dünyası oldukça kapsamlı. Henüz MSDN rahatlığını bulabilmiş değilim dökümantasyonlarında. Bazen kayboluyorum ama ilgi çekici olduğunu da ifade edebilirim. Kavramlar yeni yeni oturmaya başladılar. [Codefiction](http://www.codefiction.tech/) gibi web sitenizi AWS üzerine alabilirisiniz ya da şirketinizin elektronik ticaret alt yapısına ait fonksiyonellikleri burada barındırabilirsiniz. Bunları bir düşünün:) Böylece geldik bir makalemizin daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

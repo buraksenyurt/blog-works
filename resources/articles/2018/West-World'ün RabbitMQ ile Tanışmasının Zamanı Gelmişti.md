@@ -1,4 +1,4 @@
----
+﻿---
 title: "West-World'ün RabbitMQ ile Tanışmasının Zamanı Gelmişti"
 pubDate: 2018-09-09 21:49:00
 categories:
@@ -21,7 +21,7 @@ tags:
 ---
 
 # West-World'ün RabbitMQ ile Tanışmasının Zamanı Gelmişti
-![image.axd](images/image.axd)
+![rabonww_g.jpg](images/rabonww_g.jpg)
 
 Merhaba Arkadaşlar,
 
@@ -33,31 +33,31 @@ Anladığım Kadarıyla
 
 İşin teknik boyutuna girerek konuyu biraz daha açmaya çalışalım. Belli amaçlar için üretilen mesajlar olduğunu ve bu mesajların alıcılarının bulunduğunu düşünelim. Günümüzde kullandığımız herhangi bir sistemi düşünebiliriz. Özellikle mikroservislerin olduğu sistemler göz önüne alınabilir. Onlarca mikroservisin mesaj ürettiğini ve bu mesajların alıcılarının olduğunu düşünelim. Birisinin bu mesaj trafiğini yönetebilmesi gerekiyor. Hatta bir kuyruk sistemi ile ele alınması hiç fena olmaz. İşte bu tip ihtiyaçlarda genellikle Messaging Queue sistemlerinden yararlanılır ki RabbitMQ, Avanced Message Queueing Protocol'ünü baz alan gelişmiş versiyonlardan birisidir. Anladığım haliyle RabbitMQ aşağıdaki gibi bir mesajlaşma sistemini baz alır.
 
-![image.axd](images/image.axd)
+![rabonww_a.gif](images/rabonww_a.gif)
 
 Producer rolünü üstlenen taraf kuyruğa (belki de kuyruklara) atılmak üzere bir mesaj göderir. Mesaj, Exchange arabirimi tarafından karşılanır ve çeşitli kurallara göre bir veya daha fazla kuyruğa yönlendirmede bulunur. Exchange modellerinin herbirisi için ortak olan özellikler vardır. Name, Durability, Auto-Delete ve Arguments. Exchange'ler genellikle adlandırılırlar. Durability özelliğinin değerine göre mesajların disk üzerinde kalıcı olarak tutulup tutulmayacağı belirlenir. Varsayılan olarak bellek kullanılır. Auto-Delete ile işi biten mesajın kuyruktan otomatik olarak düşürülüp düşülmeyeceği ayarlanır. Arguments kısmında ise mesaja ait ek niteliklere yer verilir. Aslında Exchange türlerini aşağıdaki grafiklerle daha iyi anladığımı itiraf edebilirim (Teşekkürler Pluralsight)
 
 Direct Exchanges. Genelde tek bir kuyruk kullanımı söz konusu ile ele alınıyor.
 
-![image.axd](images/image.axd)
+![rabonww_b.gif](images/rabonww_b.gif)
 
 Fanout Exchanges modelinde, mesaj birden fazla kuyruğa kopyalanmakta. Broadcasting sistemlerinde anlamlı. Örneğin güncel oyun sonuçlarının tüm oyunculara bildirilmesi veya hava durumunun haber kanallarına yayınlanması.
 
-![image.axd](images/image.axd)
+![rabonww_c.gif](images/rabonww_c.gif)
 
 Topic Exchanges'de mesajlar konularına göre farklı kuyruklara dağılabilmekte. Buna göre tüketiciler ilgili oldukları konuya ait kuyruğa düşen mesajları okuyorlar. Bir nevi sınıflandırma yapılığını ifade edebiliriz.
 
-![image.axd](images/image.axd)
+![rabonww_d.gif](images/rabonww_d.gif)
 
 Header Exchanges modelinde mesaj ile ilgili birden fazla niteliğin kullanılması ve buna göre uygun kuyruğa atılması söz konusu Burada önceki modellerde kullanılan Routing-Key ele alınmamakta. Bunun yerine mesajın başlığına eklenen nitelikler öne çıkmakta. Routing-Key'lerin sadece string olabileceği düşünülürse bu model kullanılarak farklı türlere göre sınıflandırma yapılmasına da mümkün hale geliyor.
 
-![image.axd](images/image.axd)
+![rabonww_f.gif](images/rabonww_f.gif)
 
 Kuyruğunda kendine göre bi takım özellikleri vardır. Name, Durable, Exclusive ve Auto-Delete. İsmi dışında kuyruğun hafızada mı yoksa kalıcı olarak disk üzerinde mi tutulacağını belirtebiliriz. Nitekim kuyruğun makinenin restart olması halinde kaybolmasını istemiyorsak Durable özelliğine true değerini atamamız gerekir. Kuyruk için açılan bağlantının durumuna göre silinip silinmeyeceği de Exclusive özelliğiyle belirlenir. Consumer'un abonelikten çıkması halinde de kuyruğun silinmesi istenebilir. Auto-Delete bu durumun ayarlanması için kullanılır. Malum kuyruğun da sonuç itibariyle bir maliyeti var. O nedenle kalıcı olması veya işi bitince silinmesi gibi kriterler büyük ölçeklere çıktığımızda ince performans ayarlarını gerektirebilir.
 
 Consumer rolünü üstlenen taraf tahmin edileceği üzere kuyruktan ilgilendiği mesajı okur. Birden fazla mesaj tüketicisi olabilir. Hepsi aynı kuyruktan ya da birbirlerinden tamamen farklı konulardaki kuyruklardan beslenebilirler. Bu yoğurt yiğiş biraz da seçilen Exchanges stratejisine göre değişiklik gösterir. Consumer ile kuyruk arasında bir haberleşme söz konusudur. Consumer çoğu zaman bir mesajı aldıktan sonra bunu anladığına dair (acknowledgment) kuyruğa bildirimde bulunur ya da timeout gibi vakalar oluştuğunda mesajı geri çevirmek (Discard) veya yeniden kuyruğa aldırmak (Re-Queue) için dönüşler yapar. Kabaca bu durumu aşağıdaki gibi ifade resimleyebiliriz.
 
-![image.axd](images/image.axd)
+![rabonww_g.gif](images/rabonww_g.gif)
 
 Benim bu Cumartesi gecesindeki tek amacım ise RabbitMQ'yu West-World üzerinde konuşlandırmak ve.Net Core ile geliştirilmiş örneklerden yararlanarak basit mesaj alış verişi için kullanmak. Sevgili dostum Bora Kaşmer konuyu uzun zaman önce [şuradaki yazısında](http://www.borakasmer.com/rabbitmq-nedir) zaten ele almıştı. Ben hem bu yazıdan hem de internetteki diğer kaynaklardan yararlanarak RabbitMQ'yu Linux platformu üzerinde deneyimlemek istedim. Haydi gelin West-World'de bunun için neler yaptım sizlere kısaca anlatayım.
 
@@ -79,7 +79,7 @@ sudo dpkg -i esl-erlang_20.1-1\~ubuntu\~xenial_amd64.deb
 
 Sonuçlar iç açıcıydı:P
 
-![image.axd](images/image.axd)
+![rabonww_0.gif](images/rabonww_0.gif)
 
 Erlang dilinin sisteme yüklendiğini teyit etmek için komut satırından erl yazıp çalıştırmam gerektiğini öğrendim. Bu şu an için çok yabancı olduğum bir fonksiyonel programlama dili.
 
@@ -87,7 +87,7 @@ Erlang dilinin sisteme yüklendiğini teyit etmek için komut satırından erl y
 erl
 ```
 
-![image.axd](images/image.axd)
+![rabonww_1.gif](images/rabonww_1.gif)
 
 Artık RabbitMQ kurulumuna başlayabilirdim. Linux terminalinde komutlarımı arka arkaya yazmaya başladım.
 
@@ -134,11 +134,11 @@ sudo rabbitmqctl set_user_tags Jerry administrator
 sudo rabbitmqctl set_permissions -p / Jerry ".*" ".*" ".*"
 ```
 
-![image.axd](images/image.axd)
+![rabonww_2.gif](images/rabonww_2.gif)
 
 Artık tarayıcıdan http://localhost:15672 adresine gidip az önce oluşturduğum Jerry kullanıcısı ile giriş yapabilirim. İlk kez karşılaştığım bir arabirim. Ama RabbitMQ'nun artık West-World üzerinde olduğundan eminim.
 
-![image.axd](images/image.axd)
+![rabonww_3.gif](images/rabonww_3.gif)
 
 Producer Tarafını Yazmak
 
@@ -205,11 +205,11 @@ namespace TurboNecati
 
 Öncelikle localhost adresini baz alan bir ConnectionFactory nesnesi örnekleniyor. Bundan faydalanarak bir IConnection arayüzü tarafından taşınabilecek bir bağlantı üretiliyor. connection nesnesinden yararlanılaraktan da asıl mesaj gönderme işlerini üstlenecek olan IModel arayüzünün taşıyabileceği bir değişken oluşturuluyor. QueueDeclare metodu ile command isimli bir kuyruk tanımlanmakta (Tabii metod parametrelerinin değerlerinin çeşitli anlamları var. Örnekğe göre mesajlar bellekte saklanacak ve sadece bu bağlantı için geçerli olacak) Eğer RabbitMQ üzerinde bu kuyruk yoksa oluşturulacak. Sonrasında gönderilecek mesajların herbirisi için bir byte dönüştürme işi uygulanıyor. Dolayısıyla çeşitli tipte nesneleri kuyruğa atabiliriz. Mesajların yollanması için BasicPublish metodu kullanılıyor. Temel görevi body ile gelen içeriği ilgili kuyruğa basmak. Programı çalıştırdıktan sonra elde ettiğim sonuçlar oldukça hoş. RabbitMQ web arayüzüne gittiğimde kuyruğa gelmiş ve okunmak için hazır bekleyen toplam 4 mesaj olduğunu gördüm.
 
-![image.axd](images/image.axd)
+![robonww_4.gif](images/robonww_4.gif)
 
 Hatta Queues kısmına girdiğimde commands isimli kuyruğun oluşturulduğunu da gördüm.
 
-![image.axd](images/image.axd)
+![robonww_5.gif](images/robonww_5.gif)
 
 TurboNecati sevgili yeğeni AfacanMurat için anlamlı yaz tatili mesajlarını bırakmıştı bile. Peki AfacanMurat bu mesajları nasıl okuyacak?
 
@@ -269,11 +269,11 @@ class Program
 
 Aslında mesaj gönderen program kodlarına oldukça benzer bir kurgu söz konusu. İlk önce bir ConnectionFactory, ardından IConnection ve oradan da kanal modeli oluşturuluyor. AfacanMurat'da commands isimli kuyruğu dinleyecek. Mesaj okuma işlemi Received olay metodu ile sağlanmakta. BasicDeliverEventArgs tipinden olan e parametresinden yararlanılarak kuyruktaki mesaj alınıp string formata dönüştürülüyor. Örnekte 4 adet mesaj söz konusuydu. RabbitMQ'nun FIFO ilkesine göre de ilk giren mesaj ilk olarak elde edilecektir. Kodu çalıştırdım ve aşağıdaki ekran görüntüsünü elde ettim.
 
-![image.axd](images/image.axd)
+![rabonww_6.gif](images/rabonww_6.gif)
 
 Mesajlar AfacanMurat tarafından okunduğu için kuyruktan silinmişlerdi. RabbitMQ web arayüzünden bunu açıkça görebiliyordum.
 
-![image.axd](images/image.axd)
+![rabonww_7.gif](images/rabonww_7.gif)
 
 Bir şeyleri deneyimleyebildiğim güzel bir Cumartesi gecesi daha sonlanmak üzere. Sevgili CoderBora'nın güzel yazısı West-World üzerinde RabbitMQ'yu deneyimlemek için çok destekleyici oldu. Sonuçta kuyruk modelli bir mesajlaşma sistemini kurup üzerine bilgi yazıp okuyabildim. RabbitMQ bu kadarla sınırlı kalabilecek bir konu değil elbette. Ben kendim için kendi deneyimimi yazıp aktardım sadece. Gerisi sizin elinizde. Okuyun, araştırın, deneyin, ilerleyin. Örneğin ben Work Queues konusunu incelemeyi düşünüyorum. Web uygulamaları düşünüldüğünde bu kritiktir. RabbitMQ'da bu yapı nasıl uygulanır, öğrenir öğrenmez yazıya dökmek istiyorum. Böylece geldik bir maceranın daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.
 

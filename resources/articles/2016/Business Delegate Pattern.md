@@ -1,4 +1,4 @@
----
+﻿---
 title: "Business Delegate Pattern"
 pubDate: 2016-05-02 06:00:00
 categories:
@@ -12,7 +12,7 @@ tags:
 ---
 
 # Business Delegate Pattern
-![image.axd](images/image.axd)
+![Bdpattern_4.gif](images/Bdpattern_4.gif)
 
 Merhaba Arkadaşlar,
 
@@ -26,7 +26,7 @@ Business Delegate kalıbı temel olarak sunum katmanı (presentation layer) ile 
 
 Teorik olarak aşağıdaki gibi bir çizelge desenin kullanımı ile ilişkili bir ipucu verebilir. Aslında Adapter ve Bridge tasarım kalıpları da tercih edilir. Kullanım alanı olarak.Net tarafındaki asenkron tabanlı (async-based) programlama ihtiyaçlarında kullanılabilir (Örneğin bir servis çağrısının asenkron olarak gerçekleştirilmesi ve işlemin tamamlanmasını takiben geriye dönen Task'ın işaret ettiği fonksiyonun çağırılması)
 
-![image.axd](images/image.axd)
+![Bdpattern_3.gif](images/Bdpattern_3.gif)
 
 Temel olarak desende yer alan aktörler şöyledir.
 
@@ -37,7 +37,7 @@ Temel olarak desende yer alan aktörler şöyledir.
 
 Şimdi basit bir örnek ile bu deseni incelemeye çalışalım. Aşağıdaki sınıf çizelgesinde yer alan tiplerin yer aldığı Console uygulamasını geliştirerek ilerleyebiliriz.
 
-![image.axd](images/image.axd)
+![Bdpattern_1.gif](images/Bdpattern_1.gif)
 
 ```csharp
 using System;
@@ -135,7 +135,7 @@ Caller sınıfı talepte bulunan arayüz nesnes kullanıcısı olarak düşünü
 
 Çalışan program kodunda Caller nesne örneği üzerinden Do metoduna gerçekleştirilen iki farklı çağrı söz konusudur. Kod temsilcinin üretim biçimine göre uygun olan iş birimi hizmetine yönlenir. Kodun çalışma zamanı çıktısı aşağıdaki ekran görüntüsündeki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![Bdpattern_2.gif](images/Bdpattern_2.gif)
 
 Pek tabii gerçek hayat senaryolarında asıl iş birimi metodlarının string parametre yerine bir içerik tipi ile (örneğin Context isimli bir sınıf) çalışması ve geriye bir referans döndürmesi muhtemeldir. Hatta bu tipler genellikle sunum ve iş katmanı arasında hareket eden transfer nesneleri de olabilir.
 

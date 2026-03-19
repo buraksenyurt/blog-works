@@ -1,4 +1,4 @@
----
+﻿---
 title: "Ruby Kod Parçacıkları 24 - Binary Tree ve Morse Kodları"
 pubDate: 2016-11-06 21:30:00
 categories:
@@ -8,7 +8,7 @@ tags:
 ---
 
 # Ruby Kod Parçacıkları 24 - Binary Tree ve Morse Kodları
-![image.axd](images/image.axd)
+![morse_2.gif](images/morse_2.gif)
 
 Merhaba Arkadaşlar,
 
@@ -18,7 +18,7 @@ Benzer durumu Ruby ile ilgili çalışmalarıma devam ederken de yaşadım. Geç
 
 Binary Tree'ler aslında bir veri yapısı (Data Structure) olarak ifade ediliyor. Bu veri yapısı birbirine bağlı boğumlardan (Node) oluşmakta. Her boğum iki alt boğum içermekte ve sağ sol olmak üzere en fazla iki alt dala ayrılmakta. Solda veya sağda kalan boğumlar kendi aralarında benzer ilişkilere sahip olacak şekilde bir dizilim söz konusu. Ne demek istediğimi daha iyi anlatabilmek için Morse kodlarının ağaç yapısında nasıl ifade edildiğine bir bakalım. Bu amaçla aşağıdaki grafiği göz önüne alabiliriz.
 
-![image.axd](images/image.axd)
+![morse_1.gif](images/morse_1.gif)
 
 Root'tan başlayarak aşağıya doğru dallanan ve morse alfabesindeki her bir değerin boğumlar içerisinde ele alındığı bir ağaç yapısı söz konusu. Sol dalda yer alan boğumlar arasındaki ilişkiler nokta (.), sağ boğumlar arasındaki ilişkiler ise tire (-) sembolü ile ifade ediliyor. Yani kısa ve uzun sinyal olarak ifade edebiliriz. Buna göre bir harfin veya sayının Morse kodunu bulmak için ağaç üzerinde o değere doğru ilerlememiz yeterli. Söz gelimi 0'ın Morse kodu beş uzun sinyalden oluşuyor (-----) Yani T->M->O->Boşluk->0 sırasını izlersek kodu bulabiliriz. A harfini göz önüne aldığımızda bir kısa bir uzun sinyal söz konusu (.-) Buna göre root->E->A şeklinde ilerlememiz yeterli.
 
@@ -75,7 +75,7 @@ Node sınıfı bir boğumun kendisi ve bu boğumun sağ ile sol boğumlarını t
 root.each{|n|puts n.to_s}
 ```
 
-![image.axd](images/image.axd)
+![morse_4.gif](images/morse_4.gif)
 
 Ekran görüntüsünde görüldüğü gibi tüm boğumları elde ettik. Bu arada bu boğumları nasıl oluşturduk diye düşünebilirsiniz. Tekniğinden tam olarak emin olamadığım biraz da amelece diyebileceğimiz bir kodlama yapmak durumunda kaldım. Morse kodlarına ait ikili ağaç yapısını Node sınıfına ait bir nesne örneği üzerinden tek tek ekleyerek oluşturmaya çalıştım. Kodun uzunluğu için şimdiden beni mazur görün. Eminim çok daha şık bir yol vardır. Pişmanım ama elden ne gelir.
 
@@ -169,7 +169,7 @@ Buna göre herhangibir boğum ve sonrasında gelenleri each metodu üzerinden ç
 G.each{|n|puts n.to_s}
 ```
 
-![image.axd](images/image.axd)
+![morse_5.gif](images/morse_5.gif)
 
 Translate fonksiyonu ise bir kelimenin harflerini tek tek ele alıp find metodu üzerinden hareket ederek karşılık gelen sinyalleri bulmak için yazılmıştır. Aşağıdaki kod parçasında bir kaç örnek kullanımını bulabilirsiniz.
 
@@ -178,6 +178,6 @@ signs=["WeAreSinkingStop","soss","HelpUSStop"]
 signs.each{|w| puts "#{w} = #{root.translate(w)}"}
 ```
 
-![image.axd](images/image.axd)
+![morse_6.gif](images/morse_6.gif)
 
 Görüldüğü gibi yazılan metinlerin Morse kodlarına göre karşılıklarını elde ettik. Aslında bir harfin karşılığı olan morse kodunun key-value çiftleri şeklinde tutulması da mümkün. Bizim buradaki amacımız ikili ağaç veri yapısında bu serinin nasıl oluşturulabileceğini görmekti. Diğer yandan kodda dikkat çekici başka noktalar da bulunmakta. Enumerable modülünün dahil edilmesi, each metoduna block geçirilmesi ve find operasyonunun ezilmesi bunlar arasında sayılabilir. Bir antrenman kodu olarak değerlendirebilirsiniz. Tabii kodda bir çok sıkıntı var. Söz gelimi ikili ağaç resminde görünün sırada elde edemiyoruz. Buna bir bakmak lazım. Böylece geldik bir Ruby maceramızın daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

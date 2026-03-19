@@ -1,4 +1,4 @@
----
+﻿---
 title: "Ruby Kod Parçacıkları 32 - Singleton"
 pubDate: 2017-02-03 21:23:00
 categories:
@@ -8,7 +8,7 @@ tags:
 ---
 
 # Ruby Kod Parçacıkları 32 - Singleton
-![image.axd](images/image.axd)
+![rfun.gif](images/rfun.gif)
 
 Merhaba Arkadaşlar,
 
@@ -60,7 +60,7 @@ in `<main>': private method `new' called for ConfigurationManager:Class (NoMetho
 
 Kodda üretilen her iki ConfigurationManager nesne örneği de aynı object_id değerlerine sahiptir. Hatta bu iki nesne aynıdır ki eşitlik sonrası kod true değeri döndürmüştür. Bir başka dikkat çekici nokta ise, mngr1 üretimi sırasında atanan nitelik değerlerinin mngr2 için de geçerli olmasıdır. Kodun çalışma zamanı çıktısı aşağıdaki gibidir.
 
-![image.axd](images/image.axd)
+![rsingleton_1.gif](images/rsingleton_1.gif)
 
 Çok doğal olarak ConfigurationManager tipinden n sayıda nesne örneği üretilebilir. Ancak gerçek anlamda çalışma zamanında tek bir ConfigurationManager nesne örneği söz konusu olacaktır. Bu n sayıda nesne örneğinin herhangibirinde yapılan değişiklikler pek tabii diğer değişkenleri de etkiler. Söz gelimi yukarıdaki koda aşağıdaki parçayı eklediğimizi düşünelim.
 
@@ -72,7 +72,7 @@ puts mngr2.get_default_host
 
 Bu durumda mngr2 ile yapılan değişiklik mngr1 tarafından da görülecektir.
 
-![image.axd](images/image.axd)
+![rsingleton_2.gif](images/rsingleton_2.gif)
 
 ## Marshalling ile Nesne Durumunu Korumak
 
@@ -127,6 +127,6 @@ _dump metodu içerisinde sınıf örneğinin o anki durumu ile ilişkili olarak 
 
 Kodu denediğimiz akışta mngr isimli ConfigurationManager sınıf örneğinin anlık durumunu kayıt altına alıyoruz (Bellekte) Ardından niteliklerinde bir takım değişiklikler yapıyoruz. Bu sadece test amaçlı bir işlem. Sonrasında nesne örneğini ilk kayıt ettiğimiz durumuna döndürüyoruz. Farklı bir değişken ile dönmüş olsa da Singleton kalıbı gereği mngr ve mngr_backup aynı nesnelerdir. İşte çalışma zamanı çıktısı.
 
-![image.axd](images/image.axd)
+![rsingleton_3.gif](images/rsingleton_3.gif)
 
 Böylece geldik bir Ruby kod parçacığımızın daha sonuna. Bu yazıda Ruby dilinde Singleton tasarımın kalıbının ne kadar kolay uygulanabildiğini ve nesne durumlarının saklanması için Marshal modülünden nasıl faydalanabileceğimizi gördük. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

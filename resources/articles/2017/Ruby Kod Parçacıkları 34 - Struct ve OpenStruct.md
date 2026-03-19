@@ -1,4 +1,4 @@
----
+﻿---
 title: "Ruby Kod Parçacıkları 34 - Struct ve OpenStruct"
 pubDate: 2017-04-10 15:00:00
 categories:
@@ -10,7 +10,7 @@ tags:
 ---
 
 # Ruby Kod Parçacıkları 34 - Struct ve OpenStruct
-![image.axd](images/image.axd)
+![ruby34_5.gif](images/ruby34_5.gif)
 
 Merhaba Arkadaşlar,
 
@@ -30,7 +30,7 @@ obiWan=player.new("kenobi","obi wan",850)
 puts "#{obiWan.lastName}, #{obiWan.firstName}-[#{obiWan.level}]"
 ```
 
-![image.axd](images/image.axd)
+![ruby34_1.gif](images/ruby34_1.gif)
 
 Örnek kodda player isimli bir yapı bildirimi yer alıyor. İlk tanımlama sırasında new operatörünü takiben bu veri yapısına dahil olan niteliklerin bildirimi yapılmakta. Kodumuzda aynı veri modeline sahip iki Struct değişkenine yer veriliyor. dam ve obiWan:) İlk kullanımda nitelik değerleri new operatöründen sonra atanmıştır. obiWan isimli değişken örneklenirken de ilgili nitelik değerleri new fonksiyonunda belirtilmiştir.
 
@@ -50,7 +50,7 @@ tehlikeliOyunlar.category="Turk Edebiyati"
 puts tehlikeliOyunlar.getInfo
 ```
 
-![image.axd](images/image.axd)
+![ruby34_2.gif](images/ruby34_2.gif)
 
 book isimli yapı yazılırken do end blokları arasında getInfo isimli bir metod tanımına da yer verilmiştir. getInfo metodu sadece yapının niteliklerini string formunda geriye döndürmektedir. Burada sınıflardan farklı olarak niteliklere erişirken @ işaretinin kullanılmadığı gözden kaçırılmamalıdır.
 
@@ -109,7 +109,7 @@ obiWan.each_pair{|key,value| puts "#{key}->#{value}"}
 puts obiWan[:firstName]
 ```
 
-![image.axd](images/image.axd)
+![ruby34_4.gif](images/ruby34_4.gif)
 
 Bu örnekte each, each_pair ve [] operatörü kullanımları örneklenmiştir. each ile bir yapının tüm nitelik değerlerine erişmemiz mümkündür. each_pair tahmin edileceği üzere key:value benzeri yapının nitelik adı ve değerlerine erişmekte kullanılır. İstersek bir yapının elemanlarına indeksleyici ile de ulaşabiliriz. Aslında bir yapının diziye veya hash nesnesine atanması da oldukça kolaydır. Hatta select fonksiyonundan yararlanarak bir yapının taşıdığı değerler üzerinde koşullu seçimler yapılması da sağlanabilir (Detaylar için [bu](https://ruby-doc.org/core-2.2.0/Struct.html) ve [şu](http://ruby-doc.org/stdlib-2.0.0/libdoc/ostruct/rdoc/OpenStruct.html) adreslerdeki Ruby dokümanlarına bakmanızı öneririm)
 
@@ -137,7 +137,7 @@ sitiv = Employee.new("Sitiv","Jobs", {
 puts sitiv.address.inspect
 ```
 
-![image.axd](images/image.axd)
+![ruby34_3.gif](images/ruby34_3.gif)
 
 Bu örnekte Employee sınıfı içerisinde Address isimli bir yapı tanımlanmıştır. Employee sınıfına ait bir nesne örneklenirken initialize metoduna gelen son parametre bu yapıya ait bir değişken içeriğidir. Indeksleyici operatörü ile değerler alınıp Address yapısına ait değişken nitelikleri doldurulmuştur.
 

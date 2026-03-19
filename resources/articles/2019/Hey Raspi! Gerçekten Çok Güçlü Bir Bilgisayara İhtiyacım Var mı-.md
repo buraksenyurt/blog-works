@@ -1,4 +1,4 @@
----
+﻿---
 title: "Hey Raspi! Gerçekten Çok Güçlü Bir Bilgisayara İhtiyacım Var mı?"
 pubDate: 2019-09-16 10:13:00
 categories:
@@ -22,7 +22,7 @@ tags:
 ---
 
 # Hey Raspi! Gerçekten Çok Güçlü Bir Bilgisayara İhtiyacım Var mı?
-![image.axd](images/image.axd)
+![raspbian_cover.jpeg](images/raspbian_cover.jpeg)
 
 ## 1985 Yazı - Hikayenin Başladığı Yer
 
@@ -88,7 +88,7 @@ Bunun üzerine ucuz maliyetli Raspberry Pi 3B+ almaya karar verdim. 1 Gb Ram’i
 
 Artık bir şeyleri kurmaya çalışıp, programlama ortamını hazırlamak üzere harekete geçebilirdim. Saat 22yi geçmişti. S (h) arp Efe ve üst kattaki gürültücü velet çoktan uykuya dalmıştı. Mahalle sakinleşmiş ve çalışma odam tam olarak istediğim sessizliğe gelmişti. Arkamdaki kütüphanenin üst rafına kaldırdığım emektar WestWorld’e göz ucuyla şöyle bir baktım ve tebessümle “Umarım tatilin iyi geçiyordur” diyerek klavyeme döndüm. Planladığım belli bir yol haritası yoktu. Doğaçlama gidecektim. Öncelikle Raspbian diyarında neler var ne yok bakayım dedim. Aklıma ilk önce Raspberry Pi’ler ile özdeşleşen Python ortamı geldi.
 
-![image.axd](images/image.axd)
+![masa.jpg](images/masa.jpg)
 
 Raspbian üzerinde Python 2 ve 3 sürümleri ile pip paket yöneticisi zaten yüklü olarak geliyor ama benim Node.js ve npm ile yapacağım çalışmalar da var. Lakin bazı ürünlerin doğru sürümlerini yükleyebilmek ya da desteklerinin olup olmadığını görmek için ARM işlemcisinin versiyonunu öğrenmem gerekmişti. Bunun için şu terminal komutunu kullanarak çalışmalarıma başladım.
 
@@ -96,7 +96,7 @@ Raspbian üzerinde Python 2 ve 3 sürümleri ile pip paket yöneticisi zaten yü
 uname -m
 ```
 
-![image.axd](images/image.axd)
+![shot_1.png](images/shot_1.png)
 
 Sonra aşağıdaki komutlarla nodejs’i sisteme yükledim. Beraberinde npm paket yöneticisi de geldi tabi.
 
@@ -107,7 +107,7 @@ node — version
 npm — version
 ```
 
-![image.axd](images/image.axd)
+![shot_2.png](images/shot_2.png)
 
 İşte elimin altında nodejs. Rastgele aklıma gelen enstrümaları toplamaya devam ettim. Mesela şunu merak ediyordum; Raspbian üzerinde PostgreSQL’in Docker Container’ını çalıştıramaz mıydım? Hani kendi başına çalışan hafif bir microservice konuşlandıracağım bir sürü Raspberry cihazımız olur mu hayalinden yola çıkarak (Hatta çalıştığım firmadaki bazı yeni nesil ürünlerin SQL Server’dan PostgreSQL platformuna göçü için yapılan çalışmaları düşünerek) Öncesinde Docker bu sistemde çalışır mı bunu öğrenmem gerekiyordu. Bunun üzerine terminali aşağıdaki komutlarla şenlendirdim.
 
@@ -126,7 +126,7 @@ sudo docker image ls
 sudo docker image rm 618e43
 ```
 
-![image.axd](images/image.axd)
+![shot_3.png](images/shot_3.png)
 
 Pek tabii bir Container’ı ayağa kaldırmış olmak iştahımın daha da artmasına neden oldu. Bunun üzerine PostgreSQL imajını yükleyeyim ve iki SQL sorgusu çalıştırayım dedim.
 
@@ -140,13 +140,13 @@ INSERT INTO Category (Name) VALUES (‘Movie’);
 SELECT * FROM Category;
 ```
 
-![image.axd](images/image.axd)
+![shot_4.png](images/shot_4.png)
 
 Veritabanı oluşturabildiğimi, kayıt atıp çekebildiğimi görünce epey mutlu oldum. Çalışmalarım sırasında ihtiyacım olabilecek veri depoları için PostgreSQL’i burada deneyimleyebilirim (Hatta SQLite gibi sürümleri de denesem gayet iyi olur)
 
 Daha neleri kontrol edebilirim diye düşünürken asıl göz ağrım.Net Core’a ayrı bir sayfa açmam gerektiğini fark ettim. Nitekim C# programlama dilini ve.Net Core platformunu deneyimleyeceğim bir ortam olması önemliydi. Biraz araştırma yaptıktan sonra ARM sürümü için [Microsoft’un şu adresindeki kaynak](https://dotnet.microsoft.com/download/thank-you/dotnet-sdk-2.2.401-linux-arm32-binaries)tan yararlanarak Raspbian üzerine.Net Core SDK 2.2 versiyonunu yükleyebildim. Tabi güncel.Net Core sürümlerinden hangilerinin hayatta kaldığına ara ara bakmakta yarar var. Özellikle ürünleştirilmiş sürümlerimiz varsa bu önemli bir nokta. [Microsoft’un şu adresindeki görsel imgeler](https://dotnet.microsoft.com/download/dotnet-core) iyi birer yardımcı.
 
-![image.axd](images/image.axd)
+![shot_6.png](images/shot_6.png)
 
 Gerekli kurulumun ardından basit bir Console uygulaması oluşturup denemem yeterliydi. Henüz Visual Studio Code editörü yüklenebiliyor mu bilmiyordum ama Program.cs içeriğini düzenlemek için Raspbian ile gelen Geany pekala kafiydi.
 
@@ -156,7 +156,7 @@ Gerçi Visual Studio Code’un açık kaynak olarak Raspberry Pi için genişlet
 dotnet new console -o hello-from-pi
 ```
 
-![image.axd](images/image.axd)
+![shot_5.png](images/shot_5.png)
 
 Şu an için tek sıkıntı uygulamanın çalışmasının çok yavaş olması. Basit bir Hello World uygulaması için dotnet run komutunun epey beklettiğini fark ettim. Henüz bunun sebebini anlayamadım. Belki ve muhtemelen ARM işlemcisinden kaynaklı lakin bu canımı sıkan bir durum değil. Çünkü çıt çıkartmayan ve ceket cebime koyup istediğim yere götürebileceğim bir bilgisayarım var:) (Gittiğim yerde HDMI girişli bir monitor/tv, klavye ve mouse olması şartıyla tabii)
 
@@ -164,7 +164,7 @@ dotnet new console -o hello-from-pi
 
 Pek tabii merak ettiğim ve denemek istediğim bir çok konu var. Git (Raspbian ile yüklü geliyor) komut satırı aracı ile GitHub projelerine bağlanmak, cihazı NGinX veya Apache sunucusu olarak kurgulayıp web servisi hizmeti sunacak şekilde ayağa kaldırmak, Erlang dilini öğrenmek (ki sorunsuz bir şekilde sisteme kuruldu ve hello world uygulaması çalıştırılabildi — bknz aşağıdaki resim), Flutter çatısının platform üzerinde kullanılıp kullanılamayacağına bakmak, [Google Cloud Platform öğretilerini takip ederek](https://cloud.google.com/compute/docs/quickstart-linux) bulut tabanlı temel geliştirici operasyonlarını Raspi ile birlikte denemek (gCloud CLI) ve benzerleri…
 
-![image.axd](images/image.axd)
+![shot_7.png](images/shot_7.png)
 
 Aslında Raspberry Pi’yi bir IoT cihazı gibi kullanmaktansa düşük maliyetli ve programlama deneyimi yaşayabileceğim bir araç olarak ele almak şu anki hedeflerimden birisi. En nihayetinde üzerinde gelen Scratch ile çocuklara temel programlama deneyimini de yaşatıyor ki ben hala büyümedim.
 

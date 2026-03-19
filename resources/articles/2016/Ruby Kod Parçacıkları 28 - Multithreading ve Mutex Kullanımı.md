@@ -1,4 +1,4 @@
----
+﻿---
 title: "Ruby Kod Parçacıkları 28 - Multithreading ve Mutex Kullanımı"
 pubDate: 2016-12-09 21:30:00
 categories:
@@ -43,7 +43,7 @@ end
 
 Kodu dikkatli bir şekilde incelemeliyiz. Anlamlı bir iş yapmıyor ancak bize Concurrency konusunda önemli dersler veriyor. 5 sefer çalışan bir test sürecimiz söz konusu. Her seferinde 100 farklı iş parçacığı açıyoruz (Thread nesnesi örnekleyerek) Her bir iş parçacığı içinde 5000 kez yapılan bir işlem söz konusu. Bu işlem sırasında points isimli dizinin eleman değerleri arttırılıyor. Uygulama tamamlandığında dizideki her bir elemanın 500000 olmasını bekleriz değil mi? Oysaki çalışma zamanı sonuçları oldukça farklıdır.
 
-![image.axd](images/image.axd)
+![mutex_1.gif](images/mutex_1.gif)
 
 Ekran görüntüsü Eclipse IDE'sine aittir. Eclipse'e [şu adresteki plug-in'i yükleyerek](https://marketplace.eclipse.org/content/ruby-dltk) Ruby için geliştirme yapabilirsiniz.
 
@@ -81,6 +81,6 @@ end
 
 Yaptığımız ilk şey mtx isimli bir Mutex nesnesi örneklemek. Sonrasında atomikleştirmek istediğimiz kod parçasını synchronize metoduna ait kod bloğu içerisine alıyoruz. Bu şekilde map operasyonunu senkronize etmiş oluyoruz. Senkronizasyonu sağlayarak çalışmakta olan iş parçacıklarının aynı veri üzerinde işlem yaparken birbirlerini kesmemesi ve veri bütünlüğünün bozulmaması mümkün hale geliyor. İşte çalışma zamanı sonuçları.
 
-![image.axd](images/image.axd)
+![mutex_2.gif](images/mutex_2.gif)
 
 Görüldüğü gibi tüm denemelerde points dizisi elemanları beklediğimiz gibi aynı toplam değerini üretmiştir. İş parçacıklarını senkronize olarak çalıştırmak bazı durumlarda işlemlerin daha yavaş tamamlanmasına da neden olabilir ancak verinin tutarlılığı oldukça önemli bir konudur. Böylece geldik bir kod parçacığının daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

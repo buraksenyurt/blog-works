@@ -1,4 +1,4 @@
----
+﻿---
 title: "Cloud Firestore ile Angular Kullanımı"
 pubDate: 2019-05-24 09:00:00
 categories:
@@ -16,7 +16,7 @@ tags:
 ---
 
 # Cloud Firestore ile Angular Kullanımı
-![image.axd](images/image.axd)
+![magicjohson.png](images/magicjohson.png)
 
 Earvin (Magic) Johnson. Michael Jordan'la geçen gençlik yıllarımın henüz başlarında rastladığım NBA'in ve Los Angles Lakers'ın 2.06lık unutulmaz oyun kurucusu. O dönemlerde yaptığı inanılmaz assistler ve oyun zekası hala aranır nitelikte. Aslında sadece oyun kurucu değil zaman zaman şutör gard ve uzun forvet pozisyonlarında da oynamıştır.
 
@@ -50,19 +50,19 @@ ng new ile quick-action isimli yeni bir Angular projesi oluşturmaktayız (Sorul
 
 Google Cloud tarafında yapacağımız bazı hazırlıklar var. Firebase tarafında yeni bir proje açıp içerisinde test amaçlı bir Firestore veri tabanı oluşturacağız. Öncelikle b[u adresten](https://console.firebase.google.com/) Firebase Console'a gidelim ve örnek bir proje üretelim. Ben aşağıdaki ekran görüntüsüneki gibi quict-auctions-project isimli bir uygulama oluşturdum (Esasen quick demek istemiştim ama dikkatsizlik olsa gerek quict demişim, olsun. Özgün bir isim olmuş:P)
 
-![image.axd](images/image.axd)
+![04_32_credit_1.png](images/04_32_credit_1.png)
 
 Sonrasında Database menüsünden veya kocaman turuncu kutucuk içerisindeki Cloud Firestorm bölümünden hareket ederek yeni bir veri tabanı oluşturalım. Aşağıdaki ekran görüntüsünde olduğu gibi veri tabanını Test modunda açabiliriz.
 
-![image.axd](images/image.axd)
+![04_32_credit_2.png](images/04_32_credit_2.png)
 
 Şimdi Angular uyguaması ile Firebase servis tarafını tanıştırmalıyız. Project Overview kısmından hareket ederek
 
-![image.axd](images/image.axd)
+![04_32_credit_3.png](images/04_32_credit_3.png)
 
 kırmızı kutucuktaki düğmeye basalım. Gerekli ortam değişkenleri otomatik olarak üretilecektir. Karşımıza gelen ekrandaki config içeriğini uygulamanın environment.ts dosyası içerisine almamız yeterli.
 
-![image.axd](images/image.axd)
+![04_32_credit_4.png](images/04_32_credit_4.png)
 
 ## Kod Tarafı
 
@@ -393,7 +393,7 @@ ng serve
 
 komutunu vermemiz yeterli. 4200 numaralı port üzerinden web arayüzüne erişebiliriz. WestWorld testlerinde benim aldığım örnek bir ekran görüntüsünü aşağıda bulabilirsiniz (Hani ispatı olsun da sonra çalışmıyor bu filan demeyelim)
 
-![image.axd](images/image.axd)
+![04_32_credit_5.png](images/04_32_credit_5.png)
 
 Örneğin ilgi çekici yanlarından birisi, önyüz ve Firestore taraflarının eş zamanlı olarak güncel kalabilmeleridir. Firestore web konsolunda eriştiğimiz dokümanlarda yapacağımız değişiklikler anında önyüz tarafına push edilir, önyüzde yaptığımız değişiklikler de benzer şekilde Firestore tarafına yansır. Bunu denemenizi öneriririm. + ve - düğmeleri ile güncel fiyat bilgisini arttırma veya azaltma işlemlerini yapabiliriz. Sil düğmesi tahmin edileceği üzere satışa çıkarttığımız ürünü repository'den kaldırmak içindir. Güncelleme oparasyonunu sadece fiyat ayarlamaları için yaptık lakin ürün bilgilerinin düzenlenmesi ihtiyacı da var. Bunu uygulamaya nasıl ekleyebiliriz bir düşünün;)
 

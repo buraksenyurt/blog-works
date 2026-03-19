@@ -1,4 +1,4 @@
----
+﻿---
 title: "JSON to BSON"
 pubDate: 2017-04-30 21:36:00
 categories:
@@ -16,7 +16,7 @@ tags:
 ---
 
 # JSON to BSON
-![image.axd](images/image.axd)
+![bson.gif](images/bson.gif)
 
 Merhaba Arkadaşlar,
 
@@ -27,11 +27,11 @@ Sanıyorum her.Net programcısının takım çantasında yer alan paketlerden bi
 Peki.Net tarafında kullanılan nesne örneklerini BSON formatına nasıl dönüştürebiliriz? Bunun bilinen pek çok yolu var tabii ki ancak uygulamanızda Newtonsoft ve JSON içerikleri ile çalışıyorsanız işi kolaylaştıracak tiplerde bu paketle birlikte geliyor. Newtonsoft.Json paketi, bir JSON içeriğinin binary olarak yazılması ve okunması için iki temel tip sunmakta. Bu tipleri kullanarak BSON dönüşüm işlemleri kolayca gerçekleştirilebilir. Basit bir örnekle konuyu özetleyelim.
 
 > Başlamadan önce Newtonsoft'un ilgili paketinin uygulamaya yüklenmiş olması gerektiğini hatırlatalım. Bunu NuGet Package Manager veya Console üzerinden gerçekleştirebiliriz.
-> ![image.axd](images/image.axd)
+> ![bson_1.gif](images/bson_1.gif)
 
 Aşağıdaki sınıf diagramında ve kod parçasında görülen tipleri tasarladığımızı düşünelim.
 
-![image.axd](images/image.axd)
+![bson_2.gif](images/bson_2.gif)
 
 ```csharp
 public class Person
@@ -171,15 +171,15 @@ namespace BsonExample
 
 Koddaki başrol oyuncuları JsonSerializer, BsonWriter ve BsonReader sınıflarıdır. İlk using bloğunda MemoryStream ile belleğe açılan employees liste içeriğinin Base64 kodlamasından yararlanılarak dosyaya yazdırılması söz konusudur. İkinci using bloğunda ise bir kaç satır önce dosyaya yazılmış olan binary içeriğin Base64'ten byte[] haline getirilmesi ve ardından BsonReader kullanılarak generic Person listesine dönüştürülmesi işlemi yapılmaktadır. Kritik noktalardan birisi dePerson tipinden bir listenin (List) kullanılmasıdır. Eğer BsonReader nesne örneğinin ReadRootValueAsArray özelliğine true verilmezse bu listenin ters-serileştirilme aşamasında aşağıdaki ekran görüntüsünde yer alan JsonSerializationException oluşacaktır.
 
-![image.axd](images/image.axd)
+![bson_5.gif](images/bson_5.gif)
 
 Kodun çalışması sırasında üretilen BSON içeriği ise aşağıdakine benzer olacaktır.
 
-![image.axd](images/image.axd)
+![bson_3.gif](images/bson_3.gif)
 
 Yapılan ters serileştirme işlemi sonrası elde edilen ekran çıktısı da şöyledir.
 
-![image.axd](images/image.axd)
+![bson_4.gif](images/bson_4.gif)
 
 Görüldüğü gibi BSON içeriği başarılı bir şekilde ters-serileştirilerek nesne haline getirilebilmiştir.
 

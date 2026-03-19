@@ -1,4 +1,4 @@
----
+﻿---
 title: "GoLang - Basit HTTP Web Server Yapımı"
 pubDate: 2017-02-20 23:48:00
 categories:
@@ -22,7 +22,7 @@ tags:
 ---
 
 # GoLang - Basit HTTP Web Server Yapımı
-![image.axd](images/image.axd)
+![gorest_6.gif](images/gorest_6.gif)
 
 Merhaba Arkadaşlar,
 
@@ -172,7 +172,7 @@ Sırada testlerimiz var. Öncelikle uygulamamızı çalıştırmamız gerekiyor.
 
 http://localhost:8084/home.html
 
-![image.axd](images/image.axd)
+![gorest_1.gif](images/gorest_1.gif)
 
 Görüldüğü gibi tasarladığımız HTML sayfasını elde ettik. Burada çok daha şık bir sayfa sunulabilir. CSS kullanarak içeriği zenginleştirebilirsiniz. Biz basit bir HTML içeriğinin görüntülenebileceğini ifade ettik. All Products linki bizi ürün listesini alabileceğimiz sayfaya yönlendirecektir.
 
@@ -184,17 +184,17 @@ Bu sefer tüm ürün listesini elde ettik. Hem deeee JSON formatındaaaa. Peki y
 
 http://localhost:8084/products/oem
 
-![image.axd](images/image.axd)
+![gorest_3.gif](images/gorest_3.gif)
 
 Bu sefer de OEM kategorisindeki ürün listesini çektiğimizi görebilirsiniz. Tabii olmayan bir kategori girilirse istemci tarafına HTTP 404 fırlatmayı da ihmal etmedik. getProduct fonksiyonu içerisinde ilgili kategoriye bağlı ürün/ürünler yoksa Error fonksiyonundan yararlanrak 404 Not Found durumunu fırlatıyoruz. Bu nedenle aşağıdaki gibi bir talebin sonucu 404 olacaktır.
 
 http://localhost:8084/products/yokki
 
-![image.axd](images/image.axd)
+![gorest_4.gif](images/gorest_4.gif)
 
 Yaptığımız tüm işlemleri sunucu uygulamasına ait console penceresinde izleyebiliriz. Basit detaylar koyduğumuzu fark etmişsinizdir. HTTP metodu, çağrı zamanı ve çağrı yapılan adres bilgisi. Çok daha fazla detay sunulabilir tabii. Geriye dönecek olan cevap, HTTP durum bilgisi, talep yapan istemciye ait bir takım bilgiler (IP gibi) yakalanabilir. Hatta log'lar bir araç ile farklı bir kaynağa da atılabilir. Örneğin bir dosyaya yazdırabiliriz. Bu yazımıza konu olan örnek içinse aşağıdaki çıktılar yeterli görünüyor.
 
-![image.axd](images/image.axd)
+![gorest_5.gif](images/gorest_5.gif)
 
 ## Eksikler
 

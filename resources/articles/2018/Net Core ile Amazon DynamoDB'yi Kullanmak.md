@@ -1,4 +1,4 @@
----
+﻿---
 title: ".Net Core ile Amazon DynamoDB'yi Kullanmak"
 pubDate: 2018-04-16 06:00:00
 categories:
@@ -23,7 +23,7 @@ tags:
 ---
 
 # .Net Core ile Amazon DynamoDB'yi Kullanmak
-![image.axd](images/image.axd)
+![dynamocore_halo.gif](images/dynamocore_halo.gif)
 
 Merhaba Arkadaşlar,
 
@@ -37,39 +37,39 @@ Amazon Console Üzerinden Basit Bir Giriş
 
 Amazon Console web arayüzü üzerinden DynamoDb ile ilgili pek çok işlem gerçekleştirilebilir. Bir kaç dakika içerisinde tablolar oluşturabilir, insert, update, delete gibi temel veri işlemlerini gerçekleştirebiliriz. Söz gelimi sevdiğimiz oyun karakterlerine ait sözleri tutan bir tablo tasarlayabiliriz. Bunun için Create Table bağlantısından hareket etmemiz ve sayfadaki ilgili alanları doldurmamız yeterli.
 
-![image.axd](images/image.axd)
+![dynamocore_1.gif](images/dynamocore_1.gif)
 
 BEn bu deneme sonucunda aşağıdaki gibi bir ekranla karşılaştım.
 
-![image.axd](images/image.axd)
+![dynamocore_2.gif](images/dynamocore_2.gif)
 
 Quote isminde, Primary Key (Partition Key) olarak Game adında string tipte alan içeren bir tablo oluştu. Partition Key alanı özellikle veritabanının ölçeklendirilmesi noktasında önem arz eden bir konu. İkinci olarak eklediğimiz Sort Key alanı hızlı bir arama işlemi için ele alınacak ancak kullanılması elbette zorunlu değil. Game ve Character alanları bir arada yeni bir hash tanımının oluşmasına da neden olmakta. Tablonun tasarımını daha da detaylandırmamız mümkün. Şunu da unutmamak gerekiyor ki; iyi bir tablo tasarımı için partition key, sort key, global secondary index ve local secondary index kavramlarını iyi derecede kavramak lazım.
 
 Oldukça detaylı ayarların yapılabildiği bir arabirim burası. Pek çok sekmeye yabancı olduğumu itiraf edebilirim. Yeni yeni keşfetmeye çalışıyorum. İlk olarak tabloya nasıl veri ekleyeceğimizi göstermeye çalışayım. Bunun için Items sekmesinden Create Item düğmesine basmak yeterli.
 
-![image.axd](images/image.axd)
+![dynamocore_3.gif](images/dynamocore_3.gif)
 
 Tree olarak adlandırılan ve ağaç görünümü sunan arabirim kullanılabileceği gibi, Text moduna geçilerek JSON Formatındaki içeriğin elle yazılması da sağlanabilir.
 
 Tree modundaki görünüm;
 
-![image.axd](images/image.axd)
+![dynamocore_4.gif](images/dynamocore_4.gif)
 
 Bunun text modundaki görünümü ise aşağıdaki gibiydi.
 
-![image.axd](images/image.axd)
+![dynamocore_5.gif](images/dynamocore_5.gif)
 
 Bunun üzerine bir kaç öğe daha ekledim ve aşağıdaki içeriğin oluşmasını sağladım. Benim size önerim ücretsiz olarak sunulan REST tabanlı Quote hizmetlerinden yararlanarak veri girişi yapmanız. Bu güzel bir vaka çalışması da olabilir. Örneğin her gün bağlanıp o günün özlü sözünü aldığınız REST servis içeriğini, DynamoDB üzerindeki tablonuza aktarabilirsiniz;)
 
-![image.axd](images/image.axd)
+![dynamocore_6.gif](images/dynamocore_6.gif)
 
 Sonra bir filtreleme yapmaya çalıştım. Text alanı içerisinde "I" kelimesi geçenleri bulmayı denedim.
 
-![image.axd](images/image.axd)
+![dynamocore_7.gif](images/dynamocore_7.gif)
 
 Ardından Halo 2 oyununda karakterin adı G harfi ile başlayanların sözlerini nasıl süzebileceğime bir baktım.
 
-![image.axd](images/image.axd)
+![dynamocore_8.gif](images/dynamocore_8.gif)
 
 Tabii benim yaptığım sadece arabirimi tanımaya çalışmak. Tablo tasarımı aslına bakarsanız yanlış. Söz gelimi bir oyuna bir karakter için n sayıda söz ekleyemeyiz. Dolayısıyla tasarımı bir oyunun birbirinden farklı karakterlerine ait en iyi sözlerin tutulduğu bir depo gibi düşünebiliriz. Eğer aynı oyuna aynı karakterden bir söz daha girmeye çalışırsak şu uzun ifadeye benzer hata mesajı ile karşılaşmanız muhtemel.
 
@@ -139,7 +139,7 @@ namespace HowToDynamoDb
 
 Öncelikle geçerli bir Credential bilgisi oluşturmalıyız. Bunun için BasicAWSCredentials sınıfını kullanabiliriz (Siz kendi oluşturduğunuz kullanıcıya ait Key bilgilerini girmelisiniz ki bu bilgiler konfigurasyondan da gelebilirler) Sonrasında AmazonDynamoDBClient türünden bir örnek oluşturuyoruz. Ben US-East-2 bölgesini kullandığım için ikinci parametrede RegionEndpoint.USEast2 değerini verdim. GetTables isimli metodun yaptığı işlem oldukça basit. ListTablesAsync metodu ile elde edilen tablo adlarını geriye döndürüyor. Sonuçlar aşağıdaki ekran görüntüsüne benzer olmalı (AmazonDynamoDBClient üzerindeki pek çok operasyon awaitable nitelikte. Dolayısıyla tamamen asenkron olarak kullanılabilirler de)
 
-![image.axd](images/image.axd)
+![dynamocore_9.gif](images/dynamocore_9.gif)
 
 Peki kod ile sıfırdan bir tabloyu nasıl oluşturabiliriz? Kodu aşağıdaki gibi değiştirelim.
 
@@ -227,7 +227,7 @@ namespace HowToDynamoDb
 
 CreateTable isimli operayon DynamoDB üzerinde bir tablo oluşturmak için kullanılıyor. Üç parametresi var. Tablo ve Partition Key adları ile, Partition Key'in veri türünü alıyor. ScalarAttributeType üzerinden N (number), S (string) ve B (Binary) şeklinde anahtar türünün ne olacağını belirtebiliriz. Tablo oluşturma işlemini asenkron olarak kullanılabilen (ki burada senkron bir işleyiş var) CreateTableAsync fonksiyonu gerçekleştirmekte. Tabii tabloyu oluşturmadan önce var olup olmadığını da kontrol ediyoruz. Ben GameQuotes ve Players isimli iki tabloyu oluşturmayı denedim. İşlemler sorunsuz şekilde tamamlandıktan sonra AWS Console üzerinden de oluşturulan tabloları görebildim.
 
-![image.axd](images/image.axd)
+![dynamocore_10.gif](images/dynamocore_10.gif)
 
 Şimdi tablolardan birisine veri eklemeye çalışalım. Henüz elimizde bir Entity örneği bulunmuyor. Öncelikle bu varlığa ait sınıfı tasarlamak lazım. GameQuotes tablomuz için aşağıdaki gibi bir sınıf yazabiliriz.
 
@@ -285,7 +285,7 @@ utl.InsertQuote(quote);
 
 Ben Halo 2 oyunundan Cortana isimli karaktere ait bulduğum bir sözü girdim. Programı çalıştırdıktan sonra hemen Amazon Console'a gittim ve eklenen yeni satırın aşağıdaki ekran görüntüsünde olduğu gibi eklendiğini gördüm.
 
-![image.axd](images/image.axd)
+![dynamocore_11.gif](images/dynamocore_11.gif)
 
 Peki kod tarafında bu içeriği nasıl çekebiliriz? Gelin aşağıdaki fonksiyonu Utility sınıfına dahil ederek devam edelim.
 
@@ -308,7 +308,7 @@ var findingQuote=utl.FindQuoteByID(1001);
 Console.WriteLine($"{findingQuote.QuoteInfo.Character}\n{findingQuote.QuoteInfo.Text}");
 ```
 
-![image.axd](images/image.axd)
+![dynamocore_12.gif](images/dynamocore_12.gif)
 
 Siz farklı arama ifadelerini bir araya getirerek değişik denemeler de yapabilirsiniz. Örneğin eklediğiniz n sayıda Quote içerisinden, belli bir oyuna ait olup beğeni değerleri 1000 ve üzerinde olanları çekmeyi deneyebilirsiniz.
 

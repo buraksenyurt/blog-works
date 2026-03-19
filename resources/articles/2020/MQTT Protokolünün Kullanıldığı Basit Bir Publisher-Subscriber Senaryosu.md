@@ -1,4 +1,4 @@
----
+﻿---
 title: "MQTT Protokolünün Kullanıldığı Basit Bir Publisher/Subscriber Senaryosu"
 pubDate: 2020-05-05 13:48:00
 categories:
@@ -17,7 +17,7 @@ tags:
 # MQTT Protokolünün Kullanıldığı Basit Bir Publisher/Subscriber Senaryosu
 Yine bir yerlerde bir şeyleri araştırırken özellikle IoT ve M2M konseptinde yaygın olarak kullanılan MQTT (Message Queuing Telemetry Transport) isimli bir mesajlaşma protokolüne denk geldim. Düşük bant genişliklerinde, yüksek gecikme sürelerinin olduğu senaryolarda hafif bir mesajlaşma protokolü olarak karşımıza çıkıyor. En sık verilen senaryo bir IoT cihazının ısı sensöründen yayınlanan mesajın abone olan cep telefonu veya bilgisayarlar tarafından görülebilmesi. Elimde bir Raspberry PI vardı ama ısı sensörü yoktu. Dahası sensör alıp kurcalamaya üşendim diyelim. Hızlı bir antrenman için hayali bir senaryo düşündüm aşağıdaki karalamayı yaptım.
 
-![image.axd](images/image.axd)
+![Screenshot_1.jpg](images/Screenshot_1.jpg)
 
 Bir basketbol sahasının seyirci giriş çıkıp kapılarını düşünelim. Bilet okutulur, kapıdaki cihaz bunla alakalı bir konuda (topic) mesaj yayınlamak ister. Cihaz akıllıdır ve salonun WiFi ağına bağlıdır. Kapı giriş/çıkış taleplerini toplayan bir REST servisine HTTP Post ile bilgi gönderir. Servis bunu MQTT protokolü üzerinden bir Broker'a aktarır (ki bizim senaryoda O açık kaynak Eclipse Moqsquitto'nun docker container örneğidir) Broker MQTT mesajlarını dinleyip abonelere dağıtan bir aracı görevini üstlenmektedir. Abone olan cep telefonu, bilgisayar veya farklı IoT cihazları bu mesajları yakayabilir. Senaryom çok anlamlı değil belki ama ben ille de MQTT'yi kullanacağım ya:D O yüzden antrenman için ideal. Bu arada örneğimizi gerçekleştirmek için iki önemli malzeme gerekiyor; Mosquitto Docker Image ve NodeJs:) Dilerseniz vakit kaybetmeden Broker servisi ayağa kaldırıp sunucu tarafını yazarak işe başlayalım.
 
@@ -149,6 +149,6 @@ Artık sonuçları görmek için kolları sıvayabiliriz. Her iki node uygulamas
 
 benzeri farklı türde ve sayıda talepler göndererek abone olan diğer istemcide mesajların çıkıp çıkmadığını görebiliriz. Aşağıdaki ekran görüntüsünde olduğu gibi;)
 
-![image.axd](images/image.axd)
+![skynet_17_Screenshot_3.png](images/skynet_17_Screenshot_3.png)
 
 Hepsi bu kadar sevgili dostlar:) Elbette bu örnek çalışma üstünden yapabileceğiniz birçok şey olduğunu da ifade etmek isterim. Örneğin subscriber uygulamasından birden fazla örnek çalıştırıp her bir dinleyiciye aynı mesajlar ulaşıyor mu kontrol edebilirsiniz. Diğer yandan subscriber olarak NodeJs'ten farklı dillerde program geliştirip broker ile çalışmayı deneyebilirsiniz. Ben üşendim ama siz üşenmezseniz eğer bir Raspberry PI'ye ısı sensörü bağlayıp sensörden okuduğunuz bilgiyi REST servisine veya doğrudan Mosquitto broker'ına göndermeyi düşünebilirsiniz. Böylece geldik bir SkyNet derlemesinin daha sonuna. Örneğe ait tüm kodlara [github reposu](https://github.com/buraksenyurt/skynet/tree/master/No%2017%20-%20MQTT%20on%20Simple%20Scenario) üzerinden erişebilirsiniz. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

@@ -1,4 +1,4 @@
----
+﻿---
 title: "BeeWare ile Linux Platformunda Desktop Uygulaması Geliştirmek ve Android Sürümünü Oluşturmak"
 pubDate: 2020-09-13 21:05:00
 categories:
@@ -15,7 +15,7 @@ tags:
 ---
 
 # BeeWare ile Linux Platformunda Desktop Uygulaması Geliştirmek ve Android Sürümünü Oluşturmak
-![image.axd](images/image.axd)
+![beeware.png](images/beeware.png)
 
 Geçenlerde Python ile ilgili bir şeyler ararken BeeWare isimli çalışmaya rastladım. Her yerde python ile native uygulama geliştirmek gibi bir felsefesi vardı. Eee zaten python her platformda yüklenip kullanılmıyor mu? Yoo tam olarak olay öyle değil aslında. BeeWare ürünü macOS, Linux ve Windows platformlarında native uygulama geliştirmek haricinde iOS ve Android için de destek sunan bir araçlar ve kütüphaneler topluluğu. Söz gelimi iOS ve macOS platformundaki Objective C kütüphaneleri ile Python arasında köprü görevi gören Rubicon ObjC isimli bir araç sunuyor. Java kütüphaneleri ile bir iletişim mi gerekiyor!? O zaman Rubicon Java var. Diğer yandan cross-platform için Toga isimli bir widget kütüphanesi kullanıyor. Ayrıca python projelerini tek başına çalışabilir uygulamalar haline getirmek için (standalone native application) Briefcase isimli başka bir araca sahip ki bir çoğunu birazdan kullanacağız.
 
@@ -45,7 +45,7 @@ briefcase new
 # Bu dosyayı incelemekte yarar var.
 ```
 
-![image.axd](images/image.axd)
+![skynet_29_Screenshot_01.png](images/skynet_29_Screenshot_01.png)
 
 Bir yerlere kod yazmayacak mıyız dediğinizi duyar gibiyim? Sonuçta bir arayüz tasarlamak gerekiyor öyle değil mi? Bunu src/cardgame altındaki app.py dosyasında yapabiliriz. Aynen aşağıdaki kod parçasında olduğu gibi.
 
@@ -131,11 +131,11 @@ briefcase dev
 
 İlk çalışma sırasında üzerinde olduğumuz platforma göre gerekli bazı bağımlılıklar indirilir (Toga paketleri gibi)
 
-![image.axd](images/image.axd)
+![skynet_29_Screenshot_02.png](images/skynet_29_Screenshot_02.png)
 
 Ve ardından uygulama aşağıdaki ekran görüntüsünde olduğu gibi ayağa kalkar.
 
-![image.axd](images/image.axd)
+![skynet_29_Screenshot_03.png](images/skynet_29_Screenshot_03.png)
 
 ## Dağıtım (Deployment)
 
@@ -155,7 +155,7 @@ briefcase run android
 
 Ve bende tebessüm bırakan ekran görüntüsü:-)
 
-![image.axd](images/image.axd)
+![skynet_29_Screenshot_04.png](images/skynet_29_Screenshot_04.png)
 
 Bu örnek için andorid klasörü tüm bağımlılıkları ile birlikte 500 megabyte'tan fazla yer tuttu. APK dosyası ise yaklaşık 50 Mb civarındaydı. Böylesine basit bir kobay uygulama için oldukça fazla yer harcandığını ifade edebilirim. Zaten genel olarak bu tip cross-platform çözümlerinin (Xamarin, Electron vb) özellikle mobil taraftaki en büyük sorunu da sanırım bu optimizasyo konusundaki sıkıntıları.
 

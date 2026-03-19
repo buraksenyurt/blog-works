@@ -1,4 +1,4 @@
----
+﻿---
 title: "Bellek Yönetiminde Verimlilik için İpuçları (Rust Odaklı)"
 pubDate: 2025-04-03 21:30:00
 categories:
@@ -93,7 +93,7 @@ fn remove_ellipsis_dots(input: &str) -> Cow<str> {
 }
 ```
 
-![image.axd](images/image.axd)
+![cow_runtime.png](images/cow_runtime.png)
 
 Veri manupilasyonu sadece gerektiği zamanlarda yapılmış olur.
 
@@ -246,7 +246,7 @@ fn address_diff(a: usize, b: usize) -> usize {
 
 Var olan örnek kodumuza birkaç ekleme yaptık. En önemlisi Poistion türü için Drop trait davranışını eklememiz. Hatta içerisinde AtomicUsize türünden bir sayaç da kullanıyoruz. Eğer teorimiz doğruysa program sonlanırken scope dışında kalan Position değerleri için drop trait 'inin çalışmaması ve dolayısıyla DROOPEDCOUNT değişkeninin 0 olarak kalması gerekiyor. Kendi yaptığım çalışmada bu sonuca ulaştığımı söyleyebilirim.
 
-![image.axd](images/image.axd)
+![bumpalo_runtime.png](images/bumpalo_runtime.png)
 
 Dokümantasyona göre Bumpalo kütüphanesi söz konusu bellek bölgelerini kendisi oluşturup yönetmekte ve toplu serbest bırakma (ya da Batch Deallocation) işlemi icra etmekte. Yani nesneleri tek tek drop etmek yerine ayrılan tüm bellek bloğu için tek seferde boşaltma işlemi uygulamakta. İşte bu noktada Rust'ın RAII modelini ezdiği düşünülebilir ki bu normaldir zira kütüphane stack yerine kendi bellek bölgesini yönetir.
 
@@ -299,7 +299,7 @@ pub fn run() {
 
 Bu sefer Velocity isimli struct'lardan birkaç değişken tanımlıyoruz ancak dikkat edileceği üzere bunları Box ile kullanıyoruz. Bir başka deyişle kasıtlı olarak Heap üzerinde yerleşmelerini sağlıyoruz. Bu yeni durumda Drop trait'lerinin otomatik olarak çalışması ve sayaç değerimizin de 3 olması gerekiyor. İşte sonuçlar.
 
-![image.axd](images/image.axd)
+![boxing_runtime.png](images/boxing_runtime.png)
 
 ### AtomicUsize Kullanımı
 
@@ -396,7 +396,7 @@ fn give_me_another_number() -> Option<u32> {
 
 Dikkat edileceği üzere NonZeroU32 kullandığımız durumlarda None ve gerçek bir sayının bellekteki binary formatlı saklanma şekilleri çok farklı. Örneğin None bilgisi NonZerou32 için sadece 0 ile ifade edilirken U32 kullanıldığında çok daha uzun bir içerik söz konusu.
 
-![image.axd](images/image.axd)
+![niche_opt.png](images/niche_opt.png)
 
 Doğal olarak hangisini hangi durumlarda kullanabiliriz sorusu ortaya çıkıyor? Belki gözden kaçırmış olabiliriz ama şöyle bir durum var. NonZeroU32 adı üstünde 0 değerini taşıyamaz. Sıfır değerini None olarak kabul eder. Bu nedenle yaygın görüş U32'nin kullanıldığı bir senaryoda hiçbir şekilde 0 değerinin kullanılmayacağı garanti ise NonZerou32 tercih edilebilir zira her bir sayısal değer için 8 byte yerine 4 byte ayırabiliriz.
 
@@ -412,7 +412,7 @@ println!(
 );
 ```
 
-![image.axd](images/image.axd)
+![niche_opt_2.png](images/niche_opt_2.png)
 
 ## Memory/Object Pooling
 
@@ -733,11 +733,11 @@ Ram
 
 Benchmark ölçümleri target/criterion/report/index.html dosyasından da grafiksel olarak takip edilebilir. Örneğin 128 x 128 test için sütun öncelikli ve satır öncelikli ilk ölçümler aşağıdaki gibidir.
 
-![image.axd](images/image.axd)
+![ColumnMajor.png](images/ColumnMajor.png)
 
 ve
 
-![image.axd](images/image.axd)
+![RowMajor.png](images/RowMajor.png)
 
 ## Zero Cost Abstraction
 

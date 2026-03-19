@@ -1,4 +1,4 @@
----
+﻿---
 title: "WCF - Özelleştirilmiş UsernamePassword Validator Kullanımı"
 pubDate: 2017-10-24 14:18:00
 categories:
@@ -13,7 +13,7 @@ tags:
 ---
 
 # WCF - Özelleştirilmiş UsernamePassword Validator Kullanımı
-![image.axd](images/image.axd)
+![custa_8.gif](images/custa_8.gif)
 
 Merhaba Arkadaşlar,
 
@@ -39,11 +39,11 @@ C:\C\Certificates>makecert -sr CurrentUser -ss My -a sha1 -n "CN=AzonServer" -sk
 
 Komutlarda kullanılan anahtarların belli anlamları var. Örneğin -sr ile kayıt lokasyonunu (Registry Location), -ss ile sertifika deposunu (Certificate Store), -a ile hangi kriptografi algoritmasını kullanacağımızı (MD5, SHA1 gibi), -n ile üreteceğimiz sertifikanın genel adını (Common Name), -sky ile anahtar tipini (Exchange, Signature gibi), -pe ile ilgili anahtarın ihraç edilip edilemeyeceğini (Exportable) belirtmekteyiz. Oluşturulan sertifikalar o anki kullanıcı için Personal - Certificates deposuna eklenecektir. Bunu Microsoft Management Console (MMC) aracı ile görebiliriz. Komut satırından MMC aracını açıp File - Add Remove/Snap-in ile Certificates sekmesini ekleyelim. Bu durumda AzonServer ve AzonClient sertifikalarının aşağıdaki ekran görüntüsünde olduğu gibi ilgili depoya dahil edildiklerini görebiliriz.
 
-![image.axd](images/image.axd)
+![custa_1.gif](images/custa_1.gif)
 
 Sertifika üretimleri geliştireceğimiz örnekte ilerlememiz için yeterli değil. İlgili sertifikaları WCF çalışma zamanında hem sunucu hem de istemci tarafında kullanabilmek için Trusted People sekmesi altına da kopyalamamız gerekiyor. Dolayısıyla bir gerçek hayat senaryosunda bu sertifikaların birbirleriyle konuşacak olan uygulama sunucularında da yüklü olması lazım.
 
-![image.axd](images/image.axd)
+![custa_2.gif](images/custa_2.gif)
 
 Sunucu Tarafının Geliştirilmesi
 
@@ -154,13 +154,13 @@ namespace AzonHostApp
 
 Son olarak Open ve Close metodları kullanılarak gerekli açma ve kapatma işlemlerinin tatbik edildiğini belirtelim. Console uygulamasını bu haliyle çalıştırdığımızda aşağıdaki sonuçları görmemiz gerekiyor.
 
-![image.axd](images/image.axd)
+![custa_3.gif](images/custa_3.gif)
 
 İstemci Tarafının Geliştirilmesi
 
 Artık istemci tarafını yazmaya başlayabiliriz. Onu da basitlik olması açısından bir Console uygulaması olarak geliştirelim. Host uygulaması açıkken aşağıdaki ekran görüntüsünde olduğu gibi servis referansını istemci tarafına ekleyebiliriz.
 
-![image.axd](images/image.axd)
+![custa_4.gif](images/custa_4.gif)
 
 İstemci tarafına ait kodları da aşağıdaki gibi yazabiliriz.
 
@@ -191,7 +191,7 @@ namespace AzonClientApp
 
 Dikkat edilmesi gereken nokta MathServiceClient nesne örneği üzerinden ClientCredentials bilgisinin doldurulması. UserName üzerinden kullanıcı adı ve şifre bilgilerini belirttikten sonra Sum operasyonunu çağırmaktayız. Şimdi test sürüşüne çıkabiliriz. Önce sunucu sonra da istemci uygulamaları çalıştıralım. Ne yazık ki aşağıdakine benzer bir hata ile karşılaşma olasılığımız yüksek.
 
-![image.axd](images/image.axd)
+![custa_5.gif](images/custa_5.gif)
 
 Sertifikanın doğrulanması sırasında bir hata oluştuğu ortada. Servis referansının eklenmesi sonrası oluşan web.config içeriğine biraz müdahalede bulunmamız gerekiyor. İçeriği aşağıdaki hale getirerek devam edelim.
 
@@ -239,11 +239,11 @@ Sertifikanın doğrulanması sırasında bir hata oluştuğu ortada. Servis refe
 
 Aslında bir endpointBehavior ekledik. EndpointBehaviorForCertificate kısmında istemci tarafına ait sertifika bildirimini yapmaktayız. AzonClient isimli sertifikanın kullanılacağını ifade ediyoruz. Diğer yandan servis sertifikasının doğrulama modelini de PeerOrChainTrust olarak verdiğimize dikkat edelim. Gerçi sunucu tarafında da bu şekilde belirttiğimizden istemci tarafında sadece PeerTrust (Bir Chain Store olmadığından ChainStore değil) da kullanabiliriz. İkinci değişiklik ise endpoint'e ait identity elementinde yer alan dns değeri. Burada servise ait sertifikanın Common Name bilgisinin verildiği görülmekte. Uygulamaları tekrar çalıştırdığımızda aşağıdaki gibi başarılı bir çağırım gerçekleştirdiğimizi görebiliriz.
 
-![image.axd](images/image.axd)
+![custa_6.gif](images/custa_6.gif)
 
 Elbette hatalı kullanıcı bilgisi ile ilerlenirse bir istisna alınacağı aşikardır.
 
-![image.axd](images/image.axd)
+![custa_7.gif](images/custa_7.gif)
 
 Sonuç
 

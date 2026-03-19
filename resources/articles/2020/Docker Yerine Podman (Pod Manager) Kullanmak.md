@@ -1,4 +1,4 @@
----
+﻿---
 title: "Docker Yerine Podman (Pod Manager) Kullanmak"
 pubDate: 2020-12-27 09:14:00
 categories:
@@ -21,7 +21,7 @@ tags:
 ---
 
 # Docker Yerine Podman (Pod Manager) Kullanmak
-![image.axd](images/image.axd)
+![anakinspod.png](images/anakinspod.png)
 
 Heimdall üstünden birşeyler kurcalamak istediğimde yolum genellikle bir Docker imajı ile kesişiyor. Bakmak istediğim bir NoSQL veritabanı mı var, ELK üçlüsü mü gerekli, bir NGinx server ortamımı lazım ya da yeni bir servis için çalışma zamanımı hazırlamam gerekiyor... Hemen Docker kardeşimizin kapısını çalıyorum. Aslında bakarsanız Container teknolojileri denince çoğumuzun aklına Docker'dan başka bir şey gelmiyordur belki de. "Gerçekten de böyle mi?" diye düşündüğüm bir ara Docker'ın güçlü bir alternatifi olan Podman isimli ürünle karşılaştım ve onu biraz tanımaya karar verdim.
 
@@ -83,7 +83,7 @@ podman pod rm pod_race
 
 Yukarıdaki temel çalışmaların kısa bir özeti aşağıdaki ekran çıktısındaki gibidir.
 
-![image.axd](images/image.axd)
+![skynet_40_Screenshot_01.png](images/skynet_40_Screenshot_01.png)
 
 Podman ile uzak depolardaki imajları kolayca arayabiliriz de. Mesela sevgili MariaDB imajlarını aradığımızı ve 20 yıldız üstünde olup automated özellikli olanları bulmak istediğimizi düşünelim...
 
@@ -112,7 +112,7 @@ skopeo inspect docker://docker.io/alpine:latest
 
 Yukarıdaki terminal komutlarına ait Heimdall çıktıları ise aşağıdaki gibi oluşmuştur.
 
-![image.axd](images/image.axd)
+![skynet_40_Screenshot_02.png](images/skynet_40_Screenshot_02.png)
 
 > Podman varsayılan kurulumunda image registery adresleri olarak docker ve quay geldi. Başka adresler eklemek istersek (mesela private repo'lar) /etc/containers/registries.conf dosyasını düzenlemek gerekir.
 
@@ -174,11 +174,11 @@ podman stop 337f
 
 İşte çalışma zamanı çıktısı. Podman ile Container ayağa kalktıktan sonra servisi masa tenisi oynamaya götürebiliriz.
 
-![image.axd](images/image.axd)
+![skynet_40_Screenshot_03.png](images/skynet_40_Screenshot_03.png)
 
 Tabii stop komutu ile ilgili container durdurulduğunda servise gönderilen talepler cevapsız kalır. Bu bir nevi Container tatile çıktığında servisin çalışmaması gerektiğinin de bir ispatıdır.
 
-![image.axd](images/image.axd)
+![skynet_40_Screenshot_04.png](images/skynet_40_Screenshot_04.png)
 
 ## Skopeo
 

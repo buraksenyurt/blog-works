@@ -1,4 +1,4 @@
----
+﻿---
 title: "Raspberry Pi'den Python ile Tweet Göndermek"
 pubDate: 2016-06-14 06:00:00
 categories:
@@ -14,7 +14,7 @@ tags:
 ---
 
 # Raspberry Pi'den Python ile Tweet Göndermek
-![image.axd](images/image.axd)
+![raspi_0.gif](images/raspi_0.gif)
 
 Merhaba Arkadaşlar,
 
@@ -100,11 +100,11 @@ sendtweet bir metod tahmin edeceğiniz üzere. Ruby'deki gibi def anahtar kelime
 
 Koda import ettiğimiz değişkenler twitter isimli nesnenin oluşturulması sırasında (şimdilik benim yapıcı metod-constructor olarak düşündüğüm yerde) kullanılıyor. Metoda parametre olarak gelen message isimli değişken içeriği de updatestatus isimli fonksiyon kullanılarak twitter'a gönderiliyor. Son olarak print fonksiyonunu ile komut satırına bir bilgi basıyoruz. Sonuçlar mı?
 
-![image.axd](images/image.axd)
+![twython_1.gif](images/twython_1.gif)
 
 Burada % kullanımını bir türlü beceremediğimi fark etmişsinizdir:D O yüzden arka arkaya bir kaç tweet gitmiş bulundu. Ama sonuçlar ilk gün için oldukça tatmin ediciydi. Kredi kartı büyüklüğündeki o bilgisayardan, python kodları ile harici bir kütüphane kullanarak tweet atmayı başarabildim. Demek ki bir robotu Raspi ile kullanmaya başladığımda, robotun tweet atmasını artık sağlayabilirim.
 
-![image.axd](images/image.axd)
+![twython_2.gif](images/twython_2.gif)
 
 Pek tabii modül içerisinde bir çok fonksiyonellik bulunmakta. Örneğin timeline'ı, kendi tweet'lerimizi görebilir, resim gönderebilir ve daha pek çok işlemi gerçekleştirebiliriz. Sonuçta Twitter API'sini kullanabileceğiniz kütüphane elinizin altında. Bunları nasıl yapabileceğinizi görmek için [şu adresteki tutorial](https://www.raspberrypi.org/learning/getting-started-with-the-twitter-api/worksheet/)'ı aynen benim gibi adım adım yapmanızı öneririm. Ben biraz farklı olarak metod kullandım.
 

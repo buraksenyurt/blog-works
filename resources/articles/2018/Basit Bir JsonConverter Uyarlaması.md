@@ -1,4 +1,4 @@
----
+﻿---
 title: "Basit Bir JsonConverter Uyarlaması"
 pubDate: 2018-09-22 11:28:00
 categories:
@@ -16,7 +16,7 @@ tags:
 ---
 
 # Basit Bir JsonConverter Uyarlaması
-![image.axd](images/image.axd)
+![peter_1.jpg](images/peter_1.jpg)
 
 Merhaba Burak,
 
@@ -158,6 +158,6 @@ static void Convert(string payload)
 
 JsonConvert sınıfının DeserializeObject fonksiyonuna generic ServiceResponse bildirimi yapılmış durumda. Çalışma zamanında bu sınıfa uygulanan nitelik sebebiyle özelleştirdiğimiz ters serileştirme akışı devreye girecektir. Senin verdiğin mesaj içeriklerini kullanarak yazdığım basit bir test kodu. Elde ettiğim sonuçlar aşağıdaki ekran görüntüsündeki gibiydi.
 
-![image.axd](images/image.axd)
+![jsonconverter_1.gif](images/jsonconverter_1.gif)
 
 Sanıyorum ki senin istediğin de buna benzer bir şeylerdi. Elbette daha iyi şekilde geliştirilebilir bu kod parçası. Hatta hem sayı hem de isimlendirme olarak birbirlerinden tamamen farklı mesajları tek bir tip içerisinde toplamaya çalışmayı da deneyebilirsin. Umarım az da olsa fikir sahibi olmuşssundur. Ben epey şey öğrendim diyebilirim. En kısa sürede görüşmek dileğiyle. Ufaklığa bol bol selamlar:)

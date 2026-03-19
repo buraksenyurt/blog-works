@@ -1,4 +1,4 @@
----
+﻿---
 title: "Elasticsearch'ü West-World'e Kurdum"
 pubDate: 2018-10-25 07:06:00
 categories:
@@ -89,7 +89,7 @@ sudo systemctl restart elasticsearch.service
 sudo systemctl status elasticsearch.service
 ```
 
-![image.axd](images/image.axd)
+![eoa_4.gif](images/eoa_4.gif)
 
 Testler
 
@@ -110,7 +110,7 @@ Content : { "nickName": "bonza monza","level":"500","medal":4 }
 
 Elasticsearch üzerinde westy isimli bir index, altında players isimli bir type oluşturduk. Bu tip altında 1001 nolu bir doküman içerisine de örnek bir JSON içeriği yükledik. "İnanmassan gel de bak!":)
 
-![image.axd](images/image.axd)
+![eow_6.gif](images/eow_6.gif)
 
 Hatta oluşturulan bu içeriği HTTP Get ile çekebiliriz de;
 
@@ -121,7 +121,7 @@ Resource : http://localhost:9205/westy/players/1001
 
 Uuuuu beybiii! Çok keyifli.
 
-![image.axd](images/image.axd)
+![eow_7.gif](images/eow_7.gif)
 
 Peki o zaman bir de PUT metodunu mu denesek? Yani bir güncelleme mi yapsak. Mesela Bonza Monza'nın madalya sayısını arttıralım.
 
@@ -132,7 +132,7 @@ Content-Type : application/json
 Content : { "nickName": "bonza monza","level":"500","medal":5 }
 ```
 
-![image.axd](images/image.axd)
+![eow_8.gif](images/eow_8.gif)
 
 ve tekrar Get ile 1001 numaralı veri içeriğini isteyelim.
 
@@ -141,7 +141,7 @@ Metod : HTTP Get
 Resource : http://localhost:9205/westy/players/1001
 ```
 
-![image.axd](images/image.axd)
+![eow_9.gif](images/eow_9.gif)
 
 Lütfen versiyon numarasına dikkat edin (Tabii bu benim ikinci denemem. O nedenle 3 oldu:D)
 
@@ -214,7 +214,7 @@ HTTP Get 
 http://localhost:9205/_cat/indices?v 
 ```
 
-![image.axd](images/image.axd)
+![ewk_1.gif](images/ewk_1.gif)
 
 Görüldüğü üzere log için oluşturduğumuz index'de burada yer alıyor. Üstelik 3 doküman içermekte (3 tane log mesajı atmıştık) Dolayısıyla aşağıdaki taleple index hakkında bilgi alabiliriz.
 
@@ -223,7 +223,7 @@ HTTP Get
 http://localhost:9205/api-log-2018.07 
 ```
 
-![image.axd](images/image.axd)
+![ewk_2.gif](images/ewk_2.gif)
 
 Peki içerideki log bilgilerimizi nasıl göreceğiz? Yine Elastichsearch API'sinin _search metodundan yararlanabiliriz (ile başlayan komutlar Elasticsearch API'sine ait sorgulama metodlarıdır)
 
@@ -232,7 +232,7 @@ HTTP Get
 http://localhost:9205/api-log-2018.07 
 ```
 
-![image.axd](images/image.axd)
+![eok_3.gif](images/eok_3.gif)
 
 Görüldüğü üzere API komutlarından yararlanarak oluşturulan log mesajlarını görebildik. Her ne kadar REST API her tür ihtiyacımızı karışılıyor olsa da gerçek hayat uygulamalarında artan log miktarı onları takip etmemizi zorlaştıracaktır. Şöyle göze hoş gelen, sadece Elasticsearch içindeki bilgileri takip etmekle kalmayıp ek fonksiyonellikleri ile uygulamaları izleyebileceğimiz bir arabirim olsa fena mı olurdu? Olmazdı tabii. İşte Kibana bu noktada devreye giriyor.
 
@@ -254,31 +254,31 @@ sudo docker run --net=host -e "ELASTICSEARCH_URL=http://localhost:9200" docker.e
 
 Her iki container birbiriyle haberleşebilir durumdadır. Varsayılan olarak elasticsearch 9200 portundan hizmet verecektir. Bu nedenle Kibana örneğini çalıştırırken ELASTICSEARCH_URL'ini 9200 portuna göre vermek gerekir. Sonuç olarak http://localhost:5601 adresinden Kibana'ya da ulaşılabilir. West-World'de önce Elasticsearch'ü, sonra Kibana örneklerini çalıştırdıktan sonra yukarıda hazırladığımız Web API servisini kullandım. Ah bu arada port bilgisi değiştiği için Startup içerisindeki 9205 değerini tekrardan 9200'e çekmem gerekti. Elbette docker örneklerinin ilgili yml içeriklerini kurcalayarak bu bilgiler değiştirilebilir ama ben şimdilik varsayılan halleri ile bırakıyorum (yemedi:P)
 
-![image.axd](images/image.axd)
+![ewk_13.gif](images/ewk_13.gif)
 
 Üst terminal kibana, alt terminal ise elasticsearch container örneklerinden gelen log'ları göstermekte. Postman ile servise yapılan bir kaç talep sonrası hemen tarayıcıyı açıp http://localhost:5601 adresinin yolunu tuttum. Kibana'ya bu şekilde bağlandıktan sonra aslında izlemek istenen Elasticsearch index'leri için bir desen oluşturulması gerekir. Hatırlanacağı üzere log bilgisini yazarken Serilog'a index adının nasıl olacağını da söylemiştik. Bu senaryo için api-log-2018-07 şeklindeydi. Dolayısıyla api* gibi bir desen kullanarak bu ve benzer isimlere uygun tüm index'lerin Kibana'dan izlenmesini sağlayabiliriz.
 
-![image.axd](images/image.axd)
+![ewk_14.gif](images/ewk_14.gif)
 
 Ekran görüntüsündeki adımdan sonra da belki bir filtre belirleyebiliriz. Ben log atılma zamanına göre bir filtre ekleyip Create Index Pattern tuşuna basarak devam ettim.
 
-![image.axd](images/image.axd)
+![ewk_15.gif](images/ewk_15.gif)
 
 Artık atılmış olan deneme log'larını izlemek için sadece Monitoring özelliğini açmamız yeterli.
 
-![image.axd](images/image.axd)
+![ewk_16.gif](images/ewk_16.gif)
 
 Sonuçta aşağıdaki gibi şık rapor ekranlarına ulaşmış olacağız.
 
-![image.axd](images/image.axd)
+![ewk_17.gif](images/ewk_17.gif)
 
 Monitoring kısmında daha farklı bir görünüm,
 
-![image.axd](images/image.axd)
+![ewk_20.gif](images/ewk_20.gif)
 
 ve discover kısmında bir görünüm...
 
-![image.axd](images/image.axd)
+![ewk_18.gif](images/ewk_18.gif)
 
 Dikkat edileceği üzere arabirimler gayet güzel. Şu anda firmadaki uygulamaların loglama mesajlarını docker üzerinde yaşayan Elasticsearch ortamlarına atacak ve Kibana ile izlememizi sağlayacak değişikliklere başlamak istedim. Docker bu noktada hayatımızı oldukça kolaylaştırdı. Benim için hazırlanması bir kaç güne denk gelen yorucu bir makale oldu diyebilirim. Lakin oldukça keyif aldığımı ifade etmek isterim. Umarım sizler için de bilgilendirici bir yazı olmuştur. Böylece geldik bir makalemizin daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.
 

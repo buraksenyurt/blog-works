@@ -1,4 +1,4 @@
----
+﻿---
 title: "Code Coverage"
 pubDate: 2019-02-05 21:01:00
 categories:
@@ -14,7 +14,7 @@ tags:
 ---
 
 # Code Coverage
-![image.axd](images/image.axd)
+![cdcrgkapak1.jpg](images/cdcrgkapak1.jpg)
 
 Merhaba Arkadaşlar,
 
@@ -52,7 +52,7 @@ dotnet build
 
 Şu haliyle aşağıdaki şekilde görülen klasör yapısına sahibiz.
 
-![image.axd](images/image.axd)
+![codecov_1.gif](images/codecov_1.gif)
 
 Bize tabii ki bir demet C# ve bir tutam da test kodu gerekiyor. MathService ve MathService.Tests projelerine aşağıdaki kod parçalarını serpiştirebiliriz. Buradaki temel hedefimiz Code Coverage için Visual Studio Code tarafında neler yapabileceğimize bakmak olduğundan basit bir iki deneme metodu yeterli olacaktır. MathService projesindeki Fundamental projesinde dörtgen çevresini bulmak için yararlanabileceğimiz bir fonksiyon yer alıyor.
 
@@ -123,7 +123,7 @@ dotnet test MathService.Tests/MathService.Tests.csproj /p:CollectCoverage=true /
 
 Bu durumda çalışma zamanının tepkisi aşağıdaki ekran görüntüsündeki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![codeco_2.gif](images/codeco_2.gif)
 
 İki test başarılı şekilde çalışmış görünüyor. Bunun dışında kodlarımız satır, branch ve metod bazında yüzde yüz sigortalanmış durumda diyebiliriz. Söz konusu veri çıktıları bu örnek için CodeCoverage.opencover.xml isimli dosyaya da yansıtılmış durumdadır. Şimdi Fundamental sınıfına yeni bir fonksiyon daha ekleyelim.
 
@@ -140,7 +140,7 @@ public double Average(params double[] numbers)
 
 n sayılı bir dizinin ortalama değerini bulan bir fonksiyon söz konusu. Ancak bu kez ilgili fonksiyon için herhangi bir test yazmayalım ve testimizi yeniden başlatalım.
 
-![image.axd](images/image.axd)
+![codecov_3.gif](images/codecov_3.gif)
 
 Hımmm...Güzelllll...Sonuçlar değişti. Satır, branch ve metod bazında MathService projesinin bir kısmına güvenebileceğimizi söyleyebiliriz. Nitekim kodun neredeyse %50si testten geçirilmemiş ve kontrol edilmemiş durumda. Peki test metodlarından en az birisinin hatalı sonlandığı bir durum söz konusuysa ne olur? Bunun için şöyle bir test metodunu ekleyerek ilerleyelim.
 
@@ -155,7 +155,7 @@ public void Should_Average_Is_2_For_Some_Array()
 
 Tekrar testimizi çalıştırırsak aşağıdaki sonuçlarla karşılaşırız.
 
-![image.axd](images/image.axd)
+![codecov_4.gif](images/codecov_4.gif)
 
 Code Coverage adımına geçemedik bile sanki:)) Zaten testlerinden en az birisi hatalı sonuçlanan kodun güvenilirliği de tartışılır ve Continuous Integration sunucusunda çalışan SonarQube gibi statik kod analiz araçları bu durumu affetmeyecektir. Genellikle bu gibi durumlarda build edilen parçaların dağıtım adımına geçirilmemesi söz konusudur. SonarQube demişken...Aslında uygulama ile ilgili CodeCoverage sonuçlarını gözlemlemek için SonarQube'dan da yararlanabiliriz. Coverlet'in ürettiği çıktılar SonarQube ile de uyumludur. West-World üzerinde SonraQube yüklü değil ancak docker imajından yararlanabilirim. Bunun için terminalden aşağıdaki komutu vermek yeterli.
 
@@ -180,7 +180,7 @@ dotnet sonarscanner end
 
 Komutlar işletildikten sonra docker üzerinden çalışan ve localhost:9000 nolu porttan hizmet veren SonarQube servisine gidebiliriz. Bu durumda aşağıdakine benzer bir ekran görüntüsü ile karşılaşmamız gerekir.
 
-![image.axd](images/image.axd)
+![codecov_5.gif](images/codecov_5.gif)
 
 Tek kelime ile A kalite bir ürün söz konusu:P Ama tabii gerçek hayat pek de böyle olmuyor. Özellikle yaşlı ve aceleyle geliştirilmiş,acele geliştirildiği için de stratejik olarak teknik borçlanılmış ürünler söz konusu olduğunda tablo aşağıdaki grafikte görüldüğü gibi de olabilir. FAILED!!!
 

@@ -1,4 +1,4 @@
----
+﻿---
 title: "Asp.Net Core Web API için Custom MiddleWare Yazmak"
 pubDate: 2017-12-18 06:01:00
 categories:
@@ -22,7 +22,7 @@ tags:
 ---
 
 # Asp.Net Core Web API için Custom MiddleWare Yazmak
-![image.axd](images/image.axd)
+![custom_mw4.gif](images/custom_mw4.gif)
 
 Merhaba Arkadaşlar,
 
@@ -30,7 +30,7 @@ Uzun zamandır televizyon dizisi izlemiyorum. Aslında bir dönem düzenli olara
 
 Ardından kahvemi alıp West-World'e doğru yola çıktım. Bu kez Sergei Rachmaninof, Henry Auguste ve Dan Hawkins'in aralarında yer aldığı piyano tınıları eşliğindeydim. Saatler gece yarısını geçeli bir kaç dakika olmuştu. Çantamı açtım ve hafta içi.Net Core tarafındaki ara katmanın (Middleware) ne işe yaradığını anlamaya çalışırken karaladığım notlarımı buldum. Bilgilerimi toparlamanın ve güzel bir örnek yapıp tekrar unutmamak üzere bloğuma bir şeyler yazmanın tam vaktiydi.
 
-![image.axd](images/image.axd)
+![custom_mw5.gif](images/custom_mw5.gif)
 
 .Net Core açık kaynak olarak geliştirilmiş Kestrel web sunucusunu kullanmakta. Kestrel, web çalışma zamanının ayağa kaldırılmasından, istemciden gelen taleplerin (Request) hat üzerindeki ara katman modüllerine (pipeline middleware) geçirilmesinden ve tabii ki üretilen cevabın tekrar istemciye döndürülmesinden sorumlu (En temel fonksiyonellikleri bunlar) IIS gibi geniş kabiliyet ve yönetsel özelliklere sahip görünmese de bence çarpraz platformlarda microservice mimarisi için ideal bir çatı sunucusu. Benim ilgimi çekense Pipeline Middleware tarafı. Burada, seçilen web projesine göre varsayılan olarak gelen ara katman modülleri zaten mevcut. Peki kendi middleware tipimizi de sisteme dahil edebilir miyiz? (Saçma bir soru. Tabii ki de edebilirsin Burak; ama nasıl?) O zaman gelin bu işi nasıl yapabileceğimize bir bakalım.
 
@@ -42,7 +42,7 @@ dotnet new webapi -o CustomMW
 
 Asp.Net Core tarafında oluşturulan projeler bildiğiniz gibi standart bir takım kodlarla gelmekte. Startup.cs içeriği bu açından önemlidir. Nitekim web sunucusu ayağa kalkarken gerçekleştirilecek bir çok ön hazırlık ve çalışma zamanı hareketliliklerine ait işleyişler burada ele alınır. Configure metodunda yer alan app değişkeni, IApplicationBuilder arayüzünün oldukça şık bir uyarlamasını kullanır ve bir çok yeni ara katman özelliğinin çalışma zamanına dahil edilebilmesine olanak sağlar. Neler olduklarını görmek için Use ön eki ile başlayan metodlara bakmamız yeterli.
 
-![image.axd](images/image.axd)
+![custom_mw2.gif](images/custom_mw2.gif)
 
 Dilersek ara katmanda devreye girebilir ve pipeline üzerinden hareket eden mesajları yakalayabiliriz (Aslında pek çok kaynakta ilk yapılan örnek bu) Bunun en basit yolu belli bir tipe bağlı olmadan kullanılabilen Use fonksiyonunu yazmaktan geçmekte. Aşağıdaki örnek kod parçasını ele alaım.
 
@@ -73,7 +73,7 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 
 Use metodu HttpContext ve Func tipinden parametreler alan metodları işaret edebilecek bir temsilci (delegate) ile çalışır. HttpContext ile web çalışma zamanına gelen ve giden içerikleri kontrol edebiliriz. Örnekte gelen mesaj ile ilgili HTTP metodu, adres bilgisi gibi değerler çekilip Console penceresine yazdırılmaktadır. Sonrasında işleyişin sıradaki ara katman hattına devredilmesi sağlanır (Invoke çağırımı) Ardından istemciye gönderilecek cevaba ait bir takım bilgiler yazdırılır. Örneğin dönen içeriğin tipi ve durum kodu bilgisi gibi. Çalışma zamanında yapılan denemelerin sonuçlarından örnek bir ekran görüntüsü aşağıdaki gibidir.
 
-![image.axd](images/image.axd)
+![custom_mw1.gif](images/custom_mw1.gif)
 
 Dikkat edileceği üzere yapılan her talebe ilişkin bir takım bilgiler terminal penceresine yazılmıştır. IApplicationBuilder arayüzü üzerinden Use operasyonunu kullanılarak ilerlenilmesi basit ve pratik bir yol sunsa da, UseBlaBlaBla kullanımı kadar doğru değildir. Ara katmana dahil etmek istediğimiz operasyonları bir sınıf ile ilişkilendirmek sorumluluğun doğru yöne alınması ve tekrarlı kodların önlenmesi açısından iyi bir tercih olacaktır (Hatta siz ayrı bir Class Library içerisine alarak ilerleseniz daha iyi olur) Öyleyse yazının en heyecan verici kısmına başlayalım.
 
@@ -167,6 +167,6 @@ app.UseWatson(new WatsonOptions{
 
 Volaaa!!! Açıkçası bu yaklaşım çok hoşuma gitti diyebilirim. Bir interface veya abstract sınıf türetimi ile plug-in mantığında bir genişletme yerine Fluent yapıyı benimseyen bir interface tipini genişleterek pipeline üzerine yeni bir middleware ekleyebildik. Bunu sıfırdan kurgulamaya çalışıp kendimizi daha da geliştirebiliriz ama şimdilik ödülümüz olan çalışma zamanı sonuçlarına bir bakalım derim. Firefox HttpRequester ile normal ve izin verilen limit üstündeki boyutlarda POST işlemleri yaptığımızda aşağıdaki ekran görüntüsündekine benzer sonuçlar alırız.
 
-![image.axd](images/image.axd)
+![custom_mw3.gif](images/custom_mw3.gif)
 
 Tabii burada gelen geçen tüm mesajları boyutu ne olursa olsun işlettik. Belki de boyut kontrolünün başka bir yolu da vardır ama amacımız özel bir ara katman modülünü nasıl entegre edebileceğimizi görmekti. Hayal gücünüzü zorlayın ve nasıl ara katman ekleyebilirsiniz bir düşünün. Bu yapıyı sadece Web API tarafında değil Kestrel kullanılan tüm.Net Core projelerinde ele alabiliriz. Dilerseniz benzer örneği farklı bir senaryo ile bir MVC projesinde deneyerek bilgilerinizi pekiştirebilirsiniz. Böylece geldik bir makalemizin daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

@@ -1,4 +1,4 @@
----
+﻿---
 title: "Sıkça Duyduğum Deno'ya Hello Dedim"
 pubDate: 2020-01-04 21:00:00
 categories:
@@ -19,7 +19,7 @@ tags:
 ---
 
 # Sıkça Duyduğum Deno'ya Hello Dedim
-![image.axd](images/image.axd)
+![denverdino.jpg](images/denverdino.jpg)
 
 Denver, the last dinosaur
 He's my friend and a whole lot more
@@ -176,18 +176,18 @@ deno run --allow-net --allow-write --allow-read main.ts
 
 Terminalden gerekli izinleri verip uygulamayı çalıştırdıktan sonra curl ile çektiğimiz örnek veriler...
 
-![image.axd](images/image.axd)
+![screenshot_4.png](images/screenshot_4.png)
 
 Çalışma sırasında sık sık verilerin db'ye yazılıp yazılmadığını da Visual Studio Code üstündeki SQLite eklentisinden kontrol ettim. Başta söylemeyi unuttum ama Ubuntu ortamımda her zaman olduğu gibi geliştirme aracı olarak Visual Studio Code kullanmaktayım.
 
-![image.axd](images/image.axd)
+![screenshot_1.png](images/screenshot_1.png)
 
 Tabii veri eklemek için en kolay yollardan birisi Postman. Aşağıda örnek bir POST çağrısı ile bir Chuck Norris şakası ekleyişimiz resmedilmekte:)
 
-![image.axd](images/image.axd)
+![screenshot_2.png](images/screenshot_2.png)
 
 Http Get ile tüm listeyi de aşağıdaki gibi çekebiliyoruz.
 
-![image.axd](images/image.axd)
+![screenshot_3.png](images/screenshot_3.png)
 
 Chuck Norris artık mutlu diyebilirim. Ancak yapılması gereken birçok şey var. Örneğin verinin devasallaşacağını düşünerek servisin sayfalamalı bir şekilde cevap döndürmesini sağlayabiliriz. Bunlara ek olarak güncelleme ve silme gibi operasyonları da işin içerisine katmak iyi bir pratik olabilir. Bunları Deno'nun güncel sürümleri üzerinden denemenizi öneririm. Kodun son haline [github](https://github.com/buraksenyurt/skynet/tree/master/No%2007%20-%20What%20is%20Deno) SkyNet reposu üzerinden ulaşabilirsiniz. Tekrarda görüşünceye dek hepinize mutlu günler dilerim.

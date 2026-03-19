@@ -1,4 +1,4 @@
----
+﻿---
 title: "Asp.Net Core Routing Mekanizmasını Kavramak"
 pubDate: 2018-02-02 04:24:00
 categories:
@@ -21,7 +21,7 @@ tags:
 ---
 
 # Asp.Net Core Routing Mekanizmasını Kavramak
-![image.axd](images/image.axd)
+![corerouting_11.gif](images/corerouting_11.gif)
 
 Merhaba Arkadaşlar,
 
@@ -116,15 +116,15 @@ MapGet fonksiyonunun ilk parametresi path bilgisini kullanırken ikinci parametr
 
 Gelelim çalışma zamanı sonuçlarına. Eğer 4001 nolu porta doğrudan gidersek aşağıdaki sonucu elde ederiz.
 
-![image.axd](images/image.axd)
+![corerouting_1.gif](images/corerouting_1.gif)
 
 Eğer green/mile path bilgisini kullanırsak da aşağıdaki sonuçla karşılaşırız.
 
-![image.axd](images/image.axd)
+![CoreRouting_2.gif](images/CoreRouting_2.gif)
 
 Bu iki path dışında farklı bir path ile gelinirse, {*urlPath} bildirimi nedeniyle aşağıdakine benzer içeriklerle karşılaşırız. Sadece gelen path bilgisini ekrana bastırdığımıza dikkat edelim. Pekala ana sayfaya yönlendirme de yapabilir ya da HTTP 404 NotFound mesajı döndürebilirdik. Bu ikisini deneyin derim.
 
-![image.axd](images/image.axd)
+![CoreRouting_3.gif](images/CoreRouting_3.gif)
 
 MapGet çağrılarında varsayılan değerleri ele almakta mümkün. Aynı kodun {*urlPath} operasyonunu yorum satırı haline getirip aşağıdaki ilaveyi yaptığımızı düşünelim.
 
@@ -139,11 +139,11 @@ rootBuilder.MapGet("whatyouwant/{wanted=1 Bitcoin please}", (context) =>
 
 Bu kez http://localhost:4001/whatyouwant/something benzeri talepleri karşılıyoruz. Dikkat edilmesi gereken husus {} içeriği. Burada wanted isimli bir değişken tanımladık. Aslında bu değişken içeriği GetRouteData ().Values ile elde edilen listede yer alıyor. Bu nedenle HTML çıktısını üretirken ["wanted"] şeklinde erişerek kullanıcının path'e yazdığı değişken bilgisini yakalayabiliyoruz. = sonrası yapılan 1 Bitcoin please ataması ise varsayılan değer oluyor. Buna göre aşağıdaki iki farklı kullanım da geçerli. İlkinde kullanıcının path içerisine koyduğu örnek bir wanted değişkeni var.
 
-![image.axd](images/image.axd)
+![coreRouting_4.gif](images/coreRouting_4.gif)
 
 Eğer parametre girmessek de aşağıdaki sonuçla karşılaşırız.
 
-![image.axd](images/image.axd)
+![corerouting_5.gif](images/corerouting_5.gif)
 
 Varsayılan Handler'ı Kurcalamak
 
@@ -219,11 +219,11 @@ BoosterV2 sınıfına ait Configure metoduna odaklanalım. Talep edilen path bil
 
 Varsayılan sayfamız.
 
-![image.axd](images/image.axd)
+![CoreRouting_6.gif](images/CoreRouting_6.gif)
 
 ve kitaplarımız.
 
-![image.axd](images/image.axd)
+![CoreRouting_7.gif](images/CoreRouting_7.gif)
 
 URL Dizilimini Kodla İnşa Etmek
 
@@ -310,14 +310,14 @@ Tanımlanan bu iki segmentin ardışıl olarak işe yaraması için bir dizide k
 
 http://localhost:4001/api adresine yapılan çağrı sonrası
 
-![image.axd](images/image.axd)
+![coreRouting_8.gif](images/coreRouting_8.gif)
 
 Dikkat edileceği üzere karşılaştırma true dönmüştür. http://localhost:4001/api/wather gibi bir çağrı da geçerlidir. Nitekim belirtilen şablona uygundur. Ki bu sefer serviceName değişkeni de yakalanabilmiştir.
 
-![image.axd](images/image.axd)
+![CoreRouting_9.gif](images/CoreRouting_9.gif)
 
 Ama tabii şablona uymayan bir path bilgisi için eşleşme false değer dönecektir. Söz gelimi http://localhost:4001/api/weather/v2/soap11 veya http://localhost:4001/rest/collateral için...
 
-![image.axd](images/image.axd)
+![CoreRouting_10.gif](images/CoreRouting_10.gif)
 
 Bu yazımızda Asp.Net Core tarafındaki Routing mekanizmasının farklı kullanımlarını incelemeye çalıştık. Elbette daha fazlası vardır diye düşünüyorum. Şimdilik öğrenebildiklerim bunlar. Siz örnekleri geliştirmeye çalışarak ilerleyebilirsiniz. Özellikle ikinci örnek koddaki belli kategorideki ürünler mantığını ele alarak bir rest servisinin yazılmasında MapGet operasyonlarını ele alabilirsiniz. Gelen talebe göre çalışma zamanında dinamik web sayfası içeriklerini üretecek bir varsayılan handler da geliştirebilirsiniz. Hatta bir fotoğraf web sunucusu geliştirmeyi deneyebilirsiniz. Basılacak Content-Type bilgisini değiştirebildiğimize göre bu da mümkün. Elinizin altında tüm imkanlar mevcut. Böylece geldik bir makalemizin daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

@@ -1,4 +1,4 @@
----
+﻿---
 title: "Core Web API  için Planlanmış Görevler"
 pubDate: 2018-02-09 04:27:00
 categories:
@@ -22,7 +22,7 @@ tags:
 ---
 
 # Core Web API  için Planlanmış Görevler
-![image.axd](images/image.axd)
+![hostedsrv_1.gif](images/hostedsrv_1.gif)
 
 Merhaba Arkadaşlar,
 
@@ -161,6 +161,6 @@ public void ConfigureServices(IServiceCollection services)
 
 Bu değişiklikle, AddSingleton metodunun generic versiyonunu kullanarak IHostedService uyarlamasını gerçekleştiren ChuckFactService ve RequestCollectorService sınıflarının arka plan hizmetlerine eklenmesini sağladık. Artık Web uygulaması çalışmaya başladığında bu sınıflar otomatik olarak devreye alınacak ve üzerlerindeki görevler belirlenen sürelerinde işletilecekler. Uygulamamızı çalıştırdıktan sonrasına ait örnek bir ekran görüntüsü aşağıdaki gibidir.
 
-![image.axd](images/image.axd)
+![hostedsrv_2.gif](images/hostedsrv_2.gif)
 
 10 saniyede bir Chuck Norris'e ait servise bir çağrı ve 30 saniyede bir ortam verilerini toplama işlemi gerçekleşmektedir. Bu sırada Web API servisinin normal hizmetini sürdürdüğünü de ifade edelim. Yani gelen talepleri karşılar haldedir. Görüldüğü üzere arkaplan görevlerinin Web tabanlı uygulamalarda konuşlandırılması oldukça kolay..Net Core tarafının Dependency Injection mekanizması da bu işi basitleştirmekte. Microservice odaklı çözümlerde bu teknikten yararlanılarak arka plan görevlerinin tesis edilmesi kolaylıkla sağlanabilir. Hosted Service tipleri Task'ların yürütüldüğü noktalarda asenkron çalışan dış sistemlerle entegre olabilirler (RabbitMQ, Kafka, MSMQ. Azure Service Bus, WSO2 vb) Benim için yine keşfedilmesi, çalışılması, uygulanması ve öğrenilmesi keyifli bir konuydu. Bir başka makalede görüşünceye dek hepinize mutlu günler dilerim.

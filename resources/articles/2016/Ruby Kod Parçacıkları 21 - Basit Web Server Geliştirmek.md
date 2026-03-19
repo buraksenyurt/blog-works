@@ -1,4 +1,4 @@
----
+﻿---
 title: "Ruby Kod Parçacıkları 21 - Basit Web Server Geliştirmek"
 pubDate: 2016-02-22 14:00:00
 categories:
@@ -15,7 +15,7 @@ tags:
 ---
 
 # Ruby Kod Parçacıkları 21 - Basit Web Server Geliştirmek
-![image.axd](images/image.axd)
+![web-server.gif](images/web-server.gif)
 
 Merhaba Arkadaşlar,
 
@@ -88,7 +88,7 @@ rescue Errno::EPIPE
 
 Öncelikli olarak uygulamamızı test edelim. Ruby kod dosyasını çalıştırdıktan sonra localhost:8082 adresine herhangi bir talepte bulunmamız yeterlidir.
 
-![image.axd](images/image.axd)
+![rubywebserver_1.gif](images/rubywebserver_1.gif)
 
 Neler yaptığımıza kısaca bakalım. Her şeyden önce TCP protokolüne göre basit bir soket haberleşmesi söz konsuudur. Bu nedenle socket modülünde bulunan TCPServer sınıfından yararlanıyoruz. Sınıfa ait nesne örneğini oluştururken verdiğimiz iki parametre ile makine adını ve port bilgisini bildiriyoruz. Örneğimize göre localhost:8082 adresini ele almaktayız. Sonrasında istemciden gelen talepler olduğu sürece devam edecek bir while döngümüz bulunuyor (Burada sonsuz bir döngü de söz konusu olabilir tabii)
 
@@ -144,14 +144,14 @@ Bu sefer localhost:8082 adresinde docs/[bir dosya adı].jpg ile gelen talepleri 
 
 Var olan bir dosyanın talep edilmesi sonucu
 
-![image.axd](images/image.axd)
+![rubywebserver_2.gif](images/rubywebserver_2.gif)
 
 Olmayan bir dosyanın talep edilmesi sonucu
 
-![image.axd](images/image.axd)
+![rubywebserver_3.gif](images/rubywebserver_3.gif)
 
 jpg dışı bir uzantının talep edilmesi sonucu
 
-![image.axd](images/image.axd)
+![rubywebserver_4.gif](images/rubywebserver_4.gif)
 
 Örnek biraz daha geliştirilebilir. Söz gelimi sadece jpg uzantılı değil normal bir web sunucusu gibi farklı tipte içerikleri ele alacak hale de getirilebilir (Bu noktada farklı content-type'ların nasıl ele alınması gerektiğine bakılabilir) Ayrıca sadece Get değil Post gibi taleplerin ele alınması da söz konusu olabilir. Sunucu servis bazlı içerikleri de barındırıp buna uygun çalışabilir vb... Tahmin edileceği üzere bu güzel araştırma konularını siz değerli okurlarıma bırakıyorum. Böylece geldik bir yazımızın daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

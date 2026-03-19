@@ -1,4 +1,4 @@
----
+﻿---
 title: "GoLang - Bir Go Paketini Ruby'den Çağırmak"
 pubDate: 2017-06-09 12:33:00
 categories:
@@ -13,7 +13,7 @@ tags:
 ---
 
 # GoLang - Bir Go Paketini Ruby'den Çağırmak
-![image.axd](images/image.axd)
+![gofromruby_1.gif](images/gofromruby_1.gif)
 
 Merhaba Arkadaşlar,
 
@@ -139,6 +139,6 @@ puts ShapeMath.CircleSpace(10)
 
 magic.rb isimli dosya ffi gem paketini kullanıyor. ShapeMath isimli bir module tanımı içermekte. Bu modül, ffi_lib metoduna gönderilen SomeMath.so dosyasını yükleyip içerisindeki CircleSpace isimli fonksiyonu çalışma zamanına ekleme işlemini gerçekleştirmekte. Son kod satırında ise CircleSpace isimli metodun çıktısının ekrana basıldığı bir komut yer alıyor. attach_function bildiriminde Ruby dünyası için geçerli olan veri tipleri söz konusu. Go tarafında float64 olarak ifade ettiğimiz tipleri burada double olarak ele almaktayız. İşte çalışma zamanı sonuçları.
 
-![image.axd](images/image.axd)
+![gowithruby_2.gif](images/gowithruby_2.gif)
 
 Elbette işler her zaman bu kadar basit olmayabilir. GO'da var olan bir takım türlerin çağırılmak istenen programlama dilinde karşılığı olmayabilir. Örneğin bir Slice ya da map kulladığımız fonksiyonlar ya da bizim tarafımızdan tanımlanmış yapılar (struct) nasıl eşleştirilmelidir. Ruby'de, Pyhton'da, C# tarafında bu tipler nasıl ele alınmalıdır. Doğru dönüşümleri yapabilmek bu açıdan önemli. Bu "Hello World" tadındaki örnek sadece bu işin yapılabildiğini gösterir niteliktedir. Daha fazlası için Google:) Böylece geldik bir yazımızın daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

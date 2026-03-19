@@ -1,4 +1,4 @@
----
+﻿---
 title: "ServiceStack ile REST Servis Geliştirmek"
 pubDate: 2016-02-13 07:00:00
 categories:
@@ -23,7 +23,7 @@ tags:
 ---
 
 # ServiceStack ile REST Servis Geliştirmek
-![image.axd](images/image.axd)
+![cat.gif](images/cat.gif)
 
 Merhaba Arkadaşlar,
 
@@ -45,11 +45,11 @@ Console uygulaması üzerinden host edilen bir REST servis geliştireceğiz. Bu 
 
 İlk olarak bir Console uygulaması açarak işe başlayalım. Sonrasında ServiceStack paketini uygulamamıza dahil etmemiz gerekiyor.
 
-![image.axd](images/image.axd)
+![sStack_3.gif](images/sStack_3.gif)
 
 Paketi dahil ettikten sonra aşağıdaki sınıf diagramını baz alarak gerekli geliştirmeleri yapmaya başlayabiliriz.
 
-![image.axd](images/image.axd)
+![sstack_4.gif](images/sstack_4.gif)
 
 ve kodlar
 
@@ -192,27 +192,27 @@ ProductService sınıfnın bulunduğu Assembly dikkat edileceği üzere AppHost 
 
 Aslında yaptıklarımızı aşağıdaki şekil ile kısaca özetleyebiliriz.
 
-![image.axd](images/image.axd)
+![sStack_6.gif](images/sStack_6.gif)
 
 ## Testler
 
 Öncelikli olarak servisi ayağa kaldırmamız gerekiyor. Console uygulamasını başlattığımızda aşağıdakine benzer bir ekran görüntüsü ile karşılaşmalıyız.
 
-![image.axd](images/image.axd)
+![sStack_0.gif](images/sStack_0.gif)
 
 Sonrasında istemci testlerine başlayabiliriz. Ben, Get ve Post talepleri için SoapUI ve Google Chrome tarayıcısından yararlandım. SoapUI üzerinden elde ettiğim sonuçlar ise şöyle.
 
 http://localhost:4568/products/ HTTP Get için
 
-![image.axd](images/image.axd)
+![sStack_1.gif](images/sStack_1.gif)
 
 ServiceStack istemci tarafına özel bir HTML içeriği basar. İstenirse çıktılar json,xml,csv ve hatta jsv formatında alınabilir. Tek yapılması gereken URL sonuna?format=json benzeri bir ifade eklemektir. Örneğin ürün adı B harfi ile başlayanların listesini JSON formatında elde etmek istersek http://localhost:4568/Products/B?format=json şeklinde bir talep gönderilmesi yeterlidir.
 
-![image.axd](images/image.axd)
+![sstack_5.gif](images/sstack_5.gif)
 
 ve http://localhost:4568/products/ HTTP Post içinde aşağıdaki şekilde talepte bulunabiliriz. Eğer Post paketi başarılı bir şekilde gönderilirse servisin yeni üretilen Product nesnesine ait değerleri geri gönderdiğini de görebilmeliyiz. Aynen aşağıdaki ekran görüntüsünde olduğu gibi.
 
-![image.axd](images/image.axd)
+![sStack_2.gif](images/sStack_2.gif)
 
 Bu işlem sonrasında ürün listesi yeniden talep edilirse 1000 numaralı parçanın da koleksiyona eklendiği görülecektir. Tabii ki bir gerçek hayat senaryosunda veriyi tutmak adına RDBMS veya NoSQL tabanlı bir kaynaktan yararlanmakta yarar vardır. Siz antrenmanlarınızı buna göre yapabilirsiniz.
 

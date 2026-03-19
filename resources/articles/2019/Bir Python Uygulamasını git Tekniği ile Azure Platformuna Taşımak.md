@@ -1,4 +1,4 @@
----
+﻿---
 title: "Bir Python Uygulamasını git Tekniği ile Azure Platformuna Taşımak"
 pubDate: 2019-09-09 12:30:00
 categories:
@@ -14,7 +14,7 @@ tags:
 ---
 
 # Bir Python Uygulamasını git Tekniği ile Azure Platformuna Taşımak
-![image.axd](images/image.axd)
+![ahchto.png](images/ahchto.png)
 
 Rey evrenin taaa bir ucundan kalkıp ahch-to gezegenine gelmiş ve Jedi ustasının onu eğitmesini istemişti. Galaksinin bir kez daha Luke Skywalker'a ihtiyacı vardı. Uzun zamandır inzivada olan Luke ise Kylo Ren'den sonra buna pek gönüllü değildi. İzleyenler bilir. Luke, neredeyse sadece sudan ibaret ahch-to gezegenindeki bir adada, eski Jedi tapınağında yaşamını sürdürmektedir (Sevgili [ekşi sözlük yazarı John Harrison](https://eksisozluk.com/entry/78992085) bu girişi beğenmeyecektir ama olsun:D)
 
@@ -42,7 +42,7 @@ brew install azure-cli
 az login
 ```
 
-![image.axd](images/image.axd)
+![08_41_credit_1.png](images/08_41_credit_1.png)
 
 ### Azure Deployment Hazırlıkları
 
@@ -59,11 +59,11 @@ az webapp create --resource-group rg-todoshero --plan plan-todoshero --name todo
 
 Terminalden çalıştırdığım komutlar başarılı olunca aşağıdaki sonuçla karşılaştım.
 
-![image.axd](images/image.axd)
+![08_41_credit_3.png](images/08_41_credit_3.png)
 
 Uygulamanın web adresi todosherowebapp.azurewebsites.net olarak belirlenirken, github repository adresi de https://dply-usr-buraks@todosherowebapp.scm.azurewebsites.net/todosherowebapp.git şeklinde oluştu. Görüldüğü üzere varsayılan bir hoş geldin sayfamız bile var. Hatta doğrudan dokümantasyonlarına ulaşıp ilk geliştirmelerimizi yapabiliriz de (Şu an aktif değil. Malum kullanılmayacak bir servis olacağından sildim)
 
-![image.axd](images/image.axd)
+![08_41_credit_4.png](images/08_41_credit_4.png)
 
 ## Uygulamada Yapılanlar
 
@@ -116,7 +116,7 @@ Kod tarafı hazır olduğuna göre uygulamayı çalıştırıp sonuçlarını de
 FLASK_APP=app.py flask run
 ```
 
-![image.axd](images/image.axd)
+![08_41_credit_2.png](images/08_41_credit_2.png)
 
 Sayfaya yeni talepler gönderdikçe farklı kahramanlar ile karşılaşmamız gerekiyor. Bu basit uygulama kodu list içeriğinden seçtiği rastgele bir karakterin adını ekrana yazdırmakla görevli (git ve azure ikilisinin bir arada kullanılması üzerine yoğunlaştığımızdan mümkün mertebe basit bir örnek kullanıyoruz)
 
@@ -136,13 +136,13 @@ Standart git komutları ile uygulamayı azure reposuna deploy ettik. İlk olarak
 
 push işlemini takiben azure sitesine tekrar gittiğimde python uygulamasının başarılı bir şekilde etkinleştiğini görmemiz lazım. Aşağıdakine benzer bir durum olmalı.
 
-![image.axd](images/image.axd)
+![08_41_credit_5.png](images/08_41_credit_5.png)
 
 Hatta Azure portaline baktığımızda hem oluşturulan resource group içeriğini hem de yaptığımız son push işlemlerini de görebilmeliyiz.
 
-![image.axd](images/image.axd)
+![08_41_credit_6.png](images/08_41_credit_6.png)
 
-![image.axd](images/image.axd)
+![08_41_credit_7.png](images/08_41_credit_7.png)
 
 Hepsi bu!:) Siz de farklı uygulama geliştirme ortamları için (ruby,.net core, node.js vb) aynı kurguyu gerçekleştirmeyi deneyebilirsiniz.
 

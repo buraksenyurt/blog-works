@@ -1,4 +1,4 @@
----
+﻿---
 title: "Sequelize Kullanılan Bir NodeJs Rest Servisi Geliştirmek"
 pubDate: 2020-05-27 20:23:00
 categories:
@@ -18,7 +18,7 @@ tags:
 ---
 
 # Sequelize Kullanılan Bir NodeJs Rest Servisi Geliştirmek
-![image.axd](images/image.axd)
+![hearthstone_2.jpg](images/hearthstone_2.jpg)
 
 Bilgisayar ile ilk tanıştığım günden beri oyun oynamayı seven birisiyim. Tabii ilerleyen yıllarda buna vakit ayırmak benim için çok zorlaştı. Bu nedenle hep kendi devrimin efsane sayabileceğim oyunlarında takılı kaldım. Söz gelimi paraya kıyarak aldığım oyun bilgisayarıma (Hani şu acayip ekran kartları olan, bir sürü fan barındıran, renkli ışıklarıyla gece disko topuna dönüşen masaüstü canavarından bahsediyorum) taaa ikibinlerin başında ve öncesinde oynadığım Red Alert II ve Command & Conquer Generals oyunlarını yükleyip vakit geçirdim. Hani en en en yeni oynadığım oyun sanıyorum ki Hearthstone ve onda da herkes beni ezip duruyor diyebilirim:D Bende onu nerede kullanabilirim diye düşünürken bari kart ve kahramanlarını bir NodeJs servisine malzeme yapayım dedim.
 
@@ -388,7 +388,7 @@ node_modules/.bin/sequelize db:migrate
 
 > Hero ve Card arasında one-to-many ilişki var. Yani bir kahramana ait birden fazla kart olabilir. Bu nedenle migration sırasında önce Hero planının çalıştırılması lazım ki postgresql tarafında iki tablo arasındaki bire çok ilişki başarılı şekilde kurgulanabilsin. Bu nedenle hero-migration.js dosyasının başında bir a harfi bulunuyor. Çünkü db:migrate komutu klasördeki javascript içeriklerini alfabetik sırada çalıştırıyor. En azından ben denerken böyle bir şey fark ettim. Fark edene kadar da epey bir debelendim:)
 
-![image.axd](images/image.axd)
+![skynet_12_Screenshot_1.png](images/skynet_12_Screenshot_1.png)
 
 ## Çalışma Zamanı
 
@@ -412,7 +412,7 @@ JSON
 }
 ```
 
-![image.axd](images/image.axd)
+![skynet_12_Screenshot_2.png](images/skynet_12_Screenshot_2.png)
 
 Tüm kahramanların listesinin çekilmesi içinde şu komut işe yarar. (http://localhost:5555/game/api/heros daha iyi durabilir)
 
@@ -421,7 +421,7 @@ HTTP Get
 http://localhost:5555/game/api/hero
 ```
 
-![image.axd](images/image.axd)
+![skynet_12_Screenshot_3.png](images/skynet_12_Screenshot_3.png)
 
 Yeni bir Card oluşturmak içinse malum bir HTTP Post talebi göndermek icap eder. Body, bir JSON içeriği olmalıdır.
 
@@ -448,6 +448,6 @@ HTTP Get
 http://localhost:5555/game/api/hero/2/cards
 ```
 
-![image.axd](images/image.axd)
+![skynet_12_Screenshot_4.png](images/skynet_12_Screenshot_4.png)
 
 Yazması biraz zahmetli ama sonuçları açısından anlaşılır bir öğreti olduğunu düşünüyorum. Umarım sizler için de faydalı olur. Kodların tamamına [skynet github reposu](https://github.com/buraksenyurt/skynet/tree/master/No%2012%20-%20REST%20with%20Sequelize)ndan ulaşabilirsiniz. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

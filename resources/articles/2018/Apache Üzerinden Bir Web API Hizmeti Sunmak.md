@@ -1,4 +1,4 @@
----
+﻿---
 title: "Apache Üzerinden Bir Web API Hizmeti Sunmak"
 pubDate: 2018-03-22 03:13:00
 categories:
@@ -14,7 +14,7 @@ tags:
 ---
 
 # Apache Üzerinden Bir Web API Hizmeti Sunmak
-![image.axd](images/image.axd)
+![apachecore_12.gif](images/apachecore_12.gif)
 
 Merhaba Arkadaşlar,
 
@@ -43,7 +43,7 @@ sudo ufw app list
 
 Bu arada CUPS, Common Unix Printing Systems isimli bir servisin kısaltmasıymış. Bunu da öğrenmiş oldum.
 
-![image.axd](images/image.axd)
+![apachecore_1.gif](images/apachecore_1.gif)
 
 Önceden NginX ile ilgili denemeler de yaptığım için onlar da listede kendine yer bulmuştu (West-World bir süre sonra çarpık kentleşme nedeniyle tekrardan yapılandırılmalı sanıyorum ki) Apache için üç farklı profil söz konusu. Apache isimli profil sadece 80 portunun açık olduğu ve şifresiz bir trafik imkanı sunmakta. Apache Full, Apache profiline ek olarak 443 nolu porttan şifrelenmiş web trafiğine imkan tanır (Yani TLS/SSL desteği verir) Apache Secure ise sadece 443 portu kullanılacak şekilde şifrelenmiş web trafiği sağlar. Benim örneğim için 80 portunu kullandırmak yeterliydi. Bu nedenle aşağıdaki komutu kullanarak gerekli etkinleştirmeyi yaptım.
 
@@ -57,7 +57,7 @@ Güncel duruma baktığımda ilgili tanımın UFW listesine eklendiğini de gör
 sudo ufw status
 ```
 
-![image.axd](images/image.axd)
+![apachecore_2.gif](images/apachecore_2.gif)
 
 Bu işlemler sonrasında yapmam gereken apache sunucusunun ayağa kalkıp kalkmadığını denetlemekti. Terminalden
 
@@ -67,11 +67,11 @@ sudo systemctl status apache2
 
 komutunu kullandığımda servisin başarılı bir şekilde yüklendiğini ve hizmet vermeye başladığını gördüm.
 
-![image.axd](images/image.axd)
+![apachecore_3.gif](images/apachecore_3.gif)
 
 active (running) yazısını görmek önemli ama yeterli değil. Hani hepimizin aşina olduğu o Apache'nin varsayılan giriş sayfası var ya...Onu görmek lazımdı. localhost'a talep gönderdiğimde o yalın sayfa karşımdaydı.
 
-![image.axd](images/image.axd)
+![apachecore_4.gif](images/apachecore_4.gif)
 
 ## Birkaç Apache Komutu
 
@@ -83,7 +83,7 @@ Durdurmak için,
 sudo systemctl stop apache2
 ```
 
-![image.axd](images/image.axd)
+![apachecore_5.gif](images/apachecore_5.gif)
 
 Başlatmak için,
 
@@ -91,7 +91,7 @@ Başlatmak için,
 sudo systemctl start apache2
 ```
 
-![image.axd](images/image.axd)
+![apachecore_6.gif](images/apachecore_6.gif)
 
 Servisi durdurup tekrar başlatmak için,
 
@@ -113,7 +113,7 @@ Artık West-World'de gezinen bir Apache olduğuna göre basit bir.Net Core Web A
 sudo a2enmod proxy proxy_http proxy_html
 ```
 
-![image.axd](images/image.axd)
+![apachecore_8.gif](images/apachecore_8.gif)
 
 Gerekli aktivasyonu sağladıktan sonra konfigurasyon değişikliği yapıp yönlendirme tanımlarını sisteme ilave ettim. Söz konusu konfigurasyon değişiklikleri için env/apache2/sites-enabled altındaki 000-default.conf dosyasının içeriğini düzenlemek gerekiyor. Bu varsayılan site dosyası. Aslında bu klasöre farklı sanal host tanımlama bilgileri içeren conf uzantılı dosyalar yükleyebiliyoruz. Bu dosyalar apache sunucusu tarafından otomatik olarak değerlendirilmekte. Örneğin merak ettiğim konulardan birisi localhost'un farklı bir portu için sanal host konfigurasyon dosyası tanımlamak ve yine yönlendirmeler yaparak Kestrel'i ayağa kaldırmak (Bunu bir araştırmam lazım)
 
@@ -141,7 +141,7 @@ sudo service apache2 status
 
 Şimdilik bir sorun görünmüyordu.
 
-![image.axd](images/image.axd)
+![apachecore_7.gif](images/apachecore_7.gif)
 
 Web API ve Apache Service Dosyasının Oluşturulması
 
@@ -198,11 +198,11 @@ sudo systemctl start kestrel-apacheler.service
 sudo systemctl status kestrel-apacheler.service
 ```
 
-![image.axd](images/image.axd)
+![apachecore_9.gif](images/apachecore_9.gif)
 
 Gözlemlediğim kadarı ile kestrel-apacheler.service içeriği geçerliydi ve çalışır konumdaydı. Bunu gördükten sonra Firefox'tan http://localhost/api/values adresine gitmeyi denedim. Son ayların en popüler değer listesine erişebilmiştim.
 
-![image.axd](images/image.axd)
+![apachecore_10.gif](images/apachecore_10.gif)
 
 Gözlerime inanamıyordum. Emin olmak için onları bir kaç kez kırptım. Sonrasında daha gerçekçi olmaya karar verdim ve service dosyasını durdurup aynı talebi tekrar gönderdim.
 
@@ -210,6 +210,6 @@ Gözlerime inanamıyordum. Emin olmak için onları bir kaç kez kırptım. Sonr
 sudo systemctl stop kestrel-apacheler.service
 ```
 
-![image.axd](images/image.axd)
+![apachecore_11.gif](images/apachecore_11.gif)
 
 Bu çok sevindirici bir gelişmeydi (İnsanın Service Unavailable yazısını görünce sevinçten gözleri yaşarı mı?) West-World'de Apache'ler ile barış sağlandığına göre artık dinlenmeye çekilebilirdim. Tabii siz bu yazıdan ilham alarak konuyu geliştirmeyi deneyebilirsiniz. Söz gelimi 000-default.conf yerine aynı klasörde farklı bir conf dosyasını kullanarak ilgili yönlendirmenin nasıl yapılabileceğini araştırabilirsiniz. Özellikle 80 yerine farklı bir Apache portu kullandırtmayı deneyebilirsiniz. Böylece geldik bir makalemizin daha sonuna. Bu yazımızda Ubuntu 16.04 üzerinde kurduğumuz apache sunucusuna gelen talepleri, Kestrel tarafında host edilen bir Web API hizmetine yönlendirmeye çalıştık. Umarım yararlı bir makale olmuştur. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

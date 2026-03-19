@@ -1,4 +1,4 @@
----
+﻿---
 title: "Python - Flask ile Basit Bir Web Uygulaması Geliştirmek"
 pubDate: 2017-08-09 21:02:00
 categories:
@@ -13,7 +13,7 @@ tags:
 ---
 
 # Python - Flask ile Basit Bir Web Uygulaması Geliştirmek
-![image.axd](images/image.axd)
+![sicak.jpg](images/sicak.jpg)
 
 Merhaba Arkadaşlar,
 
@@ -139,14 +139,14 @@ entry_page ve sum metodlarının çıktıları html olacak şekilde belirtildi. 
 
 Yazdığımız uygulamayı IDLE üzerinden değil de komut satırından çalıştırmamız çok daha doğru olacaktır. Web sayfalarına gelecek olan talepler debug=True ataması nedeniyle komut satırına yansıtılacak. Bu sayede anlık olarak gelişmeleri takip edebiliriz. Aşağıdaki ekran görüntüsünde bunun bir örneğini görebiliriz.
 
-![image.axd](images/image.axd)
+![flaskweb_3.gif](images/flaskweb_3.gif)
 
 İlk olarak root adrese talepte bulunalım. Aşağıdaki çıktı ile karşılamamız gerekiyor. (Burada kullanılan CSS'i [kitabın önerdiği adresten](http://python.itcarlow.ie/ed2/ch05/static/hf.css) kullandım. Sadece ufak değişikliklerim oldu. Siz farklı stiller uygulayabilir ve web içeriğini çok daha şık hale getirebilirsiniz)
 
-![image.axd](images/image.axd)
+![flaskweb_1.gif](images/flaskweb_1.gif)
 
 [http://localhost:5000](http://localhost:5000)/ adresine yapacağımız talebin karşılığında hello_flask.py içerisindeki entry_page metodu devreye girecek ve einstein.html isimli sayfanın istemciye sunulması sağlanacaktır. Gelen ekrandaki kontrollere iki sayısal değer girip Calculate butonuna basarsak Post işlemi sonrası Sum isimli operasyon çalıştırılacak ve aşağıdaki çıktı elde edilecektir.
 
-![image.axd](images/image.axd)
+![flaskweb_2.gif](images/flaskweb_2.gif)
 
 Görüldüğü üzere Flask paketini kullanarak Python tarafında bir web uygulaması geliştirmek ve şablon HTML sayfalarını kullanmak oldukça basit. Pek tabii şablon kullanımında {{ ile }} arasına alınabilecek çok farklı teknikler de söz konusudur. Bunları kitabın ilerleyen kısımlarında bulabileceğimi düşünüyorum. Öğrendikçe sizlerle paylaşmaya çalışacağım. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

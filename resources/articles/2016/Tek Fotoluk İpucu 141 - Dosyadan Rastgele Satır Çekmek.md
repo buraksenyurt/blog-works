@@ -1,4 +1,4 @@
----
+﻿---
 title: "Tek Fotoluk İpucu 141 - Dosyadan Rastgele Satır Çekmek"
 pubDate: 2016-11-01 21:36:00
 categories:
@@ -14,7 +14,7 @@ Merhaba Arkadaşlar,
 
 Elinizde N sayıda şarkı adının kayıtlı olduğu fiziki bir dosya olduğunu düşünün. Amacımız ise bu dosya içerisinden rastgele şarkılar çekmek. Ancak bunu yaparken ilgili dosyanın tamamını belleğe açmak istemiyorsunuz. Nitekim dosyayı okuma modunda açıp readlines gibi bir metod ile tüm içeriğ okuduktan sonra içinden rastgele bir satırı seçme yolunu tercih edebilirsiniz. Ama bu büyük boyutlu bir dosyanın tamamen belleğe yüklenmesine de neden olacaktır. Performans ve hız açısından farklı bir şey yapılabilmelidir. Örneğin belleğe sadece o anki satırı okuyup ileri yönlü hareket edecek bir iterasyon kodu geliştirilebilir. Peki Ruby'de bunun için nasıl bir yol izlerdiniz? Aşağıdaki fotoğraftaki gibi olabilir mi?
 
-![image.axd](images/image.axd)
+![tfi_141.gif](images/tfi_141.gif)
 
 Enumerable modülü içerisine getRandomLine isimli bir metod yerleştirdik. Metod aslında numaralandırıcı olarak gelen listeyi dolaşmakta. Bunun için each_with_index fonksiyonundan yararlanıyoruz. each_with_index fonksiyonu iki parametre alıyor. İlki numaralandırıcının o an üzerinde olduğu veri (ki örneğimizde bu dosya satırı olacak), ikincisi ise index numaras (ki bu da hangi satırda olduğumuzu gösterecek) Blok içerisinde rastgele sayı üretip bir kontrol gerçekleştiriyor ve o anki satırın bu koşula uyması halinde line değişkenine atanmasını ve son olarak nil değilse geri döndürülmesini sağlıyoruz.
 

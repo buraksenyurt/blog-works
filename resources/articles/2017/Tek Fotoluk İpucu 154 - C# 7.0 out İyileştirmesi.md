@@ -1,4 +1,4 @@
----
+﻿---
 title: "Tek Fotoluk İpucu 154 - C# 7.0 out İyileştirmesi"
 pubDate: 2017-03-19 21:45:00
 categories:
@@ -42,11 +42,11 @@ namespace Classics
 }
 ```
 
-![image.axd](images/image.axd)
+![tfi154_1.gif](images/tfi154_1.gif)
 
 Örnekte Int32 tipinin TryParse metodu ile bir dönüştürme işlemi yapılmakta. TryParse bilindiği üzere string olarak gelen ilk parametreyi uygulandığı tipe dönüştürebilirse ikinci parametrede çıktı olarak veriyor. Bu teknikte out ile dışarıya verilecek değişkenin de önceden tanımlanmış olması gerekiyor. C# 7.0 da bu zorunluluk kaldırılmış durumda. Ne yazık ki şirket bilgisayarıma Visual Studio 2017'yi henüz yükletemedim. Güvenliğin önce bir bakması gerkiyormuşmuş. Ama çaresiz değiliz.[Bu adresteki online derleyici](https://dotnetfiddle.net/) pekala iş görüyor. Üzerindeki Rosyln derleyicisi sayesinde yeni dil özelliklerini deneme fırsatım oldu. Şimdi out kullanımına ilişkin bir kaç örnek yapalım.
 
-![image.axd](images/image.axd)
+![tfi154_3.gif](images/tfi154_3.gif)
 
 Calculate fonksiyonu iki sayının toplamını ve farkını hesap edip out parametresi olarak geriye döndürmekte. Main metodundaki kullanım dikkatinizi çekmiştir. total ve dif isimli değişkenleri çağrım öncesi tanımlamış değiliz. Daha yaygın bir örnekle devam edelim.
 
@@ -54,10 +54,10 @@ Calculate fonksiyonu iki sayının toplamını ve farkını hesap edip out param
 
 TryParse metodunda out değişkenini kullanırken yine number isimli değişkeni önceden tanımlamadığımızı fark etmişsinizdir. Aslında out kullanımı sırasında değişken tipini belirtmek zorunda değiliz. Yani var tipinde bir tanımlama da mümkün. Aşağıdaki ekran görüntüsünde olduğu gibi.
 
-![image.axd](images/image.axd)
+![tfi154_5.gif](images/tfi154_5.gif)
 
 Son olarak bir if bloğu içerisinde out şeklinde belirtilen değişkeni blok dışında da kullanabileceğimizi ifade edelim.
 
-![image.axd](images/image.axd)
+![tfi154_6.gif](images/tfi154_6.gif)
 
 Böylece geldik bir ipucumuzun daha sonuna. Diğer C# 7.0 özelliklerini de öğrendikçe paylaşmaya çalışacağım. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

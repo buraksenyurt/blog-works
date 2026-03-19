@@ -1,4 +1,4 @@
----
+﻿---
 title: "HTTP/2 Server Push Nasıl Bir Şeydir?"
 pubDate: 2019-04-08 21:37:00
 categories:
@@ -15,7 +15,7 @@ tags:
 ---
 
 # HTTP/2 Server Push Nasıl Bir Şeydir?
-![image.axd](images/image.axd)
+![http2_writer.jpg](images/http2_writer.jpg)
 
 Bir türlü giriş hikayesini bulamıyordum. Takip ettiğim referansta geçenleri West World üzerinde kurgulayıp sonuçları görmüş ve anladığım haliyle yazıya dökmüştüm. Ama o klasik girizgah kısmına koymam gereken hikayeyi bulamıyordum. Ne hikmetse ilgi çekici olması için her fırsatta üzerinde titizlikle durduğum bu kısmın ilham perisi tatile çıkmış aklıma tek bir düşünce dahi gelmemişti. Sonuçta istediğim girizgahı yapamadım... Yine de başlayalım.
 
@@ -25,7 +25,7 @@ Tabii olaya HTTP 1.1 ile HTTP/2 arasındaki farklılıkları göz önüne alarak
 
 Günümüzde pek çok web sitesi HTTP/2 protokolüne destek veriyor ve bir kaynağa bağlı içerikleri istemcinin talep etmesini beklemeden proaktif hareketle karşı tarafa gönderiyor. Örneğin Medium'un ana sayfasına gidelim. Google Chrome'da F12 ile açılan developer sekmesine bakılırsa, Network trafiğini izleyen kısımda h2 lakaplı izlere rastlanır. Bu izler HTTP/2 protokolüne aittir ve ilgili kaynakların istemci talep etmeden Initiator (bu örnek kapsamında index sayfası olarak görünüyor) için gönderildiğini ifade etmektedir.
 
-![image.axd](images/image.axd)
+![http2_spush_3.gif](images/http2_spush_3.gif)
 
 Örneğin m2.css, main-base.bundle.js dosyaları HTTP/2, p.js HTTP 1.1 ve son olarak analytics.js SPDY ile gelmekte ([SPeeDY diye okunuyor ve Google](https://www.chromium.org/spdy/spdy-whitepaper)'ın web'i daha hızlı hale getirmek için üzerinde çalıştığı deneysel bir protokol olduğu belirtiliyor. Henüz detaylarını öğrenemedim) Tabii Medium gibi içerik açısından zengin bir sayfanın ağ trafiğini takip ederken tekil bağlantıya karşılık n kaynağın tek seferde gönderildiğini görmek zor.
 
@@ -52,7 +52,7 @@ images, scripts ve style klasörü içerisinde yer alan içerikleri (javascript 
 openssl req -x509 -newkey rsa:2048 -nodes -sha256 -subj '/CN=localhost' -keyout simpleKey.pem -out simpleCert.pem
 ```
 
-![image.axd](images/image.axd)
+![http2_spush_1.gif](images/http2_spush_1.gif)
 
 index.html içeriği çok önemli değil ancak beraberinde gitmesini beklediğimiz kaynakları taşıması gerekiyor.
 
@@ -130,7 +130,7 @@ node appv1.js
 
 ile çalıştırılıp, https://localhost:5047/ adresine gidilirse aşağıdaki ekran görüntüsünde yer alan hareketlilikleri görmemiz muhtemel.
 
-![image.axd](images/image.axd)
+![http2_spush_4.gif](images/http2_spush_4.gif)
 
 Dikkat edileceği üzere jpg, jquery.js ve style.css kaynakları HTTP 1.1 protokolü nezninde değerlendirilmiştir. Ancak daha da önemlisi orta kısımda yer alan renkli çizgilerdir. Burada her kaynak için istemciden sunucuya gelindiği görülebilir (Sondaki kaynakça listesinde çok daha alofortanfaneli örnekler var bakın derim) Bu durumun HTTP/2 örneğinde değişmesini bekliyoruz. Hiç vakit kaybetmeden appv2.js içeriğine geçelim.
 
@@ -208,11 +208,11 @@ node appv2.js
 
 ile sunucu çalıştırılıp https://localhost:5048/index.html adresine gidilirse bu kez bir öncekinden farklı olarak tek bir ağ çizgisinin oluştuğu görülebilir.
 
-![image.axd](images/image.axd)
+![http2_spush_5.gif](images/http2_spush_5.gif)
 
 Dikkat edileceği üzere tek bir çizgi var. Bir başka deyişle sunucuya yapılan index.html talebi sonrası açılan tekil bağlantı (connection) için, stream süresince sunucudan gönderilen diğer kaynaklar da söz konusu. Kabaca aşağıdaki gibi bir durum var diyebiliriz.
 
-![image.axd](images/image.axd)
+![http2_spushg.gif](images/http2_spushg.gif)
 
 Pek tabii bu çalışma mantığını daha otomatize etmenin bir yolu var mıdır henüz bilmiyorum. Nitekim kaynakları fazla olan sayfalar için sunucu tarafındaki kod karmaşıklığını arttırmamak bence önemli. Diğer yandan bu senaryoyu.Net Core için nasıl hazırlayabiliriz bir bakmakta yarar var. Araştırmak istediğim konulardan birisi de bu.
 

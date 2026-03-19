@@ -1,4 +1,4 @@
----
+﻿---
 title: "GoLang - Redis ile Anlaşmak"
 pubDate: 2017-08-03 21:16:00
 categories:
@@ -20,7 +20,7 @@ tags:
 ---
 
 # GoLang - Redis ile Anlaşmak
-![image.axd](images/image.axd)
+![goredis_2.gif](images/goredis_2.gif)
 
 Merhaba Arkadaşlar,
 
@@ -38,7 +38,7 @@ Yükleme işlemi sonrası hemen komut satırına geçtim ve redis-server.exe'yi 
 
 Saatler ilerlerken konunun verdiği heyecanla komut satırından bir kaç deneme yapmayı da ihmal etmedim.
 
-![image.axd](images/image.axd)
+![goredis_1.gif](images/goredis_1.gif)
 
 İlk olarak redis ile ping-pong oynadım:) Siz ping yazdığınızda O da PONG diyorsa bu konuşabildiğiniz anlamına gelir. Ardından ilk iş players:reksar isimli bir key oluşturmak oldu. Değeri ise JSON formatında bir içerikten ibaretti. get komutunu kullanarak belleğe atılan bu key içeriğini okuyabiliriz.
 
@@ -91,7 +91,7 @@ func AddLudwig() {
 
 Fonksiyon redis tipinin Dial metodu ile başlıyor. TCP protokolü ile localhost üzerindeki 6379 nolu porta bağlanacağımızı ifade ediyoruz. Yani Redis sunucusuna. Eğer bağlanabiliyorsak (ki err nesnesi nil ise bağlanıyoruz diyebiliriz) önce ping pong oynuyor ve sonrasında players:ludwig isimli bir key gönderiyoruz. Değer olarak da JSON formatında bir içerik söz konusu. Ludwig'in takma adını, bestelediği şarkı türünü ve toplam parça sayısını tutan saçma bir verimiz var. Bu kodda en kritik nokta az önce terminalden yazdığımız redis komutlarının Cmd metodunda kullanılması. İlk çağrıda ping diğerinde ise set komutunu göndermekteyiz. defer ettiğimiz Close metodu fonksiyondan çıkarken redis bağlantısını kapatacak. Çalışma zamanı sonuçlarını aşağıda görebilirsiniz. Koddan eklediğimiz veriyi redis komut satırından da elde edebildik.
 
-![image.axd](images/image.axd)
+![goredis_3.gif](images/goredis_3.gif)
 
 ## Birde Hash Üretip Okuyalım
 
@@ -119,7 +119,7 @@ func AddAndReadHash() {
 
 Bu kez HMSET komutunu kullanarak bir hash üretiliyor. card:93 olarak belirtilmiş bir key söz konusu. Bu verinin nickName, greetings, price, attack, defense ve owner isimli alanları bulunuyor. Bir takım test verileri koyarak redis'e gönderiyoruz. Okuma kısmında ise HGETALL komutunun çağırılması söz konusu. Ancak dikkat çekici nokta bu seferki çağrım sonrası Map isimli metodun kullanılması. Bu sayede hash içerisindeki key ve value bilgilerini dolaşabileceğimiz map türünden bir nesneyi elde edebiliyoruz. Sonrasında range fonksiyonunu kullanarak ilgili key:value çiftlerini ekrana yazdırıyoruz. İşi eğlenceli hale getirmek için farklı bir şekilde renklendirdiğim komut satırının çalışma zamanı çıktısı aşağıdaki gibi.
 
-![image.axd](images/image.axd)
+![goredis_4.gif](images/goredis_4.gif)
 
 ## Go Tarafında Veriyi Yapı (Struct) Olarak Ele Alsak
 
@@ -196,11 +196,11 @@ type Card struct {
 
 İlk olarak Card isimli bir struct tasarladığımızı söyleyelim. İçerisinde Redis'teki Hash içeriğine karşılık gelen alanları barındırmakta. AddCard fonksiyonu parametre olarak gelen bir Card nesnesinin içeriğini kullanarak Redis üzerinde yeni bir Hash oluşturma işini üstleniyor. Fonksiyonun bir önceki örnekteki ekleme operasyonundan tek farkı değerleri almak için parametre olarak gelen Card örneğini kullanılması. card:45 benzeri key değeri için de id isimli bir parametre kullanmaktayız. GetCard metodu id bilgisine göre Redis üzerinden bir Card içeriğini çekmek üzere tasarlanmış durumda. Cmd üzerinden gidilen Map fonksiyonu ile redis tarafında tutulan içeriği almaktayız. Gelen içerikteki değerler string içerikte olacaktır. Bu nedenle strconv paketinden gerekli dönüştürme operasyonlarını kullanmamız gerekebilir. Card tipinin Price, Attack ve Defense gibi alanları int tipinden olduğu için Atoi tür dönüştürme metodundan yararlandık. Bulunan içeriğe göre değerleri atanan Card nesnesi olarak geriye döndürüyoruz. Card yapısına uygulanan ToString metodu ile de içeriği ekrana bastırıyoruz. İşte örnek çalışma zamanı çıktısı.
 
-![image.axd](images/image.axd)
+![goredis_5.gif](images/goredis_5.gif)
 
 Pek tabii olmayan bir key değerini almaya çalışırsak içeriği boş bir yapı örneği elde ederiz. Söz gelimi card:100 sistemimizde bulunmuyor. Bu anahtar için program çıktısı aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![goredis_6.gif](images/goredis_6.gif)
 
 Demek ki
 

@@ -1,4 +1,4 @@
----
+﻿---
 title: "Ruby Kod Parçacıkları 25 - Unit Test Yazmak"
 pubDate: 2016-11-07 21:28:00
 categories:
@@ -61,10 +61,10 @@ ProductTest sınıfının test metodları içerdiğini ve çalışma zamanında 
 
 testForTitle metodunda Title niteliği için iki sav deneniyor. Bunlardan birisi nil kontrolü diğeri ise nitelik değerinin "Head First Design Pattern" metnine eşit olup olmadığı. testForListPrice metodunda da benzer bir eşitlik kontrolü var. Ayrıca liste fiyatının 10 birimin altında olması durumunda almayı beklediğimiz ArgumentError istisnasının kontrolü de bulunuyor. Yani 10 birimin altında bir değer verildiğinde ortama ArgumentError fırlatılmasını bekliyoruz. Nitekim Product sınıfının initalize metodu içerisinde bu tip bir exception kontrolü söz konusu. Eğer liste fiyatı beklenen değerin altında ise ortama fırlatılacak bir hata var. assert_raise bu hatanın fırlatılacağı vakayı test ediyor. Savımızın kabul kriteri 10un altında bir değer verilmesi halinde ortama hata yollanması. testForCategory metodunda ise assert_send isimli bir çağrım yer alıyor. Burada kategorinin ilk parametre ile gelen dizi içerisindeki bir eleman olması durumu test edilmekte. Metodun ilk parametresinde kullanılabilecek kategorilere ait dizi yer alıyor. İkinci parametre array sınıfı üzerinden kullanılabilecek ve include? metodu ve son parametrede include?'a verilebilecek olan değer. İkinci satırdaki kodda sav'ın geçersiz olmasına ait bir kriter kontrol ediliyor. Hepsi bu. Dilerseniz çalışma zamanı sonuçlarına da bir bakalım.
 
-![image.axd](images/image.axd)
+![utest_1.gif](images/utest_1.gif)
 
 Product içerisinde yer alan tüm test metodları sırasıyla çalıştırılmıştır. 3 test metodu ve içerisinde yer alan 6 assert icra edilmiştir. Bu varsayımlardan beklediğimiz gibi hatalı kateogori vakasının kodun hangi satırında oluştuğu terminal penceresine dökülmüştür. Dilersek bir veya n sayıda test metodunu da çalıştırabiliriz. Nitekim bazı test sınıfları içerisinde fazla sayıda test metodu olabilir ve o an için sadece bellir birini (veya bir kaçını) test etmemiz gerekebilir. Sonuçta test operasyonları da zaman zaman süre ve kaynak kullanımı adına maliyetli olabilir. Böyle bir durumda verbose --name testMetodu dizilimini kullanabiliriz. Aşağıdaki ekran görüntüsünde örnek bir kullanım yer almaktadır.
 
-![image.axd](images/image.axd)
+![utest_2.gif](images/utest_2.gif)
 
 Bu kez sadece testForTitle isimli test vakası çalıştırılmıştır. Görüldüğü gibi Unit Test'ler oluşturmak oldukça pratik ve kolay. İşin önemli olan kısmı test vakalarını oluşturabilmek ve Test Driven Development yaklaşımının benimsediği şekilde kodları geliştirebilmek. Böylece geldik bir kod parçamızın daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

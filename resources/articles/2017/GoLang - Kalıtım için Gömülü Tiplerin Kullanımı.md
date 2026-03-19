@@ -1,4 +1,4 @@
----
+﻿---
 title: "GoLang - Kalıtım için Gömülü Tiplerin Kullanımı"
 pubDate: 2017-06-04 09:25:00
 categories:
@@ -12,7 +12,7 @@ tags:
 ---
 
 # GoLang - Kalıtım için Gömülü Tiplerin Kullanımı
-![image.axd](images/image.axd)
+![zidane.gif](images/zidane.gif)
 
 Merhaba Arkadaşlar,
 
@@ -22,7 +22,7 @@ Son olarak bugün gömülü tiplerin kullanımını öğrenmeye çalıştım. Bi
 
 Öncelikle basit bir senaryo düşünmeye çalıştım. Futbolcu, basketbolcu, boksör ve benzeri oyuncu türlerinin ortak özelliklerini barındıracak bir yapı tasarlamaya karar verdim. Sonrasında bu oyuncuların çeşitli yeteneklerini ifade edecek bir tip daha tasarladım. Her oyuncunun takma adı, sistem için önem arz edecek bir numarası ve söyleyeceği bir şeyleri olsun istedim (bunu bir metod ile halledebilirdim. Metod derken fonksiyon değil struct ile ilişkilendirilen metod) Ayrıca oyuncuların türlerine göre farklı kabiliyetleri de olabilirdi. Tabii tüm kabiliyetleri kendisini tanımlayan bir isimden ibaret olacak şekilde basitçe ele almam benim için daha iyi olacaktı. Bu kabiliyetleri uygulayacağım bir metod da pek şık olurdu. Paragraf ile ifade etmeye çalıştığım şeyi aslında aşağıdaki grafik ile daha güzel anlatabilirim belki de.
 
-![image.axd](images/image.axd)
+![golng_et_1.gif](images/golng_et_1.gif)
 
 Player ve Ability isimli yapılar FootballPlayer ve Boxer isimli diğer yapılarda gömülü tip olarak kullanılıyorlar. Buna göre her futbolcu ve boksör örneği id, nickName gibi temel bilgilere sahip olacak ve bir şeyler söyleyebilecek (saySomething metodu). Ayrıca her birisinin n sayıda kabiliyeti de bulunabilecek ve bu kabiliyetleri uygulayabilecek (useAbility metodu) Bunun için abilities niteliklerini kullanabiliriz. Gelelim bu fotoğrafın kod görüntüsüne.
 
@@ -104,6 +104,6 @@ main fonksiyonunda zidane (makale fotoğrafının sebebini de özetlemiş olduk)
 
 Kodu çalıştırdığımızda aşağıdaki ekran görüntüsündekine benzer bir sonuçla karşılaşmamız gerekir.
 
-![image.axd](images/image.axd)
+![golng_et_2.gif](images/golng_et_2.gif)
 
 Gömülü tipleri kullandığımız bu örnek kod parçasında bir yapının başka yapıları kullanarak çoklu kalıtımı nasıl ele alabileceğini incelemeye çalıştık. Anahtar nokta struct tiplerini içerme şeklinde değerlendirmekten ibaret. Felsefe olarak, genişletmek istediğimiz türün içereceği nitelikleri yapılar içerisinde toplamak gerekiyor. Eğer gömülü tip üzerinden uygulanması beklenen ortak fonksiyonellikler de söz konusu ise bunların metod şeklinde tanımlanması türeyen tip için yeterli. Böylece geldik kısa bir GO turumuzun daha sonuna. Bir başka makalemizde görüşünceye dek hepinize mutlu günler dilerim.

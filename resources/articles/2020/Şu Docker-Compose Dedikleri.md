@@ -1,4 +1,4 @@
----
+﻿---
 title: "Şu Docker-Compose Dedikleri"
 pubDate: 2020-02-28 20:23:00
 categories:
@@ -25,7 +25,7 @@ tags:
 ---
 
 # Şu Docker-Compose Dedikleri
-![image.axd](images/image.axd)
+![docker-compose.png](images/docker-compose.png)
 
 Önceki çalışmalardan [birisinde](Yine Yeni Yeniden ELK(Bu sefer E ve K için docker-compose işin içinde).md) ELK kurgusunda ElasticSearch ve Kibana tarafı için docker compose'dan yararlanmıştım. Orada iş nispeten daha kolaydı. Var olan docker imajlarını bir kompozisyon çerçevesinde düşünerek ele almıştım. Ama kendi servislerimizden oluşan bir kompozisyon gerekirse nasıl bir yol izlenebilir merak da ediyordum. İşte yılın o vakitleri bunu öğrenmeye çalışmışım.
 
@@ -250,7 +250,7 @@ Services kısmında üç container tanımı yer alıyor. Herbirisi için contain
 sudo docker-compose up
 ```
 
-![image.axd](images/image.axd)
+![skynet_13_Screenshot_1.png](images/skynet_13_Screenshot_1.png)
 
 ```bash
 curl http://localhost:5555/Event

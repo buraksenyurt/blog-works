@@ -1,4 +1,4 @@
----
+﻿---
 title: "GoLang - defer, panic ve recover Kavramlarını Tanıyalım"
 pubDate: 2017-03-09 21:32:00
 categories:
@@ -9,7 +9,7 @@ tags:
 ---
 
 # GoLang - defer, panic ve recover Kavramlarını Tanıyalım
-![image.axd](images/image.axd)
+![minionpanic.gif](images/minionpanic.gif)
 
 Merhaba Arkadaşlar,
 
@@ -51,7 +51,7 @@ func closeFile(file *os.File){
 }
 ```
 
-![image.axd](images/image.axd)
+![godefer_1.gif](images/godefer_1.gif)
 
 saveToFile fonksiyonu sistem üzerinde bir dosya açıp bunun içerisinde belirtilen içeriğin yazılması ile ilgili bir işlem gerçekleştirmekte. Dosyayı oluşturmak için create operasyonundan yararlanıyoruz. Create fonksiyonundan oluşan dosya ve bir hata değişkeni dönmekte (fonksiyondan dönen değerler için çoklu atama yapıldığını fark etmişsinizdir) Eğer hata yoksa fmt paketinin FPrintln fonksiyonu ile dosyanın içerisine basit bir metin yazıyoruz. Fonksiyon ilk parametre ile dosyayı, ikinci parametre ile de içeriği alıyor.
 
@@ -88,7 +88,7 @@ func subProc(i int){
 }
 ```
 
-![image.axd](images/image.axd)
+![godefer_2.gif](images/godefer_2.gif)
 
 doSomething içerisinde defer ifadeleri haricinde bir slice içerisindeki elemanlarda dolaşılmaktadır. subProc içinse 3 defer ifadesi tanımlanmıştır. doSomething normal işleyişini tamamladıktan sonra içerisinde defer edilen fonksiyonlar ters sırada çalışmıştır.
 
@@ -107,7 +107,7 @@ func main(){
 }
 ```
 
-![image.axd](images/image.axd)
+![gopanic_1.gif](images/gopanic_1.gif)
 
 Az önce recover ile bu tip çalışma zamanı paniklerini yatıştırabileceğimize değinmiştik. Ben tabii konuyu öğrenirken balıklama şöyle bir kod parçasını denedim.
 
@@ -140,7 +140,7 @@ func easy(n []int){
 }
 ```
 
-![image.axd](images/image.axd)
+![gopanic_2.gif](images/gopanic_2.gif)
 
 Dikkat edileceği üzere defer ifadesi ile main fonksiyonunda olası bir panik durumunda gidilebilecek bir başka fonksiyonu işaret ediyoruz. easy içerisinde recovery fonksiyonundan yararlanarak oluşan hatayı yakalayıp (eğer varsa) program akışının kontrol altına alınmasını sağlıyoruz. easy fonskiyonuna main içerisinde defer tanımını yaparken parametre geçişi de yapmaktayız (Bunu sadece parametre geçirebileceğimizi göstermek için yazdık) Bu arada defer fonksiyonunu istersek closure olarak da yazabiliriz ki yaygın kullanım şekli budur. Aynen aşağıdaki kod parçasında görüldüğü gibi.
 
@@ -193,7 +193,7 @@ func startEngine() {
 }
 ```
 
-![image.axd](images/image.axd)
+![gopanic_3.gif](images/gopanic_3.gif)
 
 main içerisinde launch isimli bir fonksiyon çağırıyoruz. Bu fonksiyon roketimizin motorlarını çalıştıran bir operasyonu kullanıyor ama başında defer ettiğimiz bir panik kontrol odası da var. startEngine içerisindeki panic fonksiyonu bilinçli olarak çalışma ortamına hata yollamak için kullanılıyor. Bu hata, defer edilen fonksiyon içerisinde yakalanıyor. İşte burası önemli. Ekrana "After recovery..." yazılmadı ama main'deki "to be continued..." basıldı. Yani hata üreten fonksiyonun çağırıcısındaki defer operasyonu devreye girdikten sonra launch işleyişinin tamamen sonlanması ve program kontrolünün main'e dönmesi söz konusu. Buna göre defer edilen fonksiyonların bir zincire eklendiğini de düşünebiliriz.
 

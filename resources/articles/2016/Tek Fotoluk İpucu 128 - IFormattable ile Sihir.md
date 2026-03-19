@@ -1,4 +1,4 @@
----
+﻿---
 title: "Tek Fotoluk İpucu 128 - IFormattable ile Sihir"
 pubDate: 2016-01-13 19:00:00
 categories:
@@ -21,7 +21,7 @@ Senaryomuz şu; bir nesne örneğini String sınıfının Format metodu ile kull
 
 İşte bu ifadede {0: dan sonra gelen parça, IFormattable arayüzünü kullanarak String sınıfının Format metoduna öğretebileceğimiz kısım. Nasıl mı? Aynen aşağıdaki fotoğrafta görüldüğü gibi.
 
-![image.axd](images/image.axd)
+![TFI_127.gif](images/TFI_127.gif)
 
 Kodun çalışma prensibi oldukça basit. Product sınıfı IFormattable arayüzünü (Interface) uyguladığında ToString metodunun ezilmesi gerekiyor. Tabi ezilen bu ToString metodu String.Format tarafından kullanılmakta (Lütfen kodu debug edip içerisinde basitçe gezinin) ToString metoduna gelen format değişkeni {0: dan sonraki kısmı işaret etmektedir. Buna gelen değerlere göre bir switch bloğu çalışmış ve istenen string içerikler geriye döndürülmüştür.
 

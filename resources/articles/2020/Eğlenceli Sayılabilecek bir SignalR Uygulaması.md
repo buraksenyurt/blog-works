@@ -1,4 +1,4 @@
----
+﻿---
 title: "Eğlenceli Sayılabilecek bir SignalR Uygulaması"
 pubDate: 2020-03-31 21:44:00
 categories:
@@ -19,7 +19,7 @@ tags:
 ---
 
 # Eğlenceli Sayılabilecek bir SignalR Uygulaması
-![image.axd](images/image.axd)
+![neseligunler.jpg](images/neseligunler.jpg)
 
 Turşunun iyisi limonla mı olur yoksa sirkeyle mi? Neşeli Günler'i izleyenleriniz rahmetli Münir Özkul ve Adile Naşit arasındaki atışmayı gayet iyi bilir:) Arada bir eski de olsa her yönüyle bizlere tarifsiz dersler veren yapımlarımızı izlemek gerekiyor. Tabii yine de turşunun iyisi limonla mı olur yoksa sirkeyle mi olur pek bilemiyorum. İyisi mi bunu bir SignalR servisine bırakalım. Ne dersiniz?
 
@@ -287,7 +287,7 @@ Uygulamamızı aşağıdaki komutu kullanarak çalıştırabiliriz. Şahsen watc
 dotnet watch run
 ```
 
-![image.axd](images/image.axd)
+![skynet_15_Screenshot_1.png](images/skynet_15_Screenshot_1.png)
 
 ## Uygulamada Koca Bir Bug!
 

@@ -1,4 +1,4 @@
----
+﻿---
 title: "GoLang - Static Web İçeriği ve JSON Üretimi"
 pubDate: 2017-07-01 10:45:00
 categories:
@@ -14,7 +14,7 @@ tags:
 ---
 
 # GoLang - Static Web İçeriği ve JSON Üretimi
-![image.axd](images/image.axd)
+![gorouting_6.gif](images/gorouting_6.gif)
 
 Merhaba Arkadaşlar,
 
@@ -50,7 +50,7 @@ type Category struct {
 
 Paketi LiteIDE ile oluşturup build edebiliriz. Sonrasında pkg klasöründe build edilmiş içeriğin ikili (binary) formattaki çıktısını görebiliriz.
 
-![image.axd](images/image.axd)
+![gorouting_8.gif](images/gorouting_8.gif)
 
 Artık makinedeki diğer go örneklerimizde entity/starwars şeklinde paket tanımlayıp kullanabiliriz.
 
@@ -104,7 +104,7 @@ body{
 
 Sonuçta aşağıdaki ekran görüntüsündeki gibi bir içerik oluşturmaya çalışıyoruz. Benim için örneği biraz daha keyifli hale getirdiğini söyleyebilirim.
 
-![image.axd](images/image.axd)
+![gorouting_9.gif](images/gorouting_9.gif)
 
 Dikkat edilmesi gereken nokta index.html'e ulaşırken http://localhost:4569/static adresi üzerinden gidiyor olmamız. main paketinde buna göre bir kodlama yapacağız.
 
@@ -206,20 +206,20 @@ Sonuçlar
 
 Eğer doğrudan / lokasyonuna gidersek pek tabii HTTP 404 not found hatası alırız. Nitekim bu adres için bir yönlendirme yapmadık. Statik içeriklerimiz /static altında yer alıyor. Diğer yandan index.html'deki All Categories bağlantısına basarsak veya URL bilgisi olarak /category şeklinde bir talep gönderirsek aşağıdaki JSON içeriğini elde ettiğimizi görebiliriz.
 
-![image.axd](images/image.axd)
+![gorouting_10.gif](images/gorouting_10.gif)
 
 Eğer fighter ya da cruiser kategorisindeki modelleri görmek istersek göndereceğimiz taleplere karşın aşağıdaki sonuçları alırız.
 
 /category/fighter
 
-![image.axd](images/image.axd)
+![gorouting_11.gif](images/gorouting_11.gif)
 
 /category/cruiser için
 
-![image.axd](images/image.axd)
+![gorouting_12.gif](images/gorouting_12.gif)
 
 Pek tabii olmayan kategori için slice içeriği boş olacağından null bir JSON çıktısına ulaşırız.
 
-![image.axd](images/image.axd)
+![gorouting_13.gif](images/gorouting_13.gif)
 
 Bu noktada belki de çok daha şık bir HTML hata sayfasına yönlendirme yaptırabiliriz ne dersiniz? Görüldüğü gibi Router nesne örnekleri üzerinden ServeFiles, GET gibi fonksiyonları bir arada kullanarak static içerik sunabilen ve REST davranış gösterip HTTP taleplerine JSON çıktılarla cevap veren bir web uygulaması geliştirmek oldukça kolay. Bu tekniği kullanarak veri içeriği sunan basit REST servisleri help sayfaları ile birlikte geliştirmeniz mümkün. Yine de kaçırdığım çok şey olduğundan adım gibi eminim. Şu konuda HTTP Post, Put, Delete, Patch gibi fonksiyonellikleri bir deneyimlemek lazım. Bunları da ilerleyen zamanlarda incelemeye çalışacağım. Şimdilik bu kadar. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

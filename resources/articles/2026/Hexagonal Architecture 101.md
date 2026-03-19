@@ -1,4 +1,4 @@
----
+﻿---
 title: "Hexagonal Architecture 101"
 pubDate: 2026-03-13 19:31:00
 categories:
@@ -35,7 +35,7 @@ Sonuçta gevşek bağlılık (Loose Coupling), sorumlulukların doğru ayrılmas
 
 Bu mimari internette genellikle aşağıdakine benzer bir görsel ile 50bin feet yükseklikten anlatılmaya çalışılır. (Çizim Excalidraw.io üzerinde tamamen insan eliyle oluşturulmuştur:P)
 
-![image.axd](images/image.axd)
+![HighLevelDesign.png](images/HighLevelDesign.png)
 
 Grafiği şöyle özetlemeye çalışalım. İş kuralları ve domain yapısı tamamen Application katmanında yer alır. Bunu adaptörlerin oluşturduğu bir başka katman sarar. Adaptörler, uygulama domain'ini dış dünyaya bağlayan bir köprü görevi görürler. Dış dünya ise kullanıcı arayüzü, veri tabanı ve diğer sistemlerle entegrasyonlar gibi unsurları içerir. Adaptörler portlara bağlanarak uygulama domain'ine erişim sağlarlar. Portlar ise uygulama domain'inin dış dünyaya açılan kapılarıdır. Bu sayede uygulama domain'i tamamen izole edilmiş olur ve dış dünyadan gelen değişikliklerden etkilenmez. Böyle anlatınca ne güzel değil mi? Soyut soyut:D Pek tabii uygulamayı yazıp, avantaj ve dezavantajlarını görmeden mimariyi anlamamız pek mümkün değil.
 
@@ -53,7 +53,7 @@ Kısır bir senaryo ile başlayalım. Stok takibi yapmak istediğimiz ürünler 
 
 Solution yapısını başlangıçta aşağıdaki gibi oluşturabiliriz.
 
-![image.axd](images/image.axd)
+![SolutionStructure.png](images/SolutionStructure.png)
 
 - HexagonalAdventure.Domain bir class library ve domain nesneleri ile iş kurallarını içeriyor.
 - HexagonalAdventure.Application yine bir class library ve In/Out port nesnelerini içeriyor. Inbound Port'lar dış dünyanın çekirdeğe ulaşmak için kullanacağı sözleşmeler olarak düşünülebilir. Outbound Port nesneleri ise çekirdeğin dış dünyadan yaptırmak istediği işler için kullanılan sözleşmedir.
@@ -276,7 +276,7 @@ Accept: application/json
 
 En azından aşağıdaki ekran görüntüsünde olduğu gibi bir yanıt almamız gerekiyor.
 
-![image.axd](images/image.axd)
+![HttpTest_00.png](images/HttpTest_00.png)
 
 ## Yeni Deneyimler
 
@@ -441,7 +441,7 @@ dotnet ef database update --project HexagonalAdventure.Adapters.Out.EF --startup
 
 Eğer her şey yolunda gittiyse aşağıdaki ekran görüntüsünde olduğu bu sefer ürün bilgisinin veritabanına kaydedildiğini görebiliriz.
 
-![image.axd](images/image.axd)
+![HttpTest_01.png](images/HttpTest_01.png)
 
 Dikkat edileceği üzere sisteme yeni bir adapter ekledik fakat uygulama domain'ine hiç dokunmadık. Dış sistem entegrasyonunda sadece yeni eklediğimiz adapter'ı var olan port'a bağladık. Böylece uygulama domain'inin dış dünyaya olan bağımlılığını tamamen ortadan kaldırmış olduk.
 
@@ -488,7 +488,7 @@ Console projesi sadece Application ve InMemory Adapter projelerini referans eder
 
 Tam şu anda solution içeriğine bakarsak aşağıdaki gibi bir iskelet oluştuğunu gözlemleyebiliriz.
 
-![image.axd](images/image.axd)
+![ConsoleRuntime.png](images/ConsoleRuntime.png)
 
 ## Testler
 
@@ -569,7 +569,7 @@ dotnet test HexagonalAdventure.Domain.Tests
 
 Sonuç olarak yazdığımız testlerin başarılı olduğunu görebiliriz.
 
-![image.axd](images/image.axd)
+![DomainTests.png](images/DomainTests.png)
 
 ### 9. Uygulama Katmanı için Birim Testler (Mock Nesnelerle)
 
@@ -663,7 +663,7 @@ CreateProductWhenTitleIsEmptyShouldThrowException ve CreateProductWithNegativeSt
 
 Eklediğimiz son testleri de çalıştıralım.
 
-![image.axd](images/image.axd)
+![ApplicationTests.png](images/ApplicationTests.png)
 
 ### 10. Entegrasyon Testleri (Adapter Katmanı Testleri)
 
@@ -808,7 +808,7 @@ public class ProductControllerTests(WebApplicationFactory<Program> factory)
 
 Testlerimizdeki nihai durumu aşağıdaki görselle özetleyebiliriz.
 
-![image.axd](images/image.axd)
+![IntegrationTests.png](images/IntegrationTests.png)
 
 ### 11. TestContainer ile Entegrasyon Testleri
 
@@ -912,7 +912,7 @@ public class ProductControllerTests(PostgresWebApplicationFactory factory)
 
 Sadece bu testi çalıştırarıp gerçekten de docker tarafında bir container ayağa kalkıyor mu ve testler bu container'daki veritabanına bağlanarak çalışıyor mu diye kontrol edebiliriz.
 
-![image.axd](images/image.axd)
+![ContainerTest.png](images/ContainerTest.png)
 
 Burada dikkat edilmesi gereken nokta söz konusu container'ın test tamamlanmadan önce başlatılması ve test bittikten sonra da kaldırılmasıdır. İlk ısınma sırasında (warm-up diyelim) testin süresi biraz uzayabilir zira container'ın ayağa kalkması ve veritabanının hazır hale gelmesi zaman alabilir. Ancak kullanmak istediğimiz veritabanı özellikleri düşünülürse bu maliyete değebilir.
 
@@ -971,12 +971,12 @@ public class DomainLayerTests
 
 Bu testlere göre örneğin HexagonalAdventure.Application öneki içeren namespace'lerin olduğu projelerin Domain katmanına sızmasını engellemiş oluyoruz (Entity Framework ile birlikte tabii). Ben burada sadece birkaç temel kontrol ekledim ancak mimari uygunluk testlerini çok daha detaylı hale getirmek mümkün olabilir. Örneğin domain katmanında sadece domain entity'lerin bulunması gerektiği gibi bir kural veya application katmanında sadece servislerin bulunması gerektiği gibi bir kural da ekleyebiliriz. Güncel olarak geldiğimiz noktada projemizdeki tüm testlerin başarılı bir şekilde çalıştığını görebiliriz.
 
-![image.axd](images/image.axd)
+![LastTestResults.png](images/LastTestResults.png)
 
 ## Genel Görünüm
 
 Solution içeriğinde birçok proje ve harici nuget bağımlılıkları var. Gelinen noktada neler olduğunu kabaca aşağıdaki diagramda olduğu gibi özetleyebiliriz.
 
-![image.axd](images/image.axd)
+![GeneralOverview.png](images/GeneralOverview.png)
 
 Yazının bu kısmına kadar geldiyseniz size canı gönülden teşekkür ederim. Umarım bilgilendirici ve denediğinize değer bir makale olmuştur. Burada ele aldığımız [uygulama kodlarına elbette github reposu üzerinden erişebilirsiniz](https://github.com/buraksenyurt/HexagonalArchitecture_101). Hatta DDD'ye özgü bir takım yenilikler de eklemeye çalışacağım. Event'ler gibi. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

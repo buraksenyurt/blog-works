@@ -1,4 +1,4 @@
----
+﻿---
 title: "Rust ve Güvenli Bellek Yönetimi Hakkında"
 pubDate: 2025-02-14 12:30:00
 categories:
@@ -106,7 +106,7 @@ gcc use_after_frees.cpp -lstdc++ -o use_after_frees
 
 Çalışma zamanı sonucu aşağıdaki gibidir.
 
-![image.axd](images/image.axd)
+![UseAfterFreesError.png](images/UseAfterFreesError.png)
 
 Şimdi benzer senaryo için aşağıdaki rust kodunu ele alabiliriz.
 
@@ -148,7 +148,7 @@ fn delete(player: Player) {
 
 Yine başrollerde Player isimli bir nesne var ve struct olarak tasarlanmış halde. player değişkeni bazı ilk değerler ile tanımlandıktan sonra delete isimli bir fonksiyona gönderiliyor. RAII'den (Resource Acquisition is Initialization) gelen scope mantığına göre delete metodunun son satırına gelindiğinde player referansı işaret ettiği veri ile birlikte otomatik olarak bellekten düşer. Buna göre main fonksiyonunda delete çağrısı sonrası player nesnesi artık geçersiz olur çünkü ortada yoktur. Ki Rust, sahiplik ilkesi gereği bir verinin t anından tek bir sahibi olabileceğini belirtir. Sahipliğin bir fonksiyona geçmesi ve fonksiyon sonlandığından söz konusu verinin düşürülmesi sahibi olan referansın da ortadan kalması anlamına gelir. Bu kısıt sebebiyle program kodu derleme zamanında aşağıdaki hataları verir.
 
-![image.axd](images/image.axd)
+![NoUseAfterFrees.png](images/NoUseAfterFrees.png)
 
 ## Double Free
 
@@ -191,7 +191,7 @@ gcc double_frees.cpp -lstdc++ -o double_frees
 
 Burada biraz duralım. Normalde bu kod Linux üzerine segmentation fault hatasına giderken Windows 11 sisteminde bu sorun oluşmuyor. En azından çalıştığım sistemdeki denemeler böyle sonuçlandı. Bunun sebebi Windows Heap Manager'ın ikinci serbest bırakma girişimini tespit edip sessizce bu durumu bertaraf etmesi. Elbette runtime hatası alınmaması çift serbest bırakma operasyonunun riskini gizlediğinden bu daha büyük bir problem olarak da düşünülebilir. Dolayısıyla örneği dilerseniz Windows sistemlerde WSL (Windows Subsystem for Linux) üzerinden de yorumlayabilirsiniz. Aşağıdaki gibi hata almanız gerekir.
 
-![image.axd](images/image.axd)
+![DoubleFreesError.png](images/DoubleFreesError.png)
 
 Birde benzer kodu Rust tarafında ele alalım.
 
@@ -221,7 +221,7 @@ fn do_something(player: Player) {
 
 Açıkça bir delete operasyonu kullanmasak da Rust'ın sahiplikleri ve değerlerini scope dışına çıkınca düşürmesi aynı senaryoyu işletmemizi sağlayacaktır. Bu kod tahmin edeceğiniz üzere derlenmez.
 
-![image.axd](images/image.axd)
+![NoDoubleFrees.png](images/NoDoubleFrees.png)
 
 Durum değerlendirmesi yapalım. player değişkeni do_something metoduna ilk gönderildiği anda sahipliği ile birlikte taşınır. do_something metodunun sonuna gelindiğinde ise bellekten düşer ve main fonksiyonundaki player değişkeni artık kullanım dışı kalır. Dolayısıyla ikinci do_something çağrısına aynı player değişkeni tekrar gönderilemez. Bu da derleme zamanı hatası anlamına gelir. Tabii şunu unutmayalım. Burada aynı referansı metoda taşımak veya metotdan yeni bir Player nesnesi ile geri döndürmek gibi yollarla player referansının birden çok kez kullanılması pakala sağlanabilir keza burada bir verinin t anında sadece tek bir sahibi olabilir ilkesi ihlal ihlal edilmez;) (Ownership ilkelerini hatırlamakta yarar var. İstediğimiz kadar immutable referans ama t anında sadece tek bir mutable referans...)
 
@@ -272,7 +272,7 @@ int main() {
 
 Öncelikle örnek kodda neler yaptığımıza bakalım. player nesnesi örneklendikten sonra onu danglingPointer isimli başka bir referansa daha atıyoruz. Dolayısıyla her iki değişkenin Doktor Sitrenç'i işaret ettiğini söyleyebiliriz. Ardından calc_bonus fonksiyonuna ilk player nesne referansımızı gönderiyoruz. Kasıtlı olarak calc_bonus sonunda player nesnesini bellekten düşürüyoruz. Bu durumda ortada Doktor Sitrenç'i referans eden bir değişken kalmıyor ancak main metodunda yer alan danglingPlayer değişkeni bellekteki aynı bölgeyi ilk referans bağı kopsa da işaret etmeye devam ediyor. Sonuçta program bu noktaya kadar çalışıp ardından çakılıyor.
 
-![image.axd](images/image.axd)
+![DanglingPointerError.png](images/DanglingPointerError.png)
 
 Çok daha büyük çapta bir projede böyle bir hata noktasına gelindiğini düşünün. Şimdi benzer senaryoyu birde Rust tarafında deneyimlemeye çalışalım.
 
@@ -307,7 +307,7 @@ fn calc_bonus(player: Player) {
 
 C++ kod örneğindekine benzer şekilde dangling_pointer isimli değişken player nesnesinin referansını taşıyor. Ancak kod derlendiğinde aşağıdaki hatayı alırız.
 
-![image.axd](images/image.axd)
+![NoDanglingPointers.png](images/NoDanglingPointers.png)
 
 Derleme mesajlarını sırasıyla dikkatli bir şekilde okumanızı tavsiye ederim. Özetle calc_bonus fonksiyonunun player nesnesinin sahipliğini aldığını, işleyişini tamamladığında da onu bellekten düşürdüğünü ve bu yüzden başka bir nesnenin onu referans etmesine müsaade edemeyeceğini söyler. Kibarca...Çünkü t anında bir değerin tek bir sahibi olabilir. Fakat yine vurgulamak isterim ki calc_bonus metodunun parametrik yapısı referans taşıyan bir versiyone dönüştürülebilir veya dönüşü yeni bir Player nesne örneği olarak ele alınabilir. Yani kodda aşağıdaki gibi bir değişiklik söz konusu ihlali ortadan kaldırır ve bellek güvenli bir şekilde programın çalıştırılmasını sağlar.
 
@@ -349,7 +349,7 @@ int main(void){
 
 Kod oldukça basit esasında. On byte'lık bir buffer ayarlanıyor ve bir for döngüsü yardımıyla içerisine veri aktarılıyor. Sorun şu ki döngü on birinci sıradan bir elemanı da yazmaya çalışıyor. Program kodu başarılı bir şekilde derlense de doğal olarak çalışma zamanında kırılacaktır. Burada sıkıntı taşma hatasına sebep olacak for döngüsünden önce atanan someData değişkeninin for döngüsünden sonraki kod satırı ile terminale çıktı olarak yazılmış olmasıdır. Yani kodun belli kısımlarının çalıştığını ve herhangibir noktada, ancak for döngüsü kullanıldığında hata alınarak sonlandığını yorumlayabiliriz.
 
-![image.axd](images/image.axd)
+![BufferOverflowError.png](images/BufferOverflowError.png)
 
 Saldırganlar genellikle bu tip buffer bölgelerine fazladan veri yazarak zarar vermeye çalışabilir. Benzer senaryoyu birde Rust tarafında ele almaya çalışalım.
 
@@ -368,7 +368,7 @@ fn main() {
 
 Neredeyse aynı kodun yazıldığını söyleyebiliriz. Hatta rust bile hata vermeden bu programı derleyecektir. Ne var ki çalışma zamanında söz konusu taşma algılanmış ama kodun kalan kısımları işletilmemiştir.
 
-![image.axd](images/image.axd)
+![BufferOverflowRust.png](images/BufferOverflowRust.png)
 
 Bu arada Rust bazı hallerde derleme zamanında da bu taşmayı yakalayabilir (Gerçi bunu C++' ta yakaladı ve hatta birçok dil derleyicisi yakalar) Son olarak aşağıdaki kod parçasını ele alalım.
 
@@ -389,7 +389,7 @@ fn main() {
 
 Burada buffer[10] = 1 ile açıkça bir buffer overflow ihlali söz konusu. Rust derleyicisinin bu koda tepkisi aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![BufferOverflowBuildError.png](images/BufferOverflowBuildError.png)
 
 Bu örnekler aslında Rust'ın daha güvenli bellek yönetimine ihtiyaç duyan ve bunu yaparken managed environment'a ihtiyaç duyulmaması gereken performans kritik senaryolar için neden tercih edildiğinin minik bir gösterimidir. Rust bilindiği üzere ownership, borrow checker, lifetime mekanizmaları yanında RAII modelini baz alan bir bellek yönetimi sunar. Birçok olası hata yukarıdaki örneklerden de görüldüğü üzere derleme zamanında tespit edilir ve risk oluşturacak ihlaller önlenir. Buffer Overflow gibi masumane görünen ama stack corruption, code execution gibi saldırıların önünü açan durumlara karşı daha güçlü bir savunma mekanizması sağlar.
 

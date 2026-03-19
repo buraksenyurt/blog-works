@@ -1,4 +1,4 @@
----
+﻿---
 title: "Bir .Net Core Web API Servisini Minikube Üzerinden Çalıştırmak"
 pubDate: 2019-05-10 13:00:00
 categories:
@@ -19,7 +19,7 @@ tags:
 ---
 
 # Bir .Net Core Web API Servisini Minikube Üzerinden Çalıştırmak
-![image.axd](images/image.axd)
+![dumen.png](images/dumen.png)
 
 Soğuk bir Şubat akşamı mıydı, dışarıda kar var mıydı, günün tam olarak hangi vakitleriydi tam olarak hatırlamıyorum ama github'a göre 24 numaralı örneğin son check-in işlemi 20 şubat Çarşamba günüydü.
 
@@ -71,7 +71,7 @@ minikube start
 
 Hatta Minikube başarılı bir şekilde başladıktan sonra Virtual Box ortamından servis durumunu kontrol edebiliriz de. Aşağıdaki ekran görüntüsünde olduğu gibi minikube servisinin running modda görünmesi iyiye işarettir.
 
-![image.axd](images/image.axd)
+![04_24_credit_1.png](images/04_24_credit_1.png)
 
 Çok doğal olarak servisi durdurma ve hatta silme ihtiyacımız da olabilir denemeler sırasında. Örneğin Minikube servisini durdurmak için,
 
@@ -196,7 +196,7 @@ kubectl get pods
 
 create sonrasında kullanılan get komutları ile dağıtımı yapılan enstrümanı ve Podları görebiliriz (Pod = Aynı host üzerine dağıtımı yapılan bir veya daha fazla container olarak düşünülebilir ki senaryomuzda minikube için 3 pod söz konusudur) Lakin pod içeriklerine bakıldığında image durumlarının ErrImageNeverPull şeklinde kalmış olması gibi bir durum söz konusudur. En azından WestWorld'de böyle bir sorunla karşılaştığımı ifade edebilirim.
 
-![image.axd](images/image.axd)
+![04_24_credit_2.png](images/04_24_credit_2.png)
 
 Sorun, minikube ile docker'ın birbirlerinden haberdar olmamalarından kaynaklanmaktaymış. Problemi aşmak için eval komutundan yararlanmak ve sonrasında docker imajını tekrar oluşturup minikube dağıtımını yeniden yapmak gerekiyor. Tabii önceki komutlar nedeniyle büyük ihtimalle sistemde duran dağıtımlar bulunacaktır. Önce onları silmek lazım. Aşağıaki ilk komutla dağıtım paketini bulup sonrasında silebiliriz.
 
@@ -215,7 +215,7 @@ kubectl get deployments
 kubectl get pods
 ```
 
-![image.axd](images/image.axd)
+![04_24_credit_3.png](images/04_24_credit_3.png)
 
 ## Çalışma Zamanı
 
@@ -230,7 +230,7 @@ minikube service random-names-api-netcore --url
 
 > minikube aksini belirtmezsek 30000 ile 32767 port aralığını kullandırtmaktadır.
 
-![image.axd](images/image.axd)
+![04_24_credit_4.png](images/04_24_credit_4.png)
 
 ## 80 Numaralı Port
 
@@ -263,7 +263,7 @@ minikube start --extra-config=apiserver.service-node-port-range=80-30000
 kubectl create -f services.yaml
 ```
 
-![image.axd](images/image.axd)
+![04_24_credit_5.png](images/04_24_credit_5.png)
 
 > İşlemleri başarılı bir şekilde sonlandırdık diyebiliriz. Evden çıkmadan önce minikube stop komutunu vermek yararlı olabilir.
 

@@ -1,4 +1,4 @@
----
+﻿---
 title: "React Üzerinde Socket.IO Kullanımı"
 pubDate: 2019-08-30 13:00:00
 categories:
@@ -14,7 +14,7 @@ tags:
 ---
 
 # React Üzerinde Socket.IO Kullanımı
-![image.axd](images/image.axd)
+![senna.png](images/senna.png)
 
 Bir zamanlar sıkı bir Formula 1 izleyicisiydim. O dönemde dünyanın bir numaralı pilotu üç kez F1 dünya şampiyonu olan [Ayrton Senna](https://youtu.be/-pItzcHBHt0)'ydı. Yağmurlu havalardaki ustalığı nedeniyle Rainman lakabını almış bir yarışçı olmakla birlikte virajları hız kesmeden dönmeyi becerirdi. Monaco yarışından bir görüntüsü geldi şimdi gözümün önüne. Sağ eliyle kokpitin sağındaki vitesi sol eliylede direksiyonu tutuyordu.
 
@@ -30,7 +30,7 @@ Bir süre önce eski bir meslektaşım OBD2 portlarından nasıl bilgi okunabile
 
 En ideal senaryolardan birisi Web Socket kullanmaktı. Socket.IO kütüphanesi bu amaçla değerlendirilebilirdi. Bir yarış aracının WebSocket haberleşmesi ile veri yayınlayacağını düşünelim. Haberleşme ağı üzerinde olan başka bir sunucu uygulama ile araç verileri abone olan istemcilere gönderilecek. Veri yayıncısı ve broadcast yönetimini üstlenecek sunucu için Node.js, görsel arayüzle yarış araçlarının gönderilen bilgilerine bakacak istemci tarafı içinse bir React uygulaması geliştirmeye karar verdim. E ne duruyoruz öyleyse. Kodlamaya başlayalım.
 
-![image.axd](images/image.axd)
+![credit_1.jpg](images/credit_1.jpg)
 
 > Bizim senaryomuzda tek bir yarış aracının bilgi yayınladığını varsayıyoruz. Şekildeki gibi n sayıda aracın ve dinleyicinin olduğu bir senaryoda, yayın yapan araçların verilerini diğerleri ile karışamayacak şekilde konsolide ederek göndermemiz gerekir ki istemciler n sayıda aracın verisini ya da istedikleri belli bir aracın verisini kullanabilsin.
 
@@ -285,11 +285,11 @@ npm run start
 
 WestWorld üzerinde yakaladığım çalışma zamanına ait iki ekran görüntüsü aşağıda bulabilirsiniz. Aslında göstergeler canlı ortamda hareket ettiklerinden çok daha hoş ve etkileyici bir sonuç ortaya çıkıyor. Veri her 5 saniyede bir yenilenmekte.
 
-![image.axd](images/image.axd)
+![credit_2.jpg](images/credit_2.jpg)
 
 Bir başka t anında;
 
-![image.axd](images/image.axd)
+![credit_3.jpg](images/credit_3.jpg)
 
 Hepsi bu kadar:) Tabii örneği zenginleştirmek lazım. Benim ki epey aceleye geldi. Mesela senaryonun n sayıda araç (yayıncı) için n sayıda istemcide tekil veya toplu halde çalışabileceği farklı bir versiyonunu yazılabilir. Bu size güzel bir ev ödevi olsun.
 

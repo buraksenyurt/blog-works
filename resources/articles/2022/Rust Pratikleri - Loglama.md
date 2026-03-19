@@ -1,4 +1,4 @@
----
+﻿---
 title: "Rust Pratikleri - Loglama"
 pubDate: 2022-01-30 13:45:00
 categories:
@@ -14,7 +14,7 @@ tags:
 ---
 
 # Rust Pratikleri - Loglama
-![image.axd](images/image.axd)Bugün bir redis, rabbitmq, kafka sunucusu başlattığımızda ya da docker container içerisine komut satırı açtığımızda terminal ekranına akan sayısız log içeriği olduğunu görüyoruz. Bu loglar hataları görmek, kodun akışını izlemek ve uyarıları çabucak fark etmek açısından sistem programcıları için son derece kıymetli bilgilerden oluşuyor. Çok doğal olarak Rust ile yazılan uygulamalar içinden de log yayınlamak isteyebiliriz ki Rust’ın asıl odağının sistem programlama olduğunu düşünecek olursak bu gereklidir. Rust Pratiklerinin bu ilk bölümünde [log](https://crates.io/crates/log) ve [env_logger](https://docs.rs/env_logger/0.9.0/env_logger/) küfelerini kullanarak basit anlamda loglamanın nasıl yapıldığını öğreneceğiz.
+![voyager.jpg](images/voyager.jpg)Bugün bir redis, rabbitmq, kafka sunucusu başlattığımızda ya da docker container içerisine komut satırı açtığımızda terminal ekranına akan sayısız log içeriği olduğunu görüyoruz. Bu loglar hataları görmek, kodun akışını izlemek ve uyarıları çabucak fark etmek açısından sistem programcıları için son derece kıymetli bilgilerden oluşuyor. Çok doğal olarak Rust ile yazılan uygulamalar içinden de log yayınlamak isteyebiliriz ki Rust’ın asıl odağının sistem programlama olduğunu düşünecek olursak bu gereklidir. Rust Pratiklerinin bu ilk bölümünde [log](https://crates.io/crates/log) ve [env_logger](https://docs.rs/env_logger/0.9.0/env_logger/) küfelerini kullanarak basit anlamda loglamanın nasıl yapıldığını öğreneceğiz.
 
 Normalde bir kütüphane geliştiriyorsak sadece log paketini kullanmak yeterlidir. Ancak çalıştırılabilir bir uygulamadan log basmak istersek onu implemente eden crate'leri kullanmamız gerekir. Façade görevi üstlenen bu tetikleyiciler farklı ortamlara log basma kabiliyetlerine de sahiptir. İzleyen örnekte minimal olanlardan env_logger kullanılıyor. Ancak daha karmaşık sistemler için log4rs (log4net gibi düşünün), web assembly'lar için console_log, android, windows, unix gibi ortamlar için de android_log, win_dbg_logger, syslog vb kütüphaneler de var.
 
@@ -149,6 +149,6 @@ RUST_LOG=trace cargo run
 
 Sonuç itibariyle aşağıdaki renkli ve iç ısıtan çıktıyı alabilmemiz gerekiyor.
 
-![image.axd](images/image.axd)
+![logging_1.png](images/logging_1.png)
 
 Görüldüğü üzere log ve env_logger küfelerini kullanarak terminale log bırakmak oldukça pratik. Bir başka rust pratiğinde görüşmek dileğiyle, sağlıklı günler.

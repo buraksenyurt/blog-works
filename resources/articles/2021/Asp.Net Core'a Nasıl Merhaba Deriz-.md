@@ -1,4 +1,4 @@
----
+﻿---
 title: "Asp.Net Core'a Nasıl Merhaba Deriz?"
 pubDate: 2021-04-25 09:00:00
 categories:
@@ -26,7 +26,7 @@ tags:
 ---
 
 # Asp.Net Core'a Nasıl Merhaba Deriz?
-![image.axd](images/image.axd)
+![hellomvc_cover.png](images/hellomvc_cover.png)
 
 Yazılım geliştirme işine ciddi anlamda başladığım yeni milenyumun başlarında.Net Framework sahanın yükselen yıldızıydı. Delphi’den kopup gelen Anders’in yarattığı C# programlama dilinin gücü ve.Net Framework çatısının vadettikleri düşünülünce bu son derece doğaldı. Aradan geçen neredeyse 20 yıllık süre zarfında.Net Framework’te evrimleşti ve sürekli güncellendi. Versiyon 2.0 ile gelen generic tipler, 3.0'la birlikte SQL yazar gibi sorgulanabilir nesneler (LINQ-Language INtegrated Query), sonrasında karşımıza çıkan WCF (Windows Communication Foundation), WF (Workflow Foundation), Entity Framework vs derken Microsoft’un açık kaynak dünyasına girişi, benimsediği platform bağımsız stratejiler (Miguel De Icaza’nın Mono’suna da saygı duyalım), Linux, MacOS gibi bir zamanların ciddi rakipleri ile el sıkışarak hamle yapması sonrasında da son birkaç yıllık zaman diliminde karşımıza çıkan.Net Core. Yeni gelişmeler Microsoft’un sıklıkla yaptığı üzere bazı kavram karmaşalarını da beraberinde getirdi elbette. En nihayetinde tek ve birleşik bir.Net 5 ortamından bahsedilmeye başlandı. (Photo by [Element5 Digital](https://unsplash.com/@element5digital?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/s/photos/education?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText))
 
@@ -149,7 +149,7 @@ Belki kafana takılan bazı sorular olabilir. Neden başlangıça @model diye bi
 
 Nereye koyman gerektiğini söylemiyorum ancak basitçe bulacağından eminim;) Tahmin edeceğin üzere yeni bir menü öğesi yerleştirdik ve ona basılınca hangi Controller nesnesinin hangi Action üyesinin tetiklenmesi gerektiği ifade ettik. Eğer hazırsan terminalden dotnet run komutunu vererek ya da Visual Studio ortamındaysan F5 tuşuna basarak örneği çalıştırabilirsin. Aşağıdaki ekran görüntüsündekine benzer bir sonuç elde etmeni bekliyorum.
 
-![image.axd](images/image.axd)
+![hellomvc_1.png](images/hellomvc_1.png)
 
 Nasıl? Hiç yoktan iyidir değil mi? Mesela oyun bilgilerinin veritabanından geldiğini düşün. Hatta yeni oyun ekleme, fiyat değiştirme, oyunlara kapak fotoğrafları ekleme, yorum alma ve puan verme gibi kullanıcı etkileşimi yüksek fonksiyonellikler dahil ettiğini düşün. Hatta önyüz tarafında hazır Bootstrap çatısını kullanarak makyaj yaptığını ve albenisi yüksek, moda tabirle UX (User Experience) açısından zengin bir uygulama inşa ettiğini. Etkileyici bir Web uygulaması ortaya koymamız işten bile değil:) Ama ortada bir sorun var gibi.
 
@@ -157,7 +157,7 @@ Nasıl? Hiç yoktan iyidir değil mi? Mesela oyun bilgilerinin veritabanından g
 
 Şu anda bir MVC uygulamasına Hello World demiş olduğumuzu sanabilirsin. Biraz üstünde durup düşününce, Controller sınıfının ne yaptığını, View bileşeninin bir Action ile nasıl ilişkilendiğini ve kendisi ile alakalı model nesnelerini nasıl kullandığını anlamış olabilirsin. Ne var ki uygulama şirketimizde çalışan yazılımcıların rahatsız olacağı bir kod parçası içeriyor. Biraz düşünüp neresi olduğunu bulmak ister misin? Arzu edersen bunu bir kahve molası eşliğinde daha da derinlemesine düşünebilirsin.
 
-![image.axd](images/image.axd)
+![matt-hoffman-ZUUsGnG5zwc-unsplash.jpg](images/matt-hoffman-ZUUsGnG5zwc-unsplash.jpg)
 
 Photo by [Matt Hoffman](https://unsplash.com/@__matthoffman__?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/s/photos/coffee-break?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText)
 
@@ -169,7 +169,7 @@ GameRepository gameRepository = new GameRepository();
 
 Bunda ne sorun olabilir ki dediğini duyar gibiyim. Aynen bana da öğretildiği üzere oyun nesnesi üstünde temel CRUD (Create Read Update Delete) operasyonlarını üstelenen ve dolayısıyla sadece bu sorumluluğu üstüne alan bir sınıfın nesne örneğini alıp güzelce kullandın. Bir şekillde ifade etmek istersek kabaca aşağıdaki gibi bir durumun söz konusu olduğunu ifade edebilirim (Ve lütfen çizimimin kötü olmasına aldırma)
 
-![image.axd](images/image.axd)
+![hellomvc_2.png](images/hellomvc_2.png)
 
 İşte o terim; Tightly-Coupled! Yine karşımıza çıktı:D Sorun, GameController nesnesinin GameRepository sınıfını doğrudan kullanması. Bu sıkı bir arkadaşlığın göstergesi gibi. Ancak uygulama kodları arttıkça ve proje ister istemez büyüdükçe GameRepository nesnesinin farklı yerlerde kullanımı da söz konusu olacak. Ya Low-level bileşen olarak ifade edilen GameRepository'nin (yapması gereken işle ilgili kaynaklara doğrudan erişip karmaşık bir şeyler yapan nesne) işleyişi farklılaşır veya adı değişirse? Ya onu kullanan bir test metodunda gerçekten veritabanına gitmeden sırf test senaryosunun kalanını işletmek için hayali bir Game listesi döndürmesi istenen bir fonksiyon gerekirse? Mesela GameRepository, GameController'a küser ve fonksiyonunu kaldırırsa:P İşin şakası bir yana GameController'ın çalışması ve oyuncu listesini View'a vermesi, GameRepository'nin ellerindedir. Bu sıkı bağımlı bileşkeler GameRepository'yi başka bir şeyle değiştirmeyi zorlaştırır.
 
@@ -177,7 +177,7 @@ Bunda ne sorun olabilir ki dediğini duyar gibiyim. Aynen bana da öğretildiği
 
 Sanırım sorun kısmen de olsa anlaşıldı. Bu ikili arasındaki sıkı dostluğa lafımız yok ama ilişkilerine bir mesafe koymalarında yarar var. Peki ya bunu nasıl sağlarız? Aşağıdaki şekle bakmadan biraz düşün derdim ama şu anda onu gördüğünü biliyorum:)
 
-![image.axd](images/image.axd)
+![hellomvc_3.png](images/hellomvc_3.png)
 
 Yapılması gereken GameController'ı GameRepository sınıfından koparmak ve aradaki ipleri gevşetmek (Loosely-Coupled ilkesini sağlanması) Bir başka deyişle, High-Level Component olan GameController ile asıl işi yapan Low-Level Component GameRepository arasına soyut bir katman (abstraction layer) koymak. Asıl işi yapan sınıfın detaylarını umursamayan ve asıl işi yapan sınıfın yaptığı işe ihtiyaç duyan GameController sınıfının isteklerine elçi olan. Ayrıca oyunun kurallarını bir sözleşme ile belirleme ve gerçekten de Controller'ın ihtiyacı olan fonksiyonları verecek asıl nesneyi kullandırma imkanına sahip olacağız. Nesne yönelimli diller açısından baktığımızda bunun en pratik yolu Interface tipini kullanmak. Şimdi üstünlüğü ele geçirelim. Yine Data klasörü altına geç ve IGameRepository isimli aşağıdaki arayüzü ekleyerek çalışmana devam et.
 
@@ -249,7 +249,7 @@ Harika! Sonuca çok yaklaştın. Haydi uygulamayı tekrar çalıştırda, her ş
 
 Galiba sende benim gibi hiç beklenmedik bir hata ile karşılaştın.
 
-![image.axd](images/image.axd)
+![hellomvc_4.png](images/hellomvc_4.png)
 
 Bu çalışma zamanı hatası da nereden çıktı şimdi!? Doğruyu söylemek gerekirse pek de sevimli bir ekran görüntüsü değil. Oysaki uygulama derlenebiliyor. Senden ricam StackTrace içeriği ile birlikte hata mesajını dikkatlice okuman.
 

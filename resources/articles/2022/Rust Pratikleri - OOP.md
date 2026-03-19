@@ -1,4 +1,4 @@
----
+﻿---
 title: "Rust Pratikleri - OOP"
 pubDate: 2022-04-24 09:00:00
 categories:
@@ -20,7 +20,7 @@ tags:
 ---
 
 # Rust Pratikleri - OOP
-![image.axd](images/image.axd)
+![oop_cover.png](images/oop_cover.png)
 
 Yılların.Net geliştiricisi olunca insan ki sanıyorum Java tarafından gelse de durum değişmeyecektir, ister istemez Rust, Go gibi dillerde nesne yönelimli dünyanın karşılıklarını arıyor. Ortak özellikleri toplayacağım üst tipler yok mu, peki ya bağımlılıkları soyutlamak için başvuracağım interface türevleri, bukalemun varlıklara ne demeli. Kısacası bir nesne yönelimli dilin öne çıkan en belirgin özellikleri encapsulation, Inheritance, Polymorphism gibi detaylara bakıyoruz.
 
@@ -81,7 +81,7 @@ class Robot
 
 Örneğimizde bir oyun sahasındaki robotu modellemeye çalışıyoruz. Bu sınıfının iki public ve bir de private özelliği var. Auto-Property şeklinde tanımlandıklarından get ve set blokları dotnet tarafından ara kodda otomatik olarak tamamlanıyor. Parametreler ile overload edilmiş bir yapıcı metot da var (constructor). Ayrıca Walk ve LoadFuel isimli deneysel fonksiyonlara sahip. Object sınıfından gelen ToString metotu bu sınıf için yeniden yazılmış durumda (override) Bilindiği üzere Object tipi dotnet camiasındaki ata sınıf. Virtual olarak sahip olduğu ToString fonksiyonunun varsayılan bir davranış zaten mevcıt ancak istersek kendi tiplerimiz için bunu değiştirebiliriz. Robotun çalışma zamanındaki anlık durumunu tutmak için State isimli bir Enum sabiti kullanmaktayız. Bu örneğin çalışma zamanı çıktısı aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![oop_1.png](images/oop_1.png)
 
 Peki ya benzer bir modeli Rust tarafında kurgulamak istersek. Sınıf, override, private erişimler, nesne fonksiyonları gibi temel modelleme konularını bakalım nasıl karşılayacağiz. Bu örnek özelinde de bir terminal uygulaması işimizi görecektir.
 
@@ -185,7 +185,7 @@ Rust bellek yönetimi ve güvenliği adına derleyici odaklı (Compiler Oriented
 
 Örneğin çalışma zamanı çıktısı da aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![oop_2.png](images/oop_2.png)
 
 ## Kalıtım (Inheritance) Durumu
 
@@ -269,7 +269,7 @@ class Submarine
 
 Aslında Java ve C# tarafından gelenler için gayet sade ve anlaşılır bir düzenek olduğunu belirtebiliriz. Alt tiplerin yapıcı metotlarından üst tiplere base anahtar kelimesi yardımıyla veri gönderilebilmektedir. ToString fonksiyonu ortak özellikleri tuttuğu için Vehicle sınıfında yeniden yazılmıştır. Ayrıca LoadFuel operasyonu bu ortak tipe taşınmıştır. Bu örneği çalıştırdığımızda aşağıdaki ekran görüntüsündekine benzer sonuçlar alırız.
 
-![image.axd](images/image.axd)
+![oop_3.png](images/oop_3.png)
 
 Kalıtımı kullanmanın sebepleri arasında tekrarlı kod bloklarını engellemeyi, türler için ortak olan özellik ve fonksiyonellikleri bir noktada toplamayı vs sayabiliriz. Gerçi ben sınıf bazlı kalıtım yerine Interface kullanmaktan ve yine de gerekliyse ortak veri ve fonksiyonları tutan sınıfların alt sınıflarda birer özellik gibi kullanılmasından yanayım (Bir nevi Composition diyebilir miyiz?) Elbette bu tartışmaya açık bir konu. Biz şimdi rust cephesinden duruma bakalım.
 
@@ -405,7 +405,7 @@ impl Display for State {
 
 Submarine ve Robot veri yapılarının ortak özellikleri Vehicle veri yapısına alındı. Bu nedenle hem Robot hem Submarine, bu türden vehicle isimli birer alana sahip. Bir nevi Composition gibi düşünebiliriz. Tabii C# örneğinde ortak fonksiyon olarak kullanılan load_fuel metodunu üst türde konuşlandırmıştık. Rust ile yazdığımız kod parçasında bu iş için bir trait kullanmaktayız. İlgili trait'i Vehicle için yazdığımızda Submarine ve Robot için de kullanabilir hale gelmekte. Nitekim her ikisi de Vehicle'a sahip ve dolayısıyla Fuel trait'i istenen yakıt yükleme davranışını pekala uygulayabilir. Ancak şunu hatırlatmakta yarar var; Rust tam anlamıyla nesne yönelimli paradigmayı hedeflemiş bir dil değildir. Yine de basit bir has-a ilişkisi ve trait'leri kullanarak benzer işlevsellikleri sağladık diyebiliriz. İşte son koduyla birlikte örneğin çalışma zamanı çıktısı.
 
-![image.axd](images/image.axd)
+![oop_4.png](images/oop_4.png)
 
 ## Polymorphism Konusu
 
@@ -501,7 +501,7 @@ class Submarine
 
 Yeni sürümde IAbility isimli bir arayüz (interface) bulunuyor. İçerisinde sadece SetTools isimli bir fonksiyon yer alıyor ve uygulandığı araç için bir takım alet edavatları yükleme işini üstlenecek davranışı tanımlıyor. Bu arada davranış (Behavior) Rust tarafı için anahtar kelime de olabilir. Robot ve Submarine türleri bu arayüzü uyguladığından CallTools isimli bir metot yazmamız pekala mümkün. Parametre olarak IAbility arayüzünü uygulayan her nesne bu fonksiyona girebilir ve kendisi için yazılmış SetTools metodunu icra edebilir. İşte çalışma zamanı çıktımız.
 
-![image.axd](images/image.axd)
+![oop_5.png](images/oop_5.png)
 
 Şimdi olayı Rust tarafında aşağıdaki kod parçaları ile değerlendirmeye çalışalım.
 
@@ -605,7 +605,7 @@ impl Ability for Submarine {
 
 Interface yok ama benzer kabiliyetleri sergileyecek trait'imiz var. Dolayısıyla Ability isimli bir enstrüman tanımladık. Bu davranışı Robot ve Submarine veri yapıları için de uyarladık. call_tools fonksiyon dikkat edileceği üzere generic parametre almakta. Rust tarafında generic kavramı yok zannediyorsanız yanılıyorsunuz:) Örnekteki generic tipin en önemli özelliği ise Ability trait'ini uygulama zorunluluğu getirmesi. Esasında bu ilk örnekte static dispatch adı verilen görünmez bir kullanım şekli söz konusu. Bu tekniğe göre call_tools fonksiyonu için derleyici Ability'nin uygulandığı her nesne adına birer call_tools fonksiyonu hazırlar ve içinde uygun olan nesnenin set_tools fonksiyonunu çağırır.
 
-![image.axd](images/image.axd)
+![oop_6.png](images/oop_6.png)
 
 Static Dispatch dışında ikinci bir kullanım şekli de dynamic dispatch yöntemidir. Bu yöntem özellikle kütüphanelerin kullanıldığı senaryolar için daha uygundur. Nitekim çok biçimli olması muhtemel trait'lerin uygulandığı tipler derleme zamanında belli olamayacağından bu bağlamları çalışma zamanında icra etmek gerekecektir. Bunun için kodu aşağıdaki gibi değiştirerek ilerleyelim.
 
@@ -643,7 +643,7 @@ fn call_tools_dynamic(a: &mut dyn Ability) {
 
 Hem static hem dynamic dispatch kullanımları aynı sonuçları verecektir.
 
-![image.axd](images/image.axd)
+![oop_7.png](images/oop_7.png)
 
 Esasında üst türden nesne kullanan koleksiyonlar nesne yönelimli dünyada sıklıkla kullanılırlar. Örneğin C# tarafında aşağıdaki gibi bir kullanım pekala mümkündür ve yazımı oldukça kolaydır.
 

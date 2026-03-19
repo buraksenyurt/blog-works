@@ -1,4 +1,4 @@
----
+﻿---
 title: "Nasıl bir Web API Tasarımı?"
 pubDate: 2018-08-05 21:30:00
 categories:
@@ -12,7 +12,7 @@ tags:
 ---
 
 # Nasıl bir Web API Tasarımı?
-![image.axd](images/image.axd)
+![restful_guid_1.gif](images/restful_guid_1.gif)
 
 Merhaba Arkadaşlar,
 
@@ -40,6 +40,6 @@ Diğer yandan sadece HTTP-Post ve Get desteği olan istemciler için mutlak sure
 
 Resource isimlendirmelerinde de çoğul ifadelerin kullanılması öneriliyor. Yani category yerine categories şeklinde tanımlama yapmak lazım. Diğer kullanım önerilerini de şu şekilde özetleyebiliriz ([Excel dosyasını indirmek için tıklayın](https://www.buraksenyurt.com/file.axd?file=/2018/07/RESTfulAPI.xlsx))
 
-![image.axd](images/image.axd)
+![rest_table.png](images/rest_table.png)
 
 Artık elimde/elinizde RESTful API tasarlamak için güzel bir kılavuz var. Bir başka yazıda görüşmek dileğiyle hepinize mutlu günler dilerim.

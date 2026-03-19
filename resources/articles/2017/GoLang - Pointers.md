@@ -1,4 +1,4 @@
----
+﻿---
 title: "GoLang - Pointers"
 pubDate: 2017-03-31 21:15:00
 categories:
@@ -10,7 +10,7 @@ tags:
 ---
 
 # GoLang - Pointers
-![image.axd](images/image.axd)
+![Pointer_DePaulo_head.gif](images/Pointer_DePaulo_head.gif)
 
 Merhaba Arkadaşlar,
 
@@ -51,7 +51,7 @@ func main(){
 
 Olayı irdelemek için çalışma zamanı sonuçlarına bakalım.
 
-![image.axd](images/image.axd)
+![gopointer_1.gif](images/gopointer_1.gif)
 
 pAge bir pointer oldu. Eşitliğin sağ tarafındaki & operatörü izleyen age değişkeninin bellek adresini yakalıyor. Bu nedenle pAge içeriğini ekrana bastığımızda bellek adresini görebiliyoruz. pAge isimli Pointer'ın işerat ettiği adres bölgesindeki değeri almak için * operatörü devreye giriyor. Sonrasında dikkat çekici bir durum söz konusu. * pAge değerinde bir değişiklik yapıp yaşa 41 sayısını atıyoruz. pAge bir pointer olduğundan üzerinden yapılan değişiklik aslında asıl işaret ettiği değişkenin değerinde gerçekleşmekte. Bu nedenle age değişkeni de artık 41 değerine sahip oluyor. point yine bir tamsayı değişkeni ve bellek adresini pPoint üzerinde taşıyoruz. * operatörü pointer'ın işaret ettiği değişken değerini verdiğinden matematik işlemlerine de dahip edebiliyoruz. * pPoint'in 2 ile çarpımında bu özellik ele alınıyor. Çok doğal olarak çarpma işlemi point değişkenini etkilemekte.
 
@@ -91,7 +91,7 @@ func callWithPointer(value *int){
 
 Olaylar main fonksiyonunda tanımlı age isimli değişken üzerinde gelişiyor. call parametre olarak değer bazlı değişken kullanmakta. Gelen age call fonksiyonunda değiştirilse bile main'deki age değerini etkilemiyor. callWithPointer içinse durum böyle değil. callWithPointer içerisine main fonksiyonundaki age değişkeninin adresi taşınıyor. Nitekim parametre bir pointer. Bu nedenle fonksiyon içerisinde yapılan değişim main içerisindeki age değişkeninde yapılmış oluyor. Konunun iyi anlaşılması için main'deki age ve fonksiyonlardaki parametre adreslerine dikkat etmenizi öneririm. Kodun çalışma zamanı çıktısı aşağıdaki gibidir.
 
-![image.axd](images/image.axd)
+![gopointer_2.gif](images/gopointer_2.gif)
 
 new ile Pointer Oluşturulması
 
@@ -115,7 +115,7 @@ func main(){
 
 Örnekte new ile string tipinden nickP isimli bir Pointer tanımlanmıştır. Sadece bellekte bunun için yer ayrılmıştır. Bu nedenle atama öncesi güncel değeri yoktur. "Speedy Gonzales" atamasından sonra ise adres bölgesi veri ile doldurulmuştur. Kodun çalışma zamanı çıktısı aşağıdaki gibidir.
 
-![image.axd](images/image.axd)
+![goPointer_3.gif](images/goPointer_3.gif)
 
 Immutable Struct
 
@@ -147,7 +147,7 @@ type Book struct{
 
 Örnekte Book isimli bir struct kullanılıyor. Title, Category ve ListPrice isimli özellikleri var. newPrice fonksiyonu parametre olarak gelen bir kitabın liste fiyatını 10 birim arttırmakta. Dikkat edilmesi gereken nokta newPrice fonksiyonu içerisinde ListPrice değerinin değiştirilmesine rağmen myBook değişkenindeki liste fiyatının değerini korumuş olmasıdır (parametre değer türü olarak taşınmıştır)
 
-![image.axd](images/image.axd)
+![gopointer_4.gif](images/gopointer_4.gif)
 
 Ancak tanımlanan struct değişkeni pointer olarak taşınırsa durum daha farklı olacaktır. * ve & operatörlerini devreye katarak kodu aşağıdaki hale getirelim.
 
@@ -166,6 +166,6 @@ func newPrice(book *Book) float32 {
 
 ve sonuç.
 
-![image.axd](images/image.axd)
+![gopointer_5.gif](images/gopointer_5.gif)
 
 Görüldüğü gibi Pointer tipinin tanımlanması ve kullanımı oldukça basittir. Böylece geldik bir Gopher olma çalışmamızın daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

@@ -1,4 +1,4 @@
----
+﻿---
 title: "Python Loglamada ELK Kullanımı"
 pubDate: 2019-04-27 19:32:00
 categories:
@@ -15,7 +15,7 @@ tags:
 ---
 
 # Python Loglamada ELK Kullanımı
-![image.axd](images/image.axd)
+![elk.png](images/elk.png)
 
 Laptop ekranına kitlenmiş error seviyesindeki logları inceliyordum. HTTP 400 en sevdiğim (yazar burada kendisiyle dalga geçiyor) ama çözmekte en çok zorlandıklarımdan birisiydi. Neyse ki monitör ettiğimiz araç bize güzel detaylar veriyordu. Pek tabii iş yoğunluğundan olsa gerek, üzerinde geliştirme yaptığımız ürünlerin bazı kurgularını inceleme fırsatı bulamıyordum. Lakin zaman zaman takım arkadaşlarımla veya mimari ekiptekilerle yaptığım konuşmalarda havada uçuşan, daha önceden duyduğum ama derinlemesine bilgi sahibi olmadığım kelimelere rastlıyordum.
 
@@ -25,7 +25,7 @@ ELK...Yani Elasticsearch, Logstash ve Kibana üçlüsü. Mikroservislerde log st
 
 Benim amacım ELK üçlüsünü WestWorld'de (Ubuntu 18.04, 64bit) deneyimlemek ve loglama işini yapan uygulama tarafında basit bir Python kodunu kullanmak. WestWorld'ün uzun denemeler sonrası bozulan ekosistemini daha da dağıtmak istemediğimden Elasticsearch ve Kibana tarafı için Docker Container'larını kullanacağım. Kabaca aşağıdaki gibi bir senaryonun söz konusu olduğunu ifade edebilirim.
 
-![image.axd](images/image.axd)
+![Cover_1.jpg](images/Cover_1.jpg)
 
 ## Örnek Uygulama Kodları
 
@@ -84,11 +84,11 @@ http://localhost:5601/status -> Kibana
 
 Elastichsearch çalışır durumda.
 
-![image.axd](images/image.axd)
+![04_20_Cover_2.png](images/04_20_Cover_2.png)
 
 Monitoring aracımız olan Kibana'da öyle.
 
-![image.axd](images/image.axd)
+![04_20_Cover_3.png](images/04_20_Cover_3.png)
 
 ### Logstash Tarafı
 
@@ -144,7 +144,7 @@ komutunu yürütmek yeterli.
 
 logstash etkinleştirildikten sonra Kibana'ya gidip yeni bir index oluşturabiliriz. index_name* ve @timestamp field'ını seçerek ilerlediğimizde python uygulaması tarafından üretilen logların yakalandığını görürüz.
 
-![image.axd](images/image.axd)
+![04_20_Cover_4.png](images/04_20_Cover_4.png)
 
 > Visualize kısmını kurcalayarak çeşitli tipte grafikler hazırlayıp Dashboard'u etkili bir monitoring aracı haline dönüştürmemiz de mümkün.
 

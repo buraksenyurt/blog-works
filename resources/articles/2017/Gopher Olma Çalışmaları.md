@@ -1,4 +1,4 @@
----
+﻿---
 title: "Gopher Olma Çalışmaları"
 pubDate: 2017-01-13 12:10:00
 categories:
@@ -12,13 +12,13 @@ tags:
 ---
 
 # Gopher Olma Çalışmaları
-![image.axd](images/image.axd)
+![gopher.gif](images/gopher.gif)
 
 Merhaba Arkadaşlar,
 
 Geçtiğimiz sene [Ruby](https://www.buraksenyurt.com/category/Ruby.aspx) diliye uğraşmaya başlamıştım. Ruby dilini sevenler ve ona gönül verenlere Rubyist deniyor. Benzer bir yaklaşım meğer Go tarafında da varmış. Onlarda kendilerine logolarına esin kaynağı olan Gopher diyorlarmış. Aslında Go dilinin logosu gerçekten bir canlıdan esinlenilerek tasarlanmış. Yaklaşık 15 ila 20 cm boylarında olan gopher'lar oldukça sevimliler (Bana göre) Elbette logo çok daha sevimli. Bu arada Gopher aynı zamanda TCP/IP tabanlı HTTP öncesi bir internet protokolu olarak da geçiyor. Detaylara [Wikipedia adresinden](https://en.wikipedia.org/wiki/Gopher_(protocol)) bakabilirsiniz.
 
-![image.axd](images/image.axd)
+![20170109_224829.gif](images/20170109_224829.gif)
 
 Benim 2017 hedeflerim arasında Go dilini en azından orta seviyeye kadar öğrenmek var. Oldukça uzun bir sprint olacak ancak geçtiğimiz hafta kendimle yaptığım Sprint planlama toplantısında onu To Do listesine aldım. Bu hafta itibariyle de durumunu In Progress'e çektim.
 
@@ -80,7 +80,7 @@ func sum(nmbrs []float32) float32{
 
 Çalışma zamanı çıktısı aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![gofnd_2.gif](images/gofnd_2.gif)
 
 Kodda neler olduğuna kısaca bakalım.
 
@@ -165,7 +165,7 @@ func calc(x,y int) (int,int,int,int){
 
 Örneğin çalışma zamanı çıktısı aşağıdaki gibidir.
 
-![image.axd](images/image.axd)
+![gofnd_3.gif](images/gofnd_3.gif)
 
 calc isimli fonksiyon 4 değer döndürecek şekilde tanımlanmıştır. return ile dikkat edileceği üzere fonksiyona parametre olarak gelen x ve y değerleri için yapılan dört işlem sonuçları döndürülmektedir. main fonksiyonunda calc çağrısının yapıldığı satırda sonuçlar dört farklı değişkene tek ifade ile atanmaktadır. Aslında bu kullanım şekli Rubyist'lere oldukça tanıdık gelecektir. Bilindiği gibi Ruby'de de n sayıda değer döndürmek ve tek satırda atama yapmak aynıdır (Fonksiyonlardan dönecek olan değerleri blok içerisinde adlanrırarak kullanmamız da mümkün)
 
@@ -193,7 +193,7 @@ func sum(numbers ...int)int{
 }
 ```
 
-![image.axd](images/image.axd)
+![gofnd_4.gif](images/gofnd_4.gif)
 
 sum isimli fonksiyon herhangibir sayıda int eleman alacak şekilde tanımlanmıştır. Buradaki... kullanımının anlamı budur diyebiliriz. Fonksiyon içerisindeki for döngüsü mutlaka dikkatinizi çekmiştir. range ile numbers elemanlarında hareket etme kabiliyeti kazanılır. numbers'a ait her eleman döngü içerisinde n adıyla kullanılır. Fonksiyonun kullanımında farklı sayıda int tipinden değişken gönderilmiştir (bir nevi foreach yazdığımızı düşünebiliriz sanırım)
 
@@ -227,11 +227,11 @@ func main(){
 }
 ```
 
-### ![image.axd](images/image.axd)
+### ![gofnd_5.gif](images/gofnd_5.gif)
 
 Örnekte Vehicle isimli bir struct tanımlı. Bu veri tipine yazının ilerleyen kısımlarında değineceğiz. Vehicle içerisinde id,name,x,y,z gibi alanlar mevcut. findLocation ise bir metod (fonkisyon olarak isimlendirmiyoruz) Tanımlanma şekli normal bir fonksiyondan biraz farklı. func'dan sonra Vehicle isimli bir parametre geliyor. Sonrasında ise metodumuzun adı. Metod içerisnde v isimli değişkeni kullanarak Vehicle örneklerinin niteliklerine ulaşabiliyoruz. Aslında metod ile fonksiyon arasındaki fark kim tarafından sahiplenildiği ile anlaşılabiliyor. Metodu örnekte olduğu gibi bir veri tipine bağladık. Bu yüzden çağırılırken Vehicle tipinden bir değişken üzerinden gidebiliyoruz. Eğer findLocation metodunu main içerisinde herhangibir noktada çağırmaya kalkarsak böyle bir metodun olmadığına dair hata mesajı alırız.
 
-![image.axd](images/image.axd)
+![gofnd_6.gif](images/gofnd_6.gif)
 
 ### Değişken Olarak Fonksiyon Kullanımı ve İsimsiz Fonksiyonlar
 
@@ -266,7 +266,7 @@ func main(){
 }
 ```
 
-![image.axd](images/image.axd)
+![gofnd_10.gif](images/gofnd_10.gif)
 
 Kodda efso şeyler var aslında. strings paketinde yer alan Map fonksiyonunun tanımı ile işe başlamak lazım.
 
@@ -311,7 +311,7 @@ func main(){
 }
 ```
 
-![image.axd](images/image.axd)
+![gofnd_11.gif](images/gofnd_11.gif)
 
 Kodun yaptığı şeyin hiç bir anlamı yok biliyorsunuz değil mi? Ama Go'nun fonksiyonel kabiliyetleri ile ilgili önemli bilgiler barındırıyor. Her şeyden önce add isimli fonksiyona odaklanalım. add geriye isimsiz bir fonksiyon döndürmekte. Bu fonksiyon int tipinden tek bir parametre alıyor ve yine int tipinden değer döndürüyor. İsimsiz fonksiyon içerisindeyse add fonksiyonunun yerel değişkenine gelen parametre değeri ekleniyor.
 
@@ -354,7 +354,7 @@ type Product struct{
 }
 ```
 
-![image.axd](images/image.axd)
+![gofnd_7.gif](images/gofnd_7.gif)
 
 Örnekte Product isimli bir yapı kullanılmakta. Yapının productId, title, listPrice isimli üyeleri mevcut. main fonksiyonu içerisinde iki struct örneği yer alıyor. Birbirlerinden farklı şekilde oluşturulduklarına dikkat etmişsinizdir. Her iki yapıyı yine Product tipinden olan bir dizide topladık. Bu diziyi writeToConsole fonksiyonuna parametre olarak da gönderiyoruz. Fonksiyon, gelen Product yapılarına ait değerleri ekrana basmakla görevli.
 
@@ -386,7 +386,7 @@ type Product struct{
 }
 ```
 
-![image.axd](images/image.axd)
+![gofnd_8.gif](images/gofnd_8.gif)
 
 discount fonksiyonu ile parametre olarak gelen ürünün liste fiyatını belli bir değerde azaltıyoruz. Fonksiyona phone isimli struct örneğini gönderiyoruz ve içerisinde listPrice değerini değiştiriyoruz. Ekran çıktısına baktığımızda fonksiyon çağrısından önceki liste fiyatı ile sonraki liste fiyatının aynı olduğunu görmekteyiz. Bu zaten beklediğimiz bir sonuç. Nitekim phone değişkeni, discount fonksiyonuna geçerken sahip olduğu değerleri ile birlikte kopyalanıyor ve blok içinde p isimli yeni bir değişken olarak muamele görüyor. Dolayısıyla fonksiyon içerisindeki değişikliker main içerisindeki değişkeni etkilemiyor. Peki etkilemesini istersek!? Yani phone değişkeninin liste fiyatını fonksiyon içerisinde değiştirebilmek istersek. İşte burada ilgili nesneyi fonksiyona referans olarak geçirmenin bir yolunu bulmamız gerekmekte. Bunun için onun bellek adresini taşımayı düşünebiliriz. Sadece iki karakter ile bu işi çözümleyebiliriz.
 
@@ -415,7 +415,7 @@ type Product struct{
 }
 ```
 
-![image.axd](images/image.axd)
+![gofnd_9.gif](images/gofnd_9.gif)
 
 Dikkat edileceği üzere phone değişkeninin fonksiyon çağrısı öncesindeki fiyatı, fonksiyon çağrısı sonrası değişmiştir. Bunun sebebi fonksiyonda bir Pointer tanımlamış olmamızdır. *Product ile tanımladığımız değişkene, &phone ile phone isimli değişkenin bellek adresini taşımız oluruz. Dolayısıyla fonksiyon içerisindeki p değişkeni üzerinde yapacağımız değişiklikler aslında phone isimli değişken için geçerli olur. Kodda &p kullanımı ile gelen bellek adresini de yazdığımızı fark etmişsinizdir. Pointer kavramı oldukça derin bir konu. En sooooooonnnn 1995de üniversite ikinci sınıftayken C++ sınavına hazırlanırken bakmıştım. Dolayısıyla yeniden öğrendiğimi ifade edebilirim.
 

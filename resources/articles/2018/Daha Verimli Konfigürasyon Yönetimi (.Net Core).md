@@ -1,4 +1,4 @@
----
+﻿---
 title: "Daha Verimli Konfigürasyon Yönetimi (.Net Core)"
 pubDate: 2018-12-10 06:36:00
 categories:
@@ -16,7 +16,7 @@ tags:
 ---
 
 # Daha Verimli Konfigürasyon Yönetimi (.Net Core)
-![image.axd](images/image.axd)
+![easy_config_0.jpg](images/easy_config_0.jpg)
 
 Merhaba Arkadaşlar,
 
@@ -106,11 +106,11 @@ dotnet run
 
 terminal komutu ile çalıştırıp http://localhost:5000/api/values adresine HTTP Get talebinde bulunursak appSettings içerisindeki ilgili değerlere erişebildiğimizi görürüz.
 
-![image.axd](images/image.axd)
+![easy_config_1.gif](images/easy_config_1.gif)
 
 Tabii geliştireceğimiz uygulamaların çeşitli ve çok sayıda konfigurasyon bağımlılığı olabilir ve bu bağımlılıkları mantıksal düzende ayrı dosyalar halinde tutmak isteyebiliriz. Bu durumu deneyimlemek için DefaultSettings içeriğini örneğin copyrightSettings.json isimli ayrı bir dosyaya aldığımızı düşünelim (appSettings.json ile aynı yerde olmalarında yarar var)
 
-![image.axd](images/image.axd)
+![easy_config_2.gif](images/easy_config_2.gif)
 
 copyrightSettings.json;
 
@@ -118,6 +118,6 @@ Artık appSettings.json dışında yeni bir konfigurasyon dosyamız daha olduğu
 
 Startup sınıfının yapıcı metodunda ConfigurationBuilder nesnesini kullanıyoruz. Root Path bilgisine göre AddJsonFile metodundan yararlanarak kullanmak istediğimiz konfigurasyon dosyalarını orta katmana bildiriyoruz. Son olarak ConfigurationBuilder'dan üretilen IConfiguration referansını AddSingleton ile çalışma zamanı servislerine ekliyoruz. Dikkat ederseniz yorumlanmış bir kod satırı da var. Tahmin edeceğiniz üzere JSON formatlı dosyalara bağımlı değiliz. İstersek eski dostumuz XML tabanlı konfigurasyon dosyalarını da işin içerisine katabiliriz. Bunu denemenizi öneririm. Uygulamayı tekrar çalıştırıp doğru çalıştığından emin olmakta yarar var.
 
-![image.axd](images/image.axd)
+![easy_config_3.gif](images/easy_config_3.gif)
 
 Konfigurasyon yönetimi her zaman için önemli konulardan birisi. Veritabanı bağlantı bilgileri, loglama kriterleri, çeşitli ortam parametrelerinin varsayılan değerleri, şifrelenmiş token bilgileri çoğunlukla bu dosyalar içerisine konuluyor. Bu nedenle kod tarafında nasıl yönetebileceğimizi bilmekte yarar var. Bu kısa yazımızda konfigurasyon içerisine alacağımız özel sekmeleri nasıl kullanabileceğimizi ve içerikleri ayrı dosyalar halinde nasıl ele alabileceğimizi incelemeye çalıştık. Umarım faydalı olmuştur. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

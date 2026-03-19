@@ -1,4 +1,4 @@
----
+﻿---
 title: "Mountebank ile Mock Servis Desteği Sunmak"
 pubDate: 2020-12-07 14:00:00
 categories:
@@ -15,7 +15,7 @@ tags:
 ---
 
 # Mountebank ile Mock Servis Desteği Sunmak
-![image.axd](images/image.axd)
+![mb.jpg](images/mb.jpg)
 
 Mountebank, ne zamandır merak ettiğim ve denemek istediğim araçlardan birisiydi. Test senaryolarında kullanmak isteyeceğimiz mock servislerini kolayca inşa edebilmemize olanak sağlayan bir araç olarak tanımlayabilirim. Örneğin test kodumuz arka tarafta belki bir veritabanına bağlanan belki başka bir servis zincirini çağıran ya da farklı bağımlıkları olan bir servisi kullanmak zorunda olabilir. Normal şartlarda bu servisin ayakta olması zorunludur ki testimiz yürüsün. Ancak o anki test vakasının ilerleyen adımlarının çalışması için illaki bu servisin vereceği çıktıya ihtiyacımız yoktur. Test vakası adımlarının devamı için o servisin vereceği çıktının sanki verilmiş gibi yapılarak ilerlenilmesi tercih edilen yöntemlerdendir.
 
@@ -257,15 +257,15 @@ npm start
 
 Mountebank server'ı npm start ile ayağa kaldırdığımızda 5500 portundan gelecek olan json içeriği aşağıdaki ekran görüntüsündeki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![skynet_34_Screenshot_01.png](images/skynet_34_Screenshot_01.png)
 
 Mock Servis örneklerini ekledikçe, imposter sözleşmelerinde belirtilen route tanımlarına gidilerek kayıt edilen servislerin çalışıp çalışmadığı kontrol edilmelidir. Örneğin ping-service'i Mountebank'a ekledikten sonra http://localhost:5501/ping adresine talete bulunup, stub->response kısmında belirtiğimiz pong cevabını almamız gerekir.
 
-![image.axd](images/image.axd)
+![skynet_34_Screenshot_02.png](images/skynet_34_Screenshot_02.png)
 
 Ayrıca birden fazla servisi Mountebank'a ekledikten sonra (ister kod yoluyla ister Postman gibi araçlarla Post ederek olsun) http://localhost:5500/imposters gibi adresten bunları izleyebilir ve gelen talep sayılarına bakabiliriz. Ben ikinci servisi de ekledikten sonra aşağıdaki ekran görüntüsünde olduğu gibi bu durumu gözlemleyebildim.
 
-![image.axd](images/image.axd)
+![skynet_34_Screenshot_03.png](images/skynet_34_Screenshot_03.png)
 
 Mountebank uygulaması ayakta iken Postman veya muadili bir araçla aşağıdaki çıktıyı gönderdiğimizde de söz konusu servisin imposter olarak eklendiğini görürüz. Yani ille de uygulama içerisinde kod yoluyla servis yüklenmesi mecburi değildir. Mountebank, REST Api şeklinde bir arabirim sunduğundan ekleme, silme vb işlemleri doğru içerikten oluşan talepler ile sağlayabiliriz. Tabii mountebank sunucusu kapandığında bu mock servisler de ömürlerini tamamlayacaktır.
 
@@ -306,7 +306,7 @@ Body içeriği :
 }
 ```
 
-![image.axd](images/image.axd)
+![skynet_34_Screenshot_04.png](images/skynet_34_Screenshot_04.png)
 
 ## Testler
 
@@ -380,11 +380,11 @@ npm test
 
 Yazılan iki testin de başarılı olma haline ait bir görüntüyü aşağıda görebilirsiniz.
 
-![image.axd](images/image.axd)
+![skynet_34_Screenshot_05.png](images/skynet_34_Screenshot_05.png)
 
 Mountebank servisleri ayakta değilken ki durum ise aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![skynet_34_Screenshot_06.png](images/skynet_34_Screenshot_06.png)
 
 Temel olarak Mountebank'ın nasıl kullanıldığını az çok anladık diye düşünüyorum. Şimdi bunu kendi projelerinizde kullanmayı deneyebilirsiniz. Konu ile ilgili not olarak aldığım birkaç soruyu buradaya da bırakayım.
 

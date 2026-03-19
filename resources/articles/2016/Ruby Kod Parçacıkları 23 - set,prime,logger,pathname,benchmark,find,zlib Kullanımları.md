@@ -1,4 +1,4 @@
----
+﻿---
 title: "Ruby Kod Parçacıkları 23 - set,prime,logger,pathname,benchmark,find,zlib Kullanımları"
 pubDate: 2016-05-31 21:00:00
 categories:
@@ -10,7 +10,7 @@ tags:
 ---
 
 # Ruby Kod Parçacıkları 23 - set,prime,logger,pathname,benchmark,find,zlib Kullanımları
-![image.axd](images/image.axd)
+![Ruby23_6n.gif](images/Ruby23_6n.gif)
 
 Merhaba Arkadaşlar,
 
@@ -39,7 +39,7 @@ puts "Sepette neler var bir bakalim \n"
 puts sepetteki_urunler.entries
 ```
 
-![image.axd](images/image.axd)
+![Ruby23_1.jpg](images/Ruby23_1.jpg)
 
 set aslında hash algoritmasını kullanarak içerisine alınan elemanların tekil olmasını sağlayan bir tiptir. Tabii burada büyük küçük harf duyarlılığı da söz konusu. Örnek kod parçasında sepete eklenen bazı ürünler olduğunu görebilirsiniz. biber ve domates ikişer kez eklenmeye çalışılmış ama zaten veri yapısında olduklarından dahil edilmemişlerdir. domates ve Domates ise büyük küçük harf farkından dolayı ayrı kelimeler olarak değerlendirilmiştir. Atama işlemleri için << operatöründen yararlandığımıza lütfen dikkat edin. Ruby dilinin en sevdiğim özelliklerinden birisidir.
 
@@ -57,7 +57,7 @@ logger.warn "Saniyorum bir hata olustu"
 logger.debug "Debug logu yazdiriyorum"
 ```
 
-![image.axd](images/image.axd)
+![Ruby23_2.gif](images/Ruby23_2.gif)
 
 Gayet sade, gayet basit, gayet yalın. Logger sınıfına ait logger isimli nesne örneğini oluştururken dikkat edileceği üzere yapıcı metoda bir dosya adı verdik. Aslında burada parametre olarak STDOUT'da kullanabiliriz. Bunu kullandığımız takdirde log mesajları ekrana basılacaktır. Kodun ilerleyen kısımları da oldukça kolay. warn, info ve debug metodları tipik log seviyelerini belirtmektedir. Hemen hemen tüm loglama mekanizmalarında bu seviyelerin yer aldığını görebiliriz. Tabii logger sınıfının daha fazla detayı da mevcut. Söz gelimi yapıcı metoda süre tanımlamaları yaparak log dosyasının fazla şişmesinin önüne de geçebiliriz. Adamlar her şeyi düşünüyorlar.
 
@@ -89,7 +89,7 @@ puts "Dosya icerigi\n"
 pn.each_line {|line| puts line }
 ```
 
-![image.axd](images/image.axd)
+![Ruby23_3.gif](images/Ruby23_3.gif)
 
 getwd isimli metod tahmin edileceği üzere uygulamanın çalışmakta olduğu klasörü döndürmektedir. eachchild metodu ile bu veya belirtilen diğer bir klasör içerisindeki öğeleri dolaşabiliriz. Belli bir dosya ile ilgili işlemler yapmak için yapıcı metoda dosya adını vermemiz yeterlidir. Sonrasında dosyanın boyutunu, sistemde yer aldığı klasörü, uzantısını ve hatta metin tabanlı içeriğini de ilgili fonksiyonlar ve alanlar ile yakalayabiliriz. basename, expandpath, extname, size özellikleri ile dosya adını, tam yol adını, dosya uzantısını ve byte cinsinden dosya boyutunu öğrenmekteyiz. eachline metodu da tahmin edileceği üzere dosya içeriğini satır bazında okumamıza yaramaktadır.
 
@@ -114,7 +114,7 @@ puts "\n11e kadar olan asal sayilarin toplami #{total} imis"
 
 Sayısal değerlerin arkasına eklenen prime? çağrısı ile ilgili değerin asal sayı olup olmadığı bilgisi true veya false olarak elde edilebilir. Dilersek belirli sayıda asal sayıyı da çekebiliriz. take metodu aldığı parametre değeri kadar asal sayıyı sisteme geri verir. each metodu ile verilen asal sayıya kadar olan asallar elde edilebilir. Örnek kod parçasında 11 dahil 2,3,5,7,11 sayılarının toplamı hesaplanmıştır.
 
-![image.axd](images/image.axd)
+![Ruby23_4.gif](images/Ruby23_4.gif)
 
 ## Bir şeyleri ölçümleyelim mi?
 
@@ -129,7 +129,7 @@ puts Benchmark.measure{BigMath.PI(100_000)}
 
 ve sonuçlar.
 
-![image.axd](images/image.axd)
+![Ruby23_5.gif](images/Ruby23_5.gif)
 
 Tabii dört farklı değer gelmesi eminim sizi şaşırtmıştır. Bu değerler sırasıyla User CPU Time, System CPU Time, User CPU Time+System CPU Time ve son olarak Elapsed Real Time. Son derece basit öyle değil mi? Tahmin edileceği üzere {} blokları arasında ölçümlemesini yapmak istediğimiz kod parçasını yazmaktayız. Dolayısıyla burada iş yapan bir metod da kullanılabilir.
 
@@ -153,7 +153,7 @@ puts Benchmark.measure{FindTotalSize()}
 
 Bu kez FindTotalSize isimli metodun iş yapma hızı elde edilmiştir. Yeri gelmişken FindTotalSize metodu ne yapıyor bakalım. İçeride kullanılan Find modülüne ait olan find metodu ile o an çalışmakta olduğumuz klasördeki (Dir.pwd deki pwd=Present Working Directory anlamındadır) dosyaların toplam boyutu elde edilmeye çalışılır. Bunun için FileTest.size metodundan yararlanılır ve içerideki dosyaların boyutları üst üste eklenerek hesaplanır.
 
-![image.axd](images/image.axd)
+![Ruby23_8.gif](images/Ruby23_8.gif)
 
 ## CSV Formatlı dosyalar ile kolayca çalışalım
 
@@ -178,7 +178,7 @@ CSV.foreach("informations.csv") do |line|
 end
 ```
 
-![image.axd](images/image.axd)
+![Ruby23_7.gif](images/Ruby23_7.gif)
 
 Bir CSV dosyasını oluşturmak gayet kolaydır. Bunun için open metoduna uygun parametreleri vermemiz yeterlidir. Dosya açıldıktan sonra içerisine satır atmak çok daha kolaydır. << operatörünü kullanarak bu işlemi gerçekleştirebiliriz. CSV uzantılı bir içeriği okumanın farklı yöntemleri vardır. Bunlardan birisi de kod parçasında görülen foreach metodudur. foreach ilgili dosya içeriğini satır bazında okumaktadır.
 

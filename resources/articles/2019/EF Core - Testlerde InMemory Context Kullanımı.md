@@ -1,4 +1,4 @@
----
+﻿---
 title: "EF Core : Testlerde InMemory Context Kullanımı"
 pubDate: 2019-02-12 09:00:00
 categories:
@@ -19,7 +19,7 @@ tags:
 ---
 
 # EF Core : Testlerde InMemory Context Kullanımı
-![image.axd](images/image.axd)
+![ttplayer_n.jpg](images/ttplayer_n.jpg)
 
 Ablamla rahmetli babamız bir önceki sabah olduğu gibi o günde terastaki ahşap yemek masasının üzerine kurdukları fileyi karşılıklı sabitlemekle meşgullerdi. Normal ebatlarına göre çok daha dar ve kısa olan yemek masası, benim gibi orta okul çağlarındaki birisi için ideal bir ping pong sahasıydı esasında. Son bir kaç yazdır en büyük eğlencelerimizden birisi haline gelmişti. Kuzenlerle dolup taşan kalabalık yaz akşamlarında bir çok aile ferdini çevresine sığdıran Alman ahşapından yapılma o sağlam masa, prüzsüz yüzeyiyle sabahları çekişmeli ping pong maçlarına ev sahipliği yapıyordu. Güzel anıları ile birlikte rahmetli babamı zaman zaman kızdıran vakitlere de tanıklık etmişti. Bir keresinde raketi tutan kolumu tavana doğru öyle bir açmıştım ki florasan lambayı tuzla buz etmiştim. O günden sonra tavandan sarkan değil zeminine sabit bir lamba tercih etmiştik. Lakin bir diğer sefer daha büyük bir sorun yaşamıştık.
 
@@ -51,7 +51,7 @@ cd CustomerService.Tests
 
 Testing isimli solution'ımız içerisinde iki tip proje yer alıyor. CustomerService isimli sınıf kütüphanesinde (class library) Entity Framework tabanlı çalışan içeriklere yer vereceğiz. Test fonksiyonlarını ise CustomerService.Tests isimli mstest şablonundaki projede yazacağız. Kabaca aşağıdaki şekilde görülen ağacı oluşturmamız başlangıç için yeterli.
 
-![image.axd](images/image.axd)
+![efinm_1.gif](images/efinm_1.gif)
 
 Pek tabii ihtiyacımız olan paketleri de kurmamız lazım. EntityFrameworkCore, SqlServer ve InMemory paketlerini CustomerService projesine eklemek için aşağıdaki terminal komutları ile çalışmamıza devam edelim.
 
@@ -269,7 +269,7 @@ dotnet test
 
 terminal komutunu vermemiz yeterli olacaktır. Ben denemelerimde aşağıdaki ekran görüntüsünde yer alan sonuçlara ulaştım. Tüm testler başarılı bir şekilde ilerletildi. Dolayısıyla operasyonun InMemory veritabanı kullanılarak icra edildiğini söyleyebiliriz.
 
-![image.axd](images/image.axd)
+![efimd_2.gif](images/efimd_2.gif)
 
 InMemory veritabanı kullanımı görüldüğü gibi oldukça basit ancak başlarda da belirttiğimiz üzere her veritabanı özelliği desteklenmiyor. Örneğin transaction desteği yok ve bu veritabanı üzerinden SQL sorgularını çalıştıramıyoruz. Bu tip bir durumda SQLite veritabanının bellekte çalışacak şekilde kullanılması öneriliyor. Amaç yine SQL Server'a ihtiyaç duymadan genel Entity Framework işlevlerini test edebilmek. Ufak bir kaç kod değişikliği ile testlerimizi SQLite'ın InMemory modda çalışan versiyonuna çekebiliriz. İlk etapta SQLite paketinin projeye dahil edilmesi gerekiyor.
 

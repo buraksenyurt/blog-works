@@ -1,4 +1,4 @@
----
+﻿---
 title: ".Net Core Konfigurasyon Yönetimi Üzerine"
 pubDate: 2018-03-01 07:33:00
 categories:
@@ -19,7 +19,7 @@ tags:
 ---
 
 # .Net Core Konfigurasyon Yönetimi Üzerine
-![image.axd](images/image.axd)
+![customconfig_0n.gif](images/customconfig_0n.gif)
 
 Merhaba Arkadaşlar,
 
@@ -119,7 +119,7 @@ ConfigSupervisor sınıfı örneklere ait fonksiyonellikleri içeriyor. ExecuteJ
 
 Bu notasyona göre services olarak isimlendirilmiş array içerisindeki bir elemana erişirken index değerini kullanarak ilerleyebiliyoruz. Söz gelimi services:1:isPublic ile 1 indisli elemanın isPublic niteliğinin değerine ulaşmış oluyoruz. Elbette services isimli dizinin elemanlarını bir döngü yardımıyla okuyabiliriz de. GetSection fonksiyonu ile konfigurasyon yöneticisinin okuduğu dosyadan ilgili sekmeyi almamız yeterli. AsEnumerable metodu ile üzerinde ileri yönlü hareket edilebilir hale getirdikten sonra Key ve Value değerlerine erişmemiz oldukça basit. Uygulamanın çalışma zamanı çıktısı aşağıdaki gibi olacaktır (services sekmesini daha iyi okumanın bir yolunu bul Burak! O ne öyle -, 1-,0-:D)
 
-![image.axd](images/image.axd)
+![customconfig_1.gif](images/customconfig_1.gif)
 
 JSON İçeriğini Sınıflar ile İlişkilendirmek
 
@@ -216,7 +216,7 @@ public void ExecuteObjectGraphSample()
 
 Öncelikle gamesettings.json dosyasını ele alacak ConfigurationBuilder örneği oluşturulup Build operasyonu ile konfigurasyon yöneticisi üretiliyor. Sonraki kısım ise epey keyifli. GetSection ile yakalanacak olan Game içeriğini Bind metodundan yararlanarak GameSetting nesne örneği olan gameConfig'e bağlıyoruz. JSON konfigurasyonundaki isimlendirmelere göre Bind metodu doğru eşleştirmeleri bizim için otomatik olarak yapacak. Sonrasında örnek olması açısından OS ve RAM bilgileri ile firma kontaklarına ait Name ve Email değerlerini ekrana yazdırıyoruz. Dikkat edilmesi gereken nokta bir önceki örnekten farklı olarak tüm bu değerlerin Bind işlemi sonrası JSON İçeriğine bağlanan gameConfig nesnesi üzerinden yakalanabilmesi. Çalışma zamanı sonuçları aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![customconfig_2.gif](images/customconfig_2.gif)
 
 Bellekte Konuşlandırılmış Konfigurasyon İçeriği ile Çalışmak
 
@@ -265,7 +265,7 @@ public class Service
 
 GetSection ("Artifact:Service").Bind (service) çağrımı ile Artifact altındaki Service içeriğinin ilgili nesne örneğine bağlanması sağlanmış olur. Bu noktadan sonra MaxConcurrentCall, Name gibi özelliklere yönetimli kod üzerinden erişilebilinir. Fonksiyonun çalışma zamanı çıktısı aşağıdaki gibidir.
 
-![image.axd](images/image.axd)
+![customconfig_3.gif](images/customconfig_3.gif)
 
 Konfigurasyon Parametrelerini Komut Satırından Göndermek
 
@@ -307,7 +307,7 @@ dotnet run Connection:Value="Azure;timeout=1000;region=EU-1" Connection:Name="az
 
 Tabii bu parametreyi vermeden uygulamayı çalıştırırsak varsayılan Connection:Value ve Connection:Name değerlerine ulaşırız. Bu arada tüm parametreleri detaylı olarak girmek zorunda değiliz. İsimle ulaştığımız için sadece değiştirmek istediklerimizi girebilir veya farklı sıralarda atamalar yapabiliriz. Aşağıdaki çalışma zamanı sonuçlarına bu anlamda bakabilirsiniz.
 
-![image.axd](images/image.axd)
+![customconfig_8.gif](images/customconfig_8.gif)
 
 Konfigurasyon yönetimi ile ilgili daha pek çok şey var (Ben MSDN'in [şu adresteki](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?tabs=basicconfiguration) oldukça doyurucu dokümanını izleyerek öğrenmeye çalışıyorum) Örneğin özel bir Entity Framework provider'ının oluşturulması, komut satırı argümanlarında switch mapping tekniğinin kullanılması gibi konulara bu adresten bakılabilir. Şimdilik benden bu kadar. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.
 

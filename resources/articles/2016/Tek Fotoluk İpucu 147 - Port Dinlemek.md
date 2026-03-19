@@ -1,4 +1,4 @@
----
+﻿---
 title: "Tek Fotoluk İpucu 147 - Port Dinlemek"
 pubDate: 2016-12-07 21:51:00
 categories:
@@ -16,7 +16,7 @@ Merhaba Arkadaşlar,
 
 Diyelim ki bir sunucu üzerinde tanımlı portların anlık durumları hakkında bilgi sahibi olmak istiyorsunuz (Örneğin sunucuda SQL Server yüklü ise varsayılan 1433 portu açık mı veya ftp portu cevap verir konumda mı vb) Ruby dilinde bu tip bir işlevselliği gerçekleştirmek son derece basit. Tek yapmamız gereken makine adı ve port bilgisini kullanmak. Nasıl mı? Aynen aşağıdaki fotoğrafta olduğu gibi.
 
-![image.axd](images/image.axd)
+![tfi_147.gif](images/tfi_147.gif)
 
 TCPSocket nesnesini kullanabilmek için sockets kütüphanesine ihtiyacımız var. Built-In gelen kütüphaneyi require anahtar kelimesi ile bildirdikten sonra, belli başlı portlar için bir Hash listesi oluşturuyoruz. Anahtar (key) olarak servis/port adını, değer (value) olarakta port numarasını kullanıyoruz (Örnekte bilinen belli başlı port numaralarına yer verdik. Sistemde yüklü olan servislere göre genişletebilirsiniz)
 

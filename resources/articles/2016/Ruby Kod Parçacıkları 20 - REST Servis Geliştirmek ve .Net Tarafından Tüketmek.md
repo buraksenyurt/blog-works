@@ -1,4 +1,4 @@
----
+﻿---
 title: "Ruby Kod Parçacıkları 20 - REST Servis Geliştirmek ve .Net Tarafından Tüketmek"
 pubDate: 2016-02-09 01:44:00
 categories:
@@ -19,7 +19,7 @@ tags:
 ---
 
 # Ruby Kod Parçacıkları 20 - REST Servis Geliştirmek ve .Net Tarafından Tüketmek
-![image.axd](images/image.axd)
+![logo.png](images/logo.png)
 
 Merhaba Arkadaşlar,
 
@@ -33,7 +33,7 @@ Elbette işin en önemli kısmı yine de servislere düşüyor. Çözümler içi
 
 Öncelikli olarak senaryomuza bir bakalım. Kabaca aşağıdaki şekilde görülen enstrümanları kullanarak bir çözüm geliştirmeye çalışcağız.
 
-![image.axd](images/image.axd)
+![rest_6_n.gif](images/rest_6_n.gif)
 
 > Senaryo: Ruby programlama dilini kullanarak basit bir REST servis geliştireceğiz. Bu servis SQLite üzerinde duran AdventureWorks isimli veritabanındaki Product tablosunu sorgulayabilmemiz için iki operasyon sunacak. HTTP Get ile çalıştıracağımız taleplere ait sonuçları istemci tarafına JSON formatında döndürmeyi planlıyoruz. İstemci tarafı basit bir tarayıcı olabileceği gibi,.Net veya herhangi platformda yazılmış bir uygulama da olabilir. İstemci tarafında REST taleplerini kolaylaştırmak içinse RestSharp paketinden yararlanacağız.
 
@@ -139,7 +139,7 @@ SQLite üzerinden gerçekleştirilen select sorguları sonucu elde edilen içeri
 
 Yazdığımız Ruby kod dosyasını çalıştırdığımızda otomatik olarak localhost:4567 adresi üzerinden servisimizin yayına başladığını görebiliriz.
 
-![image.axd](images/image.axd)
+![rest_4.gif](images/rest_4.gif)
 
 4567 Sinatra'nın varsayılan olarak kullandığı Port bilgisidir. İsterseniz değiştirebilirsiniz ancak nasıl yapıldığını söylemek istemiyorum:) Lütfen araştırın.
 
@@ -147,31 +147,31 @@ Bu işlemin ardından basit bir tarayıcı yardımıyla Get operasyonlarını de
 
 http://localhost:4567/products sonucu
 
-![image.axd](images/image.axd)
+![rest_1.gif](images/rest_1.gif)
 
 Görüldüğü gibi bir önceki yazımızda Product tablosuna eklediğimiz satırların tamamına ulaşabildik.
 
 http://localhost:4567/products/1 sonucu
 
-![image.axd](images/image.axd)
+![rest_2.gif](images/rest_2.gif)
 
 Bu kez productid değeri 1 olan ürünü elde etmeyi başardık. Pek tabii var olmayan bir ürünü girersek Not Found çıktısını almamız gerekiyor.
 
 http://localhost:4567/products/10 sonucu
 
-![image.axd](images/image.axd)
+![rest_3.gif](images/rest_3.gif)
 
 Doğal olarak bulunamayan içerikler için çok daha şık bir sayfayı istemciye sunabiliriz.
 
 Gerçekleştirilen bu çağrılar aynı zamanda komut satırına da yansır. Aşağıdaki ekran görüntüsünde dikkat edileceği üzere servise gelen tüm çağrılar loglanmıştır.
 
-![image.axd](images/image.axd)
+![rest_5.gif](images/rest_5.gif)
 
 ## .Net Client
 
 Servis hazır olduğuna göre bunu tüketecek bir istemci uygulama yazmayı da deneyebiliriz. Ben daha çok aşina olduğum.Net platformunu tercih ediyorum. Basit bir Console uygulaması işimizi görür. Host ettiğimiz servis REST tabanlı olduğu için talepleri (Request) gönderme ve gelen JSON içeriğini ters serileştirme (Deserialization) işlemlerinde RestSharp paketini kullanabiliriz.
 
-![image.axd](images/image.axd)
+![rest_7.gif](images/rest_7.gif)
 
 Paketi Console uygulamasına entegre ettikten sonra aşağıdaki kod içeriğini yazarak ilerleyebiliriz.
 
@@ -225,7 +225,7 @@ Ruby tarafındaki servisin verdiği JSON içeriğinde jsonclass ve data isimli i
 
 İlk talep ile tüm ürünlerin listesi elde edilir. Bu kısımda size düşen görev JSON içeriğini Product tipinden bir koleksiyon ile (List türevli bir nesne örneğinde) nasıl karşılayabileceğimizdir. Servis çalıştığı sürece.Net istemcisi bize aşağıdaki sonuçları döndürür.
 
-![image.axd](images/image.axd)
+![rest_8.gif](images/rest_8.gif)
 
 ## Sizin Yapabilecekleriniz
 

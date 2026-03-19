@@ -1,4 +1,4 @@
----
+﻿---
 title: "Rust Pratikleri - Channels"
 pubDate: 2022-02-20 09:00:00
 categories:
@@ -12,7 +12,7 @@ tags:
 ---
 
 # Rust Pratikleri - Channels
-![image.axd](images/image.axd)
+![peasant.jpg](images/peasant.jpg)
 
 Thread'ler aralarında haberleşmek için kanallardan (channels) yararlanır. Rust dilinde bu amaçla built-in modüllerinden olan mpsc (multi-producer single-consumer) paketi kullanılır. Bu paket aslında FIFO (First-In First-Out) ilkesine göre çalışan tipik bir kuyruk yapısıdır. Kanallar yardımıyla örneğin iki thread arasında bir yol açıp tek yönlü olarak mesaj göndermek mümkündür. Böylece bir thread'den diğerine çeşitli verileri aktarabiliriz. Hatta asenkron ve olay güdümlü (event-driven) haberleşmeler dahi tesis edebiliriz. Bir veri türünün kanalda akması için Send trait'ini uyarlamış olması gerekir. Primitive tiplerin hepsi bu davranışa sahiptir.
 
@@ -89,7 +89,7 @@ fn main() {
 
 Main bilindiği üzere ana thread olarak çalışır. Örnekte iki farklı thread açılır. Açılan thread'ler içerisinde sembolik olarak uzun süren işler düşünülmüştür. İşler tamamlandığında her bir thread kendi transmitter nesnesini kullanarak aynı kanala birer mesaj bırakır. Ana uygulama thread'i receiver nesnesini kullanarak bu kanala akan mesajları yakalar. Esas itibariyle bir thread'den değer döndürebildiğimiz için aynı işi kanallara başvurmadan da yapabiliriz. Ancak transmitter'ları thread içerisinde çeşitli noktalarda kullanıp duruma göre farklı anlarda kanala mesaj bırakmak gibi bir durum da söz konusu olabilir. Bu tip mesaj akışlarının yer aldığı senaryolarda kanal kullanımı oldukça idealdir. Yukarıdaki örneğin çalışma zamanı çıktısı aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![channels_1.png](images/channels_1.png)
 
 Şimdi gelelim crossbeam paketini kullandığımız örneğe. Bu sefer senaryoyu biraz daha eğlenceli hale getirmeye çalışacağız. İşe projemizi oluşturarak başlayalım.
 
@@ -275,7 +275,7 @@ RUST_LOG=info cargo run
 
 İşte kendi sistemimde elde ettiğim çalışma zamanı sonuçları.
 
-![image.axd](images/image.axd)
+![channels_2.png](images/channels_2.png)
 
 Birden çok iş parçacığının yer aldığı ve bu işler arasında haberleşmenin önce çıktığı senaryolarda kanal kullanımı son derece yaygın. Built-in olarak gelen mpsc kütüphanesini kullanabileceğimiz gibi Rust konusunda ileri seviye olanların önerdiği crossbeam paketini de tercih edebiliriz. Ben aradaki farkları yorumlayacak mertebede yetkinliğe sahip olmasam da önerilere kulak verip crossbeam'i tercih ediyorum. Örnek üzerinde bol bol uğraşmanızı öneririm. Söz gelimi thread'lerin açılması için bir for döngüsü kullanabilir miyiz?
 

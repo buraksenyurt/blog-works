@@ -1,4 +1,4 @@
----
+﻿---
 title: "Stream ve Pipe Mevzusu"
 pubDate: 2018-07-12 21:30:00
 categories:
@@ -12,7 +12,7 @@ tags:
 ---
 
 # Stream ve Pipe Mevzusu
-![image.axd](images/image.axd)
+![piping_g_1.gif](images/piping_g_1.gif)
 
 Merhaba Arkadaşlar,
 
@@ -41,7 +41,7 @@ bigEF.end();
 
 fs (Temel IO işlemleri için kullanıyoruz diyebilirim) modülünün kullanıldığı ve içerisinde JSON cemiyetinden rastgele insanların olduğu büyük boyutlu bir dosya üretiliyor. createWriteStream ile bigEF.data isimli örnek dosya için yazılabilir bir Stream nesnesi örnekliyoruz. Buraya uygulayacağımız write çağrısı tahmin edeceğiniz üzere dosya içerisine ilgili metinsel içeriklerin yazılmasını sağlamakta. Tüm işlerin onaycısı sondaki end çağrısı. Kodu çalıştırdığımda West-World üzerinde 1.2 Gb'lık alan işgal edecek tamamen atmasyon verilerden oluşan bir dosya üretilmiş oldu. İlk senaryo için yeterli büyüklükte.
 
-![image.axd](images/image.axd)
+![piping_0.gif](images/piping_0.gif)
 
 Problem Çıkartalım
 
@@ -66,11 +66,11 @@ Daha önceden aşina olduğumuz üzere http modülüne ihtiyacımız var. Sunucu
 
 Uygulamayı çalıştırıp curl ile (özellikle curl ile denedim çünkü tarayıcı ile gerçekleştirdiğim acı deneyimler sonrası makineyi bir kaç kez düğmesinden kapatıp açmak zorunda kaldım) 65002 nolu porta talep gönderdiğimde aşağıdaki sonuçlarla karşılaştım.
 
-![image.axd](images/image.axd)
+![piping_1.gif](images/piping_1.gif)
 
 Aynen kaynaklarda bahsedildiği gibi olmuştu. Sunucu açık ve istemci curl komutu ile adrese bir talep gönderiyor. Kısa bir süre için sorun yok. Derken bir anda bellek tüketimi artıp çıktığı noktada seyretmeye devam ediyor. Hatta West-World'ün klima sistemi de aynı anda coşmuştu diyebilirim. Uygulama çalışmasını tamamlandığında ise her şey normale döndü. Bellek tüketimi kısa süre içinde baştaki seviyelere indi.
 
-![image.axd](images/image.axd)
+![piping_2.gif](images/piping_2.gif)
 
 Burada gözle görülür bir performans sıkıntısı olduğu ortada. Sadece tek bir dosya için gönderilmiş bir talep var ancak n sayıda talebin gelmesi ve küçük boyutlarda olsalar bile onlarca, yüzlerce dosyanın sunulacağı bir sistem için çok daha büyük sorunlar oluşması pekala mümkün.
 
@@ -98,7 +98,7 @@ Bir önceki örnekten farklı olarak doğrudan readFile fonksiyonunu kullanmak y
 
 Testi tekrar yaptığımda West-World'te ortam gayet sakin görünmekteydi. Önce sunucu uygulamasını çalıştırdım, ardından curl ile talebi gönderdim.
 
-![image.axd](images/image.axd)
+![piping_3.gif](images/piping_3.gif)
 
 Veriler yine okunuyordu ancak sunucunun bellek tüketiminde gözle görülür önemli bir artış olmamıştı. Hatta neredeyse hiç olmamıştı.
 
@@ -136,7 +136,7 @@ Dikkat edileceği üzere source nesnesi yine okunabilir stream örneği olarak b
 
 Çalışma zamanı çıktılarına baktığımda aşağıdaki gibi tampon bölgeye alınan veri kümelerinin değerlendirildiğini gördüm. Hatta üstteki bilginin kesildiği yerden alttakinin devam ettiğini de fark etmiş olmalısınız.
 
-![image.axd](images/image.axd)
+![piping_4.gif](images/piping_4.gif)
 
 Dikkat edileceği üzere bellek kullanımında yine önemli bir sıkıntı görülmüyor.
 
@@ -144,15 +144,15 @@ Limitleri Zorlayalım
 
 Peki ya dosya boyutu baya baya büyük olsaydı. Kaynaklarda bahsedilen 2Gb sınırını merak ediyordum aslında. Özellikle bu değer için readFile'ın cevap vermediği ifade ediliyordu. Bu nedenle saçma veriler içeren dosya boyutunu 2Gb'ın üstüne çıkarttım.
 
-![image.axd](images/image.axd)
+![piping_5.gif](images/piping_5.gif)
 
 West-World bu kez 2.3Gb'lık bir saha işgali ile karşı karşıyaydı. pipe mekanizmasını kullandığım kodu bir kenara bıraktım ve ilk olarak standart okuma yöntemini kullanmaya karar verdim. Sonuçları almam hiç uzun sürmedi.
 
-![image.axd](images/image.axd)
+![piping_6.gif](images/piping_6.gif)
 
 Görüldüğü üzere dosya boyutu olası Buffer boyutunun üzerindeydi. Bu sebepten işlemler zaten yapılamadı. Ancak pipe fonksiyonelliğinin kullanıldığı kod parçası söz konusu dosyayı sorunsuz bir şekilde işlemeyi başarmıştı.
 
-![image.axd](images/image.axd)
+![piping_7.gif](images/piping_7.gif)
 
 Diğer Kullanışlı Bilgiler
 

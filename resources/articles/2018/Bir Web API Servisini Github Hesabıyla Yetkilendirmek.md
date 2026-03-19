@@ -1,4 +1,4 @@
----
+﻿---
 title: "Bir Web API Servisini Github Hesabıyla Yetkilendirmek"
 pubDate: 2018-04-03 22:49:00
 categories:
@@ -23,7 +23,7 @@ tags:
 ---
 
 # Bir Web API Servisini Github Hesabıyla Yetkilendirmek
-![image.axd](images/image.axd)
+![githuboauth_8.gif](images/githuboauth_8.gif)
 
 Merhaba Arkadaşlar,
 
@@ -54,13 +54,13 @@ OAuth Uygulaması için Kayıt İşlemi
 
 İlk olarak [şu adrese](https://github.com/settings/developers) giderek OAuth uygulamamızı Github'a kayıt etmemiz gerekiyor. "Register a new application" başlıklı düğmeye basarak işleme başlayabiliriz. Burada uygulamaya ait bazı bilgileri doldurmamız lazım.
 
-![image.axd](images/image.axd)
+![githuboaut_1.gif](images/githuboaut_1.gif)
 
 vb bilgiler olabilir. Authorization Callback URL bilgisi dikkatiniz çekmiş olmalı. Senaryoya göre Service Provider rolü üstlenen Github, Consumer rolündeki yerel Web API servisi üzerinden gelen kullanıcıyı yetkilendirirse bu URL adresine doğru bir yönlendirme gerçekleştirilecek ki, bu yönlendirme sırasında Consumer'a birde geçici erişim kodu verilecek. Sonrasında Consumer (yani Web API hizmetimiz) bu geçici kod ile Github'ın Token Endpoint'ine gelerek daha kalıcı olan erişim biletini (Access Token) alacak.
 
 "Register Application" başlıklı düğmeye basıldıktan sonra uygulamanın oluşturulduğu ve Web API servisimizde kullanılmak üzere Credential bilgisinin üretildiği görülebilir.
 
-![image.axd](images/image.axd)
+![githuboauth_2.gif](images/githuboauth_2.gif)
 
 Buradaki Client ID ve Client Secret değerleri Web API servisimizin Github uygulamasını kullanabilmesi için gereklidir.
 
@@ -240,7 +240,7 @@ dotnet run
 
 terminal komutu ile çalıştırdıktan ve tarayıcı üzerinden http://localhost:5005/api/quotes adresine gittikten sonra aşağıdaki ekran görüntüsü ile karşılaşırız.
 
-![image.axd](images/image.axd)
+![githuboauth_3.gif](images/githuboauth_3.gif)
 
 Dikkat edileceği üzere Github login sayfasına yönlendirildik. Eğer Network hareketliliklerini izlersek aşağıdaki geçişlerin olduğunu fark edebiliriz.
 
@@ -249,15 +249,15 @@ Yönlendirildiğimiz https://github.com/login/oauth/authorize? client_id={client
 HTTP Get ile https://github.com/login?client_id= {client id bilgisi}&return_to=/login/oauth/authorize?client_id= {client id bilgisi}&redirect_uri= http%3A%2F%2Flocalhost%3A5005%2Fsignin-github&response_type=code&scope=&state= {uzuuuuun state bilgisi} geldiğimiz bu adreste ise Login olmamız yeterli olacaktır.
 Sonrasında Github kullanıcısının söz konusu uygulama için yetki vermesini bekleyen bir onayı penceresi ile karşılaşabiliriz.
 
-![image.axd](images/image.axd)
+![githuboauth_4.gif](images/githuboauth_4.gif)
 
 Bu bir kereliğine sorulacaktır ancak Github üzerindeki uygulama ayarlarından Revoke All Users Tokens işlemini yaparsak tekrardan karşılaşabiliriz. Artık DailyQuoteService isimli uygulama için buraksenyurt kullanıcısı yetkilendirilmiş durumda. Dolayısıyla bir önceki taleple gelen Location header bilgisindeki URL adresine yönlendiriliriz ki bu da görmek istediğimiz özlü sözler operasyonudur.
 
-![image.axd](images/image.axd)
+![githuboauth_6.gif](images/githuboauth_6.gif)
 
 Tabii Visual Studio Code arabirimine bakarsak Login olan kullanıcıya ait Github tarafından sunulan tüm ClaimSet değerlerinin JSON formatında geldiğini de görebiliriz. Ayrıca Get metodu içerisinden de oturum açan kullanıcının çeşitli bilgilerine erişebiliriz.
 
-![image.axd](images/image.axd)
+![githuboauth_7.gif](images/githuboauth_7.gif)
 
 Servisimiz için Github tarafından sağlanan Token bilgisinin bir son kullanma tarihi bildiğim kadarı ile yok. Kullanıcının Token bilgisi sistemden düşmediği sürece servis yetkilendirme kontrolü yapma ihtiyacı duymadan çalışıyor olacak. Github'un ilgili servis adreslerine HTTP DELETE metoduyla ID bilgisiyle talepte bulunup düşürme işleminin bilinçli olarak uygulanabilineceği de ifade ediliyor. Bunu neden söylüyorum dersiniz? Uygulamayı denerken özlü sözler servisinin Authorization adımlarına takılmadan sürekli olarak çalıştığını gördüm. Bir yerlerde düşse de tekrar Login olmamı istese diye beklerken aslında kullanım amacının ne olduğunu hatırladım. Amaç bir uygulamanın Github üzerinden doğrulanmış kullanıcılar için OAuth protokolü üzerinden Bearer Token ile çalışmasıydı. Servisin çalıştığı sistem Github tarafından bir kere doğrulanıp ehliyet bilgisini aldıktan sonra hizmet verebilir konumda kalması yeterliydi. Bu arada pratik bir yol olarak tarayıcı çerezlerini temizlemeniz halinde tekrardan Login işlemine tabii tutulacağınızı söylemek isterim;)
 

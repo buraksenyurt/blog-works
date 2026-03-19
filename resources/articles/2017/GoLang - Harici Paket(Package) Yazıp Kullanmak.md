@@ -1,4 +1,4 @@
----
+﻿---
 title: "GoLang - Harici Paket(Package) Yazıp Kullanmak"
 pubDate: 2017-01-28 14:42:00
 categories:
@@ -12,7 +12,7 @@ tags:
 ---
 
 # GoLang - Harici Paket(Package) Yazıp Kullanmak
-![image.axd](images/image.axd)
+![gopckg_9.gif](images/gopckg_9.gif)
 
 Merhaba Arkadaşlar,
 
@@ -22,7 +22,7 @@ Go dilini sistemimize yüklediğimizde zaten beraberinde pek çok paket geliyor 
 
 > Go programlarının çalışmaya başladığı main fonksiyonunun da main isimli paket (Package) içerisinde yer aldığını hatırlayalım.
 
-![image.axd](images/image.axd)
+![gopckg_1.gif](images/gopckg_1.gif)
 
 ## Kendi Paketimizi Yazalım
 
@@ -59,7 +59,7 @@ func KmToMiles(km float64) float64{
 
 Yazdığımız paket içerisinde beş fonksiyon bulunuyor. Fahrenheit'dan Celsius'a, Kilogram'dan Pound'a, Kilometre'den Mil'e, Feet'ten metreye ve son olarak Celcius'dan Fahrenheit'a dönüşüm işlemlerini içeriyor. Kod paket adıyla başlıyor. Kullandığımız fonksiyonlar float64 tipinden birer parametre almakta ve gerekli formüller işletildikten sonra geriye yine float64 tipinden değer döndürmekteler. mtrcvrt'yi sistemde herhangibir main paketinden kullanabilmek için az önce bahsettiğimiz src klasörü içerisine atmamız yeterli. Pek tabi kaynak kodun mtrcvrt klasörü altında konuşlandırıldığına dikkat edelim (Aynı diğer built-in paketler gibi)
 
-![image.axd](images/image.axd)
+![gopckg_2.gif](images/gopckg_2.gif)
 
 > Şunu unutmayalım ki paket içerisindeki fonksiyonların adları ve özellikle ilk harfleri çok önemli. Eğer büyük harfle başlamazlarsa paket dışından kullanılamazlar.
 
@@ -101,7 +101,7 @@ func main(){
 
 import sekmesinde paketin adını belirttik ve main içerisinde sahip olduğu fonskiyonları birer örnekle denedik. var ifadesinde n sayıda değişkene değer ataması gerçekleştiriyoruz ki bunu ilk kez kullandığımı söyleyebilirim. Kodun çalışma zamanı çıktısı ise aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![gopckg_3.gif](images/gopckg_3.gif)
 
 Yazdığımız paketlerin src klasörü altında olması şart değil. Aslında Go dili klasör temelli bir çalışma ortamını (Workspace) baz alıyor. Bu ortamda src, bin ve pkg klasörleri standart olarak bulunuyor. Paket kodları src klasörü altında konuşlandırılmakta. Go ortamı sisteme yüklendiğinde bu klasör hiyerarşisini kullanıyor. Diğer yandan github gibi önemli bir paket deposu da var. Pek çok programlama dilinde olduğu gibi Go ile yazılmış paketleri github'a atabilir ve tüm geliştiricilerin kullanımına açabiliriz.
 
@@ -109,11 +109,11 @@ Yazdığımız paketlerin src klasörü altında olması şart değil. Aslında 
 
 Kaynaklardan öğrendiğim kadarı ile Workspace'imizde github için bir klasör ağacı oluşturup senkronize bir şekilde çalışabiliriz de. Böylece commit, rollback gibi standart kaynak kod yönetimi işlemlerini gerçekleştirebiliriz. Ben işleri kolaylaştırmak adına [Github Desktop for Windows](https://desktop.github.com/) sürümünü kullandım. Sistemimde yüklü olan src klasöründe mtrk olarak isimlendirdiğim paket için bir repo oluşturdum. Sonrasında kodu hazırlayıp Commit ederek github'a atılmasını sağladım. Bu işlem sonrasında mtrk klasörü içerisinde github ile ilgili dosyalar da otomatik olarak oluşturuldu.
 
-![image.axd](images/image.axd)
+![gopckg_4.gif](images/gopckg_4.gif)
 
 Ardında mtrk.go kod dosyasının commit ederek github'a yüklenmesini sağladım.
 
-![image.axd](images/image.axd)
+![gopckg_5.gif](images/gopckg_5.gif)
 
 Artık bilgisayarımdaki workspace ile github eşleşmiş durumda. Bu yeni yapıdaki paketi kullanmak için tek yapılması gereken import ifadesini uygun bir şekilde değiştirmek.
 
@@ -130,14 +130,14 @@ import (
 
 Onlar bu paketi nasıl kullanabilirler? Yazıya konu ettiğimiz örnek için go get komutunu kullanmamız yeterli aslında. Emin olmak adına sistemimdeki Go Repo'sunu sildim. Daha sonra komut satırından go get komutunu aşağıdaki ekran görüntüsünde olduğu gibi kullandım. Src/github.com/buraksenyurt/mtrk klasörünün oluşuturulduğunu ve içerisine go dosyasının indirildiğini fark ettim.
 
-![image.axd](images/image.axd)
+![gopckg_6.gif](images/gopckg_6.gif)
 
 Ayrıca pkg klasöründe paketin derlenmiş dosyasının da oluşturulduğunu gördüm.
 
-![image.axd](images/image.axd)
+![gopckg_7.gif](images/gopckg_7.gif)
 
 Uygulama kodunu tekrar çalıştırdığımda mtrk paketi ve fonksiyonelliklerinin başarılı bir şekilde yürütüldüğünü gördüm. İşin sağlamasını yapmak için mtrk.go dosyasını silip deneyebilirsiniz. Benim karşılaştığım sonucu alacaksınız.
 
-![image.axd](images/image.axd)
+![gopckg_8.gif](images/gopckg_8.gif)
 
 Görüldüğü üzere Go dilinde paketler ile çalışmak oldukça basit. Atladığım pek çok konu olabilir. Örneğin paketler yüklenirken yapılmasını istediğiniz işlemler varsa bunları init fonksiyonu içerisinde gerçekleştirebilirsiniz ki örneğimizde buna değinmedik. Paket yönetimi için github'ı uzak repository olarak kullanabileceğimizi ve local workspace ile eşleştirerek ilerleyebileceğimizi gördük. Bunlara ek olarak bin,src ve pkg klasör hiyerarşisinden azda olsa bahsettik. Böylece geldik bir Gopher olma maceramızın daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

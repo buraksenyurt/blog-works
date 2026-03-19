@@ -1,4 +1,4 @@
----
+﻿---
 title: "IIS RESTful API Hello World"
 pubDate: 2016-05-19 17:00:00
 categories:
@@ -21,7 +21,7 @@ tags:
 ---
 
 # IIS RESTful API Hello World
-![image.axd](images/image.axd)
+![iisrestful_3.gif](images/iisrestful_3.gif)
 
 Merhaba Arkadaşlar,
 
@@ -31,7 +31,7 @@ Bugün 20 Mayıs Cuma. Dün 19 Mayıs nedeniyle resmi tatil olan bankamız bugü
 
 Öğrendiğime göre Microsoft IIS (Internet Information Services) takımı yönetimsel işlemler için Asp.Net Core teknolojisini kullanan RESTFul tipinden bir servis üzerinde çalışmalar yapmakta. Micro Service mimarisi benimsenerek geliştirilen alt yapı, kullanıcılarına IIS Administration ile ilgili gerekli fonksiyonellikleri modern bir API olarak sunuyor. API, Self-Hosted Window Service olarak yayınlanmakta. In-Proc çalışmalar için Hostable Web Core yapısına da sahip. Aşağıdaki şekil teknik mimarisi hakkında biraz daha fikir verecektir. (Takımın çizdiği mimari resim kadar başarılı değil ama bakmadan çizmeye çalışırsanız konuyu güzelce pekiştirebilirsiniz)
 
-![image.axd](images/image.axd)
+![IISRestful_2.gif](images/IISRestful_2.gif)
 
 Bildiğiniz üzere IIS, Microsoft cephesinde kod geliştirenlerin yakından tanıdığı bir host uygulama olarak düşünülebilir. Web sitelerini (asp.net, asp vb), servisleri (asmx, wcf vb), HTTP Handler ve Module'leri bu uygulama üzerinden kolayca yayınlayabiliyoruz. IIS Manager (komut satırından inetmgr aracı ile) gibi arayüzleri de kullanarak istediğimiz yönetsel işlemleri (Application Pool'ların yönetimi, SSL'in açılıp kapatılması, site konfigurasyonlarının yapılması, Session ayarlamaları, yönlendirmeler, Handler yüklemeleri vb) görsel olarak yapabilmekteyiz.
 
@@ -112,7 +112,7 @@ namespace UnitsNetHelloWorld
 
 Çalışma zamanı çıktısı aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![IISRestful_1.gif](images/IISRestful_1.gif)
 
 Tamam kabul ediyorum okunurluğu epey zor. Matrix kodları içerisinde yüzüyor gibiyiz. Sonuçlar JSON formatında gelmiş durumda. Burada Newtonsoft'u devreye sokup daha okunabilir çıktılar elde edebiliriz. Hatta JSON'dan tipe dönüştürüp sonuçların domain içerisinde anlamlı nesneler olarak ele alınmasını da sağlayabiliriz. Bilin bakalım ben bu kutsal görevi kime bırakacağım...
 

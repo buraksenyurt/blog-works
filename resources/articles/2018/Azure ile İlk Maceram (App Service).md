@@ -1,4 +1,4 @@
----
+﻿---
 title: "Azure ile İlk Maceram (App Service)"
 pubDate: 2018-05-18 18:15:00
 categories:
@@ -20,7 +20,7 @@ tags:
 ---
 
 # Azure ile İlk Maceram (App Service)
-![image.axd](images/image.axd)
+![nonazure_0.gif](images/nonazure_0.gif)
 
 Merhaba Arkadaşlar,
 
@@ -38,7 +38,7 @@ Gelelim işlemlerimizi nerede yapacağımıza? Evet son derece aptal bir web uyg
 
 Sıralı bir şekilde gittiğimiz takdirde çok da kafa karıştırıcı olmayan basit işlemler icra edeceğimizi ifade edebilirim. Haydi gelin işe Cloud Shell'i açarak başlayalım. Tabii öncelikle portal'a girmemiz ve geçerli bir abonelik üzerinden oturum açmamız gerekiyor. Cloud Shell iki seçenek sunan bir terminal arabirimi. Bash Shell veya Windows Powershell kullanabiliriz. Ben Bash Shell seçeneğini tercih ettim. Bu durumda aşağıdaki ekran görüntüsü ile karşılaşmalıyız.
 
-![image.axd](images/image.axd)
+![nonazure_1.gif](images/nonazure_1.gif)
 
 > Yazıdaki işlemlerimizi Cloud Shell aracılığı ile yapacağız ama Azure'un komut satırı aracını yerel makine üzerinden de kullanabiliriz. Bunun için [şu adrese](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) uğramanızı önerebilirim.
 
@@ -48,7 +48,7 @@ Operasyonel işlemlerimiz için az isimli komut satırı programından yararlana
 az webapp deployment user set --user-name abi-wan-kenobi --password <<buraya okkalı bir şifre girin>>
 ```
 
-![image.axd](images/image.axd)
+![nonazure_2.gif](images/nonazure_2.gif)
 
 Bir deployment kullanıcısı oluşturduk. Bu kullanıcı yerel makinedeki kodları Azure platformuna git üzerinden aktarırken gerekli olacak. Ancak tek yol git kullanmak da değil. FTP bağlantısı yaparak da uygulamamızı taşımamız mümkün ki bu senaryoda da yukarıda oluşturulan kullanıcıya ihtiyacımız olacaktır. Diğer platformlardakine benzer olarak kullanıcılar ve kullanıcıların yetkileri önemli. Gerçekten belli işler için sadece yapacaklarına ait yetkileri taşıyan kullanıcılar oluşturma alışkanlığını kazanmak gerekiyor. Kısacası her şeyi yapabilen tek bir süper kullanıcı kullanmamalıyız. İşte bu yüzden senaryomuza sadece dağıtım işinden sorumlu olacak bir kullanıcı tanımı ile başladık.
 
@@ -58,7 +58,7 @@ Sıradaki adımda bir Resource Group oluşturacağız. Bunu n sayıda kaynağı 
 az appservice list-locations --sku S1 --linux-workers-enabled
 ```
 
-![image.axd](images/image.axd)
+![nonazure_3.gif](images/nonazure_3.gif)
 
 Ben East US 2 bölgesinde milano-rg isimli bir kaynak grubu tanımlamaya karar verdim. Bunun için aşağıdaki terminal komutundan yararlanılabilir.
 
@@ -66,7 +66,7 @@ Ben East US 2 bölgesinde milano-rg isimli bir kaynak grubu tanımlamaya karar v
 az group create --name milano-rg --location "East US 2"
 ```
 
-![image.axd](images/image.axd)
+![nonazure_4.gif](images/nonazure_4.gif)
 
 (az terminal komutlarının çıktısı dikkat edeceğiniz üzere JSON formatında) Son terminal komutundaki çıktya göre provisioningState için Succeeded değeri dönüldü. Yani grup başarılı bir şekilde oluşturuldu.
 
@@ -79,11 +79,11 @@ az appservice plan create --name milano-app-plan --resource-group milano-rg --sk
 --sku S1 ile S1 kodlu fiyatlandırma modelini kullanacağımızı, --is-linux ile de Linux Container üzerinde çalışacağımızı belirtmiş olduk. Özellikle planları oluştururken gereken ücretlendirme modellerine bakmakta yarar var. [Şu adresten](https://azure.microsoft.com/en-us/pricing/details/app-service/) gerekli bilgilere ulaşabilirsiniz. Bir çok plan söz konusudur. Planlarda belirtilen sku'larda makinenin çekirdek sayısı, günlük yedek alma miktarı, kaç Gb Ram'e sahip olacağı, disk kapasitesi, hangi diğer uygulama servislerini sunacağı (SQL, Biztalk vs), eş zamanlı instance değerleri gibi özellikler tanımlıdır. App Service ile App Service Plan arasında kritik bir ilişki de vardır. Birden fazla App Service'in aynı App Service Plan'a bağlanması mümkündür. Yani farklı uygulamaları barındıran farklı App Service örneklerini aynı servis planı ile ilişkilendirebiliriz. Bunun ölçeklemelerde önemli bir artısı vardır. Tek bir planı yukarı (Scale Up) veya aşağı (Scale Down) çekerek kendisine bağlı olan tüm uygulamaların bu ölçeklemeden aynı anda yararlanmasını sağlayabiliriz. Burada ister yukarı ister aşağı yönlü ölçekleme olsun, ilgili App Service Plan'a ait makine örneklerinin sayısının arttırılması veya azaltılması durumu söz konusudur.
 
 > Araya bir ekran görüntüsü koyarsam sanırım daha anlaşılır olabilir. Node.js Starter Kit tipinden bir App Service ve buna bağlı bir plan seçerken Azure...
-> ![image.axd](images/image.axd)
+> ![nonazure_13.gif](images/nonazure_13.gif)
 
 Planımızı komut satırından oluşturarak devam edelim.
 
-![image.axd](images/image.axd)
+![nonazure_5.gif](images/nonazure_5.gif)
 
 Şu ana kadar bir Deployment User, Resource Group ve App Service Plan oluşturduk. Peki uygulama nerede? Öncelikle Node.js'in çalışabileceği bir imaja ihityacımız var. Aslında Azure'casını ifade edersek bir Web App üretmemiz gerekiyor. Dilersek Azure'un desteklediği Linux tabanlı Web App çalışma zamanlarına bakabiliriz. Bunun için aşağıdaki terminal komutunu kullanmamız yeterli.
 
@@ -91,7 +91,7 @@ Planımızı komut satırından oluşturarak devam edelim.
 az webapp list-runtimes --linux
 ```
 
-![image.axd](images/image.axd)
+![nonazure_6.gif](images/nonazure_6.gif)
 
 Ruby, Node'un epey bir sürümü, PHP,.Net Core (2.1 olmaması yazıyı hazırladığım tarih itibariyle ilginçti), Java ve Go...Node'un 9.4 versiyonunu destekleyecek bir Web App oluşturmak için terminalden aşağıdaki komutu vermek yeterli.
 
@@ -101,11 +101,11 @@ az webapp create --resource-group milano-rg --plan milano-app-plan --name Fishin
 
 Komutta kullandığımız bir kaç parametre var. Resource Group, App Service Plan, uygulamanın adı (ki örneğimizde FishingServices olarak geçiyor), çalışma zamanı (node 9.4'ü seçtik) ve deployment seçeneği (bu da Git olarak belirtildi) Buna göre uzun bir JSON çıktısına sahip olacağız ancak içerisinde bizim için önemli bilgiler var.
 
-![image.axd](images/image.axd)
+![nonazure_7.gif](images/nonazure_7.gif)
 
 Birisi deploymentLocalGitUrl ve diğeri de defaultHostName. Çıktıya dikkat edilecek olursa fishingservices.azurewebsites.net isimli bir adres yer alıyor. Eğer bu adrese gidersek aşağıdakine benzer bir çıktı ile karşılaşmamız olası (İlk talepte cevap süresi biraz uzun olabilir)
 
-![image.axd](images/image.axd)
+![nonazure_8.gif](images/nonazure_8.gif)
 
 Bu hazır bir şablon ancak şu noktada Azure App Service üzerinden bir Web Hosting işlemi gerçekleştirdiğimizi söyleyebiliriz. Tabii amacımız buraya kendi yazdığımız Node.js uygulamasını taşımak. Ben bunun için West-World'deki Visual Studio Code'u kullanarak aşağıdaki içeriğe sahip basit bir index.js dosyası oluşturdum. Internet'te konu ile ilgili örnek dokümanlara baktığınızda da benzer kod parçaları ile karşılaşabilirsiniz. Temel amacımızın Azure tarafı olduğunu hatırlatalım.
 
@@ -170,15 +170,15 @@ git push milano master
 
 komutunu çalıştırmak. Yani kodlarımızı milano olarak isimlendirdiğimiz uzak adrese doğru aktarmak. Bu işlem sırasında bir şifre de sorulacaktır. Bilin bakalım bu şifreyi ne zaman ve nerede belirledik:)
 
-![image.axd](images/image.axd)
+![nonazure_9.gif](images/nonazure_9.gif)
 
 Dağıtım işlemi başarılı bir şekilde tamamlandıktan sonra fishingservices.azurewebsites.net adresine tekrar gidersek içeriğin değiştiğini ve Node.js ile yazdığımız uygulamanın çalıştığını rahatlıkla görebiliriz.
 
-![image.axd](images/image.axd)
+![nonazure_10.gif](images/nonazure_10.gif)
 
 Uygulama kodunda değişiklikler yapacak olursak standart commit işlemini uygulayıp ardından tekrardan push ile dağıtımı yapmamız gerektiğini hatırlatayım (Bunu bir deneyin derim. Hatta uygulamayı bir Web API servisi haline getirip commit'lemeyi ve bu şekilde dağıtmayı deneyebilirsiniz. Özellikle bu durumda uygulamanın bağımlı olduğu npm paketleri varsa bunları karşı tarafa da aktarmak gerekebilir. Acaba burada nasıl bir yol izlenmelidir?) Bu arada eğer portal üzerinden kaynaklara gidersek FishingServices isimli App Service örneğimizi de görebiliriz. Aşağıdaki ekran görüntüsünde kendi hesabımdaki anlık durum yer alıyor.
 
-![image.axd](images/image.axd)
+![nonazure_11.gif](images/nonazure_11.gif)
 
 Sonuçlar oldukça tatmin edici öyle değil mi? Biraz fazla terminal komutu kullandık ama adım adım oluşumu anladık diye düşünüyorum (En azından benim kafamda biraz daha netleşti) Pek tabii bu ücretsiz planlar bir süre sonra başa dert olabilirler. O nedenle oluşturduklarımızı silersek iyi olabilir ki Microsoft'un kendi öğreti dokümanlarında da bu önerilmekte. İşte bu nokta bir Resource Group oluşturmanın faydasını da göreceğiz. Aşağıdaki terminal komutunu Cloud Shell'den çalıştırdığımızda milano-rg ile ilişkili olarak oluşturulan ne kadar kaynak varsa otomatik olarak silinecek.
 
@@ -188,7 +188,7 @@ az group delete --name milano-rg
 
 Ve tabii Fishing Services isimli balıkçı malzemeleri hizmeti veren firmanın sitesi de aşağıdaki hale gelecek.
 
-![image.axd](images/image.axd)
+![nonazure_12.gif](images/nonazure_12.gif)
 
 Hepsi bu kadar:)
 

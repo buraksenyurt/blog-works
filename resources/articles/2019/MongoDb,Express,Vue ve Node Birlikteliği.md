@@ -1,4 +1,4 @@
----
+﻿---
 title: "MongoDb,Express,Vue ve Node Birlikteliği"
 pubDate: 2019-07-19 05:47:00
 categories:
@@ -17,7 +17,7 @@ tags:
 ---
 
 # MongoDb,Express,Vue ve Node Birlikteliği
-![image.axd](images/image.axd)
+![cobolll.png](images/cobolll.png)
 
 Aranızdan kaç kişi akıllı telefonundaki herhangi bir arkadaşının numarasını ezbere söyleyebilir? Eminim bazılarımız bizi dokuz ay karnında taşıyan annesinin telefonunu dahi hatırlamıyordur. Peki ya birlikte sıklıkla vakit geçirdiğiniz ama çok da yakın çevrenizden olmayan kankanızın doğum günü ne zaman? Teknolojik cihazlarınızdaki hatırlatıcılar olmadığında kaç arkadaşınızın doğum gününü unutacaksınız hiç düşündünüz mü?
 
@@ -238,7 +238,7 @@ mongo
 db
 ```
 
-![image.axd](images/image.axd)
+![06_13_credit_1.png](images/06_13_credit_1.png)
 
 ## Servis Testleri
 
@@ -553,7 +553,7 @@ Hepsi bu kadar;) Yazdığımız uygulamayı test etmek için node ve mongodb sun
 
 Ekleme işlemi ile ilgili ilk test sonucu aşağıdaki gibidir.
 
-![image.axd](images/image.axd)
+![06_13_credit_2.png](images/06_13_credit_2.png)
 
 Listeleme ve listenen bağlantıları silme işini contacts.vue isimli bileşen üstlenmekte. Buda app.vue içerisinde tanımlanıp sayfaya yerleştiriliyor. contacts.vue içerisinde bootstrap card stillerini kullanmayı tercih ettim. Çok berbat bir tasarım olmadı ama çok iyi de olmadı. Fonksiyonel olarak bağlantıları listeletebiliyor, silme ve yenilerini ekleme işlemlerini gerçekleştirebiliyoruz.
 
@@ -561,7 +561,7 @@ Listeleme ve listenen bağlantıları silme işini contacts.vue isimli bileşen 
 
 İşte örnek bir ekran görüntüsü daha...
 
-![image.axd](images/image.axd)
+![06_13_credit_3.png](images/06_13_credit_3.png)
 
 ## Ben Neler Öğrendim?
 

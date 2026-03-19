@@ -1,4 +1,4 @@
----
+﻿---
 title: "Rust Dilinde Warp, Tokio Küfelerini Kullanarak Asenkron Web Api Geliştirmek"
 pubDate: 2020-11-13 08:57:00
 categories:
@@ -25,7 +25,7 @@ tags:
 ---
 
 # Rust Dilinde Warp, Tokio Küfelerini Kullanarak Asenkron Web Api Geliştirmek
-![image.axd](images/image.axd)
+![warpspeed.png](images/warpspeed.png)
 
 Geçtiğimiz birkaç ay içerisinde Rust dilini öğrenmeye çalıştım. Zevkli olduğu kadar bir o kadar da zorlayıcı bir süreçti. Öğrendin mi derseniz, "Hayır!" derim:D İşlediğim konuları tekrar etmem gerekiyor. En çok sahiplenme (ownership) ve borçlanma (borrowing) konularında beynimi yaktım diyebilirim (Ah birde trait ve smart pointer konuları var!) Yinede Rust ile vakit geçirdikçe ortaya karışık bir şeyler çıkmaya da başladı. Dilin, Message Passing ve Mutex konularını öğrenmeye çalışırken karşıma Warp ve Tokio küfeleri (Crates) çıktı. Derken olay asenkron çalışan bir Web API geliştirmeye kadar gitti. Her ne kadar Warp denince aklımıza Star Trek gelse de mevzu bambaşka.
 
@@ -324,7 +324,7 @@ Adres : http://localhost:5555/products
 Metot : HTTP Get
 ```
 
-![image.axd](images/image.axd)
+![skynet_36_Screenshot_01.png](images/skynet_36_Screenshot_01.png)
 
 ve şimdi de belli bir id değerine göre ürün çekmeyi deneyelim.
 
@@ -333,7 +333,7 @@ Adres : http://localhost:5555/products/1
 Metot : Http Get
 ```
 
-![image.axd](images/image.axd)
+![skynet_36_Screenshot_02.png](images/skynet_36_Screenshot_02.png)
 
 İlk çağrıda bir ürün bilgisi beklerken ikinci denemede HTTP 404 almamız gerekiyor.
 
@@ -342,7 +342,7 @@ Adres : http://localhost:5555/products/123456
 Metot : Http Get
 ```
 
-![image.axd](images/image.axd)
+![skynet_36_Screenshot_03.png](images/skynet_36_Screenshot_03.png)
 
 Yeni bir ürün eklemek için HTTP Post tipinden bir çağrı yapmamız gerekir.
 
@@ -358,11 +358,11 @@ Body :
 }
 ```
 
-![image.axd](images/image.axd)
+![skynet_36_Screenshot_04.png](images/skynet_36_Screenshot_04.png)
 
 Pek tabii eklenen içeriği bir Get talebi ile kontrol etmekte yarar var.
 
-![image.axd](images/image.axd)
+![skynet_36_Screenshot_05.png](images/skynet_36_Screenshot_05.png)
 
 Uygulama çalışıyor...Güzel...Ama Warp ile Tokio'nun gerçek hayat senaryolarındaki performansını ölçümleyebilmiş değiliz. Şimdilik kaynakların verdiği bilgilere göre asenkron operasyonlarda thread-safe ve yüksek işlem gücü sunduğunu ifade edebiliriz. Ancak siz bana kulak asmayın ve bunu ispat etmeye çalışın. Nitekim yine tokio ile birlikte çalışan actix-web üretim ortamlarında ilk sıraya yerleştiriliyor.
 

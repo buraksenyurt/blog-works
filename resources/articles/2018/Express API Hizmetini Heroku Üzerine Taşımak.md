@@ -1,4 +1,4 @@
----
+﻿---
 title: "Express API Hizmetini Heroku Üzerine Taşımak"
 pubDate: 2018-04-07 19:00:00
 categories:
@@ -22,7 +22,7 @@ tags:
 ---
 
 # Express API Hizmetini Heroku Üzerine Taşımak
-![image.axd](images/image.axd)
+![herokus_intro.gif](images/herokus_intro.gif)
 
 Merhaba Arkadaşlar,
 
@@ -48,7 +48,7 @@ npm -v
 git --version
 ```
 
-![image.axd](images/image.axd)
+![herokus_1.gif](images/herokus_1.gif)
 
 Taşınacak Servis Uygulamasının Geliştirilmesi
 
@@ -158,7 +158,7 @@ sudo apt-get install heroku
 
 Eğer işler yolunda giderse versiyon numarasını alabiliyor olmamız gerekir. West-World şu anda Heroku CLI'ın 6.15.26-5726b6f versiyonuna sahip.
 
-![image.axd](images/image.axd)
+![herokus_2.gif](images/herokus_2.gif)
 
 Artık sisteme Login olabilir ve Heroku üzerinde uygulamamızı (uygulamalarımızı) taşıyacağımız projeyi oluşturabiliriz. login ve create komutları sırasıyla bu işler için.
 
@@ -167,11 +167,11 @@ heroku login
 heroku create
 ```
 
-![image.axd](images/image.axd)
+![herokus_4.gif](images/herokus_4.gif)
 
 login sırasında, Heroku'ya kayıt olurken kullandığınız bilgiler geçerli olacaktır. Oluşan uygulama Heroku web control panel üzerinden de görülebilir. Benim yazıyı yazdığım tarih itibariyle bu oluşturduğum ikinci projeydi. İlki uyku moduna geçmiş durumda. Bunun sebebi de Freeplan'a göre söz konusu uygulamaya belli bir süre talep gelmeyince (bu zamanlar 30 dakika olarak belirlenmiş) uyku moduna geçmesi. West-World için Heroku'nun oluşturduğu projenin adı fierce-earth-61739. Siz dilerseniz kendi proje adınızı da kullanabilir veya sistemin vereceği bu tutarlı atışları değerlendirebilirsiniz.
 
-![image.axd](images/image.axd)
+![herokus_5.gif](images/herokus_5.gif)
 
 ## Package.json Dosyasının Eklenmesi
 
@@ -240,7 +240,7 @@ Taşıma işlemleri sırasında olup biteni merak ediyorsanız gerek terminalden
 
 "Sunucu dinlemede" yazan kısma dikkat;)
 
-![image.axd](images/image.axd)
+![herokus_6.gif](images/herokus_6.gif)
 
 Yine de taşımanın kontrol edilmesinde fayda var. İlk etapta dyno tarafı için bir ölçekleme işlemi yapılması öneriliyor. Sonrasında gelen open komutu ile local sistemde bir tarayıcı açılıyor.
 
@@ -253,7 +253,7 @@ heroku open
 
 open komutu doğrudan tarayıcı penceresini açacak ve bizi projenin giriş url'ine yönlendirecektir.
 
-![image.axd](images/image.axd)
+![herokus_7.gif](images/herokus_7.gif)
 
 Tahmin edeceğiniz üzere bir sonuç gelmemesi normal. Çünkü doğru HTTP Get talebini yapmış olmak gerekiyor.
 
@@ -261,7 +261,7 @@ https://fierce-earth-61739.herokuapp.com/api/tasks
 
 gibi. Volaaaa!!!
 
-![image.axd](images/image.axd)
+![herokus_8.gif](images/herokus_8.gif)
 
 Bu esnada oluşan işlemleri canlı olarak takip etmek terminalde aşağıdaki komutu vererek izlemede kalabiliriz.
 
@@ -269,7 +269,7 @@ Bu esnada oluşan işlemleri canlı olarak takip etmek terminalde aşağıdaki k
 heroku logs --tail
 ```
 
-![image.axd](images/image.axd)
+![herokus_9.gif](images/herokus_9.gif)
 
 Çok doğal olarak bu tip test uygulamalarını işlerimizi bitirdikten sonra silmekte yarar var. Projenin ayarlar kısmında bir Delete düğmesi bulunuyor. Bu iş için kullanabiliriz.
 

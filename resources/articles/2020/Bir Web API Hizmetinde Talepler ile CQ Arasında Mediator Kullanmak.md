@@ -1,4 +1,4 @@
----
+﻿---
 title: "Bir Web API Hizmetinde Talepler ile CQ Arasında Mediator Kullanmak"
 pubDate: 2020-05-29 17:23:00
 categories:
@@ -18,7 +18,7 @@ tags:
 ---
 
 # Bir Web API Hizmetinde Talepler ile CQ Arasında Mediator Kullanmak
-![image.axd](images/image.axd)
+![cqrs.png](images/cqrs.png)
 
 CQRS, nam-ı diğer Command Query Responsibility Segregation mimari deseni, veritabanına doğru yapılan yazma, güncelleme, silme gibi aksiyonlar ile veri çekme işlemlerini ayrıştırmayı önermektedir. Command tarafı ile ilişkilendirilen aksiyonlar sadece veri üzerinde işlem yapar ve geriye bir şey döndürmezler. Sorgulama (Query) tarafına ayrılan aksiyonlar da tam tersine sadece veri döndürmekten sorumludurlar (Listeleme veya tek bir öğe detayının döndürülmesi gibi) Bir Web API ve CQRS söz konusu olduğunda karşımıza birde Mediator tasarım kalıbının uygulanışı çıkar.
 
@@ -555,7 +555,7 @@ http://localhost:5000/api/heroes
 }
 ```
 
-![image.axd](images/image.axd)
+![skynet_20_Screenshot_1.png](images/skynet_20_Screenshot_1.png)
 
 ```bash
 #Tek bir kahraman detayını çekme
@@ -563,7 +563,7 @@ HTTP Get
 http://localhost:5000/api/heroes/Wonder Woman
 ```
 
-![image.axd](images/image.axd)
+![skynet_20_Screenshot_3.png](images/skynet_20_Screenshot_3.png)
 
 ```bash
 #Tüm kahramanların listesini çekme
@@ -571,7 +571,7 @@ HTTP Get
 http://localhost:5000/api/heroes
 ```
 
-![image.axd](images/image.axd)
+![skynet_20_Screenshot_2.png](images/skynet_20_Screenshot_2.png)
 
 ```bash
 #Gücü 90nın üstünde olan karakterlerin çekilmesi
@@ -579,7 +579,7 @@ HTTP Get
 http://localhost:5000/api/heroes/gt/90
 ```
 
-![image.axd](images/image.axd)
+![skynet_20_Screenshot_4.png](images/skynet_20_Screenshot_4.png)
 
 ```bash
 #Bir kahramanı veritabanından silme
@@ -601,7 +601,7 @@ http://localhost:5000/api/heroes
 }
 ```
 
-![image.axd](images/image.axd)
+![skynet_20_Screenshot_5.png](images/skynet_20_Screenshot_5.png)
 
 Tavsiyem Controller, Handler ve MediatR ilişkisini daha iyi kavrayabilmek için uygulamayı debug ederek analiz etmeniz. Peki sizce CQRS desenini Mediator ile bir arada kullanmanın avantajları neler olabilir? Bu sorunun cevabını düşünürken uygulamaya birkaç ilave daha yapabilirsiniz. Örneğin kahramanların katıldığı görevleri tutan Mission isimli bir sınıf tasarlayıp Hero ile Mission arasında çoğa çok (karmaşık gelirse bire çok da olur) ilişki tesis edip bir kahraman ve katıldığı görevler listesini kontrol edecek Handler-Query tiplerini entegre etmeye çalışabilirsiniz. Buna ek olarak kahramanın gücünün belli bir değerden küçük olması için ayrı bir Handler (LessThan isimli) yazmak yerine GreaterThan ve Equal gibi operasyonları da içerisine alacak ortak bir Handler tasarımı yapmayı düşünebilirsiniz.
 

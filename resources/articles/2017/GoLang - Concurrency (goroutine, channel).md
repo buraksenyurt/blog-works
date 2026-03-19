@@ -1,4 +1,4 @@
----
+﻿---
 title: "GoLang - Concurrency (goroutine, channel)"
 pubDate: 2017-05-15 11:52:00
 categories:
@@ -14,7 +14,7 @@ tags:
 ---
 
 # GoLang - Concurrency (goroutine, channel)
-![image.axd](images/image.axd)
+![goconcurrency2.gif](images/goconcurrency2.gif)
 
 Merhaba Arkadaşlar,
 
@@ -80,7 +80,7 @@ func SaySomething(message string){
 
 for döngüsündeki kullanım şekli de oldukça şıktır. 5 defa Calculate isimli fonksiyonun farklı parametre değerlerini alarak eş zamanlı yürütülmesi işlemi örneklenmiştir. Dikkat edilmesi gereken noktalardan birisi de main fonksiyonunun sonunda ekrandan giriş beklenmesidir. Eğer bunu yapmazsak tahmin edeceğiniz üzere program kodu anında sonlanır. Örnek kodun çalışma zamanı çıktısı aşağıdaki ekran görüntüsündekine benzer olacaktır.
 
-![image.axd](images/image.axd)
+![goroutines_1.gif](images/goroutines_1.gif)
 
 channel
 
@@ -126,7 +126,7 @@ func Bar(channel chan string){
 
 Foo fonksiyonda belli bir süre duraksatma yapmaktayız (Olayı biraz daha dramatize edelim diye) Pek tabi Foo ve Bar fonksiyonları birer iş parçacığı olarak çağırılıyor. Yani goroutine haline getirilmişlerdir. Sonrasında payload isimli channel tipi bu parçacıklar tarafından kullanılarak veri transferi işlemi gerçekleştirilmiştir. Burada büyüleyici olan eş zamanlı çalışan iki fonksiyona arasında bir kanal açarak veri akışı sağlanmış olmasıdır. Bu ilkel kodun çalışma zamanı çıktısı aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![gochannels_1.gif](images/gochannels_1.gif)
 
 ## Senkronizasyon
 
@@ -157,11 +157,11 @@ func DoHeavyWork(flag chan int){
 
 Kodun çalışma zamanı çıktısı aşağıdaki gibidir.
 
-![image.axd](images/image.axd)
+![sync_1.gif](images/sync_1.gif)
 
 Burada kritik nokta main fonksiyonundaki <-chnFlag ifadesidir. Bu satırı kaldırınca kod durmadan akacak ve program sonlanacaktır.
 
-![image.axd](images/image.axd)
+![sync_2.gif](images/sync_2.gif)
 
 ## Yönlendirme (Direction)
 
@@ -194,7 +194,7 @@ func main() {
 
 sender isimli fonksiyon sadece mesaj gönderme özelliğine sahip bir kanal ile çalışır. İkinci parametre ile gelen string bilgi ilk parametredeki kanala yazılır. comm isimli fonksiyonun ilk parametresi mesaj okuma yeteneği olan bir kanaldır. İkinci parametre yine mesaj gönderme amacıyla kullanılabilecek bir kanalı ifade etmektedir. İlk parametre ile okunan mesaj ikinci parametre ile gelen kanala aktarılır. Kodun çalışmasında muazzam bir şey yoktur aslında. Öğrenmemiz gereken kanalların alıcı veya verici şeklinde sabit yönlerde kullanılmaya zorlanabilmesidir.
 
-![image.axd](images/image.axd)
+![directions.gif](images/directions.gif)
 
 ## buffer Kullanımı
 
@@ -218,11 +218,11 @@ func main() {
 }
 ```
 
-![image.axd](images/image.axd)
+![buffered_1.gif](images/buffered_1.gif)
 
 Oluşturulan channel tipi 3 string içeriği taşıyacak kapasitede tanımlanmıştır. Pek tabii kapasitesinden fazla mesaj atamaya çalışırsak Deadlock oluşmasına neden oluruz. Aşağıdaki ekran görüntüsünde olduğu gibi.
 
-![image.axd](images/image.axd)
+![buffered_2.gif](images/buffered_2.gif)
 
 ## select ifadesi
 
@@ -279,6 +279,6 @@ func main() {
 
 Örnekte üç farklı fonksiyon bulunmaktadır. Her birisinde uzun süren işler olduğunu göstermek için time.Sleep fonksiyonundan yararlanılmaktadır. Fonksiyonlar birer goroutine haline getirilip eş zamanlı olarak çalıştırılmaya başladıktan sonra select ifadesi ile kontrol altına alınırlar. 3 goroutine olduğundan for döngüsü de 3 iterasyon ilerleyecektir. Her bir case bloğunda ilgili kanalın dönüşünün olup olmadığına bakılır. Senkronizasyon örneğinde olduğu gibi her fonksiyonun sonunda kanala bırakılan bir sinyal vardır. Bu mesajlar case ifadelerinde ele alınırlar. Tahmin edileceği üzere görevler bittikçe ekrana kanaldan gelen mesajlar basılacaktır. Aynen aşağıdaki ekran görüntüsünde olduğu gibi.
 
-![image.axd](images/image.axd)
+![cselect.gif](images/cselect.gif)
 
 Böylece geldik bir gopher olma çalışmamızın daha sonuna. Bu yazımızda Concurrency konusunun iki önemli kavramına değinmeye çalıştık. Go dili ile ilgili bir şeyler öğrendikçe yazmaya devam edeceğim. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

@@ -1,4 +1,4 @@
----
+﻿---
 title: "Asp.Net Core - Dependency Lifetimes"
 pubDate: 2021-04-30 23:54:00
 categories:
@@ -18,7 +18,7 @@ tags:
 ---
 
 # Asp.Net Core - Dependency Lifetimes
-![image.axd](images/image.axd)
+![hellomvc_11.png](images/hellomvc_11.png)
 
 Çalışmakta olduğum şirketin çok büyük bir ERP (Enterprise Resource Planning) uygulaması var. Microsoft.Net Framework 1.0 sürümünde düşünce olarak hayat geçirilip geliştirilmeye başlanmış. Milyonlarca satır koddan ve sayısız sınıftan oluşan, katmanlı monolitik mimari üstünde yürüyen, sahada on binden fazla personelin kullandığı çok etkili bir ürün. Geçtiğimiz yıl bu uygulamanın modernizasyonu kapsamında başlatılan IT4IT çalışmaları bünyesinde nesne bağımlılıklarının yönetimi için Dependency Injection mekanizmasının nimetlerinden de epeyce yararlanıldı. Doğruyu söylemek gerekirse koda yaptıkları dokunuşları hayranlıkla izledim.
 
@@ -26,7 +26,7 @@ Elbette başa dert olan ve sahada fark edilmesi güç bazı konular da gündeme 
 
 Aslında Asp.Net 5 açısından bakıldığında da Dependency Injection ile ilişkili kafa karıştıran ve saha çözümlerinde dikkat gerektiren konulardan birisi servis yaşam süreleri (Hoş,.Net Remoting ve WCF tarafındaki nesne yaşam döngülerini düşününce nispeten çok daha kolay bir konu) Bu kısa yazıda söz konusu meseleyi öğrendiğim kadarıyla sizlere anlatmaya çalışacağım. Örneğimiz [bir önceki yazıda](Asp.Net Core - Dependency Injection Türleri.md) da değindiğimiz.Net çözümü (hands-on-aspnetcore-di) üzerinde koşuyor olacak. Ayrıca kodun detaylarına [github adresinden](https://github.com/buraksenyurt/hands-on-aspnetcore-di/tree/lifetimes) bakabilir ve eksik kısımları tamamlayabilirsiniz. Ben odaklanmamız gereken yerleri ve sonuçları paylaşmaya çalışarak bakmamız gereken alanı daraltmak niyetindeyim. Her şeyden önce senaryomuza bir göz atalım (Taslak çizimin kusurlarını lütfen mazur görün)
 
-![image.axd](images/image.axd)
+![hellomvc_10.png](images/hellomvc_10.png)
 
 Anlamsız bir model ancak nesne yaşamlarını öğrenmek için hem kitaplarda hem de internet kaynaklarında kullanılan yaygın bir yöntemi değerlendireceğiz; Guid tipi yardımıyla hayattaki nesnelerin takibi. Senaryomuzda GameController tipinin bağımlı olduğu dört farklı bileşen var. Bu bağımlılıklar IGameRepository, IPartRepository, IShopRepository ve arayüzleri üstünden gelen sınıflar ile PerformanceCounter tipi. İşin ilginç yanı PerformanceCounter sınıfının da IGameRepository, IPartRepository ve IShopRepository referansları üzerinden gelen bileşenlere bağımlılığı var. Bu kurguda amaç, çalışma zamanında DI Container servislerine kayıt edilen IGameRepository, IPartRepository ve IShopRepository türevlerinin, PerformanceCounter içerisine alınırken farklı yaşam süresi seçimlerine göre nasıl tepki geliştirdiklerini öğrenmek.
 
@@ -201,11 +201,11 @@ IGameRepository üstünden bağlanan GameRepository, AddTransient fonksiyonu ile
 
 Bu aşamaya geldiyseniz uygulamayı çalıştırıp logları takip etmeniz yeterli. Ben örneğin çalışma zamanına ait iki ekran görüntüsü bırakmak istiyorum. İlki komut satırından yürütülen çalışma zamanına ait. Console penceresine düşen logları görebilirsiniz (O değilde kopyala yapıştırın acı bir sonucu var burada. İki tane Prince of Persia eklenmiş yahu)
 
-![image.axd](images/image.axd)
+![hellomvc_8.png](images/hellomvc_8.png)
 
 Paylaşmak istediğim diğer görüntü ise Guid bilgilerini topladığım Excel'e ait.
 
-![image.axd](images/image.axd)
+![hellomvc_9.png](images/hellomvc_9.png)
 
 Guid değerlerinin hangi durumda nasıl farklılaştığını görebiliyor musunuz? Bir nesnenin hangi aksiyonda nasıl davranış sergilediğini anlamak oldukça kolay. ShopRepository sisteme Singleton modelde alındığı için hangi aksiyon olursa olsun üretilen Guid hep aynı kalmakta. Sayfa yenilense de scope değişse de fark etmiyor. Yani GameController için de, onun içinden çağırılan PerformanceCounter için de aynı nesne kullanılıyor ve sayfa yenilense bile bu nesne yaşamaya devam ediyor. Lakin PartRepository nesnesine ait Guid bilgisi gerçekleşen aksiyon bazında değişmiş görünüyor. Fakat bir fark var. Aynı Scope'a dahil olan PerformanceCounter'da aynı PartRepository nesne örneğini kullanıyor. Bu nedenle Guid aksiyon bazında aynı kalmış halde. Bu noktada Scoped tekniğinin, Singleton ile sürekli olarak karıştırıldığını ifade edebilirim. Biri uygulama ayakta kaldığı müddetçe aynı kalırken diğeri sadece ortak Scope'a dahil olan farklı aksiyonlar boyunca aynı kalıyor. O nedenle yapılan her aksiyonda yeni bir PartRepository örnekleniyor ve hem GameController hem PerformanceCounter bu aynı nesneyi kullanıyor. GameRepository ise oldukça şımarık:) Aksiyon ne olursa olsun hep yeni bir Guid oluşmuş görünüyor; GameController tarafında da PerformanceCounter tarafında da.
 

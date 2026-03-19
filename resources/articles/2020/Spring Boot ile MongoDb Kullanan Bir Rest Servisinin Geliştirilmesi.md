@@ -1,4 +1,4 @@
----
+﻿---
 title: "Spring Boot ile MongoDb Kullanan Bir Rest Servisinin Geliştirilmesi"
 pubDate: 2020-10-11 19:01:00
 categories:
@@ -22,7 +22,7 @@ tags:
 ---
 
 # Spring Boot ile MongoDb Kullanan Bir Rest Servisinin Geliştirilmesi
-![image.axd](images/image.axd)
+![springboot.png](images/springboot.png)
 
 Spring Boot, Java kod tabanı üzerine oturmuş ve özellikle kurumsal çapta uygulamaların geliştirilmesinde önemli bir yere sahip olan Spring çatısınının kullanımını oldukça kolaylaştıran,basitleştiren zevkli hale getiren bir başka çatıdır (Framework). Dahili Dependency Injection mekanizması ve zengin paket desteği sayesinde otonom araçlardan akıllı televizyonlara, elektronik ticaretten bulut uygulamalara kadar birçok alanda Spring'in kabiliyetlerini oldukça etkin kullanabilmemize olanak sağlamaktadır. Birazdan sizin de göreceğiniz üzere az eforla oldukça etkili bir servis ortaya çıkaracağız.
 
@@ -49,7 +49,7 @@ sudo docker run --name mongodb -p 27017:27017 -d mongo:latest
 
 Spring Boot tarafında belki de en önemli yardımcımız uygulama iskeletini bağımlılıkları ile birlikte kolayca oluşturmamızı sağlayan Spring Initializer isimli çevrimiçi araç ([Şu adresten](https://start.spring.io/) ulaşabilirsiniz) Bu yazıdaki örneğimiz için aşağıdaki ekran görüntüsünde yer alan konfigurasyonu kullanacağız. Uygulamaya REST özellikleri katmak için Rest Repositories ve Mongo tarafı ile kolayca konuşabilmek için Spring Data MongoDB bağımlılıklarını eklediğimize dikkat edelim.
 
-![image.axd](images/image.axd)
+![skynet_27_Screenshot_01.png](images/skynet_27_Screenshot_01.png)
 
 Arayüzde gerekli bilgileri doldurduktan sonra Generate butonuna basmamız yeterli. Sisteme sıkıştırılmış bir uygulama paketi inecektir. İndirilen hazır kod deposu üzerinde gerekli geliştirmelerimizi yapabiliriz. Tabii başlamadan önce neler gelmiş diye bakmakta yarar var. Sözgelimi yukarıdaki görselde belirlediğimiz ayarlar pom.xml dosyası içerisine yazılacaktır vb...
 
@@ -143,7 +143,7 @@ java -jar target/games-world-api-0.0.1-SNAPSHOT.jar
 
 Buna göre aşağıdakine benzer bir çalışma zamanı elde etmemiz gerekiyor.
 
-![image.axd](images/image.axd)
+![skynet_27_Screenshot_02.png](images/skynet_27_Screenshot_02.png)
 
 Gelelim testlerimize. Uygulamamız malumunuz bir REST servisi. Bu nedenle Curl veya Postman gibi araçlarla test yapabiliriz. Dikkat edilmesi gereken nokta özellikle kendi eklediğimiz dışında tüm CRUD (Create Read Update Delete) fonksiyonlarının karşılığı olan Post, Get, Put, Delete operasyonlarının hazır olarak sunulmasıdır. Lütfen bunlar için herhangi bir kod yazmadığımıza dikkat edin. Sihir!;) Öyleyse birkaç talep ile devam edelim.
 
@@ -160,7 +160,7 @@ JSON Body
 }
 ```
 
-![image.axd](images/image.axd)
+![skynet_27_Screenshot_03.png](images/skynet_27_Screenshot_03.png)
 
 Birkaç oyuncu daha ekleyip sonrasında tüm oyuncu listesini almak için aşağıdaki talebi kullanmak yeterli.
 
@@ -171,7 +171,7 @@ GET
 
 Tabii listelenen verinin büyük olma olasılığına karşın Spring Boot sayfalama özelliklerini de hesaba katmaktadır. Aşağıdaki görüntüde yer alan page kısmına dikkat edelim.
 
-![image.axd](images/image.axd)
+![skynet_27_Screenshot_04.png](images/skynet_27_Screenshot_04.png)
 
 Belli bir dokümanı (player verisini) çekmek istersek MongoDB'nin kendine has ID bilgisini kullanmamız yeterli. Mesela;
 
@@ -180,7 +180,7 @@ http://localhost:8080/player/5f3d626214851c46fd10544a
 GET
 ```
 
-![image.axd](images/image.axd)
+![skynet_27_Screenshot_05.png](images/skynet_27_Screenshot_05.png)
 
 Bir içeriği silmek için,
 
@@ -189,7 +189,7 @@ http://localhost:8080/player/5f3d625114851c46fd105449
 DELETE
 ```
 
-![image.axd](images/image.axd)
+![skynet_27_Screenshot_07.png](images/skynet_27_Screenshot_07.png)
 
 veya veri güncellemek içinse (Komple set) aşağıdaki örnek talebi kullanabiliriz.
 
@@ -205,7 +205,7 @@ JSON Body
 }
 ```
 
-![image.axd](images/image.axd)
+![skynet_27_Screenshot_08.png](images/skynet_27_Screenshot_08.png)
 
 Hatırlayacağınız üzere MongoDb repository'sini kendi sözleşmemiz ile genişletmiştik. Pasif ve aktif oyuncuların listesini çekmek için bu fonksiyona doğru aşağıdaki talepleri yollayabiliriz. Pasif olan oyuncular için,
 
@@ -223,7 +223,7 @@ GET
 
 İşte sonuçlar;
 
-![image.axd](images/image.axd)
+![skynet_27_Screenshot_06.png](images/skynet_27_Screenshot_06.png)
 
 Görüldüğü üzere Spring Boot kullanarak MongoDB ile konuşan bir REST servisini temel CRUD ve bizim ekleyeceğimiz ilave fonksiyonlar ile ayağa kaldırmak oldukça basit, zahmetsiz ve kolay;) Veri odaklı servisleri kolaylıkla üretim ortamlarına alabiliriz diye düşünüyorum. Spring Boot konusunda deneyimleriniz varsa bu konu özelinde yorumlarınız olursa lütfen yazının altına bırakmaya çekinmeyin. Bu arada örneği geliştirmek elbette elinizde. Söz gelimi MongoDb yerine PostgreSQL kullanmayı deneyebilirsiniz. Hatta oyuncuların katıldıkları maçlara ait skor, başarı, madalya, seviyle vb bilgilerin tutulduğu yeni bir POJO hazırlayıp Player ile ilişkilendirerek servis üzerinden sunmayı düşünebilirsiniz;)
 

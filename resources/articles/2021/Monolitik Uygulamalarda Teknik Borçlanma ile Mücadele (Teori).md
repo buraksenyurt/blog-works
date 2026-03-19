@@ -1,4 +1,4 @@
----
+﻿---
 title: "Monolitik Uygulamalarda Teknik Borçlanma ile Mücadele (Teori)"
 pubDate: 2021-10-23 07:00:00
 categories:
@@ -21,7 +21,7 @@ Tüm bu gelişmelere ek olarak bir süredir şirketin iç girişim programına d
 
 Yazılımcı olmanın kaçınılmaz bir gerçeği üretim ortamından gelen problemler ile uğraşmaktır belki de. Çalışmakta olduğumuz sistemlerin giderek büyümesi, iş kurallarının zamanla karmaşıklaşması, nasıl yapılır nereye bakılır bilgisinin ayrılan iş gücü nedeniyle eksilmesi, entegrasyon noktalarının çoğalması ve daha birçok sebepten ötürü bu kaçınılmazdır. Her birimiz yazılım yaşam süresi boyunca farklı tipte mimariler üzerinde çalışırız. Örneğin 2021 yılının ilk çeyreğinde hazırladığım ve yedi yüzden fazla [kişinin katıldığı “Teknik Borç Farkındalık Anketi” isimli çalışmanın sonuçlarına göre](https://docs.google.com/forms/d/1O_EwxGI22cADNVa2PIW5yOxGKHRECGvIp7JRWSMLw4w/edit#responses) beşimizden dördünün katmanlı mimari olarak adlandırdığımız monolitik sistemlerde görev aldığını söyleyebiliriz. Hele ki sektörde yirmi yılı deviren bir yazılım geliştirici iseniz (ki yine anket sonuçlarına göre neredeyse %40ımız 10 yaşından büyük ürünlerle çalışmış) böyle bir sistemle yolunuzun kesişmemiş olması pek mümkün değildir.
 
-![image.axd](images/image.axd)
+![techdebt_01.png](images/techdebt_01.png)
 
 Sonuçların bilimselliği bir kenara dursun katmanlı sistemlerin en büyük dertlerinden birisi kolayca modernize edilemeyişleridir. Bunun en büyük sebeplerinden birisi de kontrolsüz büyümenin ve birçok [Anti Pattern](https://www.buraksenyurt.com/post/AntiPatterns-Ders-Notlarc4b1m) ihlalinin teknik borç yükünü artırmış olmasıdır. Ward Cunningham’ın bu terimi programcı olmayan insanlara neden kodu refactor etmeleri gerektiğini anlatmak için metafor olarak kullanmasının üstünden çok süre geçmiş olsa da pek çok sistemin baş etmek zorunda kaldığı bir gerçektir teknik borç. Bu baş belası için bazı kaynaklarda ürkütücü The Silent Company Killer terimi kullanılır ve bence bu son derece isabetli bir ifade.
 
@@ -54,7 +54,7 @@ Raporlar ve rakamlar bu işin ciddiyetini ortaya koymaktadır ancak her şeyden 
 
 Teknik borcun bu bahsi geçen türlü tanımları onun farklı kategorilerde ele alınmasını da gerektirmiş ve buna göre bazı farklar ortaya konmuştur.
 
-![image.axd](images/image.axd)
+![techdebt_02.png](images/techdebt_02.png)
 
 Örneğin Steve McConnel 2007 yılında teknik borçları kasıtlı olarak yapılan ve yapılmayanlar şeklinde iki ana kategoriye ayrıştırmıştır. Gerçekten de bazı durumlarda oluşacak teknik borçlanma stratejik bir karar sebebiyle sineye çekilebilir. Buna karşın ilerde borcun ödenmesi gerekir. Software Engineering Institute tarafından 2014 yılında yapılan bir çalışmaya göre teknik borç birçok kategoride değerlendirilir. Mimari yaklaşımlardaki anomaliler de teknik borca sebebiyet verebilir, personelin sahip olduğu yeteneklerdeki eksiklik de teknik borca sebebiyet verebilir gibi. Bana göre bu sınıflandırmalar teknik borcun domain bazlı ayrılabilmesine ve buna göre ekiplerin kontrolüne verilmesine de olanak sağlamaktadır.
 
@@ -118,27 +118,27 @@ Teknik borcu yönetmek için çeşitli yöntemler olduğu aşikardır. Diğer ya
 
 Bu arada teknik borcu yönetme noktasın teşhis koymak, acı noktalarını belirlemek, devam kararı alıp almamak için skor kartlarına başvurulabilir. Bu konu ile ilişkili olarak The Art of Service tarafından yayınlanan Technical Debt — A Complete Guide (Practical Tools for Self-Assessment) kitabını tavsiye edebilirim. Kitabın genel amacı aşağıdaki skor kartlarının çeşitli kategorideki sorulara verilen cevaplara göre puanlanarak doldurulmasıdır.
 
-![image.axd](images/image.axd)
+![techdebt_03.png](images/techdebt_03.png)
 
 ### Mimari
 
 Ben ve benim gibi yazılımcılar açısından bakıldığında mimari seçim ve uygulanış biçiminin teknik borçlanma üzerinde etkisi olduğu söylemek kaçınılmazdır. Yazılım mimarileri oldukça geniş ve kapsamlı bir konudur ancak çok yüksek irtifadan meseleye bakıldığında işimize yarayacak bir özet üzerinde durabiliriz.
 
-![image.axd](images/image.axd)
+![techdebt_04.png](images/techdebt_04.png)
 
 Yazılım mimarileri temel olarak ikiye ayrılır. Monolitik sistemler ve dağıtık olanlar. Pek çoğumuzun yakinen tanıdığı katmanlı tarz monolitik tarafta yer alırken pek çoğumuzun da çalışmak istediği hatta bazen kurtarıcı olarak gördüğü mikro servis yaklaşımı dağıtık mimari kategorisinde bulunur.
 
 Tipik olarak katmanlı çözümler aşağıdakine benzer bir kurguya sahiptir ve pek çok kitapta bu şekilde resmedilir.
 
-![image.axd](images/image.axd)
+![techdebt_05.png](images/techdebt_05.png)
 
 Hatta bu yapının aktörleri zaman zaman dağıtılabilir farklı parçalara da bölünebilir. Bu daha çok ölçeklenebilirliği mümkün mertebe etkin kullanmak amacıyla yapılır. Aynen aşağıdaki şekilde görüldüğü gibi.
 
-![image.axd](images/image.axd)
+![techdebt_06.png](images/techdebt_06.png)
 
 Veri tabanı katmanı ve diğer kısımlar ayrı bir şekilde dağıtılabilirken uygulamanın tamamı tek parça halinde de üretim ortamına uğurlanabilir arkasından bir bardak su dökülerekten. Bizim üzerinde durduğumuz katmanlı yapı ile diğerlerini kıyasladığımızda ele alınması gereken birçok kriter de vardır. Pek çok kriter zaman içerisinde ortaya çıkan ihtiyaçlar doğrultusunda önem kazanmıştır. Netflix, Amazon, Google, Spotify ve benzeri öncülerin sürüklediği sistemler mimarilerin değişmesine neden olmakla kalmaz hata toleransından sistemin ayakta kalabilir olmasına kolay dağıtımdan esnekçe genişleyebilmeye kadar birçok faktörün de dikkate alınmasına sebep olur. Aşağıdaki tabloda söz konusu mimari yaklaşımlar arasındaki avantaj ve dezavantajları görebilirsiniz. Bir yıldız çok zayıf, beş yıldız çok güçlü anlamındadır.
 
-![image.axd](images/image.axd)
+![techdebt_07.png](images/techdebt_07.png)
 
 Katmanlı mimari küçük çaplı, basit uygulamalar ile web siteleri gibi çözümler için son derece idealdir. Ayrıca başlangıç bütçesi düşüktür. Bu nedenle kurumsal çapta düşünüldüğünde fikirleri hayata geçirme noktasında sıklıkla tercih edilir. Nitekim çabuk sonuç verir. Dağıtık sistemlere geçildikçe düşünülmesi, yönetilmesi gereken ayrık bileşenler çoğalır ve daha iyi bir teknik yönetim gerekir. Hata yönetimi bile dağıtık sistemler düşünüldüğünde katmanlı yapılara göre çok daha zordur. Anlamlı loglar atmanız, bunları yorumlamanız, yorumlarınıza uygun alarm sistemleri kurmanız, çakılan servisler kendine geldiğinde ne yapmalıyı planlamanız, versiyonlamaları nasıl yöneteceğinizi düşünmeniz, ağ trafiğini gözlemleyip iyileştirmeniz, kara cumalara aylar öncesinden hazır olmanız vs gerekir.
 
@@ -179,11 +179,11 @@ Yaklaşık olarak dört yıldır çalıştığım Doğuş Teknoloji ve öncesind
 
 Edindiğim tecrübelere göre monolitik bir sistemde teknik borçlanma ile mücadele için aşağıdaki gibi bir yaşam döngüsünün kullanılması gerekir. Buna TDML (Technical Debt Management Life Cycle) adını verebiliriz ve farklı türden sistemlere de uyarlanabilir.
 
-![image.axd](images/image.axd)
+![techdebt_08.png](images/techdebt_08.png)
 
 Döngüye girebilmek için ön gereksinimlerin tamamlanması gerekir. Her şeyden önce teknik borcu kabul etmek, ortak bir tanımını yapmak, yarattığı yükü hesaplayıp genel maliyetini ölçmek ve bunu şeffaf bir şekilde paylaşmak gerekir. Ön gereksinimler için aşağıdaki gibi genel bir kontrol formu kullanılabilir ve Dashboard benzeri bir arabirim ile sistem içerisinde her an görünür olması sağlanabilir. Görünürlük de bu mücadelenin olmazsa olmazlarındandır.
 
-![image.axd](images/image.axd)
+![techdebt_09_new.png](images/techdebt_09_new.png)
 
 Teknik borç yönetimi yaşam döngüsü belli periyotlarda tekrar eden bir düzenektir. Gereksinimlerin karşılanmasını takiben sırasıyla aşağıdaki adımlara göre işletilir.
 
@@ -194,7 +194,7 @@ Teknik borç yönetimi yaşam döngüsü belli periyotlarda tekrar eden bir düz
 - Raporla: Yapılan değişikliklere ait sonuçlar raporlanır ve güncel durum analiz edilir. Bu aşama görev panosunun da güncellenmesi gereken dilimdir. Yapılan son çalışmalara istinaden borçlanmanın genel durumu şeffaf bir şekilde yenilenmeli ve tüm paydaşlara sunulmalıdır. Üstte belirttiğimiz skor kartının bu aşamada yeniden hesaplanması yerinde bir ölçüm olacaktır.
 - Kontrol Et: Burası geri dönülmez kontrol noktası olarak düşünülebilir. Devam etmekte olan geliştirmeler ve önceden var olan kodların yarattığı teknik borçlar törpülense de terk ediş noktası olarak belirlenen hedefin uzağında kalmış olabiliriz. Dolayısıyla döngünün bu safhasında var olan uygulamanın artık yenisi ile değiştirilmesi gerekliliği kararı verilebilir. Diğer yandan göstergeler pozitif anlamda belirlenen bir noktanın üzerindeyse köklü mimari dönüşümler için hazırlıklara başlanması düşünülebilir. Örneğin mikro servis mimari için domain bazlı parçalamalar için gerekli alt yapı hazırlıkları IT4IT işleri kapsamında bitmiş olabilir…
 
-![image.axd](images/image.axd)
+![techdebt_10.png](images/techdebt_10.png)
 
 Burada bahsi geçen sistem genel konsept olarak teknik borç yükü altındaki birçok uygulamaya uyarlanabilir. Hatta siz bile kendi TDLM sürecinizi tasarlayıp çeşitli araçlarla donatabilirsiniz. Önemli olan teknik borçla mücadelenin iş birimi, bilişim personeli ve paydaşlar tarafından anlaşılmış, kabul edilmiş olması ve bu çerçevede karar verilen bir strateji ile belli bir metodoloji altında icra edilmesidir. TDLM gibi bir yaşam döngüsü sürekli tekrar eden bir kültür sağlar. Bu kültürün devamlılığının sağlanması da başlı başına bir konudur.
 
@@ -202,7 +202,7 @@ Burada bahsi geçen sistem genel konsept olarak teknik borç yükü altındaki b
 
 Daha önceden de belirttiğim üzere bazı legacy sistemleri bir sonraki seviyeye geçirmeden önce modernize etmek ya da anlamaya çalışmak önemlidir. Bu amaçla yapılan IT4IT işlerinde genellikle neler yapılacağı maddeler halinde ortaya konur ve bir komite eşliğinde veya farklı bir strateji ile ilgililere dağıtılarak icra edilmeye çalışılır. Ancak gözden kaçan bir nokta vardır; Bir IT4IT işinin ne işe yaradığı çoğu zaman açık ve anlaşılır olsa da ürünün sonraki kademesinde hangi alanın ihtiyacını karşılayacağı ya da devam eden dönemlerdeki hangi IT4IT işini tetikleyeceği bilinmez. Bu yüzden modernizasyon için de bir yol haritası oluşturmak yararlı olabilir. Kabaca aşağıdaki haritanın çok daha büyük ve kapsamlı bir versiyonunu kullanabiliriz.
 
-![image.axd](images/image.axd)
+![techdebt_11.png](images/techdebt_11.png)
 
 Bu sayede yapılan işin neyi tetikleyeceği ve hedef seviyede hangi alana işaret edeceği net bir şekilde modernizasyona dahil olan tüm paydaşlar tarafından anlaşılır hale gelecektir.
 

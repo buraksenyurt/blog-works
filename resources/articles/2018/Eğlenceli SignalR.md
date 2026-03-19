@@ -1,4 +1,4 @@
----
+﻿---
 title: "Eğlenceli SignalR"
 pubDate: 2018-10-31 21:30:00
 categories:
@@ -18,7 +18,7 @@ tags:
 ---
 
 # Eğlenceli SignalR
-![image.axd](images/image.axd)
+![funnys_0.jpg](images/funnys_0.jpg)
 
 Merhaba Arkadaşlar,
 
@@ -330,19 +330,19 @@ dotnet run
 
 komutları ile başlatmalıyız. Publisher belirli aralıklarla rastgele bilgi basacak. Sunucu uygulamanın çalışmasına ait örnek ekran görüntüsü aşağıdaki gibi.
 
-![image.axd](images/image.axd)
+![funnyS_1.gif](images/funnyS_1.gif)
 
 Publisher uygulamasına ait bir ekran görüntüsü de şu. Görüldüğü üzere Console'a düşen bilgilerden rastgele üretilen verileri izleyebiliriz.
 
-![image.axd](images/image.axd)
+![funnys_2.gif](images/funnys_2.gif)
 
 Artık tarayıcıdan http://localhost:7001/index.html adresine gidebiliriz. Grafik sağdan sola doğru gelen değerlere göre akmaya başlayacaktır. Bunu canlı canlı izlemek çok zevkliydi benim için. Hatta video kaydını alıp paylaşmak da istedim ama onu görmek için örneği tamamlamaya gayret etmenizin daha faydalı olabileceğini düşündüm. Sizde görmek istiyorsanız örneği tamamlamalısınız:D Şimdilik iki ekran görüntüsü paylaşarak az biraz heyecan yaratayım.
 
-![image.axd](images/image.axd)
+![funnyS_3.gif](images/funnyS_3.gif)
 
 ve
 
-![image.axd](images/image.axd)
+![funnyS_4.gif](images/funnyS_4.gif)
 
 Örnek daha da zenginleştirilebilir. Grafiği değiştrerek işe başlayabilirsiniz. Servislere ait anlık verilerin gerçekten de takip edilmek istenen servislerden beslenmesine çalışabilirsiniz. Tüm istemcilerin değil de sadece yetki bazlı olanların bu grafiğe ulaşmasını sağlayacak güvenlik tedbirlerini deneyebilirsiniz. Servis durumları yerine IoT cihazınıza bağladığınız bir takım sensör verilerinin bu grafiğe yansımasını da sağlayabilirsiniz;) Neler yapabileceğiniz tamamen sizin hayal gücünüze bağlı.
 

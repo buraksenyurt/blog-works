@@ -1,4 +1,4 @@
----
+﻿---
 title: "Birisi Sana \"Blazor Nedir?\" Diye Sorarsa"
 pubDate: 2021-05-07 22:04:00
 categories:
@@ -39,7 +39,7 @@ tags:
 ---
 
 # Birisi Sana "Blazor Nedir?" Diye Sorarsa
-![image.axd](images/image.axd)
+![whoisblazor_01.jpg](images/whoisblazor_01.jpg)
 
 Yeni bir on yılın arifesini çoktan geçtik ve bu on yıla girmeden önce Microsoft, milenyumun başında da yaptığı üzere önemli ürünlerin altına imzasını attı. Açık kaynak dünyasına hızlı bir girişten sonra yıllardır süregelen Mono projesi daha da anlam kazandı. Artık Silverlight, Windows Phone, Web Forms,.Net Remoting gibi kavramlardan neredeyse hiç söz etmiyoruz. Üstelik bazıları yıllar önce rafa kalktı. Rafa kalkanların, eskiyenlerin bıraktığı tecrübe yeni nesil ürünlerin başarısını artırdı. Unity ile platform bağımsız oyunlar, Xamarin ile macOS ve linux ayırt etmeksizin çalışan kodlar vs derken.Net Core hayatımıza girerek büyük sükse yaptı.
 
@@ -80,7 +80,7 @@ Sevgili yazılım sevdalısı merhaba, Ben Blazor.
 Ama sana sunucu üstünden çalışan klasik bir model de sunuyorum (Blazor Server) Hangisini tercih edersen artık. Ayrıca arkadaşım Xamarin ile hibrid çözümler için de yardımcı olurum. Mobil dünyasını unutmuş değilim. Tarayıcı üstünde çalışan parçalarım için Javascript kullanmana gerek yok. Gerçekten yok! Sadece C# dilini kullanarak istediğin çözümü geliştirebilirsin. Yine de olur ya Javascript paketleri ile konuşman gerekir, o zaman Javascript Interoperability (JS Interop) isimli bir araç da sunuyorum..Net içinden Unmanaged bir kod parçasını (mesela bir Win32 sistem fonksiyonunu) çağırmak gibi bir şey aslında.
 
 > Benimle pek çok türde program geliştirebilirsin. Tetris, Astreoid, Diablo, Flappy Bird gibi oyunlar, içerik yönetim sistemleri (CMS-Content Management System), IoT (Internet of Things) sürücüleri, Electron ile hibrid çözümler, mobil uygulamalar, elektronik ticaret siteleri, ofis programları, kod yazma araçları ve daha neler neler. Daha fazla detay ve örnek kod için [şuradaki repoya uğra](https://github.com/AdrienTorris/awesome-blazor)yabilirsin. Hatta istersen o repodaki uygulamalara kolayca ulaşabileceğin ve yine Blazor ile yazılmış bir tarayıcı da kullanbilirsin ki [ona da şu adresten ulaşabilirsin](https://jsakamoto.github.io/awesome-blazor-browser/).
-> ![image.axd](images/image.axd)
+> ![whoisblazor_07.jpg](images/whoisblazor_07.jpg)
 
 Benim en önemli yapı taşlarımdan birisi de Razor bileşenleri (component). HTML, C# ve CSS üçlemesini kullanabileceğin Razor bileşenleri sayfandaki bir parça, sayfanın kendisi, bir dialog penceresi veya bir form olabilir. MVC ve Razor Pages için tasarladığın bileşenler varsa onları benimle de kullanabilirsin. Şimdilik hazır bileşen setim çok güçlü olmayabilir ama çevreden birçok firmanın bu alanda sunduğu paketler mevcut. Telerik ve DevExpress onlardan sadece ikisi. Bu firmaların Asp.Net ve Windows Form kontrollerini onlarca yıl kullandın. Tecrübelerini biliyorsun. Şimdi sana sunduğum geliştirme modellerimi anlatmak istiyorum.
 
@@ -112,7 +112,7 @@ En güzel haberi baştan söyleyeyim.
 
 Bu modelime ait çalışma şeklini aşağıdaki renkli içerikte bulabilirsin (Fark ettim de Document Object Model'in L harfini unutmuşum. Pardon)
 
-![image.axd](images/image.axd)
+![whoisblazor_02.jpg](images/whoisblazor_02.jpg)
 
 Şimdi sana sunduğum diğer geliştirme modelini anlatayım.
 
@@ -142,13 +142,13 @@ Sana bu modelin birçok iyi özelliğini saydım ama kötü yanları da yok değ
 
 Çevremdeki dostlarım bu modeli genellikle aşağıdaki çizimle hatırlarlar. Pek çok kaynakta tıpkısını göreceksin (Document Object Model'i doğru yazmışım. Enteresan!)
 
-![image.axd](images/image.axd)
+![whoisblazor_03.jpg](images/whoisblazor_03.jpg)
 
 > Blazor WebAssembly ve Server modelleri genellikle performans açısından sıklıkla kıyaslanırlar. Bu konuda [Telerik'ten David Grace'in güncel araştırma yazısı](https://www.telerik.com/blogs/how-blazor-performs-against-other-frameworks)nı okumanı tavsiye ederim.
 
 Gördüğün gibi desteklediğim iki modelin birbirlerine göre avantaj ve dezavantajları var. Duruma göre uygun olan modeli tercih etmek gerekiyor. Ancak bu işe ilk kez başlıyorsan ve Blazor'a merhaba demek istiyorsan kuracağın kulübe katılacak arkadaşlarının herhangi bir zaman diliminde gördükleri bir kitabın fotoğrafını koyup yorumlayabildikleri, puan verebildiği bir sistemi aşağıdaki topolojiye göre oluşturmayı deneyebilirsin.
 
-![image.axd](images/image.axd)
+![whoisblazor_05.jpg](images/whoisblazor_05.jpg)
 
 Büyük resme baktığında şunları anlaman önemli. Çözümde her iki Blazor modeli de kullanılıyor. İstemci tarafında çevrimdışı olarak çalışabilen bir uygulaman var. Okumakta olduğun kitabın fotoğrafını çekebilir, hakkında bir şeyler yazabilir ve çevrimiçi olduğunda da Web API üstünden HTTP Post komutu ile bu bilgileri Backend uygulamasına gönderebilirsin. Backend tarafı bunu alıp istediğin Repository ortamında kalıcı olarak saklayacaktır. Entity Framework kullanırsan Repository bağımsız hareket etme şansın da var ama mecburi değilsin. İlişkisel bir veritabanı modeli seçebileceğin gibi NoSQL nimetlerinden yararlanabilirsin. Yorgun argın eve geldikten sonra da istersen bilgisayarındaki tarayıcıdan Web uygulamasını açar, arkadaşlarının eklediği kitapları Web API'den HTTP Get ile çekersin. Yapacağın veri odaklı güncellemeleri de HTTP Put ile yollayabilirsin. Hatta sen sayfada gezindiğin sırada bir arkadaşın Web Assembly uygulaması üstünden yeni bir kitap bilgisi eklerse SignalR mekanizması bu değişikliği Web üstünden bağlı tüm istemcilere de göndereceği için sen de değişiklikten anında haberdar olabileceksin. Ya da tam tersi sen sayfada gezindiğin sırada bir kitabın bilgisini değişitirirsen bu değişiklikten de diğer bağlı istemciler anında haberdar olacak. Gördüğün üzere SignalR sadece chat, anlık borsa veya stok hareketlerini takip etmek için kullanılan bir yapı değil.
 
@@ -156,7 +156,7 @@ Büyük resme baktığında şunları anlaman önemli. Çözümde her iki Blazor
 
 Bu arada aklıma gelen birkaç noktayı daha ifade etmek istiyorum. Ben MVC (Model View Controller), MVP (Model View Presenter) ve MVVM (Model View ViewModel) kalıplarından farklı olarak genelde Vertical Slices Architecture yaklaşımını kullanmanı öneriyorum. Yani kodunu fonksiyonlara göre gruplamaktan ziyade, özellik (Feature) bazlı gruplamanı öneriyorum. Yanlış anlama, onları kullanamazsın demiyorum ancak bildiğin üzere ben bileşenleri (Components) etkin kullanan SPA modelini öncelikli olarak benimsiyorum. Bileşen odaklı bu sade yaklaşımım nedeniyle Vertical Slice Architecture'ın aşağıdaki kurgusu kullanmak için çok ideal. Her kutunun bir bileşen olduğuna dikkat et lütfen.
 
-![image.axd](images/image.axd)
+![whoisblazor_06.jpg](images/whoisblazor_06.jpg)
 
 ## Sonuç Olarak
 

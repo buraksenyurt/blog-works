@@ -1,4 +1,4 @@
----
+﻿---
 title: "Blazor ile Hello World Uygulaması Geliştirmek"
 pubDate: 2019-06-07 11:00:00
 categories:
@@ -24,7 +24,7 @@ tags:
 ---
 
 # Blazor ile Hello World Uygulaması Geliştirmek
-![image.axd](images/image.axd)
+![gulelim.png](images/gulelim.png)
 
 Oturduğunuz yerden göründüğü gibi çok karikatür okuyan biri değilimdir. Ama bazen kendimi sevgili Yiğit Özgür'ün kaleminden çıkan bir Huni Kafa karakteri gibi hissettiğim olur. Bir sebepten ne olduğunu tam olarak anlayamadığım konular üzerinde debelenir dururum. O kaynaktan bu kaynağa geçerken de kaybolurum. Lakin her zaman elle tutulur bir şeylere ulaşma şansı da bulurum.
 
@@ -79,7 +79,7 @@ Oluşturulan ilk örneği didiklemekte fayda var. Index, Counter ve FetchData (D
 
 ki çalışma zamanı çıktısı aşağıdakine benzerdi.
 
-![image.axd](images/image.axd)
+![05_19_cover_1.png](images/05_19_cover_1.png)
 
 Arayüz mutlaka dikkatinizi çekmiştir. Hoş bir tasarımı var. En azından benim için öyle. Blazor proje şablonuna göre CSS tarafı için bootstrap hazır olarak geliyor. Sol taraftaki navigation menu'yü kurcalamak istersek, Shared klasöründeki NavMenu.cshtml ile oynamak yeterli ki örneğin son kısmında burayı değiştirmiş olacağız. Her şeyin giriş noktası olan index.html sayfasında blazor.webassembly.js isimli javascript dosyası için bir referans bulunuyor.
 
@@ -275,15 +275,15 @@ dotnet run
 
 Örnek olarak bir iki kitap girip sonuçları inceleyebiliriz. Ben aşağıdakine benzer bir ekran görüntüsü yakalamışım.
 
-![image.axd](images/image.axd)
+![05_19_cover_2.png](images/05_19_cover_2.png)
 
 Çalışma zamanını incelerken F12 ile debug moda geçmekte yarar var. Söz gelimi booklist üzerinde çalışırken kitap ekleme ve listeleme gibi operasyonların gerçekleştirilmesine karşılık oluşan HTML kaynağı aşağıdaki gibidir. Standart üretilen HTML çıktılarından biraz farklı değil mi? MVC'de, eski nesil Server Side Web Forms'larda veya saf HTML ile yazdıklarımızda üretilen içerikleri düşünelim. Bir takım elementleri source üzerinde göremiyoruz gibi. Yine de sayfamız kanlı canlı bir şeyler yürütüyor. Derlenmiş bir uygulamanın tarayıcıda koştuğunu ifade edebiliriz.
 
-![image.axd](images/image.axd)
+![05_19_cover_3.png](images/05_19_cover_3.png)
 
 Built-In HttpClient servisini enjekte ettiğimiz dünya nüfus verileri sayfası ise şöyle görünecektir (Ekranı daraltmamıza rağmen UX deneyiminin bozulmadığını görmüşsünüzdür)
 
-![image.axd](images/image.axd)
+![cover_4.png](images/cover_4.png)
 
 ## Ürünün Paketlenmesi
 

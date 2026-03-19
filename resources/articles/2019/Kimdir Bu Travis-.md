@@ -1,4 +1,4 @@
----
+﻿---
 title: "Kimdir Bu Travis?"
 pubDate: 2019-04-29 07:24:00
 categories:
@@ -13,7 +13,7 @@ tags:
 ---
 
 # Kimdir Bu Travis?
-![image.axd](images/image.axd)
+![Travis.jpg](images/Travis.jpg)
 
 Geçen gün çalışma odamın artık ardiye haline gelmiş bir dolabını temizlemek üzere kolları sıvadım. Sayısız network kablosu, yazılabilir DVDler, müsvette notlar, bir kaç müzik CDsi, yüksek lisanstan kalma ders kitapları, kulaklıkları kayıp walkman, bataryası şişmiş Playstation Portable ve daha bir çok ıvır zıvır eşyayla doluydu. Hangileri gerekli hangileri gereksiz diye ayıklarken dönem dönem sebebsiz yere aldığım MP3 çalarlara denk geldim. Kocaman bir discman bile vardı. Ancak gözüm arkalarda köşeye sıkışmış 1 TBlık Harddisk'e takıldı. Zamanında E-book'lar, filmler ve müzikler için kullandığım bir disk olduğunu hayal mayal hatırlıyordum.
 
@@ -38,15 +38,15 @@ CI/CD hattını tesis ederken kullanılabilecek bir çok yardımcı ürün bulun
 
 Öncelikle [Travis'in ilgili sayfasına gidip](https://travis-ci.com) Github hesabımız ile kayıt olmamız gerekiyor. Sonrasında Acivate düğmesine basarak ilerliyoruz.
 
-![image.axd](images/image.axd)
+![04_39_credit_1.png](images/04_39_credit_1.png)
 
 İzleyen adımda CI sürecine dahil etmek istediğimiz Github projesini seçiyoruz. Ben örnek için hello-travis isimli bir repo oluşturdum (Bu arada Travis'in yer yer çıkan logo'ları gerçekten çok tatlı)
 
-![image.axd](images/image.axd)
+![04_39_credit_2.png](images/04_39_credit_2.png)
 
 Artık Travis ile Github projemiz birbirlerine bağlanmış durumdalar. Bunu Travis tarafındaki Repositories sekmesinden görebiliriz.
 
-![image.axd](images/image.axd)
+![04_39_credit_3.png](images/04_39_credit_3.png)
 
 ## Projenin Geliştirilmesi
 
@@ -78,7 +78,7 @@ touch .travis.yml
 
 Öncelikle klonlanan klasörde bir Solution oluşturuyoruz. İsim vermediğimiz için hello-travis isimli bir solution dosyası üretilecektir. Ardından MathService isimli bir sınıf kütüphanesi üretiyor ve Class1.cs dosyasının adını Common.cs olarak değiştiriyoruz. Projeyi, solution içeriğine de ekledikten sonra bu kez MathService.Tests isimli xUnit tipinden bir test projesi oluşturuyoruz. Bu projeye MathService kütüphanesini referans edip son olarak test projesini solution'a bildiriyoruz. En son adımda dikkat edeceğiniz üzere.travis.yml isimli yaml dosyasını oluşturmaktayız.
 
-![image.axd](images/image.axd)
+![04_39_credit_4.png](images/04_39_credit_4.png)
 
 Kodları aşağıdaki gibi geliştirebiliriz.
 
@@ -166,7 +166,7 @@ Dosya içerisinde Travis'in çalışma zamanı ortamı için bir takım bilgiler
 dotnet test
 ```
 
-![image.axd](images/image.axd)
+![04_39_credit_5.png](images/04_39_credit_5.png)
 
 Hal böyleyken kodları commit edip github sunucusuna push ile gönderdim.
 
@@ -179,15 +179,15 @@ git push
 
 Travis'e gittiğimde otomatik bir Build işleminin başladığını fark ettim.
 
-![image.axd](images/image.axd)
+![04_39_credit_6.png](images/04_39_credit_6.png)
 
 Bir süre sonra Fail eden test nedeniyle Build işlemi de hatalı olarak sonlandı (Bu zaten istediğimiz ve beklediğimiz durum)
 
-![image.axd](images/image.axd)
+![04_39_credit_7.png](images/04_39_credit_7.png)
 
 Log raporu sonuçları da aşağıdaki gibi oluştu.
 
-![image.axd](images/image.axd)
+![04_39_credit_8.png](images/04_39_credit_8.png)
 
 Sonrasında hata alan test kodunu düzelterek ilerledim.
 
@@ -213,15 +213,15 @@ namespace MathService
 
 Westworld üzerinde dotnet test terminal komutu ile testlerin tamamının (sadece iki test var:P) başarılı olup olmadığını kontrol ettim. Ardından kodu commit edip tekrardan github'a push'ladım. Travis kısa süre içinde otomatik olarak yeni bir build işlemi başlattı. Bu sefer beklediğim gibi testler başarılı olduğundan build sonucu Passed olarak işaretlendi. İşte çalışma zamanına ait ekran görüntüleri.
 
-![image.axd](images/image.axd)
+![04_39_credit_9.png](images/04_39_credit_9.png)
 
-![image.axd](images/image.axd)
+![04_39_credit_10.png](images/04_39_credit_10.png)
 
-![image.axd](images/image.axd)
+![04_39_credit_11.png](images/04_39_credit_11.png)
 
 Dikkat edileceği üzere tüm build işlemlerinin tarihçesini de görebiliyoruz. Bu tip loglar bizim için oldukça önemli.
 
-![image.axd](images/image.axd)
+![04_39_credit_12.png](images/04_39_credit_12.png)
 
 ## Ben Neler Öğrendim
 

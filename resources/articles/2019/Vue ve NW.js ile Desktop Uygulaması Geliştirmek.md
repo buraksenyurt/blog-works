@@ -1,4 +1,4 @@
----
+﻿---
 title: "Vue ve NW.js ile Desktop Uygulaması Geliştirmek"
 pubDate: 2019-06-14 13:00:00
 categories:
@@ -20,7 +20,7 @@ tags:
 ---
 
 # Vue ve NW.js ile Desktop Uygulaması Geliştirmek
-![image.axd](images/image.axd)
+![perfectstr.png](images/perfectstr.png)
 
 Geçen gün fark ettim ki yaş ilerleyince blogumdaki yazıların girişinde kullanabileceğim malzeme sayısı da artmış. Söz gelimi şu anda lise son yıllarıma yani seksenlerin sonu doksanların başına doğru gitmiş durumdayım. O dönemlerde kısa Amerikan dizileri popüler. Hatta Arjantin menşeeli diziler de çok yaygın. Sanıyorum Mariana isimli popüler bir dizi vardı. Kısa boylu, siyah kıvırcık saçlı, buğday tenli ve hayatı acılar içinde geçen bir Latin kadının hikayesiydi. Lakin ben hayatı toz pembe görmemize vesile olan komedileri tercih ediyordum. Hatta en çok sevdiğim komedi dizisi [Perfect Strangers](https://www.imdb.com/title/tt0090501/?ref_=nv_sr_2?ref_=nv_sr_2)'dı.
 
@@ -293,7 +293,7 @@ npm run desktop
 
 Eğer bir sorun olmazsa uygulama ayağa kalktıktan sonra Big Bang Theory'den örnek bir bölümü aratabiliriz. Ben aşağıdaki gibi bir sonuca ulaşmışım.
 
-![image.axd](images/image.axd)
+![05_16_cover_1.png](images/05_16_cover_1.png)
 
 ## Paketleme
 
@@ -311,11 +311,11 @@ Dikkat edileceği üzere nw paketinin hangi versiyonunu kullanacağımızı beli
 ./node_modules/.bin/build --tasks linux-x64 .
 ```
 
-![image.axd](images/image.axd)
+![05_16_cover_2.png](images/05_16_cover_2.png)
 
 Paket boyutu oldukça yüksek görüldüğü üzere! Zaten cross-platform masaüstü uygulamaları için en rahatsız edici konuların başında da dosya boyutları geliyor. Ancak küçültmek için çeşitli yollar olduğu ifade edilmekte. Bunu henüz araştırma fırsatım olmadı ancak [yakın tarihli şu yazıda bir takım bilgiler](https://dev.to/thejaredwilcurt/reducing-app-distribution-size-in-nwjs-3d5f) mevcut.
 
-![image.axd](images/image.axd)
+![05_16_cover_3.png](images/05_16_cover_3.png)
 
 ## Ben Neler Öğrendim?
 

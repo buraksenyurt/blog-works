@@ -1,4 +1,4 @@
----
+﻿---
 title: "Matematik ve Oyun Programlama - Missile Command - Bölüm 2"
 pubDate: 2022-11-25 12:15:00
 categories:
@@ -15,7 +15,7 @@ Bir önceki programımızda Atari'nin efsane oyunlardan Missile Command'in arkas
 
 İşte tüm bu bahsettiklerimizin arkasında matematiğin ve özellikle lineer cebirin temel enstrümanları bulunuyor. Önceki programda olduğu gibi bu yayında da vektörlerden, birim vektörden, vektörler arası açı hesaplamasından, kosinüs ve sinüs fonksiyonları ile pisagor teoreminden yararlanıyoruz. Kabaca aşağıdaki şekilde görülen bir karmaşayı dilim döndüğünce anlatmaya çalışıyorum diyebilirim:)
 
-![image.axd](images/image.axd)
+![miscmd2.png](images/miscmd2.png)
 
 Konu ile ilgili örneği Rust programlama dilini kullanarak geliştiriyorum. [Github hesabımdan ilgili kaynak kodlara ulaşabilirsiniz](https://github.com/buraksenyurt/game-dev-with-rust/tree/main/missile-commander). Oyun motoru olarak hafifsiklet olanlardan [Macroquad](https://macroquad.rs/examples/)'ı tercih ettim. Bu arada ders çekimi sırasında birkaç kez dilim sürçtü ama kusurlarıyla birlikte yararlı bir anlatım oldu diye düşünüyorum.
 

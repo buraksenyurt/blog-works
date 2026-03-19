@@ -1,4 +1,4 @@
----
+﻿---
 title: "Spring Boot ile PostgreSQL Kullanan Basit Bir Web Uygulaması Geliştirmek"
 pubDate: 2020-10-19 07:20:00
 categories:
@@ -21,7 +21,7 @@ tags:
 ---
 
 # Spring Boot ile PostgreSQL Kullanan Basit Bir Web Uygulaması Geliştirmek
-![image.axd](images/image.axd)
+![category.png](images/category.png)
 
 Spring Boot maceralarımız hız kesmeden devam ediyor. Bu sefer PostgreSQL veritabanını kullanan bir Web uygulamasını resmi dokümandan da yararlanarak geliştirmeye çalışacağız. Örneğimizde veritabanı olarak PostgreSQL kullanabiliriz. Her zaman olduğu gibi sisteme kurmamız şart değil. Pekala Docker imajından yararlanabiliriz. Kurgumuz basit bir MVC düzeneği olacak. Statik bir web sayfası dışında listeleme ve yeni kategori ekleme adımlarında şablonlardan (templates) faydalanacağız. Kategorileri ifade eden bir POJO sınıfımız olacak. PostgreSQL bağımlılığı kapsamında temel CRUD operasyonlarının tamamı Spring Boot'e ekleyeceğimiz bağımlılık sayesinde zaten hazır gelecek. Bunu kategori türüne uygulamak içinse generic bir Repository arayüzünden türetme yoluna gideceğiz.
 
@@ -39,7 +39,7 @@ Create Database qworld;
 
 Veritabanı tarafı hazır. Sırada uygulamanın inşası var. İlk iş olarak [Spring Initializr](https://start.spring.io/) adresine gidip POM içeriğini ve uygulamayı hazırlamak lazım. Veritabanı kullanımı için PostgreSQL Driver, temel web uygulaması kabiliyetleri için Spring Web, MVC şablonlarını kullanabilmek için Thymeleaf (ki bunu bir türlü telaffuz edemiyorum), Object Relational Map aracı Hibernate içinse Spring Data JPA kütüphanelerini yüklüyoruz.
 
-![image.axd](images/image.axd)
+![skynet_31_Screenshot_01.png](images/skynet_31_Screenshot_01.png)
 
 Arabirimin ürettiği uygulamayı sisteme indirdikten sonra aşağıdaki adımları takip ederek senaryomuz için gerekli kod dosyalarını oluşturabiliriz.
 
@@ -381,19 +381,19 @@ Peki tabii arabirim çok ilkel. Bootstrap veya muadili yapıları kullanarak gö
 
 İşte Index sayfamız,
 
-![image.axd](images/image.axd)
+![skynet_31_Screenshot_02.png](images/skynet_31_Screenshot_02.png)
 
 ve kategorilere gittiğimizde göreceğimiz sayfa.
 
-![image.axd](images/image.axd)
+![skynet_31_Screenshot_03.png](images/skynet_31_Screenshot_03.png)
 
 Yeni kategori ekleme sayfası ise aşağıdaki gibi görünecektir.
 
-![image.axd](images/image.axd)
+![skynet_31_Screenshot_04.png](images/skynet_31_Screenshot_04.png)
 
 Son olarak yeni eklenen kategorinin listeye geldiğini gördüğümüzden emin olalım.
 
-![image.axd](images/image.axd)
+![skynet_31_Screenshot_05.png](images/skynet_31_Screenshot_05.png)
 
 Yanlış bir kategori mi eklediniz? Var olanı silmek mi istiyorsunuz? Vay halinize:D Benim üşenip de yazmadığım bu action'lar size bir görev olsun. Kodları incelerken şu sorulara cevap bulmaya çalışırsanız konuyu daha da pekiştirebilirsiniz. En azından benim aklıma gelenler bunlar.
 

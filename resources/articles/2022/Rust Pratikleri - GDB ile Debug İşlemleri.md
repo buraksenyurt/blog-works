@@ -1,4 +1,4 @@
----
+﻿---
 title: "Rust Pratikleri - GDB ile Debug İşlemleri"
 pubDate: 2022-02-27 09:00:00
 categories:
@@ -16,7 +16,7 @@ tags:
 ---
 
 # Rust Pratikleri - GDB ile Debug İşlemleri
-![image.axd](images/image.axd)
+![gdb.png](images/gdb.png)
 
 Rust dilinin en güçlü olduğu yer etkili bellek yönetimi ve olası kaosların önüne herhangi bir garbage collector veya başka bir unsura ihtiyaç duymadan geçebilecek kural setleri barındırmasıdır. Özellikle Memory Leak, Double Free, Data Race gibi C, C++ dillerinde sıklıkla rastlanan durumların oluşmaması için basit kurallar barındırır. Bu kurallar ilk başlarda rust öğrenenleri epey zorlar fakat bir kez alışılınca her şey çok daha net ve berrak hale gelir. Bellek yönetimi denilince içeride neler oluyor bitiyor görmek de önemlidir. Fonksiyonlar birer kapsam olarak Stack'e yığılır, çeşitli veri türleri (String gibi) heap'e açılıp pointer alır, kapsamlar sonlandığında bir şeyler olur vs
 
@@ -31,7 +31,7 @@ gdb --version
 
 Eğer her şey yolunda giderse aşağıdaki gibi versiyon numarasını görebilmeliyiz.
 
-![image.axd](images/image.axd)
+![debugging_1.png](images/debugging_1.png)
 
 Gelelim örnek kodlara. Debugger kullanımını basit seviyede deneyimlemek için bir rust projesi oluşturup ilerleyelim.
 
@@ -130,11 +130,11 @@ q
 
 Tabii bu komutları denerken ekran görüntüsü aşağıya doğru uzayıp gidebilir:) Neyse ki sağdaki dikey monitör bana epeyce yardımcı oldu. Yine de sonuçları iki parça halinde paylaşacağım. İlk kısımda gdb aracını başlatıp kodun içeriğini gösteriyoruz. Bu arada binary dosyanın olduğu klasöre gittiğimize dikkat edelim.
 
-![image.axd](images/image.axd)
+![debugging_2.png](images/debugging_2.png)
 
 Devam eden kısımda ise kalan komutların verdiği sonuçlarını görmekteyiz.
 
-![image.axd](images/image.axd)
+![debugging_3.png](images/debugging_3.png)
 
 Bu kısmı yorumlamak oldukça önemli. Kodumuzdaki fonksiyonlar Player verisini referans olarak ödünç alıp kullanmaktalar. Bu nedenle girdiğimiz fonksiyonlarda birer pointer görmekteyiz. Pointer adresi ve hatta kullandığı String değişkeninki değişmiyor elbette. Dikkat çekici bir diğer nokta da fonksiyonlara parametre olarak gelen Player nesnesinin işaret ettiği veri yapısı. Dikkat edileceği üzere String olarak tasarladığımız name değişkeni String veri yapısının tasarımı gereği heap bölgesindeki içeriği işaret etmekte. Diğer yandan String türünün kendisi esasında bir Smart Pointer'dır. Yani scope dışına çıkıldığı anda otomatik olarak heap içeriği deallocate edilir. GDB aracını kullanarak özellikle Smart Pointer gibi enstrümanların işleyişini anlamak çok daha kolaydır. Bunun için örneğimize aşağıdaki fonksiyonu eklediğimizi düşünelim.
 
@@ -191,6 +191,6 @@ x /d 0x5555555a5af0
 
 Çalışma zamanı sonuçları aşağıdaki gibidir.
 
-![image.axd](images/image.axd)
+![debugging_4.png](images/debugging_4.png)
 
 Dikkat edileceği üzere fonksiyon dışına çıkıldığında ilgili adres değeri 0 olarak elde edilmiştir. Smart Pointer'ın çalıştığının bir nevi ispatı olarak düşünebiliriz. Tabii büyük projelerde ve kalabalık kod parçalarında GDB ile debug işlemleri çok kolay olmayabilir. Hatta sağlıklı loglar daha çok işe yarayabilir. Yine de iç dinamikleri öğrenme aşamasındayken bu debugger'ı kullanmak bence oldukça önemli. Böylece geldik Rust Pratiklerinde bir bölümün daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

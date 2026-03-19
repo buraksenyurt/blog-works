@@ -1,4 +1,4 @@
----
+﻿---
 title: "Microsoft Custom Vision Servisini Python ile Kullanmak"
 pubDate: 2019-08-23 13:00:00
 categories:
@@ -13,7 +13,7 @@ tags:
 ---
 
 # Microsoft Custom Vision Servisini Python ile Kullanmak
-![image.axd](images/image.axd)
+![asset_12.png](images/asset_12.png)
 
 Yandaki resme baktığınızda aklınıza gelen ilk şey nedir? Bir surat? Belki de bir kurbağa. Kedi olabilir mi? Bu mürekkep baskısı gösterildiği kişide yarattığı algıyı anlamak için kullanılan Rorschach (Roşa olarak okunuyormuş) isimli psikolojik testten. Ünlü İsviçreli psikiyatrist Hermann Rorschach (1884-1922) tarafından geliştirilen test özellikle kişilik tahlili ve şizofreni vakalarında kullanılmakta. Sonuçların manipule edilmesinin zorluğu nedeniyle adli vakalarda ve hatta kariyerle ilgili kişilik testlerinde bile ele alınmakta. Hermann yandakine benzer kırk mürekkep baskısı tasarlamış. Kaynaklardan öğrendiğim kadarıyla doktorlar bu setteki kartların neredeyse yarısını kullanıp kişinin o anda nevrotik veya psikotik olup olmadığını anlayabiliyormuş. Tabi konunun uzmanı olmadığım için ancak giriş hikayemde kullanabilecek kadar bilgi aktarabiliyorum.
 
@@ -35,7 +35,7 @@ pip install azure-cognitiveservices-vision-customvision
 
 Diğer pek çok 3ncü parti serviste olduğu gibi istemci tarafının ilgisi servisi kullanmasını sağlayacak bir ehliyete (Credentials) sahip olması gerekiyor. Bu nedenle servis için abone olmamız ve uygulama anahtarını almamız lazım. İlk olarak [şu adrese gidip login olmalıyız](https://www.customvision.ai/). Ardından Create new project sekmesini kullanarak yeni bir proje oluşturmalıyız. Ben buradaki ayarları varsayılan değerlerinde bırakıp CIA çakması bir proje oluşturdum. Buna göre projemiz sınıflandırma görevini üstleniyor. Sınıflandırılmaya tabi olan tipler birden fazla takıyla işaretlenebilir. Özel bir domain belirtmedik ama ihtiyaca göre bu seçenek general haricindekilerden birisi de olabilir.
 
-![image.axd](images/image.axd)
+![08_credit_1.png](images/08_credit_1.png)
 
 Proje oluşturulduktan sonra özelliklerine ulaşıp bizim için üretilen Training Key ve Prediction Key değerlerini almamız gerekiyor. Bu bilgiler istemci tarafı için gerekli.
 
@@ -195,15 +195,15 @@ python pgadget.py
 
 Local makinedeki sonuçlar şöyle olacaktır.
 
-![image.axd](images/image.axd)
+![08_credit_3.png](images/08_credit_3.png)
 
 Azure projesine gidersek de aşağıdaki sınıflandırmalarla karşılaşırız.
 
-![image.axd](images/image.axd)
+![08_credit_4.png](images/08_credit_4.png)
 
 Görüldüğü üzere fiziki depolama alanından seçilen fotoğraflar ilgili Azure projesine yüklendiler ve hatta iki kategori ile de tag bazında ilişkilendirildiler. Bu haliyle proje özetine baktığımızda şu sonuçları görürüz.
 
-![image.axd](images/image.axd)
+![08_credit_9.png](images/08_credit_9.png)
 
 Artık servisimize bir fotoğraf gönderip ne olduğunu tahmin etmesini isteyebiliriz. Bu çok basit anlamda Postman gibi bir araçla da olabilir, tercih ettiğimiz programlama diliylede.
 
@@ -211,19 +211,19 @@ Artık servisimize bir fotoğraf gönderip ne olduğunu tahmin etmesini isteyebi
 
 Oluşturduğumuz eğitmeni test etmek için bize açılan prediction API servisini kullanmak ve Postman üzerinden basit bir POST talebi göndermek yeterlidir (Kendi örneğinizle ilgili servise ait adres bilgisini site ayarlarından bulabilirsiniz)
 
-![image.axd](images/image.axd)
+![08_credit_5.png](images/08_credit_5.png)
 
 Postman ayarlarında Header kısmında ki bilgileri de aşağıdaki gibi doldurmalıyız. Sonuçta ehliyetimizi göstermemiz gerekiyor. Bu nedenle Prediction-Key değerini girmemiz şart.
 
-![image.axd](images/image.axd)
+![08_credit_7.png](images/08_credit_7.png)
 
 Ben WestWorld'de bulunan bir imajı deneme amaçlı olarak göndermek istediğimden Body kısmında Binary seçeneğini kullandım.
 
-![image.axd](images/image.axd)
+![08_credit_8.png](images/08_credit_8.png)
 
 Deneme olarak kullandığım fotoğraf ise şuydu. Hani şimdilerde almaya kalksak bir yıl öncesine göre neredeyse iki katından fazla para vermek zorunda olduğumuz bir kutu ne yazık ki:(
 
-![image.axd](images/image.axd)
+![credit_6.jpg](images/credit_6.jpg)
 
 Tahminleme servisim bu fotoğraf için aşağıdaki sonuçları verdi. %99 ihtimalle Lego City olduğunu ifade ediyor. Oldukça başarılı;)
 
@@ -260,7 +260,7 @@ python client.py
 
 Test klasöründeki imajlar için aşağıdaki sonuçlar elde edildi.
 
-![image.axd](images/image.axd)
+![08_credit_10.png](images/08_credit_10.png)
 
 Einstein ve havadaki uçak için çok başarılı tahminlemeler yapılmadığını görebiliriz. Bunun sebebi eğitmeni sadece 10 imajla yetiştirmiş olmamızdır. Yani görüp gördüğü ve yorumladığı küme çok sığ. Örnek kümeyi ve tag yapısını ne kadar geniş tutarsak tahminleme oranlarında o kadar isabetli sonuçlar elde ederiz. Bunu sanırım üçüncü kez söyledim:S
 

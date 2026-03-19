@@ -1,4 +1,4 @@
----
+﻿---
 title: "Python Tarafında ProtoBuf (Protocol Buffers) Serileştirme"
 pubDate: 2020-01-14 21:00:00
 categories:
@@ -18,7 +18,7 @@ tags:
 ---
 
 # Python Tarafında ProtoBuf (Protocol Buffers) Serileştirme
-![image.axd](images/image.axd)
+![protobuf2.png](images/protobuf2.png)
 
 Protocol Buffer, Google'ın yapısal verileri (structured data) serileştirmek için geliştirdiği bir protokol (Hatta gRPC ile sıklıkla anılır) Onu XML (eXtensible Markup Language) benzeri bir veri tanımlama formatı olarak düşünebiliriz ama çok daha az yer tutar ve serileştirme süresi çift yönlü olarak daha kısadır. Şu sıkça gördüğümüz proto uzantılı dosyaların ana fikridir.
 
@@ -131,7 +131,7 @@ Yazdığımız örneği aşağıdaki terminal komutu ile çalıştırabilir ve s
 python3 app.py
 ```
 
-![image.axd](images/image.axd)
+![skynet_10_Screenshot_1.png](images/skynet_10_Screenshot_1.png)
 
 Esasında örnekte protobuf olarak tasarlanmış bir nesnenin python ile serileştirme işlemlerinde nasıl kullanıldığını incelemiş olduk. Gerçek hayat örneği için bu kurguyu bir servisin arkasına taşımak çok daha doğru olur. Örneğin Flask ile bir servis geliştirip istemci ile haberleşilen veriler için JSON yerine protobuf kullanımı örneklenebilir. Bu pekala sizin için güzel bir ödev de olabilir:) O halde ne duruyorsunuz!? Haydi başlayın.
 

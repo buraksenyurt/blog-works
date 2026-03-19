@@ -1,4 +1,4 @@
----
+﻿---
 title: "Google Cloud Storage Kullanımı"
 pubDate: 2018-05-08 07:23:00
 categories:
@@ -21,7 +21,7 @@ tags:
 ---
 
 # Google Cloud Storage Kullanımı
-![image.axd](images/image.axd)
+![gcpstorage_1.gif](images/gcpstorage_1.gif)
 
 Merhaba Arkadaşlar,
 
@@ -53,15 +53,15 @@ gsutil rm gs://article-images-bucket/legom.jpg
 gsutil rm -r gs://article-images-bucket
 ```
 
-![image.axd](images/image.axd)
+![gcpstorage_4.gif](images/gcpstorage_4.gif)
 
 mb komutu ile Storage üzerinde article-images-bucket isimli bir bucket oluşturuyoruz. Bu işlem sonrasında Google kontrol paneline gittiğimde bucket örneğinin oluşturulduğunu da gördüm (Sevindirdi)
 
-![image.axd](images/image.axd)
+![gcstorage_2.gif](images/gcstorage_2.gif)
 
 cp parametresini kullanarak bir bucket'a dosya yüklememiz de mümkün. Ben legom.jpg dosyasını yükledim (farklı dosya tiplerinden içerikler de kullanılabilir) Sonuç aşağıdaki resimde görüldüğü gibiydi.
 
-![image.axd](images/image.axd)
+![gcpstorage_3.gif](images/gcpstorage_3.gif)
 
 ls parametresi ile bucket içerisindeki dosyaları görmek mümkün. Eğer bu dosyaların detay bilgisine ulaşmak istiyorsak bu durumda -l anahtarını kullanmak gerekiyor. acl kullanılan kısımda internetteki tüm kullancıların legom.jpg dosyasını okuyabileceğini belirtiyoruz. Bir nevi Access Control List için AllUsers rolüne Read hakkı verdiğimizi ifade edebiliriz. Burada belirli kullanıcılara çeşitli haklar vermemiz de mümkün. Söz gelimi ilgli Storage içerisindeki dosyaları startup takımızdaki kişilerin kullanımına açabiliriz. Nasıl yapılabileceğini bulmaya ne dersiniz?;)
 
@@ -71,11 +71,11 @@ Credential Mevzusu
 
 Bir Google Cloud servisini kullanacağımız zaman, bu servis özelinde çalışacak bir servis kullanıcısı oluşturulması ve üretilen json dosyasının kullanılması öneriliyor. Bunu API Services -> Credentials kısmından New Service Account ile yapabiliriz. Önemli olan oluşturulan veya var olan kullanıcı için Storage servisi (ya da hangi servisi kullandırtmak istiyorsak onun için) bir role belirlenmesidir.
 
-![image.axd](images/image.axd)
+![gcpstorage_5.gif](images/gcpstorage_5.gif)
 
 Ben bu senaryo için my-storage-master isimli bir kullanıcı oluşturup Storage API servisinde Admin rolü ile ilişkilendirdim. Kullanıcı oluşturulduktan sonra da yetkilendirme bilgilerini taşıyan JSON formatlı dosyayı ürettirdim.
 
-![image.axd](images/image.axd)
+![gcpstorage_6.gif](images/gcpstorage_6.gif)
 
 Bu dosyayı kod tarafındaki servise ait Credential bilgilerini yüklemek için kullanacağız.
 
@@ -194,10 +194,10 @@ Bucket içerisine nesne atma işi aslında Stream temelli. Nitekim yükleyeceği
 
 Programı çalıştırdıktan sonra iki aşamalı olarak elde ettiğim sonuçlara baktım. Öncelikle oluşturulan bucket'a iki resim dosyasının da yüklendiğini gözlemledim.
 
-![image.axd](images/image.axd)
+![gcpstorage_7.gif](images/gcpstorage_7.gif)
 
 Tuşa basıp ilerlediğimdeyse hem yüklediğim dosyaların hem de bucket'ın kendisinin silindiğini gördüm.
 
-![image.axd](images/image.axd)
+![gcpstorage_8.gif](images/gcpstorage_8.gif)
 
 Görüldüğü üzere Google Cloud Platform'un kullanışlı API hizmetlerinden birisi olan Storage servisini kullanmak oldukça kolay. Artık kendi ortamınızdaki nesneleri Storage'a taşıyabilir buradan tetikleteceğiniz olaylar ile başka süreçlerin devreye girmesini sağlayabilirsiniz (diye düşünüyorum) Böylece geldik bir araştırmamızın daha sonuna. Doğruyu söylemek gerekirse Google Cloud Platform'un sunduğu API'lerle oynamak epey keyifli. Azure, AWS tarafından sunulan fonksiyonellikler için de aynı durumun söz konusu olduğunu belirtmek isterim. Bu tip fonksiyonellikleri deneyimleyerek bulut platformların imkanlarını daha iyi kavrayabilir ve çözüm üretme noktasında daha rahat hareket edebiliriz. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

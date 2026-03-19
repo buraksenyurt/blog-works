@@ -1,4 +1,4 @@
----
+﻿---
 title: "Tek Fotoluk İpucu 160 - Bir Sertifikanın Base64 Encoded Değerini Bulmak"
 pubDate: 2017-10-25 09:04:00
 categories:
@@ -32,7 +32,7 @@ Bunun üzerine istemci tarafında belirtilmesi gereken sertifikanın base64 form
 
 Tabii bir sertifikanın base64 bazlı halini nasıl elde edeceğimizi bilmiyorduk. Öğrendik. Nasıl mı oluyormuş? Aynen aşağıdaki ekran görüntüsündeki gibi.
 
-![image.axd](images/image.axd)
+![tfi_160.gif](images/tfi_160.gif)
 
 Koddaki AzonServer isimli sertifika CurrentUser->My deposu altında yer alıyor. Bu depoya ulaşmak için bir X509Store nesnesi örnekliyoruz. Sonrasında Certificates koleksiyonuna gidiyor ve SubjectName değerine göre (ki bu Comman Name'e denk gelecektir) arama yapıyoruz. Tabii ilgili sertifikanın olduğunu varsayıyoruz. Yoksa array için çalışma zamanı hatası alacağımız aşikar. Sertifikayı elde ettikten sonra bunu ihraç ediyor ve ToBase64String fonksiyonundan yararlanarak base64 encode edilmiş halini elde ediyoruz. Elde ettiğimiz içeriği de Clipboard'a (System.Windows.Forms kütüphanesini referans etmeli ve STAThread niteliğini kullanmalıyız) kopyalamayı ihmal etmiyoruz ki sonrasında tek yapacağımz şey Ctrl+V olsun. Bu hızlı ve ani çözümü uygulamak için Powershell'den de yararlanabilirsiniz bunu da belirteyim. Araştırın derim.
 

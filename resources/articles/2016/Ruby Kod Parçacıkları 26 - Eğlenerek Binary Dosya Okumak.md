@@ -1,4 +1,4 @@
----
+﻿---
 title: "Ruby Kod Parçacıkları 26 - Eğlenerek Binary Dosya Okumak"
 pubDate: 2016-11-14 21:30:00
 categories:
@@ -61,6 +61,6 @@ Kodun önemli operasyonu tabii ki get_tag_info isimli metod. MP3 dosyaları norm
 
 Tabii kodu uygulamak için MP3 şarkılarının olduğu bir konumda çalıştırmak gerekiyor (Siz kendi örneğinizi yaparken klasör bilgisini programa parametre olarak almayı denemelisiniz) İşte o anda bir klasör ve içerisindeki MP3 uzantılı dosyaları nasıl çekebileceğimi öğrendim. Dir tipine ait glob metoduna geçirilecek desen ile bu işlemi gerçekleştirmemiz mümkün. sonrasında each metodunu çağırıyor ve blok içerisinde get_tag_info fonksiyonunu kullanarak MP3 dosyalarına ait bilgileri ekrana basıyoruz. Örnek şarkılarıma ait klasör içeriğini tarattığımda aşağıdaki gibi bir çıktı elde ettim.
 
-![image.axd](images/image.axd)
+![mp3read_1.gif](images/mp3read_1.gif)
 
 Görüldüğü gibi Binary dosya içeriklerini iler yönlü okumak ve içlerinden bilgi almak son derece kolay. open fonksiyonu haricinde seek ve read metodlarının kullanımı da önemli. Örneğimizde sınıf oluşturulması ve Dir tipine ait globe metodunun kullanılmasını da öğrenmiş bulunuyoruz. Bilgilerimiz çoğaldıkça Ruby ile kodlama daha da eğlenceli hale gelmeye başlıyor. Bir başka kod parçasında görüşünceye dek hepinize mutlu günler dilerim.

@@ -1,4 +1,4 @@
----
+﻿---
 title: "Bir Web API Servisi Nasıl Hata Döndürmeli ?"
 pubDate: 2018-11-19 06:28:00
 categories:
@@ -15,7 +15,7 @@ tags:
 ---
 
 # Bir Web API Servisi Nasıl Hata Döndürmeli ?
-![image.axd](images/image.axd)
+![badrequest.jpg](images/badrequest.jpg)
 
 Merhaba Arkadaşlar,
 
@@ -88,7 +88,7 @@ namespace DummyDataApi.Controllers
 
 GetBrands isimli fonksiyon parametre olarak gelen tokenid değerine göre bir liste döndürmekte. Eğer geçerli bir tokenid değeri söz konusuysa HTTP 200 statüsünde markaların listesini döndürüyoruz. Ancak aksi durumda (ki örnekte bunu bilinçli olarak yapmaktayız) Unauthorized durumunu göndermekteyiz. Buna göre örneği Postman üzerinden yaptığım denemenin çıktısı aşağıdaki gibi oldu.
 
-![image.axd](images/image.axd)
+![rfc7807_1.gif](images/rfc7807_1.gif)
 
 Şimdi IETF'nin önerdiği formatta bir mesaj döndürmeye çalışacağız. Bunun için öncelikle ilgili paketi projeye eklemek gerekiyor.
 
@@ -112,7 +112,7 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 
 Artık Unauthorized çağrısında yeni servis devreye girecek. Postman'den aldığım cevap şöyle oldu.
 
-![image.axd](images/image.axd)
+![rfc7807_2.gif](images/rfc7807_2.gif)
 
 Görüldüğü üzere tam da istenen formatta bir çıktı söz konusu. Tabii type,title,status,detail,instance gibi bilgileri değiştrebilir ve ek bilgileri de buraya dahil edebiliriz. Bunun için ProblemDetails tipinden bir sınıf türetmemiz gerekiyor. Örneğimiz için aşağıdaki gibi bir sınıfı kullanabiliriz.
 
@@ -156,6 +156,6 @@ public IActionResult GetBrands(string tokenid)
 
 Tek sıkıntı Unauthorized yerine BadRequest kullanmış olmamız. Nitekim object türünden parametre alan bir versiyon söz konusu. Bu versiyon Unauthorized ya da Forbid gibi dönüş tiplerinde bulunmadığı için böyle bir durum oluşuyor. BadRequest sınıfının yapıcı metoduna parametre olarak UnauthorizedTokenProblemDetails tipinden bir nesne örneği vererek istediğimiz çıktıyı üretiyoruz. Son değişikliklerden sonra Postman'den aldığım tepki kısmen beklediğim gibi oldu.
 
-![image.axd](images/image.axd)
+![rfc7807_3.gif](images/rfc7807_3.gif)
 
 En azından Bad Request için uç noktaya daha anlamlı bir mesaj ilettiğimizi ve IETF standartlarına uyduğumuzu ifade edebiliriz. Bu arada paket kodlarını [github](https://github.com/khellang/Middleware/blob/master/samples/ProblemDetails.Sample/Program.cs) üzerinden incelemenizi öneririm. Güzel bir Middeware uyarlaması bulacaksınız. Hatta paketi kullanmak yerine kodlara bakarak kendi ara modülünüzü geliştirmeyi de deneyebilirsiniz. Böylece geldik bir makalemizin daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

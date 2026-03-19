@@ -1,4 +1,4 @@
----
+﻿---
 title: "Blockchain Eliptik Eğri Şifreleme Algoritması"
 pubDate: 2018-07-24 07:00:00
 categories:
@@ -13,7 +13,7 @@ tags:
 ---
 
 # Blockchain Eliptik Eğri Şifreleme Algoritması
-![image.axd](images/image.axd)
+![ecc_intro.gif](images/ecc_intro.gif)
 
 Merhaba Arkadaşlar,
 
@@ -27,11 +27,11 @@ y2=x3+7
 
 Gerçek sayılar için olan gösterimi şöyle;
 
-![image.axd](images/image.axd)
+![ecc_2.gif](images/ecc_2.gif)
 
 Toplam eleman sayısı asal olacak şekilde oluşturulmuş bir sonlu alan dizilimi için olan gösterimi ise şu şekilde;
 
-![image.axd](images/image.axd)
+![ecc_3.gif](images/ecc_3.gif)
 
 Merak uyandırdı değil mi? Öyleyse ilk konumuz ile başlayalım.
 
@@ -41,25 +41,25 @@ Eliptik eğri denklemlerine geçmeden önce bir kaç basit denklemi de hatırlam
 
 y=ax+b, doğru denklemi
 
-![image.axd](images/image.axd)
+![ecc_4n.gif](images/ecc_4n.gif)
 
 y=ax2+bx+c, parabol denklemi
 
-![image.axd](images/image.axd)
+![ecc_5.gif](images/ecc_5.gif)
 
 y=ax3+bx2+cx+d, 3ncü dereceden denklem
 
-![image.axd](images/image.axd)
+![ecc_6.gif](images/ecc_6.gif)
 
 ve tabii konumuz olan eliptik eğri denklemi.
 
 y2=x3+ax+b
 
-![image.axd](images/image.axd)
+![ecc_7.gif](images/ecc_7.gif)
 
 Yukarıdaki şekilde denkleme ait bir kaç farklı örnek görmektesiniz. Her ne kadar ben çok iyi çizemesemde, özellikle x ekseni özelinde simetriklik olduğunu söyleyebiliriz. Bazı hallerde iki ayrı eğri ve bazı hallerde de bu iki eğrinin birleştiği grafikler söz konusu. y2 den kaynaklı bir durum olduğu aşikar. Eliptik eğrilerin enteresan bir özelliği de vardır. Eğri üzerinde olduğu bilinen iki koordinat söz konusu olduğunda, bu koordinatların x değerleri birbirinden farklı olmak şartıyla, her iki koordinatın toplamından yine eğri üzerine denk düşen 3ncü bir koordinatı bulmamız mümkündür. Bulunuş şekli matematik severler için hayranlık uyandırıcıdır. Aşağıdaki şekille konuyu anlatmaya çalışayım.
 
-![image.axd](images/image.axd)
+![ecc_8.gif](images/ecc_8.gif)
 
 Şekilde M3 noktasını bulunuşu ifade edilmektedir. Olay şöyle başlar. Eğri üzerinden bilinen iki nokta referans alınır. x değerleri birbirlerinden farklı olan iki nokta. Bu noktaların üstünden geçen bir doğru çizilir. Çizilen doğru eğriyi 3ncü bir noktada daha kesecektir (örneğimizdeki P noktası) Bu noktanın iz düşümü de simetrik taraftaki bir noktaya denk gelmektedir (örneğimizdeki M3) İşte teoriye göre M1 ve M2 noktalarının toplamı M3 noktasını elde etmemizi sağlamaktadır. Tabii toplam dediğimiz olay biraz daha farklı. Noktayı bulmak için aşağıdaki gibi sıralanmış bir formül takımından yararlanılır.
 
@@ -132,7 +132,7 @@ print findThirdPoint(p1,p2,findSlope(p1,p2))
 
 Python tarafına aşina olmayanlar için bile okunması oldukça kolay bir kod parçası görmektesiniz. x,y koordinatlarını işaret eden noktaları tuple tipi ile işaret etmekteyiz. Bu bir noktanın x ve y değerlerini taşırken veya elde ederken işlerimizi kolaylaştırmakta. isOnCurve fonksiyonu parametre olarak verilen noktanın eğri üzerinde olup olmadığını kontrol ediyor. findSlope metodu ile tahmin edeceğiniz üzere eğim değerini buluyoruz. findThirdPoint fonksiyonu p1 ve p2 parametrelerinden yararlanılarak p3ün yani 3ncü noktanın bulunmasında kullanılmakta. Kodu Visual Studio Code üzerinde geliştirebilirsiniz. Şahsen ben, öyle yaptım.
 
-![image.axd](images/image.axd)
+![ecc_12.gif](images/ecc_12.gif)
 
 Eliptik Eğrilerin Gruplar ile İlişkisi
 
@@ -240,7 +240,7 @@ Buna göre P'yi kendisi ile toplaya toplaya aşağıdaki dizilimi elde edebiliri
 13P = (12,2)
 14P =(15,5)...
 
-![image.axd](images/image.axd)
+![ecc_11.gif](images/ecc_11.gif)
 
 Bir şey dikkatinizi çekti mi? Toplamda denklemi sağlayan 22 adet (x,y) noktası söz konusu iken biz 11 elemanlı bir alt grup elde ettik ve bu grubun tekrar eden bir döngü içerisinde olduğunu görmekteyiz. Buradaki hesaplamalar için aşağıdaki örnek kod parçasını da kullanabiliriz. Fonksiyonları ve kullanım şekillerini anlamaya çalışın. İçeride bir de uzatılmış Euclid algoritması olarak isimlendirilmiş bir kısım var.
 
@@ -350,7 +350,7 @@ for i in range(0,17):
     print i,Multiply(i,(3,6))
 ```
 
-![image.axd](images/image.axd)
+![ecc_13.gif](images/ecc_13.gif)
 
 Nokta sahası sonlu uzunlukta ve çok doğal olarak alt grup da öyle. Ancak denklem ve asal sayı değeri dikkatli seçilirse çok büyük bir grubun elde edilmesi söz konusu olabilir. Öyle ki geri çevirlemeye çalışıldığında bu inanılmaz derecede zor olur.
 

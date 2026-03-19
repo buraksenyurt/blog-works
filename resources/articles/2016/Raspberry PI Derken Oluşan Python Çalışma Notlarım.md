@@ -1,4 +1,4 @@
----
+﻿---
 title: "Raspberry PI Derken Oluşan Python Çalışma Notlarım"
 pubDate: 2016-07-18 21:30:00
 categories:
@@ -20,7 +20,7 @@ tags:
 ---
 
 # Raspberry PI Derken Oluşan Python Çalışma Notlarım
-![image.axd](images/image.axd)
+![RaspiCover.gif](images/RaspiCover.gif)
 
 Merhaba Arkadaşlar,
 
@@ -30,7 +30,7 @@ Bu yüzden notlarımın üstünden geçmem öğrendiklerimi hatırlamamda epey y
 
 Raspberry PI ve Python maceramda sevgili [Recep Duman](http://www.recepduman.net/) hocamın da yardımları var. Onun yol göstericiliğinde ilerlemeye çalışıyorum. Örneğin birlikte Karaköy'deki elektronikçilere gidip gerekli malzemeleri aldık. Ayrıca takip ettiğim iki kitap var.
 
-[![image.axd](images/image.axd)](http://www.idefix.com/Kitap/Raspberry-Pi/Guray-Yildirim/Egitim-Basvuru/Bilgisayar/urunno=0000000681261) [![image.axd](images/image.axd)](http://www.idefix.com/Kitap/Yeni-Baslayanlar-Icin-Python/Ahmet-Aksoy/Egitim-Basvuru/Ders-Kitaplari/Teknik-Ders-Kitaplari/urunno=0000000694609)
+[![book1a.gif](images/book1a.gif)](http://www.idefix.com/Kitap/Raspberry-Pi/Guray-Yildirim/Egitim-Basvuru/Bilgisayar/urunno=0000000681261) [![book2a.gif](images/book2a.gif)](http://www.idefix.com/Kitap/Yeni-Baslayanlar-Icin-Python/Ahmet-Aksoy/Egitim-Basvuru/Ders-Kitaplari/Teknik-Ders-Kitaplari/urunno=0000000694609)
 
 Bu kitapları da şiddetle tavsiye ederim. Orta seviyeye kadar Raspberry PI ve Python ile donanmamızı sağlayacak değerli kaynaklar. Öyleyse vakit kaybetmeden notlarımızın üzerinden bir geçelim.
 
@@ -55,7 +55,7 @@ Bu kitapları da şiddetle tavsiye ederim. Orta seviyeye kadar Raspberry PI ve P
 - --help - Bir komutun kullanımı hakkında bilgi verir.
 - man [Komut Adı] - Bu ise ilgili komut hakkındaki yardım dokümanına ulaşmamızı sağlar.
 - apt-get - Bu komutu sistemi güncellemek ve uygulama yüklemek için kullanabiliriz. Örnek olarak VLC isimli bir media player yüklemişim ama bunu yapmadan önce sistemi de güncellemişim (sudo komutunu var olan kullanıcı bir takım operasyonları yerine getirirken Permision Denied hatası almasın diye kullanmaktayız)
-![image.axd](images/image.axd)
+![firstDay.gif](images/firstDay.gif)
 
 Bu komutları terminal ekranında biraz denemişim. Hatta Raspberry PI'ye uzaktan bağlanmak için de bir şeyler yapmışım. Siz de bunu yapmak isterseniz öncelikle Raspberry PI'yi Internete bağlayıp yerel ağ için verilen IP adresini öğrenmeniz gerekir. Bunun için terminalden
 
@@ -92,7 +92,7 @@ print("My name is {} and I'am {} years old.\nAnd Pi*(R^2)={}".format(myName,myAg
 
 İlk olarak print komutu ile ekrana bir metin içeriği yazdırıyoruz. Devam eden satırlarda ise myAge ve myName isimli iki değişken tanımı söz konusu. Son print ifadesinde süslü parantezler içerisinde bu değişkenleri yazdırıyor, \n ile bir alt satıra geçiş işlemini gerçekleştiriyoruz (\ ile escape karakter kullanımının söz konusu olduğunu ifade edebiliriz) Süslü parantezler içerisine gelecek ifadeler için format metodundan faydalanmaktayız. İlk süslü paranteze myName, ikinci süslü paranteze myAge son süslü paranteze ise matematiksel bir işlemin sonucu gelmekte.
 
-![image.axd](images/image.axd)
+![notes_1.gif](images/notes_1.gif)
 
 Bu girişten sonra Python dilinin temel veri türlerinden olan listelere göz atmışım.
 
@@ -124,12 +124,12 @@ someObjects=[1,-1,"burk",True,90.345,900000055555555555000000000000000015]
 print(someObjects)
 ```
 
-![image.axd](images/image.axd)
+![notes_3.gif](images/notes_3.gif)
 
 Belli tipte veya farklı türlerede elemanları tutmak için listelerden yararlanabiliriz. Listenin elemanlarına ulaşmak için [] operatörü kullanılır. Pop metodu ile son eklenen eleman listeden çekilir ve ayrıca silinir (ki burada denemeyi unutmuşum ama siz deneyebilirsiniz) Listeden eleman çıkartmak içinse remove fonksiyonu kullanılır. Faydalı fonksiyonlardan birisi de sort. Karışık bir listenin ascending veya descending sıralanmasını sağlar. Descending sırlama için reverse parametresine True değeri verilmesi yeterlidir. O gün hoşuma giden kullanımlardan birisi de, bir öğenin listede olup olmadığının bulunması olmuş. "good" in motto ifadesine göre good kelimesi motto değişkeni ile işaret edilen metinde geçiyorsa True geçmiyorsa False sonucu elde edilir.
 
 > Defterde reverse=true şeklinde yazdıktan sonra Python'un case-sensitive bir dil olduğunu not almışım.
-> ![image.axd](images/image.axd)
+> ![notes_2.gif](images/notes_2.gif)
 
 Notlarım döngüler ve range kullanımı ile devam etmiş. Epey verimli bir haziran günü geçirmişim.
 
@@ -151,12 +151,12 @@ for number in numbers2:
 	print(number)
 ```
 
-![image.axd](images/image.axd)
+![notes_4.gif](images/notes_4.gif)
 
 range veri türü ile belirli aralıklardaki sayı dizilerini kolayca tanımlayabiliriz. Hatta bu tanımlamalarda adım değeri de verebiliriz. Örneğin -25'den -5e kadar olan sayıları 5er adım aralıkla elde edebiliriz. for döngüleri ile range ve list veri türleri üzerinde dolaşarak belli işlemler gerçekleştirmemiz de mümkün. Belli bir değer aralığındaki sayıların toplamını bulmak, oyuncu listesini ekrana yazdırmak örnek kod parçasında yer verilen işlemlerdir.
 
 > Python girinti (indent) kuralları barındıran bir dildir. Bir döngünün (bir metodun, if ifadesinin vb) alt satırlarına inildiğinde girinti verilmesi zorunludur diye de not almışım.
-> ![image.axd](images/image.axd)
+> ![notes_5.gif](images/notes_5.gif)
 
 Bu arada o günkü kod örneklerini dosyalarda bulundurmaya başlamışım. Python kod dosyaları için py uzantısı kullanılmakta. Eğer bir python dosyasını terminalden çalıştırmak istersek aynen Ruby dilinden olduğu gibi bir komut kullanmamız yeterli. Örneğin
 
@@ -188,7 +188,7 @@ result=rangeSum(0,11)
 print(result)
 ```
 
-![image.axd](images/image.axd)
+![notes_6.gif](images/notes_6.gif)
 
 Örnek kod parçasında iki metod yer alıyor. writeAllPlayers isimli fonksiyonumuz players listesindeki elemanları ekrana yazdırmakta. rangeSum metodu ise x,y parametrelerini kullanarak bir range oluşturmakta ve bu değer aralığındaki sayıların toplamını hesap ederek geri döndürmekte. Bu basit metod kullanımlarını inceledikten sonra o haziran günü yaptığım çalışmaları tamamlamışım.
 
@@ -202,7 +202,7 @@ print("random içeriği",dir(random),"\n")
 print("shuffle içeriği",dir(random.shuffle),"\n")
 ```
 
-![image.axd](images/image.axd)
+![notes_7.gif](images/notes_7.gif)
 
 Örnek kod parçasında random modülünün ve bu modüldeki shuffle operasyonunun üyeleri listlenmektedir. Eğer istersek bu üyelerin yardım dokümanlarına da ulaşabiliriz. Bunun için help (random) gibi bir ifade kullanmamız yeterlidir.
 
@@ -234,7 +234,7 @@ print("a random number is",random.choice(numbers1),"\n")
 print("and next random number is",random.choice(numbers1))
 ```
 
-![image.axd](images/image.axd)
+![notes_8.gif](images/notes_8.gif)
 
 createTenRandoms isimli fonkisyon üç parametre almaktadır ve bu parametrelerin varsayılan ilk değerleri de verilmektedir. Yani metod çağrısı sırasında x,y ve isInt değişkenlerine bir değer atanması zorunlu değildir. Fonksiyon içerisine gelen isInt değerine göre ternary operatörüne benzer bir kullanım söz konusudur. Eğer isInt değeri True gelmişse random () fonksiyonu, False gelmişse randint (x,y) çağrısı söz konusudur. random () rastgele kayan noktalı sayılar üretirken random (x,y) x ve y aralığında yer alacak rastgele tamsayılar üretir. Üretilen rastgele sayılar numbers isimli listeye eklenir ve bu liste fonksiyondan geri döner.
 
@@ -281,7 +281,7 @@ sudo pip freeze>modules.txt
 ```
 
 > Bu arada uzun modül adları söz konusu olursa import ve as ile bu modüle takma ad (alias) vererek kod içerisinde daha kolay kullanılmalarını sağlayabiliriz.
-> ![image.axd](images/image.axd)
+> ![notes_9.gif](images/notes_9.gif)
 
 Aslında kendi modüllerimizi geliştirmemiz oldukça kolay. Tek yapılması gereken aynı alana ait operasyonları içeren py uzantılı bir kod dosyası oluşturmak. Bu kod dosyasının adı aynı zamanda modülün adı olacaktır.
 
@@ -289,7 +289,7 @@ Aslında kendi modüllerimizi geliştirmemiz oldukça kolay. Tek yapılması ger
 
 Bir de Paket kavramı var tabii. Notlarıma baktığımda ilerleyen günlerde paketler (Packages) ile ilişkili bir şeyler karaladığımı gördüm.
 
-![image.axd](images/image.axd)
+![notes_18.gif](images/notes_18.gif)
 
 Aslında aynı amaca hizmet eden n sayıda modülü hiyerarşik bir klasör yapısı ile ifade edip paket haline getirebiliriz. Kritik nokta her paket içinde init.py isimli bir dosyanın olmasıdır. Bu dosyayı içeren klasör aslında otomatik olarak bir paket haline gelir. Örneğin aşağıdaki gibi bir klasör yapımız olduğunu düşünelim.
 
@@ -337,7 +337,7 @@ Apache kurulduktan sonra /var/www/html içerisine varsayılan bir index sayfası
 
 Sonrasında kendi bilgisayarımdan bu adrese giderek Raspim üzerinde değiştirdiğim index.html içeriğine ulaşabilmişim.
 
-![image.axd](images/image.axd)
+![notes_10.gif](images/notes_10.gif)
 
 ### Php Kullanımı
 
@@ -363,7 +363,7 @@ phpinfo () metodu ile sistemde yüklü php versiyonunu ve içerisinde yer alan m
 
 ## Söyleşi Öncesi Hazırlık [15 Haziran 2016]
 
-![image.axd](images/image.axd)
+![notes_12.gif](images/notes_12.gif)
 
 Bugün Recep Duman hocamla yapacağım söyleşi öncesi bazı notlar almışım. Özellikle python diline ait genel özelliklere çalışmışım.
 
@@ -408,7 +408,7 @@ get metodu dikkat edileceği üzere basit bir HTTP Get talebi göndermekte. Bunu
 
 Eğlenceli bir gece geçirmişim. One-Time Pad algoritmasını öğrenmiş bunun python dili ile yazımını gösteren tutorial'ı adım adım izlemişim. Aslında One-Time Pad algoritmasını anlamakta epey zorlandığımı hatırlıyorum. Kağıt kalem ile ders çalışır gibi yazıp çizerek işi kurtarmıştım.
 
-![image.axd](images/image.axd)
+![notes_11.gif](images/notes_11.gif)
 
 Örneğin burak kelimesini şifrelemek istediğimizi düşünelim. b alfadeki 1nci indise denk gelir. Diğer yandan örnek otp dosyasının birinci değeri 10dur. Buna göre 1+10 toplamının mod 26 değerine bakılır ki bu değer 11dir. 11 ise alfabede yer alan l harfine karşılık gelmektedir. Bu şekilde ilerlendiğinde burak kelimesi için lzaee şeklinde şifrelenmiş bir içerik üretilecektir. Şifrelenen içeriğin çözümlenmesi sırasında ise tam tersi durum söz konusudur. l harfinin alfabedeki indisi 11dir. Şifreleme sırasında b harfi için 10 ekleme yapıldığından tam tersi olacak şekilde 11-10 işleminin mod 26 değerine bakılır. Bu değer de 1dir ve sıfır indisli alfabedeki b harfine denk gelmektedir. Bu şekilde şifreleme ve ters şifrleme işlemleri one-time pad algoritmasına göre yapılabilir.
 
@@ -435,7 +435,7 @@ generateOtpFiles(3,100)
 print(loadOtpFile("otpFile1.txt"))
 ```
 
-![image.axd](images/image.axd)
+![notes_13.gif](images/notes_13.gif)
 
 generateOtpFiles metodu iki parametre alır. İlk parametre one-time pad için üretilecek dosya adedini, ikinci parametre ise bu dosyalar içerisine atılacak karışık sayı miktarını ifade eder. Açılan ilk for döngüsü dosya sayısı kadar, ikinci for döngüsü ise her bir dosyanın içereceği eleman sayısı kadar döner. with open ile başlayan kısımda verilen w değeri, dosyanın yazma amaçlı olarak açılacağını belirtir. Dosya içerisine 0 ile 26 arasında rastgele tamsayılar atamak için randint (0,26) metodundan yararlanılır. Elde edilen sayısal değer f ile ifade edilen dosyaya write metodu ile yazılır.
 
@@ -492,7 +492,7 @@ dc=decryptMessage(em,otpContent)
 print("Decrypted message is '{0}'".format(dc))
 ```
 
-![image.axd](images/image.axd)
+![notes_14.gif](images/notes_14.gif)
 
 Görüldüğü gibi kullanıcının girdiği mesaj önce şifrelenmiş ve sonra şifrelenen içerikten tekrar elde edilmiştir. Kodda o gün için öğrenilecek pek çok yeni kavram da çıkmış bana. Örneğin ekrandan bilgi almak için input fonksiyonundan yaralanıyoruz. Fonksiyon arkasından yapılan lower çağrısı ise girilen içeriğin küçük harfe dönüştürülmesini sağlıyor. Nitekim alfabemiz küçük harflerden oluşmakta. encryptMessage ve decryptMessage metodları şifrlenecek ve çözümlenecek içerik ile kullanılacak one-time pad dosya içeriğini parametre olarak alan fonksiyonlar. Her iki metod içerisinde algoritmanın gereklilikleri yerine getiriliyor.
 
@@ -502,11 +502,11 @@ Görüldüğü gibi kullanıcının girdiği mesaj önce şifrelenmiş ve sonra 
 
 Her ne kadar Raspberry Pi için bir çok sensör ve malzeme almış olsam da sanıyorum ki python dili epeyce hoşuma gitmiş. Bu nedenle o gün python dilini anlatan ikinci kitaba başlamışım (Gerçi diğer kitapta kaldığım kameranın Raspberry Pi'den kontrolü ile ilişkili kısmı kamerayı alamadığım için beklemeye almak zorunda kalmamın da bunda etkisi olmuş olabilir) İlk bölümlerde aşina olduğum kısımları hızlıca geçtikten sonra python içerisindeki temel veri türlerini kaleme almışım. Ne yazık ki gece yaptığım çalışmam S (h) arp Efe tarafında sabote edilmiş ve o da kendi bakış açısından çalışma notlarına ekler ilave etmiş.
 
-![image.axd](images/image.axd)
+![notes_15.gif](images/notes_15.gif)
 
 Sadede gelecek olursak temel veri türlerini şu şekilde özetleyebiliriz.
 
-![image.axd](images/image.axd)
+![notes_16.gif](images/notes_16.gif)
 
 Tabii en çok dikkatimi çeken nokta kompleks sayıları doğrudan ifade eden bir türün olması ki şu şekilde sanal ve gerçel köklerini ele alıp kullanabiliriz.
 
@@ -519,7 +519,7 @@ kompleksZ=kompleksX+kompleksY
 print(kompleksZ)
 ```
 
-![image.axd](images/image.axd)
+![notes_17.gif](images/notes_17.gif)
 
 Gelelim temel veri türleri ile ilgili diğer notlara.
 
@@ -563,7 +563,7 @@ studentNotes={"klara":90,"norman":100,"burk":38,"tubi":85}
 print("Klara'nın notu",studentNotes["klara"])
 ```
 
-![image.axd](images/image.axd)
+![notes_24.gif](images/notes_24.gif)
 
 ## Metodlara Bir Bakıp Çıkmışım [23 Haziran 2016]
 
@@ -617,13 +617,13 @@ createPlayer("burki","istanbul","black","master",True,1685)
 
 ve çalışma zamanı sonuçları.
 
-![image.axd](images/image.axd)
+![notes_21.gif](images/notes_21.gif)
 
 ## String Veri Yapısı ile Eğlenceli Dakikalar [25 Haziran Cumartesi]
 
 Bugün string veri yapısını kullanarak eğlenceli kod parçalarını ele almışım. Hatta string tipinin pek çok metodunu sonradan denemem için de not düşmüşüm (Niye göbekli bir karakter çizdiğimi ben de bilemiyorum sayın seyirciler)
 
-![image.axd](images/image.axd)
+![notes_19.gif](images/notes_19.gif)
 
 Peki ya kodlar?
 
@@ -671,7 +671,7 @@ print(newMotto)
 print("is there a 'gonna'? {}".format("Yes" if "gonna" in motto else "No"))
 ```
 
-![image.axd](images/image.axd)
+![notes_23.gif](images/notes_23.gif)
 
 Bu arada string türü ile ilişkili olarak [şu adresten de](http://www.tutorialspoint.com/python/python_strings.htm) yararlanmaya ve bilgi almaya çalışmışım.
 
@@ -679,7 +679,7 @@ Bu arada string türü ile ilişkili olarak [şu adresten de](http://www.tutoria
 
 O gün okuduğum kitapta çok enteresan kod parçalarına rastlamışım ve bunları teker teker denemişim. Kod parçaları bana sihirli gelmiş olacak ki bir de sihirbaz şapkası çizmeye çalışmışım.
 
-![image.axd](images/image.axd)
+![notes_20.gif](images/notes_20.gif)
 
 ```text
 import random
@@ -721,6 +721,6 @@ print(combination)
 
 Örnekte 3 farklı operasyon söz konusu. İlk olarak 10 ile 100 arasında rastgele tamsayılar üretip bunları bir listeye alıyoruz. İkinci örnekte 0 ile 100 arasındaki sayılardan 7 ile bölünebilenlerini çekiyoruz. Üçüncü ve son örnekte ise iki farklı listenin tüm ikili kombinasyonlarını çıkartmaktayız. Örneklerin uzun ve kısa versiyonlar var. Kısa versiyonlarda köşeli parantezler içerisinde yazılan ifadeler beni oldukça etkiledi. Köşeli parantezler içerisindeki ifadeleri 3 ana parça halinde düşünebiliriz. İlk parçada eşitliğin sol tarafına atanacak değer ifade edilir. Sonrasında ise bir for döngüsü ve bunu takiben de eğer gerekliyse koşullu bir ifadeye yer alır. Bu sayede tek satırda bir sayı dizisini dolaşıp belirli kriterlere uyanlar için işlemleri kısaca yaptırabiliriz.
 
-![image.axd](images/image.axd)
+![notes_22.gif](images/notes_22.gif)
 
 Çalışmalarım bu tarih itibariyle sonlanmış. Nitekim izin dönemi gelmiş. Şimdi kaldığımız yerden devam edebilirim. Bu uzun yazıda Python notlarımı elektronik ortama almaya çalıştım. Umarım python severler için yararlı bir yazı olmuştur. Bir başka makalemizde görüşünceye dek hepinize mutlu günler dilerim.

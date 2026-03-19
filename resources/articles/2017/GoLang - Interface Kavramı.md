@@ -1,4 +1,4 @@
----
+﻿---
 title: "GoLang - Interface Kavramı"
 pubDate: 2017-05-07 10:57:00
 categories:
@@ -14,7 +14,7 @@ tags:
 ---
 
 # GoLang - Interface Kavramı
-![image.axd](images/image.axd)
+![margaret_hamilton.gif](images/margaret_hamilton.gif)
 
 Merhaba Arkadaşlar,
 
@@ -74,7 +74,7 @@ func(p Player) SaySomething(s string){
 
 Kodun çalışma zamanı çıktısı aşağıdaki gibidir.
 
-![image.axd](images/image.axd)
+![interfaces_2.gif](images/interfaces_2.gif)
 
 Örnekte bir oyun sahnesindeki çeşitli aktörleri tanımlayan iki struct ve bir interface tipi yer almaktadır. Actor tipinde iki fonksiyon tanımına yer veriyoruz. Tank ve Player struct'larında kendilerine özgü bir kaç alan bulunuyor. Dikkat edilmesi gereken nokta bu iki struct için Actor interface'in de belirtilen metodların yazılmış olması. Sözdizimi olarak metodların ilk parametreleri uygulanacakları tipe ait. for döngüsü ile actors isimli slice elemanlarında dolaşıyor ve her biri için Move ile SaySomething metodlarını çağırıyoruz. Aslında kullanılan slice içerisindeki elemanlarda dolaşırken Go çalışma zamanı motoru interface{} değişkenine dönüştürme işlemini otomatik olarak gerçekleştirmekte. Fakat bu durum biraz sonra göreceğimiz vakka da biraz daha ilginçleşecek.
 
@@ -100,7 +100,7 @@ func DoIt(objects []interface{}){
 
 Burada actors isimli slice içeriğini DoIt fonksiyonuna interface dizisi olarak geçiyoruz. DoIt fonksiyonunda tüm nesneleri dolaşıyor ve Move ile SaySomething metodlarını sırasıyla çağırıyoruz. Bir önceki kodda yer alan for döngüsü çalıştığına göre bu fonksiyonun da çalışması gerekiyor. Oysaki Go çalışma zamanı bizi dönüştürme işleminin yapılamadığı konusunda uyaracak.
 
-![image.axd](images/image.axd)
+![interfaces_4.gif](images/interfaces_4.gif)
 
 Şimdi kodun doğru halini yazalım.
 
@@ -123,7 +123,7 @@ func DoIt(objects []interface{}){
 
 Öncelikle values isimli bir slice tanımı var ve interface{} tipinden oluşacağını belirtiyoruz. Elemanları ise actors'den geliyor. Bu sayede DoIt fonksiyonuna actors içeriğini interface{} tipi olarak atayabiliriz. for döngüsü içerisinde obj.(Actor) şeklinde bir çağrım var. Bu çağrım o anki interface{} tipinin bir Actor olup olmadığını kontrol etmekte. Eğer ok cevabını alırsak Move ve SaySomething metodlarını çağırabiliriz. İşte çalışma zamanı çıktısı.
 
-![image.axd](images/image.axd)
+![interfaces_3.gif](images/interfaces_3.gif)
 
 Şimdi örneğimizi biraz daha geliştirelim. Actor tiplerinin yanına örneğin int tipinden bir değişken daha koyalım ve onun için geliştireceğimiz bir metodu kullanmaya çalışalım.
 
@@ -169,7 +169,7 @@ func(n Number) IsEven() bool{
 
 IsEven metodu geriye bool değer döndüren bir metoddur ve Utility interface tipi içerisinde şablon olarak tanımlanmıştır. Bu metodu int32'den inşa edilen Number isimli yeni bir tipe uygulamaktayız. Yaptığı tek şey sayının çift olup olmadığını true veya false olarak döndürmek. DoIt fonksiyonunun kullanımı sırasında utl isimli bir değişkenin eklendiği gözden kaçmamalıdır. Aslında burada Number tipinin Utility interface{} tipine dönüştürülmesi söz konusudur. Sonrasında DoIt fonksiyonuna parametre olarak geçilir. DoIt fonksiyonu içerisinde bu kez bir switch bloğuna yer verilmiştir. switch bloğunda yaptığımız şey tipe bakıp akışı yönlendirmekten ibaret. Gelen tip bir Actor ise Move ve SaySomething metodları çağırılır. Gelen tip Number ise de IsEven. Kodun çalışma zamanı çıktısı aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![interfaces_5.gif](images/interfaces_5.gif)
 
 interface veri tipi esasında iki parçadan oluşur. Parçalardan biri veriyi tutan değişkeni işaret eden bir pointer barındırır. Diğer parçaysa interface'in bu ilişkili tip üzerinden çağırabileceği fonksiyon bilgisini barındıran veri tablosunu işaret eder.
 
@@ -221,15 +221,15 @@ func(p *Player) SaySomething(s string){
 
 Move ve SaySomething metodlarında *Tank ve * Player şeklinde Pointer kabul eden parametreler kullanıyoruz. Ayrıca actors isimli slice içerisindeki atamalarda & operatöründe yararlandık. Bu sayede adres bilgisini metodlara göndermiş oluyoruz. Çalışma zamanı çıktısı aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![gointerfaces_6.gif](images/gointerfaces_6.gif)
 
 Eğer & operatörünü kullanmazsak çalışma zamanında hata mesajı alırız.
 
-![image.axd](images/image.axd)
+![interfaces_7.gif](images/interfaces_7.gif)
 
 Bu son derece doğaldır nitekim Move ve SaySomething metodları birer Pointer beklemektedir. Ancak biz değer göndermeye çalışıyoruz. Şimdi de tam tersi durumu ele alalım. Yani metod şablonlarında Pointer kullanımından vazgeçip sadece slice içerisinde & ile adres ataması gerçekleştirelim. Çalışma zamanında hata oluşmayacak ve kod başarılı bir şekilde çalışacaktır. Bunun sebebi Pointer tipinin ilişkilendirildiği tipin üyelerine (bu örnekte Move ve SaySomething metodlar) erişebilmesidir.
 
-![image.axd](images/image.axd)
+![interfaces_8.gif](images/interfaces_8.gif)
 
 Bu son iki örnekteki farkları anlamak önemlidir. Go dilinde varsayılan olarak fonksiyon parametreleri veri kopyalama yöntemi ile kullanılırlar. Yani çağrım yapılan yerden gönderilen parametre verisi, fonksiyon içinde kullanılmak için kopyalanır. Bu nedenle Pointer parametre alan fonksiyona değer türü şeklinde atama yaptığımızda hata alırız. Çünkü beklenen Tank veya Player tipinden bir değişken adresidir. Diğer yandan Pointer tipinden parametre almayan fonksiyona & operatörü ile veri gönderdiğimizde adres kopyalaması söz konusu olacağından, interface tipinin tanımlı üyelerine (Move ve SaySomething) erişebiliriz.
 

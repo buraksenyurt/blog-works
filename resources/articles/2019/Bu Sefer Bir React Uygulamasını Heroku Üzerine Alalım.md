@@ -1,4 +1,4 @@
----
+﻿---
 title: "Bu Sefer Bir React Uygulamasını Heroku Üzerine Alalım"
 pubDate: 2019-10-04 13:00:00
 categories:
@@ -19,7 +19,7 @@ tags:
 ---
 
 # Bu Sefer Bir React Uygulamasını Heroku Üzerine Alalım
-![image.axd](images/image.axd)
+![hamlett.png](images/hamlett.png)
 
 Sir [Ken Robinson](http://sirkenrobinson.com/), çocukların hayal güçlerini sınırlayan eğitim sistemini eleştirdiği [TED'in en çok izlenen sunumu](https://www.ted.com/talks/ken_robinson_says_schools_kill_creativity?language=en)nda William Shakespeare ile ilgili güzel bir anektod paylaşır. Konuşmasının ilgili bölümünde profesör onun bir zamanlar yedi yaşında bir çocuk olduğunu dile getirir. Kısa bir an için duraksar ve ne diyeceğini merak eden seyirciye "...Shakespeare'i hiç çocuk olarak düşünmemiştiniz, değil mi?" der:)
 
@@ -181,11 +181,11 @@ ReactDOM.render metoduna dikkat edelim. root isimli DOM elementini yakalayıp bu
 
 Çalışmayı gerçekleştiğimde West-World tarafında uygulamanın açılması biraz zaman almıştı. Sizin de benim gibi sebat edip panik yapmadan beklemeniz gerekebilir. İşte çalışma zamanı görüntüleri.
 
-![image.axd](images/image.axd)
+![06_08_credit_1.png](images/06_08_credit_1.png)
 
 Her şey yolunda giderse localhost:3000 adresinden aşağıdaki içeriğe ulaşabiliriz.
 
-![image.axd](images/image.axd)
+![06_08_credit_2.png](images/06_08_credit_2.png)
 
 ## Uygulamanın Heroku Platformuna Alınması
 
@@ -197,11 +197,11 @@ heroku create
 
 Bana proje adı olarak Heroku'nun otomatik olarak ürettiği frozen-hamlet-75426 denk geldi. Ayrıca uygulama kodlarını atabilmek için github ve ulaşacağım web adresi bilgisi de iletildi.
 
-![image.axd](images/image.axd)
+![06_08_credit_3.png](images/06_08_credit_3.png)
 
 Uygulamanın web adresi https://frozen-hamlet-75426.herokuapp.com/ şeklinde. github adresi ise https://git.heroku.com/frozen-hamlet-75426.git. Hatta sonuçları Heroku Dashboard üzerinden de görebiliriz (Tabii siz örneği denerken güncel hali Heroku üzerinde olmayabilir. Kendiniz için bir tane yapsanız daha iyi olur)
 
-![image.axd](images/image.axd)
+![06_08_credit_4.png](images/06_08_credit_4.png)
 
 Uygulama klasöründeki json dosyasında yer alan heroku-postbuild script'i bu aşamada önem kazanıyor. Kodlar git ortamına taşındıktan sonra bir build işlemi gerekiyor. Heroku bu script kısmını ele alıyor.
 
@@ -227,7 +227,7 @@ ve kodun son halini master branch'e push'la
 
 Kodun github'a alınması aynı zamanda heroku'nun da ilgili uygulamayı gerekli build betiklerini çalıştırarak devreye alması anlamına gelmekte. Dolayısıyla bir süre sonra https://frozen-hamlet-75426.herokuapp.com/ adresine gitmek sonuçları görmemiz açısından yeterli olacaktır.
 
-![image.axd](images/image.axd)
+![06_08_credit_5.png](images/06_08_credit_5.png)
 
 ## Bazı Hatalarım da Olmadı Değil
 

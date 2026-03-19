@@ -1,4 +1,4 @@
----
+﻿---
 title: "Azure, Azure! Bu Fotoğrafta Neler Görüyorsun?"
 pubDate: 2018-05-25 04:46:00
 categories:
@@ -18,7 +18,7 @@ tags:
 ---
 
 # Azure, Azure! Bu Fotoğrafta Neler Görüyorsun?
-![image.axd](images/image.axd)
+![comvision_enter.jpg](images/comvision_enter.jpg)
 
 Merhaba Arkadaşlar,
 
@@ -29,7 +29,7 @@ Ancak oyunun kuralları bildiğiniz gibi uzun süre önce değişmeye başladı.
 Bugünün gelecek teknolojilerini belirleyen büyük aktörlerin çoğu, bu tip tanıma/tanımlama operasyonlarını sunan servislere sahipler. Google, Amazon, Microsoft, IBM, Facebook ve diğerlerinin başı çektiği bir dünya var artık. Özellikle bulut hesaplamaları alanında hizmet verenlerin sahip olduğu avantajlar yukarıdaki gibi bir senaryonun saniyeler içerisinde gerçeklenmesine de olanak sağlamakta. Bende bu merakla bir şeyler araştırmayı başladım geçenlerde. Pluralsight sağolsun Azure konusundaki çalışmalarıma devam ediyorum. Ufak ufak öğretilerin üzerinden geçerken de neyin nasıl yapıldığını adım adım öğrenmeye çalışıyorum. Bu yazımızda ise uzun zamandır hepimizin varlığından haberdar olduğu Cognitive Services özelliklerinden birisine bakacağız. Azure'un yapay zeka destekli makine öğrenme hizmetlerinden olan Compture Vision enstrümanını kullanarak bir fotoğrafı bizim için nasıl yorumlayableceğini işleyeceğiz.
 
 > Microsoft Cognitive Services temel olarak 5 ana kategoriye ayrılmıştır. Vision, Speech, Language, Knowledge ve Search. Her bir kategori başlığı altında bu alana özgü farklı fonksiyonellikler sunulmaktadır. İlgili listeye [şu adresten](https://azure.microsoft.com/en-us/services/cognitive-services/directory/?v=18.05) bir bakmanızı öneririm.
-> ![image.axd](images/image.axd)
+> ![comvision_ex.gif](images/comvision_ex.gif)
 
 İlk olarak Azure platformunda bu hizmeti kullanabilmek için gerekli hazırlıkları yapıp sonrasında örnek bir kod parçası ile bir kaç fotoğrafı yorumlatacağız. Bir nevi basit How To yazısı olduğunu belirtebilirim.
 
@@ -37,27 +37,27 @@ Azure Plaforumundaki Hazırlıklar
 
 İşe Azure Platformu üzerindeki hazırlıklarla başlamamız gerekiyor. Bu aşamada sizlerin Azure hesaplarınız olduğunu kabul ediyorum. Yapmamız gereken arabirimi kullanarak Cognitive Services kısmına ulaşmak. All services penceresinden aratma usulü ile bulabiliriz.
 
-![image.axd](images/image.axd)
+![comvision_1.gif](images/comvision_1.gif)
 
 Ardından Computer Vision enstrümanını bulmalıyız.
 
-![image.axd](images/image.axd)
+![comvision_2.gif](images/comvision_2.gif)
 
 AI +Machine Learning kategorisinde yer alan hizmeti bulduktan sonra yeni bir örneğini oluşturabiliriz. Ben aşağıdaki ekran görüntüsünde yer alan bilgileri kullandım.
 
-![image.axd](images/image.axd)
+![comvision_3.gif](images/comvision_3.gif)
 
 Burada söz konusu kaynak için girmemiz gereken bazı bilgiler yer alıyor. Kaynağın adı (Name), lokasyonu (Location/Data Center), dahil olacağı grup bilgisi (Resource Group) ve tabii fiyatlandırma seçeneği (Pricing Tier). F0 planı ücretsiz olduğu ve sadece öğrenme amaçlı bir çalışma yaptığımız için yeterli. Bunun dışında bir seçeneğimiz daha var. S1'e göre 1000 çağrı başına 1 dolardan başlayan bir fiyatlandırma stratejisi söz konusu. Senaryoya göre farklı bir plana da ihtiyaç duyabiliriz. Bu tamamen işlemek istediğimiz kümenin büyüklüğü, ne kadar sık işleneceği ve benzeri kriterlerle alakalı bir konu. Örneğin S1 planı saniyede 10 çağrıma izin verirken Free plan için bu dakikada 20 çağrım ve ayda en fazla 5000 çağrım ile sınırlı (Bu arada F0 planını seçtikten sonra tekrar ikinci bir Computer Vision için ikinci bir F0 planı seçemediğimi fark ettim. Ucuz etin yahnisi misali)
 
-![image.axd](images/image.axd)
+![comvision_6.gif](images/comvision_6.gif)
 
 F0 seçiminden sonra kaynağı oluşturabiliriz.
 
-![image.axd](images/image.axd)
+![comvision_4.gif](images/comvision_4.gif)
 
 İşlemler başarılı bir şekilde tamamlandığında read-this-photo isimli Computer Vision örneğinin başarılı bir şekilde oluşturulduğunu görmemiz gerekiyor. Kod tarafı için kritik olan iki bilgi de bu ekrandan alınacak. Bunlardan birisi servis adresi (endpoint bilgisi) Yani fotoğraf ile ilgili analizi gerçekleştirecek olan servisin kök adresi. Kök adresi diyorum çünkü duruma göre farklı bir operasyona da gidilebilir (Örneğin fotoğraf için ünlüleri sorgulamak istiyorsak celebrities/model gibi bir operasyon eklememiz gerekir) Diğeri ise iletişim sırasında gerekli olan anahtar (Key 1) değeridir. Anahtar bilgisini Manage Keys kısmından alabiliriz.
 
-![image.axd](images/image.axd)
+![comvision_5.gif](images/comvision_5.gif)
 
 İstemci tarafından servise gelirken KEY 1 değerine ihtiyacımız olacak.
 
@@ -131,11 +131,11 @@ Sonuçlar
 
 Hemen örnek fotoğrafların sonuçlarna bir bakalım. Çok heyecanlı değil mi?:) Öncelikli olarak bize deneme için bir kaç fotoğraf gerekiyor. Internetten test amaçlı farklı tiplerde fotoğraflar buldum. İlk sırada turuncu sakallı bir Lego manyağı var:P İkinci sırada masa başında bir çok insanın bulunduğu bir tartışma ortamı yer alıyor. Üçüncü sırada son Star Wars filminden sevdiğim bir kare var. Özellikle Computer Vision servisinin Yoda'yı nasıl yorumlayacağını çok merak ediyorum. Acaba ona usta yoda'yı öğretmişler midir? Devam eden fotoğraftaki beklentim ise park yapan araca yaslanmış bir şekilde ayakta duran kadının bulunup bulunamayacağı. 5nci fotoğrafı bilhassa koydum. Gerçek dünayadan olmayan bir çizgi. Bakalım karşı tarafın tepkisi ne olacak? Son fotoğrafımız ise başta konuştuğumuz içeriğe sahip.
 
-![image.axd](images/image.axd)
+![comvision_8.gif](images/comvision_8.gif)
 
 Programın çalışma zamanı çıktısı aşağıdakine benzer olacaktır. Dikkat edileceği üzere fotoğraflar ile ilgili yorumlar servisten JSON fortamında dönmekte. İçerikte categories, description, tags ve color kök elementleri yer alıyor ki bunları istediğimizi endpoint sonuna eklediğimiz ifadelerle biz belirtmiştik.
 
-![image.axd](images/image.axd)
+![comvision_9.gif](images/comvision_9.gif)
 
 Bu fotoğraflardan ilki için gelen JSON çıktısını kısaca değerlendirelim mi? Örneğin benim Boba Fett'in gemisinin Lego'su ile olan fotoğrafımla ilgili şöyle bir çıktı verildi (Zaman ilerledikçe Computer Vision'un fotoğraf öğrenmesi sonucu daha farklı ve isabetli cevaplar vereceğini tahmin ediyorum)
 
@@ -255,7 +255,7 @@ categories kısmına baktığımızda en yüsek skor değeri insan'da görünüy
 
 Servisin kullanımına ilişkin bir takım çalışma zamanı bilgilerini portal üzerinden de izleyebiliriz. Sonuç itibariyle yapılan işlemleri izlemek önemli. Ne kadar talep gitti, kaçı başarılı oldu, kaçında hata alında, geriye kalan kullanım haklarımız neler, ne kadar ödedik vs... Bu örnek senaryo için Overview kısmındaki grafikler başlangıç için yeterli bilgiler vermekte. Benim yaptığım az sayıda denemenin çıktısı aşağıdaki ekran görütüsündeki gibi oldu.
 
-![image.axd](images/image.axd)
+![comvision_7n.gif](images/comvision_7n.gif)
 
 Görüldüğü üzere Azure'un Cognitive servislerinden olan Computer Vision'ı kullanarak fotoğraflar ile ilgili bir takım bilgileri hesaplatmak oldukça kolay. Söz gelimi yoğun fotoğraf kullanan bir katalog sisteminde fotoğrafların tag bilgilerinin otomatik olarak çıkartılmasında bu hizmet pekala işe yarayabilir. Arka plandaki AI+ML işbirlikteliği daha da güçlendikçe fotoğrafların yorumlanması daha da iyileşecektir. Örneğin bir kamera görüntüsündeki olası saldırganın otomatik olarak tespit edildiğini bir düşünsenize (Aslında ben bu cümleyi yazarken böyle bir şeyin yapılmadığından emin değilim. Yapılıyor da olabilir. Araştırmam lazım) Azure tarafında Computer Vision servisinin pek çok gelişmiş fonksiyonu bulunuyor. Bu fonksiyonlarla resimlerin sınıflandırılması, tanımlanması, thumbnail formatlarının oluşturulması, taxonomy (SEO tarafında önem arz eden bir konudur ve yazının hazırlandığı tarih itibariyle Microsoft 86 kategori başlığından bahsediyordu) veya domain bazında kategorilendirilmesi, clip-art statüsünde olup olmadıklarının berlilenmesi, elle çizilip çizilmediklerinin anlaşılması, cinsel içerik içermediğinin tespit edilmesi ve daha bir çok şey mümkün. İlerleyen zamanlarda elbette yeni fonksiyonellikler de eklenecektir. Dilerseniz siz bu örnekten yararlanarak kendi fotoğraf albümlerinizden seçtiğiniz görüntüleri Computer Vision'a yorumlatmayı deneyebilirsiniz. Böylece geldik bir makalemizin daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.
 

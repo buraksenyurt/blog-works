@@ -1,4 +1,4 @@
----
+﻿---
 title: "Bir Ruby Uygulamasını Google Cloud Platform Üzerine Taşımak"
 pubDate: 2018-01-27 17:00:00
 categories:
@@ -17,7 +17,7 @@ tags:
 ---
 
 # Bir Ruby Uygulamasını Google Cloud Platform Üzerine Taşımak
-![image.axd](images/image.axd)
+![rubyongcp_10.gif](images/rubyongcp_10.gif)
 
 Merhaba Arkadaşlar,
 
@@ -42,16 +42,16 @@ gcloud init
 
 Son adımda Google login sayfasına yönlendirildim ve hangi projeyi hangi Google Compute Engine bölgesinde kullanmak istediğime dair iki soruyla karşılaştım. Ben YourFunnyQuote isimli projemi ve uğurlu rakamım 13 ile australia-southeast1-b bölgesini tercih ettim.
 
-![image.axd](images/image.axd)
+![rubyongcp_1.gif](images/rubyongcp_1.gif)
 
 ve login sonrasında da aşağıdaki ekranla karşılaştım.
 
-![image.axd](images/image.axd)
+![rubyongcp_2.gif](images/rubyongcp_2.gif)
 
 Bir başka deyişle West-World üzerinden gcloud'u kullanabilmek için kimliğim doğrulanmıştı.
 
 > Diğer bölgeler hakkında görsel bilgiye ihtiyaç duyarsanız [şu adrese](https://cloud.google.com/about/locations/#regions-tab) uğramanızı tavsiye ederim.
-> ![image.axd](images/image.axd)
+> ![rubyongcp_9.gif](images/rubyongcp_9.gif)
 
 Kurulumun sorunsuz tamamlanıp tamamlanmadığından emin olmak için de şu komutu çalıştırdım.
 
@@ -59,7 +59,7 @@ Kurulumun sorunsuz tamamlanıp tamamlanmadığından emin olmak için de şu kom
 gcloud --help
 ```
 
-![image.axd](images/image.axd)
+![rubyongcp_6.gif](images/rubyongcp_6.gif)
 
 Bu işlemler sırasında seçtiğimiz proje önemli. Nitekim taşıma işlemi sonrasında kodlarımız bu proje ile ilişkiliendirimiş Instance'a taşınacak.
 
@@ -79,7 +79,7 @@ ruby -v
 
 terminal komutu ile de yüklenen versiyondan emin oldum.
 
-![image.axd](images/image.axd)
+![rubyongcp_5.gif](images/rubyongcp_5.gif)
 
 Örnek olarak REST tipinden bir servis geliştirmeyi planlıyordum. İşimi kolaylaştıracak paket ise Sinatra'ydı (Ruby on Rails çatısı da tercih edilebilir tabii ki) Ancak Ruby ile yeni tanışmış olan West-World büyük üstad Sinatra'dan da bihaberdi. Ona "I did it my way" sözlerini fısıldayarak usta sanatçıyı anımsatmaya çalıştım dersem deli olduğumu düşüneceksiniz. Bende bu nedenle
 
@@ -177,7 +177,7 @@ ruby app.rb
 
 ifadesi ile programı çalıştırdım ve tarayıcıyı her güncelleyişimde rastgele bir söz ile karşılaştığımı gördüm. Dikkat edeceğiniz üzere localhost:8080/quotes/random adresine talepte bulunuluyor. Şu an için yeterli gibi görünse de amaç bunu Google Cloud üzerinden sunabilmekti.
 
-![image.axd](images/image.axd)
+![rubyongcp_3.gif](images/rubyongcp_3.gif)
 
 gcloud ile Taşıma
 
@@ -230,7 +230,7 @@ gcloud app browse
 
 diyerekten de tarayıcının açılmasını ve ilgili projeye gidilmesini sağlayabilirsiniz. Benim elde ettiğim sonuç şöyleydi.
 
-![image.axd](images/image.axd)
+![rubyongcp_4.gif](images/rubyongcp_4.gif)
 
 Adres çubuğundaki adrese dikkat edin lütfen. Bu arada yazıyı tamamladıktan sonra servisi kapattım:)) Yani çalıştığının tek ispatı bu ekran görüntüsü. Nitekim Google Cloud Platform bana 364 günlük bedava kullanma süresi ve 300 dolarlık kredi bahşetmişti ama neme lazım. Her an her şey olabilirdi. Bu nedenle ilgili adrese ulaşamazsanız lütfen beni affedin. Kendi projeniz ile denediğinizde ekstra bir durum oluşmazsa taşımanızı sorunsuz gerçekleştiriyor olmalısınız.
 
@@ -238,6 +238,6 @@ Kapatırken
 
 Pek tabii Google Cloud Platform bu kadar basit değil. Computation, Big Data, Storage, StackDriver, Networking vb pek çok ana başlık altında yer alan hizmetler içeriyor. Söz gelimi API Endpoint dikkatimi çekelerinden birisi. Özellikle ölçekleme ve yüksek performans gerektiren APIlerimiz için biçilmiş kaftan gibi duruyor. Bunun en büyük sebeplerinden birisi Proxy Container tarafında NGinx sunucularını kullanması. Aşağıdaki çizimde söz konusu yapının kabataslak hali var (Çözünürlük için lütfen kusura bakmayın. Telefon kamerasından ancak bu kadar oluyor) İstemci talepleri öndeki Load Balancer'dan sonra Nginx tabanlı Proxy servisine geliyor ve buradan API'nin (söz gelimi Python veya bir Java uygulamasının) konuşlandırıldığı Container Instance'ına geçiyor. gcloud alt taraftan da görüleceği üzere dağıtım adımından sorumlu. Servis yönetimi (Service Management) gcloud ile konuşarak taşıma operayonlarını ve konfigurasyon içeriğini yönetiyor. Çalışma zamanı kontrolleri ve raporlamalarda servis kontrolün (Service Control) işi. Çalışma zamanını web tabanlı Cloud Console üzerinden de izleme şansımız var.
 
-![image.axd](images/image.axd)
+![rubyongcp_8.gif](images/rubyongcp_8.gif)
 
 Bu mimarileri anlamaya çalışmamız önemli. Ama biraz dinlendikten sonra. Çünkü, West-World'de güneş çoktan battı. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

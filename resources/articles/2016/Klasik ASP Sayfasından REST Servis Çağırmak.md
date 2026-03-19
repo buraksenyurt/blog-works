@@ -1,4 +1,4 @@
----
+﻿---
 title: "Klasik ASP Sayfasından REST Servis Çağırmak"
 pubDate: 2016-02-24 12:00:00
 categories:
@@ -16,7 +16,7 @@ tags:
 ---
 
 # Klasik ASP Sayfasından REST Servis Çağırmak
-![image.axd](images/image.axd)
+![asprest_0.gif](images/asprest_0.gif)
 
 Merhaba Arkadaşlar,
 
@@ -24,7 +24,7 @@ Merhaba Arkadaşlar,
 
 İşte geçtiğimiz günlerde yine bizim turuncu bankamızda buna benzer bir ihtiyaç doğdu. Klasik ASP ile yazılmış ve neredeyse 10 yaşından büyük olan bir ürünün yeni nesil bir teknoloji ile entegre olması gerekti. Söz konusu ASP uygulaması bunca yıl çalıştığı için üzerine eklenen kodlar sebebiyle tam bir [Lawa-Flow AntiPattern](https://sourcemaking.com/antipatterns/lava-flow) oluşmasına da sebebiyet vermişti. (İçine giren kayboluyor herhangibir yerine müdahale etmek gerçekten yürek istiyordu) Ancak kullanıcı alışkanlıkları, yenileme maliyetleri ve kaynak sıkıntısı nedeniyle tekrardan yazılamıyordu. Ürünün güncel sıkıntısı ise içerdiği C tabanlı API'nin yeni nesil 64bit sunucularda çalışmamasıydı. İlgili kütüphane yıllarca önce dış kaynak bir firma tarafından yazılmıştı. İlgili firmadan çözüm için destek alınabilirdi. Şayet firma hala var olsaydı. Var olan C kütüphanesi banka dışı kurum ile SNA isimli eski bir protokol üzerinden haberleşme yapan fonksiyonellikler içeriyordu. Ne var ki dış kurum yakın zamanda bu protokolü terk edip TCP/IP tabanlı bir alt yapıya geçeceğini duyurmuştu. Dolayısıyla C kütüphanesinin değiştirilmesi öncelikli bir gereksinim haline gelmişti. Çözüm olarak C kütüphanesinin gerçekleştirdiği bu haberleşmeyi üstlenen REST tipinden bir servisin devreye alınmasına karar verildi. Problem basitti;.Net ile geliştirilecek olan REST servisin, HTTP POST/GET gibi metodlar ile çalışacak operasyonları klasik ASP sayfasından nasıl tüketilebilirdi? (Senaryomuzu şekilsel olarak aşağıdaki gibi özetleyebiliriz. Aslında canlı halini görseniz sarı kağıt üzerinde kurşun kalemli olan bu çizim gayet renkli ve canlı duruyor)
 
-![image.axd](images/image.axd)
+![asprest_1.gif](images/asprest_1.gif)
 
 ## REST Servisin Geliştirilmesi
 
@@ -120,7 +120,7 @@ web.config
 
 Servis uygulamasına ait konfigurasyon içeriğinde dikkat edilmesi gerekenler webHttp endPoint davranışının uygulanması ve webHttpBinding Binding tipinin kullanılmış olmasıdır. Böylece servis uygulamamız HTTP Post, Put, Get ve Delete gibi metodlara cevap verebilecek çalışma ortamına kavuşmuş olacaktır. Örneği IIS üzerine publish ettikten sonra aşağıdaki ekran görüntüsündekine benzer yardım içeriklerine erişebilmemiz gerekmektedir.
 
-![image.axd](images/image.axd)
+![asprest_2.gif](images/asprest_2.gif)
 
 ## Klasik ASP Sayfasının Geliştirilmesi
 
@@ -164,6 +164,6 @@ Aslında ASP formu oldukça basit. Submit işlemi gerçekleştirildiğinde yine 
 
 Yapılan çağrıya ait sonuçlar xmlhttp değişkeni üzerinden yakalanbilirler. responseText ile gelen cevabı, status ile HTTP durum kodunu, statustext ile de durum koduna ait açıklamayı yakalayabiliriz. Bu işlemin ardından yapılan tek şey elde edilen sonuçları ekrana basmaktır. Örnek başarılı bir şekilde çalıştığında aşağıdakine benzer bir sonuç görülebilir.
 
-![image.axd](images/image.axd)
+![asprest_3.gif](images/asprest_3.gif)
 
 Özetleyecek olursak eski nesil bir ASP sayfasından, yeni nesil REST tipinden bir servisi çağırmayı başarabildiğimizi ifade edebiliriz. Tabii ki bu benim nasıl yapılır sorusu için uğraştığım ilk kod parçası. Asıl ihtiyacımızda bu servis entegrasyonunun var olan miras uygulamasının hangi ASP sayfalarında yapılacağının bulunması, gelen içeriklerin kodda kullanılabilir kıvama getirilmesi gibi gereksinimler söz konusu. Bize kolay gelsin. Böylece geldik bir makalemizin daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

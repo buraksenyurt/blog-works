@@ -1,4 +1,4 @@
----
+﻿---
 title: "Web API Tarafında Dapper Kullanımı"
 pubDate: 2019-08-16 10:30:00
 categories:
@@ -24,7 +24,7 @@ tags:
 ---
 
 # Web API Tarafında Dapper Kullanımı
-![image.axd](images/image.axd)
+![westwind.png](images/westwind.png)
 
 O [cumartesi gecesi çalışması](https://github.com/buraksenyurt/saturday-night-works)nı bitirdiğimde, yaptığım örneğin beni çok da tatmin etmediği gerçeğiyle karşı karşıyaydım. Bazen böyle hissediyordum. Boşa kürek çektiğim hissine kapılıyor ve neden tüm bunlarla uğraştığımı sorguluyordum. Belki de sonraki yıllar boyunca kullanmayacağım bir şeyler üzerinde çalışmıştım. Ne aldığım notları ne de senaryo için kullandığım Westwind adını beğenmiştim. Örnek çok sığdı. Zengin değildi. Bir şekilde beni rahatsız ediyordu.
 
@@ -59,9 +59,9 @@ SELECT * FROM FIRM;
 
 İlk komutla dosya sisteminde Westwind.db isimli SQLite veri tabanı nesnesi oluşturulur..databases komutu sayesinde var olan veri tabanını görebiliriz. Takip eden CREATE, INSERT, SELECT komutları çoğunuzun aşina olduğu standart SQL cümleleridir. Tablonun oluşturulmasını takiben örnek olarak iki firma bilgisi girilmiş ve tablonun tüm içeriği terminal penceresine istenmiştir.
 
-![image.axd](images/image.axd)
+![07_22_Cover_1.png](images/07_22_Cover_1.png)
 
-![image.axd](images/image.axd)
+![07_22_Cover_2.png](images/07_22_Cover_2.png)
 
 ## Web API Projesinin Oluşturulması
 
@@ -265,11 +265,11 @@ POST
 
 Sonuç aşağıdaki gibi olmalıdır.
 
-![image.axd](images/image.axd)
+![07_22_Cover_3.png](images/07_22_Cover_3.png)
 
 Aynı ID ile tekrar giriş yapmak istersek Primary Key alanı nedeniyle bir çalışma zamanı hatası alınması gerekir. Nitekim tekillik ihlal edilmektedir.
 
-![image.axd](images/image.axd)
+![07_22_Cover_4.png](images/07_22_Cover_4.png)
 
 Şimdi de belli bir şehirdeki şirketleri listeleyelim.
 
@@ -278,7 +278,7 @@ http://localhost:5404/api/Firms/Detroit
 GET
 ```
 
-![image.axd](images/image.axd)
+![07_22_Cover_5.png](images/07_22_Cover_5.png)
 
 Tavsiye edilen bir servis çağrımı olmamakla birlikte tüm firmalar (1000 satırlık veriyi birden vermek çok da anlamlı olmaz gerçek hayat senaryolarında) için aşağıdaki talebi kullanalım.
 
@@ -287,7 +287,7 @@ http://localhost:5404/api/Firms
 GET
 ```
 
-![image.axd](images/image.axd)
+![07_22_Cover_6.png](images/07_22_Cover_6.png)
 
 ID bazlı bir güncelleme ile testlere devam edebiliriz.
 
@@ -297,7 +297,7 @@ PUT
 {"Id":55,"Name":"Queen Marry Music LTD","City":"London","Salary":4350000}
 ```
 
-![image.axd](images/image.axd)
+![07_22_Cover_7.png](images/07_22_Cover_7.png)
 
 Son olarak ID bilgisiyle bir firmayı silerek testlerimizi tamamlayalım.
 
@@ -308,7 +308,7 @@ DELETE
 
 Tabi o ID için bir kayıt yoksa HTTP 404 NotFound döndürdüğümüzü de görmemiz lazım.
 
-![image.axd](images/image.axd)
+![07_22_Cover_8.png](images/07_22_Cover_8.png)
 
 ## Ben Neler Öğrendim?
 

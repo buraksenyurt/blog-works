@@ -1,4 +1,4 @@
----
+﻿---
 title: "Sunucu Bazlı Blazor Uygulaması ve Firestore Kullanımı"
 pubDate: 2019-07-05 10:20:00
 categories:
@@ -26,7 +26,7 @@ tags:
 ---
 
 # Sunucu Bazlı Blazor Uygulaması ve Firestore Kullanımı
-![image.axd](images/image.axd)
+![simpscss.png](images/simpscss.png)
 
 Mavi renkli teknoloji firmasına henüz yeni başlamıştım. Yaş ve önceki dönem tecrübeleri nedeniyle standart olarak uygulanan oryantasyon hızlıca atlanmış ve 2002 yılında geliştirilmeye başlanmış Web Forms kurugulu ERP uygulamasından ilk görevimi almıştım. Henüz çevik dönüşüme başlanmamıştı. Elimde tek sayfalık bir analiz dokümanı bulunuyordu. Otomotiv tarafındaki iş bilgim az olduğundan dokümanda yer almayan şeyler hakkında pek bir fikrim yoktu. Görevim kağıt üstünde oldukça basitti. Popup pencere açtırıp içerisinde bir araca ait veriler gösterecektim. Ne kadar zor olabilirdi ki:))
 
@@ -38,7 +38,7 @@ Tabii zaman hızla aktı. Aradan aylar geçti. Hem bu yaşlı ürüne hem yeni n
 
 Blazor çoğunlukla client-side web framework olarak düşünülmekte. Bu kabaca, Component ve DOM etkileşiminin aynı process içerisinde olması anlamına geliyor ancak process'lerin ayrılması konusunda esnek bir çatı. Öyle ki Blazor'un bir Web Worker içinde çalıştırılıp UI (User Interface) thread'inden ayrıştırılabileceği ifade edilmekte. Diğer yandan 0.5 sürümü ile birlikte Blazor uygulamalarının sunucu tarafında çalıştırılması mümkün hale gelmiş. Yani.Net Core ile etkileşimde olacak şekilde Blazor bileşenlerini sunucu tarafında çalıştırabiliriz. Bu senaryoda.Net tarafı WebAssembly yerine CoreCLR üzerinde koşmakta ve.NET ekosisteminin pek çok nimetinden (JIT, debugging vb) yararlanabilmekte. Kullanıcı önyüz tarafı ile etkileşimde olayların yakalanması ve Javascript Interop çağrıları içinse SignalR ele alınmakta. Aşağıdaki kötü çizim konuyla ilgili olarak size bir parça daha fikir verebilir.
 
-![image.axd](images/image.axd)
+![09_35_credit_10.png](images/09_35_credit_10.png)
 
 Benim bu çalışmadaki amacım Server Side tipinden Blazor uygulamalarının Ubuntu gibi bir platformda nasıl geliştirilebileceğini öğrenmek ve bunu yaparken de Google Cloud Firestore'u kullanarak basit CRUD (Create Read Update Delete) operasyonları içeren bir ürün tasarlamaktı. Araştırmalarıma göre Server Side Blazor modelinin belli başlı avantajları bulunuyor. Bunları şöyle sıralayabiliriz.
 
@@ -59,7 +59,7 @@ sudo dotnet new --install "Microsoft.AspNetCore.Blazor.Templates"
 dotnet new --help
 ```
 
-![image.axd](images/image.axd)
+![09_35_credit_1.png](images/09_35_credit_1.png)
 
 Görüldüğü gibi dotnet aracının new şablonlarına Blazor eklentileri gelmiş durumda.
 
@@ -67,33 +67,33 @@ Görüldüğü gibi dotnet aracının new şablonlarına Blazor eklentileri gelm
 
 Kod tarafına geçmeden önce Google Cloud Platform üzerindeki veri tabanı hazırlıklarımızı gerçekleştirelim. Önce [Firebase Console'a gidelim](https://console.firebase.google.com/) ve yeni bir proje oluşturalım. Ben aşağıdaki özelliklere sahip enbiey (NBA) isimli bir proje oluşturdum.
 
-![image.axd](images/image.axd)
+![09_35_credit_2.png](images/09_35_credit_2.png)
 
 Ardından database sekmesinden Create Database seçeneği ile ilerleyip Security rules for Cloud Firestore penceresindeki Start in locked mode seçeneğini işaretli bırakalım.
 
-![image.axd](images/image.axd)
+![09_35_credit_3.png](images/09_35_credit_3.png)
 
 Varsayılan olarak Cloud Firestore tipinden bir veri tabanı oluşturacağız (Realtime Database tipini de kullanabilirsiniz) Sonrasında bir koleksiyon (collection) ve örnek doküman (document) ile ilk veri girişimizi yapabiliriz. Söz gelimi players isimli koleksiyonu açıp,
 
-![image.axd](images/image.axd)
+![09_35_credit_4.png](images/09_35_credit_4.png)
 
 içine fullname, length, position ve someinfo alanlarından oluşan örnek bir oyuncuyu ekleyebiliriz.
 
-![image.axd](images/image.axd)
+![09_35_credit_5.png](images/09_35_credit_5.png)
 
 Sonuçta aşağıdakine benzer bir dokümanımızın olması gerekiyor.
 
-![image.axd](images/image.axd)
+![09_35_credit_6.png](images/09_35_credit_6.png)
 
 Yazılacak Blazor uygulamasının (başka uygulamalar içinde benzer durum söz konusu aslında) Firestore veri tabanını kullanabilmesi için Credential ayarlamalarını da yapmalıyız. Yeni açılan projenin Service Account'u için bir key dosyası üretmemiz lazım. Öncelikle [Google IAM adresine](https://console.cloud.google.com/iam-admin/) gidip projemizi seçelim ve ardından istediğimiz service account'u işaretleyip üç nokta düğmesini kullanarak Create Key tuşuna basalım.
 
-![image.axd](images/image.axd)
+![09_35_credit_7.png](images/09_35_credit_7.png)
 
 Gelen penceredeki varsayılan JSON seçimini olduğu gibi bırakalım.
 
-![image.axd](images/image.axd)
+![09_35_credit_8.png](images/09_35_credit_8.png)
 
-![image.axd](images/image.axd)
+![09_35_credit_9.png](images/09_35_credit_9.png)
 
 İndirilen JSON uzantılı dosya içeriği Blazor uygulaması için gerekli olacak, unutmayın.
 
@@ -711,19 +711,19 @@ NavMenu.cshtml dosyasına da yeni razor sayfaları için gerekli linkleri ekleme
 
 Artık yazdığımız ürünü test etmeye hazırız. Uygulamayı Visual Studio Code ile geliştirdik ve önümüzde bir Solution var. Visual Studio Code'da NBAWorld klasörünü ayrıca açıp F5 tuşuna bastığımızda bize çözümü hangi derleyici ile debug etmek istediğimiz sorulacaktır..Net Core seçeneğini işaretlersek ilgili Debug ayarları JSON dosyasına eklenir ve Build işlemi başlar. Ardından uygulama ayağa kalkıp (ki oraya gelene kadar aldığım hataları düzelttim) http://localhost:5888/ adresinden yayına başlar. Sizin de aşağıdakine benzer bir görüntü elde etmeniz gerekiyor.
 
-![image.axd](images/image.axd)
+![09_35_credit_11.png](images/09_35_credit_11.png)
 
 Oyuncular linkine basıldığında da aşağıdaki gibi...
 
-![image.axd](images/image.axd)
+![09_35_credit_12.png](images/09_35_credit_12.png)
 
 Yeni bir efsane eklemek istersek NewPlayer sayfasını kullanabiliriz.
 
-![image.axd](images/image.axd)
+![credit_13.png](images/credit_13.png)
 
 Güncelleme fonksiyonelliğini ekledikten sonraki durum da şöyle olacaktır. Görüldüğü üzere bir popup ile gerekli düzenlemeleri yapabiliyoruz (Bootstrap ile modal popup tasarlamak gerçekten kolay)
 
-![image.axd](images/image.axd)
+![09_35_credit_14.png](images/09_35_credit_14.png)
 
 ## Ben Neler Öğrendim?
 

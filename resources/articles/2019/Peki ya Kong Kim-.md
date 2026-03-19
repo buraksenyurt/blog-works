@@ -1,4 +1,4 @@
----
+﻿---
 title: "Peki ya Kong Kim?"
 pubDate: 2019-05-06 07:00:00
 categories:
@@ -26,7 +26,7 @@ tags:
 ---
 
 # Peki ya Kong Kim?
-![image.axd](images/image.axd)
+![kingkong.jpg](images/kingkong.jpg)
 
 Kurumsal mimari ekibinin önerdiği çatılardan birisi üzerine kurulmuş yeni ürünümüzü test ortamına almaya çalıştığımız bir gündü. Local makinelerimizde çok az sorunla ayağa kaldırdığımız proje, test ortamında ne yazık ki daha fazla problem üretmişti. Ağırlıklı olarak web önyüzünden iş kurallarının yürütüldüğü Web API servislerine gidişlerde sorunlar yaşıyorduk.
 
@@ -302,13 +302,13 @@ docker ps -a
 
 WestWord'de durum aşağıdaki gibi.
 
-![image.axd](images/image.axd)
+![04_33_credit_1.png](images/04_33_credit_1.png)
 
 > Docker imajları çalışmaya başladıktan sonra servislere hangi IP adresi üzerinden gitmemiz gerektiğine bakmak için 'docker inspect game_center_api've 'docker inspect fabrikam_api'komutlarından yararlanabiliriz. Bize uzun bir Json içeriği dönecektir ancak son kısımda IPAddress bilgisini yakalayabiliriz. WestWorld için docker tabanlı adresler http://172.17.0.3:65001/api/v1/players ve http://172.17.0.2:65002/api/v1/games şeklinde oluştu. Sizin sisteminizde bu IP adresleri farklı olabilir.
 
-![image.axd](images/image.axd)
+![04_33_credit_2.png](images/04_33_credit_2.png)
 
-![image.axd](images/image.axd)
+![04_33_credit_3.png](images/04_33_credit_3.png)
 
 ## Kong Kurulumları ve Docker Servislerinin Dahil Edilmesi
 
@@ -331,11 +331,11 @@ docker run -d --name kong --network=sphere-net -e "KONG_LOG_LEVEL=debug" -e "KON
 
 Bu adımlardan sonra kong ve postgres ile ilgili Container'ların çalıştığını teyit etmeliyiz.
 
-![image.axd](images/image.axd)
+![04_33_credit_4.png](images/04_33_credit_4.png)
 
 Hatta http://localhost:9001 adresine bir HTTP GET talebi attığımızda konfigurasyon ayarlarını da görebiliriz. 9001 portu (Normal kurulumda 8001 de olabilir) yönetsel işlemlerin bulunduğu servis katmanıdır. Service ekleme, silme, görüntüleme ve güncelleme gibi işlemler 9001 portundan ulaşılan servisçe yapılır (Route yönetimi içinde aynı şey söz konusudur)
 
-![image.axd](images/image.axd)
+![04_33_credit_5.png](images/04_33_credit_5.png)
 
 Komutlar biter mi? Şimdi servislere ait Container'ları sphere-net üzerinde çalışacak şekilde ayağa kaldırmalıyız.
 
@@ -345,11 +345,11 @@ docker run -d --name=fabrikam_api --network=sphere-net fma_docker
 docker ps -a
 ```
 
-![image.axd](images/image.axd)
+![04_33_credit_6.png](images/04_33_credit_6.png)
 
 > KONG için bir Docker Network oluşturduk. Bu ağa dahil olan ne kadar Container varsa IP adresleri farklılık gösterecektir. sphere-net'e dahil olan Container'ların host edildiği IP adreslerini öğrenmek için terminalden 'docker inspect sphere-net'komutunu çalıştırabiliriz.
 
-![image.axd](images/image.axd)
+![04_33_credit_7.png](images/04_33_credit_7.png)
 
 ## Çalışma Zamanı (Bir başka deyişle KONG üzerinde servislerin ayarlanması)
 
@@ -371,11 +371,11 @@ Body :
 }
 ```
 
-![image.axd](images/image.axd)
+![04_33_credit_8.png](images/04_33_credit_8.png)
 
 Bu işlemi FabrikamAPI içinde yaptıktan sonra http://localhost:9001/services adresine gidersek servis bilgilerini görebiliriz.
 
-![image.axd](images/image.axd)
+![04_33_credit_9.png](images/04_33_credit_9.png)
 
 Servisleri eklemek yeterli değil. Route tanımlamalarını da yapmak gerekiyor (KONG tarafındaki entrypoint tanımlamaları için gerekli bir aksiyon olarak düşünebiliriz) KONG services'e aşağıdaki içeriğe sahip talepleri göndererek gerekli route tanımlamaları yapılabilir.
 
@@ -403,7 +403,7 @@ Body :
 
 Oluşan route bilgilerini http://localhost:9001/routes adresinden görebiliriz. Her iki servis için gerekli route tanımlamaları başarılı bir şekilde yapıldıktan sonra KONG üzerinden GameCenterAPI ve FabrikamAPI servislerine erişebiliyor olmamız gerekir.
 
-![image.axd](images/image.axd)
+![04_33_credit_10.png](images/04_33_credit_10.png)
 
 ## Yararlandığım Diğer Docker Komutları
 

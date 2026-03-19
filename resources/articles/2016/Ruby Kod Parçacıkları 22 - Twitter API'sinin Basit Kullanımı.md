@@ -1,4 +1,4 @@
----
+﻿---
 title: "Ruby Kod Parçacıkları 22 - Twitter API'sinin Basit Kullanımı"
 pubDate: 2016-04-04 15:00:00
 categories:
@@ -14,7 +14,7 @@ tags:
 ---
 
 # Ruby Kod Parçacıkları 22 - Twitter API'sinin Basit Kullanımı
-![image.axd](images/image.axd)
+![rubytwt_7.gif](images/rubytwt_7.gif)
 
 Merhaba Arkadaşlar,
 
@@ -28,13 +28,13 @@ Bazı günler şirketten geç çıkıyorum. Özellikle el ayak çekildiğinde of
 
 İlk olarak Ruby komut satırından twitter kütüphanesini sistemime yükledim. Eğer sisteminizde ruby ve [ruby development kit](https://github.com/oneclick/rubyinstaller/wiki/Development-Kit) yüklü ise gem'lerin sorunsuz bir şekilde indirilip kurulabiliyor olması gerekir. Aynen aşağıdaki ekran görüntüsünde olduğu gibi.
 
-![image.axd](images/image.axd)
+![rubytwt_1.gif](images/rubytwt_1.gif)
 
 ## Twitter API için Gerekli Kaydın Yapılması
 
 Servis tabanlı çalışan pek çok API'de olduğu gibi Twitter'ın geliştiricilere açılan hizmetlerini kullanabilmek için öncelikle uygulama bazında kayıt yaptırmamız gerekir. Bunun için [https://apps.twitter.com/](https://apps.twitter.com/) adresine gidip yeni bir uygulama oluşturarak işe başlamalıyız. Ben gerekli girişleri yaparak bir deneme uygulaması oluşturdum.
 
-![image.axd](images/image.axd)
+![rubytwt_5.gif](images/rubytwt_5.gif)
 
 Uygulama oluşturulurken dikkat edilmesi gereken noktalardan birisi de Access Token'larının ürettirilmesi (Varsayılan olan bu token bilgileri oluşturulmuyor) Twitter'ın REST servislerinin kullanılabilmesi için consumer key, consumer secret, access token ve access token secret değerlerine ihtiyaç var. Bu değerler twitter kütüphanesi içerisinde yer alan istemci sınıfının oluşturulmasında kullanılacak.
 
@@ -66,11 +66,11 @@ Kod parçasında ilk olarak gerekli gem bildirimleri yapılıyor. ardından Twit
 
 Sertifika hatasını aşınca ve Ruby kodunu çalıştırınca ta taaa...
 
-![image.axd](images/image.axd)
+![rubytwt_2.gif](images/rubytwt_2.gif)
 
 Görüldüğü üzere o gün girdiğim son üç tweet'imi başarılı bir şekilde alabildim. Hatta LastTweets.yml isimli dosya da başarıl bir şekilde oluştu.
 
-![image.axd](images/image.axd)
+![rubytwt_3.gif](images/rubytwt_3.gif)
 
 Aslında bu şekilde tweet'lerin tamamını fiziki olarak indirebiliriz. Dolayısıyla basit arşivleme yapabiliriz.
 
@@ -84,7 +84,7 @@ client.update("Bu tweet, Twitter gem kullanilarak Ruby kodundan atilmistir.")
 
 Kodu tekrar çalıştırdıktan sonra heyecanla twitter hesabımı açtım ve aşağıdaki sonucu gördüm.
 
-![image.axd](images/image.axd)
+![rubytwt_4.gif](images/rubytwt_4.gif)
 
 Vuhu huuuu:) client nesne örneği üzerinden çağırılan update metodu, twitter uygulamasının sahibi olan kişi adına parametre olarak gelen içeriği göndermişti.
 

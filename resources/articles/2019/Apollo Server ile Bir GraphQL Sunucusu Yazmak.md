@@ -1,4 +1,4 @@
----
+﻿---
 title: "Apollo Server ile Bir GraphQL Sunucusu Yazmak"
 pubDate: 2019-04-26 07:07:00
 categories:
@@ -21,7 +21,7 @@ tags:
 ---
 
 # Apollo Server ile Bir GraphQL Sunucusu Yazmak
-![image.axd](images/image.axd)
+![apollo13.jpg](images/apollo13.jpg)
 
 James A. Lovell, John L. Swigert, ve Fred W. Haise. Bu isimleri düşününce belki de çoğumuzun aklına bir şey gelmiyordur. Peki ya, Amerikalı veya İngiliz oldukları düşünülen bu şahısların yerine şu isimleri söylersek. Tom Hanks, Bill Paxton ve Kevin Bacon. Hımm...Sanırım birilerinin zihninde bir şeyler canlandı. Evet, evet...Bunlar film yıldızları değil mi? Üçü bir arada hangi filmde oynamışlardı acaba? Hala anımsayamadıysanız işte bir ipucu daha. "Houston we've got a problem." Şimdi anımsadınız mı?
 
@@ -29,11 +29,11 @@ Başta söylediğimiz isimler, 11 Nisan 1970 tarihinde uzaya fırlatılan Apollo
 
 Bildiğiniz üzere Facebook menşeili GraphQL son yılların yükselen trendlerinden. Çalışmakta olduğum şirket dahil bir çok yerde mikro servisler söz konusu olduğunda REST API mi GraphQL mi sıklıkla karşılaştırılıyor. Ben henüz emekle aşamasında olduğum için GraphQL'i anlamaya çalıştığım bir dönemdeyim. Basit örnekler dışında bu seferki amacımsa stand alone olarak çalışabilen bir GraphQL sunucusu yazmak. Bu amaçla tavsiye edilen Apollo Server API arayüzünü kullanmaya karar verdim. Bu arada [Apollo](https://www.apollographql.com/) uzun zamandır kabul görmüş bir[Framework olarak Thoughtworks teknoloji radarının](https://www.thoughtworks.com/radar/languages-and-frameworks/apollo) merceğinde yer alıyor. 2018 Nisan ayında Trial, 2019 Mayısında ise Adopt kategorsinde değerlendiriliyor.
 
-![image.axd](images/image.axd)
+![twgql.png](images/twgql.png)
 
 Apollo Server program arayüzü web, mobile gibi istemciler için GraphQL servisi sunan bir ürün olarak düşünülebilir. Otomatik API doküman desteği sunar ve herhangibir veri kaynağını kullanabilir. Yani bir veri tabanını veya bir mikroservisi ya da bir REST APIyi, GraphQL hizmeti verecek şekilde istemcilere açabilir. Tek başına sunucu gibi çalıştırılabilmektedir. Pek tabii Heroku gibi cloud ortamlar üzerinde Serverless modda da kullanılabilmekte. Takip ettiğim Apollo Server dokümanlarındaki çalışma modelini bende aşağıdaki gibi resmetmeye çalıştım.
 
-![image.axd](images/image.axd)
+![04_38_credit_1.png](images/04_38_credit_1.png)
 
 İstemciler kendilerine uygun Apollo Client paketlerini kullanarak sunucu tarafı ile kolayca haberleşebilirler. Benim bu çalışmadaki amacım stand alone çalışan bir Apollo sunucusu yazmak ve arka tarafta bir veri tabanını kullanarak (muhtemelen PostgreSQL) veriyi GraphQL üzerinden istemcilere açmak.
 
@@ -190,7 +190,7 @@ mutation {
 }
 ```
 
-![image.axd](images/image.axd)
+![04_38_credit_2.png](images/04_38_credit_2.png)
 
 ```bash
 # Tüm görevlerin listesi
@@ -204,7 +204,7 @@ mutation {
 }
 ```
 
-![image.axd](images/image.axd)
+![04_38_credit_3.png](images/04_38_credit_3.png)
 
 ```bash
 # Var olan bir satırı güncelleme
@@ -225,7 +225,7 @@ mutation {
 }
 ```
 
-![image.axd](images/image.axd)
+![04_38_credit_4.png](images/04_38_credit_4.png)
 
 ```bash
 # Id değerine göre görev silinmesi
@@ -237,7 +237,7 @@ mutation {
 }
 ```
 
-![image.axd](images/image.axd)
+![04_38_credit_5.png](images/04_38_credit_5.png)
 
 İlk sürüm önceden de belirttiğimiz üzere Apollo Server'ı basitçe işin içerisine katmak ve nasıl çalıştığını anlamak içindi. Array içeriği kalıcı bir ortamda saklanmadığından uygulama sonlandırıldığında tüm görev listesi kaybolacaktır. Kalıcı bir depolama alanı için farklı bir alternatif düşünmeliyiz. CRUD operasyonlarını başka bir servise atayabilir veya bir veri tabanı kullanabiliriz.
 
@@ -263,7 +263,7 @@ ALTER ROLE Scott CREATEDB;
 
 İlk komut ile postgresql'i Linux ortamına kuruyoruz. Kurma işlemi sonrası ikinci ve üçüncü komutları kullanarak varsayılan kullanıcı bilgisi ile Postgresql ortmına giriyoruz. \l ile var olan veri tabanlarının listesini, \du ile kullanıcıları (rolleri ile birlikte), \conninfo ile de hangi veri tabanına hangi kullanıcı ile hangi porttan bağlandığımıza dair bilgileri elde ediyoruz. CREATE ROLE ile başlayan satırda Scott isimli yeni bir rol tanımladık. Sonrasında takip eden komutla bu role veri tabanı oluşturma yetkisi verdik. \q ile o an aktif olan oturumu kapatıyoruz. Şimdi scott rolünü kullanarak örnek veri tabanımızı ve tablolarını oluşturmaya çalışacağız.
 
-![image.axd](images/image.axd)
+![04_38_credit_6.png](images/04_38_credit_6.png)
 
 ```bash
 psql -d postgres -U scott
@@ -286,7 +286,7 @@ SELECT * FROM tasks;
 
 İlk komut ile scott rolünde oturum açıyoruz. Sonrasında ThoughtWorld isimli bir veri tabanı oluşturuyoruz. \list ile var olan veri tabanlarına bakıyoruz ve \c komutuyla ThoughtWorld'e bağlanıyoruz. Ardından tasks isimli bir tablo oluşturuyor ve içerisine deneme amaçlı bir satır ekliyoruz. Son olarak basit bir Select işlemi icra etmekteyiz.
 
-![image.axd](images/image.axd)
+![04_38_credit_7.png](images/04_38_credit_7.png)
 
 Artık PostgreSQL tarafı hazır. Şimdi veri tabanını Apollo suncusunda kullanmaya başlayabiliriz. Ancak öncesinde gerekli npm modülünü yüklemek lazım (Bir önceki senaryo ile kodların karışmaması adına pg-server.js isimli yeni bir dosya üzerinde çalışmaya karar verdim)
 
@@ -406,7 +406,7 @@ houston.listen({ port: 4445 }).then(({ url }) => {
 
 Birinci senaryodaki GraphQL sorguları benzer şekilde ikinci senaryo için de denenebilir. Bu arada Visual Studio Code üzerinde PostgreSQL tarafını kolayca görüntülemek için [Chris Kolkman'nın PostgreSQL eklentisini](https://marketplace.visualstudio.com/items?itemName=ckolkman.vscode-postgres) kullandım.
 
-![image.axd](images/image.axd)
+![04_38_credit_8.png](images/04_38_credit_8.png)
 
 ## İstemci Tarafı
 

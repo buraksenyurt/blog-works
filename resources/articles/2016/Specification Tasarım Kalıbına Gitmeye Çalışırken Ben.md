@@ -1,4 +1,4 @@
----
+﻿---
 title: "Specification Tasarım Kalıbına Gitmeye Çalışırken Ben"
 pubDate: 2016-09-20 21:30:00
 categories:
@@ -12,7 +12,7 @@ tags:
 ---
 
 # Specification Tasarım Kalıbına Gitmeye Çalışırken Ben
-![image.axd](images/image.axd)
+![istebeyle2.gif](images/istebeyle2.gif)
 
 Merhaba Arkadaşlar,
 
@@ -128,7 +128,7 @@ Bu sayede CustomerAnalyzer sınıfı için söz konusu olabilecek ne kadar özel
 
 C# tarafında generic mimarinin ve Interface kullanımının da işe katılması halinde çözüm daha da zenginleştirilebilir. Nitekim söz konusu örnekte bazı handikaplar vardır. Çözüm sadece Customer tipi için söz konusudur. T türünden bir Entity tipi için benzer senaryo inşa edilmek istenebilir. Bu durumda C#'ın generic nimetlerinden de yararlanabiliriz. Hatta şartname bir arayüz (Interface) olarak da tasarlanabilir. Nitekim bu arayüzden türetmeler yapılarak kompozit şartnamelerin hazırlanması (and, or gibi mantıksal birleştirme yaklaşımlarını içeren) ve zincir şeklinde metod kullanımlarına imkan tanınarak aynı entity için ardışıl kriterlerin entegre edilmesi mümkün hale getirilebilir (Bu karmaşık cümleyi daha iyi anlamak için [wikipedia adresine](https://en.wikipedia.org/wiki/Specification_pattern) bakmanızı öneririm)
 
-![image.axd](images/image.axd)
+![specpttrn_1.gif](images/specpttrn_1.gif)
 
 ```csharp
 public interface ISpecification<T>

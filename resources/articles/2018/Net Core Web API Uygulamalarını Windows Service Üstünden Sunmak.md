@@ -1,4 +1,4 @@
----
+﻿---
 title: ".Net Core Web API Uygulamalarını Windows Service Üstünden Sunmak"
 pubDate: 2018-10-17 07:53:00
 categories:
@@ -19,7 +19,7 @@ tags:
 ---
 
 # .Net Core Web API Uygulamalarını Windows Service Üstünden Sunmak
-![image.axd](images/image.axd)
+![scrummy.jpg](images/scrummy.jpg)
 
 Merhaba Arkadaşlar,
 
@@ -122,15 +122,15 @@ create komutunda servisin adını ve exe dosyasının olduğu konumu belirtiyoru
 
 Yukarıdaki komutları çalıştırdıktan sonra aşağıdaki ekran görüntüsündeki sonuçları aldım.
 
-![image.axd](images/image.axd)
+![corewins_1.gif](images/corewins_1.gif)
 
 Görüldüğü üzere HouseAPIService başarılı bir şekilde çalışır konuma geldi. State geçişlerinden bunu görebiliriz. Buna göre artık http://localhost:3403/api/values adresine talepte bulunabiliriz. İşte postman'den elde ettiğim sonuç.
 
-![image.axd](images/image.axd)
+![corewins_2.gif](images/corewins_2.gif)
 
 Artık Windows Service üzerinden yayında olan bir Web API hizmetimiz var. Windows servisini durdurursak tahmin edeceğiniz üzere Web API'yi kullanamayız.
 
-![image.axd](images/image.axd)
+![corewins_3.gif](images/corewins_3.gif)
 
 Tabii bu işsiz servisi sistemde tutmak doğru değil. Sonuçta unutulabilir ve boat anchor anti-pattern hali oluşabilir. Bu servisi silmek için sc'nin delete komutundan yararlanabiliriz.
 

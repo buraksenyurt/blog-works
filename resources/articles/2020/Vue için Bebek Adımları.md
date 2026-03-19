@@ -1,4 +1,4 @@
----
+﻿---
 title: "Vue için Bebek Adımları"
 pubDate: 2020-12-21 08:46:00
 categories:
@@ -20,7 +20,7 @@ tags:
 ---
 
 # Vue için Bebek Adımları
-![image.axd](images/image.axd)
+![vue_manga.png](images/vue_manga.png)
 
 Yazılım işine girdiğimden beri en çok zorlandığım konu Frontend tarafında kodlama yapmak. Ne yazık ki sadece Backend tarafta kalma lüksümüz de pek bulunmuyor. Örneğin hali hazırda çalışmakta olduğum firmada yeni nesil birçok uygulama önyüz tarafında çeşitli Javascript çatıları (Framework) kullanıyor.
 
@@ -90,11 +90,11 @@ Kodlarımızı aşağıdaki gibi geliştirelim.
 
 Oluşturduğumuz HTML sayfasını bir tarayıcıda açtıktan sonra özellikle F12 ile Debug moduna geçip Vue uygulama nesnesi olan app değişkeninin data özelliğindeki bookName içeriğini Console üstünden değiştirmeyi deneyin. Bu değişiklik sayfada bookName'i kullanan tüm elementlere yansıyacaktır. Buradan Vue ana bileşeninin (Component) DOM ile etkileşim halinde olduğunu söyleyebiliriz. İşte bu reaktif olmanın bir sonucudur.
 
-![image.axd](images/image.axd)
+![skynet_41_Screenshot_01.png](images/skynet_41_Screenshot_01.png)
 
 ve F12 - Console sonrası.
 
-![image.axd](images/image.axd)
+![skynet_41_Screenshot_02.png](images/skynet_41_Screenshot_02.png)
 
 İkinci adımımızda Attribute Binding konusunu ele alacağız. HTML elementlerindeki nitelikleri (Örneğin img elementinin src niteliğini) direktifler (Örnekte v-bind) ile Vue verisine (data özelliğinin değerleri) nasıl bağlayacağımızı göreceğiz.
 
@@ -162,11 +162,11 @@ HTML sayfa kodlarını aşağıdaki gibi yazarak devam edelim.
 
 Sayfadaki img elementinin kullandığı resmi kaynağı ve açıklama kısmı Vue bileşeninin data özelliğinden beslenir. Yine F12 Debug moddayken bu içeriklerin değişmesi anında elementlere de yansıyacaktır. Aşağıdaki ekran görüntülerinde olduğu gibi;)
 
-![image.axd](images/image.axd)
+![skynet_41_Screenshot_03.png](images/skynet_41_Screenshot_03.png)
 
 ve F12 Debug mod durumu.
 
-![image.axd](images/image.axd)
+![skynet_41_Screenshot_04.png](images/skynet_41_Screenshot_04.png)
 
 Buraya kadar az çok bir Vue bileşeninin HTML DOM nesneleri ile nasıl konuştuğunu anladık diyebiliriz. Üçüncü adımımızda akış kontrol ifadelerinden if...else kullanımına bakalım.
 
@@ -240,11 +240,11 @@ Kodlarımızı da aşağıdaki gibi geliştirelim.
 
 Sayfada ürünün miktarına göre stock-state altındaki paragraflardan hangisinin gösterileceğine karar veriliyor. Yani verinin durumuna göre bir elementin görünümü, içeriği vs değiştirilebiliyor. İşte örneğe ait çalışma zamanı çıktıları.
 
-![image.axd](images/image.axd)
+![skynet_41_Screenshot_05.png](images/skynet_41_Screenshot_05.png)
 
 ve F12 Console'dan quantity ile onDiscount değerlerini değiştirdikten sonraki durum.
 
-![image.axd](images/image.axd)
+![skynet_41_Screenshot_06.png](images/skynet_41_Screenshot_06.png)
 
 Çok doğal olarak bu tip bir Vue sayfasında bileşenin kullandığı veri önemlidir. Data özelliğinin içeriği bir servisten çekilmiş bir liste olabilir. Bu durumda veriyi sayfada gösterirken basit for döngülerine ihtiyaç duyarız. Dördüncü adımda bu döngüyü bir JSON dizisi için nasıl kullanacağımızı ele alıyoruz.
 
@@ -318,11 +318,11 @@ Kodlarımızı aşağıdaki gibi geliştirelim.
 
 Bu adımdan sonraki çalışma zamanı çıktıları ise aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![skynet_41_Screenshot_07.png](images/skynet_41_Screenshot_07.png)
 
 ve F12 ile Console'a geçip dizinin elemanlarında değişiklik yaptıktan sonrası.
 
-![image.axd](images/image.axd)
+![skynet_41_Screenshot_08.png](images/skynet_41_Screenshot_08.png)
 
 Bir Web sayfası mutlaka kullanıcı ile etkileşim halindedir. Dolayısıyla sayfa üstünde gerçekleştireceği bazı olayların Vue bileşeni tarafında da ele alınması gerekir. Beşinci adımda bunu anlamaya çalışacağız.
 
@@ -411,11 +411,11 @@ HTML sayfasının kodları da şöyle.
 
 Kullanıcı kitap fiyatlarını artırıp azaltabilir. Her iki aksiyon için olay bildirimlerinin nasıl yapıldığına dikkat edin. Olayın gerçekleşmesi sonucu çalışacak kod bir direktif ile birlikte yazılabileceği gibi Vue bileşeninin methods özelliği içerisinde de konuşlandırılabilir.
 
-![image.axd](images/image.axd)
+![skynet_41_Screenshot_10.png](images/skynet_41_Screenshot_10.png)
 
 Yine F12 - Console penceresinde CSS rengini değiştirecek şekilde veriyle oynayabiliriz.
 
-![image.axd](images/image.axd)
+![skynet_41_Screenshot_11.png](images/skynet_41_Screenshot_11.png)
 
 Altıncı adımda verinin HTML elementlerinin içeriğine göre bir hesaplamaya dahil edilmesine bakacağız. Burada Vue bileşeninin computed özelliğindeki fonksiyonlar devreye giriyor. Listelenen kitaplardan herhangi birinin üstüne gelindiğinde o kitabın fiyatı güncel döviz kuru değerine göre hesaplatılıp alt tarafta yazılıyor. Burada senaroyu biraz daha zengileştirebilirsiniz. Örneğin fare imleci kitap adının üstüne geldiğinde bir popup içinde resmini ve açıklamasını gösterebilirsiniz.
 
@@ -514,7 +514,7 @@ Kodlarımızı aşağıdaki gibi geliştirelim.
 
 Bu örneğin çalışma zamanı çıktısı ise aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![skynet_41_Screenshot_12.png](images/skynet_41_Screenshot_12.png)
 
 Buraya kadarki adımlarda hep ana Vue bileşeni ile çalıştık. Çok doğal olarak HTML DOM yapısının birden fazla Vue bileşeni ile çalışması da istenebilir. Nitekim bir süre sonra ana bileşen çok fazla kalabalıklaşır. Yedinci adımda bu durumu anlamaya çalışacağız.
 
@@ -684,7 +684,7 @@ touch vue_components.html
 
 Bu örneğe ait çıktıları aşağıda görebilirsiniz. Gözleriniz kanayabilir o nedenle güneş gözlüğü kullanmanızı ya da monitörden beş metre kadar uzaklaşıp kısık gözle bakmanızı rica ederim:D
 
-![image.axd](images/image.axd)
+![skynet_41_Screenshot_15.png](images/skynet_41_Screenshot_15.png)
 
 Yine F12 - Console üstünde oynayıp veri değişimlerini izlemekte yarar var.
 
@@ -841,13 +841,13 @@ Son sayfamıza ait kodları aşağıdaki gibi yazabiliriz.
 
 İlk denemelere ait bir ekran çıktısını aşağıda bulabilirsiniz.
 
-![image.axd](images/image.axd)
+![skynet_41_Screenshot_16.png](images/skynet_41_Screenshot_16.png)
 
 Doğrulama ile ilgili kodların çıktısı da şöyle.
 
-![image.axd](images/image.axd)
+![skynet_41_Screenshot_17.png](images/skynet_41_Screenshot_17.png)
 
-![image.axd](images/image.axd)
+![skynet_41_Screenshot_18.png](images/skynet_41_Screenshot_18.png)
 
 Örnekte ekrandan girilen kitap bilgileri books isimli JSON dizisine ekleniyor. Tahmin edileceği üzere bu veri erişimi bir servise doğru yapılmalı. Yani uygulamanın bir servis üzerinden bir veritabanı ile konuşması daha doğru olacaktır. Burada veritabanı hayal gücünüze kalmış. Senaryoya uygun bir NoSQL veya ilişkisel veritabanı kullanılabilir.
 

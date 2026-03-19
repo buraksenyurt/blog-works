@@ -1,4 +1,4 @@
----
+﻿---
 title: "Google Cloud Fonksiyonlarını Firebase ile Birlikte Kullanmak"
 pubDate: 2019-06-21 07:00:00
 categories:
@@ -20,7 +20,7 @@ tags:
 ---
 
 # Google Cloud Fonksiyonlarını Firebase ile Birlikte Kullanmak
-![image.axd](images/image.axd)
+![sabihagokcen.png](images/sabihagokcen.png)
 
 Google'ın Doodle hizmetini takip ediyor musunuz bilemiyorum ancak ben zaman zaman orada hazırlanmış ikonik görsellerden harika hikayelere gidiyorum. Bu seferki yazının derlemesi sırasında da yolum bir şekilde onunla kesişti ve girişte kimden bahsedebilirim derken havacılılk tarihinin en önemli isimlerinden olan Türkiye'nin ilk kadın pilotu Sabiha Gökçen'i (22 Mart 1913 - 22 Mart 2001) anmaya karar verdim.
 
@@ -45,7 +45,7 @@ Ben uygulaması çok daha basit olduğundan Realtime Database modelini tercih et
 
 Her şeyden önce Google Cloud Platform üzerinde bir hesabımızın olması lazım. Hesabımız ile login olduktan sonra [Firebase Console adresine](https://console.firebase.google.com/) gidip bir proje oluşturacağız. Söz gelimi project-new-hope gibi bir isimle...
 
-![image.axd](images/image.axd)
+![05_27_credit_1.png](images/05_27_credit_1.png)
 
 Projeyi komut satırından yönetebilmek önemli. Nitekim yazdığımız kodları kolayca deploy edebilmeliyiz. Bu nedenle Firebase CLI (Command Line Interface) aracına ihtiyacımız var. Kendisini npm ile aşağıdaki gibi yükleyebiliriz (Dolayısıyla sistemimizde node ve npm yüklü olmalıdır)
 
@@ -64,15 +64,15 @@ firebase init functions
 
 Login işlemi sonrası arabirim bizi tarayıcıya yönlendirecek ve platform için giriş yapmamız istenecektir. Başarılı login sonrası tekrardan console ekranına dönüş yapmış oluruz.
 
-![image.axd](images/image.axd)
+![05_27_credit_2.png](images/05_27_credit_2.png)
 
 init functions çağrısı ile yeni bir google cloud function oluşturma işlemine başlanır. Dört soru sorulacaktır (En azından çalışmanın yapıldığı tarih itibariyle böyleydi) Projeyi zaten Firebase Console'unda oluşturmuştuk. Klasör adını aynı verdiğimiz için varsayılan olarak onu kullanacağını belirtebiliriz. Dil olarak Typescript ve Javascript desteği sorulmakta ki ben ikincisi tercih ettim. Üçüncü adımda [ESLint](https://eslint.org/) kullanıp kullanmayacağımız soruluyor. Şimdilik 'No'seçeneğini işaretleyerek ilerlenebilir ancak gerçek hayat senaryolarında etkinleştirmek iyi bir fikirdir. (İleriye yönelik problem yaratabilecek olası kod hatalarının önceden tespitinin kritikliği sebebiyle) Projenin bağımlılık duyduğu npm paketleri varsa bunların install edilmesini de istediğimizden son soruda 'Yes'seçminini yapmalıyız.
 
-![image.axd](images/image.axd)
+![05_27_credit_3.png](images/05_27_credit_3.png)
 
 Komut çalışmasını tamamladıktan sonra aşağıdaki klasör yapısının oluştuğunu görebiliriz.
 
-![image.axd](images/image.axd)
+![05_27_credit_4.png](images/05_27_credit_4.png)
 
 Bundan sonra index.js dosyası ile oynayıp örnek bir dağıtım (deployment) işlemi gerçekleştirebiliriz de. Index sayfasında yorum satırı içerisine alınmış bir kod parçası bulunmaktadır. Bu kısmı açarak hemen Hello World sürecini işletmemiz mümkün. Ama bunun için, yapılan değişiklikleri platforma almamız lazım. Aşağıdaki terminal komutu ile bunu sağlayabiliriz. Örnekteki amacımıza göre sadece fonksiyonların taşınması söz konusudur.
 
@@ -90,11 +90,11 @@ firebase use --add
 firebase deploy --only functions
 ```
 
-![image.axd](images/image.axd)
+![05_27_credit_5.png](images/05_27_credit_5.png)
 
 Firebase Dashboard'una gittiğimizde helloworld isimli API fonksiyonunun (ki index.js dosyasından export edilen metodumuzdur) eklenmiş olduğunu görebiliriz.
 
-![image.axd](images/image.axd)
+![05_27_credit_6.png](images/05_27_credit_6.png)
 
 Çalışmanın bu ilk yalın versiyonunda Google'ın index.js içerisine koyduğu yorum satırları kaldırılarak bir deneme yapılmıştır. Bu taşıma işlemi sonrası Firebase tarafında üretilen fonksiyona ait API adresini aşağıdaki gibi curl ile çağırdığımızda 'Hello from Firebase!' yazısını görebiliriz.
 
@@ -102,7 +102,7 @@ Firebase Dashboard'una gittiğimizde helloworld isimli API fonksiyonunun (ki ind
 curl -get https://us-central1-project-new-hope.cloudfunctions.net/helloWorld
 ```
 
-![image.axd](images/image.axd)
+![05_27_credit_7.png](images/05_27_credit_7.png)
 
 ## Kod Tarafı
 
@@ -172,11 +172,11 @@ Kod nihai halini aldıktan sonra tekrardan dağıtım işlemi yapılmalıdır.
 firebase deploy --only functions
 ```
 
-![image.axd](images/image.axd)
+![05_27_credit_8.png](images/05_27_credit_8.png)
 
 Dağıtım işlemi sonrasında somedata ve ping referans adresli endpoint bilgilerini dashboard üzerinde görebilmemiz gerekiyor.
 
-![image.axd](images/image.axd)
+![05_27_credit_9.png](images/05_27_credit_9.png)
 
 Şimdi somedata fonksiyonunun Post metodunu kullanarak bir kaç örnek veri girişi yapalım. Postman gibi bir araçtan yararlanarak bu işlemleri kolayca gerçekleştirebiliriz.
 
@@ -193,11 +193,11 @@ Body : JSON
 }
 ```
 
-![image.axd](images/image.axd)
+![05_27_credit_10.png](images/05_27_credit_10.png)
 
 Bir kaç deneme girişi yaparak veriyi çoğaltabiliriz. JSON formatlı olmak suretiyle istediğimiz şema yapısında veriler yollamamız mümkün. Firebase sayfasındaki Database kısmına baktığımıza aşağıdakine benzer sonuçları görürürüz.
 
-![image.axd](images/image.axd)
+![05_27_credit_11.png](images/05_27_credit_11.png)
 
 Pek tabii HTTP Get çağrıları sonuncunda da aktardığımız tüm verileri çekebiliriz. Bunun için aşağıdaki adrese talepte bulunmak yeterlidir.
 
@@ -206,7 +206,7 @@ Adres : https://us-central1-project-new-hope.cloudfunctions.net/somedata/
 Metod : HTTP Get
 ```
 
-![image.axd](images/image.axd)
+![05_27_credit_12.png](images/05_27_credit_12.png)
 
 ## Başka Neler Yapılabilir?
 

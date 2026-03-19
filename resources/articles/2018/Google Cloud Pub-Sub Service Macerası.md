@@ -1,4 +1,4 @@
----
+﻿---
 title: "Google Cloud Pub/Sub Service Macerası"
 pubDate: 2018-07-19 21:10:00
 categories:
@@ -25,7 +25,7 @@ tags:
 ---
 
 # Google Cloud Pub/Sub Service Macerası
-![image.axd](images/image.axd)
+![surfing.gif](images/surfing.gif)
 
 Merhaba Arkadaşlar,
 
@@ -41,7 +41,7 @@ Ama bazı sabahlarda Feedly sayfama düşen yazıları okuyorum. Şirkete ulaşt
 
 Ben yazıyı okuduktan sonra masamın başına geçtiğimde yaptığım ilk iş, mimari resmin bir benzerini çizmeye çalışmak oldu. Her zaman okuduğumu bakarak da olsa (az bakarak yapılanı kabul, hiç bakmadan tek seferde yapılanı makbuldur) çizmeye çalışırdım. Kendi notlarımı ekleyerek öğrenmeyi pekiştirmeye gayret ederdim. Sonuçta kurşun kalemle de olsa aşağıdaki gibi bir şeylere ulaştım.
 
-![image.axd](images/image.axd)
+![gcpps_1.gif](images/gcpps_1.gif)
 
 Kabaca olayı anlamış gibiydim. Eğer işlenmesini istediğim bir değer varsa (asset diyelim), bunu Google Cloud Storage'a atmam yeterliydi. Sonrasında Google'ın Handler fonksiyonları devreye girip bu değeri çeşidine göre işleyişin yürütüldüğü hattaki uygun enstrümana (yazının konusu olan Pub/Sub hizmetine) yönlendirecekti. Bu yönlendirme sırasında resim, video ve ses ile ilgili işleme fonksiyonları (Google Cloud Functions) devreye girecekti. Sonrası Elasticsearch'e atılan bilgilerden ibaretti. Benim ilgimi çeken Machine Learning, Speech to Text gibi akıllı hizmetlerin sunulduğu Google Cloud Functions alanıydı. Lakin daha önceden bir şekilde incelemiş olmama rağmen aradaki bir katmanı öğrenmeden ilerleyemeyeceğimi anlamıştım. Google Pub/Sub hizmeti.
 
@@ -55,7 +55,7 @@ gCloud ile İlk Deneyim
 
 Google bu konu ile ilişkili oldukça zengin ve basit öğreti dökümanları sunmakta (Diğer bulut bilişim sistemlerinde olduğu gibi) Bende ilgili dokümanları takip ettim ve ilk olarak gCloud aracını kullanarak var olan bir Google projemde Publisher/Subscriber modelini deneyimlemeye çalıştım. my-starwars-game-project isimli projemi seçtikten sonra Google Console-> API sekmesinden Enable APIS and Services linkine tıklayarak ilerledim. Big Data kısmında yer alan Google Cloud Pub/Sub API hizmetini seçip
 
-![image.axd](images/image.axd)
+![gcpsp_2n.gif](images/gcpsp_2n.gif)
 
 Enable yazan düğmeye bastım. Böylece Google Cloud Platform üzerinde yer alan bir projem için Pub/Sub API hizmetini etkinleştirmiş oldum.
 
@@ -63,7 +63,7 @@ Enable yazan düğmeye bastım. Böylece Google Cloud Platform üzerinde yer ala
 
 Bundan sonra iş West-World terminalindeydi. gCloud komutunu kullanarak (daha önceden West-World'e kurmuştum) bir topic oluşturmayı, bu topic'e abone olup mesaj göndermeyi ve diğer bir abone ile de bu mesajı okumayı denedim. İşte West-World'ün bu denemeler sonrası görünümü.
 
-![image.axd](images/image.axd)
+![gcpps_6.gif](images/gcpps_6.gif)
 
 Öncelikle şunu belirtmem lazım; işe gcloud init komutu ile başlamakta yarar olabilir. Nitekim projeniz için makinedeki ayarların tekrardan yapılması gerekebilir. Ekran görüntüsünden de görüleceği üzere pubsub uygulamasına ait komutları kullanarak string bir mesajı codeTopic isimli bir konu başlığı altında yayınlıyor ve tekrardan okuyoruz. Kullanılan komutlara kısaca bakacak olursak şunları söyleyebiliriz;
 
@@ -161,11 +161,11 @@ namespace gcppubsubhello
 
 İşin başında PublisherServiceApiClient türünden bir nesne oluşturmak gerekiyor. Bunu Create metodu ile sağlıyoruz. Sonrasında TopicName türünden bir örnek oluşturuluyor. İlk parametre GCPdeki projenin ID değeri, diğeri ise topic için verilecek string bir bilgi (Topic ID) CreateTopic fonksiyonu kullanılarak ilgili Topic'in Google tarafında oluşturulması sağlanıyor. Ki örneği ilk çalıştırdığımda bunu görebildim.
 
-![image.axd](images/image.axd)
+![gcpps_7.gif](images/gcpps_7.gif)
 
 ListTopics metodu ile var olan tüm topic bilgilerini elde edebiliriz. Bende bunu denemek istedim. Mesaj yayınlamak içinse bir PublisherClient örneğine ihtiyaç var. Bunu oluştururken ilk parametre ile topic nesnesini, ikinci parametre ile de PublisherServiceApiClient örneğini veriyoruz. Böylece hangi Google projesinin hangi konusuna abone olacağımızı bildirmiş oluyoruz. Sonrası oldukça kolay. PublishAsync fonksiyonunu kullanarak bir konu başlığına mesaj bırakılıyor. Ben örnek olarak iki tane string içerik gönderdim. Sonuç olarak elde edilen bilgiler ise bu mesajlar için üretilen AcknowledgeID değerleridir. Topic altına bırakılan her mesajın (sonradan aynı içeriğe sahip mesajlar tekrar geldiğinde farklı olacak şekilde) birer ackID değeri bulunur. Kodu arka arkaya çalıştırdığımda aşağıdaki sonuçları elde ettim.
 
-![image.axd](images/image.axd)
+![gcpps_8.gif](images/gcpps_8.gif)
 
 İlk çalıştırma normal sonuçlansa da ikinci çalıştırmada bir exception almıştım. Aslında hata oldukça basitti.
 
@@ -189,7 +189,7 @@ subsClient.CreateSubscription(subsName, topicName, pushConfig: null, ackDeadline
 
 Abone üretme işi bu kez SubscriberServiceApiClient nesnesinde. Create metodu ile bu nesne örneklendikten sonra CreateSubscription fonksiyonu ile de aboneyi oluşturmaktayız. Abonemiz einstein isimli bir ID değerine sahip, Push değil de Pull modelini kullanan bir abone. Kodu ilk çalıştırdığımda abonenin my-starwars-game-project için başarılı bir şekilde oluşturulduğunu gördüm.
 
-![image.axd](images/image.axd)
+![gcpps_9.gif](images/gcpps_9.gif)
 
 Pek tabii kodu ikince kez denediğimde zaten var olan bir aboneyi tekrar oluşturmaya çalıştığım için exception almam gayet normaldi.
 
@@ -236,7 +236,7 @@ namespace gcppubsubhello
 
 Bütün iş einstein isimli nesnede bitiyor. StartAync metodu içerisinde, abonenin daha önceki kod parçasında oluşturulurken abone olduğu Topic üstüne atılan mesajlar alınıyor. Ne kadar mesaj varsa gelecektir. Eğer mesaj başarılı bir şekilde alınabilmişse bu Reply.Ack ile ifade edilir (Message handled successfully) Aksi durumda Reply.Nack olur (Message not handled successfully)
 
-![image.axd](images/image.axd)
+![gcpps_10.gif](images/gcpps_10.gif)
 
 Görüldüğü gibi.Net Core tarafında uygun kütüphaneleri kullanarak Pub/Sub API ile konuşmak oldukça basit. Elbette yapılabilecek bir çok şey var. Söz gelimi bu örnekte.Net Core uygulaması Google hizmetini kullanırken hiçbir credential bilgisi kullanmadık. Nitekim West-World'e çok önceden
 

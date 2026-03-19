@@ -1,4 +1,4 @@
----
+﻿---
 title: "Instagram REST Servislerinin .Net Tarafında Basit Kullanımı"
 pubDate: 2016-05-04 06:00:00
 categories:
@@ -18,7 +18,7 @@ tags:
 ---
 
 # Instagram REST Servislerinin .Net Tarafında Basit Kullanımı
-![image.axd](images/image.axd)
+![UsingInstagram_3.gif](images/UsingInstagram_3.gif)
 
 Merhaba Arkadaşlar,
 
@@ -34,7 +34,7 @@ Dilerseniz hiç vakit kaybetmeden işlemlerimize başlayalım.
 
 Öncelikle Instagram'a gidip uygulamamız için bir kayıt işlemi (Register) gerçekleştirmeli ve kullanıcı girişi sonrası yönlendirilecek olan sayfa adresini bildirmeliyiz (Redirect URL).
 
-![image.axd](images/image.axd)
+![UsingInstagram_1.gif](images/UsingInstagram_1.gif)
 
 Bu kayıt işleminde önemli olan bir kaç nokta var. Client ID, Client Secret ve Redirect URI değerleri istemci uygulama tarafından kullanılacak değişkenler olacak. Geliştireceğimiz örnekte bu değerleri ele alarak Instagram'a erişim hakkı olan bir jeton (Access Token) elde edeceğiz. Bir başka deyişle uygulamanın REST Endoint'lerini kullanabilmesi için gerekli izni alacağız. Özellikle Redirect URI değeri önemli. Nitekim uygulamamız üzerinden bir Login işlemi de gerçekleştirilmekte. Bu Login işlemi sonrasında geriye dönülecek olan URL bilgisi, Instagram'a kayıt edilen adres ile eş olmalı. Aksi durumda bir Authentication hatası alırız.
 
@@ -170,7 +170,7 @@ Gelelim Default.aspx içeriğine.
 
 Sayfada yer alan Son Fotoğrafları Getir başlıklı buton'a basıldığında aslında önceden login olunmamışsa Instagram üzerinden bir giriş işlemi yaptırılır. Giriş işlemini takiben akış tekrardan Default.aspx sayfasına yönlenir (Instagram'a dönülürken nereye gidileceği bilgisini uygulamamızı register ederken söylemiştik) Eğer dönüş başarılı ise GetLastPhotos isimli javascript içeriği devreye girer. Bu fonksiyon içerisinde Instagram REST Endpoint'lerine Ajax servis çağrısı gerçekleştirilir. HTTP GET tipinden yapılan bu çağrıda içerik tipi (content-type) JSON olarak bildirilir. Ayrıca asenkron tipte bir çağrı yapılacağı da belirtilmiştir (async:true). url niteliğine verilen değerde ise talep edilen fonksiyonelliğe ait adres bilgisi yer alır. Tabii burada kullanılan userId ve accessToken değerlerinin, GetUserIdAndAccessToken metodu içerisinden verildiklerine dikkat edelim (O script'i bu yüzden sayfaya register ettik) Eğer işlemler başarılı bir şekilde gerçekleşirse success bloğundaki kod bloğu devreye girecek ve ilgili div söz konusu kullanıcının son fotoğrafları ile dolacaktır. Örneğin aşağıdaki gibi:)
 
-![image.axd](images/image.axd)
+![UsingInstagram_2.gif](images/UsingInstagram_2.gif)
 
 Görüldüğü gibi son fotoğraflarımız geldi. Hatta içlerinden istenilen bir tanesine tıklayabilir ve Instagram üzerindeki geçerli adresine gidebiliriz. url içeriğini değiştirerek farklı talepleri de test edebiliriz. Örneğin tag bazlı veya popüler olan fotoğrafları, sizi takip eden kullanıcıları, sizin takip ettiklerinizi, belli bir fotoğrafı ya da video'yu beğenenleri vb...Kısacası Instagram için yazılmış herhangibir uygulamanın yapabileceği pek çok şeyi REST Endpoint'leri kullanarak gerçekleştirmeniz mümkün.
 

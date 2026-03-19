@@ -1,4 +1,4 @@
----
+﻿---
 title: ".Net Core Web Api Tarafında SqlKata ile Sevimli SQL İşlemleri"
 pubDate: 2020-10-28 14:14:00
 categories:
@@ -28,7 +28,7 @@ tags:
 ---
 
 # .Net Core Web Api Tarafında SqlKata ile Sevimli SQL İşlemleri
-![image.axd](images/image.axd)
+![kata.png](images/kata.png)
 
 Veri odaklı uygulamalarda sorgu komutlarını çalıştırmak için kullandığımız birçok hazır altyapı var. Örneğin.Net dünyasına baktığımızda en temel seviyede Ado.Net ve Object Relational Mapping tarafında Entity Framework sıklıkla karşılaştıklarımız arasında. [SqlKata](https://sqlkata.com/)'da bunlardan birisi olarak düşünülebilir. Bir süredir de sağda solda okuduğum makale ve github çalışmalarından dolayı merak edip kurcalamak istediğim bir kütüphane. Öncelikle ismi çok hoş (Code Kata'yı çağrıştırıyor bana)
 
@@ -71,7 +71,7 @@ Select product_name,unit_price from products order by unit_price desc limit 3;
 Select category_name from categories;
 ```
 
-![image.axd](images/image.axd)
+![skynet_35_Screenshot_01.png](images/skynet_35_Screenshot_01.png)
 
 Pek tabii amacımız SqlKata ile bu PostgreSql veritabanına bağlanıp bir takım işlemler yapabilmek. Rapor çekmek, satır ekleyip silmek ve benzer işlemleri icra edebiliriz. Deneme kodları için bir.Net Core Web Api projesi pekala uygun bir çözüm. REST servis çağrıları ile uçtan uca çalışan bir örneği denemiş de oluruz. Öyleyse aşağıdaki terminal komutlarından yararlanarak projemizi oluşturalım ve gerekli Nuget paketlerini de ekleyerek yolumuza devam edelim.
 
@@ -418,7 +418,7 @@ https://localhost:5001/api/product/discontinued
 
 şeklinde bir talep göndermemiz yeterli. Aşağıdakine benzer bir sonuç almamız gerekiyor.
 
-![image.axd](images/image.axd)
+![skynet_35_Screenshot_02.png](images/skynet_35_Screenshot_02.png)
 
 Bir kategoriye ait ürünlerin birkaç bilgisini getiren ama bunu yaparken sayfalama tekniğini kullanan operasyon içinse aşağıdaki gibi bir talep yollanabilir.
 
@@ -426,7 +426,7 @@ Bir kategoriye ait ürünlerin birkaç bilgisini getiren ama bunu yaparken sayfa
 https://localhost:5001/api/product/Beverages/3
 ```
 
-![image.axd](images/image.axd)
+![skynet_35_Screenshot_04.png](images/skynet_35_Screenshot_04.png)
 
 Dikkat edileceği üzere 3ncü sayfadan itibaren ilk 5 kayıt getirilmiştir. En basit operasyonlardan birisi de tüm kategorilerin çekilmesidir:)
 
@@ -434,7 +434,7 @@ Dikkat edileceği üzere 3ncü sayfadan itibaren ilk 5 kayıt getirilmiştir. En
 https://localhost:5001/api/category
 ```
 
-![image.axd](images/image.axd)
+![skynet_35_Screenshot_05.png](images/skynet_35_Screenshot_05.png)
 
 Müşterilerin bulundukları şehre göre guruplandığı raporu ise aşağıdaki taleple çekebiliriz.
 
@@ -442,7 +442,7 @@ Müşterilerin bulundukları şehre göre guruplandığı raporu ise aşağıdak
 https://localhost:5001/api/customer/cityreport
 ```
 
-![image.axd](images/image.axd)
+![skynet_35_Screenshot_06.png](images/skynet_35_Screenshot_06.png)
 
 Hemen yeni bir kategori eklemeyi deneyelim. Ekleme işlemini Postman ile denemek için aşağıdaki örnek bilgileri kullanabilirsiniz.
 
@@ -458,11 +458,11 @@ Body: json
 }
 ```
 
-![image.axd](images/image.axd)
+![skynet_35_Screenshot_07.png](images/skynet_35_Screenshot_07.png)
 
 Tabii aynı Id ile bir kategori eklemek istersek exception yönetimimize göre aşağıdaki gibi bir çıktı almamız gerekir (Bu hata mesajını biraz daha anlamlı hale getirmek yerinde olabilir. Nitekim işlem başarısız ama neden başarısız olduğu istemci tarafında tam olarak anlaşılmıyor)
 
-![image.axd](images/image.axd)
+![skynet_35_Screenshot_08.png](images/skynet_35_Screenshot_08.png)
 
 Eklediğimiz kategoriyi silmek içinse bir HTTP Delete çağrısı yapmalıyız.
 
@@ -473,7 +473,7 @@ Metot: HTTP Delete
 
 Bu arada örneği çalışırken karşılaştığım enteresan bir durum vardı. Bu durumu açıklamak için localhost:5001/api/product/Beverages talebini göz önüne alalım. Beverages kategorisindeki ürünlerin listesini almayı bekliyoruz. Ancak kod tarafında yapacağımız minik bir değişiklik yüzünden aşağıdaki ekran görüntüsünde olduğu gibi connection string bilgisini görme ihtimalimiz var. Öncelikle bu nasıl mümkün olabilir, ikinci olarak bunun önüne nasıl geçeriz? Lütfen yorumlarınızı esirgemeyin, tüm okurlarımız faydalansın.
 
-![image.axd](images/image.axd)
+![skynet_35_Screenshot_03.png](images/skynet_35_Screenshot_03.png)
 
 SQL sorgulama komutlarına hakim olanlar için LINQ (Language INtegrated Query) ile birleştirilen bu kullanım şekli oldukça pratik görünüyor. Üretim ortamında da değerlendirilebilir mi henüz emin değilim ancak pilot olarak denenebilir. Yüksek transaction içeren servis operasyonlarında nasıl bir tepki vereceğine bakacak şekilde yük testlerine tabi tutmak karar verme noktasında yardımcı olabilir.
 

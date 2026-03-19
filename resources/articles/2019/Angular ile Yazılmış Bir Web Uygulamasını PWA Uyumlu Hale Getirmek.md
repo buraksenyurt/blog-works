@@ -1,4 +1,4 @@
----
+﻿---
 title: "Angular ile Yazılmış Bir Web Uygulamasını PWA Uyumlu Hale Getirmek"
 pubDate: 2019-06-28 07:00:00
 categories:
@@ -16,7 +16,7 @@ tags:
 ---
 
 # Angular ile Yazılmış Bir Web Uygulamasını PWA Uyumlu Hale Getirmek
-![image.axd](images/image.axd)
+![LesEclaireurs.png](images/LesEclaireurs.png)
 
 Geminin neredeyse tüm seyrüsefer sistemi ve radarı arka arkaya gelen alarm sinyalleri sonrası bozulmuştu. Güney pasifiği terk etmek üzere olan koca tekne en son Arjantin kıyılarına yakın seyrediyordu. Gecenin zifiri karanlığında ilerlerken kaptanın en büyük yol bulma ümitlerinden olan kuzey yıldızı bulutlarla kaplı gökyüzünden saatlerdir görülmüyordu.
 
@@ -34,7 +34,7 @@ Benim bu cumartesi gecesi çalışmasındaki amacım ise gayet basitti. Biraz ya
 
 Peki bir web sayfasından gelen içeriğin PWA uyumluluğunu nasıl test edebiliriz? Bunun için Google'ın geliştirdiği ve Chrome üzerinde bulunan Lighthouse isimli uygulamadan yararlanabiliriz (Ta taaaa...Hikayeyi bağladım işte) F12 ile açılan Developer Tools'tan kolayca erişilebilen Lighthouse ile o anki sayfa için uyumluluk testleri yapabiliriz. Örneğin kendi blogum için bunu yaptığımda mobile cihazlardaki PWA uyumluluğunun %50 olarak çıktığını gördüm:/ Yarı yarıya uyumsuz. Bu nedir arkadaş ya?
 
-![image.axd](images/image.axd)
+![06_28_credit_1.png](images/06_28_credit_1.png)
 
 Bakalım boş bir uygulama için bu durumu değiştirebilecek miyiz?
 
@@ -231,7 +231,7 @@ Amacımız uygulamanın PWA uygunluğunu kontrol etmek olduğu için öncelikle 
 ng build --prod
 ```
 
-![image.axd](images/image.axd)
+![06_28_credit_2.png](images/06_28_credit_2.png)
 
 Uygulama dist klasörüne build edilmiş olur. Hizmete sunmak için http-server gibi bir araçtan yararlanılabilir. Eğer sistemde yüklü değilse npm ile kurmamız gerekir. İlk komutla bunu yapıyoruz. İkinci terminal komutuysa uygulamayı localhost üzerinden ayağa kaldırmakta.
 
@@ -244,11 +244,11 @@ http-server -o
 
 Bunun sonucu olarak 127.0.0.1:8080 veya 8081 portundan yayın yapılır ve uygulama açılır.
 
-![image.axd](images/image.axd)
+![06_28_credit_3.png](images/06_28_credit_3.png)
 
 Uygulama çalıştıktan sonra F12 ile Audits kısmına gidip 'Run Audit'ile PWA testi başlatılırsa, Lighthouse bize aşağıdakine benzer sonuçlar verecektir (Tabii sizin denediğiniz vakitlerde bu kurallar değişmiş olabilir. O nedenle bilgileri güncellemekte yarar var)
 
-![image.axd](images/image.axd)
+![06_28_credit_4.png](images/06_28_credit_4.png)
 
 PWA uyumluluğu oldukça düşük ki bu zaten şu aşamada beklediğimiz bir şey. PWA uyumlu hale getirmek için neler yapılabilir bakalım.
 
@@ -271,15 +271,15 @@ ng add @angular/pwa
 
 Komut çalıştırıldığında eksik olan manifesto ve service worker dosyaları eklenir. Ayrıca assets altındaki icon'ların form factor desteği açısından farklı boyutları oluşur.
 
-![image.axd](images/image.axd)
+![06_28_credit_5.png](images/06_28_credit_5.png)
 
 Yeni bir dağıtım paketi çıktığımızda PWA için eklenen Service Worker ve manifesto dosyalarını da görebiliriz.
 
-![image.axd](images/image.axd)
+![06_28_credit_6.png](images/06_28_credit_6.png)
 
 Tekrardan Lighthouse raporunu çektiğimizde aşağıdaki gibi %92lik bir karşılama oranı oluştuğunu görebiliriz. Fena değil ama eksik. Çünkü HTTPS desteğini göremedi.
 
-![image.axd](images/image.axd)
+![06_28_credit_7.png](images/06_28_credit_7.png)
 
 Peki ya kalan HTTPS ihlalini development ortamında nasıl aşabiliriz? Aşabilir miyiz? Eğer buraya kadar gelebildiyseniz bir adım daha ilerleyebilirsiniz sevgili okur;)
 

@@ -1,4 +1,4 @@
----
+﻿---
 title: "Node.js ile Basit Cluster Kurguları"
 pubDate: 2018-07-03 21:04:00
 categories:
@@ -15,7 +15,7 @@ tags:
 ---
 
 # Node.js ile Basit Cluster Kurguları
-![image.axd](images/image.axd)
+![clustering_5.gif](images/clustering_5.gif)
 
 Merhaba Arkadaşlar,
 
@@ -71,7 +71,7 @@ if (cluster.isMaster) {
 
 Çalışma zamanı çıktısı aşağıdaki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![clustering_1.gif](images/clustering_1.gif)
 
 Neler oldu bir bakalım? Kodu ilk çalıştırdığımızda isMaster kontrolüne girdik ve o anda ana iş parçacığı söz konusuydu. Dört tane alt iş parçacığı oluşturduk. Bunun için fork metodundan yararlanıyoruz. Sonrasında bazı olayları ele almak için fonksiyonellikler dahil ettik. Bir alt iş parçacığı oluştuğunda fork, yaşamaya başladığında online ve yok edildiğinde exit olayları çalışır. Başka olaylar da var. İlerleyen kodlarda göreceğiz. fork fonksiyonunun etkisi aynı kodun tekrar çalıştırılmasıdır. Bu durumda else bloğuna gireceğiz çünkü ilk alt iş parçacığı oluştuğu andan tamamı sonlanıncaya kadar isMaster false dönecektir. else bloğunda bu koda özel sadece destroy işlemini uyguluyoruz. Kısacası alt iş parçacıkları oluşuyor ve yok ediliyorlar. Ana ve alt iş parçacıklarını iyi izeyebilmek için Process ID değerlerini kullandık. Tüm olaylar dikkat edileceği üzere bir callback fonksiyonu içermekte.
 
@@ -113,7 +113,7 @@ if (cluster.isMaster) {
 
 Bu sefer ana ve alt iş parçacıkları arasında mesajlaşma yapmaya çalışıyoruz. Olayımızın adı message. Her zaman ki gibi söz konusu olayı ilgili nesnenin on fonksiyonunu kullanarak yakalıyoruz. Alt iş parçacığından üste veya tam tersi istikamete mesaj göndermek için mesaj göndermek istediğimiz nesne örneğinin send fonksiyonundan yararlanmaktayız. Örneği daha anlaşılır kılmak için names ve colors isimli dizilerden çektiğimiz rastgele değerleri kullanıyoruz. Ana iş parçacığı her alt iş parçacığına mesaj göndersin diye worker nesnelerini tuttuğumuz bir dizimiz de var. İşte çalışma zamanı çıktıları.
 
-![image.axd](images/image.axd)
+![clustering_2.gif](images/clustering_2.gif)
 
 Web Server Örneği
 
@@ -165,7 +165,7 @@ Uygulamayı en az iki farklı tarayıcı ile denememizde yarar var. Nitekim [şu
 
 Şimdilik kendi sistemimde aşağıdaki ekran görüntüsünde yer alan sonuçları elde ettim. Dikkat edileceği üzere Chrome ve Firefox tarayıcıları farklı iş parçacıkları tarafından ele alınmakta (pid değerine bakın)
 
-![image.axd](images/image.axd)
+![clustering_3.gif](images/clustering_3.gif)
 
 Bu yazımızda cluster modülünü kullanarak ana iş parçacığından farklı iş parçacıklarının nasıl dallandırılabileceğini incelemeye çalıştık. Aslında konunun özelinde Node.js'in child-Process adı verilen bir konsepti bulunuyor. Child Process kavramı göz önüne alındığında spawn, execFile, exec, fork gibi çeşitli operasyonlar var. cluster, fork işlemini basitleştiriyor diyebiliriz. Bu yapıları özümsemek içinde Node.js'in stream ve event-driven konularını da iyi bilmek gerekiyor. Ben halen bu konulara bakmaktayım. Bir şeyler pekişince yazmak istiyorum. Şimdilik benden bu kadar. Gün hafif hafif ağırmaya başladı. Yola düşsem iyi olacak. Enterprise hava yollarının ilk seferi ile tekrardan eve dönme vakti gelmiş bile. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.
 

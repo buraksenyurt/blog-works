@@ -1,4 +1,4 @@
----
+﻿---
 title: "Tek Fotoluk İpucu 137 - Temporary File ile Çalışmak"
 pubDate: 2016-10-20 21:30:00
 categories:
@@ -16,7 +16,7 @@ Geliştirdiğimiz uygulamanın sadece çalışma zamanında oluşturup kullanaca
 
 Ancak bazı hallerde söz konusu bilgileri geçici bir dosyada (Temp File) tutmakta gerekebilir. Bu dosya benzersiz olmalıdır ve sadece içinde oluştuğu uygulama Process'inde veya oluşturulduğu Thread'de kullanılmalıdır. Yani dışarıdan başka Thread'lerin bu dosyaya erişimi olmamalıdır. Hatta uygulamanın dosya ile işi bitince otomatik olarak sistemden kaldırılmalıdır. İşte Ruby dilinde bu ihtiyaç için kullanılabilen hazır bir gem var. İşte basit bir örnek.
 
-![image.axd](images/image.axd)
+![tfi137.gif](images/tfi137.gif)
 
 Geçici bir dosya oluşturmak için Tempfile sınıfına ait bir nesne örneği oluşturmamız yeterli. Parametre olarak gelen dosya adının sonuna otomatik olarak sistem zamanı ve benzersiz bir ID değeri eklenir. Bu şekilde geçici dosyanın benzersiz olması da sağlanmaktadır. Nitekim aynı uygulamanın birden fazla örneğin sistemde n sayıda geçici dosyanın eş zamanlı olarak oluşmasına neden olacaktır.
 

@@ -1,4 +1,4 @@
----
+﻿---
 title: "GoLang - Unit Test Yazmak"
 pubDate: 2017-07-26 21:31:00
 categories:
@@ -11,7 +11,7 @@ tags:
 ---
 
 # GoLang - Unit Test Yazmak
-![image.axd](images/image.axd)
+![gotesting_5.gif](images/gotesting_5.gif)
 
 Merhaba Arkadaşlar,
 
@@ -49,7 +49,7 @@ Test Paketinin Yazılması
 
 GO'nun alışageldiğimiz kurallarına göre bir paket içerisinde yer alan fonksiyonların testini içeren ayrı bir dosyanın _test şeklinde isimlendirilerek oluşturulması gerektiğini söylesem sanıyorum yadırgamazsınız. Bu bana çok mantıklı geliyor. Paketlerin adlarına baktığımızda kimin test dosyası olduğunu görmemiz kolay. Anlamsal bir bütünlük oluşuyor ve herkes aynı stilde test dosya adı vermek durumunda. Güzel bir standart oluşturulduğu kesin. Örneğimize göre bu dosyanın adı operations_test.go şeklinde olmalı. Farklı bir isim verip test etmek istersek aşağıdaki gibi bir sonuçla karşılaşma ihtimalimiz oldukça yüksek.
 
-![image.axd](images/image.axd)
+![gotesting_3.gif](images/gotesting_3.gif)
 
 Gelelim operations_test.go içeriğine.
 
@@ -85,14 +85,14 @@ Sonuçlar
 
 İlk olarak senaryomuzu beklenmeyen sonuçlar için test edelim. Bu durumda iki fonksiyon testinin de Fail olmasını bekliyoruz. LiteIDE üzerinden Test seçeneği ile veya komut satırından go test ile gerçekleştirilen işlemlerin sonucu aşağıdaki ekran görüntüsündeki gibi olacaktır.
 
-![image.axd](images/image.axd)
+![gotesting_1.gif](images/gotesting_1.gif)
 
 Komut satırından test yaparken o klasörde sadece go test yazmamız yeterlidir. Test dosyasının adını vermeye gerek yoktur. _Test uzantısı onu ele veriyor diyebiliriz. Buna göre bir klasörde n sayıda test dosyası varsa tamamını tek seferde çalıştırma imkanımız da olabilir.
 
-![image.axd](images/image.axd)
+![gotesting_4.gif](images/gotesting_4.gif)
 
 Görüldüğü gibi elde edilen sonuçlar istenen sonuçlar olmamış ve Fail bildirimleri alınmıştır. Şimdi beklediğimiz değerlerin yorum satırlarını kaldıralım. Bu durumda her iki testte başarılı olmalı. Aynen aşağıdaki ekran görüntüsünde olduğu gibi.
 
-![image.axd](images/image.axd)
+![gotesting_2.gif](images/gotesting_2.gif)
 
 Dikkat edileceği üzere GO tarafında birim testler yazmak oldukça kolay. O zaman bundan sonraki ilk geliştirmenizde elinizdeki atomikleri önce TDD ilkelerine uyarak yazmaya gayret edin. Hatta FizzBuzz kod katasını baz alıp GO ile yazmayı deneyebilirsiniz. Böylece geldik bir yazımızın daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

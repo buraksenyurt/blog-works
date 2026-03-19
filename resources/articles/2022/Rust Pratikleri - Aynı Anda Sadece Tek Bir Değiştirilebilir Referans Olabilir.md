@@ -1,4 +1,4 @@
----
+﻿---
 title: "Rust Pratikleri - Aynı Anda Sadece Tek Bir Değiştirilebilir Referans Olabilir"
 pubDate: 2022-04-03 09:00:00
 categories:
@@ -15,7 +15,7 @@ tags:
 ---
 
 # Rust Pratikleri - Aynı Anda Sadece Tek Bir Değiştirilebilir Referans Olabilir
-![image.axd](images/image.axd)
+![MacLeod.jpg](images/MacLeod.jpg)
 
 Thread'ler ve eş zamanlı iş parçacıkları işin içerisine girdiğinde karşımıza çıkan önemli konulardan biriside değiştirilemez (mutable) türden referansları nasıl kullanacağımızdır. Malum aynı anda çalışan bu iş parçaları aynı veri üzerinde değişiklik yapmak isteyebilirler. Fakat bu, Data Races durumunun oluşmasına sebebiyet verebilir. Esasında aynı veri alanını kullanan thread'lerin bu içeriği okumasında bir sıkıntı yoktur. Ne var ki yazma aşamasına gelindiğinde birbirlerinin değişikliğini ezme durumu da söz konusu olabilir.
 
@@ -63,7 +63,7 @@ fn main() {
 
 Birden fazla thread'in ortaklaşa artıracağı bir sayımız var. 10 thread açıp değerini 1 birim artırmak istiyoruz. Ne yazık ki uygulamamızı bu haliyle çalıştırmak istediğimizde aşağıdaki hatalar ile karşılaşacağız.
 
-![image.axd](images/image.axd)
+![only_you_1.png](images/only_you_1.png)
 
 Hata mesajı açık bir şekilde popular_number'ın birden çok kez mutate edilmeye çalışıldığını belirtmekte. Esasında bunu çözmenin basit bir yolu var. Spawn fonksiyonunda move özelliğini kullanarak her bir thread'in popular_number'ın birer kopyasını almasını sağlayabiliriz. Ancak değişkenin birer kopyasını kullanmak tahmin edeceğiniz üzere istediğimiz sonucu vermeyebilir ki bunu şimdi göreceğiz. Dolayısıyla main içeriğini aşağıdaki gibi değiştirerek devam edelim.
 
@@ -108,7 +108,7 @@ fn main() {
 
 Hata mesajından kurtulduğumuzu söyleyebiliriz ancak program pekte istediğimiz gibi çalışmayacaktır. Normalde her thread'in bu ortak sayı değerini birer artırmasını bekliyoruz. Lakin thread'lere ilgili değişkeni move sebebiyle kopyalayarak verdiğimizden her thread kendi 23 değerini kullanıyor. Sonuçta aşağıdaki gibi bir çıktı elde edeceğiz.
 
-![image.axd](images/image.axd)
+![only_you_2.png](images/only_you_2.png)
 
 Şimdi ne yapacağız? Ortak veriyi bir Mutex nesnesi olarak ele almak esasında işimizi çözecektir. Nitekim Mutex kullandığımızda değeri okuyabilir ve eğer onun için bir kilit açmışsak üzerine yazma işlemi gerçekleştirebiliriz. Gelin kodumuzu aşağıdaki halde yeniden tasarlayalım.
 
@@ -164,7 +164,7 @@ Yeni kurguda işin içerisine Mutext nesnesini tutan bir de Atomically Reference
 
 İşte Atomically Reference Counter dediğimiz tür burada devreye girmekte. Arc ile heap'te yer alan ve bir Mutex tarafından tutulan bellek bölgesi için n adet referans oluşturulması mümkün. Thread'ler Arc değerlerini klonladıkça aslında Mutex ile sahiplenilmiş aynı bellek bölgesini referans eden pointer'lar oluşuyor. number_clone değişkeni bu amaçla oluşturuldu. Derken açılan herbir thread kendisine klon olarak gelen ama aynı bellek bölgesini işaret eden bu referansları ele almaya başlıyor. Bu referansın bellekte işaret ettiği alanı değiştirmek içinse öncelikle bir kilit koyuyor. p değişkenini oluşturduğumuz yer. Dolayısıya thread içinde tamamen güvenli bir şekilde ilgili referansın işaret ettiği bölgedeki veriyi değiştirme şansımız doğuyor. Tabii bunun için dereference işlemini uygulamamız gerekiyor ki bu da * operatörü ile sağlanmakta. Thread scope'u sonlandığında hem kilit kalkıyor hem de referans eden pointer'lardan birisi eksiliyor. En nihayetinde tüm thread'ler ilgili sayıyı ortaklaşa değiştirmiş oluyorlar. İşte çalışma zamanı görüntüsü.
 
-![image.axd](images/image.axd)
+![only_you_3.png](images/only_you_3.png)
 
 Rust'ın standart Arc, Mutex ve thread yapılarını kullanınca kod biraz karmaşıklaşabiliyor. Esasında concurrent işlemler için çok güzel iki paket mevcut. Benim de bazı örneklerde tercih ettiğim [Crossbeam](https://docs.rs/crossbeam/latest/crossbeam/) ve [parking_lot](https://docs.rs/parking_lot/latest/parking_lot/) paketlerinden yararlanarak kodu daha okunur ve anlaşılır hale getirebiliriz. Şimdi bu modülleri kullanarak aynı örneği tekrar yazmayı deneyelim. İlk olarak toml dosyasında gerekli bildirimleri eklemeliyiz.
 
@@ -204,6 +204,6 @@ fn main() {
 
 Program kodumuzu tekrar çalıştırdığımızda istediğimiz sonuca ulaşırız.
 
-![image.axd](images/image.axd)
+![only_you_4.png](images/only_you_4.png)
 
 Hem birden fazla thread'in aynı veri üzerinde iş yapmasını sağladık hem de bunu thread safe olarak data races sorununa neden olmayacak şekilde gerçekleştirdik. Böylece geldik bir rust pratiğimizin daha sonuna. Örneğe her zaman olduğu gibi [github reposundan](https://github.com/buraksenyurt/rust-farm/tree/main/Practices/only_you) ulaşabilirsiniz. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

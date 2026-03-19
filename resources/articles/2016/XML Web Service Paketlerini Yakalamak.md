@@ -1,4 +1,4 @@
----
+﻿---
 title: "XML Web Service Paketlerini Yakalamak"
 pubDate: 2016-03-30 23:00:00
 categories:
@@ -18,7 +18,7 @@ tags:
 ---
 
 # XML Web Service Paketlerini Yakalamak
-![image.axd](images/image.axd)
+![wslog_0.gif](images/wslog_0.gif)
 
 Merhaba Arkadaşlar,
 
@@ -66,11 +66,11 @@ Servisimiz içerisinde anlamsız bir operasyon var aslına bakarsanız. Location
 
 Çalışmamızın ikinci aşamasında ise bir istemciye ihtiyacımız var. Basit bir Console uygulaması bu aşamada işimizi görecektir. Kullandığımız servis eski stilde bir XML Web Service. Dolayısıyla istemci tarafına Add Service Reference seçeneği ile eklenirken aslında Add Web Reference kısmında ilerlememiz gerektiğini unutmamalıyız. Çünkü bir WCF Service söz konusu değil.
 
-![image.axd](images/image.axd)
+![wslog_1.gif](images/wslog_1.gif)
 
 Sonrasında aynı Solution içerisindeki servisimizi ekleyerek ilerleyebiliriz.
 
-![image.axd](images/image.axd)
+![wslog_2.gif](images/wslog_2.gif)
 
 İstemci tarafındaki kodlarımızı aşağıdaki şekilde yazmamız şu an için yeterli.
 
@@ -145,11 +145,11 @@ namespace CommonWebClient
 
 Önemli olan kısım system.diagnostics sekmesinin içeriği. Burada servis tarafı ile ilgili mesajlaşma trafiğini dinleyeceğimizi belirtiyoruz. Aslında soket haberleşmesini yakaladığımızı ifade edebiliriz. initilalizeData niteliğinin değerine göre istemci uygulama çalıştırıldığında exe'nin olduğu klasörde service.log isimli bir dosya oluşacaktır.
 
-![image.axd](images/image.axd)
+![wslog_3.gif](images/wslog_3.gif)
 
 Dosya içeriğine baktığımızda ise soket giriş ve çıkışlarının olduğu gibi indirildiğini görebiliriz.
 
-![image.axd](images/image.axd)
+![wslog_5.gif](images/wslog_5.gif)
 
 Burada XML mesajlarını okumak biraz zahmetli olabilir ancak sonuç itibariyle istediğimiz XML paketlerini yakalamış bulunuyoruz. Gidip gelen XML içerikleri aşağıdakine benzer olacaktır.
 

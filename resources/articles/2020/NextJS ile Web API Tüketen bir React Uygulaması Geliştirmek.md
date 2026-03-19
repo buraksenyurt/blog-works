@@ -1,4 +1,4 @@
----
+﻿---
 title: "NextJS ile Web API Tüketen bir React Uygulaması Geliştirmek"
 pubDate: 2020-07-18 19:22:00
 categories:
@@ -16,7 +16,7 @@ tags:
 ---
 
 # NextJS ile Web API Tüketen bir React Uygulaması Geliştirmek
-![image.axd](images/image.axd)
+![nextjs.png](images/nextjs.png)
 
 Geçen sene React ile ilgili basit birkaç örnek denemiiş olmama rağmen öğrendiklerimi çok çabuk unuttuğumu fark ettim. Gerçek saha projelerinde sıklıkla kullanmayınca böyle bir şeyin olması kaçınılmazdı. Dolayısıyla [skynet çalışmaları](https://github.com/buraksenyurt/skynet) kapsamında tekrardan pratik yapmanın uygun olacağını düşündüm. Bu sefer amacımız Star Wars için [https://swapi.dev](https://swapi.dev/) adresinden sunulan REST servisini tüketen ve karakterlerin listesini gösteren bir web uygulaması geliştirmek. Bunu yaparken hafif siklet kategorisinde sayılan ancak bir çok işi kolaylaştırdığı söylenen Next.Js isimli web framework'ten faydalanacağız.
 
@@ -226,6 +226,6 @@ npm run dev
 
 Ve çalışma zamanına ait bir görüntü.
 
-![image.axd](images/image.axd)
+![skynet_24_Screenshot_1.png](images/skynet_24_Screenshot_1.png)
 
 Kodları denerken yorum satırı olan console.log satırlarını açmanız işe yarayabilir. F12 Developers Tools sekmesinde bu sayede akan mesajları da görebilirsiniz. Tabii uygulamada ufak bir problemimiz de var. Minik bir bug diyelim:D "Daha fazlası..." butonuna bastıkça listemiz açılıyor ancak bir önceki konuma dönmemiz mümkün olmuyor. Söz gelimi "Azalt..." isimli bir button daha olsa ve buna basılınca state bir önceki konumuna dönse hiç fena olmaz. Sizce bunu yapmak mümkün mü? Eğer mümkün olduğunu düşünüyorsanız lütfen yorumlarda belirtip bana yardımcı olun;) Böylece geldik bir skynet derlemesinin daha sonuna. Kaynak kodlara [github reposu üzerinden](https://github.com/buraksenyurt/skynet/tree/master/No%2024%20-%20A%20Simple%20React%20App%20with%20NextJS) erişebilirsiniz. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

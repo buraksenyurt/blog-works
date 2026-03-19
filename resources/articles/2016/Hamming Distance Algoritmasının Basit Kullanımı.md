@@ -1,4 +1,4 @@
----
+﻿---
 title: "Hamming Distance Algoritmasının Basit Kullanımı"
 pubDate: 2016-01-13 17:09:00
 categories:
@@ -14,7 +14,7 @@ tags:
 ---
 
 # Hamming Distance Algoritmasının Basit Kullanımı
-![image.axd](images/image.axd)
+![hamming_0.gif](images/hamming_0.gif)
 
 Merhaba Arkadaşlar,
 
@@ -31,7 +31,7 @@ dolu - kedi
 
 Öncelikle karşılaştırılan tüm kelimelerin birbirleri ile eşit uzunlukta olduklarını söylememiz lazım. Bu zaten algoritmanın şartlarından da birisi. kuru ve duru arasında sadece bir harflik fark var. Buna göre Hamming Distance değeri 1. Nitekim k ve d dışındaki harfler aynılar. clone ve drone karşılaştırmasına göre aradaki fark değeri ise 2dir. Yani iki harflik bir farklılık vardır. c,l ve d,r harfleri. patates ve domates'e gelince. Buradaki Hamming değeri 3tür. p,a,t ve d,o,m harfleri farklıdır. Son eşleşmeye baktığımızda ise bütün harflerin tamamen farklı olduğunu görebiliriz. Buna göre Hamming Distance değeri 4tür. Hatta bu değer kelimedeki harf sayısı kadar olduğundan her iki eşin birbirlerinden tamamen farklı olduğu sonucuna da varabiliriz. Aşağıdaki grafik ile olayı özetleyelim.
 
-![image.axd](images/image.axd)
+![HammingMini.gif](images/HammingMini.gif)
 
 > Tabii binary içerikler için algoritmanın çalıştırılması biraz daha farklıdır. İkili (Binary) sayı sistemi söz konusu olduğunda Hamming Distance değerini bulmak için XOR operatöründen yararlanılır.
 
@@ -90,7 +90,7 @@ namespace HammingDistance
 
 Örneğin çalışma zamanı çıktısı aşağıdaki gibidir.
 
-![image.axd](images/image.axd)
+![Hamming_1.gif](images/Hamming_1.gif)
 
 Kodda basitçe neler yaptığımıza bir bakalım. String tipi için yazılmış bir genişletme metodu (Extension Methods) olduğunu görmüşsünüzdür. CalculateHammingDistance metodu bir string değişkene uygulanabilir. target isimli değişken ile gelen içerik source ile karşılaştırılmaktadır. LINQ ifadesindeki dikkat çekici nokta ise Zip metodudur. Sanırım pek çoğumuz bu fonksiyon ile ilk kez karşılaşıyor. Zip fonksiyonu iki diziyi istenen bir ifade çerçevesinde (Predication diyelim) birleştirmek amacıyla kullanılmaktadır. Öncesinde dikkat edileceği gibi source içeriği bir karakter dizisine çevrilir. Zip fonksiyonu target değişkeninin taşıdığı karakter dizisi ile source içeriğine ait karakter dizisini yeni bir isimsiz tip (Anonymous Type) altında birleştirir. Son olarak da bu dizi elemanlarının birbirleri ile aynı olup olmadığı kontrolü yapılır. Count metodunda yer alan m değişkeni new {char1, char2} ifadesi ile üretilen nesne örneklerini ifade eder.
 
@@ -128,7 +128,7 @@ puts "#{key} vs #{value} = #{sOp.calculateHammingDistance(key,value)}"
 
 ve çalışma zamanı çıktımız.
 
-![image.axd](images/image.axd)
+![Hamming_2.gif](images/Hamming_2.gif)
 
 Ruby kod örneğimizde StringOperations sınıfı içerisinde yazdığımız calculateHammingDistance isimli fonksiyonu kullanıyoruz. İki parametre alan fonksiyon source ve target içeriklerin kıyaslayarak ilgili Hamming Distance değerini döndürüyor. Metodun ilk satırında kaynak ve hedef metinlerin uzunluklarının aynı olmaması halinde bir Exception fırlatılmasını sağlıyoruz (Benzer durum C# ile yazdığımız kod örneği için de geçerli) İkinci satırda ise chars, zip ve count metod kullanımları söz konusu. LINQ ile yazdığımız ifadeye ne kadar da benzer değil mi?:) İzleyen kod satırlarında ise key:value çiflerini tutan bir Hash dizisini ele alarak Hamming değerlerini ekrana yazdırıyoruz.
 

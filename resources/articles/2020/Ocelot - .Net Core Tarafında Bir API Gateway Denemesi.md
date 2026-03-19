@@ -1,4 +1,4 @@
----
+﻿---
 title: "Ocelot - .Net Core Tarafında Bir API Gateway Denemesi"
 pubDate: 2020-12-16 11:51:00
 categories:
@@ -27,7 +27,7 @@ tags:
 ---
 
 # Ocelot - .Net Core Tarafında Bir API Gateway Denemesi
-![image.axd](images/image.axd)
+![ocelot.png](images/ocelot.png)
 
 Uzun süre önce bankada çalışırken nereye baksam servis görüyordum. Bir süre sonra ana bankacılık uygulaması dahil pek çok ürünün kullandığı bu sayısız servisler ağının yönetimi zorlaşmaya başladı. Bir takım ortak işlerin daha kolay ve etkili yönetilmesi gerekiyordu. Müşterek bir kullanıcı doğrulama ve yetkilendirme kontrolü (authentication & authorization), yük dengesi dağıtımı (load balancing), birkaç servis talebinin birleştirilmesi ve hatta birkaç servis verisinin birleştirilerek döndürülmesi (aggregation), servis verisinin örneğin XML'den JSON gibi farklı formata evrilmesi, servis geliş gidişlerinin loglanması, yönlendirmeler yapılması (routing), performans için önbellek kullanılması (caching), servis hareketliliklerini izlenmesi (tracing), servislerin kolayca keşfedilmesi (discovery), çağrı sayılarına sınırlandırma getirilmesi, bir takım güvenlik politikalarının entegre edilmesi, özelleştirilmiş delegeler yazılması (custom handler/middleware), tüm uygulamalar için ortak bir servis geçiş kanalının konuşlandırılması ve benzerleri. Yazarken yoruldum, daha ne olsun:D Sonunda Java tabanlı WSO2 isimli bir API Gateway kullanılmasına karar verildi.
 
@@ -356,15 +356,15 @@ Ocelot için çalışma zamanı ayarları bildiğiniz üzere json türünden kon
 
 Artık Bosphorus uygulamasını çalıştırıp localhost:5000/19 şeklinde bir talep gönderebiliriz. İlk örnek Aggregation durumunu taklit etmekte ve promosyon ekleme için yönlendirme yapmaktadır. Ayrıca GamerService ve ProductService'e ortak çağrı yapıp arka planda çağırılan servis çıktılarını tek bir JSON paketinde birleştirip geriye döndürür;)
 
-![image.axd](images/image.axd)
+![skynet_37_Screenshot_02.png](images/skynet_37_Screenshot_02.png)
 
 İlk örnekteki UpstreamPathTemplate tanımlarına göre http://localhost:5000/eagames/player/23 adresine yapılan çağrı esasında http://localhost:6501/player/23 adresine yönlendirilir.
 
-![image.axd](images/image.axd)
+![skynet_37_Screenshot_01.png](images/skynet_37_Screenshot_01.png)
 
 Benzer şekilde http://localhost:5000/eagames/product/23 şeklinde yapılacak çağrıda http://localhost:7501/api/product/suggestions/23 adresine yönlendirilir.
 
-![image.axd](images/image.axd)
+![skynet_37_Screenshot_03.png](images/skynet_37_Screenshot_03.png)
 
 PromotionService içerisinde bir de POST metodumuz var. Ocelot.JSON için yaptığımız tanıma göre http://localhost:5000/eagames/applypromo adresine gelen talebi, http://localhost:8501/applier adresine yönlendiriyor olmalı. İşte örnek POST içeriği ve sonuç...
 
@@ -377,7 +377,7 @@ PromotionService içerisinde bir de POST metodumuz var. Ocelot.JSON için yaptı
 }
 ```
 
-![image.axd](images/image.axd)
+![skynet_37_Screenshot_04.png](images/skynet_37_Screenshot_04.png)
 
 ## İkinci Deneme (Load Balancer)
 
@@ -507,15 +507,15 @@ Bu sefer http://localhost:5555/Calculator, http://localhost:5556/Calculator ve h
 
 Artık http://localhost:5000/eagames/rewards adresine geldiğimizde
 
-![image.axd](images/image.axd)
+![skynet_37_Screenshot_05.png](images/skynet_37_Screenshot_05.png)
 
 Talepler LeastConnection seçimi nedeniyle her seferinde bir sonraki backend servisine yönlendirilecektir.
 
-![image.axd](images/image.axd)
+![skynet_37_Screenshot_06.png](images/skynet_37_Screenshot_06.png)
 
 Diğer yandan hatırlayacağınız gibi gelen talepler sırasında araya girebileceğimizden bahsetmiştik. Bu sayede Ocelot'a gelen bir Http isteğine cevap dönmeden önce bir takım iş kurallarını işletmek mümkün olabilir.
 
-![image.axd](images/image.axd)
+![skynet_37_Screenshot_07.png](images/skynet_37_Screenshot_07.png)
 
 Gelelim bu SkyNet derlemesinin bomba sorularına:)
 

@@ -1,4 +1,4 @@
----
+﻿---
 title: "Sadece Tarayıcı Kullanarak Web API Servisini Google Cloud Platform Üzerinde Yayınlamak"
 pubDate: 2018-01-14 00:44:00
 categories:
@@ -19,7 +19,7 @@ Sizi Cumartesi gecesi çalışma odama davet etsem...Olmaz mı? Pekiiii...Sadece
 
 Not: Talep sayısının artma ve Free Trial için verilen paranın bitmesi ihtimaline karşın servis şu anda hizmet dışıdır:) Bilginiz olsun.
 
-![image.axd](images/image.axd)
+![gconsole.gif](images/gconsole.gif)
 
 Peki ne yaptık?
 

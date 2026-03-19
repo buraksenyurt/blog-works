@@ -1,4 +1,4 @@
----
+﻿---
 title: "Tek Fotoluk İpucu 140 - Distributed Ruby(dRuby)"
 pubDate: 2016-10-31 21:16:00
 categories:
@@ -21,21 +21,21 @@ Eğitmenlik yaptığım dönemlerde.Net'in en zor alanlarından birisi de Remoti
 
 Ruby dünyasında bu iş için drb kütüphanesini kullanıyoruz. Tahmin edileceği üzere bir sunucu ve bu suncuya çalıştığı süre boyunca bağlanacak istemciler söz konusu. Bu ikili dağıtık bir Ruby uygulamasının iki ana parçasını oluşturmakta. Sunucu ve istemcilerin temel özelliklerini aşağıdaki şekilde olduğu gibi sıralayabiliriz.
 
-![image.axd](images/image.axd)
+![tfi_140_2.gif](images/tfi_140_2.gif)
 
 Peki basit bir sunucu ve bu sunucu ile iletişim kuracak istemci (ler) nasıl geliştirilebilirler? Yoksa aşağıdaki ekran görüntülerindeki gibi olabilir mi?
 
 Önce sunucu uygulama;
 
-![image.axd](images/image.axd)
+![tfi_140_3.gif](images/tfi_140_3.gif)
 
 ardından istemci uygulama;
 
-![image.axd](images/image.axd)
+![tfi_140_4.gif](images/tfi_140_4.gif)
 
 ve çalışma zamanında olanlar
 
-![image.axd](images/image.axd)
+![tfi_140_1.gif](images/tfi_140_1.gif)
 
 Aslında örnek son derece basit. Sunucu uygulama üzerinde bir dizi tanımlıyor ve 8890 nolu port üzerinden yayına çıkıyoruz. Uygulamayı açık tutmak için sonsuz bir döngümüz var. Döngü içerisinde 5er saniyelik duraksamalarımız ve sonrasında anlık olarak objects isimli dizi içeriğini ekrana basan kod parçamız bulunuyor. Terminal ekranına bir çeşit log bıraktığımızı düşünebiliriz.
 

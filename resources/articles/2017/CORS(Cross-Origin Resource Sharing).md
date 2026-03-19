@@ -1,4 +1,4 @@
----
+﻿---
 title: "CORS(Cross-Origin Resource Sharing)"
 pubDate: 2017-12-29 21:01:00
 categories:
@@ -16,7 +16,7 @@ tags:
 ---
 
 # CORS(Cross-Origin Resource Sharing)
-![image.axd](images/image.axd)
+![cors_6.gif](images/cors_6.gif)
 
 Merhaba Arkadaşlar,
 
@@ -26,7 +26,7 @@ Konuyu kısaca özetlemek için aşağıdaki grafiğin yardımcı olabileceğini
 
 Ancak izleyen senaryolarda servise doğru gelmek isteyen farklı kökler görüyoruz. Farklı bir alan adı (domain), alt alan adı (sub domain), şema (https ile gelinen) ve port. Bu durumlarda hedef adres gelen talep ile ilişkili olarak bir şüpheye düşüyor. Acaba benim iznim olmayan bir adresten mi geliniyor gibi duruma paranoyakça yaklaşıp isteğe olumlu cevap vermiyor. Bu durumlara özellikle AJAX modelli servis çağrılarının yapıldığı çözümlerde sıklıkla rastlanıyor. Dolayısıyla hedef tarafının belirli bir politikaya göre istekte bulunanlara izin vermesini sağlamamız gerekiyor. Yani bir CORS policy'nin uygulanması gerekmekte.
 
-![image.axd](images/image.axd)
+![cors_1.gif](images/cors_1.gif)
 
 Gelin.Net Core tarafında CORS politikalarının nasıl uygulanabileceğini basit bir örnek ile incelemeye çalışalım. İlk olarak Illegal Cross Site Script vakasını değerlendirelim. Senaryoyu ele alırken iki uygulama yazacağız. İlki 6001 numaralı port üzerinden yayın yapan bir Web API servisi olacak. Bu servisin tüketicisi ise 5000 nolu porttan çalışacak olan boş bir Web projesi. Terminal'den aşağıdaki komutu kullanarak Contoso isimli Web API uygulamasını oluşturalım.
 
@@ -105,11 +105,11 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 
 Her iki uygulamada hazır. Servis ve web uygulamalarını ayrı ayrı çalıştıralım ve Get butonuna basarak servise çağrıda bulunmaya çalışalım.
 
-![image.axd](images/image.axd)
+![cors_2.gif](images/cors_2.gif)
 
 İki uygulamayı da dotnet run komutlarımız ile çalıştırdıktan sonra Get ile servisten sunulan değer listesine ulaşamadığımızı görürüz.
 
-![image.axd](images/image.axd)
+![Cors_3.gif](images/Cors_3.gif)
 
 Dikkat edileceği üzere CORS Header 'Access-Control-Allow-Origin'missing şeklinde bir uyarı mesajı alınıyor. Bir başka deyişle Contoso servisine http://localhost:5000 adresinden gelinmesi için gerekli policy belgesinin olmadığı belirtilmektedir. Bu sorunu çözmek için servis tarafındaki Startup.cs içeriğine bir kaç dokunuş gerçekleştirmemiz yeterli.
 
@@ -151,11 +151,11 @@ namespace Contoso
 
 ConfigureServices metounda AddCors fonksiyonu ile Cross-Origin Sharing hizmetini çalışma zamanına ekliyoruz. Configure fonksiyonundaki UseCors çağrısı ile de Middleware tarafında ilgili policy'nin etkinleştirilmesini sağlıyoruz. Örneğimizde localhost:5000 adresi için gerekli Header bilgisinin ekleneceğini belirtmekteyiz. Şimdi senaryomuzu tekrar işletelim. Bu kez aşağıdaki görüntüde olduğu gibi değerlerin sayfaya basıldığını görebiliriz.
 
-![image.axd](images/image.axd)
+![cors_4.gif](images/cors_4.gif)
 
 Bu başarılı talebin arka plandaki izlerine baktığımızda servis tarafından döndürülen cevabın içerisinde ek bir Header bilgisi olduğunu da görürüz.
 
-![image.axd](images/image.axd)
+![cors_5n.gif](images/cors_5n.gif)
 
 Dikkat edileceği üzere Access-Control-Allow-Origin isimli header bilgisi için http://localhost:5000 değeri eklenmiştir. Benzer şekilde Request Header içerisinde de Origin bilgisi yer almaktadır.
 

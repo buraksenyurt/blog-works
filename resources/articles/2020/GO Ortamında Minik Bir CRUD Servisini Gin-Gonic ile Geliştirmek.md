@@ -1,4 +1,4 @@
----
+﻿---
 title: "GO Ortamında Minik Bir CRUD Servisini Gin-Gonic ile Geliştirmek"
 pubDate: 2020-09-03 13:00:00
 categories:
@@ -16,7 +16,7 @@ tags:
 ---
 
 # GO Ortamında Minik Bir CRUD Servisini Gin-Gonic ile Geliştirmek
-![image.axd](images/image.axd)
+![gingonic.png](images/gingonic.png)
 
 Gin-Gonic hafif siklet sayılan ama yüksek performansı ile öne çıkan (Muadili olan martini'den çok daha hızlı olduğu ifade ediliyor. Bu arada farklı Http Web Framework'ler için [şu yazıyı](https://deepsource.io/blog/go-web-frameworks/) inceleyebilirsiniz) bir HTTP-Web framework. Elbette açık kaynak bir çatı. Middleware tarafında (Yani Request ve Response'lar arasında) Recover ve Log desteği sunuyor. Tabii kendi middleware bileşenimizi yazıp ekleyebiliriz de. Recovery modülü en başından beri ekli olduğundan paniklemeyen bir framework diyebiliriz:) Yani Go çalışma zamanında HTTP talepleri ile ilgili olarak bir panic oluştuğunda uygun bir 500 cevabı verebiliyor.
 
@@ -316,9 +316,9 @@ curl http://localhost:5003/api/v1/quote/
 
 İşte çalışma zamanından birkaç görüntü.
 
-![image.axd](images/image.axd)
+![skynet_25_Screenshot_1.png](images/skynet_25_Screenshot_1.png)
 
-![image.axd](images/image.axd)
+![skynet_25_Screenshot_2.png](images/skynet_25_Screenshot_2.png)
 
 Uygulamamıza swagger entegrasyonu yaptığımızdan detaylı bir dokümantasyona da sahibiz. Bu servis ne yapıyor, hangi operasyonları nasıl test ederim, test için bana vereceği curl çıktıları neler vb şeklindeki soruların karşılığı olan dokümantasyonu hatırlayacağınız üzere aşağıdaki terminal komutu ile üretmiştik. Tekrardan hatırlatmakta yarar var.
 
@@ -329,18 +329,18 @@ swag init _ "book-worm-api/docs"
 
 Bu işlem docs klasörünün oluşmasını sağlar. Klasördeki swagger.json ve yaml içeriklerini bir inceleyin derim;) Swagger implementasyonu sonrası çalışma zamanına ait birkaç ekran görüntüsünü de aşağıda bulabilirsiniz. İşte localhost:5003/swagger/index.html den erişebileceğimi ana sayfadan bir görüntü. Gayet şık değil mi?:)
 
-![image.axd](images/image.axd)
+![skynet_25_Screenshot_3.png](images/skynet_25_Screenshot_3.png)
 
 Yeni bir kitap alıntısı eklerken ki görüntü.
 
-![image.axd](images/image.axd)
+![skynet_25_Screenshot_4.png](images/skynet_25_Screenshot_4.png)
 
 Post işleminin sonucuna ait bir görüntü.
 
-![image.axd](images/image.axd)
+![skynet_25_Screenshot_5.png](images/skynet_25_Screenshot_5.png)
 
 ve son olarak tüm kitap alıntılarını çektiğimiz HTTP Get talebine ait görüntü.
 
-![image.axd](images/image.axd)
+![skynet_25_Screenshot_6.png](images/skynet_25_Screenshot_6.png)
 
 Örnek servisimiz MongoDb'yi gin-gonic çatısı üstünden kullanan bir Go uyglaması. Swagger desteği de bulunmakta. Eğer Update ve Delete operasyonlarını da işin içerisine katarsak, çalıştığımız kurumlar için hafif/orta siklet sayılabilecek REST Api'leri kolaylıkla geliştirebiliriz. Böylece geldik bir SkyNet derlemesinin daha sonuna. Örnek uygulama kodlarına [github reposu üzerinden](https://github.com/buraksenyurt/skynet/tree/master/No%2025%20-%20Hello%20Gin-Gonic) erişebilirsiniz. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

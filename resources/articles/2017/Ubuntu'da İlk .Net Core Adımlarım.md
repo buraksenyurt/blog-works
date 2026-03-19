@@ -1,4 +1,4 @@
----
+﻿---
 title: "Ubuntu'da İlk .Net Core Adımlarım"
 pubDate: 2017-11-05 10:17:00
 categories:
@@ -17,7 +17,7 @@ tags:
 ---
 
 # Ubuntu'da İlk .Net Core Adımlarım
-![image.axd](images/image.axd)
+![coubuntu_1.gif](images/coubuntu_1.gif)
 
 Merhaba Arkadaşlar,
 
@@ -43,7 +43,7 @@ sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
 sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-xenial-prod xenial main" > /etc/apt/sources.list.d/dotnetdev.list'
 ```
 
-![image.axd](images/image.axd)
+![cobuntu_5.gif](images/cobuntu_5.gif)
 
 Sorunsuz geçen bu sürecin ardından sistemi güncelleyip.Net Core 2.0 sürümünü indirmeye başladım. Tabii alışılageldiği üzere önce bir güncelleme yapmakta ve eksik paketlerin yüklenmesini sağlamakta yarar var.
 
@@ -61,7 +61,7 @@ dotnet --version
 dotnet --info
 ```
 
-![image.axd](images/image.axd)
+![cobuntu_6.gif](images/cobuntu_6.gif)
 
 Console Uygulamasının Oluşturulması
 
@@ -71,7 +71,7 @@ Bildiğiniz gibi dotnet new komutu ile önceden tanımlı şablonlardan yararlan
 dotnet new console -o HelloWorld
 ```
 
-![image.axd](images/image.axd)
+![cobuntu_3.gif](images/cobuntu_3.gif)
 
 Oluşan Program.cs içeriğini biraz değiştirdim ve Algebra.cs isimli bir sınıfı da klasöre dahil ettim.
 
@@ -122,7 +122,7 @@ dotnet build
 dotnet run
 ```
 
-![image.axd](images/image.axd)
+![runtime.gif](images/runtime.gif)
 
 Belki de pek çoğunuz için etkileyici bir sonuç değil ama benim oldukça hoşuma gitti. Vakti zamanında sadece Windows platformunda.Net ile kod yazabildiğimi düşününce, kurduğum Linux makinede bu ortamı kullanarak C# ile kod geliştirebilmek harika bir deneyim.
 
@@ -138,7 +138,7 @@ sudo apt-get update
 sudo apt-get install code
 ```
 
-![image.axd](images/image.axd)
+![cobuntu_4.gif](images/cobuntu_4.gif)
 
 Eğer komut satırından kurulum zor geliyorsa basit kurulum için [şu adresten de](https://code.visualstudio.com/Download?wt.mc_id=DotNet_Home&dotnetid=572034740.1488954905) yararlanabilirsiniz.
 

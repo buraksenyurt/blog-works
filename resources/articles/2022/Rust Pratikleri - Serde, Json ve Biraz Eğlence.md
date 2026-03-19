@@ -1,4 +1,4 @@
----
+﻿---
 title: "Rust Pratikleri - Serde, Json ve Biraz Eğlence"
 pubDate: 2022-03-13 09:00:00
 categories:
@@ -15,7 +15,7 @@ tags:
 ---
 
 # Rust Pratikleri - Serde, Json ve Biraz Eğlence
-![image.axd](images/image.axd)
+![tipstricks.png](images/tipstricks.png)
 
 Sanıyorum JSON veriler ile çalışmayan programlama dili veya ortam yoktur. Sonuç itibariyle bir takım verileri düzenli, standart ve insan gözüyle okunabilir bir formatta tutmanın en iyi yollarından birisi şüphesiz ki JSON. Öncesinden gelen XML formatına göre daha az yer tutması da cazibesini artırmaktadır. Tabii günümüzde BSON gibi sıkıştırılabilir ve çok daha hızlı yol alabilen seçenekler de mevcut ama rust dilini öğrenirken bunun pratiğini yapmadan olmaz. Bu noktada işimizi epey kolaylaştıran bir kütüphane olduğunu ifade edebilirim. [Serde](https://docs.serde.rs/serde/index.html) isimli çatı (ki framework olduğu vurgulanıyor JSON ile çalışma konusunda epey popüler. Hiç vakit kaybetmeden örnek bir uygulama üstünden ilerleyelim.
 
@@ -145,7 +145,7 @@ cargo run r none
 
 Kendi sistemimdeki çalışma zamanına ait çıktıyı aşağıda görebilirsiniz.
 
-![image.axd](images/image.axd)
+![gettip_1.png](images/gettip_1.png)
 
 Tabii örneğimizi yürütülebilir bir binary olarak hazırlamakta yarar var. Bunun için build işlemini aşağıdaki gibi icra edip yine gerekli denemelerimizi yapabiliriz.
 
@@ -158,7 +158,7 @@ cd target/release
 
 Ancak şöyle bir hatırlatma yapalım. Program, tips.json dosyası ile çalıştığından onu da binary'nin olduğu klasörle birlikte dağıtmalıyız. En azından siz daha iyi bir çözüm bulana kadar böyle. Şimdi cargo paketine gereksinim duymadan binary'yi yürütebiliriz. İşte birkaç örnek.
 
-![image.axd](images/image.axd)
+![gettip_2.png](images/gettip_2.png)
 
 Rust programlama dilinde başlangıç seviyesini tamamlamış herkesin yapabileceği türden bir örnek. Bizim için işleri kolaylaştıran serde ve rand kütüphanelerini kullandık. Biraz pattern matching, biraz dosya okuma, komut satırından argüman alma, fonksiyon tanımlama, vector, struct ve trait uyarlaması gibi konuları değerlendirmiş olduk. Elbette örnek daha da geliştirilebilir ve eksik yönleri de yok değil. Örneğin JSON dosya içeriği çok büyük olursa uygulama performansı bundan nasıl etkilenir? Ya da ipuçlarını bir JSON dosyasından değil de herhangi bir servisten alsak güzel olmaz mı? Kendinizi güçlü gördüğünüz bir programlama dili ile pekala REST tabanlı bir servis yazıp bu terminal uygulamasından çağırmayı deneyebilirsiniz. JSON dosyasını binary ile birlikte taşımanın daha kolay bir yolu var mıdır? Örnekte sadece dosyadan json veri okuyup ters serileştirme ile bir vektor dizisine nasıl alınacağına baktık. Peki komut satırından bu dosyaya yeni bir ipucu eklemek istersek nasıl bir yol izleriz? İşte bana ve size pek güzel sorular:)
 

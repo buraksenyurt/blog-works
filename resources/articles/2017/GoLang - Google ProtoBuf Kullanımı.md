@@ -1,4 +1,4 @@
----
+﻿---
 title: "GoLang - Google ProtoBuf Kullanımı"
 pubDate: 2017-07-22 21:03:00
 categories:
@@ -19,7 +19,7 @@ tags:
 ---
 
 # GoLang - Google ProtoBuf Kullanımı
-![image.axd](images/image.axd)
+![protogopher_1.gif](images/protogopher_1.gif)
 
 Merhaba Arkadaşlar,
 
@@ -85,7 +85,7 @@ Derleme/Üretim
 
 Yazılan Proto dosyasının kullanılması için bir üretim adımından geçirilmesi gerekmektedir. protoc aracını kullanarak yukarıda oluşturduğumuz dosyayı derleyebiliriz. Aynen aşağıdaki şekilde görüldüğü gibi.
 
-![image.axd](images/image.axd)
+![goproto_2.gif](images/goproto_2.gif)
 
 Derleme sonrasında Southwind.pd.go isimli bir dosya oluşacaktır. Bu dosyanın içeriği aşağıdaki gibidir.
 
@@ -326,7 +326,7 @@ func main() {
 
 Öncelikle kodda neler yaptığımız bir bakalım. ProtoBuf formatında serileştirme ve ters serileştirme işlemleri için github.com/golang/protobuf/proto paketinde yer alan proto tipinin Marshal ve Unmarshal metodlarından yararlanılıyor. taverna isimli değişken içerisinde iki oyuncu ve bu oyuncuların silahlarına ait test verileri yer almakta. Marshal metodu ile serileştirilen içeriği hem byte array hem de string tipine dönüştürülmüş olarak ekrana bastırmaktayız. Sonrasında da serileştirilmiş bu veri içeriğinden yeni bir Game örneğine ters serileştirme yaparak elde edilen verileri yazdırmaktayız. Çalışma zamanı sonuçları aşağıdaki ekran görüntüsündeki gibidir.
 
-![image.axd](images/image.axd)
+![goproto_4.gif](images/goproto_4.gif)
 
 Tabii ki serileştirilen içerik fiziki bir dosyaya çıkılabilir veya ağ üzerinden bir kanala yazdırılabilir. Daha az yer kapladığı ortada. Yine de gerçek benchmark testleri ve farklı serileştirme formatları ile karşılaştırılması için interneti dolaşmakta yarar var. Üretilen serileştirilmiş içeriğe bakıldığında ise sadece verinin tutulduğu görülmektedir. Tahmin edeceğiniz üzere verinin şeması paket olarak eklediğimiz Southwind.pd.go içerisinde yer alıyor. Dolayısıyla Marshal ve Unmarsal işlemlerinde bu paketten yararlanılmakta.
 

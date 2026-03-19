@@ -1,4 +1,4 @@
----
+﻿---
 title: "gRPC Nedir, Nasıl Uygulanır?"
 pubDate: 2019-04-24 07:06:00
 categories:
@@ -21,7 +21,7 @@ tags:
 ---
 
 # gRPC Nedir, Nasıl Uygulanır?
-![image.axd](images/image.axd)
+![grpc_zero.jpg](images/grpc_zero.jpg)
 
 Oturduğum masanın hemen sağındaki pencerede ufak bir aralık kalmış olmalı ki "Vuuuu..." diye öten rüzgarın sesini fark ettim bir anda. Aslında işime konstantre olmuştum ama o sesle birlikte olduğum yerden uzaklaşmıştım. Dışarısı soğuktu. Havan kapalı ve biraz da kasvetliydi. Yağmur damlalarının cama vuruşunu fark ettim sonrasında. Gözlerim uzaklara daldı ve rüzgarın sesi ile birikte Lise yıllarında buldum kendimi. Doğal gaz İstanbul'a henüz gelmiş ve bizimki gibi kimi sobalı ev kalorifer petekleriyle tanışmıştı. Geçmiş yılların ardından bu yeni konfor sayesinde sabahları üşüyerek uyanmıyorduk artık. Benim en büyük keyiflerimden birisi olan öğle sonrası uykularım içinse yeni mekanımı bulmuştum bile. Okuldan her geldiğimde önce karnımı doyuruyor sonra o köşeye kuruluyordum. Minderler camın altındaki peteğin yanına seriliyor, üste hafif bir battaniye alınıyor, zaten sessiz olan sokağın sükunetini bozmak isteyen yağmur damlalarının cama vuruşu dinlenerek derin bir uykuya dalınıyor. Bazen de o sessizliğe eski sokak kapısının altındaki süngerden kaçan "Vuuuu" sesi ortak olurdu...
 
@@ -31,7 +31,7 @@ Kısa süreli bu seyahatin ardından tekrar bilgisayarıma döndüm ve araştır
 
 İşin temelleri oldukça basit aslında. RPC'ye göre istemciler, uzak sunucudaki metodları sanki kendi ortamlarının birer parçasıymış gibi çağırabilirler. Taraflar farklı makinelerde dolayısıyla farklı domain sınıflarında olabilirler. Bu nedenle dağıtık sistem kurgularında ideal bir uygulama senaryosu olarak ele alınabileceğini ifade edebiliriz. Aşağıdaki şekille konuyu özetlemek mümkün. Node.js ile geliştirilmiş örnek bir gRPC sunucusu ile protoBuf bazlı mesajlarla anlaşan farklı dillerde istemcier veya servisler. Aslında oldukça bilindik ve tanıdık bir senaryo.
 
-![image.axd](images/image.axd)
+![grpc_2.gif](images/grpc_2.gif)
 
 Peki bu çatıyı sahada nasıl kullanabiliriz?
 
@@ -219,7 +219,7 @@ Burada öncelikle proto dosyasını yüklüyor ve sonrasında client isimli Prod
 
 Yaptıklarımızı test etmek için önce sunucu tarafını, ardından istemci tarafını çalıştırmamız yeterli. Ben aşağıdaki ekran görüntüsünde yer alan sonuçları elde ettim.
 
-![image.axd](images/image.axd)
+![grPC_1.gif](images/grPC_1.gif)
 
 Görüldüğü gibi istemci uygulama, uzak sunucu üzerinden sunulan servis operasyonlarını başarılı bir şekilde kullandı. Benim gRPC ile ilgili olarak ilk öğrendiklerim kısac bunlar. Aslında Microservice mimarisinde REST alternatifi bir iletişim tekniği olduğunu görmek benim için güzel oldu. Diğer yandan gRPC'nin yüksek performanslı, TCP soket haberleşmesi üzerinden binary serileştirme kullanan ve uygulanması kolay bir çatı olduğunu söyleyebiliriz. Performans konusunda bende Google'ın yalancısıyım dolayısıyla gerçek ölçümlemelere bakmakta yarar var. Bununla birlikte özellikle stream kullanımı örneğini de bir bakın derim ki [burada güzel bir anlatımı var](https://grpc.io/docs/tutorials/basic/node.html). gRPC'yi farklı dillerde uygulamak isterseniz google'ın [bu adresteki pratiklerine](https://grpc.io/docs/tutorials/) bakabilirsiniz. Böylece geldik bir yazımızın daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.
 

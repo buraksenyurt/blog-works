@@ -1,4 +1,4 @@
----
+﻿---
 title: "Spring Boot ile Eski Usül Soap Based XML Web Service Yazmak Ne Kadar Zor Olabilir?"
 pubDate: 2020-10-26 17:51:00
 categories:
@@ -24,7 +24,7 @@ tags:
 ---
 
 # Spring Boot ile Eski Usül Soap Based XML Web Service Yazmak Ne Kadar Zor Olabilir?
-![image.axd](images/image.axd)
+![xmlheimdall.png](images/xmlheimdall.png)
 
 Kısa bir süre önce değerli bir çalışma arkadaşım kullanmaya çalıştığı Java tabanlı XML Web servis ile epeyce sorun yaşadı. Söz konusu servisi.Net tarafından tüketmeye çalışıyordu ancak XML şeması da epeyce karmaşık olan servis iletişim noktasında şema adlarına kızıyor, header içeriğini beğenmiyor sürekli naz yapıyordu. Arkadaşım allem etti kallem etti sorunun altından girip üstünden çıktı ve nihayetinde çözdü. Bu olaylara kısmen tanıklık ettikten sonra "yahu Java tarafında XML Web Service geliştirmek şimdilerde daha bir kolay değil midir!?" diye söylenmeye başladım. Yol doğal olarak beni Spring Boot'a ve resmi dokümantasyonuna götürdü.
 
@@ -34,7 +34,7 @@ Kısa bir süre önce değerli bir çalışma arkadaşım kullanmaya çalıştı
 
 Yine belirtmem de yarar var; örneği Heimdall (Ubuntu-20.04) üzerine ve Visual Studio Code arabirimiyle geliştirmekteyim;)
 
-![image.axd](images/image.axd)
+![skynet_39_Screenshot_01.png](images/skynet_39_Screenshot_01.png)
 
 Şimdi de gerekli dosyalarımızı oluşturalım.
 
@@ -252,7 +252,7 @@ Kodlama faslı tamamlandıktan sonra örneği maven üzerinden çalıştırıp h
 
 İlk etapta WSDL içeriğine ulaşabilmek beni olduğu kadar sizi de mutlu edecektir diye düşünüyorum. Artık elimizde SOAP standartlarında operasyon desteği sunabilen bir service var.
 
-![image.axd](images/image.axd)
+![skynet_39_Screenshot_02.png](images/skynet_39_Screenshot_02.png)
 
 Tabii bunu birde tüketmek gerekiyor. SoapUI bu anlamda ideal ve pratik bir çözüm. Ne varki ben ilk Request denemesinden sonra "Implementation of JAXB-API has not been found on module path or classpath" şeklinde bir hata aldım. Çözümü araştırdığımda konuya çalıştığım tarih itibariyle jaxb'nin aşağıdaki paketini kullanmam önerildi. Tabii siz bunu denerken aynı problemle karşılaşmayabilirsiniz.
 
@@ -280,7 +280,7 @@ POM.xml üzerinde gerekli değişikliği yaptıktan sonra ise ilk talebimizi gö
 
 Aşağıdaki sonucu almamız gerekiyor.
 
-![image.axd](images/image.axd)
+![skynet_39_Screenshot_03.png](images/skynet_39_Screenshot_03.png)
 
 ## Peki Ya.Net Core Tarafı!?
 

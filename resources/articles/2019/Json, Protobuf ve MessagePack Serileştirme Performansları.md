@@ -1,4 +1,4 @@
----
+﻿---
 title: "Json, Protobuf ve MessagePack Serileştirme Performansları"
 pubDate: 2019-04-01 06:00:00
 categories:
@@ -20,7 +20,7 @@ tags:
 ---
 
 # Json, Protobuf ve MessagePack Serileştirme Performansları
-![image.axd](images/image.axd)
+![mpack_0.jpg](images/mpack_0.jpg)
 
 Merhaba Arkadaşlar,
 
@@ -46,7 +46,7 @@ Geçtiğimiz günlerde West-World'ün başında otururken hız ve alansal büyü
 
 gibi üretiliyor ve [resmi siteye](https://msgpack.org/index.html) göre %18 kadar yer kazanımı sağlıyor (Bu örnek için tabii)
 
-![image.axd](images/image.axd)
+![mpack_5.gif](images/mpack_5.gif)
 
 Bu arada MessagePack serileştirmesi binary formatta olmak zorunda da değil. İnsan gözüyle okunabilir bir formatta da dönüşebiliyor ve bu haliyle de daha az yer tuttuğu daha hızlı serileştiği belirtiliyor.
 
@@ -201,20 +201,20 @@ dotnet run -c release
 
 Bir süre bekledikten sonra terminalde aşağıdakine benzer sonuçlarla karşılaşmalısınız. Ben yaklaşık olarak dört dakika kadar bekledim.
 
-![image.axd](images/image.axd)
+![mpack_1.gif](images/mpack_1.gif)
 
 Burada üç ölçüm kriteri görülüyor. Herbirisi mikrosaniye cinsinden hesaplanmış durumda. Çalışma süresini Mean sütununda görebiliriz. Hata üretme değerleri Error kısmında yer alırken standart sapma verileri de StdDev sütununda bulunmakta. Kullandığımız sistemin donanımı da etkili tabii ama aslında kitap sayısı açısından bakarsak oransal anlamda tüm platformlarda benzer sonuçlar çıkacak. Elde edilen verilere göre serileşecek veri kümesinin küçük boyutlu olması halinde tüm ölçüm değerlerinin birbirlerine yakın çıktığını söyleyebiliriz. Ancak 1000, 10000 ve 100000 için farklılıklar daha da belirginleşmeye başlıyor. Newtonsoft aracılığıyla yapılan JSON serileştirme süreleri çok uzun. Hata payı ve standart sapma değerleri de oldukça yüksek. Binary MessagePack en iyi sonuçları üretmiş görünüyor. Hatta protobuf serileştirme süresinden de iyi bir performans sergilemiş diyebiliriz.
 
 Oluşan dosya boyutlarına baktığımızda da MessagePack serileştirmesinin (binay olan) diğerlerine göre en az yer kaplayan içeriği oluşturduğunu söyleyebiliriz (Protobuf serileştirme sonucu ortaya çıkan boyutta fena sayılmaz aslında) JSON çıktısı ise neredeyse iki katı. Tabii çok küçük veri kümelerinde boyutsal farklılıklar çok fark etmiyor.
 
-![image.axd](images/image.axd)
+![mpack_3.gif](images/mpack_3.gif)
 
 BenchmarkDotnet ayrıca rapor çıktılarını da bir klasör altında topluyor (Proje klasöründeki BenchmarkDotNet.Artifacts altında) Aşağıdaki görsellerde örneğimize istinaden üretilen içeriklerden bir kaçını görebilirsiniz.
 
-![image.axd](images/image.axd)
+![mpack_2.gif](images/mpack_2.gif)
 
 Raporun web tabanlı örnek görünümü;
 
-![image.axd](images/image.axd)
+![mpack_4.gif](images/mpack_4.gif)
 
 Hepsi bu kadar:) MessagePack bu ölçümleme değerleri göz önüne alındığında özellikle gerçek zamanlı iletişim yapılan uygulamalarda değer kazanıyor. Gerçek zamanlı uygulamalar denince akla ilk gelen sanıyorum ki SignalR ve WebSockets. Örneğin Asp.Net Core tarafında geliştirilen bir chat uygulamasında mesajlaşma kısmı için MessagePack serileştirmeden yararlanılabilir. Ya da bir merkezden gelecek stok verisini, broadcast yayınla sunucuya bağlı olan tüm istemcilerin grafiklerinde güncelleyecek bir sistemde kullanılabilir. Nitekim kullanıcı sayısının ve gerçek zamanlı veri değiş tokuşunun arttığı senaryolarda, hat üzerinde yol alacak paket içeriklerinin boyutsal olarak minimize edilmesi her zaman için hız avantajı sağlayacaktır. Bu tip bir örneği sonraki makalelerimizde ele almaya çalışacağım. Ne de olsa MessagePack kullanmanın avantaj sağlayacağını görmüş olduk. Burada size düşen bir görev de var. Örneğimizde sadece serileştirme senaryoları ölçümlendi. Peki ya ters serileştirmeden (deserialization) ne haber? Ellerinizden öper:) Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

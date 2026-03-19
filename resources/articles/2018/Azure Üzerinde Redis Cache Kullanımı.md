@@ -1,4 +1,4 @@
----
+﻿---
 title: "Azure Üzerinde Redis Cache Kullanımı"
 pubDate: 2018-09-01 07:02:00
 categories:
@@ -21,7 +21,7 @@ tags:
 ---
 
 # Azure Üzerinde Redis Cache Kullanımı
-![image.axd](images/image.axd)
+![aredisc_02.gif](images/aredisc_02.gif)
 
 Merhaba Arkadaşlar,
 
@@ -43,23 +43,23 @@ Redis Cache Kaynağını Oluşturmak
 
 İşe azure portal üzerinden redis cache araması yaparak başlayabiliriz (Bu aşamada Microsoft Azure aboneliğinizin olduğunu varsayıyorum)
 
-![image.axd](images/image.axd)
+![aredisc_1.gif](images/aredisc_1.gif)
 
 Redis Cache öğesini bulduktan sonra tek yapmamız gereken yeni bir tane oluşturmak. Diğer pek çok hizmette olduğu gibi isim, kaynak grubu, lokasyon ve benzeri bilgileri girmemiz gerekiyor. Ben DNS adı olarak Gondor'u kullandım ve "Kullandıkça Öde" tipindeki aboneliği seçtim. Bu vakaya özel olmasını istediğim için gondor-redis-rg isimli yeni bir Resource Group belirttim. Lokasyon olarak da West Europe tarafındaki sunucu merkezini işaret ettim.
 
-![image.axd](images/image.axd)
+![aredisc_2.gif](images/aredisc_2.gif)
 
 Burada da bir fiyatlandırma söz konusu elbette:) Ücretsiz bir kullanımını bulamadım ancak geliştirme amacıyla C0 Basic isimli modeli değerlendirmemiz mümkün. Tabii başka modellerde var. "View Full Pricing Details" bağlantısına basarsak diğer seçenekleri görebiliriz.
 
-![image.axd](images/image.axd)
+![aredisc_3.gif](images/aredisc_3.gif)
 
 İhtiyaca yönelik olarak doğru modeli seçerek ilerlemek önemli. Gerekli bilgiler sonrası oluşturma işlemi başlatılabilir. Redis Cache bir kaç dakika içinde kullanıma hazır hale gelecektir. Başlangıç için tek Node'dan oluşan 250 MB kapasiteli, SSL desteği veren ve 256 bağlantıya kadar çıkabileceğimiz bir Redis Cache hizmeti söz konusu.
 
-![image.axd](images/image.axd)
+![aredisc_4.gif](images/aredisc_4.gif)
 
 Burası bir veri kaynağı olduğu için doğal olarak Connection String bilgisine de ihtiyacımız var. Show Access Keys kısmından bu bilgilere ulaşabiliriz.
 
-![image.axd](images/image.axd)
+![aredisc_5.gif](images/aredisc_5.gif)
 
 Primary Connection string içerisindeki bilgi.Net Core tarafnda StackExchange.Redis paketi için ele alınabilir formattadır.
 
@@ -126,16 +126,16 @@ Aslında anahtar nokta içeriği JSON formatında saklamaktan ibaret. Sonuçta h
 
 Uygulamayı çalıştırdığımızda aşağıdaki ekran görüntüsündekine benzer sonuçlar almamız lazım.
 
-![image.axd](images/image.axd)
+![aredisc_6.gif](images/aredisc_6.gif)
 
 Görüldüğü gibi ECHO ile gönderdiğimiz mesaj bize aynen geri gönderildi. Ayrıca Motto mesajının da başarılı bir şekilde aktarıldığını görmekteyiz. Benzer durum LegoBox anahtar değeri ile tutulan Product nesne örneği için de geçerli. Neredeyse her türden veriyi Redis Cache üzerine almamız mümkün.
 
 Çalışmalar devam ettikçe Redis Cache üzerindeki harketlilikler de artacaktır. Portal üzerindeki Monitoring sekmesini kullanarak çeşitli metrikleri inceleyebiliriz (Tahminimce Amazon Web Services'ler de olduğu gibi belli eşik değerlerine ulaşıldığında devreye girecek alarm mekanizmaları da kurulabiliyordur. Araştırmam lazım) Ben yaptığımız ilk bir kaç deneme sonrası aşağıdaki sonuçlarla karşılaştım.
 
-![image.axd](images/image.axd)
+![aredisc_7.gif](images/aredisc_7.gif)
 
 Bağlantı sayıları, get ve set operasyon çağrıları, cache nesnelerinin durumları vs. Diğer kaynaklarda olduğu gibi oldukça geniş bir ölçümleme seti var. Biraz kurcalamak lazım. Bu adımları başarılı bir şekilde tamamladıysanız ve Redis Cache ile ilgili başka bir şey yapmayacaksanız size tavsiyem ilgili kaynak grubunu silmeniz olacaktır. Neme lazım arka planda unutulup da ilerleyen zamanlarda fiyatlandırma konusunda bize problem çıkartmasın değil mi?
 
-![image.axd](images/image.axd)
+![aredisc_8.gif](images/aredisc_8.gif)
 
 Bu yazımızda Azure tarafından sunulan Redis Cache hizmetini nasıl kullanabileceğimize dair basit bir örnek yapmaya çalıştık. İstemci tarafında sadece.Net Core değil, Python, Node.Js, Java gibi diğer platformları da kullanabiliriz. Detaylı bilgi ve diğer öğretiler için [Microsoft'un resmi dokümanlarına](https://docs.microsoft.com/en-us/azure/redis-cache/cache-overview) bir bakmanızı öneririm. İşi daha da ileri götürmek için istemci uygulamanızı da Azure üzerinde host etmeyi deneyibilirsiniz. Pekala bu bir Web uygulaması ya da Web API hizmeti olabilir. Bu uygulamayı App Service olarak host edip Redis Cache'den yararlanmaya çalışabilirsiniz. Hatta dağıtık bir önbellekleme stratejisinin mimari seviyede nasıl ele alınması gerektiğine dair [şu adresteki pratiğe](https://docs.microsoft.com/en-us/azure/architecture/best-practices/caching?toc=%2Fazure%2Fredis-cache%2Ftoc.json) de bakabilirsiniz. Daha gerçekçi bir vaka çalışması olacağı kesin. Böylece geldik bir makalemizin daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.

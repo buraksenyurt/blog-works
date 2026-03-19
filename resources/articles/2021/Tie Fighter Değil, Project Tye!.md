@@ -1,4 +1,4 @@
----
+﻿---
 title: "Tie Fighter Değil, Project Tye!"
 pubDate: 2021-03-30 15:00:00
 categories:
@@ -31,7 +31,7 @@ tags:
 ---
 
 # Tie Fighter Değil, Project Tye!
-![image.axd](images/image.axd)
+![tie-fighter.png](images/tie-fighter.png)
 
 Star Wars'ın figür kabul edilen gemilerinden birisi imparatorluk güçlerinin Tie Fighter'ıdır. Lord Vader ile özdeşlemiş olan bu figürün kulak tırmalayan ama rahatsız etmeyen sesinin Almanların İkinci Dünya savaşındaki hafif bombardıman uçaklarından birisi olan Junkers Ju-87 Stuka'dan (Sturzkampfflugzeug) geldiği bile söylenir.
 
@@ -75,11 +75,11 @@ tye run
 
 Bu komut sonrası solution içerisindeki uygulamalar otomatik olarak kendileri için tahsis edilmiş process ve adreslerden ayağa kalkacaktır.
 
-![image.axd](images/image.axd)
+![Mart_screenshot_1.png](images/Mart_screenshot_1.png)
 
 Şu haldeyken tye ile çözümü çalıştırıp localhost:8000 adresine gidebiliriz. Her iki uygulama da Dashboard üstünde görünür ve ayrı ayrı incelenebilir ki inceleyin derim:) View kısmına bir bakın, Bindings kısmından sayfalara gitmeye çalışın. Tabii Api servis için bir rest çağrısı şeklinde gitmeniz gerekir.
 
-![image.axd](images/image.axd)
+![Mart_screenshot_2.png](images/Mart_screenshot_2.png)
 
 Şık ve uygulamaların kolayca erişilip, loglarına bakıldığı arayüz dışında ortada henüz bir numara yok. Örneğin frontend ile backend şu anda birbirlerinden bihaberler. Frontend'in backend ile konuşuyor olması da lazımdı. Şimdi WebAPI tarafına OrderData sınıfını ekleyip WeatherForecastController tipini de OrderController olarak değiştirip kodlayarak ilerleyelim.
 
@@ -285,7 +285,7 @@ Bu aşamada çözüm çalıştırılır ve tarayıcı ile HeadOffice uygulaması
 tye run
 ```
 
-## ![image.axd](images/image.axd)
+## ![screenshot_3.png](images/screenshot_3.png)
 StarCups için Redis Desteğinin Eklenmesi
 
 Dağıtık mimariler söz konusu olduğunda Redis, RabbitMQ gibi hizmetler eğer single node üstünde çalışılıyorsa genellikle Sidecar Container olarak ele alınabilirler. Tye bu konuda bize bazı kolaylıklar sağlar. Ne demek istediğimi anlatamabilmek için backend servisine Redis desteğini ekleyerek devam edelim. Redis desteği'ni de yaml dosyaları ile yöneteceğiz. Öncelikle backend uygulamasında Redis kullanabilmek için gerekli Nuget paketini ilave ediyoruz.
@@ -371,15 +371,15 @@ Güncel yaml içeriğinde redis ve redis-cli isimli iki yeni bildirim görüyors
 
 Artık backend uygulaması Redis ile çalışır hale geldi. Bu aşamada yine tye run ile örneği çalıştırıp, redis servislerinin ayağa kalkıp kalkmadığına bakmak ve 10 saniyede bir cache'in düşüp yeni bilgilerin getirildiğini görmek iyi olacaktır. tye run ile sistem ayağa kaldırıldığında aşağıdaki ekran görüntüsünden de görüldüğü gibi redis hizmeti de çalışmaya başlar. Bu arada redis için docker imajı kullanıldığını fark etmiş olmalısınız. Yani redis hizmeti bir Container olarak ayağa kalkar. Aynı işleyip redis-cli hizmeti için de söz konusudur (Buradan terminal komutu loglarını okumanın faydalarını da görebilirsiniz)
 
-![image.axd](images/image.axd)
+![Mart_screenshot_4.png](images/Mart_screenshot_4.png)
 
 Tye dashboard üstünde de benzer şekilde redis ve redis-cli hizmetlerinin çalışıyor olduğunu görmemiz lazım.
 
-![image.axd](images/image.axd)
+![Mart_screenshot_5.png](images/Mart_screenshot_5.png)
 
 Hatta redis-cli loglarına gidersek cache'e atılan JSON içeriklerini de takip edebiliriz.
 
-![image.axd](images/image.axd)
+![Mart_screenshot_6.png](images/Mart_screenshot_6.png)
 
 ## StartCups'ın Kubernetes Ortamına Alınması
 
@@ -470,7 +470,7 @@ kubectl get pods
 
 İşlemler sırasında terminal hareketlilikleri takip edilirse, tye.yaml üstünde belirtilen projeler için Dockerize işlemlerinin otomatik olarak yapıldığı da görülebilir. Dikkat ederseniz herhangibir Dockerfile oluşturmadık. Deployment işlemi başarılı ise get pods ile aktif olarak çalışan pod'ları görebilmemiz gerekir. Aynen aşağıdaki ekran görüntüsüne olduğu gibi.
 
-![image.axd](images/image.axd)
+![Mart_screenshot_7.png](images/Mart_screenshot_7.png)
 
 Frontend uygulamasının web arayüzüne erişmek için port-forward işlemi uygulamamız gerekebilir (Cluster dışından erişmek istediğimiz için) Bunun için aşağıdaki terminal komutunu çalıştırmak yeterli olacaktır.
 
@@ -480,7 +480,7 @@ kubectl port-forward svc/headoffice 80:80
 
 Sonrasında localhost:80 adresine gidilirse web uygulamasına ulaşıldığı ve anlık olarak kahve dükkanlarımızın beklediği malzemeler görülebilir. Aynen aşağıdaki ekran görüntüsünde olduğu gibi.
 
-![image.axd](images/image.axd)
+![Mart_screenshot_8.png](images/Mart_screenshot_8.png)
 
 Çok doğal olarak şu noktada Kubernetes ortamına yapılan dağıtımı geri almak isteyebilirsiniz. Tye bu işlemi basitleştirir.
 
@@ -494,7 +494,7 @@ Bonus: SchoolOfMath Senaryosu
 
 Yeni pratiğimizde aşağıdaki şekilde görülen senaryo söz konusu olacak.
 
-![image.axd](images/image.axd)
+![Project_Tye_Senaryo.png](images/Project_Tye_Senaryo.png)
 
 Çok daha keyifli bir senaryo olduğunu söyleyebilirim. Benim için yeni deneyimler içeriyordu. Kısaca çözümdeki aktörlerin ne işe yaradığını anlatarak devam edelim.
 
@@ -724,9 +724,9 @@ Yukradaki işlemler tamamlandıktan sonra en azından aşağıdaki terminal komu
 tye run
 ```
 
-![image.axd](images/image.axd)
+![Nisan_screenshot_2.png](images/Nisan_screenshot_2.png)
 
-## ![image.axd](images/image.axd)
+## ![Nisan_screenshot_1.png](images/Nisan_screenshot_1.png)
 Redis ve RabbitMQ Desteğinin Eklenmesi
 
 İlk Hello World örneğinde Redis desteğini eklemiştik. Aynı adımları burada da uygulayacağız. Ayrıca rabbitmq hizmetini de dahil edeceğiz. Özellikle dağıtık mimarinin event-based modelinde uygulamalar arası haberleşmede mesaj bazlı kuyruk sistemleri sıklıkla karşımıza çıkıyor. Kafka ve RabbitMQ sanıyorum ki en çok başvurduklarımız. Dolayısıyla RabbitMQ için aranan Sidecar container'lardan birisi olduğunu ifade etsek yeridir. Şimdi gelin bu iki aktörü sisteme dahil ederek Kubernetes hazırlıklarına geçelim.
@@ -909,11 +909,11 @@ namespace Einstein
 
 Kod tarafında RabbitMQ kullanımı için gerekli tipler, GoldenHammer isimli sınıfta yer alıyor. Bunu baştan yazmak biraz zahmetli ama yine de üşenmeyin yazın derim. Yazarken düşünecek ve neden böyle kullanılmış ki diyeceksiniz. Kitabın yönlendirmesi ile ben bu [adrese](https://github.com/PacktPublishing/Adopting-.NET-5--Architecture-Migration-Best-Practices-and-New-Features/tree/master/Chapter04/microservicesapp) gittim ama kendimde teknik borç riskini göze alarak bir [GodObject oluşturdum.](https://github.com/buraksenyurt/tye_sample_v2/tree/main/SchoolOfMath) Eğer sayfadan ayrılmadan kodu kullanmak isterseniz notların sonundaki Yardımcı Kodlar kısmından yararlanabilirsiniz. Bu noktada yine tye run ile ilerlemek önemli. Redis'in çalıştığından ve http://localhost:15672 adresine gittiğimizde RabbitMQ tarafının işler olduğundan emin olmakta fayda var.
 
-![image.axd](images/image.axd)
+![Nisan_screenshot_4.png](images/Nisan_screenshot_4.png)
 
-![image.axd](images/image.axd)
+![Nisan_screenshot_5.png](images/Nisan_screenshot_5.png)
 
-![image.axd](images/image.axd)
+![Nisan_screenshot_6.png](images/Nisan_screenshot_6.png)
 
 ## Robert: AMQP İstemcisinin Eklenmesi
 
@@ -1033,7 +1033,7 @@ namespace Robert
 
 Robert'ın kodları tamamlandıktan sonra tye run ile sistemi çalıştırıp dashboard üzerinden ulaşabileceğimiz logları kontrol etmekte yarar var. Bakalım Robert'ın loglarında RabbitMQ daki palindromes isimli kuyruğa düşen mesajlar var mı?
 
-![image.axd](images/image.axd)
+![Nisan_screenshot_7.png](images/Nisan_screenshot_7.png)
 
 ## Sadece Belli Uygulamaları Çalıştırmak
 
@@ -1043,7 +1043,7 @@ Robert'ın kodları tamamlandıktan sonra tye run ile sistemi çalıştırıp da
 tye run --tags middleware #sadece middleware tag'ine sahip servisleri çalıştırır.
 ```
 
-![image.axd](images/image.axd)
+![Nisan_screenshot_8.png](images/Nisan_screenshot_8.png)
 
 Birden fazla namespace'te bir arada ayağa kaldırılabilir. Mesela aşağıdaki kullanım ile backend ve middleware tag'ine sahip servisler ayağa kaldırılacaktır. Şimdi yaml içerisindeki tag elementlerinin ne işe yaradığınız daha iyi anlamış olmalısınız.
 
@@ -1055,7 +1055,7 @@ tye run --tags backend middleware
 
 Kod debug etmek adettendir:D Lakin tye ile çalışırken ayağa kaldırılan aktörleri debug etmek için biraz meşakkatli bir yol izlemek gerekiyor. İlk olarak gerekli yerlere breakpoint konulur. Örneğin;
 
-![image.axd](images/image.axd)
+![screenshot_9.png](images/screenshot_9.png)
 
 Sonrasında aşağıdaki komut ile çözüm çalıştırlır.
 
@@ -1065,15 +1065,15 @@ tye run --debug
 
 Debug edilmek istenen uygulamanının terminal loglarına düşen process id değeri bulunur.
 
-![image.axd](images/image.axd)
+![screenshot_10.png](images/screenshot_10.png)
 
 Visual Studio -> Debug -> Attach to Process adımları kullanılarak ilgili process çalışma zamanına alınır.
 
-![image.axd](images/image.axd)
+![screenshot_11.png](images/screenshot_11.png)
 
 Çayımızdan/kahvemizden bir yudum alınır ve Breakpoint noktasına gelinmesi beklenir.
 
-![image.axd](images/image.axd)
+![screenshot_12.png](images/screenshot_12.png)
 
 Hepsi bu kadar;) Ya da doğru düzgün tasarladığımız hata yönetim mekanizmasının ürettiği sistem loglarına gidilir ve sorunun ne olduğu anlaşılmaya çalışılır.
 
@@ -1154,7 +1154,7 @@ kubectl apply -f .\rabbitmq.yaml
 kubectl apply -f .\redis.yaml
 ```
 
-![image.axd](images/image.axd)
+![screenshot_13.png](images/screenshot_13.png)
 
 Kubernetes deployment adımını da aşağıdaki komutla başlatabiliriz.
 
@@ -1164,25 +1164,25 @@ tye deploy --interactive
 
 Büyük ihtimalle redis ve rabbitmq için adres sorulacaktır. Redis için redis:6379, rabbitmq içinse rabbitmq:5672 (Mui sebebiyle iki kez sorulabilir ki bana öyle oldu) adresleri kullanılabilir. Sonuç olarak Docker Desktop'a baktığımızda dağıtımların yapıldığını görmeliyiz.
 
-![image.axd](images/image.axd)
+![screenshot_14.png](images/screenshot_14.png)
 
 Yukarıdaki ekran görüntüsünde dikkat edileceği üzere servislerimiz localhost:5000 ön adresi üzerine konumlanmış duruyorlar. Bunun sebebi container registry olarak bu adresi bildirmiş olmamız (yaml dosyasındaki ilgili kısmı hatırlayın)
 
 Tekrar belirtmekte fayda var ki kendi uygulamalarımız dağıtım işlemi sırasında yine otomatik olarak dockerize edilmişlerdir. Robert isimli Worker servise ait tye çalışma zamanının yaptıklarını aşağıdaki ekran görüntüsünde görebilirsiniz (Normalde bunlar için bir Dockerfile hazırlamamız gerekirdi diye düşünüyorum)
 
-![image.axd](images/image.axd)
+![screenshot_16.png](images/screenshot_16.png)
 
 Oluşan diğer imajları Docker Desktop üzerinde görebiliriz.
 
-![image.axd](images/image.axd)
+![screenshot_17.png](images/screenshot_17.png)
 
 Şu anda RabbitMQ tarafı da aktif haldedir ve eğer localhost:30072 adresine gidersek o ana kadar ki mesaj trafiğini izleyebiliriz.
 
-![image.axd](images/image.axd)
+![screenshot_15.png](images/screenshot_15.png)
 
 Yapılan Deployment işlemini geri almak ve Kubernetes dağıtımlarını kaldırmak içinse tye undeploy terminal komutu kullanılır.
 
-![image.axd](images/image.axd)
+![screenshot_18.png](images/screenshot_18.png)
 
 Bu çalışma deneysel bir projeyi hem basılı hem de çevrimiçi bir kaynaktan yazarak anlamam noktasında bana önemli değerler katmış durumda. Ancak işi burada bırakmamak lazım. Tye projesinin bir geleceği olacaksa diğer örnek kullanımları incelemekte de yarar var. Söz gelimi bir loglama senaryosunu işin içerisine katmak, performans izleme aktörünü dahil etmek gibi konular üstünde de denemeler yapmak yararlı olabilir. Dahası açık kaynak kod reposuna gidip tye run dediğimizde arka planda neler nasıl çalışıyoru anlamaya çalışmak çok daha yararlı olabilir. Bir teknoloji tüketicisi olarak en azından nasıl kullanılır ve ne işe yararı bir nebze olsun anladığımı ve siz değerli okurlarıma aktarabildiğimi düşünüyorum. Böylece geldik bir makalemizin daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.
 
