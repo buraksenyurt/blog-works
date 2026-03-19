@@ -1,0 +1,130 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "BlogPilot";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white d-flex align-items-center">
+                    <h4 class="mb-0">BSŞ Senin Yanında</h4>
+                </div>
+                <div class="card-body" id="chat-container" style="height: 500px; overflow-y: auto; background-color: #f8f9fa;">
+                    <div id="chat-messages" class="d-flex flex-column gap-3">
+                        <div class="d-flex justify-content-start">
+                            <div class="p-3 rounded bg-white shadow-sm border" style="max-width: 80%;">
+                                Merhaba Ben Burak Selim Şenyurt! Blogumdaki makaleler ile ilgili sana nasıl yardımcı olabilirim? Bana şöyle sorular sorabilirsin:<br/>
+                                <small class="text-muted">- Rust dilinde nesne yönelimli kabiliyetler var mı?</small><br/>
+                                <small class="text-muted">- Asp.Net Web Forms ile ilgili yazıları listele.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <form id="chat-form" class="d-flex gap-2">
+                        <input type="text" id="user-message" class="form-control" placeholder="Sorunuzu buraya yazın..." autocomplete="off" required />
+                        <button type="submit" id="send-btn" class="btn btn-primary">Gönder</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('chat-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            
+            const messageInput = document.getElementById('user-message');
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            const chatMessages = document.getElementById('chat-messages');
+            
+            // Add user message to UI
+            const userMsgDiv = document.createElement('div');
+            userMsgDiv.className = 'd-flex justify-content-end';
+            userMsgDiv.innerHTML = `<div class='p-3 rounded bg-primary text-white shadow-sm' style='max-width: 80%;'>${message}</div>`;
+            chatMessages.appendChild(userMsgDiv);
+
+            // Clear input
+            messageInput.value = '';
+            
+            // Disable button during loading
+            const sendBtn = document.getElementById('send-btn');
+            sendBtn.disabled = true;
+
+            // Add empty bot message
+            const botMsgDiv = document.createElement('div');
+            botMsgDiv.className = 'd-flex justify-content-start';
+            const botContent = document.createElement('div');
+            botContent.className = 'p-3 rounded bg-white shadow-sm border';
+            botContent.style.maxWidth = '80%';
+            botContent.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Yanıt üretiliyor...';
+            botMsgDiv.appendChild(botContent);
+            chatMessages.appendChild(botMsgDiv);
+            
+            chatMessages.parentElement.scrollTop = chatMessages.parentElement.scrollHeight;
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: message })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                botContent.innerHTML = ''; // clear loading spinner
+
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder('utf-8');
+                let done = false;
+
+                while (!done) {
+                    const { value, done: readerDone } = await reader.read();
+                    done = readerDone;
+                    
+                    if (value) {
+                        const chunk = decoder.decode(value, { stream: true });
+                        const lines = chunk.split('\n');
+                        
+                        for (const line of lines) {
+                            if (line.startsWith('data: ')) {
+                                const dataStr = line.replace('data: ', '').trim();
+                                if (dataStr === '[DONE]') {
+                                    done = true;
+                                    break;
+                                }
+                                
+                                try {
+                                    const data = JSON.parse(dataStr);
+                                    if (data.chunk) {
+                                        // Replace newlines with <br> for HTML rendering, simple approach
+                                        const textChunk = data.chunk.replace(/\n/g, '<br>');
+                                        botContent.innerHTML += textChunk;
+                                        chatMessages.parentElement.scrollTop = chatMessages.parentElement.scrollHeight;
+                                    } else if (data.error) {
+                                        botContent.innerHTML += `<span class="text-danger">Hata: ${data.error}</span>`;
+                                    }
+                                } catch (e) {
+                                    console.error('JSON Parse error', e, dataStr);
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                botContent.innerHTML = `<span class="text-danger">Beklenmeyen bir hata oluştu: ${error.message}</span>`;
+            } finally {
+                sendBtn.disabled = false;
+                messageInput.focus();
+            }
+        });
+    </script>
+}

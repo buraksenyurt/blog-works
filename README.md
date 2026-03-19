@@ -12,9 +12,3 @@ XML formatlında tutulan makale içerikleri **GPT 5.4** yardımıyla Markdown fo
   - Buna bağlı olarak blog yazılarının içeriklerini kullanarak farklı konularda **soru-cevap** tarzında bir **chatbot** hazırlamak.
 - İçerikleri kullanabilen bir API tasarlayıp bunu bir **MCP *(Model Context Protocol)*** server arkasına almak.
 - İçinde tüm blog yazılarını ve yazılarda kullanılan görselleri barındıran offline bir **knowledge base** oluşturmak.
-
-ve daha fazlası...
-
-## Çalışma Günlüğü
-
-[Updates](Updates.md) dosyasında yer alır.
