@@ -1,17 +1,13 @@
-﻿---
+---
 layout: post
 title: "Tip Güvenli (Type Safety ) Koleksiyonlar Oluşturmak - 2"
 date: 2005-07-31 12:00:00 +0300
-description: "Bir önceki makalemizde tip güvenli koleksiyon nesnelerimizi CollectionBase sınıfı yardımıyla nasıl oluşturabileceğimizi incelemiştik. CollectionBase bize ArrayList benzeri koleksiyon sınıflarını yazma fırsatı vermektedir. Diğer yandan Hashtable koleksiyonunda olduğu gibi key (anahtar) - value (değer) çiftlerinden oluşacak tip güvenli bir koleksiyon sınıfı yazmak isteyebiliriz. Bu durumda, DictionaryBase sınıfından yaralanabiliriz. DictionaryBase sınıfıda CollectionBase sınıfı gibi abstract yapıdadır. Yani kendisini örnekleyemeyiz. Temel olarak DictionaryBase key-value çiftlerine sahip bir koleksiyonun kullanması gereken üyeleri sunan arayüzlerden türemiştir. Yani IDictionary, IEnumerable ve ICollection arayüzlerini uyarlamaktadır. Dikkat ederseniz CollectionBase sınıfınında türediği IEnumerable ve ICollection arayüzleri DictionaryBase içinde söz konusudur."
 categories:
   - csharp
 tags:
   - csharp
   - java
 ---
-# Tip Güvenli (Type Safety ) Koleksiyonlar Oluşturmak - 2
-Değerli Okurlarım Merhabalar,
-
 Bir önceki makalemizde tip güvenli koleksiyon nesnelerimizi CollectionBase sınıfı yardımıyla nasıl oluşturabileceğimizi incelemiştik. CollectionBase bize ArrayList benzeri koleksiyon sınıflarını yazma fırsatı vermektedir. Diğer yandan Hashtable koleksiyonunda olduğu gibi key (anahtar) - value (değer) çiftlerinden oluşacak tip güvenli bir koleksiyon sınıfı yazmak isteyebiliriz. Bu durumda, DictionaryBase sınıfından yaralanabiliriz. DictionaryBase sınıfıda CollectionBase sınıfı gibi abstract yapıdadır. Yani kendisini örnekleyemeyiz. Temel olarak DictionaryBase key-value çiftlerine sahip bir koleksiyonun kullanması gereken üyeleri sunan arayüzlerden türemiştir. Yani IDictionary, IEnumerable ve ICollection arayüzlerini uyarlamaktadır. Dikkat ederseniz CollectionBase sınıfınında türediği IEnumerable ve ICollection arayüzleri DictionaryBase içinde söz konusudur.
 
 ![mk131_1.gif](/assets/images/2005/mk131_1.gif)
@@ -145,7 +141,7 @@ namespace StrongCollections
             kitapCol.Ekle(1001,new Kitap(1001,"Thinking in C#",1));
             kitapCol.Ekle(1002,new Kitap(1002,"Truva",1));
             kitapCol.Ekle(1003,new Kitap(1003,"Java in a Nuthshell",1));
-        } 
+        }
 
         static void Main(string[] args)
         {

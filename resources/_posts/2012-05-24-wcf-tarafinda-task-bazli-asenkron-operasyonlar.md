@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF Tarafında Task Bazlı Asenkron Operasyonlar"
 date: 2012-05-24 14:50:00 +0300
-description: "Uzun bir zamandır .Net Framework içerisinde, fonksiyonların asenkronize edilmesi üzerinde çalışılmaktadır. Daha önceleri Thread bazlı veya Delegate tipleri ile gerçekleştirdiğimiz asenkron çağırımlar, .Net Framework 4.0’ a gömülü olarak gelen Task Parallel Library sayesinde daha da gelişmiş ve alt yapının her noktasına enjekte edilebilir olmuştur. Şu günlerde .Net Framework 4.5 ile birlikte gündeme gelen ve uzun zamandır da haberdar olduğumuz async, await gibi anahtar kelimeler de, temel de Task tiplerine dayanmaktadır. Bir başka deyişle TPL kütüphanesi ve içeriği, ilerleyen zamanlarda .Net Framework’ ün pek çok önemli alt yapısında etkisini hissettirecektir."
 categories:
   - wcf-4-0
 tags:
@@ -18,10 +17,10 @@ tags:
   - delegates
   - generics
 ---
-# WCF Tarafında Task Bazlı Asenkron Operasyonlar
-[![delegating](/assets/images/2012/delegating_thumb.jpg)](/assets/images/2012/delegating.jpg) Merhaba Arkadaşlar,
-
 Yandaki karikatür, aşağıdaki yazıyı bitirdiğim zaman aradığım giriş resmi ile ilişkili olarak karşıma çıkan örneklerden sadece bir tanesiydi. Beni epey bir güldürdüğünü ve neşelendirdiğini ifade edebilirim
+
+[![delegating](/assets/images/2012/delegating_thumb.jpg)](/assets/images/2012/delegating.jpg)
+
 
 ![Laughing](/assets/images/2012/smiley-laughing.gif)
 

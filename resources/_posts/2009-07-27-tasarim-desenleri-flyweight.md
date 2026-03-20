@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tasarım Desenleri - FlyWeight"
 date: 2009-07-27 09:30:00 +0300
-description: "Yandaki resimde yer alan minik boksör aslında hafif siklette mücadele etmektedir ve biraz sonra işleyeceğimiz FlyWeight tasarım kalıbı ile uzaktan yakında hiç bir alakası bulunmamaktadır Sealed Ancak işleyeceğimiz tasarım kalbına bu ismin verilmesininde bir sebebi vardır. Bakalım neymiş?"
 categories:
   - tasarim-kaliplari-design-patterns
 tags:
@@ -10,16 +9,9 @@ tags:
   - csharp
   - generics
 ---
-# Tasarım Desenleri - FlyWeight
+Yandaki resimde yer alan minik boksör aslında hafif siklette mücadele etmektedir ve biraz sonra işleyeceğimiz FlyWeight tasarım kalıbı ile uzaktan yakında hiç bir alakası bulunmamaktadır. Ancak işleyeceğimiz tasarım kalbına bu ismin verilmesininde bir sebebi vardır. Bakalım neymiş?
+
 ![blg51_2.jpg](/assets/images/2009/blg51_2.jpg)
-
-Merhaba Arkadaşlar,
-
-Yandaki resimde yer alan minik boksör aslında hafif siklette mücadele etmektedir ve biraz sonra işleyeceğimiz FlyWeight tasarım kalıbı ile uzaktan yakında hiç bir alakası bulunmamaktadır
-
-![Sealed](/assets/images/2009/smiley-sealed.gif)
-
-Ancak işleyeceğimiz tasarım kalbına bu ismin verilmesininde bir sebebi vardır. Bakalım neymiş?
 
 Yapısal (Structural) tasarım kalıplarından olan FlyWeight, bellek tüketimini optimize etmek amacıyla kullanılan bir desendir. Aslında detayına inildiğinde son derece zekice tasarlanmış ve pek çok noktada karşımıza çıkabilecek havuz mantığını içeren bir kalıp olduğu anlaşılabilir. Burada önemli olan nokta, bellek tüketiminin çok fazla sayıda nesnenin bir arada ele alınması sırasında ortaya çıkmasıdır. Buna göre söz konusu nesnelerin ortak olan, paylaşılabilen içerikleri ve bunların dışında kendilerine has durumları olduğu takdirde, nesne üretimlerini sürekli tekrar ettirmektense basit bir havuz içerisinden tedarik ettirmek, uygulamanın harcadığı bellek alanlarının optimize edilmesi için yeterli olacaktır. Bu açıdan bakıldığında desenin, paylaşımlı nesneleri efektif olarak kullanabilmek üzerine odaklandığını söyleyebiliriz.
 

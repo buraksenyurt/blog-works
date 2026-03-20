@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "NET Remoting' i Kavramak - 2"
 date: 2004-07-03 09:00:00 +0300
-description: "Bu makalemizde, daha önceden değinmiş olduğumuz .net remoting ile ilgili olarak çok basit bir örnek geliştirmeye çalışacağız. Remoting' de amaç, istemcilerin uzak nesnelere ait üyelere erişebilmelerini ve kullanabilmelerini sağlamaktır. Dolayısıyla, remoting sistemi söz konusu olduğunda, remote object, server channels ve client channels kavramları önem kazanır. Olaya bu açıdan baktığımızda ilk olarak bir remote object (uzak nesne) geliştirmemiz gerektiği ortadadır. Daha sonra, bu nesneyi kullanmak isteyecek istemcileri dinleyecek bir server programını yazmamız gerekir. Bu server programı aslında, remote object' i barındıran (host) bir hizmet programı olacaktır. İstemcilerin tek yapması gereken uzak nesneye ait bir örneği, çalıştıkları sistemde kullanarak bir proxy nesnesi oluşturmak ve bu nesne üzerinden server programa istekte bulunarak ilgili uzak nesneye ait metodları çalıştırmaktır. İşte bu noktada server ve client uygulamalardaki channel nesneleri önem kazanır."
 categories:
   - dotnet-remoting
 tags:
@@ -11,9 +10,6 @@ tags:
   - xml
   - dotnet
 ---
-# NET Remoting' i Kavramak - 2
-Değerli Okurlarım, Merhabalar.
-
 Bu makalemizde, daha önceden değinmiş olduğumuz.net remoting ile ilgili olarak çok basit bir örnek geliştirmeye çalışacağız. Remoting'de amaç, istemcilerin uzak nesnelere ait üyelere erişebilmelerini ve kullanabilmelerini sağlamaktır. Dolayısıyla, remoting sistemi söz konusu olduğunda, remote object, server channels ve client channels kavramları önem kazanır. Olaya bu açıdan baktığımızda ilk olarak bir remote object (uzak nesne) geliştirmemiz gerektiği ortadadır. Daha sonra, bu nesneyi kullanmak isteyecek istemcileri dinleyecek bir server programını yazmamız gerekir. Bu server programı aslında, remote object'i barındıran (host) bir hizmet programı olacaktır. İstemcilerin tek yapması gereken uzak nesneye ait bir örneği, çalıştıkları sistemde kullanarak bir proxy nesnesi oluşturmak ve bu nesne üzerinden server programa istekte bulunarak ilgili uzak nesneye ait metodları çalıştırmaktır. İşte bu noktada server ve client uygulamalardaki channel nesneleri önem kazanır.
 
 Biz bugünkü örneğimizde, TCP protokolü üzerinden haberleşen bir remoting uygulaması geliştirmeye çalışacağız. öncelikle işe, remote object (uzak nesne) sınıfını tasarlayarak başlayalım. Konuyu daha net anlayabilmek için, uygulamalarımızı editoründe geliştireceğiz. Şimdi aşağıdaki kodlardan oluşan, UzakNesne.cs kod dosyasını oluşturalım.

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Workflow Foundation 4.0 - Paralel Olmak ya da Olmamak"
 date: 2010-03-16 02:15:00 +0300
-description: "Geçtiğimiz günlerde Workflow Foundation 4.0 içerisinde NativeActivity türevli bileşenlerde hata yönetiminin nasıl yapılabileceğini incelerken, ne olduysa kendimi ParallelForEach<T> aktivitesini çalıştırmaya uğraşırken buldum. Bir türlü istediğim gibi ayrı Thread parçaları oluşturulmuyor dolayısıyla aktivite içerisine aldığım işler paralel olarak yürütülmüyordu."
 categories:
   - wf-4-0-rc
 tags:
@@ -16,12 +15,9 @@ tags:
   - visual-studio
   - rc
 ---
-# Workflow Foundation 4.0 - Paralel Olmak ya da Olmamak
-![blg155_Giris.jpg](/assets/images/2010/blg155_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Pek çoğumuz ünlü İngiliz şairi Shakespeare'in adını ve eserlerini bir şekilde duymuş, okumuş veya seyretmişizdir. Yaşadığı 1564-1616 yılları arasında yazdığı sayısız Komedi, Trajedi ve Romanesk bulunmaktadır. Bunlar yüz yıllar boyu Tiyatrolarda sergilenmiş ve edebi değeri yüksek eserlerdir. Shakespeare dendiğinde insanın aklına hemen Romeo ve Juliet, Hamlet, Othello, Machbeth gibi eserleri gelmektedir. Aslında Edebiyat'tan çok fazla anlamam. Büyük bir ihtimalle Matematikçi olduğum içindir.
+
+![blg155_Giris.jpg](/assets/images/2010/blg155_Giris.jpg)
 
 Dolayısıyla Shakespeare gibi ünlü şarilerin eserlerini hayatım boyunca çok fazla dikkate almamışımdır. Tabi son zamanlarda bu tip kült klasiklerin NTV Yayınlarından çıkan çizgi serileri yer almakta. En azından çocuklarımızın okuması için bir hamlede bulunabiliriz. Her ne kadar Shakespeare'i çok fazla okumasam da, Mel Gibson'ın oyunculuğuyla parladığı Hamlet filmini seyretmişimdir. Her ne kadar Shakespeare'in eserlerindeki anlamı, derinliği tam olarak bilemesem de, şiirindeki şu meşhur mısrayı hiç unutmam; "Olmak ya da olmamak; işte bütün mesele bu". Bu konuya nereden mi geldik? Kısaca hikayeyi anlatayım.
 

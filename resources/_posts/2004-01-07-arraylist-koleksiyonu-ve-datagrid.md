@@ -1,16 +1,12 @@
-﻿---
+---
 layout: post
 title: "ArrayList Koleksiyonu ve DataGrid"
 date: 2004-01-07 12:00:00 +0300
-description: "Bugünkü makalemizde, veritabanlarındaki tablo yapısında olan bir ArrayList'i bir DataGrid kontrolüne nasıl veri kaynağı olarak bağlayacağımızı inceleyeceğiz. Bildiğiniz gibi ArrayList bir koleksiyon sınıfıdır ve System.Collections isim uzayında yer almaktadır. Genelde ArrayList koleksiyonlarını tercih etmemizin nedeni, dizilere olan üstünlüklerinden kaynaklanmaktadır."
 categories:
   - csharp
 tags:
   - csharp
 ---
-# ArrayList Koleksiyonu ve DataGrid
-Değerli Okurlarım, Merhabalar.
-
 Bugünkü makalemizde, veritabanlarındaki tablo yapısında olan bir ArrayList'i bir DataGrid kontrolüne nasıl veri kaynağı olarak bağlayacağımızı inceleyeceğiz. Bildiğiniz gibi ArrayList bir koleksiyon sınıfıdır ve System.Collections isim uzayında yer almaktadır. Genelde ArrayList koleksiyonlarını tercih etmemizin nedeni, dizilere olan üstünlüklerinden kaynaklanmaktadır.
 
 En büyük tercih nedeni, normal dizilerin boyutlarının çalışma esnasında değiştirilemeyişidir. Böyle bir işlemi gerçekleştirmek için, dizi elemanları yeni boyutlu başka boş bir diziye kopyalanır. Oysaki, ArrayList koleksiyonunda böyle bir durum söz konusu değildir. Koleksiyonu, aşağıdaki yapıcı metodu ile oluşturduğunuzda boyut belirtmezsiniz. Eleman ekledikçe, ArrayList'in kapasitesi otomatik olarak büyüyecektir.

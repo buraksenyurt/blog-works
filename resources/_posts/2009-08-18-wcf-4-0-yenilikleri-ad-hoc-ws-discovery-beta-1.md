@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF 4.0 Yenilikleri - Ad Hoc WS-Discovery [Beta 1]"
 date: 2009-08-18 09:23:00 +0300
-description: "Ağ üzerinde bulunan servis noktalarının çalışma zamanında keşfi(Runtime Discovery), Servis Yönelimli Mimarilerde(Service Oriented Architecture) karşılaşılan en önemli ihtiyaçlardan birisidir."
 categories:
   - wcf-4-0-beta-1
 tags:
@@ -16,12 +15,9 @@ tags:
   - delegates
   - visual-studio
 ---
-# WCF 4.0 Yenilikleri - Ad Hoc WS-Discovery [Beta 1]
-![blg67_Giris.jpg](/assets/images/2009/blg67_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Uzun süredir macera dolu bir rüya görmüyordum. Geçtiğimiz gece askeri bir birlikte görev yapmaktaydım ve gerideki topçu birliklerime hedeflere ait koordinatları bildiriyordum. Tabi gerçek hayatta yedek subak eğitimimi Topçu sınıfında, Ateş Destek üzerine aldığım için keşif, arama ve bulma gibi konularda azda olsa bilgi sahibiydim. Rüyamda da bu bilgilerimi kullandığımı itiraf edebilirim. Peki konumuz nedir?
+
+![blg67_Giris.jpg](/assets/images/2009/blg67_Giris.jpg)
 
 Bu yazımızdaki konumuzun keşif yapmak ile aslında çok yakın bir ilişkisi bulunmaktadır. WS-Discovery modeli için WCF 4.0 ile birlikte gelen kolaylıklar.
 

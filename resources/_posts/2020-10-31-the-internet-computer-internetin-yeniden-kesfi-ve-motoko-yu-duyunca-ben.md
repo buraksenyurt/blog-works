@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "The Internet Computer (Internetin Yeniden Keşfi) ve Motoko'yu Duyunca Ben"
 date: 2020-10-31 22:31:00 +0300
-description: "Herkese açık olan interneti genişletip kendi yazılım sistemlerimizi, kurumsal IT çözümlerimizi, web sitelerimizi, dağıtık bir ortamda firewall'lara ve yedekleme sistemlerine ihtiyacı duymadan güvenli bir şekilde konuşlandırabildiğimizi düşünelim. Hatta bunu sağlayan altyapı ile internete konan bu sistemler arasında fonksiyon çağrımı yapar gibi kolayca haberleşebildiğimizi(ve tabii ki güvenli bir ortamda) hayal edelim. Biraz blockchain benzeri bir dağıtık sistem kurugusu gibi değil mi? Tam olarak olmasa da oradaki teorileri baz almışlar gibi görünüyor. The Internet Computer adlı bu proje ICP(Internet Computer Protocol) adı verilen ve herhangi bir merkezi olmayan bir protokolü baz alarak, küresel ortamdaki bağımsız veri merkezlerinin, web sitelerinin, backend hizmetlerinin vb yazılımların aynı güvenlik garantileriyle çalıştığı kapatılamaz bir alt evren vaat ediyor."
 categories:
   - motoko
 tags:
@@ -16,10 +15,9 @@ tags:
   - visual-studio
   - github
 ---
-# The Internet Computer (Internetin Yeniden Keşfi) ve Motoko'yu Duyunca Ben
-![motokon.jpg](/assets/images/2020/motokon.jpg)
-
 Herkese açık olan interneti genişletip kendi yazılım sistemlerimizi, kurumsal IT çözümlerimizi, web sitelerimizi, dağıtık bir ortamda firewall'lara ve yedekleme sistemlerine ihtiyacı duymadan güvenli bir şekilde konuşlandırabildiğimizi düşünelim. Hatta bunu sağlayan altyapı ile internete konan bu sistemler arasında fonksiyon çağrımı yapar gibi kolayca haberleşebildiğimizi (ve tabii ki güvenli bir ortamda) hayal edelim. Biraz blockchain benzeri bir dağıtık sistem kurugusu gibi değil mi? Tam olarak olmasa da oradaki teorileri baz almışlar gibi görünüyor. The Internet Computer adlı bu proje ICP (Internet Computer Protocol) adı verilen ve herhangi bir merkezi olmayan bir protokolü baz alarak, küresel ortamdaki bağımsız veri merkezlerinin, web sitelerinin, backend hizmetlerinin vb yazılımların aynı güvenlik garantileriyle çalıştığı kapatılamaz bir alt evren vaat ediyor.
+
+![motokon.jpg](/assets/images/2020/motokon.jpg)
 
 Aslında ilk okumalarımda şunu anladığımı ifade edebilirim: Internete alacağımız bir hizmeti geliştirirken kodun güvenliği ve ürünün açıklarının kapatılması için çaba sarf ediliyor. Bu durum referans ettiğimiz paketler güncellendiğinde benzer kontrollerin tekrar yapılmasını gerektiriyor, lakin hacker'lar bu açıkları çok seviyor. Bağımlı olduğumuz sistemlerle belki de yeterince özgür bir ortama da sahip olamıyoruz. İşte The Internet Computer fikri, geliştirdiğimiz sistemlerin standart bir güvenlik sözleşmesi ile ayağa kalkabildiği, asla kapatılamayacak ve kurcalanamayacak bir ortamın üstünde çalışmasını garanti etme felsefesini öne sürüyor.
 

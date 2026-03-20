@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Nasıl Yapılır : Özelleştirilmiş SiteMapProvider Yazmak"
 date: 2006-12-29 12:00:00 +0300
-description: "Asp.Net 2.0 ile web uygulamalarını geliştirmek artık çok daha kolaylaştı. Bunun en büyük nedenlerinden biriside kontrol paneline gelen çok sayıda bileşen olmasıdır. Her ne kadar bir yazılımcının hayatını kolaylaştıran yenilikler olsada zaman zaman var olan bu yapıları özelleştirme yoluna gitmek isteyebiliriz."
 categories:
   - aspnet-2-0
 tags:
@@ -16,9 +15,6 @@ tags:
   - caching
   - datatable
 ---
-# Nasıl Yapılır : Özelleştirilmiş SiteMapProvider Yazmak
-Değerli Okurlarım Merhabalar,
-
 Asp.Net 2.0 ile web uygulamalarını geliştirmek artık çok daha kolaylaştı. Bunun en büyük nedenlerinden biriside kontrol paneline gelen çok sayıda bileşen olmasıdır. Her ne kadar bir yazılımcının hayatını kolaylaştıran yenilikler olsada zaman zaman var olan bu yapıları özelleştirme yoluna gitmek isteyebiliriz. Bugunkü makalemizin konusunu oluşturan SiteMapProvider bu durumda ele alınabilecek yeniliklerden birisidir. Asp.Net 2.0 ile geliştirilen web uygulamalarında site haritası çıkartmak ve bunu ele alacak kontrollerle çalışmak son derece kolaydır.
 
 Yeni gelen SiteMapPath, Menu ve TreeView kontrolleri site haritasının etkin bir şekilde kullanılmasını sağlayan bileşenlerdir. Bu kontroller sayesinde kullanıcıların site içerisinde hareket etmesi, nerede olduklarını görmesi son derece kolaylaşmıştır. Aslında olayın özünde web uygulamasına dahil edilen web.sitemap isimli dosya ve içeriği yer almaktadır. Xml tabanlı olan bu dosya siteMapNode isimli elementlerden oluşmaktadır. Aşağıda örnek bir web.sitemap dosya içeriği yer almaktadır.

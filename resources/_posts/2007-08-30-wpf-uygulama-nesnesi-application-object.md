@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WPF-Uygulama Nesnesi (Application Object)"
 date: 2007-08-30 09:00:00 +0300
-description: "Windows Presentation Foundation windows tabanlı uygulama geliştirmeye çok yeni bir yaklaşım getirdi. Tabiri yerindeyse pek çok yenilik ile karşı karşıyayız. İşte bu makalemizde WPF ile geliştirilen windows uygulamalarında çekirdek nesnelerden birisi olan Application tipini incelemeye çalışacağız. Application nesnesi, WPF uygulamalarının çekirdek nesnesidir..."
 categories:
   - wpf
 tags:
@@ -19,9 +18,6 @@ tags:
   - generics
   - visual-studio
 ---
-# WPF-Uygulama Nesnesi (Application Object)
-Değerli Okurlarım Merhabalar,
-
 Windows Presentation Foundation windows tabanlı uygulama geliştirmeye çok yeni bir yaklaşım getirdi. Tabiri yerindeyse pek çok yenilik ile karşı karşıyayız. İşte bu makalemizde WPF ile geliştirilen windows uygulamalarında çekirdek nesnelerden birisi olan Application tipini incelemeye çalışacağız. Application nesnesi, WPF uygulamalarının çekirdek nesnesidir.
 
 Genel olarak bir windows uygulamasının çalıştırılması işletim sistemi tarafından tetiklenen bir aksiyonla gerçekleşir ve bu uygulama Process dahilinde ayrı bir AppDomain içerisinde çalışır. Buna göre her WPF uygulaması çalıştığı yaşam süresi boyunca yanlızca bir Application nesnesine sahip olur. Buda çok doğal olarak, windows uygulaması içerisindeki tüm sayfa (Page) veya pencerelerin (Windows) ortaklaşa kullanacakları global seviyede bir nesnenin söz konusu olması anlamına gelmektedir. Aşağıdaki şekilde Application nesnesinin WPF uygulamasındaki yeri tasvir edilmeye çalışılmaktadır.

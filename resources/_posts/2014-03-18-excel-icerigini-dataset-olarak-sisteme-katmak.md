@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Excel İçeriğini DataSet Olarak Sisteme Katmak"
 date: 2014-03-18 19:13:00 +0300
-description: "Bazen geliştirme ortamımız ile yazılan uygulamanın taşınacağı ortamlar arasında ciddi ve keskin farklılıklar bulunur. İki resim arasındaki 9 farkı bulunuzdan öte, geliştirici ekiplerinin bu farkları bilerek kodlama yapmasında yarar vardır. Tabi bazı yazılım ekiplerinde Development sunucularının sanallaştırılmış versiyonları üzerinde geliştirme yapabilme imkanı da vardır."
 categories:
   - csharp
 tags:
@@ -15,10 +14,10 @@ tags:
   - dataset
   - datatable
 ---
-# Excel İçeriğini DataSet Olarak Sisteme Katmak
-[![production-bug](/assets/images/2014/production-bug_thumb.jpg)](/assets/images/2014/production-bug.jpg) Merhaba Arkadaşlar,
-
 Bazen geliştirme ortamımız ile yazılan uygulamanın taşınacağı ortamlar arasında ciddi ve keskin farklılıklar bulunur. İki resim arasındaki 9 farkı bulunuzdan öte, geliştirici ekiplerinin bu farkları bilerek kodlama yapmasında yarar vardır. Tabi bazı yazılım ekiplerinde Development sunucularının sanallaştırılmış versiyonları üzerinde geliştirme yapabilme imkanı da vardır.
+
+[![production-bug](/assets/images/2014/production-bug_thumb.jpg)](/assets/images/2014/production-bug.jpg)
+
 
 Bu tip bir yaklaşım ortak ortam standartlarının geliştirme de kullanılmasına olanak tanımaktadır. Ancak geliştiriciler uygulamanın host edileceği ortamlar hakkında fazla düşünceli davranmazsa (aynen benim gibi), özellikle kendi ortamında elinde yer alan her aracın orada sorunsuz çalışabileceğini düşünürse büyük hata yapar. İşte benim içine düştüğüm durum ve uyguladığım basit çözüm.
 

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ado.Net 2.0 ve Bulk-Data Kopyalama Mekanizması"
 date: 2004-09-17 12:00:00 +0300
-description: "Sql Server'da bir veritabanı tablosundan, başka bir hedef tabloya veri taşıma işlemi bulk-data kopyalama olarak adlandırılır. Veritabanı yöneticileri çoğunlukla bu operasyonu gerçekleştirmek amacıyla, BCP adı verilen komut satırı aracını kullanırlar. Burada amaç, kaynak tablodaki satırların veya bir satır kümesinin farklı konumda olabilecek bir tabloya taşınmasıdır. Hedef tablo aynı veritabanında olabileceği gibi, diğer bir sql sunucusu üzerindeki başka bir veritabanında da yer alabilir. Ado.Net 2.0' da SqlClient isim alanına eklenen yeni sınıflar yardımıyla bu işlemleri yönetimli kodda (managed-code) gerçekleştirme imkanına da artık sahibiz. Bu makalemizde, bu işlemleri gerçekleştirmek için kullanabileceğimiz yeni Ado.Net 2.0 sınıflarını incelemeye çalışacağız."
 categories:
   - ado-net-2-0
 tags:
@@ -18,9 +17,6 @@ tags:
   - generics
   - datatable
 ---
-# Ado.Net 2.0 ve Bulk-Data Kopyalama Mekanizması
-Değerli Okurlarım Merhabalar,
-
 Sql Server'da bir veritabanı tablosundan, başka bir hedef tabloya veri taşıma işlemi bulk-data kopyalama olarak adlandırılır. Veritabanı yöneticileri çoğunlukla bu operasyonu gerçekleştirmek amacıyla, BCP adı verilen komut satırı aracını kullanırlar. Burada amaç, kaynak tablodaki satırların veya bir satır kümesinin farklı konumda olabilecek bir tabloya taşınmasıdır. Hedef tablo aynı veritabanında olabileceği gibi, diğer bir sql sunucusu üzerindeki başka bir veritabanında da yer alabilir. Ado.Net 2.0' da SqlClient isim alanına eklenen yeni sınıflar yardımıyla bu işlemleri yönetimli kodda (managed-code) gerçekleştirme imkanına da artık sahibiz. Bu makalemizde, bu işlemleri gerçekleştirmek için kullanabileceğimiz yeni Ado.Net 2.0 sınıflarını incelemeye çalışacağız.
 
 Bulk-Data kopyalama işlemi için Ado.Net 2.0 ile gelen en önemli sınıf, SqlClient isim alanında yer alan SqlBulkCopy sınıfıdır. Bu sınıfa ait nesne örnekleri yardımıyla, kaynak tablodan hedef tabloya veri transferi işlemleri kolayca gerçekleştirilebilir. Bu işlemler sırasında SqlBulkCopy nesne örnekleri, taşıma işlemini varsayılan olarak açtığı bir transaction içerisinde gerçekleştirmektedir. Yani, hedef tabloya yapılan taşıma işlemleri sırasında oluşabilecek olan hatalar sonrasında, transaction işlemi iptal edilerek roll-back operasyonu gerçekleşir ve hedef tabloya o ana kadar girilen satırlar geri alınır.

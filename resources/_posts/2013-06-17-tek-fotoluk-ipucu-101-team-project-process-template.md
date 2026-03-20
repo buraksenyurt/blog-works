@@ -1,16 +1,12 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu 101–Team Project Process Template"
 date: 2013-06-17 12:30:00 +0300
-description: "Merhaba Arkadaşlar,"
 categories:
   - tek-fotoluk-ipucu
 tags:
   - tek-fotoluk-ipucu
 ---
-# Tek Fotoluk İpucu 101–Team Project Process Template
-Merhaba Arkadaşlar,
-
 Bazı komut satırı araçları oldukça işlevseldir ve çoğunlukla tercih edilir. Örneğin TFS üzerinde bir Team Project silinmek istendiğinde, tfsdeleteproject komut satırı aracına başvrulur. Peki şirketinizde kurulu olan TFS üzerindeki Team Project örneklerinin kullandıkları Process Template’ leri yine bir komut satırı aracı ile öğrenmek isteseydiniz, nasıl bir yol izlerdiniz? Aşağıdaki fotoğraf size bir ipucu verebilir belki de
 
 ![Winking smile](/assets/images/2013/wlEmoticon-winkingsmile_199.png)

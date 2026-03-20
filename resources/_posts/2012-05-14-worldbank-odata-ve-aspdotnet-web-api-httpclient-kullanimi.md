@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WorldBank, OData ve ASP.Net Web API HttpClient Kullanımı"
 date: 2012-05-14 06:30:00 +0300
-description: "Microsoft önce servis odaklı yaklaşımını değiştirerek Windows Communication Foundation altyapısını duyurdu. Hemen ardından WCF hızla gelişti ve pek çok Microsoft ürününün servis uç noktalarında yerini almaya başladı. Derken WCF’ e Web programlama modeli(Web Programming Model) için destekler eklendi. Artık REST(Representational State Transefer) odaklı servisleri yayınlamak ve hatta kullanmak mümkün hale gelmeye başladı. Çok basit anlamda HTTP protokolünün GET,POST,PUT,DELETE gibi metodlarına göre hizmet verebilen ve bu nedenle bir proxy ihtiyacını ortadan kaldırıp platform bağımsızlığı getiren servis yayınlama modeline destek söz konusu idi. Söz konusu model daha da geliştirildi. Özellikle Code Plex tarafında WCF Rest Service API’ si duyuruldu ve programlama modeli Astoria kod adlı WCF Data Service’ lerinde çekirdek yapı taşı haline geldi."
 categories:
   - aspnet-web-api
 tags:
@@ -22,10 +21,10 @@ tags:
   - concurrency
   - generics
 ---
-# WorldBank, OData ve ASP.Net Web API HttpClient Kullanımı
-[![World_Bank](/assets/images/2012/World_Bank_thumb.jpg)](/assets/images/2012/World_Bank.jpg) Merhaba Arkadaşlar,
-
 1999 yılında girdiğim yüksek lisans (MBA-Master of Business Administrator) programını tamamlarken, bitirme projemde “Türkiye’ nin Dünya Bankası borçlanmalarını” ele almaya çalışmıştım. Haliyle o dönemlerde ve geçmişte, ülkemizin Worldbank üzerinden yaptığı borçlanmalara ait istatistiki bilgilere oldukça fazla ihtiyacım vardı. O kütüphane bu kütüphane gezmek dışında, dünya bankası internet sitesinden yayınlanan istatistik bazlı raporları da değerlendirmeye alıyordum. Yaklaşık olarak 60 sayfalık bir döküman oluşturmayı başarmıştım. Sunumumu yaptım, vardığım sonuçları değerli hocalarım ile paylaştım
+
+[![World_Bank](/assets/images/2012/World_Bank_thumb.jpg)](/assets/images/2012/World_Bank.jpg)
+
 
 ![Wink](/assets/images/2012/smiley-wink.gif)
 

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tasarım Desenleri - Mediator"
 date: 2009-07-28 09:04:00 +0300
-description: "Yandaki resimde Zurich hava alanına ait bir görüntü yer almaktadır. Hava alanının ne kadar karmaşık olduğu aşikardır. Laughing Aslında yazımıza konu olarak Londra' daki Heathrow hava alanını dahil edecektim..."
 categories:
   - tasarim-kaliplari-design-patterns
 tags:
@@ -13,16 +12,9 @@ tags:
   - performance
   - generics
 ---
-# Tasarım Desenleri - Mediator
+Yandaki resimde Zurich hava alanına ait bir görüntü yer almaktadır. Hava alanının ne kadar karmaşık olduğu aşikardır. Aslında yazımıza konu olarak Londra'daki Heathrow hava alanını dahil edecektim. Nitekim uzun zaman önce Discovery Channel'da izlediğim bir belgeselde, bir iniş ve birde kalkış pistiyle bu kadar işlek bir havalimanının ne kadar ustalıkla yönetildiği anlatılıyordu. Ancak yaptığım araştırmalar sonrası dünyadaki en iyi hava alanları arasında olmadığını gördüm.([http://www.worldairportawards.com/](http://www.worldairportawards.com/)). Her neyse.
+
 ![blg52_2.jpg](/assets/images/2009/blg52_2.jpg)
-
-Merhaba Arkadaşlar,
-
-Yandaki resimde Zurich hava alanına ait bir görüntü yer almaktadır. Hava alanının ne kadar karmaşık olduğu aşikardır.
-
-![Laughing](/assets/images/2009/smiley-laughing.gif)
-
-Aslında yazımıza konu olarak Londra'daki Heathrow hava alanını dahil edecektim. Nitekim uzun zaman önce Discovery Channel'da izlediğim bir belgeselde, bir iniş ve birde kalkış pistiyle bu kadar işlek bir havalimanının ne kadar ustalıkla yönetildiği anlatılıyordu. Ancak yaptığım araştırmalar sonrası dünyadaki en iyi hava alanları arasında olmadığını gördüm.([http://www.worldairportawards.com/](http://www.worldairportawards.com/)). Her neyse.
 
 Konumuz aslında kimin daha iyi olduğu değil ama tüm hava alanları için ortak olan bir sorun. İnip kalkan ve hatta aynı havasahasına giren uçakların koordine edilmesi. Hiç çok işlek hava alanlarında kontrol kulesi olmadığını hayal ettiniz mi?
 

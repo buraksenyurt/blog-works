@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ado.Net Senkronizasyon Servisleri(Sync Services for Ado.Net)"
 date: 2009-01-03 10:00:00 +0300
-description: "Birbirleri ile sürekli bağlantı halinde olamayan istemci/sunucu(Client/Server) mimarilerinde en büyük problemlerden biriside verilerin karşılıklı veya tek taraflı olaraktan senkronize edilmeleridir. Çoğu büyük çaplı saha uygulamasında, sunucu tarafındaki veri kaynaklarının istemcide kullanıldığı durumlar söz konusudur. Bu noktada istemcilerin sürekli bağlı kalamadıkları bir ortamın var olması olasıdır (Occasionally Connected Enivronments)."
 categories:
   - ado-net-sync-services
 tags:
@@ -24,9 +23,6 @@ tags:
   - datatable
   - shared-state
 ---
-# Ado.Net Senkronizasyon Servisleri(Sync Services for Ado.Net)
-Değerli Okurlarım Merhabalar,
-
 Birbirleri ile sürekli bağlantı halinde olamayan istemci/sunucu (Client/Server) mimarilerinde en büyük problemlerden biriside verilerin karşılıklı veya tek taraflı olaraktan senkronize edilmeleridir. Çoğu büyük çaplı saha uygulamasında, sunucu tarafındaki veri kaynaklarının istemcide kullanıldığı durumlar söz konusudur. Bu noktada istemcilerin sürekli bağlı kalamadıkları bir ortamın var olması olasıdır (Occasionally Connected Enivronments). Nitekim istemci ve sunucu arasında kablosuz bağlantı olma ihtimali oldukça yüksektir. Nitekim günümüz teknolojileri düşünüldüğünde istemci uygulamaların bir çoğu mobil cihazlar ile, diz üstü bilgisayarlar üzerinde koşmaktadır. Bu tabiki daha çok saha elemanlarının işin içerisine girdiği senaryolardır.
 
 Söz gelimi günlük ürün fiyatlandırmalarını kullanarak satış yapan personelin mobil cihazlara sahip olduğu bir durumda, istemcilerin sunucuya sürekli olarak bağlı kalmaları saha üzerinde son derece zor olabilir. (Mobil cihazlar, modern cep telefonları ve PDA'ler olabileceği gibi dizüstü bilgisayarlarda olabilir.) Buna rağmen istemcinin söz konusu veriyi kullanarak çalışabilmesi de istenebilir. Diğer taraftan istemcinin sunucuya bağlandığı hallerde ortak veri üzerindeki değişikliklerini göndermesi ve hatta var olan farklılıkları kendi sistemine çekmeside istenebilir.

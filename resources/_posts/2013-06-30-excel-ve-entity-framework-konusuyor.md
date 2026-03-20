@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Excel ve Entity Framework Konuşuyor"
 date: 2013-06-30 17:57:00 +0300
-description: "Özellikle Sheet’ ler veya Workbook’ lar kodlanabilir birer C#(Vb.Net) dosyası olduğu için, uygulama bazında istediğimiz taklayı atma şansına sahibiz. İşte bu düşünceler ışığında yola çıktığımız ve okumakta olduğunuz yazımızda, Excel’ i, Entity Framework’ ü, C#’ ı işin içerisine katacak ve birbirleri ile konuşmalarını sağlamaya çalışacağız. Haydi hiç vakit kaybetmeden yola koyulalım. Ama önce örnek senaryomuz..."
 categories:
   - office-development
 tags:
@@ -17,12 +16,9 @@ tags:
   - performance
   - visual-studio
 ---
-# Excel ve Entity Framework Konuşuyor
-[![handshake](/assets/images/2013/handshake_thumb.jpg)](/assets/images/2013/handshake.jpg)[Orjinal Yazım Tarihi 03-05-2013]
-
-Merhaba Arkadaşlar,
-
 Artık uygulamaların birbirleri ile konuşmaları çok ama çok kolay. Bu gerçekten önemli bir mesele. Özellikle farklı segmentlerden insanların bir araya geldiği bilişim toplumlarında. Kimi kullanıcı için Office Excel, Word veya Powerpoint çok şey ifade ederken, kimi kullanıcı içinde SQL Management Studio ortamında hazırlanan karmaşık bir sorguya bakmak daha anlamlı olabiliyor. Ya da bir Web sayfası üzerinden alınan raporlar şirketin Muhasebe Şefi için değerli iken, kimisi SSRS ile elde edilen raporları mobil cihazında görmeyi tercih edebiliyor.
+
+[![handshake](/assets/images/2013/handshake_thumb.jpg)](/assets/images/2013/handshake.jpg)
 
 Ancak Developer gözüyle olaya bakıldığında, her segmenti memnun edecek şekilde geliştirme yapması beklendiği oldukça aşikar. Bu sebepten, farklı uygulamaların birbirleriyle rahatça konuşabilmeleri önemli bir mesele olarak karşımıza çıkıyor. Visual Studio 2012 tarafında olaya baktığımızda bir Office uygulamasının, önceki sürümlere göre.Net Framework ile daha yüksek seviyede etkileşime girerek tasarlanabilmesi/geliştirilebilmesi de pekala mümkün.
 

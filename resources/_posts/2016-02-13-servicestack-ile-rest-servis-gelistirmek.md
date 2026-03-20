@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "ServiceStack ile REST Servis Geliştirmek"
 date: 2016-02-13 07:00:00 +0300
-description: "ServiceStack, WCF ve Asp.Net Web API' ye alternatif olarak kullanılabilecek bir Web Service Framework'ü. Standart SOAP tabanlı servisler dışında REST tabanlı servislerin geliştirilmesine de izin veren bir çatı. Host uygulamalar IIS, Windows Service ya da Self-Hosted teknikleri ile yayınlanabiliyor. Hatta mono üzerinden de servisleri host etmek mümkün ki bu da farklı platformlar üzerinden servis yayınlanmasına imkan sağlıyor. Çok fazla konfigurasyon gerektirmeden kolayca geliştirme yapılması mümkün."
 categories:
   - rest
 tags:
@@ -23,12 +22,9 @@ tags:
   - iis
   - generics
 ---
-# ServiceStack ile REST Servis Geliştirmek
-![cat.gif](/assets/images/2016/cat.gif)
-
-Merhaba Arkadaşlar,
-
 Geçenlerde üzerinde çalışmakta olduğum proje için kullandığım geliştirme ortamımı bir güzelce patlatıverdim. Oracle'ın yeni sürümüne ait Data Provider'ın,.Net Framework 4.5.2 sürümüne yükseltmiş bir uygulamada neden çalışmadığını araştırıyordum. Sorun sunucu kaynaklı idi. Vakayı geliştirme ortamında da oluşturmaya çalıştım. Nitekim orada her şey yolunda görünüyordu. Lafı fazla uzatmayayım sonunda Production ortamını da kurcalamaya karar verdim...Eee...Şey...Orayı da patlattım:) Neyseki prod sunucusu sadece kurulumu yapılmış ve henüz yayına alınmamış bir makine idi. Zaten uygulamanın orada başarılı şekilde çalışması halinde kullanıma açılacak bir sunucuydu. Durumu ben, sistem ekibindeki bir kaç kişi ve ekip arkadaşım biliyordu. Ah şu andan itibaren de siz. Dolayısıyla hafif stresli günler geçirdiğimi ifade edebilirim. Epeyce sinirlendim ve sakinleşmek için her zaman yaptığım şeyi yaptım. Makale yazdım.
+
+![cat.gif](/assets/images/2016/cat.gif)
 
 Bu kez gözüme faydalı olduğunu düşündüğüm bir Nuget paketini kestirdim. [DTO servis tasarım desenini](http://www.servicedesignpatterns.com/requestandresponsemanagement/datatransferobject) baz alan ServiceStack.
 
@@ -159,7 +155,7 @@ namespace HowToServiceStack
             products.Add(newProduct);
             return newProduct;
         }
-    }    
+    }
 
     #endregion
 

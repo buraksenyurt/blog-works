@@ -1,16 +1,12 @@
-﻿---
+---
 layout: post
 title: "Indeksleyiciler (Indexers)"
 date: 2004-01-27 12:00:00 +0300
-description: "Bugünkü makalemizde kısaca indeksleyicilerin C# programlama dilindeki kullanımını incelemeye çalışacağız. Bir indeksleyici, bir sınıfı dizi şeklinde kullanabilmek ve bu sınıftan türetilen nesneleri dizinleyebilmek amacıyla kullanılır. Başka bir deyişle bir indeksleyici, nesnelere dizi gibi davranılabilmesini sağlar. Indeksleyiciler tanımlanışları itibariyle, özelliklere (properties) çok benzerler . Ancak aralarında temel farklılıklarda vardır. Herşeyden önce bu benzerlik, indeksleyicilerin tanımlanmasında göze çarpar. Bir indeksleyiciyi teorik olarak aşağıdaki söz dizimi ile tanımlanır."
 categories:
   - csharp
 tags:
   - csharp
 ---
-# Indeksleyiciler (Indexers)
-Değerli Okurlarım, Merhabalar.
-
 Bugünkü makalemizde kısaca indeksleyicilerin C# programlama dilindeki kullanımını incelemeye çalışacağız. Bir indeksleyici, bir sınıfı dizi şeklinde kullanabilmek ve bu sınıftan türetilen nesneleri dizinleyebilmek amacıyla kullanılır. Başka bir deyişle bir indeksleyici, nesnelere dizi gibi davranılabilmesini sağlar.
 
 Indeksleyiciler tanımlanışları itibariyle, özelliklere (properties) çok benzerler. Ancak aralarında temel farklılıklarda vardır. Herşeyden önce bu benzerlik, indeksleyicilerin tanımlanmasında göze çarpar. Bir indeksleyiciyi teorik olarak aşağıdaki söz dizimi ile tanımlanır.

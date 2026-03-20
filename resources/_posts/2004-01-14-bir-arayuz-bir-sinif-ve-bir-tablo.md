@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Bir Arayüz, Bir Sınıf ve Bir Tablo"
 date: 2004-01-14 12:00:00 +0300
-description: "Bugünkü makalemizde, bir arayüzü uygulayan sınıf nesnelerinden faydalanarak, bir Sql tablosundan nasıl veri okuyacağımızı ve değişiklikleri veritabanına nasıl göndereceğimizi incelemeye çalışacağız. Geliştireceğimiz örnek, arayüzlerin nasıl oluşturulduğu ve bir sınıfa nasıl uygulandığını incelemekle yetinmeyecek, Sql veritabanımızdaki bir tablodaki belli bir kayda ait verilerin bu sınıf nesnelerine nasıl aktarılacağını da işleyecek. Kısacası uygulamamız, hem arayüzlerin hem sınıfların hemde Sql nesnelerinin kısa bir tekrarı olucak."
 categories:
   - csharp
 tags:
@@ -11,9 +10,6 @@ tags:
   - sql-server
   - visual-studio
 ---
-# Bir Arayüz, Bir Sınıf ve Bir Tablo
-Değerli Okurlarım, Merhabalar.
-
 Bugünkü makalemizde, bir arayüzü uygulayan sınıf nesnelerinden faydalanarak, bir Sql tablosundan nasıl veri okuyacağımızı ve değişiklikleri veritabanına nasıl göndereceğimizi incelemeye çalışacağız. Geliştireceğimiz örnek, arayüzlerin nasıl oluşturulduğu ve bir sınıfa nasıl uygulandığını incelemekle yetinmeyecek, Sql veritabanımızdaki bir tablodaki belli bir kayda ait verilerin bu sınıf nesnelerine nasıl aktarılacağını da işleyecek. Kısacası uygulamamız, hem arayüzlerin hem sınıfların hemde Sql nesnelerinin kısa bir tekrarı olucak.
 
 Öncelikle uygulamamızın amacından bahsedelim. Uygulamamızı bir Windows uygulaması şeklinde geliştireceğiz. Kullanacağımız veri tablosunda arkadaşlarımızla ilgili bir kaç veriyi tutuyor olacağız. Kullanıcı, Windows formunda, bu tablodaki alanlar için Primary Key niteliği taşıyan bir ID değerini girerek, buna karşılık gelen tablo satırına ait verilerini elde edicek. İstediği değişiklikleri yaptıktan sonra ise bu değişiklikleri tekrar veritabanına gönderecek. Burada kullanacağımız teknik makalemizin esas amacı olucak. Bu kez veri tablosundan çekip aldığımız veri satırının programdaki eşdeğeri, oluşturacağımız sınıf nesnesi olucak. Bu sınıfımız ise, yazmış olduğumuz arayüzü uygulayan bir sınıf olucak. Veriler sınıf nesnesine, satırdaki her bir alan değeri, aynı isimli özelliğe denk gelicek şekilde yüklenecek. Yapılan değişiklikler yine bu sınıf nesnesinin özelliklerinin sahip olduğu değerlerin veri tablosuna gönderilmesi ile gerçekleştirilecek.

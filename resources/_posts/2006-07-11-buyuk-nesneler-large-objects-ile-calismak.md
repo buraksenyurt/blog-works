@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Büyük Nesneler(Large Objects) ile Çalışmak"
 date: 2006-07-11 12:00:00 +0300
-description: "Veritabanı programcılığında zaman zaman büyük nesneler (large objects) ile çalışmak zorunda kalabiliriz. Görüntü, ses, resim, text dökümanı, çalıştırılabilir uygulamalar gibi dosyalar bir veritabanı için büyük nesne (large objects) olabilecek kaynaklardır. Bu gibi dosyaların veritabanı üzerinde alanlar (fields) içerisinde saklanabilmesi bazı özel veritabanı türleri ile mümkün olabilmektedir. Sql Server temel olarak büyük nesneleri iki kategoriye ayırmaktadır."
 categories:
   - csharp
 tags:
@@ -14,9 +13,6 @@ tags:
   - performance
   - datatable
 ---
-# Büyük Nesneler(Large Objects) ile Çalışmak
-Değerli Okurlarım Merhabalar,
-
 Veritabanı programcılığında zaman zaman büyük nesneler (large objects) ile çalışmak zorunda kalabiliriz. Görüntü, ses, resim, text dökümanı, çalıştırılabilir uygulamalar gibi dosyalar bir veritabanı için büyük nesne (large objects) olabilecek kaynaklardır. Bu gibi dosyaların veritabanı üzerinde alanlar (fields) içerisinde saklanabilmesi bazı özel veritabanı türleri ile mümkün olabilmektedir. Sql Server temel olarak büyük nesneleri iki kategoriye ayırmaktadır.
 
 BLOBs adı verilen ikili formatta büyük nesneler (Binary Large Objects - BLOBs) ve karakter tabanlı büyük nesneler (Character Large Objects - CLOBs). Bununla birlikte Sql Server 2005 ile büyük nesneleri saklamak için gelen yeni veri türleride vardır. Bunlarıda genel olarak değer türünden büyük nesneler (Value Types Large Objects - VTLOs) olarak adlandırılmaktadır. Aşağıdaki tabloda Sql Server 2000 ve 2005 sürümlerinde geçerli olan büyük nesne türleri (Large Objects Types) listelenmektedir.

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tasarım Prensipleri - Single Responsibility"
 date: 2009-06-26 16:04:00 +0300
-description: "Sanıyorum benim gibi eskiler, yandaki resimde yer alan değerli ressamı hatırlayacaklardır. Bob Ross. Küçüklüğümde(ve halen Smile) Bob Ross' un TRT televizyonunda yayınlanan Resim Sevinci programlarını zaman zaman izler ve yarım saatlik sürede çizdiği doğa manzaralarına bakakalırdım. Rahmetli Bob bu günkü Tasarım Prensipleri uyarlanması sırasında Einstein ile birlikte küçük bir rol üstleniyor olacak. Öyleyse sözü fazla uzatmadan konumuza geçelim."
 categories:
   - tasarim-prensipleri-design-principles
 tags:
@@ -12,16 +11,9 @@ tags:
   - http
   - generics
 ---
-# Tasarım Prensipleri - Single Responsibility
+Sanıyorum benim gibi eskiler, yandaki resimde yer alan değerli ressamı hatırlayacaklardır. Bob Ross. Küçüklüğümde (ve halen) Bob Ross'un TRT televizyonunda yayınlanan Resim Sevinci programlarını zaman zaman izler ve yarım saatlik sürede çizdiği doğa manzaralarına bakakalırdım. Rahmetli Bob bu günkü Tasarım Prensipleri uyarlanması sırasında Einstein ile birlikte küçük bir rol üstleniyor olacak. Öyleyse sözü fazla uzatmadan konumuza geçelim.
+
 ![bob-ross.jpg](/assets/images/2009/bob-ross.jpg)
-
-Merhaba Arkadaşlar,
-
-Sanıyorum benim gibi eskiler, yandaki resimde yer alan değerli ressamı hatırlayacaklardır. Bob Ross. Küçüklüğümde (ve halen
-
-![Smile](/assets/images/2009/smiley-smile.gif)
-
-) Bob Ross'un TRT televizyonunda yayınlanan Resim Sevinci programlarını zaman zaman izler ve yarım saatlik sürede çizdiği doğa manzaralarına bakakalırdım. Rahmetli Bob bu günkü Tasarım Prensipleri uyarlanması sırasında Einstein ile birlikte küçük bir rol üstleniyor olacak. Öyleyse sözü fazla uzatmadan konumuza geçelim.
 
 Hatırlayacağınız gibi son iki blog yazımda, nesneye dayalı tasarım prensipleri içerisinde uyarlanan ilkelere değinmeye çalışmıştım. Bu günkü konumuz ise Single Responsibility prensibi. Bu prensip anlaşılması kolay ancak çoğu zaman tespit edilmesi veya gerekliliğinin ortaya çıkartılması zor bir ilke olarak karşımıza çıkmaktadır. İlkenin savunduğu tez şudur; Bir sınıf sadece tek bir sorumluluk içermelidir. Bir başka deyişle bir sınıfın birden fazla sorumluluğa sahip olmasına karşı bir ilkedir. Bunun en büyük nedeni olarak, sıklıkla yapılan ya da beklenen değişikliklerin, sorumluluk sayısı fazla olan sınıflar için yeniden kullanılabilirliği (Reusable), test edilebilirliği, genişletilebilirliği vb... zorlaştırıyor olmasıdır. Bu ilke aslında şu şekildede açıklanabilir; bir sınıfın değişikliğe uğraması için birden fazla neden olmamalıdır.
 

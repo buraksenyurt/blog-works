@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Compact Framework Üzerinde RDA ile Senkronizasyon"
 date: 2006-01-24 12:00:00 +0300
-description: "Mobil uygulamalarda veri senkronizasyonu son derece önemlidir. Örneğin bir kurye firmasının dağıtım elemanını göz önüne alalım. Mobil cihaz ile donatılmış olan bu personelin görevi, kendisine verilen teslimat bilgilerine göre, sipariş sahiplerine ürünlerini teslim etmektir. Her çalışma gününün başında, teslimat yapacağı kişilerin bilgilerini ana sunuculardan mobil cihazına yükleyerek teslimat için hareket geçen personel, tamamlanan teslimatları anında veya belirli bir süre sonunda topluca asıl sunuculara göndererek gerekli güncelleştirme işlemlerini yapar. Bu senaryo gereği personelin teslimat bilgilerini düzenli olarak alması, tamamlanaları işaretlemesi ve son olarak bu bilgileri asıl sunucuya göndermesi gerekir.Bu noktada senaryonun iki ucunda yer alan sunucu ve mobil tarafındaki veriler arasındaki güncelliği çeşitli senkranizasyon mimarileri ile sağlayabiliriz."
 categories:
   - csharp
 tags:
@@ -13,9 +12,6 @@ tags:
   - transactions
   - datatable
 ---
-# Compact Framework Üzerinde RDA ile Senkronizasyon
-Değerli Okurlarım Merhabalar,
-
 Mobil uygulamalarda veri senkronizasyonu son derece önemlidir. Örneğin bir kurye firmasının dağıtım elemanını göz önüne alalım. Mobil cihaz ile donatılmış olan bu personelin görevi, kendisine verilen teslimat bilgilerine göre, sipariş sahiplerine ürünlerini teslim etmektir. Her çalışma gününün başında, teslimat yapacağı kişilerin bilgilerini ana sunuculardan mobil cihazına yükleyerek teslimat için hareket geçen personel, tamamlanan teslimatları anında veya belirli bir süre sonunda topluca asıl sunuculara göndererek gerekli güncelleştirme işlemlerini yapar. Bu senaryo gereği personelin teslimat bilgilerini düzenli olarak alması, tamamlanaları işaretlemesi ve son olarak bu bilgileri asıl sunucuya göndermesi gerekir.Bu noktada senaryonun iki ucunda yer alan sunucu ve mobil tarafındaki veriler arasındaki güncelliği çeşitli senkranizasyon mimarileri ile sağlayabiliriz.
 
 Mobile uygulamalarda uzak sunucular (Server) üzerindeki veriler ile yerel (Client/Mobil) veriler arasındaki senkronizasyon işlemini iki farklı mimaride gerçekleştirebiliriz. Bunlardan birisi RDA (Remote Data Access) diğeri ise Merge Replication'dır. RDA kullanımı Merge Replication'a göre daha kolay olan bir mimaridir. Biz bu makalemizde RDA'yı her yönüyle incelemeye çalışacağız. RDA mimarisi Sql Server 6.5 sürümü ve üstünü hedef almıştır. RDA mimarisinde, mobil platform ile uzak sunucu üzerindeki veritabanı arasında senkronizasyon 3 teknikle sağlamaktır. Bu teknikler Push, Pull ve SubmitSql teknikleridir. Bu tekniklere geçmeden önce, RDA ' nın çalışma şekli hakkında kısa bir bilgi vermekte fayda olacağı düşüncesindeyim.

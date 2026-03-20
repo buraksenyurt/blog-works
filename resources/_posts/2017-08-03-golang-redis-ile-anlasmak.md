@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "GoLang - Redis ile Anlaşmak"
 date: 2017-08-03 21:16:00 +0300
-description: "Bir Cumartesi gecesiydi. Dışarıda hava nemli ve sıcaktı. Bir süre önce başlayan yağmurun sesi çalışma odama tatlı tatlı geliyordu. Biraz da toprak kokusu. Evde el ayak çekilmiş sakin bir ortam oluşmuştu. GoLang öğrenme çalışmaları devam ediyordu. Dili ufak ufak kavramaya başlamıştım ama örnek senaryolar işleterek ilerlemem gerektiğini de biliyordum. Derken aklıma eskiden .Net tarafında kullandığım NoSQL sistemlerinden olan Redis ile ilgili bir şeyler yapmak geldi."
 categories:
   - golang
   - nosql
@@ -20,12 +19,9 @@ tags:
   - react
   - github
 ---
-# GoLang - Redis ile Anlaşmak
-![goredis_2.gif](/assets/images/2017/goredis_2.gif)
-
-Merhaba Arkadaşlar,
-
 Bir haziran gecesiydi. Dışarıda hava nemli ve sıcaktı. Bir süre önce başlayan yağmurun sesi çalışma odamın pencersinden kulaklarıma tatlı tatlı geliyordu. Biraz da toprak kokusu vardı tabii. Evde el ayak çekilmiş sakin bir ortam oluşmuştu. Bol kafein dolu bardağım elimde internetten bir şeyler okuyordum. İnsanlar çıldırmıştı. Javascript Framework'ler, yapay zeka'lar, react'ler, cordova'lar,.net core'lar, sanayi 4.0'lar, tesla'lar ve daha niceleri. Eskisinden daha hızlı bir şekilde geride kaldığımı hissediyordum. Sanırım sonum örümcek adamın amcası gibi evde bozuk ampülü tamir edip gazetede iş arayan ama bulamayan biri gibi olacaktı. Ama direniyordum. Önce Ruby, sonra Pyhton ve derken GO. Amatör seviyede başlamış biraz ilerlemiştim. Kendime bir çalışma döngüsü kurmuştum. Bir süre Ruby bakıyor, sonra Pyhton bakıyor, sonra GO bakıyor sonra bu döngüyü tekrar başa sarıyordum. GO'nun ikinci iterasyonundaydım.
+
+![goredis_2.gif](/assets/images/2017/goredis_2.gif)
 
 Bu sefer elimde oldukça güzel de bir Türkçe kaynak vardı (Murat Özalp'in Go Programlama isimli kitabını şiddetle tavsiye ederim) Kitabın son sayfalarına gelmiştim. Döngünün bir sonraki adımına geçmeden önce biraz daha uygulama yapmam gerekiyordu. Nitekim dile hakim olabilmek için bol bol kod yazmam şarttı. Mesela GoLangWeekly'de yayımlanan başlıklara göz gezdirdiğimde çoğunu anlamakta güçlük çekiyordum. Bu yüzden seçmece ilerlemek durumundaydım. Aslında programlama dilini ufak ufak kavramaya başlamıştım ama örnek senaryolar işleterek ilerlemem gerektiğini de biliyordum. Gelişebilmem için bu şarttı. Bu karman çorman düşünceler altında devam ederken aklıma bir pratik geldi. Eskiden.Net tarafında kullandığım NoSQL sistemlerinden olan Redis ile ilgili bir şeyler yapmak istiyordum.
 

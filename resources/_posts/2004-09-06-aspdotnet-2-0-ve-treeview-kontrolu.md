@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net 2.0 ve TreeView Kontrolü"
 date: 2004-09-06 12:00:00 +0300
-description: "Bu makalemizde, Asp.Net 2.0 ile birlikte gelen yeni kontrollerden birisi olan TreeView kontrolü ile, özellikle Xml tabanlı veri kaynaklarına ait bilgilerin, internet ortamında hiyerarşik bir yapıda nasıl gösterilebileceğini incelemeye çalışacağız. Bir önceki makalemizden hatırlayacağınız gibi, site içinde son kullanıcıya akıllı navigasyon hizmeti sunabilmek için sitemap dosyalarından faydalanabileceğimizi ve bu dosyalara ait Xml içeriğinin, SiteMapPath kontrolü ile sayfalarımızda gösterilebileceğinden bahsetmiş ve basit bir örnek geliştirmiştik. Benzer işlevselliğe TreeView kontrolü yardımıyla daha kuvvetli bir biçimde sahip olabiliriz."
 categories:
   - aspnet-2-0
 tags:
@@ -12,9 +11,6 @@ tags:
   - dotnet
   - aspnet
 ---
-# Asp.Net 2.0 ve TreeView Kontrolü
-Değerli Okurlarım Merhabalar,
-
 Bu makalemizde, Asp.Net 2.0 ile birlikte gelen yeni kontrollerden birisi olan TreeView kontrolü ile, özellikle Xml tabanlı veri kaynaklarına ait bilgilerin, internet ortamında hiyerarşik bir yapıda nasıl gösterilebileceğini incelemeye çalışacağız. Bir önceki makalemizden hatırlayacağınız gibi, site içinde son kullanıcıya akıllı navigasyon hizmeti sunabilmek için sitemap dosyalarından faydalanabileceğimizi ve bu dosyalara ait Xml içeriğinin, SiteMapPath kontrolü ile sayfalarımızda gösterilebileceğinden bahsetmiş ve basit bir örnek geliştirmiştik. Benzer işlevselliğe TreeView kontrolü yardımıyla daha kuvvetli bir biçimde sahip olabiliriz.
 
 TreeView kontrolü, Xml tabanlı veri kaynaklarını kullanır. Bu anlamda, hiyerarşik verilerin özellikle ağaç yapısı şeklinde ifade edilmesinde kullanılmaktadır. Şimdi bir önceki makalemizde geliştirdiğimiz örneğe TreeView kontrolünü ekleyerek, sitemap işleminin nasıl yapılacağını incelemeye çalışalım. Öncelikle, formumuza bir TreeView kontrolü ve birde SiteMapDataSource kontrolü ekleyeceğiz. TreeView kontrolünün önemli bir özelliği mutlaka bir veri kaynağına bağlanması gerekliliğidir.

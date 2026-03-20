@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Silverlight Tarafından Feed Okumak"
 date: 2010-07-22 09:05:00 +0300
-description: "Biliyoruz ki, Silverlight uygulamaları Asp.Net gibi Web uygulamaları içerisinde host edilebilmektedir. Planımıza göre Cross-Domain Policy sorunu ile karşılaşmayacak olan WCF Service' lerinin, Silverlight istemcilerinin talep edeceği RSS içeriklerini ele alması söz konusudur."
 categories:
   - silverlight-4-0
   - wcf-eco-system
@@ -25,12 +24,9 @@ tags:
   - generics
   - visual-studio
 ---
-# Silverlight Tarafından Feed Okumak
-![blg176_Giris.jpg](/assets/images/2010/blg176_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Yeni bir maceraya hazır mısınız? Hureyyy dediğinizi duyar gibiyim. Bildiğiniz üzere Internet kaynaklarının takibinin kolay bir şekilde yapılabilmesi adına RSS veya Atom formatındaki Feed içeriklerinden sıklıkla yararlanmaktayız. Blog, Community, News Group ve benzeri pek çok internet kaynağı, güncel içeriklerini yayınlamak amacıyla global olarak standart hale getirilmiş olan bu formatları kullanmaktalar.
+
+![blg176_Giris.jpg](/assets/images/2010/blg176_Giris.jpg)
 
 Pek tabi yayınlanan bu içeriklerin takip edilebilmesi içinde çeşitli istemci programlar söz konusu. FeedReader bu uygulamalara örnek olarak verilebilecek Windows tabanlı iddialı programlardan birisi. Feed içerikleri zaman zaman internet siteleri üzerinde kontrol şeklinde de barındırılmaktadır. Söz gelimi pek çok blog içerisinde bu durum söz konusudur ve hatta hazır Widget'lar yardımıyla entegrasyonları son derece kolaydır. Peki maceramız nerede başlıyor? Özellikle ambulans resminin bu konu ile alakası nedir?
 

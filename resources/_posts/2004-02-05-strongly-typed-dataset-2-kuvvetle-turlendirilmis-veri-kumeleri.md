@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Strongly Typed DataSet - 2 (Kuvvetle Türlendirilmiş Veri Kümeleri)"
 date: 2004-02-05 12:00:00 +0300
-description: "Bir önceki makalemizde, Kuvvetle Türlendirilmiş Veri Kümelerinin ne olduğunu ve nasıl oluşturulduğunu incelemiştik. Bu makalemizde ise, bir türlendirilmiş veri kümesi yardımıyla satır ekleme, arama, düzenleme ve silme gibi işlemlerin nasıl yapılacağını inceleyeceğiz. Bu amaçla işe basit bir windows uygulaması ile başlıyoruz. Bu uygulamamızda kolaylık olması açısından Kuvvetle Türlendirilmiş Veri Kümemizi, Visual Studio.NET ortamında oluşturdum. Uygulamamızda, Makale isimli sql tablomuzu kullanacağız. Uygulamamızın formu izleyen şekildeki gibi olucak."
 categories:
   - ado-net
 tags:
@@ -13,9 +12,6 @@ tags:
   - dataset
   - datatable
 ---
-# Strongly Typed DataSet - 2 (Kuvvetle Türlendirilmiş Veri Kümeleri)
-Değerli Okurlarım, Merhabalar.
-
 Bir önceki makalemizde, Kuvvetle Türlendirilmiş Veri Kümelerinin ne olduğunu ve nasıl oluşturulduğunu incelemiştik. Bu makalemizde ise, bir türlendirilmiş veri kümesi yardımıyla satır ekleme, arama, düzenleme ve silme gibi işlemlerin nasıl yapılacağını inceleyeceğiz. Bu amaçla işe basit bir windows uygulaması ile başlıyoruz. Bu uygulamamızda kolaylık olması açısından Kuvvetle Türlendirilmiş Veri Kümemizi, Visual Studio.NET ortamında oluşturdum. Uygulamamızda, Makale isimli sql tablomuzu kullanacağız. Uygulamamızın formu izleyen şekildeki gibi olucak.
 
 ![mk51_1.gif](/assets/images/2004/mk51_1.gif)

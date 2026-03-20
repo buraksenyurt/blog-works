@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: ".Net Core Web Api Tarafında SqlKata ile Sevimli SQL İşlemleri"
 date: 2020-10-28 14:14:00 +0300
-description: "Veri odaklı uygulamalarda sorgu komutlarını çalıştırmak için kullandığımız birçok hazır altyapı var. Örneğin .Net dünyasına baktığımızda en temel seviyede Ado.Net ve Object Releational Mapping tarafında Entity Framework sıklıkla karşılaştıklarımız arasında. SqlKata'da bunlardan birisi olarak düşünülebilir. Bir süredir de sağda solda okuduğum makale ve github çalışmalarından dolayı merak edip kurcalamak istediğim bir kütüphaneydi. C# ile geliştirimiş paketin temel amacı SqlServer, PostgreSql, Firebird, MySql gibi veritabanları için kod tarafında ortak bir sorgu oluşturma/derleme arabirimi sunmak ama bunu LINQ sorgu metotları üzerinden SQL dilinin anlaşılır rahatlığında, injection yemeden(Parameter Binding tekniğini kullandığı için) ve cache gibi performans artırıcıları kullanarak sağlamak..."
 categories:
   - dotnet-core
 tags:
@@ -28,10 +27,9 @@ tags:
   - visual-studio
   - github
 ---
-# .Net Core Web Api Tarafında SqlKata ile Sevimli SQL İşlemleri
-![kata.png](/assets/images/2020/kata.png)
-
 Veri odaklı uygulamalarda sorgu komutlarını çalıştırmak için kullandığımız birçok hazır altyapı var. Örneğin.Net dünyasına baktığımızda en temel seviyede Ado.Net ve Object Relational Mapping tarafında Entity Framework sıklıkla karşılaştıklarımız arasında. [SqlKata](https://sqlkata.com/)'da bunlardan birisi olarak düşünülebilir. Bir süredir de sağda solda okuduğum makale ve github çalışmalarından dolayı merak edip kurcalamak istediğim bir kütüphane. Öncelikle ismi çok hoş (Code Kata'yı çağrıştırıyor bana)
+
+![kata.png](/assets/images/2020/kata.png)
 
 C# ile geliştirimiş paketin temel amacı SqlServer, PostgreSql, Firebird, MySql gibi veritabanları için kod tarafında ortak bir sorgu oluşturma/derleme arabirimi sunmak ama bunu LINQ sorgu metotları üzerinden SQL dilinin anlaşılır rahatlığında, injection yemeden (Parameter Binding tekniğini kullandığı için) ve ön bellekleme (caching) gibi performans artırıcıları kullanarak sağlamak. Tabii konuşmayı bir kenara bırakıp kod yazarak onu tanımaya çalışmak en doğrusu. Ben örneği Heimdall (Ubuntu-20.04) üzerinde ve Visual Studio Code arabirimini kullanarak geliştirmekteyim (Uygulama kodlarının tamamına [SkyNet github reposu](https://github.com/buraksenyurt/skynet/tree/master/No%2035%20-%20Hiyaaa%20This%20is%20SqlKata) üzerinden erişebilirsiniz)
 
@@ -352,7 +350,7 @@ using Microsoft.Extensions.Logging;
 using SqlKata;
 using SqlKata.Compilers;
 using SqlKata.Execution;
-using Npgsql; 
+using Npgsql;
 
 namespace NorthwindApi
 {

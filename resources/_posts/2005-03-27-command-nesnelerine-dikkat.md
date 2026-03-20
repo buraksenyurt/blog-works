@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Command Nesnelerine Dikkat!"
 date: 2005-03-27 09:00:00 +0300
-description: "Bu makalemizde, Command nesnelerini kullanırken performans arttırıcı, kod okunurluğunu kolaylaştırıcı, güvenlik riskini azaltıcı etkenler üzerinde duracağız ve bu kazanımlar için gerekli teknikleri göreceğiz. Örneklerimizi SqlCommand sınıfına ait nesneler üzerinden geliştireceğiz. Bildiğiniz gibi Command nesneleri yardımıyla veritabanına doğru yürütmek istediğimiz sorguları çalıştırmaktayız. Bu sorgular basit Select, Insert, Update, Delete sorguları olabileceği gibi saklı yordamlar (Stored Procedures) veya tablolarda olabilir."
 categories:
   - ado-net
 tags:
@@ -12,9 +11,6 @@ tags:
   - performance
   - transactions
 ---
-# Command Nesnelerine Dikkat!
-Değerli Okurlarım, Merhabalar.
-
 Bu makalemizde, Command nesnelerini kullanırken performans arttırıcı, kod okunurluğunu kolaylaştırıcı, güvenlik riskini azaltıcı etkenler üzerinde duracağız ve bu kazanımlar için gerekli teknikleri göreceğiz. Örneklerimizi SqlCommand sınıfına ait nesneler üzerinden geliştireceğiz. Bildiğiniz gibi Command nesneleri yardımıyla veritabanına doğru yürütmek istediğimiz sorguları çalıştırmaktayız. Bu sorgular basit Select, Insert, Update, Delete sorguları olabileceği gibi saklı yordamlar (Stored Procedures) veya tablolarda olabilir.
 
 Command nesneleri ayrıca diğer Ado.Net nesnelerinin işletilmelerinde de etkin rol oynamaktadır. Örneğin bağlantısız katman (disconnected layer) nesnelerinin doldurulması veya güncellenmesi için kullanılan DataAdapter nesneleri veya bağlantılı katman (connected layer) üzerinde çalışan DataReader nesneleri gibi. Dolayısıyla Command nesnelerine bağımlı olarak çalışan programların performans, güvenlik ve kod okunurluğu yönünden uygulaması tavsiye edilen bazı teknikler vardır. Command nesnelerinin hazırlanışı ve kullanılması sırasında dikkat etmemiz gereken noktalar aşağıdaki dört madde ile özetlenmiştir.

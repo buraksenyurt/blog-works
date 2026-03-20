@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Entity Framework Üzerinde TransactionScope Kullanımı"
 date: 2011-04-01 08:52:00 +0300
-description: "Yıllar yıllar önce .Net Framework 2.0 ile gelen yenilikleri takip etmeye çalıştığım dönemlerde, Amazon üzerinden getirttiğim kitaplardan birisi de yandaki resimde görülen Ado.Net and System.Xml v2.0 kitabı idi. Şu an halen kitaplığımda durmakta. O sıralar CSharpNedir? bünyesinde Ado.Net bölüm editörlüğü yaptığımdan, bu kitabı tedarik etmiş ve çalışmıştım. .Net Framework 2.0 ile gelen yeni Xml alt yapısının beta hali ile alması bir yana Ado.Net’ in yeni 2.0 sürümü için planlanan bazı kabiliyetlerde anlatılmaktaydı ki bunlardan bekli de en önemlisi System.Transaction.dll assembly içerisinde yer alan ve özellikle Distributed Transaction yönetimini daha etkili ve kolay bir şekilde ele almamızı sağlayan TransactionScope tipiydi."
 categories:
   - entity-framework
 tags:
@@ -14,16 +13,16 @@ tags:
   - xml
   - transactions
 ---
-# Entity Framework Üzerinde TransactionScope Kullanımı
-[![blg231_Giris](/assets/images/2011/blg231_Giris_thumb.gif)](/assets/images/2011/blg231_Giris.gif) Günlerden Salı, sonbahar. Neredeyse hiç uyumadan geçen bir gecenin ardından sabaha karşı yorgunluktan sızan Netspecter, CAD’ in baş ucunda dakikalarca miyavlaması sonucu ancak kendine gelebilir. Eksi ve köhne divanı, o doğrulurken olabildiğince haykırarak gıcırdamaktadır. Önce terliklerini arar. Oda darma dağınıktır. Tüm gece kütüphanedeki sayısız kitabı indirmiş ve bir sonuç bulmak için saatlerce araştırma yapmıştır. Sonuçta terliğin tekinin dahi bulunamadığı bir kalabalık kitap yığınıdır.
+Günlerden Salı, sonbahar. Neredeyse hiç uyumadan geçen bir gecenin ardından sabaha karşı yorgunluktan sızan Netspecter, CAD’ in baş ucunda dakikalarca miyavlaması sonucu ancak kendine gelebilir. Eksi ve köhne divanı, o doğrulurken olabildiğince haykırarak gıcırdamaktadır. Önce terliklerini arar. Oda darma dağınıktır. Tüm gece kütüphanedeki sayısız kitabı indirmiş ve bir sonuç bulmak için saatlerce araştırma yapmıştır. Sonuçta terliğin tekinin dahi bulunamadığı bir kalabalık kitap yığınıdır.
+
+[![blg231_Giris](/assets/images/2011/blg231_Giris_thumb.gif)](/assets/images/2011/blg231_Giris.gif)
+
 
 Kafada korkunç bir baş ağrısı, dışarıdan gelen metronun raylarda bıraktığı ses ve CAD’ in cılız miyavlamaları…Netspecter divandan kalkarken şöyle bir belinden geriye doğru esner. Derken tavan lambasının biraz üstüne vuran dikdörtgen biçimli gölgeyi fark eder. Nasıl olur? Bu kitap gözünden nasıl kaçmıştır. Gece karanlığında fark edemediği kaynağı gün ışığı açığa çıkarmıştır. İşte oradadır. Gölgenin kaynağına doğru gider. Ado.Net and System.Xml v2.0 The Beta Version
 
 ![Open-mouthed smile](/assets/images/2011/wlEmoticon-openmouthedsmile_1.png)
 
 Yaşasın diyerek haykırır.
-
-Merhaba Arkadaşlar,
 
 Yıllar yıllar önce.Net Framework 2.0 ile gelen yenilikleri takip etmeye çalıştığım dönemlerde, Amazon üzerinden getirttiğim kitaplardan birisi de yandaki resimde görülen Ado.Net and System.Xml v2.0 kitabı idi. Şu an halen kitaplığımda durmakta. O sıralar CSharpNedir? bünyesinde Ado.Net bölüm editörlüğü yaptığımdan, bu kitabı tedarik etmiş ve çalışmıştım..Net Framework 2.0 ile gelen yeni Xml alt yapısının beta hali ile alması bir yana Ado.Net’ in yeni 2.0 sürümü için planlanan bazı kabiliyetlerde anlatılmaktaydı ki bunlardan bekli de en önemlisi System.Transaction.dll assembly içerisinde yer alan ve özellikle Distributed Transaction yönetimini daha etkili ve kolay bir şekilde ele almamızı sağlayan TransactionScope tipiydi.
 

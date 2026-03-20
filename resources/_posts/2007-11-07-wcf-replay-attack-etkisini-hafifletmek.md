@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF - Replay Attack Etkisini Hafifletmek"
 date: 2007-11-07 12:00:00 +0300
-description: "WCF(Windows Communication Foundation) ile ilgili bir önceki makalemizde, istemci ve servis arasında güvenilir oturumların(Reliable Session) nasıl açılabileceğinden bahsetmiştik. Güvenilir oturumların yararlarından biriside, olası cevaplama saldırılarının(Replay Attacks) önüne geçmektir. Bilindiği üzere cevaplama saldırılarında, istemci ve servis arasında hareket eden mesajların yakalanarak bozulması, değiştirilmesi, kesilmesi gibi problemler söz konusu olmaktadır. Üstelik değişikliğe uğratılan mesajların zaman içerisinde her hangibir anda, orjinal servis kaynağına yada farklı bir yöne doğru defalarca gönderilmeleride söz konusudur."
 categories:
   - wcf
 tags:
@@ -11,9 +10,6 @@ tags:
   - xml
   - http
 ---
-# WCF - Replay Attack Etkisini Hafifletmek
-Değerli Okurlarım Merhabalar,
-
 WCF (Windows Communication Foundation) ile ilgili bir önceki makalemizde, istemci ve servis arasında güvenilir oturumların (Reliable Session) nasıl açılabileceğinden bahsetmiştik. Güvenilir oturumların yararlarından biriside, olası cevaplama saldırılarının (Replay Attacks) önüne geçmektir. Bilindiği üzere cevaplama saldırılarında, istemci ve servis arasında hareket eden mesajların yakalanarak bozulması, değiştirilmesi, kesilmesi gibi problemler söz konusu olmaktadır. Üstelik değişikliğe uğratılan mesajların zaman içerisinde her hangibir anda, orjinal servis kaynağına yada farklı bir yöne doğru defalarca gönderilmeleride söz konusudur.
 
 Güvenilir oturumlarda, mesajların tekrar etmesini önlemek adına WS-ReliableMessaging şartnamelerine uygun şekilde hareket edilir. Buna göre mesajların benzersiz bir id ile işaretlenmesi ve sıralarının belirlenmesi için numaralandırılması söz konusudur. Ne yazıkki güvenilir bir oturum cevaplama saldırılarını tek başına karşılamakta yeterli olmayabilir. Aslında bunun için geçerli ve yeterli bir senaryo vardır. Aşağıdaki şekil cevaplama saldırılarına ait bir vakayı ifade etmektedir.

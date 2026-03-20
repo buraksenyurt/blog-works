@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Workflow Designer’ ı Yeniden Host Etmek (WF 4.0)"
 date: 2012-07-12 23:05:00 +0300
-description: "Aslına bakarsanız Visual Studio gerçekten harika bir IDE ortamı sunmaktadır. Hatta UX olarak bilien User eXperience değil de tam anlamıya Developer eXperience’ ın hat safhada olduğu bir geliştirme ortamıdır. Lakin genişletilebilir olması(Extension Manager’ a dikkatiniz çekmek isterim) haricinde çok gelişmiş özellikleri olmakla birlikte, zaman zaman daha hafif bir sürüme ihtiyaç duyabiliriz. Örneğin Workflow Foundation tabanlı olarak bir iş akışı tasarım uygulaması geliştirmek istediğinizi düşünün"
 categories:
   - wf-4-0
 tags:
@@ -19,10 +18,10 @@ tags:
   - visual-studio
   - rc
 ---
-# Workflow Designer’ ı Yeniden Host Etmek (WF 4.0)
-[![total-recall-2012-official-trailer-teaser-00 (1)](/assets/images/2012/total-recall-2012-official-trailer-teaser-00%20%281%29_thumb.jpg)](/assets/images/2012/total-recall-2012-official-trailer-teaser-00%20%281%29.jpg) Merhaba Arkadaşlar,
-
 Çoğu zaman sinemada daha önceden vizyona girmiş olan bir filmin yeniden çekilmiş bir versiyonuna rastlarız. Örneğin Batman Begins veya vizyona bu yaz girecek Total Recall gibi. Hatta bazen Cover olarak adlandırdığımız bir durum söz konusu olur ve çeşitli müzik guruplarının önemli parçalarının tekrardan, aynı ekipçe veya başkalarınca yorumlandığını görür, duyarız.
+
+[![total-recall-2012-official-trailer-teaser-00 (1)](/assets/images/2012/total-recall-2012-official-trailer-teaser-00%20%281%29_thumb.jpg)](/assets/images/2012/total-recall-2012-official-trailer-teaser-00%20%281%29.jpg)
+
 
 Sonuç itibariyle insanlar zaman zaman yapılmış olan bazı çalışmaları hem teknolojinin yeni nimetleri, hem de farklı şekilde yorumlayabilme isteği nedeni ile tekrardan ele alabilirler.
 
@@ -377,3 +376,4 @@ Görüldüğü üzere Visual Studio IDE’ sinin bir parçası olarak sunulan ve
 
 [ReHostedWFDesigner.zip (75,05 kb)](/assets/files/2012/ReHostedWFDesigner.zip)
 (Örnek Visual Studio 2012 RC sürümünde geliştirilmiştir ancak kodlar Visual Studio 2010 üzerinde de çalışmaktadır)
+

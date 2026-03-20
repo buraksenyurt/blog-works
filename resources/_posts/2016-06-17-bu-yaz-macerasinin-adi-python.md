@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Bu Yaz Macerasının Adı Python"
 date: 2016-06-17 00:00:00 +0300
-description: "Kısa bir süre önce bu yaz dönemi için kendime yeni bir uğraşı buldum. Raspberry Pi. Çalıştığım turuncu bankadaki ekip arkadaşım sevgili Recep Duman'ın, Raspberry Pi ile epey zamandır uğraştığını da öğrenince planlar yapılmaya başlandı.Lego, IoT ve Raspberry Pi konularını bir araya getireceğimiz bir fikir üzerinde ilerlemeye karar verdik. Bunun için gerekli çalışmalarımıza devam ediyoruz. Hatta Recep Hocam ile gerçekleştirdiğimiz iki söyleşimize buradan ve şuradan ulaşabilirsiniz."
 categories:
   - python
 tags:
@@ -14,12 +13,9 @@ tags:
   - ruby
   - javascript
 ---
-# Bu Yaz Macerasının Adı Python
-![Guido_van_Rossum.gif](/assets/images/2016/Guido_van_Rossum.gif)
-
-Merhaba Arkadaşlar,
-
 Kısa bir süre önce bu yaz dönemi için kendime yeni bir uğraşı buldum. Raspberry Pi. Çalıştığım turuncu bankadaki ekip arkadaşım sevgili [Recep Duman](http://www.recepduman.net/)'ın, Raspberry Pi ile epey zamandır uğraştığını da öğrenince planlar yapılmaya başlandı.Lego, IoT ve Raspberry Pi konularını bir araya getireceğimiz bir fikir üzerinde ilerlemeye karar verdik. Bunun için gerekli çalışmalarımıza devam ediyoruz. Hatta Recep Hocam ile gerçekleştirdiğimiz iki söyleşimize [buradan](https://youtu.be/LfTrBhXo8vk) ve [şuradan](https://youtu.be/h3xfi1-SmQc) ulaşabilirsiniz.
+
+![Guido_van_Rossum.gif](/assets/images/2016/Guido_van_Rossum.gif)
 
 Raspberry Pi kredi kartı büyüklüğünde de olsa sonuçta bir bilgisayar olduğundan, onu yönetebilmek için de programlama dillerinden yararlanmak gerekiyor. Raspi üzerinde Java, Scratch (Scratch'i MIT'den bilirsiniz), Ruby ve Python gibi dilleri kullanarak geliştirme yapmak ve donanıma bağlanan cihazları yönetebilmek mümkün. Pek tabii Windows IoT açısından olaya baktığımızda C# dilini de kullanabiliriz. Ben Ruby ile ilerlemeyi düşünüyordum ancak hazır yeri gelmişken Python programlama dilini odağıma almaya karar verdim.
 

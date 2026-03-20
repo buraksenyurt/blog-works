@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "NET Remoting' i Kavramak - 3"
 date: 2004-07-22 12:00:00 +0300
-description: "Bu makalemizde, uzak nesneler üzerindeki metodlara asenkron olarak nasıl erişebileceğimizi kısaca incelemeye çalışacağız. Remoting ile ilgili bir önceki makalemizde, çok basit haliyle uzak nesnelerin, istemciler tarafından nasıl kullanılabildiğini incelemiştik."
 categories:
   - dotnet-remoting
 tags:
@@ -12,9 +11,6 @@ tags:
   - concurrency
   - delegates
 ---
-# NET Remoting' i Kavramak - 3
-Değerli Okurlarım, Merhabalar.
-
 Bu makalemizde, uzak nesneler üzerindeki metodlara asenkron olarak nasıl erişebileceğimizi kısaca incelemeye çalışacağız. Remoting ile ilgili bir önceki makalemizde, çok basit haliyle uzak nesnelerin, istemciler tarafından nasıl kullanılabildiğini incelemiştik. Geliştirmiş olduğumuz örnekte, uzak nesne üzerindeki metoda senkron olarak erişmekteydik. Yani, uzak nesnedeki metodun işleyişi bitene kadar, istemci uygulama kısa sürelide olsa duraksıyordu. Ancak bazı zamanlarda, uzak nesneler üzerinde işleyecek olan metodlar, belirli bir süre zarfında gerçekleşebilecek uzunlukta işlemlere sahip olabilirler. Böyle bir durumda istemci uygulamalar, metodların geri dönüş değerlerini beklemek zorunda kalabilirler. Oysaki, uzak nesneye ait metodlar bir yandan çalışırken, diğer yandanda istemci uygulamadaki izleyen kod satırlarının eş zamanlı olarak çalışması istenebilir. Bunu sağlamak için, uzak nesne metodlarına asenkron olarak erişilir.
 
 Uzak nesne metodlarına asenkron olarak erişim, istemci uygulamalar için oldukça kullanışlıdır. Elbette bazı durumlarda senkron erişim tercih edilir. Öyleki, uzak nesneye ait metodun sonucu veya sonuçları, istemci uygulamada izleyen kod satırlarında kullanılıyor olabilir veya uzak nesne metodunun sonucu, istemci uygulama içindeki başka metodlara parametre olarak gönderiliyor olabilir vb... Elbette böyle bir durumda, uzak nesne üzerindeki metoda asenkron olarak erişmek çok mantıklı değildir. Nitekim, uzak nesne metodunun sonucunun veya sonuçlarının etkilediği başka işlemler söz konusudur.

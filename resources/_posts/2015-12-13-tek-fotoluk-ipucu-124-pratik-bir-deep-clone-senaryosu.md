@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu 124 - Pratik Bir Deep Clone Senaryosu"
 date: 2015-12-13 17:00:00 +0300
-description: "Nesnelerin çalışma zamanında klonlanması ile ilişkili olarak bahsi geçen iki kavram vardır. Shallow(Yüzeysel) ve Deep(Derinsel diyelim) klonlama. Shallow türüne göre, kopyalanan nesnenin alanları orjinal nesnedeki aynı referans adreslerini işaret edecektir(Yani nesne içerisindeki referans türleri kopyalanacak ama aynı bellek adreslerini gösterecektir) Deep Copy tekniğine göreyse kopyalanan nesne alanları orjinal nesne alanlarının yeni kopyalarını referans etmektdir. Bir başka deyişle Deep Copy tekniğini uyguladığımızda, orjinal nesne içeriği ile aynı veri yapısına sahip yeni bir referans(bellekte farklı bir adreste konuşlandırılmış şekilde) üretmiş oluruz."
 categories:
   - tek-fotoluk-ipucu
 tags:
@@ -12,9 +11,6 @@ tags:
   - reflection
   - generics
 ---
-# Tek Fotoluk İpucu 124 - Pratik Bir Deep Clone Senaryosu
-Merhaba Arkadaşlar,
-
 Nesnelerin çalışma zamanında klonlanması ile ilişkili olarak bahsi geçen iki kavram vardır. Shallow (Yüzeysel) ve Deep (Derinsel diyelim) klonlama. Shallow türüne göre, kopyalanan nesnenin alanları orjinal nesnedeki aynı referans adreslerini işaret edecektir (Yani nesne içerisindeki referans türleri kopyalanacak ama aynı bellek adreslerini gösterecektir) Deep Copy tekniğine göreyse kopyalanan nesne alanları orjinal nesne alanlarının yeni kopyalarını referans etmektdir. Bir başka deyişle Deep Copy tekniğini uyguladığımızda, orjinal nesne içeriği ile aynı veri yapısına sahip yeni bir referans (bellekte farklı bir adreste konuşlandırılmış şekilde) üretmiş oluruz.
 
 .Net içerisinde klonlama işlemi için çoğunlukla ICloneable arayüzünden (Interface) yararlanılmaktadır. Bu Interface aşağıdaki içeriğe sahiptir.

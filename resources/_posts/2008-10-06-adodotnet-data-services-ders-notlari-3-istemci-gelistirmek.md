@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ado.Net Data Services Ders Notları - 3 (İstemci Geliştirmek)"
 date: 2008-10-06 12:00:00 +0300
-description: "Hatırlayacağınız gibi daha önceki iki ders notumuzda Ado.Net Data Service örneklerinin nasıl geliştirilebileceğini incelemeye çalışmıştık. Hatırlatmak gerekirse, Ado.Net Data Service' ler ile verilerin Entity Data Model(EDM) veya Custom LINQ Provider bazlı katmanlar üzerinden REST modeline göre sunulması mümkün olmaktadır..."
 categories:
   - ado-net-data-services
 tags:
@@ -27,9 +26,6 @@ tags:
   - generics
   - visual-studio
 ---
-# Ado.Net Data Services Ders Notları - 3 (İstemci Geliştirmek)
-Değerli Okurlarım Merhabalar,
-
 Hatırlayacağınız gibi daha önceki iki ders notumuzda Ado.Net Data Service örneklerinin nasıl geliştirilebileceğini incelemeye çalışmıştık. Hatırlatmak gerekirse, Ado.Net Data Service'ler ile verilerin Entity Data Model (EDM) veya Custom LINQ Provider bazlı katmanlar üzerinden REST modeline göre sunulması mümkün olmaktadır. Bu noktada söz konusu servislerin WCF'in REST modelini kullanan ve Ado.Net üzerine odaklanmış bir açılımı olduğu görüşünde hem fikir olabiliriz. Ne varki Servis Yönelimli Mimari (Service Oriented Architecture-SOA) temelli çözümlerde yap-bozun en önemli iki parçasını servis ve istemciler oluşturmaktadır. Bir başka deyişle, servislerin tamamlayıcısı olan ve ilgili hizmetleri kullanacak istemci uygulamalar (Client Applications) olmalıdır. İşte bu yazımızda istemci uygulamaları göz önüne alacağız.
 
 Ado.Net Data Service ve istemci arasında geçen bu hikayede, anahtar öneme sahip bir kaç kelimede yer almaktadır. WCF, Ado.Net, REST vb. Bunlar az çok istemcilerin kimler olabileceğinide ortaya çıkartan terimlerdir. Aslında bir servis istemcisinin herhangibir uygulama olabilmesi istenir. Platform kriterleri gözetilmeksizin. Fakat geçmiş zamanlarda sadece belirli platformlara yönelik çözümler de ele alınmamış değildir ki halen daha popüler olarak pek çok alt yapıda kullanılmaktadır. Buna verilebilecek en güzel örnek belkide.Net Remoting çözümleridir..Net Remoting temelli uygulamalar sadece.Net tabanlı istemci ve sunucuları baz almaktadır. Bu bir kısıtlamadır ama performans ve verimlilik gibi avantajlarıda getirmektedir. Ancak zaman ilerledikçe farklı tipte platformların ortaklaşa haberleşebilmesi daha büyük önem arz etmeye başlamıştır. Buda Xml Web Service'lerin popüler olmasının nedenlerinden birisidir:) Ama uzun zamandır elimizde çok daha güçlü bir kozun olduğunu da belirtmek isterim; Windows Communication Foundation.

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: ".Net RIA Servisleri - DomainDataSource Kulanımı"
 date: 2009-05-14 12:30:00 +0300
-description: "Her ne kadar şu günlerde güzel ülkemizin Ege kıyılarında kısa bir dinlenme molası vermiş olsamda, internetin sahil kıyılarındaki cafe' lere kadar girmiş olması, herşeyi değiştiriyor. Cool Artık bir yaşam tarzı haline gelen Yazılımdan, onun gizemli dünyasından uzak durmak bu nedenle, şu sıralar aşağıdaki şekilde görülen yerde tatilde bile olsam çok zor."
 categories:
   - dotnet-ria-services
 tags:
@@ -20,12 +19,9 @@ tags:
   - http
   - visual-studio
 ---
-# .Net RIA Servisleri - DomainDataSource Kulanımı
-![blg17_4.jpg](/assets/images/2009/blg17_4.jpg)
-
-Merhaba Arkadaşlar,
-
 Her ne kadar şu günlerde güzel ülkemizin Ege kıyılarında kısa bir dinlenme molası vermiş olsamda, internetin sahil kıyılarındaki cafe'lere kadar girmiş olması, herşeyi değiştiriyor.
+
+![blg17_4.jpg](/assets/images/2009/blg17_4.jpg)
 
 ![Cool](/assets/images/2009/smiley-cool.gif)
 

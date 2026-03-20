@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Entity Framework Code-First Development Webiner Kayıdı"
 date: 2012-02-04 00:00:00 +0300
-description: "Hatırlayacağınız üzere Ocak ayı içerisinde Nedirtv?com bünyesinde düzenlenen Webinerler arasında ben de Entity Framework-Code First Development ile kendime bir yer edinmiştim. İlk gerçekleştirdiğimiz Webinerimizde ne yazıkki Internet bağlantısında yaşadığımız şanssız sorunlar nedeni ile sağlıklı olarak ilerleyememiştik. 31 Ocak tarihinde tekrarladığımız Webinerimizi ise şans esesi başarılı bir şekilde gerçekleştirdik ve Nedirtv?com bünyesinde yayına aldık."
 categories:
   - nedirtv
 tags:
@@ -11,10 +10,10 @@ tags:
   - http
   - webinar
 ---
-# Entity Framework Code-First Development Webiner Kayıdı
-[![efcodefirst](/assets/images/2012/efcodefirst_thumb.png)](/assets/images/2012/efcodefirst.png) Merhaba Arkadaşlar,
-
 Hatırlayacağınız üzere Ocak ayı içerisinde [Nedirtv?com](http://www.nedirtv.com) bünyesinde düzenlenen Webinerler arasında ben de Entity Framework-Code First Development ile kendime bir yer edinmiştim. İlk gerçekleştirdiğimiz Webinerimizde ne yazıkki Internet bağlantısında yaşadığımız şanssız sorunlar nedeni ile sağlıklı olarak ilerleyememiştik
+
+[![efcodefirst](/assets/images/2012/efcodefirst_thumb.png)](/assets/images/2012/efcodefirst.png)
+
 
 ![Sad smile](/assets/images/2012/wlEmoticon-sadsmile_11.png)
 

@@ -1,17 +1,13 @@
-﻿---
+---
 layout: post
 title: "Struct Kavramı ve Class ile Struct Arasındaki Farklar"
 date: 2003-12-04 11:00:00 +0300
-description: "Bugünkü makalemizde struct kavramını incelemeye çalışacağız. Hatırlayacağınız gibi, kendi tanımladığımız veri türlerinden birisi olan Numaralandırıcıları (Enumerators) görmüştük. Benzer şekilde diğer bir veri tipide struct (yapı) lardır.Yapılar, sınıflar ile büyük benzerleklik gösterirler. Sınıf gibi tanımlanırlar. Hatta sınıflar gibi, özellikler,metodlar,veriler, yapıcılar vb... içerebilirler. Buna karşın sınıflar ile yapılar arasında çok önemli farklılıklar vardır."
 categories:
   - csharp
 tags:
   - csharp
   - performance
 ---
-# Struct Kavramı ve Class ile Struct Arasındaki Farklar
-Değerli Okurlarım, Merhabalar.
-
 Bugünkü makalemizde struct kavramını incelemeye çalışacağız. Hatırlayacağınız gibi, kendi tanımladığımız veri türlerinden birisi olan Numaralandırıcıları (Enumerators) görmüştük. Benzer şekilde diğer bir veri tipide struct (yapı) lardır.Yapılar, sınıflar ile büyük benzerleklik gösterirler. Sınıf gibi tanımlanırlar. Hatta sınıflar gibi, özellikler,metodlar,veriler, yapıcılar vb... içerebilirler. Buna karşın sınıflar ile yapılar arasında çok önemli farklılıklar vardır.
 
 Herşeyden önce en önemli fark, yapıların değer türü olması ve sınıfların referans türü olmasıdır. Sınıflar referans türünden oldukları için, bellekte tutuluş biçimleri değer türlerine göre daha farklıdır. Referans tiplerinin sahip olduğu veriler belleğin öbek (heap) adı verilen tarafında tutulurken, referansın adı stack (yığın) da tutulur ve öbekteki verilerin bulunduğu adresi işaret eder. Ancak değer türleri belleğin stack denilen kısmında tutulurlar. Aşağıdaki şekil ile konuyu daha net canlandırabiliriz.

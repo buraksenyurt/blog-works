@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Microsoft.Net Services - Service Bus için REST Tabanlı Hello World"
 date: 2009-11-19 23:45:00 +0300
-description: "Bir önceki yazımızda Microsoft.Net Services alt yapsının önemli parçalarından birisi olan Service Bus hizmetini incelemeye çalışmış ve basit bir Hello World uygulama koleksiyonu geliştirmiştik. Bu yazımızda ise REST bazlı geliştirilen bir WCF servisine herhangibir tarayıcı yardımıyla HTTP Get metoduna göre, Service Bus üzerinden nasıl ulaşabileceğimizi incelemeye çalışacağız..."
 categories:
   - windows-azure
 tags:
@@ -15,9 +14,6 @@ tags:
   - http
   - generics
 ---
-# Microsoft.Net Services - Service Bus için REST Tabanlı Hello World
-Merhaba Arkadaşlar,
-
 Bir önceki [yazımızda](https://www.buraksenyurt.com/post/Microsoft-DotNet-Services-Service-Bus-Hello-World)Microsoft.Net Services alt yapsının önemli parçalarından birisi olan Service Bus hizmetini incelemeye çalışmış ve basit bir Hello World uygulama koleksiyonu geliştirmiştik. Bu yazımızda ise REST bazlı geliştirilen bir WCF servisine herhangibir tarayıcı yardımıyla HTTP Get metoduna göre, Service Bus üzerinden nasıl ulaşabileceğimizi incelemeye çalışacağız.
 
 REST bazlı modelde bilindiği üzere Web tabanlı olarak yayınlanan servislere HTTP protokolünün Get,Post,Put,Delete gibi metodları yardımıyla erişilebilmektedir. Bu URL bazlı erişim sayesinde herhangibir tarayıcı uygulamanın söz konusu servis operasyonlarını kullanabilmesi mümkündür. Üstelik istemciler arada bir proxy nesnesine ihtiyaç duymadan doğrudan HTTP taleplerini gönderebilir. Bunlara ek olarak birde servis operasyonlarının Syndication (RSS,Atom gibi) tabanlı içerik yayınlayabilme kabiliyetleri eklendiğinde Web programlama modeline uygun bir hizmet üretiminin gerçekleştirilebildiği gözlemlenecektir.

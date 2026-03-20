@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WPF - Temel Animasyon İşlemleri"
 date: 2007-09-26 12:00:00 +0300
-description: "Windows uygulamalarında kullanıcılara görsel bir şölen sunmak için animasyon işlemlerinden yararlanılır. Ne varki söz konusu animasyonları gerçekleştirebilmek amacıyla zorlu olan bazı süreçlerin aşılması gerekmektedir..."
 categories:
   - wpf
 tags:
@@ -16,9 +15,6 @@ tags:
   - delegates
   - generics
 ---
-# WPF - Temel Animasyon İşlemleri
-Değerli Okurlarım Merhabalar,
-
 Windows uygulamalarında kullanıcılara görsel bir şölen sunmak için animasyon işlemlerinden yararlanılır. Ne varki söz konusu animasyonları gerçekleştirebilmek amacıyla zorlu olan bazı süreçlerin aşılması gerekmektedir. Burada aslında, GDI+(Graphics Device Interface) alt yapısını (Infrastructure) daha etkili kullanmak adına daha çok ve daha karmaşık kodların yazılması, form üzerinde animasyonun zaman çizelgesine göre Timer bileşenleri ile Interval özelliği ve Tick olayı (event) gibi üyelerlerle uğraşılması ve hatta yeri geldiğinde ana iş parçasının (Main Thread) bozabileceği durumların önüne geçmek için özel tedbirler alınması söz konusudur. Hele birde işin içerisine üç boyutlu (3D) nesneler girdiğinde ve bunların üzerinde kullanıcı etkileşimli olayların tetiklenebilmesi de istendiğinde programıcının geliştirme süreci hem zorlaşacak hemde uzayacaktır.
 
 Tabiki günümüzde bu tip işlemleri gerçekleştirmek için ele alına pek çok kolaylaştırıcı yazılım vardır. Ancak bir olaya.Net Windows programcısı olarak bakıyor olacağız. Durumun zorluğunu daha net anlayabilmek adına, basit olarak form üzerinde yer alan bir Button kontrolünün yükseklik (Height) ve genişlik (Width) özelliklerinin sürekli olarak belirli oranlarda büyüyüp küçüldüğünü düşünelim. Bunu Windows programlamada nasıl yapmamız gerektiğini hayal edin. Her şeyden önce sürenin söz konusu olduğu bu senaryoda bir Timer bileşenin var olması ve Tick olayının uygun şekilde ele alınması (Handle) gerekmektedir. Oysaki WPF (Windows Presentation Foundation) mimarisinde bu ve benzeri animasyon işlemleri çok daha kolay, hızlı ve güçlü bir şekilde gerçekleştirilebilmektedir. İşte bu makalemizde söz konusu durumu incemeleye başlayacak ve WPF mimarisinde temel animasyon işlemlerine değineceğiz. WPF mimarisinin söz konusu animasyon geliştirme işlerini nasıl kolaylaştırdığını görmek adına aşağıda XAML (eXtensible Application Markup Language) çıktısı aşağıda görülen örnek ile hızlı bir şekilde başlamakta yarar olacağı kanısındayım.

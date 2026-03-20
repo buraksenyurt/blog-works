@@ -2,7 +2,6 @@
 layout: post
 title: "Client Application Services (İstemci Uygulama Servisleri)"
 date: 2008-12-16 12:00:00 +0300
-description: "Pek çok istemci uygulama için önem arz eden konular arasında doğrulama(Authentication), Rol Yönetimi (Roles Management), profile(Profile) göre kişiselleştirme yer almaktadır. Özellikle Web tabanlı uygulamalarda bu kıstaslar daha çok ön plana çıkmaktadır..."
 categories:
   - wcf
 tags:
@@ -24,7 +23,6 @@ tags:
   - visual-studio
   - asmx
 ---
-# Client Application Services (İstemci Uygulama Servisleri)
 Pek çok istemci uygulama için önem arz eden konular arasında doğrulama (Authentication), Rol Yönetimi (Roles Management), profile (Profile) göre kişiselleştirme yer almaktadır. Özellikle Web tabanlı uygulamalarda bu kıstaslar daha çok ön plana çıkmaktadır. Nitekim Client/Server mimarinin en güzel uyarlamalarından birisi olan web tabanlı geliştirmelerde, istemcilerin doğrulanması, rollerine göre ne yapabileceklerinin belirlenmesi, profillerine göre istekte bulundukları sayfaların kişiselleştirilmesi önemlidir. Bu noktada Asp.Net 2.0 sürümünden itibaren saymış olduğumuz bu kriterlerin çok daha kolay bir şekilde uygulanabilmesi sağlanmıştır.
 
 Hatırlanacağı üzere Asp.Net 2.0 Web Site Administration Tool veya kod tarafında Membership API içerisinde yer alan tipler yardımıyla, kullanıcı hesaplarının yönetilmesi, çeşitli rollere atanması görsel olarak kolayca yapılabilmektedir. Bununla birlikte Profile API içerisinde yer alan tipler yardımıylada, bir web sitesinin kullanıcı bazında özelleştirilebilmesi son derece kolaylaşmıştır. Ancak bu noktada söz konusu kriterlerin windows tabanlı istemciler (Windows Clients) açısındanda değerlendirilebilir olması oldukça kıymetlidir. İşte tam bu noktada söz konusu kriterlerin servis haline getirilmesi gerekliliği ortaya çıkmaktadır.

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Servisleri Monitor Edelim"
 date: 2012-06-01 01:12:00 +0300
-description: "İşin içerisine servisler girdiğinde, bunların anlık durumunlarını izlemek, ayakta olup olmadıklarını görmek veya zaman içerisindeki hareketliliklerine bakarak istikrarlı yapılarının nasıl olduğunu analiz etmek isteyebiliriz. Pek tabi bunun için birden çok 3ncü parti tool olduğunu biliyoruz. Söz gelimi IIS tarafında Windows Server AppFabric aracından yararlanılarak son derece etkili ve gelişmiş izleme ve kontrol mekanizmaları gerçekleştirilebilmektedir. Lakin bazı bankacılık sistemlerinde teknoloji adaptasyonu beklendiği kadar hızlı değildir. Windows Server AppFabric gibi bir tool’ un geçişi, yıllarca XP üzerinde çalışan bankanın Windows 7’ ye geçişindeki gecikme kadar sancılı ve sıkıntılı olabilir. Hatta bankanın bir sonraki teknolojik yenilenme sürecinde ortada Windows Server AppFabric’ ten tamamen farklı bir ürün de bulunabilir..."
 categories:
   - wcf
 tags:
@@ -21,10 +20,10 @@ tags:
   - testing
   - asmx
 ---
-# Servisleri Monitor Edelim
-[![504349_tft_screen_close-up_1](/assets/images/2012/504349_tft_screen_close-up_1_thumb.jpg)](/assets/images/2012/504349_tft_screen_close-up_1.jpg) Merhaba Arkadaşlar,
-
 Banka gibi, pek çok farklı sistemin bir arada yer aldığı ve çalıştığı, çoğu zaman heterojen yapıda olan büyük çaplı çözümlerde, servislerin sıklıkla kullanıldığını görürüz. Çok basit bir operasyonel uygulama bile, çalışacağı veri kümesini sadece veritabanı kaynağı üzerinden değil, sistem içerisinde yer alan başka kanallardan da almak durumunda kalabilir. Tam tersi durumda söz konusudur. Gerçekleşen bir toplu işlemin içerisinde, akışın çeşitli noktalarında yine servisler devreye girerek diğer sistemlerin haberdar edilmesi de söz konusudur. İşte böyle durumlarda, sistem içerisindeki parçalar arasındaki entegrasyonun sağlanabilmesi amacıyla, servis bazlı çözümlere sıklıkla başvurulur.
+
+[![504349_tft_screen_close-up_1](/assets/images/2012/504349_tft_screen_close-up_1_thumb.jpg)](/assets/images/2012/504349_tft_screen_close-up_1.jpg)
+
 
 İşin içerisine servisler girdiğinde, bunların anlık durumunlarını izlemek, ayakta olup olmadıklarını görmek veya zaman içerisindeki hareketliliklerine bakarak istikrarlı yapılarının nasıl olduğunu analiz etmek isteyebiliriz. Pek tabi bunun için birden çok 3ncü parti tool olduğunu biliyoruz. Söz gelimi IIS tarafında Windows Server AppFabric aracından yararlanılarak son derece etkili ve gelişmiş izleme ve kontrol mekanizmaları gerçekleştirilebilmektedir. Lakin bazı bankacılık sistemlerinde teknoloji adaptasyonu beklendiği kadar hızlı değildir. Windows Server AppFabric gibi bir tool’ un geçişi, yıllarca XP üzerinde çalışan bankanın Windows 7’ ye geçişindeki gecikme kadar sancılı ve sıkıntılı olabilir. Hatta bankanın bir sonraki teknolojik yenilenme sürecinde ortada Windows Server AppFabric’ ten tamamen farklı bir ürün de bulunabilir
 

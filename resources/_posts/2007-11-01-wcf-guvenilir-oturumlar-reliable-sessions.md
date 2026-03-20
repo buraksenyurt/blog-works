@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF - Güvenilir Oturumlar(Reliable Sessions)"
 date: 2007-11-01 12:00:00 +0300
-description: "WCF(Windows Communication Foundation) bilindiği üzere bir servis yönelimli mimari(Service Oriented Architecture) yaklaşımıdır. Buda basitçe, birbirleriyle haberleşen istemci(client) ve sunucu(server) uygulamaların var olması anlamına gelmektedir. Bu haberleşme çok doğal olarak bir ağ(network) ortamı üzerinde gerçekleşir. Ağ ortamı intranet gibi bir sistem olabileceği gibi kablolu veya kablosuz(wireless) bir internet ortamıda olabilir. Hal böyle olunca arada hareket etmekte olan mesajların güvenliği önem arz eden bir konudur. Mesaj güvenliğinden kasıt sadece şifreleme yada sertifikalı bir iletişimin sağlanması demek değildir. Bunların sağlanması için WCF mimarisi içerisindede çeşitli teknikler bulunmaktadır. Bu teknikler bir yana istemci ve sunucu(servis) arasında güvenilir bir oturumun(reliable session) var olması gereken durumlarda söz konusudur."
 categories:
   - wcf
 tags:
@@ -16,9 +15,6 @@ tags:
   - serialization
   - asmx
 ---
-# WCF - Güvenilir Oturumlar(Reliable Sessions)
-Değerli Okurlarım Merhabalar,
-
 WCF (Windows Communication Foundation) bilindiği üzere bir servis yönelimli mimari (Service Oriented Architecture) yaklaşımıdır. Buda basitçe, birbirleriyle haberleşen istemci (client) ve sunucu (server) uygulamaların var olması anlamına gelmektedir. Bu haberleşme çok doğal olarak bir ağ (network) ortamı üzerinde gerçekleşir. Ağ ortamı intranet gibi bir sistem olabileceği gibi kablolu veya kablosuz (wireless) bir internet ortamıda olabilir. Hal böyle olunca arada hareket etmekte olan mesajların güvenliği önem arz eden bir konudur. Mesaj güvenliğinden kasıt sadece şifreleme yada sertifikalı bir iletişimin sağlanması demek değildir. Bunların sağlanması için WCF mimarisi içerisindede çeşitli teknikler bulunmaktadır. Bu teknikler bir yana istemci ve sunucu (servis) arasında güvenilir bir oturumun (reliable session) var olması gereken durumlarda söz konusudur. Güvenilir bir oturum sağlanması için gereken sebepler arasında aşağıdaki maddeler göz önüne alınabilir;
 
 - Ağ ortamında istemci ve servis arasındaki bağlantının kopması olasıdır.

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu–72–LINQ to Excel ile Basit Sorgulama"
 date: 2012-11-22 22:10:00 +0300
-description: "Merhaba Arkadaşlar,"
 categories:
   - tek-fotoluk-ipucu
 tags:
@@ -10,9 +9,6 @@ tags:
   - linq
   - http
 ---
-# Tek Fotoluk İpucu–72–LINQ to Excel ile Basit Sorgulama
-Merhaba Arkadaşlar,
-
 Zaman zaman siz de benim gibi LINQ ile yazılmış çeşitli Provider'lara şöyle bir göz gezdirenlerden misiniz?
 
 ![Winking smile](/assets/images/2012/wlEmoticon-winkingsmile_119.png)

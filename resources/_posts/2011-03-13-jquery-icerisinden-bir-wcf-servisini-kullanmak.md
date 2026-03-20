@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "jQuery İçerisinden Bir WCF Servisini Kullanmak"
 date: 2011-03-13 21:27:00 +0300
-description: "Son yıllarda özellikle Web uygulamalarında jQuery’ nin oldukça fazla yaygınlaştığını görmekteyiz. Özellikle Asp.Net MVC(Model View Controller) disiplinin de…Ben her ne kadar Javascript vey jQuery tarafında uzman olmasam da sonuçta bu istemcilerin çağrıda bulunabileceği WCF(Windows Communication Foundation) servisleri olabileceğini biliyorum Sarcastic smile Dolayısıyla bu günkü yazımızda jQuery içerisinden JSON(JavaScript Object Notation) ve XML(eXtensible Markup Language) formatında veri sunan operasyonlara sahip bir WCF servisinin nasıl kullanılabileceğini incelemeye çalışıyor olacağız."
 categories:
   - wcf
   - wcf-4-0
@@ -20,8 +19,10 @@ tags:
   - java
   - visual-studio
 ---
-# jQuery İçerisinden Bir WCF Servisini Kullanmak
-[![blg234_Giris](/assets/images/2011/blg234_Giris_thumb.jpg)](/assets/images/2011/blg234_Giris.jpg) Kahramanımız Netspecter Malezyadaki müşterisi ile buluşmak üzere café’ de beklerken, detektiflik işine girdiğinden beri en çok sevdiği içecek olan Java Chip Chocolate’ ını keyifli bir şekilde yudumlamaktadır.
+Kahramanımız Netspecter Malezyadaki müşterisi ile buluşmak üzere café’ de beklerken, detektiflik işine girdiğinden beri en çok sevdiği içecek olan Java Chip Chocolate’ ını keyifli bir şekilde yudumlamaktadır.
+
+[![blg234_Giris](/assets/images/2011/blg234_Giris_thumb.jpg)](/assets/images/2011/blg234_Giris.jpg)
+
 
 Güneş batmış ve hava çoktan kararmıştır. Müşterileri çoğunlukla buluşmalara geç kalır. Aslında çevrede oturanları gizlice gözlemlediğinde onlardan birisinin kalkıp yanına geleceğini ve kendisini müşterisi olarak tanıtacağını gayet iyi bilmektedir. Bir açıdan müşterilerinin aslında kendinden önce geldiğini ama tedrigin oldukları için yaklaşmakta zorlandıklarını bilmektedir. Daha önce bu çok sık başına gelmiştir.
 
@@ -30,8 +31,6 @@ Masadaki metal peçetelikten arkasına doğru baktığında çok fazla dikkat ç
 “Bay Netspecter…Ben müşteriniz jQuery” der
 
 ![Smile with tongue out](/assets/images/2011/wlEmoticon-smilewithtongueout.png)
-
-Merhaba Arkadaşlar,
 
 Son yıllarda özellikle Web uygulamalarında jQuery’ nin oldukça fazla yaygınlaştığını görmekteyiz. Özellikle Asp.Net MVC (Model View Controller) disiplinin de…Ben her ne kadar Javascript vey jQuery tarafında uzman olmasam da sonuçta bu istemcilerin çağrıda bulunabileceği WCF (Windows Communication Foundation) servisleri olabileceğini biliyorum
 

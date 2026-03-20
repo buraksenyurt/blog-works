@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net 4.0 - Heryerde Cache [Beta 2]"
 date: 2009-11-18 04:20:00 +0300
-description: "Aslında listenin başında System.Web.Caching.dll assembly' ının Web dışındaki uygulamalara referans edilerek kullanılmasının yer aldığını söyleyebiliriz. Ne varki bir Windows uygulamasına Web alanına ait bir Assembly' ın referans edilmeside son derece gariptir..."
 categories:
   - aspnet-4-0-beta-2
 tags:
@@ -18,12 +17,9 @@ tags:
   - visual-studio
   - dependency-management
 ---
-# Asp.Net 4.0 - Heryerde Cache [Beta 2]
-![blg103_Giris.jpg](/assets/images/2009/blg103_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Kronometrelerinizi hazır edin! Bu yazımızda Absolute ve Sliding Expiration modelinde ön bellekleme işlemlerini Windows tabanlı bir uygulama üzerinde gerçekleştiriyor olacağız. Durun bir dakika...Windows mu? Evet evet yanlış duymadınız Windows. Aslında başlıktaki konu ile tamamen tezat bir durum. Gerçekten de öyle mi acaba? Gelin şu meseleyi açıklığa kavuşturalım.
+
+![blg103_Giris.jpg](/assets/images/2009/blg103_Giris.jpg)
 
 ![Smile](/assets/images/2009/smiley-smile.gif)
 

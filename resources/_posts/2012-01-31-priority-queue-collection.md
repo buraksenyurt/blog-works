@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Priority Queue Collection"
 date: 2012-01-31 15:01:00 +0300
-description: "Temel olarak bu tip bir koleksiyon Queue(FIFO - First In First Out ilkesine göre çalışmaktadır) ve Stack(LIFO - Last in First Out ilkesine göre çalışmaktadır) tipinden olanlarına benzer. Bu tip koleksiyonlar(generic karşılıkları da dahil olmak üzere), bildiğiniz gibi tek boyutludur."
 categories:
   - csharp
 tags:
@@ -13,12 +12,9 @@ tags:
   - performance
   - generics
 ---
-# Priority Queue Collection
-![artcl_7_1.jpg](/assets/images/2012/artcl_7_1.jpg)
-
-Merhaba Arkadaşlar,
-
 1996 yılıydı. Efes Pilsen (bu günkü adıyla Anadolu Efes) spor klübü altın dönemlerini yaşıyordu. Tamer Oyguç, Ufuk Sarıca, Peter Naumoski, Hidayet Türkoğlu, Mirsad Türkcan ve diğerleri. O yıl kulüp Avrupa Koraç kupasında finale yükselmiş ve İtalyan temsilcisi Stefanel Milano'nun rakibi olmuştu. İlk maç İstanbul Abdi İpekçi spor salonundaydı. Üniversitedeydim ve arkadaşlarımla günün erken saatlerinde stad kuyruğuna girmiştim. Biletlerimiz vardı ancak bulunduğumuz tribünde herkes karışık oturacağı için iyi bir yer bulmak adına sabahın köründe ve soğuk bir havada kendimizi orada buluvermiştik. Ne varki sabahın erken saatlerinde sıranın başlarında iken bu zamanla değişmeye başlamıştı. Çünkü alt yola bir basketçi geliyor, hayranları ona bakmak için bulunduğumuz kuyruğa hücum ediyor ve baktıkları yerden tekrar geriye çıkmıyorlarda. 8nci sıradan 148nci sıraya kadar gelmişimdir sanıyorum ki. Bu noktada çok doğal olarak sıranın en başındaki kişi de sıksık değişiyordu.
+
+![artcl_7_1.jpg](/assets/images/2012/artcl_7_1.jpg)
 
 ![Sealed](/assets/images/2012/smiley-sealed.gif)
 
@@ -54,7 +50,7 @@ namespace PQueue
         private IComparer<P> comparer; // Max-Heap veya Min-Heap' e göre bir uyarlamaya hizmet verebilmek için kullanılacak arayüz referansı
         private const string ioeMessage = "Koleksiyonda hiç eleman yok";
 
-        #region Constructors 
+        #region Constructors
 
         // P ile gelen tipin varsayılan karşılaştırma kriterine göre bir yol izlenir
         public PriorityQueue()

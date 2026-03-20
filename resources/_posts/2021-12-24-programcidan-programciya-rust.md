@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Programcıdan Programcıya Rust"
 date: 2021-12-24 10:00:00 +0300
-description: "İki yıl kadar önce bir merakla başladığım ama sonrasında takıntı haline gelen bir uğraş edindim; Rust programlama dili. Profesyonel iş yaşantımın neredeyse tamamında .Net platformu üstünde geliştirme yaptım ve halen daha maaşımı ondan kazanıyorum. Bazı zamanlar Python, Go, Ruby gibi dillere de baktım ama hep hobi olarak kaldılar. Rust içinse aynı şeyi söylemem zor. Onunla ilgili resmi dokümantasyonu takip edip birkaç satır kod yazmaya başladım ve derken sayısız derleme zamanı hatası ile karşılaştım. Bunların neredeyse büyük çoğunluğu borrowing, ownership, lifetimes gibi konularla ilintiliydi ve her biri Rust’ın temelde bilinmesi gereken demirbaşları."
 categories:
   - rust
 tags:
@@ -20,10 +19,9 @@ tags:
   - ownership
   - borrow-checker
 ---
-# Programcıdan Programcıya Rust
-![cover.png](/assets/images/2021/cover.png)
-
 İki yıl kadar önce bir merakla başladığım ama sonrasında takıntı haline gelen bir uğraş edindim; Rust programlama dili. Profesyonel iş yaşantımın neredeyse tamamında.Net platformu üstünde geliştirme yaptım ve halen daha maaşımı ondan kazanıyorum. Bazı zamanlar Python, Go, Ruby gibi dillere de baktım ama hep hobi olarak kaldılar. Rust içinse aynı şeyi söylemem zor. Onunla ilgili resmi dokümantasyonu takip edip birkaç satır kod yazmaya başladım ve derken sayısız derleme zamanı hatası ile karşılaştım. Bunların neredeyse büyük çoğunluğu borrowing, ownership, lifetimes gibi konularla ilintiliydi ve her biri Rust’ın temelde bilinmesi gereken demirbaşları.
+
+![cover.png](/assets/images/2021/cover.png)
 
 Bu zorlanma bende daha fazla merak uyandırdı. Derken her zaman olduğu gibi en doğru kaynağın kitaplar olduğuna karar verip güzelim paracıklarımı Amazon’daki kitaplara yatırmaya başladım. No Starch Press’ten [The Rust Programming Language](https://www.amazon.com.tr/dp/1718500440/ref=cm_sw_em_r_mt_dp_5D4B09DFF32M6D1X8P98), Packt’tan [Rust Programming Cookbook](https://www.amazon.com.tr/dp/1789530660/ref=cm_sw_em_r_mt_dp_YGFG0G92KY1D0EM5N39Y), [Hands-On Data Structures and Algorithms with Rust](https://www.amazon.com.tr/dp/178899552X/ref=cm_sw_em_r_mt_dp_AWQTXM5ZCAGPCBVRR3KV?_encoding=UTF8&psc=1), [Creative Projects for Rust Programmers](https://www.amazon.com.tr/dp/1789346223/ref=cm_sw_em_r_mt_dp_2QBF516ZBVN45G933JD8) ve son olarak da [Rust Web Programming](https://www.amazon.com.tr/dp/1800560818/ref=cm_sw_em_r_mt_dp_FQBZVKFFB11WZ06WM3RY). Hepsine zaman zaman bakıp bir şeyler çalıştım ama tabii işten güçten çok da fazla değil. Gerçi acelem yok. Hayatımın bundan sonraki dönemi için hedefe aldığım bir programlama dili olduğundan ona yıllarca vakit ayırabilirim.
 

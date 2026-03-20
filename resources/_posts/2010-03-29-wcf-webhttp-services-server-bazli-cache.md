@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF WebHttp Services - Server Bazlı Cache"
 date: 2010-03-29 15:05:00 +0300
-description: "Bir süredir WCF Eco System' in parçaları üzerinde yazmakta olduğum bir seri bulunmaktaydı. Bunu devam ettirmek ile Cuma gecesini güzelce tamamlayabileceğimi düşündüm. İşte bu günkü konumuz...WCF WebHttp Service' lerinde ön bellekleme(Output Caching)"
 categories:
   - wcf-eco-system
   - wcf-webhttp-services
@@ -22,12 +21,9 @@ tags:
   - visual-studio
   - rc
 ---
-# WCF WebHttp Services - Server Bazlı Cache
-![blg143_Giris.jpg](/assets/images/2010/blg143_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Şirketimi çok seviyorum. Nazar değmesin ama araştırma yapmam, yeni bir şeyler öğrenmem ve bunları ekip arkadaşlarımla paylaşmam için beni özellikle teşvik eden bir şirkette bulunmaktayım. Çalıştığım şirketin en güzel özelliklerinden biriside, Cuma günleri yapılan minik ikramları.
+
+![blg143_Giris.jpg](/assets/images/2010/blg143_Giris.jpg)
 
 ![Wink](/assets/images/2010/smiley-wink.gif)
 

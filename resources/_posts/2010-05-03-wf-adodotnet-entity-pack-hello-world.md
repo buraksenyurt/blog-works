@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WF Ado.Net Entity Pack - Hello World"
 date: 2010-05-03 01:00:00 +0300
-description: "Ne var ki ilerleyen zamanlarda çıkan PreBeta, Beta 1, Beta 2, RC ve nihayet RTM sürümlerinde yer alan Activity Component setinde bu tip bileşenlerin yer almadığına da şahit olduk. Hatta WF 4.0 öncesinde aşina olduğumuz State Machine tipinden şablonlarında kaldırıldığını gördük. Geçtiğimiz günlerde ise Codeplex üzerinden iki WF 4.0 Activity Pack yayınlandı. Bunlardan birisi WF Ado.Net Activity Pack CTP 1 iken diğer ise WF State Machine Activity Pack 1 isimli paketti."
 categories:
   - wf-4-0
 tags:
@@ -18,12 +17,9 @@ tags:
   - visual-studio
   - rc
 ---
-# WF Ado.Net Entity Pack - Hello World
-![blg191_Giris.gif](/assets/images/2010/blg191_Giris.gif)
-
-Merhaba Arkadaşlar,
-
 2008 yılının son çeyreğinde Microsoft tarafından düzenlenen Yazılım Geliştiriciler Zirvesinde, WCF & WF 4.0 konulu bir sunumum olmuştu. Derinlere Dalıyoruz mesajını içeren etkinliğin sunum dosyalarının arka plan resminde, dipteki bilgisayara ulaşmaya çalışan bir balık adam motifi yer almaktaydı. Sevgili Mehmet Emre'nin beni davet ettiği bu oturuma hazırlanırken, Microsoft PDC 2008' de dağıtılan VHD'ler üzerinde çalışmıştım. O zamanlarda WF Designer üzerinde dikkatimi çeken noktaların başında, WF aktivitelerindeki çeşitlilik yer almaktaydı. Özellike DbQuery, DbUpdate isimli SQL odaklı aktivite bileşenleri dikkatimi çekmişti.
+
+![blg191_Giris.gif](/assets/images/2010/blg191_Giris.gif)
 
 Ne var ki ilerleyen zamanlarda çıkan PreBeta, Beta 1, Beta 2, RC ve nihayet RTM sürümlerinde yer alan Activity Component setinde bu tip bileşenlerin yer almadığına da şahit olduk. Hatta WF 4.0 öncesinde aşina olduğumuz State Machine tipinden şablonlarında kaldırıldığını gördük. Geçtiğimiz günlerde ise Codeplex üzerinden iki WF 4.0 Activity Pack yayınlandı. Bunlardan birisi [WF Ado.Net Activity Pack CTP 1](http://wf.codeplex.com/releases/view/43585) iken diğer ise [WF State Machine Activity Pack 1](http://wf.codeplex.com/releases/view/43586) isimli paketti.
 

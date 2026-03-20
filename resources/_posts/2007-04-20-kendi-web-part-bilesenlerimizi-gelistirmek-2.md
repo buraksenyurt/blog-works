@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Kendi Web Part Bilesenlerimizi Gelistirmek - 2"
 date: 2007-04-20 12:00:00 +0300
-description: "Kendi web partlarımızı nasıl geliştirebileceiğimizi ve bu sayede kişiselleştirilebilir web sunucu kontrollerini nasıl yazabileceğimizi bu konu ile ilgili bir önceki makalemizde incelemeye çalışmıştık. Bu makalemizde ise kendi Web Part bileşenlerimize özel fiillerin (Web Part Verbs) nasıl eklenebileceğini ve söz konusu fillerin ne şekilde ele alınabileceğini incelemeye çalışacağız."
 categories:
   - aspnet-2-0
 tags:
@@ -12,9 +11,6 @@ tags:
   - threading
   - delegates
 ---
-# Kendi Web Part Bilesenlerimizi Gelistirmek - 2
-Değerli Okurlarım Merhabalar,
-
 Kendi web partlarımızı nasıl geliştirebileceiğimizi ve bu sayede kişiselleştirilebilir web sunucu kontrollerini nasıl yazabileceğimizi bu konu ile ilgili bir önceki makalemizde incelemeye çalışmıştık. Bu makalemizde ise kendi Web Part bileşenlerimize özel fiillerin (Web Part Verbs) nasıl eklenebileceğini ve söz konusu fillerin ne şekilde ele alınabileceğini incelemeye çalışacağız. Web Part kontrollerini herhangibir WebPartZone altında kullandığımızda standart olarak bazı fiilere (Verbs) sahip oluruz. Tahmin edeceğiniz gibi bu değerler aslında WebPartManager tarafından ele alınmakta ve sayfa üzerinde uygun olan web part alanlarının (Web Part Zone) gösterilmesini sağlamaktadır.
 
 Söz gelimi kullanıcı Edit isimli fiili (Verb) seçtiğinde WebPartManager bileşeni, EditorZone kontrolünü aktif hale getirmekte ve söz konusu Web Part kontrolünün değiştirilebilen yada düzenlenebilen özelliklerinin (Properties) bulunduğu bir bileşeni (örneğin PropertyGridEditorPart kontrolü) göstermektedir. Bu açıdan bakıldığında fiillerin (Verbs) varsayılan olarak WebPartManager bileşenine ait Display Mode değerleri ile yakın bir ilişkide olduklarını söyleyebiliriz. Elbette farklı şekilde davranabilen fiillerde (Verbs) vardır. Örneğin Minimize fiili, bulunduğu Web Part'ın içerisinde yer aldığı WebPartZone alanının küçülmesini sağlarken, Restore fiili tekrardan eski haline getirilmesine olanak vermektedir.

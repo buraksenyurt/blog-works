@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ado.Net Data Services 1.5 CTP2 - Data Binding Bölüm 2"
 date: 2009-11-15 23:09:00 +0300
-description: "Hatırlayacağınız gibi bir önceki yazımızda, Ado.Net Data Service için istemci taraflı veri bağlama işlemlerinde DataServiceCollection<T> kolekisyonunu değerlendirmeye çalışmış ve istemci tarafında bu konuyu ele almak için basit bir WPF uygulaması geliştirmiştik. Bir önceki örneğimiz aslında tek yönlü veri bağlama işlemine örnek olmasında rağmen, iki yönlü modeli de desteklemektedir."
 categories:
   - ado-net-data-services
 tags:
@@ -20,12 +19,9 @@ tags:
   - http
   - visual-studio
 ---
-# Ado.Net Data Services 1.5 CTP2 - Data Binding Bölüm 2
-![blg83_Giris.jpg](/assets/images/2009/blg83_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Orta uzunlukta bir yazı için hazır mısınız? Analizi dikkat gerektiren bir Ado.Net Data Service örneği geliştiriyor olacağız. Genellikle bu tarz yazılara ait kodları geliştirirken sıkılmamak ve zihnimi açık tutmak için ya kahve içerim yada mutluluktan havalara uçarmış gibi yazabilmek ve kan şekerimi üst seviyede tutabilmek için bazen değişik şekerlemelerden yerim. Aynen yandaki resimde olduğu gibi.
+
+![blg83_Giris.jpg](/assets/images/2009/blg83_Giris.jpg)
 
 ![Cool](/assets/images/2009/smiley-cool.gif)
 

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Connection (Bağlantı) Kavramı ve OleDbConnection Sınıfı"
 date: 2004-02-13 06:00:00 +0300
-description: "Bu makalemizde, ADO.NET mimarisinde temel yapı taşı olan Connection (Bağlantı) kavramına kısaca değinecek ve OleDbConnection sınıfını incelemeye çalışacağız. ADO.NET mimarisinde, pek çok sınıfın veri kaynakları ile olan iletişiminde Connection (Bağlantı) nesnelerini kullanırız. Örneğin, bir veri kayağındaki tablolara ait verileri, DataSet sınıfından bir nesne örneğine taşımak istediğimizi düşünelim. Bu dataSet nesnesini dolduracak olan DataAdapter sınıfına, sahip olduğu sql sorgusunun veya komutunun işleyeceği bir hattı belirtmemiz gerekir. İşte burada devreye Connection (Bağlantı) nesnelerimiz girer. Yada bir Command sınıfı nesnesi yardımıyla veritabanı üzerindeki bir saklı yordamı (stored procedure) çalıştırmak istediğimizi düşünelim. Bu durumda komutun çalıştırılabileceği bir hattı veri kaynağımız ile Command nesnesi arasında sağlamamız gerekir. İşte Connection (Bağlantı) nesnemizi kullanmamız için bir sebep daha."
 categories:
   - ado-net
 tags:
@@ -17,9 +16,6 @@ tags:
   - visual-studio
   - dataset
 ---
-# Connection (Bağlantı) Kavramı ve OleDbConnection Sınıfı
-Değerli Okurlarım, Merhabalar.
-
 Bu makalemizde, ADO.NET mimarisinde temel yapı taşı olan Connection (Bağlantı) kavramına kısaca değinecek ve OleDbConnection sınıfını incelemeye çalışacağız. ADO.NET mimarisinde, pek çok sınıfın veri kaynakları ile olan iletişiminde Connection (Bağlantı) nesnelerini kullanırız. Örneğin, bir veri kayağındaki tablolara ait verileri, DataSet sınıfından bir nesne örneğine taşımak istediğimizi düşünelim. Bu dataSet nesnesini dolduracak olan DataAdapter sınıfına, sahip olduğu sql sorgusunun veya komutunun işleyeceği bir hattı belirtmemiz gerekir. İşte burada devreye Connection (Bağlantı) nesnelerimiz girer. Yada bir Command sınıfı nesnesi yardımıyla veritabanı üzerindeki bir saklı yordamı (stored procedure) çalıştırmak istediğimizi düşünelim. Bu durumda komutun çalıştırılabileceği bir hattı veri kaynağımız ile Command nesnesi arasında sağlamamız gerekir. İşte Connection (Bağlantı) nesnemizi kullanmamız için bir sebep daha.
 
 Verdiğimiz bu basit örneklerdende anlaşıldığı gibi, Connection (bağlantı) sınıfları, veri kaynağına bir hat çekerek, ADO.NET nesnelerinin bu hat yardımıyla işlemlerini gerçekleştirmelerine imkan sağlarlar. Ancak sahip olunan veri kaynağının türüne göre, ADO.NET içerisine değişik Connection sınıfları eklenmiştir. DotNet'in ilk sürümünde OleDbConnection ve SqlConnection nesneleri ile bu hatlar temin edilirken,.NET Framework 1.1 sürümü ile birlikte, OdbcConnection ve OracleConnection sınıflarıda ADO.NET kütüphanelerine dahil edilerek Odbc ve Oracle veri kaynaklarına bağlantılar sağlanması imkanı kazandırılmıştır.

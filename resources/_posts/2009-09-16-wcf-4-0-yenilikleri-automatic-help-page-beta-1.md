@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF 4.0 Yenilikleri - Automatic Help Page [Beta 1]"
 date: 2009-09-16 16:02:00 +0300
-description: "WCF 4.0 tarafında beklenen gelmesi yüksek olan yenilikleri sizlere aktarmaya çalıştığım yazılarımızın yavaş yavaş sonlarına gelmekteyiz. Elbette incelemeyemediğimiz bir çok detay var. Bunları ilerleyen dönemlerde ürün son halini alırken tartışma ve araştırma fırsatımız olacak..."
 categories:
   - wcf-4-0-beta-1
 tags:
@@ -17,12 +16,9 @@ tags:
   - caching
   - visual-studio
 ---
-# WCF 4.0 Yenilikleri - Automatic Help Page [Beta 1]
-![blg76_Giris.jpg](/assets/images/2009/blg76_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 WCF 4.0 tarafında beklenen gelmesi yüksek olan yenilikleri sizlere aktarmaya çalıştığım yazılarımızın yavaş yavaş sonlarına gelmekteyiz. Elbette incelemeyemediğimiz bir çok detay var. Bunları ilerleyen dönemlerde ürün son halini alırken tartışma ve araştırma fırsatımız olacak. Bu yazımızda WCF 4.0 tarafına entegre olarak gelen REST geliştirme modeline yönelik yeteneklerden bahsedeceğiz.
+
+![blg76_Giris.jpg](/assets/images/2009/blg76_Giris.jpg)
 
 Aslında bu yeniliklerin çoğunu WCF Rest Starter Kit ile birlikte,.Net Framework 3.5 platformu üzerinde kullanabiliyoruz. Ne varki, ek bir pakete ihtiyaç duyulmadan kullanılabilen iki özellik, WCF 4.0 içerisine entegre edilmiş durumda. Bunlardan birisi otomatik yardım sayfaları (Automatic Help Page). WCF 4.0 içerisindeki WebServiceHost fabrikasını kullandığımızda otomatik olarak her RESTful servis için gelen ve varsayılan olarak açık olan yardım sayfaları, istenirse konfigurasyon dosyasındaki bir nitelik yardımıyla kapatılabilirde.
 

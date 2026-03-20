@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "CORS(Cross-Origin Resource Sharing)"
 date: 2017-12-29 21:01:00 +0300
-description: "Bu yazımızda .Net Core WebAPI servislerine CORS(Cross-Orijin Resource Sharing) özelliklerinin nasıl eklenebildiğini inceliyoruz. Konuyu ele alırken CORS'un ne olduğuna da değinir ve örnekler ile açıklamaya çalışıyoruz."
 categories:
   - dotnet-core
 tags:
@@ -16,12 +15,9 @@ tags:
   - http
   - github
 ---
-# CORS(Cross-Origin Resource Sharing)
-![cors_6.gif](/assets/images/2017/cors_6.gif)
-
-Merhaba Arkadaşlar,
-
 Geçtiğimiz günlerde Asp.Net Core tarafında SignalR kullanımını incelemeye başladım. O sırada incelediğim kaynakların birisinde UseCors isimli bir fonksiyonla karşılaştım. Uzun zamandır Cross-Site Scripting Error almamış birisi olarak.Net Core tarafında Cross-Origin Resource Sharing nasıl yapılır öğrenmem gerektiğini fark ettim. Sonunda SignalR ile ilgili araştırmalarıma bir kahve molası verip konuyu inceleyeyim dedim. Aslında W3C'un [şu adresinde](https://www.w3.org/TR/cors/) ve IETF (havalı isimleri ile Internet Engineering Task Force) kulübünün [bu adresinde](https://tools.ietf.org/html/rfc6454) konu ile ilgili standartlara ait oldukça detaylı bilgiler mevcut.
+
+![cors_6.gif](/assets/images/2017/cors_6.gif)
 
 Konuyu kısaca özetlemek için aşağıdaki grafiğin yardımcı olabileceğini düşünüyorum. Senaryoda sol taraftaki adrese erişmeye çalışan farklı kaynaklar yer alıyor. İlk senaryoda http://fabrikam.com/api/products adresine http://fabrikam.com/index.html adresinden gidilmekte. Her iki adresin de ortak özelliği aynı orjin (kök, kaynak diyelim) üzerinden sunulmaları.
 

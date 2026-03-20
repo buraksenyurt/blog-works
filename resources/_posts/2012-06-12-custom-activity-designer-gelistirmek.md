@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Custom Activity Designer Geliştirmek"
 date: 2012-06-12 07:00:00 +0300
-description: "Geçtiğimiz günlerde Workflow Foundation tarafında bir Component Set' in geliştirilmesi üzerine açılan POC(Proof of Concept) projesinde görev aldım. Bu anlamda yoğun bir şekilde Custom Activity Designer konusu ile yakın ilişki içerisinde yer almam gerekti. Workflow Foundation' ın bileşen seti her ne kadar geniş bir yelpazeye sahip olsa da, özellikle uygulama geliştiricilerin hızlı bir şekilde Workflow(Flow Chart, Sequential vb) tasarlaması gerektiği durumlarda, işleri kolaylaştıracak Component setlerinin üretilmesi son derece önemlidir. Ne varki XAML tabanlı çalışan Activity Designer örnekleri, Visual Studio IDE' si ile pek kardeşçe yaşamamaktadır(Bu durumun Visual Studio 2012' de devam etmediğini umuyorum). Dikkat edilmesi gereken pek çok nokta ve ip ucu bulunmakta. Dilerseniz ne demek istediğimi örnek bir senaryo üzerinden görmeye çalışalım."
 categories:
   - wf
   - wf-4-0
@@ -19,12 +18,9 @@ tags:
   - visual-studio
   - datatable
 ---
-# Custom Activity Designer Geliştirmek
-![Challenge.jpg](/assets/images/2012/Challenge.jpg)
-
-Merhaba Arkadaşlar,
-
 İnsanın kendisini en çok geliştireceği yer gerçek çalışma sahaları/ortamlarıdır. Ortaya konan ihtiyaçlar ne zaman ki sizin kullanmakta olduğunuz araçların (Tools) sınırlarını zorlamaya başlar, bu noktadan itibaren içerisine gireceğiniz her çeşit mücadele size inanılmaz derece tecrübe ve bilgi katacaktır. Tabi bu know-how bilgisini saklayabilir, kendiniz için dökümante edebilir veya kuralları çerçevesinde paylaşabilirsiniz
+
+![Challenge.jpg](/assets/images/2012/Challenge.jpg)
 
 ![Wink](/assets/images/2012/smiley-wink.gif)
 

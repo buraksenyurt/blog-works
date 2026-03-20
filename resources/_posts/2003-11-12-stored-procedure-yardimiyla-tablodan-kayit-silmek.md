@@ -2,7 +2,6 @@
 layout: post
 title: "Stored Procedure Yardımıyla Tablodan Kayıt Silmek"
 date: 2003-11-12 12:00:00 +0300
-description: "Bugün ki makalemde Stored Procedure yardımıyla bir veritabanı tablosundan, bizim seçtiğimiz herhangi bir satırı nasıl sileceğimizi sizlere anlatmaya çalışacağım.Her zaman olduğu gibi örneğimizi geliştirmek için, SQL Server üzerinde yer alan Northwind veritabanını kullanmak istiyorum. SQL Server üzerinde çalışan örnekler geliştirmek istememin en büyük nedeni, bir veritabanı yönetim sistemi (Database Management System;DBMS) üzerinde .NET ile projeler geliştirmenin gerçekçiliğidir. Güncel yaşantımızda ağ üzerinde çalışan uygulamalar çoğunlukla , iyi bir veritabanı yönetim sistemi üzerinde yazılmış programlar ile gerçekleştirilmektedir."
 categories:
   - ado-net
 tags:
@@ -15,7 +14,6 @@ tags:
   - visual-studio
   - datatable
 ---
-# Stored Procedure Yardımıyla Tablodan Kayıt Silmek
 Bugün ki makalemde Stored Procedure yardımıyla bir veritabanı tablosundan, bizim seçtiğimiz herhangi bir satırı nasıl sileceğimizi sizlere anlatmaya çalışacağım.Her zaman olduğu gibi örneğimizi geliştirmek için, SQL Server üzerinde yer alan Northwind veritabanını kullanmak istiyorum. SQL Server üzerinde çalışan örnekler geliştirmek istememin en büyük nedeni, bir veritabanı yönetim sistemi (Database Management System;DBMS) üzerinde.NET ile projeler geliştirmenin gerçekçiliğidir. Güncel yaşantımızda ağ üzerinde çalışan uygulamalar çoğunlukla, iyi bir veritabanı yönetim sistemi üzerinde yazılmış programlar ile gerçekleştirilmektedir.
 
 Çok katlı mimari olarak hepimizin kulağına bir şekilde gelmiş olan bu sistemde, aslında yazmış olduğumuz programlar, birer arayüz niteliği taşımakta olup kullanıcı ile veritabanı arasındaki iletişimi görsel anlamda kolaylaştıran birer araç haline gelmiştir. İşte bu sunum katmanı (presantation layer) denen yerdir. Burada veri tablolarını ve veritabanlarını üzerinde barındıran yer olarak veritabanı katmanı (Database Layer) büyük önem kazanmaktadır.

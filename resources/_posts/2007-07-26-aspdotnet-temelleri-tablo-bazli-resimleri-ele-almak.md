@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net Temelleri : Tablo Bazlı Resimleri Ele Almak"
 date: 2007-07-26 12:00:00 +0300
-description: "Bir Windows uygulaması göz önüne alındığında, resimleri gösterebilecek bir PictureBox kontrolünün çeşitli özellikleriden yararlanarak herhangibir tabloda tutulan binary içeriği kullanmak ve bu içeriğin işaret ettiği resmi göstermek son derece kolaydır..."
 categories:
   - aspnet
 tags:
@@ -14,9 +13,6 @@ tags:
   - caching
   - dependency-management
 ---
-# Asp.Net Temelleri : Tablo Bazlı Resimleri Ele Almak
-Değerli Okurlarım Merhabalar,
-
 Yazın bu sıcak günlerinde daha hafif konularla web maceralarımıza devam ediyoruz. Geçtiğimiz makalemizde Asp.Net uygulamalarında ektin hata yönetiminin nasıl yapılabileceğini incelemeye çalışmıştık. Bu kez veritabanı tablolarında çoğunlukla binary alanlarda saklanan resimlerin, Asp.Net uygulamalarında nasıl ele alınabileceğini örnek projeler üzerinden incelemeye çalışacağız.
 
 Bir Windows uygulaması göz önüne alındığında, resimleri gösterebilecek bir PictureBox kontrolünün çeşitli özellikleriden yararlanarak herhangibir tabloda tutulan binary içeriği kullanmak ve bu içeriğin işaret ettiği resmi göstermek son derece kolaydır. Ne varki Asp.Net uygulamalarında her zaman için, render edilerek istemciye gönderilen bir sayfa içeriği mevcuttur. Bu içeriğin tipi (Content Type) daha farklıdır. Dolayısıyla binary formatta tutulan resimleri ele almak için farklı bir yaklaşım gerekmektedir.

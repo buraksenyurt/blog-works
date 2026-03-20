@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: ".Net RIA Servisleri - Özel Doğrulama(Custom Validation)"
 date: 2009-05-31 04:03:00 +0300
-description: "ir önceki blog yazımızda, .Net RIA Servislerin kullanıldığı Silverlight uygulamalarında doğrulama(Validation) işlemlerinin nasıl yapılabileceğini incelemeye çalışmıştık. Bu yazımızda ise, Range, Required, StringLength, RegularExpression gibi built-in niteliklerle(attribute) gerçekleştirilen doğrulamalar haricinde kalan özel durumlar için nasıl ilerleyebileceğimizi araştıracağız. Konuyu adım adım irdelersek, aşağıdaki işlemleri yapmamız gerekmektedir."
 categories:
   - dotnet-ria-services
 tags:
@@ -11,9 +10,6 @@ tags:
   - silverlight
   - authentication
 ---
-# .Net RIA Servisleri - Özel Doğrulama(Custom Validation)
-Merhaba Arkadaşlar,
-
 Bir önceki blog yazımızda,.Net RIA Servislerin kullanıldığı Silverlight uygulamalarında doğrulama (Validation) işlemlerinin nasıl yapılabileceğini incelemeye çalışmıştık. Bu yazımızda ise, Range, Required, StringLength, RegularExpression gibi built-in niteliklerle (attribute) gerçekleştirilen doğrulamalar haricinde kalan özel durumlar için nasıl ilerleyebileceğimizi araştıracağız. Konuyu adım adım irdelersek, aşağıdaki işlemleri yapmamız gerekmektedir.
 
 - Sunucu uygulama tarafında (Web App) shared niteliği ile işaretlenmiş bir sınıf tasarlanır ve içerisine özel doğrulama operasyonları ilave edilir.

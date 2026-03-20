@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Node.js, MongoDB, Fastify ve Swagger Kullanılan Web API Servisi Geliştirmek"
 date: 2019-05-12 21:45:00 +0300
-description: "Bu sefer eski örneklerden birisini masaya yatırmaya karar verdim. 07 numaralı örnekteki amacım MongoDB kullanan Node.Js tabanlı Web API servisi geliştirmekti. Ancak bunu yaparken web framework olarak sıklıkla kullandığım express yerine Fastify'ı denemiştim. Ayrcıa web api tarafından sunulan operayonların kullanıcı dostu bir şekilde sunulabilmesi için Swagger'dan yararlandım. Örneği geliştirdiğim WestWorld'de (Ubuntu 18.04 64bit) Node.js, npm ve MongoDB yüklü durumdaydı. Bu örneğe ait notların üstünden bir kez daha geçerken javascript, node.js, mongodb ve REST API bilgilerimi yeniden hatırlama fırsatı bulmuş oldum."
 categories:
   - nodejs
 tags:
@@ -21,10 +20,9 @@ tags:
   - visual-studio
   - github
 ---
-# Node.js, MongoDB, Fastify ve Swagger Kullanılan Web API Servisi Geliştirmek
-![minions2.png](/assets/images/2019/minions2.png)
-
 Yazılım tarafında yeni bir şeyler öğrenmeye çalışmak hayatımın standart ritüelleri arasında. Bu döngü içerisinde yaşamak en büyük keyiflerimden birisi. Tabii bu döngünün en önemli parçalarından birisi masabaşında yapılan kodlama çalışmaları. WestWorld ve son zamanlardaki gözdem Ahch-To başlıca yardımcılarım. Çalışmalar değişik diyarlardan geliyor. Bazen konular arasında keskin geçişler yapıyorum. Bir gün Node.js dünyasında debelenirken bir başka gün daha aşina olduğum.Net Core kıyılarında yürüyüşe çıkıyorum.
+
+![minions2.png](/assets/images/2019/minions2.png)
 
 Ancak konular ne kadar değişirse değişsin bazı şeyler hep aynı kalıyor. Bu sebepten kullandığım örneklerdeki veri odaklı varlıklar zamanla tekrar önüme geliyor. Star Wars gezegenleri, ünlü düşünürlerin özlü sözleri, yapılacaklar listesindeki maddeler, emektar Northwind ve AdventureWorks veri tabanları, müzik gruplarının sevilen albümleri, Marvel karakterleri, basketbol yıldızları ve Minion'lar:) İşte yine onlarla karşı karşıyayım. Bu sefer eski örneklerden birisini masaya yatırmaya karar verdiğimde rastladım onlara.
 

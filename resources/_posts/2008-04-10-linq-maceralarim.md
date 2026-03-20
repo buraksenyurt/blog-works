@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "LINQ Maceralarım"
 date: 2008-04-10 06:00:00 +0300
-description: "Language INtegrated Query(LINQ) mimarisi sayesinde CLR nesneleri(Common Language Runtime Objects) üzerinden SQL tarzı sorgu ifadeleri yazılabilmektedir. Hatta LINQ mimarisi, SQL veritabanı(LINQ to SQL) ve XML (LINQ to XML) kaynakları üzerindede kullanılabilmektedir. Özellikle IEnumerable<T> arayüzünü uyarlayan tiplere ait nesne örnekleri için, Select, Where, GroupBy, Sum, Avg, Distinct ve daha pek çok bilinen sorgulama metodu uygulanabilmektedir."
 categories:
   - csharp-3-0
   - linq
@@ -21,9 +20,6 @@ tags:
   - visual-studio
   - datatable
 ---
-# LINQ Maceralarım
-Değerli Okurlarım Merhabalar,
-
 Language INtegrated Query (LINQ) mimarisi sayesinde CLR nesneleri (Common Language Runtime Objects) üzerinden SQL tarzı sorgu ifadeleri yazılabilmektedir. Hatta LINQ mimarisi, SQL veritabanı (LINQ to SQL) ve XML (LINQ to XML) kaynakları üzerindede kullanılabilmektedir. Özellikle IEnumerable arayüzünü uyarlayan tiplere ait nesne örnekleri için, Select, Where, GroupBy, Sum, Avg, Distinct ve daha pek çok bilinen sorgulama metodu uygulanabilmektedir.
 
 LINQ içerisinde yer alan imkanlar göz önüne alındığında,.Net Framework 1.1, 2.0 ve 3.0 ile geliştirilmiş pek çok projenin.Net 3.5' e aktarılarak bu olanaklardan yararlanabilmeleri için gerekli geçiş hazırlıklarının ciddi anlamda düşünüldüğüde ortadadır. Üstelik Visual Studio 2008, getirdiği çoklu framework desteği sayesinde.Net Framework 2.0, 3.0 ve 3.5 arasındaki geçişlerin kolayca yapılabilmesini sağlamaktadır. Bu gibi konular göz önüne alındığında bir geliştirici olarak LINQ'in daha önceki kod parçalarında kullanılabileceği yeni yerlerde merak konusu haline gelmektedir. İşte bu makalemizde, LINQ sorgularını farklı kod parçalarında kullanmaya çalışıyor olacağız.

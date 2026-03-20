@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WPF - Temel Animasyon İşlemleri - 2"
 date: 2007-10-01 12:00:00 +0300
-description: "Bir önceki makalemizde Windows Prensetation Foundation(WPF) uygulamalarında animasyon işlemlerinin temel animasyon tipleri(Basic Animation Types) yardımıyla nasıl gerçekleştirilebileceğini incelemeye başlamıştık. Bu makalemizde animasyon işlemleri üzerindeki yönetimin biraz daha fazla olmasını sağlamak için farklı teknikleri göz önüne alıyor olacağız..."
 categories:
   - wpf
 tags:
@@ -15,9 +14,6 @@ tags:
   - delegates
   - generics
 ---
-# WPF - Temel Animasyon İşlemleri - 2
-Değerli Okurlarım Merhabalar,
-
 Bir önceki makalemizde Windows Prensetation Foundation (WPF) uygulamalarında animasyon işlemlerinin temel animasyon tipleri (Basic Animation Types) yardımıyla nasıl gerçekleştirilebileceğini incelemeye başlamıştık. Bu makalemizde animasyon işlemleri üzerindeki yönetimin biraz daha fazla olmasını sağlamak için farklı teknikleri göz önüne alıyor olacağız. Her zaman olduğu gibi konuyu daha iyi kavrayabilmek adına örnekler üzerinden ilerlemekte fayda olduğu kanısındayım. Dilerseniz hiç vakit kaybetmeden ilk örneğimiz ile başalayım. Hatırlanacağı üzere, WPF uygulamalarında bileşenlerin rotasyon işlemleri için RotateTransform, ScaleTransform ve benzeri tiplerin kullanıldığını görmüştük.
 
 Bu tip transformasyon işlemlerini animasyon tipleri ile birlikte kullanmak isteyebiliriz. Söz gelimi bir Button kontrolünün 3 saniye içerisinde kendi ekseninde 360 derece dönmesini ve bu sırada boyutlarınında 2 katına çıkarak tekrardan eski haline dönmesini istediğimizi düşünelim. Bu tip bir animasyon işleminin Buttton kontrolünün üzerine mouse ile gelindiğinde başlatılmasını ve 3 saniyelik zaman dilimi içerisinde mouse ile kontrolün terk edilmesi halinde de durmasınıda sağlayabiliriz. Burada temel animasyon tiplerinden olan DoubleAnimation oldukça işe yarayacaktır. Herşeyden önce animasyon tipinin RotateTransform ve ScaleTransform tiplerindeki uygun özellikleri kontrol edecek şekilde ayarlanması gerekir. Bu senaryoyu gerçekleştirmek için XAML içeriği aşağıda verilen bir pencere (Window) oluşturulması yeterli olacaktır.

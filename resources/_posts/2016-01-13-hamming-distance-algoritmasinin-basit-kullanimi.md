@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Hamming Distance Algoritmasının Basit Kullanımı"
 date: 2016-01-13 17:09:00 +0300
-description: "Hamming Distance, Amerikalı Matematikçi Richard Hamming tarafından bulunmuş olan ve kodlama teorisinde geçen vektör bazlı bir karşılaştırma algoritmasıdır(Bu adresten teori hakkında biraz bilgi alabiliriz) Programlama tarafından baktığımızda çoğunlukla eşit uzunluktaki içeriklerin benzerliklerine ilişkin bir mesafe ölçüsünün bulunmasında kullanılır. Bu sayede bir metnin diğerine dönüştürülebilmesi için kaç adımlık değişime ihitiyaç duyulduğu da hesaplanabilir. Ya da benzerliğin ne kadarlık bir değere denk geldiği anlaşılabilir. Hata tespiti ve düzeltilmesi, grafik dosyaları üzerinden şekil eşleştirmelerinin(Shape Recognation) yapılması gibi hesaplamalarda kullanılmaktadır. Aslında örnekler ile konuyu daha iyi anlayabiliriz. Basit düşünmeye çalışalım ve aşağıdaki gibi bir kaç kelime çiftini ele alalım."
 categories:
   - csharp
   - ruby
@@ -14,12 +13,9 @@ tags:
   - http
   - generics
 ---
-# Hamming Distance Algoritmasının Basit Kullanımı
+Geçtiğimiz günlerde uzun süredir görüşmediğim bir arkadaşımdan mesaj aldım. Bir projesinde Levenshtein Distance algoritmasını kullanmaya karar verdiğini ve internette arama yaparken daha önceden yazdığım [şu](/2012/07/01/levenshtein-distance-algoritmasi/) makaleye rastladığını dile getirdi. Hem kafasına takılan bir konuyu dile getirmek hem de bir hal hatır sormak istediğini belirtti.
+
 ![hamming_0.gif](/assets/images/2016/hamming_0.gif)
-
-Merhaba Arkadaşlar,
-
-Geçtiğimiz günlerde uzun süredir görüşmediğim bir arkadaşımdan mesaj aldım. Bir projesinde Levenshtein Distance algoritmasını kullanmaya karar verdiğini ve internette arama yaparken daha önceden yazdığım [şu](../2012/Levenshtein Distance Algoritması.md) makaleye rastladığını dile getirdi. Hem kafasına takılan bir konuyu dile getirmek hem de bir hal hatır sormak istediğini belirtti.
 
 Yazıyı yazalı epey zaman olduğundan konuyu tamamen unutmuştum. Şöyle arkama yaslandım ve bir güzel yazdıklarımı okudum. Tabii dolu imla hatası buldum ama neyseki algoritmanın kullanım amacını yeniden hatırlamayı başardım. Derken Levenshetin Distance gibi benzer fark bulma algoritmaları olup olmadığına bakmaya karar verdim. Bu iş için geliştirilmiş bir çok algoritma vardı. Derken kendimi Hamming Distance algoritmasını incelerken buldum.
 

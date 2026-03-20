@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF WebHttp Services - Routing"
 date: 2010-03-07 21:45:00 +0300
-description: "Malum bir süredir de WCF Eco System' in önemli parçalarından birisi olan WebHttp Service' lerini incelemekte olduğumuza göre yine bu alanda ilerleyerek devam edebiliriz. Bu günkü konumuz ise WCF WebHttp servislerinde yönlendirme(Routing) işlemleri olacak."
 categories:
   - wcf-eco-system
   - wcf-webhttp-services
@@ -21,12 +20,9 @@ tags:
   - visual-studio
   - rc
 ---
-# WCF WebHttp Services - Routing
-![blg138_Giris.jpg](/assets/images/2010/blg138_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Geçtiğimiz aylarda yurdumuzun en güzel şehirlerinden birisi olan İstanbul'da, oldukça soğuk ve kar yağışlı günler geçirdik. Yandaki resimde görülen manzara çalıştığım ARI 1 binasının yürüyüş yolu üzerinde çok da yeni olmayan, dokunmatik ekran, Windows Mobile gibi ileri özellikleri bulunmayan ancak Carl Zeiss mercekli Sony Ericsson K810i marka cep telefonum tarafından çekilmiştir.
+
+![blg138_Giris.jpg](/assets/images/2010/blg138_Giris.jpg)
 
 3.1 Megapiksel ölçekli çekilen fotoğrafı kaliteli yapan ise elbetteki Carl Zeiss mercek. İnsan böyle zamanlarda eğer şartlar yerindeyse (çay, kahve, sıcak ve sessiz bir ortam, hızlı bir internet bağlantısı) işiyle ilgili pek çok konuda araştırma fırsatı bulabiliyor. Malum böyle havalarda sizde benim gibi evden çıkmamayı veya mesai sonrası şirkette bir kaç saat durmayı tercih edinenlerdenseniz, yapılacaklar listesinin belkide en başında yenilikleri araştırmak vardır diye düşünüyorum. Malum bir süredir de WCF Eco System'in önemli parçalarından birisi olan WebHttp Service'lerini incelemekte olduğumuza göre yine bu alanda ilerleyerek devam edebiliriz. Bu günkü konumuz ise WCF WebHttp servislerinde yönlendirme (Routing) işlemleri olacak.
 

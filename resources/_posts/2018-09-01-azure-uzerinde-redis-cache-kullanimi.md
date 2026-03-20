@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Azure Üzerinde Redis Cache Kullanımı"
 date: 2018-09-01 07:02:00 +0300
-description: "Bu yazımızda Azure üzerindeki minik maceralarımıza devam ediyoruz. Amacımız bir Redis Cache hizmetini devreye almak ve basit bir .Net Core istemcisinden yararlanarak kendisiyle konuşmak. Önce portaldan yararlanarak bir Redis Cache hizmetini devreye alacağız. Ardından StackExchange.Redis paketini kullanıp istemci tarafını geliştireceğiz. Redis'e ECHO komutu ile mesaj gönderecek ve kullanıcı tanımlı nesne örneklerini de nasıl kullanacağımız irdeleyeceğiz. Haydi gelin başlayalım."
 categories:
   - azure
 tags:
@@ -21,12 +20,9 @@ tags:
   - caching
   - serialization
 ---
-# Azure Üzerinde Redis Cache Kullanımı
-![aredisc_02.gif](/assets/images/2018/aredisc_02.gif)
-
-Merhaba Arkadaşlar,
-
 Bir süredir kişisel becerilerimizle alakalı olarak karşımıza çıkan T-Shaped Person isimli bir konu var (Aslında yıllardır var) Daha yakın zamanda katıldığım Scrum eğitiminde tekrardan karşıma çıkan ve [hatta şuradaki yazıyla](https://medium.com/@jchyip/why-t-shaped-people-e8706198e437) kısaca bilgilenebileceğiniz, özetle bir alanda gerçekten uzman ama bu alanla alakalı yan dallarda da bir şeyler yapabilen insan modelinden bahsediyorum.
+
+![aredisc_02.gif](/assets/images/2018/aredisc_02.gif)
 
 Tek kişi için düşündüğümüzde bile çok yönlü bir birey geliyor aklımıza ama özellikle bir takımı bu tip insanlardan oluşturduğumuzda birbirlerinin açıklarını kapatabilen başarılı ekiplerin ortaya çıktığını görüyoruz. I-Shaped yerine T-Shaped olmak daha mühim bu nedenle. Özellike çevik ekiplerin başarısında önemli bir yere sahip.
 

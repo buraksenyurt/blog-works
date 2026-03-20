@@ -1,16 +1,12 @@
-﻿---
+---
 layout: post
 title: "StreamReader Sınıfı Yardımıyla Dosya Okumak"
 date: 2004-01-01 12:00:00 +0300
-description: "Bugünkü makalemizde, sistemimizde yer alan text tabanlı dosyaları nasıl okuyabileceğimizi incelemeye çalışacağız. .NET ortamında, dosyaların okunması için streamler(akımlar) kullanılır. Bugün işleyeceğimi StreamReader sınıfıda bunlardanbir tanesidir. StreamReader sınıfı dosyaların okunmasını, dosyalara yazılmasını vb.. sağlar."
 categories:
   - csharp
 tags:
   - csharp
 ---
-# StreamReader Sınıfı Yardımıyla Dosya Okumak
-Değerli Okurlarım, Merhabalar.
-
 Bugünkü makalemizde, sistemimizde yer alan text tabanlı dosyaları nasıl okuyabileceğimizi incelemeye çalışacağız..NET ortamında, dosyaların okunması için streamler (akımlar) kullanılır. Bugün işleyeceğimi StreamReader sınıfıda bunlardanbir tanesidir. StreamReader sınıfı dosyaların okunmasını, dosyalara yazılmasını vb.. sağlar. StreamReader sınıfını bir FileStream nesnesi ile kullanabileceğimiz gibi, tek başınada kullanabiliriz. Kullanabileceğimiz yapıcı metodlardan birisi;
 
 ```csharp

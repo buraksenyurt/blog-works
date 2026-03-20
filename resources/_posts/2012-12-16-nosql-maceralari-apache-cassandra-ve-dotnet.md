@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "NoSQL Maceraları - Apache Cassandra ve .Net"
 date: 2012-12-16 19:35:00 +0300
-description: "Size bu günkü makale konumuzun yanda fotoğrafı görülen model(youtube modeli de diyebiliriz) Cassandra Bankson ile alakalı olduğunu söylemek isterdim ama yakınlarından bile geçmeyeceğiz. (Zaten araştırırsanız aslında makyaj bidonu ile bu hale geldiğini keşfedeceksiniz) Başlıktan da anlayacağınız üzere bu günkü yazımızın konusu .Net plaftormunda Apache Cassandra’ yı kullanmak."
 categories:
   - nosql
 tags:
@@ -19,10 +18,10 @@ tags:
   - java
   - performance
 ---
-# NoSQL Maceraları - Apache Cassandra ve .Net
-[![cassandra](/assets/images/2012/cassandra_thumb.jpg)](/assets/images/2012/cassandra.jpg) Merhaba Arkadaşlar,
-
 Size bu günkü makale konumuzun yanda fotoğrafı görülen model (youtube modeli de diyebiliriz) Cassandra Bankson ile alakalı olduğunu söylemek isterdim ama yakınlarından bile geçmeyeceğiz. (Zaten araştırırsanız aslında makyaj bidonu ile bu hale geldiğini keşfedeceksiniz) Başlıktan da anlayacağınız üzere bu günkü yazımızın konusu.Net plaftormunda Apache Cassandra’ yı kullanmak.
+
+[![cassandra](/assets/images/2012/cassandra_thumb.jpg)](/assets/images/2012/cassandra.jpg)
+
 
 Uzun zamandır gündemimde olan konulardan birisi de NoSQL veritabanı sistemleri. Internet şirketlerinin pek çoğu (Facebook, Twitter, Youtube, Netflix vb) NotOnly SQL veritabanlarını kullanmakta ve hatta bir kısmının kendi geliştirdikleri NoSQL sistemleri bile var. Amazon, Google bu noktada öncüler diyebiliriz.
 

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WF 4.0 - Kod Yoluyla Workflow Service Oluşturmak, Kullanmak [Beta 1]"
 date: 2009-10-16 00:00:00 +0300
-description: "Örneğin her zaman elimizin altında Visual Studio IDE' sinin sunduğu gibi gelişmiş arayüzler bulunmayabilir. Örneğin Visual Studio 2010 Beta 1 üzerinde yaşadığım sorunlardan birisi WPF tabanlı Designer' ı Workflow uygulamaları için kullanamıyor oluşumdu. Bu gerçekten çok üzücü bir durum."
 categories:
   - wf-4-0-beta-1
 tags:
@@ -20,12 +19,9 @@ tags:
   - serialization
   - visual-studio
 ---
-# WF 4.0 - Kod Yoluyla Workflow Service Oluşturmak, Kullanmak [Beta 1]
-![blg90_Giris.jpg](/assets/images/2009/blg90_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Yükseklik korkum olmasına rağmen her zaman yandaki gibi tırmanışta olanlara imrenmişimdir. Bu fotoğrafa konu olan kişinin tek yaptığı yoğun bir mücadele ve efor ile yukarı doğru tırmanmaktır. Bana göre sonuçta elde edilebilecek tek şey zirveye ulaşmak ve oranın eşsiz manzarasını izlemekten ibarettir. Tabi bunun birde inişi olduğunu düşünmek gerekiyor
+
+![blg90_Giris.jpg](/assets/images/2009/blg90_Giris.jpg)
 
 ![Sealed](/assets/images/2009/smiley-sealed.gif)
 
@@ -82,7 +78,7 @@ namespace WithWCF
             #region Sequence Aktivitesi Oluşturulma İşlemleri
 
             // Sequence tipinden bir aktivite örneklenir
-            Sequence squareRootFlow = new Sequence();           
+            Sequence squareRootFlow = new Sequence();
 
             // Aktivitede kullanılacak olan Variable tanımlamaları yapılır
             Variable<double> number = new Variable<double>(); // Receive aktivitesi tarafından alınan değişken

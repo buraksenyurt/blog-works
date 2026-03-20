@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net 4.5 için Yeni Nesil Doğrulama(Validation)"
 date: 2013-06-11 14:09:00 +0300
-description: "Her şey uzun bir zaman önce değil ama kısa bir süre önce Asp.Net 4.5 tabanlı bir Empty Web Application açmamla başlamış ve sonrasında olanlar olmuştuConfused smile Aslında senaryo gereği çok basit olarak bir web form üzerinde doğrulama kontrollerini kullanacaktım. Bunun için Visual Studio 2012 ortamında Asp.Net Empty Web Application tipinden bir proje oluşturdum ve aşağıdaki Web Form içeriğini tasarladım..."
 categories:
   - aspnet-4-5
 tags:
@@ -16,10 +15,10 @@ tags:
   - javascript
   - visual-studio
 ---
-# Asp.Net 4.5 için Yeni Nesil Doğrulama(Validation)
-[![300px-Opening_crawl](/assets/images/2013/300px-Opening_crawl_thumb.jpg)](/assets/images/2013/300px-Opening_crawl.jpg) Merhaba Arkadaşlar,
-
 Bilişim sektöründe yer alan ve özellikle 70li yıllarda doğanların neredeyse tamamı bu efsane cümleyi bilir.
+
+[![300px-Opening_crawl](/assets/images/2013/300px-Opening_crawl_thumb.jpg)](/assets/images/2013/300px-Opening_crawl.jpg)
+
 
 > A long tim ago in a galaxy far, far away…
 

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Server Side SponsorShip"
 date: 2006-04-19 12:00:00 +0300
-description: "Bir önceki makalemizde Remoting mimarisinde istemci taraflı destek modelini incelemeye çalışmıştık. İstemci taraflı destek modelinin en büyük problemlerinden birisi, istemcilerin firewall arkasında olması halinde ortaya çıkmaktadır. Bu engel, sunucuların istemcilere erişimini kısıtlayacağından istemci taraflı destek modelinin çalışması garanti altına alınmamış olabilir. Bu nedenle, istemcilerin firewall arkasında olup olmadıklarının bilinmediği durumlarda kesinlikle sunucu taraflı destek (server side sponsorship) modeli kullanılmalıdır. Bu makalemizde sunucu taraflı destek modelinin işleyiş şeklinden bahsedecek ve örnek bir uygulama geliştireceğiz."
 categories:
   - dotnet-remoting
 tags:
@@ -11,9 +10,6 @@ tags:
   - xml
   - threading
 ---
-# Server Side SponsorShip
-Değerli Okurlarım Merhabalar,
-
 Bir önceki makalemizde Remoting mimarisinde istemci taraflı destek modelini incelemeye çalışmıştık. İstemci taraflı destek modelinin en büyük problemlerinden birisi, istemcilerin firewall arkasında olması halinde ortaya çıkmaktadır. Bu engel, sunucuların istemcilere erişimini kısıtlayacağından istemci taraflı destek modelinin çalışması garanti altına alınmamış olabilir. Bu nedenle, istemcilerin firewall arkasında olup olmadıklarının bilinmediği durumlarda kesinlikle sunucu taraflı destek (server side sponsorship) modeli kullanılmalıdır. Bu makalemizde sunucu taraflı destek modelinin işleyiş şeklinden bahsedecek ve örnek bir uygulama geliştireceğiz.
 
 İlk olarak modelin teorisinden birazda olsa bahsetmekte fayda var. Sunucu taraflı destek modelinde, uzak nesne haricinde bu nesnenin kiralama süresini kontrol eden ve gerektiğinde otomatik olarak uzatan bir destek nesnesi (Sponsor Object) vardır. Yanlız bu sponsor nesne sunucu tarafında olduğu için, istemci tarafından bir şekilde çağırılabilmeli ve kullanılabilmelidir. Dolayısıyla uzak nesnenin kiralama süresini kontrol eden sponsor nesnemizde aslında bir uzak nesnedir. Yani MarshallByRefObject tipinden türetilmiştir. Diğer taraftan bu sponsor nesnenin, uzak nesne referansına ait kiralama süresini, sunucu tarafında kontrol edebilmesi için ayrıca ISponsor arayüzünüde uygulaması gerekmektedir. Bildiğiniz gibi ISponsor arayüzünün sağladığı Renewal metodu ile kiralama süreleri uzatılabilir.

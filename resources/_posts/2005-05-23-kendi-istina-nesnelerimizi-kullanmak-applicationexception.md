@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Kendi İstina Nesnelerimizi Kullanmak (ApplicationException)"
 date: 2005-05-23 12:00:00 +0300
-description: "İstisna yakalama mekanizması (Exception Handling) dotNet mimarisinde oldukça önemli bir yere sahiptir. Bu mekanizma sayesinde uygulamalarımızın kilitlenmesi ve istem dışı bir şekilde sonlandırılmaya zorlanmasının önüne geçmiş oluruz. Framework içerisinde önceden tanımlanmış pek çok istisna sınıfı mevcuttur. Bu sınıflar yardımıyla, çalışma zamanında oluşabilecek istisnai durumlar kolayca tespit edilebilmektedir."
 categories:
   - csharp
 tags:
@@ -10,9 +9,6 @@ tags:
   - dotnet
   - xml
 ---
-# Kendi İstina Nesnelerimizi Kullanmak (ApplicationException)
-Değerli Okurlarım Merhabalar,
-
 İstisna yakalama mekanizması (Exception Handling) dotNet mimarisinde oldukça önemli bir yere sahiptir. Bu mekanizma sayesinde uygulamalarımızın kilitlenmesi ve istem dışı bir şekilde sonlandırılmaya zorlanmasının önüne geçmiş oluruz. Framework içerisinde önceden tanımlanmış pek çok istisna sınıfı mevcuttur. Bu sınıflar yardımıyla, çalışma zamanında oluşabilecek istisnai durumlar kolayca tespit edilebilmektedir.
 
 Böylece uygulamaların, CLR tarafından denetlendiği sırada ortama fırlatılan istisnalar nedeniyle yön değiştirebilmesi ve yaşamını sürdürebilmesi sağlanmış olmaktadır. Ancak bazı durumlarda kendi istisna sınıflarımızı yazma ihtiyacı duyabiliriz. Bunun pek çok nedeni olabilir. İlk ve en temel nedeni, sistemde var olan istisna sınıfları dışındaki bir istisnayı çalışma zamanında ele almak isteyişimizdir. İşte bu makalemizde bu işlevselliği nasıl gerçekleştirebileceğimizi basit bir örnek üzerinde incelemeye çalışacağız.

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Rust Pratikleri - HTTP Sunucusu Yazmak/Yazmaya Çalışmak"
 date: 2022-03-20 09:00:00 +0300
-description: "Bir HTTP sunucusu yazmaya ne gerek var diyebilirsiniz. Öyle düşünmeyin. Bir programlama dilini öğrenmenin en iyi yolu, var olan yapıları o dille yazmaya çalışmaktır. Hangi dil ya da platform olursa olsun ortada dolaşan yüzlerce HTTP server zaten var. Ancak nasıl çalıştıklarını anlamak için de yine yeniden yazmakta yarar var. Bugünkü pratiğimizde Rust dilini kullanarak bir HTTP server nasıl yazılabilir incelemeye çalışacağız. Esasında sadece minik bir başlanıç yapacağız. Nitekim bir HTTP sunucusunun görevleri çok geniş olabilir. Sonuçta IIS Server yazmayacağız ancak genel felsefeyi öğreneceğiz."
 categories:
   - rust
 tags:
@@ -15,10 +14,9 @@ tags:
   - github
   - ownership
 ---
-# Rust Pratikleri - HTTP Sunucusu Yazmak/Yazmaya Çalışmak
-![crayz_server.png](/assets/images/2022/crayz_server.png)
-
 Bir HTTP sunucusu yazmaya ne gerek var diyebilirsiniz. Öyle düşünmeyin. Bir programlama dilini öğrenmenin en iyi yolu, var olan yapıları o dille yazmaya çalışmaktır. Hangi dil ya da platform olursa olsun ortada dolaşan yüzlerce HTTP server zaten var. Ancak nasıl çalıştıklarını anlamak için de yine yeniden yazmakta yarar var. Bugünkü pratiğimizde bir HTTP server Rust programlama dili ile nasıl yazılabilir incelemeye çalışacağız. Esasında minik bir başlanıç yapacağız. Nitekim bir HTTP sunucusunun görevleri çok geniş olabilir.
+
+![crayz_server.png](/assets/images/2022/crayz_server.png)
 
 Tipik bir HTTP sunucusuna talep yollandığında bu belli bir protokol ve standarda göre gerçekleşir. HTTP protokolünün gereği olarak geçerli bir metot ile ilintili paketler söz konusudur. Sunucu bir IP adresi ve port üstünden gelen mesajları dinler ve gerekli çıktıları hazırlar. Sunucu tarafından üretilen içerik kimi zaman bir web sayfası kimi zaman da bir JSON çıktısıdır. İşin aslı gelen veriyi yorumladıktan sonra nasıl bir şeyler döndüreceğimiz bize bağlıdır. Lakin endüstriyel dinamikler göz önüne alındığında uç tarafların yorumlayacağı standartlar bellidir. HTML, JSON, XML, PDF vs gibi çeşitli türden tipler (Content Types) söz konusu olabilir. Bu pratikteki temel amacımız TCP paketi olarak gelen binary içeriği HTTP mesajı olarak yorumlamaya çalışmak olacak. Ele almaya çalışacağımız HTTP içeriklerine bir bakalım.
 

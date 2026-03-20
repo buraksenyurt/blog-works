@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Windows Phone 7 Cihazlarda LINQ to SQL Kökenli Veritabanı ile Çalışmak"
 date: 2012-10-10 21:00:00 +0300
-description: "Geçtiğimiz günlerde Feedreader üzerinden blogları şöyle bir tararken Windows Phone üzerinde kullanılabilecek olan veri depolama seçenekleri ile ilişkili kısa bir nota rast geldim. Özellikle Isolated Storage tabanlı depolamalar üzerinde durulmaktaydı. Derken kendimi konuyu araştırır halde buldum. İşte bu yazının amacı elde edilen sonuçlar ve hoşunuza gidecek(hoşuma gidecek) bir örneği kaleme almak"
 categories:
   - windows-phone-7
 tags:
@@ -20,10 +19,10 @@ tags:
   - windows-phone
   - visual-studio
 ---
-# Windows Phone 7 Cihazlarda LINQ to SQL Kökenli Veritabanı ile Çalışmak
-[![HP-iPAQ-110-classic-handheld](/assets/images/2012/HP-iPAQ-110-classic-handheld_thumb.jpg)](/assets/images/2012/HP-iPAQ-110-classic-handheld.jpg) Merhaba Arkadaşlar,
-
 Uzun zamandır bilgisayar yazılım teknolojileri ile ilgileniyor olmama rağmen zaman içerisinde belirli konularda uzmanlaşmaya çalıştığımı fark ettim. Bana göre normalde olması gereken bu. Nitekim insanın kapasitesini bilmesi ve her şeyden çok fazla anlamamaktansa, belirli bir konuda çok iyi bilgiye sahip olması daha anlamlıdır diye düşünüyorum
+
+[![HP-iPAQ-110-classic-handheld](/assets/images/2012/HP-iPAQ-110-classic-handheld_thumb.jpg)](/assets/images/2012/HP-iPAQ-110-classic-handheld.jpg)
+
 
 ![Smile](/assets/images/2012/wlEmoticon-smile_48.png)
 

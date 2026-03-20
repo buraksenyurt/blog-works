@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ado.Net ile Sql Server Full-Text Searching (Tüm Metinde Arama) Kullanımı"
 date: 2004-12-18 12:00:00 +0300
-description: "Bu makalemizde, Sql sunucu üzerindeki tablolarda text tabanlı arama işlemlerinin, Full-Text Searching (Tüm Metinde Arama) servisi yardımıyla nasıl gerçekleştirildiğini incelemeye çalışacağız. Konunun pekişmesi açısından basit bir web uygulması ile de bu hizmeti kullanıp text tabanlı arama işlemlerini irdelemeye çalışacağız. Özellikle dikkatinizi çekmiştir ki, internette yer alan pek çok arama motoru aradığımız kelimelerin geçtiği web sayfalarını bulup bize getirir. Çoğunlukla arama motoruna kayıtlı web sayfasının içeriğinde yapılan text tabanlı aramalar da Full-Text Searching (Tüm Metinde Arama) hizmetinden faydalanılır. Bu tip bir arama genellikle alanları içerisinde çok geniş text tabanlı içeriğe sahip olan tablolar üzerinde yapılmaktadır. Sql sunucusu, 7.0 versiyonundan itibaren bu hizmeti vermeye başlamıştır. Elbetteki arama işleminin gerçekleştirilebilmesi için Full-Text Searching (Tüm Metinde Arama) servisinin Sql sunucusunda yüklü olması gerekmektedir."
 categories:
   - ado-net
 tags:
@@ -14,9 +13,6 @@ tags:
   - t-sql
   - datatable
 ---
-# Ado.Net ile Sql Server Full-Text Searching (Tüm Metinde Arama) Kullanımı
-Değerli Okurlarım, Merhabalar.
-
 Bu makalemizde, Sql sunucu üzerindeki tablolarda text tabanlı arama işlemlerinin, Full-Text Searching (Tüm Metinde Arama) servisi yardımıyla nasıl gerçekleştirildiğini incelemeye çalışacağız. Konunun pekişmesi açısından basit bir web uygulması ile de bu hizmeti kullanıp text tabanlı arama işlemlerini irdelemeye çalışacağız. Özellikle dikkatinizi çekmiştir ki, internette yer alan pek çok arama motoru aradığımız kelimelerin geçtiği web sayfalarını bulup bize getirir. Çoğunlukla arama motoruna kayıtlı web sayfasının içeriğinde yapılan text tabanlı aramalar da Full-Text Searching (Tüm Metinde Arama) hizmetinden faydalanılır. Bu tip bir arama genellikle alanları içerisinde çok geniş text tabanlı içeriğe sahip olan tablolar üzerinde yapılmaktadır. Sql sunucusu, 7.0 versiyonundan itibaren bu hizmeti vermeye başlamıştır. Elbetteki arama işleminin gerçekleştirilebilmesi için Full-Text Searching (Tüm Metinde Arama) servisinin Sql sunucusunda yüklü olması gerekmektedir.
 
 Dilerseniz hiç vakit kaybetmeden bir tablo için Full-Text Index'in nasıl oluşturulacağına kısaca bakalım. Öncelikle, Full-Text Indeksleme yapacağımız tablonun adına enterprise manager'dan sağ tıklayoruz ve aşağıdaki gibi Define Full-Text Indexing On a Table'ı seçiyoruz. Bu işleme başlamadan önce tablomuzda bir primary key alan olması gerektiğinide belirtelim. Nitekim indeksleme işlemlerinde bu alan, sonuçların döndürülmesinde anahtar alan olarak kullanılmaktadır.

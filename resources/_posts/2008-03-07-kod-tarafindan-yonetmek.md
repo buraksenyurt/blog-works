@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Kod Tarafından Yönetmek"
 date: 2008-03-07 12:00:00 +0300
-description: "Windows Communication Foundation ile geliştirilen Servis Yönelimli Uygulama(SOA-Service Oriented Architecture) çözümlerinde konfigurasyon bazlı(Configuration Based) geliştirme süreci oldukça yaygındır."
 categories:
   - wcf
 tags:
@@ -20,9 +19,6 @@ tags:
   - serialization
   - visual-studio
 ---
-# Kod Tarafından Yönetmek
-Değerli Okurlarım Merhabalar,
-
 Windows Communication Foundation ile geliştirilen Servis Yönelimli Uygulama (SOA-Service Oriented Architecture) çözümlerinde konfigurasyon bazlı (Configuration Based) geliştirme süreci oldukça yaygındır. Konfigurasyon dosyaları içerisinde yer alan bilgiler yardımıyla WCF çalışma zamanı (WCF Runtime) ortamı otomatik olarak bazı işlemler gerçekleştirir. Söz gelimi istemci (Client) ve servis (Service) arasında taşınacak olan mesajların çözümlenmesi (Encoding), bunların seçilen bağlayıcı tipin (Binding Type) belirlediği protokole göre aktarılması gibi alt yapı (Infrastructure) hazırlıkları otomatik olarak gerçekleştirilir. Hatta istemcinin servis üzerinden talep ettiği bir operasyon (Service Operation), servis tarafındaki konfigurasyon bilgilerinden yola çıkılarak hazırlanan çalışma zamanı sayesinde, anlamlı bir metod çağrısı haline dönüşür.
 
 Ne varki bazı vakalarda, WCF altyapı hazırlıklarının konfigursayon bazlı olması tercih edilmez. Bunun en büyük nedenlerinden bir taneside, konfigurasyon bilgilerinin XML (eXtensible Markup Lanuage) bazlı açık text dosyalarında duruyor olmasıdır. Buda ilgili dosyanın dışarıdan değiştirilebileceği anlamına gelmektedir. Her ne kadar servis tarafının Host edileceği uygulama administrator (veya bu gruba dahil kullanıcıların) yetkisindede olsa, söz gelimi HTML Metadata Publishing özelliğinin konfigurasyon içerisinde, program koduna girmeye gerek kalmadan, yanlışlıklada olsa değiştirilmesi istenmeyebilir. Çünkü bunun etkisi sonrasında istemcilerin servise ait metadata bilgisini çekememesi gibi durumlar ortaya çıkmaktadır. Bu gibi bazı sebeplerden dolayı, WCF alt yapı hazırlıklarının özellikle servis tarafında iken, kod bazında (Code Based) gerçekleştirilmesi tercih edilebilir. Bu yazıda ağırılıklı olarak kod tarafında gerekli hazırlıkların nasıl yapılabileceği gibi konulara değinilmektedir.

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Netspecter Takipte - Object Initializer Deyip Geçmemek Lazım"
 date: 2011-04-14 14:34:00 +0300
-description: "C# 3.0 ile birlikte gelen önemli yeniliklerden birisi de Object Initializers kullanımı idi. Bu kullanım sayesinde özellikle LINQ(Language Integrated Query) sorgularında Anonymous Type üretiminin mümkün hale gelmesi de sağlanmaktaydı. Dolayısıyla her zaman ifade ettiğimiz gibi bu yenilik, başka bir yeniliğin yapılabilmesi için getirilmiş bir yenilikti."
 categories:
   - csharp
   - csharp-3-0
@@ -15,10 +14,10 @@ tags:
   - generics
   - visual-studio
 ---
-# Netspecter Takipte - Object Initializer Deyip Geçmemek Lazım
-[![blg229_Giris](/assets/images/2011/blg229_Giris_thumb.gif)](/assets/images/2011/blg229_Giris.gif) Merhaba Arkadaşlar,
-
 Puslu bir sonbahar akşamında detektif Netspecter odasında sessiz sakin oturmaktadır. Loş bir ortama neden olan gece lambasının yeşil cam aksamı altından oda içerisindeki tozların sessiz ve sakin akışı bir yana, Netspecter’ ın kafasında masasına yeni gelen dosya ile ilişkili soru işaretleri koşup durmaktadır.
+
+[![blg229_Giris](/assets/images/2011/blg229_Giris_thumb.gif)](/assets/images/2011/blg229_Giris.gif)
+
 
 Sıkıntılı geçen bir kaç saat sonrasında aniden telefon çalar. Ölüm sessizliği içerisinde olan odanın neredeyse canlanmasına neden olan bir çalıştır bu. Ahizeyi ancak bir kaç seferden sonra fark edip kulağına götüren Netspecter, karşısında acı çektiği belli olan bir inleme ile irkilir.
 

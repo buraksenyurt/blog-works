@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Razor Dünyasındaki İlk Adımlarım"
 date: 2019-05-17 12:53:00 +0300
-description: "Amacım, Microsoft'un Asp.Net Core MVC tarafında özellikle sayfa odaklı senaryolar için geliştirdiği Razor çatısını tanımak. Bu çatıda sayfalar doğrudan istemci taleplerini karşılayıp arada bir Controller'a uğramadan sayfa modeli _(PageModel)_ ile konuşabiliyorlar. Razor sayfaları SayfaAdı.cshtml benzeri olup kullandıkları sayfa modelleri SayfaAdi.cshtml.cs şeklinde oluşturuluyorlar. Genel hatları ile URL eşleştirmeleri aşağıdaki gibi oluyor."
 categories:
   - asp-dotnet-core
 tags:
@@ -22,10 +21,9 @@ tags:
   - visual-studio
   - github
 ---
-# Razor Dünyasındaki İlk Adımlarım
-![zekimuren.png](/assets/images/2019/zekimuren.png)
-
 Bizim servisin dönüş yolculuğu bir başkadır. Her gün yaklaşık git gel neredeyse seksen kilometrelik yol teperiz (Daha ne kadar teperim bilemiyorum tabii) Dönüş yolculuğumuz trafiğin durumuna göre bazen çok uzun sürer. İşte böyle akşamların çok özel bir anı vardır.
+
+![zekimuren.png](/assets/images/2019/zekimuren.png)
 
 Şekerpınardan yola çıkan yüzler Ümraniye sapağına girmek üzere otobandan ayrıldığımızda gülümser. Sadece evlerimize yaklaştığımız ve günün yorgunluğunu atmak üzere ayakkabılarımızı fırlatacağımız için değil, sevgili İhsan Bey radyosunu açıp Zeki Müren'den Müzeyyen Senar'dan Safiye Ayla'dan Muazzez Ersoy'dan ve daha nice değerli sanatçımızdan oluşan koleksiyonunu dinletmeye başladığı için de tebessüm ederiz.
 

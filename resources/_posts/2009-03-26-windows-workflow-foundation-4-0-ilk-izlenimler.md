@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Windows Workflow Foundation 4.0 - İlk İzlenimler"
 date: 2009-03-26 12:00:00 +0300
-description: "Bundan sadece bir kaç sene önce .Net Framework 3.0 versiyonu ile birlikte iş akışlarının(Workflows) kod içerisinde modellenerek farklı uygulamalarda kullanılabilmesini sağlamak amacıyla Windows Workflow Foundation(WWF) alt yapısı duyurulmuştu. Paralelinde ise, Servis Odaklı Mimarilere(Service Oriented Architecture) yeni bir yaklaşım, Windows Communication Foundation(WCF) ile birlikte getirilmişti. Workflow Foundation her ne kadar iş akışlarının(çoğu zaman kod akışlarının) kendi içinde modellenmesini sağlasa da, zaman içerisinde dış ortamlar ile olan haberleşmesinde WCF ile birlikte hareket etmeye başlamıştır."
 categories:
   - wf-4-0
 tags:
@@ -22,9 +21,6 @@ tags:
   - debugging
   - visual-studio
 ---
-# Windows Workflow Foundation 4.0 - İlk İzlenimler
-Değerli Okurlarım Merhabalar,
-
 Bundan sadece bir kaç sene önce.Net Framework 3.0 versiyonu ile birlikte iş akışlarının (Workflows) kod içerisinde modellenerek farklı uygulamalarda kullanılabilmesini sağlamak amacıyla Windows Workflow Foundation (WWF) alt yapısı duyurulmuştu. Paralelinde ise, Servis Odaklı Mimarilere (Service Oriented Architecture) yeni bir yaklaşım, Windows Communication Foundation (WCF) ile birlikte getirilmişti. Workflow Foundation her ne kadar iş akışlarının (çoğu zaman kod akışlarının) kendi içinde modellenmesini sağlasa da, zaman içerisinde dış ortamlar ile olan haberleşmesinde WCF ile birlikte hareket etmeye başlamıştır. Bu nedenle.Net Framework 3.5 ile birlikte her iki alt yapınında birbirleriyle daha kolay haberleşebilmesi için bazı eklentiler yapılmıştır.
 
 Bu genişletmelerden en önemlileri Workflow Activity Library içerisine eklenen SendActivity ve ReceiveActivity aktivite tipleridir. Böylece bir Workflow uygulamasının servisler yardımıyla dış dünya ile tek yönlü (One-Way) mesajlaşabilmesi yada kendi içerisinden dış dünyaya servis bazlı operasyonlar sunabilmesi mümkün hale gelmiştir. Ama belkide en önemli genişletme WorkflowServiceHost sınıfıdır. Bu sınıf sayesinde, WF uygulamalarının servis olarak host edilebilmesi, bir başka deyişle IIS/WAS (Internet Information Services/Windows Process Activation Service) içerisinde sunulması mümkün kılınmaktadır. Sonuç olarak artık günümüzde, Workflow Tabanlı Servisler (Workflow Based Services) kavramı hayatımızın bir parçası haline gelmeye başlamıştır. Yinede özellikle geliştirici açısından bakıldığında halen daha eksiklikler bulunmaktadır. Özellikle WF ile WCF entegrasyonunda karşılaşılan bu zorlukların üstesinden gelebilmek için.Net Framework 4.0 içerisinde önemli yenilikler bulunmaktadır. İşte bu yazımızda halen son sürümü ile yayınlanmamış olsada WF 4.0 ile gelmesi muhtemel yeniliklere değinilmeye çalışılacaktır.

@@ -1,17 +1,13 @@
-﻿---
+---
 layout: post
 title: "Tasarım Prensipleri - Open Closed"
 date: 2009-06-25 04:22:00 +0300
-description: "Bir önceki yazımda, yazılm tasrımında benimsenen ilkelerinden birisi olan Loose Coupling prensibine değinmiştik. Bu yazımızda ise, Open Closed(Açık Kapalı) prensibine değiniyor olacağız.(Bu prensibini pek çok yazılım disiplininde görebilirsiniz. Örneğin eXtreme Programming veya Aspect Oriented Programming-AOP içerisinde.)"
 categories:
   - tasarim-prensipleri-design-principles
 tags:
   - tasarim-prensipleri-design-principles
   - csharp
 ---
-# Tasarım Prensipleri - Open Closed
-Merhaba Arkadaşlar,
-
 Bir önceki yazımda, yazılm tasrımında benimsenen ilkelerinden birisi olan Loose Coupling prensibine değinmiştik. Bu yazımızda ise, Open Closed (Açık Kapalı) prensibine değiniyor olacağız.(Bu prensibini pek çok yazılım disiplininde görebilirsiniz. Örneğin eXtreme Programming veya Aspect Oriented Programming-AOP içerisinde.)
 
 Açık kapalı prensibi aslında son derece basit bir ilkedir. Bu ilke bir sistemin sürekli olarak değişimlere maruz kalabileceğini göz önüne alaraktan (ki örneğin çevik süreçlerde hızlı değişimler asıl odaklanılan noktadır), genişletilmeye açık ama modifiye edilmeye kapalı varlıkların (Sınıf, Method vb...) kullanılmasını önerir. Gerçekten de günümüz Enterprise çözümlerin çoğunda,müşteri ihtiyaçlarına göre yazılımın sürekli güncelleniyor olması gerekmektedir. Bu noktada güncelleştirme işlemleri sırasında koda dokunmadan ilerlemeye çalışmak neredeyse imkansızdır. Ancak bu risk en aza indirgenmeye çalışılabilir. OCP (Open Closed Principle) bu noktada devreye giren prensiplerden sadece birisidir. Tabikide bu teorik anlatım bir örnekle süslenmediği takdirde çok anlaşılır değildir

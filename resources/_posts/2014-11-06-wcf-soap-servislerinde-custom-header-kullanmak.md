@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF–SOAP Servislerinde Custom Header Kullanmak"
 date: 2014-11-06 12:00:00 +0300
-description: "Bazen kurum içerisinde kullanılan SOAP(Simpe Object Access Protocol) bazlı servisler istemcilerin kimliklerine göre operasyonlarını farklılaştırmak isterler. Böyle bir durumda istemcilerin kendilerini servis tarafına bir şekilde tanıtmaları ve özelleştirilmiş operasyon için gerekli bilgileri iletmeleri beklenir. En bilinen yollardan birisi de SOAP zarfının(Hah işte mektup meselesi ile bağlayabildiğimiz nokta) Header kısmına bu tip bilgileri ilave etmektir. XML Web Service zamanlarından beri var olan bu yaklaşım, WCF tabanlı SOAP servisleri için de geçerlidir. Pek tabi Header bilgisi network trafiğini dinleyenler tarafından yakalansa da sorun teşkil etmeyecek vakalarda ele alınması daha uygundur."
 categories:
   - wcf
 tags:
@@ -15,10 +14,10 @@ tags:
   - http
   - generics
 ---
-# WCF–SOAP Servislerinde Custom Header Kullanmak
-Merhaba Arkadaşlar,
+Çok uzun zamandır Sosyal ağlardan uzağım. Ne Facebook, ne Twitter ne de bir başkasını kullanmıyorum. Google+ üzerinde bile sırf Hangout söyleşileri nedeniyle mecburen açık tuttuğum bir hesap var. Sosyal ağları terk ettiğim ilk günlerde çevremdeki pek çok yakın dostumla olan iletişimimi de yeniden tesis etmem gerekmişti. Ne acıdır ki pek çoğunun iletişim bilgisi sadece Tweet ve Facebook mesaj kısmı ile sınırlı kalmıştı. Hani nerede telefon numaraları, nerede e-posta adresleri? Çoğunu tedarik etmek epeyce zor oldu.
 
-[![OldMail](/assets/images/2014/OldMail_thumb.jpg)](/assets/images/2014/OldMail.jpg) Çok uzun zamandır Sosyal ağlardan uzağım. Ne Facebook, ne Twitter ne de bir başkasını kullanmıyorum. Google+ üzerinde bile sırf Hangout söyleşileri nedeniyle mecburen açık tuttuğum bir hesap var. Sosyal ağları terk ettiğim ilk günlerde çevremdeki pek çok yakın dostumla olan iletişimimi de yeniden tesis etmem gerekmişti. Ne acıdır ki pek çoğunun iletişim bilgisi sadece Tweet ve Facebook mesaj kısmı ile sınırlı kalmıştı. Hani nerede telefon numaraları, nerede e-posta adresleri? Çoğunu tedarik etmek epeyce zor oldu.
+[![OldMail](/assets/images/2014/OldMail_thumb.jpg)](/assets/images/2014/OldMail.jpg)
+
 
 O vakitlerde yine yakın arkadaşlarımdan birisi ile işte bu sosyal ağ mevzularını ve insanlar üzerindeki olumsuz etkilerini konuşmaya başlamıştık. Bir arkadaşımla uzun zamandır e-posta üzerinden böylesine yoğun iletişim kurmamıştım. Heyecan verici ve sürükleyici bir deneyim idi. Şirkette uçuşan e-posta trafiğinden çok daha farklıydı. Duygusal anlamı vardı. Suni, bayağı değildi. İletişim kurmak isteyen iki arkadaşın yazışmalarıydı.
 

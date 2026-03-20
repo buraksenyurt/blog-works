@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Paralel Sorgularda İstisna Yönetimi(Exception Handling) [Beta 1]"
 date: 2009-05-26 05:30:00 +0300
-description: "Yönetimli kod(Managed Code) tarafında istisna yönetimi oldukça önemli konulardan birisidir. Uygulamaların veya kod süreçlerinin istem dışı sonlanmasının önüne geçilmek istendiği durumlarda, basit try...catch...finally bloklarından yararlanabilir yada Enterprise Library gibi kütüphanelerin sunduğu bloklardan faydalanarak istisna yönetimini üst seviyede sağlayabiliriz."
 categories:
   - linq
   - plinq
@@ -14,9 +13,6 @@ tags:
   - generics
   - visual-studio
 ---
-# Paralel Sorgularda İstisna Yönetimi(Exception Handling) [Beta 1]
-Merhaba Arkadaşlar,
-
 Yönetimli kod (Managed Code) tarafında istisna yönetimi oldukça önemli konulardan birisidir. Uygulamaların veya kod süreçlerinin istem dışı sonlanmasının önüne geçilmek istendiği durumlarda, basit try...catch...finally bloklarından yararlanabilir yada Enterprise Library gibi kütüphanelerin sunduğu bloklardan faydalanarak istisna yönetimini üst seviyede sağlayabiliriz.
 
 Bu yazımda çok geniş kapsamda düşünmeyip, PLINQ (Parallel Language INtegrated Query) ifadelerinde oluşabilecek istisnai durumların nasıl ele alınması gerektiği üzerinde durmaya çalışacağız. Olaya hızlı bir giriş yapıp aşağıdaki örnek kod parçasına sahip olduğumuzu düşünelim.

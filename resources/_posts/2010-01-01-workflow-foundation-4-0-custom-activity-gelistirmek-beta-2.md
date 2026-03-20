@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Workflow Foundation 4.0 - Custom Activity Geliştirmek [Beta 2]"
 date: 2010-01-01 07:00:00 +0300
-description: "Programlamaya profesyonel olarak adım attığım yıllarda henüz .Net mimarisi geliştirilmeden önce Delphi programlama dili ile ürünler yazmaya çalışırdım. Aslında .Net çıktığından beri uğraşmadığım Delphi programlama dilini düşündüğümde aklıma ilk gelen hızlı geliştirme(Rapid Development) için sunduğu zengin Component sekmeleridir."
 categories:
   - wf-4-0-beta-2
 tags:
@@ -20,12 +19,9 @@ tags:
   - visual-studio
   - datatable
 ---
-# Workflow Foundation 4.0 - Custom Activity Geliştirmek [Beta 2]
-![blg108_Giris.jpg](/assets/images/2010/blg108_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Programlamaya profesyonel olarak adım attığım yıllarda henüz.Net mimarisi geliştirilmeden önce Delphi programlama dili ile ürünler yazmaya çalışırdım. Aslında.Net çıktığından beri uğraşmadığım Delphi programlama dilini düşündüğümde aklıma ilk gelen hızlı geliştirme (Rapid Development) için sunduğu zengin Component sekmeleridir. Sayısız bileşen sayesinde müşteri ihtiyaçlarına çok hızlı cevap verebilecek ürünler geliştirebildiğimi de gayet net hatırlayabiliyorum. Tabi.Net dünyasına geçiş yapıp Visual Studio.Net (2005,2008,2010) ortamı ile karşılaştırıldığında çok fazla bileşen olduğu göze çarpmaktaydı. Ancak.Net tarafında da kodlama yeteneklerinin daha ön plana çıktığı bir gerçekti.
+
+![blg108_Giris.jpg](/assets/images/2010/blg108_Giris.jpg)
 
 Ancak ister Delphi olsun ister.Net ister Java platformu, görsel program geliştirme ortamlarında var olan bileşenlerin yeterli gelmediği durumlar ile karşılaşılabilir. Bu durumda, geliştiriciler kendi bileşenlerini yazmaya çalışırlar (Yada ihtiyaçlarını karşılayan bileşenleri satın alma yoluna giderler
 

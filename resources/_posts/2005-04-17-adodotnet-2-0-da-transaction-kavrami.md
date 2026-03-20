@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ado.Net 2.0' da Transaction Kavramı"
 date: 2005-04-17 12:00:00 +0300
-description: "Transaction kavramı ve kullanımı veritabanı programcılığının olmazsa olmaz temellerinden birisidir. Veritabanına doğru gerçekleştirilen işlemlerin tamamının onaylanması veya içlerinden birisinde meydana gelecek bir istisna sonrası o ana kadar yapılan tüm işlerin geri alınması veri bütünlüğünü korumak açısından son derece önemlidir. Ado.Net 1.0/1.1 için transactionların kullanımı, seçilen veri sağlayıcısına göre farklı sınıfların kullanılmasını gerektirir."
 categories:
   - ado-net-2-0
 tags:
@@ -14,9 +13,6 @@ tags:
   - transactions
   - generics
 ---
-# Ado.Net 2.0' da Transaction Kavramı
-Değerli Okurlarım, Merhabalar.
-
 Transaction kavramı ve kullanımı veritabanı programcılığının olmazsa olmaz temellerinden birisidir. Veritabanına doğru gerçekleştirilen işlemlerin tamamının onaylanması veya içlerinden birisinde meydana gelecek bir istisna sonrası o ana kadar yapılan tüm işlerin geri alınması veri bütünlüğünü korumak açısından son derece önemlidir. Ado.Net 1.0/1.1 için transactionların kullanımı, seçilen veri sağlayıcısına göre farklı sınıfların kullanılmasını gerektirir.
 
 Örneğin SqlClient isim alanındaki sınıfları kullandığınız bir veritabanı uygulamanız var ise, SqlTransaction sınıfını kullanırsınız. Oysa Ado.Net 2.0' da transaction mimarisi Ado.Net'ten ayrıştırılmış, bir başka deyişle provider'lardan bağımsız hale getirilmiştir. Aslında en büyük değişiklik transaction işlemlerinin artık System.Transactions isim alanı altında yer alan sınıflar ile gerçekleştirilecek olmasıdır. Bir diğer büyük değişiklik transaction'ların yazım tekniği ile ilgilidir. Ado.Net 2.0 da transaction oluşturacak ve kullanacak kodları çok daha basit biçimde yazabilirsiniz. Bunu ilerleyen paragraflarda sizde göreceksiniz.

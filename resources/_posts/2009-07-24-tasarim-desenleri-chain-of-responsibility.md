@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tasarım Desenleri - Chain of Responsibility"
 date: 2009-07-24 05:15:00 +0300
-description: "Dün gece çok garip bir rüya gördüm. Rüyamda denize açılmak için limanda duran tekneme doğru ilerliyordum. Derken kendimi kaptan köşkünde buldum. E tabi rüya bu. Hareket etmek istedim ama bir türlü beceremedim. Sonunda sorunun ne olduğunu bulmaya çalıştım ve yandaki manzaranın bir benzeri ile karşılaştım..."
 categories:
   - tasarim-kaliplari-design-patterns
 tags:
@@ -10,18 +9,11 @@ tags:
   - csharp
   - http
 ---
-# Tasarım Desenleri - Chain of Responsibility
-![blg49_2.jpg](/assets/images/2009/blg49_2.jpg)
-
-Merhaba Arkadaşlar,
-
 Dün gece çok garip bir rüya gördüm. Rüyamda denize açılmak için limanda duran tekneme doğru ilerliyordum. Derken kendimi kaptan köşkünde buldum. E tabi rüya bu. Hareket etmek istedim ama bir türlü beceremedim. Sonunda sorunun ne olduğunu bulmaya çalıştım ve yandaki manzaranın bir benzeri ile karşılaştım. Geminin demir halat zinciri (zincirleri) arap saçına dönmüştü. Sabah uyandığımda ilginç bir şekilde rüyayı hatırlayabildiğimi de farkettim.
 
-Acaba bu bir işaret miydi? Evet sanırım bu davranışsal tasarım desenlerinden olan Chain of Responsibility'yi anlatmam için bir işaretti.
+![blg49_2.jpg](/assets/images/2009/blg49_2.jpg)
 
-![Laughing](/assets/images/2009/smiley-laughing.gif)
-
-İşte maceramız başlıyor.
+Acaba bu bir işaret miydi? Evet sanırım bu davranışsal tasarım desenlerinden olan Chain of Responsibility'yi anlatmam için bir işaretti. İşte maceramız başlıyor.
 
 Davranışsal (Behavioral) kalıplardan olan Chain of Responsibility deseni, ortak bir mesaj veya talebin (Request), birbirlerine zayıf bir şekilde bağlanmış (Loosly Coupled) nesneler arasında gezdirilmesi ve bu zincir içerisinde asıl sorumlu olanı tarafından ele alınması gerektiği vakalarda kullanılmaktadır. DoFactory.com güncel istatistiklerine baktığımızda kullanım oranı %40' lar seviyesinde görünsede, yazılışı son derece basit bir desendir.
 

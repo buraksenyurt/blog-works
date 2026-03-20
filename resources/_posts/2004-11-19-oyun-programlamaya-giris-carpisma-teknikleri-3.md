@@ -1,16 +1,12 @@
-﻿---
+---
 layout: post
 title: "Oyun Programlamaya Giriş (Çarpışma Teknikleri - 3)"
 date: 2004-11-19 10:00:00 +0300
-description: "Geçtiğimiz hafta boyunca, Oyun Programcılığı ile ilgili olaraktan aldığım kitapları fırsat buldukça okumaya ve çalışmaya devam ettim. Konular o kadar heyecanlı ve sürükleyici ki araştırmak için zaman kavramı anlmasız hale geliyor. Öyleki, dün gece sabaha karşı saat 03:00 sularında kağıt kalem ile boğuşuyor ve Çarpışma Tekniklerinden birisinin daha matematiksel modelinin C# ile nasıl uygulanabileceğini araştırıyordum. Sonuç olarak işe bir kaç saatlik uykuyla gitmek zorunda kaldım. Ancak buna rağmen tüm gün dinçtim. Çünkü, çarpışma tekniklerinden birisini daha öğrenmiştim. Sıra anlatmaya gelmişti. İşte bugünkü makalemizde 3ncü çarpışma tekniğini incelemeye çalışacağız."
 categories:
   - csharp
 tags:
   - csharp
 ---
-# Oyun Programlamaya Giriş (Çarpışma Teknikleri - 3)
-Değerli Okurlarım Merhabalar,
-
 Geçtiğimiz hafta boyunca, Oyun Programcılığı ile ilgili olaraktan aldığım kitapları fırsat buldukça okumaya ve çalışmaya devam ettim. Konular o kadar heyecanlı ve sürükleyici ki araştırmak için zaman kavramı anlmasız hale geliyor. Öyleki, dün gece sabaha karşı saat 03:00 sularında kağıt kalem ile boğuşuyor ve Çarpışma Tekniklerinden birisinin daha matematiksel modelinin C# ile nasıl uygulanabileceğini araştırıyordum. Sonuç olarak işe bir kaç saatlik uykuyla gitmek zorunda kaldım. Ancak buna rağmen tüm gün dinçtim. Çünkü, çarpışma tekniklerinden birisini daha öğrenmiştim. Sıra anlatmaya gelmişti. İşte bugünkü makalemizde 3ncü çarpışma tekniğini incelemeye çalışacağız.
 
 Oyun programcılığında önemli bir yere sahip olan çarpışma tekniklerinde, bu makaleye gelinceye kadar iki ana konuyu inceleme fırsatı bulduk. İlk olarak iki dörtgensel nesnenin bir birleriyle olan çarpışmalarını inceledik. Daha sonraki makalemizde ise, eski dostumuz Pisagor'u anıp, iki dairesel nesnenin birbirleriyle olan çarpışmalarını araştırdık. Sırada bu iki durumun kombinasyonu var. Yani, bir dörtgen ile dairesel bir nesnenin birbirleriyle olan çarpışmalarının tespit edilmesi. Bu teknikte yine Pisagor teroeminden yararlanacağız. Ancak dikkat etmemiz gereken önemli koordinat noktaları var. Bu durumu daha iyi analiz etmek için aşağıdaki şekli göz önüne alalım.

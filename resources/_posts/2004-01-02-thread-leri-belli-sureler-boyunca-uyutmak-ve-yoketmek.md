@@ -1,17 +1,13 @@
-﻿---
+---
 layout: post
 title: "Thread'leri Belli Süreler Boyunca Uyutmak ve Yoketmek"
 date: 2004-01-02 12:00:00 +0300
-description: "Bir önceki makalemizde hatırlayacak olursanız, iş parçacıkları haline getirdiğimiz metodlarımızda işlemeleri yavaşlatmak amacı ile bazı döngüler kullanmıştık. Gerçek hayatta çoğu zaman, iş parçacıklarının belirli süreler boyunca beklemesini ve süre sona erdiğinde tekrardan işlemelerine kaldığı yerden devam etmesini istediğimiz durumlar olabilir. Önceki makalemizde kullandığımız Suspend metodu ile ilgili iş parçacığını durdurabiliyorduk. Bu ilgili iş parçacıklarını geçici süre ile bekletmenin yollarından birisidir. Ancak böyle bir durumda bekletilen iş parçacığını tekrar hareketlendirmek kullanıcının Resume metodunu çalıştırması ile olabilir. Oysaki biz"
 categories:
   - csharp
 tags:
   - csharp
   - threading
 ---
-# Thread'leri Belli Süreler Boyunca Uyutmak ve Yoketmek
-Değerli Okurlarım, Merhabalar.
-
 Bugünkü makalemizde iş parçacıklarının belli süreler boyunca nasıl durgunlaştırılabileceğini yani etkisizleştirebilieceğimizi işlemey çalışıcaz. Ayrıca iş parçacıklarının henüz sonlanmadan önce nasıl yokedildiklerini göreceğiz.
 
 Bir önceki makalemizde hatırlayacak olursanız, iş parçacıkları haline getirdiğimiz metodlarımızda işlemeleri yavaşlatmak amacı ile bazı döngüler kullanmıştık. Gerçek hayatta çoğu zaman, iş parçacıklarının belirli süreler boyunca beklemesini ve süre sona erdiğinde tekrardan işlemelerine kaldığı yerden devam etmesini istediğimiz durumlar olabilir. Önceki makalemizde kullandığımız Suspend metodu ile ilgili iş parçacığını durdurabiliyorduk. Bu ilgili iş parçacıklarını geçici süre ile bekletmenin yollarından birisidir. Ancak böyle bir durumda bekletilen iş parçacığını tekrar hareketlendirmek kullanıcının Resume metodunu çalıştırması ile olabilir. Oysaki biz, iş parçacığımızın belli bir süre boyunca beklemsini isteyebiliriz. İşte böyle bir durumda Sleep metodunu kullanırız. Bu metodun iki adet overload edilmiş versiyonu vardır.

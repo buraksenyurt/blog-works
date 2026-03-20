@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Derinlemesine Session Kullanımı - 1"
 date: 2004-12-30 18:00:00 +0300
-description: "Bu makalemizde, Asp.Net sunucularında durum yönetimi (state management) amacıyla kullanılan Session nesnesini detaylı bir şekilde incelemeye başlıyacağız. Bildiğiniz gibi, web anatomisinde durum yönetimi başlı başına bir terminolojidir. Web sitelerinin yer aldığı web sunucularının istemci makinelerde durum yönetme yeteneğine sahip olamamaları sonucu, belli bir kullanıcıya ait bilgilerin sayfalar arasında korunması veya taşınabilmesi için değişik teknikler geliştirilmiştir. Session kullanımı bu tekniklerden birisidir. Öncelikle Session kavramının ne olduğunu ve ne için kullanıldığını kavramaya çalışalım."
 categories:
   - aspnet
 tags:
@@ -13,9 +12,6 @@ tags:
   - performance
   - dataset
 ---
-# Derinlemesine Session Kullanımı - 1
-Değerli Okurlarım, Merhabalar.
-
 Bu makalemizde, Asp.Net sunucularında durum yönetimi (state management) amacıyla kullanılan Session nesnesini detaylı bir şekilde incelemeye başlıyacağız. Bildiğiniz gibi, web anatomisinde durum yönetimi başlı başına bir terminolojidir. Web sitelerinin yer aldığı web sunucularının istemci makinelerde durum yönetme yeteneğine sahip olamamaları sonucu, belli bir kullanıcıya ait bilgilerin sayfalar arasında korunması veya taşınabilmesi için değişik teknikler geliştirilmiştir. Session kullanımı bu tekniklerden birisidir. Öncelikle Session kavramının ne olduğunu ve ne için kullanıldığını kavramaya çalışalım.
 
 Bir kullanıcı, bir web sunucusundan herhangibir sayfa talep ettiğinde, web sunucusu bu kullanıcı için kendi sistemi üzerinde veya yardımcı bir sunucuda (web farm'lar göz önüne alındığında) bir oturum başlatır. İşte Session nesneleri yardımıyla kullanıcıya ait olan bu oturum boyunca sayfalar arasında bilgi taşıma işlemini gerçekleştirebiliriz. Session kullanımına verilebilecek en güzel ve klasik örnek, kullanıcılarının alış veriş sepetleri ile birlikte site içindeki sayfalar boyunca gezinebilmeleridir. Burada temel fikir kullanıcının sahip olduğu sepete ait bilgileri site içerisinde yer alan sayfalar boyunca taşıyabilmektir. Biz bu amaçla Session nesnelerini kullanabilir ve kullanıcının oturumu sonlanıncaya kadar sayfalar arasında veri taşıyabiliriz. Elbette başlayan bir oturum mutlaka bir şekilde sonlandırılır. Bir oturum temel olarak aşağıdaki nedenlerden dolayı sonlanabilir?

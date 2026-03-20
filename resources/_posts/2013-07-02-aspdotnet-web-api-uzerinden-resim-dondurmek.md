@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net Web API Üzerinden Resim Döndürmek"
 date: 2013-07-02 13:08:00 +0300
-description: "Bu yazımızda Asp.Net Web API üzerinden, SQL tablolarında binary formatta tutulabilen resim içeriklerini nasıl çekebileceğimizi basit bir örnek ile incelemeye çalışıyor olacağız. Örneğimizin özel yanlarından birisi de kısa süre önce yayınlanan Visual Studio 2013 Preview ile geliştirilecek olması. Önce senaryomuza bir bakalım..."
 categories:
   - aspnet-web-api
 tags:
@@ -18,10 +17,10 @@ tags:
   - generics
   - visual-studio
 ---
-# Asp.Net Web API Üzerinden Resim Döndürmek
-[![Road-Runner-Wile-E-Coyote-looney-tunes-5226561-1024-768](/assets/images/2013/Road-Runner-Wile-E-Coyote-looney-tunes-5226561-1024-768_thumb.jpg)](/assets/images/2013/Road-Runner-Wile-E-Coyote-looney-tunes-5226561-1024-768.jpg) Merhaba Arkadaşlar,
-
 Eminim çocukken çizgi filmlerle aranız vardı. Hatta çoğumuz yaşı kaç olursa olsun çizgi filmlere arada sırada da olsa zaman ayırmakta. (Ben Batman gördüm mü pür dikkat izlerim örneğin) Keza pek çok büyüğümüz de, eskiden izlediği çizgi filmler ile karşılaştığında taaaa çocukluk yıllarına kadar gidip aynı o zamanki gibi içten gülebiliyorlar da (Rahmetli babamdan bilirim)
+
+[![Road-Runner-Wile-E-Coyote-looney-tunes-5226561-1024-768](/assets/images/2013/Road-Runner-Wile-E-Coyote-looney-tunes-5226561-1024-768_thumb.jpg)](/assets/images/2013/Road-Runner-Wile-E-Coyote-looney-tunes-5226561-1024-768.jpg)
+
 
 Aslına bakarsanız bazen teknoloji de bizi aynen bu mantıkta epeyce güldürebiliyor. Örneğin Microsoft’ un ürünlerini düşünelim. (Gerçi çok fazlalar ama gene de düşünmeye çalışalım) Sürekli yenilikler çıkartıyorlar, sürekli verisyon atlatıyorlar ve işin en acı tarafı da koşan [Road Runner](https://eksisozluk.com/road-runner--32627)’ a benziyorlar. Biz mi? Biz ise Road Runner’ ı her fırsatta yakalamaya çalışıp yakaladığını zanneden ama son anda hep elinden kaçıran [Coyote](https://eksisozluk.com/coyote--51208)’ ye
 

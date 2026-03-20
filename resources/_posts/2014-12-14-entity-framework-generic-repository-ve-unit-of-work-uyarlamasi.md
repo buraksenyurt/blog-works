@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Entity Framework - Generic Repository ve Unit of Work Uyarlaması"
 date: 2014-12-14 03:00:00 +0300
-description: "DDD denilince aklımıza daha çok veri odaklı uygulamalar gelir ve bu tip ürünlerde RDBMS(Relational Database Management System) lerin yeri hatırı sayılır ölçüde fazladır(Her ne kadar son yıllarda NoSQL cephesinde önemli gelişmeler ve kullanımda ciddi artışlar olsa da…) Hal böyle olunca O/RM(Object Relational Mapping) araçlarının kullanımı da önem kazanmaktadır. Yıllardır hayatımızda olan bu araçlar modellerin nesnel olarak inşasında da önemli bir yere sahiptirler. Lakin Object Oriented dünyasının kuralları içerisinde yaşarlar ve bu yüzden bazı kurumsal prensipleri uygulamaları gerekmektedir."
 categories:
   - entity-framework
   - tasarim-prensipleri-design-principles
@@ -21,10 +20,10 @@ tags:
   - dependency-injection
   - dependency-management
 ---
-# Entity Framework - Generic Repository ve Unit of Work Uyarlaması
-[![thinking](/assets/images/2014/thinking_thumb.jpg)](/assets/images/2014/thinking.jpg) Merhaba Arkadaşlar,
-
 Yazılım dünyasında var olan mimari prensipler veya tasarım kalıpları tek başlarına belirli sorunları çözseler de, bazı kurumsal projelerde mutlak suretle bir arada düşünülmeleri gerekir. Söz gelimi Repository ve Unit of Work kalıpları, özellikle Domain Driven Design odaklı yapılarda bir arada değerlendirilmesi gerekenlerdendir.
+
+[![thinking](/assets/images/2014/thinking_thumb.jpg)](/assets/images/2014/thinking.jpg)
+
 
 DDD denilince aklımıza daha çok veri odaklı uygulamalar gelir ve bu tip ürünlerde RDBMS (Relational Database Management System) lerin yeri hatırı sayılır ölçüde fazladır (Her ne kadar son yıllarda NoSQL cephesinde önemli gelişmeler ve kullanımda ciddi artışlar olsa da…)
 

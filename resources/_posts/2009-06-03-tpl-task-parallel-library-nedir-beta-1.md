@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "TPL(Task Parallel Library) Nedir? [Beta 1]"
 date: 2009-06-03 02:50:00 +0300
-description: "Özellikle işlemcilerin bu şekilde ilerlemesine paralel olarak, yazılım geliştirme ortamlarında da pekala pek çok değişiklik ve yenilikçi fikir ortaya çıktı. Son zamanların özellikle Microsoft .Net cephesindeki en popüler konularından biriside paralel genişletmeler(Parallel Extensions). Bir başka deyişle, sistemin sahip olduğu işlemci gücünün tümünü kullanarak(Arabanın hakkını ver hakkını Smile ), paralel işlemler veya eş zamanlı yürütmelerin gerçekleştirilmesi."
 categories:
   - tpl
 tags:
@@ -16,18 +15,11 @@ tags:
   - delegates
   - generics
 ---
-# TPL(Task Parallel Library) Nedir? [Beta 1]
-Merhaba Arkadaşlar,
-
 Uzun uzun zaman önceydi. İlk bilgisayarımı daha dün gibi hatırlıyorum. Efsane Commodore 64.
 
 ![blg26_8.jpg](/assets/images/2009/blg26_8.jpg)
 
-Açıkçası onunla yaptığım tek şey oyun oynamaktı itiraf ediyorum. En çok sevdiğim oyunlar arasında Grean Beret, Barbarian, Karate Kid 2, 1942, Airwolf vardı. Gel zaman git zaman, Üniversite yıllarına girince, bilgisayar işini daha ciddi düşünmeye başlamıştım. Yanlış hatırlamıyorsam yaklaşık olarak 2400 dolar değerinde (
-
-![Money mouth](/assets/images/2009/smiley-money-mouth.gif)
-
-) 486DX işlemcili bir bilgisayarım daha olmuştu.
+Açıkçası onunla yaptığım tek şey oyun oynamaktı itiraf ediyorum. En çok sevdiğim oyunlar arasında Grean Beret, Barbarian, Karate Kid 2, 1942, Airwolf vardı. Gel zaman git zaman, Üniversite yıllarına girince, bilgisayar işini daha ciddi düşünmeye başlamıştım. Yanlış hatırlamıyorsam yaklaşık olarak 2400 dolar değerinde (![Money mouth](/assets/images/2009/smiley-money-mouth.gif)) 486DX işlemcili bir bilgisayarım daha olmuştu.
 
 ![blg26_3.jpg](/assets/images/2009/blg26_3.jpg)
 

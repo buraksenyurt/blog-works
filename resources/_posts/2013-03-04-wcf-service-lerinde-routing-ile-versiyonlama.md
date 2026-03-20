@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF Service' lerinde Routing ile Versiyonlama"
 date: 2013-03-04 00:50:00 +0300
-description: "Geçen gün şöyle eskiden yazmış olduğum makalelere bir bakayım dedim. Derken gözüm WCF 4.0’ ın Beta zamanlarında yazdıklarıma takıldı. O zamanlar .Net Framework 4.0' ün Beta sürümü çıktığında, incelemeye çalıştığım önemli yeniliklerden birisi de yönlendirme servisleri(Routing Service) idi."
 categories:
   - wcf
 tags:
@@ -12,12 +11,9 @@ tags:
   - dotnet
   - http
 ---
-# WCF Service' lerinde Routing ile Versiyonlama
-[![oldbook](/assets/images/2013/oldbook_thumb.jpg)](/assets/images/2013/oldbook.jpg)[Orjinal yazım tarihi 2012 Eylül’ dür]
-
-Merhaba Arkadaşlar,
-
 Geçen gün şöyle eskiden yazmış olduğum makalelere bir bakayım dedim. Derken gözüm WCF 4.0’ ın Beta zamanlarında yazdıklarıma takıldı. O zamanlar.Net Framework 4.0' ün Beta sürümü çıktığında, incelemeye çalıştığım önemli yeniliklerden birisi de yönlendirme servisleri (Routing Service) idi.
+
+[![oldbook](/assets/images/2013/oldbook_thumb.jpg)](/assets/images/2013/oldbook.jpg)
 
 İstemciden gelen talepleri analiz ederek, arka planda yer alan asıl servislere mesajların taşınması noktasında göz önüne alınabilecek önemli bir kabiliyet sunulmaktaydı. Aslında RoutingService, buradaki işi güçlü filtreleme özellikleri ile epeyce kolaylaştıran bir tip olarak karşımıza çıkmaktaydı. Hatta bu konuyu bir kaç makale ile de ele almaya çalışmıştım.
 
@@ -29,7 +25,7 @@ Geçen gün şöyle eskiden yazmış olduğum makalelere bir bakayım dedim. Der
 
 [WCF 4.0 Yenilikleri - Routing Service - MatchAll Filtresi [Beta 1]](https://www.buraksenyurt.com/post/WCF-40-Yenilikleri-Routing-Service-MatchAll-Filtresi)
 
-[WCF WebHttp Services - Routing](../2010/WCF WebHttp Services - Routing.md)
+[WCF WebHttp Services - Routing](/2010/03/07/wcf-webhttp-services-routing/)
 
 Tabi bunların hepsi Beta sürümüne ait incelemelerdi. Zaman ilerledikçe yönlendirme servislerinin önemli senaryolarda göz önüne alınabileceğini de gördük. Örneğin Load Balancing gibi.
 

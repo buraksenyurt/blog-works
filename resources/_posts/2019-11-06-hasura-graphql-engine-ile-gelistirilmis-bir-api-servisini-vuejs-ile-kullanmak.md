@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Hasura GraphQL Engine ile geliştirilmiş bir API Servisini Vue.js ile Kullanmak"
 date: 2019-11-06 10:30:00 +0300
-description: "API'ler için türlendirilmiş(typed) sorgulama dillerinden birisi olarak öne çıkan GraphQL'e bir süredir uğramıyordum. Daha doğrusu GraphQL sorgusu çalıştırılabilecek şekilde API servis hazırlıklarını yapmaya üşeniyordum. Bu nedenle işi kolaylaştıran ve Heroku üzerinden sunulan Hasura GraphQL Engine hizmetine bakmaya karar verdim. Hasura, veriyi PostgreSQL kullanarak saklıyor ve ayrıca API'yi bir Docker Container içerisinden sunuyor. Amacım Hasura tarafında hazırlayacağım iki kobay veri setini, Vue.js tabanlı bir istemcisinden tüketmek. Basitçe listeleme yapıp, veri ekleme işini yapabilsem başlangıç aşamasında yeterli olur. İşe Hasura servisini hazırlayarak başlamak lazım."
 categories:
   - vuejs
 tags:
@@ -20,10 +19,9 @@ tags:
   - caching
   - github
 ---
-# Hasura GraphQL Engine ile geliştirilmiş bir API Servisini Vue.js ile Kullanmak
-![hasuralogo.png](/assets/images/2019/hasuralogo.png)
-
 Yıl 2015. Hindistan'ın Bengaluru şehrinde doğan bir Startup (Sonradan San Fransico'da da bir ofis sahibi olacaklar), [Microsoft'un BizSpark programından destek](https://blogs.technet.microsoft.com/bizspark_featured_startups/2017/09/18/quickly-develop-backend-applications-without-having-to-write-code-with-hasura/) buluyor. Kurucuları Rajoshi Ghosh (Aslen bioinformatik araştırmacısı) ve Tanmai Gopal (Bulut sistemleri, fonksiyonel programlama ve GraphQL konusunda uzman) isimli iki Hintli. Şirketlerine şeytanın sanskritçedeki adını veriyorlar; Hasura! Aslında O, fonksiyonel dillerin kralı Haskell ile yazılmış bir platform ve şimdilerde Heroku ile daha yakın arkadaş.
+
+![hasuralogo.png](/assets/images/2019/hasuralogo.png)
 
 Ekibin amacı geliştiricilerin hayatını kolaylaştıracak, yüksek hızlı, kolayca ölçeklenebilir, sade ve Kubernetes ile dost PaaS (Platform as a Service) ile BaaS (Back-end as a Service) ortamları sunmak.
 
@@ -213,8 +211,9 @@ sudo npm install vue-apollo apollo-client apollo-cache-inmemory apollo-link-http
 
 Vue uygulaması tarafında yapacaklarımız kabaca şöyle (Kod dosyalarındaki yorum bloklarında daha detaylı bilgiler mevcut)
 
-Components klasörüne tek ürün için kullanılabilecek ProductItem isimli bir bileşen ekliyoruz. Anasayfa listelemesinde tekrarlanacak türden bir bileşen olacak bu. Bileşende product özelliği üzerinden içerideki elementlere veri bağlama işlemini gerçekleştirmekteyiz. {{nesne.özellik}} notasyonlarının nasıl kullanıldığına dikkat edelim.
+Components klasörüne tek ürün için kullanılabilecek ProductItem isimli bir bileşen ekliyoruz. Anasayfa listelemesinde tekrarlanacak türden bir bileşen olacak bu. Bileşende product özelliği üzerinden içerideki elementlere veri bağlama işlemini gerçekleştirmekteyiz. &#123;&#123;nesne.özellik&#125;&#125; notasyonlarının nasıl kullanıldığına dikkat edelim.
 
+{% raw %}
 ```text
 <template>
   <div :key="product.productId" class="card w-75">
@@ -231,6 +230,7 @@ Components klasörüne tek ürün için kullanılabilecek ProductItem isimli bir
       <hr/>
   </div>
 </template>
+{% endraw %}
 
 <script>
 export default {

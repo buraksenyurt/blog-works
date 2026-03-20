@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "DART Programlama Diliyle Az Biraz Uğraşmak"
 date: 2020-06-07 14:14:00 +0300
-description: "Çok duydum, çok bahsedildi. Hep Flutter arkasında kaldı. Aslında yıllardır vardı. Birazcık bakmamın zamanı gelip de geçmişti. Haydi dedim o zaman. Önce onu Heimdall(Ubuntu-20.04) yüklemem gerekiyordu tabii. Bu adresteki talimatları takip ederek kurulumu gerçekleştirdim ve birkaç örnek kod parçasını bol yorum satırlarıyla önce skynet reposuna ardından da bloga bırakmaya karar verdim. Sizde Dart diline şöyle bir bakmak temel özelliklerini öğrenmek istiyorsanız aşağıdaki kronolojiyi takip ederek bana katılabilirsiniz. Eğer Java veya C# kökenliyseniz DART diline alışmanız da çok zor değil."
 categories:
   - dart
 tags:
@@ -21,10 +20,9 @@ tags:
   - visual-studio
   - github
 ---
-# DART Programlama Diliyle Az Biraz Uğraşmak
-![dart.jpg](/assets/images/2020/dart.jpg)
-
 Çok duydum, çok bahsedildi. Hep Flutter arkasında kaldı. Aslında yıllardır vardı. Birazcık bakmamın zamanı gelip de geçmişti. Haydi dedim o zaman. Önce onu Heimdall (Ubuntu-20.04) yüklemem gerekiyordu tabii. [Bu adresteki talimatları](https://dart.dev/get-dart) takip ederek kurulumu gerçekleştirdim ve birkaç örnek kod parçasını bol yorum satırlarıyla önce skynet reposuna ardından da bloga bırakmaya karar verdim. Sizde Dart diline şöyle bir bakmak temel özelliklerini öğrenmek istiyorsanız aşağıdaki kronolojiyi takip ederek bana katılabilirsiniz. Eğer Java veya C# kökenliyseniz DART diline alışmanız da çok zor değil. Tabii başlamadan önce adettendir dil ile ilgili sözü geçen genel özellikleri şöyle bir sıralayalım.
+
+![dart.jpg](/assets/images/2020/dart.jpg)
 
 - Google tarafından yazılmış çok amaçlı bir programlama dilidir. A,B,C,D,E,F,G vitaminlerinin hepsini...Pardon:D Onunla web, mobil, masaüstü ve sunucu bazlı uygulamalar geliştirilebilir. Pek tabii google içindeki birçok uygulama onunla yazılmıştır (Adwords,AngularDart, Fuchsia ve tabii ki Flutter)
 - Merak edenler için...2011 de GOTO konferansında duyurulmuş ve ilk sürümü 2013'te çıkmıştır. Amaç web uygulamalarını daha kolay bir şekilde geliştirmektir.

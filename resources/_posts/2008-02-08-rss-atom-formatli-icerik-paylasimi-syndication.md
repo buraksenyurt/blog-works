@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "RSS, Atom Formatlı İçerik Paylaşımı(Syndication)"
 date: 2008-02-08 12:00:00 +0300
-description: "Windows Communication Foundation, Net Framework 3.5 ile gelen bazı yeni CLR(Common Language Runtime) tipleri sayesinde RSS 2.0 ve Atom 1.0 formatlarında yada diğer özel formatlarda içerik paylaşımı(Syndication) yapılmasına izin veren özelliklere sahip olmuştur. Bu tipler sayesinde bir WCF servisi(Service) üzerinden özellikle HTTP protokolünün GET, POST, HEAD ve benzeri metodlarına göre talep-cevap(Request-Response) işlemleri gerçekleştirilebilmektedir. Bir başka deyişle EndPoint noktaları üzerinden farklı tipte verilerin, dünya standartlarına uygun olacak şekilde yayınlanması mümkündür. İşte bu makalemizde bir WCF servisi üzerinden en basit haliyle RSS veya Atom formatında içerik paylaşımlarının nasıl yapılabileceğini incelemeye çalışacağız."
 categories:
   - wcf
 tags:
@@ -15,9 +14,6 @@ tags:
   - generics
   - visual-studio
 ---
-# RSS, Atom Formatlı İçerik Paylaşımı(Syndication)
-Değerli Okurlarım Merhabalar,
-
 Windows Communication Foundation, Net Framework 3.5 ile gelen bazı yeni CLR (Common Language Runtime) tipleri sayesinde RSS 2.0 ve Atom 1.0 formatlarında yada diğer özel formatlarda içerik paylaşımı (Syndication) yapılmasına izin veren özelliklere sahip olmuştur. Bu tipler sayesinde bir WCF servisi (Service) üzerinden özellikle HTTP protokolünün GET, POST, HEAD ve benzeri metodlarına göre talep-cevap (Request-Response) işlemleri gerçekleştirilebilmektedir. Bir başka deyişle EndPoint noktaları üzerinden farklı tipte verilerin, dünya standartlarına uygun olacak şekilde yayınlanması mümkündür. İşte bu makalemizde bir WCF servisi üzerinden en basit haliyle RSS veya Atom formatında içerik paylaşımlarının nasıl yapılabileceğini incelemeye çalışacağız.
 
 RSS veya Atom gibi formatların ortak noktası platform bağımsız (Interoperability) veri içerikleri sunulabilmesi için gerekli standartları içeriyor olmalarıdır. Bu sayede yayınlanan veriyi alacak olan istemcilerin (Clients) farklı özelliklerinin düşünülmesine gerek kalmamaktadır. Burada söz konusu olan platform bağımsız yayınlanabilen veriler genellikle Feed olarak adlandırılırlar. Feed yapısı kendi içerisinde, içerik yayınlaması ile ilgili olaraktan yazar (author), başlık (title), adres (url) ve bunlar ile ilişkili olan metadata bilgilerini barındırır. Ayrıca kendi içerisinde birden fazla öğe (Item) barındırabilir. Bu öğelerin her biride kendi içerisinde başlık (title), adres (url), oluşturulma tarihi (creation date), açıklama (description), kategori (category) gibi bilgileri barındırmaktadır. Bu içeriklerin şu anda popüler olan iki farklı sunuş şekli RSS (Really Simple Syndication) ve Atom teknikleridir. Her ikiside XML (eXtensible Markup Languge) tabanlı olacak şekilde içerik paylaşımı standartları sunarlar.

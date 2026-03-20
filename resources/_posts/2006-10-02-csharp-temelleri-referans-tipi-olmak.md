@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "C# Temelleri : Referans Tipi Olmak"
 date: 2006-10-02 06:00:00 +0300
-description: ".Net üzerinde kullanılabilen veri türleri (data types) referans türleri (reference types) ve değer türleri (value types) olmak üzere iki kategoriye ayrılmaktadır. Temel olarak değer türleri (value types) fiziki belleğin stack adı verilen bölgesinde tutulur..."
 categories:
   - csharp
 tags:
@@ -10,9 +9,6 @@ tags:
   - dotnet
   - delegates
 ---
-# C# Temelleri : Referans Tipi Olmak
-Değerli Okurlarım Merhabalar,
-
 .Net üzerinde kullanılabilen veri türleri (data types) referans türleri (reference types) ve değer türleri (value types) olmak üzere iki kategoriye ayrılmaktadır. Temel olarak değer türleri (value types) fiziki belleğin stack adı verilen bölgesinde tutulur. Referans türleri ise, veriyi heap bellek bölgesinde tutarken, stack bölgesinden verilerin adresini gösteren işaretçiler kullanır..Net Framework içerisinde yer alan int, double, float, bool gibi ilkel tiplerin çoğu değer türleridir.
 
 Geliştiriciler struct ve enum tiplerini kullanarak kendi değer türlerini tasarlayabilirler. Aslında ilkel değer türlerinin (int, double gibi).Net Framework içerisinde karşılık geldikleri struct ' lar vardır (örneğin int için System.Int32). Bunlar aynı zaman Common Type System'in üyeleridir. Referans tipleri cephesine bakacak olursak; string ve object türleri önceden tanımlı olan referans tipleridir. Geliştiriciler class, delegate gibi tipleri kullanarak kendi referans türlerini yazabilirler. Değer ve referans türleri ile ilgili bu kısa açıklamalardan sonra dilerseniz makalemizde işleyeceğimiz konu başlıklarına bir bakalım.

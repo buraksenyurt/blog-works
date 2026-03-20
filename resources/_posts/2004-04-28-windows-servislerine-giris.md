@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Windows Servislerine Giriş"
 date: 2004-04-28 15:00:00 +0300
-description: "Bu makalemizde windows servislerine kısa bir giriş yapıcak ve en basit haliye bir windows servisinin, .net ortamında nasıl oluşturulacağını incelemeye çalışacağız. Öncelikle Windows Service nedir, ne amaçlarla kullanılır bunu irdelemeye çalışak daha sonra windows servislerinin mimarisini kısaca inceleyeceğiz. Windows servisleri, işletim sisteminde arka planda çalışan, kullanıcı ile etkilişimde bulunduğu herhangibir arayüze sahip olmayan, kaynakların izlenmesi, system olaylarının log olarak tutulması, network erişimlerinin izlenmesi, veritabanları üzerindeki transaction'ların izlenmesi, sistem performansına ati bilgilerin toplanması, sistem hatalarının (system exceptions) , başarısız program denemelerin (failure) vb. gibi geri plan işlemlerinin takip edilmesinde kullanılan, sisteme kayıt edilmiş (register), çalıştırılabilir nesnelerdir."
 categories:
   - windows-services
 tags:
@@ -14,9 +13,6 @@ tags:
   - transactions
   - visual-studio
 ---
-# Windows Servislerine Giriş
-Değerli Okurlarım, Merhabalar.
-
 Bu makalemizde windows servislerine kısa bir giriş yapıcak ve en basit haliye bir windows servisinin,.net ortamında nasıl oluşturulacağını incelemeye çalışacağız. Öncelikle Windows Service nedir, ne amaçlarla kullanılır bunu irdelemeye çalışak daha sonra windows servislerinin mimarisini kısaca inceleyeceğiz.
 
 Windows servisleri, işletim sisteminde arka planda çalışan, kullanıcı ile etkilişimde bulunduğu herhangibir arayüze sahip olmayan, kaynakların izlenmesi, system olaylarının log olarak tutulması, network erişimlerinin izlenmesi, veritabanları üzerindeki transaction'ların izlenmesi, sistem performansına ati bilgilerin toplanması, sistem hatalarının (system exceptions), başarısız program denemelerin (failure) vb. gibi geri plan işlemlerinin takip edilmesinde kullanılan, sisteme kayıt edilmiş (register), çalıştırılabilir nesnelerdir.

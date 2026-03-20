@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ado.Net 2.0 ile Mars' a Ayak Basıyoruz"
 date: 2004-09-20 12:00:00 +0300
-description: "Bu makalemizde, MARS (Multiple Active Results Sets) kavramını incelemeye çalışacağız. MARS kavramı Ado.Net 2.0 mimarisine monte edilmiş yeni bir yapıdır. Bu yapının bize sağladığı avantajları anlayabilmek için, Ado.Net 1.0/1.1 sürümlerinin kabiliyetlerine ve kısıtlamalarına kısaca bir göz atmak gerekmektedir."
 categories:
   - ado-net-2-0
 tags:
@@ -17,9 +16,6 @@ tags:
   - dataset
   - datatable
 ---
-# Ado.Net 2.0 ile Mars' a Ayak Basıyoruz
-Değerli Okurlarım Merhabalar,
-
 Bu makalemizde, MARS (Multiple Active Results Sets) kavramını incelemeye çalışacağız. MARS kavramı Ado.Net 2.0 mimarisine monte edilmiş yeni bir yapıdır. Bu yapının bize sağladığı avantajları anlayabilmek için, Ado.Net 1.0/1.1 sürümlerinin kabiliyetlerine ve kısıtlamalarına kısaca bir göz atmak gerekmektedir.
 
 > Editörün Notu: Final sürümünde, ConnectionString katarı içerisinde MultipleActiveResultSets=true kullanılmaması halinde, MARS etkisi görülmemektedir. Varsayılan olarak MultipleActiveResultSets özelliğinin değeri false'dur. MARS tekniği, MultipleActiveResultSets değeri açıkça true'ya set edildiği takdirde çalışmaktadır.

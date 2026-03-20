@@ -1,16 +1,12 @@
-﻿---
+---
 layout: post
 title: "Kalıtım (Inheritance) Kavramına Kısa Bir Bakış"
 date: 2003-12-25 12:00:00 +0300
-description: "Bir önceki makalemizde C# dilinde sınıf kavramına bir giriş yapmış ve OOP(Objcet Oriented Programming-Nesneye Dayalı Programlama) tekniğinin en önemli kavramlarından biri olan kalıtımdan bahsedeceğimizi söylemiştik. Bugünkü makalemizde bu kavramı incelemeye çalışacağız."
 categories:
   - csharp
 tags:
   - csharp
 ---
-# Kalıtım (Inheritance) Kavramına Kısa Bir Bakış
-Değerli Okurlarım, Merhabalar.
-
 Bir önceki makalemizde C# dilinde sınıf kavramına bir giriş yapmış ve OOP (Objcet Oriented Programming-Nesneye Dayalı Programlama) tekniğinin en önemli kavramlarından biri olan kalıtımdan bahsedeceğimizi söylemiştik. Bugünkü makalemizde bu kavramı incelemeye çalışacağız.
 
 Kalıtım kavramı için verilebilecek en güzel örnekler doğamızda yer almaktadır. Örneğin Bitkiler, türlerine gore sınıflandırılırlar. Ancak hepsinin birer bitki olması ortak bir takım özelliklere sahip oldukları anlamınada gelmektedir. Bitki isimli bir sınıfı göz önüne alıp Ağaçlar,Çiçekler,Deniz Bitkileri vb… gibi alt sınıflara ayırabiliriz. Tüm bu alt sınıflar Bitki sınıfından gelmekte, yani türemektedirler. Aynı şekilde Bitki türü olan bir sınıf kendi içinde başka alt sınıflara ayrılabilir. Örneğin, Çiçek sınıfı Güller, Orkideler, Papatyalar vb… Tüm bu nesneler hiyerarşik bir yapıda ele alındıklarında temel bir sınıftan türedikleri görülebilmektedir.

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "C# Temelleri - Olayları(Events) Kavramak"
 date: 2007-06-06 09:00:00 +0300
-description: "Olaylar (Events), görsel uygulamalar ile uğraşan her geliştirici tarafından bilinçli veya bilinçsiz bir şekilde kullanılmaktadır. Nesne yönelimli programlama ortamında olayları tanımlamak için klasik olarak verilen bir örnek vardır."
 categories:
   - csharp
 tags:
@@ -14,9 +13,6 @@ tags:
   - generics
   - visual-studio
 ---
-# C# Temelleri - Olayları(Events) Kavramak
-Değerli Okurlarım Merhabalar,
-
 Olaylar (Events), görsel uygulamalar ile uğraşan her geliştirici tarafından bilinçli veya bilinçsiz bir şekilde kullanılmaktadır. Nesne yönelimli programlama ortamında olayları tanımlamak için klasik olarak verilen bir örnek vardır. Hepinizin bir sonraki cümlede ne diyeceğimi bildiğinizden eminim. Söz konusu örnekte görsel ortamda yer alan bir düğme kontrolü (çoğunlukla Button sınıfına ait bir nesne örneği) ve bu düğmeye kullanıcının mouse ile basması sonucu oluşan Click isimli bir olay mevcuttur.
 
 Oysaki olayların her zaman için görsel ortamda olması ve işletim sistemi tarafından algılanacak bir etkileşime karşılık olarak uygulama ortamına fırlatılması şart değildir. Dolayısıyla olayları kavrayabilmenin en güzel yolu, geliştirici tarafından yazılan tiplere özel olarak nasıl yazılacağını ve kullanılacağını bilmekle mümkün olabilir. İşte bu makalemizde kendi tiplerimiz için özel olayları nasıl yazabileceğimizi incelemeye başlayacak ve olayları daha derinlemesine kavramaya çalışacağız.

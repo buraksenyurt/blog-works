@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tasarım Desenleri - Interpreter"
 date: 2009-08-03 06:30:00 +0300
-description: "Yandaki legoya baktığımızda sanıyorum ki hepimizin aklına Romalılar gelmektedir. Aslında benim aklıma Ben Hur filmi ve müthiş atlı araba yarışı sahneleri geliyor. Her neyse..."
 categories:
   - tasarim-kaliplari-design-patterns
 tags:
@@ -10,10 +9,9 @@ tags:
   - csharp
   - generics
 ---
-# Tasarım Desenleri - Interpreter
-![blg55_Giris.jpg](/assets/images/2009/blg55_Giris.jpg)
-
 Yandaki legoya baktığımızda sanıyorum ki hepimizin aklına Romalılar gelmektedir. Aslında benim aklıma Ben Hur filmi ve müthiş atlı araba yarışı sahneleri geliyor. Her neyse...
+
+![blg55_Giris.jpg](/assets/images/2009/blg55_Giris.jpg)
 
 Romalılar, Mısırlıların fikirlerinden yola çıkarak harfler ile ifade edilebilen bir sayı sistemini geliştirmiştir. Bu nedenle mutlaka okul hayatımızın bir döneminde Roma Rakamları ile karşılaşmışızdır. Aslında son derece eğlenceli bir sayı sistemidir ve bazı filmlerin sonunda, çevrildikleri yıllar genellikle Roma rakamları ile ifade edilmektedir.
 

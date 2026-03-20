@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: ".Net Remoting - SoapSuds"
 date: 2006-06-21 12:00:00 +0300
-description: "Remoting mimarisinde, istemci ve sunucu arasında uzak nesneleri paylaşmanın dört farklı yolu vardır. İstemcilerin tek amacı sunucu üzerinde yer alan uzak nesne referanslarını kullanabilmektir. Bu açıdan bakıldığında, istemci uygulamanın uzak sunucu üzerindeki nesne referanslarının yapısını bilmesi gerektiği ortaya çıkmaktadır. Kullanılabilecek yollardan ilki uzak nesne sınıfının bulunduğu paylaşımlı bir assembly' ı tüm istemci uygulamalara dağıtmaktır. Bu istemci uygulamalar için ekstra kod yazmadan kolayca gerçekleştirilebilecek bir işlemdir. Lakin istemci uygulamalarda, uzak sınıfın tüm içeriğinin yer aldığı bir assembly' da mevcuttur. Bu da ILDASM (Intermediate Dis-Assembler Tool) ve başka üçüncü parti araçlar yardımıyla iş mantığının (business logic) istemci tarafından kolayca okunabileceği anlamına gelir. İşte bu dezavnataj nedeni ile özellikle güvenlik açısından çoğu zaman bu teknik tercih edilmez."
 categories:
   - dotnet-remoting
 tags:
@@ -16,9 +15,6 @@ tags:
   - generics
   - visual-studio
 ---
-# .Net Remoting - SoapSuds
-Değerli Okurlarım Merhabalar,
-
 Remoting mimarisinde, istemci ve sunucu arasında uzak nesneleri paylaşmanın dört farklı yolu vardır. İstemcilerin tek amacı sunucu üzerinde yer alan uzak nesne referanslarını kullanabilmektir. Bu açıdan bakıldığında, istemci uygulamanın uzak sunucu üzerindeki nesne referanslarının yapısını bilmesi gerektiği ortaya çıkmaktadır. Kullanılabilecek yollardan ilki uzak nesne sınıfının bulunduğu paylaşımlı bir assembly'ı tüm istemci uygulamalara dağıtmaktır. Bu istemci uygulamalar için ekstra kod yazmadan kolayca gerçekleştirilebilecek bir işlemdir. Lakin istemci uygulamalarda, uzak sınıfın tüm içeriğinin yer aldığı bir assembly'da mevcuttur. Bu da ILDASM (Intermediate Dis-Assembler Tool) ve başka üçüncü parti araçlar yardımıyla iş mantığının (business logic) istemci tarafından kolayca okunabileceği anlamına gelir. İşte bu dezavnataj nedeni ile özellikle güvenlik açısından çoğu zaman bu teknik tercih edilmez.
 
 İkinci yöntem ve belkide en popüler olanı, uzak sınıf modelinin türetildiği bir interface tipini istemci ve sunucu arasında paylaşıma sunmaktır. Yani istemci tarafında sadece ve sadece uzak nesne modelinin bilgisini tutan bir interface tipi yer alacaktır. Bu modele göre uzak sunucu üzerindeki uzak nesne referansına polimorfizm'in bir sonucu olarak interface tipi üzerinden erişebilinir. Ama daha da önemlisi istemci tarafında, uzak nesne içerisindeki kodların kesinlikle görünmüyor oluşudur. Bu da doğal olarak iş mantığını istemciden gizleyen etkili bir tekniktir..Net Remoting uygulamalarını yazarken çoğunlukla interface kullanımı tercih edilmektedir.

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Bu Sefer Bir React Uygulamasını Heroku Üzerine Alalım"
 date: 2019-10-04 13:00:00 +0300
-description: "Sekiz numaralı örnekteki amacım node.js ile çalıştırılan basit bir React uygulamasını Heroku üzerine taşımaktı. React ile node haberleşmesinde express paketini kullanmıştım. Bu paket deneyimlediğim kadarıyla HTTP yönlendiricisi olarak kullanılmaktaydı. React tarafına gelen HTTP taleplerini karşılarken kullanılabilmekte. Diğer yandan React tarafında çok fazla tecrübem olmadığından benim için hala kapalı kutu olma özelliğini taşıyor. Bir nevi ona da merhaba demek istediğim bir çalışma olduğunu ifade edebilirim."
 categories:
   - react
 tags:
@@ -19,10 +18,9 @@ tags:
   - concurrency
   - github
 ---
-# Bu Sefer Bir React Uygulamasını Heroku Üzerine Alalım
-![hamlett.png](/assets/images/2019/hamlett.png)
-
 Sir [Ken Robinson](http://sirkenrobinson.com/), çocukların hayal güçlerini sınırlayan eğitim sistemini eleştirdiği [TED'in en çok izlenen sunumu](https://www.ted.com/talks/ken_robinson_says_schools_kill_creativity?language=en)nda William Shakespeare ile ilgili güzel bir anektod paylaşır. Konuşmasının ilgili bölümünde profesör onun bir zamanlar yedi yaşında bir çocuk olduğunu dile getirir. Kısa bir an için duraksar ve ne diyeceğini merak eden seyirciye "...Shakespeare'i hiç çocuk olarak düşünmemiştiniz, değil mi?" der:)
+
+![hamlett.png](/assets/images/2019/hamlett.png)
 
 Hepimiz onu ünlü İngiliz şair ve yazar olarak bilir Romeo Juliet, Macbeth, Othello ve diğer trajedileri ile hatırlarız. Hatta "olmak yada olmamak, işte bütün mesele bu" sözleri hafızalarımıza kazınmıştır. Ancak çoğumuz onun da bir zamanlar çocuk olduğunu ve bir öğretmenin edebiyat dersine girdiğini düşünmeyiz (Bunu Ken Robinson gayet güzel bir şekilde düşündürtüyor) Onun da hepimiz gibi çocukken kurduğu hayaller olduğunu bu cümleleri duyana kadar da fark etmeyiz. Çok şükür ki [sekiz numaralı çalışma](https://github.com/buraksenyurt/saturday-night-works/tree/master/No%2008%20-%20Express%20with%20React%20to%20Heroku)mın içerisinde geçen bir kelime benim onu, onun yardımıyla Sir Ken Robinson'u ve sonrasında da bu güzel anekdotu hatırlamamı sağladı. Nihayetinde Shakespeare'in ölümsüz eserlerinden olan Hamlet'in Heroku tarafından bana önerilmesi işte bu kısa girizgahın hayat bulmasına vesile oldu.
 

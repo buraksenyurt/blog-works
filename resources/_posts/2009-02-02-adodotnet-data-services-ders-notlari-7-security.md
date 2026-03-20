@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ado.Net Data Services Ders Notları - 7 (Security)"
 date: 2009-02-02 12:00:00 +0300
-description: "Yazılım dünyasının en önemli zorluklarından biriside uygulamanın kapsamına göre güvenliğin etkili bir şekilde nasıl sağlanacağı ile ilişkilidir. Burada hassas bilgilerin korunması, kullanıcıların tanınması ve yetkilendirilmesi, kodun erişim ilkelerinin belirlenmesi, verinin şifrelenmesi gibi pek çok faktör söz konusudur. Genel anlamda günvelik farklı şekillerde göz önüne alınabilir."
 categories:
   - ado-net-data-services
 tags:
@@ -27,9 +26,6 @@ tags:
   - generics
   - visual-studio
 ---
-# Ado.Net Data Services Ders Notları - 7 (Security)
-Değerli Okurlarım Merhabalar,
-
 Yazılım dünyasının en önemli zorluklarından biriside uygulamanın kapsamına göre güvenliğin etkili bir şekilde nasıl sağlanacağı ile ilişkilidir. Burada hassas bilgilerin korunması, kullanıcıların tanınması ve yetkilendirilmesi, kodun erişim ilkelerinin belirlenmesi, verinin şifrelenmesi gibi pek çok faktör söz konusudur. Genel anlamda günvelik farklı şekillerde göz önüne alınabilir.
 
 - Kimi zaman uygulama içerisinde kullanılan parametrik dış ortam değişkenlerini korumak gerekir. Örneğin uygulamanın kullandığı değişkenlerin konfigurasyon (app.config, web.config gibi) dosyasında şifrelenerek saklanması önemlidir ki bu pek çok uygulama standardınında ilkeleri arasında yer almaktadır.

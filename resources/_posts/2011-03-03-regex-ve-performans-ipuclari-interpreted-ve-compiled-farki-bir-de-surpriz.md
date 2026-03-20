@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Regex ve Performans İpuçları – Interpreted ve Compiled Farkı, Bir de Sürpriz"
 date: 2011-03-03 17:00:00 +0300
-description: "İnce ayarlar çekilmiş bir yazılım, zaman zaman çok hızlı sonuçlar verebilir. Hatırlayacağınız üzere Regex ve Performans İpuçları – Otomatik Cache başlıklı bir önceki yazımızda son derece sıcak bir gecede, Regex tipinin performanslı kullanımına ilişkin ilk ip ucunu aktarmış ve sonuçlarını incelemeye çalışmıştık. Regex kullanımında dikkat çeken noktalardan bir diğeri de(bir başka deyişle yapılabilecek ince ayarlardan bir diğeri de) yorumlanarak(Interpret) veya önceden derlenerek(Compiled) çalıştırılabilen ifadeler ile ilişkilidir."
 categories:
   - csharp
 tags:
@@ -13,10 +12,10 @@ tags:
   - reflection
   - visual-studio
 ---
-# Regex ve Performans İpuçları – Interpreted ve Compiled Farkı, Bir de Sürpriz
-[![blg222_Giris](/assets/images/2011/blg222_Giris_thumb.jpg)](/assets/images/2011/blg222_Giris.jpg) Merhaba Arkadaşlar,
-
 Formula 1 merakı olanlar, yarışan araçların mühendislik olarak birbirlerine çok yakın teknolojiler ile üretildikleri ve benzer olduklarını bilirler. Gerçi bazı zamanlarda ön plana çıkan araçlar da söz konusudur. Frenaj veya hızlanma sistemlerine getirilen iyileştirmeler sonucu, diğer yarış araçlarının pilotları kim olursa olsun belirgin bir şekilde öne fırlarlar.
+
+[![blg222_Giris](/assets/images/2011/blg222_Giris_thumb.jpg)](/assets/images/2011/blg222_Giris.jpg)
+
 
 Ancak bazen de araçlar bir birlerine o kadar denktir ki, yarışın kaderini ve sonuçlarını sürücüler ile Pit-Stop’ lar sırasında yapılan kritik değişiklikler belirler. Örneğin lastik seçimlerİ, ön veya arka kanatların açısal değerleri, rüzgarın hızına göre yapılan ayarlamalar, yakıt tankının ne kadar doldurulacağı vb…
 
@@ -24,7 +23,7 @@ E tabi en iyi sonuçları elde edebilmek için takımlar yıl boyu sayısız tes
 
 ![Wink](/assets/images/2011/smiley-wink.gif)
 
-İnce ayarlar çekilmiş bir yazılım, zaman zaman çok hızlı sonuçlar verebilir. Hatırlayacağınız üzere [Regex ve Performans İpuçları – Otomatik Cache](../2010/Regex ve Performans İpuçları – Otomatik Cache.md) başlıklı bir önceki yazımızda son derece sıcak bir gecede, Regex tipinin performanslı kullanımına ilişkin ilk ip ucunu aktarmış ve sonuçlarını incelemeye çalışmıştık. Regex kullanımında dikkat çeken noktalardan bir diğeri de (bir başka deyişle yapılabilecek ince ayarlardan bir diğeri de) yorumlanarak (Interpret) veya önceden derlenerek (Compiled) çalıştırılabilen ifadeler ile ilişkilidir.
+İnce ayarlar çekilmiş bir yazılım, zaman zaman çok hızlı sonuçlar verebilir. Hatırlayacağınız üzere [Regex ve Performans İpuçları – Otomatik Cache](/2010/08/06/regex-ve-performans-ipuclari-otomatik-cache/) başlıklı bir önceki yazımızda son derece sıcak bir gecede, Regex tipinin performanslı kullanımına ilişkin ilk ip ucunu aktarmış ve sonuçlarını incelemeye çalışmıştık. Regex kullanımında dikkat çeken noktalardan bir diğeri de (bir başka deyişle yapılabilecek ince ayarlardan bir diğeri de) yorumlanarak (Interpret) veya önceden derlenerek (Compiled) çalıştırılabilen ifadeler ile ilişkilidir.
 
 Bu notkada Regex tipine ait nesne örneklerinin oluşturulması sırasında devreye giren RegexOptions enum sabitinin Compiled değerinin kullanılması halinde ilgili regex deseninin derlenmiş halinin kullanılması söz konusudur. Normal şartlar altında Compiled değeri belirtilmediği takdirde, Interpret moda göre kontroller yapılmaktadır. Yani çalışma zamanı desen ile ilgili satıra geldiğinde bir takım işlemleri gerçekleştirir. Aslında konuyu teknik hatları ile irdelemek dışında örnek bir kod parçası üzerinde ilerleyerek çalışma zamanı sonuçlarına bakmamız da yarar vardır.
 

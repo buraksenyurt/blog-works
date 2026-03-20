@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Rust Pratikleri - Multithreading"
 date: 2022-02-06 09:00:00 +0300
-description: "Uygulamalar işletim sistemlerince Process olarak ayağa kaldırılırlar. Bir process içerisindeki işleri birbirlerinden bağımsız olarak yapan thread'ler de söz konusu olabilir. Çoğu zaman çalıştırılabilir programın main fonksiyonu ile akan akış tek bir thread ile işleyişini sürdürür ama ihtiyaç dahillinde yeni thread'ler açmak gerekir. Rust için process içerisinde bir thread açmak oldukça kolaydır ve bellek tüketimi açısından maliyeti düşüktür. Ownership ve borrowing kuralları sayesinde bellek sahası güvende kalır ve özellikle data-race sorunları oluşmaz..."
 categories:
   - rust
 tags:
@@ -13,10 +12,9 @@ tags:
   - github
   - ownership
 ---
-# Rust Pratikleri - Multithreading
-![housecleaning.gif](/assets/images/2022/housecleaning.gif)
-
 Uygulamalar işletim sistemlerince Process olarak ayağa kaldırılırlar. Bir process içerisindeki işleri birbirlerinden bağımsız olarak yapan thread'ler de söz konusu olabilir. Çoğu zaman çalıştırılabilir programın main fonksiyonu ile akan akış tek bir thread ile işleyişini sürdürür ama ihtiyaç dahillinde yeni thread'ler açmak gerekir. Rust için process içerisinde bir thread açmak oldukça kolaydır ve bellek tüketimi açısından maliyeti düşüktür. Ownership ve borrowing kuralları sayesinde bellek sahası güvende kalır ve özellikle data-race sorunları oluşmaz.
+
+![housecleaning.gif](/assets/images/2022/housecleaning.gif)
 
 Nitekim bir veri parçasının sadece tek bir sahibi olabilir ve bu kural thread'ler için de geçerlidir. Üstelik aynı Process içerisindeki thread'ler birbirleriyle kolayca haberleşebilirler (channels konusunda bakarız) Şu da bir gerçek ki çok uzun zamandır birden fazla çekirdeğe sahip işlemcilerin olduğu sistemlerde çalışıyoruz. Bu işlemcilerdeki her bir çekirdek (core) belli bir anda tek bir thread işletebilir. Dolayısıyla programlarımızdaki thread'leri bu işlemci çekirdeklerine verip bir takım işlerin eş zamanlı çalıştırılmasını da sağlayabiliriz ki bu Parallel Processing olarak da bilinir. Ancak oraya gelmeden önce Rust dilinde thread'leri nasıl kullanırız pratik anlamda bilmemiz gerekiyor. İzleyen örnek Rust dilinde bir thread nasıl oluşturulur ve kullanılır sorusuna en basit haliyle cevap vermeye çalışır.
 
@@ -33,7 +31,7 @@ touch src/dursun.rs
 touch src/common.rs
 ```
 
-fellowship isimli çalıştırılabilir uygulamada Dursun, Yensen ve Gibsın için ayrı birer modül dosyası yer almakta. Çıktıları izlemek için [bir önceki pratik](Rust Pratikleri - Loglama.md)te olduğu üzere loglama modülünü kullanabiliriz. Thread'lerin uzun süren işleri simüle etmesi için yardımcı bir fonksiyonumuz da var, common.rs. Çok yaratıcı bir isim değil ama şimdilik idare eder.
+fellowship isimli çalıştırılabilir uygulamada Dursun, Yensen ve Gibsın için ayrı birer modül dosyası yer almakta. Çıktıları izlemek için [bir önceki pratik](/2022/01/30/rust-pratikleri-loglama/)te olduğu üzere loglama modülünü kullanabiliriz. Thread'lerin uzun süren işleri simüle etmesi için yardımcı bir fonksiyonumuz da var, common.rs. Çok yaratıcı bir isim değil ama şimdilik idare eder.
 
 common.rs
 

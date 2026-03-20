@@ -1,17 +1,13 @@
-﻿---
+---
 layout: post
 title: "Ruby Kod Parçacıkları 29 - Kod Yazan Kodlar"
 date: 2016-12-16 16:51:00 +0300
-description: "Ruby programlama dilinin öne çıkan özellikleri arasında dinamiklik ve meta programlama yetenekleri de yer almaktadır. Aslında işin özeti kod yazan kodlardır diyebiliriz. Ruby yorumlamalı bir dildir ve doğal olarak her şey çalışma zamanında icra edilmektedir. Ancak bazı senaryolarda metinsel olarak gelen bir içeriğin kod parçası şeklinde değerlendirilmesi ve çalışma zamanında yürütülmesi istenebilir. Hatta çalışan kod üzerinde değişiklikler yapılabilmesi de belli ölçülerde mümkündür. Konu pek tabii benim burada anlatacağım kadar basit değil. Örneğin Amazon'da bu konu üzerine yazılmış kitaplar bulabilirsiniz. Bu yazımızda kodu çalışma zamanında üretmek veya çalışan kodu manipule etmek için yapılabileceklerden bir kaçına değinmeye çalışacağız."
 categories:
   - ruby
 tags:
   - ruby
   - reflection
 ---
-# Ruby Kod Parçacıkları 29 - Kod Yazan Kodlar
-Merhaba Arkadaşlar,
-
 Ruby programlama dilinin öne çıkan özellikleri arasında dinamiklik ve meta programlama yetenekleri de yer almaktadır. Aslında işin özeti kod yazan kodlardır diyebiliriz. Ruby yorumlamalı bir dildir ve doğal olarak her şey çalışma zamanında icra edilmektedir. Ancak bazı senaryolarda metinsel olarak gelen bir içeriğin kod parçası şeklinde değerlendirilmesi ve çalışma zamanında yürütülmesi istenebilir. Hatta çalışan kod üzerinde değişiklikler yapılabilmesi de belli ölçülerde mümkündür. Konu pek tabii benim burada anlatacağım kadar basit değil. Örneğin [Amazon'da bu konu üzerine yazılmış kitap](https://www.amazon.com/Metaprogramming-Ruby-Program-Like-Facets/dp/1941222129/ref=sr_1_1?s=books&ie=UTF8&qid=1481543025&sr=1-1&keywords=ruby+metaprogramming)lar bulabilirsiniz. Bu yazımızda kodu çalışma zamanında üretmek veya çalışan kodu manipule etmek için yapılabileceklerden bir kaçına değinmeye çalışacağız.
 
 > Bazı durumlarda Meta-programlama ile Reflection birbirleri ile karışıtırılır. Normal de Reflection Meta-programlama'nın bir alt dalı olarak karşımıza çıkar ve özellikle yorumlamalı betik dillerde program kodu hakkında çalışma zamanına bilgi sağlamak amacıyla kullanılır. Bir sınıfın özellik adlarını yakalamak gibi. Oysa ki meta-programlama ile çalışan kodun çalışma zamanında değiştirilmesi veya çalışabilecek metinsel kod parçalarının yine çalışma zamanında ayağa kaldırılıp yürütülmesi gibi işlemler kastedilir. Bu açıdan bakıldığında meta-programlama'nın yer bulduğu en önemli alan Domain Specific Language yazılmasıdır.

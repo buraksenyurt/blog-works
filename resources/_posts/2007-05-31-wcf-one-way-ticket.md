@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF - One Way Ticket"
 date: 2007-05-31 09:00:00 +0300
-description: "One Way Ticket...One Way Ticket... Bu sözleri duyduğumda aklıma bu şarkıyı yapan eruption ve cover versiyonunu söyleyip efsaneleşen Boney M grupları gelir. Ancak One Way ikilisi ne tesadüftürki .Net Remoting mimarisinde de karşımıza çıkmaktadır."
 categories:
   - wcf
 tags:
@@ -19,9 +18,6 @@ tags:
   - visual-studio
   - thread-safety
 ---
-# WCF - One Way Ticket
-Değerli Okurlarım Merhabalar,
-
 One Way Ticket...One Way Ticket... Bu sözleri duyduğumda aklıma bu şarkıyı yapan eruption ve cover versiyonunu söyleyip efsaneleşen Boney M grupları gelir. Ancak One Way ikilisi ne tesadüftürki.Net Remoting mimarisinde de karşımıza çıkmaktadır. Kısaca tek yön olarak çevirebileceğimiz bu iki kelime aslında fırlat ve unut (fire and forget) anlamındada düşünülebilir. Yada bir başka deyişle istemci tarafından olaya bakıldığında, "metodu çağırdım gerisi umrumda değil" de denebilir. Aynı kelimelerin Windows Communication Foundation içerisinde de yer alması elbetteki şaşırtıcı değildir. Nitekim One Way operasyonlar aslında asenkron istemci-sunucu modelininde önemli bir parçasıdır.
 
 Normal şartlarda Windows Communication Foundation istemcileri servisten bir talepte bulunduklarında, proxy tarafından hazırlanan mesaj sunucuya gönderilir. Servis gelen mesajı alır, çözümler ve gereken yürütme işlemlerini gerçekleştirir. Burada söz konusu yürütmeye dahil olan metodların çalıştırılmasının sonucunda istemciye bu işlemin tamamlandığı bilgisi eğer geri dönüş değeri var ise onunla birlikte döner. Bu, talep/cevap mesajlaşma deseni (request/response messaging pattern) olarak adlandırılan klasik çalışma modelidir. Ancak burada istemcinin çağrıda bulunduğu metodun tamamlanışını beklemesi gerekir. Aksi takdirde ilerlemesi söz konusu değildir. Burada bahsi geçen konu kod satırında bir alt ifadeye geçilememesidir. Çok doğal olarak servis tarafındaki metodun çalışmasının uzun sürdüğü durumlarda istemci uygulama beklemede olacaktır.

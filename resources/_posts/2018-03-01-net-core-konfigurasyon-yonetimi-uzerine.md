@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: ".Net Core Konfigurasyon Yönetimi Üzerine"
 date: 2018-03-01 07:33:00 +0300
-description: "Çalışma zamanına bilgi taşımanın ve bazı ayarlamalar için gerekli değerleri okumanın en popüler yollarından birisi de bildiğiniz üzere konfigurasyon dosyalarından yararlanmak. Zaman içerisinde app.config, web.config gibi XML tabanlı konfigurasyon dosyalarına aşina olan bizler, .Net Core ile birlikte JSON formatlı içeriklerle çalışmaya başladık. .Net Core tarafında bu JSON içeriklerini yönetmek oldukça kolay. Farklı yöntemlerimiz var. Dahası Dependency Injection yeteneklerinden yararlanılabildiği için özel sekmelerin(section) sınıflara bağlanması da münkün..."
 categories:
   - dotnet-core
 tags:
@@ -19,12 +18,9 @@ tags:
   - github
   - dependency-management
 ---
-# .Net Core Konfigurasyon Yönetimi Üzerine
-![customconfig_0n.gif](/assets/images/2018/customconfig_0n.gif)
-
-Merhaba Arkadaşlar,
-
 West-World üzerinde bir şeyler araştırmak için vaktim olan bir haftayı geride bırakmak üzereyim. Internet üzerinde derya deniz içerik olsa da bazen ne araştıracağımı şaşırmıyor değilim. İşte bu anlarda [MSDN dokümanları](https://docs.microsoft.com/en-us/) imdadıma yetişiyor. İlk zamanlarından beri oldukça verimli olduğunu düşündüğüm içerik son yıllarda çok daha profesyonelleşti (Tabii MSDN dokümanlarını CD veya DVD olarak edindiğimiz zamanları da hatırlıyorum) İşin aslı sadece MSDN değil, yazılım ürünü sahibi pek çok öncünün teknik destek dokümanları inanılmaz derecede doyurucu ve birbirleriyle yarışır durumdalar. Son zamanlarda uğradıklarım arasında [Google Cloud Platform](https://cloud.google.com/docs/) ve [Amazon Web Services](https://aws.amazon.com/documentation/) var. Bu rehberler ilk kaynak niteliğinde olduğu için bir şeyleri öğrenebilmemiz adına doğru adresler. Hatta yazılım geliştirici olarak ortalama bir seviyenin üstüne çıktıktan sonra bunlar gibi dokümantasyonlara uğramak, rastgele bir ürün seçip teknik dokümantasyonunu okumak, Get Started örneklerini yapıp bir şeylerin farkına varabilmek gerekiyor. Sözü fazla uzatmadan gerekli mesajları da verdiğimi düşünerek yazımıza başlayalım diyorum.
+
+![customconfig_0n.gif](/assets/images/2018/customconfig_0n.gif)
 
 Çalışma zamanına bilgi taşımanın ve bazı ayarlamalar için gerekli değerleri okumanın en popüler yollarından birisi de bildiğiniz üzere konfigurasyon dosyalarından yararlanmak. Zaman içerisinde app.config, web.config gibi XML tabanlı konfigurasyon dosyalarına aşina olan bizler,.Net Core ile birlikte JSON formatlı içeriklerle çalışmaya başladık..Net Core tarafında bu JSON içeriklerini yönetmek oldukça kolay. Farklı yöntemlerimiz var. Dahası Dependency Injection yeteneklerinden yararlanılabildiği için özel sekmelerin (section) sınıflara bağlanması da münkün (Hatta Interface Segregation Principle ve Seperation of Concerns ilkelerini kullanan Options deseni var ki ilk fırstatta inceleyip öğrenmek istiyorum. Farkında olmadan kullanıyoruz ama altındaki çalışma dinamiklerini öğrenmek çok yerinde olacaktır) Gelin bir kaç basit örnek ile konfigurasyon yönetimini nasıl yapabileceğimizi incelemeye çalışalım. Ağırlıklı olarak varsayılan konfigurasyon dosyaları haricinde kendi özel içeriklerimizle çalışacağız. Kodlarımızı Console tabanlı bir uygulamada deneyimleyeceğiz ama aynı teknikleri Web, Web API gibi diğer proje türlerinde de kullanabilirsiniz.
 

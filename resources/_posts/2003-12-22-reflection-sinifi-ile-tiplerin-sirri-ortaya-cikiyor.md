@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Reflection Sınıfı İle Tiplerin Sırrı Ortaya Çıkıyor"
 date: 2003-12-22 12:00:00 +0300
-description: "Hiç .NET ‘te yer alan bir tipinin üyelerini öğrenebilmek istediniz mi? Örneğin var olan bir .NET sınıfının veya sizin kendi yazmış olduğunuz yada bir başkasının yazdığı sınıfa ait tüm üyelerin neler olduğuna programatik olarak bakmak istediniz mi? İşte bugünkü makalemizin konusu bu. Herhangi bir tipe (type) ait üyelerin neler olduğunu anlayabilmek. Bu amaçla, Reflection isim uzayını ve bu uzaya ait sınıfları kullanacağız."
 categories:
   - csharp
 tags:
@@ -11,9 +10,6 @@ tags:
   - reflection
   - datatable
 ---
-# Reflection Sınıfı İle Tiplerin Sırrı Ortaya Çıkıyor
-Değerli Okurlarım, Merhabalar.
-
 Hiç.NET ‘te yer alan bir tipinin üyelerini öğrenebilmek istediniz mi? Örneğin var olan bir.NET sınıfının veya sizin kendi yazmış olduğunuz yada bir başkasının yazdığı sınıfa ait tüm üyelerin neler olduğuna programatik olarak bakmak istediniz mi? İşte bugünkü makalemizin konusu bu. Herhangi bir tipe (type) ait üyelerin neler olduğunu anlayabilmek. Bu amaçla, Reflection isim uzayını ve bu uzaya ait sınıfları kullanacağız.
 
 Bildiğiniz gibi.NET ‘te kullanılan her şey bir tipe aittir. Yani herşeyin bir tipi vardır. Üyelerini öğrenmek isteğimiz bir tipi öncelikle bir Type değişkeni olarak alırız. (Yani tipin tipini alırız. Bu nedenle ben bu tekniğe Tip-i-Tip adını verdim). Bu noktadan sonra Reflection uzayına ait sınıfları ve metodlarını kullanarak ilgili tipe ait tüm bilgileri edinebiliriz. Küçük bir Console uygulaması ile konuyu daha iyi anlamaya çalışalım. Bu örneğimizde, System.Int32 sınıfına ait üyelerin bir listesini alacağız. İşte kodlarımız;

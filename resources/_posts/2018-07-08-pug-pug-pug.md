@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Pug, Pug, Pug"
 date: 2018-07-08 21:30:00 +0300
-description: "Bu makalemizde Node.js üzerinde express kullanarak basit bir web sayfasının nasıl gösterilebileceğini incelemeye çalışıyoruz. Ancak farklı olarak Pug(eski adı Jade) isimli paketten yararlanarak html içeriğini çok daha farklı bir şekilde tasarlıyoruz. Bu tasarım sırasında HTML'in klasik açısal ayraç sistemini terk ediyor ve girintili(tab'lı) yazım stiline geçiyoruz."
 categories:
   - nodejs
 tags:
@@ -17,12 +16,9 @@ tags:
   - ruby
   - github
 ---
-# Pug, Pug, Pug
-![node_with_pug_3.jpg](/assets/images/2018/node_with_pug_3.jpg)
-
-Merhaba Arkadaşlar,
-
 Kısa bir süre önce çalışmakta olduğum şirkette epey eğlenceli bir mevzunun içerisinde kaldım. Daha önceden de bahsettiğim gibi kurumumuzun bize sunduğu güzel bir hizmet var...[Pluralsight](https://www.pluralsight.com/). Ne var ki benim gibi dikkatsiz kullanıcılar için enteresan şeyler olabiliyor. İzin verin hikayeyi size anlatayım; İlk hedefim oldukça hoşuma giden Node.js tarafında ilerlemekti.
+
+![node_with_pug_3.jpg](/assets/images/2018/node_with_pug_3.jpg)
 
 Bu amaçla kendime çizdiğim kariyer yolunda (aslında Pluralsight Path demek daha doğru olur) bir takım Node.js eğitimlerini izlemeye başladım. Hatam bu eğitimlerin tarihlerine pek dikkat etmiyor oluşumdu. Öyle ki eğitimde sözü geçen bir npm modülü pekala eskimiş olabilirdi.
 

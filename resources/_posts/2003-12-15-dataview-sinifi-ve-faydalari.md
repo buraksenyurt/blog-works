@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "DataView Sınıfı ve Faydaları"
 date: 2003-12-15 04:00:00 +0300
-description: "Bugünkü makalemizde getirileri ve performansı ile ADO.NET içerisinde önemli bir yere sahip olan DataView nesnesini incelemeye çalışacağız. Özellikle bu sınıfa ait, RowFilter özelliğinin ne gibi faydalar sağlıyacağına da değineceğiz. DataView sınıfı, veritabanı yönetim sistemlerindeki view nesneleri göz önüne alınarak oluşturulmuş bir sınıftır. Bilindiği gibi veritabanı yönetim sistemlerinde (DBMS-DataBase Management System) , bir veya birden fazla tablo için gerçekleştireceğimiz çeşitli tipteki birleştirici veya ayrı ayrı sorgulamalar sonucu elde edilen veri kümelerini view nesnelerine aktarabilmekteyiz. View nesneleri sahip oldukları veri alt kümelerini temsil eden birer veritabanı nesnesi olarak, önceden derlendiklerinden, süratli ve performansı yüksek yapılardır."
 categories:
   - ado-net
 tags:
@@ -12,9 +11,6 @@ tags:
   - performance
   - datatable
 ---
-# DataView Sınıfı ve Faydaları
-Değerli Okurlarım, Merhabalar.
-
 Bugünkü makalemizde getirileri ve performansı ile ADO.NET içerisinde önemli bir yere sahip olan DataView nesnesini incelemeye çalışacağız. Özellikle bu sınıfa ait, RowFilter özelliğinin ne gibi faydalar sağlıyacağına da değineceğiz.
 
 DataView sınıfı, veritabanı yönetim sistemlerindeki view nesneleri göz önüne alınarak oluşturulmuş bir sınıftır. Bilindiği gibi veritabanı yönetim sistemlerinde (DBMS-DataBase Management System), bir veya birden fazla tablo için gerçekleştireceğimiz çeşitli tipteki birleştirici veya ayrı ayrı sorgulamalar sonucu elde edilen veri kümelerini view nesnelerine aktarabilmekteyiz. View nesneleri sahip oldukları veri alt kümelerini temsil eden birer veritabanı nesnesi olarak, önceden derlendiklerinden, süratli ve performansı yüksek yapılardır.

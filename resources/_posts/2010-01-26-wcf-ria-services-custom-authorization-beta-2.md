@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF RIA Services - Custom Authorization [Beta 2]"
 date: 2010-01-26 01:52:00 +0300
-description: "Geçtiğimiz günlerde uzun süredir yemediğim şu meşhur Dunkin & Donuts' tan bir iki kurabiye almak istedim. Wink Ansızın gelen bu dayanılmaz istek üzerine oturduğumuz semte en yakın dükkanına gidip hem kendim hemde eşim için bir kaç tane aldım."
 categories:
   - wcf-eco-system
   - wcf-ria-services
@@ -17,16 +16,9 @@ tags:
   - xml
   - authorization
 ---
-# WCF RIA Services - Custom Authorization [Beta 2]
+Geçtiğimiz günlerde uzun süredir yemediğim şu meşhur Dunkin & Donuts'tan bir iki kurabiye almak istedim. Ansızın gelen bu dayanılmaz istek üzerine oturduğumuz semte en yakın dükkanına gidip hem kendim hemde eşim için bir kaç tane aldım. Sonrası malum...Yanında güzel bir kahve ve harika bir tat...Tattıları afiyetle mideye indirdikten sonra evde sessiz ve sakin bir ortamın olduğunu farkettim. Bizim azman ufaklık uyumuş ve gıkı bile çıkmıyorken, yorduğu eşim divanda mışıl mışıl sızmıştı.
+
 ![blg116_Giris.jpg](/assets/images/2010/blg116_Giris.jpg)
-
-Merhababa Arkadaşlar,
-
-Geçtiğimiz günlerde uzun süredir yemediğim şu meşhur Dunkin & Donuts'tan bir iki kurabiye almak istedim.
-
-![Wink](/assets/images/2010/smiley-wink.gif)
-
-Ansızın gelen bu dayanılmaz istek üzerine oturduğumuz semte en yakın dükkanına gidip hem kendim hemde eşim için bir kaç tane aldım. Sonrası malum...Yanında güzel bir kahve ve harika bir tat...Tattıları afiyetle mideye indirdikten sonra evde sessiz ve sakin bir ortamın olduğunu farkettim. Bizim azman ufaklık uyumuş ve gıkı bile çıkmıyorken, yorduğu eşim divanda mışıl mışıl sızmıştı.
 
 Herkesin böyle huzurlu bir ortamı hakkettiğini düşünürken, yağmur damlalarının cama vuruşunu izliyordum. Derken ansızın bir ilham geldi ve bloğuma bir şeyler yazmamın iyi olacağı kanısına vardım. Nede olsa gerekli glikoz yüklemesi fazlasıyla yapılmıştı. Günlüğüme yazılacaklar listeme baktığımda, sıradaki konunun WCF RIA Service'lerinde özel yetkilendirme niteliklerinin (Custom Authorization Attributes) nasıl yazılacağının anlatılması olduğunu farkettim. Neyseki hafta içi bu konu ile ilişkili olaraktan internetteki az sayıda kaynaktan bilgi edinmiştim. Tabiki en güncel ve geçerli kaynak her zamanki gibi MSDN'di.
 

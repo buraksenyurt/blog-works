@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Derinlemesine Session Kullanımı - 2"
 date: 2005-01-07 22:00:00 +0300
-description: "Bir önceki makalemizde hatırlayacağınız gibi, Session nesnelerinin kullanımını incelemeye başlamıştık. Bu makalemizde ise, Session nesnelerinin nerelerde saklanabildiğine değinmeye çalışacağız. Varsayılan olarak Session nesneleri In-Proc (işlem içi) modunda saklanırlar. Yani web sayfasının çalıştığı asp.net work process' in içinde, dolayısıyla bu işlerin çalıştığı web sunucularındaki bellek alanlarında tutulurlar. Bu özellikle Session nesnelerine bilgi yazma ve okumada önemli bir avantajdır."
 categories:
   - aspnet
 tags:
@@ -15,9 +14,6 @@ tags:
   - performance
   - dataset
 ---
-# Derinlemesine Session Kullanımı - 2
-Değerli Okurlarım, Merhabalar.
-
 Bir önceki makalemizde hatırlayacağınız gibi, Session nesnelerinin kullanımını incelemeye başlamıştık. Bu makalemizde ise, Session nesnelerinin nerelerde saklanabildiğine değinmeye çalışacağız. Varsayılan olarak Session nesneleri In-Proc (işlem içi) modunda saklanırlar. Yani web sayfasının çalıştığı asp.net work process'in içinde, dolayısıyla bu işlerin çalıştığı web sunucularındaki bellek alanlarında tutulurlar. Bu özellikle Session nesnelerine bilgi yazma ve okumada önemli bir avantajdır.
 
 Nitekim, erişim doğrudan ram üzerindeki bölgelere doğru olduğu için diğer bahsedeceğimiz modlara nazaran göreceli olarak oldukça hızlı bir erişim söz konusudur. Lakin, web sunucusunun başına bir şey gelmesi halinde (örneğin sunucunun bir anda restart olması gibi) bellekte tutulan tüm Session nesneleri bir anda kaybedilir. Bu da çok sayıda kullanıcının açtığı oturumlara ait bilgilerin tamamının kaybolması anlamına gelmektedir. Bunu basit bir örnek ile gösterebiliriz. Aşağıdaki web uygulmasında, Session nesnesine bir değer atanmaktadır. Session'ın time-out süresi varsayılan halinde (Yani 20 dakika olarak) bırakılmıştır.

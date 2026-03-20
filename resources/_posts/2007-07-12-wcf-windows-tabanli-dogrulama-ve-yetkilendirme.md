@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF - Windows Tabanlı Doğrulama ve Yetkilendirme"
 date: 2007-07-12 12:00:00 +0300
-description: "Servis yönelimli mimaride(Service Oriented Architecture), dağıtık uygulamaların bir kısmı intranet tabanlı olaraktan Windows işletim sistemleri üzerinde konuşlandırılmış olarak tasarlanmaktadır. Bu sebepten ağ üzerinde tüm kullanıcıların daha kolay bir şekilde yönetildiği var olan ve bilinen doğrulama ve yetkilendirme materyallerinden yararlanmak sık olarak başvurulan tekniklerdendir..."
 categories:
   - wcf
 tags:
@@ -15,9 +14,6 @@ tags:
   - authorization
   - threading
 ---
-# WCF - Windows Tabanlı Doğrulama ve Yetkilendirme
-Değerli Okurlarım Merhabalar,
-
 Servis yönelimli mimaride (Service Oriented Architecture), dağıtık uygulamaların bir kısmı intranet tabanlı olaraktan Windows işletim sistemleri üzerinde konuşlandırılmış olarak tasarlanmaktadır. Bu sebepten ağ üzerinde tüm kullanıcıların daha kolay bir şekilde yönetildiği var olan ve bilinen doğrulama ve yetkilendirme materyallerinden yararlanmak sık olarak başvurulan tekniklerdendir. Bir başka deyişle kullanıcı hesaplarının (Member accounts) yönetimi hazır olan Windows işletim sistemi unsurları tarafından kolayca ele alınabilmektedir. Buda doğal olarak istemcilerin servis tarafında doğrulanması (Authentication) ve yetkilendirilmesi (Authorization) için hazır olan kaynakların kullanılabilmesi anlamına gelir.
 
 Sonuç itibariyle servis ve istemci tarafı açısıdan geliştiricinin yükü biraz daha hafiflemektedir. Windows Communication Foundation uygulamalarındada intranet tabanlı sistemler için Windows tabanlı doğrulama ve yetkilendirme (Windows Based Authentication and Authorization) işlemlerini, bağlayıcı tip (binding type) bazında kolayca gerçekleştirebiliriz. Bu bölümde özellikle basicHttpBinding tipi yardımıyla bu işlemlerin nasıl geliştirilebileceğini adım adım incelemeye çalışacağız. Her zamanki gibi servis tarafından hizmete sunulacak olan WCF Service Library'sini geliştirmekle işe başlanabilir. Bu kütüphane içerisindeki söz konusu tipler (types) aşağıdaki gibi tasarlanmıştır.

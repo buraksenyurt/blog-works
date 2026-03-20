@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Koleksiyon Bazlı WCF Rest Servisleri"
 date: 2009-04-22 08:07:00 +0300
-description: "Bildiğiniz üzere bir süredir WCF servislerinin REST modeline göre geliştirilmesi ile ilgili bilgilerimi ve öğrendiklerimi sizlerle paylaşmaktayım. Bu nedenle dün gece yaşadığım bir macerayıda aktararak başıma gelenleri sizlerle paylaşmak istiyorum."
 categories:
   - wcf
 tags:
@@ -20,9 +19,6 @@ tags:
   - generics
   - visual-studio
 ---
-# Koleksiyon Bazlı WCF Rest Servisleri
-Merhaba Arkadaşlar,
-
 Bildiğiniz üzere bir süredir WCF servislerinin REST modeline göre geliştirilmesi ile ilgili bilgilerimi ve öğrendiklerimi sizlerle paylaşmaktayım. Bu nedenle dün gece yaşadığım bir macerayıda aktararak başıma gelenleri sizlerle paylaşmak istiyorum. Bir süre önce [WCF Rest Starter Kit'](http://aspnet.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=24644)i incelemeye başlamış ve bu konuyla ilgili olaraktan bir görsel video yayınlamıştım.([NedirTv? bağlantısı](http://www.nedirtv.com/video/WCF-REST-Bolum-2---Readonly-Collection-Service.aspx))
 
 Bu görsel derste, veri kaynağı olarak içerdikleri koleksiyonları yanlız okuma (Read-only) amaçlı ele alan REST bazlı WCF servislerinin, WCF Rest Start Kit Preview 1 sürümü ile nasıl geliştirilebileceğini incelemeye çalışmıştım. Tabi aradan uzun zaman geçti ve WCF Rest Start Kit Preview 2 sürümü yayınlandı. Ayrıca görsel derste insert, update ve delete işlemlerini ele almamıştım. Bende hazır fırsat varken, bu tip WCF servislerinde Insert, Update, Delete işlemlerini nasıl yapabiliriz konusunu araştırmaya başladım. Starter Kit ile birlikte gelen Lab'lar içerisinde (3ncü alıştırmada) bu konu oldukça kolay anlaşılır bir şekilde ele alınmaktadır. Benim size aktaracaklarım daha çok başıma nelerin geldiği.

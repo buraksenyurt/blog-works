@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "C# 6.0–Yeni Esintiler"
 date: 2014-04-03 13:04:00 +0300
-description: "İngilizce kelime anlamı Build olan inşa etmek(yapmak, kurmak) üzerine bu aralar uzak uzak diyarlarda da yapılmakta olan konuşmalar da var. Evet tahmin ettiğiniz gibi Microsoft’ un Build etkinlikleri dolayısıyla yazılım dünyasında hareketli günler yaşanmakta. Yeni ürünler, var olan ürünlere eklenen yeni özellikler, gelecek ile ilişkili planlamalar ve diğerleri. Konuşulabilecek ve üzerinde durulabilecek pek çok konu var. Benim dikkatimi çeken nokta ise bir süredir varlığından haberdar olduğumuz ve şu anda Roslyn’ in End User Preview sürümü ile Visual Studio 2013 üzerinden anında inceleyebileceğimiz C# 6.0 dili ile ilişkili yeni kabiliyetler. Bu yazımızda söz konusu yeteneklerden bir kaçına kısaca değinmeye çalışacağım. Amacımız öncelikli olarak söz konusu bu yeteneklerin ne olduklarını kavrayabilmek."
 categories:
   - csharp
   - csharp-6-0
@@ -16,10 +15,10 @@ tags:
   - visual-studio
   - datatable
 ---
-# C# 6.0–Yeni Esintiler
-[![LegoBuild](/assets/images/2014/LegoBuild_thumb.jpg)](/assets/images/2014/LegoBuild.jpg) Merhaba Arkadaşlar,
-
 Çok şanslı bir çocukluk geçirdim. 80li yıllarda daha minik bir çocukken Lego’ lar oyuncak dolabımdan eksik olmazdı. O zamanlar benim için çok kıymetliydiler. Tabi büyüdükçe başka başka şeyler önem kazanmaya başladı. Lego’ nun pabucu belki de dama atıldı. Ta ki bir oğlum olana kadar.
+
+[![LegoBuild](/assets/images/2014/LegoBuild_thumb.jpg)](/assets/images/2014/LegoBuild.jpg)
+
 
 Şimdiler de 4lü yaşlarını yaşayan S (h) arp Efe’ nin en sevdiği oyuncakların başında geliyor Lego. Ülkemizdeki fiyatları her ne hikmetse yüksek olan Lego’ lardan çok fazla alamıyoruz belki ama işin güzel bir tarafı var. 80li yıllarda oynadığım ve Annem tarafından saklanan Lego parçaları günümüzdekiler ile de uyumlu. Yani var olanları yeniler ile bir arada kullanıp hayal gücümüze göre farklı farklı yapılar inşa edebiliyoruz.
 

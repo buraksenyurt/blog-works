@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tablo Değişikliklerini GetChanges ile İzlemek"
 date: 2004-01-29 12:00:00 +0300
-description: "Bugünkü makalemizde, bağlantısız olarak veri tabloları ile çalışırken, bu tablolar üzerinde meydana gelen değişiklikleri nasıl izleyebileceğimizi ve davranışlarımızı bu değişikliklere göre nasıl yönledirebileceğimizi incelemeye çalışacağız. Hepimizin bildiği gibi, bağlantısız veriler ile çalışırken, bir veri kaynağında, makinemizin belleğine tablo veya tabloları alırız. Bu tablolar üzerinde, yeni satırlar oluşturur, var olan satırlar üzerinde değişiklikler yapar, her hangibir satırı siler ve bunlar gibi bir takım işlemler gerçekleştiririz. Tüm bu işlemler, bellek bölgesine aldığımız veriler üzerinde bir DataTable nesnesinde yada bir DataSet kümesinde gerçekleşir. Bununla birlikte, bahsettiğimiz bu değişiklikleri, asıl veri kaynağınada yansıtarak, güncellenmelerinide sağlarız."
 categories:
   - ado-net
 tags:
@@ -12,9 +11,6 @@ tags:
   - dataset
   - datatable
 ---
-# Tablo Değişikliklerini GetChanges ile İzlemek
-Değerli Okurlarım, Merhabalar.
-
 Bugünkü makalemizde, bağlantısız olarak veri tabloları ile çalışırken, bu tablolar üzerinde meydana gelen değişiklikleri nasıl izleyebileceğimizi ve davranışlarımızı bu değişikliklere göre nasıl yönledirebileceğimizi incelemeye çalışacağız.
 
 Hepimizin bildiği gibi, bağlantısız veriler ile çalışırken, bir veri kaynağında, makinemizin belleğine tablo veya tabloları alırız. Bu tablolar üzerinde, yeni satırlar oluşturur, var olan satırlar üzerinde değişiklikler yapar, her hangibir satırı siler ve bunlar gibi bir takım işlemler gerçekleştiririz. Tüm bu işlemler, bellek bölgesine aldığımız veriler üzerinde bir DataTable nesnesinde yada bir DataSet kümesinde gerçekleşir. Bununla birlikte, bahsettiğimiz bu değişiklikleri, asıl veri kaynağınada yansıtarak, güncellenmelerinide sağlarız.

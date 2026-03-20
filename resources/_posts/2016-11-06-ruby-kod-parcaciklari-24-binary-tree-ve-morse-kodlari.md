@@ -1,19 +1,15 @@
-﻿---
+---
 layout: post
 title: "Ruby Kod Parçacıkları 24 - Binary Tree ve Morse Kodları"
 date: 2016-11-06 21:30:00 +0300
-description: "Geçtiğimiz günlerde çalışma arkadaşımla aramızda gelişen teknolojiler üzerine bir takım konuşmalar geçti. Amazon Alexa'dır, Facebook'un Face Recognation teknolojileridir, Arduino'dur, Drone'lardır vs derken OCR konusuna da değindik. Bükük duran bir kağıdın fotoğrafını çeken uygulamanın, kağıt üzerindeki şekli düz bir biçimde algılayabilidiğini, bunu yapmak içinse matematik'teki Laplace denklemleri ve Fourier serilerine başvurduğunu öğrendik. Bir Matematik Mühendisi olarak bu dersleri hep teorik olarak okumuştum. Tabii o zamanlarda bu tip denklemlerin gerçek hayat uygulamalarını pek görememiştim. Bu yüzden çoğu teori soyut olarak kalmıştı."
 categories:
   - ruby
 tags:
   - ruby
 ---
-# Ruby Kod Parçacıkları 24 - Binary Tree ve Morse Kodları
-![morse_2.gif](/assets/images/2016/morse_2.gif)
-
-Merhaba Arkadaşlar,
-
 Geçtiğimiz günlerde çalışma arkadaşımla aramızda gelişen teknolojiler üzerine bir takım konuşmalar geçti. Amazon Alexa'dır, Facebook'un Face Recognation teknolojileridir, Arduino'dur, Drone'lardır vs derken OCR konusuna da değindik. Bükük duran bir kağıdın fotoğrafını çeken uygulamanın, kağıt üzerindeki şekli düz bir biçimde algılayabilidiğini, bunu yapmak içinse matematik'teki Laplace denklemleri ve Fourier serilerine başvurduğunu öğrendik. Bir Matematik Mühendisi olarak bu dersleri hep teorik olarak okumuştum. Tabii o zamanlarda bu tip denklemlerin gerçek hayat uygulamalarını pek görememiştim. Bu yüzden çoğu teori soyut olarak kalmıştı.
+
+![morse_2.gif](/assets/images/2016/morse_2.gif)
 
 Benzer durumu Ruby ile ilgili çalışmalarıma devam ederken de yaşadım. Geçtiğimiz günlerde Enumerable modülünü incelemeye çalışırken kendimi bir anda Binary Tree veri yapısını tekrardan incelerken buldum. C# tarafında bu veri yapısını incelemiş ve kullanmıştım ancak Ruby tarafında incelerken farklı bir yaklaşımı benimsedim. Aynen OCR denklemlerinde olduğu gibi bunu gerçek hayat örnekleri ile eşleştirmeye gayret ettim. Yaptığım araştırmalar sonuncunda Morse kodlarının ikili ağaç yapısı ile ifade edilebildiğini öğrendim. Bilmediğim bir bilgiydi ve Binary Tree'yi daha iyi anlamama yardımcı oldu.
 

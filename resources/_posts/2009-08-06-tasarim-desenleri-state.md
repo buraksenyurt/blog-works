@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tasarım Desenleri - State"
 date: 2009-08-06 06:00:00 +0300
-description: "Bir süre öncesine kadar özel bir bankada uzman yazılım geliştirici olarak görev almaktaydım. Bankada en çok hoşuma giden bazende en çok nefret ettiğim hususlardan biriside otomat makinesi idi..."
 categories:
   - tasarim-kaliplari-design-patterns
 tags:
@@ -12,12 +11,9 @@ tags:
   - threading
   - generics
 ---
-# Tasarım Desenleri - State
-![blg57_vendingMachine.gif](/assets/images/2009/blg57_vendingMachine.gif)
-
-Merhaba Arkadaşlar,
-
 Bir süre öncesine kadar özel bir bankada uzman yazılım geliştirici olarak görev almaktaydım. Bankada en çok hoşuma giden bazende en çok nefret ettiğim hususlardan biriside otomat makinesi idi.
+
+![blg57_vendingMachine.gif](/assets/images/2009/blg57_vendingMachine.gif)
 
 ![Smile](/assets/images/2009/smiley-smile.gif)
 
@@ -169,7 +165,7 @@ namespace StatePattern
                 // Burada durum değişimleri sonucu çalıştırılacak davranışların başlatılma noktasınıda merkezileştirmiş oluyoruz.
                 _state.HandleState(this);
             }
-        }       
+        }
 
         // Context nesnesi örneklenirken başlangıç durumu belirtilir.
         public VendingMachine()

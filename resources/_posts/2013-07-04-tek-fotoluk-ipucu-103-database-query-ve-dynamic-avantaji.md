@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu 103–Database.Query ve dynamic Avantajı"
 date: 2013-07-04 21:31:00 +0300
-description: "Merhaba Arkadaşlar,"
 categories:
   - tek-fotoluk-ipucu
 tags:
@@ -11,9 +10,6 @@ tags:
   - dataset
   - datatable
 ---
-# Tek Fotoluk İpucu 103–Database.Query ve dynamic Avantajı
-Merhaba Arkadaşlar,
-
 SQL gibi bir veri kaynağına erişmek için pek çok yol olduğunu gayet iyi biliyoruz. Hatta bu işi öğrenmeye başladığımız ilk zamanları hatırlayın. Connection'ın açılması, Command hazırlanması, bir DataAdapter'dan yararlanılarak DataTable/DataSet doldurulması ve DataReader ile veri setinin ileri yönlü dolaşılması ve benzeri tiplerle uğraşırız. Hatta Entity Framework gibi alt yapılar da kendi içlerinde bu temel türlerin ata tiplerinden fazlasıyla yararlanmaktadır.
 
 Son zamanlarda popüler olan (en azından benim dikkatimi yeni çeken) kütüphanelerden birisi de WebMatrix.Data dır (Oldukça eğlenceli olduğunu da ifade etmek isterim) Bu kütüphane içerisinde yer alan Database tipi ise tam bir sihirbaz. Özellikle dynamic desteği sağlayan metodları.

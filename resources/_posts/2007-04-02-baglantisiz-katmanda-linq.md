@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Bağlantısız Katmanda LINQ"
 date: 2007-04-02 12:00:00 +0300
-description: "Language Integrated Query (Dil ile tümleştirilmiş sorgu) yardımıyla yapabileceklerimiz saymakla bitmiyor. Aslında LINQ projesinin en önemli çıkış nedeni, Anders Hejslberg' ın anlatımıyla veri ve nesne eşitsizliğidir. (data!=objects)"
 categories:
   - csharp
 tags:
@@ -15,9 +14,6 @@ tags:
   - dataset
   - datatable
 ---
-# Bağlantısız Katmanda LINQ
-Değerli Okurlarım Merhabalar,
-
 Language Integrated Query (Dil ile tümleştirilmiş sorgu) yardımıyla yapabileceklerimiz saymakla bitmiyor. Aslında LINQ projesinin en önemli çıkış nedeni, Anders Hejslberg'ın anlatımıyla veri ve nesne eşitsizliğidir. (data!=objects) Bu ifadeyi, TechEd 2006 sunumlarında kullanan Anders Hejslberg, özellikle veri yapılarının programlama ortamına alınması sonrasında, var olan basit sorgu tekniklerinin uygulanamayışından yakınmaktadır.
 
 LINQ projesinin aslında en temel amacı, uygulamaların çalışma alanlarında (.Net perspektifinden baktığımızda Application Domain'ler içerisinde), bellek üzerinde konuşlanan nesneler üzerinden bildiğimiz veri sorgulama kurallarını uygulayabilmektir. Bir başka deyişle, nesne (object) üzerinde, var olan veritabanı nesnelerini taşıyabilen Entity bileşenleri üzerinde, belleğe alınan Xml veri setleri üzerinde, sorgulamaları bilinen alışılagelmiş söz dizimleri ile tek bir standart altında yapabilmektir. Tüm bu farklı nesnel yapıların ortak bir sorgulama dilini kullanabiliyor olması da LINQ projesinin ana fikirlerinden birisidir aslında.

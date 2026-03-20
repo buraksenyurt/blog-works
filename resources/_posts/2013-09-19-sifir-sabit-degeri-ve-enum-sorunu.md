@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Sıfır Sabit Değeri ve Enum Sorunu"
 date: 2013-09-19 10:48:00 +0300
-description: "C# konulu yeni bir bilmece ile karşı karşıyayız. Bu sefer kolay kolay fark edemeyebileceğimiz, basit ama irdelenmesi gereken bir vakayı göz önüne alacağız."
 categories:
   - csharp
 tags:
@@ -10,10 +9,10 @@ tags:
   - dotnet
   - generics
 ---
-# Sıfır Sabit Değeri ve Enum Sorunu
-[![1186819_puzzle_time_1](/assets/images/2013/1186819_puzzle_time_1_thumb.jpg)](/assets/images/2013/1186819_puzzle_time_1.jpg) Merhaba Arkadaşlar,
-
 C# konulu yeni bir bilmece ile karşı karşıyayız. Bu sefer kolay kolay fark edemeyebileceğimiz, basit ama irdelenmesi gereken bir vakayı göz önüne alacağız.
+
+[![1186819_puzzle_time_1](/assets/images/2013/1186819_puzzle_time_1_thumb.jpg)](/assets/images/2013/1186819_puzzle_time_1.jpg)
+
 
 Bir uygulamayı geliştirirken, Developer olarak son derece dikkatli olmalı ve testlerimizi gerçekleştirirken de tüm senaryoları göz önüne almalıyız. Bu anlamda gerek dilin gerek.Net Framework alt yapısının tüm unsurlarına hakim olmak da son derece önemli.
 

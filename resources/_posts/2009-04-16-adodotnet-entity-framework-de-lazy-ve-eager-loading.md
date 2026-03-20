@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ado.Net Entity Framework' de Lazy ve Eager Loading"
 date: 2009-04-16 03:41:00 +0300
-description: "Bildiğiniz üzere uzun bir süre önce Microsoft, LINQ to SQL yerine Ado.Net Entity Framework ile ilerleme kararı aldı. Bu konu ile ilişkili olaraktan okuduğum hemem hemen bütün kitaplarda Ado.Net' in geleceğinde önemli bir yere sahip olan Ado.Net Entity Framework alt yapısının geliştiriciler tarafından asla ihmal edilmemesi gerektiğide sıkça vurgulanmakta. Peki günlüğüme konu olan mesele nedir?"
 categories:
   - entity-framework
 tags:
@@ -15,9 +14,6 @@ tags:
   - generics
   - visual-studio
 ---
-# Ado.Net Entity Framework' de Lazy ve Eager Loading
-Merhaba Arkadaşlar,
-
 Bildiğiniz üzere uzun bir süre önce Microsoft, LINQ to SQL yerine Ado.Net Entity Framework ile ilerleme kararı aldı. Bu konu ile ilişkili olaraktan okuduğum hemem hemen bütün kitaplarda Ado.Net'in geleceğinde önemli bir yere sahip olan Ado.Net Entity Framework alt yapısının geliştiriciler tarafından asla ihmal edilmemesi gerektiğide sıkça vurgulanmakta. Peki günlüğüme konu olan mesele nedir?
 
 Aslında günlüğe yazmadan önce odaklandığım nokta, aralarında master-detail ilişki bulunan tablo verilerinin, LINQ to SQL tarafında nasıl yüklendiğinin incelenmesiydi. Dolayısıyla önce LINQ to SQL tarafındaki duruma bir göz atmakya yarar var. İşe öncelikle basit bir Console uygulamasında kobay nesnelerimizden Northwind veritabanını kullanarak başlayabiliriz. Burada Visual Studio 2008 üzerinde ve.Net Framework 3.5 tabanlı bir geliştirme yaptığımızı belirtelim. Söz konusu uygulamamızda kullanacağımız LINQ to SQL diagramının içeriği aşağıdaki gibi tasarlanabilir.

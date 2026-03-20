@@ -1,16 +1,12 @@
-﻿---
+---
 layout: post
 title: "Oyun Programlamaya Giriş (Matrisler Yardımıyla Çarpışma Kontrolü)"
 date: 2004-12-04 12:00:00 +0300
-description: "Hafta sonu evde bilgisayarım başında internette gezinirken, tarihi oyunların anlatıldığı bir site ile karşılaştım. Aslında zaten eski oyunları araştırıyordum. Amacım bu oyunlara, oyun oynamak isteyen bir çocuk gözü ile değil, onların yapılarını ve çekirdeklerini anlamaya çalışacak bir yazılımcı gözüyle bakabilmekti. Sonuçta, içimdeki çocuk ağır basıp bir kaç tanesini saatlerce oynadım. Aralarında en çok hoşuma gidenlerden birisi PackMan' di. Packman, doğrusal düzlemde 4 yöne hareket edebilen bir kahramandı. Yolda kendisini rastgele konumlardan gelerek yakalamaya çalışan böceklerden kaçıyor ve bulduğu meyveleri yiyerekte puanlar topluyordu. Tam oyunu bitirmeme az kalmıştıki hiç beklenmedik bir şekilde böceklerden birisi tarafından yendim. Aslında ekrana bir süre donuk gözler ile bakmıştım. Nitekim, oyunu oynarken aklıma geçen gün okuduğum Oyun Programlama kitabı gelmişti."
 categories:
   - csharp
 tags:
   - csharp
 ---
-# Oyun Programlamaya Giriş (Matrisler Yardımıyla Çarpışma Kontrolü)
-Değerli Okurlarım Merhabalar,
-
 Hafta sonu evde bilgisayarım başında internette gezinirken, tarihi oyunların anlatıldığı bir site ile karşılaştım. Aslında zaten eski oyunları araştırıyordum. Amacım bu oyunlara, oyun oynamak isteyen bir çocuk gözü ile değil, onların yapılarını ve çekirdeklerini anlamaya çalışacak bir yazılımcı gözüyle bakabilmekti. Sonuçta, içimdeki çocuk ağır basıp bir kaç tanesini saatlerce oynadım. Aralarında en çok hoşuma gidenlerden birisi PackMan'di. Packman, doğrusal düzlemde 4 yöne hareket edebilen bir kahramandı. Yolda kendisini rastgele konumlardan gelerek yakalamaya çalışan böceklerden kaçıyor ve bulduğu meyveleri yiyerekte puanlar topluyordu. Tam oyunu bitirmeme az kalmıştıki hiç beklenmedik bir şekilde böceklerden birisi tarafından yendim. Aslında ekrana bir süre donuk gözler ile bakmıştım. Nitekim, oyunu oynarken aklıma geçen gün okuduğum Oyun Programlama kitabı gelmişti.
 
 Kitabın bir bölümünde, ekranda yer alan aynı boyutlu nesnelerin çarpışmalarının kontrolünde iki boyutlu bir matris dizisinden faydalanılıyordu. O anda, çarpışma tekniklerinin farklı bir teoremini Packman'a benzeyecek bir oyun ile inceleyebileceğimi düşündüm. Her ne kadar amacım tümüyle bir oyunu yazmak olmasada en azından Packman'imi ekrandaki duvarların içinden geçirmeyecek şekilde hareket ettirmek istiyordum.

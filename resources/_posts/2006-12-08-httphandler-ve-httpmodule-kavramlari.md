@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "HTTPHandler ve HttpModule Kavramları"
 date: 2006-12-08 04:00:00 +0300
-description: "Çoğumuz herhangibir tarayıcı penceresinden bir AspNet sayfasını çağırdığımızda resmin hep ön yüzünden bakarız. Oysaki resmin arka yüzünde dikkate değer bir mimari bulunmaktadır. Bu mimari içerisinde yer alan önemli yapılardan ikisi, Http Pipeline' ın bir parçası olan Http Handler ve Http Module kavramlarıdır..."
 categories:
   - aspnet
 tags:
@@ -18,9 +17,6 @@ tags:
   - visual-studio
   - asmx
 ---
-# HTTPHandler ve HttpModule Kavramları
-Değerli Okurlarım Merhabalar,
-
 Çoğumuz herhangibir tarayıcı penceresinden bir AspNet sayfasını çağırdığımızda resmin hep ön yüzünden bakarız. Oysaki resmin arka yüzünde dikkate değer bir mimari bulunmaktadır. Bu mimari içerisinde yer alan önemli yapılardan ikisi, Http Pipeline'ın bir parçası olan Http Handler ve Http Module kavramlarıdır. Bu makalemizde Http Handler ve Http Module kavramlarını kısaca incelemeye ve tanımaya çalışacağız. HttpHandler ve HttpModule kavramlarını derinlemesine incelemeden önce işe, bir web sayfasını talep ettiğimizde web sunucusunun bu talebi nasıl değerlendirdiğini ele almaya çalışarak başlayalım. Çalışma modelindeki başrol oyuncularımız ISS (Microsoft Internet Information Services), ASPNETISAPI, Asp.Net Work Processor ve HTTPPipeLine dır.
 
 Temel olarak IIS, web sunucusuna gelen html, aspx, asp, jsp vb talepleri karşılayıp cevaplamakla yükümlü bir programıdır. Talep edilen sayfalar farklı tipte olduğundan yada farklı programalama sistemlerince işletildiklerinden IIS, gelen talebi asıl işletecek olan sisteme devretmek için bazı durumlarda arada bir program arayüzüne ihtiyaç duyacaktır. Bazı durumlarda diyoruz çünkü bir HTML sayfası için (yada bir resim dosyası vb...).Net Framework ve benzeri ortamlara ihtiyaç yoktur. Bunlar zaten doğrudan karşılanabilirler.

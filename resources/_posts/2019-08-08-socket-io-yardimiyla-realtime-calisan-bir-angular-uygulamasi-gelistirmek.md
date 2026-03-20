@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Socket-IO Yardımıyla RealTime Çalışan Bir Angular Uygulaması Geliştirmek"
 date: 2019-08-08 15:17:00 +0300
-description: "Bilindiği üzere istemci-sunucu geliştirme modelinde gerçek zamanlı ve çift yönlü iletişim için WebSocket yaygın olarak kullanılan protokollerden birisi. Klasik HTTP request/response modelinden farklı olarak WebSocket protokolünde sunucu, istemcinin talep göndermesine gerek kalmadan mesaj gönderebiliyor. Chat uygulamaları, eş zamanlı oyunlar, finansal bildirim yapan ticari programlar, online doküman yönetim sistemleri ve benzerleri WebSocket protokolünün kullanıldığı ideal ortamlar. Benim 29 numaralı Saturday Night Works çalışmasındaki amacım Socket.IO kütüphanesinden yararlanan bir Node sunucusu ile Angular'da yazılmış bir web uygulamasını WebSocket protokolü tabanında deneyimlemekti. Hazırsanız notlarımızı derlemeye başlayalım."
 categories:
   - angular
 tags:
@@ -16,10 +15,9 @@ tags:
   - async-await
   - github
 ---
-# Socket-IO Yardımıyla RealTime Çalışan Bir Angular Uygulaması Geliştirmek
-![someprimes.png](/assets/images/2019/someprimes.png)
-
 Dünyanın aslen hukukçu olmasına rağmen en ünlü matematikçilerinden olan Fermat'nın (1601-1665) asal sayıları bulduğunu iddia ettiği denklemini bir diğer matematikçi Euler (1707-1773), n=5 değeri için bozmuştur. Lakin matematikçilerin ve diğer pek çok kişinin asalları bulma tutkusu bitmemiştir. Bilim, felsefe ve müzikle haşırneşir olmayı seven Fransız rahibi Marin Mersenne (1558-1648) 2n-1 şeklindeki formülü ile ünlenmiştir. Formüldeki n değerinin asal sayı olarak kabul edildiği hallerde bulunan sayıların da asal olduğunun belirtildiği bir teorem söz konusudur (Bu formül ile bulunan bir sayının asal olup olmadığı Lucas-Lehmer testi ile kontrol edilebilir)
+
+![someprimes.png](/assets/images/2019/someprimes.png)
 
 Nitekim mesele 1000-2000 arası asalları bulmakla ilgili değildir. En büyük asal değeri bulabilmektir. Çünkü n değeri büyüdükçe en büyük asalı bulmak da zorlaşır (Nadir olan her zaman daha kıymetlidir) Mersenne sayıları olarak adlandırılan bu asalların en kocamanı 2018 yılında elektrik mühendisi Jonathan Pace tarafından keşfedilmiştir. n = 82.589.933 değeri için bulunan 50nci Mersenne asalı tam 24.862.048 rakamdan oluşmaktadır (Ocak 2019 itibariyle) Dilerseniz 51nci Mersenne asalını bulmak için siz de katkıda bulunabilir hatta bulursanız küçük bir ödül bile alabilirsiniz. [Şu adrese girip](https://www.mersenne.org/) GIMPS (Great Internet Mersenne Prime Search) sistemine gönüllü olarak katılmanız yeterli.
 
@@ -97,13 +95,13 @@ io.on("connection", socket => {
     /*
     add yeni bir dokümanın eklenmesi için kullanılır.
     istemci tarafından yayınlanan olayda payload olarak
-    dokümanın kendisi gelir. 
+    dokümanın kendisi gelir.
 
     io üzerinden yayınlanan warnEveryone isimli olay
     istemcilerin tümünü yeni bir dokümanın eklendiği bilgisini vermek üzere tasarlanmıştır.
 
     socket üzerinden yapılan olay bildirimi payload dokümanı ile birlikte sadece bağlı
-    olan istemci için geçerlidir. 
+    olan istemci için geçerlidir.
 
     socket ile io nesnelerinin emit kullanımları arasındaki farka dikkat edelim.
     io.emit bağlı olan tüm istmecileri ilgilendirirken, socket.emit o anki olayın
@@ -326,6 +324,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
 
 article-list.component.html
 
+{% raw %}
 ```text
 <div>
   <button (click)='newArticle()'>Yeni makale başlat</button>
@@ -348,6 +347,7 @@ article-list.component.html
   newArticle metodu çağırılıyor.
 -->
 ```
+{% endraw %}
 
 artcile-list.component.ts
 

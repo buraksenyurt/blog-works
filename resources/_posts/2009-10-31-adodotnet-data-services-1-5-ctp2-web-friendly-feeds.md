@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ado.Net Data Services 1.5 CTP2 - Web Friendly Feeds"
 date: 2009-10-31 11:25:00 +0300
-description: "Ado.Net Data Services v1.5 CTP1 ile gelen Web Friendly Feeds özelliği, CTP2 sürümünde eklenen iki yeni eşleştirme seçeneği ile genişletilmiştir. Durun bir dakika...Web Friendly Feeds nedir? Undecided Arkadaşlıktan farklı bir şey olsa gerek Wink Öncelikle bu konuya açıklık getirmek gerekiyor. Web Friendly Feeds özelliği, bir Entity'nin herhangibir özelliğini(Property), Ado.Net Data Service' inden çıktı olarak üretilen Atom içeriğindeki bir elemente eşleştirmekte kullanılmaktadır. Nitekim servisin ürettiği varsayılan Atom içeriğinde yer alan author name, url, title vs... gibi bilgiler zaten standart olarak kabul edilmiştir ve bu nedenle söz konusu elementleri değerlendiren yorumlayıcılara, var olan Entity içeriğindeki bazı özellik değerlerinin aktarılması istenebilir. Bir başka deyişle, servisin ürettiği içeriğin kaynağındaki özelliklerin çıktıda map edileceği yerler, Atom içeriğindeki belirli noktalar olarak belirlenebilir."
 categories:
   - ado-net-data-services
 tags:
@@ -14,12 +13,9 @@ tags:
   - entity-framework
   - linq
 ---
-# Ado.Net Data Services 1.5 CTP2 - Web Friendly Feeds
-![blg80_Giris.jpg](/assets/images/2009/blg80_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Ado.Net Data Services v1.5 CTP1 ile gelen Web Friendly Feeds özelliği, CTP2 sürümünde eklenen iki yeni eşleştirme seçeneği ile genişletilmiştir. Durun bir dakika...Web Friendly Feeds nedir?
+
+![blg80_Giris.jpg](/assets/images/2009/blg80_Giris.jpg)
 
 ![Undecided](/assets/images/2009/smiley-undecided.gif)
 

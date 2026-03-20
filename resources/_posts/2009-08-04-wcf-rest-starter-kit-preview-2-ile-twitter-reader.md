@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF Rest Starter Kit Preview 2 ile Twitter Reader"
 date: 2009-08-04 23:47:00 +0300
-description: "Örneğin, XML içeriğini managed tarafta kolayca ele alabilmemiz için gerekli tiplerin üretimini kolaylaştıran Paste XML As Types Laughing Örneği geliştirebilmek için çok sık kullanmasamda Twitter' da bir hesap oluşturdum ve bildiğim geliştiricilerin Tweet' lerini takip etmeye başladım. İşe başlamadan önce, Twitter'da ne olup bittiğine bir bakayım dedim."
 categories:
   - wcf
 tags:
@@ -16,12 +15,9 @@ tags:
   - serialization
   - visual-studio
 ---
-# WCF Rest Starter Kit Preview 2 ile Twitter Reader
-![blg56_giris.gif](/assets/images/2009/blg56_giris.gif)
-
-Merhaba Arkadaşlar,
-
 Minik bir çocukken Televizyon bağımlılığı (Malesef bu aptal kutuda çok vakiy geçirebiliyor çocuklar ![Frown](/assets/images/2009/smiley-frown.gif)) nedeniyle pek çok çizgi filmi izlediğimi hatırlıyorum. Voltran, Transformers, Red Kit ve Daltonlar, Denver The Last Dinasour, Clementine filan derken arada sıradada "Bi kedi gördüm sanki" diyen Tweety
+
+![blg56_giris.gif](/assets/images/2009/blg56_giris.gif)
 
 ![Laughing](/assets/images/2009/smiley-laughing.gif)
 

@@ -1,17 +1,13 @@
-﻿---
+---
 layout: post
 title: "Batch Queries (Toplu Sorgular) ve SqlDataReader"
 date: 2004-02-17 12:00:00 +0300
-description: "Bu makalemizde, toplu sorguların, SqlDataReader sınıfı ile nasıl okunabileceğini incelemeye çalışacağız. Bildiğiniz gibi SqlDataReader nesneleri, bir select sorgusunu çalıştıran SqlCommand sınıfına ait, ExecuteReader metodu ile oluşturulmaktaydı. Çalıştırılan sorgu sonucu elde edilen kayıt kümesinde sadece okunabilir ve ileri yönlü hareket etmemize imkan sağlayan SqlDataReader sınıfı, belli bir t anında veri kanağından sadece tek bir satırı okumamıza izin vermektedir. Bu yönden bakıldığında, SqlDataReader sınıfı, verileri hızlı ve verimli bir şekilde okumamıza imkan sağlamaktadır. Örneğin aşağıdaki kod satırları ile, Sql sunucumuzda yer alan makale isimli tablodaki tüm satırlar okunarak ekrana yazdırılmıştır."
 categories:
   - ado-net
 tags:
   - ado-net
   - csharp
 ---
-# Batch Queries (Toplu Sorgular) ve SqlDataReader
-Değerli Okurlarım, Merhabalar.
-
 Bu makalemizde, toplu sorguların, SqlDataReader sınıfı ile nasıl okunabileceğini incelemeye çalışacağız. Bildiğiniz gibi SqlDataReader nesneleri, bir select sorgusunu çalıştıran SqlCommand sınıfına ait, ExecuteReader metodu ile oluşturulmaktaydı. Çalıştırılan sorgu sonucu elde edilen kayıt kümesinde sadece okunabilir ve ileri yönlü hareket etmemize imkan sağlayan SqlDataReader sınıfı, belli bir t anında veri kanağından sadece tek bir satırı okumamıza izin vermektedir. Bu yönden bakıldığında, SqlDataReader sınıfı, verileri hızlı ve verimli bir şekilde okumamıza imkan sağlamaktadır. Örneğin aşağıdaki kod satırları ile, Sql sunucumuzda yer alan makale isimli tablodaki tüm satırlar okunarak ekrana yazdırılmıştır.
 
 ```csharp

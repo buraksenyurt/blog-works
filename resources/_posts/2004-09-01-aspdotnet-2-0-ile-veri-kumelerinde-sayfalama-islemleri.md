@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net 2.0 ile Veri Kümelerinde Sayfalama İşlemleri"
 date: 2004-09-01 12:00:00 +0300
-description: "Bu makalemizde, Asp.Net 2.0 ile geliştirilen sayfalarda, veri kümeleri üzerinde sayfalama işlemlerinin nasıl yapıldığını incelemeye çalışacağız. Sayfalama işlemleri, özellikle internet(intranet) uygulamalarında yaygın şekilde kullanılan bir tekniktir. Burada, veri kümesine ati olan satırlar, DataGrid gibi bir kontrolde gösterilirken, sayfalara ayrılırlar. Böylece veri kümesine ait satırlar arasında toplu geçiş yapmamıza imkan sağlayan, navigasyon seçeneklerine sahip olmuş oluruz."
 categories:
   - aspnet-2-0
 tags:
@@ -15,9 +14,6 @@ tags:
   - visual-studio
   - datatable
 ---
-# Asp.Net 2.0 ile Veri Kümelerinde Sayfalama İşlemleri
-Değerli Okurlarım Merhabalar,
-
 Bu makalemizde, Asp.Net 2.0 ile geliştirilen sayfalarda, veri kümeleri üzerinde sayfalama işlemlerinin nasıl yapıldığını incelemeye çalışacağız. Sayfalama işlemleri, özellikle internet (intranet) uygulamalarında yaygın şekilde kullanılan bir tekniktir. Burada, veri kümesine ati olan satırlar, DataGrid gibi bir kontrolde gösterilirken, sayfalara ayrılırlar. Böylece veri kümesine ait satırlar arasında toplu geçiş yapmamıza imkan sağlayan, navigasyon seçeneklerine sahip olmuş oluruz.
 
 Asp.Net 2.0 içinde aynı imkanlar ve kabiliyetler söz konusudur. Ancak uygulanış şekli ve kullanılan bileşenler çok daha farklıdır. Herşeyden önce, Asp.Net 1.0/1.1 de izlenen yollara nazaran, daha kısa ve etkili bir teknik geliştirilmiştir. Asp.Net'in ilk sürümleri ile geliştirilen uygulamalarda, sayfalama işlemlerinin gerçekleştirilmesi için DataGrid kontrollerinde ekstradan olay prosedürü kodlamamız gerekmektedir. Bu bizim için fazla maliyettir. Nitekim zaman kaybettirici bir işlemdir. Ne demek istediğimi ve Asp.Net 2.0' da hangi noktaya geldiğimizi görmek için Visual Studio.Net 2003 ile geliştirilen aşağıdaki internet sayfasına bir göz atalım.

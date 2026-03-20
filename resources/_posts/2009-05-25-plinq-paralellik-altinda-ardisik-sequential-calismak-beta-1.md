@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "PLINQ - Paralellik Altında Ardışık(Sequential) Çalışmak [Beta 1]"
 date: 2009-05-25 11:34:00 +0300
-description: "Bir önceki blog yazımızda PLINQ ifadelerinde sıralama konusuna değinmeye çalışmıştık. Bu yazımızda ise, paralel olarak çalıştırılan LINQ sorguları içerisinde, ardışık(Sequential) olarak nasıl işlem yapılabileceğini incelemeye çalışacağız."
 categories:
   - linq
   - plinq
@@ -14,9 +13,6 @@ tags:
   - generics
   - visual-studio
 ---
-# PLINQ - Paralellik Altında Ardışık(Sequential) Çalışmak [Beta 1]
-Merhaba Arkadaşlar,
-
 Bir önceki blog yazımızda PLINQ ifadelerinde sıralama konusuna değinmeye çalışmıştık. Bu yazımızda ise, paralel olarak çalıştırılan LINQ sorguları içerisinde, ardışık (Sequential) olarak nasıl işlem yapılabileceğini incelemeye çalışacağız.
 
 PLINQ ifadeleri, sorgu içerisindeki işlemleri paralel çalışan görevlere ayırmakta son derece başarılıdır. Ancak öyle senaryolar olabilirki, sorgunun belirli bir noktasından (noktalarından) sonra ardışık olarak işlemlerin devam etmesi istenebilir.(Hatta sonra tekrardan paralel olarak devam edilmeside sağlanabilir) Tabi bu şekilde anlatmaya çalışınca inanın benim kafamda karışıyor.

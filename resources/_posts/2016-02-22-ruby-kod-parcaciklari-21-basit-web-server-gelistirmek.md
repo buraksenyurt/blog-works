@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ruby Kod Parçacıkları 21 - Basit Web Server Geliştirmek"
 date: 2016-02-22 14:00:00 +0300
-description: "Web tabanlı çalışan uygulamalar genellikle IIS(Internet Information Services) ve benzeri ortamlar üzerinde barındırılırlar. Aslında IIS basitçe TCP soket haberleşmesi gerçekleştiren bir ürün olarak düşünülebilir. Üzerinde konuşlandırılan kaynaklara olan erişimde ise genellikle HTTP protokolü ve Get, Post vb metodları kullanılır. Gelen taleplere göre uygun servislerin devreye girmesi söz konusudur."
 categories:
   - ruby
 tags:
@@ -15,12 +14,9 @@ tags:
   - caching
   - asmx
 ---
-# Ruby Kod Parçacıkları 21 - Basit Web Server Geliştirmek
-![web-server.gif](/assets/images/2016/web-server.gif)
-
-Merhaba Arkadaşlar,
-
 Web tabanlı çalışan uygulamalar genellikle IIS (Internet Information Services) ve benzeri ortamlar üzerinde barındırılırlar. Aslında IIS basitçe TCP soket haberleşmesi gerçekleştiren bir ürün olarak düşünülebilir. Üzerinde konuşlandırılan kaynaklara olan erişimde ise genellikle HTTP protokolü ve Get, Post vb metodları kullanılır. Gelen taleplere göre uygun servislerin devreye girmesi söz konusudur.
+
+![web-server.gif](/assets/images/2016/web-server.gif)
 
 İlgili taleplere (Request) verilecek cevaplar (Response) da bu hizmetler üzerinden karşılanır. Örneğin.Net çalışma zamanı aspx, svc, asmx, html gibi uzantılara gelecek talepleri ele alarak uygun cevapları döndürür. İstenirse handler'lar veya modul'ler özelleştirilerek farklı uzantılar için farklı çalışma şekilleri de düzenlenebilir. Ana fikirde ise evrensel bir standarda göre gelen mesajların irdelenip uygun içeriklerin döndürüldüğü sunucu uygulamaları söz konusudur.
 

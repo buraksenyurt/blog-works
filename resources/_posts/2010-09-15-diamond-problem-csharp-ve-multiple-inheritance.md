@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Diamond Problem, C# ve Multiple Inheritance"
 date: 2010-09-15 06:28:00 +0300
-description: "Olaya C++ tarafından baktığımızda, Diamond Problem adı verilen bir sorunsalın, böyle bir yasağa neden olduğunu da ifade edebiliriz. Peki Diamond Problemi nedir? Dilerseniz öncelikle bu vakayı ele almaya çalışarak işe başlayalım."
 categories:
   - csharp
 tags:
@@ -10,10 +9,10 @@ tags:
   - bash
   - linq
 ---
-# Diamond Problem, C# ve Multiple Inheritance
-[![blg226_Giris](/assets/images/2010/blg226_Giris_thumb.jpg)](/assets/images/2010/blg226_Giris.jpg) Merhaba Arkadaşlar,
-
 Yandaki resimde mükemmel ölçülerde bir elmas taşını görmektesiniz. Sanıyorum ki içerisinde altın orana rastlamak bile mümkündür. Elmas karatına göre derece değerli bir taş olduğu kadar, elde edilmesi de zahmetli ve zordur. Hatta özellikle Afrika’ nın elmas yönünden zengin olan bazı ülkelerinde bu taş yüzünden pek çok kişi hayatını kaybetmiştir/kaybetmektedir. Ki bu konu günümüz sinemasına da malzeme olmayı başarmıştır.
+
+[![blg226_Giris](/assets/images/2010/blg226_Giris_thumb.jpg)](/assets/images/2010/blg226_Giris.jpg)
+
 
 Elbette bizim bu günkü konumuzun elmaslar ve üzerinde dönen dolaplar ile pek bir alakası bulunmamaktadır. Aslında bu günkü yazımızda C# programlama dilinde yasaklanmış olan ama örneğin C++ ile ele alabileceğiniz çoklu kalıtım (Multiple Inheritance) konusuna farklı bir açıdan bakmaya çalışıyor olacağız.
 

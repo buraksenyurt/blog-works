@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Entity Framework - Many To Many Relations"
 date: 2010-02-12 01:05:00 +0300
-description: "Bundan yıllar önce üniversiteden arkadaşım Orkun Şentürk ile birlikte Altunizade Capitol alışveriş merkezinde Dreamcatcher isimli bir bilim kurgu gerilim filmine gittiğimizi hatırlıyorum. (Aslında bilim kurgu filmlerin tam bir hayranıyımdır. Ancak seyrettiklerimin hiç biri Starwars veya Terminator gibilerinin yerini tutmamakta) Film Stephen King' in bir romanından uyarlanmıştı. Sevgili arkadaşım Orkun kitabını okuyarak geldiğinden, film üzerinde daha iyi yorumlar yapmıştı ancak ortak kanımız çok başarılı olmadığı yönündeydi. Açıkçası fazla etkilenmemiştik."
 categories:
   - entity-framework
 tags:
@@ -16,12 +15,9 @@ tags:
   - visual-studio
   - rc
 ---
-# Entity Framework - Many To Many Relations
-![blg131_GirisNew.jpg](/assets/images/2010/blg131_GirisNew.jpg)
-
-Merhaba Arkadaşlar,
-
 Bundan yıllar önce üniversiteden arkadaşım Orkun Şentürk ile birlikte Altunizade Capitol alışveriş merkezinde Dreamcatcher isimli bir bilim kurgu gerilim filmine gittiğimizi hatırlıyorum. (Aslında bilim kurgu filmlerin tam bir hayranıyımdır. Ancak seyrettiklerimin hiç biri Starwars veya Terminator gibilerinin yerini tutmamakta) Film Stephen King'in bir romanından uyarlanmıştı. Sevgili arkadaşım Orkun kitabını okuyarak geldiğinden, film üzerinde daha iyi yorumlar yapmıştı ancak ortak kanımız çok başarılı olmadığı yönündeydi. Açıkçası fazla etkilenmemiştik.
+
+![blg131_GirisNew.jpg](/assets/images/2010/blg131_GirisNew.jpg)
 
 Özellikle filmden çıktıktan sonra yaptığımız muhabbet bunu doğrular nitelikteydi..Net Framework 1.1 ile yazmakta olduğumuz programda kullandığımız SQL 2000 veritabanındaki many-to-many ilişkileri anlamaya çalışıyorduk. O zamanlar bizim için SQL veritabanına bağlanabilmek bile bir lüks iken bu tip alengirli konular korkutucu geliyordu. Filmden daha çok gerildiğimiz bir konuydu.
 

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Python Öğrenmeye Devam - Sınıflar"
 date: 2016-09-01 01:00:00 +0300
-description: "Bir süredir izinde olduğum için yeni gözdem Python ile yeterince ilgilenemedim. Döndüğümde daha önceden çalıştığım konuları hatırlamakta da epeyce zorlandım. Pasımı atmak ve tekrardan verimliliğimi yükseltmek için ilk olarak defterime karaladığım notlarımın üstünden geçtim. Sonrasında ise C# dili ile geçimini sağlayan birisi olduğumdan Pyhton'un Nesne Yönelimli Dünyadaki yerini öğrenmeye çalışırsam bazı şeyleri daha kolay anlarım diye düşündüm. Derken kendimi nesne yönelimli dillerin en temel yapıtaşlarından birisi olan sınıfların Python içerisindeki yerini araştırırken buldum. İşte bir .Net geliştiricisi olarak edindiğim bilgiler(Eğer .Net veya Java dünyasından geliyorsanız temel seviyede de olsa nesne yönelimli programlama kavramlarını biliyorsunuzdur. Yazıyı ben de kendime göre hazırladığımdam sizin de bildiğinizi varsayarak ilerleyeceğim)"
 categories:
   - python
 tags:
@@ -12,12 +11,9 @@ tags:
   - java
   - ruby
 ---
-# Python Öğrenmeye Devam - Sınıflar
-![practice-makes-perfect.jpg](/assets/images/2016/practice-makes-perfect.jpg)
-
-Merhaba Arkadaşlar,
-
 Bir süredir izinde olduğum için yeni gözdem Python ile yeterince ilgilenemedim. Döndüğümde daha önceden çalıştığım konuları hatırlamakta da epeyce zorlandım. Pasımı atmak ve tekrardan verimliliğimi yükseltmek için ilk olarak defterime karaladığım notlarımın üstünden geçtim.
+
+![practice-makes-perfect.jpg](/assets/images/2016/practice-makes-perfect.jpg)
 
 Sonrasında ise C# dili ile geçimini sağlayan birisi olduğumdan Pyhton'un Nesne Yönelimli Dünyadaki yerini öğrenmeye çalışırsam bazı şeyleri daha kolay anlarım diye düşündüm. Derken kendimi nesne yönelimli dillerin en temel yapıtaşlarından birisi olan sınıfların Python içerisindeki yerini araştırırken buldum. İşte bir.Net geliştiricisi olarak edindiğim bilgiler (Eğer.Net veya Java dünyasından geliyorsanız temel seviyede de olsa nesne yönelimli programlama kavramlarını biliyorsunuzdur. Yazıyı ben de kendime göre hazırladığımdam sizin de bildiğinizi varsayarak ilerleyeceğim)
 

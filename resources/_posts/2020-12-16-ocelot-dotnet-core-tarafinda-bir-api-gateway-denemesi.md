@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ocelot - .Net Core Tarafında Bir API Gateway Denemesi"
 date: 2020-12-16 11:51:00 +0300
-description: "Uzun süre önce bankada çalışırken nereye baksam servis görüyordum. Bir süre sonra ana bankacılık uygulaması dahil pek çok ürünün kullandığı bu sayısız servisler ağının yönetimi zorlaşmaya başladı. Bir takım ortak işlerin daha kolay ve etkili yönetilmesi gerekiyordu. Müşterek bir kullanıcı doğrulama ve yetkilendirme kontrolü(authentication & authorization), yük dengesi dağıtımı (load balancing), birkaç servis talebinin birleştirilmesi ve hatta birkaç servis verisinin birleştirilerek döndürülmesi(aggregation), servis verisinin örneğin XML'den JSON gibi farklı formata evrilmesi, servis geliş gidişlerinin loglanması, yönlendirmeler yapılması(routing), performans için önbellek kullanılması(caching), servis hareketliliklerini izlenmesi(tracing), servislerin kolayca keşfedilmesi(discovery), çağrı sayılarına sınırlandırma getirilmesi, bir takım güvenlik politikalarının entegre edilmesi, özelleştirilmiş delegeler yazılması(custom handler/middleware), tüm uygulamalar için ortak bir servis geçiş kanalının konuşlandırılması ve benzerleri. Yazarken yoruldum, daha ne olsun :D Sonunda Java tabanlı WSO2 isimli bir API Gateway kullanılmasına karar verildi..."
 categories:
   - dotnet-core
 tags:
@@ -27,10 +26,9 @@ tags:
   - generics
   - github
 ---
-# Ocelot - .Net Core Tarafında Bir API Gateway Denemesi
-![ocelot.png](/assets/images/2020/ocelot.png)
-
 Uzun süre önce bankada çalışırken nereye baksam servis görüyordum. Bir süre sonra ana bankacılık uygulaması dahil pek çok ürünün kullandığı bu sayısız servisler ağının yönetimi zorlaşmaya başladı. Bir takım ortak işlerin daha kolay ve etkili yönetilmesi gerekiyordu. Müşterek bir kullanıcı doğrulama ve yetkilendirme kontrolü (authentication & authorization), yük dengesi dağıtımı (load balancing), birkaç servis talebinin birleştirilmesi ve hatta birkaç servis verisinin birleştirilerek döndürülmesi (aggregation), servis verisinin örneğin XML'den JSON gibi farklı formata evrilmesi, servis geliş gidişlerinin loglanması, yönlendirmeler yapılması (routing), performans için önbellek kullanılması (caching), servis hareketliliklerini izlenmesi (tracing), servislerin kolayca keşfedilmesi (discovery), çağrı sayılarına sınırlandırma getirilmesi, bir takım güvenlik politikalarının entegre edilmesi, özelleştirilmiş delegeler yazılması (custom handler/middleware), tüm uygulamalar için ortak bir servis geçiş kanalının konuşlandırılması ve benzerleri. Yazarken yoruldum, daha ne olsun:D Sonunda Java tabanlı WSO2 isimli bir API Gateway kullanılmasına karar verildi.
+
+![ocelot.png](/assets/images/2020/ocelot.png)
 
 Geçtiğimiz günlerde de yine konuşma sırasında Ocelot isimli C# ile yazılmış açık kaynak bir ürünün adı geçti ve tabii ki bende bir merak uyandı. Kanımca hafif sıklet mikroservis ortamlarında veya servis odaklı mimari çözümlerinde düşünülebilir. Ama önce denemek ve nasıl işlediğini görmek gerekiyor, öyle değil mi?;) Bu arada Ocelot'un oldukça doyurucu bir [dokümantasyonu](https://ocelot.readthedocs.io/en/latest/index.html) olduğunu da belirteyim. Haydi gelin SkyNet derlememize başlayalım.
 

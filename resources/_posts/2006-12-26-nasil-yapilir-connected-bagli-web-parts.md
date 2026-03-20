@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Nasıl Yapılır : Connected(Bağlı) Web Parts"
 date: 2006-12-26 12:00:00 +0300
-description: "Web uygulamalarımızda kullanabileceğimiz sayısız sunucu tabanlı kontrol vardır. Geliştirdiğimiz uygulamalarda bazı durumlarda birden fazla kontrolün kullanıldığı web sayfalarımız söz konusu olabilir. Bu tarz durumlarda kodları merkezileştirmek, istenen kontrolleri tek bir noktadan güncelleyebilmek amacıyla kullanıcı web kontrollerine (web user control) başvurabilir yada kendi web sunucu kontrollerimizi yazabiliriz..."
 categories:
   - aspnet-2-0
 tags:
@@ -15,9 +14,6 @@ tags:
   - visual-studio
   - datatable
 ---
-# Nasıl Yapılır : Connected(Bağlı) Web Parts
-Değerli Okurlarım Merhabalar,
-
 Web uygulamalarımızda kullanabileceğimiz sayısız sunucu tabanlı kontrol vardır. Geliştirdiğimiz uygulamalarda bazı durumlarda birden fazla kontrolün kullanıldığı web sayfalarımız söz konusu olabilir. Bu tarz durumlarda kodları merkezileştirmek, istenen kontrolleri tek bir noktadan güncelleyebilmek amacıyla kullanıcı web kontrollerine (web user control) başvurabilir yada kendi web sunucu kontrollerimizi yazabiliriz. Özellikle kendi web sunucu kontrollerimizi var olan bir kontrolden türetme (inheritance) yardımıyla geliştirebileceğimiz gibi sıfırdan da yazabiliriz. (Kendi web kontrollerimizi oluşturmak ile ilgili olarak ilerleyen zamanlarda bir makale hazırlamayı düşünüyorum.)
 
 Asp.Net 2.0 mimarisi ile birlikte sayfaya bağlı olan kullanıcılara göre özelleştirebileceğimiz Web Part kavramı ile karşılaştık. Web Part kontrolleri birer sunucu kontrolü olmakla birlikte, özelliklerini kişileştirebilme ve farklı kullanıcılar için farklı veriler taşıyabilme yeteneğine sahip kontroller olarak karşımıza çıkmaktadır. Aslında SharePoint mimarisini kendi web uygulamalarımızda kullanabilme amacıyla tasarlanmış kontrollerdir.

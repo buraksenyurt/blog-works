@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Entity Framework Code-First için Calculated Fields Kullanımı"
 date: 2013-02-08 05:15:00 +0300
-description: "Bildiğiniz üzere Entity Framework Code-First yaklaşımında, veritabanı nesnelerinin tasarımları POCO(Plain Old CRL Object) tipleri üzerinden gerçekleştirilmektedir. Dolayısıyla Calculated Field şeklinde düşünülmesi gereken bir özelliğin veritabanı tarafına nasıl yansıtılacağı kafalarda bir soru işareti oluşturmaktadır. Pek tabi bunun için de bir nitelik(attribute) desteği sunulmuş olabilir ki öyledir. DatabaseGenerated niteliğinde DatabaseGeneratedOption.Computed enum sabiti değerini kullanarak, istenilen hesaplanabilir alan bildirimlerini yaptırabiliriz. Acaba durum gerçekten böyle midir?"
 categories:
   - entity-framework
 tags:
@@ -11,10 +10,10 @@ tags:
   - linq
   - t-sql
 ---
-# Entity Framework Code-First için Calculated Fields Kullanımı
-[![hot-water-migration](/assets/images/2013/hot-water-migration_thumb.jpg)](/assets/images/2013/hot-water-migration.jpg) Merhaba Arkadaşlar,
-
 Genellikle göç etmek gibi anlamlarda kullanılan Migrate kelimesinin yazılım dünyasındaki karşılığını düşündüğümüzde, elbetteki yandaki fotoğrafta yer alan ve bir birlerinin akvaryumuna atlayan balıklar gelmeyecektir/gelmemelidir.
+
+[![hot-water-migration](/assets/images/2013/hot-water-migration_thumb.jpg)](/assets/images/2013/hot-water-migration.jpg)
+
 
 Ancak Entity Framework Code-First yaklaşımı ve Calculated Fields kavramını göz önüne getirdiğimizde, Migration kelimesini ciddi manada düşünmemiz gerekebilir. Nasıl mı? Haydi okumaya devam
 

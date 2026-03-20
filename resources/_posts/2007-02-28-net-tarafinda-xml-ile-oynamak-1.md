@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: ".Net Tarafında Xml ile Oynamak-1"
 date: 2007-02-28 12:00:00 +0300
-description: "Bu makalemiz ile birlikte Xml mimarisini yönetimli kod(managed code) tarafından ele almaya çalışacak ve konuları örnek senaryolar üzerinden geliştireceğiz. Bildiğiniz gibi Xml(eXtensible Markup Language) çok yaygın olarak kullanılan, platformlar arası veri taşıma standartlarından birisidir."
 categories:
   - csharp
 tags:
@@ -11,9 +10,6 @@ tags:
   - http
   - generics
 ---
-# .Net Tarafında Xml ile Oynamak-1
-Değerli Okurlarım Merhabalar,
-
 Bu makalemiz ile birlikte Xml mimarisini yönetimli kod (managed code) tarafından ele almaya çalışacak ve konuları örnek senaryolar üzerinden geliştireceğiz. Bildiğiniz gibi Xml (eXtensible Markup Language) çok yaygın olarak kullanılan, platformlar arası veri taşıma standartlarından birisidir..Net Framework içerisinde Xml standartları ile doğrudan iş yapmamızı sağlayan yönetimli tipler bulunmaktadır. Bu tipler sayesinde sadece Xml değil, Xml ile ilişkili diğer standartlarıda etkili bir şekilde kullanabilmekteyiz. Xml Schema, Xslt ve XPath mimarileri bunlar arasında sayılabilir. Biz bu günkü makalemizde çalışma zamanında dinamik olarak bir Xml belgesini nasıl oluşturabileceğimizi, bu belgenin kaydedilmesini ve hatta yeniden okunmasını ele alacağımız bir senaryo üzerinde duracağız. Dilerseniz işe örnek senaryomuzdan bahsederek başlayalım.
 
 Örneğimiz bir windows uygulaması olacak ve MDI (Multiple Document Interface) tarzında tasarlanacak. Ana formun altın yer alabilecek olan alt formlarımız (Child Forms) üzerinde mouse yardımıyla düz çizgiler çiziyor olacağız. Çizim işlemleri için GDI+ API'sinden yararlanıyor olacağız. Amacamız ise bu çizgilerin ilgili form için bir Xml dosyasında kendi belirleyeceğimiz bir desende saklanmasını sağlamak. Xml tarafında geçmeden önce Windows uygulamamızı tasarlamakta fayda var. Alt formlarımızda çizilen çizgilerin hatırlanması ve generic bir koleksiyon içerisinde saklanması programatik olarak işimizi oldukça kolaylaştıracaktır. Temel olarak bir çizginin, başlangıç ve bitiş koordinatlarına ait bilgilerin önemli olduğunu düşünecek olursak aşağıdaki gibi bir sınıf bizim için yeterli olacaktır.

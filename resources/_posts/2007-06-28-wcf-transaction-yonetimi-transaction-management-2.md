@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF - Transaction Yonetimi (Transaction Management) - 2"
 date: 2007-06-28 12:00:00 +0300
-description: "Windows Communication Foundation için transaction yönetimi ile ilgili bir önceki makalemizde teorik bilgiler üzerinde durmaya çalışmıştık. Bu makalemizde ise, transaction yönetimi için gerekli materyalleri toplamaya devam edecek ve bir örnek üzerinde konuyu daha net bir şekilde anlamaya çalışacağız."
 categories:
   - wcf
 tags:
@@ -14,9 +13,6 @@ tags:
   - http
   - transactions
 ---
-# WCF - Transaction Yonetimi (Transaction Management) - 2
-Değerli Okurlarım Merhabalar,
-
 Windows Communication Foundation için transaction yönetimi ile ilgili bir önceki makalemizde teorik bilgiler üzerinde durmaya çalışmıştık. Bu makalemizde ise, transaction yönetimi için gerekli materyalleri toplamaya devam edecek ve bir örnek üzerinde konuyu daha net bir şekilde anlamaya çalışacağız. Örneği geliştirmeden önce özellikle servis ve metod seviyesinde bilinmesi gerekenler olduğunu belirtelim. Özellikle servis nesnesi için çalışma zamanı davranışlarını belirlemek adına ServiceBehavior niteliğinin bazı özelliklerini kullanmak gerekmektedir. Benzer şekilde operasyonların transaction ile ilişkili çalışma zamanı davranışlarını belirlemek içinde, OperationBehavior niteliğinin özelliklerinden faydalanılmaktadır.
 
 ServiceBehavior ve OperationBehavior dışında transacation yönetimi için kullanılan bir diğer nitelik (attribute) ise, TransactionFlow'dur. Bu nitelik servis tarafındaki metodlara uygulanabilen türdedir. TransactionFlow niteliği temel olarak bir servisin dış servisler ile olan ilişkilerinde servisler arasında akan transaction'ların operasyon kademesinde kabul edilme seviyelerinin belirlenmesinde kullanılır. Söz konusu seviyeler TransactionFlowOption isimli enum sabiti tarafından belirlenebilir. TransactionFlowOption enum sabitinin değerleri ve nasıl bir akışa izin verdikleri aşağıdaki tabloda gösterilmektedir.

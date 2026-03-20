@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Temeller Kolay Unutulur (C# – Implicitly Name Hiding Sorunsalı)"
 date: 2011-02-06 15:50:00 +0300
-description: "Özellikle C#, Java gibi nesne yönelimli(Object Oriented) programlama dillerinin temelleri son derece önemlidir ve bu temeller bir süre sonra profesyonel bir geliştirici için artık bisiklet sürmek gibi unutlmayacak unsurlara dönüşmelidir. İşte bu yazımızda kolayca unutulabilen bilinçsiz üye gizleme(Implicitly Name Hiding) ile alakalı bir vakayı ele almaya çalışıyor olacağız."
 categories:
   - csharp
 tags:
@@ -11,10 +10,10 @@ tags:
   - memory-management
   - visual-studio
 ---
-# Temeller Kolay Unutulur (C# – Implicitly Name Hiding Sorunsalı)
-[![blg214_Giris](/assets/images/2011/blg214_Giris_thumb.jpg)](/assets/images/2011/blg214_Giris.jpg) Merhaba Arkadaşlar,
-
 Sizde benim gibi basketol tutkunu musunuz? Aslında ülkemizde hemen herkesin birincil olarak futbol merakı olması beklenir. Oysaki bende diğer pek çok arkadaşım gibi birincil olarak basketbol’ a meraklıyımdır. Aslında lise yıllarında sevgili Michael Jordan ve Chicago Bulls ile başlayan bu merakım sonrasında Efes Pilsen, Ülker, Tofaş gibi takımlarla daha da artmıştır. Üniversite yıllarından beri bu takımların pek çok maçına gitmişimdir ve halen daha gitmeye çalışmaktayım (Tabi bir dönem Tofaş profesyonel basketbol şubesini kapatmıştı…) Tabi şu anda 11 aylık S (h) arp Efe buna pek müsade etmiyor. Ama yine de takım ayırt etmeksizin özellikle avrupa arenasındaki pek çok maça gitmeye çalışıyorum.
+
+[![blg214_Giris](/assets/images/2011/blg214_Giris_thumb.jpg)](/assets/images/2011/blg214_Giris.jpg)
+
 
 Basketbol denilince aklıma gelen en önemli şahsiyetler arasında ise değerli spiker Murat Murathanoğlu ve değerli yorumcu İsmet Badem ikilisi gelmektedir. Her ne kadar uzun bir süre önce yollarını ayırmış olsalar da, özellikle İsmet Badem’ in hemen her maçta gençlere verdiği basketbol ip uçları halen kullaklarımdadır. Özellikle basketbolun temellerinin (Fundamentals) çok önemli olduğunu genç basketbolcu adaylara sürekli ifade etmiştir, etmektedir.
 

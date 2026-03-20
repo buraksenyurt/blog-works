@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ado.Net Entity Framework 4.0 - Stored Procedures ve Complex Types"
 date: 2009-11-15 23:55:00 +0300
-description: "Ado.Net Entity Framework 4.0 ile birlikte gelecek/gelmekte olan yeniliklerden birisi de, Stored Procedure' lerin dönüş tipi ile alakalıdır. Henüz tam olarak bitirilememiş olan bu özellik şu anki haliyle bir Stored Procedure' den geriye karmaşık bir tipinin(Complex Type) döndürülebilmesine izin vermektedir..."
 categories:
   - entity-framework
 tags:
@@ -14,9 +13,6 @@ tags:
   - http
   - visual-studio
 ---
-# Ado.Net Entity Framework 4.0 - Stored Procedures ve Complex Types
-Merhaba Arkadaşlar,
-
 Ado.Net Entity Framework 4.0 ile birlikte gelecek/gelmekte olan yeniliklerden birisi de, Stored Procedure'lerin dönüş tipi ile alakalıdır. Henüz tam olarak bitirilememiş olan bu özellik şu anki haliyle bir Stored Procedure'den geriye karmaşık bir tipinin (Complex Type) döndürülebilmesine izin vermektedir. Bunun için Designer tarafında destek sunulmaktadır. Aslında önceki Ado.Net Entity Framework sürümünde bir Stored Procedure'ün Entity modeli içerisine eklenmesi sonrasında dönüş kümesinin Scalars veya Entities olarak kullanılması sağlanabilmekteydi. Ancak bir Stored Procedure çıktısının Complex Type bazlı olaraktan kod tarafında ele alınamayışı da de önemli bir eksiklikti. Bakalım 4.0 versiyonunda bu eksikliği gidermek adına neler yapılmış. Yazımızın ilerleyen kısımlarında bu özeliği anlamaya çalışıyor olacağız.
 
 İlk olarak kendimize kobay bir Stored Procedure seçelim

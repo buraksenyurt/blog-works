@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Non-Persisted Memory Mapped Files"
 date: 2011-04-16 15:00:00 +0300
-description: "Hatırlayacağınız üzere bir önceki yazımızda .Net Framework 4.0 sürümüne dahil edilen Memory-Mapped Files kavramını incelemeye başlamıştık. İncelememizde ele aldığımız örnekte ise Persisted modeli göz önüne almıştık. Bu modelde bellek üzerine açılan içerikler, fiziki disk üzerinde yer alan dosyalar ile doğrudan ilişkilidir. Yani sanal belleğe açılan görünümler(Views), fiziki disk üzerindeki dosyanın belirli bir bölümü veya tamamıdır."
 categories:
   - dotnet-framework-4-0
   - csharp-4-0
@@ -13,16 +12,16 @@ tags:
   - dotnet
   - visual-studio
 ---
-# Non-Persisted Memory Mapped Files
-[![blg202_Giris](/assets/images/2011/blg202_Giris_thumb.jpg)](/assets/images/2011/blg202_Giris.jpg) Merhaba Arkadaşlar,
-
 Akşam saatleriydi. Sıcak ama güneşin fazla görünmediği bir yaz gününün sonları yaklaşmaktaydı. Gün boyu güneşi İstanbul’ dan saklayan bulutlar yavaş yavaş parçalanmaya başlamıştı. Aralardan güneşin ışınları hafif kızılımsı bir renk ile göğü süslemekteydi. Ancak yine de sert esen rüzgar ve hızla hareket eden bulutlar adeta fırtına öncesi sessizliğin bir habercisiydi. Aile efradı tatildeydi ve çalışma odamda tek başıma dışarıya doğru bakerken geceyi nasıl devam ettirmem gerektiğini planlıyordum.
+
+[![blg202_Giris](/assets/images/2011/blg202_Giris_thumb.jpg)](/assets/images/2011/blg202_Giris.jpg)
+
 
 Zaman ilerledi ve gecenin zifiri karanlığında güçlü bir gök gürültüsü duyuldu. Belli ki fırtınalı, zor bir gece olacaktı. Kimsenin açık denizde veya havada olmak istemeyeceği bir gece.
 
 Kısa bir süre sonra yağmaya başlayan yağmur ve cama vuran damlaların sesi eşliğinde kendimi bilgisayarımın başında buldum. Odayı kaplayan loş lamba ışığı konstanrasyonu en üst seviye çıkartırken, bilgisayardan gelen hafif müzik nameleri, bloğumun girişi için gerekli cümleleri hazırlamama yardımcı oluyordu. Rota çizilmişti. Geceyi güzel bir blog yazısı ile tamamlamak.
 
-Hatırlayacağınız üzere bir önceki yazımızda.Net Framework 4.0 sürümüne dahil edilen [Memory-Mapped Files](../2010/Persisted Memory-Mapped Files.md) kavramını incelemeye başlamıştık. İncelememizde ele aldığımız örnekte ise Persisted modeli göz önüne almıştık. Bu modelde bellek üzerine açılan içerikler, fiziki disk üzerinde yer alan dosyalar ile doğrudan ilişkilidir. Yani sanal belleğe açılan görünümler (Views), fiziki disk üzerindeki dosyanın belirli bir bölümü veya tamamıdır.
+Hatırlayacağınız üzere bir önceki yazımızda.Net Framework 4.0 sürümüne dahil edilen [Memory-Mapped Files](/2010/12/17/persisted-memory-mapped-files/) kavramını incelemeye başlamıştık. İncelememizde ele aldığımız örnekte ise Persisted modeli göz önüne almıştık. Bu modelde bellek üzerine açılan içerikler, fiziki disk üzerinde yer alan dosyalar ile doğrudan ilişkilidir. Yani sanal belleğe açılan görünümler (Views), fiziki disk üzerindeki dosyanın belirli bir bölümü veya tamamıdır.
 
 Bir de Non-Persisted modeli söz konusudur. Bu modelde Sanal Bellek (Virtual Memory) üzerinde oluşturulan bir dosya içeriği söz konusudur. Non-Persisted modelinde de, aynen Persisted modelinde olduğu gibi, bellek içeriklerinin ve buna bağlı olarak oluşturulan görünümlerinin birden fazla Process tarafından ele alınması mümkündür. İşte bu yazımızda söz konusu modeli ele alan basit bir örnek geliştirmeye çalışıyor olacağız. MemoryMappedFile tipinin static CreateNew veya CreateOrOpen metodları, Non-Persisted modeline göre dosya oluşturulmasını sağlamaktadırlar. Elbette birden fazla Process’ in bellek bölgesi üzerindeki aynı içeriğin tamamını veya belirli parçalarını kullanabilmeleri için MemoryMappedViewStream nesne örneklerinden yararlanmaları gerekmektedir. Bir başka deyişle içeriğe ait görünümler (View) ele alınmalıdır.
 

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Web Bazlı Programlama Modeli"
 date: 2008-02-14 12:00:00 +0300
-description: "Web programlama modelinin en büyük avantajlarından biriside istemci(Client) tarafındaki uygulamaları düşünmeye gerek kalmadan istemci-sunucu(Client/Server) mimarisine uygun sistemler geliştirilebilmesidir. Basit olarak HTTP protokolünün farklı metodlarına göre işleyen bu sistemde, istemcilerin farklı tipte olabilecek tarayıcı programlar(Browsers) üzerinden talepte bulunmaları söz konusudur."
 categories:
   - wcf
 tags:
@@ -25,9 +24,6 @@ tags:
   - visual-studio
   - dataset
 ---
-# Web Bazlı Programlama Modeli
-Değerli Okurlarım Merhabalar,
-
 Web programlama modelinin en büyük avantajlarından biriside istemci (Client) tarafındaki uygulamaları düşünmeye gerek kalmadan istemci-sunucu (Client/Server) mimarisine uygun sistemler geliştirilebilmesidir. Basit olarak HTTP protokolünün farklı metodlarına göre işleyen bu sistemde, istemcilerin farklı tipte olabilecek tarayıcı programlar (Browsers) üzerinden talepte bulunmaları söz konusudur.
 
 Özellikle servis yönelimi mimari (Serivce Oriented Architecture) yaklaşımlarına bakıldığında örneğin Xml Web Servislerinde (Xml Web Services) HTTP protokolünün basit GET metoduna göre taleplerde (Requests) bulunulabilmektedir. Bu istemci tarafına bir proxy nesnesi koymadan servis fonksiyonelliklerini HTTP protokolünün basit bir metoduna göre çağırabilme anlamınada gelmektedir. (Bununla birlikte Web servislerinde SOAP (Simple Object Access Protocol) protokolüne uygun olacak şekilde proxy kullanmadan talepte bulunulup cevap alınabileceğide bilinmektedir.)

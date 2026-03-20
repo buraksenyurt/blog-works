@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Rust Pratikleri - Channels"
 date: 2022-02-20 09:00:00 +0300
-description: "Thread'ler aralarında haberleşmek için kanallardan(channels) yararlanır. Rust dilinde bu amaçla built-in modüllerinden olan mpsc(multi-producer single-consumer) paketi kullanılır. Bu paket aslında FIFO(First-In First-Out) ilkesine göre çalışan tipik bir kuyruk yapısıdır. Kanallar yardımıyla örneğin iki thread arasında bir kanal açıp tek yönlü olarak mesaj göndermek mümkündür. Böylece bir thread'den diğerine çeşitli verileri aktarabiliriz. Hatta asenkron ve olay güdümlü(event-driven) haberleşmeler tesis edebiliriz. Bir veri türünün kanalda akması için Send trait'ini uyarlamış olması gerekir. Primitive tiplerin hepsi bu davranışa sahiptir..."
 categories:
   - rust
 tags:
@@ -12,10 +11,9 @@ tags:
   - threading
   - github
 ---
-# Rust Pratikleri - Channels
-![peasant.jpg](/assets/images/2022/peasant.jpg)
-
 Thread'ler aralarında haberleşmek için kanallardan (channels) yararlanır. Rust dilinde bu amaçla built-in modüllerinden olan mpsc (multi-producer single-consumer) paketi kullanılır. Bu paket aslında FIFO (First-In First-Out) ilkesine göre çalışan tipik bir kuyruk yapısıdır. Kanallar yardımıyla örneğin iki thread arasında bir yol açıp tek yönlü olarak mesaj göndermek mümkündür. Böylece bir thread'den diğerine çeşitli verileri aktarabiliriz. Hatta asenkron ve olay güdümlü (event-driven) haberleşmeler dahi tesis edebiliriz. Bir veri türünün kanalda akması için Send trait'ini uyarlamış olması gerekir. Primitive tiplerin hepsi bu davranışa sahiptir.
+
+![peasant.jpg](/assets/images/2022/peasant.jpg)
 
 Kanallarla ilgili olarak dikkate değer bir diğer konu da türleridir. Bounded ve Unbounded olmak üzere iki seçenek vardır. Bounded kanallarda kapasite bellidir. Bir başka deyişle bir thread'den diğerine veri taşımak için kullanılan kanalın kapasitesi sınırlandırılır. Eğer kanal kapasitesi dolarsa, yayın yapan (mesaj gönderen) thread doğal olarak bloklanır. Unbounded kanallarda ise bir kapasite sınırı yoktur. Bellek yetersiz olana ya da sistem bir şekilde çökene kadar kanal kullanılabilir.
 

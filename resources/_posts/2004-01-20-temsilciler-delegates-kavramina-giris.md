@@ -1,17 +1,13 @@
-﻿---
+---
 layout: post
 title: "Temsilciler (Delegates) Kavramına Giriş"
 date: 2004-01-20 10:00:00 +0300
-description: "Bugünkü makalemizde, C# programlama dilinde ileri seviye kavramlardan biri olan Temsilcileri(delegates) incelemeye başlayacağız. Temsilciler ileri seviye bir kavram olmasına rağmen, her seviyden C# programcısının bilmesi gereken unsurlardandır. Uygulamalarımızı temsilciler olmadan da geliştirebiliriz. Ancak bu durumda, yapamıyacaklarımız, yapabileceklerimizin önüne geçecektir. Diğer yandan temsilcilerin kullanımını gördükçe bize getireceği avantajları daha iyi anlayacağımız kanısındayım. Bu makalemizde temsilcileri en basit haliyle anlamaya çalışıcağız."
 categories:
   - csharp
 tags:
   - csharp
   - delegates
 ---
-# Temsilciler (Delegates) Kavramına Giriş
-Değerli Okurlarım, Merhabalar.
-
 Bugünkü makalemizde, C# programlama dilinde ileri seviye kavramlardan biri olan Temsilcileri (delegates) incelemeye başlayacağız. Temsilciler ileri seviye bir kavram olmasına rağmen, her seviyden C# programcısının bilmesi gereken unsurlardandır. Uygulamalarımızı temsilciler olmadan da geliştirebiliriz. Ancak bu durumda, yapamıyacaklarımız, yapabileceklerimizin önüne geçecektir. Diğer yandan temsilcilerin kullanımını gördükçe bize getireceği avantajları daha iyi anlayacağımız kanısındayım. Bu makalemizde temsilcileri en basit haliyle anlamaya çalışıcağız.
 
 Temsilci (delegate), program içerisinde bir veya daha fazla metodu gösteren (işaret eden), referans türünden bir nesnedir. Programlarımızda temsilciler kullanmak istediğimizde, öncelikle bu temsilcinin tanımını yaparız. Temsilci tanımları, arayüzlerdeki metod tanımlamaları ile neredeyse aynıdır. Tek fark delegate anahtar sözcüğünün yer almasıdır. Bununla birlikte, bir temsilci tanımlandığında, aslında işaret edebileceği metod (ların) imzalarınıda belirlemiş olur. Dolayısıyla, bir temsilciyi sadece tanımladığı metod imzasına uygun metodlar için kullanabiliceğimizi söyleyebiliriz. Temsilci tanımları tasarım zamanında yapılır. Bir temsilciyi, bir metodu işaret etmesi için kullanmak istediğimizde ise, çalışma zamanında onu new yapılandırıcısı ile oluşturur ve işaret etmesini istediğimiz metodu ona parametre olarak veririz. Bir temsilci tanımı genel haliyle, aşağıdaki şekildeki gibidir.

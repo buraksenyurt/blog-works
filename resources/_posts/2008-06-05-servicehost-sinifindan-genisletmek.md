@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "ServiceHost Sınıfından Genişletmek"
 date: 2008-06-05 12:00:00 +0300
-description: "WCF(Windows Communication Foundation) mimarisinde sunucu(Server) tarafındaki çalışma ortamınının(WCF Runtime) hazırlanması ile ilişkili olaraktan ServiceHost sınıfı kullanılmaktadır. Bir başka deyişle ServiceHost sınıfı uygulama sunucusu(Application Server) üzerindeki gerekli hazırlıkların yapılmasını sağlamaktadır."
 categories:
   - wcf
 tags:
@@ -14,9 +13,6 @@ tags:
   - serialization
   - visual-studio
 ---
-# ServiceHost Sınıfından Genişletmek
-Değerli Okurlarım Merhabalar,
-
 WCF (Windows Communication Foundation) mimarisinde sunucu (Server) tarafındaki çalışma ortamınının (WCF Runtime) hazırlanması ile ilişkili olaraktan ServiceHost sınıfı kullanılmaktadır. Bir başka deyişle ServiceHost sınıfı uygulama sunucusu (Application Server) üzerindeki gerekli hazırlıkların yapılmasını sağlamaktadır. ServisHost sınıfı çoğunlukla, servis nesnesinin IIS (Internet Information Services) veya WAS (Windows Activation Services) üzerinden yayınlanmadığı durumlarda kullanılmaktadır.
 
 Nitekim IIS ve WAS, ServiceHost tiplerinin çalışma zamanında kendileri ele almaktadır. Bununla birlikte geliştirici tarafından türetilen ServiceHost tiplerinin IIS veya WAS ortamlarında ele alınacak şekilde özelleştirmelerinin yapılmasıda mümkündür. System.ServiceModel isim alanı altında yer alan ServiceHost sınıfı ServiceHostBase isimli abstract sınıftan türemektedir. Doğal olarak sunduğu bazı kurallar değiştirilebilir bir başka deyişle ezilerek (override) yenide yorumlanabilir.

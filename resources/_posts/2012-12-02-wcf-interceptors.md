@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF Interceptors"
 date: 2012-12-02 19:53:00 +0300
-description: "WCF(Windows Communication Foundation) alt yapısının popüler olmasının en büyük nedenlerinden birisi de, hemen her seviyede genişletilebilir olmasıdır. Genişleyebilirlik, bir Framework için oldukça önemli bir özelliktir. Nitekim bu yeteneğin olması, geliştiricilerin daha fazla noktada müdahalede bulunabilme ve ihtiyaçları daha fazla yerde çözümleyebilme kabiliyetini kazanabilmesi anlamına gelmektedir."
 categories:
   - wcf-4-5
 tags:
@@ -18,10 +17,10 @@ tags:
   - performance
   - visual-studio
 ---
-# WCF Interceptors
-[![32484720231_large](/assets/images/2012/32484720231_large_thumb.jpg)](/assets/images/2012/32484720231_large.jpg) Merhaba Arkadaşlar,
-
 Hepimizin hafızasında yer eden ve defalarca seyretse de asla sıkılmayacağı kült filmler vardır. Hatta nesiller ilerledikçe, her neslin mutlaka en az bir kere uğradığı, uğraması gereken yapımlar vardır.
+
+[![32484720231_large](/assets/images/2012/32484720231_large_thumb.jpg)](/assets/images/2012/32484720231_large.jpg)
+
 
 The Godfather, Starwars, Matrix, The Good the bad and the ugly, Back to the future vb…Bunlardan birisi de benim için [Mad Max](http://www.imdb.com/title/tt0079501/)’ dir.
 

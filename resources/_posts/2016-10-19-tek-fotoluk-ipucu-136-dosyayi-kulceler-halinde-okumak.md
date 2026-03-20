@@ -1,17 +1,13 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu 136 - Dosyayı Külçeler Halinde Okumak"
 date: 2016-10-19 21:30:00 +0300
-description: "Büyük boyutlu dosyalar neredeyse her programlama ortamının en büyük sorunlarındadır. Nitekim bu tip içeriklerin bir yerden bir yere taşınması, içeriklerinde arama yapılması ve benzeri senaryolarda oluşan sistemsel yükler söz konusudur. Tek işlemli süreçlerde sıkıntı olmasa da eş zamanlı olarak n sayıda dosya üzerinde toplu işlemler söz konusu olduğunda farklı tekniklerin uygulanması önerilmektedir."
 categories:
   - ruby
 tags:
   - ruby
   - concurrency
 ---
-# Tek Fotoluk İpucu 136 - Dosyayı Külçeler Halinde Okumak
-Merhaba Arkadaşlar,
-
 Büyük boyutlu dosyalar neredeyse her programlama ortamının en büyük sorunlarındadır. Nitekim bu tip içeriklerin bir yerden bir yere taşınması, içeriklerinde arama yapılması ve benzeri senaryolarda oluşan sistemsel yükler söz konusudur. Tek işlemli süreçlerde sıkıntı olmasa da eş zamanlı olarak n sayıda dosya üzerinde toplu işlemler söz konusu olduğunda farklı tekniklerin uygulanması önerilmektedir.
 
 Doğal olarak çok büyük boyutlu bir dosyayı tamamıyla belleğe açmaya çalışmak pek anlamlı değildir. Böyle hallerde genellikle dosyanın belli boyutlu parçalar (chunk diyelim) halinde okunması tercih edilir (Örneğin 4Kb lık boyutlarda parça parça okumak gibi) Ruby tarafında da bu iş aslında son derece basit. Örneğin binary içerikli aşağıdaki resim dosyasının belirli boyutlarda okunmasını istediğimizi düşünelim.

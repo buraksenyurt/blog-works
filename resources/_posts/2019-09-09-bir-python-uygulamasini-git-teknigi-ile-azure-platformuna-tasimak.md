@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Bir Python Uygulamasını git Tekniği ile Azure Platformuna Taşımak"
 date: 2019-09-09 12:30:00 +0300
-description: "Çok sık kullanılan Azure öğretilerinden birisi bu. Amaç git yardımıyla Azure üzerinde deployment işlemi başlatmak. Ben bunu python ile denemek istedim. Bu sefer işim biraz daha zorlu. Nitekim WestWorld(Ubuntu 18.04, 64bit) topraklarını bir süreliğine terk ettim. Artık ahch-to(Mac Mini, High Sierra) adasındayım. Bu nedenle sistemde bazı şeyler eksik gibi görünüyor."
 categories:
   - python
 tags:
@@ -14,10 +13,9 @@ tags:
   - nodejs
   - github
 ---
-# Bir Python Uygulamasını git Tekniği ile Azure Platformuna Taşımak
-![ahchto.png](/assets/images/2019/ahchto.png)
-
 Rey evrenin taaa bir ucundan kalkıp ahch-to gezegenine gelmiş ve Jedi ustasının onu eğitmesini istemişti. Galaksinin bir kez daha Luke Skywalker'a ihtiyacı vardı. Uzun zamandır inzivada olan Luke ise Kylo Ren'den sonra buna pek gönüllü değildi. İzleyenler bilir. Luke, neredeyse sadece sudan ibaret ahch-to gezegenindeki bir adada, eski Jedi tapınağında yaşamını sürdürmektedir (Sevgili [ekşi sözlük yazarı John Harrison](https://eksisozluk.com/entry/78992085) bu girişi beğenmeyecektir ama olsun:D)
+
+![ahchto.png](/assets/images/2019/ahchto.png)
 
 Peki bu gezegeninin gerçekte nerede olduğunu biliyor musunuz?
 

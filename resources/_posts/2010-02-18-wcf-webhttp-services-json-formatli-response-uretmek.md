@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF WebHttp Services - JSON Formatlı Response Üretmek"
 date: 2010-02-18 22:50:00 +0300
-description: "Yandaki Logo size neyi çağırıştırıyor? Aslında bakarsanız çok meşhur olan hafif siklette bir veri değiş tokuş formatının logosunu ifade etmekte. JSON(JavaScript Object Notation). Hatırlayacağınız üzere bir süredir WCF Eco System içerisinde yer alan WCF WebHttp Service alt yapısını incelemeye çalışıyoruz."
 categories:
   - wcf-eco-system
   - wcf-webhttp-services
@@ -21,12 +20,9 @@ tags:
   - visual-studio
   - rc
 ---
-# WCF WebHttp Services - JSON Formatlı Response Üretmek
-![blg133_Giris.gif](/assets/images/2010/blg133_Giris.gif)
-
-Merhaba Arkadaşlar,
-
 Yandaki Logo size neyi çağırıştırıyor? Aslında bakarsanız çok meşhur olan hafif siklette bir veri değiş tokuş formatının logosunu ifade etmekte. [JSON (JavaScript Object Notation).](http://www.json.org/)Hatırlayacağınız üzere bir süredir WCF Eco System içerisinde yer alan WCF WebHttp Service alt yapısını incelemeye çalışıyoruz. WCF WebHttp Service'leri eğer istemci tarafından aksi belirtilmezse varsayılan olarak XML formatında çıktı üretmektedir. Ancak istenirse JSON (JavaScript Object Notation) formatında çıktı üretmeside sağlanabilir.
+
+![blg133_Giris.gif](/assets/images/2010/blg133_Giris.gif)
 
 Söz konusu çıktı üretim işlemi iki yolla gerçekleştirilebilir. Bilinçli olarak (Excplicitly) veya otomatik olarak. Bu yazımızda söz konusu yolları inceleyerek JSON formatında çıktıları nasıl verebileceğimizi basit bir örnek üzerinden görmeye çalışıyor olacağız. Örnek uygulamamızı bu kez Visual Studio 2010 Ultimate RC ortamı üzerinde geliştirdiğimizi belirtelim. Dolayısıyla ilerleyen sürümde bazı farklılıklar olabilir. Lesson3 isimli WCF REST Service Application uygulamamız içerisinde yer alan servis sınıfı içeriğimiz çok basit olarak aşağıdaki kod parçasından oluşmaktadır.
 

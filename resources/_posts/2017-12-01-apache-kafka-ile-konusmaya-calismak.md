@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Apache Kafka ile Konuşmaya Çalışmak"
 date: 2017-12-01 06:01:00 +0300
-description: "Bu yazıda West-World'e Apache Kafka'yı kuruyoruz. Basit adımlardan sonra bir .Net Core uygulamasından yararlanarak Kafka ile haberleşmeye çalışıyoruz."
 categories:
   - dotnet-core
 tags:
@@ -20,12 +19,9 @@ tags:
   - generics
   - visual-studio
 ---
-# Apache Kafka ile Konuşmaya Çalışmak
-![kafka_core_giris.gif](/assets/images/2017/kafka_core_giris.gif)
-
-Merhaba Arkadaşlar,
-
 Bilgisayarla yeni tanıştığım dönemlerde aynı zamane çocuklarımızın tabletlerde yaptığı gibi oyun oynamaya bayılırdım. Dersler, sınavlar bir yana oyunlar bir yana. Kasetlerin olduğu Commodore 64 zamanlarından, disketler ile 486DX işlemcili makinelerdekilere, CD ile yüklenenlerden, internetten indirilip oynananlara kadar... Pek çok efsane vardı tabii oynananlar arasında. Bazen onların başında saatlerce nasıl vakit geçiriyormuşum diye düşününce hayret ediyorum kendime. Hoşuma giden oyunların en önemli özellikleri arasında ses efektleri ve karakter konuşmaları gelirdi.
+
+![kafka_core_giris.gif](/assets/images/2017/kafka_core_giris.gif)
 
 Duke Nukem'da onlardan birisidir. Geçenlerde internetten sözlerini araştırırken 3D isimli sürümünün listesini bulup text dosya içine attım. Neme lazım belki bir kod parçasında rastgele söz çıkartmak için kullanırız (Hatta Docker'ın bir tutorial'ında kullanılmıştı diye biliyorum) Peki bugünkü konumuzda nerede ele alacağız? Önce West-World'de neler oluyor bir bakalım.
 

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Vue ve NW.js ile Desktop Uygulaması Geliştirmek"
 date: 2019-06-14 13:00:00 +0300
-description: "Daha önceden Electron ile cross platform desktop uygulamalarının geliştirilmesi üzerine çalışmıştım. Bu kez eskiden node-webkit olarak bilinen NW.js kullanarak WestWorld üzerinden desktop uygulaması geliştirmek istedim. NW.js cephesinde de aynen Electron'da olduğu gibi Chromium, Node.js, HTML, CSS ve javascript kullanılmakta. Lakin ufak tefek farklılıklar var. Electron'da entry point yeri Javascript script'i iken NW.js tarafında script haricinde bir web sayfası da giriş noktası olabiliyor. Build süreçlerinde de bir takım farklılıklar var."
 categories:
   - vuejs
 tags:
@@ -20,10 +19,9 @@ tags:
   - generics
   - github
 ---
-# Vue ve NW.js ile Desktop Uygulaması Geliştirmek
-![perfectstr.png](/assets/images/2019/perfectstr.png)
-
 Geçen gün fark ettim ki yaş ilerleyince blogumdaki yazıların girişinde kullanabileceğim malzeme sayısı da artmış. Söz gelimi şu anda lise son yıllarıma yani seksenlerin sonu doksanların başına doğru gitmiş durumdayım. O dönemlerde kısa Amerikan dizileri popüler. Hatta Arjantin menşeeli diziler de çok yaygın. Sanıyorum Mariana isimli popüler bir dizi vardı. Kısa boylu, siyah kıvırcık saçlı, buğday tenli ve hayatı acılar içinde geçen bir Latin kadının hikayesiydi. Lakin ben hayatı toz pembe görmemize vesile olan komedileri tercih ediyordum. Hatta en çok sevdiğim komedi dizisi [Perfect Strangers](https://www.imdb.com/title/tt0090501/?ref_=nv_sr_2?ref_=nv_sr_2)'dı.
+
+![perfectstr.png](/assets/images/2019/perfectstr.png)
 
 Mipos isimli Yunan köyünden Chicago'daki kuzeni Larry Appleton'ın yanına yerleşip "Komik olma kuzen" repliği ile zihnime kazınan Balki Bartokomous bizleri epeyce güldürürdü. Aradan çeyrek asır geçmiş olsa da aptal kutunun bizleri ekrana bağlayan bazı alışkanlıkları değişmiyor. Platformlar belki ama yine komedi dizileri, yine Arjantin dizileri ve yine aklımıza kazınan Balki'ler var. [Saturday-Night-Works'ün 16 numaralı çalışması](https://github.com/buraksenyurt/saturday-night-works/tree/master/No%2016%20-%20Build%20Desktop%20App%20with%20Vue%20and%20NWjs)na konu olan Big Bang Theory'de işte bana bu çağrışımları yapmış durumda. Öyleyse gelin başlayalım.
 
@@ -48,10 +46,11 @@ sudo npm install axios
 
 ## Kod Tarafı
 
-Gelelim kodlama tarafına. Uygulamanın masaüstü arayüzü olan App bileşeni app.vue dosyasında kodlanıyor. Bu dosyayı aşağıdaki gibi değiştirerek ilerleyebiliriz. Sonuçta HTML tabanlı bir ortam var. Elbette Vue'ya özgü bir sentaks da söz konusu. Söz gelimi bileşendeki bir kontrolü model tarafına bağlamak için v-model direktifinden yararlanılıyor. Bir section elementinin görünürlüğünü koşullandıracaksak v-if direktifini kullanabiliyoruz. Button kontrolündeki olayları betikteki bir fonksiyonla ilişkilendirirken @click şeklindeki element adı ele alınıyor. Modeldeki özellikleri kontrollerde gösterirkense {{propertyName}} notasyonuna başvuruyoruz.
+Gelelim kodlama tarafına. Uygulamanın masaüstü arayüzü olan App bileşeni app.vue dosyasında kodlanıyor. Bu dosyayı aşağıdaki gibi değiştirerek ilerleyebiliriz. Sonuçta HTML tabanlı bir ortam var. Elbette Vue'ya özgü bir sentaks da söz konusu. Söz gelimi bileşendeki bir kontrolü model tarafına bağlamak için v-model direktifinden yararlanılıyor. Bir section elementinin görünürlüğünü koşullandıracaksak v-if direktifini kullanabiliyoruz. Button kontrolündeki olayları betikteki bir fonksiyonla ilişkilendirirken @click şeklindeki element adı ele alınıyor. Modeldeki özellikleri kontrollerde gösterirkense &#123;&#123;propertyName&#125;&#125; notasyonuna başvuruyoruz.
 
 Örneğimizdeki bileşen, önyüz tasarımı ve kodu aynı dosya içerisinde barındırmakta. Ancak hazır olarak gelen şablonu incelerseniz Components klasöründe bir bileşen geldiğini de görebilirsiniz. Yani alt bileşenleri bu klasör altında da toplayabiliriz. Bu arada kodlarda yakaladığınız yorum satırlarını okumayı unutmayın. Destekleyici bilgiler görebilirsiniz.
 
+{% raw %}
 ```text
 <template>
   <div id="app">
@@ -154,6 +153,7 @@ button{
 
 </style>
 ```
+{% endraw %}
 
 App bileşeninde dikkat edileceği üzere $http ile yapılan bir servis çağrısı var. Bu axios tarafından sağlanacak bir hizmet. Bu nedenle main.js dosyasında gerekli hazırlıkların yapılması lazım. Dikkat edileceği üzere Vue çalışma zamanının axios'u $http özelliği üzerinden kullanabilmesini sağlayacak bir enjekte işlemi söz konusu.
 
@@ -323,7 +323,7 @@ Paket boyutu oldukça yüksek görüldüğü üzere! Zaten cross-platform masaü
 Elbette aptal kutunun başında saatlerimi geçirdiğim Perfect Strangers dizisinin bana alttan alttan verdiği mesajlar gibi bu örnek çalışma sonrasında öğrendiğim bazı şeyler de olmadı değil. Bunları aşağıdaki gibi özetlemeye çalışayım.
 
 - Vue tarafında ön yüz nasıl geliştirilir
-- v-model, v-if, {{ }}, @click gibi Vue ilişkili ifadeler ne işe yarar
+- v-model, v-if, &#123;&#123; &#125;&#125;, @click gibi Vue ilişkili ifadeler ne işe yarar
 - Bileşen ile model özellikleri nasıl kullanılır
 - axios ile node.js tarafından servis talepleri nasıl gönderilir
 - newtonsoft.json ile bir json dizisinde nasıl linq sorgusu çalıştırılır

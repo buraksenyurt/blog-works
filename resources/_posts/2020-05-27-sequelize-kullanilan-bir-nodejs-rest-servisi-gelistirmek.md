@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Sequelize Kullanılan Bir NodeJs Rest Servisi Geliştirmek"
 date: 2020-05-27 20:23:00 +0300
-description: "Epey zamandır Nodejs ile kod yazmamıştım. Bu öğretideki amacım Postgresql veritabanını kullanan bir REST servisini NodeJs ile geliştirmekti. Kod tarafındaki Entity nesneleri ile Postgresql arasındaki ORM(Object Relational Mapping) katmanında Sequelize paketini kullanmayı öğrenmeye çalışıyordum. Postgresql tarafı içinse sistemi kirletmemek adına Docker imajından yararlandım. Önce onun ayağa kaldırarak işe başlayabiliriz."
 categories:
   - nodejs
 tags:
@@ -18,10 +17,9 @@ tags:
   - async-await
   - github
 ---
-# Sequelize Kullanılan Bir NodeJs Rest Servisi Geliştirmek
-![hearthstone_2.jpg](/assets/images/2020/hearthstone_2.jpg)
-
 Bilgisayar ile ilk tanıştığım günden beri oyun oynamayı seven birisiyim. Tabii ilerleyen yıllarda buna vakit ayırmak benim için çok zorlaştı. Bu nedenle hep kendi devrimin efsane sayabileceğim oyunlarında takılı kaldım. Söz gelimi paraya kıyarak aldığım oyun bilgisayarıma (Hani şu acayip ekran kartları olan, bir sürü fan barındıran, renkli ışıklarıyla gece disko topuna dönüşen masaüstü canavarından bahsediyorum) taaa ikibinlerin başında ve öncesinde oynadığım Red Alert II ve Command & Conquer Generals oyunlarını yükleyip vakit geçirdim. Hani en en en yeni oynadığım oyun sanıyorum ki Hearthstone ve onda da herkes beni ezip duruyor diyebilirim:D Bende onu nerede kullanabilirim diye düşünürken bari kart ve kahramanlarını bir NodeJs servisine malzeme yapayım dedim.
+
+![hearthstone_2.jpg](/assets/images/2020/hearthstone_2.jpg)
 
 Lakin epey zamandır Nodejs ile kod yazmamıştım. İşte bu öğretideki amacım Postgresql veritabanını kullanan bir REST servisini NodeJs ile geliştirmek. Kod tarafındaki Entity nesneleri ile Postgresql arasındaki ORM (Object Relational Mapping) katmanında Sequelize paketini kullanmayı öğrenmeye çalışıyorum.
 

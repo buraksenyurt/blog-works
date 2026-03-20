@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Silverlight - JSON ile Çalışmak"
 date: 2010-08-13 01:15:00 +0300
-description: "Silverlight tarafında JSON içeriği ile çalışabilmek adına geliştirilmiş JsonArray, JsonObject, JsonPrimitive gibi tipler bulunmaktadır. Bu tipler sayesinde JSON veri kümesinde yer alan string, number, Boolean gibi veri türleri kod içerisinde ele alınabilir. Ayrıca tek JSON nesnesi veya bir JSON nesne listesinin ele alınması da sağlanabilir. Bu geliştiriciler için önemlidir. Nitekim Web ortamında gelen JSON içeriğinin Parse edilme işlemleri ile uğraşılmasına gerek kalmamaktadır."
 categories:
   - silverlight-4-0
   - wcf-eco-system
@@ -30,12 +29,9 @@ tags:
   - generics
   - visual-studio
 ---
-# Silverlight - JSON ile Çalışmak
-![blg177_Giris.jpg](/assets/images/2010/blg177_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Uzun süredir şöyle deliksiz uyuyamıyordum. Malum evde bir afacan var. Pek uyumayı sevmeyen, sürekli hareket halinde olmak isteyen S (h) arp Efe izin verdiğinde, eşim ve ben dinlenmek için çeşitli işlere dalıyoruz. Ben uzun süredir Bulmacalara takılmış durumdayım. Bir de şu eski dil karşılıklarını isteyen sorular olmasa. Geçtiğimiz günlerde yine böyle bir boşluk yakalamışken, kendimi bulmacalar arasında yüzerken buluverdim. Ancak bir süre sonra "...eski dildeki karşılığı..." sorularından sıkıldım ve televizyonda neler olduğuna bir akayım dedim.
+
+![blg177_Giris.jpg](/assets/images/2010/blg177_Giris.jpg)
 
 Televizyonda yandaki resimde görülen adam vardı ve ismi Jason'dı. Açıkçası Jason Statham'ın fanatiği bir sinemasever olarak bu isim benzerliğinin, böyle korkutucu bir karakter üzerinde olması beni üzmüştü. Nitekim Jason ismini düşününce aklıma gıcır gıcır parlayan Audi marka arabalar gelmekteydi. Her neyse...Filme fazla takılmadım ama Jason, Jason derken, bu isim JSON diye dudaklarımdan süzülmeye başladı. Pek tabi bunun doğal sonucu olarak bilgisayarımın başına oturdum ve JSON ile ilişkili bir şeyler yazmaya karar verdim. İşte başlıyoruz
 

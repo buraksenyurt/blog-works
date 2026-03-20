@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net Core - Dependency Lifetimes"
 date: 2021-04-30 23:54:00 +0300
-description: "Asp.Net 5 tarafında Dependency Injection ile ilişkili kafa karıştıran ve saha çözümlerinde dikkat gerektiren konulardan birisi de servis yaşam süreleridir(lifetimes) Bu kısa yazıda söz konusu meseleyi basit bir şekilde anlamaya çalışacağız. Örneğimiz bir önceki yazımızda da kullandığımız .Net çözümü üzerinde geliştirilecek. Dolayısıyla kodun detaylarına github adresinden bakabilirsiniz. Ben odaklanmamız gereken kısımları ve sonuçları paylaşmaya çalışarak bakmamız gereken alanı daraltmaya çalışacağım. Dilerseniz neler yaptığımız bir bakalım."
 categories:
   - asp-dotnet-core
 tags:
@@ -18,14 +17,13 @@ tags:
   - github
   - dependency-management
 ---
-# Asp.Net Core - Dependency Lifetimes
-![hellomvc_11.png](/assets/images/2021/hellomvc_11.png)
-
 Çalışmakta olduğum şirketin çok büyük bir ERP (Enterprise Resource Planning) uygulaması var. Microsoft.Net Framework 1.0 sürümünde düşünce olarak hayat geçirilip geliştirilmeye başlanmış. Milyonlarca satır koddan ve sayısız sınıftan oluşan, katmanlı monolitik mimari üstünde yürüyen, sahada on binden fazla personelin kullandığı çok etkili bir ürün. Geçtiğimiz yıl bu uygulamanın modernizasyonu kapsamında başlatılan IT4IT çalışmaları bünyesinde nesne bağımlılıklarının yönetimi için Dependency Injection mekanizmasının nimetlerinden de epeyce yararlanıldı. Doğruyu söylemek gerekirse koda yaptıkları dokunuşları hayranlıkla izledim.
+
+![hellomvc_11.png](/assets/images/2021/hellomvc_11.png)
 
 Elbette başa dert olan ve sahada fark edilmesi güç bazı konular da gündeme gelmedi değil. Bunlarda birisi de bağımlı nesnelerin yaşam ömürleri ile alakalıydı. Gerçekten böylesine büyük bir sistemde AddTransient ile mi gitmeli yoksa AddScoped olarak mı bırakmalı gibi sorulara cevap vermek kolay değil. Öncelikle şu nesne yaşam ömrü meselesini anlamak gerekiyor. Bende hazır evden çıkmamız yasak kitaplarıma gömülmüşken bu meseleyi iyice bir öğreneyim istiyorum. Kapak fotoğrafı mı? Her zaman ki gibi konumuzla bir alakası yok. Sadece yazıyı yazarken dinlemekte olduğum Bon Jovi'nin 1984 çıkışlı stüdyo albümüne ait:D
 
-Aslında Asp.Net 5 açısından bakıldığında da Dependency Injection ile ilişkili kafa karıştıran ve saha çözümlerinde dikkat gerektiren konulardan birisi servis yaşam süreleri (Hoş,.Net Remoting ve WCF tarafındaki nesne yaşam döngülerini düşününce nispeten çok daha kolay bir konu) Bu kısa yazıda söz konusu meseleyi öğrendiğim kadarıyla sizlere anlatmaya çalışacağım. Örneğimiz [bir önceki yazıda](Asp.Net Core - Dependency Injection Türleri.md) da değindiğimiz.Net çözümü (hands-on-aspnetcore-di) üzerinde koşuyor olacak. Ayrıca kodun detaylarına [github adresinden](https://github.com/buraksenyurt/hands-on-aspnetcore-di/tree/lifetimes) bakabilir ve eksik kısımları tamamlayabilirsiniz. Ben odaklanmamız gereken yerleri ve sonuçları paylaşmaya çalışarak bakmamız gereken alanı daraltmak niyetindeyim. Her şeyden önce senaryomuza bir göz atalım (Taslak çizimin kusurlarını lütfen mazur görün)
+Aslında Asp.Net 5 açısından bakıldığında da Dependency Injection ile ilişkili kafa karıştıran ve saha çözümlerinde dikkat gerektiren konulardan birisi servis yaşam süreleri (Hoş,.Net Remoting ve WCF tarafındaki nesne yaşam döngülerini düşününce nispeten çok daha kolay bir konu) Bu kısa yazıda söz konusu meseleyi öğrendiğim kadarıyla sizlere anlatmaya çalışacağım. Örneğimiz [bir önceki yazıda](/2021/04/29/aspdotnet-core-dependency-injection-turleri/) da değindiğimiz.Net çözümü (hands-on-aspnetcore-di) üzerinde koşuyor olacak. Ayrıca kodun detaylarına [github adresinden](https://github.com/buraksenyurt/hands-on-aspnetcore-di/tree/lifetimes) bakabilir ve eksik kısımları tamamlayabilirsiniz. Ben odaklanmamız gereken yerleri ve sonuçları paylaşmaya çalışarak bakmamız gereken alanı daraltmak niyetindeyim. Her şeyden önce senaryomuza bir göz atalım (Taslak çizimin kusurlarını lütfen mazur görün)
 
 ![hellomvc_10.png](/assets/images/2021/hellomvc_10.png)
 

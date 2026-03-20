@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Replay Attack Saldırısını Nonce Token ile Engellemek"
 date: 2016-01-19 00:00:00 +0300
-description: "Bir zamanlar WCF servisleri ile ilişkili epeyce çalışma yapmış ve öğrendiklerimi kaleme almaya çalışmıştım. En çok zorlandığım konulardan birisi ise servislerin güvenliğini sağlamaktı. (Mesaj içeriklerinin korunmasından tutun, uç noktalar arası haberleşmenin güvenilik olmasına kadar dikkat edilmesi gereken pek çok nokta var) Ne yazık ki internet ortamında sürüsüne bereket saldırı biçimi var. Bunların önüne geçmek için WCF tarafında WS-* standartlarına uygun kanal yapıları kullanmak tercih edilen yöntemlerden birisi. Örneğin popüler saldırı çeşitlerinden olan Replay Attack etkisini hafifletmek için Custom Binding'ler kullanılıp, Reliable oturumlar açılması ve iletişimin SSL üzerinden gerçekleştirilmesi uygulanan teknikler arasında. (Şu an okudukça sıkıldığım 2007 menşeeli o uzun makalede bu konuya değinmişim)"
 categories:
   - wcf
 tags:
@@ -16,12 +15,9 @@ tags:
   - javascript
   - visual-studio
 ---
-# Replay Attack Saldırısını Nonce Token ile Engellemek
-![Viking_minion.gif](/assets/images/2016/Viking_minion.gif)
-
-Merhaba Arkadaşlar,
-
 Bir zamanlar WCF servisleri ile ilişkili epeyce çalışma yapmış ve öğrendiklerimi kaleme almaya çalışmıştım. En çok zorlandığım konulardan birisi ise servislerin güvenliğini sağlamaktı. (Mesaj içeriklerinin korunmasından tutun, uç noktalar arası haberleşmenin güvenilik olmasına kadar dikkat edilmesi gereken pek çok nokta var)
+
+![Viking_minion.gif](/assets/images/2016/Viking_minion.gif)
 
 Ne yazık ki internet ortamında sürüsüne bereket saldırı biçimi var. Bunların önüne geçmek için WCF tarafında WS- standartlarına uygun kanal yapıları kullanmak tercih edilen yöntemlerden birisi. Örneğin popüler saldırı çeşitlerinden olan Replay Attack etkisini hafifletmek için Custom Binding'ler kullanılıp, Reliable oturumlar açılması ve iletişimin SSL üzerinden gerçekleştirilmesi uygulanan teknikler arasında. (Şu an okudukça sıkıldığım 2007 menşeeli o uzun makalede [bu konuya](https://www.buraksenyurt.com/post/WCF-Replay-Attack-Etkisini-Hafifletmek-bsenyurt-com-dan) değinmişim)
 

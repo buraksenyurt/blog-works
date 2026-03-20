@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF 4.0 Yenilikleri - Default Binding Configuration [Beta 1]"
 date: 2009-08-12 03:30:00 +0300
-description: "WCF 4.0 ile birlikte gelmesi muhtemel yenilikleri incelemeye kaldığımız yerden devam ediyoruz. Bu yazımızda ele alacağımız konu, config dosyası içerisinde kullanılan bağlayıcı tipe(Binding Type) özel konfigurasyon ayarları ile ilişkili olacak. Konuyu net bir şekilde anlayabilmek için .Net Framework 3.5 tabanlı olarak geliştirilmiş basit bir servis uygulaması ile işe başlamamız gerekiyor."
 categories:
   - wcf-4-0-beta-1
 tags:
@@ -14,9 +13,6 @@ tags:
   - wcf
   - visual-studio
 ---
-# WCF 4.0 Yenilikleri - Default Binding Configuration [Beta 1]
-Merhaba Arkadaşlar,
-
 WCF 4.0 ile birlikte gelmesi muhtemel yenilikleri incelemeye kaldığımız yerden devam ediyoruz. Bu yazımızda ele alacağımız konu, config dosyası içerisinde kullanılan bağlayıcı tipe (Binding Type) özel konfigurasyon ayarları ile ilişkili olacak. Konuyu net bir şekilde anlayabilmek için.Net Framework 3.5 tabanlı olarak geliştirilmiş basit bir servis uygulaması ile işe başlamamız gerekiyor. Uygulamamıza ait App.config dosyasının içeriği aşağıdaki gibidir.
 
 ```xml

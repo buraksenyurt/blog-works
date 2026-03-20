@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ruby Kod Parçacıkları 19 - SQLite ile Basit Veritabanı İşlemleri"
 date: 2016-02-07 15:00:00 +0300
-description: "Sanıyorum bir programlama dilini öğrenirken en çok merak edilen konulardan birisi de veritabanı işlemleridir. \"Hani bir uygulama yazabilsem de bilgileri veritabanına kayıt edebilsem ve oradan okuyabilsem süper olur\" benzeri bir cümleyi eminim hepimiz kurmuşuzdur. Günümüzde geliştirilen uygulamalar mutlak suretle verileri kalıcı olarak saklamaya ihtiyaç duyar."
 categories:
   - ruby
 tags:
@@ -11,12 +10,9 @@ tags:
   - rest
   - http
 ---
-# Ruby Kod Parçacıkları 19 - SQLite ile Basit Veritabanı İşlemleri
-![Ultra-Lightweight-Carbon-Fiber-Blackbraid-Bicycle-0.jpg](/assets/images/2016/Ultra-Lightweight-Carbon-Fiber-Blackbraid-Bicycle-0.jpg)
-
-Merhaba Arkadaşlar,
-
 Sanıyorum bir programlama dilini öğrenirken en çok merak edilen konulardan birisi de veritabanı işlemleridir. "Hani bir uygulama yazabilsem de bilgileri veritabanına kayıt edebilsem ve oradan okuyabilsem süper olur" benzeri bir cümleyi eminim hepimiz kurmuşuzdur. Günümüzde geliştirilen uygulamalar mutlak suretle verileri kalıcı olarak saklamaya ihtiyaç duyar.
+
+![Ultra-Lightweight-Carbon-Fiber-Blackbraid-Bicycle-0.jpg](/assets/images/2016/Ultra-Lightweight-Carbon-Fiber-Blackbraid-Bicycle-0.jpg)
 
 İster ilişkisel veritabanı ister NoSQL tabanlı bir sistem olsun verinin kalıcı olarak saklanması gerekir. Ruby tarafında da veritabanı işlemleri için farklı çözümler kullanılabilir. NoSQL çözümleri dışında RDMBS tarafı için Lightweight olarak düşünebileceğimiz SQLite bu veritabanı sistemlerinden birisidir.
 

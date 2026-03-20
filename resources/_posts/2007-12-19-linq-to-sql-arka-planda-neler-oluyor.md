@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Linq To Sql : Arka Planda Neler Oluyor?"
 date: 2007-12-19 10:00:00 +0300
-description: "Veritabanı(Database) nesnelerinin programatik ortamda sınıf gibi tipler(Type) ve metod benzeri üyeler(Members) ile ifade ediliyor olması, bu tiplere ait nesne örnekleri üzerinden sorgulalamalar yapılabilmesi ihtiyacınıda ortaya çıkartmıştır. Bir veritabanı nesnesinin programatik taraftaki karşılığının nesne yönelimli(Object Oriented) bir dilde geliştirilmesi son derece kolaydır. Örneğin bir tablo(Table) göz önüne alındığında, bu tablonun kendisi bir sınıf(Class) olarak tasarlanabilir. Benzer şekilde, tablo içerisindeki alanlar(Fields) sınıf içinde yer alan birer özellik(Property) olarak düşünülebilir."
 categories:
   - linq-to-sql
 tags:
@@ -14,9 +13,6 @@ tags:
   - generics
   - visual-studio
 ---
-# Linq To Sql : Arka Planda Neler Oluyor?
-Değerli Okurlarım Merhabalar,
-
 Veritabanı (Database) nesnelerinin programatik ortamda sınıf gibi tipler (Type) ve metod benzeri üyeler (Members) ile ifade ediliyor olması, bu tiplere ait nesne örnekleri üzerinden sorgulalamalar yapılabilmesi ihtiyacınıda ortaya çıkartmıştır. Bir veritabanı nesnesinin programatik taraftaki karşılığının nesne yönelimli (Object Oriented) bir dilde geliştirilmesi son derece kolaydır. Örneğin bir tablo (Table) göz önüne alındığında, bu tablonun kendisi bir sınıf (Class) olarak tasarlanabilir. Benzer şekilde, tablo içerisindeki alanlar (Fields) sınıf içinde yer alan birer özellik (Property) olarak düşünülebilir.
 
 Basit CRUD (CreateRetrieveUpdateDelete) işlemleri, varlık sınıfı (Entity Class) diyebileceğimiz tipin birer üye metodu olarak düşünülebilir. Tabloda yer alan kolonların bazı niceleyicileri (örneğin Null değer içerip içermedikleri, primary key olup olmadıkları vb...) sınıfın kendisi ve üyeleri için birer nitelik (Attribute) olarak tasarlanabilir. Ne varki bu eşleştirme kolaylığı dışında, programatik tarafta yer alan nesnel yapılar üzerinde, SQL cümlelerine benzer ifadeler ile sorgulamalar yapmak kolay değildir. Nitekim, programatik tarafın SQL benzeri cümelere karşılık gelen fonksiyonellikleri ele alıyor olması gerekmektedir. LINQ (Language Integrated Query) mimariside, temel anlamda programatik tarafta yazılan ifadeleri arka planda metodlar, temsilciler (Delegates) yardımıyla kurduğu bir modele dönüştürmektedir. LINQ'in kullanıldığı alanlar göz önüne alındığında en popüler seçeneklerden biriside LINQ to SQL mimarisidir.

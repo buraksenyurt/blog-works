@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Interpreter Tasarım Kalıbı - İkinci Randevu"
 date: 2009-08-15 17:37:00 +0300
-description: "Bir süre önce tasarım kalıplarından Interpreter desenini incelemiş ve konu ile ilişkili bir kural motorunun çok basit anlamda nasıl yazılabileceğini araştıracağımızdan bahsetmiştik. Interpreter tasarım kalıbında hatırlayacağınız gibi Terminal ve NonTerminal tipleri bulunmaktadır..."
 categories:
   - tasarim-kaliplari-design-patterns
 tags:
@@ -11,12 +10,9 @@ tags:
   - dotnet
   - generics
 ---
-# Interpreter Tasarım Kalıbı - İkinci Randevu
-![blg64_Giris_1.jpg](/assets/images/2009/blg64_Giris_1.jpg)
-
-Merhaba Arkadaşlar,
-
 Bir süre önce tasarım kalıplarından [Interpreter](https://www.buraksenyurt.com/post/Tasarc4b1m-Desenleri-Interpreter.aspx) desenini incelemiş ve konu ile ilişkili bir kural motorunun çok basit anlamda nasıl yazılabileceğini araştıracağımızdan bahsetmiştik. Interpreter tasarım kalıbında hatırlayacağınız gibi Terminal ve NonTerminal tipleri bulunmaktadır. NonTerminal tipler genellikle kural motoru gibi modellerde devreye girmektedir. Kural motorlarında (Rule Engine), işletilmek istenen ifadelerin içerisinde sıklıkla operatörlerin kullanılması söz konusudur.
+
+![blg64_Giris_1.jpg](/assets/images/2009/blg64_Giris_1.jpg)
 
 Örneğin and, or, >=, <, küçüktür, eşittir gibi düşünebiliriz. Dikkat ederseniz eşittir ve küçüktür gibi kelimeleri de operatörler arasına kattım. Nitekim yorumlanacak ifade (Expression) bütününü kendimiz oluşturduğumuz için istediğimiz terimleri seçmemiz son derece doğaldır. Tam bu noktada sağ üstteki resmin konu ile ne alakası olduğunu düşünebilirsiniz.
 

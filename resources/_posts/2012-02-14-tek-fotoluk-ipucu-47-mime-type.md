@@ -1,16 +1,12 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu–47 (Mime Type)"
 date: 2012-02-14 23:11:00 +0300
-description: "Merhaba Arkadaşlar,"
 categories:
   - tek-fotoluk-ipucu
 tags:
   - tek-fotoluk-ipucu
 ---
-# Tek Fotoluk İpucu–47 (Mime Type)
-Merhaba Arkadaşlar,
-
 Hani olurda web tarafında istemciden gelen talebe göre, döndürmek istediğiniz herhangibir tipteki dosyanın Mime Type değerine göre bir Content Type üretmek istersiniz ya
 
 ![Smile](/assets/images/2012/wlEmoticon-smile_23.png)

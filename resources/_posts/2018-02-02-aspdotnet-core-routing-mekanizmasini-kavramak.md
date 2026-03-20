@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net Core Routing Mekanizmasını Kavramak"
 date: 2018-02-02 04:24:00 +0300
-description: "Bu yazımızda Asp.Net Core routing mekanizmasını yakından incelemeye çalışacağız. .Net tarafında MVC zamanlarından beri kritik bir yere sahip olan talep yönlendirme mekanizması .Net Core tarafında da etkili bir biçimde kullanılmakta. Bir kaç farklı örnek yaparak mekanizmanın nasıl çalıştığını anlamaya çalışalım."
 categories:
   - asp-dotnet-core
 tags:
@@ -21,12 +20,9 @@ tags:
   - visual-studio
   - github
 ---
-# Asp.Net Core Routing Mekanizmasını Kavramak
-![corerouting_11.gif](/assets/images/2018/corerouting_11.gif)
-
-Merhaba Arkadaşlar,
-
 Güzel otomobilleri hepimiz severiz. Özellikle spor olanlarını. Benim favori araçlarımdan birisi ise Audi RS8. 2017 model Türkiye satış fiyatı 430 bin Avro civarındaydı. Gerçekten çok yüksek bir rakam. Ne oldu da birden onunla yollarımız kesişti diye düşünebilirsiniz. Bir deneme sürüşüne çıktım demek isterdim ama... Aslında olay West-World üzerinde Asp.Net Core routing mekanizmasını incelerken meydana geldi. Bir şekilde dile benden ne dilersen tadındaki URL path'in çalışma zamanına Audi RS8 yazmış bulundum. Web sunucusunun bana verdiği cevapsa oldukça hoştu. "Oldu bil!" Onunla aramızda nasıl böyle bir muhabbet gerçekleşti merak ediyor olmalısınız. Gelin Asp.Net Core routing mekanizmasını yakından incelemeye çalışalım.
+
+![corerouting_11.gif](/assets/images/2018/corerouting_11.gif)
 
 Asp.Net dünyasında MVC zamanlarından beri kritik bir yere sahip olan talep yönlendirme mekanizması.Net Core için de etkili bir biçimde kullanılmakta. Farklı yöntemlerle web sunucusuna gelen taleplerin değerlendirilmesi mümkün. Bu senaryoların hali hazırdaki versiyonlarını zaten Web API ve MVC şablonlarında ele alıyoruz. Ancak mekanizmayı tanımak adında bir Console projesinden ayağa kaldırılacak Host örneğinde ne gibi operasyonları kullanabilirize bakmakta yarar var. Dilerseniz hiç vakit kaybetdemen bu varyasyonlardan bir kısmını basit örneklerle ele alalım.
 

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net’ ten HTTPS Tabanlı WCF Çağrısı Gerçekleştirmek"
 date: 2014-08-13 12:00:00 +0300
-description: "Development ortamında geliştirme yapmaktayız. IIS üzerinde host edilen bir WCF Servis uygulamamız var. Bu servis uygulaması WS Security standartlarında ve SSL tabanlı bir hizmet sunmakta. Bir başka deyişle servise https üzerinden talep gönderebiliyoruz. Servisin WSDL içeriğinin elde edilebildiği adres de aslında HTTPS tabanlı. İstemci tarafı ise Asp.Net tipinden bir web uygulaması. Bu uygulamanın söz konusu servise HTTPS tabanlı olarak talep gönderebilmesi ve cevap alabilmesi isteniyor. Development ortamında çalışıldığından gerçek bir sertifika yerine, Microsoft’ un test amaçlı X509 sertifikasının kullanılması planlanıyor."
 categories:
   - wcf
   - wcf-4-5
@@ -18,10 +17,10 @@ tags:
   - iis
   - visual-studio
 ---
-# Asp.Net’ ten HTTPS Tabanlı WCF Çağrısı Gerçekleştirmek
-![381eed443562d941546485cc9e2decf4_1316198153](/assets/images/2014/381eed443562d941546485cc9e2decf4_1316198153_thumb.jpg)Merhaba Arkadaşlar,
-
 Özel Ajan Oso! Son yılımda Disney Channel’ de sıklıkla maruz kaldığım bir çizgi karakter. Aslında bu sakar ve bir o kadar da maharetli ve sevimli çizgi dizi kahramının görevi son derece basit. Sadece 3 adımda çocuklara yol gösterici nitelikte yardımcı olmaya çalışmak.
+
+![381eed443562d941546485cc9e2decf4_1316198153](/assets/images/2014/381eed443562d941546485cc9e2decf4_1316198153_thumb.jpg)
+
 
 Ajanımızın dizi de bir de yöneticisi var. Aynı Mission Impossible’ da olduğu gibi. Onun adı “Bay Dost”
 

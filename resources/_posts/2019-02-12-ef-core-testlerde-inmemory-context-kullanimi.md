@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "EF Core : Testlerde InMemory Context Kullanımı"
 date: 2019-02-12 09:00:00 +0300
-description: "Entity Framework ile çalışırken test süreçlerini zorlaştırabilecek bağımlılıklardan birisi de uzak veritabanı bağlantısıdır. Genellikle bir SQL sunucusu ile çalışıldığından connectionString bilgisinde belirtilen adrese test ortamında da gidilebiliyor olması beklenir. Ancak bu şu anki durumda şart değil. EF context'ini bellekte çalışacak şekilde o anki process içerisinde de kullanabiliriz. Bunun için..."
 categories:
   - dotnet-core
 tags:
@@ -19,10 +18,9 @@ tags:
   - testing
   - github
 ---
-# EF Core : Testlerde InMemory Context Kullanımı
-![ttplayer_n.jpg](/assets/images/2019/ttplayer_n.jpg)
-
 Ablamla rahmetli babamız bir önceki sabah olduğu gibi o günde terastaki ahşap yemek masasının üzerine kurdukları fileyi karşılıklı sabitlemekle meşgullerdi. Normal ebatlarına göre çok daha dar ve kısa olan yemek masası, benim gibi orta okul çağlarındaki birisi için ideal bir ping pong sahasıydı esasında. Son bir kaç yazdır en büyük eğlencelerimizden birisi haline gelmişti. Kuzenlerle dolup taşan kalabalık yaz akşamlarında bir çok aile ferdini çevresine sığdıran Alman ahşapından yapılma o sağlam masa, prüzsüz yüzeyiyle sabahları çekişmeli ping pong maçlarına ev sahipliği yapıyordu. Güzel anıları ile birlikte rahmetli babamı zaman zaman kızdıran vakitlere de tanıklık etmişti. Bir keresinde raketi tutan kolumu tavana doğru öyle bir açmıştım ki florasan lambayı tuzla buz etmiştim. O günden sonra tavandan sarkan değil zeminine sabit bir lamba tercih etmiştik. Lakin bir diğer sefer daha büyük bir sorun yaşamıştık.
+
+![ttplayer_n.jpg](/assets/images/2019/ttplayer_n.jpg)
 
 Evin zemin katındaki terasta hemen bahçe giriş kapısının önünde topraktan elli santimetre kadar yüksekte olan taş zemin üzerinde duran yemek masası, sokağa bakan tarafı boydan boya cam olan mutfağın da yanı başındaydı. Her ne kadar masa ile mutfak camı arasında bir metrelik mesafe olsa da büyüyen ben yıllar içerisinde aradaki kol mesafesini de azaltmıştım. Ve bir gün lise çağına geldiğimde olan olmuştu. Kolumu sağa doğru koşarken öyle geniş ve sert açmıştım ki, kırmızı yüzeyi ile göz göze geldiğim raket elimden fırlayıvermişti. Bahçe yerine mutfak camına doğru. Koca cam ortadan büyük bir yarıkla kırıldı. Eh tabii o zamanlar bugünkü gibi minicik parçalara ayrılıp kimseye zarar vermeyen camlara sahip değildik. Annemin "Aman oğlum iyi ki size bir şey olmadı" deyişinin yanında rahmetlinin o en meşhur bakışı saplanmıştı gözlerimden içeriye. Telepatik olarak mesaj alınmıştı. Sonraki gün ve yaz tatillerinin ilerleyen yıllarında, panayır yerindeki ping pong masasını kiralamanın çok daha ucuz olacağını anlamıştık.
 

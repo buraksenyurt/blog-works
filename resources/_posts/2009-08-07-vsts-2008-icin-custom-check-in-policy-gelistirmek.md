@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "VSTS 2008 için Custom Check-In Policy Geliştirmek"
 date: 2009-08-07 12:56:00 +0300
-description: "Bir süredir Team Foundation Server üzerinde ve doğal olarak Visual Studio Team System 2008 geliştirme ortamında çalışmaktayım. Tabi uzun yıllar Visual Source Safe ile vakit geçirmenin sonucunda, TFS ile birlikte gelen pek çok nimetin farkına çok geç varabiliyoruz."
 categories:
   - visual-studio
 tags:
@@ -11,12 +10,9 @@ tags:
   - generics
   - testing
 ---
-# VSTS 2008 için Custom Check-In Policy Geliştirmek
-![blg58_Giris.jpg](/assets/images/2009/blg58_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Bir süredir Team Foundation Server üzerinde ve doğal olarak Visual Studio Team System 2008 geliştirme ortamında çalışmaktayım. Tabi uzun yıllar Visual Source Safe ile vakit geçirmenin sonucunda, TFS ile birlikte gelen pek çok nimetin farkına çok geç varabiliyoruz. Herşeyden önce TFS'in, MSF (Microsoft Solution Framework) ve CMMI (Capability Maturity Model Integration) gibi yazılım geliştirme süreç modellerinin uygulanabildiği profesyonel bir çevre sağladığını bilmemiz gerekiyor.
+
+![blg58_Giris.jpg](/assets/images/2009/blg58_Giris.jpg)
 
 İşin içerisine Reporting Services'ile etkili raporlama, SharePoint ile tutarlı, ölçeklenebilir döküman yönetimi gibi pek çok yararlı üründe giriyor. Tabiki bu tip sistemlerin uygulanması her zaman kolay değildir. Her şeyden önce bir öğrenme süreci için geliştirme ekibinin ciddi zaman ayrılması şarttır. Öyleki, model içerisinde çevik (Agile) süreçlerin uygulanabilirliği söz konusudur ki bunlarda başlı başlına birer konsepttir.
 

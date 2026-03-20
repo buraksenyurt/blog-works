@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Sql 2005 XML Veri Tipini XSD ile Doğrulamak"
 date: 2006-04-21 12:00:00 +0300
-description: "Sql Server 2005 ile birlikte gelen en büyük yeniliklerden birisi, yeni XML veri tipidir. XML veri tipini tablolarda alanlar, stored procedure' lerde ve fonksiyonlarda parametreler veya değişkenler için kullanabilmekteyiz. Ancak asıl iyi olan nokta, XML veri tipinden herhangibir içeriğin, XSD şemaları yardımıyla doğruluğunun kontrol altına alınabilmesidir. Bir XML şeması ile ilişkilendirilmiş ve doğruluğu bu şema bilgisinde verilen kriterlere göre sağlanacak olan XML verisine, türlendirilmiş XML (Typed XML) adı verilmektedir. (Tam karşıtı olan Untyped XML verisi ise sadece well-formed olarak tanımlanmış XML içeriğini işaret etmektedir.)"
 categories:
   - t-sql
 tags:
@@ -15,9 +14,6 @@ tags:
   - performance
   - visual-studio
 ---
-# Sql 2005 XML Veri Tipini XSD ile Doğrulamak
-Değerli Okurlarım Merhabalar,
-
 Sql Server 2005 ile birlikte gelen en büyük yeniliklerden birisi, yeni XML veri tipidir. XML veri tipini tablolarda alanlar, stored procedure'lerde ve fonksiyonlarda parametreler veya değişkenler için kullanabilmekteyiz. Ancak asıl iyi olan nokta, XML veri tipinden herhangibir içeriğin, XSD şemaları yardımıyla doğruluğunun kontrol altına alınabilmesidir. Bir XML şeması ile ilişkilendirilmiş ve doğruluğu bu şema bilgisinde verilen kriterlere göre sağlanacak olan XML verisine, türlendirilmiş XML (Typed XML) adı verilmektedir. (Tam karşıtı olan Untyped XML verisi ise sadece well-formed olarak tanımlanmış XML içeriğini işaret etmektedir.)
 
 > Typed XML verileri, çalışma zamanında Untyped XML verilerine göre daha yüksek performans sağlar. Çünkü Untyped XML içeriğinde, elementlere ve niteliklere ait veriler string formatında tutulmakta olup çalışma zamanında gereksiz yere tür dönüşümlerinin olmasına neden olmaktadır. Oysaki Typed XML verisinin içeriğinde yer alan element ve niteliklerin veri türleri zaten şemada belirtilen türlerden olmak zorunadır. Bu da çalışma zamanında gereksiz tür dönüşümlerini engelleyerek yüksek performans sağlamaktadır.

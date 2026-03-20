@@ -1,16 +1,12 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu 121 - Code Contracts ve Immutable Type"
 date: 2015-11-16 06:00:00 +0300
-description: "Bazı durumlarda tanımladığımız tiplerin Immutable olmasını isteriz. Bildiğiniz üzere bir nesne örneğinin özellikleri ile nitelenen durumunun(State) çalışma zamanı boyunca değişmesini istemiyorsak Immutable hale getirebiliriz.Bir tipin Immutable olması için yapılacaklar bellidir. Nesne durumunu taşıyan özellikler(Property) dışarıdan erişime kapatılır ve değerleri sadece yapıcı metod(Constructor) tarafından belirlenir. Eğer çalışma zamanında bu nesne örneğinin durumunun değişmesi gerekiyorsa(Örneğin belirli özelliklerinin değerlerinin değişmesi), kendisine ait yeni nesne örneği üretip döndüren fonksiyonlardan yararlanılır."
 categories:
   - tek-fotoluk-ipucu
 tags:
   - tek-fotoluk-ipucu
 ---
-# Tek Fotoluk İpucu 121 - Code Contracts ve Immutable Type
-Merhaba Arkadaşlar,
-
 Bazı durumlarda tanımladığımız tiplerin Immutable olmasını isteriz. Bildiğiniz üzere bir nesne örneğinin özellikleri ile nitelenen durumunun (State) çalışma zamanı boyunca değişmesini istemiyorsak Immutable hale getirebiliriz.
 
 Bir tipin Immutable olması için yapılacaklar bellidir. Nesne durumunu taşıyan özellikler (Property) dışarıdan erişime kapatılır ve değerleri sadece yapıcı metod (Constructor) tarafından belirlenir. Eğer çalışma zamanında bu nesne örneğinin durumunun değişmesi gerekiyorsa (Örneğin belirli özelliklerinin değerlerinin değişmesi), kendisine ait yeni nesne örneği üretip döndüren fonksiyonlardan yararlanılır.

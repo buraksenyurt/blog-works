@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Node.js - Asenkron Talep Karşılama"
 date: 2019-01-10 17:00:00 +0300
-description: "Bu yazımızda Node.js ile geliştirilmiş sunucu uygulamalarında async kullanımını inceleyeceğiz. Amacımız istemci talebi sonrası arka planda paralel servis çağrıları gerçekleştirmek ve ayrıca bu süreç sırasında sunucuya gelecek diğer isteklerinde değerlendirilebileceğini görmek. Bunlara ilaveten ön tarafta konuşlandıracağımız ana servisin bir yönlendirici(router) gibi kullanılabileceğini öğreneceğiz. Haydi gelin hiç vakit kaybetmeden serüvenimize başlayalım. Konuyu basit bir şekilde anlayabilmek adına örnek bir senaryo üzerinden gitmekte yarar var..."
 categories:
   - nodejs
 tags:
@@ -20,12 +19,9 @@ tags:
   - microservices
   - github
 ---
-# Node.js - Asenkron Talep Karşılama
-![async_viking.jpg](/assets/images/2019/async_viking.jpg)
-
-Merhaba Arkadaşlar,
-
 Adrenali oldukça yüksek (özellikle benim için) ve zorlayıcı bir Cumartesi gününü geride bıraktım. Yo yo sandığınız gibi Cape Town'da büyük beyazlar ile dalış yapmadım ya da Helikopter'den Bungee Jumping... Hatta deployment sırasında canlı ortam datalarını da silmedim. Tek yaptığım Vialand'e gitmek oldu. Daha ilk turda bindiğim Vikings beni yeterince heyecanlndırırken, "Nefes Kesen" neredeyse ses hızına yaklaştığımı hissettirdi:P
+
+![async_viking.jpg](/assets/images/2019/async_viking.jpg)
 
 Ehh, yanınızda bu adrenaline doymayan bir arkadaşınız veya çocuğunuz varsa o aletten diğerine koşturmayı bırakın her bir aleti defalarca deneyimlemek zorunda da kalabilirsiniz. Hoş bunu sevenler ve etkilenmeyenler için inanılmaz derecede eğlenceli bir ortam söz konusu. Lakin benim gibi yaşlı bünyeler için aslında bu kadar adrenalin biraz (belki birazdan da fazla) ürkütücü diyebilirim. Bu yoğun heyecan üzerine beni dengeleyen tek yer çalışma odam oldu. Viking'deki sulu inişleri, Rollar Coaster'daki 38 saniyelik öldürücü heyecanı, Adelet Kulesinden yapılan 50 metrelik sert düşüşü bir kenara bıraktım ve West World'e doğru yol aldım. Elimde incelenmeyi bekleyen ve hafta boyu gerek Pluralsight eğitimleri gerek dokümanlar olsun çalıştığım güzel bir konu vardı.
 

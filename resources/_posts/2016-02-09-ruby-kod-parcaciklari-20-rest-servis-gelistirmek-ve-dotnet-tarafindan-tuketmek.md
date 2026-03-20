@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ruby Kod Parçacıkları 20 - REST Servis Geliştirmek ve .Net Tarafından Tüketmek"
 date: 2016-02-09 01:44:00 +0300
-description: "Artık belli bir platforma bağlı kalmadan farklı uygulamaları bir araya getirip konuşturabiliyor, büyük ölçekli sistemleri uçtan uca bağlayarak süreçler işletebiliyoruz. Burada programlama dillerinin üzerine oturduğu çatıların(Frameworks) büyük avantajlar sağladığı ve işleri belirli ölçüde kolaylaştırdığı aşikar."
 categories:
   - rest
   - ruby
@@ -19,12 +18,9 @@ tags:
   - serialization
   - generics
 ---
-# Ruby Kod Parçacıkları 20 - REST Servis Geliştirmek ve .Net Tarafından Tüketmek
-![logo.png](/assets/images/2016/logo.png)
-
-Merhaba Arkadaşlar,
-
 Artık belli bir platforma bağlı kalmadan farklı uygulamaları bir araya getirip konuşturabiliyor, büyük ölçekli sistemleri uçtan uca bağlayarak süreçler işletebiliyoruz. Burada programlama dillerinin üzerine oturduğu çatıların (Frameworks) büyük avantajlar sağladığı ve işleri belirli ölçüde kolaylaştırdığı aşikar.
+
+![logo.png](/assets/images/2016/logo.png)
 
 Elbette işin en önemli kısmı yine de servislere düşüyor. Çözümler için düşünülen mimariler mutlak suretle servisleri ele alıyor. Hali hazırda SOA (Service Oriented Architecture) üzerine kurulu sayısız çözüm mevcut. Yeni geliştirilen kurumsal çözümler için de SOA mutlaka göz önüne alınıyor. Son yıllarda Micro Service yaklaşımı ile hafif siklet servislerin süreçlere dahil edilmesi de oldukça popüler. Herhangi bir programlama dili ile Lightweight servisler geliştirmek, bunları ucuz sunucular üzerinde organize ederek kolayca dağıtılabilir ve ölçeklenebilir şekilde sunmak oldukça pratik.
 

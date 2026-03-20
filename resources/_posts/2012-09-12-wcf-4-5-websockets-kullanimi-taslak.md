@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF 4.5 WebSockets Kullanımı [Taslak]"
 date: 2012-09-12 15:04:00 +0300
-description: "Bilindiği üzere HTTP protokolü üzerinden gerçekleştirilmekte olan Request-Response tabanlı çalışma modelinde, istemcilerin göndereceği taleplere karşılık olarak sunucunun vereceği cevaplar söz konusudur. Dolayısıyla istemciler, örneğin borsa hareketliliği gibi anlık değişim gösteren içerikleri elde etmek istediklerinde, çeşitli teknikleri işin içerisine katmak zorundadırlar. Bunun için Polling adı verilen teknik sıklıkla kullanılmaktadır. İstemci belirli periyot aralıklarında sunucudan gerekli veriyi talep eder ve içeriği okur. Polling dışında bir de Streaming tekniği ile verinin çekilmesi sağlanabilir, ancak hangisi olursa olsun istemci ve sunucu arasındaki haberleşme şekli, tek talebe(Request) karşın, tek bir cevap(Response) gelecek şekilde tesis edilir."
 categories:
   - wcf-4-5
 tags:
@@ -20,10 +19,10 @@ tags:
   - serialization
   - visual-studio
 ---
-# WCF 4.5 WebSockets Kullanımı [Taslak]
-[![yoresel1](/assets/images/2012/yoresel1_thumb.jpg)](/assets/images/2012/yoresel1.jpg) Merhaba Arkadaşlar,
-
 Bazen yemek yemek için dışarı çıkar ve daha önceden gitmediğimiz bir yere oturup hiç bakmadığımız tadlara yelken açarız. Bu, bazen çok başarılı sonuçlanır ve bize büyük bir keyif verir. Bazen de yapmış olduğumuz tercihlerimiz için pişmanlık duyarız. Hatta bazı zamanlarda yerken iyi gelen o tadlar, çıkışta büyük sıkıntılara yol açabilir
+
+[![yoresel1](/assets/images/2012/yoresel1_thumb.jpg)](/assets/images/2012/yoresel1.jpg)
+
 
 ![Smile](/assets/images/2012/wlEmoticon-smile_53.png)
 

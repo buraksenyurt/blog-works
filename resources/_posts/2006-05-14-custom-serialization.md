@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Custom Serialization"
 date: 2006-05-14 12:00:00 +0300
-description: "Nesnelerin çalışma zamanındaki durumlarını alıp herhangi bir kaynağa doğru yazmak ve başka bir zaman dilimi içerisinde bu kaynaktan aynı nesne durumunu elde etmek amacıyla serileştirme tekniklerinden sıkça faydalanılmaktadır. Biz bu makalemizde özel serileştirmeyi (Custom Serialization), Framework 1.1' den itibaren incelemeye başlayacak ve 2.0' da getirilen yeniliklere değineceğiz. Bazen serileştirme (Serialization) veya ters-serileştirme (Deserialization) işlemleri sırasında, veriyi değiştirmek isteyebiliriz..."
 categories:
   - csharp
 tags:
@@ -11,9 +10,6 @@ tags:
   - serialization
   - generics
 ---
-# Custom Serialization
-Değerli Okurlarım Merhabalar,
-
 Nesnelerin çalışma zamanındaki durumlarını alıp herhangi bir kaynağa doğru yazmak ve başka bir zaman dilimi içerisinde bu kaynaktan aynı nesne durumunu elde etmek amacıyla serileştirme tekniklerinden sıkça faydalanılmaktadır. Biz bu makalemizde özel serileştirmeyi (Custom Serialization), Framework 1.1' den itibaren incelemeye başlayacak ve 2.0' da getirilen yeniliklere değineceğiz. Bazen serileştirme (Serialization) veya ters-serileştirme (Deserialization) işlemleri sırasında, veriyi değiştirmek isteyebiliriz. Örneğin serileştirilecek olan veriyi ilgili stream üzerine şifrelemek isteyebiliriz. Söz konusu stream bir ağ ortamında, fiziki bir dosya veya bellek bölgesi olabilir. Özellikle ağ üzerinden harekete eden verilerin serileştirme işlemine tabi tutulduğu Remoting gibi mimarilerde şifreleme işlemi zaman zaman önem arz edebilir. Elbette şifreleme gibi amaçlar dışında da başka nedenlerden dolayı özel serileştirme işlemlerini gerçekleştirmek isteyebiliriz.
 
 Hangi nedenle olursa olsun özel serileştirme, kod tarafında bir takım özel işlemleri gerektirir. Özel serileştirmeyi kavrayabilmek ve uygulayabilmek için var olan serileştirme süreçlerini basitten detaya kadar incelemek gerekir. Dilerseniz ilk olarak bir nesnenin serileştirme sürecine kısaca bir göz atalım.

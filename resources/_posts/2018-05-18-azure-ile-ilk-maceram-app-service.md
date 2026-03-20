@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Azure ile İlk Maceram (App Service)"
 date: 2018-05-18 18:15:00 +0300
-description: "Yazımızdaki temel amacımız Azure'un desteklediği dillerinden birisini kullanarak geliştirilen uygulamayı buluta alıp, yayınlamaktan ibaret. Konuyu araştırdığım tarih itibariyle PHP, Java, Ruby, Go ve pek tabii .Net Core için destek sunuluyor. Ben elimin bir süredir de sıcak durduğu Node.js dilini seçtim. Azure'un App Service hizmetini Linux tabanlı bir ortam üzerinde deneyimlemeyeceğiz. Aslında App Service bir web hosting hizmeti olarak düşünülebilir. Kurulumu oldukça kolaydır ve bir plana bağlandığında dağıtım gibi işlemlerde basittir. Gelelim işlemlerimizi nerede yapacağımıza?"
 categories:
   - azure
 tags:
@@ -20,12 +19,9 @@ tags:
   - concurrency
   - visual-studio
 ---
-# Azure ile İlk Maceram (App Service)
-![nonazure_0.gif](/assets/images/2018/nonazure_0.gif)
-
-Merhaba Arkadaşlar,
-
 Sinema tarihinin en araştırmacı en gözüpek en maceraperest arkeoloğu kimdir desek herhalde aklımıza tek bir isim gelir; Indiana Jones. Geçenlerde DVD arşivimden şöyle yanında patlamış mısırla izleyeceğim güzel bir macera filmi bakıyordum. Bu yaşıma kadar aslında bir çok ünlü seriyi arşivime eklemiştim. Baba, Matrix, Mad Max, Star Wars, Back to the Future, Terminator, Lord of the Rings ve diğerleri. Derken Indiana Jones çıktı karşıma ve gecenin izlencesi belli oldu. Mısırlar patlatıldı, naneli limonatalar hazırlandı, DVD takıldı, perdeler indirildi ve seyir başladı. Pek tabii Indiana Jones'un bir profesör olmasından çok atıldığı maceralardı seyirciyi ekrana bağlayan. Ona can veren Harrison Ford'un ince esprileri de cabasıydı. Filmi büyük bir keyifle tamamladıktan sonra geçtim West-World'ün başına. Bir Indiana Jones değildim ama benim de kendi çapımda minik maceralarım vardı. Sıradaki serüven yüksek tepelerin ardında, ihtişamlı bulutları ile göz kamaştıran Azure hanedanlığına doğru olacaktı.
+
+![nonazure_0.gif](/assets/images/2018/nonazure_0.gif)
 
 Bulut bilişim dünyasının başrol oyuncularını düşündüğümüzde karşımıza Amazon Web Services, Google Cloud Platform ve Microsoft Azure çıkıyor (İlk harflere göre sıralayarak yazdım:P) Neredeyse hepsinin benzer amaç, araç ve sunduğu hizmetler var (Düşünsenize hepsinde mutlaka tarayıcı üzerinde çalıştırabildiğimiz terminal konsolları bulunuyor) Bu nedenle herhangi birinde deneyimlediğimiz tecrübeleri diğerlerinde tatbik etmek de mümkün. Bu platformlarda hayatın nasıl işlediğini anlamak için sundukları dokümanlardan yararlanmaksa en mantıklısı.
 

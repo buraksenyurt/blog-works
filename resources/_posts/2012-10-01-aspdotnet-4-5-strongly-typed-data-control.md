@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net 4.5- Strongly Typed Data Control"
 date: 2012-10-01 02:45:00 +0300
-description: "Malumunuz Web tarafı ile aram pek iyi değildir. Ancak .Net Framework’ ün her sürümünde genel olarak gelen yeniliklere bakmaya çalışıyorum/çalışmaktayım. Geçtiğimiz hafta içerisinde de Asp.Net 4.5 tarafında gelen yenilikleri incelemeye başladım. Bunlar arasında dikkatimi çekenlerden birisi de, Web Form’ larda veri bağlı kontroller(Data Bind Controls) için gelen strongly typed ve intelli-sense desteğiydi. Durumu daha iyi aktarabilmem için basit bir örnek üzerinden ilerlemeye çalışım. İlk etapta aşağıdaki gibi bir POCO(Plain OLD CLR object) tipimiz olduğunu düşünelim."
 categories:
   - aspnet-4-5
 tags:
@@ -16,10 +15,10 @@ tags:
   - reflection
   - generics
 ---
-# Asp.Net 4.5- Strongly Typed Data Control
-[![strong](/assets/images/2012/strong_thumb.gif)](/assets/images/2012/strong.gif) Merhaba Arkadaşlar,
-
 Malumunuz Web tarafı ile aram pek iyi değildir. Ancak.Net Framework’ ün her sürümünde genel olarak gelen yeniliklere bakmaya çalışıyorum/çalışmaktayım. Geçtiğimiz hafta içerisinde de Asp.Net 4.5 tarafında gelen yenilikleri incelemeye başladım.
+
+[![strong](/assets/images/2012/strong_thumb.gif)](/assets/images/2012/strong.gif)
+
 
 Bunlar arasında dikkatimi çekenlerden birisi de, Web Form’ larda veri bağlı kontroller (Data Bind Controls) için gelen strongly typed ve intelli-sense desteğiydi. Durumu daha iyi aktarabilmem için basit bir örnek üzerinden ilerlemeye çalışım. İlk etapta aşağıdaki gibi bir POCO (Plain OLD CLR object) tipimiz olduğunu düşünelim.
 

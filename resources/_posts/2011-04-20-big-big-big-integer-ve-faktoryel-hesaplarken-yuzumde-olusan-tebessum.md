@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Big Big Big Integer ve Faktöryel Hesaplarken Yüzümde Oluşan Tebessüm"
 date: 2011-04-20 15:05:00 +0300
-description: "Bu hüzünlü girişten sonra bu kocaman araçların konumuzla ne alakası olduğunu düşünebilirsiniz. Aslında bu gün sizlere yine .Net Framework 4.0 ile birlikte gelen yeniliklerden birisinde bahsediyor olacağım. Aslında kocaman, iri, büyük bir yenilik. BigInteger ;) .Net Framework 4.0 ile birlikte System.Numerics.dll isimli bir assembly daha gelmektedir. Bu yeni assembly içerisinde ise aşağıdaki şekilde görülen iki Değer Türü(Value Type) yer almaktadır."
 categories:
   - dotnet-framework-4-0
   - csharp-4-0
@@ -14,10 +13,10 @@ tags:
   - http
   - visual-studio
 ---
-# Big Big Big Integer ve Faktöryel Hesaplarken Yüzümde Oluşan Tebessüm
-[![blg203_Giris](/assets/images/2011/blg203_Giris_thumb.jpg)](/assets/images/2011/blg203_Giris.jpg) Merhaba Arkadaşlar,
-
 [Monster Truck](http://en.wikipedia.org/wiki/Monster_truck) yarışlarını izleyen var mıdır bilemiyorum. Bir zamanlar Eurosport kanalında sık sık izler ve bu devasa, kocaman araçların, önlerinde ufacık kalan (ki o araçların çoğu avrupada kullanılan binek otoların çoğundan en ve boyca büyüktür) araçların üstünden atlarken onları nasıl ezdiklerine ağzım açık bakardım.
+
+[![blg203_Giris](/assets/images/2011/blg203_Giris_thumb.jpg)](/assets/images/2011/blg203_Giris.jpg)
+
 
 Amerikalıların gerçekten garip müsabaka anlayışları ve sportif aktiviteleri var. Monster Truck araçlarının kullanıldığı bu tip yarışmalarda bile binlerce seyirciyi toplayabiliyorlar. Üstelik bu seyirciler çılgınlar gibi bağırıp duruyor ve keyif alıyorlar. (Biz daha basketbol maçlarına seyirci toplayamazken üstelik:()
 

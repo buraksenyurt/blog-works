@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "TFS–Client Object Model için Hello World"
 date: 2013-03-15 02:30:00 +0300
-description: "Team Foundation Server’ ın çok geniş bir kavram olduğunu ve bir makaleye sığdırılamayacak kadar çok özelliği bulunduğunu gönül rahatlığı ile ifade edebilirim .out loud Diğer yandan bugünkü yazımıza konu olan onun küçük görünen ama çok önemli işlerin altına imza eden bir parçası…"
 categories:
   - team-foundation-server
 tags:
@@ -18,10 +17,10 @@ tags:
   - windows-phone
   - visual-studio
 ---
-# TFS–Client Object Model için Hello World
-[![commodore](/assets/images/2013/commodore_thumb.jpg)](/assets/images/2013/commodore.jpg) Merhaba Arkadaşlar,
-
 Çok eskidendi diyemeyeceğimiz kadar yakın bir zamanda, bilgisayar programcılarının ilah olduğu devirlerde, evimizin 37 ekran TV’ lerine girmiş Commodore 64K, Amiga oyunlarına sabaha kadar vakit ayırdığımız yıllarda; ne Source Code Control denen bir kavram vardı, ne de 9 kişilik askeri manga misali çalışan Scrum ekipleri. Ancak teknoloji ve yazılım dünyası öylesine hızla ilerledi ki…Koşar adımlarla geldiğimiz günümüzde, özellikle Enterprise çapta yürütülen projelerde, ekip olmadan hareket etmek neredeyse imkansız hale geldi.
+
+[![commodore](/assets/images/2013/commodore_thumb.jpg)](/assets/images/2013/commodore.jpg)
+
 
 Yazılıma başladığım yıllarda Microsoft Visual SourceSafe kullanan birisi olarak olayın uzun bir süre önce kod kontrolü ve saklanmasının ötesine geçtiğini söylesem sanırım hepimiz bu noktada hem fikir oluruz
 

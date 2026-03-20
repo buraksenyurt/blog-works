@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Entity Framework ile Gerçek Hayat Örnekleri 2 Webineri"
 date: 2011-12-22 06:30:00 +0300
-description: "Hatırlayacağınız üzere bir önceki bölümümüzde, Entity Framework tabanlı Data-Centric çözümümüzü(Solution) geliştirmeye başlamış ve çok basit olarak çatıyı kurduktan sonra, iş katmanına(Business Layer) ait bir operasyonu örneklemiştik. Ardından bu operasyonu bir Unit Test metodu ile denemeye tabi tutarak Webinerimizi sonlandırmıştık."
 categories:
   - nedirtv
 tags:
@@ -12,10 +11,10 @@ tags:
   - http
   - testing
 ---
-# Entity Framework ile Gerçek Hayat Örnekleri 2 Webineri
-[![artcl_12_1](/assets/images/2011/artcl_12_1_thumb_1.png)](/assets/images/2011/artcl_12_1_1.png) Merhaba Arkadaşlar,
-
 Hatırlayacağınız üzere [bir önceki bölümümüzde](http://nedirtv.com/video/entity-framework-ile-gercek-hayat-ornekleri-webineri-1), Entity Framework tabanlı Data-Centric çözümümüzü (Solution) geliştirmeye başlamış ve çok basit olarak çatıyı kurduktan sonra, iş katmanına (Business Layer) ait bir operasyonu örneklemiştik. Ardından bu operasyonu bir Unit Test metodu ile denemeye tabi tutarak Webinerimizi sonlandırmıştık.
+
+[![artcl_12_1](/assets/images/2011/artcl_12_1_thumb_1.png)](/assets/images/2011/artcl_12_1_1.png)
+
 
 Serimizin ikinci bölümünde ise projemizi kalan parçaları ile birlikte tamamlıyor ve servis tarafından istemcilere nasıl açabileceğimizi irdelemeye çalışıyoruz. İlk olarak Business Layer tarafında gerekli fonksiyonellikleri geliştirip her biri için ilgili Unit Test işlemlerini aştıktan sonra, WCF (Windows Communication Foundation) tarafında ilgili operasyonları tanımlıyoruz. Son olarakta servisimizi basit bir istemci (Console projesi kullandık) üzerinden deniyoruz.
 

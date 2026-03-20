@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Eclipse Üzerinden Java ile TFS Client Object Model Konuşuyor"
 date: 2013-05-12 10:10:00 +0300
-description: "Bildiğiniz üzere bir süredir Team Foundation Server’ ın çevre dünya ile olan etkileşimini incelemeye çalışıyorum. Açıkçası TFS’ in gerek servis yapısı gerek Client Object Model gibi kütüphaneleri sayesinde, dış dünya ile olan entegrasyonu son derece kolay. Bu gün buna bir kere daha inandım. Çünkü bir Java uygulaması içerisinde TFS Client Object Model’ i kullanarak, bir Team Project’ in Work Item listesini sorguladım Winking smile Nasıl yaptığımı merak ediyorsanız okumaya devam edin. Tabi bu işte de çok önemli bir yardımcım vardı. O da Microsoft tarafından geliştirilen ve ücretsiz olarak sunulan Client Object Model SDK’sı. Ama Java için olan sürümü."
 categories:
   - team-foundation-server
 tags:
@@ -14,10 +13,10 @@ tags:
   - threading
   - visual-studio
 ---
-# Eclipse Üzerinden Java ile TFS Client Object Model Konuşuyor
-[![developers](/assets/images/2013/developers_thumb.jpg)](/assets/images/2013/developers.jpg) Merhaba Arkadaşlar,
-
 Çok değil daha bir kaç sene öncesine kadar (Özellikle.Net’ in duyurulduğu yıllarda ve izleyen bir kaç senede) yazılım dünyasında neredeyse yandaki resimdekine benzer bir kavga vardı (Benzetmeyi biraz abartmış olabilirim)
+
+[![developers](/assets/images/2013/developers_thumb.jpg)](/assets/images/2013/developers.jpg)
+
 
 Java’ cılar, C#’ çıları pek sevmez iken tam tersi durum da pekala geçerliydi. Ben hiç bir zaman birisinin fanatiği olmadım. Hatta Java ile ufak çaplı bir kaç deneyimim bile oldu.
 

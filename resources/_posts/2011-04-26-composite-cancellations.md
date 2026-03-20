@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Composite Cancellations"
 date: 2011-04-26 12:15:00 +0300
-description: "Bildiğiniz üzere Task iptal taleplerinde, CancellationTokenSource örneğine ait Cancel metodunun çağırılması gerekmektedir. CancellationTokenSource örneği üzerinden yapılan iptal taleplerinin hangi Task işleyişini keseceğinin belirlenmesinde ise CancellationToken örneklerinden yararlanılmaktadır."
 categories:
   - parallel-programming
   - tpl
@@ -14,10 +13,10 @@ tags:
   - generics
   - visual-studio
 ---
-# Composite Cancellations
-[![blg205_Giris](/assets/images/2011/blg205_Giris_thumb.jpg)](/assets/images/2011/blg205_Giris.jpg) Merhaba Arkadaşlar,
-
 Hatırlayacağınız üzere bir önceki yazımızda ([Task İptal İşlemlerinin İzlenmesi (Monitoring Cancellation)](https://www.buraksenyurt.com/post/Task-Iptal-Islemlerinin-Izlenmesi(Monitoring-Cancellation))) Task Cancellation işlemlerinin izlenmesi ile ilişkili teknikleri ve konuları irdelemeye başlamıştık. Bu yazımızda da iptal işlemleri ile ilgili farklı bir konuya değinmeye çalışıyor olacağız. Bu gün kü konumuz Composite Cancellation vakası.
+
+[![blg205_Giris](/assets/images/2011/blg205_Giris_thumb.jpg)](/assets/images/2011/blg205_Giris.jpg)
+
 
 Bildiğiniz üzere Task iptal taleplerinde, CancellationTokenSource örneğine ait Cancel metodunun çağırılması gerekmektedir. CancellationTokenSource örneği üzerinden yapılan iptal taleplerinin hangi Task işleyişini keseceğinin belirlenmesinde ise CancellationToken örneklerinden yararlanılmaktadır. CancellationToken örnekleri hatırlayacağını üzere CancellationTokenSource örnekleri tarafından üretilmekte ve Task’ ler ile ilişkilendirilmektedir. Bu sebepten Cancel metodunun hangi Task ile ilişkili olduğu bellidir. Bir önceki yazımızda geliştirdiğimiz son örnekte aynı Token örneğini kullanan birden fazla Task’ in tek bir iptal çağrısı ile nasıl kesilebileceğini incelemiştik. Bir diğer durum da şudur;
 

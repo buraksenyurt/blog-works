@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "C# 3.0 - İlk Bakışta DLINQ"
 date: 2006-09-25 12:00:00 +0300
-description: "Bildiğiniz gibi uzun bir süredir Microsoft LINQ (.Net Language Integrated Query) adını verdiği ve C# 3.0' ın amacı olan bir projeyi sürdürmekte. Projenin en büyük amacı, özellikle veri üzerinde yapılabilecek sorgulama tekniklerinin dahada yaygınlaştırılması ve dil ortamına entegre edilebilmesi..."
 categories:
   - csharp
 tags:
@@ -15,9 +14,6 @@ tags:
   - transactions
   - generics
 ---
-# C# 3.0 - İlk Bakışta DLINQ
-Değerli Okurlarım Merhabalar,
-
 Bildiğiniz gibi uzun bir süredir Microsoft LINQ (.Net Language Integrated Query) adını verdiği ve C# 3.0' ın amacı olan bir projeyi sürdürmekte. Projenin en büyük amacı, özellikle veri üzerinde yapılabilecek sorgulama tekniklerinin dahada yaygınlaştırılması ve dil ortamına entegre edilebilmesi. Örneğin LINQ sayesinde IEnumerable arayüzünü (interface) uygulamış herhanbir tip (type) üzerinde sql sorgularına benzer ifadeler kullanabilir ve alt kümeler çekebiliriz.
 
 LINQ'nun bu özelliklerini kullanabilmek için C# dilinin 3.0 versiyonunda pek çok yenilik bulunmaktadır. Örneğin var anahtar sözcüğü ile, tip belirtmeden değişken tanımlayabilmek (var keyword), nesne örneklerini oluştururken yapıcı metodlara gerek kalmadan başlangıç değerlerini belirleyebilmek (object initializing), isimsiz tipler oluşturabilmek (anonymous types) hatta lambda (=>) isimli yeni bir operatör sayesinde isimsiz metodları bir adım ileriye götürebilmek vb... mümkündür. Ancak asıl etki az öncede bahsettiğimiz gibi LINQ ile gelmektedir.

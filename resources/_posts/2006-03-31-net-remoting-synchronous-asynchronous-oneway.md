@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: ".Net Remoting - Synchronous, Asynchronous, OneWay"
 date: 2006-03-31 12:00:00 +0300
-description: "Remoting gibi mimarilerde bazen istemcilerin (clients) çağırdıkları uzak nesnelere (remote objects) ait metodların dönüş süreleri uzun zaman alabilir. Bu gibi durumlarda istemci doğal olarak, uzak nesne üzerinden çağırdığı metodun geri dönüşünü beklemek durumunda kalır. Dolayısıyla istemci uygulamanın, uzak nesne çağırımına paralel olarak yürütebileceği işlemler var ise bunlarda askıda kalacaktır. Bunun değişik nedenleri olabilir. Gerçektende işlemler uzun sürebilir. Örneğin veritabanı bazlı işlemlerin uzak sunucular üzerinde gerçekleştiği remoting uygulamalarında sıkça rastlanabilen bir durumdur. Varsayılan olarak istemci tarafında eğer hiç bir özelleştirme yapılmaz ise, senkron(Synhronous) çalışan bir yapı söz konusudur. Bu makalemizde Senkron model ile başlayıp, Asenkron ve OneWay metod çağırım modellerini incelemeye çalışacağız."
 categories:
   - dotnet-remoting
 tags:
@@ -15,9 +14,6 @@ tags:
   - threading
   - delegates
 ---
-# .Net Remoting - Synchronous, Asynchronous, OneWay
-Değerli Okurlarım Merhabalar,
-
 Remoting gibi mimarilerde bazen istemcilerin (clients) çağırdıkları uzak nesnelere (remote objects) ait metodların dönüş süreleri uzun zaman alabilir. Bu gibi durumlarda istemci doğal olarak, uzak nesne üzerinden çağırdığı metodun geri dönüşünü beklemek durumunda kalır. Dolayısıyla istemci uygulamanın, uzak nesne çağırımına paralel olarak yürütebileceği işlemler var ise bunlarda askıda kalacaktır. Bunun değişik nedenleri olabilir. Gerçektende işlemler uzun sürebilir. Örneğin veritabanı bazlı işlemlerin uzak sunucular üzerinde gerçekleştiği remoting uygulamalarında sıkça rastlanabilen bir durumdur. Varsayılan olarak istemci tarafında eğer hiç bir özelleştirme yapılmaz ise, senkron (Synhronous) çalışan bir yapı söz konusudur. Bu makalemizde Senkron model ile başlayıp, Asenkron ve OneWay metod çağırım modellerini incelemeye çalışacağız.
 
 Aşağıdaki kod parçasında yer alan remoting uygulaması senkron yapıya bir örnektir. Uzak nesnemize ait sınıf modelinde çok basit bir metod yer almaktadır. Bu metodun geri dönüş süresini arttırmak ve istemcinin durumunu analiz edebilmek için Thread tipinin Sleep metodu ile uzak nesne metodu içerisinde güncel iş parçacığı bir süre uyutulmuştur.

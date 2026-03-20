@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Teknik Borçları(Technical Debt) Azaltmak"
 date: 2019-01-04 05:03:00 +0300
-description: "Teknik borçlar pek çoğumuzun bilmeden de olsa gelecek programcılara bıraktığı sorunlar. Bu sorunlar sebebiyle zamanla kalitesi bozulan ürünler ortaya çıkıyor. Teknik borçların temizlenmesi mi, müşterinin yeni isteklerinin karşılanması mı derken ürün üzerinde çalışan programcıları eskitmeye devam edebiliyor. Sonunda legacy olarak tanımlanan, kimsenin ellemek istemediği ama yaşamını devam ettirmek zorunda olan devasa projeler oluşuyor. Bunun önüne geçmek sanıldığı kadar zor değil aslında. En başından test odaklı yaklaşımlarla ilerlemek sadece bir başlangıç."
 categories:
   - devops
 tags:
@@ -11,12 +10,9 @@ tags:
   - docker
   - visual-studio
 ---
-# Teknik Borçları(Technical Debt) Azaltmak
-![sonar_7.gif](/assets/images/2019/sonar_7.gif)
-
-Merhaba Arkadaşlar,
-
 Bir yazılım ürünü geliştirilirken dikkat edilmesi gereken konuların başında kod kalitesi geliyor. Kaliteli kod, bilinen kodlama standartlarına uyan, okunabilirliği yüksek, karmaşıklığı az, dokümante edilmiş ve bakımı yapılabilir özellikleri barındırmak durumunda. Bu kurallara uymaya çalışmak geliştirme sürelerini uzatsa da uzun vadede kalitenin korunması için gerekli. Üstelik endüstüriyel normlara uygun, derecelendirilebilir uygulamalar geliştirmek istiyorsak kuvvetle üzerinde durulması gereken bir konu. Eğer kaliteyi bozacak ihlaller yaparsak uygulama arkasında ödenmesi zor büyük borçlar bırakabiliriz. Nam-ı diğer Teknik Borç (Technical Debt)
+
+![sonar_7.gif](/assets/images/2019/sonar_7.gif)
 
 Teknik borç yeni bir kavram değil. İlk olarak Wiki’nin kurucusu, Extreme Programming ve Design Patterns kavramlarının öncülerinden olan Ward Cunningham tarafından ortaya konulmuştur. Oluşmasına etken olan sebepler vardır. Bazen geliştirilen ürünün proje bitiş süresi sebebiyle mecburen stratejik olarak kabul edilir ya da ekip kendi insiyatifinde bunu taktiksel olarak kabul edebilir. Bazı durumlarda ekibin yetkinliğinin az olması sebebiyle ortaya çıkar. Ancak belki de en kötüsü teknik borç üstüne yeni yapılan geliştirmelerin getirdiği ek borçlardır.
 

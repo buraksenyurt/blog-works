@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Python Tarafında ProtoBuf (Protocol Buffers) Serileştirme"
 date: 2020-01-14 21:00:00 +0300
-description: "Protocol Buffer, Google'ın yapısal verilerin (structured data) serileştirilmesi için geliştirdiği bir protokol. gRPC ile sıklıkla anılır. XML benzeri düşünebiliriz ama çok daha az yer tutar ve serileştirme süreleri hızlıdır. Şu sıkça gördüğümüz proto uzantılı dosyaların ana fikridir. Nam-ı diğer ProtoBuf örneğin ağ üzerinden gönderilecek verinin tanımını yapan bir sözleşmedir. Sözleşmenin ana unsuru mesajdır. Dosya içeriğine bakınca anlaşılması kolay bir mevzu. Tek başına bir anlamı yoktur. protoc isimli derleyiciden geçmesi gerekir. Bu derleme sonucu insan gözüyle pek de okunamayan binary bir türev ortaya çıkar. Bunu ağ üstünden gönderebilir, bir yerlerde veri olarak saklayabilir ya da ille de okumak istersek JSON, XML gibi formatlara dönüştürebiliriz."
 categories:
   - python
 tags:
@@ -18,10 +17,9 @@ tags:
   - serialization
   - github
 ---
-# Python Tarafında ProtoBuf (Protocol Buffers) Serileştirme
-![protobuf2.png](/assets/images/2020/protobuf2.png)
-
 Protocol Buffer, Google'ın yapısal verileri (structured data) serileştirmek için geliştirdiği bir protokol (Hatta gRPC ile sıklıkla anılır) Onu XML (eXtensible Markup Language) benzeri bir veri tanımlama formatı olarak düşünebiliriz ama çok daha az yer tutar ve serileştirme süresi çift yönlü olarak daha kısadır. Şu sıkça gördüğümüz proto uzantılı dosyaların ana fikridir.
+
+![protobuf2.png](/assets/images/2020/protobuf2.png)
 
 Nam-ı diğer ProtoBuf örneğin ağ üzerinden gönderilecek verinin tanımını yapan bir sözleşmedir. Sözleşmenin ana unsuru ise mesajdır. Dosya içeriğine bakınca anlaşılması kolay bir mevzu iken tek başına bir anlamı yoktur, nitekim protoc isimli derleyiciden de geçmesi gerekir. Bu derleme sonucu insan gözüyle pek de okunamayan binary bir versiyon ortaya çıkar. Bunu ağ üstünden gönderebilir bir yerlerde veri olarak saklayabilir ya da ille de okumak istersek JSON, XML gibi formatlara dönüştürebiliriz.
 

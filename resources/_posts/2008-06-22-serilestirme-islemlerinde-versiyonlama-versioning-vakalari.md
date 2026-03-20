@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Serileştirme İşlemlerinde Versiyonlama(Versioning) Vakaları"
 date: 2008-06-22 12:00:00 +0300
-description: "Bir önceki makalemizde WCF(Windows Communication Foundation) mimarisinin kullandığı serileştirici tiplerden bahsetmiş ve son olarak versiyonlama(Versioning) vakalarına değinmiştik. Bu makalemizde ise versiyonlama vakalarının örnek uygulama üzerinden test ederek analiz etmeye çalışacağız."
 categories:
   - wcf
 tags:
@@ -14,9 +13,6 @@ tags:
   - serialization
   - visual-studio
 ---
-# Serileştirme İşlemlerinde Versiyonlama(Versioning) Vakaları
-Değerli Okurlarım Merhabalar,
-
 Bir önceki makalemizde WCF (Windows Communication Foundation) mimarisinin kullandığı serileştirici tiplerden bahsetmiş ve son olarak versiyonlama (Versioning) vakalarına değinmiştik. Bu makalemizde ise versiyonlama vakalarının örnek uygulama üzerinden test ederek analiz etmeye çalışacağız. Versiyonlama vakalarının merkezinde veri sözleşmesi (Data Contract) farklılıkları yer almaktadır. Daha öncedende değinildiği üzere üç farklı versiyonlama vakası bulunmaktadır. New Members, Missing Members, Round-Trip.
 
 Bu bölümde ilk olarak yeni üyelerin (New Members) oluştuğu vaka irdelenmeye çalışılacaktır. Söz konusu senaryoda, istemci veya servis tarafının sahip olduğu veri sözleşmesinin yeni bir versiyonunu, karşı taraf ile paylaştığı bir ortam söz konusudur. WCF çalışma zamanı varsayılan olarak böyle bir durum ile karşılaştığında, fazladan gelen üyenin kendisini ve içeriğini görmezden gelmektedir. Ancak yinede fazla üyeleri içeren nesne verisi, karşı tarafa iletilmektedir. Öncelikli olarak tüm versiyonlama örneklerinde kullanılacak olan ve aşağıdaki sınıf şemasında (Class Diagram) görülen tipleri içeren bir WCF servis kütüphanesi (WCF Service Libary) geliştirildiğini düşünelim.

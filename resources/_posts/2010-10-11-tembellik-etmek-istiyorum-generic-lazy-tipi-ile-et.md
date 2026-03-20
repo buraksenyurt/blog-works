@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tembellik Etmek İstiyorum (Generic Lazy Tipi ile Et)"
 date: 2010-10-11 12:20:00 +0300
-description: "Aslında geliştiriciler için Lazy olmanın başka manaları da vardır. Olay sadece çimler üzerinde uzanmaktan ibaret değildir anlayacağınız. İlk akla gelen ORM(Object Relational Mapping) araçlarının birincil özelliklerinden birisi olan Lazy Loading kavramıdır. Kısaca Entity tabanlı nesnelerin/koleksiyonlarının gerektiğinde yüklenmesi şeklinde açıklayabiliriz. Ne varki .Net Framework 4.0 sürümü ile birlikte hayatımıza bir de Lazy<T> tipi girmektedir. Base Class Library içerisine dahil edilen bu yeni generic sınıf sayesinde T tipi için Lazy Initialization işlemi gerçekleştirilebilmektedir."
 categories:
   - csharp-4-0
 tags:
@@ -15,12 +14,9 @@ tags:
   - visual-studio
   - thread-safety
 ---
-# Tembellik Etmek İstiyorum (Generic Lazy Tipi ile Et)
-![blg194_Giris.jpg](/assets/images/2010/blg194_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Yaz günlerinde pek çok geliştirici tembellik yapmak ister. Hatta benim gibi kocaman bir Üniversite Kampüsü içerisinde yer alan çalışma ortamınız var ise ve kampüsünüzün çimleri üzerinde yatıp şöyle beş on dakika kestirmeye müsaitse. Tabi tembelliğin çeşitli türevleri vardır. Çimler üzerinde uzanmak bunlardan sadece birisi.
+
+![blg194_Giris.jpg](/assets/images/2010/blg194_Giris.jpg)
 
 Aslında geliştiriciler için Lazy olmanın başka manaları da vardır. Olay sadece çimler üzerinde uzanmaktan ibaret değildir anlayacağınız. İlk akla gelen ORM (Object Relational Mapping) araçlarının birincil özelliklerinden birisi olan Lazy Loading kavramıdır. Kısaca Entity tabanlı nesnelerin/koleksiyonlarının gerektiğinde yüklenmesi şeklinde açıklayabiliriz. Ne varki.Net Framework 4.0 sürümü ile birlikte hayatımıza bir de Lazy tipi girmektedir. Base Class Library içerisine dahil edilen bu yeni generic sınıf sayesinde T tipi için Lazy Initialization işlemi gerçekleştirilebilmektedir.
 

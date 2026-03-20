@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net 2.0 ile Cross-Page Posting"
 date: 2004-08-31 12:00:00 +0300
-description: "Bu makalemizde, Asp.Net 2.0 (Asp.Net Whidbey) ile, başka sayfalara veri postalama işlemlerinin nasıl ele alındığını ve uygulandığını incelemeye çalışacağız. Bildiğiniz gibi, Asp.Net 1.0 / 1.1 ile gelen yeniliklerden en önemlisi, sayfaların kendi kendilerine form verilerini postalayabilme kabiliyetleridir. Öyleki, Asp.Net ile geliştirilen web sayfaları aslında birer sınıf nesnesi olduklarından, sayfa üzerindeki form kontrollerine ve değerlerine kolayca erişilebilmektedir. Ancak bazı zamanlarda, sayfalarımızda yer alan form verilerini başka sayfalara göndermek isteyedebiliriz. İşte Cross-Page Posting olarak adlandırılan bu işlemlerin, Asp.Net 2.0 ile gerçekleştirilmesi hem daha kolay hemde daha etkili hale getirilmiştir."
 categories:
   - aspnet-2-0
 tags:
@@ -13,9 +12,6 @@ tags:
   - http
   - visual-studio
 ---
-# Asp.Net 2.0 ile Cross-Page Posting
-Değerli Okurlarım Merhabalar,
-
 Bu makalemizde, Asp.Net 2.0 (Asp.Net Whidbey) ile, başka sayfalara veri postalama işlemlerinin nasıl ele alındığını ve uygulandığını incelemeye çalışacağız. Bildiğiniz gibi, Asp.Net 1.0 / 1.1 ile gelen yeniliklerden en önemlisi, sayfaların kendi kendilerine form verilerini postalayabilme kabiliyetleridir. Öyleki, Asp.Net ile geliştirilen web sayfaları aslında birer sınıf nesnesi olduklarından, sayfa üzerindeki form kontrollerine ve değerlerine kolayca erişilebilmektedir. Ancak bazı zamanlarda, sayfalarımızda yer alan form verilerini başka sayfalara göndermek isteyedebiliriz. İşte Cross-Page Posting olarak adlandırılan bu işlemlerin, Asp.Net 2.0 ile gerçekleştirilmesi hem daha kolay hemde daha etkili hale getirilmiştir.
 
 Örneklerimizi geliştirdiğimizde bu konuyu çok daha iyi anlayabileceğinize inanıyorum. Hiç vakit kaybetmeden örneğimizi geliştirmeye başlayalım. Bu örnek uygulamamızı, Visual Studio.Net'in 2005 sürümünün Beta versiyonu ile geliştireceğiz. Örneğimizde, basit olarak iki web sayfası kullanacağız. Öncelikle yerel sunucumuzda bir web sitesi oluşturalım. Bunun için, File menüsünden, New alt menüsünü ve buradan da Web Site kısmını seçiyoruz.

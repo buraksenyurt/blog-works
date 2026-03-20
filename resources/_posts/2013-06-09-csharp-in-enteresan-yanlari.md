@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "C#’ ın Enteresan Yanları"
 date: 2013-06-09 02:44:00 +0300
-description: "Bu arada C# diline ait geniş bir dökümantasyonu C:\\Program Files\\Microsoft Visual Studio 11.0\\VC#\\Specifications\\1033 klasörü altında bulabilirsiniz Winking smile 527 sayfalık CSharp Language Specification isimli bu döküman, elinizin altındaydı her zaman. Başka bir kitaba ihtiyacınız yok. En azından başlangıç seviyesinde. Visual Studio 2012 kurulumu sonrası gelen bu dökümantasyon aslında C# 3.0 sürümünden beri de mevcut."
 categories:
   - csharp
 tags:
@@ -14,14 +13,9 @@ tags:
   - generics
   - visual-studio
 ---
-# C#’ ın Enteresan Yanları
-[![helpful_tips_image](/assets/images/2013/helpful_tips_image_thumb.jpg)](/assets/images/2013/helpful_tips_image.jpg)[İlk yazım tarihi 31 ekim 2012]
+Yazılım sektöründe yer alan bizler, mutlak suretle en az bir programlama dilini çok iyi seviyede öğrenmeye çalışır ve bunun için epey yoğun çaba sarf ederiz (Hatta değerli bir büyüğümüzün sözüne göre, hayatımızın her hangibir noktasında C veya C++ gibi bir dili öğrenmeye çalışmış ama hiç bir zaman iyi bir C/C++ geliştiricisi olamamışızdır) Ne varki bazen dilin kullanılmayan pek çok özelliğini, zamanında öğrenmiş olsak dahi unutabiliriz. Hatta bazı ilginç olan yanlarını bugüne kadar hiç görmemiş, denememiş ya da duymamış olabiliriz.
 
-Merhaba Arkadaşlar,
-
-Yazılım sektöründe yer alan bizler, mutlak suretle en az bir programlama dilini çok iyi seviyede öğrenmeye çalışır ve bunun için epey yoğun çaba sarf ederiz (Hatta değerli bir büyüğümüzün sözüne göre, hayatımızın her hangibir noktasında C veya C++ gibi bir dili öğrenmeye çalışmış ama hiç bir zaman iyi bir C/C++ geliştiricisi olamamışızdır)
-
-Ne varki bazen dilin kullanılmayan pek çok özelliğini, zamanında öğrenmiş olsak dahi unutabiliriz. Hatta bazı ilginç olan yanlarını bugüne kadar hiç görmemiş, denememiş ya da duymamış olabiliriz.
+[![helpful_tips_image](/assets/images/2013/helpful_tips_image_thumb.jpg)](/assets/images/2013/helpful_tips_image.jpg)
 
 İşte size C# dili ile ilişkili olarak pek çoğumuzun hatırından giden bir kaç enteresan vaka…
 

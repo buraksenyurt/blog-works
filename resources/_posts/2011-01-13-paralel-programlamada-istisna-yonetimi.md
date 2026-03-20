@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Paralel Programlamada İstisna Yönetimi"
 date: 2011-01-13 13:30:00 +0300
-description: "Task örneklerinin kullanıldığı senaryolarda, bloklar içerisinde yer alan işlevselliklerin doğurabileceği çalışma zamanı istisnalarını ele almak, son derece önemlidir. Nitekim paralel çalışmakta olan blokların beklenmedik bir şekilde sonlandırılması söz konusudur. İşte bu yazımızda Task örnekleri içerisinde oluşabilecek istisnaların nasıl ele alınabileceğini incemelye çalışıyor olacağız."
 categories:
   - parallel-programming
 tags:
@@ -14,10 +13,10 @@ tags:
   - delegates
   - visual-studio
 ---
-# Paralel Programlamada İstisna Yönetimi
-[![blg208_Giris](/assets/images/2011/blg208_Giris_thumb.jpg)](/assets/images/2011/blg208_Giris.jpg) Merhaba Arkadaşlar,
-
 Balık tutmak farklı bir hobidir. Özellikle olta ile balık yakalamaktan büyük keyif alanlar vardır. (Hatta laf aramızda, şirkette yanımda oturan çalışma arkadaşımın çekmecesinde, bir olta takımı var)
+
+[![blg208_Giris](/assets/images/2011/blg208_Giris_thumb.jpg)](/assets/images/2011/blg208_Giris.jpg)
+
 
 Çoğu zaman Haliç köprüsü gibi alanlarda yandaki resimde olduğu gibi bu işin sevdalılarını görebiliriz. Kimisi sabahın erken saatlerinde gelip, akşamın geç saatlerine kadar burada olta sallar ve “Rastgele” der.
 

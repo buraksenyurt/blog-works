@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Adım Adım State Machine Workflow Geliştirmek"
 date: 2008-01-15 06:00:00 +0300
-description: "Öyle iş akışları vardırki, süreç(Process) içerisinde yer alan adımlar arasındaki geçişler herhangibir zamanda ve herhangibir olayın meydana gelmesi sonrasında mümkün olur. Çoğunlukla terminolojide Sonlu Durum Makinesi(Finite State Machine) olarak geçen bu yaklaşıma göre, herhangibir nesnel varlığın zaman içerisinde sahip olabileceği durumlar işaret edilmektedir. Çok doğal olarak bu durum, programatik ortamda yer alan iş problemlerinin çözümündede göz önüne alınmaktadır. İşte bu makalemizde Sonlu Durum Makinesi(Finite State Machine) kavramını irdelemeye ve Windows Workflow Foundation içerisindeki kullanımını araştırmaya çalışacağız. Başlamadan önce Sonlu Durum Makinesi(Finite State Machine) kavramını anlamaya çalışamakta yarar vardır."
 categories:
   - wf
 tags:
@@ -21,9 +20,6 @@ tags:
   - generics
   - visual-studio
 ---
-# Adım Adım State Machine Workflow Geliştirmek
-Değerli Okurlarım Merhabalar,
-
 Öyle iş akışları vardırki, süreç (Process) içerisinde yer alan adımlar arasındaki geçişler herhangibir zamanda ve herhangibir olayın meydana gelmesi sonrasında mümkün olur. Çoğunlukla terminolojide Sonlu Durum Makinesi (Finite State Machine) olarak geçen bu yaklaşıma göre, herhangibir nesnel varlığın zaman içerisinde sahip olabileceği durumlar işaret edilmektedir. Çok doğal olarak bu durum, programatik ortamda yer alan iş problemlerinin çözümündede göz önüne alınmaktadır. İşte bu makalemizde Sonlu Durum Makinesi (Finite State Machine) kavramını irdelemeye ve Windows Workflow Foundation içerisindeki kullanımını araştırmaya çalışacağız. Başlamadan önce Sonlu Durum Makinesi (Finite State Machine) kavramını anlamaya çalışamakta yarar vardır.
 
 Öncelikli olarak sonlu kelimesinin kullanılmasının sebebi söz konusu nesnel varlığın sahip olabileceği durumların (State) sayılı olmasıdır. Bir başka deyişle bu yaklaşıma göre bir makinenin sahip olabileceği durumların sayısı bellidir. Diğer taraftan makinenin zaman içerisinde sahip olabileceği haller onun durumlarını (States) ifade etmektedir. Makine doğal olarak bu durumlara sahip olan nesnel yapıyı temsil etmektedir. Sonlu durum makinelerinde (Finite State Machine) durumlar arasındaki geçişler bir aksiyon sonucu gerçekleşir.

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF 4.0 Yenilikleri - Routing Service Geliştirmek - Hello World [Beta 1]"
 date: 2009-08-26 15:03:00 +0300
-description: "Routing Service konusu ile ilişkili bir önceki yazımızda modelin sunduğu alt yapıya kısaca değinmeye çalışmış ancak bir örnek geliştirme girişiminde bulunmamıştık. Bu yazımızda ise bir Hello World örneğini geliştirmeye çalışacağız. (Örneğimizi .Net Framework Beta 1 ve Visual Studio 2010 Beta 1 ile geliştirdiğimizi bir kere daha hatırlatmak isterim.) İlk olarak sizlere, örnek senaryomuzdan bahsetmek isterim."
 categories:
   - wcf-4-0-beta-1
 tags:
@@ -18,9 +17,6 @@ tags:
   - generics
   - visual-studio
 ---
-# WCF 4.0 Yenilikleri - Routing Service Geliştirmek - Hello World [Beta 1]
-Merhaba Arkadaşlar,
-
 Routing Service konusu ile ilişkili [bir önceki yazımızda](https://www.buraksenyurt.com/post/WCF-40-Yenilikleri-Routing-Service)modelin sunduğu alt yapıya kısaca değinmeye çalışmış ancak bir örnek geliştirme girişiminde bulunmamıştık. Bu yazımızda ise bir Hello World örneğini geliştirmeye çalışacağız. (Örneğimizi.Net Framework Beta 1 ve Visual Studio 2010 Beta 1 ile geliştirdiğimizi bir kere daha hatırlatmak isterim.) İlk olarak sizlere, örnek senaryomuzdan bahsetmek isterim.
 
 Router servisimizin arkasında genellikle Downstream olarak adlandırılan servislerimiz yer almaktadır. Bu servislerden birisi, kullanıcı kayıt işlemlerini (Register) üstlenirken, diğeride kullanıcı adını güncelleştirme işlemini ele almaktadır.(Tabiki bu örnekteki amaç yönlendirme servisini devreye almak olduğundan sadece iki basit operasyonun, farklı servislere dağılması üzerine yoğunlaşılmıştır) İstemci uygulama, Router servisi üzerinden yeni bir kullanıcıyı kayıt etmek veya güncellemek ile ilişkili işlemler için talepte bulunabilir.

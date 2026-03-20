@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "SQL_DMO İşlemleri"
 date: 2003-12-12 12:00:00 +0300
-description: "Bugünkü makalemizde, Sql Distributed Management Objects (SQL Dağıtık Yönetim Nesneleri) kütüphanesini incelemeye çalışacağız. SQL_DMO kütüphanesi bir COM uygulaması olup, SQL sunucusu ile birlikte sisteme kurulmaktadır. Bu kütüphanedeki sınıflar yardımıyla, var olan bir sql sunucusu üzerinde yönetimsel işlemler gerçekleştirebiliriz. Örneğin, kullanıcı tanımlayabilir, yeni bir veritabanı yaratabilir bu veritabanına ait tablolar oluşturabilir, var olan bir veritabanı için yedekleme işlemleri gerçekleştirebilir, yedeklenmiş veritabanlarını geri yükleyebilir ve bunlar gibi pek çok yönetsel işlemi gerçekleştirebiliriz."
 categories:
   - t-sql
 tags:
@@ -14,9 +13,6 @@ tags:
   - authentication
   - visual-studio
 ---
-# SQL_DMO İşlemleri
-Değerli Okurlarım, Merhabalar.
-
 Bugünkü makalemizde, Sql Distributed Management Objects (SQL Dağıtık Yönetim Nesneleri) kütüphanesini incelemeye çalışacağız. SQL_DMO kütüphanesi bir COM uygulaması olup, SQL sunucusu ile birlikte sisteme kurulmaktadır. Bu kütüphanedeki sınıflar yardımıyla, var olan bir sql sunucusu üzerinde yönetimsel işlemler gerçekleştirebiliriz. Örneğin, kullanıcı tanımlayabilir, yeni bir veritabanı yaratabilir bu veritabanına ait tablolar oluşturabilir, var olan bir veritabanı için yedekleme işlemleri gerçekleştirebilir, yedeklenmiş veritabanlarını geri yükleyebilir ve bunlar gibi pek çok yönetsel işlemi gerçekleştirebiliriz.
 
 Uygulamalarımızda bu tip işlemleri kodlayabilmek için, Microsoft SQL Distribution Control’un projemize referans edilmesi gerekmektedir. Bir uygulamaya bunu referans etmek için VS.NET ortamında, Add Reference kısmında, COM nesneleri altında Microsoft SQL Distribution Control 8.0 seçilmelidir. Aşağıdaki şekilde bunun nasıl yapıldığını görebilirsiniz.

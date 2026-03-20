@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Connection Pooling' in Önemi"
 date: 2006-02-27 08:00:00 +0300
-description: "Connectilon Pooling veritabanı programcılığında, uygulamaların performansını doğrudan etkiliyen unsurlardan birisidir. Bağlantıların bir havuza atılarak buradan kullanılmalarını sağlamaktaki en büyük amaç, çok sayıda kullanıcının bağlı olduğu veri tabanlı uygulamalarda, aynı özelliklere sahip bağlantı bilgilerinin defalarca oluşturulmasınının önüne geçmek bu sayede var olan açık bağlantıların kullanılabilmesini sağlamaktır..."
 categories:
   - ado-net-2-0
 tags:
@@ -15,9 +14,6 @@ tags:
   - performance
   - generics
 ---
-# Connection Pooling' in Önemi
-Değerli Okurlarım Merhabalar,
-
 Connectilon Pooling veritabanı programcılığında, uygulamaların performansını doğrudan etkiliyen unsurlardan birisidir. Bağlantıların bir havuza atılarak buradan kullanılmalarını sağlamaktaki en büyük amaç, çok sayıda kullanıcının bağlı olduğu veri tabanlı uygulamalarda, aynı özelliklere sahip bağlantı bilgilerinin defalarca oluşturulmasınının önüne geçmek bu sayede var olan açık bağlantıların kullanılabilmesini sağlamaktır. Temel mantık son derece basittir. Bir kullanıcı uygulaması içerisinden bir verikaynağına bağlanmak istediğinde, geçerli bir Connection nesnesi oluşturmak zorundadır. Bu Connection nesnesi eğer ilk kez talep edilmişse, veritabanı tarafında bir bağlantı havuzunun içine atılacaktır.
 
 Ki başka bir kullanıcı aynı veri kaynağına aynı bağlantı bilgisi ile bağlanmak istediğinde, havuzdaki bağlantıyı kullanabilecektir. Burada aynı bağlantı bilgisine başvuran birden fazla kullanıcı olduğunu düşündüğümüzde bu mimarinin önemi ortaya çıkmaktadır. Özellikle web tabanlı uygulamalarda bu fark büyük performans kazanımı anlamına gelmektedir. Biz bu makalemizde Connection Pooling'in mimarisini incelemektense onu kullanırken dikkat etmemiz gereken noktalara değineceğiz. Ama herşeyden önce connection pooling'i kullanmanın faydasını göreceğimiz basit bir örnek ile yola çıkmakta fayda olacağı kanısındayım. Bunun için, Vs.2005' de aşağıdaki kodlara sahip basit bir console uygulaması yazarak işe başlayalım.

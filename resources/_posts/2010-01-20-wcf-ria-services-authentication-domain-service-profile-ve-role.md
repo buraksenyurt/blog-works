@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF RIA Services - Authentication Domain Service - Profile ve Role"
 date: 2010-01-20 16:10:00 +0300
-description: "Yandaki resmin bir renk cümbüşü oluşturup sizlere çok güzel göründüğüne eminim. Hatta bu resmin biraz sonra anlatacağımız konu ile olan ilgisini merak ediyor olabilirsiniz. Ne yazıkki yok. Sadece renk cümbüşünün benide etkilediğini ve yazının hoş görünmesi için eklediğimi itiraf edebilirim. Gelelim asıl mevzumuza."
 categories:
   - wcf-eco-system
   - wcf-ria-services
@@ -20,14 +19,11 @@ tags:
   - http
   - authentication
 ---
-# WCF RIA Services - Authentication Domain Service - Profile ve Role
-![blg114_First.jpg](/assets/images/2010/blg114_First.jpg)
-
-Merhaba Arkadaşlar,
-
 Yandaki resmin bir renk cümbüşü oluşturup sizlere çok güzel göründüğüne eminim. Hatta bu resmin biraz sonra anlatacağımız konu ile olan ilgisini merak ediyor olabilirsiniz. Ne yazıkki yok. Sadece renk cümbüşünün benide etkilediğini ve yazının hoş görünmesi için eklediğimi itiraf edebilirim. Gelelim asıl mevzumuza.
 
-[Bir önceki yazımızda](../2009/WCF RIA Services - Authentication Domain Service.md) Authentication Domain Service konusunu incelemeye başlamış ve RIA (Rich Internet Application) çeşitlerinden olan Silverlight uygulamalarında Form tabanlı doğrulamanın standart ASP.NET Membership kaynakları üzerinden nasıl sağlanabileceğini görmüştük. RIA uygulamaları ile ilişkili konulardan bir diğeride rol ve profil yönetimidir. WCF RIA Service'lerde kullanılan Authentication Domain Service'lerden yararlanarak Role ve Profile yönetimide yapılabilir. Çok doğal olarak WCF RIA Service'leri, Asp.Net mimarisinin rol ve profil alt yapısını kullanmaktadır.
+![blg114_First.jpg](/assets/images/2010/blg114_First.jpg)
+
+[Bir önceki yazımızda](/2009/12/10/wcf-ria-services-authentication-domain-service/) Authentication Domain Service konusunu incelemeye başlamış ve RIA (Rich Internet Application) çeşitlerinden olan Silverlight uygulamalarında Form tabanlı doğrulamanın standart ASP.NET Membership kaynakları üzerinden nasıl sağlanabileceğini görmüştük. RIA uygulamaları ile ilişkili konulardan bir diğeride rol ve profil yönetimidir. WCF RIA Service'lerde kullanılan Authentication Domain Service'lerden yararlanarak Role ve Profile yönetimide yapılabilir. Çok doğal olarak WCF RIA Service'leri, Asp.Net mimarisinin rol ve profil alt yapısını kullanmaktadır.
 
 Doğrulanan bir kullanıcının (Authenticated User), sistem içerisinde yapabileceklerini belirlerken rolüne bakılarak karar verilmesi tercih edilen yöntemlerdendir. Örneğin Administrator rolündeki bir kullanıcı ile Guest rolündeki bir kullanıcının sistem içerisinde yapılabilecekleri kuvvetle muhtemel farklıdır. Burada açık bir şekilde role göre yetkinin mertebesinin belirlendiğini düşünebiliriz. Diğer yandan sistem içerisinde yer alan tüm kullanıcılar için ortak tanımlanabilecek özellikler, çalışma zamanında farklı (bazende benzer, hatta aynı) değerler alarak, her kullanıcının sistem için bir profilinin oluşmasında kullanılabilirler. Çok doğal olarak bu profil özellikleri sistemden sisteme farklı şekillerde tanımlanabilir ve kullanılabilirler. Söz gelimi RIA uygulamasına dahil olan kullanıcıların ünvanları, doğum tarihleri, göz renkleri, cep telefonlarının gsm operatörleri, son giriş zamanları her kullanıcı için birer profil özelliği olarak değerlendirilebilir.
 

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF Data Services – Reflection Provider Kullanımı"
 date: 2012-05-01 01:25:00 +0300
-description: "Windows Communication Foundation(WCF) yıllardır Microsoft mimarisinde önemli bir yere sahip. Özellikle servis bazlı uygulama geliştirme modeline kazandırdığı pek çok yeni yaklaşım sayesinde, var olan ve gelecek Microsoft ürünlerinin de pek çok noktasında kullanılmaya başlandı. Bana göre WCF modeli özellikle 3.5 sürümü ile başlayan gelişmeler ile birlikte programlama modelini önemli derece de geliştirdi. Bu gün mimari programlama modeline kuşbakışı baktığımızda aşağıdaki çizelge de görülen servis çeşitlerinin kullanımda olduğunu biliyoruz."
 categories:
   - wcf-data-services
 tags:
@@ -26,12 +25,9 @@ tags:
   - reflection
   - generics
 ---
-# WCF Data Services – Reflection Provider Kullanımı
-![1316795_bicycle.jpg](/assets/images/2012/1316795_bicycle.jpg)
-
-Merhaba Arkadaşlar,
-
 Bundan bir kaç yıl öncesiydi. Daha dün gibi hatırlıyorum..Net Framework 3.0 sürümünde çıkması beklenen yeni Foundation alt yapıları üzerine Microsoft ekibinden gelen elektronik bir postayı okuyordum. O zamana kadar XML Web Service'leri ve özellikle.Net Remoting ile yakın ilişkiler içerisinde bulunduğumdan, dikkatimi ilk çeken Windows Communication Foundation isimli konsept olmuştu. Kısaca WCF olarak adlandırılıyordu. Mutlaka üzerine eğilmem gerektiğini düşündüğüm bir konuydu. Benim için yeni bir macera başlıyordu.
+
+![1316795_bicycle.jpg](/assets/images/2012/1316795_bicycle.jpg)
 
 Hem heyecanlıydım hem de biraz korkmuştum
 

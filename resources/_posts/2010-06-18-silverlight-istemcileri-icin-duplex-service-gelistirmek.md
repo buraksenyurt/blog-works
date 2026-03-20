@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Silverlight İstemcileri için Duplex Service Geliştirmek"
 date: 2010-06-18 04:50:00 +0300
-description: "Bilindiği üzere WCF(Windows Communication Foundation) tarafında geliştirilen servislerin Duplex iletişimi kullanaraktan istemciler üzerinde operasyonlar gerçekleştirmesi, bir başka deyişle metod çağrılarında bulunabilmeleri mümkündür."
 categories:
   - silverlight-4-0
   - wcf
@@ -22,12 +21,9 @@ tags:
   - visual-studio
   - rc
 ---
-# Silverlight İstemcileri için Duplex Service Geliştirmek
-![blg172_Giris.jpg](/assets/images/2010/blg172_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Lost dizisinin müptelası olan arkadaşlar "Push The Button" repliğini bilirler. Hikayeye göre DHARMA girişimin labaratuvarında yer alan ve 108 dakikadan geriye doğru sayan bir numarator vardır. Zaman sayacı sıfırlanmadan önce toplamları 108 olan 4,8,15,16,23,42 sayı dizisinin klavyeden girilmesi ve Enter tuşuna basılması gerekmektedir. Tabi ben Lost dizisinin tüm sezonlarını takip etmemiş ve hatta sonunu getirememiş birisi olarak ne olduğunu tam olarak anlayabilmiş değilim.
+
+![blg172_Giris.jpg](/assets/images/2010/blg172_Giris.jpg)
 
 Lakin bu Push The Button mevzusunda düşündüğüm genelde, sunucu üzerindeki bir servisin Pusher Service olarak hizmet vermesi olmuştur. Buna göre, servis kendisine bağlı olan istemci modundaki lokasyonlara bir bildiri yapmaktadır diyerek konuyu bir şekilde bağlmaya çalışayım. Bu günkü yazımızda Silverlight istemcilerinin Duplex iletişim üzerinden hizmet verebilen servisler yardımıyla nasıl tetiklenebileceğini incelemeye çalışıyor olacağız. Sanıyorum Siverlight tabanlı chat programları geliştirmek isteyenlerin ilgisini çekecek en azından biraz bilgi verecek bir yazı olacaktır.
 

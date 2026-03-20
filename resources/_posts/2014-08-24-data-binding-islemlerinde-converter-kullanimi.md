@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Data Binding İşlemlerinde Converter Kullanımı"
 date: 2014-08-24 06:40:00 +0300
-description: "Daha önceki yazılarımızdan birisinde(Data-Binding Retro Bakış Açısı) özellikle WPF(Windows Presentation Foundation), Windows Phone, WF(Workflow Foundation) gibi XAML tabanlı ara birimlerin sıklıkla kullanıldığı noktalarda veri bağlama(Data Binding) işlemlerinin temellerini kavramaya çalışmış ve çok basit bir örnek ile konuyu irdelemiştik."
 categories:
   - wpf
 tags:
@@ -16,10 +15,10 @@ tags:
   - windows-phone
   - visual-studio
 ---
-# Data Binding İşlemlerinde Converter Kullanımı
-[![Fuel level](/assets/images/2014/Fuel%20level_thumb.jpg)](/assets/images/2014/Fuel%20level.jpg) Merhaba Arkadaşlar,
-
 Daha [önceki yazılarımızdan birisinde](https://www.buraksenyurt.com/post/WPF-Uzerinde-Data-Bindinge28093-Retro-Bakc4b1s-Acc4b1sc4b1) (Data-Binding Retro Bakış Açısı) özellikle WPF (Windows Presentation Foundation), Windows Phone, WF (Workflow Foundation) gibi XAML tabanlı ara birimlerin sıklıkla kullanıldığı noktalarda veri bağlama (Data Binding) işlemlerinin temellerini kavramaya çalışmış ve çok basit bir örnek ile konuyu irdelemiştik.
+
+[![Fuel level](/assets/images/2014/Fuel%20level_thumb.jpg)](/assets/images/2014/Fuel%20level.jpg)
+
 
 Bu yazımızda ise, veri bağlama işlemleri sırasında dönüştürücü tiplerden (Converters) nasıl yararlanabileceğimizi incelemeye çalışacağız. Bu güzel kabiliyet sayesinde aslında var olan çalışma zamanı veri bağlama işlemlerine müdahale edebilmekteyiz ki bu, geliştirici açısından oldukça önem arz eden bir konudur. Öyleki, geliştiricinin standart basma kalıpların dışına çıkarak hareket edebilmesine olanak sağlamakta.
 

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Daha Verimli Konfigürasyon Yönetimi (.Net Core)"
 date: 2018-12-10 06:36:00 +0300
-description: ".Net core'da konfigurasyon bilgileri varsayılan olarak json formatlı olarak tutulur(appsettings.json) Burada çalışma zamanına özgü varsayılan parametreler dışında özel konfigurasyon içeriklerini tutmak da mümkündür. Hatta istersek birden fazla konfigurasyon dosyasını da bir arada kullanabiliriz. Her ikisini uygulamak da oldukça kolay aslında. Nasıl mı? Gelin birlikte bakalım."
 categories:
   - dotnet-core
 tags:
@@ -16,12 +15,9 @@ tags:
   - http
   - generics
 ---
-# Daha Verimli Konfigürasyon Yönetimi (.Net Core)
-![easy_config_0.jpg](/assets/images/2018/easy_config_0.jpg)
-
-Merhaba Arkadaşlar,
-
 Epey zamandır onbeş yaşından büyük bir proje ile ilgili geliştirmeler yapmaktayız. Uygulamayı ilk kez kullanmaya başladığımda en çok zorlandığım şeylerden birisi, küçük birimlerin testini yazmak olmuştu. Sıkılaşmış ve hatta kemikleşmiş bağımlılıklar nedeniyle basit bir fonksiyon testi için gerekli gereksiz bir çok kütüphanenin kullanılması gerekebiliyordu. Sahte nesneleri araya almak bir yere kadar çözüm olabilirdi. Lakin entegrasyon testlerini deneyimlerken karşılaştığım bir başka sorun daha vardı. Karmaşıklık değeri yüksek konfigurasyon dosyaları. Çok fazla konfigurasyon ayarı, özelleştirilmiş sektör, şifrelenmiş bağlantı cümleleri ve diğer parametrik ayarlarla ilgili bilgiler tutan web.config zaman içerisinde epeyce şişmanlamıştı. God Object değil ama God Configuration (Böyle bir terim yok tabii ben uydurdum) gibi bir anti-pattern oluşmuştu. İlk başlarda sadece gereken ayarları alarak test projesini ayağa kaldırmaya çalışmıştım. İşin sonunda ise tüm web.config'i kopyalamıştım.
+
+![easy_config_0.jpg](/assets/images/2018/easy_config_0.jpg)
 
 Oysa ki konfigurasyon yönetimi de en az temiz kod yazmaya çalışmak kadar titizlikle üzerinde durulması gereken bir mevzu. Bazen bir konfigurasyon dosyasını parçalamak ve bu şekilde yönetmeye çalışmak çok daha anlamlı olabilir. Hele ki ortamların test, pre-prod ve prod olarak ayrıldığı ve Continuous Integration/Deployment/Delivery hattı üzerinde değer bulduğu bir dünyada oldukça önemli. Microsoft.Net dünyasında çok uzun zamandır konfigurasyon içeriklerini efektif bir şekilde yönetebiliyoruz. Pratik bir kaç bilgi ile bu yönetim gücünü daha da verimli hale getirebiliriz.
 

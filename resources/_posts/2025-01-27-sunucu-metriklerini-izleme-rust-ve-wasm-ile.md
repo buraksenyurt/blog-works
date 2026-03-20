@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Sunucu Metriklerini İzleme (Rust ve WASM ile)"
 date: 2025-01-27 14:29:00 +0300
-description: "WASM ya da bilinen adıyla WebAssembly tarayıcılarda yüksek performans çalışma zamanına çıkabileceğimiz ortamlar için ideal bir çatı sunar. Bu standart, düşük seviyeli binary format üzerine odaklanır ve bu anlamda C, C++ ve Rust gibi dillerle birlikte kullanılması hızlı bir çalışma zamanına olanak sağlar. Pek tabii WASM'ın kullanım alanı bu dillerle sınırlı değildir. Örneğin Microsoft, Blazor soyutlaması ile WASM ortamı için gerekli çıktıları üretmeyi oldukça kolaylaştırır. WASM' ın binary formattaki çıktılarının tarayıcıda çalıştırması sırasında yine tarayıcıların sağladığı güvenlik protokolleri işletilir. Dolayısıyla tarayıcının çalıştığı sistem kaynaklarına çıkmak ve zararlı yazılım kodlarını işletmek pek mümkün değildir(\"pek\" diyorum çünkü hacker'ların sağı solu belli olmaz) Bununla birlikte sunucu tarafı ile olan iletişim klasik olarak servis çağrıları ile sağlanabilir."
 categories:
   - rust
 tags:
@@ -27,10 +26,9 @@ tags:
   - github
   - mutex
 ---
-# Sunucu Metriklerini İzleme (Rust ve WASM ile)
-![ferrisandwasm.png](/assets/images/2025/ferrisandwasm.png)
-
 WASM ya da bilinen adıyla WebAssembly tarayıcılarda yüksek performans çalışma zamanına çıkabileceğimiz ortamlar için ideal bir çatı sunar. Bu standart, düşük seviyeli binary format üzerine odaklanır ve C, C++ ve Rust gibi dillerle birlikte kullanılması hızlı bir çalışma zamanına olanak sağlar. Pek tabii WASM'ın kullanım alanı bu dillerle sınırlı değildir. Örneğin Microsoft, Blazor soyutlaması ile WASM ortamı için gerekli çıktıları üretmeyi oldukça kolaylaştırır. WASM'ın binary formattaki çıktılarının tarayıcıda çalıştırılması sırasında yine tarayıcıların sağladığı güvenlik protokolleri işletilir. Dolayısıyla tarayıcının çalıştığı sistem kaynaklarına çıkmak ve zararlı yazılım kodlarını işletmek pek mümkün değildir ("pek" diyorum çünkü hackerların sağı solu belli olmaz) Bununla birlikte sunucu tarafı ile olan iletişim klasik olarak servis çağrıları ile sağlanabilir.
+
+![ferrisandwasm.png](/assets/images/2025/ferrisandwasm.png)
 
 Genel olarak geliştirme modeli şöyle işler; WASM destekli bir programlama diliyle gerekli kütüphaneler yazılır. Bu çıktılar bir ara işlem sonrası WASM modüllerine derlenir. İlgili modüller tarayıcı tarafına indirildikten sonra yine tarayıcı tarafında çalışır. WASM çıktısının makine koduna yakınlığı tarayıcıda yüksek performans avantajının elde edilmesinin en büyük sebebidir. Tarayıcıda çalışan WASM modülleri, Javascript tarafı ile iletişim kurabilir. Temel (primitive) veri türleri üzerinden sağlanan iletişim çift taraflı sağlanabilir. Bir başka deyişle, Javascript kodunda WASM modül fonksiyonları çağırılabileceği gibi, WASM içerisinden de önyüz tarafına belli ölçülerde müdahale edilebilir.
 

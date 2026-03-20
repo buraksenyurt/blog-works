@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF WebHttp Services - Error Handling"
 date: 2010-03-04 23:10:00 +0300
-description: "Bu yazımızda WCF Eco System' in bir parçası olan WebHttp Service' lerinde hata yönetimini(Error Management) etkili bir şekilde nasıl ele alabileceğimizi incelemeye çalışıyor olacağız."
 categories:
   - wcf-eco-system
   - wcf-webhttp-services
@@ -24,12 +23,9 @@ tags:
   - visual-studio
   - rc
 ---
-# WCF WebHttp Services - Error Handling
-![blg136_Giris.jpg](/assets/images/2010/blg136_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Bu yazımızda WCF Eco System'in bir parçası olan WebHttp Service'lerinde hata yönetimini (Error Management) etkili bir şekilde nasıl ele alabileceğimizi incelemeye çalışıyor olacağız. WCF WebHttp Service'leri üzerinden çağırılan bir servis operasyonundan, istemci tarafına kendi insiyatifimizde hata mesajları gönderilmesini sağlayabiliriz.
+
+![blg136_Giris.jpg](/assets/images/2010/blg136_Giris.jpg)
 
 Üstelik bu mesajları bilinen HTTP durum kodları (HTTP Status Code) çerçevesinde yayınlayabiliriz. Bu tip bir isteğin çeşitli sebepleri olabilir. Hemen bir gerçek hayat senaryosu üzerinden ilerleyerek bu basit konuyu pekiştirmeye çalışalım. Bu amaçla Visual Studio 2010 Ultimate RC sürümü üzerinde geliştirdiğimiz ve aşağıdaki kod içeriğine sahip bir WCF REST Service Application projemiz olduğunu düşünelim.
 

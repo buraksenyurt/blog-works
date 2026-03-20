@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ruby Kod Parçacıkları - 10 (Yield ve Block Kullanımı)"
 date: 2015-08-20 15:00:00 +0300
-description: "Ruby' nin güçlü olmasını sağlayan pek çok özellik vardır. block' lar bu güçlü özelliklerden birisidir. (Block' lar dışında Proc ve Lambda kavramları da mevcuttur ki bu konuları ve aralarındaki temel farklılıkları sonraki kod parçacıklarında ele alacağız)"
 categories:
   - ruby
 tags:
@@ -10,9 +9,6 @@ tags:
   - wcf
   - workflow-foundation
 ---
-# Ruby Kod Parçacıkları - 10 (Yield ve Block Kullanımı)
-Merhaba Arkadaşlar,
-
 Ruby'nin güçlü olmasını sağlayan pek çok özellik vardır. block'lar bu güçlü özelliklerden birisidir. (Block'lar dışında Proc ve Lambda kavramları da mevcuttur ki bu konuları ve aralarındaki temel farklılıkları sonraki kod parçacıklarında ele alacağız)
 
 Bir Block ile değişkene veya nesneye atayamadığımız kod parçalarını işaret edebilir ve bu isimsiz kod parçalarını metodlara parametre olarak taşıyabiliriz. Tabi burada yield anahtar kelimesinin önemli bir yeri vardır. Gelin konuyu aşağıdaki kod parçacığı ile anlamaya çalışalım.

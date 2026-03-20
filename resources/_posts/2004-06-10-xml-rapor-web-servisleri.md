@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "XML Rapor Web Servisleri"
 date: 2004-06-10 12:00:00 +0300
-description: "Bu makalemizde, Crystal Report'ların birer web servisi olarak nasıl yayınlanacaklarını ve istemciler tarafından kullanılacaklarını kısaca incelemeye çalışacağız. Hepimizin bildiği gibi Web Servislerinin günümüz teknolojilerine getirdiği en büyük yenilik, merkezileştirilmiş metodların, herhangibir platformda yer alan sayısız istemci tarafından, hiç bir engele yada kısıtlamaya takılmadan kolayca çağırılabilmeleri ve sonuçların aynı yollar ile kolayca sorunsuz elde edilebilmeleridir."
 categories:
   - xml-web-services
 tags:
@@ -18,9 +17,6 @@ tags:
   - visual-studio
   - asmx
 ---
-# XML Rapor Web Servisleri
-Değerli Okurlarım, Merhabalar.
-
 Bu makalemizde, Crystal Report'ların birer web servisi olarak nasıl yayınlanacaklarını ve istemciler tarafından kullanılacaklarını kısaca incelemeye çalışacağız. Hepimizin bildiği gibi Web Servislerinin günümüz teknolojilerine getirdiği en büyük yenilik, merkezileştirilmiş metodların, herhangibir platformda yer alan sayısız istemci tarafından, hiç bir engele yada kısıtlamaya takılmadan kolayca çağırılabilmeleri ve sonuçların aynı yollar ile kolayca sorunsuz elde edilebilmeleridir. Öyleki, web servislerinin XML tabanlı olarak, SOAP protokolünün belirlediği kriterlerde HTTP gibi basit iletişim protokolleri üzerinden anlaşmayı desteklemesi, onların esnek, genişleyebilir, kolay erişilebilir ve popüler olmalarını sağlamıştır.
 
 İşte web servislerinin sunmuş olduğu bu imkanlardan, geliştirmiş olduğumuz Crsytal Report'larında faydalanmalarını sağlayabiliriz. Çoğunlukla, müşterilerimizin yada firmamız ile birlikte çalışan tedarikçilerimizin, ortak bir noktadan, Crystal Report olarak hazırladığımız esnek ve güçlü raporlara, her platformdan sorunsuz ulaşılabilmeleri amacıyla web servisi tabanlı raporlar geliştirilir.

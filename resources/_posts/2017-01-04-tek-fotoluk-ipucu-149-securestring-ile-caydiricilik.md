@@ -1,17 +1,13 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu 149 - SecureString ile Caydırıcılık"
 date: 2017-01-04 21:23:00 +0300
-description: "Elimizde veritabanı bağlantı bilgisi, kullanıcı şifresi, uygulamamıza özel port numaraları, finansal oranlar gibi hassas olabilecek içerikleri tutan bir sınıf olduğunu düşünelim. Bu sınıfı kullanmak için doğal olarak bir şekilde örneklenmesi gerekir. Nesnenin kullanılabilir olması içeriği ile birlikte belleğe açılması anlamına da gelir. Uygulama, .Net'in çalışma zamanı ortamında kendisi için oluşturulan Application Domain içerisinde yaşar."
 categories:
   - dotnet-temelleri
 tags:
   - dotnet-temelleri
   - dotnet
 ---
-# Tek Fotoluk İpucu 149 - SecureString ile Caydırıcılık
-Merhaba Arkadaşlar,
-
 Elimizde veritabanı bağlantı bilgisi, kullanıcı şifresi, uygulamamıza özel port numaraları, finansal oranlar gibi hassas olabilecek içerikleri tutan bir sınıf olduğunu düşünelim. Bu sınıfı kullanmak için doğal olarak bir şekilde örneklenmesi gerekir. Nesnenin kullanılabilir olması içeriği ile birlikte belleğe açılması anlamına da gelir. Uygulama,.Net'in çalışma zamanı ortamında kendisi için oluşturulan Application Domain içerisinde yaşar.
 
 Peki bu metinsel içeriklerin bellekte güvenli bir şekilde durduklarını söyleyebilir miyiz? Belleğe açılan uygulamaların izlerini takip etmek aslında mümkün. RedGate ve benzeri araçlar yada uygulamanın çalışma zamanındaki bellek hareketliliklerini indiren Memory Dump programları ile bu mümkün olabilir. Dolayısıyla belleğe alınmış bir değişken içeriğinin güvenli şekilde saklanmasını sağlamamız önemlidir. SecureString sınıfı bu ihtiyacı karşılamak için kullanılan.Net sınıflarındandır. Nasıl mı? Aynen aşağıdaki fotoğrafta görüldüğü gibi.

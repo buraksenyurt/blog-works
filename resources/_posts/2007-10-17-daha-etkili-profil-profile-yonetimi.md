@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Daha Etkili Profil(Profile) Yönetimi"
 date: 2007-10-17 12:00:00 +0300
-description: "Uzun süre önce Asp.Net 2.0 ile geliştirilen web uygulamalarında Profile API' sinin nasıl kullanıldığını kısa bir makale üzerinden incelemeye çalışmıştık. Geçtiğimiz günlerde Asp.Net 2.0 ile ilgili bilgilerimi tazelerken profil yönetiminin daha etkin bir şekilde nasıl kullanılabileceğine dair pek çok örnek ile karşılaştım..."
 categories:
   - aspnet-2-0
 tags:
@@ -18,9 +17,6 @@ tags:
   - caching
   - serialization
 ---
-# Daha Etkili Profil(Profile) Yönetimi
-Değerli Okurlarım Merhabalar,
-
 Uzun süre önce Asp.Net 2.0 ile geliştirilen web uygulamalarında Profile API'sinin nasıl kullanıldığını kısa bir [makale](http://www.bsenyurt.com/MakaleGoster.aspx?ID=160) üzerinden incelemeye çalışmıştık. Geçtiğimiz günlerde Asp.Net 2.0 ile ilgili bilgilerimi tazelerken profil yönetiminin daha etkin bir şekilde nasıl kullanılabileceğine dair pek çok örnek ile karşılaştım. İşte bu makalemizde temel olarak profil yönetiminin daha etkin hale getirilmeye çalışması için uğraşıyor olacağız. İnceleyeceğimiz temel konu başlıklarını aşağıdaki gibi sıralayabiliriz.
 
 - ProfileBase tipinden türetmek (Inherit).

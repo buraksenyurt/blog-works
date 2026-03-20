@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "GoLang - Ticker ile Periyodik İş Çalıştırma"
 date: 2017-06-18 06:11:00 +0300
-description: "GO dilinin en güçlü yanlarından birisi eş zamanlı programlama(Concurrent Programming) kabiliyetlerinde sunduğu performans ve kullanım kolaylıkları. Daha önceden şu yazıda Concurrency konusunu GoRoutine ve Channel kavramları üzerinden incelemeye çalışmıştım. Çalıştığım kaynaklarda ilerledikçe eş zamanlı programlama konusunda yeni şeyler de öğrendim. Bunlardan birisi time paketinden yer alan time tipi. Bu tipin NewTimer ve NewTicker isimli iki önemli fonksiyonu bulunuyor."
 categories:
   - golang
 tags:
@@ -13,12 +12,9 @@ tags:
   - concurrency
   - performance
 ---
-# GoLang - Ticker ile Periyodik İş Çalıştırma
+GO dilinin en güçlü yanlarından birisi eş zamanlı programlama (Concurrent Programming) kabiliyetleri sayesinde sunduğu performans ve kullanım kolaylıkları. Daha önceden [şu yazıda](/2017/05/15/golang-concurrency-goroutine-channel/) Concurrency konusunu GoRoutine ve Channel kavramları üzerinden incelemiştim. Çalıştığım kaynaklarda ilerledikçe eş zamanlı programlama konusunda yeni şeyler de öğrendim. Bunlardan birisi de time tipi. Bu tipin NewTimer ve NewTicker isimli iki önemli fonksiyonu bulunuyor. Doğruyu söylemek gerekirse NewTimer ile yapacağımız işlemleri time.Sleep kullanımı ile de sağlamamız mümkün. Bu nedenle NewTimer'ı daha çok bir GoRoutine'in beklenen sürede işini yapmasını beklediğimiz, aksi hallerde ise zaman aşımı halini ele alacağımız durumlarda kullanmanın çok daha mantıklı olduğunu öğrendim. Diğer yandan NewTicker fonksiyonu daha çok dikkatimi çekti. Bu fonksiyon ile belirli periyotlar boyunca tekrar etmesini istediğimiz eş zamanlı görevler planlayabiliriz. Konuyu anlamaya çalışırken önce teorik bir örnek ile ilerlemeye çalıştım. Ardından daha pratik bir örnek geliştirdim. İlk GO kodlarımızı aşağıdaki gibi geliştirdiğimizi düşünelim.
+
 ![gotimer_4.gif](/assets/images/2017/gotimer_4.gif)
-
-Merhaba Arkadaşlar,
-
-GO dilinin en güçlü yanlarından birisi eş zamanlı programlama (Concurrent Programming) kabiliyetleri sayesinde sunduğu performans ve kullanım kolaylıkları. Daha önceden [şu yazıda](GoLang - Concurrency (goroutine, channel).md) Concurrency konusunu GoRoutine ve Channel kavramları üzerinden incelemiştim. Çalıştığım kaynaklarda ilerledikçe eş zamanlı programlama konusunda yeni şeyler de öğrendim. Bunlardan birisi de time tipi. Bu tipin NewTimer ve NewTicker isimli iki önemli fonksiyonu bulunuyor. Doğruyu söylemek gerekirse NewTimer ile yapacağımız işlemleri time.Sleep kullanımı ile de sağlamamız mümkün. Bu nedenle NewTimer'ı daha çok bir GoRoutine'in beklenen sürede işini yapmasını beklediğimiz, aksi hallerde ise zaman aşımı halini ele alacağımız durumlarda kullanmanın çok daha mantıklı olduğunu öğrendim. Diğer yandan NewTicker fonksiyonu daha çok dikkatimi çekti. Bu fonksiyon ile belirli periyotlar boyunca tekrar etmesini istediğimiz eş zamanlı görevler planlayabiliriz. Konuyu anlamaya çalışırken önce teorik bir örnek ile ilerlemeye çalıştım. Ardından daha pratik bir örnek geliştirdim. İlk GO kodlarımızı aşağıdaki gibi geliştirdiğimizi düşünelim.
 
 ```cpp
 package main

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net 2.0 ve Code Klasörü"
 date: 2004-09-01 12:00:00 +0300
-description: "Bu makalemizde, Asp.Net 2.0 ile gelen tanımlanmış klasörlerden (defined folders), Code klasörünün nasıl kullanıldığını incelemeye çalışacağız. Asp.Net 1.0/1.1 ile uygulama geliştirirken, solution içindeki herşey bir dll içinde (assembly) toplanır. Asp.Net 2.0 ise, dosya tabanlı (file-based) yaklaşım adı verilen yeni bir teknik kullanır. Bu tekniğe göre, solution, dosyalar ve klasörler sisteminden oluşmaktadır. Bu sistemin faydası, otomatik derleme özelliğine sahip olmasıdır."
 categories:
   - aspnet-2-0
 tags:
@@ -15,9 +14,6 @@ tags:
   - visual-studio
   - dataset
 ---
-# Asp.Net 2.0 ve Code Klasörü
-Değerli Okurlarım Merhabalar,
-
 Bu makalemizde, Asp.Net 2.0 ile gelen tanımlanmış klasörlerden (defined folders), Code klasörünün nasıl kullanıldığını incelemeye çalışacağız. Asp.Net 1.0/1.1 ile uygulama geliştirirken, solution içindeki herşey bir dll içinde (assembly) toplanır. Asp.Net 2.0 ise, dosya tabanlı (file-based) yaklaşım adı verilen yeni bir teknik kullanır. Bu tekniğe göre, solution, dosyalar ve klasörler sisteminden oluşmaktadır. Bu sistemin faydası, otomatik derleme özelliğine sahip olmasıdır.
 
 Yani, solution içerisine herhangibir dosya eklenmesi halinde (örneğin bir sınıf), Visual Studio.Net 2005 bu dosyayı otomatik olarak derler ve solution'ın her zaman dinamik olarak güncel kalmasını sağlar. Bir başka deyişle yeni eklenen dosya için, solution'ın baştan derlenmesi gerekmez. Bu yüzden, Asp.Net 2.0 ile uygulama geliştirirken ilk dikkati çeken unsur, oluşturulan sanal klasör altında eskiden olduğu gibi bin klasörünün ve bir dll dosyasının olmayışıdır.

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Servis Operasyonlarını Kod Yardımıyla İzlemek – Event Kullanımı"
 date: 2011-03-06 18:00:00 +0300
-description: "Oysaki operasyon çağrılarını işletim sisteminin Event Log’ larına yazdırtmak ya da, XML tabanlı bir dosyaya aktarılmasını sağlamak isteyebiliriz. Hatta söz konusu izlerin veritabanı üzerindeki bir tabloya yazdırılması da düşünülebilir vb… Bir başka deyişle operasyon çağrılarının izlenmesi sırasında oluşan log verilerini, herhangibir kaynağa doğru yazdırmak isteyebiliriz. Böyle bir durumda, tasarlamış olduğumuz tiplerin, onları kullanan object user’ lara alternatif bir yol sunması gerekmektedir. Nitekim oluşturulan log verisinin nereye yazılacağına object user’ ın karar vermesi, çok daha esnek bir izleme yapısı oluşturulmasını sağlayacaktır. Peki bunu nasıl gerçekleştirebiliriz?"
 categories:
   - wcf
 tags:
@@ -13,10 +12,10 @@ tags:
   - iis
   - visual-studio
 ---
-# Servis Operasyonlarını Kod Yardımıyla İzlemek – Event Kullanımı
-[![blg223_Giris](/assets/images/2011/blg223_Giris_thumb.jpg)](/assets/images/2011/blg223_Giris.jpg) Merhaba Arkadaşlar,
-
 Suyun dibinden bir baloncuk yükselmeye başlar. Taze ve temiz hava ile temas etmek için can atmaktadır. Ancak kat etmesi gereken epey bir mesafe vardır. Daha da hızlanabilmek ister. Yükselirken karşısına bir baloncuk daha çıkar ve doğrudan ona koşar. Artık ikisi birlikte, daha hızlı yükselmektedirler.
+
+[![blg223_Giris](/assets/images/2011/blg223_Giris_thumb.jpg)](/assets/images/2011/blg223_Giris.jpg)
+
 
 “Birlikten kuvvet doğar” der, alttan gelen ötekine. Ama artık havasızlıktan boğulmak üzeredirler. Neyse ki yollarına başka bir baloncuk daha çıkar. Üç baloncuk birleşerek daha büyük bir tane oluşturur. Süratler artmıştır. Gün ışığına, taze havaya çok, çok az kalmıştır. Ve nihayettt…Hımmmm!!! Temiz hava…
 
@@ -30,7 +29,7 @@ baloncukların konumuzla ne alakası olduğunu düşünebilirsiniz elbette
 
 Aslında bu gün irdeleyeceğimiz konunun özünde Olaylar (Events) yer almakta. Ayrıca söz konusu bir olay tanımının, üst tarafta doğru (ama kodun içerisinden baktığımızda da alt tarafa doğru yürüdüğünü düşünebiliriz) aktarılması söz konusu. (WPF tarafında buna sıkça rastlandığını ve Event Bubbling şeklinde ifadeler ile tanımlandığını belirtelim)
 
-[Servis Operasyonlarını Kod Yardımıyla İzlemek](Servis Operasyonlarını Kod Yardımıyla İzlemek.md) başlıklı yazımızda, IIS (Internet Information Services) dışında Self-Hosted modelinde yayınlanan servislere ait operasyon çağrılarının nasıl izlenebileceğini incelemeye çalışmıştık. Geliştirmiş olduğumuz tipler yardımıyla, istemcilerden servis operasyonlarına gelen çağrı öncesi ve sonrası durumları, Text tabanlı olarak dosyaya kaydetmiştik. Text tabanlı dosyaya kaydetme işlemi aslında bir zorlama olarak düşünülebilir. Nitekim söz konusu yazıda uygulanan çözüme göre, operasyon çağrıları ancak text tabanlı dosyaya bakılarak takip edilebilir
+[Servis Operasyonlarını Kod Yardımıyla İzlemek](/2011/02/27/servis-operasyonlarini-kod-yardimiyla-izlemek/) başlıklı yazımızda, IIS (Internet Information Services) dışında Self-Hosted modelinde yayınlanan servislere ait operasyon çağrılarının nasıl izlenebileceğini incelemeye çalışmıştık. Geliştirmiş olduğumuz tipler yardımıyla, istemcilerden servis operasyonlarına gelen çağrı öncesi ve sonrası durumları, Text tabanlı olarak dosyaya kaydetmiştik. Text tabanlı dosyaya kaydetme işlemi aslında bir zorlama olarak düşünülebilir. Nitekim söz konusu yazıda uygulanan çözüme göre, operasyon çağrıları ancak text tabanlı dosyaya bakılarak takip edilebilir
 
 ![Undecided](/assets/images/2011/smiley-undecided.gif)
 

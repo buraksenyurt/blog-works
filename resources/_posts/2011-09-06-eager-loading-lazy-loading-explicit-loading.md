@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Eager Loading, Lazy Loading, Explicit Loading"
 date: 2011-09-06 20:30:00 +0300
-description: "Şöyle basit tek bir Main metodu içerisinde, Entity Framework' teki Loading çeşitlerini görmek ister miydiniz? Winking smile Öyleyse aşağıdaki kod bloğu oldukça işinize yarayacaktır diye düşünüyorum. Senaryolar oldukça basit. Meşhur Chinook veritabanında yer alan Artist ve buna bağlı Album tablolarını ele alıyoruz."
 categories:
   - entity-framework
 tags:
@@ -11,9 +10,6 @@ tags:
   - linq
   - http
 ---
-# Eager Loading, Lazy Loading, Explicit Loading
-Merhaba Arkadaşlar,
-
 Şöyle basit tek bir Main metodu içerisinde, Entity Framework'teki Loading çeşitlerini görmek ister miydiniz?
 
 ![Winking smile](/assets/images/2011/wlEmoticon-winkingsmile_64.png)

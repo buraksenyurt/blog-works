@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Web Server Control Yazmak - 3"
 date: 2007-02-05 12:00:00 +0300
-description: "Bir önceki makalemizde kendi web kontrollerimizi geliştirirken durum yönetimi(state management) için ViewState' lerden nasıl faydalanabileceğimizi incelemiştik. Bununla birlikte assembly, sınıf ve metod seviyesinde, çalışma zamanı için gerekli davranışları çeşitli nitelikler (attribute) yardımıyla nasıl etkileyebileceğimizi görmüştük. Bugünkü makalemizde ise, kendi web kontrollerimiz için olay güdümlü (event based) programlamayı nasıl sağlayabileceğimizi incelemeye çalışacağız."
 categories:
   - aspnet-2-0
 tags:
@@ -12,9 +11,6 @@ tags:
   - aspnet
   - delegates
 ---
-# Web Server Control Yazmak - 3
-Değerli Okurlarım Merhabalar,
-
 Bir önceki makalemizde kendi web kontrollerimizi geliştirirken durum yönetimi (state management) için ViewState'lerden nasıl faydalanabileceğimizi incelemiştik. Bununla birlikte assembly, sınıf ve metod seviyesinde, çalışma zamanı için gerekli davranışları çeşitli nitelikler (attribute) yardımıyla nasıl etkileyebileceğimizi görmüştük. Bugünkü makalemizde ise, kendi web kontrollerimiz için olay güdümlü (event based) programlamayı nasıl sağlayabileceğimizi incelemeye çalışacağız.
 
 Var olan web kontrollerinin pek çok olayı vardır. İstersek kendi geliştirdiğimiz web sunucu kontrolleri içinde olay tanımlayabilir ve kullanabiliriz. Ne varki web kontrolleri seviyesinde dikkate alınması gereken bazı noktalar vardır. Bu noktaları yazımızın ilerleyen kısımlarında keşfedeceğiz. Öncelikli olarak olay tabanlı programlama için gereken unsurları biraz hatırlamaya çalışalım. Herşeyden önce olayların (events), temsilciler (delegates) ile yakın ilişkisi vardır. Olay güdümlü programlama tarafında temsilcilerin görevi, meydana gelen olay sonrasında çalıştırılacak olan olay metodunu işaret etmektir. Var olan Windows ve Web kontrollerinin sahip oldukları olaylar, yine Framework içerisinde yer alan değişik temsilciler ile ilişkilendirilmiştir. Örneğin bir Button bileşenine ait click olayı, EventHandler temsilcisi ile ilişkilendirilmiştir. Temsilciler çalışma zamanında işaret edecekleri metodların yapılarınıda söylemektedirler. Bir başka deyişle işaret edilecek metodun parametrik yapısı ve geri dönüş tipinide belirtirler. Özellikle görsel bileşenlere bakıldığında, olay metodlarının çoğunlukla iki parametre aldığını görürüz. Bu parametrelerden ilki, olayı meydana getiren nesne referansını taşıyabilecek object tipindendir. İkinci parametre ise, olay meydana geldiğinde, olay metodu içerisine bilgi taşımak amacıyla kullanılabilecek türden bir tip olabilir.

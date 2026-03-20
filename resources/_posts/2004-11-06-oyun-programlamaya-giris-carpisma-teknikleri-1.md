@@ -1,17 +1,13 @@
-﻿---
+---
 layout: post
 title: "Oyun Programlamaya Giriş (Çarpışma Teknikleri - 1)"
 date: 2004-11-06 04:00:00 +0300
-description: "Yaklaşık bir ay kadar önce evde dinlenirken, şu ana kadar yaptığım işleri ve projeleri düşündüm. Kesin olarak şunu söyliyebilirim ki, profesyonel anlamda ilgilendiğim ve kullandığım tek dil C# idi. C# dilini kullanarak, .Net platformu altında veritabanı ağırılıklı olmak üzere çeşitli çalışmalar yaptım. Ancak bir süre sonra farkettim ki, bir Matematik Mühendisi olarak lisans eğitimim sırasında gördüğüm o devasa cebir problemleri, teorem ispatları hiç bir zaman işin içine girmemişti. Matematiğin belkide çok az olmakla birlikte dört işleminin ve bir takım algoritmalar için gerekli iteratif ifadelerinin yer aldığı uygulamalar dışında, onu çok yoğun şekilde kullanmamıştım."
 categories:
   - csharp
 tags:
   - csharp
   - dotnet
 ---
-# Oyun Programlamaya Giriş (Çarpışma Teknikleri - 1)
-Değerli Okurlarım Merhabalar,
-
 Yaklaşık bir ay kadar önce evde dinlenirken, şu ana kadar yaptığım işleri ve projeleri düşündüm. Kesin olarak şunu söyliyebilirim ki, profesyonel anlamda ilgilendiğim ve kullandığım tek dil C# idi. C# dilini kullanarak,.Net platformu altında veritabanı ağırılıklı olmak üzere çeşitli çalışmalar yaptım. Ancak bir süre sonra farkettim ki, bir Matematik Mühendisi olarak lisans eğitimim sırasında gördüğüm o devasa cebir problemleri, teorem ispatları hiç bir zaman işin içine girmemişti. Matematiğin belkide çok az olmakla birlikte dört işleminin ve bir takım algoritmalar için gerekli iteratif ifadelerinin yer aldığı uygulamalar dışında, onu çok yoğun şekilde kullanmamıştım.
 
 Belki finansal veya istatistiki bir projede yoğun olarak ekonomi teoremlerini ve bunlara bağlı olarak matematiksel denklemleri kullanmak gerekmekteydi ancak çok yoğun bir şekilde bunları kurcalamamıştım. Düşündükçe, günümüz dünyasında artık algoritmalar ile, matematik ile uğraşan yazılımcıların azaldığı kanısına vardım. Hepimizde matematik temeli var. Hepimiz bu konuda çeşitli sınavlardan geçtik. Ama sonuç itibariyle çok az projede, daha önceden gördüğümüz eşsiz teoremleri kullandık. O dakikalarda neden bu yöne eğilmiyorum, biraz eğlenceli hatta matematik yüklü çalışmalara el atmıyorum diye düşünmeye başladım. Derken çözümü son derece eğlenceli ama bir o kadarda önemli bir sahada buldum. Oyun Programcılığı.

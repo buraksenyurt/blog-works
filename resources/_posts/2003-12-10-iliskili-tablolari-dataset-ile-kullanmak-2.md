@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "İlişkili Tabloları DataSet İle Kullanmak - 2"
 date: 2003-12-10 12:00:00 +0300
-description: "Bugünkü makalemizde ilişkili tablolar arasında kısıtlamaların ( constraints ) nasıl kullanıldığını işlemey çalışacağız. Hatırlayacağınız gibi bu yazı dizisinin ilk bölümünde DataRelation sınıfını kullanarak ilişkil tabloların bellekte nasıl ifade edilebileceğini görmüştük.Bir diğer önemli konu, bu ilişkili tablolar arasındaki parent-child ilişkisinin kayıt güncelleme, kayıt silme gibi durumlarda nasıl hareket edeceğini belirlemektir."
 categories:
   - ado-net
 tags:
@@ -11,9 +10,6 @@ tags:
   - dataset
   - datatable
 ---
-# İlişkili Tabloları DataSet İle Kullanmak - 2
-Değerli Okurlarım, Merhabalar.
-
 Bugünkü makalemizde ilişkili tablolar arasında kısıtlamaların (constraints) nasıl kullanıldığını işlemey çalışacağız. Hatırlayacağınız gibi bu yazı dizisinin ilk bölümünde DataRelation sınıfını kullanarak ilişkil tabloların bellekte nasıl ifade edilebileceğini görmüştük.Bir diğer önemli konu, bu ilişkili tablolar arasındaki parent-child ilişkisinin kayıt güncelleme, kayıt silme gibi durumlarda nasıl hareket edeceğini belirlemektir.
 
 Buna verilecek en güzel örnek müşterilere ait sipariş detaylarının ve buna benzer ilişkilerin yer aldığı veritabanı tasarımlarıdır. Söz gelimi parent tablodan bir kayıdın silinmesi ile bu kayda bağlı child tablodaki kayıtların da silinmesi gerekebilir yada silinmemesi istenebilir. İşte bu noktada DataSet ile belleğer yüklenen tablolar arasındaki bu zorlamaları bir şekilde tanımlamamız gerekmektedir. Bu zorlamalar Constraints olarak tanımlanır. Bizim için en öneli iki kısıtlama Foreign Key Constraints ve Unique Constraints dir.

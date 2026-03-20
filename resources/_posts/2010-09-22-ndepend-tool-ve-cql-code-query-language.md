@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "NDepend Tool ve CQL(Code Query Language)"
 date: 2010-09-22 20:16:00 +0300
-description: "Merhaba Arkadaşlar,"
 categories:
   - teknik-disi-konular
 tags:
@@ -13,20 +12,9 @@ tags:
   - visual-studio
   - dependency-management
 ---
-# NDepend Tool ve CQL(Code Query Language)
-Merhaba Arkadaşlar,
+Aşağıdaki resimde Visual Studio 2010 Ultimate ortamına ait bir ara pencere görmektesiniz. Dikkat edeceğiniz üzere Select Methods Where NbLinesOfCode>=5 şeklinde bir sorgu cümlesi var. Oppsss!!! Bu nasıl bir sorgu cümlesi? Tahmin etmeye çalışalım. Sanki uygulamadaki kod satır sayısı 5’ ten fazla olan metodların adlarını döndüren bir sorgu cümlesi gibi.
 
-[![blg227_CQL_Sample_1](/assets/images/2010/blg227_CQL_Sample_1_thumb.gif)](/assets/images/2010/blg227_CQL_Sample_1.gif) Yandaki resimde Visual Studio 2010 Ultimate ortamına ait bir ara pencere görmektesiniz. Dikkat edeceğiniz üzere
-
-Select Methods Where NbLinesOfCode>=5
-
-şeklinde bir sorgu cümlesi var
-
-![Laughing](/assets/images/2010/smiley-laughing.gif)
-
-Oppsss!!! Bu nasıl bir sorgu cümlesi? Tahmin etmeye çalışalım. Sanki uygulamadaki kod satır sayısı 5’ ten fazla olan metodların adlarını döndüren bir sorgu cümlesi gibi
-
-![Smile](/assets/images/2010/smiley-smile.gif)
+[![blg227_CQL_Sample_1](/assets/images/2010/blg227_CQL_Sample_1_thumb.gif)](/assets/images/2010/blg227_CQL_Sample_1.gif)
 
 Şu anda bir Code Query Language örneğinin Visual Studio 2010 IDE’ si içerisindeki raporlama sonucunu görmektesiniz.
 

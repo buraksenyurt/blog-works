@@ -1,19 +1,15 @@
-﻿---
+---
 layout: post
 title: "Değişken Atamalarında Bir Efsane"
 date: 2010-04-12 02:30:00 +0300
-description: "Bu kod parçasında double tipinden olan x, y ve z değişkenlerine tek satırda Pi değerinin atanması söz konusudur. Bu son derece doğaldır nitekim eşitliğin sağından başlayan bir atama sırası mevcuttur. Hatta buna göre aşağıdaki ifade de doğrudur."
 categories:
   - csharp
 tags:
   - csharp
 ---
-# Değişken Atamalarında Bir Efsane
-![blg149_MythBusters.jpg](/assets/images/2010/blg149_MythBusters.jpg)
-
-Merhaba Arkadaşlar,
-
 Yandaki resimde görülen kahramanları tanıyanınız var mı? Biraz düşünün isterseniz...Jamie Hyneman ve Adam Savage ikilisi tarafından sunulan ve Wikipedia'daki verilere göre Discovery Channel aracılığıyla ilk yayınını 23 Ocak 2003 tarihinde gerçekleştiren MythBusters isimli bu belgesel dizide, bilimsel metodlardan yararlanılarak bazı şehir efsanelerinin gerçeklikleri ispatlanmaya çalışılmaktadır.
+
+![blg149_MythBusters.jpg](/assets/images/2010/blg149_MythBusters.jpg)
 
 Aslında film sanayisinin ne kadar çok geliştiğini ispat eden bir dizidir. Nitekim dizinin sunucuları Hollywood'un tanınan film efekti teknisyenleridir (ki bu nedenle bilimsel anlamda gayet donanımlıdırlar) ve son derece ilginç efsaneleri araştırırlar. Örneğin "Yağmurda koşan mı yoksa yürüyen mi daha çok ıslanır?", "Benzin istasyonunda cep telefonu kullanmak patlmaya neden olur mu?", "Piercing yapan insanları yıldırım çarpar mı?", "Emprise State binasının tepesinden yere serbest düşüşle bırakılan metal bir para betona saplanır mı?" ve daha nice ilginç efsaneyi bilimsel taktikler ile çözmüşlerdir ve çözmeye devam etmektedirler. Açıkçası bende evdeki afacan müsade ettiği sürece bu tip belgeselleri kaçırmamaya çalışıyorum ve size de izlemenizi şiddetle tavsiye ediyorum.
 

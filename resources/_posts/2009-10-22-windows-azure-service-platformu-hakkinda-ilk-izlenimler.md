@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Windows Azure Service Platformu Hakkında İlk İzlenimler"
 date: 2009-10-22 07:15:00 +0300
-description: "Microsoft' un son yıllarda Cloud Computing mimarisi için getirdiği geliştirmelerden biriside Windows Azure Services platformudur. Bu platformu servis bazlı bir işletim sistemi olarak düşünebiliriz. Ama bu çok basit bir yaklaşım olur. Bu konuda aslında pek çok kaynakta yazılmakta ve çizilmektedir. Ancak ürün henüz nihai halini almadığından sürekli olarak değişimlere uğramaktadır. Söz gelimi daha önce yayınlanan SDK içerisine Microsoft.Net Services bloku içerisinde yer alan Workflow Services modeli, Temmuz 2009' da yayınlanan CTP sürümünde kaldırılmışdır. Aslında konunun detaylarına girdiğimde çok kısa bir sürede kaybolduğumu ifade edebilirim. Bu nedenle yazımızın bundan sonraki kısımlarında mimarinin ne getirdiğini sizlere araştırma sonuçlarımdan aktarmaya çalışacağım."
 categories:
   - windows-azure
 tags:
@@ -16,12 +15,9 @@ tags:
   - ruby
   - visual-studio
 ---
-# Windows Azure Service Platformu Hakkında İlk İzlenimler
-![blg91_Giris.jpg](/assets/images/2009/blg91_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Güneşli açık bir hava ve sessiz bir gün yada gece...Deniz kenarında veya caddenin herhangibir köşesinde...Mutlaka zaman zaman gökyüzüne bakıp bulutları bazı nesnelere benzettiğimiz olmuştur. Yandaki resimde görüldüğü gibi gülen bir bulutla karşılaşma ihtimalimiz az olsada, arabaya, ördeğe veya başka bir şekle benzettiğimiz bulut sayısı oldukça fazladır. Bugünkü yazımızda bulutlar ile pek bir haşır neşir olacağımızı düşünebilirsiniz. Ancak tabiki yazılımsal anlamda
+
+![blg91_Giris.jpg](/assets/images/2009/blg91_Giris.jpg)
 
 ![Wink](/assets/images/2009/smiley-wink.gif)
 

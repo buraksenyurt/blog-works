@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "C# 6.0 - Collection Initializers için Add Metodunu Yönlendirmek"
 date: 2017-03-18 22:50:00 +0300
-description: "C# 6.0 ile gelen yeni özelliklerden birisi de geliştirici tanımlı koleksiyonlar içerisindeki üyeler için Collection Initializers kullanılabilmesi. Bunun için Add genişletme metodunun istenen metoda atanması yeterli. Konuyu daha iyi anlamak için C# 6.0 öncesinden bir örnekle işe başlayalım. Elimizde aşağıdaki gibi bir sınıf olduğunu düşünelim."
 categories:
   - csharp-6-0
 tags:
@@ -12,12 +11,9 @@ tags:
   - generics
   - visual-studio
 ---
-# C# 6.0 - Collection Initializers için Add Metodunu Yönlendirmek
-![lego_collection_n.gif](/assets/images/2017/lego_collection_n.gif)
-
-Merhaba Arkadaşlar,
-
 Mesleki hayatımın bir döneminde yazılım eğitmeni olarak çalıştım. Ağırlıklı olarak.Net eğitimleri verdim. Tabii o zamanlar.Net nispeten daha kolaydı. Bu kadar fazla dallanan bir Framework değildi ama C# dil özellikleri de acımasızca genişlemiyordu. Aradan geçen onca yıldan sonra çalıştığım turuncu bankanın kendi akademisinden iç eğitim isteği geldi.
+
+![lego_collection_n.gif](/assets/images/2017/lego_collection_n.gif)
 
 Konu C# programlama diliydi. İyi hazırlanmam gerektiği ortadaydı. Kurumsal projelerin standartları gereği en son teknolojiyi kullanamıyor olsak da C# 6.0 dünyasını yakalamıştık. Projelerimizi Visual Studio 2013 ile geliştirmekte ve.Net Framework 4.6.1 sürümünü kullanmaktayız (Şimdilik) Bana sanal bir makine de verdiler ve içerisine gıcır gıcır Visual Studio 2015 koydular (Kurum içinde de Visual Studio 2015 yaygınlaştırılmakta)
 

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Eski Dost ve Entity Framework 4.0"
 date: 2010-02-09 07:28:00 +0300
-description: "Bildiğiniz üzere .Net Framework 4.0 ve Visual Studio 2010 sürümlerinin çıkmasına az bir zaman kaldı(Hatta yarın RC sürümü herkese açık olacak). Blog yazısını hazırladığım zaman itibariyle Microsoft' taki güvenilir kaynaklar ve MSDN yazarlarından edinilen bilgilere göre, sürümün Nisan 2010 içerisinde çıkması bekleniyor. Tabi yeni bir sürüm denilince eski sürüm ile aradaki farklılıkları bilmek, nereden nereye gelindiği ve nelerin düzeltildiğini öğrenmek, beklentilerin karşılanıp karşılanmadığına bakmak oldukça önemli. Bende buna istinaden yazımızın ilerleyen kısımlarında, Ado.Net Entity Framework 4.0 ile bir önceki versiyonu arasında, sorgu teknikleri açısından oluşan farkları aktarmaya çalışıyor olacağım."
 categories:
   - entity-framework
 tags:
@@ -17,9 +16,6 @@ tags:
   - github
   - rc
 ---
-# Eski Dost ve Entity Framework 4.0
-Merhaba Arkadaşlar,
-
 Bildiğiniz üzere.Net Framework 4.0 ve Visual Studio 2010 sürümlerinin çıkmasına az bir zaman kaldı (Hatta yarın RC sürümü herkese açık olacak). Blog yazısını hazırladığım zaman itibariyle Microsoft'taki güvenilir kaynaklar ve MSDN yazarlarından edinilen bilgilere göre, sürümün Nisan 2010 içerisinde çıkması bekleniyor. Tabi yeni bir sürüm denilince eski sürüm ile aradaki farklılıkları bilmek, nereden nereye gelindiği ve nelerin düzeltildiğini öğrenmek, beklentilerin karşılanıp karşılanmadığına bakmak oldukça önemli. Bende buna istinaden yazımızın ilerleyen kısımlarında, Ado.Net Entity Framework 4.0 ile bir önceki versiyonu arasında, sorgu teknikleri açısından oluşan farkları aktarmaya çalışıyor olacağım.
 
 Ado.Net takımının 4.0 sürümündeki hedeflerinden biriside SQL sorgularının daha anlaşılır olmasını sağlamak. Buna ek olarak gereksiz SQL ifadelerinin kullanılmasından uzaklaşılmaya çalışılmış ve hatta önceki Entity Framework sürümünde SQL sorgusuna dönüştürülemeyen LINQ ifadeleri kullanılabilir hale getirilmiş. Tabi daha da fazla fark bulunabilir. Ancak MSDN ve Ado.Net takımının gerek blog yazılarından gerek Webcast'lerinden takip ettiğim kadarı ile aşağıda yer alan 4 önemli farklılık göze çarpmaktadır. Çok doğal olarak söz konusu iyileştirmeler LINQ ifadelerinin SQL sorgularına dönüştürülmesinde devreye giren motor üzerinde yer almaktadır.

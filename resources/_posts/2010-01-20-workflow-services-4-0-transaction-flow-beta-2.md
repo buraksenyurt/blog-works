@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Workflow Services 4.0 - Transaction Flow [Beta 2]"
 date: 2010-01-20 01:00:00 +0300
-description: "Geçen gece ilginç bir rüya gördüm. Bir su birikintisine damlacıklar düşüyordu. Önceleri yavaş yavaş ve uzun aralıklarla düşen damlalar söz konusuydu. Zaman ilerledikçe her bir damlanın suya değdiği noktada bir isim bıraktığını görmeye başladım."
 categories:
   - wf-4-0-beta-2
 tags:
@@ -20,12 +19,9 @@ tags:
   - visual-studio
   - rc
 ---
-# Workflow Services 4.0 - Transaction Flow [Beta 2]
-![blg123_Giris.jpg](/assets/images/2010/blg123_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Geçen gece ilginç bir rüya gördüm. Bir su birikintisine damlacıklar düşüyordu. Önceleri yavaş yavaş ve uzun aralıklarla düşen damlalar söz konusuydu. Zaman ilerledikçe her bir damlanın suya değdiği noktada bir isim bıraktığını görmeye başladım. int i, for, if derken damlalar hızlanmaya başladı. Daha sık daha çok damla düşüyordu. Bazıları kocaman boyutlardaydı ve düştükleri su birikintisinde neredeyse fırtına koparıyorlardı..Net, C#, parallel, WPF, Ajax, ASP.Net, WCF, WF derken damlaların artık nerelerden geldiğini takip edemez olmaya başladım. Ama damlalar iz bırakmaya devam ediyordu. 1.1, 2.0, 3.5, 4.0, Beta, RC, RTM...derken terler içerisinde uyanmıştım
+
+![blg123_Giris.jpg](/assets/images/2010/blg123_Giris.jpg)
 
 ![Wink](/assets/images/2010/smiley-wink.gif)
 

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Vue için Bebek Adımları"
 date: 2020-12-21 08:46:00 +0300
-description: "Yazılım işine girdiğimden beri en çok zorlandığım konu Frontend tarafta kodlama yapmak. Ne yazık ki sadece Backend tarafta kalmak lüksümüz de pek bulunmuyor. Örneğin hali hazırda çalışmakta olduğum firmada yeni nesil birçok uygulama önyüz tarafında çeşitli Javascript çatıları(Framework) kullanılıyor. Pratikte bakınca oldukça iyi bir kurgu aslında. Önyüzü Vue, React vb yapılarla geliştirip, asıl iş kuralları için arka planda yer alan .Net Core Web API servislerine gelmek. C# ve .Net Core tarafına aşina olduğum için arka planı rahatça kodluyorum, önyüz tarafında ise önceden geliştirilmiş sayfalara bakarak bir şeyler yapabiliyorum. Yani işin özü Vue.Js çatısının temellerinde sorunlarım var. Bu amaçla SkyNet'e uğradığım bir gün oturdum ekran başına en basit adımlarıyla bu işi nasıl öğrenirim bir kurcalayayım dedim."
 categories:
   - vuejs
 tags:
@@ -20,10 +19,9 @@ tags:
   - caching
   - github
 ---
-# Vue için Bebek Adımları
-![vue_manga.png](/assets/images/2020/vue_manga.png)
-
 Yazılım işine girdiğimden beri en çok zorlandığım konu Frontend tarafında kodlama yapmak. Ne yazık ki sadece Backend tarafta kalma lüksümüz de pek bulunmuyor. Örneğin hali hazırda çalışmakta olduğum firmada yeni nesil birçok uygulama önyüz tarafında çeşitli Javascript çatıları (Framework) kullanıyor.
+
+![vue_manga.png](/assets/images/2020/vue_manga.png)
 
 Pratikte bakınca oldukça iyi bir kurgu aslında. Önyüzü Vue, React, Angular vb yapılarla geliştirip, asıl iş kuralları için arka planda yer alan.Net Core Web API servislerine gelmek. C# ve.Net Core tarafına aşina olduğum için arka planı rahatça kodluyorum, önyüz tarafında ise önceden geliştirilmiş sayfalara bakarak bir şeyler yapabiliyorum. Yani işin özü Vue çatısının temellerinde sorunlarım var. Bu amaçla SkyNet'e uğradığım bir gün oturdum ekran başına en basit adımlarıyla bu işi nasıl öğrenirim bir kurcalayayım dedim.
 
@@ -39,6 +37,7 @@ touch vue_is_reactive.html
 
 Kodlarımızı aşağıdaki gibi geliştirelim.
 
+{% raw %}
 ```text
 <html>
 
@@ -88,6 +87,7 @@ Kodlarımızı aşağıdaki gibi geliştirelim.
 
 </html>
 ```
+{% endraw %}
 
 Oluşturduğumuz HTML sayfasını bir tarayıcıda açtıktan sonra özellikle F12 ile Debug moduna geçip Vue uygulama nesnesi olan app değişkeninin data özelliğindeki bookName içeriğini Console üstünden değiştirmeyi deneyin. Bu değişiklik sayfada bookName'i kullanan tüm elementlere yansıyacaktır. Buradan Vue ana bileşeninin (Component) DOM ile etkileşim halinde olduğunu söyleyebiliriz. İşte bu reaktif olmanın bir sonucudur.
 
@@ -99,6 +99,7 @@ ve F12 - Console sonrası.
 
 İkinci adımımızda Attribute Binding konusunu ele alacağız. HTML elementlerindeki nitelikleri (Örneğin img elementinin src niteliğini) direktifler (Örnekte v-bind) ile Vue verisine (data özelliğinin değerleri) nasıl bağlayacağımızı göreceğiz.
 
+{% raw %}
 ```bash
 touch vue_attribute_binding.html
 ```
@@ -255,6 +256,8 @@ touch vue_for_loop.html
 
 Kodlarımızı aşağıdaki gibi geliştirelim.
 
+{% endraw %}
+{% raw %}
 ```text
 <html>
 
@@ -316,6 +319,9 @@ Kodlarımızı aşağıdaki gibi geliştirelim.
 
 </html>
 ```
+{% endraw %}
+
+{% raw %}
 
 Bu adımdan sonraki çalışma zamanı çıktıları ise aşağıdaki gibi olacaktır.
 
@@ -874,3 +880,4 @@ Sekizinci örnekle birlikte Vue'nun en temel parçalarını bebek adımları ile
 - Vue_forms.html örneğinde summary için maksimum 250 karakter girilmesine izin veren bir doğrulama fonksiyonelliği geliştirin.
 
 Örnek kodlara [github reposu üzerinden](https://github.com/buraksenyurt/skynet/tree/master/No%2041%20-%20Vueeeee) erişebilirsiniz. Böylece geldik bir SkyNet derlememizin daha sonuna. Tekrardan görüşünceye dek hepinize mutlu günler dilerim.
+{% endraw %}

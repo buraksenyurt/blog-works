@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Visual Studio Code İçinde Unit Test Yazmak"
 date: 2018-11-26 21:15:00 +0300
-description: "Bu yazımızda Visual Studio Code içerisinde Unit Test barındıran bir çözümün nasıl geliştirilebileceğini inceliyoruz. İdeal klasör yapısını oluşturuyor, MSTest çatısını kullanarak çok basit bir test vakasını işletmeye çalışıyoruz. Amaçlarımızdan birisi de Visual Studio Code arabirimi dışına çıkmadan proje iskeletini oluşturmak ve testleri kurgulayarak deneyimlemek."
 categories:
   - dotnet-core
 tags:
@@ -15,12 +14,9 @@ tags:
   - testing
   - visual-studio
 ---
-# Visual Studio Code İçinde Unit Test Yazmak
-![core_test_7.gif](/assets/images/2018/core_test_7.gif)
-
-Merhaba Arkadaşlar,
-
 Geçtiğimiz günlerde şirketimizin düzenlediği kişisel gelişim eğitimlerinden birisindeydim. Transaksiyonel Analiz'in konularından olan Ego üzerine kişiliğimizin parçası olan ve hayatımızı etkileyen iç karakterlerimizden bahsediliyordu. Yaklaşık üç saatlik eğitimde hoşça dakikalar geçirdik ve epey değişik bilgiler öğrendik. Özellikle uzman psikoloğun yer yer kullandığı görseller ve nokta atışı yapan karikatürler eğitimi çok keyifli hale getirmeye yetmişti. Üstelik uygulamalı olarak yaptığımız testler ile iç benliğimizdeki karakterlerin hangi noktalarda olduğunu da gördük. Eğitim sonrası masama döndüm ve bir kaç gün önce başladığım ama iş yoğunluğu sebebiyle yarım kalan yazımın başına geçtim. Derken eğitimde kullanılan Yiğit Özgür imzalı nefis karikatür geldi aklıma. Okur için tebessüm ettirici bir başlangıç olur diye düşündüm. Gelelim konumuza.
+
+![core_test_7.gif](/assets/images/2018/core_test_7.gif)
 
 Şirketimizdeki Framework geliştirme ekibi, yazılan yeni nesil ürünlerde Visual Studio yerine Visual Studio Code ile çalışmamızı önermekte. Bir mecburiyet olmamakla beraber kendi Sprint Review toplantılarında gösterdikleri her şey Visual Studio Code üzerinden anlatılıyor. Çok eski ürünler için olmasa da (15 yıllık monolitik haline gelmiş devasa bir ERP uygulaması mesela) yeni nesil geliştirmeler için özellikle tercih ettiklerini ifade edebilirim. Bu da Visual Studio Code ile daha fazla haşır neşir olmamız ve el yatkınlığımızı arttırmamız gerektiği anlamına geliyor.
 

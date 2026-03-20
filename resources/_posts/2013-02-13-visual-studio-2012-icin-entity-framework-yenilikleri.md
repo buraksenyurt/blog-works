@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Visual Studio 2012 için Entity Framework Yenilikleri"
 date: 2013-02-13 01:18:00 +0300
-description: "Entity Framework bilindiği üzere son sürümlerinden itibaren çok daha fazla etkili olmaya başladı. Bu noktada Ado.Net geliştirici takımının müşteri ihtiyaçlarını da çeşitli anketler yardımıyla dinliyor olmasının önemi büyüktür. Örneğin uzun bir zaman anketin en üst sıralarında yer alan Enum desteğinin getirilmesi gibi. (Bu amaçla açılan Entity Framework Feature Suggestions forumunu takip etmenizi öneririm)"
 categories:
   - dotnet-framework-4-5
 tags:
@@ -15,10 +14,10 @@ tags:
   - http
   - visual-studio
 ---
-# Visual Studio 2012 için Entity Framework Yenilikleri
-[![Delphi5_RTM](/assets/images/2013/Delphi5_RTM_thumb.jpg)](/assets/images/2013/Delphi5_RTM.jpg) Merhaba Arkadaşlar,
-
 Çok eskiden kullanılan programlama dilleri ve platformları düşünüldüğünde çok ilkel IDE’ ler ile çalışmış olduğumuzu görmekteyiz. Hatta bazı programlama dilleri ile yapılan geliştirmelerde değil IDE, komut satırına mahkum olmuşuzdur (Gerçi komut satırında script yazarak geliştirme yapmak özellikle fonksiyonel programlama dilleri göz önüne alınırsa oldukça popüler ve isabetlidir)
+
+[![Delphi5_RTM](/assets/images/2013/Delphi5_RTM_thumb.jpg)](/assets/images/2013/Delphi5_RTM.jpg)
+
 
 Gelişen sistemler, kullanıcı deneyimleri ve görselliklerin artması ile de yazılımcıların daha profesyonel olan IDE’ ler üzerinde çalışması şart olmuştur.
 

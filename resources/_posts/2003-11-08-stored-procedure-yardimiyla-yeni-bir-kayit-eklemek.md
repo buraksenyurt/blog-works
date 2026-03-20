@@ -2,7 +2,6 @@
 layout: post
 title: "Stored Procedure Yardımıyla Yeni Bir Kayıt Eklemek"
 date: 2003-11-08 12:00:00 +0300
-description: "Bu yazımızda Sql Server üzerinde, kendi yazdığımız bir Saklı Yordam (Saklı Yordam) ile , veritabanındaki ilgili tabloya nasıl kayıt ekleyeceğimizi incelemeye çalışacağız. Öncelikle, Saklı Yordamlar hakkında kısa bir bilgi vererek hızlı bir giriş yapalım. Saklı yordamlar derlenmiş sql cümlecikleridir. Bunlar birer veritabanı nesnesi oldukları için, doğrudan veritabanı yöneticisi olan programda (örneğin Sql Server) yer alırlar. Bu nedenle veritabanınızı bir yere taşıdığınızda otomatik olarak, saklı yordamlarınızıda taşımış olursunuz. Bu Saklı Yordam'lerin tercih edilme nedenlerinden sadece birisidir."
 categories:
   - ado-net
 tags:
@@ -12,7 +11,6 @@ tags:
   - sql-server
   - t-sql
 ---
-# Stored Procedure Yardımıyla Yeni Bir Kayıt Eklemek
 Bu yazımızda Sql Server üzerinde, kendi yazdığımız bir Saklı Yordam (Saklı Yordam) ile, veritabanındaki ilgili tabloya nasıl kayıt ekleyeceğimizi incelemeye çalışacağız.
 
 Öncelikle, Saklı Yordamlar hakkında kısa bir bilgi vererek hızlı bir giriş yapalım. Saklı yordamlar derlenmiş sql cümlecikleridir. Bunlar birer veritabanı nesnesi oldukları için, doğrudan veritabanı yöneticisi olan programda (örneğin Sql Server) yer alırlar. Bu nedenle veritabanınızı bir yere taşıdığınızda otomatik olarak, saklı yordamlarınızıda taşımış olursunuz. Bu Saklı Yordam'lerin tercih edilme nedenlerinden sadece birisidir.

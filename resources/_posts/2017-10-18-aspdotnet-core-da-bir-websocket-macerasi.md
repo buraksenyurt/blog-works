@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net Core'da Bir WebSocket Macerası"
 date: 2017-10-18 14:29:00 +0300
-description: "Web Sockets web uygulamalarında aynı anda çift yönlü haberleşmeye olanak sağlayan bir standart olarak karşımıza çıkmakta. Bu yazıda Asp.Net Core 2.0 tarafında Web Sockets kullanımına bakacağız."
 categories:
   - asp-dotnet-core
 tags:
@@ -19,12 +18,9 @@ tags:
   - generics
   - github
 ---
-# Asp.Net Core'da Bir WebSocket Macerası
-![websockets_5.gif](/assets/images/2017/websockets_5.gif)
-
-Merhaba Arkadaşlar,
-
 Meşhur ve özlenen telefon markası Nokia'nın o başarılı sloganını hatırlıyor musunuz?, "Nokia, connecting people":) İşte bugünkü konumuz da o jeneriği aratmayacak türden. "WebSockets, connecting applications."(Burayı o adamın ses tonu ile zihninizde canlandırın derim) Evet berbat bir giriş oldu ama olsun. Gelelim konumuza.
+
+![websockets_5.gif](/assets/images/2017/websockets_5.gif)
 
 Web Sockets aynı anda çift yönlü haberleşmeye olanak sağlayan bir protokol olarak karşımıza çıkmakta. HTTP'nin klasik Request/Response modelinden farklı çalışan bu model ile masaüstü uygulamalarının eş zamanlı olarak karşılıklı haberleşebilme yetenekleri web ortamına da taşınmış oluyor. Böylece akıllı telefonlardan, tabletlerden, masaüstü uygulamalarından, tarayıcılardan bir sunucu ile Web Socket haberleşmesi gerçeklenebiliyor. Bu iletişim de istemci ve sunucu birbirlerini beklemeden eş zamanlı olarak karşılılklı paket alışverişinde bulunmakta. Chat arabirimleri, Bot programları, borsa ürünleri, gerçek zamanlı oyunlar ve benzeri örneklerde Web Socket modeli kullanılabiliyor. Aslında TCP haberleşmesini web için çift yönlü iletişime dönüştüren bir model olduğunu da belirtebiliriz. En temelinde ise handshaking adı verilen bir kavrama dayanıyor. Sunucu, kendisine bağlı olan istemcileri ile senkronize kalıyor. Web Socket'lerin en önemli yanları ise gerçek anlamda eşzamanlılık ve optimize edilmiş bir mesaj trafiği sunması.
 

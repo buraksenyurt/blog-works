@@ -1,15 +1,16 @@
-﻿---
+---
 layout: post
 title: "Netspecter Abstract Class Peşinde"
 date: 2011-04-07 09:18:00 +0300
-description: "Netspecter bu kez bir abstract sınıfın peşinde. Sizin içinde eğlenceli bir deneyim olacağına inandığım enteresan bir vakayı analiz etmeye çalışıyor olacağız. Çoğunlukla kod geliştirirken pek fark etmediğimiz bir hata ama hemen çözüm üretebiliyorz. Lakin bu çözümü üretirken istediğimizin dışında bir sonuca da neden olabiliyoruz. Dilerseniz hiç vakit kaybetmeden konumuza geçelim. İlk olarak aşağıdaki kod içeriğini göz önüne alarak başlamamızda yarar olacağı kanısındayım."
 categories:
   - csharp
 tags:
   - csharp
 ---
-# Netspecter Abstract Class Peşinde
-[![blg230_Giris](/assets/images/2011/blg230_Giris_thumb.jpg)](/assets/images/2011/blg230_Giris.jpg) Yağmur şiddetini giderek arttırıyordu. Karanlık ara sokakta gizemli bir pardesü ise ağır ağır ilerlemekteydi. Etraftaki pis kokunun hemen sokağın başındaki çöp konteynerlerinden geldiği ap açık ortadaydı. Ancak gizemli pardesü bu kokuyu umursamıyordu bile. Bir an durdu ve şüpheli bir şekilde arkasına baktı.
+Yağmur şiddetini giderek arttırıyordu. Karanlık ara sokakta gizemli bir pardesü ise ağır ağır ilerlemekteydi. Etraftaki pis kokunun hemen sokağın başındaki çöp konteynerlerinden geldiği ap açık ortadaydı. Ancak gizemli pardesü bu kokuyu umursamıyordu bile. Bir an durdu ve şüpheli bir şekilde arkasına baktı.
+
+[![blg230_Giris](/assets/images/2011/blg230_Giris_thumb.jpg)](/assets/images/2011/blg230_Giris.jpg)
+
 
 Karanlık içerisinde sadece gözleri belli oluyordu. Kaşlarını çattı ve bir anda irkilerek koşmaya başladı. O kadar paniklemişti ki, koşarken teneke çöp kutularını fark etmedi bile. Önce yere düştü, bir süre yuvarlandı. Çevredeki kediler sağ sola kaçışırken, kalkmaya çalıştı ama önündeki metal iskeleyi hesaplayamadı. Kafasını sert bir şekilde demire çarptı.
 
@@ -20,8 +21,6 @@ Bir kaç saniye sonra gökyüzünden düşen yağmur damlalarını görebiliyor 
 - Netspecter: Evet yaaa. Ben…Fazla uzağa kaçamadın eski dostum Abstract Class
 
 ![Sarcastic smile](/assets/images/2011/wlEmoticon-sarcasticsmile.png)
-
-Merhaba Arkadaşlar,
 
 Netspecter bu kez bir abstract sınıfın peşinde. Sizin içinde eğlenceli bir deneyim olacağına inandığım enteresan bir vakayı analiz etmeye çalışıyor olacağız. Çoğunlukla kod geliştirirken pek fark etmediğimiz bir hata ama hemen çözüm üretebiliyorz. Lakin bu çözümü üretirken istediğimizin dışında bir sonuca da neden olabiliyoruz. Dilerseniz hiç vakit kaybetmeden konumuza geçelim. İlk olarak aşağıdaki kod içeriğini göz önüne alarak başlamamızda yarar olacağı kanısındayım.
 

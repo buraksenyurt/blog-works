@@ -2,7 +2,6 @@
 layout: post
 title: "Basit Bir .Net Core Worker Servisi(Linux Daemon Olarak)"
 date: 2020-05-26 20:05:00 +0300
-description: ".Net Core Worker Service'ler ile planlanmış görevlerin arka planda icra edilmesi mümkün. Mesela belirli aralıklarla sistemden veri toplayıp kullanan bir Windows Service bu şekilde geliştirilebilir. Lakin o zaman .Net Core kullanmanın bir esprisi kalmıyor öyle değil mi? :) Bunun yerine bir Linux servisi geliştirmeyi ne dersiniz? En azından nasıl geliştirilebileceğini öğrenmeye. İşte benim amacım Heimdall(Ubuntu-20.04) üzerinde Linux Daemon olarak çalışacak bir servis yazmak. Örneğin günlük hava durumu bilgilerini 24 saatte bir toplayıp Redis üzerinde saklayan bir servis pekala güzel ve eğlenceli olabilir(Belki de olmaz, neyse) Daha önceki örneklerde kullandığımız Redis Docker Container'ı burada da kullanabiliriz. Öyleyse ne duruyoruz. Haydi kodlamaya."
 categories:
   - dotnet-core
 tags:
@@ -19,7 +18,6 @@ tags:
   - generics
   - github
 ---
-# Basit Bir .Net Core Worker Servisi(Linux Daemon Olarak)
 Konfor alanı dışında çalışmak geliştiricileri zaman zaman zorlasa da pek çok yeniliğin de kapısını açıyor. Örneğin yıllar önce pek çok kurumsal projede Windows Service'ler geliştirmiş olan ben bunun Linux platformunda yapılıp yapılamayacağını asla bilemezdim; şayet evdeki makineme Ubuntu kurup üstünde.Net Core ile bir şeyler yapmaya çalışana kadar. İşte günün konusu planlı işler için bir alternatif olan Worker Service'ler.
 
 .Net Core Worker Service'ler ile planlanmış görevlerin arka planda icra edilmesinin mümkün olduğunu biliyoruz. Mesela belirli aralıklarla sistemden veri toplayıp kullanan bir Windows Service bu şekilde geliştirilebilir. Lakin o zaman.Net Core kullanmanın bir esprisi kalmıyor öyle değil mi?:) Bunun yerine bir Linux servisi geliştirmeyi ne dersiniz? En azından nasıl geliştirilebileceğini öğrenmeye...İşte benim amacım da tam olarak bu. Heimdall (Ubuntu-20.04) üzerinde Linux Daemon olarak çalışacak bir servis yazmak. Örneğin günlük hava durumu bilgilerini 24 saatte bir toplayıp Redis üzerinde saklayan bir servis pekala güzel ve eğlenceli olabilir (Belki de olmaz, neyse) Daha önceki örneklerde kullandığımız Redis Docker Container'ı burada da kullanabiliriz. Öyleyse ne duruyoruz. Haydi kodlamaya.

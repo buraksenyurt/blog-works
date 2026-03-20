@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Stream ve Pipe Mevzusu"
 date: 2018-07-12 21:30:00 +0300
-description: "Node.js tarafında anlaşılması en zor konulardan birisinin stream'ler olduğu söyleniyor. Özellikle event ve multi-process gibi konularlar yakın temas içerisinde. Ancak benim dikkatimi çeken nokta okuduğum bir yazı üzerine önüme gelen performans. Özellikle büyük veri ile çalışan bir web sunucusu söz konusu ise stream nesnelerinin pipe mekanizması ile birlikte kullanılıyor olması önem arz eden bir konu. Gelin ne demek istediğimi benden daha iyi özetleyecek basit bir örnek ile konuya giriş yapalım."
 categories:
   - nodejs
 tags:
@@ -12,12 +11,9 @@ tags:
   - http
   - performance
 ---
-# Stream ve Pipe Mevzusu
-![piping_g_1.gif](/assets/images/2018/piping_g_1.gif)
-
-Merhaba Arkadaşlar,
-
 West-World bu hafta neredeyse savaş alanı gibiydi. Node.js tarafında öğrenmeye çalştığım yeni konu sebebiyle makineyi bir çok kez restart etmek zorunda kaldım. Üstelik düğmeden:|
+
+![piping_g_1.gif](/assets/images/2018/piping_g_1.gif)
 
 Sebep çok büyük boyutlu bir dosya içeriğini basit bir web sunucusu üzerinden sunmaya çalışmaktı. Aslında kimse bu tip bir şey yapmaz. Hadi yapsa da koca dosyayı tek seferde istemciye göndermez. Kaldı ki istemci de bu web hizmetine herhangi bir tarayıcıdan talep göndermez.
 

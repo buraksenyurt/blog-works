@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Cloud Firestore ile Angular Kullanımı"
 date: 2019-05-24 09:00:00 +0300
-description: "Angular tarafına yavaş yavaş alışmaya başladım. Yine de fazladan idman yapmaktan ve tekrar etmekten zarar gelmez. Bu sefer temel CRUD(Create Read Update Delete) operasyonlarını Firebase Firestore üzerinden icra ederken Angular'da koşmaya çalışacağım. Amaçlarımdan birisi de servis tarafında Form kontrolü kullanabilmek. Örneği her zaman olduğu gibi WestWorld(Ubuntu 18.04, 64bit) üzerinde yazacağım(ahch-to sistemine geçmeden önce oradaki son örneklerim diyebilirim)"
 categories:
   - angular
 tags:
@@ -16,10 +15,9 @@ tags:
   - concurrency
   - github
 ---
-# Cloud Firestore ile Angular Kullanımı
-![magicjohson.png](/assets/images/2019/magicjohson.png)
-
 Earvin (Magic) Johnson. Michael Jordan'la geçen gençlik yıllarımın henüz başlarında rastladığım NBA'in ve Los Angles Lakers'ın 2.06lık unutulmaz oyun kurucusu. O dönemlerde yaptığı inanılmaz assistler ve oyun zekası hala aranır nitelikte. Aslında sadece oyun kurucu değil zaman zaman şutör gard ve uzun forvet pozisyonlarında da oynamıştır.
+
+![magicjohson.png](/assets/images/2019/magicjohson.png)
 
 Lakers tarafından 1979 yılında birinci sırada draft edilen Johnson toplamda 5 NBA şampiyonluğu yaşamış efsanelerden birisi. [NBA istatistiklerine göre](https://stats.nba.com/player/77142/career/) oynadığı 906 maçta 19.5 sayı ve 11.2 assist ortalamaları ile double double yapmıştır. Toplamda 10141 asist ile tüm zamanların en çok asist yapan 5nci oyuncusu durumunda. 32 numaralı formasıyla 12 sezon Lakers'da görev alan oyun kurucunun hayatını sevgili Murat Murathanoğlu'nun eşsiz anlatımıyla dinlemek isterseniz [şöyle buyrun](https://youtu.be/xyxIiLpNDu8). Onun [Saturday-Night-Works](https://github.com/buraksenyurt/saturday-night-works) çalıştayımla olan tek ilgisi ise [forma numarası](https://github.com/buraksenyurt/saturday-night-works/tree/master/No%2032%20-%20Angular%20with%20Firebase). Hoş bir giriş olsun istedim de:[]
 
@@ -185,6 +183,7 @@ export class ProductListComponent implements OnInit {
 
 product-list.component.html
 
+{% raw %}
 ```text
 <table class="table">
   <thead class="thead-dark">
@@ -227,6 +226,7 @@ product-list.component.html
   servis tarafındaki versiyonunu çağırmış oluyoruz.
 -->
 ```
+{% endraw %}
 
 CRUD operasyonları her iki bileşen içinde ortaklaşa kullanılabilecek fonksiyonellikler. Bu nedenle Shared klasörü altında konuşlandırdığımız products.service.ts isimli bir tip mevcut.
 

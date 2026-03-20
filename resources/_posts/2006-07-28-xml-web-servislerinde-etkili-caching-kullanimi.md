@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Xml Web Servislerinde Etkili Caching Kullanımı"
 date: 2006-07-28 12:00:00 +0300
-description: "Ön-bellekleme (Caching) işlemleri web uygulamaları için ne kadar önemli ise Xml Web Servisleri içinde aynı durum geçerlidir. Ön-bellekleme sistemi sayesinde web uygulamalarının kullanıcıya cevap verme sürelerinin kısaltılması hedeflenmiştir. Bu da doğal olarak uygulamanın performansını arttırıcı bir etkendir. Kaldıki istekler önbellekten (cache) karşılandığı için, arka tarafta yapılan pek çok süreç atlanmaktadır."
 categories:
   - xml-web-services
 tags:
@@ -18,9 +17,6 @@ tags:
   - shared-state
   - dependency-management
 ---
-# Xml Web Servislerinde Etkili Caching Kullanımı
-Değerli Okurlarım Merhabalar,
-
 Ön-bellekleme (Caching) işlemleri web uygulamaları için ne kadar önemli ise Xml Web Servisleri içinde aynı durum geçerlidir. Ön-bellekleme sistemi sayesinde web uygulamalarının kullanıcıya cevap verme sürelerinin kısaltılması hedeflenmiştir. Bu da doğal olarak uygulamanın performansını arttırıcı bir etkendir. Kaldıki istekler önbellekten (cache) karşılandığı için, arka tarafta yapılan pek çok süreç atlanmaktadır. Dolayısıyla database işlemleri gibi maliyeti yüksek olan süreçlerin belirli kriterlere göre çalıştırılması ve kullanıcının istediği sonuçların en hızlı şekilde verilebilmesi ön-bellekleme sisteminin getirilerinden sadece birisidir. Web servisleride, web uygulamaları gibi 80 numaralı port üzerinden hizmet verdiklerinden ön-bellekleme yetilerine sahiptir. Web uygulamarında kullanılan ön-bellekleme mantığı ile web servislerinde kullanılan birbirlerine oldukça yakındır. Ancak bir takım farklılıklarda mevcuttur.
 
 Bildiğiniz gibi, web uygulamalarında ön-bellekleme (caching) sistemi Output Caching ve Data Caching olmak üzere iki ana kategoriye ayırlmaktadır. Bir web uygulamasında Output Caching sayfa bazında veya user control bazında kullanılabilir. Böylece bir web sayfasının tamamının yada onun küçük bir parçasının ön-bellekte tutulması sağlanabilir. Oysaki aynı durum Web Servislerinde biraz daha farklıdır. Nitekim, web servislerinin kullanıcı ile etkileşimde olan bir arayüzü bulunmamaktadır. Buda kontrol veya sayfa bazında ön-bellekleme işleminin yapılamayacağı anlamına gelmektedir. Bir web servisi söz konusu olduğunda ön belleğe (cache) alınabilecek olan içerik bu servise ait metodların döndüreceği sonuç kümelerinden başka bir şey olmayacaktır. Dolayısıla web servislerinde metod bazında ön-belleklemenin yapılabileceğini söyleyebiliriz. Bunun dışında, web uygulamlarında sıkça kullanılan Data Caching tekniği web servisleri içinde geçerlidir. Kaldıki Data Caching tekniğinde kesin yaşam süresi (absolute expire time), hareketli yaşam süresi (floating expire time), dosya veya tablo bağımlılığı (cache dependency) gibi seçeneklerde mevcuttur. Bu seçenekler bir web servisi içerisinde etkin bir şekilde uygulandığında kullanıcılara hızlı cevap verebilmenin dışında, var olan sistem kaynaklarınıda daha etkili kullanabilme olanaklarına sahip oluruz. Bir web metodun döndüreceği sonuç kümesini ön-belleğe taşımak için yapılması gereken, WebMethod niteliğini aşağıdaki gibi CacheDuration özelliği ile kullanmaktır.

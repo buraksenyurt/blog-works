@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "MongoDB ile Bir GO Uygulamasını Konuşturmak"
 date: 2019-12-18 08:00:00 +0300
-description: "Elimizdeki malzemeleri sayalım. MongoDB için bir docker imajı, gRPC ve GoLang. Bu üçünü kullanarak CRUD operasyonlarını icra eden basit bir uygulama geliştirmek niyetindeyim. Bir önceki öğretide Redis docker container'dan yararlanmıştım. Ahch-to sistemini kirletmemek adına MongoDB için de benzer şekilde hareket edeceğim. Açıkçası GoLang bilgim epey paslanmış durumda ve sistemde yüklü olup olmadığını dahi bilmiyorum."
 categories:
   - golang
 tags:
@@ -21,10 +20,9 @@ tags:
   - visual-studio
   - github
 ---
-# MongoDB ile Bir GO Uygulamasını Konuşturmak
-![screenshot_9.png](/assets/images/2019/screenshot_9.png)
-
 Teknoloji baş döndüren bir hızla ilerlerken beynimizin tembelleştiğini de kabul etmemiz gerekiyor. Artık pek çok işimiz otonomlaştırıldığından zihnimiz eski egzersizleri yapmıyor. Yıllar önce İngiltere'de yapılan bir araştırmada çocukların hesap makinesi kullanması sebebiyle temel dört işlem matematiğinde sorunlar yaşadığı tespit edilmişti. Yine Kanada'da yapılan bir araştırma insanların dikkat dağılma sürelerinin 8 saniyelere kadar indiğini gösterdi. Hafızamızı dinç tutma noktasında Japon balıkları ile yarışır bir konumda olduğumuz da aşikar. Kaçımız aklından ezbere 4 telefon numarasını sayabilir (Üç haneliler yasak) Otonomlaşan dünya sebebiyle tembelleşen ve dış uyarıcılar yüzünden sürekli dikkati dağılan zihnimiz...Gerçekten de dikkatimizi dağıtan, odaklanmamızı bozan o kadar çok şey var ki. Dolayısıyla kendimizi yetiştirmek istediğimiz konulara çalışırken ne kadar verimli olabiliyoruz bir bakmak gerekiyor. Tekrar satın alınamayacak olan zamanın ne kadar kıymetli olduğunu düşünürsek verimli çalışmanın ilerleyen yaşlarda çok çok önemli bir mesele haline geldiğini vurgulamak isterim.
+
+![screenshot_9.png](/assets/images/2019/screenshot_9.png)
 
 İşte bu sebepten birkaç haftadır [Saturday-Night-Works](https://github.com/buraksenyurt/saturday-night-works) çalışmalarım sırasında pomodoro tekniğini neden kullanmadığımı karar kara düşünmekteyim. Oysa ki çok verimli bir çalışma pratiği. Atladığım bu önemli detayı SkyNet çalışmalarımın ilk gününden itibaren uygulamaya karar verdim. Genellikle gece 22:00 sularında başlayarak 4X25 dakikalık seanslar halinde ilerliyorum. Her seans arasında 5er dakikalık standart molalar var. Tabii bu tekniği uygularken en önemli kural çalışmayı bölecek unsurları mutlak suretle dışarıda bırakmak. Cep/ev telefonu, televizyon, radyo, e-mail programı ve benzeri odak dağıtıcı ne kadar şey varsa kapatmak gerekiyor. Bunun faydasını epeyce gördüğümü ve 25 dakikalık zaman dilimlerindeki çalışmalardan iyi seviyede verim aldığımı ifade edebilirim. Aranızda uygulamayanlar varsa bir göz atsınlar derim;)
 

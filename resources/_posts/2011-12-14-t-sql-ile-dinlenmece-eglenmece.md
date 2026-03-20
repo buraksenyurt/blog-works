@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "T-SQL ile Dinlenmece Eğlenmece"
 date: 2011-12-14 16:25:00 +0300
-description: "Açıkçası geçtiğimiz günlerde böyle sıkkın ve bıkkın bir ruh halindeyken ve konuşmak istediğim tüm arkadaşlarım yoğunken, ekranımda duran Management Studio' daki bembeyaz ve bomboş Query penceresi ile muhabbet etmeye karar verdim. Aslında amacım basitti. Daha önceki tecrübelerime dayanarak ihtiyaçlar dahilinde kullandığım T-SQL ifadelerini şöyle bir tekrar etmeye çalışacak ve siz değerli okurlarıma bir blog girdisi olarak sunacaktım. Aklıma geldikçe ihtiyaçlarımın T-SQL karşılıklarını yazmaya başladım. Düşündüğüm ilk gereksinim, sistemimde yüklü olan kaç veritabanı olduğunu ve bunlara ait bazı temel bilgileri edinmekti...İşte serüvenimiz bu ilk sorgumuz ile başlıyor."
 categories:
   - t-sql
 tags:
@@ -14,10 +13,10 @@ tags:
   - transactions
   - visual-studio
 ---
-# T-SQL ile Dinlenmece Eğlenmece
-[![fun](/assets/images/2011/fun_thumb.jpg)](/assets/images/2011/fun.jpg) Merhaba Arkadaşlar,
-
 Hiç canınızın sıkıldığı ve böyle bir buhran anına girdiğinizde SQL Server Management Studio'yu açıp T-SQL ile eğlenceli bir şeyler yapmaya çalıştığınız oldu mu?
+
+[![fun](/assets/images/2011/fun_thumb.jpg)](/assets/images/2011/fun.jpg)
+
 
 ![Smile](/assets/images/2011/wlEmoticon-smile_25.png)
 

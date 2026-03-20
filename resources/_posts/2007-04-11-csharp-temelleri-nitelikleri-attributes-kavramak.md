@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "C# Temelleri : Nitelikleri(Attributes) Kavramak"
 date: 2007-04-11 03:00:00 +0300
-description: "Nitelik(Attribute) eninde sonunda her dotNet programcısının kullandığı ve karşılaştığı bir kavramdır. Özellikle yansıma (Reflection) konusu ile birlikte anıldığından, .Net Framework içerisinde önemli bir yere sahiptir."
 categories:
   - csharp
 tags:
@@ -23,9 +22,6 @@ tags:
   - generics
   - visual-studio
 ---
-# C# Temelleri : Nitelikleri(Attributes) Kavramak
-Değerli Okurlarım Merhabalar,
-
 Nitelik (Attribute) eninde sonunda her dotNet programcısının kullandığı ve karşılaştığı bir kavramdır. Özellikle yansıma (Reflection) konusu ile birlikte anıldığından,.Net Framework içerisinde önemli bir yere sahiptir..Net Framework içerisinde pek çok modelde niteliklerden aktif olarak faydalanılmaktadır. Web servislerinden windows kontrollerini geliştirmeye, kendi web part bileşenlerimizi yazmaktan serileştirmeye kadar pek çok alanda işe yaramaktadır. Hatta çok popüler olarak, katmanlı mimarilerde ve nitelik bazlı (attribute based) programlama modellerinde de ele alınmaktadır. İşte bu makalemizde nitelikleri incelemeye çalışacak ve özellikle kendi niteliklerimizi nasıl geliştirebileceğimize değineceğiz.
 
 Herşeyden önce, niteliği (Attribute) tanımlamakta fayda vardır. Nitelikler, uygulandıkları tiplerin (types) yada üyelerin (members) çalışma zamanındaki davranışlarının değiştirilmesine olanak sağlayan sınıflardır. Niteliklerin sınıf (class) olduğu rahatlıkla söylenebilir. Nitekim var olan veya bizim tarafımızdan geliştirilen nitelikler daima Attribute sınıfından türemek zorundadırlar. Attribute, abstract bir sınıftır. Dolayısıyla örneklenemez ancak bir nitelik sınıfının içermesi gereken temel üyeleri bünyesinde barındırır.

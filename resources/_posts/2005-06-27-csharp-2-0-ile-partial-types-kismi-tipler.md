@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "C# 2.0 ile Partial Types (Kısmi Tipler)"
 date: 2005-06-27 12:00:00 +0300
-description: "Visual Studio.Net ile windows veya web uygulamaları geliştirirken, kod yazılması sırasında karşılaştığımız güçlüklerden birisi, tasarım kodları ile kendi yazmış olduklarımızın iç içe geçmeleridir. Bu zamanla kodun okunabilirliğini zorlaştıran bir etmendir. Bunun windows uygulamalarını veya asp.net uygulamalarını geliştirirken sıkça yaşamaktayız. Bununla birlikte, özellike soruce safe gibi ortamlarda farklı geliştiricilerin aynı sınıf kodları üzerinde eş zamanlı olarak çalışması pek mümkün değildir."
 categories:
   - csharp
 tags:
@@ -13,9 +12,6 @@ tags:
   - generics
   - visual-studio
 ---
-# C# 2.0 ile Partial Types (Kısmi Tipler)
-Değerli Okurlarım Merhabalar,
-
 Visual Studio.Net ile windows veya web uygulamaları geliştirirken, kod yazılması sırasında karşılaştığımız güçlüklerden birisi, tasarım kodları ile kendi yazmış olduklarımızın iç içe geçmeleridir. Bu zamanla kodun okunabilirliğini zorlaştıran bir etmendir. Bunun windows uygulamalarını veya asp.net uygulamalarını geliştirirken sıkça yaşamaktayız. Bununla birlikte, özellike soruce safe gibi ortamlarda farklı geliştiricilerin aynı sınıf kodları üzerinde eş zamanlı olarak çalışması pek mümkün değildir.
 
 Visual Studio.2005 ile birlikte, sınıf (class), arayüz (interface) ve yapı (struct) gibi tipleri mantıksal olarak ayrıştırabileceğimiz ve farklı fiziki dosyalarda (veya aynı fiziki dosya üzerinde) tutabileceğimiz yeni bir yapı getirilmiştir. Bu yapının kilit noktası tiplerin partial anahtar sözcüğü ile imzalanmasıdır. Partial olarak tanımladığımız tipleri farklı fiziki dosyalarda (veya aynı fiziki dosya içerisinde) tutabiliriz. Burada önemli olan, çalışma zamanında yazmış olduğumuz tipin mutlaka tek bir bütün olarak ele alınıyor olmasıdır.

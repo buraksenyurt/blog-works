@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Microsoft PDC İçeriğini OData Servisi Üzerinden Elde Etmek"
 date: 2010-11-17 22:18:00 +0300
-description: "Bildiğiniz üzere bir süre önce Microsoft PDC 2010 etkinlikleri gerçekleştirildi. Online olaraktan da canlı izleyebildiğimiz sunumlarda Microsoft’ un çok değerli sunumlarına ve anlatımlarına şahit olduk. Her PDC konferansında olduğu gibi bu sene yapılan etkinliklere ait görüntü kayıtları, Download edilmeye açıldıkları andan itibaren de ilgi odağı oldular..."
 categories:
   - wcf-data-services
 tags:
@@ -14,10 +13,10 @@ tags:
   - silverlight
   - http
 ---
-# Microsoft PDC İçeriğini OData Servisi Üzerinden Elde Etmek
-[![blg240_Giris](/assets/images/2010/blg240_Giris_thumb.gif)](/assets/images/2010/blg240_Giris.gif) Merhaba Arkadaşlar,
-
 Bildiğiniz üzere bir süre önce Microsoft PDC 2010 etkinlikleri gerçekleştirildi. Online olaraktan da canlı izleyebildiğimiz sunumlarda Microsoft’ un çok değerli sunumlarına ve anlatımlarına şahit olduk. Her PDC konferansında olduğu gibi bu sene yapılan etkinliklere ait görüntü kayıtları, Download edilmeye açıldıkları andan itibaren de ilgi odağı oldular
+
+[![blg240_Giris](/assets/images/2010/blg240_Giris_thumb.gif)](/assets/images/2010/blg240_Giris.gif)
+
 
 ![Winking smile](/assets/images/2010/wlEmoticon-winkingsmile_10.png)
 

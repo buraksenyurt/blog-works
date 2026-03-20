@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "AWS Elastic Beanstalk Macerası"
 date: 2018-02-16 05:00:00 +0300
-description: "Bu yazımızda Django çatısından üretilmiş standart bir web uygulamasını, Amazon'un Platform As A Service olarak konumlandırdığı Elastic Beanstalk üzerine nasıl taşıyabileceğimizi öğrenmeye çalışıyoruz. Yolda tabii ki başımıza garip garip olaylar da geliyor. Özellikle sonlara doğru yaşadığımız sıkıntıları çözmeye de çalışıyoruz. Haydi gelin başlayalım."
 categories:
   - aws
   - python
@@ -17,16 +16,13 @@ tags:
   - ruby
   - nodejs
 ---
-# AWS Elastic Beanstalk Macerası
-![ebpython_robin.gif](/assets/images/2018/ebpython_robin.gif)
-
-Merhaba Arkadaşlar,
-
 Geçenlerde sıkıldığım bir ara kendimi Google'da "How To Draw..." araması yaparken buldum. [Bir internet sitesinde](http://www.drawinghowtodraw.com/stepbystepdrawinglessons/2016/10/draw-cute-kawaii-chibi-robin-dc-comics-batman-robin-easy-steps-drawing-lesson-kids/) DC Comics'in Robin karakterini nasıl çizebileceğimizi anlatan içerik ilgimi çekmişti. Geometri bilgisini iyi kullandığı için anlaşılırdı. Tabii önemli bir eksiğim vardı...Yetenek. Sonuçları sizlerle paylaşmayı çok tercih etmiyorum ama yandaki Robin'in kafasının pek yakınlarından geçemediğimi gönül rahatlığıyla itiraf edebilirim. Dolayısıyla google aramasını ve internet sayfasını kapatıp tekrardan az buçuk anlamaya çalıştığım yazılım dünyasına döndüm.
+
+![ebpython_robin.gif](/assets/images/2018/ebpython_robin.gif)
 
 Aslında bazen öğrenmek istediğimiz konuyu adım adım ve her adımında da tane tane anlatan bir dokümanı takip ederiz. Ama çalıştığımız ortamlar her zaman için bir yerlerde sorunlarla karşılaşmamıza neden olabilirler. Geçtiğimiz cumartesi günü de benzer sorunlarla karşılaştım. Amacım Amazon'un [şu adreste](http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create-deploy-python-django.html?refid=em_68105) yayınladığı dokümanı takip ederek Elastic Beanstalk üzerine Django ile oluşturulmuş bir web uygulamasını taşıyıp Doğu Amerika kıtasındaki herhangibir Elastic Compute Cloud (Amazon EC2) sistemi üzerinden canlı yayına almaktı. İlk başlarda kolay giden adımlar özellikle sonlara doğru çeşitli sürprizlerle karşılaşmama neden oldu.
 
-Her şey o Cuma günü AWS'de açmış olduğum hesapla neler yapabileceğime bakarken başladı. Bir süre öncesinde [Amazon Lambda hizmetini incelemiş](AWS Lambda Üzerinde .Net Core Koşturmak.md) ve.Net Core ile kullanabildiğimi gördükten sonra epey keyif almıştım. Şimdiki hedefim Elastic Beanstalk ürünüydü. Kısaca Platform as a Service gibi konumlanan bu ürün sayesinde, çeşitli platformları Amazon EC2 örnekleri ile çalışacak şekilde hazırlayabiliyoruz. Platform anlamında oldukça geniş bir ürün yelpazesi de söz konusu. [Buradaki adresten](http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/concepts.platforms.html) detaylarını öğrenebileceğinize gibi.Net Core'dan Go'ya, Python'dan Java'ya, Ruby'den Php'ye, Node.js'ten Docker'a kadar pek çok uygulama için hazır ortamlar söz konusu.
+Her şey o Cuma günü AWS'de açmış olduğum hesapla neler yapabileceğime bakarken başladı. Bir süre öncesinde [Amazon Lambda hizmetini incelemiş](/2018/01/11/aws-lambda-uzerinde-dotnet-core-kosturmak/) ve.Net Core ile kullanabildiğimi gördükten sonra epey keyif almıştım. Şimdiki hedefim Elastic Beanstalk ürünüydü. Kısaca Platform as a Service gibi konumlanan bu ürün sayesinde, çeşitli platformları Amazon EC2 örnekleri ile çalışacak şekilde hazırlayabiliyoruz. Platform anlamında oldukça geniş bir ürün yelpazesi de söz konusu. [Buradaki adresten](http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/concepts.platforms.html) detaylarını öğrenebileceğinize gibi.Net Core'dan Go'ya, Python'dan Java'ya, Ruby'den Php'ye, Node.js'ten Docker'a kadar pek çok uygulama için hazır ortamlar söz konusu.
 
 Buradaki hazırlıklarda Infrastructure as a Service gibi konumlanan Amazon EC2 tarafını da pek düşünmemize gerek kalmıyor esasında. Bu noktada EB'nin başarılı bir Deployment aracı olduğunu da ifade edebiliriz. EB'yi kullanırken Amazon Web Console üzerinden bir kaç tıklama ile bir platformu ayağa kaldırıp yayına almamız mümkün. İşte o Cuma akşamı bunu denemiştim. Şekilden de görüleceği gibi üzerinde Python 3.6 ortamı kurulu olan 64bitlik bir Linux makine emrime amadeydi.
 

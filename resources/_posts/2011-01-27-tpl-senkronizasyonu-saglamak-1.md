@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "TPL Senkronizasyonu Sağlamak - 1"
 date: 2011-01-27 13:40:00 +0300
-description: "TPL ve Shared Data Isolation başlıklı yazımızda, n sayıda Task örneğinin ortaklaşa kullandıkları bir veri alanı üzerindeki işlemlerinin, ne gibi sonuçlara yol açabileceğini incelemiş ve bunun önün geçmek için basit bir kaç yolu ele almıştık."
 categories:
   - parallel-programming
   - tpl
@@ -16,12 +15,9 @@ tags:
   - visual-studio
   - shared-state
 ---
-# TPL Senkronizasyonu Sağlamak - 1
-![blg212_Giris](/assets/images/2011/blg212_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Pek çoğumuzun anahtarlığında sayısız anahtar bulunmaktadır. Özellike gerilim filmlerinde bu anahtarlardan doğru olanı bulmak ve anahtar deliğine sokmak, hep zaman alan başarısız kaçış girişimleri olarak sahnelenir. Genellikle bu başarız girişimlerin sonunda ne olduğu malumdur.
+
+![blg212_Giris](/assets/images/2011/blg212_Giris.jpg)
 
 Ancak ister gerilim filmi olsun ister olmasın sonuçta anahtar deliğine herhangibir zamanda takılabilecek sadece tek bir anahtar söz konusudur. Üstelik bu anahtar, aynı yere başka bir anahtarın takılmasına da izin vermez. Aslında izin verip vermemesi, anahtarı tutan veya kullanan kişinin elindedir.
 
@@ -29,7 +25,7 @@ Aslında şu anda varmak istediğim nokta lock kelimesidir. lock, çok kanallı 
 
 Tüm bunlara ek olarak uzun zamandır bilinen Task Parallel Library ve doğal olarak yeni paralel programlama yapısı mevcuttur. Dolayısıyla aynı senkronizasyon vakaları TPL içerisinde de geçerlidir ve bu amaçla eklenmiş yeni özellikler bulunmaktadır. İşte bu yazımız ile birlikte TPL içerisinde senkronizasyon konusunu incelemeye çalışıyor olacağız.
 
-[TPL ve Shared Data Isolation](TPL ve Shared Data Isolation.md) başlıklı yazımızda, n sayıda Task örneğinin ortaklaşa kullandıkları bir veri alanı üzerindeki işlemlerinin, ne gibi sonuçlara yol açabileceğini incelemiş ve bunun önün geçmek için basit bir kaç yolu ele almıştık. Hatırlayacağınız üzere değerlendirdiğimiz senaryoda, Plane tipinden olan nesne örneğine ait Altitude özelliğinin değerinin, Task blokları içerisinde değiştirildiği nokta, sorunun oluşmasına neden olan kritik bölgeydi.
+[TPL ve Shared Data Isolation](/2011/01/20/tpl-ve-shared-data-isolation/) başlıklı yazımızda, n sayıda Task örneğinin ortaklaşa kullandıkları bir veri alanı üzerindeki işlemlerinin, ne gibi sonuçlara yol açabileceğini incelemiş ve bunun önün geçmek için basit bir kaç yolu ele almıştık. Hatırlayacağınız üzere değerlendirdiğimiz senaryoda, Plane tipinden olan nesne örneğine ait Altitude özelliğinin değerinin, Task blokları içerisinde değiştirildiği nokta, sorunun oluşmasına neden olan kritik bölgeydi.
 
 ```csharp
 for (int i = 0; i < 5; i++) 

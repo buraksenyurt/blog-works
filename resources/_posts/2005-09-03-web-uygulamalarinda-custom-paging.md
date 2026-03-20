@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Web Uygulamalarında Custom Paging"
 date: 2005-09-03 12:00:00 +0300
-description: "Geliştirdiğimiz web uygulamalarında özellikle DataGrid kontrollerini kullandığımızda sayfalama işlemini sıkça kullanırız. Genellikle sayfalama işlemlerini var sayılan hali ile kullanırız. Bu modele göre grid üzerinde sayfalama yapabilmek için PageIndexChanged olayını ele almamız gerekir. Burada grid kontrolüne yeni sayfa numarasını DataGridPageChangedEventArgs parametresinin NewPageIndex değeri ile verir ve bilgilerin tekrardan yüklenmesini sağlayacak uygulama kodlarımızı yürütürüz. Tipik olarak bu tarz bir kullanım aşağıdaki kod parçasında olduğu gibi yapılmaktadır."
 categories:
   - aspnet
 tags:
@@ -13,9 +12,6 @@ tags:
   - caching
   - datatable
 ---
-# Web Uygulamalarında Custom Paging
-Değerli Okurlarım Merhabalar,
-
 Geliştirdiğimiz web uygulamalarında özellikle DataGrid kontrollerini kullandığımızda sayfalama işlemini sıkça kullanırız. Genellikle sayfalama işlemlerini var sayılan hali ile kullanırız. Bu modele göre grid üzerinde sayfalama yapabilmek için PageIndexChanged olayını ele almamız gerekir. Burada grid kontrolüne yeni sayfa numarasını DataGridPageChangedEventArgs parametresinin NewPageIndex değeri ile verir ve bilgilerin tekrardan yüklenmesini sağlayacak uygulama kodlarımızı yürütürüz. Tipik olarak bu tarz bir kullanım aşağıdaki kod parçasında olduğu gibi yapılmaktadır.
 
 ```csharp

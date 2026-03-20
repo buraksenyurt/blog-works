@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Cross-Page Postback Paradigması"
 date: 2006-08-04 12:00:00 +0300
-description: "Asp.Net 2.0 ile gelen en önemli yeniliklerden biriside Cross-Page Postback mimarisidir. Cross-Page Postback, bir sayfanın tüm içeriği ile başka bir sayfaya doğru gönderilebilmesini sağlar. Bunu bir asp.net sayfasının kendi üzerine değilde, hedef gösterilen bir sayfaya doğru gönderilmesi olarakta düşünebiliriz."
 categories:
   - aspnet-2-0
 tags:
@@ -15,9 +14,6 @@ tags:
   - java
   - javascript
 ---
-# Cross-Page Postback Paradigması
-Değerli Okurlarım Merhabalar,
-
 Asp.Net 2.0 ile gelen en önemli yeniliklerden biriside Cross-Page Postback mimarisidir. Cross-Page Postback, bir sayfanın tüm içeriği ile başka bir sayfaya doğru gönderilebilmesini sağlar. Bunu bir asp.net sayfasının kendi üzerine değilde, hedef gösterilen bir sayfaya doğru gönderilmesi olarakta düşünebiliriz. Böylece hedef sayfa içerisinden, kaynak sayfadaki (yada kaynak sayfalardaki) verilere erişebilme imkanı sağlanmış olunur.
 
 Bu aynı zamanda sayfalar arasında veri taşımanın etkili yollarından birisi olarak, web uygulamalarındaki yerini almıştır. Cross-Page Postback oldukça güçlü bir yenilik olmasına karşın kullanırken dikkat edilmesi gereken bazı hususlar vardır. Bu makelemizde dikkat edilmesi gereken noktaları örnekler üzerinden incelemeye çalışacağız. Aşağıdaki tabloda Cross-Page Postback işlemi sırasında dikkat etmemiz gereken noktalar maddeler halinde özetlenmeye çalışılmıştır.

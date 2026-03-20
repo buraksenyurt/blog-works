@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Yine Yeni Yeniden ELK(Bu sefer E ve K için docker-compose işin içinde)"
 date: 2020-07-22 20:23:00 +0300
-description: "Her ne kadar artık .Net 5.0 hayatımızın içinde olsa da bu yıl içinde bir yerlerde .Net Core 3.1 ile ELK kurgusunu yeniden değerlendirme ihtiyacı hissetmişim. Elasticsearch, Logstash ve Kibana kurgusu aslında günümüz uygulamalarında son derece popüler. Genellikle uygulama loglarının devasa şekilde biriktiği durumların çözümünde ideal bir kurgu. Uygulama loglarını standart bir formata uygun olacak şekilde Elasticsearch'e atar ve bizler de Kibana gibi arayüzleri kullanarak burayı monitör ederek çeşitli durumların kontrolünü yapmaya çalışırız. Ağırlıklı olarak üretim ortamında oluşacak hataların, dar boğazların yakalanması noktasında işimize yarayan bir düzenek olarak düşünebiliriz. Şunu da belirtmekte yarar var. Günümüz uygulamalarında hataları debug ederek bulmak yerine detaylı ve iyi bir strateji ile oluşturulmuş logları takip ederek tedbir almak son derece kıymetlidir. Benim bu çalışmadaki amacım .Net Core 3.1 üstünden ELK düzeneğini kurgulayıp loglama, izleme işlerini tekrarlamaktı. Ancak bu sefer ElasticSearch ve Kibana containerları için docker compose aracını kullanmayı da öğrenmek istemiştim. Yani çalışmanın ana noktası ilgili düzeneği Docker Compose ile kurgulamak."
 categories:
   - dotnet-core
 tags:
@@ -21,10 +20,9 @@ tags:
   - visual-studio
   - github
 ---
-# Yine Yeni Yeniden ELK(Bu sefer E ve K için docker-compose işin içinde)
-![elk_2.png](/assets/images/2020/elk_2.png)
-
 Her ne kadar artık.Net 5.0 hayatımızın içinde olsa da bu yıl içinde bir yerlerde.Net Core 3.1 ile ELK kurgusunu yeniden değerlendirme ihtiyacı hissetmişim. Elasticsearch, Logstash ve Kibana kurgusu aslında günümüz uygulamalarında son derece popüler. Genellikle uygulama loglarının devasa şekilde biriktiği durumların çözümünde ideal bir kurgu olarak karşımıza çıkıyor. Bu kurguda uygulama loglarını standart bir formata uygun olacak şekilde Elasticsearch'e atar, Kibana arayüzünü kullanarak izleme yapar ve çeşitli durumların kontrolünü gerçekleştiririz. Ağırlıklı olarak üretim ortamında oluşacak hataların, performans kayıplarının ve dar boğazların yakalanması noktasında işimize yarayan bir düzenek olarak düşünebiliriz.
+
+![elk_2.png](/assets/images/2020/elk_2.png)
 
 Şunu da belirtmekte yarar var; günümüz uygulamalarında hataları debug ederek bulmak yerine detaylı ve iyi bir strateji ile oluşturulmuş logları takip ederek tedbir almak son derece kıymetlidir. Benim bu çalışmadaki amacım.Net Core 3.1 üstünden ELK düzeneğini kurgulayıp loglama ve izleme işlerini tekrarlamaktı. Ancak bu sefer ElasticSearch ve Kibana ortamları için docker compose aracını kullanmayı tercih etmiştim. Yani çalışmanın ana noktası ilgili düzeneği Docker Compose ile kurgulamak ve çalışma sonuçlarını görmekten ibaret. Öyleyse kurgumuza başlayalım
 
@@ -162,7 +160,7 @@ Kobay servisimiz hazır. Şimdi docker compose dosyasını hazırlayalım (Bu ar
 ```yml
 version: '3.7'
 
-services: 
+services:
 
     elasticsearch:
         container_name: elasticsearch

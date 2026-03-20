@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "GoLang - Slice ve Map Kavramları"
 date: 2017-03-02 21:23:00 +0300
-description: "Gopher olma çalışmalarına veri türlerini tanıyarak devam ediyorum. Geçtiğimiz günlerde Slice ve Maps veri türlerini anlamaya çalıştım. Her ikisi de sağladıkları esneklikler açısından kullanışlı. Şimdi gelin kısaca bu türleri tanıyalım."
 categories:
   - golang
 tags:
@@ -10,12 +9,9 @@ tags:
   - go
   - pointers
 ---
-# GoLang - Slice ve Map Kavramları
-![gobanana.gif](/assets/images/2017/gobanana.gif)
-
-Merhaba Arkadaşlar,
-
 Gopher olma çalışmalarım iş yoğunluğuna bağlı olarak zaman zaman hızlı ve zaman zaman da yavaş bir şekilde devam ediyor. Açıkçası Gopher karakterini ve internetteki örneklerini çok sevdim. Google oldukça sevimli bir logo yaratmış. Bu nedenle her bölüm mümkün mertebe farklı bir Gopher'ı ekranlarınıza taşımaya çalışıyorum.
+
+![gobanana.gif](/assets/images/2017/gobanana.gif)
 
 Efendim gelelim sadede. Go dilinde kullanılan türlerden olan Array tipini kısaca inceledikten sonra geçtiğimiz günlerde Slice ve Map kavramlarını da incelemeye başladım. Her ikisi de sağladıkları esneklikler açısından dil içerisinde oldukça önemli bir yere sahipler. Bu makalemizde ilgili veri tiplerini basit örnekler üzerinden tanıma gayretinde olacağız.
 

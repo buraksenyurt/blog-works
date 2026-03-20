@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "XPath ve .Net"
 date: 2006-03-04 06:00:00 +0300
-description: "XPath, XML dökümanları üzerinde basit tipte sorgulamalar yapmamıza izin veren bir dildir. Yapısı gereği kullanıldığı pek çok alan vardır. Örneğin XQuery içinde yada bir XSLT dökümanında bu dilin izlerine rahatlıkla rastlayabilirsiniz. Tam olarak yaptığı işin, XML dökümanı içerisinde lokasyon aramak ve bulmak olduğunu söyleyebiliriz. XPath, herhangibir Xml verisi üzerinde arama ve konumlandırma işlemini gerçekleştirmek için Document Object Model' i kullanılır. Yani, xml verisinin bellekteki hiyerarşik ağaç yapısını ele alır. Bunun içinde Xml verisinin yapısal (structural) metadata bilgisine bakar. XPath başlı başına bir dildir ve bu konu ile ilgili yazılmış kitaplar vardır. ( Size eski olmasına rağmen Sams' ın XPath Kick Start : Navigating XML with XPath 1.0 and 2.0 kitabını tavsiye edebilirim.)"
 categories:
   - xml
 tags:
@@ -12,9 +11,6 @@ tags:
   - http
   - performance
 ---
-# XPath ve .Net
-Değerli Okurlarım Merhabalar,
-
 XPath, XML dökümanları üzerinde basit tipte sorgulamalar yapmamıza izin veren bir dildir. Yapısı gereği kullanıldığı pek çok alan vardır. Örneğin XQuery içinde yada bir XSLT dökümanında bu dilin izlerine rahatlıkla rastlayabilirsiniz. Tam olarak yaptığı işin, XML dökümanı içerisinde lokasyon aramak ve bulmak olduğunu söyleyebiliriz. XPath, herhangibir Xml verisi üzerinde arama ve konumlandırma işlemini gerçekleştirmek için Document Object Model'i kullanılır. Yani, xml verisinin bellekteki hiyerarşik ağaç yapısını ele alır. Bunun içinde Xml verisinin yapısal (structural) metadata bilgisine bakar. XPath başlı başına bir dildir ve bu konu ile ilgili yazılmış kitaplar vardır. (Size eski olmasına rağmen Sams'ın [XPath Kick Start: Navigating XML with XPath 1.0 and 2.0](http://www.amazon.com/gp/product/0672324113/sr=8-3/qid=1141335716/ref=pd_bbs_3/102-6694554-3383307?_encoding=UTF8) kitabını tavsiye edebilirim.)
 
 Biz bu makalemizde çok fazla detaya inmeyecek ve XPath'i.Net üzerinde nasıl kullanabileceğimizi basit olarak incelemeye çalışacağız. Konuyu iyi anlayabilmek amacıylada XPath ile oluşturulmuş çeşitli tipteki sorguları örnek bir xml dökümanı üzerinde kullanacağız. Örneğin elimizde Kitaplara ait yazar, isim, fiyat gibi bilgileri tutan bir Xml dökümanı olduğunu düşünelim. Aşağıda bu amaçla kullanabileceğimiz Kitaplar.xml adlı xml veri dosyasının bir parçasını görüyorsunuz. (Xml dosyasını ve örnek kodları buradan [indirebilirsiniz](/assets/files/2006/UsingXPath.rar).)

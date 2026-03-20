@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Effective Engine — Bir Uzay Macerası"
 date: 2021-05-14 18:22:00 +0300
-description: "Altunizade’nin bahar aylarında insanı epey dinlendiren yeşil yapraklı ağaçları ile çevrelenmiş caddesinin hemen sonunda, köprüye bağlanmadan iki yüz metre kadar öncesinde dört katlı bir bina vardır. Araba ile geçerken eğer kırmızı ışığa denk gelmediyseniz pek fark edilmez ama yürürken önündeki geniş kaldırımları ile dikkat çeker. Ana cadde tarafındaki yeşillikler binanın ilk katlarını gizemli bir şekilde saklar. Binanın bulunduğu adanın etrafı cadde ve ara sokaklarla çevrilidir. Bir sokağın karşısında yeni yapılmış hastane ile metro çıkışı, ana cadde tarafında ev yapımı tatlılarının kokusu ile insanı baştan çıkaran pastane, eczane, kuaför, camii ve minik bir park bulunur. Dört yola bakan diğer cadde tarafında ise eskiden karakol olan ama çok uzun zamandır kreş olarak işletilen bir komşu yer alır."
 categories:
   - aspnet-web-api
 tags:
@@ -35,10 +34,9 @@ tags:
   - github
   - dependency-management
 ---
-# Effective Engine — Bir Uzay Macerası
-![asset_cover.png](/assets/images/2021/asset_cover.png)
-
 Altunizade’nin bahar aylarında insanı epey dinlendiren yeşil yapraklı ağaçları ile çevrelenmiş caddesinin hemen sonunda, köprüye bağlanmadan iki yüz metre kadar öncesinde dört katlı bir bina vardır. Araba ile geçerken eğer kırmızı ışığa denk gelmediyseniz pek fark edilmez ama yürürken önündeki geniş kaldırımları ile dikkat çeker. Ana cadde tarafındaki yeşillikler binanın ilk katlarını gizemli bir şekilde saklar. Binanın bulunduğu adanın etrafı cadde ve ara sokaklarla çevrilidir. Bir sokağın karşısında yeni yapılmış hastane ile metro çıkışı, ana cadde tarafında ev yapımı tatlılarının kokusu ile insanı baştan çıkaran pastane, eczane, kuaför, camii ve minik bir park bulunur. Dört yola bakan diğer cadde tarafında ise eskiden karakol olan ama çok uzun zamandır kreş olarak işletilen bir komşu yer alır.
+
+![asset_cover.png](/assets/images/2021/asset_cover.png)
 
 Bu binanın bende özel bir yeri vardır. Bir zamanlar Netron adıyla da bilinen yazılım eğitim kurumlarının genel merkeziydi. Şirket eğitimlerindeki başarısı ve iyi eğitmenleri ile adından söz ettirmiş bir kurumdu. 2005 yılının sonlarına doğru adım attığım eğitmenlik kariyeriminin başlangıç noktasıydı. Geniş, yemyeşil bir bahçesi ve Proxy isimli bir köpeği vardı. Her sabah o güzel bahçeye bakan camekanlı kafesinde taze simit ve poğaçalar olur, ücretsiz dağıtılırdı. İsteyen istediği kadar alabilirdi. Camekanlı kafeye giriş kapsının önündeki basamaklardan indiğinizde solunuzda kalan birde bilgisayar vardı. Şöyle CRT tüplü monitörü olan bir bilgisayar. Otururak kullanabildiğiniz değil de bir bar sandalyesi üstünde hafif rahatsız biçimde kullanabildiğiniz yavaş bir bilgisayar. Uzunca bir süre sınıflardaki birkaç eğitmen bilgisayarı dışında o binada internete bağlanabilinen tek bilgisayar O olmuştu. Şifresiz ve herkesin kullanımına açıktı. O zamanlar öğrencilerin ders sırasında veya arasında sınıftaki bilgisayarları kullanarak internete çıkmalarını pek istemezdik. Nitekim derste öğretilenler ile bir şeyleri çözebileceklerini umut eder, onları buna yönlendirmeye çalışırdık — Lakin bir defasında Ogame filosuna saldırdıkları için oldukça endişeli görünen bir öğrencim sebebiyle ders arasını birkaç dakika erken vermiştim.
 

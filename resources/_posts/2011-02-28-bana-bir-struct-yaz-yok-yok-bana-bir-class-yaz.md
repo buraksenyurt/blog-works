@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Bana Bir Struct Yaz. Yok Yok Bana Bir Class Yaz."
 date: 2011-02-28 16:30:00 +0300
-description: "Bu yazımızda, Struct(Yapı) ile Class(Sınıf) tipleri arasındaki temel farklılıkları irdelemeye çalışıyor olacağız. Ancak benzerlikleri de yakalamaya gayret edeceğiz. (Hemen şunu hatırlatalım; .Net Framework, 5 temel veri tipi tanımlar. Bunlar Class, Struct, Enum, Interface ve Delegate tipleridir) Özellikle Struct tipinin kullanımına ilişkin örnekler geliştireceğiz."
 categories:
   - csharp
 tags:
@@ -13,10 +12,10 @@ tags:
   - delegates
   - visual-studio
 ---
-# Bana Bir Struct Yaz. Yok Yok Bana Bir Class Yaz.
-[![blg220_Giris](/assets/images/2011/blg220_Giris_thumb.jpg)](/assets/images/2011/blg220_Giris.jpg) Merhaba Arkadaşlar,
-
 Aralık…2003 yılı. Dışarısı oldukça soğuk ve ben evdeyim. Camdan dışarıya baktığımda dışarıda pek kimseyi göremiyorum. Soğuktan dolayı sakin olan sokağımız daha da bir yanlız. Bu arada askerden döndükten sonra iş aramakla geçirdiğim 8nci ayın içerisindeydim. Neyseki mesleki kariyerimde ilerlemek için yeni bir heyecanım var. [C#Nedir?](http://www.csharpnedir.com/) ile daha ilk günlerimi yaşıyorum.
+
+[![blg220_Giris](/assets/images/2011/blg220_Giris_thumb.jpg)](/assets/images/2011/blg220_Giris.jpg)
+
 
 O zamanlar en çok yaptığım iş, öğrendiklerimi Türkçe yazım dili ile olabildiğince doğru bir şekilde paylaşmaktı. Nitekim öğrenmenin en iyi yolunun öğrenilenleri anlatmakla mümkün olduğuna inanmaktayım. Halen daha bu düşüncemin arkasındayım.
 

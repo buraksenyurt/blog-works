@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF - Internet Üzerinden Güvenliği Sağlamak - 2"
 date: 2007-07-05 12:17:00 +0300
-description: "Hatırlanacağı gibi bir önceki makalemizde iletişim seviyesinde(Transport Level) güvenliğin sağlanabilmesi için gerekli ayarların nasıl yapılabileceğini incelemiştik. Bu makalemizde kaldığımız yerden devam ederek servis tarafındaki doğrulama işlemleri için üyelik ve rol yönetim(Membership and Role Management) sistemini devreye alacak ve istemci tarafını yazarak test edeceğiz."
 categories:
   - wcf
 tags:
@@ -18,7 +17,6 @@ tags:
   - authorization
   - visual-studio
 ---
-# WCF - Internet Üzerinden Güvenliği Sağlamak - 2
 Hatırlanacağı gibi bir önceki makalemizde iletişim seviyesinde (Transport Level) güvenliğin sağlanabilmesi için gerekli ayarların nasıl yapılabileceğini incelemiştik. Bu makalemizde kaldığımız yerden devam ederek servis tarafındaki doğrulama işlemleri için üyelik ve rol yönetim (Membership and Role Management) sistemini devreye alacak ve istemci tarafını yazarak test edeceğiz. İlk olarak önceki yazımızda açmış olduğumuz WCF Service uygulamasına dönelim. Her zaman olduğu gibi basit bir arayüzü, servis sözleşmesi (Service Contract) olacak şekilde tasarlayacağız ve bunun uyarlamasını yapacak bir sınıf geliştireceğiz. İşlemlerin kolay bir şekilde anlaşılabilmesi için servis tarafındaki tipler mümkün olduğu kadar basit düşünülmüştür.
 
 ![mk212_1.gif](/assets/images/2007/mk212_1.gif)

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Bir Ruby Uygulamasını Google Cloud Platform Üzerine Taşımak"
 date: 2018-01-27 17:00:00 +0300
-description: "Ben bu Cloud platformlarını çok tuttum. Gerek Azure, gerek AWS, gerek Google Cloud Platform...Hepsi çok çekici duruyor. Benim ilgimi çeken şey onları araştırırken özellikle west-world dünyasında yazılmış bir programın ilgili platform üzerinde konuşlandırılması ve yürütülebilmesi. Ağırlıklı olarak REST tipinden servis uygulamalarını taşımaya çalışıyorum. Bu seferki hedefimse rastgele bir sözü sunan ruby ile yazılmış bir REST servisinin Google Cloud Platform'a taşınması ve oradan kullanılabilmesi. İşlemlerime başlamadan önce Google Cloud Platform üzerinden geçerli bir ödeme seçeneğinimizin olması gerekiyor. Yani bir kredi kartı bilgimizi tanımlamış olmalıyız. Bir ablam olduğu için çok şanslıyım :) Sağolsun bu proje için sanal kredi kartını kullanmama izin verdi. Gelin adım adım ilerleyelim."
 categories:
   - ruby
 tags:
@@ -17,12 +16,9 @@ tags:
   - serialization
   - visual-studio
 ---
-# Bir Ruby Uygulamasını Google Cloud Platform Üzerine Taşımak
-![rubyongcp_10.gif](/assets/images/2018/rubyongcp_10.gif)
-
-Merhaba Arkadaşlar,
-
 "Futbol basit bir oyundur. 22 kişi 90 dakika boyunca bir topun peşinde koşar ve sonunda her zaman Almanlar kazanır." demiş bizim de ne yazık ki yakından tanıdığımız Gary Lineker. Konumuzla ne alakası var derseniz. Az sonra onun bu sözünü buluta alacağız.
+
+![rubyongcp_10.gif](/assets/images/2018/rubyongcp_10.gif)
 
 Ben bu bulut platformlarını çok tuttum. Gerek Microsoft Azure, gerek Amazon Web Services, gerek Google Cloud Platform...Hepsi çok çekici duruyor. Kurcaladığım ve üzerinde çalıştığım örneklerle, özellikle West-World dünyasında yazılmış bir programın ilgili platform üzerinde konuşlandırılması ve yürütülmesini öğrenmeye gayret ediyorum. Ağırlıklı olarak REST (Representational State Transfer) tipinden servis uygulamalarını taşımaya çalışıyorum ki bu sayede bir mikroservis bulut alanında nasıl kullanılıyor öğreneyim.
 

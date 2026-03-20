@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "PLINQ - Sıralamayı(Ordering) Korumak [Beta 1]"
 date: 2009-05-23 20:30:00 +0300
-description: "Hatırlayacağınız gibi, PLINQ(Parallel LINQ) ile ilişkili ilk yazımda, LINQ sorgularının eş zamanlı olarak nasıl çalıştırılabileceğini incelemeye çalışmıştık. Hello World örneğimizde ağırlıklı olarak aşağıdaki sorgu üzerinde durmuştuk."
 categories:
   - plinq
 tags:
@@ -13,9 +12,6 @@ tags:
   - generics
   - visual-studio
 ---
-# PLINQ - Sıralamayı(Ordering) Korumak [Beta 1]
-Merhaba Arkadaşlar,
-
 Hatırlayacağınız gibi, PLINQ (Parallel LINQ) ile ilişkili ilk [yazımda](https://www.buraksenyurt.com/post/PLINQ-(Parallel-LINQ)-Hello-World), LINQ sorgularının eş zamanlı olarak nasıl çalıştırılabileceğini incelemeye çalışmıştık. Hello World örneğimizde ağırlıklı olarak aşağıdaki sorgu üzerinde durmuştuk.
 
 ```csharp

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "MigraDoc ile PDF Rapor Üretimi - Hello World"
 date: 2013-08-18 11:48:00 +0300
-description: "Özellikle veri odaklı(Data-Centric) çalışan uygulamalar düşünüldüğünde çeşitleri ne olursa olsun raporlama, işin oldukça önemli bir parçasını oluşturmaktadır. Ağırlıklı olarak rapora ihtiyaç duyan pozisyonlar, söz konusu raporları çeşitli ortamlarda görmek isteyen elemanlardır. Örneğin bunları Web arayüzünde açabilmeyi, Excel veya Word formatındaki dosyalara çıktı olarak alabilmeyi ve mobil cihazlarından takip edebilmeyi isterler. Günümüzün pek çok modern uygulaması zaten bu tip çıktıların alınmasını standart olarak olanak sunmaktadır."
 categories:
   - csharp
 tags:
@@ -15,10 +14,9 @@ tags:
   - generics
   - datatable
 ---
-# MigraDoc ile PDF Rapor Üretimi - Hello World
-[![cpdf_10](/assets/images/2013/cpdf_10_thumb.png)](/assets/images/2013/cpdf_10.png)"Mösyö Reno" dedi, oturduğu yerden Jimmy Carl.
+"Mösyö Reno" dedi, oturduğu yerden Jimmy Carl. Uzun süredir bu dev şirketi yönetiyordu. Son zamanlarda teknolojiye büyük yatırım yapan firmanın, bundan en iyi şekilde yararlanabilmesini isteyenlerin başında geliyordu. Oldukça meraklı biri olan Carl, bilgisayarına bakarken içeriye orta boylarda, saçlarının bir kısmı ağırmış, numarası büyük olduğu belli olan kalın çerçeveli gözlüklü, hafif de göbekli ama güler yüzlü birisi girdi. Üstünde rengarenk bir hawai t-shirt, altında bermuda şort ve parmak arası terlikleri ile.
 
-Uzun süredir bu dev şirketi yönetiyordu. Son zamanlarda teknolojiye büyük yatırım yapan firmanın, bundan en iyi şekilde yararlanabilmesini isteyenlerin başında geliyordu. Oldukça meraklı biri olan Carl, bilgisayarına bakarken içeriye orta boylarda, saçlarının bir kısmı ağırmış, numarası büyük olduğu belli olan kalın çerçeveli gözlüklü, hafif de göbekli ama güler yüzlü birisi girdi. Üstünde rengarenk bir hawai t-shirt, altında bermuda şort ve parmak arası terlikleri ile.
+[![cpdf_10](/assets/images/2013/cpdf_10_thumb.png)](/assets/images/2013/cpdf_10.png)
 
 "Buyrun" dedi Reno, nefes nefese kalmış bir halde.
 
@@ -31,8 +29,6 @@ Fransız, yazılım alanında çift doktora yapmış birisiydi. Şirketin en kil
 Gülümsedi Fransız Reno.
 
 "Neden olmasın? Bana mesai bitimine kadar müddet verin lütfen."
-
-Merhaba Arkadaşlar,
 
 Özellikle veri odaklı (Data-Centric) çalışan uygulamalar düşünüldüğünde çeşitleri ne olursa olsun raporlama, işin oldukça önemli bir parçasını oluşturmaktadır. Ağırlıklı olarak rapora ihtiyaç duyan pozisyonlar, söz konusu raporları çeşitli ortamlarda görmek isteyen elemanlardır. Örneğin bunları Web arayüzünde açabilmeyi, Excel veya Word formatındaki dosyalara çıktı olarak alabilmeyi ve mobil cihazlarından takip edebilmeyi isterler. Günümüzün pek çok modern uygulaması zaten bu tip çıktıların alınmasını standart olarak olanak sunmaktadır.
 

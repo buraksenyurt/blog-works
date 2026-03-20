@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Haydi Bir Captcha Kontrolü Yazalım"
 date: 2011-09-26 23:11:00 +0300
-description: "Olayı daha net bir şekilde kavrayabilmek adına örnek bir uygulama üzerinden gitmemizde yarar vardır. Bu amaçla dilerseniz Visual Studio 2010 ortamı üzerinde basit bir Web Site şablonu açarak işe başlayalım. Söz konusu Captcha kontrolü esas itibariyle Drawing tipleri tarafından çizilen bir resim ve üzerine yerleştirilen bir takım sayısal veya karakter bazlı verilerden oluşmaktadır. Burada bahsedilen çizim işini ise genellikle bir Handler tipi üstlenmektedir. İşte Handler içeriğimiz."
 categories:
   - aspnet-4-0
 tags:
@@ -16,10 +15,10 @@ tags:
   - generics
   - visual-studio
 ---
-# Haydi Bir Captcha Kontrolü Yazalım
-[![terzi](/assets/images/2011/terzi_thumb.gif)](/assets/images/2011/terzi.gif) Merhaba Arkadaşlar,
-
 Şu sıralarda kurumsal bir Asp.Net eğitimi vermekteyim. Eğitim içeriği oldukça geniş ve güzel konuları içermekte. Bunlardan bir tanesi de Asp.Net uygulamalarında Captcha doğrulamasının kullanımı. Bildiğiniz üzere web ortamı üzerinde özellikle Form veri girişlerinin yapıldığı senaryolarda akıllı robotların gereksiz yere post atma işlemlerini engellemek çok önemlidir.
+
+[![terzi](/assets/images/2011/terzi_thumb.gif)](/assets/images/2011/terzi.gif)
+
 
 Örneğin şu an kullanmakta olduğum BlogEngine sürümünde, sisteme monte edilmiş bir Captcha kontrolü veya modülü bulunmamakta (Biliyorum son sürüme geçmeliydim ![Üzgün gülümseme](/assets/images/2011/wlEmoticon-sadsmile_6.png)). Bu nedenle özellikle yorum kısımlarında dünyanın çeşitli bölgelerindeki robot programlarının tacizlerine fazlasıyla maruz kalmaktayım. Anlamsız pek çok bilgiden oluşan spam yorumlar söz konusu.
 

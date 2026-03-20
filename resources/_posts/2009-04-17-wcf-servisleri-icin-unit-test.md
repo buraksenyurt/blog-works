@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF Servisleri için Unit Test"
 date: 2009-04-17 07:28:00 +0300
-description: "Yazdığımız programların belirli kriterlere göre test edilmesi proje süreçleri içerisinde önem arz eden konulardan birisidir. Bilindiği üzere pek çok test çeşidi vardır. Bunların bir kısmı standart haline gelmiş tekniklerden oluşmaktadır. Örneğin web uygulamalarının beliri bir düzenle çalıştırılaran Request' ler ile test edilmesi. Stres testlerine tabi tutularaktan çok sayıda request sonrası web uygulamasının çalışmasının analiz edilmesi veya en basit anlamda bir programın çalışmasının ana parçalarından olan metodlarının, beklenen sonuçları verip vermediğinin araştırılması vb..."
 categories:
   - wcf
 tags:
@@ -14,9 +13,6 @@ tags:
   - testing
   - visual-studio
 ---
-# WCF Servisleri için Unit Test
-Merhaba Arkadaşlar,
-
 Yazdığımız programların belirli kriterlere göre test edilmesi proje süreçleri içerisinde önem arz eden konulardan birisidir. Bilindiği üzere pek çok test çeşidi vardır. Bunların bir kısmı standart haline gelmiş tekniklerden oluşmaktadır. Örneğin web uygulamalarının beliri bir düzenle çalıştırılaran Request'ler ile test edilmesi. Stres testlerine tabi tutularaktan çok sayıda request sonrası web uygulamasının çalışmasının analiz edilmesi veya en basit anlamda bir programın çalışmasının ana parçalarından olan metodlarının, beklenen sonuçları verip vermediğinin araştırılması vb...
 
 Nesne yönelimli programlama (Object Oriented Programming) dilleri ile geliştirilen uygulamalarda, özellikle metod bazında yapılan birim testlerini (Unit Test) WCF servislerine de uygulayabiliriz. Bu kısa yazımızda söz konusu işlemin Visual Studio ile birlikte gelen Test Tool'u yardımıyla nasıl gerçekleştirebileceğimizi incelemeye çalışacağız. Konu ile ilişkili olarak internette eğer araştırma yaparsanız, test amacıyla NUnit gibi araçlardan da faydalanabileceğimizi görebilirsiniz. Nitekim bazı durumlarda test yapan tarafta Visual Studio gibi bir araç olmayabilir ve [NUnit](http://www.nunit.org/index.php)aracı ile söz konusu analizler kolayca yapılabilir.

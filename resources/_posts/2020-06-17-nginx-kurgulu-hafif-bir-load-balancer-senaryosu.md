@@ -2,7 +2,6 @@
 layout: post
 title: "Nginx Kurgulu Hafif Bir Load Balancer Senaryosu"
 date: 2020-06-17 09:20:00 +0300
-description: "Dünyanın en popüler ve hızlı proxy serverlarıdan birisi sanıyorum ki Nginx. Daha önce birçok kez onun üzerinde .Net Core tabanlı servisleri konuşlandırmıştım. Ancak bu defa Nginx'in talepleri dengeli bir şekilde dağıtacak şekilde(Load Balancer olarak) nasıl kullanacağımızı öğrenmeye çalışacağız. Senaryo gereği NodeJS ile yazılmış basit bir dummy servisin birkaç kopyasını çalıştıracağız. Aynı makinede farklı port adresleri üzerinden hizmet verecek bu servislere gelen taleplerin dağıtımını, Load Balancer görevini üstlenecek olan Nginx sunucusu üstlenecek. Ben bu kurguyu her zaman yaptığım gibi Heimdall(Ubuntu-20.04) üzerinde icra ediyorum. Ancak teorik olarak farklı platformlarda da benzer şekilde ilerleyebilirsiniz. Sisteminizde docker ve NodeJs'in yüklü olması şu an için yeterli. Nginx sunucusunu makineye kurmaktansa Docker imajı ile çalışmak çok daha mantıklı olacaktır. Hatta bu kurgu özelinde kendi docker imajımızı kullanıp Nginx konfigurasyonlarını bu Container içerisinde yapacağız. Öylese işe Dummy servisimizi yazarak başlayabiliriz."
 categories:
   - nodejs
 tags:
@@ -17,7 +16,6 @@ tags:
   - docker
   - github
 ---
-# Nginx Kurgulu Hafif Bir Load Balancer Senaryosu
 Dünyanın en popüler ve hızlı proxy serverlarıdan birisi sanıyorum ki Nginx. Daha önce birçok kez onun üzerinde.Net Core tabanlı servisleri konuşlandırmıştım. Ancak bu defa Nginx'in talepleri dengeli bir şekilde dağıtacak şekilde (Load Balancer olarak) nasıl kullanacağımızı öğrenmeye çalışacağız. Senaryo gereği NodeJS ile yazılmış basit bir dummy servisin birkaç kopyasını çalıştıracağız. Aynı makinede farklı port adresleri üzerinden hizmet verecek bu servislere gelen taleplerin dağıtımını, Load Balancer görevini üstlenecek olan Nginx sunucusu üstlenecek.
 
 Ben bu kurguyu her zaman yaptığım gibi Heimdall (Ubuntu-20.04) üzerinde icra ediyorum. Ancak teorik olarak farklı platformlarda da benzer şekilde ilerleyebilirsiniz. Sisteminizde docker ve NodeJs'in yüklü olması şu an için yeterli. Nginx sunucusunu makineye kurmaktansa Docker imajı ile çalışmak çok daha mantıklı olacaktır. Hatta bu kurgu özelinde kendi docker imajımızı kullanıp Nginx konfigurasyonlarını bu Container içerisinde yapacağız. Öylese işe Dummy servisimizi yazarak başlayabiliriz.

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "TPL Senkronizasyonu Sağlamak – 2 (Interlocked)"
 date: 2011-01-31 13:45:00 +0300
-description: "Hatırlayacağınız üzere TPL Senkronizasyonu Sağlamak – 1 başlıklı yazımız ile Task Parallel Library(TPL) tarafında senkronizasyon kullanımını incelemeye başlamıştık. Aslında başımıza iş mi açtık bilemiyorum ama sonuç itibariyle kritik bir konu olduğunda sanıyorum ki hepimiz hem fikiriz. Önceki yazımızda değerlendirdiğimiz senaryoda, lock keyword kullanımı ile izole edilmiş bir veri alanının, farklı iş parçaları tarafından nasıl güvenli bir şekilde kullanılabileceğini analiz etmiştik. Üstelik bu keyword’ ün aslında arka planda Monitor tipini kullandığını da Intermediate Language(IL) kodunda görmüştük. Elbette iş parçalarının senkronizasyonu için kullanılabilecek farklı tipler de söz konusudur. Interlocked sınıfı gibi."
 categories:
   - parallel-programming
 tags:
@@ -16,10 +15,10 @@ tags:
   - visual-studio
   - atomic-operations
 ---
-# TPL Senkronizasyonu Sağlamak – 2 (Interlocked)
-[![blg213_Giris](/assets/images/2011/blg213_Giris_thumb_1.jpg)](/assets/images/2011/blg213_Giris_1.jpg) Merhaba Arkadaşlar,
-
 “Seçimi zaten yaptın. Şimdi onu anlaman gerekli.” Sanırım Matrix filminde Neo ile Oracle’ ın felsefe içeren ve uzun uzun düşünüldüğünde akla son derece anlaşılır gelen bir kaç sohbetinde geçen repliklerden birisi de buydu. Aslında ben bunu kendi hayatımda zaman zaman “Çözümü uyguladın. Şimdi onun her parçasının ne anlama geldiğini öğrenmen gerekli” diye çeviriyorum.
+
+[![blg213_Giris](/assets/images/2011/blg213_Giris_thumb_1.jpg)](/assets/images/2011/blg213_Giris_1.jpg)
+
 
 Yazımızın giriş kısmını oluşturan bu paragrafın üretiliş amacı ise en sonda geliştireceğimiz örnek olacak aslında. Gerçekten de bazen çeşitli vakaların çözüme ulaşmasında, gerekli teknikleri uyguladıktan sonra onları anlamaya çalışmak daha öğretici olabilmekte. Merak ediyor musunuz?
 

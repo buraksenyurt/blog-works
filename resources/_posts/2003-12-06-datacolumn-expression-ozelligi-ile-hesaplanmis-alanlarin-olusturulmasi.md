@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "DataColumn.Expression Özelliği İle Hesaplanmış Alanların Oluşturulması"
 date: 2003-12-06 12:00:00 +0300
-description: "Bugünkü makalemizde bir tabloda sonradan hesaplanan alanların nasıl oluşturulacağını incelemeye çalışacağız. Her zaman olduğu gibi konuyu iyi anlayabilmek için bir örnek üzerinden gideceğiz. Bir hesaplanan alan aslında bir hesaplama ifadesidir. Örneğin var olan bir tablodaki bir alana ait her değere ortak bir işlem yaptırmak istediğimizi ve bu her veri için oluşan sonuçlarında tabloda ayrı bir alan adı altında gözükmesini istediğimizi varsayalım."
 categories:
   - ado-net
 tags:
@@ -11,9 +10,6 @@ tags:
   - performance
   - datatable
 ---
-# DataColumn.Expression Özelliği İle Hesaplanmış Alanların Oluşturulması
-Değerli Okurlarım, Merhabalar.
-
 Bugünkü makalemizde bir tabloda sonradan hesaplanan alanların nasıl oluşturulacağını incelemeye çalışacağız. Her zaman olduğu gibi konuyu iyi anlayabilmek için bir örnek üzerinden gideceğiz. Bir hesaplanan alan aslında bir hesaplama ifadesidir. Örneğin var olan bir tablodaki bir alana ait her değere ortak bir işlem yaptırmak istediğimizi ve bu her veri için oluşan sonuçlarında tabloda ayrı bir alan adı altında gözükmesini istediğimizi varsayalım. Buna en güzel örneklerden birisi;
 
 Diyelimki personelinizin maaş bilgilerinin tutulduğu tablomuz var. Bu tablomuzda yer alan maaş verilerinde değişik oranlarda artışlar uygulamak istediğinizi varsayalım. Yüzde 10, yüzde 15 vb...Bu artışlarıda sadece ekranda izlemek istediğinizi tablo üzerinde kalıcı olarak yer almasını istemediğinizi düşünün. Bu minik problemin çözümü DataColumn sınıfına ait Expression özelliğidir. Bu özelliği yapmak istediğimiz işlemin sonucunu oluşturacak ifadelerden oluştururuz.

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Klasik ASP Sayfasından REST Servis Çağırmak"
 date: 2016-02-24 12:00:00 +0300
-description: "Özellikle kurumsal çözümler üreten/kullanan firmalarda görev alanların sıklıkla dahil olduğu vakalardan birisi de, eski ve yeni teknolojilerin iç içe kullanıldığı senaryolardır. Bazen geliştirilen ürünler yıllara varan yaşam döngüleri boyunca çalışmaya devam eder. Yenileme maliyetlerinin yüksek olması nedeniyle de tekrardan yazılmak yerine var olan yeni teknolojiler ile entegre edilmeye çalışılırlar."
 categories:
   - rest
 tags:
@@ -16,12 +15,9 @@ tags:
   - ruby
   - serialization
 ---
-# Klasik ASP Sayfasından REST Servis Çağırmak
-![asprest_0.gif](/assets/images/2016/asprest_0.gif)
-
-Merhaba Arkadaşlar,
-
 Özellikle kurumsal çözümler üreten/kullanan firmalarda görev alanların sıklıkla dahil olduğu vakalardan birisi de, eski ve yeni teknolojilerin iç içe kullanıldığı senaryolardır. Bazen geliştirilen ürünler yıllara varan yaşam döngüleri boyunca çalışmaya devam eder. Yenileme maliyetlerinin yüksek olması nedeniyle de tekrardan yazılmak yerine var olan yeni teknolojiler ile entegre edilmeye çalışılırlar.
+
+![asprest_0.gif](/assets/images/2016/asprest_0.gif)
 
 İşte geçtiğimiz günlerde yine bizim turuncu bankamızda buna benzer bir ihtiyaç doğdu. Klasik ASP ile yazılmış ve neredeyse 10 yaşından büyük olan bir ürünün yeni nesil bir teknoloji ile entegre olması gerekti. Söz konusu ASP uygulaması bunca yıl çalıştığı için üzerine eklenen kodlar sebebiyle tam bir [Lawa-Flow AntiPattern](https://sourcemaking.com/antipatterns/lava-flow) oluşmasına da sebebiyet vermişti. (İçine giren kayboluyor herhangibir yerine müdahale etmek gerçekten yürek istiyordu) Ancak kullanıcı alışkanlıkları, yenileme maliyetleri ve kaynak sıkıntısı nedeniyle tekrardan yazılamıyordu. Ürünün güncel sıkıntısı ise içerdiği C tabanlı API'nin yeni nesil 64bit sunucularda çalışmamasıydı. İlgili kütüphane yıllarca önce dış kaynak bir firma tarafından yazılmıştı. İlgili firmadan çözüm için destek alınabilirdi. Şayet firma hala var olsaydı. Var olan C kütüphanesi banka dışı kurum ile SNA isimli eski bir protokol üzerinden haberleşme yapan fonksiyonellikler içeriyordu. Ne var ki dış kurum yakın zamanda bu protokolü terk edip TCP/IP tabanlı bir alt yapıya geçeceğini duyurmuştu. Dolayısıyla C kütüphanesinin değiştirilmesi öncelikli bir gereksinim haline gelmişti. Çözüm olarak C kütüphanesinin gerçekleştirdiği bu haberleşmeyi üstlenen REST tipinden bir servisin devreye alınmasına karar verildi. Problem basitti;.Net ile geliştirilecek olan REST servisin, HTTP POST/GET gibi metodlar ile çalışacak operasyonları klasik ASP sayfasından nasıl tüketilebilirdi? (Senaryomuzu şekilsel olarak aşağıdaki gibi özetleyebiliriz. Aslında canlı halini görseniz sarı kağıt üzerinde kurşun kalemli olan bu çizim gayet renkli ve canlı duruyor)
 

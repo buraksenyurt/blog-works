@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF - Adım Adım IIS Hosting"
 date: 2007-04-28 03:00:00 +0300
-description: "Windows Communication Foundation ile ilişkili bir önceki makalemizde mimarinin detaylarına yakından bakmaya çalışmış ve örnek bir uygulama geliştirmiştik. Bu makalemizde ise bir WCF Service projesi geliştirmeye çalışacağız."
 categories:
   - wcf
 tags:
@@ -22,9 +21,6 @@ tags:
   - asmx
   - dataset
 ---
-# WCF - Adım Adım IIS Hosting
-Değerli Okurlarım Merhabalar,
-
 Windows Communication Foundation ile ilişkili bir önceki makalemizde mimarinin detaylarına yakından bakmaya çalışmış ve örnek bir uygulama geliştirmiştik. Bu makalemizde ise bir WCF Service projesi geliştirmeye çalışacağız. Bir başka deyişle HTTP protokolünü kullanarak, IIS üzerinden bir.Net kütüphanesini servis olarak yayınlayacağız.
 
 > WCF servislerini Self Hosting ve IIS Hosting olmak üzere iki farklı şekilde yayınlayabiliyoruz. Bununla birlikte Self Hosting modeli kendi içerisinde Console, Windows, Windows Service ve Vista ile gelen Windows Activation Service (WAS) olmak üzere dört farklı seçenekten oluşmaktadır.

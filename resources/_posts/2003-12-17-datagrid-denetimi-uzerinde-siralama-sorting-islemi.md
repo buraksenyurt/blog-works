@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "DataGrid Denetimi Üzerinde Sıralama(Sorting) İşlemi"
 date: 2003-12-17 10:00:00 +0300
-description: "Bugünkü makalemizde, bir Web Sayfası üzerinde yer alan DataGrid kontrolü üzerinde tıklanan kolon başlığına gore sıralama işleminin manuel olarak nasıl yapılacağını işleyeceğiz. Konu teknik ağırlığa sahip olduğu için hemen kodlara geçmek istiyorum."
 categories:
   - ado-net
 tags:
@@ -11,9 +10,6 @@ tags:
   - performance
   - datatable
 ---
-# DataGrid Denetimi Üzerinde Sıralama(Sorting) İşlemi
-Değerli Okurlarım, Merhabalar.
-
 Bugünkü makalemizde, bir Web Sayfası üzerinde yer alan DataGrid kontrolü üzerinde tıklanan kolon başlığına gore sıralama işleminin manuel olarak nasıl yapılacağını işleyeceğiz. Konu teknik ağırlığa sahip olduğu için hemen kodlara geçmek istiyorum.
 
 Uygulamamız, C# ile yazılmış bir Web Application. Bir adet herhangibir özelliği belirlenmemiş DataGrid kontrolü içermekte. Aspx sayfamızın kodlarına göz atıcak olursak, DataBound tagları içerisinde yer alan SortExpression ifadeleri ve DataGrid tagında yer alan, OnSortCommand ifadesi bizim anahtar terimlerimizdir. SortExpression ifadesi, kolon başlığına tıklandığında ilgili veri kümesinin hangi alan adını göz önüne alacağını belirlemek için kullanılır. OnSortCommand değeri ise, SortExpression ifadesinin işlenerek sıralamanın yapılacağı kodları içeren procedure adına işaret etmektedir. Bu bilgiler ışığında izleyeceğimiz yol şudur;

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Entity Framework 6 – Code First için Convention Nedir?"
 date: 2012-12-12 05:15:00 +0300
-description: "Entity Framework alt yapısının sunduğu önemli yaklaşımlardan birisi de Code-First modelidir. Bu modele göre geliştiriciler, önce sınıfları basit POCO(Plain Old CLR Objects) tipler şeklinde tasarlar. Böylece Conceptual(Domain) Model oluşturulur. POCO tiplerinin tek başına tasarlanması elbette yeterli değildir. DbContext türevli bir sınıfında, model de kullanılması düşünülen POCO tiplerine ait koleksiyon bazlı özellikleri içeriyor olması gerekmektedir. Bu noktada DbSet<T> tipinden yararlanılır. Ayrıca tipler arasın ilişkileri betimleyen Navigation Property’ ler de tasarlanır."
 categories:
   - entity-framework
 tags:
@@ -13,14 +12,9 @@ tags:
   - reflection
   - generics
 ---
-# Entity Framework 6 – Code First için Convention Nedir?
-[![themask](/assets/images/2012/themask_thumb.jpg)](/assets/images/2012/themask.jpg) Merhaba Arkadaşlar,
+Entity Framework takımı aldı başını gidiyor. Kim durduracak onları. Onlarda The Mask filmindeki karakter gibi “Somebody stop me!” demiyor ki... Aslında bakarsanız olaylar bana göre, Microsoft geliştirici takımlarının, diğer geliştiricilerin seslerini duymaya ve dikkate almaya başlamasından sonra epeyce gelişti.
 
-Entity Framework takımı aldı başını gidiyor. Kim durduracak onları. Onlarda The Mask filmindeki karakter gibi “Somebody stop me!” demiyor ki
-
-![Just kidding](/assets/images/2012/wlEmoticon-justkidding.png)
-
-Aslında bakarsanız olaylar bana göre, Microsoft geliştirici takımlarının, diğer geliştiricilerin seslerini duymaya ve dikkate almaya başlamasından sonra epeyce gelişti.
+[![themask](/assets/images/2012/themask_thumb.jpg)](/assets/images/2012/themask.jpg)
 
 Microsoft’ un çeşitli takımlarının açtığı anketler sayesinde, geliştiricilerin talepleri dinleniyor, değerlendiriliyor ve kayda değer olanlar planlanıp peyder pey yeni sürümlere ilave ediliyor. Hatta takımların ortaya koyduğu “şu da olsa nasıl olur?” ruh halindeki öğeler de geliştiriciler tarafından oylanıyor ve aynı sürece dahil edilebiliyor.(Bloğumdaki takip ettiklerim listesinde bir kaç survey adresini bulabilirsiniz)
 

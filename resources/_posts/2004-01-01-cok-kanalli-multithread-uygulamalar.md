@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Çok Kanallı(Multithread) Uygulamalar"
 date: 2004-01-01 12:00:00 +0300
-description: "Bugünkü makelemiz ile birlikte threading kavramını en basit haliyle tanımaya çalışacağız. Sonraki makalelerimizde de threading kavramını daha üst seviyede işlemeye çalışacağız. Bugün hepimiz bilgisayar başındayaken aynı anda pek çok uygulamanın sorunsuz bir şekilde çalıştığını görürüz. Bir belge yazarken, aynı zamanda müzik dinleyebilir, internet üzerinden program indirebilir ve sistemimizin kaynaklarının elverdiği ölçüde uygulamayla eşzamanlı olarak çalışabiliriz. Bu bize, günümüz işlemcilerinin ve üzerlerinde çalışan işletim sistemlerinin ne kadar yetenekli oluğunu gösterir. Gösterir mi acaba?"
 categories:
   - csharp
 tags:
@@ -11,9 +10,6 @@ tags:
   - concurrency
   - delegates
 ---
-# Çok Kanallı(Multithread) Uygulamalar
-Değerli Okurlarım, Merhabalar.
-
 Bugünkü makelemiz ile birlikte threading kavramını en basit haliyle tanımaya çalışacağız. Sonraki makalelerimizde de threading kavramını daha üst seviyede işlemeye çalışacağız. Bugün hepimiz bilgisayar başındayaken aynı anda pek çok uygulamanın sorunsuz bir şekilde çalıştığını görürüz. Bir belge yazarken, aynı zamanda müzik dinleyebilir, internet üzerinden program indirebilir ve sistemimizin kaynaklarının elverdiği ölçüde uygulamayla eşzamanlı olarak çalışabiliriz. Bu bize, günümüz işlemcilerinin ve üzerlerinde çalışan işletim sistemlerinin ne kadar yetenekli oluğunu gösterir. Gösterir mi acaba?
 
 Aslında tek işlemcili makineler günümüzün modern sihirbazları gibidirler. Gerçekte çalışan uygulamaların tüm işlemleri aynı anda gerçekleşmemektedir. Fakat işlemciler öylesine büyük saat hızlarına sahiptirlerki. İşlemcinin yaptığı, çalıştırılan uygulamaya ait işlemleri iş parçacacıkları (thread) halinde ele almaktır. Her bir iş parçacağı bir işlemin birden fazla parçaya bölünmesinden oluşur. İşlemciler her iş parçacığı için bir zaman dilimi belirler. T zaman diliminde bir işlem parçacığı yürütülür ve bu zaman dilim bittiğinde işlem parçacığı geçici bir süre için durur. Ardından kuyrukta bekleyen diğer iş parçacağı başka bir zaman dilimi içinde çalıştırılır. Bu böylece devam ederken, işlemcimiz her iş parçacığına geri döner ve tüm iş parçacıkları sıra sıra çalıştırılır. Dedik ya, işlemciler bu işlemleri çok yüksek saat ve frekans hızında gerçekleştiri. İşte bu yüksek hız nedeniyle tüm bu olaylar saniyenin milyon sürelerinde gerçekleşir ve sanki tüm bu uygulamalar aynı anda çalışıyor hissi verir.

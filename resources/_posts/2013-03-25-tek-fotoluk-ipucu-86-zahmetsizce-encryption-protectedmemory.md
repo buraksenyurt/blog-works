@@ -1,17 +1,13 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu 86–Zahmetsizce Encryption (ProtectedMemory)"
 date: 2013-03-25 20:50:00 +0300
-description: "Merhaba Arkadaşlar,"
 categories:
   - tek-fotoluk-ipucu
 tags:
   - tek-fotoluk-ipucu
   - http
 ---
-# Tek Fotoluk İpucu 86–Zahmetsizce Encryption (ProtectedMemory)
-Merhaba Arkadaşlar,
-
 [Bir önceki tek fotoluk ipucunda ProtectedData sınıfından yararlanmış](http://www.buraksenyurt.com/post/Tek-Fotoluk-Ipucu-85-Zahmetsizce-Encryption.aspx) ve basitçe bir byte dizisinin nasıl şifrelenebileceğini/çözümlenebileceğini görmüştük. Hatırlarsanız veriyi Current User ve Local Machine seviylerinde ele alabiliyorduk. DPAPI’ nin kullanıldığı veri odaklı bu tekniğin yanında, bellek üzerinde yer alan bir içeriğin Process bazında şifrelenmesi/çözümlenmesi de mümkündür. Aynı Process (SameProcess), farklı Process (CrossProcess) veya aynı giriş (SameLogon) bilgisi için…Üstelik son derece de kolay bir şekilde. Nasıl mı?
 
 ![Winking smile](/assets/images/2013/wlEmoticon-winkingsmile_160.png)

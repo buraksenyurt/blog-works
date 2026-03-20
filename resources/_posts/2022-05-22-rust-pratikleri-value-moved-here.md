@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Rust Pratikleri - Value Moved Here"
 date: 2022-05-22 09:00:00 +0300
-description: "Sıklıkla vurguladığım üzere Rust programlama dili bellek yönetimi ve güvenliği konusunda son derece hassas kurallar içeriyor. Değişken sahipliği kuralları ve ödünç alma kontrolcüleri(Ownership, borrow checker) olası bir çok bellek probleminin henüz derleme aşamasındayken önüne geçilmesini sağlıyor ancak dilin öğrenme eğrisini de oldukça dikleştiriyor(En azından ilk zamanlarda) Esasında C,C++ türevi sayabileceğimiz Rust bir Garbage Collector mekanizması kullanmaması belleğin iç dinamiklerini daha iyi bilmemizi de gerektiriyor. Stack ve heap özelinde değişkenlerin nasıl tutulduğu, yer ayarlamalarının nasıl yapıldığını bilmek programcı açısından oldukça önemli. Bu sayede pek çok derleme zamanı hatasını anlamlandırmak kolaylaşıyor. Bu yazıdaki amacımız Rust öğrenenlerin sıklıkla yakalandığı \"Value borrowed here after move\" hatasını bellek çalışma prensipleri kapsamında özetlemek."
 categories:
   - rust
 tags:
@@ -13,10 +12,9 @@ tags:
   - ownership
   - borrow-checker
 ---
-# Rust Pratikleri - Value Moved Here
-![moved_cover.png](/assets/images/2022/moved_cover.png)
-
 Sıklıkla vurgulandığı üzere Rust programlama dili bellek yönetimi ve güvenliği konusunda son derece hassas kurallar içeriyor. Değişken sahipliği kuralları ve ödünç alma kontrolü (Ownership, Borrow Checker) olası bir çok bellek probleminin henüz derleme aşamasındayken önüne geçilmesini sağlıyor ancak dilin öğrenme eğrisini de oldukça dikleştiriyor (En azından ilk zamanlarda) Esasında C,C++ türevi sayabileceğimiz Rust'ın bir Garbage Collector mekanizması kullanmaması belleğin çalışma dinamiklerini daha iyi bilmemizi gerektiriyor. Ancak sanılanın aksin Rust'ın bir Garbage Collector mekanizması içermemesi bellek yönetimi yapmadığı anlamına gelmemeli. Nitekim Rust bellek yönetimi için Ownership, Resource Acquisition is Initialization (RAII), Borrow Checker, Lifetimes ve Smart Pointers gibi birçok enstrüman kullanmakta.
+
+![moved_cover.png](/assets/images/2022/moved_cover.png)
 
 Yine de Rust ile ilk kez tanışanların Stack ve Heap özelinde değişkenlerin nasıl tutulduğunu, kaynak tahsislerinin nasıl yapıldığını, hangi noktada verilerin bellekten atıldığını bilmeleri işleri kolaylaştırmak adına oldukça önemli. Bu sayede pek çok derleme zamanı hatasını anlamlandırmak mümkün hale geliyor (Özellikle Garbage Collector destekli bir dilden geliyorsanız) Bu yazıdaki amacımız Rust öğrenenlerin sıklıkla yakalandığı "Value borrowed here after move" hatasını bellek çalışma prensipleri kapsamında özetleyerek anlamaya çalışmak.
 

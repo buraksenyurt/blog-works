@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF 4.0 Yenilikleri - Managed WS-Discovery [Beta 1]"
 date: 2009-08-21 23:13:00 +0300
-description: "Proxy servisi aslında hem announcement mesajları hemde istemcilerden gelecek olan Probe taleplerini dinlemektedir. Announcement mesajların dinlenmesi, online veya offline olan servislerin, Proxy servisi üzerinde bir saklama alanında tutulmasınıda gerektirir. Nitekim proxy servisi, ağa bağlı olan veya ayrılan tüm servislere ait ortak bir listeyi barındırıp istemci taleplerini bu listedeki durumlara göre karşılamalıdır. Diğer taraftan kendiside, istemciler tarafından keşfedilebilir olmalıdır. Bu nedenle tüm istemciler için ortak bir Discovery Endpoint noktasına sahip olmalıdır. Proxy servisini bu nedenlerden dolayı sürekli online halde kalan bir hizmet olarak düşünebiliriz. Online kalması önemlidir; çünkü online olduğu sürece, ağı dinleyerek katılan servisleri listesine alabilir ve istemcilerden gelen Probe veya Resolve gibi çağrılara cevap verebilir. Peki işi zorlayan nokta nedir?"
 categories:
   - wcf-4-0-beta-1
 tags:
@@ -15,12 +14,9 @@ tags:
   - concurrency
   - generics
 ---
-# WCF 4.0 Yenilikleri - Managed WS-Discovery [Beta 1]
-![blg70_Giris1.jpg](/assets/images/2009/blg70_Giris1.jpg)
-
-Merhaba Arkadaşlar,
-
 Yandaki resimdeki gibi çok çok uzun bir yolun başında ve ulaşmanız gereken yere yüzlerce kilometre mesafede olduğunuzu hayal edin. Sabırlı bir şekilde bu yolu gidebilmek için çok iyi bir disipline sahip olmanız gerekir. Yazılım geliştirme denilen büyük okyanusun içerisinde de bu tip yollar ile karşılaşmaz mıyız? Hemde sıklıkla karşılaşırız. Yılmadan yola devam edenler, nihayetinde mutlu sona ulaşırlar. Ama belkide ulaşmazlar. Bu tamamen zamanın o andaki çevresel koşullarına bağlı olarak değişir. İşte bu yazımızda hakikaten sadece geliştirme aşaması dahi insanı çileden çıkarabilen zahmetli bir yola baş koyuyor olacağız. Hedefimiz, WS-Discovery tabanlı WCF sistemlerinde Managed Discovery modelini uygulayabilmek.
+
+![blg70_Giris1.jpg](/assets/images/2009/blg70_Giris1.jpg)
 
 Konuyu MSDN ve diğer internet kaynaklarından araştırırken Ad Hoc modeli ile ilişkili tonlarca yazı olduğunu ama Managed tarafa pek kimsenin bulaşmak istemdiğini farkettim. Nedenini anlamam yaklaşık olarak 2,5 Litre kahve içmeme ve uykusuz bir Cumartesi gecesi geçirmeme neden oldu. Ama sonunda deydi. Aslında teorik olarak Managed modelin açıklaması son derece basit. İstemcilerin kullanmak isteyipte, farklı zamanlarda farklı lokasyonlardan ağa/ağlara dahil olan veya ayrılan servislerin keşfedilmesi görevi, istemci uygulamalardan alınıp istemci ile söz konusu servisler arasındaki başka bir Proxy servisine verilmektedir.
 

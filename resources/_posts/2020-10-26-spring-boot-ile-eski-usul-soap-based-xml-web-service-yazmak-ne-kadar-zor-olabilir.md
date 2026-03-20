@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Spring Boot ile Eski Usül Soap Based XML Web Service Yazmak Ne Kadar Zor Olabilir?"
 date: 2020-10-26 17:51:00 +0300
-description: "Kısa bir süre önce değerli bir çalışma arkadaşım kullanmaya çalıştığı Java tabanlı XML Web servis ile epeyce sorun yaşadı. Söz konusu servisi .Net tarafından tüketmeye çalışıyordu ancak XML şeması da epeyce karmaşık olan servis iletişim noktasında şema adlarına kızıyor, header içeriğini beğenmiyor sürekli naz yapıyordu. Arkadaşım allem etti kallem etti sorunun altından girip üstünden çıktı ve nihayetinde çözdü. Bu olaylara kısmen tanıklık ettikten sonra \"yahu Java tarafında XML Web Service geliştirmek şimdilerde daha bir kolay değil midir!?\" diye söylenmeye başladım. Yol doğal olarak beni Spring Boot'a ve resmi dokümantasyonuna götürdü..."
 categories:
   - spring-boot
 tags:
@@ -24,10 +23,9 @@ tags:
   - github
   - dependency-management
 ---
-# Spring Boot ile Eski Usül Soap Based XML Web Service Yazmak Ne Kadar Zor Olabilir?
-![xmlheimdall.png](/assets/images/2020/xmlheimdall.png)
-
 Kısa bir süre önce değerli bir çalışma arkadaşım kullanmaya çalıştığı Java tabanlı XML Web servis ile epeyce sorun yaşadı. Söz konusu servisi.Net tarafından tüketmeye çalışıyordu ancak XML şeması da epeyce karmaşık olan servis iletişim noktasında şema adlarına kızıyor, header içeriğini beğenmiyor sürekli naz yapıyordu. Arkadaşım allem etti kallem etti sorunun altından girip üstünden çıktı ve nihayetinde çözdü. Bu olaylara kısmen tanıklık ettikten sonra "yahu Java tarafında XML Web Service geliştirmek şimdilerde daha bir kolay değil midir!?" diye söylenmeye başladım. Yol doğal olarak beni Spring Boot'a ve resmi dokümantasyonuna götürdü.
+
+![xmlheimdall.png](/assets/images/2020/xmlheimdall.png)
 
 Şimdiki amacımız yönergeleri takip ederek basit bir XML Web servisin Spring Boot çerçevesinde nasıl yazıldığını deneyimlemek. Günümüzde neredeyse tüm servisler REST, gRPC, OData ve benzeri kavramlar üzerinde konuşuyor olsalar da özellikle kurumsal çapta uzun yıllardır var olan pek çok uygulama halen daha SOAP (Simple Object Access Protocol) temelli XML Web servislerini kullanıyor. Nitekim SOAP protokolünün de dezavantajları kadar avantajlı olduğu taraflar var. Ancak konumuz bunu tartışmak yerine bir pratik yapmak.
 

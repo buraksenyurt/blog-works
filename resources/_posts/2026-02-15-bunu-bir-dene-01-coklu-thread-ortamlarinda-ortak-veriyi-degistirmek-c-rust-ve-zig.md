@@ -1,31 +1,29 @@
-﻿---
+---
 layout: post
 title: "Bunu Bir Dene 01 - Çoklu Thread Ortamlarında Ortak Veriyi Değiştirmek (C#, Rust ve Zig)"
 date: 2026-02-15 19:31:00 +0300
-description: "Önceki yazımızda, bir fonksiyona aktarılan parametre üzerinde değişklik yapmak istediğimizde bunun C#, Rust ve Zig programlama dilleri tarafındaki ele alınış biçimlerini farklı örneklerle incelemeye çalışmıştım. Nihayetinde ulaştığım noktada bir nesnenin kendisini tanımlayan değerlerin değiştirilmesinde programlama dili ve hatta kullanılacak yazılım mimarisi bazında farklı yaklaşımlar olduğunu görmüştük. Merak ettiğim bir başka konu ise, multi-thread(çoklu iş parçacığı) ortamlarında ortak veriyi değiştirmek."
 categories:
-  - zig
+  - Zig
 tags:
-  - zig
-  - csharp
-  - rust
-  - dotnet
-  - redis
-  - rabbitmq
-  - threading
-  - concurrency
-  - performance
-  - pointers
-  - github
-  - shared-state
-  - mutex
-  - atomic-operations
-  - race-condition
-  - ownership
-  - arc
+  - Zig
+  - C#
+  - Rust
+  - .NET
+  - Redis
+  - RabbitMQ
+  - Threading
+  - Concurrency
+  - Performance
+  - Pointers
+  - GitHub
+  - Shared State
+  - Mutex
+  - Atomic Operations
+  - Race Condition
+  - Ownership
+  - Arc
 ---
-# Bunu Bir Dene 01 - Çoklu Thread Ortamlarında Ortak Veriyi Değiştirmek (C#, Rust ve Zig)
-[Önceki yazımızda](Bunu Bir Dene 00 - Metot Argümanlarında Değişiklik (C#, Rust ve Zig).md), bir fonksiyona aktarılan parametre üzerinde değişklik yapmak istediğimizde bunun C#, Rust ve Zig programlama dilleri tarafındaki ele alınış biçimlerini farklı örneklerle incelemeye çalışmıştım. Nihayetinde ulaştığım noktada bir nesnenin kendisini tanımlayan değerlerin değiştirilmesinde programlama dili ve hatta kullanılacak yazılım mimarisi bazında farklı yaklaşımlar olduğunu görmüştük. Merak ettiğim bir başka konuysa, multi-thread (çoklu iş parçacığı) ortamlarında ortak veriyi değiştirmek. Aynı veri üzerinde birden fazla thread'in okuma/yazma işlemi yapması çok sık karşılaşılan bir durum. Şu anda elimde managed ortamı olan, yerleşik framework kütüphanelerinde üst düzey soyutlamalar sunan C#, bellek güvenliği konusundaki titiz stratejileri ve zorlamaları ile öne çıkan Rust ve C'nin modern bir versiyonu olarak gördüğüm düşük seviyeli sistem programlama dili Zig var.
+[Önceki yazımızda](/2026/01/15/bunu-bir-dene-00-metot-argumanlarinda-degisiklik-c-rust-ve-zig/), bir fonksiyona aktarılan parametre üzerinde değişklik yapmak istediğimizde bunun C#, Rust ve Zig programlama dilleri tarafındaki ele alınış biçimlerini farklı örneklerle incelemeye çalışmıştım. Nihayetinde ulaştığım noktada bir nesnenin kendisini tanımlayan değerlerin değiştirilmesinde programlama dili ve hatta kullanılacak yazılım mimarisi bazında farklı yaklaşımlar olduğunu görmüştük. Merak ettiğim bir başka konuysa, multi-thread (çoklu iş parçacığı) ortamlarında ortak veriyi değiştirmek. Aynı veri üzerinde birden fazla thread'in okuma/yazma işlemi yapması çok sık karşılaşılan bir durum. Şu anda elimde managed ortamı olan, yerleşik framework kütüphanelerinde üst düzey soyutlamalar sunan C#, bellek güvenliği konusundaki titiz stratejileri ve zorlamaları ile öne çıkan Rust ve C'nin modern bir versiyonu olarak gördüğüm düşük seviyeli sistem programlama dili Zig var.
 
 Örnek kodların tamamına [github adresinden](https://github.com/buraksenyurt/friday-night-programmer/tree/main/src/try-this-01) ulaşabilirsiniz.
 

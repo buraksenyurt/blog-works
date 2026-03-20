@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Apache Üzerinden Bir Web API Hizmeti Sunmak"
 date: 2018-03-22 03:13:00 +0300
-description: "Bu yazımızda West-World üzerine Apache kuruyor ve 80 portuna gelen talepleri Kestrel'e yönlendirerek bir Asp.Net Web API hizmetini nasıl sunabileceğimizi incelemeye çalışıyoruz. Daha önceden NginX için gerçekleştirdiğimiz vakayı Apache tarafı için ele aldığımızı ifade edebiliriz. Tabii farklı olan bazı noktalar var. Yine de teorinin aynı olduğunu ifade edebiliriz. Bakalım Apache, Ubuntu üzerinde nasıl Reverse Proxy Server haline geliyor. Haydi başlayalım."
 categories:
   - dotnet-core
 tags:
@@ -14,12 +13,9 @@ tags:
   - web-api
   - http
 ---
-# Apache Üzerinden Bir Web API Hizmeti Sunmak
-![apachecore_12.gif](/assets/images/2018/apachecore_12.gif)
-
-Merhaba Arkadaşlar,
-
 Küçük bir çocukken her pazar sabahı TRT ekranlarında kovboy (Western) filmleri olurdu. Rahmetli babam ile severek geçirdiğimiz nadide vakitlerdendi. Sanıyorum son yıllarda yine Pazar sabahları ekranlarımızı süslüyorlar (Bakamıyorum çünkü sabahlarımız basketbol antrenmanları ile geçiyor) Kızılderililer ile süvarilerin sıklıkla karşı karşıya geldiği, batının en hızlı silahşörlerinin yer aldığı filmlere ne hikmetse çok bağlanmıştım.
+
+![apachecore_12.gif](/assets/images/2018/apachecore_12.gif)
 
 Oysa ki okuduğumuz tarih kitapları o zamanlardaki olayların pek de filmlerde gördüğümüz gibi olmadığını yazıyor. Özellikle de kızılderili yerlilerin durumu düşünüldüğünde. O zamanların pek çok yerli kabilesi günümüzün pek çok teknolojisine de isim kaynağı oldu aslında. Bunlardan en popüler olanlarından birisi de sanıyorum ki Apache'dir (Şu isimler de eminim ki çağrışım yapacaktır;Siu, Cheyenn, Comanche...) Ünlü savaş helikopteri dışında hepimiz onun yazılım dünyasındaki ününü de duymuşuzdur. Gelelim bugün inceleyeceğimiz konuya.
 

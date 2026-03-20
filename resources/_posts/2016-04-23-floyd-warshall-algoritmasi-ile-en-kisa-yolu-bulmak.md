@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Floyd-Warshall Algoritması ile En Kısa Yolu Bulmak"
 date: 2016-04-23 12:00:00 +0300
-description: "Uzun zamandır algoritmalar üzerinde çalışmadığımı fark ettim. İşlerin biraz olsun hafiflediği şu vakitlerde de bir tanesini inceleyeyim dedim. Derken kendimi Floyd-Warshall algoritmasını anlamaya çalışırken buldum. Söz konusu algoritma Graph yapılarında boğumlar arasındaki en kısa yolların bulunmasında kullanılmaktadır."
 categories:
   - algoritma
 tags:
@@ -10,12 +9,9 @@ tags:
   - csharp
   - linq
 ---
-# Floyd-Warshall Algoritması ile En Kısa Yolu Bulmak
-![FWa_6.gif](/assets/images/2016/FWa_6.gif)
-
-Merhaba Arkadaşlar,
-
 Uzun zamandır algoritmalar üzerinde çalışmadığımı fark ettim. İşlerin biraz olsun hafiflediği şu vakitlerde de bir tanesini inceleyeyim dedim. Derken kendimi [Floyd-Warshall algoritmasını](https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm) anlamaya çalışırken buldum. Söz konusu algoritma Graph yapılarında boğumlar arasındaki en kısa yolların bulunmasında kullanılmaktadır.
+
+![FWa_6.gif](/assets/images/2016/FWa_6.gif)
 
 Gerçek hayat örnekleri düşünüldüğünde Regular Expression, Network Routing, Dynamic Programming, yönsüz graph'ların iki parçalı graph'lar dönüştürülmesi ve daha bir çok alanda kullanıldığına şahit oluruz. Algoritmanın matematiksel çalışmasına bakıldığında boğumların birbirlerine olan yakınlıklarını ele alan matrisleri kullandığını görürüz.
 

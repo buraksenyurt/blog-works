@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF-Windows ve Windows Service Hosting"
 date: 2007-05-04 09:00:00 +0300
-description: "Windows Communication Foundation ile ilişikili önceki makalelerimizde mimarinin temellerinden ve bir WCF sevisinin Internet Information Services (IIS) üzerinden nasıl yayımlanabileceğini incelemiştik. Bu makalemizde ise Host uygulama olarak windows uygulamalarını ve windows servislerini ele almaya çalışacağız."
 categories:
   - wcf
 tags:
@@ -21,9 +20,6 @@ tags:
   - generics
   - visual-studio
 ---
-# WCF-Windows ve Windows Service Hosting
-Değerli Okurlarım Merhabalar,
-
 Windows Communication Foundation ile ilişikili önceki makalelerimizde mimarinin temellerinden ve bir WCF sevisinin Internet Information Services (IIS) üzerinden nasıl yayımlanabileceğini incelemiştik. Bu makalemizde ise Host uygulama olarak windows uygulamalarını ve windows servislerini ele almaya çalışacağız. Geliştireceğimiz uygulamalarda öncekilerden farklı olarak konfigurasyon dosyalarını kullanmayıp, programatik kod parçalarından yararlanacağız. Ayrıca, HTTP yerine TCP protokolü üzerinden haberleşmeyi kullanıyor olacağız.
 
 Bildiğiniz gibi WCF mimarisinde sözleşmeleri (Contracts) sunan uygulamalar, sadece IIS üzerinden yayınlanmak zorunda değildir. Bu şablon dışında windows uygulamalarını (Hatta WPF uygulamalarını) ve windows servislerinide kullanabiliriz. Özellikle windows servisleri (Windows Service), bulundukları makine üzerinde otomatik olarak başlatılabildiklerinden, yönetilebilirlikleri daha kolaydır ve özellikle windows tabanlı intranet sistemlerinde tercih edilirler. Özellikle.Net Remoting üzerine yazılan sistemlerde windows servisleri yaygın olarak kullanılmaktadır.

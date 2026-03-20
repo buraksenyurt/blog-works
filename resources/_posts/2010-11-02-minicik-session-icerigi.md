@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Minicik Session İçeriği"
 date: 2010-11-02 15:10:00 +0300
-description: "Aslında .Net Framework 4.0 tarafını uzun süredir incelememe rağmen, en ince detaylarına kadar girmeden konuya hakim olmanın zor olacağını da gayet iyi biliyordum. Hatta bana göre yazarak anlatmak öğrenmenin en iyi yollarından birisi. İşte bu bi dolu düşünce altında başladığım gece çalışmasının sonucu olan küçük bir blog girdisi ile karşınızdayım. Bu yazımızda Asp.Net 4.0 tarafında gelen önemli yeniliklerden birisi olan serileştirilebilir Session içeriğini ufaltmak(daha teknik bir tabirle sıkıştırmak) konusuna değiniyor olacağız."
 categories:
   - aspnet-4-0
 tags:
@@ -16,10 +15,10 @@ tags:
   - visual-studio
   - dataset
 ---
-# Minicik Session İçeriği
-[![blg237_Giris](/assets/images/2010/blg237_Giris_thumb.jpg)](/assets/images/2010/blg237_Giris.jpg) Merhaba Arkadaşlar,
-
 Bildiğiniz üzere bir süredir Microsoft Teknoloji Günleri Akşam Sınıfı etkinliklerini gerçekleştirmekteyiz. Kasım ayının konusu ise hemen her sürümünde köklü ve önemli yenilikler ile birlikte gelen Asp.Net'in 4.0 sürümü
+
+[![blg237_Giris](/assets/images/2010/blg237_Giris_thumb.jpg)](/assets/images/2010/blg237_Giris.jpg)
+
 
 ![Winking smile](/assets/images/2010/wlEmoticon-winkingsmile_7.png)
 

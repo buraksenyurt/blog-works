@@ -2,7 +2,6 @@
 layout: post
 title: "Enum Veri Türünün Rust Tarafında Etkili Bir Kullanımı"
 date: 2025-02-12 16:23:00 +0300
-description: "Enum veri türü genellikle Algebraic Data Type olarak da ifade edilmektedir. Özellikle fonksiyonel programlama dillerinden gelenler için bu veri türü oldukça anlamlı. Tuple ve record gibi türler de bu kapsamda ele alınmakta. Yıllardır C# tarafında kodlama yapan birisi olarak enum türünün bu dilde de faydalı amaçlar için kullanıldığını ifade edebilirim. En kötü ihtimalle kafada karışılık yaratacak sayısal değerlerin anlamlı ifadeleri için kullanılabilecek bir değer türü gibi düşünülebilir. Ne varki Rust dilindeki Enum türü çok daha zengin bir veri modeli sunuyor bana kalırsa. Bunu iddia etmiyorum ama gördüğüm bazı örnekler böyle düşündürüyor."
 categories:
   - rust
 tags:
@@ -11,7 +10,6 @@ tags:
   - redis
   - http
 ---
-# Enum Veri Türünün Rust Tarafında Etkili Bir Kullanımı
 Enum veri türü genellikle Algebraic Data Type olarak da ifade edilmektedir. Özellikle fonksiyonel programlama dillerinden gelenler için bu veri türü oldukça anlamlı. Tuple ve record gibi türler de bu kapsamda ele alınmakta. Yıllardır C# tarafında kodlama yapan birisi olarak enum türünün bu dilde de faydalı amaçlar için kullanıldığını ifade edebilirim. En kötü ihtimalle kafada karışılık yaratacak sayısal değerlerin anlamlı ifadeleri için kullanılabilecek bir değer türü gibi düşünülebilir. Ne varki Rust dilindeki Enum türü çok daha zengin bir veri modeli sunuyor bana kalırsa. Bunu iddia etmiyorum ama gördüğüm bazı örnekler böyle düşündürüyor. Bu kısa yazımızda C# tarafında veya herhangibir nesne yönelimli dilde icra edeceğimiz bir çözümün Rust tarafında struct yerine enum türü ile ele alınırken nasıl fark yaratabileceğini ele almaya çalışacağız. İşe şu basit senaryo ile başlayalım;
 
 Büyük bir dağıtık sistemde yer alan servisler ait temel bilgilerin uygulama içerisinde birçok noktada kullanılmasından mütevellit ortak bir model nesnesine ihtiyacımız olduğunu düşünelim. Söz konusu uygulamanın bir monitoring aracı olduğunu ve servislerin aktif veya pasif (ya da ayakta veya erişilemez durumda) gibi iki farklı durumda değerlendirilmelerinin anlam kazandığını varsayalım. Gerçekten de sistemlerdeki servislerin durumlarını inceleyen bir izleme aracının Dashboard ekranında çok detaylı bilgiler içeren bir modele ihtiyacımız olmayabilir. Kuvvetle muhtemel bu tip bir nesne modelini aşağıdaki gibi bir sınıfla ifade edebiliriz.

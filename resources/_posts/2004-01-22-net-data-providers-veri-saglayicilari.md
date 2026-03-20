@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Net Data Providers(Veri Sağlayıcıları)"
 date: 2004-01-22 08:00:00 +0300
-description: "Bugünkü makalemiz ile, ADO.NET ' te yer alan veri sağlayıcılarını inceleyeceğiz. Bildiğiniz gibi hepimiz uygulamalarımızda yoğun bir şekilde veri kaynaklarını kullanmaktayız. Normalde sistemimizde, bu veri kaynaklarına erişmek için kullanılan sistem sürücüleri vardır. Bu sürücüler, sistemimize dll kütüphaneleri olarak yüklenirler ve kendilerini sisteme kayıt ederler(register). Bu noktadan itibaren bu veri sürücülerinin içerdiği fonksiyonları kullanarak veritabanları üzerinde istediğimiz işlemleri gerçekleştirebiliriz. Kısaca, bu veri sürücüleri uygulamalarımız ile, veritabanı arasındaki iletişimi sağlarlar. Sistemizide yüklü olan programlara göre pek çok veri sürücüsüne sahip olabiliriz. Örneğin ODBC sürücüleri, SQL sürücüleri, Ole Db Jet sürücüleri ve bazıları."
 categories:
   - ado-net
 tags:
@@ -12,9 +11,6 @@ tags:
   - oracle
   - performance
 ---
-# Net Data Providers(Veri Sağlayıcıları)
-Değerli Okurlarım, Merhabalar.
-
 Bugünkü makalemiz ile, ADO.NET ' te yer alan veri sağlayıcılarını inceleyeceğiz. Bildiğiniz gibi hepimiz uygulamalarımızda yoğun bir şekilde veri kaynaklarını kullanmaktayız. Normalde sistemimizde, bu veri kaynaklarına erişmek için kullanılan sistem sürücüleri vardır. Bu sürücüler, sistemimize dll kütüphaneleri olarak yüklenirler ve kendilerini sisteme kayıt ederler (register). Bu noktadan itibaren bu veri sürücülerinin içerdiği fonksiyonları kullanarak veritabanları üzerinde istediğimiz işlemleri gerçekleştirebiliriz. Kısaca, bu veri sürücüleri uygulamalarımız ile, veritabanı arasındaki iletişimi sağlarlar. Sistemizide yüklü olan programlara göre pek çok veri sürücüsüne sahip olabiliriz. Örneğin ODBC sürücüleri, SQL sürücüleri, Ole Db Jet sürücüleri ve bazıları.
 
 ADO.NET ile veritabanı uygulamaları geliştirirken, bu sürücüler üzerinden veritabanlarına erişim sağlarız. Bu sebeple.Net Framework 'te her bir veri sürücüsü için geliştirilmiş veri sağlayıcıları (data providers) vardır. Bu veri sağlayıcılarının görevi, uygulamalarımız ile veri sürücülerini bağlamak ve veri sürücülerindeki ilgili kütüphane fonksiyonlarını çalıştırarak veriler üzerinde işlem yapabilmemizi sağlamaktır..Net Framework'ün 1.1 sürümü aşağıdaki listede yer alan veri sağlayıcıları ile birlikte gelmektedir..Net Framework'ün ilk sürümlerinde sadece Sql ve Ole Db veri sağlayıcıları varsayılan olarak yer almaktadır. Ancak 1.1 sürümü ile birlikte bu veri sağlayıcılarına, Oracle ve ODBC veri sağlayıcılarıda eklenmiştir.

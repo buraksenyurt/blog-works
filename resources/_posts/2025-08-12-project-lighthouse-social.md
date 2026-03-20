@@ -2,7 +2,6 @@
 layout: post
 title: "Project Lighthouse Social"
 date: 2025-08-12 08:00:00 +0300
-description: "Project Lighthouse Social, C# ile uçtan uca bir Web projesi geliştirilme serüvenidir. Konu, dünya üzerindeki deniz fenerlerine ait fotoğrafların paylaşıldığı, yorumlandığı ve puanlandığı bir sosyal platform hazırlamaktır. Projede mümkün mertebe yazılım dünyasının efsane konularına olan ihtiyaçları ortaya koymaya çalışmak ilk amaçlarımdan birisidir. Örneğin, hiçbir mimari kalıba uymadan sadece belli prensipleri (soyutlamalar, bağımlılıkları tersine çevirme, sorumlulukları dağıtma vs gibi) baz alarak bir proje iskeleti oluşturup, sonrasında sorularla yaklaşımın doğruluğunu değerlendirmek, açık noktaları tespit etmek ve standartlaşmış bir mimari kalıba çevirmek gibi."
 categories:
   - csharp
 tags:
@@ -16,7 +15,6 @@ tags:
   - performance
   - github
 ---
-# Project Lighthouse Social
 Project Lighthouse Social, C# ile uçtan uca bir web projesinin geliştirilme serüvenidir. Konu, dünya üzerindeki deniz fenerlerine ait fotoğrafların paylaşıldığı, yorumlandığı ve puanlandığı bir sosyal platform yazmaktır. Projede mümkün mertebe yazılım dünyasının efsane konularına olan ihtiyaçları ortaya koymaya çalışmak ilk amaçlarımdan birisidir. Örneğin, hiçbir mimari kalıba uymadan sadece belli prensipleri (türetmeler, bağımlılıkları tersine çevirme, sorumlulukları dağıtma vs gibi) baz alarak bir proje iskeleti oluşturup sonrasında sorularla yaklaşımın doğruluğunu değerlendirmek, açık noktaları tespit etmek ve standartlaşmış bir mimari kalıba çevirmek gibi.
 
 Seriye ait anlatımlara [youtube üzerinden](https://youtube.com/playlist?list=PLY-17mI_rla6Kt-Ri6nP1pE62ZyE-6wjS&si=YGd-iBIwZGLIAZBM) erişebilirsiniz. Seri boyunca işlenen kodlar [github reposuna](https://github.com/buraksenyurt/project-lighthouse-social) da düzenli olarak aktarılmaktadır.

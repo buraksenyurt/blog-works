@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Task Relations–Continuation Metodları"
 date: 2011-11-18 12:00:00 +0300
-description: "Continuations tekniklerinde, bir Task’ ın çalıştırılması veya icra edilmesi, atası olan ya da öncesinden tanımlanıp kendisine bağlanan Task örneklerine bağlıdır. Normal şartlar altında size tek bir Task örneği ve bu Task çalışmasını bitirdikten sonra devreye girmesi gereken bir Task örneğinin ele alındığı senaryoyu aktarmam gerekiyor. Ancak bana göre konunun daha iyi anlaşılabilmesi için aşağıdaki kod parçasında yer alan örneği göz önüne alarak başlamamız daha doğru olacaktır"
 categories:
   - parallel-programming
 tags:
@@ -11,10 +10,10 @@ tags:
   - dotnet
   - threading
 ---
-# Task Relations–Continuation Metodları
-Merhaba Arkadaşlar,
+Böylesine yağmurlu ve sabah trafiğinin tavan yaptığı bir günde size ne Radyo Eksen’ deki güzel melodiler, ne de okuduğunuz mizah dergisindeki karikatürler iyi gelmiyorsa, başka bir şeyle uğraşmanın yeridir diyebilirim. Ben bu sıkıntıyı aşmak ve kendimi daha iyi hissetmek adına bir makale daha yazmaya karar verdim ve hemen Windows Live Writer programını açtım
 
-[![1342533_gray_day_over_water](/assets/images/2011/1342533_gray_day_over_water_thumb.jpg)](/assets/images/2011/1342533_gray_day_over_water.jpg) Böylesine yağmurlu ve sabah trafiğinin tavan yaptığı bir günde size ne Radyo Eksen’ deki güzel melodiler, ne de okuduğunuz mizah dergisindeki karikatürler iyi gelmiyorsa, başka bir şeyle uğraşmanın yeridir diyebilirim. Ben bu sıkıntıyı aşmak ve kendimi daha iyi hissetmek adına bir makale daha yazmaya karar verdim ve hemen Windows Live Writer programını açtım
+[![1342533_gray_day_over_water](/assets/images/2011/1342533_gray_day_over_water_thumb.jpg)](/assets/images/2011/1342533_gray_day_over_water.jpg)
+
 
 ![Gülümseme](/assets/images/2011/wlEmoticon-smile_20.png)
 
@@ -154,7 +153,7 @@ namespace TaskContinuation
                 succesorTask.Wait(); 
             }
 
-            #endregion           
+            #endregion
 
             Console.WriteLine("Program Sonu"); 
             Console.ReadLine();        

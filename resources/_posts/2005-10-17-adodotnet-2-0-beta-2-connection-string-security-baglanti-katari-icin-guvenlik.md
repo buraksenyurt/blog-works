@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ado.Net 2.0(Beta 2) - Connection String Security (Bağlantı Katarı için Güvenlik)"
 date: 2005-10-17 09:00:00 +0300
-description: "Güvenlik günümüz uygulamalarında çok önemli bir yere sahiptir. Özellikle veritabanı kullanımını içeren uygulamalarda güvenliğin ayrı bir önemi vardır. Veritabanına gönderilen sorguların korunması, özellikle web servislerinden dönen veri kümelerinin etkin olarak şifrelenmesi gibi durumlar söz konusudur. Güvenlik prosedürü içerisinde yer alan unsurlardan biriside bağlantı bilgilerinin saklanmasıdır. Biz bu makalemizde, .Net 2.0 ile birlikte gelen yeni tekniklerden birisine değinerek, bağlantı bilgisinin (çoğunlukla connection string olarakda ifade edebiliriz) kolay bir şekilde nasıl korunabileceğini incelemeye çalışacağız."
 categories:
   - ado-net-2-0
 tags:
@@ -15,9 +14,6 @@ tags:
   - http
   - generics
 ---
-# Ado.Net 2.0(Beta 2) - Connection String Security (Bağlantı Katarı için Güvenlik)
-Değerli Okurlarım Merhabalar,
-
 Güvenlik günümüz uygulamalarında çok önemli bir yere sahiptir. Özellikle veritabanı kullanımını içeren uygulamalarda güvenliğin ayrı bir önemi vardır. Veritabanına gönderilen sorguların korunması, özellikle web servislerinden dönen veri kümelerinin etkin olarak şifrelenmesi gibi durumlar söz konusudur. Güvenlik prosedürü içerisinde yer alan unsurlardan biriside bağlantı bilgilerinin saklanmasıdır. Biz bu makalemizde,.Net 2.0 ile birlikte gelen yeni tekniklerden birisine değinerek, bağlantı bilgisinin (çoğunlukla connection string olarakda ifade edebiliriz) kolay bir şekilde nasıl korunabileceğini incelemeye çalışacağız.
 
 Bildiğiniz gibi,.Net tabanlı uygulamalar özellikle XML tabanlı konfigurasyon dosyalarını yoğun olarak kullanır. Varsayılan olarak windows uygulamalarında app.config veya web uygulamalarında yer alan web.config dosyaları, genel bilgilerin yer aldığı kaynaklardır. Çoğunlukla proje genelinde kullanılan bağlantı bilgilerini bu dosyalarda key-value (anahtar-değer) çiftleri şeklinde tutmayı tercih ederiz. Aslında bağlantı katarı (connection string) bilgilerini kod içerisinde de global seviyede tanımlayıp kullanabiliriz. Ancak bunun bir takım dezavantajları vardır.

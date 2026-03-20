@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Biyütıful Kod - Ninject ile Bir Dependency Injection Macerası"
 date: 2015-01-04 20:00:00 +0300
-description: "Her yazılım geliştirici özellikle büyük bir projeye girdiğinde kodlarının kaliteli olması için uğraşır. Bu yönde adımlar atar. Çoğu zaman bu bir sanata dahi dönüşebilir. Okunabilir kodlar oluşturmanın dışında, mimari açıdan büyüleyici olan, yeniden kullanılabilirliğin üst seviyede olduğu, fazla uğraşılmadan genişleyebilen ürünler ortaya çıkartmak en büyük gayelerden birisi haline gelir. Martin Fowler' ın ilkeleri sıkı sıkıya takip edilir. Kurumsal çözüm içerisinde Fluent API' ler kullanılmaya, \"Dependency Injection Container\" gibi kavramlar konuşulmaya başlanır. Ne kadar başarılabilir bilinmez ama amaçlardan birisi de Biyütıful Kodu ortaya çıkartmaktır."
 categories:
   - csharp
   - tasarim-prensipleri-design-principles
@@ -17,10 +16,10 @@ tags:
   - github
   - dependency-management
 ---
-# Biyütıful Kod - Ninject ile Bir Dependency Injection Macerası
-[![OLYMPUS DIGITAL CAMERA](/assets/images/2015/legoninjas_thumb.jpg)](/assets/images/2015/legoninjas.jpg) Merhaba Arkadaşlar,
-
 Her yazılım geliştirici özellikle büyük bir projeye girdiğinde kodlarının kaliteli olması için uğraşır. Bu yönde adımlar atar. Çoğu zaman bu bir sanata dahi dönüşebilir. Okunabilir kodlar oluşturmanın dışında, mimari açıdan büyüleyici olan, yeniden kullanılabilirliğin üst seviyede olduğu, fazla uğraşılmadan genişleyebilen ürünler ortaya çıkartmak en büyük gayelerden birisi haline gelir. Martin Fowler'ın ilkeleri sıkı sıkıya takip edilir. Kurumsal çözüm içerisinde Fluent API'ler kullanılmaya, "Dependency Injection Container" gibi kavramlar konuşulmaya başlanır. Ne kadar başarılabilir bilinmez ama amaçlardan birisi de Biyütıful Kodu ortaya çıkartmaktır.
+
+[![OLYMPUS DIGITAL CAMERA](/assets/images/2015/legoninjas_thumb.jpg)](/assets/images/2015/legoninjas.jpg)
+
 
 Dependency Injection Container Hakkında
 

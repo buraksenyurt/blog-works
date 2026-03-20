@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Bir Web API Servisi Nasıl Hata Döndürmeli ?"
 date: 2018-11-19 06:28:00 +0300
-description: "Bu yazımızda IETF(Internet Engineering Task Force) ekibinin koyduğu önemli standartlardan birisi olan \"Problem Details for HTTP APIs\" konusunu incelemeye çalışıyoruz. Bu bağlamda RFC 7807 maddesinde belirtilen sonuçları elde edebilmek için Kristian Hellang'in geliştirdiği Hellang.Middleware.ProblemDetails nuget paketinden yararlanıyoruz."
 categories:
   - dotnet-core
 tags:
@@ -15,12 +14,9 @@ tags:
   - http
   - github
 ---
-# Bir Web API Servisi Nasıl Hata Döndürmeli ?
-![badrequest.jpg](/assets/images/2018/badrequest.jpg)
-
-Merhaba Arkadaşlar,
-
 Bir süre öncesine kadar şirkette yeni bir lakabım vardı. "Bad Request Burak":) Devraldığımız bir kaç projede teknik borçlanmadan ötürü oluşan kirli kodlarla boğuşurken çok fazla detay vermeyen HTTP 400 hataları ile karşılaşıyordum. Bazen bir tanesini çözerken bir başkasının doğmasına neden olacak değişikliklere de sebep olabiliyordum. Hatta hesapta olmayan bu hataların neden oluştuğunu tespit etmek için harcanan zaman kaybı nedeniyle diğer görevlerim de aksıyordu. Bir süre sonra "Bad Request" ünvanı ile hatırlanır oldum:) Hatta bulaşıcı hale gelen bu ünvan ekibimdeki başka arkadaşlara da yayılıverdi. Neyse ki işleri sonunda yoluna koyduk (Her ne kadar ünvanım " Burak 200" olarak değişmese de:D)
+
+![badrequest.jpg](/assets/images/2018/badrequest.jpg)
 
 Neden böyle oluyordu. Bu işin bir orta noktası yok muydu? Bir Web API servisi gerçekte nasıl mesaj döndürmeliydi? İşte hata mesajlarını verirken bile bazı kritrleri göz önüne alarak evresenl bir takım standartları uygulamak gerekiyor. Aslında standartlar yazılım geliştirme yaşam döngüsünde konulması ve uygulanması zor olan kavramların başında geliyor. Özellikle endüstüriyel çözümleri göz önüne aldığımızda çeşitli toplulukların kabul gördüğü ve uygulanmasını beklediği standartlara bağlı kalmak da önem arz ediyor. IETF (Internet Engineering Task Force) bu anlamda standart koyuculardan birisi olarak karşımıza çıkmakta. Geçtiğimiz günlerde Web API servisleri ile ilgili durum kodlarının nasıl olması gerektiğini araştırırken güzel bir RFC dokümanına rastladım. Her ne kadar 2016 yılında yazılmış olsa da güncel ve geçerli bir standart olduğu aşikardı.
 

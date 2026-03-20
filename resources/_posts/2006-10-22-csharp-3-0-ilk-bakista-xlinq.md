@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "C# 3.0 - İlk Bakışta XLINQ"
 date: 2006-10-22 12:00:00 +0300
-description: "XLINQ (Xml Language Integrated Query) temel olarak LINQ modelinin Xml üzerine uyarlanabilmesini hedeflemektedir. Bildiğiniz gibi LINQ projesi ile, IEnumerable<T> arayüzünü uygulamış .Net nesneleri üzerinde dil ile tümleştirilmiş sorgulamalar gerçekleştirilebilmektedir..."
 categories:
   - csharp
 tags:
@@ -14,9 +13,6 @@ tags:
   - generics
   - visual-studio
 ---
-# C# 3.0 - İlk Bakışta XLINQ
-Değerli Okurlarım Merhabalar,
-
 XLINQ (Xml Language Integrated Query) temel olarak LINQ modelinin Xml üzerine uyarlanabilmesini hedeflemektedir. Bildiğiniz gibi LINQ projesi ile, IEnumerable arayüzünü uygulamış.Net nesneleri üzerinde dil ile tümleştirilmiş sorgulamalar gerçekleştirilebilmektedir. Microsoft aynı sorgu yapısını, veritabanı objelerinin programlama ortamında nesnel olarak ifade edilebildiği varlıklar (entities) üzerinde kullanılabilmesini de DLINQ (Database Language Integrated Query) ile sağlamaktadır. (DLINQ ile ilgili özet bilgileri bu [makalemden](http://www.bsenyurt.com/MakaleGoster.aspx?ID=174) bulabilirsiniz.)
 
 XLINQ ise, yine dil tabanlı sorgulama özelliklerini alıp bunların XML verileri üzerinden gerçkeştirilebilmesini sağlmayayı amaçlamaktadır. Xml verilerinde dil tabanlı sorgular yapılabilmesinin dışında, var olan döküman nesne modeline (Document Object Model -DOM), XPath ve Xslt kavramlarına ek olacak şekilde yeni fonksiyonelliklerde gelmektedir. Örneğin bir Xml verisini bellek üzerinde oluşturmak için XDocument isimli yeni bir tipin yapıcı metodlarından faydalanabiliriz. Dahada ileri gidersek, XLINQ ' yu DLINQ ile tümleşik olacak şekilde kullanabiliriz. Bunun anlamı, veritabanı objelerinin nesnel olarak ifade edildiği varlıkları LINQ ile sorgulayıp, Xml formatında sonuç kümelerini çalışma zamanında (runtime) elde edebileceğimizdir. DLINQ'da olduğu gibi, XLINQ'da kendi içerisinde C# 3.0' ın yeniliklerini barındırmakta ve kullanmaktadır.

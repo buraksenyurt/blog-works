@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ado.Net Data Services Ders Notları - 5 (Custom LINQ Provider-CUD)"
 date: 2008-10-24 12:00:00 +0300
-description: "Ado.Net Data Services konusu ile ilintili bir önceki ders notlarımızda, EDM(Entity Data Model) üzerinden CUD(CreateUpdateDelete) işlemlerinin nasıl yapılabileceğini incelemeye çalışmıştık. Ancak durum özel LINQ Provider kullanımı söz konusu olduğunda biraz daha karmaşıklaşmakta."
 categories:
   - ado-net-data-services
 tags:
@@ -20,9 +19,6 @@ tags:
   - generics
   - debugging
 ---
-# Ado.Net Data Services Ders Notları - 5 (Custom LINQ Provider-CUD)
-Değerli Okurlarım Merhabalar,
-
 Ado.Net Data Services konusu ile ilintili bir önceki ders notlarımızda, EDM (Entity Data Model) üzerinden CUD (CreateUpdateDelete) işlemlerinin nasıl yapılabileceğini incelemeye çalışmıştık. Ancak durum özel LINQ Provider kullanımı söz konusu olduğunda biraz daha karmaşıklaşmakta. Nitekim Custom LINQ Provider kullanılması halinde istemci tarafından gelen CUD taleplerine karşılık servis tarafında özel kodlamaların yapılması gerekiyor. Bu noktada ders notlarımız içerisinde belkide çoğumuzun korkup fazla bulaşmak istemediği bir konuya kısacada olsa değineceğimizi şimdiden ifade etmek isterim. Reflection (Yansıma):)
 
 "Hayda brea nereden çıktı bu reflection" diyenelerimiz eminim ki vardır. Öyleyse kısaca bu kavramı hatırlamaya çalışalım. Reflection teknikleri ile çalışma zamanında (Runtime).Net CLR tiplerine ait (ister kullanıcı tanımlı ister önceden tanımlanmış tipler) metadata bilgilerine ulaşılabilmektedir. Bu açıdan bakıldığında özellikle plug-in tabanlı uygulama geliştirmelerde, IDE tasarımlarında kullanılmaktadır. Hatta çalışma zamanında tiplere ait canlı nesne örneklerinin üretilip kullanılması bile mümkündür. Söz gelimi.[Net Reflector](http://www.red-gate.com/products/reflector/) gibi araçlar Reflection teknikleri yardımıyla geliştirilirler. Peki konunun Ado.Net Data Service'ler ile olan ilişkisi nedir? Neden bu tekniklere ihtiyaç vardır?

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu 154 - C# 7.0 out İyileştirmesi"
 date: 2017-03-19 21:45:00 +0300
-description: "Henüz C# 6.0'ın nimetlerini şirket projelerinde deneyimleme fırsatı bulamamışken yakın zaman çıkan Visual Studio 2017 ile birlikte gündeme oturan C# 7.0 kabiliyetlerini yeni yeni keşfetmeye başlıyorum. C# 7.0 tarafında epey yenilik var. Bunlardan birisi de özellikle TryParse operasyonlarında ele alınan out kullanımına yönelik. En yaygın senaryo string bir içeriğin sayısal tipe dönüştürülmesi sırasında TryParse fonksiyonunun kullanılması. Normal şartlarda aşağıdaki kod parçasındaki gibi gerçekleştirdiğimiz bir operasyon."
 categories:
   - csharp-7-0
 tags:
@@ -11,9 +10,6 @@ tags:
   - dotnet
   - visual-studio
 ---
-# Tek Fotoluk İpucu 154 - C# 7.0 out İyileştirmesi
-Merhaba Arkadaşlar,
-
 Henüz C# 6.0'ın nimetlerini şirket projelerinde deneyimleme fırsatı bulamamışken yakın zamanda çıkan Visual Studio 2017 ile birlikte gündeme oturan C# 7.0 kabiliyetlerini yeni yeni keşfetmeye başlıyorum. C# 7.0 tarafında da epey yenilik var. Bunlardan birisi de özellikle out anahtar kelimesinin kullanımına yönelik. En yaygın senaryo string bir içeriğin sayısal tipe dönüştürülmesi sırasında TryParse fonksiyonunun kullanılması. Normal şartlarda aşağıdaki kod parçasındaki gibi gerçekleştirdiğimiz bir operasyon bu.
 
 ```csharp

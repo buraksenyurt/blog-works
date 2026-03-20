@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "NoSQL Maceraları - Graph Database DEX"
 date: 2013-02-20 04:00:00 +0300
-description: "Sparsity firmasının bir ürünü olan DEX, Community kullanımında 1milyon nesneye(Objects) kadar ücretsiz olarak yararlanılabilen bir veritabanı sunmaktadır. Veritabanının en önemli özelliği ise içeriği nesnel olarak Graph teorisine göre tutuyor olmasıdır. (Graph teorisi hakkında Wikipedia bağlantısından özet bir bilgi alabilirsiniz)"
 categories:
   - nosql
 tags:
@@ -18,10 +17,10 @@ tags:
   - http
   - java
 ---
-# NoSQL Maceraları - Graph Database DEX
-[![dex_7](/assets/images/2013/dex_7_thumb.png)](/assets/images/2013/dex_7.png) Merhaba Arkadaşlar,
-
 Eminim pek çoğunuzun hastası/fanatiği olduğu yerli veya yabancı diziler vardır. Küçük bir çocukken çizgi filmlere olan düşkünlüğümüz kadar olmasa da, hemen her bölümünü heyecanla beklediklerimiz mutlaka vardır (Hatta ülkemizde geç yayınlanıyor diye ilgili dizileri internetten indirenlerimizde vardır)
+
+[![dex_7](/assets/images/2013/dex_7_thumb.png)](/assets/images/2013/dex_7.png)
+
 
 Bilişim alanında görev alanların ağırlıkla CNBC-E gibi kanallarda yer alan dizilere olan bağımlılığı da aslında su götürmez bir gerçektir. Örneğin benim fanatiği olduğum dizilerden birisi Dexter ve ne tesadüftür ki bu gün yazımızda ele alacağımız ürünün adı da onun lakabı ile eş: DEX ![Laughing out loud](/assets/images/2013/wlEmoticon-laughingoutloud_4.png)
 

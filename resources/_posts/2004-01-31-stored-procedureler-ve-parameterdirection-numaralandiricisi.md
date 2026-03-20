@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Stored Procedureler ve ParameterDirection Numaralandırıcısı"
 date: 2004-01-31 12:00:00 +0300
-description: "Bugünkü makalemizde, Sql sunucularında yazdığımız Stored Procedure'lere ilişkin parametreleri incelemeye çalışacağız. Stored Procedure'ler ile ilgili daha önceki makalelerimizde, uygulamamızdan bu procedure'lere nasıl parametre aktarılacağını incelemiştik. Parametre aktarımında yaptığımız işlem, SqlCommand nesnesimizin parametre koleksiyonuna, Stored Procedure içinde tanımladığımız parametrenin eklenmesiydi. Bunun için, SqlCommand sınıfının Parameters koleksiyonuna Add metodunu kullanarak SqlParameter sınıfı türünden bir nesne ekliyorduk. Bu parametrelere program içerisinden ilgili değerleri aktararak, bu değerlerin Stored Procedure içinede aktarılmasına imkan sağlıyorduk."
 categories:
   - ado-net
 tags:
@@ -10,9 +9,6 @@ tags:
   - csharp
   - performance
 ---
-# Stored Procedureler ve ParameterDirection Numaralandırıcısı
-Değerli Okurlarım, Merhabalar.
-
 Bugünkü makalemizde, Sql sunucularında yazdığımız Stored Procedure'lere ilişkin parametreleri incelemeye çalışacağız. Stored Procedure'ler ile ilgili daha önceki makalelerimizde, uygulamamızdan bu procedure'lere nasıl parametre aktarılacağını incelemiştik. Parametre aktarımında yaptığımız işlem, SqlCommand nesnesimizin parametre koleksiyonuna, Stored Procedure içinde tanımladığımız parametrenin eklenmesiydi. Bunun için, SqlCommand sınıfının Parameters koleksiyonuna Add metodunu kullanarak SqlParameter sınıfı türünden bir nesne ekliyorduk. Bu parametrelere program içerisinden ilgili değerleri aktararak, bu değerlerin Stored Procedure içinede aktarılmasına imkan sağlıyorduk.
 
 Bugünkü makalemizde ise, bir Stored Procedure'den programımıza nasıl değer (ler) döndürebileceğimizi inceleyeceğiz. Dikkat ederseniz, bir Stored Procedure'e program içinden parametre aktarabileceğimiz gibi, Stored Procedure'dende programımıza değerler aktarbildiğimizden bahsediyoruz. Dolayısıyla parametrelerin bir takım farklı davranışlar sergiliyebilmesi söz konusu. SqlParameters sınıfı, parametrelerin davranışlarını yada başka bir deyişle hangi yöne doğru hareket edeceklerini belirten bir özellik içermektedir. Bu özellik Direction özelliğidir ve C# prototipi aşağıdaki gibidir.

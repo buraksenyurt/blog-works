@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Enumerators"
 date: 2003-12-01 12:00:00 +0300
-description: "Bugünkü makalemizde, kendi değer türlerimizi oluşturmanın yollarından birisi olan Enumerator’ları inceleyeceğiz. C# dilinde veri depolamak için kullanabileceğim temel veri türleri yanında kendi tanımlayabileceğimiz türlerde vardır. Bunlar Structs(Yapılar), Arrays(Diziler) ve Enumerators(Numaralandırıcılar) dır. Numaralandırıcılar, sınırlı sayıda değer içeren değişkenler yaratmamıza olanak sağlarlar. Burada bahsi geçen değişken değerleri bir grup oluştururlar ve sembolik bir adla temsil edilirler. Numaralandırıcıları kullanma nedenlerimizden birisi verilere anlamlar yüklekleyerek, program içerisinde kolay okunabilmelerini ve anlaşılabilmelerini sağlamaktır. Örneklerimizde bu konuyu çok daha iyi anlıyacaksınız. Bir Numaralandırıcı tanımlamak için aşağıdaki syntax kullanılır."
 categories:
   - csharp
 tags:
@@ -10,9 +9,6 @@ tags:
   - dotnet
   - visual-studio
 ---
-# Enumerators
-Değerli Okurlarım, Merhabalar.
-
 Bugünkü makalemizde, kendi değer türlerimizi oluşturmanın yollarından birisi olan Enumerator’ları inceleyeceğiz. C# dilinde veri depolamak için kullanabileceğim temel veri türleri yanında kendi tanımlayabileceğimiz türlerde vardır. Bunlar Structs (Yapılar), Arrays (Diziler) ve Enumerators (Numaralandırıcılar) dır. Numaralandırıcılar, sınırlı sayıda değer içeren değişkenler yaratmamıza olanak sağlarlar. Burada bahsi geçen değişken değerleri bir grup oluştururlar ve sembolik bir adla temsil edilirler. Numaralandırıcıları kullanma nedenlerimizden birisi verilere anlamlar yüklekleyerek, program içerisinde kolay okunabilmelerini ve anlaşılabilmelerini sağlamaktır. Örneklerimizde bu konuyu çok daha iyi anlıyacaksınız. Bir Numaralandırıcı tanımlamak için aşağıdaki syntax kullanılır.
 
 ```csharp

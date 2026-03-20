@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ado.Net Data Services Ders Notları - 6 (Optimistic Concurrency)"
 date: 2008-10-30 10:00:00 +0300
-description: "İstemci-Sunucu(Client-Server) bazlı uygulamalar göz önüne alındığında, istemcilerin aynı veriler üzerinde birbirlerinden habersiz şekilde değişiklikler yapabilme ihtimali oldukça meşhur bir vaka olarak bilinmektedir."
 categories:
   - ado-net-data-services
 tags:
@@ -21,9 +20,6 @@ tags:
   - generics
   - debugging
 ---
-# Ado.Net Data Services Ders Notları - 6 (Optimistic Concurrency)
-Değerli Okurlarım Merhabalar,
-
 İstemci-Sunucu (Client-Server) bazlı uygulamalar göz önüne alındığında, istemcilerin aynı veriler üzerinde birbirlerinden habersiz şekilde değişiklikler yapabilme ihtimali oldukça meşhur bir vaka olarak bilinmektedir. Özellikle.Net tarafında bağlantısız katman (Disconnected Layer) uygulamalarında bu tip vakalar son derece önemlidir. Zaman zaman bu tip vakalar ile mücadele etmek ve tedbirler almak gerekir. Vaka aslında şu şekilde ifade edilebilir; "sunucu üzerinden aynı veri içeriklerini çeken istemci programlar, sunucu ile bağlantılarını kestikten sonra kendi uygulama alanları üzerine aldıkları verilerde değişiklik yapabilirler.
 
 Ancak bu noktada sunucu ile sürekli bir bağlantıları olmadığından, başka istemcilerin aynı veriler üzerinde değişiklikler yapıp yapmadıklarını tam olarak bilemezler. Bu sebepten aynı veriler üzerinde birbirlerinden habersiz olacak şekilde yaptıkları değişiklikleri sunucuya gönderebilirler." İşte bu noktada sunucu tarafında durumun nasıl ele alınacağı önem kazanır. Bu amaçla çeşitli denetleme mekanizmaları kullanılabilir. Bu yazımızda hepinizin kulağında bol bol Optimistic Concurrency kelimelerinin çınlayacağını şimdiden söyleyebilirim.

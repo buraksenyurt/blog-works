@@ -1,17 +1,13 @@
-﻿---
+---
 layout: post
 title: "Tip Güvenli (Type Safety ) Koleksiyonlar Oluşturmak - 1"
 date: 2005-07-23 12:00:00 +0300
-description: "Tip güvenliğini sağlamak her zaman için önemli unsurlardan birisidir. Koleksiyon tabanlı nesneleri kullanırken çoğu zaman istediğimiz tip güvenliğini sağlayamayabiliriz. Buradaki en büyük etken, koleksiyon tabanlı nesnelerin object tipinden referanslar taşıyor olmasıdır. Bazen kendi belirlediğimiz tip dışında, başka her hangi bir tip barındırmasına izin vermek istemediğimiz yapıda koleksiyon nesnelerine ihtiyacımız olur. Böyle bir koleksiyon nesnesinin en büyük avantajı az önce bahsettiğimiz tip güvenliğini sağlamasıdır."
 categories:
   - csharp
 tags:
   - csharp
   - generics
 ---
-# Tip Güvenli (Type Safety ) Koleksiyonlar Oluşturmak - 1
-Değerli Okurlarım Merhabalar,
-
 Tip güvenliğini sağlamak her zaman için önemli unsurlardan birisidir. Koleksiyon tabanlı nesneleri kullanırken çoğu zaman istediğimiz tip güvenliğini sağlayamayabiliriz. Buradaki en büyük etken, koleksiyon tabanlı nesnelerin object tipinden referanslar taşıyor olmasıdır. Bazen kendi belirlediğimiz tip dışında, başka her hangi bir tip barındırmasına izin vermek istemediğimiz yapıda koleksiyon nesnelerine ihtiyacımız olur. Böyle bir koleksiyon nesnesinin en büyük avantajı az önce bahsettiğimiz tip güvenliğini sağlamasıdır.
 
 C# 2.0 versiyonunda koleksiyon nesnelerine ilişkin olarak tip güvenliği generic yapıları ile kazandırılmıştır. Peki 1.1 versiyonunda bu işleri nasıl gerçekleştirebiliriz? İki alternatif yolumuz vardır. Bunlardan birisi var olan bir koleksiyon nesnesini türetmektir. Diğer yol ise CollectionBase veya DictionaryBase tipinden türetme yaparak bir koleksiyon nesnesi tanımlamaktır. Biz bu makalemizde CollectionBase sınıfı yardımıyla tip güvenli koleksiyon sınıflarını nasıl oluşturabileceğimizi inceleyeceğiz. Bu sınıflar aynı zamanda strongly-typed collections (kuvvetle türlendirimiş koleksiyonlar) olarakta adlandırılmaktadır.

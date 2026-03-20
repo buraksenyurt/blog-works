@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ubuntu'da İlk .Net Core Adımlarım"
 date: 2017-11-05 10:17:00 +0300
-description: "Bu yazımızda Ubuntu sistemi üzerine .Net Core 2.0 yükleyip basit bir Console uygulaması yazarak Linux üzerinde Hello World demeye çalışacağız."
 categories:
   - dotnet-core
 tags:
@@ -17,12 +16,9 @@ tags:
   - visual-studio
   - github
 ---
-# Ubuntu'da İlk .Net Core Adımlarım
-![coubuntu_1.gif](/assets/images/2017/coubuntu_1.gif)
-
-Merhaba Arkadaşlar,
-
 Üniversite yıllarımda internet yeni yeni yaygınlaşmaya başlayan bir ortamdı. 14400 kpbs hızındaki modemimi daha 3ncü sınıfta alabilmiştim. Bu sebepten okulun ilk yıllarında bilgisayar teknolojileri ile ilgili bilgileri öğrenebileceğim en güzel mecra aylık dergilerdi. Bazıları zaman içerisinde kapandı bazılarıysa internet üzerinden yayınlanmaya başladı. Ben ağırlıklı olarak PcWorld, PcNet, PcMagazine gibi dergileri okuduğumu hatta ay ay biriktirdiğimi hatırlıyorum.
+
+![coubuntu_1.gif](/assets/images/2017/coubuntu_1.gif)
 
 Byte severek takip ettiğim dergilerden birisiydi. Özellikle de Jerry Pournelle'in köşesi. Her ay farklı şeylerle uğraşır, yaptığı denemelerin sonuçları paylaşır, bilim kurgu üzerine konuşur, kitap önerilerinde bulunurdu. Yeni yazılımları dener ve deneyimlerini aktarırdı. The New York Times [ilgili yazısında](https://www.nytimes.com/2017/09/15/obituaries/jerry-pournelle-science-fiction-novelist-and-computer-guide-dies-at-84.html) onu bilim kurgu yazarı ve bilgisayar rehberi olarak tanımlamıştır. Araştırmayı ve bu araştırmaları sırasında öğrendiklerini paylaşan değerli bir bilim insanıydı benim için.
 

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "C# 4.0 Default Parameter Kullanımına Dikkat"
 date: 2011-02-13 16:00:00 +0300
-description: "İşte bu yazımızın konusu da; C# 4.0 ile birlikte gelen yeni dil özelliklerden birisi olan Default Parameters ile ilişkili tuzaklar. Öncelikli olarak konuya aşağıdaki hazır kod parçası ile başlayalım."
 categories:
   - csharp-4-0
 tags:
@@ -11,10 +10,10 @@ tags:
   - xml
   - http
 ---
-# C# 4.0 Default Parameter Kullanımına Dikkat
-[![blg215_Giris](/assets/images/2011/blg215_Giris_thumb.jpg)](/assets/images/2011/blg215_Giris.jpg) Merhaba Arkadaşlar,
-
 2004 ve 2005 yıllarında uzun bir süre editörlüğünü yaptığım [C#Nedir?](http://www.csharpnedir.com/) topluluğunun düzenlediği C# Akademi eğitimlerinde, yarı zamanlı eğitmen olarak görev yapmıştım. Genellikle C# programlama dilinin basit ve temel konularını, ayrıca Object Oriented özelliklerini aktarmaya çalışırdım. Elbette sınıfımdaki öğrencilerim yanda görüldüğü gibi her zaman pür neşe olmazlardı.
+
+[![blg215_Giris](/assets/images/2011/blg215_Giris_thumb.jpg)](/assets/images/2011/blg215_Giris.jpg)
+
 
 Ancak insan zaman içerisinde profesyonelleşme yolunda ilerledikçe konuları çok daha farklı açılardan ele alması gerektiğini de öğreniyor. Profesyonel bir eğitmenin en iyi yaptığı işlerin başında, en zor konuları çöp adam kullanarak anlatmak gelmektedir. Tabi eğitmenin gerçek hayat tecrübelerini ve ip uçlarını da aktarıyor olması, profesyonelliğinin diğer bir göstergesidir. Böyle bir eğitmenin vereceği önerileri pür dikkat dinlemekte yarar vardır.
 

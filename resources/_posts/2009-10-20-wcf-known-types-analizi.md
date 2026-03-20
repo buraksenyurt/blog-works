@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF Known Types Analizi"
 date: 2009-10-20 13:36:00 +0300
-description: "Bilindiği üzere WCF aslında SOA(Service Oriented Architecture) mimarisinin uygulama modellerinden birisidir. İşin içerisinde servisler söz konusu olduğunda ağlar ve sistemler arası mesajlaşlamalar söz konusudur."
 categories:
   - wcf
 tags:
@@ -17,12 +16,9 @@ tags:
   - generics
   - visual-studio
 ---
-# WCF Known Types Analizi
-![blg84_Thinking.jpg](/assets/images/2009/blg84_Thinking.jpg)
-
-Merhaba Arkadaşlar,
-
 Bilindiği üzere WCF aslında SOA (Service Oriented Architecture) mimarisinin uygulama modellerinden birisidir. İşin içerisinde servisler söz konusu olduğunda ağlar ve sistemler arası mesajlaşlamalar söz konusudur. Mesajlaşmalar söz konusu olduğundaysa, servis ve istemci arasında hareket eden verinin serileşebilir olması önem arz eden konuların başında gelmektedir.
+
+![blg84_Thinking.jpg](/assets/images/2009/blg84_Thinking.jpg)
 
 Ne varki serileşen veri içeriklerinin, platform bağımsızlık adına her iki tarafında kullanabileceği tiplerden (Types) oluşmasının sağlanması bir avantajdır. İşte bu noktada biz WCF geliştiricileri için anlaşılması zor olan ve dikkatle üzerinde durumlası gereken kıyıda köşede kalmış konulardan biriside Known Types kavramıdır.
 

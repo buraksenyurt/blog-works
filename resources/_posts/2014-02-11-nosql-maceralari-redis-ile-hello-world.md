@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "NoSQL Maceraları–Redis ile Hello World"
 date: 2014-02-11 13:04:00 +0300
-description: "Bildiğiniz üzere bir süredir NoSQL veritabanı sistemlerinin, .Net tarafındaki kullanımlarını basit Hello World uygulamaları ile incelemeye çalışmaktayız. Bu günkü yazımıza konu olan ürün ise, popüler NoSQL sistemler arasında yer alan Redis. Oldukça popüler sayılabilecek olan bu ürünün kullanıcıları arasında hemen hemen her gün ziyaret ettiğimiz pek çok site bulunmakta. Stackoverflow, instagram, flickr, blizzard, github, disqus ve hatta guardian. Tabi dikkat çekici noktalardan birisi tüm bu örneklerin web tabanlı birer uygulama olması."
 categories:
   - nosql
 tags:
@@ -21,10 +20,10 @@ tags:
   - visual-studio
   - github
 ---
-# NoSQL Maceraları–Redis ile Hello World
-[![Blizzard_Entertainment_Logo.svg](/assets/images/2014/Blizzard_Entertainment_Logo.svg_thumb.png)](/assets/images/2014/Blizzard_Entertainment_Logo.svg.png) Merhaba Arkadaşlar,
-
 Üniversite yıllarında en çok oynadığım oyunlar sanıyorum ki Warcraft II ve Starcraft idi. Sonrasında bunlara Diablo’ da eklendi. Bu üç güzide oyunun ortak özelliği ise Blizzard firması tarafından geliştirilmiş olmalarıydı. 1991 yılının bir Şubat ayında (soğuk muydu hava bilemiyorum) UCLA üniversitesi mezunu Michale Morhaime, Allen Adham ve Frank Pearce tarafından Kaliforniya’ da kurulan şirket, 2012 itibariyle tam olarak 4700 çalışana sahip. (Hani çalıştığım uluslararası bankanın yaptığı işleri ve IT departmanını düşünce gerçekten durup 8 kere düşünüyorum) Peki firmanın kendi ortamında kullandığı ürünlerden birisinin Redis isimli NoSQL sistemi olduğunu biliyor muydunuz?
+
+[![Blizzard_Entertainment_Logo.svg](/assets/images/2014/Blizzard_Entertainment_Logo.svg_thumb.png)](/assets/images/2014/Blizzard_Entertainment_Logo.svg.png)
+
 
 ![Smile](/assets/images/2014/wlEmoticon-smile_90.png)
 

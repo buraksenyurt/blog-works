@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: ".Net RIA Servisleri - CRUD İşlemleri"
 date: 2009-05-13 22:50:00 +0300
-description: "Bildiğiniz gibi bir süredir .Net RIA Servisleri ile ilişkili araştırmalarıma devam etmekteyim. Bu yazımızda, .Net RIA Servislerinde Insert, Update ve Delete işlemlerini nasıl yapabileceğimizi basit bir örnek üzerinden adım adım aktarmaya çalışacağım."
 categories:
   - dotnet-ria-services
 tags:
@@ -19,9 +18,6 @@ tags:
   - concurrency
   - generics
 ---
-# .Net RIA Servisleri - CRUD İşlemleri
-Merhaba Arkadaşlar,
-
 Bildiğiniz gibi bir süredir.Net RIA Servisleri ile ilişkili araştırmalarıma devam etmekteyim. Bu yazımızda,.Net RIA Servislerinde Insert, Update ve Delete işlemlerini nasıl yapabileceğimizi basit bir örnek üzerinden adım adım aktarmaya çalışacağım. Daha önceki Hello World örneğimizden farklı olarak, DAL (Data Access Layer) içerisinde LINQ to SQL modelini kullanıyor olacağız. İlk adımımız elbetteki bir Silverlight Application projesi oluşturmak olmalıdır..Net RIA Servisini kullanacağımız için, projenin oluşturulması sırasında Link to ASP.NET Server Project seçeneğinin işaretli olmasına dikkat edelim.
 
 Sonrasında Web projesine bir adet LINQ to SQL öğesi eklemeli ve bağlanmak istediğimiz veri kaynağı üzerinden, kullanmak istediğimiz tablo veya stored procedure'leri diagram üzerine sürüklemeliyiz. Ben Insert, Update ve Delete işlemlerini çok basit bir şekilde ele almak istediğimdeN kullanabileceğim en kolay kobay tabloyu seçtim:) Northwind veritabanında yer alan Categories tablosu. Nitekim sadece CategoryName ve Description alanlarına veri eklemek bizim için yeterli olacaktır.

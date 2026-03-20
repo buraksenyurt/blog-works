@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF Uygulamalarında Enterprise Library Validation Block Kullanımı"
 date: 2013-06-23 15:26:00 +0300
-description: "Biz bu makalemizde WCF(Windows Communication Foundation) servislerinde, Validation Application Block’ u nasıl kullanabileceğimizi incelemeye çalışıyor olacağız. Bu block yardımıyla nitelik bazlı(Attribute Based) olacak şekilde doğrulama(Validation) kontrolleri yapılabilmektedir. Söz konusu doğrulama kontrolleri sınıfların özelliklerine uygulanan nitelikler ile yapılabileceği gibi, metodların parametreleri üzerine de enjekte olabilmektedir. Dilerseniz adım adım senaryomuzu geliştirip konuyu basit seviye de kavramaya çalışalım."
 categories:
   - wcf
 tags:
@@ -14,14 +13,9 @@ tags:
   - caching
   - serialization
 ---
-# WCF Uygulamalarında Enterprise Library Validation Block Kullanımı
-[![lego-block-tape](/assets/images/2013/lego-block-tape_thumb.jpg)](/assets/images/2013/lego-block-tape.jpg)[Orjinal Yazım Tarihi 10.09.2012]
+Enterprise Library ve içerisinde yer alan Application Block’ lar çoğunlukla projelerimizde ihtiyaç duyduğumuz ve Cross-Cutting olarak geçen parçaların hızlı ve kolay bir biçimde uygulanmasında kullanılmaktadır. Cross-Cutting’ ler özellikle birden fazla katmandan oluşan proje bazlı çözümlerde, katmanların pek çok noktasında sıklıkla kullanılabilen (ihtiyaç duyulabilen) fonksiyonelliklerdir.
 
-Merhaba Arkadaşlar,
-
-Enterprise Library ve içerisinde yer alan Application Block’ lar çoğunlukla projelerimizde ihtiyaç duyduğumuz ve Cross-Cutting olarak geçen parçaların hızlı ve kolay bir biçimde uygulanmasında kullanılmaktadır.
-
-Cross-Cutting’ ler özellikle birden fazla katmandan oluşan proje bazlı çözümlerde, katmanların pek çok noktasında sıklıkla kullanılabilen (ihtiyaç duyulabilen) fonksiyonelliklerdir.
+[![lego-block-tape](/assets/images/2013/lego-block-tape_thumb.jpg)](/assets/images/2013/lego-block-tape.jpg)
 
 Örneğin Exception Handling, Security, Cryptography, Configuration, Logging, Validation, Caching vb…Bu tip modüler yapılar çok sık kullanıldıklarından her çözüm için ayrı ayrı geliştirilmemektedir/geliştirilmemelidir. Bunun yerine yeniden kullanılabilen modüler yapılar olarak ele alınmaları daha doğru bir yaklaşımdır. Örneğin Enterprise Library
 

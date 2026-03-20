@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu 152 - DebuggerDisplay Niteliği ile Debugging Daha Sevimli Olabilir"
 date: 2017-02-16 21:29:00 +0300
-description: "Nitelikler bildiğiniz üzere çalışma zamanına bilgi taşıma amacıyla kullanılan önemli kabiliyetlerdendir. Visual Studio tarafında da işimize yarayan bir çok nitelik(Attribute) yer alır. Bunlardan birisi de DebuggerDisplay niteliğidir. Önce aşağıdaki ekran görüntüsündeki kod parçasını göz önüne alalım."
 categories:
   - tek-fotoluk-ipucu
 tags:
@@ -10,9 +9,6 @@ tags:
   - debugging
   - visual-studio
 ---
-# Tek Fotoluk İpucu 152 - DebuggerDisplay Niteliği ile Debugging Daha Sevimli Olabilir
-Merhaba Arkadaşlar,
-
 Nitelikler bildiğiniz üzere çalışma zamanına bilgi taşımak amacıyla kullanılan önemli tiplerdendir. Visual Studio tarafında da işimize yarayan bir çok nitelik (Attribute) yer alır. Bunlardan birisi DebuggerDisplay'dir. Önce aşağıdaki ekran görüntüsündeki kod parçasını göz önüne alalım.
 
 ![tfi152_1.gif](/assets/images/2017/tfi152_1.gif)

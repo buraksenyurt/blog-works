@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net Web API için Sayfalama Tekniği"
 date: 2013-05-20 06:11:00 +0300
-description: "Asp.Net Web API alt yapısının popüler olmasının ardında yatan en büyük sebeplerden birisi, HTTP tabanlı servis yayılımına izin vermesidir. Hemen her fonksiyonel birimin veya bütünlüğün servis odaklı teknolojiler ile ele alındığı ve istemcilere sunulduğu bir dünyada, bu ihtiyacı eskiden beri var olan HTTP protokolünün Post, Put, Get, Delete gibi standart metodlarına göre karşılamak elbette önemlidir. Bu sayede Microsoft tabanlı olarak geliştirilen Web API servislerinin, dış dünyadaki herhangibir Client tarafından tüketilmesi de oldukça kolaydır. Üstelik OData(Open Data Protocol) desteği sayesinde, veri odaklı servislerin standart URL bazlı parametreler ile sorgulanabilmesi mümkün hale gelmektedir."
 categories:
   - aspnet-web-api
 tags:
@@ -20,10 +19,10 @@ tags:
   - javascript
   - visual-studio
 ---
-# Asp.Net Web API için Sayfalama Tekniği
-[![lazy-baby-laptop](/assets/images/2013/lazy-baby-laptop_thumb.jpg)](/assets/images/2013/lazy-baby-laptop.jpg) Merhaba Arkadaşlar,
-
 Bu aralar şirkette işler oldukça kesat. En azından benim bulunduğum departman itibariyle böyle bir durum söz konusu. Sanırım kurumsal kimlik kazanmış firmaların genel sorunu da bu olsa gerek. Kaynak planlaması ve dağıtımının bir türlü istenen şekilde yapılamayışı. Hal böyle olunca aynı firmada hatta aynı departman içerisinde, çok yoğun çalışan insanlara ve beraberinde her hangi bir işi olmayanlara (benim gibi) rastlamak mümkün.
+
+[![lazy-baby-laptop](/assets/images/2013/lazy-baby-laptop_thumb.jpg)](/assets/images/2013/lazy-baby-laptop.jpg)
+
 
 Böyle bir durumda keyif sürmek ve tembel tembel internette gezmek (Video paylaşmak, onun bunun ciklemesine yetişmeye çalışmak vb) yapılabilecek en cazip işlerden birisi gibi gözükse de, hızla ilerleyen teknoloji ne yazık ki buna müsade etmemekte. Neredeyse her hafta yeni konuların ele alındığı bilmem kaç katlık [yottabyte](http://en.wikipedia.org/wiki/Yottabyte)’ lık bilgi denizinde sürekli bir şeyler öğrenmek zorunda olan biz köle geliştiricilerin iş olmasa da kendisine iş yaratması şart. Eğitim şart da diyebiliriz
 

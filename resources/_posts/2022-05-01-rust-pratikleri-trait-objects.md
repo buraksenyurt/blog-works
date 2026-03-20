@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Rust Pratikleri - Trait Objects"
 date: 2022-05-01 09:00:00 +0300
-description: "Bir Windows Forms uygulaması düşünelim ya da bir web sayfası. Hatta birden fazla bileşenden (component) oluşan bir mobil uygulama arayüzünü...Temelde ana kontrol üstüne eklenen başka tekil ve karma kontrollerden oluşan bir bütün söz konusudur. Şimdi de ana saha üzerine gelen bu kontrollerin nasıl çizilebildiğini düşünelim. Bir motor büyük ihtimalle belli ortak davranışlara sahip olan bileşenleri, ortamın istediği kıvamda (örneğin HTML olarak) çizme görevini üstlenir. Hatta bu sistemlerde bileşen ağacı öyle bir tasarlanır ki, geliştiriciler isterlerse kendi bileşenleri de tasarlayıp çalışma zamanı motorunun kullanımına sunabilir."
 categories:
   - rust
 tags:
@@ -16,10 +15,9 @@ tags:
   - rc
   - arc
 ---
-# Rust Pratikleri - Trait Objects
-![doc_builder_0.png](/assets/images/2022/doc_builder_0.png)
-
 Bir windows forms uygulamasını ya da bir web sayfasını düşünelim. Hatta birden fazla bileşenden (component) oluşan bir mobil uygulama arayüzünü...Temelde ana kontrol üstüne eklenen başka tekil ve karma bileşenlerden oluşan bir bütün söz konusudur. Şimdi de ana saha üzerine gelen bu kontrollerin nasıl çizildiğini, hangi sırayla eklendiklerini düşünelim. Bir çalışma zamanı motoru büyük ihtimalle belli ortak davranışlara sahip olan bileşenleri, ortamın istediği kıvamda (örneğin HTML olarak) çizme görevini üstlenir. Hatta bu sistemlerde bileşen ağacı öyle bir tasarlanır ki, geliştiriciler isterlerse kendi bileşenlerini de tasarlayıp çalışma zamanı motorunun kullanımına sunabilir.
+
+![doc_builder_0.png](/assets/images/2022/doc_builder_0.png)
 
 Nesne yönelimli dillerde bu tip kurgular için Interface tipi sıklıkla tercih edilir. Ana motor, belli interface şablonlarınca tanımlanan davranışları işletecek şekilde tasarlanır. Bileşenler bu interface şablonlarında belirtilen kuralları kendi dünyalarında yeniden yazar. Çalışma zamanı motoru çok biçimlilik esaslarını kullanarak bu davranışları kolayca tatbik eder. Rust tarafında bu amaçla trait nesneleri öne çıkmaktadır. Bu pratikte bir fatura dokümanı üstüne eklenen parçları trait nesnelerini kullanarak nasıl genişletebileceğimizi incelemeye çalışacağız. Tabii gerçekten de bir fatura görseli çizmeyeceğiz ama temel yapı taşlarını icra etmeye uğraşacağız.
 

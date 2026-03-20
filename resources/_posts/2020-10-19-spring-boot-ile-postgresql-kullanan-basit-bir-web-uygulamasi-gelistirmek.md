@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Spring Boot ile PostgreSQL Kullanan Basit Bir Web Uygulaması Geliştirmek"
 date: 2020-10-19 07:20:00 +0300
-description: "Spring Boot maceralarımız hız kesmeden devam ediyor. Bu sefer PostgreSQL veritabanını kullanan bir Web uygulamasını resmi dokümandan da yararlanarak geliştirmeye çalışacağız. Örneğimizde veritabanı olarak PostgreSQL kullanabiliriz. Her zaman olduğu gibi sisteme kurmamız şart değil. Pekala Docker imajından yararlanabiliriz. Kurgumuz basit bir MVC düzeneği olacak. Statik bir web sayfası dışında listeleme ve yeni kategori ekleme adımlarında şablonlardan(templates) faydalanacağız. Kategorileri ifade eden bir POJO sınıfımız olacak. PostgreSQL bağımlılığı kapsamında temel CRUD operasyonlarının tamamı Spring Boot'e ekleyeceğimiz bağımlılık sayesinde zaten hazır gelecek. Bunu kategori türüne uygulamak içinse generic bir Repository arayüzünden türetme yoluna gideceğiz..."
 categories:
   - spring-boot
 tags:
@@ -21,10 +20,9 @@ tags:
   - github
   - dependency-management
 ---
-# Spring Boot ile PostgreSQL Kullanan Basit Bir Web Uygulaması Geliştirmek
-![category.png](/assets/images/2020/category.png)
-
 Spring Boot maceralarımız hız kesmeden devam ediyor. Bu sefer PostgreSQL veritabanını kullanan bir Web uygulamasını resmi dokümandan da yararlanarak geliştirmeye çalışacağız. Örneğimizde veritabanı olarak PostgreSQL kullanabiliriz. Her zaman olduğu gibi sisteme kurmamız şart değil. Pekala Docker imajından yararlanabiliriz. Kurgumuz basit bir MVC düzeneği olacak. Statik bir web sayfası dışında listeleme ve yeni kategori ekleme adımlarında şablonlardan (templates) faydalanacağız. Kategorileri ifade eden bir POJO sınıfımız olacak. PostgreSQL bağımlılığı kapsamında temel CRUD operasyonlarının tamamı Spring Boot'e ekleyeceğimiz bağımlılık sayesinde zaten hazır gelecek. Bunu kategori türüne uygulamak içinse generic bir Repository arayüzünden türetme yoluna gideceğiz.
+
+![category.png](/assets/images/2020/category.png)
 
 Model ile View arasında köprü vazifesi gören Controller tipi, gerekli CRUD operasyonlarına erişmek için bir sözleşme arayüzünü kullanacak. Tahmin edeceğiniz üzere asıl operasyonları kullanması için Controller tipine ihtiyacı olan nesneyi, Dependency Injection mekanizması yardımıyla aktaracağız. Kod kısmını sırayla takip ettiğinizde konuyu daha iyi anlayacağınızdan eminim. Ben örneğimizi Heimdall (Ubuntu-20.04) üzerinde ve Visual Studio Code arabirimini kullanarak geliştirmekteyim. Ancak temel olarak tüm platformlarda benzer adımlarla ilerleyeceğinizi ifade edebilirim. Öyleyse gelin PostgreSQL Container'ını hazırlayarak çalışmamıza başlayalım.
 

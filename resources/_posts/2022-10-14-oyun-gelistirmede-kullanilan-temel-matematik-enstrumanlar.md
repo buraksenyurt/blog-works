@@ -1,18 +1,16 @@
-﻿---
+---
 layout: post
 title: "Oyun Geliştirmede Kullanılan Temel Matematik Enstrümanlar"
 date: 2022-10-14 11:20:00 +0300
-description: "Oyun sahasına ekranın sağından gelip düz ve çapraz bir çizgide ilerledikten sonra dairesel hareketle devam edip rastgele zamanlarda ateş eden uzay gemisinin kodlamasını öğrenirken ortaya döküken kosinüs ve sinüs çağrıları sonrası ise şöyle bir durup düşünmeye başladım. Öncesinde kağıt kalem alıp biraz karalama yapmalıydım. Bugünün popüler oyun motorlarından Unity, Unreal Engine gibilerinin çoğu fizik motorlarından ışıklandırmaya, gölgeleme efektlerinden çarpışma hesaplamalarına, izdüşümsel kamera bazlı 2D sahalardan sıçrama efektlerine kadar pek çok şeyin temel hesaplamasını hazır olarak sunmakta. Hatta IDE desteği sunanlar çok daha öne çıkmakta. Ancak oyun programlamanın temellerinde her zaman olduğu gibi matematik var ve bu atlanmaması gereken bir mevzu..."
 categories:
   - rust
 tags:
   - rust
   - github
 ---
-# Oyun Geliştirmede Kullanılan Temel Matematik Enstrümanlar
-![math101_00.png](/assets/images/2022/math101_00.png)
-
 Bir süredir Rust tarafındaki oyun motorlarını incelemekteyim. Bu konuda sayısız youtube videosu ve öğreti buldum. Hem rust kodlama pratiklerimi geliştirmek hem de meraklı olduğum oyun programlama tekniklerini deneyimlemek için biraz zaman harcadım. Ping Pong oyunundan, uzaydaki göktaşlarını patlatan gemiye, karşısındaki farklı türden blokları onlara top fırlatarak patlatan dikdörtgenden, derin zindanlarda ortografik projeksiyon bazlı kamera kullanan sahalara neredeyse her yerde temel matematikten yararlanıldığına şahit oldum (Öğretilere ait uyguladığım pratikleri ve ortaya çıkan sonuçları [game-dev-with-rust](https://github.com/buraksenyurt/game-dev-with-rust) reposunda bulabilirsiniz) Bunu zaten biliyordum ama unuttuğum çekirdek matematik bilgim ile yapıldıklarını görünce aslında onlarca yıl önce öğrendiklerimin ne kadar çok işe yaradığını fark ettim (Ne yazık ki)
+
+![math101_00.png](/assets/images/2022/math101_00.png)
 
 Oyun sahasına ekranın sağından gelip düz ve çapraz bir çizgide ilerledikten sonra dairesel hareketle devam edip rastgele zamanlarda ateş eden uzay gemisinin kodlamasını öğrenirken ortaya döküken kosinüs ve sinüs çağrıları sonrası ise şöyle bir durup düşünmeye başladım. Devam etmek istiyorsam öncesinde kağıt kalem alıp biraz karalama yapmalıydım. Bugünün popüler oyun motorlarından Unity, Unreal Engine gibilerinin çoğu fizik motorlarından ışıklandırmaya, gölgeleme efektlerinden çarpışma hesaplamalarına, izdüşümsel kamera bazlı 2D sahalardan sıçrama efektlerine kadar pek çok şeyin temel hesaplamasını hazır olarak sunmakta. Hatta IDE desteği sunanlar çok daha öne çıkmakta. Ancak oyun programlamanın temellerinde her zaman olduğu gibi matematik var ve bu atlanmaması gereken bir mevzu (Az biraz cebir fazlasıyla trigonometri)
 

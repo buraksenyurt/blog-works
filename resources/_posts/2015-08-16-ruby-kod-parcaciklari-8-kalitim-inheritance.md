@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ruby Kod Parçacıkları - 8 (Kalıtım/Inheritance)"
 date: 2015-08-16 09:00:00 +0300
-description: "Ruby, nesne yönelimli(Object Oriented) bir dil olduğu için kalıtım(Inheritance) ilkesi karakteristiklerini de taşımaktadır. En temel haliyle var olan bir tipin özelliklerini ve fonksiyonelliklerini alt sınıflara taşıyabildiğimiz(alt sınıfta kullanabildiğimiz ve hatta gerekirse ezebildiğimiz) kalıtım ilkesinin Ruby tarafındaki uygulanış biçimi oldukça kolaydır. Gelin basit bir kod parçacığı ile konuyu anlamaya çalışalım."
 categories:
   - ruby
 tags:
@@ -11,9 +10,6 @@ tags:
   - workflow-foundation
   - jwt
 ---
-# Ruby Kod Parçacıkları - 8 (Kalıtım/Inheritance)
-Merhaba Arkadaşlar,
-
 Ruby, nesne yönelimli (Object Oriented) bir dil olduğu için kalıtım (Inheritance) ilkesi karakteristiklerini de taşımaktadır. En temel haliyle var olan bir tipin özelliklerini ve fonksiyonelliklerini alt sınıflara taşıyabildiğimiz (alt sınıfta kullanabildiğimiz ve hatta gerekirse ezebildiğimiz) kalıtım ilkesinin Ruby tarafındaki uygulanış biçimi oldukça kolaydır. Gelin basit bir kod parçacığı ile konuyu anlamaya çalışalım. Aşağıdaki kod parçasında Figure isimli sınıftan türetme yoluyla oluşturulan Human ve Alien isimli varlıklar yer almaktadır. Ayrıca Zork isimli Alien sınıfından türeyen bir varlık daha söz konusudur.
 
 > Ruby Kod Parçacıkları

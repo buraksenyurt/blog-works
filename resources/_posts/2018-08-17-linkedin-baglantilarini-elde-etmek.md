@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Linkedin Bağlantılarını Elde Etmek"
 date: 2018-08-17 21:30:00 +0300
-description: "Linkedin üzerindeki bağlantılarınızın listesini elde etmek ister misiniz? Aslında bu sanıldığı kadar kolay değil ancak nasıl yapıldığını öğrenmeye çalışırken OAuth 2.0 standartları ile kendimizi doğrulatmamız gerekiyor. Kabaca pek çok platformun yaptığı gibi bir yol izlememiz gerektiğini söyleyebiliriz. Gelin maceramıza başlayalım ve OAuth 2.0 tabanlı bir sistemin nasıl işlediğini anlamaya çalışalım."
 categories:
   - dotnet-core
 tags:
@@ -22,12 +21,9 @@ tags:
   - javascript
   - async-await
 ---
-# Linkedin Bağlantılarını Elde Etmek
-![linkedin_11.jpg](/assets/images/2018/linkedin_11.jpg)
-
-Merhaba Arkadaşlar,
-
 Sosyal ağlar ile pek aram yok. Vakit kaybı gibi gelmese de oraya harcayacağım zamanı farklı alanlarda kullanmayı daha çok tercih ediyorum. Özellikle yeni bir şeyler öğrenmek benim epey zamanımı alıyor. Kullandığım tek sosyal platform diyebileceğim yerse Linkedin. Bu profesyonel iş ağında zaman içerisinde hatırı sayılır derecede bağlantım oluştu. Ne var ki sayı artınca ana sayfadaki akışı izlemek inanılmaz derecede zorlaştı. Hatta iş ağını geliştirirken sayının onbinler üzerine çıkması bir süre sonra bazı merak edilen sorulara cevap bulmayı zorlaştırıyor. Örneğin bağlantılarımdan kaçı İnsan Kaynakları alanında çalışıyor? Ya da İstanbul'da yaşayanlar kimler? Veya ayda ortalama 4 veya daha fazla paylaşım yapanlar hangi bağlantılarım? Peki ya yaptıkları paylaşımlarda yapay zeka ile ilgili anahtar kelimeler kullananlar?
+
+![linkedin_11.jpg](/assets/images/2018/linkedin_11.jpg)
 
 Herhalde nereye varmak istediğimi az çok anladınız. Bir şekilde Linkedin bağlantılarımı sorgulayabilmek istiyorum. Ancak kendi geliştireceğim uygulama üzerinden. Hal böyle olunca tüm kapılar diğer sosyal ağlarda da olduğu üzere firmanın bizlere sunduğu geliştirici API'lerine açılıyor. Bu amaç doğrultusunda yine bir Cumartesi gecesi oturdum bilgisayarımın başına ve Linkedin REST Api diyerekten google'lamaya başladım. Eh malum illa ki kendi içeriğini kullandırttığı REST tabanlı servisleri vardır diye düşündüm. Evet vardı. Sonra dokümantasyonunu okumaya başladım. Ağırlıklı olarak Android, Apple gibi platformlar için sunduğu SDK'lar öne çıkıyordu. Ben ilk başta basit tarayıcı veya Postman gibi araçları kullanarak ilerlemek istedim. Çünkü REST servisilerinin çalışır hallerini görmek için minimum kod eforu harcamak istedim.
 

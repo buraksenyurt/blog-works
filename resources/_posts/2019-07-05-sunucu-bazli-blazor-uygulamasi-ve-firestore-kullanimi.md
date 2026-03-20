@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Sunucu Bazlı Blazor Uygulaması ve Firestore Kullanımı"
 date: 2019-07-05 10:20:00 +0300
-description: "Blazor client-side web framework olarak düşünülebilir(Component ve DOM etkileşiminin aynı process içerisinde gerçekleşmesi) ancak process'lerin ayrılması konusunda da esnektir. Öyle ki, Blazor'u bir Web Worker içinde çalıştırıp UI thread'inden ayrıştırılabileceği ifade edilmektedir. Diğer yandan 0.5 sürümü ile birlikte Blazor uygulamalarının sunucu tarafında çalıştırılması mümkün hale gelmiştir. Yani .Net Core ile etkileşimde olacak şekilde Blazor bileşenlerini(component) sunucu tarafında çalıştırabiliriz. Burada .Net tarafı WebAssembly yerine CoreCLR üzerinde koşar ve .NET ekosisteminin tüm nimetlerinden(JIT, debugging vb) yararlanabilir. UI tarafı ile etkileşimde olayların ele alınması ve Javascript Interop çağrıları için SignalR bağlantılarından faydalanılır."
 categories:
   - dotnet-core
 tags:
@@ -26,10 +25,9 @@ tags:
   - visual-studio
   - github
 ---
-# Sunucu Bazlı Blazor Uygulaması ve Firestore Kullanımı
-![simpscss.png](/assets/images/2019/simpscss.png)
-
 Mavi renkli teknoloji firmasına henüz yeni başlamıştım. Yaş ve önceki dönem tecrübeleri nedeniyle standart olarak uygulanan oryantasyon hızlıca atlanmış ve 2002 yılında geliştirilmeye başlanmış Web Forms kurugulu ERP uygulamasından ilk görevimi almıştım. Henüz çevik dönüşüme başlanmamıştı. Elimde tek sayfalık bir analiz dokümanı bulunuyordu. Otomotiv tarafındaki iş bilgim az olduğundan dokümanda yer almayan şeyler hakkında pek bir fikrim yoktu. Görevim kağıt üstünde oldukça basitti. Popup pencere açtırıp içerisinde bir araca ait veriler gösterecektim. Ne kadar zor olabilirdi ki:))
+
+![simpscss.png](/assets/images/2019/simpscss.png)
 
 İlk haftanın sonunda popup açılıyor ancak engin front-end bilgim nedeniyle ekranın üstündeki nesnelerin hiç biri olması gerektiği yerde durmuyordu. Back-end servisinin kodlanması, Data Access Layer tarafı, veri tabanı nesneleri...Hepsini kısa sürede halledebilmiştim ama işte o önyüz tarafı yok mu? O görselliği arttıran CSS ayarlamaları yok mu? (CSS demişken yandaki Simpson karakterlerinin Chris Pattle tarafından nasıl yazıldığına bir bakmak ister misiniz? [Şöyle buyrun öyleyse](https://pattle.github.io/simpsons-in-css/))
 

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Web API Tarafında Dapper Kullanımı"
 date: 2019-08-16 10:30:00 +0300
-description: "Veri kaynakları ile kod tarafındaki modeller arasında devreye giren bir çok ORM aracı mevcut. Stackoverflow tarafından geliştirilen ve Micro ORM olarak nitelendirilen Dapper bunlardan birisi. SQLite, MySQL, SQLCE, SQL Server, Firebird ve daha bir çok veritabanı platformu ile çalışabilen Dapper'ın performans olarak da iyi sonuçlar verdiği ifade edilmekte. Amacım Dapper'ı bir Web API uygulamasında SQLite ile birlikte kullanabilmek."
 categories:
   - dotnet-core
 tags:
@@ -24,10 +23,9 @@ tags:
   - visual-studio
   - github
 ---
-# Web API Tarafında Dapper Kullanımı
-![westwind.png](/assets/images/2019/westwind.png)
-
 O [cumartesi gecesi çalışması](https://github.com/buraksenyurt/saturday-night-works)nı bitirdiğimde, yaptığım örneğin beni çok da tatmin etmediği gerçeğiyle karşı karşıyaydım. Bazen böyle hissediyordum. Boşa kürek çektiğim hissine kapılıyor ve neden tüm bunlarla uğraştığımı sorguluyordum. Belki de sonraki yıllar boyunca kullanmayacağım bir şeyler üzerinde çalışmıştım. Ne aldığım notları ne de senaryo için kullandığım Westwind adını beğenmiştim. Örnek çok sığdı. Zengin değildi. Bir şekilde beni rahatsız ediyordu.
+
+![westwind.png](/assets/images/2019/westwind.png)
 
 Gürültülü soğutma sistemi ile zamanın pancar motorlu tekneleriyle karıştırdığım emektar WestWorld'ün başından kalkıp evin basketbol sahasına bakan çalışma odasının penceresine doğru yürüdüm. Gün henüz batmak üzereyken havadaki az sayıda buluta, karşı okulun damına tünemiş bir kaç martıya, sahada şuuruzca oradan oraya koşuşturup duran çocuğa, her zaman ki gibi yanındaki bakkalla dükkanının önünde tavla oynayan Ekrem amcaya baktım. Gelip giden düşünceler eşliğinde dengeye gelmeyi ve bir kaç saattir beni terk eden iç motivasyonumu bulmaya çalışıyordum. Benimle tekrar iletişim kurması biraz zaman alsa da sonunda bir şeyler fısıldamaya başlamıştı.
 

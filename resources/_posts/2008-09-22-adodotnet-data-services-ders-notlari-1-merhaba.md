@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ado.Net Data Services Ders Notları - 1 (Merhaba)"
 date: 2008-09-22 12:00:00 +0300
-description: "Uzun bir aradan sonra yeni bir makale ile daha birlikteyiz. Sağnak yağışlı ve tamda “bu havada bir makale yazılır” dedirten bir günde hazırladığımız bu yazımızda, daha şimdiden gelecek vaat etmiş görünen, .Net Framework 3.5 Service Pack 1 ile birlikte hazır olarak gelen, Visual Studio 2008 ortamına entegre edilen ve WCF mimarisinin en güzel uyarlamalarından birisi olan ADO.Net Data Services(Astoria) üzerinde konuşuyor olacağız."
 categories:
   - ado-net-data-services
 tags:
@@ -26,9 +25,6 @@ tags:
   - generics
   - visual-studio
 ---
-# Ado.Net Data Services Ders Notları - 1 (Merhaba)
-Değerli Okurlarım Merhabalar,
-
 Uzun bir aradan sonra yeni bir makale ile daha birlikteyiz. Sağnak yağışlı ve tamda “bu havada bir makale yazılır” dedirten bir günde hazırladığımız bu yazımızda, daha şimdiden gelecek vaat etmiş görünen,.Net Framework 3.5 Service Pack 1 ile birlikte hazır olarak gelen, Visual Studio 2008 ortamına entegre edilen ve WCF mimarisinin en güzel uyarlamalarından birisi olan ADO.Net Data Services (Astoria) üzerinde konuşuyor olacağız.
 
 Bilindiği üzere Windows Communication Foundation (WCF), Microsoft’ un.Net Framework 3.0 ile duyurduğu ve 3.5 ile getirdiği yeni ilavelerle ön plana çıkardığı yeni Service Yönelimli Mimari (Service Oriented Architecture/SOA) yaklaşımıdır. Bu yaklaşımın etkileri güncel projelerde kendini uzun zamandır göstermektedir. SOA yaklaşımlarının ağırlıklı bir biçimde kabul gördüğü günümüz çözümlerinde veri (Data) ile olan ilişkiler göz önüne alındığında Microsoft cephesinde uzun süre önce getirilen yeni bir proje karşımıza çıkmaktadır. Ado.Net Data Services.

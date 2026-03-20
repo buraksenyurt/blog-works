@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net 2.0 URL Rewriting Hakkında Gerçekler"
 date: 2007-08-07 12:00:00 +0300
-description: "Çok kısa süreliğinede olsa tatilde olduğum şu günlerde yazılım dünyasından kopmak hiç içimden gelmedi. Bu nedenle dinlendiğim zamanlardan arta kalan sürelerde azda olsa bir şeyler karalamak istedim. Sonuç olarak daha hafif ve tatil moduna uygun olacak bir yazı ile yeniden beraberiz. Bu makalemizde Asp.Net 2.0 ile geliştirilen web uygulamalarında, URL eşleştirmelerinin (Url Mapping) nasıl düzenlenebileceğini, bir başka deyişle nasıl özelleştirilebileceğini incelemeye çalışacağız. Son kullanıcılar web ortamında, kendi tarayıcı(browser) uygulamalarında yer alan adres satırlarında zaman zaman karışık ve uzun URL bilgileri ile karşılaşırlar. Genellikle sorgu katarlarının(QueryString) kullanıldığı ve bunların sayılarının çok olduğu durumlarda adres satırlarını okumak gerçekten güçleşebilir. Söz gelimi aşağıdaki URL bilgisini göz önüne alalım."
 categories:
   - aspnet
 tags:
@@ -14,9 +13,6 @@ tags:
   - http
   - authentication
 ---
-# Asp.Net 2.0 URL Rewriting Hakkında Gerçekler
-Değerli Okurlarım Merhabalar,
-
 Çok kısa süreliğinede olsa tatilde olduğum şu günlerde yazılım dünyasından kopmak hiç içimden gelmedi. Bu nedenle dinlendiğim zamanlardan arta kalan sürelerde azda olsa bir şeyler karalamak istedim. Sonuç olarak daha hafif ve tatil moduna uygun olacak bir yazı ile yeniden beraberiz. Bu makalemizde Asp.Net 2.0 ile geliştirilen web uygulamalarında, URL eşleştirmelerinin (Url Mapping) nasıl düzenlenebileceğini, bir başka deyişle nasıl özelleştirilebileceğini incelemeye çalışacağız. Son kullanıcılar web ortamında, kendi tarayıcı (browser) uygulamalarında yer alan adres satırlarında zaman zaman karışık ve uzun URL bilgileri ile karşılaşırlar. Genellikle sorgu katarlarının (QueryString) kullanıldığı ve bunların sayılarının çok olduğu durumlarda adres satırlarını okumak gerçekten güçleşebilir. Söz gelimi aşağıdaki URL bilgisini göz önüne alalım.
 
 ```text

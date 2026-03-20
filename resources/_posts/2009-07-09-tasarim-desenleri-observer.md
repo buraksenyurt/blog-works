@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tasarım Desenleri - Observer"
 date: 2009-07-09 07:35:00 +0300
-description: "Yaklaşık olarak 10 yılı aşkın bir süredir yazılım teknolojileri ile ilgilenmekteyim. Bu süre zarfı içerisinde Delphi 1.0' dan tutunda Java' ya, C++'tan C#' a, Visual Basic' ten Cobol' a kadar pek çok programlama dili ile uğraşma fırsatım oldu. Her ne kadar dünyada kaç nesne yönelimli programlama dili olursa olsun, hayatın ve dolayısıyla yazılım teknolojilerinin değişmez kuralları arasında tasarım kalıpları yer almakta..."
 categories:
   - tasarim-kaliplari-design-patterns
 tags:
@@ -13,16 +12,11 @@ tags:
   - generics
   - visual-studio
 ---
-# Tasarım Desenleri - Observer
-![blg44_1.jpg](/assets/images/2009/blg44_1.jpg)
-
-Merhaba Arkadaşlar,
-
 Yaklaşık olarak 10 yılı aşkın bir süredir yazılım teknolojileri ile ilgilenmekteyim. Bu süre zarfı içerisinde Delphi 1.0' dan tutunda Java'ya, C++'tan C#' a, Visual Basic'ten Cobol'a kadar pek çok programlama dili ile uğraşma fırsatım oldu. Her ne kadar dünyada kaç nesne yönelimli programlama dili olursa olsun, hayatın ve dolayısıyla yazılım teknolojilerinin değişmez kuralları arasında tasarım kalıpları yer almakta...
 
-Ve birde platform, dil, cihaz gözetmeksizin var olan oyunlar.
+![blg44_1.jpg](/assets/images/2009/blg44_1.jpg)
 
-![Laughing](/assets/images/2009/smiley-laughing.gif)
+Ve birde platform, dil, cihaz gözetmeksizin var olan oyunlar.
 
 Bende her ne kadar yazılımı bir hayat biçimi olarak benimsemiş olsamda, zaman zaman eski günlerdeki gibi strateji oyunlarını oynamıyor da değilim. Warcraft 2 ve "Yeş mi Lord" ile başlayan bu serüvende, Starcraft'taki Protosları, Red Alert'taki Yuri'nin Mind Control makinelerini, Generals'taki Stealth Fighter'ları ve daha nicelerini kullanma fırsatım oldu. Geçen akşamda kafamda bir oyun canlandırmaya çalışırken, korumakta olduğum topraklara yapılan bir saldırıyı, filomdaki birimlere nasıl ileteceğimi düşünmeye başladım (Çok doğal olarak telsizle bildir olsun bitsin diyebilirsiniz)
 

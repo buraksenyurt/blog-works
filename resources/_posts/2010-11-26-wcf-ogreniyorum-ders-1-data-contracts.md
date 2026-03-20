@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF Öğreniyorum Ders 1–Data Contracts"
 date: 2010-11-26 22:04:00 +0300
-description: "Hatırlayacağınız üzere bir süre önce NedirTv?com sponsorluğunda WCF Öğreniyorum Webiner serimize başlamıştık. Ders 0 kodlu ilk Webinerimizde SOA(Service Oriented Architecture) kavramına kısaca değinmiş, SOA ile WCF arasındaki ilişkiye bakmış ve ardından WCF(Windows Communication Foundation) geliştirme modelini incelemeye başlamıştık. İlk dersimizde temel olarak aşağıdaki konuları göz önüne aldığımızı ifade edebiliriz."
 categories:
   - wcf-ogreniyorum
 tags:
@@ -13,10 +12,10 @@ tags:
   - webinar
   - visual-studio
 ---
-# WCF Öğreniyorum Ders 1–Data Contracts
-[![wcfogreniyorumDers1](/assets/images/2010/wcfogreniyorumDers1_thumb.gif)](/assets/images/2010/wcfogreniyorumDers1.gif) Merhaba Arkadaşlar,
-
 Hatırlayacağınız üzere bir süre önce [NedirTv?com](http://www.nedirtv.com) sponsorluğunda WCF Öğreniyorum Webiner serimize başlamıştık. Ders 0 kodlu ilk Webinerimizde SOA (Service Oriented Architecture) kavramına kısaca değinmiş, SOA ile WCF arasındaki ilişkiye bakmış ve ardından WCF (Windows Communication Foundation) geliştirme modelini incelemeye başlamıştık. İlk dersimizde temel olarak aşağıdaki konuları göz önüne aldığımızı ifade edebiliriz.
+
+[![wcfogreniyorumDers1](/assets/images/2010/wcfogreniyorumDers1_thumb.gif)](/assets/images/2010/wcfogreniyorumDers1.gif)
+
 
 - Bir WCF Servis geliştirdik ![Smile](/assets/images/2010/wlEmoticon-smile_3.png) Bunu yaparken hazır Visual Studio proje şablonları yerine standart bir class library şablonu kullandık ve bu anlamda System.ServiceModel.dll assembly’ ının önemini gördük.
 - Servisimizi geliştirirken ServiceContract ve OperationContract niteliklerinin (Attributes) ne işe yaradığını öğrendik.

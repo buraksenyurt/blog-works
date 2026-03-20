@@ -2,14 +2,12 @@
 layout: post
 title: "Matematik ve Oyun Programlama - Missile Command - Bölüm 1"
 date: 2022-11-18 17:00:00 +0300
-description: "Uzun bir süredir Rust programlama dili ile hobi amaçlı uğraşıyorum. Son birkaç aydırda Rust tarafında kullanılan oyun motorlarını kurcalamaktayım. Ancak birkaç haftadır amacım oyun programlamada kullanılan temel matematik enstrümanları öğrenmek. Bana göre bu alanda ilerleyebilmemin en iyi yolu bilinen oyunların birer klonunu yazmaya çalışmak. Onca vektör, açı, nokta çarpım problemini işledikten sonra ilk gözüme kestirdiğim zamanın efsane Atari oyunlarından olan Missile Command. Kaynaklara göre seksenli yılların en kült oyunlarından birisi olarak karşımıza çıkıyor. Oyunda ekranın üst kısmında rastgele açılarda ve sayıda füzenin üssümüze inişine şahit oluyoruz. Oyuncu üssün tam orta yerinde duran füze rampasında ateş ederek şehre inen füzeleri patlatmaya çalışıyor. Görüntü tamamen piksel hareketlerinden oluşmakta ve benim asıl ilgilendiğim oyunun arkasındaki olası matematik hesaplamalar."
 categories:
   - rust
 tags:
   - rust
   - github
 ---
-# Matematik ve Oyun Programlama - Missile Command - Bölüm 1
 Uzun bir süredir Rust programlama dili ile hobi amaçlı uğraşıyorum. Son birkaç aydırda Rust tarafında kullanılan oyun motorlarını kurcalamaktayım. Ancak birkaç haftadır amacım oyun programlamada kullanılan temel matematik enstrümanları öğrenmek. Bana göre bu alanda ilerleyebilmemin en iyi yolu bilinen oyunların birer klonunu yazmaya çalışmak. Onca vektör, açı, nokta çarpım problemini işledikten sonra ise ilk gözüme kestirdiğim zamanın efsane Atari oyunlarından olan[Missile Command](https://en.wikipedia.org/wiki/Missile_Command).
 
 Kaynaklara göre seksenli yılların en kült oyunlarından birisi olarak ifade ediliyor. Oyunda ekranın üst kısmından rastgele açılarda şehre doğru inen füzeleri görüyoruz. Oyuncu, üssün tam orta yerinde duran füze rampasından ateş ederek şehre inen füzeleri önlemeye çalışıyor. Kaçan füzeler şehre düşünce de hasar veriyor. Füzelerden kurtuldukça farklı seviyelere geçiş yapıyorsunuz. Görüntü tamamen piksel hareketlerinden oluşmakta ve benim asıl ilgilendiğim oyunun arkasındaki matematik hesaplamalar.

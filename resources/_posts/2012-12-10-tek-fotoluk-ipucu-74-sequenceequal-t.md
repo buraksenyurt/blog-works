@@ -1,16 +1,12 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu–74–SequenceEqual<T>"
 date: 2012-12-10 20:40:00 +0300
-description: "Merhaba Arkadaşlar,"
 categories:
   - tek-fotoluk-ipucu
 tags:
   - tek-fotoluk-ipucu
 ---
-# Tek Fotoluk İpucu–74–SequenceEqual<T>
-Merhaba Arkadaşlar,
-
 Diyelim ki uygulamanızda zaman zaman da olsa farklı referanslar da duran ve aynı tipte elemanlardan oluşan koleksiyonlarınız oluşuyor ve bunları yeri geldiğinde birbirleri ile kıyaslamak istiyorsunuz. Ne yaparsınız?
 
 Mantıksal olarak her iki koleksiyonu dolaşacak ortak bir döngü ile bire bir kıyaslama yolunu tercih edersiniz

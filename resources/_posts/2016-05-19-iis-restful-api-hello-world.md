@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "IIS RESTful API Hello World"
 date: 2016-05-19 17:00:00 +0300
-description: "Öğrendiğime göre Microsoft IIS(Internet Information Services) takımı yönetimsel işlemler için Asp.Net Core teknolojisini kullanan RESTFul tipinden bir servis üzerinde çalışmalar yapmakta. Micro Service mimarisi benimsenerek geliştirilen alt yapı, kullanıcılarına IIS Administration ile ilgili gerekli fonksiyonellikleri modern bir API olarak sunuyor. API, Self-Hosted Window Service olarak yayınlanmakta. In-Proc çalışmalar için Hostable Web Core yapısına da sahip. Aşağıdaki şekil teknik mimarisi hakkında biraz daha fikir verecektir. (Takımın çizdiği mimari resim kadar başarılı değil ama bakmadan çizmeye çalışırsanız konuyu güzelce pekiştirebilirsiniz)"
 categories:
   - rest
 tags:
@@ -21,12 +20,9 @@ tags:
   - microservices
   - asmx
 ---
-# IIS RESTful API Hello World
-![iisrestful_3.gif](/assets/images/2016/iisrestful_3.gif)
-
-Merhaba Arkadaşlar,
-
 Bugün 20 Mayıs Cuma. Dün 19 Mayıs nedeniyle resmi tatil olan bankamız bugün de toplu olarak tatil. Ancak şirkette kalmak isteyenler durumlarını bildirip gelebiliyor.
+
+![iisrestful_3.gif](/assets/images/2016/iisrestful_3.gif)
 
 Çalıştığım şirkettlerde işlerin hafiflediği dönemler genellikle makale yazdığım dönemler oluyor. Hazır geçtiğimiz gün de IIS Restful API hakkında araştırmalara başlamışken bugün biraz daha üzerine eğileyim, şu Hello World uygulamasını yaparak nedir ne değildir anlayayım istedim. Malzemelerimi hazırladım. En önemlisi elbetteki kafeindi. Her ne kadar çalışma masamdaki kadim dostum [VULK](http://www.lego.com/en-us/mixels/products/series-1/41501-vulk) kahveme sulansa da...
 

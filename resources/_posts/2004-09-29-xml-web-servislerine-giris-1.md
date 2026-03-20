@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Xml Web Servislerine Giriş - 1"
 date: 2004-09-29 09:00:00 +0300
-description: "Bir Web Servisi, uzak istemcilerin başvuruda bulunduğu çeşitli işlevsel metod çağırımlarını bardındırdan, çok yönlü ve merkezileştirilmiş bir ünitedir. Bir web servisi, çok sayıda istemci tarafından erişilebilen bir yapıya sahiptir. Onu diğer dağıtık nesne modellerinden farklı kılan sahip olduğu alt yapı sistemi sayesinde, platform bağımsız uygulanabilirliği sağlamasıdır. Web servislerinin geliştirilmesinde en büyük etken, özellikle bir merkezdeki uygulamalar üzerinde, ortak amaçları gerçekleştiren işlevselliklere sahip nesnelerin, geliştirildikleri ağın iletişim protokolü gibi kısıtlamaların varlığıdır."
 categories:
   - xml-web-services
 tags:
@@ -20,9 +19,6 @@ tags:
   - visual-studio
   - asmx
 ---
-# Xml Web Servislerine Giriş - 1
-Merhaba Arkadaşlar,
-
 Bu makalemizde, kısaca bir XML Web Servisinin ne olduğuna, ne işe yaradığına değinecek ve basit bir Xml Web Servisinin notepad ile nasıl oluşturulabileceğini incelemeye çalışacağız.
 
 Bir Web Servisi, uzak istemcilerin başvuruda bulunduğu çeşitli işlevsel metod çağırımlarını bardındırdan, çok yönlü ve merkezileştirilmiş bir ünitedir. Bir web servisi, çok sayıda istemci tarafından erişilebilen bir yapıya sahiptir. Onu diğer dağıtık nesne modellerinden farklı kılan sahip olduğu alt yapı sistemi sayesinde, platform bağımsız uygulanabilirliği sağlamasıdır. Web servislerinin geliştirilmesinde en büyük etken, özellikle bir merkezdeki uygulamalar üzerinde, ortak amaçları gerçekleştiren işlevselliklere sahip nesnelerin, geliştirildikleri ağın iletişim protokolü gibi kısıtlamaların varlığıdır.

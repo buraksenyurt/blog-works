@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Silverlight Tarafında HTTP Bazli Servisleri Kullanmak"
 date: 2010-07-12 00:55:00 +0300
-description: "Bilindiği üzere bazı servisler HTTP protokolü üzerinden GET, POST, PUT veya DELETE metod çağrıları ile kullanılabilmektedir. Bu anlamda WCF Eco System içerisinde yer alan WebHTTP servisleri, söz konusu tipteki hizmetleri sunmak üzere WCF alt yapısı üzerine oturmuş bir model sunmaktadır. Çok doğal olarak Silverlight tabanlı istemciler de bu servislerin tüketicileri olabilirler."
 categories:
   - silverlight-4-0
   - wcf-eco-system
@@ -27,12 +26,9 @@ tags:
   - visual-studio
   - rc
 ---
-# Silverlight Tarafında HTTP Bazli Servisleri Kullanmak
-![blg175_Giris.jpg](/assets/images/2010/blg175_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Eğitmenlik yaptığım yıllarda Microsoft'un ders kitaplarında yer alan LAB çalışmalarını mümkün mertebe yapmaya ve yaptırmaya çalışırdım. Hatta çoğu zaman eğitimlere hazırlanırken sık sık bu lab çalışmalarını kendim yapar ve hatta ek ilaveler ile daha da eğlenceli hale getirmeye çalışırdım. Tabi bazen elimizde lab yapacağımız kitaplarımız olmazdı ki o ayrı bir hikaye.
+
+![blg175_Giris.jpg](/assets/images/2010/blg175_Giris.jpg)
 
 Lab çalışmaları öğrencinin adım adım yapması gerekenleri söylerek, konunun en yalın haliyle anlaşılmasını sağlamakta önemli rol oynamaktadır. Lab çalışmalarındakine benzer konu anlatımları benimde özümsediğim ve faydalı bulduğum öğrenme tekniklerinden birisidir. İşte bu yazımızda da bu kültüre uymaya çalışarak ilerlemeye çalışıyor olacağız. Hedefimiz Silverlight uygulamalarından, HTTP tabanlı taleplere göre operasyonel hizmetlerde bulunan servisleri nasıl kullanabileceğimizi, en yalın haliyle görmek. Haydi o zaman lab için gerekli materyalleri değerlendirerek yola koyulalım.
 

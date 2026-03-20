@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: ".Net Remoting - Lease Time (Kiralık Süre) Yönetimi"
 date: 2006-04-06 12:00:00 +0300
-description: "Remoting mimarisi göz önüne alındığında dikkat çekici noktalardan bir tanesi, sunucu tarafında oluşturulan uzak nesnelerin (remote object) yaşam süreleridir. İstemciler, uzak nesnelere ait referansları kullanırken bunların yaşam sürelerini sunucu tarafındaki konfigurasyon belirler. Bu istemcilerin sunucu tarafındaki referanslara ait kaynaklara açıkça müdahale edememesinin de bir sonucu olarak görülebilir. Sunucu tarafında yapılan bu yaşam sürelerinin yönetimine kısaca Kiralık Süre Yönetimi (Lease Time Management) denmektedir. Bu makalemizde kısaca bu konuyu incelemeye çalışacağız."
 categories:
   - dotnet-remoting
 tags:
@@ -11,9 +10,6 @@ tags:
   - xml
   - threading
 ---
-# .Net Remoting - Lease Time (Kiralık Süre) Yönetimi
-Değerli Okurlarım Merhabalar,
-
 Remoting mimarisi göz önüne alındığında dikkat çekici noktalardan bir tanesi, sunucu tarafında oluşturulan uzak nesnelerin (remote object) yaşam süreleridir. İstemciler, uzak nesnelere ait referansları kullanırken bunların yaşam sürelerini sunucu tarafındaki konfigurasyon belirler. Bu istemcilerin sunucu tarafındaki referanslara ait kaynaklara açıkça müdahale edememesinin de bir sonucu olarak görülebilir. Sunucu tarafında yapılan bu yaşam sürelerinin yönetimine kısaca Kiralık Süre Yönetimi (Lease Time Management) denmektedir. Bu makalemizde kısaca bu konuyu incelemeye çalışacağız.
 
 Bir istemci, uzak nesneye ait bir referans oluşturduğunda sunucu tarafında bu referans için bir geri sayım süresi başlatılır. Buna çoğunlukla Initial Lease Time (Başlangıç Kiralama Süresi) denir. Bu süre geriye doğru hareket eder ve sunucu tarafında çalışan Lease Manager yardımıyla belirli aralıklarla (varsayılan olarak 10 saniyede 1) kontrol edilir. Eğer bir referansın geriye doğru işleyen kiralama süresi sonlanırsa (ki bu o anki sürenin 0 olması anlamına gelir), garbage collector tarafından toplanılmak üzere işaretlenir. İşte bu andan sonra istemci, aynı referansa ait bir üyeyi çağırdığında çalışma zamanında bir exception ile karşılaşır. Bunun sebebi istemci tarafından oluşturulan uzak nesnenin sunucu üzerindeki kiralama süresinin sıfırlanmış bir başka deyişle yaşam süresinin bitmiş olması ve bu nesneye ait referansın artık sunucuda bulunamayışıdır.

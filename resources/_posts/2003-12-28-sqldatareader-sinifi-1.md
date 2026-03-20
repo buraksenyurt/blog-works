@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "SqlDataReader Sınıfı 1"
 date: 2003-12-28 12:00:00 +0300
-description: "Bugünkü makalemizde, SqlDataReader sınıfını incelemeye çalışacağız. ADO.NET’in bilgisayar programcılığına getirdiği en büyük farklıklardan birisi bağlantısız veriler ile çalışılabilmemize imkan sağlamasıydı. DataSet sınıfıını ve buna bağlı diğer teknikleri kastettiğimi anlamışsınızdır. Bu teknikler ile, bir veritabanı içinde yer alan tabloları, tablolar arasındaki ilişkileri, içerdikleri verileri vb… istemci makinenin belleğinde tutmamız mümkün olabiliyor."
 categories:
   - ado-net
 tags:
@@ -13,9 +12,6 @@ tags:
   - dataset
   - datatable
 ---
-# SqlDataReader Sınıfı 1
-Değerli Okurlarım, Merhabalar.
-
 Bugünkü makalemizde, SqlDataReader sınıfını incelemeye çalışacağız. ADO.NET’in bilgisayar programcılığına getirdiği en büyük farklıklardan birisi bağlantısız veriler ile çalışılabilmemize imkan sağlamasıydı. DataSet sınıfıını ve buna bağlı diğer teknikleri kastettiğimi anlamışsınızdır. Bu teknikler ile, bir veritabanı içinde yer alan tabloları, tablolar arasındaki ilişkileri, içerdikleri verileri vb… istemci makinenin belleğinde tutmamız mümkün olabiliyor.
 
 Bu sayede, bu veriler istemci makine belleği üzerinde tutulduğundan, bir veritabanına sürekli bağlantısı olan bir sisteme gore daha hızlı çalışabiliyoruz. Ayrıca veritabanı sunucusuna sürekli olarak bağlı olmadığımız için network trafiğinide hafifletmiş oluyoruz. Tüm bu hoş ayrıntılar dışında hepimiz için nahoş olan ayrıntı, her halikarda bellek tüketiminin artması. Öyleki bazen kullanıdığımız programlarda sadece listeleme amacı ile, sadece görsellik amacı ile küçük veriler ile çalışmak durumunda kaldığımızda, bu elde edilebilirlik için fazlasıyla kaynak tüketmiş oluyoruz. İşte ADO.NET ‘te bu tip veriler düşünülerek, listeleme amacı güden, küçük boyutlarda olan veri kümeleri için DataReader sınıfları tasarlanmış. Biz bugün SqlDataReader sınıfını inceleyeceğiz.

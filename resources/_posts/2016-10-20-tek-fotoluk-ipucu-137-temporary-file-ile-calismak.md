@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu 137 - Temporary File ile Çalışmak"
 date: 2016-10-20 21:30:00 +0300
-description: "Geliştirdiğimiz uygulamanın sadece çalışma zamanında oluşturup kullanacağı ve herhangi bir anda ortadan kaldıracağı geçici bilgilere ihtiyacı olduğunu düşünelim. İlk akla gelen bu tip bilgileri bir yerlerde işi bitene kadar saklamak olacaktır. Bunun için veritabanında geçici bir tabloyu veya işletim sisteminin Registry gibi alanlarını kullanabiliriz. Aslında nesne yönelimli dünyada söz konusu içerikleri birer sınıf örneği olarak tutmakta mümkün."
 categories:
   - ruby
 tags:
@@ -10,9 +9,6 @@ tags:
   - threading
   - concurrency
 ---
-# Tek Fotoluk İpucu 137 - Temporary File ile Çalışmak
-Merhaba Arkadaşlar,
-
 Geliştirdiğimiz uygulamanın sadece çalışma zamanında oluşturup kullanacağı ve herhangi bir anda ortadan kaldıracağı geçici bilgilere ihtiyacı olduğunu düşünelim. İlk akla gelen bu tip bilgileri bir yerlerde işi bitene kadar saklamak olacaktır. Bunun için veritabanında geçici bir tabloyu veya işletim sisteminin Registry gibi alanlarını kullanabiliriz. Aslında nesne yönelimli dünyada söz konusu içerikleri birer sınıf örneği olarak tutmakta mümkün.
 
 Ancak bazı hallerde söz konusu bilgileri geçici bir dosyada (Temp File) tutmakta gerekebilir. Bu dosya benzersiz olmalıdır ve sadece içinde oluştuğu uygulama Process'inde veya oluşturulduğu Thread'de kullanılmalıdır. Yani dışarıdan başka Thread'lerin bu dosyaya erişimi olmamalıdır. Hatta uygulamanın dosya ile işi bitince otomatik olarak sistemden kaldırılmalıdır. İşte Ruby dilinde bu ihtiyaç için kullanılabilen hazır bir gem var. İşte basit bir örnek.

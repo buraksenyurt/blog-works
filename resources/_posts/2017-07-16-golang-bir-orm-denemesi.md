@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "GoLang - Bir ORM Denemesi"
 date: 2017-07-16 21:40:00 +0300
-description: "Veri depolamanın en popüler yolu NoSQL veya RDBMS bazlı sistemler. 90lı yıllardan beri program yazan insanlar için de özellikle Microsoft SQL Server, Oracle ve sonrasında gelen MySQL ya da SQLite gibi yapılar da oldukça fazla oranda kullanılmaktalar. E tabii bildiğiniz üzere bu serüvenin ortalarında bir yerlerde SQL dili ve RDBMS'in yapısının, programcıların kodlama mantığına biraz ters gelişi de vuku buldu. Sonuçta SQL tarafındaki varlıkların programatik ortamda ve özellikle nesne yönelimli(Object Oriented) dünyada nasıl daha anlamlı ele alınabileceğinin yolları araştırıldı. Artık popüler olma zamanı nesne ilişkilendirmelerini sağlayan araçlardaydı. Yani Object Relational Mapping(O/RM) konusu gündemdeydi. Neredeyse bütün programlama çatılarının bu tip araçlarla yakın ilişkisi bulunmakta. Hibernate ve Entity Framework gibi en azından ülkemizde adını sıklıkla duyduğumuz araçlar dışında farklı pek çok ürün de bulunmakta. Ben de GoLang tarafında SQLite operasyonlarını incelemeye çalışırken \"bir O/RM aracı var mıdır?\" sorusuna cevap ararken buldum kendimi. Murat Hoca'nın kitabı, GoLang'in resmi dokümanları, Stackoverflow konuları derken gitub üzerinden sunulan GORM ile karşlılaştım."
 categories:
   - golang
 tags:
@@ -19,12 +18,9 @@ tags:
   - transactions
   - github
 ---
-# GoLang - Bir ORM Denemesi
-![gogorm_buffon.jpg](/assets/images/2017/gogorm_buffon.jpg)
-
-Merhaba Arkadaşlar,
-
 Yakın zamanda bir şampiyonlar ligi finali vardı. Real Madrid ve Juventus arasında oynanan maçı eflatun beyazlılar 4-1 gibi farklı bir skorla kazandı. Aslında ilk yarı Juventus çok daha iyi paslaşıyordu lakin ikinci yarı Ronaldo faktörü ön plana çıktı. Modric'in de etkili orta saha oyunu ile İspanyol ekibi kupayı üstüste ikinci kez almayı başardı. Benim gönlüm Juventus'tan yanaydı çünkü kalede 39 yaşında olan Buffon yer alıyordu. Özellikle İtalyan kulüplerinden 40lı yaşlarına kadar oynayan çok başarılı sporcular çıkıyor (Francesco Totti, Andrea Pirlo, Roberto Baggio vb) Kendilerine iyi bakıyorlar ve özellikle de mesleklerine profesyonelce yaklaşıyorlar. Bu ilham verici bir şey. Hatta pek çok genç sporcuya da örnek olmalı diye düşünüyorum. Gerçi Buffon'a bir şekilde makalemde yer vermek istediğim için bu girişi yaptım. Gelin asıl konumuza geçelim.
+
+![gogorm_buffon.jpg](/assets/images/2017/gogorm_buffon.jpg)
 
 Veri depolamanın en popüler yolu NoSQL veya RDBMS bazlı sistemler. 90lı yıllardan beri program yazan insanlar için de özellikle Microsoft SQL Server, Oracle ve sonrasında gelen MySQL ya da SQLite gibi yapılar da oldukça fazla oranda kullanılmaktalar. E tabii bildiğiniz üzere bu serüvenin ortalarında bir yerlerde SQL dili ve RDBMS yapısının, programcıların kodlama mantığına biraz ters gelişi de vuku buldu. Sonuçta SQL tarafındaki varlıkların programatik ortamda ve özellikle nesne yönelimli (Object Oriented) dünyada nasıl daha anlamlı ele alınabileceğinin yolları araştırıldı. Artık popüler olma zamanı nesne ilişkilendirmelerini sağlayan araçlardaydı. Object Relational Mapping (O/RM) konusu gündemdeydi. Neredeyse bütün programlama çatılarının bu tip araçlarla yakın ilişkisi bulunmakta. Hibernate ve Entity Framework gibi en azından ülkemizde adını sıklıkla duyduğumuz araçlar dışında farklı pek çok ürün de bulunmakta. Ben de GoLang tarafında SQLite operasyonlarını incelemeye çalışırken "bir O/RM aracı var mıdır?" sorusuna cevap ararken buldum kendimi. Murat Hoca'nın kitabı, GoLang'in resmi dokümanları, Stackoverflow tartışmaları derken [gitub üzerinden sunulan GORM](https://github.com/jinzhu/gorm) ile karşlılaştım.
 
@@ -143,22 +139,22 @@ Uygulamanın çalışma zamanı çıktısı aşağıdaki gibi olacaktır. Adım 
 
 ```text
 (C:/Go Works/Samples/book/Web Programming/Lesson_28/server.go:21) 
-[2017-06-05 00:02:57]  [182.01ms]  CREATE TABLE "employees" ("id" integer primary key autoincrement,"created_at" datetime,"updated_at" datetime,"deleted_at" datetime,"first_name" varchar(30) NOT NULL,"last_name" varchar(30) NOT NULL ) 
+[2017-06-05 00:02:57]  [182.01ms]  CREATE TABLE "employees" ("id" integer primary key autoincrement,"created_at" datetime,"updated_at" datetime,"deleted_at" datetime,"first_name" varchar(30) NOT NULL,"last_name" varchar(30) NOT NULL )
 
 (C:/Go Works/Samples/book/Web Programming/Lesson_28/server.go:21) 
-[2017-06-05 00:02:58]  [147.00ms]  CREATE INDEX idx_employees_deleted_at ON "employees"(deleted_at) 
+[2017-06-05 00:02:58]  [147.00ms]  CREATE INDEX idx_employees_deleted_at ON "employees"(deleted_at)
 
 (C:/Go Works/Samples/book/Web Programming/Lesson_28/server.go:21) 
-[2017-06-05 00:02:58]  [155.00ms]  CREATE TABLE "emails" ("id" integer primary key autoincrement,"created_at" datetime,"updated_at" datetime,"deleted_at" datetime,"employee_id" integer,"mail" varchar(50),"is_active" bool ) 
+[2017-06-05 00:02:58]  [155.00ms]  CREATE TABLE "emails" ("id" integer primary key autoincrement,"created_at" datetime,"updated_at" datetime,"deleted_at" datetime,"employee_id" integer,"mail" varchar(50),"is_active" bool )
 
 (C:/Go Works/Samples/book/Web Programming/Lesson_28/server.go:21) 
-[2017-06-05 00:02:58]  [170.00ms]  CREATE INDEX idx_emails_deleted_at ON "emails"(deleted_at) 
+[2017-06-05 00:02:58]  [170.00ms]  CREATE INDEX idx_emails_deleted_at ON "emails"(deleted_at)
 
 (C:/Go Works/Samples/book/Web Programming/Lesson_28/server.go:21) 
-[2017-06-05 00:02:58]  [184.01ms]  CREATE INDEX idx_emails_employee_id ON "emails"(employee_id) 
+[2017-06-05 00:02:58]  [184.01ms]  CREATE INDEX idx_emails_employee_id ON "emails"(employee_id)
 
 (C:/Go Works/Samples/book/Web Programming/Lesson_28/server.go:21) 
-[2017-06-05 00:02:58]  [115.00ms]  CREATE UNIQUE INDEX uix_emails_mail ON "emails"("mail") 
+[2017-06-05 00:02:58]  [115.00ms]  CREATE UNIQUE INDEX uix_emails_mail ON "emails"("mail")
 
 (C:/Go Works/Samples/book/Web Programming/Lesson_28/server.go:22) 
 [2017-06-05 00:02:58]  [1.00ms]  SELECT * FROM "emails"  WHERE "emails"."deleted_at" IS NULL AND (("employee_id" = '0'))

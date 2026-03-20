@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "EF Core ile MariaDb Kullanımı"
 date: 2018-02-19 17:18:00 +0300
-description: "Bu yazımızda MySQL’in yaratıcısı olan Monty Widenius‘un MySQL’in kodunu çatallayıp oluşturduğu ve kızının adını verdiği MariaDB'nin Entity Framework Core ile nasıl kullanılabileceğini incelemeye çalışıyoruz."
 categories:
   - dotnet-core
 tags:
@@ -26,12 +25,9 @@ tags:
   - visual-studio
   - github
 ---
-# EF Core ile MariaDb Kullanımı
-![mariacore_5.gif](/assets/images/2018/mariacore_5.gif)
-
-Merhaba Arkadaşlar,
-
 Son bir kaç aydır Cumartesi gecelerimi bir şeyler yazmak veya araştırmak için değerlendirmekteyim. Bu tip çalışma disiplinlerini daha önceden de denemiş ve epeyce faydasını görmüştüm. Sonuçta üzerinde çalıştığımız yazılım platformları ve ürünler sürekli ve düzenli olarak değişim içerisindeler. Dolayısıyla yeniliklerin ucundan da olsa tutabilmek lazım. Bir anlamda şu meşhur Pomodoro çalışma tekniğini haftalık periyotlara böldüğümü ifade edebilirim.
+
+![mariacore_5.gif](/assets/images/2018/mariacore_5.gif)
 
 Geçtiğimiz hafta içerisinde.Net Core tarafında nelere bakabilirim diye internette sörf yaparken eski dostumuz Entity Framework'e rastladım. Tabii oyun sahası benim için artık değişmişti. West-World, Microsoft Sql Server nedir pek bilmiyordu. Hatta IIS'e bile burun kıvırıp Nginx ya da Apache ile konuşuyordu. Elimde pek çok makalede kullanılan Visual Studio'da yoktu. Buna rağmen yetenekleri daha kısıtlı olan Visual Studio Code ile hayat oldukça güzeldi. Sonunda bir süredir merak ettiğim MariaDb'yi, Entity Framework Core ile basitçe nasıl konuşturabilleceğimi görmeye karar verdim. Öncelikle MariaDb'yi tanımlayalım...
 

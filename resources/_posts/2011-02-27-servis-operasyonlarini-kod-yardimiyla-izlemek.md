@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Servis Operasyonlarını Kod Yardımıyla İzlemek"
 date: 2011-02-27 16:20:00 +0300
-description: "Aslında bu günkü yazımızda bir WCF(Windows Communication Foundation) servisinin operasyonlarına gelen çağrılar hakkında istihbarat toplamaya çalışıyor olacağız. Ancak bunun için standart Trace ve Monitoring özellikleri yerine kod yardımıyla ilerleyeceğiz."
 categories:
   - wcf
   - wcf-4-0
@@ -18,10 +17,10 @@ tags:
   - concurrency
   - visual-studio
 ---
-# Servis Operasyonlarını Kod Yardımıyla İzlemek
-[![blg219_Giris](/assets/images/2011/blg219_Giris_thumb.jpg)](/assets/images/2011/blg219_Giris.jpg) Merhaba Arkadaşlar,
-
 Savaş meydanlarında ezelden beri uygulanan istihbarat ve haber alma teknikleri, avantaj sağlamak açısından en önemli unsurların başında gelmektedir. Karşı tarafın nerede olduğunu izlemek, ne yaptığını bilmek, istenen bir anda ne kadar ateş gücüne sahip olduğunu tespit etmek çok önemlidir. Örneğin karşı tarafın şu anda denizde hareket etmekte olan veya karasal alanda saklanmakta olan kuvvetlerini görmek istediğimiz durumlarda keşif yapılması ve istihbarat toplanması stratejik anlamda önemli avantajlar sağlayacaktır.
+
+[![blg219_Giris](/assets/images/2011/blg219_Giris_thumb.jpg)](/assets/images/2011/blg219_Giris.jpg)
+
 
 Yakın zamana kadar bu işler için yüksek irtifalardan, ses hızının bir kaç kat üstünde uçan uçaklar görev alırdı ki halen daha pek çok hava kuvvetlerince kullanılmaktadır. Örneğin bir zamanlar Birleşik Devletler ile Sovyetler Birliği arasında krize neden olan U2’ ler, şekli ve harcadığı yakıt ile ün salıp emekli olan SR71 Blackbird’ ler vs…
 

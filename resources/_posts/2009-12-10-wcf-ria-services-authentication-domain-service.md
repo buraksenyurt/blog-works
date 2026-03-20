@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF RIA Services - Authentication Domain Service"
 date: 2009-12-10 04:40:00 +0300
-description: "Sözün özü bir noktaya güvenlik kontrolünden geçerek girmemiz gerektiğinde doğrulanma, yetki kontrolü, rol gibi faktörlerle karşılaşırız. Zaten yazılım dünyasında da üyelik tabanlı(Membership Based) olarak çalışan sistemlerde, kullanıcıların bazı şeyleri yapabilmesi için önce doğrulanmaları(Authenticate) gerekir..."
 categories:
   - wcf-eco-system
   - wcf-ria-services
@@ -20,12 +19,9 @@ tags:
   - authentication
   - authorization
 ---
-# WCF RIA Services - Authentication Domain Service
-![blg113_Giris.jpg](/assets/images/2009/blg113_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Bazen insanın yapmak zorunda olduğu bazı şeyler gözünde büyür. Örneğin havalimanlarında kontrollerden geçerek uçağa ulaşmak o daracı rahatsız koltuklara sığmak için çabalamak. Önce ilk kapıda bir güvenlik kontrollünden geçilir, ardından Check-In işlemi için kimlikle birlikte bir kontrolden daha geçilir (hatta bagajımız var ise tartılır ve gerekiyorsa ekstra para ödenir), ardından uçağa bineceğimiz kapılara gitmek için bir kontrolden daha geçilir, ardından uçağa binerken bilet ve kimlik ile kontrolden bir kere daha geçilir.
+
+![blg113_Giris.jpg](/assets/images/2009/blg113_Giris.jpg)
 
 Keşke insanoğlu daha barışçıl olsaymış dedirten aramalar ile karşılaşılır zaman içerisinde. Güvenlik kontrollerinin temel amaçlarından birisi de, gerçekten sizin kimliğinizde söylenen kişi olduğunuzu görmek ve hatta elinizdeki biletiniz ile söz konusu uçağa binebilecek yetkiye sahip olduğunu öğrenmektir. Tabi arada sıra Administrator seviyesinde pek çok insan güvenlik kontrollerine takılmadan protokol kapısından giriş yaparak yollarına devam edebilirler. Üstelik yürüdükleri hat üzerinde kırmızı halılarda bulunabilir.
 

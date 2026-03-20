@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Rust Pratikleri - GDB ile Debug İşlemleri"
 date: 2022-02-27 09:00:00 +0300
-description: "Rust ile ilgili öğretilerde bellek yönetimi konusunu incelerken fonksiyon ve değişkenlere ait kapsamların bellekte nasıl açıldığını görmek için GNU Debugger'dan(kısaca GDB) yararlanıldığını gördüm. Kodu debug etmek deyince insanın aklına Visual Studio gibi gelişmiş IDE'lerin kolaylıkları geliyor ve bu nedenle GDB ilkel bir araç gibi görünebilir. Yine de rust kodunu terminalden adım adım işletmek ve bellek üzerindeki konumlandırmaları görmek(stack açılımlarını izleyip pointer'ları analiz etmek gibi) adına son derece faydalı bir araç. Rust dilinde ilerlemek isteyenlerin bilmesi ve kullanması gereken bir yardımcı. Öncelikle üzerine çalıştığım Ubuntu platformuna yüklemem lazım. Bu arada GDB ile ilgili detaylar için şu adrese bakılabilir."
 categories:
   - rust
 tags:
@@ -16,10 +15,9 @@ tags:
   - visual-studio
   - race-condition
 ---
-# Rust Pratikleri - GDB ile Debug İşlemleri
-![gdb.png](/assets/images/2022/gdb.png)
-
 Rust dilinin en güçlü olduğu yer etkili bellek yönetimi ve olası kaosların önüne herhangi bir garbage collector veya başka bir unsura ihtiyaç duymadan geçebilecek kural setleri barındırmasıdır. Özellikle Memory Leak, Double Free, Data Race gibi C, C++ dillerinde sıklıkla rastlanan durumların oluşmaması için basit kurallar barındırır. Bu kurallar ilk başlarda rust öğrenenleri epey zorlar fakat bir kez alışılınca her şey çok daha net ve berrak hale gelir. Bellek yönetimi denilince içeride neler oluyor bitiyor görmek de önemlidir. Fonksiyonlar birer kapsam olarak Stack'e yığılır, çeşitli veri türleri (String gibi) heap'e açılıp pointer alır, kapsamlar sonlandığında bir şeyler olur vs
+
+![gdb.png](/assets/images/2022/gdb.png)
 
 Rust ile ilgili öğretilerde bellek yönetimi konusunu incelerken fonksiyon ve değişkenlere ait kapsamların stack ve heap bölgelerine nasıl açıldığını görmek için GNU Debugger'dan (kısaca GDB) yararlanılabilir. Kodu debug etmek deyince insanın aklına Visual Studio gibi gelişmiş IDE'lerin kolaylıkları geliyor ve bu nedenle ilk kez karşılaşanlar için GDB ilkel bir araç gibi görünebilir elbette. Ancak rust ile yazılmış programları terminalden adım adım işletmek ve bellek üzerindeki konumlandırmaları görmek (stack açılımlarını izleyip pointer'ları analiz etmek gibi) adına son derece faydalı bir araçtır. Rust dilinde ilerlemek isteyenlerin bilmesi ve kullanması gereken bir yardımcı olduğunu düşünüyorum. Tabii her şeyden önce onu üzerinde çalıştığım Ubuntu platformuna yüklemem gerekiyor. Bu arada GDB ile ilgili detaylar için [şu adrese](http://www.gdbtutorial.com/) bakılabilir.
 

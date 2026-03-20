@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Profesyonelce Master Pages"
 date: 2007-03-13 08:00:00 +0300
-description: "Asp.Net 2.0 ile birlikte gelen en önemli yeniliklerden biriside Master Page kavramıdır. Master Page kavramını ilk öğrendiğimde aklımda oluşan tanımlama şöyleydi; \"bir sitedeki sayfalarının tamamının yada bir kısmının aynı şablon üzerinde oturmasını sağlamak istiyorsak Master Page' lerden faydalanabiliriz\"."
 categories:
   - aspnet-2-0
 tags:
@@ -14,9 +13,6 @@ tags:
   - http
   - visual-studio
 ---
-# Profesyonelce Master Pages
-Değerli Okurlarım Merhabalar,
-
 Asp.Net 2.0 ile birlikte gelen en önemli yeniliklerden biriside Master Page kavramıdır. Master Page kavramını ilk öğrendiğimde aklımda oluşan tanımlama şöyleydi; "bir sitedeki sayfalarının tamamının yada bir kısmının aynı şablon üzerinde oturmasını sağlamak istiyorsak Master Page'lerden faydalanabiliriz". Oysaki Master Page kullanımı ile elde edilen avantajlar sadece görsel açıdan gelen bu kolaylık ile sınırlı değildir. Sonuç itibariye her Master Page aynı zamanda arka planda bir örnek olarak oluşturulan bir sınıf tanımlamasıdır. Bu nedenle Master Page uyarlanan içerik sayfalarının (Content Page) ortaklaşa kullanabileceği fonksiyonellikleri dahi barındırabilir. Buda tam anlamıyla kalıtım (inheritance) ile yapabildiklerimizin bir yansımasıdır. İşte bu makalemizde Master Page kavramının derinlerine gidip diğer avantajlarını ve özellikle dikkat etmemiz gereken noktaların neler olabileceğini incelemeye çalışacağız. Temel olarak ele alacağımız konular aşağıda maddeler halinde sıralanmıştır.
 
 - Master Page uygulanmamış bir web sayfasına sonradan Master Page uygulamaya çalışmak.

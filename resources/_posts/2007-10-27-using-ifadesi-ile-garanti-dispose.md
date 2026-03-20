@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Using İfadesi ile Garanti Dispose"
 date: 2007-10-27 21:37:00 +0300
-description: "Bellek yönetimi özellikle büyük çaplı projelerde performans kazanımı açısından çok önemlidir. Günümüz sistemlerinin yüksek Ram kapasitesine sahip oldukları göz önüne alındığında bu durum çoğu zaman göz ardı edilmektedir. Ancak sayısız kullanıcının bağlandığı sunucu(server) sistemleri üzerinde çalışan windows veya web servisleri gibi uygulamalar göz önüne alındığında bellek sorunları ile her zaman için karşılaşılma olasılığı vardır."
 categories:
   - csharp
 tags:
@@ -12,9 +11,6 @@ tags:
   - memory-management
   - performance
 ---
-# Using İfadesi ile Garanti Dispose
-Değerli Okurlarım Merhabalar,
-
 Bellek yönetimi özellikle büyük çaplı projelerde performans kazanımı açısından çok önemlidir. Günümüz sistemlerinin yüksek Ram kapasitesine sahip oldukları göz önüne alındığında bu durum çoğu zaman göz ardı edilmektedir. Ancak sayısız kullanıcının bağlandığı sunucu (server) sistemleri üzerinde çalışan windows veya web servisleri gibi uygulamalar göz önüne alındığında bellek sorunları ile her zaman için karşılaşılma olasılığı vardır.
 
 Bildiğiniz gibi.Net ağırlıklı olarak yönetimli kodu (managed code) desteklemektedir. CLR (Common Language RunTime - Ortak Dil Çalışma Zamanı), yazmış olduğumuz uygulamarı çalıştırmaktan, kaynakları yönetmekten ve sonlandırmaktan sorumlu bir ortam olarak bu yönetim işini üstlenmiştir. CLR içerisinde istisna yönetimi, tip güvenliği gibi çeşitli kontrol ve yönetim mekanizmaları vardır. Bunlardan belkide en önemlisi (uygulama geliştiricileri özellikle C++' tan gelenleri bir nebze olsun rahatlatan) GC (Garbage Collector- Çöp Toplayıcı) mekanizmasıdır. GC, kapsama alanı (scope) dışına çıkan referans tiplerinin bellekten atılması görevini üstlenir. Oysaki C++ ile geliştirilen uygulamalarda, nesnelerin bellekten atılması elle yapılmak zorundadır. Dolayısıyla GC uygulama geliştiricilere büyük avantaj sağlar.

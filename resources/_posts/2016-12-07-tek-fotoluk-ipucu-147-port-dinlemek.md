@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu 147 - Port Dinlemek"
 date: 2016-12-07 21:51:00 +0300
-description: "Diyelim ki bir sunucu üzerinde tanımlı portların anlık durumları hakkında bilgi sahibi olmak istiyorsunuz (Örneğin sunucuda SQL Server yüklü ise varsayılan 1433 portu açık mı veya ftp portu cevap verir konumda mı vb) Ruby dilinde bu tip bir işlevselliği gerçekleştirmek son derece basit. Tek yapmamız gereken makine adı ve port bilgisini kullanmak. Nasıl mı? Aynen aşağıdaki fotoğrafta olduğu gibi."
 categories:
   - ruby
 tags:
@@ -12,9 +11,6 @@ tags:
   - mysql
   - http
 ---
-# Tek Fotoluk İpucu 147 - Port Dinlemek
-Merhaba Arkadaşlar,
-
 Diyelim ki bir sunucu üzerinde tanımlı portların anlık durumları hakkında bilgi sahibi olmak istiyorsunuz (Örneğin sunucuda SQL Server yüklü ise varsayılan 1433 portu açık mı veya ftp portu cevap verir konumda mı vb) Ruby dilinde bu tip bir işlevselliği gerçekleştirmek son derece basit. Tek yapmamız gereken makine adı ve port bilgisini kullanmak. Nasıl mı? Aynen aşağıdaki fotoğrafta olduğu gibi.
 
 ![tfi_147.gif](/assets/images/2016/tfi_147.gif)

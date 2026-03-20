@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net Web API’ leri ASPX’ den Asenkron Çağırmak"
 date: 2012-11-14 00:00:00 +0300
-description: "Bilindiği gibi Asenkron(Asynchronous) çalışma, günümüz yazılım geliştirme araçlarının olmazsa olmaz parçalarından birisidir. Nitekim kullanıcı deneyimi(User Experience) yüksek olan uygulamalarda, istemcilerin uzun sürebilecek işlemleri beklemeden başkalarına devam edebilmesi tercih edilen ve işlem sürelerini kısaltan bir kabiliyettir."
 categories:
   - dotnet-framework-4-5
 tags:
@@ -24,16 +23,9 @@ tags:
   - concurrency
   - generics
 ---
-# Asp.Net Web API’ leri ASPX’ den Asenkron Çağırmak
-[![baterist-290x290](/assets/images/2012/baterist-290x290_thumb.jpg)](/assets/images/2012/baterist-290x290.jpg) Merhaba Arkadaşlar,
+Bateri çalanları her zaman için büyük bir hayranlıkla izlerim/izlemişimdir. Özellikle 4 uzuvlarını da (iki kol iki ayak) kullanırlar ama daha da önemlisi tüm bu unsurları eş zamanlı olarak çalıştırabilirler. Sadece iki kolu çalıştırmak nispeten bir dereceye kadar kolay olabilir biz normal insan oğulları için ama bir de ayakları devreye sokmak. Hele de tüm bu hareketli parçalardan anlamlı bir melodi çıkartmak gerçekten çok ama çok zor bir iştir.
 
-Bateri çalanları her zaman için büyük bir hayranlıkla izlerim/izlemişimdir. Özellikle 4 uzuvlarını da (iki kol iki ayak
-
-![Smile with tongue out](/assets/images/2012/wlEmoticon-smilewithtongueout_6.png)
-
-) kullanırlar ama daha da önemlisi tüm bu unsurları eş zamanlı olarak çalıştırabilirler.
-
-Sadece iki kolu çalıştırmak nispeten bir dereceye kadar kolay olabilir biz normal insan oğulları için ama bir de ayakları devreye sokmak. Hele de tüm bu hareketli parçalardan anlamlı bir melodi çıkartmak gerçekten çok ama çok zor bir iştir.
+[![baterist-290x290](/assets/images/2012/baterist-290x290_thumb.jpg)](/assets/images/2012/baterist-290x290.jpg)
 
 Tabi eğitimler ile belirli seviyede bateri çalabilmek pek çok insan için mümkün olabilir ama tabi ritim tutturmak, ataklarda bulunmak veya çok uzun süre boyunca aynı tempoyu hiç bozulmadan devam ettirebilmek inanılmaz bir konsantrasyon veya yetenek gerektirmektedir. Peki bu eş zamanlı çalışabilme bir yazılımcı için ne ifade edebilir? Tabi ki de asenkron çalışan kod parçalarını
 

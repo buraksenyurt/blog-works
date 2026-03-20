@@ -1,17 +1,13 @@
-﻿---
+---
 layout: post
 title: "C# Temelleri: 1!=1 Eşitsizliğinden GetHashCode' a Uzun İnce Bir Yol"
 date: 2006-10-11 03:00:00 +0300
-description: "Eminimki makale başlığı size oldukça ilginç gelmiştir. Matematiksel olarak mümkün olmayan bu durum .Net programlama ortamında acaba gerçekleştirilebilir mi? Elbetteki matematiksel olarak imkansız olan bu durumun programlama ortamımız içerisinde gerçekleşebilir olmasıda pek mantıklı değil. O halde makalemizin asıl konusundan bahsedelim ve durumu açıklığa kavuşturalım..."
 categories:
   - csharp
 tags:
   - csharp
   - dotnet
 ---
-# C# Temelleri: 1!=1 Eşitsizliğinden GetHashCode' a Uzun İnce Bir Yol
-Değerli Okurlarım Merhabalar,
-
 Eminimki makale başlığı size oldukça ilginç gelmiştir. Matematiksel olarak mümkün olmayan bu durum.Net programlama ortamında acaba gerçekleştirilebilir mi? Elbetteki matematiksel olarak imkansız olan bu durumun programlama ortamımız içerisinde gerçekleşebilir olmasıda pek mantıklı değil. O halde makalemizin asıl konusundan bahsedelim ve durumu açıklığa kavuşturalım.
 
 Bu makalemizde.Net içerisinde yer alan veri tiplerinin (data types) nasıl ve ne şekilde karşılaştırılabileceklerini incelemeye çalışacağız. Bir başka deyişle nesnelerin birbirleri arasındaki eşitliklerini mercek altına alacağız..Net içerisinde nesnelerin içeriklerini karşılaştırmak adına pek çok yöntem bulunmaktadır. Bu anlamda makalemizin çekirdeğini Object sınıfının static ReferneceEquals, Equals metodları ile sanal (virtual- yani ezilebilir) Equals metodu oluşturmaktadır. Sonrasında bu metodlara Object sınıfının GetHashCode metodunun ezilmesini de ekleyeceğiz. Nitekim bazı koşullar bizi GetHashCode'a doğru götürecektir.

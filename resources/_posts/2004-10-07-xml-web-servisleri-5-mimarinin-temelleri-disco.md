@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Xml Web Servisleri - 5 (Mimarinin Temelleri - DISCO)"
 date: 2004-10-07 12:00:00 +0300
-description: "Disco, Microsoft tarafından geliştirilmiş bir keşif mekanizmasıdır. Web servislerinin kullanılması ile ilgili en önemli sorun, istemci uygulamaları geliştiren yazılımcıların, ne tip web servisleri olduğundan ve bunları nasıl kullanacağından haberdar olamamasıdır. Bu amaçla, web servislerini yayınlayanlar, bu servislere ait erişim bilgilerini e-mail veya başka iletişim yolları ile, istemcileri geliştiren yazılım tarafına gönderebilirler. Ancak Microsoft bu işin daha kolay yapılabilmesini sağlamak amacıyla, web servislerinin keşfedilmelerine kolaylık getiren teknikler geliştirmiştir. Bu tekniklerden birisi, disco tekniğidir. Disco tekniğinin kilit noktası, disco uzantılı XML tabanlı dosyalardır. Daha önceki makalelerimizde, Visual Studio.Net ile geliştirdiğimiz istemci uygulamayı göz önüne aldığımızda, GeoMat.disco isimli bir dosyanında yer aldığını görürüz."
 categories:
   - xml-web-services
 tags:
@@ -17,9 +16,6 @@ tags:
   - visual-studio
   - asmx
 ---
-# Xml Web Servisleri - 5 (Mimarinin Temelleri - DISCO)
-Değerli Okurlarım, Merhabalar.
-
 Disco, Microsoft tarafından geliştirilmiş bir keşif mekanizmasıdır. Web servislerinin kullanılması ile ilgili en önemli sorun, istemci uygulamaları geliştiren yazılımcıların, ne tip web servisleri olduğundan ve bunları nasıl kullanacağından haberdar olamamasıdır. Bu amaçla, web servislerini yayınlayanlar, bu servislere ait erişim bilgilerini e-mail veya başka iletişim yolları ile, istemcileri geliştiren yazılım tarafına gönderebilirler. Ancak Microsoft bu işin daha kolay yapılabilmesini sağlamak amacıyla, web servislerinin keşfedilmelerine kolaylık getiren teknikler geliştirmiştir. Bu tekniklerden birisi, disco tekniğidir. Disco tekniğinin kilit noktası, disco uzantılı XML tabanlı dosyalardır. Daha önceki makalelerimizde, Visual Studio.Net ile geliştirdiğimiz istemci uygulamayı göz önüne aldığımızda, GeoMat.disco isimli bir dosyanında yer aldığını görürüz.
 
 ![mk102_1.gif](/assets/images/2004/mk102_1.gif)

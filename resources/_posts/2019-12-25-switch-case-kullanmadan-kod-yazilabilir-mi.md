@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Switch Case Kullanmadan Kod Yazılabilir mi?"
 date: 2019-12-25 10:00:00 +0300
-description: "Bu yazıda switch case kullanmadan nasıl kod yazabileceğimizi anlamaya çalışacağız. İşin içerisine SOLID(Single Responsibility, Open Closed, Liskov Substituion, Interface Segregation, Dependency Inversion) ilkelerinden open-closed principle ve tasarım kalıplarından Strateji girecek. Eğlenceli olduğu kadar Sonarqube bulgularını memnun edecek bir kod parçasını nasıl geliştirebileceğimizi göreceğiz."
 categories:
   - csharp
 tags:
@@ -13,10 +12,9 @@ tags:
   - generics
   - dependency-management
 ---
-# Switch Case Kullanmadan Kod Yazılabilir mi?
-![strategy_cover.jpg](/assets/images/2019/strategy_cover.jpg)
-
 İnsanoğlu yağmurlu bir pazar günü evden çıkıp ne yapacağını bilemezken ne hakla ölümsüzlükten bahseder. Bir yazara ait olan bu cümleyi sevgili Serdar Kuzuloğlu'nun yakın zamanda izlediğim söyleşisinden not almışım. İnsanlığın ömrünü uzatmaya çalışması ile ilgili bir konuya atıfta bulunurken ifade etmişti. Oysa karşımızda duran ekolojik denge ve iklim problemleri, yakın gelecekte (2025 deniyor) dünya nüfusunun 1 milyar 250 milyon kadarının içilebilir su kaynaklarına erişemeyeceğini işaret etmekte. Lakin bundan etkilenmeyecek olan ve asıl ömrünü uzatmak isteyen dünya nüfusunun en zengin %1i, söz konusu kıtlığın yaratacağı sorunlardan ve başka felaketlerden korunmak için kendisine dev sığınaklar inşa ediyor, adalar satın alıyormuş. Gerçekten anlaşılması çok zor ve bir o kadar da karmaşık bir durum değil mi? Bu distopik senaryo bir kenara dursun biz geleceğin iyi şeyler getireceğini ümit ederek gelişmeye devam edelim.
+
+![strategy_cover.jpg](/assets/images/2019/strategy_cover.jpg)
 
 Bazen üzerinde çalıştığımız Legacy sistemlerin biriktirdiği teknik borçlar da aynen bu distopik senaryoda olduğu gibi bizi kara kara düşündürür. Bunun önemli sebeplerinden birisi teknik borçlanma konusundaki bilinçsizliğimizdir. Ancak benim farklı bir teorim var. İtiraf etmeliyim ki programlama dillerini bazen çok yanlış bir biçimde öğreniyoruz. Özellikle nesne yönelimli dillerde bu daha fazla öne çıkıyor.
 

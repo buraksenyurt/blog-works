@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Servis Çıktılarını Plotly.js ile Grafikleştirmek"
 date: 2019-03-18 21:51:00 +0300
-description: "West-World'de eğlence tüm hızı ile devam ediyor. Bu geceki \"Easy Graphics of new Era\" isimli partinin onur konuğu ise açık kaynak javascript grafik kütüphanesi Plotly. Oldukça renkli bir kişiliğe sahip olan plotly github şehrinin de en sevilen karakterlerinden birisi. Kendisini West-World'e getirense en yakın arkadaşları D3.js ve WebGL. Ona West-World sakinleri adına bir soru yönelttik ve izleyicilerini nasıl büyülediğini sorduk. Enerjik ve içten uslübuyla \"dans figürlerimi çalışırken çoğunlukla JSON ve CSV melodilerinden ilham alıyorum. Kareografide uzun zamandarı Mr. jQuery ile ilerliyorum. Ayrıca Node'un bana sağladığı içsel motivasyondan bahsetmeden geçemem. Hepsi içimde harika bir karmanın oluşmasına neden oluyor. Sonuç gülümseyen ve ritmime uymaya çalışan insanların ortaya çıkarttığı müthiş enerji\" diyor..."
 categories:
   - nodejs
 tags:
@@ -15,10 +14,9 @@ tags:
   - python
   - github
 ---
-# Servis Çıktılarını Plotly.js ile Grafikleştirmek
-![plotly_02.jpg](/assets/images/2019/plotly_02.jpg)
-
 West-World'de eğlence tüm hızı ile devam ediyor. Geçen ay gerçekleştirdiğimiz "C64 Retro" partisinden sonra sıra bu geceki "Easy Graphics of new Era" adlı eğlenceye geldi. Onur konuğumuz açık kaynak Javascript dünyasının son zamanlardaki yükselek yıldızı olarak görülen grafik kütüphanesi Plotly. Oldukça renkli bir kişiliğe sahip olan Plotly, GitHub şehrinin de en sevilen karakterlerinden birisi haline gelmiş durumda. Şehrin devasa enerji santrallerinin ürettiği verilerle çalışan çılgın istatistikçileri arasında da çok popüler bir karakter. Kendisini West-World'e getiren en yakın destekçileri D3.js ve WebGL'de partiye renk katanlar arasındalar.
+
+![plotly_02.jpg](/assets/images/2019/plotly_02.jpg)
 
 Ona West-World sakinleri adına bir soru yönelttik ve izleyicilerini nasıl böylesine inanılaz şekilde büyülediğini sorduk. Her zaman ki enerjisi ve içten uslübuyla "dans figürlerimi çalışırken çoğunlukla JSON ve CSV melodilerinden ilham alıyorum. Kareografide uzun zamandır Mr. jQuery ile ilerliyorum. Ayrıca Node'un bana sağladığı içsel motivasyondan bahsetmeden geçemem. Her isteğimi bekletmeden ve hızla karşılıyor. Hepsi içimde harika bir karmanın oluşmasına neden olmakta. Sonuç, gülümseyen ve ritmime uymaya çalışan insanların ortaya çıkarttığı müthiş bir dans gösterisi..." diyor.
 

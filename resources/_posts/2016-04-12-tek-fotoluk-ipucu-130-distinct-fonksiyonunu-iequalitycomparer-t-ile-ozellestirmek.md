@@ -1,17 +1,13 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu 130 - Distinct Fonksiyonunu IEqualityComparer<T> ile Özelleştirmek"
 date: 2016-04-12 12:15:00 +0300
-description: "Koleksiyon bazlı veri kaynaklarında LINQ(Language INtegrated Query) sorgularını yoğun şekilde kullanmaktayız. LINQ bildiğiniz üzere pek çok genişletme metodundan oluşan ve ifadesel olarak koleksiyonlar üzerinde SQL benzeri sorgular yapabilmemizi sağlayan bir alt yapı sunmaktadır. Sıklıkla Select, Where, Count, Sort, Max, Min, Reverse, GroupBy, OrderBy ve daha pek çok metodu kullanırız. Bunlar zaman zaman ifadeler şeklinde ele aldığımız gibi zaman zamanda metod zincirleri biçiminde değerlendiririz."
 categories:
   - tek-fotoluk-ipucu
 tags:
   - tek-fotoluk-ipucu
   - linq
 ---
-# Tek Fotoluk İpucu 130 - Distinct Fonksiyonunu IEqualityComparer<T> ile Özelleştirmek
-Merhaba Arkadaşlar,
-
 Koleksiyon bazlı veri kaynaklarında LINQ (Language INtegrated Query) sorgularını yoğun şekilde kullanmaktayız. LINQ bildiğiniz üzere pek çok genişletme metodundan oluşan ve ifadesel olarak koleksiyonlar üzerinde SQL benzeri sorgular yapabilmemizi sağlayan bir alt yapı sunmaktadır. Sıklıkla Select, Where, Count, Sort, Max, Min, Reverse, GroupBy, OrderBy ve daha pek çok metodu kullanırız. Bunlar zaman zaman ifadeler şeklinde ele aldığımız gibi zaman zamanda metod zincirleri biçiminde değerlendiririz.
 
 Bu metodlardan bazıları aldıkları parametrelere göre farklı davranışları da öğrenebilirler. Örneğin bir tip koleksiyonunun, tipe ait belli bir özelliğe göre Distinct listeye dönüştürülmesini istediğimizi varsayalım. Bu durumda Distinct metodunun IEqualityComparer arayüzünü uygulayan tipleri parametre olarak alabilen aşırı yüklenmiş versiyonunu kullanabiliriz. Böylece çalışma zamanına, Distinct metodunu nasıl icra etmesi gerektiğini öğretebiliriz.

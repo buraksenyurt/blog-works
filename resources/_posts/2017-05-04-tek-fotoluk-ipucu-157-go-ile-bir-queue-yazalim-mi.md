@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu 157 - GO ile Bir Queue Yazalım mı?"
 date: 2017-05-04 10:10:00 +0300
-description: "Go programlama dilinde C#,Java veya bunlara benzer dillerden gelenler için söz konusu olan pek çok kolaylık bulunmayabilir. Söz gelimi Stack veya Queue gibi bir koleksiyon kullanmak istersek bu veri yapısını bizim tasarlamamız gerekebilir. Nitekim bu adresteki standart kütüphanelerde Queue ile ilgili bir şey bulamadığımı ifade edebilirim(aslında github üzerinde açık kaynak ek kütüphaneler var) Olsa da olmasa da biz kendimiz de bir queue veri yapısı tasarlayabiliriz. Aynen aşağıdaki fotoğrafta olduğu gibi."
 categories:
   - golang
 tags:
@@ -12,9 +11,6 @@ tags:
   - generics
   - github
 ---
-# Tek Fotoluk İpucu 157 - GO ile Bir Queue Yazalım mı?
-Merhaba Arkadaşlar,
-
 Go programlama dilinde C#,Java veya benzer dillerden gelenler için söz konusu olan pek çok kolaylık bulunmayabilir. Söz gelimi Stack veya Queue gibi bir koleksiyon kullanmak istersek baştan tasarlamamız gerekebilir. Nitekim [bu adresteki](https://golang.org/pkg/) standart kütüphanelerde Queue ile ilgili bir şey bulamadığımı ifade edebilirim (aslında github üzerinde açık kaynak ek kütüphaneler var) Olsa da olmasa da bir queue veri yapısı tasarlayabiliriz. Hem basit ve temel bir antrenman yapmış oluruz. Aynen aşağıdaki fotoğrafta olduğu gibi (Sisteminizde benim şirket bilgisayarımda olduğu gibi GO ortamı var olmayabilir. [https://play.golang.org/](https://play.golang.org/) adresindeki online derleyiciyi bu anlamda kullanabilirsiniz)
 
 ![tfi157.gif](/assets/images/2017/tfi157.gif)

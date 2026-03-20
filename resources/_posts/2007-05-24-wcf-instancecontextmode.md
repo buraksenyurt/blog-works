@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF - InstanceContextMode"
 date: 2007-05-24 12:00:00 +0300
-description: "Windows Communication Foundation uygulamalarında istemciler başvurdukları servisler üzerindeki nesne örneklerini kullanırlar. Özellikle kullanılan bağlayıcının (binding) tipine göre servis üzerindeki nesne örneklerinin farklı şekillerde oluşturulup ele alınması söz konusudur. .Net Remoting ile uygulama yazan geliştiriciler, istemcilerin talepte bulunacağı uzak nesne örneklerinin farklı modellerde örneklendiklerini bilirler. Burada bahsi geçen modeller Server Activated Object için Singleton ve SingleCall ile Client Activated Object' dir. Örneğin CAO modeline göre istemciler, uzak nesneyi örneklediklerinde sunucu üzerinde bir referans oluşturulur ve istemciler bunu kullanır. Singleton ve SingleCall modelleri metod çağrıları sonucu referans oluşturulmasını sağlar. Ama Singleton modelinde her istemci için(dolayısıyla her metod çağrısı için) aynı nesne örneği, SingleCall' da ise her metod çağrısı için ayrı bir nesne örneği sunucu üzerinde oluşturulmaktadır."
 categories:
   - wcf-webhttp-services
 tags:
@@ -16,9 +15,6 @@ tags:
   - concurrency
   - thread-safety
 ---
-# WCF - InstanceContextMode
-Değerli Okurlarım Merhabalar,
-
 Windows Communication Foundation uygulamalarında istemciler başvurdukları servisler üzerindeki nesne örneklerini kullanırlar. Özellikle kullanılan bağlayıcının (binding) tipine göre servis üzerindeki nesne örneklerinin farklı şekillerde oluşturulup ele alınması söz konusudur..Net Remoting ile uygulama yazan geliştiriciler, istemcilerin talepte bulunacağı uzak nesne örneklerinin farklı modellerde örneklendiklerini bilirler.
 
 Burada bahsi geçen modeller Server Activated Object için Singleton ve SingleCall ile Client Activated Object'dir. Örneğin CAO modeline göre istemciler, uzak nesneyi örneklediklerinde sunucu üzerinde bir referans oluşturulur ve istemciler bunu kullanır. Singleton ve SingleCall modelleri metod çağrıları sonucu referans oluşturulmasını sağlar. Ama Singleton modelinde her istemci için (dolayısıyla her metod çağrısı için) aynı nesne örneği, SingleCall'da ise her metod çağrısı için ayrı bir nesne örneği sunucu üzerinde oluşturulmaktadır.

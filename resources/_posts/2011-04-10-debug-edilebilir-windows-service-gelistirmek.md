@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Debug Edilebilir Windows Service Geliştirmek"
 date: 2011-04-10 10:34:00 +0300
-description: "Ancak bir developer için, kodun çalışma zamanındaki durumunu incelemenin sayısız yolu olduğu da bir gerçek. Öyleki, Debug etmek bence en güzel yollardan birisi. Lakin bir Windows Service uygulamasının Debug edilmesi de sanıldığı kadar kolay değil Thinking smile İşte bu yazımızda internet üzerinden yaptığım araştırmalar sonucu öğrendiğim ve bir Windows Service uygulamasının nasıl debug edilebeceğine dair uygulanabilen yöntemlerden birisini ele alıyor olacağız. Olabildiğince basit bir şekilde anlatmaya gayret edeceğim bu vaka çalışmamızda, adım adım ilerliyor olacağızWinking smile Öyleyse gelin şu metal entegre üzerindeki böcekleri ayıklamaya çalışalım."
 categories:
   - windows-services
 tags:
@@ -11,10 +10,10 @@ tags:
   - threading
   - visual-studio
 ---
-# Debug Edilebilir Windows Service Geliştirmek
-[![blg232_Giris](/assets/images/2011/blg232_Giris_thumb.jpg)](/assets/images/2011/blg232_Giris.jpg) Merhaba Arkadaşlar,
-
 Uzun süre önce dış kaynak (Outsource) olarak görev aldığım bir bankacılık uygulamasında Windows Service tabanlı entegrasyon işlemleri için görevlendirilmiştim. Herşeyden önce bu servislerin bankacılık uygulaması olması nedeniyle, farklı ve yabancı sistemleri de ilgilendiren iş adımları bulunmaktaydı. Bu sebepten söz konusu Windows Service uygulamalarının hem kod içerikleri hem de iş kuralları oldukça karışık olabiliyordu. İlgili Windows Service örneklerinin geliştirilmesi bir yana, bunların test ortamına atılması ve sonuçlarının takip edilmesi ise başlı başına bir dertti
+
+[![blg232_Giris](/assets/images/2011/blg232_Giris_thumb.jpg)](/assets/images/2011/blg232_Giris.jpg)
+
 
 ![Confused smile](/assets/images/2011/wlEmoticon-confusedsmile_1.png)
 

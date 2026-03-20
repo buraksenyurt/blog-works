@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net Core - Dependency Injection Türleri"
 date: 2021-04-29 11:03:00 +0300
-description: "Hatırlayacağınız üzere bir önceki yazımızda Asp.Net 5 tarafında nasıl Hello World diyebileceğimizi incelemeye çalışmıştık(Henüz okumadıysanız bir göz atmanızda yarar var) Bu deneyimde ana odak noktamız dahili Dependency Injection mekanizmasının nasıl kullanıldığını görmekti. Kobay senaryomuzdaki en önemli noktalardan birisi de GameController sınıfı içerisinde IGameRepository yardımıyla low-level bir bileşenin kullanılmasıydı. Burada Constructor Injection tekniğinden yararlandığımızı ifade etmiştik. Bu teknik dışında kullanabileceğimiz versiyonlar da var. Metot üzerinden, bir Property yardımıyla ve Asp.Net MVC 6 ile gelen @inject direktifi yoluyla, nesne bağımlılıklarını çözümleyebiliriz. İşte bu yazımızdaki amacımız aynı senaryoyu devam ettirerek söz konusu tekniklerin nasıl uygulanabileceğini öğrenmektir. Hazırsanız başlayalım."
 categories:
   - asp-dotnet-core
 tags:
@@ -17,14 +16,13 @@ tags:
   - github
   - dependency-management
 ---
-# Asp.Net Core - Dependency Injection Türleri
-![hellomvc_7.png](/assets/images/2021/hellomvc_7.png)
-
 Ayakta durmuş odanın camından dışarıyı izlerken yazıya nasıl bir giriş yapsam diye düşünüyordum. Baharın etkisi ile yapraklarını açmış meşenin yavaş yavaş gölgelediği caddeden İtalyan bayrağı kasklı bir motosikletli geçti aniden. Sadece birkaç metre gerisinden de onu neredeyse aynı süratle takip eden martıya binmiş bir genç. Kaldırımda bir elinde alışveriş poşeti ötekinde onu yola doğru çekiştiren haylazla birlikte yürümeye çalışan orta yaşlarında bir kadın. Hemen binanın önündeki basket sahasında da yaşları beş ile on beş arasında değişen on çocuk. Futbol oynuyorlar. Bağrışlar, çağrışlar. Çekişmeli de gidiyor ama herkesin yüzünde bir maske. Eve kapanmak zorunda kalmadan önce çocukların son bir bahar ziyafetini izliyorum diye iç geçiriyorum.
+
+![hellomvc_7.png](/assets/images/2021/hellomvc_7.png)
 
 On yedi günlük evden çıkma yasaklarının bir gün öncesi çünkü bugün, 29 Nisan 2021 Perşembe. Pek tabii hayat evde de olsa devam ediyor. Bende bu dönemi iyi değerlendirmek adına yaz aylarında vereceğim şirket eğitimleri için Amazon'dan getirttiğim kitapları çalışmaya ağırlık vereyim diyorum. Malum.Net 5 güldür güldür geleli çok oldu ve orada öğrenmem gereken birçok konu birikti. En önemli şey ise öğrendiğim bir konuyu olabildiğince basit şekilde anlatabilmek. Bakalım bu yazıda bunu başarabilecek miyim?
 
-Hatırlayacağınız üzere [bir önceki yazımızda](Asp.Net Core'a Nasıl Merhaba Deriz-.md) Asp.Net 5 tarafında nasıl Hello World diyebileceğimizi incelemeye çalışmıştık (Henüz okumadıysanız bir göz atmanızda yarar var) O çalışmada ana odak noktamız dahili Dependency Injection mekanizmasının nasıl kullanıldığını görmekti. Kobay senaryomuzdaki en önemli noktalardan birisi de GameController sınıfı içerisinde IGameRepository yardımıyla low-level bir bileşenin kullanımıydı. Burada Constructor Injection tekniğinden yararlandığımızı ifade etmiştik. Bu teknik dışında kullanabileceğimiz versiyonlar da var. Bağımlı nesne çözümlemesini metot üzerinden, Property yardımıyla ve Asp.Net MVC 6 ile gelen @inject direktifi yoluyla da gerçekleştirebiliriz. İşte bu yazımızdaki amacımız aynı senaryoyu devam ettirerek söz konusu tekniklerin nasıl uygulanabileceğini öğrenmek. Yazıdaki kod parçaları [şuradaki github hesabımda](https://github.com/buraksenyurt/hands-on-aspnetcore-di) yer alıyor. Initial, constructor-injection, method-injection, property-injection ve view-injection şeklinde farklı branch'ler içeriyor. Bu branch'lerde ilgili tekniklerin proje üstünden ayrı ayrı uygulanış şekillerini takip edebilirsiniz. Yazı boyunca ise odak noktamızı kaybetmemek adına sadece gerekli kod parçalarını kullanacağım. Paralel hareket etmeniz gerekebilir. Hazırsanız başlayalım;
+Hatırlayacağınız üzere [bir önceki yazımızda](/2021/04/25/aspdotnet-core-a-nasil-merhaba-deriz/) Asp.Net 5 tarafında nasıl Hello World diyebileceğimizi incelemeye çalışmıştık (Henüz okumadıysanız bir göz atmanızda yarar var) O çalışmada ana odak noktamız dahili Dependency Injection mekanizmasının nasıl kullanıldığını görmekti. Kobay senaryomuzdaki en önemli noktalardan birisi de GameController sınıfı içerisinde IGameRepository yardımıyla low-level bir bileşenin kullanımıydı. Burada Constructor Injection tekniğinden yararlandığımızı ifade etmiştik. Bu teknik dışında kullanabileceğimiz versiyonlar da var. Bağımlı nesne çözümlemesini metot üzerinden, Property yardımıyla ve Asp.Net MVC 6 ile gelen @inject direktifi yoluyla da gerçekleştirebiliriz. İşte bu yazımızdaki amacımız aynı senaryoyu devam ettirerek söz konusu tekniklerin nasıl uygulanabileceğini öğrenmek. Yazıdaki kod parçaları [şuradaki github hesabımda](https://github.com/buraksenyurt/hands-on-aspnetcore-di) yer alıyor. Initial, constructor-injection, method-injection, property-injection ve view-injection şeklinde farklı branch'ler içeriyor. Bu branch'lerde ilgili tekniklerin proje üstünden ayrı ayrı uygulanış şekillerini takip edebilirsiniz. Yazı boyunca ise odak noktamızı kaybetmemek adına sadece gerekli kod parçalarını kullanacağım. Paralel hareket etmeniz gerekebilir. Hazırsanız başlayalım;
 
 ## Method Injection
 

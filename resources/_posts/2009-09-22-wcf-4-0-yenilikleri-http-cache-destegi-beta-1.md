@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF 4.0 Yenilikleri - HTTP Cache Desteği [Beta 1]"
 date: 2009-09-22 13:07:00 +0300
-description: "En basit ve popülerlerinden birisi olan Output Caching,REST tabanlı WCF servisleri içinde kullanılabilmektedir. WCF' in önceki sürümünde WebOperationContext tipinden yararlanılarak ekstra kod eforu ile ele alınabilen Output Cache özelliği, 4.0 sürümünde tamamen dekleratif olarak değerlendirilebilmektedir."
 categories:
   - wcf-4-0-beta-1
 tags:
@@ -19,12 +18,9 @@ tags:
   - performance
   - caching
 ---
-# WCF 4.0 Yenilikleri - HTTP Cache Desteği [Beta 1]
-![blg77_Performance.jpg](/assets/images/2009/blg77_Performance.jpg)
-
-Merhaba arkadaşlar,
-
 Performans pek çok uygulama geliştirme ortamında önem arz eden konuların başında gelmektedir. Özellikle Web tabanlı uygulamalarda performans arttırmak adına göz önüne alınan kriterlerden biriside farklı tipteki önbellekleme (Caching) işlemleridir.
+
+![blg77_Performance.jpg](/assets/images/2009/blg77_Performance.jpg)
 
 En basit ve popülerlerinden birisi olan Output Caching,REST tabanlı WCF servisleri içinde kullanılabilmektedir. WCF'in önceki sürümünde WebOperationContext tipinden yararlanılarak ekstra kod eforu ile ele alınabilen Output Cache özelliği, 4.0 sürümünde tamamen dekleratif olarak değerlendirilebilmektedir. Aslında bu yenilik bilindiği üzere WCF Rest Starter Kit Preview 2 ile birlikte.Net Framework 3.5 üzerinde de uygulanabilmektedir. Output Cache özelliği performans için önemli bir kriter olduğundan, WCF 4.0 versiyonunda doğrudan ele alınmaktadır.
 

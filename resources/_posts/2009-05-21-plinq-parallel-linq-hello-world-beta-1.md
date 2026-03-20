@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "PLINQ (Parallel LINQ) - Hello World [Beta 1]"
 date: 2009-05-21 19:11:00 +0300
-description: "Bildiğiniz gibi son yazımı deniz kenarında bir kafede tatildeyken yazmıştım Wink Ama tatil bitti malesef ve tekrardan Morpheus' un sözleri kulaklarımda çınladı \"Wellcome to the real world\". Cry Yinede 1 haftalığınada olsa tatil yapabildiğime şükrediyorum. Gerçek dünyaya döndükten sonra tabiki bir süre adaptasyon sorunları ile karşılaşıyor insan doğal olaraktan. Bu adaptasyon sorunları içerisinde boğuşurken, neleri araştırabilirim diye düşünürken buluverdim kendimi."
 categories:
   - linq
   - plinq
@@ -19,18 +18,7 @@ tags:
   - generics
   - visual-studio
 ---
-# PLINQ (Parallel LINQ) - Hello World [Beta 1]
-Merhaba Arkadaşlar,
-
-Bildiğiniz gibi son yazımı deniz kenarında bir kafede tatildeyken yazmıştım
-
-![Wink](/assets/images/2009/smiley-wink.gif)
-
-Ama tatil bitti malesef ve tekrardan Morpheus'un sözleri kulaklarımda çınladı "Wellcome to the real world".
-
-![Cry](/assets/images/2009/smiley-cry.gif)
-
-Yinede 1 haftalığınada olsa tatil yapabildiğime şükrediyorum. Gerçek dünyaya döndükten sonra tabiki bir süre adaptasyon sorunları ile karşılaşıyor insan doğal olaraktan. Bu adaptasyon sorunları içerisinde boğuşurken, neleri araştırabilirim diye düşünürken buluverdim kendimi.
+Bildiğiniz gibi son yazımı deniz kenarında bir kafede tatildeyken yazmıştım. Ama tatil bitti malesef ve tekrardan Morpheus'un sözleri kulaklarımda çınladı "Wellcome to the real world". Yinede 1 haftalığınada olsa tatil yapabildiğime şükrediyorum. Gerçek dünyaya döndükten sonra tabiki bir süre adaptasyon sorunları ile karşılaşıyor insan doğal olaraktan. Bu adaptasyon sorunları içerisinde boğuşurken, neleri araştırabilirim diye düşünürken buluverdim kendimi.
 
 Herşeyden önce.Net Framework 4.0 ve [Visual Studio 2010 Beta 1](http://www.microsoft.com/downloads/details.aspx?FamilyID=255fc5f1-15af-4fe7-be4d-263a2621144b&displaylang=en) sürümlerinin yayınlandığını hepimiz biliyoruz. Dolayısıyla odaklanılacak konu zaten ap açık ortadaydı..Net Framework 4.0 içerisinde entegre olarak gelen bir yenilik hemen ilgi odağım oldu. PLINQ (Parallel Language INtegrated Query). Aslında PLINQ yeni çıkmış bir eklenti değil. Zaten uzun süredir.Net Framework 3.5 ve Visual Studio 2008 üzerinde CTP sürümü ile testlerimizi yapabiliyorduk. Ne varki,.Net Framework 4.0 göz önüne alındığında PLINQ ile ilişkili tiplerin System.Core.dll assembly'ının 4.0 versiyonu içerisine doğrudan ilave edildiğini görüyoruz. Aşağıdaki Visual Studio 2010 Object Browser'dan alınan görüntüde bu durum açık bir şekilde gözlemlenebiliyor.
 

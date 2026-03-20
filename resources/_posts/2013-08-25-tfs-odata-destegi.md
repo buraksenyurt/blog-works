@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "TFS OData Desteği"
 date: 2013-08-25 10:35:00 +0300
-description: "Özellikle ALM(Application Lifecycle Management) gibi geniş konuların uygulandığı ürünlerin değerlendirildiği firmalar ve kalabalık ekipleri düşünüldüğünde, bu heterojenlik kendini iyiden iyiye hissettir. Dolayısıyla ürünün geliştiriciler açısından ne kadar ve nasıl genişletilebileceği önem kazanır..."
 categories:
   - team-foundation-server
 tags:
@@ -13,14 +12,9 @@ tags:
   - javascript
   - visual-studio
 ---
-# TFS OData Desteği
-[![almworld](/assets/images/2013/almworld_thumb.jpg)](/assets/images/2013/almworld.jpg)[Orjinal Yazım Tarihi 3/20/2013]
+Çoğu zaman geliştirilen yazılım ürünleri ile farklı profilden insanları ortak bir payda da buluşturmayı hedefleriz. Farklı özelliklere sahip insanları, ürüne nasıl katabileceğimizi keşfetmeye çalışırız. Tabi geliştirilen ürünün hedef kitlesi de burada önemli bir rol oynar. Bazı ürünlerin arayüzlerinin son derece basit tasarlanması yeterli iken bazılarında ise tam tersi bir durum söz konusudur.
 
-Merhaba Arkadaşlar,
-
-Çoğu zaman geliştirilen yazılım ürünleri ile farklı profilden insanları ortak bir payda da buluşturmayı hedefleriz. Farklı özelliklere sahip insanları, ürüne nasıl katabileceğimizi keşfetmeye çalışırız. Tabi geliştirilen ürünün hedef kitlesi de burada önemli bir rol oynar.
-
-Bazı ürünlerin arayüzlerinin son derece basit tasarlanması yeterli iken bazılarında ise tam tersi bir durum söz konusudur.
+[![almworld](/assets/images/2013/almworld_thumb.jpg)](/assets/images/2013/almworld.jpg)
 
 Hangisi olursa olsun kullanıcı bir insan olarak düşünüldüğünde çok da fazla zorlanmamalı veya kolayca adapte olabilmelidir. Ne kadar kolay kullanılırsa, hedef kitle içerisinde o kadar fazla sayıda farklı profile de ulaşılabilinir. Ancak bazı hallerde ürünün hedef kitlesi o kadar dağınıktır ki, hepsini çekebilmek ya da bir başka deyişle kazanabilmek için yapılan genişletmeler yeterli gelmeyebilir. Böyle bir durumda çevreye şu mesajı vermeniz gerekebilir;
 

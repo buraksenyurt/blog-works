@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Distributed Transactions"
 date: 2003-11-19 12:00:00 +0300
-description: "Bildiğiniz gibi bir önceki makalemizde Transaction kavramından bahsetmiş, ancak birden fazla veritabanı için geçerli olucak Transaction işlemlerinin Dağıtık Transaction’lar olarak adlandırıldığından sözetmiştik."
 categories:
   - ado-net
 tags:
@@ -13,9 +12,6 @@ tags:
   - transactions
   - visual-studio
 ---
-# Distributed Transactions
-Değerli Okurlarım, Merhabalar.
-
 Bildiğiniz gibi bir önceki makalemizde Transaction kavramından bahsetmiş, ancak birden fazla veritabanı için geçerli olucak Transaction işlemlerinin Dağıtık Transaction’lar olarak adlandırıldığından sözetmiştik. Bu makalemizde Dağıtık Transaction’ları inceleyecek ve her zaman olduğu gibi konuyu açıklayıcı basit bir örnek geliştireceğiz.
 
 İş uygulamalarında, Online Transaction Processing (OLTP) dediğimiz olay çok sık kullanılmaktadır. Buna verilecek en güzel örnek bankaların ATM uygulamalarıdır. Veriler eş zamanlı olarak aynı anda bir bütün halinde işlenmekte ve güncellenmektedir. Bu tarz projelerin uygulanmasında OLTP tekniği yaygın bir biçimde kullanılmaktadır. Bu tekniğin uygulanabilmesi Dağıtık Transaction’ların kullanılmasını gerektirir..NET ile Dağıtık Transaction’lar yazmak için Component Services’ı kullanmamız gerekmektedir. Özellikle,çok katlı mimari dediğimiz iş uygulamalarında Dağıtık Transaction’ları çok sık kullanırız. Burada Dağıtık Transaction’lar başka componentler tarafından üstlenilir ve Sunu Katmanı ile Veritabanları arasındaki işlemlerin gerçekleştirilmesinde rol oynarlar. Bu component’lerin bulunduğu katman İş Katmanı olarakda adlandırılmaktadır.

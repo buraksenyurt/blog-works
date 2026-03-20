@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Merhaba Bing API 2.0"
 date: 2009-08-25 11:15:00 +0300
-description: "Bir süredir WCF 4.0 ile birlikte gelen yenilikleri sizlere aktarmaya çalışıyorum. Son olarak Routing Service ile ilişkili bir giriş yazımız olmuştu. Bu konu ile ilişkili örnek en kısa sürede sizlerle olacak. Ne varki konu biraz zorlu. Undecided Bu yüzden bende yüksek lisans eğitimi aldığım yıllarda çok sevgili hocam Halil Seyidoğlu' nun bir açıklamasını uygulamaya karar verdim. Kendisi bize \"Bilimsel Araştırma ve Yazma\" dersinde şöyle seslenmişt; \"Bir tez konusunu araştırırken çok zorlu yollardan geçersiniz. Tezin bir noktasında tıkandınız mı? O zaman ara verin...Tatile çıkın...Bir süreliğine uzaklaşın...\""
 categories:
   - bing
 tags:
@@ -21,12 +20,9 @@ tags:
   - delegates
   - testing
 ---
-# Merhaba Bing API 2.0
-![blg72_Giris.gif](/assets/images/2009/blg72_Giris.gif)
-
-Merhaba Arkadaşlar,
-
 Bir süredir WCF 4.0 ile birlikte gelen yenilikleri sizlere aktarmaya çalışıyorum. Son olarak Routing Service ile ilişkili bir giriş yazımız olmuştu. Bu konu ile ilişkili örnek en kısa sürede sizlerle olacak. Ne varki konu biraz zorlu.
+
+![blg72_Giris.gif](/assets/images/2009/blg72_Giris.gif)
 
 ![Undecided](/assets/images/2009/smiley-undecided.gif)
 

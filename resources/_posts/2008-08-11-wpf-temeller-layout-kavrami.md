@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WPF Temeller : Layout Kavramı"
 date: 2008-08-11 03:00:00 +0300
-description: "Uzun süredir ara verdiğimiz makalelerimize kaldığımız yerden devam ediyoruz. Bu makalemizde çok basit seviyede Windows Presentation Foundation uygulamalarının temellerinden birisi olan Layout kavramını inceleme çalışıyor olacağız."
 categories:
   - wpf
 tags:
@@ -12,9 +11,6 @@ tags:
   - http
   - visual-studio
 ---
-# WPF Temeller : Layout Kavramı
-Değerli Okurlarım Merhabalar,
-
 Uzun süredir ara verdiğimiz makalelerimize kaldığımız yerden devam ediyoruz. Bu makalemizde çok basit seviyede Windows Presentation Foundation uygulamalarının temellerinden birisi olan Layout kavramını inceleme çalışıyor olacağız. WPF uygulamalarında kullanılan ekranlara ait element veya kontrollerin mutlaka bir Layout bileşeni içerisinde konuşlandırılmış olmaları gerekmektedir. Layout bileşenleri temelde birer Panel olarak düşünülmelidir.
 
 Bu açıdan bakıldığında klasik Windows programcılığında yer alan (diğer kontrolleri üzerinden taşıyan) Container bileşenlerinede benzetilebilirler. WPF uygulamalarında kullanılabilecek olan 6 adet temel Layout bileşeni bulunmaktadır. Herbirinin kendine özgü şekilde elementleri gösterme ve yerleştirme seçenekleri vardır. Bu bileşenlerin en önemli ortak özelliği ise Panel isimli abstract sınıftan (Class) türemiş (Inherit) olmalarıdır. Aşağıdaki sınıf şemasında (Class Diagram) söz konusu bileşenler ve Panel ile aralarında türetimsel ilişki açık bir şekilde görülebilmektedir.

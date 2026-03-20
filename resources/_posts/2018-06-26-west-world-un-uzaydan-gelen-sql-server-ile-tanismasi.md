@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "West-World'ün Uzaydan Gelen SQL Server ile Tanışması"
 date: 2018-06-26 03:00:00 +0300
-description: "Bizim kuşağın yazılımcıları uzun yıllar boyunca çeşitli çatışmalar içerisinde yer aldılar. Java'mı, .Net mi, SQL mi Oracle'mı, SOA'mı Microservices'mı....Bu ve benzeri tartışmalar uzun yıllar sürecek mi diye düşünürken birden şartlar değişmeye başladı. Mesela Microsoft açık kaynak dünyası ile el sıkıştı, ortaya .Net Core'u koydu. Hatta Java Developers Day'a altın ortak bile oluverdi. Ne alıp veremdikleri vardı ki bu ayrı dünyalarda yaşadıklarını zanneden standart koyucuların..."
 categories:
   - dotnet-core
 tags:
@@ -24,12 +23,9 @@ tags:
   - microservices
   - visual-studio
 ---
-# West-World'ün Uzaydan Gelen SQL Server ile Tanışması
-![sqlonlinux_0.jpg](/assets/images/2018/sqlonlinux_0.jpg)
-
-Merhaba Arkadaşlar,
-
 Renkler ve zevkler tartışılmaz. Hatta dünya öylesine renkli bir yerdir ki insanlar bazen neyi seçeceklerine karar veremeyebilir. Tabii ki işin içerisinde yazılım olunca bu renkler siyah ve beyaz gibi sadece iki seçeneğe de indirgenebilmişdir.
+
+![sqlonlinux_0.jpg](/assets/images/2018/sqlonlinux_0.jpg)
 
 Hatta bu sadece yazılım için değil donanım için de söz konusu olmuştur. Hep bir kıyaslama vardır. PC'mi Mac'mi, RISC tabanlı mı CISC olanı mı, Intel'mi AMD'mi... Diğer yandan hepinizin bildiği üzere ben yaşlanmakta olan bir yazılımcıyım. Eski kuşak bir programcı olarak (bir başka deyişle 70li yılların ürünü bir birey olarak) benim neslin uzun yıllar içinde yer aldığı çatışmaların canlı şahitlerindenim. Hala süregelir ya bu sonu gelmez tartışmalar. Sizde içinde yer almışsınızdır mutlaka. Java'mı,.Net mi, SQL'mi Oracle'mı, OOP'mi Functional'mı, SOA'mı Microservices'mı vb diye sürer gider.
 

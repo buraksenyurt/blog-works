@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "DataRelation Sınıfı ve Çoğa-Çok (Many-to-many) İlişkiler"
 date: 2004-04-01 09:00:00 +0300
-description: "Bugünkü makalemizde, DataRelation sınıfı yardımıyla, veritabanlarındaki many-to-many(Çoğa-çok) ilişkilerin, bağlantısız katmanda nasıl kullanılabildiğini incelemeye çalışacağız. İlişkisel veri tabanı modelinde, tablolar arası ilişkilerde çoğunlukla bire-çok(one-to-many) ilişkilere rastlarız. Ancak azda olsa, çoğa-çok ilişkilerin kullanıldığı durumlarda söz konusudur."
 categories:
   - ado-net
 tags:
@@ -12,9 +11,6 @@ tags:
   - dataset
   - datatable
 ---
-# DataRelation Sınıfı ve Çoğa-Çok (Many-to-many) İlişkiler
-Değerli Okurlarım, Merhabalar.
-
 Bugünkü makalemizde, DataRelation sınıfı yardımıyla, veritabanlarındaki many-to-many (Çoğa-çok) ilişkilerin, bağlantısız katmanda nasıl kullanılabildiğini incelemeye çalışacağız. İlişkisel veri tabanı modelinde, tablolar arası ilişkilerde çoğunlukla bire-çok (one-to-many) ilişkilere rastlarız. Ancak azda olsa, çoğa-çok ilişkilerin kullanıldığı durumlarda söz konusudur. Bu ilişkiye örnek olarak çoğunlukla, Sql sunucusunda yer alan Pubs veritabanındaki Authors ve Titles tabloları gösterilir. Bu iki tablo arasındaki ilişki şöyledir; bir yazara ait birden fazla kitap titles tablosunda yer alabilir. Aynı şekilde, bir kitap birden fazla yazar tarafından kaleme alınmış olabilir. Bu bahsedilen iki ilişkide ayrı ayrı bire-çok ilişkilerdir. Yani bir yazarın birden fazla kitabı yazmış olması bire çok ilişki olarak düşünülebilirken, bir kitabın birden fazla yazara ait olmasıda bire-çok ilişki olarak gözlemlenebilir.
 
 Ancak, bu iki tablo arasında ilişkiyi bu şekilde yansıtmamız mümkün değildir. Nitekim, bire-çok ilişkilerde, çok ilişkiyi temsil eden tablodaki yabancı anahtar (foreign key), ebeveyn (parent) tabloda unique özellikte bir alana ihtiyaç duyar. Dolayısıyla iki yönlü ilişkinin olduğu authors ve titles gibi tablolar için bu tarz bir ilişkiyi oluşturmak biraz daha farklıdır. Bunun için üçüncü bir tablo kullanılır ve bu tabloda, her iki tablonun primary key alanlarına yer verilir. Aşağıdaki şekil, pubs veritabanında yer alan authors ve titles tabloları için çoğa-çok ilişkiyi sağlayacak bu tarz bir tablonun yapısını ve aralarındaki ilişkiyi göstermektedir.

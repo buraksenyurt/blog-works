@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Simetrik Şifreleme(Symmetric Cryptography) Hızları"
 date: 2014-09-28 04:00:00 +0300
-description: "Şifreleme teknikleri sizlerin de bildiği üzere karmaşık matematiksel algoritmaları baz alacak şekilde tesis edilmeye çalışılırlar. Algoritma ne kadar karmaşık veya basit olursa olsun önemli olan çıkan sonuçların zor kırılacak cinsten olmalarıdır. Bu noktada kullanılan anahtarların ve bit değerlerinin de büyük önemi vardır. E tabi doğal olarak zaman içerisinde pek çok şifreleme algoritması ortaya çıkmıştır. Bunları temel de simetrik ve asimetrik olanlar gibi iki ana kategoriye ayırabiliriz. Ama diğer yandan hash algoritmaları veya veri bütünlüğünü korumaya yönelik algoritmalar da mevcuttur."
 categories:
   - dotnet-framework-4-5
 tags:
@@ -15,28 +14,9 @@ tags:
   - visual-studio
   - dependency-management
 ---
-# Simetrik Şifreleme(Symmetric Cryptography) Hızları
-[![62374](/assets/images/2014/62374_thumb.gif)](/assets/images/2014/62374.gif) Merhaba Arkadaşlar,
+Crptograpy… Hayır hayır şöyleydi.Crpytograyph… Yok yok böyle değil. Belki de… Cyrptograhy… Offf! Bir türlü beceremiyorum şunu yazmayı. Hah sanırım buydu. Cryptography. Nihayet! Şifreleme teknikleri sizlerin de bildiği üzere karmaşık matematiksel algoritmaları baz alacak şekilde tesis edilmeye çalışılırlar. Algoritma ne kadar karmaşık veya basit olursa olsun önemli olan çıkan sonuçların zor kırılacak cinsten olmalarıdır. Bu noktada kullanılan anahtarların ve bit değerlerinin de büyük önemi vardır. E tabi doğal olarak zaman içerisinde pek çok şifreleme algoritması ortaya çıkmıştır. Bunları temel de simetrik ve asimetrik olanlar gibi iki ana kategoriye ayırabiliriz. Ama diğer yandan hash algoritmaları veya veri bütünlüğünü korumaya yönelik algoritmalar da mevcuttur.(Ve belki de bizim bilmediğimiz ama üst düzey veri güvenliğinde kullanılan çok gizli olanları)
 
-Crptograpy…
-
-Hayır hayır şöyleydi.
-
-Crpytograyph…
-
-Yok yok böyle değil. Belki de…
-
-Cyrptograhy…
-
-Offf! Bir türlü beceremiyorum şunu yazmayı. Hah sanırım buydu.
-
-Cryptography.
-
-Nihayet!
-
-![Smile](/assets/images/2014/wlEmoticon-smile_63.png)
-
-Şifreleme teknikleri sizlerin de bildiği üzere karmaşık matematiksel algoritmaları baz alacak şekilde tesis edilmeye çalışılırlar. Algoritma ne kadar karmaşık veya basit olursa olsun önemli olan çıkan sonuçların zor kırılacak cinsten olmalarıdır. Bu noktada kullanılan anahtarların ve bit değerlerinin de büyük önemi vardır. E tabi doğal olarak zaman içerisinde pek çok şifreleme algoritması ortaya çıkmıştır. Bunları temel de simetrik ve asimetrik olanlar gibi iki ana kategoriye ayırabiliriz. Ama diğer yandan hash algoritmaları veya veri bütünlüğünü korumaya yönelik algoritmalar da mevcuttur.(Ve belki de bizim bilmediğimiz ama üst düzey veri güvenliğinde kullanılan çok gizli olanları ![Sarcastic smile](/assets/images/2014/wlEmoticon-sarcasticsmile_10.png))
+[![62374](/assets/images/2014/62374_thumb.gif)](/assets/images/2014/62374.gif)
 
 .Net Framework gibi pek çok programlama geliştirme ortamı, bu tip şifreleme algoritmalarının kod içerisinde kolayca ele alınmasını sağlayacak cinsten tipler/sınıflar içermektedirler. Genellikle hangisinin kullanılacağını tercih ederken simetrik veya asimetrik şifreleme yapılıp yapılmayacağına ya da ne kadar zor kırılacağına bakılır (AES’ in bu konuda bazı yarışmaları var. İnceleyin derim). Bunlardan herhangibiri seçilirse bu durumda farklı faktörleri de göz önüna almamız gerekebilir. Örneğin algoritmanın şifreleme ve çözümleme işlemlerini ne kadar sürede yaptığı da önemli bir kriter olabilir.
 

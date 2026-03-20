@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Rust Dilinde Warp, Tokio Küfelerini Kullanarak Asenkron Web Api Geliştirmek"
 date: 2020-11-13 08:57:00 +0300
-description: "Geçtiğimiz birkaç ay içerisinde Rust dilini öğrenmeye çalıştım. Zevkli olduğu kadar bir o kadar da zorlayıcı bir süreçti. Öğrendin mi derseniz, \"Hayır!\" derim :D İşlediğim konuları tekrar etmem gerekiyor. En çok sahiplenme(ownership) ve borçlanma(borrowing) konularında beynimi yaktım diyebilirim(Ah birde trait ve smart pointer konuları var!) Yinede Rust ile vakit geçirdikçe ortaya karışık bir şeyler çıkmaya da başladı. Dilin, Message Passing ve Mutex konularını öğrenmeye çalışırken karşıma Warp ve Tokio küfeleri(Crates) çıktı. Derken olay asenkron çalışan bir Web API geliştirmeye kadar gitti. Her ne kadar Warp denince aklımıza Star Trek gelse de mevzu bambaşka..."
 categories:
   - rust
 tags:
@@ -25,10 +24,9 @@ tags:
   - ownership
   - arc
 ---
-# Rust Dilinde Warp, Tokio Küfelerini Kullanarak Asenkron Web Api Geliştirmek
-![warpspeed.png](/assets/images/2020/warpspeed.png)
-
 Geçtiğimiz birkaç ay içerisinde Rust dilini öğrenmeye çalıştım. Zevkli olduğu kadar bir o kadar da zorlayıcı bir süreçti. Öğrendin mi derseniz, "Hayır!" derim:D İşlediğim konuları tekrar etmem gerekiyor. En çok sahiplenme (ownership) ve borçlanma (borrowing) konularında beynimi yaktım diyebilirim (Ah birde trait ve smart pointer konuları var!) Yinede Rust ile vakit geçirdikçe ortaya karışık bir şeyler çıkmaya da başladı. Dilin, Message Passing ve Mutex konularını öğrenmeye çalışırken karşıma Warp ve Tokio küfeleri (Crates) çıktı. Derken olay asenkron çalışan bir Web API geliştirmeye kadar gitti. Her ne kadar Warp denince aklımıza Star Trek gelse de mevzu bambaşka.
+
+![warpspeed.png](/assets/images/2020/warpspeed.png)
 
 Warp, Rust için geliştirilmiş bir Web Server Framework (Rust dünyasında Tide, Rocket, actix-web gibi ürünler de mevcut) Eğer geliştireceğimiz enstrüman bir Web API ise öne çıkan alternatifler arasında yer alıyor. Tokio ise Rust dilinde asenkron çalışmayı kolaylaştıran fonksiyonellikler sunan bir küfe (Crate). Şu sıralarda okuduğum yazılardan öğrendiğim kadarıyla ciddi bir rakibi de var; async-std isimli küfe. Esasında uygulamaya söz konusu asenkron kabiliyetleri sıfırdan kazandırmakta mümkün ancak üretim bandına gidecek projelerde çok da tercih edilen bir yol değil. Nitekim endüstüriyel anlamda kendini kanıtlamış bir çatı pekala işimizi kolaylaştırır. Öyleyse gelin hiç vakit kaybetmeden çalışmamıza başlayalım. Bakalım küfeden neler çıkacak?
 

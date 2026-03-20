@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF - Client Callback (İstemci Taraflı Geri Bildirim)"
 date: 2007-08-23 12:00:00 +0300
-description: "Servis yönelimi mimari (Service Oriented Architecture) üzerine geliştirilen sistemler istemci/sunucu(client/server) tabanlı bir iletişimi olanaklı kılarlar. Bu sistemlerde süreçler çoğunlukla istemciden sunucuya doğru yapılan operasyon talepleri(Request) ve servis tarafından istemciye geri dönen cevaplardan(Response) ibarettir...."
 categories:
   - wcf
 tags:
@@ -14,9 +13,6 @@ tags:
   - delegates
   - generics
 ---
-# WCF - Client Callback (İstemci Taraflı Geri Bildirim)
-Değerli Okurlarım Merhabalar,
-
 Servis yönelimi mimari (Service Oriented Architecture) üzerine geliştirilen sistemler istemci/sunucu (client/server) tabanlı bir iletişimi olanaklı kılarlar. Bu sistemlerde süreçler çoğunlukla istemciden sunucuya doğru yapılan operasyon talepleri (Request) ve servis tarafından istemciye geri dönen cevaplardan (Response) ibarettir. Oysaki bazı SOA vakkalarında rollerin tam tersine çevrilmesi gerekebilir. Bir başka deyişle servislerin yeri geldiğinde bir istemci gibi hareket etmesi istenebilir. Söz gelimi bir stok sisteminde yer alan bir servis parçasında, istemcilerin stok üzerinde servis yardımıyla yapacağı hareketleri göz önüne alalım.
 
 Bu stok hareketleri istemciden gelecek olan operasyon çağrıları sonucu servis tarafında ele alınıyor olsunlar. Buna göre, servise bağlı diğer istemcilerinde durumdan haberdar olması istenebilir. Bu bir uyarı sistemi olarakda göz önüne alınabilir. Böyle bir sistemde öncelikli olarak servis tarafındaki uygulamanın istemci tarafında yer alan belirli operasyonları çağırabiliyor olması gerekmektedir. Diğer taraftan, servis uygulaması kendisine bağlı istemcilerin hepsinde bir yayınlama yapmak istiyorsa, olay (event) yönelimli bir model geliştirilmesi söz konusu olmalıdır. Bu makalemizde Windows Communication Foundation sisteminde istemci taraflı geri bildirimlerin (Client Callback) nasıl yapılabileceğini çok basit olarak incelemeye çalışacağız.

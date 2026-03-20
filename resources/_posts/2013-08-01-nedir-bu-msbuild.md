@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Nedir Bu MSBuild?"
 date: 2013-08-01 07:47:00 +0300
-description: "Microsoft Build Engine aslında başlı başına bir platformdur. Kısaca MSBuild olarak anılmaktadır ve bir uygulamanın inşa edilmesi noktasında devreye giren XML(eXtensible Markup Language) tabanlı bir Script bütününü esas alır. Kısacası uygulamanın inşa edilmesi sırasındaki aşamalar XML tabanlı bir akış olarak ifade edilebilmektedir. MSBuild platformunun en önemli özelliği ise, inşa sürecinde Visual Studio gibi bir araca ihtiyaç duymuyor oluşudur..."
 categories:
   - dotnet-framework-4-0
   - dotnet-framework-4-5
@@ -17,12 +16,9 @@ tags:
   - http
   - performance
 ---
-# Nedir Bu MSBuild?
-[![msbuild_9](/assets/images/2013/msbuild_9_thumb.jpg)](/assets/images/2013/msbuild_9.jpg)[Orjinal Yazım Tarihi – 25/02/2013]
-
-Merhaba Arkadaşlar,
-
 Yıllar öncesinde bir kaç seneliğine de olsa saygın bir eğitim kurumunda eğitmen olarak görev alma şansını yakalamıştım. Özellikle C#’ ın öğretilmeye çalışıldığı başlangıç niteliğindeki seanslarda dilin temel özelliklerini anlatırken, tüm dış çevre ile olan bağlantıyı kesip, sadece anahtar kelime (keyword), ifade ve materyale odaklanmaya çalışırdık. Bu sebepten genellikle ilk örneklerimiz ve Hello World uygulamamız, Notepad gibi bir program ve komut satırındaki csc (C# Compiler) ile inşa edilirdi.
+
+[![msbuild_9](/assets/images/2013/msbuild_9_thumb.jpg)](/assets/images/2013/msbuild_9.jpg)
 
 O zamanlar bu bizim için yeterli görünüyordu ama tabi.Net Framework 2.0 ile birlikte hayatımıza yeni bir inşa süreci de girdi. Aslında bu günkü konumuzda da, Notepad (tam olarak Notepad 2) ve komut satırı aracını kullanarak ilerlemeye çalışıyor olacağız. Amacımız MSBuild platformunu çok kısaca tanımaya ve anlamaya çalışmak.
 

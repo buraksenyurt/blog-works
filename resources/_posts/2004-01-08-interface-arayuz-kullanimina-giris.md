@@ -1,16 +1,12 @@
-﻿---
+---
 layout: post
 title: "Interface (Arayüz) Kullanımına Giriş"
 date: 2004-01-08 10:00:00 +0300
-description: "Bugünkü makalemizde, nesneye dayalı programlamanın önemli kavramlarından birisi olan arayüzleri incelemeye çalışacağız. Öncelikle, arayüz'ün tanımını yapalım. Bir arayüz, başka sınıflar için bir rehberdir. Bu kısa tanımın arkasında, deryalar gibi bir kavram denizi olduğunu söylemekte yarar buluyorum.. Arayüzün ne olduğunu tam olarak anlayabilmek için belkide asıl kullanım amacına bakmamız gerekmektedir."
 categories:
   - csharp
 tags:
   - csharp
 ---
-# Interface (Arayüz) Kullanımına Giriş
-Değerli Okurlarım, Merhabalar.
-
 Bugünkü makalemizde, nesneye dayalı programlamanın önemli kavramlarından birisi olan arayüzleri incelemeye çalışacağız. Öncelikle, arayüz'ün tanımını yapalım. Bir arayüz, başka sınıflar için bir rehberdir. Bu kısa tanımın arkasında, deryalar gibi bir kavram denizi olduğunu söylemekte yarar buluyorum.. Arayüzün ne olduğunu tam olarak anlayabilmek için belkide asıl kullanım amacına bakmamız gerekmektedir.
 
 C++ programlama dilinde, sınıflar arasında çok kalıtımlılık söz konusu idi. Yani bir sınıf, birden fazla sınıftan türetilebiliyordu kalıtımsal olarak. Ancak bu teknik bir süre sonra kodların dahada karmaşıklaşmasına ve anlaşılabilirliğin azalmasına neden oluyordu. Bu sebeten ötürü değerli Microsoft mimarları, C# dilinde, bir sınıfın sadece tek bir sınıfı kalıtımsal olarak alabileceği kısıtlmasını getirdiler. Çok kalıtımlık görevini ise anlaşılması daha kolay arayüzlere bıraktılar. İşte arayüzleri kullanmamızın en büyük nedenlerinden birisi budur.

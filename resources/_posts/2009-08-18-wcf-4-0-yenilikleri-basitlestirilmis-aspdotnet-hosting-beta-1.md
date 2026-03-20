@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF 4.0 Yenilikleri - Basitleştirilmiş Asp.Net Hosting [Beta 1]"
 date: 2009-08-18 03:10:00 +0300
-description: "WCF 4.0 ile birlikte gelen yenilikler bitmek bilmiyor. Smile Aslında irili ufaklı bu değişikliklerin ilk bölümünde daha çok basitleştirilmiş konfigurasyon(Simplified Configuration) özellikleri üzerinde durmaya çalışıyoruz."
 categories:
   - wcf-4-0-beta-1
 tags:
@@ -18,9 +17,6 @@ tags:
   - serialization
   - visual-studio
 ---
-# WCF 4.0 Yenilikleri - Basitleştirilmiş Asp.Net Hosting [Beta 1]
-Merhaba Arkadaşlar,
-
 WCF 4.0 ile birlikte gelen yenilikler bitmek bilmiyor.
 
 ![Smile](/assets/images/2009/smiley-smile.gif)

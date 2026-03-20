@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: ".Net 4.0 Öncesi ThreadPool Kullanımı"
 date: 2009-12-23 03:15:00 +0300
-description: "ThreadPool; arka planda belli bir işi yapmak üzere planlanmış görevlerin Thread' lere bölünmesi ve bu Thread' lerin bir koleksiyon şeklinde tutularak asenkron işleyişlerinin yönetilmesi amacıyla kullanılan sarmalayıcı(Wrapper) bir tip olarak düşünülebilir. Genellikle sunucu tabanlı uygulamalarda değerlendirildiği gözlemlenmektedir..."
 categories:
   - csharp
 tags:
@@ -14,12 +13,9 @@ tags:
   - visual-studio
   - dependency-management
 ---
-# .Net 4.0 Öncesi ThreadPool Kullanımı
-![blg122_Giris.jpg](/assets/images/2009/blg122_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 İlk okulda eminimki pek çok arkadaşımız havuz problemlerinden müzdarip olmuştur. Genellikle bu havuzlarda ikiden fazla musluk olması neredeyse garantidir ve genellikle bu musluklardan bazıları havuzu belirli sürelerde doldururken, bazılarıda belirli sürelerde boşaltır. Hatta zamanla bu muslukların ne kadar hızla su doldurduğu veya boşalttığıda işin içerisine girer ve aslında sadece yüzmek için kullanabileceğimiz güzelim havuz koca bir problem haline dönüşür.
+
+![blg122_Giris.jpg](/assets/images/2009/blg122_Giris.jpg)
 
 Ben açıkçası bu problemleri çözmekte hep yetersiz kalmışımdır. Hatta çoğunlukla atmasyon cevaplar ürettiğimi itiraf edebilirim. Nitekim havuz deyince aklıma genellikle yandaki resimde görülen manzara gelir. Peki havuz problemlerinden kurtulabildik mi? Ihhh
 

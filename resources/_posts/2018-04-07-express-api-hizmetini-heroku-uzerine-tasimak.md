@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Express API Hizmetini Heroku Üzerine Taşımak"
 date: 2018-04-07 19:00:00 +0300
-description: "Bu yazımızda express modülünü kullanarak node.js'de geliştirdiğimiz çok basit bir REST servisinin, Heroku üzerine nasıl taşınabileceğini incelemeye çalışıyoruz. Örneğimizde Heroku CLI'dan yararlanıyor ve dağıtım operasyonunu Ubuntu tabanlı bir işletim sistemi üzerinden yapıyoruz."
 categories:
   - nodejs
 tags:
@@ -22,12 +21,9 @@ tags:
   - github
   - dependency-management
 ---
-# Express API Hizmetini Heroku Üzerine Taşımak
-![herokus_intro.gif](/assets/images/2018/herokus_intro.gif)
-
-Merhaba Arkadaşlar,
-
 Geçenlerde sevgili çalışma arkadaşlarımdan [Atahan Ceylan](https://www.linkedin.com/in/atahanceylan/) ile Node.js ve MongoDb üzerine konuşurken bana Heroku diye bir şeyden bahsetti. Daha önceden duymamış olmamın verdiği etkiyle hemen nedir ne değildir diyerek kendisinden bilgi istedim. Sonunda konuyu pekiştirmek için ninjaları bana sevimli bir şekilde hatırlatan bu ürünü incelemeye karar verdim.
+
+![herokus_intro.gif](/assets/images/2018/herokus_intro.gif)
 
 Heroku'unun başlangıç rehberlerinden yararlanarak bir senaryo seçtim. Amacım Node.js'de çok ilkel (amaç taşıma işlemini adımlamak olduğu için çok karmaşık olmamasında yarar var) bir REST servisi yazıp bunu Heroku üzerine taşımak. Söz konusu servisi geliştirirken express paketinden de yararlanacağız. Bu sayede bağımlı bir paketin taşınması durumunu da ele almış olacağız. Tabii öncesinde Heroku hakkında kısa bir bilgi vermekte fayda var.
 
@@ -274,7 +270,7 @@ heroku logs --tail
 
 Çok doğal olarak bu tip test uygulamalarını işlerimizi bitirdikten sonra silmekte yarar var. Projenin ayarlar kısmında bir Delete düğmesi bulunuyor. Bu iş için kullanabiliriz.
 
-> Küçük bir ipucu verelim. Heroku üzerinde host edilen bir servisi farklı bir domain'den çağıracağımız zaman CORS-Cross Origin Resource Sharing sorunu ile karşılaşabiliriz. Firefox özellikle bu konuda çok katı. [Şu adreste](../2017/CORS(Cross-Origin Resource Sharing).md).Net Core tarafında CORS konusunun ele alınışı var. Faydası olabilir tabii sizin kendi ortamınız için gerekli aksiyonu almanız lazım.
+> Küçük bir ipucu verelim. Heroku üzerinde host edilen bir servisi farklı bir domain'den çağıracağımız zaman CORS-Cross Origin Resource Sharing sorunu ile karşılaşabiliriz. Firefox özellikle bu konuda çok katı. [Şu adreste](/2017/12/29/cors-cross-origin-resource-sharing/).Net Core tarafında CORS konusunun ele alınışı var. Faydası olabilir tabii sizin kendi ortamınız için gerekli aksiyonu almanız lazım.
 
 Sonuç itibariyle geliştireceğimiz çeşitli tipteki web uygulamalarını Heroku üzerine almak görüldüğü üzere oldukça kolay. Heroku, bizlere geliştirici dostu bir PaaS ortamı ve kullanımı sunuyor. Desteklediği diller ve platformlar düşünüldüğünde aslında startup'lar ve özellikle hackathon tarzı yarışmalar için tercih edilmesi ideal gibi görünüyor.
 

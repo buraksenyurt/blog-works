@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "C# 2.0 Covariance ve Contravariance Delegates"
 date: 2005-06-30 12:00:00 +0300
-description: "Bildiğiniz gibi temsilciler (delegates) çalışma zamanında metodların başlangıç adreslerini işaret eden tiplerdir. Bu tipleri uygulamalarımızda tanımlarken çalışma zamanında işaret edebilecekleri metodların geri dönüş tipi ve parametrik yapılarını bildirecek şekilde oluştururuz. Ancak özellikle , C# 1.1 ortamında temsilcilerin kullanımında parametre ve dönüş tipileri açısından iki önemli sıkıntımız vardır. Bu sıkıntıların kaynağında birbirlerinden türeyen yani aralarında kalıtımsal (inheritance) ilişkiler olan tipler yer alır."
 categories:
   - csharp
 tags:
@@ -10,9 +9,6 @@ tags:
   - dotnet
   - delegates
 ---
-# C# 2.0 Covariance ve Contravariance Delegates
-Değerli Okurlarım Merhabalar,
-
 Bildiğiniz gibi temsilciler (delegates) çalışma zamanında metodların başlangıç adreslerini işaret eden tiplerdir. Bu tipleri uygulamalarımızda tanımlarken çalışma zamanında işaret edebilecekleri metodların geri dönüş tipi ve parametrik yapılarını bildirecek şekilde oluştururuz. Ancak özellikle, C# 1.1 ortamında temsilcilerin kullanımında parametre ve dönüş tipileri açısından iki önemli sıkıntımız vardır. Bu sıkıntıların kaynağında birbirlerinden türeyen yani aralarında kalıtımsal (inheritance) ilişkiler olan tipler yer alır.
 
 Nitekim temsilciler C# 1.1 versiyonunda oluşturulacakları zaman, işaret edecekleri metodlar için kesin dönüş ve parametre tipi uyumluluğunu ararlar. Dolayısıla bu tiplerde kalıtımsal ilişkiler söz konusu olduğunda ortaya çıkan iki temel problem vardır. Bu iki temel sorunumuza bakmadan önce, konunun odağında aralarında kalıtım ilişkisi olan iki sınıf olduğunu göz önüne almalıyız. Örneğin Sekil ve Dortgen isimli iki sınıfımız olduğunu ve Dortgen sınıfının Sekil sınıfından türediğini varsayalım. Bu sınıfların sahip olduğu içeriğin bizim için şu aşamada çok fazla önemi yoktur. İlk olarak covariance'lığa neden olan sorunu ele alalım. Aşağıdaki uygulamamızı dikkatle inceleyelim.

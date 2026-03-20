@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Bir Web Uygulamasında Gantt Chart Kullanımı"
 date: 2019-07-26 13:00:00 +0300
-description: "Henry Gantt tarafından icat edilen Gantt tabloları, proje takvimlerinin şekilsel gösteriminde kullanılmaktadır. Temel olarak yatay çubuklardan oluşan bu tablolarda proje planlarını, task'ları, süreleri ve ilerleyişi görmek mümkündür. Excel üzerinde bile kullanılabilen Gantt Chart'lar sanıyorum proje yöneticilerinin de vazgeçilmez araçlarındandır. Benim amacım ise dhtmlxGantt isimli Javascript kütüphanesinden yararlanarak bir Asp.Net Core projesinde Gantt Chart kullanmak."
 categories:
   - asp-dotnet-core
 tags:
@@ -25,10 +24,9 @@ tags:
   - visual-studio
   - github
 ---
-# Bir Web Uygulamasında Gantt Chart Kullanımı
-![windofchange2.png](/assets/images/2019/windofchange2.png)
-
 Beğenerek dinlediğim Scorpions grubunun en güzel şarkılarından birisidir Wind of Change. Değişim rüzgarları uzun zamandır hayatımın bir parçası aslında. Sanıyorum ilk olarak 2012 yılında o zamanlar çalışmakta olduğum turuncu bankada başlamıştı esintiler. Çevik dönüşüm süreci kapsamında uzun zamandır var olan şelale modelinin ağır ve hantal işleyişi yerine daha hızlı reaksiyon verme kabiliyeti kazanmak içindi her şey. Benzer bir dönüşüm süreci geçtiğimiz sene içerisinde şu an çalışmakta olduğum mavi renkli teknoloji şirketinde de başlatıldı.
+
+![windofchange2.png](/assets/images/2019/windofchange2.png)
 
 Her iki şirketin bu dönüşüm sürecindeki en büyük problemi ise oturmuş kültürel işleyiş yapısının değişime karşı geliyor olmasıydı. Hal böyle olunca her iki firmada dışarıdan yetkin danışmanlıklar alarak dönüşümü daha az sancılı geçirmeye çalıştı. Genelde ölçek olarak büyük bir firmaysanız bu tip dijital dönüşümler hem uzun hem de sancılı olabiliyor.
 

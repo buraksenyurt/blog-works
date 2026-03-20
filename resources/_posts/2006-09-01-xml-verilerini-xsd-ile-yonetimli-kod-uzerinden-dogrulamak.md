@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "XML Verilerini XSD ile Yönetimli Kod Üzerinden Doğrulamak"
 date: 2006-09-01 09:00:00 +0300
-description: "Xml içeriğini kullandığımız pek çok platformda, verinin belirli kurallara göre yazılmış olmasını istediğimiz durumlar söz konusu olabilir. Bu durum özellikle, farklı platformlar arasında taşınacak Xml tabanlı verilerin aynı kurallar dizisine uygun olacak şekilde kullanılması istendiği durumlarda karşımıza çıkmaktadır..."
 categories:
   - xml
 tags:
@@ -14,9 +13,6 @@ tags:
   - authentication
   - visual-studio
 ---
-# XML Verilerini XSD ile Yönetimli Kod Üzerinden Doğrulamak
-Değerli Okurlarım Merhabalar,
-
 Xml içeriğini kullandığımız pek çok platformda, verinin belirli kurallara göre yazılmış olmasını istediğimiz durumlar söz konusu olabilir. Bu durum özellikle, farklı platformlar arasında taşınacak Xml tabanlı verilerin aynı kurallar dizisine uygun olacak şekilde kullanılması istendiği durumlarda karşımıza çıkmaktadır. Xml verilerinin belirli kurallara göre doğruluğunun tespitinde şu anda DTD (Document Type Definitions), XDR (Xml Data Reduced) ve XSD (Xml Schema Definitions) gibi teknolojilerden yararlanılmaktadır.
 
 Bu teknolojiler yardımıyla bir Xml verisi içerisindeki elemanlar üzerinde çeşitli kurallar tanımlayabiliriz. Örneğin tutulan veri tiplerini sınırlayabilir, Xml ağacının yapısını tanımlayabiliriz vb. Böylece verilerin tutarlılığınıda sağlamış oluruz. Günümüzde, Xml verilerinin doğrulanması için kullanılan en yaygın teknoloji XSD ' dir. XSD'yi daha önceki türevi olan XDR'ın mükemmelleştirilmiş hali olarakta düşünebiliriz. Zaten WC3' da XSD şemalarının kullanılmasını önermektedir. Biz bu makalemizde.Net tarafında yer alan yönetimli tipleri (Managed Types) kullanarak Xml verilerini XSD ile çarpıştırarak doğrulama işlemlerini nasıl yapabileceğimizi incelemeye çalışacağız. İlk olarak aşağıdaki gibi bir Xml içeriğimiz olduğunu düşünelim.

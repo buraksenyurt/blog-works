@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Web Server Control Yazmak - 1"
 date: 2007-01-17 12:00:00 +0300
-description: "Günümüz program geliştirme ortamların çoğu, geliştiricilerin(developers) daha kullanıcı dostu (user friendly) arabirimler tasarlayabilmeleri için sayısız kontrol içermektedir. Özellikle Asp.Net ortamından Asp.Net 2.0 ortamına geçildiğinde, web tabanlı uygulamaları geliştirirken kullanabileceğimiz kontrollerin sayısı oldukça artmıştır."
 categories:
   - aspnet-2-0
 tags:
@@ -14,9 +13,6 @@ tags:
   - caching
   - visual-studio
 ---
-# Web Server Control Yazmak - 1
-Değerli Okurlarım Merhabalar,
-
 Günümüz program geliştirme ortamların çoğu, geliştiricilerin (developers) daha kullanıcı dostu (user friendly) arabirimler tasarlayabilmeleri için sayısız kontrol içermektedir. Özellikle Asp.Net ortamından Asp.Net 2.0 ortamına geçildiğinde, web tabanlı uygulamaları geliştirirken kullanabileceğimiz kontrollerin sayısı oldukça artmıştır.(70den fazla kontrol) Buna rağmen var olan web sunucu kontrollerinin ihtiyacımızı karşılamadığı durumlar olabilir. Hatta ihtiyacımızı karşılayabilecek bir kontrol olmayabilir de. Bu gibi durumlarda geliştiriciler ya üçüncü parti bileşenleri satın alma ve kullanma yolunu tercih ederler yada ilgili sunucu kontrollerini (web server control) kendileri geliştirirler. Bu ilk makalemizde basit anlamda web sunucu kontrollerini nasıl geliştirebileceğimizi incelemeye başlayacağız.
 
 Bir web sunucu kontrolünü sıfırdan yazmadan önce, var olan web kontrollerinin ne şekilde çalıştıklarını analiz etmekte fayda vardır. Web ortamı sunucu taraflı ve istemci taraflı çalışabilen kodların içerisinde yer aldığı bir teknolojidir. Asp.Net perspektifinden baktığımızda ise çoğunlukla sunucu taraflı kodlamadan ve kontrollerden bahsederiz. Hangi web teknolojisi olursa olsun istemcilerin tarayıcı pencerelerinde elde ettikleri çıktı her zaman için yorumlanabilir bir HTML çıktısı olacaktır. Örneğin aşağıdaki ekran görüntüsünde yer alan web sunucu kontrollerini göz önüne alalım.

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Docker SQL Server Kullanımı"
 date: 2018-11-09 06:25:00 +0300
-description: "West-World'e daha önceden Microsoft SQL Server sürümünü kurmuş ve basit denemeler yapmıştık. Esasında bu şart değildi. SQL Server'ın Linux platformu için olan Docker imajını da kullanabilirdik. İşte bu yazımızda docker imajını baz alarak, Entity Framework çatısının kullanan basit bir Web API servisini nasıl geliştirebileceğimizi öğrenmeye çalışacağız."
 categories:
   - dotnet-core
 tags:
@@ -19,12 +18,9 @@ tags:
   - docker
   - visual-studio
 ---
-# Docker SQL Server Kullanımı
-![sqldocker_8.jpeg](/assets/images/2018/sqldocker_8.jpeg)
-
-Merhaba Arkadaşlar,
-
 Geçenlerde Guinness Dünya Rekorları kitabının 2018 baskısını aldım. Bu zamana kadar kayıt altına alınmış bir çok rekorun yer aldığı resimli ansiklopedi de ilgimi çeken değişik bölümler oldu. "Derinler" başlıklı kısmı okurken aklım dünyanın ilginç ve bir o kadar da zorlu mesleklerine gitti. Mesela derin sualtı dalgıcı olduğunuzu düşünsenize. İkinci dünya savaşında Norveç'in soğuk kuzey deniz sularının 245 metre derinine gömülmüş bir savaş gemisine batık dalışı yapan 12 dalgıçtan birisi olabilirdiniz. Her ne kadar 1981'de 31 gün içinde 431 külçe altın çıkartmış olsanız da kolay iş değil. Bunun gibi bir çok zorlu meslek var düşününce. Astrontlar, madencilikle uğraşanlar, yüksek gökdelen camlarını temizleyenler, İstanbul boğazındaki köprülerin bağlantı kablolarına tadilat yapanlar, hayvanat bahçelerindeki timsahlara bakanlar, bomba imhası ile uğraşan uzmanlar ve diğerleri.
+
+![sqldocker_8.jpeg](/assets/images/2018/sqldocker_8.jpeg)
 
 Bu meslek gruplarını düşünürkene dedim bir kaç tane atmasyon iş ilanı çıkayım. Astronot, dalgıç arayayım. Bunları West-World'de SQL Server veritabanında bir Web API ile yöneteyim dedim. Sonra gün gelir kullanıcı dostu arayüzü olan bir web uygulaması yazarım dedim. West-World'e daha önceden Microsoft SQL Server sürümünü kurmuş ve basit denemeler yapmıştım. Bu yeni çalışma için de onu kullanabilirdim ama şart değildi. SQL Server'ın Linux platformuna özel bir Docker imajını da kullanabilirdim. Hem benim için de bir değişiklik olurdu. Docker bu. Alışınca vazgeçemiyor insan.
 

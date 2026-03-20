@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Front-End Service Geliştirmek"
 date: 2008-01-30 12:00:00 +0300
-description: "Windows Communication Foundation(WCF) mimarisinde belkide en kritik unsurlardan birisi EndPoint kavramıdır. EndPoint, Servis Yönelimli Mimari(Service Oriented Architecture - SOA) uygulamaları geliştirmek için kullanılan WCF modelinde, istemciler(Clients) ile servis(Service) arasındaki haberleşmede yer alan kritik bir parçadır. WCF' in temellerini incelediğimiz daha önceki yazılarımızda, EndPoint kavramının aslında WCF mimarisinin ABC' si olduğundan bahsetmiştik. ABC bilindiği üzere adres(Address), bağlayıcı(Binding) ve sözleşme(Contract) bilgilerinden oluşmaktadır. Buna göre bir EndPoint yardımıyla, servisin istemcilere hangi adresten, hangi protokolle, hangi kurallara göre neyi sunacağı bilgisi aktarılabilir. Bununla birlikte, EndPoint' ler istemci tarafından gelecek olan taleplerin karşılanmasında da büyük öneme sahiptir."
 categories:
   - wcf
 tags:
@@ -19,9 +18,6 @@ tags:
   - generics
   - visual-studio
 ---
-# Front-End Service Geliştirmek
-Değerli Okurlarım Merhabalar,
-
 Windows Communication Foundation (WCF) mimarisinde belkide en kritik unsurlardan birisi EndPoint kavramıdır. EndPoint, Servis Yönelimli Mimari (Service Oriented Architecture - SOA) uygulamaları geliştirmek için kullanılan WCF modelinde, istemciler (Clients) ile servis (Service) arasındaki haberleşmede yer alan kritik bir parçadır. WCF'in temellerini incelediğimiz daha önceki yazılarımızda, EndPoint kavramının aslında WCF mimarisinin ABC'si olduğundan bahsetmiştik. ABC bilindiği üzere adres (Address), bağlayıcı (Binding) ve sözleşme (Contract) bilgilerinden oluşmaktadır. Buna göre bir EndPoint yardımıyla, servisin istemcilere hangi adresten, hangi protokolle, hangi kurallara göre neyi sunacağı bilgisi aktarılabilir. Bununla birlikte, EndPoint'ler istemci tarafından gelecek olan taleplerin karşılanmasında da büyük öneme sahiptir.
 
 Bir WCF servisi, kendi üzerinde birden fazla EndPoint bilgisi taşıyabilir. Üstelik bu EndPoint'ler aynı sözleşme (Contract) veya farklı sözleşmeler (Contract) içinde tanımlanmış olabilirler. Bu noktada WCF servisi aldığı mesajı hangi EndPoint bileşenine ileteceğinede karar vermektedir. Çok doğal olarak geliştiriciler bu karar aşamasına müdahale edebilir ve EndPoint yönlendirmelerini programlayabilirler. İşte bu da Front-End Service adı verilen WCF servislerinin geliştirilebilmesine neden olmaktadır ki makalemizin konusuda budur. Bazı durumlarda bir WCF servisi, istemcilerden (Clients) gelecek olan mesajları asıl servislere yönlendirmek için kullanılabilir. Aşağıdaki şekilde bu durum analiz edilmeye çalışılmaktadır.

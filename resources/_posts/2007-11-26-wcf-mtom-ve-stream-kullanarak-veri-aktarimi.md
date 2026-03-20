@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF - MTOM ve Stream Kullanarak Veri Aktarımı"
 date: 2007-11-26 12:00:00 +0300
-description: "Günümüzde resim,ses, video, doküman formatında kaynakların yoğun olarak kullanıldığı pek çok sistem bulunmaktadır. Söz gelimi içerik yönetim sistemleri(Content Management Systems) neredeyse sırf bu tip verilerin kullanılması üzerine kurulmuştur. Resim, ses, video formatındaki veri kaynaklarının oluşturduğu en büyük problem ise boyutlarının söz konusu sistemlerde ne kadar etkin bir şekilde ölçeklenebildiğidir. Büyük boyutlu dosyalar çeşitli amaçlarla kullanılabilirler."
 categories:
   - wcf
 tags:
@@ -17,9 +16,6 @@ tags:
   - serialization
   - generics
 ---
-# WCF - MTOM ve Stream Kullanarak Veri Aktarımı
-Değerli Okurlarım Merhabalar,
-
 Günümüzde resim,ses, video, doküman formatında kaynakların yoğun olarak kullanıldığı pek çok sistem bulunmaktadır. Söz gelimi içerik yönetim sistemleri (Content Management Systems) neredeyse sırf bu tip verilerin kullanılması üzerine kurulmuştur. Resim, ses, video formatındaki veri kaynaklarının oluşturduğu en büyük problem ise boyutlarının söz konusu sistemlerde ne kadar etkin bir şekilde ölçeklenebildiğidir. Büyük boyutlu dosyalar çeşitli amaçlarla kullanılabilirler.
 
 Örneğin bir şirketin tüm dökümantasyon alt yapısı bu tip büyük büyük dosyalar üzerine kurulu olabilir. Yada üretim sektöründe görev alan bir firmanın teknik çizimleri ikili (binary) formatta olacak şekilde veritabanı üzerinde saklanıyor olabilir. Bu tarz verilerin (ister dosyalarda ister veritabanı alanlarında saklanıyor olsunlar) aynı bilgisayarda kullanıldığı uygulamalarda boyutların artması çok fazla problem teşkil etmeyebilir. Ancak işin içerisine istemci-sunucu (Client-Server) tabanlı bir ortam girdiğinde boyutların artması özellikle ağ (Network) üzerindeki trafiğe olumsuz etkiler yansıtmaktadır. Dolayısıyla farklı makinelerde koşan uygulamaların arasında bu tip büyük boyutlu verilerin aktarımında dikkat edilmesi gereken bazı önemli noktalar vardır.

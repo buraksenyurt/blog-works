@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Generic Lazy Tipi Olmasaydı"
 date: 2010-10-18 02:05:00 +0300
-description: "Hatırlayacağınız üzere Lazy<T> nesne örnekleri üzerinden Value özelliği çağırılmadığı sürece T tipinden değer döndüren bir operasyonun çağırılması söz konusu değildir. Üstelik Value özelliğine sonradan yapılan çağrılarda T dönüşü yapan operasyonların tekrardan çağırılmadığı da bilinmektedir. Şimdi Lazy<T> tipini kullanmadan bir sınıf özelliğinin Lazy Initializate işleminde değerlendirilip değerlendirilemeyeceğini düşünerek yola koyulalım."
 categories:
   - csharp-4-0
 tags:
@@ -14,12 +13,9 @@ tags:
   - generics
   - visual-studio
 ---
-# Generic Lazy Tipi Olmasaydı
-![blg195_Giris.jpg](/assets/images/2010/blg195_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Aklım üniversite kampüsünün çimlerinde hala...Pek çok gün İstinye Park'a giden öğle arası servisimiz, dönüş yolunda İTÜ kütüphanesi önünden geçmekte (Geçmekte idi...Sonrasında o yol trafiğe kapatıldı) Öğrencilerin çimlere yayılarak mavi gök yüzünü seyre dalmasına her zaman imreniyorum. Çoğu zaman bu psikolojideki öğrencinin kafasında oluşan sorunlar bellidir. Kız arkadaş veya erkek arkadaş sorunu, maddi sorunlar, dersler, vize ve finaller...Tabi iş hayatına giren ben gibi insanlar aynı çimlere yatmaya kalksa, kafada dönen sorunların sayısı azalacağına büyük ihtimalle artacaktır. Hele ki yazılımla uğraşıyorsanız mavi göğü seyre dalarken geçen bulutların çoğu birer Component haline dönüşecek ve üstünüze üstünüze gelecektir. Neyse...
+
+![blg195_Giris.jpg](/assets/images/2010/blg195_Giris.jpg)
 
 Hatırlayacağınız üzere [Tembellik Etmek İstiyorum (Generic Lazy Tipi ile Et)](https://www.buraksenyurt.com/post/Tembellik-Etmek-Istiyorum-(Generic-Lazy-Tipi-ile-Et).aspx) başlıklı yazımızda.Net Framework 4.0 ile birlikte Base Class Library'ye eklenen yeni tiplerden birisi olan Lazy sınıfını irdelemeye çalışmıştık. Bu sınıfın T tipi için gerçek anlamda Lazy Initialization yaptığını örnekler üzerinden öğrendik ve yine hatırlayacağınız üzere Lazy nesne örnekleri üzerinden Value özelliği çağırılmadığı sürece T tipinden değer döndüren bir operasyonun çağırılması söz konusu değildir. Üstelik Value özelliğine sonradan yapılan çağrılarda T dönüşü yapan operasyonların tekrardan çağırılmadığı da bilinmektedir. Şimdi Lazy tipini kullanmadan bir sınıf özelliğinin Lazy Initializate işleminde değerlendirilip değerlendirilemeyeceğini düşünerek yola koyulalım. Bu amaçla aşağıdaki gibi bir kod örneğini göz önüne alabiliriz.
 
@@ -299,7 +295,7 @@ namespace LazyPart2
                                 new Product{ProductId=2,Name="Product Y",ListPrice=3},
                             };
             }
-        ); 
+        );
 
         public static List<Product> Products
         {

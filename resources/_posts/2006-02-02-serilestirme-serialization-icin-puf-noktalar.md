@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Serileştirme (Serialization) İçin Püf Noktalar"
 date: 2006-02-02 10:00:00 +0300
-description: "Uygulamalarımızda kullandığımız tipler (types) pek çok amaçla serileştirilirler (Serialization). Framework Class Library içerisinde var olan pek çok tip serileştirilebilir (Serializable) halde tasarlanmıştır. Bizde çoğu zaman kendi yazmış olduğumuz tipleri serileştirme ihtiyacı duyarız. Örnek olarak, XML Web Servislerinde istemci taleplerine gönderilecek olan nesnelerin, network üzerinde taşıyacağımız paketlerin veya bir web uygulamasında yer alan Session nesnelerinin veritabanında saklanması sırasında kullanılan tiplerin serileştirilmesini göz önüne alabiliriz. Hangi türü olursa olsun serileştirmede dikkat edilmesi gereken bazı noktalar vardır. İşte bu günkü makalemizde özellikle Binary ve SOAP formatlı serileştirmelere yönelik püf noktalara değinmeye çalışacağız."
 categories:
   - csharp
 tags:
@@ -13,9 +12,6 @@ tags:
   - xml-web-services
   - serialization
 ---
-# Serileştirme (Serialization) İçin Püf Noktalar
-Değerli Okurlarım Merhabalar,
-
 Uygulamalarımızda kullandığımız tipler (types) pek çok amaçla serileştirilirler (Serialization). Framework Class Library içerisinde var olan pek çok tip serileştirilebilir (Serializable) halde tasarlanmıştır. Bizde çoğu zaman kendi yazmış olduğumuz tipleri serileştirme ihtiyacı duyarız. Örnek olarak, XML Web Servislerinde istemci taleplerine gönderilecek olan nesnelerin, network üzerinde taşıyacağımız paketlerin veya bir web uygulamasında yer alan Session nesnelerinin veritabanında saklanması sırasında kullanılan tiplerin serileştirilmesini göz önüne alabiliriz. Hangi türü olursa olsun serileştirmede dikkat edilmesi gereken bazı noktalar vardır. İşte bu günkü makalemizde özellikle Binary ve SOAP formatlı serileştirmelere yönelik püf noktalara değinmeye çalışacağız.
 
 Kendi yazmış olduğumuz bir tipi serileştirmek için tek yapmamız gereken Serializable niteliğini (Attribute) kullanmaktır. Bu zaten bir tipin serileştirilebilmesi için gerekli kuraldır. Serileştirme doğası gereği, tipin içerisinde yer alan alanları (fields) ele alır ve bu alanların değerlerini isimleri ile birlikte herhangibir stream'e yazabilir. Bu durumda, tip içerisinde var olan alanların da serileştirilebilir olmaları gerekir.

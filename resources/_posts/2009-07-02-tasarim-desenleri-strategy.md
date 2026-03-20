@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tasarım Desenleri - Strategy"
 date: 2009-07-02 22:34:00 +0300
-description: "Bir süredir tasarım prensiplerini(Design Principles) incelemeye çalışıyoruz. Tabiki prensipler iyi bir yazılım modeli ve geliştirilmesi için yeterli değildir. Çoğu prensip kendi içerisinde çeşitli tasarım desenlerini(Design Patterns) uygulamaktadır..."
 categories:
   - tasarim-kaliplari-design-patterns
 tags:
@@ -11,12 +10,9 @@ tags:
   - delegates
   - dependency-management
 ---
-# Tasarım Desenleri - Strategy
-![blg41_1.jpg](/assets/images/2009/blg41_1.jpg)
-
-Merhaba Arkadaşlar,
-
 Bir süredir tasarım prensiplerini (Design Principles) incelemeye çalışıyoruz. Tabiki prensipler iyi bir yazılım modeli ve geliştirilmesi için yeterli değildir. Çoğu prensip kendi içerisinde çeşitli tasarım desenlerini (Design Patterns) uygulamaktadır. Bu nedenle ara sıra tasarım deseneleride bakmakta, öğrenmekte, daha önceden bakmışsak bile sık sık tekrar etmekte yarar var. Ben bu günkü yazımda sizlere davranışsal (Behavioral) kalıplardan olan Strategy tasarım desenini aktarmaya çalışacağım.
+
+![blg41_1.jpg](/assets/images/2009/blg41_1.jpg)
 
 [Youtube Link](https://www.youtube.com/watch?v=t8SZ2MFplLA)
 

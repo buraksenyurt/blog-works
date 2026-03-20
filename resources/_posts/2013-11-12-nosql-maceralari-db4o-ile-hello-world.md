@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "NoSQL Maceraları - db4o ile Hello World"
 date: 2013-11-12 21:01:00 +0300
-description: "Apache Cassandra, RavendDb, Dex, StsDb derken sıra geldi nesne veritabanlarından(Object Database) birisi olan db4o’ ya(Database for Objects şeklinde çevirebiliriz sanırım) Object tipinden bir NoSQL(Not-Only SQL) veritabanı olan db4o ürününün, Java ve .Net platformları için sürümleri bulunmaktadır(Hatta Mono desteği de mevcuttur). Aslında %100 Java ile geliştirilmiştir ve açık kaynak Sharpen ile C# diline de çevrilmiştir. Bu da onun popüler olmasını sağlayan unsurlardan bir tanesidir(Yazının hazırlandığı tarih itibariyle .Net Framework 3.5/4.0 ve platformlarını hedef alan versiyonları vardı)"
 categories:
   - nosql
 tags:
@@ -19,12 +18,9 @@ tags:
   - generics
   - visual-studio
 ---
-# NoSQL Maceraları - db4o ile Hello World
-[![GoldenGateBridge-001](/assets/images/2013/GoldenGateBridge-001_thumb.jpg)](/assets/images/2013/GoldenGateBridge-001.jpg) Merhaba Arkadaşlar,
+Eğer bir ülke olsaydı, dünyanın 6ncı büyük ekonomisne sahip olurdu. Bu ifade Amerika’ nın en kalabalık nüfusuna sahip olan Kaliforniya eyaleti için [wikipedia](http://tr.wikipedia.org/wiki/Kaliforniya)’ da yazılmış. Birleşik Devletlerin batı kıyısının bir eyaleti olan Kaliforniya eyaletinde aslında pek çoğumuzun gıpta ederek baktığı şehirler var.
 
-Eğer bir ülke olsaydı, dünyanın 6ncı büyük ekonomisne sahip olurdu.
-
-Bu ifade Amerika’ nın en kalabalık nüfusuna sahip olan Kaliforniya eyaleti için [wikipedia](http://tr.wikipedia.org/wiki/Kaliforniya)’ da yazılmış. Birleşik Devletlerin batı kıyısının bir eyaleti olan Kaliforniya eyaletinde aslında pek çoğumuzun gıpta ederek baktığı şehirler var.
+[![GoldenGateBridge-001](/assets/images/2013/GoldenGateBridge-001_thumb.jpg)](/assets/images/2013/GoldenGateBridge-001.jpg)
 
 NBA’ in en ünlü takımlarından olan Lakers’ ın vatanı Los Angeles, uzun bir dönem Kings forması giyen Hido’ nun şehri Sacremento (ki aynı zamanda eyalet başkenti olarak geçiyor), küçüklüğümde sokakları ile bir dedektiflik dizisinin ([The Street of San Franciso](http://www.imdb.com/title/tt0068135/)) adeta başrolü haline gelen San Francisco.
 

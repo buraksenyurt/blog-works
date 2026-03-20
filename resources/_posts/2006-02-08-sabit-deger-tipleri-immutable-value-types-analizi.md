@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Sabit Değer Tipleri (Immutable Value Types) Analizi"
 date: 2006-02-08 10:00:00 +0300
-description: "Immutable (sabit) tipler basit olarak tanımlandıktan sonra varlıkları asla değişmeyen türler olarak nitelendirilebilirler. Sabit bir tipe ait bir nesne örneğini oluşturduğunuzda, bu tipin içeriği asla değişmez. Ancak bir tipin sabit olup olmayacağına karar vermek gerçekten zordur. Bu karar mekanizmasında, tipin sahip olduğu veri içeriğinin atomik (atomic) yapısı oldukça önemlidir. Atomiklik, bir tipin sahip olduğu verisel bütünlüğü oluşturan her bir elemanın aralarındaki ilişki olarak tanımlanabilir. Bu noktada bir tipin atomik olup olmaması, sabit bir tip haline getirilip getirilmemesinde önemli bir karar mekanizmasıdır."
 categories:
   - csharp
 tags:
@@ -10,9 +9,6 @@ tags:
   - concurrency
   - atomic-operations
 ---
-# Sabit Değer Tipleri (Immutable Value Types) Analizi
-Değerli Okurlarım Merhabalar,
-
 Immutable (sabit) tipler basit olarak tanımlandıktan sonra varlıkları asla değişmeyen türler olarak nitelendirilebilirler. Sabit bir tipe ait bir nesne örneğini oluşturduğunuzda, bu tipin içeriği asla değişmez. Ancak bir tipin sabit olup olmayacağına karar vermek gerçekten zordur. Bu karar mekanizmasında, tipin sahip olduğu veri içeriğinin atomik (atomic) yapısı oldukça önemlidir. Atomiklik, bir tipin sahip olduğu verisel bütünlüğü oluşturan her bir elemanın aralarındaki ilişki olarak tanımlanabilir. Bu noktada bir tipin atomik olup olmaması, sabit bir tip haline getirilip getirilmemesinde önemli bir karar mekanizmasıdır.
 
 Atomik yapıyı anlamak için, bir tipin içerisinde yer alan alanların aralarındaki ilişkiyi kavramamız çok önemlidir. Örneğin, Muhendis isimli bir tipimiz olduğunu düşünelim. Tipimizin ID, Ad, Soyad, Pozisyon gibi bilgileri bardındırdığını göz önüne alalım. Bir mühendisin şirket için geçerli olan ID bilgisi değişebilir. Ancak bu değişikliğin Ad,Soyad veya Pozisyon alanları üzerinde herhangibir etkisi yoktur. Benzer şekilde, bir mühendisin pozisyonuda değişebilir. Ancak bu değişikliğin Id,Ad,Soyad alanları üzerinde bir etkisi yoktur. Kısacası, Muhendis tipinin veri içeriğini oluşturan alanların birbirleri üzerinde her hangibir bağlayıcı etkisi yoktur. Bu nedenle Muhendis tipinin atomik olmayan bir veri içeriği sunduğunu söyleyebiliriz. Bu da ilgili tipin verileri arasında tutarlılık olmasını gerektirmeyecek bir olgudur.

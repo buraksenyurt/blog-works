@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu-16 (Dynamic Var)"
 date: 2011-07-10 21:41:00 +0300
-description: "Merhaba Arkadaşlar,"
 categories:
   - csharp
   - csharp-3-0
@@ -15,9 +14,6 @@ tags:
   - tek-fotoluk-ipucu
   - linq
 ---
-# Tek Fotoluk İpucu-16 (Dynamic Var)
-Merhaba Arkadaşlar,
-
 LINQ tarafında isimsiz tipleri (Anonymous Types) oldukça sık kullanmaktayız. Ancak isimsiz tiplerin metodlara parametre olarak geçirilemediğini de biliyoruz
 
 ![Sad smile](/assets/images/2011/wlEmoticon-sadsmile_4.png)

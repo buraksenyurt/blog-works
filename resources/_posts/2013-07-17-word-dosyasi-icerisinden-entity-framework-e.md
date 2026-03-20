@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Word Dosyası İçerisinden Entity Framework’ e"
 date: 2013-07-17 17:26:00 +0300
-description: "Geliştirdiğimiz veya kullanmakta olduğumuz yazılım ürünlerine dahil olan, farklı segmentlerden gelen pek çok kullanıcı profili vardır. Farklı profillerin olması, bazı hallerde geliştirilmekte olan ürünlerin başarısını doğrudan etkilemektedir. Bir fotoğraf işleme programını geliştirirken çoğu zaman annemizin olası kullanıcı profilleri arasına gireceğini pek düşünmeyiz. Genellikle fotoğraf işleme programını kullanacak olanların, en azından temek düzeyde fotoğrafçılık bilgisine sahip olduğunu kabul eder, menü komutlarını buna göre belirler, arayüzü buna göre hazırlarız. Ama bazı uygulamalarda annemizi hedef alır ve çektiği fotoğraflara kolayca efekt uygulamasına bir kaç basit adımda olanak tanır. Örneğin instagram’ ın iPhone uygulamasında olduğu gibi."
 categories:
   - office-development
 tags:
@@ -20,14 +19,9 @@ tags:
   - generics
   - visual-studio
 ---
-# Word Dosyası İçerisinden Entity Framework’ e
-[![275344](/assets/images/2013/275344_thumb.jpg)](/assets/images/2013/275344.jpg)[Orjinal Yazım Tarihi 03-15-2013]
+Geliştirdiğimiz veya kullanmakta olduğumuz yazılım ürünlerine dahil olan, farklı segmentlerden gelen pek çok kullanıcı profili vardır. Farklı profillerin olması, bazı hallerde geliştirilmekte olan ürünlerin başarısını doğrudan etkilemektedir. Bir fotoğraf işleme programını geliştirirken çoğu zaman annemizin olası kullanıcı profilleri arasına gireceğini pek düşünmeyiz. Genellikle fotoğraf işleme programını kullanacak olanların, en azından temek düzeyde fotoğrafçılık bilgisine sahip olduğunu kabul eder, menü komutlarını buna göre belirler, arayüzü buna göre hazırlarız. Ama bazı uygulamalarda annemizi hedef alır ve çektiği fotoğraflara kolayca efekt uygulamasına bir kaç basit adımda olanak tanır. Örneğin instagram’ ın iPhone uygulamasında olduğu gibi.
 
-Merhaba Arkadaşlar,
-
-Geliştirdiğimiz veya kullanmakta olduğumuz yazılım ürünlerine dahil olan, farklı segmentlerden gelen pek çok kullanıcı profili vardır. Farklı profillerin olması, bazı hallerde geliştirilmekte olan ürünlerin başarısını doğrudan etkilemektedir.
-
-Bir fotoğraf işleme programını geliştirirken çoğu zaman annemizin olası kullanıcı profilleri arasına gireceğini pek düşünmeyiz. Genellikle fotoğraf işleme programını kullanacak olanların, en azından temek düzeyde fotoğrafçılık bilgisine sahip olduğunu kabul eder, menü komutlarını buna göre belirler, arayüzü buna göre hazırlarız. Ama bazı uygulamalarda annemizi hedef alır ve çektiği fotoğraflara kolayca efekt uygulamasına bir kaç basit adımda olanak tanır. Örneğin instagram’ ın iPhone uygulamasında olduğu gibi.
+[![275344](/assets/images/2013/275344_thumb.jpg)](/assets/images/2013/275344.jpg)
 
 Bir yazılım geliştirme ürününü tasarlarken ise, son kullanıcının programcılar olduğunu varsayar ve arabirimin karmaşık olmasının herhangibir sorun oluşturmayacağını düşünürüz. Oysaki Team Foundation Server gibi geniş ürün yelpazesine sahip aileler düşünüldüğünde, işe dahil olan farklı profildeki kullanıcılar için işleri kolaylaştırıcı şekilde düşünüldüğüne şahit oluruz.
 

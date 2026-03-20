@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "İşe Yarar Bir MultiThreading(Çok Kanallı) Uygulama Örneği"
 date: 2004-01-06 12:00:00 +0300
-description: "Bundan önceki üç makalemizde iş parçacıkları hakkında bilgiler vermeye çalıştım. Bu makalemde ise işimize yarayacak tarzda bir uygulama geliştirecek ve bilgilerimizi pekiştireceğiz. Bir iş parçacığının belkide en çok işe yarayacağı yerlerden birisi veritabanı uygulamalarıdır. Bazen programımız çok uzun bir sonuç kümesi döndürecek sorgulara veya uzun sürecek güncelleme ifadeleri içeren sql cümlelerine sahip olabilir. Böyle bir durumda programın diğer öğeleri ile olan aktivitemizi devam ettirebilmek isteyebiliriz. Ya da aynı anda bir den fazla iş parçacığında, birden fazla veritabanı işlemini yaptırarak bu işlemlerin tamamının daha kısa sürelerde bitmesini sağlıyabiliriz. İşte bu gibi nedenleri göz önüne alarak bu gün birlikte basit ama faydalı olacağına inandığım bir uygulama geliştireceğiz."
 categories:
   - csharp
 tags:
@@ -11,9 +10,6 @@ tags:
   - dataset
   - datatable
 ---
-# İşe Yarar Bir MultiThreading(Çok Kanallı) Uygulama Örneği
-Değerli Okurlarım, Merhabalar.
-
 Bundan önceki üç makalemizde iş parçacıkları hakkında bilgiler vermeye çalıştım. Bu makalemde ise işimize yarayacak tarzda bir uygulama geliştirecek ve bilgilerimizi pekiştireceğiz. Bir iş parçacığının belkide en çok işe yarayacağı yerlerden birisi veritabanı uygulamalarıdır. Bazen programımız çok uzun bir sonuç kümesi döndürecek sorgulara veya uzun sürecek güncelleme ifadeleri içeren sql cümlelerine sahip olabilir. Böyle bir durumda programın diğer öğeleri ile olan aktivitemizi devam ettirebilmek isteyebiliriz. Ya da aynı anda bir den fazla iş parçacığında, birden fazla veritabanı işlemini yaptırarak bu işlemlerin tamamının daha kısa sürelerde bitmesini sağlıyabiliriz. İşte bu gibi nedenleri göz önüne alarak bu gün birlikte basit ama faydalı olacağına inandığım bir uygulama geliştireceğiz.
 
 Olayı iyi anlayabilmek için öncelikle bir milat koymamız gerekli. İş parçacığından önceki durum ve sonraki durum şeklinde. Bu nedenle uygulamamızı önce iş parçacığı kullanmadan oluşturacağız. Sonrada iş parçacığı ile. Şimdi programımızdan kısaca bahsedelim. Uygulamamız aşağıdaki sql sorgusunu çalıştırıp, bellekteki bir DataSet nesnesinin referans ettiği bölgeyi, sorgu sonucu dönen veri kümesi ile dolduracak.

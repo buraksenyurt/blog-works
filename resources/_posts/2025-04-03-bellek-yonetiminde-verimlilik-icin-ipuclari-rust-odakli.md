@@ -2,7 +2,6 @@
 layout: post
 title: "Bellek Yönetiminde Verimlilik için İpuçları (Rust Odaklı)"
 date: 2025-04-03 21:30:00 +0300
-description: "Unmanaged ortamlarda gezinmek birçok yeni veya unutulmuş bilgiyi de karşıma çıkarıyor. Geçtiğimiz günlerde devasa boyutlarda JSON tabanlı logları işlerken Interning stratejisi ile belleğe alınan büyük boyutlu veri kümesinin nasıl optimize edilebileceğini öğrendim. Belli senaryolarda (her zaman da avantajlı olmayabiliyor) çok sık tekrar eden string içerikler için heap bölgesinde tahsisat yapılırken gereksiz alan ayırmak yerine, bunları referans eden tekil pointer'lardan yararlanmak ve hatta benzersiz sayısal değerlerle (örneğin pozitif bir tam sayı ile) bir vektör içerisinde tutup (Intern havuzu olarak da ifade ediliyor) erişimi hızlandırmak mümkün."
 categories:
   - rust
 tags:
@@ -25,7 +24,6 @@ tags:
   - refcell
   - arc
 ---
-# Bellek Yönetiminde Verimlilik için İpuçları (Rust Odaklı)
 Unmanaged ortamlarda gezinmek birçok yeni veya unutulmuş bilgiyi de karşıma çıkarıyor. Geçtiğimiz günlerde devasa boyutlarda JSON tabanlı logları işlerken Interning stratejisi ile belleğe alınan büyük boyutlu veri kümesinin nasıl optimize edilebileceğini öğrendim. Belli senaryolarda (her zaman da avantajlı olmayabiliyor) çok sık tekrar eden string içerikler için heap bölgesinde tahsisat yapılırken gereksiz alan ayırmak yerine, bunları referans eden tekil pointer'lardan yararlanmak ve hatta benzersiz sayısal değerlerle (örneğin pozitif bir tam sayı ile) bir vektör içerisinde tutup (Intern havuzu olarak da ifade ediliyor) erişimi hızlandırmak mümkün. Tam anlamıyla bellek seviyesinde optimizasyon ve performans kazanımı söz konusu.
 
 Biraz karışık bir cümle oldu ama kaynak olarak sunacağım [şu yazının uzunluğu](https://gendignoux.com/blog/2025/03/03/rust-interning-2000x.html) düşünülünce elden bu kadar geldi. Yazıda Paris'in herkese açık ulaşım verilerinden yararlanılıyor. Veriler çok büyük ve yazarın iddiasına göre 2bin kata kadar küçültülebiliyor. Örneğin sadece String veriler üzerine yapılan Interning tekniğinin %47 oranında yer kazanımı sağladığı ifade ediliyor. Tabii olay bellek yönetimi, bellek operasyonlarında optimizasyon ve performans işlemleri denilince karşımıza çıkan daha birçok konu var. Örneğin Region-Based Management konseptinde yer bulan Area Allocators, Copy on Write (CoW), Zero Cost Abstraction, Memory/Object Pooling, Cache-Aware Programming, Enum'larda Padding ve Allignment kullanımı gibi

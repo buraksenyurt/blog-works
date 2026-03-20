@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "C# 4.0 ile Code Contracts"
 date: 2009-12-18 05:40:00 +0300
-description: "Uzun süredir ilgimi çeken ama fırsat bulamadığım konulardan birisidir Code Contracts. Özellikle test süreçlerinde önem arz eden ve kodun çalışma zamanında veya kodlama zamanında varsayımsal bazı koşulları sağlayıp sağlamadığını tespit etmemizi sağlayan bir yenilik olarak düşünülebilir..."
 categories:
   - csharp-4-0
 tags:
@@ -13,12 +12,9 @@ tags:
   - testing
   - visual-studio
 ---
-# C# 4.0 ile Code Contracts
-![blg120_Giris.jpg](/assets/images/2009/blg120_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Microsoft gibi dev yazılım firmalarının araştırma geliştirme ekipleri ve labarotuvar çalışmaları her zaman ilgimi çekmiştir. Herhalde pek çok yazılımcının hayalleri arasında bu tip firmalarda çalışmak ve yeni fikirleri ortaya atarak diğer yazılımcılara sunmak yer almaktadır.
+
+![blg120_Giris.jpg](/assets/images/2009/blg120_Giris.jpg)
 
 Microsoft'un DevLabs isimli portalında bu tip fikirlerin labarotuvar çalışmalarının yer aldığını görebilirsiniz. Örneğin son zamanların popüler konularından birisi olan observable koleksiyonları kullanarak asenkron (Asynchronous) ve olay güdümlü (Event Based) programlamayı kolaylaştıran Reactive Extensions, yeni başlayanlara yazılım anlatan Small Basic yada White Box testleri için geliştirilen Pex... Tabi daha pek çok labarotuvar çalışması yer almaktadır. Bunlardan biriside Code Contracts'tır.
 

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Business Delegate Pattern"
 date: 2016-05-02 06:00:00 +0300
-description: "Epey zamandır tasarım kalıpları tarafına bakmadığımı fark ettim. Hem kalıpları tekrar etmek hem de yeni bir şeyler var mı diye internette gezinirken JEE tarafında sıklıkla başvurulan Business Delegate isimli bir desene rastladım. Aslında delegate dediğimiz zaman bir işi başkasına devrettiğimizi düşünebiliriz (Delegasyon ile ilgili olarak internette resim ararken de işte yandaki gibi eğlenceli bir tanesine rastladım) Business Delegate kalıbı temel olarak sunum katmanı(presentation layer) ile iş katmanını(Business Layer) arasındaki iletişimde aynı isimli fonksiyonların ele alınmasında değerlendiriliyor. Zaten adından da anlaşılacağı üzere sunum katmanındaki bir fonksiyonelliğin asıl iş katmanındaki karşılığına devredilmesi söz konusu. Burada önemli noktalardan birisi talebi olan nesnenin talep ile ilgili içeriği(Context diyebiliriz) aynen ikinci bir nesneye delege etmesidir."
 categories:
   - tasarim-kaliplari-design-patterns
 tags:
@@ -12,12 +11,9 @@ tags:
   - async-await
   - delegates
 ---
-# Business Delegate Pattern
-![Bdpattern_4.gif](/assets/images/2016/Bdpattern_4.gif)
-
-Merhaba Arkadaşlar,
-
 Epey zamandır tasarım kalıpları tarafına bakmadığımı fark ettim. Hem kalıpları tekrar etmek hem de yeni bir şeyler var mı diye internette gezinirken JEE tarafında sıklıkla başvurulan Business Delegate isimli bir desene rastladım. Aslında delegate dediğimiz zaman bir işi başkasına devrettiğimizi düşünebiliriz (Delegasyon ile ilgili olarak internette resim ararken de işte yandaki gibi eğlenceli bir tanesine rastladım)
+
+![Bdpattern_4.gif](/assets/images/2016/Bdpattern_4.gif)
 
 Normal şartlarda standart olarak kabul gören Gangs of Four (Erich Gamma, Richard Helm, Ralph Johnson ve John Vlissides) desenlerinde yer almıyor ancak genel yazılım tasarım kalıpları içerisinde yer verilmiş. (Tüm deseneler ile ilişkili olarak [Wikipedia adresine](https://en.wikipedia.org/wiki/Design_Patterns) giderseniz diğer desenler kısmında yer aldığını görebilirsiniz)
 

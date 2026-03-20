@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Workflow Foundation 4.0 - Kodlama Zamanında Doğrulama(Validation)"
 date: 2010-01-15 01:08:00 +0300
-description: "Bazen nerede duracağımızı bilmemiz gerekir ve bazende, mümkün olduğunca erken durup bazı şeyleri değiştirerek ilerlememiz...Bu teori yazılım geliştirmeninde pek çok noktasında karşımıza çıkmaktadır. Durmamız gereken noktalardan birisi, uygulamaların ürettiği ve önceden fark edebileceğimiz hatalardır(Genellikle Exception' ları düşünebiliriz)."
 categories:
   - wf-4-0-beta-2
 tags:
@@ -12,12 +11,9 @@ tags:
   - authentication
   - visual-studio
 ---
-# Workflow Foundation 4.0 - Kodlama Zamanında Doğrulama(Validation)
-![blg110_Giris.jpg](/assets/images/2010/blg110_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Bazen nerede duracağımızı bilmemiz gerekir ve bazende, mümkün olduğunca erken durup bazı şeyleri değiştirerek ilerlememiz...Bu teori yazılım geliştirmeninde pek çok noktasında karşımıza çıkmaktadır. Durmamız gereken noktalardan birisi, uygulamaların ürettiği ve önceden fark edebileceğimiz hatalardır (Genellikle Exception'ları düşünebiliriz). Ancak bazı olası hataların uygulamaların çalışması sırasında değil, çalıştırılmaya başlamadan önce bilinmesinde hem zaman hemde maliyet kazancı açısından yarar vardır. Şimdi elimizdeki materyalleri bir düşünelim.
+
+![blg110_Giris.jpg](/assets/images/2010/blg110_Giris.jpg)
 
 Ürün geliştirmek için kullandığımız Visual Studio gibi gelişmiş bir araç,.Net Framework platformu vb...O halde bazı hataların çalışma zamanı yerine daha geliştirme aşamasındayken IDE üzerinde fark edilmesinin önemli olduğunu söyleyebiliriz. Peki geliştirme safhasında, örneğin bir Workflow aktivitesini kullanırken...Hımmmm...Sanırım nereye varmak istediğimi anladınız.
 

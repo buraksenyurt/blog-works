@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tasarım Prensipleri - Dependency Inversion"
 date: 2009-06-30 10:45:00 +0300
-description: "Bu yazımızda Dependency Inversion isimli tasarım prensibinden bahsediyor olacağız. Bu prensip kabaca, alt sınıflar ve üst sınıflar arasında kuvvetli bir bağ olmamasını önermektedir. Bunun en büyük gerekçesi, alt sınıflarda olabilecek sık değişiklerin, üst sınıfında değişmesine neden olabilecek olmasıdır ki bu hızla değişen yazılım ihtiyaçlarında sorunlara neden olmaktadır."
 categories:
   - tasarim-prensipleri-design-principles
 tags:
@@ -14,9 +13,6 @@ tags:
   - testing
   - dependency-management
 ---
-# Tasarım Prensipleri - Dependency Inversion
-Merhaba Arkadaşlar,
-
 Bu yazımızda Dependency Inversion isimli tasarım prensibinden bahsediyor olacağız. Bu prensip kabaca, alt sınıflar ve üst sınıflar arasında kuvvetli bir bağ olmamasını önermektedir. Bunun en büyük gerekçesi, alt sınıflarda olabilecek sık değişiklerin, üst sınıfında değişmesine neden olabilecek olmasıdır ki bu hızla değişen yazılım ihtiyaçlarında sorunlara neden olmaktadır. Buna birde yeni alt tipler ile genişletilebilme olasılıklarınıda eklersek, üst ve alt sınıflar arasındaki bağımlılıkların ortadan kaldırılmasının (bağımsızlık olarak düşünmek istesemde, bağımlılığın tersine çevrilmesi olarak bilmek zorundayız ![Wink](/assets/images/2009/smiley-wink.gif)) aslında ne kadar önemli olduğu anlaşılabilir. Durumu daha iyi kavrayabilmek adına basit bir örnek üzerinden ilerlemek çok daha doğrudur. Öncelikli olarak aşağıdaki sınıf diagramı ve kod içeriğinde görülen örnek Console uygulamasını göz önüne alalım.
 
 ![blg39_1.gif](/assets/images/2009/blg39_1.gif)

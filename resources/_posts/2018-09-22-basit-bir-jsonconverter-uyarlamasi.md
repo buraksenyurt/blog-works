@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Basit Bir JsonConverter Uyarlaması"
 date: 2018-09-22 11:28:00 +0300
-description: "Elimizde aynı anlamları taşıyan ama key adları farklı olan JSON içerikleri bulunmakta. Farklı paketleri kullanan servislerden dönen farklı cevaplar oluşuyor. İstemci tarafı aynı anlamdaki bu farklı çıktılar için farklı sınıflar tasarlamak istemiyor. Acaba ters serileştirme işlemi sırasında araya girip farklı key değerlerini aynı nesne örneğinin özelliklerine atamamız mümkün olabilir mi? JsonConverter sınıfını kullanarak konuya çözüm üretmeye çalışıyoruz."
 categories:
   - dotnet-core
 tags:
@@ -16,12 +15,9 @@ tags:
   - reflection
   - generics
 ---
-# Basit Bir JsonConverter Uyarlaması
+Merhaba Burak, Nasılsın? Umarım iyisindir ve her şey yolundadır. Beni sorarsan her zaman ki gibi oldukça yoğun bir dönemden geçmekteyim. Özellikle halen devam etmekte olan mimari dönüşüm projesinden dolayı böyle bir yoğunluğumuz var. Gerçi çevikleşmeye başladığımızdan beri fazla mesai yapmıyor ve gerçekten değer içeren sürümlenebilir çıktılar üretiyoruz. Şu an altıncı sprint'i koşmaktayız ve takımın ivmesi rayına oturmuş durumda. Bu açılardan bakınca tatlı bir yoğunluktayım desem yeridir. Sana bunları anlatmama gerek yok nitekim duyduğuma göre siz de benzer bir sürece girmişssiniz.
+
 ![peter_1.jpg](/assets/images/2018/peter_1.jpg)
-
-Merhaba Burak,
-
-Nasılsın? Umarım iyisindir ve her şey yolundadır. Beni sorarsan her zaman ki gibi oldukça yoğun bir dönemden geçmekteyim. Özellikle halen devam etmekte olan mimari dönüşüm projesinden dolayı böyle bir yoğunluğumuz var. Gerçi çevikleşmeye başladığımızdan beri fazla mesai yapmıyor ve gerçekten değer içeren sürümlenebilir çıktılar üretiyoruz. Şu an altıncı sprint'i koşmaktayız ve takımın ivmesi rayına oturmuş durumda. Bu açılardan bakınca tatlı bir yoğunluktayım desem yeridir. Sana bunları anlatmama gerek yok nitekim duyduğuma göre siz de benzer bir sürece girmişssiniz.
 
 Ben izninle kafama takılan bir konuyu seninle paylaşmak istiyorum. Firmamız bünyesinde geliştirdiğimiz Web API servislerinde standart input ve output tipleri kullanmaktayız. Payload'ları bunların içerisinde taşıyoruz. Bilirsin, POCO (Plain Old CLR Objects) şeklinde tasarladığımız klasik servis girdi çıktı mesajları işte. Lakin bu mesajların bazılarının farklı döndüğünü gördük. Aktif olarak Load Balancer'lar arkasında kalan servislerin bir kaçı aşağıdaki gibi bir JSON içeriği döndürmekteyken (basit anlatabilmek için içerikleri kırptım),
 

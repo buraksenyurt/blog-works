@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net Temelleri - Etkin Hata Yönetimi (Error Management)"
 date: 2007-07-18 12:00:00 +0300
-description: "Uzun süredir Windows Communication Foundation ile ilgili yazılar yayınlıyoruz. Sanıyorumki biraz hava değişimine ihtiyacımız olacak. Bu nedenle bu haftaki yazımızda biraz daha hafif ama önemli olan bir konu üzerinde durmaya çalışacağız..."
 categories:
   - aspnet
 tags:
@@ -13,9 +12,6 @@ tags:
   - http
   - iis
 ---
-# Asp.Net Temelleri - Etkin Hata Yönetimi (Error Management)
-Değerli Okurlarım Merhabalar,
-
 Uzun süredir Windows Communication Foundation ile ilgili yazılar yayınlıyoruz. Sanıyorumki biraz hava değişimine ihtiyacımız olacak. Bu nedenle bu haftaki yazımızda biraz daha hafif ama önemli olan bir konu üzerinde durmaya çalışacağız. Web uygulamalarında sunucu taraflı hata yönetimi (Server Side State Management)..Net ortamında hataların ele alınmasında kullanılan en bilinen yol try...catch...finally bloklarıdır. Ne varki uygulama ortamları çeşitlilik göstermektedir.
 
 Bir sınıf kütüphanesi içerisinde yapılan hata kontrolü ile dağıtık mimari uygulamaları (distributed applications) içerisinde yapılan hata yönetimi farklıdır.(Örneğin WCF içerisindeki Fault Management konusunu hatırlayalım) Bu sebepten Asp.Net uygulamalarındada farklı bir yaklaşımı ele almak gerekmektedir. Web uygulamalarında oluşan hatalar sonucu çok hoş olmayan hata ekranları ile karşılaşmak mümkün olabilmektedir. Ancak hatalar kontrollü bir şekilde yönetilebilirlerse, son kullanıcıyı bilgilendirebilecek şekilde mesajlar verilip hataların düzeltilmesi yönünde daha sağlam ve güçlü adımlar atılabilir. Bu aynı zamanda uygulamanın tutarlılığı ve güvenilirliği açısındanda önemlidir.

@@ -1,15 +1,12 @@
-﻿---
+---
 layout: post
 title: "Service Orientation vs Object Orientation"
 date: 2009-07-30 11:11:00 +0300
-description: "Merhaba Arkadaşlar,"
 categories:
   - soa
 tags:
   - soa
 ---
-# Service Orientation vs Object Orientation
-Merhaba Arkadaşlar,
 Geçtiğimiz günlerde çok ilginç bir rüya daha gördüm. ![Laughing](/assets/images/2009/smiley-laughing.gif) Ne zamandır paylaşmayı planlıyordum. Kısmet bu yazıymış. Rüyamda bir uçak yolculuğu ile Japonya'nın başkenti Tokyo'ya gidiyordum. Antartika üzerinden önce Hawai'ye oradanda Eminönü iskelesine uğradıktan sonra bir anda kendimi Tokyo'da buldum. E rüya tabi...Bir süre Japonya'ya vizesiz gidilebildiğini duymuştum.
 
 ![blg50_3.jpg](/assets/images/2009/blg50_3.jpg)

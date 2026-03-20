@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF Data Services– Annotations Builder"
 date: 2011-10-14 14:00:00 +0300
-description: "Gün geçmiyor ki Microsoft ürünlerinde yeni bir sürüm, yeni bir güncelleme görmeyelim Gülümseme Şurada daha iki gün oldu Entity Framework 4.2 RC ile ilişkili bir şeyler yazmaya çalışmıştım. Bu gün de ne duyduk dersiniz? WCF Data Services October 2011 CTP yayınlanmış Gülümseme Biraz sitemkar bir giriş oldu ama boşverin…"
 categories:
   - wcf-data-services
 tags:
@@ -20,10 +19,10 @@ tags:
   - visual-studio
   - rc
 ---
-# WCF Data Services– Annotations Builder
-[![Huzun](/assets/images/2011/Huzun_thumb.jpg)](/assets/images/2011/Huzun.jpg) Merhaba Arkadaşlar,
-
 Yağmurlu bu sonbahar günlerinde eminim ki kimse hüzünlenmek, kara kara düşünmek istemez. Ama bazen o kadar garip sorunlar ile karşı karşıya kalırız ki…Ne yapacağımızı bilemeyiz ve kara kara düşünürüz. Mesela ben bu girişi yazdığım sırada, aslında tamamlamış olduğum makalenin sonucunda bir yere varamamış ve beklentilerimi karşılayamamış birisi modundayım. Neden mi? Gelin anlatayım.
+
+[![Huzun](/assets/images/2011/Huzun_thumb.jpg)](/assets/images/2011/Huzun.jpg)
+
 
 Gün geçmiyor ki Microsoft ürünlerinde yeni bir sürüm, yeni bir güncelleme görmeyelim
 

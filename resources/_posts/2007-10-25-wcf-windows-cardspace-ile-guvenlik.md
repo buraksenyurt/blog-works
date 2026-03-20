@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF - Windows CardSpace ile Güvenlik"
 date: 2007-10-25 12:00:00 +0300
-description: "WCF(Windows Communication Foundation) mimarisini baz alan SOA(Service Oriented Applications) uygulamaları geliştirilirken, güvenlik(security) başlığı altında ele alınmakta olan pek çok konu vardır. Geliştirilen bir WCF servisinin sadece izin verilen istemciler(clients) tarafından kullanılmasıda bu konulardan bir tanesidir. Bu amaçla istemci uygulamaların veya onları kullanan hesapların servis tarafında doğrulanması(authenticate) ve yetkilendirilmesi(authorize) adına bazı teknikler ele alınır. Temel olarak bir istemcinin doğrulanması ve yetkilendirilmesi, onun kim olduğunun bilinmesine bağlıdır(Identification). Kimlik tespiti için kullanıcı adı-şifre, sertifika(certificate) yada Kerberos kartı(token) gibi elemanlar göz önüne alınır. Doğrulama işlemi sırasında kullanılan kimlik tespiti tekniklerinden biriside .Net Framework 3.0 ile birlikte gelen Windows Cardspace teknolojisidir."
 categories:
   - wcf
 tags:
@@ -19,9 +18,6 @@ tags:
   - generics
   - visual-studio
 ---
-# WCF - Windows CardSpace ile Güvenlik
-Değerli Okurlarım Merhabalar,
-
 WCF (Windows Communication Foundation) mimarisini baz alan SOA (Service Oriented Applications) uygulamaları geliştirilirken, güvenlik (security) başlığı altında ele alınmakta olan pek çok konu vardır. Geliştirilen bir WCF servisinin sadece izin verilen istemciler (clients) tarafından kullanılmasıda bu konulardan bir tanesidir. Bu amaçla istemci uygulamaların veya onları kullanan hesapların servis tarafında doğrulanması (authenticate) ve yetkilendirilmesi (authorize) adına bazı teknikler ele alınır. Temel olarak bir istemcinin doğrulanması ve yetkilendirilmesi, onun kim olduğunun bilinmesine bağlıdır (Identification). Kimlik tespiti için kullanıcı adı-şifre, sertifika (certificate) yada Kerberos kartı (token) gibi elemanlar göz önüne alınır. Doğrulama işlemi sırasında kullanılan kimlik tespiti tekniklerinden biriside.Net Framework 3.0 ile birlikte gelen Windows Cardspace teknolojisidir.
 
 > Windows CardSpace teknolojisi Windows Vista ile birlikte doğrudan gelmektedir. Nitekim Vista varsayılan olaran.Net Framwork 3.0 yüklü olarak yayınlanmaktadır. Diğer taraftan.Net Framework 3.0 yüklendiğinde Windows XP sürümlerinde de Windows CardSpace teknolojisi kullanılabilmektedir.

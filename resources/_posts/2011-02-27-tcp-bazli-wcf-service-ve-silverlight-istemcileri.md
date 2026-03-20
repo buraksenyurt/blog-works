@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "TCP Bazlı WCF Service ve Silverlight İstemcileri"
 date: 2011-02-27 16:10:00 +0300
-description: "Bugün yazımız içinde elimizde bir takım malzemelerimiz bulunmakta. Bir adet TCP bazlı olarak çalışan WCF(Windows Communication Foundation) servisi. Bu servisi kullanan Silverlight 4.0 tabanlı bir istemci. TCP bazlı servisimiz son derece zıpkın bir delikanlı aslında. Nitekim şirketin iç ağı üzerinden Binary tabanlı mesaj formatını kullandığı için ondan daha hızlısı neredeyse yok gibi."
 categories:
   - silverlight-4-0
   - wcf-4-0
@@ -18,10 +17,10 @@ tags:
   - iis
   - visual-studio
 ---
-# TCP Bazlı WCF Service ve Silverlight İstemcileri
-[![blg218_Giris](/assets/images/2011/blg218_Giris_thumb_1.jpg)](/assets/images/2011/blg218_Giris_1.jpg) Merhaba Arkadaşlar,
-
 Bir yazar, hazırlayacağı hikaye için çoğu zaman çevrede dolaşıp malzeme toplar. Olayın kahramanlarını tasvir etmek için çevredeki insanları göz önüne alır. Hatta gezdiği yerleri inceler. Bu açıdan bakıldığında iyi yazarların aslında çok iyi birer gözlemci olduğu söylenebilir.
+
+[![blg218_Giris](/assets/images/2011/blg218_Giris_thumb_1.jpg)](/assets/images/2011/blg218_Giris_1.jpg)
+
 
 Sonuç olarak yazarın elinde bir senaryo taslağı oluşur. Artık tek yapması gereken sakin bir köşe bulmak ve daktilosunun başına geçerek (ki günümüde büyük bir olasılıkla bu diz üstü bir bilgisayar olacaktır) yazmaya başlamaktır. Çözülmesi en zor olan parçaların başında kitaba bir isim bulmak ve ilk giriş cümlesini yazmak gelmektedir. Her ne kadar bu güne kadar yazılmış bir kitabım olmasa da böyle olduğunu tahmin etmekteyim.
 

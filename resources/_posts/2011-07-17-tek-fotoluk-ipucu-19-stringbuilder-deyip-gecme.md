@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu-19 (StringBuilder deyip geçme)"
 date: 2011-07-17 21:51:00 +0300
-description: "Merhaba Arkadaşlar,"
 categories:
   - csharp
   - tek-fotoluk-ipucu
@@ -11,9 +10,6 @@ tags:
   - tek-fotoluk-ipucu
   - performance
 ---
-# Tek Fotoluk İpucu-19 (StringBuilder deyip geçme)
-Merhaba Arkadaşlar,
-
 String tipleri çok garip tiplerdir. Onları + operatörü ile birleştirmek bazen akıl karı değildir. Çok fazla performans kaybettirir. Bir de uzlaşma yoluna gidebileceğini StringBuilder var. Örneğin
 
 ![Winking smile](/assets/images/2011/wlEmoticon-winkingsmile_37.png)

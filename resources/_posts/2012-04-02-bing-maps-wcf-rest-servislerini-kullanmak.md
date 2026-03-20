@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "BING Maps WCF Rest Servislerini Kullanmak"
 date: 2012-04-02 04:00:00 +0300
-description: "Hatırlayacağınız üzere BING Maps WCF Servislerini değerlendirdiğimiz bir önceki yazımızda, söz konusu hizmetlerden yararlanabilmek için proxy tiplerinden faydalanmıştık(Add Service Reference). Ancak bu servisleri sadece proxy tipleri üzerinden kullanmak gibi bir zorunluluğumuz bulunmamaktadır."
 categories:
   - bing
 tags:
@@ -19,10 +18,10 @@ tags:
   - serialization
   - generics
 ---
-# BING Maps WCF Rest Servislerini Kullanmak
-[![Garfield-1](/assets/images/2012/Garfield-1_thumb.jpg)](/assets/images/2012/Garfield-1.jpg) Merhaba Arkadaşlar,
-
 Bazen öğrenmek istediklerimiz bize inanılmaz karşık gelir. Ne zaman kitabı açsak ya da bilgisayarın başına geçsek işe zaten demoralize olmuş bir şekilde başlarız. Özellikle tez hazırlıkları safhasındayken veya yazacağımız kitap için gerekli araştırmaları yaparken çok yoğun, ağır, sıkıcı ve uğraştırıcı unsurlarla karşı karşıya kalabiliriz.
+
+[![Garfield-1](/assets/images/2012/Garfield-1_thumb.jpg)](/assets/images/2012/Garfield-1.jpg)
+
 
 Yüksek Lisans yaptığım dönemlerdeki hocalarımdan birisi bu konuda şöyle bir tavsiye de bulunmuştu…
 
@@ -32,7 +31,7 @@ Yüksek Lisans yaptığım dönemlerdeki hocalarımdan birisi bu konuda şöyle 
 
 Doğruyu söylemek gerekirse hangi yolu kullanırsak kullanalım, kendimizi nasıl motive etmek istersek isteyelim, bazen araştırdığımız konu da öyle bir nokta yakalarız ki, gerisi çorap söküğü gibi gelir. İşte bu yazımızda bu çorap söküğünü bulmaya çalışıyor olacağız.
 
-Hatırlayacağınız üzere BING Maps WCF Servislerini değerlendirdiğimiz [bir önceki yazımızda](Bing Maps WCF Servisleri.md), söz konusu hizmetlerden yararlanabilmek için proxy tiplerinden faydalanmıştık (Add Service Reference). Ancak bu servisleri sadece proxy tipleri üzerinden kullanmak gibi bir zorunluluğumuz bulunmamaktadır. Özellikle son yıllarda ön plana çıkan REST tabanlı servis yaklaşımı sayesinde, ilgili hizmetlerden HTTP protokolünün GET metodunu kullanaraktan da yararlanabiliriz. Bu çok doğal olarak platform bağımsızlık avantajını da beraberinde getirecektir. İşte bu yazımızda BING Maps servislerine ait REST (Representational State Transfer) arayüz noktalarını nasıl kullanabileceğimizi çok basit bir örnek üzerinden incelemeye çalışıyor olacağız. Gerisi çorağ söküğü gibi gelecek
+Hatırlayacağınız üzere BING Maps WCF Servislerini değerlendirdiğimiz [bir önceki yazımızda](/2012/02/13/bing-maps-wcf-servisleri/), söz konusu hizmetlerden yararlanabilmek için proxy tiplerinden faydalanmıştık (Add Service Reference). Ancak bu servisleri sadece proxy tipleri üzerinden kullanmak gibi bir zorunluluğumuz bulunmamaktadır. Özellikle son yıllarda ön plana çıkan REST tabanlı servis yaklaşımı sayesinde, ilgili hizmetlerden HTTP protokolünün GET metodunu kullanaraktan da yararlanabiliriz. Bu çok doğal olarak platform bağımsızlık avantajını da beraberinde getirecektir. İşte bu yazımızda BING Maps servislerine ait REST (Representational State Transfer) arayüz noktalarını nasıl kullanabileceğimizi çok basit bir örnek üzerinden incelemeye çalışıyor olacağız. Gerisi çorağ söküğü gibi gelecek
 
 BING Maps Rest servisleri de toplamda dört arayüz ile karşımıza çıkmaktadır. Adres, nokta bazlı yer bulma işlemleri vb için Locations API, harita bazlı rota gösterme ve metadata bilgisi elde edebilmek vb için Imagery API, yürüme yolu, araç yolu veya transit geliş gidişlere yönelik rota çıkartılması vb için Routes API, coğrafi bir alandaki trafik durum bilgisini vb öğrenebilmek için de Traffic API REST servislerinden yararlanılabilmektedir.
 

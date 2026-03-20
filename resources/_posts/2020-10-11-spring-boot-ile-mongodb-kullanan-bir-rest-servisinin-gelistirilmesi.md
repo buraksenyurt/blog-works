@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Spring Boot ile MongoDb Kullanan Bir Rest Servisinin Geliştirilmesi"
 date: 2020-10-11 19:01:00 +0300
-description: "Spring Boot, Java kod tabanı üzerine oturmuş Spring ile uygulama geliştirmeyi kolaylaştıran oldukça kolaylaştıran bir geliştirme çatısıdır. Dahili Dependency Injection mekanizması ve zengin paket desteği sayesinde otonom araçlardan akıllı televizyonlara, elektronik ticaretten bulut uygulamalara kadar birçok alanda Spring'in kabiliyetlerini oldukça etkin kullanabilmemize olanak sağlamaktadır. Birazdan sizde göreceksiniz ki az eforla oldukça etkili bir uygulama ortaya çıkartacağız. Geliştireceğimiz örnekteki amacımız resmi dokümantasyondan da yararlanarak MongoDb veritabanını kullanan basit bir REST servisi geliştirmek. Spring hayatı o kadar kolaylaştırıyor ki, onunla geliştirilen bir API servisi pek çok standardı da otomatik olarak sağlıyor. Haydi gelin nasıl olduğuna bir bakalım."
 categories:
   - spring-boot
 tags:
@@ -22,10 +21,9 @@ tags:
   - github
   - dependency-management
 ---
-# Spring Boot ile MongoDb Kullanan Bir Rest Servisinin Geliştirilmesi
-![springboot.png](/assets/images/2020/springboot.png)
-
 Spring Boot, Java kod tabanı üzerine oturmuş ve özellikle kurumsal çapta uygulamaların geliştirilmesinde önemli bir yere sahip olan Spring çatısınının kullanımını oldukça kolaylaştıran,basitleştiren zevkli hale getiren bir başka çatıdır (Framework). Dahili Dependency Injection mekanizması ve zengin paket desteği sayesinde otonom araçlardan akıllı televizyonlara, elektronik ticaretten bulut uygulamalara kadar birçok alanda Spring'in kabiliyetlerini oldukça etkin kullanabilmemize olanak sağlamaktadır. Birazdan sizin de göreceğiniz üzere az eforla oldukça etkili bir servis ortaya çıkaracağız.
+
+![springboot.png](/assets/images/2020/springboot.png)
 
 Geliştireceğimiz örnekteki amacımız [resmi dokümantasyondan](https://spring.io/guides/gs/spring-boot/) da yararlanarak MongoDb veritabanını kullanan basit bir REST servisi yazmak. Spring hayatı o kadar kolaylaştırıyor ki, onunla geliştirilen bir API servisi pek çok standardı da otomatik olarak sağlıyor. Haydi gelin nasıl olduğuna bir bakalım.
 

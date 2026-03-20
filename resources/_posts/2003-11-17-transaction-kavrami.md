@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Transaction Kavramı"
 date: 2003-11-17 10:00:00 +0300
-description: "Bu makalemizde sizlere veritabanı programcılığında ve özellikle de çok katlı mimaride çok önemli bir yere sahip olan Transaction’lar hakkında bilgi vermeye çalışacağım. Her zaman olduğu gibi konuyu iyi anlayabilmek için bir de örnek uygulamamız olucak."
 categories:
   - ado-net
 tags:
@@ -12,9 +11,6 @@ tags:
   - concurrency
   - transactions
 ---
-# Transaction Kavramı
-Değerli Okurlarım, Merhabalar.
-
 Bu makalemizde sizlere veritabanı programcılığında ve özellikle de çok katlı mimaride çok önemli bir yere sahip olan Transaction’lar hakkında bilgi vermeye çalışacağım. Her zaman olduğu gibi konuyu iyi anlayabilmek için bir de örnek uygulamamız olucak. Öncelikle Transaction nedir, ne işe yarar bunlardan bahsedelim. Çoğu zaman programlarımızda ardı arkasına veritabanı işlemleri uygulatırız. Örneğin, bir veritabanındaki bir tablodan kayıt silerken, aynı olayın sonucunda başka bir ilişkli tabloya silinen bu verileri ekleyebilir veya güncelleyebiliriz. Hatta bu işlemin arkasından da silinen kayıtların bulunduğu tablo ile ilişkili başka tablolaradan da aynı verileri sildiğimiz işlemleri başlatabiliriz. Dikkat edicek olursanız burada birbirleriyle ilintili ve ardışık işlemlerden söz ediyoruz.
 
 Farzedelim ki, üzerinde çalıştığımız bu tablolara farklı veritabanı sunucularında bulunsun. Örneğin, birisi Adana’da diğeri Arnavutluk’ta ortağı olduğumuz şirketin sunucularında. Hatta bir diğeride Kazakistandaki ortağımızın bir kaç sunucusunda bulunuyor olsun. E hadi bir tanede bizim sunucumuzda farklı bir veya bir kaç tablo olsun. Şimdi düşünün ki, biz Kazakistan’ a sattığımız malların bilgisini, Arnavutluk’ taki ortağımızın sunucularınada bildiriyoruz.

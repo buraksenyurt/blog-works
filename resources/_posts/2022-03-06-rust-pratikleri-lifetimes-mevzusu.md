@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Rust Pratikleri - Lifetimes Mevzusu"
 date: 2022-03-06 09:00:00 +0300
-description: "Rust'ın özellikle Garbage Collector kullanılan dillerden çok farklı olduğunu bellek yönetimi için getirdiği kurallardan dolayı biliyoruz. Ownership, borowwing gibi hususlar sayesinde güvenli bir bellek ortamını garanti etmek üzerine ihtisas yapmış bir dil. Bunlar pek çok dilde otomatik yönetildiği için Rust'ı öğrenmek zaman alabiliyor. Zor konulardan birisi de Lifetimes mevzusu. Bu konuyu esasında sevgili Bora Kaşmer ile başladığımız 45 Byte sohbetlerinde dile getirmek istiyorum. Lakin çok basit bir örnek gerekiyor ve String türü ile literal string arasındaki fark bu işi anlatmak için biçilmiş kaftan. Hiç vakit kaybetmeden proje iskeletini oluşturarak devam edelim."
 categories:
   - rust
 tags:
@@ -15,10 +14,9 @@ tags:
   - github
   - ownership
 ---
-# Rust Pratikleri - Lifetimes Mevzusu
-![vivalasvegas.jpg](/assets/images/2022/vivalasvegas.jpg)
-
 Rust'ın özellikle Garbage Collector kullanan dillerden çok farklı olduğunu bellek yönetimi için getirdiği kurallardan dolayı biliyoruz. Ownership, borrowing gibi hususlar sayesinde güvenli bir bellek ortamını garanti etmek üzerine ihtisas yapmış bir dil olduğunu söylesek yeridir. Bunlar pek çok dilde otomatik yönetildiği için Rust'ı öğrenmek biraz zaman alabiliyor ve bu yolda karşımıza çıkacak zor konulardan birisi de Lifetimes mevzusu. Kısaca nesnelere yaşam süresini bilinçli olarak vermek diye ifade edebileceğimiz bu konuyu esasında sevgili [Bora Kaşmer](https://www.borakasmer.com/) ile başladığımız [45 Byte sohbetleri](https://youtube.com/playlist?list=PLY-17mI_rla7WSQoRx_8a_1k79x3LDX4W)nde dile getirmek istiyorum. Lakin çok basit bir örnek ile konuyu olabildiğince sade bir şekilde anlatmam gerekiyor ve String ile &str arasındaki fark bunun için ideal olabilir.
+
+![vivalasvegas.jpg](/assets/images/2022/vivalasvegas.jpg)
 
 String gibi veri türleri, bulundukları tüm dillerde Heap ovasını dilediğince kullandığı için hem pratik hem de tehlikeli olabiliyor. Özellikle performans odaklı diller Heap konusunda çok hassas ve gereksiz kaynak tüketimlerini sevmiyorlar. Olayıların daha çok stack üstünde kalmasını tercih ediyorlar ve gerçekten gereken hallerde Heap'e çıkılmasını bekliyorlar. Bunu basit bir örnekle pekiştirelim. Diyelim ki TCP protokolü üstünden belli bir sokete gelen paketleri işliyoruz. Bu paketler uygulama tarafına buffer nesnesi olarak alınırlar. Bir buffer belleğe alındığında, onun içinden işe yarar bilgileri alıp örneğin bir struct'ın String türünden değerlerinde saklamak mümkündür. Hatta ilk aklımıza gelen yol budur. Böylece değiştirilebilir (mutable) bir veri modelini de tesis etmiş oluruz. Lakin söz konusu buffer içindeki verileri çektikten sonra değiştirmek gibi bir niyetimiz yoksa (bir başka deyişle onları sadece okunabilir olarak kullanacaksak) heap üstünde String veri türleri için ekstra alanlar açmak yerine buffer içindeki ilgili dilimleri işaret eden &str türlerini kullanabiliriz. Dolayısıyla ağ paketi olarak gelen veriyi alıp doğrudan kullanmak hem bellek üzerindeki operasyonu azaltır hem de performansı artırır.
 

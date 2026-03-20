@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "SSIS - Programatik Olarak Variable Değeri Set Etmek"
 date: 2011-11-11 14:59:00 +0300
-description: "Ne varki bu ham veri içeriklerinin operasyonel düzeyde ele alınabilmeleri için ilişkisel hale getirilmeleri, bir başka deyişle SQL Server gibi ilişkisel veritabanı ortamlarına aktarılmarı gerekmektedir. Pek tabi tersi bir durumda çoğu zaman söz konusu olmaktadır. Bu gibi ihtiyaçlar dahilinde SSIS(Sql Server Integration Services) paketleri oldukça kullanışlıdır. Özellikle bir tasarım aracının söz konusu olması, zengin kontrol seti ve akış bazlı çalışma modeli önemli avantajlar olarak karşımıza çıkmaktadır."
 categories:
   - csharp
 tags:
@@ -12,10 +11,10 @@ tags:
   - xml
   - visual-studio
 ---
-# SSIS - Programatik Olarak Variable Değeri Set Etmek
-[![SQL-Server-2008-Grid-v-r_2-300x187](/assets/images/2011/SQL-Server-2008-Grid-v-r_2-300x187_thumb.png)](/assets/images/2011/SQL-Server-2008-Grid-v-r_2-300x187.png) Merhaba Arkadaşlar,
-
 Beni tanıyanlar SQL ailesini pek sevmediğimi ve biraz uzak durmaya çalışmak istediğimi bilirler. Ne varki bazen iş hayatının gerçekleri ile karşı karşıya kalırız ve mecburen SQL ailesinin bazı fertleri ile yakın ilişkiler içerisine gireriz
+
+[![SQL-Server-2008-Grid-v-r_2-300x187](/assets/images/2011/SQL-Server-2008-Grid-v-r_2-300x187_thumb.png)](/assets/images/2011/SQL-Server-2008-Grid-v-r_2-300x187.png)
+
 
 ![Confused smile](/assets/images/2011/wlEmoticon-confusedsmile_13.png)
 

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: ".Net Tarafında Xml ile Oynamak-2"
 date: 2007-03-08 12:00:00 +0300
-description: "Yıllar önce odamdaki bilgisayarımda arkadaşlarımın telefon ve doğum günü bilgilerini C tabanlı bir programda kütük dosyasına kaydetmeye çalışmıştım. O günlerde sadece bulunduğum oda içerisindeki alanla sınırlıyken, bir süre sonra internet ortamına taşınıvermiştik."
 categories:
   - csharp
 tags:
@@ -13,9 +12,6 @@ tags:
   - performance
   - generics
 ---
-# .Net Tarafında Xml ile Oynamak-2
-Değerli Okurlarım Merhabalar,
-
 Yıllar önce odamdaki bilgisayarımda arkadaşlarımın telefon ve doğum günü bilgilerini C tabanlı bir programda kütük dosyasına kaydetmeye çalışmıştım. O günlerde sadece bulunduğum oda içerisindeki alanla sınırlıyken, bir süre sonra internet ortamına taşınıvermiştik. Dolayısıyla artık kütük dosyasını başka ortamlara aktarabilme imkanı doğmuştu. Elbetteki bu taşıma işinin bir standart dahilinde olması önemli idi. Sonuçta günümüzde bu tip veri taşıma standartları için Xml kullanır hale geldik. Xml elbette beraberinde pek çok teknolojiyide getirdi.
 
 XPath, XQuery, Xslt bunlardan sadece bazılarıdır. Dolayısıyla bu popüler veri standartı pek çok programlama dili tarafından desteklenir hale gelmiştir. Microsoft.Net Framework platformunda buna destek verecek tipler yer almaktadır. Bunlardan biriside bir önceki makalemizde değindiğimiz XmlDocument tipidir. Serinin bu ikinci bölümünde bu tipin diğer özelliklerinide öğrenmeye devam ediyor olacacağız. Hazır kütük dosyası yazma ve okuma işleminden söze başlamışken aynı işi Xml dosyası üzerinde nasıl yapabileceğimizi inceleyecebiliriz. Bu makalemizde telefonlardan ziyade kendi kütüphanemizdeki kitaplarımızı taşıyacak olan bir Xml dökümanı üzerinde bazı işlemler yapmaya çalışacağız. Elbette gerekli aksiyonların üzerinde gerçekleştirileceği bir Xml dosyasının olması gerekir. Bu dosyanın temel desenini aşağıdaki gibi tasarlayabiliriz.

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Blockchain Eliptik Eğri Şifreleme Algoritması"
 date: 2018-07-24 07:00:00 +0300
-description: "Blockchain ve onu baz alarak günümüzün popüler ilgi alanlarından birisi haline gelen BitCoin, kriptolamada Elliptic Curve Cryptography(ECC) olarak adlandırılan bir algoritmayı kullanmakta. Bu yazımızda temel matematik bilgilerimizi işin içerisine katıp, Fermat'nın Little Therorem'ine uğrayacak, Modüler aritmetik'ten yararlanıp, grup kavramı ve eliptik eğriler üzerinden geçerek algoritmanın temel dayanak noktalarını öğrenmeye çalışacağız."
 categories:
   - algoritma
 tags:
@@ -13,12 +12,9 @@ tags:
   - transactions
   - visual-studio
 ---
-# Blockchain Eliptik Eğri Şifreleme Algoritması
-![ecc_intro.gif](/assets/images/2018/ecc_intro.gif)
-
-Merhaba Arkadaşlar,
-
 Matematik tek evresenl dil olarak varoluşumuzdan bu yana yaşamın içerisinde. Onun diğer bilimlere olan pozitif etkisi tartışılamaz. Bugün ulaştığımız noktada teknoloji sınırlarını zorlarken yüz yıllar öncesinden ispat edilmiş pek çok teoremin uygulanabilirliklerine de rastlıyoruz. Doğruyu söylemek gerekrise 1999 yılında ilk işe başladığımdan beri matematik'ten epey uzakta sadece kod yazmaktayım. Belki de bugün.Net Core'un Linux üzerinde koşturulup bir Cloud platformuna taşınması da önemli bir mevzu. Lakin o hayranlık duyduğumuz fikirlerin arkasında, çok fazla ilişmediğimiz (belki de bakmaya korktuğumuz) güçlü bir matematik var. Bende büyük bir cesaretle o fikirlerden birisinin arkasında olan matematiği bir nebze olsun anlamak istedim. Matematik kesin kuralları olan bir dil olduğu içi, yazdığım şeyleri doğru telafüz etmem gerekiyor. Eğer basit bir şekilde anlatabilirsem, konuyu da anlamış sayılırm (Son gün notu: Basitleştiremedi)
+
+![ecc_intro.gif](/assets/images/2018/ecc_intro.gif)
 
 Geçtiğimiz iki hafta boyunca neredeyse her gün yarım saatimi ayırdığım ve anlamak için çaba sarf ettiğim bir konu oldu. Blockchain'in kullandığı Elliptic Curve Cryptography (ECC) algoritmasının nasıl çalıştığını öğrenmek. Araştırmalarıma başladığımda olayın içerisinde matematiğin bilgisayar şifreleme teknikleri üzerine kullanılan bir çok teorisine denk geldim. 1993 yılında girdiğim Matematik Mühendisliği bölümünde okurken gördüğüm pek çok konu burada da yer alıyordu. Ama zaman içerisinde hepsini unutmuşum. İkinci ve üçüncü dereceden denklemler, eliptik eğriler, asal sayılar, gruplar, sonlu alanlar (Finite Fields), Fermat'nın küçük teoremi (Little Theorem), modüler aritmetik, ayrık logaritma problemi (discrete logarithm problem), double and add algoritması, euclid vs... Aslında her şey Blockchain sisteminde yer alan eliptik eğri denklemine ait grafik gösterimin, gerçek sayılar ile ifade edileninden çok daha farklı olduğunu öğrenmemle başladı diyebilirim.
 

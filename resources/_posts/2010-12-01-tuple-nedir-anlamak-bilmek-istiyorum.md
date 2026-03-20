@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tuple Nedir? Anlamak, Bilmek İstiyorum."
 date: 2010-12-01 03:55:00 +0300
-description: "Tuple’ ın Türkçe' deki kelime karşılığı Demet olarak ifade edilmektedir. Matematikte elementlerin sıralanmış bir liste tasarımı olarak tanımlanmaktadır. Diğer yandan İlişkisel Veritabanı Sistemlerinde(Relational Database Management Systems) tablo içerisindeki bir satır olarak düşünülür. Dolayısıyla burada da sütunların sıralı bir dizisinden oluşan liste şeklinde ifade edildiğinde, Matematiksel tanımını da işaret ettiği ifade edilebilir."
 categories:
   - dotnet-framework-4-0
   - csharp-4-0
@@ -20,10 +19,10 @@ tags:
   - generics
   - visual-studio
 ---
-# Tuple Nedir? Anlamak, Bilmek İstiyorum.
-[![blg200_Giris](/assets/images/2010/blg200_Giris_thumb.jpg)](/assets/images/2010/blg200_Giris.jpg) Merhaba Arkadaşlar,
-
 Matematik Mühendisliği eğitimi almış birisi olarak hayatımın önemli bir kısmını teorem ispatlarına harcadığımı itiraf edebilirim. Tabi yaşamımın mesleki olarak kırılma anı sanıyorum ki üniversite yıllarında bilgisayara merak salmam ve programlama ile alakalı dersleri daha çok sevmemdi. Kısacası Matematik üzerine eğilmekten vazgeçip (ki bundan biraz pişmanlık duyduğumu ifade edebilirim) yazılım alanında ilerlemeyi kafama koymuştum.
+
+[![blg200_Giris](/assets/images/2010/blg200_Giris_thumb.jpg)](/assets/images/2010/blg200_Giris.jpg)
+
 
 Ama tabiki insanoğlu Matematik’ ten kaçamıyor. Hayatının belirli noktalarında öyle ya da böyle karşılaşıyor. Söz gelimi çalıştığım projelerin bazılarında, müşterinin sorunlarının çözümü için matematiksel modellerin kullandığını söyleyebilirim. Örneğin bir üretim hattının minimum maliyet gibi değerlere ulaşabilmesi için çalıştıracağı optimizasyon modelleri, dünyanın en zor matematik formüllerini içermektedir. Yazıya yaptığımız bu giriş sizleri korkutmasın. Bu günkü konumuzun Matematik ile çok alakası yok. Ancak Matematik dünyasından bir ismin yazılım tarafına geçirlişini inceleyeceğimizi ifade edebilirim. Bu günkü konumuz,.Net Framework 4.0 ile birlikte gelen Tuple.
 

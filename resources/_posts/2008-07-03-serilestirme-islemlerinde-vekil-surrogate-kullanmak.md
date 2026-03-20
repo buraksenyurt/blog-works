@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Serileştirme İşlemlerinde Vekil(Surrogate) Kullanmak"
 date: 2008-07-03 12:00:00 +0300
-description: "Bir önceki makalemizde WCF(Windows Communication Foundation) mimarisinde veri sözleşmelerinin(Data Contracts) karşı taraflarda farklı versiyonlarının olması durumunda oluşan vakaları incelemeye çalışmıştık. Versiyonlama(Versioning) vakaları dışında serileştirmede önem arz eden konulardan biriside, servis tarafında yayınlanan veri sözleşmeleri içerisinde serileştirilemeyen(NotSerializable) tiplerin var olmasıdır."
 categories:
   - wcf
 tags:
@@ -14,9 +13,6 @@ tags:
   - reflection
   - visual-studio
 ---
-# Serileştirme İşlemlerinde Vekil(Surrogate) Kullanmak
-Değerli Okurlarım Merhabalar,
-
 Bir önceki makalemizde WCF (Windows Communication Foundation) mimarisinde veri sözleşmelerinin (Data Contracts) karşı taraflarda farklı versiyonlarının olması durumunda oluşan vakaları incelemeye çalışmıştık. Versiyonlama (Versioning) vakaları dışında serileştirmede önem arz eden konulardan biriside, servis tarafında yayınlanan veri sözleşmeleri içerisinde serileştirilemeyen (NotSerializable) tiplerin var olmasıdır. Bu durum çoğunlukla, serieştirilebilen tipin kullandığı bazı dahili tiplerin farklı assembly dosyaları içerisinde yer aldığı vakalarda ortaya çıkmaktadır. Öyleki, diğer assembly içerisinde yer alan tipe (type) geliştirici tarafından müdahale edilemeyebilir ve bu sebepten serileştirilebilmesi için DataContract veya DataMember üyeleri uygulanamayabilir. Bu durum aşağıdaki şekilde örnek bir senaryo üzerinden ifade edilmeye çalışılmaktadır.
 
 ![mk256_1.gif](/assets/images/2008/mk256_1.gif)

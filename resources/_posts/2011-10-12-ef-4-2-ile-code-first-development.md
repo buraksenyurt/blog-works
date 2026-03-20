@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "EF 4.2 ile Code–First Development"
 date: 2011-10-12 20:45:00 +0300
-description: "Teknolojinin hızına inanın ki yetişilemiyor. Her gün yeni bir bilim ve teknoloji haberi var dünyada. Ancak bir geçek daha var ki o da Microsoft, Google, Apple gibi devlerin de hızına yetişilememsi. Örneğin daha henüz 2011 Mix’ te RTM olarak duyurulan Entity Framework 4.1 sürümü üzerine geçtiğimiz günlerde 4.2 RC(Release Candidate) duyuruldu. Ben de bunun üzerine yeni sürümde Code-First Development’ ın nasıl uygulandığını anlamak ve görmek istedim. Haydi gelin keşfetmeye başlayalım."
 categories:
   - entity-framework
 tags:
@@ -16,10 +15,10 @@ tags:
   - generics
   - rc
 ---
-# EF 4.2 ile Code–First Development
-[![speed](/assets/images/2011/speed_thumb.jpg)](/assets/images/2011/speed.jpg) Merhaba Arkadaşlar,
-
 Teknolojinin hızına inanın ki yetişilemiyor. Her gün yeni bir bilim ve teknoloji haberi var dünyada. Ancak bir geçek daha var ki o da Microsoft, Google, Apple gibi devlerin de hızına yetişilememsi. Örneğin daha henüz 2011 Mix’ te RTM olarak duyurulan Entity Framework 4.1 sürümü üzerine geçtiğimiz günlerde 4.2 RC (Release Candidate) duyuruldu. Ben de bunun üzerine yeni sürümde Code-First Development’ ın nasıl uygulandığını anlamak ve görmek istedim. Haydi gelin keşfetmeye başlayalım.
+
+[![speed](/assets/images/2011/speed_thumb.jpg)](/assets/images/2011/speed.jpg)
+
 
 İlk olarak Entity Framework 4.2 sürümü ile ilişkili detaylı bilgilere [Ado.Net Team Blog’](http://blogs.msdn.com/b/adonet/) un ilgili adresi üzerinden ulaşabileceğinizi belirtmek isterim. Peki herşey güzel de nedir bu Code-First Development? Ado.Net Entity Framework tarafında en başından beri var olduğunu bildiğimiz Model-First ve Database-First Development yaklaşımları mevcut. Ancak Code-First development ne ola ki
 

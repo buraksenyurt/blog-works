@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Entity Framework–İki Entity Bir Table ile Lazy ve Eager Loading"
 date: 2014-10-12 02:00:00 +0300
-description: "Özellikle içerisinde CLOB veya BLOB benzeri alanlar barındıran tabloların Entity Framework tarafındaki kullanımlarında network yükünü hafifletmek adına bir tablonun iki Entity ile ifade edilebilmesi düşünülebilir. Böyle bir durumda Lazy Loading’ i tablo içerisindeki alanlar bazında uygulama şansına sahip oluruz. Bu, özellikle LINQ(Language INtegrated Query) sorgularını işlettiğimiz yerlerde performans açısından faydalı bir iyileştirmedir. Kısacası bir tablonun kendi alanları içerisinde ilişki kurup bunu Entity seviyesinde ifade etmemiz gerekmektedir. Gelin basit bir örnek üzerinden ilerleyerek konuyu incelemeye çalışalım."
 categories:
   - entity-framework
 tags:
@@ -14,10 +13,10 @@ tags:
   - http
   - performance
 ---
-# Entity Framework–İki Entity Bir Table ile Lazy ve Eager Loading
-[![eftsplit_0](/assets/images/2014/eftsplit_0_thumb.png)](/assets/images/2014/eftsplit_0.png) Merhaba Arkadaşlar,
-
 Yandaki görüntü 1988 yılında Mevlüt Dinç (nam-ı diğer Mev Dinc) tarafından kurulan [Vivid Image](http://en.wikipedia.org/wiki/Vivid_Image) firmasının geliştirdiği oyunlardan birisine ait. [The First Samurai](http://en.wikipedia.org/wiki/First_Samurai_(video_game)). Mev Dinc ülkemizin yetiştirdiği en önemli değerlerden birisidir. Kendisi ile NedirTv topluluğunda yapılmış güzel bir röportaj da bulunmaktadır. Pek çoğumuz onu, [SOBEE](http://www.sobee.com.tr) firması ile de tanımıştır. Ben ise uzun zaman önce Microsoft’ un Darphane’ deki binasında katıldığım bir söyleşiden…
+
+[![eftsplit_0](/assets/images/2014/eftsplit_0_thumb.png)](/assets/images/2014/eftsplit_0.png)
+
 
 MVP olduğum o dönemlerde Microsoft Türkiye düzenlediği bir etkinlik ile onu karşımıza çıkartmıştı. Kendisini büyük bir keyifle dinlemiştik. Nasıl bu günlere geldiğinden, geliştirdiği oyunlardan, kurduğu SOBEE firması'nın projelerinden bahsetmişti. Hatta akılda kalan önemli ifadelerden birisi de, yeni geliştirmekte oldukları oyunlarda C++ yerine C# programlama dilini tercih etmeleriydi. (Sene 2007 olabilir) Ancak benim daha çok aklımda kalan tam olarak hatırlayamasam da aşağıda yazan ifadeleriydi.
 

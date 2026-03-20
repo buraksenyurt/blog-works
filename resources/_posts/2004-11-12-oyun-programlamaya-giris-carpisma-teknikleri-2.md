@@ -1,16 +1,12 @@
-﻿---
+---
 layout: post
 title: "Oyun Programlamaya Giriş (Çarpışma Teknikleri - 2)"
 date: 2004-11-12 10:00:00 +0300
-description: "Hatırlayacağınız gibi bir önceki makalemizde, Oyun Programcılığına girmek adına çarpışma tekniklerini incelemeye başlamış ve dörtgenlerin çarpışmalarını ele almıştık. Bugünkü makalemizde ise, dairesel şekillerin birbirleri ile olan çarpışmalarını incelemeye çalışacağız. Dairesel şekillerin çarpışmasına verilebilecek en güzel örnek, kaynaklardan edindiğim bilgiye göre Bilardo oyunlarıdır. Burada gerçekten de mükemmel dairelerin birbirleriyle olan çarpışmaları söz konusudur. Şunuda hatırlatmakta fayda var. Şu an için teorilerimizi iki boyutlu uzayda inceliyoruz. Elbetteki işin için üç boyutlu cisimler girdiğinde kullanacağımız algoritmalar ve teknikler birazda olsa farklılık gösterecektir. Çünkü uzay boyutunda X ve Y koordinatlarına ek olarak Z koordinatlarıda işin içine girecektir. Bu da iki boyutlu bir sistemde Bilardo oyunun tasarlanmasının 3 boyutlu sistemdekine göre daha kolay olduğunu göstermektedir."
 categories:
   - csharp
 tags:
   - csharp
 ---
-# Oyun Programlamaya Giriş (Çarpışma Teknikleri - 2)
-Değerli Okurlarım Merhabalar,
-
 Hatırlayacağınız gibi bir önceki makalemizde, Oyun Programcılığına girmek adına çarpışma tekniklerini incelemeye başlamış ve dörtgenlerin çarpışmalarını ele almıştık. Bugünkü makalemizde ise, dairesel şekillerin birbirleri ile olan çarpışmalarını incelemeye çalışacağız. Dairesel şekillerin çarpışmasına verilebilecek en güzel örnek, kaynaklardan edindiğim bilgiye göre Bilardo oyunlarıdır. Burada gerçekten de mükemmel dairelerin birbirleriyle olan çarpışmaları söz konusudur. Şunuda hatırlatmakta fayda var. Şu an için teorilerimizi iki boyutlu uzayda inceliyoruz. Elbetteki işin için üç boyutlu cisimler girdiğinde kullanacağımız algoritmalar ve teknikler birazda olsa farklılık gösterecektir. Çünkü uzay boyutunda X ve Y koordinatlarına ek olarak Z koordinatlarıda işin içine girecektir. Bu da iki boyutlu bir sistemde Bilardo oyunun tasarlanmasının 3 boyutlu sistemdekine göre daha kolay olduğunu göstermektedir.
 
 Dairesel nesnelerin çarpışmalarını belirlemek için eski dostumuz Pisagor Teoreminden faydalanacağız. Burada ana fikir, dairelerin merkezlerinin birbirlerine olan doğrusal uzaklıkları ile yarıçaplarının toplamlarının karşılaştırılmasıdır. Eğer, dairelerin merkezleri arası doğrusal uzaklık, dairelerin yarıçapları toplamından küçük ise, dairelerin üst üste geldiklerinden dolayısıyla çarpıştıklarından söz edebiliriz. Olayı aşağıdaki şekil ile ele almaya çalışalım.

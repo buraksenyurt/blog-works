@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "C# 4.0 - COM Interop İyileştirmelerinden Dynamic Import ve Ommiting Ref [Beta 2]"
 date: 2009-12-14 20:30:00 +0300
-description: "Bildiğiniz üzere C# 4.0 ile birlikte yine köklü dil değişiklikleri hayatımıza girmiş bulunmakta. Özellikle dinamik diller ile olan etkileşimin arttırılması ve COM dünyası ile olan haberleşmede getirilen yenilikler son derece önemli..."
 categories:
   - csharp-4-0
 tags:
@@ -12,12 +11,9 @@ tags:
   - http
   - generics
 ---
-# C# 4.0 - COM Interop İyileştirmelerinden Dynamic Import ve Ommiting Ref [Beta 2]
-![blg117_Giris.jpg](/assets/images/2009/blg117_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Hani bazen insanın canı şöyle çıtır çıtır kuruyemiş çeker ya...Hatta çoğunlukla bir film seyrederken, maç izlerken, arkadaşları ile sohhet ederken, internette surf yaparken iyi gider ya...Hatta birisinin blog yazısını okurken kuruyemişleri yerken daha bir heyecanlı, istekli olur ya...
+
+![blg117_Giris.jpg](/assets/images/2009/blg117_Giris.jpg)
 
 ![Laughing](/assets/images/2009/smiley-laughing.gif)
 

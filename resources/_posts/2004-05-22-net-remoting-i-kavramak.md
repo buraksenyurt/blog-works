@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: ".NET Remoting'i Kavramak"
 date: 2004-05-22 09:00:00 +0300
-description: "Bu makalemizde, .net remoting sistemini anlamaya çalışacak ve .net remoting sistemini oluşturan temel yapılar üzerinde duracağız. Öncelikle .net remoting' in ne olduğunu ve ne işe yaradığını tanımlamakla işe başlılayım. Remoting sistemi, kısaca, farklı platformlarda çalışan uygulamalar arasında veri alışverişine imkan sağlayan bir sistemdir. Bu tanımda söz konusu olan platformlar farklı işletim sistemlerinin yer aldığı farklı ve birbirlerinden habersiz proseslerde çalışan uygulamaları içerebilir. Olayın en kilit noktasıda, farklı sistemlerin veri alışverişinde bulunabilmelerinin sağlanmasıdır."
 categories:
   - dotnet-remoting
 tags:
@@ -14,9 +13,6 @@ tags:
   - performance
   - serialization
 ---
-# .NET Remoting'i Kavramak
-Değerli Okurlarım, Merhabalar.
-
 Bu makalemizde,.net remoting sistemini anlamaya çalışacak ve.net remoting sistemini oluşturan temel yapılar üzerinde duracağız. Öncelikle.net remoting'in ne olduğunu ve ne işe yaradığını tanımlamakla işe başlılayım. Remoting sistemi, kısaca, farklı platformlarda çalışan uygulamalar arasında veri alışverişine imkan sağlayan bir sistemdir. Bu tanımda söz konusu olan platformlar farklı işletim sistemlerinin yer aldığı farklı ve birbirlerinden habersiz proseslerde çalışan uygulamaları içerebilir. Olayın en kilit noktasıda, farklı sistemlerin veri alışverişinde bulunabilmelerinin sağlanmasıdır.
 
 Konuyu daha iyi irdeleyebilmek amacıyla, Microsoft tarafından belirtilen şu örneği göz önüne alabiliriz. Bir pocket pc aygıtında, Windows CE işletim sistem üzerinde, C# dili ile yazılmış bir uygulamamız olduğunu düşünelim. Bu uygulama herhangibir parçası olmadığı bir ağda yer alan bir uygulamanın ilgili metodlarını çağırıyor olsun. Uzak network üzerinde kurulu olan bu uygulama, Windows 2000 işletim sisteminde çalışan VB ile yazılmış ve başka bir sql sunucusunda yer alan bir takım bilgileri tedarik eden bir yapıya sahip olabilir. İşte.net remoting ile bu iki farklı uzak nesne arasında kolayca iletişim kurabilir ve veri alışverişini sağlayabiliriz.

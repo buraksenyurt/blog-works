@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Scala ile Tanışmak"
 date: 2019-02-28 21:30:00 +0300
-description: "Bir çok programlama dili var. Scala'nın dikkatimi çekmesindeki en büyük sebepse daha önceden çalıştığım turuncu bankanın merkezde servis odaklı süreçlerin yönetimi için backend tarafında kullanıyor olması. Bunu bir konuşma sırasında fark etmiştim ancak inceleme fırsatını henüz bulamamıştım. Derken zaman geçti, hayatlar değişti, teknolojiler farklılaştı ve araştırılacak konu listesinde sıra ona geldi. Bir bakalım neymiş bu Scala dedikleri programlama dili."
 categories:
   - scala
 tags:
@@ -16,12 +15,9 @@ tags:
   - visual-studio
   - github
 ---
-# Scala ile Tanışmak
-![learn_scala_0.gif](/assets/images/2019/learn_scala_0.gif)
-
-Merhaba Arkadaşlar,
-
 Yazılım geliştirmek için kullanabileceğimiz bir çok programlama dili var. Hatta bir ürünün geliştirilmesi demek farklı platformların bir araya getirilmesi anlamına da geldiği için, bir firmanın kendi ekosisteminde çeşitli dilleri bir arada kullandığını görmek mümkün. [Scala](https://docs.scala-lang.org/tour/tour-of-scala.html)'da bu çark içerisinde kendisine yer edinmiş ve son zamanlarda dikkatimi çeken programlama dillerden birisi. Bunun en büyük sebebi daha önceden çalıştığım turuncu bankanın Hollanda kanadında servis odaklı süreçlerin orkestrasyonu için onu backend tarafında kullanıyor (veya deneyimliyor) olması. Hatta [şuradaki github adresinden](https://github.com/ing-bank/baker) açık kaynak olan Baker isimli ürünü inceleme şansımız da var. Scala ve Java kullanılarak yazılmış bir çatı.
+
+![learn_scala_0.gif](/assets/images/2019/learn_scala_0.gif)
 
 Bunu bir konuşma sırasında öğrenmiştim ancak inceleme fırsatını bir türlü bulamamıştım. O vaktiler süreç akışlarının yönetimi için.Net ve Tibco işbirliğinden yararlanılıyordu. Hollanda neden daha farklı bir yol izlemişti? Scala'yı tercih etme sebepleri neydi? Hatta Scala programcıları aradıklarına dair iş ilanları var. Bu sorular bir süre kafamı meşgul etmişti. Derken zaman geçti, hayatlar değişti, teknolojiler farklılaştı ve araştırılacak konu listesinde sıra ona geldi. Bir bakalım neymiş bu Scala dedikleri programlama dili.
 

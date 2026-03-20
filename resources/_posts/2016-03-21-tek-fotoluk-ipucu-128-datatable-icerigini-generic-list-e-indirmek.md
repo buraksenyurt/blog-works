@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu 128 - DataTable içeriğini Generic List'e İndirmek"
 date: 2016-03-21 11:00:00 +0300
-description: "Diyelim ki kullandığınız harici bir metod size DataTable tipinden bir nesne örneği döndürmekte. Ne var ki kendi sisteminizde bu nesne içeriğini List<T> tipinden koleksiyon örnekleri ile dolaştırmanız gerekiyor. Hatta DataTable içeriğinin doldurulduğu tablonun kolon adları da sizin programınızdaki standartlar ile uyumlu değil. Bu durumda karşımıza şöyle bir soru çıkıyor. Herhangi bir DataTable içeriğini bir List<T> tipine nasıl dönüştürebiliriz?"
 categories:
   - tek-fotoluk-ipucu
 tags:
@@ -12,9 +11,6 @@ tags:
   - generics
   - datatable
 ---
-# Tek Fotoluk İpucu 128 - DataTable içeriğini Generic List'e İndirmek
-Merhaba Arkadaşlar,
-
 Diyelim ki kullandığınız harici bir metod size DataTable tipinden bir nesne örneği döndürmekte. Ne var ki kendi sisteminizde bu nesne içeriğini List tipinden koleksiyon örnekleri ile dolaştırmanız gerekiyor. Hatta DataTable içeriğinin doldurulduğu tablonun kolon adları da sizin programınızdaki standartlar ile uyumlu değil. Bu durumda karşımıza şöyle bir soru çıkıyor. Herhangi bir DataTable içeriğini bir List tipine nasıl dönüştürebiliriz? Dahası dönüşüm işlemi sırasında T tipinin özellik adlarının tablodaki asıl kolon adları ile eşleştirilmesini nasıl sağlarız? İşin sırrı aslına bakarsanız kendi tarafımızdaki Entity tiplerinde birer Attribute kullanmaktan ve bunu çalışma zamanında ele almaktan geçiyor. Aşağıdaki ekran görüntüsü size bir fikir verecektir.
 
 ![tfi_129.gif](/assets/images/2016/tfi_129.gif)

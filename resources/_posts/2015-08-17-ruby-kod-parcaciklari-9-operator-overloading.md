@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ruby Kod Parçacıkları - 9 (Operator Overloading)"
 date: 2015-08-17 09:00:00 +0300
-description: "Neredeyse her programlama dilinin öğrenilirken çalışana sıkıcı gelen bölümleri muhakkak vardır. Sanıyorum o dildeki operatörler bunların başında gelir. Ancak nesne yönelimli bir dil öğreniyorsak, kullanıcı tanımlı tipler için operatörlerin yeniden programlanması gerektiğini de er geç fark ederiz. Bu nedenle operatorlerin kendi tiplerimiz(User Defined Class) olması halinde yeniden nasıl yükleneceğini bilmemiz gerekir."
 categories:
   - ruby
 tags:
@@ -10,9 +9,6 @@ tags:
   - dotnet
   - workflow-foundation
 ---
-# Ruby Kod Parçacıkları - 9 (Operator Overloading)
-Merhaba Arkadaşlar,
-
 Neredeyse her programlama dilinin öğrenilirken çalışana sıkıcı gelen bölümleri muhakkak vardır. Sanıyorum o dildeki operatörler bunların başında gelir. Ancak nesne yönelimli bir dil öğreniyorsak, kullanıcı tanımlı tipler için operatörlerin yeniden programlanması gerektiğini de er geç fark ederiz. Bu nedenle operatorlerin kendi tiplerimiz (User Defined Class) olması halinde yeniden nasıl yükleneceğini bilmemiz gerekir.
 
 Ruby dilinde de aynı.Net tarafında olduğu gibi operatörleri yeniden yükleme imkanımız bulunmaktadır (Operator Overloading). Yani dört işlemde kullanılan operatörler ve diğerlerinin kendi tiplerimize ait nesne örnekleri üzerinde kullanılmaları halinde çalışma zamanın nasıl davranış sergileyeceğini belirleyebiliriz.

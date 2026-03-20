@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tasarım Desenleri - Prototype"
 date: 2009-07-06 20:35:00 +0300
-description: "Yandaki resimde 118 WallyPower isimli tekneyi(yada suda giden uzay mekiği) görmektesiniz. Bu tekneyi hangi filmde gördüğünüzü bir hatırlamaya çalışın. Seyredenler The Island filmi olduğunu hemen bulacaktır..."
 categories:
   - tasarim-kaliplari-design-patterns
 tags:
@@ -10,12 +9,9 @@ tags:
   - csharp
   - dotnet
 ---
-# Tasarım Desenleri - Prototype
-![blg43_1.jpg](/assets/images/2009/blg43_1.jpg)
-
-Merhaba Arkadaşlar,
-
 Yandaki resimde 118 WallyPower isimli tekneyi (yada suda giden uzay mekiği) görmektesiniz. Bu tekneyi hangi filmde gördüğünüzü bir hatırlamaya çalışın. Seyredenler The Island filmi olduğunu hemen bulacaktır. The Island filminde, Ewan McGregor'un gece rüyasında görüpte ustaca çizdiği (sanki çöpten adam çiziyormuşçasına) bu teknenin senaryodaki adı ise Renovatio (Yeniden doğmak-latince) idi.
+
+![blg43_1.jpg](/assets/images/2009/blg43_1.jpg)
 
 Bu arada filmin ana fikri, ileride yarın öbür gün organ ihtiyacı olabilecek olan insanların birer klonunun üretildiği ve tutulduğu gizli bir yer altı şehri üstüne kuruluydu. Klon demişken var olan insanların birebir kopyasının üretildiği bir üs olduğunu belirteyim.
 

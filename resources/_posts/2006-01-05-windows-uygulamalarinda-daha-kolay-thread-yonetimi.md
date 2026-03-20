@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Windows Uygulamalarında Daha Kolay Thread Yönetimi"
 date: 2006-01-05 08:00:00 +0300
-description: "Windows uygulamalarında, arka planda çalışan iş parçalarının (process) çok uzun sürdüğü durumlar ile sıkça karşılaşırız. Bu gibi durumlarda genellikle kullanıcı ekranı (UI - User Interface) kısa süreliğine de olsa arka plan işlemleri tamamlanıncaya kadar donar. Bunun önüne geçmek için Thread sınıflarını kullanabiliriz. Ancak .Net 2.0 ile birlikte windows uygulamalarında arka planda asenkron olarak çalıştırılabilecek tipteki işlemleri kolayca yönetebileceğimiz BackgroundWorker isimli yeni bir görsel bileşen gelmektedir. Bu makalemizde bu bileşen yardımıyla, UI kitlenmelerine neden olacak tarzdaki süreçleri nasıl yönetebileceğimizi görmeye çalışacağız."
 categories:
   - windows-forms
 tags:
@@ -13,9 +12,6 @@ tags:
   - threading
   - generics
 ---
-# Windows Uygulamalarında Daha Kolay Thread Yönetimi
-Değerli Okurlarım Merhabalar,
-
 Windows uygulamalarında, arka planda çalışan iş parçalarının (process) çok uzun sürdüğü durumlar ile sıkça karşılaşırız. Bu gibi durumlarda genellikle kullanıcı ekranı (UI - User Interface) kısa süreliğine de olsa arka plan işlemleri tamamlanıncaya kadar donar. Bunun önüne geçmek için Thread sınıflarını kullanabiliriz. Ancak.Net 2.0 ile birlikte windows uygulamalarında arka planda asenkron olarak çalıştırılabilecek tipteki işlemleri kolayca yönetebileceğimiz BackgroundWorker isimli yeni bir görsel bileşen gelmektedir. Bu makalemizde bu bileşen yardımıyla, UI kitlenmelerine neden olacak tarzdaki süreçleri nasıl yönetebileceğimizi görmeye çalışacağız.
 
 > BackgroundWorker bileşeni çalışma zamanında, asenkron olarak işlem yürütebilmemizi ve bu sayede kullanıcı ekranının gereksiz şekilde donmasını (freeze) engellemek amacıyla kolay ve güçlü bir süreç yönetimi sunar.

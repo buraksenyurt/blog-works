@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Transaction' larda DeadLock Kavramı"
 date: 2004-07-07 12:00:00 +0300
-description: "Bu makalemizde, eş zamanlı olarak çalışan Transaction' larda meydana gelebilecek DeadLock durumunu incelemeye çalışacağız. Öncelikle DeadLock teriminin ne olduğunu anlamaya çalışalım. DeadLock, aynı zamanlı çalışan Transaction' ların, belirlir satır(ları) kilitlemeleri sonucunda ortaya çıkabilecek bir durumdur."
 categories:
   - ado-net
 tags:
@@ -14,9 +13,6 @@ tags:
   - concurrency
   - transactions
 ---
-# Transaction' larda DeadLock Kavramı
-Değerli Okurlarım, Merhabalar.
-
 Bu makalemizde, eş zamanlı olarak çalışan Transaction'larda meydana gelebilecek DeadLock durumunu incelemeye çalışacağız. Öncelikle DeadLock teriminin ne olduğunu anlamaya çalışalım. DeadLock, aynı zamanlı çalışan Transaction'ların, belirlir satır (ları) kilitlemeleri sonucunda ortaya çıkabilecek bir durumdur. DeadLock terimini kavrayabilmenin en iyi yolu aşağıdaki gibi gelişebilecek bir senaryoyu zihnimizde canlandırmakla mümkündür. Bu senaryoda söz konusu olan iki tablomuz mevcuttur. Bu tablolar Sql sunucusunda Northwind veritabanı altında oluşturulmuş olup Field (alan) yapıları aşağıdaki gibidir.
 
 ![mk77_1.gif](/assets/images/2004/mk77_1.gif)

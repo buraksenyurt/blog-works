@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Google Cloud Pub/Sub Service Macerası"
 date: 2018-07-19 21:10:00 +0300
-description: "Bu makalemizde Google Cloud Platform'un önemli servislerinden birisi olan Pub/Sub API'yi incelemeye çalışıyoruz. gCloud ile komut satırından topic oluşturup, buna abone oluyor ve mesaj yayınlayıp, yayınlanan mesajı okuyoruz. Ardından .Net Core ile geliştirdiğimiz uygulamada Google.Cloud.PubSub.V1 paketini kullanarak mesaj yayınlama ve yayınlanan mesajları okuma işlemlerini nasıl gerçekleştirebileceğimize bakıyoruz."
 categories:
   - dotnet-core
   - gcp
@@ -25,12 +24,9 @@ tags:
   - generics
   - visual-studio
 ---
-# Google Cloud Pub/Sub Service Macerası
-![surfing.gif](/assets/images/2018/surfing.gif)
-
-Merhaba Arkadaşlar,
-
 Yeni yuvam ile evimin arası 40 km. Uzaklık nedeniyle mesailerimiz erken başlıyor. Sabah 05:50de çalan alarmla güne başlıyorum. Üst baş, kişisel bakım, seyahat boyu bana eşlik edecek filtre kahveyi hazırlama vs derken 06:35 sıralarında sevgili servis şoförümüz İhsan ağabey ile buluşup yola devam ediyorum. Yaklaşık 40-45 dakikalık bir seyahatten sonra iş yerine ulaşıyorum. Yol boyunca "o saatte kim ayakta olur?" sorusunu cevaplarcasına her sabah onlarca kez ezen insanla karşılaşıyorum. Mevsime göre evlerin sarı beyaz oda ışıkları, seyir halindeki arabalar, çalışanları işe götüren servisler, otobüsler, minibüsler, duraklarda bekleyen öğrenciler... O vakitlerde empati yapmak farklı bir deneyim.
+
+![surfing.gif](/assets/images/2018/surfing.gif)
 
 Ama bazı sabahlarda Feedly sayfama düşen yazıları okuyorum. Şirkete ulaştığımda mesainin başladığı 07:45e kadar da neredeyse yarım saatlik serbest zamanım oluyor. Genelde beğendiğim ve Feedly listemde favorilere eklediğim bir yazının devamını o zaman diliminde getiriyorum. Bazı yazıları da tekrar tekrar okuyorum. İşte tam da böyle bir sabahtı Google'ın iş ortaklarından olan [Incentro](https://www.incentro.com/en/) firmasının (Internet sayfaları çok hoş) direktörü Kees van Bemmel'ın kaleminde çıkan yazıyı okuduğumda. Makale, Cloud Platform temelli olarak geliştirilen bir çözüm hakkındaydı.
 

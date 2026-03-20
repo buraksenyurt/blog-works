@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF Öğreniyorum Ders 0–Temeller"
 date: 2010-11-15 08:30:00 +0300
-description: "Önümüzdeki 8 Webiner(Webcast) boyunca sizlere WCF(Windows Communication Foundation) kavramını öğretmeye çalışıyor olacağım. Bu 8 bölümlük seride Microsoft standartlarına göre Level 100 ile Level 200 arasında geziniyor olacağız. Ancak 2011 başlarında ikinci bir seri ile seviyemizi Level 200’ ün üstüne çıkartmayı da planlılyoruz"
 categories:
   - wcf-ogreniyorum
 tags:
@@ -11,10 +10,10 @@ tags:
   - http
   - webinar
 ---
-# WCF Öğreniyorum Ders 0–Temeller
-[![blg239_Giris](/assets/images/2010/blg239_Giris_thumb.gif)](/assets/images/2010/blg239_Giris.gif) Merhaba Aradaşlar,
-
 Uzun bekleyiş sona erdi ve sonbaharın gelmesi ile birlikte editörlüğünü yapmakta olduğum [NedirTv?Com](http://www.nedirtv.com) bünyesindeki yeni Webinerlerimize (WebCasts) başlamış olduk
+
+[![blg239_Giris](/assets/images/2010/blg239_Giris_thumb.gif)](/assets/images/2010/blg239_Giris.gif)
+
 
 ![Open-mouthed smile](/assets/images/2010/wlEmoticon-openmouthedsmile_7.png)
 

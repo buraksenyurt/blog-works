@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Dosya Satır Sayısını Bulmak"
 date: 2013-10-06 12:02:00 +0300
-description: "Malum Bankaların sistemleri halen daha eski olabildiğinden, bölümler arası veya uygulamalar arası veri aktarmanın en popüler yollarından birisi olarak Text tabanlı dosya formatları göz önüne alınmaktadır. Bazen onlarca megabyte' ı aşan ve milyonlarca satırdan oluşabilen düzenli text dosyaları söz konusu olur ve bunların bir şekilde uygulamaların konuştuğu veritabanı ortamlarına işlenerek, ilişkisel veri bütünlüğü içerisinde yerlerini alması beklenir."
 categories:
   - csharp
 tags:
@@ -17,10 +16,10 @@ tags:
   - generics
   - visual-studio
 ---
-# Dosya Satır Sayısını Bulmak
-[![1370555_lots_of_files_2](/assets/images/2013/1370555_lots_of_files_2_thumb.jpg)](/assets/images/2013/1370555_lots_of_files_2.jpg) Merhaba Arkadaşlar,
-
 Eğer sizde zamanında benim gibi bankaların teknoloji departmanlarında çalışmış ve yazılım geliştirmişseniz, eminimki hayatınızın bir döneminde büyük boyutlu Text dosyaları ile çalışmak zorunda kalmışsınızdır.
+
+[![1370555_lots_of_files_2](/assets/images/2013/1370555_lots_of_files_2_thumb.jpg)](/assets/images/2013/1370555_lots_of_files_2.jpg)
+
 
 Malum Bankaların sistemleri halen daha eski olabildiğinden, bölümler arası veya uygulamalar arası veri aktarmanın en popüler yollarından birisi olarak Text tabanlı dosya formatları göz önüne alınmaktadır. Bazen onlarca megabyte'ı aşan ve milyonlarca satırdan oluşabilen düzenli text dosyaları söz konusu olur ve bunların bir şekilde uygulamaların konuştuğu veritabanı ortamlarına işlenerek, ilişkisel veri bütünlüğü içerisinde yerlerini alması beklenir.
 

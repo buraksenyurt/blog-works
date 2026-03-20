@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WF Rule Engine’ i Dışarıdan Kullanmak"
 date: 2012-09-02 19:45:00 +0300
-description: "Hangi sektörde olunursa olunsun, işler ister kağıt üstünde, ister elektronik ortamda yürüsün, iş süreçleri kendi içerisinde tanımlı bir çok kural kümesi içerir. İş bu kural kümeleri, gerekli durumlarda doğal yollarla sistemin bir parçası olarak ya da yürütme usulü ile manuel olarak devreye girerek, sürecin şekillenmesi ve bir takım aksiyonların alınması noktasında önemli rol üstlenirler. Biz geliştiricilerde, iş akışı mantığına dayalı sistemleri tasarladığımız durumlarda bu kural kümelerinin esnekliklerine sahip olmak isteriz. Bu Biztalk, Sharepoint, TIBCO vb iş akışı modellerini içeren gelişmiş ürünlerde çoğu zaman karşımıza çıkmaktadır."
 categories:
   - wf
   - wf-4-0
@@ -21,10 +20,10 @@ tags:
   - visual-studio
   - rc
 ---
-# WF Rule Engine’ i Dışarıdan Kullanmak
-[![mfln2687l](/assets/images/2012/mfln2687l_thumb.jpg)](/assets/images/2012/mfln2687l.jpg) Merhaba Arkadaşlar,
-
 Kurallar, kurallar, kurallar!Hayatın hemen her noktasında karşımıza tonlarca kural çıkar. Tabi mevzumuz kuralların zorlayıcılığı ve saire değil, kuralların ihlal edilmesi veya uyulması halinde gerçekleşen aksiyonların neler olduğu ile ilgilidir. Ki bu düşünce tarzı aslına bakarsanız iş dünyasının çekirdek süreçlerinden tutun, en ince ve hatta uç noktalarına kadar yayılır.
+
+[![mfln2687l](/assets/images/2012/mfln2687l_thumb.jpg)](/assets/images/2012/mfln2687l.jpg)
+
 
 Hangi sektörde olunursa olunsun, işler ister kağıt üstünde, ister elektronik ortamda yürüsün, iş süreçleri kendi içerisinde tanımlı bir çok kural kümesi içerir. İş bu kural kümeleri, gerekli durumlarda doğal yollarla sistemin bir parçası olarak ya da yürütme usulü ile manuel olarak devreye girerek, sürecin şekillenmesi ve bir takım aksiyonların alınması noktasında önemli rol üstlenirler.
 

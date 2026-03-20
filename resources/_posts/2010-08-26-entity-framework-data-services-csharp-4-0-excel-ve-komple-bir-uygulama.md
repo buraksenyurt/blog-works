@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Entity Framework, Data Services, C# 4.0, Excel ve Komple Bir Uygulama"
 date: 2010-08-26 04:50:00 +0300
-description: "Bildiğiniz üzere bir süre önce Visual Studio 2010 ve .Net Framework ürünlerinin RTM sürümleri yayınlandı. Her iki ürünüde sizlerle birlikte , Microsoft PDC 2008 konferanslarından bu yana gerek yazılarımızla, gerek görsel derslerimizle incelemeye çalışıyoruz. Özellikle .Net Framework 4.0 açısından baktığımızda alet, edevat çantamızın dop dolu olduğunun eminimki hepimiz farkındayız."
 categories:
   - csharp-4-0
   - entity-framework
@@ -22,12 +21,9 @@ tags:
   - visual-studio
   - github
 ---
-# Entity Framework, Data Services, C# 4.0, Excel ve Komple Bir Uygulama
-![blg181_Giris.jpg](/assets/images/2010/blg181_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Bildiğiniz üzere bir süre önce Visual Studio 2010 ve.Net Framework ürünlerinin RTM sürümleri yayınlandı. Her iki ürünüde sizlerle birlikte, Microsoft PDC 2008 konferanslarından bu yana gerek yazılarımızla, gerek görsel derslerimizle incelemeye çalışıyoruz. Özellikle.Net Framework 4.0 açısından baktığımızda alet, edevat çantamızın dop dolu olduğunun eminimki hepimiz farkındayız.
+
+![blg181_Giris.jpg](/assets/images/2010/blg181_Giris.jpg)
 
 Paralel programlamadan tutun, WCF Eco System'e, C# 4.0 ile birlikte gelen yeniliklerden, WF 4.0 tarafına kadar pek çok noktada ek kabiliyetler, iyileştirmeler ve daha fazlası söz konusu. Aslında sizde benim gibi zaman zaman bu alet kutusu içerisindeki parçalardan bir kısmını alıp, örnek bir uygulamada kullanmaya çalışarak vaktinizi değerlendirmeye ve dolayısıyla offlama sorununa çare bulmaya çalışıyor olabilirsiniz. İşte bende bu düşünceler eşliğinde, havanın çok güzel olduğu şu bahar aylarında dışarıya çıkıp dolaşma şansını bulmama rağmen, evde kalıp örnek bir uygulama geliştirmeye karar verdim. İşte bu yazımız için alet çantası içinden seçtiklerimiz.
 

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF 4.0 Yenilikleri - Standard Endpoints [Beta 1]"
 date: 2009-08-14 03:15:00 +0300
-description: "Bir süredir WCF 4.0 ile birlikte gelen yenilikleri tek tek incelemeye çalışıyoruz. İlk incelediğimiz noktalar konfigurasyon ayarları üzerinde yapılmış olan basitleştirmeleri içermektedir. Bu değişimlerden bir diğerini inceleyerek serimize devam ediyor olacağız. Bu anlamda konumuz Standard Endpoints başlığı altında gelen yeniliklerdir. Bu özelliği inceledikten sonra konuyu anlamanın en iyi yolunun bir önceki versiyonda ne olduğuna bakmak olduğuna karar verdim."
 categories:
   - wcf-4-0-beta-1
 tags:
@@ -15,9 +14,6 @@ tags:
   - iis
   - visual-studio
 ---
-# WCF 4.0 Yenilikleri - Standard Endpoints [Beta 1]
-Merhaba Arkadaşlar,
-
 Bir süredir WCF 4.0 ile birlikte gelen yenilikleri tek tek incelemeye çalışıyoruz. İlk incelediğimiz noktalar konfigurasyon ayarları üzerinde yapılmış olan basitleştirmeleri içermektedir. Bu değişimlerden bir diğerini inceleyerek serimize devam ediyor olacağız. Bu anlamda konumuz Standard Endpoints başlığı altında gelen yeniliklerdir. Bu özelliği inceledikten sonra konuyu anlamanın en iyi yolunun bir önceki versiyonda ne olduğuna bakmak olduğuna karar verdim.
 
 Senaryomuza göre Http üzerinden sunulan bir servis için mexHttpBinding bağlayıcı tipini (Binding Type) kullanarak Metadata Publishing işlemini gerçekleştiriyoruz. Bir başka deyişle servisi ne yaptığı ve bunu hangi operasyonlar ile tanımladığı bilgisini istemcilere açıyoruz. Metadata üzerinden publishing işleminde anahtar noktanın servis sözleşmesi olarak IMetadataExchange arayüzünü kullanmak olduğunu bilmekteyiz. (Tabi doğrudan IIS üzerinden host edilen bir WCF servisi yazmıyorsak.) Bunu aklımızın bir köşesinde tutalım. Şimdi örneğimize ait konfigurasyon dosyasını aşağıdaki gibi geliştirdiğimizi düşünelim (İlk örneğimizi.Net Framework 3.5 tabanlı olarak geliştirdiğimizi hatırlatalım.)

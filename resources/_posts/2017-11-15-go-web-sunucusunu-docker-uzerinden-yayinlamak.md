@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Go Web Sunucusunu Docker Üzerinden Yayınlamak"
 date: 2017-11-15 10:00:00 +0300
-description: "Uzun zamandır Go ile kod yazmıyordum. Özlediğimi ifade edebilirim. Özellikle de kurallarını ve basitliğini. Ana paketteki programın başlangıç noktası olan main içerisinde HandleFunc isimli fonksiyondan yararlanarak root adrese gelecek olan talepleri indexHandler isimli operasyona yönlendiriyoruz. indexHandler içerisinde ise çok basit bir HTML içeriği bastırmaktayız. Elle tutulur bir şeyler olması açısından güncel zaman bilgisini, işletim sistemini, işlemcinin türevini yazdırdıktan sonra 0 ile 100 arasında üretilecek rastgele bir sayı da basıyoruz."
 categories:
   - golang
 tags:
@@ -16,12 +15,9 @@ tags:
   - visual-studio
   - shared-state
 ---
-# Go Web Sunucusunu Docker Üzerinden Yayınlamak
-![go_docker5.gif](/assets/images/2017/go_docker5.gif)
-
-Merhaba Arkadaşlar,
-
 Gondor'da bir şeyler araştırmak için harika bir zaman. Çünkü elimdeki işler bitti. Böyle vakitleri kendi araştırmalarıma ayırmak hoşuma gidiyor, kim ne derse desin. Yeni gözdem Linux makinem de (Gondor) önümde durduğuna göre kısa bir süre onun üzerinde çalışabileceğimi düşünüyorum.
+
+![go_docker5.gif](/assets/images/2017/go_docker5.gif)
 
 Aklıma gelen ilk şey ise, Go diliyle yazılmış ilkel bir web sunucusunu Docker üzerinden kullanabilmek. Önce web sunucusunu geliştirmek, başarılı bir şekilde çalıştığından emin olmak, sonrasında bir Docker imajı hazırlamak lazım. Ardından oluşturulan imajdan yararlanarak bir Container başlatıp web sunucusunun bu taşıyıcı örneği üzerinden çalışıp çalışmadığını test etmek senaryonun tamamlanması açısından yeterli. Tahminlerime göre 15 dakikayı aşmayacak bir iş gibi duruyor. Haydi başlayalım.
 

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ruby Kod Parçacıkları 27 - Hello Multithreading"
 date: 2016-12-01 21:15:00 +0300
-description: "Multithreading, programlamanın zor konularından birisidir. Aslında amaç işlemciye aynı andan birden fazla iş yaptırabilmek ya da bir işi parçalara bölerek eş zamanlı olarak yürütebilmektir. İşlemcinin bu farklı iş parçacıkları(Thread) arasında kısa sürelerde geçişler yapması sonucu istenen sonuçlara daha çabuk ulaşılması sağlanır. Bu, performans gerektiren bazı vakalarda oldukça önemlidir. Büyük veri kümelerinde arama yapan algoritmalar, yüksek boyutlu video görüntülerinin render eden programla, çeşitli matematik problemleri, oyun programlama ve daha pek çok alanda çoklu iş parçacığı tekniklerine başvurulur."
 categories:
   - ruby
 tags:
@@ -13,9 +12,6 @@ tags:
   - shared-state
   - mutex
 ---
-# Ruby Kod Parçacıkları 27 - Hello Multithreading
-Merhaba Arkadaşlar,
-
 Multithreading, programlamanın zor konularından birisidir. Aslında amaç işlemciye aynı andan birden fazla iş yaptırabilmek ya da bir işi parçalara bölerek eş zamanlı olarak yürütebilmektir. İşlemcinin bu farklı iş parçacıkları (Thread) arasında kısa sürelerde geçişler yapması sonucu istenen sonuçlara daha çabuk ulaşılması sağlanır. Bu, performans gerektiren bazı vakalarda oldukça önemlidir. Büyük veri kümelerinde arama yapan algoritmalar, yüksek boyutlu video görüntülerinin render eden programla, çeşitli matematik problemleri, oyun programlama ve daha pek çok alanda çoklu iş parçacığı tekniklerine başvurulur.
 
 ![rubythread_7.gif](/assets/images/2016/rubythread_7.gif)

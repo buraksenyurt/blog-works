@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Binary Search Tree' yi Anlamak"
 date: 2012-01-09 11:01:00 +0300
-description: "İkili ağaç yapısı basitliği ve hızlı sonuç üretimi açısından bakıldığında, arama algoritmalarından tutunda oyun programlamaya, ilişkisel veri tabanlarından, karmaşık matematik modellere kadar pek çok alanda kullanılmaktadır..."
 categories:
   - algoritma
   - csharp
@@ -15,12 +14,9 @@ tags:
   - java
   - generics
 ---
-# Binary Search Tree' yi Anlamak
-![oldradio.jpg](/assets/images/2012/oldradio.jpg)
-
-Merhaba Arkadaşlar,
-
 İnsan hafızası gizemli çalışan ama çoğu zamanda bizleri şaşırtan bir mekaniğe sahiptir. Doğduğumuz andan itibaren 3 yaşına kadar geçen zaman dilimi içerisinde görsel olarak ne izlersek kaparız. Ancak neredeyse bunların hiç birini hatırlamayız.
+
+![oldradio.jpg](/assets/images/2012/oldradio.jpg)
 
 Çocukluğumuz, ergenliğimiz, yetişkinliğimiz, orta yaş halimiz ve yaşlılığımız. Tüm bu zaman dilimlerinde beynimiz sürekli olarak bir şeyleri hafıza da tutma ihtiyacı hisseder. Zaman zaman öğrendiğimiz pek çok bilgiyi kolayca unutur ve ihtiyacımız olduğunda hatırlamakta zorlanırız. Ama kimi bilgilerde bilinç altımıza neredeyse kazınır ve geçerli bir sağlık problemi oluşmadığı sürece hiç unutmayız (Çarpım tablosu, matematik dört işlemin nasıl yapıldığı veya hangi ışıkta durulması gerektiği gibi)
 

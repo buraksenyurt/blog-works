@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Powershell'i Kurcalayan Bir Yazılımcı"
 date: 2017-06-14 09:27:00 +0300
-description: "Aslında Powershell betikleri uzun zamandır yaygın ve etkin bir şekilde kullanılıyor. Sistem yöneticilerinin biraz programlama bilgisi ile veya programcıların da biraz sistem bilgisi ile bu dili temel seviyede kullanmaları mümkün. Elimizdeki Windows 7'den son sürüm Windows Server ailesine kadar pek çok sistemde Powershell betiklerini kullanabiliriz. Geçtiğimiz günlerde bir boşluk yakaladım ve en çok tavsiye edilen Powershell betikleri nelerdir öğrenmek istedim. Uzman olmadığım bir alan olsa da tanıma mahiyetinde neler yapılabileceğini görmek istiyordum."
 categories:
   - powershell
 tags:
@@ -10,12 +9,9 @@ tags:
   - dotnet
   - http
 ---
-# Powershell'i Kurcalayan Bir Yazılımcı
-![powershell_1.gif](/assets/images/2017/powershell_1.gif)
-
-Merhaba Arkadaşlar,
-
 Powershell betikleri uzun zamandır yaygın ve etkin bir şekilde Windows ailesinde yer almakta. Özellikle sunucu tarafındaki kullanımının öne çıktığını görüyoruz. Temel olarak işletim sistemi üzerinden betik dillerin avantajlarını da kullanarak pek çok işlemin yapılabilmesine olanak sağlayan bir kabuk olarak düşünülebilir. Powershell.Net Framework kütüphanelerini de doğrudan kullanabildiğinden önemli avantajlar sağlamaktadır. Klasör listeleme veya dosya kopyalama gibi çok basit işlemler dışında, n sayıda sunucuya dağıtım paketi çıkacak programcıkların geliştirilmesi benzeri operasyonları da içeren geniş bir yetkinliğe sahiptir. DevOps kültüründe Windows ailesi için değerli ve öne çıkan bir programlama ortamıdır diyebiliriz.
+
+![powershell_1.gif](/assets/images/2017/powershell_1.gif)
 
 Sistem yöneticilerinin biraz programlama bilgisi ile veya programcıların da biraz sistem bilgisi ile bu dili temel seviyede kullanmaları mümkündür. Elimizdeki Windows 7'den son sürüm Windows Server ailesine kadar pek çok sistemde Powershell betiklerini kullanabiliriz. Geçtiğimiz günlerde bir boşluk yakaladım ve en çok tavsiye edilen Powershell betikleri nelerdir araştırayım dedim. Uzman olmadığım bir alan olsa da tanıma mahiyetinde neler yapılabileceğini görmek istiyordum. Daha önceden Powershell ile üzerinde Gacutil olmayan bir makinede.Net Framework 1.1 ile yazılmış bir kütüphanenin register edilmesi ve eğlence amaçlı olarak Star Wars marşının çaldırılması gibi işlemler yapmıştım ama çok çok daha fazlası olduğunu biliyordum.
 

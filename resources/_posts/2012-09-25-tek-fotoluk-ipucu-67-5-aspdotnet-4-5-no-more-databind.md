@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu 67.5–Asp.Net 4.5 No More DataBind"
 date: 2012-09-25 05:45:00 +0300
-description: "Merhaba Arkadaşlar,"
 categories:
   - tek-fotoluk-ipucu
 tags:
@@ -11,9 +10,6 @@ tags:
   - aspnet
   - entity-framework
 ---
-# Tek Fotoluk İpucu 67.5–Asp.Net 4.5 No More DataBind
-Merhaba Arkadaşlar,
-
 Asp.Net 4.5 Web Forms tarafında gelen yeniliklerden birisi de, veri bağlı kontrolleri IQueryable veya IEnumerable tipinden arayüz referanslarına bağlarken DataBind fonksiyon çağrısı yapılması zorunluluğu olmamasıdır. Bu sayede Markup tarafında sadece Select metodunun bildirilmesi yeterli olmaktadır. Aşağıdaki ekran görüntüsünde olduğu gibi
 
 ![Winking smile](/assets/images/2012/wlEmoticon-winkingsmile_130.png)

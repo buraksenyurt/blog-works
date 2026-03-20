@@ -1,17 +1,13 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu 156 - Sevimli Ruby Block'ları"
 date: 2017-04-16 15:38:00 +0300
-description: "Farklı programlama dillerini çalışırken alışkın olduğum programlama dillerindeki ortamlardan çok daha farklı kabiliyetleri görme şansını buluyorum. Bazı dillerin kabiliyetleri bana çok ilgi çekici geliyor. Örneğin Ruby dilindeki block kavramı."
 categories:
   - ruby
 tags:
   - ruby
 ---
-# Tek Fotoluk İpucu 156 - Sevimli Ruby Block'ları
-Merhaba Arkadaşlar,
-
-Farklı programlama dillerini öğrenmeye çalışırken alışkın olduğum programlama dillerindeki ortamlardan çok daha farklı kabiliyetleri görme şansı buluyorum. Bazı dillerin kabiliyetleri çok dikkat çekici oluyor. Örneğin Ruby dilindeki block kavramı. İlk tanımaya çalıştığım [şu kod parçasında](../2015/Ruby Kod Parçacıkları - 10 (Yield ve Block Kullanımı).md) mevzuyu az çok anlamış olsam da asıl gücünü görmek için Ruby'nin kendi built-in yapılarındaki block kullanımlarını incelemem gerekti. Sonunda asıl faydasını anladım diyebilirim. Konuyu anlamak için dizilere sıklıkla uygulanan each, find_all, reject gibi metodları göz önüne aldım. Örneğin bir dizide belirli kurallara uyan elemanları elde etmek için kullanılan find_all metodunu kendim yazmak istesem ve bir block kullanmam gerekse bunu nasıl yapabileceğimi bulmaya çalıştım. Siz, Ruby'yi geliştiren kişi olsanız ve metodlara parametre olarak kod bloklarını geçirme yeteneğini ilave etseniz veri yapılarında bu özelliği nasıl kullandırtınız? Aşağıdaki örnek ekran çıktısında yer alan findSomething metodu gibi olabilir mi?
+Farklı programlama dillerini öğrenmeye çalışırken alışkın olduğum programlama dillerindeki ortamlardan çok daha farklı kabiliyetleri görme şansı buluyorum. Bazı dillerin kabiliyetleri çok dikkat çekici oluyor. Örneğin Ruby dilindeki block kavramı. İlk tanımaya çalıştığım [şu kod parçasında](/2015/08/20/ruby-kod-parcaciklari-10-yield-ve-block-kullanimi/) mevzuyu az çok anlamış olsam da asıl gücünü görmek için Ruby'nin kendi built-in yapılarındaki block kullanımlarını incelemem gerekti. Sonunda asıl faydasını anladım diyebilirim. Konuyu anlamak için dizilere sıklıkla uygulanan each, find_all, reject gibi metodları göz önüne aldım. Örneğin bir dizide belirli kurallara uyan elemanları elde etmek için kullanılan find_all metodunu kendim yazmak istesem ve bir block kullanmam gerekse bunu nasıl yapabileceğimi bulmaya çalıştım. Siz, Ruby'yi geliştiren kişi olsanız ve metodlara parametre olarak kod bloklarını geçirme yeteneğini ilave etseniz veri yapılarında bu özelliği nasıl kullandırtınız? Aşağıdaki örnek ekran çıktısında yer alan findSomething metodu gibi olabilir mi?
 
 ![tfi156.gif](/assets/images/2017/tfi156.gif)
 

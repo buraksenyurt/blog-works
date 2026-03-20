@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ado.Net 2.0 ve Toplu Güncelleme İşlemleri (Batch-Updates)"
 date: 2004-09-18 12:00:00 +0300
-description: "Toplu güncelleştirme işlemleri, birden fazla sql ifadesinin (insert,update,delete,select gibi) arka arkaya gelecek şekilde ancak tek bir seferde çalıştırılmasını baz alan bir tekniktir. Ado.Net 2.0 ile, toplu güncelleştirme işlemlerine daha fazla fonksiyonellik kazandırılmıştır. Bu koşul elbetteki toplu güncelleştirme işlemlerini destekeleyen veritabanı sunucuları üzerinde geçerli olmaktadır. Şu an için, yönetimsel kodda yer alan Oracle ve Sql nesnelerinin desteklediği bu fonksiyonelliği kazanmak için aşağıda prototipi verilen ve SqlDataAdapter yada OracleDataAdapter sınıflarına ait olan, UpdateBatchSize özelliği kullanılmaktadır."
 categories:
   - ado-net-2-0
 tags:
@@ -16,9 +15,6 @@ tags:
   - generics
   - datatable
 ---
-# Ado.Net 2.0 ve Toplu Güncelleme İşlemleri (Batch-Updates)
-Değerli Okurlarım Merhabalar,
-
 Toplu güncelleştirme işlemleri, birden fazla sql ifadesinin (insert,update,delete,select gibi) arka arkaya gelecek şekilde ancak tek bir seferde çalıştırılmasını baz alan bir tekniktir. Ado.Net 2.0 ile, toplu güncelleştirme işlemlerine daha fazla fonksiyonellik kazandırılmıştır. Bu koşul elbetteki toplu güncelleştirme işlemlerini destekeleyen veritabanı sunucuları üzerinde geçerli olmaktadır. Şu an için, yönetimsel kodda yer alan Oracle ve Sql nesnelerinin desteklediği bu fonksiyonelliği kazanmak için aşağıda prototipi verilen ve SqlDataAdapter yada OracleDataAdapter sınıflarına ait olan, UpdateBatchSize özelliği kullanılmaktadır.
 
 ```csharp

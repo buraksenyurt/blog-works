@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF RIA Services - Gerçekten WCF"
 date: 2009-11-25 23:19:00 +0300
-description: "Uzun ve yorucu bir geceydi...Dün gece WCF RIA Service' leri ile ilişkili görsel bir dersin hazırlıklarını yaparken sevgili Mehmet Cengiz arkadaşımın hediyesi olan tablet üzerinde aşağıdaki şekli çizdiğimi farkettim. Bu şekilde WCF RIA Service' i kullanan basit bir Silverlight uygulamasının anlaşılır hali yer almaktadır..."
 categories:
   - wcf-eco-system
   - wcf-ria-services
@@ -21,9 +20,6 @@ tags:
   - http
   - authentication
 ---
-# WCF RIA Services - Gerçekten WCF
-Merhaba Arkadaşlar,
-
 Uzun ve yorucu bir geceydi...Dün gece WCF RIA Service'leri ile ilişkili görsel bir dersin hazırlıklarını yaparken sevgili Mehmet Cengiz arkadaşımın hediyesi olan tablet üzerinde aşağıdaki şekli çizdiğimi farkettim. Bu şekilde WCF RIA Service'i kullanan basit bir Silverlight uygulamasının anlaşılır hali yer almaktadır. Web uygulamamız, içerisinde Silverlight nesnesi barındıran test sayfası ve Domain Service sınıfı, dışarıda veya aynı alanda duran Ado.Net Entity Data Model içeriği ve onun kullandığı veritabanı. Soru işareti içeren ok ve Winforms kutucuğunu ise sonradan eklemeye karar verdim ve araştırmam da işte bu şekilde başladı
 
 ![Laughing](/assets/images/2009/smiley-laughing.gif)

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Instagram REST Servislerinin .Net Tarafında Basit Kullanımı"
 date: 2016-05-04 06:00:00 +0300
-description: "Neredeyse hepimizin sosyal ağ üzerinde hesapları bulunuyor. Facebook, Twitter, Instagram, Youtube, Flickr ve benzerlerini bunlara örnek olarak verebiliriz. Bu ağlar pek tabii kendi hizmetlerini geliştiricilerin kullanımına da uzun zamandır açmış durumdalar. Geliştirici olarak bizleri bu kısım daha çok ilgilendiriyor. Peki bu tip ağlar geliştiricilere kendi hizmetlerini nasıl sunuyorlar? Bunun en bilinen ve ortak yanı pek tabii ki servisler şeklinde yayınlanmaları. Burada kullanılacak olan servislerin istemci uygulamaların ne tipte olduğuna bakılmaksızın ortak bir standartta çalışması önemli. İşte bu noktada devreye REST(Representational State Transfer) yaklaşımını benimseyen servisler geliyor."
 categories:
   - rest
 tags:
@@ -18,12 +17,9 @@ tags:
   - async-await
   - caching
 ---
-# Instagram REST Servislerinin .Net Tarafında Basit Kullanımı
-![UsingInstagram_3.gif](/assets/images/2016/UsingInstagram_3.gif)
-
-Merhaba Arkadaşlar,
-
 Neredeyse hepimizin sosyal ağ üzerinde hesapları bulunuyor. Facebook, Twitter, Instagram, Youtube, Flickr ve benzerlerini bunlara örnek olarak verebiliriz. Bu ağlar pek tabii kendi hizmetlerini geliştiricilerin kullanımına da uzun zamandır açmış durumdalar. Geliştirici olarak bizleri bu kısım daha çok ilgilendiriyor.
+
+![UsingInstagram_3.gif](/assets/images/2016/UsingInstagram_3.gif)
 
 Peki bu tip ağlar geliştiricilere kendi hizmetlerini nasıl sunuyorlar? Bunun en bilinen ve ortak yanı pek tabii ki servisler şeklinde yayınlanmaları. Burada kullanılacak olan servislerin istemci uygulamaların ne tipte olduğuna bakılmaksızın ortak bir standartta çalışması önemli. İşte bu noktada devreye REST (Representational State Transfer) yaklaşımını benimseyen servisler geliyor. Neredeyse pek çok sosyal ağın REST tipinden hizmet veren Endpoint'leri mevcut. Bu sayede istemci teknolojilerinden tamamen bağımsız olarak dış dünyaya fonksiyonellikler sunulabilmekte. İşte bu yazımızda Instagram'ın dışarıya sunduğu bu REST servisleri nasıl kullanabileceğimizi basit bir Endpoint üzerinden incelemeye çalışacağız. Amacımız Instagram hesabı ile giriş yapan bir kullanıcının eklediği son fotoğrafları web sayfası üzerinde gösterbilmek.
 

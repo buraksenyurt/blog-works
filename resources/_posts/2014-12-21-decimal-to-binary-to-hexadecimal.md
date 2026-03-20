@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Decimal to Binary to Hexadecimal"
 date: 2014-12-21 17:00:00 +0300
-description: "Görünen o ki evrenin hemen her alanında matematiğin izlerine rastlamaktayız. İşin gerçeği bildiğimiz tüm bilimler illaki bir ucundan da olsa matematiğe bulaşmak zorunda kalmıştır/kalmaktadır/kalacaktır. Söz gelimi bilgisayar bilimlerini göz önüne alalım. Bilgisayar bilimleri deyince işin içerisine elektronikten tutunda yazılıma kadar geniş bir alan girmektedir. Hatta kapalı ve açık devre ile başlayan ampüllerin zaman içerisinde 1 ve 0’ lar olarak anıldığı ve karşımıza anlamlı, işlenebilir veri olarak çıktığı bir durum da söz konusudur."
 categories:
   - algoritma
 tags:
@@ -11,12 +10,9 @@ tags:
   - http
   - generics
 ---
-# Decimal to Binary to Hexadecimal
-[![Pierre_de_Fermat_Pul](/assets/images/2014/Pierre_de_Fermat_Pul_thumb.jpg)](/assets/images/2014/Pierre_de_Fermat_Pul.jpg) Merhaba Arkadaşlar,
-
-[İlk Draft Tarihi: 2012-08-01]
-
 Bundan bir kaç sene önce ünlü matematikçi Fermat’ nın son teoreminin nasıl ispat edildiğinin anlatıldığı bir kitabı okumuştum. 1670 yılında ortaya çıkan ve Fermat tarafından o zaman ispat edildiği öne sürülen ama bildiğim kadarı ile kanıt bulunamayan teorem ancak 1995 yılında Andrew Wiles tarafından kanıtlanabilmiştir.
+
+[![Pierre_de_Fermat_Pul](/assets/images/2014/Pierre_de_Fermat_Pul_thumb.jpg)](/assets/images/2014/Pierre_de_Fermat_Pul.jpg)
 
 Söz konusu teoremin ispatı sırasında ([bununla ilişkili olarak wikiden bilgi alabilirsiniz](http://tr.wikipedia.org/wiki/Fermat%27n%C4%B1n_son_teoremi)) arada ispat edilmek zorunda kalınan başka teoremler de ortaya çıkmıştı. Kitabın içerisinde altın orandan tutunda, Şimuya-Taniyama konjöktörünün çözümlenmesine kadar pek çok konuya yer verilmişti. Şimdi haklı olarak bunları niye söylüyorsun diyeceksiniz?
 

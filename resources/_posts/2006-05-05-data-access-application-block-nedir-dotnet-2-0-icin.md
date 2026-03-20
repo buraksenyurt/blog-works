@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Data Access Application Block Nedir? (.Net 2.0 için)"
 date: 2006-05-05 12:00:00 +0300
-description: "Microsoft tarafından serbest olarak dağıtılan Data Access Application Block (Veri Erişimi Uygulama Bloğu) özellikle n katmanlı mimarilerde, Data Access Layer (veri erişim katmanı) için gerekli işlevselliği sağlayan, performans ve bellek yönetimi konusunda iyi sonuçlar veren bir Enterprise Solution Pattern' dir. Bu block sayesinde, özellikle Business Layer (iş katmanındaki) katmanındaki işimiz oldukça kolaylaşmaktadır. Özellikle Sql sunucusu üzerinde uzmanlaşmış olan bu block' un .Net 2.0 için olan sürümü Ocak ayı içerisinde yayınlandı."
 categories:
   - ado-net-2-0
 tags:
@@ -20,9 +19,6 @@ tags:
   - dataset
   - datatable
 ---
-# Data Access Application Block Nedir? (.Net 2.0 için)
-Değerli Okurlarım Merhabalar,
-
 Microsoft tarafından serbest olarak dağıtılan Data Access Application Block (Veri Erişimi Uygulama Bloğu) özellikle n katmanlı mimarilerde, Data Access Layer (veri erişim katmanı) için gerekli işlevselliği sağlayan, performans ve bellek yönetimi konusunda iyi sonuçlar veren bir Enterprise Solution Pattern'dir. Bu block sayesinde, özellikle Business Layer (iş katmanındaki) katmanındaki işimiz oldukça kolaylaşmaktadır. Özellikle Sql sunucusu üzerinde uzmanlaşmış olan bu block'un.Net 2.0 için olan sürümü Ocak ayı içerisinde yayınlandı.
 
 Data Access Application Block (Veri Erişimi Uygulama Bloğu) ve diğer Enterprise Solution Pattern'lerini bu adresten [indirebilirsiniz](http://www.microsoft.com/downloads/details.aspx?familyid=5A14E870-406B-4F2A-B723-97BA84AE80B5&displaylang=en). Data Access Application Block (Veri Erişimi Uygulama Bloğu), diğer blocklar gibi bir solution olarak gelmektedir. Dolayısıyla ilk kullanımından önce mutlaka bu solution'ı açıp derlememiz gerekir. Böylece kullanılabilir assembly dosyalarımızı (dll'leri) elde etmiş oluruz. Bunun sonucu olarakta herhangibir projede, Data Access Application Block (Veri Erişimi Uygulama Bloğu) için oluşturulan assembly'ımızı referans edebilir ve kullanmaya başlayabiliriz. Aynı uygulama mantığı diğer block'lar içinde geçerlidir.

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Paralel Programlamada Performans, Hız, Verimlilik ve Ölçeklenebilirlik Ölçümleri"
 date: 2010-02-21 23:05:00 +0300
-description: "Ben Matematik Mühendisliği eğitimi almış bir bireyim. Öğrenim hayatım boyunca en çok yaptığım işlerden birisi, matematiksel teoremlerin bilimsel ispatlarını gerçekleştirmek olmuştur. Hemen hemen mühandisliğin her alanındaki farklı problemlerin modellenmesi ve ispatlarının yapılarak en uygun yol olduklarının gösterilmesi adına pek çok kağıt karalamış ve tüketmişimdir."
 categories:
   - parallel-programming
 tags:
@@ -14,12 +13,9 @@ tags:
   - visual-studio
   - rc
 ---
-# Paralel Programlamada Performans, Hız, Verimlilik ve Ölçeklenebilirlik Ölçümleri
-![blg135_Giris.jpg](/assets/images/2010/blg135_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Ben Matematik Mühendisliği eğitimi almış bir bireyim. Öğrenim hayatım boyunca en çok yaptığım işlerden birisi, matematiksel teoremlerin bilimsel ispatlarını gerçekleştirmek olmuştur. Hemen hemen mühandisliğin her alanındaki farklı problemlerin modellenmesi ve ispatlarının yapılarak en uygun yol olduklarının gösterilmesi adına pek çok kağıt karalamış ve tüketmişimdir.
+
+![blg135_Giris.jpg](/assets/images/2010/blg135_Giris.jpg)
 
 Zaman zaman neden yaptığımızı anlamadığım ispatlardan tutunda, lastiğine konumuş olan sineğin bisikletin ileriye yönlü ama düz bir rotada olmayan hareketi boyunca çizdiği sarmalımsının denklemini çıkartmaya kadar matematiğin bir o kadar garip ama gizemli evreninde dolaşıp durduğumu hatırlıyorum. Hatta bir gün Matematik Analiz dersinin finalinde karşılaştığım bir soruda ne hikmetse 1=2 sonucuna ulaşmışımdır. Halbuki 1=1' e ulaşmış olmam gerekirdi.
 

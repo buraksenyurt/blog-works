@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Entity Framework - POCO(Plain Old CLR Objects)"
 date: 2010-04-30 12:01:00 +0300
-description: "Aslında Ado.Net Entity Framework 4.0 tarafında yer alan önemli kavramlardan birisi de POCO nesnelerinin kullanımı. Ado.Net Entity Framework 3.5(Service Pack 1) sürümünde net bir şekilde ele alınmayan POCO nesneleri için, 4.0 versiyonunda tam destek söz konusu. POCO(Plain Old CLR Objects), .Net Framework üzerinde herhangibir bağımlılığı olmadan tanımlanabilen nesneler olarak düşünülebilir. POCO nesneleri herhangibir sınıftan türemez(Class Inheritance), çeşitli arayüzleri uygulamaz(Interface Implementation) veya özel nitelikler(Attributes) ile işaretlenmezler."
 categories:
   - entity-framework
 tags:
@@ -16,12 +15,9 @@ tags:
   - visual-studio
   - rc
 ---
-# Entity Framework - POCO(Plain Old CLR Objects)
-![blg152_Giris.gif](/assets/images/2010/blg152_Giris.gif)
-
-Merhaba Arkadaşlar,
-
 Yandaki resimde Seychelles Blue Pigeon olarak adlandırılan ve Hint Okyanusundaki 115 adadan birisi olan Republic of Seychelles kolonisine has bir güvercin resmi yer almaktadır. Aslında bu kuş oldukça meşhurdur. Nitekim çeşitli hayvan türlerini genellikle kitap kapaklarında kullanan O'Reilly yayınlarının uzun zaman önce çıkarttığı ve Julia Lerman tarafından yazılmış olan [Programming Entity Framework](http://www.amazon.com/Programming-Entity-Framework-Julia-Lerman/dp/059652028X/ref=sr_1_1?ie=UTF8&s=books&qid=1266336933&sr=8-1-spell) baskısında bu kuşa yer verilmiştir. Kitaptan bahsetmişken...Bendeki baskısı Ado.Net Entity Framework 3.5 sürümünü içermekteydi. Doğal olarak köprünün altından çok sular geçti ve artık 4.0 sürümü ile karşı karşıyayız. Kitabın Aralık 2009 baskısında 4.0 vesiyonu içinde ek bilgiler yer almakta. Ancak sanıyorum ki yakın zamanda son sürümüne kavuşacak olan.Net Framework 4.0 ile birlikte yeni bir baskısı daha çıkacaktır.
+
+![blg152_Giris.gif](/assets/images/2010/blg152_Giris.gif)
 
 Aslında Ado.Net Entity Framework 4.0 tarafında yer alan önemli kavramlardan birisi de POCO nesnelerinin kullanımı. Ado.Net Entity Framework 3.5 (Service Pack 1) sürümünde net bir şekilde ele alınmayan POCO nesneleri için, 4.0 versiyonunda tam destek söz konusu. POCO (Plain Old CLR Objects),.Net Framework üzerinde herhangibir bağımlılığı olmadan tanımlanabilen nesneler olarak düşünülebilir. POCO nesneleri herhangibir sınıftan türemez (Class Inheritance), çeşitli arayüzleri uygulamaz (Interface Implementation) veya özel nitelikler (Attributes) ile işaretlenmezler. Sadece verinin üzerlerinden akmasını sağlayan hafif siklet (Lightweight) nesnelerdir. Oysaki Entity Framework tarafında üretilen tipler düşünüldüğünde, türetmelerin, nitelik işaretlemelerinin ve IPOCO olarak adlandırabileceğimiz bazı arayüz uyarlamalarının yapıldığı görülür. Bu nedenle Entity nesnelerinin, Persistence kıstasını göz ardı etmesi veya test senaryoları düşünülerek Entity Framework yapısı içerisinde ele alınmaları zorlaşmaktadır. Dolayısıyla Entity Framework tarafına getirilen POCO desteğinin önemi büyüktür.
 

@@ -1,17 +1,13 @@
-﻿---
+---
 layout: post
 title: "Ruby Kod Parçacıkları 26 - Eğlenerek Binary Dosya Okumak"
 date: 2016-11-14 21:30:00 +0300
-description: "Vakit buldukça Ruby programlama dili ile ilgili bir şeyler yapmaya çalışıyorum. Halen daha dilin kabiliyetlerini tanıma aşamasındayım. Geçtiğimiz günlerde de Ruby Cookbook kitabından binary dosyalar üzerinde yapılan işlemlere ait örnekleri inceliyordum. Hoşuma giden uygulamalardan birisi de MP3 dosyalarına ait Tag bilgilerinin elde edilmesiydi. Gerçek hayat örneği olduğundan benim için daha öğretici idi. Örnekleri inceledim ve kendime göre farklılaştırarak basit bir kod parçası oluşturmaya çalıştım."
 categories:
   - ruby
 tags:
   - ruby
   - nosql
 ---
-# Ruby Kod Parçacıkları 26 - Eğlenerek Binary Dosya Okumak
-Merhaba Arkadaşlar,
-
 Vakit buldukça Ruby programlama dili ile ilgili bir şeyler yapmaya çalışıyorum. Halen daha dilin kabiliyetlerini tanıma aşamasındayım. Geçtiğimiz günlerde de Ruby Cookbook kitabından binary dosyalar üzerinde yapılan işlemlere ait örnekleri inceliyordum. Hoşuma giden uygulamalardan birisi de MP3 dosyalarına ait Tag bilgilerinin elde edilmesiydi. Gerçek hayat örneği olduğundan benim için daha öğretici idi. Örnekleri inceledim ve kendime göre farklılaştırarak basit bir kod parçası oluşturmaya çalıştım.
 
 Amaç bir MP3 dosyası üzerinde eğer varsa kayıtlı Tag bilgilerini elde etmek. Tag bilgilerine bakarak şarkının adını, söyleyen sanatçı veya grubu, yayınlandığı yılı ve içinde bulunduğu albüm bilgilerini elde etmek mümkün. Hatta albümdeki sıra numarası, türünü, başlangıç ve bitiş sürelerini dahi elde edebiliyoruz. Tabii MP3 dosya formatlarına ve ID3 standartlarına göre farklılıklar söz konusu olabiliyor. Uzatılmış tag yapısı gibi bir kavram ve ID3 ün farklı versiyonları var. Buna göre farklı bilgileri de elde etmek mümkün. Lakin ben 128 byte'lık segment yapısına sahip dosyaları ele almaya çalıştım ([ID3 formatına ait detaylı bilgi almak için wikipedia adresine bakmanızı öneririm](https://en.wikipedia.org/wiki/ID3))

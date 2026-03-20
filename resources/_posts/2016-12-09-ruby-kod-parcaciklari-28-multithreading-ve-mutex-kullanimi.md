@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ruby Kod Parçacıkları 28 - Multithreading ve Mutex Kullanımı"
 date: 2016-12-09 21:30:00 +0300
-description: "Ruby Kod Parçacıkları serimizin bir önceki bölümünde çoklu iş parçacıklarının(Multithreading) nasıl yazılabileceğini incelemeye başlamıştık. Başrol oyuncumuz olan Thread sınıfının kullanımını gördük. Lakin birden fazla iş parçacığının ele alındığı senaryolarda dikkat edilmesi gereken önemli konulardan birisi de ortak veriler üzerinde işlemler yapıldığında ortaya çıkmaktadır. Eş zamanlı olarak çalışan iş parçacıkları bazı durumlarda verinin tutarlılığının bozulmasına neden olabilir. Nitekim n sayıda iş parçacığının farklı anlarda aynı veri üzerinde işlem yapması söz konusudur. Birbirlerinin işlerini kesebilirler."
 categories:
   - ruby
 tags:
@@ -13,9 +12,6 @@ tags:
   - shared-state
   - mutex
 ---
-# Ruby Kod Parçacıkları 28 - Multithreading ve Mutex Kullanımı
-Merhaba Arkadaşlar,
-
 Ruby Kod Parçacıkları serimizin bir önceki bölümünde çoklu iş parçacıklarının (Multithreading) nasıl yazılabileceğini incelemeye başlamıştık. Başrol oyuncumuz olan Thread sınıfının kullanımını gördük. Lakin birden fazla iş parçacığının ele alındığı senaryolarda dikkat edilmesi gereken önemli konulardan birisi de ortak veriler üzerinde işlemler yapıldığında ortaya çıkmaktadır. Eş zamanlı olarak çalışan iş parçacıkları bazı durumlarda verinin tutarlılığının bozulmasına neden olabilir. Nitekim n sayıda iş parçacığının farklı anlarda aynı veri üzerinde işlem yapması söz konusudur. Birbirlerinin işlerini kesebilirler.
 
 Eğer ortak verinin tutarlılığı/kararlılığı önemli ise ilgili iş parçacıklarının senkronize edilmesi gereklidir. Bu pek çok programlama dilinde benzer teknikler ile çözülen bir problemdir. Ruby tarafında Mutex sınıfını kullanarak bu sorunun kontrollü bir şekilde ele alınması sağlanabilir. Mutex ile atomik olmayan metodların atomikleştirilmesi, memory barier konulması vb işler yapılabilir. Kısacası thread-safe denilen güvenli paralelliği sağlayabiliriz.

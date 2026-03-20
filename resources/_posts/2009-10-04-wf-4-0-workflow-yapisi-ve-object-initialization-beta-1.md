@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WF 4.0 - Workflow Yapısı ve Object Initialization[Beta 1]"
 date: 2009-10-04 23:29:00 +0300
-description: "Workflow Foundation 4.0 ile ilgili yenilikleri araştırdığım şu günlerde, yaptığım araştırmalar sırasında ilgimi çeken noktalardan biriside, bir Workflow' un kod tarafında tek bir ifade satırı ile oluşturulabiliyor olmasıydı."
 categories:
   - wf-4-0-beta-1
 tags:
@@ -11,9 +10,6 @@ tags:
   - workflow-foundation
   - visual-studio
 ---
-# WF 4.0 - Workflow Yapısı ve Object Initialization[Beta 1]
-Merhaba Arkadaşlar,
-
 Workflow Foundation 4.0 ile ilgili yenilikleri araştırdığım şu günlerde, yaptığım araştırmalar sırasında ilgimi çeken noktalardan biriside, bir Workflow'un kod tarafında tek bir ifade satırı ile oluşturulabiliyor olmasıydı. Burada Workflow sisteminin hiyerarşik yapısının, Object Oriented seviyede etkili bir kullanımının söz konusu olduğunu belirtmek isterim. Ancak konuya çekirdek bilgilerden başlayarak yaklaşmakta yarar var.
 
 Workflow içerisindeki lego parçalarının temelini aktiviteler (Activities) oluşturmaktadır. WF 4.0 mimarsinde tüm aktiviteler WorkflowElement bileşeninden türemektedir. Aktivitleri aslında Workflow'ların iş birimleri (Work Units) olarak düşünebiliriz. İki ve daha fazla iş biriminin bir araya gelerekten aktivite oluşturmaları da çok doğal olarak mümkündür. Aslında buradan ilginç olan bir tespit vardır. Bir aktivite, hiyerarşinin en üstünde yer alıyorsa bir Workflow halini alır ve kendi içerisinde pek çok aktiviteyi barındırabilir. Bunu şu şekilde de düşünebiliriz; "Bir metodun kendi içerisinde birden fazla metodu çağırması".

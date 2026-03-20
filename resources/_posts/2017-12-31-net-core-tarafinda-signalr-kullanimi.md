@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: ".Net Core Tarafında SignalR Kullanımı"
 date: 2017-12-31 21:02:00 +0300
-description: "Bir süre önce araştırmaya başladığım ama araya giren diğer konular(WebSockets ve CORS) nedeniyle askıda kalan SignalR ile ilgili West-World tarafında haftasonu önemli gelişmeler oldu. Öncelikle çalıştığım kaynaklardan yararlanarak aşağıdaki özet şekli oluşturdum ve bir örnek yapmaya karar verdim."
 categories:
   - asp-dotnet-core
 tags:
@@ -18,12 +17,9 @@ tags:
   - visual-studio
   - github
 ---
-# .Net Core Tarafında SignalR Kullanımı
-![signalr_4.gif](/assets/images/2017/signalr_4.gif)
-
-Merhaba Arkadaşlar,
-
 Bir süre önce araştırmaya başladığım ama araya giren diğer konular (WebSockets ve CORS-Cross Origin Resource Sharing) nedeniyle askıda kalan SignalR mevuzusuyla ilgili West-World'de haftasonu önemli ve heyecanlı gelişmeler oldu. Epey zorlandığımı itiraf etmek isterim. Bunun en büyük sebebi standart öğretilerde yer alan web tabanlı örnekler yerine her şeyi Console üzerinde uygulamaya çalışmamdı. HUB için bir sunucu, mesaj yayını için bir başka uygulama ve yayınlanan mesajları alan bir diğeri.
+
+![signalr_4.gif](/assets/images/2017/signalr_4.gif)
 
 Alınan sayısız çalışma zamanı hatası ve uykusuz bırakan birkaç saatin ardından sonunda konuyu bir şekilde toparlamayı başardım. Bu hataları gidermeye çalışırken farkına vardığım bir çok şey de oldu. SignalR'ın çalışma yapısı haricinde sunucu ve istemci taraflarının birbirleri üzerinden fonkisyon tetiklemesi noktasında nasıl bir yol izlediklerini.Net Core cephesinden görmüş oldum. Tüm bu didinmenin ardından güzel bir uyku çektim ve ertesi gün gelecekteki kendime not bırakmak için geçtim bilgisayarımın başına. Öncelikle çalıştığım kaynaklardan yararlanarak aşağıdaki özet şekli oluşturdum.
 
@@ -216,7 +212,7 @@ namespace FabrikamPostman
                 else
                     Console.WriteLine("Connected to Hub");
 
-            }).Wait();              
+            }).Wait();
 
             conn.On<string>("GetQuote", param => {
                 Console.WriteLine(param);

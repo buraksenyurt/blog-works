@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Oracle View' ları için Otomatik DataTable' lar Üretmek"
 date: 2016-03-19 18:21:00 +0300
-description: "Üzerinde çalıştığımız ve uzun süredir canlı ortamda yaşamakta olan eski bir ürünümüz geçtiğimiz günlerde kod kalite taramalarından birisine girdi. Vaktinde her zaman olduğu gibi alel acele yazılmak zorunda olan kodlar bir kaç ana kategori altında çeşitli tipte ihlallere yakalandı. Bunlardan birisi de Strongly Typed DataSet kullanımına ilişkindi."
 categories:
   - csharp
 tags:
@@ -13,9 +12,6 @@ tags:
   - dataset
   - datatable
 ---
-# Oracle View' ları için Otomatik DataTable' lar Üretmek
-Merhaba Arkadaşlar,
-
 Üzerinde çalıştığımız ve uzun süredir canlı ortamda yaşamakta olan eski bir ürünümüz geçtiğimiz günlerde kod kalite taramalarından birisine girdi. Vaktinde her zaman olduğu gibi alel acele yazılmak zorunda olan kodlar bir kaç ana kategori altında çeşitli tipte ihlallere yakalandı. Bunlardan birisi de Strongly Typed DataSet kullanımına ilişkindi.
 
 Ölçümleme yapan aracın metriklerinden birisi Untyped DataSet kullanımı kabul etmemekte. Bu yüzden uygulama içerisinde View'lar için kullandığımız ne kadar DataTable varsa ihlale girdi..Net tarafında kodlamaya yeni başlayanların sıklıkla düşebileceği bir hata olduğunu ifade edebilir aslında. Typed DataSet/DataTable'ler kod yazımı sırasında tip güvenliğini (Type Safety) de beraberinde getirdiğinden tercih edilmesi gereken sınıflar.
@@ -36,6 +32,7 @@ Dikkat edilmesi gereken ilk nokta ProductTable tipinin DataTable sınıfından t
 
 Tahmn edileceği üzere bir sonraki adım Oracle View'larının her biri için bu tip DataTable türevli tipler üretmekti. Ancak View'ların sayısı oldukça fazlaydı. Bu sınıfları otomatik üretecek bir kod parçası geliştirmek çok daha mantıklıydı. Dolayısıyla aşağıdaki gibi bir kod parçasını kullanamaya ve ilgili sınıfları otomatik olarak ürettirmeye karar verdik. Unutmadan burada Oracle DataAccess Client'ın - ODP.Net'in 4.0 sürümünü kullandığımızı ifade edelim.
 
+{% raw %}
 ```csharp
 using Oracle.DataAccess.Client;
 using System.Configuration;
@@ -84,6 +81,7 @@ namespace GenerateDataTables
     }
 }
 ```
+{% endraw %}
 
 Kısaca kodda neler yaptığımıza bir bakalım dilerseniz. En önemli nokta kullandığımız iki select sorgusu. İlk sorgumuz ile Connection String'de (app.config dosyasından alıyoruz) yer alan Oracle şemasının erişim yetkisi dahilinde olan View'ları elde etmekteyiz. Bunun için userviews nesnesi kullanılmakta. İkinci Select sorgusu ise her bir View'un kolon adlarını döndürmekte. Bunun için de usertabcolumns db nesnesine gidiyor ve parametre olarak view adını veriyoruz. Böylece üretilecek DataTable türevli sınıfların özelliklerini elde etmiş oluyoruz. StringBuiler sınıfından yararlanarak da DataTable türevli sınıfların içeriğini yazdırmaktayız. Aynı, bir kod editöründe C# sınıfı yazar gibi düşünerek hareket etmemiz önemli. Örneğin kod dosyasının başında using System.Data bildiriminin olması, özelliklerde System.Data.DataColumn yerine DataColumn kullanabilmemize olanak tanıyor. Sonuç olarak Oracle tarafındaki View'lara karşılık gelecek basit DataTable türevli tipleri oluşturmuş bulunuyoruz. Bu işlemlerin arından tek yaptığımız ilgili sınıfları ayrı bir sınıf kütüphanesi altında toplamak oldu.
 

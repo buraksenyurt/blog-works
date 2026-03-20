@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Karmaşık Değil Son Derece Basit"
 date: 2011-09-29 06:50:00 +0300
-description: "Söz gelimi geçtiğimiz hafta içerisinde vermeye başladığım ve makaleyi yazdığım tarih itibariyle devam etmekte olan bir eğitim sırasında, Binary ve XML Serileştirme konularını anlatırken, sahip olduğumuz dil ve framework materyallerinden bazılarını iç içe ve ne kadar etkili kullanabildiğimizi gördük Göz kırpan gülümseme"
 categories:
   - dotnet-framework-4-0
   - csharp-4-0
@@ -16,10 +15,10 @@ tags:
   - generics
   - dependency-management
 ---
-# Karmaşık Değil Son Derece Basit
-[![experience](/assets/images/2011/experience_thumb.jpg)](/assets/images/2011/experience.jpg) Merhaba Arkadaşlar,
-
 Kurumsal eğitim vermenin en güzel yanlarından birisi de, gelenlerin istekleri ve talepleri doğrultusunda gerçek hayat örneklerini daha kolay bir şekilde kodlayabilmeniz ve gösterebilmenizdir.
+
+[![experience](/assets/images/2011/experience_thumb.jpg)](/assets/images/2011/experience.jpg)
+
 
 Söz gelimi geçtiğimiz hafta içerisinde vermeye başladığım ve makaleyi yazdığım tarih itibariyle devam etmekte olan bir eğitim sırasında, Binary ve XML Serileştirme konularını anlatırken, sahip olduğumuz dil ve framework materyallerinden bazılarını iç içe ve ne kadar etkili kullanabildiğimizi gördük
 

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Bir Web API Servisini Github Hesabıyla Yetkilendirmek"
 date: 2018-04-03 22:49:00 +0300
-description: "Senaryomuzda basit bir Web API Servisi bulunuyor. .Net Core ile geliştirilen servisin bir Controller'ı için yetkilendirme(Authorization) sürecini uygulatmak istiyoruz. Burada OAuth 2 standardını ele almak, kullanıcı yetkilendirme yöneticisi ve bilet(Token) tedarikçisi olarak Github'dan yararlanmak istiyoruz. Temel olarak Web API servisimiz Consumer, Github'ın kendisi ise Service Provider olarak düşünülebilir. Tabii bu senaryonun gerçekleşmesi için bizim Github'a bir proje kaydettirmemiz ve özellike Redirect URI bilgisini Consumer rolündeki uygulamamız için bildirmemiz gerekiyor(Az sonra yapacağız)"
 categories:
   - dotnet-core
 tags:
@@ -23,12 +22,9 @@ tags:
   - visual-studio
   - github
 ---
-# Bir Web API Servisini Github Hesabıyla Yetkilendirmek
-![githuboauth_8.gif](/assets/images/2018/githuboauth_8.gif)
-
-Merhaba Arkadaşlar,
-
 Teknik konularda yazı yazmaya çalışmanın en zor yanlarından birisi de anlatımı basitleştirmek. Şüphesiz ki uğraştığımız konular bazen anlamakta güçlük çektiğimiz karmaşıklıkta olabiliyor. Böyle konuların bırakın anlatılması öğrenilmesi de güçleşebiliyor. Şahsen kendi adıma bazı konuları anlamak için epey çaba sarf ettiğimi söylesem yeridir. Üstelik bu konuları zaman içerisinde gerçek hayat senaryolarında kullanmaz veya üzerinde saatler geçirmessek unutuyoruz da. Oysaki bir konuyu basitçe anlatabiliyorsak hem iyi anlamışız demektir hem de verimli bir çalışma safhası geçirmişizdir. Ne demiş Austion Freeman;
+
+![githuboauth_8.gif](/assets/images/2018/githuboauth_8.gif)
 
 > "Simplicity is the soul of efficiency" - Austin Freeman
 

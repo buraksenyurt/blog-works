@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WF - XAML Bazlı Workflow Örnekleri Geliştirmek"
 date: 2009-05-06 11:23:00 +0300
-description: "Geçtiğimiz günlerde Workflow 4.0 ile ilişkili araştırmalarıma devam ederken, özellikle dekleratif olarak tanımlanabilen WF servislerindeki önemli bir noktayı farkettim. Bu, aynı zamanda WF 4.0 ile birlikte gelen en önemli yenilikler arasındaydı."
 categories:
   - wf
 tags:
@@ -16,9 +15,6 @@ tags:
   - delegates
   - visual-studio
 ---
-# WF - XAML Bazlı Workflow Örnekleri Geliştirmek
-Merhaba Arkadaşlar,
-
 Geçtiğimiz günlerde Workflow 4.0 ile ilişkili araştırmalarıma devam ederken, özellikle dekleratif olarak tanımlanabilen WF servislerindeki önemli bir noktayı farkettim. Bu, aynı zamanda WF 4.0 ile birlikte gelen en önemli yenilikler arasındaydı. (Hatta WF motorunun-Engine- değişmesi veya temel aktivite kütüphanesinde (Base Activity Library), ata tip olarak WorkflowElement isimli yeni bir sınıfın getirilmesi kadar önemliydi) Bir workflow örneğinin sadece XAML içeriğinden oluşacak şekilde koda ihtiyaç duymadan tasarlanabilmesi (design), derlenebilmesi (Compile) ve gerektiğinde çalışma zamanında basit bir notepad uygulaması ile değiştirilerek güncellenebilmesi...Burada özellikle derleme konusu son derece dikkat çekici. Nedeni mi?
 
 Nedeni araştırmak için elbette basit bir senaryo üzerinden ilerlemem gerekiyordu. Bu yüzden dün gece biraz geç bir vakittede olsa üşenmeden kodlamaya başladım. Senaryoya göre,.Net 3.5 açısından olaya bakıp, sadece XAML içeriğinden oluşacak bir Workflow örneğini oluşturmak ve çalıştırmak istiyordum. Bu sebeple öncelikle, örnek bir aktivite tipi geliştirmeye karar verdim. ProductOrderActivity isimli aktivite bileşenini, ayrı bir Workflow Activity Library projesi içerisinde aşağıdaki sınıf diagramında olduğu gibi tasarladım.

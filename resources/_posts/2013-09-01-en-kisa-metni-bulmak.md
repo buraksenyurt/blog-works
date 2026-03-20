@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "En Kısa Metni Bulmak"
 date: 2013-09-01 20:45:00 +0300
-description: "İşte geçtiğimiz hafta içerisinde de Internet üzerinden araştırma yaparken enteresan bir konu ile karşılaştım. Aslında konuyu isimlendirmek oldukça zor ama bir optimizasyon işlemi olduğunu ifade edebilirim. Sorun n sayıda kelimenin saklanmak istendiği bir durumda ortaya çıkıyor. İstenen, bu kelimeleri birleştirerek saklamak ancak bunu yaparkende olabilecek en kısa cümleyi elde ederek ilgili depolama işlemini gerçekleştirmek. Öyleki, üretilen cümle hem çok kısa olmalı hem de tüm kelimeleri içermeli."
 categories:
   - data-structures-algorithms
 tags:
@@ -11,12 +10,9 @@ tags:
   - linq
   - generics
 ---
-# En Kısa Metni Bulmak
-![205735_getting_the_last_word.jpg](/assets/images/2013/205735_getting_the_last_word.jpg)
-
-Merhaba Arkadaşlar,
-
 Uzun zamandır makale yazmaya çalışmakta ve öğrendiklerimi, edindiğim tecrübeleri sizlere aktarmaktayım. Tabi zaman ilerledikçe yazacak konu bulmakta da bir hayli zorlanıyor insan. Bu noktada öğrenmeninin sınırının olmadığını hepimiz biliyoruz. Olaya bu açıdan baktığımızda yazılmaya ve araştırılmaya değer binlerce konu olduğunu gönül rahatlığıyla ifade edebilirim. Yazma hevesli bir birey olarak bu benim için gerçekten önemli
+
+![205735_getting_the_last_word.jpg](/assets/images/2013/205735_getting_the_last_word.jpg)
 
 ![Smile](/assets/images/2013/smiley-smile.gif)
 

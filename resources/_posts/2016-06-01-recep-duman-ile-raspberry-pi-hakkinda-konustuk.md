@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Recep Duman ile Raspberry Pi Hakkında Konuştuk"
 date: 2016-06-01 13:59:00 +0300
-description: "Bu yaz için kendime güzel bir hobi buldum. Raspberry PI. Biraz geç kalmış olabilirim bunun için ama merak ettiğim IoT(Internet of Things) konusunun önemli parçalarından birisiydi. Üstelik çocukların programlamayı öğrenmesi için de kullanılan vakıf destekli açık kaynak bir çalışmaydı. Hatta bu sene gerçekleştirebilyseydik eğer NedirTv?com etkinliğinde Raspberry Pi ile ilgili sunum yapacak olan DevNot yazarlarımızdan Recep Duman arkadaşımız ile aynı ekipte çalışıyor olmamız gibi bir gerçek de vardı. Kolları sıvadım ve işe koyuldum."
 categories:
   - nedirtv
   - raspberry-pi
@@ -13,9 +12,6 @@ tags:
   - http
   - ruby
 ---
-# Recep Duman ile Raspberry Pi Hakkında Konuştuk
-Merhaba Arkadaşlar,
-
 Bu yaz için kendime güzel bir hobi buldum. Raspberry PI. Biraz geç kalmış olabilirim bunun için ama merak ettiğim IoT (Internet of Things) konusunun önemli parçalarından birisiydi. Üstelik çocukların programlamayı öğrenmesi için de kullanılan vakıf destekli açık kaynak bir çalışmaydı. Hatta bu sene gerçekleştirebilyseydik eğer [NedirTv?com](http://www.nedirtv.com) etkinliğinde Raspberry Pi ile ilgili sunum yapacak olan [DevNot](http://devnot.com/) yazarlarımızdan [Recep Duman](http://www.recepduman.net/iot-dunyasinin-parlayan-yildizi-raspberry-pi.html) arkadaşımız ile aynı ekipte çalışıyor olmamız gibi bir gerçek de vardı. Kolları sıvadım ve işe koyuldum.
 
 Önce kendime Raspberry Pi 3 Model B kart aldım. Ama her şey bununla bitmiyormuş. Bir MicroSD (Class 10 tipinde ve en az 8 Gb olması öneriliyor) alıp üzerine Linux Mate (Linux sürümü şart değil. Rasbian, Windows 10 IoT vb farklı OS'lar da varmış) yüklemem gerekti. Lakin iş bununla da bitmiyordu. Bir de monitör almam gerekiyor (ki yazıyı yazdığım tarih itibariyle henüz almış değilim) Hatta hello world uygulaması için de basit bir aygıt (Kamera olur, sıcaklık algılayıcı sensör olur vs) Sonuç itibariyle Raspberry Pi kredi kartı boyutlarında bir bilgisayar aslında. Çevre ünitelerini bizim eklememiz gerekiyor. Sonrasında ise Ruby dilini kullanarak bir şeyler yapmaya planlıyorum. Bakalım neler olacak?

@@ -1,16 +1,12 @@
-﻿---
+---
 layout: post
 title: "Operator Overloading (Operatörlerin Aşırı Yüklenmesi)"
 date: 2005-06-03 12:00:00 +0300
-description: "Hepimiz uygulamalarımızda sıklıkla operatörleri kullanmaktayız. Matematiksel işlemlerde, koşullu ifadelerde,tip dönüştürme işlemlerinde vb...Ancak onların kendi yazdığımız sınıflar için özel anlamlar ifade edecek şekilde yüklenmesi ile pek az uğraşmaktayız. Basit bir toplama operatörünün bile, yeri geldiğinde kendi sınıflarımıza ait nesne örnekleri üzerinde daha farklı davranışlar gösterecek şekilde yeniden yapılandırılması son derece önemlidir. Bu aynı zamanda dilin sağladığı esnekliği ve genişletilebilirliğini de gözler önüne sergilemektedir. İşte bu makalemizde, basit olarak operatörlerin aşırı yüklenmelerinin nasıl gerçekleştirilebileceğini örnek bir uygulama üzerinden incelemeye çalışacağız."
 categories:
   - csharp
 tags:
   - csharp
 ---
-# Operator Overloading (Operatörlerin Aşırı Yüklenmesi)
-Değerli Okurlarım Merhabalar,
-
 Hepimiz uygulamalarımızda sıklıkla operatörleri kullanmaktayız. Matematiksel işlemlerde, koşullu ifadelerde,tip dönüştürme işlemlerinde vb...Ancak onların kendi yazdığımız sınıflar için özel anlamlar ifade edecek şekilde yüklenmesi ile pek az uğraşmaktayız. Basit bir toplama operatörünün bile, yeri geldiğinde kendi sınıflarımıza ait nesne örnekleri üzerinde daha farklı davranışlar gösterecek şekilde yeniden yapılandırılması son derece önemlidir. Bu aynı zamanda dilin sağladığı esnekliği ve genişletilebilirliğini de gözler önüne sergilemektedir. İşte bu makalemizde, basit olarak operatörlerin aşırı yüklenmelerinin nasıl gerçekleştirilebileceğini örnek bir uygulama üzerinden incelemeye çalışacağız.
 
 İlk olarak senaryomuzdan kısaca bahsedelim. Uygulamamızda System.Drawing isim alanını kullanarak dörtgen ve eliptik şekilleri çizmemizi sağlayacak iki adet sınıfımız olacak. Bu sınıfların çizim metodlarına baktığımızda ortak parametreler içerdiklerini görürüz. Bu nedenle bu ortak parametreleri bir arada toplayacağımız bir üst sınıfıda işin içine katarak ilgili şekil sınıflarını buradan türeteceğiz. Amacımız kalıtım kavramı üzerinde durmak değil. Bunu sadece kod okunabilirliğini ve nesnelerinin kullanılabilirliğini kolaylaştırmak amacıyla gerçekleştiriyoruz. Peki bu sınıfların yer aldığı bir uygulamada hangi operatörleri ne amaçla aşırı yükleyebiliriz?

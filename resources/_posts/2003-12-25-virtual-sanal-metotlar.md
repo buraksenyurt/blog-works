@@ -1,16 +1,12 @@
-﻿---
+---
 layout: post
 title: "Virtual(Sanal) Metotlar"
 date: 2003-12-25 10:00:00 +0300
-description: "Bugünkü makalemizde sanal metodların kalıtım içerisindeki rolüne bakacağız. Sanal metodlar, temel sınıflarda tanımlanan ve türeyen sınıflarda geçersiz kılınabilen metodlardır."
 categories:
   - csharp
 tags:
   - csharp
 ---
-# Virtual(Sanal) Metotlar
-Değerli Okurlarım, Merhabalar.
-
 Bugünkü makalemizde sanal metotların kalıtım içerisindeki rolüne bakacağız. Sanal metotlar, temel sınıflarda tanımlanan ve türeyen sınıflarda geçersiz kılınabilen metotlardır. Bu tanım bize pek bir şey ifade etmez aslında. O halde gelin sanal metodların neden kullanırız, once buna bakalım. Bu amaçla minik bir örnek ile işe başlıyoruz.
 
 ```csharp

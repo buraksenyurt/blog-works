@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Yıllar Sonra Yeniden Enum Sabitleri"
 date: 2011-02-20 16:05:00 +0300
-description: "İşte bu yazımızda Enum sabitlerinin başımıza dert olabileceği bir kaç vakayı ele almaya çalışıyor olacağız. Öyleyse hızlı bir başlangıç yapalım ve aşağıdaki kod parçasını göz önüne alalım."
 categories:
   - csharp
 tags:
@@ -13,10 +12,10 @@ tags:
   - delegates
   - generics
 ---
-# Yıllar Sonra Yeniden Enum Sabitleri
-[![blg216_Giris](/assets/images/2011/blg216_Giris_thumb.jpg)](/assets/images/2011/blg216_Giris.jpg) Merhaba Arkadaşlar,
-
 Aslında çok şanslı bir insanım. Çünkü çocukluğumdan beri tatile gidebiliyorum. Yazlığımızın olduğu [Avşa](http://www.avsa.com.tr/) adasına her sene iki günlüğüne dahi olsa gitmekteyim. İlk yıllarda adaya hareket eden nostaljik gemiler vardı. Bu gemiler yaklaşık olarak altı saat gibi bir sürede İstanbul’ dan adaya ulaşmaktaydı.
+
+[![blg216_Giris](/assets/images/2011/blg216_Giris_thumb.jpg)](/assets/images/2011/blg216_Giris.jpg)
+
 
 İlerleyen yıllarda hızlandıkça deniz yüzeyinin üstünde yükselen kanatlı gemilerle karşılaştık. Ne yazık ki bu hızlı gemiler daha çok dalgasız göller için yapıldıklarından her tür havada gidemiyorlardı.
 

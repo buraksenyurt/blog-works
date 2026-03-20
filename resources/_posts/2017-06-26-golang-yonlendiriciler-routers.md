@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "GoLang - Yönlendiriciler (Routers)"
 date: 2017-06-26 10:30:00 +0300
-description: "Yönlendirme(Routers) mekanizmaları özellikle anlamlı http taleplerinde önemli bir rol oynar. Bir tarayıcının URL satırından gelen ifadelerin sunucu tarafında ele alınması sırasında işleri kolaylaştırıcı kütüphaneler de bulunmaktadır. Sevgili Murat Özalp'ın kitabında ilerlerken GO'nun built-in yönlendirme mekanizmaları dışında github üzerinden sunulan pek çok basit ve kullanışlı çatının daha olduğunu öğrendim. Tabii burada bahsedilen kütüphaneler ağırlıklı olarak web taleplerinin bir eşleştirme koduna göre uygun fonksiyonlara yönlendirilmesi ve cevaplandırılması ile alakalıydı."
 categories:
   - golang
 tags:
@@ -16,12 +15,9 @@ tags:
   - performance
   - github
 ---
-# GoLang - Yönlendiriciler (Routers)
-![gorouting_1.gif](/assets/images/2017/gorouting_1.gif)
-
-Merhaba Arkadaşlar,
-
 Yönlendirme (Routers) mekanizmaları özellikle anlamlı HTTP taleplerinde önemli bir rol oynar. Bir tarayıcının adres satırından gelen ifadelerin sunucu tarafında ele alınması sırasında işleri kolaylaştırıcı kütüphaneler de bulunmaktadır. Sevgili Murat Özalp'ın kitabında ilerlerken GO'nun built-in yönlendirme mekanizmaları dışında github üzerinden sunulan pek çok basit ve kullanışlı çatının olduğunu öğrendim. Tabii burada bahsedilen kütüphaneler ağırlıklı olarak web taleplerinin bir eşleştirme koduna göre uygun fonksiyonlara yönlendirilmesi ve cevaplandırılması ile alakalıydı. Bazıları performans açısından öne çıkarken bazıları komple bir web çatısını sunma kabiliyetine sahipti. Güncel listeye [şu adresten bakabilirsiniz.](https://github.com/naoina/go-http-routing-benchmark) Yeni paketler geldikçe veya var olanlarda değişiklikler oldukça benchmark sonuçları da etkilenecektir. Bu nedenle ara ara uğramakta yarar olduğu kanısındayım.
+
+![gorouting_1.gif](/assets/images/2017/gorouting_1.gif)
 
 Bende kitabın sıkı bir takipçisi olarak örnek üzerinden ilerlemeye başladım ve bahsedilen [httpRouter](https://github.com/julienschmidt/httprouter) kütüphanesini kullanmayı denedim. Pek tabii aynı örneği değil de konuyu kendim için eğlenceli hale getirecek bir versiyonunu yapmaya çalıştım. Aklıma en sevdiğim film serilerinden olan Star Wars'taki gezegenler geldi. Bir kaç gezegeni ve önemli şehirlerini şimdilik bellekte tutacağım bir yapı (struct) ilişkisi oluşturup aşağıdaki HTTP taleplerini karşılayacak bir web sunucusu yazmak eğlenceli olabilirdi (Yandaki fotoğrafta görülen galaksinin detaylarına ve çok daha kapsamlı bir sunumuna [şu adresten ulaşabilirsiniz](http://starwars.wikia.com/wiki/Star_Wars:_Complete_Locations). Adamlar üşenmemişler koskoca bir evreni hayal edip kurgulamışlar. Bu kurgulamayı Star Trek serisinde de görmekteyiz.)
 

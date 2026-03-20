@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Gopher Olma Çalışmaları"
 date: 2017-01-13 12:10:00 +0300
-description: "Geçtiğimiz sene Ruby diliye uğraşmaya başlamıştım. Ruby dilini sevenler ve ona gönül verenlere Rubyist deniyor. Benzer bir yaklaşım meğer Go tarafında da varmış. Onlarda kendilerine logolarına esin kaynağı olan Gopher diyorlarmış. Aslında Go dilinin logosu gerçekten bir canlıdan esinlenilerek tasarlanmış. Yaklaşık 15 ila 20 cm boylarında olan gopher'lar oldukça sevimliler(Bana göre) Elbette logo çok daha sevimli. Bu arada Gopher aynı zamanda TCP/IP tabanlı HTTP öncesi bir internet protokolu olarak da geçiyor. Detaylara Wikipedia adresinden bakabilirsiniz."
 categories:
   - golang
 tags:
@@ -12,12 +11,9 @@ tags:
   - ruby
   - pointers
 ---
-# Gopher Olma Çalışmaları
-![gopher.gif](/assets/images/2017/gopher.gif)
-
-Merhaba Arkadaşlar,
-
 Geçtiğimiz sene [Ruby](https://www.buraksenyurt.com/category/Ruby.aspx) diliye uğraşmaya başlamıştım. Ruby dilini sevenler ve ona gönül verenlere Rubyist deniyor. Benzer bir yaklaşım meğer Go tarafında da varmış. Onlarda kendilerine logolarına esin kaynağı olan Gopher diyorlarmış. Aslında Go dilinin logosu gerçekten bir canlıdan esinlenilerek tasarlanmış. Yaklaşık 15 ila 20 cm boylarında olan gopher'lar oldukça sevimliler (Bana göre) Elbette logo çok daha sevimli. Bu arada Gopher aynı zamanda TCP/IP tabanlı HTTP öncesi bir internet protokolu olarak da geçiyor. Detaylara [Wikipedia adresinden](https://en.wikipedia.org/wiki/Gopher_(protocol)) bakabilirsiniz.
+
+![gopher.gif](/assets/images/2017/gopher.gif)
 
 ![20170109_224829.gif](/assets/images/2017/20170109_224829.gif)
 
@@ -28,6 +24,8 @@ Gopher olabilir miyim bilemiyorum ama bir dili çok iyi seviyede öğrenmeden o 
 ## Arrays
 
 Belli tipteki elemanaları (herhangibir Go veri tipi olabilir) bir arada tutan (sunan) koleksiyonlara dizi diyebiliriz. Pek çok programlama dilinde olduğu gibi Go'da da kullanılan çekirdek veri yapılarından (data structures) birisidir. Diziler sabit uzunlukta tanımlanırlar. Yani içereceği eleman sayısı baştan bildirilir (Ya da dizinin tanımlandığı satırda atama işlemi yapıldığında uzunluğu belirlenir). Tabii Go söz konusu olunca ileride de göreceğimiz gibi bellek adresleri de önem kazanacak. Diziler için de birbirini takip eden bellek adresleri söz konusu. İlk eleman (bu arada diziler 0ncı indisten başlamakta) dizinin başladığı son eleman da bittiği bellek adresinde konumlanmakta. Go çok boyutlu (Multi Dimensional) dizi yapısına da sahip ve fonksiyonlara dizileri parametre olarak geçirebiliyoruz. Aşağıdaki basit kod parçasında hem diziler ile ilgili temel işlemeler yer alıyor hem de basit for döngülerine yer veriliyor.
+
+{% raw %}
 
 ```cpp
 package main
@@ -77,7 +75,10 @@ func sum(nmbrs []float32) float32{
 	}
 	return toplam
 }
+
 ```
+
+{% endraw %}
 
 Çalışma zamanı çıktısı aşağıdaki gibi olacaktır.
 

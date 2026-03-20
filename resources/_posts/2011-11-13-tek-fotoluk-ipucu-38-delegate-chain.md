@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu-38(Delegate Chain)"
 date: 2011-11-13 08:45:00 +0300
-description: "Merhaba Arkadaşlar,"
 categories:
   - csharp
   - tek-fotoluk-ipucu
@@ -11,9 +10,6 @@ tags:
   - tek-fotoluk-ipucu
   - delegates
 ---
-# Tek Fotoluk İpucu-38(Delegate Chain)
-Merhaba Arkadaşlar,
-
 Arada sırada temelleri de hatırlamak gerekir değil mi? Söz gelimi bir delegate zincirini nasıl kurar ve aynı parametreler için nasıl çalıştırırsınız? İşte size örnek
 
 ![Winking smile](/assets/images/2011/wlEmoticon-winkingsmile_55.png)

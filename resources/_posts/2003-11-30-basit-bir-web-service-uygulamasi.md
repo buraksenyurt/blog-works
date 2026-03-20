@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Basit Bir Web Service Uygulaması"
 date: 2003-11-30 14:00:00 +0300
-description: "Bugünkü makalemizde web servislerinin nasıl kullanıldığını göreceğiz. Her zaman olduğu gibi konuyu açıklayıcı basit bir örnek üzerinde çalışacağız. Öncelikle web servisi nedir, ne işe yarar bunu açıklamaya çalışalım. Öncelikle web servisi nedir, ne işe yarar bunu açıklamaya çalışalım. Web servisi, internet üzerinden erişilebilen, her türlü platform ile bağlantı kurabileceğimiz, geriye sonuç döndüren(döndürmeye) fonksiyonelliklere ve hizmetlere sahip olan bir uygulama parçasıdır. Aşağıdaki şekil ile konuyu zihnimizde daha kolay canlandırabiliriz."
 categories:
   - xml-web-services
 tags:
@@ -20,9 +19,6 @@ tags:
   - dataset
   - web-proxy
 ---
-# Basit Bir Web Service Uygulaması
-Değerli Okurlarım, Merhabalar.
-
 Bugünkü makalemizde web servislerinin nasıl kullanıldığını göreceğiz. Her zaman olduğu gibi konuyu açıklayıcı basit bir örnek üzerinde çalışacağız. Öncelikle web servisi nedir, ne işe yarar bunu açıklamaya çalışalım. Web servisi, internet üzerinden erişilebilen, her türlü platform ile bağlantı kurabileceğimiz, geriye sonuç döndüren (döndürmeye) fonksiyonelliklere ve hizmetlere sahip olan bir uygulama parçasıdır. Aşağıdaki şekil ile konuyu zihnimizde daha kolay canlandırabiliriz.
 
 ![mk10_1.gif](/assets/images/2003/mk10_1.gif)

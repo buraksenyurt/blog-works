@@ -2,14 +2,12 @@
 layout: post
 title: "Rust Programlama Dili için \\\"Hello World\\\""
 date: 2022-03-27 09:00:00 +0300
-description: "Yakın zamanda yazılımcılardan oluşan bir ekibe Rust programlama dili ile ilgili bildiklerimi anlattım. Bunu yaparken örnek bir program kodu üzerinden ilerledim. İlk etapta neyi nasıl anlatacağım konusunda hiçbir fikrim yoktu. Sonrasında doğaçlama ilerlemeye ve yolda karşımıza çıkacak sorunlar üzerinden dili tanıtmaya karar verdim. Derken anlattıklarımı bir video haline getirsem iyi olabilir diye düşündüm. Pek tabii Rust dilini yeni öğrenen birisi olarak bunu 1 saatlik bir zaman diliminde yapmak pek mümkün değil. Yine de ilerisi için iyi bir hazırlık oldu. Belki ilgi duyan arkadaşlar için yol gösterici de olur. Deneysel amaçla gerçekleştirdiğim bu görsel derste aşağıdaki konulara değindim."
 categories:
   - rust
 tags:
   - rust
   - ownership
 ---
-# Rust Programlama Dili için "Hello World"
 Yakın zamanda yazılımcılardan oluşan bir ekibe Rust programlama dili ile ilgili bildiklerimi anlattım. Bunu yaparken örnek bir program kodu üzerinden ilerledim. İlk etapta neyi nasıl anlatacağım konusunda hiçbir fikrim yoktu. Sonrasında doğaçlama hareket etmeye ve yolda karşımıza çıkacak sorunlar üzerinden dilin birkaç özelliğini anlatmaya karar verdim. Derken anlattıklarımı bir video haline getirsem iyi olabilir diye düşündüm. Pek tabii Rust dilini yeni öğrenen birisi olarak bunu bir saatlik zaman diliminde yapmak pek mümkün değil. Yine de ilerisi için iyi bir hazırlık oldu. Belki ilgi duyan arkadaşlar için yol gösterici de olur. Deneysel amaçla gerçekleştirdiğim bu görsel derste aşağıdaki konulara değindim.
 
 - cargo.toml

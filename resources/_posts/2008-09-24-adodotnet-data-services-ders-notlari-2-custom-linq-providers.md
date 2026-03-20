@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ado.Net Data Services Ders Notları - 2 (Custom LINQ Providers)"
 date: 2008-09-24 12:00:00 +0300
-description: "Son bahar yada kış gibi mevsimler ile özellikle yağmurlu ve kasvetli günlerde her geliştiricinin araştırma ve öğrenme süreci ve verimliliğinde belirgin bir artış gözlemlenir. Bu herkes için böyle olmasada en azından benim için geçerli bir durumdur."
 categories:
   - ado-net-data-services
 tags:
@@ -21,9 +20,6 @@ tags:
   - generics
   - visual-studio
 ---
-# Ado.Net Data Services Ders Notları - 2 (Custom LINQ Providers)
-Değerli Okurlarım Merhabalar,
-
 Son bahar yada kış gibi mevsimler ile özellikle yağmurlu ve kasvetli günlerde her geliştiricinin araştırma ve öğrenme süreci ve verimliliğinde belirgin bir artış gözlemlenir. Bu herkes için böyle olmasada en azından benim için geçerli bir durumdur. İşte bu felsefe ve ruh haliyle çıktığımız yolda son makalemizde Ado.Net Data Services konusuna değinmeye başlamış ve ders notlarımızı kaleme almıştık. İkinci ders notlarımızın konusu ise LINQ Provider kullanarak özel bir bağlama işleminin nasıl yapılabileceğini görmek.
 
 Hatırlayacağınız gibi Ado.Net Data Service Entry Point'leri istemcilerden gelen HTTP taleplerini ele almak üzere tasarlanmaktadır. Bu tipteki servislerin belirgin amacı, veriler üzerindeki hizmetleri operasyonel bazda istemcilere sunabilmektir. Bu nedenle arka planda bir veri erişim katmanı (Data Access Layer) mutlaka söz konusudur. Temel olarak DAL içerisinde iki farklı açılım olduğundan bir önceki yazımızda kısaca bahsetmiştik. Buna göre Entity Data Model veya LINQ Provider seçenekleri söz konusudur. Bu günkü ders notlarımızda ele alacağımız LINQ Provider, çoğunlukla Entity tiplerinin geliştirici tarafından tasarlanıp farklı veri kaynaklarına bağlanması istendiği durumlarda düşünülür. Bilindiği üzere günümüzde pek çok veri kaynağı için yazılmış LINQ Provider araçları söz konusudur.

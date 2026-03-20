@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net 2.0 ve Master Page Kavramı"
 date: 2004-09-10 12:00:00 +0300
-description: "Bu makalemizde, Master Pages kavramına giriş yapacak ve web uygulamalarının geliştirmesinde yaşamımıza getirdiği kolaylıkları incelemeye çalışacağız. Internet sitelerini göz önüne aldığımızda, siteye ait sayfaların sıklıkla aynı şablonları kullandığını görürüz. Özellike, header, footer, navigasyon ve advertisement alanları, çoğunlukla siteye ait tüm sayfalarda aynı yerlerde kullanılır. Bu, siteye ait sayfaların standart olarak aynı görünümde olmasını sağlamakla kalmaz, değişen içeriğinde ortak bir şablon üzerinde durmasına imkan tanır. Peki Asp.Net 2.0' ın bu kullanım için getirdiği yaklaşıma gelene kadar, sayfalarda ortak olarak kullanılan ve tasarımsal olarak sayfa koordinatlarında aynı yerlerde yer alan bu unsurlar hangi teknikler ile oluşturulmuştur?"
 categories:
   - aspnet-2-0
 tags:
@@ -11,9 +10,6 @@ tags:
   - aspnet
   - visual-studio
 ---
-# Asp.Net 2.0 ve Master Page Kavramı
-Değerli Okurlarım Merhabalar,
-
 Bu makalemizde, Master Pages kavramına giriş yapacak ve web uygulamalarının geliştirmesinde yaşamımıza getirdiği kolaylıkları incelemeye çalışacağız. Internet sitelerini göz önüne aldığımızda, siteye ait sayfaların sıklıkla aynı şablonları kullandığını görürüz. Özellike, header, footer, navigasyon ve advertisement alanları, çoğunlukla siteye ait tüm sayfalarda aynı yerlerde kullanılır. Bu, siteye ait sayfaların standart olarak aynı görünümde olmasını sağlamakla kalmaz, değişen içeriğinde ortak bir şablon üzerinde durmasına imkan tanır. Peki Asp.Net 2.0' ın bu kullanım için getirdiği yaklaşıma gelene kadar, sayfalarda ortak olarak kullanılan ve tasarımsal olarak sayfa koordinatlarında aynı yerlerde yer alan bu unsurlar hangi teknikler ile oluşturulmuştur?
 
 Html'in ilk zamanlarında, bu tarz işlemleri gerçekleştirmek için, ortak olan alanlar kopyalanarak diğer sayfalara yapıştırılırdı. Yada, ana şablonu ihtiva eden bir sayfadan diğer sayfalar "save as" metodu ile oluşturulur ve içerikleri değiştirilirdi. Bu tekniğin en büyük handikapı, şablondaki herhangibir değişikliğin diğer sayfalara yansıtılması sırasında ortaya çıkmaktadır. Nitekim 100' lerce alt sayfaya aynı şablonu uygulamışsak bu gerçekten büyük bir problemdir.

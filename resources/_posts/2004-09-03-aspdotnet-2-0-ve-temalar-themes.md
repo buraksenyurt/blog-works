@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net 2.0 ve Temalar (Themes)"
 date: 2004-09-03 12:00:00 +0300
-description: "Bir internet sitesini önemli kılan özellikler, sayfalarının font, renk, nesne yerleşimleri ile kontrollere ait görsel özellikleri açısından birbirleriyle olan uyumluluklarıdır. Bu anlamda, çoğu zaman sayfalara CSS stilleri uygulanır ve web uygulamasındaki tüm görsel öğelerin aynı font, renk vb özelliklere sahip olması sağlanır. Asp.Net 2.0, bu tarz stillerin çeşitli seviyelerde uygulanmasını sağlayacak yeni bir özellik sağlamaktadır. Themes (Temalar). İşte bu makalemizde, Asp.Net 2.0'da yer alan temaların, hangi seviyelere, nasıl ve ne şekilde uygulanabileceğini incelemeye çalışacağız."
 categories:
   - aspnet-2-0
 tags:
@@ -10,9 +9,6 @@ tags:
   - dotnet
   - aspnet
 ---
-# Asp.Net 2.0 ve Temalar (Themes)
-Değerli Okurlarım Merhabalar,
-
 Bir internet sitesini önemli kılan özellikler, sayfalarının font, renk, nesne yerleşimleri ile kontrollere ait görsel özellikleri açısından birbirleriyle olan uyumluluklarıdır. Bu anlamda, çoğu zaman sayfalara CSS stilleri uygulanır ve web uygulamasındaki tüm görsel öğelerin aynı font, renk vb özelliklere sahip olması sağlanır. Asp.Net 2.0, bu tarz stillerin çeşitli seviyelerde uygulanmasını sağlayacak yeni bir özellik sağlamaktadır. Themes (Temalar). İşte bu makalemizde, Asp.Net 2.0'da yer alan temaların, hangi seviyelere, nasıl ve ne şekilde uygulanabileceğini incelemeye çalışacağız.
 
 Bir tema, aslında işletim sistemlerinde uygulanan temalardan çok da farklı değildir. Pek çoğumuz kullandığı işletim sistemine temalar uygulamıştır. Uygulanan temalar, çoğunlukla sistemdeki font özelliklerini, pencerelere ait çeşitli renkleri, duvar kağıtlarını, sembolleri vb öğeleri görsel açıdan belirli bir standarta göre değiştirirler. Ancak internet projelerinin tasarlanması söz konusu olduğunda, temaların uygulanacağı seviyeler kavramı öncelikli olarak devreye girmektedir. Asp.Net 2.0 ile, makine seviyesinde, web uygulaması seviyesinde, sayfa seviyesinde ve sunucu kontrolü seviyesinde temalar uygulanabilmektedir.

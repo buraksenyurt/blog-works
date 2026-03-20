@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "MongoDb,Express,Vue ve Node Birlikteliği"
 date: 2019-07-19 05:47:00 +0300
-description: "Amacım bu 4 enstrümanı kullanarak Web API tabanlı çalışan basit bir web uygulaması geliştirmek. Veriyi tutmak için MongoDB'yi, sunucu tarafı için Node.js'i, Web Framework amacıyla Express'i ve önyüz geliştirmesinde de Vue.js'i kullanmak istedim. Kobay olarakta 90lardan aklıma gelen ve Cobol öğretirlerken gösterdikleri Fihrist örneğini seçtim. Ayrıca WebPack'i de işin içerisine katıp paketleme operasyonunu da deneyimlemeye çalıştım."
 categories:
   - vuejs
 tags:
@@ -17,10 +16,9 @@ tags:
   - vue
   - github
 ---
-# MongoDb,Express,Vue ve Node Birlikteliği
-![cobolll.png](/assets/images/2019/cobolll.png)
-
 Aranızdan kaç kişi akıllı telefonundaki herhangi bir arkadaşının numarasını ezbere söyleyebilir? Eminim bazılarımız bizi dokuz ay karnında taşıyan annesinin telefonunu dahi hatırlamıyordur. Peki ya birlikte sıklıkla vakit geçirdiğiniz ama çok da yakın çevrenizden olmayan kankanızın doğum günü ne zaman? Teknolojik cihazlarınızdaki hatırlatıcılar olmadığında kaç arkadaşınızın doğum gününü unutacaksınız hiç düşündünüz mü?
+
+![cobolll.png](/assets/images/2019/cobolll.png)
 
 İletişim bilgisi ve doğum günleri bizi yakın çevremize bağlayan veya uzağı yakın eden unsurlar arasında yer alıyor. Hatırlanmak güzel olduğu kadar hatırlamak da gerekiyor. Ortaokul sıralarında kullandığım bir fihrist defterim vardı. İçinde yakın arkadaşlarımın ev telefonları ve doğum günü bilgileri yazardı. Pek tabii çok sık iletişimde olduğum sıra arkadaşım sevgili Burak Gürkan gibi dostlarımı aramak için o deftere ihtiyacım yoktu. Neredeyse her gün telefonla konuştuğumuz için numarayı ezberlemiştim.
 
@@ -384,6 +382,7 @@ export default {
 
 contacts.vue bileşenimiz
 
+{% raw %}
 ```text
 <template>
   <div>
@@ -403,6 +402,7 @@ contacts.vue bileşenimiz
     </div>
   </div>
 </template>
+{% endraw %}
 
 <script>
 import axios from "axios";

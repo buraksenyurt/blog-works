@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Web Server Control Yazmak - 2"
 date: 2007-01-23 12:00:00 +0300
-description: "Bir önceki makalemizde web sunucu kontrollerini nasıl geliştireceğimizi incelemeye başlamıştık. Bu günkü makalemizde, ViewState' lerin web sunucu kontrollerinde nasıl ele alınabileceğinden ve kontrollerin tasarım zamanındaki (design time) yeteneklerinin nitelikler (attributes) yardımıyla nasıl arttırılabileceğinden bahsetmeye çalışacağız."
 categories:
   - aspnet-2-0
 tags:
@@ -14,9 +13,6 @@ tags:
   - reflection
   - visual-studio
 ---
-# Web Server Control Yazmak - 2
-Değerli Okurlarım Merhabalar,
-
 Bir önceki makalemizde web sunucu kontrollerini nasıl geliştireceğimizi incelemeye başlamıştık. Bu günkü makalemizde, ViewState'lerin web sunucu kontrollerinde nasıl ele alınabileceğinden ve kontrollerin tasarım zamanındaki (design time) yeteneklerinin nitelikler (attributes) yardımıyla nasıl arttırılabileceğinden bahsetmeye çalışacağız.
 
 Herhangibir web sunucu kontrolünün (web server control) bazı özellikleri (properties) sayfa üretilirken belirlenmek (set) istenebilir. Bu işlem için sayfanın PageLoad olay (event) metodu ideal bir noktadır. Hatta burada sayfanın Postback edilip edilmediği kontrol edilerek, özelliklerin sadece sayfanın ilk yüklenişinde belirlenmesi sağlanabilir. Ancak burada ViewState kullanılmadığı takdirde karşılaşılabilecek önemli bir problem vardır. Bu problemi analiz edebilmek için, bir önceki makalemizde geliştirdiğimiz TarihKontrolum isimli bileşenimize üç yeni özellik daha ekleyerek analizimize başlayalım. Bu özellikler ile liste kutularındaki gün, ay, yıl bilgilerinin değerlerini değiştirmeyi ve elde etmeyi hedeflemekteyiz.

@@ -1,20 +1,16 @@
-﻿---
+---
 layout: post
 title: "Satranç ve ELO Puanlama Sistemi"
 date: 2018-10-01 09:08:00 +0300
-description: "Satranç oynamayalı yıllar olmuştur. Lise yıllarında okurken kadim dostum Burak Gürkan ile karşılıklı maçlar yapardık. Kerata çok iyiydi. Çoğunlukla kaybederdim. Yine de hoşuma giden bir oyundu. Herhalde dostlar arasında yapılabilecek en güzel aktivitelerden birisidir. Sebat etmek, stratejik düşünmek, saygı göstermek, kabullenmek, odaklanmak. Faydaları saymakla bitmez. En faal oynadığımız yıllarsa 1990 ile 1993 arasındaydı. Burak ailesi ile birlikte Kadıköy'ün sakin sokaklarından birisinde otururdu. Sabahçı olduğumuz için öğleden sonraları zaman zaman evlerine giderdim. Annesi Nimet Hanım'ın lezzetli sütlü kahvesi yanında mutlaka tahinli çörek de olurdu. Burağın odası arka bahçeye doğru bakardı. Herhalde hayatımın orada geçen hiç bir dakikasında tek çıt dahi duymamışımdır. O günleri özlediğimi itiraf edebilirim. Çok fazla ve hatta neredeyse hiç problemimiz yoktu(Üniversite sınavı, okul dersleri ve kızlardan başka)"
 categories:
   - general
 tags:
   - http
   - nodejs
 ---
-# Satranç ve ELO Puanlama Sistemi
-![arpardeo.gif](/assets/images/2018/arpardeo.gif)
-
-Merhaba Arkadaşlar,
-
 Satranç oynamayalı yıllar olmuştur. Lise yıllarında kadim dostum Burak Gürkan ile karşılıklı maçlar yapardık. Kerata çok iyiydi. Maçları çoğunlukla kaybederdim ama yine de hoşuma giderdi onunla rekabet içerisine girmek (Bir ara arayayım da yine satranç oynayalım) Herhalde sevdiğimiz bir arkadaşımızla yapabileceğimiz en güzel aktivitelerden birisidir Satranç. Sebat etmek, stratejik düşünmek, saygı göstermek, kabullenmek, odaklanmak…Faydaları saymakla bitmez.
+
+![arpardeo.gif](/assets/images/2018/arpardeo.gif)
 
 En faal oynadığımız yıllar 1990 ile 1993 arasındaydı. O zamanlar Burak ailesi ile Kadıköy’ün sakin sokaklarından birisinde oturuyordu. Sabahçı olduğumuz için öğleden sonraları zaman zaman evlerine giderdim. Annesi Nimet Hanım’ın lezzetli sütlü kahvesi yanında mutlaka tahinli çörek olurdu. Eğer evdeyse de Ertan amcamızla salonda hoş bir muhabbetin içerisine dalardık. Bize Galatasaray’daki futbolculuk yıllarından, Altay’dan bahsederdi. Burağın odası arka bahçeye doğru bakardı. Herhalde hayatımın orada geçen hiç bir anında tek çıt dahi duymamışımdır. Sakinliği ile huzur veren bir odaydı. O günleri özlediğimi itiraf edebilirim. Çok fazla ve hatta neredeyse hiç problemimiz yoktu (Üniversite sınavı, okul dersleri ve kızlardan başka)
 

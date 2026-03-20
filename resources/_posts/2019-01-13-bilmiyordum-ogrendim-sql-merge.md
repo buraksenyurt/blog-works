@@ -1,20 +1,16 @@
-﻿---
+---
 layout: post
 title: "Bilmiyordum, Öğrendim : SQL Merge"
 date: 2019-01-13 13:03:00 +0300
-description: "Gün geçmiyor ki çevremdeki insanlardan yeni bir şey daha öğrenmeyeyim. İş yerindeki sıkıcı sayılabilecek SQL sorguları arasında gezinirken takım arkadaşım Mustafa'nın bir önerisi üzerine SQL Merge komutunu araştırmaya başladım. 2008den beri var olan benim bihaber olduğum bu komutu öğrenirken keyifli anlar yaşadım. Normalde çok kötü bir SQLciyimdir ama Merge komutunu uygulamalı olarak denedikten sonra şirketteki o kallavi sorgunun hem daha da hızlandığını hem de daha okunur hale geldiğini gördüm. Sonunda konuyu kaleme alıp paylaşmanın iyi olacağını fark ettim. Haydi gelin başlayalım."
 categories:
   - t-sql
 tags:
   - t-sql
   - performance
 ---
-# Bilmiyordum, Öğrendim : SQL Merge
-![sqlmerge_0.jpg](/assets/images/2019/sqlmerge_0.jpg)
-
-Merhaba Arkadaşlar,
-
 Gün geçmiyor ki çevremdeki insanlardan yeni bir şeyler daha öğrenmeyeyim. Bugün o günlerden biriydi...
+
+![sqlmerge_0.jpg](/assets/images/2019/sqlmerge_0.jpg)
 
 İş yerinde elimizin her an üzerinde olabileceği binlerce SQL nesnemiz var. Tablolar, fonksiyonlar, sp'ler... Bazen iş biriminden gelen istekler doğrultusunda onlara müdahale etmemiz veya yenilerini yazmamız gerekiyor. Sorun şu ki 2000li yılların başından kalan ve yorum satırlarına bakıldığında üzerinden bir çok geliştiricinin geçtiği spl'lerimiz var. Bazen buradaki kalabalık sorgular arasında samanlıkta iğne ararcasına sorun çözmeye çalıştığımız oluyor. Çok motive edici bir durum değil takdir ederseniz ki. Şükür ki alanlarında yetkin ekip arkadaşlarımız var ve yeri geldiği zaman söyledikleri ufak bir ipucu ile hayatımızı kolaylaştırıyorlar (ki bu etkili yardımlaşmada agile metodolojide koşan bir takım olmamızın da büyük etkisi var)
 

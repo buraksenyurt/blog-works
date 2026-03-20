@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "AJAX ve JSON Desteği"
 date: 2008-02-25 08:00:00 +0300
-description: "Son yıllarda özellikle Web uygulamalarında AJAX(Asynchronous Javascript And XML) mimarisi oldukça yaygın bir şekilde kullanılmaktadır. Özellikle sunucu taraflı(Server-Side) çalışan Asp.Net gibi web uygulaması geliştirme modellerinde istemciler(Clients) tarafından sunucuya(Server) doğru gerçekleştirilen POST işlemleri sırasında, sayfanın tamamının gönderilmesi söz konusudur..."
 categories:
   - wcf
 tags:
@@ -21,9 +20,6 @@ tags:
   - visual-studio
   - dataset
 ---
-# AJAX ve JSON Desteği
-Değerli Okurlarım Merhabalar,
-
 Son yıllarda özellikle Web uygulamalarında AJAX (Asynchronous Javascript And XML) mimarisi oldukça yaygın bir şekilde kullanılmaktadır. Özellikle sunucu taraflı (Server-Side) çalışan Asp.Net gibi web uygulaması geliştirme modellerinde istemciler (Clients) tarafından sunucuya (Server) doğru gerçekleştirilen POST işlemleri sırasında, sayfanın tamamının gönderilmesi söz konusudur. AJAX modeli sayesinde istemci tarafında yer alan sayfanın tüm içeriği yerine sadece değiştirilmesi istenen parçaların sunucuya gönderilmesi, işlenmesi ve cevapların alınarak tarayıcı uygulama (Browser Application) üzerinde gösterilmesi mümkün olmaktadır. Böylece sayfanın gerçektende değişmesi gereken içeriğinin istemci ve sunucu arasındaki hareketi söz konusudur. Bir başka deyişle gereksiz olan içeriğin sunucuya tekrar gönderilmesinin, işlenmesinin önüne geçilmesi sağlanmaktadır. Bu bir anlamda son kullanıcı (End User) için daha zengin etkileşime sahip ve performanslı bir web ortamı oluşturulması anlamına da gelir.
 
 AJAX mimarisi, Asp.Net AJAX ile.NET platformu üzerinde çok daha kolay bir şekilde uygulanabilir hale getirilmiştir. Microsoft'un.Net Framework mimarisine getirdiği bu ilave yenilik hakkında söylenecek ve yazılacak çok şey vardır. Bu yazıdaki hedef ise Windows Communication Foundation servislerinin (WCF Services) AJAX bazlı istemcilere hizmete verebilecek şekilde nasıl geliştirileceklerinin öğrenilmesidir. Nitekim Web uygulamalarıda kendi içlerinde WCF servislerine erişebilir ve kullanabilirler. Bununla birlikte WCF mimarisi AJAX tipindeki istemcilere JSON (JavaScript and Object Notation) formatında veri içeriği sunabilme kapasitesine de sahip hale gelmiştir. İşe ilk olarak Asp.Net AJAX tipindeki istemcileri ele alarak başlamakta yarar vardır.

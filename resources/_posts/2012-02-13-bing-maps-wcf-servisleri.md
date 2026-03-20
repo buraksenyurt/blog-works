@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Bing Maps WCF Servisleri"
 date: 2012-02-13 01:05:00 +0300
-description: "WCF(Windows Communication Foundation) Şimdi eskisi kadar çok sık olmasa da arada sırada eğitim veriyorum ve özellikle WCF konusuna sıra geldiğinde, öğrencilerime verdiğim gerçek hayat örnekleri arasında Bing Maps’ in ücretsiz servisleri de yer alıyor. Bu yazımızda söz konusu servislerden bazılarını nasıl kullanacağımızı, basit fonksiyonlar üzerinden görmeye çalışıyor olacağız."
 categories:
   - wcf
 tags:
@@ -16,10 +15,10 @@ tags:
   - generics
   - testing
 ---
-# Bing Maps WCF Servisleri
-[![812522_audio_cassette_template](/assets/images/2012/812522_audio_cassette_template_thumb.jpg)](/assets/images/2012/812522_audio_cassette_template.jpg) Merhaba Arkadaşlar,
-
 Eğitimci olarak çalıştığım dönemlerde servis bazlı mimarilerde, XML Web Service’ leri son derece popüler bir kavramdı. Pek tabi öğrencilerimin çoğu, bu servislerin gerçek hayat örneklerini merak ederdi. Haklı olarak söz konusu yapının, nasıl çalıştığını anlamanın en iyi yolu onu saha da görmekti.
+
+[![812522_audio_cassette_template](/assets/images/2012/812522_audio_cassette_template_thumb.jpg)](/assets/images/2012/812522_audio_cassette_template.jpg)
+
 
 O dönemlerde internet üzerinden yayınlanan bazı ücretsiz servislerden yararlanarak konuyu pekiştirmeye çalışırdım. Klasik hava durumu veya finans servisleri bu anlamda çok işe yaramaktaydı.
 

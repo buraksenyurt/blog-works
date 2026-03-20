@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "İlişkili Tabloları DataSet İle Kullanmak - 1"
 date: 2003-12-09 10:00:00 +0300
-description: "Bugünkü makalemizde, aralarında relationship (ilişki) bulunan tabloların, bir DataSet nesnesinin bellekte temsil ettiği alanda nasıl saklandığını incelemeye çalışıcacağız. Bunu yaparken de, geliştireceğimiz uygulama ile parant-child (ebeveyn-çocuk) yada master-detail (efendi-detay) adı verilen ilişkileri taşıyan tablolarımızı bir windows application’da bir dataGrid nesnesi ile nasıl kolayca göstereceğimizi göreceğ"
 categories:
   - ado-net
 tags:
@@ -13,9 +12,6 @@ tags:
   - dataset
   - datatable
 ---
-# İlişkili Tabloları DataSet İle Kullanmak - 1
-Değerli Okurlarım, Merhabalar.
-
 Bugünkü makalemizde, aralarında relationship (ilişki) bulunan tabloların, bir DataSet nesnesinin bellekte temsil ettiği alanda nasıl saklandığını incelemeye çalışıcacağız. Bunu yaparken de, geliştireceğimiz uygulama ile parant-child (ebeveyn-çocuk) yada master-detail (efendi-detay) adı verilen ilişkileri taşıyan tablolarımızı bir windows application’da bir dataGrid nesnesi ile nasıl kolayca göstereceğimizi göreceğiz.
 
 İşin sırrı Olin’de diye bir reklam vardı eskiden. Şimdi aklıma o reklam geldi. Burada da işin sırrı DataRelation adı verilen sınıftadır. DataRelation sınıfına ait nesneler, aralarında ilişkisel bağ olan tablolarının, aralarındaki ilişkiyi temsil ederler. Bir DataRelation nesnesi kullandığımızda, bu nesneyi mutlaka bir DataSet sınıfı nesnesine eklememiz gerekmektedir. Dolayısıyla DataSet sınıfımız, aralarında ilişki olan tabloları temsil eden DataTable nesnelerini ve bu tablolar arasındaki ilişkiyi temsil eden DataRelation nesnesini (lerini) taşımak durumundadır.

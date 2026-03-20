@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Entity Framework 6 Alpha 1 ve async, await Özellikleri"
 date: 2012-10-31 22:41:00 +0300
-description: "Sözü fazla uzatmıyayım ama daha bu ayki Entity Framework 5.0 tabanlı Nedirtv?com Webinerime hazırlanırken bir kaç gün önce EF 6.0’ nın alpha sürümünün yayınlandığını ve NuGet paket yönetim aracı ile indirilebileceğini öğrendim."
 categories:
   - entity-framework
 tags:
@@ -15,14 +14,9 @@ tags:
   - threading
   - visual-studio
 ---
-# Entity Framework 6 Alpha 1 ve async, await Özellikleri
-[![speed_limit](/assets/images/2012/speed_limit_thumb.jpg)](/assets/images/2012/speed_limit.jpg) Merhaba Arkadaşlar,
+Doğruyu söylemek gerekirse yazılım hayatım boyunca en çok kurduğum cümlelerden birisi de sanıyorum ki şu olmuştur: “Microsoft’ un hızına yetişemiyoruz” Bazı açılardan bakıldığında bu özellikle nihayi ürün ile geliştirme yapanlar için bir handikap olarak görülebilir. Çünkü yeni sürümler genellikle geliştiricilerin ve ürün yöneticilerinin arzu ettikleri, görmek istedikleri kabiliyetleri içermektedir.
 
-Doğruyu söylemek gerekirse yazılım hayatım boyunca en çok kurduğum cümlelerden birisi de sanıyorum ki şu olmuştur: “Microsoft’ un hızına yetişemiyoruz”
-
-![Smile](/assets/images/2012/wlEmoticon-smile_66.png)
-
-Bazı açılardan bakıldığında bu özellikle nihayi ürün ile geliştirme yapanlar için bir handikap olarak görülebilir. Çünkü yeni sürümler genellikle geliştiricilerin ve ürün yöneticilerinin arzu ettikleri, görmek istedikleri kabiliyetleri içermektedir.
+[![speed_limit](/assets/images/2012/speed_limit_thumb.jpg)](/assets/images/2012/speed_limit.jpg)
 
 Diğer taraftan kişisel görüşüme göre, Microsoft yazılım ekiplerinin bu çalışkanlığı da takdir edilmesi gereken bir durumdur. Bu ekiplerin başında da Entity Framework geliştirilmesinden [sorumlu ekip](http://blogs.msdn.com/b/adonet/) gelmektedir.
 

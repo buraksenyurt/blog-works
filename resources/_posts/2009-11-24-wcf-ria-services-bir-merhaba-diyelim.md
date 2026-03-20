@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF RIA Services - Bir Merhaba Diyelim"
 date: 2009-11-24 01:56:00 +0300
-description: "Buna göre Ado.Net Data Services' ler WCF Data Services ve Rich Internet Application' lar için n-tier sorununu servis bazlı olarak kolayca aşmamızı sağlayan .Net RIA Services' da WCF RIA Services olarak isim değiştirmiştir..."
 categories:
   - wcf-eco-system
   - wcf-ria-services
@@ -22,12 +21,9 @@ tags:
   - http
   - visual-studio
 ---
-# WCF RIA Services - Bir Merhaba Diyelim
-![blg105_Giris.jpg](/assets/images/2009/blg105_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Yağmurlu günler ve kış geldikçe bir blog yazarının ilham gelmesini bekleyerek zaman geçirmesine hiç mi hiç gerek yoktur? (Tabi yandaki resimde görülen köprüye o açıdan uzun uzun baktığınızda bloğunuza yazacak çok güzel fikirler edinebilirsiniz) Aslında bu gün itibariyle blog yazısına konsantre olmak için gerekli şartlar zaten mevcuttur. Bir adet bilgisayar, internet bağlantısı, gerekli referans kitaplar (eğer konu ile ilişkili bulunabilirse), kapalı bir hava, güzel bir müzik ve onu kulaktan beyin hücrelerine kaliteli bir şekilde aktaracak kulaklıklar ile yağmurlu bir gün.
+
+![blg105_Giris.jpg](/assets/images/2009/blg105_Giris.jpg)
 
 Tabi insan bazen bloğuna yazarken bir solukta işe yarayacak eserlerde çıkartmak isteyebilir. İşte ben bu yüzden Hello World uygulamalarını çok severim. Zaten Microsoft pek çok eğitim materyalinde detaya girmeden önce, basit bir Hello World uygulaması ile "aslında biz bu konsept ile neyi yapabiliyoruz" sorusuna cevap vererek başlamayı tercih etmiştir,etmektedir. Örneğin çok çok eski Xml Web Services eğitiminde böyle bir giriş bulunmaktadır. Önce yazılmış olan bir Xml Web Service'inin kullanıdırıması öğretilir. Dikkat edin eğitimin amacı Xml Web Service'lerini geliştirmek. Öyleyse bu gün menümüzde ne var bir bakalım.
 

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu-20 (Except Sorgusu)"
 date: 2011-07-18 21:17:00 +0300
-description: "Merhaba Arkadaşlar,"
 categories:
   - csharp
   - linq
@@ -13,9 +12,6 @@ tags:
   - tek-fotoluk-ipucu
   - dotnet
 ---
-# Tek Fotoluk İpucu-20 (Except Sorgusu)
-Merhaba Arkadaşlar,
-
 Hemen hepimiz LINQ sorgularını kullanıyoruz (Tabi aramızda halen.Net 2.0 ve altı ile çalışan zavallılar da yok değil
 
 ![Sad smile](/assets/images/2011/wlEmoticon-sadsmile_5.png)

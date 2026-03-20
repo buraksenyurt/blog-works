@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF WebHttp Services - Tanışma"
 date: 2010-02-01 05:50:00 +0300
-description: "Nihayet taşlar yerli yerine oturmaya başladı. 2008 yılında düzenlenen Microsoft PDC' de tanıtılan sürüm ile başlayan macerada Beta 1, Beta 2 versiyonları derken yavaş yavaş RC, RTM sürümlerinin çıkacağı günlere gelmekteyiz. Elbette hepizimin beklentisi bir an önce stabil bir sürüme kavuşabilmek. Bu günlerde çok doğal olarak .Net Framework 4.0 ve Visual Studio 2010 ürünlerinin sınırlarının daha da netleştiğini görmeye başladık. Her ne kadar henüz yayınlanmış yeni bir sürüm olmasa da, pek çok güncel ve geçerli kaynaktan okuduğumuz kadarı ile bu böyle. Taşların yerli yerine oturmaya başladığı ve herşeyin biraz daha belirginleştiği alanlardan biriside Windows Communication Foundation 4.0."
 categories:
   - wcf-eco-system
   - wcf-webhttp-services
@@ -23,14 +22,11 @@ tags:
   - visual-studio
   - rc
 ---
-# WCF WebHttp Services - Tanışma
-![blg127_Giris.jpg](/assets/images/2010/blg127_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Nihayet taşlar yerli yerine oturmaya başladı. 2008 yılında düzenlenen Microsoft PDC'de tanıtılan sürüm ile başlayan macerada Beta 1, Beta 2 versiyonları derken yavaş yavaş RC, RTM sürümlerinin çıkacağı günlere gelmekteyiz. Elbette hepizimin beklentisi bir an önce stabil bir sürüme kavuşabilmek. Bu günlerde çok doğal olarak.Net Framework 4.0 ve Visual Studio 2010 ürünlerinin sınırlarının daha da netleştiğini görmeye başladık. Her ne kadar henüz yayınlanmış yeni bir sürüm olmasa da, pek çok güncel ve geçerli kaynaktan okuduğumuz kadarı ile bu böyle. Taşların yerli yerine oturmaya başladığı ve herşeyin biraz daha belirginleştiği alanlardan biriside Windows Communication Foundation 4.0
 
-Hatırlayacağınız üzere [WCF Eco System'i anlattığımız yazımızda](WCF Eco System.md), WCF alt yapısı üzerine geliştirilen ve amaca yönelik olarak farklılaştırılan servis geliştirme modellerine değinmiştik. Bunlardan biriside WebHttp Services idi. Bu yazımız ile birlikte WebHttp Service'lerini tanımaya çalışacağız. Aslında WCF 3.5 sürümüne kazandırılan Web programlama teknikleri sayesinde zaten uzun bir süredir farkında olduğumuz non-SOAP bazlı bir modelden bahsediyoruz. Bildiğiniz üzere WebGet ve WebInvoke isimli nitelikler (attribute) yardımıyla servis operasyonlarının HTTP Get,Post,Put ve Delete metodlarına cevap verebilecek şekilde tasarlanması mümkün. Ancak zaman ilerledikçe REST (REpresentational State Transfer) modeline göre WCF servislerinin daha kolay geliştirilmesini sağlayan ve WCF 4.0 içerisinde gömülecek yeni özelliklerin bir ön görünümünü bizlere sunan WCF REST Starter Kit ile karşılaştık.
+![blg127_Giris.jpg](/assets/images/2010/blg127_Giris.jpg)
+
+Hatırlayacağınız üzere [WCF Eco System'i anlattığımız yazımızda](/2010/01/05/wcf-eco-system/), WCF alt yapısı üzerine geliştirilen ve amaca yönelik olarak farklılaştırılan servis geliştirme modellerine değinmiştik. Bunlardan biriside WebHttp Services idi. Bu yazımız ile birlikte WebHttp Service'lerini tanımaya çalışacağız. Aslında WCF 3.5 sürümüne kazandırılan Web programlama teknikleri sayesinde zaten uzun bir süredir farkında olduğumuz non-SOAP bazlı bir modelden bahsediyoruz. Bildiğiniz üzere WebGet ve WebInvoke isimli nitelikler (attribute) yardımıyla servis operasyonlarının HTTP Get,Post,Put ve Delete metodlarına cevap verebilecek şekilde tasarlanması mümkün. Ancak zaman ilerledikçe REST (REpresentational State Transfer) modeline göre WCF servislerinin daha kolay geliştirilmesini sağlayan ve WCF 4.0 içerisinde gömülecek yeni özelliklerin bir ön görünümünü bizlere sunan WCF REST Starter Kit ile karşılaştık.
 
 WCF Eco System'in bir parçası olan WebHttp Service'ler,.Net Framework 3.5 ile gelen Web Programlama modeli, REST Starter Kit ile tanıtılan kabiliyetler ve bunlara ek yeni özelliklerin.Net Framework 4.0 içerisinde ele alınmasını sağlayan bir geliştirme alt yapısı olarakta düşünülebilir. Şimdi dilerseniz WebHttp Service'lere bir merhaba demeye çalışalım. Örneğimizi Visual Studio 2010 Ultimate Beta 2 sürümü üzerinden geliştirmeye çalışıyor olacağız. Ancak yazıyı hazırladığım tarihte araştırdığım MSDN, The.NET Endpint vb blog sitelerinde yer alan bilgilere göre Visual Studio 2010' un o anki sürümü üzerinde WebHttp Service'leri için bir proje şablon (project template) bulunmamaktaydı.
 

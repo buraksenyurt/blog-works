@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Daha iyi Kodlama için Basit Öneriler"
 date: 2011-03-17 07:01:00 +0300
-description: "Aslında daha okunaklı, daha efektif ve zaman zaman daha verimli kod üretmek için bir kaç küçük noktaya dikkat etmekte yarar olabilir. Bu sayede sanıyorum ki kodlarımız en azından daha şık duracaktır Wink Gelin bu bir kaç küçük püf noktadan bir kaçına hep birlikte bakalım."
 categories:
   - csharp
 tags:
@@ -13,10 +12,10 @@ tags:
   - threading
   - visual-studio
 ---
-# Daha iyi Kodlama için Basit Öneriler
-[![blg225_Giris](/assets/images/2011/blg225_Giris_thumb.jpg)](/assets/images/2011/blg225_Giris.jpg) Merhaba Arkadaşlar,
-
 Bilenler bilir, uzun süredir.Net Framework 2.0 üzerinde yazılmış ve Visual Studio 2005 ortamında geliştirilmeye devam edilen bir bankacılık uygulamasında görevliyim. Buradaki işim müşterinin yeni isteklerini sisteme katmak/katmaya çalışmak olarak düşünülebilir
+
+[![blg225_Giris](/assets/images/2011/blg225_Giris_thumb.jpg)](/assets/images/2011/blg225_Giris.jpg)
+
 
 ![Sealed](/assets/images/2011/smiley-sealed.gif)
 

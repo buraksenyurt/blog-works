@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Raspberry Pi Maceramızda Bu Bölüm - Tekerleği Döndürdük"
 date: 2016-08-06 21:01:00 +0300
-description: "Uzun bir tatil molasının ardından tekrar birlikteyiz. Sevgili Recep Duman hocam RaspiRobot Shiled' ını kullanarak bir Servo Motora ait tekerleği ileri yönlü döndürüp durdurmayı başardı. Üstelik Raspberry Pi, RaspiRobot ve Servo Motor için sadece 9 Volt'luk güç kaynağı ile. Söyleşimizde farklı konulara da değinmeye çalıştık ancak ağırlıklı olarak Servo Motor üzerinde durduk. İyi seyriler dilerim."
 categories:
   - python
   - raspberry-pi
@@ -13,9 +12,6 @@ tags:
   - http
   - github
 ---
-# Raspberry Pi Maceramızda Bu Bölüm - Tekerleği Döndürdük
-Merhaba Arkadaşlar,
-
 Uzun bir tatil molasının ardından tekrar birlikteyiz. Sevgili [Recep Duman](http://www.recepduman.net/) hocam RaspiRobot Shiled'ını kullanarak bir Servo Motora ait tekerleği ileri yönlü döndürüp durdurmayı başardı. Üstelik Raspberry Pi, RaspiRobot ve Servo Motor için sadece 9 Volt'luk güç kaynağı ile. Söyleşimizde farklı konulara da değinmeye çalıştık ancak ağırlıklı olarak Servo Motor üzerinde durduk. İyi seyriler dilerim.
 
 [Youtube Link](https://www.youtube.com/watch?v=Xscx6RkuLoA)

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: ".Net Remoting ve Event Mimarisi"
 date: 2006-03-26 12:00:00 +0300
-description: "Remoting mimarisinde temel amaç, istemcilerin uzak nesnelere (remote objects) erişmelerini sağlamak ve bu nesneler üzerindeki metodları çalıştırmaktır. .Net Remoting için en çok kullanılan model Marshall By Referance modelidir. Bu modelde istemciler uzak nesneler ile, sunucu üzerinde oluşturulan uzak nesne referansları yoluyla konuşurlar. Ancak bazı durumlarda, uzak nesnelerin yer aldığı sunucu uygulamalar, istemciler üzerinde yer alan metodları çalıştırmak isteyebilir. Böyle bir durumda roller süreç içerisinde istemci ve sunucu arasında değişime uğrar. Yani istemciler sunucudaki uzak nesnelere erişebilirken, sunucuda istemciler üzerindeki nesnelere erişebilmektedir. Bu modelin gerçekleşmesi için özellikle olay güdümlü programlanın can damarı olan temsilci (delegate) ve event (olay) tipleri kullanılmaktadır."
 categories:
   - dotnet-remoting
 tags:
@@ -13,9 +12,6 @@ tags:
   - threading
   - delegates
 ---
-# .Net Remoting ve Event Mimarisi
-Değerli Okurlarım Merhabalar,
-
 Remoting mimarisinde temel amaç, istemcilerin uzak nesnelere (remote objects) erişmelerini sağlamak ve bu nesneler üzerindeki metodları çalıştırmaktır..Net Remoting için en çok kullanılan model Marshall By Referance modelidir. Bu modelde istemciler uzak nesneler ile, sunucu üzerinde oluşturulan uzak nesne referansları yoluyla konuşurlar. Ancak bazı durumlarda, uzak nesnelerin yer aldığı sunucu uygulamalar, istemciler üzerinde yer alan metodları çalıştırmak isteyebilir. Böyle bir durumda roller süreç içerisinde istemci ve sunucu arasında değişime uğrar. Yani istemciler sunucudaki uzak nesnelere erişebilirken, sunucuda istemciler üzerindeki nesnelere erişebilmektedir. Bu modelin gerçekleşmesi için özellikle olay güdümlü programlanın can damarı olan temsilci (delegate) ve event (olay) tipleri kullanılmaktadır.
 
 Teorik olarak bu yaklaşımda, istemciler uzak nesne için geçerli olan bir event'ı yükleyebilir ve uzak nesneleri kullanan sunucuda tetiklenen olay sonrası, istemci tarafında yer alan olay metodlarını çalıştırabilir. Bu olayın gerçekleşebilmesi için, uzak nesnenin istemci tarafından yüklenebilecek bir event'a sahip olması, ayrıca olayın tetiklenmesi sonucu istemcideki uygun metodu işaret edebilecek bir temsilci (delegate) tipininde var olması gerekir. Dolayısıyla sunucu tarafında ve istemci tarafında olması gerekenler belirlidir. Sunucu tarafında, uzak nesne tipimiz, istemcideki olay metodunu işaret edebilecek bir delegate tipimiz ve istemci tarafından erişilebilecek bir event tipimiz var olmalıdır. İstenirse, olay metodu için bilgi taşıyacak başka bir tip daha sunucu tarafında yer alabilir. Bilgi taşıyacak bu tipi örneğin bir windows uygulamasındaki button nesnesine tıklandığında devreye giren click olay metodunun EventArgs parametre tipine benzetebiliriz. İstemci tarafında ise, uzak sunucunun herhangibir olay sonucu çalıştıracağı olay metodunu içeren bir tip yer almalıdır.

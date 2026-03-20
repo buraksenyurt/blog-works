@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "GoLang - Kalıtımsız Bir Dünya"
 date: 2017-02-25 21:38:00 +0300
-description: "Go hızlı ve performanslı bir programlama dili olarak anılıyor. Diğer yandan nesne yönelimli dil özelliklerini büyük ölçüde içermediği gibi bir gerçek de var ortada."
 categories:
   - golang
 tags:
@@ -12,12 +11,9 @@ tags:
   - go
   - pointers
 ---
-# GoLang - Kalıtımsız Bir Dünya
-![gocomp_2.gif](/assets/images/2017/gocomp_2.gif)
-
-Merhaba Arkadaşlar,
-
 Go hızlı ve performanslı bir programlama dili olarak anılıyor. Diğer yandan nesne yönelimli dil özelliklerini büyük ölçüde içermediği gibi bir gerçek de var ortada. Tasarımı sırasında kalıtım (Inheritance) gibi yönetimin sonradan zorlaşabildiği ve bakım gerektiren çatıların performansı olumsuz yönde etkilediği düşüncesi hakim olmuş. Bu nedenle nesne yönelimli düşünce tarzını az da olsa kenara bırakarak ilerlemek gerekiyor. Kalıtım doğrudan desteklenmese de nesne kompozisyonu (Composition) mevcut. Hatta belli bir ölçüde çok biçimliliği (Polymorphism) de uygulayabiliriz gibi.
+
+![gocomp_2.gif](/assets/images/2017/gocomp_2.gif)
 
 Doğruyu söylemek gerekirse yıllarca nesne yönelimli dillerle çalışmış birisinin tekrardan okula dönüp alışık olduğu alan yapısı ve kurallar dizisinin dışına çıkması pek kolay değil. Bunu sancısını Go dilini öğrenmeye çalıştığım şu günlerde yoğun olarak yaşamaktayım. Gelin kalıtımı ve çok biçimliliği tam olarak karşılamasa da Go dilinde benzer kurguların nasıl yapılabileceğine bir bakalım. İşe aşağıdaki örnek kod parçasını geliştirerek başlayabiliriz.
 

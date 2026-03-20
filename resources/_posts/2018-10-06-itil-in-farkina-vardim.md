@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "ITIL'ın Farkına Vardım"
 date: 2018-10-06 18:05:00 +0300
-description: "Seksenli yıllarda İngilizlerin Central Computer and Telecommunications Agency isimli departmanı, IT hizmetlerindeki sıkıntıların tespiti ve doğru yolun bulunması amacıyla ITIL olarak kısaltılan bir konseptin temellerini ortaya koymuş. Tam olarak açılımı Information Technology Infrastructure Library şeklinde. Ona kütüphane denmesinin makul bir sebebi de süreçlere ait pratikleri içeren beş kitaptan oluşması. O yıllarda temelleri atılan ITIL zaman içerisinde yeni versiyonları ile birlikte gelişmeye devam etmiş. Bugün pek çok IT firmasının(ki sadece IT ile sınırlamak doğru değil nitekim içerisinde hizmet geçen her alanda ele alınabilir) uygulamaya çalıştığı bir, bir…Şey…Immm…Bir ne?"
 categories:
   - dokuman
 tags:
@@ -10,12 +9,9 @@ tags:
   - oracle
   - authorization
 ---
-# ITIL'ın Farkına Vardım
-![itil_intro.jpg](/assets/images/2018/itil_intro.jpg)
-
-Merhaba Arkadaşlar,
-
 Seksenli yıllarda İngilizlerin Central Computer and Telecommunications Agency isimli departmanı, IT hizmetlerindeki sıkıntıların tespiti ve doğru yolun bulunması amacıyla ITIL olarak kısaltılan bir konseptin temellerini ortaya koymuş. Tam olarak açılımı Information Technology Infrastructure Library şeklinde. Ona kütüphane denmesinin makul bir sebebi de süreçlere ait pratikleri içeren beş kitaptan oluşması. O yıllarda temelleri atılan ITIL zaman içerisinde yeni versiyonları ile birlikte gelişmeye devam etmiş. Bugün pek çok IT firmasının (ki sadece IT ile sınırlamak doğru değil nitekim içerisinde hizmet geçen her alanda ele alınabilir) uygulamaya çalıştığı bir, bir…Şey…Immm…Bir ne?
+
+![itil_intro.jpg](/assets/images/2018/itil_intro.jpg)
 
 İşte geçtiğimiz günlerde Doğuş Teknoloji tarafından düzenlenen “ITIL Farkındalık” eğitiminde bu sorunun cevabını bulmaya çalıştık. Ben, her zaman olduğu gibi heyecanla not tutmaya çalıştım. Bir günlük eğitimde yaklaşık onaltı sayfalık not çıkmıştı. Üstelik kaçırdığım bir çok kısım vardı.
 

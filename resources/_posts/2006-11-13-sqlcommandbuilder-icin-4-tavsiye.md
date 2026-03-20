@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "SqlCommandBuilder için 4 Tavsiye"
 date: 2006-11-13 12:00:00 +0300
-description: "SqlCommandBuilder sınıfı özellikle bağlantısız katman (disconnected layer) modelinde sıkça kullanılmaktadır. Çoğunlukla, SqlDataAdapter tipine ait nesneler için gerekli olan UpdateCommand, InsertCommand ve DeleteCommand özelliklerine bağlı SqlCommand nesnelerini sıfırdan oluşturmamak için tercih edilebilir..."
 categories:
   - ado-net
 tags:
@@ -12,9 +11,6 @@ tags:
   - http
   - datatable
 ---
-# SqlCommandBuilder için 4 Tavsiye
-Değerli Okurlarım Merhabalar,
-
 SqlCommandBuilder sınıfı özellikle bağlantısız katman (disconnected layer) modelinde sıkça kullanılmaktadır. Çoğunlukla, SqlDataAdapter tipine ait nesneler için gerekli olan UpdateCommand, InsertCommand ve DeleteCommand özelliklerine bağlı SqlCommand nesnelerini sıfırdan oluşturmamak için tercih edilebilir. Framework 1.1' de özellikle bağlantısız katman modeline ait bir vakka olan Concurency Violation durumlarındaki yaklaşımı nedeniyle (tüm kolonları where'e dahil etmek) bazen tercih edilmemektedir.
 
 Ancak SqlCommandBuilder, Framework 2.0 ile birlikte kendisine eklenen yeni üyeler sayesinde daha da fonksiyonel hale gelmiştir. Bununla birlikte SqlCommandBuilder tipinin sadece bağlantısız katman (disconnected layer) modeli için yazılmış olduğunu düşünmek haksızlık olacaktır. Nitekim katmanlı mimaride veri erişim katmanı (data access layer) içerisinde son derece kullanışlı olabilecek bir metodada sahiptir. İşte bu makalemizde SqlCommandBuilder tipinin,.Net Framework 2.0 versiyonu ile birlikte güçlendirilmiş olan yönlendiren bahsetmeye çalışacağız. Temel olarak işleyeceğimiz maddeler aşağıdaki gibidir.

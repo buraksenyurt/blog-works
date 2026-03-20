@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Localization (Yerelleştirme) 2 - Dil Desteği"
 date: 2004-08-07 12:00:00 +0300
-description: "Bir önceki makalemizde hatırlayacağınız gibi, .net ile geliştirilen uygulamaların belirli kültürler için nasıl yerelleştirilebileceğini incelemeye başlamıştık. İlk bölümde, belirli bir kültürün daha çok sayısal, tarihsel ve sıralama formatları üzerinde durduk. Bu bölümde ise, yerelleştirmede daha da önemli olan bir konuya, uygulamaların farklı dillere göre destek vermesine değineceğiz."
 categories:
   - csharp
 tags:
@@ -13,9 +12,6 @@ tags:
   - reflection
   - visual-studio
 ---
-# Localization (Yerelleştirme) 2 - Dil Desteği
-Değerli Okurlarım, Merhabalar.
-
 Bir önceki makalemizde hatırlayacağınız gibi,.net ile geliştirilen uygulamaların belirli kültürler için nasıl yerelleştirilebileceğini incelemeye başlamıştık. İlk bölümde, belirli bir kültürün daha çok sayısal, tarihsel ve sıralama formatları üzerinde durduk. Bu bölümde ise, yerelleştirmede daha da önemli olan bir konuya, uygulamaların farklı dillere göre destek vermesine değineceğiz.
 
 Bir.net uygulamasının farklı dillere destek vermesindeki anahtar nokta, Resource dosyalarının etkin bir şekilde kullanılmasında yatmaktadır. Örneğin, uygulamamızın arayüzünün Türkçe olarak oluşturulduğunu düşünelim. Bu uygulamaya ait arayüzdeki metinleri, başka bir dilde sunabilmek için, ilgili kelimelerin diğer dildeki karşılıklarının bir şekilde assembly tarafından bilinmesi gerekir. Sadece bilinmesi elbette yeterli değildir. Ayrıca, çalışan proses için, arayüz kültürününde istenen dile ayarlanması gerekmektedir.

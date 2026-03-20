@@ -1,17 +1,13 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu 122 - Regex ile MatchEvaluator Kullanımı"
 date: 2015-11-29 17:00:00 +0300
-description: "Vaktiyle zamanında üyelerine çeşitli finansal verilerden harmanlanmış metinsel içerik sağlayan bir kurum varmış. Bu kurum geliştirme döneminde bakmış ki verinin boyutu epeyce büyük. Ne yapalım ne edelim derken, üretilen metinsel içerikte çok sık tekrar eden bazı karakterler olduğunu fark etmişler. \"Nasıl yapsak da bu çok sayıda tekrar eden karakteri metin içerisinden kırpsak ama bütünün anlamını bozmasak\" demişler. Bunu üzerine tekrar eden kısımların yerine geçecek ve orada bunlardan kaç tane olduğunu ifade edecek basit söz dizimleri kullanmaya karar vermişler. Demişler ki, örneğin @9@ geçen bir aslında 9 tane 0 karakterini ifade etsin."
 categories:
   - csharp
 tags:
   - csharp
   - delegates
 ---
-# Tek Fotoluk İpucu 122 - Regex ile MatchEvaluator Kullanımı
-Merhaba Arkadaşlar,
-
 Geçtiğimiz günlerde üzerinde çalıştığımız bir projede, sıkıştırılmış metinsel içeriklerin açılması ile ilgili bir ihtiyaç doğdu. Cümle biraz karışık gelmiş olabilir. İfinim müsadenizle senaryoyu anlatayım öncelikle;
 
 Vaktiyle zamanında üyelerine çeşitli finansal verilerden harmanlanmış metinsel içerik sağlayan bir kurum varmış. Bu kurum geliştirme döneminde bakmış ki verinin boyutu epeyce büyük. Ne yapalım ne edelim derken, üretilen metinsel içerikte çok sık tekrar eden bazı karakterler olduğunu fark etmişler. "Nasıl yapsak da bu çok sayıda tekrar eden karakteri metin içerisinden kırpsak ama bütünün anlamını bozmasak" demişler. Bunu üzerine tekrar eden kısımların yerine geçecek ve orada bunlardan kaç tane olduğunu ifade edecek basit söz dizimleri kullanmaya karar vermişler. Demişler ki, örneğin @9@ geçen bir aslında 9 tane 0 karakterini ifade etsin.

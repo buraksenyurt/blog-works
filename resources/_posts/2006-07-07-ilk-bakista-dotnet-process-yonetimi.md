@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "İlk Bakışta .Net Process Yönetimi"
 date: 2006-07-07 12:00:00 +0300
-description: "Bir Windows uygulamasını çalıştırdığımızda işletim sistemi bellek üzerinde söz konusu programın çalışabilmesi için bir Process açar. Bu Process içerisinde, uygulamanın çalışması için gerekli bellek ayırma işlemleri, harici olarak kullanılan Module' ler (örneğin başka Com nesneleri veya .net assembly' ları gibi) ve process içi Thread' ler bulunur. Çoğunlukla bir Process açıldığında bu Process içerisinde mutlaka bir main thread bulunur. Hatta basit bir Console uygulamasını çalıştırdığınızda Main Thread dışında başka aynı Proces' e dahil başka Thread' ler ile de karşılaşabiliriz. Dolayısıyla uygulama için açılan Process' in birden fazla Thread içereceği durumlar söz konusu olabilir. Literatürde multi-threading olarak geçen bu olay, bir Process' in içerisinde iş yapan eş zamanlı parçaların olması anlamına gelmektedir."
 categories:
   - csharp
 tags:
@@ -13,9 +12,6 @@ tags:
   - concurrency
   - visual-studio
 ---
-# İlk Bakışta .Net Process Yönetimi
-Değerli Okurlarım Merhabalar,
-
 Bir Windows uygulamasını çalıştırdığımızda işletim sistemi bellek üzerinde söz konusu programın çalışabilmesi için bir Process açar. Bu Process içerisinde, uygulamanın çalışması için gerekli bellek ayırma işlemleri, harici olarak kullanılan Module'ler (örneğin başka Com nesneleri veya.net assembly'ları gibi) ve process içi Thread'ler bulunur. Çoğunlukla bir Process açıldığında bu Process içerisinde mutlaka bir main thread bulunur. Hatta basit bir Console uygulamasını çalıştırdığınızda Main Thread dışında başka aynı Proces'e dahil başka Thread'ler ile de karşılaşabiliriz. Dolayısıyla uygulama için açılan Process'in birden fazla Thread içereceği durumlar söz konusu olabilir. Literatürde multi-threading olarak geçen bu olay, bir Process'in içerisinde iş yapan eş zamanlı parçaların olması anlamına gelmektedir.
 
 ![mk166_1.gif](/assets/images/2006/mk166_1.gif)

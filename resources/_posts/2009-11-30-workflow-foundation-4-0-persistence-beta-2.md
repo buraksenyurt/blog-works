@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Workflow Foundation 4.0 - Persistence [Beta 2]"
 date: 2009-11-30 23:29:00 +0300
-description: "Workflow Foundation modeli ile geliştirilen uzun süreli işlemlerde(Long Running Process) en önemli konulardan biriside, Workflow örneğinin herhangibir t anında kalıcı olarak saklanabilmesi(Persist) ve istenildiğinde saklandığı yerdeki içeriği ile birlikte tekrardan ayağa kaldırılabilmesidir..."
 categories:
   - wf-4-0-beta-2
 tags:
@@ -16,12 +15,9 @@ tags:
   - transactions
   - visual-studio
 ---
-# Workflow Foundation 4.0 - Persistence [Beta 2]
-![blg104_Giris.jpg](/assets/images/2009/blg104_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Bundan bir kaç yıl önce, eşimle birlike İtalya'daki Amca'sını ziyarete gitmiştik. Amcamız, Milano şehrinde uzun yıllar restoran işiyle uğraşmış oldukça yetenekli bir aşçı ve işletmeciydi. Bir gün İtalya'da bizi davet ettiği bir restoranda yemek yerken güzel bir tavsiyede bulunduğunu hatırlıyorum; "Yemekte bitiremediğiniz salatalar mı var? Yemekten sonra onları tavada ısıtın ve buzdolabına koyun. Ertesi gün yine soslayarak yiyebilirsiniz. Tabiki ağır soslu salatalar değilde hafif olanlardan bahsediyorum". Bir anlamda salatayı herhangibir anda o anki haliyle saklayıp (ki ben buna Persist etmek demek istiyorum) sonra t zamanında yeniden yemek. Her ne kadar bu senaryoda salatayı yıllarca saklamak zor olsada (ki bu durumdada bazı sonuçlarına katlanmak gerekebilir ![Sealed](/assets/images/2009/smiley-sealed.gif)) yazılım dünyasında uzun süreli bir iş akışının yıllarca saklanabilmesi mümkündür. İşte bu günkü konumuz; Workflow Foundation 4.0 ile Persistence işlemleri nasıl gerçekleştirilebilir...
+
+![blg104_Giris.jpg](/assets/images/2009/blg104_Giris.jpg)
 
 Workflow Foundation modeli ile geliştirilen uzun süreli işlemlerde (Long Running Process) en önemli konulardan biriside, Workflow örneğinin herhangibir t anında kalıcı olarak saklanabilmesi (Persist) ve istenildiğinde saklandığı yerdeki içeriği ile birlikte tekrardan ayağa kaldırılabilmesidir. Persist edilecek verilerin nerede saklanacağına ilişkin olarak çalışma zamanının varsayılan tutumu belleği kullanmaktır. Ancak çok sayıda Workflow örneğinin Long Running Process olarak değerlendirildiği gerçek hayat vakalarında hem yönetim (Administration) hemde kalıcılığın daha kuvvetli olması adına SQL veritabanı ortamının değerlendirilmesi çok daha doğru bir davranıştır.
 

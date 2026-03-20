@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: ".Net Core ile Amazon DynamoDB'yi Kullanmak"
 date: 2018-04-16 06:00:00 +0300
-description: "Epey zamandır NoSQL veritabanı sistemlerini kurcalamıyordum. Ağırlıklı olarak da .Net tarafında nasıl kullanılabildiklerini incelediğimi hatırlıyorum. 2017nin son çeyreği ve 2018 için kendime koyduğum hedeflerden birisi ise .Net Core dünyasını daha yakından tanımak. West-World'ün kurulum amacı da özellik bu. Sonuç olarak Amazon'un DynamoDb'sini .Net Core tarafında nasıl kullanabileceğimi incelemeye karar verdim. Bir süredir AWS Console üzerinden bir şeyler araştırıyor ve Amazon Web Service ürünleri hakkında giriş niteliğinde bilgiler edinmeye çalışıyorum."
 categories:
   - dotnet-core
   - aws
@@ -23,12 +22,9 @@ tags:
   - visual-studio
   - github
 ---
-# .Net Core ile Amazon DynamoDB'yi Kullanmak
-![dynamocore_halo.gif](/assets/images/2018/dynamocore_halo.gif)
-
-Merhaba Arkadaşlar,
-
 Epey zamandır NoSQL veritabanı sistemlerini kurcalamıyordum. Ağırlıklı olarak.Net Framework tarafında nasıl kullanılabildiklerini incelediğimi hatırlıyorum. 2017nin son çeyreği ve 2018in tamamı için kendime koyduğum hedeflerden birisi ise.Net Core dünyasını daha yakından tanımaktı. Zaten Ubuntu üzerinde koşan West-World'ün kurulum amacı da buydu. Sonuç olarak Amazon'un DynamoDb'sini.Net Core tarafında nasıl kullanabileceğimi incelemeye karar verdim. Bir süredir AWS Console üzerinden bir şeyler araştırıyor ve Amazon Web Service ürünleri hakkında giriş niteliğinde bilgiler edinmeye çalışıyorum.
+
+![dynamocore_halo.gif](/assets/images/2018/dynamocore_halo.gif)
 
 Amazon DynamoDb şemasız (schema-less) olarak kullanılabilen bir NoSQL veritabanı sistemi olarak karşımıza çıkıyor. Key-Value tipine göre çalışan (ama Document Store'a da benzeyen) bir model sunduğunu söyleyebiliriz. Belli koşullar gerçekleşinceye kadar tamamen ücretsiz kullanılabilen hızlı bir veri tabanı da aynı zamanda. Bununla birlikte veriyi hızlı SSD'ler üzerinde tuttuğuna dair bir bilgi de var. Bu açıdan bakıldığında veriyi bellekte konuşlandırmayı seçen Redis'ten ayrışıyor.
 

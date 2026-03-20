@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ado.Net Data Services 1.5 CTP2 - Data Binding Bölüm 1"
 date: 2009-11-08 18:30:00 +0300
-description: "Ado.Net Data Services v1.5 ile birlikte istemci tarafına getirilen DataServiceCollection isimli koleksiyonun veri bağlama işlemlerinde kullanılabilmekte olup, CTP2 versiyonunda dahada iyileştirilmiş olarak karşımıza çıkmaktadır. Buna göre istemci tarafı için üretilen kütüphanede(Client Library) kolaylaştırıcı değişiklikler yapıldığı söylenebilir. DataServiceCollection<T> koleksiyonu ObservabelCollection<T> tipinden türemekte olup, INotifyPropertyChanged ve INotifyCollectionChanged arayüzlerini(Interface) uygulamaktadır. Aşağıdaki Object Browser çıktısında bu tipin içeriği açık bir şekilde görülmektedir."
 categories:
   - ado-net-data-services
 tags:
@@ -20,9 +19,6 @@ tags:
   - http
   - visual-studio
 ---
-# Ado.Net Data Services 1.5 CTP2 - Data Binding Bölüm 1
-Merhaba Arkadaşlar,
-
 Ado.Net Data Services ile geliştirilen servislerin tüketilmesi sırasında önem arz eden konulardan biriside, istemci tarafındaki veri bağlama (DataBinding) işlemleridir. Öyleki, servisin tüketicisi olan istemcilerin
 
 - Veriye bağlanılması,

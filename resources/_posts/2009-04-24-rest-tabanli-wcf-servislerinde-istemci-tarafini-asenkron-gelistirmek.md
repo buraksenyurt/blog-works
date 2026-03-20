@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Rest Tabanlı WCF Servislerinde İstemci Tarafını Asenkron Geliştirmek"
 date: 2009-04-24 09:26:00 +0300
-description: "Bir önceki yazımızda REST bazlı WCF servisleri için, WCF Rest Stater Kit yardımıyla istemci uygulamaların nasıl geliştirilebileceğini incelemeye çalışmıştık. İstemci açısından önemli olan konulardan biriside, uzun sürebilecek request/response operasyonları sırasında uygulamasını kullanmaya devam edebiliyor olmasıdır."
 categories:
   - wcf
 tags:
@@ -22,9 +21,6 @@ tags:
   - serialization
   - delegates
 ---
-# Rest Tabanlı WCF Servislerinde İstemci Tarafını Asenkron Geliştirmek
-Merhaba Arkadaşlar,
-
 Bir önceki [yazımızda](https://www.buraksenyurt.com/post/Rest-Tabanl%C4%B1-WCF-Servisleri-icin-Istemci-Yazmak)REST bazlı WCF servisleri için, WCF Rest Stater Kit yardımıyla istemci uygulamaların nasıl geliştirilebileceğini incelemeye çalışmıştık. İstemci açısından önemli olan konulardan biriside, uzun sürebilecek request/response operasyonları sırasında uygulamasını kullanmaya devam edebiliyor olmasıdır. Tahmin edeceğiniz üzere istemci tarafında bir request'in asenkron olarak gönderilip, işlenmesi konusunu değerlendiriyor olacağız. Aslında asenkron erişimden kastımız, istemcinin talebi gönderdikten sonra cevabın anında gelmesini beklemeden çalışmasına devam edebilmesidir. Servis tabanlı uygulamalar söz konusu olduğunda, asenkron işlemleri iki lokasyonda tasarlayabiliriz.
 
 Asenkron işlemler servis tarafında uygulanır. Geliştiricinin asenkron modeli kendisinin uygulamasını gerektirebilir.

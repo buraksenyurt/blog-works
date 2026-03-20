@@ -1,17 +1,13 @@
-﻿---
+---
 layout: post
 title: "FizzBuzz ile Basit Bir TDD Pratiği"
 date: 2018-08-09 07:52:00 +0300
-description: "DevOps felsefesinin içerdiği önemli pratiklerden birisi de test süreçleridir ve bu noktada TDD(Test Driven Development) büyük önem taşımaktadır. TDD, temel olarak Unit Tests, Integration Tests, User Acceptance Tests gibi pratikleri içerir ve en azından bunların DevOps süreçlerine dahil edilmesi beklenir. Ancak TDD ve DevOps söz konusu olunca daha bir çok test tekniği vardır. Smoke Testing, Penetration Testing, Stress Testing, A/B testing, Fuzz Testing ve Boundary Testing gibi."
 categories:
   - codekata
 tags:
   - codekata
   - testing
 ---
-# FizzBuzz ile Basit Bir TDD Pratiği
-Merhaba Arkadaşlar,
-
 [DevOps felsefesinin](https://medium.com/@burakselyum/devops-e%C4%9Fitiminden-akl%C4%B1mda-kalanlar-6853070d89d6) içerdiği önemli pratiklerden birisi de test süreçleridir ve bu noktada TDD (Test Driven Development) büyük önem taşımaktadır. TDD, temel olarak Unit Tests, Integration Tests, User Acceptance Tests gibi pratikleri içerir ve en azından bunların DevOps süreçlerine dahil edilmesi beklenir. Ancak TDD ve DevOps söz konusu olunca daha bir çok test tekniği vardır. Smoke Testing, Penetration Testing, Stress Testing, A/B testing, Fuzz Testing ve Boundary Testing gibi.
 
 Geliştiriciler olarak bizlerin TDD'ye yatkın olması bu açıdan önemlidir. Yazılım geliştirmeye yeni başlayanlar için TDD pratiklerini öğrenmenin güzel yollarından birisi de Code Kata'sı yapmaktır. Ben daha önceden verdiğim eğitimlerde de basit Code Kata'ları ile TDD pratiklerini anlatmaya çalışmıştım. Bu pratikler bize önemli bir test odaklı bakış açısı disiplini kazandırmak için idealdir. Geçtiğimiz günlerde şirkette yakaladığım yaklaşık 20 dakikalık bir boşluk olunca hemen FizzBuzz katasını bir hatırlayayım istedim.

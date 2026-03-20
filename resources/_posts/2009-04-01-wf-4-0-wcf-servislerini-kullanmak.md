@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WF 4.0 - WCF Servislerini Kullanmak"
 date: 2009-04-01 12:00:00 +0300
-description: "Bir önceki yazımızda Windows Workflow Foundation 4.0 (WF 4.0) ile birlikte gelmesi muhtemel(yüksek bir olasılıkla çok az değişikle gelecekler) kavramları incelemeye çalışmıştık ve pek çok yeni aktivite tipinin alt yapıya dahil edilmiş olduğunu gördük. WF örnekleri bilindiği üzere çoğu zaman servisler ile haberleşmek durumundadır. Bu özellikle gerçek hayat senaryolarında çok sık karşılaşına ve ihtiyaç duyulan bir durumdur. Nitekim WF içerisinde yer alan akışların dış ortamlara olan bir bağımlılığı söz konusu olabilir. Bir Bankacılık sisteminde yer alan akışlarda, servisler yardımıyla ulaşılabilen bazı operasyonlar bu bağımlılığa örnek gösterilebilir örneğin."
 categories:
   - wf-4-0-beta-1
 tags:
@@ -21,9 +20,6 @@ tags:
   - debugging
   - visual-studio
 ---
-# WF 4.0 - WCF Servislerini Kullanmak
-Değerli Okurlarım Merhabalar,
-
 Bir [önceki](https://www.buraksenyurt.com/post/Windows-Workflow-Foundation-4-0-Ilk-Izlenimler-bsenyurt-com-dan.aspx) yazımızda Windows Workflow Foundation 4.0 (WF 4.0) ile birlikte gelmesi muhtemel (yüksek bir olasılıkla çok az değişikle gelecekler) kavramları incelemeye çalışmıştık ve pek çok yeni aktivite tipinin alt yapıya dahil edilmiş olduğunu gördük. WF örnekleri bilindiği üzere çoğu zaman servisler ile haberleşmek durumundadır. Bu özellikle gerçek hayat senaryolarında çok sık karşılaşına ve ihtiyaç duyulan bir durumdur. Nitekim WF içerisinde yer alan akışların dış ortamlara olan bir bağımlılığı söz konusu olabilir. Bir Bankacılık sisteminde yer alan akışlarda, servisler yardımıyla ulaşılabilen bazı operasyonlar bu bağımlılığa örnek gösterilebilir örneğin.
 
 WF alt yapısı bu anlamda WCF (Windows Communication Foundation) servisleri ile haberleşilebilmesini kolaylaştırmak amacıyla.Net Framework 3.5 ile birlikte yeni aktivite bileşenlerine sahip olmuştur. SendActivity ve ReceiveActivity isimli bu tipler temel olarak servislere ait operayonların çağırılması veya WF içerisinde servis bazlı operasyonların dış dünyaya sunulmasında etkin olarak kullanılmaktadır. Ancak WF 4.0 ile birlikte servisler ile olan iletişimde daha yetenekli aktivite tipleri yer almaktadır. Özellikle görsel açıdan geliştiriciye kolaylıklar sağlayan ama asıl etkisini XAML bazlı servis tanımlamalarının yapılabilmesinde gösteren aktiviteler söz konusudur. Zaten WF ve WCF 4.0 içerisinde XAML tabanlı deklerafit tanımlamaların son derece etkin bir şekilde kullanıldığı bir gerçektir. WF 4.0 açısında bakıldığında bir WCF operasyonu ile sağlanan istek/cevap (Request/Response) odaklı iletişim temel olarak aşağıdaki şekilde görüldüğü gibidir.

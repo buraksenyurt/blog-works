@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Kod Bazlı Workflow Service Geliştirmek ve Yayınlamak"
 date: 2010-10-04 16:20:00 +0300
-description: "Bildiğiniz üzere bir süredir NedirTv?com desteğinde \"Workflow Foundation 4.0 Öğreniyorum\" isimli bir seri üzerinde çalışmaktayız. Bu seride başlangıç seviyesinden orta seviyeye kadar, bir kaç ayrı derste Workflow Foundation kavramını öğrenmeye gayret ettik. Bu seriye dahil etmek istediğim bir konu da, Workflow Service örneklerinin tamamen kod bazında yazılması ve IIS(Internet Information Services) dışındaki bir uygulama tarafından host edilmesiydi."
 categories:
   - wf
   - wf-4-0
@@ -22,12 +21,9 @@ tags:
   - iis
   - visual-studio
 ---
-# Kod Bazlı Workflow Service Geliştirmek ve Yayınlamak
-![blg193_Giris.jpg](/assets/images/2010/blg193_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Bildiğiniz üzere bir süredir [NedirTv?com](http://www.nedirtv.com) desteğinde ["Workflow Foundation 4.0 Öğreniyorum"](http://www.nedirtv.com/kategori/Workflow-Foundation-Ogreniyorum.aspx) isimli bir seri üzerinde çalışmaktayız. Bu seride başlangıç seviyesinden orta seviyeye kadar, bir kaç ayrı derste Workflow Foundation kavramını öğrenmeye gayret ettik. Bu seriye dahil etmek istediğim bir konu da, Workflow Service örneklerinin tamamen kod bazında yazılması ve IIS (Internet Information Services) dışındaki bir uygulama tarafından host edilmesiydi. Ancak konu biraz karmaşık olduğundan ve tabiri yerinde ise yandaki resimde görülen Puzzle'a benzemediğinden, yazı haline getirilmesinin daha iyi olacağına karar verdim. Hem böylece ben de unuttuğum zamanlarda bu yazıma bakarak hatırlayabilirim. Öyleyse derin bir nefes alalım ve yola koyulalım.
+
+![blg193_Giris.jpg](/assets/images/2010/blg193_Giris.jpg)
 
 İlk olarak ne yapmak istediğimizi açık ve net bir şekilde ortaya koymaya çalışalım. WCF Eco System yapısının da önemli bir parçası olan Workflow Service'ler yardımıyla iş akışlarının servis bazlı olarak dış ortama sunulması mümkündür. Bu noktada özellikle Visual Studio 2010 tarafında yer alan WCF Workflow Service Application şablonu ve Workflow Designer işlerimizi inanılmaz ölçüde kolaylaştırmaktadır. Ancak elimizin altında sadece.Net Framework 4.0 olduğunu düşünelim. Hımmm...
 

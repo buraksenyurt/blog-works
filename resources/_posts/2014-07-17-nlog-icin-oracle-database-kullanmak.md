@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "NLog için Oracle Database Kullanmak"
 date: 2014-07-17 07:45:00 +0300
-description: "Daha önceden Log4Net aracını incelemiş ve pek çok projede kullanmıştım ama hayat bizi farklı kaynaklarla çalışmaya da itebiliyor. Öyle ki yakın zamanda popüler loglama araçlarından olan NLog kütüphanesini kullanma fırsatı buldum. Ve bu sefer gerek kayıt altına alınacak bilgiler gerekse logun yazılacağı ortam biraz farklıydı. Log’ ların veritabanına, kurumun Audit mekanizmasına uygun kurallar dahilinde yazılması zorunluydu. Yıllarca alışkın olduğum SQL Server yerine bu kez karşımda Oracle vardı. Ve sonuçta bir vaka çalışması ortaya çıktı. Haydi gelin senaryomuz ile makalemize başlayalım."
 categories:
   - csharp
 tags:
@@ -16,10 +15,10 @@ tags:
   - threading
   - transactions
 ---
-# NLog için Oracle Database Kullanmak
-[![marlin-dory](/assets/images/2014/marlin-dory_thumb.jpg)](/assets/images/2014/marlin-dory.jpg) Merhaba Arkadaşlar,
-
 Animasyon film meraklısı olupta [Pixar’ ın 2003 yapımı Nemo’ sunu](http://www.imdb.com/title/tt0266543/) izlemeyen sanırım yoktur. Kayıp oğlu Nemo’ yu bulmak isteyen Marlin, uzun ve zorlu yolculuğu sırasında oldukça unutkan olan ve aslında bu özelliği ile balık olduğunu adeta tüm izleyenlere ispat eden Dory ile seyahat etmektedir. Dory neredeyse bir saniye önce söylediğini hatırlamakta zorlanan bir balıktır.
+
+[![marlin-dory](/assets/images/2014/marlin-dory_thumb.jpg)](/assets/images/2014/marlin-dory.jpg)
+
 
 Aslında geliştirmekte olduğumuz uygulamaların da buna benzer handikapları vardır. Bir şeyler hatırlamak zorundadırlar ve bu yüzden çeşitli depolama ortamlarını kullanırlar. Bu depolar ile olan iletişimlerinde çeşitli stratejiler uygularlar. Özellikle web tabanlı uygulamalar söz konusu olduğunda istemciler ile olan iletişimde de unutkanlık halleri baş gösterir. Web, doğası gereği çoğu zaman State tutmakta zorlanan bir ortamdır.
 

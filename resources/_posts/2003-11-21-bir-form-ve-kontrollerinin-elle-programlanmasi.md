@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Bir Form ve Kontrollerinin Elle Programlanması"
 date: 2003-11-21 12:00:00 +0300
-description: "Bugünkü makalemizde, bir Formu kodla nasıl oluşturacağımızı, bu form üstüne nasıl kontroller ekleyeciğimizi, bu kontoller için nasıl olaylar yazacağımızı vb. konuları işlemeye çalışacağız."
 categories:
   - windows-forms
 tags:
@@ -11,9 +10,6 @@ tags:
   - dotnet
   - visual-studio
 ---
-# Bir Form ve Kontrollerinin Elle Programlanması
-Değerli Okurlarım, Merhabalar.
-
 Bugünkü makalemizde, bir Formu kodla nasıl oluşturacağımızı, bu form üstüne nasıl kontroller ekleyeciğimizi, bu kontoller için nasıl olaylar yazacağımızı vb. konuları işlemeye çalışacağız. Bildiğiniz gibi Visual Studio.NET gibi grafiksel ortamlar ile Form ve Form nesnelerini görsel olarak, kolay ve hızlı bir şekilde oluşturabilmekteyiz. Bu bizim programlama için ayıracağımız sürede, ekran tasarımlarının daha hızlı yapılabilmesine olanak sağlamaktadır.
 
 Ancak bazen elimizde sadece csc gibi bir C# derleyicisi ve.Net Framework vardır. İşte böyle bir durumda, Windows Form’larını tasarlamak için manuel olarak kodlama yapmamız gerekmektedir. Ayrıca, iyi ve uzman bir programcı olabilmek için özellikle Visual ortamlarda Windows Form, Button, TextBox gibi kontrollerin nasıl oluşturulduğunu, nasıl kodlandığını olaylara nasıl ve ne şekilde bağlandığını bilmek, oldukça faydalıdır. Bu aynı zamanda kontrolün bizde olmasını da sağlayan bir unsur olarak karşııza çıkmar ve kendimize olan güvenimizi dahada arttırır.

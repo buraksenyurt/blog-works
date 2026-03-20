@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu 141 - Dosyadan Rastgele Satır Çekmek"
 date: 2016-11-01 21:36:00 +0300
-description: "Elinizde N sayıda şarkı adının kayıtlı olduğu fiziki bir dosya olduğunu düşünün. Amacımız ise bu dosya içerisinden rastgele şarkılar çekmek. Ancak bunu yaparken ilgili dosyanın tamamını belleğe açmak istemiyorsunuz. Nitekim dosyayı okuma modunda açıp readlines gibi bir metod ile tüm içeriğ okuduktan sonra içinden rastgele bir satırı seçme yolunu tercih edebilirsiniz. Ama bu büyük boyutlu bir dosyanın tamamen belleğe yüklenmesine de neden olacaktır. Performans ve hız açısından farklı bir şey yapılabilmelidir. Örneğin belleğe sadece o anki satırı okuyup ileri yönlü hareket edecek bir iterasyon kodu geliştirilebilir. Peki Ruby'de bunun için nasıl bir yol izlerdiniz? Aşağıdaki fotoğraftaki gibi olabilir mi?"
 categories:
   - ruby
 tags:
@@ -10,9 +9,6 @@ tags:
   - threading
   - performance
 ---
-# Tek Fotoluk İpucu 141 - Dosyadan Rastgele Satır Çekmek
-Merhaba Arkadaşlar,
-
 Elinizde N sayıda şarkı adının kayıtlı olduğu fiziki bir dosya olduğunu düşünün. Amacımız ise bu dosya içerisinden rastgele şarkılar çekmek. Ancak bunu yaparken ilgili dosyanın tamamını belleğe açmak istemiyorsunuz. Nitekim dosyayı okuma modunda açıp readlines gibi bir metod ile tüm içeriğ okuduktan sonra içinden rastgele bir satırı seçme yolunu tercih edebilirsiniz. Ama bu büyük boyutlu bir dosyanın tamamen belleğe yüklenmesine de neden olacaktır. Performans ve hız açısından farklı bir şey yapılabilmelidir. Örneğin belleğe sadece o anki satırı okuyup ileri yönlü hareket edecek bir iterasyon kodu geliştirilebilir. Peki Ruby'de bunun için nasıl bir yol izlerdiniz? Aşağıdaki fotoğraftaki gibi olabilir mi?
 
 ![tfi_141.gif](/assets/images/2016/tfi_141.gif)

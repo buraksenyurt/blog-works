@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Birisi Sana \\\"Blazor Nedir?\\\" Diye Sorarsa"
 date: 2021-05-07 22:04:00 +0300
-description: "Yeni bir on yılın arifesini çoktan geçtik ve bu on yıla girmeden önce Microsoft çok önemli geliştirmelerin altına imza attı. Açık kaynak dünyasına hızlı bir girişten sonra yıllardır devam eden Mono projesi daha da anlam kazandı. Artık elimizde Silverlight, Windows Phone, Web Forms, .Net Remoting gibi kavramlar yok. Bunların yerine yenileri ve daha fazlası geldi. Xamarin ile platform bağımsız oyunlar, mobil uygulamalar, macOS ve linux ayırt etmeksizin çalışan kodlar... Dahası da var. 2017'de başlatılan ve standart haline gelen WASM(Web Assembly), Microsoft cephesinin gözünden kaçmadı. 2018 yılında deneysel bir çalışma olarak başlayan Blazor yıllar içerisinde gelişti ve şu anda üzerine yatırım yapılması gereken(mesela on yıllık Asp.Net Web Forms tabanlı ürünlerinizi modernize etmek istiyorsanız) bir konu haline geldi. Ancak ortada önemli bir sorun var. Onu bir arkadaşına nasıl anlatırsın?"
 categories:
   - blazor
 tags:
@@ -39,10 +38,9 @@ tags:
   - visual-studio
   - github
 ---
-# Birisi Sana "Blazor Nedir?" Diye Sorarsa
-![whoisblazor_01.jpg](/assets/images/2021/whoisblazor_01.jpg)
-
 Yeni bir on yılın arifesini çoktan geçtik ve bu on yıla girmeden önce Microsoft, milenyumun başında da yaptığı üzere önemli ürünlerin altına imzasını attı. Açık kaynak dünyasına hızlı bir girişten sonra yıllardır süregelen Mono projesi daha da anlam kazandı. Artık Silverlight, Windows Phone, Web Forms,.Net Remoting gibi kavramlardan neredeyse hiç söz etmiyoruz. Üstelik bazıları yıllar önce rafa kalktı. Rafa kalkanların, eskiyenlerin bıraktığı tecrübe yeni nesil ürünlerin başarısını artırdı. Unity ile platform bağımsız oyunlar, Xamarin ile macOS ve linux ayırt etmeksizin çalışan kodlar vs derken.Net Core hayatımıza girerek büyük sükse yaptı.
+
+![whoisblazor_01.jpg](/assets/images/2021/whoisblazor_01.jpg)
 
 Dahası da var. 2017'de başlatılan ve standart haline gelen [WASM (Web Assembly)](https://webassembly.org/) Microsoft cephesinin gözünden kaçmadı. 2018 yılında deneysel bir çalışma olarak başlayan Blazor kısa sürede evrimleşti ve şu anda yatırım yapılması gereken bir konu haline geldi (Örneğin Asp.Net Web Forms tabanlı ürünlerinizi modernize etmek istiyorsanız) Ancak ortada önemli bir sorun var. Onu bir arkadaşına nasıl anlatırsın? (Photo by [Museums Victoria](https://unsplash.com/@museumsvictoria?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/s/photos/history?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText))
 

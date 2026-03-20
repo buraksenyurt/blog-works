@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu-29 (Ne Kadar TextBox Varsa)"
 date: 2011-08-26 03:17:00 +0300
-description: "Merhaba Arkadaşlar,"
 categories:
   - csharp
   - tek-fotoluk-ipucu
@@ -12,9 +11,6 @@ tags:
   - tek-fotoluk-ipucu
   - windows-forms
 ---
-# Tek Fotoluk İpucu-29 (Ne Kadar TextBox Varsa)
-Merhaba Arkadaşlar,
-
 Kaliteli kod yazmak için aslında biraz titiz düşünmek gerekir. Söz gelimi bir Windows programlamada bir Container kontrol içerisindeki tüm TextBox'ların içeriğini temizlemek istediğiniz bir durumda nasıl kodlama yaparsınız? İşin içerisine Recursive metod formatını katabilirsiniz. Hatta bunu bir Extension Method haline de getirebilirsiniz. Nasıl mı?
 
 ![Winking smile](/assets/images/2011/wlEmoticon-winkingsmile_47.png)

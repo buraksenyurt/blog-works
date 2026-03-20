@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF 4.0 Yenilikleri - Artık Svc Uzantısına Gerek Yok [Beta 1]"
 date: 2009-08-18 03:45:00 +0300
-description: "Nihayet WCF 4.0 için basitleştirilmiş konfigurasyon(Simplified Configuration) yeniliklerinden sonuncusuna değineceğimiz blog girişimize ulaştık. Tabiki WCF 4.0 tarafındaki diğer yenilikleride zaman içerisinde inceliyoruz olacağız. Örneğin Discovery, Routing, RESTful geliştirmeleri vb...Ancak diğer köklü değişikliklere başlamadan önce konfigurasyon tarafına son noktayı koyalım artık.Wink"
 categories:
   - wcf-4-0-beta-1
 tags:
@@ -15,9 +14,6 @@ tags:
   - http
   - iis
 ---
-# WCF 4.0 Yenilikleri - Artık Svc Uzantısına Gerek Yok [Beta 1]
-Merhaba Arkadaşlar,
-
 Nihayet WCF 4.0 için basitleştirilmiş konfigurasyon (Simplified Configuration) yeniliklerinden sonuncusuna değineceğimiz blog girişimize ulaştık. Tabiki WCF 4.0 tarafındaki diğer yenilikleride zaman içerisinde inceliyoruz olacağız. Örneğin Discovery, Routing, RESTful geliştirmeleri vb...Ancak diğer köklü değişikliklere başlamadan önce konfigurasyon tarafına son noktayı koyalım artık.
 
 ![Wink](/assets/images/2009/smiley-wink.gif)

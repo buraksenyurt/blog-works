@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF 4.5–SingleWSDL"
 date: 2012-09-18 05:50:00 +0300
-description: "Daha dün gibi hatırlıyorum. Windows Communication Foundation 4.0 ile gelen yenilikleri inceliyor, öğrendiklerimi derhal bloğumda paylaşıyordum. Zaman ya çok hızlı akıyor ya da Microsoft zamanın önünde koşuyor Smile Nitekim .Net Framework 4.5 ha çıktı çıkacak derken, çoktan çıkmış da profesyonel projelerde kullanılmaya başlanmış bile."
 categories:
   - wcf-4-5
 tags:
@@ -18,10 +17,10 @@ tags:
   - generics
   - visual-studio
 ---
-# WCF 4.5–SingleWSDL
-[![what-wsdl-defines](/assets/images/2012/what-wsdl-defines_thumb.jpg)](/assets/images/2012/what-wsdl-defines.jpg) Merhaba Arkadaşlar,
-
 Daha dün gibi hatırlıyorum. Windows Communication Foundation 4.0 ile gelen yenilikleri inceliyor, öğrendiklerimi derhal bloğumda paylaşıyordum. Zaman ya çok hızlı akıyor ya da Microsoft zamanın önünde koşuyor
+
+[![what-wsdl-defines](/assets/images/2012/what-wsdl-defines_thumb.jpg)](/assets/images/2012/what-wsdl-defines.jpg)
+
 
 ![Smile](/assets/images/2012/wlEmoticon-smile_56.png)
 

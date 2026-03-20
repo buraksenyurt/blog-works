@@ -2,7 +2,6 @@
 layout: post
 title: "Rust Pratikleri - Wordle Oyunu"
 date: 2022-04-10 09:00:00 +0300
-description: "Doğruyu söylemek gerekirse mobil oyunlarla çok fazla aram yok. Yine de etkileyici grafikleri olmasa da insanları saatlerce esir edebilenlerin nasıl yazıldığını merak etmiyor da değilim. Geçtiğimiz günlerde The Pragmatic Programmers mecrasından Herbert Wolverson'un Wordle isimli popüler bir oyunun Rust ile nasıl yazılacağını anlattığı şu yazısına denk geldim. E boş durur muyum? Adım adım tatbik etmeye karar verdim. Nitekim bu yolculuk Rust ile ilgili birçok şey öğretecekti bana. Her şeyden önce pratik yapacaktım. İşte bu yazıda izlediğim adımları ve kendi yorumlarımı bulabilirsiniz."
 categories:
   - rust
 tags:
@@ -10,7 +9,6 @@ tags:
   - bash
   - github
 ---
-# Rust Pratikleri - Wordle Oyunu
 Doğruyu söylemek gerekirse mobil oyunlarla çok fazla aram yok. Ancak platform ne olursa olsun oyun yazmaya çalışmak programlama dili öğrenenler için çok iyi bir egzersiz. Bu nedenle bazen var olan oyunların nasıl yazıldığını anlatan öğretileri uygulamaya çalışıyorum. Geçtiğimiz günlerde [The Pragmatic Programmers](https://medium.com/pragmatic-programmers) mecrasından Herbert Wolverson'un Wordle isimli popüler bir oyunun Rust ile nasıl yazılabileceğini anlattığı [şu yazısına](https://medium.com/pragmatic-programmers/rustle-5c15d1c153a1) denk geldim. Tamda başta belirttiğim tipte bir egzersiz karşıma çıkmıştı. E boş durur muyum? Adım adım tatbik etmeye karar verdim. Nitekim bu yolculuk Rust ile ilgili birçok şey öğretecekti bana. Her şeyden önce pratik yapacaktım. İşte bu yazıda izlediğim adımları ve kendi yorumlarımı bulabilirsiniz.
 
 Öncelikle Wordle oyunu nasıl bir şey anlamak lazım. Google Play veya App Store'dan indirebileceğimiz oyunun Huawei App Gallery'de bir karşılığını bulamadım ama benzerleri vardı. Önce oynamalıydım ki nasıl bir şey olduğunu anlayayım. Düşündüren bir kelime oyunu olduğunu ifade edebilirim. Hatta isterseniz [Newyork Times'ın şu adresinden](https://www.nytimes.com/games/wordle/index.html) hemen çevrimiçi bir sürümünü de deneyebilirsiniz. Kendi denememden bir örneği de aşağıdaki ekran görüntüsü ile paylaşmak isterim.

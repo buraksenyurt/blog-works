@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Sıralama Algoritmaları - Hangisi Daha Hızlı (Bubble, Quick, Insertion, Selection, Shell, Merge, Heap)"
 date: 2013-09-24 14:08:00 +0300
-description: "Özellikle bu algoritmaların dil bağımsız olan Pseudo Code içeriklerinden yararlanarak her hangi bir dile uygulanmaya çalışılması üzerine epeyce kafa yormuşuzdur. C, C++, Java, Basic, Pascal ve benzeri temel programlama derslerinde edindiğimiz bilgiler ile bu algoritmaları yazmak için çokça uğraşmışızdır. Tabi üzülerek söylemeliyim ki ben üniversite yıllarındayken Bubble ve Quick Sort sıralama algoritmalarından fazlasını ne yazık ki göremedim."
 categories:
   - csharp
   - data-structures-algorithms
@@ -14,10 +13,10 @@ tags:
   - performance
   - pointers
 ---
-# Sıralama Algoritmaları - Hangisi Daha Hızlı (Bubble, Quick, Insertion, Selection, Shell, Merge, Heap)
-[![Sorting_1](/assets/images/2013/Sorting_1_thumb.jpg)](/assets/images/2013/Sorting_1.jpg) Merhaba Arkadaşlar,
-
 Evimdeki çalışma odasında yer alan kütüphanemi zaman zaman gelen yeni kitaplar ve afacan S (h) arp Efe'nin haylazlıkları nedeni ile darma duman halde bulabiliyorum. Hal böyle olunca çoğu zaman kitaplıkta yer alan onlarca kitabı tekrardan düzenlemem ve uygun bir sırada dizmem gerekebiliyor. Hatta bunu kitapların tozunu almak için hepsini yerlere indirdikten sonra da yaşayabiliyorum. Aslına bakarsanız her seferinde farklı bir kategorilendirme yapıyor ve buna göre bir sıralama işlemi icra etmeye çalışıyorum. Tabi el çabukluğu dışında akıllı düşününce sıralamak ve yerleştirmek kısa sürede bitebiliyor. Ama bazen de kafa bulanık olunca bu işlem sandığımdan da uzun sürüp bir işkence haline gelebiliyor.
+
+[![Sorting_1](/assets/images/2013/Sorting_1_thumb.jpg)](/assets/images/2013/Sorting_1.jpg)
+
 
 Üniversite yıllarında özellikle programlama derslerinde buna benzer şekilde sıralama algoritmaları ile haşır neşir olmayanımız yoktur eminim ki. Hatta çoğu sınavın korkulu rüyası sorularının kaynağını teşkil etmektedir ki hocalarımız genellikle bunları kağıt kalem kullanarak çözmemizi isterler (En azından benim zamanında böyleydi)
 

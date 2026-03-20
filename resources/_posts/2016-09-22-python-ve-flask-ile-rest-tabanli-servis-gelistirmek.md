@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Python ve Flask ile REST Tabanlı Servis Geliştirmek"
 date: 2016-09-22 22:00:00 +0300
-description: "Bir süredir Python ile ilgili çalışmalarıma aralıklarla da olsa devam etmeye çalışıyorum. Malum iş yoğunluğu ve sıkışık proje takvimi nedeniyle eskisi kadar vakit ayıramıyorum. Bu nedenle öğrenmek istediğim konuları önceliklendirme yoluna gittim(Kendi çalışma programımda bir backlog oluşturup öğeleri önceliklendirdiğimi ifade edebilirim) Genellikle backend tarafında programlama yaptığımdan olsan gerek listenin üst sıralarında servis tabanlı geliştirmeler yer alıyor. Onlardan birisi de REST tabanlı servis uyarlamaları."
 categories:
   - python
 tags:
@@ -16,12 +15,9 @@ tags:
   - ruby
   - microservices
 ---
-# Python ve Flask ile REST Tabanlı Servis Geliştirmek
-![SeptemberFall-long-goodbye.gif](/assets/images/2016/SeptemberFall-long-goodbye.gif)
-
-Merhaba Arkadaşlar,
-
 Bir süredir [Python](https://www.buraksenyurt.com/category/python) ile ilgili çalışmalarıma aralıklarla da olsa devam etmeye çalışıyorum. Malum iş yoğunluğu ve sıkışık proje takvimi nedeniyle eskisi kadar vakit ayıramıyorum. Bu nedenle öğrenmek istediğim konuları önceliklendirme yoluna gittim (Kendi çalışma programımda bir backlog oluşturup öğeleri önceliklendirdiğimi ifade edebilirim) Genellikle backend tarafında programlama yaptığımdan olsan gerek listenin üst sıralarında servis tabanlı geliştirmeler yer alıyor. Onlardan birisi de REST tabanlı servis uyarlamaları.
+
+![SeptemberFall-long-goodbye.gif](/assets/images/2016/SeptemberFall-long-goodbye.gif)
 
 İşte Eylül ayındaki önceliğimi bu konuya verdim. Tabii Eylül denince akla sonbahar, şiir, hafif hafif serinleyen hava, şöyle güzelce sarındığımız yorgan, açılan okullar, okul malzemeleri ile dolup taşan kırtasiyeler, sararan yapraklar, eğer eğlenceli geçtiyse sıcak yaz akşamlarının geride kalması nedeniyle oluşan hüzün ve benzeri şeyler geliyor.
 

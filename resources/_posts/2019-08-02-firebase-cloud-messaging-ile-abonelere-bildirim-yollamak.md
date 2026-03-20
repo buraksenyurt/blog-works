@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Firebase Cloud Messaging ile Abonelere Bildirim Yollamak"
 date: 2019-08-02 17:48:00 +0300
-description: "Tarayıcı üzerinde yaşayan ve çevrim dışı ya da çok düşük internet hızlarında da çalışabilme özelliğine sahip olan PWA(Progressive Web Applications) uygulamalarının en önemli kabiliyetlerinden birisi de Push Notification'dır. Bu, mobil platformlardan yapılan erişimler düşünüldüğünde oldukça önemli bir nimettir. Arka planda içerik güncelleme (updating) özelliği de bir diğer önemli kabiliyettir. Bu yetenekler uygulama için tekrardan submit operasyonuna gerek kalmadan güncel kalabilmek anlamına da gelir."
 categories:
   - gcp
 tags:
@@ -15,10 +14,9 @@ tags:
   - github
   - dependency-management
 ---
-# Firebase Cloud Messaging ile Abonelere Bildirim Yollamak
-![friendship.png](/assets/images/2019/friendship.png)
-
 Servis kapısı açıldığında gözlerini herkesten kaçırıp araca binerken heyecanlı ses tonuyla "Günaydın" diyerek en arka koltuğa geçen kadının ruh hali her yönüyle tanıdık geliyordu. Bir buçuk yıl kadar önce yine bu servise bindiğim ilk gün bende benzer kaygıları hissetmiştim. Oysa hayatımda ilk kez servis binmiyordum.
+
+![friendship.png](/assets/images/2019/friendship.png)
 
 Ama işte o ilk biniş sırasında söylenen "Günaydın" kelimesi ardından ben ve şoförümüz İhsan Bey dışında kimsenin karşılık vermediği ve onun gözlerini aradığım sırada geçen kısa zaman diliminde aklından geçenleri tahmin ettiğim anlar, en arka koltuğa oturduğunu gördükten sonra toplum psikolojisine ayak uydurup önüme doğru bakmamla son bulmuştu.
 

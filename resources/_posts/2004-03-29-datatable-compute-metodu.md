@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "DataTable.Compute Metodu"
 date: 2004-03-29 12:00:00 +0300
-description: "Çoğu zaman, uygulamalarımızda T-Sql' in Aggregate fonksiyonlarını kullanarak, belirli sütunlara ait veriler üzerinden, toplam değer, en büyük değer, en küçük değer, ortalama değer vb. gibi sonuçlara ulaşmaya çalışırız. Bu amaçla T-Sql' in Avg, Sum, Count gibi Aggregate fonksiyonlarından yararlanırız. İşte bu makalemizde, bu fonksiyonları, DataTable sınıfının Compute metodu yardımıyla nasıl kullanabileceğimizi incelemeye çalışacağız."
 categories:
   - ado-net
 tags:
@@ -12,9 +11,6 @@ tags:
   - t-sql
   - datatable
 ---
-# DataTable.Compute Metodu
-Değerli Okurlarım, Merhabalar.
-
 Çoğu zaman, uygulamalarımızda T-Sql'in Aggregate fonksiyonlarını kullanarak, belirli sütunlara ait veriler üzerinden, toplam değer, en büyük değer, en küçük değer, ortalama değer vb. gibi sonuçlara ulaşmaya çalışırız. Bu amaçla T-Sql'in Avg, Sum, Count gibi Aggregate fonksiyonlarından yararlanırız. İşte bu makalemizde, bu fonksiyonları, DataTable sınıfının Compute metodu yardımıyla nasıl kullanabileceğimizi incelemeye çalışacağız.
 
 Öncelikle, T-Sql'de yer alan Aggregate fonksiyonlarından kısaca bahsetmekta yarar olduğunu düşünüyorum. Bu fonksiyonların en önemlileri ve kullanışlıları aşağıdaki tabloda yer almaktadır.

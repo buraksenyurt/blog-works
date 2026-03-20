@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ado.Net Data Services Ders Notları - 4 (CUD Operasyonları)"
 date: 2008-10-16 12:00:00 +0300
-description: "Ders notlarımızı tutmaya devam ediyoruz. Bu gün Ado.Net Data Service' ler yardımıyla istemcilerden veri ekleme(Insert), silme(Delete) ve güncelleme(Update) işlemlerinin nasıl yapılabileceğini incelemeye karar verdim. Tabiki Ado.Net Data Services konusu halen daha Astoria kod adıyla anılmakta..."
 categories:
   - ado-net-data-services
 tags:
@@ -18,9 +17,6 @@ tags:
   - http
   - generics
 ---
-# Ado.Net Data Services Ders Notları - 4 (CUD Operasyonları)
-Değerli Okurlarım Merhabalar,
-
 Ders notlarımızı tutmaya devam ediyoruz. Bu gün Ado.Net Data Service'ler yardımıyla istemcilerden veri ekleme (Insert), silme (Delete) ve güncelleme (Update) işlemlerinin nasıl yapılabileceğini incelemeye karar verdim. Tabiki Ado.Net Data Services konusu halen daha Astoria kod adıyla anılmakta. Dolayısıyla zaman içerisinde uygulanan metod adlarında ve kullanılış biçimlerinde değişiklikler olması muhtemel. Yine şu an itibariyle neler yapabileceğimize bakmakta yarar var nitekim bir WCF fanatiği olarak Ado.Net Data Services açılımı beni son derece heyecanlandırıyor. Bu kadar laf salatasından sonra kısaca konuya girmeye ve basit bir örnek geliştirmeye ne dersiniz?
 
 Ado.Net Data Service operasyonlarına yapılan istemci çağrılarının HTTP bazlı olduklarını ve GET,POST,PUT,DELETE gibi metodlara göre uygulandıklarını biliyoruz. İstemci tarafından servis operasyonlarına doğru eklenmek, silinmek veya güncellenmek amacıyla gönderilen verilerin çoğunluğuda POST metoduna uygun olacak şekilde paketlenmektedir. Ancak elbetteki istemci tarafında bu paketin manuel olarak hazırlanması gibi işlemler ile uğraşmamıza gerek yoktur. Nitekim istemci tarafında oluşturulan servis örneğine ait üye metodlar yardımıyla bu paketlerin otomatik olarak hazırlanması, gönderilmesi sağlanabilmektedir. Her zamanki gibi adım adım ilerleyeceğimiz bir örnek konuyu pekiştirmek açısından çok daha yararlı olacaktır.

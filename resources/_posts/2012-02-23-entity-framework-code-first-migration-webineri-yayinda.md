@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Entity Framework - Code First Migration Webineri Yayında"
 date: 2012-02-23 03:22:00 +0300
-description: "20 Şubat 2012 Pazartesi günü gerçekleştirdiğimiz Entity Framework - Code First Migration konulu webinerimiz NedirTv?com üzerinden yayına alınmıştır. Bu webinerimizde Entity Framework 4.3 sürümü üzerinden Code First yaklaşımında Migration işlemlerinin nasıl yapılabildiğini anlamaya çalıştık. Özellikle NuGet paket yönetim aracının komut satırı parametreleri ile kolayca yönetilebilen hem update ham de downgrade senaryolarında devreye giren Up, Down metodlarını ve bunların içerisindeki kod parçalarını analiz edip neler yapabileceğimizi görmeye gayret ettik."
 categories:
   - entity-framework
   - nedirtv
@@ -15,10 +14,10 @@ tags:
   - web-api
   - http
 ---
-# Entity Framework - Code First Migration Webineri Yayında
-[![efcfm.jpg](/assets/images/2012/efcfm.jpg)](http://nedirtv.com/video/entity-framework-code-first-migration-webineri) Merhaba Arkadaşlar,
-
 20 Şubat 2012 Pazartesi günü gerçekleştirdiğimiz Entity Framework - Code First Migration konulu webinerimiz [NedirTv?com](http://www.nedirtv.com) üzerinden yayına alınmıştır. Bu webinerimizde Entity Framework 4.3 sürümü üzerinden Code First yaklaşımında Migration işlemlerinin nasıl yapılabildiğini anlamaya çalıştık. Özellikle NuGet paket yönetim aracının komut satırı parametreleri ile kolayca yönetilebilen hem update ham de downgrade senaryolarında devreye giren Up, Down metodlarını ve bunların içerisindeki kod parçalarını analiz edip neler yapabileceğimizi görmeye gayret ettik.
+
+[![efcfm.jpg](/assets/images/2012/efcfm.jpg)](http://nedirtv.com/video/entity-framework-code-first-migration-webineri)
+
 
 [Diğer detaylar ve örnek proje çalışması için sizi böyle alalım](http://nedirtv.com/video/entity-framework-code-first-migration-webineri)
 

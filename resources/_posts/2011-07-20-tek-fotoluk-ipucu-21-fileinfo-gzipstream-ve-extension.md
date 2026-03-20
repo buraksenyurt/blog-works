@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu-21(FileInfo,GZipStream ve Extension)"
 date: 2011-07-20 08:28:00 +0300
-description: "Merhaba Arkadaşlar,"
 categories:
   - csharp
   - tek-fotoluk-ipucu
@@ -10,9 +9,6 @@ tags:
   - csharp
   - tek-fotoluk-ipucu
 ---
-# Tek Fotoluk İpucu-21(FileInfo,GZipStream ve Extension)
-Merhaba Arkadaşlar,
-
 Elimde FileInfo, GZipStream tipleri ve Extension Method kabiliyeti var. Sizce ne yapılabilir? Yoksa FileInfo tipinde Compress ve DeCompress işlemleri için birer Extension Method'mu yazılabilir?
 
 ![Smile](/assets/images/2011/wlEmoticon-smile_10.png)

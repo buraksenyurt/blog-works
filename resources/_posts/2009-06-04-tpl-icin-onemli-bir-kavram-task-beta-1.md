@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "TPL için Önemli Bir Kavram : Task [Beta 1]"
 date: 2009-06-04 19:05:00 +0300
-description: "Bir önceki blog yazımda Task Parallel Library alt yapısının ne olduğunu sizlere aktarmaya çalışmıştım. Tabiki bu alt yapı üzerinde durulması gereken pek çok konu bulunmaktadır. Heyecanım çok, anlatmak içinde sabırsızlanıyorum. Ama her zamanki gibi adım adım ilerlemekte ve acele etmemekte yarar olduğu kansındayın. TPL ile ilişkili önemli konulardan birisi Task(yada Task<T>) sınıfıdır. TPL esas itibariyle görev adı verilen küçük iş parçaları üzerine kurulu bir yapı olarak düşünülebilir. Bu nedenle Task sınıfı son derece önemlidir."
 categories:
   - tpl
 tags:
@@ -20,9 +19,6 @@ tags:
   - debugging
   - visual-studio
 ---
-# TPL için Önemli Bir Kavram : Task [Beta 1]
-Merhaba Arkadaşlar,
-
 Bir önceki blog yazımda Task Parallel Library alt yapısının ne olduğunu sizlere aktarmaya çalışmıştım. Tabiki bu alt yapı üzerinde durulması gereken pek çok konu bulunmaktadır. Heyecanım çok, anlatmak içinde sabırsızlanıyorum. Ama her zamanki gibi adım adım ilerlemekte ve acele etmemekte yarar olduğu kansındayın. TPL ile ilişkili önemli konulardan birisi Task (yada Task) sınıfıdır. TPL esas itibariyle görev adı verilen küçük iş parçaları üzerine kurulu bir yapı olarak düşünülebilir. Bu nedenle Task sınıfı son derece önemlidir.
 
 Nitekim görevlerin yönetimli kod tarafındaki ifadesidir. Bu sınıf yardımıyla, paralel çalışacak olan görevlerin başlatılması, iptal edilmesi, bekletilmesi, arka arkaya eklenerek bir süreç tesis edilmesi gibi pek çok işlem yapılabilir. Task sınıfı normal şartlarda geriye değer döndürmeyen fonksiyonelliklerin eş zamanlı olarak çalıştırılmasında ele alınmaktadır. Geriye değer döndüren metodlar söz konusu olduğunda ise, Task generic tipinden yararlanılabilir. Buradaki T, paralel çalışan metodun dönüş tipi olarak düşünülebilir. Aşağıdaki sınıf diagramında söz konusu tipler ve üyeleri yer almaktadır.

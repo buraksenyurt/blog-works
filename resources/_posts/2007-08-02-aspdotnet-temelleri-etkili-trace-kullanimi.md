@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net Temelleri : Etkili Trace Kullanımı"
 date: 2007-08-02 12:00:00 +0300
-description: "Web uygulamalarında son kullanıcıların(End Users) şikayetçi olabileceği pek çok konu vardır. Bunlar arasında popüler olanlarından biriside sayfaların yavaş açılıyor olmasıdır. Nihayetinde son kullanıcıları her zaman için sabırsız ve acelesi olan kişiler olarak düşünmek doğru bir yaklaşım olacaktır..."
 categories:
   - aspnet
 tags:
@@ -13,9 +12,6 @@ tags:
   - http
   - authentication
 ---
-# Asp.Net Temelleri : Etkili Trace Kullanımı
-Değerli Okurlarım Merhabalar,
-
 Web uygulamalarında son kullanıcıların (End Users) şikayetçi olabileceği pek çok konu vardır. Bunlar arasında popüler olanlarından biriside sayfaların yavaş açılıyor olmasıdır. Nihayetinde son kullanıcıları her zaman için sabırsız ve acelesi olan kişiler olarak düşünmek doğru bir yaklaşım olacaktır. Sayfaların yavaş açılıyor yada geç cevap veriyor olmasının donanımsal yada çeşitli çevre faktörleri nedeniyle bilinen sebepleri vardır.
 
 Söz gelimi bağlantı hızının düşük olması ilk akla gelen nedendir. Ancak geliştiriciler (developers) olarak bizlerinde üzerine düşen önemli görevler vardır. Sonuç itibariyle bir geliştirici, mininum donanım gereksinimleri karşılandığı takdirde hızlı ve yeterli performasta çalışabilen bir web uygulaması geliştiriyorsa, donanım kapasite ve yeteneklerinin daha yüksek olduğu son kullanıcılarda aynı web uygulamasının çok daha iyi sonuçlar vereceği düşünülebilir.

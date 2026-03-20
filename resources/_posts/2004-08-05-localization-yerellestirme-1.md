@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Localization (Yerelleştirme) - 1"
 date: 2004-08-05 09:00:00 +0300
-description: "Dünya çapında yada başka bir deyişle global çapta uygulamalar geliştirilirken karşılaşılabilecek zorluklardan birisi, uygulamanın farklı kültür ve dil seçeneklerine göre çalışabilecek şekilde tasarlanmasıdır. Eski programlama dilleri göz önüne alındığında, özellikle farklı dil desteği sağlayacak uygulamaların geliştirilmesi tam anlamıyla bir kabus olmuştur. Söz gelimi 2 dile destek verecek bir uygulama geliştirilmek istendiğinde, her iki dil içinde farklı uygulama kodları yazılması gerekirdi. Böyle bir durumda, uygulamanın piyasaya sürülmesinden sonra yapılacak güncelleme paketleri içinde aynı durum söz konusuydu. Dahası, 3ncü bir dilin desteğinin sağlanması için, aynı projenin bu kezde bu dil için geliştirilmesi gerekmekteydi. Dil çeşitliliğinin yanı sıra, aynı dili konuşan fakat farklı takvimler, farklı parasal formatlar, farklı sayısal formatlar hatta farklı sıralamalar kullanan kültürler işin içine sokulduğunda durum tam anlamıyla bir paradoks haline gelmektedir."
 categories:
   - csharp
 tags:
@@ -11,9 +10,6 @@ tags:
   - threading
   - visual-studio
 ---
-# Localization (Yerelleştirme) - 1
-Değerli Okurlarım, Merhabalar.
-
 Dünya çapında yada başka bir deyişle global çapta uygulamalar geliştirilirken karşılaşılabilecek zorluklardan birisi, uygulamanın farklı kültür ve dil seçeneklerine göre çalışabilecek şekilde tasarlanmasıdır. Eski programlama dilleri göz önüne alındığında, özellikle farklı dil desteği sağlayacak uygulamaların geliştirilmesi tam anlamıyla bir kabus olmuştur. Söz gelimi 2 dile destek verecek bir uygulama geliştirilmek istendiğinde, her iki dil içinde farklı uygulama kodları yazılması gerekirdi. Böyle bir durumda, uygulamanın piyasaya sürülmesinden sonra yapılacak güncelleme paketleri içinde aynı durum söz konusuydu. Dahası, 3ncü bir dilin desteğinin sağlanması için, aynı projenin bu kezde bu dil için geliştirilmesi gerekmekteydi. Dil çeşitliliğinin yanı sıra, aynı dili konuşan fakat farklı takvimler, farklı parasal formatlar, farklı sayısal formatlar hatta farklı sıralamalar kullanan kültürler işin içine sokulduğunda durum tam anlamıyla bir paradoks haline gelmektedir.
 
 Peki Microsoft.Net ile bu soruna nasıl bir çözüm getirmektedir? İşte bu günkü makalemizin konusu budur. Microsoft.Net platformu içinde geliştirdiğimiz çözümlerin (solutions), çeşitli dillere veya kültürlere destek verebilmesini sağlamak amacıyla, öncekilerine nazaran çok daha mantıklı ve verimli bir teknik uygulanır. Bu teknikte, uygulama kodu bir kez yazılır. Bu uygulamanın dil desteği ve kültür desteği vermesi için ise, framework içinde yer alan System.Globalization isim alanındaki sınıflardan ve resource files dediğimiz kaynak dosyalarından yararlanılır. Bir başka deyişle, bir uygulamanın yerelleştirilmesi yani dil desteği ve kültürel desteğin sağlaması için, uygulama kodları ile destek birimleri birbirinden ayrı tutulmuştur. Böylece, bir uygulamayı n sayıda kültür için yerelleştirmek mümkün olmaktadır.

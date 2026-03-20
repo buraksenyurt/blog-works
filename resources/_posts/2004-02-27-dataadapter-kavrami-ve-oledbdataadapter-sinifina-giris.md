@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "DataAdapter Kavramı ve OleDbDataAdapter Sınıfına Giriş"
 date: 2004-02-27 08:00:00 +0300
-description: "Bu makalemizde, Ado.Net'in en çok kullanılan kavramlarından birisi olan DataAdapter kavramını incelemeye çalışacak ve OleDbDataAdapter sınıfına kısa bir giriş yapacağız. Pek çok programcı, veritabanı uygulamaları geliştirirken, kontrol ve performansa büyük önem verir. Ancak aynı zamanda bu kazanımlara kolay yollar ile ulaşmak isterler. Ado.Net modelinde, bağlantısız katman ile bağlantılı katman arasındaki iletişim ve veri alışverişinin, kontrol edilebilir, performanslı ve aynı zamanda kolay geliştirilir olmasında DataAdapter kavramının yeri yadırganamıyacak kadar fazladır. Temel tanım olarak, DataAdapter sınıfları, sahip oldukları veri sağlayıcılarının izin verdiği veri kaynakları ile, sistem belleği üzerinde yer alan bağlantısız katman nesneleri arasındaki veri alışverişinin kolay, güçlü ve verimli bir şekilde sağlanmasından sorumludurlar. Bu tanımdan yola çıkarak, DataAdapter sınıflarının, veri kaynağından verilerin alınıp, bağlantısız katman nesneleri olan DataSet ve DataTable nesnelerine doldurulmasından sorumlu olduğunu; ayrıca, bağlantısız katman nesnelerinin taşıdığı verilerdeki değişikliklerinde veri kaynağına yansıtılmasından sorumlu olduğunu söyleyebiliriz. İşte bu, DataAdapter sınıfının rolünü tam olarak açıklayan bir tanımlamadır."
 categories:
   - ado-net
 tags:
@@ -15,9 +14,6 @@ tags:
   - dataset
   - datatable
 ---
-# DataAdapter Kavramı ve OleDbDataAdapter Sınıfına Giriş
-Değerli Okurlarım, Merhabalar.
-
 Bu makalemizde, Ado.Net'in en çok kullanılan kavramlarından birisi olan DataAdapter kavramını incelemeye çalışacak ve OleDbDataAdapter sınıfına kısa bir giriş yapacağız. Pek çok programcı, veritabanı uygulamaları geliştirirken, kontrol ve performansa büyük önem verir. Ancak aynı zamanda bu kazanımlara kolay yollar ile ulaşmak isterler. Ado.Net modelinde, bağlantısız katman ile bağlantılı katman arasındaki iletişim ve veri alışverişinin, kontrol edilebilir, performanslı ve aynı zamanda kolay geliştirilir olmasında DataAdapter kavramının yeri yadırganamıyacak kadar fazladır. Temel tanım olarak, DataAdapter sınıfları, sahip oldukları veri sağlayıcılarının izin verdiği veri kaynakları ile, sistem belleği üzerinde yer alan bağlantısız katman nesneleri arasındaki veri alışverişinin kolay, güçlü ve verimli bir şekilde sağlanmasından sorumludurlar. Bu tanımdan yola çıkarak, DataAdapter sınıflarının, veri kaynağından verilerin alınıp, bağlantısız katman nesneleri olan DataSet ve DataTable nesnelerine doldurulmasından sorumlu olduğunu; ayrıca, bağlantısız katman nesnelerinin taşıdığı verilerdeki değişikliklerinde veri kaynağına yansıtılmasından sorumlu olduğunu söyleyebiliriz. İşte bu, DataAdapter sınıfının rolünü tam olarak açıklayan bir tanımlamadır.
 
 Veritabanı uygulamalarında en önemli unsurların, verinin taşınması, izlenebilmesi, üzerinde değişikliklerin yapılması ve tekrar veri kaynağına yansıtılması olduğunu söyleyebiliriz. DataAdapter sınıflarının bu unsurların gerçekleştirilmesinde çok önemli rol oynadıkları bir gerçektir. Aşağıdaki şekil DataAdapter sınıflarının işleyişini daha iyi anlamamıza yardımcı olucaktır.

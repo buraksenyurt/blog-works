@@ -1,16 +1,12 @@
-﻿---
+---
 layout: post
 title: "HashTable Koleksiyon Sınıfı"
 date: 2003-12-18 12:00:00 +0300
-description: "Bugünkü makalemizde HashTable koleksiyon sınıfını incelemeye çalışacağız. Bildiğiniz gibi Koleksiyonlar System.Collections namespace'inde yer almakta olup, birbirlerinin aynı veya birbirlerinden farklı veri tiplerinin bir arada tutulmasını sağlayan diziler oluşturmamıza imkan sağlamaktadırlar. Pek çok koleksiyon sınıfı vardır."
 categories:
   - csharp
 tags:
   - csharp
 ---
-# HashTable Koleksiyon Sınıfı
-Değerli Okurlarım, Merhabalar.
-
 Bugünkü makalemizde HashTable koleksiyon sınıfını incelemeye çalışacağız. Bildiğiniz gibi Koleksiyonlar System.Collections namespace'inde yer almakta olup, birbirlerinin aynı veya birbirlerinden farklı veri tiplerinin bir arada tutulmasını sağlayan diziler oluşturmamıza imkan sağlamaktadırlar. Pek çok koleksiyon sınıfı vardır. Bugün bu koleksiyon sınıflarından birisi olan HashTable koleksiyon sınıfını inceleyeceğiz.
 
 HashTable koleksiyon sınıfında veriler key-value dediğimiz anahtar-değer çiftleri şeklinde tutulmaktadırlar. Tüm koleksiyon sınıflarının ortak özelliği barındırdıkları verileri object tipinde olmalarıdır. Bu nedenle, HashTable'lardada key ve value değerleri herhangibir veri tipinde olabilirler. Temel olarak bunların her biri birer DictionaryEntry nesnesidir. Bahsetmiş olduğumuz key-value çiftleri hash tablosu adı verilen bir tabloda saklanırlar. Bu değer çiftlerine erişmek için kullanılan bir takım karmaşık kodlar vardır.

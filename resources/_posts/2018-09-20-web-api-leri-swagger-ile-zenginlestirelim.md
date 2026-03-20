@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Web API'leri Swagger ile Zenginleştirelim"
 date: 2018-09-20 21:22:00 +0300
-description: "Bu yazımızda Web API servislerimizi OpenAPI Specification'da belirtilen dokümanlaştırma standartlarına göre nasıl zenginleştirebileceğimizi incelemeye çalışıyoruz. Web api servisinin ne işe yaradığını gösteren ve sunduğu operasyonları hızlıca test edebilmemize olanak tanıyan Swagger arabirimini de deneyimliyoruz."
 categories:
   - asp-dotnet-core
 tags:
@@ -19,12 +18,9 @@ tags:
   - generics
   - visual-studio
 ---
-# Web API'leri Swagger ile Zenginleştirelim
-![swagger_8.gif](/assets/images/2018/swagger_8.gif)
-
-Merhaba Arkadaşlar,
-
 Dokümantasyon sektörümüzün olmazsa olmazları arasında yer alan bir konu. Ancak güncelliğini korumak ve okunabilirliğini sağlamak da bir o kadar zor olabiliyor. Ayrıca dokümantasyon hazırlamak da çoğumuza bir işkence gibi geliyor. Yine de belirli alanlarda tüketicilerin iyiliği için bu dokümantasyonları hazırlamak boynumuzun borcu diye düşünüyorum. Devasa kütüphanalerden oluşan uygulamalarda gerçekten dokümantasyon başlı başına bir işken daha küçük alanlarda etkili kullanabileceğimiz yerleri de var.
+
+![swagger_8.gif](/assets/images/2018/swagger_8.gif)
 
 Ağırlıklı olarak web servislerini göz önüne alalım (Genel standartlara uyan her tür servis olabilir) Bir servis ne iş yapar, tanımı nedir, içerisinde hangi operasyonları barındırır, bu operasyonların kullanım şekli nasıl olmalıdır, giriş çıkış parametreleri ne türdedir ve akla gelebilecek bir kaç soruyu düşünelim. Bu sorular ilgili web servisini kullanacak taraf için kendi geliştirmeleri sırasında önem arz eder ve mutlaka hayatımızın bir noktasında entegre etmemiz gereken bir servis olmuştur.
 

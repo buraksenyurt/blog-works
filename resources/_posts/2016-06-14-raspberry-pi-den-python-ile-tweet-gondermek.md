@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Raspberry Pi'den Python ile Tweet Göndermek"
 date: 2016-06-14 06:00:00 +0300
-description: "Geçtiğimiz sene yaz ayı boyunca Ruby programlama dilini öğrenmeye çalışmıştım. Ruby dilinde orta seviyelere kadar bilgimi ilerletebildim ancak bu yaz dönemini paslanmamak adına farklı bir uğraş ile geçirmeye karar verdim. Ruby'yi öğrenmeye başlama amaçlarımın başında çocuklara programlama dilini öğretmek geliyordu. Benzer şekilde Raspberry Pi'nin de bu amaçla kullanılabildiğini öğrendim. Özellikle Scratch dilini kullanarak çocukların robotlara bir şeyler yaptırabilmesi ve bu şekilde programlamayı öğrenmeleri harika. Pek tabi Raspberry Pi'yi özel yapan bir diğer neden de IoT(Internet of Things)."
 categories:
   - python
   - raspberry-pi
@@ -14,12 +13,9 @@ tags:
   - java
   - ruby
 ---
-# Raspberry Pi'den Python ile Tweet Göndermek
-![raspi_0.gif](/assets/images/2016/raspi_0.gif)
-
-Merhaba Arkadaşlar,
-
 Geçtiğimiz sene yaz ayı boyunca Ruby programlama dilini öğrenmeye çalışmıştım. Ruby dilinde orta seviyelere kadar bilgimi ilerletebildim ancak bu yaz dönemini paslanmamak adına farklı bir uğraş ile geçirmeye karar verdim. Ruby'yi öğrenmeye başlama amaçlarımın başında çocuklara programlama dilini öğretmek geliyordu. Benzer şekilde Raspberry Pi'nin de bu amaçla kullanılabildiğini öğrendim. Özellikle Scratch dilini kullanarak çocukların robotlara bir şeyler yaptırabilmesi ve bu şekilde programlamayı öğrenmeleri harika. Pek tabi Raspberry Pi'yi özel yapan bir diğer neden de IoT (Internet of Things).
+
+![raspi_0.gif](/assets/images/2016/raspi_0.gif)
 
 Bunun üzerine aldım Bruce'u yanıma her zamanki gibi büyük bir hevesle koyuldum yola. Önce bir Raspberry Pi 3 Model B aldım (Sonrasında 7inch dokunmatik ekran, sıcaklık sensörü, HDMI bağlantı kablosu, 40 GPIO kablosu, bir adet servo motor kontrolcüsü gibi parçaları da dahil ederek kredi kartlarımdan birini epeyce şişirdim) Ancak sonradan öğrendim ki [Robotistan](http://www.robotistan.com) gibi sitelerde Raspberry Pi ile ilgili komple setler satılıyor. Yeni başlayacaklara tavsiyem bir set alarak ilerlemeleri.
 

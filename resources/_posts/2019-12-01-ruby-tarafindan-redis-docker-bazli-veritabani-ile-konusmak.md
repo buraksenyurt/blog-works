@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ruby Tarafından Redis(Docker Bazlı) Veritabanı ile Konuşmak"
 date: 2019-12-01 09:45:00 +0300
-description: "Nihayet Ahch-To(MacOS Mojave - Intel Core i5 1.4Ghz, 4 Gb 1600 Mhz DDR3) üzerinde ki ilk çalışmamı gerçekleştirebildim. 2020 yılı için planlarım arasında yer alan kendimi yetiştirme turları kapsamında çıktığım bu ilk macerada epeydir eğilmediğim Ruby kodları ile tekrar bir aradayım. Bu ilk maceradaki amacım Ruby kodlama ile docker container üzerinde host edilmiş bir Redis veritabanında basit işlemler yapabilmek."
 categories:
   - ruby
 tags:
@@ -18,10 +17,9 @@ tags:
   - github
   - dataset
 ---
-# Ruby Tarafından Redis(Docker Bazlı) Veritabanı ile Konuşmak
-![terminatormotorcyle.jpg](/assets/images/2019/terminatormotorcyle.jpg)
-
 Geçtiğimiz yıl kendi kendimi eğitmek üzere 41 bölümden oluşan [Saturday-Night-Works](https://github.com/buraksenyurt/saturday-night-works) isimli bir çalışma yapmıştım. Github üzerine aldığım notlar ve kod örneklerini blog üzerinde derleyip toparlamak onları pekiştirmek için önemli ve gerekliydi. Ne var ki yetişemediğimiz yazılım teknolojilerindeki gelişmeler için sürekli antrenman yapmam gerekiyor. Bu sebepten araya uzun bir tatil koyup tekrardan enerjimi depolamaya çalıştım. Nadas süresi boyunca neler yapabileceğimi düşündüm. Yeni maceramın felsefesi bir öncekisi ile aynı olmalıydı. Rastgele ve pek deneyimli olmadığım konularla ilgili araştırma yapıp bunları basit örneklerle çalışmalı ve dokümanlaştırmalıydım. Ha geldi gelecek derken nihayet ilham perim beni buldu ve artık tatilimi sonlandırmam gerektiğine karar verdim. Yeni serüvenime SkyNet evrenindeki Ahch-To (MacOS Mojave - Intel Core i5 1.4Ghz, 4 Gb 1600 Mhz DDR3) gezegeninde başlıyorum. Orada geçirdiğim bir saat dünya zamanında birkaç güne denk geliyor.
+
+![terminatormotorcyle.jpg](/assets/images/2019/terminatormotorcyle.jpg)
 
 Öyleyse gelin size ilk gün başımdan geçenleri anlatayım. Bu ilk macerada epeydir eğilmediğim Ruby kodları ile tekrar bir aradayım. Amacım Ruby ile docker container üzerinde host edilmiş bir Redis veritabanında basit işlemler yapabilmek. Daha önce birkaç NoSQL sistemini deneyimle fırsatım olmuştu. Ancak MacOS üzerinde docker kullanımı konusunda tecrübeli değildim. Ruby kodlamayı ve Redis'in temel veri tipleriniyse çoktan unuttum. Dolayısıyla benim için bilgi pekiştirmek açısından iyi bir gün olacağını düşünüyorum.
 
@@ -78,7 +76,7 @@ redis=Redis.new(host:"localhost")
 #redis.ping()
 
 redis.set("aloha",1001) # örnek key:value ekledik
-word=redis.get("aloha") # eklediğimizi alıp 
+word=redis.get("aloha") # eklediğimizi alıp
 
 puts word # ekrana bastırdık
 

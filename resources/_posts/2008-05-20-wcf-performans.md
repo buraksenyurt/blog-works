@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF - Performans"
 date: 2008-05-20 12:00:00 +0300
-description: "Uzun bir aradan sonra tekrar birlikteyiz. Windows Communication Foundation mimarisinin geliştirilmesininin tek amacı, var olan dağıtık mimari modellerini bir çatı altında birleştirmek değildir. Buna paralel olaraktan WCF mimarisi, .Net Remoting, Xml Web Servisleri, WSE(Web Service Enhancements), MSMQ(Microsoft Message Queue), COM+ gibi pek çok dağıtık uygulama geliştirme modelinin çalışma zamanı alt yapısının kolayca oluşturulabilmesinide hedeflemektedir."
 categories:
   - wcf
 tags:
@@ -19,9 +18,6 @@ tags:
   - serialization
   - visual-studio
 ---
-# WCF - Performans
-Değerli Okurlarım Merhabalar,
-
 Uzun bir aradan sonra tekrar birlikteyiz. Windows Communication Foundation mimarisinin geliştirilmesininin tek amacı, var olan dağıtık mimari modellerini bir çatı altında birleştirmek değildir. Buna paralel olaraktan WCF mimarisi,.Net Remoting, Xml Web Servisleri, WSE (Web Service Enhancements), MSMQ (Microsoft Message Queue), COM+ gibi pek çok dağıtık uygulama geliştirme modelinin çalışma zamanı alt yapısının kolayca oluşturulabilmesinide hedeflemektedir. Burada dekleratif programlama modelinin benimsenmesinin önemli katkısı vardır. Sonuçta geliştiricinin sıklıkla yapmak zorunda kaldığı alt yapı hazırlıklarının attribute (nitelik) veya konfigurasyon bazlı olacak şekilde ayarlanabilmesi son derece avantajlıdır.
 
 Bu açıdan bakıldığında olayın kilit noktası WCF'in ABC (AddressBindingContract)' sinde yer alan bağlayıcı tiplerdir (Binding Types). Bilindiği üzere WCF mimarisi.Net Framework 3.0 ile birlikte gelmiştir. Bununla birlikte şu an itibariyle.Net Framework 3.5 sürümünde ek yeniliklerde içermektedir (Örneğin Web Programlama Modeli, WorkFlow Foundation ile Tam Entegrasyon, JSON, AJAX desteği gibi). Bağlayıcı tiplerin sayısının çok olmasının, geliştiricilerin karar verme noktasındaki işlerini zorlaştırdığıda bir gerçektir. Bu nedenle çoğunlukla yardımcı tablolardan veya diagramlardan yararlanılmaktadır.

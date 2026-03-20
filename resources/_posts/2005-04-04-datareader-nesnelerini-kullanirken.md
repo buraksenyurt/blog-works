@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "DataReader Nesnelerini Kullanırken…"
 date: 2005-04-04 12:00:00 +0300
-description: "Bir önceki makalemizde Command nesnelerini kullanırken dikkat etmemiz gereken noktalara değinmiştik. Bu makalemizde ise DataReader nesnelerini kullanırken bizlere avantaj sağlayacak tekniklere değinmeye çalışacağız. Önceki makalemizde olduğu gibi ağırlık olarak SqlDataReader nesnesini ve Sql veritanını kullanacağız. DataReader nesneleri bildiğiniz gibi, bağlantılı katman (connected-layer) üzerinde çalışmaktadır."
 categories:
   - ado-net
 tags:
@@ -12,9 +11,6 @@ tags:
   - aspnet
   - caching
 ---
-# DataReader Nesnelerini Kullanırken…
-Değerli Okurlarım, Merhabalar.
-
 Bir önceki makalemizde Command nesnelerini kullanırken dikkat etmemiz gereken noktalara değinmiştik. Bu makalemizde ise DataReader nesnelerini kullanırken bizlere avantaj sağlayacak tekniklere değinmeye çalışacağız. Önceki makalemizde olduğu gibi ağırlık olarak SqlDataReader nesnesini ve Sql veritanını kullanacağız. DataReader nesneleri bildiğiniz gibi, bağlantılı katman (connected-layer) üzerinde çalışmaktadır. Görevleri veri kaynağından, uygulama ortamına doğru belli bir akım üzerinden hareket edecek veri parçalarının taşınmasını sağlamaktır.
 
 DataReader nesneleri ile veri almak bağlantısız katman (disconnected-layer) nesnelerine veri çekmekten çok daha hızlıdır. Çoğunlukla DataReader nesnelerinin kullanılmasının tercih edileceği durumlar vardır. Uygulamalarımız geliştirirken çoğu zaman bağlantılı katman ile bağlantısız katman nesneleri arasında seçim yapmakta zorlanırız. Aşağıdaki tablo "Ne zaman DataReader kullanırız?" sorusuna ışık tutan noktalara değinmektedir.

@@ -1,17 +1,13 @@
-﻿---
+---
 layout: post
 title: "Overload Metodların Gücü"
 date: 2003-11-13 13:00:00 +0300
-description: "Bu makalemde sizlere overload kavramından bahsetmek istiyorum. Konunun daha iyi anlaşılabilmesi açısından, ilerliyen kısımlarda basit bir örnek üzerinde de çalışacağız. Öncelikle Overload ne demek bundan bahsedelim. Overload kelime anlamı olarak Aşırı Yükleme anlamına gelmektedir. C# programlama dilinde overload dendiğinde, aynı isme sahip birden fazla metod akla gelir. Bu metodlar aynı isimde olmalarına rağmen, farklı imzalara sahiptirler. Bu metodların imzalarını belirleyen unsurlar, parametre sayıları ve parametre tipleridir. Overload edilmiş metodları kullandığımız sınıflarda, bu sınıflara ait nesne örnekleri için aynı isme sahip fakat farklı görevleri yerine getirebilen ( veya aynı görevi farklı sayı veya tipte parametre ile yerine getirebilen ) fonksiyonellikler kazanmış oluruz."
 categories:
   - csharp
 tags:
   - csharp
   - dotnet
 ---
-# Overload Metodların Gücü
-Değerli Okurlarım, Merhabalar.
-
 Bu makalemde sizlere overload kavramından bahsetmek istiyorum. Konunun daha iyi anlaşılabilmesi açısından, ilerliyen kısımlarda basit bir örnek üzerinde de çalışacağız.
 
 Öncelikle Overload ne demek bundan bahsedelim. Overload kelime anlamı olarak Aşırı Yükleme anlamına gelmektedir. C# programlama dilinde overload dendiğinde, aynı isme sahip birden fazla metod akla gelir. Bu metodlar aynı isimde olmalarına rağmen, farklı imzalara sahiptirler. Bu metodların imzalarını belirleyen unsurlar, parametre sayıları ve parametre tipleridir. Overload edilmiş metodları kullandığımız sınıflarda, bu sınıflara ait nesne örnekleri için aynı isme sahip fakat farklı görevleri yerine getirebilen (veya aynı görevi farklı sayı veya tipte parametre ile yerine getirebilen) fonksiyonellikler kazanmış oluruz.

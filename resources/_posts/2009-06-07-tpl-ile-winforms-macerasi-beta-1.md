@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "TPL ile WinForms Macerası [Beta 1]"
 date: 2009-06-07 11:53:00 +0300
-description: "Dün gece Task Parallel Library ile ilgili olarak internette araştırma yaparken, örnekleri çoğunlukla(hatta tamamen) Console uygulamaları üzerinde geliştirdiğimi farkettim. Oysaki TPL veya PLINQ gibi alt yapıların, WinForms yada WPF(Windows Presentation Foundation) uygulamalarında nasıl kullanılabileceğide önemli bir konuydu. Özellikle Windows Form' larının TPL çalışmalarına karşı nasıl tepkilerde bulunabileceği belkide en önemli noktaydı."
 categories:
   - tpl
 tags:
@@ -16,9 +15,6 @@ tags:
   - threading
   - delegates
 ---
-# TPL ile WinForms Macerası [Beta 1]
-Merhaba Arkadaşlar,
-
 Dün gece Task Parallel Library ile ilgili olarak internette araştırma yaparken, örnekleri çoğunlukla (hatta tamamen) Console uygulamaları üzerinde geliştirdiğimi farkettim. Oysaki TPL veya PLINQ gibi alt yapıların, WinForms yada WPF (Windows Presentation Foundation) uygulamalarında nasıl kullanılabileceğide önemli bir konuydu. Özellikle Windows Form'larının TPL çalışmalarına karşı nasıl tepkilerde bulunabileceği belkide en önemli noktaydı. Biliyorsunuz TPL alt yapısında, işlemci ve çekirdek gücü sonuna kadar kullanılmakta ve arka planda coşan pek çok Thread yer almaktadır. Fakat WinForms uygulamalarında herşeyin hakimi olan ana Thread'in genellikle bencil olduğuda bilinmektedir. Bu nedenle TPL ile çekilen bir veri içeriğinin, Form üzerindeki bir kontrole doldurulması gerçekten başa bela olabilir.
 
 ![Sealed](/assets/images/2009/smiley-sealed.gif)

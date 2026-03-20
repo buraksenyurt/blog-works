@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "LINQ Sorgusu mu? ForEach mi? Bir Türlü Karar Veremedim"
 date: 2010-05-27 20:40:00 +0300
-description: "Bilim Kurgu fanatiklerinin kafasında her zaman hayranı oldukları filmlerden kesitler, sahneler kalır. Matrix filmini izleyenler eminimki Neo' ya uzatılan kırmızı ve mavi hap serenatını gayet iyi hatırlayacaktır. Morpheus haplardan birisinde Alice Harikalar Diyarının kapılarını ardına kadar açabileceğini ifade ederken, diğer hapı yuttuğunda, Neo' nun yatağında hiç bir şey olmamış gibi uyanacağını ve tüm bunların bir hayalden ibaret olduğunu düşüneceğini belirtir. Tabi Neo amacına ulaşmak için zaten hangi hapı içmesi gerektiğini biliyordur ki son bölümde aslında gerçekten hapı yutmaktadır"
 categories:
   - csharp
   - linq
@@ -13,12 +12,9 @@ tags:
   - generics
   - visual-studio
 ---
-# LINQ Sorgusu mu? ForEach mi? Bir Türlü Karar Veremedim
-![blg196_GirisNew.jpg](/assets/images/2010/blg196_GirisNew.jpg)
-
-Merhaba Arkadaşlar,
-
 Bilim Kurgu fanatiklerinin kafasında her zaman hayranı oldukları filmlerden kesitler, sahneler kalır. Matrix filmini izleyenler eminimki Neo'ya uzatılan kırmızı ve mavi hap serenatını gayet iyi hatırlayacaktır. Morpheus haplardan birisinde Alice Harikalar Diyarının kapılarını ardına kadar açabileceğini ifade ederken, diğer hapı yuttuğunda, Neo'nun yatağında hiç bir şey olmamış gibi uyanacağını ve tüm bunların bir hayalden ibaret olduğunu düşüneceğini belirtir. Tabi Neo amacına ulaşmak için zaten hangi hapı içmesi gerektiğini biliyordur ki son bölümde aslında gerçekten hapı yutmaktadır
+
+![blg196_GirisNew.jpg](/assets/images/2010/blg196_GirisNew.jpg)
 
 ![Yell](/assets/images/2010/smiley-yell.gif)
 

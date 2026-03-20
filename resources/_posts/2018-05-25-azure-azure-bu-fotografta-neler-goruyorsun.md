@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Azure, Azure! Bu Fotoğrafta Neler Görüyorsun?"
 date: 2018-05-25 04:46:00 +0300
-description: "Pluralsight sağolsun Azure konusundaki çalışmalarıma devam ediyorum. Ufak ufak öğretilerin üzerinden geçerken de neyin nasıl yapıldığını adım adım öğrenmeye çalışıyorum. Bu yazımızda zun zamandır hepimizin varlığından haberdar olduğu Cognitive Services özelliklerinden birisine bakacağız. Azure'un yapay zeka destekli makine öğrenme hizmetlerinden olan Compture Vision enstrümanını kullanarak bir fotoğrafı bizim için nasıl yorumlayableceğini göreceğiz."
 categories:
   - azure
 tags:
@@ -18,12 +17,9 @@ tags:
   - async-await
   - visual-studio
 ---
-# Azure, Azure! Bu Fotoğrafta Neler Görüyorsun?
-![comvision_enter.jpg](/assets/images/2018/comvision_enter.jpg)
-
-Merhaba Arkadaşlar,
-
 Yandaki fotoğrafa baktığınızda neler görüyorsunuz? Hatta neler hissediyorsunuz? Kalın lastikleri olan koyu yeşil renkte Toyota marka bir arazi aracı. Aracın içine bakabilmesi için ufaklığı kollarıyla kaldıran arkası dönük bir kadın. Arka tarafta turuncu kapısı görünen bir başka araç. Olayla pek ilgisi olmayan ilkokul çağında sarışın kıvırcık saçlı bir kız çocuğu. Bluzundaki sembollerden çıkartıldığı kadarıyla Minion'lar. Arka tarafta yükselene sıra dağlar ve diğerleri. İnsan gözüyle fotoğraf dikkatlice incelelendiğinde söyleyebileceklerimizden sadece bazıları. Hatta insani duygularla hareket ederek empati yaptığımızda göreceğimiz farklı detaylar da var öyle değil mi? Ufaklığın yüzündeki meraklı bakışa, aracın içini görmek istercesine annesinin kollarında yukarıya doğru yükselmeye çalışmasına bir baksanıza. Ya da cansız bile olsa aracın tekerlekleri ile ne kadar agresif göründüğüne. İşte bu farklılıkları ve detayları görmek belki de biz insanları makinelerden, düşünmeye çalışan robotlardan ayıran önemli bir özellik.
+
+![comvision_enter.jpg](/assets/images/2018/comvision_enter.jpg)
 
 Ancak oyunun kuralları bildiğiniz gibi uzun süre önce değişmeye başladı. Önce dijital fotoğraf makinelerinin, kameraların gördükleri karelerdeki yüzleri ayırt edişlerine şahit olmaya başladık. Hatta hareket edenleri nasıl yakaladıklarını gördük. Sonra onların renklerini ayırt edebildiklerini ve az çok o fotoğraflarda neler bulunduğunu tahminlemeye çalıştıklarını. Halen daha da görmeye devam ediyoruz. Artık yapay zekanın, öğrenen makinelerin dünyasında olduğumuz için bu fotoğrafı yorumlayışımıza yakınlaşmaları çok da uzak değil gibi. Ne kadar yaklaşabileceklerini zaman içerisinde daha net göreceğiz ama bu çok uzak bir gelecek değil. Öğreniyorlar...
 

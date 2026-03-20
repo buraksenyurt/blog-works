@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WPF - Veriye Bağlanmak (Data Binding)"
 date: 2007-09-03 12:00:00 +0300
-description: "Bu gün geliştirdiğimiz programların çoğu veri(Data) ile ilişkili kaynakları kullanmaktadır. Özellikle büyük ölçekli pek çok proje tipi içerisinde mutlaka verilerin kullanılması söz konusudur. Veriler kimi zaman müşteri bilgilerini, kimiz zaman ürün bilgilerini, kimi zamanda uygulamaya ait konfigurasyon bilgilerini vb..."
 categories:
   - wpf
 tags:
@@ -19,9 +18,6 @@ tags:
   - dataset
   - datatable
 ---
-# WPF - Veriye Bağlanmak (Data Binding)
-Değerli Okurlarım Merhabalar,
-
 Bu gün geliştirdiğimiz programların çoğu veri (Data) ile ilişkili kaynakları kullanmaktadır. Özellikle büyük ölçekli pek çok proje tipi içerisinde mutlaka verilerin kullanılması söz konusudur. Veriler kimi zaman müşteri bilgilerini, kimiz zaman ürün bilgilerini, kimi zamanda uygulamaya ait konfigurasyon bilgilerini vb... tutar. Verilerin çoğu zaman veritabanı sistemlerinde, fiziki dosyalarda veya program içerisindeki özel tiplerde saklandıklarını görürüz. Çok doğal olarak bu veri depoları içerisinde tutulan bilgilerin son kullanıcılara gösterilmeside söz konusudur.
 
 Bu noktada, geliştirilen uygulamaya bakılmaksızın pek çok veri bağlama tekniği olduğunu söyleyebiliriz. Ama bu yazımızda özellike Windows Presentation Foundation (WPF) uygulamalarında veri bağlama işlemlerinin nasıl yapılabileceğini basit örneklerden hareket ederek incelemeye çalışıyor olacağız. Windows tabanlı programlamada özellikle Visual Studio 2005 ile birlikte veri bağlama işlemlerinin dahada genişletildiğine şahit olduk. Data Source menüsü bunun en güzel örneklerinden birisidir. Hatta XML ve nesne (object) kaynaklarına daha kolay bağlanılmasını sağlayan XmlDataSource ve ObjectDataSource gibi kontrolleri gördük. Aslında veri bağlama (Data Binding) denildiği zaman akla gelmesi gereken; "bir tipin herhangibir üyesinin başka bir tipin sahip olduğu veriye otomatik olarak erişmesidir" diyebiliriz. Form üzerindeki bir metin kutusunun (TextBox) text özelliğinin, veritabanındaki bir alana bağlanması buna verilebilecek basit bir örnektir.

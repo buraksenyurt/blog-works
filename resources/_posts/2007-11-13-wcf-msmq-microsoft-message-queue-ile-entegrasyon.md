@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF - MSMQ(MicroSoft Message Queue) ile Entegrasyon"
 date: 2007-11-13 12:00:00 +0300
-description: "TCP veya HTTP bazlı iletişimlerde, tarafların aynı zaman dilimi içerisinde çalışıyor olmaları gerekmektedir. Böyle bir mesajlaşma sürecinde taraflardan herhangibirin çalışmaması, aradaki bağlantının kopması gibi nedenlerden dolayı tüm iletişimin aksamasıda muhtemeldir..."
 categories:
   - wcf
 tags:
@@ -18,9 +17,6 @@ tags:
   - performance
   - transactions
 ---
-# WCF - MSMQ(MicroSoft Message Queue) ile Entegrasyon
-Değerli Okurlarım Merhabalar,
-
 TCP veya HTTP bazlı iletişimlerde, tarafların aynı zaman dilimi içerisinde çalışıyor olmaları gerekmektedir. Böyle bir mesajlaşma sürecinde taraflardan herhangibirin çalışmaması, aradaki bağlantının kopması gibi nedenlerden dolayı tüm iletişimin aksamasıda muhtemeldir. Bazı gerçek hayat senaryolarında, sistemin tarafları olan istemci (Client), sunucu (Server), ağ (Network) bileşenlerinin çökmesi durumlarında dahi işlevselliğin devam edebilmesi istenebilir. Bunun dışında, çalışan sistemin içerisindeki bileşenlerin sürekli bir bağlantıda olmadığı durumlarda bu tip iletişimleri zorlaştırmaktadır. Bir başka deyişle ağa sürekli olarak bağlanamayan ama offline olarak çalışabilen istemcilerin bu tip bir mesajlaşma sisteminin parçası olması istendiğinde senkronizasyon güçlükleri ortaya çıkmaktadır.
 
 Ne varki mesajlaşmaların kuyruk (Queue) modeline göre taşındığı bir sistemde yukarıda bahsedilen iletişim sorunlarının yaşanmaması sağlanabilir. Nitekim mesaj kuyruğu (Message Queue) sisteminin geliştirilme amacıda aslında budur. Bu sistem temelde Windows tabanlı bilgisayarlar arasında kuyruk sistemine dayalı bir mesaj alışverişinin tesis edilmesini sağlamaktadır. Bu iletişimde istemci (Client), servis (Service) ve ağ (Network) arasında bir izolasyon sağlanmaktadır. Bu izolasyon sayesinde istemci, servis yada ağ çökse, hata üretse dahi fonksiyonelliklerini devam ettirebileceklerdir. Kuyruk temelli iletişimde güvenilir (Reliable) bir iletişim ortamı tesis edilmekte olup transaction kullanılabilmekte, kuyruğa atılan mesajlar fiziki yada değişken (Volatile) olarak saklanabilmektedir. Kuyruk temelli mesajlaşmanın en bilinen uyarlaması MicroSoft Message Queue bileşenidir (Component).

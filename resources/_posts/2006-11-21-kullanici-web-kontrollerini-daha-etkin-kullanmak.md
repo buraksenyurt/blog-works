@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Kullanıcı Web Kontrollerini Daha Etkin Kullanmak"
 date: 2006-11-21 12:00:00 +0300
-description: "Kullanıcı web kontrolleri (web user control) kendi içlerinde birden fazla kontrolü barındırabilen komposit tipteki görsel bileşenlerdir. Asp.Net 1.0/1.1 den veri var olan kullanıcı web kontrollerini çoğunlukla, birden fazla sayfada kullandığımız durumlarda (hatta aynı sayfada bir çok yerde aynı kontrol kümelerini kullanmak istediğimizde) düşünür ve geliştiririz..."
 categories:
   - csharp
 tags:
@@ -13,9 +12,6 @@ tags:
   - delegates
   - generics
 ---
-# Kullanıcı Web Kontrollerini Daha Etkin Kullanmak
-Değerli Okurlarım Merhabalar,
-
 Kullanıcı web kontrolleri (web user control) kendi içlerinde birden fazla kontrolü barındırabilen komposit tipteki görsel bileşenlerdir. Asp.Net 1.0/1.1 den veri var olan kullanıcı web kontrollerini çoğunlukla, birden fazla sayfada kullandığımız durumlarda (hatta aynı sayfada bir çok yerde aynı kontrol kümelerini kullanmak istediğimizde) düşünür ve geliştiririz. Bu kontroller tek bir yerde durdukları için güncelleştirilmeleri halinde, kullanıldıkları tüm sayfalara ilgili değişiklikler yansıyacaktır. Güncelleme kolaylığı, kullanıcı web kontrollerini tercih etmemizin en büyük nedenlerinden birisidir.
 
 Ancak bu kontroller bir açıdan bakıldığında, herhangibir web sayfasına eklenen web sunucu kontrollerinden (web server control) yada html sunucu kontrollerinden (html server control) çok da farklı düşünülmemelidir. Nasıl ki bir web sunucu kontrolünün özellikleri (properties) ve olayları (events) oluyorsa bir web kullanıcı kontrolününde özellikleri ve olayları olabilir. Nihayetinde, bir kullanıcı tanımlı web kontrolü aslında System.Web.UI.UserControl sınıfından türerler ve kullanıldığı sayfanın bir parçası olarak sunucu tarafında nesne bazında ele alınırlar. Dolayısıyla kullanıldıkları sayfada yakalanabilecek olayları ve kullanılabilecek özellikleri olabilir. Hatta bir web kontrolünü nasıl dinamik olarak oluşturabiliyorsak bir kullanıcı web kontrolünü de dinamik olarak oluşturabilir ve sayfanın o anki içeriğine ekleyebiliriz. İşte bu makalemizde daha çok bu konular üzerinde durmaya çalışacağız. Temel olarak aşağıdaki üç maddede duracağız.

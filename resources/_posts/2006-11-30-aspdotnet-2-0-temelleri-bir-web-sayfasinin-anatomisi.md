@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net 2.0 Temelleri : Bir Web Sayfasının Anatomisi"
 date: 2006-11-30 10:00:00 +0300
-description: "Bu makalemizde, bir web sayfasının (.aspx uzantılı dosyalar) anatomosini incelemeye çalışacak, kaynak koddaki özel noktaları, in-line coding, code-behind modelini, yaşam döngüsünü ve çalışma zamanında olay bağlanması gibi temel kavramlara değineceğiz..."
 categories:
   - aspnet
 tags:
@@ -15,9 +14,6 @@ tags:
   - visual-studio
   - dependency-management
 ---
-# Asp.Net 2.0 Temelleri : Bir Web Sayfasının Anatomisi
-Değerli Okurlarım Merhabalar,
-
 Bu makalemizde, bir web sayfasının (.aspx uzantılı dosyalar) anatomosini incelemeye çalışacak, kaynak koddaki özel noktaları, in-line coding, code-behind modelini, yaşam döngüsünü ve çalışma zamanında olay bağlanması gibi temel kavramlara değineceğiz. Böylece basit olarak bir web sayfasının anatomisini öğrenmek için gerekli ip uçlarını değerlendirme fırsatını bulmuş olacağız. İlk olarak basit bir web sayfasını göz önüne alarak başlayalım.
 
 ```text

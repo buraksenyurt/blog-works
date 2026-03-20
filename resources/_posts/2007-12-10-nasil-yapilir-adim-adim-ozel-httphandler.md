@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Nasıl Yapılır? Adım Adım Özel HttpHandler"
 date: 2007-12-10 12:00:00 +0300
-description: "Uzun zaman önce Asp.Net 2.0 ile ilişkili makalelerimizden birisinde HttpHandler ve HttpModule kavramlarından bahsetmeye çalışmıştık. Bu makalemizde kendi Handler sınıfımızı geliştirmek isteyebileceğimiz örnek bir senaryo üzerinde daha durmaya çalışacağız. Bu sayede HttpHandler sınıfları yazarak neler yapılabileceğinide daha net bir şekilde görmüş olacağız. Konuyu daha net kavrayabilmek adına örnek senaryomuz üzerinden adım adım ilerleyeceğiz."
 categories:
   - aspnet-2-0
 tags:
@@ -19,9 +18,6 @@ tags:
   - visual-studio
   - datatable
 ---
-# Nasıl Yapılır? Adım Adım Özel HttpHandler
-Değerli Okurlarım Merhabalar,
-
 Uzun zaman önce Asp.Net 2.0 ile ilişkili makalelerimizden birisinde HttpHandler ve HttpModule kavramlarından bahsetmeye çalışmıştık. Bu makalemizde kendi Handler sınıfımızı geliştirmek isteyebileceğimiz örnek bir senaryo üzerinde daha durmaya çalışacağız. Bu sayede HttpHandler sınıfları yazarak neler yapılabileceğinide daha net bir şekilde görmüş olacağız. Konuyu daha net kavrayabilmek adına örnek senaryomuz üzerinden adım adım ilerleyeceğiz.
 
 Bilindiği üzere web sunucusuna istemci tarafından gelen talepler (Requests) bazı program ara yüzleri (API) tarafından karşılanır ve uygun ortamlara işletilmek üzere iletilirler. Özellikle Asp.Net ile geliştirilen web uygulamalarında, talep edilen dosya tipine göre devreye giren HttpHandler sınıfları bulunmaktadır. Söz gelimi aspx uzantılı dosyalar PageHandlerFactory isimli sınıf tarafından ele alınırlar. PageHandlerFactory ve benzer işlevselliklere sahip handler tipleri IHttpHandler arayüzünü (interface) uygularlar. Dolayısıyla geliştiriciler kendi Handler tiplerini IHttpHandler arayüzünü kullanarak yazabilirler.

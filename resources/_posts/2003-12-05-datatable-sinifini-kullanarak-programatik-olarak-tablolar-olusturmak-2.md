@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "DataTable Sınıfını Kullanarak Programatik Olarak Tablolar Oluşturmak-2"
 date: 2003-12-05 12:00:00 +0300
-description: "Hatırlayacağınız gibi yazı dizimizin ilk bölümünde, DataTable sınıfını kullanarak bellekte bir tablonun ve bu tabloya ait alanların nasıl yaratıldığını işlemiştik. Bugünkü makalemizde oluşturmuş olduğumuz bu tabloya kayıtlar ekleyeceğiz ve sonra bu DataTable nesnesini bir DataSet’e aktarıp içerisindeki verileri bir DataGrid kontrolünde göstereceğiz."
 categories:
   - ado-net
 tags:
@@ -11,9 +10,6 @@ tags:
   - dataset
   - datatable
 ---
-# DataTable Sınıfını Kullanarak Programatik Olarak Tablolar Oluşturmak-2
-Değerli Okurlarım, Merhabalar.
-
 Hatırlayacağınız gibi yazı dizimizin ilk bölümünde, DataTable sınıfını kullanarak bellekte bir tablonun ve bu tabloya ait alanların nasıl yaratıldığını işlemiştik. Bugünkü makalemizde oluşturmuş olduğumuz bu tabloya kayıtlar ekleyeceğiz ve sonra bu DataTable nesnesini bir DataSet’e aktarıp içerisindeki verileri bir DataGrid kontrolünde göstereceğiz.
 
 Bir dataTable nesnesinin bellekte temsil ettiği tabloya yeni satırlar başka bir deyişle kayıtlar eklemek için, DataRow sınıfından nesneleri kullanacağız. Dilerseniz hiç vakit kaybetmeden uygulamamıza başlayalım. İlk örneğimizin devamı niteliğinde olucak bu çalışmamızda kullanıcının oluşturduğu tablodaki alan sayısı kadar textBox nesnesinide label nesneleri ile birlikte programatik olarak oluşturacağız. İşte programımızın kodları,

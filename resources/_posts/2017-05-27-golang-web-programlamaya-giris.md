@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "GoLang - Web Programlamaya Giriş"
 date: 2017-05-27 19:03:00 +0300
-description: "Bir web uygulamasının temel malzemeleri nelerdir? Sunucu tarafında çalışan bir çatı, içeriklerin gösterildiği dinamik web sayfaları, tasarım, görsel zenginlik katan materyaller(resimler,css'ler vb), veri depolama enstrümanları ve diğerleri. Aslında internet programcılığının ilk yılları düşünüldüğünde basit HTML sayfalarının neredeyse her tür ihtiyacı karşılayacağı düşünülüyordu. Zaman geçtikçe programlama dillerinin dinamik web sayfaları ile olan etkileşimi, istemci taraflı çalışan betiklerin sunucu taraflı kullanılabilmesi de gündeme geldi. Modern programlama dillerinin neredeyse tamamı web uygulamaları geliştirebilmek için gerekli temel donanıma sahip. Backend tarafında eş zamanlı işlemlerde yüksek performans sunan GO diliyle de web tabanlı uygulamalar geliştirebilmemiz mümkün."
 categories:
   - golang
 tags:
@@ -15,12 +14,9 @@ tags:
   - performance
   - github
 ---
-# GoLang - Web Programlamaya Giriş
-![goweb_3.gif](/assets/images/2017/goweb_3.gif)
-
-Merhaba Arkadaşlar,
-
 Bir web uygulamasının temel malzemeleri nelerdir? Sunucu tarafında çalışan güçlü bir çatı (Framework), içeriklerin gösterildiği statik veya dinamik web sayfaları, iyi tasarım, görsel zenginlik katan materyaller (resimler,css'ler vb), veri depolama enstrümanları ve diğerleri. Aslında internet programcılığının ilk yılları düşünüldüğünde basit HTML sayfalarının neredeyse her tür ihtiyacı karşılayacağı düşünülüyordu belkide. Zaman geçtikçe programlama dillerinin dinamik web sayfaları ile olan etkileşimi, istemci taraflı çalışan betiklerin sunucu taraflı kullanılabilmesi de gündeme geldi. Modern programlama dillerinin neredeyse tamamı web uygulamaları geliştirebilmek için gerekli temel donanıma sahip. Asıl amacı back-end tarafındaki büyük ölçekli sistemlerde yüksek performans sunmak olan, eş zamanlı programlamada öne çıkan GO ile de web tabanlı uygulamalar geliştirebilmemiz mümkün. Go dilinin network haberleşme üzerine sunduğu basitlik ve yüksek performans da göz önüne alındığında web programlama oldukça ilgi çekici bir konu haline geliyor.
+
+![goweb_3.gif](/assets/images/2017/goweb_3.gif)
 
 Ruby tarafında Ruby on Rails, Python tarafında Django gibi çatılar profesyonel anlamda web uygulamalarının geliştirilmesini kolaylaştırıyor. Go tarafında da bu tip çatılar mevcut hatta Beego bunlar arasında en popülerlerinden birisi. Ne var ki basit düzeyde de dahili paketlerden yararlanarak web uygulamaları geliştirebiliriz. Çünkü teori her zaman basittir. tcp/ip üzerinden belli bir porta gelen çeşitli talepler ve bu taleplere karşılık istemcilerin yorumlayabileceği HTML içerikler. Bu düşünce yapısından yola çıkarak net/http ve html/template kütüphanelerini kullanarak iki sayfadan oluşan basit bir web sitesi yazacağız. İşe ilk olarak aşağıdaki klasör ve dosya yapısını tasarlayarak başlayabiliriz.
 
@@ -99,6 +95,7 @@ Kullanıcılar örneğin http://localhost:8085 gibi bir adrese geldiklerinde bu 
 
 Oyuncuları gösteren Players.html sayfası
 
+{% raw %}
 ```text
 <html>
 <head>
@@ -127,8 +124,9 @@ Oyuncuları gösteren Players.html sayfası
 	<a href="/">Go Back</a>
 </body>
 ```
+{% endraw %}
 
-Hımmmm...Bir dakika...Burada oldukça enteresan ifadeler var. Bir back-end geliştiricisi de olsak az buçuk HTML'den çakmadığımızı kim söyleyebilir. Peki bu ikişer küme parantezleri de neyin nesi oluyor? range anahtar kelimesi bir yerlerden tanıdık geliyor aslında. Sözü fazla uzatmayalım. {{ ile }} arasında yazdığımız ifadeler Go diline ait kod satırlarını içeren kısımlar. Yani HTML sayfası içerisine GO kodlarını gömdüğümüzü ifade edebiliriz. Önemli olan kısımsa range ile başlayan satırlar. Burada nokta ile sayfaya gelen veri kaynağı üzerinde index ve nesne çiftleri olarak hareket ediyoruz ({{ }} arasında GO kodundan gelen bir değişkene ulaşmak istediğimizde adının başına nokta koymamız gerekiyor) Bir döngü söz konusu ama key:value çiftlerini dönüyor. Peki bu key:value çiftlerinin kaynağı kim? Döngü tarafından işlenecek olan veriyi server.go içerisinden göndereceğiz. Göndereceğimiz nesne topluluğundaki öğelerin de Id, Nickname ve Level isimli alanları olacak. Alanları HTML içerisine yedirmek için $index ve $player gibi ifadeler kullanıldığına dikkat edelim. Örneğin döngünün o anki nesnesine gelen Player içerisindeki Nickname alanına ulaşmak için $player.Nickname ifadesini, bu ifadenin sonucunu td takıları arasına yazmak için de {{ }} bloğunu kullanıyoruz. E öyleyse gelelim server.go içeriğine.
+Hımmmm...Bir dakika...Burada oldukça enteresan ifadeler var. Bir back-end geliştiricisi de olsak az buçuk HTML'den çakmadığımızı kim söyleyebilir. Peki bu ikişer küme parantezleri de neyin nesi oluyor? range anahtar kelimesi bir yerlerden tanıdık geliyor aslında. Sözü fazla uzatmayalım. &#123;&#123; ile &#125;&#125; arasında yazdığımız ifadeler Go diline ait kod satırlarını içeren kısımlar. Yani HTML sayfası içerisine GO kodlarını gömdüğümüzü ifade edebiliriz. Önemli olan kısımsa range ile başlayan satırlar. Burada nokta ile sayfaya gelen veri kaynağı üzerinde index ve nesne çiftleri olarak hareket ediyoruz (&#123;&#123; &#125;&#125; arasında GO kodundan gelen bir değişkene ulaşmak istediğimizde adının başına nokta koymamız gerekiyor) Bir döngü söz konusu ama key:value çiftlerini dönüyor. Peki bu key:value çiftlerinin kaynağı kim? Döngü tarafından işlenecek olan veriyi server.go içerisinden göndereceğiz. Göndereceğimiz nesne topluluğundaki öğelerin de Id, Nickname ve Level isimli alanları olacak. Alanları HTML içerisine yedirmek için $index ve $player gibi ifadeler kullanıldığına dikkat edelim. Örneğin döngünün o anki nesnesine gelen Player içerisindeki Nickname alanına ulaşmak için $player.Nickname ifadesini, bu ifadenin sonucunu td takıları arasına yazmak için de &#123;&#123; &#125;&#125; bloğunu kullanıyoruz. E öyleyse gelelim server.go içeriğine.
 
 Başrol Oyuncusu Server.go
 
@@ -183,7 +181,7 @@ Dosyanın genel yapısına baktığımızda Player tipinden bir struct içerdiğ
 
 Famous Hearthstone Players başlıklı linke tıklandığında ise main fonksiyonundaki http.HandleFunc bildirimlerinden ikincisi devreye girer. Nitekim bağlantı /players şeklinde bir çağrı yapmaktadır. Bu adrese gelecek olan talepler getPlayers isimli fonksiyona yönlendirilmektedir. Bu fonksiyon iki kritik parametre alır. İstemciye gönderilecek cevabın yazılmasında kullanılacak olan ResponseWriter ve gelen talebe ait bilgiler içeren Request (Örnekte Request nesnesi kullanılmamıştır ancak [şu adresteki yazıdan](https://www.buraksenyurt.com/post/go-ile-basit-http-web-server-yapimi) kendisi hakkında ek bilgi edinebilirsiniz) getPlayers fonksiyonunda önce terminale log basılarak işlemlere başlanır. Arından Player isimli struct tipinden nesne örnekleri barındıran slice içeriğini elde edeceğimiz loadPlayers fonksiyonu tetiklenir. İşte bu slice içerisindeki Player nesne örnekleri, players.html sayfasındaki ilgili konumlara basılacaktır. Ama nasıl?
 
-Önce template tipinin ParseFiles fonksiyonu ile pages klasöründeki players.html şablonu yakalanır. ParseFiles pek çok Go fonksiyonu gibi iki değer döndürür. İlki kullanacağımız Template, ikincisi de Error tipidir. Eğer bir hata yoksa t isimli Template tipi üzerinden Execute fonksiyonu çalıştırılır. Exceute fonksiyonu ResponseWriter örneğini ve players içeriğini alıp players.html üzerinde gerekli işlemleri gerçekleştirir. Aslında players.html sayfası belleğe alınıp, {{ }} konumları players dizisi içeriği ile beslenip gerekli HTML çıktısının üretilmesi ve bu içeriğin ilgili ResponseWriter'ın sahiplendiği stream üzerinden ağa yazdırılması söz konusudur diyebiliriz. Sonuç aşağıdaki ekran görüntüsündeki gibi olacaktır.
+Önce template tipinin ParseFiles fonksiyonu ile pages klasöründeki players.html şablonu yakalanır. ParseFiles pek çok Go fonksiyonu gibi iki değer döndürür. İlki kullanacağımız Template, ikincisi de Error tipidir. Eğer bir hata yoksa t isimli Template tipi üzerinden Execute fonksiyonu çalıştırılır. Exceute fonksiyonu ResponseWriter örneğini ve players içeriğini alıp players.html üzerinde gerekli işlemleri gerçekleştirir. Aslında players.html sayfası belleğe alınıp, &#123;&#123; &#125;&#125; konumları players dizisi içeriği ile beslenip gerekli HTML çıktısının üretilmesi ve bu içeriğin ilgili ResponseWriter'ın sahiplendiği stream üzerinden ağa yazdırılması söz konusudur diyebiliriz. Sonuç aşağıdaki ekran görüntüsündeki gibi olacaktır.
 
 ![goweb_2.gif](/assets/images/2017/goweb_2.gif)
 

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "C# 2.0 ile Generic Delegates"
 date: 2005-11-21 10:00:00 +0300
-description: "Bu makalemizde generic temsilcilerin (generic delegates) ne olduğunu ve nasıl kullanılabildiğini incelemeye çalışacağız. .Net 2.0 ile gelen en önemli yenelik generic mimarisidir. Generic mimarisi, tür bağımsız algoritmalar kurmamıza imkan sağlayan gelişmiş bir yapıdır. .Net 2.0' da sınıfları (class), yapıları (struct), arayüzleri (interface), metodları (method), koleksiyonları (collection) ve temsilcileri (delegate) generic olarak oluşturabilir ve kullanabiliriz. Bildiğiniz gibi generic mimarisinin sağlamış olduğu iki önemli özellik vardır. Bunlar tip güvenliği (type-safety) ve performans artışıdır. Özellikle performans ile kastedilen konu gereksiz boxing ve unboxing işlemlerinin ortadan kaldırılabilmesidir. Generic mimarinin getirdiği bu avantajları delegate (temsilci) tipi içinde kullanabilmekteyiz."
 categories:
   - csharp
 tags:
@@ -12,9 +11,6 @@ tags:
   - delegates
   - generics
 ---
-# C# 2.0 ile Generic Delegates
-Değerli Okurlarım Merhabalar,
-
 Bu makalemizde generic temsilcilerin (generic delegates) ne olduğunu ve nasıl kullanılabildiğini incelemeye çalışacağız..Net 2.0 ile gelen en önemli yenelik generic mimarisidir. Generic mimarisi, tür bağımsız algoritmalar kurmamıza imkan sağlayan gelişmiş bir yapıdır..Net 2.0' da sınıfları (class), yapıları (struct), arayüzleri (interface), metodları (method), koleksiyonları (collection) ve temsilcileri (delegate) generic olarak oluşturabilir ve kullanabiliriz. Bildiğiniz gibi generic mimarisinin sağlamış olduğu iki önemli özellik vardır. Bunlar tip güvenliği (type-safety) ve performans artışıdır. Özellikle performans ile kastedilen konu gereksiz boxing ve unboxing işlemlerinin ortadan kaldırılabilmesidir. Generic mimarinin getirdiği bu avantajları delegate (temsilci) tipi içinde kullanabilmekteyiz.
 
 İlk olarak generic temsilcilere neden ihtiyacımız olabileceğini 1.1 versiyonundaki kullanımını göz önüne alarak irdelemeye çalışalım. Aşağıdaki örnek uygulamada overload edilmiş Toplam isimli iki metod yer almaktadır. Bu iki metod farklı tipte parametreler almaktadır. Bunun yanında dönüş tipleride farklıdır. Bu metodları temsilci nesneleri ile işaret etmek istediğimizde iki ayrı temsilci tipi tanımlamamız gerekecektir. Nitekim temsilci tipi, tanımlamış olduğu desen ile (dönüş tipi ve metod imzası) birebir uyumlu metodları işaret edebilmektedir.

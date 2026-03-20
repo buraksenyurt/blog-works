@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu-32(Environment Verisini XML Olarak Sunmak)"
 date: 2011-09-22 07:05:00 +0300
-description: "Merhaba Arkadaşlar,"
 categories:
   - csharp
   - tek-fotoluk-ipucu
@@ -11,9 +10,6 @@ tags:
   - tek-fotoluk-ipucu
   - xml
 ---
-# Tek Fotoluk İpucu-32(Environment Verisini XML Olarak Sunmak)
-Merhaba Arkadaşlar,
-
 System.Environment tipi içerisinde son derece yararlı ortam bilgileri bulunmaktadır. Bu bilgileri elde etmek son derece kolaydır. Hatta dilerseniz bunları XML formatında dış dünyaya sunabilirsinizde. Nasıl mı?
 
 ![Winking smile](/assets/images/2011/wlEmoticon-winkingsmile_50.png)

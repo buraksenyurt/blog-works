@@ -2,7 +2,6 @@
 layout: post
 title: "Text Template ve VSIX Project Template Kullanımı"
 date: 2012-07-17 08:04:00 +0300
-description: "Ancak yazılımcıların bu gibi ihtiyaçlarda yine de yaptıkları bazı temel hatalar vardır. Söz gelimi dosya üretme ve devreye alma işlemlerini yapmak için herşeyi sıfırdan yazma yoluna gidebilirler. Oysaki kullanılan geliştirme ortamlarının bu gibi noktalarda ürettikleri bazı kolaylaştırıcı çözüm yolları da bulunmaktadır. Söz gelimi Visual Studio tarafından bakıldığında, Text Template' ler kod dosyalarının otomatik üretiminde kullanılabilir. Hatta Visual Studio SDK ile birlikte gelen VSIX Project Template' ler ile bu gibi üretimlerin birer Extension olarak şablonlaştırılması da mümkündür."
 categories:
   - visual-studio
 tags:
@@ -18,12 +17,9 @@ tags:
   - rc
   - dependency-management
 ---
-# Text Template ve VSIX Project Template Kullanımı
-[Aşağıdaki örnek Visual Studio 2012 RC sürümü üzerinde ele alınmıştır]
-
-[![deadline](/assets/images/2012/deadline_thumb.jpg)](/assets/images/2012/deadline.jpg) Merhaba Arkadaşlar,
-
 Çoğu zaman geliştiricilerin karşısına zaman kısıtı olan projelerde, sıklıkla tekrar eden çözümsel ihtiyaçlar çıkar. Örneğin, ürünün içerisinde n sayıda ekran kullanıldığını ve bunların aslında belirli bir noktaya kadar bir kaç parametre ile değişen ama standart kod içeriklerine sahip olduğunu düşünün. Hatta bu tip ekranları bir kaç proje için aynı şekilde ürettiğinizi.
+
+[![deadline](/assets/images/2012/deadline_thumb.jpg)](/assets/images/2012/deadline.jpg)
 
 Yazılımcılar bu gibi durumlarda yükü azaltmak ve özellikle Deadline sürelerini eritmek adına, parçaları otomatik olarak üreten kodlar ile çözümleme yoluna gitmeye gayret ederler. Bir başka deyişle otomatik kod üreticilerini (Auto Code Generator) yazmak için çaba gösterirler. Bu oldukça etkili ve önemli bir yaklaşımdır. Tekrarlı işleri azaltmakla kalmaz, aynı zamanda yeniden yapılması gereken üretimlerde veya toplu güncellemelerde işleri merkezi bir noktadan kolaylaştırır.
 
@@ -37,6 +33,7 @@ Ancak yazılımcıların bu gibi ihtiyaçlarda yine de yaptıkları bazı temel 
 
 Öğemize DbClassTemplate ismini verebiliriz. TT (Text Template) uzantılı olan bu dosya aslında metinsel içerik ile C#/Vb.Net tabanlı kod parçalarını bir arada ele alıp üretimi gerçekleştirmek üzere kullanılmaktadır. Visual Studio ile entegre çalışmakta olup yaptığımız her Save işlemi sonrası bir üretim gerçekleşmektedir. Söz konusu dosyanın içeriğini ise aşağıdaki gibi oluşturduğumuzu düşünelim.
 
+{% raw %}
 ```csharp
 <#@ template debug="True" hostspecific="True" language="C#" #> 
 <#@ output extension=".cs" #> 
@@ -89,6 +86,7 @@ namespace <#= dbName #>
 <#= builder.ToString() #> 
 }
 ```
+{% endraw %}
 
 Şimdi bu kod parçasında ne yaptığımıza bir bakalım.
 

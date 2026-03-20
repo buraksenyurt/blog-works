@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "GO Ortamında Minik Bir CRUD Servisini Gin-Gonic ile Geliştirmek"
 date: 2020-09-03 13:00:00 +0300
-description: "Gin-Gonic hafif siklet sayılan ama yüksek performansı ile öne çıkan(muadili olan martini'den çok daha hızlı olduğu ifade ediliyor) bir HTTP-Web framework. Elbette açık kaynak bir çatı. Middleware tarafında(Yani Request ve Response'lar arasında) Recover ve Log desteği sunuyor. Tabii kendi middleware bileşenimizi yazıp ekleyebiliriz de. Recovery modülü en başından beri ekli olduğundan paniklemeyen bir framework diyebiliriz :) Yani Go çalışma zamanında HTTP talepleri ile ilgili olarak bir panic oluştuğunda uygun bir 500 cevabı verebiliyor."
 categories:
   - golang
 tags:
@@ -16,10 +15,9 @@ tags:
   - go
   - github
 ---
-# GO Ortamında Minik Bir CRUD Servisini Gin-Gonic ile Geliştirmek
-![gingonic.png](/assets/images/2020/gingonic.png)
-
 Gin-Gonic hafif siklet sayılan ama yüksek performansı ile öne çıkan (Muadili olan martini'den çok daha hızlı olduğu ifade ediliyor. Bu arada farklı Http Web Framework'ler için [şu yazıyı](https://deepsource.io/blog/go-web-frameworks/) inceleyebilirsiniz) bir HTTP-Web framework. Elbette açık kaynak bir çatı. Middleware tarafında (Yani Request ve Response'lar arasında) Recover ve Log desteği sunuyor. Tabii kendi middleware bileşenimizi yazıp ekleyebiliriz de. Recovery modülü en başından beri ekli olduğundan paniklemeyen bir framework diyebiliriz:) Yani Go çalışma zamanında HTTP talepleri ile ilgili olarak bir panic oluştuğunda uygun bir 500 cevabı verebiliyor.
+
+![gingonic.png](/assets/images/2020/gingonic.png)
 
 Söylentilere göre bu özelliği sayesinde söz konusu servis her an ayakta ve çalışır durumda kalıyor (muş). Bahseliden bu yeteneklere ilaveten yönlendirmeleri (routes) gruplandırabiliyoruz ki bu da örneğin versiyonlamayı kolaylaştırıyor. Bu kısa notlar şimdilik yeterli. Sahada deneyimlemek lazım. İşte bu [SkyNet](https://github.com/buraksenyurt/skynet) derlemesindeki amacımız MongoDb üzerinde basit CRUD (Create Read Update Delete) işlemlerini yaparken gin-gonic üstüne kurulmuş golang tabanlı bir servis geliştirmek. Tahmin edeceğiniz üzere ben örneği Heimdall (Ubuntu-20.04) üstünde geliştiriyorum. MongoDb tarafı içinde bir Docker imajını kullanmayı tercih edeceğim. Dilerseniz vakit kaybetmeden idmanımıza başlayalım. İşte ilk terminal adımlarımız.
 

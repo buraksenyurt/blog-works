@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Levenshtein Distance Algoritması"
 date: 2012-07-01 23:05:00 +0300
-description: "Aslına bakarsanız bilgisayar bilimlerinde uygulanabilen, gerçekten çok işe yarayan ve onları keşfedenleri saygıyla hatırlamamız gereken algoritmalar mevcut. Örneğin bunlardan birisi olan Levenshtein Distance algoritması ve mucidi Vladimir Levenshtein Winking smile..."
 categories:
   - algoritma
   - csharp
@@ -14,10 +13,10 @@ tags:
   - rest
   - http
 ---
-# Levenshtein Distance Algoritması
-[![artcl_11_4](/assets/images/2012/artcl_11_4_thumb.jpg)](/assets/images/2012/artcl_11_4.jpg) Merhaba Arkadaşlar,
-
 Bir süredir yazılım dünyasında sıklıkla kullanılan basit algoritmalara merak salmış durumdayım. Bazıları kafayı yedirtecek cinsten olsalarda arada sırada bunları değerlendirmekte ve paslanan dimamızı açmaya çalışmakta yarar olduğu kanısındayım.
+
+[![artcl_11_4](/assets/images/2012/artcl_11_4_thumb.jpg)](/assets/images/2012/artcl_11_4.jpg)
+
 
 Aslına bakarsanız bilgisayar bilimlerinde uygulanabilen, gerçekten çok işe yarayan ve onları keşfedenleri saygıyla hatırlamamız gereken algoritmalar mevcut. Örneğin bunlardan birisi olan [Levenshtein Distance](http://en.wikipedia.org/wiki/Vladimir_Levenshtein) algoritması ve mucidi Vladimir Levenshtein
 

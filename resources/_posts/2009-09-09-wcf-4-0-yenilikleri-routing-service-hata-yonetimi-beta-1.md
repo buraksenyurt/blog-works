@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF 4.0 Yenilikleri - Routing Service - Hata Yönetimi [Beta 1]"
 date: 2009-09-09 13:02:00 +0300
-description: "Bir önceki blog yazımızda WCF 4.0 ile basit bir yönlendirme servisinin(Router Service) nasıl yazılabileceğini incelemeye çalışmıtık. Tabi bu tip bir sistemde dikkat edilmesi gereken vakalardan biriside, Downstream servislerde istisnaların(Exceptions) oluşması halinde nasıl davranılacağıdır."
 categories:
   - wcf-4-0-beta-1
 tags:
@@ -12,12 +11,9 @@ tags:
   - wcf
   - http
 ---
-# WCF 4.0 Yenilikleri - Routing Service - Hata Yönetimi [Beta 1]
-![blg74_Giris.jpg](/assets/images/2009/blg74_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Bir önceki [blog yazımızda](https://www.buraksenyurt.com/post/WCF-40-Yenilikleri-Routing-Service-Gelistirmek-Hello-World)WCF 4.0 ile basit bir yönlendirme servisinin (Router Service) nasıl yazılabileceğini incelemeye çalışmıtık. Tabi bu tip bir sistemde dikkat edilmesi gereken vakalardan biriside, Downstream servislerde istisnaların (Exceptions) oluşması halinde nasıl davranılacağıdır. Peki ne gibi durumlardan bahsediyoruz? Örneğin, Router servisine gelen paketin yönlendirildiği bir alt servis çalışmıyor olabilir.
+
+![blg74_Giris.jpg](/assets/images/2009/blg74_Giris.jpg)
 
 Bu durumda bir TimeoutException oluşması muhtemeldir. Benzer şekilde CommunicationException ve türevi olan istisna tiplerinin fırlatılmasıda söz konusudur. Bu gibi istisnaların ortaya çıkması halinde en azından işleyişin devamlılığını sağlamak ve sistemin çökmesini engellemek için, WCF 4.0 tarafı konfigurasyon dosyasında Alternatif Endpoint tanımlamaları yapılmasına izin vermektedir.
 

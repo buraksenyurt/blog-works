@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "OleDbDataAdapter Sınıfı ve Update Metodu."
 date: 2004-03-14 12:00:00 +0300
-description: "Bu makalemizde, OleDbDataAdapter sınıfının , veriler üzerindeki güncelleme işlemlerinin, veri kaynağına yansıtılması sırasında nasıl bir rol oynadığını ve kullanıldığını incelemeye çalışacağız. Önceki makalelerimizde belirttiğimiz gibi, OleDbDataAdapter nesnesi yardımıyla veri kaynağından, uygulamalarımızdaki bağlantısız katman nesnelerine veri kümelerini aktarmak amacıyla Fill metodunu kullanıyorduk. Diğer yandan, bağlantısız katman nesnelerimizin temsil ettiği veriler üzerinde yapılan değişiklikleri veritabanına göndermek istersek, Update metodunu kullanırız."
 categories:
   - ado-net
 tags:
@@ -11,9 +10,6 @@ tags:
   - performance
   - datatable
 ---
-# OleDbDataAdapter Sınıfı ve Update Metodu.
-Değerli Okurlarım, Merhabalar.
-
 Bu makalemizde, OleDbDataAdapter sınıfının, veriler üzerindeki güncelleme işlemlerinin, veri kaynağına yansıtılması sırasında nasıl bir rol oynadığını ve kullanıldığını incelemeye çalışacağız. Önceki makalelerimizde belirttiğimiz gibi, OleDbDataAdapter nesnesi yardımıyla veri kaynağından, uygulamalarımızdaki bağlantısız katman nesnelerine veri kümelerini aktarmak amacıyla Fill metodunu kullanıyorduk. Diğer yandan, bağlantısız katman nesnelerimizin temsil ettiği veriler üzerinde yapılan değişiklikleri veritabanına göndermek istersek, Update metodunu kullanırız.
 
 Update metodu çalışma sistemi açısından oldukça ilgi çekici bir metoddur. Bildiğiniz gibi, DataAdapter nesnelerinin, verilerin güncellenmesi için UpdateCommand, verileri eklemek için InsertCommand, veri silmek için DeleteCommand özellikleri vardır. Uygulamamız çalışırken, bağlantısız katman nesnelerimiz verilerin satırsal bazda durumlarını gösteren bir değer içeririr. RowState olarak bilinen bu özellik DataRow sınıfına ait bir özellik olup aşağıdaki tabloda yer alan DataRowState numaralandırıcısı türünden değerlerden birisini almaktadır.

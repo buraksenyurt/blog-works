@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "OleDbDataAdapter Sınıfı Olayları"
 date: 2004-03-18 12:00:00 +0300
-description: "Bu makalemizde, OleDbDataAdapter sınıfının olaylarını incelemeye çalışacağız. OleDbDataAdapter sınıfı aşağıdaki tabloda belirtilen üç önemli olayı içermektedir. Şimdi dilerseniz bu olayları kısaca incelemeye çalışalım. RowUpdating olayından başlayalım. Bu olay, OleDbRowUpdatingEventArgs sınıfı türünden bir parametre almaktadır. Bu paramterenin sahip olduğu özellikleri kullanarak, bağlantısız katmandaki veriler, veritabanına yazılmadan önce değişik işlevleri yerine getirme imkanına sahip olmuş oluruz. OleDbRowUpdatingEventArgs sınıfının özellikleri aşağıdaki tabloda yer almaktadır."
 categories:
   - ado-net
 tags:
@@ -12,9 +11,6 @@ tags:
   - visual-studio
   - datatable
 ---
-# OleDbDataAdapter Sınıfı Olayları
-Değerli Okurlarım, Merhabalar.
-
 Bu makalemizde, OleDbDataAdapter sınıfının olaylarını incelemeye çalışacağız. OleDbDataAdapter sınıfı aşağıdaki tabloda belirtilen üç önemli olayı içermektedir.
 
 Olay

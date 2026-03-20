@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ruby Kod Parçacıkları 34 - Struct ve OpenStruct"
 date: 2017-04-10 15:00:00 +0300
-description: "Bir süredir tek günlük bir Ruby eğitimine hazırlanmaktayım. İşlerden çok vakit kalmasa da önceki notlarımı ve farklı kaynakları takip ederek bir içerik oluşturmaya çalışıyorum. Konular üzerinden geçerken struct ve openstruct kavramlarına da rastladım. Struct aslında Ruby'nin built-in sınıflarından birisi. Temel olarak bir sınıf tanımı yapmadan nitelik barındıran tip kullanımına olanak sağlıyor diyebiliriz. Aşağıdaki kod parçasını göz önüne alalım."
 categories:
   - ruby
 tags:
@@ -10,12 +9,9 @@ tags:
   - mysql
   - http
 ---
-# Ruby Kod Parçacıkları 34 - Struct ve OpenStruct
-![ruby34_5.gif](/assets/images/2017/ruby34_5.gif)
-
-Merhaba Arkadaşlar,
-
 Bir süredir şirket içinde vereceğim Ruby eğitimine hazırlanmaktayım. İşlerden çok vakit kalmasa da önceki Ruby notlarımı ve farklı kaynakları takip ederek 101 seviyesinde bir içerik oluşturmaya çalışıyorum. Gün içinde C# evde geç vakitlerde ise Ruby. Biraz yorucu olsa da oldukça keyifli aslında. Hem yeni bir şeyler öğreniyorum hem de iç eğitim gibi bir gerçek olduğundan ciddi anlamda not çıkartıyorum. Bugün konular üzerinden geçerken struct ve openstruct kavramlarını atladığımı fark ettim (Ov yooo) Tabii hemen öğrenmeye başladım. Neymiş ne için kullanılırmış biraz fikir sahibi oldum. İşte notlarım.
+
+![ruby34_5.gif](/assets/images/2017/ruby34_5.gif)
 
 Struct aslında Ruby'nin built-in sınıflarından birisi. Temel olarak bir sınıf hazırlamadan nitelik ve değer barındıran tip tanımlanmasına olanak sağlıyor. Konuyu basit bir şekilde incelemeye başlamak için aşağıdaki kod parçasını göz önüne alarak ilerleyebiliriz.
 

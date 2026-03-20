@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "BeeWare ile Linux Platformunda Desktop Uygulaması Geliştirmek ve Android Sürümünü Oluşturmak"
 date: 2020-09-13 21:05:00 +0300
-description: "Geçenlerde Python ile ilgili bir şeyler ararken BeeWare isimli çalışmaya rastladım. Her yerde python ile native uygulama geliştirmek gibi bir felsefesi vardı. Eee zaten python her platformda yüklenip kullanılmıyor mu? Yoo tam olarak olay öyle değil aslında. BeeWare ürünü macOS, Linux ve Windows platformlarında native uygulama geliştirmek haricinde iOS ve Android için de destek sunan bir araçlar ve kütüphaneler topluluğu. Söz gelimi iOS ve macOS platformundaki Objective C kütüphaneleri ile Python arasında köprü görevi gören Rubicon ObjC isimli bir araç sunuyor. Java kütüphaneleri ile bir iletişim mi gerekiyor!? O zaman Rubicon Java var. Diğer yandan cross-platform için Toga isimli bir widget kütüphanesi kullanıyor. Ayrıca python projelerini tek başına çalışabilir uygulamalar haline getirmek için(standalone native application) Briefcase isimli başka bir araca sahip ki bir çoğunu birazdan kullanacağız."
 categories:
   - python
 tags:
@@ -15,10 +14,9 @@ tags:
   - java
   - github
 ---
-# BeeWare ile Linux Platformunda Desktop Uygulaması Geliştirmek ve Android Sürümünü Oluşturmak
-![beeware.png](/assets/images/2020/beeware.png)
-
 Geçenlerde Python ile ilgili bir şeyler ararken BeeWare isimli çalışmaya rastladım. Her yerde python ile native uygulama geliştirmek gibi bir felsefesi vardı. Eee zaten python her platformda yüklenip kullanılmıyor mu? Yoo tam olarak olay öyle değil aslında. BeeWare ürünü macOS, Linux ve Windows platformlarında native uygulama geliştirmek haricinde iOS ve Android için de destek sunan bir araçlar ve kütüphaneler topluluğu. Söz gelimi iOS ve macOS platformundaki Objective C kütüphaneleri ile Python arasında köprü görevi gören Rubicon ObjC isimli bir araç sunuyor. Java kütüphaneleri ile bir iletişim mi gerekiyor!? O zaman Rubicon Java var. Diğer yandan cross-platform için Toga isimli bir widget kütüphanesi kullanıyor. Ayrıca python projelerini tek başına çalışabilir uygulamalar haline getirmek için (standalone native application) Briefcase isimli başka bir araca sahip ki bir çoğunu birazdan kullanacağız.
+
+![beeware.png](/assets/images/2020/beeware.png)
 
 Aslında olayı şöyle düşünebiliriz; Bu çatı sayesinde Android için Gradle çıktısı, iOS için XCode proje çıktısı, Linux için AppImage, Windows için MSI Installer ve macOS için doğrudan çalışabilir uygulama çıktıları üretebiliyoruz. Bana Xamarin ve Electron'u düşündürmedi değil (Bu arada BeeWare'in Logo'su epey sevimli)
 

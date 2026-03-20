@@ -2,7 +2,6 @@
 layout: post
 title: "Rust ve Güvenli Bellek Yönetimi Hakkında"
 date: 2025-02-14 12:30:00 +0300
-description: "Bir sistem programlama dili olarak tanınan Rust genellikle C veya C++ dillerinde kritik hatalara sebep olan bazı kod parçalarının henüz derleme aşamasında(compile time) tespit edilerek önlenmesi ile de ön plana çıkmaktadır. Rust'ın kendine has bellek yönetim mekanizması (ownership, borrow checker, lifetime ve RAII mekanizması) esas itibariyle bu tip hataların önüne geçebilmek üzerine tasarlanmıştır. Kaynaklarda bu konuyla ilgili olarak Use Aftre Free, Double Free, Dangling Pointer, Buffer Overflow gibi kavramlara rastlamaktayız. Esasında bunlar gerçekten de zaman içerisinde büyük problemlere neden olan açıkların tanımlarıdır."
 categories:
   - rust
 tags:
@@ -15,7 +14,6 @@ tags:
   - ownership
   - borrow-checker
 ---
-# Rust ve Güvenli Bellek Yönetimi Hakkında
 Bir sistem programlama dili olarak tanınan Rust genellikle C veya C++ dillerinde kritik hatalara sebep olan bazı kod parçalarının henüz derleme aşamasında (compile time) tespit edilerek önlenmesi ile de ön plana çıkmaktadır. Rust'ın kendine has bellek yönetim mekanizması (ownership, borrow checker, lifetime ve RAII mekanizması) esas itibariyle bu tip hataların önüne geçebilmek üzerine tasarlanmıştır. Kaynaklarda bu konuyla ilgili olarak Use Aftre Free, Double Free, Dangling Pointer, Buffer Overflow gibi kavramlara rastlamaktayız. Esasında bunlar gerçekten de zaman içerisinde büyük problemlere neden olan açıkların tanımlarıdır. Internet kaynaklarında geçen bazı tarihi olaylar ise aşağıdaki gibidir.
 
 - Use After Free: Bellekten silinmiş bir değerin referansına silme işleminden sonra tekrardan erişmeye çalışmak.

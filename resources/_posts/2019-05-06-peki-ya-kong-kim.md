@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Peki ya Kong Kim?"
 date: 2019-05-06 07:00:00 +0300
-description: "Hali hazırda çalışmakta olduğum firmada, microservice'lerin orkestrasyonu için KONG isimli bir araç kullanılıyor. Kabaca bir API Gateway rolünü üstlenen KONG microservice'lere gelen request'lerle ilgili olarak Load Balancing, Authentication, Rate Limiting, Caching, Logging gibi cross-cutting olarak tabir edebileceğimiz yapıları hazır olarak sunuyor(muş) Web, Mobil ve IoT gibi uygulamalar geliştirirken backend servisleri çoğunlukla microservis formunda yaşamaktalar. Bunların orkestrasyonunda görev alan KONG, Lua dili ile geliştirilmiş performansı ile ön plana çıkan NGINX üzerinde koşan açık kaynaklı bir proje olmasıyla da dikkat çekiyor."
 categories:
   - devops
 tags:
@@ -26,10 +25,9 @@ tags:
   - microservices
   - github
 ---
-# Peki ya Kong Kim?
-![kingkong.jpg](/assets/images/2019/kingkong.jpg)
-
 Kurumsal mimari ekibinin önerdiği çatılardan birisi üzerine kurulmuş yeni ürünümüzü test ortamına almaya çalıştığımız bir gündü. Local makinelerimizde çok az sorunla ayağa kaldırdığımız proje, test ortamında ne yazık ki daha fazla problem üretmişti. Ağırlıklı olarak web önyüzünden iş kurallarının yürütüldüğü Web API servislerine gidişlerde sorunlar yaşıyorduk.
+
+![kingkong.jpg](/assets/images/2019/kingkong.jpg)
 
 CI/CD hattındaki parametreleri, veri tabanı nesnelerini, SSO ayarlarını kontrol edip Kibana loglarını incelemeye başladık. Tüm bu işler devam ederken DevOps ekibinden bize destek veren sevigili Yavuz, servisler üzerindeki trafiği monitör etmekteydi. Konuşmalarımız sırasında Docker Container'larının önünde yer alan KONG isimli bir arabirimden bahsetti. O an içimde bir merak uyanmış olsa da aslında sorunların bir an önce çözülmesini istiyordum. Bu yüzden merakımı birkaç hafta sonrasına bıraktım.
 

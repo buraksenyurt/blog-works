@@ -1,17 +1,13 @@
-﻿---
+---
 layout: post
 title: "Single File Assembly ve Multiple-File Assembly Kavramları"
 date: 2004-04-27 12:00:00 +0300
-description: "Bir önceki makalemizde, assembly'ları erişilebilirliklerine göre özel (private) ve paylaştırılmış (shared) olmak üzere iki kategoriye ayırabileceğimizi incelemiştik. Assembly'ları ayrıca, tek dosya (single file) ve çoklu dosya (multiple-file) olmak üzere iki farklı kategoriye daha ayırabiliriz. Bu makelemizde assembly'ların bu tiplerini incelemeye çalışacağız."
 categories:
   - csharp
 tags:
   - csharp
   - dotnet
 ---
-# Single File Assembly ve Multiple-File Assembly Kavramları
-Değerli Okurlarım, Merhabalar.
-
 Bir önceki makalemizde, assembly'ları erişilebilirliklerine göre özel (private) ve paylaştırılmış (shared) olmak üzere iki kategoriye ayırabileceğimizi incelemiştik. Assembly'ları ayrıca, tek dosya (single file) ve çoklu dosya (multiple-file) olmak üzere iki farklı kategoriye daha ayırabiliriz. Bu makelemizde assembly'ların bu tiplerini incelemeye çalışacağız.
 
 Çoğunlukla.net ile uygulama geliştirirken, gerçekleştirmiş olduğumuz uygulamalar tek bir assembly'dan oluşurlar. Bu varsayılan olarakta böyledir. İşte bu assembly'lar single file (tek dosya) assembly olarak adlandırılır. Bir multiple-file assembly uygulaması ise, birden fazla assembly'dan oluşabilir. Öyleki tüm bu assembly'lar farklı.net dillerince yazılmış uygulama parçaları olabilir. Tüm bunların bir araya getirilerek PE (portable executable) olarak kullanılacak teki bir assembly altında birleştirilmesi ile, multiple-file assembly mimarisi elde edilmiş olur.

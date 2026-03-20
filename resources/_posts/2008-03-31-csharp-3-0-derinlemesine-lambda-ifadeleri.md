@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "C# 3.0 : Derinlemesine Lambda İfadeleri"
 date: 2008-03-31 06:00:00 +0300
-description: "C# programlama dilinin 3ncü versiyonu ile birlikte gelen önemli yeniliklerden biriside lambda(=>) operatörüdür. Bu operatörün kullanıldığı ifadeler yardımıyla temsilci(delegate) oluşturulması, kod bloğunun yazılması, sonuçların alınması ve tip tahmini(Type Inference) gibi işlemlerin tek seferde gerçekleştirilmesi mümkündür."
 categories:
   - csharp-3-0
 tags:
@@ -14,9 +13,6 @@ tags:
   - generics
   - visual-studio
 ---
-# C# 3.0 : Derinlemesine Lambda İfadeleri
-Değerli Okurlarım Merhabalar,
-
 C# programlama dilinin 3ncü versiyonu ile birlikte gelen önemli yeniliklerden biriside lambda (=>) operatörüdür. Bu operatörün kullanıldığı ifadeler yardımıyla temsilci (delegate) oluşturulması, kod bloğunun yazılması, sonuçların alınması ve tip tahmini (Type Inference) gibi işlemlerin tek seferde gerçekleştirilmesi mümkündür. Bu sebepten dolayı LINQ (Language INtegrated Query) sorgularında yer alan genişletme metodlarında (Extension Methods) büyük öneme sahiptir. Ne varki lambda operatörünü kavramak için ona olan ihtiyacın nereden doğdunu bilmek ve nasıl bu operatöre ulaşıldığını anlamak gerekmektedir. En iyi başlangıç noktası elbetteki C# dilinin ilk versiyonudur. Bu yazımızda lambda operatörünün getirdiği avantajları görmeye çalışırken derinlemesinede inceliyor olacağız.
 
 Herşeyden önce C# 1.0 versiyonunda kullanıcı tanımlı bir tipe ait koleksiyonlar üzerinde bazı sorgulamalar yapmak istediğimizi düşünelim. C# 1.0 versiyonunda generic mimari kavramı yoktur. Bu sebepten generic olarak türden bağımsız ve.Net Framework içerisinde önceden tanımlanmış olan koleksiyonlar bulunmamaktadır. Bunun yerine elemanları her zaman object türünden olan ArrayList, Stack, Queue gibi Collection bazlı koleksiyonlar ile Hashtable ve SortedList gibi Dictionary bazlı koleksiyonlar mevcuttur. Eğer sadece bizim istediğimiz tip ile çalışacak kuvvetle türlendirilmiş bir koleksiyon (Strongly Typed Collection) kullanmak istersek CollectionBase veya DictionaryBase abstract sınıflarından türetme yolunu tercih edebiliriz. Böylece sadece istenilen tipler ile çalışacak bir koleksiyonumuz olur.(Lakin bu koleksiyon tip güvenli-type safety olmasına rağmen gereksiz boxing ve unboxing işlemlerini engellemez.)

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "GoLang - REST Servisimizi SQLite'a Bağlayalım"
 date: 2017-07-10 09:05:00 +0300
-description: "Son yazılarımızda GoLang ile web uygulamalarının geliştirilmesi üzerinde duruyoruz. Yeni şeyler öğrendikçe bunları farklı örnekler üzerinden denemeye gayret ediyorum. Bu sefer HTTP yönlendiricimizi SQLite ile çalışan basit bir REST servisi haline getirmeye çalışacağız."
 categories:
   - golang
 tags:
@@ -17,12 +16,9 @@ tags:
   - pointers
   - github
 ---
-# GoLang - REST Servisimizi SQLite'a Bağlayalım
-![gosqlite_7.gif](/assets/images/2017/gosqlite_7.gif)
-
-Merhaba Arkadaşlar,
-
 Son yazılarımızda GoLang ile web uygulamalarının geliştirilmesi üzerinde durduk. Yeni şeyler öğrendikçe bunları farklı örnekler üzerinden denemeye gayret ediyorum. Bu sefer HTTP yönlendiricimizi SQLite ile çalışan basit bir REST servisi için kullanmaya çalışacağız. Kodlara geçmeden önce sisteminize SQLite yüklemiş olduğunuzdan emin olun (Kendi sisteminiz için uygun sürümü SQLite'ın [şuradaki resmi adresinden](https://sqlite.org/download.html) bulup indirebilirsiniz) SQLite yazımızın kapsamı dışında ama bizim için hafif bir veri saklamak fonksiyonelliğini sunacağını ifade edebiliriz. Bu tipteki veritabanları fiziki birer dosya olarak tutulmaktalar. Bu nedenle geliştireceğimiz Go örneğinin erişebileceği bir konumda ilgili veritabanı dosyasının bulunması yeterli.
+
+![gosqlite_7.gif](/assets/images/2017/gosqlite_7.gif)
 
 Ben örnek veri kümesi için bir önceki yazıda kullandığım Star Wars çözümünü baz aldım. Yani Category ve buna bağlı Model isimli birer tablo söz konusu. Tablolar arasında bire-çok ilişkili CategoryId alanı üzerinden sağlayabiliriz. Böylece bir kategori altındaki tüm modelleri ele alacağımız basit bir senaryo üzerinde de durabiliriz. Tabii öncelikle komut satırından aşağıdaki betikler yardımıyla starwars.sdb isimli veritabanını oluşturmamız gerekiyor (Aslında istediğiniz bir uzantıyı kullanabilirsiniz nitekim SQLite dosyaları ikili-binary formatta tutulan içeriklere sahiptirler. Yani uzantısının ne olduğunu bir önemi yok) Sonrasında Category ve Model isimli iki tablo ekleyip örnek veriler ile doldurursak da güzel olabilir.
 

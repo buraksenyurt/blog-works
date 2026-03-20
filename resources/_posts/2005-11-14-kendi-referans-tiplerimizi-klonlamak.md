@@ -1,16 +1,12 @@
-﻿---
+---
 layout: post
 title: "Kendi Referans Tiplerimizi Klonlamak"
 date: 2005-11-14 10:00:00 +0300
-description: "Bu makalemizde kendi yazmış olduğumuz referans tipleri arasında yapılan atama işlemleri sırasında üyeden üyeye (Member by member) kopyalamanın nasıl yapılabileceğini incelemeye çalışacağız. Bildiğiniz gibi referans tipleri belleğin heap bellek bölgesinde tutulurlar. Bu tutuluş yapısının özellikle referans tipleri arasında yapılan atama işlemlerinde önemli bir etkisi vardır. İki referans tipi arasında bir atama işlemi söz konusu olduğunda, aslında bu referans tiplerinin heap bellek bölgesinde yer alan adresleri eşitlenmektedir. Bu eşlemenin doğal bir sonucu olaraktan da referans tiplerinin her hangibirisinde yapılan değişiklik diğerinide otomatikman etkileyecektir."
 categories:
   - csharp
 tags:
   - csharp
 ---
-# Kendi Referans Tiplerimizi Klonlamak
-Değerli Okurlarım Merhabalar,
-
 Bu makalemizde kendi yazmış olduğumuz referans tipleri arasında yapılan atama işlemleri sırasında üyeden üyeye (Member by member) kopyalamanın nasıl yapılabileceğini incelemeye çalışacağız. Bildiğiniz gibi referans tipleri belleğin heap bellek bölgesinde tutulurlar. Bu tutuluş yapısının özellikle referans tipleri arasında yapılan atama işlemlerinde önemli bir etkisi vardır. İki referans tipi arasında bir atama işlemi söz konusu olduğunda, aslında bu referans tiplerinin heap bellek bölgesinde yer alan adresleri eşitlenmektedir. Bu eşlemenin doğal bir sonucu olaraktan da referans tiplerinin her hangibirisinde yapılan değişiklik diğerinide otomatikman etkileyecektir.
 
 Ancak bazı durumlarda, özellikle kendi yazdığımız referans tiplerini kullanırken bu durumun tam tersini isteyebiliriz. Yani kendi yazmış olduğumuz bir sınıfın iki nesne örneği arasında yaptığımız atama işlemi sonrası, bu referansların birbirini etkilemelerini istemeyebiliriz. Bu durumda yazmış olduğumuz sınıfa IClonable arayüzünü uygulayarak referans tipinin klonlanmasını sağlayabiliriz. Bu durumu analiz etmeden önce, referans tipleri arasında yapılam atamanın doğal sonucunu aşağıdaki örnek ile incelemeye çalışalım. Örneğimizde bir dörtgene ait kenar uzunluklarını tutacak olan Dortgen isimli bir sınıf kullanacağız. Dortgen sınıfımızın UML şeması ve kodları aşağıdaki gibidir.

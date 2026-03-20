@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "C# Temelleri : Enum Sabitinin Bilinmeyen Yönleri"
 date: 2006-10-30 02:00:00 +0300
-description: "Enum sabitleri geliştirici dostu tipler olarak düşünülebilir. Çoğu zaman uygulamalarımız içerisinde yer alan algoritmaların bazı durumlara göre farklı şekillerde hareket etmesi beklenir. Bu hareket serbestliğini sağlamanın kolay yollarından birisi, koşulların doğru şekilde tespitinden sonra, uygun bir biçimde ele alınabilmesidir..."
 categories:
   - csharp
 tags:
@@ -10,9 +9,6 @@ tags:
   - serialization
   - datatable
 ---
-# C# Temelleri : Enum Sabitinin Bilinmeyen Yönleri
-Değerli Okurlarım Merhabalar,
-
 Enum sabitleri geliştirici dostu tipler olarak düşünülebilir. Çoğu zaman uygulamalarımız içerisinde yer alan algoritmaların bazı durumlara göre farklı şekillerde hareket etmesi beklenir. Bu hareket serbestliğini sağlamanın kolay yollarından birisi, koşulların doğru şekilde tespitinden sonra, uygun bir biçimde ele alınabilmesidir. Bu amaçla sayısal değerler ile yapılan karşılaştırmalar son derece yerinde olmaktadır. Ancak algortima işleyişini değiştirmek için sayıları ele almak, eğer bu algoritmalar pek çok yerde kullanılacaksa çeşitli zorluklara neden olabilir. En azından hangi sayının ne anlama geldiğini yada o sayı için koşulun nasıl değiştirilmesi gerektiğini hatırlamak zor olabilir. Neyseki enum sabitleri sayesinde, bu tip sayıların anlamlı şekilde isimlendirilerek kullanılabilmesi sağlanmıştır.
 
 Framework kendi içerisinde kullandığı pek çok yapıda aktif olarak enum sabitlerine başvurmaktadır. Örnek olarak, DataReader'lar için kullanılan CommandBehavior, DataTable içerisindeki satırların durumuna ilişkin bilgiler için kullanılan DataRowState ve benzerleri gibi daha pek çok enum tipini sayabiliriz. Built-in tipler dışında kendimizde enum sabitleri geliştirebiliriz ki buda işin en güzel taraflarından birisidir. Ne varki enum sabitlerini geliştirmek, sadece sayılara anlamlı isimler vermek kadar sade bir konu değildir. İşte bu makalemizde enum konusunun derinlerine inmeye çalışacağız. Temel olarak ele alacağımız konuları aşağıdaki başlıklar altında işlemeye çalışacağız.

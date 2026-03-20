@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Angular ile Yazılmış Bir Web Uygulamasını PWA Uyumlu Hale Getirmek"
 date: 2019-06-28 07:00:00 +0300
-description: "PWA(Progressive Web App) tipindeki uygulamalar özellikle mobil cihazlarda kullanılırken sanki AppStore veya PlayStore'dan indirilmiş native uygulamalarmış gibi görünürler. Ancak native uygulamalar gibi dükkandan indirilmezler ve bir web sunucusundan talep edilirler. Https desteği sunduklarından hat güvenlidir. Bağlı olan istemcilere push notification ile bildirimde bulunabilirler. Cihaz bağımsız olarak her tür form-factor'ü desteklerler. Bu uygulama modelinde Service Worker'lar iş başındadır ve sürekli taze kalınmasını sağlarlar. Düşük internet bağlantılarında veya internet olmayan ortamlarda çevrim dışı da çalışabilirler. URL üzerinden erişilen uygulamalar olduklarından kurulum ihtiyaçları yoktur."
 categories:
   - angular
 tags:
@@ -16,10 +15,9 @@ tags:
   - github
   - dependency-management
 ---
-# Angular ile Yazılmış Bir Web Uygulamasını PWA Uyumlu Hale Getirmek
-![LesEclaireurs.png](/assets/images/2019/LesEclaireurs.png)
-
 Geminin neredeyse tüm seyrüsefer sistemi ve radarı arka arkaya gelen alarm sinyalleri sonrası bozulmuştu. Güney pasifiği terk etmek üzere olan koca tekne en son Arjantin kıyılarına yakın seyrediyordu. Gecenin zifiri karanlığında ilerlerken kaptanın en büyük yol bulma ümitlerinden olan kuzey yıldızı bulutlarla kaplı gökyüzünden saatlerdir görülmüyordu.
+
+![LesEclaireurs.png](/assets/images/2019/LesEclaireurs.png)
 
 Altı kişilik güverte mürettabı normal şartlarda geminin seyri için fazlasıyla yeterliydi. Yaklaşık yirmibin groston ağırlığındaki gemi son teknloji cihazlarla donatıldığı için az sayıda personel ile kıtalar arası seyahat edebiliyordu.
 
@@ -204,6 +202,7 @@ export class AppComponent implements OnInit {
 
 Önyüz bileşeni olarak src/app/app.component.html içeriği de tamamen değiştirildi. Material bileşenlerine yer verildi.
 
+{% raw %}
 ```text
 <mat-toolbar>
   <mat-toolbar-row>
@@ -221,8 +220,9 @@ export class AppComponent implements OnInit {
   </mat-card>
 </main>
 ```
+{% endraw %}
 
-Toolbar tipinde bir Navigation kontrolü, Post bilgilerini göstermek içinse Card kontrolünden yararlanıyoruz. UI, bağlı olduğu AppComponent içerisindeki posts dizisini kullanıyor. Tüm dizi elemanlarında gezmek içinse *ngFor komutundan yararlanılmakta. Bir özellik değerini arayüzde göstermek istediğimizde {{post.title}} benzeri notasyonlar kullandığımız da gözden kaçmamalı.
+Toolbar tipinde bir Navigation kontrolü, Post bilgilerini göstermek içinse Card kontrolünden yararlanıyoruz. UI, bağlı olduğu AppComponent içerisindeki posts dizisini kullanıyor. Tüm dizi elemanlarında gezmek içinse *ngFor komutundan yararlanılmakta. Bir özellik değerini arayüzde göstermek istediğimizde &#123;&#123;post.title&#125;&#125; benzeri notasyonlar kullandığımız da gözden kaçmamalı.
 
 ## PWA Uyumluluğu için Hazırlıklar
 

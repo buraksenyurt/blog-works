@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net 2.0 ve Client Script Callback"
 date: 2006-12-17 12:00:00 +0300
-description: "Web sayfalarımızda karşılaştığımız sorunlardan bir tanesi post-back hareketlerine neden olacak davranışların çok fazla olabilmesidir. Varsayılan olarak bir Button' ın görevi sayfayı istemciden sunucuya içeriği ile birlikte göndermektir. Diğer yandan bazı bileşenlerin AutoPostback özelliklerine true değeri atanarak istemci tarafından sunucuya doğru postalama işlemi yapmaları da sağlanabilmektedir..."
 categories:
   - aspnet-2-0
 tags:
@@ -14,9 +13,6 @@ tags:
   - javascript
   - caching
 ---
-# Asp.Net 2.0 ve Client Script Callback
-Değerli Okurlarım Merhabalar,
-
 Web sayfalarımızda karşılaştığımız sorunlardan bir tanesi post-back hareketlerine neden olacak davranışların çok fazla olabilmesidir. Varsayılan olarak bir Button'ın görevi sayfayı istemciden sunucuya içeriği ile birlikte göndermektir. Diğer yandan bazı bileşenlerin AutoPostback özelliklerine true değeri atanarak istemci tarafından sunucuya doğru postalama işlemi yapmaları da sağlanabilmektedir. Fakat bazı durumlarda sayfanın tamamını sunucuya doğru postalamak istemeyebiliriz. Örneğin il ve ilçe bilgilerini ayrı ayrı tutan DropDownList kontrollerinin olduğu bir senaryoda; bir il seçildiğinde buna bağlı ilçelerin yüklenmesi için sayfanının tamamiyle sunucuya gidip gelmesi gerekecektir.
 
 Böyle bir durumda sayfanın daha önceden istemci tarafına yüklenmiş pek çok parçası gereksiz yere tekrardan sunucu tarafından istemciye doğru gönderilecektir. Her ne kadar arabelleğe (caching) alma gibi tekniklerle sunucudan istemciye gelecek olan cevabın daha da hızlandırılmasını sağlayabilsekte, sayfanın tamamının postalanmasını engellemek ve sadece gereken kısımlarının güncellenmesi için ilgili parçaların postalanmasını sağlayabilmek daha etkili bir çözümdür. Tahmin edeceğiniz gibi bu yaklaşım modeli günümüzde Ajax ve Atlas.Net gibi teknolojik terimlerle karşımıza çıkmaktadır.

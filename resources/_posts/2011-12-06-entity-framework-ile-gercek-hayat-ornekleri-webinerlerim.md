@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Entity Framework ile Gerçek Hayat Örnekleri Webinerlerim"
 date: 2011-12-06 08:51:00 +0300
-description: "Merhaba Arkadaşlar,"
 categories:
   - entity-framework
   - nedirtv
@@ -16,12 +15,9 @@ tags:
   - http
   - webinar
 ---
-# Entity Framework ile Gerçek Hayat Örnekleri Webinerlerim
-![nedirlogo.gif](/assets/images/2011/nedirlogo.gif)
-
-Merhaba Arkadaşlar,
-
 Uzun zamandır [NedirTv?com](http://www.nedirtv.com/) bünyesinde webiner gerçekleştirmiyordum
+
+![nedirlogo.gif](/assets/images/2011/nedirlogo.gif)
 
 ![Embarassed](/assets/images/2011/smiley-embarassed.gif)
 

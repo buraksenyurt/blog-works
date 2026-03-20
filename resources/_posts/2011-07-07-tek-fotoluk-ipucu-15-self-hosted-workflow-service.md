@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu - 15(Self Hosted Workflow Service)"
 date: 2011-07-07 08:05:00 +0300
-description: "Merhaba Arkadaşlar,"
 categories:
   - tek-fotoluk-ipucu
   - wcf
@@ -16,9 +15,6 @@ tags:
   - wf
   - wf-4-0
 ---
-# Tek Fotoluk İpucu - 15(Self Hosted Workflow Service)
-Merhaba Arkadaşlar,
-
 Elinizde bir Workflow Service kütüphanesi ve XAMLX uzantılı Workflow Service dosyaları var. Bu dosyalardan yararlanarak kendi Workflow Service Host uygulamanızı yazmak niyetindesiniz. Diyelim ki bu uygulama bir Console projesi olacak. Nasıl yaparsınız? İşte böyle
 
 ![Winking smile](/assets/images/2011/wlEmoticon-winkingsmile_33.png)

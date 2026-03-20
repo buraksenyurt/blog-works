@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net Temelleri : Derinlemesine Download/Upload İşlemleri"
 date: 2007-08-15 06:00:00 +0300
-description: "Tatile çıkan herkes, iyi ve dinlendirici geçen günlerin ardından tekrar hayatın akışına kapıldığında kısa süreliğinede olsa adaptasyon problemi yaşar. Tatildeyken hatırlayacağınız gibi hafif ve dinlendirici bir Asp.Net konusu ile ilgilenmeye çalışmıştık..."
 categories:
   - aspnet
 tags:
@@ -16,9 +15,6 @@ tags:
   - authentication
   - generics
 ---
-# Asp.Net Temelleri : Derinlemesine Download/Upload İşlemleri
-Değerli Okurlarım Merhabalar,
-
 Tatile çıkan herkes, iyi ve dinlendirici geçen günlerin ardından tekrar hayatın akışına kapıldığında kısa süreliğinede olsa adaptasyon problemi yaşar. Tatildeyken hatırlayacağınız gibi hafif ve dinlendirici bir Asp.Net konusu ile ilgilenmeye çalışmıştık. Tatil dönüşündeki adaptasyon sürecinde de benzer nitelikte bir konuyu incelemenin uygun olacağı kanısındayım. Bu yazımızda Asp.Net uygulamalarında sıklıkla başvurduğumuz temel dosya giriş/çıkış (Input/Output -IO) işlemlerinden yararlanarak Download ve Upload işlemlerinin nasıl yapılabileceğini ele almaya çalışacağız.
 
 Özellikle web tabanlı içerik yönetim sistemlerinde (Content Management System), kullanıcıların sunucu üzerinde dökümanlar ile etkin bir şekilde çalışabilmeleri sağlanmaktadır. Bu sistemlerde genel olarak kullanıcı kimliği veya rolüne göre istemci bilgisayarlara indirilebilen (Download). Hatta çoğu içerik yönetim sisteminde, istemciler herkesin okuyabileceği yada belirli kişilerin görebileceği şekilde sunucuya döküman aktarma (Upload) işlemleride yapabilirler. Söz gelimi bir yazılım şirketinin içerik yönetim sistemi göz önüne alındığında, yazılım departmanındaki geliştiricilerin hazırladıkları teknik dökümantasyonları Upload veya Download edebilecekleri bir ortam hazırlanabilir.

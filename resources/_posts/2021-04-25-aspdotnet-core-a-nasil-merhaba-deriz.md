@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net Core'a Nasıl Merhaba Deriz?"
 date: 2021-04-25 09:00:00 +0300
-description: "Yazılım geliştirme işine ciddi anlamda başladığım yeni milenyumun başlarında .Net Framework sahanın yükselen yıldızıydı. C# programlama dilinin gücü ve .Net Framework çatısının vadettikleri düşünülünce bu son derece doğaldı. Aradan geçen neredeyse 20 yıllık süre zarfında .Net Framework'te evrimleşti. Microsoft'un açık kaynak dünyasına girişi, cross-platform stratejileri, Linux gibi bir zamanların ciddi rakipleri ile el sıkışarak hamle yapması sonrasında da son beş yıllık zaman diliminde .Net Core hayatımıza girdi. Bu beraberinde Microsoft'un sıklıkla yaptığı üzere bazı kavram karmaşalarını da beraberinde getirdi. En nihayetinde tek ve birleşik bir .Net 5 ortamından bahsedilmeye başlandı..."
 categories:
   - dotnet-core
 tags:
@@ -26,10 +25,9 @@ tags:
   - github
   - dependency-management
 ---
-# Asp.Net Core'a Nasıl Merhaba Deriz?
-![hellomvc_cover.png](/assets/images/2021/hellomvc_cover.png)
-
 Yazılım geliştirme işine ciddi anlamda başladığım yeni milenyumun başlarında.Net Framework sahanın yükselen yıldızıydı. Delphi’den kopup gelen Anders’in yarattığı C# programlama dilinin gücü ve.Net Framework çatısının vadettikleri düşünülünce bu son derece doğaldı. Aradan geçen neredeyse 20 yıllık süre zarfında.Net Framework’te evrimleşti ve sürekli güncellendi. Versiyon 2.0 ile gelen generic tipler, 3.0'la birlikte SQL yazar gibi sorgulanabilir nesneler (LINQ-Language INtegrated Query), sonrasında karşımıza çıkan WCF (Windows Communication Foundation), WF (Workflow Foundation), Entity Framework vs derken Microsoft’un açık kaynak dünyasına girişi, benimsediği platform bağımsız stratejiler (Miguel De Icaza’nın Mono’suna da saygı duyalım), Linux, MacOS gibi bir zamanların ciddi rakipleri ile el sıkışarak hamle yapması sonrasında da son birkaç yıllık zaman diliminde karşımıza çıkan.Net Core. Yeni gelişmeler Microsoft’un sıklıkla yaptığı üzere bazı kavram karmaşalarını da beraberinde getirdi elbette. En nihayetinde tek ve birleşik bir.Net 5 ortamından bahsedilmeye başlandı. (Photo by [Element5 Digital](https://unsplash.com/@element5digital?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/s/photos/education?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText))
+
+![hellomvc_cover.png](/assets/images/2021/hellomvc_cover.png)
 
 Gelişmeleri zaten sizler de benim gibi takip ediyorsunuzdur. Bu durum benim de kişisel olarak kendimi yenilemem gereken bir dönemi tetikledi. Bir süredir özellikle Amazon’dan getirttiğim kitaplardan.Net 5 dünyasını tanımaya,.Net 4.7.2 gibi versiyonlarda yazılmış uygulamarı yeni sürüme göç ettirmenin (migration) yollarını öğrenmeye çalışıyorum. Bu kişisel çabayı da çalışmakta olduğum şirketin iç eğitim programından gelen talepleri karşılamak için kullanıyorum.
 

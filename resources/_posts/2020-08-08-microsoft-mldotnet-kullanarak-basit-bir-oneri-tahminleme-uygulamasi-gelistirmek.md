@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Microsoft ML.Net Kullanarak Basit Bir Öneri Tahminleme Uygulaması Geliştirmek"
 date: 2020-08-08 06:13:00 +0300
-description: "Yaz başından beri Mark J. Price'ın, C# 8.0 and .NET Core 3.0 – Modern Cross-Platform Development: Build applications with C#, .NET Core, Entity Framework Core, ASP.NET Core, and ML.NET using Visual Studio Code, 4th Edition(Evet biraz uzun bir ismi var :D ) kitabıyla uğraştım. Hoş ben daha kitabı tamamlayamadan .Net 5.0 son sürümü çıktı ve hatta Mark bu sürüm için de yeni bir kitap yayınladı ya neyse :D Kitabın ilgimi çeken bölümlerinden birisi(19ncu Kısım) makine öğrenmesi ile alakalı olandı. Makine Öğrenmesi benim çok ama gerçekten çok uzak olduğum bir konu. Yine de \"Algoritması benden, modeli senin için eğitirim ve basitçe kullanırsın\" diyen Microsoft'un ML.Net çatısını bir kod parçasında nasıl uygulayacağımı da merak etmekteydim. En iyisi kitabın dediklerini uygulamalı olarak yapmaktı. O zaman gelin bir parça kod bir parça ML.Net bir parça MVC yazalım."
 categories:
   - dotnet-core
 tags:
@@ -20,10 +19,9 @@ tags:
   - github
   - dataset
 ---
-# Microsoft ML.Net Kullanarak Basit Bir Öneri Tahminleme Uygulaması Geliştirmek
-![emeldotnet.png](/assets/images/2020/emeldotnet.png)
-
 Yaz başından beri Mark J. Price'ın, C# 8.0 and.NET Core 3.0 – Modern Cross-Platform Development: Build applications with C#,.NET Core, Entity Framework Core, ASP.NET Core, and ML.NET using Visual Studio Code, 4th Edition (Evet biraz uzun bir ismi var:D) [kitabıyla](https://www.amazon.com/8-0-NET-Core-3-0-Cross-Platform-dp-1788478126/dp/1788478126/ref=mt_other?_encoding=UTF8&me=&qid=) uğraştım. Hoş ben daha kitabı tamamlayamadan.Net 5.0 son sürümü çıktı ve hatta Mark bu sürüm için de yeni bir kitap yayınladı ya neyse:D Kitabın ilgimi çeken bölümlerinden birisi (19ncu Kısım) makine öğrenmesi ile alakalı olandı. Makine Öğrenmesi benim çok ama gerçekten çok uzak olduğum bir konu.
+
+![emeldotnet.png](/assets/images/2020/emeldotnet.png)
 
 Yine de "Algoritması benden, modeli senin için eğitirim ve basitçe kullanırsın" diyen Microsoft'un ML.Net çatısını bir kod parçasında nasıl uygulayacağımı da merak etmekteydim. En iyisi kitabın dediklerini uygulamalı olarak yapmaktı. O zaman gelin bir parça kod bir parça ML.Net bir parça MVC yazalım.
 
@@ -326,7 +324,7 @@ namespace SmartWind.Controllers
                 }
                 else // ve ürün sepeti çerezinin içerisinde veriler varsa
                 {
-                    string[] ids = cartCookie.Split('|'); // pipe karakterine göre içeriği split ediyoruz 
+                    string[] ids = cartCookie.Split('|'); // pipe karakterine göre içeriği split ediyoruz
 
                     if (!ids.Contains(id.ToString())) // gelen id bu çerez içerisinde yoksa(yani ürün sepette değilse)
                     {

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Angular ile Basit Bir Görevler Listesi Uygulaması Yazmak"
 date: 2019-05-08 06:00:00 +0300
-description: "Bu çalışmadaki temel amacım Angular ile basit bir Hello World uygulaması oluşturmak. Güncel Angular bilgim oldukça düşük olduğu için bu tip bir çalışma içerisine girdim diyebilirim. Nitekim şirketteki projelerde Vue.js kullanılıyor ancak ben Angular tarafını da öğrenmek istiyorum. Çalışmayı uzun zamandır yaptığım gibi yine WestWorld (Ubuntu 18.04, 64bit) üzerinde icra etmekteyim."
 categories:
   - angular
 tags:
@@ -17,10 +16,9 @@ tags:
   - visual-studio
   - github
 ---
-# Angular ile Basit Bir Görevler Listesi Uygulaması Yazmak
-![albertsword.png](/assets/images/2019/albertsword.png)
-
 Bazen ne kadar basit olursa olsun üşenmeden bir örneğin üstüne gitmek gerekiyor. Çünkü çok basit örneklerle çalışıyor olsak bile gözümüzden kaçan önemli detaylar olabilir. Günümüzde kullanmakta olduğumuz pek çok geliştirme çatısı, belli ürünlere yönelik hazır şablonları kolayca üretebileceğimiz komut setleri sunmakta.
+
+![albertsword.png](/assets/images/2019/albertsword.png)
 
 Boilerplate olarak da ifade edebileceğimiz bu enstrümanlar sayesinde bir anda işler halde karşımıza çıkan uygulamalarla karşılaşıyoruz. Ancak ürüne hakim olabilmek, rahatça sağını solunu bükebilmek için hazır gelen şablonları bile kurcalamak gerekiyor. Benim [Saturday-Night-Works birinci fazında](https://github.com/buraksenyurt/saturday-night-works) sıklıkla icra ettiğim bir eğitim süreci bu. Angular, Blazor, React ve benzeri konu başlıklarında hazır hello world şablonları ile sıklıkla karşılaştım. Onları eğip bükerek daha çok şey öğrenmeye çalıştım. Sonuçta tecrübe etmediğimiz sürece bilgi dağarcığımız genişleyemez, yanılıyor muyum? Öyleyse gelin 09 numaralı çalışmayı kayıt altına alalım.
 
@@ -56,6 +54,7 @@ ng new sonrası oluşan proje içerisinde çok fazla dosya bulunacaktır. Şu ha
 
 app.component.html
 
+{% raw %}
 ```text
 <div class="container">
   <form>
@@ -93,6 +92,7 @@ app.component.html
 </div>
 <!-- addJob, removeJob metodları ile jos dizisi app.component.ts dosyası içerisinde yer alıyor -->
 ```
+{% endraw %}
 
 component içerisinde basit bir form grubu var. İçinde iki adet bileşen gövdesi bulunuyor. Üst taraf yeni görev girmek için kullanılan kısım. Ekle başlıklı düğmeye basıldığındaysa Typescript tarafındaki addJob metodu çağırılıyor. Parametre olarak job isimli text kontrolünün içeriği gönderilmekte.
 

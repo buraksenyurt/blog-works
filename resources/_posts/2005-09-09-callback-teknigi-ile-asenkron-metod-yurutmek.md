@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "CallBack Tekniği ile Asenkron Metod Yürütmek"
 date: 2005-09-09 12:00:00 +0300
-description: "Çoğu zaman projelerimizde, çalışmakta olan uygulamaları uzun süreli olarak duraksatacak işlevlere yer veririz. Özellikle görsel tabanlı uygulamalarda veritabanlarına ait kapsamlı sorguların yer aldığı işlemlerde bu sorunla sıkça karşılaşılmaktadır. En büyük problem var sayılan olarak kod satırlarının senkron hareket etmesidir. Yani kodlar sırası geldikçe işleyen parçalar bütününden oluşmaktadır. Bu elbetteki uzun sürecek bir sorgunun cevapları alınmadan izleyen kod satırlarının işlememesi anlamına gelmektedir. Oysaki kodları asenkron olarak çalıştırma şansımızda mevcuttur. Eminim ki Ado.Net 2.0' da asenkron metod yürütme tekniklerini veya asenkron web servisi uygulamalarınının nasıl yazılacağını duymuşsunuzdur. Temel prensib hepsi için aynıdır. Merkezde IAsyncResult arayüzü tipinden bir nesnenin kullanıldığı temsilci (delegate) tabanlı modeller söz konusudur."
 categories:
   - csharp
 tags:
@@ -15,9 +14,6 @@ tags:
   - delegates
   - dataset
 ---
-# CallBack Tekniği ile Asenkron Metod Yürütmek
-Değerli Okurlarım Merhabalar,
-
 Çoğu zaman projelerimizde, çalışmakta olan uygulamaları uzun süreli olarak duraksatacak işlevlere yer veririz. Özellikle görsel tabanlı uygulamalarda veritabanlarına ait kapsamlı sorguların yer aldığı işlemlerde bu sorunla sıkça karşılaşılmaktadır. En büyük problem var sayılan olarak kod satırlarının senkron hareket etmesidir. Yani kodlar sırası geldikçe işleyen parçalar bütününden oluşmaktadır. Bu elbetteki uzun sürecek bir sorgunun cevapları alınmadan izleyen kod satırlarının işlememesi anlamına gelmektedir. Oysaki kodları asenkron olarak çalıştırma şansımızda mevcuttur. Eminim ki Ado.Net 2.0' da asenkron metod yürütme tekniklerini veya asenkron web servisi uygulamalarınının nasıl yazılacağını duymuşsunuzdur. Temel prensib hepsi için aynıdır. Merkezde IAsyncResult arayüzü tipinden bir nesnenin kullanıldığı temsilci (delegate) tabanlı modeller söz konusudur.
 
 Bir temsilci her hangi bir metodun başlanıç adresini işaret eden bir tip (type) tir. Metodların başlangıç adreslerini işaret eden bir temsilci çalışma zamanında polimorfik bir yapıya sahiptir. Bu sayede yeri geldiği zaman kendi desenine uygun her hangi bir metodun yürütülmesini sağlayabilir. İşte bu felsefeden yola çıkarak çalışma zamanında asenkron olarak yürütülecek metodlarda oluşturulabilir. Bu noktada devreye IAsyncResult arayüzü (interface) girer. Temel olarak asenkron olarak çalıştırılmak istenen metod bir temsilci vasıtasıyla yürürlüğe sokulur. Bu anda ortama IAsyncResult tipinden bir arayüz nesnesi döner. Anlık olan bu işlem nedeni ile uygulamanın geri kalan kod satırları duraksamadan işlemeye devam eder. Ancak bu sırada ilgili temsilcinin başlattığı işlemler ayrı bir thread (iş parçacığı) içerisinde yürütülmeye devam etmektedir. Peki yürütülen thread sonlandığında, üretilen sonuçlar ortama nasıl alınacaktır? İşte burada çeşitli teknikler kullanılabilir. Bizim bu makalede işleyeceğimiz olan teknik Callback modelidir.

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF - Mesaj Seviyesinde Güvenlik"
 date: 2007-05-16 12:00:00 +0300
-description: "Dağıtık mimariye yönelik olarak geliştirilen uygulamalarda güvenlik son derece önemli bir faktördür. Özellikle farklı süreçler (process) içerisinde yer alan uygulamalar, birbirleriyle haberleşirken aradaki veri trafiği mesajlar üzerine kuruludur."
 categories:
   - wcf
 tags:
@@ -15,9 +14,6 @@ tags:
   - authorization
   - performance
 ---
-# WCF - Mesaj Seviyesinde Güvenlik
-Değerli Okurlarım Merhabalar,
-
 Dağıtık mimariye yönelik olarak geliştirilen uygulamalarda güvenlik son derece önemli bir faktördür. Özellikle farklı süreçler (process) içerisinde yer alan uygulamalar, birbirleriyle haberleşirken aradaki veri trafiği mesajlar üzerine kuruludur. Bu mesajların ağ ortamları üzerinden (Internet-Intranet) hareket etmeside güvenlik ile ilgili olarak dikkat edilmesi gereken noktaların sayısını arttırır. Temel olarak dağıtık mimarilerde güvenlik düşünüldüğünde, kullanıcıların sunucu tarafından doğrulanması (authentication), doğrulanan kullanıcıların hangi fonksiyonellikleri kullanabileceğine bakılması (authorization), arada hareket etmekte olan mesajların ne şekilde şifreleneceğinin (encryption) veya çözümleneceğinin (decryption) belirlenmesi gibi konular yer almaktadır. Bu tip işlemlere ihtiyaç duyulmasının bilinen pek çok nedeni vardır. Bunlardan bir kaçı aşağıda maddeler halinde listelenmiştir.
 
 - İyi geliştiriciler veya sistem bakımından sorumlu olanlar, genellikle ağ üzerindeki trafiği kontrol etmek, performans kayıplarını tespit etmek amacıyla çeşitli programlar kullanırlar.(Örneğin biz makalemizde istemci ile sunucu arasındaki mesajları görmek adına Microsoft Service Trace Viewer aracından faydalanacağız.) Bu programlar sayesinde ağ üzerinde istemciler ve sunucu arasında hareket eden mesajlar görülebilir. Ancak kötü niyetli kişilerde bu paketleri takip edebilirler. Eğer paketler içerisinde hassas bilgiler var ise söz konusu bilgilerin görülmesi istenmeyen bir durumdur. Dolayısıyla mesajların çeşitli algoritmalar ile (TripleDes, SHA vb...) şifrelenmesi çok doğrudur.

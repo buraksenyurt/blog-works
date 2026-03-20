@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WF 4.0 Beta 1' den Beta 2' ye"
 date: 2009-10-27 06:25:00 +0300
-description: "Workflow Service' ler ile çalışırken Beta 1 sürümünde geliştirdiğim örneklerin Beta 2 sürümünde ne yazık ki çalışmadığını farkettim. Bu son derece doğaldı çünkü kısa bir süre önce yayınlanan .Net Framework Beta 2 sürümünde, WF tarafında özellikle tipler bazında bazı geri dönüşler ve değişimler meydana geldi. Hal böyle olunca konuyu hemen araştırmaya koyuldum. Pek çok blog yazısında WF 4.0 Beta 1 ve Beta 2 arasındaki farklılıkları bulabilirsiniz."
 categories:
   - wf-4-0-beta-2
 tags:
@@ -21,12 +20,9 @@ tags:
   - visual-studio
   - rc
 ---
-# WF 4.0 Beta 1' den Beta 2' ye
-![blg93_Giris.jpg](/assets/images/2009/blg93_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Hatırlıyorumda bundan bir kaç sene önce Visual Studio 2005 in henüz Build sürümleri CD olarak değerli bir Microsoft çalışanı tarafından bana hediye edilmişti. Whidbey kod adlı sürümde pek çok yenilik olduğu gibi IDE'nin zaman zaman istisnalar (Exception) vererek çöktüğüne de sıklıkla şahit olmuştum.
+
+![blg93_Giris.jpg](/assets/images/2009/blg93_Giris.jpg)
 
 Tabiki Microsoft cephesinden gelen yenilikleri takip etmek, nasıl ilerlenildiğini izlemek adına Alpha, Beta, RC gibi sürümlerle çalışmanın oldukça faydası oluyor. En azından getirilen yeniliklerin neden değiştirildiğini, neden kaldırıldığını veya yeni eklenen bileşenlerin hangi amaçla düşünüldüğünü görme ve araştırma şansını buluyoruz. Bazende anlayamıyor veya bulamıyoruz
 

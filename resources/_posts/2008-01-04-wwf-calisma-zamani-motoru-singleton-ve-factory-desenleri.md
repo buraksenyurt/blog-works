@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WWF : Çalışma Zamanı Motoru, Singleton ve Factory Desenleri"
 date: 2008-01-04 12:00:00 +0300
-description: "Bir önceki makalemizde iş akışı(Workflow) kavramını anlamaya çalışmış, Windows Workflow Foundation(WWF) mimarisini yüzeysel olarak incelemiş ve basit bir kaç Sequential Workflow örneği geliştirmiştik. Bu makalemizde ise WWF mimarisinin sunduğu çalışma zamanı ortamını derinlemesine kavramaya çalışacağız. Ağırlıklı olarak üzerinde durmaya çalışacağımız konu ise WorkflowRuntime sınıfı olacak."
 categories:
   - wf
 tags:
@@ -18,9 +17,6 @@ tags:
   - delegates
   - visual-studio
 ---
-# WWF : Çalışma Zamanı Motoru, Singleton ve Factory Desenleri
-Değerli Okurlarım Merhabalar,
-
 Bir önceki makalemizde iş akışı (Workflow) kavramını anlamaya çalışmış, Windows Workflow Foundation (WWF) mimarisini yüzeysel olarak incelemiş ve basit bir kaç Sequential Workflow örneği geliştirmiştik. Bu makalemizde ise WWF mimarisinin sunduğu çalışma zamanı ortamını derinlemesine kavramaya çalışacağız. Ağırlıklı olarak üzerinde durmaya çalışacağımız konu ise WorkflowRuntime sınıfı olacak.
 
 İş akışları herhangibir.Net uygulaması tarafından host edilebilmektedir. Burada amaç ana uygulamanın belirli iş kurallarını ve mantığını barındıran süreç veya süreçleri tutarlı bir şekilde ele alabilmesi ve kullanabilmesidir. Çok doğal olarak iş akışları, host uygulama göz önüne alınırken ortaya bir iş akışı çalışma zamanı (Workflow Runtime) çıkmaktadır. Buda Windows Workflow Foundation içerisinde yer alan önemli bileşenlerden birisi anlamına gelmektedir. WWF mimarisi içerisinde pek çok bileşen (Components) yer almaktadır. Büyük resme bakıldığında başrol oynayan bileşenler aşağıdaki şekilde görüldüğü gibidir.

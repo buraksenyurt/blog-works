@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Rust ile Kodlama İdmanları - İleri Seviye"
 date: 2025-12-01 19:51:00 +0300
-description: "Rust programlama dili ile ilgili maceralarımız devam ediyor. Gerçi geçtiğimiz günlerde sizin de bildiğiniz üzere unwrap metodunun hatalı bir kullanımı sebebiyle internet sitelerinin %20sini koruyan Cloudlfare çöktü ve birçok hizmet uzun süre kullanılamaz hale geldi. Konuyla ilgili detaylı bilgiler platformun sitesinde yer alıyor. Şunu kabul etmek lazım ki..."
 categories:
   - rust
 tags:
@@ -22,10 +21,9 @@ tags:
   - arc
   - dependency-management
 ---
-# Rust ile Kodlama İdmanları - İleri Seviye
-![15_mini.png](/assets/images/2025/15_mini.png)
-
 Rust programlama dili ile ilgili maceralarımıza devam ediyoruz. Gerçi geçtiğimiz günlerde sizin de bildiğiniz üzere unwrap metodunun hatalı bir kullanımı sebebiyle internet sitelerinin %20sini koruyan [Cloudfare](https://www.cloudflare.com/) çöktü ve birçok hizmet uzun süre kullanılamaz hale geldi. Konuyla ilgili detaylı bilgilere[şu adreste](https://blog.cloudflare.com/18-november-2025-outage/)ki yazıdan ulaşabilirsiniz. Ferris şaşkın, ferris üzgün!
+
+![15_mini.png](/assets/images/2025/15_mini.png)
 
 Şunu kabul etmek lazım ki C, C++ gibi diller gerçekten dikkat isteyen, kaotik sorunlara yol açabilen, programıcısının yüksek yetkinlikte olmasını gerektiren programlama dilleri. En azından ben bu şekilde düşünüyorum. Rust'ın kendi bellek yönetim felsefesi bu sebeple en çok öne çıkan ve rağbet gören özellikleri arasında. Lakin dil ne kadar becerikli de olsa biz programcılar zaman zaman kötü hatalara sebebiyet veriyoruz.
 

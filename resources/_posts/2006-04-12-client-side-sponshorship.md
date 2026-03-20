@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Client Side SponshorShip"
 date: 2006-04-12 12:00:00 +0300
-description: "Son makalemizde, remoting uygulamalarında uzak nesnelere ait kiralama sürelerinin (Lease Time) nasıl yönetilebileceğinden bahsetmiştik. Bununla birlikte bir uzak nesnenin kiralama süresinin sonlamasının ardından gelecek olan metod çağrılarında istemcilerin olmayan bir referansa erişmeye çalıştığını ve bu nedenlede çalışma zamanı istisnaları ile karşılaşabileceklerini görmüştük. Bu makalemizde, kiralama sürelerini otomatik olarak uzatmak için istemci taraflı destek modelinden (Client Side sponsorShip) nasıl yararlanabileceğimizi incemeleye çalışacağız."
 categories:
   - dotnet-remoting
 tags:
@@ -11,9 +10,6 @@ tags:
   - xml
   - threading
 ---
-# Client Side SponshorShip
-Değerli Okurlarım Merhabalar,
-
 Son makalemizde, remoting uygulamalarında uzak nesnelere ait kiralama sürelerinin (Lease Time) nasıl yönetilebileceğinden bahsetmiştik. Bununla birlikte bir uzak nesnenin kiralama süresinin sonlamasının ardından gelecek olan metod çağrılarında istemcilerin olmayan bir referansa erişmeye çalıştığını ve bu nedenlede çalışma zamanı istisnaları ile karşılaşabileceklerini görmüştük. Bu makalemizde, kiralama sürelerini otomatik olarak uzatmak için istemci taraflı destek modelinden (Client Side sponsorShip) nasıl yararlanabileceğimizi incemeleye çalışacağız.
 
 SponsorShip mimarisi temel olarak, uzak nesnelerin yaşam sürelerini otomatik olarak arttırmak için kullanılır. İki şekilde uygulanabilir. Bunlardan birisi istemci tarafında diğeri ise sunucu tarafında yapılabilen destekleme sistemidir. Her iki destek türününde birbirlerine göre avantajları ve dezavantajları vardır. İstemci taraflı destek modelinde (Client Side Sponsorship), istemcinin kullandığı uzak nesnenin kiralama yöneticisi (Lease Manager) ile, ISponsor arayüzünden türetilen bir sınıfın iş birliği söz konusudur.

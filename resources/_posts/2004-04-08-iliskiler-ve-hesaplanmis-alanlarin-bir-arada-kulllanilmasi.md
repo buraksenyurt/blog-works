@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "İlişkiler ve Hesaplanmış Alanların Bir Arada Kulllanılması"
 date: 2004-04-08 12:00:00 +0300
-description: "Bu makalemizde aralarında bire-çok (one-to-many) ilişki olan tablolar için hesaplanmış alanların, (yani DataColumn sınıfının Expression özelliği ile oluşturduğumuz sütunların) tablolar arasındaki ilişkiler ile nasıl bir arada kullanılabileceğini incelemeye çalışacağız. Burada bir arada kullanımdan kastım, örnek olarak; ebevyn (parent) tabloda fiziki olarak var olmayan ancak uygulamanın çalışması sırasında oluşturulacak bir sütundan, detay tablosundaki ilişkili alanlar üzerinden toplam, ortalama, miktar gibi Aggregate ifadelerinin çalıştırılmasından ve sonuçların yine parent tabloya yansıtılmasından bahsediyorum."
 categories:
   - ado-net
 tags:
@@ -11,9 +10,6 @@ tags:
   - dataset
   - datatable
 ---
-# İlişkiler ve Hesaplanmış Alanların Bir Arada Kulllanılması
-Değerli Okurlarım, Merhabalar.
-
 Bu makalemizde aralarında bire-çok (one-to-many) ilişki olan tablolar için hesaplanmış alanların, (yani DataColumn sınıfının Expression özelliği ile oluşturduğumuz sütunların) tablolar arasındaki ilişkiler ile nasıl bir arada kullanılabileceğini incelemeye çalışacağız. Burada bir arada kullanımdan kastım, örnek olarak; ebevyn (parent) tabloda fiziki olarak var olmayan ancak uygulamanın çalışması sırasında oluşturulacak bir sütundan, detay tablosundaki ilişkili alanlar üzerinden toplam, ortalama, miktar gibi Aggregate ifadelerinin çalıştırılmasından ve sonuçların yine parent tabloya yansıtılmasından bahsediyorum.
 
 Konumuzun ana problemini daha iyi anlamak için şu örneği göz önünde bulunduralım. Internet üzerinden ticaret yapan sitemizde kullanıcıların temel bilgileri ile, vermiş oldukları sipariş bilgilerinin ayrı iki tabloda tutulduğunu ve bu tablolar arasında bire-çok ilişki olduğunu varsayalım. Kendimize ait yönetici ekranlarında, her bir üye için, bu güne kadar vermiş olduğu siparişlerin toplam sayısını ve bu siparişlerin hepsine ödemiş olduğu toplam tutarları anlık olarak görmek istediğimizi varsayalım. Burada bize, ebevyn tabloda bir hesaplanmış alan gerekmektedir. Ancak hesaplanmış alan değerleri, detay tablosundaki veriler üzerinden gerçekleştirilmek zorundadır. İşte bu noktada devreye iki tablo arasında tanımlamış olduğumuz bire-çok ilişki girer.

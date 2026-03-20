@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "MemoryCache"
 date: 2010-11-08 03:34:00 +0300
-description: "Asp.Net tarafında performans tarafında göz önüne alınan kriterlerden birisi de ön bellekleme mekanizmalarının kullanılmasıdır. Özellikle nesne tabanlı ön bellekleme işlemlerinde Cache tipinden sıklıkla yararlanıldığını görürüz. Bu tip yardımıyla herhangibir nesne örneğinin, içeriği ile birlikte bellek üzerinde tamponlanması mümkündür. Bu kullanıma göre ön bellekleme seçeneklerini zaman bazlı olarak değerlendirebiliriz."
 categories:
   - aspnet-4-0
 tags:
@@ -20,18 +19,11 @@ tags:
   - datatable
   - dependency-management
 ---
-# MemoryCache
-[![blg238_Giris](/assets/images/2010/blg238_Giris_thumb.jpg)](/assets/images/2010/blg238_Giris.jpg) Merhaba Arkadaşlar,
+Deadline…Benim gibi yazılım geliştirici olan pek coğumuzun sevmediği kelimelerin başında geldiğinden eminim. Ancak kaçınılmaz bir gerçek olduğunu da biliyoruz. Her şeye rağmen onunla yaşamak veya yaşamasını öğrenmek zorundayız.
 
-Deadline…Benim gibi yazılım geliştirici olan pek coğumuzun sevmediği kelimelerin başında geldiğinden eminim
+[![blg238_Giris](/assets/images/2010/blg238_Giris_thumb.jpg)](/assets/images/2010/blg238_Giris.jpg)
 
-![Annoyed](/assets/images/2010/wlEmoticon-annoyed_2.png)
-
-Ancak kaçınılmaz bir gerçek olduğunu da biliyoruz. Her şeye rağmen onunla yaşamak veya yaşamasını öğrenmek zorundayız.
-
-Tabi Deadline’ lar her zaman için bir proje için söz konusu olmayabiliyorlar. Söz gelimi şu sıralar hazırlanmakta olduğum Microsoft Teknoloji Günler Akşam Sınıfı Asp.Net 4.0 eğitiminin 3 gün öncesi de benim için bir Deadline (Aslında ilke olarak her seminerin 3 gün öncesinden tam olarak hazır olmayı benimsemişimdir) Bu deadline zamanına hızla yaklaştığım şu günlerde uykusuz geceler ile hazırlanmaya devam ediyorum. Ne varki oldukça yoğun ve zorlu bir projenin de içerisinde yer almaktayım. Ama ne demişler “No Sacrifice No Victory” Bakalım bu gece ki konumuz neymiş
-
-![Winking smile](/assets/images/2010/wlEmoticon-winkingsmile_8.png)
+Tabi Deadline’ lar her zaman için bir proje için söz konusu olmayabiliyorlar. Söz gelimi şu sıralar hazırlanmakta olduğum Microsoft Teknoloji Günler Akşam Sınıfı Asp.Net 4.0 eğitiminin 3 gün öncesi de benim için bir Deadline (Aslında ilke olarak her seminerin 3 gün öncesinden tam olarak hazır olmayı benimsemişimdir) Bu deadline zamanına hızla yaklaştığım şu günlerde uykusuz geceler ile hazırlanmaya devam ediyorum. Ne varki oldukça yoğun ve zorlu bir projenin de içerisinde yer almaktayım. Ama ne demişler “No Sacrifice No Victory” Bakalım bu gece ki konumuz neymiş.
 
 Asp.Net tarafında performans tarafında göz önüne alınan kriterlerden birisi de ön bellekleme mekanizmalarının kullanılmasıdır. Özellikle nesne tabanlı ön bellekleme işlemlerinde Cache tipinden sıklıkla yararlanıldığını görürüz. Bu tip yardımıyla herhangibir nesne örneğinin, içeriği ile birlikte bellek üzerinde tamponlanması mümkündür. Bu kullanıma göre ön bellekleme seçeneklerini zaman bazlı olarak değerlendirebiliriz.(Absolute Expiration, Sliding Expiration). Hatta özellikle SQL tarafında, tablo bazlı bağımlılıklar oluşturabilir ve buna göre ön bellekte tutulma sürelerini tablodaki değişikliklere bağımlı hale getirebiliriz (SqlCacheDependency). Buna ilaveten dosya bazlı bağımlılıklar da oluşturmamız mümkündür (File Based Dependency).
 

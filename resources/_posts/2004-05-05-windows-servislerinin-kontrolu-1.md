@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Windows Servislerinin Kontrolü -1"
 date: 2004-05-05 09:00:00 +0300
-description: "Bu makalemizde, windows servislerinin, bir windows uygulamasından nasıl kontrol edilebileceğini incelemeye çalışacağız. Bir önceki makalemizde, windows servislerinin nasıl oluşturulduğunu ve sisteme nasıl yüklendiklerini incelemiştik. Oluşturduğumuz windows servislerini(sistemdeki windows servislerini), SCM yardımıyla yönetibilmekteyiz. Ancak dilersek, bu yönetimi programlarımız içindende gerçekleştirebiliriz. Bunu sağlayabilmek için, System.ServiceProcess isim alanında yer alan ServiceController sınıfını ve üyelerini kullanmaktayız."
 categories:
   - windows-services
 tags:
@@ -12,9 +11,6 @@ tags:
   - performance
   - visual-studio
 ---
-# Windows Servislerinin Kontrolü -1
-Değerli Okurlarım, Merhabalar.
-
 Bu makalemizde, windows servislerinin, bir windows uygulamasından nasıl kontrol edilebileceğini incelemeye çalışacağız. Bir önceki makalemizde, windows servislerinin nasıl oluşturulduğunu ve sisteme nasıl yüklendiklerini incelemiştik. Oluşturduğumuz windows servislerini (sistemdeki windows servislerini), SCM yardımıyla yönetibilmekteyiz. Ancak dilersek, bu yönetimi programlarımız içindende gerçekleştirebiliriz. Bunu sağlayabilmek için, System.ServiceProcess isim alanında yer alan ServiceController sınıfını ve üyelerini kullanmaktayız.
 
 ServiceController sınıfı ile windows servislerine bağlanabilir ve onları kontrol edebiliriz. Örneğin servisleri başlatabilir, durdurabilir veya sistemdeki servisleri elde edebiliriz. Bu ve benzeri olanaklar dışında SCM ile yapamıyacağımız bir olayıda gerçekleştirebiliriz. Bu olay windows servislerinin OnCustomCommand metodu üzerinde işlemektedir. Bir windows servisinin OnCustomCommand metodu sayesinde servisimize standart işlevselliklerinin haricinde yeni işlevsellikler kazandırabiliriz. Prototipi aşağıdaki gibi olan OnCustomCommand metodu integer tipinden bir parametre almaktadır.

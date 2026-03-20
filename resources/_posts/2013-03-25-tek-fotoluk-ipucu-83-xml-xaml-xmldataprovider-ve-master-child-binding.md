@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu 83–XML, XAML, XmlDataProvider ve Master Child Binding"
 date: 2013-03-25 20:35:00 +0300
-description: "Diyelim ki elinizde aşağıdaki gibi Master-Child veri ilişkisi içeren(1 gruba bağlı birden fazla albüm) bir XML dosyası var ve sizde örneğin WPF-XAML tarafında buradaki Master-Detail ilişkiyi kullanmak ve hatta iki veri bağlı kontrol üzerinden sembolize etmek istiyorsunuz. Ne yaparsınız?"
 categories:
   - tek-fotoluk-ipucu
 tags:
@@ -11,9 +10,6 @@ tags:
   - wpf
   - xaml
 ---
-# Tek Fotoluk İpucu 83–XML, XAML, XmlDataProvider ve Master Child Binding
-Merhaba Arkadaşlar,
-
 Diyelim ki elinizde aşağıdaki gibi Master-Child veri ilişkisi içeren (1 gruba bağlı birden fazla albüm) bir XML dosyası var.
 
 ```xml

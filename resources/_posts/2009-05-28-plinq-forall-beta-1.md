@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "PLINQ - ForAll [Beta 1]"
 date: 2009-05-28 08:43:00 +0300
-description: "Bildiğiniz gibi bir süredir LINQ sorgularının paralel çalıştırılması ile ilişkili çalışmalarıma ve araştırmalarıma devam etmekteyim. Bu yazımdaki konumuz ise System.Linq.ParallelEnumerable static sınıfı içerisinde tanımlanmış olan ForAll genişletme metodudur(extension methods)."
 categories:
   - linq
   - plinq
@@ -14,9 +13,6 @@ tags:
   - delegates
   - generics
 ---
-# PLINQ - ForAll [Beta 1]
-Merhaba Arkadaşlar,
-
 Bildiğiniz gibi bir süredir LINQ sorgularının paralel çalıştırılması ile ilişkili çalışmalarıma ve araştırmalarıma devam etmekteyim. Bu yazımdaki konumuz ise System.Linq.ParallelEnumerable static sınıfı içerisinde tanımlanmış olan ForAll genişletme metodudur (extension methods).
 
 public static void ForAll (this ParallelQuery source, Action action);

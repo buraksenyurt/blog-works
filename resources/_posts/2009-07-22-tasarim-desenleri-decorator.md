@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tasarım Desenleri - Decorator"
 date: 2009-07-22 08:44:00 +0300
-description: "Görsel tasarım işinden pek anladığımı söyleyemem. Embarassed Hatta ne zaman büyük bir hevesle Win Forms yada Asp.Net ön yüzü tasarlamaya kalksam renkleri bir türlü tutturamayak başladığım süreci hep yarım bırakmak zorunda kalırım. Bu sebepten genellikle arka plandaki iş mantıkları ile uğraşmayı tercih ederim..."
 categories:
   - tasarim-kaliplari-design-patterns
 tags:
@@ -14,14 +13,7 @@ tags:
   - http
   - generics
 ---
-# Tasarım Desenleri - Decorator
-Merhaba Arkadaşlar,
-
-Görsel tasarım işinden pek anladığımı söyleyemem.
-
-![Embarassed](/assets/images/2009/smiley-embarassed.gif)
-
-Hatta ne zaman büyük bir hevesle Win Forms yada Asp.Net ön yüzü tasarlamaya kalksam renkleri bir türlü tutturamayak başladığım süreci hep yarım bırakmak zorunda kalırım. Bu sebepten genellikle arka plandaki iş mantıkları ile uğraşmayı tercih ederim. Sanırım WCF tarafında geliştirme yapmayı sevmemin en büyük nedenide bu olsa gerek. Anlaşılacağı üzere sanatsal yeteneğim pek yok. Hatta evimizin tüm dekorasyonu sevgili eşime aittir. Ama Decoration tasarım deseni deyince sanıyorumki anlatabilecek, paylaşabilecek bir kaç bilgim olabilir. İşte bu günkü konumuz Structural desenlerden olan Decorator Tasarım kalıbı.
+Görsel tasarım işinden pek anladığımı söyleyemem. Hatta ne zaman büyük bir hevesle Win Forms yada Asp.Net ön yüzü tasarlamaya kalksam renkleri bir türlü tutturamayak başladığım süreci hep yarım bırakmak zorunda kalırım. Bu sebepten genellikle arka plandaki iş mantıkları ile uğraşmayı tercih ederim. Sanırım WCF tarafında geliştirme yapmayı sevmemin en büyük nedenide bu olsa gerek. Anlaşılacağı üzere sanatsal yeteneğim pek yok. Hatta evimizin tüm dekorasyonu sevgili eşime aittir. Ama Decoration tasarım deseni deyince sanıyorumki anlatabilecek, paylaşabilecek bir kaç bilgim olabilir. İşte bu günkü konumuz Structural desenlerden olan Decorator Tasarım kalıbı.
 
 Bu tasarım kalıbı bir nesneye dinamik olarak yeni sorumlulukların eklenmesi ve hatta var olanların çıkartılması amacıyla kullanılır. Bir açıdan bakıldığında nesneyi kendisinden türeyen alt sınıflar ile genişletmek yerine kullanılabilen alternatif bir yaklaşım olarak düşünülebilir. Desenin başlıca kahramanları ve UML şeması ise aşağıda görüldüğü gibidir.
 

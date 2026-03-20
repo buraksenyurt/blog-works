@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Web Servisleri İçin Dört Püf Nokta"
 date: 2006-03-14 10:00:00 +0300
-description: "Web Servislerini yazmak ve kullanmak, çoğu zaman bir web service projesi oluşturmak ve istemci tarafında Add Web Reference tekniği ile oluşturulan proxy sınıfını kullanmaktan ibaret basit bir mimari olarak düşünülür. Ancak sanılanın aksine Web servislerinin yazılmasında ve kullanılmasında dikkate değer çeşitli püf noktalar vardır. İşte bu makalemizde bu püf noktalardan dördünü maddeler halinde incelemeye çalışacağız."
 categories:
   - xml-web-services
 tags:
@@ -20,9 +19,6 @@ tags:
   - serialization
   - dataset
 ---
-# Web Servisleri İçin Dört Püf Nokta
-Değerli Okurlarım Merhabalar,
-
 Web Servislerini yazmak ve kullanmak, çoğu zaman bir web service projesi oluşturmak ve istemci tarafında Add Web Reference tekniği ile oluşturulan proxy sınıfını kullanmaktan ibaret basit bir mimari olarak düşünülür. Ancak sanılanın aksine Web servislerinin yazılmasında ve kullanılmasında dikkate değer çeşitli püf noktalar vardır. İşte bu makalemizde bu püf noktalardan dördünü maddeler halinde incelemeye çalışacağız.
 
 1 - Bir web metodunun overload edilmesi (aşırı yüklenmesi) standart bir metodun overload edilmesinden daha farklıdır.

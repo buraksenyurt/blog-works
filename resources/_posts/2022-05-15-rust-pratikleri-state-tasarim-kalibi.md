@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Rust Pratikleri - State Tasarım Kalıbı"
 date: 2022-05-15 09:00:00 +0300
-description: "Belli bir akış içerisinde ele alınan nesneler belli durumlara sahiptirler. Bu durumlar arasındaki geçişler için fonksiyonlardan yararlanılırken bazı kuralların işletilmesi de istenebilir. Örneğin belli bir duruma sahipken diğer bir duruma geçilmesini engelleyen karar mekanizmaları ve koşullar söz konusudur. Hatta programın belli bir t anında içinde bulunabileceği durumlar bellidir. Nesne yönelimli dillerde bu gibi ihtiyaçlar için davranışsal(Behavioral) kalıplardan olan State tasarım deseni sıklıkla kullanılır. Hatta oyun programlamada State Machine türevli motorlarda nesne durumlarının yönetimi için bu desene ait pratikler söz konusudur."
 categories:
   - rust
 tags:
@@ -11,10 +10,9 @@ tags:
   - pointers
   - github
 ---
-# Rust Pratikleri - State Tasarım Kalıbı
-![state_pattern_2.png](/assets/images/2022/state_pattern_2.png)
-
 Belli bir akış içerisinde ele alınan nesneler belli durumlara sahiptirler. Bu durumlar arasındaki geçişler için fonksiyonlardan yararlanılırken bazı kuralların işletilmesi de istenebilir. Örneğin belli bir duruma sahipken diğer bir duruma geçilmesini engelleyen karar mekanizmaları ve koşullar söz konusudur. Hatta programın belli bir t anında içinde bulunabileceği durumlar bellidir. Nesne yönelimli dillerde bu gibi ihtiyaçlar için davranışsal (Behavioral) kalıplardan olan State tasarım deseni sıklıkla kullanılır. Hatta oyun programlamada State Machine türevli motorlarda nesne durumlarının yönetimi için bu desene ait pratikler söz konusudur.
+
+![state_pattern_2.png](/assets/images/2022/state_pattern_2.png)
 
 Pek tabii nesne yönelimli diller denince işin içerisine interface, class ve object gibi kavramlar da dahil olur. Rust açısından olaya baktığımızda ise elimizde struct ve ortak davranış modellemesi için kullanabileceğimiz trait'ler vardır. Her ne kadar bazı kaynaklarda ve tartışmalarda Rust'ın nesne yönelimli bir dil hedefi ile geliştirilmediği ifade edilse de (ki pek çok noktada haklılık payı var) eldeki enstrümanlar bu örnekte olduğu gibi birçok kalıbın uygulanabilmesine de imkan tanımaktadır. Biz bu örnekte State tasarım kalıbını Rust tarafında nasıl uygulayabiliriz öğrenmeye çalışacağız.
 
@@ -230,7 +228,7 @@ impl ChangeRequest {
 }
 ```
 
-Kod epey uzun ve kalabalık görünüyor ancak bir kere benzerini yazmayı deneyip ona sorular sorduktan sonra daha anlaşılır olacaktır. Dikkat edilmesi gereken noktalar ChangeRequest nesnesi için durumlar arası geçişlerin nasıl yapıldığı ve burada State isimli trait nesnesinin nasıl etkin kullanıldığıdır. State trait nesnesi içinde tanımlanan information, request_approve ve commit davranışlarının nesne durumlarını ifade eden veri yapılarındaki kullanımına dikkat etmeliyiz. Her state nesnesi sadece kendisi ile ilgili olan davranışı uygulayıp diğerleri için kendisini (self) döndürmektedir. Öyle ya, nesne durumu WaitingForApproval'dayken yeniden bir onay talebinin gönderilmesi mantıklı değildir. Lakin bir sonraki durum olan Committed'a geçmek içinse commit davranışının uyarlanması anlamlıdır. Bir diğer dikkat çekici noktada birçok enstrümanda Box türünden smart pointer kullanılmasıdır. State trait'indeki davranışları uygulayan veri yapılarına ait nesnelerin durumlar arası geçişlerde neyi kullanacağının çalışma zamanında çözümlenmesi tercih edildiğinden dolayı böyle bir kullanım söz konusudur. Bu aynı zamanda dynamic dispatch kullanımı için de güzel bir örnektir (Trait Object ile ilgili detaylı bilgi için [şu yazıya](Rust Pratikleri - Trait Objects.md) bakabilirsiniz)
+Kod epey uzun ve kalabalık görünüyor ancak bir kere benzerini yazmayı deneyip ona sorular sorduktan sonra daha anlaşılır olacaktır. Dikkat edilmesi gereken noktalar ChangeRequest nesnesi için durumlar arası geçişlerin nasıl yapıldığı ve burada State isimli trait nesnesinin nasıl etkin kullanıldığıdır. State trait nesnesi içinde tanımlanan information, request_approve ve commit davranışlarının nesne durumlarını ifade eden veri yapılarındaki kullanımına dikkat etmeliyiz. Her state nesnesi sadece kendisi ile ilgili olan davranışı uygulayıp diğerleri için kendisini (self) döndürmektedir. Öyle ya, nesne durumu WaitingForApproval'dayken yeniden bir onay talebinin gönderilmesi mantıklı değildir. Lakin bir sonraki durum olan Committed'a geçmek içinse commit davranışının uyarlanması anlamlıdır. Bir diğer dikkat çekici noktada birçok enstrümanda Box türünden smart pointer kullanılmasıdır. State trait'indeki davranışları uygulayan veri yapılarına ait nesnelerin durumlar arası geçişlerde neyi kullanacağının çalışma zamanında çözümlenmesi tercih edildiğinden dolayı böyle bir kullanım söz konusudur. Bu aynı zamanda dynamic dispatch kullanımı için de güzel bir örnektir (Trait Object ile ilgili detaylı bilgi için [şu yazıya](/2022/05/01/rust-pratikleri-trait-objects/) bakabilirsiniz)
 
 Uygulamanın işe yarayıp yaramadığını anlamak için basit testler koşturabiliriz. İşte kendi sistemimdeki çalışma zamanı sonuçları.
 

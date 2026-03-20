@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Self Referencing Relations ve Recursive(Yinelemeli) Metodlar"
 date: 2005-03-14 12:00:00 +0300
-description: "Çoğumuz çalıştığımız projelerde müdür,müdür yardımcısı gibi ast üst ilişkisine sahip olan organizasyonel yapılarla karşılamışızdır. Örneğin işletmelerin Genel Müdür’ den başlayarak en alt kademedeki personele kadar inen organizasyonel yapılar gibi. Burada söz konusu olan ilişkiler çoğunlukla pozisyonel bazdadır. Yani çok sayıda personel birbirlerine pozisyonel bazda bağımlıdır ve bu bağımlılık en üst pozisyondan en alt pozisyona kadar herkesi kapsar. Bu tarz bir sistemin uygulama ortamında canlandırılabilmesi için pozisyonel ilişkileri ifade edebilecek tablo yapılarına başvurulur. Özellikle pozisyonlar arasındaki ilişkiyi kendi içerisinde referans edebilen tablolar bu tarz ihtiyaçların karşılanması için biçilmiş kaftandır. Örneğin aşağıdaki tabloyu göz önüne alalım."
 categories:
   - ado-net
 tags:
@@ -12,7 +11,6 @@ tags:
   - datatable
   - dependency-management
 ---
-# Self Referencing Relations ve Recursive(Yinelemeli) Metodlar
 Çoğumuz çalıştığımız projelerde müdür,müdür yardımcısı gibi ast üst ilişkisine sahip olan organizasyonel yapılarla karşılamışızdır. Örneğin işletmelerin Genel Müdür’ den başlayarak en alt kademedeki personele kadar inen organizasyonel yapılar gibi. Burada söz konusu olan ilişkiler çoğunlukla pozisyonel bazdadır. Yani çok sayıda personel birbirlerine pozisyonel bazda bağımlıdır ve bu bağımlılık en üst pozisyondan en alt pozisyona kadar herkesi kapsar. Bu tarz bir sistemin uygulama ortamında canlandırılabilmesi için pozisyonel ilişkileri ifade edebilecek tablo yapılarına başvurulur. Özellikle pozisyonlar arasındaki ilişkiyi kendi içerisinde referans edebilen tablolar bu tarz ihtiyaçların karşılanması için biçilmiş kaftandır. Örneğin aşağıdaki tabloyu göz önüne alalım.
 
 ![mk117_1.gif](/assets/images/2005/mk117_1.gif)

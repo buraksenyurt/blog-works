@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF ile WF Entegrasyonu - 2"
 date: 2008-04-23 12:00:00 +0300
-description: "Bir önceki yazımızda WCF(Windows Communication Foundation) servislerinin, WF(Windows WorkFlow) uygulamaları içerisinden nasıl çağırıldığını incelemiştik. Bu yazımızda ise tam tersine, bir Workflow örneğinin servis olarak nasıl sunulabileceğini analiz ediyor olacağız. Bazı durumlarda kod akışlarının birer servis olarak istemcilere sunulması gerekebilir."
 categories:
   - wcf
   - wf
@@ -23,9 +22,6 @@ tags:
   - generics
   - visual-studio
 ---
-# WCF ile WF Entegrasyonu - 2
-Değerli Okurlarım Merhabalar,
-
 Bir önceki yazımızda WCF (Windows Communication Foundation) servislerinin, WF (Windows WorkFlow) uygulamaları içerisinden nasıl çağırıldığını incelemiştik. Bu yazımızda ise tam tersine, bir Workflow örneğinin servis olarak nasıl sunulabileceğini analiz ediyor olacağız. Bazı durumlarda kod akışlarının birer servis olarak istemcilere sunulması gerekebilir. Burada söz konusu kod akışlarının Servis Yönelimli Mimarinin (Service Oriented Architecture) imkanlarından yararlanıyor olması isteği ön plana çıkmatadır. Çok doğal olarak servis gibi yayınlanan akış tipleri (Workflow Instance), istemci ile olan mesajlaşmalarında SOA temelli olanakları kullanabilir hale gelmektedir. Bu noktada WCF ile WF entegrasyonu göz önüne alınmalıdır.
 
 WCF servisleri WF uygulamaları içerisinden çağırılırken ağırlıklı olarak.Net Framework 3.5 ile birlikte gelen SendActivity bileşeni kullanılmaktadır. WF örneklerinin servis olarak yayınlamasında ise başrol oyuncusu yine.Net Framework 3.5 ile birlikte gelen ReceiveActivity isimli activity bileşenidir. Özellikle Visual Studio 2008 kullanılarak servis destekli Workflow kütüphaneleri kolay bir şekilde geliştirilebilmektedir. Bu amaçla Visual Studio 2008 ortamına Sequential Workflow Service Library ve State Machine Workflow Service Library proje şablonları eklenmiştir. Tabi çok doğal olarak geliştirilen iş akışı servislerinin bir uygulama tarafından barındırılması (Hosting) ve yayınlanmasıda gerekmektedir. Host seçenekleri WF servisleri içinde aynıdır. IIS üzerinde, WAS (Windows Activation Service) yardımıyla veya Self-Hosting seçeneklerine göre barındırma ve yayınlama yapılabilir. Önemli olan noktalardan birisie normal WCF servislerinden farklı olaraktan Host çalışma ortamını WorkflowServiceHost tipinin yönetmesidir.

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WF 4.0 : WorkflowInvoker ile Single Thread, WorkflowApplication ile Multi-Thread [Beta 2]"
 date: 2009-11-02 02:35:00 +0300
-description: "WF 4.0 öncesinde bir Workflow örneğini çalıştırmak için WorkflowRuntime sınıfından yararlanılmaktadır. Aşağıdaki kod parçasında Visual Studio 2008 üzerinde geliştirilen basit bir WF örneğinin çalıştırılması için otomatik olarak üretilen kod görülmektedir. Ancak Workflow Foundation 4.0 içerisinde bir Workflow örneğini çalıştırmak için iki farklı yol sunulmaktadır. İlk yol daha önceki yazı ve görsel derslerimizde de sıklıkla bahsettiğimiz WorkflowInvoker sınıfına ait static Invoke metodunun kullanılmasıdır. Bu tekniğin en önemli özelliği Workflow örneğinin çalıştığı uygulamaya ait Thread içerisinde senkron olaran yürütülmesini sağlamasıdır. Dilerseniz ne demek istediğimize basit bir örnek yardımıyla bakmaya çalışalım. Visual Studio 2010 Ultimate Beta 2 sürümü üzerinden oluşturduğumuz Workflow Console Application içerisinde aşağıdaki Workflow1 içeriği göz önüne alınmaktadır."
 categories:
   - wf-4-0-beta-2
 tags:
@@ -20,16 +19,9 @@ tags:
   - debugging
   - visual-studio
 ---
-# WF 4.0 : WorkflowInvoker ile Single Thread, WorkflowApplication ile Multi-Thread [Beta 2]
+Hiç müzik dinlerken bir yandan da kod yazmayı denediniz mi? Üstelik çevre ile olan etkileşiminiz devam ederken söz gelimi hareketli bir parçayı tempo tutarak dinleyip ondan tamamen bağımsız bir şekilde geliştirmeye devam ederken yan masadaki arkadaşınızdan gelen "Dün akşamki maçı seyrettin mi?...Ronaldo ne gol attı öyle..." sorusuna da rakip takımın orta sahasını kattığınız bir yorumda bulunup diğer taraftanda kahve içtiğinizi düşünebilirsiniz.
+
 ![blg94_Giris.jpg](/assets/images/2009/blg94_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
-Hiç müzik dinlerken bir yandan da kod yazmayı denediniz mi? Üstelik çevre ile olan etkileşiminiz devam ederken
-
-![Wink](/assets/images/2009/smiley-wink.gif)
-
-Söz gelimi hareketli bir parçayı tempo tutarak dinleyip ondan tamamen bağımsız bir şekilde geliştirmeye devam ederken yan masadaki arkadaşınızdan gelen "Dün akşamki maçı seyrettin mi?...Ronaldo ne gol attı öyle..." sorusuna da rakip takımın orta sahasını kattığınız bir yorumda bulunup diğer taraftanda kahve içtiğinizi düşünebilirsiniz.
 
 Tabiki insan beyninin büyülü dünyası ve eş zamanlı olarak çalışma yetenekleri zaman zaman geliştirdiğimiz uygulamalara da yansımaktadır. Böyle bir giriş yaptığımıza göre multi-thread bir takım işlemleri anlatacağımı düşünmüş olmalısınız. İşte bu gün konumuz Workflow Foundation 4.0 üzerindeki Single-Thread ve Multi-Thread çalıştırma modelleri.
 

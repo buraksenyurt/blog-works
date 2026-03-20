@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tasarım Desenleri – Template Method"
 date: 2015-02-03 19:00:00 +0300
-description: "Düzenli olarak teknik paylaşımlarda bulunan internet yazarlarının karşılaştığı en büyük sorunlardan birisi, hızla gelişen teknoloji nedeniyle ele alınan konuların kolayca eskimesidir. Hangi firma olursa olsun bu kural geçerlidir. Bu eskitme işinde elbette başı çeken bir kaç firma var. Zaman zaman yazarların serzenişte bulunup kızdığı Microsoft, Oracle, Google ve diğerleri. Pek tabi teknik yazıların bir yaşam ömrüne sahip olması, kalıcı olan içerik sayısının daha kıymetli olmasına neden olmaktadır. Söz gelimi bir programlama dilinin temel özellikleri, dilden bağımsız düşünülebilen matematik algoritmaları gibi mevzular kolay kolay eskimezler. Hatta eskimeyen konuların başında tasarım kalıpları(Design Patterns) gelir."
 categories:
   - tasarim-kaliplari-design-patterns
 tags:
@@ -14,10 +13,10 @@ tags:
   - visual-studio
   - dependency-management
 ---
-# Tasarım Desenleri – Template Method
-[![eskiici](/assets/images/2015/eskiici_thumb.jpg)](/assets/images/2015/eskiici.jpg) Merhaba Arkadaşlar,
-
 Düzenli olarak teknik paylaşımlarda bulunan internet yazarlarının karşılaştığı en büyük sorunlardan birisi, hızla gelişen teknoloji nedeniyle ele alınan konuların kolayca eskimesidir. Hangi firma olursa olsun bu kural geçerlidir. Bu eskitme işinde elbette başı çeken bir kaç firma var. Zaman zaman yazarların serzenişte bulunup kızdığı Microsoft, Oracle, Google ve diğerleri.
+
+[![eskiici](/assets/images/2015/eskiici_thumb.jpg)](/assets/images/2015/eskiici.jpg)
+
 
 Dolayısıyla yazdığımız yazılar bir süre sonra eskiyen gaz lambaları misali duvarın bir köşesine asılıp yavaş yavaş çürüyorlar. Elbette istisnai durumlar da söz konusu. Nitekim pek çok firma (örneğin finans kurumları) teknolojiyi bazen geriden takip etmekte. O nedenle yazılan içeriğin hala bir yerlerde birilerinin işine yarayacağını ümit edebiliriz.
 

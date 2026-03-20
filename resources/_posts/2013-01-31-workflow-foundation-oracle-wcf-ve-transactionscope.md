@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Workflow Foundation, Oracle, WCF ve TransactionScope"
 date: 2013-01-31 22:36:00 +0300
-description: "Geçtiğimiz günlerde Workflow Foundation tabanlı bir uygulama içerisinde Transaction Scope kullanımına ihtiyacım oldu. Transaction' a dahil olan işlemler Oracle tabloları üzerinde gerçekleştirilecekti. Senaryoyu zorlaştıran noktalardan birisi ise, akış içerisinde harici bir WCF servis çağrısının yapılacak olmasıydı. Nitekim söz konusu WCF servisi içerisindeki operasyonda da, yine Oracle veritabanı üzerinde yapılması planlanan Transactional bir işlem söz konusuydu."
 categories:
   - wf-4-0
 tags:
@@ -23,18 +22,9 @@ tags:
   - visual-studio
   - atomic-operations
 ---
-# Workflow Foundation, Oracle, WCF ve TransactionScope
-[![Proof-of-Concept-Prototypes-Dont-Have-to-Be-as-Complicated-as-This](/assets/images/2013/Proof-of-Concept-Prototypes-Dont-Have-to-Be-as-Complicated-as-This_thumb.jpg)](/assets/images/2013/Proof-of-Concept-Prototypes-Dont-Have-to-Be-as-Complicated-as-This.jpg)[Örnek Visual Studio 2010,.Net Framework 4.0 tabanlıdır]
+Yandaki fotoğrafta görülen buluşa baktığınızda aslında gerçekten bu pilotun o koca pervaneler ile uçup uçamayacağına pek kanaat getiremiyoruz öyle değil mi? Sonuçta en azından kağıt üstünde ve teorik olarak da bu tip bir uçuş aracının çalışacağının ispat edilmesi ve sonrasında pratikteki kullanımı için teste çıkılması beklenir (Tabi buna cesaret edecek de bir pilotun olması gerekir) Bir dostumuzun söylediği üzere "tasarlanan her uçak uçmuş ama her yazılım çalışmamıştır"
 
-Merhaba Arkadaşlar,
-
-Yandaki fotoğrafta görülen buluşa baktığınızda aslında gerçekten bu pilotun o koca pervaneler ile uçup uçamayacağına pek kanaat getiremiyoruz öyle değil mi?
-
-Sonuçta en azından kağıt üstünde ve teorik olarak da bu tip bir uçuş aracının çalışacağının ispat edilmesi ve sonrasında pratikteki kullanımı için teste çıkılması beklenir (Tabi buna cesaret edecek de bir pilotun olması gerekir)
-
-Bir dostumuzun söylediği üzere "tasarlanan her uçak uçmuş ama her yazılım çalışmamıştır"
-
-![Winking smile](/assets/images/2013/wlEmoticon-winkingsmile_109.png)
+[![Proof-of-Concept-Prototypes-Dont-Have-to-Be-as-Complicated-as-This](/assets/images/2013/Proof-of-Concept-Prototypes-Dont-Have-to-Be-as-Complicated-as-This_thumb.jpg)](/assets/images/2013/Proof-of-Concept-Prototypes-Dont-Have-to-Be-as-Complicated-as-This.jpg)
 
 Bir başka deyişle yazılım tarafında bir şeylerin ispatını yaparken bir uçağı uçuracakmış gibi düşünerek hareket etmeyiz genelde. İstesek de edemiyoruz sanırım. Yine de elimizden geldiğince titiz çalışmamız da yarar var. Öyleyse gelelim bu günün konusuna.
 

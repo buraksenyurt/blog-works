@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Entity Framework Code First için Doğrulama(Validation) Stratejileri"
 date: 2012-11-18 06:38:00 +0300
-description: "Bir verinin çeşitli kurallara göre doğrulanması, verinin işlenmek üzere gönderilmeden önce yapılması gereken önemli işlemlerden birisidir. Özellikle Entity Framework gibi veri merkezli(Data-Centric) uygulama geliştirme alt yapılarında bu durum daha da önem arz etmektedir."
 categories:
   - entity-framework
 tags:
@@ -16,14 +15,9 @@ tags:
   - generics
   - webinar
 ---
-# Entity Framework Code First için Doğrulama(Validation) Stratejileri
-[![checklist1](/assets/images/2012/checklist1_thumb.gif)](/assets/images/2012/checklist1.gif) Merhaba Arkadaşlar,
+Bir verinin çeşitli kurallara göre doğrulanması, verinin işlenmek üzere gönderilmeden önce yapılması gereken önemli işlemlerden birisidir. Özellikle Entity Framework gibi veri merkezli (Data-Centric) uygulama geliştirme alt yapılarında bu durum daha da önem arz etmektedir. Burada söz konusu olan, görsel bir kontrolün içerik denetiminden ziyade, çalışma zamanı Entity örneklerine ait özelliklerin (Property) değerlerinin denetlenmesidir. Çok doğal olarak verilerde tutarsızlıklara neden olabilecek çeşitli ihlallerin tespit edilmesi, toplanması, gerektiğinde son kullanıcıya bildirilmesi ya da farklı bir yere raporlanması/loglanması gerekmektedir.
 
-[[Bu yazıda ele alınan konuları içeren Webiner (Webcast) kayıtlarına Nedirtv?com sayfasından erişebilir, izleyebilir ve indirebilirsiniz]](http://nedirtv.com/video/entity-framework-code-first-validation)
-
-Bir verinin çeşitli kurallara göre doğrulanması, verinin işlenmek üzere gönderilmeden önce yapılması gereken önemli işlemlerden birisidir. Özellikle Entity Framework gibi veri merkezli (Data-Centric) uygulama geliştirme alt yapılarında bu durum daha da önem arz etmektedir.
-
-Burada söz konusu olan, görsel bir kontrolün içerik denetiminden ziyade, çalışma zamanı Entity örneklerine ait özelliklerin (Property) değerlerinin denetlenmesidir. Çok doğal olarak verilerde tutarsızlıklara neden olabilecek çeşitli ihlallerin tespit edilmesi, toplanması, gerektiğinde son kullanıcıya bildirilmesi ya da farklı bir yere raporlanması/loglanması gerekmektedir.
+[![checklist1](/assets/images/2012/checklist1_thumb.gif)](/assets/images/2012/checklist1.gif)
 
 Peki verinin doğrulanmasından tam olarak beklentilerimiz neler olabilir? Bunu bir kaç gerçek hayat ihtiyacı ile cevaplayabiliriz.
 

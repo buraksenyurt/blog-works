@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF WebHttp Services - Client Bazlı Cache"
 date: 2010-03-30 07:30:00 +0300
-description: "Bir önceki yazımızda(WCF WebHttp Services - Server Bazlı Cache) hatırlayacağınız üzere WCF WebHttp Service' lerinde sunucu taraflı ön belleklemeyi(Server-Based Caching) incelemeye çalışmış ve bu işin birde istemci taraflı olanından bahsetmiştik. Aslında sunucu ve istemci taraflı ön bellekleme işleyişleri birbirlerinden tamamen farklıdır. Sunucu taraflı ön bellekleme işleyişinde, tamponlanan veriyi üreten operasyonun duration süresi dolana kadar çalıştırılmaması söz konusudur. Yani istemciden gelen ilk talebin sonucunun ön belleğe alınmasını takiben gelen taleplerde, sunucu tarafındaki operasyon kodları icra edilmemektedir."
 categories:
   - wcf-eco-system
   - wcf-webhttp-services
@@ -20,9 +19,6 @@ tags:
   - visual-studio
   - rc
 ---
-# WCF WebHttp Services - Client Bazlı Cache
-Merhaba Arkadaşlar,
-
 Bir önceki yazımızda ([WCF WebHttp Services - Server Bazlı Cache)](https://www.buraksenyurt.com/admin/post/WCF-WebHttp-Services-Server-Side-Caching) hatırlayacağınız üzere WCF WebHttp Service'lerinde sunucu taraflı ön belleklemeyi (Server-Based Caching) incelemeye çalışmış ve bu işin birde istemci taraflı olanından bahsetmiştik. Aslında sunucu ve istemci taraflı ön bellekleme işleyişleri birbirlerinden tamamen farklıdır. Sunucu taraflı ön bellekleme işleyişinde, tamponlanan veriyi üreten operasyonun duration süresi dolana kadar çalıştırılmaması söz konusudur. Yani istemciden gelen ilk talebin sonucunun ön belleğe alınmasını takiben gelen taleplerde, sunucu tarafındaki operasyon kodları icra edilmemektedir.
 
 Ne varki istemci taraflı ön belleklemenin işleyişine göre sunucu tarafındaki kodlar icra edilir ve ön bellekleme yapılacağı, HTTP Cache-Control bilgisinin istemciye gönderilen cevabın (Response) Header kısmına eklenmesi ile anlaşılır. Bir başka deyişle ilk talepten sonra gelecek taleplerde yine servis kodunun çalıştırılması gündemdedir. Dolayısıyla ispatı ve analizi pekte kolay olmayan bir konu ile karşı karşıyayız. Bu yüzden en azından nasıl hayata geçirilebileceğini görmeye çalışacağız. Elbette bir örnek geliştirerek. Gelin tembellik etmeyerek bir önceki uygulamamızdan devam etmek yerine yeni bir örnek üzerinden istemci taraflı ön belleklemenin nasıl yapılacağını araştıralım. Öncelikle aşağıdaki servis kodlarına sahip olan bir WCF REST Service Application projemiz olduğunu düşünelim.

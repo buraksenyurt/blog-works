@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Post Görünümlü Put"
 date: 2018-08-02 11:51:00 +0300
-description: "Hiç bir REST servisine Post talebi gönderip aslında onun Put işlemini yapmasını istediğiniz oldu mu? Bir kaç değişik sebepten dolayı tasarlayacağınız REST tabanlı servisin bu tip senaryolara hizmet verebilir olmasını isteyebilirsiniz. Haydi gelin bir .Net Core Web API için bunu nasıl yapacağımıza bakalım."
 categories:
   - dotnet-core
 tags:
@@ -23,12 +22,9 @@ tags:
   - generics
   - visual-studio
 ---
-# Post Görünümlü Put
-![tun_giris.gif](/assets/images/2018/tun_giris.gif)
-
-Merhaba Arkadaşlar,
-
 Dışarıda çok güzel bir hava var. Büyük ihtimalle tüm sahil şeritlerimiz hınca hınç dolu. Denize girip serinleyenler, çimlere serilip gölgelenenler, arkadaşlarıyla birlikte naneli limonata içip hararet giderenler vs...Kimbilir belki de az sonra ahşap üzerinde çıplak ayaklarınızla yürüyecek ve incecik kumlara basıp bütün senenin yorgunluğunu atmak üzere kendinizi serin okyanus sularına bırakacaksınız. Ama birilerinin de şu yazılım dünyası için içerik üretmesi gerekiyor öyle değil mi? Doğruyu söylemek gerekirse bu tip bir misyonu üstlendiğim için memnunum. Öyleyse gelin bugün ki konumuza başlayalım.
+
+![tun_giris.gif](/assets/images/2018/tun_giris.gif)
 
 Hiç bir REST servisine POST talebi gönderip aslında onun PUT işlemini yapmasını istediğiniz oldu mu? Bir kaç değişik sebepten dolayı tasarlayacağınız REST tabanlı servisin bu tip senaryolara hizmet verebilir olmasını isteyebilirsiniz. Bunun bir kaç sebebi olabilir. Basit haliyle şöyle bir senaryoyu göz önünde bulundurabiliriz;
 

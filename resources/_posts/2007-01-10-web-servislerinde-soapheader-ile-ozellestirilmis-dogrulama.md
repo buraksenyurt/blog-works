@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Web Servislerinde SoapHeader ile Özelleştirilmiş Doğrulama"
 date: 2007-01-10 12:00:00 +0300
-description: "Web servislerinde güvenlik söz konusu olduğunda, geliştiricileri en çok zorlayan noktalardan birisi görsel bir arabirimin olmayışıdır. Bu nedenle özellikle web tabanlı uygulamalarda tercih edilen form tabanlı (form-based) veya windows tabanlı (windows based) doğrulama (authentication) sistemlerini uygulamak biraz daha farklıdır. Biz bu makalemizde form tabanlı doğrulama ve yetkilendirme sistemininin iskeletini, web servisleri üzerinde nasıl geliştirebileceğimizi incelemeye çalışacağız."
 categories:
   - xml-web-services
 tags:
@@ -17,9 +16,6 @@ tags:
   - authorization
   - caching
 ---
-# Web Servislerinde SoapHeader ile Özelleştirilmiş Doğrulama
-Değerli Okurlarım Merhabalar,
-
 Web servislerinde güvenlik söz konusu olduğunda, geliştiricileri en çok zorlayan noktalardan birisi görsel bir arabirimin olmayışıdır. Bu nedenle özellikle web tabanlı uygulamalarda tercih edilen form tabanlı (form-based) veya windows tabanlı (windows based) doğrulama (authentication) sistemlerini uygulamak biraz daha farklıdır. Biz bu makalemizde form tabanlı doğrulama ve yetkilendirme sistemininin iskeletini, web servisleri üzerinde nasıl geliştirebileceğimizi incelemeye çalışacağız.
 
 Konuyu daha iyi anlamak için vakkamızı analiz edelim. Web servisi tarafında yer alan bazı metodların istemciler tarafından kullanılabilmesi için ilgili kullanıcıların doğrulanması gerektiğini düşünelim. Böyle bir durumda kullanıcıların ilgili web metod çağrılarından önce web servisi tarafından doğrulanması (authenticate) gerekecektir. Sırf bu amaç için tasarlanmış bir web metodu göz önüne alınabilir. Kullanıcıların login metodu ile doğrulanmasının en büyük amacı, iş yapan web metodlarına yapılacak olan çağrılarda tekrar tekrar doğrulama yapılmasının da önüne geçmektir. Peki bu nasıl sağlanabilir?

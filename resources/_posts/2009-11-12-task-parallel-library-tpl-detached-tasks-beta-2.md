@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Task Parallel Library(TPL) - Detached Tasks [Beta 2]"
 date: 2009-11-12 06:00:00 +0300
-description: "Bir önceki yazımızda Task Parallel Library tarafında .Net Framework 4.0 Beta 2 tabanlı olarak iptal işlemleri(Task Cancellation) için yapılan değişikliklere değinmeye çalışmıştık. TPL tarafında yapılan değişikliklerden birisi de iç içe çalışan Task' ler arasındaki Parent - Child ilişkiye yönelik olarak yapılmıştır. Aslında basit bir davranış değişikliği olduğunu söyleyebiliriz. Konuyu daha net kavramak amacıyla aşağıdaki örnek kod parçasını göz önüne alalım."
 categories:
   - tpl
 tags:
@@ -12,9 +11,6 @@ tags:
   - task-parallel-library
   - threading
 ---
-# Task Parallel Library(TPL) - Detached Tasks [Beta 2]
-Merhaba Arkadaşlar,
-
 Bir önceki yazımızda Task Parallel Library tarafında.Net Framework 4.0 Beta 2 tabanlı olarak iptal işlemleri (Task Cancellation) için yapılan değişikliklere değinmeye çalışmıştık. TPL tarafında yapılan değişikliklerden birisi de iç içe çalışan Task'ler arasındaki Parent - Child ilişkiye yönelik olarak yapılmıştır. Aslında basit bir davranış değişikliği olduğunu söyleyebiliriz. Konuyu daha net kavramak amacıyla aşağıdaki örnek kod parçasını göz önüne alalım.
 
 ```csharp

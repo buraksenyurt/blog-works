@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF Servis Yolunda Debelenirken"
 date: 2017-07-17 21:47:00 +0300
-description: "Geçtiğimiz günlerde çalıştığım turuncu bankada bölümüm değişti. Yeni bölümümdeki ilk görevim ise ServiceStack yerini alabilecek bir çatının oluşturulması konusunda bir takım POC çalışmalarının yapılması. Önemli hedeflerden birisi Servislerin IIS bağımsız dinamik olarak ayağa kaldırılması ve servislere gidip gelen mesajların yakalanabildiğinin görülmesi. Epey zamandır WCF alt tarafında çalışmamıştım. Pas tuttuğumu itiraf edeyim. Tabii yazının konusu devam etmekte olan POC çalışmasının tamamını anlatmak değil ancak dinamik olarak host edilen servislere gelen ve servisten dönen mesajları nasıl yakalayabiliriz bunun bir yolunu göstermeye çalışacağım."
 categories:
   - wcf
 tags:
@@ -18,12 +17,9 @@ tags:
   - generics
   - testing
 ---
-# WCF Servis Yolunda Debelenirken
-![wcf_message_8.gif](/assets/images/2017/wcf_message_8.gif)
-
-Merhaba Arkadaşlar,
-
 Geçtiğimiz günlerde çalıştığım turuncu bankadaki bölümüm değişti. İsmini halen ezberleyemediğim Yazılım Geliştirme Sistemleri ve Platform Uygulamaları bölümünde yaşamımı sürdürmeye devam ediyorum. Yeni bölümümdeki ilk görevim ise ServiceStack yerini alabilecek bir çatının oluşturulması konusunda bir takım POC çalışmalarının yapılması. Önemli hedeflerden birisi WCF (Windows Communication Foundation) servislerinin IIS (Internet Information Services) bağımsız olarak dinamik bir şekilde ayağa kaldırılması ve istemci ile sunucu arasındaki mesajların yakalanarak kayıt altına alınabildiğinin görülmesi.
+
+![wcf_message_8.gif](/assets/images/2017/wcf_message_8.gif)
 
 Epey zamandır WCF ile çalışmadığımdan baya pas tuttuğumu itiraf etmek isterim. Yazının konusu, devam etmekte olan POC (Proof of Concept) çalışmasının tamamını anlatmak değil ancak dinamik olarak host edilen servislere gelen ve servisten dönen mesajları nasıl yakalayabiliriz bunun bir yolunu bulmaya çalışmak. Hatta bu konuda çok yakın bir zamanda sevdiğim bir dostumun da sorusu olmuştu. Entegre olunan bir servise gelip giden mesajları nasıl yakalayabiliriz. Normal şartlarda WCF'in Trace ve Logging mekanizmalarını kullanarak bu mümkün ve oldukça kolay ama hedef buradaki takibi kontrol atlına almak. Yani mesajları yakaladığımız yerlerde araya girerek başlangıç için sadece loglamak (örneğin Console'a yazdırmak)
 

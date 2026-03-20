@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "GoLang - Bir Go Paketini Ruby'den Çağırmak"
 date: 2017-06-09 12:33:00 +0300
-description: "Pek çok kaynak GO dilinin ileride C'nin yerini alabileceği yönünde görüşler belirtmekte. Özellikle IoT alanında bu dilin daha fazla ön plana çıkacağı vurgulanıyor. Bu düşüncenin haklı olabileceği yönünde bazı tespitlerim var. Söz gelimi GO ile yazılmış bir paketi başka bir dilden çağırmamız mümkün. C, Python, Java ve Ruby bunlardan sadece bir kaçı."
 categories:
   - golang
 tags:
@@ -13,12 +12,9 @@ tags:
   - java
   - ruby
 ---
-# GoLang - Bir Go Paketini Ruby'den Çağırmak
-![gofromruby_1.gif](/assets/images/2017/gofromruby_1.gif)
-
-Merhaba Arkadaşlar,
-
 Pek çok kaynak GO dilinin ileride C'nin yerini alabileceği yönünde görüşler belirtmekte. Özellikle IoT alanında bu dilin daha fazla ön plana çıkacağı vurgulanıyor. Bu düşüncenin haklı olabileceği yönünde bazı tespitlerim var.
+
+![gofromruby_1.gif](/assets/images/2017/gofromruby_1.gif)
 
 Söz gelimi GO ile yazılmış paketleri başka dillere ait ortamlarda kullanabilmemiz mümkün. Bir başka deyişle bir GO paketini C, Python, Java ve Ruby gibi dillerde kullanabiliriz. Sonuçta yazılan GO kodları C-Style API şeklinde ifade edebileceğimiz derlenmiş kütüphanelere dönüştürülebilmekte.
 

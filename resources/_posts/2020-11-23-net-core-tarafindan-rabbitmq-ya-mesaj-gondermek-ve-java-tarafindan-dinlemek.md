@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: ".Net Core Tarafından RabbitMQ'ya Mesaj Göndermek ve Java Tarafından Dinlemek"
 date: 2020-11-23 21:00:00 +0300
-description: "Çok sık karşılaştığımız senaryolardan birisidir; Bir uygulama kendi bünyesinde gerçekleşen bir olay sonrası başka bir uygulamayı haberdar etmek ister ya da başka bir uygulamanın yaptıklarından haberdar olmak isteyen bir uygulama vardır :) Bunun bir çok sebebi olabilir. Örneğin uygulamalar farklı teknolojilerde yazılmıştır ancak ortak iş süreçleri üzerinde koşmaktadır. Gerçek bir senaryo üzerinden hareket edersek konu daha anlaşılır olabilir. Kargo çıkışı gerçekleştiren yeni nesil bir uygulama bu çıkışlar için düzenlediği irsaliyelerin bir devlet kurumuna gönderilmesi sırasında yine aynı kurumun legacy diyebileceğimiz başka bir sisteminin süreçlerine dahil olmak durumunda olsun. Bu sürecin belli noktalarında uygulamaların birbirini haberdar etmesi gerektiğini de varsayalım. Tipik olarak gerçekleşen bir olay sonrası bu olaya ait diğer uygulamanın ihtiyacı olan bilgilerin gönderilmesi bekleniyor. Çok doğal olarak bu iletişimi senkronize etmek çok mantıklı olmaz. Nitekim anlık iş yükü çok yüksek sayılara çıkabilir ve bekleme süreleri diğer uygulamanın sürecini olumsuz etkileyebilir. Asenkron kuyruk sistemi bu dar boğazı aşmada önemli bir rol oynamaktadır."
 categories:
   - dotnet-core
 tags:
@@ -18,10 +17,9 @@ tags:
   - serialization
   - github
 ---
-# .Net Core Tarafından RabbitMQ'ya Mesaj Göndermek ve Java Tarafından Dinlemek
-![queue.png](/assets/images/2020/queue.png)
-
 Çok sık karşılaştığımız senaryolardan birisidir; Bir uygulama kendi bünyesinde gerçekleşen bir olay sonrası başka bir uygulamayı haberdar etmek ister ya da başka bir uygulamanın yaptıklarından haberdar olmak isteyen bir uygulama vardır:) Bunun bir çok sebebi olabilir. Örneğin uygulamalar farklı teknolojilerde yazılmıştır ancak ortak iş süreçleri üzerinde koşmaktadır. Gerçek bir senaryo üzerinden hareket edersek konu daha anlaşılır olabilir.
+
+![queue.png](/assets/images/2020/queue.png)
 
 Kargo çıkışı gerçekleştiren yeni nesil bir uygulama bu çıkışlar için düzenlediği irsaliyelerin bir devlet kurumuna gönderilmesi sırasında yine aynı kurumun legacy diyebileceğimiz başka bir sisteminin süreçlerine dahil olmak durumunda olsun. Bu sürecin belli noktalarında uygulamaların birbirini haberdar etmesi gerektiğini de varsayalım. Tipik olarak gerçekleşen bir olay sonrası bu olaya ait diğer uygulamanın ihtiyacı olan bilgilerin gönderilmesi bekleniyor. Çok doğal olarak bu iletişimi senkronize etmek çok mantıklı olmaz. Nitekim anlık iş yükü çok yüksek sayılara çıkabilir ve bekleme süreleri diğer uygulamanın sürecini olumsuz etkileyebilir. Asenkron kuyruk sistemi bu dar boğazı aşmada önemli bir rol oynamaktadır.
 

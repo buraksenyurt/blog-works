@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net Routing – Hatırlamak"
 date: 2013-06-20 05:07:00 +0300
-description: "Asp.Net MVC’ nin en cazip yanlarından birisi sanırım sağladığı URL eşleştirme(Routing) sistemidir. Özellikle Search Engine Optimization(SEO) kriterleri göz önüne alındığında, orders.aspx?categoryName=Beverages&shipCity=istanbul&orderNumber=12903 gibi bir ifade yerine, orders/beverages/istanbul/12903 şeklinde bir URL çok daha değerlidir."
 categories:
   - aspnet
   - aspnet-4-0
@@ -21,10 +20,10 @@ tags:
   - http
   - reflection
 ---
-# Asp.Net Routing – Hatırlamak
-[![oblivious](/assets/images/2013/oblivious_thumb.jpg)](/assets/images/2013/oblivious.jpg) Merhaba Arkadaşlar,
-
 Geçtiğimiz günlerde şirkette çok küçük bir web uygulamasına ihtiyaç duyuldu. Neredeyse bir günlük geliştirme maliyeti olan, küçük bir departmanın önemli bir gereksinimi karşılayacaktı. Tabi insan uzun zaman kodlama yapmayınca veya kodlamaya ara verince bazı temel bilgileri de unutabiliyor.
+
+[![oblivious](/assets/images/2013/oblivious_thumb.jpg)](/assets/images/2013/oblivious.jpg)
+
 
 Ben de kafayı Team Foundation Server entegrasyonu, SOA mimarisi ve Scrum gibi metodolojiler ile bozunca, zihinsel diskimdeki ana partition’ a yeni bilgilerin yazıldığına ve eskilerinin yerinde yeller estiğine şahit oldum. Ama malum, günümüz teknolojilerinde bilginin tamamını ezberlemeye çalışmak yerine, en doğrusuna en hızlı şekilde nasıl ulaşabileceğimizi bilmek daha önemli. İşte bu felsefeden yola çıkıp dedim ki, şu Asp.Net Routing konusunu bir hatırlayayım ve hatta kayıt altına alayım. İşte hikayemiz böyle başladı
 

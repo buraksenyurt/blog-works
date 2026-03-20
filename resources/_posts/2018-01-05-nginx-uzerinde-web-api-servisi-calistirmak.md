@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Nginx Üzerinde Web API Servisi Çalıştırmak"
 date: 2018-01-05 08:54:00 +0300
-description: "Nginx(Engine X olarak telafuz ediliyor) Kazakistan Almatı doğumlu bilgisyar programcısı Igor Sysoev tarafından 2002 yılında geliştirilmeye başlanmış ve 2004 yılında ürünleşmiş açık kaynak bir web sunucusudur. İlk olarak mail.ru için mail sunucu olarak geliştirilmiş ama sonrasında çok daha geniş yetenekler kazanarak web siteleri için Apache'den çok daha hızlı çalışabilen bir sunucu haline gelmiştir. Henüz doğrulayamadığım ama genel kabul görmüş bazı performans testlerine göre muadili olan Apache ve Lightpdd gibi ürünlere göre çok yüksek cevap süreleri ve minimum bellek tüketimi sağlamaktadır. Bu açılardan oldukça popüler olduğunu ifade edebiliriz. Yük dengeleme(Load Balancing), Sana sunucu(Virtual Host), Otomatik indeksleme ve ters vekil sunucu(Reverse Proxy) gibi temel özellikleri vardır."
 categories:
   - dotnet-core
 tags:
@@ -24,12 +23,9 @@ tags:
   - performance
   - microservices
 ---
-# Nginx Üzerinde Web API Servisi Çalıştırmak
-![nginxcore_1.gif](/assets/images/2018/nginxcore_1.gif)
-
-Merhaba Arkadaşlar,
-
 Animasyon izlemek keyif aldığım hobilerden birisi. İzlediğimde bende derin izler ve duygular bırakmış uzun metrajlı bir çok anım var. Bazen filmde geçen bir söz bazen karakterin gülme krizine sokan bir davranışı ya da başına gelen dramatik bir olay. Geçenlerde bilmem kaçıncı kez izlediğim [Sing](http://www.imdb.com/title/tt3470600/) filmi de benim uzun metraj anı defterim arasında yer alanlardan. Maddi sorunlar nedeniyle banka ile başı dertten kurtulamayan Buster Moon, filmin bir yerinde tam bütün ümitlerin tükendiği noktada şöyle bir cümle sarf ediyor;
+
+![nginxcore_1.gif](/assets/images/2018/nginxcore_1.gif)
 
 "When you've reached rock bottom, there's only one way to go, and that's up!"
 

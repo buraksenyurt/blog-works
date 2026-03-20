@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF - Hata Yönetimi (Fault Management)"
 date: 2007-05-09 06:00:00 +0300
-description: "Hata yönetimi her programlama dili ve geliştirme ortamı içerisinde yer alan önemli konulardan birisidir. Özellikle kullanıcıların yapmış olduğu işlemler sonucunda oluşan veya sistem üzerinde beklenmeyen durumlardan doğan hataların önüne geçmek amacıyla çeşitli mekanizmalara başvurulmaktadır."
 categories:
   - wcf
 tags:
@@ -22,9 +21,6 @@ tags:
   - visual-studio
   - dataset
 ---
-# WCF - Hata Yönetimi (Fault Management)
-Değerli Okurlarım Merhabalar,
-
 Hata yönetimi her programlama dili ve geliştirme ortamı içerisinde yer alan önemli konulardan birisidir. Özellikle kullanıcıların yapmış olduğu işlemler sonucunda oluşan veya sistem üzerinde beklenmeyen durumlardan doğan hataların önüne geçmek amacıyla çeşitli mekanizmalara başvurulmaktadır. Bunlardan birisi ve aynı zamanda etkili olanıda istisna yönetimidir (Exception Handling). Microsoft.Net ortamında istisna yönetimi CLR (Common Language Runtime - Ortak Dil ÇalışmaZamanı) tarafından gerçekleştirilen bir unsurdur.
 
 Ne varki, basit bir windows veya web uygulamasında etkili bir şekilde ele alınabilen istisnalar, dağıtık mimari uygulamaları (Distributed Applications) göz önüne alındığında daha farklı yaklaşılmak durumundadır. Bu durumu daha iyi anlayabilmek için, dağıtık mimari uygulamalarının taraflarını göz önüne almakta yarar vardır. Biz her ne kadar sunucu tarafında.Net ortamını kullanıyor olsakta, istemci açısından durum aynen geçerli değildir. Örneğin dağıtık mimari uyarlamalarından birisi olan Xml Web Servisleri düşünüldüğünde istemcinin farklı platformda yer alan bir uygulama olması muhtemeldir. Öyleyse düşünülmesi gereken iki önemli nokta vardır.

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Profile API ile Personalization"
 date: 2006-06-02 12:00:00 +0300
-description: "Günümüz web uygulamalarında, kullanıcı bazlı kişiselleştirme (personalization) oldukça önemli ve popüler bir konudur. Örneğin, bir elektronik ticaret sitesini ziyaret ettiğimizi düşünelim. Bu site bir sonraki ziyaretimizde, daha önceden bakmış olduğumuz ürünler ile ilişkili yeni önerilerde bulunabilir. Böylece siteye giren kullanıcıları başka ürünlere yönlendirebilir. Yeni önerilerin sunulabilmesi, sitenin bizim alışkanlıkarımızı takip etmesi ve kendisini buna göre değiştirmesi anlamına gelmektedir."
 categories:
   - aspnet-2-0
 tags:
@@ -13,9 +12,6 @@ tags:
   - aspnet
   - sql-server
 ---
-# Profile API ile Personalization
-Değerli Okurlarım Merhabalar,
-
 Günümüz web uygulamalarında, kullanıcı bazlı kişiselleştirme (personalization) oldukça önemli ve popüler bir konudur. Örneğin, bir elektronik ticaret sitesini ziyaret ettiğimizi düşünelim. Bu site bir sonraki ziyaretimizde, daha önceden bakmış olduğumuz ürünler ile ilişkili yeni önerilerde bulunabilir. Böylece siteye giren kullanıcıları başka ürünlere yönlendirebilir. Yeni önerilerin sunulabilmesi, sitenin bizim alışkanlıkarımızı takip etmesi ve kendisini buna göre değiştirmesi anlamına gelmektedir.
 
 Daha açık bir şekilde söylemek gerekirse bu site, üyelerin özelliklerine göre kişiselleşmektedir. Buna örnek olabilecek en güzel sitelerden birisi amazon.com'dur. Bir sitenin, üyelerinin isteklerine göre davranış göstermesi için kullanılan çeşitli teknikler vardır. Bunlardan belkide en basiti ve ilkel olanı Cookie kullanımıdır. Cookie'ler istemci taraflı bilgi saklama amacıyla tercih edilirler. Ancak istemcilerin Cookie desteği olmadığı durumlarda kişiselleştirme (personalization) mümkün olmayacaktır. Alternatif ve daha sağlıklı bir yol olarak kullanıcıya ilişkin bilgilerin kişiselleştirme (personalization) amacıyla veritabanı sistemlerinde tutulması ve sayfalar arası geçişlerde de Session nesneleri yardımıyla taşınması çok daha profesyonel bir yaklaşımdır.

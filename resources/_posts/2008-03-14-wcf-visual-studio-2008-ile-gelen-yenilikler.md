@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF - Visual Studio 2008 ile Gelen Yenilikler"
 date: 2008-03-14 12:00:00 +0300
-description: "Yazılım dünyası çeşitli ürün gruplarını ve bunların üretimini içeren materyaller içermektedir. Son kullanıcıya(End User) veya geliştiricilere(Developers) yönelik olarak tasarlanan ürünlerin yazılmasında çeşitli program geliştirme arabirimleri kullanılmaktadır. Belkide bunlardan en popüler olanları Microsoft tarafından üretilen Visual Studio ailesidir."
 categories:
   - wcf
 tags:
@@ -22,9 +21,6 @@ tags:
   - debugging
   - visual-studio
 ---
-# WCF - Visual Studio 2008 ile Gelen Yenilikler
-Değerli Okurlarım Merhabalar,
-
 Yazılım dünyası çeşitli ürün gruplarını ve bunların üretimini içeren materyaller içermektedir. Son kullanıcıya (End User) veya geliştiricilere (Developers) yönelik olarak tasarlanan ürünlerin yazılmasında çeşitli program geliştirme arabirimleri kullanılmaktadır. Belkide bunlardan en popüler olanları Microsoft tarafından üretilen Visual Studio ailesidir. Visual Studio.Net ile başlayan serüvende kısa bir süre öncede Visual Studio 2008 sürümü son haliyle yayınlanmıştır. Yeni sürüm özellikle.Net Framework 2.0, 3.0 ve 3.5 için ortak ve tek bir geliştirme ortamı sunmasıyla hemen dikkati çekmektedir. Bu ve benzer özelliklerin yanında Windows Communication Foundation çözümleri içinde ek bir takım yenilikleri gelmektedir.
 
 Göze çarpan yeniliklerden ilki WcfSvcHost.exe ve WcfTestClient.exe isimli yardımcı uygulamalardır. Visual Studio 2008 kurulumundan sonra C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE klasörü altına eklenen bu programlar sayesinde herhangibir WCF servis kütüphanesi (WCF Service Library) Host ve istemci uygulamalara ihtiyaç duyulmadan test edilebilir. Genellikle bir servis kütüphanesi geliştirilirken ve test edilirken ekstra çaba sarfederek basit bir Host uygulama ve istemci (Client) yazılması gerekmektedir. Ancak Visual Studio 2008 ile gelen yardımcı araçlar sayesinde buna gerek kalmadan basit testler yapılabilmektedir.

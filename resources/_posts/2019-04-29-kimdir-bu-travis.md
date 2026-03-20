@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Kimdir Bu Travis?"
 date: 2019-04-29 07:24:00 +0300
-description: "Continuous Integration kaliteli ve sorunsuz kod çıkartmanın önemli safhalarından birisi. DevOps kültürü için değerli olan, Continuous Deployment/Delivery ile bir anılan CI'ın uygulanmasında en temel noktalar kodun sürekli test edilebilir olması ve ne kadarının kontrol altına alındığının bilinmesi. Başarılı bir Build için bu kriterlerin metrik olarak gerekli değerlerin üzerine çıkması şart. Ancak bu metriklere uyan bir Build, dağıtıma gönderilebilir bir aday sürüm haline gelebilir."
 categories:
   - dotnet-core
 tags:
@@ -13,10 +12,9 @@ tags:
   - docker
   - github
 ---
-# Kimdir Bu Travis?
-![Travis.jpg](/assets/images/2019/Travis.jpg)
-
 Geçen gün çalışma odamın artık ardiye haline gelmiş bir dolabını temizlemek üzere kolları sıvadım. Sayısız network kablosu, yazılabilir DVDler, müsvette notlar, bir kaç müzik CDsi, yüksek lisanstan kalma ders kitapları, kulaklıkları kayıp walkman, bataryası şişmiş Playstation Portable ve daha bir çok ıvır zıvır eşyayla doluydu. Hangileri gerekli hangileri gereksiz diye ayıklarken dönem dönem sebebsiz yere aldığım MP3 çalarlara denk geldim. Kocaman bir discman bile vardı. Ancak gözüm arkalarda köşeye sıkışmış 1 TBlık Harddisk'e takıldı. Zamanında E-book'lar, filmler ve müzikler için kullandığım bir disk olduğunu hayal mayal hatırlıyordum.
+
+![Travis.jpg](/assets/images/2019/Travis.jpg)
 
 Eşyaları ayıklamayı bırakıp diskin içinde ne var ne yok bakmak istedim. Daha yeni aldığım Mac Mini (ona ahch-to adını verdim) ile açmaya çalıştım. Sierra onu pek sevmedi diyebilirim. Bunun üzerine Westworld'e geçmeye karar verdim. Ubuntu'nun açamayacağı disk yoktu. Diskin içinde beklediğimden de geniş bir arşiv vardı..Net 2.0/3.5 ile yazılmış projeler, makaleler için toplanmış belgeler, cv'min seksensekiz çeşidi, bloğun dönemsel yedekleri, fotoğrafçılık ile uğraştığım zamanlardan kalma klasörler ve diğer şeyler
 

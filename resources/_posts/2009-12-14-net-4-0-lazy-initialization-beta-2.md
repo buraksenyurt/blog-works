@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: ".Net 4.0 - Lazy Initialization [Beta 2]"
 date: 2009-12-14 01:30:00 +0300
-description: "Lazy Initialization yetenekleri sayesinde programların gereksiz bellek tüketimlerinin önüne geçilebilir ve ayrıca performans kazanımı sağlanabilir. Aslında uygulamalarımızda Lazy Initialization kullanmamız için gerek ve yeter iki sebep bulunmaktadır..."
 categories:
   - csharp-4-0
 tags:
@@ -17,12 +16,9 @@ tags:
   - visual-studio
   - thread-safety
 ---
-# .Net 4.0 - Lazy Initialization [Beta 2]
-![blg96_Giris.jpg](/assets/images/2009/blg96_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Eminim hepimiz arada sırada tembellik yapıyor ve ilk bulduğumuz rahat köşeye kıvrılıp hiç bir şeyi düşünmeden rahatça uyuyabiliyoruz. Eğer bulunduğumuz yer uyumaya çok müsait değilse yandaki kedi gibi ortama ayak uydurup yinede uyuyoruz
+
+![blg96_Giris.jpg](/assets/images/2009/blg96_Giris.jpg)
 
 ![Smile](/assets/images/2009/smiley-smile.gif)
 
@@ -167,7 +163,7 @@ namespace BeLazy
 
             Console.WriteLine("Scene oluşturuldu mu? {0} ", scene.IsValueCreated);
             Console.WriteLine("Azman oluşturuldu mu= {0}", azman.IsValueCreated);
-            Console.WriteLine("Gazman oluşturuldu mu= {0}", gazman.IsValueCreated);     
+            Console.WriteLine("Gazman oluşturuldu mu= {0}", gazman.IsValueCreated);
 
             Console.WriteLine(currentScene.ToString());
 

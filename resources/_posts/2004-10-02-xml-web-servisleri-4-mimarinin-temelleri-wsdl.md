@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Xml Web Servisleri - 4 ( Mimarinin Temelleri - WSDL)"
 date: 2004-10-02 12:00:00 +0300
-description: "İstemciler, web servisleri ile aralarındaki iletişimi, çalıştıkları makinede oluşturulan proxy nesneleri yardımıyla gerçekleştirir. Bu, istemci uygulamanın, web servisine ait üyelerin farkında olmasını gerektiren bir durumdur. Nitekim proxy nesnesini oluşturan sınıf, web servisindeki public arayüze göre tasarlanır. Dolayısıyla, istemci uygulamanın kullandığı web servisine ait bilgileri bir şekilde temin etmesi gerekmektedir. Visual Studio.Net ortamında geliştirdiğimiz istemci uygulamada, projeye web servisinin referans olarak eklenmesi sonucu oluşturulan bazı dosyalar olduğundan bahsetmiştik. Disco uzantılı bir dosya, wsdl uzantılı bir dosya ve proxy sınıfımıza ait cs uzantılı dosya."
 categories:
   - xml-web-services
 tags:
@@ -18,9 +17,6 @@ tags:
   - visual-studio
   - asmx
 ---
-# Xml Web Servisleri - 4 ( Mimarinin Temelleri - WSDL)
-Değerli Okurlarım, Merhabalar.
-
 İstemciler, web servisleri ile aralarındaki iletişimi, çalıştıkları makinede oluşturulan proxy nesneleri yardımıyla gerçekleştirir. Bu, istemci uygulamanın, web servisine ait üyelerin farkında olmasını gerektiren bir durumdur. Nitekim proxy nesnesini oluşturan sınıf, web servisindeki public arayüze göre tasarlanır. Dolayısıyla, istemci uygulamanın kullandığı web servisine ait bilgileri bir şekilde temin etmesi gerekmektedir. Visual Studio.Net ortamında geliştirdiğimiz istemci uygulamada, projeye web servisinin referans olarak eklenmesi sonucu oluşturulan bazı dosyalar olduğundan bahsetmiştik. Disco uzantılı bir dosya, wsdl uzantılı bir dosya ve proxy sınıfımıza ait cs uzantılı dosya.
 
 ![mk101_1.gif](/assets/images/2004/mk101_1.gif)

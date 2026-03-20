@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Mocha'nızı Node.js ile Alır mıydınız?"
 date: 2018-06-07 21:03:00 +0300
-description: "Bu yazımızda Node.js kodlarımızı test etmek için kullanabileceğimiz Mocha ve Should çatılarına değiniyoruz. Çok basit bir node.js fonksiyonelliğini test edereken behaviour driven development(BDD) odaklı yaklaşıma da çok çok yüzeysel anlamda vurguda bulunuyoruz. Should çatısını kullanırken kendi özel assertion fonksiyonlarımızı nasıl yazabileceğimize de kısaca bakıyoruz. Özetle test yazmanın nasıl keyifli hale getirildiğine bakıyoruz."
 categories:
   - nodejs
 tags:
@@ -16,12 +15,9 @@ tags:
   - visual-studio
   - github
 ---
-# Mocha'nızı Node.js ile Alır mıydınız?
-![mocha_1.gif](/assets/images/2018/mocha_1.gif)
-
-Merhaba Arkadaşlar,
-
 Çalışmakta olduğum şirketin bizlere sunduğu güzel imkanlardan birisi de Pluralsight aboneliği. Hesabım açılır açılmaz ilk yol haritamı da çıkarıverdim. Kendime göre verimli olacağını düşündüğüm bir zaman planlaması yaptım. Sabah saat 07:15 sularında şirkete vardıktan sonra, kapıdaki görevliye sıcak bir tebessümle 'Günaydın'de, mutfaktan geçerken bir bardak kahve al, masana otur ve sonrasında kaldığın yerden devam et... Şu sıralar Node.js yol haritamın merkezinde yer alıyor. Mesai başlangıç saatimiz olan 07:45'e kadar izleyebildiğim ve uygulayabildiğim kadarıyla ilerliyorum. Yer yer videoyu durduruyor, örnek kod parçalarını satır satır yazıyor, gerektiği yerlerde notlar alıyorum. Amacım şu an için sadece ve sadece Node.js'i tanımak, biraz daha iyi anlamak. Sonuçta node.js konusunda uzman olabilmem için yüzlerce saat gerçek hayat projelerinde çalışmam gerekiyor.
+
+![mocha_1.gif](/assets/images/2018/mocha_1.gif)
 
 İşte bu tempoyu devam ettirdiğim sabahlardan birisinde işlediğim modülde test kodları yazılması üzerine faydalanılan iki paketten bahsedildi. Modülü çalışırken çok güzel şeyler öğrendiğimi fark ettim. Hafiften behavioral driven development (BDD) yaklaşımına yönlendiren, kullanımı kolay ve eğlenceli bir test ortamının nasıl oluşturulabileceği gözler önüne seriliyordu (Aslında şu güdümlü geliştirme konsepti bağlamında sevgili dostum Görkem Özdoğan'ın [şuradaki yazısını okumanızı](http://gorkemozdogan.net/dv/data-vinci-32-x-driven-development/) şiddetle tavsiye ederim) Modülde Mocha ve Should isimli iki çatıdan (framework) bahsediliyordu. Öğrendiklerimi pekiştirmek için bir yerlere yazmam gerektiğini gayet iyi biliyordum.
 

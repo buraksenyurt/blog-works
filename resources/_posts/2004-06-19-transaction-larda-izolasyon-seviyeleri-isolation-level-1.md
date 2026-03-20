@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Transaction' larda Izolasyon Seviyeleri (Isolation Level) - 1"
 date: 2004-06-19 12:00:00 +0300
-description: "Bu makalemizde, Transaction' larda kullanılan izolasyon seviyelerini incelemeye başlayacağız. Izolasyon seviyeleri, eşzamanlı olarak çalışan Transaction' ların birbirlerini nasıl etkilemesi gerektiğini belirtmekte kullanılır. Yani bir başka deyişle, bir Transaction içinde meydana gelen değişikliklerin, başka eş zamanlı Transactionlar tarafından nasıl ele alınması gerektiğini belirlememize olanak sağlar. Izolasyon seviylerini anlamanın en iyi yolu, eş zamanlı olarak çalışan Transaction' larda meydana gelebilecek sorunları iyi anlamaktan geçer."
 categories:
   - ado-net
 tags:
@@ -14,11 +13,6 @@ tags:
   - visual-studio
   - datatable
 ---
-# Transaction' larda Izolasyon Seviyeleri (Isolation Level) - 1
-"Felakete maruz kalmadan önce, olasılıkları iyi bilmek gerekir."
-
-Değerli Okurlarım, Merhabalar.
-
 Bu makalemizde, Transaction'larda kullanılan izolasyon seviyelerini incelemeye başlayacağız. Izolasyon seviyeleri, eşzamanlı olarak çalışan Transaction'ların birbirlerini nasıl etkilemesi gerektiğini belirtmekte kullanılır. Yani bir başka deyişle, bir Transaction içinde meydana gelen değişikliklerin, başka eş zamanlı Transactionlar tarafından nasıl ele alınması gerektiğini belirlememize olanak sağlar. Izolasyon seviylerini anlamanın en iyi yolu, eş zamanlı olarak çalışan Transaction'larda meydana gelebilecek sorunları iyi anlamaktan geçer.
 
 Eşzamanlı olarak çalışan iki Transaction göz önüne alındığında, oluşabilecek durumlar üç tanedir. Phantoms, Non-Repeatable Read, Dirty Read. Her bir durumun, çalışan Transaction'lara etkisi farklıdır. Şimdi bu problemleri incelemeye çalışalım. Bu amaçla basit bir windows uygulaması geliştireceğiz. Uygulamamız, Sql sunucusu üzerinde çalışan veritabanı üzerinde ekleme, güncelleme, veri çekme gibi işlemler yapacak. Tüm bu işlemleri birer Transaction içerisinde gerçekleştireceğiz. Sonuç olarak, aynı anda bu uygulamalardan iki proses çalıştırıp, bahsettiğimiz problemleri simüle etmeyi deneyeceğiz. Öncelikle, Visual Studio.Net ortamında bir windows uygulamasını aşağıdakine benzer forma sahip olacak şekilde oluşturalım.

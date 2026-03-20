@@ -2,7 +2,6 @@
 layout: post
 title: "Soap Bazlı WCF Servislerini REST Modeline Taşımak"
 date: 2009-04-17 17:19:00 +0300
-description: ".Net Framework 3.5 ile birlikte, WCF(Windows Communication Foundation) tarafına kazandırılan önemli yeteneklerden biriside Web programlama modelidir. Bu modelin getirileri arasında, WCF servislerinin REST(Representational State Transfer) tekniğine göre yazılıp, kullanılabilmesi de vardır. Özellikle SOAP(Simple Object Access Procotol) bazlı WCF Servisleri ile REST modeline göre tasarlanmış servisler arasındaki en büyük fark, HTTP metodunun çeşididir."
 categories:
   - wcf
 tags:
@@ -19,7 +18,6 @@ tags:
   - serialization
   - visual-studio
 ---
-# Soap Bazlı WCF Servislerini REST Modeline Taşımak
 .Net Framework 3.5 ile birlikte, [WCF (Windows Communication Foundation)](http://msdn.microsoft.com/en-us/netframework/aa663324.aspx) tarafına kazandırılan önemli yeteneklerden biriside Web programlama modelidir. Bu modelin getirileri arasında, WCF servislerinin REST ([Representational State Transfer](http://en.wikipedia.org/wiki/Representational_State_Transfer)) tekniğine göre yazılıp, kullanılabilmesi de vardır. Özellikle SOAP (Simple Object Access Procotol) bazlı WCF Servisleri ile REST modeline göre tasarlanmış servisler arasındaki en büyük fark, HTTP metodunun çeşididir.
 
 SOAP bazlı modelde istemciler proxy'ler aracılığıyla HTTP protokolünün POST metoduna göre isteklerini gönderirler. REST modeline göre tasarlanmış bir servise ise HTTP protokolünün GET metoduna göre talepte bulunulmaktadır. URL bazlı Querystring parametreleri ele alınabilir, URL Rewriting/URL Routing tarzında taleplerin istenmesi sağlanabilir (İlerleyen bir yazımda nasıl ele alındığını göstereceğim). Bu yazımızda SOAP bazlı olarak tasarlanmış bir WCF servisinin, basitçe REST modeline nasıl taşınabileceğini incelemeye çalışacağız. Öncelikli olarak elimizde aşağıdaki kod parçalarında yer alan sözleşme (Service Contract) ve tiplere sahip bir WCF Service Application'ımız olduğunu düşünelim.

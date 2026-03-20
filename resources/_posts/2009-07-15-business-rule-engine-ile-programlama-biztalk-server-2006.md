@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Business Rule Engine ile Programlama(Biztalk Server 2006)"
 date: 2009-07-15 13:30:00 +0300
-description: "Yıllardır yazılım projelerinde görev almaktayım. Çeşitli projelerde pek çok zorlukla karşılaştım. Özellikle enterprise seviyedeki projelerde karşılaştığım en büyük zorluklar arasında, müşterinin uygulama içerisinde tanımladığı iş kurallarını istediği gibi ve görsel arayüzler yardımıyla değiştirmek istemesi yer almaktaydı..."
 categories:
   - biztalk
 tags:
@@ -17,14 +16,9 @@ tags:
   - testing
   - visual-studio
 ---
-# Business Rule Engine ile Programlama(Biztalk Server 2006)
-![blg46_1.jpg](/assets/images/2009/blg46_1.jpg)
-
-Merhaba Arkadaşlar,
-
 Yıllardır yazılım projelerinde görev almaktayım. Çeşitli projelerde pek çok zorlukla karşılaştım. Özellikle enterprise seviyedeki projelerde karşılaştığım en büyük zorluklar arasında, müşterinin uygulama içerisinde tanımladığı iş kurallarını istediği gibi ve görsel arayüzler yardımıyla değiştirmek istemesi yer almaktaydı. Burada geliştirme açısından bakıldığında zafer, söz konusu iş kurallarını uygulama kodu üzerinde herhangibir güncelleme yapılmasına gerek bırakmadan entegre edebilen sistemleri geliştirmektir aslında.
 
-![Wink](/assets/images/2009/smiley-wink.gif)
+![blg46_1.jpg](/assets/images/2009/blg46_1.jpg)
 
 Tabiki burada müşterinin kastettiği iş kurallarının nasıl tanımlandığından tutunda dile getiriliş şekli daha çok büyük öneme sahiptir. Nitekim öyle kurallar olabilir ki, yada bu kurallar öyle şekillerde dile getirilebilirki, yorumlayabilmek veya uygulatabilmek için yapay zeka stratejilerinin ele alınması zorunlu hale gelir. Ben tabiki konunun bu kısmına en azından şu an için girmemeyi tercih etmekteyim
 

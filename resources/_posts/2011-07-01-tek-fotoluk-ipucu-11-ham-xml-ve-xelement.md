@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu – 11 (Ham XML ve XElement)"
 date: 2011-07-01 11:30:00 +0300
-description: "Merhaba Arkadaşlar,"
 categories:
   - tek-fotoluk-ipucu
   - wcf
@@ -14,9 +13,6 @@ tags:
   - dotnet
   - xml
 ---
-# Tek Fotoluk İpucu – 11 (Ham XML ve XElement)
-Merhaba Arkadaşlar,
-
 Hani olurda yazdığınız WCF servislerini.Net istemcilerine açarken XML olarak döndürdüğünüz içeriklari RAW formatlarında sunmak istersiniz. Bu durumda yapacağınız iş çok basittir. İşte örnek
 
 ![Winking smile](/assets/images/2011/wlEmoticon-winkingsmile_29.png)

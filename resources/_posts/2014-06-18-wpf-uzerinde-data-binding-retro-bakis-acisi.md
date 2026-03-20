@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WPF Üzerinde Data Binding– Retro Bakış Açısı"
 date: 2014-06-18 16:55:00 +0300
-description: "XAML doğduğundan beri gerek WPF(Windows Presentation Foundation), gerek Silverlight, gerek Windows Phone tarafı olsun pek çok yeniliği ve farklı geliştirme bakış açılarını da beraberinde getirmiş oldu. Bu alanlardan birisi de özellikle kontrol odaklı veri bağlama(Data Binding) stratejileri üzerinedir. Bu anlamda pek çok ve farklı veri bağlama tekniğini bulmak mümkün."
 categories:
   - wpf
 tags:
@@ -17,10 +16,10 @@ tags:
   - http
   - windows-phone
 ---
-# WPF Üzerinde Data Binding– Retro Bakış Açısı
-[![retro_car-1590](/assets/images/2014/retro_car-1590_thumb.jpg)](/assets/images/2014/retro_car-1590.jpg) Merhaba Arkadaşlar,
-
 Bizim dünyamızda zaman hızla akar ve eskiler eskide kalıp, yerini yeniler almaya başlar. Her ne kadar uzun ömürlü kavramlar söz konusu olsa da genel itibariyle yazılım dünyası böyledir. Bazen durup geriye bakar, eskiden nasıl yaptığımızı hatırlar, sonra yenisine dönerek bir kıyaslama yaparız. İşte bu yazımızda yıllarca eski stilde geliştirme yapmış klasik bir.Net yazılımcısının gözünden, yenilikçi bir konuya (ki çıkalı da çok çok çoook zaman olmuştur) bakmaya çalışacağız. Buyrun bakalım.
+
+[![retro_car-1590](/assets/images/2014/retro_car-1590_thumb.jpg)](/assets/images/2014/retro_car-1590.jpg)
+
 
 XAML doğduğundan beri gerek WPF (Windows Presentation Foundation), gerek Silverlight, gerek Windows Phone tarafı olsun pek çok yeniliği ve farklı geliştirme bakış açılarını da beraberinde getirmiş oldu. Bu alanlardan birisi de özellikle kontrol odaklı veri bağlama (Data Binding) stratejileri üzerinedir. Bu anlamda pek çok ve farklı veri bağlama tekniğini bulmak mümkün.
 

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ollama Yardımıyla Deepseek Dil Modelini .Net Platformunda Kullanmak"
 date: 2025-02-10 14:00:00 +0300
-description: "Yakın zamanda AI hizmetlerini .Net uygulamalarına adapte edebilmek için iki soyutlama paketi tanıtıldı. Microsoft.Extensions.AI ve Microsoft.Extensions.AI.Abstractions. Bu kütüphanelerden yararlanarak birçok dil modelini basit metot çağrıları ile kullanabiliyoruz. OpenAI, Azure OpenAI, Azure AI Infrence ve Ollama kullanabileceğimiz servislerden birkaçı. Bu servisler birçok dil modelini çalıştırmak için birer sunucu olarak da hareket ediyorlar. Microsoft .Net kütüphaneleri ise bu servisleri kullanmak için gerekli fonksiyonellikleri sağlayarak kullanımı kolaylaştırıyor."
 categories:
   - csharp
 tags:
@@ -25,10 +24,9 @@ tags:
   - github
   - dependency-management
 ---
-# Ollama Yardımıyla Deepseek Dil Modelini .Net Platformunda Kullanmak
-![llama_logo.png](/assets/images/2025/llama_logo.png)
-
 Geçtiğimiz günlerde Bursa Bilişim Topluluğu tarafından düzenlenen bir etkinliğe konuşmacı olarak katılma fırsatı buldum. Ben, yüksek kalite kodlama ve teknik borçlanma ile mücadele üzerine bazı tecrübelerimi paylaştım. Benden sonra sevgili dostum Bora Kaşmer (Coderbora) JWT token senaryolarında özellikle çok yüksek kullanıcı ve farklı cihazların kullanıldığı senaryolardaki olası güvenlik açıkları üzerine nasıl tedbirler uygulanabileceğini anlatan dikkat çekici bir sunum icra etti.
+
+![llama_logo.png](/assets/images/2025/llama_logo.png)
 
 Son olarak Volosoft'tan Alper Ebçioğlu, birkaç fotoğrafı arasından sosyal medyada kullanılabilecek en iyi versiyonun tespiti için Ollama ve Microsoft AI soyutlamalarının nasıl kullanılacağına dair bir başka etkileyici sunum gerçekleştirdi. Alper'in sunumu sonrası bu konuyu mutlaka öğrenmeli ve deneyimlerimi yazıya dökmeliyim dedim. Maceramızın bundan sonraki kısmı sunumlardan aldığım ilham üzerine yaptığım araştırma ve denemelerin sonuçlarını içermektedir;)
 
@@ -176,6 +174,7 @@ Pek tabii daha üst modelleri çalıştırmak için daha güçlü bir sisteme ih
 
 Şimdi yazımızın başlarında belirttiğim senaryo ile devam edelim. C# dosyalarını bu dil modeline verip kalitesini yorumlatmak istiyoruz. Pek tabii burada çok iyi prompt girilmesi gerekiyor. Dolayısıyla farklı bir yaklaşıma gideceğiz. Console uygulamamıza ait kodları aşağıdaki gibi değiştirelim.
 
+{% raw %}
 ```csharp
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
@@ -233,6 +232,7 @@ foreach (var codeFile in codeFiles)
     Console.WriteLine($"Total time of analysis {time.Elapsed.TotalSeconds}");
 }
 ```
+{% endraw %}
 
 Örnek kodun en önemli kısmı prompt içeriği. Burada görüldüğü üzere chatbot konuşmalarından çok daha farklı bir bildiri söz konusu. İstediğimiz kod analizini yapması için dil modeline detaylı bilgiler veriyoruz. Örnekte kullandığım promptu chatgpt'ye yaptırdığımı ifade edeyim ama kendisi Deepseek için bunu istediğimi henüz önemsememiş gibi:D Dolayısıyla Prompt Engineering mevzusu hayatımızın bundan sonraki aşamalarında oldukça önemli hale gelebilir. Diğer yandan bu tip bir promptu yazdırmak içinde iyi seviyede programlama bilgisine, en azından programlama dilinin yapısı ile ilgili kavramlara hakim olmak gerekiyor. Korkma sayın programcı bize hala iş var:D Neyse neyse biz konumuza geri dönelim. Örneğin aşağıdaki kod parçası için çalıştırabiliriz.
 

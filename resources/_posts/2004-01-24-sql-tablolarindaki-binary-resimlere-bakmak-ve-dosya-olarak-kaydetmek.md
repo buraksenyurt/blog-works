@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Sql Tablolarındaki Binary Resimlere Bakmak ve Dosya Olarak Kaydetmek"
 date: 2004-01-24 10:00:00 +0300
-description: "Hatırlayacağınız gibi bir önceki makalemizde, bir resim dosyasını sql tablosundaki Image veri tipinden bir alana nasıl yazabileceğimizi görmüştük. Bugünkü makalemizde ise, bu tablodaki Image veri tipindeki Resim alanında yer alan byte'lara nasıl okuyabileceğimizi ,( Örneğimizde, PictureBox kontrolünde nasıl görüntüleyebileceğimizi inceledik) ve bu alandaki resmi, jpg uzantılı bir resim dosyası olarak nasıl kaydedebileceğimizi incelemeye çalışacağız."
 categories:
   - ado-net
 tags:
@@ -13,9 +12,6 @@ tags:
   - visual-studio
   - datatable
 ---
-# Sql Tablolarındaki Binary Resimlere Bakmak ve Dosya Olarak Kaydetmek
-Değerli Okurlarım, Merhabalar.
-
 Hatırlayacağınız gibi bir önceki makalemizde, bir resim dosyasını sql tablosundaki Image veri tipinden bir alana nasıl yazabileceğimizi görmüştük. Bugünkü makalemizde ise, bu tablodaki Image veri tipindeki Resim alanında yer alan byte'lara nasıl okuyabileceğimizi,(Örneğimizde, PictureBox kontrolünde nasıl görüntüleyebileceğimizi inceledik) ve bu alandaki resmi, jpg uzantılı bir resim dosyası olarak nasıl kaydedebileceğimizi incelemeye çalışacağız.
 
 Image tipindeki binary (ikili) bir alandan verileri okumak için yine stream nesnelerinden ve BinaryWriter sınıfından faydalanacağız. Visual Studio.Net ortamında, SqlClient isim uzayındaki sınıfları kullanarak Wallpapers isimli sql tablomuza eriştiğimizde, PictureBox kontrolüne, Image tipindeki Resim alanımızı bağlayamadığımızı görürüz. Bu nedenle, bu ikili (binary) alanı okuyup, PictureBox kontrolümüzün anlayacağı bir hale getirmeliyiz.

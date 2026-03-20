@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "SqlDataReader Sınıfı 2"
 date: 2003-12-29 12:00:00 +0300
-description: "Bir önceki makalemizde SqlDataReader sınıfını incelemeye başlamıştık Listeleme amaçlı veri kümelerinin görüntülemesinde performans açısından etkin bir rol oynadığından bahsetmiştik. Bugünkü makalemizde , SqlDataReader sınıfının faydalı diğer özelliklerinden bahsedeceğiz. Öncelikle, bir SqlDataReader nesnesinin, geçerli ve açık bir SqlConnection nesnesi üzerinde çalışan bir SqlCommand nesnesi yardımıyla oluşturulduğunu hatırlayalım."
 categories:
   - ado-net
 tags:
@@ -11,9 +10,6 @@ tags:
   - dotnet
   - performance
 ---
-# SqlDataReader Sınıfı 2
-Değerli Okurlarım, Merhabalar.
-
 Bir önceki makalemizde SqlDataReader sınıfını incelemeye başlamıştık Listeleme amaçlı veri kümelerinin görüntülemesinde performans açısından etkin bir rol oynadığından bahsetmiştik. Bugünkü makalemizde, SqlDataReader sınıfının faydalı diğer özelliklerinden bahsedeceğiz. Öncelikle, bir SqlDataReader nesnesinin, geçerli ve açık bir SqlConnection nesnesi üzerinde çalışan bir SqlCommand nesnesi yardımıyla oluşturulduğunu hatırlayalım.
 
 Burada SqlCommand sınıfına ait ExecuteReader metodu kullanılmaktadır. ExecuteReader metoduna değişik parametreler geçirerek uygulamanın performansını dahada arttırabiliriz. Önceki makalemizde, CommandBehavior.CloseConnection parametre değerini kullanmıştık. CommandBehavior, çalıştırılacak olan sql sorgusu için bir davranış belirlememizi sağlar. SqlCommand nesnesinin ExecuteReader metodunun alabileceği parametre değerleri şekil1 de görülmektedir. Bunların ne işe yaradığı kısaca tablo 1 ‘de bahsedilmiştir.

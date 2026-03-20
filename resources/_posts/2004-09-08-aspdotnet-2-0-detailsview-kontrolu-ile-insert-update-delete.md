@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net 2.0 DetailsView Kontrolü ile Insert,Update,Delete"
 date: 2004-09-08 12:00:00 +0300
-description: "Bu makalemizde, Whidbey ile gelen yeni kontrollerden birisi olan DetailsView bileşeni ile, satır ekleme, silme ve güncelleme gibi işlemlerin nasıl yapıldığını incelemeye çalışacağız. Bununla birlikte öncesinde, DetailsView kontrolünü genel hatları ile kısaca araştıracağız. DetailsView kontrolü, Asp.Net 2.0' a eklenen yeni data-bound kontrollerinden birisidir. Bu kontrolün en büyük özelliği, t zamanında sadece bir satır verinin gösterilmesini sağlamasıdır. Bu noktada GridView kontrolünden ayrılmasına rağmen, bir veri kümesi üzerinden navigasyon linkleri yardımıyla hareket edilmesinede izin verir."
 categories:
   - aspnet-2-0
 tags:
@@ -12,9 +11,6 @@ tags:
   - aspnet
   - http
 ---
-# Asp.Net 2.0 DetailsView Kontrolü ile Insert,Update,Delete
-Değerli Okurlarım Merhabalar,
-
 Bu makalemizde, Whidbey ile gelen yeni kontrollerden birisi olan DetailsView bileşeni ile, satır ekleme, silme ve güncelleme gibi işlemlerin nasıl yapıldığını incelemeye çalışacağız. Bununla birlikte öncesinde, DetailsView kontrolünü genel hatları ile kısaca araştıracağız. DetailsView kontrolü, Asp.Net 2.0' a eklenen yeni data-bound kontrollerinden birisidir. Bu kontrolün en büyük özelliği, t zamanında sadece bir satır verinin gösterilmesini sağlamasıdır. Bu noktada GridView kontrolünden ayrılmasına rağmen, bir veri kümesi üzerinden navigasyon linkleri yardımıyla hareket edilmesinede izin verir. Konuyu daha iyi anlayabilmek için, bir önceki makalemizde yer alan Access veritabanımızı kullanacağımız bir örnek geliştireceğiz. Bu örneğimizde de, Access veri kaynağımıza bağlanmak ve Select, Insert, Update, Delete işlemlerini gerçekleştirebilmek amacıyla bir AccessDataSource bileşeni kullanacağız. Bu bileşenimizi aşağıdaki aspx kodları ile oluşturalım.
 
 ```csharp

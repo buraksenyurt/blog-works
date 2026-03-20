@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ado.Net 2.0 ve Sql Komutlarını Asenkron Olarak Yürütmek - 1"
 date: 2004-09-23 12:00:00 +0300
-description: "Bir önceki makalemizde MARS etkisini incelemiş ve aynı bağlantı üzerinden birden fazla sayıda sonuç kümesine nasıl erişebileceğimizi görmüştük. Her ne kadar, aynı anda birden fazla sonuç kümesine erişebilsekte, halen daha MARS modeli, sql komutları ile eş zamanlı çalışan kodlar ve asenkron yürütülebilen diğer sql komutları için yeterli değildir."
 categories:
   - ado-net-2-0
 tags:
@@ -15,9 +14,6 @@ tags:
   - generics
   - visual-studio
 ---
-# Ado.Net 2.0 ve Sql Komutlarını Asenkron Olarak Yürütmek - 1
-Değerli Okurlarım Merhabalar,
-
 Bir önceki makalemizde MARS etkisini incelemiş ve aynı bağlantı üzerinden birden fazla sayıda sonuç kümesine nasıl erişebileceğimizi görmüştük. Her ne kadar, aynı anda birden fazla sonuç kümesine erişebilsekte, halen daha MARS modeli, sql komutları ile eş zamanlı çalışan kodlar ve asenkron yürütülebilen diğer sql komutları için yeterli değildir. Ado.Net 2.0 ile, sql komutlarını asenkron olarak yürütebileceğimiz bir takım yeni üyeler gelmektedir. Bu üyeler sayesinde, sql komutlarını asenkron olarakçalıştırabilir ve hatta, diğer kod satırlarınında eş zamanlı olarak işleyebilmesini sağlayabiliriz. Bu işleri gerçekleştirebilecek üyeler şu an için sadece SqlClient sınıfında yer almaktadır. Ancak.Net Framework 2.0' ın final sürümünde bu üyelerin, diğer Ado.Net isim alanlarınada yerleştirileceklerini düşünüyorum.
 
 Asenkron komut yürütümenin mantığı, asenkron metodların çalıştırılmasına çok benzer. Nitekim burada da, başlatılan bir prosesi kontrol etmemize imkan sağlayan IAsyncResult arayüzününe ait bir nesne örneği anahtar görevini oynamaktadır. Asenkron sql komutlarını yürütmek için, SqlCommand sınıfına aşağıdaki tabloda yer alan altı adet yeni metod ilave edilmiştir.

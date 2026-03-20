@@ -1,32 +1,30 @@
-﻿---
+---
 layout: post
 title: "Microsoft DotNet Platformunda Bir MCP Server Yazmak"
 date: 2026-03-07 14:34:00 +0300
-description: "MCP(Model Context Protocol), yapay zeka araçları için tool desteği sağlamak amacıyla kullanılan bir protokol olarak düşünülebilir. Anthropic tarafından geliştirilmiş bir standarttır. Bu protokolün geliştirilmesinde amaç yapay zeka araçlarına belli bir standart dahilinde harici araç desteği sunabilmektir. Genel senaryoda bir dil modeline gitmeden önce bu protokol üzerinden hizmet veren MCP Server`lara gidilerek sağlanan araçlar kullanılabilir. Araçlar da arka planda çoğunlukla REST API hizmetlerini çağırır ama bu zorunluluk değildir. Bir başka deyişle MCP server'ın sağladığı araç seti arka planda sarmalladığı herhangi bir başka araca da gidebilir. MCP, yapay zeka araçları için standart bir protokol sunduğundan tüm MCP server'lar bir yapay zeka aracı tarafından çağırılabilir."
 categories:
-  - dotnet-core
-  - csharp
-  - rust
+  - .Net Core
+  - C#
+  - Rust
 tags:
-  - dotnet-core
-  - csharp
-  - rust
-  - yaml
-  - bash
-  - json
-  - dotnet
-  - postgresql
-  - mongodb
-  - rest
-  - http
-  - docker
-  - llm
-  - mcp
-  - async-await
-  - visual-studio
-  - github
+  - .Net Core
+  - C#
+  - Rust
+  - YAML
+  - Bash
+  - JSON
+  - .NET
+  - PostgreSQL
+  - MongoDB
+  - REST
+  - HTTP
+  - Docker
+  - LLM
+  - MCP
+  - Async/Await
+  - Visual Studio
+  - GitHub
 ---
-# Microsoft DotNet Platformunda Bir MCP Server Yazmak
 MCP (Model Context Protocol), yapay zeka araçları için tool desteği sağlamak amacıyla kullanılan bir protokol olarak düşünülebilir. Anthropic tarafından geliştirilmiş bir standarttır ki detaylarına [buradan](https://github.com/modelcontextprotocol) ulaşabilirsiniz. Bu protokolün geliştirilmesinde amaç yapay zeka araçlarına belli bir standart dahilinde harici araç desteği sunabilmektir. Genel senaryoda bir dil modeline gitmeden önce bu protokol üzerinden hizmet veren MCP sunucularına ulaşılır ve sağlanan araçlar kullanılarak belli bir domain sınırı içerisinde kalacak şekilde işlemler yapılabilir. Araçlar (Tools) arka planda çoğunlukla REST API gibi hizmetleri kullanır ancak farklı kaynaklarda çağırılabilir. Bir başka deyişle MCP sunucusunun sağladığı araç seti arka planda sarmaladığı herhangi bir başka araca da gidebilir. MCP, yapay zeka araçları için standart bir protokol sunduğundan tüm MCP Server'lar bir yapay zeka aracı tarafından keşfedilebilir, araçları kullanılabilir.
 
 Çok basit bir senaryo ile konuyu anlamaya çalışalım; Sisteminizde binlerce servis olduğunu ve bu servislerle ilgili keşif dokümanlarının yaml formatlı dosyalarda tutulduğunu düşünelim. Tabii o kadar çok yaml içeriği var ki bunlarla alakalı istatistik toplayan, bilgi veren bir de Rest Api hizmetimiz bulunuyor. Bir MCP sunucusu ile bu API hizmetindeki fonksiyonellikleri birer araç (tool) olarak tanımlamak ve çağırmak mümkündür. Senaryoya dahil olan bir MCP istemcisi (Örneğin VS Code veya farklı bir kod geliştirme ortamındaki AI asistanı, Github CLI veya Claude CLI gibi komut satırı araçları ya da bizim yazacağımız basit bir istemci uygulama), MCP sunucumuza bağlanarak araçlarımızı çağırabilir ve bu çıktıları değerlendirerek cevap vermesi için herhangi bir dil modelini kullanabilir. Söz gelimi bu ortamlarda aşağıdaki gibi sorular sorabiliriz;

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF 4.5–Task Based Asynchronous Operasyonlar"
 date: 2013-01-01 13:51:00 +0300
-description: "Bilindiği üzere .Net Framework 4.5 ile birlikte altyapıya entegre olan async ve await anahtar kelimelerini kullanarak, task bazlı asenkron programlama teknikleri uygulanabilmektedir. Çok doğal olarak WCF 4.5 tarafında da bunun bir yansımasını görmekteyiz. Visual Studio arabirimi üzerinden herhangibir WCF servis referansını istemci uygulamaya eklemeye çalıştığımızda Task bazlı operasyon desteği varsayılan olarak etkinleştirilmekte ve proxy tipi içeriğinde buna uygun metodlara yer verilmektedir. Dolayısıyla WCF(Windows Communication Foundation) servislerini kullanan istemciler, operasyon çağrılarında async ve await anahtar kelimelerinden de yararlanabilirler."
 categories:
   - wcf
   - wcf-4-5
@@ -22,10 +21,10 @@ tags:
   - windows-phone
   - visual-studio
 ---
-# WCF 4.5–Task Based Asynchronous Operasyonlar
-[![kronometrei](/assets/images/2013/kronometrei_thumb.jpg)](/assets/images/2013/kronometrei.jpg) Merhaba Arkadaşlar,
-
 Yaklaşık olarak 4 dakika 38 saniye…İzleyen yazıyı benim okuma hızım bu oldu. Aslında bu süre şu demek; Öğle arasına çıkmadan bir 4 dakika 38 saniye demek bu...Ya da geldikten sonra bir 4 dakika 38 saniye demek…Ya da sabah işe erken geldiğimizde ayırabileceğimiz bir 4 dakika 38 saniye demek...Ya da servisi/otobüsü/minibüsü beklerken ayırabileceğimiz 4 dakika 38 saniye demek. Hatta Facebook’ a, Twitter’ a, Linkedin’ e, Youtube’a bakmadan geçireceğimiz bir 4 dakika 38 saniye demek… E o halde ne duruyorsunuz?Ayırın işte o zamanı
+
+[![kronometrei](/assets/images/2013/kronometrei_thumb.jpg)](/assets/images/2013/kronometrei.jpg)
+
 
 ![Winking smile](/assets/images/2013/wlEmoticon-winkingsmile_165.png)
 

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ruby Kod Parçacıkları - 1"
 date: 2015-08-02 18:00:00 +0300
-description: "Bir programlama dilini öğrenmenin en iyi yolu elbetteki bol bol kod yazmaktan geçer. En azından belirli bir seviyeye gelene kadar basit IDE' ler ile mümkünse Console ekranları üzerinden çalışarak ilerlemekte yarar vardır. Hazır bu aralar Ruby ile haşır neşir iken hem basit kod parçaları paylaşayım hem de bu eğlenceli dili birlikte öğrenelim istedim. İşte ilk kod parçacığımız. Konumuz, diziler(Arrays)."
 categories:
   - ruby
 tags:
@@ -12,9 +11,6 @@ tags:
   - wcf
   - jwt
 ---
-# Ruby Kod Parçacıkları - 1
-Merhaba Arkadaşlar,
-
 Bir programlama dilini öğrenmenin en iyi yolu elbetteki bol bol kod yazmaktan geçer. En azından belirli bir seviyeye gelene kadar basit IDE'ler ile mümkünse Console ekranları üzerinden çalışarak ilerlemekte yarar vardır. Hazır bu aralar Ruby ile haşır neşir iken hem basit kod parçaları paylaşayım hem de bu eğlenceli dili birlikte öğrenelim istedim. İşte ilk kod parçacığımız. Konumuz, diziler (Arrays).
 
 > (Örneğin Arrays.rb gibi)

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Object vs Dynamic"
 date: 2010-03-31 15:10:00 +0300
-description: "Ayrıntılar detaylarda saklıdır. Bu cümleyi çok severim. Sevdiğim özlü sözler arasındadır. Gerçel bir nesnenin ne kadar kaliteli olduğunu anlamak için detaylarına bakmak gerekir. İşçiliğine, kullanılan malzemeye, malzemelerin uyumuna vs...Hatta benzer diğerleri ile olan kalite farkını anlamak için bile. Çok doğal olarak yazılım dünyasında da bir takım konuların anlaşılabilmesi, kavranabilmesi, benzerleri ile olan farklarının irdelenebilmesi için mutlaka detaylara bakmak, ama sıkılmadan bakmak gerekir. Aynen bu günkü yazımızda yapacağımız gibi."
 categories:
   - csharp
   - csharp-3-0
@@ -15,12 +14,9 @@ tags:
   - visual-studio
   - rc
 ---
-# Object vs Dynamic
-![blg139_Giris.jpg](/assets/images/2010/blg139_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Ayrıntılar detaylarda saklıdır. Bu cümleyi çok severim. Sevdiğim özlü sözler arasındadır. Gerçel bir nesnenin ne kadar kaliteli olduğunu anlamak için detaylarına bakmak gerekir. İşçiliğine, kullanılan malzemeye, malzemelerin uyumuna vs...Hatta benzer diğerleri ile olan kalite farkını anlamak için bile. Çok doğal olarak yazılım dünyasında da bir takım konuların anlaşılabilmesi, kavranabilmesi, benzerleri ile olan farklarının irdelenebilmesi için mutlaka detaylara bakmak, ama sıkılmadan bakmak gerekir. Aynen bu günkü yazımızda yapacağımız gibi.
+
+![blg139_Giris.jpg](/assets/images/2010/blg139_Giris.jpg)
 
 Bu yazımızda Dynamic Language Runtime kullanımında büyük öneme sahip olan dynamic ile.Net Framework'ün ilk çıktığı zamandan beri var olan Object tipi arasındaki farklılıkları görmeye çalışacağız. Bunun için kod tarafında biraz daha detaya girmemiz gerekecek. Çok derin değil belki de ama aradaki farklılıkları çıkartabilmek adına önemli detaylar. Başlamadan önce örneklerimizi Visual Studio 2010 Ultimate RC sürümünde geliştirdiğimizi ve ilerleyen sürümlerde farklılıklar olabileceğini hatırlatmak isterim.
 

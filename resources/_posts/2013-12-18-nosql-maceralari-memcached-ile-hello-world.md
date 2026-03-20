@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "NoSQL Maceraları - MemCached ile Hello World"
 date: 2013-12-18 23:45:00 +0300
-description: "Web uygulamalarında ele alınan performans arttırma kriterlerinden birisi de Caching tekniklerinden yararlanılmasıdır. Özellike veri odaklı çalışan web uygulamaları göz önüne alındığında, nesnelerin bellekte tutulması/getirilmesi, sık görülen geliştirme tekniklerinden birisidir. Pek tabi bu senaryo biraz daha geniş çaplı düşünüldüğünde, bir web sunucusunda yer alan n sayıda uygulamanın tamamı için kullanılabilecek bellek tabanlı bir depolama alanı da söz konusu olacaktır/olmuştur."
 categories:
   - nosql
 tags:
@@ -21,10 +20,10 @@ tags:
   - caching
   - serialization
 ---
-# NoSQL Maceraları - MemCached ile Hello World
-[![memcached_hero_thumb4](/assets/images/2013/memcached_hero_thumb4_thumb.jpg)](/assets/images/2013/memcached_hero_thumb4.jpg) Merhaba Arkadaşlar,
-
 Belki de açık kaynak olarak geliştirilen projelerin bu kadar popüler olma nedenlerinden bir tanesi de, logolarındaki orjinalliktir. Küçük bir ihtimal olsa da böyle bir algı olduğuna inanıyorum. Söz gelimi Linux’ un pengueni, Mono projesinin maymunu (Biliyorsunuz Mono İspanyolca’ da maymun demek), Android’ in yeşil robotu, Joomla’ nın birbirlerine kenetlenmiş insanları vb.
+
+[![memcached_hero_thumb4](/assets/images/2013/memcached_hero_thumb4_thumb.jpg)](/assets/images/2013/memcached_hero_thumb4.jpg)
+
 
 Bu gün inceleyeceğimiz açık kaynak NoSQL ürünlerinden birisi olan MemCached için de benzer bir durum söz konusu bana kalırsa. Logo’ da yer alan bu sevimli yaratıklar (belki de soğuk bir kış günü yürüyüş yapan atkı takmış kediler) ilk dikkatimi çeken yanı olmuştur.
 

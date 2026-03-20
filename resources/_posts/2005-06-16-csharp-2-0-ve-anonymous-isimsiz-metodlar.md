@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "C# 2.0 ve Anonymous (İsimsiz) Metodlar"
 date: 2005-06-16 12:00:00 +0300
-description: "İsimsiz metodlar bildiğiniz gibi C# 2.0' a eklenmiş olan yeni özelliklerden birisidir. Temeli C# dilinin temsilci tipine dayanan bu yeni teknikte amaç, temsilcileri işaret edecekleri metodların sahip oldukları kod blokları ile bir seferde tanımlayabilmektir. İsimsiz metodları anlayabilmek için herşeyden önce temsilcilerin (delegates) iyi kavranmış olması gerekmektedir(Ön bilgi veya hatırlatma açısından Örnek makale ve video larımızı incelemenizi öneririm)"
 categories:
   - csharp
 tags:
@@ -12,9 +11,6 @@ tags:
   - delegates
   - generics
 ---
-# C# 2.0 ve Anonymous (İsimsiz) Metodlar
-Değerli Okurlarım Merhabalar,
-
 İsimsiz metodlar bildiğiniz gibi C# 2.0' a eklenmiş olan yeni özelliklerden birisidir. Temeli C# dilinin temsilci tipine dayanan bu yeni teknikte amaç, temsilcileri işaret edecekleri metodların sahip oldukları kod blokları ile bir seferde tanımlayabilmektir. İsimsiz metodları anlayabilmek için herşeyden önce temsilcilerin (delegates) iyi kavranmış olması gerekmektedir (Ön bilgi veya hatırlatma açısından Örnek [makale](http://www.bsenyurt.com/MakaleGoster.aspx?ID=43) ve [video](http://www.bsenyurt.com/video/Delegates.zip) larımızı incelemenizi öneririm)
 
 Kısaca temsilciler, çalışma zamanında metodların başlangıç adreslerini işaret eden tip (type) lerdir. Temsilcilerin herhangibir metodu çalışma zamanında işaret edebilmesinin yanı sıra bu metodu (metodları) çağırlabilmesi ve hatta parametreler göndererek dönüş değerleri vermesi gibi yetenekleride vardır. Ama tüm bu özellikleri arasında en önemlisi, çalışma zamanında hangi metodu çalıştıracağına karar vermesidir.

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net 2.0 ile Configuration Management (Konfigurasyon Yönetimi)"
 date: 2006-06-26 12:00:00 +0300
-description: "Asp.Net 2.0 özellikle Web.config dosyasını daha kolay yönetebilmek amacıyla beraberinde bir yönetim API' si ile birlikte gelmektedir. Configuration Management API olarak adlandırabileceğimiz bu yapı sayesinde, web.config gibi konfigurasyon dosyalarını ve içeriğini programatik olarak daha etkin bir şekilde yönetebiliriz. Bildiğiniz gibi web.config dosyası xml tabanlı bir içerik sunmakla birlikte entegre edildiği web uygulaması için gerekli temel bir takım ayaları içerir. (Elbette bir web uyguması içerisinde yer alan alt klasörler içinde ayrı web.config dosyalarının ele alınabileceğini hatırlatmakta fayda var.)"
 categories:
   - aspnet-2-0
 tags:
@@ -15,9 +14,6 @@ tags:
   - authentication
   - authorization
 ---
-# Asp.Net 2.0 ile Configuration Management (Konfigurasyon Yönetimi)
-Değerli Okurlarım Merhabalar,
-
 Asp.Net 2.0 özellikle Web.config dosyasını daha kolay yönetebilmek amacıyla beraberinde bir yönetim API'si ile birlikte gelmektedir. Configuration Management API olarak adlandırabileceğimiz bu yapı sayesinde, web.config gibi konfigurasyon dosyalarını ve içeriğini programatik olarak daha etkin bir şekilde yönetebiliriz. Bildiğiniz gibi web.config dosyası xml tabanlı bir içerik sunmakla birlikte entegre edildiği web uygulaması için gerekli temel bir takım ayaları içerir. (Elbette bir web uyguması içerisinde yer alan alt klasörler içinde ayrı web.config dosyalarının ele alınabileceğini hatırlatmakta fayda var.)
 
 AppSettings, ConnectionStrings, Authentication, Authorization, SessionState, Membership, Tracing, Pages gibi pek çok konu ile ilişkili kısımları bu ayarlar arasında düşünebiliriz. Burada saymış olduğumuz tüm kısımlar Configuration Management API içerisinde birer tipe karşılık gelmektedir. Örneğin Authentication ayarları için AuthenticationSection, SessionState ayaları için SessionStateSection gibi pek çok tip geliştirilmiştir. Bu, ilgili kısımların programatik olarak nesnel düzeyde kullanılabilmesi anlamına gelmektedir. Yani, Configuration Management API'si sayesinde, web.config içerisinde yer alan herhangibir kısmı (Section) nesne örneği olarak kullanabilir, içeriğini düzenleyebilir ve tekrardan kayıt edebiliriz. İşte bu makalemizde, basit olarak web.config içeriğini programatik olarak nasıl ele alabileceğimizi incelemeye çalışacağız.

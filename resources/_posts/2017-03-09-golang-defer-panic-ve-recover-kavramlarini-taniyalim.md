@@ -1,20 +1,16 @@
-﻿---
+---
 layout: post
 title: "GoLang - defer, panic ve recover Kavramlarını Tanıyalım"
 date: 2017-03-09 21:32:00 +0300
-description: "Geçtiğimiz günlerde panic anahtar kelimesini incelerken aslında rescue ve defer kavramları ile birlikte kullanımının daha anlamlı olduğunu gördüm. Pek tabii defer ve rescue nedir öğrenmem gerekiyordu. Bu makalemizde bahsetmiş olduğumuz kavramları basitçe anlamaya çalışacağız."
 categories:
   - golang
 tags:
   - golang
   - go
 ---
-# GoLang - defer, panic ve recover Kavramlarını Tanıyalım
-![minionpanic.gif](/assets/images/2017/minionpanic.gif)
-
-Merhaba Arkadaşlar,
-
 Gopher'ın Go diline kattığı sevimlilik ortada. Sadece maskotu değil bazı kavramları da oldukça motive edici bu dilin. Bir.Netçi olarak ortama hata fırlatmak istediğim de kullandığımız throw new Exception gibi bir terminoloji yerine panic şeklinde bir anahtar kelimenin kullanılması aslında kasttettiğim. Hatta go dilinin resmi dokümanlarında "Panic is a built-in function that stops the ordinary flow of control and begins panicking." şeklinde bir cümle ile bu terim hoş bir şekilde ifade edilmiş. En azından beni tebessüm ettirdi fotoğraftaki minion'u ise biraz ürküttü.
+
+![minionpanic.gif](/assets/images/2017/minionpanic.gif)
 
 Geçtiğimiz günlerde panic fonksiyonunu incelerken aslında recover ve defer kavramları ile birlikte kullanımının daha anlamlı olduğunu öğrendim. Aslında amacım ortama bir istisnanın nasıl fırlatılabileceğini görmek ve hata yönetimini incelemekti. Derken kendimi defer ifadesi ile panic ve recover fonksiyonlarını araştırırken buldum. İlk etapta bu üç kavramın kod akışını kontrol etmek için kullanıldığını söyleyebiliriz. Şimdi bu kavramları örneklendirerek kısaca incelemeye çalışalım.
 
@@ -23,7 +19,7 @@ defer
 .Net kökenli yazılımcılar için finally operasyonları amacıyla kullanılır dersek sanırım yerinde olacaktır. defer ifadesi ile işaret edilen fonksiyon, program çalışması sırasında mutlak suretle devreye girmesi istenen operasyonlarda kullanılır. Üzerinde işlem yapılmış bir dosyanın, açılan bir veritabanı bağlantısının, haberleşilen bir soket ile olan iletişimin kapatılması veya belleğe alınan ama işleri biten nesnelerin serbest bırakılması gibi genelleyebileceğimiz işlemler bu operasyonlara örnek olarak verilebilir. Tabii burada dikkat çekici nokta defer ifadesinde bildirilen fonksiyonun kodun akışında bir hata olması halinde de devreye girmesidir. Bir başka deyişle runtime panic olarak isimlendirilen çalışma zamanı hatalarının oluştuğu durumlarda defer edilen fonksiyonların çalışması söz konusudur. Kaynaklarda sıklıkla geçen dosya işlemlerinden basit bir tanesini bu bağlamda ele alalım.
 
 ```cpp
-package main 
+package main
 
 import (
 	"fmt" 

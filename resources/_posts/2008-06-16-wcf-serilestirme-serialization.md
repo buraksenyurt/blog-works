@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF Serileştirme(Serialization)"
 date: 2008-06-16 12:00:00 +0300
-description: "Serileştirme(Serialization) ve çözümleme(Encoding) çoğu zaman bir birlerine karıştırılan kavramlar olabilmektedir. Oysaki aralarında çok ince ama bir o kadarda önemli farklılıklar vardır. Serileştirme ve çözümleme, SOA(Service Oritented Architecture) tarzındaki uygulama çözümlerinde sıklıkla kullanılmaktadır."
 categories:
   - wcf
 tags:
@@ -20,9 +19,6 @@ tags:
   - performance
   - serialization
 ---
-# WCF Serileştirme(Serialization)
-Değerli Okurlarım Merhabalar,
-
 Serileştirme (Serialization) ve çözümleme (Encoding) çoğu zaman bir birlerine karıştırılan kavramlar olabilmektedir. Oysaki aralarında çok ince ama bir o kadarda önemli farklılıklar vardır. Serileştirme ve çözümleme, SOA (Service Oritented Architecture) tarzındaki uygulama çözümlerinde sıklıkla kullanılmaktadır. Nitekim bu tip mimarilerde servis ve istemci arasında yapılan veri transferlerinde bilginin serileştirilmesi ve mesajların çözümlenmesi gerekmektedir.
 
 Serileştirme özet olarak nesne grafiğinin (Object Graph) byte dizisine dönüştürülmesi olarak düşünülebilir. Bu sayede çalışma zamanı (Run-Time) nesne örneklerinin herhangibir kaynakta sürekli olarak saklanması mümkün olabilmektedir. Bir başka deyişle nesneye ait veri içeriğinin, bir dosyada, veritabanında, bellekte tutulması mümkündür. Ancak en önemli olan kısmı söz konusu nesne içeriğinin başka bir ortama herhangibir protokol üzerinden taşınabiliyor olmasıdır ki bu dağıtık uygulama (Distributed Applications) çözümlerinde kilit rollerden birisidir.

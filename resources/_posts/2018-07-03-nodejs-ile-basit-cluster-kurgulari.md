@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Node.js ile Basit Cluster Kurguları"
 date: 2018-07-03 21:04:00 +0300
-description: "NodeJS ile yazdığımız uygulamaları genel olarak node [application_name.js] şeklinde çalıştırıyoruz/çalıştırıyordum. Aslında bu durumda söz konusu uygulama tekil bir iş parçası olarak(Single Thread) çalışmakta. Dolayısıyla birden fazla iş parçacığını çalıştırıp tüm işlemci/çekirdek gücünü almaktan yoksun kalıyoruz. Aslında özellikle web sunucuları/servisleri geliştirebileceğimiz etkili bir ortam söz konusu iken bu tip bir avantajdan faydalanamamak yazık olurdu. NodeJS ile birlikte gelen cluster isimli modül bu konuda önemli fonksiyonellikler sunuyor."
 categories:
   - nodejs
 tags:
@@ -15,12 +14,9 @@ tags:
   - visual-studio
   - github
 ---
-# Node.js ile Basit Cluster Kurguları
-![clustering_5.gif](/assets/images/2018/clustering_5.gif)
-
-Merhaba Arkadaşlar,
-
 Programcılıkla uğraşan bizim gibi organizmalar sükunetle kod yazmaya bayılır. Hatta her şeyin sorunsuz işlediği, test'lerin prüzsüz ilerlediği, taşımaların tereyağından kıl çeker gibi kolay olduğu bir yaşam alanı düşler. Ne yazık ki gerçek hayat çoğu zaman böyle değildir. Bilirsiniz işte...Sıkışık proje süreleri, anlamakta güçlük çektiğimiz iş süreçleri, değişen ve öğrenmemiz gereken yeni nesil teknolojiler, aniden ortaya çıkan Murphy kanunları vs derken bir bakmışız ki barut fıçısına dönmüşüz. Kim bilir kaç kere içimizden bir Hulk fırlamak üzere düşe gelmiştir. Bazen benim de bu tip gıcık olduğum anlar olmuyor değil. Zaten çalışılması zor, huysuz ve aksi bir insanken bunlara birde ters giden işler eklenince, iyice çekilmez oluyorum.
+
+![clustering_5.gif](/assets/images/2018/clustering_5.gif)
 
 Ancak son yıllarda kendime güzel bir tedavi yöntemi bulduğumu söyleyebilirim. Öyle ki üzerimdeki tüm negatif enerjiyi alıp götürmeye yetiyor (En azından 2003ten beri işe yaradığını söyleyebilirim) Geçtiğimiz hafta içersinde de böyle hafiften gerginleşen sinirlerimi yatıştırmak için atladım Red Enterprise'ın akşamki ilk trenine, düştüm West-World yollarına. Gün batarken Node oteldeki odama çoktan yerleşmiş taze demlenmiş çayımı yudumluyordum bile. Kulaklarımda Freddie Hultana'dan Le Practicante'si tınlarken açtım özet notlarımı ve başladım yazmaya.
 

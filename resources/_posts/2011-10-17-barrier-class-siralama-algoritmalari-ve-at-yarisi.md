@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Barrier Class, Sıralama Algoritmaları ve At Yarışı"
 date: 2011-10-17 09:47:00 +0300
-description: "Durumu daha iyi analiz edebilmek için dilerseniz basit bir senaryo üzerinden ilerlemeye çalışalım. Malumunuz günümüz üniversitelerinde özellikle algoritma derslerinde en çok sorulan, okutulan, ezberletilen konuların başında sıralama teknikleri gelmektedir. Bubble Sort, Quick Sort, Insertion Sort vb…"
 categories:
   - parallel-programming
 tags:
@@ -12,10 +11,10 @@ tags:
   - http
   - generics
 ---
-# Barrier Class, Sıralama Algoritmaları ve At Yarışı
-[![The starting gate](/assets/images/2011/The%20starting%20gate_thumb.jpg)](/assets/images/2011/The%20starting%20gate.jpg) Merhaba Arkadaşlar,
-
 At yarışlarına pek ilgim yoktur aslında ama tam da bu günlerde okuduğum kitap nedeniyle, paralel programlama ile aralarında sıkı bir ilişki olduğunu ifade edebilirim
+
+[![The starting gate](/assets/images/2011/The%20starting%20gate_thumb.jpg)](/assets/images/2011/The%20starting%20gate.jpg)
+
 
 ![Göz kırpan gülümseme](/assets/images/2011/wlEmoticon-winkingsmile_70.png)
 

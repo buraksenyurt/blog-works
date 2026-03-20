@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WPF, Xaml, Baml ve Dahası"
 date: 2007-03-21 12:00:00 +0300
-description: "Windows Presentation Foundation (WPF), windows tabanlı uygulama geliştirme modeline yeni ve çok farklı bir soluk getirmiştir. Daha çok web uygulama geliştirme sistematiğini andıran bu yeni model, .Net Framework 2.0 ile birlikte yapabildiklerimizi tek bir çatı altında toplamıştır. Hatırlayacağınız üzere, benzer bir yaklaşım modelinin Windows Communication Foundation (WCF) içerisinde de yer aldığından daha önceki makalelerimizde bahsetmiştik. Öncelikle bu noktaya nasıl gelindiğini vurgulamakta fayda var."
 categories:
   - csharp
 tags:
@@ -18,9 +17,6 @@ tags:
   - delegates
   - visual-studio
 ---
-# WPF, Xaml, Baml ve Dahası
-Değerli Okurlarım Merhabalar,
-
 Windows Presentation Foundation (WPF), windows tabanlı uygulama geliştirme modeline yeni ve çok farklı bir soluk getirmiştir. Daha çok web uygulama geliştirme sistematiğini andıran bu yeni model,.Net Framework 2.0 ile birlikte yapabildiklerimizi tek bir çatı altında toplamıştır. Hatırlayacağınız üzere, benzer bir yaklaşım modelinin Windows Communication Foundation (WCF) içerisinde de yer aldığından daha önceki makalelerimizde bahsetmiştik. Öncelikle bu noktaya nasıl gelindiğini vurgulamakta fayda var..Net Framework 2.0 açısından baktığımızda windows uygulamalarını geliştirirken yaşanan bazı sıkıntılar vardır.
 
 Örneğin iki boyutlu grafik işlemleri için System.Drawing.dll kütüphanesinin etkin bir şekilde bilinmesi gerekir. Ancak windows uygulamalarımıza üç boyutlu grafik modeller katmak istediğimizde,.Net Framework'ün dışına çıkmalı ve yönetimli (Managed) DirectX API'sini öğrenmeliyizdir. Bunlara ek bir diğer örnek olarakta, akıcı görsel öğeleri verebiliriz. Stream Video'ları işleyebilmek için, en azından Media Player API'sinin yönetimli (Managed) halinin ele alınması gerekmektedir. Peki Windows Presentation Foundation bize bu anlamda nasıl bir getiri sağlamaktadır. WPF, yukarıda bahsetmiş olduğumuz özellikleri.Net Framework 3.0 içerisinde tek bir çatı altında ele alan bir model sunmaktadır. Böylece,.Net Framework 2.0 içerisinde ayrı ayrı ele almak zorunda kaldığımız API ve benzeri parçaları,.Net Framework 3.0 içerisinde tek ve benzersiz (unique) bir nesne modeli içerisinde ele alma şansına sahib oluruz. Temel olarak kazanımlarımızı aşağıdaki tablo ile özetleyebiliriz.

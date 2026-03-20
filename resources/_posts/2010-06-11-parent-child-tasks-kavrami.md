@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Parent-Child Tasks Kavramı"
 date: 2010-06-11 02:00:00 +0300
-description: "Ancak Task nesne örneklerinin devreye girdiği noktada, Parent-Child ilişkiler kurularak Planlanmış/Yapılandırılmış görevlerin(Structured Tasks) oluşturulması da mümkündür."
 categories:
   - parallel-programming
   - tpl
@@ -15,12 +14,9 @@ tags:
   - visual-studio
   - rc
 ---
-# Parent-Child Tasks Kavramı
-![blg171_Giris.jpg](/assets/images/2010/blg171_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Planlama gerçek hayatta her zaman karşımıza çıkan ve yaşamımızın, işlerimizin düzenli devam edebilmesi için gereken olmazsa olmazlar arasında yer alan bir kavramdır. Toplantıların planlanmasından tutun da, işlerin hangi sırada yapılacağına karar verilmesine kadar pek çok yerde planlamanın önemini görürüz. Aslında başarılı sistemlerin tasarlanması, çalışması ve istenen sonuçları üretmesi iyi planlamayla ilişkilidir. Tasarımın planlanması, kaynakların planlanması, sistemin önceliklerinin planlanması, müşteri toplantılarının planlanması vs...Bazen kafamızda hayatımızın ilerleyişini planlarız ve bazende yazdığımız kodun fonksiyonelliklerini.
+
+![blg171_Giris.jpg](/assets/images/2010/blg171_Giris.jpg)
 
 Dolayısıyla planlamanın yazılımın pek çok noktasında da son derece önemli bir rol üstlendiğine şahit oluruz. Aslında planlı olmak, neyin ne zaman nasıl ve ne şekilde yapılacağının bilinmesi, ortaya çıkacak sonuçlarda nasıl hareket edileceğinin tespit edilmesi noktasında son derece hayatidir.
 

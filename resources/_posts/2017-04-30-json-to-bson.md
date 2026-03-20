@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "JSON to BSON"
 date: 2017-04-30 21:36:00 +0300
-description: "Amacımız çalışan listesinin içeriğini BSON formatında bir dosyaya yazdırmak ve sonrasında bu içeriği tekrar okuyup ters-serileştirme işlemini gerçekleştirerek ekrana yazdırmak."
 categories:
   - csharp
 tags:
@@ -16,12 +15,9 @@ tags:
   - serialization
   - generics
 ---
-# JSON to BSON
-![bson.gif](/assets/images/2017/bson.gif)
-
-Merhaba Arkadaşlar,
-
 Sanıyorum her.Net programcısının takım çantasında yer alan paketlerden birisi de Newtonsoft'un JSON serileştirme kütüphanesidir. JSON (JavaScriptObjectNotation) formatı, XML (eXtensibleMarkupLanguage) şemasından sonra hafif ve az yer kaplama özellikleri nedeniyle çokça tercih edilen standartlardan birisi haline gelmiştir. Diğer yandan JSON içeriklerin Binary formatta serileştirilmiş versiyonu olarak adlandırılan BSON formatı da sıklıkla kullanılmaktadır.
+
+![bson.gif](/assets/images/2017/bson.gif)
 
 [BSON](http://bsonspec.org/#/specification), NoSQL camiasının liderlerinden MongoDB ile popülerlik kazanmış bir veri formatı. JSON içeriğinin binary formatta sunulması oldukça hızlı gerçekleşebilecek bir işlem. Bu nedenle NoSQL tabanlı sistemlerde yatay ölçeklenen veri kümeleri arasındaki iletişimde tercih edilebiliyor. Ağ üzerinde dolaşan bu küçültülmüş paketler içerisinde JSON tipinde veri bulunuyor. Zaten tasarım amaçlarından birisi de bu.
 

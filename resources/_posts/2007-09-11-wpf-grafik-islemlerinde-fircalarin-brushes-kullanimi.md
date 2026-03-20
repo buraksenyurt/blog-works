@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WPF - Grafik İşlemlerinde Fırçaların(Brushes) Kullanımı"
 date: 2007-09-11 12:00:00 +0300
-description: "Windows uygulamalarında özellikle .Net tarafında vektörel grafik işlemleri için çoğunlukla GDI+ alt yapısı(infrastructure) kullanılmaktadır. Ancak Windows Presentation Foundation(WPF) mimarisinde öne çıkan özelliklerden biriside grafik anlamdaki yeteneklerin son derece geliştirilmiş olmasıdır..."
 categories:
   - wpf
 tags:
@@ -17,9 +16,6 @@ tags:
   - generics
   - visual-studio
 ---
-# WPF - Grafik İşlemlerinde Fırçaların(Brushes) Kullanımı
-Değerli Okurlarım Merhabalar,
-
 Windows uygulamalarında özellikle.Net tarafında vektörel grafik işlemleri için çoğunlukla GDI+ alt yapısı (infrastructure) kullanılmaktadır. Ancak Windows Presentation Foundation (WPF) mimarisinde öne çıkan özelliklerden biriside grafik anlamdaki yeteneklerin son derece geliştirilmiş olmasıdır. Kişisel görüşüm grafik yönündeki özelliklerin gelişmesi dışında bu tekniklerin element bazında uygulanabiliyor olması son derece önemli ve yerindedir.
 
 Yani XAML tarafında grafikler ile daha kolay çalışabilme imkanının gelmiş olması önemlidir. Bu yazımız ile birlikte WPF içerisindeki grafiksel öğeleri incelemeye başlıyor olacağız. Grafik konusu oldukça geniş olduğundan bir iki yazı dizisi halinde incelememiz çok daha yerinde olacaktır. Hepimizin GDI+ alt yapısından aşina olduğumuz teknikler aslında WPF içinde geçerlidir. Ancak önemli olan temel bazı kavramlar vardır. Bu kavramlar grafik işlemlerinde önemli bir yere sahiptir. Söz konusu kavramlar ve açıklamaları aşağıda maddeler halinde sunulmaktadır.

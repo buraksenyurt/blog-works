@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "GoLang - Basit HTTP Web Server Yapımı"
 date: 2017-02-20 23:48:00 +0300
-description: "Geçtiğimiz günlerde REST(Representational State Transfer) servislerinin nasıl yazıldığına bakarken bir kaç yeni şey daha öğrendim. Amacım HTTP Get metodu ile basit REST servis talebi yapmak ve örneğin bir ürün listesini JSON(JavaScript Object Notation) formatında istemciye döndürmekti (Daha önceden Ruby ve Python'da REST servislerin nasıl yazılabileceğine de bakmıştım) Go tarafındaki durumu araştırırken HTTP olarak gelecek talepleri nasıl karşılayabileceğimi de gördüm."
 categories:
   - golang
 tags:
@@ -22,12 +21,9 @@ tags:
   - pointers
   - microservices
 ---
-# GoLang - Basit HTTP Web Server Yapımı
-![gorest_6.gif](/assets/images/2017/gorest_6.gif)
-
-Merhaba Arkadaşlar,
-
 Go dili ile ilgili maceralarım devam ediyor. Dilin temel özelliklerini anlamaya çalışmak bir yana, aralarda merak ettiğim farklı konuları da incelemeye çalışıyorum. Uygulamalı örnekler üzerinden gitmek de bir programlama dilini öğrenirken tercih ettiğim yollardan birisi. Size de tavsiye ederim.
+
+![gorest_6.gif](/assets/images/2017/gorest_6.gif)
 
 Geçtiğimiz günlerde [REST (Representational State Transfer)](https://tr.wikipedia.org/wiki/REST) servislerinin nasıl yazıldığına bakarken bir kaç yeni şey daha öğrendim. Amacım HTTP Get metodu ile basit REST servis talebi yapmak ve örneğin bir ürün listesini [JSON (JavaScript Object Notation)](https://tr.wikipedia.org/wiki/JSON) formatında istemciye döndürmekti (Daha önceden [Ruby](https://www.buraksenyurt.com/post/ruby-kod-parcaciklari-20-rest-servis-gelistirmek) ve [Python](https://www.buraksenyurt.com/post/python-ile-rest-tabanli-servis-gelistirmek)'da REST servislerin nasıl yazılabileceğine de bakmıştım) Go tarafındaki durumu araştırırken HTTP olarak gelecek talepleri nasıl karşılayabileceğimi de gördüm.
 

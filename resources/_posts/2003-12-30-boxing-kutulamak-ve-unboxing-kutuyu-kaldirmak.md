@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Boxing (Kutulamak) ve Unboxing (Kutuyu Kaldırmak)"
 date: 2003-12-30 12:00:00 +0300
-description: "Bugünkü makalemizde, Boxing ve Unboxing kavramlarını incelemeye çalışacağız. Boxing değer türü bir değişkeni, referans türü bir nesneye aktarmaktır."
 categories:
   - csharp
 tags:
@@ -10,9 +9,6 @@ tags:
   - dotnet
   - delegates
 ---
-# Boxing (Kutulamak) ve Unboxing (Kutuyu Kaldırmak)
-Değerli Okurlarım, Merhabalar.
-
 Bugünkü makalemizde, Boxing ve Unboxing kavramlarını incelemeye çalışacağız. Boxing değer türü bir değişkeni, referans türü bir nesneye aktarmaktır. Unboxing işlemi ise bunun tam tersidir. Yani referans türü değişkenin işaret ettiği değeri tekrar, değer türü bir değişkene aktarmaktır. Bu tanımlarda karşımıza çıkan ve bilmemiz gereken en önemli noktalar, değer türü değişkenler ile referans türü nesnelerin bellekte tutuluş şekilleridir.
 
 Net ortamında iki tür veri tipi vardır. Referans tipleri (reference type) ve değer tipleri (value type). İki veri türünün bellekte farklı şekillerde tutulmaları nedeni ile boxing ve unboxing işlemleri gündeme gelmiştir. Bu nedenle öncelikle bu iki farklı veri tipinin bellekte tutuluş şekillerini iyice anlamamız gerekmektedir.

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "REST Starter Kit Nedir?"
 date: 2009-05-05 12:41:00 +0300
-description: "Bildiğiniz üzere bir süredir WCF REST Starter Kit ile ilişkili yazılarımı ve görsel derslerimi sizlerle paylaşmaktayım. Ancak önemli bir noktayı kaçırdığımı düşünüyorum. Embarassed Nedir bu WCF REST Starter Kit? Bizlere ne gibi avantajlar getirmektedir? WCF REST Starter Kit temel olarak, WCF servislerinin REST(REpresentational State Transfer) bazlı olaraktan geliştirilmesi için gerekli özellik ve şablonları(Visual Studio Templates) içermekte olan bir yardımcı araç kitidir. Bu kit .Net Framework 3.5 ve SP1 ile birlikte, WCF tarafına kazandırılan Web programlama modelini kullanır ve geliştiricinin, REST bazlı WCF servislerinin yazılması ve tüketilmesi sırasında gerekli olan bir çok kıstasın(aspect olarakta düşünebiliriz) kolayca ele alabilmesini hedefler. WCF Rest Starter Kit, konsept olarak WCF servislerini ve REST modelini hedef almakla birlikte özellikle açık kaynak kodlu olması açısındanda önemli bir eklenti olarak düşünülmelidir."
 categories:
   - wcf
 tags:
@@ -23,12 +22,9 @@ tags:
   - transactions
   - visual-studio
 ---
-# REST Starter Kit Nedir?
-![WCF-Rest-Starter-Kit.png](/assets/images/2009/WCF-Rest-Starter-Kit.png)
-
-Merhaba Arkadaşlar,
-
 Bildiğiniz üzere bir süredir [WCF REST Starter Kit](http://aspnet.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=24644)ile ilişkili yazılarımı ve görsel derslerimi sizlerle paylaşmaktayım. Ancak önemli bir noktayı kaçırdığımı düşünüyorum.
+
+![WCF-Rest-Starter-Kit.png](/assets/images/2009/WCF-Rest-Starter-Kit.png)
 
 ![Embarassed](/assets/images/2009/smiley-embarassed.gif)
 

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Workflow Foundation 4.0 - Declarative Validation [Beta 2]"
 date: 2010-01-19 06:00:00 +0300
-description: "Sakin bir Cuma gününde bilgisayarın başında kahvemi yudumlarken ve M&M drajelerinden avuç avuç yerken araştırmalarıma devam ediyordum. Bir süredir Workflow Foundation 4.0 ile birlikte gelen yenilikleri incelediğimden takip ettiğim bloglar ve MSDN üzerinde bu konu ile ilişkili yazıları okumaktaydım. Özelliklede son iki yazımda üzerinde durmaya çalıştığım özel aktivite bileşenlerinin doğrulanması konusunu irdelemekteydim. Bu yazımızda doğrulama(Validation) ile ilişkili araştırmalarımı sizlerle paylaşmaya devam ediyor olacağım."
 categories:
   - wf-4-0-beta-2
 tags:
@@ -15,12 +14,9 @@ tags:
   - generics
   - visual-studio
 ---
-# Workflow Foundation 4.0 - Declarative Validation [Beta 2]
-![blg111_Giris.gif](/assets/images/2010/blg111_Giris.gif)
-
-Merhaba Arkadaşlar,
-
 Sakin bir Cuma gününde bilgisayarın başında kahvemi yudumlarken ve M&M drajelerinden avuç avuç yerken araştırmalarıma devam ediyordum. Bir süredir Workflow Foundation 4.0 ile birlikte gelen yenilikleri incelediğimden takip ettiğim bloglar ve MSDN üzerinde bu konu ile ilişkili yazıları okumaktaydım. Özelliklede son iki yazımda üzerinde durmaya çalıştığım özel aktivite bileşenlerinin doğrulanması konusunu irdelemekteydim. Bu yazımızda doğrulama (Validation) ile ilişkili araştırmalarımı sizlerle paylaşmaya devam ediyor olacağım.
+
+![blg111_Giris.gif](/assets/images/2010/blg111_Giris.gif)
 
 Doğrulama işlemlerinin çeşitlerine baktığımızda Declarative Constraint isimli bir yaklaşımın daha olduğu görülmektedir. Bu yaklaşıma göre bir aktivite ile ilişkili doğrulama mantığının kısıt olaraktan (Constraint) ayrı bir tip ve metod içerisinde konuşlandırılması mümkündür. (Hatta kod dışında XAML bazlı olaraktan kısıtların konulmasıda söz konusudur) Workflow Foundation alt yapısında bu tip dekleratif doğrulamalar için Constraint sınıfından yararlanılmaktadır. Constraint tipi aslında NativeActivity türevidir. Bir başka deyişle bir aktivitedir.
 

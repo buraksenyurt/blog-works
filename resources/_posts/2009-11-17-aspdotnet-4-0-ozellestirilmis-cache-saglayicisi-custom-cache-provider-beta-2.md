@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net 4.0 - Özelleştirilmiş Cache Sağlayıcısı(Custom Cache Provider) [Beta 2]"
 date: 2009-11-17 06:10:00 +0300
-description: "Dikkatimi çeken ilk özellik ön bellekleme(Caching) sisteminin genişletilebilmesi ile alakalıydı. Bilindiği üzere web uygulamalarında performansı arttırmanın en etikili yollarından biriside sunucu tarafındaki yükü azaltarak mümkün olabilmektedir..."
 categories:
   - aspnet-4-0-beta-2
 tags:
@@ -20,12 +19,9 @@ tags:
   - generics
   - dependency-management
 ---
-# Asp.Net 4.0 - Özelleştirilmiş Cache Sağlayıcısı(Custom Cache Provider) [Beta 2]
-![blg102_Giris.jpg](/assets/images/2009/blg102_Giris.jpg)
-
-Merhaba Arkdaşlar,
-
 Çok çok uzun zamandır Asp.Net üzerine eğilmiyordum. Hem tasarım yönünden kabiliyetsiz olmam (iki rengi bir araya getir deseler kesin uyumsuz renkler çıkartırım) hemde servis yönelimli mimari dünyasına dalmış olmamın bunda büyük bir rol oynadığını itiraf etmek isterim. Yine de Asp.Net 4.0 ile birlikte gelen yenilikleri okuyunca biraz olsun araştırmak ve edindiğim tecrübeleri sizlere aktarmak istedim.
+
+![blg102_Giris.jpg](/assets/images/2009/blg102_Giris.jpg)
 
 Dikkatimi çeken ilk özellik ön bellekleme (Caching) sisteminin genişletilebilmesi ile alakalıydı. Bilindiği üzere web uygulamalarında performansı arttırmanın en etikili yollarından biriside sunucu tarafındaki yükü azaltarak mümkün olabilmektedir. Bu manada istemci tarafına, sunucu üzerinde ön belleğe atılmış hazır veri çıktılarını göndermek etkili bir yaklaşımdır. Asp.Net tarafında ön bellekleme için farklı teknikler kullanılabilir. Son süre bildirimli (Expire Date), uzatmalı (Sliding), bağımlı (Dependency, SqlCacheDependency, FileDependency gibi) vb...Üstelik ön belleklenecek veri içeriği sayfa bazında, Web User Control bazında vb olabilir. Yine de eksik olan bir şeyler vardır. Herşeyden önemlisi ön bellekleme gerçekten bellek üzerinde yapılmaktadır.
 

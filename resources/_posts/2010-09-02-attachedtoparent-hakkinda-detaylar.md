@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "AttachedToParent Hakkında Detaylar"
 date: 2010-09-02 08:30:00 +0300
-description: "Daha önceki iki yazımızda(Parent-Child Tasks Kavramı, Parent-Child Task Exception Durumlar) sürekli olarak AttachedToParent metodunun belirli bir kullanımını ele aldık. Oysa ki, Child Task örneklerinin Parent Task örneklerinin yaşam döngülerine eklenmelerinde izlenebilecek birden fazla yol bulunmaktadır. Buna göre Parent Task örneğine dahil olmak için aşağıdaki tekniklerden herhangibirisinden yararlanılabilir."
 categories:
   - parallel-programming
   - tpl
@@ -15,16 +14,13 @@ tags:
   - visual-studio
   - datatable
 ---
-# AttachedToParent Hakkında Detaylar
-![blg178_Giris.jpg](/assets/images/2010/blg178_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Malum "her yiğidin farklı bir yoğurt yiğiş tarzı vardır" derler. Genellikle programlama dilleri veya.Net Framework gibi yapılarda da bir sonuca ulaşmak için birden fazla ve farklı yol söz konusu olabilir. Böyle bir durumun oluşmasına neden olan etkenlerin başında, çevresel ortam parametrelerinin farklılaşmasının geldiğini ifade edebiliriz.
+
+![blg178_Giris.jpg](/assets/images/2010/blg178_Giris.jpg)
 
 Çok basit bir kaç örnek vererek olayı kafamızda daha net bir şekilde canlandırmaya çalışalım. Bir koleksiyon içerisindeki öğeleri for veya foreach döngüleri ile dolaşabiliriz. Ya da örneğin bir veri tablosundan veriyi çekmek için, DataTable bazlı bir tekniği veya DataReader bazlı bir yöntemi ele alabiliriz. Ancak öyle vakalar söz konusudur ki, aynı amaç için ele alınabilecek veya değerlendirilebilecek yolların sayısı çok fazladır. Bu fazlalık bir süre sonra karar vermeyi zorlaştırır ve işin içinden çıkılmaz bir duruma düşülebilir.
 
-Söz gelimi paralel programlama konusu ile ilgili olarak bir süredir incelediğimiz Parent-Child Task ilişkilerini göz önüne alalım. Daha önceki iki yazımızda ([Parent-Child Tasks Kavramı](Parent-Child Tasks Kavramı.md), [Parent-Child Task Exception Durumlar](Parent-Child Task Exception Durumları.md)) sürekli olarak AttachedToParent metodunun belirli bir kullanımını ele aldık. Oysa ki, Child Task örneklerinin Parent Task örneklerinin yaşam döngülerine eklenmelerinde izlenebilecek birden fazla yol bulunmaktadır. Buna göre Parent Task örneğine dahil olmak için aşağıdaki tekniklerden herhangibirisinden yararlanılabilir.
+Söz gelimi paralel programlama konusu ile ilgili olarak bir süredir incelediğimiz Parent-Child Task ilişkilerini göz önüne alalım. Daha önceki iki yazımızda ([Parent-Child Tasks Kavramı](/2010/06/11/parent-child-tasks-kavrami/), [Parent-Child Task Exception Durumlar](/2010/08/02/parent-child-task-exception-durumlari/)) sürekli olarak AttachedToParent metodunun belirli bir kullanımını ele aldık. Oysa ki, Child Task örneklerinin Parent Task örneklerinin yaşam döngülerine eklenmelerinde izlenebilecek birden fazla yol bulunmaktadır. Buna göre Parent Task örneğine dahil olmak için aşağıdaki tekniklerden herhangibirisinden yararlanılabilir.
 
 - Task nesnesine ait yapıcı metod (Constructor) içerisinde TaskCreationOptions.AttachedToParent enum sabiti bildirimi yapılarak
 - Task sınıfının static StartNew metodunda TaskCreationOptions.AttachedToParent enum sabiti bildirimi yapılarak
@@ -90,7 +86,7 @@ namespace AttachedToParentCases
         {
             Task parentTask = Task.Factory.StartNew(() =>
             {
-                Console.WriteLine("Parent Task...");                
+                Console.WriteLine("Parent Task...");
 
                 #region 2 - StartNew Kullanımı
 
@@ -151,7 +147,6 @@ namespace AttachedToParentCases
                     );
 
                 #endregion
-               
 
                 Thread.Sleep(30000); //Debug modda Parallel Task' leri izlemek için konulmuştur
             });

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net Web API ile OData Kullanımı"
 date: 2016-04-21 09:00:00 +0300
-description: "İşlerin epeyce hafiflediği bir haftaydı diyebilirim. Dolayısıyla kırda parkta bayırda oturup dinlenmek için epeyce vaktim vardı. Ya da bir şeyler araştırmayı da tercih edebilirdim ki ben de öyle yaptım. Uzun zamandır Asp.Net Web API tarafında bir şeyler yapmıyordum. Araştırmalarım sırasında OData'nın Web API tarafındaki kullanımına denk geldim. Her zaman ki gibi konuyu olabildiğince basit bir halde öğrenmenin iyi olacağını düşündüm. Sonunda konuyu kaleme almayı başardım. Haydi başlayalım."
 categories:
   - aspnet-web-api
 tags:
@@ -19,12 +18,9 @@ tags:
   - generics
   - visual-studio
 ---
-# Asp.Net Web API ile OData Kullanımı
-![ODataWebAPI_G.gif](/assets/images/2016/ODataWebAPI_G.gif)
-
-Merhaba Arkadaşlar,
-
 İşlerin epeyce hafiflediği bir haftaydı diyebilirim. Dolayısıyla kırda parkta bayırda oturup dinlenmek için epeyce vaktim vardı. Ya da bir şeyler araştırmayı da tercih edebilirdim ki ben de öyle yaptım. Uzun zamandır Asp.Net Web API tarafında bir şeyler yapmıyordum. Araştırmalarım sırasında OData'nın Web API tarafındaki kullanımına denk geldim. Her zaman ki gibi konuyu olabildiğince basit bir halde öğrenmenin iyi olacağını düşündüm. Sonunda konuyu kaleme almayı başardım. Haydi başlayalım.
+
+![ODataWebAPI_G.gif](/assets/images/2016/ODataWebAPI_G.gif)
 
 OData (Open Data Protocol) ile veri kaynaklarına HTTP üzerinden sorgu atabilmek ve bunu REST stilinde gerçekleştirmek mümkündür. OData standartları sayesinde veri üzerinde filtreleme, belirli alanlarını çekme (Projection), ana içeriklerden detay içerikleri genişletme (Expand), gruplamalı hesaplamalar yapma (Aggregations) ve benzeri SQL'den aşina olduğumuz belli başlı fonksiyonellikleri servis odaklı kullanabiliriz.
 
@@ -159,7 +155,7 @@ Category isimli sınıfımız,
 
 ```csharp
 using System.Collections.Generic;
-using System.Web.OData.Builder; 
+using System.Web.OData.Builder;
 
 namespace UsingOData.Models
 {
@@ -201,7 +197,7 @@ using System.Web.Http;
 using System.Web.OData.Batch;
 using System.Web.OData.Builder;
 using System.Web.OData.Extensions;
-using UsingOData.Models;  
+using UsingOData.Models;
 
 namespace UsingOData
 {

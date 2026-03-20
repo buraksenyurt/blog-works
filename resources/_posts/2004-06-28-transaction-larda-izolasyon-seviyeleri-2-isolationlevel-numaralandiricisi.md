@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Transaction' larda Izolasyon Seviyeleri -2 (IsolationLevel Numaralandırıcısı)"
 date: 2004-06-28 12:00:00 +0300
-description: "Bu makalemizde, Sql izolasyon seviyelerinin, .net uygulamalarında nasıl kullanıldığını incelemeye çalışacağız. Bir önceki makalemizde, izolasyon seviyeleri için söz konusu olabilecek 3 problemi ele almıştık."
 categories:
   - ado-net
 tags:
@@ -14,9 +13,6 @@ tags:
   - transactions
   - datatable
 ---
-# Transaction' larda Izolasyon Seviyeleri -2 (IsolationLevel Numaralandırıcısı)
-Değerli Okurlarım, Merhabalar.
-
 Bu makalemizde, Sql izolasyon seviyelerinin,.net uygulamalarında nasıl kullanıldığını incelemeye çalışacağız. Bir önceki makalemizde, izolasyon seviyeleri için söz konusu olabilecek 3 problemi ele almıştık. Bu olası problemler phantoms, non-repeatable read ve dirty read durumlarıdır. Eş zamanlı olarak çalışan Transaction'larda meydana gelebilecek bu problemleri, IsolationLevel numaralandırıcısı yardımıyla kontrol altına alabiliriz. Bu numaralandırıcının alabileceği değerler ve bu değerlerin izin verdiği (vermediği) durumlar aşağıdaki tabloda yer almaktadır.
 
 IsolationLevel Numaralandırıcı Değeri

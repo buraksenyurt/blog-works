@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF 4.5–ChannelFactory Tipi için Caching Kullanımı"
 date: 2014-12-22 19:00:00 +0300
-description: "Bir WCF(Windows Communication Foundation) servisi ile onun tüketicisi olan istemci arasındaki iletişimde önem arz eden konulardan birisi de kanaldır(Channel). Bu kanalın oluşturulması görevini ChannelFactory tipi üstlenmektedir. İstemci açısından bakıldığında bir kanalın oluşturulması aslında servisin bir Proxy tipinin üretilmesi ve uzak metod çağrıları için gerekli iletişim ortamının sağlanması anlamına gelmektedir. Bir kanal esas itibariyle EndPoint odaklı üretilir. Dolayısıyla WCF' in ABC'si olarak nitelendirilen Address Binding Contract üçlemesi üzerine inşa olunur(ki bu da WCF Service EndPoint tanımıdır)"
 categories:
   - wcf
   - wcf-4-5
@@ -15,10 +14,10 @@ tags:
   - caching
   - generics
 ---
-# WCF 4.5–ChannelFactory Tipi için Caching Kullanımı
-[![PerfectCircle](/assets/images/2014/PerfectCircle_thumb.jpg)](/assets/images/2014/PerfectCircle.jpg) Merhaba Arkadaşlar,
-
 Vaktiyle üniversitedeki diferansiyel denklemler dersi hocamızın anlattığı bir efsane vardı (Sene 94 bu arada). Ne kadar gerçektir bilinmez ama beni oldukça etkilemişti. Hikayeye göre üniversite hocaları arasında belirli aralıklarla düzenlenen bir yarışma varmış. Bu yarışmada hocaların tahtaya kalkıp seçtikleri teoremlere ait geometrik şekilleri çizmeleri istenirmiş. En güzel çizim ise mükafatlandırılırmış.
+
+[![PerfectCircle](/assets/images/2014/PerfectCircle_thumb.jpg)](/assets/images/2014/PerfectCircle.jpg)
+
 
 Bir gün hocalar ardı ardına kalkıp tahtada hünerlerini göstermeye başlamışlar. Hemen hepsi rengarenk tebeşirler kullanıyormuş. Sarmallar, hiperboller, spiraller, üç boyutlu grafikler vb…
 

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Entity Framework - Many To Many Relations - Link Tablosunda Israrcı Olmak"
 date: 2010-03-23 22:35:00 +0300
-description: "Hatırlayacağınız üzere son iki yazımızda Many-To-Many ilişkileri nasıl ele alabileceğimizi incelemiştik. Many-To-Many ilişkilerin Entity Model'e olan yansımasında belkide en önemli nokta, ara bağlantı tablosunun taşınmıyor olmasıydı. Bu genellikle ara bağlantı tablosu üzerinde diğer tablolara ait Primary Key alanlarının bulunduğu durumlar düşünülerek meydana gelen bir sonuçtur. Nitekim ara tablonun Entity tarafına taşınmayışının herhangibir olumsuz maliyeti bulunmamaktadır."
 categories:
   - entity-framework
 tags:
@@ -15,12 +14,9 @@ tags:
   - visual-studio
   - rc
 ---
-# Entity Framework - Many To Many Relations - Link Tablosunda Israrcı Olmak
-![blg141_Giris.jpg](/assets/images/2010/blg141_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Bazen bebek adımları ile ilerlememiz gerekir. Özellikle yazılım alanında bazı konuları öğrenirken işin teorisinden önce pratik bir örneği adım adım geliştirmek son derece faydalıdır. Ado.Net Entity Framework ile ilişkili inclemelerimize devam edeceğimiz bu yazımızda bebek adımları ile ilerleyeceğiz.
+
+![blg141_Giris.jpg](/assets/images/2010/blg141_Giris.jpg)
 
 Hatırlayacağınız üzere son iki yazımızda Many-To-Many ilişkileri nasıl ele alabileceğimizi incelemiştik. Many-To-Many ilişkilerin Entity Model'e olan yansımasında belkide en önemli nokta, ara bağlantı tablosunun taşınmıyor olmasıydı. Bu genellikle ara bağlantı tablosu üzerinde diğer tablolara ait Primary Key alanlarının bulunduğu durumlar düşünülerek meydana gelen bir sonuçtur. Nitekim ara tablonun Entity tarafına taşınmayışının herhangibir olumsuz maliyeti bulunmamaktadır. Ancak bazı durumlarda söz konusu ara bağlantı tablosunun ilerleyen zamanlarda ek alanlar ile genişlemesi söz konusu olabilir. Bu durumda ara bağlantı tablosunun Entity olaraktan Model Diagram içerisinde yer almasının avantajı olacaktır. Nitekim ileride eklenecen kolonlar için Entity Model tarafında sadece Conceptual Schema'yı güncellemek yeterlidir.
 

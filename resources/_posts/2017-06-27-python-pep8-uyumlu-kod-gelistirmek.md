@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Python - PEP8 Uyumlu Kod Geliştirmek"
 date: 2017-06-27 17:10:00 +0300
-description: "Geçtiğimiz günlerde senelik kişisel gelişim döngümün ikinci yarısının ilk konusu olan Python'a başladım. Yine bir önceki yılın aynı dönemlerinde Raspberry Pi ile ilgili olarak Python üzerine bir şeyler yapmaya çalışmıştım. Döngünün bir sonraki adımında yine Python ile başbaşayım. Head First Python, A Brain Friendly Guilde isimli kitabı takip ediyorum. Her örneği tek tek yapmaya çalışıyorum. Bayram tatilinde ilgimi çeken bir konu ile karşılaştım. Yazdığımız python kodlarının PEP8(Python Enhancement Proposals) adı verilen standartlara uygun olup olmadığının tespiti."
 categories:
   - python
 tags:
@@ -12,12 +11,9 @@ tags:
   - go
   - ruby
 ---
-# Python - PEP8 Uyumlu Kod Geliştirmek
-![pythonpep_2.gif](/assets/images/2017/pythonpep_2.gif)
-
-Merhaba Arkadaşlar,
-
 Geçtiğimiz günlerde senelik kişisel gelişim döngümün ikinci yarısının ilk konusu olan Python'a tekrardan başladım. Bir önceki yılın aynı dönemlerinde Raspberry Pi ile ilgili olarak Python üzerine bir şeyler yapmaya çalışmıştım. Ruby ve Go ile devam eden iterasyonun sıradaki adımında Python'u bir başucu kitabını kullanarak tekrar etmekteyim. Bu amaçla [Head First Python, A Brain Friendly Guilde](http://shop.oreilly.com/product/0636920036777.do) isimli kitaptan yararlanıyorum. Her örneği tek tek yapmaya çalışıyorum. Bugün ilgimi çeken bir konu ile karşılaştım. Yazdığımız python kodlarının PEP8 (Python Enhancement Proposals) adı verilen standartlara uygun olup olmadığının tespiti. PEP konusu ile ilgili detaylı bilgilere [şu adresten](https://www.python.org/dev/peps/) ulaşabilirsiniz. Hatta bu kısa yazıya konu olan PEP8 içeriğine de [bu adresten](https://www.python.org/dev/peps/pep-0008/) bakabilirsiniz.
+
+![pythonpep_2.gif](/assets/images/2017/pythonpep_2.gif)
 
 Tahminlerime göre bloğumu okuyan hemen herkes yazılım geliştiriyor ve bu işte kodlama standartlarının ne kadar önemli olduğunu da biliyor. Bu standartlarda değişken isimlendirmelerinden yorum satırlarının nasıl olması gerektiğine kadar pek çok yazım stili önerisi de bulunuyor. Bu öneriler kodun daha okunabilir ve diğer meslektaşlarımız ile aynı stilde içerik üretilmesi açısından mühim. Python dili içinde kodun standard kütüphanenin yazım stiline uygun olup olmadığının kontrolünü yapabileceğimiz bir kılavuz mevcut. Gerçi içerik olarak bakıldığında daha çok yazım stilinin ön plana çıktığı ve bu noktada bir tutarlılığın sağlanmaya çalışıldığı anlaşılabiliyor. Gelin Python ile yazdığımız kodların (örneğin basit bir modül içeriğinin) PEP8 standartlarına uygunuluğunu kontrol edelim.
 

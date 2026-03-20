@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Bir Web API Hizmetinde Talepler ile CQ Arasında Mediator Kullanmak"
 date: 2020-05-29 17:23:00 +0300
-description: "CQRS, nam-ı diğer Command Query Responsibility Segregation mimari deseni, veritabanına doğru yapılan yazma, güncelleme, silme gibi aksiyonlar ile veri çekme işlemlerini ayrıştırmayı önermektedir. Command tarafı ile ilişkilendirilen aksiyonlar sadece veri üzerinde işlem yapar ve geriye bir şey döndürmezler. Sorgulama(Query) tarafına ayrılan aksiyonlar da tam tersine sadece veri döndürmekten sorumludurlar(Listeleme veya tek bir öğe detayının döndürülmesi gibi) Bir Web API ve CQRS söz konusu olduğunda karşımıza birde Mediator tasarım kalıbının uygulanışı çıkar."
 categories:
   - dotnet-core
 tags:
@@ -18,10 +17,9 @@ tags:
   - generics
   - github
 ---
-# Bir Web API Hizmetinde Talepler ile CQ Arasında Mediator Kullanmak
-![cqrs.png](/assets/images/2020/cqrs.png)
-
 CQRS, nam-ı diğer Command Query Responsibility Segregation mimari deseni, veritabanına doğru yapılan yazma, güncelleme, silme gibi aksiyonlar ile veri çekme işlemlerini ayrıştırmayı önermektedir. Command tarafı ile ilişkilendirilen aksiyonlar sadece veri üzerinde işlem yapar ve geriye bir şey döndürmezler. Sorgulama (Query) tarafına ayrılan aksiyonlar da tam tersine sadece veri döndürmekten sorumludurlar (Listeleme veya tek bir öğe detayının döndürülmesi gibi) Bir Web API ve CQRS söz konusu olduğunda karşımıza birde Mediator tasarım kalıbının uygulanışı çıkar.
+
+![cqrs.png](/assets/images/2020/cqrs.png)
 
 Şöyle düşünebiliriz; Veritabanındaki kahramanların listesini çekmek Controller tarafına gelen bir HTTP Get talebidir ve davranışsal olarak listelemeyi ifade eder. Listelemeyi ele alacak bir Handler tanımlanabilir. Listeleme ihtiyacı oluştuğunda bunun doğru Query nesnesi ile ilişkilendirilmesi sağlanmalıdır. İşte bu noktada devreye girecek Mediator, Controller üzerinden doğru Handler<->(Command/Query) ilişkisini tesis eder. Benzer şekilde yeni bir kahramanın veritabanına eklenmesi veya silinmesi CQRS'in Command kısmını ilgilendiren bir mevzudur. Yeni kahraman eklenmesini Create isimli bir tip olarak ifade edersek bu tasarım içerisinde bir Handler ve Command ilişkisini kurabiliriz.
 

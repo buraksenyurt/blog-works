@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net 4.5–Asenkron HTTP Module Geliştirmek"
 date: 2013-10-13 11:00:00 +0300
-description: "İşte bu günkü konumuzda HttpModule tipleri içerisindeki işlemleri asenkron olarak nasıl yaptırabileceğimizi incelemeye çalışıyor olacağız. Bildiğiniz üzere .Net Framework 4.0 ile hayatımıza giren Task ve doğal olarak Task Parallel Library kavramı, 4.5 sürümünde gelen async ve await anahtar kelimeleri ile birlikte alt yapının pek çok noktasında daha sık görülmeye başladı. Bu açıdan bakıldığında Asp.Net 4.5 tarafında da ilgili anahtar kelime ve Task tiplerini kullanarak bazı senkronize edilmiş işlemlerin asenkron hale getirilmesi sağlanabilmekte."
 categories:
   - aspnet-4-5
 tags:
@@ -18,10 +17,10 @@ tags:
   - delegates
   - visual-studio
 ---
-# Asp.Net 4.5–Asenkron HTTP Module Geliştirmek
-[![Pioneer Stereo Ad 1974](/assets/images/2013/Pioneer%20Stereo%20Ad%201974_thumb.jpg)](/assets/images/2013/Pioneer%20Stereo%20Ad%201974.jpg) Merhaba Arkadaşlar,
-
 Bir çoğunuz gibi ben de düzenli olarak bazı dergilerin abonesiyim ve her ay onları alıp biraz karıştırdıktan sonra arşive (yani çalışma odasındaki kütüphaneye) kaldırmaktayım.
+
+[![Pioneer Stereo Ad 1974](/assets/images/2013/Pioneer%20Stereo%20Ad%201974_thumb.jpg)](/assets/images/2013/Pioneer%20Stereo%20Ad%201974.jpg)
+
 
 Tabi gün oluyor pek çoğuna dönüp bakmıyorum bile. Hatta kimisinin rengi sararıp soluyor bir köşede mazlum mazlum kalıyor. Ama eminim ki geride kalanlar için bazıları güncel içeriklere sahip iken, bazıları da tam anlamıyla bir Retro havası veriyor. Ve hatta çoğu, yıllar geçtikçe daha fazla değer kazanıyor.
 

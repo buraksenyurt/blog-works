@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ruby Kod Parçacıkları 16 - (JSON Serileştirme)"
 date: 2015-09-22 03:30:00 +0300
-description: "Aslında bu kod parçasında temel dosya giriş çıkış işlemlerini(IO operasyonları diyelim) ele almayı planlamıştım. Ancak konuyu araştırırken dosya içerisine ne yazabilirim sorusuna denk geldiğimde, bir nesne koleksiyonunu aktarmanın uygun olacağını düşündüm. Hal böyle olunca ortaya \"hangi fortmatta?\" sorusu çıktı."
 categories:
   - ruby
 tags:
@@ -14,9 +13,6 @@ tags:
   - javascript
   - serialization
 ---
-# Ruby Kod Parçacıkları 16 - (JSON Serileştirme)
-Merhaba Arkadaşlar,
-
 Aslında bu kod parçasında temel dosya giriş çıkış işlemlerini (IO operasyonları diyelim) ele almayı planlamıştım. Ancak konuyu araştırırken dosya içerisine ne yazabilirim sorusuna denk geldiğimde, bir nesne koleksiyonunu aktarmanın uygun olacağını düşündüm. Hal böyle olunca ortaya "hangi fortmatta?" sorusu çıktı.
 
 Malum nesne yönelimli bir dünyada geliştirme yapıyoruz. Domain içerisinde dolaşan nesne örnekleri mevcut. Çok doğal olarak bu nesne örneklerine ait dizi veya koleksiyonların zaman zaman kalıcı olarak saklanması gerekiyor. Depolama alanları veritabanı olabileceği gibi basit metin tabanlı dosyalar dahi olabiliyor. Hatta ilişkisel bir veritabanı sistemi (Relational Database Management System - RDBMS) olabileceği gibi son yılların popüler oyuncusu NoSQL de olabilir. Veri, kalıcı olarak uygulama ile aynı lokasyonda bir yerlere yazılabileceği gibi, servisler arasında dolaşabilir de...

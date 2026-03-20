@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tasarım Prensipleri - Loose Coupling"
 date: 2009-06-23 22:46:00 +0300
-description: "Yazılım teknolojilerinde uygulanan tekniklerin çoğunda temel tasarım prensipleri sıklıkla ele alınmaktadır/Alınmalıdı. Örneğin eXtreme Programming, Aspect Oriented Programming vb... yazılım geliştirme tekniklerinde bu prensiplerin çoğuna rastlayabiliriz. Bu yazı ile birlikte Temel Tasarım Prensiplerinin incelenmesine başlıyor olacağız ki özellikle büyük çaplı projelerde bu tip disiplinler büyük bir öneme sahiptir."
 categories:
   - tasarim-prensipleri-design-principles
 tags:
@@ -10,9 +9,6 @@ tags:
   - csharp
   - wpf
 ---
-# Tasarım Prensipleri - Loose Coupling
-Merhaba Arkadaşlar
-
 Yazılım teknolojilerinde uygulanan tekniklerin çoğunda temel tasarım prensipleri sıklıkla ele alınmaktadır/Alınmalıdı. Örneğin eXtreme Programming, Aspect Oriented Programming vb... yazılım geliştirme tekniklerinde bu prensiplerin çoğuna rastlayabiliriz. Bu yazı ile birlikte Temel Tasarım Prensiplerinin incelenmesine başlıyor olacağız ki özellikle büyük çaplı projelerde bu tip disiplinler büyük bir öneme sahiptir.
 
 Enterprise yazılım süreçlerinde en çok zorlanılan noktalardan biriside müşteri ihtiyaçlarının sürekli olarak en hızlı şekilde karşılanması gerekliliğidir. Bu durumda yazılımın bir süre sonra kendinden geçerek

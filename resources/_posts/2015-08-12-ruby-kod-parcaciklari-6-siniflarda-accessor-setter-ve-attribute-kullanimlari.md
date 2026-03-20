@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Ruby Kod Parçacıkları - 6 (Sınıflarda Accessor, Setter ve Attribute Kullanımları)"
 date: 2015-08-12 12:00:00 +0300
-description: "Nesne yönelimli dillerde sınıfların birer varlık(Entity) olarak düşünüldüğüne sıklıkla şahit oluruz. Bu sayede bir Domain' e özgü gerçek dünya varlıklarının tasarlanması ve örneklenerek kullanılması mümkün hale gelir. Üstelik Domain içinde dolaşımda olacak anlamlı nesneler ortaya çıkar. Çok doğal olarak her bir varlığın karakteristik özellikleri bulunur. Nitelik(attribute) olarak da düşünebileceğimiz bu özellikler ilgili varlığın çalışma zamanı(Runtime) durumu hakkında bilgiler taşır. Aslında .Netçi gözüyle bakıldığında sınıf ve özelliklerinden bahsettiğimizi anlamışsınızdır."
 categories:
   - ruby
 tags:
@@ -10,9 +9,6 @@ tags:
   - workflow-foundation
   - java
 ---
-# Ruby Kod Parçacıkları - 6 (Sınıflarda Accessor, Setter ve Attribute Kullanımları)
-Merhaba Arkadaşlar,
-
 Nesne yönelimli dillerde sınıfların birer varlık (Entity) olarak düşünüldüğüne sıklıkla şahit oluruz. Bu sayede bir Domain'e özgü gerçek dünya varlıklarının tasarlanması ve örneklenerek kullanılması mümkün hale gelir. Üstelik Domain içinde dolaşımda olacak anlamlı nesneler ortaya çıkar. Çok doğal olarak her bir varlığın karakteristik özellikleri bulunur. Nitelik (attribute) olarak da düşünebileceğimiz bu özellikler ilgili varlığın çalışma zamanı (Runtime) durumu hakkında bilgiler taşır. Aslında.Netçi gözüyle bakıldığında sınıf ve özelliklerinden bahsettiğimizi anlamışsınızdır.
 
 Ruby dili içinde sınıf ve özellikler söz konusudur. Aslında özellik (property) şeklinde bir kavram yerine Java'dakine benzer metod kullanımları yer alır. Şimdi dilerseniz bir sınıfın varlığını tanımlayan değerlerini nasıl tanımlayabileceğimize bakalım. Aşağıdaki kod parçacığını bu anlamda ele alabiliriz.

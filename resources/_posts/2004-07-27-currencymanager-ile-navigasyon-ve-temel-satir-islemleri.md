@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "CurrencyManager ile Navigasyon ve Temel Satır İşlemleri"
 date: 2004-07-27 06:00:00 +0300
-description: "Bu makalemizde, CurrencyManager sınıfı yardımıyla, bağlantısız katman nesnelerinin işaret ettiği bellek bölgelerindeki veri satırları arasında navigasyon, satır ekleme, satır silme ve satır güncelleme işlemlerinin nasıl gerçekleştirildiğini incelemeye çalışacağız."
 categories:
   - ado-net
 tags:
@@ -10,9 +9,6 @@ tags:
   - csharp
   - datatable
 ---
-# CurrencyManager ile Navigasyon ve Temel Satır İşlemleri
-Değerli Okurlarım, Merhabalar.
-
 Bu makalemizde, CurrencyManager sınıfı yardımıyla, bağlantısız katman nesnelerinin işaret ettiği bellek bölgelerindeki veri satırları arasında navigasyon, satır ekleme, satır silme ve satır güncelleme işlemlerinin nasıl gerçekleştirildiğini incelemeye çalışacağız.
 
 Genellikle bir veritabanı uygulamasını göz önüne aldığımızda, var olan satırlar arasında ileri ve geri yönlü hareketler sıklıkla kullanılan işlemler arasında yer almaktadır. Bir windows uygulamasında, bağlantısız katman nesnelerinin sahip olduğu veri kümelerini, form üzerinde yer alan çeşitli kontroller yardımıyla kullanıcıya sunarız. Ancak zaman zaman, bu veri kümesi içinde hareket ederken, veriye bağlı kontrollerinde güncel satıra ait alan bilgilerini göstermesini isteriz. Form üzerine yerleştirilen kontrollerin her biri, bu çeşit navigasyon işlemlerine izin veren CurrencyManager isimli nesne örneklerine sahiptir. Dolayısıyla navigasyon işlemlerinin bağlı kontrollere yansıması için, bağlı kontrollere ait CurrencyManager nesnelerinin ilgili özelliklerinin kullanılması yeterlidir.

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "LINQ: Daha Fazla Sorgu"
 date: 2007-02-21 10:00:00 +0300
-description: "u günlerde hepimiz .Net Framework 3.0 ve getirileri üzerine yoğunlaşmış durumdayız. Özellikle mimari anlamda yapılan köklü değişimler söz konusu. Bu köklü değişiklikler; Windows uygulamalarının yeni yüzü olan WPF (Windows Presentation Foundation) ve XAML (eXtensible Application Markup Language), dağıtık mimariyi tek çatı altında toplamayı başaran WCF (Windows Communication Foundation), akış şemaları ve iş süreçlerinin .Net plaformuna dahil edilmesini sağlayan WF(Workflow Foundation) ve CardSpace olarak sıralanabilir."
 categories:
   - linq
 tags:
@@ -17,9 +16,6 @@ tags:
   - xaml
   - generics
 ---
-# LINQ: Daha Fazla Sorgu
-Değerli Okurlarım Merhabalar,
-
 Bu günlerde hepimiz.Net Framework 3.0 ve getirileri üzerine yoğunlaşmış durumdayız. Özellikle mimari anlamda yapılan köklü değişimler söz konusu. Bu köklü değişiklikler; Windows uygulamalarının yeni yüzü olan WPF (Windows Presentation Foundation) ve XAML (eXtensible Application Markup Language), dağıtık mimariyi tek çatı altında toplamayı başaran WCF (Windows Communication Foundation), akış şemaları ve iş süreçlerinin.Net plaformuna dahil edilmesini sağlayan WF (Workflow Foundation) ve CardSpace olarak sıralanabilir. Ancak bunların dışında Microsoft'un gelecek vizyonu içerisinde yer alan en önemli konulardan biriside C# 3.0 konusudur. Bildiğiniz gibi C#, sıfırdan geliştirilmiş ve atası olan nesne yönelimli dillerin en iyi özelliklerini bünyesinde birleştirerek bunu güçlü bir Framework üzerinde kullanabilmemizi sağlayan bir dildir. Zaman içerisinde C# 2.0 ile gelen yenilikler şu anda tüm C# geliştiricilerin hayatının bir parçası haline gelmiştir. Şimdi herkesin gözü C# 3.0 üzerinde.
 
 C# 3.0, beraberinde LINQ (Language Integrated Query), DLINQ (Database Language Integrated Query) ve XLINQ (Xml Language Integrated Query) gibi yeni teknolojileride getirmekte ve desteklemektedir. Biz bu makalemizde daha fazla LINQ ifadesi yazmaya çalışacağız. Onbir basit LINQ ifadesi ile dil tabanlı sorguları daha yakından tanımaya başlıyacak ve elimizdeki gücün farkına varacağız. Bildiğiniz gibi LINQ (Language Integrated Query) özellikle dil içerisinde, Sql tarzı sorgular yazabilmemizi ve bunları var olan IEnumerable türevli tipler üzerinde kullanabilmemizi sağlamaktadır. Ancak özellikle LINQ içerisinde kullanılabilen operatörler göz önüne alındığında, oldukça etkili sonuçlar alabileceğimiz ortadır. Temel olarak LINQ içerisindeki operatörler aşağıdaki başlıklar altında toplanmıştır. (Elbetteki bu bilgiler hala deneme aşamasında olan bir sürece aittir ve değişebilir.)

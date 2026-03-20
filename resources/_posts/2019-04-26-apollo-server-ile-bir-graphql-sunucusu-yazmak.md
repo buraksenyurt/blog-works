@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Apollo Server ile Bir GraphQL Sunucusu Yazmak"
 date: 2019-04-26 07:07:00 +0300
-description: "Apollo Server, web, mobile gibi istemciler için GraphQL servisi sunan bir ürün olarak düşünülebilir. Otomatik API doküman desteği sunar ve herhangibir veri kaynağını kullanabilir. Yani bir veri tabanını veya bir mikroservisi ya da bir REST APIyi, GraphQL hizmeti verebilecek şekilde istemcilere açabilir. Tek başına sunucu gibi çalıştırılabileceğinden de ilgimi çekti aslında. Pek tabii Heroku gibi ortamlarca Serverless modda da kullanılabiliyor."
 categories:
   - nodejs
 tags:
@@ -21,10 +20,9 @@ tags:
   - github
   - dependency-management
 ---
-# Apollo Server ile Bir GraphQL Sunucusu Yazmak
-![apollo13.jpg](/assets/images/2019/apollo13.jpg)
-
 James A. Lovell, John L. Swigert, ve Fred W. Haise. Bu isimleri düşününce belki de çoğumuzun aklına bir şey gelmiyordur. Peki ya, Amerikalı veya İngiliz oldukları düşünülen bu şahısların yerine şu isimleri söylersek. Tom Hanks, Bill Paxton ve Kevin Bacon. Hımm...Sanırım birilerinin zihninde bir şeyler canlandı. Evet, evet...Bunlar film yıldızları değil mi? Üçü bir arada hangi filmde oynamışlardı acaba? Hala anımsayamadıysanız işte bir ipucu daha. "Houston we've got a problem." Şimdi anımsadınız mı?
+
+![apollo13.jpg](/assets/images/2019/apollo13.jpg)
 
 Başta söylediğimiz isimler, 11 Nisan 1970 tarihinde uzaya fırlatılan Apollo 13 mürettebatına ait. Apollo programınındaki bu uçuşun amacı aya insan götürmekti. Ne yazık ki mekik, uçuşunun ikinci gününde meydana gelen bir kaza sonrası acil olarak dünyaya dönüş yapmak zorunda kalmıştı. Yazılanlardan okuduğumuz ve filmden gördüğümüz kadarıyla astronotlar çok zor koşullara göğüs gererek mucizevi bir dönüş hikayesinin altına imza atmışlardı. Tesadüf bu ya, geçenlerde filmini tekrardan izlediğim gün Apollo isimli Framework GraphQL arayüzü ile cumartesi gecesi çalışmalarımı yürütüyordum. Örneği orada tamamladıktan uzun süre sonra sağını solunu biraz derleyip bloğuma kendime not olarak düşeyim dedim. Haydi başlayalım.
 

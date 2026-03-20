@@ -1,17 +1,13 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu 95–OfType<T>"
 date: 2013-03-25 19:25:00 +0300
-description: "Merhaba Arkadaşlar,"
 categories:
   - tek-fotoluk-ipucu
 tags:
   - tek-fotoluk-ipucu
   - linq
 ---
-# Tek Fotoluk İpucu 95–OfType<T>
-Merhaba Arkadaşlar,
-
 LINQ (Language INtegrated Query) tarafını her ne kadar yoğun kullanıyor olsak da gözümüzden kaçırdığımız, dikkat etmediğimiz, yerine yeni geliştirmeler yaptığımız ama aslında bizim kullanmamızı bir köşede bekleyen fonksiyonlar vardır.
 
 Örneğin kalıtımsal ilişki içerisinde olan Actor, Soldier, Computer, Vehicle tiplerini düşünün. Hatta bu tipler arasında, Soldier bir Actor’ dür, Computer’ de bir Actor’ dür ve hatta Vehicle’ da bir Actor’ dür şeklinde is-a ilişkisi olduğunu düşünelim.

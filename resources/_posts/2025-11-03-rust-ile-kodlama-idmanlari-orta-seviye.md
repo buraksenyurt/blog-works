@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Rust ile Kodlama İdmanları - Orta Seviye"
 date: 2025-11-03 07:28:00 +0300
-description: "Bir önceki yazımızda Rust programlama dili için başlangıç seviyesinde değerlendirebileceğimiz örnek kodlara değinmiştik. Bu yazımızda ise orta seviye konulara ait örneklere yer vermeye gayret edeceğiz. Composition'dan kapsamlı test senaryolarına, lazy iterator kullanımından generic türlerde kısıtlamaları kullanmaya kadar farklı konu başlıklarında kısa ve hatırlatıcı bilgileri örnek kodlar ile ele alacağız."
 categories:
   - rust
 tags:
@@ -15,10 +14,9 @@ tags:
   - github
   - ownership
 ---
-# Rust ile Kodlama İdmanları - Orta Seviye
-![ferris_mini_11.png](/assets/images/2025/ferris_mini_11.png)
-
 Şunu fark ettim ki, hangi programlama dili olursa olsun bilgilerimizi taze tutmanın yollarından birisi öğrenilenleri düzenli olarak not haline getirmek ve yazarak kayıt altına almak. Elbette tek yol bu değil. Mutlaka her gün bir parça da olsa kod yazmak, belki bir proje üzerinden ilerlemek (hiçbir yerde kullanılmayacak olsa bile), onunla ilgili bir makale okumak veya bir video izlemek lazım. Ünlü düşünür Johann Wolfgang von Goethe ne demiş "İnsan her gün bir parça müzik dinlemeli, iyi bir şiir okumalı, güzel bir tablo görmeli ve mümkünse birkaç mantıklı cümle söylemelidir." Yapay zekanın bilgisayar ve internet'ten sonra yeni bir devrim olma çabasıyla koştuğu şu dönemde iyi bir programcı olmak için daha çok okuyalım, daha çok pratik yapalım, daha çok araştıralım, daha çok dinleyelim derim. Elbette yapay zeka araçlarına sırtımızı da dönmeyelim. Nimetlerinden, verimliliğimizi artıracak ölçüde yararlanalım.
+
+![ferris_mini_11.png](/assets/images/2025/ferris_mini_11.png)
 
 Bir önceki yazımızda Rust programlama dili için başlangıç seviyesinde değerlendirebileceğimiz örnek kodlara değinmiştik. Bu yazımızda ise orta seviye konulara ait örneklere yer vermeye gayret edeceğiz. Composition'dan kapsamlı test senaryolarına, lazy iterator kullanımından generic türlerde kısıtlamaları kullanmaya kadar farklı konu başlıklarında kısa ve hatırlatıcı bilgileri örnek kodlar ile ele alacağız. Dilerseniz vakit kaybetmeden ilk konumuzla başlayalım.
 

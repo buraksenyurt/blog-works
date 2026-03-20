@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF - Istemci Taraflı Asenkron Çağırma (Client Side Asynchronous Invoking)"
 date: 2007-06-13 12:00:00 +0300
-description: "Windows Communication Foundation ile ilgili bir önceki makalemizde One Way tekniğini uygulayarak istemcilerin asenkron olarak uzak metodları nasıl çağırabileceklerini incelemiştik. One Way tekniğinin elbetteki en büyük dezavantajı geriye değer döndüren metodların ele alınamayışıdır."
 categories:
   - wcf
 tags:
@@ -17,9 +16,6 @@ tags:
   - delegates
   - visual-studio
 ---
-# WCF - Istemci Taraflı Asenkron Çağırma (Client Side Asynchronous Invoking)
-Değerli Okurlarım Merhabalar,
-
 Windows Communication Foundation ile ilgili bir önceki makalemizde One Way tekniğini uygulayarak istemcilerin asenkron olarak uzak metodları nasıl çağırabileceklerini incelemiştik. One Way tekniğinin elbetteki en büyük dezavantajı geriye değer döndüren metodların ele alınamayışıdır. Oysaki çoğu zaman, işlem süresi uzun zaman alabilecek metodların geriye değer döndürdüğü vakkalarda asenkron erişim tekniklerini kullanmak gerekir. Ancak Windows Communication Foundation göz önüne alındığında asenkron çalıştırma iki farklı şekilde ele alınabilmektedir. Bunlarda birisi istemci taraflı asenkron çağırma (Client Side Asynchronous Invoking) modelidir. Diğeri ise servis taraflı asenkron uyarlama modelidir (Service Side Asynchronous Implementation). Bu makalemizde istemci taraflı asenkron çağırma modelini incelemeye çalışacağız.
 
 İstemci taraflı asenkron çağırma modelinde, proxy sınıfının asenkron desene (Asynchronous Pattern) uygun olacak şekilde Begin ve End ile başlayan standart metodları vardır. Bu metodlar temelinde IAsyncResult arayüzünü ele almaktadır. İstemci taraflı olarak çalışan bu modelin, doğal olarak farklı uygulanabilme çeşitleri vardır..Net tarafında asenkron mimarinin ele alınabilen tüm teknikleri Windows Communication Foundation içinde geçerlidir. Burada bahsedilen teknikler Polling, Callback ve WaitHandle modellerini içermektedir. WaitHandle modelininde kendi içerisinde WaitOne, WaitAny, WaitAll gibi farklı kullanım şekilleri vardır.

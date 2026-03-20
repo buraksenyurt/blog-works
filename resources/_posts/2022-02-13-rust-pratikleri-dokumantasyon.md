@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Rust Pratikleri - Dokümantasyon"
 date: 2022-02-13 09:00:00 +0300
-description: "Bir programlama dilini iyi yapan ve onu öne çıkaran bazı önemli unsurlar vardır. İdeal bir söz dizimi oluşturulması için önerilerde bulunmak, kullanılan fonksiyon veya türlerle ilgili yardım dokümantasyonları sunmak, merkezi ve başarılı bir paket yönetim sistemine sahip olmak bunlar arasında sayılabilir. Rust dilindeki pek çok kural sayesinde bellek sahasının güvende kaldığı(memory safe), dangle pointer, data race, memory leak gibi sorunların oluşmadığı, performansı yüksek ve üstelik bütün bunlar için garbage collector benzeri mekanizmalara ihtiyaç duymayacak şekilde geliştirme yapmamız mümkün. Yine de idiomatic olarak ifade edilen ve dilin en ideal şekilde kullanılmasını tarifleyen ihtiyaç için yardım almamız gerekiyor. Bu anlamda cargo clippy en büyük destekçimiz. Ancak kaliteli kodlamanın olmazsa olmaz önemli özelliklerinden birisi de elbette verimli içerik sunan dokümantasyon. Özellikle yazdığımız kütüphaneleri herkesin kullanımına açmak istediğimiz senaryolarda bu konuya azami özeni göstermek lazım."
 categories:
   - rust
 tags:
@@ -15,10 +14,9 @@ tags:
   - github
   - race-condition
 ---
-# Rust Pratikleri - Dokümantasyon
-![horten.jpg](/assets/images/2022/horten.jpg)
-
 Bir programlama dilini iyi yapan ve onu öne çıkaran bazı önemli unsurlar vardır. İdeal bir söz dizimi oluşturulması için önerilerde bulunmak, kullanılan fonksiyon veya türlerle ilgili yardım dokümantasyonları sunmak, merkezi ve başarılı bir paket yönetim sistemine sahip olmak bunlar arasında sayılabilir. Rust dilindeki pek çok kural sayesinde bellek sahasının güvende kaldığı (memory safe), dangle pointer, data race, memory leak gibi sorunların oluşmadığı, performansı yüksek ve üstelik bütün bunlar için garbage collector benzeri mekanizmalara ihtiyaç duymayacak şekilde geliştirme yapmamız mümkün. Yine de idiomatic olarak ifade edilen ve dilin en ideal şekilde kullanılmasını tarifleyen ihtiyaç için yardım almamız gerekiyor. Bu anlamda cargo clippy en büyük destekçimiz. Ancak kaliteli kodlamanın olmazsa olmaz önemli özelliklerinden birisi de elbette verimli içerik sunan dokümantasyon. Özellikle yazdığımız kütüphaneleri herkesin kullanımına açmak istediğimiz senaryolarda bu konuya azami özeni göstermek lazım.
+
+![horten.jpg](/assets/images/2022/horten.jpg)
 
 Rust'ın kendi built-in içeriğinin sağladığı dokümantasyon son derece etkilidir. Neredeyse kitaplara taş çıkartacak kadar iyi bilgi verir ve aynı zamanda ilgili enstrümanın kullanımına dair örnekler sunar. [crates.io](https://crates.io/), Rust kodlamacıların kullandığı en önemli kütüphane deposudur. Buraya çıkan ve silinemeyen kütüphanelerimiz için iyi bir dokümantasyon sunmak programcı olarak vazifemizdir.
 
@@ -195,7 +193,7 @@ Artık doküman içerisindeki kod parçası da çalıştırılabilir durumda, ü
 cargo doc
 
 # Ancak bağımlı kütüphanelerin dokümantasyonunu işin içerisine dahil etmek istemezsek şöyle kullanabiliriz.
-cargo doc --no-deps 
+cargo doc --no-deps
 
 # Hatta geliştirme sırasında şu kullanımı daha şık olur. 
 cargo doc --no-deps --open

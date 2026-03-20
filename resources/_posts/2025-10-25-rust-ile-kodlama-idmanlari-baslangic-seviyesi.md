@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Rust ile Kodlama İdmanları - Başlangıç Seviyesi"
 date: 2025-10-25 20:04:00 +0300
-description: "Rust, daha çok öğrenme eğrisinin zorluğu ile tanınan bir sistem programlama dilidir desek sanırım yanlış olmaz. Ownership, borrow-checker, lifetimes vs derken managed ortamlarda geliştirme yapan programcıları epeyce zorlayan konu başlıklarına sahip. Bu seride rust ile uğraşmış ve ara vermiş ya da rust konusunda belli seviyeye kadar ilerlemiş ama bilgilerini tazelemek isteyenler için pratik kodlamalar yer alıyor."
 categories:
   - rust
 tags:
@@ -19,10 +18,9 @@ tags:
   - ownership
   - borrow-checker
 ---
-# Rust ile Kodlama İdmanları - Başlangıç Seviyesi
-![rust_mini_00.png](/assets/images/2025/rust_mini_00.png)
-
 Rust, daha çok öğrenme eğrisinin zorluğu ile tanınan bir sistem programlama dilidir desek sanırım yanlış olmaz. Ownership, borrow-checker, lifetimes, macro'lar, mutex vs derken managed ortamlarda (.Net, Java, Go gibi) geliştirme yapan programcıları epeyce zorlayan konu başlıklarına sahiptir. Şahsen, aynı öğrenme eğrisi zorluğunu yaşamış birisi olarak kodladıkça daha fazla tutulacağınız bir dil olduğunu da belirtmek isterim.
+
+![rust_mini_00.png](/assets/images/2025/rust_mini_00.png)
 
 Buna rağmen son dönemlerde özellikle github copilot gibi asistanlar veya kodlama üzerine uzmanlaşmış yapay zeka ajanları yaygın olarak kullanılmakta ve kod satırlarını otomatik olarak neredeyse tam da düşündüğümüz gibi tamamlamakta.
 
@@ -408,7 +406,7 @@ fn main() {
         Aşağıdaki kullanımda owned_input değişkeninin sahipliği validate_with_ownership fonksiyonuna
         devredildiği için, fonksiyon çağrısından sonra owned_input değişkeni geçersiz hale gelir.
         Bu nedenle, fonksiyon çağrısından sonra owned_input değişkenine erişmeye çalışmak
-        derleme hatasına neden olur. 
+        derleme hatasına neden olur.
 
         error[E0382]: borrow of moved value: `owned_input`
         --> exc15\src\main.rs:35:23

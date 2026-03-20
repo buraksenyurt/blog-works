@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Fluent Interface Nedir?"
 date: 2011-03-27 05:15:00 +0300
-description: "Bu günkü yazımızda ilk olarak Martin Fowler ve Eric Evans tarafından tanımlanan Fluent Interface konusunu irdelemeye çalışıyor olacağız. Aslında kelime anlamlarından yola çıkarsak okunabilir, açık, net arayüz tiplerinden bahsettiğimizi düşünebiliriz. Ancak bu şekilde söz konusu kavrama biraz haksızlık etmiş oluruz. Fluent Interface esas itibariyle daha okunabilir kodlama açısından önem arz eden ve uygulanması sırasında metod zincirlerinden yararlananan bir yaklaşım sunmaktadır. Şimdi ne demek istediğimizi ben de ifade edemedim aslında Confused smile Gelin basit bir örnek ile konuyu didiklemeye başlayalım.Bu amaçla aşağıdaki kod içeriğini göz önüne alabiliriz."
 categories:
   - csharp
 tags:
@@ -10,10 +9,10 @@ tags:
   - http
   - generics
 ---
-# Fluent Interface Nedir?
-[![blg236_Giris](/assets/images/2011/blg236_Giris_thumb.jpg)](/assets/images/2011/blg236_Giris.jpg) Merhaba Arkadaşlar,
-
 Yazılımcı olarak bizlerin zaman içerisindeki gelişimimiz/ilerleyişimiz açısından takip etmemiz gereken önemli kişiler olduğu aşikardır. Söz gelimi çevik süreç prensiplerine ait manifestoyu hazırlayanlar arasında yer alan Martin Fowler gibi. [Martin Fowler](http://martinfowler.com/) bana göre yazılım mühendisliğinin uç noktalarında yaşayan bir bilim insanıdır. Bilim insanı diyorum nitekim çalıştığı şirkette Chief Scientist pozisyonunda görev almaktadır
+
+[![blg236_Giris](/assets/images/2011/blg236_Giris_thumb.jpg)](/assets/images/2011/blg236_Giris.jpg)
+
 
 ![Smile](/assets/images/2011/wlEmoticon-smile.png)
 

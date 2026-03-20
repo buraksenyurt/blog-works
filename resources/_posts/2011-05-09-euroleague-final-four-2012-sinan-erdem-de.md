@@ -1,18 +1,17 @@
-﻿---
+---
 layout: post
 title: "Euroleague Final Four 2012 Sinan Erdem’ de"
 date: 2011-05-09 08:01:00 +0300
-description: "[![5695552760_3ba8cdb7cf_z](/assets/images/2011/5695552760_3ba8cdb7cf_z_thumb.jpg)](/assets/images/2011/5695552760_3ba8cdb7cf_z.jpg) Merhaba Arkadaşlar,"
 categories:
   - teknik-disi-konular
 tags:
   - teknik-disi-konular
   - http
 ---
-# Euroleague Final Four 2012 Sinan Erdem’ de
-[![5695552760_3ba8cdb7cf_z](/assets/images/2011/5695552760_3ba8cdb7cf_z_thumb.jpg)](/assets/images/2011/5695552760_3ba8cdb7cf_z.jpg) Merhaba Arkadaşlar,
-
 Geçtiğimiz günler basketbol adına oldukça hareketliydi. Özellikle benim için dün. Öncelikle Euroleague Final Four 2011 oynandı ve Barcelona’ da düzenlenen seride, Panathinaikos nefes kesen mücadelede Maccabi Electra’ yı 78-70 yenerek şampiyon oldu.
+
+[![5695552760_3ba8cdb7cf_z](/assets/images/2011/5695552760_3ba8cdb7cf_z_thumb.jpg)](/assets/images/2011/5695552760_3ba8cdb7cf_z.jpg)
+
 
 (Bu arada unutmadan hatırlatayım. 2012 Final Four’ da Sinan Erdem spor salonunda oynanacak. Dolayısıyla şimdiden bilet paralarını biriktirmeye başlamakta yarar var ![Winking smile](/assets/images/2011/wlEmoticon-winkingsmile_19.png))
 

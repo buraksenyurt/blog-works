@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu 134 - Powershell'den XML Web Service Çağırmak"
 date: 2016-10-06 21:10:00 +0300
-description: "Olmaz olmaz demeyin, gün gelir ihtiyacınız olur :) Ortada bir XML Web Service olduğunu düşünelim ve onu çağırmak istediğimiz bir sunucunun başında oturduğumuzu. Sunucu üzerinde SOAP-UI gibi yardımcı araçların olmadığını ve bunları kurma yetkinizin de bulunmadığını düşünün. Öyle bir sunucu ki komut satırı en etkili araç. İşte böyle bir durumda Windows PowerShell gibi araçlar web servislerini çağırma noktasında işimize yarayabilir. Nasıl mı? Gelin bakalım."
 categories:
   - powershell
 tags:
@@ -16,9 +15,6 @@ tags:
   - http
   - asmx
 ---
-# Tek Fotoluk İpucu 134 - Powershell'den XML Web Service Çağırmak
-Merhaba Arkadaşlar,
-
 Olmaz olmaz demeyin, gün gelir ihtiyacınız olur:) Ortada bir XML Web Service olduğunu düşünelim ve onu çağırmak istediğimiz bir sunucunun başında oturduğumuzu. Sunucu üzerinde SOAP-UI gibi yardımcı araçların olmadığını ve bunları kurma yetkinizin de bulunmadığını düşünün. Öyle bir sunucu ki komut satırı en etkili araç. İşte böyle bir durumda Windows PowerShell gibi araçlar web servislerini çağırma noktasında işimize yarayabilir. Nasıl mı? Gelin bakalım.
 
 Elimizde ASP.Net ortamında geliştirilmiş CalculationService.asmx isimli bir XML Web Service olduğunu ve içerisinde Sum isimli basit bir toplama operasyonu bulunduğunu varsayalım (Sum operasyonuna ait SOAP 1.1 temelli HTTP Post talebinin şablonu aşağıdakine benzerdir)

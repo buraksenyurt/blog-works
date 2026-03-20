@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "C# 2.0 İçin İterasyon Yenilikleri"
 date: 2005-07-05 12:00:00 +0300
-description: "Bazen kendi yazmış olduğumuz tiplerin dizi bazlı elemanları olur. Uygulamalarımızda, bu elemanlar arasında, elamanların sahipi olan nesne örneği üzerinden ileri yönlü iterasyonlar kurmak isteyebiliriz. Foreach döngüleri belirtilen tip için bu iterasyonu sağlayan bir mekanizmaya sahiptir. Lakin kendi geliştirdiğimiz tiplerin sahip oldukları elemanlar üzerinde, bu tarz bir iterasyonu uygulayabilmek için bir numaratöre ve uygulayıcıya ihtiyacımız vardır. Kısacası, tipimizin elemanları arasında nasıl öteleme yapılabileceğini sisteme öğretmemiz gerekmektedir. Bu işlevselliği kazandırmak için IEnumerable ve IEnumerator arayüzlerini birlikte kullanırız."
 categories:
   - csharp
 tags:
@@ -10,9 +9,6 @@ tags:
   - generics
   - visual-studio
 ---
-# C# 2.0 İçin İterasyon Yenilikleri
-Değerli Okurlarım Merhabalar,
-
 Bazen kendi yazmış olduğumuz tiplerin dizi bazlı elemanları olur. Uygulamalarımızda, bu elemanlar arasında, elamanların sahipi olan nesne örneği üzerinden ileri yönlü iterasyonlar kurmak isteyebiliriz. Foreach döngüleri belirtilen tip için bu iterasyonu sağlayan bir mekanizmaya sahiptir. Lakin kendi geliştirdiğimiz tiplerin sahip oldukları elemanlar üzerinde, bu tarz bir iterasyonu uygulayabilmek için bir numaratöre ve uygulayıcıya ihtiyacımız vardır. Kısacası, tipimizin elemanları arasında nasıl öteleme yapılabileceğini sisteme öğretmemiz gerekmektedir. Bu işlevselliği kazandırmak için IEnumerable ve IEnumerator arayüzlerini birlikte kullanırız.
 
 Uygulamalarımızda klasik olarak kullandığımız bir iterasyon tekniği vardır. Bu tekniğe göre iterasyon içerisinde kullanılacak olan elemanlar için bir numaratör sağlanır. IEnumerable arayüzünün sağladığı GetEnumerator metodu geriye IEnumerator arayüzü tipinden bir nesne örneği döndürmektedir ve bizim için gerekli olan numaratörün kendisidir. IEnumerator ise çoğunlukla dahili bir sınıfa (inner class) uygulanır ve iterasyon için gerekli asıl metodları sağlar. Bu metodlardan MoveNext bir sonraki elemanın olup olmadığını bool tipinden döndüren bir işleve sahip iken, Current metodu o anki elemanı iterasyona devreder. Bu iki arayüzü kullanarak bir sınıf içindeki elemanlar üzerinde iterasyona izin verecek yapıyı kurmak biraz karmaşıktır. Aslında teknik son derece kolaydır sadece uygulanabilirliği ilk zamanlarda biraz kafa karıştırıcıdır. İlk olarak C# 1.1 için bahsetmiş olduğumuz iterasyon tekniğinin nasıl gerçekleştirildiğini inceleyeceğimiz bir örnek geliştirelim.

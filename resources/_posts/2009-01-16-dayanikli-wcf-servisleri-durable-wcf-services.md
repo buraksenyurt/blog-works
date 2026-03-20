@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Dayanıklı WCF Servisleri (Durable WCF Services)"
 date: 2009-01-16 10:00:00 +0300
-description: "Uzun zamandır Windows Communication Foundation(WCF) konulu bir araştırma üzerinde durmamıştık. Aslında WCF 4.0 ve WF 4.0 ile ilgili yeniliklerin uzun süredir konuşulduğu şu günlerde, WCF tarafında oldukça önemli bir yere sahip olan ve hatta Workflow Foundation açısından da değer arz eden bir konuya değiniyor olacağız. Dayanıklı WCF Servisleri(Durable WCF Services)."
 categories:
   - wcf
 tags:
@@ -17,9 +16,6 @@ tags:
   - transactions
   - visual-studio
 ---
-# Dayanıklı WCF Servisleri (Durable WCF Services)
-Değerli Okurlarım Merhabalar,
-
 Uzun zamandır Windows Communication Foundation (WCF) konulu bir araştırma üzerinde durmamıştık. Aslında WCF 4.0 ve WF 4.0 ile ilgili yeniliklerin uzun süredir konuşulduğu şu günlerde, WCF tarafında oldukça önemli bir yere sahip olan ve hatta Workflow Foundation açısından da değer arz eden bir konuya değiniyor olacağız. Dayanıklı WCF Servisleri (Durable WCF Services).
 
 Durable deyince aklıma gelen ilk şey, uzun ömürlü bir pil markası oluyor:) Sürer...Sürer...Sürerrr...İşin mizahi yanı bir tarafa dursun, Servis Yönelimli Mimari (ServiceOrientedArchitecture) uygulamalarında, bir servisin herhangibir zaman dilimindeki konumunun içeriği ile birlikte uzun süreliğine saklanabiliyor olması bazen elzem olan gereksinimlerden bir tanesidir. Nitekim bazı servis operasyonlarının gerçekleştirilmesi sırasında servisin kapanması veya istemcinin tekrardan başlatılması gibi vakaları olasıdır. Yada çok uzun süren, içerisinde insan faktörü olan bir sürecin ele alındığı herhangibir servisin, belirli zaman dilimlerinde son içeriğinden yüklenerek çalıştırılması gerekebilir.

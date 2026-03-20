@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF 4.0 Yenilikleri - Discovery için Scope Kullanmak [Beta 1]"
 date: 2009-08-20 16:57:00 +0300
-description: "Bir önceki yazımızda WCF 4.0 tabanlı servislerde WS-Discovery protokolünün, Ad Hoc modeline göre nasıl uygulanabileceğini görmüştük. Ad Hoc modelinde istemcinin, yerel ağ üzerine dahil olan bir servisi aramak için kullanabileceği kriterleri önceden belirlemesi ve bunları kullanması gerektiğinden bahsetmiştik. Bu amaçla kod tarafında FindCriteria tipinden yararlanılmaktadır. Bir önceki örneğimizde, arama kriterinde sadece servis sözleşmesini(Service Contract) kullanmıştık."
 categories:
   - wcf-4-0-beta-1
 tags:
@@ -13,9 +12,6 @@ tags:
   - http
   - delegates
 ---
-# WCF 4.0 Yenilikleri - Discovery için Scope Kullanmak [Beta 1]
-Merhaba Arkadaşlar,
-
 Bir [önceki](https://www.buraksenyurt.com/post/wcf40-Yenilikleri-Ad-Hoc-WS-Discovery)yazımızda WCF 4.0 tabanlı servislerde WS-Discovery protokolünün, Ad Hoc modeline göre nasıl uygulanabileceğini görmüştük. Ad Hoc modelinde istemcinin, yerel ağ üzerine dahil olan bir servisi aramak için kullanabileceği kriterleri önceden belirlemesi ve bunları kullanması gerektiğinden bahsetmiştik. Bu amaçla kod tarafında FindCriteria tipinden yararlanılmaktadır. Bir önceki örneğimizde, arama kriterinde sadece servis sözleşmesini (Service Contract) kullanmıştık.
 
 Ancak, arama alanını biraz daha dar tutmak amacıyla Scope bildirimlerinde de bulunabiliriz. Bir başka deyişle, ağ üzerinde birden fazla servisin arandığı durumlarda kapsama alanımızı, ekleyeceğimiz Scope kriterlerine göre azaltma şansımız bulunmaktadır. Bir şekilde istemcinin ilgi alanınıda daha kesin çizgilerle belirlemiş olmaktayız. Peki bunu nasıl uygulayabiliriz?

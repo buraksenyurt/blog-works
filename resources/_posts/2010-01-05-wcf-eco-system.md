@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF Eco System"
 date: 2010-01-05 01:30:00 +0300
-description: "Özellikle son bir iki yıllık zaman dilimi içerisinde .Net tarafında pek çok servis modeli ve ismiyle karşılaştık. Örneğin Astoria kod adıyla başlayan Ado.Net Data Services, Silverlight gibi Rich Internet Application' ları hedef alan .Net RIA Services vb... (Eğer Microsoft' un ürünleri için kullandığı kod adlarını merak ediyorsanız Wikipedia' daki ilgili listeye bakmanızı öneririm) Hal böyle olunca ortada bir sürü kod adı ve isim oluşmaya başladı. Buda çok doğal olarak bizim gibi geliştricilerin kafasında pek çok soru işaretine neden oldu. Acaba hangi servis modelini hangi amaçlar ile kullanmalıyız? Bunların nihai sürümler yaklaştıkça isimlendirmeleri neler olacak? Ne gibi avantaj veya dez avantajları var?"
 categories:
   - wcf
 tags:
@@ -22,9 +21,6 @@ tags:
   - javascript
   - transactions
 ---
-# WCF Eco System
-Merhaba Arkadaşlar,
-
 Özellikle son bir iki yıllık zaman dilimi içerisinde.Net tarafında pek çok servis modeli ve ismiyle karşılaştık. Örneğin Astoria kod adıyla başlayan Ado.Net Data Services, Silverlight gibi Rich Internet Application'ları hedef alan.Net RIA Services vb... (Eğer Microsoft'un ürünleri için kullandığı kod adlarını merak ediyorsanız [Wikipedia](http://en.wikipedia.org/wiki/List_of_Microsoft_codenames)'daki ilgili listeye bakmanızı öneririm) Hal böyle olunca ortada bir sürü kod adı ve isim oluşmaya başladı. Buda çok doğal olarak bizim gibi geliştricilerin kafasında pek çok soru işaretine neden oldu. Acaba hangi servis modelini hangi amaçlar ile kullanmalıyız? Bunların nihai sürümler yaklaştıkça isimlendirmeleri neler olacak? Ne gibi avantaj veya dez avantajları var?
 
 Soruları arttırmak mümkün. Aslında kabul edilmesi gereken önemli bir nokta var; Tüm bu servis modelleri.Net Framework 3.0' dan beri var olan ve her sürümde önemli yetenekler kazanan Windows Communication Foundation (WCF) alt yapısı (Infrastructure diyebiliriz) üzerinde konuşlandırılmış durumda. Şu an içinde bulunduğumuz servis modellerinin çeşitliliğini ve sayısını düşündüğümüzde ise bir Eco System'in oluştuğunu net bir şekilde ifade edebiliriz. Aşağıdaki tabloda WCF Eco System'in parçaları yer almakta olup kısaca amaçları özetlenmeye çalışılmaktadır.

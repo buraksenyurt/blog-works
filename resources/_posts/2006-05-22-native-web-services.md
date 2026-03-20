@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Native Web Services"
 date: 2006-05-22 12:00:00 +0300
-description: "Sql Server 2005 ile gelen etkili özelliklerden biriside, doğal xml web servisi (native xml web services) desteğinin bulunmasıdır. Sql Server 2000 sürümünde, web servisi desteğini sunabilmek için SqlXml 3.0 ve IIS' in sunucu sistemde mutlaka yüklü olması gerekmektedir. Bununla birlikte istemciler MDAC desteğine sahip olmalıdır..."
 categories:
   - xml-web-services
 tags:
@@ -19,9 +18,6 @@ tags:
   - dataset
   - datatable
 ---
-# Native Web Services
-Değerli Okurlarım Merhabalar,
-
 Sql Server 2005 ile gelen etkili özelliklerden biriside, doğal xml web servisi (native xml web services) desteğinin bulunmasıdır. Sql Server 2000 sürümünde, web servisi desteğini sunabilmek için SqlXml 3.0 ve IIS'in sunucu sistemde mutlaka yüklü olması gerekmektedir. Bununla birlikte istemciler MDAC desteğine sahip olmalıdır. Oysaki Sql Server 2005 istemcilerden Http protokolüne göre gelecek SOAP uyumlu talepleri doğrudan işletebilecek şekilde tasarlanmıştır. Sistemde yer alan Http dinleyici (Http Listener), istemcilerden gelecek olan talepleri doğrudan Sql Server 2005 üzerindeki EndPoint'lere iletmektedir. Dolayısıyla sunucu sistem üzerine IIS bulunma zorunluluğu ortadan kaldırılmıştır.
 
 Sql Server 2005, saklı yordamların (stored procedures) ve kullanıcı tanımlı fonksiyonların (User-defined Functions) http üzerinden SOAP uyumlu taleplere cevap verebilecek halde sunulmasını sağlar. Bunun içinde Http veya Tcp protokolüne göre çalışan EndPoint nesnelerinden yararlanır. Sql Server 2005, http üzerinden gelecek olan talepleri yine SOAP mesajları şeklinde cevaplandırdığından, istemci her hangibir platform veya sistem olabilir. Örneğin bir Unix sistemi yada Linux sistemi de Sql Server 2005 tarafından sununlan bu servisleri kullanabilir. Biz bu makalemizde adım adım Sql Server 2005 üzerinden web servisi hizmetini nasıl verebileceğimizi incelemeye çalışacağız. Sql Server 2005 üzerinden herhangibir saklı yordamı yada kullanıcı tanımlı fonksiyonu web servisi kuralları içerisinde sunmanın ve kullanmanın yolu aşağıdaki şekilde kısaca tasvir edilmeye çalışılmaktadır.

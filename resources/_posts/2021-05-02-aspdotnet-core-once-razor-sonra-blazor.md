@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Asp.Net Core - Önce Razor Sonra Blazor"
 date: 2021-05-02 21:30:00 +0300
-description: "Asp.Net Core 5 cephesine baktığımızda üç temel uygulama modelini desteklediğini görürüz. Web uygulamaları, servisler ve gerçek zamanlı iletişim araçları. Gerçek zamanlı(Real-Time) iletişim tarafında SignalR karşımıza çıkar. Servisleri göz önüne aldığımızda ise Web API ve gRPC başrolde yer alır. Web tarafını düşündüğümüzde oldukça zengin bir ürün çeşitliliği söz konusudur. MVC(Model View Controller), Razor Pages, Blazor, Angular ve React tabanlı SPA'lar(Single Page Applications). Kuvvetle muhtemel Asp.Net Core 5 tarafına yeni başladıysanız ve haberleri yeterince takip ediyorsanız en çok ilgi çeken geliştirme çatısının Blazor olduğunda hem fikir sayılırız. Fakat Blazor' a doğrudan geçmeden önce bazı temellerin de öğrenilmesi gerekir."
 categories:
   - asp-dotnet-core
 tags:
@@ -21,10 +20,9 @@ tags:
   - visual-studio
   - dependency-management
 ---
-# Asp.Net Core - Önce Razor Sonra Blazor
-![jack-finnigan-00yDgACVeMA-unsplash.jpg](/assets/images/2021/jack-finnigan-00yDgACVeMA-unsplash.jpg)
-
 Kendime geldiğimde hiçbir şey göremediğimi fark ettim. Üstüme çöken zifiri karanlığa rağmen halen daha hayatta olduğuma dair tek şey yağmur damlalarının birkaç metre üstümde olduğunu sandığım metal tavana vurarak çıkardıkları seslerdi. Ensemden neredeyse ayak parmaklarıma kadar yayılan ağrı hiçbir şeyi umursamaz bir tavırda yattığım yerden doğrulmamı güçleştiriyordu. Son hatırladığım CloudTown'dan birkaç sibernetik coder ile karşılaştığım belli belirsiz yansımalardan ibaretti. Kısa süre sonra yakınlarımda koşuşturan bazı ayak sesleri işittim. Yer yer duraksıyor yer yer su birikintilerine girip çıkıyorlardı. Fısıltılar daha duyulur sesler haline gelmeye başladı. Tavandaki kapağı açmak üzere içlerinden birinin elindeki anahtarları hazırladığını işittim. Sonrası gözlerim için çok korkunç bir deneyimdi. Bu zifiri karanlıkta ne kadar kaldığımı bilmiyorum ama gözlerim dışardan gelen o parlak ışığa karşı adeta haykırıyordu. Üstüme boca edilen bir kova soğuk suyun ardından gelen kaba ses ise çok tanıdıkdı. Ve şöyle seslendim; "Reyzor! Sen haaa":P
+
+![jack-finnigan-00yDgACVeMA-unsplash.jpg](/assets/images/2021/jack-finnigan-00yDgACVeMA-unsplash.jpg)
 
 Efendim bendeniz yine yazıya giriş yapacak güzel bir şeyler bulamayınca böyle garip bir hikayeyi ortaya atıverdim. Gel gelelim konumuz baş karakterimiz Reyzor ile de alakalı.(Photo by [Jack Finnigan](https://unsplash.com/@jackofallstreets?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/s/photos/rain?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText))
 
@@ -167,7 +165,7 @@ namespace FirstContact.Controllers
 }
 ```
 
-Index metodunda bir Star nesne örneği kullanarak yıldız listesini almaktayız. Sonrasında bu listeyi View metoduna parametre olarak geçerek Home isimli View'a göndermekteyiz. Sınıfın yapıcı metodunda görüleceği üzere Star bileşenini Dependency Injection Container'dan istiyoruz. Dolayısıyla Star bileşeninin DI servislerine eklenmesi gerekiyor. Daha önceki bir yazımızda bu konuya değinmiştik;) [Nasıl yaparım diyorsanız buradaki yazıya bakmanızı önerebilirim](Asp.Net Core'a Nasıl Merhaba Deriz-.md) ama "işimi uzatma" derseniz de yapmanız gereken tek şey Startup sınıfındaki ConfigureServices metoduna aşağıdaki satırı eklemekten ibaret.
+Index metodunda bir Star nesne örneği kullanarak yıldız listesini almaktayız. Sonrasında bu listeyi View metoduna parametre olarak geçerek Home isimli View'a göndermekteyiz. Sınıfın yapıcı metodunda görüleceği üzere Star bileşenini Dependency Injection Container'dan istiyoruz. Dolayısıyla Star bileşeninin DI servislerine eklenmesi gerekiyor. Daha önceki bir yazımızda bu konuya değinmiştik;) [Nasıl yaparım diyorsanız buradaki yazıya bakmanızı önerebilirim](/2021/04/25/aspdotnet-core-a-nasil-merhaba-deriz/) ama "işimi uzatma" derseniz de yapmanız gereken tek şey Startup sınıfındaki ConfigureServices metoduna aşağıdaki satırı eklemekten ibaret.
 
 ```csharp
 services.AddTransient<IStar, Star>();
@@ -179,7 +177,7 @@ Bu ara hazırlıklardan sonra yeniden Razor tarafına dönelim ve Index sayfası
 @{
     ViewData["Title"] = "Space Traveler's Base";
 }
-@model List<StarModel> 
+@model List<StarModel>
 
 <div>
     <h1 class="display-4">@ViewData["Title"]</h1>

@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF RIA Services - Alan Bazlı(Field Based) Rol Kontrolü [Beta 2]"
 date: 2010-01-27 02:33:00 +0300
-description: "Hani bazen insanın aklına son derece zekice fikirler gelir ya... Wink Sene 1992. Lise öğrencisiyim. Bazı akşamlar yazlığımızdaki odamda üniversiteye hazırlanmaya çalışırdım. Güzel yaz gecelerinde, tertemiz ada ikliminde, mis gibi kokan iyotlu deniz suyunun çok yakınlarında konsantre olmak her ne kadar çok zor olsa da, buna mecburdum. Sealed Odamdaki flöresan ışığını çalışma ortamı için hiç uygun bulmazdım. Bunun yerine sarı ışığı tercih ederdim ve aynen yandaki şekilde görülene benzer bir gece lambam vardı."
 categories:
   - wcf-eco-system
   - wcf-ria-services
@@ -18,20 +17,9 @@ tags:
   - authentication
   - performance
 ---
-# WCF RIA Services - Alan Bazlı(Field Based) Rol Kontrolü [Beta 2]
+Hani bazen insanın aklına son derece zekice fikirler gelir ya...Sene 1992. Lise öğrencisiyim. Bazı akşamlar yazlığımızdaki odamda üniversiteye hazırlanmaya çalışırdım. Güzel yaz gecelerinde, tertemiz ada ikliminde, mis gibi kokan iyotlu deniz suyunun çok yakınlarında konsantre olmak her ne kadar çok zor olsa da, buna mecburdum. Odamdaki flöresan ışığını çalışma ortamı için hiç uygun bulmazdım. Bunun yerine sarı ışığı tercih ederdim ve aynen yandaki şekilde görülene benzer bir gece lambam vardı.
+
 ![blg119_Giris.jpg](/assets/images/2010/blg119_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
-Hani bazen insanın aklına son derece zekice fikirler gelir ya...
-
-![Wink](/assets/images/2010/smiley-wink.gif)
-
-Sene 1992. Lise öğrencisiyim. Bazı akşamlar yazlığımızdaki odamda üniversiteye hazırlanmaya çalışırdım. Güzel yaz gecelerinde, tertemiz ada ikliminde, mis gibi kokan iyotlu deniz suyunun çok yakınlarında konsantre olmak her ne kadar çok zor olsa da, buna mecburdum.
-
-![Sealed](/assets/images/2010/smiley-sealed.gif)
-
-Odamdaki flöresan ışığını çalışma ortamı için hiç uygun bulmazdım. Bunun yerine sarı ışığı tercih ederdim ve aynen yandaki şekilde görülene benzer bir gece lambam vardı.
 
 Aslında lambanın etrafında şık bir küre bulunmaktaydı fakat sakarlığıyla bilinen bendeniz onu bir ara kırmıştım. Tabi hal böyle olunca şöyle bir sorunla karşılaştım. Işık direkt olarak gözüme geliyor ve çok rahatsız ediyordu. Çözüm olarak nemi yaptım. Dahiyane bir fikirle Amerika'daki bir arkadaşımın hediye ettiği Newyork Nicks takımının logosunu taşıyan şapkayı, lambanın üstüne güzelce yerleştirdim. Özellikle ışığın gözüme direkt olarak girmesini engelleyen ama etrafı ve okuduklarımı görmemi sağlayan bir açıyı düşünüp, ölçüp biçerek, dikkatlice yerleştirdim. Kendimle gurur duyuyordum. Bu zeka ile NASA'ya bile gidebilirim diye düşünüyordum
 

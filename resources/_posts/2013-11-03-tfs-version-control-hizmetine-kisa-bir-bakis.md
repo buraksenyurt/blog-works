@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "TFS Version Control Hizmetine Kısa Bir Bakış"
 date: 2013-11-03 14:58:00 +0300
-description: "TFS Web Services kullanımlarını incelediğimiz bu yazımızda, en popüler hizmetlerden birisi olan Work Item Tracking servisine odaklamıştık. Bu servisten yararlanarak özellikle template bazlı öğelerin(Task, Bug, Product Back Log Item gibi) nasıl okunabileceğini öğrenmiştik. Çok doğal olarak daha pek çok servis kullanımı söz konusu. Önemli olan nokta, ilgili servislerin TFS Client Object Model üzerinden kullanılabileceğidir."
 categories:
   - team-foundation-server
 tags:
@@ -13,9 +12,6 @@ tags:
   - generics
   - windows-phone
 ---
-# TFS Version Control Hizmetine Kısa Bir Bakış
-Merhaba Arkadaşlar,
-
 TFS Web Services kullanımlarını incelediğimiz [bu](https://www.buraksenyurt.com/post/TFS-Web-Services-ve-Kullanimi) yazımızda, en popüler hizmetlerden birisi olan Work Item Tracking servisine odaklamıştık. Bu servisten yararlanarak özellikle template bazlı öğelerin (Task, Bug, Product Back Log Item gibi) nasıl okunabileceğini öğrenmiştik. Çok doğal olarak daha pek çok servis kullanımı söz konusu. Önemli olan nokta, ilgili servislerin TFS Client Object Model üzerinden kullanılabileceğidir.
 
 [Yazı, Team Foundation Server 2012 üzerinde ele alınmıştır]

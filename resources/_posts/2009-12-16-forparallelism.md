@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "FORParallelism"
 date: 2009-12-16 04:55:00 +0300
-description: "Günümüz yazılım teknolojilerinin belkide en popüler olan konularından biriside paralel programlamadır(Parallel Programming). Özellikle kullanıcı bilgisayarlarının artık birden fazla çekirdeğe sahip işlemcilerle donatılmış olduğu düşünüldüğünde geliştirme ortamlarının da(.Net Framework 4.0' da olduğu üzere) paralel programlamaya daha fazla destek vermeye başladığını görmekteyiz."
 categories:
   - tpl
 tags:
@@ -16,12 +15,9 @@ tags:
   - generics
   - visual-studio
 ---
-# FORParallelism
-![blg100_Giris.jpg](/assets/images/2009/blg100_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Günümüz yazılım teknolojilerinin belkide en popüler olan konularından biriside paralel programlamadır (Parallel Programming). Özellikle kullanıcı bilgisayarlarının artık birden fazla çekirdeğe sahip işlemcilerle donatılmış olduğu düşünüldüğünde geliştirme ortamlarının da (.Net Framework 4.0' da olduğu üzere
+
+![blg100_Giris.jpg](/assets/images/2009/blg100_Giris.jpg)
 
 ![Wink](/assets/images/2009/smiley-wink.gif)
 

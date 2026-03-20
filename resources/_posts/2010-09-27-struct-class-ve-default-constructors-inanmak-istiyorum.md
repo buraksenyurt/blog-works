@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Struct, Class ve Default Constructors - İnanmak İstiyorum"
 date: 2010-09-27 06:50:00 +0300
-description: "Konumuz C# programlama dilinin temelleri arasında sayılmaktadır. Class ve Struct tiplerinde Default Constructor(Varsayılan Yapıcı Metod) kullanımı. Bildiğiniz üzere .Net Framework Base Class Library üzerinde tiplere en üst seviyeden baktığımızda değer(Value) ve referans(Reference) türleri olarak ikiye ayırmaktayız."
 categories:
   - csharp
 tags:
@@ -13,12 +12,9 @@ tags:
   - reflection
   - visual-studio
 ---
-# Struct, Class ve Default Constructors - İnanmak İstiyorum
-![blg192_Giris.jpg](/assets/images/2010/blg192_Giris.jpg)
-
-Merhaba Arkadaşlar,
-
 Sanıyorum 90 yıllarda en çok izlediğim dizilerden birisi The X Files (Gizli Dosyalar) idi. Her bölümde olağan dışı konuların ele alındığı ve birbirlerine tamamen zıt iki karekter olan ama bu sayede gizli dosyaların işlenmesinde birbirlerini sürekli olarak dengeleyen Ajan Dana Scully ve Fox Mulder'ın maceraları gerçeklikten uzak olsa da, benim gibi bilim kurgu severleri ekrana bağlamak için yeterliydi.
+
+![blg192_Giris.jpg](/assets/images/2010/blg192_Giris.jpg)
 
 Diziyi her izleyişimde en çok hoşuma giden sahneler ise genellikle Fox Mulder'ın bir soru sorup ortağı dahil herkesi bir kaç saniyeliğine de olsa düşünmeye itmesiydi (yeni nesil argoda ifade etmek istersek dumura uğratmasıydı). Geçtiğimiz günlerde yine X Files dizisinin bir kaç bölümünü heyecanlı bir şekilde tekrardan izlerken bazen yaptığımız işte de, Ajan Fox Mulder'ın ürettiği gibi şüphe uyandırıcı soruların oluştuğunu düşünmeye başladım. Tabi soruyu hemen sormak istemiyorum. Olaya biraz daha heyecan katmakta yarar var. Bakalım bu yazımızın Fox Mulder'ı olabilecek miyim?
 

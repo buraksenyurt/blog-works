@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Mesaj Sözleşmeleri(Message Contracts)"
 date: 2009-02-09 12:00:00 +0300
-description: "Servis tabanlı uygulamalarda en önemli noktalardan biriside aradaki bilgi transferlerinin nasıl ve ne şekilde gerçekleştirildiğidir. Gerçek şuki, bu bilgi transferinin oluşma şekli çoğu zaman geliştiricinin gözünden kaçan yada çok fazla ilgilenmediği bir konu olmaktadır. Nitekim çoğu servis geliştirme aracı buradaki söz konusu içeriğin hazırlanmasını , gönderilmesini veya alınmasını otomatikleştirmektedir. Özellikle Windows Communication Foundation tarafında, bilginin istemci ve servis arasındaki dolaşımında bağlayıcı tiplerin(Binding Type) seçilmesi ile zaten arka tarafta ne şekilde bir haberleşme olacağı ve paketlerin nasıl hazırlanacağı belirlenmiş olur."
 categories:
   - wcf
 tags:
@@ -18,9 +17,6 @@ tags:
   - generics
   - debugging
 ---
-# Mesaj Sözleşmeleri(Message Contracts)
-Değerli Okurlarım Merhabalar,
-
 Servis tabanlı uygulamalarda en önemli noktalardan biriside aradaki bilgi transferlerinin nasıl ve ne şekilde gerçekleştirildiğidir. Gerçek şuki, bu bilgi transferinin oluşma şekli çoğu zaman geliştiricinin gözünden kaçan yada çok fazla ilgilenmediği bir konu olmaktadır. Nitekim çoğu servis geliştirme aracı buradaki söz konusu içeriğin hazırlanmasını, gönderilmesini veya alınmasını otomatikleştirmektedir. Özellikle Windows Communication Foundation tarafında, bilginin istemci ve servis arasındaki dolaşımında bağlayıcı tiplerin (Binding Type) seçilmesi ile zaten arka tarafta ne şekilde bir haberleşme olacağı ve paketlerin nasıl hazırlanacağı belirlenmiş olur.
 
 Aslında servis ve istemci tarafında mesaj bazlı bir iletişim olduğu son derece açıktır. Farklı platformlar üzerinde koşan servislerin haberleşmeleri yada farklı tipteki istemci uygulamaların servisleri kullanabilmeleri gerektiğinde ise, aradaki haberleşmenin bir standart üzerinde ve esnek olması beklenir. Bu nedenle özellikle SOAP bazlı web servisleri göz önüne alındığında mesajın tipi ve içeriğide bellidir. İşte burada SOAP (Simpe Object Access Protocol) tarzı mesajlardan söz edilebilir. Tipik olarak SOAP mesajları bir zarf olarak temsil edilmekte (SOAP Envelope) ve Header, Body isimli iki parçadan oluşmaktadır. Aşağıdaki şekilde bu içerik temsil edilmeye çalışılmıştır.

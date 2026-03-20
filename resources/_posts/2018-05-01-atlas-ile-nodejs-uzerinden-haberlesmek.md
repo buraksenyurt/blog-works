@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Atlas ile Node.js Üzerinden Haberleşmek"
 date: 2018-05-01 21:30:00 +0300
-description: "Bu yazımızda MongoDb'nin Cloud sistemi olan Atlas üzerinde bir proje oluşturarak işe başlıyoruz. Sonrasında Cluster üretip gerekli konfigurasyon ayarlamalarını yaparak MongoDB Compass uygulamasıyla bağlantı gerçekleştiriyor, örnek bir veritabanı ile koleksiyon oluşturup içerisine doküman ekliyoruz. Son aşamada bu içeriği Node.js ile yazdığımız bir kod parçası yardımıyla Ubuntu ortamına indirmeye çalışıyoruz."
 categories:
   - nodejs
 tags:
@@ -20,12 +19,9 @@ tags:
   - ruby
   - visual-studio
 ---
-# Atlas ile Node.js Üzerinden Haberleşmek
-![atlas_node_9.gif](/assets/images/2018/atlas_node_9.gif)
-
-Merhaba Arkadaşlar,
-
 Atlas denilince aklımıza gelen çoğunlukla coğrafya dersleridir. Hatta bu isimde coğrafya dergisi bile var. İşin köküne indiğimizde ise aslında bu ismin Yunan mitolojisinden geldiğini görmekteyiz. Yunan mitolojisine göre Atlas, Lapetos ve Klymene'nin 13 çocuğundan en güçlü olanıdır. Hatta o kadar güçlüdür ki Olympos'a saldırmış ve bu sebepten Zeus tarafından gök kubbeyi omuzlarından taşımakla cezalandırılmıştır. Hatta bu omuzlarda taşıma olayı bizleri o kadar etkilemiştir ki, kafatasını taşıyan ilk omura da tıp dünyası tarafından Atlas adı verilmiştir. Sanırım şimdi yandaki fotoğrafın ne anlama geldiğini daha net anladınız. Oysa ki Atlas'ın taşıdığı tek yük dünya ya da kafataslarımız değil. O, Big Data konusunda da büyük bir yükün altına girmiş durumda. İşte bugün inceleyeceğimiz konumuz. MongoDB'nin bulut çözümü hizmeti olan Atlas...
+
+![atlas_node_9.gif](/assets/images/2018/atlas_node_9.gif)
 
 Atlas'a giriş mevzum yeni iş yerimdeki genç meslektaşlarım sayesinde gerçekleşti. Beni bu tip araştırmalara ittikleri için çok memnunum. Bir kaç gün öncesinde katıldıkları Hackathon'la ilgili izlenimlerini paylaşan arkadaşlarıma ne kadar teşekkür etsem azdır. Hemen nasıl bir şeydir araştırmaya başladım ve sonunda aşağıdaki çizimde yer alan senaryonun gerçekleştirilebileceğini öğrendim. Burada Node.js istemcisinin yerine farklı platformlar da gelebiliyor hemen söyleyeyim. Dilerseniz Ruby, Python gibi dilleri de katabilirsiniz. Ben son günlerin popüler konuşmaları özelinde Node.js tipinde bir istemciyi tercih ettim.
 

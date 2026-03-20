@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "TPL – Göz Göre Göre Başımızı Belaya Sokmak"
 date: 2010-06-21 06:08:00 +0300
-description: "Ancak birden fazla iş parçasının da deadlock’ a düşmesi, bir başka deyişle birbirlerini beklemeleri nedeniyle, içinde çalıştıkları Thread’ i(çoğunlukla ana uygulama iş parçası-Main Thread) kitlemeleri söz konusudur. Durumu daha net anlayabilmek için aşağıdaki kod parçasını göz önüne alalım."
 categories:
   - parallel-programming
   - tpl
@@ -14,10 +13,10 @@ tags:
   - threading
   - visual-studio
 ---
-# TPL – Göz Göre Göre Başımızı Belaya Sokmak
-[![blg209_Giris](/assets/images/2010/blg209_Giris_thumb.jpg)](/assets/images/2010/blg209_Giris.jpg) Merhaba Arkadaşlar,
-
 Bazen göz göre göre başımıza bi ton dert açarız. Kimi zaman başlayacağımız iş bize çok eğlenceli gelebilir (Yandaki resimde yüzü görünmeyen şahsın da bu heyacanla Hamburgere bindiğinden eminiz) Ama işin sonuçlarını biliyorsak eğer, bunu yapmamızın nedeni büyük olasılıkla adrenalindir.
+
+[![blg209_Giris](/assets/images/2010/blg209_Giris_thumb.jpg)](/assets/images/2010/blg209_Giris.jpg)
+
 
 Tabi ki bir yazılımcı için adrenalin genellikle üst yöneticisi tarafından salgılanan bir hormondur. Nitekim yazılımcıların, ilerideki felaketleri kestirerek hareket etmesi ve geliştirmeleri buna göre yapması her zaman kolay olmayabilir. Bir başka deyişle bazı vakalara hazırlıklı olmak için önceden bunları çalışmak gerekmektedir.
 

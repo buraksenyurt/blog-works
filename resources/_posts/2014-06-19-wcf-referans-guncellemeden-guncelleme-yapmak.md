@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "WCF - Referans Güncellemeden Güncelleme Yapmak"
 date: 2014-06-19 17:20:00 +0300
-description: "Bildiğiniz üzere bir servis yazıldığında genellikle bunu tüketen(Consume) en az bir taraf bulunur. İstemci olarak düşündüğümüz bu taraflar her hangi bir uygulama olabilir. WCF(Windows Communication Foundation) ile geliştirdiğimiz bu servislerin, söz konusu istemciler tarafından kullanılması noktasında ise izlenebilecek bir kaç yol bulunmaktadır. Bunlardan en yaygını, servislerin projeye referans olarak eklenmesi ve üretilen Proxy sınıfının kullanılmasıdır(Add Service Reference). Visual Studio gibi gelişmiş IDE’ lerin ilgili arabirimleri, bu noktada büyük kolaylık sağlamaktadır."
 categories:
   - wcf
 tags:
@@ -18,10 +17,10 @@ tags:
   - generics
   - visual-studio
 ---
-# WCF - Referans Güncellemeden Güncelleme Yapmak
-[![wcfrf_8](/assets/images/2014/wcfrf_8_thumb.png)](/assets/images/2014/wcfrf_8.png) Merhaba Arkadaşlar,
-
 Bildiğiniz üzere bir servis yazıldığında genellikle bunu tüketen (Consume) en az bir taraf bulunur. İstemci olarak düşündüğümüz bu taraflar her hangi bir uygulama olabilir. WCF (Windows Communication Foundation) ile geliştirdiğimiz bu servislerin, söz konusu istemciler tarafından kullanılması noktasında ise izlenebilecek bir kaç yol bulunmaktadır. Bunlardan en yaygını, servislerin projeye referans olarak eklenmesi ve üretilen Proxy sınıfının kullanılmasıdır (Add Service Reference). Visual Studio gibi gelişmiş IDE’ lerin ilgili arabirimleri, bu noktada büyük kolaylık sağlamaktadır.
+
+[![wcfrf_8](/assets/images/2014/wcfrf_8_thumb.png)](/assets/images/2014/wcfrf_8.png)
+
 
 İkinci bir yol ise Proxy üretimi zorunluluğu olmadan servislerin kullanılmasıdır. Ancak söz konusu servislerin Web programlama modeline uygun olacak şekilde, HTTP protokolünün ilgili metodlarına (GET,POST,PUT,DELETE…) destek vermek üzere geliştirilmesi gerekir. Daha çok veri odaklı (Data-Centric) servisler için geçerli olan bu senaryoda, içerik de çoğunlukla JSON (JavaScriptObjectNotation), BSON (Binary Javascript Object Notation) ve XML (eXensibleMarkupLanguage) gibi veri formatlarında sunulmaktadır. Bu tip servislerin tüketilmesinde istemcinin her hangi bir Proxy üretimine gereksinimi bulunmamaktadır. Yine de işleri kolaylaştırıcı tiplerden yararlanıldığı da görülmektedir.
 

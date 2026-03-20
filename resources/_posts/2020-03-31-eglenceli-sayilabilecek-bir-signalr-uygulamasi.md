@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "Eğlenceli Sayılabilecek bir SignalR Uygulaması"
 date: 2020-03-31 21:44:00 +0300
-description: "Turşunun iyisi limonla mı olur yoksa sirkeyle mi? Neşeli Günler'i izleyenleriniz rahmetli Münir Özkul ve Adile Naşit arasındaki atışmayı gayet iyi bilir :) Arada bir eski de olsa her yönüyle bizlere tarifsiz dersler veren yapımlarımızı izlemek gerekiyor. Tabii yine de turşunun iyisi limonla mı olur yoksa sirkeyle mi olur pek bilemiyorum. İyisi mi bunu bir SignalR servisine bırakalım. Ne dersiniz? Birkaç kez .Net Core'un farklı versiyonları ile SignalR uygulaması yazmaya çalışmıştım. Tazelenme sürecindeki skynet'te ona yer vermezsem olmazdı. Bu sefer biraz daha eğlenceli olsun istedim. Amacım siteye bağlanan kullanıcıların oy vermek suretiyle iyi turşunun limonla mı yoksa sirkeyle mi yapılacağına karar vermelerini sağlamak :D Yarışma gibi olan oylamada birden fazla kullanıcı bağlanınca sonuçları anlık olarak progress bar'lar üzerinde de görünsün istiyorum. En azından klasik chat uygulamasından farklı olacak bir antrenmana başlıyoruz diyebilirim."
 categories:
   - dotnet-core
 tags:
@@ -19,10 +18,9 @@ tags:
   - github
   - dependency-management
 ---
-# Eğlenceli Sayılabilecek bir SignalR Uygulaması
-![neseligunler.jpg](/assets/images/2020/neseligunler.jpg)
-
 Turşunun iyisi limonla mı olur yoksa sirkeyle mi? Neşeli Günler'i izleyenleriniz rahmetli Münir Özkul ve Adile Naşit arasındaki atışmayı gayet iyi bilir:) Arada bir eski de olsa her yönüyle bizlere tarifsiz dersler veren yapımlarımızı izlemek gerekiyor. Tabii yine de turşunun iyisi limonla mı olur yoksa sirkeyle mi olur pek bilemiyorum. İyisi mi bunu bir SignalR servisine bırakalım. Ne dersiniz?
+
+![neseligunler.jpg](/assets/images/2020/neseligunler.jpg)
 
 Birkaç kez.Net Core'un farklı versiyonları ile SignalR uygulaması yazmaya çalışmıştım. Tazelenme sürecindeki skynet'te ona yer vermezsem olmazdı. Bu sefer biraz daha eğlenceli olsun istedim. Amacım siteye bağlanan kullanıcıların oy vermek suretiyle iyi turşunun limonla mı yoksa sirkeyle mi yapılacağına karar vermelerini sağlamak:D Yarışma gibi olan oylamada birden fazla kullanıcı bağlanınca sonuçları anlık olarak progress bar'lar üzerinde de görünsün istiyorum. En azından klasik chat uygulamasından farklı olacak bir antrenmana başlıyoruz diyebilirim.
 

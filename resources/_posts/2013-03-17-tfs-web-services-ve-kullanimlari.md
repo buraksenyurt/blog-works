@@ -1,8 +1,7 @@
-﻿---
+---
 layout: post
 title: "TFS Web Services ve Kullanımları"
 date: 2013-03-17 12:30:00 +0300
-description: "TFS mimari alt yapısı ve çevre etkileşimini incelediğimiz şu yazımızda Client Object Model’ i kısaca anlamaya çalışmıştık. O makalede yer alan mimari çizime dikkatlice bakarsak eğer, Client Object Model’ in aslında TFS Web Service’ ler ile haberleştiğini görebiliriz. Aslına bakarsanız Team Foundation Server tarafında epeyce fazla sayıda XML Web Service yer almaktadır. Bu servisleri ana hatları ile değerlendirdiğimizde ise sunucu ve koleksiyon seviyesinde olmak üzere iki ana dala bölündüklerini görürüz."
 categories:
   - team-foundation-server
 tags:
@@ -18,10 +17,10 @@ tags:
   - generics
   - asmx
 ---
-# TFS Web Services ve Kullanımları
-[![cartoon-soldier-010](/assets/images/2013/cartoon-soldier-010_thumb.jpg)](/assets/images/2013/cartoon-soldier-010.jpg) Merhaba Arkadaşlar,
-
 Yedek Subay olarak askerlik hizmetimi yerine getirdiğim yıllarda (O zamanlar 16 ay idi) Jandarma Genel Komutanlığı Personel Şube’ de görev almıştım. Aslında temel işim Powerpoint ile sunum hazırlamaktı ama verilen emir her ne ise onu da yerine getirmek mesuliyetini taşımaktaydım.
+
+[![cartoon-soldier-010](/assets/images/2013/cartoon-soldier-010_thumb.jpg)](/assets/images/2013/cartoon-soldier-010.jpg)
+
 
 Bir gün komutanım ile birlikte yine sivil hayat için anlamsız olan ama Askeri disiplin kuralları çerçevesinde gayet de makul görünen bir işe adanmıştık. Neredeyse tüm komutanlık personelinin iğneli Printer’ dan çıkartılmış karınca yazısı ebatlarındaki bilgilerini, bir diğer koca liste ile karşılaştıracak ve bir filtreleme işlemi gerçekleştirecektik. (İşin yaklaşık olarak kesintisiz çalışma ile 48 saate varabileceğini biliyorduk)
 
