@@ -23,7 +23,7 @@ class Program
         };
 
         builder.AddOpenAIChatCompletion(
-            modelId: "qwen/qwen3-14b",
+            modelId: "meta-llama-3-8b-instruct",
             apiKey: "lm-studio",
             endpoint: new Uri("http://localhost:1234/v1"),
             httpClient: httpClient
@@ -90,18 +90,36 @@ Makale Metni:
             var result = await kernel.InvokePromptAsync(prompt);
             string jsonResponse = result.GetValue<string>()?.Trim() ?? string.Empty;
 
-            if (jsonResponse.StartsWith("```json"))
+            int startIndex = jsonResponse.IndexOf('{');
+            int endIndex = jsonResponse.LastIndexOf('}');
+
+            if (startIndex >= 0 && endIndex > startIndex)
             {
-                jsonResponse = jsonResponse.Replace("```json", "").Replace("```", "").Trim();
+                jsonResponse = jsonResponse.Substring(startIndex, (endIndex - startIndex) + 1);
+            }
+            else
+            {
+                Console.WriteLine($"  -> Uyarı ({fileName}): Gelen yanıtta geçerli bir JSON bloğu bulunamadı. Atlanıyor.");
+                return;
             }
 
-            var aiResult = JsonSerializer.Deserialize<AiClassificationResult>(jsonResponse);
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                AllowTrailingCommas = true
+            };
+
+            var aiResult = JsonSerializer.Deserialize<AiClassificationResult>(jsonResponse, jsonOptions);
 
             if (aiResult != null)
             {
                 UpdateFileWithNewFrontMatter(filePath, frontMatter, markdownBody, aiResult);
                 Console.WriteLine($"  -> Başarılı: Kategori: {aiResult.Category}, Etiketler: {string.Join(", ", aiResult.Tags)}");
             }
+        }
+        catch (JsonException jsonEx)
+        {
+            Console.WriteLine($"  -> JSON PARSE HATASI ({fileName}): {jsonEx.Message}");
         }
         catch (Exception ex)
         {
