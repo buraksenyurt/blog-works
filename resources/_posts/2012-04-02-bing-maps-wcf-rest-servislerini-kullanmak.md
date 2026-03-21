@@ -5,18 +5,9 @@ date: 2012-04-02 04:00:00 +0300
 categories:
   - bing
 tags:
-  - bing
-  - xml
-  - json
-  - csharp
-  - dotnet
-  - linq
-  - wcf
-  - rest
-  - http
-  - javascript
-  - serialization
-  - generics
+  - bing-maps
+  - wcf-rest
+  - windows-communication-foundation
 ---
 Bazen öğrenmek istediklerimiz bize inanılmaz karşık gelir. Ne zaman kitabı açsak ya da bilgisayarın başına geçsek işe zaten demoralize olmuş bir şekilde başlarız. Özellikle tez hazırlıkları safhasındayken veya yazacağımız kitap için gerekli araştırmaları yaparken çok yoğun, ağır, sıkıcı ve uğraştırıcı unsurlarla karşı karşıya kalabiliriz.
 

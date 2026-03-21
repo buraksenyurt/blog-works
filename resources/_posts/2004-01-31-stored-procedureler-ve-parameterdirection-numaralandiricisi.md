@@ -5,9 +5,12 @@ date: 2004-01-31 12:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
-  - csharp
-  - performance
+  - ado.net
+  - ParameterDirection
+  - sql
+  - enums
+  - stored-procedures
+  - database
 ---
 Bugünkü makalemizde, Sql sunucularında yazdığımız Stored Procedure'lere ilişkin parametreleri incelemeye çalışacağız. Stored Procedure'ler ile ilgili daha önceki makalelerimizde, uygulamamızdan bu procedure'lere nasıl parametre aktarılacağını incelemiştik. Parametre aktarımında yaptığımız işlem, SqlCommand nesnesimizin parametre koleksiyonuna, Stored Procedure içinde tanımladığımız parametrenin eklenmesiydi. Bunun için, SqlCommand sınıfının Parameters koleksiyonuna Add metodunu kullanarak SqlParameter sınıfı türünden bir nesne ekliyorduk. Bu parametrelere program içerisinden ilgili değerleri aktararak, bu değerlerin Stored Procedure içinede aktarılmasına imkan sağlıyorduk.
 

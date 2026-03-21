@@ -5,17 +5,17 @@ date: 2015-11-09 21:00:00 +0300
 categories:
   - csharp
 tags:
-  - csharp
-  - dotnet
-  - wcf
+  - tcp
   - soap
-  - rest
+  - microservice
+  - rest-api
   - http
-  - authentication
-  - performance
-  - testing
-  - microservices
-  - visual-studio
+  - makecert
+  - SampleSslSocketCertificate
+  - x-509-certificate
+  - extension-methods
+  - sesecurity
+  - cryptography
 ---
 Günümüzde geliştirilen yazılım ürünleri çoğunlukla farklı uygulamalar ile de konuşmak durumunda. Sistemler sürekli birbirleri ile konuşan parçalar bütünü halinde genişlemeye devam ediyor. Akıllı cihazlar büyük ölçekli sistemlerin birer parçası olup çeşitli iş süreçlerinin işletilmesinde rol alıyor. Bu iletişimde servislerin de yeri var.
 

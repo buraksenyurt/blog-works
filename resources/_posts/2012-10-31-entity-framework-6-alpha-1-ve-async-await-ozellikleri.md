@@ -6,13 +6,12 @@ categories:
   - entity-framework
 tags:
   - entity-framework
-  - csharp
-  - dotnet
-  - http
-  - async-await
-  - parallel-programming
-  - threading
-  - visual-studio
+  - alpha
+  - async
+  - await
+  - task-parallel-library
+  - asynchronous-programming
+  - nuget
 ---
 Doğruyu söylemek gerekirse yazılım hayatım boyunca en çok kurduğum cümlelerden birisi de sanıyorum ki şu olmuştur: “Microsoft’ un hızına yetişemiyoruz” Bazı açılardan bakıldığında bu özellikle nihayi ürün ile geliştirme yapanlar için bir handikap olarak görülebilir. Çünkü yeni sürümler genellikle geliştiricilerin ve ürün yöneticilerinin arzu ettikleri, görmek istedikleri kabiliyetleri içermektedir.
 

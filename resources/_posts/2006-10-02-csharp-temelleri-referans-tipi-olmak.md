@@ -6,8 +6,12 @@ categories:
   - csharp
 tags:
   - csharp
-  - dotnet
-  - delegates
+  - stacktrace
+  - heap
+  - memory-management
+  - garbage-collection
+  - referance-types
+  - value-types
 ---
 .Net üzerinde kullanılabilen veri türleri (data types) referans türleri (reference types) ve değer türleri (value types) olmak üzere iki kategoriye ayrılmaktadır. Temel olarak değer türleri (value types) fiziki belleğin stack adı verilen bölgesinde tutulur. Referans türleri ise, veriyi heap bellek bölgesinde tutarken, stack bölgesinden verilerin adresini gösteren işaretçiler kullanır..Net Framework içerisinde yer alan int, double, float, bool gibi ilkel tiplerin çoğu değer türleridir.
 

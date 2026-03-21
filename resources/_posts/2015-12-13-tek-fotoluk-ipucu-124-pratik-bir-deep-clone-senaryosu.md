@@ -5,11 +5,15 @@ date: 2015-12-13 17:00:00 +0300
 categories:
   - tek-fotoluk-ipucu
 tags:
-  - tek-fotoluk-ipucu
   - csharp
-  - serialization
-  - reflection
-  - generics
+  - deep-clone
+  - deep-copy
+  - shallow-copy
+  - IClonable
+  - generic
+  - object-oriented-programming
+  - .net-framework
+  - clr
 ---
 Nesnelerin çalışma zamanında klonlanması ile ilişkili olarak bahsi geçen iki kavram vardır. Shallow (Yüzeysel) ve Deep (Derinsel diyelim) klonlama. Shallow türüne göre, kopyalanan nesnenin alanları orjinal nesnedeki aynı referans adreslerini işaret edecektir (Yani nesne içerisindeki referans türleri kopyalanacak ama aynı bellek adreslerini gösterecektir) Deep Copy tekniğine göreyse kopyalanan nesne alanları orjinal nesne alanlarının yeni kopyalarını referans etmektdir. Bir başka deyişle Deep Copy tekniğini uyguladığımızda, orjinal nesne içeriği ile aynı veri yapısına sahip yeni bir referans (bellekte farklı bir adreste konuşlandırılmış şekilde) üretmiş oluruz.
 

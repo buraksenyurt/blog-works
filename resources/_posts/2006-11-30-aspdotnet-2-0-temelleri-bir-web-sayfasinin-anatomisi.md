@@ -5,14 +5,7 @@ date: 2006-11-30 10:00:00 +0300
 categories:
   - aspnet
 tags:
-  - aspnet
-  - csharp
-  - dotnet
-  - http
-  - iis
-  - javascript
-  - visual-studio
-  - dependency-management
+  - asp.net
 ---
 Bu makalemizde, bir web sayfasının (.aspx uzantılı dosyalar) anatomosini incelemeye çalışacak, kaynak koddaki özel noktaları, in-line coding, code-behind modelini, yaşam döngüsünü ve çalışma zamanında olay bağlanması gibi temel kavramlara değineceğiz. Böylece basit olarak bir web sayfasının anatomisini öğrenmek için gerekli ip uçlarını değerlendirme fırsatını bulmuş olacağız. İlk olarak basit bir web sayfasını göz önüne alarak başlayalım.
 

@@ -6,17 +6,8 @@ categories:
   - linq
   - plinq
 tags:
-  - linq
   - plinq
-  - csharp
-  - dotnet
-  - xml
-  - http
-  - task-parallel-library
-  - threading
-  - concurrency
-  - generics
-  - visual-studio
+  - language-integrated-query
 ---
 Bildiğiniz gibi son yazımı deniz kenarında bir kafede tatildeyken yazmıştım. Ama tatil bitti malesef ve tekrardan Morpheus'un sözleri kulaklarımda çınladı "Wellcome to the real world". Yinede 1 haftalığınada olsa tatil yapabildiğime şükrediyorum. Gerçek dünyaya döndükten sonra tabiki bir süre adaptasyon sorunları ile karşılaşıyor insan doğal olaraktan. Bu adaptasyon sorunları içerisinde boğuşurken, neleri araştırabilirim diye düşünürken buluverdim kendimi.
 

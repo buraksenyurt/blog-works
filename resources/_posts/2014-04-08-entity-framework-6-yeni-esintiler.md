@@ -6,12 +6,8 @@ categories:
   - entity-framework
 tags:
   - entity-framework
-  - xml
-  - csharp
-  - dotnet
-  - linq
-  - http
-  - visual-studio
+  - new-features
+  - .net
 ---
 Tam da bu gün İstanbul’ da hafif rüzgarlı, güneşli bir bahar havası var. Binaların kapalı mekanlarında çalışan bizler için iki dakikalığına da olsa dışarıya çıkmanın, rüzgarın hafif esintisini ve güneşin ılık sıcaklığını hissetmenin değeri paha biçilemez.
 

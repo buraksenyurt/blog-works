@@ -5,25 +5,9 @@ date: 2008-09-22 12:00:00 +0300
 categories:
   - ado-net-data-services
 tags:
-  - ado-net-data-services
-  - bash
-  - csharp
-  - dotnet
-  - aspnet
-  - ado-net
-  - linq
-  - wcf
-  - wpf
-  - silverlight
-  - xml
-  - rest
-  - json
-  - http
-  - iis
-  - authorization
-  - java
-  - generics
-  - visual-studio
+  - windows-communication-foundation
+  - ado.net-data-services
+  - wcf-data-services
 ---
 Uzun bir aradan sonra yeni bir makale ile daha birlikteyiz. Sağnak yağışlı ve tamda “bu havada bir makale yazılır” dedirten bir günde hazırladığımız bu yazımızda, daha şimdiden gelecek vaat etmiş görünen,.Net Framework 3.5 Service Pack 1 ile birlikte hazır olarak gelen, Visual Studio 2008 ortamına entegre edilen ve WCF mimarisinin en güzel uyarlamalarından birisi olan ADO.Net Data Services (Astoria) üzerinde konuşuyor olacağız.
 

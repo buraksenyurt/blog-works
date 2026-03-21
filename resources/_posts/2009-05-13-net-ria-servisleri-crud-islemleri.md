@@ -5,18 +5,8 @@ date: 2009-05-13 22:50:00 +0300
 categories:
   - dotnet-ria-services
 tags:
-  - dotnet-ria-services
-  - csharp
-  - xml
-  - dotnet
-  - aspnet
-  - linq
-  - sql-server
+  - .net-ria-services
   - silverlight
-  - xaml
-  - http
-  - concurrency
-  - generics
 ---
 Bildiğiniz gibi bir süredir.Net RIA Servisleri ile ilişkili araştırmalarıma devam etmekteyim. Bu yazımızda,.Net RIA Servislerinde Insert, Update ve Delete işlemlerini nasıl yapabileceğimizi basit bir örnek üzerinden adım adım aktarmaya çalışacağım. Daha önceki Hello World örneğimizden farklı olarak, DAL (Data Access Layer) içerisinde LINQ to SQL modelini kullanıyor olacağız. İlk adımımız elbetteki bir Silverlight Application projesi oluşturmak olmalıdır..Net RIA Servisini kullanacağımız için, projenin oluşturulması sırasında Link to ASP.NET Server Project seçeneğinin işaretli olmasına dikkat edelim.
 

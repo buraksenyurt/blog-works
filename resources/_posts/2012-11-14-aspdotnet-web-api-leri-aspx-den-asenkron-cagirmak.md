@@ -5,23 +5,15 @@ date: 2012-11-14 00:00:00 +0300
 categories:
   - dotnet-framework-4-5
 tags:
-  - dotnet-framework-4-5
-  - csharp
-  - xml
-  - dotnet
-  - aspnet
-  - aspnet-mvc
-  - entity-framework
-  - linq
-  - rest
+  - asp.net-web-api
+  - .net-framework
+  - mvc
+  - newtonsoft
   - json
-  - web-api
-  - http
-  - async-await
   - task-parallel-library
-  - threading
-  - concurrency
-  - generics
+  - async
+  - await
+  - asynchronous-programming
 ---
 Bateri çalanları her zaman için büyük bir hayranlıkla izlerim/izlemişimdir. Özellikle 4 uzuvlarını da (iki kol iki ayak) kullanırlar ama daha da önemlisi tüm bu unsurları eş zamanlı olarak çalıştırabilirler. Sadece iki kolu çalıştırmak nispeten bir dereceye kadar kolay olabilir biz normal insan oğulları için ama bir de ayakları devreye sokmak. Hele de tüm bu hareketli parçalardan anlamlı bir melodi çıkartmak gerçekten çok ama çok zor bir iştir.
 

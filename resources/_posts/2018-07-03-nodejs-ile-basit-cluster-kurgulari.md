@@ -6,13 +6,16 @@ categories:
   - nodejs
 tags:
   - nodejs
-  - javascript
-  - json
+  - node.js
+  - cluster
+  - load-balancing
+  - child-process
+  - single-thread
+  - multi-core-processing
+  - inter-channel-communication
   - http
-  - task-parallel-library
-  - threading
-  - visual-studio
-  - github
+  - httpServer
+  - web-server-controls
 ---
 Programcılıkla uğraşan bizim gibi organizmalar sükunetle kod yazmaya bayılır. Hatta her şeyin sorunsuz işlediği, test'lerin prüzsüz ilerlediği, taşımaların tereyağından kıl çeker gibi kolay olduğu bir yaşam alanı düşler. Ne yazık ki gerçek hayat çoğu zaman böyle değildir. Bilirsiniz işte...Sıkışık proje süreleri, anlamakta güçlük çektiğimiz iş süreçleri, değişen ve öğrenmemiz gereken yeni nesil teknolojiler, aniden ortaya çıkan Murphy kanunları vs derken bir bakmışız ki barut fıçısına dönmüşüz. Kim bilir kaç kere içimizden bir Hulk fırlamak üzere düşe gelmiştir. Bazen benim de bu tip gıcık olduğum anlar olmuyor değil. Zaten çalışılması zor, huysuz ve aksi bir insanken bunlara birde ters giden işler eklenince, iyice çekilmez oluyorum.
 
@@ -30,7 +33,7 @@ Buna göre bir iş parçacığını çatallayarak (fork) alt iş parçacıkları
 
 cluster modülünü kullanarak yazacağımız mekanizma oldukça basit. Tek bir uygulamaya gelen talepleri master veya child olma hallerine göre değerlendireceğiz. Uygulama ilk çalıştığında cluster modeline göre master process konumunda olacaktır. Bu koşula bakarak istediğimiz sayıda alt iş parçacığını (child process) oluşturabiliriz. Tabii istediğimiz sayıda derken bunu abartmamak, belli bir standarda göre yapmak (örneğin işlemci/çekirdek sayısı kadar) daha doğru bir yaklaşım olacaktır. Bu noktada aklıma Microsoft'un Task Parallel Library ile ilgili oluşturduğu doküman geldi. Tekrar konumuza dönelim. Uygulama başlatıldı, master iş parçacığında olduğumuz fark edildi ve ana iş, alt parçacıklara çatallanmaya başlandı. Her çatal aslında aynı uygulamanın yeni bir örneğinin de başlatılması anlamına gelir. Buna göre aynı uygulamaya bu kez bir alt iş parçacığı olarak gelinecektir. Bunu da cluster'ın master olmama halinde ele alabiliriz ki bu sayede aynı uygulama kodu içerisinde alt iş parçacıklarını da kontrol edebiliriz.
 
-Pek tabii oluşan bu alt iş parçacıkları ve ana iş parçacığının aralarında haberleşmesi gerekebilir. Bu noktada her iş parçacığının kendi örneğine sahip olduğunu (hatta kendi V8 tabanlı örneğini çalıştırdığını) ve belleği ortaklaşa paylaşmadıklarını belirtmemiz gerekiyor. Ancak birbirlerine mesaj gönderebilirler. Bu mesajlaşma trafiği de [şu adreste](https://www.geeksforgeeks.org/inter-process-communication/) detaylarını bulabileceğiniz Inter Process Communication standardı ile sağlanmakta. Kısaca ana iş parçacığı alt iş parçacıklarına veya alt iş parçacıkları da ana iş parçacığına mesaj gönderebilir. Örneğe geçmeden önce son olarak ana iş parçacığının çeşitli olaylar ile alt iş parçacıklarını takip edebildiğini de belirtelim (fork, online, listening, exit)
+Pek tabii oluşan bu alt iş parçacıkları ve ana iş parçacığının aralarında haberleşmesi gerekebilir. Bu noktada her iş parçacığının kendi örneğine sahip olduğunu (hatta kendi V8 tabanlı örneğini çalıştırdığını) ve belleği ortaklaşa paylaşmadıklarını belirtmemiz gerekiyor. Ancak birbirlerine mesaj gönderebilirler. Bu mesajlaşma trafiği de [şu adreste](https://www.geeksforgeeks.org/inter-process-communication-ipc/) detaylarını bulabileceğiniz Inter Process Communication standardı ile sağlanmakta. Kısaca ana iş parçacığı alt iş parçacıklarına veya alt iş parçacıkları da ana iş parçacığına mesaj gönderebilir. Örneğe geçmeden önce son olarak ana iş parçacığının çeşitli olaylar ile alt iş parçacıklarını takip edebildiğini de belirtelim (fork, online, listening, exit)
 
 Hello Clustering
 

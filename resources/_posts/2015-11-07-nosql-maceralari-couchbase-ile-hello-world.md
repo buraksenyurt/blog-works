@@ -6,18 +6,13 @@ categories:
   - nosql
 tags:
   - nosql
-  - csharp
-  - dotnet
-  - linq
+  - nancy-framework
+  - IoT
+  - Internet-of-Things
+  - Couchbase
   - json
-  - http
-  - python
-  - java
-  - ruby
-  - nodejs
-  - concurrency
-  - generics
-  - rc
+  - captain-slow
+  - n1ql
 ---
 Uzun süredir NoSQL ürünleri ile ilgilenmediğimi fark ettim ve bu haftanın araştırma konusu olarak kendime bir NoSQL sistemi seçmeye karar verdim. Aslında aklımda bir alan vardı. Özellikle Nancy Framework'ü incelediğim sırada karşıma çıkan IoT (Internet of Things) ve NoSQL ilişkisi dikkat çekiciydi. Burada geçerli olan ve kullanılan veritabanı sistemlerinden bağzılarına baktım.
 

@@ -6,19 +6,11 @@ categories:
   - wcf-eco-system
   - wcf-webhttp-services
 tags:
-  - wcf-eco-system
+  - windows-communication-foundation
+  - webhttp-services
+  - rest-api
+  - non-soap
   - wcf-webhttp-services
-  - csharp
-  - wcf
-  - xml
-  - rest
-  - json
-  - http
-  - javascript
-  - serialization
-  - generics
-  - visual-studio
-  - rc
 ---
 Yandaki Logo size neyi çağırıştırıyor? Aslında bakarsanız çok meşhur olan hafif siklette bir veri değiş tokuş formatının logosunu ifade etmekte. [JSON (JavaScript Object Notation).](http://www.json.org/)Hatırlayacağınız üzere bir süredir WCF Eco System içerisinde yer alan WCF WebHttp Service alt yapısını incelemeye çalışıyoruz. WCF WebHttp Service'leri eğer istemci tarafından aksi belirtilmezse varsayılan olarak XML formatında çıktı üretmektedir. Ancak istenirse JSON (JavaScript Object Notation) formatında çıktı üretmeside sağlanabilir.
 

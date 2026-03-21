@@ -6,14 +6,16 @@ categories:
   - python
 tags:
   - python
-  - bash
-  - dotnet
-  - rest
-  - json
+  - rest-api
   - http
-  - java
-  - ruby
-  - microservices
+  - web-framework
+  - api
+  - linux
+  - terminal
+  - pip
+  - flask
+  - curl
+  - ubuntu
 ---
 Bir süredir [Python](https://www.buraksenyurt.com/category/python) ile ilgili çalışmalarıma aralıklarla da olsa devam etmeye çalışıyorum. Malum iş yoğunluğu ve sıkışık proje takvimi nedeniyle eskisi kadar vakit ayıramıyorum. Bu nedenle öğrenmek istediğim konuları önceliklendirme yoluna gittim (Kendi çalışma programımda bir backlog oluşturup öğeleri önceliklendirdiğimi ifade edebilirim) Genellikle backend tarafında programlama yaptığımdan olsan gerek listenin üst sıralarında servis tabanlı geliştirmeler yer alıyor. Onlardan birisi de REST tabanlı servis uyarlamaları.
 

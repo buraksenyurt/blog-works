@@ -6,12 +6,10 @@ categories:
   - csharp
 tags:
   - csharp
-  - dotnet
-  - threading
-  - performance
-  - delegates
-  - generics
-  - visual-studio
+  - events
+  - delegate
+  - event-driven-programming
+  - oop
 ---
 Olaylar (Events), görsel uygulamalar ile uğraşan her geliştirici tarafından bilinçli veya bilinçsiz bir şekilde kullanılmaktadır. Nesne yönelimli programlama ortamında olayları tanımlamak için klasik olarak verilen bir örnek vardır. Hepinizin bir sonraki cümlede ne diyeceğimi bildiğinizden eminim. Söz konusu örnekte görsel ortamda yer alan bir düğme kontrolü (çoğunlukla Button sınıfına ait bir nesne örneği) ve bu düğmeye kullanıcının mouse ile basması sonucu oluşan Click isimli bir olay mevcuttur.
 

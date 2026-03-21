@@ -5,15 +5,9 @@ date: 2004-10-22 12:00:00 +0300
 categories:
   - ado-net-2-0
 tags:
-  - ado-net-2-0
-  - bash
-  - csharp
-  - dotnet
-  - ado-net
-  - async-await
-  - threading
-  - concurrency
-  - generics
+  - ado.net
+  - asynchronous-programming
+  - async
 ---
 Hatılayacağınız gibi, Asenkron erişim teknikleri ile ilgili önceki makalelerimizde Polling ve Callback modellerini incelemiştik. Bu makalemizde ise, Wait modelini incelemeye çalışacağız. Wait modeli, diğer asenkron sql komutu yürütme tekniklerine göre biraz daha farklı bir işleyişe sahiptir. Bu model, bazı durumlarda asenkron olarak çalışan sql komutları tamamlanıncaya kadar uygulamayı bekletmek istediğimiz durumlarda kullanılmaktadır. WaitHandle modeli aslında birden fazla sunucu üzerinde çalışacak farklı sorgular söz konusu olduğunda işe yarayacak etkili bir tekniktir. Diğer taraftan eş zamanlı çalışan sorgu sonuçlarının uygulamamın kalanında etkili olduğu durumlarda da tercih edilmelidir. Wait modeli şu an için 3 teknik ile gerçekleştirilmektedir. Dilerseniz bu tekniklerin ne olduklarını ve nasıl uygulandıklarını kısaca inceleyelim.
 

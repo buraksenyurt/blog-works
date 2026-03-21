@@ -5,12 +5,14 @@ date: 2016-12-09 21:30:00 +0300
 categories:
   - ruby
 tags:
-  - ruby
-  - threading
-  - concurrency
-  - thread-safety
-  - shared-state
+  - ruby-lang
   - mutex
+  - multi-thread
+  - multithreading
+  - concurrency
+  - atomicity
+  - ordering
+  - visibility
 ---
 Ruby Kod Parçacıkları serimizin bir önceki bölümünde çoklu iş parçacıklarının (Multithreading) nasıl yazılabileceğini incelemeye başlamıştık. Başrol oyuncumuz olan Thread sınıfının kullanımını gördük. Lakin birden fazla iş parçacığının ele alındığı senaryolarda dikkat edilmesi gereken önemli konulardan birisi de ortak veriler üzerinde işlemler yapıldığında ortaya çıkmaktadır. Eş zamanlı olarak çalışan iş parçacıkları bazı durumlarda verinin tutarlılığının bozulmasına neden olabilir. Nitekim n sayıda iş parçacığının farklı anlarda aynı veri üzerinde işlem yapması söz konusudur. Birbirlerinin işlerini kesebilirler.
 

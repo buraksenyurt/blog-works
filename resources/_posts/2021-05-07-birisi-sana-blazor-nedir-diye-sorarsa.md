@@ -6,37 +6,15 @@ categories:
   - blazor
 tags:
   - blazor
-  - dotnet
-  - aspnet
-  - asp-dotnet-core
-  - ado-net
-  - entity-framework
-  - nosql
-  - wcf
-  - workflow-foundation
-  - wpf
-  - windows-forms
-  - silverlight
-  - xml
-  - soap
-  - rest
-  - web-api
-  - web-service
-  - http
-  - grpc
-  - docker
-  - rust
+  - blazor-server
+  - blazor-web-assembly
+  - web-assembly
+  - wasm
+  - csharp
   - javascript
-  - typescript
-  - nodejs
-  - react
-  - vue
-  - concurrency
-  - performance
-  - microservices
-  - windows-phone
-  - visual-studio
-  - github
+  - client-server
+  - client-side-blazor
+  - server-side-blazor
 ---
 Yeni bir on yılın arifesini çoktan geçtik ve bu on yıla girmeden önce Microsoft, milenyumun başında da yaptığı üzere önemli ürünlerin altına imzasını attı. Açık kaynak dünyasına hızlı bir girişten sonra yıllardır süregelen Mono projesi daha da anlam kazandı. Artık Silverlight, Windows Phone, Web Forms,.Net Remoting gibi kavramlardan neredeyse hiç söz etmiyoruz. Üstelik bazıları yıllar önce rafa kalktı. Rafa kalkanların, eskiyenlerin bıraktığı tecrübe yeni nesil ürünlerin başarısını artırdı. Unity ile platform bağımsız oyunlar, Xamarin ile macOS ve linux ayırt etmeksizin çalışan kodlar vs derken.Net Core hayatımıza girerek büyük sükse yaptı.
 

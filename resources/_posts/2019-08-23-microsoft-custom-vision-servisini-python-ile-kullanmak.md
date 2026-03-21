@@ -5,12 +5,19 @@ date: 2019-08-23 13:00:00 +0300
 categories:
   - azure
 tags:
-  - azure
-  - bash
-  - json
-  - http
   - python
-  - github
+  - microsoft-azure
+  - visionApi
+  - ai
+  - pip
+  - custom-vision-api
+  - cognitive-services
+  - prediction
+  - post
+  - http
+  - postman
+  - ubuntu
+  - rest-api
 ---
 Yandaki resme baktığınızda aklınıza gelen ilk şey nedir? Bir surat? Belki de bir kurbağa. Kedi olabilir mi? Bu mürekkep baskısı gösterildiği kişide yarattığı algıyı anlamak için kullanılan Rorschach (Roşa olarak okunuyormuş) isimli psikolojik testten. Ünlü İsviçreli psikiyatrist Hermann Rorschach (1884-1922) tarafından geliştirilen test özellikle kişilik tahlili ve şizofreni vakalarında kullanılmakta. Sonuçların manipule edilmesinin zorluğu nedeniyle adli vakalarda ve hatta kariyerle ilgili kişilik testlerinde bile ele alınmakta. Hermann yandakine benzer kırk mürekkep baskısı tasarlamış. Kaynaklardan öğrendiğim kadarıyla doktorlar bu setteki kartların neredeyse yarısını kullanıp kişinin o anda nevrotik veya psikotik olup olmadığını anlayabiliyormuş. Tabi konunun uzmanı olmadığım için ancak giriş hikayemde kullanabilecek kadar bilgi aktarabiliyorum.
 

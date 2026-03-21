@@ -6,19 +6,17 @@ categories:
   - dotnet-core
   - gcp
 tags:
-  - dotnet-core
-  - gcp
-  - bash
-  - csharp
-  - dotnet
-  - rest
+  - .net-core
+  - google-cloud-platform
+  - google-cloud-storage
+  - rest-api
+  - gsutil
+  - bucket
+  - storage
+  - cloud-computing
+  - StorageClient
+  - api
   - json
-  - authentication
-  - authorization
-  - python
-  - java
-  - ruby
-  - nodejs
 ---
 Vakti zamanında sıkı bir Instagram kullanıcısıydım. En güzel fotoğrafları yakalamaya çalışır, anı görüntüleyip tüm bağlantılarımla paylaşırdım. Derken bir gün "ne yapıyorum ben yahu?" oldum. Neden o anı ille de herkesle paylaşma ihtiyacı hissediyordum. Bazen o anın fotoğrafını çekmek gerekmiyordu. Hatta hiç çekmediğim zamanlarda aklıma nasıl kazıdığımı bile unutmuştum. Üstelik ona ayıracağım zamanı pekala başka değerli şeylere de ayırabilirdim. Örneğin yeni şeyler öğrenmeye, makale yazmaya vs...
 

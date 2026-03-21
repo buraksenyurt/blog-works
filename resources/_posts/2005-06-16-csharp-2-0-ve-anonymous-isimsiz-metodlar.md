@@ -6,10 +6,6 @@ categories:
   - csharp
 tags:
   - csharp
-  - http
-  - threading
-  - delegates
-  - generics
 ---
 İsimsiz metodlar bildiğiniz gibi C# 2.0' a eklenmiş olan yeni özelliklerden birisidir. Temeli C# dilinin temsilci tipine dayanan bu yeni teknikte amaç, temsilcileri işaret edecekleri metodların sahip oldukları kod blokları ile bir seferde tanımlayabilmektir. İsimsiz metodları anlayabilmek için herşeyden önce temsilcilerin (delegates) iyi kavranmış olması gerekmektedir (Ön bilgi veya hatırlatma açısından Örnek [makale](http://www.bsenyurt.com/MakaleGoster.aspx?ID=43) ve [video](http://www.bsenyurt.com/video/Delegates.zip) larımızı incelemenizi öneririm)
 

@@ -5,7 +5,10 @@ date: 2012-03-16 00:00:00 +0300
 categories:
   - tek-fotoluk-ipucu
 tags:
-  - tek-fotoluk-ipucu
+  - uri
+  - extension-methods
+  - rss
+  - html
 ---
 Siz de benim gibi aklınıza geldikçe ve vaktiniz oldukça Extension Method (Genişletme Metodu) yazmaya çalışanlardan mısınız?
 

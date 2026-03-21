@@ -5,12 +5,9 @@ date: 2006-06-02 12:00:00 +0300
 categories:
   - aspnet-2-0
 tags:
-  - aspnet-2-0
-  - xml
-  - csharp
-  - dotnet
-  - aspnet
-  - sql-server
+  - asp.net
+  - profile-api
+  - personalization
 ---
 Günümüz web uygulamalarında, kullanıcı bazlı kişiselleştirme (personalization) oldukça önemli ve popüler bir konudur. Örneğin, bir elektronik ticaret sitesini ziyaret ettiğimizi düşünelim. Bu site bir sonraki ziyaretimizde, daha önceden bakmış olduğumuz ürünler ile ilişkili yeni önerilerde bulunabilir. Böylece siteye giren kullanıcıları başka ürünlere yönlendirebilir. Yeni önerilerin sunulabilmesi, sitenin bizim alışkanlıkarımızı takip etmesi ve kendisini buna göre değiştirmesi anlamına gelmektedir.
 

@@ -5,16 +5,9 @@ date: 2007-03-28 12:00:00 +0300
 categories:
   - aspnet-2-0
 tags:
-  - aspnet-2-0
-  - csharp
-  - dotnet
-  - aspnet
-  - xml
-  - http
-  - performance
-  - visual-studio
-  - dataset
-  - datatable
+  - asp.net
+  - web-parts
+  - custom-web-parts
 ---
 Web uygulamalarında var olan bileşenlerin yetersiz kaldığı durumlarda kendi kontrollerimizi geliştirme yoluna gidebiliyoruz. Kendi kontrollerimizi geliştirirken seçebileceğimiz yollar bellidir. Var olan bir web bileşeninden türetme yolunu seçebiliriz (Inherited Controls). Bu durumda kontrolün Html çıktısının ne olacağını bir başka deyişle Render işlemlerini çok fazla düşünmemize gerek kalmaz. Tek yapmamız gereken var olan üyeleri ezmek (override) veya yeni üyeler katmaktır. Bir diğer yol birden fazla kontrolü içeren komposit bir bileşen geliştirmektir (Composite Controls). Bu tekniğe verilebilecek en güzel örnek kullanıcı web kontrolleridir (web user controls). Özel bileşen geliştirmenin belkide en zor seçeneği, kontrolü sıfırdan yazmaktır. Bu durumda, ilgili bileşenin istemci tarayıcılarındaki Html çıktısını düşünmekle kalmayıp, ViewState, Postback, Event Handling gibi temel konularında göz önüne alınması ve düşünülmesi gerekir.
 

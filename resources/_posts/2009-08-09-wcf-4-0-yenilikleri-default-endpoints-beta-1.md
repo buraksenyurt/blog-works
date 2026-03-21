@@ -5,15 +5,7 @@ date: 2009-08-09 16:51:00 +0300
 categories:
   - wcf-4-0-beta-1
 tags:
-  - wcf-4-0-beta-1
-  - csharp
-  - dotnet
-  - wcf
-  - xml
-  - web-service
-  - xml-web-services
-  - http
-  - visual-studio
+  - windows-communication-foundation
 ---
 Çok eskinden.Net Remoting ile ilişkili uygulamalarda çalışırken, servis ve istemci taraflarının konfigurasyon dosyası bazlı ayarlamaları sırasında, Visual Studio.Net 2003 intelli-sense özelliğinin kaybolduğuna şahit olmuştum. Gerçektende config dosyası içerisindeki intelli-sense özelliği belirli bir elemente kadar destek veriyor ama sonrasında kayboluyordu. Böyle bir durumda pek çok ayarlamayı ezbere yapmak zorunda kaldığımı hatırlıyorum.
 

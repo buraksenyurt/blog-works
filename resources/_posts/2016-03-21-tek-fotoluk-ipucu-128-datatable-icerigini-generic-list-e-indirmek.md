@@ -5,11 +5,16 @@ date: 2016-03-21 11:00:00 +0300
 categories:
   - tek-fotoluk-ipucu
 tags:
-  - tek-fotoluk-ipucu
-  - dotnet
   - oracle
-  - generics
+  - sql
+  - extension-methods
+  - custom-attribute
+  - attribute
   - datatable
+  - odp.net
+  - csharp
+  - generics
+  - reflection
 ---
 Diyelim ki kullandığınız harici bir metod size DataTable tipinden bir nesne örneği döndürmekte. Ne var ki kendi sisteminizde bu nesne içeriğini List tipinden koleksiyon örnekleri ile dolaştırmanız gerekiyor. Hatta DataTable içeriğinin doldurulduğu tablonun kolon adları da sizin programınızdaki standartlar ile uyumlu değil. Bu durumda karşımıza şöyle bir soru çıkıyor. Herhangi bir DataTable içeriğini bir List tipine nasıl dönüştürebiliriz? Dahası dönüşüm işlemi sırasında T tipinin özellik adlarının tablodaki asıl kolon adları ile eşleştirilmesini nasıl sağlarız? İşin sırrı aslına bakarsanız kendi tarafımızdaki Entity tiplerinde birer Attribute kullanmaktan ve bunu çalışma zamanında ele almaktan geçiyor. Aşağıdaki ekran görüntüsü size bir fikir verecektir.
 

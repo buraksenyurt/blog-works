@@ -7,7 +7,9 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - entity-framework
-  - tek-fotoluk-ipucu
+  - language-integrated-query
+  - compiled-query
+  - csharp
 ---
 Entity Framework ile Compiled Query'ler hazırlayabileceğinizi ve daha performanslı sorgulamalar yaptırabileceğinizi biliyor muydunuz? İşte basit bir örnek
 

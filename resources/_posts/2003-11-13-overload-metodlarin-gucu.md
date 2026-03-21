@@ -6,7 +6,9 @@ categories:
   - csharp
 tags:
   - csharp
-  - dotnet
+  - overloading
+  - method-overloading
+  - oop
 ---
 Bu makalemde sizlere overload kavramından bahsetmek istiyorum. Konunun daha iyi anlaşılabilmesi açısından, ilerliyen kısımlarda basit bir örnek üzerinde de çalışacağız.
 

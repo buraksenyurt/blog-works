@@ -5,16 +5,9 @@ date: 2004-09-20 12:00:00 +0300
 categories:
   - ado-net-2-0
 tags:
-  - ado-net-2-0
-  - csharp
-  - bash
-  - dotnet
-  - ado-net
-  - concurrency
-  - generics
-  - visual-studio
-  - dataset
-  - datatable
+  - ado.net
+  - asynchronous-programming
+  - async
 ---
 Bu makalemizde, MARS (Multiple Active Results Sets) kavramını incelemeye çalışacağız. MARS kavramı Ado.Net 2.0 mimarisine monte edilmiş yeni bir yapıdır. Bu yapının bize sağladığı avantajları anlayabilmek için, Ado.Net 1.0/1.1 sürümlerinin kabiliyetlerine ve kısıtlamalarına kısaca bir göz atmak gerekmektedir.
 

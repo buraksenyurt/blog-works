@@ -5,23 +5,8 @@ date: 2008-12-16 12:00:00 +0300
 categories:
   - wcf
 tags:
-  - wcf
-  - csharp
-  - dotnet
-  - aspnet
-  - wpf
-  - windows-forms
-  - soap
-  - json
-  - web-service
-  - http
-  - iis
-  - authentication
-  - java
-  - javascript
-  - threading
-  - visual-studio
-  - asmx
+  - xml-web-service
+  - client-application-services
 ---
 Pek çok istemci uygulama için önem arz eden konular arasında doğrulama (Authentication), Rol Yönetimi (Roles Management), profile (Profile) göre kişiselleştirme yer almaktadır. Özellikle Web tabanlı uygulamalarda bu kıstaslar daha çok ön plana çıkmaktadır. Nitekim Client/Server mimarinin en güzel uyarlamalarından birisi olan web tabanlı geliştirmelerde, istemcilerin doğrulanması, rollerine göre ne yapabileceklerinin belirlenmesi, profillerine göre istekte bulundukları sayfaların kişiselleştirilmesi önemlidir. Bu noktada Asp.Net 2.0 sürümünden itibaren saymış olduğumuz bu kriterlerin çok daha kolay bir şekilde uygulanabilmesi sağlanmıştır.
 

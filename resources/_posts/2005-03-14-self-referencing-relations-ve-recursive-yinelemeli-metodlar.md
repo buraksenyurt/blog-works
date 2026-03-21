@@ -5,11 +5,10 @@ date: 2005-03-14 12:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
-  - csharp
-  - dataset
-  - datatable
-  - dependency-management
+  - ado.net
+  - relations
+  - recursive-method
+  - self-referencing
 ---
 Çoğumuz çalıştığımız projelerde müdür,müdür yardımcısı gibi ast üst ilişkisine sahip olan organizasyonel yapılarla karşılamışızdır. Örneğin işletmelerin Genel Müdür’ den başlayarak en alt kademedeki personele kadar inen organizasyonel yapılar gibi. Burada söz konusu olan ilişkiler çoğunlukla pozisyonel bazdadır. Yani çok sayıda personel birbirlerine pozisyonel bazda bağımlıdır ve bu bağımlılık en üst pozisyondan en alt pozisyona kadar herkesi kapsar. Bu tarz bir sistemin uygulama ortamında canlandırılabilmesi için pozisyonel ilişkileri ifade edebilecek tablo yapılarına başvurulur. Özellikle pozisyonlar arasındaki ilişkiyi kendi içerisinde referans edebilen tablolar bu tarz ihtiyaçların karşılanması için biçilmiş kaftandır. Örneğin aşağıdaki tabloyu göz önüne alalım.
 

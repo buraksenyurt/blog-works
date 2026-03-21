@@ -5,10 +5,8 @@ date: 2009-05-31 04:03:00 +0300
 categories:
   - dotnet-ria-services
 tags:
-  - dotnet-ria-services
-  - csharp
+  - .net-ria-services
   - silverlight
-  - authentication
 ---
 Bir önceki blog yazımızda,.Net RIA Servislerin kullanıldığı Silverlight uygulamalarında doğrulama (Validation) işlemlerinin nasıl yapılabileceğini incelemeye çalışmıştık. Bu yazımızda ise, Range, Required, StringLength, RegularExpression gibi built-in niteliklerle (attribute) gerçekleştirilen doğrulamalar haricinde kalan özel durumlar için nasıl ilerleyebileceğimizi araştıracağız. Konuyu adım adım irdelersek, aşağıdaki işlemleri yapmamız gerekmektedir.
 

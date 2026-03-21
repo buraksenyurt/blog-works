@@ -5,24 +5,13 @@ date: 2013-03-25 10:21:00 +0300
 categories:
   - wcf
 tags:
-  - wcf
-  - csharp
-  - xml
-  - dotnet
-  - aspnet
-  - linq
-  - oracle
+  - windows-communication-foundation
   - workflow-foundation
-  - xaml
-  - web-service
-  - xml-web-services
-  - http
-  - java
-  - transactions
-  - generics
-  - debugging
-  - visual-studio
-  - atomic-operations
+  - xml-web-service
+  - atomic-transactions
+  - distributed-transactions
+  - transaction
+  - csharp
 ---
 Bir süre öncesine kadar Composition adı verilen bir katmanda yer alacak çeşitli servisler ile yoğun şekilde güreşmekteydim. Çok fazla faktör, çok fazla farklı sistem ve tabiri yerinde ise oyun ve oyuncu söz konusuydu. WCF servisleri, XML Web Servisleri, Java tabanlı olanları ve belki de yarın gelecek olan çeşitli COM bileşenleri, 3ncü parti uygulamalar, koduna müdahale edemeyeceğimiz programlar vs.
 

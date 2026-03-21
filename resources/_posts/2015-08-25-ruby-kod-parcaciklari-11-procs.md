@@ -5,9 +5,8 @@ date: 2015-08-25 08:00:00 +0300
 categories:
   - ruby
 tags:
-  - ruby
-  - workflow-foundation
-  - rc
+  - ruby-lang
+  - procs
 ---
 Bir [önceki kod parçacığımızda](/2015/08/20/ruby-kod-parcaciklari-10-yield-ve-block-kullanimi/) Ruby dilinin önemli özelliklerinden birisi olan Block kavramına değinmiştik. Bu kod parçacığında ise Proc kullanımını anlamaya çalışacağız. Kod parçalarını metodlara taşımanın yollarından sadece birisi Block'lardır. Ancak block'lar bir nesne olarak ifade edilemezler. Oysa ki Ruby dilinde her şeyin bir nesne olduğu öne sürülür. İşte bu noktada devreye Proc ve Lambda enstrümanları girer.
 

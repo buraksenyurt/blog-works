@@ -6,6 +6,16 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - tek-fotoluk-ipucu
+  - auto-mapper
+  - entity
+  - class
+  - reflection
+  - generics
+  - extension-methods
+  - convertion
+  - dto
+  - business-object
+  - data-transfer-object
 ---
 Özellikle ORM araçlarının ele alındığı uygulamalarda bazen Entity içeriklerini sistem içerisinde dolaştıran ve nispeten daha az sayıda özellik (asıl ihtiyaç olunanları) taşıyan tiplere ihtiyaç duyarız. Business Object veya Data Transfer Object gibi isimler de verirler bunlara.
 

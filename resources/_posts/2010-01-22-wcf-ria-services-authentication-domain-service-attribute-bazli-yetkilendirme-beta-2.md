@@ -6,21 +6,10 @@ categories:
   - wcf-eco-system
   - wcf-ria-services
 tags:
-  - wcf-eco-system
   - wcf-ria-services
-  - csharp
-  - xml
-  - dotnet
-  - aspnet
-  - ado-net
-  - entity-framework
-  - linq
-  - wcf
-  - silverlight
-  - xaml
-  - http
-  - authentication
-  - authorization
+  - .net-ria-services
+  - windows-communication-foundation
+  - wcf-eco-system
 ---
 Bildiğiniz üzere bir süredir WCF RIA Service'lerinde doğrulama (Authentication), yetkilendirme (Authorization), Role ve Profile yönetimi konularına değinmekteyiz. WCF RIA Service'lerinin temel amaçlarından birisininde RIA tipindeki uygulamalar için Ado.Net Entity Framework gibi kaynaklar üzerinden CRUD (CreateReadUpdateDelete) operasyonlarını sağlanması olduğu düşünüldüğünde, servis fonksiyonelliklerinin yetkilendirilmeside güvenlik açısından önem arz eden konuların başında gelmektedir. Bu konu, WCF RIA Service'lerinde nitelikler (Attributes) yardımıyla ele alınabilmektedir.
 

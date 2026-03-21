@@ -7,14 +7,9 @@ categories:
   - parallel-programming
   - tpl
 tags:
-  - csharp-4-0
+  - task-parallel-library
   - parallel-programming
-  - tpl
-  - csharp
-  - dotnet
-  - threading
-  - generics
-  - visual-studio
+  - parallel-computing
 ---
 Daha orta okul sıralarındayken havacılığa karşı müthiş bir ilgim vardı. Hiç unutmuyorum o yıllarda Uçan Türk dergisinin sıkı bir fanatiğiydim. Pek çok savaş uçağının teknik özelliklerini ezbere bilirdim ve hatta onları arşivlediğim bir not defterim dahi vardı. Uçmaktan korkan birisi olmama rağmen bunu yeneceğimi düşünerekten Lise yıllarında Hava Harp Okuluna girebilmek için özel bir çalışma programı bile uygulamıştım. Düzenli olarak spor yapıyor, kondisyon arttırmaya çalışıyor, günde değil 3, 5 kere dişlerimi fırçalıyor, gözlerimi yormamak için uykuma özen gösteriyordum.
 

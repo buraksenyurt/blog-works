@@ -7,19 +7,15 @@ categories:
   - entity-framework
   - wcf-data-services
 tags:
-  - csharp-4-0
-  - entity-framework
   - wcf-data-services
-  - xml
+  - entity-framework
+  - chinook
   - csharp
-  - dotnet
-  - ado-net
-  - linq
-  - wcf
-  - workflow-foundation
-  - http
+  - optional-and-named-parameters
+  - dynamic
+  - excel
+  - office-interop
   - visual-studio
-  - github
 ---
 Bildiğiniz üzere bir süre önce Visual Studio 2010 ve.Net Framework ürünlerinin RTM sürümleri yayınlandı. Her iki ürünüde sizlerle birlikte, Microsoft PDC 2008 konferanslarından bu yana gerek yazılarımızla, gerek görsel derslerimizle incelemeye çalışıyoruz. Özellikle.Net Framework 4.0 açısından baktığımızda alet, edevat çantamızın dop dolu olduğunun eminimki hepimiz farkındayız.
 

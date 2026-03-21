@@ -6,15 +6,14 @@ categories:
   - csharp
   - tasarim-prensipleri-design-principles
 tags:
-  - csharp
-  - tasarim-prensipleri-design-principles
-  - dotnet
-  - http
-  - reflection
-  - testing
   - dependency-injection
-  - github
-  - dependency-management
+  - ninject
+  - design-principles
+  - software-design-principle
+  - csharp
+  - .net
+  - inversion-of-control
+  - dependency-injection-container
 ---
 Her yazılım geliştirici özellikle büyük bir projeye girdiğinde kodlarının kaliteli olması için uğraşır. Bu yönde adımlar atar. Çoğu zaman bu bir sanata dahi dönüşebilir. Okunabilir kodlar oluşturmanın dışında, mimari açıdan büyüleyici olan, yeniden kullanılabilirliğin üst seviyede olduğu, fazla uğraşılmadan genişleyebilen ürünler ortaya çıkartmak en büyük gayelerden birisi haline gelir. Martin Fowler'ın ilkeleri sıkı sıkıya takip edilir. Kurumsal çözüm içerisinde Fluent API'ler kullanılmaya, "Dependency Injection Container" gibi kavramlar konuşulmaya başlanır. Ne kadar başarılabilir bilinmez ama amaçlardan birisi de Biyütıful Kodu ortaya çıkartmaktır.
 

@@ -5,7 +5,24 @@ date: 2013-10-10 07:50:00 +0300
 categories:
   - csharp
 tags:
+  - reflection
+  - ildasm
+  - intermediate-language
+  - cil
+  - clr
+  - assembly
+  - module
+  - type
+  - property
+  - assemblybuilder
+  - typebuilder
+  - methodbuilder
+  - fieldbuilder
+  - opcodes
+  - propertybuilder
   - csharp
+  - common-type-system
+  - common-language-runtime
 ---
 Şöyle bir senaryo düşünelim; Bir Excel dosyasında yer alan sayfa ve kolon bilgilerini programatik ortamda ifade etmek istiyoruz. Ancak Excel dosyası oldukça büyük. Sheet ve kolon sayıları çok fazla. Bir şekilde dosyayı okumayı, kolon adlarını, içeriklerini ve veri tiplerini öğrenmeyi başarıyoruz. Her bir Sheet'in bir sınıfa karşılık gelmesi gerektiğini fark ediyoruz. Ama işin zor olan kısmı şemaya uygun şekilde sınıf ve özelliklerinin programatik ortamda üretilmesi. Aklımıza gelen bir kaç yol var fakat biz en şık olanlarından birisini tercih ediyoruz. Sınıfları (Class), özelliklerini (Property) ve bu tiplerin bulunduğu Assembly’ ı içeren sınıf kütüphanesini (Class Library) kod ile üretiyoruz. Üretme işini gerçekleştirirken Intermediate Language’ e kadar da uzanıyoruz. Merak ediyor musunuz?
 

@@ -5,11 +5,8 @@ date: 2004-09-14 12:00:00 +0300
 categories:
   - aspnet-2-0
 tags:
-  - aspnet-2-0
-  - csharp
-  - dotnet
-  - aspnet
-  - dataset
+  - asp.net
+  - objectdatasource
 ---
 Bu makalemizde ObjectDataSource bileşenini incelemeye çalışacağız. ObjectDataSource bileşeni Asp.Net 2.0 ile gelen yeni bileşenlerden birisidir. Görevi, 3 katlı mimarinin uygulanması halinde, verikaynağı ile sunum katmanında yer alan veri bağlı kontroller arasındaki veri alışverişinin, iş katmanı üzerindeki herhangibir nesne yardımıyla gerçekleştirilebilmesini sağlamaktır. Başka bir deyişle, veri-bağlı kontroller ile, iş katmanında yer alan iş nesnesi arasındaki iletişimi sağlamaktadır.
 

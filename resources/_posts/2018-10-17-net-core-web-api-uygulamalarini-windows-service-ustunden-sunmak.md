@@ -5,18 +5,18 @@ date: 2018-10-17 07:53:00 +0300
 categories:
   - dotnet-core
 tags:
-  - dotnet-core
-  - bash
-  - xml
-  - csharp
-  - dotnet
-  - aspnet
-  - asp-dotnet-core
-  - wcf
+  - windows-services
+  - .net-core
   - web-api
-  - http
-  - iis
-  - visual-studio
+  - hosting
+  - asp.net-core
+  - service-controller
+  - windows-7
+  - csharp
+  - .net
+  - code-activity
+  - sc
+  - Microsoft.AspNetCore.Hosting.WindowsServices
 ---
 Scrum'lı çevik günlerimiz tüm hızıyla devam ediyor. Artık takımın kapasitesi standart çizgiye oturmaya başladı. Daha verimli çalışıyor ve daha iyi değerler üretebiliyoruz. Bunun bana olan en büyük artılarından birisi de yeni bir şeyler araştıracak vakit bulabilmek. Nitekim takım üyelerinin değişime uygun olacak şekilde kendisini sürekli yeniliyor olması lazım. Bu açıdan motive edildiğimizi ifade edebilirim. Gündem maddemiz ise uzun zamandır pek yanına uğramadığımız ama mutlaka sistemlerimizin bir yerlerinde koşan Windows Service'ler.
 

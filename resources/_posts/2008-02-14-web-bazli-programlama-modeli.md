@@ -5,24 +5,9 @@ date: 2008-02-14 12:00:00 +0300
 categories:
   - wcf
 tags:
-  - wcf
-  - csharp
-  - dotnet
-  - linq
-  - xml
-  - soap
-  - rest
-  - json
-  - web-service
-  - xml-web-services
-  - http
-  - iis
-  - javascript
-  - serialization
-  - delegates
-  - generics
-  - visual-studio
-  - dataset
+  - windows-communication-foundation
+  - web-programming-model
+  - rest-api
 ---
 Web programlama modelinin en büyük avantajlarından biriside istemci (Client) tarafındaki uygulamaları düşünmeye gerek kalmadan istemci-sunucu (Client/Server) mimarisine uygun sistemler geliştirilebilmesidir. Basit olarak HTTP protokolünün farklı metodlarına göre işleyen bu sistemde, istemcilerin farklı tipte olabilecek tarayıcı programlar (Browsers) üzerinden talepte bulunmaları söz konusudur.
 

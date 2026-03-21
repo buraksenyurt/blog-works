@@ -5,14 +5,12 @@ date: 2014-09-28 04:00:00 +0300
 categories:
   - dotnet-framework-4-5
 tags:
-  - dotnet-framework-4-5
-  - csharp
-  - dotnet
-  - http
-  - generics
-  - dependency-injection
-  - visual-studio
-  - dependency-management
+  - cryptography
+  - encryption
+  - decryption
+  - şifreleme
+  - algoritma
+  - symmetric-encryption
 ---
 Crptograpy… Hayır hayır şöyleydi.Crpytograyph… Yok yok böyle değil. Belki de… Cyrptograhy… Offf! Bir türlü beceremiyorum şunu yazmayı. Hah sanırım buydu. Cryptography. Nihayet! Şifreleme teknikleri sizlerin de bildiği üzere karmaşık matematiksel algoritmaları baz alacak şekilde tesis edilmeye çalışılırlar. Algoritma ne kadar karmaşık veya basit olursa olsun önemli olan çıkan sonuçların zor kırılacak cinsten olmalarıdır. Bu noktada kullanılan anahtarların ve bit değerlerinin de büyük önemi vardır. E tabi doğal olarak zaman içerisinde pek çok şifreleme algoritması ortaya çıkmıştır. Bunları temel de simetrik ve asimetrik olanlar gibi iki ana kategoriye ayırabiliriz. Ama diğer yandan hash algoritmaları veya veri bütünlüğünü korumaya yönelik algoritmalar da mevcuttur.(Ve belki de bizim bilmediğimiz ama üst düzey veri güvenliğinde kullanılan çok gizli olanları)
 

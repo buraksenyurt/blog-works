@@ -5,15 +5,10 @@ date: 2006-12-29 12:00:00 +0300
 categories:
   - aspnet-2-0
 tags:
-  - aspnet-2-0
-  - csharp
-  - xml
-  - dotnet
-  - aspnet
-  - sql-server
-  - performance
-  - caching
-  - datatable
+  - asp.net
+  - sitemapprovider
+  - sitemap
+  - provider
 ---
 Asp.Net 2.0 ile web uygulamalarını geliştirmek artık çok daha kolaylaştı. Bunun en büyük nedenlerinden biriside kontrol paneline gelen çok sayıda bileşen olmasıdır. Her ne kadar bir yazılımcının hayatını kolaylaştıran yenilikler olsada zaman zaman var olan bu yapıları özelleştirme yoluna gitmek isteyebiliriz. Bugunkü makalemizin konusunu oluşturan SiteMapProvider bu durumda ele alınabilecek yeniliklerden birisidir. Asp.Net 2.0 ile geliştirilen web uygulamalarında site haritası çıkartmak ve bunu ele alacak kontrollerle çalışmak son derece kolaydır.
 

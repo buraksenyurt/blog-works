@@ -6,7 +6,8 @@ categories:
   - csharp
 tags:
   - csharp
-  - dotnet
+  - gethashcode
+  - value-types
 ---
 Eminimki makale başlığı size oldukça ilginç gelmiştir. Matematiksel olarak mümkün olmayan bu durum.Net programlama ortamında acaba gerçekleştirilebilir mi? Elbetteki matematiksel olarak imkansız olan bu durumun programlama ortamımız içerisinde gerçekleşebilir olmasıda pek mantıklı değil. O halde makalemizin asıl konusundan bahsedelim ve durumu açıklığa kavuşturalım.
 

@@ -6,19 +6,9 @@ categories:
   - dotnet-remoting
   - wcf
 tags:
-  - dotnet-remoting
-  - wcf
-  - csharp
-  - xml
-  - dotnet
-  - soap
-  - web-service
-  - http
-  - iis
-  - authentication
-  - authorization
-  - serialization
-  - visual-studio
+  - windows-communication-foundation
+  - .net-remoting
+  - migration
 ---
 Windows tabanlı olan Servis Yönelimli Mimari (Service Oriented Architecture) tekniklerinden biriside.Net Remoting'dir..Net Remoting mimarisi ağırlıklı olarak TCP bazlı ve Binary tabanlı paket iletiminde kullanılır. En büyük özelliklerinden birisi, sadece Windows işletim sistemlerinden oluşan ağlarda koşabilmesidir. Elbette HTTP üzerinden SOAP-Simple Object Access Protocol formatına uygun alt yapı kurulmasıda mümkündür. Bu sayede internet ağındada ektin şekilde kullanılabilir. Ancak Windows bağımlı olması platform bağımsızlığını ortadan kaldırmaktadır. Günümüzde WCF (Windows Communication Foundation) gibi daha ölçeklenebilir (Scalable), birleştirilmiş (Unified) bir Servis Yönelimli Mimari (SOA) açılımıda mevcuttur. Bu durumda geliştiricilerin karşısına önemli bazı sorular ve sorunlar çıkmaktadır. İşte bunlardan bir kaçı;
 

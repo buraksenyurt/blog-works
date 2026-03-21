@@ -6,23 +6,9 @@ categories:
   - wcf
   - wf
 tags:
-  - wcf
-  - wf
-  - csharp
-  - xml
-  - dotnet
-  - linq
+  - windows-communication-foundation
   - workflow-foundation
-  - soap
-  - json
-  - web-service
-  - http
-  - iis
-  - transactions
-  - delegates
-  - generics
-  - visual-studio
-  - asmx
+  - windows-workflow-foundation
 ---
 Bilindiği üzere Window Communication Foundation ve Windows Workflow Foundation,.Net Framework 3.0 ile birlikte gelen önemli teknolojilerdendir. WCF servis yönelimli mimariye (Service Oriented Architecture) yeni bir yaklaşım getirip, dağıtık mimari uygulama geliştirme kavramlarını bir çatı altında toplayarak güçlü, daha platform bağımsız ve güvenilir bir ortamda geliştirme yapılabilmesini olanaklı kılan bir alt yapı sunmaktadır. WF ise, birden fazla adımdan oluşan kod süreçlerinin iş akışı (Workflow) tarzında olay güdümlü (Event-Driven) yada sırasal (Sequential) olacak şekilde tasarlanarak çeşitli.Net uygulamalarında kullanılabilmelerini mümkün kılan bir alt yapı tesit etmektedir.
 

@@ -6,22 +6,11 @@ categories:
   - wcf-eco-system
   - wcf-webhttp-services
 tags:
-  - wcf-eco-system
+  - windows-communication-foundation
+  - webhttp-services
+  - rest-api
+  - non-soap
   - wcf-webhttp-services
-  - csharp
-  - dotnet
-  - aspnet
-  - ado-net
-  - entity-framework
-  - linq
-  - wcf
-  - xml
-  - rest
-  - json
-  - http
-  - generics
-  - visual-studio
-  - rc
 ---
 Bu yazımızda WCF Eco System'in bir parçası olan WebHttp Service'lerinde hata yönetimini (Error Management) etkili bir şekilde nasıl ele alabileceğimizi incelemeye çalışıyor olacağız. WCF WebHttp Service'leri üzerinden çağırılan bir servis operasyonundan, istemci tarafına kendi insiyatifimizde hata mesajları gönderilmesini sağlayabiliriz.
 

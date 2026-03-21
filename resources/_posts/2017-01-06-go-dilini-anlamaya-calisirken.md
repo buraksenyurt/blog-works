@@ -5,18 +5,10 @@ date: 2017-01-06 03:56:00 +0300
 categories:
   - golang
 tags:
+  - google-go
   - golang
-  - dotnet
-  - workflow-foundation
-  - go
-  - python
-  - java
-  - ruby
-  - concurrency
-  - memory-management
-  - pointers
-  - generics
-  - dependency-management
+  - programming-languages
+  - programlama
 ---
 Liseye başladığım 1990 yılından beri arkadaşım ve aynı zamanda adaşım olan sevgili dostum Burak ile üniversite yıllarında öğrenip oynamaya başladığımız GO oyunu geldi aklıma. Öğrenmesi zor, kavramak için yıllar geçmesi gereken, iyi bir oyuncu olmak için sizden daha iyi birisiyle yine yıllarca maç yapmanızı gerektiren zevkli bir strateji oyunu. Ünlü matematikçi John Forbes Nash'ten Albert Einstein'a, Alan Turing'den Bill Gates'e tarihi değiştiren pek çok kişinin de oynadığı bir oyun.
 

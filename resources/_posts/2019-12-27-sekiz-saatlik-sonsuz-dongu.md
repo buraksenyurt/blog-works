@@ -5,23 +5,67 @@ date: 2019-12-27 07:00:00 +0300
 categories:
   - deneyimler
 tags:
-  - deneyimler
-  - dotnet
-  - aspnet
-  - sql-server
-  - postgresql
-  - wcf
-  - soap
-  - rest
-  - web-api
-  - javascript
-  - typescript
+  - teknoloji
+  - agile
+  - scurm
+  - sprint
+  - storyPoint
+  - safe
+  - workitemstore
+  - .net
+  - .net-core
   - nodejs
+  - typescript
   - vue
-  - blazor
-  - performance
-  - transactions
-  - microservices
+  - angular
+  - erp
+  - monolithic
+  - legacysystem
+  - nTier
+  - soa
+  - soap
+  - rest-api
+  - windows-communication-foundation
+  - sonarqube
+  - code-coverage
+  - technicalDepth
+  - quality-assurance
+  - mssql-server
+  - postgresql
+  - gitflow
+  - vsts-2008
+  - team-foundation-server
+  - microsoft-azure
+  - branch
+  - fortify
+  - owasp
+  - roslyn
+  - ci/cd
+  - continuous-integration
+  - continuous-delivery
+  - continuous-deployment
+  - docker
+  - container
+  - microservice
+  - kong
+  - riverbed
+  - itil
+  - cab
+  - anti-pattern
+  - godObject
+  - boundedContext
+  - dataAccessLayer
+  - chrome-developer-tools
+  - thoughtworks
+  - hype-tech
+  - tech-radar
+  - sql-server-integration-services
+  - IoT
+  - ai
+  - robotik
+  - postman
+  - soap-based-service
+  - rpa
 ---
 Uygulama geliştirme yaşam döngümüzün henüz otuzuncu Sprint başındaydı. İki haftalık koşu görevlerini Sprint Planning toplantısında zaten belirlemiştik. Takım olarak 13 Story Point’e sahip Production Support Buffer mecburen her sprint içerisine dahil ettiğimiz bir maliyet. 17 yaşındaki Microsoft.Net tabanlı devasa ERP (Enterprise Resource Planning) ürünümüz ek geliştirmeler veya önceki yıllardan kalan teknik borçlar sebebiyle bazen üretim ortamı sorunları ile karşımıza gelmekte. Büyüklüğüne nazaran Code Coverage oranının düşük olması yeni ilavelerin var olan yapılara olan etkisini anlamamızı zorlaştırıyor. Ben, Mali İşler ve Ortak Modüller (Kimsenin bilmediği bir modül varsa böyle gelin) ekibindeyim. Lakin ERP’nin diğer modüllerinde de benzer sorunlar olabiliyor.
 

@@ -5,15 +5,8 @@ date: 2004-10-25 21:00:00 +0300
 categories:
   - ado-net-2-0
 tags:
-  - ado-net-2-0
-  - csharp
-  - bash
-  - dotnet
-  - ado-net
-  - sql-server
-  - delegates
-  - generics
-  - datatable
+  - ado.net
+  - sql
 ---
 Çoğu zaman istemci uygulamalarda, kullanıcıya sunduğumuz verilerin yer aldığı tablolarda başka kullanıcılar tarafından gerçekleştirilen değişikliklerin anında görünmesini isteriz. SqlDependency sınıfı sayesinde artık, bir veritabanında meydana gelen değişiklikleri (şu an için Sql Server ve Yukon) anında yakalayabilme şansına sahibiz. İşte bugünkü makalemizde aslında son derece derin ve geniş bir konu olan Sql Server Notification meselesini çok basit bir örnek ve Ado.Net 2.0 ile gelen yeni sınıflardan birisi olan SqlDependency yardımıyla incelemeye çalışacağız. İlk olarak şu soruyu düşünelim.
 

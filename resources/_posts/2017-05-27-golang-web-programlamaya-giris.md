@@ -6,13 +6,10 @@ categories:
   - golang
 tags:
   - golang
-  - http
-  - go
-  - python
-  - ruby
-  - concurrency
-  - performance
-  - github
+  - web-programming-model
+  - net/http
+  - html
+  - css
 ---
 Bir web uygulamasının temel malzemeleri nelerdir? Sunucu tarafında çalışan güçlü bir çatı (Framework), içeriklerin gösterildiği statik veya dinamik web sayfaları, iyi tasarım, görsel zenginlik katan materyaller (resimler,css'ler vb), veri depolama enstrümanları ve diğerleri. Aslında internet programcılığının ilk yılları düşünüldüğünde basit HTML sayfalarının neredeyse her tür ihtiyacı karşılayacağı düşünülüyordu belkide. Zaman geçtikçe programlama dillerinin dinamik web sayfaları ile olan etkileşimi, istemci taraflı çalışan betiklerin sunucu taraflı kullanılabilmesi de gündeme geldi. Modern programlama dillerinin neredeyse tamamı web uygulamaları geliştirebilmek için gerekli temel donanıma sahip. Asıl amacı back-end tarafındaki büyük ölçekli sistemlerde yüksek performans sunmak olan, eş zamanlı programlamada öne çıkan GO ile de web tabanlı uygulamalar geliştirebilmemiz mümkün. Go dilinin network haberleşme üzerine sunduğu basitlik ve yüksek performans da göz önüne alındığında web programlama oldukça ilgi çekici bir konu haline geliyor.
 

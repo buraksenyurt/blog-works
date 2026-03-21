@@ -5,8 +5,9 @@ date: 2016-10-24 21:35:00 +0300
 categories:
   - ruby
 tags:
-  - ruby
-  - http
+  - ruby-lang
+  - http-request
+  - nethttp
 ---
 Vakti zamanında (90lı yılların ortaları diyelim) internette dolanırken bir şeyler öğrenmeye çalıştığım geliştirici siteleri olurdu. Internet o zamanlar kıymetli olduğundan site içeriklerini offline olarak da dolaşabilmek için bazı yardımcı uygulamaları kullanırdık. O yıllarda Delphi konulu makaleler içeren bir sitenin tüm içeriğini indirdiğimi hatırlıyorum. Geçenlerde bu tip bir uygulamayı nasıl yazabilirim diye düşünerken işe web içeriklerini nasıl indirebileceğimi araştırarak başlayayım dedim..Net tarafında bununla ilgili daha önceden uğraşmıştım ama bu sefer Ruby'yi seçtim. Aşağıdaki ekran görüntüsünde bu işi gerçekleştiren basit bir kod parçasını görebilirsiniz (Fotoğraftaki Zero Hour Maps tab'ına aldırmayın:D)
 

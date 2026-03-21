@@ -6,20 +6,12 @@ categories:
   - wcf
   - wcf-4-5
 tags:
-  - wcf
-  - wcf-4-5
-  - csharp
-  - xml
-  - dotnet
-  - wpf
-  - xaml
-  - http
-  - async-await
-  - threading
-  - serialization
-  - generics
-  - windows-phone
-  - visual-studio
+  - windows-communication-foundation
+  - task-parallel-library
+  - task-based-asynchronous
+  - async
+  - await
+  - .net-framework
 ---
 Yaklaşık olarak 4 dakika 38 saniye…İzleyen yazıyı benim okuma hızım bu oldu. Aslında bu süre şu demek; Öğle arasına çıkmadan bir 4 dakika 38 saniye demek bu...Ya da geldikten sonra bir 4 dakika 38 saniye demek…Ya da sabah işe erken geldiğimizde ayırabileceğimiz bir 4 dakika 38 saniye demek...Ya da servisi/otobüsü/minibüsü beklerken ayırabileceğimiz 4 dakika 38 saniye demek. Hatta Facebook’ a, Twitter’ a, Linkedin’ e, Youtube’a bakmadan geçireceğimiz bir 4 dakika 38 saniye demek… E o halde ne duruyorsunuz?Ayırın işte o zamanı
 

@@ -5,12 +5,7 @@ date: 2006-11-21 12:00:00 +0300
 categories:
   - csharp
 tags:
-  - csharp
-  - dotnet
-  - aspnet
-  - authentication
-  - delegates
-  - generics
+  - asp.net
 ---
 Kullanıcı web kontrolleri (web user control) kendi içlerinde birden fazla kontrolü barındırabilen komposit tipteki görsel bileşenlerdir. Asp.Net 1.0/1.1 den veri var olan kullanıcı web kontrollerini çoğunlukla, birden fazla sayfada kullandığımız durumlarda (hatta aynı sayfada bir çok yerde aynı kontrol kümelerini kullanmak istediğimizde) düşünür ve geliştiririz. Bu kontroller tek bir yerde durdukları için güncelleştirilmeleri halinde, kullanıldıkları tüm sayfalara ilgili değişiklikler yansıyacaktır. Güncelleme kolaylığı, kullanıcı web kontrollerini tercih etmemizin en büyük nedenlerinden birisidir.
 

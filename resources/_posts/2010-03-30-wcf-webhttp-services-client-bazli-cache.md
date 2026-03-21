@@ -6,18 +6,11 @@ categories:
   - wcf-eco-system
   - wcf-webhttp-services
 tags:
-  - wcf-eco-system
+  - windows-communication-foundation
+  - webhttp-services
+  - rest-api
+  - non-soap
   - wcf-webhttp-services
-  - csharp
-  - xml
-  - linq
-  - wcf
-  - rest
-  - http
-  - caching
-  - generics
-  - visual-studio
-  - rc
 ---
 Bir önceki yazımızda ([WCF WebHttp Services - Server Bazlı Cache)](https://www.buraksenyurt.com/admin/post/WCF-WebHttp-Services-Server-Side-Caching) hatırlayacağınız üzere WCF WebHttp Service'lerinde sunucu taraflı ön belleklemeyi (Server-Based Caching) incelemeye çalışmış ve bu işin birde istemci taraflı olanından bahsetmiştik. Aslında sunucu ve istemci taraflı ön bellekleme işleyişleri birbirlerinden tamamen farklıdır. Sunucu taraflı ön bellekleme işleyişinde, tamponlanan veriyi üreten operasyonun duration süresi dolana kadar çalıştırılmaması söz konusudur. Yani istemciden gelen ilk talebin sonucunun ön belleğe alınmasını takiben gelen taleplerde, sunucu tarafındaki operasyon kodları icra edilmemektedir.
 

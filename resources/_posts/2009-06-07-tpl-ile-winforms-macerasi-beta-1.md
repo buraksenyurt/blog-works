@@ -5,15 +5,7 @@ date: 2009-06-07 11:53:00 +0300
 categories:
   - tpl
 tags:
-  - tpl
-  - csharp
-  - bash
-  - dotnet
-  - wpf
-  - windows-forms
   - task-parallel-library
-  - threading
-  - delegates
 ---
 Dün gece Task Parallel Library ile ilgili olarak internette araştırma yaparken, örnekleri çoğunlukla (hatta tamamen) Console uygulamaları üzerinde geliştirdiğimi farkettim. Oysaki TPL veya PLINQ gibi alt yapıların, WinForms yada WPF (Windows Presentation Foundation) uygulamalarında nasıl kullanılabileceğide önemli bir konuydu. Özellikle Windows Form'larının TPL çalışmalarına karşı nasıl tepkilerde bulunabileceği belkide en önemli noktaydı. Biliyorsunuz TPL alt yapısında, işlemci ve çekirdek gücü sonuna kadar kullanılmakta ve arka planda coşan pek çok Thread yer almaktadır. Fakat WinForms uygulamalarında herşeyin hakimi olan ana Thread'in genellikle bencil olduğuda bilinmektedir. Bu nedenle TPL ile çekilen bir veri içeriğinin, Form üzerindeki bir kontrole doldurulması gerçekten başa bela olabilir.
 

@@ -5,11 +5,9 @@ date: 2007-04-20 12:00:00 +0300
 categories:
   - aspnet-2-0
 tags:
-  - aspnet-2-0
-  - csharp
-  - xml
-  - threading
-  - delegates
+  - asp.net
+  - web-parts
+  - custom-web-parts
 ---
 Kendi web partlarımızı nasıl geliştirebileceiğimizi ve bu sayede kişiselleştirilebilir web sunucu kontrollerini nasıl yazabileceğimizi bu konu ile ilgili bir önceki makalemizde incelemeye çalışmıştık. Bu makalemizde ise kendi Web Part bileşenlerimize özel fiillerin (Web Part Verbs) nasıl eklenebileceğini ve söz konusu fillerin ne şekilde ele alınabileceğini incelemeye çalışacağız. Web Part kontrollerini herhangibir WebPartZone altında kullandığımızda standart olarak bazı fiilere (Verbs) sahip oluruz. Tahmin edeceğiniz gibi bu değerler aslında WebPartManager tarafından ele alınmakta ve sayfa üzerinde uygun olan web part alanlarının (Web Part Zone) gösterilmesini sağlamaktadır.
 

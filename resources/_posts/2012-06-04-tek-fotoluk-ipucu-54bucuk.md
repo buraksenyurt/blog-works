@@ -5,12 +5,12 @@ date: 2012-06-04 11:12:00 +0300
 categories:
   - tek-fotoluk-ipucu
 tags:
-  - tek-fotoluk-ipucu
-  - dotnet
-  - async-await
-  - parallel-programming
-  - visual-studio
-  - rc
+  - .net-framework
+  - zipfile
+  - compression
+  - system.io.compression
+  - system.io.compression.filesystem
+  - zip
 ---
 Malum Visual Studio 2012 sürümünün RC sürümü geçtiğimiz hafta içerisinde yayınlandı ve internet üzerinden bu konu ile ilişkili yazılarda yayılmaya başlandı. Sadece Visual Studio 2012 değil ama.Net Framework 4.5 tarafında da epey önemli yenilikler geliyor. Ağırlık noktası her ne kadar paralel programlama tarafı ve doğal olarak async ile await anahtar kelimeleri olsa da, temel bazı yenilikler de var. Örneğin artık Zip formatında sıkıştırma desteği var. Söz gelimi bir klasör içeriğini ZIP formatında sıkıştıracak bir Extension metod yazmak istediniz
 

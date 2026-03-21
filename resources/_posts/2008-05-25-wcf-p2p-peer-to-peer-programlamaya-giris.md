@@ -5,16 +5,7 @@ date: 2008-05-25 09:00:00 +0300
 categories:
   - wcf
 tags:
-  - wcf
-  - csharp
-  - xml
-  - dotnet
-  - linq
-  - wpf
-  - iis
-  - performance
-  - delegates
-  - generics
+  - windows-communication-foundation
 ---
 Dağıtık mimari uygulamaları (Distributed Applications) geliştirilirken çoğunlukla Client/Server veya N-Tier modelleri göz önüne alınmaktadır. Oysaki dağıtık mimari uygulamaları için Peer-to-Peer (P2P) modelide söz konusudur. P2P modelinde istemci ve sunucu arasında bir fark yoktur ve alt yapı hazırlıkları diğer modellere göre biraz daha karmaşıktır. Programlama zorluğu nedeni ile geliştiriciler zaman zaman bu modelden kaçınırlar.
 

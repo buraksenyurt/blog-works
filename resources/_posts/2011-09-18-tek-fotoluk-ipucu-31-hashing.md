@@ -7,8 +7,13 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - csharp
-  - tek-fotoluk-ipucu
-  - dotnet
+  - security
+  - hashing
+  - md5
+  - sha1
+  - sha256
+  - sha384
+  - sha512
 ---
 Hiç bir zaman kullanıcılarımıza ait şifreleri açık formatta saklamamamız gerekir. En basit anlamda söz konusu verileri Hash'leyerek tutmak en doğrusudur. Bu anlamda.Net tarafında kullanımı son derece basit olan Hash algoritma tipleri mevcuttur. Nasıl kullanıldığını merak ediyor musunuz?
 

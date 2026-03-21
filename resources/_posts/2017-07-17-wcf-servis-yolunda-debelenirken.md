@@ -5,17 +5,15 @@ date: 2017-07-17 21:47:00 +0300
 categories:
   - wcf
 tags:
-  - wcf
-  - csharp
-  - dotnet
-  - xml
-  - json
-  - iis
-  - authentication
-  - authorization
+  - windows-communication-foundation
+  - ServiceHost
+  - IDispatchMessageInspector
+  - RuntimeDispatcher
+  - MessageInspectors
   - reflection
-  - generics
-  - testing
+  - dynamic-service-host
+  - json
+  - newtonsoft
 ---
 Geçtiğimiz günlerde çalıştığım turuncu bankadaki bölümüm değişti. İsmini halen ezberleyemediğim Yazılım Geliştirme Sistemleri ve Platform Uygulamaları bölümünde yaşamımı sürdürmeye devam ediyorum. Yeni bölümümdeki ilk görevim ise ServiceStack yerini alabilecek bir çatının oluşturulması konusunda bir takım POC çalışmalarının yapılması. Önemli hedeflerden birisi WCF (Windows Communication Foundation) servislerinin IIS (Internet Information Services) bağımsız olarak dinamik bir şekilde ayağa kaldırılması ve istemci ile sunucu arasındaki mesajların yakalanarak kayıt altına alınabildiğinin görülmesi.
 

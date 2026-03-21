@@ -5,18 +5,12 @@ date: 2018-03-01 07:33:00 +0300
 categories:
   - dotnet-core
 tags:
-  - dotnet-core
-  - bash
   - json
-  - csharp
-  - dotnet
-  - entity-framework
-  - xml
-  - web-api
-  - generics
+  - configuration-management
+  - .net-core
   - dependency-injection
-  - github
-  - dependency-management
+  - IConfigurationRoot
+  - configuration-builder
 ---
 West-World üzerinde bir şeyler araştırmak için vaktim olan bir haftayı geride bırakmak üzereyim. Internet üzerinde derya deniz içerik olsa da bazen ne araştıracağımı şaşırmıyor değilim. İşte bu anlarda [MSDN dokümanları](https://docs.microsoft.com/en-us/) imdadıma yetişiyor. İlk zamanlarından beri oldukça verimli olduğunu düşündüğüm içerik son yıllarda çok daha profesyonelleşti (Tabii MSDN dokümanlarını CD veya DVD olarak edindiğimiz zamanları da hatırlıyorum) İşin aslı sadece MSDN değil, yazılım ürünü sahibi pek çok öncünün teknik destek dokümanları inanılmaz derecede doyurucu ve birbirleriyle yarışır durumdalar. Son zamanlarda uğradıklarım arasında [Google Cloud Platform](https://cloud.google.com/docs/) ve [Amazon Web Services](https://aws.amazon.com/documentation/) var. Bu rehberler ilk kaynak niteliğinde olduğu için bir şeyleri öğrenebilmemiz adına doğru adresler. Hatta yazılım geliştirici olarak ortalama bir seviyenin üstüne çıktıktan sonra bunlar gibi dokümantasyonlara uğramak, rastgele bir ürün seçip teknik dokümantasyonunu okumak, Get Started örneklerini yapıp bir şeylerin farkına varabilmek gerekiyor. Sözü fazla uzatmadan gerekli mesajları da verdiğimi düşünerek yazımıza başlayalım diyorum.
 

@@ -5,14 +5,15 @@ date: 2019-03-18 21:51:00 +0300
 categories:
   - nodejs
 tags:
-  - nodejs
-  - bash
-  - json
+  - node
+  - node.js
   - javascript
-  - rest
+  - express
+  - plotly.js
+  - jquery
+  - rest-api
   - http
-  - python
-  - github
+  - json
 ---
 West-World'de eğlence tüm hızı ile devam ediyor. Geçen ay gerçekleştirdiğimiz "C64 Retro" partisinden sonra sıra bu geceki "Easy Graphics of new Era" adlı eğlenceye geldi. Onur konuğumuz açık kaynak Javascript dünyasının son zamanlardaki yükselek yıldızı olarak görülen grafik kütüphanesi Plotly. Oldukça renkli bir kişiliğe sahip olan Plotly, GitHub şehrinin de en sevilen karakterlerinden birisi haline gelmiş durumda. Şehrin devasa enerji santrallerinin ürettiği verilerle çalışan çılgın istatistikçileri arasında da çok popüler bir karakter. Kendisini West-World'e getiren en yakın destekçileri D3.js ve WebGL'de partiye renk katanlar arasındalar.
 

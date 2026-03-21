@@ -5,12 +5,8 @@ date: 2003-12-09 10:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
-  - csharp
-  - dotnet
-  - visual-studio
+  - ado.net
   - dataset
-  - datatable
 ---
 Bugünkü makalemizde, aralarında relationship (ilişki) bulunan tabloların, bir DataSet nesnesinin bellekte temsil ettiği alanda nasıl saklandığını incelemeye çalışıcacağız. Bunu yaparken de, geliştireceğimiz uygulama ile parant-child (ebeveyn-çocuk) yada master-detail (efendi-detay) adı verilen ilişkileri taşıyan tablolarımızı bir windows application’da bir dataGrid nesnesi ile nasıl kolayca göstereceğimizi göreceğiz.
 

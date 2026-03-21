@@ -5,13 +5,8 @@ date: 2006-12-17 12:00:00 +0300
 categories:
   - aspnet-2-0
 tags:
-  - aspnet-2-0
-  - csharp
-  - dotnet
-  - aspnet
-  - http
-  - javascript
-  - caching
+  - asp.net
+  - client-script-callback
 ---
 Web sayfalarımızda karşılaştığımız sorunlardan bir tanesi post-back hareketlerine neden olacak davranışların çok fazla olabilmesidir. Varsayılan olarak bir Button'ın görevi sayfayı istemciden sunucuya içeriği ile birlikte göndermektir. Diğer yandan bazı bileşenlerin AutoPostback özelliklerine true değeri atanarak istemci tarafından sunucuya doğru postalama işlemi yapmaları da sağlanabilmektedir. Fakat bazı durumlarda sayfanın tamamını sunucuya doğru postalamak istemeyebiliriz. Örneğin il ve ilçe bilgilerini ayrı ayrı tutan DropDownList kontrollerinin olduğu bir senaryoda; bir il seçildiğinde buna bağlı ilçelerin yüklenmesi için sayfanının tamamiyle sunucuya gidip gelmesi gerekecektir.
 

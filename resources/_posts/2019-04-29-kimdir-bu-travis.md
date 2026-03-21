@@ -5,12 +5,16 @@ date: 2019-04-29 07:24:00 +0300
 categories:
   - dotnet-core
 tags:
-  - dotnet-core
-  - bash
-  - csharp
-  - dotnet
-  - docker
-  - github
+  - travis
+  - ci/cd
+  - continuous-integration
+  - continuous-deployment
+  - continuous-delivery
+  - .net-core
+  - yaml
+  - testing
+  - xUnit
+  - unit-test
 ---
 Geçen gün çalışma odamın artık ardiye haline gelmiş bir dolabını temizlemek üzere kolları sıvadım. Sayısız network kablosu, yazılabilir DVDler, müsvette notlar, bir kaç müzik CDsi, yüksek lisanstan kalma ders kitapları, kulaklıkları kayıp walkman, bataryası şişmiş Playstation Portable ve daha bir çok ıvır zıvır eşyayla doluydu. Hangileri gerekli hangileri gereksiz diye ayıklarken dönem dönem sebebsiz yere aldığım MP3 çalarlara denk geldim. Kocaman bir discman bile vardı. Ancak gözüm arkalarda köşeye sıkışmış 1 TBlık Harddisk'e takıldı. Zamanında E-book'lar, filmler ve müzikler için kullandığım bir disk olduğunu hayal mayal hatırlıyordum.
 

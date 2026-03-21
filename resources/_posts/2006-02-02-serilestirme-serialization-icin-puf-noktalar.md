@@ -6,11 +6,8 @@ categories:
   - csharp
 tags:
   - csharp
-  - xml
-  - soap
-  - web-service
-  - xml-web-services
   - serialization
+  - tips-and-tricks
 ---
 Uygulamalarımızda kullandığımız tipler (types) pek çok amaçla serileştirilirler (Serialization). Framework Class Library içerisinde var olan pek çok tip serileştirilebilir (Serializable) halde tasarlanmıştır. Bizde çoğu zaman kendi yazmış olduğumuz tipleri serileştirme ihtiyacı duyarız. Örnek olarak, XML Web Servislerinde istemci taleplerine gönderilecek olan nesnelerin, network üzerinde taşıyacağımız paketlerin veya bir web uygulamasında yer alan Session nesnelerinin veritabanında saklanması sırasında kullanılan tiplerin serileştirilmesini göz önüne alabiliriz. Hangi türü olursa olsun serileştirmede dikkat edilmesi gereken bazı noktalar vardır. İşte bu günkü makalemizde özellikle Binary ve SOAP formatlı serileştirmelere yönelik püf noktalara değinmeye çalışacağız.
 

@@ -6,13 +6,9 @@ categories:
   - parallel-programming
   - tpl
 tags:
-  - parallel-programming
-  - tpl
-  - csharp
   - task-parallel-library
-  - threading
-  - visual-studio
-  - rc
+  - parallel-programming
+  - parallel-computing
 ---
 Planlama gerçek hayatta her zaman karşımıza çıkan ve yaşamımızın, işlerimizin düzenli devam edebilmesi için gereken olmazsa olmazlar arasında yer alan bir kavramdır. Toplantıların planlanmasından tutun da, işlerin hangi sırada yapılacağına karar verilmesine kadar pek çok yerde planlamanın önemini görürüz. Aslında başarılı sistemlerin tasarlanması, çalışması ve istenen sonuçları üretmesi iyi planlamayla ilişkilidir. Tasarımın planlanması, kaynakların planlanması, sistemin önceliklerinin planlanması, müşteri toplantılarının planlanması vs...Bazen kafamızda hayatımızın ilerleyişini planlarız ve bazende yazdığımız kodun fonksiyonelliklerini.
 

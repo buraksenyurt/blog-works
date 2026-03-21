@@ -5,9 +5,9 @@ date: 2012-07-08 19:45:00 +0300
 categories:
   - tek-fotoluk-ipucu
 tags:
-  - tek-fotoluk-ipucu
-  - entity-framework
-  - linq
+  - language-integrated-query
+  - extension-methods
+  - string-expressions
 ---
 Bazı durumlarda Entity Framework tabanlı nesne koleksiyonlarını sorgularken, Extension Method’ lar içerisine gelecek olan sorgulama ifadelerinin string bazlı olarak gelmesi söz konusu olabilir. Örneğin servis metodlarının istemci tarafından parametre olarak bu tip sorgu ifadeleri aldığı sıklıkla görülmektedir. Peki ama nasıl? Bunun bir örneği var mıdır? Hani elimizin altında dursa ve bir fikir verse iyi olmaz mı?
 

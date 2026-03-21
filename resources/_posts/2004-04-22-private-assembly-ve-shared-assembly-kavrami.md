@@ -5,10 +5,9 @@ date: 2004-04-22 09:00:00 +0300
 categories:
   - csharp
 tags:
-  - csharp
-  - dotnet
-  - caching
-  - visual-studio
+  - Framework
+  - assembly
+  - common-language-runtime
 ---
 Bu makalemizde,.NET'in temellerinden olan Assembly kavramının önemli bir bölümü olan Global Assembly Cache'i incelemeye çalışacağız. Net dilinde, assembly'ları private (özel) ve shared (paylaşımlı) olmak üzere iki kategoriye ayırabiliriz. Private assembly'lar oluşturulduklarında, çalıştırılabilmeleri için, uygulama ile aynı klasör altında yer almalıdırlar. Söz gelimi aşağıdaki gibi bir assembly'a sahip olduğumuzu düşünelim.
 

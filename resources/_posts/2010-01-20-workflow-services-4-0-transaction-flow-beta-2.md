@@ -5,19 +5,7 @@ date: 2010-01-20 01:00:00 +0300
 categories:
   - wf-4-0-beta-2
 tags:
-  - wf-4-0-beta-2
-  - xml
-  - csharp
-  - dotnet
-  - aspnet
-  - ado-net
-  - wcf
   - workflow-foundation
-  - wpf
-  - xaml
-  - transactions
-  - visual-studio
-  - rc
 ---
 Geçen gece ilginç bir rüya gördüm. Bir su birikintisine damlacıklar düşüyordu. Önceleri yavaş yavaş ve uzun aralıklarla düşen damlalar söz konusuydu. Zaman ilerledikçe her bir damlanın suya değdiği noktada bir isim bıraktığını görmeye başladım. int i, for, if derken damlalar hızlanmaya başladı. Daha sık daha çok damla düşüyordu. Bazıları kocaman boyutlardaydı ve düştükleri su birikintisinde neredeyse fırtına koparıyorlardı..Net, C#, parallel, WPF, Ajax, ASP.Net, WCF, WF derken damlaların artık nerelerden geldiğini takip edemez olmaya başladım. Ama damlalar iz bırakmaya devam ediyordu. 1.1, 2.0, 3.5, 4.0, Beta, RC, RTM...derken terler içerisinde uyanmıştım
 

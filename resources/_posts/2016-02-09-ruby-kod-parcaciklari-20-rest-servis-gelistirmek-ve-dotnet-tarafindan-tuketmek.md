@@ -6,17 +6,18 @@ categories:
   - rest
   - ruby
 tags:
-  - rest
-  - ruby
-  - bash
-  - csharp
-  - dotnet
-  - json
+  - ruby-lang
+  - rest-api
+  - sinatra
+  - sqlite
+  - service
   - http
-  - authentication
-  - authorization
-  - serialization
-  - generics
+  - json
+  - json-serialization
+  - restsharp
+  - nuget
+  - .net
+  - csharp
 ---
 Artık belli bir platforma bağlı kalmadan farklı uygulamaları bir araya getirip konuşturabiliyor, büyük ölçekli sistemleri uçtan uca bağlayarak süreçler işletebiliyoruz. Burada programlama dillerinin üzerine oturduğu çatıların (Frameworks) büyük avantajlar sağladığı ve işleri belirli ölçüde kolaylaştırdığı aşikar.
 

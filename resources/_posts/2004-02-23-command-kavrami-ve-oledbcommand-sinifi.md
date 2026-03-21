@@ -5,12 +5,12 @@ date: 2004-02-23 12:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
-  - csharp
-  - dotnet
-  - threading
-  - transactions
-  - dataset
+  - ado.net
+  - oledb
+  - sql
+  - sql-server
+  - oledbcommand
+  - database
 ---
 Bu makalemizde, Ado.Net mimarisi içinde çok önemli bir yere sahip olan Command kavramını ve OleDbCommand sınıfına ait en temel üyeleri incelemeye çalışacağız. Veritabanı uygulamaları geliştiren her programcı mutlaka, veri kaynağına doğru bir takım sorgu komutlarına ihtiyaç duymaktadır. Örneğin, veri kaynağındaki bir tabloya yeni bir satır eklemek için, veri kaynağı üzerinde bir tablo yaratmak için veya veri kaynağından belli şartlara uyan veri kümelerini çekmek için vb... Tüm bu işlemler için Ado.Net mimarisi bize, sql sorgularını barındırabileceğimiz ve geçerli bir bağlantı hattı üzerinden çalıştırabileceğimiz Command sınıfını sunmaktadır. Şu an itibariyle, Ado.Net mimarisi 4 temel Command sınıfı içerir. Bunlar, OleDbCommand, SqlCommand, OracleCommand ve OdbcCommand sınıflarıdır.
 

@@ -1,16 +1,20 @@
-﻿---
+---
 layout: post
 title: "Monolitik Uygulamalarda Teknik Borçlanma ile Mücadele (Teori)"
 date: 2021-10-23 07:00:00 +0300
 categories:
   - deneyimler
 tags:
-  - deneyimler
-  - dotnet
-  - redis
-  - transactions
-  - dependency-injection
-  - dependency-management
+  - tecnichal-debt
+  - monolitik-mimari
+  - yazılım-mimarileri
+  - modernizasyon
+  - sonarqube
+  - statik-kod-analizi
+  - dijital-dönüşüm
+  - çevik-olmak
+  - yazılım-geliştirme-yaşamdöngüsü
+  - strateji
 ---
 İş hayatına adım attığımda tarihler 1999 yılını gösteriyordu. Bilgi İşlem Sorumlusu unvanı ile yarı zamanlı başladığım şirkette bir çağrı merkezi uygulamasının geliştirilmesinden, bilgisayarların kurulumlarından ve kullanıcı destek işlemlerinden sorumluydum. O zamanlar sahip olduğum bilgiler çok kıt ve tamamen programlama üzerindeydi. Ne katmanlı mimarilerden ne de tasarım kalıplarından bihaberdim. Hal böyle olunca yazdığım uygulama buton arkası kodlamanın ötesine geçemiyordu. Üstelik web tabanlı değil Windows tabanlı bir programdı ve dağıtımı çağrı merkezi bilgisayarlarına kopyala yapıştır usulüne göre yapılıyordu (Neyse ki şirkette sadece on iki çağrı personeli vardı) ancak bir sonraki işimde dengeler tamamen değişti. Bu sefer yazılım dünyasının milenyum başındaki yükselen yıldızlarından olan.Net platformu üstünde yeni yetme bir yazılımcı olarak işe başlamıştım. Bana Junior Software Developer unvanı vermişlerdi ve bu kez web tabanlı bir uygulama ile bol miktarda katman söz konusuydu. Tipik olarak katmanlı mimariye göre geliştirilmiş ve müşterisi olan bir ürün üstünde çalışan birkaç yazılımcıdan birisiydim.
 
@@ -29,7 +33,7 @@ Sonuçların bilimselliği bir kenara dursun katmanlı sistemlerin en büyük de
 
 Teknik borç yazılım tarafındakiler için anlamlı bir terim (bazen) olmasına karşın bazen IT personeli ve daha da önemlisi iş birimi ile paydaşlar için pek önemli bir kavrammış gibi görünmez. Sonuçta ölçülebilir değerler sunmadığımız ve bunların maliyet tablosundaki etkilerini göstermediğimiz sürece paydaşlar için anlamlı olmaz. Oysaki Gartner, McKinsey, Price Waterhouse Coopers, CAST ve CISQ (Consortium for Information & Software Quality) gibi kurumların zaman içerisinde yaptığı çeşitli çalışma sonuçları ve raporlar durumun ne kadar ciddi olduğunu gözler önüne sermektedir. İşte konu ile ilgili dikkat çekici bazı istatistikler;
 
-- CISQ’ in 2020 yılı bazlı [The Cost of Poor Software Quality in the US](https://www.it-cisq.org/pdf/CPSQ-2020-report.pdf) raporuna göre Birleşik Devletler’ de ciddi sorunlara yol açan teknik borç düzeltme maliyeti 1.13 Trilyon dolar civarındadır.
+- CISQ’ in 2020 yılı bazlı [The Cost of Poor Software Quality in the US](https://www.it-cisq.org/cisq-files/pdf/CPSQ-2020-report.pdf) raporuna göre Birleşik Devletler’ de ciddi sorunlara yol açan teknik borç düzeltme maliyeti 1.13 Trilyon dolar civarındadır.
 - Gartner’ a göre ciddi sorunlara yol açabilecek teknik borç düzeltme maliyeti sadece 2020 için 2.84 Trilyon dolar civarındadır ki aynı danışmanlık firmasının 2011’de yayınladığı raporda 2015 için bu borcun 1 Trilyon dolar civarında olacağı ön görülmüştür.
 - NYSE borsasında tahtası olan ve devlet tarafından belirlenen bir regülasyonu hatalı uygulayan bir firma, uygulamanın eksik dağıtımı sebebiyle 45 dakika içinde 462 milyon dolar zarar etmiştir.
 - McKinsey’ nin değeri 1 milyar doların üstünde olan şirketlerin CIO’ ları ile yapığı çalışma sonuçlarına göre CIO’ ların %60’ı son üç yıllık dönemde teknik borçların gözle görülür şekilde arttığını belirtmektedir.
@@ -212,7 +216,7 @@ Sunuma [bu adresten](https://www.slideshare.net/BurakSelimSenyurt1/monolitik-uyg
 ### Kaynaklar
 
 - [Technical debt and agile software development practices and processes: An industry practitioner survey](https://www.sciencedirect.com/science/article/pii/S0950584917305098#:~:text=Technical%20debt%20describes%20the%20consequences,technical%20implementation%20and%20design%20considerations.),
-- [The Cost of Poor Software Quality in the US: A 2020 Report](https://www.it-cisq.org/pdf/CPSQ-2020-report.pdf),
+- [The Cost of Poor Software Quality in the US: A 2020 Report](https://www.it-cisq.org/cisq-files/pdf/CPSQ-2020-report.pdf),
 - [What is Technical Debt](https://www.productplan.com/glossary/technical-debt/),
 - [CAST Technical Debt Estimation](https://www.castsoftware.com/research-labs/technical-debt-estimation),
 - [Identification and Management of Technical Debt: A Systematic Mapping Study](https://pdf.sciencedirectassets.com/271539/1-s2.0-S0950584915X00115/1-s2.0-S0950584915001743/Nicolli_S_R_Alves_Technical_Debt_2015.pdf?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEKj%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJHMEUCIQCP37P1LrIXgSHRN%2FjW2tUniDkeMKXvPcgPdDC8A9DOpgIgWCoIxS4aWl4C63BcrlhF5d%2BTpHGXWt3J%2BVRdd2HyCekqgwQIwf%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAEGgwwNTkwMDM1NDY4NjUiDIrPuHMmb5VbUE4f%2FirXA3YpbV4M0ZU79eov3dUWwRzZ4qF1BG%2FJQk%2BBa1nSP1ywyNVqUPk%2BUyuNsb80mqRt7PVMMAulItYWOc9E3caZ6ql%2B12aFzMx6Xcf566bv1HW59IbHprXUI4NT%2BNE4HgZURIalOa7ak%2FK1XoY0BXjMERfgtyPLTRstJDGJXtOj5%2FVhv8bJMXSexpx7mrapqP5YmOkRq7unz9eqT4UMiiF4lq535lYMhb20N0aZosfwtZNE05vNh%2B8YOmB2Lv5%2FlXddKQqvcLGNZsWOKzH58z5TM2lBlFPA1EjQ1zy32BMruGowcMSqYd6XPH7yudKjKkuAgBsbpysBiM5J3GIsRwq%2FLUxKngsY4m7uSaEBNKV3Y0cne214tVcQTyOkzk54kVo4q11RYCLanrLUM2ZDC0yA01YByDpUyUSeSPQe99QJ%2BOzgLMO7nmYFed699sjHoJEy4duLAzKXi0gsVlDuuX3PrPdxuWm1RNujlnESHIWyvBFUHqPsQyOOk5u085wB3wlIVqWQnMs2QtqMvkf%2F7jkAzt0Ky6Dxyd3%2FWMljH489nfqP%2FfflFAx69aaHXyfTLpW3osnXbWLY0m3cvYCZhxHCElSjHJQ4UabGCcgKKcjOC6AYGAOfEjOjuzCqvMqIBjqlAYrfaRr6pmDrWMsBOD2c7iYLqjid%2FzmczBzC%2FsOxQxcMm5YgwFzHga5r9DlqIDeZFnnc%2BNTxOQ9LQti6WP%2BoMHrIAGlf3dK43sPgdTmYWLiEbCYHfdYAX%2Bn6W6JDeJAcsF3Pnw3vXM1MPzM5xBD6LQDixDZh0MzhHHQ4ACQqGw3mxZpiWMVQ2iMsJGl2n20fbiVK4r37Z1H8S%2Bu2mOy0vqk6cAnlpQ%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20210810T160818Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAQ3PHCVTYQHS5BDBD%2F20210810%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=73c39a99e3a29eff3a4955674161afe67e53c09f5beca39c08437515839ebf9c&hash=af1a40704bfc93396cb420d58c61c9dd3214787d4a0ecd55e0e0d0e005d5c452&host=68042c943591013ac2b2430a89b270f6af2c76d8dfd086a07176afe7c76c2c61&pii=S0950584915001743&tid=pdf-1b40ad4e-73cb-462b-a66b-9741505b548e&sid=950738e73dd014440359d5f259870579643bgxrqb&type=client),

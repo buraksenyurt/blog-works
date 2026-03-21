@@ -6,8 +6,8 @@ categories:
   - csharp
 tags:
   - csharp
-  - dotnet
-  - threading
+  - thread
+  - threadPriority
 ---
 İş parçacıklarını işlediğimiz yazı dizimizin bu üçüncü makalesinde, iş parçacıklarının birbirlerine karşı öncelik durumlarını incelemeye çalışacağız. İş parçacıkları olarak tanımladığımız metodların çalışma şıralarını, sahip oldukları öneme göre değiştirmek durumunda kalabiliriz. Normal şartlar altında, oluşturduğumuz her bir iş parçacığı nesnesi aynı ve eşit önceliğe sahiptir. Bu öncelik değeri Normal olarak tanımlanmıştır. Bir iş parçacığının önceliğini değiştirmek istediğimizde, Priority özelliğinin değerini değiştiririz. Priority özelliğinin.NET Framework'teki tanımı aşağıdaki gibidir.
 

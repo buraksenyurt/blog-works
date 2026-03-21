@@ -6,21 +6,10 @@ categories:
   - csharp
 tags:
   - csharp
-  - bash
-  - dotnet
-  - aspnet
-  - linq
-  - sql-server
-  - wcf
-  - xml
-  - soap
-  - web-service
-  - http
-  - serialization
+  - attribute
+  - object-oriented-programming
   - reflection
-  - delegates
-  - generics
-  - visual-studio
+  - metadata-programming
 ---
 Nitelik (Attribute) eninde sonunda her dotNet programcısının kullandığı ve karşılaştığı bir kavramdır. Özellikle yansıma (Reflection) konusu ile birlikte anıldığından,.Net Framework içerisinde önemli bir yere sahiptir..Net Framework içerisinde pek çok modelde niteliklerden aktif olarak faydalanılmaktadır. Web servislerinden windows kontrollerini geliştirmeye, kendi web part bileşenlerimizi yazmaktan serileştirmeye kadar pek çok alanda işe yaramaktadır. Hatta çok popüler olarak, katmanlı mimarilerde ve nitelik bazlı (attribute based) programlama modellerinde de ele alınmaktadır. İşte bu makalemizde nitelikleri incelemeye çalışacak ve özellikle kendi niteliklerimizi nasıl geliştirebileceğimize değineceğiz.
 

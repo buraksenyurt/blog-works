@@ -5,13 +5,12 @@ date: 2015-02-03 19:00:00 +0300
 categories:
   - tasarim-kaliplari-design-patterns
 tags:
-  - tasarim-kaliplari-design-patterns
+  - design-patterns
+  - tasarım-kalıpları
   - csharp
-  - oracle
-  - xml
-  - http
-  - visual-studio
-  - dependency-management
+  - object-oriented-programming
+  - anti-pattern
+  - template-method
 ---
 Düzenli olarak teknik paylaşımlarda bulunan internet yazarlarının karşılaştığı en büyük sorunlardan birisi, hızla gelişen teknoloji nedeniyle ele alınan konuların kolayca eskimesidir. Hangi firma olursa olsun bu kural geçerlidir. Bu eskitme işinde elbette başı çeken bir kaç firma var. Zaman zaman yazarların serzenişte bulunup kızdığı Microsoft, Oracle, Google ve diğerleri.
 

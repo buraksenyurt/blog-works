@@ -5,20 +5,12 @@ date: 2021-05-02 21:30:00 +0300
 categories:
   - asp-dotnet-core
 tags:
-  - asp-dotnet-core
-  - bash
+  - asp.net
+  - asp.net-core
+  - razor-page
   - csharp
-  - dotnet
-  - aspnet
-  - web-api
-  - grpc
-  - authentication
-  - react
-  - blazor
-  - generics
-  - dependency-injection
-  - visual-studio
-  - dependency-management
+  - cshtml
+  - tag-helper
 ---
 Kendime geldiğimde hiçbir şey göremediğimi fark ettim. Üstüme çöken zifiri karanlığa rağmen halen daha hayatta olduğuma dair tek şey yağmur damlalarının birkaç metre üstümde olduğunu sandığım metal tavana vurarak çıkardıkları seslerdi. Ensemden neredeyse ayak parmaklarıma kadar yayılan ağrı hiçbir şeyi umursamaz bir tavırda yattığım yerden doğrulmamı güçleştiriyordu. Son hatırladığım CloudTown'dan birkaç sibernetik coder ile karşılaştığım belli belirsiz yansımalardan ibaretti. Kısa süre sonra yakınlarımda koşuşturan bazı ayak sesleri işittim. Yer yer duraksıyor yer yer su birikintilerine girip çıkıyorlardı. Fısıltılar daha duyulur sesler haline gelmeye başladı. Tavandaki kapağı açmak üzere içlerinden birinin elindeki anahtarları hazırladığını işittim. Sonrası gözlerim için çok korkunç bir deneyimdi. Bu zifiri karanlıkta ne kadar kaldığımı bilmiyorum ama gözlerim dışardan gelen o parlak ışığa karşı adeta haykırıyordu. Üstüme boca edilen bir kova soğuk suyun ardından gelen kaba ses ise çok tanıdıkdı. Ve şöyle seslendim; "Reyzor! Sen haaa":P
 

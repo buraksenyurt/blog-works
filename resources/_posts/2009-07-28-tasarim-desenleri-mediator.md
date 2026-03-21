@@ -5,12 +5,9 @@ date: 2009-07-28 09:04:00 +0300
 categories:
   - tasarim-kaliplari-design-patterns
 tags:
-  - tasarim-kaliplari-design-patterns
+  - design-patterns
+  - oop
   - csharp
-  - http
-  - threading
-  - performance
-  - generics
 ---
 Yandaki resimde Zurich hava alanına ait bir görüntü yer almaktadır. Hava alanının ne kadar karmaşık olduğu aşikardır. Aslında yazımıza konu olarak Londra'daki Heathrow hava alanını dahil edecektim. Nitekim uzun zaman önce Discovery Channel'da izlediğim bir belgeselde, bir iniş ve birde kalkış pistiyle bu kadar işlek bir havalimanının ne kadar ustalıkla yönetildiği anlatılıyordu. Ancak yaptığım araştırmalar sonrası dünyadaki en iyi hava alanları arasında olmadığını gördüm.([http://www.worldairportawards.com/](http://www.worldairportawards.com/)). Her neyse.
 

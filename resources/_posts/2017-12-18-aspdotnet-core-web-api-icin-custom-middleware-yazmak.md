@@ -6,20 +6,14 @@ categories:
   - dotnet-core
   - asp-dotnet-core
 tags:
-  - dotnet-core
-  - asp-dotnet-core
-  - bash
-  - csharp
-  - dotnet
-  - aspnet
-  - json
-  - web-api
-  - http
-  - iis
-  - async-await
-  - delegates
-  - generics
-  - microservices
+  - .net-core
+  - asp.net-core
+  - asp.net-core-webapi
+  - webapi
+  - middleware
+  - custom-middleware
+  - kestrel
+  - pipeline
 ---
 Uzun zamandır televizyon dizisi izlemiyorum. Aslında bir dönem düzenli olarak takip ettiğim diziler vardı. Bir tanesi de usta oyuncular Benedict Cumberbatch (Sherlock Holmes) ve Martin Freeman (Dr. John Watson) ın oynadığı Sherlock Holmes idi. Bu Cumartesi gecesi bir şekilde dizinin bir bölümüne rastladım. Keyifli bir bölüm tekrarı yaptım. Oyunculuklara yine hayran kaldım. Sherlock'un keskin zekasına, Watson'un her zamanki sorgulayıcı düşünce tarzının eklendiği bir bölümdü.
 

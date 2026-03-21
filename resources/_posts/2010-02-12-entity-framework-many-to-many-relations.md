@@ -6,14 +6,6 @@ categories:
   - entity-framework
 tags:
   - entity-framework
-  - csharp
-  - dotnet
-  - ado-net
-  - linq
-  - concurrency
-  - performance
-  - visual-studio
-  - rc
 ---
 Bundan yıllar önce üniversiteden arkadaşım Orkun Şentürk ile birlikte Altunizade Capitol alışveriş merkezinde Dreamcatcher isimli bir bilim kurgu gerilim filmine gittiğimizi hatırlıyorum. (Aslında bilim kurgu filmlerin tam bir hayranıyımdır. Ancak seyrettiklerimin hiç biri Starwars veya Terminator gibilerinin yerini tutmamakta) Film Stephen King'in bir romanından uyarlanmıştı. Sevgili arkadaşım Orkun kitabını okuyarak geldiğinden, film üzerinde daha iyi yorumlar yapmıştı ancak ortak kanımız çok başarılı olmadığı yönündeydi. Açıkçası fazla etkilenmemiştik.
 

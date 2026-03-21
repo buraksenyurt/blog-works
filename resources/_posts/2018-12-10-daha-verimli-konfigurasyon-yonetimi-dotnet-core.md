@@ -5,15 +5,17 @@ date: 2018-12-10 06:36:00 +0300
 categories:
   - dotnet-core
 tags:
-  - dotnet-core
-  - bash
-  - json
+  - configuration-management
+  - .net-core
   - csharp
-  - dotnet
+  - json
   - xml
   - web-api
-  - http
-  - generics
+  - dependency-injection
+  - IConfiguration
+  - ILogger
+  - configuration-builder
+  - .net
 ---
 Epey zamandır onbeş yaşından büyük bir proje ile ilgili geliştirmeler yapmaktayız. Uygulamayı ilk kez kullanmaya başladığımda en çok zorlandığım şeylerden birisi, küçük birimlerin testini yazmak olmuştu. Sıkılaşmış ve hatta kemikleşmiş bağımlılıklar nedeniyle basit bir fonksiyon testi için gerekli gereksiz bir çok kütüphanenin kullanılması gerekebiliyordu. Sahte nesneleri araya almak bir yere kadar çözüm olabilirdi. Lakin entegrasyon testlerini deneyimlerken karşılaştığım bir başka sorun daha vardı. Karmaşıklık değeri yüksek konfigurasyon dosyaları. Çok fazla konfigurasyon ayarı, özelleştirilmiş sektör, şifrelenmiş bağlantı cümleleri ve diğer parametrik ayarlarla ilgili bilgiler tutan web.config zaman içerisinde epeyce şişmanlamıştı. God Object değil ama God Configuration (Böyle bir terim yok tabii ben uydurdum) gibi bir anti-pattern oluşmuştu. İlk başlarda sadece gereken ayarları alarak test projesini ayağa kaldırmaya çalışmıştım. İşin sonunda ise tüm web.config'i kopyalamıştım.
 

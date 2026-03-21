@@ -5,9 +5,9 @@ date: 2015-09-16 15:00:00 +0300
 categories:
   - ruby
 tags:
-  - ruby
-  - wcf
-  - workflow-foundation
+  - mixin
+  - ruby-lang
+  - object-oriented-programming
 ---
 Ruby tam anlamıyla nesne yönelimli (Object Oriented) bir dildir. Bunu her fırsatta vurguluyoruz. Bu nedenle bünyesinde temel OOP özelliklerini taşır. Kalıtım (Inheritance) bunlardan birisidir. Ancak Ruby dilinde bir sınıfın aynı seviyede birden fazla sınıftan türemesine izin verilmez (Single Inheritance söz konusudur).
 

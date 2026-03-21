@@ -6,8 +6,12 @@ categories:
   - dotnet-framework-4-0
   - tek-fotoluk-ipucu
 tags:
-  - dotnet-framework-4-0
-  - tek-fotoluk-ipucu
+  - .net-framework
+  - csharp
+  - office-interop
+  - language-integrated-query
+  - entity-framework
+  - excel
 ---
 .Net Framework 4.0' ın getirdiği pek çok yenilik sayesinde Office gibi API'leri kullanmamız çok daha fazla kolaylaştı. Örneğin bir Entity sorgusunun sonucunu Excel dosyasına aktarmak için daha basit kodlamalar yapabiliyoruz. Nasıl mı?
 

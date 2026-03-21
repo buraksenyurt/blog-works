@@ -5,8 +5,10 @@ date: 2015-12-22 15:00:00 +0300
 categories:
   - tek-fotoluk-ipucu
 tags:
-  - tek-fotoluk-ipucu
+  - csharp
   - mutex
+  - single-instance-applications
+  - multiple-instance-applications
 ---
 Bazı uygulamaların çalışma zamanında sadece tek bir örneğinin yaşaması istenebilir (Single Instance Applications) Bilindiği üzere uygulamaların T anında birden fazla örneği olabilir (Multiple Instance Applications) Uygulamanın herhangi T anında tekil olması için ele alınabilecek bir kaç teknik vardır. Bunlardan birisi de Mutex tipinden yararlanmaktır. Aynen aşağıdaki fotoğrafta olduğu gibi.
 

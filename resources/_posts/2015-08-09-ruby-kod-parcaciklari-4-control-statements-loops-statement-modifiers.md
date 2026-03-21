@@ -5,10 +5,10 @@ date: 2015-08-09 10:00:00 +0300
 categories:
   - ruby
 tags:
-  - ruby
-  - wcf
-  - workflow-foundation
-  - http
+  - ruby-lang
+  - control-statements
+  - loops
+  - statement-modifiers
 ---
 Her programlama dilinde olduğu gibi Ruby içinde kontrol ifadeleri (Control Statements) ve döngüler (Loops) söz konusudur. Tabi Ruby dili özellikle yazımsal kolaylık açısından pek çok geliştiriciyi gülümseten betiklere de sahiptir. İlerleyen kod parçasında bu konudaki en temel kullanımları inceliyoruz.
 

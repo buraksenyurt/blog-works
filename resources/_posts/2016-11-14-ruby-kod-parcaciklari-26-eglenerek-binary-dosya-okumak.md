@@ -5,8 +5,12 @@ date: 2016-11-14 21:30:00 +0300
 categories:
   - ruby
 tags:
-  - ruby
-  - nosql
+  - ruby-lang
+  - binary-read
+  - file-io
+  - mp3
+  - idtag-standarts
+  - fun-with-code
 ---
 Vakit buldukça Ruby programlama dili ile ilgili bir şeyler yapmaya çalışıyorum. Halen daha dilin kabiliyetlerini tanıma aşamasındayım. Geçtiğimiz günlerde de Ruby Cookbook kitabından binary dosyalar üzerinde yapılan işlemlere ait örnekleri inceliyordum. Hoşuma giden uygulamalardan birisi de MP3 dosyalarına ait Tag bilgilerinin elde edilmesiydi. Gerçek hayat örneği olduğundan benim için daha öğretici idi. Örnekleri inceledim ve kendime göre farklılaştırarak basit bir kod parçası oluşturmaya çalıştım.
 

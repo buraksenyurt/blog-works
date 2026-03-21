@@ -6,9 +6,9 @@ categories:
   - csharp
   - tek-fotoluk-ipucu
 tags:
+  - language-integrated-query
   - csharp
-  - tek-fotoluk-ipucu
-  - linq
+  - aggregate-functions
 ---
 LINQ tarafında Sum,Max,Min,Average gibi bazı hesaplama fonksiyonları vardır. Bunlara ait örnek bir kullanımı aşağıda bulabilirsiniz
 

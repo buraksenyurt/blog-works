@@ -5,11 +5,10 @@ date: 2017-04-09 21:42:00 +0300
 categories:
   - csharp-7-0
 tags:
-  - csharp-7-0
   - csharp
-  - python
-  - ruby
-  - generics
+  - tuple
+  - tuple<>
+  - deconstruction
 ---
 C# 7.0 tarafında geliştiricileri mutlu eden iyileştirmelerden birisi de Tuple tipi ile ilgili. Klasik olarak bir tip tanımı yapmamıza ihtiyaç duymadan özellikle metodlardan dönüş yaptığımız noktalarda faydalanabildiğimiz generic Tuple tipinin en büyük handikapı, üye isilmendirmeleri. Aşağıdaki kod parçasında bu durumu açık bir şekilde görebiliriz.
 

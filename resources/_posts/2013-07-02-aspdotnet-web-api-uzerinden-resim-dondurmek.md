@@ -5,17 +5,14 @@ date: 2013-07-02 13:08:00 +0300
 categories:
   - aspnet-web-api
 tags:
-  - aspnet-web-api
-  - csharp
-  - dotnet
-  - aspnet
-  - ado-net
-  - entity-framework
-  - linq
+  - asp.net-web-api
+  - http-get
   - web-api
-  - http
-  - generics
-  - visual-studio
+  - get
+  - image-format
+  - httpresponsemessage
+  - httpstatuscode
+  - 404
 ---
 Eminim çocukken çizgi filmlerle aranız vardı. Hatta çoğumuz yaşı kaç olursa olsun çizgi filmlere arada sırada da olsa zaman ayırmakta. (Ben Batman gördüm mü pür dikkat izlerim örneğin) Keza pek çok büyüğümüz de, eskiden izlediği çizgi filmler ile karşılaştığında taaaa çocukluk yıllarına kadar gidip aynı o zamanki gibi içten gülebiliyorlar da (Rahmetli babamdan bilirim)
 

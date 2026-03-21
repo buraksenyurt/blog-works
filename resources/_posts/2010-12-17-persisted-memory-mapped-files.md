@@ -6,12 +6,9 @@ categories:
   - dotnet-framework-4-0
   - csharp-4-0
 tags:
-  - dotnet-framework-4-0
-  - csharp-4-0
+  - .net-framework
   - csharp
-  - linq
-  - caching
-  - generics
+  - memory-mapped-files
   - visual-studio
 ---
 Sene 1997. Üniversite 3ncü sınıf öğrencisiyim. Eskiden lisanslı bir basketbolcu olan uzun boylu arkadaşım Serkan ve Babası ile birlikte Tepebaşındaki bilgisayar fuarındayız. Serkan, kendisine bir bilgisayar almak istiyor. Tabi Baba’ sının gelmesinin nedeni işlemci mimarilerini, ram teknolojilerini çok iyi bilmesi değil. Tamamen duygusal:$ Ben de Serkan arkadaşıma teknik olarak destek verip önerilerde bulunuyorum. Derken 3müz arasında şöyle bir konuşma geçiyor;

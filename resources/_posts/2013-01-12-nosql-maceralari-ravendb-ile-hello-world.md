@@ -5,21 +5,18 @@ date: 2013-01-12 12:05:00 +0300
 categories:
   - nosql
 tags:
-  - nosql
-  - xml
-  - csharp
-  - dotnet
-  - entity-framework
-  - linq
-  - oracle
   - ravendb
-  - cassandra
-  - silverlight
-  - rest
+  - .net
   - json
-  - http
-  - java
-  - javascript
+  - open-source
+  - nosql
+  - schema-less
+  - store
+  - document
+  - delete
+  - load
+  - query
+  - generic
 ---
 Kuzgun’ lar Kargagiller ailesinden gelen bir kuş çeşididir. Diğer karga cinslerine göre daha iridirler ve özellikle çok daha zeki oldukları söylenir. Yapılan araştırma ve deneyler sonrasında bu cins kargaların, sorunları çözmek için çevresel materyalleri kullanabilme (kullanmak için de öğrenebilme) becerisine sahip oldukları öne sürülmüştür. Hatta parlak, beyaz ve mavi renkli metallere karşı özel bir ilgileri olduğundan, hırsız olarak da ifade edilmektedirler.
 

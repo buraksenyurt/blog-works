@@ -7,22 +7,10 @@ categories:
   - wcf-eco-system
   - wcf-ria-services
 tags:
-  - silverlight-4-0
-  - wcf-eco-system
-  - wcf-ria-services
-  - xml
-  - csharp
-  - dotnet
-  - aspnet
-  - linq
-  - wcf
   - silverlight
-  - xaml
-  - http
-  - iis
-  - serialization
-  - generics
-  - visual-studio
+  - windows-communication-foundation
+  - syndication
+  - wcf-eco-system
 ---
 Yeni bir maceraya hazır mısınız? Hureyyy dediğinizi duyar gibiyim. Bildiğiniz üzere Internet kaynaklarının takibinin kolay bir şekilde yapılabilmesi adına RSS veya Atom formatındaki Feed içeriklerinden sıklıkla yararlanmaktayız. Blog, Community, News Group ve benzeri pek çok internet kaynağı, güncel içeriklerini yayınlamak amacıyla global olarak standart hale getirilmiş olan bu formatları kullanmaktalar.
 

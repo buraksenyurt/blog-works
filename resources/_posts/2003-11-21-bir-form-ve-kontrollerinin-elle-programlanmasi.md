@@ -6,9 +6,6 @@ categories:
   - windows-forms
 tags:
   - windows-forms
-  - csharp
-  - dotnet
-  - visual-studio
 ---
 Bugünkü makalemizde, bir Formu kodla nasıl oluşturacağımızı, bu form üstüne nasıl kontroller ekleyeciğimizi, bu kontoller için nasıl olaylar yazacağımızı vb. konuları işlemeye çalışacağız. Bildiğiniz gibi Visual Studio.NET gibi grafiksel ortamlar ile Form ve Form nesnelerini görsel olarak, kolay ve hızlı bir şekilde oluşturabilmekteyiz. Bu bizim programlama için ayıracağımız sürede, ekran tasarımlarının daha hızlı yapılabilmesine olanak sağlamaktadır.
 

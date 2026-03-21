@@ -5,20 +5,16 @@ date: 2019-04-26 07:07:00 +0300
 categories:
   - nodejs
 tags:
+  - graphql
+  - apollo-server
   - nodejs
-  - bash
   - javascript
   - postgresql
-  - mongodb
-  - nosql
-  - rest
-  - json
-  - http
-  - async-await
-  - dependency-injection
-  - visual-studio
-  - github
-  - dependency-management
+  - sql
+  - npm
+  - ubuntu
+  - query
+  - mutation
 ---
 James A. Lovell, John L. Swigert, ve Fred W. Haise. Bu isimleri düşününce belki de çoğumuzun aklına bir şey gelmiyordur. Peki ya, Amerikalı veya İngiliz oldukları düşünülen bu şahısların yerine şu isimleri söylersek. Tom Hanks, Bill Paxton ve Kevin Bacon. Hımm...Sanırım birilerinin zihninde bir şeyler canlandı. Evet, evet...Bunlar film yıldızları değil mi? Üçü bir arada hangi filmde oynamışlardı acaba? Hala anımsayamadıysanız işte bir ipucu daha. "Houston we've got a problem." Şimdi anımsadınız mı?
 

@@ -5,30 +5,23 @@ date: 2021-03-30 15:00:00 +0300
 categories:
   - dotnet-core
 tags:
-  - dotnet-core
-  - bash
-  - csharp
-  - yaml
-  - dotnet
-  - aspnet
-  - linq
+  - .net-core
+  - .net
+  - kubernetes
+  - docker
   - redis
   - rabbitmq
-  - rest
-  - json
-  - web-api
-  - http
-  - grpc
-  - docker
-  - kubernetes
-  - async-await
-  - performance
-  - caching
-  - serialization
-  - generics
-  - microservices
-  - visual-studio
-  - github
+  - csharp
+  - pods
+  - container
+  - yaml
+  - sidecar-pattern
+  - dağıtık-mimari
+  - tye
+  - kubectl
+  - wsl
+  - worker-service
+  - service-discovery
 ---
 Star Wars'ın figür kabul edilen gemilerinden birisi imparatorluk güçlerinin Tie Fighter'ıdır. Lord Vader ile özdeşlemiş olan bu figürün kulak tırmalayan ama rahatsız etmeyen sesinin Almanların İkinci Dünya savaşındaki hafif bombardıman uçaklarından birisi olan Junkers Ju-87 Stuka'dan (Sturzkampfflugzeug) geldiği bile söylenir.
 

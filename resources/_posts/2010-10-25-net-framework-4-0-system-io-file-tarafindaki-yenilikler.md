@@ -6,13 +6,10 @@ categories:
   - dotnet-framework-4-0
   - bcl
 tags:
-  - dotnet-framework-4-0
-  - bcl
-  - csharp
-  - dotnet
-  - threading
-  - generics
-  - visual-studio
+  - base-class-library
+  - .net-framework
+  - file-io
+  - system.io
 ---
 Bu yazımızda ele alacağımız konu ile ilişkili olarak kullanacağım giriş resmi için uzun bir süre araştırma yapmak zorunda kaldım. Sanırım yazıyı yazdığım bu sıcak yaz gününde devrelerim istediğim randımanı vermedi. Ancak en azından yandaki resim, anlatacağım ilk konu ile doğrudan alakalı olarak düşünülebilir. Bu resimde üst üste binmiş onlarca metre yüksekliğe varan dosya dolapları olduğu ifade edilemekte. Bunların hepsinin tek bir dosya içerisinde birleştirildiğini düşünün. Üstelik bu dosya text tabanlı olsun.
 

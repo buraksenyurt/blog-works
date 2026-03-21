@@ -5,13 +5,7 @@ date: 2009-06-30 10:45:00 +0300
 categories:
   - tasarim-prensipleri-design-principles
 tags:
-  - tasarim-prensipleri-design-principles
-  - csharp
-  - dotnet
-  - xml
-  - json
-  - testing
-  - dependency-management
+  - design-principles
 ---
 Bu yazımızda Dependency Inversion isimli tasarım prensibinden bahsediyor olacağız. Bu prensip kabaca, alt sınıflar ve üst sınıflar arasında kuvvetli bir bağ olmamasını önermektedir. Bunun en büyük gerekçesi, alt sınıflarda olabilecek sık değişiklerin, üst sınıfında değişmesine neden olabilecek olmasıdır ki bu hızla değişen yazılım ihtiyaçlarında sorunlara neden olmaktadır. Buna birde yeni alt tipler ile genişletilebilme olasılıklarınıda eklersek, üst ve alt sınıflar arasındaki bağımlılıkların ortadan kaldırılmasının (bağımsızlık olarak düşünmek istesemde, bağımlılığın tersine çevrilmesi olarak bilmek zorundayız ![Wink](/assets/images/2009/smiley-wink.gif)) aslında ne kadar önemli olduğu anlaşılabilir. Durumu daha iyi kavrayabilmek adına basit bir örnek üzerinden ilerlemek çok daha doğrudur. Öncelikli olarak aşağıdaki sınıf diagramı ve kod içeriğinde görülen örnek Console uygulamasını göz önüne alalım.
 

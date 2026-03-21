@@ -5,9 +5,16 @@ date: 2016-04-03 06:00:00 +0300
 categories:
   - tek-fotoluk-ipucu
 tags:
-  - tek-fotoluk-ipucu
+  - extension-methods
   - reflection
   - generics
+  - override
+  - tostring
+  - base-object
+  - poco
+  - entity
+  - assembly-reference
+  - stringbuilder
 ---
 Geçtiğimiz günlerde çalışma arkadaşımın oldukça enteresan bir sorusu ile karşılaştım. Projesinde referans ettiği bir kütüphane içerisinde yer alan POCO (Plain Old CLR Objects) tiplerine ait ToString metodlarını ezmesi (Override) gerekiyordu. Ne yazık ki ilgili kütüphane dll olarak referans edildiğinden, içerisindeki sınıflara girip ToString metodunu ezmek mümkün değildi. Bir şekilde ToString metodunu genişletebilir miyiz diye düşünmeye başladık. Bu mümkün gibi görünmüştü. Ancak varsayılan ToString metodu genişletilse dahi kod her zaman Object tipinin ToString metoduna gitmekteydi. Dolayısıyla istediğimizi bir türlü gerçekleştiremiyorduk. Sonrasında var olan projede kullanılan ToString çağrılarında ufak parametre değişiklikleri yaparak ilerleyelim dedik ve aşağıdaki gibi bir extension method yazmaya karar verdik.
 

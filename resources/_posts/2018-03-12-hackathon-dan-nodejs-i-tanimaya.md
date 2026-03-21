@@ -5,20 +5,20 @@ date: 2018-03-12 03:00:00 +0300
 categories:
   - nodejs
 tags:
-  - nodejs
+  - node.js
   - javascript
-  - bash
-  - json
-  - mongodb
-  - rest
-  - http
-  - docker
-  - typescript
-  - async-await
-  - performance
-  - microservices
-  - visual-studio
-  - github
+  - Framework
+  - script-languages
+  - vs-code
+  - callback
+  - repl
+  - asynchronous-programming
+  - functional-programming
+  - module
+  - built-in-module
+  - npm
+  - linux
+  - ubuntu
 ---
 Javascript yüzyıllardır (abartmayı severim) front-end tarafında kullanılan en güçlü yazılım geliştirme dillerinden birisi. Bir web uygulamasını onsuz düşünmek neredeyse imkansız. Her ne kadar Typescript gibi oluşumlar söz konusu olsa da, Javascript'in yeri ayrı. Javascript dilini baz alan bir çok Framework (çatı) de uzun zamandır sektörümüzde yer almakta. Hatta bazıları tamamen sunucu bazlı çalışacak şekilde tasarlanmış durumdalar. Node.js bunlardan birisi.
 

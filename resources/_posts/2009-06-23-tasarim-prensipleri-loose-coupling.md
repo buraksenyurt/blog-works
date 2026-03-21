@@ -5,9 +5,11 @@ date: 2009-06-23 22:46:00 +0300
 categories:
   - tasarim-prensipleri-design-principles
 tags:
-  - tasarim-prensipleri-design-principles
-  - csharp
-  - wpf
+  - design-principles
+  - loose-coupling
+  - oop
+  - object-oriented-programming
+  - aspect-oriented-programming
 ---
 Yazılım teknolojilerinde uygulanan tekniklerin çoğunda temel tasarım prensipleri sıklıkla ele alınmaktadır/Alınmalıdı. Örneğin eXtreme Programming, Aspect Oriented Programming vb... yazılım geliştirme tekniklerinde bu prensiplerin çoğuna rastlayabiliriz. Bu yazı ile birlikte Temel Tasarım Prensiplerinin incelenmesine başlıyor olacağız ki özellikle büyük çaplı projelerde bu tip disiplinler büyük bir öneme sahiptir.
 

@@ -5,14 +5,9 @@ date: 2005-03-06 10:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
-  - csharp
-  - dotnet
-  - sql-server
+  - ado.net
   - concurrency
-  - performance
-  - dataset
-  - datatable
+  - disconnected-layer
 ---
 Bağlantısız katman nesneleri ile çalışırken karşılaşabileceğimiz problemlerden bir tanesi güncelleme işlemleri sırasında oluşabilecek DBConcurrencyException istisnasıdır. Bu makalemizde, bu hatanın fırlatılış nedenini inceleyecek ve alabileceğimiz tedbirleri ele almaya çalışacağız. Öncelikle istisnanın ne olduğunu anlamak ile işe başlayalım. Bir DataAdapter nesnesine ait Update metodu güncelleme işlemleri için Optimistic (iyimser) yaklaşımı kullanan sql sorgularını çalıştırıyorsa DBConcurrencyException istisnasının ortama fırlatılması, başka bir deyişle Concurrency Violation (eş zamanlı uyumsuzluk) durumunun oluşması son derece doğaldır.
 

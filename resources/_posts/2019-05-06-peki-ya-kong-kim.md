@@ -5,25 +5,18 @@ date: 2019-05-06 07:00:00 +0300
 categories:
   - devops
 tags:
-  - devops
-  - bash
-  - csharp
-  - javascript
-  - dotnet
-  - linq
-  - postgresql
-  - cassandra
-  - rest
-  - json
+  - kong
+  - api-gateway
+  - microservice
   - web-api
-  - http
-  - authentication
+  - node
+  - node.js
+  - javascript
+  - csharp
   - docker
-  - nodejs
-  - caching
-  - generics
-  - microservices
-  - github
+  - container
+  - PostgreSQL
+  - api
 ---
 Kurumsal mimari ekibinin önerdiği çatılardan birisi üzerine kurulmuş yeni ürünümüzü test ortamına almaya çalıştığımız bir gündü. Local makinelerimizde çok az sorunla ayağa kaldırdığımız proje, test ortamında ne yazık ki daha fazla problem üretmişti. Ağırlıklı olarak web önyüzünden iş kurallarının yürütüldüğü Web API servislerine gidişlerde sorunlar yaşıyorduk.
 

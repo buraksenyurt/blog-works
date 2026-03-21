@@ -5,23 +5,17 @@ date: 2019-06-07 11:00:00 +0300
 categories:
   - dotnet-core
 tags:
-  - dotnet-core
-  - bash
-  - csharp
-  - xml
-  - dotnet
-  - json
-  - web-api
-  - http
-  - rust
-  - javascript
   - blazor
-  - async-await
-  - performance
-  - dependency-injection
-  - visual-studio
-  - github
-  - dependency-management
+  - razor-page
+  - .net-core
+  - html
+  - csharp
+  - wasm
+  - .net
+  - WebAssembly
+  - cshtml
+  - single-page-application
+  - Framework
 ---
 Oturduğunuz yerden göründüğü gibi çok karikatür okuyan biri değilimdir. Ama bazen kendimi sevgili Yiğit Özgür'ün kaleminden çıkan bir Huni Kafa karakteri gibi hissettiğim olur. Bir sebepten ne olduğunu tam olarak anlayamadığım konular üzerinde debelenir dururum. O kaynaktan bu kaynağa geçerken de kaybolurum. Lakin her zaman elle tutulur bir şeylere ulaşma şansı da bulurum.
 

@@ -5,19 +5,14 @@ date: 2012-09-12 15:04:00 +0300
 categories:
   - wcf-4-5
 tags:
-  - wcf-4-5
-  - csharp
-  - xml
-  - dotnet
-  - aspnet
-  - wcf
+  - windows-communication-foundation
+  - asp.net
+  - windows-8
+  - websockets
+  - html
   - http
-  - iis
-  - javascript
-  - async-await
-  - transactions
-  - serialization
-  - visual-studio
+  - polling
+  - streaming
 ---
 Bazen yemek yemek için dışarı çıkar ve daha önceden gitmediğimiz bir yere oturup hiç bakmadığımız tadlara yelken açarız. Bu, bazen çok başarılı sonuçlanır ve bize büyük bir keyif verir. Bazen de yapmış olduğumuz tercihlerimiz için pişmanlık duyarız. Hatta bazı zamanlarda yerken iyi gelen o tadlar, çıkışta büyük sıkıntılara yol açabilir
 

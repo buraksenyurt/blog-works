@@ -6,9 +6,9 @@ categories:
   - linq
   - tek-fotoluk-ipucu
 tags:
-  - linq
-  - tek-fotoluk-ipucu
-  - performance
+  - csharp
+  - language-integrated-query
+  - where
 ---
 Bazen bir fotoğraf bin kelimeye bedeldir derler. Bin kelime konusunda şüpheliyim ama bir fotoğrafın anlatım gücü açısından çok önemli katma değerlere sahip olduğuna inanıyorum. İşte size LINQ konusunda performans ipucu verecek bir fotoğraf. Bakalım ben de yarattığı etkiyi siz de yaratacak mı?
 

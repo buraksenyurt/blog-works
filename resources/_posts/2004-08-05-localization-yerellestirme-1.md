@@ -6,9 +6,9 @@ categories:
   - csharp
 tags:
   - csharp
-  - dotnet
-  - threading
-  - visual-studio
+  - localization
+  - globalization
+  - multi-language
 ---
 Dünya çapında yada başka bir deyişle global çapta uygulamalar geliştirilirken karşılaşılabilecek zorluklardan birisi, uygulamanın farklı kültür ve dil seçeneklerine göre çalışabilecek şekilde tasarlanmasıdır. Eski programlama dilleri göz önüne alındığında, özellikle farklı dil desteği sağlayacak uygulamaların geliştirilmesi tam anlamıyla bir kabus olmuştur. Söz gelimi 2 dile destek verecek bir uygulama geliştirilmek istendiğinde, her iki dil içinde farklı uygulama kodları yazılması gerekirdi. Böyle bir durumda, uygulamanın piyasaya sürülmesinden sonra yapılacak güncelleme paketleri içinde aynı durum söz konusuydu. Dahası, 3ncü bir dilin desteğinin sağlanması için, aynı projenin bu kezde bu dil için geliştirilmesi gerekmekteydi. Dil çeşitliliğinin yanı sıra, aynı dili konuşan fakat farklı takvimler, farklı parasal formatlar, farklı sayısal formatlar hatta farklı sıralamalar kullanan kültürler işin içine sokulduğunda durum tam anlamıyla bir paradoks haline gelmektedir.
 

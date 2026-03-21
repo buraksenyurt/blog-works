@@ -5,18 +5,8 @@ date: 2008-01-30 12:00:00 +0300
 categories:
   - wcf
 tags:
-  - wcf
-  - csharp
-  - xml
-  - soap
-  - web-service
-  - http
-  - iis
-  - authentication
-  - performance
-  - transactions
-  - generics
-  - visual-studio
+  - windows-communication-foundation
+  - front-end-services
 ---
 Windows Communication Foundation (WCF) mimarisinde belkide en kritik unsurlardan birisi EndPoint kavramıdır. EndPoint, Servis Yönelimli Mimari (Service Oriented Architecture - SOA) uygulamaları geliştirmek için kullanılan WCF modelinde, istemciler (Clients) ile servis (Service) arasındaki haberleşmede yer alan kritik bir parçadır. WCF'in temellerini incelediğimiz daha önceki yazılarımızda, EndPoint kavramının aslında WCF mimarisinin ABC'si olduğundan bahsetmiştik. ABC bilindiği üzere adres (Address), bağlayıcı (Binding) ve sözleşme (Contract) bilgilerinden oluşmaktadır. Buna göre bir EndPoint yardımıyla, servisin istemcilere hangi adresten, hangi protokolle, hangi kurallara göre neyi sunacağı bilgisi aktarılabilir. Bununla birlikte, EndPoint'ler istemci tarafından gelecek olan taleplerin karşılanmasında da büyük öneme sahiptir.
 

@@ -5,13 +5,11 @@ date: 2004-02-04 12:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
-  - csharp
-  - dotnet
-  - xml
-  - visual-studio
+  - ado.net
   - dataset
-  - datatable
+  - strongly-typed-data-controls
+  - strongly-typed-dataset
+  - data
 ---
 Bugünkü makalemizde kuvvetle türlendirilmiş veri kümelerinin ne olduğunu ve nasıl oluşturulduklarını incelemeye çalışacağız. Kuvvetle türlendirilmiş veri kümelerini tanımlamadan önce, aşağıdaki kod satırının incelemekle işe başlayalım.
 

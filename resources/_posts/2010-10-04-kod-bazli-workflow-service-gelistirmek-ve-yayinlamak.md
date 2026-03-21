@@ -6,20 +6,9 @@ categories:
   - wf
   - wf-4-0
 tags:
-  - wf
-  - wf-4-0
-  - csharp
-  - xml
-  - dotnet
-  - aspnet
-  - wcf
   - workflow-foundation
-  - wpf
-  - windows-forms
-  - xaml
-  - http
-  - iis
   - visual-studio
+  - workflow-services
 ---
 Bildiğiniz üzere bir süredir [NedirTv?com](http://www.nedirtv.com) desteğinde ["Workflow Foundation 4.0 Öğreniyorum"](http://www.nedirtv.com/kategori/Workflow-Foundation-Ogreniyorum.aspx) isimli bir seri üzerinde çalışmaktayız. Bu seride başlangıç seviyesinden orta seviyeye kadar, bir kaç ayrı derste Workflow Foundation kavramını öğrenmeye gayret ettik. Bu seriye dahil etmek istediğim bir konu da, Workflow Service örneklerinin tamamen kod bazında yazılması ve IIS (Internet Information Services) dışındaki bir uygulama tarafından host edilmesiydi. Ancak konu biraz karmaşık olduğundan ve tabiri yerinde ise yandaki resimde görülen Puzzle'a benzemediğinden, yazı haline getirilmesinin daha iyi olacağına karar verdim. Hem böylece ben de unuttuğum zamanlarda bu yazıma bakarak hatırlayabilirim. Öyleyse derin bir nefes alalım ve yola koyulalım.
 

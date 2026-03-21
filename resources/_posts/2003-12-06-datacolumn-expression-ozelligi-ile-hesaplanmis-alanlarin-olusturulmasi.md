@@ -5,10 +5,9 @@ date: 2003-12-06 12:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
-  - csharp
-  - performance
-  - datatable
+  - ado.net
+  - data-column
+  - expression
 ---
 Bugünkü makalemizde bir tabloda sonradan hesaplanan alanların nasıl oluşturulacağını incelemeye çalışacağız. Her zaman olduğu gibi konuyu iyi anlayabilmek için bir örnek üzerinden gideceğiz. Bir hesaplanan alan aslında bir hesaplama ifadesidir. Örneğin var olan bir tablodaki bir alana ait her değere ortak bir işlem yaptırmak istediğimizi ve bu her veri için oluşan sonuçlarında tabloda ayrı bir alan adı altında gözükmesini istediğimizi varsayalım. Buna en güzel örneklerden birisi;
 

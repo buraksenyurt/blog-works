@@ -5,12 +5,10 @@ date: 2007-03-08 12:00:00 +0300
 categories:
   - csharp
 tags:
-  - csharp
   - xml
-  - dotnet
-  - concurrency
-  - performance
-  - generics
+  - document-object-model
+  - domain
+  - x-path
 ---
 Yıllar önce odamdaki bilgisayarımda arkadaşlarımın telefon ve doğum günü bilgilerini C tabanlı bir programda kütük dosyasına kaydetmeye çalışmıştım. O günlerde sadece bulunduğum oda içerisindeki alanla sınırlıyken, bir süre sonra internet ortamına taşınıvermiştik. Dolayısıyla artık kütük dosyasını başka ortamlara aktarabilme imkanı doğmuştu. Elbetteki bu taşıma işinin bir standart dahilinde olması önemli idi. Sonuçta günümüzde bu tip veri taşıma standartları için Xml kullanır hale geldik. Xml elbette beraberinde pek çok teknolojiyide getirdi.
 

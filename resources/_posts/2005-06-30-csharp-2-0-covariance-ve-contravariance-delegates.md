@@ -6,8 +6,10 @@ categories:
   - csharp
 tags:
   - csharp
-  - dotnet
-  - delegates
+  - covariance-generic
+  - contravariance-generic
+  - covariance
+  - delegate
 ---
 Bildiğiniz gibi temsilciler (delegates) çalışma zamanında metodların başlangıç adreslerini işaret eden tiplerdir. Bu tipleri uygulamalarımızda tanımlarken çalışma zamanında işaret edebilecekleri metodların geri dönüş tipi ve parametrik yapılarını bildirecek şekilde oluştururuz. Ancak özellikle, C# 1.1 ortamında temsilcilerin kullanımında parametre ve dönüş tipileri açısından iki önemli sıkıntımız vardır. Bu sıkıntıların kaynağında birbirlerinden türeyen yani aralarında kalıtımsal (inheritance) ilişkiler olan tipler yer alır.
 

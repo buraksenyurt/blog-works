@@ -5,17 +5,13 @@ date: 2016-03-30 23:00:00 +0300
 categories:
   - xml-web-services
 tags:
-  - xml-web-services
+  - xml-web-service
+  - logging
+  - soap
+  - trace
   - csharp
   - xml
-  - dotnet
-  - aspnet
-  - oracle
-  - wcf
-  - soap
-  - web-service
-  - http
-  - asmx
+  - servicestack
 ---
 Yine karşımıza çıkan bir problem çözümü ile birlikteyiz. Öncelikle senaryomuzu anlatarak işe başlayalım. Şirket içerisinde kullanılan bir XML Web Service'in Oracle tarafındaki bir Stored Procedure içerisinden çağırılması gerekiyordu. Burada kullanılacak teknikten ziyade XML Web Service'e gidecek olan SOAP mesajının içeriği daha önemliydi. Nitekim giden örnek bir mesaj elimizde olduğu takdirde Stored Procedure tarafındaki string içeriğin (SOAP XML yapısını ifade eden) oluşturulması daha kolay olacaktı. Haliyle bizim XML Web Service'e istemci tarafından gönderilen mesaj içeriklerine ait örneklere ihtiyacımız vardı. Bunun için Fiddler gibi araçları da kullanabilirdik. Ama bilin bakalım ne var? Şirketteki bilgisayarlara bu tip araçları indirip kurmamız mümkün değil. Dolayısıyla kendi kodumuzu yazarak servise giden paketlerin içeriğini görmemiz gerekiyor.
 

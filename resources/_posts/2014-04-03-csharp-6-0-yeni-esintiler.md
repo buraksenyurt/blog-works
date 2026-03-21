@@ -7,13 +7,7 @@ categories:
   - csharp-6-0
 tags:
   - csharp
-  - csharp-6-0
-  - entity-framework
-  - json
-  - async-await
-  - generics
-  - visual-studio
-  - datatable
+  - new-features
 ---
 Çok şanslı bir çocukluk geçirdim. 80li yıllarda daha minik bir çocukken Lego’ lar oyuncak dolabımdan eksik olmazdı. O zamanlar benim için çok kıymetliydiler. Tabi büyüdükçe başka başka şeyler önem kazanmaya başladı. Lego’ nun pabucu belki de dama atıldı. Ta ki bir oğlum olana kadar.
 

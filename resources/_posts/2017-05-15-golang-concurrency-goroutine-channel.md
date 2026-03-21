@@ -6,12 +6,11 @@ categories:
   - golang
 tags:
   - golang
-  - dotnet
-  - http
-  - go
-  - ruby
-  - threading
   - concurrency
+  - goroutine
+  - channel
+  - channel-direction
+  - buffered-channel
 ---
 Yazılım ürünlerinde eş zamanlı çalışma modeli oldukça önemli. Uygulamalarda yer alan süreçler çoğu zaman alt iş parçalarından oluşmakta ve bu parçalar uygun koşullarda eş zamanlı olarak yürütülebilmekte. Eş zamanlılık için bir çok dilde destek mevcut. Go dili için de öne çıkan kavramlarından birisi aslında. Concurrency denildiğinde aklımıza bir sürece ait n sayıda görevin (Task) aynı anda çalışması gelmeli. Okuduğum kaynakta buna güzel bir örnek veriliyor: Web Sunucusu.
 

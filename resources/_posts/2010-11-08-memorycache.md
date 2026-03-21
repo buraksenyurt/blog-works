@@ -5,19 +5,12 @@ date: 2010-11-08 03:34:00 +0300
 categories:
   - aspnet-4-0
 tags:
-  - aspnet-4-0
-  - csharp
-  - dotnet
-  - aspnet
-  - wpf
-  - windows-forms
-  - http
-  - performance
+  - asp.net
   - caching
-  - generics
-  - visual-studio
-  - datatable
-  - dependency-management
+  - windows-forms
+  - memorycache
+  - in-memory-caching
+  - asp.net-caching
 ---
 Deadline…Benim gibi yazılım geliştirici olan pek coğumuzun sevmediği kelimelerin başında geldiğinden eminim. Ancak kaçınılmaz bir gerçek olduğunu da biliyoruz. Her şeye rağmen onunla yaşamak veya yaşamasını öğrenmek zorundayız.
 

@@ -5,13 +5,8 @@ date: 2006-07-20 12:00:00 +0300
 categories:
   - aspnet-2-0
 tags:
-  - aspnet-2-0
-  - xml
-  - csharp
-  - dotnet
-  - aspnet
-  - http
-  - performance
+  - asp.net
+  - xslt
 ---
 Xml (eXtensible Markup Language - genişletilebilir işaretleme dili), farklı platformlar arasında kolayca bilgi taşınmasına izin veren, veri kümelerini kendi kurallarımızla oluşturmamızı sağlayan önemli standartlardan birisidir. Lakin zaman zaman Xml dökümanlarını okumak çok kolay olmamaktadır. En azından oluşturulan Xml dökümanlarında tutulan içeriği, son kullanıcıya farklı şekillerde göstermek ihtiyacını duyabiliriz. İşte bu noktada, var olan Xml verisinin farklı bir formata dönüştürülebiliyor olması gerekmektedir. XSLT (eXtensible Stylesheet Language Transformation) standardı tam bu noktada devreye girmektedir. Xslt herhangibir Xml içeriğini farklı bir Xml, Html, Csv (Comma Seperated Values) veya Text formatına dönüştürme işlemi ile ilgili materyalleri sağlayan bir işaretleme dilidir.
 

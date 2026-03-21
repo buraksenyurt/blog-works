@@ -6,11 +6,12 @@ categories:
   - rust
 tags:
   - rust
+  - rust-lang
   - memory-management
-  - pointers
-  - github
-  - ownership
+  - stack
+  - heap
   - borrow-checker
+  - ownership
 ---
 Sıklıkla vurgulandığı üzere Rust programlama dili bellek yönetimi ve güvenliği konusunda son derece hassas kurallar içeriyor. Değişken sahipliği kuralları ve ödünç alma kontrolü (Ownership, Borrow Checker) olası bir çok bellek probleminin henüz derleme aşamasındayken önüne geçilmesini sağlıyor ancak dilin öğrenme eğrisini de oldukça dikleştiriyor (En azından ilk zamanlarda) Esasında C,C++ türevi sayabileceğimiz Rust'ın bir Garbage Collector mekanizması kullanmaması belleğin çalışma dinamiklerini daha iyi bilmemizi gerektiriyor. Ancak sanılanın aksin Rust'ın bir Garbage Collector mekanizması içermemesi bellek yönetimi yapmadığı anlamına gelmemeli. Nitekim Rust bellek yönetimi için Ownership, Resource Acquisition is Initialization (RAII), Borrow Checker, Lifetimes ve Smart Pointers gibi birçok enstrüman kullanmakta.
 

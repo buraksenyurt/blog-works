@@ -5,16 +5,8 @@ date: 2009-12-14 01:30:00 +0300
 categories:
   - csharp-4-0
 tags:
-  - csharp-4-0
   - csharp
-  - dotnet
-  - linq
-  - threading
-  - performance
-  - reflection
-  - generics
-  - visual-studio
-  - thread-safety
+  - .net-framework
 ---
 Eminim hepimiz arada sırada tembellik yapıyor ve ilk bulduğumuz rahat köşeye kıvrılıp hiç bir şeyi düşünmeden rahatça uyuyabiliyoruz. Eğer bulunduğumuz yer uyumaya çok müsait değilse yandaki kedi gibi ortama ayak uydurup yinede uyuyoruz
 

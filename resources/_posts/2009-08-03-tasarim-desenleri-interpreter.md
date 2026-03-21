@@ -5,9 +5,9 @@ date: 2009-08-03 06:30:00 +0300
 categories:
   - tasarim-kaliplari-design-patterns
 tags:
-  - tasarim-kaliplari-design-patterns
+  - design-patterns
+  - oop
   - csharp
-  - generics
 ---
 Yandaki legoya baktığımızda sanıyorum ki hepimizin aklına Romalılar gelmektedir. Aslında benim aklıma Ben Hur filmi ve müthiş atlı araba yarışı sahneleri geliyor. Her neyse...
 

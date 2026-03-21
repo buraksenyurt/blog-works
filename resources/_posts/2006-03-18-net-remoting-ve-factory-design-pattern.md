@@ -5,9 +5,9 @@ date: 2006-03-18 12:00:00 +0300
 categories:
   - dotnet-remoting
 tags:
-  - dotnet-remoting
-  - csharp
-  - dotnet
+  - .net-remoting
+  - factory
+  - design-patterns
 ---
 Factory Design Pattern (Fabrika Tasarım Deseni), istemcilerin ihtiyaç duyduğu nesneleri oluşturmak için özel bir nesnenin kullanıldığı mimariyi ele alır. Öyleki bu tasarım deseninde istemcinin, kullanacağı asıl nesnenin nasıl üretileceği hakkında herhangibir bilgiye sahibi olması gerekmez. Bu örnekleme işini üstlenen fabrikanın (Factory) kendisidir. Biz bu makalemizde, Factory Design Pattern'in.Net Remoting içerisinde kullanılışını incelemeye çalışacağız. Makaleyi kolay takip edebilmeniz açısından Remoting ile ilgili temel bilgilere aşina olmanız önemlidir. Factory tasarım deseninin 3 önemli parçası vardır. Client, Factory ve Product.
 

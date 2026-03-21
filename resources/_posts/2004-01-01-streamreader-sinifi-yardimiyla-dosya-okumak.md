@@ -5,7 +5,10 @@ date: 2004-01-01 12:00:00 +0300
 categories:
   - csharp
 tags:
+  - ado.net
   - csharp
+  - .net
+  - stream
 ---
 Bugünkü makalemizde, sistemimizde yer alan text tabanlı dosyaları nasıl okuyabileceğimizi incelemeye çalışacağız..NET ortamında, dosyaların okunması için streamler (akımlar) kullanılır. Bugün işleyeceğimi StreamReader sınıfıda bunlardanbir tanesidir. StreamReader sınıfı dosyaların okunmasını, dosyalara yazılmasını vb.. sağlar. StreamReader sınıfını bir FileStream nesnesi ile kullanabileceğimiz gibi, tek başınada kullanabiliriz. Kullanabileceğimiz yapıcı metodlardan birisi;
 

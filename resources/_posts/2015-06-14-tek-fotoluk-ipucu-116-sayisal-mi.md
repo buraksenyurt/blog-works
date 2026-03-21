@@ -5,7 +5,9 @@ date: 2015-06-14 15:32:00 +0300
 categories:
   - tek-fotoluk-ipucu
 tags:
-  - tek-fotoluk-ipucu
+  - regex
+  - extension-methods
+  - csharp
 ---
 Oldu ya geliştirdiğiniz projenin bir yerinde, koda düşen metinsel bazı değişkenlerin sayısal olup olmadığını tespit etme ihtiyacı duydunuz. Söz gelimi bir Excel dokümanı içerisinden aldığınız hücre değerlerinin sayısallığını kontrol etmek ve buna göre program akışını yönlendirmek gerekiyor.
 

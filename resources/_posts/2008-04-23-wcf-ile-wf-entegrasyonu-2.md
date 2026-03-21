@@ -6,21 +6,9 @@ categories:
   - wcf
   - wf
 tags:
-  - wcf
-  - wf
-  - csharp
-  - xml
-  - dotnet
-  - linq
+  - windows-communication-foundation
   - workflow-foundation
-  - wpf
-  - json
-  - http
-  - iis
-  - serialization
-  - delegates
-  - generics
-  - visual-studio
+  - windows-workflow-foundation
 ---
 Bir önceki yazımızda WCF (Windows Communication Foundation) servislerinin, WF (Windows WorkFlow) uygulamaları içerisinden nasıl çağırıldığını incelemiştik. Bu yazımızda ise tam tersine, bir Workflow örneğinin servis olarak nasıl sunulabileceğini analiz ediyor olacağız. Bazı durumlarda kod akışlarının birer servis olarak istemcilere sunulması gerekebilir. Burada söz konusu kod akışlarının Servis Yönelimli Mimarinin (Service Oriented Architecture) imkanlarından yararlanıyor olması isteği ön plana çıkmatadır. Çok doğal olarak servis gibi yayınlanan akış tipleri (Workflow Instance), istemci ile olan mesajlaşmalarında SOA temelli olanakları kullanabilir hale gelmektedir. Bu noktada WCF ile WF entegrasyonu göz önüne alınmalıdır.
 

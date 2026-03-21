@@ -5,15 +5,7 @@ date: 2009-11-30 23:29:00 +0300
 categories:
   - wf-4-0-beta-2
 tags:
-  - wf-4-0-beta-2
-  - xml
-  - csharp
-  - dotnet
-  - sql-server
   - workflow-foundation
-  - xaml
-  - transactions
-  - visual-studio
 ---
 Bundan bir kaç yıl önce, eşimle birlike İtalya'daki Amca'sını ziyarete gitmiştik. Amcamız, Milano şehrinde uzun yıllar restoran işiyle uğraşmış oldukça yetenekli bir aşçı ve işletmeciydi. Bir gün İtalya'da bizi davet ettiği bir restoranda yemek yerken güzel bir tavsiyede bulunduğunu hatırlıyorum; "Yemekte bitiremediğiniz salatalar mı var? Yemekten sonra onları tavada ısıtın ve buzdolabına koyun. Ertesi gün yine soslayarak yiyebilirsiniz. Tabiki ağır soslu salatalar değilde hafif olanlardan bahsediyorum". Bir anlamda salatayı herhangibir anda o anki haliyle saklayıp (ki ben buna Persist etmek demek istiyorum) sonra t zamanında yeniden yemek. Her ne kadar bu senaryoda salatayı yıllarca saklamak zor olsada (ki bu durumdada bazı sonuçlarına katlanmak gerekebilir ![Sealed](/assets/images/2009/smiley-sealed.gif)) yazılım dünyasında uzun süreli bir iş akışının yıllarca saklanabilmesi mümkündür. İşte bu günkü konumuz; Workflow Foundation 4.0 ile Persistence işlemleri nasıl gerçekleştirilebilir...
 

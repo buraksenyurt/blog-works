@@ -7,8 +7,8 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - csharp
-  - tek-fotoluk-ipucu
-  - performance
+  - stringbuilder
+  - string
 ---
 String tipleri çok garip tiplerdir. Onları + operatörü ile birleştirmek bazen akıl karı değildir. Çok fazla performans kaybettirir. Bir de uzlaşma yoluna gidebileceğini StringBuilder var. Örneğin
 

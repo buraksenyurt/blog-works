@@ -5,8 +5,19 @@ date: 2019-01-13 13:03:00 +0300
 categories:
   - t-sql
 tags:
-  - t-sql
-  - performance
+  - sql
+  - merge
+  - docker
+  - query
+  - linux
+  - ubuntu
+  - sub-query
+  - select
+  - join
+  - data-merging
+  - migration
+  - sql-server
+  - stored-procedures
 ---
 Gün geçmiyor ki çevremdeki insanlardan yeni bir şeyler daha öğrenmeyeyim. Bugün o günlerden biriydi...
 

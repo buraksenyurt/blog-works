@@ -6,18 +6,18 @@ categories:
   - office-development
 tags:
   - office-development
-  - csharp
-  - dotnet
-  - aspnet
-  - aspnet-mvc
-  - ado-net
-  - entity-framework
-  - wcf
-  - windows-forms
-  - http
-  - authentication
-  - generics
+  - word-projects
+  - microsoft-word
+  - office
+  - word-addin
+  - addin
   - visual-studio
+  - .net
+  - csharp
+  - entity-framework
+  - document-level
+  - application-level
+  - word-object-model
 ---
 Geliştirdiğimiz veya kullanmakta olduğumuz yazılım ürünlerine dahil olan, farklı segmentlerden gelen pek çok kullanıcı profili vardır. Farklı profillerin olması, bazı hallerde geliştirilmekte olan ürünlerin başarısını doğrudan etkilemektedir. Bir fotoğraf işleme programını geliştirirken çoğu zaman annemizin olası kullanıcı profilleri arasına gireceğini pek düşünmeyiz. Genellikle fotoğraf işleme programını kullanacak olanların, en azından temek düzeyde fotoğrafçılık bilgisine sahip olduğunu kabul eder, menü komutlarını buna göre belirler, arayüzü buna göre hazırlarız. Ama bazı uygulamalarda annemizi hedef alır ve çektiği fotoğraflara kolayca efekt uygulamasına bir kaç basit adımda olanak tanır. Örneğin instagram’ ın iPhone uygulamasında olduğu gibi.
 

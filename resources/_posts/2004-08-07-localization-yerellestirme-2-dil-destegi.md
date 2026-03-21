@@ -6,11 +6,9 @@ categories:
   - csharp
 tags:
   - csharp
-  - dotnet
-  - xml
-  - threading
-  - reflection
-  - visual-studio
+  - localization
+  - globalization
+  - multi-language
 ---
 Bir önceki makalemizde hatırlayacağınız gibi,.net ile geliştirilen uygulamaların belirli kültürler için nasıl yerelleştirilebileceğini incelemeye başlamıştık. İlk bölümde, belirli bir kültürün daha çok sayısal, tarihsel ve sıralama formatları üzerinde durduk. Bu bölümde ise, yerelleştirmede daha da önemli olan bir konuya, uygulamaların farklı dillere göre destek vermesine değineceğiz.
 

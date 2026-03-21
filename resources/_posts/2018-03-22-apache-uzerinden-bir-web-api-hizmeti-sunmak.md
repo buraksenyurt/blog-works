@@ -5,13 +5,21 @@ date: 2018-03-22 03:13:00 +0300
 categories:
   - dotnet-core
 tags:
-  - dotnet-core
-  - bash
-  - xml
+  - apache
+  - .net-core
+  - hosting
+  - reverse-proxy
+  - kestrel
   - csharp
-  - dotnet
   - web-api
-  - http
+  - asp.net-web-api
+  - systemctl
+  - modproxy
+  - ufw
+  - open-source
+  - apache-foundation
+  - ubuntu
+  - linux-ubuntu
 ---
 Küçük bir çocukken her pazar sabahı TRT ekranlarında kovboy (Western) filmleri olurdu. Rahmetli babam ile severek geçirdiğimiz nadide vakitlerdendi. Sanıyorum son yıllarda yine Pazar sabahları ekranlarımızı süslüyorlar (Bakamıyorum çünkü sabahlarımız basketbol antrenmanları ile geçiyor) Kızılderililer ile süvarilerin sıklıkla karşı karşıya geldiği, batının en hızlı silahşörlerinin yer aldığı filmlere ne hikmetse çok bağlanmıştım.
 

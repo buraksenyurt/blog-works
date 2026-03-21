@@ -5,10 +5,8 @@ date: 2003-12-17 10:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
-  - csharp
-  - performance
-  - datatable
+  - ado.net
+  - datagrid
 ---
 Bugünkü makalemizde, bir Web Sayfası üzerinde yer alan DataGrid kontrolü üzerinde tıklanan kolon başlığına gore sıralama işleminin manuel olarak nasıl yapılacağını işleyeceğiz. Konu teknik ağırlığa sahip olduğu için hemen kodlara geçmek istiyorum.
 

@@ -5,9 +5,7 @@ date: 2009-07-02 01:16:00 +0300
 categories:
   - tasarim-prensipleri-design-principles
 tags:
-  - tasarim-prensipleri-design-principles
-  - csharp
-  - dependency-management
+  - design-principles
 ---
 Bir süredir pek çok nesne yönelimli yazılım disiplininde önem arz eden ve kullanılan Tasarım Prensiplerini (Design Principles) incelemeye ve öğrendiklerimi sizlere aktarmaya çalışıyorum. Şu ana kadar pek çok prensibi inceledik ve kısaltmalarına tanık olduk.
 

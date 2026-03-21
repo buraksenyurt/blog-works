@@ -6,9 +6,11 @@ categories:
   - rust
 tags:
   - rust
-  - bash
-  - pointers
-  - github
+  - rust-lang
+  - state-design-pattern
+  - oop
+  - trait
+  - trait-objects
 ---
 Belli bir akış içerisinde ele alınan nesneler belli durumlara sahiptirler. Bu durumlar arasındaki geçişler için fonksiyonlardan yararlanılırken bazı kuralların işletilmesi de istenebilir. Örneğin belli bir duruma sahipken diğer bir duruma geçilmesini engelleyen karar mekanizmaları ve koşullar söz konusudur. Hatta programın belli bir t anında içinde bulunabileceği durumlar bellidir. Nesne yönelimli dillerde bu gibi ihtiyaçlar için davranışsal (Behavioral) kalıplardan olan State tasarım deseni sıklıkla kullanılır. Hatta oyun programlamada State Machine türevli motorlarda nesne durumlarının yönetimi için bu desene ait pratikler söz konusudur.
 

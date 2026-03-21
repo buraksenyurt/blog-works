@@ -6,28 +6,12 @@ categories:
   - dotnet-core
   - aws
 tags:
-  - dotnet-core
   - aws
-  - bash
-  - csharp
-  - xml
-  - dotnet
-  - aspnet
-  - asp-dotnet-core
-  - json
+  - serverless
+  - .net-core
+  - asp.net-core
+  - asp.net-core-web-api
   - web-api
-  - web-service
-  - http
-  - iis
-  - docker
-  - python
-  - ruby
-  - nodejs
-  - react
-  - serialization
-  - generics
-  - microservices
-  - visual-studio
 ---
 Çok yeni bir dünyanın içerisindeyiz uzun zamandır. Cloud Computing ile başladı. C#'ın Linux, MacOSX üzerinde çalıştığına şahit olurken, React Native'ın dünyayı sarsan yükselişine tanık olduk. Oysa ki daha bir süre öncesine kadar Scrum metodolojilerine alışmaya çalışıyor, TFS'e nasıl plug-in yazarıza bakıyorduk. Üniversite yıllarımızda internet bağlantısı bile olmayan bilgisayarlarda yazdığımız faktöryel hesaplama fonksiyonlarını, doğrudan sahibi olmadığımız Quantum bilgisayarlara yaptırmak için Serverless sistemlerden yararlanabileceğimiz bir dünya söz konusu artık. Şirketin hantallaşan iş alanlarını birer microservice haline getirip docker üzerinden host ettiğimiz gezegenler var artık. Çok hızlı dediğimiz Apache sunucularının yerini alan NGinx'e bakarken IIS'i unutup gidiyoruz belki de. Gelişiyoruz, değişiyoruz...Ve bu ikisini sürekli yapıyoruz. Adapte olmak zorundayız.
 

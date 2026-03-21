@@ -7,6 +7,9 @@ categories:
 tags:
   - tek-fotoluk-ipucu
   - windows-forms
+  - controls
+  - recursive-method
+  - extension-methods
 ---
 Diyelim ki çalışma zamanında, Windows Forms'un içerisindeki bir kontrolü (Control tipinden bir nesne örneğini) kodla buldurmanız ve üzerinde bir işlem yaptırmanız gerekiyor. Hatta formunuzun da, otomatik olarak bir veri kaynağına göre üretildiğini ve kontrollerin de iç içe gelecek şekilde yerleştirildiğini düşünün. Kodun belirli bir kontrol üzerinde işlem yapması için önce onu bulması gerekir değil mi? Ancak control ağaç yapısının da çalışma zamanında üretilmesi söz konusudur.
 

@@ -5,12 +5,8 @@ date: 2006-03-26 12:00:00 +0300
 categories:
   - dotnet-remoting
 tags:
-  - dotnet-remoting
-  - csharp
-  - xml
-  - http
-  - threading
-  - delegates
+  - .net-remoting
+  - event
 ---
 Remoting mimarisinde temel amaç, istemcilerin uzak nesnelere (remote objects) erişmelerini sağlamak ve bu nesneler üzerindeki metodları çalıştırmaktır..Net Remoting için en çok kullanılan model Marshall By Referance modelidir. Bu modelde istemciler uzak nesneler ile, sunucu üzerinde oluşturulan uzak nesne referansları yoluyla konuşurlar. Ancak bazı durumlarda, uzak nesnelerin yer aldığı sunucu uygulamalar, istemciler üzerinde yer alan metodları çalıştırmak isteyebilir. Böyle bir durumda roller süreç içerisinde istemci ve sunucu arasında değişime uğrar. Yani istemciler sunucudaki uzak nesnelere erişebilirken, sunucuda istemciler üzerindeki nesnelere erişebilmektedir. Bu modelin gerçekleşmesi için özellikle olay güdümlü programlanın can damarı olan temsilci (delegate) ve event (olay) tipleri kullanılmaktadır.
 

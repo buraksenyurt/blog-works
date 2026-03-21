@@ -6,14 +6,10 @@ categories:
   - parallel-programming
   - tpl
 tags:
-  - parallel-programming
-  - tpl
-  - csharp
-  - dotnet
   - task-parallel-library
-  - threading
-  - visual-studio
-  - shared-state
+  - .net-framework
+  - synchronization-primitives
+  - parallel-programming
 ---
 Pek çoğumuzun anahtarlığında sayısız anahtar bulunmaktadır. Özellike gerilim filmlerinde bu anahtarlardan doğru olanı bulmak ve anahtar deliğine sokmak, hep zaman alan başarısız kaçış girişimleri olarak sahnelenir. Genellikle bu başarız girişimlerin sonunda ne olduğu malumdur.
 

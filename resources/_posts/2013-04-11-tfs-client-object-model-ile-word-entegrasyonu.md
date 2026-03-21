@@ -6,9 +6,13 @@ categories:
   - team-foundation-server
 tags:
   - team-foundation-server
-  - csharp
-  - http
-  - visual-studio
+  - client-object-model
+  - work-item
+  - task
+  - product-backlog-item
+  - scrum
+  - cmmi
+  - msf
 ---
 Geçtiğimiz gün National Geographic kanalında Mega Fabrikalar’ ı seyretme fırsatı buldum. Amerikalı Dodge firması efsane Challanger‘ ı yeniden üretmekteydi. Konu bu üretimin gerçekleştirildiği mega fabrikaydı.
 

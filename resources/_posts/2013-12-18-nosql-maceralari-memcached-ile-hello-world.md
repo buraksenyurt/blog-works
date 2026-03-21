@@ -5,20 +5,12 @@ date: 2013-12-18 23:45:00 +0300
 categories:
   - nosql
 tags:
-  - nosql
-  - xml
-  - csharp
-  - dotnet
-  - wcf
-  - web-api
-  - http
-  - authentication
-  - python
-  - java
-  - ruby
-  - performance
-  - caching
-  - serialization
+  - memcached
+  - memorycache
+  - not-only-sql
+  - distributed-caching
+  - velocity
+  - open-source
 ---
 Belki de açık kaynak olarak geliştirilen projelerin bu kadar popüler olma nedenlerinden bir tanesi de, logolarındaki orjinalliktir. Küçük bir ihtimal olsa da böyle bir algı olduğuna inanıyorum. Söz gelimi Linux’ un pengueni, Mono projesinin maymunu (Biliyorsunuz Mono İspanyolca’ da maymun demek), Android’ in yeşil robotu, Joomla’ nın birbirlerine kenetlenmiş insanları vb.
 

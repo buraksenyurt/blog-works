@@ -5,25 +5,9 @@ date: 2012-05-01 01:25:00 +0300
 categories:
   - wcf-data-services
 tags:
+  - windows-communication-foundation
   - wcf-data-services
-  - csharp
-  - dotnet
-  - aspnet
-  - entity-framework
-  - linq
-  - sql-server
-  - wcf
-  - workflow-foundation
-  - silverlight
-  - xml
-  - soap
-  - rest
-  - json
-  - web-api
-  - web-service
-  - http
   - reflection
-  - generics
 ---
 Bundan bir kaç yıl öncesiydi. Daha dün gibi hatırlıyorum..Net Framework 3.0 sürümünde çıkması beklenen yeni Foundation alt yapıları üzerine Microsoft ekibinden gelen elektronik bir postayı okuyordum. O zamana kadar XML Web Service'leri ve özellikle.Net Remoting ile yakın ilişkiler içerisinde bulunduğumdan, dikkatimi ilk çeken Windows Communication Foundation isimli konsept olmuştu. Kısaca WCF olarak adlandırılıyordu. Mutlaka üzerine eğilmem gerektiğini düşündüğüm bir konuydu. Benim için yeni bir macera başlıyordu.
 

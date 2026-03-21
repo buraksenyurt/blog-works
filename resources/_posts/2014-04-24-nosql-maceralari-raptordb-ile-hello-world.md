@@ -6,18 +6,6 @@ categories:
   - nosql
 tags:
   - nosql
-  - csharp
-  - dotnet
-  - linq
-  - sql-server
-  - oracle
-  - json
-  - http
-  - task-parallel-library
-  - transactions
-  - serialization
-  - generics
-  - visual-studio
 ---
 Yıllardır vaz geçemediğim bilgisayar oyunlarından birisidir [Command and Conquer Generals](http://tr.wikipedia.org/wiki/Command_%26_Conquer:_Generals). Özellikle Zero Hour setini çok ama çok severim. Bu set içerisinde en çok kullandığım GLA güçleridir ama zaman zaman China Tank General veya USA Air Force’ u da tercih ederim.
 

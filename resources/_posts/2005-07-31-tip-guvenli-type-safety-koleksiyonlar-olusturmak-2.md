@@ -6,7 +6,8 @@ categories:
   - csharp
 tags:
   - csharp
-  - java
+  - strongly-typed-collections
+  - collections
 ---
 Bir önceki makalemizde tip güvenli koleksiyon nesnelerimizi CollectionBase sınıfı yardımıyla nasıl oluşturabileceğimizi incelemiştik. CollectionBase bize ArrayList benzeri koleksiyon sınıflarını yazma fırsatı vermektedir. Diğer yandan Hashtable koleksiyonunda olduğu gibi key (anahtar) - value (değer) çiftlerinden oluşacak tip güvenli bir koleksiyon sınıfı yazmak isteyebiliriz. Bu durumda, DictionaryBase sınıfından yaralanabiliriz. DictionaryBase sınıfıda CollectionBase sınıfı gibi abstract yapıdadır. Yani kendisini örnekleyemeyiz. Temel olarak DictionaryBase key-value çiftlerine sahip bir koleksiyonun kullanması gereken üyeleri sunan arayüzlerden türemiştir. Yani IDictionary, IEnumerable ve ICollection arayüzlerini uyarlamaktadır. Dikkat ederseniz CollectionBase sınıfınında türediği IEnumerable ve ICollection arayüzleri DictionaryBase içinde söz konusudur.
 

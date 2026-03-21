@@ -6,12 +6,19 @@ categories:
   - react
 tags:
   - react
-  - bash
+  - alasql
+  - javascript
+  - sql
+  - database
+  - node
+  - node.js
   - json
   - nosql
-  - http
-  - javascript
-  - github
+  - indexedDb
+  - crud
+  - npm
+  - npx
+  - create-react-app
 ---
 İngilizcede bazen gemi kaptanlarına Captain yerine Skipper dendiğini biliyor muydunuz? Aslında Hollandalıların schipper, schip en nihayetinde de ship kelimelerinden türeyerek gelmiş bir ifade. Her ikisi de kaptanı ifade etmekte ama Skipper daha çok bir hitap şekli. Hatta yer yer takım kaptanları veya uçak pilotları için de kullanılıyor. Skipper kelimesinin kullanıldığı yerleri düşününce aklıma The Hunt For Red October filminde USS Dallas kaptanı Mancuso'nun CIA'den Jack Ryan'a "That's right? Skipper's Ramius?" demesi geliyor.
 

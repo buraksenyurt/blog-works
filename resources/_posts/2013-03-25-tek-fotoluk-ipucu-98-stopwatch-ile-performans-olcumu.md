@@ -5,9 +5,19 @@ date: 2013-03-25 19:32:00 +0300
 categories:
   - tek-fotoluk-ipucu
 tags:
-  - tek-fotoluk-ipucu
+  - stopwatch
+  - system.diagnostics
+  - performance-measuring
   - performance
-  - delegates
+  - func
+  - delegate
+  - generic
+  - generics
+  - elapsed-milliseconds
+  - total-hours
+  - total-seconds
+  - total-minutes
+  - out-parameters
 ---
 Diyelim ki elinizde çeşitli tipte ve sayıda fonksiyon var ve bunların çalışma zamanındaki işleyiş sürelerini hesaplamak istiyorsunuz. Normal şartlarda her metoda gidip DateTime tipini ele alarak süre ölçümleri yapabiliriz. Ya da Delegate sınıfına bir genişletme fonksiyonu yazarak sorunu halletmeye çalışırız. Aynen aşağıdaki ekran görüntüsünde olduğu gibi.
 

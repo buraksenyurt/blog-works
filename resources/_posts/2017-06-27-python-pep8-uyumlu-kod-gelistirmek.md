@@ -5,11 +5,11 @@ date: 2017-06-27 17:10:00 +0300
 categories:
   - python
 tags:
-  - python
-  - bash
-  - http
-  - go
-  - ruby
+  - pep8
+  - pytest
+  - python-enhancements-proposal-guide
+  - coding-standards
+  - kodlama-standartları
 ---
 Geçtiğimiz günlerde senelik kişisel gelişim döngümün ikinci yarısının ilk konusu olan Python'a tekrardan başladım. Bir önceki yılın aynı dönemlerinde Raspberry Pi ile ilgili olarak Python üzerine bir şeyler yapmaya çalışmıştım. Ruby ve Go ile devam eden iterasyonun sıradaki adımında Python'u bir başucu kitabını kullanarak tekrar etmekteyim. Bu amaçla [Head First Python, A Brain Friendly Guilde](http://shop.oreilly.com/product/0636920036777.do) isimli kitaptan yararlanıyorum. Her örneği tek tek yapmaya çalışıyorum. Bugün ilgimi çeken bir konu ile karşılaştım. Yazdığımız python kodlarının PEP8 (Python Enhancement Proposals) adı verilen standartlara uygun olup olmadığının tespiti. PEP konusu ile ilgili detaylı bilgilere [şu adresten](https://www.python.org/dev/peps/) ulaşabilirsiniz. Hatta bu kısa yazıya konu olan PEP8 içeriğine de [bu adresten](https://www.python.org/dev/peps/pep-0008/) bakabilirsiniz.
 

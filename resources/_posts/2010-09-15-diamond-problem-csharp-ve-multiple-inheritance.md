@@ -6,8 +6,9 @@ categories:
   - csharp
 tags:
   - csharp
-  - bash
-  - linq
+  - c++
+  - inheritance
+  - multiple-inheritance
 ---
 Yandaki resimde mükemmel ölçülerde bir elmas taşını görmektesiniz. Sanıyorum ki içerisinde altın orana rastlamak bile mümkündür. Elmas karatına göre derece değerli bir taş olduğu kadar, elde edilmesi de zahmetli ve zordur. Hatta özellikle Afrika’ nın elmas yönünden zengin olan bazı ülkelerinde bu taş yüzünden pek çok kişi hayatını kaybetmiştir/kaybetmektedir. Ki bu konu günümüz sinemasına da malzeme olmayı başarmıştır.
 

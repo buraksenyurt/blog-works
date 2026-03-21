@@ -5,15 +5,14 @@ date: 2017-04-30 21:36:00 +0300
 categories:
   - csharp
 tags:
-  - csharp
-  - dotnet
-  - mongodb
-  - nosql
-  - xml
   - json
-  - http
+  - bson
+  - binary-json
+  - .net
+  - newtonsoft
+  - csharp
   - serialization
-  - generics
+  - deserialization
 ---
 Sanıyorum her.Net programcısının takım çantasında yer alan paketlerden birisi de Newtonsoft'un JSON serileştirme kütüphanesidir. JSON (JavaScriptObjectNotation) formatı, XML (eXtensibleMarkupLanguage) şemasından sonra hafif ve az yer kaplama özellikleri nedeniyle çokça tercih edilen standartlardan birisi haline gelmiştir. Diğer yandan JSON içeriklerin Binary formatta serileştirilmiş versiyonu olarak adlandırılan BSON formatı da sıklıkla kullanılmaktadır.
 

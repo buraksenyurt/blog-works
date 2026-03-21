@@ -6,12 +6,15 @@ categories:
   - team-foundation-server
 tags:
   - team-foundation-server
-  - dotnet
-  - sql-server
+  - team-explorer-everywhere
+  - msscci-provider
+  - sql-navigator
   - oracle
-  - http
   - java
-  - visual-studio
+  - eclipse
+  - branch
+  - checkin
+  - checkout
 ---
 Yandaki fotoğrafta bir duvar prizi içinden USB bağlantısı yapıldığını ve cep telefonunun şarj edildiğini görmektesiniz. Bir süredir hayatımızda olan ilginç buluşlardan birisi de USB Priz’ ler. Bu aslında USB’ nin pek çok farklı ortama entegre edilebilmesi anlamına da geliyor. Söz gelimi bir süredir pek çok araç modelin USB çıkışları neredeyse standart. Telefonlarımızı yol boyunca şarj edebiliyoruz. Hatta USB olmayan araçlarda, çakmaktan gelen enerjiyi USB bağlantısı ile aktaran ara dönüştürücüler bile var.
 

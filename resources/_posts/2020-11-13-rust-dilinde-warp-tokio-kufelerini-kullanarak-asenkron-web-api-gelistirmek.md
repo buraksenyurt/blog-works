@@ -6,23 +6,16 @@ categories:
   - rust
 tags:
   - rust
-  - bash
-  - rest
-  - json
+  - tokio
+  - warp
+  - crate
+  - asynchronous-programming
   - web-api
-  - http
-  - async-await
-  - threading
-  - concurrency
-  - serialization
-  - pointers
-  - visual-studio
-  - github
-  - thread-safety
-  - mutex
-  - atomic-operations
-  - ownership
-  - arc
+  - rest-api
+  - rust-lang
+  - vs-code
+  - ubuntu
+  - linux
 ---
 Geçtiğimiz birkaç ay içerisinde Rust dilini öğrenmeye çalıştım. Zevkli olduğu kadar bir o kadar da zorlayıcı bir süreçti. Öğrendin mi derseniz, "Hayır!" derim:D İşlediğim konuları tekrar etmem gerekiyor. En çok sahiplenme (ownership) ve borçlanma (borrowing) konularında beynimi yaktım diyebilirim (Ah birde trait ve smart pointer konuları var!) Yinede Rust ile vakit geçirdikçe ortaya karışık bir şeyler çıkmaya da başladı. Dilin, Message Passing ve Mutex konularını öğrenmeye çalışırken karşıma Warp ve Tokio küfeleri (Crates) çıktı. Derken olay asenkron çalışan bir Web API geliştirmeye kadar gitti. Her ne kadar Warp denince aklımıza Star Trek gelse de mevzu bambaşka.
 

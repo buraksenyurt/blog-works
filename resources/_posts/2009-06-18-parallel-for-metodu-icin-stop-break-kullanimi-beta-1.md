@@ -6,11 +6,6 @@ categories:
   - parallel-programming
 tags:
   - parallel-programming
-  - csharp
-  - linq
-  - threading
-  - generics
-  - visual-studio
 ---
 Parallel.For metodu bildiğiniz gibi döngüsel işlemleri birden fazla göreve bölerek kısa sürede yapılmasına olanak sağlamaktadır. Bu yazımda, kelimeler ile ifade etmeyi bir türlü beceremediğim ancak bir örnek üzerinden sizlere aktarabileceğim Stop ve Break metodları üzerinde durmaya çalışacağım. Aslında amaç tahmin edeceğiniz üzere paralel çalışan döngü içerisinden çıkmak. Bu ardışıl çalışan bir for döngüsü göz önüne alındığında problem değil. Ya da önemsenmesi gereken sorunlara yol açabilecek bir konu değil. Nitekim tek bir Thread söz konusu. Ancak Parallel.For metodu işlemleri gerçekleştirirken birden fazla Task'in başlatılmasına neden olmaktadır. Bu durumdada Stop veya Break gibi iki farklı metodun nasıl davranış göstereceğini bilmekte yarar vardır. İşte konuyu anlayabilmek için Visual Studio 2010 Beta 1 sürümünde geliştirdiğim örnek Console uygulaması kodları.
 

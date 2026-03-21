@@ -6,19 +6,7 @@ categories:
   - dart
 tags:
   - dart
-  - java
-  - csharp
-  - bash
-  - rest
-  - json
-  - http
-  - javascript
-  - async-await
-  - threading
-  - concurrency
-  - performance
-  - visual-studio
-  - github
+  - dartlang
 ---
 Çok duydum, çok bahsedildi. Hep Flutter arkasında kaldı. Aslında yıllardır vardı. Birazcık bakmamın zamanı gelip de geçmişti. Haydi dedim o zaman. Önce onu Heimdall (Ubuntu-20.04) yüklemem gerekiyordu tabii. [Bu adresteki talimatları](https://dart.dev/get-dart) takip ederek kurulumu gerçekleştirdim ve birkaç örnek kod parçasını bol yorum satırlarıyla önce skynet reposuna ardından da bloga bırakmaya karar verdim. Sizde Dart diline şöyle bir bakmak temel özelliklerini öğrenmek istiyorsanız aşağıdaki kronolojiyi takip ederek bana katılabilirsiniz. Eğer Java veya C# kökenliyseniz DART diline alışmanız da çok zor değil. Tabii başlamadan önce adettendir dil ile ilgili sözü geçen genel özellikleri şöyle bir sıralayalım.
 

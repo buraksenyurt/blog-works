@@ -5,19 +5,18 @@ date: 2017-12-01 06:01:00 +0300
 categories:
   - dotnet-core
 tags:
-  - dotnet-core
-  - bash
-  - csharp
-  - dotnet
-  - oracle
-  - rabbitmq
-  - http
-  - docker
-  - java
-  - threading
-  - serialization
-  - generics
-  - visual-studio
+  - apache-kafka
+  - .net-core
+  - message-queue
+  - message-broker
+  - distributed-messaging-system
+  - apache
+  - consumer
+  - producer
+  - broker
+  - zookeeper
+  - publisher-subscriber-model
+  - message-queue-middleware
 ---
 Bilgisayarla yeni tanıştığım dönemlerde aynı zamane çocuklarımızın tabletlerde yaptığı gibi oyun oynamaya bayılırdım. Dersler, sınavlar bir yana oyunlar bir yana. Kasetlerin olduğu Commodore 64 zamanlarından, disketler ile 486DX işlemcili makinelerdekilere, CD ile yüklenenlerden, internetten indirilip oynananlara kadar... Pek çok efsane vardı tabii oynananlar arasında. Bazen onların başında saatlerce nasıl vakit geçiriyormuşum diye düşününce hayret ediyorum kendime. Hoşuma giden oyunların en önemli özellikleri arasında ses efektleri ve karakter konuşmaları gelirdi.
 

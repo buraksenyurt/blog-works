@@ -5,10 +5,9 @@ date: 2012-06-04 15:16:00 +0300
 categories:
   - tek-fotoluk-ipucu
 tags:
-  - tek-fotoluk-ipucu
-  - delegates
-  - generics
-  - rc
+  - collections
+  - comparer
+  - .net-framework
 ---
 Kendi tiplerimize ait koleksiyon nesnelerini kullanırken, Sort metodunu ele aldığımız durumlarda mutlaka neye göre karşılaştırma yapacağımızı belirtmemiz gerekmektedir. Bu amaçla IComparer veya IComparable gibi arayüzleri (Interface) ve bunların generic versiyonlarını kullanırız.
 

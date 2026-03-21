@@ -5,14 +5,12 @@ date: 2007-05-16 12:00:00 +0300
 categories:
   - wcf
 tags:
-  - wcf
-  - csharp
-  - xml
-  - web-service
-  - http
+  - windows-communication-foundation
+  - security
+  - service-security
+  - tracing
   - authentication
   - authorization
-  - performance
 ---
 Dağıtık mimariye yönelik olarak geliştirilen uygulamalarda güvenlik son derece önemli bir faktördür. Özellikle farklı süreçler (process) içerisinde yer alan uygulamalar, birbirleriyle haberleşirken aradaki veri trafiği mesajlar üzerine kuruludur. Bu mesajların ağ ortamları üzerinden (Internet-Intranet) hareket etmeside güvenlik ile ilgili olarak dikkat edilmesi gereken noktaların sayısını arttırır. Temel olarak dağıtık mimarilerde güvenlik düşünüldüğünde, kullanıcıların sunucu tarafından doğrulanması (authentication), doğrulanan kullanıcıların hangi fonksiyonellikleri kullanabileceğine bakılması (authorization), arada hareket etmekte olan mesajların ne şekilde şifreleneceğinin (encryption) veya çözümleneceğinin (decryption) belirlenmesi gibi konular yer almaktadır. Bu tip işlemlere ihtiyaç duyulmasının bilinen pek çok nedeni vardır. Bunlardan bir kaçı aşağıda maddeler halinde listelenmiştir.
 

@@ -6,18 +6,10 @@ categories:
   - wcf-data-services
 tags:
   - wcf-data-services
-  - csharp
-  - xml
-  - dotnet
-  - ado-net
-  - entity-framework
-  - linq
-  - wcf
-  - http
-  - authentication
-  - generics
-  - visual-studio
-  - rc
+  - astoria
+  - windows-communication-foundation
+  - annotations
+  - wcf-data-services-october-2011-ctp
 ---
 Yağmurlu bu sonbahar günlerinde eminim ki kimse hüzünlenmek, kara kara düşünmek istemez. Ama bazen o kadar garip sorunlar ile karşı karşıya kalırız ki…Ne yapacağımızı bilemeyiz ve kara kara düşünürüz. Mesela ben bu girişi yazdığım sırada, aslında tamamlamış olduğum makalenin sonucunda bir yere varamamış ve beklentilerimi karşılayamamış birisi modundayım. Neden mi? Gelin anlatayım.
 

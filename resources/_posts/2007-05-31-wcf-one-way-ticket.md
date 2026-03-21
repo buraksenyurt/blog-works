@@ -5,18 +5,7 @@ date: 2007-05-31 09:00:00 +0300
 categories:
   - wcf
 tags:
-  - wcf
-  - csharp
-  - xml
-  - dotnet
-  - soap
-  - http
-  - threading
-  - concurrency
-  - performance
-  - generics
-  - visual-studio
-  - thread-safety
+  - windows-communication-foundation
 ---
 One Way Ticket...One Way Ticket... Bu sözleri duyduğumda aklıma bu şarkıyı yapan eruption ve cover versiyonunu söyleyip efsaneleşen Boney M grupları gelir. Ancak One Way ikilisi ne tesadüftürki.Net Remoting mimarisinde de karşımıza çıkmaktadır. Kısaca tek yön olarak çevirebileceğimiz bu iki kelime aslında fırlat ve unut (fire and forget) anlamındada düşünülebilir. Yada bir başka deyişle istemci tarafından olaya bakıldığında, "metodu çağırdım gerisi umrumda değil" de denebilir. Aynı kelimelerin Windows Communication Foundation içerisinde de yer alması elbetteki şaşırtıcı değildir. Nitekim One Way operasyonlar aslında asenkron istemci-sunucu modelininde önemli bir parçasıdır.
 

@@ -4,8 +4,7 @@ title: "Visual Basic 6.0 ile Nostalji Rüzgarı"
 date: 2014-03-23 04:18:00 +0300
 categories:
   - nedirtv
-tags:
-  - nedirtv
+tags: []
 ---
 Üniversiteye girdiğim 1993 yılında, 2 kredilik Bilgisayar Programlama dersimizin ana konusu GWBasic dili idi. Aynı yıl Microsoft, Visual Basic 3.0 sürümünü duyurmuştu. Onunla tanışmam 1995 yılını bulacaktı. 486 DX-33 işlemcili bilgisayarımda, Delphi’ den sonra sık sık kurcaladığım program geliştirme ortamlarından birisi olmuştu. O zamanlar benim gibiler için sadece olay güdümlü ve nesne tabanlı bir dil değil, daha da önemlisi Windows platformunda hızlı geliştirme yapmaya olanak sağlayan inanılmaz bir araçtı (Rapid Application Development-RAD)
 

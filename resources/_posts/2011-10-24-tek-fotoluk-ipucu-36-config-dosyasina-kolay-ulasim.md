@@ -7,7 +7,10 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - csharp
-  - tek-fotoluk-ipucu
+  - configuration-manager
+  - configuration-api
+  - app.config
+  - .net-framework
 ---
 .Net Framework 2.0 ile birlikte gelen Configuration API'sini hepimiz biliyoruzdur. Bu API sayesinde config dosya içeriklerinin Managed karşılıkları olan tiplere ulaşmamız son derece kolay. Aslına bakarsanız pek çok uygulamada config dosyası içerisinde ConnectionStrings ve AppSettings kısımlarını sıklıkla kullandığımızı görmekteyiz. Bu içeriklere daha efektif ve performanslı erişim için belki bir Wrapper tip işimizi görebilir. Nasıl mı?
 

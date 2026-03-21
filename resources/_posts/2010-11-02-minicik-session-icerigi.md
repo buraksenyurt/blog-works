@@ -5,15 +5,9 @@ date: 2010-11-02 15:10:00 +0300
 categories:
   - aspnet-4-0
 tags:
-  - aspnet-4-0
-  - csharp
-  - xml
-  - dotnet
-  - aspnet
-  - sql-server
-  - serialization
-  - visual-studio
-  - dataset
+  - asp.net
+  - session
+  - session-compression
 ---
 Bildiğiniz üzere bir süredir Microsoft Teknoloji Günleri Akşam Sınıfı etkinliklerini gerçekleştirmekteyiz. Kasım ayının konusu ise hemen her sürümünde köklü ve önemli yenilikler ile birlikte gelen Asp.Net'in 4.0 sürümü
 

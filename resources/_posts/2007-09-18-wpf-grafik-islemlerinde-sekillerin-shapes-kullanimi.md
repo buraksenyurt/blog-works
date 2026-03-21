@@ -5,14 +5,8 @@ date: 2007-09-18 09:00:00 +0300
 categories:
   - wpf
 tags:
-  - wpf
-  - xml
-  - csharp
-  - linq
-  - xaml
-  - http
-  - generics
-  - visual-studio
+  - windows-presentation-foundation
+  - shapes
 ---
 Windows Presentation Foundation (WPF) ile ilgili bir önceki makalemizde, iki boyutlu (2D) grafiklerin çizilmesi amacıyla kullanılan fırçaları (Brushes) incelemeye çalışmıştık. Bu makalemizde ise iki boyutlu şekilleri (Shapes) araştırıyor olacağız. Vektörel grafiklerde şekillerin (Shapes) büyük önemi vardır. Nitekim temel şekiller kullanılarak asıl resimler ve görüntüler kolaylıkla elde edilebilir. Bir CAD uygulamasının karmaşık çizelgelerinden, eğlenceli çocuk programlarında kullanılan vektörel grafiklere kadar pek çok alanda temel şekiller yeterli olmaktadır. Söz gelimi bir şehrin imar planlamasında kullanılacak bir programda iki boyutlu olarak düşünüldüğünde dörtgenler, daireler, elipsler, poligonlar ve düz çizgiler evlerin, yolların, arsaların, parkların ifade edilmesi için yeterlidir. Senaryolar arttırılabilir ve daha geniş alanlarda düşünülebilir. Ancak temel olarak gereken şekiller bellidir. WPF kendi bünyesinde iki boyutlu çizimlerin gerçekleştirilebilmesi amacıyla aşağıda belirtilen şekilleri (Shapes) sunmaktadır.
 

@@ -6,7 +6,14 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - tek-fotoluk-ipucu
-  - http
+  - webrequest
+  - webresponse
+  - httpwebrequest
+  - httpwebresponse
+  - networkcredential
+  - proxy
+  - credentials
+  - internet-connection
 ---
 [Bir önceki ipucumuzda](http://www.buraksenyurt.com/post/Tek-Fotoluk-Ipucu-82-Internete-Baglmiyiz) wininet.dll WinAPI kütüphanesinden yararlanarak, internet’ e bağlı olup olmadığımızı nasıl öğrenebileceğimizin fotoğrafını çekmiştik. Tahmin edeceğiniz üzere söz konusu senaryo için tek yol bu değil. Örneğin aşağıdaki gibi bir kullanımı da tercih edebilirsiniz.
 

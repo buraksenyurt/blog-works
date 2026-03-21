@@ -5,19 +5,21 @@ date: 2021-12-24 10:00:00 +0300
 categories:
   - rust
 tags:
-  - rust
-  - bash
-  - dotnet
-  - python
-  - java
-  - ruby
-  - javascript
-  - threading
-  - performance
-  - pointers
-  - generics
+  - rust-lang
   - ownership
+  - borrowing
   - borrow-checker
+  - mutable
+  - immutable
+  - cargo
+  - crate
+  - trait
+  - macro
+  - rust
+  - stack
+  - heap
+  - struct
+  - data-structures
 ---
 İki yıl kadar önce bir merakla başladığım ama sonrasında takıntı haline gelen bir uğraş edindim; Rust programlama dili. Profesyonel iş yaşantımın neredeyse tamamında.Net platformu üstünde geliştirme yaptım ve halen daha maaşımı ondan kazanıyorum. Bazı zamanlar Python, Go, Ruby gibi dillere de baktım ama hep hobi olarak kaldılar. Rust içinse aynı şeyi söylemem zor. Onunla ilgili resmi dokümantasyonu takip edip birkaç satır kod yazmaya başladım ve derken sayısız derleme zamanı hatası ile karşılaştım. Bunların neredeyse büyük çoğunluğu borrowing, ownership, lifetimes gibi konularla ilintiliydi ve her biri Rust’ın temelde bilinmesi gereken demirbaşları.
 

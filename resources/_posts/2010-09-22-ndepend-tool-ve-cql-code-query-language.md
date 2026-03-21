@@ -5,12 +5,10 @@ date: 2010-09-22 20:16:00 +0300
 categories:
   - teknik-disi-konular
 tags:
-  - teknik-disi-konular
-  - dotnet
-  - entity-framework
-  - http
   - visual-studio
-  - dependency-management
+  - ndepend
+  - cql
+  - code-query-language
 ---
 Aşağıdaki resimde Visual Studio 2010 Ultimate ortamına ait bir ara pencere görmektesiniz. Dikkat edeceğiniz üzere Select Methods Where NbLinesOfCode>=5 şeklinde bir sorgu cümlesi var. Oppsss!!! Bu nasıl bir sorgu cümlesi? Tahmin etmeye çalışalım. Sanki uygulamadaki kod satır sayısı 5’ ten fazla olan metodların adlarını döndüren bir sorgu cümlesi gibi.
 

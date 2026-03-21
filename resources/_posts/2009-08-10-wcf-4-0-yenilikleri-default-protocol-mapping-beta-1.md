@@ -5,14 +5,7 @@ date: 2009-08-10 23:09:00 +0300
 categories:
   - wcf-4-0-beta-1
 tags:
-  - wcf-4-0-beta-1
-  - csharp
-  - xml
-  - dotnet
-  - wcf
-  - http
-  - authorization
-  - visual-studio
+  - windows-communication-foundation
 ---
 Bir önceki blog yazımızda, WCF 4.0 ile birlikte gelebilecek özelliklerden birisi olan Default EndPoints kavramına değinmeye çalışmıştık. Durumu kısaca özetleyip, bu konu ile bağlantılı olan başka bir yenileğe bakarak devam edelim. Default EndPoints özelliği sayesinde, WCF çalışma zamanına (Runtime) açık bir şekilde EndPoint bildirimi yapma zorunluluğumuz ortadan kalkmaktaydı. Bir başka deyişle config dosyalarında veya kod bazında herhangibir EndPoint bildirimi yapmasak dahi, WCF çalışma zamanı, ServiceHost nesnesinde bildirilen Uri bilgilerine göre varsayılan iletişim noktalarını üretmekteydi. Ancak bir geliştirici gözü ile olaya yaklaştığımızda, Uri içerisinde yer alan string bilgiden nasıl yararlanılabildiği, yararlanıldıysada neye göre varsayılan bağlayıcı tiplerin (Binding Type) seçildiği bir soru işareti oluşturmaktadır.
 

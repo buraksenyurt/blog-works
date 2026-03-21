@@ -5,17 +5,9 @@ date: 2004-10-02 12:00:00 +0300
 categories:
   - xml-web-services
 tags:
-  - xml-web-services
+  - xml-web-service
   - xml
-  - csharp
-  - bash
-  - dotnet
-  - soap
-  - web-service
-  - http
-  - serialization
-  - visual-studio
-  - asmx
+  - wsdl
 ---
 İstemciler, web servisleri ile aralarındaki iletişimi, çalıştıkları makinede oluşturulan proxy nesneleri yardımıyla gerçekleştirir. Bu, istemci uygulamanın, web servisine ait üyelerin farkında olmasını gerektiren bir durumdur. Nitekim proxy nesnesini oluşturan sınıf, web servisindeki public arayüze göre tasarlanır. Dolayısıyla, istemci uygulamanın kullandığı web servisine ait bilgileri bir şekilde temin etmesi gerekmektedir. Visual Studio.Net ortamında geliştirdiğimiz istemci uygulamada, projeye web servisinin referans olarak eklenmesi sonucu oluşturulan bazı dosyalar olduğundan bahsetmiştik. Disco uzantılı bir dosya, wsdl uzantılı bir dosya ve proxy sınıfımıza ait cs uzantılı dosya.
 

@@ -6,18 +6,12 @@ categories:
   - silverlight-4-0
   - wcf
 tags:
-  - silverlight-4-0
-  - wcf
-  - xml
-  - csharp
-  - dotnet
-  - aspnet
+  - windows-communication-foundation
   - silverlight
-  - xaml
-  - http
-  - iis
-  - visual-studio
-  - rc
+  - wcf-service
+  - duplex-service
+  - duplex-communication
+  - push
 ---
 Hatırlayacağınız üzere [bir önceki yazımızda](/2010/06/18/silverlight-istemcileri-icin-duplex-service-gelistirmek/) Silverlight istemcilerinin kullanabileceği Duplex WCF Service uygulamalarının nasıl yazılabileceğini incelemeye çalışmıştık. Çok doğal olarak bu işin bir de istemci tarafı bulunmaktadır. İşte bu yazımızda söz konusu istemciyi geliştirmeye çalışacak ve bir önceki yazının yorgunluğunu üzerimizden atarcasına, basit bir şekilde ilerliyor olacağız. İlk olarak Visual Studio 2010 Ultimate RC ortamında Silverlight 4.0 tabanlı bir uygulama oluşturarak işe başlayabiliriz. Bu işlemin ardından Proxy tabanlı bir WCF servis kullanımı için Add Service Reference seçeneğine başvurmamız gerekecektir. Yine hatırlayacağınız üzere geliştirdiğimiz WorldWeatherService isimli servisi IIS üzerine Publish etmiştik. Bu sebepten ilgili servis referansına aşağıdaki şekilden de görüldüğü üzere http://localhost/WorldWeatherService/WeatherDuplexService.svc adresinden erişebiliriz.
 

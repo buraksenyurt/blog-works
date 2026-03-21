@@ -5,16 +5,9 @@ date: 2014-05-01 13:59:00 +0300
 categories:
   - wpf
 tags:
-  - wpf
-  - csharp
-  - dotnet
-  - nosql
-  - wcf
-  - workflow-foundation
-  - xaml
-  - http
-  - generics
-  - visual-studio
+  - design-patterns
+  - observablecollection
+  - windows-presentation-foundation
 ---
 31 Mart 2013 deki kapanma kararına kadar Formspring ‘in sadık kullanıcılarından birisiydim. Her ne kadar anlık bir soru-cevap ortamı olmasa da, takip edenler açısından faydalı bir sosyal ağ idi. Özellikle Facebook, Twitter gibi eklentileri de, cevapların farklı sosyal ağlara bağlanmasında önemli rol oynuyordu. Bu sayede verilen cevapların daha fazla kitleye ulaşması mümkündü. Ama maya bir şekilde tutmadı, kullanıcı sayısı git gide azaldı ve sonunda kapatılma kararı verildi.(Şu anda o adrese girmek isterseniz aslında [şu adrese yönleniyor](http://new.spring.me/) ve yeni bir oluşumla karşılaşıyorsunuz)
 

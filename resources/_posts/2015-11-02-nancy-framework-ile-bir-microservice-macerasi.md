@@ -5,23 +5,18 @@ date: 2015-11-02 10:00:00 +0300
 categories:
   - wcf
 tags:
-  - wcf
-  - csharp
-  - dotnet
-  - aspnet
-  - aspnet-mvc
-  - linq
-  - nosql
-  - wpf
-  - xml
-  - rest
-  - json
+  - nancy-framework
+  - microservice
+  - IoT
+  - mvc
+  - asp.net
+  - rest-api
+  - NancyHost
   - http
-  - javascript
-  - generics
-  - debugging
-  - microservices
-  - github
+  - get
+  - post
+  - put
+  - delete
 ---
 Son yılların popüler trendleri arasında MicroService ve IoT (Internet of Things) nin yer aldığını ifade edebiliriz. Akıllı cihazlar ile micro servislerin yan yana gelmesi size biraz şaşırtıcı gelmiş olabilir. Aslında birbirleri ile oldukça ilişkililer. Sonuç olarak IoT dünyasına dahil olan cihazlar birbirleri ile haberleşmek için hafif donatılmış servislerden yararlanabilirler.
 

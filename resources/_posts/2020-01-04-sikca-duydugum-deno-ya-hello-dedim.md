@@ -5,18 +5,14 @@ date: 2020-01-04 21:00:00 +0300
 categories:
   - nodejs
 tags:
+  - deno
   - nodejs
-  - bash
   - javascript
-  - rest
-  - json
-  - http
-  - rust
-  - typescript
-  - async-await
-  - performance
-  - visual-studio
-  - github
+  - linux
+  - sqlite
+  - router
+  - postman
+  - ubuntu
 ---
 Denver, the last dinosaur
 He's my friend and a whole lot more

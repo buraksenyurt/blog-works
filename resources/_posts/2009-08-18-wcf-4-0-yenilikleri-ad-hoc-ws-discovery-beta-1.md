@@ -5,15 +5,7 @@ date: 2009-08-18 09:23:00 +0300
 categories:
   - wcf-4-0-beta-1
 tags:
-  - wcf-4-0-beta-1
-  - csharp
-  - xml
-  - dotnet
-  - wcf
-  - web-service
-  - http
-  - delegates
-  - visual-studio
+  - windows-communication-foundation
 ---
 Uzun süredir macera dolu bir rüya görmüyordum. Geçtiğimiz gece askeri bir birlikte görev yapmaktaydım ve gerideki topçu birliklerime hedeflere ait koordinatları bildiriyordum. Tabi gerçek hayatta yedek subak eğitimimi Topçu sınıfında, Ateş Destek üzerine aldığım için keşif, arama ve bulma gibi konularda azda olsa bilgi sahibiydim. Rüyamda da bu bilgilerimi kullandığımı itiraf edebilirim. Peki konumuz nedir?
 

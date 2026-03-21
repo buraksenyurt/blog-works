@@ -6,20 +6,11 @@ categories:
   - wcf-eco-system
   - wcf-webhttp-services
 tags:
-  - wcf-eco-system
+  - windows-communication-foundation
+  - webhttp-services
+  - rest-api
+  - non-soap
   - wcf-webhttp-services
-  - csharp
-  - dotnet
-  - linq
-  - wcf
-  - windows-forms
-  - xml
-  - rest
-  - json
-  - http
-  - generics
-  - visual-studio
-  - rc
 ---
 Sanırım pek çoğumuz piyangodan veya diğer şans oyunlarından kendilerine tonlarca para çıksa ne yapacağını düşünmüş veya hayal etmiştir. Açıkası kendi adıma hayat etmediğimi dile getirsem yalan söylemiş olurum. Ancak ben pek çoğumuz gibi yan yana bir kaç Ferrari'yi dizmektense bir kaç yere yatırım yapmayı hayal etmişimdir hep. Örneğin dünyanın sayılı bir kaç futbol kulübünün (Barcelona, Manchester United vb...) ve yazılım şirketinin (Microsoft, IBM vb...) hisselerinden satın alır ve şöyle güzel bir fon sepeti oluştururum. Neyse...Sözü niye piyangodan açtığımıza gelince...
 

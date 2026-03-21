@@ -5,11 +5,8 @@ date: 2005-03-27 09:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
-  - csharp
-  - dotnet
-  - performance
-  - transactions
+  - ado.net
+  - sqlcommand
 ---
 Bu makalemizde, Command nesnelerini kullanırken performans arttırıcı, kod okunurluğunu kolaylaştırıcı, güvenlik riskini azaltıcı etkenler üzerinde duracağız ve bu kazanımlar için gerekli teknikleri göreceğiz. Örneklerimizi SqlCommand sınıfına ait nesneler üzerinden geliştireceğiz. Bildiğiniz gibi Command nesneleri yardımıyla veritabanına doğru yürütmek istediğimiz sorguları çalıştırmaktayız. Bu sorgular basit Select, Insert, Update, Delete sorguları olabileceği gibi saklı yordamlar (Stored Procedures) veya tablolarda olabilir.
 

@@ -6,8 +6,9 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - tek-fotoluk-ipucu
-  - linq
-  - http
+  - language-integrated-query
+  - excel
+  - csharp
 ---
 Zaman zaman siz de benim gibi LINQ ile yazılmış çeşitli Provider'lara şöyle bir göz gezdirenlerden misiniz?
 

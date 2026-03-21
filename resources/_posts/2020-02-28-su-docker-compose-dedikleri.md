@@ -5,24 +5,16 @@ date: 2020-02-28 20:23:00 +0300
 categories:
   - dotnet-core
 tags:
-  - dotnet-core
-  - bash
-  - javascript
-  - csharp
-  - yaml
-  - dotnet
-  - aspnet
-  - linq
-  - postgresql
-  - json
-  - web-api
-  - http
   - docker
-  - python
   - nodejs
-  - caching
-  - generics
-  - github
+  - python
+  - flask
+  - .net-core
+  - express
+  - csharp
+  - javascript
+  - yaml
+  - yml
 ---
 Önceki çalışmalardan [birisinde](/2020/07/22/yine-yeni-yeniden-elk-bu-sefer-e-ve-k-icin-docker-compose-isin-icinde/) ELK kurgusunda ElasticSearch ve Kibana tarafı için docker compose'dan yararlanmıştım. Orada iş nispeten daha kolaydı. Var olan docker imajlarını bir kompozisyon çerçevesinde düşünerek ele almıştım. Ama kendi servislerimizden oluşan bir kompozisyon gerekirse nasıl bir yol izlenebilir merak da ediyordum. İşte yılın o vakitleri bunu öğrenmeye çalışmışım.
 

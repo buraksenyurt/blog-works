@@ -5,17 +5,9 @@ date: 2012-09-18 05:50:00 +0300
 categories:
   - wcf-4-5
 tags:
-  - wcf-4-5
-  - csharp
-  - dotnet
-  - wcf
-  - xml
-  - web-service
-  - http
-  - iis
-  - authentication
-  - generics
-  - visual-studio
+  - windows-communication-foundation
+  - wsdl
+  - singlewsdl
 ---
 Daha dün gibi hatırlıyorum. Windows Communication Foundation 4.0 ile gelen yenilikleri inceliyor, öğrendiklerimi derhal bloğumda paylaşıyordum. Zaman ya çok hızlı akıyor ya da Microsoft zamanın önünde koşuyor
 

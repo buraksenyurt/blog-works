@@ -5,10 +5,11 @@ date: 2012-02-04 00:00:00 +0300
 categories:
   - nedirtv
 tags:
-  - nedirtv
+  - webcast
   - entity-framework
-  - http
-  - webinar
+  - code-first-development
+  - dbcontext
+  - nuget
 ---
 Hatırlayacağınız üzere Ocak ayı içerisinde [Nedirtv?com](http://www.nedirtv.com) bünyesinde düzenlenen Webinerler arasında ben de Entity Framework-Code First Development ile kendime bir yer edinmiştim. İlk gerçekleştirdiğimiz Webinerimizde ne yazıkki Internet bağlantısında yaşadığımız şanssız sorunlar nedeni ile sağlıklı olarak ilerleyememiştik
 

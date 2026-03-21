@@ -5,23 +5,14 @@ date: 2014-01-16 16:36:00 +0300
 categories:
   - wpf
 tags:
-  - wpf
-  - xml
-  - javascript
   - csharp
-  - dotnet
-  - aspnet
-  - linq
-  - windows-forms
-  - xaml
-  - soap
-  - rest
-  - json
-  - web-api
-  - web-service
-  - http
-  - async-await
-  - generics
+  - rest-api
+  - lyrics-wikia
+  - wikia
+  - webrequest
+  - webresponse
+  - httpwebrequest
+  - httpwebresponse
 ---
 Geçtiğimiz gün standart olarak Youtube üzerinden gerek 80ler, gerek 90lara ait iz bırakan sanatçıları ve şarkılarını izlemekteydim. Çok sık yaptığım şeylerden birisi de bu şarkıları sosyal ağda paylaşmak aslında. Ama bazende şarkıların melodileri dışında sözlerini de mırıldanmaktayım kendi kendime, ki pek çoğumuzun bunu sıkça yaptığından eminim
 

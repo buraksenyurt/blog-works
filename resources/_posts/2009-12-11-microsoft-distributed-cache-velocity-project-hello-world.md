@@ -6,17 +6,9 @@ categories:
   - velocity-project
   - windows-server-appfabric
 tags:
-  - velocity-project
+  - velocity
+  - microsoft-distributed-cache
   - windows-server-appfabric
-  - xml
-  - csharp
-  - dotnet
-  - aspnet
-  - windows-forms
-  - http
-  - concurrency
-  - caching
-  - visual-studio
 ---
 Bazen bir otomobilin çok hızlı gitmesi, yüksek süratlere çıktığında direksiyonunun titrememesi, yolda sağa sola savrulmaması, keskin virajlarda rahatlıkla tutunabilmesi, vitesler arasındaki geçişlerde torkunun mümkün olduğunca korunabilmesi, frenajlarda kontrolü sağlaması vb... istenir. Yarış otomobillerinde bu ve benzeri ihtiyaçlar için çok sık duyduğumuz tunning olarak isimlendirilen geliştirmeler yapılır. Bazen yarışın kategorisine göre neredeyse teknolojinin sınırlarını zorlayacak yeniliklere şahit olunur. Ama özetle aracın performansını arttıracak her yol, kuralları çerçevesinde mübahtır.
 

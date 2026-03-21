@@ -5,11 +5,8 @@ date: 2003-11-12 12:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
-  - csharp
-  - sql-server
-  - http
-  - performance
+  - asp.net
+  - stored-procedures
 ---
 Bugünkü makalemde sizlere bir Web Sayfası üzerinde, bir tablonun belli bir satırına ait detaylı bilgilerin, bir Stored Procedure yardımıyla nasıl gösterileceğini anlatmaya çalışacağım. Uygulamamızda örnek olması açısından, Kitap bilgileri barındıran bir Sql tablosu kullanacağım. Tablomuzun yapısını aşağıdaki Şekil 1’ de görebilirsiniz. Temel olarak, kitap isimlerini, kitapların kategorilerini, yazar isimlerini, basım evi bilgilerini vb… barındıran bir tablomuz var. Bu tablonun örnek verilerini de Şekil2’ de görebilirsiniz.
 

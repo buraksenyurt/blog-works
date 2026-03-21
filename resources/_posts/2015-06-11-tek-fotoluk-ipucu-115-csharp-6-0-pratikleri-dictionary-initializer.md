@@ -5,8 +5,11 @@ date: 2015-06-11 12:09:00 +0300
 categories:
   - tek-fotoluk-ipucu
 tags:
-  - tek-fotoluk-ipucu
+  - csharp
   - generics
+  - Dictionary,
+  - initializer
+  - ilasm
 ---
 Bir [önceki tek fotoluk ipucunda](https://www.buraksenyurt.com/admin/app/editor/post/tek-fotoluk-ipucu-114-c-6-0-pratikleri-expression-bodied-function1) belirttiğimiz üzere C# 6.0 ile dile kazandırılan bazı kabiliyetler kodun kolay okunabilir olması açısında önem arz ediyorlar. Örneğin generic bir Dictionary koleksiyonunu örneklemek için aşağıdaki fotoğrafta görülen yeni yazım dizimini kullanabiliyoruz. Daha okunabilir ve anlaşılır olduğu şüphesiz.
 

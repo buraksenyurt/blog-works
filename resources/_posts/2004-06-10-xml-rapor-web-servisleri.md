@@ -5,17 +5,8 @@ date: 2004-06-10 12:00:00 +0300
 categories:
   - xml-web-services
 tags:
-  - xml-web-services
-  - csharp
-  - dotnet
-  - aspnet
-  - sql-server
-  - xml
-  - soap
-  - web-service
-  - http
-  - visual-studio
-  - asmx
+  - xml-web-service
+  - report-services
 ---
 Bu makalemizde, Crystal Report'ların birer web servisi olarak nasıl yayınlanacaklarını ve istemciler tarafından kullanılacaklarını kısaca incelemeye çalışacağız. Hepimizin bildiği gibi Web Servislerinin günümüz teknolojilerine getirdiği en büyük yenilik, merkezileştirilmiş metodların, herhangibir platformda yer alan sayısız istemci tarafından, hiç bir engele yada kısıtlamaya takılmadan kolayca çağırılabilmeleri ve sonuçların aynı yollar ile kolayca sorunsuz elde edilebilmeleridir. Öyleki, web servislerinin XML tabanlı olarak, SOAP protokolünün belirlediği kriterlerde HTTP gibi basit iletişim protokolleri üzerinden anlaşmayı desteklemesi, onların esnek, genişleyebilir, kolay erişilebilir ve popüler olmalarını sağlamıştır.
 

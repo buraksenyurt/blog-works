@@ -5,18 +5,8 @@ date: 2007-12-10 12:00:00 +0300
 categories:
   - aspnet-2-0
 tags:
-  - aspnet-2-0
-  - xml
-  - csharp
-  - dotnet
-  - aspnet
-  - linq
-  - http
-  - iis
-  - authentication
-  - caching
-  - visual-studio
-  - datatable
+  - asp.net
+  - http-handler
 ---
 Uzun zaman önce Asp.Net 2.0 ile ilişkili makalelerimizden birisinde HttpHandler ve HttpModule kavramlarından bahsetmeye çalışmıştık. Bu makalemizde kendi Handler sınıfımızı geliştirmek isteyebileceğimiz örnek bir senaryo üzerinde daha durmaya çalışacağız. Bu sayede HttpHandler sınıfları yazarak neler yapılabileceğinide daha net bir şekilde görmüş olacağız. Konuyu daha net kavrayabilmek adına örnek senaryomuz üzerinden adım adım ilerleyeceğiz.
 

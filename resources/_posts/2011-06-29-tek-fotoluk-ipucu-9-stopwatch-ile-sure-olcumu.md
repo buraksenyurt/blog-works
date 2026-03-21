@@ -7,9 +7,9 @@ categories:
   - csharp-4-0
   - tek-fotoluk-ipucu
 tags:
-  - dotnet-framework-4-0
-  - csharp-4-0
-  - tek-fotoluk-ipucu
+  - csharp
+  - .net-framework
+  - stopwatch
 ---
 Bazen yazdığımız kod parçalarının işlem sürelerini hesaplama ihtiyacı duyarız. Bu anlamda en çok kullanılan yöntemlerden birisi DateTime ve TimeSpan tiplerini ele almakta iken gerçekte en efektif olanı Stopwatch sınıfını değerlendirmektir. Nasıl mı?
 

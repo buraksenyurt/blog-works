@@ -7,8 +7,8 @@ categories:
 tags:
   - tek-fotoluk-ipucu
   - json
-  - serialization
-  - generics
+  - datacontractjsonserializer
+  - extension-methods
 ---
 Diyelimki generic T tipine yazacağınız bir Extension metod ile, JSON formatında serileştirme işlemi yaptırmak ve serileştirme sonucunuda string olarak geriye döndürmek istiyorsunuz. Ne yaparsınız? Aşağıdaki fotoğraf bir ip ucu verebilir mi?
 

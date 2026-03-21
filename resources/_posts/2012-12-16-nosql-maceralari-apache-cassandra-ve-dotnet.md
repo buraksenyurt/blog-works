@@ -6,17 +6,10 @@ categories:
   - nosql
 tags:
   - nosql
-  - csharp
-  - dotnet
-  - sql-server
-  - oracle
-  - mongodb
-  - cassandra
-  - redis
-  - xml
-  - http
-  - java
-  - performance
+  - apache-cassandra
+  - .net
+  - nuget
+  - not-only-sql
 ---
 Size bu günkü makale konumuzun yanda fotoğrafı görülen model (youtube modeli de diyebiliriz) Cassandra Bankson ile alakalı olduğunu söylemek isterdim ama yakınlarından bile geçmeyeceğiz. (Zaten araştırırsanız aslında makyaj bidonu ile bu hale geldiğini keşfedeceksiniz) Başlıktan da anlayacağınız üzere bu günkü yazımızın konusu.Net plaftormunda Apache Cassandra’ yı kullanmak.
 

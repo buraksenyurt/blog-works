@@ -5,13 +5,8 @@ date: 2004-12-18 12:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
-  - csharp
-  - dotnet
-  - aspnet
-  - sql-server
-  - t-sql
-  - datatable
+  - ado.net
+  - sql-server-full-text-search
 ---
 Bu makalemizde, Sql sunucu üzerindeki tablolarda text tabanlı arama işlemlerinin, Full-Text Searching (Tüm Metinde Arama) servisi yardımıyla nasıl gerçekleştirildiğini incelemeye çalışacağız. Konunun pekişmesi açısından basit bir web uygulması ile de bu hizmeti kullanıp text tabanlı arama işlemlerini irdelemeye çalışacağız. Özellikle dikkatinizi çekmiştir ki, internette yer alan pek çok arama motoru aradığımız kelimelerin geçtiği web sayfalarını bulup bize getirir. Çoğunlukla arama motoruna kayıtlı web sayfasının içeriğinde yapılan text tabanlı aramalar da Full-Text Searching (Tüm Metinde Arama) hizmetinden faydalanılır. Bu tip bir arama genellikle alanları içerisinde çok geniş text tabanlı içeriğe sahip olan tablolar üzerinde yapılmaktadır. Sql sunucusu, 7.0 versiyonundan itibaren bu hizmeti vermeye başlamıştır. Elbetteki arama işleminin gerçekleştirilebilmesi için Full-Text Searching (Tüm Metinde Arama) servisinin Sql sunucusunda yüklü olması gerekmektedir.
 

@@ -6,6 +6,11 @@ categories:
   - csharp
 tags:
   - csharp
+  - ado.net
+  - ado
+  - provider
+  - oledb
+  - enums
 ---
 Malumunuz büyük çaplı sistemler kolay kolay yenilenmiyorlar. Ancak teknolojik gereklilikler ve değişen ihtiyaçlar ister istemez bu yaşayan organizmaların yeni sunucular üzerinde hayata devam etmelerini gerektirebiliyor. Yeniden yazma maliyetlerinin yüksek olduğu durumlarda var olan sistemin kullandığı pek çok bileşenin de bu sunucular ile uyumlu olması gerekiyor (bekleniyor). Uyumlu olmayanların yerine geçici çözümler uygulanıyor. Tabii mümkün mertebede. Bazen yeni sunuculara taşınan sistem üzerinde yıllardır yaşamını sürdüren C,C++ gibi derlendikten sonra pek de geri çevrilip içeriği görülemeyeccek kodlar da söz konusu oluyor. Böyle bir durumla karşı karşıya kalırsanız vay halinize. Ben ve değerli ekip arkadaşım bu durumdam çok çektik.
 

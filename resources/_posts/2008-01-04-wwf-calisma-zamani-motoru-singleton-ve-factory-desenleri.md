@@ -5,17 +5,9 @@ date: 2008-01-04 12:00:00 +0300
 categories:
   - wf
 tags:
-  - wf
-  - csharp
-  - dotnet
-  - aspnet
   - workflow-foundation
-  - wpf
-  - threading
-  - performance
-  - transactions
-  - delegates
-  - visual-studio
+  - singleton
+  - factory
 ---
 Bir önceki makalemizde iş akışı (Workflow) kavramını anlamaya çalışmış, Windows Workflow Foundation (WWF) mimarisini yüzeysel olarak incelemiş ve basit bir kaç Sequential Workflow örneği geliştirmiştik. Bu makalemizde ise WWF mimarisinin sunduğu çalışma zamanı ortamını derinlemesine kavramaya çalışacağız. Ağırlıklı olarak üzerinde durmaya çalışacağımız konu ise WorkflowRuntime sınıfı olacak.
 

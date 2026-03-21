@@ -6,8 +6,11 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - tek-fotoluk-ipucu
-  - dotnet
-  - aspnet
+  - asp.net
+  - fileupload
+  - allow-multiple
+  - multiple-file-upload
+  - postedfiles
 ---
 Asp.Net 4.5 ile FileUpload kontrolüne gelen iki önemli özellik (Property) mevcuttur. Bunlardan birisi AllowMultiple, diğeri ise PostedFiles’ dır. Bu iki özelliği kullanarak birden fazla dosyanın, istemciden sunucu tarafına yüklenme işlemlerini (Multiple Upload Files) kolayca ele alabilirsiniz. Nasıl mı? Buyrun
 

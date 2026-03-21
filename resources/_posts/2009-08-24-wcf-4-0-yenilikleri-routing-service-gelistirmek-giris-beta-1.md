@@ -5,13 +5,10 @@ date: 2009-08-24 06:15:00 +0300
 categories:
   - wcf-4-0-beta-1
 tags:
-  - wcf-4-0-beta-1
-  - dotnet
-  - wcf
-  - xml
-  - soap
-  - http
-  - iis
+  - windows-communication-foundation
+  - router
+  - soa
+  - service-oriented-architecture
 ---
 Servis Yönelimli Mimari (Service Oriented Architecture) çözümlerinde zaman zaman yönlendirme amaçlı servislerin yazılması gerekmektedir (Router Service). Bu servislerin genel kullanım amacı çoğunlukla, istemcilerden gelecek olan talepleri değerlendirip asıl işi yapacak olan servislere devretmek ile ilişkilidir.
 
@@ -27,7 +24,7 @@ WCF tarafında Routing Service geliştirilmesi hangi durumlarda tercih edilir?
 - Versiyonlama senaryolarında.
 - İstemciler ve yönlendirilen servisler arasında bir güvenlik geçidi kurulmak istendiğinde (ki bu geçit genellikle DMZ-demilitarized zone arkasında asıl servislere olan akışı güvenlik kontrolüne alır).
 
-WCF 3.X tarafında yönlendirme servisi geliştirebilmek için belirli kodlama eforu sarfetmek gerekirken (ki bu konuda daha önceden yayınladığım bir [yazımı](https://www.buraksenyurt.com/post/WCF-Front-End-Service-Gelistirmek.aspx)incleyebilirsiniz), WCF 4.0 tarafında bu işlemler belirli tipler ve konfigurasyon özellikleri ile one-way,two-way ve duplex iletişim seviyesinde olduçka kolaylaştırılmıştır. WCF 4.0 tarafında System.ServiceModel.Routing assembly'ı içerisinde yine aynı adlı isim alanında yer alan RoutingService isimli sınıf, söz konusu yönlendirme servisi için gerekli çalışma zamanı ortamının hazırlanmasını sağlamakta ve ayrıca istemci taleplerinin filtrelenerek uygun alt servislere aktarılmasında önemli bir rol oynamaktadır.
+WCF 3.X tarafında yönlendirme servisi geliştirebilmek için belirli kodlama eforu sarfetmek gerekirken (ki bu konuda daha önceden yayınladığım bir [yazımı](/2008/01/30/front-end-service-gelistirmek/)incleyebilirsiniz), WCF 4.0 tarafında bu işlemler belirli tipler ve konfigurasyon özellikleri ile one-way,two-way ve duplex iletişim seviyesinde olduçka kolaylaştırılmıştır. WCF 4.0 tarafında System.ServiceModel.Routing assembly'ı içerisinde yine aynı adlı isim alanında yer alan RoutingService isimli sınıf, söz konusu yönlendirme servisi için gerekli çalışma zamanı ortamının hazırlanmasını sağlamakta ve ayrıca istemci taleplerinin filtrelenerek uygun alt servislere aktarılmasında önemli bir rol oynamaktadır.
 
 > Not:.Net Framework Beta 1 sürümünde RoutingService olarak geçen yönlendirme sınıfı çeşitli internet kaynaklarında (örneğin [Michele Leroux Bustamante'](http://www.aspnetpro.com/articles/2009/05/asp200905mb_f/asp200905mb_f.asp)nin bloğunda) RouterService olarak geçmektedir. Dolayısıyla final sürümde servisin adında farklılıklar olabilir. Örneklerimizi.Net Framework Beta 1 üzerinde geliştirdiğimizi hatırlatmak isterim.
 

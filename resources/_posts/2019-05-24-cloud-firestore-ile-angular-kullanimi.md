@@ -5,15 +5,12 @@ date: 2019-05-24 09:00:00 +0300
 categories:
   - angular
 tags:
+  - google-cloud-platform
   - angular
-  - bash
-  - xml
-  - javascript
-  - nosql
-  - json
   - typescript
-  - concurrency
-  - github
+  - cloud-firestore
+  - nosql
+  - realtime-database
 ---
 Earvin (Magic) Johnson. Michael Jordan'la geçen gençlik yıllarımın henüz başlarında rastladığım NBA'in ve Los Angles Lakers'ın 2.06lık unutulmaz oyun kurucusu. O dönemlerde yaptığı inanılmaz assistler ve oyun zekası hala aranır nitelikte. Aslında sadece oyun kurucu değil zaman zaman şutör gard ve uzun forvet pozisyonlarında da oynamıştır.
 

@@ -5,16 +5,8 @@ date: 2007-02-21 10:00:00 +0300
 categories:
   - linq
 tags:
-  - linq
   - csharp
-  - dotnet
-  - t-sql
-  - wcf
-  - workflow-foundation
-  - wpf
-  - xml
-  - xaml
-  - generics
+  - language-integrated-query
 ---
 Bu günlerde hepimiz.Net Framework 3.0 ve getirileri üzerine yoğunlaşmış durumdayız. Özellikle mimari anlamda yapılan köklü değişimler söz konusu. Bu köklü değişiklikler; Windows uygulamalarının yeni yüzü olan WPF (Windows Presentation Foundation) ve XAML (eXtensible Application Markup Language), dağıtık mimariyi tek çatı altında toplamayı başaran WCF (Windows Communication Foundation), akış şemaları ve iş süreçlerinin.Net plaformuna dahil edilmesini sağlayan WF (Workflow Foundation) ve CardSpace olarak sıralanabilir. Ancak bunların dışında Microsoft'un gelecek vizyonu içerisinde yer alan en önemli konulardan biriside C# 3.0 konusudur. Bildiğiniz gibi C#, sıfırdan geliştirilmiş ve atası olan nesne yönelimli dillerin en iyi özelliklerini bünyesinde birleştirerek bunu güçlü bir Framework üzerinde kullanabilmemizi sağlayan bir dildir. Zaman içerisinde C# 2.0 ile gelen yenilikler şu anda tüm C# geliştiricilerin hayatının bir parçası haline gelmiştir. Şimdi herkesin gözü C# 3.0 üzerinde.
 

@@ -6,21 +6,9 @@ categories:
   - ado-net-data-services
   - wcf
 tags:
-  - ado-net-data-services
-  - wcf
-  - csharp
-  - dotnet
-  - aspnet
-  - ado-net
-  - entity-framework
-  - linq
-  - sql-server
-  - workflow-foundation
-  - silverlight
-  - rest
-  - http
-  - performance
-  - visual-studio
+  - ado.net-data-services
+  - windows-communication-foundation
+  - rest-api
 ---
 Gün geçmiyorki yazılım teknolojilerinde bir yenilik, bir güncelleme, bir genişletme çıkmasın...Özellikle dünyanın dev yazılım şirketlerinin en büyüğü olarak görebileceğimiz Microsoft tarafında bu gelişme ve güncelleme hızı oldukça yüksek. Gerçektende heyecan verici yenilikler, özellikler ile karşılaşmıyor değiliz. Bu konuya nereden mi geldim?
 

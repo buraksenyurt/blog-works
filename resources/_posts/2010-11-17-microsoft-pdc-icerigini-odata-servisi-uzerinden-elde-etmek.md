@@ -5,13 +5,10 @@ date: 2010-11-17 22:18:00 +0300
 categories:
   - wcf-data-services
 tags:
+  - windows-communication-foundation
+  - odata
   - wcf-data-services
-  - csharp
-  - linq
-  - wcf
-  - wpf
-  - silverlight
-  - http
+  - open-data-protocol
 ---
 Bildiğiniz üzere bir süre önce Microsoft PDC 2010 etkinlikleri gerçekleştirildi. Online olaraktan da canlı izleyebildiğimiz sunumlarda Microsoft’ un çok değerli sunumlarına ve anlatımlarına şahit olduk. Her PDC konferansında olduğu gibi bu sene yapılan etkinliklere ait görüntü kayıtları, Download edilmeye açıldıkları andan itibaren de ilgi odağı oldular
 

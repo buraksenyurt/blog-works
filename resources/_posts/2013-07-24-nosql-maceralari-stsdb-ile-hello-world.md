@@ -6,15 +6,9 @@ categories:
   - nosql
 tags:
   - nosql
-  - csharp
-  - dotnet
-  - linq
-  - ravendb
-  - cassandra
-  - http
-  - transactions
-  - generics
-  - rc
+  - sts-db
+  - key-value-storage
+  - not-only-sql
 ---
 [Matrix Reloaded'](http://en.wikipedia.org/wiki/The_Matrix_Reloaded) ı seyrettiğim zamanları düşündüğümde, anımsadıklarım arasında heyecanlı aksiyon sahnelerinde yer alan ve eski Amerikan stilini de yansıtan kocaman otomobiller vardı. (Hatta bildiğim kadarı ile ikinci dünya savaşı sonrası çelik stoklarının fazlalığı nedeniyle Amerikan otoları hep kocaman olmuşlardı)
 

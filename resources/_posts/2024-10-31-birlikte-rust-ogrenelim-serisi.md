@@ -1,4 +1,4 @@
-﻿---
+---
 layout: post
 title: "Birlikte Rust Öğrenelim Serisi"
 date: 2024-10-31 06:28:00 +0300
@@ -6,17 +6,8 @@ categories:
   - rust
 tags:
   - rust
-  - async-await
-  - threading
-  - concurrency
-  - generics
-  - testing
-  - github
-  - mutex
-  - ownership
-  - refcell
-  - rc
-  - arc
+  - rust-lang
+  - online-ders
 ---
 Uzun zamandır vakit buldukça Rust programlama diliyle uğraşıyorum. Onu öğrenmenin, öğrendiklerimi pekiştirmenin en iyi yollarından birisi de bildiklerimi anlatmak, geri bildirim almak ve daha iyisi için uğraşmak. Bu amaçla değişken türlerinin ele alındığı Hello World uygulaması ile başlayan ve aşağıdaki içeriğie sahip olan "Birlikte Rust Öğrenelim" isimli bir video serisi hazırladım. İş sahasında C# programlama dilini kullandığım için yer yer kıyaslamalar yapmaya, örneklerde gerçek hayat senaryolarını baz almaya gayret ettim.
 

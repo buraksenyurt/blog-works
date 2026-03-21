@@ -6,9 +6,9 @@ categories:
   - entity-framework
 tags:
   - entity-framework
-  - csharp
-  - linq
-  - http
+  - eager-loading
+  - lazy-loading
+  - explicit-loading
 ---
 Şöyle basit tek bir Main metodu içerisinde, Entity Framework'teki Loading çeşitlerini görmek ister miydiniz?
 

@@ -7,20 +7,13 @@ categories:
   - wcf-4-5
   - wcf-webhttp-services
 tags:
-  - wcf
-  - wcf-4-5
-  - wcf-webhttp-services
-  - csharp
-  - xml
-  - dotnet
-  - aspnet
-  - windows-forms
-  - rest
+  - windows-communication-foundation
+  - web-http-services
+  - rest-api
   - json
-  - http
-  - iis
-  - javascript
-  - generics
+  - jquery
+  - ajax
+  - cors
 ---
 Bir süredir şirket içerisinde kullanılacak olan web tabanlı bir.Net uygulamasının geliştirilmesinde görev almaktayım. Uygulama, yürütülen süreç gereği her iterasyon sonunda yeni özellikler eklenmiş ve hataları giderilmiş biçimde Üretim (Production) ortamına taşınmakta.
 

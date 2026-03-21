@@ -5,26 +5,9 @@ date: 2008-10-06 12:00:00 +0300
 categories:
   - ado-net-data-services
 tags:
-  - ado-net-data-services
-  - csharp
-  - dotnet
-  - ado-net
-  - linq
-  - wcf
-  - wpf
-  - windows-forms
-  - silverlight
-  - xml
-  - soap
-  - rest
-  - json
-  - web-service
-  - xml-web-services
-  - http
-  - javascript
-  - performance
-  - generics
-  - visual-studio
+  - ado.net-data-services
+  - wcf-data-services
+  - windows-communication-foundation
 ---
 Hatırlayacağınız gibi daha önceki iki ders notumuzda Ado.Net Data Service örneklerinin nasıl geliştirilebileceğini incelemeye çalışmıştık. Hatırlatmak gerekirse, Ado.Net Data Service'ler ile verilerin Entity Data Model (EDM) veya Custom LINQ Provider bazlı katmanlar üzerinden REST modeline göre sunulması mümkün olmaktadır. Bu noktada söz konusu servislerin WCF'in REST modelini kullanan ve Ado.Net üzerine odaklanmış bir açılımı olduğu görüşünde hem fikir olabiliriz. Ne varki Servis Yönelimli Mimari (Service Oriented Architecture-SOA) temelli çözümlerde yap-bozun en önemli iki parçasını servis ve istemciler oluşturmaktadır. Bir başka deyişle, servislerin tamamlayıcısı olan ve ilgili hizmetleri kullanacak istemci uygulamalar (Client Applications) olmalıdır. İşte bu yazımızda istemci uygulamaları göz önüne alacağız.
 

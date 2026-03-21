@@ -6,7 +6,12 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - tek-fotoluk-ipucu
-  - wcf
+  - svcutil
+  - windows-communication-foundation
+  - contract-first-development
+  - wsdl
+  - xsd
+  - single-file-wsdl
 ---
 WCF 4.5 tarafında gelen yeniliklerden birisi de svcutil komut satırına eklenen servicecontract (ya da kısa haliyle sc) parametresidir. Bu parametre sayesinde bir WSDL dokümanından (ve beraberinde kullandığı XSD’ ler var ise onlardan) servis sözleşmesinin (Service Contract) elde edilebilmesi mümkündür. Tek yapmanız gereken aşağıdakine benzer şekilde sc parametresini kullanmanız olacaktır.
 

@@ -6,9 +6,9 @@ categories:
   - csharp
 tags:
   - csharp
-  - threading
-  - concurrency
-  - delegates
+  - thread
+  - multi-thread
+  - .net
 ---
 Bugünkü makelemiz ile birlikte threading kavramını en basit haliyle tanımaya çalışacağız. Sonraki makalelerimizde de threading kavramını daha üst seviyede işlemeye çalışacağız. Bugün hepimiz bilgisayar başındayaken aynı anda pek çok uygulamanın sorunsuz bir şekilde çalıştığını görürüz. Bir belge yazarken, aynı zamanda müzik dinleyebilir, internet üzerinden program indirebilir ve sistemimizin kaynaklarının elverdiği ölçüde uygulamayla eşzamanlı olarak çalışabiliriz. Bu bize, günümüz işlemcilerinin ve üzerlerinde çalışan işletim sistemlerinin ne kadar yetenekli oluğunu gösterir. Gösterir mi acaba?
 

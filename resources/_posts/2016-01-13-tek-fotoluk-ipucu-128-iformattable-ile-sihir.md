@@ -5,11 +5,11 @@ date: 2016-01-13 19:00:00 +0300
 categories:
   - csharp
 tags:
-  - csharp
-  - dotnet
-  - xml
+  - IFormattable
+  - interface
+  - plugin
   - json
-  - javascript
+  - newtonsoft
   - serialization
 ---
 Bildiğiniz üzere.Net Framework çatısı altında bir çok arayüz (Interface) vardır. Özellikle plug-in tabanlı geliştirmelerde sıklıkla başvurduğumuz bu arayüzleri zaman zaman inceliyor ve nerelerde kullanılabileceğine bakıyorum. Yine bu araştırmaları yaptığım bir gün IFormattable arayüzünün kullanımına ilişkin örnekler ile karşılaştım.

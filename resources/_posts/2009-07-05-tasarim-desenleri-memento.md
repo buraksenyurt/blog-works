@@ -5,7 +5,8 @@ date: 2009-07-05 20:45:00 +0300
 categories:
   - tasarim-kaliplari-design-patterns
 tags:
-  - tasarim-kaliplari-design-patterns
+  - design-patterns
+  - oop
   - csharp
 ---
 Sanıyorum yandaki resmi görenler Guy Pearce ve Carrie Anne Moss'un başrolde yer aldıkları bu filmi hatırlayacaklardır. Benimde favori klasiklerim arasında yer alan bu film, tersten ilerlemesi bir yana herşeyi unutan ve bazı kritik kuralları hatırlamak için dövemeler yaptırmak zorunda kalan bir adamın hikayesi ile ilgiliydi. Çok şükürki nesne yönelimli (Object Oriented) dillerde, önceki hallerinin hatırlanılması istenilen varlıklar için geliştiricilerin vücutlarına dövme yaptırmasına gerek yoktur.

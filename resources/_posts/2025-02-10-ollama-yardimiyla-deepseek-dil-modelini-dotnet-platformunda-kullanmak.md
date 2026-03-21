@@ -5,24 +5,14 @@ date: 2025-02-10 14:00:00 +0300
 categories:
   - csharp
 tags:
-  - csharp
-  - bash
-  - json
-  - dotnet
-  - http
-  - jwt
-  - docker
-  - openai
-  - llm
   - ollama
   - deepseek
-  - async-await
-  - performance
-  - generics
-  - debugging
-  - dependency-injection
-  - github
-  - dependency-management
+  - chatgpt
+  - genai
+  - csharp
+  - programlama
+  - large-language-model
+  - code-quality
 ---
 Geçtiğimiz günlerde Bursa Bilişim Topluluğu tarafından düzenlenen bir etkinliğe konuşmacı olarak katılma fırsatı buldum. Ben, yüksek kalite kodlama ve teknik borçlanma ile mücadele üzerine bazı tecrübelerimi paylaştım. Benden sonra sevgili dostum Bora Kaşmer (Coderbora) JWT token senaryolarında özellikle çok yüksek kullanıcı ve farklı cihazların kullanıldığı senaryolardaki olası güvenlik açıkları üzerine nasıl tedbirler uygulanabileceğini anlatan dikkat çekici bir sunum icra etti.
 

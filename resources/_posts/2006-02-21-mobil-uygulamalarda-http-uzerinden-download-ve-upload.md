@@ -6,10 +6,10 @@ categories:
   - windows-mobile
 tags:
   - windows-mobile
-  - csharp
-  - dotnet
   - http
-  - iis
+  - download
+  - upload
+  - smart-device
 ---
 Http protolokü yardımıyla internet üzerinden sunuclar ve istemciler arasında veri alış verişinde bulunmak mobil uygulamalarda çok işe yarayan bir tekniktir. Özellikle binary (ikili) formatta veri transferi için, Http ektili ve verimli bir protokol hizmeti sunar. Bu makalemizde mobil uygulamalar ile web sunucuları arasında veri transferi işlemlerini Http protokolüne göre nasıl yapabileceğimizi incelemeye çalışacağız.
 

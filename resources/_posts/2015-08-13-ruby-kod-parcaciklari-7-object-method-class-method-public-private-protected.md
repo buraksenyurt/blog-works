@@ -5,10 +5,13 @@ date: 2015-08-13 11:00:00 +0300
 categories:
   - ruby
 tags:
-  - ruby
-  - dotnet
-  - wcf
-  - workflow-foundation
+  - ruby-lang
+  - object-method
+  - public-key-token
+  - private
+  - protected
+  - attribute
+  - accessor
 ---
 Ruby sınıflarında farklı amaçlarla kullanılan metodlar mevcuttur. Serimiz boyunca pek çok çeşidini kullandık. Nesne örneklerini oluşturmak için initialize metodundan, sınıf varlığını String olarak yazmak için ezdiğimiz (override) to_s metodundan, sınıfa ait durum bilgisini taşıyan nitelikler (Attributes) için accessor'lardan vb...
 

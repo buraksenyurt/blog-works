@@ -5,14 +5,15 @@ date: 2016-02-22 14:00:00 +0300
 categories:
   - ruby
 tags:
-  - ruby
-  - bash
-  - dotnet
-  - aspnet
+  - tcpserver
+  - socket
+  - ruby-lang
+  - socket-programming
   - http
+  - http-header
+  - get
+  - tcp
   - iis
-  - caching
-  - asmx
 ---
 Web tabanlı çalışan uygulamalar genellikle IIS (Internet Information Services) ve benzeri ortamlar üzerinde barındırılırlar. Aslında IIS basitçe TCP soket haberleşmesi gerçekleştiren bir ürün olarak düşünülebilir. Üzerinde konuşlandırılan kaynaklara olan erişimde ise genellikle HTTP protokolü ve Get, Post vb metodları kullanılır. Gelen taleplere göre uygun servislerin devreye girmesi söz konusudur.
 

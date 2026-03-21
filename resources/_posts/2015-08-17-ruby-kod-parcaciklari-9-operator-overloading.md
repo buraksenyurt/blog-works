@@ -5,9 +5,8 @@ date: 2015-08-17 09:00:00 +0300
 categories:
   - ruby
 tags:
-  - ruby
-  - dotnet
-  - workflow-foundation
+  - ruby-lang
+  - operator-overloading
 ---
 Neredeyse her programlama dilinin öğrenilirken çalışana sıkıcı gelen bölümleri muhakkak vardır. Sanıyorum o dildeki operatörler bunların başında gelir. Ancak nesne yönelimli bir dil öğreniyorsak, kullanıcı tanımlı tipler için operatörlerin yeniden programlanması gerektiğini de er geç fark ederiz. Bu nedenle operatorlerin kendi tiplerimiz (User Defined Class) olması halinde yeniden nasıl yükleneceğini bilmemiz gerekir.
 

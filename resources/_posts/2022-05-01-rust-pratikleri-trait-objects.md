@@ -6,14 +6,13 @@ categories:
   - rust
 tags:
   - rust
-  - bash
-  - csharp
-  - windows-forms
-  - pointers
-  - generics
-  - github
-  - rc
-  - arc
+  - rust-lang
+  - trait
+  - trait-objects
+  - dyn
+  - dynamic-dispatch
+  - plugin
+  - box
 ---
 Bir windows forms uygulamasını ya da bir web sayfasını düşünelim. Hatta birden fazla bileşenden (component) oluşan bir mobil uygulama arayüzünü...Temelde ana kontrol üstüne eklenen başka tekil ve karma bileşenlerden oluşan bir bütün söz konusudur. Şimdi de ana saha üzerine gelen bu kontrollerin nasıl çizildiğini, hangi sırayla eklendiklerini düşünelim. Bir çalışma zamanı motoru büyük ihtimalle belli ortak davranışlara sahip olan bileşenleri, ortamın istediği kıvamda (örneğin HTML olarak) çizme görevini üstlenir. Hatta bu sistemlerde bileşen ağacı öyle bir tasarlanır ki, geliştiriciler isterlerse kendi bileşenlerini de tasarlayıp çalışma zamanı motorunun kullanımına sunabilir.
 

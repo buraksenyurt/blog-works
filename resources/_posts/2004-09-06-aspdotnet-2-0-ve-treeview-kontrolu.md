@@ -5,11 +5,8 @@ date: 2004-09-06 12:00:00 +0300
 categories:
   - aspnet-2-0
 tags:
-  - aspnet-2-0
-  - xml
-  - csharp
-  - dotnet
-  - aspnet
+  - asp.net
+  - treeview
 ---
 Bu makalemizde, Asp.Net 2.0 ile birlikte gelen yeni kontrollerden birisi olan TreeView kontrolü ile, özellikle Xml tabanlı veri kaynaklarına ait bilgilerin, internet ortamında hiyerarşik bir yapıda nasıl gösterilebileceğini incelemeye çalışacağız. Bir önceki makalemizden hatırlayacağınız gibi, site içinde son kullanıcıya akıllı navigasyon hizmeti sunabilmek için sitemap dosyalarından faydalanabileceğimizi ve bu dosyalara ait Xml içeriğinin, SiteMapPath kontrolü ile sayfalarımızda gösterilebileceğinden bahsetmiş ve basit bir örnek geliştirmiştik. Benzer işlevselliğe TreeView kontrolü yardımıyla daha kuvvetli bir biçimde sahip olabiliriz.
 

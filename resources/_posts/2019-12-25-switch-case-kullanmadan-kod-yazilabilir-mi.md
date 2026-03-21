@@ -5,12 +5,15 @@ date: 2019-12-25 10:00:00 +0300
 categories:
   - csharp
 tags:
+  - sonarqube
+  - strategy-design-pattern
+  - design-patterns
+  - tasarım-kalıpları
   - csharp
-  - redis
-  - rabbitmq
-  - concurrency
-  - generics
-  - dependency-management
+  - solid
+  - open-closed-principle
+  - software-design-principle
+  - behavioral-design-patterns
 ---
 İnsanoğlu yağmurlu bir pazar günü evden çıkıp ne yapacağını bilemezken ne hakla ölümsüzlükten bahseder. Bir yazara ait olan bu cümleyi sevgili Serdar Kuzuloğlu'nun yakın zamanda izlediğim söyleşisinden not almışım. İnsanlığın ömrünü uzatmaya çalışması ile ilgili bir konuya atıfta bulunurken ifade etmişti. Oysa karşımızda duran ekolojik denge ve iklim problemleri, yakın gelecekte (2025 deniyor) dünya nüfusunun 1 milyar 250 milyon kadarının içilebilir su kaynaklarına erişemeyeceğini işaret etmekte. Lakin bundan etkilenmeyecek olan ve asıl ömrünü uzatmak isteyen dünya nüfusunun en zengin %1i, söz konusu kıtlığın yaratacağı sorunlardan ve başka felaketlerden korunmak için kendisine dev sığınaklar inşa ediyor, adalar satın alıyormuş. Gerçekten anlaşılması çok zor ve bir o kadar da karmaşık bir durum değil mi? Bu distopik senaryo bir kenara dursun biz geleceğin iyi şeyler getireceğini ümit ederek gelişmeye devam edelim.
 

@@ -5,8 +5,11 @@ date: 2018-10-01 09:08:00 +0300
 categories:
   - general
 tags:
-  - http
-  - nodejs
+  - matematik
+  - elo-rating
+  - node.js
+  - satranç
+  - chess
 ---
 Satranç oynamayalı yıllar olmuştur. Lise yıllarında kadim dostum Burak Gürkan ile karşılıklı maçlar yapardık. Kerata çok iyiydi. Maçları çoğunlukla kaybederdim ama yine de hoşuma giderdi onunla rekabet içerisine girmek (Bir ara arayayım da yine satranç oynayalım) Herhalde sevdiğimiz bir arkadaşımızla yapabileceğimiz en güzel aktivitelerden birisidir Satranç. Sebat etmek, stratejik düşünmek, saygı göstermek, kabullenmek, odaklanmak…Faydaları saymakla bitmez.
 

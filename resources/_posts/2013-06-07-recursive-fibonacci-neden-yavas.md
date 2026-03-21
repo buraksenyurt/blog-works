@@ -6,7 +6,17 @@ categories:
   - algoritma
   - csharp
 tags:
+  - recursive-method
+  - özyinelemeli-fonksiyonlar
+  - fibonacci
+  - factorial
+  - tree-view
+  - iteration
+  - performance
+  - math
+  - matematik
   - algoritma
+  - hanoi-towers
   - csharp
 ---
 Okulda “Algoritma ve Veri Yapıları” dersinde ya da C# benzeri nesne yönelimli (Object Oriented) bir dili öğrenmeye başladığımız ilk zamanlarda, karşımıza muhakkak Recursive fonksiyonlar çıkmıştır (Çıkmaya da devam edecektir). Hatta en meşhur olanları da, bir sayının faktöryelinin (6!=6x5x4x3x2x1=720 ve 0!=1) bulunması veya Fibonacci sayı dizisinin (0,1,1,2,3,5,8,13,21,34…, Fn=(Fn-1 (+(Fn-2)) ardışıl olarak ekrana yazdırılmasıdır.

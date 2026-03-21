@@ -5,18 +5,16 @@ date: 2017-10-18 14:29:00 +0300
 categories:
   - asp-dotnet-core
 tags:
-  - asp-dotnet-core
-  - bash
-  - csharp
-  - dotnet
-  - aspnet
-  - linq
+  - asp.net-core
+  - websockets
+  - web-socket
   - http
-  - javascript
-  - async-await
-  - concurrency
-  - generics
-  - github
+  - tcp
+  - duplex-communication
+  - signalr
+  - ws
+  - async
+  - await
 ---
 Meşhur ve özlenen telefon markası Nokia'nın o başarılı sloganını hatırlıyor musunuz?, "Nokia, connecting people":) İşte bugünkü konumuz da o jeneriği aratmayacak türden. "WebSockets, connecting applications."(Burayı o adamın ses tonu ile zihninizde canlandırın derim) Evet berbat bir giriş oldu ama olsun. Gelelim konumuza.
 

@@ -5,19 +5,7 @@ date: 2009-11-02 02:35:00 +0300
 categories:
   - wf-4-0-beta-2
 tags:
-  - wf-4-0-beta-2
-  - csharp
-  - xml
-  - linq
   - workflow-foundation
-  - xaml
-  - http
-  - threading
-  - concurrency
-  - delegates
-  - generics
-  - debugging
-  - visual-studio
 ---
 Hiç müzik dinlerken bir yandan da kod yazmayı denediniz mi? Üstelik çevre ile olan etkileşiminiz devam ederken söz gelimi hareketli bir parçayı tempo tutarak dinleyip ondan tamamen bağımsız bir şekilde geliştirmeye devam ederken yan masadaki arkadaşınızdan gelen "Dün akşamki maçı seyrettin mi?...Ronaldo ne gol attı öyle..." sorusuna da rakip takımın orta sahasını kattığınız bir yorumda bulunup diğer taraftanda kahve içtiğinizi düşünebilirsiniz.
 

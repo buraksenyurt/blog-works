@@ -6,15 +6,10 @@ categories:
   - wcf-eco-system
   - wcf-ria-services
 tags:
-  - wcf-eco-system
   - wcf-ria-services
-  - csharp
-  - dotnet
-  - aspnet
-  - linq
-  - wcf
-  - xml
-  - authorization
+  - .net-ria-services
+  - windows-communication-foundation
+  - wcf-eco-system
 ---
 Geçtiğimiz günlerde uzun süredir yemediğim şu meşhur Dunkin & Donuts'tan bir iki kurabiye almak istedim. Ansızın gelen bu dayanılmaz istek üzerine oturduğumuz semte en yakın dükkanına gidip hem kendim hemde eşim için bir kaç tane aldım. Sonrası malum...Yanında güzel bir kahve ve harika bir tat...Tattıları afiyetle mideye indirdikten sonra evde sessiz ve sakin bir ortamın olduğunu farkettim. Bizim azman ufaklık uyumuş ve gıkı bile çıkmıyorken, yorduğu eşim divanda mışıl mışıl sızmıştı.
 

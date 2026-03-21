@@ -5,24 +5,12 @@ date: 2026-03-13 19:31:00 +0300
 categories:
   - C#
 tags:
-  - C#
-  - YAML
-  - Bash
-  - JSON
-  - .NET
-  - Entity Framework
-  - EF Core
-  - PostgreSQL
-  - Web API
-  - HTTP
-  - Authentication
-  - Docker
-  - Async/Await
-  - Generics
-  - Testing
-  - Dependency Injection
-  - GitHub
-  - Dependency Management
+  - software-architecture
+  - onionArchitecture
+  - .net
+  - csharp
+  - yazılım-mimarileri
+  - hexagonalArchitecture
 ---
 Kurumsal uygulamaları göz önüne aldığımızda zaman içerisinde birçok yazılım mimarisinin ortaya çıktığını görüyoruz. Programlama dillerinin gelişimi, framework'lerin ortaya çıkması ve değişen müşteri ihtiyaçları sonucunda bu kavram çok daha büyük önem kazandı. Belki de her şey üç katmanlı (3-tier) yaklaşımla başlamıştı. Geldiğimiz zaman diliminde ise monolit sistemlerin modüler hale getirildiğiği Modulith'lerden mikro servislere, soğan halkaları benzetmesi ile popülerleşen Onion mimariden servis odaklı (Service-Oriented) yaklaşıma kadar birçok stil var. Bazı kaynaklarda yazılım mimarileri katmanlı (Layered) ve dağıtık sistemler (Distributed) olmak üzere iki ana kategoriye ayrılmakta. Üzerinde uzun uzun konuşulacak olan bu kavramları elbette deneyimleyerek görmek en güzeli. Bende bir süredir bakmak istediğim Hexagonal mimari yaklaşımını öğrenmeye karar verdim ve işte karşınızdayım. Gelin.net platformunda bu mimariyi çok temel seviyede de olsa uygulamalı olarak anlamaya çalışalım.
 

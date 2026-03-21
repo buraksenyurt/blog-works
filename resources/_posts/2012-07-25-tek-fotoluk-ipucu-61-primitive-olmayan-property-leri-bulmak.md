@@ -5,10 +5,14 @@ date: 2012-07-25 22:51:00 +0300
 categories:
   - tek-fotoluk-ipucu
 tags:
-  - tek-fotoluk-ipucu
-  - linq
-  - http
   - reflection
+  - language-integrated-query
+  - isprimitive
+  - cts
+  - common-type-system
+  - .net-types
+  - assembly
+  - extension-methods
 ---
 Diyelim ki bir değişkenin tipinin içerisinde yer aldığı Assembly’ daki diğer tiplerin Primitive olmayan (int,double,char vb) özelliklerini bulmak gibi bir ihtiyacınız var. Nasıl bir yol izlersiniz? Kuvvetle muhtemel Reflection’ dan yararlanırsınız. Hatta belki biraz da LINQ katarsınız işin içine. Ya da aklınızdan geçen tam olarak aşağıdaki gibi bir Extension Method’ dur
 

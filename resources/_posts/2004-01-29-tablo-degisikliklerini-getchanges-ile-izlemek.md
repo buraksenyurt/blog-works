@@ -5,11 +5,9 @@ date: 2004-01-29 12:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
-  - csharp
-  - web-service
-  - dataset
+  - ado.net
   - datatable
+  - GetChanges
 ---
 Bugünkü makalemizde, bağlantısız olarak veri tabloları ile çalışırken, bu tablolar üzerinde meydana gelen değişiklikleri nasıl izleyebileceğimizi ve davranışlarımızı bu değişikliklere göre nasıl yönledirebileceğimizi incelemeye çalışacağız.
 

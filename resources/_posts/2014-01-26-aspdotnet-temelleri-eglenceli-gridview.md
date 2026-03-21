@@ -5,8 +5,18 @@ date: 2014-01-26 19:01:00 +0300
 categories:
   - aspnet
 tags:
-  - aspnet
-  - dotnet
+  - asp.net
+  - asp.net-temelleri
+  - web-server-controls
+  - gridview
+  - csharp
+  - rowdatabound
+  - emptydatatemplate
+  - boundfield
+  - hyperlinkfield
+  - emptydatatext
+  - dataformatstring
+  - nulltextformat
 ---
 Bir süre önce çalıştığım firmada ufak bir web uygulaması ihtiyacı ile karşılaştım. Bir kaç günlük efor isteyen bu basit işte, uzun süredir kullanmadığım eski dostumuz GridView kontrolü ile haşır neşir oldum. Onun bir kaç etkili özelliğini ve işe yarar ip uçlarını tekrardan hatırladım. Hal böyle olunca bir araya getirip basit bir video anlatımında birleştirmek istedim. Ele aldığımız konulara gelince.
 

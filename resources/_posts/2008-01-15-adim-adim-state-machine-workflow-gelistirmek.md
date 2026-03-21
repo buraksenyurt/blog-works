@@ -5,20 +5,9 @@ date: 2008-01-15 06:00:00 +0300
 categories:
   - wf
 tags:
-  - wf
-  - csharp
-  - xml
-  - dotnet
-  - linq
-  - wcf
   - workflow-foundation
-  - wpf
-  - xaml
-  - http
-  - transactions
-  - delegates
-  - generics
-  - visual-studio
+  - windows-workflow-foundation
+  - state-machine
 ---
 Öyle iş akışları vardırki, süreç (Process) içerisinde yer alan adımlar arasındaki geçişler herhangibir zamanda ve herhangibir olayın meydana gelmesi sonrasında mümkün olur. Çoğunlukla terminolojide Sonlu Durum Makinesi (Finite State Machine) olarak geçen bu yaklaşıma göre, herhangibir nesnel varlığın zaman içerisinde sahip olabileceği durumlar işaret edilmektedir. Çok doğal olarak bu durum, programatik ortamda yer alan iş problemlerinin çözümündede göz önüne alınmaktadır. İşte bu makalemizde Sonlu Durum Makinesi (Finite State Machine) kavramını irdelemeye ve Windows Workflow Foundation içerisindeki kullanımını araştırmaya çalışacağız. Başlamadan önce Sonlu Durum Makinesi (Finite State Machine) kavramını anlamaya çalışamakta yarar vardır.
 

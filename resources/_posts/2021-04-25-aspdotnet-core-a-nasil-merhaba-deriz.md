@@ -5,25 +5,16 @@ date: 2021-04-25 09:00:00 +0300
 categories:
   - dotnet-core
 tags:
-  - dotnet-core
-  - bash
-  - csharp
-  - dotnet
-  - aspnet
-  - aspnet-mvc
-  - asp-dotnet-core
-  - entity-framework
-  - ef-core
-  - linq
-  - wcf
-  - workflow-foundation
-  - web-api
-  - blazor
-  - generics
+  - .net
+  - .net-core
+  - asp.net-mvc
   - dependency-injection
+  - solid
+  - inversion-of-control
+  - dependency-inversion-principle
+  - mvc
+  - model-view-controller
   - visual-studio
-  - github
-  - dependency-management
 ---
 Yazılım geliştirme işine ciddi anlamda başladığım yeni milenyumun başlarında.Net Framework sahanın yükselen yıldızıydı. Delphi’den kopup gelen Anders’in yarattığı C# programlama dilinin gücü ve.Net Framework çatısının vadettikleri düşünülünce bu son derece doğaldı. Aradan geçen neredeyse 20 yıllık süre zarfında.Net Framework’te evrimleşti ve sürekli güncellendi. Versiyon 2.0 ile gelen generic tipler, 3.0'la birlikte SQL yazar gibi sorgulanabilir nesneler (LINQ-Language INtegrated Query), sonrasında karşımıza çıkan WCF (Windows Communication Foundation), WF (Workflow Foundation), Entity Framework vs derken Microsoft’un açık kaynak dünyasına girişi, benimsediği platform bağımsız stratejiler (Miguel De Icaza’nın Mono’suna da saygı duyalım), Linux, MacOS gibi bir zamanların ciddi rakipleri ile el sıkışarak hamle yapması sonrasında da son birkaç yıllık zaman diliminde karşımıza çıkan.Net Core. Yeni gelişmeler Microsoft’un sıklıkla yaptığı üzere bazı kavram karmaşalarını da beraberinde getirdi elbette. En nihayetinde tek ve birleşik bir.Net 5 ortamından bahsedilmeye başlandı. (Photo by [Element5 Digital](https://unsplash.com/@element5digital?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/s/photos/education?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText))
 
@@ -31,7 +22,7 @@ Yazılım geliştirme işine ciddi anlamda başladığım yeni milenyumun başla
 
 Gelişmeleri zaten sizler de benim gibi takip ediyorsunuzdur. Bu durum benim de kişisel olarak kendimi yenilemem gereken bir dönemi tetikledi. Bir süredir özellikle Amazon’dan getirttiğim kitaplardan.Net 5 dünyasını tanımaya,.Net 4.7.2 gibi versiyonlarda yazılmış uygulamarı yeni sürüme göç ettirmenin (migration) yollarını öğrenmeye çalışıyorum. Bu kişisel çabayı da çalışmakta olduğum şirketin iç eğitim programından gelen talepleri karşılamak için kullanıyorum.
 
-Sabahsız gecelerimin birisinde zen merkezim olan çalışma odamdaki kanepeya uzanmış boş boş tavana bakıyordum. Hoş aklımda cevap arayan güzel bir soru da vardı. [Geleceğe Giriş](https://www.gelecegegiris.com) programı kapsamındaki bir Asp.Net Core eğitimine nasıl başlamalıydım? Nasıl bir Hello World olmalıydı? Doğrudan üretilecek uygulamanın kendisini en başından gösterip; “İşte bu uygulamayı nasıl yazacağımızı adım adım öğreneceğiz” şeklinde mi yol almalıydım. Yoksa Hello World deme şekli.Net Core sonrası daha mı farklıydı?
+Sabahsız gecelerimin birisinde zen merkezim olan çalışma odamdaki kanepeya uzanmış boş boş tavana bakıyordum. Hoş aklımda cevap arayan güzel bir soru da vardı. [Geleceğe Giriş](https://gelecegegiris.com/) programı kapsamındaki bir Asp.Net Core eğitimine nasıl başlamalıydım? Nasıl bir Hello World olmalıydı? Doğrudan üretilecek uygulamanın kendisini en başından gösterip; “İşte bu uygulamayı nasıl yazacağımızı adım adım öğreneceğiz” şeklinde mi yol almalıydım. Yoksa Hello World deme şekli.Net Core sonrası daha mı farklıydı?
 
 Bu işe başladığım yıllarda beni eğitenler veya okuduklarım Nesne Yönelimli Dil (Object Oriented Programming) konusunun ne denli önemli olduğundan bahseder, kalıtım (Inheritance), çok biçimlilik (Polymorphism) ve soyutlama (Abstraction) gibi kavramların önemine vurgu yapardı. İş, düşük maliyeti nedeniyle çok sık tercih edilen monolitik mimarinin en yaygın kullanılan örneklerinden olan çok katmanlı (n-tier) çözümlere geldiğinde ise mahşerin beş atlısı SOLID ilkeleri, sayısız yazılım prensibi ve tasarım kalıbı ile karşılaşırdık. Gerçekten yazılım mühendisliğinden bahsettiğimiz noktaya gelindiğinde ise Autofac, Ninject, Unity, Castle Windsor gibi bileşenler arası bağımlılıkları yöneten çatıları kullanmaya başlardık. O günleri düşünürken aklıma.Net Core'u (esasında.Net 5'i) bu bağlamda ele almak geldi. Çok üst düzey yetenekleri olmasa da zaten dahili bir DI (Dependency Injection) mekanizmasına sahipti.
 

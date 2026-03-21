@@ -5,8 +5,10 @@ date: 2005-02-23 12:00:00 +0300
 categories:
   - csharp
 tags:
-  - csharp
-  - dotnet
+  - Framework
+  - cryptography
+  - encryption
+  - rijndael
 ---
 Bu makalemizde, Rijndael Algoritmasını kullanan Managed tiplerden RijndaelManaged sınıfı ile şifreleme (encryption) ve deşifre etme (decryption) işlemelerinin nasıl gerçekleştirilebileceğini incelemeye çalışacağız. Konu ile ilgili örneklerimize geçmeden önce.Net Framework içerisinde yer alan Cryptography mimarisinde kısaca bahsetmekte yarar olduğunu düşünüyorum. Aşağıdaki şekil,.Net Framework’ te System.Securtiy.Cryptograhpy isim alanında yer alan şifreleme hiyerarşisini göstermektedir. Framework mimarisinde şifreleme sistemi ilk olarak üç ana katmandan oluşur. İlk katmanda taban sınıflar (base classes) yer alır. Bunlar SymmetricAlgorithm, AsymmetricAlgorithm ve HashAlgorithm sınıflarıdır. Bu sınıflar kendisinden türeyen ikinci katman sınıfları için temel ve ortak şifreleme özelliklerini içerirler.
 

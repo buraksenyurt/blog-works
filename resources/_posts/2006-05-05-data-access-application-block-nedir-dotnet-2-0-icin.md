@@ -5,19 +5,9 @@ date: 2006-05-05 12:00:00 +0300
 categories:
   - ado-net-2-0
 tags:
-  - ado-net-2-0
-  - csharp
-  - xml
-  - dotnet
-  - ado-net
-  - sql-server
-  - http
-  - memory-management
-  - performance
-  - transactions
-  - generics
-  - dataset
-  - datatable
+  - enterprise-applications
+  - enterprise-architectures
+  - cross-cuttings
 ---
 Microsoft tarafından serbest olarak dağıtılan Data Access Application Block (Veri Erişimi Uygulama Bloğu) özellikle n katmanlı mimarilerde, Data Access Layer (veri erişim katmanı) için gerekli işlevselliği sağlayan, performans ve bellek yönetimi konusunda iyi sonuçlar veren bir Enterprise Solution Pattern'dir. Bu block sayesinde, özellikle Business Layer (iş katmanındaki) katmanındaki işimiz oldukça kolaylaşmaktadır. Özellikle Sql sunucusu üzerinde uzmanlaşmış olan bu block'un.Net 2.0 için olan sürümü Ocak ayı içerisinde yayınlandı.
 

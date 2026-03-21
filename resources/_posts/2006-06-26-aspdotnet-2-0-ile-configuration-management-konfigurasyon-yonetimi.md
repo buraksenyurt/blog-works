@@ -5,14 +5,9 @@ date: 2006-06-26 12:00:00 +0300
 categories:
   - aspnet-2-0
 tags:
-  - aspnet-2-0
-  - xml
-  - csharp
-  - dotnet
-  - aspnet
-  - iis
-  - authentication
-  - authorization
+  - asp.net
+  - configuration-api
+  - configuration-management
 ---
 Asp.Net 2.0 özellikle Web.config dosyasını daha kolay yönetebilmek amacıyla beraberinde bir yönetim API'si ile birlikte gelmektedir. Configuration Management API olarak adlandırabileceğimiz bu yapı sayesinde, web.config gibi konfigurasyon dosyalarını ve içeriğini programatik olarak daha etkin bir şekilde yönetebiliriz. Bildiğiniz gibi web.config dosyası xml tabanlı bir içerik sunmakla birlikte entegre edildiği web uygulaması için gerekli temel bir takım ayaları içerir. (Elbette bir web uyguması içerisinde yer alan alt klasörler içinde ayrı web.config dosyalarının ele alınabileceğini hatırlatmakta fayda var.)
 

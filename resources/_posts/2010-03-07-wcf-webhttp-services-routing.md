@@ -6,19 +6,11 @@ categories:
   - wcf-eco-system
   - wcf-webhttp-services
 tags:
-  - wcf-eco-system
+  - windows-communication-foundation
+  - webhttp-services
+  - rest-api
+  - non-soap
   - wcf-webhttp-services
-  - csharp
-  - dotnet
-  - aspnet
-  - linq
-  - sql-server
-  - wcf
-  - rest
-  - http
-  - generics
-  - visual-studio
-  - rc
 ---
 Geçtiğimiz aylarda yurdumuzun en güzel şehirlerinden birisi olan İstanbul'da, oldukça soğuk ve kar yağışlı günler geçirdik. Yandaki resimde görülen manzara çalıştığım ARI 1 binasının yürüyüş yolu üzerinde çok da yeni olmayan, dokunmatik ekran, Windows Mobile gibi ileri özellikleri bulunmayan ancak Carl Zeiss mercekli Sony Ericsson K810i marka cep telefonum tarafından çekilmiştir.
 

@@ -5,26 +5,9 @@ date: 2009-02-02 12:00:00 +0300
 categories:
   - ado-net-data-services
 tags:
-  - ado-net-data-services
-  - csharp
-  - xml
-  - dotnet
-  - aspnet
-  - ado-net
-  - entity-framework
-  - linq
-  - sql-server
-  - wcf
-  - json
-  - web-service
-  - http
-  - authentication
-  - authorization
-  - threading
-  - caching
-  - delegates
-  - generics
-  - visual-studio
+  - ado.net-data-services
+  - wcf-data-services
+  - windows-communication-foundation
 ---
 Yazılım dünyasının en önemli zorluklarından biriside uygulamanın kapsamına göre güvenliğin etkili bir şekilde nasıl sağlanacağı ile ilişkilidir. Burada hassas bilgilerin korunması, kullanıcıların tanınması ve yetkilendirilmesi, kodun erişim ilkelerinin belirlenmesi, verinin şifrelenmesi gibi pek çok faktör söz konusudur. Genel anlamda günvelik farklı şekillerde göz önüne alınabilir.
 

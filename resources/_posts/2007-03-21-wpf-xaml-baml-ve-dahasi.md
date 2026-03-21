@@ -5,17 +5,9 @@ date: 2007-03-21 12:00:00 +0300
 categories:
   - csharp
 tags:
-  - csharp
-  - xml
-  - dotnet
-  - aspnet
-  - wcf
-  - wpf
-  - windows-forms
+  - windows-presentation-foundation
   - xaml
-  - http
-  - delegates
-  - visual-studio
+  - baml
 ---
 Windows Presentation Foundation (WPF), windows tabanlı uygulama geliştirme modeline yeni ve çok farklı bir soluk getirmiştir. Daha çok web uygulama geliştirme sistematiğini andıran bu yeni model,.Net Framework 2.0 ile birlikte yapabildiklerimizi tek bir çatı altında toplamıştır. Hatırlayacağınız üzere, benzer bir yaklaşım modelinin Windows Communication Foundation (WCF) içerisinde de yer aldığından daha önceki makalelerimizde bahsetmiştik. Öncelikle bu noktaya nasıl gelindiğini vurgulamakta fayda var..Net Framework 2.0 açısından baktığımızda windows uygulamalarını geliştirirken yaşanan bazı sıkıntılar vardır.
 

@@ -5,12 +5,12 @@ date: 2004-01-24 10:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
-  - csharp
-  - dotnet
-  - performance
-  - visual-studio
-  - datatable
+  - ado.net
+  - sql
+  - file-io
+  - binarywriter
+  - binaryreader
+  - database
 ---
 Hatırlayacağınız gibi bir önceki makalemizde, bir resim dosyasını sql tablosundaki Image veri tipinden bir alana nasıl yazabileceğimizi görmüştük. Bugünkü makalemizde ise, bu tablodaki Image veri tipindeki Resim alanında yer alan byte'lara nasıl okuyabileceğimizi,(Örneğimizde, PictureBox kontrolünde nasıl görüntüleyebileceğimizi inceledik) ve bu alandaki resmi, jpg uzantılı bir resim dosyası olarak nasıl kaydedebileceğimizi incelemeye çalışacağız.
 

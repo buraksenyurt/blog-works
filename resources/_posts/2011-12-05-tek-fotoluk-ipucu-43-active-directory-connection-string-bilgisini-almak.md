@@ -7,8 +7,11 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - csharp
-  - tek-fotoluk-ipucu
-  - dotnet
+  - active-directory
+  - ldap
+  - .net-framework
+  - system.directoryservices
+  - directory-services
 ---
 Oldu da domain üzerinde çalışırken Active Directory'nin bağlantı bilgisine ihtiyaç duydunuz? Bu özellikle AD ile.Net tarafında çalışırken size gerekli olan önemli bir bilgidir. Nasıl mı elde edebiliriz? Aslında basit bir teknik var. Garantisi yok ama en azından ben şirket makinemde başarılı bir şekilde test edebildiğimi söyleyebilirim
 

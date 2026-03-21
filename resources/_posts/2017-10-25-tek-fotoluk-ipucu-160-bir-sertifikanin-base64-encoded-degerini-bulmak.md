@@ -6,12 +6,14 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - tek-fotoluk-ipucu
-  - xml
-  - dotnet
-  - wcf
-  - soap
+  - x-509-certificate
+  - base64-encoding
+  - basicHttpBinding
+  - certificate-based-authentication
+  - authentication
+  - windows-communication-foundation
 ---
-[Önceki yazımızda](https://www.buraksenyurt.com/post/wcf-ozellestirilmis-usernamepasswordvalidator-kullanimi) WsHttpBinding kullandığımız sertifika tabanlı bir WCF senaryo çalışmamız vardı. Aynı örneği göz önüne alarak BasicHttpBinding kullanabileceğimizi de belirtelim. Nitekim bu bağlayıcı tipi ile de Message tabanlı güvenliği sertifika bazlı gerçekleştirebiliriz. Bunun en gerekli sebeplerinden birisi de servis tüketicilerinin eski nesil uygulamalar olabilmesi sebebiyle sadece SOAP 1.1 haberleşme kurmasıdır. Olmaz demeyin oluyor. Geliştirmekte olduğumuz projede buna benzer bir ihtiyaçla karşılaştık. Bazı servis tüketicilerimiz sadece SOAP 1.1 paketi gönderebilir durumdalar. Tabii öncelikle bizim.Net ortamında bu senaryoyu test edebilmemiz gerekmekteydi. Bağlayıcı tipini belirledik, Message güvenliğini ayarladık, sertifika tanımlamalarını yükledik ve servisi ayağa kaldırıp istemciye proxy tipini indirttik. İstemci web.config dosyasında gerekli ayarlamaları yaptık. Ne varki istemci tarafındaki endpoint bildiriminde yaptığımız aşağıdaki örnek tanımlama işe BasicHttpBinding tipi özelinde işe yaramadı ve çalışma zamanında "The request message must be protected" şeklinde hata aldık.
+[Önceki yazımızda](/2017/10/24/wcf-ozellestirilmis-usernamepassword-validator-kullanimi/) WsHttpBinding kullandığımız sertifika tabanlı bir WCF senaryo çalışmamız vardı. Aynı örneği göz önüne alarak BasicHttpBinding kullanabileceğimizi de belirtelim. Nitekim bu bağlayıcı tipi ile de Message tabanlı güvenliği sertifika bazlı gerçekleştirebiliriz. Bunun en gerekli sebeplerinden birisi de servis tüketicilerinin eski nesil uygulamalar olabilmesi sebebiyle sadece SOAP 1.1 haberleşme kurmasıdır. Olmaz demeyin oluyor. Geliştirmekte olduğumuz projede buna benzer bir ihtiyaçla karşılaştık. Bazı servis tüketicilerimiz sadece SOAP 1.1 paketi gönderebilir durumdalar. Tabii öncelikle bizim.Net ortamında bu senaryoyu test edebilmemiz gerekmekteydi. Bağlayıcı tipini belirledik, Message güvenliğini ayarladık, sertifika tanımlamalarını yükledik ve servisi ayağa kaldırıp istemciye proxy tipini indirttik. İstemci web.config dosyasında gerekli ayarlamaları yaptık. Ne varki istemci tarafındaki endpoint bildiriminde yaptığımız aşağıdaki örnek tanımlama işe BasicHttpBinding tipi özelinde işe yaramadı ve çalışma zamanında "The request message must be protected" şeklinde hata aldık.
 
 ```xml
 <identity>

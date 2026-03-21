@@ -5,18 +5,16 @@ date: 2019-02-12 09:00:00 +0300
 categories:
   - dotnet-core
 tags:
-  - dotnet-core
-  - bash
-  - csharp
-  - dotnet
   - entity-framework
-  - ef-core
-  - linq
-  - sql-server
-  - transactions
-  - generics
+  - csharp
+  - .net-core
+  - inmemory-database
+  - nuget
+  - dbcontext
   - testing
-  - github
+  - unit-test
+  - sql-server
+  - DbContextOptionsBuilder
 ---
 Ablamla rahmetli babamız bir önceki sabah olduğu gibi o günde terastaki ahşap yemek masasının üzerine kurdukları fileyi karşılıklı sabitlemekle meşgullerdi. Normal ebatlarına göre çok daha dar ve kısa olan yemek masası, benim gibi orta okul çağlarındaki birisi için ideal bir ping pong sahasıydı esasında. Son bir kaç yazdır en büyük eğlencelerimizden birisi haline gelmişti. Kuzenlerle dolup taşan kalabalık yaz akşamlarında bir çok aile ferdini çevresine sığdıran Alman ahşapından yapılma o sağlam masa, prüzsüz yüzeyiyle sabahları çekişmeli ping pong maçlarına ev sahipliği yapıyordu. Güzel anıları ile birlikte rahmetli babamı zaman zaman kızdıran vakitlere de tanıklık etmişti. Bir keresinde raketi tutan kolumu tavana doğru öyle bir açmıştım ki florasan lambayı tuzla buz etmiştim. O günden sonra tavandan sarkan değil zeminine sabit bir lamba tercih etmiştik. Lakin bir diğer sefer daha büyük bir sorun yaşamıştık.
 

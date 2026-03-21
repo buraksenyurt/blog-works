@@ -6,8 +6,13 @@ categories:
   - golang
 tags:
   - golang
-  - go
-  - pointers
+  - slice
+  - append
+  - capacity
+  - copy
+  - len
+  - map
+  - array
 ---
 Gopher olma çalışmalarım iş yoğunluğuna bağlı olarak zaman zaman hızlı ve zaman zaman da yavaş bir şekilde devam ediyor. Açıkçası Gopher karakterini ve internetteki örneklerini çok sevdim. Google oldukça sevimli bir logo yaratmış. Bu nedenle her bölüm mümkün mertebe farklı bir Gopher'ı ekranlarınıza taşımaya çalışıyorum.
 

@@ -5,14 +5,7 @@ date: 2009-03-06 12:00:00 +0300
 categories:
   - wf
 tags:
-  - wf
-  - csharp
-  - dotnet
-  - sql-server
   - workflow-foundation
-  - transactions
-  - serialization
-  - generics
 ---
 Workflow Foundation yardımıyla kod akışlarının modellenebilmesi ve herhangibir.Net uygulaması içerisinden host edilerek çalıştırılabilmesi mümkündür. Bu kavram işin içerisine servisler girdiğinde çok daha genişlemektedir. Nitekim servisler yardımıyla Workflow örneklerinin host edildikleri uygulama dışındaki ortamlar ile haberleşebilmeleri mümkün olmaktadır. Hatta servislerin kendi içlerinde Workflow aktivitilerini kullanabilmeleri ve böylece belirli kod akışlarını yürütebilmeleride mümkündür. Bu cümleden sonra durup düşünüldüğünde Workflow Foundation kavramının akışları, platform bağımsız ortamlara taşıyabileceği sonucuda ortaya çıkmaktadır. Diğer taraftan Workflow uygulamaları sadece dış ortamlar ile haberleşmek için servislerden yararlanmazlar. İlaveten, Workflow çalışma zamanını (Runtime) ilgilendiren ve özellikle aktivitilerin dayanıklı olarak saklanmasını (Durable Persistence), çalışma hayatlarının izlenmesini (Tracking), adımlar arası geçişlerin özel olarak planlanmasını (Scheduling) sağlayan ve.Net Framework içerisinde önceden tanımlanmış servislerde söz konusudur.
 

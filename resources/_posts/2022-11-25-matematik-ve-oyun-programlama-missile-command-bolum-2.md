@@ -4,9 +4,7 @@ title: "Matematik ve Oyun Programlama - Missile Command - Bölüm 2"
 date: 2022-11-25 12:15:00 +0300
 categories:
   - rust
-tags:
-  - rust
-  - github
+tags: []
 ---
 Matematiği bana sevdiren lise birinci sınıftaki öğretmenimdi. Fizik, Kimya ve Türkçe derslerinde o kadar iyi değildim ama konu matematik olunca pür dikkat kesilirdim. Ancak üniversite yıllarına geldiğimde Matematik Mühendisliğinin o yoğun teorik programı içerisinde kaybolurken nefes alacak yer bulmakta zorlanıyordum. İmdadıma yine bölüm müfredatında yer alan programlama dersleri yetişmişti (ve halen Fizik dersinde başarısızdım:D) Programlama dillerine olan tutkum beni bir yazılımcı olmaya ve bugünlere kadar gelmeye ikna etti. Ancak bazen durup bir düşünüyorum. Yeterince farkında olsaydım acaba oyun geliştiricisi olmak ister miydim? Çünkü hem matematiği hem de programlamayı bir arada bulabileceğim en güzel alandı. Tabii evdeki hesap çarşıya uymamıştı. O zamanlarda ne programlamada ne de matematiğin oyun geliştirme dünyasındeki yeri anlamında yeterli değildim. Üstelik oyun geliştiriciliği alanına hitap eden bir bölümde de okumuyordum. Yine de "çok geç değil, nasıl olsa hobi amaçlı ilgilenebilirim" dedim ve işte bu seri böylece başlamış oldu. Konuşmak için çok erken ve daha yolun başındayım ama öğrendikçe ve fırsat buldukça meraklılarına aktarmaya çalışacağım.
 

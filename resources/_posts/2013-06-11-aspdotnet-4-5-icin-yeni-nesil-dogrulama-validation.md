@@ -5,15 +5,14 @@ date: 2013-06-11 14:09:00 +0300
 categories:
   - aspnet-4-5
 tags:
-  - aspnet-4-5
-  - csharp
-  - xml
-  - dotnet
-  - aspnet
-  - http
-  - authentication
-  - javascript
-  - visual-studio
+  - asp.net-validation
+  - web-forms
+  - web-form-validation
+  - jquery
+  - html
+  - data-*
+  - data-attributes
+  - unobtrusive-validation
 ---
 Bilişim sektöründe yer alan ve özellikle 70li yıllarda doğanların neredeyse tamamı bu efsane cümleyi bilir.
 

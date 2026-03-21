@@ -5,15 +5,7 @@ date: 2009-12-16 04:55:00 +0300
 categories:
   - tpl
 tags:
-  - tpl
-  - csharp
-  - parallel-programming
   - task-parallel-library
-  - threading
-  - concurrency
-  - performance
-  - generics
-  - visual-studio
 ---
 Günümüz yazılım teknolojilerinin belkide en popüler olan konularından biriside paralel programlamadır (Parallel Programming). Özellikle kullanıcı bilgisayarlarının artık birden fazla çekirdeğe sahip işlemcilerle donatılmış olduğu düşünüldüğünde geliştirme ortamlarının da (.Net Framework 4.0' da olduğu üzere
 

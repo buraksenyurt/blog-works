@@ -5,18 +5,10 @@ date: 2007-08-30 09:00:00 +0300
 categories:
   - wpf
 tags:
-  - wpf
-  - csharp
-  - xml
-  - bash
-  - dotnet
-  - linq
-  - wcf
-  - xaml
-  - http
-  - transactions
-  - generics
-  - visual-studio
+  - windows-presentation-foundation
+  - application-object
+  - clr
+  - common-language-runtime
 ---
 Windows Presentation Foundation windows tabanlı uygulama geliştirmeye çok yeni bir yaklaşım getirdi. Tabiri yerindeyse pek çok yenilik ile karşı karşıyayız. İşte bu makalemizde WPF ile geliştirilen windows uygulamalarında çekirdek nesnelerden birisi olan Application tipini incelemeye çalışacağız. Application nesnesi, WPF uygulamalarının çekirdek nesnesidir.
 

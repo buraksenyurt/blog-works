@@ -5,18 +5,9 @@ date: 2020-03-31 21:44:00 +0300
 categories:
   - dotnet-core
 tags:
-  - dotnet-core
-  - bash
+  - .net-core
+  - signalr
   - csharp
-  - javascript
-  - dotnet
-  - linq
-  - async-await
-  - concurrency
-  - generics
-  - dependency-injection
-  - github
-  - dependency-management
 ---
 Turşunun iyisi limonla mı olur yoksa sirkeyle mi? Neşeli Günler'i izleyenleriniz rahmetli Münir Özkul ve Adile Naşit arasındaki atışmayı gayet iyi bilir:) Arada bir eski de olsa her yönüyle bizlere tarifsiz dersler veren yapımlarımızı izlemek gerekiyor. Tabii yine de turşunun iyisi limonla mı olur yoksa sirkeyle mi olur pek bilemiyorum. İyisi mi bunu bir SignalR servisine bırakalım. Ne dersiniz?
 

@@ -5,12 +5,6 @@ date: 2009-11-12 02:00:00 +0300
 categories:
   - tpl
 tags:
-  - tpl
-  - csharp
-  - dotnet
-  - wcf
-  - workflow-foundation
-  - parallel-programming
   - task-parallel-library
 ---
 Uzun süredir.Net Framework 4.0' ın bir parçası olarak gelen paralel programlama alt yapısı ile uğraşmıyordum. En son Beta 1 sürümündeyken Task Parallel Library ve PLINQ ile ilişkili konulara bakma fırsatım olmuştu. Zaman ilerledi ve.Net Framework 4.0 Beta 2 sürümü yayınlandı. Bu sürümde Beta 1' e göre bazı farklılıklar bulunmakta. Yani farklılıkları yeniden öğrenme aşamasına gelmiş durumdayız. Bunu WF tarafında, WCF tarafında gördüğümüz gibi halen gelişmekte olan Paralel programlama alt yapısında da görmekteyiz. İşte bu günkü yazımızda herhangibir Task'in iptal sürecinin Beta 2 sürümünde nasıl değerlendirildiğini incelemeye çalışıyoruz olacağız. Beta 1 sürümünde bir Task'in iptal edilmesi için aşağıdaki kod tasarımı kullanılmaktaydı.

@@ -6,18 +6,10 @@ categories:
   - wcf-eco-system
   - wcf-ria-services
 tags:
-  - wcf-eco-system
   - wcf-ria-services
-  - xml
-  - csharp
-  - dotnet
-  - aspnet
-  - wcf
-  - silverlight
-  - xaml
-  - http
-  - authentication
-  - authorization
+  - .net-ria-services
+  - windows-communication-foundation
+  - wcf-eco-system
 ---
 Bazen insanın yapmak zorunda olduğu bazı şeyler gözünde büyür. Örneğin havalimanlarında kontrollerden geçerek uçağa ulaşmak o daracı rahatsız koltuklara sığmak için çabalamak. Önce ilk kapıda bir güvenlik kontrollünden geçilir, ardından Check-In işlemi için kimlikle birlikte bir kontrolden daha geçilir (hatta bagajımız var ise tartılır ve gerekiyorsa ekstra para ödenir), ardından uçağa bineceğimiz kapılara gitmek için bir kontrolden daha geçilir, ardından uçağa binerken bilet ve kimlik ile kontrolden bir kere daha geçilir.
 

@@ -5,10 +5,7 @@ date: 2009-08-07 12:56:00 +0300
 categories:
   - visual-studio
 tags:
-  - visual-studio
-  - csharp
-  - generics
-  - testing
+  - vsts-2008
 ---
 Bir süredir Team Foundation Server üzerinde ve doğal olarak Visual Studio Team System 2008 geliştirme ortamında çalışmaktayım. Tabi uzun yıllar Visual Source Safe ile vakit geçirmenin sonucunda, TFS ile birlikte gelen pek çok nimetin farkına çok geç varabiliyoruz. Herşeyden önce TFS'in, MSF (Microsoft Solution Framework) ve CMMI (Capability Maturity Model Integration) gibi yazılım geliştirme süreç modellerinin uygulanabildiği profesyonel bir çevre sağladığını bilmemiz gerekiyor.
 

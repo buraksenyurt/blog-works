@@ -6,9 +6,8 @@ categories:
   - csharp
 tags:
   - csharp
-  - dotnet
-  - http
-  - visual-studio
+  - static-type
+  - static-class
 ---
 Static anahtar sözcüğü C# programlama dilinde üstü kapalı yada açık bir biçimde pek çok yerde kullanılır. C# programlama dilini yeni öğrenen birisi için static anahtar sözcüğünün kullanım alanlarını bilmek önemlidir. İşte bu amaçla yola çıktığımız bu makalemizde, static kavramının C# programlama dilindeki yerini incelemeye çalışacağız. Static anahtar sözcüğünün aşağıdaki listede olduğu gibi çeşitli durumlarda kullanabiliriz.
 

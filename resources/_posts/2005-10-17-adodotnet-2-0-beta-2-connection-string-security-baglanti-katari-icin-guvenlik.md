@@ -5,14 +5,8 @@ date: 2005-10-17 09:00:00 +0300
 categories:
   - ado-net-2-0
 tags:
-  - ado-net-2-0
-  - xml
-  - csharp
-  - dotnet
-  - ado-net
-  - web-service
-  - http
-  - generics
+  - ado.net
+  - connection-string-security
 ---
 Güvenlik günümüz uygulamalarında çok önemli bir yere sahiptir. Özellikle veritabanı kullanımını içeren uygulamalarda güvenliğin ayrı bir önemi vardır. Veritabanına gönderilen sorguların korunması, özellikle web servislerinden dönen veri kümelerinin etkin olarak şifrelenmesi gibi durumlar söz konusudur. Güvenlik prosedürü içerisinde yer alan unsurlardan biriside bağlantı bilgilerinin saklanmasıdır. Biz bu makalemizde,.Net 2.0 ile birlikte gelen yeni tekniklerden birisine değinerek, bağlantı bilgisinin (çoğunlukla connection string olarakda ifade edebiliriz) kolay bir şekilde nasıl korunabileceğini incelemeye çalışacağız.
 

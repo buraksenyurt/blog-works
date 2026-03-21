@@ -5,27 +5,15 @@ date: 2020-10-28 14:14:00 +0300
 categories:
   - dotnet-core
 tags:
-  - dotnet-core
-  - yaml
-  - bash
-  - csharp
-  - dotnet
-  - ado-net
-  - entity-framework
-  - linq
+  - .net-core
+  - sqlkata
   - postgresql
-  - mysql
-  - rest
-  - json
-  - web-api
-  - http
+  - csharp
+  - sql
+  - language-integrated-query
+  - .net
+  - northwind
   - docker
-  - performance
-  - caching
-  - transactions
-  - generics
-  - visual-studio
-  - github
 ---
 Veri odaklı uygulamalarda sorgu komutlarını çalıştırmak için kullandığımız birçok hazır altyapı var. Örneğin.Net dünyasına baktığımızda en temel seviyede Ado.Net ve Object Relational Mapping tarafında Entity Framework sıklıkla karşılaştıklarımız arasında. [SqlKata](https://sqlkata.com/)'da bunlardan birisi olarak düşünülebilir. Bir süredir de sağda solda okuduğum makale ve github çalışmalarından dolayı merak edip kurcalamak istediğim bir kütüphane. Öncelikle ismi çok hoş (Code Kata'yı çağrıştırıyor bana)
 

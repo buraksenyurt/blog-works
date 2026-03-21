@@ -5,8 +5,7 @@ date: 2003-12-04 12:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
-  - csharp
+  - ado.net
   - datatable
 ---
 Bugünkü makalemizde bağlantısız katmanın önemli bir sınıfı olan DataTable nesnesini bir açıdan incelemeye çalışacağız. Bilindiği gibi DataTable sınıfından türetilen bir nesne, bir tabloyu ve elemanlarını bellekte temsil etmek için kullanılmaktadır. DataTable sınıfı bellekte temsil ettiği tablolara ait olan satırları Rows koleksiyonuna ait DataRow nesneleri ile temsil ederken, tabloun alanlarını ise, Columns koleksiyonuna ait DataColumn nesneleri ile temsil etmektedir.

@@ -6,7 +6,10 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - tek-fotoluk-ipucu
-  - http
+  - tfi
+  - wmi32_logicaldisk
+  - wmi
+  - windows-management-instrumentation
 ---
 WMI (Windows Management Instrumentation) maceralarımıza devam etmeye ne dersiniz? Eğer biraz daha kasarsak, geniş bir WMI kütüphanesi bile oluşturabiliriz. Bu fotoğrafımıza konu olan güncel senaryomuz ise şöyle; İşletim sistemi tarafından Map edilmiş Disk bilgilerine nasıl ulaşabiliriz? Sadece Hard Disk’ ler değil. Bağlı olduğumuz Network Driver’ ları da öğrenmek istediğimizi varsalayım
 

@@ -5,7 +5,9 @@ date: 2012-02-14 23:11:00 +0300
 categories:
   - tek-fotoluk-ipucu
 tags:
-  - tek-fotoluk-ipucu
+  - mime-type
+  - response.contenttype
+  - asp.net
 ---
 Hani olurda web tarafında istemciden gelen talebe göre, döndürmek istediğiniz herhangibir tipteki dosyanın Mime Type değerine göre bir Content Type üretmek istersiniz ya
 

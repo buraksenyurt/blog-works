@@ -5,15 +5,14 @@ date: 2017-12-29 21:01:00 +0300
 categories:
   - dotnet-core
 tags:
-  - dotnet-core
-  - bash
-  - csharp
-  - dotnet
-  - aspnet
-  - asp-dotnet-core
+  - .net-core
   - web-api
-  - http
-  - github
+  - cors
+  - security
+  - cors-policy
+  - jquery
+  - ajax
+  - rest-api
 ---
 Geçtiğimiz günlerde Asp.Net Core tarafında SignalR kullanımını incelemeye başladım. O sırada incelediğim kaynakların birisinde UseCors isimli bir fonksiyonla karşılaştım. Uzun zamandır Cross-Site Scripting Error almamış birisi olarak.Net Core tarafında Cross-Origin Resource Sharing nasıl yapılır öğrenmem gerektiğini fark ettim. Sonunda SignalR ile ilgili araştırmalarıma bir kahve molası verip konuyu inceleyeyim dedim. Aslında W3C'un [şu adresinde](https://www.w3.org/TR/cors/) ve IETF (havalı isimleri ile Internet Engineering Task Force) kulübünün [bu adresinde](https://tools.ietf.org/html/rfc6454) konu ile ilgili standartlara ait oldukça detaylı bilgiler mevcut.
 

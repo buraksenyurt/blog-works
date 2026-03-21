@@ -6,8 +6,8 @@ categories:
   - csharp
 tags:
   - csharp
-  - http
-  - performance
+  - boxing
+  - unboxing
 ---
 Bundan yaklaşık olarak iki sene önce boxing ve unboxing kavramları ile ilgili bir [makale](http://www.buraksenyurt.com/post/Boxing-(Kutulamak)-ve-Unboxing-(Kutuyu-Kald%C4%B1rmak)-bsenyurt-com-dan) (30.12.2003) yazmıştım. Aradan uzun süre geçti. Ancak boxing ve unboxing kavramları ile ilgili olarak halen daha dikkat edilmesi gereken hususlar var. Bunlardan bizim için en önemlisi elbetteki performans üzerine etkileri. Uygulamalarımızda çok sık olarak farkında olmadan veya farkında olaraktan boxing ve unboxing işlemlerinin yer aldığı kod parçalarını kullanıyoruz.
 

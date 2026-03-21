@@ -6,11 +6,8 @@ categories:
   - csharp
 tags:
   - csharp
-  - dotnet
-  - http
-  - performance
-  - delegates
-  - visual-studio
+  - class
+  - struct
 ---
 Aralık…2003 yılı. Dışarısı oldukça soğuk ve ben evdeyim. Camdan dışarıya baktığımda dışarıda pek kimseyi göremiyorum. Soğuktan dolayı sakin olan sokağımız daha da bir yanlız. Bu arada askerden döndükten sonra iş aramakla geçirdiğim 8nci ayın içerisindeydim. Neyseki mesleki kariyerimde ilerlemek için yeni bir heyecanım var. [C#Nedir?](http://www.csharpnedir.com/) ile daha ilk günlerimi yaşıyorum.
 

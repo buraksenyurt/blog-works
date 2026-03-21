@@ -5,19 +5,17 @@ date: 2019-01-10 17:00:00 +0300
 categories:
   - nodejs
 tags:
-  - nodejs
-  - bash
-  - javascript
-  - dotnet
-  - mysql
+  - node.js
+  - async
+  - asynchronous-programming
+  - rest-api
+  - web-service
   - mongodb
-  - rest
-  - json
-  - http
-  - async-await
-  - concurrency
-  - microservices
-  - github
+  - javascript
+  - vs-code
+  - npm
+  - node
+  - express
 ---
 Adrenali oldukça yüksek (özellikle benim için) ve zorlayıcı bir Cumartesi gününü geride bıraktım. Yo yo sandığınız gibi Cape Town'da büyük beyazlar ile dalış yapmadım ya da Helikopter'den Bungee Jumping... Hatta deployment sırasında canlı ortam datalarını da silmedim. Tek yaptığım Vialand'e gitmek oldu. Daha ilk turda bindiğim Vikings beni yeterince heyecanlndırırken, "Nefes Kesen" neredeyse ses hızına yaklaştığımı hissettirdi:P
 

@@ -7,7 +7,10 @@ categories:
 tags:
   - algoritma
   - csharp
-  - linq
+  - regex
+  - network-routing
+  - dynamic-programming
+  - floydWarshall
 ---
 Uzun zamandır algoritmalar üzerinde çalışmadığımı fark ettim. İşlerin biraz olsun hafiflediği şu vakitlerde de bir tanesini inceleyeyim dedim. Derken kendimi [Floyd-Warshall algoritmasını](https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm) anlamaya çalışırken buldum. Söz konusu algoritma Graph yapılarında boğumlar arasındaki en kısa yolların bulunmasında kullanılmaktadır.
 

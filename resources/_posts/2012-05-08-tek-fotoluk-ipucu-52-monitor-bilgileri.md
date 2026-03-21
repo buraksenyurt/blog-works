@@ -5,8 +5,11 @@ date: 2012-05-08 09:10:00 +0300
 categories:
   - tek-fotoluk-ipucu
 tags:
-  - tek-fotoluk-ipucu
-  - visual-studio
+  - csharp
+  - windows-forms
+  - monitor
+  - screen
+  - system-informations
 ---
 Malum Visual Studio dahil pek çok programın birden fazla monitor desteği bulunmakta. Hatta geliştirdiğimiz uygulamaların çoğu birden fazla monitor desteği olacak şekilde yapılandırılabiliyor. Peki sistemde yüklü kaç monitor var, bunların çözünürlükleri, pixel başına byte değerleri nelerdir, öğrenebilir miyiz? Tabi ki
 

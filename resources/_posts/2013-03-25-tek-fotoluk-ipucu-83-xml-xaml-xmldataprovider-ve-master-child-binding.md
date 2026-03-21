@@ -7,8 +7,17 @@ categories:
 tags:
   - tek-fotoluk-ipucu
   - xml
-  - wpf
   - xaml
+  - windows-presentation-foundation
+  - xmldataprovider
+  - binding
+  - x-path
+  - master-detail
+  - listbox
+  - itemssource
+  - datatemplate
+  - itemtemplate
+  - issychronizedwithcurrentitem
 ---
 Diyelim ki elinizde aşağıdaki gibi Master-Child veri ilişkisi içeren (1 gruba bağlı birden fazla albüm) bir XML dosyası var.
 

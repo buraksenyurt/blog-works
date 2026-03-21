@@ -1,4 +1,4 @@
-﻿---
+---
 layout: post
 title: "Tek Fotoluk İpucu–69–Newtonsoft JSON.Net ve dynamic Keyword"
 date: 2012-11-04 18:00:00 +0300
@@ -6,9 +6,11 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - tek-fotoluk-ipucu
-  - dotnet
-  - xml
   - json
+  - newtonsoft
+  - dynamic
+  - csharp
+  - mvc
   - serialization
 ---
 Bildiğiniz üzere JSON (JavaScriptObjectNotation) oldukça kompakt bir veri formatı sunuyor. Çoğu durumda veriyi anlamlı şekilde saklarken, XML serileştirme yerine tercih ediyoruz. Nitekim daha az yer kaplamakla birlikte nesnel olarak anlaşılabilirliği daha yüksek. Özellikle MVC tarafında çok kıymetli. JSON ile.Net tarafında çalışırken ise işleri kolaylaştırmak adına Newtonsoft’ un NuGet ile indirebileceğimiz paketini kullanmaktayız.

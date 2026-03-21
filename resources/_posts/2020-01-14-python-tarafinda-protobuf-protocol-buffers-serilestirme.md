@@ -6,16 +6,10 @@ categories:
   - python
 tags:
   - python
-  - bash
-  - javascript
-  - xml
-  - rest
-  - json
-  - http
-  - grpc
-  - performance
-  - serialization
-  - github
+  - protobuf
+  - rest-api
+  - websockets
+  - protocol
 ---
 Protocol Buffer, Google'ın yapısal verileri (structured data) serileştirmek için geliştirdiği bir protokol (Hatta gRPC ile sıklıkla anılır) Onu XML (eXtensible Markup Language) benzeri bir veri tanımlama formatı olarak düşünebiliriz ama çok daha az yer tutar ve serileştirme süresi çift yönlü olarak daha kısadır. Şu sıkça gördüğümüz proto uzantılı dosyaların ana fikridir.
 

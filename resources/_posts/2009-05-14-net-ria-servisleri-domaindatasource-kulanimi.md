@@ -5,19 +5,8 @@ date: 2009-05-14 12:30:00 +0300
 categories:
   - dotnet-ria-services
 tags:
-  - dotnet-ria-services
-  - xml
-  - csharp
-  - dotnet
-  - aspnet
-  - ado-net
-  - entity-framework
-  - linq
-  - sql-server
+  - .net-ria-services
   - silverlight
-  - xaml
-  - http
-  - visual-studio
 ---
 Her ne kadar şu günlerde güzel ülkemizin Ege kıyılarında kısa bir dinlenme molası vermiş olsamda, internetin sahil kıyılarındaki cafe'lere kadar girmiş olması, herşeyi değiştiriyor.
 

@@ -6,11 +6,13 @@ categories:
   - golang
 tags:
   - golang
-  - bash
-  - go
-  - python
-  - java
-  - ruby
+  - c-programming-language
+  - shared-c-library
+  - ruby-lang
+  - ubuntu
+  - ffi
+  - gem
+  - c-header
 ---
 Pek çok kaynak GO dilinin ileride C'nin yerini alabileceği yönünde görüşler belirtmekte. Özellikle IoT alanında bu dilin daha fazla ön plana çıkacağı vurgulanıyor. Bu düşüncenin haklı olabileceği yönünde bazı tespitlerim var.
 

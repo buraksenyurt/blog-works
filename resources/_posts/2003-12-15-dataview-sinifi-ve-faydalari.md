@@ -5,11 +5,8 @@ date: 2003-12-15 04:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
-  - csharp
-  - dotnet
-  - performance
-  - datatable
+  - ado.net
+  - dataview
 ---
 Bugünkü makalemizde getirileri ve performansı ile ADO.NET içerisinde önemli bir yere sahip olan DataView nesnesini incelemeye çalışacağız. Özellikle bu sınıfa ait, RowFilter özelliğinin ne gibi faydalar sağlıyacağına da değineceğiz.
 

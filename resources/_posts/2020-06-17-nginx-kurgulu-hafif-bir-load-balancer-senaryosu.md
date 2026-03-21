@@ -5,16 +5,14 @@ date: 2020-06-17 09:20:00 +0300
 categories:
   - nodejs
 tags:
+  - nginx
+  - load-balancing
+  - proxy-server
   - nodejs
-  - bash
   - javascript
-  - dotnet
-  - mongodb
-  - rest
-  - json
-  - http
+  - pm2
   - docker
-  - github
+  - round-rubin
 ---
 Dünyanın en popüler ve hızlı proxy serverlarıdan birisi sanıyorum ki Nginx. Daha önce birçok kez onun üzerinde.Net Core tabanlı servisleri konuşlandırmıştım. Ancak bu defa Nginx'in talepleri dengeli bir şekilde dağıtacak şekilde (Load Balancer olarak) nasıl kullanacağımızı öğrenmeye çalışacağız. Senaryo gereği NodeJS ile yazılmış basit bir dummy servisin birkaç kopyasını çalıştıracağız. Aynı makinede farklı port adresleri üzerinden hizmet verecek bu servislere gelen taleplerin dağıtımını, Load Balancer görevini üstlenecek olan Nginx sunucusu üstlenecek.
 

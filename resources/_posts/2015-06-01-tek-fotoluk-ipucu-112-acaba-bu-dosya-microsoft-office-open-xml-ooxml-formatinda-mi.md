@@ -5,10 +5,10 @@ date: 2015-06-01 21:34:00 +0300
 categories:
   - tek-fotoluk-ipucu
 tags:
+  - OOXML
+  - io
+  - csharp
   - tek-fotoluk-ipucu
-  - dotnet
-  - xml
-  - http
 ---
 Diyelim ki bir yerlerde saklanmış ve kod tarafında byte[] array olarak ifade ediebilecek çeşitli tipte dosya içerikleriniz var ve siz bunların Microsoft Office Open XML formatında olup olmadıklarını anlamak istiyorsunuz. Bir süreci başlatmadan önce DB gibi bir ortamda duran dosyaların gerçekten de istenen tipte olup olmadığını anlamak kritik bir operasyon olabilir. Peki bu tip bir kontrolü gerçekleştirmek için nasıl bir kod parçasına ihtiyacımız olur?
 

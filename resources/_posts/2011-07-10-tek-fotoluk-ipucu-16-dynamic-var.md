@@ -9,10 +9,9 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - csharp
-  - csharp-3-0
-  - csharp-4-0
-  - tek-fotoluk-ipucu
-  - linq
+  - dynamic
+  - var
+  - dynamic-language-runtime
 ---
 LINQ tarafında isimsiz tipleri (Anonymous Types) oldukça sık kullanmaktayız. Ancak isimsiz tiplerin metodlara parametre olarak geçirilemediğini de biliyoruz
 

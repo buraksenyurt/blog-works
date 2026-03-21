@@ -5,15 +5,7 @@ date: 2009-06-03 02:50:00 +0300
 categories:
   - tpl
 tags:
-  - tpl
-  - csharp
-  - dotnet
-  - linq
   - task-parallel-library
-  - threading
-  - concurrency
-  - delegates
-  - generics
 ---
 Uzun uzun zaman önceydi. İlk bilgisayarımı daha dün gibi hatırlıyorum. Efsane Commodore 64.
 

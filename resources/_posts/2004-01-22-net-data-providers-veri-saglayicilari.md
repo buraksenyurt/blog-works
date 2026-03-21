@@ -5,11 +5,11 @@ date: 2004-01-22 08:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
-  - dotnet
+  - ado.net
+  - data-providers
+  - sql
   - sql-server
-  - oracle
-  - performance
+  - database
 ---
 Bugünkü makalemiz ile, ADO.NET ' te yer alan veri sağlayıcılarını inceleyeceğiz. Bildiğiniz gibi hepimiz uygulamalarımızda yoğun bir şekilde veri kaynaklarını kullanmaktayız. Normalde sistemimizde, bu veri kaynaklarına erişmek için kullanılan sistem sürücüleri vardır. Bu sürücüler, sistemimize dll kütüphaneleri olarak yüklenirler ve kendilerini sisteme kayıt ederler (register). Bu noktadan itibaren bu veri sürücülerinin içerdiği fonksiyonları kullanarak veritabanları üzerinde istediğimiz işlemleri gerçekleştirebiliriz. Kısaca, bu veri sürücüleri uygulamalarımız ile, veritabanı arasındaki iletişimi sağlarlar. Sistemizide yüklü olan programlara göre pek çok veri sürücüsüne sahip olabiliriz. Örneğin ODBC sürücüleri, SQL sürücüleri, Ole Db Jet sürücüleri ve bazıları.
 

@@ -5,14 +5,10 @@ date: 2006-03-31 12:00:00 +0300
 categories:
   - dotnet-remoting
 tags:
-  - dotnet-remoting
-  - csharp
-  - dotnet
-  - xml
-  - web-service
-  - xml-web-services
-  - threading
-  - delegates
+  - .net-remoting
+  - synchronous
+  - asynchronous-programming
+  - oneway
 ---
 Remoting gibi mimarilerde bazen istemcilerin (clients) çağırdıkları uzak nesnelere (remote objects) ait metodların dönüş süreleri uzun zaman alabilir. Bu gibi durumlarda istemci doğal olarak, uzak nesne üzerinden çağırdığı metodun geri dönüşünü beklemek durumunda kalır. Dolayısıyla istemci uygulamanın, uzak nesne çağırımına paralel olarak yürütebileceği işlemler var ise bunlarda askıda kalacaktır. Bunun değişik nedenleri olabilir. Gerçektende işlemler uzun sürebilir. Örneğin veritabanı bazlı işlemlerin uzak sunucular üzerinde gerçekleştiği remoting uygulamalarında sıkça rastlanabilen bir durumdur. Varsayılan olarak istemci tarafında eğer hiç bir özelleştirme yapılmaz ise, senkron (Synhronous) çalışan bir yapı söz konusudur. Bu makalemizde Senkron model ile başlayıp, Asenkron ve OneWay metod çağırım modellerini incelemeye çalışacağız.
 

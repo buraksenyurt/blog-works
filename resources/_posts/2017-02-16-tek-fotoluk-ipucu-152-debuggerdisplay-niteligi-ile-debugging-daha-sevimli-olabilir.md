@@ -5,9 +5,14 @@ date: 2017-02-16 21:29:00 +0300
 categories:
   - tek-fotoluk-ipucu
 tags:
+  - csharp
   - tek-fotoluk-ipucu
-  - debugging
+  - attribute
+  - debug
   - visual-studio
+  - metadata-programming
+  - clr
+  - common-language-runtime
 ---
 Nitelikler bildiğiniz üzere çalışma zamanına bilgi taşımak amacıyla kullanılan önemli tiplerdendir. Visual Studio tarafında da işimize yarayan bir çok nitelik (Attribute) yer alır. Bunlardan birisi DebuggerDisplay'dir. Önce aşağıdaki ekran görüntüsündeki kod parçasını göz önüne alalım.
 

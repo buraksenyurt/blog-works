@@ -5,14 +5,11 @@ date: 2004-02-09 12:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
-  - csharp
-  - dotnet
-  - sql-server
-  - authentication
+  - ado.net
+  - dataform
+  - wizard
   - visual-studio
-  - dataset
-  - datatable
+  - identity
 ---
 Bu makalemizde, Visual Studio.NET ortamında, Data Form Wizard yardımıyla, veritabanı uygulamalarının ne kadar kolay bir şekilde oluşturulabileceğini inceleyeceğiz. Pek çok programcı, uygulamalarını geliştirirken sihirbazları kullanmaktan açıkça kaçınır. Bunun bir nedeni, sihirbazların işlemleri çok fazla kolaylaştırması ve programcıyı tembelliğe itmesidir. Gerçektende, bir Data Form Wizard yardımıyla uzun sürede programlayacağınız bir veritabanı uygulamsını inanılmaz kısa sürede tamamlayabilirisiniz. Diğer yandan, bir programcı için bir uygulamayı geliştirmekteki en önemli unsur belkide şu kelimenin arkasında gizlidir; Kontrol.
 

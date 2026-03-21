@@ -4,16 +4,7 @@ title: "Project Lighthouse Social"
 date: 2025-08-12 08:00:00 +0300
 categories:
   - csharp
-tags:
-  - csharp
-  - dotnet
-  - postgresql
-  - redis
-  - rabbitmq
-  - web-api
-  - docker
-  - performance
-  - github
+tags: []
 ---
 Project Lighthouse Social, C# ile uçtan uca bir web projesinin geliştirilme serüvenidir. Konu, dünya üzerindeki deniz fenerlerine ait fotoğrafların paylaşıldığı, yorumlandığı ve puanlandığı bir sosyal platform yazmaktır. Projede mümkün mertebe yazılım dünyasının efsane konularına olan ihtiyaçları ortaya koymaya çalışmak ilk amaçlarımdan birisidir. Örneğin, hiçbir mimari kalıba uymadan sadece belli prensipleri (türetmeler, bağımlılıkları tersine çevirme, sorumlulukları dağıtma vs gibi) baz alarak bir proje iskeleti oluşturup sonrasında sorularla yaklaşımın doğruluğunu değerlendirmek, açık noktaları tespit etmek ve standartlaşmış bir mimari kalıba çevirmek gibi.
 

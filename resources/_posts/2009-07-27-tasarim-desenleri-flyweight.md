@@ -5,9 +5,9 @@ date: 2009-07-27 09:30:00 +0300
 categories:
   - tasarim-kaliplari-design-patterns
 tags:
-  - tasarim-kaliplari-design-patterns
+  - design-patterns
+  - oop
   - csharp
-  - generics
 ---
 Yandaki resimde yer alan minik boksör aslında hafif siklette mücadele etmektedir ve biraz sonra işleyeceğimiz FlyWeight tasarım kalıbı ile uzaktan yakında hiç bir alakası bulunmamaktadır. Ancak işleyeceğimiz tasarım kalbına bu ismin verilmesininde bir sebebi vardır. Bakalım neymiş?
 

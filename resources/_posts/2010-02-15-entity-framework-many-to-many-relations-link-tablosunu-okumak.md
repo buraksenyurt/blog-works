@@ -6,8 +6,6 @@ categories:
   - entity-framework
 tags:
   - entity-framework
-  - csharp
-  - linq
 ---
 Hatırlayacağınız üzere bir önceki yazımızda veritabanı tarafındaki Many-To-Many Relation'ların, Entity Framework tarafında nasıl değerlendirilebileceğine değinmeye çalışmıştık. Dikkat edilmesi gereken önemli noktalardan birisi, veritabanı tarafında yer alan ara bağlantı tablosunun Entity Framework üzerindeki modele alınmayışıydı. Ancak tam bu noktada ortaya bir soru işareti çıkmakta. Ya çalışma zamanında sadece ilişkili primary key alanlarının değerlerini elde etmek istersek. Bir önceki senaryomuza göre bu, hangi Track satırının hangi Playlist'ler ile ve hangi Playlist satırının hangi Track'ler ile ilişkili olduğunun görülmesi anlamına gelmektedir. Kısacası sadece TrackId ve PlaylistId değerlerinin eşleşmesine bakmak istediğimizi düşünebiliriz. Bu durumda aşağıdaki gibi bir kod parçası işimizi görecektir. Şükürler olsun isimsiz tiplere (Anonymous Type)
 

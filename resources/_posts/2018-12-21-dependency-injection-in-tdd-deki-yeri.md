@@ -5,16 +5,23 @@ date: 2018-12-21 10:30:00 +0300
 categories:
   - csharp
 tags:
-  - csharp
-  - bash
-  - dotnet
-  - web-service
-  - authentication
-  - generics
+  - unit-test
+  - tdd
+  - test-driven-development
+  - mocking
+  - stub
   - dependency-injection
-  - visual-studio
-  - github
-  - dependency-management
+  - csharp
+  - .net-core
+  - vs-code
+  - moq
+  - stubs
+  - nuget
+  - dotnet-test
+  - mstest
+  - .net
+  - interface
+  - constructor
 ---
 Ne zamandır oturup da Lego yapmadığımı fark ettim. Her ne kadar fiyatları epeyce artmış olsa da geçenlerde dayanamayıp bir tane aldım. Bitirir bitirmez beni tatile götüreceğini düşündüğüm güzel bir karavan. Bloklardaki canlı renklerin tatlılığı, masmavi surf tahtası, uydu alıcısı, konforlu koltukları, panaromik tavanı, spor lastikleri ile bir saate kalmadan hazırdı bile.
 

@@ -5,21 +5,8 @@ date: 2009-05-08 13:41:00 +0300
 categories:
   - dotnet-ria-services
 tags:
-  - dotnet-ria-services
-  - dotnet
-  - aspnet
-  - ado-net
-  - entity-framework
-  - linq
-  - wcf
-  - workflow-foundation
+  - .net-ria-services
   - silverlight
-  - rest
-  - http
-  - authentication
-  - authorization
-  - javascript
-  - visual-studio
 ---
 Son yıllarda bildiğiniz üzere Servis Tabanlı Uygulamalar (Service Oriented Applications) hayatımızda oldukça fazla yer kaplamaya başladı. Microsoft cephesinden olaya baktığımızda, en büyük sıçramanın Windows Communication Foundation ile.Net Framework 3.0' da yaşandığını söyleyebiliriz. WCF'in getirdiği servis bazlı uygulama geliştirme yaklaşımı,.Net Framework 3.5 ile dahada zenginleşti. Eklenen Web programlama modeli (Web Programming Model) özellikleri sayesinde, REST (Representational State Transfer) bazlı servislerin geliştirilebilmesinin yolu açıldı. Sonrasında Workflow Foundation ile iç içe geçen WCF özellikleri sayesinde, iş akışlarının farklı domainler ile haberleşebilmesi veya servis gibi sunulabilmesi olanaklı hale geldi. Derken.Net Framework 3.5 Service Pack 1 ile hayatımıza başka bir kavram daha girdi. Ado.Net Data Services.
 

@@ -6,8 +6,7 @@ categories:
   - csharp
 tags:
   - csharp
-  - xml
-  - performance
+  - arrays
 ---
 Hepimiz dizileri (Arrays) bilir ve kullanırız. Her ne kadar günümüzde koleksiyonlar, xml kaynakları ve tablo yapıları veri saklamak amacıyla daha çok kullanılıyor olsalar da, dizilerdende yoğun şekilde yararlanmaktayız. Örneğin kendi tasarladığımız bir sınıfa ait nesneler topluluğunu pekala bir dizi şeklinde ifade edebilir hatta serileştirebiliriz (serializable). Lakin dizileri kullanırken tercih edeceğimiz ve bize performans açısından avantaj sağlayacak teknikleri çoğu zaman göz ardı ederiz. İşte bu makalemizde dizileri kullanırken işimize yarayacak performans kriterlerinden bahsedeceğiz.
 

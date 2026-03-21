@@ -5,18 +5,20 @@ date: 2013-11-12 21:01:00 +0300
 categories:
   - nosql
 tags:
+  - db4o
+  - object-database
   - nosql
+  - not-only-sql
+  - .net
   - csharp
-  - dotnet
-  - linq
-  - cassandra
-  - silverlight
-  - http
   - java
-  - concurrency
-  - performance
-  - generics
-  - visual-studio
+  - language-integrated-query
+  - acid
+  - objectmanager-enterprise
+  - eclipse
+  - store
+  - iobjectcontainer
+  - poco
 ---
 Eğer bir ülke olsaydı, dünyanın 6ncı büyük ekonomisne sahip olurdu. Bu ifade Amerika’ nın en kalabalık nüfusuna sahip olan Kaliforniya eyaleti için [wikipedia](http://tr.wikipedia.org/wiki/Kaliforniya)’ da yazılmış. Birleşik Devletlerin batı kıyısının bir eyaleti olan Kaliforniya eyaletinde aslında pek çoğumuzun gıpta ederek baktığı şehirler var.
 

@@ -5,11 +5,9 @@ date: 2017-03-18 22:50:00 +0300
 categories:
   - csharp-6-0
 tags:
-  - csharp-6-0
   - csharp
-  - dotnet
-  - generics
-  - visual-studio
+  - extension-methods
+  - collections
 ---
 Mesleki hayatımın bir döneminde yazılım eğitmeni olarak çalıştım. Ağırlıklı olarak.Net eğitimleri verdim. Tabii o zamanlar.Net nispeten daha kolaydı. Bu kadar fazla dallanan bir Framework değildi ama C# dil özellikleri de acımasızca genişlemiyordu. Aradan geçen onca yıldan sonra çalıştığım turuncu bankanın kendi akademisinden iç eğitim isteği geldi.
 

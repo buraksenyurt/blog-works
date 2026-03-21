@@ -5,17 +5,7 @@ date: 2008-02-09 12:00:00 +0300
 categories:
   - csharp
 tags:
-  - csharp
-  - dotnet
-  - wcf
-  - xml
-  - soap
-  - web-service
-  - http
-  - authentication
-  - serialization
-  - generics
-  - debugging
+  - windows-communication-foundation
 ---
 Servis tabanlı uygulamalarda en önemli
 noktalardan biriside aradaki bilgi transferlerinin nasıl ve ne şekilde

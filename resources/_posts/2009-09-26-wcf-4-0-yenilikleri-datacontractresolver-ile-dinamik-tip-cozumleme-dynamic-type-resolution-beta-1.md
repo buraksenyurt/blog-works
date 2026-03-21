@@ -5,14 +5,7 @@ date: 2009-09-26 16:30:00 +0300
 categories:
   - wcf-4-0-beta-1
 tags:
-  - wcf-4-0-beta-1
-  - csharp
-  - dotnet
-  - wcf
-  - xml
-  - http
-  - serialization
-  - visual-studio
+  - windows-communication-foundation
 ---
 Hatırlayacağınız üzere bir önceki yazımızda, WCF serileştirme işlemlerinde Known Types sorunsalını değerlendirmeye çalışmıştık. Bu sorunsalın giderilmesinde ele alınan tekniklerden biriside KnownType niteliğinin (Attribute) kullanılmasıyıdı. Ama istersek servise uygulanacak ServiceKnownType niteliği ve başka diğer teknikleri de değerlendirebileceğimizden bahsetmiştik. Ne varki tüm bu teknikler static bir model sunmaktadır. WCF 4.0 ile birlikte, tip çözümlemelerinin (Type Resolution) dinamik olarak ele alınmasını sağlayan DataContractResovler isimli abstract bir sınıfın geldiği görülmektedir. Bu sınıf System.Runtime.Serialization.dll assembly'ının.Net Framework 4.0 versiyonunda yer almaktadır. Abstract bir sınıf olması, türetmede (Inheritance) kullanıldığı takdirde anlam kazanacak bir tip olduğunu ifade etmektedir.
 

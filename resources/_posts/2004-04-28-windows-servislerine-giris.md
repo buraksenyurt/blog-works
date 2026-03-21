@@ -6,12 +6,9 @@ categories:
   - windows-services
 tags:
   - windows-services
+  - hello-world
   - csharp
-  - dotnet
-  - threading
-  - performance
-  - transactions
-  - visual-studio
+  - windows
 ---
 Bu makalemizde windows servislerine kısa bir giriş yapıcak ve en basit haliye bir windows servisinin,.net ortamında nasıl oluşturulacağını incelemeye çalışacağız. Öncelikle Windows Service nedir, ne amaçlarla kullanılır bunu irdelemeye çalışak daha sonra windows servislerinin mimarisini kısaca inceleyeceğiz.
 

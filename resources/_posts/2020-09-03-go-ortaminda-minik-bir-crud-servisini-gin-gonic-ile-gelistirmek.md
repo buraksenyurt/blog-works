@@ -6,14 +6,11 @@ categories:
   - golang
 tags:
   - golang
-  - bash
-  - mongodb
-  - rest
-  - json
+  - gin-gonic
+  - rest-api
+  - swagger
   - http
-  - docker
-  - go
-  - github
+  - http-web-framework
 ---
 Gin-Gonic hafif siklet sayılan ama yüksek performansı ile öne çıkan (Muadili olan martini'den çok daha hızlı olduğu ifade ediliyor. Bu arada farklı Http Web Framework'ler için [şu yazıyı](https://deepsource.io/blog/go-web-frameworks/) inceleyebilirsiniz) bir HTTP-Web framework. Elbette açık kaynak bir çatı. Middleware tarafında (Yani Request ve Response'lar arasında) Recover ve Log desteği sunuyor. Tabii kendi middleware bileşenimizi yazıp ekleyebiliriz de. Recovery modülü en başından beri ekli olduğundan paniklemeyen bir framework diyebiliriz:) Yani Go çalışma zamanında HTTP talepleri ile ilgili olarak bir panic oluştuğunda uygun bir 500 cevabı verebiliyor.
 

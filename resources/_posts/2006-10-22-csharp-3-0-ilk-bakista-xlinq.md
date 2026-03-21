@@ -6,12 +6,8 @@ categories:
   - csharp
 tags:
   - csharp
-  - dotnet
-  - linq
-  - xml
-  - http
-  - generics
-  - visual-studio
+  - language-integrated-query
+  - xlinq
 ---
 XLINQ (Xml Language Integrated Query) temel olarak LINQ modelinin Xml üzerine uyarlanabilmesini hedeflemektedir. Bildiğiniz gibi LINQ projesi ile, IEnumerable arayüzünü uygulamış.Net nesneleri üzerinde dil ile tümleştirilmiş sorgulamalar gerçekleştirilebilmektedir. Microsoft aynı sorgu yapısını, veritabanı objelerinin programlama ortamında nesnel olarak ifade edilebildiği varlıklar (entities) üzerinde kullanılabilmesini de DLINQ (Database Language Integrated Query) ile sağlamaktadır. (DLINQ ile ilgili özet bilgileri bu [makalemden](http://www.bsenyurt.com/MakaleGoster.aspx?ID=174) bulabilirsiniz.)
 

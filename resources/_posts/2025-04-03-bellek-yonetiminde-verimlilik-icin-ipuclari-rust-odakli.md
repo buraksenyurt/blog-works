@@ -6,23 +6,18 @@ categories:
   - rust
 tags:
   - rust
-  - bash
-  - json
-  - threading
-  - concurrency
   - memory-management
-  - performance
-  - caching
-  - pointers
-  - generics
-  - thread-safety
-  - mutex
-  - atomic-operations
-  - race-condition
-  - ownership
-  - borrow-checker
-  - refcell
-  - arc
+  - copy-on-write
+  - dirt-cow
+  - arena-allocators
+  - atomicusize
+  - object-pooling
+  - zero-cost-abstraction
+  - cache-friendly-programming
+  - padding
+  - allignment
+  - interning
+  - niche-optimization
 ---
 Unmanaged ortamlarda gezinmek birçok yeni veya unutulmuş bilgiyi de karşıma çıkarıyor. Geçtiğimiz günlerde devasa boyutlarda JSON tabanlı logları işlerken Interning stratejisi ile belleğe alınan büyük boyutlu veri kümesinin nasıl optimize edilebileceğini öğrendim. Belli senaryolarda (her zaman da avantajlı olmayabiliyor) çok sık tekrar eden string içerikler için heap bölgesinde tahsisat yapılırken gereksiz alan ayırmak yerine, bunları referans eden tekil pointer'lardan yararlanmak ve hatta benzersiz sayısal değerlerle (örneğin pozitif bir tam sayı ile) bir vektör içerisinde tutup (Intern havuzu olarak da ifade ediliyor) erişimi hızlandırmak mümkün. Tam anlamıyla bellek seviyesinde optimizasyon ve performans kazanımı söz konusu.
 

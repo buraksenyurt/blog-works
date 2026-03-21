@@ -5,16 +5,8 @@ date: 2007-06-19 09:00:00 +0300
 categories:
   - wcf
 tags:
-  - wcf
-  - dotnet
-  - ado-net
-  - sql-server
-  - oracle
-  - web-service
-  - http
-  - performance
-  - transactions
-  - atomic-operations
+  - windows-communication-foundation
+  - transaction
 ---
 Transaction (İşlem) yönetimi özellikle veritabanı kaynakları söz konusu olduğunda her sistemde büyük bir önem sahiptir. Basit olarak transaction bir veya daha çok işlem bütününü temsil eder. Bütünü oluşturan söz konusu işlem parçaları çoğunlukla birbirleriyle ilişkilidir ve hepsinin başarılı bir şekilde tamamlanabilmesi sonrasında transaction'ın başarılı olduğu söylenebilir. Bu doğal olarak işlem parçalarından herhangibirinin başarısız olması sonucunda transaction'ınında başarısız olması anlamına gelmektedir. Aşağıdaki şekilde bir transaction'ın süreç içerisinde sistemin belirli bir konumdan başka bir konuma geçişi sırasında üstlendiği rol ifade edilmeye çalışılmaktadır.
 

@@ -6,8 +6,10 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - tek-fotoluk-ipucu
-  - linq
-  - http
+  - language-integrated-query
+  - excel
+  - csharp
+  - query
 ---
 [Bir önceki ip ucunda](http://www.buraksenyurt.com/post/Tek-Fotoluk-Ipucu-LINQ-to-Excel-ile-Basit-Sorgulama) LINQ to Excel Provider’ dan yararlanmış ve bir Excel dosyasını kolayca nasıl sorgulayabileceğimizi görmüştük. Peki ya Excel tablosunda yer alan satırları, kod tarafında oluşturacağımız Strongly Typed sınıflar içerisindeki özelliklere karşılık gelecek şekilde ifade edebiliyor olsaydık
 

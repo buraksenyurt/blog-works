@@ -5,18 +5,13 @@ date: 2012-03-01 07:22:00 +0300
 categories:
   - dotnet-framework-4-0
 tags:
-  - dotnet-framework-4-0
+  - .net
   - csharp
-  - xml
-  - dotnet
-  - aspnet
-  - wpf
-  - http
-  - threading
-  - performance
-  - caching
-  - dependency-injection
-  - dependency-management
+  - cross-cutting
+  - logging
+  - concern
+  - log4net
+  - nlog
 ---
 Herkesin kendine has bir parmak izi vardır. DNA gibi benzersizdir. Her ne kadar bazı ajanlı filmelerinde bu izler silinebilse de (belki de silinebilyordur):) Krimonoloji labaratuvarlarından tutunda, şirketlerdeki giriş kapılarına kadar pek çok noktada parmak izlerimiz devreye girer. Hatta günümüzde kullandığımız bilgisayarların çoğunun açılması için parmak izi kullanılabilmektedir.
 

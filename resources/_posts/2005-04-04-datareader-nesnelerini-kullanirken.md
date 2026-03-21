@@ -5,11 +5,8 @@ date: 2005-04-04 12:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
-  - csharp
-  - dotnet
-  - aspnet
-  - caching
+  - ado.net
+  - sqldatareader
 ---
 Bir önceki makalemizde Command nesnelerini kullanırken dikkat etmemiz gereken noktalara değinmiştik. Bu makalemizde ise DataReader nesnelerini kullanırken bizlere avantaj sağlayacak tekniklere değinmeye çalışacağız. Önceki makalemizde olduğu gibi ağırlık olarak SqlDataReader nesnesini ve Sql veritanını kullanacağız. DataReader nesneleri bildiğiniz gibi, bağlantılı katman (connected-layer) üzerinde çalışmaktadır. Görevleri veri kaynağından, uygulama ortamına doğru belli bir akım üzerinden hareket edecek veri parçalarının taşınmasını sağlamaktır.
 

@@ -5,12 +5,7 @@ date: 2009-06-09 16:51:00 +0300
 categories:
   - tpl
 tags:
-  - tpl
-  - csharp
-  - dotnet
-  - parallel-programming
-  - concurrency
-  - visual-studio
+  - task-parallel-library
 ---
 Gecenin bu saatinde uyuyamayıp blog'uma bir şeyler yazmak isteyişimin sebebi, bu gün bir okurumdan gelen şu sorudur; "Madem Parallel.For veya Parallel.ForEach ile herşey daha hızlı oluyor, niye normal for ve foreach döngülerini bu formasyona sokmuyorlarda ek bir şeyler ilave ediyorlar". Dolayısıyla klavyemi elime aldım ve hemen bir test programı yazmaya koyuldum. Bu kez amaç vaat edilenin tersini göstermekti. Yani performansa ve hıza ulaşmaya çalışmayacak, tam aksi yöne gitmeye gayret edecektim. Aslında bu işlemler için gayet profesyonel test araçları mevcuttur. Ancak bir araca gerek duymadanda analizimizi yapabiliriz. İşe Visual Studio 2010 Beta 1 üzerinde, basit bir Console örneği geliştirerek başladım. İşte kodlarımız;
 

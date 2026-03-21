@@ -6,14 +6,11 @@ categories:
   - golang
 tags:
   - golang
-  - nosql
-  - rest
-  - json
+  - web-programming-model
   - http
-  - go
-  - concurrency
-  - performance
-  - github
+  - router
+  - httprouter
+  - http-get
 ---
 Yönlendirme (Routers) mekanizmaları özellikle anlamlı HTTP taleplerinde önemli bir rol oynar. Bir tarayıcının adres satırından gelen ifadelerin sunucu tarafında ele alınması sırasında işleri kolaylaştırıcı kütüphaneler de bulunmaktadır. Sevgili Murat Özalp'ın kitabında ilerlerken GO'nun built-in yönlendirme mekanizmaları dışında github üzerinden sunulan pek çok basit ve kullanışlı çatının olduğunu öğrendim. Tabii burada bahsedilen kütüphaneler ağırlıklı olarak web taleplerinin bir eşleştirme koduna göre uygun fonksiyonlara yönlendirilmesi ve cevaplandırılması ile alakalıydı. Bazıları performans açısından öne çıkarken bazıları komple bir web çatısını sunma kabiliyetine sahipti. Güncel listeye [şu adresten bakabilirsiniz.](https://github.com/naoina/go-http-routing-benchmark) Yeni paketler geldikçe veya var olanlarda değişiklikler oldukça benchmark sonuçları da etkilenecektir. Bu nedenle ara ara uğramakta yarar olduğu kanısındayım.
 

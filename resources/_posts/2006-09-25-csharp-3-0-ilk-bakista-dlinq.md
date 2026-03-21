@@ -6,13 +6,9 @@ categories:
   - csharp
 tags:
   - csharp
-  - linq
-  - sql-server
-  - t-sql
-  - xml
-  - http
-  - transactions
-  - generics
+  - language-integrated-query
+  - lambda-operator
+  - anonymous-types
 ---
 Bildiğiniz gibi uzun bir süredir Microsoft LINQ (.Net Language Integrated Query) adını verdiği ve C# 3.0' ın amacı olan bir projeyi sürdürmekte. Projenin en büyük amacı, özellikle veri üzerinde yapılabilecek sorgulama tekniklerinin dahada yaygınlaştırılması ve dil ortamına entegre edilebilmesi. Örneğin LINQ sayesinde IEnumerable arayüzünü (interface) uygulamış herhanbir tip (type) üzerinde sql sorgularına benzer ifadeler kullanabilir ve alt kümeler çekebiliriz.
 

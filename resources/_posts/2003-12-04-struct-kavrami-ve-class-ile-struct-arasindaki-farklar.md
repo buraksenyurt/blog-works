@@ -5,8 +5,9 @@ date: 2003-12-04 11:00:00 +0300
 categories:
   - csharp
 tags:
+  - struct
+  - class
   - csharp
-  - performance
 ---
 Bugünkü makalemizde struct kavramını incelemeye çalışacağız. Hatırlayacağınız gibi, kendi tanımladığımız veri türlerinden birisi olan Numaralandırıcıları (Enumerators) görmüştük. Benzer şekilde diğer bir veri tipide struct (yapı) lardır.Yapılar, sınıflar ile büyük benzerleklik gösterirler. Sınıf gibi tanımlanırlar. Hatta sınıflar gibi, özellikler,metodlar,veriler, yapıcılar vb... içerebilirler. Buna karşın sınıflar ile yapılar arasında çok önemli farklılıklar vardır.
 

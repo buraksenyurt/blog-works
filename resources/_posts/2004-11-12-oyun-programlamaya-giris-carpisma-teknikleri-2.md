@@ -6,6 +6,9 @@ categories:
   - csharp
 tags:
   - csharp
+  - game-programming
+  - pisagor
+  - matematik
 ---
 Hatırlayacağınız gibi bir önceki makalemizde, Oyun Programcılığına girmek adına çarpışma tekniklerini incelemeye başlamış ve dörtgenlerin çarpışmalarını ele almıştık. Bugünkü makalemizde ise, dairesel şekillerin birbirleri ile olan çarpışmalarını incelemeye çalışacağız. Dairesel şekillerin çarpışmasına verilebilecek en güzel örnek, kaynaklardan edindiğim bilgiye göre Bilardo oyunlarıdır. Burada gerçekten de mükemmel dairelerin birbirleriyle olan çarpışmaları söz konusudur. Şunuda hatırlatmakta fayda var. Şu an için teorilerimizi iki boyutlu uzayda inceliyoruz. Elbetteki işin için üç boyutlu cisimler girdiğinde kullanacağımız algoritmalar ve teknikler birazda olsa farklılık gösterecektir. Çünkü uzay boyutunda X ve Y koordinatlarına ek olarak Z koordinatlarıda işin içine girecektir. Bu da iki boyutlu bir sistemde Bilardo oyunun tasarlanmasının 3 boyutlu sistemdekine göre daha kolay olduğunu göstermektedir.
 

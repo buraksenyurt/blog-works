@@ -6,8 +6,11 @@ categories:
   - csharp
 tags:
   - csharp
+  - generic
   - reflection
-  - generics
+  - IList
+  - type-safety
+  - recursive-method
 ---
 Çalışmakta olduğumuz projelerde zaman zaman bizi zorlayan vakalar ile karşılaşıyoruz. Bu gibi durumlarda Google abimiz en büyük yardımcımız olabiliyor. Hatta pek çoğumuz sorunların çözümünde Stackoverflow gibi kaynaklardan yararlanıyor ya da daha deneyimli birisinden yardım istiyor. Ne var ki bazı vakaları kendimiz çözmeye çalışsak çok daha yararlı olabilir.
 

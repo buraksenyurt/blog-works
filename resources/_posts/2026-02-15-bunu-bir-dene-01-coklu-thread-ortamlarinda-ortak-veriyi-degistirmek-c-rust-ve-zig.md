@@ -5,23 +5,14 @@ date: 2026-02-15 19:31:00 +0300
 categories:
   - Zig
 tags:
-  - Zig
-  - C#
-  - Rust
-  - .NET
-  - Redis
-  - RabbitMQ
-  - Threading
-  - Concurrency
-  - Performance
-  - Pointers
-  - GitHub
-  - Shared State
-  - Mutex
-  - Atomic Operations
-  - Race Condition
-  - Ownership
-  - Arc
+  - zig-lang
+  - csharp
+  - .net
+  - rust
+  - multi-thread
+  - thread
+  - thread-safe
+  - multithreading
 ---
 [Önceki yazımızda](/2026/01/15/bunu-bir-dene-00-metot-argumanlarinda-degisiklik-c-rust-ve-zig/), bir fonksiyona aktarılan parametre üzerinde değişklik yapmak istediğimizde bunun C#, Rust ve Zig programlama dilleri tarafındaki ele alınış biçimlerini farklı örneklerle incelemeye çalışmıştım. Nihayetinde ulaştığım noktada bir nesnenin kendisini tanımlayan değerlerin değiştirilmesinde programlama dili ve hatta kullanılacak yazılım mimarisi bazında farklı yaklaşımlar olduğunu görmüştük. Merak ettiğim bir başka konuysa, multi-thread (çoklu iş parçacığı) ortamlarında ortak veriyi değiştirmek. Aynı veri üzerinde birden fazla thread'in okuma/yazma işlemi yapması çok sık karşılaşılan bir durum. Şu anda elimde managed ortamı olan, yerleşik framework kütüphanelerinde üst düzey soyutlamalar sunan C#, bellek güvenliği konusundaki titiz stratejileri ve zorlamaları ile öne çıkan Rust ve C'nin modern bir versiyonu olarak gördüğüm düşük seviyeli sistem programlama dili Zig var.
 

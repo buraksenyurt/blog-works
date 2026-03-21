@@ -5,10 +5,10 @@ date: 2004-09-07 12:00:00 +0300
 categories:
   - aspnet-2-0
 tags:
-  - aspnet-2-0
-  - dotnet
-  - aspnet
-  - http
+  - asp.net
+  - gridview
+  - update
+  - delete
 ---
 Bu makalemizde, Asp.Net 2.0 ile gelen yeni kontrollerden birisi olan GridView kontrolü üzerinde, veri güncelleme ve veri silme gibi işlemlerin nasıl yapılacağını incelemeye çalışacağız. Asp.Net 2.0 ve dolayısıyla Framework 2.0, özellikle veri bağlı kontrollerde, yazılım geliştiricilerin sıklıkla yaptıkları rutin işlemlerin dahada kolaylaştırılmasına izin veren mimari yaklaşımları benimsemektedir.
 

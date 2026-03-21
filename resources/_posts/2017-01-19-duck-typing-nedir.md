@@ -5,12 +5,11 @@ date: 2017-01-19 21:30:00 +0300
 categories:
   - ruby
 tags:
-  - ruby
-  - csharp
-  - linq
-  - python
-  - java
-  - generics
+  - ruby-lang
+  - type-systems
+  - duck-typing
+  - static-languages
+  - dynamic-programming
 ---
 Son bir yıldır Ruby ve Python gibi script diller üzerinde araştırmalar yapıyorum. Daha çok bu dilleri öğrenme, anlama gayretindeyim. En azından orta seviye bilgi sahibi olmak benim için yeterli. Bu dilleri incelerken uzun yıllardır çalıştığım dinamik tip sistemli ve derleyici odaklı yaklaşımları da sorgulamak durumunda kalıyoum. Nitekim farklı programlama yaklaşımlarına sahipler.
 

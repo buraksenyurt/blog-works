@@ -5,20 +5,13 @@ date: 2020-07-22 20:23:00 +0300
 categories:
   - dotnet-core
 tags:
-  - dotnet-core
-  - bash
-  - csharp
-  - yaml
-  - dotnet
-  - aspnet
-  - linq
-  - web-api
-  - http
   - docker
-  - performance
-  - generics
-  - visual-studio
-  - github
+  - .net
+  - .net-core
+  - elk
+  - elasticsearch
+  - kibana
+  - logging
 ---
 Her ne kadar artık.Net 5.0 hayatımızın içinde olsa da bu yıl içinde bir yerlerde.Net Core 3.1 ile ELK kurgusunu yeniden değerlendirme ihtiyacı hissetmişim. Elasticsearch, Logstash ve Kibana kurgusu aslında günümüz uygulamalarında son derece popüler. Genellikle uygulama loglarının devasa şekilde biriktiği durumların çözümünde ideal bir kurgu olarak karşımıza çıkıyor. Bu kurguda uygulama loglarını standart bir formata uygun olacak şekilde Elasticsearch'e atar, Kibana arayüzünü kullanarak izleme yapar ve çeşitli durumların kontrolünü gerçekleştiririz. Ağırlıklı olarak üretim ortamında oluşacak hataların, performans kayıplarının ve dar boğazların yakalanması noktasında işimize yarayan bir düzenek olarak düşünebiliriz.
 
@@ -225,7 +218,7 @@ dotnet run
 
 ![skynet_08_Screenshot_2.png](/assets/images/2020/skynet_08_Screenshot_2.png)
 
-Sonrasında örneğin Kibana ortamında ([KQL - Kibana Query Language](https://www.elastic.co/guide/en/kibana/master/kuery-query.html)) ile Error seviyesinde olan veya mesaj içeriğinde "zamanı" kelimesi geçen logları aratabiliriz.
+Sonrasında örneğin Kibana ortamında ([KQL - Kibana Query Language](https://www.elastic.co/docs/explore-analyze/query-filter/languages/kql)) ile Error seviyesinde olan veya mesaj içeriğinde "zamanı" kelimesi geçen logları aratabiliriz.
 
 ```text
 level : "Error" or message : "zamanı"

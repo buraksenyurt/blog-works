@@ -5,10 +5,7 @@ date: 2009-10-04 23:29:00 +0300
 categories:
   - wf-4-0-beta-1
 tags:
-  - wf-4-0-beta-1
-  - csharp
   - workflow-foundation
-  - visual-studio
 ---
 Workflow Foundation 4.0 ile ilgili yenilikleri araştırdığım şu günlerde, yaptığım araştırmalar sırasında ilgimi çeken noktalardan biriside, bir Workflow'un kod tarafında tek bir ifade satırı ile oluşturulabiliyor olmasıydı. Burada Workflow sisteminin hiyerarşik yapısının, Object Oriented seviyede etkili bir kullanımının söz konusu olduğunu belirtmek isterim. Ancak konuya çekirdek bilgilerden başlayarak yaklaşmakta yarar var.
 

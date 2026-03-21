@@ -5,19 +5,8 @@ date: 2009-04-22 08:07:00 +0300
 categories:
   - wcf
 tags:
-  - wcf
-  - csharp
-  - dotnet
-  - aspnet
-  - xml
-  - rest
-  - json
-  - http
-  - javascript
-  - caching
-  - serialization
-  - generics
-  - visual-studio
+  - windows-communication-foundation
+  - rest-api
 ---
 Bildiğiniz üzere bir süredir WCF servislerinin REST modeline göre geliştirilmesi ile ilgili bilgilerimi ve öğrendiklerimi sizlerle paylaşmaktayım. Bu nedenle dün gece yaşadığım bir macerayıda aktararak başıma gelenleri sizlerle paylaşmak istiyorum. Bir süre önce [WCF Rest Starter Kit'](http://aspnet.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=24644)i incelemeye başlamış ve bu konuyla ilgili olaraktan bir görsel video yayınlamıştım.([NedirTv? bağlantısı](http://www.nedirtv.com/video/WCF-REST-Bolum-2---Readonly-Collection-Service.aspx))
 

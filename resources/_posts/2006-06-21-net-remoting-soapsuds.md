@@ -5,15 +5,8 @@ date: 2006-06-21 12:00:00 +0300
 categories:
   - dotnet-remoting
 tags:
-  - dotnet-remoting
-  - csharp
-  - xml
-  - dotnet
+  - .net-remoting
   - soap
-  - web-service
-  - http
-  - generics
-  - visual-studio
 ---
 Remoting mimarisinde, istemci ve sunucu arasında uzak nesneleri paylaşmanın dört farklı yolu vardır. İstemcilerin tek amacı sunucu üzerinde yer alan uzak nesne referanslarını kullanabilmektir. Bu açıdan bakıldığında, istemci uygulamanın uzak sunucu üzerindeki nesne referanslarının yapısını bilmesi gerektiği ortaya çıkmaktadır. Kullanılabilecek yollardan ilki uzak nesne sınıfının bulunduğu paylaşımlı bir assembly'ı tüm istemci uygulamalara dağıtmaktır. Bu istemci uygulamalar için ekstra kod yazmadan kolayca gerçekleştirilebilecek bir işlemdir. Lakin istemci uygulamalarda, uzak sınıfın tüm içeriğinin yer aldığı bir assembly'da mevcuttur. Bu da ILDASM (Intermediate Dis-Assembler Tool) ve başka üçüncü parti araçlar yardımıyla iş mantığının (business logic) istemci tarafından kolayca okunabileceği anlamına gelir. İşte bu dezavnataj nedeni ile özellikle güvenlik açısından çoğu zaman bu teknik tercih edilmez.
 

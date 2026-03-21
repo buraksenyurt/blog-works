@@ -5,11 +5,7 @@ date: 2004-07-22 12:00:00 +0300
 categories:
   - dotnet-remoting
 tags:
-  - dotnet-remoting
-  - csharp
-  - threading
-  - concurrency
-  - delegates
+  - .net-remoting
 ---
 Bu makalemizde, uzak nesneler üzerindeki metodlara asenkron olarak nasıl erişebileceğimizi kısaca incelemeye çalışacağız. Remoting ile ilgili bir önceki makalemizde, çok basit haliyle uzak nesnelerin, istemciler tarafından nasıl kullanılabildiğini incelemiştik. Geliştirmiş olduğumuz örnekte, uzak nesne üzerindeki metoda senkron olarak erişmekteydik. Yani, uzak nesnedeki metodun işleyişi bitene kadar, istemci uygulama kısa sürelide olsa duraksıyordu. Ancak bazı zamanlarda, uzak nesneler üzerinde işleyecek olan metodlar, belirli bir süre zarfında gerçekleşebilecek uzunlukta işlemlere sahip olabilirler. Böyle bir durumda istemci uygulamalar, metodların geri dönüş değerlerini beklemek zorunda kalabilirler. Oysaki, uzak nesneye ait metodlar bir yandan çalışırken, diğer yandanda istemci uygulamadaki izleyen kod satırlarının eş zamanlı olarak çalışması istenebilir. Bunu sağlamak için, uzak nesne metodlarına asenkron olarak erişilir.
 

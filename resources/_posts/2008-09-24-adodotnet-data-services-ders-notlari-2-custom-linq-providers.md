@@ -5,20 +5,9 @@ date: 2008-09-24 12:00:00 +0300
 categories:
   - ado-net-data-services
 tags:
-  - ado-net-data-services
-  - csharp
-  - dotnet
-  - aspnet
-  - ado-net
-  - linq
-  - wcf
-  - xml
-  - rest
-  - http
-  - concurrency
-  - performance
-  - generics
-  - visual-studio
+  - ado.net-data-services
+  - wcf-data-services
+  - windows-communication-foundation
 ---
 Son bahar yada kış gibi mevsimler ile özellikle yağmurlu ve kasvetli günlerde her geliştiricinin araştırma ve öğrenme süreci ve verimliliğinde belirgin bir artış gözlemlenir. Bu herkes için böyle olmasada en azından benim için geçerli bir durumdur. İşte bu felsefe ve ruh haliyle çıktığımız yolda son makalemizde Ado.Net Data Services konusuna değinmeye başlamış ve ders notlarımızı kaleme almıştık. İkinci ders notlarımızın konusu ise LINQ Provider kullanarak özel bir bağlama işleminin nasıl yapılabileceğini görmek.
 

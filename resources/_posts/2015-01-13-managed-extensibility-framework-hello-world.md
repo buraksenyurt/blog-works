@@ -6,13 +6,15 @@ categories:
   - dotnet-framework-4-0
   - dotnet-framework-4-5
 tags:
-  - dotnet-framework-4-0
-  - dotnet-framework-4-5
-  - dotnet
-  - http
-  - performance
-  - reflection
-  - visual-studio
+  - mef
+  - managed-extensibility-framework
+  - csharp
+  - .net-framework
+  - IoC
+  - dependency-injection
+  - modul-based-development
+  - windows-api
+  - .net-runtime
 ---
 Günümüzde uygulamaların genişletilebilir olması önemli bir konu. Modüler olarak da nitelendirebileceğimiz bu felsefe ile bir uygulamanın kullanıcıları tarafından kolayca genişletilebilmesi amaçlanır. Hatta akıllı uygulamaların kendilerini bu şekilde genişletmesi de mümkündür.
 

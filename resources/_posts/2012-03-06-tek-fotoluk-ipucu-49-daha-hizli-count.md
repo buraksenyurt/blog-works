@@ -5,7 +5,12 @@ date: 2012-03-06 22:50:00 +0300
 categories:
   - t-sql
 tags:
-  - t-sql
+  - sql
+  - sql-server
+  - transact-sql
+  - row-count
+  - count
+  - select
 ---
 Çok yüksek rakamlarda satır içeren (Milonylarca Satır) tablolar söz konusu olduğunda, bunların satır sayılarını, Count Aggregate fonksiyonu ile bulurken süre kaybı yaşıyorsak ve sonuçları geç alıyorsak daha hızlı bir yola başvurabiliriz. Nasıl mı?
 

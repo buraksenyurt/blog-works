@@ -6,13 +6,12 @@ categories:
   - rust
 tags:
   - rust
-  - bash
-  - csharp
-  - xml
-  - json
+  - rust-lang
+  - tcp
   - http
-  - github
-  - ownership
+  - tcplistener
+  - http-server
+  - server-object-model
 ---
 Bir HTTP sunucusu yazmaya ne gerek var diyebilirsiniz. Öyle düşünmeyin. Bir programlama dilini öğrenmenin en iyi yolu, var olan yapıları o dille yazmaya çalışmaktır. Hangi dil ya da platform olursa olsun ortada dolaşan yüzlerce HTTP server zaten var. Ancak nasıl çalıştıklarını anlamak için de yine yeniden yazmakta yarar var. Bugünkü pratiğimizde bir HTTP server Rust programlama dili ile nasıl yazılabilir incelemeye çalışacağız. Esasında minik bir başlanıç yapacağız. Nitekim bir HTTP sunucusunun görevleri çok geniş olabilir.
 

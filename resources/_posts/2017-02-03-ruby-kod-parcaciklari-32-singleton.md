@@ -5,7 +5,11 @@ date: 2017-02-03 21:23:00 +0300
 categories:
   - ruby
 tags:
-  - ruby
+  - ruby-lang
+  - design-patterns
+  - tasarım-kalıpları
+  - singleton-design-pattern
+  - marshalling
 ---
 Ruby'nin oldukça geniş bir program kütüphanesi bulunuyor. Fırsat buldukça bazılarını incelemeye çalışıyorum. Geçtiğimiz günlerde Singleton isimli bir modüle rastladım. Kısaca tasarım kalıplarından (Design Patterns) olan Singleton deseninin kolayca uygulanmasını sağlıyor.
 

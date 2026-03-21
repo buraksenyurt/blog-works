@@ -6,20 +6,16 @@ categories:
   - raspberry-pi
 tags:
   - raspberry-pi
-  - bash
-  - dotnet
-  - sql-server
-  - postgresql
-  - web-service
-  - authentication
-  - docker
-  - python
-  - java
+  - linux
+  - programlama
+  - commodore-64
   - nodejs
-  - performance
-  - microservices
-  - visual-studio
-  - github
+  - python
+  - .net-core
+  - postgresql
+  - 80ler
+  - 90lar
+  - 2000ler
 ---
 ## 1985 Yazı - Hikayenin Başladığı Yer
 
@@ -80,7 +76,7 @@ Sonra düşünmeye başladım. Neden en iyisi gerekiyordu programlama yapmam iç
 
 Bunun üzerine ucuz maliyetli Raspberry Pi 3B+ almaya karar verdim. 1 Gb Ram’i olan cihazın üzerinde Debian tabanlı Raspbian sürümünü kullanacaktım. 16 Gb’lık bir MicroSD kartı bootable disk olarak hazırladım. Ufacık entegrenin hard diski yoktu ama WiFi ile internete bağlanabiliyordu. Daha ilk gece üstünde bir çok şey yapmış, sadeliğine, sessizliğine ve minimal gereksinimlerine hayran kalmıştım. Şimdilik…
 
-> [Şu adresten öğrendiğim kadarıyla](https://ubuntu-mate.org/blog/ubuntu-mate-bionic-beta1-raspberry-pi/) Ubuntu Mate sürümünün en azından beta olarak Raspberry Pi 2,3 modellerine kurulumuna ait bir paylaşım var. Diğer yandan [2019 tarihli bu yazıya göre](https://www.fossmint.com/operating-systems-for-raspberry-pi/) Ubuntu ile sınırlı değiliz. Bir çok işletim sistemini Raspberry Pi üzerinde kullanmamız mümkün. Windows IoT Core ve Ubuntu Core’da bunlara dahil.
+> [Şu adresten öğrendiğim kadarıyla](https://ubuntu-mate.org/blog/ubuntu-mate-bionic-beta1-raspberry-pi/) Ubuntu Mate sürümünün en azından beta olarak Raspberry Pi 2,3 modellerine kurulumuna ait bir paylaşım var. Diğer yandan [şu yazıya göre](https://www.geeksmint.com/operating-systems-for-raspberry-pi/) Ubuntu ile sınırlı değiliz. Bir çok işletim sistemini Raspberry Pi üzerinde kullanmamız mümkün. Windows IoT Core ve Ubuntu Core’da bunlara dahil.
 > [Forbes’un bir haberine göre](https://www.forbes.com/sites/jasonevangelho/2019/07/01/confirmed-ubuntu-mate-is-coming-to-the-raspberry-pi-4/#51296f2b9b4d) Ubuntu Mate’in Raspberry Pi 4'ü destekleyeceği ifade edilse de resmi olarak buna dair bir doğrulama en azından yazıyı hazırladığım tarih itibariyle yoktu. Sadece Estimated Time of Arrival konsepti ile üzerinde çalışıldığına dair söylemler var. Sanırım bu desteğin gelip gelmeyeceğini zaman içerisinde öğreneceğiz.
 
 ## Raspbian’da Bir Gece…
@@ -169,4 +165,4 @@ Aslında Raspberry Pi’yi bir IoT cihazı gibi kullanmaktansa düşük maliyetl
 
 ## Bir Öğle Arası…Şekerpınar
 
-Gerçekten de programlama yapmak için çok güçlü bir makineye ihtiyacım var mı? Yeni bir maceraya atılmış gibi hissediyorum. Bazen teknolojinin baş döndürücü gelişmesine kızsam da yeni ufuklara yelken açmamıza olanak sağladığı için hevesleniyorum. Oldukça minimal bir cihaz üzerinde programlama öğrenmeye çalışmak…Motivasyonum tam olarak bu. Piyasadaki bilgisayarlara nazaran çok düşük maliyetli bu minion pc için elde edeceğim deneyime göre 128 Gb Micro SD karta geçmeyi bile düşünebilirim. Hatta [4Gb Ram kapasiteli Raspberry Pi 4 sürümü](https://www.raspberrypi.org/products/raspberry-pi-4-model-b/specifications/) maliyet bazında ciddi olarak düşünülebilir ki PC’lere hafif bir alternatif olarak ön plana çıkmakta ([Şuradaki karşılaştırma](https://www.androidcentral.com/raspberry-pi-4-vs-raspberry-pi-3) konu hakkında fikir verebilir) Aradığım sorunun cevabını ancak bu şekilde bulabileceğime inanıyorum. Tabii şu önemli parametreyi de unutmamak lazım; Bu karışımı üretim ortamları haricinde yazılım geliştirme adına bir şeyleri öğrenmek için kurcalayacağım deneysel bir çalışma sahası olarak görüyorum. ARM işlemcisi bazı geliştirme platformlarınca desteklenmiyor olsa dahi…
+Gerçekten de programlama yapmak için çok güçlü bir makineye ihtiyacım var mı? Yeni bir maceraya atılmış gibi hissediyorum. Bazen teknolojinin baş döndürücü gelişmesine kızsam da yeni ufuklara yelken açmamıza olanak sağladığı için hevesleniyorum. Oldukça minimal bir cihaz üzerinde programlama öğrenmeye çalışmak…Motivasyonum tam olarak bu. Piyasadaki bilgisayarlara nazaran çok düşük maliyetli bu minion pc için elde edeceğim deneyime göre 128 Gb Micro SD karta geçmeyi bile düşünebilirim. Hatta [4Gb Ram kapasiteli Raspberry Pi 4 sürümü](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/specifications/) maliyet bazında ciddi olarak düşünülebilir ki PC’lere hafif bir alternatif olarak ön plana çıkmakta ([Şuradaki karşılaştırma](https://www.androidcentral.com/raspberry-pi-4-vs-raspberry-pi-3) konu hakkında fikir verebilir) Aradığım sorunun cevabını ancak bu şekilde bulabileceğime inanıyorum. Tabii şu önemli parametreyi de unutmamak lazım; Bu karışımı üretim ortamları haricinde yazılım geliştirme adına bir şeyleri öğrenmek için kurcalayacağım deneysel bir çalışma sahası olarak görüyorum. ARM işlemcisi bazı geliştirme platformlarınca desteklenmiyor olsa dahi…

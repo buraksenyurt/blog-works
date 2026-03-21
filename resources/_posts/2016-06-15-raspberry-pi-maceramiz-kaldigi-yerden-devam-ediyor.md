@@ -6,10 +6,10 @@ categories:
   - python
   - raspberry-pi
 tags:
-  - python
   - raspberry-pi
-  - dotnet
-  - http
+  - IoT
+  - Internet-of-Things
+  - python
 ---
 Raspberry Pi'mize yeni parçalar alarak masraf yapmaya, python dilini öğrenmeye ayırdığımız bir iki haftayı daha heyecanlı bir şekilde geride bıraktık. Ne durumdayız, merak ediyor musunuz? [Recep Duman](http://www.recepduman.net/) hocam ile kısa bir Retrospective toplantısı yapıp durumu değerlendiriyoruz. Buyrun izleyelim. Bu arada yer yer sürçü lisan'da ettik o nedenle affedin.
 

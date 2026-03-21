@@ -7,8 +7,9 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - csharp
-  - tek-fotoluk-ipucu
+  - extension-methods
   - reflection
+  - language-integrated-query
 ---
 Sanırım bir önceki tek fotoluk ipucunda çalışma zamanındaki bir nesne özelliğinin değerinin nasıl alınabileceğini görmüştük. Elbette reflection konulu işlerde bir nesne örneğinin bir metodunun çağırılması da söz konusu olabilir. Nasıl mı?
 

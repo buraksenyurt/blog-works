@@ -6,17 +6,12 @@ categories:
   - golang
 tags:
   - golang
-  - dotnet
+  - google-proto-buffers
+  - protobuf
   - xml
   - json
-  - go
-  - python
-  - java
-  - javascript
-  - performance
   - serialization
-  - pointers
-  - github
+  - binary-serialization
 ---
 Uygulama verilerini kullandığımız dile göre çeşitli şekillerde ifade edebiliriz. Eğer nesne yönelimli bir dil kullanıyorsak buradaki başrol oyuncumuz sınıflardır. Verinin nesnel olarak ifade edilişinde rol olan sınıf ve benzeri tipler, çalışma zamanında taşıdıkları içerikleri ile sürekli hareket halindedir. Bu hareket uygulamanın kendi alanında olabileceği gibi farklı programlar arasında da gerçekleşebilir. Veri, ağ üzerinde de hareket edebilir. Verinin bu şekilde dolaşımı sırasında belirli kriterlere göre serileştirilmesi de gerekebilir. Bu noktada karşımıza platform bağımsızlık, okunabilirlik, genişletilebilirlik, versiyonlama ve performans gibi kriterler çıkar.
 

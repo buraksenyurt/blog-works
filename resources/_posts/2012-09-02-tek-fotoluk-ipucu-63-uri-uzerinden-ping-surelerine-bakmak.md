@@ -5,7 +5,14 @@ date: 2012-09-02 19:50:00 +0300
 categories:
   - tek-fotoluk-ipucu
 tags:
-  - tek-fotoluk-ipucu
+  - uri
+  - extension-methods
+  - httpwebrequest
+  - httpwebresponse
+  - ping
+  - web-request
+  - web-response
+  - stopwatch
 ---
 Hani bazen komut satırından bir URL adresine talep gönderip cevap sürelerine bakarız. Peki kod tarafından bu işi nasıl taklit edebiliriz? Örneğin Uri tipine bir Extension Method dahil etsek nasıl olur? Buyrun öyleyse
 

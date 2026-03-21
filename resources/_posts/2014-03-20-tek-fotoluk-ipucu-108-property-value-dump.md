@@ -4,8 +4,7 @@ title: "Tek Fotoluk İpucu 108–Property Value Dump"
 date: 2014-03-20 21:30:00 +0300
 categories:
   - tek-fotoluk-ipucu
-tags:
-  - tek-fotoluk-ipucu
+tags: []
 ---
 Projelerinizde, temel tiplerden (Primitive Types) özellikler içeren yalın nesne örnekleri döndüren servis metodlarını tüketir misiniz? Mutlaka bir yerlerde kullanıyorsunuzdur. Bu tipler bazen kurum dışı servis üreticileri tarafından hazırlanmış olabilirler. Hatta bazıları içlerinde 50ye yakın özellik (Property) de barındırabilir. Ve bazen projenizin özellikle log atan kısımlarında bu nesnelerin belirli tiplerden oluşan özelliklerine ait değerleri olduğu gibi yazdırmak istersiniz.
 

@@ -5,23 +5,27 @@ date: 2019-08-16 10:30:00 +0300
 categories:
   - dotnet-core
 tags:
-  - dotnet-core
-  - bash
-  - json
-  - csharp
-  - dotnet
-  - entity-framework
-  - linq
-  - sql-server
-  - mysql
-  - nosql
-  - rest
+  - .net-core
   - web-api
-  - http
-  - performance
-  - generics
-  - visual-studio
-  - github
+  - dapper.net
+  - orm
+  - csharp
+  - IActionResult
+  - rest-api
+  - sqlite
+  - dapper
+  - sql
+  - query
+  - execute-query
+  - select
+  - crud
+  - stackoverflow
+  - httpget
+  - httppost
+  - poco
+  - entity-framework
+  - extension-methods
+  - microservice
 ---
 O [cumartesi gecesi çalışması](https://github.com/buraksenyurt/saturday-night-works)nı bitirdiğimde, yaptığım örneğin beni çok da tatmin etmediği gerçeğiyle karşı karşıyaydım. Bazen böyle hissediyordum. Boşa kürek çektiğim hissine kapılıyor ve neden tüm bunlarla uğraştığımı sorguluyordum. Belki de sonraki yıllar boyunca kullanmayacağım bir şeyler üzerinde çalışmıştım. Ne aldığım notları ne de senaryo için kullandığım Westwind adını beğenmiştim. Örnek çok sığdı. Zengin değildi. Bir şekilde beni rahatsız ediyordu.
 

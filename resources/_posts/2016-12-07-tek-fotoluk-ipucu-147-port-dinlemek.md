@@ -5,11 +5,13 @@ date: 2016-12-07 21:51:00 +0300
 categories:
   - ruby
 tags:
-  - ruby
-  - sql-server
-  - oracle
-  - mysql
-  - http
+  - ruby-lang
+  - tcp
+  - port
+  - networking
+  - network-programming
+  - three-way-handshake
+  - Internet-Assigned-Numbers-Authority
 ---
 Diyelim ki bir sunucu üzerinde tanımlı portların anlık durumları hakkında bilgi sahibi olmak istiyorsunuz (Örneğin sunucuda SQL Server yüklü ise varsayılan 1433 portu açık mı veya ftp portu cevap verir konumda mı vb) Ruby dilinde bu tip bir işlevselliği gerçekleştirmek son derece basit. Tek yapmamız gereken makine adı ve port bilgisini kullanmak. Nasıl mı? Aynen aşağıdaki fotoğrafta olduğu gibi.
 

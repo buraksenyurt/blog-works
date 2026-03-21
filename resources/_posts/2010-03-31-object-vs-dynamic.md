@@ -7,12 +7,8 @@ categories:
   - csharp-3-0
   - csharp-4-0
 tags:
+  - dynamic-language-runtime
   - csharp
-  - csharp-3-0
-  - csharp-4-0
-  - dotnet
-  - visual-studio
-  - rc
 ---
 Ayrıntılar detaylarda saklıdır. Bu cümleyi çok severim. Sevdiğim özlü sözler arasındadır. Gerçel bir nesnenin ne kadar kaliteli olduğunu anlamak için detaylarına bakmak gerekir. İşçiliğine, kullanılan malzemeye, malzemelerin uyumuna vs...Hatta benzer diğerleri ile olan kalite farkını anlamak için bile. Çok doğal olarak yazılım dünyasında da bir takım konuların anlaşılabilmesi, kavranabilmesi, benzerleri ile olan farklarının irdelenebilmesi için mutlaka detaylara bakmak, ama sıkılmadan bakmak gerekir. Aynen bu günkü yazımızda yapacağımız gibi.
 

@@ -5,10 +5,8 @@ date: 2007-11-07 12:00:00 +0300
 categories:
   - wcf
 tags:
-  - wcf
-  - csharp
-  - xml
-  - http
+  - windows-communication-foundation
+  - replay-attack
 ---
 WCF (Windows Communication Foundation) ile ilgili bir önceki makalemizde, istemci ve servis arasında güvenilir oturumların (Reliable Session) nasıl açılabileceğinden bahsetmiştik. Güvenilir oturumların yararlarından biriside, olası cevaplama saldırılarının (Replay Attacks) önüne geçmektir. Bilindiği üzere cevaplama saldırılarında, istemci ve servis arasında hareket eden mesajların yakalanarak bozulması, değiştirilmesi, kesilmesi gibi problemler söz konusu olmaktadır. Üstelik değişikliğe uğratılan mesajların zaman içerisinde her hangibir anda, orjinal servis kaynağına yada farklı bir yöne doğru defalarca gönderilmeleride söz konusudur.
 

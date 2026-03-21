@@ -5,15 +5,9 @@ date: 2011-09-26 23:11:00 +0300
 categories:
   - aspnet-4-0
 tags:
-  - aspnet-4-0
-  - csharp
-  - xml
-  - dotnet
-  - aspnet
-  - linq
-  - http
-  - generics
-  - visual-studio
+  - asp.net
+  - captcha
+  - handler
 ---
 Şu sıralarda kurumsal bir Asp.Net eğitimi vermekteyim. Eğitim içeriği oldukça geniş ve güzel konuları içermekte. Bunlardan bir tanesi de Asp.Net uygulamalarında Captcha doğrulamasının kullanımı. Bildiğiniz üzere web ortamı üzerinde özellikle Form veri girişlerinin yapıldığı senaryolarda akıllı robotların gereksiz yere post atma işlemlerini engellemek çok önemlidir.
 

@@ -5,12 +5,7 @@ date: 2009-06-08 13:19:00 +0300
 categories:
   - tpl
 tags:
-  - tpl
-  - csharp
-  - windows-forms
   - task-parallel-library
-  - threading
-  - generics
 ---
 Bir önceki blog yazımda, TPL kullanılarak WinForms uygulamalarında paralel işlemlerin nasıl yapılabileceğini ele almaya çalışmıştım. Örnekte son geldiğimiz noktaya bakıldığında aşağıdaki kazanımları elde ettiğimizi düşünebiliriz.
 

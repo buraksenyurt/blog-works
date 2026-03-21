@@ -6,9 +6,13 @@ categories:
   - entity-framework
 tags:
   - entity-framework
+  - sql
+  - migration
+  - code-first
+  - poco
   - csharp
-  - linq
-  - t-sql
+  - ado.net
+  - alter
 ---
 Genellikle göç etmek gibi anlamlarda kullanılan Migrate kelimesinin yazılım dünyasındaki karşılığını düşündüğümüzde, elbetteki yandaki fotoğrafta yer alan ve bir birlerinin akvaryumuna atlayan balıklar gelmeyecektir/gelmemelidir.
 

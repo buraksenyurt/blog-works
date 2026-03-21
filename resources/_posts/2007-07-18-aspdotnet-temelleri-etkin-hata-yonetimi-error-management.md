@@ -5,12 +5,8 @@ date: 2007-07-18 12:00:00 +0300
 categories:
   - aspnet
 tags:
-  - aspnet
-  - csharp
-  - dotnet
-  - wcf
-  - http
-  - iis
+  - asp.net
+  - error-handling
 ---
 Uzun süredir Windows Communication Foundation ile ilgili yazılar yayınlıyoruz. Sanıyorumki biraz hava değişimine ihtiyacımız olacak. Bu nedenle bu haftaki yazımızda biraz daha hafif ama önemli olan bir konu üzerinde durmaya çalışacağız. Web uygulamalarında sunucu taraflı hata yönetimi (Server Side State Management)..Net ortamında hataların ele alınmasında kullanılan en bilinen yol try...catch...finally bloklarıdır. Ne varki uygulama ortamları çeşitlilik göstermektedir.
 

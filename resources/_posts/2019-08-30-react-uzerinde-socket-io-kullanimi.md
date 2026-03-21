@@ -5,13 +5,14 @@ date: 2019-08-30 13:00:00 +0300
 categories:
   - nodejs
 tags:
-  - nodejs
-  - bash
-  - csharp
+  - socket
+  - socket.io
+  - websockets
+  - node.js
   - javascript
-  - http
   - react
-  - github
+  - express
+  - react-d3-speedometer
 ---
 Bir zamanlar sıkı bir Formula 1 izleyicisiydim. O dönemde dünyanın bir numaralı pilotu üç kez F1 dünya şampiyonu olan [Ayrton Senna](https://youtu.be/-pItzcHBHt0)'ydı. Yağmurlu havalardaki ustalığı nedeniyle Rainman lakabını almış bir yarışçı olmakla birlikte virajları hız kesmeden dönmeyi becerirdi. Monaco yarışından bir görüntüsü geldi şimdi gözümün önüne. Sağ eliyle kokpitin sağındaki vitesi sol eliylede direksiyonu tutuyordu.
 

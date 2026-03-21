@@ -7,24 +7,16 @@ categories:
   - wcf-eco-system
   - wcf-webhttp-services
 tags:
-  - silverlight-4-0
-  - wcf-eco-system
   - wcf-webhttp-services
-  - csharp
-  - xml
-  - dotnet
-  - linq
-  - wcf
+  - Silverlight
   - silverlight
-  - xaml
-  - rest
-  - json
+  - windows-communication-foundation
   - http
-  - iis
-  - javascript
-  - generics
-  - visual-studio
-  - rc
+  - get
+  - post
+  - put
+  - delete
+  - wcf-eco-system
 ---
 Eğitmenlik yaptığım yıllarda Microsoft'un ders kitaplarında yer alan LAB çalışmalarını mümkün mertebe yapmaya ve yaptırmaya çalışırdım. Hatta çoğu zaman eğitimlere hazırlanırken sık sık bu lab çalışmalarını kendim yapar ve hatta ek ilaveler ile daha da eğlenceli hale getirmeye çalışırdım. Tabi bazen elimizde lab yapacağımız kitaplarımız olmazdı ki o ayrı bir hikaye.
 

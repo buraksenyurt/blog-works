@@ -5,18 +5,14 @@ date: 2012-07-12 23:05:00 +0300
 categories:
   - wf-4-0
 tags:
-  - wf-4-0
-  - xml
-  - csharp
   - workflow-foundation
-  - wpf
+  - rehosted-workflow-designer
   - xaml
-  - http
-  - authorization
-  - threading
-  - delegates
-  - visual-studio
-  - rc
+  - activity
+  - custom-activity-designer
+  - code-activity
+  - native-activity
+  - workflow-context
 ---
 Çoğu zaman sinemada daha önceden vizyona girmiş olan bir filmin yeniden çekilmiş bir versiyonuna rastlarız. Örneğin Batman Begins veya vizyona bu yaz girecek Total Recall gibi. Hatta bazen Cover olarak adlandırdığımız bir durum söz konusu olur ve çeşitli müzik guruplarının önemli parçalarının tekrardan, aynı ekipçe veya başkalarınca yorumlandığını görür, duyarız.
 

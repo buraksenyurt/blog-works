@@ -9,10 +9,10 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - csharp
-  - csharp-3-0
-  - csharp-4-0
-  - tek-fotoluk-ipucu
+  - language-integrated-query
+  - list
   - generics
+  - collections
 ---
 Elinizde List tipinden bir koleksiyon var ve içerisindeki nesnelerden rastgele sırada yeni bir liste kullanmak istiyorsunuz. Ne yaparsınız? İşte cevabı
 

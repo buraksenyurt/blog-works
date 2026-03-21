@@ -5,11 +5,9 @@ date: 2009-07-12 07:00:00 +0300
 categories:
   - tasarim-kaliplari-design-patterns
 tags:
-  - tasarim-kaliplari-design-patterns
+  - design-patterns
+  - oop
   - csharp
-  - wpf
-  - xml
-  - generics
 ---
 Küçüklüğümde son derece şanslı bir çocuktum. Uzun yıllar Almanya'da çalışan rahmetli babam ve annemin pek çok arkadaşı bana Lego oyuncaklarından göndermiştir. Evde günümün büyük bir çoğunluğunu bu legolar ile oynarak geçirir ve okul zamanında derslerimden geri kalırdım. Lego oyuncakları zaman içerisinde öylesine geliştiki, artık efsane haline gelen pek çok filmin (Starwars, Indiana Jones vb...) konseptini içerdiğini görmeye başladık. Şimdi bunun konumuz ile ne alakası var diye düşünüyorum. Hemen aralarında rütbe ilişkisi olan legolardan oluşan bir orduyu gözümde canlandırıyorum. Generalden en alt kademedeki ere kadar kadar pek çok rütbe yer alıyor.
 

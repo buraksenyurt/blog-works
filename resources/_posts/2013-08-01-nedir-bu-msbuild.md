@@ -7,14 +7,19 @@ categories:
   - dotnet-framework-4-5
   - visual-studio
 tags:
-  - dotnet-framework-4-0
-  - dotnet-framework-4-5
-  - visual-studio
+  - microsoft-build-engine
+  - build
+  - compile
   - xml
-  - dotnet
-  - linq
-  - http
-  - performance
+  - project-file
+  - command-prompt
+  - visual-studio
+  - platform
+  - team-foundation-server
+  - build-server
+  - build-service
+  - csharp
+  - project-properties
 ---
 Yıllar öncesinde bir kaç seneliğine de olsa saygın bir eğitim kurumunda eğitmen olarak görev alma şansını yakalamıştım. Özellikle C#’ ın öğretilmeye çalışıldığı başlangıç niteliğindeki seanslarda dilin temel özelliklerini anlatırken, tüm dış çevre ile olan bağlantıyı kesip, sadece anahtar kelime (keyword), ifade ve materyale odaklanmaya çalışırdık. Bu sebepten genellikle ilk örneklerimiz ve Hello World uygulamamız, Notepad gibi bir program ve komut satırındaki csc (C# Compiler) ile inşa edilirdi.
 

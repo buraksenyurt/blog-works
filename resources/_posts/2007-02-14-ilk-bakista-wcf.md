@@ -5,23 +5,8 @@ date: 2007-02-14 06:00:00 +0300
 categories:
   - wcf
 tags:
-  - wcf
-  - csharp
-  - xml
-  - bash
-  - dotnet
-  - workflow-foundation
-  - wpf
-  - web-service
-  - xml-web-services
-  - http
-  - iis
-  - java
-  - performance
-  - serialization
-  - delegates
-  - generics
-  - visual-studio
+  - windows-communication-foundation
+  - hello-world
 ---
 Bildiğiniz gibi bir süre önce Microsoft.Net Framework'un 3.0 sürümünün son halini yayınladı. Framework 3.0 beraberinde köklü ve güçlü mimari modeller ile birlikte geldi. Aslında Framework 3.0, Framework 2.0 üzerine gelen yeni eklentiler ile oluşmuştur. Bu eklentiler, Windows Presentation Foundation (WPF), Work Flow Foundation (WF), CardSpace ve Windows Communication Foundation (WCF) dır. Biz bu makalemizde WCF'ı çok yüzeysel olarak anlamaya başlayacak ve konu ile ilişkili basit bir örnek geliştirmeye çalışacağız.
 

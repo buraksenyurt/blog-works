@@ -6,7 +6,11 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - tek-fotoluk-ipucu
-  - dotnet
+  - assembly
+  - sn
+  - command-prompt
+  - log4net
+  - public-key-token
 ---
 Diyelim ki elinizde projeye referans ettiğiniz bir.Net assembly dosyası bulunmakta. Örneğin Log4Net ve bununla birlikte konfigurasyon dosyası içerisinde de ilgili assembly’ ın versiyon numarasını ve daha da önemlisi Public Key Token değerini girmeniz gereken bir bölüm yer almakta. Söz konusu Assembly’ ın Public Key Token değerini öğrenmek için pratik olarak nasıl bir yol izlersiniz acaba?
 

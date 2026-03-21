@@ -5,15 +5,9 @@ date: 2010-03-16 02:15:00 +0300
 categories:
   - wf-4-0-rc
 tags:
-  - wf-4-0-rc
-  - csharp
-  - xml
   - workflow-foundation
-  - xaml
-  - async-await
-  - threading
-  - visual-studio
-  - rc
+  - parallel-programming
+  - .net-framework
 ---
 Pek çoğumuz ünlü İngiliz şairi Shakespeare'in adını ve eserlerini bir şekilde duymuş, okumuş veya seyretmişizdir. Yaşadığı 1564-1616 yılları arasında yazdığı sayısız Komedi, Trajedi ve Romanesk bulunmaktadır. Bunlar yüz yıllar boyu Tiyatrolarda sergilenmiş ve edebi değeri yüksek eserlerdir. Shakespeare dendiğinde insanın aklına hemen Romeo ve Juliet, Hamlet, Othello, Machbeth gibi eserleri gelmektedir. Aslında Edebiyat'tan çok fazla anlamam. Büyük bir ihtimalle Matematikçi olduğum içindir.
 

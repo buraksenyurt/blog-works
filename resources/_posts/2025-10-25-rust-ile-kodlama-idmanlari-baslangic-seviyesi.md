@@ -6,17 +6,7 @@ categories:
   - rust
 tags:
   - rust
-  - json
-  - http
-  - authentication
-  - java
-  - performance
-  - generics
-  - visual-studio
-  - github
-  - mutex
-  - ownership
-  - borrow-checker
+  - rust-lang
 ---
 Rust, daha çok öğrenme eğrisinin zorluğu ile tanınan bir sistem programlama dilidir desek sanırım yanlış olmaz. Ownership, borrow-checker, lifetimes, macro'lar, mutex vs derken managed ortamlarda (.Net, Java, Go gibi) geliştirme yapan programcıları epeyce zorlayan konu başlıklarına sahiptir. Şahsen, aynı öğrenme eğrisi zorluğunu yaşamış birisi olarak kodladıkça daha fazla tutulacağınız bir dil olduğunu da belirtmek isterim.
 
@@ -69,7 +59,7 @@ fn main() {
 }
 ```
 
-## ![rust_exc_00.png](/assets/images/2025/rust_exc_00.png)
+![rust_exc_00.png](/assets/images/2025/rust_exc_00.png)
 
 ## Gereksiz clone Çağrılarından Kaçınmak
 

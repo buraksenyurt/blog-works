@@ -5,20 +5,21 @@ date: 2017-10-04 09:58:00 +0300
 categories:
   - aspnet-web-api
 tags:
-  - aspnet-web-api
-  - bash
-  - xml
-  - csharp
-  - dotnet
-  - entity-framework
-  - ef-core
-  - linq
-  - rest
-  - json
+  - .net-core
   - web-api
+  - rest-api
   - http
-  - generics
-  - visual-studio
+  - entity-framework
+  - swagger
+  - core
+  - middleware
+  - mvc
+  - model-view-controller
+  - .net
+  - build
+  - run
+  - restore
+  - command-prompt
 ---
 Günler yoğun geçiyor. Bir süredir sosyal medyadan da uzaktayım. Kendimce sebeplerim var. Ağırlık görev değişikliği sonrası kritik geliştirmeler barındıran işimdeki yoğunluk. Bunun dışında daha çok kitap okuduğumu, telefona neredeyse hiç bakmadığımı (Türkiye ortalamasına göre bir kişi günde 70 kez telefona bakıyormuş-kahrolsun Instagram çağı), Serdar Kuzuloğlu'ndan [dünya hallerini](https://www.dunyahalleri.com/) daha çok okuduğumu, Gündem Özel'i daha çok izlediğimi (Yazıyı yazdığım günlerdeki [şu yayınlarını](https://www.youtube.com/watch?v=GYwyBC5XfFQ) tavsiye ederim. [Hasan Söylemez'i](http://www.hasansoylemez.com/) de takip edin kitabını alın derim), okuyup dinlediklerimden kendime küçük küçük notlar çıkarttığımı, daha çok basketbol oynadığımı, işe gittiğim her gün gerek otobüs gerek metorbüs gerek minibüs daha çok sıkıştığımı (tutunmadan seyahat edebilmek dahil) ama Beşiktaş-Üsküdar arası motor hattında nefes alarak huzur bulabildiğim günler geçirdiğimi ifade edebilirim. Kalan zamanlarda eskisi kadar çok olmasa da bir şeyler öğrenmeye gayret ediyorum. Bir süredir de.Net Core tarafında servis geliştirme noktasında neler yapılabileceğini incelemek istiyordum. İşlerden boşluk bulduğum bir sırada Web API nasıl yazılır araştırayım ve yaptığım örneği bloğuma ekleyeyim dedim.
 

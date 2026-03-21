@@ -6,19 +6,12 @@ categories:
   - wf
   - wf-4-0
 tags:
-  - wf
-  - wf-4-0
-  - csharp
-  - xml
-  - dotnet
+  - rule-engine
   - workflow-foundation
+  - wf-rule-engine
+  - rule-set
+  - ruleset
   - windows-forms
-  - xaml
-  - http
-  - authentication
-  - serialization
-  - visual-studio
-  - rc
 ---
 Kurallar, kurallar, kurallar!Hayatın hemen her noktasında karşımıza tonlarca kural çıkar. Tabi mevzumuz kuralların zorlayıcılığı ve saire değil, kuralların ihlal edilmesi veya uyulması halinde gerçekleşen aksiyonların neler olduğu ile ilgilidir. Ki bu düşünce tarzı aslına bakarsanız iş dünyasının çekirdek süreçlerinden tutun, en ince ve hatta uç noktalarına kadar yayılır.
 

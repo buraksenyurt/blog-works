@@ -5,8 +5,11 @@ date: 2016-10-19 21:30:00 +0300
 categories:
   - ruby
 tags:
-  - ruby
-  - concurrency
+  - ruby-lang
+  - large-objects
+  - file-io
+  - io
+  - input-output
 ---
 Büyük boyutlu dosyalar neredeyse her programlama ortamının en büyük sorunlarındadır. Nitekim bu tip içeriklerin bir yerden bir yere taşınması, içeriklerinde arama yapılması ve benzeri senaryolarda oluşan sistemsel yükler söz konusudur. Tek işlemli süreçlerde sıkıntı olmasa da eş zamanlı olarak n sayıda dosya üzerinde toplu işlemler söz konusu olduğunda farklı tekniklerin uygulanması önerilmektedir.
 

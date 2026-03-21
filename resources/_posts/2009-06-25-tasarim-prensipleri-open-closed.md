@@ -5,8 +5,7 @@ date: 2009-06-25 04:22:00 +0300
 categories:
   - tasarim-prensipleri-design-principles
 tags:
-  - tasarim-prensipleri-design-principles
-  - csharp
+  - design-principles
 ---
 Bir önceki yazımda, yazılm tasrımında benimsenen ilkelerinden birisi olan Loose Coupling prensibine değinmiştik. Bu yazımızda ise, Open Closed (Açık Kapalı) prensibine değiniyor olacağız.(Bu prensibini pek çok yazılım disiplininde görebilirsiniz. Örneğin eXtreme Programming veya Aspect Oriented Programming-AOP içerisinde.)
 

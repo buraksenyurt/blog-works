@@ -5,10 +5,8 @@ date: 2006-04-06 12:00:00 +0300
 categories:
   - dotnet-remoting
 tags:
-  - dotnet-remoting
-  - csharp
-  - xml
-  - threading
+  - .net-remoting
+  - lease-time-management
 ---
 Remoting mimarisi göz önüne alındığında dikkat çekici noktalardan bir tanesi, sunucu tarafında oluşturulan uzak nesnelerin (remote object) yaşam süreleridir. İstemciler, uzak nesnelere ait referansları kullanırken bunların yaşam sürelerini sunucu tarafındaki konfigurasyon belirler. Bu istemcilerin sunucu tarafındaki referanslara ait kaynaklara açıkça müdahale edememesinin de bir sonucu olarak görülebilir. Sunucu tarafında yapılan bu yaşam sürelerinin yönetimine kısaca Kiralık Süre Yönetimi (Lease Time Management) denmektedir. Bu makalemizde kısaca bu konuyu incelemeye çalışacağız.
 

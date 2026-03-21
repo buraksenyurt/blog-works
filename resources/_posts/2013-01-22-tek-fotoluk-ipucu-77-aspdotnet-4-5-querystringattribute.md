@@ -6,8 +6,12 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - tek-fotoluk-ipucu
-  - dotnet
-  - aspnet
+  - asp.net
+  - querystringattribute
+  - attribute
+  - model-binding
+  - web-forms
+  - new-features
 ---
 Asp.Net 4.5 tarafında gelen yeniliklerden birisi de System.Web.ModelBinding isim alanı altında yer alan ve metod parametrelerine uygulanan QueryString niteliğidir (Attribute). Bu nitelik ile bir metodun parametre değerinin, URL Querystring üzerinden okunabileceği ifade edilmektedir.
 

@@ -5,12 +5,8 @@ date: 2004-12-30 18:00:00 +0300
 categories:
   - aspnet
 tags:
-  - aspnet
-  - csharp
-  - dotnet
-  - http
-  - performance
-  - dataset
+  - asp.net
+  - session
 ---
 Bu makalemizde, Asp.Net sunucularında durum yönetimi (state management) amacıyla kullanılan Session nesnesini detaylı bir şekilde incelemeye başlıyacağız. Bildiğiniz gibi, web anatomisinde durum yönetimi başlı başına bir terminolojidir. Web sitelerinin yer aldığı web sunucularının istemci makinelerde durum yönetme yeteneğine sahip olamamaları sonucu, belli bir kullanıcıya ait bilgilerin sayfalar arasında korunması veya taşınabilmesi için değişik teknikler geliştirilmiştir. Session kullanımı bu tekniklerden birisidir. Öncelikle Session kavramının ne olduğunu ve ne için kullanıldığını kavramaya çalışalım.
 

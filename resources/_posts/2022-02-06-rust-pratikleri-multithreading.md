@@ -6,11 +6,11 @@ categories:
   - rust
 tags:
   - rust
-  - bash
-  - threading
-  - concurrency
-  - github
-  - ownership
+  - rust-lang
+  - multi-thread
+  - thread
+  - spawn
+  - thread-join
 ---
 Uygulamalar işletim sistemlerince Process olarak ayağa kaldırılırlar. Bir process içerisindeki işleri birbirlerinden bağımsız olarak yapan thread'ler de söz konusu olabilir. Çoğu zaman çalıştırılabilir programın main fonksiyonu ile akan akış tek bir thread ile işleyişini sürdürür ama ihtiyaç dahillinde yeni thread'ler açmak gerekir. Rust için process içerisinde bir thread açmak oldukça kolaydır ve bellek tüketimi açısından maliyeti düşüktür. Ownership ve borrowing kuralları sayesinde bellek sahası güvende kalır ve özellikle data-race sorunları oluşmaz.
 

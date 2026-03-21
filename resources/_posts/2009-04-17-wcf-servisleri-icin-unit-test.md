@@ -5,13 +5,8 @@ date: 2009-04-17 07:28:00 +0300
 categories:
   - wcf
 tags:
-  - wcf
-  - csharp
-  - dotnet
-  - http
-  - iis
-  - testing
-  - visual-studio
+  - windows-communication-foundation
+  - unit-test
 ---
 Yazdığımız programların belirli kriterlere göre test edilmesi proje süreçleri içerisinde önem arz eden konulardan birisidir. Bilindiği üzere pek çok test çeşidi vardır. Bunların bir kısmı standart haline gelmiş tekniklerden oluşmaktadır. Örneğin web uygulamalarının beliri bir düzenle çalıştırılaran Request'ler ile test edilmesi. Stres testlerine tabi tutularaktan çok sayıda request sonrası web uygulamasının çalışmasının analiz edilmesi veya en basit anlamda bir programın çalışmasının ana parçalarından olan metodlarının, beklenen sonuçları verip vermediğinin araştırılması vb...
 

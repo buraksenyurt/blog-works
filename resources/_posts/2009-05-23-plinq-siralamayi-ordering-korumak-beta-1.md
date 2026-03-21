@@ -6,11 +6,7 @@ categories:
   - plinq
 tags:
   - plinq
-  - csharp
-  - linq
-  - concurrency
-  - generics
-  - visual-studio
+  - language-integrated-query
 ---
 Hatırlayacağınız gibi, PLINQ (Parallel LINQ) ile ilişkili ilk [yazımda](https://www.buraksenyurt.com/post/PLINQ-(Parallel-LINQ)-Hello-World), LINQ sorgularının eş zamanlı olarak nasıl çalıştırılabileceğini incelemeye çalışmıştık. Hello World örneğimizde ağırlıklı olarak aşağıdaki sorgu üzerinde durmuştuk.
 

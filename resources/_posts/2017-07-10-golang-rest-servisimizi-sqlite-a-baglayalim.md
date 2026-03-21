@@ -6,15 +6,9 @@ categories:
   - golang
 tags:
   - golang
-  - dotnet
-  - oracle
-  - mysql
-  - rest
-  - json
-  - http
-  - go
-  - pointers
-  - github
+  - sqlite
+  - rest-api
+  - postman
 ---
 Son yazılarımızda GoLang ile web uygulamalarının geliştirilmesi üzerinde durduk. Yeni şeyler öğrendikçe bunları farklı örnekler üzerinden denemeye gayret ediyorum. Bu sefer HTTP yönlendiricimizi SQLite ile çalışan basit bir REST servisi için kullanmaya çalışacağız. Kodlara geçmeden önce sisteminize SQLite yüklemiş olduğunuzdan emin olun (Kendi sisteminiz için uygun sürümü SQLite'ın [şuradaki resmi adresinden](https://sqlite.org/download.html) bulup indirebilirsiniz) SQLite yazımızın kapsamı dışında ama bizim için hafif bir veri saklamak fonksiyonelliğini sunacağını ifade edebiliriz. Bu tipteki veritabanları fiziki birer dosya olarak tutulmaktalar. Bu nedenle geliştireceğimiz Go örneğinin erişebileceği bir konumda ilgili veritabanı dosyasının bulunması yeterli.
 
@@ -188,7 +182,7 @@ Aslında önceki yazılarımızdan farklı olarak bir tane HTTP Post metodumuz b
 
 İlk olarak createCategory fonksiyonunu ele alalım. SQLite veritabanımızdaki Category tablosuna yeni bir kategori eklemek istiyoruz. İstemci taleplerini HTTP Post metodu ile ve JSON formatında olacak şekilde kabul edeceğiz. Category yapısı önceki yazılarımızdan da hatırlayacağınız gibi sistemde ayrı bir paket içerisinde duruyor (entity/starwars) İstemciden gönderilecek JSON içeriğinde Id ve Name alanlarının olması yeterli. NewDecoder ile üretilen çözümleyici, Request nesnesinden gelen Body içeriğini ayrıştırıyor ve sonuçları category değişkenine aktarıyor. & ile bir adres aldığımıza dikkat edelim (Pointer'ları hatırlayalım). Decode fonskiyonunun parametre yapısına baktığınızda interface kabul ettiğini göreceksiniz. Bu teoriyi kodun ilerleyen kısımlarında biz de değerlendireceğiz.
 
-Gelen bilgileri logladıktan sonra SQLite operasyonumuza başlıyoruz. Open fonksiyonu ile sqlite3 veritabanı sürücüsünü kullanarak, sunucu ile aynı adreste yer alan starwars.sdb isimli veritabanını belleğe açıyoruz. Exec fonksiyonu basit bir Insert sorgusu içeriyor. Bu sorgunun parametrik olduğuna ve parametre bildirimleri için soru işareti kullanıldığına dikkat edelim. Eğer Exec fonksiyonunu bir hata döndürmediyse insert işleminin başarılı olduğunu düşünerek gelen JSON içeriğine göre oluşturulan category değişkenini bu kez render fonksiyonu üzerinden istemciye basıyoruz. Bu render işlemlerini diğer fonksiyonlarda da kullanacağımız için kod tekrarını biraz olsun önlemek amacıyla geliştirdik. Yanlız fonksiyonun ikinci parametresine bilhassa dikkat edelim. data isimli bir interface tipi almakta. Aslında bu sayede render fonksiyonuna JSON olarak serileşebilecek herhangibir tipi aktarabiliriz. Bu tip tek bir Category örneği olabileceği gibi Model örnekleri içeren bir slice'da olabilir. Fonksiyon Header bilgisini JSON formatında işaretleyip HTTP 200 kodunu da ekleyerek bir çıktı oluşturuyor. Bu çıktı ilk parametre ile gelen ResponseWriter üzerinden istemciye gönderiliyor. Çalışma zamanında [Postman](https://www.getpostman.com/) veya muadili bir uygulamayı kullanarak yeni bir kategori oluşturmayı deneyebiliriz. Aşağıdaki örnek bir POST çağrısı görüyorsunuz.
+Gelen bilgileri logladıktan sonra SQLite operasyonumuza başlıyoruz. Open fonksiyonu ile sqlite3 veritabanı sürücüsünü kullanarak, sunucu ile aynı adreste yer alan starwars.sdb isimli veritabanını belleğe açıyoruz. Exec fonksiyonu basit bir Insert sorgusu içeriyor. Bu sorgunun parametrik olduğuna ve parametre bildirimleri için soru işareti kullanıldığına dikkat edelim. Eğer Exec fonksiyonunu bir hata döndürmediyse insert işleminin başarılı olduğunu düşünerek gelen JSON içeriğine göre oluşturulan category değişkenini bu kez render fonksiyonu üzerinden istemciye basıyoruz. Bu render işlemlerini diğer fonksiyonlarda da kullanacağımız için kod tekrarını biraz olsun önlemek amacıyla geliştirdik. Yanlız fonksiyonun ikinci parametresine bilhassa dikkat edelim. data isimli bir interface tipi almakta. Aslında bu sayede render fonksiyonuna JSON olarak serileşebilecek herhangibir tipi aktarabiliriz. Bu tip tek bir Category örneği olabileceği gibi Model örnekleri içeren bir slice'da olabilir. Fonksiyon Header bilgisini JSON formatında işaretleyip HTTP 200 kodunu da ekleyerek bir çıktı oluşturuyor. Bu çıktı ilk parametre ile gelen ResponseWriter üzerinden istemciye gönderiliyor. Çalışma zamanında [Postman](https://www.postman.com/) veya muadili bir uygulamayı kullanarak yeni bir kategori oluşturmayı deneyebiliriz. Aşağıdaki örnek bir POST çağrısı görüyorsunuz.
 
 ![gosqlite_3.gif](/assets/images/2017/gosqlite_3.gif)
 

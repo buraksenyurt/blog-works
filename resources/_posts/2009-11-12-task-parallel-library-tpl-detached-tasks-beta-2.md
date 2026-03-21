@@ -5,11 +5,7 @@ date: 2009-11-12 06:00:00 +0300
 categories:
   - tpl
 tags:
-  - tpl
-  - csharp
-  - dotnet
   - task-parallel-library
-  - threading
 ---
 Bir önceki yazımızda Task Parallel Library tarafında.Net Framework 4.0 Beta 2 tabanlı olarak iptal işlemleri (Task Cancellation) için yapılan değişikliklere değinmeye çalışmıştık. TPL tarafında yapılan değişikliklerden birisi de iç içe çalışan Task'ler arasındaki Parent - Child ilişkiye yönelik olarak yapılmıştır. Aslında basit bir davranış değişikliği olduğunu söyleyebiliriz. Konuyu daha net kavramak amacıyla aşağıdaki örnek kod parçasını göz önüne alalım.
 

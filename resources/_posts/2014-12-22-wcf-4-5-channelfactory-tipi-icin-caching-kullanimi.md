@@ -6,13 +6,14 @@ categories:
   - wcf
   - wcf-4-5
 tags:
-  - wcf
-  - wcf-4-5
-  - csharp
-  - xml
-  - http
+  - windows-communication-foundation
+  - channel
+  - channel-factory
   - caching
-  - generics
+  - service-contract
+  - iclientchannel
+  - clientbase
+  - generic
 ---
 Vaktiyle üniversitedeki diferansiyel denklemler dersi hocamızın anlattığı bir efsane vardı (Sene 94 bu arada). Ne kadar gerçektir bilinmez ama beni oldukça etkilemişti. Hikayeye göre üniversite hocaları arasında belirli aralıklarla düzenlenen bir yarışma varmış. Bu yarışmada hocaların tahtaya kalkıp seçtikleri teoremlere ait geometrik şekilleri çizmeleri istenirmiş. En güzel çizim ise mükafatlandırılırmış.
 

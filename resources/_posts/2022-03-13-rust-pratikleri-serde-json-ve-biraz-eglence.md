@@ -6,13 +6,11 @@ categories:
   - rust
 tags:
   - rust
-  - java
-  - bash
-  - xml
-  - rest
+  - rust-lang
   - json
-  - serialization
-  - github
+  - serde
+  - ubuntu
+  - rand
 ---
 Sanıyorum JSON veriler ile çalışmayan programlama dili veya ortam yoktur. Sonuç itibariyle bir takım verileri düzenli, standart ve insan gözüyle okunabilir bir formatta tutmanın en iyi yollarından birisi şüphesiz ki JSON. Öncesinden gelen XML formatına göre daha az yer tutması da cazibesini artırmaktadır. Tabii günümüzde BSON gibi sıkıştırılabilir ve çok daha hızlı yol alabilen seçenekler de mevcut ama rust dilini öğrenirken bunun pratiğini yapmadan olmaz. Bu noktada işimizi epey kolaylaştıran bir kütüphane olduğunu ifade edebilirim. [Serde](https://docs.serde.rs/serde/index.html) isimli çatı (ki framework olduğu vurgulanıyor JSON ile çalışma konusunda epey popüler. Hiç vakit kaybetmeden örnek bir uygulama üstünden ilerleyelim.
 

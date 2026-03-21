@@ -6,14 +6,19 @@ categories:
   - angular
 tags:
   - angular
-  - bash
+  - angular-cli
+  - material-design
+  - typescript
   - javascript
-  - json
-  - http
-  - caching
-  - dependency-injection
-  - github
-  - dependency-management
+  - pwa
+  - progressive-web-app
+  - google-chrome
+  - service-worker
+  - form-factor
+  - command-line-interface
+  - cli
+  - lighthouse
+  - chrome-developer-tools
 ---
 Geminin neredeyse tüm seyrüsefer sistemi ve radarı arka arkaya gelen alarm sinyalleri sonrası bozulmuştu. Güney pasifiği terk etmek üzere olan koca tekne en son Arjantin kıyılarına yakın seyrediyordu. Gecenin zifiri karanlığında ilerlerken kaptanın en büyük yol bulma ümitlerinden olan kuzey yıldızı bulutlarla kaplı gökyüzünden saatlerdir görülmüyordu.
 

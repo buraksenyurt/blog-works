@@ -5,14 +5,8 @@ date: 2006-08-04 12:00:00 +0300
 categories:
   - aspnet-2-0
 tags:
-  - aspnet-2-0
-  - csharp
-  - dotnet
-  - aspnet
-  - http
-  - authentication
-  - java
-  - javascript
+  - asp.net
+  - cross-page-postback
 ---
 Asp.Net 2.0 ile gelen en önemli yeniliklerden biriside Cross-Page Postback mimarisidir. Cross-Page Postback, bir sayfanın tüm içeriği ile başka bir sayfaya doğru gönderilebilmesini sağlar. Bunu bir asp.net sayfasının kendi üzerine değilde, hedef gösterilen bir sayfaya doğru gönderilmesi olarakta düşünebiliriz. Böylece hedef sayfa içerisinden, kaynak sayfadaki (yada kaynak sayfalardaki) verilere erişebilme imkanı sağlanmış olunur.
 

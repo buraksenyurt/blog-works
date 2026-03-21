@@ -6,12 +6,7 @@ categories:
   - xml
 tags:
   - xml
-  - csharp
-  - dotnet
-  - aspnet
-  - http
-  - authentication
-  - visual-studio
+  - xsd
 ---
 Xml içeriğini kullandığımız pek çok platformda, verinin belirli kurallara göre yazılmış olmasını istediğimiz durumlar söz konusu olabilir. Bu durum özellikle, farklı platformlar arasında taşınacak Xml tabanlı verilerin aynı kurallar dizisine uygun olacak şekilde kullanılması istendiği durumlarda karşımıza çıkmaktadır. Xml verilerinin belirli kurallara göre doğruluğunun tespitinde şu anda DTD (Document Type Definitions), XDR (Xml Data Reduced) ve XSD (Xml Schema Definitions) gibi teknolojilerden yararlanılmaktadır.
 

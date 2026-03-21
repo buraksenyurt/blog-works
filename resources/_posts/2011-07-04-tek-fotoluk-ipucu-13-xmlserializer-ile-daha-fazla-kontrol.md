@@ -7,10 +7,11 @@ categories:
   - wcf
   - wcf-4-0
 tags:
-  - tek-fotoluk-ipucu
-  - wcf
-  - wcf-4-0
+  - windows-communication-foundation
+  - xml
   - soap
+  - xml-serialization
+  - xml-serializer
 ---
 Bazen SOAP Bazlı WCF servisimizdeki veri türlerinin,.Net tabanlı olmayan platformlarda yer alan istemci veya servislerle daha kolay anlaşabilmesini sağlamak isteyebiliriz. Özellikle bu noktada XmlSerializer işimizi kolaylaştırabilir. Nasıl mı?
 

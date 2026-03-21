@@ -5,15 +5,9 @@ date: 2004-09-25 12:00:00 +0300
 categories:
   - ado-net-2-0
 tags:
-  - ado-net-2-0
-  - bash
-  - csharp
-  - dotnet
-  - ado-net
-  - async-await
-  - delegates
-  - generics
-  - visual-studio
+  - ado.net
+  - asynchronous-programming
+  - async
 ---
 Hatırlayacağınız gibi bir önceki makalemizde, sql komutlarının asenkron olarak yürütülmesi için kullanılan tekniklerden birisi olan polling modelini incelemiştik. Polling modeli basit olmakla birlikte, iş yükü fazla olan hacimli sql komutlarının asenkron olarak çalıştırılmasında çok fazla tercih edilmemelidir. Bu tip sorguların yer aldığı asenkron yürütmelerde, CallBack veya Wait modellerini kullanmak verimliği arttırıcı etkenlerdir. Bu makalemizde CallBack modelini kısaca incelemeye çalışacağız.
 

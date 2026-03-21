@@ -5,11 +5,11 @@ date: 2010-12-05 19:40:00 +0300
 categories:
   - wcf-ogreniyorum
 tags:
+  - windows-communication-foundation
   - wcf-ogreniyorum
-  - wcf
-  - http
-  - iis
-  - webinar
+  - data-contracts
+  - surrogate-types
+  - wcf-service-application
 ---
 [Nedirtv?com](http://www.nedirtv.com) liderdliğinde sürdürdüğümüz WCF Öğreniyorum Webiner (Webcast) serisinin 3ncü dersini de (biliyorsunuz ders numaralarımız 0dan başlıyor) tamamlamış bulunuyoruz. Öncelikli olarak katılan tüm arkadaşlarımıza çok teşekkür ederim.
 

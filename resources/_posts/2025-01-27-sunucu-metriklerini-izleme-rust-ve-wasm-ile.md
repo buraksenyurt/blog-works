@@ -6,25 +6,14 @@ categories:
   - rust
 tags:
   - rust
-  - bash
-  - yaml
-  - json
-  - javascript
-  - dotnet
-  - rest
-  - web-service
-  - http
-  - docker
-  - typescript
+  - rust-lang
+  - wasm
+  - web-assembly
+  - rest-api
+  - WebAssembly
+  - webpack
   - nodejs
-  - blazor
-  - async-await
-  - threading
-  - performance
-  - serialization
-  - visual-studio
-  - github
-  - mutex
+  - npm
 ---
 WASM ya da bilinen adıyla WebAssembly tarayıcılarda yüksek performans çalışma zamanına çıkabileceğimiz ortamlar için ideal bir çatı sunar. Bu standart, düşük seviyeli binary format üzerine odaklanır ve C, C++ ve Rust gibi dillerle birlikte kullanılması hızlı bir çalışma zamanına olanak sağlar. Pek tabii WASM'ın kullanım alanı bu dillerle sınırlı değildir. Örneğin Microsoft, Blazor soyutlaması ile WASM ortamı için gerekli çıktıları üretmeyi oldukça kolaylaştırır. WASM'ın binary formattaki çıktılarının tarayıcıda çalıştırılması sırasında yine tarayıcıların sağladığı güvenlik protokolleri işletilir. Dolayısıyla tarayıcının çalıştığı sistem kaynaklarına çıkmak ve zararlı yazılım kodlarını işletmek pek mümkün değildir ("pek" diyorum çünkü hackerların sağı solu belli olmaz) Bununla birlikte sunucu tarafı ile olan iletişim klasik olarak servis çağrıları ile sağlanabilir.
 

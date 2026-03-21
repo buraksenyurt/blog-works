@@ -5,17 +5,15 @@ date: 2013-10-13 11:00:00 +0300
 categories:
   - aspnet-4-5
 tags:
-  - aspnet-4-5
-  - csharp
-  - xml
-  - dotnet
-  - aspnet
-  - http
-  - async-await
-  - task-parallel-library
-  - threading
-  - delegates
-  - visual-studio
+  - asp.net
+  - http-handler
+  - async
+  - await
+  - http-module
+  - asynchttpmodule
+  - module
+  - asp.net-pipeline
+  - asp.net-runtime
 ---
 Bir çoğunuz gibi ben de düzenli olarak bazı dergilerin abonesiyim ve her ay onları alıp biraz karıştırdıktan sonra arşive (yani çalışma odasındaki kütüphaneye) kaldırmaktayım.
 

@@ -5,13 +5,10 @@ date: 2005-04-17 12:00:00 +0300
 categories:
   - ado-net-2-0
 tags:
-  - ado-net-2-0
-  - csharp
-  - bash
-  - dotnet
-  - ado-net
-  - transactions
-  - generics
+  - ado.net
+  - transaction
+  - oletx-transaction
+  - lightweight-transaction
 ---
 Transaction kavramı ve kullanımı veritabanı programcılığının olmazsa olmaz temellerinden birisidir. Veritabanına doğru gerçekleştirilen işlemlerin tamamının onaylanması veya içlerinden birisinde meydana gelecek bir istisna sonrası o ana kadar yapılan tüm işlerin geri alınması veri bütünlüğünü korumak açısından son derece önemlidir. Ado.Net 1.0/1.1 için transactionların kullanımı, seçilen veri sağlayıcısına göre farklı sınıfların kullanılmasını gerektirir.
 

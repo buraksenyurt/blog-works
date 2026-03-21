@@ -4,14 +4,7 @@ title: "Asp.Net–Doğru async, await Kullanımı"
 date: 2014-06-27 04:00:00 +0300
 categories:
   - aspnet-4-5
-tags:
-  - aspnet-4-5
-  - dotnet
-  - aspnet
-  - http
-  - async-await
-  - threading
-  - concurrency
+tags: []
 ---
 Bazen web sayfalarının yüklenmesi sırasında senkron olarak çalışan ve uzun süren işlemler gerçekleştiririz (ki aslında Web uygulamalarında bu tip yaklaşımları pek tercih etmeyiz) Sayfada ki kontrollerde gösterilmek üzere çeşitli kaynaklardan veri çekilmesi buna örnek olarak verilebilir. Bu tip veri yükleme işlemleri ağırlıklı olarak PageLoad olay metodu içerisinde gerçekleştirilir. Uzun süren işlemlerin kısa sürede tamamlanabilmesi için farklı teknikler mevcuttur. Bir tanesi de asenkron olarak çalışabilmelerini sağlamaktır (Örneğin zaman kaybettiren servis çağrılarının, veri çekme işlemlerinin eş zamanlı hale getirilmesi)
 

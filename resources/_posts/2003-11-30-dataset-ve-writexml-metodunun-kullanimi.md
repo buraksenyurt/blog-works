@@ -5,10 +5,10 @@ date: 2003-11-30 12:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
-  - csharp
-  - xml
+  - ado.net
   - dataset
+  - xml
+  - writexml
 ---
 Bugünkü makalemizde, bir dataset nesnesinin içerdiği tabloların ve bu tablolardaki alanlara ait bilgilerin xml formatında nasıl yazdırıldığını göreceğiz. Örneğimiz son derece basit. Örnek uygulamamızda, Sql sunucusu üzerinde yer alan, Friends isimli database’den Kitaplar isimli tabloya ait verileri taşıyan bir dataset nesnesini kullanacağız. DataSet sınıfına ait WriteXml metodu dataset içerisinde yer alan bilgilerin bir xml dokumanına Schema bilgisi ile birlikte aktarılmasına imkan sağlmakatadır. Bu metoda ait 8 adet yapıcı (Constructor) metod bulunmakta olup biz örneğimizde,
 

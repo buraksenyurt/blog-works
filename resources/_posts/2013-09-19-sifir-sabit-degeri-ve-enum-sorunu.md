@@ -6,8 +6,8 @@ categories:
   - csharp
 tags:
   - csharp
-  - dotnet
-  - generics
+  - enums
+  - constant
 ---
 C# konulu yeni bir bilmece ile karşı karşıyayız. Bu sefer kolay kolay fark edemeyebileceğimiz, basit ama irdelenmesi gereken bir vakayı göz önüne alacağız.
 

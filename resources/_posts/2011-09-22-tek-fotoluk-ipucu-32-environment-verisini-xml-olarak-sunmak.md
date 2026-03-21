@@ -7,8 +7,9 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - csharp
-  - tek-fotoluk-ipucu
-  - xml
+  - system.environment
+  - xlinq
+  - xelement
 ---
 System.Environment tipi içerisinde son derece yararlı ortam bilgileri bulunmaktadır. Bu bilgileri elde etmek son derece kolaydır. Hatta dilerseniz bunları XML formatında dış dünyaya sunabilirsinizde. Nasıl mı?
 

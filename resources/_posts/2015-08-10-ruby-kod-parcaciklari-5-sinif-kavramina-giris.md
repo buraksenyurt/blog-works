@@ -5,9 +5,9 @@ date: 2015-08-10 19:00:00 +0300
 categories:
   - ruby
 tags:
-  - ruby
-  - bash
-  - csharp
+  - ruby-lang
+  - class
+  - object-oriented-programming
 ---
 Bilindiği üzere Ruby nesne yönelimli bir programlama dilidir. Bu yüzden Ruby dilinde her şey bir nesne olarak düşünülür. Dolayısıyla OOP dillerin Kalıtım (Inheritance), Encapsulation (Kapsülleme), Çok Biçimlilik (Polymorphism) gibi temel özelliklerini bünyesinde barındırır. Elbette en küçük yapı taşı sınıflardır (Class). İzleyen kod parçacığında basit olarak bir sınıfın nasıl tanımlandığına yer verilmektedir. Bu anlamda değişken türlerinden (Instance,Class ve Global Variable), sınıf yapıcılarından (initialize), nesne örnekleme operasyonlarından (new), standart sınıf içi metod tanımlamalarından (def) ve metod ezme (overriding) gibi işlemlerden kısaca bahsedilmektedir.
 

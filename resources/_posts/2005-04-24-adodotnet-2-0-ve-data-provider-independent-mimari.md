@@ -5,16 +5,12 @@ date: 2005-04-24 12:00:00 +0300
 categories:
   - ado-net-2-0
 tags:
-  - ado-net-2-0
-  - csharp
-  - bash
-  - dotnet
-  - ado-net
-  - oracle
-  - xml
-  - performance
-  - generics
-  - datatable
+  - ado.net
+  - data-providers
+  - dbconnection
+  - dbcommand
+  - dbdataadapter
+  - dbproviderfactory
 ---
 Veritabanı uygulamalarında başımızı ağrıtan noktalardan bir tanesi farklı tipte veritabanı sistemleri kullanan uygulamaların geliştirilmesi sırasında ortaya çıkar. Çoğu zaman geliştirdiğimiz bir ürün Sql sunucları üzerinde yüksek performans gösterecek şekilde çalışmak zorunda iken, aynı ürünün Oracle üzerinde çalıştırılması da istenebilir. Bu durumda ortak bir çözüm olarak OleDb isim alanı altındaki sınıfları kullanmak oldukça mantıklıdır. Çünkü OleDb üzerinden her iki veri sunucusu için gerekli olan veri sağlayıcılarını kullanabiliriz.
 

@@ -6,13 +6,8 @@ categories:
   - golang
 tags:
   - golang
-  - nosql
-  - xml
-  - rest
   - json
-  - http
-  - go
-  - serialization
+  - json-serialization
 ---
 Mesajlaşma formatlarından çeşitli NoSQL sistemlerine, REST tabanlı veri servislerinden mobil cihazlardaki depolama kabiliyetlerine kadar pek çok alanda JSON (JavaScriptObjectNotation) standardının kullanıldığını görüyoruz. Özellikle XML (eXtensible Markup Language) kadar fazla yer tutmuyor oluşu da onu ön plana çıkartan özelliklerinden birisi. Hatta sıkıştırılmış formatının kullanıldığı ağ protokolleri bile olabiliyor. Verinin rahatça okunabildiği bu standart ile barışık olmayan programlama dili neredeyse yok gibi (Internet Engineering Task Force kurumunun JSON veri değiş-tokuş standartları ile ilgili yazısına [buradan](https://tools.ietf.org/html/rfc7159), JSON API standartları ile ilgili DevNot üzerinden yayınlanan yazıya da [şuradan](http://devnot.com/2017/json-api-standardi/) bakabilirsiniz) Özellikle son on yıl zarfında geliştirilen veya ön plana çıkan ne kadar dil varsa JSON için çekirdekten destek sunuyor. Sunmayanlar da bu sürede ek paket veya eklentilerle bu veri modelini kullandırıyor. GoLang için de benzer durum söz konusu. Nasıl mı? Aynen aşağıdaki kod parçasında olduğu gibi.
 

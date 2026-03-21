@@ -5,19 +5,7 @@ date: 2009-01-23 12:00:00 +0300
 categories:
   - wcf
 tags:
-  - wcf
-  - csharp
-  - xml
-  - dotnet
-  - sql-server
-  - oracle
-  - workflow-foundation
-  - soap
-  - http
-  - caching
-  - serialization
-  - generics
-  - visual-studio
+  - windows-communication-foundation
 ---
 Hatırlayacağınız üzere bir önceki makalemizde, dayanıklı WCF servislerinin (Durable WCF Services) nasıl geliştirilebileceğini incelemeye başlamıştık. Kısaca hatırlatmak gerekirse dayanıklı WCF servislerini şu şekilde tanımlayabiliriz; belirli bir süre için durumlarını bir depolama alanında saklayarak koruyabilen ve t süre sonrasında istemci uygulama tarafından bırakıldığı haliyle kullanılabilen servisler. Konunun ilk aşamasında, varsayılan olarak SQL sunucusu üzerindeki bir depolama alanının kullanıldığı senaryo üzerinde durmuştuk. (Hatırlayaım, SQL sunucusu üzerinde veriyi saklamak yönetsel açıdan pek çok işi kolaylaştırmaktadır.) Bu makalemizde ise kaldığımız yerden devam edeceğiz ve aşağıdaki iki soruya yönelik çözümler geliştirmeye gayret edeceğiz.
 

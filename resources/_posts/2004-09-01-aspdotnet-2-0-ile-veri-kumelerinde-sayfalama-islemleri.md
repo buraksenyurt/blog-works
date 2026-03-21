@@ -5,14 +5,8 @@ date: 2004-09-01 12:00:00 +0300
 categories:
   - aspnet-2-0
 tags:
-  - aspnet-2-0
-  - csharp
-  - dotnet
-  - aspnet
-  - sql-server
-  - http
-  - visual-studio
-  - datatable
+  - asp.net
+  - data-paging
 ---
 Bu makalemizde, Asp.Net 2.0 ile geliştirilen sayfalarda, veri kümeleri üzerinde sayfalama işlemlerinin nasıl yapıldığını incelemeye çalışacağız. Sayfalama işlemleri, özellikle internet (intranet) uygulamalarında yaygın şekilde kullanılan bir tekniktir. Burada, veri kümesine ati olan satırlar, DataGrid gibi bir kontrolde gösterilirken, sayfalara ayrılırlar. Böylece veri kümesine ait satırlar arasında toplu geçiş yapmamıza imkan sağlayan, navigasyon seçeneklerine sahip olmuş oluruz.
 

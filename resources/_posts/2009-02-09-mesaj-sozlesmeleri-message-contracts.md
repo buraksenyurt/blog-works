@@ -5,17 +5,7 @@ date: 2009-02-09 12:00:00 +0300
 categories:
   - wcf
 tags:
-  - wcf
-  - csharp
-  - xml
-  - dotnet
-  - soap
-  - web-service
-  - http
-  - authentication
-  - serialization
-  - generics
-  - debugging
+  - windows-communication-foundation
 ---
 Servis tabanlı uygulamalarda en önemli noktalardan biriside aradaki bilgi transferlerinin nasıl ve ne şekilde gerçekleştirildiğidir. Gerçek şuki, bu bilgi transferinin oluşma şekli çoğu zaman geliştiricinin gözünden kaçan yada çok fazla ilgilenmediği bir konu olmaktadır. Nitekim çoğu servis geliştirme aracı buradaki söz konusu içeriğin hazırlanmasını, gönderilmesini veya alınmasını otomatikleştirmektedir. Özellikle Windows Communication Foundation tarafında, bilginin istemci ve servis arasındaki dolaşımında bağlayıcı tiplerin (Binding Type) seçilmesi ile zaten arka tarafta ne şekilde bir haberleşme olacağı ve paketlerin nasıl hazırlanacağı belirlenmiş olur.
 

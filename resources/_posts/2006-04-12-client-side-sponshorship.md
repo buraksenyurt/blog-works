@@ -5,10 +5,7 @@ date: 2006-04-12 12:00:00 +0300
 categories:
   - dotnet-remoting
 tags:
-  - dotnet-remoting
-  - csharp
-  - xml
-  - threading
+  - .net-remoting
 ---
 Son makalemizde, remoting uygulamalarında uzak nesnelere ait kiralama sürelerinin (Lease Time) nasıl yönetilebileceğinden bahsetmiştik. Bununla birlikte bir uzak nesnenin kiralama süresinin sonlamasının ardından gelecek olan metod çağrılarında istemcilerin olmayan bir referansa erişmeye çalıştığını ve bu nedenlede çalışma zamanı istisnaları ile karşılaşabileceklerini görmüştük. Bu makalemizde, kiralama sürelerini otomatik olarak uzatmak için istemci taraflı destek modelinden (Client Side sponsorShip) nasıl yararlanabileceğimizi incemeleye çalışacağız.
 

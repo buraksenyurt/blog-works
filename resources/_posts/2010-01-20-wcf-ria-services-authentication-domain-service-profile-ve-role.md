@@ -6,18 +6,10 @@ categories:
   - wcf-eco-system
   - wcf-ria-services
 tags:
-  - wcf-eco-system
   - wcf-ria-services
-  - xml
-  - csharp
-  - dotnet
-  - aspnet
-  - linq
-  - wcf
-  - silverlight
-  - xaml
-  - http
-  - authentication
+  - .net-ria-services
+  - windows-communication-foundation
+  - wcf-eco-system
 ---
 Yandaki resmin bir renk cümbüşü oluşturup sizlere çok güzel göründüğüne eminim. Hatta bu resmin biraz sonra anlatacağımız konu ile olan ilgisini merak ediyor olabilirsiniz. Ne yazıkki yok. Sadece renk cümbüşünün benide etkilediğini ve yazının hoş görünmesi için eklediğimi itiraf edebilirim. Gelelim asıl mevzumuza.
 

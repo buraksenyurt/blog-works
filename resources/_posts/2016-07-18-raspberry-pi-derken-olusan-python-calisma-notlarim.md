@@ -6,18 +6,11 @@ categories:
   - python
   - raspberry-pi
 tags:
-  - python
   - raspberry-pi
-  - bash
-  - dotnet
-  - rest
-  - json
-  - web-api
-  - http
-  - java
-  - ruby
-  - javascript
-  - serialization
+  - python
+  - temel-kavramlar
+  - Internet-of-Things
+  - IoT
 ---
 Bloğumu takip edenler bu yaz için Raspberry PI ve Python programlama diline merak saldığımı biliyordur. Bu merakımı boşa çıkarmamak için de vakit buldukça her iki konuya da çalışıyorum. İş yoğunluğu ve araya giren bayram tatili beni az da olsa geriye atmış durumda. Ama neyseki defterime aldığım renkli renkli notlarım var.
 

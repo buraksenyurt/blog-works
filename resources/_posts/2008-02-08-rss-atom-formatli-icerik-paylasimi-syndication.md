@@ -5,14 +5,10 @@ date: 2008-02-08 12:00:00 +0300
 categories:
   - wcf
 tags:
-  - wcf
-  - csharp
-  - dotnet
-  - linq
-  - xml
-  - http
-  - generics
-  - visual-studio
+  - windows-communication-foundation
+  - rss
+  - feed
+  - syndication
 ---
 Windows Communication Foundation, Net Framework 3.5 ile gelen bazı yeni CLR (Common Language Runtime) tipleri sayesinde RSS 2.0 ve Atom 1.0 formatlarında yada diğer özel formatlarda içerik paylaşımı (Syndication) yapılmasına izin veren özelliklere sahip olmuştur. Bu tipler sayesinde bir WCF servisi (Service) üzerinden özellikle HTTP protokolünün GET, POST, HEAD ve benzeri metodlarına göre talep-cevap (Request-Response) işlemleri gerçekleştirilebilmektedir. Bir başka deyişle EndPoint noktaları üzerinden farklı tipte verilerin, dünya standartlarına uygun olacak şekilde yayınlanması mümkündür. İşte bu makalemizde bir WCF servisi üzerinden en basit haliyle RSS veya Atom formatında içerik paylaşımlarının nasıl yapılabileceğini incelemeye çalışacağız.
 

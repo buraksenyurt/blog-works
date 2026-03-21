@@ -6,10 +6,16 @@ categories:
   - nodejs
 tags:
   - nodejs
+  - stream
+  - pipeline
+  - pipe
+  - events
   - javascript
-  - json
-  - http
   - performance
+  - EventEmit
+  - event
+  - writable-stream
+  - readable-stream
 ---
 West-World bu hafta neredeyse savaş alanı gibiydi. Node.js tarafında öğrenmeye çalştığım yeni konu sebebiyle makineyi bir çok kez restart etmek zorunda kaldım. Üstelik düğmeden:|
 

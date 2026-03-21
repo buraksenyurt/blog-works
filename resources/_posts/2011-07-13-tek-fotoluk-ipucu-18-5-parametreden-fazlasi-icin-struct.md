@@ -7,7 +7,10 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - csharp
-  - tek-fotoluk-ipucu
+  - struct
+  - parameters
+  - juval-lowy
+  - code-standarts
 ---
 Çok sevgili Juval Löwy der ki: "Bir metod 5den fazla parametre alıyorsa, verileri Struct tipini kullanarak aktarın". Meşhur kod standartlarından birisi olan bu kurala kaçımız ne kadar uyuyoruz acaba? Oysaki kullanımı çok basit. İşte basit bir örnek
 

@@ -6,7 +6,9 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - tek-fotoluk-ipucu
-  - rc
+  - extension-methods
+  - regex
+  - system.io
 ---
 Diyelim ki elinizde bir takım dosya adları var. Bu dosya adları herhangi bir kaynaktan okunuyor. Ancak bazı dosya adlarında geçersiz karakterler yer aldığını tespit ediyorsunuz (?: < vb) Siz de dosya adlarını kendi uygulamanız içerisinde değerlendirirken bu geçersiz karakterlerden arındırarak hareket etmek niyetindesiniz. Ne yaparsınız? Bunun için bir genişletme fonksiyonu (extension method) yazmak isteseniz nasıl hareket edersiniz? Yoksa aşağıdaki gibi bir metod işinize yarar mı?
 

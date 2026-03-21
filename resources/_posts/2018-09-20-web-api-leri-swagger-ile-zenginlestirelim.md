@@ -5,18 +5,14 @@ date: 2018-09-20 21:22:00 +0300
 categories:
   - asp-dotnet-core
 tags:
-  - asp-dotnet-core
-  - bash
-  - xml
-  - csharp
-  - dotnet
-  - linq
-  - json
+  - .net-core
   - web-api
-  - web-service
-  - http
-  - generics
-  - visual-studio
+  - swagger
+  - swagger-ui
+  - OpenAPI
+  - api
+  - xml
+  - help-standards
 ---
 Dokümantasyon sektörümüzün olmazsa olmazları arasında yer alan bir konu. Ancak güncelliğini korumak ve okunabilirliğini sağlamak da bir o kadar zor olabiliyor. Ayrıca dokümantasyon hazırlamak da çoğumuza bir işkence gibi geliyor. Yine de belirli alanlarda tüketicilerin iyiliği için bu dokümantasyonları hazırlamak boynumuzun borcu diye düşünüyorum. Devasa kütüphanalerden oluşan uygulamalarda gerçekten dokümantasyon başlı başına bir işken daha küçük alanlarda etkili kullanabileceğimiz yerleri de var.
 

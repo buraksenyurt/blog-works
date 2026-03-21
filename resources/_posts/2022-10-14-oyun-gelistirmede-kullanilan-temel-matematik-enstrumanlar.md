@@ -5,8 +5,19 @@ date: 2022-10-14 11:20:00 +0300
 categories:
   - rust
 tags:
+  - oyun-programlama
+  - matematik
   - rust
-  - github
+  - pisagor
+  - trigonometri
+  - vektörler
+  - açılar
+  - nokta-çarpımı
+  - birim-vektör
+  - normalizasyon
+  - doğrusal-denklem
+  - interpolasyon
+  - oyun-matematiği
 ---
 Bir süredir Rust tarafındaki oyun motorlarını incelemekteyim. Bu konuda sayısız youtube videosu ve öğreti buldum. Hem rust kodlama pratiklerimi geliştirmek hem de meraklı olduğum oyun programlama tekniklerini deneyimlemek için biraz zaman harcadım. Ping Pong oyunundan, uzaydaki göktaşlarını patlatan gemiye, karşısındaki farklı türden blokları onlara top fırlatarak patlatan dikdörtgenden, derin zindanlarda ortografik projeksiyon bazlı kamera kullanan sahalara neredeyse her yerde temel matematikten yararlanıldığına şahit oldum (Öğretilere ait uyguladığım pratikleri ve ortaya çıkan sonuçları [game-dev-with-rust](https://github.com/buraksenyurt/game-dev-with-rust) reposunda bulabilirsiniz) Bunu zaten biliyordum ama unuttuğum çekirdek matematik bilgim ile yapıldıklarını görünce aslında onlarca yıl önce öğrendiklerimin ne kadar çok işe yaradığını fark ettim (Ne yazık ki)
 

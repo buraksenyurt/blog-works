@@ -6,13 +6,6 @@ categories:
   - entity-framework
 tags:
   - entity-framework
-  - csharp
-  - dotnet
-  - ado-net
-  - linq
-  - generics
-  - visual-studio
-  - rc
 ---
 Bazen bebek adımları ile ilerlememiz gerekir. Özellikle yazılım alanında bazı konuları öğrenirken işin teorisinden önce pratik bir örneği adım adım geliştirmek son derece faydalıdır. Ado.Net Entity Framework ile ilişkili inclemelerimize devam edeceğimiz bu yazımızda bebek adımları ile ilerleyeceğiz.
 

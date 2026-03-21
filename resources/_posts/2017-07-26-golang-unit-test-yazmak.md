@@ -6,9 +6,10 @@ categories:
   - golang
 tags:
   - golang
-  - go
   - testing
-  - github
+  - unit-test
+  - birim-test
+  - test-driven-development
 ---
 Aranızda hala birim test (Unit Test) yazmayan/yazmamış olan var mı? diyerek konuya giriş yapmak istiyorum. Yazdığımız atomik fonksiyonelliklerin taşınan ortamlarda başımızı ağrıtmasını istemiyorsak birim testlerini mutlaka yazmalıyız. Üstelik iyi yazmalıyız. Belki birim testler uygulama geliştirme süresini uzatabilirler ancak uzun vadede kalp krizi geçirme riskini de azaltırlar. Üstelik test senaryoları sayesinde gerçekten ne yapmak istediğimizin farkında olarak da hareket edebiliriz. Eğer test güdümlü yaklaşımla (Test Driven Development) ilerliyorsak bilinçli olarak yaptırılan hata sonrası kodun çalışır hale getirilmesi ve iyileştirilmesi (Refactoring) de önemli kazanımlarımızdır (Red-Green-Blue konusuna bir bakın) En önemlisi de beklenen testleri başarılı bir şekilde aşmış temiz bir kodun ortaya çıkmasıdır.
 

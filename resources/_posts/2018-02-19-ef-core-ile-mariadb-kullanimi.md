@@ -5,25 +5,13 @@ date: 2018-02-19 17:18:00 +0300
 categories:
   - dotnet-core
 tags:
-  - dotnet-core
-  - bash
-  - csharp
-  - dotnet
-  - aspnet
-  - asp-dotnet-core
   - entity-framework
-  - ef-core
-  - linq
-  - sql-server
-  - oracle
+  - .net-core
+  - mariadb
   - mysql
-  - web-api
-  - iis
-  - go
-  - vue
-  - generics
-  - visual-studio
-  - github
+  - linux
+  - ubuntu
+  - sql
 ---
 Son bir kaç aydır Cumartesi gecelerimi bir şeyler yazmak veya araştırmak için değerlendirmekteyim. Bu tip çalışma disiplinlerini daha önceden de denemiş ve epeyce faydasını görmüştüm. Sonuçta üzerinde çalıştığımız yazılım platformları ve ürünler sürekli ve düzenli olarak değişim içerisindeler. Dolayısıyla yeniliklerin ucundan da olsa tutabilmek lazım. Bir anlamda şu meşhur Pomodoro çalışma tekniğini haftalık periyotlara böldüğümü ifade edebilirim.
 

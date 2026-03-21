@@ -6,9 +6,9 @@ categories:
   - csharp
 tags:
   - csharp
-  - java
-  - memory-management
-  - visual-studio
+  - object-oriented-programming
+  - oop
+  - polymorphism
 ---
 Sizde benim gibi basketol tutkunu musunuz? Aslında ülkemizde hemen herkesin birincil olarak futbol merakı olması beklenir. Oysaki bende diğer pek çok arkadaşım gibi birincil olarak basketbol’ a meraklıyımdır. Aslında lise yıllarında sevgili Michael Jordan ve Chicago Bulls ile başlayan bu merakım sonrasında Efes Pilsen, Ülker, Tofaş gibi takımlarla daha da artmıştır. Üniversite yıllarından beri bu takımların pek çok maçına gitmişimdir ve halen daha gitmeye çalışmaktayım (Tabi bir dönem Tofaş profesyonel basketbol şubesini kapatmıştı…) Tabi şu anda 11 aylık S (h) arp Efe buna pek müsade etmiyor. Ama yine de takım ayırt etmeksizin özellikle avrupa arenasındaki pek çok maça gitmeye çalışıyorum.
 

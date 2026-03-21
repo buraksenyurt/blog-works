@@ -5,15 +5,18 @@ date: 2019-08-08 15:17:00 +0300
 categories:
   - angular
 tags:
+  - .net
+  - .net-core
   - angular
-  - bash
-  - javascript
-  - json
-  - http
+  - socket.io
+  - nq
+  - node
+  - node.js
+  - angular-cli
+  - npm
   - typescript
-  - nodejs
-  - async-await
-  - github
+  - websockets
+  - broadcasting
 ---
 Dünyanın aslen hukukçu olmasına rağmen en ünlü matematikçilerinden olan Fermat'nın (1601-1665) asal sayıları bulduğunu iddia ettiği denklemini bir diğer matematikçi Euler (1707-1773), n=5 değeri için bozmuştur. Lakin matematikçilerin ve diğer pek çok kişinin asalları bulma tutkusu bitmemiştir. Bilim, felsefe ve müzikle haşırneşir olmayı seven Fransız rahibi Marin Mersenne (1558-1648) 2n-1 şeklindeki formülü ile ünlenmiştir. Formüldeki n değerinin asal sayı olarak kabul edildiği hallerde bulunan sayıların da asal olduğunun belirtildiği bir teorem söz konusudur (Bu formül ile bulunan bir sayının asal olup olmadığı Lucas-Lehmer testi ile kontrol edilebilir)
 

@@ -5,14 +5,9 @@ date: 2009-10-21 07:14:00 +0300
 categories:
   - csharp-4-0
 tags:
-  - csharp-4-0
   - csharp
-  - dotnet
-  - linq
-  - http
-  - delegates
-  - testing
-  - visual-studio
+  - dynamic-language-runtime
+  - .net-framework
 ---
 Bildiğiniz üzere.Net Framework 4.0 ile birlikte gelmesi muhtemel en köklü yenilikler arasında Dynamic Language Runtime alt yapısı yer almaktadır. Bu anlamda [daha önceden](https://www.buraksenyurt.com/post/C-40-Dynamic-Olmak)dynamic anahtar kelimesini inceleyerek tiplerin dinamik olarak oluşturulup kullanılmasını kavramaya çalışmıştık. Bu yazımızda nasıl bir yenilikten bahsedeceğimizi anlatabilmek için öncelikle aşağıdaki kod parçasına odaklanmanızı istiyorum.
 

@@ -5,18 +5,16 @@ date: 2016-04-21 09:00:00 +0300
 categories:
   - aspnet-web-api
 tags:
-  - aspnet-web-api
-  - csharp
-  - dotnet
-  - aspnet
-  - entity-framework
-  - linq
-  - rest
-  - json
-  - web-api
+  - asp.net-web-api
+  - windows-communication-foundation
+  - odata
+  - open-data-protocol
   - http
-  - generics
-  - visual-studio
+  - service
+  - asp.net
+  - web-api
+  - rest-api
+  - csharp
 ---
 İşlerin epeyce hafiflediği bir haftaydı diyebilirim. Dolayısıyla kırda parkta bayırda oturup dinlenmek için epeyce vaktim vardı. Ya da bir şeyler araştırmayı da tercih edebilirdim ki ben de öyle yaptım. Uzun zamandır Asp.Net Web API tarafında bir şeyler yapmıyordum. Araştırmalarım sırasında OData'nın Web API tarafındaki kullanımına denk geldim. Her zaman ki gibi konuyu olabildiğince basit bir halde öğrenmenin iyi olacağını düşündüm. Sonunda konuyu kaleme almayı başardım. Haydi başlayalım.
 

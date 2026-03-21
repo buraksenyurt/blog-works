@@ -5,14 +5,8 @@ date: 2004-09-01 12:00:00 +0300
 categories:
   - aspnet-2-0
 tags:
-  - aspnet-2-0
-  - csharp
-  - dotnet
-  - aspnet
-  - xml
-  - web-service
-  - visual-studio
-  - dataset
+  - asp.net
+  - app_code
 ---
 Bu makalemizde, Asp.Net 2.0 ile gelen tanımlanmış klasörlerden (defined folders), Code klasörünün nasıl kullanıldığını incelemeye çalışacağız. Asp.Net 1.0/1.1 ile uygulama geliştirirken, solution içindeki herşey bir dll içinde (assembly) toplanır. Asp.Net 2.0 ise, dosya tabanlı (file-based) yaklaşım adı verilen yeni bir teknik kullanır. Bu tekniğe göre, solution, dosyalar ve klasörler sisteminden oluşmaktadır. Bu sistemin faydası, otomatik derleme özelliğine sahip olmasıdır.
 

@@ -5,12 +5,8 @@ date: 2004-08-31 12:00:00 +0300
 categories:
   - aspnet-2-0
 tags:
-  - aspnet-2-0
-  - csharp
-  - dotnet
-  - aspnet
-  - http
-  - visual-studio
+  - asp.net
+  - cross-page-posting
 ---
 Bu makalemizde, Asp.Net 2.0 (Asp.Net Whidbey) ile, başka sayfalara veri postalama işlemlerinin nasıl ele alındığını ve uygulandığını incelemeye çalışacağız. Bildiğiniz gibi, Asp.Net 1.0 / 1.1 ile gelen yeniliklerden en önemlisi, sayfaların kendi kendilerine form verilerini postalayabilme kabiliyetleridir. Öyleki, Asp.Net ile geliştirilen web sayfaları aslında birer sınıf nesnesi olduklarından, sayfa üzerindeki form kontrollerine ve değerlerine kolayca erişilebilmektedir. Ancak bazı zamanlarda, sayfalarımızda yer alan form verilerini başka sayfalara göndermek isteyedebiliriz. İşte Cross-Page Posting olarak adlandırılan bu işlemlerin, Asp.Net 2.0 ile gerçekleştirilmesi hem daha kolay hemde daha etkili hale getirilmiştir.
 

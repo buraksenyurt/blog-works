@@ -5,20 +5,7 @@ date: 2009-10-27 06:25:00 +0300
 categories:
   - wf-4-0-beta-2
 tags:
-  - wf-4-0-beta-2
-  - csharp
-  - xml
-  - dotnet
-  - linq
   - workflow-foundation
-  - xaml
-  - http
-  - authentication
-  - transactions
-  - generics
-  - debugging
-  - visual-studio
-  - rc
 ---
 Hatırlıyorumda bundan bir kaç sene önce Visual Studio 2005 in henüz Build sürümleri CD olarak değerli bir Microsoft çalışanı tarafından bana hediye edilmişti. Whidbey kod adlı sürümde pek çok yenilik olduğu gibi IDE'nin zaman zaman istisnalar (Exception) vererek çöktüğüne de sıklıkla şahit olmuştum.
 

@@ -5,9 +5,10 @@ date: 2016-10-20 21:30:00 +0300
 categories:
   - ruby
 tags:
-  - ruby
-  - threading
-  - concurrency
+  - ruby-lang
+  - io
+  - temp-file
+  - tek-fotoluk-ipucu
 ---
 Geliştirdiğimiz uygulamanın sadece çalışma zamanında oluşturup kullanacağı ve herhangi bir anda ortadan kaldıracağı geçici bilgilere ihtiyacı olduğunu düşünelim. İlk akla gelen bu tip bilgileri bir yerlerde işi bitene kadar saklamak olacaktır. Bunun için veritabanında geçici bir tabloyu veya işletim sisteminin Registry gibi alanlarını kullanabiliriz. Aslında nesne yönelimli dünyada söz konusu içerikleri birer sınıf örneği olarak tutmakta mümkün.
 

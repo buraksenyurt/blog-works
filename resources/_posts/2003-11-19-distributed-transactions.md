@@ -5,12 +5,12 @@ date: 2003-11-19 12:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
-  - csharp
-  - dotnet
-  - concurrency
-  - transactions
-  - visual-studio
+  - ado.net
+  - transaction
+  - distributed-transactions
+  - com+
+  - component-services
+  - oltp
 ---
 Bildiğiniz gibi bir önceki makalemizde Transaction kavramından bahsetmiş, ancak birden fazla veritabanı için geçerli olucak Transaction işlemlerinin Dağıtık Transaction’lar olarak adlandırıldığından sözetmiştik. Bu makalemizde Dağıtık Transaction’ları inceleyecek ve her zaman olduğu gibi konuyu açıklayıcı basit bir örnek geliştireceğiz.
 

@@ -6,7 +6,8 @@ categories:
   - csharp
 tags:
   - csharp
-  - generics
+  - value-types
+  - nullable
 ---
 C# programlama dilinde bildiğiniz gibi veri türlerini Referans Türleri (Reference Types) ve Değer Türleri (Value Types) olmak üzere iki kısma ayırıyoruz. Bu iki tür arasında bellek üzerinde fiziki tutuluş şekillerinden tutunda birbirleri arasındaki atamalara kadar pek çok farklılık vardır. Bu farklılıklardan birisi de, referans türlerinin null değerleri alabilmelerine karşın, değer türlerinin aynı özelliğe sahip olmayışlarıdır.
 

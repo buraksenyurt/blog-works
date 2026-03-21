@@ -6,16 +6,17 @@ categories:
   - team-foundation-server
 tags:
   - team-foundation-server
-  - csharp
-  - dotnet
-  - sql-server
-  - oracle
-  - xml
-  - web-service
-  - http
-  - java
-  - windows-phone
-  - visual-studio
+  - team-explorer-everywhere
+  - client-object-model
+  - source-control
+  - work-item
+  - task
+  - scrum
+  - cmmi
+  - msf
+  - workitemstore
+  - server-object-model
+  - build-process-object-model
 ---
 Çok eskidendi diyemeyeceğimiz kadar yakın bir zamanda, bilgisayar programcılarının ilah olduğu devirlerde, evimizin 37 ekran TV’ lerine girmiş Commodore 64K, Amiga oyunlarına sabaha kadar vakit ayırdığımız yıllarda; ne Source Code Control denen bir kavram vardı, ne de 9 kişilik askeri manga misali çalışan Scrum ekipleri. Ancak teknoloji ve yazılım dünyası öylesine hızla ilerledi ki…Koşar adımlarla geldiğimiz günümüzde, özellikle Enterprise çapta yürütülen projelerde, ekip olmadan hareket etmek neredeyse imkansız hale geldi.
 

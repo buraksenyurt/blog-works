@@ -5,18 +5,18 @@ date: 2019-09-30 13:00:00 +0300
 categories:
   - azure
 tags:
-  - azure
-  - bash
-  - csharp
+  - microsoft-azure
+  - signalr
+  - real-time-communications
+  - node
   - javascript
-  - json
-  - dotnet
-  - http
-  - nodejs
-  - async-await
-  - concurrency
-  - visual-studio
-  - github
+  - .net-core
+  - csharp
+  - cors
+  - cloud-computing
+  - table-storage
+  - webjobs
+  - websockets
 ---
 Basketbolu neden bu kadar çok seviyorum diye düşündüm geçenlerde. Oturduğumuz sitenin basket sahasını futbol oynamak için kullanan onca çocuk ve genç gibi bir gerçek varken ben neden bu spora böylesine sevdalıydım. İnanılmaz enerjisi ve sürekli değiştirdiği NBA şapkaları ile rahmetli İsmet Badem mi sevdirmişti? Yoksa final serisi maçları sabahın kaçında olursa olsun uyanamayıp okula geç gitmeme neden olan majestelerinin maçları mı? Basketbolun tüm efsanelerini kendi kardeşiymiş gibi tanıyan ve maçları kendine has heyecanı ile anlatan Murat Murathanoğlu muydu yoksa?
 

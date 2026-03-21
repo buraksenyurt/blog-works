@@ -5,17 +5,10 @@ date: 2006-07-28 12:00:00 +0300
 categories:
   - xml-web-services
 tags:
-  - xml-web-services
-  - csharp
-  - sql-server
-  - xml
-  - web-service
-  - http
+  - xml-web-service
+  - cache
   - caching
-  - dataset
-  - datatable
-  - shared-state
-  - dependency-management
+  - context.cache
 ---
 Ön-bellekleme (Caching) işlemleri web uygulamaları için ne kadar önemli ise Xml Web Servisleri içinde aynı durum geçerlidir. Ön-bellekleme sistemi sayesinde web uygulamalarının kullanıcıya cevap verme sürelerinin kısaltılması hedeflenmiştir. Bu da doğal olarak uygulamanın performansını arttırıcı bir etkendir. Kaldıki istekler önbellekten (cache) karşılandığı için, arka tarafta yapılan pek çok süreç atlanmaktadır. Dolayısıyla database işlemleri gibi maliyeti yüksek olan süreçlerin belirli kriterlere göre çalıştırılması ve kullanıcının istediği sonuçların en hızlı şekilde verilebilmesi ön-bellekleme sisteminin getirilerinden sadece birisidir. Web servisleride, web uygulamaları gibi 80 numaralı port üzerinden hizmet verdiklerinden ön-bellekleme yetilerine sahiptir. Web uygulamarında kullanılan ön-bellekleme mantığı ile web servislerinde kullanılan birbirlerine oldukça yakındır. Ancak bir takım farklılıklarda mevcuttur.
 

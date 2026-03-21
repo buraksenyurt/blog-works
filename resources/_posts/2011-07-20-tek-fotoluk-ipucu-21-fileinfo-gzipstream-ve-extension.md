@@ -7,7 +7,12 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - csharp
-  - tek-fotoluk-ipucu
+  - .net-framework
+  - gzipstream
+  - compress
+  - extension-methods
+  - file-io
+  - io
 ---
 Elimde FileInfo, GZipStream tipleri ve Extension Method kabiliyeti var. Sizce ne yapılabilir? Yoksa FileInfo tipinde Compress ve DeCompress işlemleri için birer Extension Method'mu yazılabilir?
 

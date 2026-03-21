@@ -6,6 +6,8 @@ categories:
   - csharp
 tags:
   - csharp
+  - oop
+  - .net
 ---
 Bugünkü makalemizde sanal metotların kalıtım içerisindeki rolüne bakacağız. Sanal metotlar, temel sınıflarda tanımlanan ve türeyen sınıflarda geçersiz kılınabilen metotlardır. Bu tanım bize pek bir şey ifade etmez aslında. O halde gelin sanal metodların neden kullanırız, once buna bakalım. Bu amaçla minik bir örnek ile işe başlıyoruz.
 

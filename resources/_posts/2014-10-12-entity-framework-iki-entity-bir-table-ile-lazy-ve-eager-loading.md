@@ -6,12 +6,9 @@ categories:
   - entity-framework
 tags:
   - entity-framework
-  - csharp
-  - xml
-  - linq
-  - sql-server
-  - http
-  - performance
+  - lazy-loading
+  - eager-loading
+  - code-first-development
 ---
 Yandaki görüntü 1988 yılında Mevlüt Dinç (nam-ı diğer Mev Dinc) tarafından kurulan [Vivid Image](http://en.wikipedia.org/wiki/Vivid_Image) firmasının geliştirdiği oyunlardan birisine ait. [The First Samurai](http://en.wikipedia.org/wiki/First_Samurai_(video_game)). Mev Dinc ülkemizin yetiştirdiği en önemli değerlerden birisidir. Kendisi ile NedirTv topluluğunda yapılmış güzel bir röportaj da bulunmaktadır. Pek çoğumuz onu, [SOBEE](http://www.sobee.com.tr) firması ile de tanımıştır. Ben ise uzun zaman önce Microsoft’ un Darphane’ deki binasında katıldığım bir söyleşiden…
 

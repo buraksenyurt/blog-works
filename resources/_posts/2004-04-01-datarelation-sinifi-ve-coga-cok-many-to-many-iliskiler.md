@@ -5,11 +5,10 @@ date: 2004-04-01 09:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
-  - csharp
-  - dotnet
-  - dataset
-  - datatable
+  - ado.net
+  - relations
+  - many-to-many
+  - sql
 ---
 Bugünkü makalemizde, DataRelation sınıfı yardımıyla, veritabanlarındaki many-to-many (Çoğa-çok) ilişkilerin, bağlantısız katmanda nasıl kullanılabildiğini incelemeye çalışacağız. İlişkisel veri tabanı modelinde, tablolar arası ilişkilerde çoğunlukla bire-çok (one-to-many) ilişkilere rastlarız. Ancak azda olsa, çoğa-çok ilişkilerin kullanıldığı durumlarda söz konusudur. Bu ilişkiye örnek olarak çoğunlukla, Sql sunucusunda yer alan Pubs veritabanındaki Authors ve Titles tabloları gösterilir. Bu iki tablo arasındaki ilişki şöyledir; bir yazara ait birden fazla kitap titles tablosunda yer alabilir. Aynı şekilde, bir kitap birden fazla yazar tarafından kaleme alınmış olabilir. Bu bahsedilen iki ilişkide ayrı ayrı bire-çok ilişkilerdir. Yani bir yazarın birden fazla kitabı yazmış olması bire çok ilişki olarak düşünülebilirken, bir kitabın birden fazla yazara ait olmasıda bire-çok ilişki olarak gözlemlenebilir.
 

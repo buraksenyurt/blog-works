@@ -7,8 +7,9 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - csharp
-  - tek-fotoluk-ipucu
+  - extension-methods
   - reflection
+  - language-integrated-query
 ---
 Özellikle Reflection kullandığımız bazı çalışma zamanı senaryolarında, nesnelerin özellik değerlerini elde etmek istediğimiz durumlar da söz konusu olabilir. Çok basit bir senaryo göz önüne alındığında bunun için bir Extension method dahi geliştirebiliriz. Nasıl mı?
 

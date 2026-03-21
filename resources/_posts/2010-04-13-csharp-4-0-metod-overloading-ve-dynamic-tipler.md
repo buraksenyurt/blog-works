@@ -5,11 +5,10 @@ date: 2010-04-13 04:40:00 +0300
 categories:
   - csharp-4-0
 tags:
-  - csharp-4-0
   - csharp
-  - dotnet
-  - http
-  - visual-studio
+  - dynamic
+  - object
+  - method-overloading
 ---
 Eminim hepimiz çocukluğumuzda en az bir kere olmak üzere yediklerimizi, elimize yüzümüze bulaştırmış ve kirlenmişizdir. Her ne kadar bazı şirketler reklam kapmanyalarında kirlenmek güzeldir diyerek annelerin yüreğine su serpseler de, bu aslında pek gerçeği yansıtmamaktadır. Nitekim anneler, çocuklarının ellerini yüzlerini yediklerine bulayıp etraftaki eşyalara dokunmalarını pek hoş karşılamayabilirler.
 

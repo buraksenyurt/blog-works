@@ -7,18 +7,13 @@ categories:
   - aspnet-4-0
   - aspnet-4-5
 tags:
-  - aspnet
-  - aspnet-4-0
-  - aspnet-4-5
-  - csharp
-  - xml
-  - dotnet
-  - aspnet-mvc
-  - entity-framework
-  - linq
-  - rest
-  - http
-  - reflection
+  - asp.net
+  - routing
+  - route-table
+  - mvc
+  - model-view-controller
+  - url
+  - url-mapping
 ---
 Geçtiğimiz günlerde şirkette çok küçük bir web uygulamasına ihtiyaç duyuldu. Neredeyse bir günlük geliştirme maliyeti olan, küçük bir departmanın önemli bir gereksinimi karşılayacaktı. Tabi insan uzun zaman kodlama yapmayınca veya kodlamaya ara verince bazı temel bilgileri de unutabiliyor.
 

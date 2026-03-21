@@ -4,9 +4,7 @@ title: "SOLID–Adım Adım Tanımak"
 date: 2014-03-10 00:00:00 +0300
 categories:
   - tasarim-prensipleri-design-principles
-tags:
-  - tasarim-prensipleri-design-principles
-  - dependency-management
+tags: []
 ---
 SOLID basit bir kelime gibi görünse de, her harfinin ifade ettiği yazılım prensipleri göz önüne alındığında devasa bir evreni işaret etmekte. Single Responsibility, Open-Closed, Liskov Substitution, Interface Segregation ve son olarak Dependency Inversion. İşte bu görsel dersimizde bu prensipleri çok basit ve yüzeysel bir örnek üzerinden anlamaya çalışıyoruz. Önce ilkeleri ihlal ediyor, sonrasında bunları düzeltme yoluna gidiyoruz.
 

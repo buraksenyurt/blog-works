@@ -6,11 +6,11 @@ categories:
   - python
   - raspberry-pi
 tags:
-  - python
   - raspberry-pi
-  - dotnet
-  - http
-  - github
+  - python
+  - servo-motor
+  - IoT
+  - Internet-of-Things
 ---
 Uzun bir tatil molasının ardından tekrar birlikteyiz. Sevgili [Recep Duman](http://www.recepduman.net/) hocam RaspiRobot Shiled'ını kullanarak bir Servo Motora ait tekerleği ileri yönlü döndürüp durdurmayı başardı. Üstelik Raspberry Pi, RaspiRobot ve Servo Motor için sadece 9 Volt'luk güç kaynağı ile. Söyleşimizde farklı konulara da değinmeye çalıştık ancak ağırlıklı olarak Servo Motor üzerinde durduk. İyi seyriler dilerim.
 

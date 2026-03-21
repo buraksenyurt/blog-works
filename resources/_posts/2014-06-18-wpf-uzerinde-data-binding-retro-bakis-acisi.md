@@ -5,16 +5,9 @@ date: 2014-06-18 16:55:00 +0300
 categories:
   - wpf
 tags:
-  - wpf
-  - xml
-  - csharp
-  - dotnet
-  - linq
-  - windows-forms
-  - silverlight
+  - windows-presentation-foundation
+  - data-binding
   - xaml
-  - http
-  - windows-phone
 ---
 Bizim dünyamızda zaman hızla akar ve eskiler eskide kalıp, yerini yeniler almaya başlar. Her ne kadar uzun ömürlü kavramlar söz konusu olsa da genel itibariyle yazılım dünyası böyledir. Bazen durup geriye bakar, eskiden nasıl yaptığımızı hatırlar, sonra yenisine dönerek bir kıyaslama yaparız. İşte bu yazımızda yıllarca eski stilde geliştirme yapmış klasik bir.Net yazılımcısının gözünden, yenilikçi bir konuya (ki çıkalı da çok çok çoook zaman olmuştur) bakmaya çalışacağız. Buyrun bakalım.
 

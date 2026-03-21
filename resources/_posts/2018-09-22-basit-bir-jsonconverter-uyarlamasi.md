@@ -5,15 +5,14 @@ date: 2018-09-22 11:28:00 +0300
 categories:
   - dotnet-core
 tags:
-  - dotnet-core
+  - newtonsoft
   - json
-  - bash
   - csharp
-  - dotnet
-  - web-api
-  - serialization
+  - interface
+  - implementation
+  - nuget
+  - package-management
   - reflection
-  - generics
 ---
 Merhaba Burak, Nasılsın? Umarım iyisindir ve her şey yolundadır. Beni sorarsan her zaman ki gibi oldukça yoğun bir dönemden geçmekteyim. Özellikle halen devam etmekte olan mimari dönüşüm projesinden dolayı böyle bir yoğunluğumuz var. Gerçi çevikleşmeye başladığımızdan beri fazla mesai yapmıyor ve gerçekten değer içeren sürümlenebilir çıktılar üretiyoruz. Şu an altıncı sprint'i koşmaktayız ve takımın ivmesi rayına oturmuş durumda. Bu açılardan bakınca tatlı bir yoğunluktayım desem yeridir. Sana bunları anlatmama gerek yok nitekim duyduğuma göre siz de benzer bir sürece girmişssiniz.
 

@@ -5,20 +5,8 @@ date: 2009-08-25 11:15:00 +0300
 categories:
   - bing
 tags:
-  - bing
+  - xml-web-service
   - csharp
-  - dotnet
-  - linq
-  - wcf
-  - xml
-  - soap
-  - json
-  - web-service
-  - http
-  - javascript
-  - threading
-  - delegates
-  - testing
 ---
 Bir süredir WCF 4.0 ile birlikte gelen yenilikleri sizlere aktarmaya çalışıyorum. Son olarak Routing Service ile ilişkili bir giriş yazımız olmuştu. Bu konu ile ilişkili örnek en kısa sürede sizlerle olacak. Ne varki konu biraz zorlu.
 

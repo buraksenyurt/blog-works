@@ -6,16 +6,11 @@ categories:
   - nodejs
 tags:
   - nodejs
-  - bash
-  - json
-  - javascript
-  - postgresql
-  - mysql
-  - rest
-  - http
   - docker
-  - async-await
-  - github
+  - javascript
+  - rest-api
+  - sequelize
+  - epxress
 ---
 Bilgisayar ile ilk tanıştığım günden beri oyun oynamayı seven birisiyim. Tabii ilerleyen yıllarda buna vakit ayırmak benim için çok zorlaştı. Bu nedenle hep kendi devrimin efsane sayabileceğim oyunlarında takılı kaldım. Söz gelimi paraya kıyarak aldığım oyun bilgisayarıma (Hani şu acayip ekran kartları olan, bir sürü fan barındıran, renkli ışıklarıyla gece disko topuna dönüşen masaüstü canavarından bahsediyorum) taaa ikibinlerin başında ve öncesinde oynadığım Red Alert II ve Command & Conquer Generals oyunlarını yükleyip vakit geçirdim. Hani en en en yeni oynadığım oyun sanıyorum ki Hearthstone ve onda da herkes beni ezip duruyor diyebilirim:D Bende onu nerede kullanabilirim diye düşünürken bari kart ve kahramanlarını bir NodeJs servisine malzeme yapayım dedim.
 

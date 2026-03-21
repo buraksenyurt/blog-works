@@ -6,16 +6,9 @@ categories:
   - wcf
   - wcf-4-0
 tags:
-  - wcf
-  - wcf-4-0
-  - csharp
-  - xml
-  - windows-forms
-  - http
-  - iis
-  - threading
-  - concurrency
-  - visual-studio
+  - windows-communication-foundation
+  - iparameterinspector
+  - service-operation-behavior
 ---
 Savaş meydanlarında ezelden beri uygulanan istihbarat ve haber alma teknikleri, avantaj sağlamak açısından en önemli unsurların başında gelmektedir. Karşı tarafın nerede olduğunu izlemek, ne yaptığını bilmek, istenen bir anda ne kadar ateş gücüne sahip olduğunu tespit etmek çok önemlidir. Örneğin karşı tarafın şu anda denizde hareket etmekte olan veya karasal alanda saklanmakta olan kuvvetlerini görmek istediğimiz durumlarda keşif yapılması ve istihbarat toplanması stratejik anlamda önemli avantajlar sağlayacaktır.
 

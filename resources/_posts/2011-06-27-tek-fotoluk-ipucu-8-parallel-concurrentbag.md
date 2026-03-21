@@ -6,11 +6,11 @@ categories:
   - dotnet-framework-4-0
   - tek-fotoluk-ipucu
 tags:
-  - dotnet-framework-4-0
-  - tek-fotoluk-ipucu
-  - threading
-  - concurrency
-  - thread-safety
+  - csharp
+  - parallel-programming
+  - concurrent-collections
+  - concurrentbag
+  - thread-safe
 ---
 Concurrent Collections deyince aklımıza Thread-Safe koleksiyon tipleri gelmelidir. Söz gelimi bir ConcurrentBag koleksiyonunun basit kullanımına bir örneği aşağıdaki gibi verebiliriz.
 

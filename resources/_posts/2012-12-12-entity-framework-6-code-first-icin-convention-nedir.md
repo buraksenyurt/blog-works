@@ -6,11 +6,21 @@ categories:
   - entity-framework
 tags:
   - entity-framework
-  - csharp
-  - xml
-  - http
-  - reflection
-  - generics
+  - dbcontent
+  - convention
+  - fluent-api
+  - dbset
+  - navigationproperty
+  - primary-key-convention
+  - relation-convention
+  - complex-type-convention
+  - connection-string-convention
+  - lightweight-convention-model
+  - model-based-convention
+  - configuration-based-covention
+  - iedmconvention
+  - idbconvention
+  - idbmappingconvention
 ---
 Entity Framework takımı aldı başını gidiyor. Kim durduracak onları. Onlarda The Mask filmindeki karakter gibi “Somebody stop me!” demiyor ki... Aslında bakarsanız olaylar bana göre, Microsoft geliştirici takımlarının, diğer geliştiricilerin seslerini duymaya ve dikkate almaya başlamasından sonra epeyce gelişti.
 

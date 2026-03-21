@@ -6,12 +6,14 @@ categories:
   - parallel-programming
   - tpl
 tags:
-  - parallel-programming
-  - tpl
-  - csharp
   - task-parallel-library
-  - threading
+  - parallel-programming
+  - csharp
+  - .net-framework
   - visual-studio
+  - deadlock
+  - local-variable-evaluation
+  - excessive-spinning
 ---
 Bazen göz göre göre başımıza bi ton dert açarız. Kimi zaman başlayacağımız iş bize çok eğlenceli gelebilir (Yandaki resimde yüzü görünmeyen şahsın da bu heyacanla Hamburgere bindiğinden eminiz) Ama işin sonuçlarını biliyorsak eğer, bunu yapmamızın nedeni büyük olasılıkla adrenalindir.
 

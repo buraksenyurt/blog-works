@@ -6,13 +6,7 @@ categories:
   - entity-framework
 tags:
   - entity-framework
-  - csharp
-  - dotnet
-  - ado-net
-  - linq
-  - performance
-  - generics
-  - visual-studio
+  - language-integrated-query
 ---
 Bildiğiniz üzere uzun bir süre önce Microsoft, LINQ to SQL yerine Ado.Net Entity Framework ile ilerleme kararı aldı. Bu konu ile ilişkili olaraktan okuduğum hemem hemen bütün kitaplarda Ado.Net'in geleceğinde önemli bir yere sahip olan Ado.Net Entity Framework alt yapısının geliştiriciler tarafından asla ihmal edilmemesi gerektiğide sıkça vurgulanmakta. Peki günlüğüme konu olan mesele nedir?
 

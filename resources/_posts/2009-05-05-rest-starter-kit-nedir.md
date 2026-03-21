@@ -5,22 +5,8 @@ date: 2009-05-05 12:41:00 +0300
 categories:
   - wcf
 tags:
-  - wcf
-  - dotnet
-  - aspnet
-  - xml
-  - rest
-  - json
-  - web-service
-  - xml-web-services
-  - http
-  - authentication
-  - authorization
-  - javascript
-  - async-await
-  - caching
-  - transactions
-  - visual-studio
+  - windows-communication-foundation
+  - rest-api
 ---
 Bildiğiniz üzere bir süredir [WCF REST Starter Kit](http://aspnet.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=24644)ile ilişkili yazılarımı ve görsel derslerimi sizlerle paylaşmaktayım. Ancak önemli bir noktayı kaçırdığımı düşünüyorum.
 

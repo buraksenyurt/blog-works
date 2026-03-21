@@ -5,23 +5,31 @@ date: 2018-06-26 03:00:00 +0300
 categories:
   - dotnet-core
 tags:
-  - dotnet-core
-  - bash
-  - csharp
-  - dotnet
-  - entity-framework
-  - linq
+  - .net-core
   - sql-server
-  - oracle
-  - json
+  - linux
+  - sql-on-linux
   - web-api
-  - http
-  - docker
-  - java
-  - performance
-  - generics
-  - microservices
-  - visual-studio
+  - service
+  - rest-api
+  - entity-framework
+  - csharp
+  - sql
+  - systemctl
+  - mssql-server
+  - command-line-interface
+  - cli
+  - sqlcmd
+  - .net
+  - package
+  - dbcontext
+  - httpget
+  - httppost
+  - httpput
+  - post,put,delete
+  - json
+  - testing-framework
+  - postman
 ---
 Renkler ve zevkler tartışılmaz. Hatta dünya öylesine renkli bir yerdir ki insanlar bazen neyi seçeceklerine karar veremeyebilir. Tabii ki işin içerisinde yazılım olunca bu renkler siyah ve beyaz gibi sadece iki seçeneğe de indirgenebilmişdir.
 

@@ -5,19 +5,8 @@ date: 2009-10-16 00:00:00 +0300
 categories:
   - wf-4-0-beta-1
 tags:
-  - wf-4-0-beta-1
-  - csharp
-  - dotnet
-  - aspnet
-  - linq
-  - wcf
   - workflow-foundation
-  - wpf
-  - windows-forms
-  - xml
-  - http
-  - serialization
-  - visual-studio
+  - windows-communication-foundation
 ---
 Yükseklik korkum olmasına rağmen her zaman yandaki gibi tırmanışta olanlara imrenmişimdir. Bu fotoğrafa konu olan kişinin tek yaptığı yoğun bir mücadele ve efor ile yukarı doğru tırmanmaktır. Bana göre sonuçta elde edilebilecek tek şey zirveye ulaşmak ve oranın eşsiz manzarasını izlemekten ibarettir. Tabi bunun birde inişi olduğunu düşünmek gerekiyor
 

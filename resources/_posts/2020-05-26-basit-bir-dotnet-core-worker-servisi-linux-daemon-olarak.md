@@ -1,22 +1,16 @@
-﻿---
+---
 layout: post
 title: "Basit Bir .Net Core Worker Servisi(Linux Daemon Olarak)"
 date: 2020-05-26 20:05:00 +0300
 categories:
   - dotnet-core
 tags:
-  - dotnet-core
-  - bash
   - csharp
-  - dotnet
-  - linq
+  - .net-core
+  - linux
+  - daemon
   - redis
-  - json
-  - docker
-  - async-await
-  - caching
-  - generics
-  - github
+  - systemctl
 ---
 Konfor alanı dışında çalışmak geliştiricileri zaman zaman zorlasa da pek çok yeniliğin de kapısını açıyor. Örneğin yıllar önce pek çok kurumsal projede Windows Service'ler geliştirmiş olan ben bunun Linux platformunda yapılıp yapılamayacağını asla bilemezdim; şayet evdeki makineme Ubuntu kurup üstünde.Net Core ile bir şeyler yapmaya çalışana kadar. İşte günün konusu planlı işler için bir alternatif olan Worker Service'ler.
 

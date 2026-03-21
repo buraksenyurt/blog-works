@@ -5,10 +5,12 @@ date: 2016-02-07 15:00:00 +0300
 categories:
   - ruby
 tags:
-  - ruby
-  - nosql
-  - rest
-  - http
+  - ruby-lang
+  - sqlite
+  - gem
+  - sql
+  - rdbms
+  - scripts
 ---
 Sanıyorum bir programlama dilini öğrenirken en çok merak edilen konulardan birisi de veritabanı işlemleridir. "Hani bir uygulama yazabilsem de bilgileri veritabanına kayıt edebilsem ve oradan okuyabilsem süper olur" benzeri bir cümleyi eminim hepimiz kurmuşuzdur. Günümüzde geliştirilen uygulamalar mutlak suretle verileri kalıcı olarak saklamaya ihtiyaç duyar.
 

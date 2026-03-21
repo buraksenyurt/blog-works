@@ -5,16 +5,7 @@ date: 2009-09-16 16:02:00 +0300
 categories:
   - wcf-4-0-beta-1
 tags:
-  - wcf-4-0-beta-1
-  - csharp
-  - xml
-  - dotnet
-  - wcf
-  - rest
-  - json
-  - http
-  - caching
-  - visual-studio
+  - windows-communication-foundation
 ---
 WCF 4.0 tarafında beklenen gelmesi yüksek olan yenilikleri sizlere aktarmaya çalıştığım yazılarımızın yavaş yavaş sonlarına gelmekteyiz. Elbette incelemeyemediğimiz bir çok detay var. Bunları ilerleyen dönemlerde ürün son halini alırken tartışma ve araştırma fırsatımız olacak. Bu yazımızda WCF 4.0 tarafına entegre olarak gelen REST geliştirme modeline yönelik yeteneklerden bahsedeceğiz.
 

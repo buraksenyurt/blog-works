@@ -5,16 +5,10 @@ date: 2015-07-31 16:00:00 +0300
 categories:
   - ruby
 tags:
-  - ruby
-  - dotnet
-  - linq
-  - wcf
-  - workflow-foundation
-  - xml
-  - http
-  - java
-  - github
-  - rc
+  - ruby-lang
+  - programlama
+  - oop
+  - newEra
 ---
 Kırklı yaşlarına gelmekte olan bir yazılımcıyım ve uzun zamandır bu işin içerisindeyim. Fark ettim ki yeni bir şeyler araştırmadan rahat edemiyorum. Belki hep.Net üzerine yoğunlaştım ancak zaman zaman farklı alanlara da göz atıyorum. Bu düşüncelere sahip olduğum dönemlerde ağırlıklı olarak farklı programlama dillerini tanımaya çalışıyorum.
 

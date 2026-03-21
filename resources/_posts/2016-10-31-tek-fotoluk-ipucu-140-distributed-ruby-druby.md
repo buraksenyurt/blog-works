@@ -5,12 +5,11 @@ date: 2016-10-31 21:16:00 +0300
 categories:
   - ruby
 tags:
-  - ruby
-  - dotnet
-  - wcf
-  - web-service
-  - http
-  - performance
+  - ruby-lang
+  - distributed-programming
+  - .net-remoting
+  - druby
+  - client-server
 ---
 Eğitmenlik yaptığım dönemlerde.Net'in en zor alanlarından birisi de Remoting idi. Konu aslında Client-Server mantığına uygun olacak şekilde farklı process'ler arasında veri alışverişinin yapılmasından ibaretti ancak uygulaması web servis geliştirmek kadar kolay olmuyordu. TCP/IP bazlı ağlarda.Net Remoting epeyce iyi performans sergilemekteydi. Özellikle ağ üzerinde hareket eden nesnelerin Binary olarak serileşmesi ve TCP/IP protokolünün devrede olması hız avantajı sağlıyordu. Zaman içerisinde servis odaklı yaklaşımlarda kullanılan WCF gibi alt yapılar.Net Remoting yerine tercih edilmeye başlandı. Dağıtık Uygulamalar (Distributed Applications) olarak geçen bu konu Ruby dilinde de kullanılabiliyor. Üstelik çok çok daha basit. Standart Ruby kurulumu ile birlikte gelen drb modülü bu işler için ele alınmakta ([dRuby, Masatoshi Seki tarafından geliştirilmiş bir üründür ve standart Ruby kütüphanesi içerisinde yer almaktadır](http://ruby-doc.org/stdlib-2.3.1/libdoc/drb/rdoc/))
 

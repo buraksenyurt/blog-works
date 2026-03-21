@@ -5,15 +5,8 @@ date: 2009-05-06 11:23:00 +0300
 categories:
   - wf
 tags:
-  - wf
-  - csharp
-  - xml
   - workflow-foundation
   - xaml
-  - http
-  - authentication
-  - delegates
-  - visual-studio
 ---
 Geçtiğimiz günlerde Workflow 4.0 ile ilişkili araştırmalarıma devam ederken, özellikle dekleratif olarak tanımlanabilen WF servislerindeki önemli bir noktayı farkettim. Bu, aynı zamanda WF 4.0 ile birlikte gelen en önemli yenilikler arasındaydı. (Hatta WF motorunun-Engine- değişmesi veya temel aktivite kütüphanesinde (Base Activity Library), ata tip olarak WorkflowElement isimli yeni bir sınıfın getirilmesi kadar önemliydi) Bir workflow örneğinin sadece XAML içeriğinden oluşacak şekilde koda ihtiyaç duymadan tasarlanabilmesi (design), derlenebilmesi (Compile) ve gerektiğinde çalışma zamanında basit bir notepad uygulaması ile değiştirilerek güncellenebilmesi...Burada özellikle derleme konusu son derece dikkat çekici. Nedeni mi?
 

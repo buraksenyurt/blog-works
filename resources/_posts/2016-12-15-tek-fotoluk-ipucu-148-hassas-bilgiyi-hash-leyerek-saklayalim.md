@@ -6,6 +6,9 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - tek-fotoluk-ipucu
+  - hashing
+  - cryptography
+  - sha1
 ---
 Yazdığımız bir uygulamada kullanıcının anne kızlık soyadı, kimlik numarası, şifre ve benzeri bilgilerini aldığımızı düşünelim. Bir arayüz üzerinden giriliyor olabilirler. Bu bilgileri herhangibir amaçla veritabanında sakladığımızı varsayalım. Şirket güvenlik politikları gereği ilgili bilgiler açık bir şekilde tutulmamalı. Yani anne kızlık soyadı, şifre veya kimlik numarası gözle okunabilir halde tutulmamalı. Buna göre ilgili bilgileri veritabanı üzerinde maskeleyerek saklamak doğru bir çözüm olabilir. Bunu yapabilmek için akla gelen yollardan birisi de tahmin edileceği üzere Hash algoritmalarına başvurmaktır. Peki güçlü bir Hash algoritması ile bu maskeleme işlemini yapmak ister misiniz? Aşağıdaki fotoğraf size yol gösterebilir.
 

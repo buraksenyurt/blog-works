@@ -5,9 +5,8 @@ date: 2004-09-03 12:00:00 +0300
 categories:
   - aspnet-2-0
 tags:
-  - aspnet-2-0
-  - dotnet
-  - aspnet
+  - asp.net
+  - themes
 ---
 Bir internet sitesini önemli kılan özellikler, sayfalarının font, renk, nesne yerleşimleri ile kontrollere ait görsel özellikleri açısından birbirleriyle olan uyumluluklarıdır. Bu anlamda, çoğu zaman sayfalara CSS stilleri uygulanır ve web uygulamasındaki tüm görsel öğelerin aynı font, renk vb özelliklere sahip olması sağlanır. Asp.Net 2.0, bu tarz stillerin çeşitli seviyelerde uygulanmasını sağlayacak yeni bir özellik sağlamaktadır. Themes (Temalar). İşte bu makalemizde, Asp.Net 2.0'da yer alan temaların, hangi seviyelere, nasıl ve ne şekilde uygulanabileceğini incelemeye çalışacağız.
 

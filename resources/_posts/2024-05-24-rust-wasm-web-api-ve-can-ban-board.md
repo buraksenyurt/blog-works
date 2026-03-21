@@ -6,13 +6,13 @@ categories:
   - rust
 tags:
   - rust
-  - dotnet
-  - rest
   - web-api
-  - http
+  - rust-lang
+  - wasm
+  - web-assembly
+  - html
+  - bootstrap
   - javascript
-  - blazor
-  - github
 ---
 Rust çoğunlukla bir sistem programlama dili olarak öne çıkıyor. Ancak [geniş kütüphane](https://crates.io) desteği sayesinde bildiğimiz iş modellerinin uygulanabildiği türden birçok program da geliştirebiliyoruz. Bende hem rust kodlama pratiklerimi artırmak hem de basit gerçek hayat senaryolarını uçtan uca ele alabilmek adına bu tip bir uygulama geliştirmeye çalıştım. Sonrasında kamera arkasına geçtim.
 

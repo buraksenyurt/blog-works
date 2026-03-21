@@ -6,13 +6,16 @@ categories:
   - rust
 tags:
   - rust
-  - bash
+  - c++
   - memory-management
-  - performance
-  - pointers
-  - github
   - ownership
   - borrow-checker
+  - lifetimes
+  - raii
+  - use-after-free
+  - double-free
+  - dangling-pointers
+  - buffer-overflow
 ---
 Bir sistem programlama dili olarak tanınan Rust genellikle C veya C++ dillerinde kritik hatalara sebep olan bazı kod parçalarının henüz derleme aşamasında (compile time) tespit edilerek önlenmesi ile de ön plana çıkmaktadır. Rust'ın kendine has bellek yönetim mekanizması (ownership, borrow checker, lifetime ve RAII mekanizması) esas itibariyle bu tip hataların önüne geçebilmek üzerine tasarlanmıştır. Kaynaklarda bu konuyla ilgili olarak Use Aftre Free, Double Free, Dangling Pointer, Buffer Overflow gibi kavramlara rastlamaktayız. Esasında bunlar gerçekten de zaman içerisinde büyük problemlere neden olan açıkların tanımlarıdır. Internet kaynaklarında geçen bazı tarihi olaylar ise aşağıdaki gibidir.
 

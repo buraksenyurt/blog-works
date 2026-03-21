@@ -7,12 +7,11 @@ categories:
   - csharp
   - data-structures-algorithms
 tags:
+  - binary-tree
+  - binary-search-tree
+  - tree-node
+  - data-structures
   - algoritma
-  - csharp
-  - data-structures-algorithms
-  - dotnet
-  - java
-  - generics
 ---
 İnsan hafızası gizemli çalışan ama çoğu zamanda bizleri şaşırtan bir mekaniğe sahiptir. Doğduğumuz andan itibaren 3 yaşına kadar geçen zaman dilimi içerisinde görsel olarak ne izlersek kaparız. Ancak neredeyse bunların hiç birini hatırlamayız.
 

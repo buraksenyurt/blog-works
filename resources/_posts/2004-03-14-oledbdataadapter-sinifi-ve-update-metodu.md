@@ -5,10 +5,15 @@ date: 2004-03-14 12:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
+  - ado.net
+  - oledb
+  - oledbdataadapter
+  - data-adapter
+  - sql
+  - query
+  - update
+  - crud
   - csharp
-  - performance
-  - datatable
 ---
 Bu makalemizde, OleDbDataAdapter sınıfının, veriler üzerindeki güncelleme işlemlerinin, veri kaynağına yansıtılması sırasında nasıl bir rol oynadığını ve kullanıldığını incelemeye çalışacağız. Önceki makalelerimizde belirttiğimiz gibi, OleDbDataAdapter nesnesi yardımıyla veri kaynağından, uygulamalarımızdaki bağlantısız katman nesnelerine veri kümelerini aktarmak amacıyla Fill metodunu kullanıyorduk. Diğer yandan, bağlantısız katman nesnelerimizin temsil ettiği veriler üzerinde yapılan değişiklikleri veritabanına göndermek istersek, Update metodunu kullanırız.
 

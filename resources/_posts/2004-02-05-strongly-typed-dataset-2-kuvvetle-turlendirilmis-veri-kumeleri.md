@@ -5,12 +5,10 @@ date: 2004-02-05 12:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
-  - csharp
-  - dotnet
-  - visual-studio
-  - dataset
+  - ado.net
+  - strongly-typed-dataset
   - datatable
+  - datarow
 ---
 Bir önceki makalemizde, Kuvvetle Türlendirilmiş Veri Kümelerinin ne olduğunu ve nasıl oluşturulduğunu incelemiştik. Bu makalemizde ise, bir türlendirilmiş veri kümesi yardımıyla satır ekleme, arama, düzenleme ve silme gibi işlemlerin nasıl yapılacağını inceleyeceğiz. Bu amaçla işe basit bir windows uygulaması ile başlıyoruz. Bu uygulamamızda kolaylık olması açısından Kuvvetle Türlendirilmiş Veri Kümemizi, Visual Studio.NET ortamında oluşturdum. Uygulamamızda, Makale isimli sql tablomuzu kullanacağız. Uygulamamızın formu izleyen şekildeki gibi olucak.
 

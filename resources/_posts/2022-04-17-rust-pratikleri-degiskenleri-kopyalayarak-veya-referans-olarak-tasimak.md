@@ -6,18 +6,11 @@ categories:
   - rust
 tags:
   - rust
-  - bash
-  - dotnet
-  - rest
-  - http
-  - grpc
+  - rust-lang
   - memory-management
-  - performance
-  - pointers
-  - debugging
-  - visual-studio
-  - github
-  - ownership
+  - stack
+  - heap
+  - gdb
 ---
 Rust bellek yönetimi konusunda epey hassas olduğundan, fonksiyonlara aktarılan değerlerin nasıl taşınacağı da önemli bir konudur. Bir.net geliştiricisi olarak değişkenlerin fonksiyonların değer türü veya referans türü olarak aktarıldığını biliyorum. Söz gelimi Rust tarafında olmayan class türevli nesneler fonksiyonlara otomatik olarak referans adresleri ile aktarılıyorlar. Üstelik bunu açıkça belirtmemize gerek olmadığını söyleyebilirim. Peki Rust tarafında durum nasıl? Sonuçta ortada bir Garbage Collector yok. Değişkenler varsayılan olarak değiştirilemez (immutable). Class diye bir kavram yok ve kodlarda kullandığımız değişkenler katı bir biçimde ownership, borrowing gibi kural denetimlerine tabiler.
 

@@ -6,10 +6,11 @@ categories:
   - python
 tags:
   - python
-  - dotnet
-  - entity-framework
-  - java
-  - ruby
+  - oop
+  - object-oriented-programming
+  - class
+  - temel-kavramlar
+  - nitelikler
 ---
 Bir süredir izinde olduğum için yeni gözdem Python ile yeterince ilgilenemedim. Döndüğümde daha önceden çalıştığım konuları hatırlamakta da epeyce zorlandım. Pasımı atmak ve tekrardan verimliliğimi yükseltmek için ilk olarak defterime karaladığım notlarımın üstünden geçtim.
 

@@ -5,14 +5,13 @@ date: 2020-09-13 21:05:00 +0300
 categories:
   - python
 tags:
-  - python
-  - bash
-  - dotnet
-  - aspnet
-  - windows-forms
-  - rest
-  - java
-  - github
+  - pyhton
+  - cross-platform-development
+  - widget
+  - briefcase
+  - android
+  - emulator
+  - togo
 ---
 Geçenlerde Python ile ilgili bir şeyler ararken BeeWare isimli çalışmaya rastladım. Her yerde python ile native uygulama geliştirmek gibi bir felsefesi vardı. Eee zaten python her platformda yüklenip kullanılmıyor mu? Yoo tam olarak olay öyle değil aslında. BeeWare ürünü macOS, Linux ve Windows platformlarında native uygulama geliştirmek haricinde iOS ve Android için de destek sunan bir araçlar ve kütüphaneler topluluğu. Söz gelimi iOS ve macOS platformundaki Objective C kütüphaneleri ile Python arasında köprü görevi gören Rubicon ObjC isimli bir araç sunuyor. Java kütüphaneleri ile bir iletişim mi gerekiyor!? O zaman Rubicon Java var. Diğer yandan cross-platform için Toga isimli bir widget kütüphanesi kullanıyor. Ayrıca python projelerini tek başına çalışabilir uygulamalar haline getirmek için (standalone native application) Briefcase isimli başka bir araca sahip ki bir çoğunu birazdan kullanacağız.
 

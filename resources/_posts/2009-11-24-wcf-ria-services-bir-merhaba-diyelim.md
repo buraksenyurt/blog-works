@@ -6,20 +6,10 @@ categories:
   - wcf-eco-system
   - wcf-ria-services
 tags:
-  - wcf-eco-system
   - wcf-ria-services
-  - csharp
-  - xml
-  - dotnet
-  - ado-net
-  - linq
-  - wcf
-  - silverlight
-  - xaml
-  - web-service
-  - xml-web-services
-  - http
-  - visual-studio
+  - .net-ria-services
+  - windows-communication-foundation
+  - wcf-eco-system
 ---
 Yağmurlu günler ve kış geldikçe bir blog yazarının ilham gelmesini bekleyerek zaman geçirmesine hiç mi hiç gerek yoktur? (Tabi yandaki resimde görülen köprüye o açıdan uzun uzun baktığınızda bloğunuza yazacak çok güzel fikirler edinebilirsiniz) Aslında bu gün itibariyle blog yazısına konsantre olmak için gerekli şartlar zaten mevcuttur. Bir adet bilgisayar, internet bağlantısı, gerekli referans kitaplar (eğer konu ile ilişkili bulunabilirse), kapalı bir hava, güzel bir müzik ve onu kulaktan beyin hücrelerine kaliteli bir şekilde aktaracak kulaklıklar ile yağmurlu bir gün.
 

@@ -6,14 +6,6 @@ categories:
   - entity-framework
 tags:
   - entity-framework
-  - csharp
-  - dotnet
-  - ado-net
-  - linq
-  - http
-  - generics
-  - visual-studio
-  - rc
 ---
 Yandaki resimde Seychelles Blue Pigeon olarak adlandırılan ve Hint Okyanusundaki 115 adadan birisi olan Republic of Seychelles kolonisine has bir güvercin resmi yer almaktadır. Aslında bu kuş oldukça meşhurdur. Nitekim çeşitli hayvan türlerini genellikle kitap kapaklarında kullanan O'Reilly yayınlarının uzun zaman önce çıkarttığı ve Julia Lerman tarafından yazılmış olan [Programming Entity Framework](http://www.amazon.com/Programming-Entity-Framework-Julia-Lerman/dp/059652028X/ref=sr_1_1?ie=UTF8&s=books&qid=1266336933&sr=8-1-spell) baskısında bu kuşa yer verilmiştir. Kitaptan bahsetmişken...Bendeki baskısı Ado.Net Entity Framework 3.5 sürümünü içermekteydi. Doğal olarak köprünün altından çok sular geçti ve artık 4.0 sürümü ile karşı karşıyayız. Kitabın Aralık 2009 baskısında 4.0 vesiyonu içinde ek bilgiler yer almakta. Ancak sanıyorum ki yakın zamanda son sürümüne kavuşacak olan.Net Framework 4.0 ile birlikte yeni bir baskısı daha çıkacaktır.
 

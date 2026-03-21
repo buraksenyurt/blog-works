@@ -5,20 +5,17 @@ date: 2019-05-12 21:45:00 +0300
 categories:
   - nodejs
 tags:
-  - nodejs
-  - bash
-  - javascript
-  - json
-  - dotnet
+  - node.js
   - mongodb
-  - nosql
-  - rest
+  - fastify
+  - swagger
   - web-api
-  - http
-  - docker
-  - async-await
-  - visual-studio
-  - github
+  - rest-api
+  - web-service
+  - postman
+  - nodemon
+  - async
+  - routers
 ---
 Yazılım tarafında yeni bir şeyler öğrenmeye çalışmak hayatımın standart ritüelleri arasında. Bu döngü içerisinde yaşamak en büyük keyiflerimden birisi. Tabii bu döngünün en önemli parçalarından birisi masabaşında yapılan kodlama çalışmaları. WestWorld ve son zamanlardaki gözdem Ahch-To başlıca yardımcılarım. Çalışmalar değişik diyarlardan geliyor. Bazen konular arasında keskin geçişler yapıyorum. Bir gün Node.js dünyasında debelenirken bir başka gün daha aşina olduğum.Net Core kıyılarında yürüyüşe çıkıyorum.
 

@@ -5,21 +5,15 @@ date: 2018-02-09 04:27:00 +0300
 categories:
   - dotnet-core
 tags:
-  - dotnet-core
-  - bash
-  - csharp
-  - dotnet
-  - rabbitmq
-  - rest
-  - json
-  - web-api
-  - http
-  - async-await
-  - threading
-  - generics
-  - dependency-injection
-  - microservices
-  - dependency-management
+  - asp.net-core
+  - asp.net-core-web-api
+  - task
+  - IHostedService
+  - scheduling
+  - backgroundworker
+  - task-based-programming
+  - parallel-computing
+  - parallel-programming
 ---
 [Chuck Norris](https://chucknorris.com/). Sanıyorum hayatımın bir bölümü onun televizyonda arka arkaya yayınlanan filmleri ile geçmiştir. Asıl adı Carlo Ray Norris'tir ve Chuck ismi 1958de O, hava kuvvetlerindeyken takma ad olarak ortaya çıkmıştır. Dövüş sanatları ustası olan Chuck'ın harika bir web sitesi var. Hayran kitlesi oldukça geniş. 1940 doğumlu olan film yıldızını Google aramalarında daha çok "Chuck Norris Facts" ile biliyoruz.
 

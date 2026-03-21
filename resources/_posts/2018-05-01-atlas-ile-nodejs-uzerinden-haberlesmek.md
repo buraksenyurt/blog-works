@@ -5,19 +5,21 @@ date: 2018-05-01 21:30:00 +0300
 categories:
   - nodejs
 tags:
-  - nodejs
-  - json
-  - csharp
-  - bash
-  - javascript
-  - dotnet
   - mongodb
-  - nosql
-  - http
-  - authentication
-  - python
-  - ruby
-  - visual-studio
+  - node.js
+  - javascript
+  - atlas
+  - cloud-computing
+  - aws
+  - promise
+  - asynchronous-programming
+  - paas
+  - vs-code
+  - json
+  - reject
+  - async
+  - await
+  - crud
 ---
 Atlas denilince aklımıza gelen çoğunlukla coğrafya dersleridir. Hatta bu isimde coğrafya dergisi bile var. İşin köküne indiğimizde ise aslında bu ismin Yunan mitolojisinden geldiğini görmekteyiz. Yunan mitolojisine göre Atlas, Lapetos ve Klymene'nin 13 çocuğundan en güçlü olanıdır. Hatta o kadar güçlüdür ki Olympos'a saldırmış ve bu sebepten Zeus tarafından gök kubbeyi omuzlarından taşımakla cezalandırılmıştır. Hatta bu omuzlarda taşıma olayı bizleri o kadar etkilemiştir ki, kafatasını taşıyan ilk omura da tıp dünyası tarafından Atlas adı verilmiştir. Sanırım şimdi yandaki fotoğrafın ne anlama geldiğini daha net anladınız. Oysa ki Atlas'ın taşıdığı tek yük dünya ya da kafataslarımız değil. O, Big Data konusunda da büyük bir yükün altına girmiş durumda. İşte bugün inceleyeceğimiz konumuz. MongoDB'nin bulut çözümü hizmeti olan Atlas...
 

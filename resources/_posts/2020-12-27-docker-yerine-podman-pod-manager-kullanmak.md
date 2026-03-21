@@ -5,20 +5,16 @@ date: 2020-12-27 09:14:00 +0300
 categories:
   - devops
 tags:
-  - devops
-  - bash
-  - javascript
-  - dotnet
-  - mongodb
-  - nosql
-  - rabbitmq
-  - json
-  - web-api
-  - http
   - docker
+  - podman
+  - container
+  - Open-Container-Initiative
   - kubernetes
-  - nodejs
-  - github
+  - quay
+  - redHat
+  - skopeo
+  - Poderize
+  - Deamon
 ---
 Heimdall üstünden birşeyler kurcalamak istediğimde yolum genellikle bir Docker imajı ile kesişiyor. Bakmak istediğim bir NoSQL veritabanı mı var, ELK üçlüsü mü gerekli, bir NGinx server ortamımı lazım ya da yeni bir servis için çalışma zamanımı hazırlamam gerekiyor... Hemen Docker kardeşimizin kapısını çalıyorum. Aslında bakarsanız Container teknolojileri denince çoğumuzun aklına Docker'dan başka bir şey gelmiyordur belki de. "Gerçekten de böyle mi?" diye düşündüğüm bir ara Docker'ın güçlü bir alternatifi olan Podman isimli ürünle karşılaştım ve onu biraz tanımaya karar verdim.
 

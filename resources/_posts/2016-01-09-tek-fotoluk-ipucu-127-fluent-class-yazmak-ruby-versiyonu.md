@@ -5,9 +5,9 @@ date: 2016-01-09 20:00:00 +0300
 categories:
   - tek-fotoluk-ipucu
 tags:
-  - tek-fotoluk-ipucu
-  - http
-  - ruby
+  - fluent-api
+  - fluent-interface
+  - ruby-lang
 ---
 Geçtiğimiz günlerde her zamanki gibi Google Chrome’ un RSS Feed Reader’ ındaki blog yazılarında geziniyordum. Derken Fatih Boy hocanın [bu adresteki](http://www.enterprisecoding.com/post/verbalexpressions-sozlu-duzenli-ifade-kutuphaneleri) yazısına denk geldim. Aslında buradaki gibi Fluent geliştirilen tipler kod tarafındaki işlerimizi oldukça kolaylaştırmakta. Felsefesi oldukça basit olan bu yaklaşımda anahtar nokta, tipin kendisine ait çalışma zamanı örneklerini döndüren fonksiyonelliklere başvurulması. Böylece bir metod zinciri ile bir tipe davranışlar yüklemek son derece kolaylaşıyor.
 

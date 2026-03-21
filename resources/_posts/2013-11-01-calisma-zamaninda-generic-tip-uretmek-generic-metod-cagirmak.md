@@ -5,9 +5,17 @@ date: 2013-11-01 03:45:00 +0300
 categories:
   - csharp
 tags:
-  - csharp
-  - xml
   - generics
+  - type
+  - makegenerictype
+  - activator
+  - createinstance
+  - methodinfo
+  - makegenericmethod
+  - invoke
+  - runtime
+  - clr
+  - common-language-runtime
 ---
 Bu görsel dersimizde çalışma zamanında kullanılabilecek örnek senaryolardan birisine daha değinmekteyiz. İlk amacımız Generic olarak tanımlanmış bir tipin çalışma zamanında üretilmesini sağlamak (Örneğin List koleksiyonunun) Diğer amacımız ise generic bir metodun yine çalışma zamanında üretilip, yürütülmesi.
 

@@ -6,13 +6,7 @@ categories:
   - rust
 tags:
   - rust
-  - json
-  - authentication
-  - performance
-  - serialization
-  - generics
-  - github
-  - ownership
+  - rust-lang
 ---
 Şunu fark ettim ki, hangi programlama dili olursa olsun bilgilerimizi taze tutmanın yollarından birisi öğrenilenleri düzenli olarak not haline getirmek ve yazarak kayıt altına almak. Elbette tek yol bu değil. Mutlaka her gün bir parça da olsa kod yazmak, belki bir proje üzerinden ilerlemek (hiçbir yerde kullanılmayacak olsa bile), onunla ilgili bir makale okumak veya bir video izlemek lazım. Ünlü düşünür Johann Wolfgang von Goethe ne demiş "İnsan her gün bir parça müzik dinlemeli, iyi bir şiir okumalı, güzel bir tablo görmeli ve mümkünse birkaç mantıklı cümle söylemelidir." Yapay zekanın bilgisayar ve internet'ten sonra yeni bir devrim olma çabasıyla koştuğu şu dönemde iyi bir programcı olmak için daha çok okuyalım, daha çok pratik yapalım, daha çok araştıralım, daha çok dinleyelim derim. Elbette yapay zeka araçlarına sırtımızı da dönmeyelim. Nimetlerinden, verimliliğimizi artıracak ölçüde yararlanalım.
 

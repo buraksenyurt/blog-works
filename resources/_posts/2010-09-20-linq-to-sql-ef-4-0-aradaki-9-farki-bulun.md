@@ -6,12 +6,8 @@ categories:
   - entity-framework
   - linq-to-sql
 tags:
+  - language-integrated-query
   - entity-framework
-  - linq-to-sql
-  - dotnet
-  - linq
-  - sql-server
-  - xml
 ---
 Evet çok doğru. Hiç bu kadar kısa ve öz yazmamıştım daha önceden. Ama zaman zaman bu kadar kısa yazıp çok fazla şey ifade edilebileceğine de inanmaktayım
 

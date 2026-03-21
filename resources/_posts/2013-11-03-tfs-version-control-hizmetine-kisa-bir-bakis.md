@@ -6,11 +6,9 @@ categories:
   - team-foundation-server
 tags:
   - team-foundation-server
-  - csharp
-  - windows-forms
-  - xaml
-  - generics
-  - windows-phone
+  - client-object-model
+  - xml-web-service
+  - version-control
 ---
 TFS Web Services kullanımlarını incelediğimiz [bu](https://www.buraksenyurt.com/post/TFS-Web-Services-ve-Kullanimi) yazımızda, en popüler hizmetlerden birisi olan Work Item Tracking servisine odaklamıştık. Bu servisten yararlanarak özellikle template bazlı öğelerin (Task, Bug, Product Back Log Item gibi) nasıl okunabileceğini öğrenmiştik. Çok doğal olarak daha pek çok servis kullanımı söz konusu. Önemli olan nokta, ilgili servislerin TFS Client Object Model üzerinden kullanılabileceğidir.
 

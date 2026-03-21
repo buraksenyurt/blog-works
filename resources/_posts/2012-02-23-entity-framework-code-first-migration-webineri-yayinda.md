@@ -7,12 +7,12 @@ categories:
   - nedirtv
 tags:
   - entity-framework
+  - code-first
+  - code-first-migration
+  - migration
   - nedirtv
-  - dotnet
-  - aspnet
-  - wcf
-  - web-api
-  - http
+  - webcast
+  - webiner
 ---
 20 Şubat 2012 Pazartesi günü gerçekleştirdiğimiz Entity Framework - Code First Migration konulu webinerimiz [NedirTv?com](http://www.nedirtv.com) üzerinden yayına alınmıştır. Bu webinerimizde Entity Framework 4.3 sürümü üzerinden Code First yaklaşımında Migration işlemlerinin nasıl yapılabildiğini anlamaya çalıştık. Özellikle NuGet paket yönetim aracının komut satırı parametreleri ile kolayca yönetilebilen hem update ham de downgrade senaryolarında devreye giren Up, Down metodlarını ve bunların içerisindeki kod parçalarını analiz edip neler yapabileceğimizi görmeye gayret ettik.
 

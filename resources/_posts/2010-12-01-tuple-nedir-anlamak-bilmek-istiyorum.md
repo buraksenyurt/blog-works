@@ -6,18 +6,8 @@ categories:
   - dotnet-framework-4-0
   - csharp-4-0
 tags:
-  - dotnet-framework-4-0
-  - csharp-4-0
   - csharp
-  - dotnet
-  - linq
-  - rest
-  - http
-  - python
-  - task-parallel-library
-  - threading
-  - generics
-  - visual-studio
+  - tuple
 ---
 Matematik Mühendisliği eğitimi almış birisi olarak hayatımın önemli bir kısmını teorem ispatlarına harcadığımı itiraf edebilirim. Tabi yaşamımın mesleki olarak kırılma anı sanıyorum ki üniversite yıllarında bilgisayara merak salmam ve programlama ile alakalı dersleri daha çok sevmemdi. Kısacası Matematik üzerine eğilmekten vazgeçip (ki bundan biraz pişmanlık duyduğumu ifade edebilirim) yazılım alanında ilerlemeyi kafama koymuştum.
 

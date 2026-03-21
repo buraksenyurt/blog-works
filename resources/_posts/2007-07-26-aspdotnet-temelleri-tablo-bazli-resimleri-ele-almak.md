@@ -5,13 +5,10 @@ date: 2007-07-26 12:00:00 +0300
 categories:
   - aspnet
 tags:
-  - aspnet
+  - asp.net
   - csharp
-  - dotnet
-  - sql-server
-  - http
-  - caching
-  - dependency-management
+  - BLOB
+  - large-objects
 ---
 Yazın bu sıcak günlerinde daha hafif konularla web maceralarımıza devam ediyoruz. Geçtiğimiz makalemizde Asp.Net uygulamalarında ektin hata yönetiminin nasıl yapılabileceğini incelemeye çalışmıştık. Bu kez veritabanı tablolarında çoğunlukla binary alanlarda saklanan resimlerin, Asp.Net uygulamalarında nasıl ele alınabileceğini örnek projeler üzerinden incelemeye çalışacağız.
 

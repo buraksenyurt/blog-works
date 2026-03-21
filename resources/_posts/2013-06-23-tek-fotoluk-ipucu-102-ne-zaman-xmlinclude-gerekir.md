@@ -5,8 +5,13 @@ date: 2013-06-23 11:00:00 +0300
 categories:
   - tek-fotoluk-ipucu
 tags:
-  - tek-fotoluk-ipucu
+  - xml-serialization
+  - xml-serializer
+  - serialization
   - xml
+  - invalidoperationexception
+  - attribute
+  - xmlinclude
 ---
 Diyelim ki elinizde Role isimli bir sınıf var. Hatta bu sınıftan türemiş Manager ve Worker isimli iki ayrı sınıf daha var. Hatta Role tipinden Employees isimli bir listeyi özellik (Property) olarak içeren Company isimli başka bir sınıf daha var…Derken Company sınıfına ait bir nesne örneğini çalışma zamanında XML serileştirmek istediniz. Klasik olarak XmlSerializer tipini işin içerisine kattınız. Peki ya sonra? Aldınız InvalidOperationException hatasını oturdunuz aşağıya
 

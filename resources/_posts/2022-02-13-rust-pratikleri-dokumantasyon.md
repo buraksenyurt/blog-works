@@ -6,13 +6,11 @@ categories:
   - rust
 tags:
   - rust
-  - bash
-  - csharp
-  - dotnet
-  - xml
-  - pointers
-  - github
-  - race-condition
+  - rust-lang
+  - documentation
+  - idiomatic-code
+  - cargo
+  - clippy
 ---
 Bir programlama dilini iyi yapan ve onu öne çıkaran bazı önemli unsurlar vardır. İdeal bir söz dizimi oluşturulması için önerilerde bulunmak, kullanılan fonksiyon veya türlerle ilgili yardım dokümantasyonları sunmak, merkezi ve başarılı bir paket yönetim sistemine sahip olmak bunlar arasında sayılabilir. Rust dilindeki pek çok kural sayesinde bellek sahasının güvende kaldığı (memory safe), dangle pointer, data race, memory leak gibi sorunların oluşmadığı, performansı yüksek ve üstelik bütün bunlar için garbage collector benzeri mekanizmalara ihtiyaç duymayacak şekilde geliştirme yapmamız mümkün. Yine de idiomatic olarak ifade edilen ve dilin en ideal şekilde kullanılmasını tarifleyen ihtiyaç için yardım almamız gerekiyor. Bu anlamda cargo clippy en büyük destekçimiz. Ancak kaliteli kodlamanın olmazsa olmaz önemli özelliklerinden birisi de elbette verimli içerik sunan dokümantasyon. Özellikle yazdığımız kütüphaneleri herkesin kullanımına açmak istediğimiz senaryolarda bu konuya azami özeni göstermek lazım.
 

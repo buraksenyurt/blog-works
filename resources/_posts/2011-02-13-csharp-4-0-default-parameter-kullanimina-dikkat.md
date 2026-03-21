@@ -5,10 +5,10 @@ date: 2011-02-13 16:00:00 +0300
 categories:
   - csharp-4-0
 tags:
-  - csharp-4-0
   - csharp
-  - xml
-  - http
+  - default-parameters
+  - optional-parameters
+  - named-parameters
 ---
 2004 ve 2005 yıllarında uzun bir süre editörlüğünü yaptığım [C#Nedir?](http://www.csharpnedir.com/) topluluğunun düzenlediği C# Akademi eğitimlerinde, yarı zamanlı eğitmen olarak görev yapmıştım. Genellikle C# programlama dilinin basit ve temel konularını, ayrıca Object Oriented özelliklerini aktarmaya çalışırdım. Elbette sınıfımdaki öğrencilerim yanda görüldüğü gibi her zaman pür neşe olmazlardı.
 

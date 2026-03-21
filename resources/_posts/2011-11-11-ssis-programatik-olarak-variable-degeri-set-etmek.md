@@ -6,10 +6,10 @@ categories:
   - csharp
 tags:
   - csharp
-  - dotnet
-  - sql-server
-  - xml
-  - visual-studio
+  - sql-server-integration-services
+  - dts
+  - dts-package
+  - manageddts
 ---
 Beni tanıyanlar SQL ailesini pek sevmediğimi ve biraz uzak durmaya çalışmak istediğimi bilirler. Ne varki bazen iş hayatının gerçekleri ile karşı karşıya kalırız ve mecburen SQL ailesinin bazı fertleri ile yakın ilişkiler içerisine gireriz
 

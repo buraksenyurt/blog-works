@@ -6,12 +6,12 @@ categories:
   - parallel-programming
   - tpl
 tags:
-  - parallel-programming
-  - tpl
   - csharp
-  - linq
-  - generics
+  - parallel-programming
+  - cancellation-token
   - visual-studio
+  - task-parallel-library
+  - monitoring-cancellation
 ---
 Hatırlayacağınız üzere bir önceki yazımızda ([Task İptal İşlemlerinin İzlenmesi (Monitoring Cancellation)](https://www.buraksenyurt.com/post/Task-Iptal-Islemlerinin-Izlenmesi(Monitoring-Cancellation))) Task Cancellation işlemlerinin izlenmesi ile ilişkili teknikleri ve konuları irdelemeye başlamıştık. Bu yazımızda da iptal işlemleri ile ilgili farklı bir konuya değinmeye çalışıyor olacağız. Bu gün kü konumuz Composite Cancellation vakası.
 

@@ -5,18 +5,22 @@ date: 2019-05-10 13:00:00 +0300
 categories:
   - dotnet-core
 tags:
-  - dotnet-core
-  - bash
-  - csharp
-  - yaml
-  - dotnet
-  - linq
-  - web-api
-  - http
-  - docker
+  - .net-core
+  - minikube
+  - k8s
   - kubernetes
-  - generics
-  - github
+  - golang
+  - ubuntu
+  - yaml
+  - docker
+  - container
+  - virtual-box
+  - kubectl
+  - csharp
+  - deployment
+  - pod
+  - service
+  - cluster
 ---
 Soğuk bir Şubat akşamı mıydı, dışarıda kar var mıydı, günün tam olarak hangi vakitleriydi tam olarak hatırlamıyorum ama github'a göre 24 numaralı örneğin son check-in işlemi 20 şubat Çarşamba günüydü.
 

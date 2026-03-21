@@ -7,27 +7,10 @@ categories:
   - wcf-eco-system
   - wcf-webhttp-services
 tags:
-  - silverlight-4-0
-  - wcf-eco-system
-  - wcf-webhttp-services
-  - csharp
-  - xml
-  - dotnet
-  - linq
-  - sql-server
-  - wcf
-  - workflow-foundation
   - silverlight
-  - xaml
-  - rest
+  - windows-communication-foundation
+  - wcf-webhttp-services
   - json
-  - web-service
-  - http
-  - iis
-  - javascript
-  - transactions
-  - generics
-  - visual-studio
 ---
 Uzun süredir şöyle deliksiz uyuyamıyordum. Malum evde bir afacan var. Pek uyumayı sevmeyen, sürekli hareket halinde olmak isteyen S (h) arp Efe izin verdiğinde, eşim ve ben dinlenmek için çeşitli işlere dalıyoruz. Ben uzun süredir Bulmacalara takılmış durumdayım. Bir de şu eski dil karşılıklarını isteyen sorular olmasa. Geçtiğimiz günlerde yine böyle bir boşluk yakalamışken, kendimi bulmacalar arasında yüzerken buluverdim. Ancak bir süre sonra "...eski dildeki karşılığı..." sorularından sıkıldım ve televizyonda neler olduğuna bir akayım dedim.
 

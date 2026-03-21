@@ -5,15 +5,13 @@ date: 2007-05-24 12:00:00 +0300
 categories:
   - wcf-webhttp-services
 tags:
-  - wcf-webhttp-services
-  - csharp
-  - xml
-  - bash
-  - wcf
-  - http
-  - threading
-  - concurrency
-  - thread-safety
+  - windows-communication-foundation
+  - singleton
+  - client-activated-object
+  - singlecall
+  - persession
+  - percall
+  - instancecontextmode
 ---
 Windows Communication Foundation uygulamalarında istemciler başvurdukları servisler üzerindeki nesne örneklerini kullanırlar. Özellikle kullanılan bağlayıcının (binding) tipine göre servis üzerindeki nesne örneklerinin farklı şekillerde oluşturulup ele alınması söz konusudur..Net Remoting ile uygulama yazan geliştiriciler, istemcilerin talepte bulunacağı uzak nesne örneklerinin farklı modellerde örneklendiklerini bilirler.
 

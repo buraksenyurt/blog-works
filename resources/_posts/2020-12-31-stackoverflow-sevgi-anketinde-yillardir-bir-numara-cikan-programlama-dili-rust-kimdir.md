@@ -5,30 +5,30 @@ date: 2020-12-31 20:59:00 +0300
 categories:
   - rust
 tags:
+  - rust-lang
   - rust
-  - bash
-  - csharp
-  - dotnet
-  - linq
-  - redis
-  - docker
-  - parallel-programming
-  - threading
-  - concurrency
-  - performance
-  - pointers
-  - generics
-  - testing
-  - visual-studio
-  - github
-  - mutex
-  - atomic-operations
-  - race-condition
+  - cargo
+  - Immutable-Types
+  - functional-programming
   - ownership
-  - borrow-checker
-  - rc
-  - arc
-  - dependency-management
+  - borrowing
+  - type-safety
+  - crate
+  - toml
+  - lifetimes
+  - scope
+  - trait
+  - generic
+  - smart-pointers
+  - reference-counting
+  - mutex
+  - thread
+  - concurrency
+  - parallel-programming
+  - struct
+  - pattern-matching
+  - closures
+  - iterators
 ---
 Hepimiz için berbat geçen bir yılı geride bırakıyoruz. Koca sene boyunca uğraştığımız salgının etkileri daha da sürecek gibi duruyor. 2021 bize neler getirir bilemiyorum ama yazılımcıların bilgisayarları başında daha çok vakit geçirdiği günlerin hayatımızda kalıcı hale geldiğini de ifade edebilirim. Geçen yılın bir bölümünde işlerden arta kalan vakitlerde kendimce yeni şeyler öğrenmeye gayret ettim. Bunlardan birisi de Mozilla Labs'ın gücünü arkasına almış olan Rust programlama diliydi.
 

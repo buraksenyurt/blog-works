@@ -7,8 +7,9 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - csharp
-  - tek-fotoluk-ipucu
+  - extension-methods
   - json
+  - serialization
 ---
 Extension metodlar çok ama çok işimize yarayabiliyor. Örneğin serileştirilebilir herhangibir tipin Json formatındaki çıktısının string tipinden döndüren bir extension metodu geliştirebilirsiniz. Nasıl mı?
 

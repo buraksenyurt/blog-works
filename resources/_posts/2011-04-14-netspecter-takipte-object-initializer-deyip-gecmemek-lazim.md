@@ -7,12 +7,6 @@ categories:
   - csharp-3-0
 tags:
   - csharp
-  - csharp-3-0
-  - linq
-  - wcf
-  - performance
-  - generics
-  - visual-studio
 ---
 Puslu bir sonbahar akşamında detektif Netspecter odasında sessiz sakin oturmaktadır. Loş bir ortama neden olan gece lambasının yeşil cam aksamı altından oda içerisindeki tozların sessiz ve sakin akışı bir yana, Netspecter’ ın kafasında masasına yeni gelen dosya ile ilişkili soru işaretleri koşup durmaktadır.
 

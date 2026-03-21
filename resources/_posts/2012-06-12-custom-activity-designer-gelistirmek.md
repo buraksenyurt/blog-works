@@ -6,17 +6,15 @@ categories:
   - wf
   - wf-4-0
 tags:
-  - wf
-  - wf-4-0
-  - csharp
-  - xml
   - workflow-foundation
-  - wpf
+  - activity-designer
+  - native-activity
+  - custom-workflow-component
   - xaml
-  - http
-  - generics
+  - xaml-data-binding
+  - ivalueconverter
+  - observablecollection
   - visual-studio
-  - datatable
 ---
 İnsanın kendisini en çok geliştireceği yer gerçek çalışma sahaları/ortamlarıdır. Ortaya konan ihtiyaçlar ne zaman ki sizin kullanmakta olduğunuz araçların (Tools) sınırlarını zorlamaya başlar, bu noktadan itibaren içerisine gireceğiniz her çeşit mücadele size inanılmaz derece tecrübe ve bilgi katacaktır. Tabi bu know-how bilgisini saklayabilir, kendiniz için dökümante edebilir veya kuralları çerçevesinde paylaşabilirsiniz
 

@@ -5,16 +5,12 @@ date: 2004-02-13 06:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
+  - ado.net
+  - oledb
+  - oledbconnection
+  - connectionString
+  - database
   - csharp
-  - dotnet
-  - aspnet
-  - sql-server
-  - oracle
-  - authentication
-  - transactions
-  - visual-studio
-  - dataset
 ---
 Bu makalemizde, ADO.NET mimarisinde temel yapı taşı olan Connection (Bağlantı) kavramına kısaca değinecek ve OleDbConnection sınıfını incelemeye çalışacağız. ADO.NET mimarisinde, pek çok sınıfın veri kaynakları ile olan iletişiminde Connection (Bağlantı) nesnelerini kullanırız. Örneğin, bir veri kayağındaki tablolara ait verileri, DataSet sınıfından bir nesne örneğine taşımak istediğimizi düşünelim. Bu dataSet nesnesini dolduracak olan DataAdapter sınıfına, sahip olduğu sql sorgusunun veya komutunun işleyeceği bir hattı belirtmemiz gerekir. İşte burada devreye Connection (Bağlantı) nesnelerimiz girer. Yada bir Command sınıfı nesnesi yardımıyla veritabanı üzerindeki bir saklı yordamı (stored procedure) çalıştırmak istediğimizi düşünelim. Bu durumda komutun çalıştırılabileceği bir hattı veri kaynağımız ile Command nesnesi arasında sağlamamız gerekir. İşte Connection (Bağlantı) nesnemizi kullanmamız için bir sebep daha.
 

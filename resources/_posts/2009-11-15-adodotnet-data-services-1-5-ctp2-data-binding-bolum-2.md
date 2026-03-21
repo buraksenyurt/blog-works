@@ -5,19 +5,7 @@ date: 2009-11-15 23:09:00 +0300
 categories:
   - ado-net-data-services
 tags:
-  - ado-net-data-services
-  - csharp
-  - xml
-  - dotnet
-  - ado-net
-  - entity-framework
-  - linq
-  - sql-server
-  - wcf
-  - wpf
-  - xaml
-  - http
-  - visual-studio
+  - ado.net-data-services
 ---
 Orta uzunlukta bir yazı için hazır mısınız? Analizi dikkat gerektiren bir Ado.Net Data Service örneği geliştiriyor olacağız. Genellikle bu tarz yazılara ait kodları geliştirirken sıkılmamak ve zihnimi açık tutmak için ya kahve içerim yada mutluluktan havalara uçarmış gibi yazabilmek ve kan şekerimi üst seviyede tutabilmek için bazen değişik şekerlemelerden yerim. Aynen yandaki resimde olduğu gibi.
 

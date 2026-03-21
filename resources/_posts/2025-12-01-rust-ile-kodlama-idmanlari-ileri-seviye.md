@@ -6,20 +6,7 @@ categories:
   - rust
 tags:
   - rust
-  - authentication
-  - async-await
-  - threading
-  - concurrency
-  - performance
-  - pointers
-  - github
-  - thread-safety
-  - mutex
-  - atomic-operations
-  - refcell
-  - rc
-  - arc
-  - dependency-management
+  - rust-lang
 ---
 Rust programlama dili ile ilgili maceralarımıza devam ediyoruz. Gerçi geçtiğimiz günlerde sizin de bildiğiniz üzere unwrap metodunun hatalı bir kullanımı sebebiyle internet sitelerinin %20sini koruyan [Cloudfare](https://www.cloudflare.com/) çöktü ve birçok hizmet uzun süre kullanılamaz hale geldi. Konuyla ilgili detaylı bilgilere[şu adreste](https://blog.cloudflare.com/18-november-2025-outage/)ki yazıdan ulaşabilirsiniz. Ferris şaşkın, ferris üzgün!
 

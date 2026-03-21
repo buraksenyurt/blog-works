@@ -6,8 +6,8 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - tek-fotoluk-ipucu
-  - authentication
-  - github
+  - validation
+  - fluent-api
 ---
 Hani şu NuGet paketlerine bakıyoruz ya bir süredir. Hatta bazılarını alıp basit Hello World uygulamalarını geliştiriyoruz. Aslında nasıl kullanıldıklarını öğrenmenin dışında GitHub gibi Repository'ler üzerinde tutulan kodlarına bakamamızda da büyük yarar var biliyor musunuz? Çünkü çoğu, nesne yönelimli programlamanın temel dinamiklerini içeriyor ve hatta yazılım prensipleri ile tasarım kalıplarını başarılı bir şekilde uyguluyor.
 

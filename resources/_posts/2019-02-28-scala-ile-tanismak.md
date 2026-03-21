@@ -6,14 +6,20 @@ categories:
   - scala
 tags:
   - scala
-  - csharp
-  - bash
-  - dotnet
-  - http
+  - programming-languages
+  - object-oriented-programming
+  - functional-programming
+  - repl
   - java
-  - generics
-  - visual-studio
-  - github
+  - jvm
+  - bytecode
+  - pattern-matching
+  - case-class
+  - Immutable-Types
+  - methods
+  - anonymous-function
+  - trait
+  - object
 ---
 Yazılım geliştirmek için kullanabileceğimiz bir çok programlama dili var. Hatta bir ürünün geliştirilmesi demek farklı platformların bir araya getirilmesi anlamına da geldiği için, bir firmanın kendi ekosisteminde çeşitli dilleri bir arada kullandığını görmek mümkün. [Scala](https://docs.scala-lang.org/tour/tour-of-scala.html)'da bu çark içerisinde kendisine yer edinmiş ve son zamanlarda dikkatimi çeken programlama dillerden birisi. Bunun en büyük sebebi daha önceden çalıştığım turuncu bankanın Hollanda kanadında servis odaklı süreçlerin orkestrasyonu için onu backend tarafında kullanıyor (veya deneyimliyor) olması. Hatta [şuradaki github adresinden](https://github.com/ing-bank/baker) açık kaynak olan Baker isimli ürünü inceleme şansımız da var. Scala ve Java kullanılarak yazılmış bir çatı.
 

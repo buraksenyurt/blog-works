@@ -5,19 +5,20 @@ date: 2019-11-06 10:30:00 +0300
 categories:
   - vuejs
 tags:
-  - vuejs
-  - javascript
-  - bash
-  - postgresql
-  - http
-  - jwt
-  - authentication
-  - docker
-  - kubernetes
+  - hasura
   - vue
-  - performance
-  - caching
-  - github
+  - graphql
+  - javascript
+  - api
+  - html
+  - mutation
+  - component
+  - heroku
+  - postgresql
+  - docker
+  - container
+  - bootstrap
+  - crud
 ---
 Yıl 2015. Hindistan'ın Bengaluru şehrinde doğan bir Startup (Sonradan San Fransico'da da bir ofis sahibi olacaklar), [Microsoft'un BizSpark programından destek](https://blogs.technet.microsoft.com/bizspark_featured_startups/2017/09/18/quickly-develop-backend-applications-without-having-to-write-code-with-hasura/) buluyor. Kurucuları Rajoshi Ghosh (Aslen bioinformatik araştırmacısı) ve Tanmai Gopal (Bulut sistemleri, fonksiyonel programlama ve GraphQL konusunda uzman) isimli iki Hintli. Şirketlerine şeytanın sanskritçedeki adını veriyorlar; Hasura! Aslında O, fonksiyonel dillerin kralı Haskell ile yazılmış bir platform ve şimdilerde Heroku ile daha yakın arkadaş.
 

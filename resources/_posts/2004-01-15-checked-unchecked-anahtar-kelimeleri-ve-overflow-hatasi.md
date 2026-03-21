@@ -6,6 +6,8 @@ categories:
   - csharp
 tags:
   - csharp
+  - checked
+  - unchecked
 ---
 Bugünkü makalemizde, değişkenlerin içerdikleri verilerin birbirleri arasında atanması sırasında oluşabilecek durumları incelemeye çalışacağız. Bildiğiniz gibi, değişkenler bellekte tutulurken, tanımlandıkları veri tipine göre belirli bir bit boyutuna sahip olurlar. Ayrıca her değişkenimizin belli bir değer aralığı vardır. Programlarımızı yazarken, çoğu zaman değişkenleri birbirlerine atarız. Küçük boyutlu bir değişkeni, kendisinden daha büyük boyutlu bir değişkene atarken bir problem yoktur. Ancak, boyutu büyük olan bir değişkeni, daha küçük boyuta sahip bir değişkene atamak istediğimizde durum değişir. Elbette böyle bir durumda, derleyicimiz bizi uyaracaktır. Ancak bilinçli olarak yani tür dönüştürme anahtar kelimelerini kullandığımız durumlarda herhangibir derleyici hatasını almayız. Bu konuyu daha iyi anlayabilmek, değişkenleri tanımladığımız türlere ait boyut bilgilerinin iyi bilinmesini gerektirir. Bu amaçla aşağıdaki tabloda, C# programlama dilinde kullanılan değişken türlerini bulabilirsiniz.
 

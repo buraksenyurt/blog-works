@@ -6,16 +6,7 @@ categories:
   - team-foundation-server
 tags:
   - team-foundation-server
-  - csharp
-  - dotnet
-  - oracle
-  - wcf
-  - xml
-  - web-service
-  - http
-  - iis
-  - generics
-  - asmx
+  - client-object-model
 ---
 Yedek Subay olarak askerlik hizmetimi yerine getirdiğim yıllarda (O zamanlar 16 ay idi) Jandarma Genel Komutanlığı Personel Şube’ de görev almıştım. Aslında temel işim Powerpoint ile sunum hazırlamaktı ama verilen emir her ne ise onu da yerine getirmek mesuliyetini taşımaktaydım.
 

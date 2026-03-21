@@ -5,17 +5,17 @@ date: 2021-04-30 23:54:00 +0300
 categories:
   - asp-dotnet-core
 tags:
-  - asp-dotnet-core
-  - csharp
-  - dotnet
-  - aspnet
-  - entity-framework
-  - wcf
-  - performance
-  - generics
   - dependency-injection
-  - github
-  - dependency-management
+  - dependency-injection-container
+  - lifetimes
+  - addsingleton
+  - addscoped
+  - addtransient
+  - asp.net-core
+  - asp.net
+  - mvc
+  - controller
+  - logging
 ---
 Çalışmakta olduğum şirketin çok büyük bir ERP (Enterprise Resource Planning) uygulaması var. Microsoft.Net Framework 1.0 sürümünde düşünce olarak hayat geçirilip geliştirilmeye başlanmış. Milyonlarca satır koddan ve sayısız sınıftan oluşan, katmanlı monolitik mimari üstünde yürüyen, sahada on binden fazla personelin kullandığı çok etkili bir ürün. Geçtiğimiz yıl bu uygulamanın modernizasyonu kapsamında başlatılan IT4IT çalışmaları bünyesinde nesne bağımlılıklarının yönetimi için Dependency Injection mekanizmasının nimetlerinden de epeyce yararlanıldı. Doğruyu söylemek gerekirse koda yaptıkları dokunuşları hayranlıkla izledim.
 

@@ -5,12 +5,8 @@ date: 2007-08-02 12:00:00 +0300
 categories:
   - aspnet
 tags:
-  - aspnet
-  - csharp
-  - xml
-  - dotnet
-  - http
-  - authentication
+  - asp.net
+  - trace
 ---
 Web uygulamalarında son kullanıcıların (End Users) şikayetçi olabileceği pek çok konu vardır. Bunlar arasında popüler olanlarından biriside sayfaların yavaş açılıyor olmasıdır. Nihayetinde son kullanıcıları her zaman için sabırsız ve acelesi olan kişiler olarak düşünmek doğru bir yaklaşım olacaktır. Sayfaların yavaş açılıyor yada geç cevap veriyor olmasının donanımsal yada çeşitli çevre faktörleri nedeniyle bilinen sebepleri vardır.
 

@@ -5,13 +5,11 @@ date: 2004-05-22 09:00:00 +0300
 categories:
   - dotnet-remoting
 tags:
-  - dotnet-remoting
-  - dotnet
-  - xml
-  - soap
+  - .net-remoting
+  - hello-world
   - http
-  - performance
-  - serialization
+  - tcp
+  - data-communication
 ---
 Bu makalemizde,.net remoting sistemini anlamaya çalışacak ve.net remoting sistemini oluşturan temel yapılar üzerinde duracağız. Öncelikle.net remoting'in ne olduğunu ve ne işe yaradığını tanımlamakla işe başlılayım. Remoting sistemi, kısaca, farklı platformlarda çalışan uygulamalar arasında veri alışverişine imkan sağlayan bir sistemdir. Bu tanımda söz konusu olan platformlar farklı işletim sistemlerinin yer aldığı farklı ve birbirlerinden habersiz proseslerde çalışan uygulamaları içerebilir. Olayın en kilit noktasıda, farklı sistemlerin veri alışverişinde bulunabilmelerinin sağlanmasıdır.
 

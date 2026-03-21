@@ -5,18 +5,8 @@ date: 2007-10-25 12:00:00 +0300
 categories:
   - wcf
 tags:
-  - wcf
-  - csharp
-  - bash
-  - xml
-  - dotnet
-  - linq
-  - http
-  - iis
-  - authentication
-  - authorization
-  - generics
-  - visual-studio
+  - windows-communication-foundation
+  - windows-card-space
 ---
 WCF (Windows Communication Foundation) mimarisini baz alan SOA (Service Oriented Applications) uygulamaları geliştirilirken, güvenlik (security) başlığı altında ele alınmakta olan pek çok konu vardır. Geliştirilen bir WCF servisinin sadece izin verilen istemciler (clients) tarafından kullanılmasıda bu konulardan bir tanesidir. Bu amaçla istemci uygulamaların veya onları kullanan hesapların servis tarafında doğrulanması (authenticate) ve yetkilendirilmesi (authorize) adına bazı teknikler ele alınır. Temel olarak bir istemcinin doğrulanması ve yetkilendirilmesi, onun kim olduğunun bilinmesine bağlıdır (Identification). Kimlik tespiti için kullanıcı adı-şifre, sertifika (certificate) yada Kerberos kartı (token) gibi elemanlar göz önüne alınır. Doğrulama işlemi sırasında kullanılan kimlik tespiti tekniklerinden biriside.Net Framework 3.0 ile birlikte gelen Windows Cardspace teknolojisidir.
 

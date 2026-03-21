@@ -5,13 +5,15 @@ date: 2011-12-14 16:25:00 +0300
 categories:
   - t-sql
 tags:
-  - t-sql
-  - entity-framework
+  - sql
+  - stored-procedures
+  - newid
+  - transact-sql
+  - cursor
+  - database
+  - adventure-works
   - sql-server
-  - wcf
-  - performance
-  - transactions
-  - visual-studio
+  - temp-table
 ---
 Hiç canınızın sıkıldığı ve böyle bir buhran anına girdiğinizde SQL Server Management Studio'yu açıp T-SQL ile eğlenceli bir şeyler yapmaya çalıştığınız oldu mu?
 

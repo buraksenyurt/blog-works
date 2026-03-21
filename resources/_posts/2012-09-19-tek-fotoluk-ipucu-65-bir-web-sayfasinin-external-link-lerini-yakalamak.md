@@ -5,7 +5,14 @@ date: 2012-09-19 23:15:00 +0300
 categories:
   - tek-fotoluk-ipucu
 tags:
+  - regex
+  - extension-methods
   - tek-fotoluk-ipucu
+  - httpwebrequest
+  - httpwebresponse
+  - streamreader
+  - html
+  - uri
 ---
 Diyelim ki her hangibir Uri tipinin işaret ettiği Web içeriğinde yer alan a href= takılarını yakalamak ve bir listeye doldurmak istediniz. Napardınız? Yoksa aşağıdaki gibi bir Extension Method mu geliştirirdiniz?
 

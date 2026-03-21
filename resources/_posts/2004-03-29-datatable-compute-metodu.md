@@ -5,11 +5,11 @@ date: 2004-03-29 12:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
-  - csharp
-  - dotnet
-  - t-sql
+  - ado.net
   - datatable
+  - compute
+  - sqlcommand
+  - aggregate-functions
 ---
 Çoğu zaman, uygulamalarımızda T-Sql'in Aggregate fonksiyonlarını kullanarak, belirli sütunlara ait veriler üzerinden, toplam değer, en büyük değer, en küçük değer, ortalama değer vb. gibi sonuçlara ulaşmaya çalışırız. Bu amaçla T-Sql'in Avg, Sum, Count gibi Aggregate fonksiyonlarından yararlanırız. İşte bu makalemizde, bu fonksiyonları, DataTable sınıfının Compute metodu yardımıyla nasıl kullanabileceğimizi incelemeye çalışacağız.
 

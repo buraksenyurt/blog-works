@@ -6,11 +6,8 @@ categories:
   - windows-forms
 tags:
   - windows-forms
-  - csharp
-  - dotnet
-  - web-service
-  - threading
-  - generics
+  - thread
+  - backgroundworker
 ---
 Windows uygulamalarında, arka planda çalışan iş parçalarının (process) çok uzun sürdüğü durumlar ile sıkça karşılaşırız. Bu gibi durumlarda genellikle kullanıcı ekranı (UI - User Interface) kısa süreliğine de olsa arka plan işlemleri tamamlanıncaya kadar donar. Bunun önüne geçmek için Thread sınıflarını kullanabiliriz. Ancak.Net 2.0 ile birlikte windows uygulamalarında arka planda asenkron olarak çalıştırılabilecek tipteki işlemleri kolayca yönetebileceğimiz BackgroundWorker isimli yeni bir görsel bileşen gelmektedir. Bu makalemizde bu bileşen yardımıyla, UI kitlenmelerine neden olacak tarzdaki süreçleri nasıl yönetebileceğimizi görmeye çalışacağız.
 

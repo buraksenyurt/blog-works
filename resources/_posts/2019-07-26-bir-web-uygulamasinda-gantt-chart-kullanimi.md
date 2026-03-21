@@ -5,24 +5,25 @@ date: 2019-07-26 13:00:00 +0300
 categories:
   - asp-dotnet-core
 tags:
-  - asp-dotnet-core
-  - bash
-  - json
-  - csharp
-  - dotnet
-  - aspnet
-  - entity-framework
-  - ef-core
-  - linq
-  - rest
-  - web-api
-  - http
-  - jwt
+  - .net-core
+  - asp.net-core
+  - gantt-chart
+  - chart
   - javascript
-  - generics
-  - microservices
-  - visual-studio
-  - github
+  - gantt
+  - css
+  - sqlite
+  - entity-framework
+  - html
+  - mvc
+  - datacontext
+  - extension-methods
+  - dependency-injection
+  - dto
+  - data-transfer-object
+  - rest-api
+  - project-management
+  - waterfall
 ---
 Beğenerek dinlediğim Scorpions grubunun en güzel şarkılarından birisidir Wind of Change. Değişim rüzgarları uzun zamandır hayatımın bir parçası aslında. Sanıyorum ilk olarak 2012 yılında o zamanlar çalışmakta olduğum turuncu bankada başlamıştı esintiler. Çevik dönüşüm süreci kapsamında uzun zamandır var olan şelale modelinin ağır ve hantal işleyişi yerine daha hızlı reaksiyon verme kabiliyeti kazanmak içindi her şey. Benzer bir dönüşüm süreci geçtiğimiz sene içerisinde şu an çalışmakta olduğum mavi renkli teknoloji şirketinde de başlatıldı.
 

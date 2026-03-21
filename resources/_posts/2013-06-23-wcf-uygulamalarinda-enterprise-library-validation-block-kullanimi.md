@@ -5,13 +5,12 @@ date: 2013-06-23 15:26:00 +0300
 categories:
   - wcf
 tags:
-  - wcf
-  - csharp
-  - xml
-  - http
-  - authentication
-  - caching
-  - serialization
+  - windows-communication-foundation
+  - validation
+  - enterprise-library
+  - validation-application-block
+  - fault-management
+  - fault-contract
 ---
 Enterprise Library ve içerisinde yer alan Application Block’ lar çoğunlukla projelerimizde ihtiyaç duyduğumuz ve Cross-Cutting olarak geçen parçaların hızlı ve kolay bir biçimde uygulanmasında kullanılmaktadır. Cross-Cutting’ ler özellikle birden fazla katmandan oluşan proje bazlı çözümlerde, katmanların pek çok noktasında sıklıkla kullanılabilen (ihtiyaç duyulabilen) fonksiyonelliklerdir.
 

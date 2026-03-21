@@ -5,9 +5,7 @@ date: 2003-12-05 12:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
-  - csharp
-  - dataset
+  - ado.net
   - datatable
 ---
 Hatırlayacağınız gibi yazı dizimizin ilk bölümünde, DataTable sınıfını kullanarak bellekte bir tablonun ve bu tabloya ait alanların nasıl yaratıldığını işlemiştik. Bugünkü makalemizde oluşturmuş olduğumuz bu tabloya kayıtlar ekleyeceğiz ve sonra bu DataTable nesnesini bir DataSet’e aktarıp içerisindeki verileri bir DataGrid kontrolünde göstereceğiz.

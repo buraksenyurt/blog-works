@@ -6,10 +6,9 @@ categories:
   - parallel-programming
 tags:
   - parallel-programming
-  - csharp
-  - dotnet
-  - http
-  - generics
+  - barrier-class
+  - task-parallel-library
+  - sort-algoritmaları
 ---
 At yarışlarına pek ilgim yoktur aslında ama tam da bu günlerde okuduğum kitap nedeniyle, paralel programlama ile aralarında sıkı bir ilişki olduğunu ifade edebilirim
 

@@ -5,17 +5,10 @@ date: 2004-09-17 12:00:00 +0300
 categories:
   - ado-net-2-0
 tags:
-  - ado-net-2-0
-  - bash
-  - csharp
-  - dotnet
-  - ado-net
-  - sql-server
-  - xml
-  - transactions
-  - delegates
-  - generics
-  - datatable
+  - ado.net
+  - bulk
+  - data
+  - copy
 ---
 Sql Server'da bir veritabanı tablosundan, başka bir hedef tabloya veri taşıma işlemi bulk-data kopyalama olarak adlandırılır. Veritabanı yöneticileri çoğunlukla bu operasyonu gerçekleştirmek amacıyla, BCP adı verilen komut satırı aracını kullanırlar. Burada amaç, kaynak tablodaki satırların veya bir satır kümesinin farklı konumda olabilecek bir tabloya taşınmasıdır. Hedef tablo aynı veritabanında olabileceği gibi, diğer bir sql sunucusu üzerindeki başka bir veritabanında da yer alabilir. Ado.Net 2.0' da SqlClient isim alanına eklenen yeni sınıflar yardımıyla bu işlemleri yönetimli kodda (managed-code) gerçekleştirme imkanına da artık sahibiz. Bu makalemizde, bu işlemleri gerçekleştirmek için kullanabileceğimiz yeni Ado.Net 2.0 sınıflarını incelemeye çalışacağız.
 

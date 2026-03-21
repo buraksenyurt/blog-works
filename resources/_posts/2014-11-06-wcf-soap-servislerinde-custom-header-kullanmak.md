@@ -5,14 +5,13 @@ date: 2014-11-06 12:00:00 +0300
 categories:
   - wcf
 tags:
-  - wcf
-  - csharp
+  - windows-communication-foundation
+  - soa
+  - header
+  - soap-based-service
+  - message-contract
+  - xsd
   - xml
-  - dotnet
-  - soap
-  - web-service
-  - http
-  - generics
 ---
 Çok uzun zamandır Sosyal ağlardan uzağım. Ne Facebook, ne Twitter ne de bir başkasını kullanmıyorum. Google+ üzerinde bile sırf Hangout söyleşileri nedeniyle mecburen açık tuttuğum bir hesap var. Sosyal ağları terk ettiğim ilk günlerde çevremdeki pek çok yakın dostumla olan iletişimimi de yeniden tesis etmem gerekmişti. Ne acıdır ki pek çoğunun iletişim bilgisi sadece Tweet ve Facebook mesaj kısmı ile sınırlı kalmıştı. Hani nerede telefon numaraları, nerede e-posta adresleri? Çoğunu tedarik etmek epeyce zor oldu.
 

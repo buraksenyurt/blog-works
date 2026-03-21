@@ -5,21 +5,9 @@ date: 2007-04-28 03:00:00 +0300
 categories:
   - wcf
 tags:
-  - wcf
-  - csharp
-  - xml
-  - dotnet
-  - aspnet
-  - ado-net
-  - web-service
-  - xml-web-services
-  - http
+  - windows-communication-foundation
   - iis
-  - serialization
-  - generics
-  - visual-studio
-  - asmx
-  - dataset
+  - internet-information-services
 ---
 Windows Communication Foundation ile ilişkili bir önceki makalemizde mimarinin detaylarına yakından bakmaya çalışmış ve örnek bir uygulama geliştirmiştik. Bu makalemizde ise bir WCF Service projesi geliştirmeye çalışacağız. Bir başka deyişle HTTP protokolünü kullanarak, IIS üzerinden bir.Net kütüphanesini servis olarak yayınlayacağız.
 

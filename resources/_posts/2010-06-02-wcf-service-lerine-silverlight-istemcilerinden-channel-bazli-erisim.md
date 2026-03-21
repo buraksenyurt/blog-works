@@ -6,21 +6,9 @@ categories:
   - silverlight-4-0
   - wcf
 tags:
-  - silverlight-4-0
-  - wcf
-  - csharp
-  - xml
-  - dotnet
-  - aspnet
   - silverlight
-  - xaml
-  - http
-  - authentication
-  - threading
-  - serialization
-  - generics
-  - visual-studio
-  - rc
+  - windows-communication-foundation
+  - svcutil
 ---
 Bir zamanlar (aslında çok uzun zaman olmadı ayrılalı) özel bir eğitim firmasında Yazılım Eğitmeni olarak görev yapmaktaydım. Freelance olarak başladığım ilk dönemlerde kurumda en çok dikkatimi çeken nokta, şirketin gece koruyuculuğunu yapan köpekleri olmuştu. Aslında herkes yandaki resimde görülen ki kadar etkili ve caydırıcı olmasını bekleyebilir ancak son derece sakin ve kendi halinde sevimli bir köpekti. Bilişim sektöründe sistem eğitimleri de veren bu şirketin, geceleri koruma görevi ile barındırdığı köpeğinin adı ise, şirketin yaptığı işle ilintili olarak Proxy olarak verlimişti. Bilenler bilir...Neredeyse gıkı bile (pardon havı bile) çıkmayan bu sevimli köpeğin yersiz serzenişte bulunmamasının da bir nedeni vardı elbette. Proxy...Gelen veriyi süzüp ona göre aksiyon veriyordu çünkü
 

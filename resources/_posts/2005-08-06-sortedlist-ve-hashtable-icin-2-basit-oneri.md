@@ -6,9 +6,8 @@ categories:
   - csharp
 tags:
   - csharp
-  - bash
-  - sql-server
-  - generics
+  - sorted-list
+  - hashtable
 ---
 SortedList ve Hashtable koleksiyonları, anahtar-değer (key-value) çiftlerini esas alır. Hashtable koleksiyonu özellikle sahip olduğu elemanlar ile ilgili işlemlerde kullandığı hash algoritmalı teknik sayesinde en hızlı çalışan koleksiyon olma özelliğinide gösterir. Diğer yandan SortedList anahtar-değer çiftlerinin, anahtar değerine göre her zaman sıralandığı bir koleksiyon tipidir.
 

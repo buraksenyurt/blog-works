@@ -5,21 +5,21 @@ date: 2018-08-17 21:30:00 +0300
 categories:
   - dotnet-core
 tags:
-  - dotnet-core
-  - bash
+  - linkedin
   - csharp
-  - xml
-  - dotnet
-  - aspnet
-  - asp-dotnet-core
-  - rest
-  - json
-  - http
-  - oauth
-  - authentication
+  - .net-core
+  - oauth-2.0
+  - access-token
+  - postman
+  - rest-api
+  - web-api
+  - http-get
+  - http-post
+  - bearer
+  - bearer-authentication
+  - bearer-token
+  - token-based-authentication
   - authorization
-  - javascript
-  - async-await
 ---
 Sosyal ağlar ile pek aram yok. Vakit kaybı gibi gelmese de oraya harcayacağım zamanı farklı alanlarda kullanmayı daha çok tercih ediyorum. Özellikle yeni bir şeyler öğrenmek benim epey zamanımı alıyor. Kullandığım tek sosyal platform diyebileceğim yerse Linkedin. Bu profesyonel iş ağında zaman içerisinde hatırı sayılır derecede bağlantım oluştu. Ne var ki sayı artınca ana sayfadaki akışı izlemek inanılmaz derecede zorlaştı. Hatta iş ağını geliştirirken sayının onbinler üzerine çıkması bir süre sonra bazı merak edilen sorulara cevap bulmayı zorlaştırıyor. Örneğin bağlantılarımdan kaçı İnsan Kaynakları alanında çalışıyor? Ya da İstanbul'da yaşayanlar kimler? Veya ayda ortalama 4 veya daha fazla paylaşım yapanlar hangi bağlantılarım? Peki ya yaptıkları paylaşımlarda yapay zeka ile ilgili anahtar kelimeler kullananlar?
 

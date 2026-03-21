@@ -5,20 +5,17 @@ date: 2013-01-25 02:27:00 +0300
 categories:
   - dotnet-framework-4-5
 tags:
-  - dotnet-framework-4-5
-  - csharp
-  - dotnet
-  - aspnet
-  - linq
-  - sql-server
-  - wpf
-  - windows-forms
-  - async-await
+  - .net-framework
+  - async
+  - asynchronous-programming
+  - wait
+  - await
+  - awaitable-task
+  - task
   - task-parallel-library
-  - threading
-  - concurrency
-  - performance
-  - generics
+  - io
+  - streamreader
+  - streamwriter
 ---
 Geçtiğimiz gün özlem duyduğum bilgisayar oyunlarından birisi olan Warcraft II'nin ses efektlerini arar halde buldum kendimi. Olay tabi ses efektlerinin mükemmelliğinden çıktı oyuncu karakterlerine kadar geldi. Gerek Orc'lar da gerek Human'lar da süper kahramanlar vardı. Büyücüler, okçular, işçiler ve daha niceleri. Pek çoğumuzun bu oyun başında saatler harcadığından ve sabah ezanına kadar kaldığından eminim.
 

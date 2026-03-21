@@ -5,10 +5,12 @@ date: 2017-05-05 12:17:00 +0300
 categories:
   - ruby
 tags:
-  - ruby
-  - task-parallel-library
-  - threading
   - concurrency
+  - concurrent-programming
+  - multi-thread
+  - thread
+  - fiber
+  - ruby-lang
 ---
 Eş zamanlı programlamanın (Concurrent Programming) dile veya çatıya göre farklı uygulanma şekilleri olabiliyor. Esas itibariyle genel amaç eş zamanlı olarak birden fazla işin gerçekleştirilmesini sağlayabilmek. Bu noktada en zorlayıcı noktalardan birisi işlemcinin ve işletim sisteminin bu çalışma taleplerine olan anlık tepkilerinin yönetilmesi. Neredeyse pek çok programlama ortamında Thread'ler ile karşılaşıyoruz (Bu arada yandaki fotoğrafın Ruby Fiber ile bir alakası yok. Fiber konulu imaj ararkan doğal olarak lifli yiyecekler ve sevimsiz diyet konusunu karşıma çıkmıştı)
 

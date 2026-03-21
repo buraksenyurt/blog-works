@@ -6,9 +6,8 @@ categories:
   - csharp
 tags:
   - csharp
-  - dotnet
   - reflection
-  - datatable
+  - .net
 ---
 Hiç.NET ‘te yer alan bir tipinin üyelerini öğrenebilmek istediniz mi? Örneğin var olan bir.NET sınıfının veya sizin kendi yazmış olduğunuz yada bir başkasının yazdığı sınıfa ait tüm üyelerin neler olduğuna programatik olarak bakmak istediniz mi? İşte bugünkü makalemizin konusu bu. Herhangi bir tipe (type) ait üyelerin neler olduğunu anlayabilmek. Bu amaçla, Reflection isim uzayını ve bu uzaya ait sınıfları kullanacağız.
 

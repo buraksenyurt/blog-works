@@ -5,16 +5,8 @@ date: 2005-02-07 12:00:00 +0300
 categories:
   - aspnet
 tags:
-  - aspnet
-  - csharp
-  - xml
-  - dotnet
-  - sql-server
+  - asp.net
   - caching
-  - delegates
-  - dataset
-  - datatable
-  - dependency-management
 ---
 Hatırlayacağınız gibi bir önceki makalemizde, web uygulamalarında caching mekanizmasını incelemeye başlamış ve ara belleğe alma tekniklerinden Output Cache yapısını incelemiştik. Output Cache tekniğinde bir sayfanın tamamının HTML içeriği ara belleğe alınmaktaydı. Oysa çoğu zaman sayfamızda yer alan belirli veri kümelerinin ara bellekte tutulmasını isteyebiliriz. Örneğin, bir alışveriş sitesinin pek çok kısmı dinamik olarak değişebilirken satışı yapılan ürünlerin yer aldığı kategori listeleri çok sık değişmez. Hatta uzun süreler boyunca aynı kalabilirler. İşte böyle bir durumda sayfanın tamamını ara belleğe almak yerine sadece kategori listesini sunan veri kümesini ara belleğe almak daha mantıklıdır. Data Caching olarak adlandırılan bu teknikte çoğunlukla veri kümeleri ara belleğe alınır. Data Caching tekniğinde verileri ara belleğe almak için System.Web.Caching isim alanında yer alan Cache sınıfı ve üyeleri kullanılmaktadır.
 

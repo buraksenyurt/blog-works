@@ -9,10 +9,8 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - csharp
-  - csharp-3-0
-  - csharp-4-0
-  - tek-fotoluk-ipucu
-  - linq
+  - language-integrated-query
+  - enums
 ---
 LINQ sorgularını sadece sorgulamak için kullandığımızı da nereden çıkartıyorsunuz. Aslında onları kodlarımızı daha şık hale getirmek için de kullanabiliriz? Nasıl mı? İşte küçük bir örnek
 

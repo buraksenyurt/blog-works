@@ -5,19 +5,9 @@ date: 2008-10-24 12:00:00 +0300
 categories:
   - ado-net-data-services
 tags:
-  - ado-net-data-services
-  - csharp
-  - dotnet
-  - aspnet
-  - ado-net
-  - linq
-  - sql-server
-  - wcf
-  - http
-  - iis
-  - reflection
-  - generics
-  - debugging
+  - ado.net-data-services
+  - wcf-data-services
+  - windows-communication-foundation
 ---
 Ado.Net Data Services konusu ile ilintili bir önceki ders notlarımızda, EDM (Entity Data Model) üzerinden CUD (CreateUpdateDelete) işlemlerinin nasıl yapılabileceğini incelemeye çalışmıştık. Ancak durum özel LINQ Provider kullanımı söz konusu olduğunda biraz daha karmaşıklaşmakta. Nitekim Custom LINQ Provider kullanılması halinde istemci tarafından gelen CUD taleplerine karşılık servis tarafında özel kodlamaların yapılması gerekiyor. Bu noktada ders notlarımız içerisinde belkide çoğumuzun korkup fazla bulaşmak istemediği bir konuya kısacada olsa değineceğimizi şimdiden ifade etmek isterim. Reflection (Yansıma):)
 

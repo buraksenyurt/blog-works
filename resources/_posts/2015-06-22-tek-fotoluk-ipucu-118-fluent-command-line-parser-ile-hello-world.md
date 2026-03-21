@@ -5,7 +5,10 @@ date: 2015-06-22 04:09:00 +0300
 categories:
   - tek-fotoluk-ipucu
 tags:
+  - fluent-api
   - tek-fotoluk-ipucu
+  - csharp
+  - command-prompt
 ---
 Nesne Yönelimli Programlama Dillerinin (Object Oriented Programming Languages) kullanıcılarını büyülediği pek çok nokta var. Örneğin Fluent API'ler bunlardan sadece birisi ve getirdiği güzellikleri pek çok bağımsız üründe de görebiliyoruz (Bu arada Fluent API geliştirilmesi ile ilgili olarak [şu eski anlatıma](https://www.buraksenyurt.com/post/Fluent-Interface-Prensibi-ile-Daha-Okunabilir-Kod-Gelistirmek) bakabilirsiniz)
 

@@ -6,15 +6,6 @@ categories:
   - parallel-programming
 tags:
   - parallel-programming
-  - csharp
-  - dotnet
-  - linq
-  - task-parallel-library
-  - threading
-  - concurrency
-  - performance
-  - generics
-  - visual-studio
 ---
 .Net Framework 4.0 ve içerdiği paralel genişletmeler (Parallel Extensions) ile birlikte gelmekte olan yenilikler arasında, eş zamanlı (Concurrent) çalışabilen ve Thread Safe olan koleksiyonlarda bulunmaktadır. Bu koleksiyonlar aslında veri yapıları (Data Structures) ile birlikte gelen yeni tipler arasında yer almaktadır.
 

@@ -5,14 +5,7 @@ date: 2010-02-19 05:04:00 +0300
 categories:
   - wf-4-0-rc
 tags:
-  - wf-4-0-rc
-  - csharp
-  - dotnet
   - workflow-foundation
-  - concurrency
-  - delegates
-  - visual-studio
-  - rc
 ---
 Çalışmakta olduğum yazılım şirketinin çok yakınında kocaman bir alışveriş merkezi bulunmakta. Bazen öğle yemekleri için alışveriş merkezinin tahsis ettiği servisler ile oraya gidiyoruz. Alışveriş merkezi olduğu için tehlikeli bir yer olduğunu da söyleyebiliriz.
 

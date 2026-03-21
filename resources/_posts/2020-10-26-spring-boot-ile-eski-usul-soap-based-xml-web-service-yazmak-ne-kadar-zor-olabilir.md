@@ -5,23 +5,15 @@ date: 2020-10-26 17:51:00 +0300
 categories:
   - spring-boot
 tags:
-  - spring-boot
-  - bash
-  - csharp
-  - xml
-  - dotnet
-  - mongodb
-  - soap
-  - rest
-  - web-api
-  - web-service
-  - xml-web-services
-  - http
-  - grpc
   - java
-  - visual-studio
-  - github
-  - dependency-management
+  - spring-boot
+  - xml
+  - xml-web-service
+  - soap
+  - wsdl
+  - dependency-injection
+  - service-discovery
+  - soap-based-service
 ---
 Kısa bir süre önce değerli bir çalışma arkadaşım kullanmaya çalıştığı Java tabanlı XML Web servis ile epeyce sorun yaşadı. Söz konusu servisi.Net tarafından tüketmeye çalışıyordu ancak XML şeması da epeyce karmaşık olan servis iletişim noktasında şema adlarına kızıyor, header içeriğini beğenmiyor sürekli naz yapıyordu. Arkadaşım allem etti kallem etti sorunun altından girip üstünden çıktı ve nihayetinde çözdü. Bu olaylara kısmen tanıklık ettikten sonra "yahu Java tarafında XML Web Service geliştirmek şimdilerde daha bir kolay değil midir!?" diye söylenmeye başladım. Yol doğal olarak beni Spring Boot'a ve resmi dokümantasyonuna götürdü.
 

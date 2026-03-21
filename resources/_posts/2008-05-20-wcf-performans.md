@@ -5,18 +5,7 @@ date: 2008-05-20 12:00:00 +0300
 categories:
   - wcf
 tags:
-  - wcf
-  - csharp
-  - xml
-  - dotnet
-  - workflow-foundation
-  - json
-  - web-service
-  - xml-web-services
-  - http
-  - performance
-  - serialization
-  - visual-studio
+  - windows-communication-foundation
 ---
 Uzun bir aradan sonra tekrar birlikteyiz. Windows Communication Foundation mimarisinin geliştirilmesininin tek amacı, var olan dağıtık mimari modellerini bir çatı altında birleştirmek değildir. Buna paralel olaraktan WCF mimarisi,.Net Remoting, Xml Web Servisleri, WSE (Web Service Enhancements), MSMQ (Microsoft Message Queue), COM+ gibi pek çok dağıtık uygulama geliştirme modelinin çalışma zamanı alt yapısının kolayca oluşturulabilmesinide hedeflemektedir. Burada dekleratif programlama modelinin benimsenmesinin önemli katkısı vardır. Sonuçta geliştiricinin sıklıkla yapmak zorunda kaldığı alt yapı hazırlıklarının attribute (nitelik) veya konfigurasyon bazlı olacak şekilde ayarlanabilmesi son derece avantajlıdır.
 

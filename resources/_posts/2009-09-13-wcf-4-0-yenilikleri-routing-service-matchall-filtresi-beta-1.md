@@ -5,13 +5,7 @@ date: 2009-09-13 21:00:00 +0300
 categories:
   - wcf-4-0-beta-1
 tags:
-  - wcf-4-0-beta-1
-  - csharp
-  - xml
-  - wcf
-  - soap
-  - http
-  - serialization
+  - windows-communication-foundation
 ---
 Bundan önceki yazılarımızda WCF 4.0 için yönlendirme servislerinin (Router Service) nasıl yazılabileceğini incelemeye çalışmıştık. Fark edeceğiniz üzere yönlendirme servislerinin en önemli noktaları arasında filtreleme tablosu ve filtrelerin olduğunu gördük. Bununla birlikte sadece Action tipinde bir filtreleme kullanıp, istemciden gelen SOAP paketinin Action kısmından yararlanılarak bir yönlendirme yapılmasını inceledik.
 

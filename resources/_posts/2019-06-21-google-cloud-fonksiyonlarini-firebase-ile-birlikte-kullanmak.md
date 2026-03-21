@@ -5,19 +5,19 @@ date: 2019-06-21 07:00:00 +0300
 categories:
   - gcp
 tags:
-  - gcp
-  - bash
+  - google-cloud-platform
+  - realtime-database
+  - google
+  - node
+  - npm
+  - node.js
   - javascript
-  - dotnet
-  - nosql
-  - rest
-  - json
-  - http
-  - typescript
-  - nodejs
-  - transactions
-  - github
-  - dependency-management
+  - postman
+  - express
+  - cors
+  - cloud-computing
+  - cloud-functions
+  - eslint
 ---
 Google'ın Doodle hizmetini takip ediyor musunuz bilemiyorum ancak ben zaman zaman orada hazırlanmış ikonik görsellerden harika hikayelere gidiyorum. Bu seferki yazının derlemesi sırasında da yolum bir şekilde onunla kesişti ve girişte kimden bahsedebilirim derken havacılılk tarihinin en önemli isimlerinden olan Türkiye'nin ilk kadın pilotu Sabiha Gökçen'i (22 Mart 1913 - 22 Mart 2001) anmaya karar verdim.
 

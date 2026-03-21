@@ -5,11 +5,7 @@ date: 2009-06-26 16:04:00 +0300
 categories:
   - tasarim-prensipleri-design-principles
 tags:
-  - tasarim-prensipleri-design-principles
-  - csharp
-  - windows-forms
-  - http
-  - generics
+  - design-principles
 ---
 Sanıyorum benim gibi eskiler, yandaki resimde yer alan değerli ressamı hatırlayacaklardır. Bob Ross. Küçüklüğümde (ve halen) Bob Ross'un TRT televizyonunda yayınlanan Resim Sevinci programlarını zaman zaman izler ve yarım saatlik sürede çizdiği doğa manzaralarına bakakalırdım. Rahmetli Bob bu günkü Tasarım Prensipleri uyarlanması sırasında Einstein ile birlikte küçük bir rol üstleniyor olacak. Öyleyse sözü fazla uzatmadan konumuza geçelim.
 

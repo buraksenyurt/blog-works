@@ -7,9 +7,10 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - csharp
-  - tek-fotoluk-ipucu
-  - reflection
   - generics
+  - dynamic
+  - dynamic-language-runtime
+  - reflection
 ---
 Hani böyle annemiz zamanında içinde yok yok dedirtecek türden çorbalar yapmıştır. Her çeşit sebzenin konulduğu... Hah işte bu fotoğrafta ona benziyor. İçinde generic mimari var, reflection var, dynamic tip kullanımı var. Olay gayet basit. Çalışma zamanında generic tipleri dinamik olarak üretip kullanmak istediğinizi düşünün. Bunu nasıl sağlarsınız? İşte basit bir örnek
 

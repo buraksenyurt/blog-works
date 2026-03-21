@@ -5,8 +5,11 @@ date: 2016-04-12 12:15:00 +0300
 categories:
   - tek-fotoluk-ipucu
 tags:
-  - tek-fotoluk-ipucu
-  - linq
+  - language-integrated-query
+  - extension-methods
+  - interface
+  - distinct
+  - inheritance
 ---
 Koleksiyon bazlı veri kaynaklarında LINQ (Language INtegrated Query) sorgularını yoğun şekilde kullanmaktayız. LINQ bildiğiniz üzere pek çok genişletme metodundan oluşan ve ifadesel olarak koleksiyonlar üzerinde SQL benzeri sorgular yapabilmemizi sağlayan bir alt yapı sunmaktadır. Sıklıkla Select, Where, Count, Sort, Max, Min, Reverse, GroupBy, OrderBy ve daha pek çok metodu kullanırız. Bunlar zaman zaman ifadeler şeklinde ele aldığımız gibi zaman zamanda metod zincirleri biçiminde değerlendiririz.
 

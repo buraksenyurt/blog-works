@@ -5,15 +5,9 @@ date: 2007-08-15 06:00:00 +0300
 categories:
   - aspnet
 tags:
-  - aspnet
-  - csharp
-  - xml
-  - dotnet
-  - sql-server
-  - http
-  - iis
-  - authentication
-  - generics
+  - asp.net
+  - download
+  - upload
 ---
 Tatile çıkan herkes, iyi ve dinlendirici geçen günlerin ardından tekrar hayatın akışına kapıldığında kısa süreliğinede olsa adaptasyon problemi yaşar. Tatildeyken hatırlayacağınız gibi hafif ve dinlendirici bir Asp.Net konusu ile ilgilenmeye çalışmıştık. Tatil dönüşündeki adaptasyon sürecinde de benzer nitelikte bir konuyu incelemenin uygun olacağı kanısındayım. Bu yazımızda Asp.Net uygulamalarında sıklıkla başvurduğumuz temel dosya giriş/çıkış (Input/Output -IO) işlemlerinden yararlanarak Download ve Upload işlemlerinin nasıl yapılabileceğini ele almaya çalışacağız.
 

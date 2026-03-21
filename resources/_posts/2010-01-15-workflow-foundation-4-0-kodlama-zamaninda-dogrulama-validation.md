@@ -5,11 +5,7 @@ date: 2010-01-15 01:08:00 +0300
 categories:
   - wf-4-0-beta-2
 tags:
-  - wf-4-0-beta-2
-  - csharp
   - workflow-foundation
-  - authentication
-  - visual-studio
 ---
 Bazen nerede duracağımızı bilmemiz gerekir ve bazende, mümkün olduğunca erken durup bazı şeyleri değiştirerek ilerlememiz...Bu teori yazılım geliştirmeninde pek çok noktasında karşımıza çıkmaktadır. Durmamız gereken noktalardan birisi, uygulamaların ürettiği ve önceden fark edebileceğimiz hatalardır (Genellikle Exception'ları düşünebiliriz). Ancak bazı olası hataların uygulamaların çalışması sırasında değil, çalıştırılmaya başlamadan önce bilinmesinde hem zaman hemde maliyet kazancı açısından yarar vardır. Şimdi elimizdeki materyalleri bir düşünelim.
 

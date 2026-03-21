@@ -5,19 +5,11 @@ date: 2009-11-08 18:30:00 +0300
 categories:
   - ado-net-data-services
 tags:
-  - ado-net-data-services
-  - csharp
-  - xml
-  - dotnet
-  - aspnet
-  - ado-net
-  - entity-framework
-  - sql-server
-  - wpf
+  - ado.net-data-services
+  - windows-presentation-foundation
   - silverlight
-  - xaml
-  - http
-  - visual-studio
+  - databinding
+  - odata
 ---
 Ado.Net Data Services ile geliştirilen servislerin tüketilmesi sırasında önem arz eden konulardan biriside, istemci tarafındaki veri bağlama (DataBinding) işlemleridir. Öyleki, servisin tüketicisi olan istemcilerin
 

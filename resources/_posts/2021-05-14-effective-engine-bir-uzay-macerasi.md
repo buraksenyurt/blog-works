@@ -5,34 +5,14 @@ date: 2021-05-14 18:22:00 +0300
 categories:
   - aspnet-web-api
 tags:
-  - aspnet-web-api
-  - bash
-  - csharp
-  - javascript
-  - json
-  - dotnet
-  - entity-framework
-  - ef-core
-  - linq
-  - sql-server
-  - postgresql
-  - nosql
-  - xml
-  - soap
-  - rest
   - web-api
-  - web-service
-  - http
-  - grpc
-  - authentication
-  - docker
-  - blazor
-  - async-await
-  - transactions
-  - generics
-  - dependency-injection
-  - github
-  - dependency-management
+  - asp.net-web-api
+  - .net
+  - swagger
+  - entity-framework
+  - csharp
+  - programlama
+  - eğitim
 ---
 Altunizade’nin bahar aylarında insanı epey dinlendiren yeşil yapraklı ağaçları ile çevrelenmiş caddesinin hemen sonunda, köprüye bağlanmadan iki yüz metre kadar öncesinde dört katlı bir bina vardır. Araba ile geçerken eğer kırmızı ışığa denk gelmediyseniz pek fark edilmez ama yürürken önündeki geniş kaldırımları ile dikkat çeker. Ana cadde tarafındaki yeşillikler binanın ilk katlarını gizemli bir şekilde saklar. Binanın bulunduğu adanın etrafı cadde ve ara sokaklarla çevrilidir. Bir sokağın karşısında yeni yapılmış hastane ile metro çıkışı, ana cadde tarafında ev yapımı tatlılarının kokusu ile insanı baştan çıkaran pastane, eczane, kuaför, camii ve minik bir park bulunur. Dört yola bakan diğer cadde tarafında ise eskiden karakol olan ama çok uzun zamandır kreş olarak işletilen bir komşu yer alır.
 

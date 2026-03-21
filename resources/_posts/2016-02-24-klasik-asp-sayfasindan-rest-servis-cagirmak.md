@@ -5,15 +5,14 @@ date: 2016-02-24 12:00:00 +0300
 categories:
   - rest
 tags:
-  - rest
-  - csharp
-  - xml
-  - wcf
-  - web-api
   - http
-  - iis
-  - ruby
-  - serialization
+  - rest-api
+  - asp.net
+  - classic-asp
+  - windows-communication-foundation
+  - http-post
+  - MSXML2
+  - ServerXMLHTTP
 ---
 Özellikle kurumsal çözümler üreten/kullanan firmalarda görev alanların sıklıkla dahil olduğu vakalardan birisi de, eski ve yeni teknolojilerin iç içe kullanıldığı senaryolardır. Bazen geliştirilen ürünler yıllara varan yaşam döngüleri boyunca çalışmaya devam eder. Yenileme maliyetlerinin yüksek olması nedeniyle de tekrardan yazılmak yerine var olan yeni teknolojiler ile entegre edilmeye çalışılırlar.
 

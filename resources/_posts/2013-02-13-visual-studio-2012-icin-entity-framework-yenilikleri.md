@@ -5,13 +5,8 @@ date: 2013-02-13 01:18:00 +0300
 categories:
   - dotnet-framework-4-5
 tags:
-  - dotnet-framework-4-5
-  - dotnet
-  - ado-net
   - entity-framework
-  - linq
-  - xml
-  - http
+  - code-first-development
   - visual-studio
 ---
 Çok eskiden kullanılan programlama dilleri ve platformları düşünüldüğünde çok ilkel IDE’ ler ile çalışmış olduğumuzu görmekteyiz. Hatta bazı programlama dilleri ile yapılan geliştirmelerde değil IDE, komut satırına mahkum olmuşuzdur (Gerçi komut satırında script yazarak geliştirme yapmak özellikle fonksiyonel programlama dilleri göz önüne alınırsa oldukça popüler ve isabetlidir)

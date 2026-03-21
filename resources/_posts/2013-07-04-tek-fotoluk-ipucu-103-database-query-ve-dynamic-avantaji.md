@@ -5,10 +5,13 @@ date: 2013-07-04 21:31:00 +0300
 categories:
   - tek-fotoluk-ipucu
 tags:
-  - tek-fotoluk-ipucu
-  - entity-framework
-  - dataset
-  - datatable
+  - web-matrix
+  - webmatrix.data
+  - database
+  - query
+  - dynamic
+  - var
+  - runtime
 ---
 SQL gibi bir veri kaynağına erişmek için pek çok yol olduğunu gayet iyi biliyoruz. Hatta bu işi öğrenmeye başladığımız ilk zamanları hatırlayın. Connection'ın açılması, Command hazırlanması, bir DataAdapter'dan yararlanılarak DataTable/DataSet doldurulması ve DataReader ile veri setinin ileri yönlü dolaşılması ve benzeri tiplerle uğraşırız. Hatta Entity Framework gibi alt yapılar da kendi içlerinde bu temel türlerin ata tiplerinden fazlasıyla yararlanmaktadır.
 

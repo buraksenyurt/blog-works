@@ -5,21 +5,7 @@ date: 2009-03-26 12:00:00 +0300
 categories:
   - wf-4-0
 tags:
-  - wf-4-0
-  - csharp
-  - xml
-  - dotnet
-  - linq
-  - wcf
   - workflow-foundation
-  - wpf
-  - xaml
-  - http
-  - iis
-  - delegates
-  - generics
-  - debugging
-  - visual-studio
 ---
 Bundan sadece bir kaç sene önce.Net Framework 3.0 versiyonu ile birlikte iş akışlarının (Workflows) kod içerisinde modellenerek farklı uygulamalarda kullanılabilmesini sağlamak amacıyla Windows Workflow Foundation (WWF) alt yapısı duyurulmuştu. Paralelinde ise, Servis Odaklı Mimarilere (Service Oriented Architecture) yeni bir yaklaşım, Windows Communication Foundation (WCF) ile birlikte getirilmişti. Workflow Foundation her ne kadar iş akışlarının (çoğu zaman kod akışlarının) kendi içinde modellenmesini sağlasa da, zaman içerisinde dış ortamlar ile olan haberleşmesinde WCF ile birlikte hareket etmeye başlamıştır. Bu nedenle.Net Framework 3.5 ile birlikte her iki alt yapınında birbirleriyle daha kolay haberleşebilmesi için bazı eklentiler yapılmıştır.
 

@@ -5,10 +5,8 @@ date: 2011-11-18 12:00:00 +0300
 categories:
   - parallel-programming
 tags:
+  - task-parallel-library
   - parallel-programming
-  - csharp
-  - dotnet
-  - threading
 ---
 Böylesine yağmurlu ve sabah trafiğinin tavan yaptığı bir günde size ne Radyo Eksen’ deki güzel melodiler, ne de okuduğunuz mizah dergisindeki karikatürler iyi gelmiyorsa, başka bir şeyle uğraşmanın yeridir diyebilirim. Ben bu sıkıntıyı aşmak ve kendimi daha iyi hissetmek adına bir makale daha yazmaya karar verdim ve hemen Windows Live Writer programını açtım
 

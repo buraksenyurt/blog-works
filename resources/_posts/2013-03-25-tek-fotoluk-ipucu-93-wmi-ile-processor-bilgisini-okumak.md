@@ -6,7 +6,11 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - tek-fotoluk-ipucu
-  - http
+  - wmi
+  - windows-management-instrumentation
+  - wql
+  - wmi-query-language
+  - wmi32_processor
 ---
 Hatırlayacağınız üzere bir önceki Tek Fotoluk İpucunda, Win32PhysicalMemory isimli WMI (Windows Management Instrumentation) tipinden yararlanarak, makinede takılı olan RAM’ ler hakkında temel bilgileri nasıl alabileceğimizi incelemiştik. Bu seferki ipucumuzda ise işlemci bilgilerini okumaya çalışıyor olacağız. Aşağıdaki fotoğrafta görüldüğü gibi.
 

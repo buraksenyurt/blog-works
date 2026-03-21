@@ -6,10 +6,12 @@ categories:
   - csharp
 tags:
   - csharp
-  - dotnet
-  - web-service
-  - memory-management
-  - performance
+  - using
+  - garbage-collection
+  - disposable-objects
+  - idisposable
+  - dispose
+  - overriding
 ---
 Bellek yönetimi özellikle büyük çaplı projelerde performans kazanımı açısından çok önemlidir. Günümüz sistemlerinin yüksek Ram kapasitesine sahip oldukları göz önüne alındığında bu durum çoğu zaman göz ardı edilmektedir. Ancak sayısız kullanıcının bağlandığı sunucu (server) sistemleri üzerinde çalışan windows veya web servisleri gibi uygulamalar göz önüne alındığında bellek sorunları ile her zaman için karşılaşılma olasılığı vardır.
 

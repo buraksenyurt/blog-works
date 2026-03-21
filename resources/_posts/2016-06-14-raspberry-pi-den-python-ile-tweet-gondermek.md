@@ -8,10 +8,7 @@ categories:
 tags:
   - python
   - raspberry-pi
-  - rest
-  - http
-  - java
-  - ruby
+  - twitter-api
 ---
 Geçtiğimiz sene yaz ayı boyunca Ruby programlama dilini öğrenmeye çalışmıştım. Ruby dilinde orta seviyelere kadar bilgimi ilerletebildim ancak bu yaz dönemini paslanmamak adına farklı bir uğraş ile geçirmeye karar verdim. Ruby'yi öğrenmeye başlama amaçlarımın başında çocuklara programlama dilini öğretmek geliyordu. Benzer şekilde Raspberry Pi'nin de bu amaçla kullanılabildiğini öğrendim. Özellikle Scratch dilini kullanarak çocukların robotlara bir şeyler yaptırabilmesi ve bu şekilde programlamayı öğrenmeleri harika. Pek tabi Raspberry Pi'yi özel yapan bir diğer neden de IoT (Internet of Things).
 

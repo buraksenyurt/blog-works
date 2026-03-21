@@ -6,13 +6,9 @@ categories:
   - csharp
 tags:
   - csharp
-  - dotnet
-  - ado-net
-  - web-service
-  - async-await
-  - threading
-  - delegates
-  - dataset
+  - async
+  - asynchronous-programming
+  - delegate
 ---
 Çoğu zaman projelerimizde, çalışmakta olan uygulamaları uzun süreli olarak duraksatacak işlevlere yer veririz. Özellikle görsel tabanlı uygulamalarda veritabanlarına ait kapsamlı sorguların yer aldığı işlemlerde bu sorunla sıkça karşılaşılmaktadır. En büyük problem var sayılan olarak kod satırlarının senkron hareket etmesidir. Yani kodlar sırası geldikçe işleyen parçalar bütününden oluşmaktadır. Bu elbetteki uzun sürecek bir sorgunun cevapları alınmadan izleyen kod satırlarının işlememesi anlamına gelmektedir. Oysaki kodları asenkron olarak çalıştırma şansımızda mevcuttur. Eminim ki Ado.Net 2.0' da asenkron metod yürütme tekniklerini veya asenkron web servisi uygulamalarınının nasıl yazılacağını duymuşsunuzdur. Temel prensib hepsi için aynıdır. Merkezde IAsyncResult arayüzü tipinden bir nesnenin kullanıldığı temsilci (delegate) tabanlı modeller söz konusudur.
 

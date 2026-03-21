@@ -5,14 +5,7 @@ date: 2009-08-14 03:15:00 +0300
 categories:
   - wcf-4-0-beta-1
 tags:
-  - wcf-4-0-beta-1
-  - xml
-  - csharp
-  - dotnet
-  - wcf
-  - http
-  - iis
-  - visual-studio
+  - windows-communication-foundation
 ---
 Bir süredir WCF 4.0 ile birlikte gelen yenilikleri tek tek incelemeye çalışıyoruz. İlk incelediğimiz noktalar konfigurasyon ayarları üzerinde yapılmış olan basitleştirmeleri içermektedir. Bu değişimlerden bir diğerini inceleyerek serimize devam ediyor olacağız. Bu anlamda konumuz Standard Endpoints başlığı altında gelen yeniliklerdir. Bu özelliği inceledikten sonra konuyu anlamanın en iyi yolunun bir önceki versiyonda ne olduğuna bakmak olduğuna karar verdim.
 

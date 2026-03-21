@@ -6,9 +6,8 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - tek-fotoluk-ipucu
-  - dotnet
-  - linq
-  - http
+  - language-integrated-query
+  - excel
 ---
 Yine çok sıkıldığınız günlerden biri ve siz şöyle bir yarım saatlik kodlama uğraşı arıyorsunuz. Hani yeni birNuGet paketi denesem nasıl olur diyorsunuz belki de. Hatta azcık da zorlayıcı bir paket olsa, yükleyince hemen çalışmasa ama çok da vaktimi almasa derdindesiniz. Bir bakıyorsunuz karşınızda Excel dosyalarında LINQ (Language INtegrated Query) sorguları yazabilmenizi sağlayan [LINQtoExcel](http://nugetmusthaves.com/Package/LinqToExcel). Hemen örnek bir Exceldosyası oluşturuyorsunuz belki de.
 

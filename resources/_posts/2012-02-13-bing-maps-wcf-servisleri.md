@@ -5,15 +5,16 @@ date: 2012-02-13 01:05:00 +0300
 categories:
   - wcf
 tags:
-  - wcf
+  - bings
+  - bing-maps
   - csharp
-  - dotnet
-  - xml
-  - soap
-  - web-service
-  - http
-  - generics
-  - testing
+  - windows-communication-foundation
+  - msdn
+  - search
+  - geolocation
+  - geocode
+  - imagery
+  - route
 ---
 Eğitimci olarak çalıştığım dönemlerde servis bazlı mimarilerde, XML Web Service’ leri son derece popüler bir kavramdı. Pek tabi öğrencilerimin çoğu, bu servislerin gerçek hayat örneklerini merak ederdi. Haklı olarak söz konusu yapının, nasıl çalıştığını anlamanın en iyi yolu onu saha da görmekti.
 

@@ -6,8 +6,13 @@ categories:
   - rust
 tags:
   - rust
-  - github
-  - rc
+  - rust-lang
+  - oyun-matematiği
+  - oyun-programlama
+  - collasion
+  - collision-detection
+  - clamping
+  - vektörler
 ---
 Hiçbir ödül veya karşılık beklemeden kendinizi iyi hissetmek adına en son ne yaptığınızı hatırlıyor musunuz? Bu öyle değişik bir iç motivasyon ki kendinizi bir amaca adayarak hareket etmenizi sağlıyor. Karşılaşılan engeller engel olmaktan çıkıyor ve anlamak istediğiniz şeyler haline geliyor. En azından ben birkaç haftadır böyle hissediyorum. Cevval bir oyun programcısı olmak ya da akademide bu alana dair dersler vermek gibi bir amacım yok ama çok güçlü bir iç motivasyonum var; öğrenmek…
 

@@ -5,23 +5,9 @@ date: 2009-01-03 10:00:00 +0300
 categories:
   - ado-net-sync-services
 tags:
-  - ado-net-sync-services
-  - csharp
-  - dotnet
-  - ado-net
-  - linq
-  - sql-server
-  - wcf
-  - xml
-  - http
-  - concurrency
-  - caching
-  - transactions
-  - generics
-  - visual-studio
-  - dataset
-  - datatable
-  - shared-state
+  - ado.net
+  - sync-services
+  - windows-communication-foundation
 ---
 Birbirleri ile sürekli bağlantı halinde olamayan istemci/sunucu (Client/Server) mimarilerinde en büyük problemlerden biriside verilerin karşılıklı veya tek taraflı olaraktan senkronize edilmeleridir. Çoğu büyük çaplı saha uygulamasında, sunucu tarafındaki veri kaynaklarının istemcide kullanıldığı durumlar söz konusudur. Bu noktada istemcilerin sürekli bağlı kalamadıkları bir ortamın var olması olasıdır (Occasionally Connected Enivronments). Nitekim istemci ve sunucu arasında kablosuz bağlantı olma ihtimali oldukça yüksektir. Nitekim günümüz teknolojileri düşünüldüğünde istemci uygulamaların bir çoğu mobil cihazlar ile, diz üstü bilgisayarlar üzerinde koşmaktadır. Bu tabiki daha çok saha elemanlarının işin içerisine girdiği senaryolardır.
 

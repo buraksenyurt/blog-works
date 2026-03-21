@@ -5,14 +5,19 @@ date: 2019-08-02 17:48:00 +0300
 categories:
   - gcp
 tags:
-  - gcp
-  - rest
-  - json
-  - http
+  - google-cloud-platform
+  - progressive-web-app
+  - pwa
+  - push-notification
+  - node
+  - node.js
+  - express
+  - rest-api
+  - fcm
+  - fcm-node
+  - service-worker
   - javascript
-  - nodejs
-  - github
-  - dependency-management
+  - npm
 ---
 Servis kapısı açıldığında gözlerini herkesten kaçırıp araca binerken heyecanlı ses tonuyla "Günaydın" diyerek en arka koltuğa geçen kadının ruh hali her yönüyle tanıdık geliyordu. Bir buçuk yıl kadar önce yine bu servise bindiğim ilk gün bende benzer kaygıları hissetmiştim. Oysa hayatımda ilk kez servis binmiyordum.
 

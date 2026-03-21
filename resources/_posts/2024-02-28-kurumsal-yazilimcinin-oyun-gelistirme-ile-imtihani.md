@@ -1,19 +1,18 @@
-﻿---
+---
 layout: post
 title: "Kurumsal Yazılımcının Oyun Geliştirme ile İmtihanı"
 date: 2024-02-28 16:03:00 +0300
 categories:
   - rust
 tags:
+  - game-programming
   - rust
-  - dotnet
-  - python
-  - java
-  - ruby
-  - pointers
-  - github
-  - ownership
-  - borrow-checker
+  - unity-framework
+  - unity
+  - csharp
+  - matematik
+  - oyun-matematiği
+  - oyun-programlama
 ---
 Bu yazıyı yazdığım tarih itibariyle SGK dökümüm 20 yıl 1 aydır çalışmakta olduğumu ifade ediyor. Sektöre sigortalı bir çalışan olarak adım attığım 1999 yılında Delphi dili ile geliştirme yapan yeni yetme bir bilgisayar programcısıydım. 20 yıllık iş hayatımın %90'ında ise.Net teknolojileri ve C# programlama dilini kullandım, kullanmaya da devam ediyorum. Bu zaman diliminde telekominikasyondan finansa, eğitimden otomotive farklı sektörlerde çalışma fırsatı buldum. Aslında benim dünyam iş modellerinin nesne yönelimli dillerle buluştuğu, birçok yazılım prensibinin uygulanıp teknik borçların hortladığı, büyük ölçekli teknoloji değişimlerinin yapılıp çevik metodolojilerle ilerlendiği içinde Enterprise kelimesinin sıklıkla zikredildiği devasa bir evren. Bu evrende bir çok Neo ve Trinity var. Gündüzleri kurumsal dünyanın rutin çarklarına adapte olup geceleri farklı dünyaların kapılarını açmaya çalışan. Hal böyle olunca insan ister istemez arada bir düzen dışına çıkıp kendi konfor alanını terk ederek bambaşka maceralara dalmak istiyor. Ben bunun için ağırlıklı olarak farklı programlama dillerini öğrenmeye çalışıyorum. Java, Ruby, Python ve Go bunlardan sadece bazıları. Ciddi anlamda ilgilendiğim bir diğer programlama dili ise Rust.
 

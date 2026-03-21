@@ -6,11 +6,9 @@ categories:
   - csharp
 tags:
   - csharp
-  - dotnet
-  - aspnet
-  - concurrency
-  - generics
-  - visual-studio
+  - class
+  - partial-class
+  - partial-type
 ---
 Visual Studio.Net ile windows veya web uygulamaları geliştirirken, kod yazılması sırasında karşılaştığımız güçlüklerden birisi, tasarım kodları ile kendi yazmış olduklarımızın iç içe geçmeleridir. Bu zamanla kodun okunabilirliğini zorlaştıran bir etmendir. Bunun windows uygulamalarını veya asp.net uygulamalarını geliştirirken sıkça yaşamaktayız. Bununla birlikte, özellike soruce safe gibi ortamlarda farklı geliştiricilerin aynı sınıf kodları üzerinde eş zamanlı olarak çalışması pek mümkün değildir.
 

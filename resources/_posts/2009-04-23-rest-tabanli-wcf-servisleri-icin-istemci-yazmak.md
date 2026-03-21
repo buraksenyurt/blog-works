@@ -5,20 +5,8 @@ date: 2009-04-23 12:12:00 +0300
 categories:
   - wcf
 tags:
-  - wcf
-  - csharp
-  - dotnet
-  - aspnet
-  - linq
-  - windows-forms
-  - xml
-  - soap
-  - rest
-  - web-service
-  - http
-  - serialization
-  - generics
-  - visual-studio
+  - windows-communication-foundation
+  - rest-api
 ---
 Bir önceki blog [yazımızda](https://www.buraksenyurt.com/post/Koleksiyon-Bazl%C4%B1-WCF-Rest-Servisleri), koleksiyon bazlı WCF servislerinin REST modeline göre geliştirilmesini incelemeye çalışmış ve REST Starter Kit'in sağladığı kolaylıklara değinmiştik. Belkide yazının en zor kısımlarından biriside CUD (CreateUpdateDelete) işlemlerinin test edilmesiydi. Nitekim burada istemciden gönderilecek Request paketlerinin HTTP protokolünün uygun olan POST, PUT, DELETE metodlarından birisine göre hazırlanıp iletilmesi gerekmekteydi. Bu nedenle, Fiddler aracını kullanarak talepleri oluşturmuş ve testleri gerçekleştirmiştik. Aslında, sadece veri çekilmesi işleminde (HTTP GET) işimiz nispeten çok daha kolay olmaktadır. Basit bir tarayıcı uygulama bu iş için yeterlidir. Peki ya istemci, bir geliştirici tarafından yazılacak ve söz konusu REST bazlı koleksiyon servisini tüketecek bir uygulama olacaksa...
 

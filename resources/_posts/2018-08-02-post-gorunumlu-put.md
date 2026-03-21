@@ -5,22 +5,16 @@ date: 2018-08-02 11:51:00 +0300
 categories:
   - dotnet-core
 tags:
-  - dotnet-core
-  - bash
-  - csharp
-  - dotnet
-  - aspnet
-  - asp-dotnet-core
-  - entity-framework
-  - linq
-  - wcf
-  - rest
-  - json
-  - web-api
   - http
-  - java
-  - generics
-  - visual-studio
+  - .net-core
+  - web-api
+  - http-tunneling
+  - X-HTTP-Method-Override
+  - csharp
+  - post
+  - put
+  - delete
+  - middleware
 ---
 Dışarıda çok güzel bir hava var. Büyük ihtimalle tüm sahil şeritlerimiz hınca hınç dolu. Denize girip serinleyenler, çimlere serilip gölgelenenler, arkadaşlarıyla birlikte naneli limonata içip hararet giderenler vs...Kimbilir belki de az sonra ahşap üzerinde çıplak ayaklarınızla yürüyecek ve incecik kumlara basıp bütün senenin yorgunluğunu atmak üzere kendinizi serin okyanus sularına bırakacaksınız. Ama birilerinin de şu yazılım dünyası için içerik üretmesi gerekiyor öyle değil mi? Doğruyu söylemek gerekirse bu tip bir misyonu üstlendiğim için memnunum. Öyleyse gelin bugün ki konumuza başlayalım.
 
@@ -124,7 +118,7 @@ public static IWebHost BuildWebHost(string[] args) =>
 
 Middleware Sınıfının Geliştirilmesi
 
-Aslında senaryoyu gerçekleştirmek için yapılması gereken şey belli. Bir şekilde istemciden gelen mesajı yakalamalı, header içerisindeki bilgiye bakıp (X-HTTP-Method-Override anahtarının değerine bakacağız) asıl HTTP metodu yerine hangi işlemin uygulanması gerektiğini anlamalıyız. Bunu yaparken de bizim izin verdiğimiz HTTP metodları çerçevesinde gerçekleştirilir olmasına özen göstermeliyiz. Şimdi projeye middlewares isimli bir klasör ekleyelim ve içerisine aşağıdaki sınıfları koyalım (Asp.Net Core tarafında Middleware yazılması ile ilgili olarak [şu yazıya da](https://www.buraksenyurt.com/post/web-api-icin-custom-middleware-yazmak) göz atabilirsiniz)
+Aslında senaryoyu gerçekleştirmek için yapılması gereken şey belli. Bir şekilde istemciden gelen mesajı yakalamalı, header içerisindeki bilgiye bakıp (X-HTTP-Method-Override anahtarının değerine bakacağız) asıl HTTP metodu yerine hangi işlemin uygulanması gerektiğini anlamalıyız. Bunu yaparken de bizim izin verdiğimiz HTTP metodları çerçevesinde gerçekleştirilir olmasına özen göstermeliyiz. Şimdi projeye middlewares isimli bir klasör ekleyelim ve içerisine aşağıdaki sınıfları koyalım (Asp.Net Core tarafında Middleware yazılması ile ilgili olarak [şu yazıya da](/2017/12/18/aspdotnet-core-web-api-icin-custom-middleware-yazmak/) göz atabilirsiniz)
 
 HttpOverrider sınıfı
 

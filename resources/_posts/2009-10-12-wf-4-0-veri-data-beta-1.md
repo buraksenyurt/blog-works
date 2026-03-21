@@ -5,18 +5,11 @@ date: 2009-10-12 14:48:00 +0300
 categories:
   - wf-4-0-beta-1
 tags:
-  - wf-4-0-beta-1
-  - csharp
-  - dotnet
   - workflow-foundation
-  - wpf
-  - generics
-  - visual-studio
-  - dependency-management
 ---
 Bir süredir Workflow Foundation 4.0 ile ilişkili blog yazılarını, makaleleri ve görsel dersleri takip etmekteyim. Bu araştırmalarım sırasında Workflow Foundation 4.0 modelinde veriye (Data) olan bakış açısının WF 3.X sürümüne göre oldukça farklılaştığını gördüm. WF 3.X tabanlı modelde, aktivite bazlı verileri temsil etmek için genellikle standart sınıf özelliklerinden (Property) veya WPF'ten esinlenilen bağımlı özelliklerden (Dependency Property) yararlanılmaktadır. WF 4.0 modelinde ise veriyi temsil etmek amacıyla Variable veya Argument türevli tiplerden yararlanıldığı görülmektedir.
 
-Bu tiplerin türevleri veriyi doğrudan tutmazlar. Bunun yerine veriyi tanımlar ve elde edilmesini sağlarlar. Verinin içeriği Workflow üzerinde bir yerlerde saklanmaktadır. Bu noktada Variable kavramını aynen Imperative programlama dillerindeki kullanılış biçimi ile düşünebiliriz. Bu nedenle Variable veya Argument türevli tipler tanımlandıkları scope dahilinde kullanılabilirler. Dolayısıyla bir Variable bir Workflow için kök seviyede (Root Level) tanımlanırsa tüm alt aktiviteler tarafından kullanılabilir. Bugünkü örneğimizde [bir önceki blog](https://www.buraksenyurt.com/post/WF-40-Workflow-ve-Object-Initialization.aspx)yazımızda olduğu gibi kod bazlı bir Workflow örneği geliştirecek ve Variable kullanımı ile veriyi nasıl ele alacağımızı görmeye çalışacağız. Aslında.Net 4.0 içerisindeki oluşuma baktığımızda Variable için Variable isimli bir abstract sınıftan türetme yapıldığını görebiliriz. Aşağıdaki sınıf diyagramında bu durum görülmektedir.
+Bu tiplerin türevleri veriyi doğrudan tutmazlar. Bunun yerine veriyi tanımlar ve elde edilmesini sağlarlar. Verinin içeriği Workflow üzerinde bir yerlerde saklanmaktadır. Bu noktada Variable kavramını aynen Imperative programlama dillerindeki kullanılış biçimi ile düşünebiliriz. Bu nedenle Variable veya Argument türevli tipler tanımlandıkları scope dahilinde kullanılabilirler. Dolayısıyla bir Variable bir Workflow için kök seviyede (Root Level) tanımlanırsa tüm alt aktiviteler tarafından kullanılabilir. Bugünkü örneğimizde [bir önceki blog](/2009/10/04/wf-4-0-workflow-yapisi-ve-object-initialization-beta-1/)yazımızda olduğu gibi kod bazlı bir Workflow örneği geliştirecek ve Variable kullanımı ile veriyi nasıl ele alacağımızı görmeye çalışacağız. Aslında.Net 4.0 içerisindeki oluşuma baktığımızda Variable için Variable isimli bir abstract sınıftan türetme yapıldığını görebiliriz. Aşağıdaki sınıf diyagramında bu durum görülmektedir.
 
 ![blg89_ClassDiagram.gif](/assets/images/2009/blg89_ClassDiagram.gif)
 

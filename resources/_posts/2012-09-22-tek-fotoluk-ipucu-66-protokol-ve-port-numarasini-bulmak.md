@@ -5,7 +5,13 @@ date: 2012-09-22 21:00:00 +0300
 categories:
   - tek-fotoluk-ipucu
 tags:
+  - extension-methods
+  - regex
   - tek-fotoluk-ipucu
+  - uri
+  - struct
+  - port
+  - protocol
 ---
 Elimizde bir Uri nesne örneği olduğunu varsayalım. Bu Uri adres bilgisinden de port numarası ve protocol bilgisine ulaşmak istiyorsunuz. Aslında string tabanlı fonksiyonellikler ile bu iş gerçekleştirilebilir ama Regex tipini işin içerisine katar ve bir de Extension Method haline getirirsek tadından yinmez
 

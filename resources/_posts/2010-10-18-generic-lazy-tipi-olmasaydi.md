@@ -5,13 +5,13 @@ date: 2010-10-18 02:05:00 +0300
 categories:
   - csharp-4-0
 tags:
-  - csharp-4-0
   - csharp
-  - bash
-  - dotnet
-  - threading
+  - base-class-library
+  - lazy-initialization
   - generics
-  - visual-studio
+  - singleton-design-pattern
+  - lock
+  - thread-safe
 ---
 Aklım üniversite kampüsünün çimlerinde hala...Pek çok gün İstinye Park'a giden öğle arası servisimiz, dönüş yolunda İTÜ kütüphanesi önünden geçmekte (Geçmekte idi...Sonrasında o yol trafiğe kapatıldı) Öğrencilerin çimlere yayılarak mavi gök yüzünü seyre dalmasına her zaman imreniyorum. Çoğu zaman bu psikolojideki öğrencinin kafasında oluşan sorunlar bellidir. Kız arkadaş veya erkek arkadaş sorunu, maddi sorunlar, dersler, vize ve finaller...Tabi iş hayatına giren ben gibi insanlar aynı çimlere yatmaya kalksa, kafada dönen sorunların sayısı azalacağına büyük ihtimalle artacaktır. Hele ki yazılımla uğraşıyorsanız mavi göğü seyre dalarken geçen bulutların çoğu birer Component haline dönüşecek ve üstünüze üstünüze gelecektir. Neyse...
 

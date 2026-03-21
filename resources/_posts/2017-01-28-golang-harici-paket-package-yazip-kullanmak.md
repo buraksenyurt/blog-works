@@ -6,9 +6,8 @@ categories:
   - golang
 tags:
   - golang
-  - json
-  - http
-  - go
+  - package
+  - package-management
   - github
 ---
 Go dilinin paketler üzerine kurulu bir yapısı olduğunu biliyoruz. fmt, math, strings, net/http, time, log, encoding/json ve benzerleri şu kısa go geçmişimde kullandıklarımdan sadece birkaçı. Geliştirdiğimiz ürünlerde ortak sorumlulukları barındıran fonksiyonellikleri aynı paketler içerisinde toplamak son derece mantıklı. Bu sayede aynı alana ait fonksiyonellikleri bir paket içerisinde toplayıp kullanabilme şansına sahip oluyoruz. Paketler, kodun yeniden kullanılabilirliği (Code Reusability) noktasında da değer bulan bir kavram.

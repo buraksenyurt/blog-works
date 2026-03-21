@@ -5,13 +5,8 @@ date: 2007-06-28 12:00:00 +0300
 categories:
   - wcf
 tags:
-  - wcf
-  - csharp
-  - xml
-  - sql-server
-  - soap
-  - http
-  - transactions
+  - windows-communication-foundation
+  - transaction
 ---
 Windows Communication Foundation için transaction yönetimi ile ilgili bir önceki makalemizde teorik bilgiler üzerinde durmaya çalışmıştık. Bu makalemizde ise, transaction yönetimi için gerekli materyalleri toplamaya devam edecek ve bir örnek üzerinde konuyu daha net bir şekilde anlamaya çalışacağız. Örneği geliştirmeden önce özellikle servis ve metod seviyesinde bilinmesi gerekenler olduğunu belirtelim. Özellikle servis nesnesi için çalışma zamanı davranışlarını belirlemek adına ServiceBehavior niteliğinin bazı özelliklerini kullanmak gerekmektedir. Benzer şekilde operasyonların transaction ile ilişkili çalışma zamanı davranışlarını belirlemek içinde, OperationBehavior niteliğinin özelliklerinden faydalanılmaktadır.
 

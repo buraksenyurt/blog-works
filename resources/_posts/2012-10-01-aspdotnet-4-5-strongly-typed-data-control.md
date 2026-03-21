@@ -5,15 +5,12 @@ date: 2012-10-01 02:45:00 +0300
 categories:
   - aspnet-4-5
 tags:
-  - aspnet-4-5
+  - asp.net
+  - strongly-typed-data-controls
+  - binditem
+  - bind
+  - eval
   - csharp
-  - xml
-  - dotnet
-  - aspnet
-  - xaml
-  - http
-  - reflection
-  - generics
 ---
 Malumunuz Web tarafı ile aram pek iyi değildir. Ancak.Net Framework’ ün her sürümünde genel olarak gelen yeniliklere bakmaya çalışıyorum/çalışmaktayım. Geçtiğimiz hafta içerisinde de Asp.Net 4.5 tarafında gelen yenilikleri incelemeye başladım.
 

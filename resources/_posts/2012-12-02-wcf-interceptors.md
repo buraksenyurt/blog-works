@@ -5,17 +5,16 @@ date: 2012-12-02 19:53:00 +0300
 categories:
   - wcf-4-5
 tags:
-  - wcf-4-5
-  - csharp
-  - xml
-  - wcf
-  - soap
-  - json
-  - web-api
-  - http
-  - authentication
-  - performance
-  - visual-studio
+  - windows-communication-foundation
+  - interceptor
+  - parameter-inspector
+  - message-inspector
+  - custom-behavior
+  - iparameterinspector
+  - ioperationbehavior
+  - attribute
+  - iendpointbehavior
+  - endpoint-behavior
 ---
 Hepimizin hafızasında yer eden ve defalarca seyretse de asla sıkılmayacağı kült filmler vardır. Hatta nesiller ilerledikçe, her neslin mutlaka en az bir kere uğradığı, uğraması gereken yapımlar vardır.
 

@@ -6,14 +6,11 @@ categories:
   - rust
 tags:
   - rust
-  - bash
-  - csharp
-  - http
-  - memory-management
-  - pointers
+  - rust-lang
   - debugging
-  - visual-studio
-  - race-condition
+  - gdb
+  - gnu-debugger
+  - ubuntu
 ---
 Rust dilinin en güçlü olduğu yer etkili bellek yönetimi ve olası kaosların önüne herhangi bir garbage collector veya başka bir unsura ihtiyaç duymadan geçebilecek kural setleri barındırmasıdır. Özellikle Memory Leak, Double Free, Data Race gibi C, C++ dillerinde sıklıkla rastlanan durumların oluşmaması için basit kurallar barındırır. Bu kurallar ilk başlarda rust öğrenenleri epey zorlar fakat bir kez alışılınca her şey çok daha net ve berrak hale gelir. Bellek yönetimi denilince içeride neler oluyor bitiyor görmek de önemlidir. Fonksiyonlar birer kapsam olarak Stack'e yığılır, çeşitli veri türleri (String gibi) heap'e açılıp pointer alır, kapsamlar sonlandığında bir şeyler olur vs
 

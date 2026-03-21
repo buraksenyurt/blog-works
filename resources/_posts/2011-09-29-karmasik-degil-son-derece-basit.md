@@ -6,14 +6,11 @@ categories:
   - dotnet-framework-4-0
   - csharp-4-0
 tags:
-  - dotnet-framework-4-0
-  - csharp-4-0
-  - csharp
-  - dotnet
-  - xml
-  - serialization
+  - generic
   - generics
-  - dependency-management
+  - interface
+  - domain
+  - binary-serialization
 ---
 Kurumsal eğitim vermenin en güzel yanlarından birisi de, gelenlerin istekleri ve talepleri doğrultusunda gerçek hayat örneklerini daha kolay bir şekilde kodlayabilmeniz ve gösterebilmenizdir.
 

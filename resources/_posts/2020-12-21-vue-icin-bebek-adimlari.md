@@ -5,19 +5,14 @@ date: 2020-12-21 08:46:00 +0300
 categories:
   - vuejs
 tags:
-  - vuejs
-  - bash
-  - dotnet
-  - nosql
-  - json
-  - web-api
-  - authentication
-  - rust
   - javascript
-  - react
   - vue
-  - caching
-  - github
+  - vue.js
+  - Framework
+  - frontend
+  - html
+  - mvvm
+  - programlama
 ---
 Yazılım işine girdiğimden beri en çok zorlandığım konu Frontend tarafında kodlama yapmak. Ne yazık ki sadece Backend tarafta kalma lüksümüz de pek bulunmuyor. Örneğin hali hazırda çalışmakta olduğum firmada yeni nesil birçok uygulama önyüz tarafında çeşitli Javascript çatıları (Framework) kullanıyor.
 

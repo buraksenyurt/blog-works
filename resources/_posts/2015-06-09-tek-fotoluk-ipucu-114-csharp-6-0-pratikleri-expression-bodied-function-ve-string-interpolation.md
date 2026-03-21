@@ -5,8 +5,12 @@ date: 2015-06-09 02:50:00 +0300
 categories:
   - tek-fotoluk-ipucu
 tags:
-  - tek-fotoluk-ipucu
-  - rc
+  - poco
+  - Expression-bodied
+  - csharp
+  - override
+  - string-interpolation
+  - tostring
 ---
 Eric Vogel'e göre C# 6.0 ile birlikte dile kazandırılan yenilikler kodun daha kolay okunabilmesini sağlamaktaymış. Örneğin Expression-Bodied fonksiyonlar bu kapsamda değerlendirilebilirler. Diyelim ki elinizde bir POCO (Plain Old CLR Object) tipi var ve ToString metodunu ezeceksiniz (Override). Dile gelen yeni kabiliyetler ile söz konusu metodu aşağıdaki gibi yazma imkanımız var. (Metod gövdesinde string Interpolation özelliğini kullandığımıza da dikkat edelim)
 

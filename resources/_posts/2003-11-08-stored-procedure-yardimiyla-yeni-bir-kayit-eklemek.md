@@ -5,11 +5,8 @@ date: 2003-11-08 12:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
-  - csharp
-  - dotnet
-  - sql-server
-  - t-sql
+  - ado.net
+  - stored-procedures
 ---
 Bu yazımızda Sql Server üzerinde, kendi yazdığımız bir Saklı Yordam (Saklı Yordam) ile, veritabanındaki ilgili tabloya nasıl kayıt ekleyeceğimizi incelemeye çalışacağız.
 

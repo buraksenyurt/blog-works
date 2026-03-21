@@ -6,13 +6,10 @@ categories:
   - rust
 tags:
   - rust
-  - bash
-  - threading
-  - concurrency
-  - pointers
-  - github
-  - mutex
-  - arc
+  - rust-lang
+  - mutable-references
+  - thread
+  - multi-thread
 ---
 Thread'ler ve eş zamanlı iş parçacıkları işin içerisine girdiğinde karşımıza çıkan önemli konulardan biriside değiştirilemez (mutable) türden referansları nasıl kullanacağımızdır. Malum aynı anda çalışan bu iş parçaları aynı veri üzerinde değişiklik yapmak isteyebilirler. Fakat bu, Data Races durumunun oluşmasına sebebiyet verebilir. Esasında aynı veri alanını kullanan thread'lerin bu içeriği okumasında bir sıkıntı yoktur. Ne var ki yazma aşamasına gelindiğinde birbirlerinin değişikliğini ezme durumu da söz konusu olabilir.
 

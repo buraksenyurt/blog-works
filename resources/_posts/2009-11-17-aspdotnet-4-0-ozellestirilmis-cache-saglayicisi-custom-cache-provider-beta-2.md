@@ -5,19 +5,7 @@ date: 2009-11-17 06:10:00 +0300
 categories:
   - aspnet-4-0-beta-2
 tags:
-  - aspnet-4-0-beta-2
-  - csharp
-  - xml
-  - dotnet
-  - aspnet
-  - linq
-  - http
-  - threading
-  - concurrency
-  - caching
-  - serialization
-  - generics
-  - dependency-management
+  - asp.net
 ---
 Çok çok uzun zamandır Asp.Net üzerine eğilmiyordum. Hem tasarım yönünden kabiliyetsiz olmam (iki rengi bir araya getir deseler kesin uyumsuz renkler çıkartırım) hemde servis yönelimli mimari dünyasına dalmış olmamın bunda büyük bir rol oynadığını itiraf etmek isterim. Yine de Asp.Net 4.0 ile birlikte gelen yenilikleri okuyunca biraz olsun araştırmak ve edindiğim tecrübeleri sizlere aktarmak istedim.
 

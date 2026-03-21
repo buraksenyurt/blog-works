@@ -5,12 +5,12 @@ date: 2003-12-28 12:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
+  - ado.net
+  - sqldatareader
   - csharp
-  - dotnet
-  - visual-studio
-  - dataset
-  - datatable
+  - oop
+  - .net
+  - database
 ---
 Bugünkü makalemizde, SqlDataReader sınıfını incelemeye çalışacağız. ADO.NET’in bilgisayar programcılığına getirdiği en büyük farklıklardan birisi bağlantısız veriler ile çalışılabilmemize imkan sağlamasıydı. DataSet sınıfıını ve buna bağlı diğer teknikleri kastettiğimi anlamışsınızdır. Bu teknikler ile, bir veritabanı içinde yer alan tabloları, tablolar arasındaki ilişkileri, içerdikleri verileri vb… istemci makinenin belleğinde tutmamız mümkün olabiliyor.
 

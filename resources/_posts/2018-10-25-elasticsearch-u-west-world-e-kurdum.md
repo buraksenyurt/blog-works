@@ -6,16 +6,23 @@ categories:
   - elasticsearch
 tags:
   - elasticsearch
-  - bash
-  - csharp
-  - dotnet
-  - oracle
-  - rest
-  - json
-  - web-api
+  - linux
+  - ubuntu
+  - rest-api
   - http
+  - get
+  - post
+  - put
+  - linux-ubuntu
+  - lucene
+  - apache
+  - full-text-search
+  - search
+  - algoritma
+  - kibana
+  - serilog
   - docker
-  - java
+  - container
 ---
 Guam adasının güney batısında yer alan ve yaklaşık 11 km derinliğindeki Mariana çukuru, dünyanın en derin noktasıdır. Benim için anlamı "Mariana Çukuru Etkisi" dir. Hatta çevik süreçlerdeki epik senaryoları da "Mariana Çukuru Etkisi" yaratan konular olarak tanımlarım. Ancak bu etkiyi daha çok bir makale için araştırma yaparken yaşarım. Bir kaynaktan diğerine geçtikçe konu derinleşir. Derinleştikçe başladığım yere olan uzaklığımın arttığını fark ederim. Işık azalır, etraf kararmaya oksijen azalmaya başlar. Derken düşünemez bir noktaya gelirim. Çünkü beyne yeteri kadar oksijen gitmez.
 

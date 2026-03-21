@@ -5,9 +5,11 @@ date: 2003-12-30 12:00:00 +0300
 categories:
   - csharp
 tags:
+  - ado.net
+  - boxing
   - csharp
-  - dotnet
-  - delegates
+  - oop
+  - .net
 ---
 Bugünkü makalemizde, Boxing ve Unboxing kavramlarını incelemeye çalışacağız. Boxing değer türü bir değişkeni, referans türü bir nesneye aktarmaktır. Unboxing işlemi ise bunun tam tersidir. Yani referans türü değişkenin işaret ettiği değeri tekrar, değer türü bir değişkene aktarmaktır. Bu tanımlarda karşımıza çıkan ve bilmemiz gereken en önemli noktalar, değer türü değişkenler ile referans türü nesnelerin bellekte tutuluş şekilleridir.
 

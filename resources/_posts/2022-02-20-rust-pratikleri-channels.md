@@ -6,10 +6,12 @@ categories:
   - rust
 tags:
   - rust
-  - bash
-  - csharp
-  - threading
-  - github
+  - rust-lang
+  - channel
+  - crossbeam
+  - thread
+  - multi-thread
+  - unbounded
 ---
 Thread'ler aralarında haberleşmek için kanallardan (channels) yararlanır. Rust dilinde bu amaçla built-in modüllerinden olan mpsc (multi-producer single-consumer) paketi kullanılır. Bu paket aslında FIFO (First-In First-Out) ilkesine göre çalışan tipik bir kuyruk yapısıdır. Kanallar yardımıyla örneğin iki thread arasında bir yol açıp tek yönlü olarak mesaj göndermek mümkündür. Böylece bir thread'den diğerine çeşitli verileri aktarabiliriz. Hatta asenkron ve olay güdümlü (event-driven) haberleşmeler dahi tesis edebiliriz. Bir veri türünün kanalda akması için Send trait'ini uyarlamış olması gerekir. Primitive tiplerin hepsi bu davranışa sahiptir.
 

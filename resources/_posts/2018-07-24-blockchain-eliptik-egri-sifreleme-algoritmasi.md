@@ -5,12 +5,16 @@ date: 2018-07-24 07:00:00 +0300
 categories:
   - algoritma
 tags:
-  - algoritma
-  - dotnet
-  - http
-  - python
-  - transactions
-  - visual-studio
+  - cryptography
+  - blockchain
+  - elliptic-curve-cryptography
+  - group-law
+  - modular-arithmetic
+  - finite-sets
+  - district-logarithm
+  - logarithm
+  - Extended-Euclidean-Algorithm
+  - matematik
 ---
 Matematik tek evresenl dil olarak varoluşumuzdan bu yana yaşamın içerisinde. Onun diğer bilimlere olan pozitif etkisi tartışılamaz. Bugün ulaştığımız noktada teknoloji sınırlarını zorlarken yüz yıllar öncesinden ispat edilmiş pek çok teoremin uygulanabilirliklerine de rastlıyoruz. Doğruyu söylemek gerekrise 1999 yılında ilk işe başladığımdan beri matematik'ten epey uzakta sadece kod yazmaktayım. Belki de bugün.Net Core'un Linux üzerinde koşturulup bir Cloud platformuna taşınması da önemli bir mevzu. Lakin o hayranlık duyduğumuz fikirlerin arkasında, çok fazla ilişmediğimiz (belki de bakmaya korktuğumuz) güçlü bir matematik var. Bende büyük bir cesaretle o fikirlerden birisinin arkasında olan matematiği bir nebze olsun anlamak istedim. Matematik kesin kuralları olan bir dil olduğu içi, yazdığım şeyleri doğru telafüz etmem gerekiyor. Eğer basit bir şekilde anlatabilirsem, konuyu da anlamış sayılırm (Son gün notu: Basitleştiremedi)
 

@@ -5,13 +5,11 @@ date: 2016-01-04 07:00:00 +0300
 categories:
   - tek-fotoluk-ipucu
 tags:
-  - tek-fotoluk-ipucu
   - xml
-  - soap
-  - zig
-  - performance
-  - serialization
-  - generics
+  - entity
+  - domain-driven-design
+  - extension-methods
+  - csharp
 ---
 Malumunuz nesne yönelimli (Object Oriented) dünyanın en önemli unsurlarından birisi de varlıklar (Entity). Uygulamaların çalıştığı alanlarda (Domains) bu varlıklar dolaşmakta. Birer sınıf olarak tasarlanan bu varklıklar çalışma zamanlarında örneklenmekte ve belirli içerikleri taşımakta. Varlığı niteleyen verinin kaynağı çeşitli enstrümanlar olabiliyor. Veritabanı üzerindeki bir tablo, fiziki bir dosya, bir servis uç noktası, başka bir donanım, bir ara motorunun ürettiği çıktı vb
 

@@ -5,17 +5,15 @@ date: 2020-11-23 21:00:00 +0300
 categories:
   - dotnet-core
 tags:
-  - dotnet-core
-  - bash
-  - yaml
-  - csharp
-  - dotnet
-  - rabbitmq
-  - json
-  - docker
+  - .net-core
   - java
-  - serialization
-  - github
+  - csharp
+  - rabbitmq
+  - docker
+  - spring
+  - spring-boot
+  - json
+  - maven
 ---
 Çok sık karşılaştığımız senaryolardan birisidir; Bir uygulama kendi bünyesinde gerçekleşen bir olay sonrası başka bir uygulamayı haberdar etmek ister ya da başka bir uygulamanın yaptıklarından haberdar olmak isteyen bir uygulama vardır:) Bunun bir çok sebebi olabilir. Örneğin uygulamalar farklı teknolojilerde yazılmıştır ancak ortak iş süreçleri üzerinde koşmaktadır. Gerçek bir senaryo üzerinden hareket edersek konu daha anlaşılır olabilir.
 

@@ -5,14 +5,8 @@ date: 2003-11-12 12:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
-  - csharp
-  - dotnet
-  - sql-server
-  - t-sql
-  - performance
-  - visual-studio
-  - datatable
+  - ado.net
+  - stored-procedures
 ---
 Bugün ki makalemde Stored Procedure yardımıyla bir veritabanı tablosundan, bizim seçtiğimiz herhangi bir satırı nasıl sileceğimizi sizlere anlatmaya çalışacağım.Her zaman olduğu gibi örneğimizi geliştirmek için, SQL Server üzerinde yer alan Northwind veritabanını kullanmak istiyorum. SQL Server üzerinde çalışan örnekler geliştirmek istememin en büyük nedeni, bir veritabanı yönetim sistemi (Database Management System;DBMS) üzerinde.NET ile projeler geliştirmenin gerçekçiliğidir. Güncel yaşantımızda ağ üzerinde çalışan uygulamalar çoğunlukla, iyi bir veritabanı yönetim sistemi üzerinde yazılmış programlar ile gerçekleştirilmektedir.
 

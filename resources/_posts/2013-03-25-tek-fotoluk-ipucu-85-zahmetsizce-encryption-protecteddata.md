@@ -6,7 +6,18 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - tek-fotoluk-ipucu
-  - dotnet
+  - cryptography
+  - data-protection
+  - dpapi
+  - windows-protection
+  - current-user
+  - local-machine
+  - security
+  - encryption
+  - decryption
+  - şifreleme
+  - çözümleme
+  - memory-protection
 ---
 Cryptography denilince.Net Framework tarafında epey bir çözüm bulunmakta. Bazıları oldukça karmaşıktır ve simetrik yada a-simetrik olmalarına bağlı olaraktan, ortak noktalarından birisi de, tekniğe göre kullanılan Vector-Key değerlerinin tutulması/bilinmesi gibi zorunluluklardır.
 

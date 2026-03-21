@@ -5,8 +5,11 @@ date: 2016-10-30 21:30:00 +0300
 categories:
   - ruby
 tags:
-  - ruby
-  - testing
+  - ruby-lang
+  - singleton-method
+  - override
+  - overriding
+  - functional-programming
 ---
 Gün geçmiyor ki Ruby dilinde beni şaşırtan bir kabiliyet ile daha karşılaşmayayım. Dün gece Ruby kitapları arasında dolanırken öğrendiğim yeni bir kavram var; Singleton Method. Instance metodlarından farklı olarak sadece belli bir nesne örneği için çalışabilecek fonksiyonellikler tanımlayabilmemizi sağlayan önemli bir yetenek. Yani sınıf tanımı içerisinde yer almayıp nesne örneği üzerinden tanımlanabilen ve sadece o örnek için kullanılabilen fonksiyonlar geliştirebildiğimizi düşünün. Konuyu aşağıdaki fotoğrafta yer alan kod parçasında daha net bir şekilde görebiliriz.
 

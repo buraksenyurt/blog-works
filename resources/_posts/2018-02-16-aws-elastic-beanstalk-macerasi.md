@@ -6,15 +6,12 @@ categories:
   - aws
   - python
 tags:
-  - aws
   - python
-  - bash
-  - dotnet
-  - http
-  - docker
-  - java
-  - ruby
-  - nodejs
+  - aws
+  - cloud-computing
+  - paas
+  - django
+  - iaas
 ---
 Geçenlerde sıkıldığım bir ara kendimi Google'da "How To Draw..." araması yaparken buldum. [Bir internet sitesinde](http://www.drawinghowtodraw.com/stepbystepdrawinglessons/2016/10/draw-cute-kawaii-chibi-robin-dc-comics-batman-robin-easy-steps-drawing-lesson-kids/) DC Comics'in Robin karakterini nasıl çizebileceğimizi anlatan içerik ilgimi çekmişti. Geometri bilgisini iyi kullandığı için anlaşılırdı. Tabii önemli bir eksiğim vardı...Yetenek. Sonuçları sizlerle paylaşmayı çok tercih etmiyorum ama yandaki Robin'in kafasının pek yakınlarından geçemediğimi gönül rahatlığıyla itiraf edebilirim. Dolayısıyla google aramasını ve internet sayfasını kapatıp tekrardan az buçuk anlamaya çalıştığım yazılım dünyasına döndüm.
 

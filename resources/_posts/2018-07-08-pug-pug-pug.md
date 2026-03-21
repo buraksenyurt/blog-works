@@ -5,16 +5,16 @@ date: 2018-07-08 21:30:00 +0300
 categories:
   - nodejs
 tags:
-  - nodejs
-  - bash
-  - json
+  - node.js
+  - pug
+  - npm
+  - html
   - javascript
-  - dotnet
-  - rest
-  - http
-  - python
-  - ruby
-  - github
+  - express
+  - webProgramming
+  - pluralsight
+  - mixin
+  - jade
 ---
 Kısa bir süre önce çalışmakta olduğum şirkette epey eğlenceli bir mevzunun içerisinde kaldım. Daha önceden de bahsettiğim gibi kurumumuzun bize sunduğu güzel bir hizmet var...[Pluralsight](https://www.pluralsight.com/). Ne var ki benim gibi dikkatsiz kullanıcılar için enteresan şeyler olabiliyor. İzin verin hikayeyi size anlatayım; İlk hedefim oldukça hoşuma giden Node.js tarafında ilerlemekti.
 

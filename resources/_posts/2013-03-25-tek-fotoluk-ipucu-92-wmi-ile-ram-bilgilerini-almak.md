@@ -6,6 +6,11 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - tek-fotoluk-ipucu
+  - wmi
+  - windows-management-instrumentation
+  - wql
+  - wmi-query-language
+  - ansi-sql
 ---
 Diyelim ki uygulamanız içerisinden, çalışmakta olduğu Windows işletim sistemi tabanlı makinenize ait fiziki RAM bilgilerini almak istiyorsunuz. Örneğin markasını, hangi slota takılı olduğunu, boyutunu, tipini vs…
 

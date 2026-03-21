@@ -6,7 +6,12 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - tek-fotoluk-ipucu
-  - generics
+  - extension-methods
+  - language-integrated-query
+  - orderby
+  - random
+  - randomizer
+  - shuffle
 ---
 Malum hepimizin devasaaa/kocaman boyutlarda MP3 arşivleri var ve genelde müzik dinlerken de uygulamaların shuffle özelliklerini açarak, karışık sırada dinlemeyi tercih ediyoruz. Peki kendi tiplerinize ait generic bir listeyi Shuffle’ layarak kullanmak isteseydiniz, nasıl bir yol izlersiniz? Aşağıdaki gibi olabilir mi?
 

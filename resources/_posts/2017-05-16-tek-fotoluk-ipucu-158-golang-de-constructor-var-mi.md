@@ -6,7 +6,10 @@ categories:
   - golang
 tags:
   - golang
-  - go
+  - tek-fotoluk-ipucu
+  - struct
+  - type
+  - factory-design-pattern
 ---
 GO tam anlamıyla nesne yönelimli (Object Oriented) bir dil değildir. Hatta object terimi yerine Type kavramının daha çok öne çıktığı bir programlama dilidir. Geliştirici tanımlı tipler için struct'lardan yararlanılır ve onların örneklenmesinde kullanılabilecekk doğal yapıcı metodlar (built-in constructor) vardır. Yine de istersek kendi yapıcı metodlarımızı yazabiliriz. Nasıl mı? Aynen aşağıdaki fotoğrafta olduğu gibi.
 

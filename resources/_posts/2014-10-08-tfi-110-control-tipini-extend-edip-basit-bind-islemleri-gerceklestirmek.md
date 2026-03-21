@@ -6,9 +6,9 @@ categories:
   - tek-fotoluk-ipucu
 tags:
   - tek-fotoluk-ipucu
-  - windows-forms
+  - tfi
   - reflection
-  - generics
+  - dynamic
 ---
 Diyelim ki, geliştirdiğiniz Windows Forms tabanlı ekranlarınızdaki kontrollerin içerikleri farklı bir veri kaynağından (Strongly Typed özellikte) geliyor ve siz bunları kontrollerin ilgili özelliklerine bağlayacak generic özellikte bir metod geliştirmek istiyorsunuz. Doğrudan özelliklere değer set etmek ile uğraşabilirsiniz de ama, veri kaynağından okuma yapan kod parçasının içerisinde bu işlemi merkezileştirmeyi de düşünüyorsunuz. Ancak ilk adım olarak Control türevli tipler için bir Extension metod üzerinden özelliklere değer bağlama işlemlerini yapmak istiyorsunuz. Nasıl bir yol izlersiniz? Aşağıdaki ip ucu işinize yarayabilir mi?
 

@@ -5,10 +5,9 @@ date: 2003-12-10 12:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
-  - csharp
+  - ado.net
   - dataset
-  - datatable
+  - relations
 ---
 Bugünkü makalemizde ilişkili tablolar arasında kısıtlamaların (constraints) nasıl kullanıldığını işlemey çalışacağız. Hatırlayacağınız gibi bu yazı dizisinin ilk bölümünde DataRelation sınıfını kullanarak ilişkil tabloların bellekte nasıl ifade edilebileceğini görmüştük.Bir diğer önemli konu, bu ilişkili tablolar arasındaki parent-child ilişkisinin kayıt güncelleme, kayıt silme gibi durumlarda nasıl hareket edeceğini belirlemektir.
 

@@ -5,16 +5,9 @@ date: 2004-10-07 12:00:00 +0300
 categories:
   - xml-web-services
 tags:
-  - xml-web-services
-  - xml
-  - dotnet
-  - aspnet
-  - soap
-  - web-service
-  - http
-  - iis
-  - visual-studio
-  - asmx
+  - xml-web-service
+  - disco
+  - discovery
 ---
 Disco, Microsoft tarafından geliştirilmiş bir keşif mekanizmasıdır. Web servislerinin kullanılması ile ilgili en önemli sorun, istemci uygulamaları geliştiren yazılımcıların, ne tip web servisleri olduğundan ve bunları nasıl kullanacağından haberdar olamamasıdır. Bu amaçla, web servislerini yayınlayanlar, bu servislere ait erişim bilgilerini e-mail veya başka iletişim yolları ile, istemcileri geliştiren yazılım tarafına gönderebilirler. Ancak Microsoft bu işin daha kolay yapılabilmesini sağlamak amacıyla, web servislerinin keşfedilmelerine kolaylık getiren teknikler geliştirmiştir. Bu tekniklerden birisi, disco tekniğidir. Disco tekniğinin kilit noktası, disco uzantılı XML tabanlı dosyalardır. Daha önceki makalelerimizde, Visual Studio.Net ile geliştirdiğimiz istemci uygulamayı göz önüne aldığımızda, GeoMat.disco isimli bir dosyanında yer aldığını görürüz.
 

@@ -5,8 +5,18 @@ date: 2013-05-07 13:30:00 +0300
 categories:
   - dotnet-temelleri
 tags:
-  - dotnet-temelleri
-  - dotnet
+  - .net-security
+  - ildasm
+  - makecert
+  - ilasm
+  - common-intermediate-language
+  - strong-name
+  - signtool
+  - signing
+  - application-security
+  - hacking
+  - obfuscator
+  - obfuscating
 ---
 Bu görsel dersimizde önce basit bir.Net uygulamasını, CIL (Common Intermediate Language) kodları üzerinden Hackliyor ve sonrasında olası tedbirleri deneyerek söz konusu vakayı engellemeye çalışıyoruz. Bunun için komut satırından kolayca kullanılabilen sn.exe (Strong Name ile uygulamanın işaretlenmesi) ve SignTool.exe (Uygulamanın bir sertifika ile işaretlenmesi) araçlarını değerlendiriyoruz. Kodun Obfuscate edilmesinden bahsediyor ve son olarak sonuçları irdeliyoruz.
 

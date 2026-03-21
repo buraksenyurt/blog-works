@@ -6,20 +6,7 @@ categories:
   - enterprise-library
 tags:
   - enterprise-library
-  - csharp
-  - xml
-  - dotnet
-  - aspnet
-  - linq
-  - wcf
-  - windows-forms
-  - http
-  - authentication
-  - performance
-  - caching
-  - serialization
-  - generics
-  - visual-studio
+  - windows-communication-foundation
 ---
 Az önce 1966 yılında çevrilmiş olan ve küçüklüğümde bol bol izlediğim nefis bir filmi belkide 179ncu kez tekrardan seyrettim. Eskiler aşağıdaki resimden hangi film olabileceğini tahmin edebilirler. Yeni nesilden seyretmeyen varsa eğer [The Good, The Bad and The Ugly](http://en.wikipedia.org/wiki/The_Good,_the_Bad_and_the_Ugly) filmini mutlaka tedarik edip izlesinler. Peki bunun anlatacağım konu ile bir ilgisi var mı? Hayır yok.
 

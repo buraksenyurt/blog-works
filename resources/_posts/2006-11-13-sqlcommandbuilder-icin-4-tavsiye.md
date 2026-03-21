@@ -5,11 +5,8 @@ date: 2006-11-13 12:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
-  - csharp
-  - sql-server
-  - http
-  - datatable
+  - ado.net
+  - sqlcommandbuilder
 ---
 SqlCommandBuilder sınıfı özellikle bağlantısız katman (disconnected layer) modelinde sıkça kullanılmaktadır. Çoğunlukla, SqlDataAdapter tipine ait nesneler için gerekli olan UpdateCommand, InsertCommand ve DeleteCommand özelliklerine bağlı SqlCommand nesnelerini sıfırdan oluşturmamak için tercih edilebilir. Framework 1.1' de özellikle bağlantısız katman modeline ait bir vakka olan Concurency Violation durumlarındaki yaklaşımı nedeniyle (tüm kolonları where'e dahil etmek) bazen tercih edilmemektedir.
 

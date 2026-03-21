@@ -6,11 +6,14 @@ categories:
   - python
 tags:
   - python
-  - json
-  - dotnet
-  - rest
+  - flask
+  - web-programlama
+  - http-post
+  - post
+  - jinja
   - http
-  - go
+  - html
+  - template
 ---
 Yazıyı yazdığım şu yaz gününde hava epey sıcak. İstanbul'da öğle saatlerinde 39 dereceyi gördük. Güney tarafında yaşayan bir kaç yakın arkadaşımdan 48 dereceli rakamları duyduktan sonra ise halimize şükredelim dedim. Açtım Python kitabımı, çalışmaya devam ettim.
 

@@ -5,14 +5,7 @@ date: 2010-01-19 06:00:00 +0300
 categories:
   - wf-4-0-beta-2
 tags:
-  - wf-4-0-beta-2
-  - csharp
   - workflow-foundation
-  - xaml
-  - http
-  - authentication
-  - generics
-  - visual-studio
 ---
 Sakin bir Cuma gününde bilgisayarın başında kahvemi yudumlarken ve M&M drajelerinden avuç avuç yerken araştırmalarıma devam ediyordum. Bir süredir Workflow Foundation 4.0 ile birlikte gelen yenilikleri incelediğimden takip ettiğim bloglar ve MSDN üzerinde bu konu ile ilişkili yazıları okumaktaydım. Özelliklede son iki yazımda üzerinde durmaya çalıştığım özel aktivite bileşenlerinin doğrulanması konusunu irdelemekteydim. Bu yazımızda doğrulama (Validation) ile ilişkili araştırmalarımı sizlerle paylaşmaya devam ediyor olacağım.
 

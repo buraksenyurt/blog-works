@@ -5,11 +5,8 @@ date: 2004-07-29 12:00:00 +0300
 categories:
   - ado-net
 tags:
-  - ado-net
-  - csharp
-  - dotnet
-  - visual-studio
-  - datatable
+  - ado.net
+  - identity
 ---
 Bu makalemizde, veritabanlarında otomatik olarak artan identity alanlarının değerlerinin, çalışma zamanında uygulama ortamlarına nasıl yansıtılabileceğini incelemeye çalışacağız. Çoğunlukla, tablolarımızda yer alan satırların birbirlerinden kolayca ayırt edilebilmelerini sağlamak için, primary key alanlarını kullanırız. Genellikle bu alanları otomatik olarak artan sayısal değerler üzerinde yapılandırırız. Örnek olarak aşağıdaki tabloyu göz önüne aldığımızda, PersonelID alanının 1 sayısal değerinden başlayarak 1'er artan ve primary key özelliğine sahip olduğunu görürüz.
 

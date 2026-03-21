@@ -6,18 +6,13 @@ categories:
   - rust
 tags:
   - rust
-  - bash
-  - csharp
-  - dotnet
-  - java
-  - memory-management
-  - generics
-  - dependency-injection
-  - github
-  - shared-state
-  - ownership
-  - borrow-checker
-  - dependency-management
+  - rust-lang
+  - oop
+  - class
+  - struct
+  - trait
+  - inheritance
+  - polymorphism
 ---
 Yılların.Net geliştiricisi olunca insan ki sanıyorum Java tarafından gelse de durum değişmeyecektir, ister istemez Rust, Go gibi dillerde nesne yönelimli dünyanın karşılıklarını arıyor. Ortak özellikleri toplayacağım üst tipler yok mu, peki ya bağımlılıkları soyutlamak için başvuracağım interface türevleri, bukalemun varlıklara ne demeli. Kısacası bir nesne yönelimli dilin öne çıkan en belirgin özellikleri encapsulation, Inheritance, Polymorphism gibi detaylara bakıyoruz.
 

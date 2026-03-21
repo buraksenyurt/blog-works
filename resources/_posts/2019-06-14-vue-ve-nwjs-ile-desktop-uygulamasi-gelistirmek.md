@@ -5,19 +5,20 @@ date: 2019-06-14 13:00:00 +0300
 categories:
   - vuejs
 tags:
-  - vuejs
-  - bash
-  - javascript
-  - csharp
-  - dotnet
-  - linq
-  - json
+  - vue.js
+  - electron
+  - linux
+  - cross-platform-development
+  - nw.js
+  - node
+  - node.js
+  - .net-core
   - web-api
-  - http
-  - nodejs
-  - vue
-  - generics
-  - github
+  - rest-api
+  - cors
+  - .net
+  - chromium
+  - node-webkit
 ---
 Geçen gün fark ettim ki yaş ilerleyince blogumdaki yazıların girişinde kullanabileceğim malzeme sayısı da artmış. Söz gelimi şu anda lise son yıllarıma yani seksenlerin sonu doksanların başına doğru gitmiş durumdayım. O dönemlerde kısa Amerikan dizileri popüler. Hatta Arjantin menşeeli diziler de çok yaygın. Sanıyorum Mariana isimli popüler bir dizi vardı. Kısa boylu, siyah kıvırcık saçlı, buğday tenli ve hayatı acılar içinde geçen bir Latin kadının hikayesiydi. Lakin ben hayatı toz pembe görmemize vesile olan komedileri tercih ediyordum. Hatta en çok sevdiğim komedi dizisi [Perfect Strangers](https://www.imdb.com/title/tt0090501/?ref_=nv_sr_2?ref_=nv_sr_2)'dı.
 

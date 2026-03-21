@@ -5,17 +5,14 @@ date: 2017-12-31 21:02:00 +0300
 categories:
   - asp-dotnet-core
 tags:
-  - asp-dotnet-core
-  - bash
+  - signalr
+  - .net-core
+  - asp.net-core
   - csharp
-  - dotnet
-  - aspnet
-  - http
-  - threading
-  - concurrency
-  - generics
-  - visual-studio
-  - github
+  - websockets
+  - real-time-messaging
+  - hub
+  - signalr.client
 ---
 Bir süre önce araştırmaya başladığım ama araya giren diğer konular (WebSockets ve CORS-Cross Origin Resource Sharing) nedeniyle askıda kalan SignalR mevuzusuyla ilgili West-World'de haftasonu önemli ve heyecanlı gelişmeler oldu. Epey zorlandığımı itiraf etmek isterim. Bunun en büyük sebebi standart öğretilerde yer alan web tabanlı örnekler yerine her şeyi Console üzerinde uygulamaya çalışmamdı. HUB için bir sunucu, mesaj yayını için bir başka uygulama ve yayınlanan mesajları alan bir diğeri.
 

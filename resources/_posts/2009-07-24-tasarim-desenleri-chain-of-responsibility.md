@@ -5,9 +5,9 @@ date: 2009-07-24 05:15:00 +0300
 categories:
   - tasarim-kaliplari-design-patterns
 tags:
-  - tasarim-kaliplari-design-patterns
+  - design-patterns
+  - oop
   - csharp
-  - http
 ---
 Dün gece çok garip bir rüya gördüm. Rüyamda denize açılmak için limanda duran tekneme doğru ilerliyordum. Derken kendimi kaptan köşkünde buldum. E tabi rüya bu. Hareket etmek istedim ama bir türlü beceremedim. Sonunda sorunun ne olduğunu bulmaya çalıştım ve yandaki manzaranın bir benzeri ile karşılaştım. Geminin demir halat zinciri (zincirleri) arap saçına dönmüştü. Sabah uyandığımda ilginç bir şekilde rüyayı hatırlayabildiğimi de farkettim.
 

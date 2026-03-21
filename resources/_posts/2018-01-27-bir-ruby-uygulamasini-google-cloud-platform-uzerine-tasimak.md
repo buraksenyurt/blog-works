@@ -5,16 +5,12 @@ date: 2018-01-27 17:00:00 +0300
 categories:
   - ruby
 tags:
-  - ruby
-  - bash
-  - rest
-  - json
-  - http
-  - python
-  - java
-  - performance
-  - serialization
-  - visual-studio
+  - ruby-lang
+  - google-cloud-platform
+  - sinatra
+  - rest-api
+  - cloud-computing
+  - google-app-engine
 ---
 "Futbol basit bir oyundur. 22 kişi 90 dakika boyunca bir topun peşinde koşar ve sonunda her zaman Almanlar kazanır." demiş bizim de ne yazık ki yakından tanıdığımız Gary Lineker. Konumuzla ne alakası var derseniz. Az sonra onun bu sözünü buluta alacağız.
 

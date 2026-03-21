@@ -5,14 +5,7 @@ date: 2009-08-13 10:01:00 +0300
 categories:
   - wcf-4-0-beta-1
 tags:
-  - wcf-4-0-beta-1
-  - xml
-  - csharp
-  - dotnet
-  - linq
-  - wcf
-  - http
-  - visual-studio
+  - windows-communication-foundation
 ---
 Bir kaç gece önce evde DVD keyfi yapmak için A Fistful Of Dollars (Per un pugno di dollari) isimli çok eski bir Western filmi seyrettim. Filmi seyretmeyenler için bir kaç hatırlatma yapayım. Film aslında The Good The Bad and The Ugly ile For a Few Dollars More birlikte oluşan bir üçlemenin ilk halkasını oluşturmakta. Hepside çok güzeldi. Bu filmin belkide en can alıcı ve etkileyici yeri ise sonlarında yaşanan silahlı dövüş sahneleridir.
 

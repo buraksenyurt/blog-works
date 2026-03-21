@@ -6,7 +6,9 @@ categories:
   - csharp
 tags:
   - csharp
-  - performance
+  - constructor
+  - oop
+  - class
 ---
 Yapıcı metodlar nesne yönelimli programlamada çok büyük öneme sahiptir. Uygulamada oluşturduğumuz her bir nesnenin en az bir yapıcı metodu (ki bu varsayılan yapıcı metodtur) vardır. Kuşkusuz ki yapıcı metodlar (constructors), bir nesne örneğinin kapsüllediği verilere başlangıç değerlerinin atanabileceği en elverişli elemanlardır.
 

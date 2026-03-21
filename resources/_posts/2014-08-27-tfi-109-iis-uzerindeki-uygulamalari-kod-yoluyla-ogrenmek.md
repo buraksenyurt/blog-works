@@ -8,14 +8,7 @@ categories:
   - aspnet-4-0-beta-2
   - aspnet-4-5
   - aspnet-web-api
-tags:
-  - aspnet
-  - aspnet-2-0
-  - aspnet-4-0-beta-2
-  - aspnet-4-5
-  - aspnet-web-api
-  - windows-forms
-  - iis
+tags: []
 ---
 Diyelim ki sunucudaki IIS üzerinde konuşlandırdığınız Web uygulamalarının bir listesini almak istiyorsunuz. Bunun elbette pek çok yolu olduğunu biliyorsunuz. Bir Powershell script'i belki de işinizi görür. Ancak belki de siz bunu kendi geliştireceğiniz windows forms uygulamasında bu listeyi kullanmak istiyorsunuz. Ne yaparsınız? Kod yardımıyla IIS üzerindeki Application'ları, Site'ları öğrenebilir misiniz?
 

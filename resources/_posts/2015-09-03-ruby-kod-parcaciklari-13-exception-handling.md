@@ -5,13 +5,9 @@ date: 2015-09-03 05:00:00 +0300
 categories:
   - ruby
 tags:
-  - ruby
-  - dotnet
-  - wcf
-  - http
-  - jwt
-  - authentication
-  - java
+  - ruby-lang
+  - exception-handling
+  - error-handling
 ---
 Malumunuz hata yönetimi (Error Handling) oldukça önemli bir konu. Bu amaçla.Net/Java gibi çalışma zamanı motoru olan ortamlarda genellikle Exception yönetim mekanizmaları kullanılmakta. Benzer durum Ruby programlama dili için de söz konusu. Aşağıdaki kod parçacığında hata yönetiminin Ruby tarafında nasıl ele alındığını temel anlamda incelemeye çalışıyoruz (Aslında beni benden alan rescue, retry ve ensure kullanımlarıdır. Söylemeden geçmek istemedim.)
 

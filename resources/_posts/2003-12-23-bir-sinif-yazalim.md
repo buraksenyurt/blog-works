@@ -6,8 +6,9 @@ categories:
   - csharp
 tags:
   - csharp
-  - dotnet
-  - ado-net
+  - oop
+  - class
+  - .net
 ---
 Bugünkü makalemizde ADO.NET kavramı içerisinde sınıfları nasıl kullanabileceğimizi incelemeye çalışacak ve sınıf kavramına kısa bir giriş yapıcağız. Nitekim C# dili tam anlamıyla nesne yönelimli bir dildir. Bu dil içerisinde sınıf kavramının önemli bir yeri vardır. Bu kavramı iyi anlamak, her türlü teknikte, sınıfların avantajlarından yararlanmanızı ve kendinize özgü nesnelere sahip olabilmenizi sağlar. Zaten.net teknolojisinde yer alan her nesne, mutlaka sınıflardan türetilmektedir.
 

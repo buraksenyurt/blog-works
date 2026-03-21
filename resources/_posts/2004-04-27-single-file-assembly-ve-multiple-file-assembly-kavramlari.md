@@ -5,8 +5,10 @@ date: 2004-04-27 12:00:00 +0300
 categories:
   - csharp
 tags:
-  - csharp
-  - dotnet
+  - Framework
+  - assembly
+  - clr
+  - common-language-runtime
 ---
 Bir önceki makalemizde, assembly'ları erişilebilirliklerine göre özel (private) ve paylaştırılmış (shared) olmak üzere iki kategoriye ayırabileceğimizi incelemiştik. Assembly'ları ayrıca, tek dosya (single file) ve çoklu dosya (multiple-file) olmak üzere iki farklı kategoriye daha ayırabiliriz. Bu makelemizde assembly'ların bu tiplerini incelemeye çalışacağız.
 

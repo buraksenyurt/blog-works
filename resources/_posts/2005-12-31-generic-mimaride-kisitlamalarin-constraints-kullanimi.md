@@ -6,8 +6,8 @@ categories:
   - csharp
 tags:
   - csharp
-  - dotnet
   - generics
+  - constraints
 ---
 Bu makalemizde.Net 2.0 ile birlikte gelen Generic mimarisinin uygulanışında, kısıtlamaların rolünü basit örnekler ile incelemeye çalışacağız. Generic mimari her ne kadar tür bağımsız algoritmaların geliştirilmesine izin versede, bazı durumlarda çeşitli zorlamaların uygulanmasınıda gerektirir. Örneğin generic olması planlanan tiplerin sadece referans tipleri ile çalışmasını isteyebiliriz. Generic bir tipe her hangibir zorunluluk kuralını uygulayabilmek için where anahtar sözcüğünü içeren bir ek ifade kullanılır. Bu ifadeler 5 adettir ve aşağıdaki tabloda gösterilmektedir.
 

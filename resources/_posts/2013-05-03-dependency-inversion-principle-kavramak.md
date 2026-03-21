@@ -5,8 +5,14 @@ date: 2013-05-03 00:10:00 +0300
 categories:
   - tasarim-prensipleri-design-principles
 tags:
-  - tasarim-prensipleri-design-principles
-  - dependency-management
+  - software-design-principle
+  - dip
+  - dependency-injection
+  - inversion-of-control
+  - ninject
+  - windsor-castle
+  - unity-framework
+  - solid
 ---
 Bu görsel dersimizde, SOLID ilkelerinden birisi olup Yazılım Tasarım Presinpleri (Software Design Principles) içerisinde yer alan Dependency Inversion’ ı kavramaya çalışıyoruz. Konuyu irdelerken basit bir senaryoyu göz önüne alıyor, önce DIP olmadan ilerliyor ve sorunları teşhis ediyoruz. Sonrasında ise Dependency Inversion prensibini baz alarak bağımlılıkları tersine çeviriyor ve problemli kısımları iyileştiriyoruz.
 

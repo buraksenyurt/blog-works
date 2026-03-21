@@ -6,15 +6,14 @@ categories:
   - angular
 tags:
   - angular
-  - bash
-  - javascript
-  - http
   - typescript
-  - react
-  - vue
-  - blazor
-  - visual-studio
-  - github
+  - javascript
+  - html
+  - bootstrap
+  - .net-core
+  - ubuntu
+  - hello-world
+  - npm
 ---
 Bazen ne kadar basit olursa olsun üşenmeden bir örneğin üstüne gitmek gerekiyor. Çünkü çok basit örneklerle çalışıyor olsak bile gözümüzden kaçan önemli detaylar olabilir. Günümüzde kullanmakta olduğumuz pek çok geliştirme çatısı, belli ürünlere yönelik hazır şablonları kolayca üretebileceğimiz komut setleri sunmakta.
 

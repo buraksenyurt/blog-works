@@ -6,12 +6,13 @@ categories:
   - golang
 tags:
   - golang
-  - rest
+  - web-programming-model
   - json
+  - rest-api
+  - data-services
   - http
-  - go
-  - caching
-  - github
+  - httprouting
+  - routers
 ---
 Bir önceki yazımızda web programlamada önemli bir yere sahip olan yönlendiricileri (Router) tanımak adına github üzerinden sunulan httpRouter paketini kullanarak dinamik HTML içeriği ürettiğimiz bir örnek geliştirmiştik. Bu hafta içinde HttpRouter paketi hakkında öğrendiklerimi çeşitli örnekler ile pekiştirmeye çalıştım. Bu sefer hem static web içeriğinin hem de talebe göre JSON formatlı veri sunumu yapacak dinamiklerin yer alacağı konu üzerinde durdum. Web programlama konusunda acemi olduğum için örneği sonuca ulaştırırken takıldığım bir kaç nokta da oldu. Yazımızda bu konulara da değinmeye çalışacağım.
 

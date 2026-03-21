@@ -5,20 +5,8 @@ date: 2008-01-01 12:00:00 +0300
 categories:
   - wf
 tags:
-  - wf
-  - csharp
-  - dotnet
-  - wcf
   - workflow-foundation
-  - xml
-  - web-service
-  - http
-  - threading
-  - transactions
-  - serialization
-  - delegates
-  - generics
-  - visual-studio
+  - hello-world
 ---
 Gerçek dünyada pek çok iş probleminin çözümünde iş akışlarından (Workflow) yararlanılır. Temelde bir iş probleminin çözümünde veya amacının gerçekleştirilmesinde izlenen yol birdir. Önce problem yönetilebilir küçük parçalara bölünür. Bu parçalar, gerçekleştirilmesi gereken görevler (Tasks) olarak düşünülebilir. Her bir görevin (Task) içerisinde ona ait gerçekleştirilmesi gereken ne varsa adımlar (Steps) halinde tasarlanır. Bu adımlar dahil oldukları görevin tamamlanmasında rol oynarlar. Adımlar arasındaki geçişler basit olabileceği gibi çeşitli çevresel koşul veya faktörlerede bağımlı olabilir. Bir başka deyişle adımlar arası geçişlerde koşullar (Conditions) söz konusu olabilir. Adımlar düzenli bir sırada olup aralarındaki geçişler önceden tanımlanmış ve belirli olabileceği gibi, çeşitli olaylara göre farklı şekillerde ele alınabilirlerde. Sonuç olarak ortaya iş probleminin çözümü için tasarlanmış bir süreç (Process) ve kontrollü bir akış (Control Flow) çıkar.
 

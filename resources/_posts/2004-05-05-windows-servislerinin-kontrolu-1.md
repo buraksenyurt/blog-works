@@ -6,10 +6,8 @@ categories:
   - windows-services
 tags:
   - windows-services
-  - csharp
-  - dotnet
-  - performance
-  - visual-studio
+  - ServiceController
+  - eventlog
 ---
 Bu makalemizde, windows servislerinin, bir windows uygulamasından nasıl kontrol edilebileceğini incelemeye çalışacağız. Bir önceki makalemizde, windows servislerinin nasıl oluşturulduğunu ve sisteme nasıl yüklendiklerini incelemiştik. Oluşturduğumuz windows servislerini (sistemdeki windows servislerini), SCM yardımıyla yönetibilmekteyiz. Ancak dilersek, bu yönetimi programlarımız içindende gerçekleştirebiliriz. Bunu sağlayabilmek için, System.ServiceProcess isim alanında yer alan ServiceController sınıfını ve üyelerini kullanmaktayız.
 

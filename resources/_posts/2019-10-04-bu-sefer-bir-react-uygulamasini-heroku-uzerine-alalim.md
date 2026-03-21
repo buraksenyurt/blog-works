@@ -6,17 +6,17 @@ categories:
   - react
 tags:
   - react
-  - bash
-  - javascript
-  - postgresql
-  - json
-  - http
-  - python
-  - java
-  - ruby
-  - nodejs
-  - concurrency
-  - github
+  - node
+  - node.js
+  - heroku
+  - paas
+  - platform-as-a-service
+  - cloud-services
+  - deployment
+  - npm
+  - express
+  - nodemon
+  - concurrently
 ---
 Sir [Ken Robinson](http://sirkenrobinson.com/), çocukların hayal güçlerini sınırlayan eğitim sistemini eleştirdiği [TED'in en çok izlenen sunumu](https://www.ted.com/talks/ken_robinson_says_schools_kill_creativity?language=en)nda William Shakespeare ile ilgili güzel bir anektod paylaşır. Konuşmasının ilgili bölümünde profesör onun bir zamanlar yedi yaşında bir çocuk olduğunu dile getirir. Kısa bir an için duraksar ve ne diyeceğini merak eden seyirciye "...Shakespeare'i hiç çocuk olarak düşünmemiştiniz, değil mi?" der:)
 

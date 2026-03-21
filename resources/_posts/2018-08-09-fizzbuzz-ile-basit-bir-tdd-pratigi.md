@@ -5,7 +5,15 @@ date: 2018-08-09 07:52:00 +0300
 categories:
   - codekata
 tags:
-  - codekata
+  - tdd
+  - test-driven-development
+  - unit-test
+  - mstest
+  - .net
+  - .net-core
+  - csharp
+  - code-kata
+  - triangulation
   - testing
 ---
 [DevOps felsefesinin](https://medium.com/@burakselyum/devops-e%C4%9Fitiminden-akl%C4%B1mda-kalanlar-6853070d89d6) içerdiği önemli pratiklerden birisi de test süreçleridir ve bu noktada TDD (Test Driven Development) büyük önem taşımaktadır. TDD, temel olarak Unit Tests, Integration Tests, User Acceptance Tests gibi pratikleri içerir ve en azından bunların DevOps süreçlerine dahil edilmesi beklenir. Ancak TDD ve DevOps söz konusu olunca daha bir çok test tekniği vardır. Smoke Testing, Penetration Testing, Stress Testing, A/B testing, Fuzz Testing ve Boundary Testing gibi.
